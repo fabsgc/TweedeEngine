@@ -1,0 +1,16 @@
+set (TE_FREEIMGIMPORTER_INC_NOFILTER
+    "TeFreeImgImporterPrerequisites.h"
+    "TeFreeImgImporter.h"
+)
+
+set (TE_FREEIMGIMPORTER_SRC_NOFILTER
+    "TeFreeImgImporter.cpp"
+    "TeFreeImgImporterPlugin.cpp"
+)
+
+source_group ("" FILES ${TE_FREEIMGIMPORTER_SRC_NOFILTER} ${TE_FREEIMGIMPORTER_INC_NOFILTER})
+
+set (TE_FREEIMGIMPORTER_SRC
+    ${TE_FREEIMGIMPORTER_INC_NOFILTER}
+    ${TE_FREEIMGIMPORTER_SRC_NOFILTER}
+)

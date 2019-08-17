@@ -1,0 +1,22 @@
+# Ignored files
+
+*~
+*.suo
+*.opensdf
+/bin/
+/lib/
+/Build/
+/.vscode/
+
+*.DS_Store
+
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.sln
+
+CMakeFiles/
+cmake_install.cmake
+CMakeCache.txt
+
+TeEngineConfig.h

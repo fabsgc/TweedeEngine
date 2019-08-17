@@ -1,0 +1,22 @@
+#pragma once
+
+#define TE_RENDERER_MODULE "@RENDERER_MODULE_LIB@"
+#define TE_RENDER_API_MODULE "@RENDER_API_MODULE_LIB@"
+#define TE_AUDIO_MODULE "@AUDIO_MODULE_LIB@"
+
+/** Path to the framework root when files haven't been packaged yet (e.g. running from debugger). */
+static constexpr const char* RAW_APP_ROOT = "@APP_ROOT_DIR@/"; 
+
+/** Secondary search path to use when looking for built-in assets (after the RAW_APP_ROOT). */
+static constexpr const char* SECONDARY_APP_ROOT = "@SECONDARY_APP_ROOT_DIR@/"; 
+
+/** Path to the binaries when files haven't been packaged yet (e.g. running from debugger). */
+#if TE_CONFIG == TE_CONFIG_DEBUG
+#   define TE_BINARIES_PATH = "@CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG@";
+#elif TE_CONFIG == TE_CONFIG_RELWITHDEBINFO
+#   define TE_BINARIES_PATH = "@CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO@";
+#elif TE_CONFIG == TE_CONFIG_MINSIZEREL
+#   define TE_BINARIES_PATH = "@CMAKE_RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL@";
+#elif TE_CONFIG == TE_CONFIG_RELEASE
+#   define TE_BINARIES_PATH = "@CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE@";
+#endif
