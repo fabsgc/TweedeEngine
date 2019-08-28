@@ -215,7 +215,7 @@ namespace te
 	template<class _Ty1, class _Ty2>
 	TResourceHandle<_Ty1> static_resource_cast(const TResourceHandle<_Ty2>& other)
 	{
-		TResourceHandle<_Ty1, false> handle;
+		TResourceHandle<_Ty1> handle;
 		handle.SetHandleData(other.GetHandleData());
 
 		return handle;
