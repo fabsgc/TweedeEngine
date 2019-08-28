@@ -102,6 +102,17 @@ set (TE_CORE_SRC_IMAGE
     "Core/Image/TeTexture.cpp"
 )
 
+set (TE_CORE_INC_RESOURCE
+    "Core/Resources/TeResource.h"
+    "Core/Resources/TeResourceManager.h"
+    "Core/Resources/TeResourceHandle.h"
+)
+set (TE_CORE_SRC_RESOURCE
+    "Core/Resources/TeResource.cpp"
+    "Core/Resources/TeResourceManager.cpp"
+    "Core/Resources/TeResourceHandle.cpp"
+)
+
 if (WIN32)
     list(APPEND TE_CORE_INC_PLATFORM ${TE_CORE_INC_PLATFORM_WIN32})
     list(APPEND TE_CORE_SRC_PLATFORM ${TE_CORE_SRC_PLATFORM_WIN32})
@@ -120,6 +131,7 @@ source_group("Core\\Input" FILES ${TE_CORE_INC_INPUT} ${TE_CORE_SRC_INPUT})
 source_group("Core\\Manager" FILES ${TE_CORE_INC_MANAGER} ${TE_CORE_SRC_MANAGER})
 source_group("Core\\Importer" FILES ${TE_CORE_INC_IMPORTER} ${TE_CORE_SRC_IMPORTER})
 source_group("Core\\Image" FILES ${TE_CORE_INC_IMAGE} ${TE_CORE_SRC_IMAGE})
+source_group("Core\\Resource" FILES ${TE_CORE_INC_RESOURCE} ${TE_CORE_SRC_RESOURCE})
 source_group("Core" FILES ${TE_CORE_INC_NOFILTER} ${TE_CORE_SRC_NOFILTER})
 
 set(TE_CORE_SRC
@@ -137,4 +149,6 @@ set(TE_CORE_SRC
     ${TE_CORE_SRC_MANAGER}
     ${TE_CORE_INC_IMPORTER}
     ${TE_CORE_SRC_IMPORTER}
+    ${TE_CORE_INC_RESOURCE}
+    ${TE_CORE_SRC_RESOURCE}
 )

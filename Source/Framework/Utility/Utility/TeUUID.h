@@ -10,7 +10,7 @@ namespace te
         /** Initializes an empty UUID. */
         constexpr UUID() = default;
 
-        /** Initializes an UUID using Banshee's UUID representation. */
+        /** Initializes an UUID using framework UUID representation. */
         constexpr UUID(UINT32 data1, UINT32 data2, UINT32 data3, UINT32 data4)
             : _data{ data1, data2, data3, data4 }
         { }

@@ -7,7 +7,7 @@
 
 namespace te
 {
-     /** Manager that handles render system start up. */
+    /** Manager that handles render system start up. */
     class TE_CORE_EXPORT RenderAPIManager : public Module<RenderAPIManager>
     {
     public:

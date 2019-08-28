@@ -31,7 +31,7 @@
 #   ifndef TE_PRINT
 #   define TE_PRINT(message)                                                                     \
         {                                                                                        \
-            ::std::cout << message << std::endl;                                                 \
+            std::cout << message << std::endl;                                                 \
         }
 #   endif
 #else 
