@@ -64,7 +64,7 @@ namespace te
         /**	Copy constructor. */
 		TResourceHandle(const TResourceHandle& other)
 		{
-			this->mData = other.GetHandleData();
+			this->_data = other.GetHandleData();
 			this->AddRef();
 		}
 
@@ -157,7 +157,7 @@ namespace te
 		 * @note	Handle will take ownership of the provided resource pointer, so make sure you don't delete it elsewhere.
 		 */
 		explicit TResourceHandle(T* ptr, const te::UUID& uuid)
-			: ResourceHandle()
+			: ResourceHandleBase()
 		{
 			this->_data = te_shared_ptr_new<ResourceHandleData>();
 			this->AddRef();
@@ -187,7 +187,7 @@ namespace te
 		}
 
 		/**	Replaces the internal handle data pointer, effectively transforming the handle into a different handle. */
-		void setHandleData(const SPtr<ResourceHandleData>& data)
+		void SetHandleData(const SPtr<ResourceHandleData>& data)
 		{
 			this->ReleaseRef();
 			this->_data = data;
