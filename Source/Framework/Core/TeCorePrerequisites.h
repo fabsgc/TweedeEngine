@@ -81,4 +81,14 @@ namespace te
 
     class Platform;
     struct OSPointerButtonStates;
+
+    class Resource;
+    class ResourceManager;
+}
+
+#include "Resources/TeResourceHandle.h"
+
+namespace te
+{
+    typedef ResourceHandle<Resource> HResource;
 }

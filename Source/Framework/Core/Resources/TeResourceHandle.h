@@ -1,7 +1,6 @@
 #pragma once
 
-#include "TeCorePrerequisites.h"
-#include "Resources/TeResource.h"
+#include "Utility/TeUUID.h"
 
 namespace te
 {
@@ -17,9 +16,7 @@ namespace te
 	class TE_CORE_EXPORT ResourceHandleBase
 	{
 	public:
-        /**
-		 * Releases an internal reference to this resource held by the resources system, if there is one.
-		 */
+        /** Releases an internal reference to this resource held by the resources system, if there is one. */
 		void Release();
 
 		/** Returns the UUID of the resource the handle is referring to. */
@@ -37,7 +34,7 @@ namespace te
 		 * constructed just using a UUID, then you need to call this manually before you can access the resource from
 		 * this handle.
 		 */
-		void SetHandleData(const SPtr<Resource>& ptr, const UUID& uuid);
+        void SetHandleData(const SPtr<Resource>& resource, const UUID& uuid);
 
 		/**
 		 * Clears the created flag and the resource pointer, making the handle invalid until the resource is loaded again
@@ -45,10 +42,10 @@ namespace te
 		 */
 		void ClearHandleData();
 
-		/** Increments the reference count of the handle. Only to be used by Resources for keeping internal references. */
+		/** Increments the reference count of the handle. Only to be used by ResourceManager for keeping internal references. */
 		void AddInternalRef();
 
-		/** Decrements the reference count of the handle. Only to be used by Resources for keeping internal references. */
+		/** Decrements the reference count of the handle. Only to be used by ResourceManager for keeping internal references. */
 		void RemoveInternalRef();
 
     protected:
@@ -85,15 +82,20 @@ namespace te
 			return handle;
 		}
 
-		/**
-		 * Returns internal resource pointer.
-		 */
+		/** Returns internal resource pointer. */
 		T* operator->() const { return Get(); }
 
-		/**
-		 * Returns internal resource pointer and dereferences it.
-		 */
+		/** Returns internal resource pointer and dereferences it. */
 		T& operator*() const { return *Get(); }
+
+        /** Clears the handle making it invalid and releases any references held to the resource. */
+        TResourceHandle<T>& operator=(std::nullptr_t ptr)
+        {
+            this->ReleaseRef();
+            this->_data = nullptr;
+
+            return *this;
+        }
 
         /**	Copy assignment. */
 		TResourceHandle<T>& operator=(const TResourceHandle<T>& rhs)
@@ -116,17 +118,13 @@ namespace te
 			return *this;
 		}
 
-        /**
-		 * Returns internal resource pointer and dereferences it.
-		 */
+        /** Returns internal resource pointer and dereferences it. */
 		T* Get() const
 		{
 			return reinterpret_cast<T*>(this->_data->resource.get());
 		}
 
-        /**
-		 * Returns the internal shared pointer to the resource.
-		 */
+        /** Returns the internal shared pointer to the resource. */
 		SPtr<T> GetInternalPtr() const
 		{
 			return std::static_pointer_cast<T>(this->_data->resource);
@@ -145,6 +143,8 @@ namespace te
         {
             if (_data)
             {
+                _data->refCount--;
+
                 if (_data->refCount == 1)
                 {
                     Destroy();
@@ -154,7 +154,7 @@ namespace te
 
         /**
 		 * Constructs a new valid handle for the provided resource with the provided UUID.
-		 * @note	Handle will take ownership of the provided resource pointer, so make sure you don't delete it elsewhere.
+		 * @note Handle will take ownership of the provided resource pointer, so make sure you don't delete it elsewhere.
 		 */
 		explicit TResourceHandle(T* ptr, const te::UUID& uuid)
 			: ResourceHandleBase()
@@ -193,17 +193,28 @@ namespace te
 			this->_data = data;
 			this->AddRef();
 		}
+
+        using ResourceHandleBase::SetHandleData;
     };
 
     /**	Checks if two handles point to the same resource. */
 	template<class _Ty1, class _Ty2>
 	bool operator==(const TResourceHandle<_Ty1>& _Left, const TResourceHandle<_Ty2>& _Right)
 	{
-		if(_Left.GetHandleData() != nullptr && _Right.GetHandleData() != nullptr)
-			return _Left.GetHandleData()->mPtr == _Right.GetHandleData()->mPtr;
+        if (_Left.GetHandleData() != nullptr && _Right.GetHandleData() != nullptr)
+        {
+            return _Left.GetHandleData()->mPtr == _Right.GetHandleData()->mPtr;
+        }
 
 		return _Left.GetHandleData() == _Right.GetHandleData();
 	}
+
+    /**	Checks if a handle is null. */
+    template<class _Ty1, class _Ty2>
+    bool operator==(const TResourceHandle<_Ty1>& _Left, std::nullptr_t  _Right)
+    {
+        return _Left.GetHandleData() == nullptr || _Left.GetHandleData()->uuid.Empty();
+    }
 
     template<class _Ty1, class _Ty2>
 	bool operator!=(const TResourceHandle<_Ty1>& _Left, const TResourceHandle<_Ty2>& _Right)

@@ -11,14 +11,4 @@ namespace te
 	{
 		_name = name;
 	}
-
-    const te::UUID& Resource::getUUID() const
-    {
-        return _uuid;
-    }
-
-    void Resource::setUUID(const te::UUID& uuid)
-    {
-        _uuid = uuid;
-    }
 }
