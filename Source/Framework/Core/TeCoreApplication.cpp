@@ -13,6 +13,7 @@
 #include "RenderAPI/TeRenderAPI.h"
 #include "Renderer/TeRenderer.h"
 #include "Importer/TeImporter.h"
+#include "Resources/TeResourceManager.h"
 
 namespace te
 {
@@ -39,6 +40,7 @@ namespace te
 
         RenderAPIManager::StartUp();
         RendererManager::StartUp();
+        ResourceManager::StartUp();
 
         LoadPlugin(_startUpDesc.Renderer, &_rendererPlugin);
         LoadPlugin(_startUpDesc.RenderAPI, &_renderAPIPlugin);
@@ -77,6 +79,9 @@ namespace te
         {
             LoadPlugin(importerName);
         }
+
+        HTexture loadedTexture = gResourceManager().Load<Texture>("myTexture.asset");
+        TE_PRINT(&(loadedTexture.GetHandleData())->resource);
     }
     
     void CoreApplication::OnShutDown()
@@ -87,6 +92,7 @@ namespace te
         Importer::ShutDown();
         VirtualInput::ShutDown();
         Input::ShutDown();
+        ResourceManager::ShutDown();
         RendererManager::ShutDown();
         RenderAPIManager::ShutDown();
 

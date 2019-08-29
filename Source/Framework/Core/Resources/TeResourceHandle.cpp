@@ -7,14 +7,14 @@ namespace te
 {
     void ResourceHandleBase::Release()
 	{
-		// TODO
+        gResourceManager().Release(*this);
 	}
 
 	void ResourceHandleBase::Destroy()
 	{
 		if(_data->resource)
         {
-            // TODO
+            gResourceManager().Destroy(*this);
         }
 	}
 

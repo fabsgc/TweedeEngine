@@ -84,6 +84,10 @@ namespace te
 
     class Resource;
     class ResourceManager;
+
+    class Texture;
+
+    class Mesh;
 }
 
 #include "Resources/TeResourceHandle.h"
@@ -91,4 +95,6 @@ namespace te
 namespace te
 {
     typedef ResourceHandle<Resource> HResource;
+    typedef ResourceHandle<Texture> HTexture;
+    typedef ResourceHandle<Mesh> HMesh;
 }

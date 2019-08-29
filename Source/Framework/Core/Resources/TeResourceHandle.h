@@ -131,6 +131,12 @@ namespace te
 		}
 
     protected:
+        friend ResourceManager;
+        template<class _T>
+        friend class TResourceHandle;
+        template<class _Ty1, class _Ty2>
+        friend TResourceHandle<_Ty1> static_resource_cast(const TResourceHandle<_Ty2>& other);
+
         void AddRef()
         {
             if (_data)
