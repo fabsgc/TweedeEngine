@@ -150,8 +150,6 @@ namespace te
 
         /**
          * Checks if the Module has been shut down.
-         *
-         * @note	If module was never even started, this will return false.
          */
         static bool& IsDestroyed()
         {

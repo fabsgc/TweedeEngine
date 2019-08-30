@@ -34,21 +34,25 @@ namespace te
 
     public:
 #if TE_PLATFORM == TE_PLATFORM_LINUX
-        static constexpr const char* EXTENSION = "so";
+    static constexpr const char* EXTENSION = "so";
 #elif TE_PLATFORM == TE_PLATFORM_OSX
-        static constexpr const char* EXTENSION = "dylib";
+    static constexpr const char* EXTENSION = "dylib";
 #elif TE_PLATFORM == TE_PLATFORM_WIN32
-        static constexpr const char* EXTENSION = "dll";
+    static constexpr const char* EXTENSION = "dll";
 #else
 #   error Unhandled platform
 #endif
 
 #if TE_PLATFORM == TE_PLATFORM_LINUX
-        static constexpr const char* PREFIX = "lib";
+    static constexpr const char* PREFIX = "lib";
 #elif TE_PLATFORM == TE_PLATFORM_OSX
-        static constexpr const char* PREFIX = "lib";
+    static constexpr const char* PREFIX = "lib";
 #elif TE_PLATFORM == TE_PLATFORM_WIN32
+#   if defined(_MSC_VER)
         static constexpr const char* PREFIX = nullptr;
+#   else
+        static constexpr const char* PREFIX = "lib";
+#   endif
 #else
 #   error Unhandled platform
 #endif
