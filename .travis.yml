@@ -61,6 +61,7 @@ script:
     fi
   - make
   - make install
+  - ./../bin/x64/Debug/HelloWorld
   
 after_success:
   - cd ..
@@ -84,5 +85,3 @@ after_success:
       mv ${filename} artifacts
       mv ${symbolsFilename} artifacts
     fi
-  - cd ../../bin/x64/Debug/
-  - ./HelloWorld
