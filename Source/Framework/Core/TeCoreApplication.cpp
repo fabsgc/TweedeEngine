@@ -81,6 +81,7 @@ namespace te
         }
 
         HTexture loadedTexture = gResourceManager().Load<Texture>("myTexture.asset");
+        ResourceHandle<UINT32> loadedUINT32 = gResourceManager().Load<UINT32>("myTexture.asset");
         TE_PRINT(&(loadedTexture.GetHandleData())->resource);
     }
     

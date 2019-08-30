@@ -25,6 +25,9 @@ namespace te
         /**	Gets the handle data. For internal use only. */
 		const SPtr<ResourceHandleData>& GetHandleData() const { return _data; }
 
+    private:
+        friend class ResourceManager;
+
     protected:
         /**	Destroys the resource the handle is pointing to. */
 		void Destroy();

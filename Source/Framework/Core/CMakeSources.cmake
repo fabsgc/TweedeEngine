@@ -88,11 +88,13 @@ set (TE_CORE_SRC_MANAGER
 
 set (TE_CORE_INC_IMPORTER
     "Core/Importer/TeImporter.h"
-    "Core/Importer/TeBaseImporter.cpp"
+    "Core/Importer/TeImportOptions.h"
+    "Core/Importer/TeBaseImporter.h"
 )
 set (TE_CORE_SRC_IMPORTER
     "Core/Importer/TeImporter.cpp"
-    "Core/Importer/TeBaseImporter.h"
+    "Core/Importer/TeImportOptions.cpp"
+    "Core/Importer/TeBaseImporter.cpp"
 )
 
 set (TE_CORE_INC_IMAGE

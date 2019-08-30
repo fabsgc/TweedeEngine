@@ -22,9 +22,7 @@ namespace te
     UUID PlatformUtility::GenerateUUID()
     {
         ::UUID uuid;
-
-        if (!UuidCreate(&uuid))
-            TE_ASSERT_ERROR(false, "Failed to create UUID");
+        UuidCreate(&uuid);
 
         // Endianess might not be correct, but it shouldn't matter
         UINT32 data1 = uuid.Data1;

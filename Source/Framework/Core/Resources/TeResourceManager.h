@@ -9,11 +9,19 @@ namespace te
     /** Manager that handles resource loading. */
 	class TE_CORE_EXPORT ResourceManager: public Module<ResourceManager>
 	{
+        struct LoadedResourceData
+        {
+            ResourceHandle<Resource> Resource;
+            UINT32 InternalRefCount = 0;
+        };
+
 	public:
 		ResourceManager();
 		~ResourceManager();
 
         HResource Load(const String& filePath);
+
+        void Update(HResource& handle, const SPtr<Resource>& resource);
 
         template <class T>
         ResourceHandle<T> Load(const String& filePath)
@@ -51,7 +59,21 @@ namespace te
         Event<void(const HResource&)> OnResourceModified;
 
     private:
+        friend class ResourceHandleBase;
+
+    private:
+        HResource LoadInternal(const UUID& uuid, const String& filePath);
+
+        bool GetUUIDFromFile(const String& filePath, UUID& uuid);
+        bool GetFileFromUUID(const UUID& uuid, String& filePath);
+        void RegisterResource(const UUID& uuid, const String& filePath);
+        void UnregisterResource(const UUID& uuid);
+
+    private:
         UnorderedMap<UUID, TResourceHandle<Resource>> _handles;
+        UnorderedMap<UUID, LoadedResourceData> _loadedResources;
+        UnorderedMap<UUID, String> _UUIDToFile;
+        UnorderedMap<String, UUID> _fileToUUID;
     };
 
     TE_CORE_EXPORT ResourceManager& gResourceManager();
