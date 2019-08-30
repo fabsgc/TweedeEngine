@@ -35,6 +35,8 @@
 #   else
 #       define TE_DEBUG_MODE 0
 #   endif
+#   
+#   undef _WIN32_WINNT
 #
 #   if defined(TE_WIN_SDK_7)
 #       pragma warning(push)

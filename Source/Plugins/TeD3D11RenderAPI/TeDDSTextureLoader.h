@@ -18,6 +18,8 @@
 
 #include "Prerequisites/TePlatformDefines.h"
 
+#undef _WIN32_WINNT
+
 #if defined(TE_WIN_SDK_7)
 #   define WIN32_LEAN_AND_MEAN
 #   define _WIN32_WINNT _WIN32_WINNT_WIN7

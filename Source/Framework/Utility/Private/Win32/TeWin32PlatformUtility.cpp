@@ -4,7 +4,7 @@
 #include <iphlpapi.h>
 #include <intrin.h>
 
-#if defined(TE_WIN_SDK_10)
+#if defined(TE_WIN_SDK_10) && defined(_MSC_VER)
 #   include <Rpc.h>
 #   pragma comment(lib, "Rpcrt4.lib")
 #endif
