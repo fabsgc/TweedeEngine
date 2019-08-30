@@ -38,8 +38,8 @@ namespace te
             {
                 LoadedResourceData& resData = _loadedResources[uuid];
 
-                resData.Resource._data->resource = handle.GetHandleData()->resource;
-                resData.Resource._data->uuid = handle.GetHandleData()->uuid;
+                resData.resource._data->resource = handle.GetHandleData()->resource;
+                resData.resource._data->uuid = handle.GetHandleData()->uuid;
             }
         }
 
@@ -63,13 +63,13 @@ namespace te
         for (auto iter = _loadedResources.begin(); iter != _loadedResources.end(); ++iter)
         {
             const LoadedResourceData& resData = iter->second;
-            UINT32 refCount = resData.Resource.GetHandleData()->refCount;
+            UINT32 refCount = resData.resource.GetHandleData()->refCount;
 
             assert(refCount > 0);
 
             if (refCount == resData.InternalRefCount) // Only internal references exist, free it
             {
-                resourcesToUnload.push_back(resData.Resource);
+                resourcesToUnload.push_back(resData.resource);
             }
         }
 
@@ -86,7 +86,7 @@ namespace te
     {
         for (auto& loadedResourcePair : _loadedResources)
         {
-            Destroy(loadedResourcePair.second.Resource);
+            Destroy(loadedResourcePair.second.resource);
         } 
     }
 
@@ -110,7 +110,7 @@ namespace te
                 while (resData.InternalRefCount > 0)
                 {
                     resData.InternalRefCount--;
-                    resData.Resource.RemoveInternalRef();
+                    resData.resource.RemoveInternalRef();
                 }
 
                 _loadedResources.erase(iterFind);

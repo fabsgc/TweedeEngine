@@ -11,7 +11,7 @@ namespace te
 	{
         struct LoadedResourceData
         {
-            ResourceHandle<Resource> Resource;
+            ResourceHandle<Resource> resource;
             UINT32 InternalRefCount = 0;
         };
 
