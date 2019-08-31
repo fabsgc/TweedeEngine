@@ -7,6 +7,8 @@ using namespace std::placeholders;
 
 namespace te
 {
+    TE_MODULE_STATIC_MEMBER(VirtualInput)
+
     VirtualInput::VirtualInput()
         : _activeModifiers((UINT32)ButtonModifier::None)
     {

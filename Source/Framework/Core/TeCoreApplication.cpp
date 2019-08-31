@@ -17,6 +17,8 @@
 
 namespace te
 {
+    TE_MODULE_STATIC_MEMBER(CoreApplication)
+
     CoreApplication::CoreApplication(START_UP_DESC desc)
         : _window(nullptr)
         , _startUpDesc(desc)

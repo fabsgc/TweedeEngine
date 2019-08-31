@@ -10,6 +10,8 @@ using namespace std::placeholders;
 
 namespace te
 {   
+    TE_MODULE_STATIC_MEMBER(Input)
+
     Input::DeviceData::DeviceData()
     {
         for (UINT32 i = 0; i < BC_Count; i++)
@@ -31,8 +33,11 @@ namespace te
 
         _mouseWheelScrolledConn = Platform::OnMouseWheelScrolled.Connect(std::bind(&Input::MouseWheelScrolled, this, _1));
 
-        gCoreApplication().GetWindow()->OnFocusGained.Connect(std::bind(&Input::InputWindowChanged, this, _1));
-        gCoreApplication().GetWindow()->OnFocusLost.Connect(std::bind(&Input::InputFocusLost, this));
+        auto focusGainListener = std::bind(&Input::InputWindowChanged, this, _1);
+        auto focusLostListener = std::bind(&Input::InputFocusLost, this);
+
+        gCoreApplication().GetWindow()->OnFocusGained.Connect(std::move(focusGainListener));
+        gCoreApplication().GetWindow()->OnFocusLost.Connect(std::move(focusLostListener));
 
         for (int i = 0; i < 3; i++)
             _pointerButtonStates[i] = ButtonState::Off;

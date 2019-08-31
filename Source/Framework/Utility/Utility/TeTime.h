@@ -12,6 +12,8 @@ namespace te
         Time();
         ~Time() {}
 
+        TE_MODULE_STATIC_HEADER_MEMBER(Time)
+
         float GetTime() const { return _timeSinceStart; }
         UINT64 GetTimeMs() const { return _timeSinceStartMs; }
         float GetFrameDelta() const { return _frameDelta; }

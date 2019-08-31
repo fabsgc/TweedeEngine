@@ -19,6 +19,8 @@ namespace te
 		ResourceManager();
 		~ResourceManager();
 
+        TE_MODULE_STATIC_HEADER_MEMBER(ResourceManager)
+
         HResource Load(const String& filePath);
 
         void Update(HResource& handle, const SPtr<Resource>& resource);

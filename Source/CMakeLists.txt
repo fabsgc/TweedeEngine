@@ -63,8 +63,8 @@ add_subdirectory (Examples)
 
 ## Install
 install (
-    DIRECTORY ../Data
-    DESTINATION bin/
+    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Data
+    DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/bin/
 )
 
 ## Copy data elements inside bin directory
@@ -74,12 +74,12 @@ else ()
     set (PLATFORM_DATA "x86")
 endif ()
 
-execute_process (COMMAND ${CMAKE_COMMAND} -E copy_directory "../Data" "../bin/${PLATFORM_DATA}/Release/Data/")
-execute_process (COMMAND ${CMAKE_COMMAND} -E copy_directory "../Data" "../bin/${PLATFORM_DATA}/RelWithDebInfo/Data/")
-execute_process (COMMAND ${CMAKE_COMMAND} -E copy_directory "../Data" "../bin/${PLATFORM_DATA}/MinSizeRel/Data/")
-execute_process (COMMAND ${CMAKE_COMMAND} -E copy_directory "../Data" "../bin/${PLATFORM_DATA}/Debug/Data/")
+execute_process (COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/../Data" "${CMAKE_CURRENT_SOURCE_DIR}/../bin/${PLATFORM_DATA}/Release/Data/")
+execute_process (COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/../Data" "${CMAKE_CURRENT_SOURCE_DIR}/../bin/${PLATFORM_DATA}/RelWithDebInfo/Data/")
+execute_process (COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/../Data" "${CMAKE_CURRENT_SOURCE_DIR}/../bin/${PLATFORM_DATA}/MinSizeRel/Data/")
+execute_process (COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/../Data" "${CMAKE_CURRENT_SOURCE_DIR}/../bin/${PLATFORM_DATA}/Debug/Data/")
 
-execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "../bin/${PLATFORM_DATA}/Release/Log/")
-execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "../bin/${PLATFORM_DATA}/RelWithDebInfo/Log/")
-execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "../bin/${PLATFORM_DATA}/MinSizeRel/Log/")
-execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "../bin/${PLATFORM_DATA}/Debug/Log/")
+execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_SOURCE_DIR}/../bin/${PLATFORM_DATA}/Release/Log/")
+execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_SOURCE_DIR}/../bin/${PLATFORM_DATA}/RelWithDebInfo/Log/")
+execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_SOURCE_DIR}/../bin/${PLATFORM_DATA}/MinSizeRel/Log/")
+execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_SOURCE_DIR}/../bin/${PLATFORM_DATA}/Debug/Log/")

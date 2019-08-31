@@ -2,6 +2,8 @@
 
 namespace te
 {
+    TE_MODULE_STATIC_MEMBER(Time)
+
     const double Time::MICROSEC_TO_SEC = 1.0 / 1000000.0;
 
     Time::Time()

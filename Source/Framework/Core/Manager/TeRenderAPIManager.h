@@ -14,9 +14,10 @@ namespace te
         RenderAPIManager();
         ~RenderAPIManager();
 
+        TE_MODULE_STATIC_HEADER_MEMBER(RenderAPIManager)
+
         /**
          * Starts the render API with the provided name and creates the primary render window.
-         *
          * @param[in]	name				Name of the render system to start. Factory for this render system must be
          *									previously registered.
          * @param[in]	primaryWindowDesc	Contains options used for creating the primary window.

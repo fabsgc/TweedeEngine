@@ -3,6 +3,8 @@
 
 namespace te
 {
+    TE_MODULE_STATIC_MEMBER(DynLibManager)
+
     static void dynlib_delete(DynLib* lib)
     {
         lib->Unload();

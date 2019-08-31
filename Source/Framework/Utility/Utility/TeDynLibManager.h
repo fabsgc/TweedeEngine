@@ -19,6 +19,8 @@ namespace te
         DynLib* Load(String name);
         void Unload(DynLib* lib);
 
+        TE_MODULE_STATIC_HEADER_MEMBER(DynLibManager)
+
     protected:
         Set<UPtr<DynLib>, std::less<>> _loadedLibrairies;
     };

@@ -2,6 +2,8 @@
 
 namespace te
 {
+    TE_MODULE_STATIC_MEMBER(Console)
+
     Console::Console()
         : _hCrtIn(0)
         , _hCrtOut(0)

@@ -6,6 +6,8 @@
 
 namespace te
 {
+    TE_MODULE_STATIC_MEMBER(RenderAPIManager)
+
     RenderAPIManager::RenderAPIManager()
         : _renderAPIInitialized(false)
     { }

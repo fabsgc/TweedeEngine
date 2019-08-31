@@ -49,6 +49,8 @@ namespace te
     public:
         VirtualInput();
 
+        TE_MODULE_STATIC_HEADER_MEMBER(VirtualInput)
+
         /**	Creates a new empty input configuration. */
         static SPtr<InputConfiguration> CreateConfiguration();
 

@@ -6,6 +6,8 @@
 
 namespace te
 {
+    TE_MODULE_STATIC_MEMBER(RendererManager)
+
     SPtr<Renderer> RendererManager::Initialize(const String& pluginFilename)
     {
         DynLib* loadedLibrary = gDynLibManager().Load(pluginFilename);

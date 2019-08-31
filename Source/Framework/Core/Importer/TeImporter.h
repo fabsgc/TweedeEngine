@@ -10,6 +10,8 @@ namespace te
 	{
 	public:
 		Importer() = default; 
-		~Importer() = default; 
+		~Importer() = default;
+
+        TE_MODULE_STATIC_HEADER_MEMBER(Importer)
     };
 }

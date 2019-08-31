@@ -57,6 +57,8 @@ namespace te
         Input();
         ~Input();
 
+        TE_MODULE_STATIC_HEADER_MEMBER(Input)
+
         void Update();
         void TriggerCallbacks();
 

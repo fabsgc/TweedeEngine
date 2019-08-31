@@ -11,6 +11,8 @@ namespace te
         Console();
         ~Console() = default;
 
+        TE_MODULE_STATIC_HEADER_MEMBER(Console)
+
     protected:
         void OnStartUp() override;
         void OnShutDown() override;

@@ -29,8 +29,8 @@ int main()
 
     te::CoreApplication::StartUp(desc);
 
-    te::String hello = "Application start";
-    TE_PRINT(hello);
+    te::String startMessage = "Application start";
+    TE_PRINT(startMessage);
 
     te::gCoreApplication().RunMainLoop();
     te::CoreApplication::ShutDown();

@@ -11,6 +11,8 @@ namespace te
         RenderAPI();
         ~RenderAPI();
 
+        TE_MODULE_STATIC_HEADER_MEMBER(RenderAPI)
+
         virtual SPtr<RenderWindow> CreateRenderWindow(const RENDER_WINDOW_DESC& windowDesc) = 0;
 
         virtual void Initialize() = 0;
