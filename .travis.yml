@@ -61,7 +61,7 @@ script:
     fi
   - make
   - make install
-  - ./../bin/x64/Debug/HelloWorld
+  # - ./../bin/x64/Debug/HelloWorld
   
 after_success:
   - cd ..
