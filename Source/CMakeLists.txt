@@ -63,8 +63,8 @@ add_subdirectory (Examples)
 
 ## Install
 install (
-    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Data
-    DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/bin/
+    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../Data
+    DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/../bin/
 )
 
 ## Copy data elements inside bin directory
