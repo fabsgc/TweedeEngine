@@ -254,7 +254,7 @@ namespace te
     {
     public:
         ButtonEvent()
-            :mIsUsed(false)
+            :_isUsed(false)
         { }
 
         ButtonCode buttonCode; /**< Button code this event is referring to. */
@@ -274,12 +274,12 @@ namespace te
          * Check if the event has been marked as used. Internally this means nothing but caller might choose to ignore an
          * used event.
          */
-        bool isUsed() const { return mIsUsed; }
+        bool isUsed() const { return _isUsed; }
 
         /** Mark the event as used. Internally this means nothing but caller might choose to ignore an used event. */
-        void markAsUsed() const { mIsUsed = true; }
+        void markAsUsed() const { _isUsed = true; }
     private:
-        mutable bool mIsUsed;
+        mutable bool _isUsed;
     };
 
     /**
@@ -308,7 +308,7 @@ namespace te
     public:
         PointerEvent()
             : button(PointerEventButton::Left), type(PointerEventType::CursorMoved), shift(false)
-            , control(false), alt(false), mouseWheelScrollAmount(0.0f), mIsUsed(false)
+            , control(false), alt(false), mouseWheelScrollAmount(0.0f), _isUsed(false)
         {
             buttonStates[0] = false;
             buttonStates[1] = false;
@@ -337,13 +337,13 @@ namespace te
          * Check if the event has been marked as used. Internally this means nothing but caller might choose to ignore an
          * used event.
          */
-        bool isUsed() const { return mIsUsed; }
+        bool isUsed() const { return _isUsed; }
 
         /** Mark the event as used. Internally this means nothing but caller might choose to ignore an used event. */
-        void markAsUsed() const { mIsUsed = true; }
+        void markAsUsed() const { _isUsed = true; }
 
     private:
-        mutable bool mIsUsed;
+        mutable bool _isUsed;
     };
 
     /**
@@ -354,7 +354,7 @@ namespace te
     {
     public:
         TextInputEvent()
-            :mIsUsed(false)
+            :_isUsed(false)
         { }
 
         UINT32 textChar; /**< Character the that was input. */
@@ -363,13 +363,13 @@ namespace te
          * Check if the event has been marked as used. Internally this means nothing but caller might choose to ignore an
          * used event.
          */
-        bool isUsed() const { return mIsUsed; }
+        bool isUsed() const { return _isUsed; }
 
         /** Mark the event as used. Internally this means nothing but caller might choose to ignore an used event. */
-        void markAsUsed() const { mIsUsed = true; }
+        void markAsUsed() const { _isUsed = true; }
 
     private:
-        mutable bool mIsUsed;
+        mutable bool _isUsed;
     };
 
     /**	Common input axis types. */

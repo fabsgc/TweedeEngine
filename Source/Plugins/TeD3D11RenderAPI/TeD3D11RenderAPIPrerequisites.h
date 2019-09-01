@@ -4,7 +4,7 @@
 
 #define SAFE_RELEASE(p)      { if(p) { (p)->Release(); (p)=NULL; } }
 
-#if BS_DEBUG_MODE
+#if TE_DEBUG_MODE
 #	define D3D_DEBUG_INFO
 #endif
 

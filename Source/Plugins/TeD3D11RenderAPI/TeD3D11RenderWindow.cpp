@@ -43,7 +43,7 @@ namespace te
         windowDesc.CreationParams = this;
         windowDesc.WndProc = &Win32Platform::_win32WndProc;
         
-#ifdef BS_STATIC_LIB
+#ifdef TE_STATIC_LIB
         windowDesc.Module = GetModuleHandle(NULL);
 #else
         windowDesc.Module = GetModuleHandle("TeD3D11RenderAPI.dll");

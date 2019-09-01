@@ -3,19 +3,21 @@
 #include "TeCorePrerequisites.h"
 #include "Utility/TeModule.h"
 #include "Utility/TeEvent.h"
+#include "Importer/TeImporter.h"
 
 namespace te
 {
-    /** 
-     * Manager that handles resource loading. 
-     * INFO : Currently not used as there is no RTTI system to save resources on disk
-     */
+    /** Manager that handles resource loading.*/
 	class TE_CORE_EXPORT ResourceManager: public Module<ResourceManager>
 	{
         struct LoadedResourceData
         {
             ResourceHandle<Resource> resource;
-            UINT32 InternalRefCount = 0;
+
+            LoadedResourceData() = default;
+            LoadedResourceData(ResourceHandle<Resource> resource)
+                : resource(resource)
+            {}
         };
 
 	public:
@@ -24,35 +26,51 @@ namespace te
 
         TE_MODULE_STATIC_HEADER_MEMBER(ResourceManager)
 
-        HResource Load(const String& filePath);
-
-        void Update(HResource& handle, const SPtr<Resource>& resource);
+        template <class T>
+        ResourceHandle<T> Load(UUID& uuid = UUID::EMPTY)
+        {
+            OnResourceLoaded(Get(uuid));
+            return static_resource_cast<T>(Get(uuid));
+        }
 
         template <class T>
         ResourceHandle<T> Load(const String& filePath)
         {
-            return static_resource_cast<T>(Load(filePath));
+            UUID uuid;
+            GetUUIDFromFile(filePath, uuid);
+
+            if(uuid.Empty())
+            {
+                ResourceHandle<T> resourceHandle = gImporter().Import<T>(filePath);
+                uuid = resourceHandle.GetHandleData()->uuid;
+                RegisterResource(uuid, filePath);
+                _loadedResources[uuid] = static_resource_cast<Resource>(resourceHandle);
+            }
+
+            OnResourceLoaded(Get(uuid));
+            return static_resource_cast<T>(Get(uuid));
         }
 
-        void release(const HResource& resource) 
+        void Update(HResource& handle, const SPtr<Resource>& resource);
+
+        void Release(const HResource& resource) 
         { 
             Release((ResourceHandleBase&)resource); 
         }
 
-        /** @copydoc release(const HResource&) */
         void Release(ResourceHandleBase& resource);
-
-        /**
-         * Finds all resources that aren't being referenced outside of the resources system and unloads them.
-         * @see	release(const HResource&)
-         */
-        void UnloadAllUnused();
 
         /** Forces unload of all resources, whether they are being used or not. */
         void UnloadAll();
 
         /**	Destroys a resource, freeing its memory. */
         void Destroy(ResourceHandleBase& resource);
+
+        /** Creates a new resource handle from a resource pointer. */
+        HResource _createResourceHandle(const SPtr<Resource>& obj);
+
+        /** Creates a new resource handle from a resource pointer, with a user defined UUID. */
+        HResource _createResourceHandle(const SPtr<Resource>& obj, const UUID& UUID);
 
     public:
         Event<void(const HResource&)> OnResourceLoaded;
@@ -67,15 +85,13 @@ namespace te
         friend class ResourceHandleBase;
 
     private:
-        HResource LoadInternal(const UUID& uuid, const String& filePath);
+        HResource Get(const UUID& uuid);
 
         bool GetUUIDFromFile(const String& filePath, UUID& uuid);
         bool GetFileFromUUID(const UUID& uuid, String& filePath);
         void RegisterResource(const UUID& uuid, const String& filePath);
-        void UnregisterResource(const UUID& uuid);
 
     private:
-        UnorderedMap<UUID, TResourceHandle<Resource>> _handles;
         UnorderedMap<UUID, LoadedResourceData> _loadedResources;
         UnorderedMap<UUID, String> _UUIDToFile;
         UnorderedMap<String, UUID> _fileToUUID;

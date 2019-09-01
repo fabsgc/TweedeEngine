@@ -7,9 +7,8 @@ namespace te
     /**	Data that is shared between all resource handles. */
 	struct TE_CORE_EXPORT ResourceHandleData
 	{
-		SPtr<Resource> resource;
+		SPtr<Resource> data;
         te::UUID uuid;
-		UINT32 refCount = 0;
 	};
 
     /** Manager that handles resource loading. */
@@ -20,10 +19,10 @@ namespace te
 		void Release();
 
 		/** Returns the UUID of the resource the handle is referring to. */
-		const te::UUID& GetUUID() const { return _data != nullptr ? _data->uuid : te::UUID::EMPTY; }
+		const te::UUID& GetUUID() const { return _handleData != nullptr ? _handleData->uuid : te::UUID::EMPTY; }
 
         /**	Gets the handle data. For internal use only. */
-		const SPtr<ResourceHandleData>& GetHandleData() const { return _data; }
+		const SPtr<ResourceHandleData>& GetHandleData() const { return _handleData; }
 
     private:
         friend class ResourceManager;
@@ -45,14 +44,8 @@ namespace te
 		 */
 		void ClearHandleData();
 
-		/** Increments the reference count of the handle. Only to be used by ResourceManager for keeping internal references. */
-		void AddInternalRef();
-
-		/** Decrements the reference count of the handle. Only to be used by ResourceManager for keeping internal references. */
-		void RemoveInternalRef();
-
     protected:
-        SPtr<ResourceHandleData> _data;
+        SPtr<ResourceHandleData> _handleData;
     };
 
     template <typename T>
@@ -60,21 +53,16 @@ namespace te
 	{
 	public:
 		TResourceHandle() = default;
+        ~TResourceHandle() {}
 
         /**	Copy constructor. */
 		TResourceHandle(const TResourceHandle& other)
 		{
-			this->_data = other.GetHandleData();
-			this->AddRef();
+			this->_handleData = other.GetHandleData();
 		}
 
 		/** Move constructor. */
 		TResourceHandle(TResourceHandle&& other) = default;
-
-		~TResourceHandle()
-		{
-			this->ReleaseRef();
-		}
 
         /**	Converts a specific handle to generic Resource handle. */
 		operator TResourceHandle<Resource>() const
@@ -94,9 +82,7 @@ namespace te
         /** Clears the handle making it invalid and releases any references held to the resource. */
         TResourceHandle<T>& operator=(std::nullptr_t ptr)
         {
-            this->ReleaseRef();
-            this->_data = nullptr;
-
+            this->_handleData = nullptr;
             return *this;
         }
 
@@ -115,22 +101,20 @@ namespace te
 				return *this;
             }
 
-			this->ReleaseRef();
-			this->_data = std::exchange(other._data, nullptr);
-
+			this->_handleData = std::exchange(other._handleData, nullptr);
 			return *this;
 		}
 
         /** Returns internal resource pointer and dereferences it. */
 		T* Get() const
 		{
-			return reinterpret_cast<T*>(this->_data->resource.get());
+			return reinterpret_cast<T*>(this->_handleData->data.get());
 		}
 
         /** Returns the internal shared pointer to the resource. */
 		SPtr<T> GetInternalPtr() const
 		{
-			return std::static_pointer_cast<T>(this->_data->resource);
+			return std::static_pointer_cast<T>(this->_handleData->data);
 		}
 
         /** Converts a handle into a weak handle. */
@@ -149,27 +133,6 @@ namespace te
         template<class _Ty1, class _Ty2>
         friend TResourceHandle<_Ty1> static_resource_cast(const TResourceHandle<_Ty2>& other);
 
-        void AddRef()
-        {
-            if (_data)
-            {
-                _data->refCount++;
-            }
-        };
-
-        void ReleaseRef()
-        {
-            if (_data)
-            {
-                _data->refCount--;
-
-                if (_data->refCount == 1)
-                {
-                    Destroy();
-                }
-            }
-        };
-
         /**
 		 * Constructs a new valid handle for the provided resource with the provided UUID.
 		 * @note Handle will take ownership of the provided resource pointer, so make sure you don't delete it elsewhere.
@@ -177,9 +140,7 @@ namespace te
 		explicit TResourceHandle(T* ptr, const te::UUID& uuid)
 			: ResourceHandleBase()
 		{
-			this->_data = te_shared_ptr_new<ResourceHandleData>();
-			this->AddRef();
-
+			this->_handleData = te_shared_ptr_new<ResourceHandleData>();
 			this->SetHandleData(SPtr<Resource>(ptr), uuid);
 		}
 
@@ -189,27 +150,21 @@ namespace te
 		 */
 		TResourceHandle(const te::UUID& uuid)
 		{
-			this->_data = te_shared_ptr_new<ResourceHandleData>();
-			this->_data->uuid = uuid;
-
-			this->AddRef();
+			this->_handleData = te_shared_ptr_new<ResourceHandleData>();
+			this->_handleData->uuid = uuid;
 		}
 
         /**	Constructs a new valid handle for the provided resource with the provided UUID. */
 		TResourceHandle(const SPtr<T> ptr, const te::UUID& uuid)
 		{
-			this->_data = te_shared_ptr_new<ResourceHandleData>();
-			this->AddRef();
-
+			this->_handleData = te_shared_ptr_new<ResourceHandleData>();
 			this->SetHandleData(ptr, uuid);
 		}
 
 		/**	Replaces the internal handle data pointer, effectively transforming the handle into a different handle. */
 		void SetHandleData(const SPtr<ResourceHandleData>& data)
 		{
-			this->ReleaseRef();
-			this->_data = data;
-			this->AddRef();
+			this->_handleData = data;
 		}
 
         using ResourceHandleBase::SetHandleData;
@@ -221,7 +176,7 @@ namespace te
 	{
         if (_Left.GetHandleData() != nullptr && _Right.GetHandleData() != nullptr)
         {
-            return _Left.GetHandleData()->mPtr == _Right.GetHandleData()->mPtr;
+            return _Left.GetHandleData()->data == _Right.GetHandleData()->data;
         }
 
 		return _Left.GetHandleData() == _Right.GetHandleData();
@@ -229,7 +184,7 @@ namespace te
 
     /**	Checks if a handle is null. */
     template<class _Ty1, class _Ty2>
-    bool operator==(const TResourceHandle<_Ty1>& _Left, std::nullptr_t  _Right)
+    bool operator==(const TResourceHandle<_Ty1>& _Left, std::nullptr_t _Right)
     {
         return _Left.GetHandleData() == nullptr || _Left.GetHandleData()->uuid.Empty();
     }

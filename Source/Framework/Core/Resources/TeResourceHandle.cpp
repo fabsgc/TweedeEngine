@@ -12,7 +12,7 @@ namespace te
 
 	void ResourceHandleBase::Destroy()
 	{
-		if(_data->resource)
+		if(_handleData->data)
         {
             gResourceManager().Destroy(*this);
         }
@@ -20,26 +20,15 @@ namespace te
 
 	void ResourceHandleBase::SetHandleData(const SPtr<Resource>& resource, const UUID& uuid)
 	{
-		_data->resource = resource;
-
-        if(_data->resource)
-        {
-            _data->uuid = uuid;
-        }
+        _handleData->data = resource;
+        _handleData->uuid = uuid;
 	}
 
     void ResourceHandleBase::ClearHandleData()
 	{
-		_data->resource = nullptr;
-	}
-
-	void ResourceHandleBase::AddInternalRef()
-	{
-		_data->refCount++;
-	}
-
-	void ResourceHandleBase::RemoveInternalRef()
-	{
-		_data->refCount--;
+        if (_handleData != nullptr)
+        {
+            _handleData->data = nullptr;
+        }
 	}
 }

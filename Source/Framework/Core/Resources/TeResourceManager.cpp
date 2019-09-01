@@ -13,23 +13,46 @@ namespace te
         UnloadAll();
     }
 
-    HResource ResourceManager::Load(const String& filePath)
+    void ResourceManager::Release(ResourceHandleBase& resource)
     {
-        UUID uuid;
-        bool foundUUID = GetUUIDFromFile(filePath, uuid);
+        Destroy(resource);
+    }
 
-        if (!foundUUID)
+    void ResourceManager::UnloadAll()
+    {
+        UnorderedMap<UUID, LoadedResourceData> loadedResourcesCopy = _loadedResources;
+        for (auto& loadedResourcePair : loadedResourcesCopy)
         {
-            uuid = UUIDGenerator::GenerateRandom();
+            Destroy(loadedResourcePair.second.resource);
+        } 
+    }
+
+    void ResourceManager::Destroy(ResourceHandleBase& resource)
+    {
+        if (resource._handleData == nullptr)
+        {
+            return;
         }
-            
-        return LoadInternal(uuid, filePath);
+
+        const UUID& uuid = resource.GetUUID();
+        OnResourceDestroyed(uuid);
+
+        auto iterFind = _loadedResources.find(uuid);
+        if (iterFind != _loadedResources.end())
+        {
+            _loadedResources.erase(iterFind);
+        }
+        else
+        {
+            // This should never happen but in case it does fail silently in release mode
+            TE_ASSERT_ERROR(false, "Trying to destroy an inexisting resource" + uuid.ToString());
+        }
+
+        resource.ClearHandleData();
     }
 
     void ResourceManager::Update(HResource& handle, const SPtr<Resource>& resource)
     {
-        OnResourceModified(handle);
-
         const UUID& uuid = handle.GetUUID();
         handle.SetHandleData(resource, uuid);
 
@@ -46,121 +69,20 @@ namespace te
         OnResourceModified(handle);
     }
 
-    void ResourceManager::Release(ResourceHandleBase& resource)
-    {
-        resource.RemoveInternalRef();
-
-        if (resource.GetHandleData()->refCount == 0)
-        {
-            Destroy(resource);
-        }
-    }
-
-    void ResourceManager::UnloadAllUnused()
-    {
-        Vector<HResource> resourcesToUnload;
-
-        for (auto iter = _loadedResources.begin(); iter != _loadedResources.end(); ++iter)
-        {
-            const LoadedResourceData& resData = iter->second;
-            UINT32 refCount = resData.resource.GetHandleData()->refCount;
-
-            assert(refCount > 0);
-
-            if (refCount == resData.InternalRefCount) // Only internal references exist, free it
-            {
-                resourcesToUnload.push_back(resData.resource);
-            }
-        }
-
-        // Note: When unloading multiple resources it's possible that unloading one will also unload
-        // another resource in "resourcesToUnload". This is fine because "unload" deals with invalid
-        // handles gracefully.
-        for (auto iter = resourcesToUnload.begin(); iter != resourcesToUnload.end(); ++iter)
-        {
-            Release(*iter);
-        }
-    }
-
-    void ResourceManager::UnloadAll()
-    {
-        for (auto& loadedResourcePair : _loadedResources)
-        {
-            Destroy(loadedResourcePair.second.resource);
-        } 
-    }
-
-    void ResourceManager::Destroy(ResourceHandleBase& resource)
-    {
-        if (resource._data == nullptr)
-        {
-            return;
-        }
-
-        const UUID& uuid = resource.GetUUID();
-        OnResourceDestroyed(uuid);
-
-        resource._data->resource.reset();
-
-        {
-            auto iterFind = _loadedResources.find(uuid);
-            if (iterFind != _loadedResources.end())
-            {
-                LoadedResourceData& resData = iterFind->second;
-                while (resData.InternalRefCount > 0)
-                {
-                    resData.InternalRefCount--;
-                    resData.resource.RemoveInternalRef();
-                }
-
-                _loadedResources.erase(iterFind);
-            }
-            else
-            {
-                // This should never happen but in case it does fail silently in release mode
-                TE_ASSERT_ERROR(false, "Trying to destroy an inexisting resource" + uuid.ToString());
-            }
-        }
-
-        resource.ClearHandleData();
-    }
-
-    HResource ResourceManager::LoadInternal(const UUID& uuid, const String& filePath)
+    HResource ResourceManager::Get(const UUID& uuid)
     {
         HResource resource;
-        OnResourceLoaded(resource);
 
-        // Check if the resource is already loaded
         auto iterFind = _loadedResources.find(uuid);
         if (iterFind != _loadedResources.end())
         {
-            LoadedResourceData& resData = iterFind->second;
-            resource = resData.resource;
-            resource.AddInternalRef();
-            resData.InternalRefCount++;
+            resource.SetHandleData(iterFind->second.resource.GetHandleData());
         }
         else
         {
-            auto iterFind = _handles.find(uuid);
-            if (iterFind != _handles.end())
-                resource = iterFind->second;
-            else
-            {
-                resource = HResource(uuid);
-                _handles[uuid] = resource.GetNewHandleFromExisting();
-            }
+            // This should never happen but in case it does fail silently in release mode
+            TE_ASSERT_ERROR(false, "Trying to destroy an inexisting resource" + uuid.ToString());
         }
-
-        // TODO
-
-
-
-
-
-
-
-
-
 
         return resource;
     }
@@ -224,16 +146,22 @@ namespace te
         }
     }
 
-    void ResourceManager::UnregisterResource(const UUID& uuid)
+    HResource ResourceManager::_createResourceHandle(const SPtr<Resource>& obj)
     {
-        auto iterFind = _UUIDToFile.find(uuid);
-
-        if (iterFind != _UUIDToFile.end())
-        {
-            _fileToUUID.erase(iterFind->second);
-            _UUIDToFile.erase(uuid);
-        }
+        UUID uuid = UUIDGenerator::GenerateRandom();
+        return _createResourceHandle(obj, uuid);
     }
+
+    HResource ResourceManager::_createResourceHandle(const SPtr<Resource>& obj, const UUID& UUID)
+    {
+        if (UUID.Empty())
+        {
+            return _createResourceHandle(obj);
+        }
+
+        return HResource(obj, UUID);
+    }
+
 
     TE_CORE_EXPORT ResourceManager& gResourceManager()
     {

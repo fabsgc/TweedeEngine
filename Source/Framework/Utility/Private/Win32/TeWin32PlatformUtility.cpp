@@ -22,14 +22,19 @@ namespace te
     UUID PlatformUtility::GenerateUUID()
     {
         ::UUID uuid;
-        UuidCreate(&uuid);
+        RPC_STATUS status = UuidCreate(&uuid);
 
-        // Endianess might not be correct, but it shouldn't matter
-        UINT32 data1 = uuid.Data1;
-        UINT32 data2 = uuid.Data2 | (uuid.Data3 << 16);
-        UINT32 data3 = uuid.Data3 | (uuid.Data4[0] << 16) | (uuid.Data4[1] << 24);
-        UINT32 data4 = uuid.Data4[2] | (uuid.Data4[3] << 8) | (uuid.Data4[4] << 16) | (uuid.Data4[5] << 24);
+        if (status == RPC_S_OK)
+        {
+            // Endianess might not be correct, but it shouldn't matter
+            UINT32 data1 = uuid.Data1;
+            UINT32 data2 = uuid.Data2 | (uuid.Data3 << 16);
+            UINT32 data3 = uuid.Data3 | (uuid.Data4[0] << 16) | (uuid.Data4[1] << 24);
+            UINT32 data4 = uuid.Data4[2] | (uuid.Data4[3] << 8) | (uuid.Data4[4] << 16) | (uuid.Data4[5] << 24);
 
-        return UUID(data1, data2, data3, data4);
+            return UUID(data1, data2, data3, data4);
+        }
+
+        return UUID::EMPTY;
     }
 }

@@ -23,6 +23,9 @@ namespace te
     /** Get current time and date into a char array */
     void GetTime(char* buffer);
 
+    /** Get the extension of a file (with ".") */
+    String GetFileExtension(const String& filePath);
+
     /** Sets contents of a struct to zero. */
     template<class T>
     void te_zero_out(T& s)

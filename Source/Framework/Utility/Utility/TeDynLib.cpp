@@ -29,7 +29,6 @@ namespace te
 
         if (!_handle)
         {
-
             TE_ASSERT_ERROR(false,
                 "Could not load dynamic library " + _name +
                 ".  System Error: " + DynLibError());

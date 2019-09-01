@@ -13,6 +13,10 @@
 // disable: 'X' Function call with parameters that may be unsafe
 #	pragma warning(disable: 4996)
 
+// disable: usage of the macro - based offsetof pattern in constant expressions is non 
+//- standard; use offsetof defined in the C++ standard library instead
+#	pragma warning(disable: 4644)
+
 // disable: decorated name length exceeded, name was truncated
 // Happens with really long type names. Even fairly standard use
 // of std::unordered_map with custom parameters, meaning I can't

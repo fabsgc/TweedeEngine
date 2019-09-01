@@ -1,5 +1,6 @@
 #include "TeObjectImporterPrerequisites.h"
 #include "TeObjectImporter.h"
+#include "Importer/TeImporter.h"
 
 namespace te
 {
@@ -13,7 +14,8 @@ namespace te
 	/**	Entry point to the plugin. Called by the engine when the plugin is loaded. */
 	extern "C" TE_PLUGIN_EXPORT void* LoadPlugin()
 	{
-		te_new<ObjectImporter>();
+        ObjectImporter* importer = te_new<ObjectImporter>();
+        Importer::Instance()._registerAssetImporter(importer);
 		return nullptr;
 	}
 }

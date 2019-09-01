@@ -15,7 +15,9 @@ namespace te
         String buf;
         buf.resize(32);
         for (int i = 0; i < 16; i++)
+        {
             snprintf(&(buf[0]) + i * 2, 3, "%02x", digest[i]);
+        }
 
         return buf;
     }
@@ -46,5 +48,19 @@ namespace te
         timeinfo = localtime(&rawtime);
 
         strftime(buffer, sizeof(buffer), "%d-%m-%Y %H:%M:%S", timeinfo);
+    }
+
+    String GetFileExtension(const String& filePath)
+    {
+        String::size_type pos = filePath.rfind('.');
+        if (pos != String::npos)
+        {
+            return filePath.substr(pos);
+        }
+        else
+        {
+            TE_DEBUG("Can't find extension for file : " + filePath);
+            return String();
+        }
     }
 }

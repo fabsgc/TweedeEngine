@@ -82,9 +82,14 @@ namespace te
             LoadPlugin(importerName);
         }
 
-        HTexture loadedTexture = gResourceManager().Load<Texture>("myTexture.asset");
-        ResourceHandle<UINT32> loadedUINT32 = gResourceManager().Load<UINT32>("myTexture.asset");
-        TE_PRINT(&(loadedTexture.GetHandleData())->resource);
+        HMesh loadedMesh = gResourceManager().Load<Mesh>("Data/Mesh/cube.obj");
+        HTexture loadTexture = gResourceManager().Load<Texture>("Data/Texture/default.png");
+
+        TE_PRINT((loadedMesh.GetHandleData())->data);
+        TE_PRINT((loadedMesh.GetHandleData())->uuid.ToString());
+
+        TE_PRINT((loadTexture.GetHandleData())->data);
+        TE_PRINT((loadTexture.GetHandleData())->uuid.ToString());
     }
     
     void CoreApplication::OnShutDown()

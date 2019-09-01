@@ -21,7 +21,7 @@ endif ()
 target_include_directories (TeD3D11RenderAPI PRIVATE "./")
 
 # Libraries
-if (BS_64BIT)
+if (TE_64BIT)
     link_directories ("$(DXSDK_DIR)Lib/x64")
 else()
     link_directories ("$(DXSDK_DIR)Lib/x86")

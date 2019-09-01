@@ -90,11 +90,15 @@ set (TE_CORE_INC_IMPORTER
     "Core/Importer/TeImporter.h"
     "Core/Importer/TeImportOptions.h"
     "Core/Importer/TeBaseImporter.h"
+    "Core/Importer/TeTextureImportOptions.h"
+    "Core/Importer/TeMeshImportOptions.h"
 )
 set (TE_CORE_SRC_IMPORTER
     "Core/Importer/TeImporter.cpp"
     "Core/Importer/TeImportOptions.cpp"
     "Core/Importer/TeBaseImporter.cpp"
+    "Core/Importer/TeTextureImportOptions.cpp"
+    "Core/Importer/TeMeshImportOptions.cpp"
 )
 
 set (TE_CORE_INC_IMAGE
@@ -102,6 +106,13 @@ set (TE_CORE_INC_IMAGE
 )
 set (TE_CORE_SRC_IMAGE
     "Core/Image/TeTexture.cpp"
+)
+
+set (TE_CORE_INC_MESH
+    "Core/Mesh/TeMesh.h"
+)
+set (TE_CORE_SRC_MESH
+    "Core/Mesh/TeMesh.cpp"
 )
 
 set (TE_CORE_INC_RESOURCE
@@ -133,6 +144,7 @@ source_group("Core\\Input" FILES ${TE_CORE_INC_INPUT} ${TE_CORE_SRC_INPUT})
 source_group("Core\\Manager" FILES ${TE_CORE_INC_MANAGER} ${TE_CORE_SRC_MANAGER})
 source_group("Core\\Importer" FILES ${TE_CORE_INC_IMPORTER} ${TE_CORE_SRC_IMPORTER})
 source_group("Core\\Image" FILES ${TE_CORE_INC_IMAGE} ${TE_CORE_SRC_IMAGE})
+source_group("Core\\Mesh" FILES ${TE_CORE_INC_MESH} ${TE_CORE_SRC_MESH})
 source_group("Core\\Resources" FILES ${TE_CORE_INC_RESOURCE} ${TE_CORE_SRC_RESOURCE})
 source_group("Core" FILES ${TE_CORE_INC_NOFILTER} ${TE_CORE_SRC_NOFILTER})
 
@@ -151,6 +163,10 @@ set(TE_CORE_SRC
     ${TE_CORE_SRC_MANAGER}
     ${TE_CORE_INC_IMPORTER}
     ${TE_CORE_SRC_IMPORTER}
+    ${TE_CORE_INC_IMAGE}
+    ${TE_CORE_SRC_IMAGE}
+    ${TE_CORE_INC_MESH}
+    ${TE_CORE_SRC_MESH}
     ${TE_CORE_INC_RESOURCE}
     ${TE_CORE_SRC_RESOURCE}
 )
