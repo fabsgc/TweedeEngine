@@ -39,9 +39,7 @@ namespace te
             if (iterFind == _loadedResources.end())
             {
                 LoadedResourceData& resData = _loadedResources[uuid];
-
-                resData.resource._data->resource = handle.GetHandleData()->resource;
-                resData.resource._data->uuid = handle.GetHandleData()->uuid;
+                resData.resource = handle.GetNewHandleFromExisting();
             }
         }
 
@@ -132,7 +130,37 @@ namespace te
         HResource resource;
         OnResourceLoaded(resource);
 
+        // Check if the resource is already loaded
+        auto iterFind = _loadedResources.find(uuid);
+        if (iterFind != _loadedResources.end())
+        {
+            LoadedResourceData& resData = iterFind->second;
+            resource = resData.resource;
+            resource.AddInternalRef();
+            resData.InternalRefCount++;
+        }
+        else
+        {
+            auto iterFind = _handles.find(uuid);
+            if (iterFind != _handles.end())
+                resource = iterFind->second;
+            else
+            {
+                resource = HResource(uuid);
+                _handles[uuid] = resource.GetNewHandleFromExisting();
+            }
+        }
+
         // TODO
+
+
+
+
+
+
+
+
+
 
         return resource;
     }

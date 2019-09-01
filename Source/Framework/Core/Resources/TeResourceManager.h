@@ -6,7 +6,10 @@
 
 namespace te
 {
-    /** Manager that handles resource loading. */
+    /** 
+     * Manager that handles resource loading. 
+     * INFO : Currently not used as there is no RTTI system to save resources on disk
+     */
 	class TE_CORE_EXPORT ResourceManager: public Module<ResourceManager>
 	{
         struct LoadedResourceData
