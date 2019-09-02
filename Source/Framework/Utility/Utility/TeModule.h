@@ -4,84 +4,84 @@
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32 && TE_COMPILER == TE_COMPILER_GNUC
 #   ifndef TE_MODULE_STATIC_MEMBER
-#   define TE_MODULE_STATIC_MEMBER(class_name)                                                          \
-    bool class_name::StartedUp   = false;                                                               \
-    bool class_name::Destroyed   = false;                                                               \
-    class_name* class_name::Inst = nullptr;                                                             \
-                                                                                                        \
-    bool& class_name::IsStartedUp() { return StartedUp; }                                               \
-    bool& class_name::IsDestroyed() { return Destroyed; }                                               \
-    class_name*& class_name::_instance() { return Inst; }                                               \
-    class_name& class_name::Instance()                                                                  \
-    {                                                                                                   \
-        if (!IsStartedUp())                                                                             \
-            TE_ASSERT_ERROR(false, "Trying to access a module but it hasn't been started up yet.", __FILE__, __LINE__);     \
-        if (IsDestroyed())                                                                              \
-            TE_ASSERT_ERROR(false, "Trying to access a destroyed module.", __FILE__, __LINE__);                             \
-        return *_instance();                                                                            \
-    }                                                                                                   \
-                                                                                                        \
-    class_name* class_name::InstancePtr()                                                               \
-    {                                                                                                   \
-        if (!IsStartedUp())                                                                             \
-            TE_ASSERT_ERROR(false, "Trying to access a module but it hasn't been started up yet.", __FILE__, __LINE__);     \
-        if (IsDestroyed())                                                                              \
-            TE_ASSERT_ERROR(false, "Trying to access a destroyed module.", __FILE__, __LINE__);                             \
-        return _instance();                                                                             \
-    }                                                                                                   \
-                                                                                                        \
-    void class_name::ShutDown()                                                                         \
-    {                                                                                                   \
-        if (IsDestroyed())                                                                              \
-            TE_ASSERT_ERROR(false, "Trying to shut down an already shut down module.", __FILE__, __LINE__);                 \
-        if (!IsStartedUp())                                                                             \
-            TE_ASSERT_ERROR(false, "Trying to shut down a module which was never started.", __FILE__, __LINE__);            \
-        (_instance())->OnShutDown();                                                                    \
-        _instance()->~class_name();                                                                     \
-        ::free(_instance());                                                                            \
-        IsDestroyed() = true;                                                                           \
-    }                                                                                                   \
-                                                                                                        \
+#   define TE_MODULE_STATIC_MEMBER(class_name)                                                                          \
+    bool class_name::StartedUp   = false;                                                                               \
+    bool class_name::Destroyed   = false;                                                                               \
+    class_name* class_name::Inst = nullptr;                                                                             \
+                                                                                                                        \
+    bool& class_name::IsStartedUp() { return StartedUp; }                                                               \
+    bool& class_name::IsDestroyed() { return Destroyed; }                                                               \
+    class_name*& class_name::_instance() { return Inst; }                                                               \
+    class_name& class_name::Instance()                                                                                  \
+    {                                                                                                                   \
+        if (!IsStartedUp())                                                                                             \
+            TE_ASSERT_ERROR(false, "Trying to access a module but it hasn't been started up yet.", __FILE__, __LINE__); \
+        if (IsDestroyed())                                                                                              \
+            TE_ASSERT_ERROR(false, "Trying to access a destroyed module.", __FILE__, __LINE__);                         \
+        return *_instance();                                                                                            \
+    }                                                                                                                   \
+                                                                                                                        \
+    class_name* class_name::InstancePtr()                                                                               \
+    {                                                                                                                   \
+        if (!IsStartedUp())                                                                                             \
+            TE_ASSERT_ERROR(false, "Trying to access a module but it hasn't been started up yet.", __FILE__, __LINE__); \
+        if (IsDestroyed())                                                                                              \
+            TE_ASSERT_ERROR(false, "Trying to access a destroyed module.", __FILE__, __LINE__);                         \
+        return _instance();                                                                                             \
+    }                                                                                                                   \
+                                                                                                                        \
+    void class_name::ShutDown()                                                                                         \
+    {                                                                                                                   \
+        if (IsDestroyed())                                                                                              \
+            TE_ASSERT_ERROR(false, "Trying to shut down an already shut down module.", __FILE__, __LINE__);             \
+        if (!IsStartedUp())                                                                                             \
+            TE_ASSERT_ERROR(false, "Trying to shut down a module which was never started.", __FILE__, __LINE__);        \
+        (_instance())->OnShutDown();                                                                                    \
+        _instance()->~class_name();                                                                                     \
+        ::free(_instance());                                                                                            \
+        IsDestroyed() = true;                                                                                           \
+    }                                                                                                                   \
+                                                                                                                        \
     bool class_name::IsStarted() { return IsStartedUp() && !IsDestroyed(); }
 #   endif
 
 #   ifndef TE_MODULE_STATIC_HEADER_MEMBER
-#   define TE_MODULE_STATIC_HEADER_MEMBER(class_name)                                                   \
-                                                                                                        \
-    static bool StartedUp;                                                                              \
-    static bool Destroyed;                                                                              \
-    static class_name* Inst;                                                                            \
-                                                                                                        \
-    static class_name*& _instance();                                                                    \
-    static bool& IsStartedUp();                                                                         \
-    static bool& IsDestroyed();                                                                         \
-                                                                                                        \
-                                                                                                        \
-    static class_name& Instance();                                                                      \
-    static class_name* InstancePtr();                                                                   \
-    static void ShutDown();                                                                             \
-    static bool IsStarted();                                                                            \
-                                                                                                        \
-    template<class ...Args>                                                                             \
-    static void StartUp(Args&& ...args)                                                                 \
-    {                                                                                                   \
-        if (IsStartedUp())                                                                              \
-            TE_ASSERT_ERROR(false, "Trying to start an already started module.", __FILE__, __LINE__);                       \
-        _instance() = new class_name(std::forward<Args>(args)...);                                      \
-        IsStartedUp() = true;                                                                           \
-        ((class_name*)_instance())->OnStartUp();                                                        \
-    }                                                                                                   \
-                                                                                                        \
-    template<class SubType, class ...Args>                                                              \
-    static void StartUp(Args&& ...args)                                                                 \
-    {                                                                                                   \
-        static_assert(std::is_base_of<class_name, SubType>::value,                                      \
-            "Provided type is not derived from type the Module is initialized with.");                  \
-        if (IsStartedUp())                                                                              \
-            TE_ASSERT_ERROR(false, "Trying to start an already started module.", __FILE__, __LINE__);                       \
-        _instance() = new SubType(std::forward<Args>(args)...);                                         \
-        IsStartedUp() = true;                                                                           \
-        ((class_name*)_instance())->OnStartUp();                                                        \
+#   define TE_MODULE_STATIC_HEADER_MEMBER(class_name)                                                                   \
+                                                                                                                        \
+    static bool StartedUp;                                                                                              \
+    static bool Destroyed;                                                                                              \
+    static class_name* Inst;                                                                                            \
+                                                                                                                        \
+    static class_name*& _instance();                                                                                    \
+    static bool& IsStartedUp();                                                                                         \
+    static bool& IsDestroyed();                                                                                         \
+                                                                                                                        \
+                                                                                                                        \
+    static class_name& Instance();                                                                                      \
+    static class_name* InstancePtr();                                                                                   \
+    static void ShutDown();                                                                                             \
+    static bool IsStarted();                                                                                            \
+                                                                                                                        \
+    template<class ...Args>                                                                                             \
+    static void StartUp(Args&& ...args)                                                                                 \
+    {                                                                                                                   \
+        if (IsStartedUp())                                                                                              \
+            TE_ASSERT_ERROR(false, "Trying to start an already started module.", __FILE__, __LINE__);                   \
+        _instance() = new class_name(std::forward<Args>(args)...);                                                      \
+        IsStartedUp() = true;                                                                                           \
+        ((class_name*)_instance())->OnStartUp();                                                                        \
+    }                                                                                                                   \
+                                                                                                                        \
+    template<class SubType, class ...Args>                                                                              \
+    static void StartUp(Args&& ...args)                                                                                 \
+    {                                                                                                                   \
+        static_assert(std::is_base_of<class_name, SubType>::value,                                                      \
+            "Provided type is not derived from type the Module is initialized with.");                                  \
+        if (IsStartedUp())                                                                                              \
+            TE_ASSERT_ERROR(false, "Trying to start an already started module.", __FILE__, __LINE__);                   \
+        _instance() = new SubType(std::forward<Args>(args)...);                                                         \
+        IsStartedUp() = true;                                                                                           \
+        ((class_name*)_instance())->OnStartUp();                                                                        \
     }
 #   endif
 #else

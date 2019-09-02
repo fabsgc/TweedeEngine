@@ -29,12 +29,11 @@ namespace te
 
         if (!_handle)
         {
+            TE_PRINT(DynLibError())
+
             TE_ASSERT_ERROR(false,
                 "Could not load dynamic library " + _name +
                 ".  System Error: " + DynLibError(), __FILE__, __LINE__);
-
-            String error = DynLibError();
-            std::cout << error << std::endl;
         }
         else
         {
