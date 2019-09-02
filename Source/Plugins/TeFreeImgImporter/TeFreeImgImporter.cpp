@@ -31,7 +31,7 @@ namespace te
 
     FreeImgImporter::~FreeImgImporter()
     {
-        FreeImage_DeInitialise();
+        //FreeImage_DeInitialise();
     }
 
     bool FreeImgImporter::IsExtensionSupported(const String& ext) const

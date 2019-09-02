@@ -19,7 +19,7 @@ if (${CMAKE_SIZEOF_VOID_P} EQUAL 8)
 	set(TE_64BIT true)
 else ()
 	set(TE_32BIT true)
-	message(WARNING "The framework should not be compiled on a x86 architecture")
+	message(FATAL_ERROR "The framework could not be compiled on a x86 architecture")
 endif ()
 
 if (UNIX)

@@ -13,7 +13,7 @@
         {                                                                                                   \
             if (!(condition))                                                                               \
             {                                                                                               \
-                ::std::ofstream errorFile(TE_ERROR_FILE, ::std::ios_base::out | ::std::ios_base::app);      \
+                ::std::ofstream errorFile("Log/fuckj", ::std::ios_base::out | ::std::ios_base::app);      \
                                                                                                             \
                 errorFile << "Assertion failed at " << __FILE__ << ":" << __LINE__ << ::std::endl;          \
                 errorFile << "Inside " << __FUNCTION__ << ::std::endl;                                      \
@@ -22,7 +22,6 @@
                 errorFile << "Error: " << error << ::std::endl;                                             \
                 errorFile << "Condition: " << (condition) << ::std::endl;                                   \
                 errorFile << "############################################: " << ::std::endl;               \
-                assert((condition));                                                                        \
             }                                                                                               \
         }                                                                                   
 #   endif

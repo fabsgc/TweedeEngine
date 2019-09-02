@@ -32,9 +32,14 @@ namespace te
             TE_ASSERT_ERROR(false,
                 "Could not load dynamic library " + _name +
                 ".  System Error: " + DynLibError());
-        }
 
-        TE_DEBUG("Dynamic library " + _name + " has been successfully loaded");
+            String error = DynLibError();
+            std::cout << error << std::endl;
+        }
+        else
+        {
+            TE_DEBUG("Dynamic library " + _name + " has been successfully loaded");
+        }
     }
 
     void DynLib::Unload()

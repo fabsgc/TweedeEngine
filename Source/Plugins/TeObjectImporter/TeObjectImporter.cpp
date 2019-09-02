@@ -1,6 +1,10 @@
 #include "TeObjectImporter.h"
 #include "Importer/TeMeshImportOptions.h"
 
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
 namespace te
 {
     ObjectImporter::ObjectImporter()
@@ -27,6 +31,16 @@ namespace te
 
     SPtr<Resource> ObjectImporter::Import(const String& filePath, SPtr<const ImportOptions> importOptions)
     {
+        Assimp::Importer importer;
+
+        const aiScene* scene = importer.ReadFile(filePath.c_str(),
+            aiProcess_CalcTangentSpace |
+            aiProcess_Triangulate |
+            aiProcess_JoinIdenticalVertices |
+            aiProcess_SortByPType);
+
+        TE_ASSERT_ERROR(scene != nullptr, "Failed to load object '" + filePath + "'");
+
         return SPtr<Resource>();
     }
 }
