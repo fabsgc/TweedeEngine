@@ -10,11 +10,11 @@ namespace te
         const char* typeName = FreeImage_GetFormatFromFIF(fif);
         if (typeName)
         {
-            TE_DEBUG("FreeImage error: " + String(message) + " when loading format " + String(typeName));
+            TE_DEBUG("FreeImage error: " + String(message) + " when loading format " + String(typeName), __FILE__, __LINE__);
         }
         else
         {
-            TE_DEBUG("FreeImage error: " + String(message));
+            TE_DEBUG("FreeImage error: " + String(message), __FILE__, __LINE__);
         }
     }
 

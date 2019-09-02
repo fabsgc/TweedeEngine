@@ -39,7 +39,7 @@ namespace te
             aiProcess_JoinIdenticalVertices |
             aiProcess_SortByPType);
 
-        TE_ASSERT_ERROR(scene != nullptr, "Failed to load object '" + filePath + "'");
+        //TE_ASSERT_ERROR(scene != nullptr, "Failed to load object '" + filePath + "'", __FILE__, __LINE__);
 
         return SPtr<Resource>();
     }

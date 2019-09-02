@@ -37,7 +37,7 @@ namespace te
             }
         }
 
-        TE_ASSERT_ERROR(_renderer != nullptr, "Cannot initialize renderer. Renderer with the name '" + pluginFilename + "' cannot be found.");
+        TE_ASSERT_ERROR(_renderer != nullptr, "Cannot initialize renderer. Renderer with the name '" + pluginFilename + "' cannot be found.", __FILE__, __LINE__);
 
         return nullptr;
     }

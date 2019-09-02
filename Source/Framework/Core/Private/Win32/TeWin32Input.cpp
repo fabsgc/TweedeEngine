@@ -153,13 +153,13 @@ namespace te
         _platformData = te_new<InputPrivateData>();
 
         if(IsWindow((HWND)_windowHandle) == 0)
-            TE_ASSERT_ERROR(false, "RawInputManager failed to initialized. Invalid HWND provided.")
+            TE_ASSERT_ERROR(false, "RawInputManager failed to initialized. Invalid HWND provided.", __FILE__, __LINE__)
 
         HINSTANCE hInst = GetModuleHandle(0);
 
         HRESULT hr = DirectInput8Create(hInst, DIRECTINPUT_VERSION, IID_IDirectInput8, (VOID**)&_platformData->DirectInput, nullptr);
         if (FAILED(hr))
-            TE_ASSERT_ERROR(false, "Unable to initialize DirectInput.");
+            TE_ASSERT_ERROR(false, "Unable to initialize DirectInput.", __FILE__, __LINE__);
 
         _platformData->KbSettings = DISCL_FOREGROUND | DISCL_NONEXCLUSIVE;
         _platformData->MouseSettings = DISCL_FOREGROUND | DISCL_NONEXCLUSIVE;
