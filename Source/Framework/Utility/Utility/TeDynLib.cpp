@@ -87,7 +87,8 @@ namespace te
         LocalFree(lpMsgBuf);
         return ret;
 #elif TE_PLATFORM == TE_PLATFORM_LINUX || TE_PLATFORM == TE_PLATFORM_OSX
-        return String(dlerror());
+        TE_PRINT(dlerror())
+        return String();
 #else
         return String();
 #endif

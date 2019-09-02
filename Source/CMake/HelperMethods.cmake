@@ -150,7 +150,6 @@ MACRO (find_imported_library_shared2 FOLDER_NAME LIB_NAME DEBUG_LIB_NAME)
 ENDMACRO ()
 
 MACRO (find_imported_library_shared FOLDER_NAME LIB_NAME)
-    list (APPEND ${FOLDER_NAME}_SHARED_LIBS ${LIB_NAME})
     find_imported_library_shared2 (${FOLDER_NAME} ${LIB_NAME} ${LIB_NAME})
 ENDMACRO ()
 
@@ -218,12 +217,34 @@ MACRO (install_dependency_binaries FOLDER_NAME)
             set (SRC_DEBUG "${PROJECT_SOURCE_DIR}/Dependencies/binaries/Debug/${DEBUG_FILENAME}")
             set (DESTINATION_DIR bin/)
         else ()
-            set (RELEASE_FILENAME ${RELEASE_FILENAME}.so)
-            set (DEBUG_FILENAME ${DEBUG_FILENAME}.so)
-
+            message(FF, "${LOOP_ENTRY}")
             set (SRC_RELEASE ${${LOOP_ENTRY}_LIBRARY_RELEASE})
             set (SRC_DEBUG ${${LOOP_ENTRY}_LIBRARY_DEBUG})
             set (DESTINATION_DIR lib)
+
+            list(GET SRC_RELEASE 0 HEAD)
+            get_filename_component (SRC_DIR ${HEAD} DIRECTORY)
+            file(GLOB_RECURSE ALL_FILES ABSOLUTE ${SRC_DIR} "${SRC_DIR}/*.so.*")
+
+            foreach (CUR_PATH ${ALL_FILES})
+                get_filename_component(EXTENSION ${CUR_PATH} EXT)
+
+                if (EXTENSION MATCHES "^\\.so\\.([0-9]+)$")
+                    set (SO_VERSION ".${CMAKE_MATCH_1}")
+                else ()
+                    SET (SO_VERSION)
+                endif ()
+
+                message(TEST ${CUR_PATH})
+
+                unset(SRC_RELEASE)
+                unset(SRC_DEBUG)
+
+                list(APPEND SRC_RELEASE ${CUR_PATH})
+                list(APPEND SRC_DEBUG ${CUR_PATH})
+            endforeach ()
+
+
         endif ()
 
         message (STATUS "... Copiyng ${SRC_RELEASE}")
@@ -238,5 +259,6 @@ MACRO (install_dependency_binaries FOLDER_NAME)
         execute_process (COMMAND ${CMAKE_COMMAND} -E copy ${SRC_RELEASE} "${PROJECT_SOURCE_DIR}/${DESTINATION_DIR}${PLATFORM}/RelWithDebInfo/")
         execute_process (COMMAND ${CMAKE_COMMAND} -E copy ${SRC_RELEASE} "${PROJECT_SOURCE_DIR}/${DESTINATION_DIR}${PLATFORM}/MinSizeRel/")
         execute_process (COMMAND ${CMAKE_COMMAND} -E copy ${SRC_DEBUG}   "${PROJECT_SOURCE_DIR}/${DESTINATION_DIR}${PLATFORM}/Debug/")
+        
     endforeach ()
 ENDMACRO ()
