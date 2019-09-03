@@ -8,10 +8,6 @@
 #   include <windows.h>
 #endif
 
-#if TE_PLATFORM == TE_PLATFORM_OSX
-#include <dlfcn.h>
-#endif
-
 namespace te
 {
     DynLib::DynLib(const String& name)
@@ -29,8 +25,6 @@ namespace te
 
         if (!_handle)
         {
-            TE_PRINT(DynLibError())
-
             TE_ASSERT_ERROR(false,
                 "Could not load dynamic library " + _name +
                 ".  System Error: " + DynLibError(), __FILE__, __LINE__);
@@ -85,9 +79,6 @@ namespace te
         // Free the buffer.
         LocalFree(lpMsgBuf);
         return ret;
-#elif TE_PLATFORM == TE_PLATFORM_LINUX || TE_PLATFORM == TE_PLATFORM_OSX
-        TE_PRINT(dlerror())
-        return String();
 #else
         return String();
 #endif

@@ -60,7 +60,7 @@
 #endif
 
 // Linux/Apple Settings
-#if TE_PLATFORM == TE_PLATFORM_LINUX || TE_PLATFORM == TE_PLATFORM_OSX
+#if TE_PLATFORM == TE_PLATFORM_LINUX
 // A quick define to overcome different names for the same function
 #   define stricmp strcasecmp
 

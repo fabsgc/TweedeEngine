@@ -25,13 +25,47 @@ namespace te
 
         FreeImage_Initialise(false);
 
+        // Register codecs
+        StringStream strExt;
+        strExt << "Supported formats: ";
+        bool first = true;
+        for (int i = 0; i < FreeImage_GetFIFCount(); ++i)
+        {
+            // Skip DDS codec since FreeImage does not have the option
+            // to keep DXT data compressed, we'll use our own codec
+            if ((FREE_IMAGE_FORMAT)i == FIF_DDS)
+                continue;
+
+            String exts = String(FreeImage_GetFIFExtensionList((FREE_IMAGE_FORMAT)i));
+            if (!first)
+                strExt << ",";
+
+            first = false;
+            strExt << exts;
+
+            // Pull off individual formats (separated by comma by FI)
+            Vector<String> extsVector = Util::Split(exts, u8",");
+            for (auto v = extsVector.begin(); v != extsVector.end(); ++v)
+            {
+                auto findIter = std::find(_extensions.begin(), _extensions.end(), *v);
+
+                if (findIter == _extensions.end())
+                {
+                    String ext = *v;
+                    Util::ToLowerCase(ext);
+
+                    _extensions.push_back(ext);
+                }
+            }
+        }
+
         // Set error handler
         FreeImage_SetOutputMessage(FreeImageLoadErrorHandler);
     }
 
     FreeImgImporter::~FreeImgImporter()
     {
-        //FreeImage_DeInitialise();
+        FreeImage_DeInitialise();
     }
 
     bool FreeImgImporter::IsExtensionSupported(const String& ext) const

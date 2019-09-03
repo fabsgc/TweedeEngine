@@ -69,7 +69,7 @@ namespace te
 
     BaseImporter* Importer::GetImporterForFile(const String& inputFilePath) const
     {
-        String ext = GetFileExtension(inputFilePath);
+        String ext = Util::GetFileExtension(inputFilePath);
         
         if (ext.empty())
             return nullptr;
