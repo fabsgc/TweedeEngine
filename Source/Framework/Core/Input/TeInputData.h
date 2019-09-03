@@ -5,6 +5,10 @@
 
 namespace te
 {
+
+//Conflicts with other libs
+#undef None
+
     /**
 	 * Contains all possible input buttons, including keyboard scan codes, mouse buttons and gamepad buttons.
 	 *
