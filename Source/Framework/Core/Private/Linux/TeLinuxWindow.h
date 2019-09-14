@@ -71,6 +71,9 @@ namespace te
 		/**	Converts window local position to screen position. */
 		Vector2I WindowToScreenPos(const Vector2I& windowPos) const;
 
+		/** Returns the internal X11 window handle. */
+		::Window _getXWindow() const;
+
     private:
         struct Pimpl;
 		Pimpl* _data;

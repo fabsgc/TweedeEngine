@@ -5,7 +5,13 @@ namespace te
 {
     struct LinuxWindow::Pimpl
 	{
-		// TODO
+		::Window XWindow = 0;
+
+		INT32 X, Y;
+		UINT32 Width, Height;
+		bool HasTitleBar = true;
+		bool ResizeDisabled = false;
+		bool IsExternal = false;
     };
 
     LinuxWindow::LinuxWindow(const WINDOW_DESC &desc)
@@ -81,5 +87,10 @@ namespace te
 	Vector2I LinuxWindow::ScreenToWindowPos(const Vector2I& screenPos) const
 	{
 		return Vector2I(); // TODO
+	}
+
+	::Window LinuxWindow::_getXWindow() const
+	{
+		return _data->XWindow;
 	}
 }
