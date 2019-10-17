@@ -32,4 +32,22 @@ namespace te
 	{
 		Vector<GamepadInfo> GamepadInfos;
 	};
+
+	/** Data about relative pointer / scroll wheel movement. */
+	struct LinuxMouseMotionEvent
+	{
+		double deltaX; /**< Relative pointer movement in X direction. */
+		double deltaY; /**< Relative pointer movement in Y direction. */
+		double deltaZ; /**< Relative vertical scroll amount. */
+	};
+
+	/** Data about a single button press or release. */
+	struct LinuxButtonEvent
+	{
+		UINT64 timestamp;
+		ButtonCode button;
+		bool pressed;
+	};
+
+#define BUFFER_SIZE_GAMEPAD 64
 }
