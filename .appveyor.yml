@@ -8,4 +8,4 @@ build_script:
   - cmd: cd Build
   - cmd: cmake --version
   - cmd: cmake .. -G "Visual Studio 16 2019"
-  - cmd: cmake --build
+  - cmd: cmake --build ./ --config Release
