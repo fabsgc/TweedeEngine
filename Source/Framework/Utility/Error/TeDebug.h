@@ -40,6 +40,6 @@
 #   define TE_DEBUG(message, file, line)
 #   endif
 #   ifndef TE_PRINT
-#   define TE_PRINT(message, file, line)
+#   define TE_PRINT(message)
 #   endif
 #endif
