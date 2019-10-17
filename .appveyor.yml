@@ -3,10 +3,10 @@ platform: x64
 configuration: Release
 clone_folder: C:\Projects\TweedeFrameworkRedux
 
-before_build:
+build:
 - cmd: |-
     mkdir Build
     cd Build
     cmake --version
-    cmake .. -G %generator%
+    cmake .. -G "Visual Studio 16 2019"
     cmake --build
