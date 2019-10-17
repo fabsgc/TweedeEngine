@@ -93,7 +93,7 @@ namespace te
         static bool IsCursorHidden();
 
         /** 
-         *Called once per frame
+         * Called once per frame
          */
         static void Update();
 
