@@ -217,7 +217,6 @@ MACRO (install_dependency_binaries FOLDER_NAME)
             set (SRC_DEBUG "${PROJECT_SOURCE_DIR}/Dependencies/binaries/Debug/${DEBUG_FILENAME}")
             set (DESTINATION_DIR bin/)
         else ()
-            message(FF, "${LOOP_ENTRY}")
             set (SRC_RELEASE ${${LOOP_ENTRY}_LIBRARY_RELEASE})
             set (SRC_DEBUG ${${LOOP_ENTRY}_LIBRARY_DEBUG})
             set (DESTINATION_DIR lib)
@@ -235,20 +234,13 @@ MACRO (install_dependency_binaries FOLDER_NAME)
                     SET (SO_VERSION)
                 endif ()
 
-                message(TEST ${CUR_PATH})
-
                 unset(SRC_RELEASE)
                 unset(SRC_DEBUG)
 
                 list(APPEND SRC_RELEASE ${CUR_PATH})
                 list(APPEND SRC_DEBUG ${CUR_PATH})
             endforeach ()
-
-
         endif ()
-
-        message (STATUS "... Copiyng ${SRC_RELEASE}")
-        message (STATUS "... Copiyng ${SRC_DEBUG}")
 
         execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${PROJECT_SOURCE_DIR}/${DESTINATION_DIR}${PLATFORM}/Release/")
         execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${PROJECT_SOURCE_DIR}/${DESTINATION_DIR}${PLATFORM}/RelWithDebInfo/")
