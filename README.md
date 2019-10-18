@@ -1,6 +1,6 @@
 | CI            |
 | ------------- |
-[![Build Status](https://travis-ci.org/fabsgc/TweedeFrameworkRedux.svg?branch=master)](https://travis-ci.org/fabsgc/TweedeFrameworkRedux)
+[![Build Status](https://travis-ci.org/fabsgc/TweedeFrameworkRedux.svg?branch=master)](https://travis-ci.org/fabsgc/TweedeFrameworkRedux) [![Build Status](https://ci.appveyor.com/api/projects/status/github/fabsgc/TweedeFrameworkRedux?branch=master&svg=true)](https://ci.appveyor.com/project/fabsgc/tweedeframeworkredux)
 
 # TweedeEngine Framework
 
