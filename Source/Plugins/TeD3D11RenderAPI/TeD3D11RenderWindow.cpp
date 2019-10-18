@@ -5,6 +5,7 @@ namespace te
 {
     D3D11RenderWindow::D3D11RenderWindow(const RENDER_WINDOW_DESC& desc)
         : RenderWindow(desc)
+        , _swapChainDesc()
     {
     }
 

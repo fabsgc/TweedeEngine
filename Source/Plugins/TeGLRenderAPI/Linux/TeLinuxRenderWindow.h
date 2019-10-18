@@ -6,11 +6,11 @@
 
 namespace te
 {
-    class GLRenderWindow : public RenderWindow
+    class LinuxRenderWindow : public RenderWindow
 	{
 	public:
-        GLRenderWindow(const RENDER_WINDOW_DESC& desc);
-		~GLRenderWindow() = default;
+        LinuxRenderWindow(const RENDER_WINDOW_DESC& desc);
+		~LinuxRenderWindow() = default;
 
         void Update() override;
         void Initialize() override;
