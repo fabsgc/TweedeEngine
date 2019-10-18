@@ -1,5 +1,4 @@
 #include "TeGLRenderAPI.h"
-#include "Win32/TeWin32RenderWindow.h"
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
 #   include "Win32/TeWin32RenderWindow.h"
