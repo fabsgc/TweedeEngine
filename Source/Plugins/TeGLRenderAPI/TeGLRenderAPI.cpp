@@ -3,7 +3,7 @@
 #if TE_PLATFORM == TE_PLATFORM_WIN32
 #   include "Win32/TeWin32RenderWindow.h"
 #   define WINDOW_TYPE Win32RenderWindow
-#elif
+#elif TE_PLATFORM == TE_PLATFORM_LINUX
 #   include "Linux/TeLinuxRenderWindow.h"
 #   define WINDOW_TYPE LinuxRenderWindow
 #endif
