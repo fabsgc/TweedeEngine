@@ -80,6 +80,10 @@ namespace te
         LocalFree(lpMsgBuf);
         return ret;
 #else
+        char *errstr;
+        errstr = dlerror();
+
+        TE_PRINT(errstr);
         return String();
 #endif
     }

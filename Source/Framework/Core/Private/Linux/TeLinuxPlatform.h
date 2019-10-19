@@ -15,16 +15,19 @@ namespace te
 	{
 	public:
 		/** Returns the active X11 display. */
-		static ::Display* getXDisplay();
+		static ::Display* GetXDisplay();
 
 		/** Returns the main X11 window. Caller must ensure the main window has been created. */
-		static ::Window getMainXWindow();
+		static ::Window GetMainXWindow();
 
 		/** Locks access to the X11 system, not allowing any other thread to access it. Must be used for every X11 access. */
-		static void lockX();
+		static void LockX();
 
 		/** Unlocks access to the X11 system. Must follow every call to lockX(). */
-		static void unlockX();
+		static void UnlockX();
+
+		/** Notifies the system that a new window was created. */
+		static void RegisterWindow(::Window xWindow, LinuxWindow* window);
 
 	public:
 		/**

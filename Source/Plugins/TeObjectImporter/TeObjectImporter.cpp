@@ -10,6 +10,7 @@ namespace te
     ObjectImporter::ObjectImporter()
     {
         _extensions.push_back(u8"obj");
+        _extensions.push_back(u8"blend");
     }
 
     ObjectImporter::~ObjectImporter()
@@ -39,7 +40,9 @@ namespace te
             aiProcess_JoinIdenticalVertices |
             aiProcess_SortByPType);
 
-        TE_ASSERT_ERROR(scene != nullptr, "Failed to load object '" + filePath + "'", __FILE__, __LINE__);
+            TE_PRINT(scene);
+
+        TE_ASSERT_ERROR(scene != nullptr, "Failed to load object '" + filePath + "' : " + importer.GetErrorString(), __FILE__, __LINE__);
 
         return SPtr<Resource>();
     }
