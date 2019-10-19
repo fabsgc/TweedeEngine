@@ -40,8 +40,6 @@ namespace te
             aiProcess_JoinIdenticalVertices |
             aiProcess_SortByPType);
 
-            TE_PRINT(scene);
-
         TE_ASSERT_ERROR(scene != nullptr, "Failed to load object '" + filePath + "' : " + importer.GetErrorString(), __FILE__, __LINE__);
 
         return SPtr<Resource>();

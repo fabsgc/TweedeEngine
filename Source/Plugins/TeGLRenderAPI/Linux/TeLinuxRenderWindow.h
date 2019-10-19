@@ -6,11 +6,13 @@
 
 namespace te
 {
+    class LinuxWindow;
+    
     class LinuxRenderWindow : public RenderWindow
 	{
 	public:
         LinuxRenderWindow(const RENDER_WINDOW_DESC& desc);
-		~LinuxRenderWindow() = default;
+		~LinuxRenderWindow();
 
         void Update() override;
         void Initialize() override;
@@ -54,5 +56,6 @@ namespace te
         Vector2I WindowToScreenPos(const Vector2I& windowPos) const override;
 
     protected:
+        LinuxWindow* _window;
     };
 }

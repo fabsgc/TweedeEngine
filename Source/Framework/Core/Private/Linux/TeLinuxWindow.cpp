@@ -16,10 +16,7 @@ namespace te
 
     LinuxWindow::LinuxWindow(const WINDOW_DESC &desc)
 	{
-		_data = te_new<Pimpl>(); 
-
-		TE_PRINT("CREATE LINUX WINDOW")
-		
+		_data = te_new<Pimpl>();		
 		// TODO
     }
 
