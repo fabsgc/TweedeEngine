@@ -36,6 +36,7 @@ namespace te
 
     void CoreApplication::OnStartUp()
     {
+        Platform::StartUp();
         Console::StartUp();
         Time::StartUp();
         DynLibManager::StartUp();
@@ -256,9 +257,8 @@ namespace te
                 if (loadPluginFunc != nullptr)
                 {
                     retVal = loadPluginFunc(passThrough);
-                } 
+                }
             }
-
 
             UpdatePluginFunc updatePluginFunc = (UpdatePluginFunc)loadedLibrary->GetSymbol("UpdatePlugin");
 

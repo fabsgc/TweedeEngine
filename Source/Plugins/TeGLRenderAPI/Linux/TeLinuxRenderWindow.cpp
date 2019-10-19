@@ -54,6 +54,19 @@ namespace te
 
     void LinuxRenderWindow::GetCustomAttribute(const String& name, void* pData) const
     {
+        if(name == "LINUX_WINDOW")
+		{
+			LinuxWindow** window = (LinuxWindow**)pData;
+			*window = _window;
+			return;
+		}
+		else if(name == "WINDOW")
+		{
+			::Window* window = (::Window*)pData;
+			*window = _window->_getXWindow();
+			return;
+		}
+
         RenderWindow::GetCustomAttribute(name, pData);
     }
 

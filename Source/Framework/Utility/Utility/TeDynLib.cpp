@@ -82,9 +82,8 @@ namespace te
 #else
         char *errstr;
         errstr = dlerror();
-
         TE_PRINT(errstr);
-        return String(errstr);
+        return String();
 #endif
     }
 }

@@ -10,7 +10,6 @@ namespace te
     ObjectImporter::ObjectImporter()
     {
         _extensions.push_back(u8"obj");
-        _extensions.push_back(u8"blend");
     }
 
     ObjectImporter::~ObjectImporter()

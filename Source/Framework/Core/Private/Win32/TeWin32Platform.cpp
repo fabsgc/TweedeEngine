@@ -232,6 +232,10 @@ namespace te
         return _data->IsCursorHidden;
     }
 
+    void Platform::StartUp()
+    {
+    }
+
     void Platform::Update()
     {
         MessagePump();

@@ -92,6 +92,9 @@ namespace te
          */
         static bool IsCursorHidden();
 
+        /** Called during application start up from the sim thread. Must be called before any other operations are done. */
+		static void StartUp();
+
         /** 
          * Called once per frame
          */
