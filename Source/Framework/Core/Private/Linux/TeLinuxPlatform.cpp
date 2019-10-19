@@ -10,6 +10,7 @@
 #include <X11/Xlib.h>
 #include <X11/XKBlib.h>
 #include <X11/extensions/XInput2.h>
+#include <X11/cursorfont.h>
 
 namespace te
 {
@@ -69,29 +70,81 @@ namespace te
 
 	void ApplyCurrentCursor(Platform::Pimpl* data, ::Window window)
 	{
-		// TODO
+		if(data->IsCursorHidden)
+		{
+			XDefineCursor(data->XDisplay, window, data->EmptyCursor);
+		}
+		else
+		{
+			if (data->CurrentCursor != None)
+			{
+				XDefineCursor(data->XDisplay, window, data->CurrentCursor);
+			}
+			else
+			{
+				XUndefineCursor(data->XDisplay, window);
+			}
+		}
 	}
 
 	void UpdateClipBounds(Platform::Pimpl* data, LinuxWindow* window)
 	{
-		// TODO
+		if(!data->CursorClipEnabled || data->CursorClipWindow != window)
+			return;
+
+		data->CursorClipRect.x = window->GetLeft();
+		data->CursorClipRect.y = window->GetTop();
+		data->CursorClipRect.width = window->GetWidth();
+		data->CursorClipRect.height = window->GetHeight();
 	}
 
 	bool ClipCursor(Platform::Pimpl* data, Vector2I& pos)
 	{
-		// TODO
+		if(!data->CursorClipEnabled)
+			return false;
 
-		return true;
+		INT32 clippedX = pos.x - data->CursorClipRect.x;
+		INT32 clippedY = pos.y - data->CursorClipRect.y;
+
+		if(clippedX < 0)
+			clippedX = 0;
+		else if(clippedX >= (INT32)data->CursorClipRect.width)
+			clippedX = data->CursorClipRect.width > 0 ? data->CursorClipRect.width - 1 : 0;
+
+		if(clippedY < 0)
+			clippedY = 0;
+		else if(clippedY >= (INT32)data->CursorClipRect.height)
+			clippedY = data->CursorClipRect.height > 0 ? data->CursorClipRect.height - 1 : 0;
+
+		clippedX += data->CursorClipRect.x;
+		clippedY += data->CursorClipRect.y;
+
+		if(clippedX != pos.x || clippedY != pos.y)
+		{
+			pos.x = clippedX;
+			pos.y = clippedY;
+
+			return true;
+		}
+
+		return false;
 	}
 
 	void ClipCursorDisable(Platform::Pimpl* data)
 	{
-		// TODO
+		data->CursorClipEnabled = false;
+		data->CursorClipWindow = None;
 	}
 
 	void SetCurrentCursor(Platform::Pimpl* data, ::Cursor cursor)
 	{
-		// TODO
+		if(data->CurrentCursor)
+		{
+			XFreeCursor(data->XDisplay, data->CurrentCursor);
+		}
+
+		data->CurrentCursor = cursor;
+		ApplyCurrentCursor(data, data->MainXWindow);
 	}
 
 	Vector2I Platform::GetCursorPosition()
@@ -190,7 +243,9 @@ namespace te
 		Vector2I pos = GetCursorPosition();
 
 		if(ClipCursor(_data, pos))
+		{
 			SetCursorPosition(pos);
+		}
 	}
 
 	void Platform::ClipCursorToRect(const Rect2I& screenRect)
@@ -204,8 +259,7 @@ namespace te
 		if(ClipCursor(_data, pos))
 		{
 			SetCursorPosition(pos);
-		}
-			
+		}	
 	}
 
 	void Platform::ClipCursorDisable()
@@ -220,6 +274,46 @@ namespace te
 
 	void Platform::MessagePump()
 	{
+		// TODO
+	}
 
+	::Display* LinuxPlatform::GetXDisplay()
+	{
+		return _data->XDisplay;
+	}
+
+	::Window LinuxPlatform::GetMainXWindow()
+	{
+		return _data->MainXWindow;
+	}
+
+	void LinuxPlatform::LockX()
+	{
+		// TODO
+	}
+
+	void LinuxPlatform::UnlockX()
+	{
+		// TODO
+	}
+
+	void LinuxPlatform::RegisterWindow(::Window xWindow, LinuxWindow* window)
+	{
+		// First window is assumed to be the main
+		if(_data->MainXWindow == 0)
+		{
+			_data->MainXWindow = xWindow;
+
+			// Input context client window must be set before use
+			XSetICValues(_data->IC,
+					XNClientWindow, xWindow,
+					XNFocusWindow, xWindow,
+					nullptr);
+		}
+
+		_data->EmptyCursor = XCreateFontCursor(_data->XDisplay, XC_arrow); 
+		_data->CurrentCursor = XCreateFontCursor(_data->XDisplay, XC_arrow); 
+
+		ApplyCurrentCursor(_data, xWindow);
 	}
 }

@@ -16,12 +16,27 @@ namespace te
 
     LinuxWindow::LinuxWindow(const WINDOW_DESC &desc)
 	{
-		_data = te_new<Pimpl>(); // TODO
+		_data = te_new<Pimpl>(); 
+
+		TE_PRINT("CREATE LINUX WINDOW")
+		
+		// TODO
     }
 
     LinuxWindow::~LinuxWindow()
 	{
-		te_delete(_data); // TODO
+		if(_data->XWindow != 0)
+		{
+			XUnmapWindow(LinuxPlatform::GetXDisplay(), _data->XWindow);
+			XSync(LinuxPlatform::GetXDisplay(), 0);
+
+			XDestroyWindow(LinuxPlatform::GetXDisplay(), _data->XWindow);
+			XSync(LinuxPlatform::GetXDisplay(), 0);
+
+			_data->XWindow = 0;
+		}
+
+		te_delete(_data);
 	}
 
 	void LinuxWindow::Move(INT32 x, INT32 y)
