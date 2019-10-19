@@ -5,7 +5,17 @@ namespace te
 {
     LinuxRenderWindow::LinuxRenderWindow(const RENDER_WINDOW_DESC& desc)
         : RenderWindow(desc)
+        , _window(nullptr)
     {
+    }
+
+    LinuxRenderWindow::~LinuxRenderWindow()
+    {
+        if(_window != nullptr)
+        {
+            te_delete(_window);
+            _window = nullptr;
+        }
     }
 
     void LinuxRenderWindow::Update()
@@ -15,7 +25,31 @@ namespace te
 
     void LinuxRenderWindow::Initialize()
     {
-        //TODO
+        WINDOW_DESC windowDesc;
+		windowDesc.X = _desc.Left;
+		windowDesc.Y = _desc.Top;
+		windowDesc.Width = _desc.Mode.GetWidth();
+		windowDesc.Height = _desc.Mode.GetHeight();
+		windowDesc.Title = _desc.Title;
+		windowDesc.ShowDecorations = _desc.ShowTitleBar;
+		windowDesc.AllowResize = _desc.AllowResize;
+		// windowDesc.VisualInfo = visualConfig.visualInfo; TODO
+
+        _properties.IsFullScreen = _desc.Fullscreen;
+
+        _window = te_new<LinuxWindow>(windowDesc);
+
+		_properties.Width = _window->GetWidth();
+		_properties.Height = _window->GetHeight();
+		_properties.Top = _window->GetTop();
+		_properties.Left = _window->GetLeft();
+
+        if(_desc.Fullscreen)
+        {
+			SetFullscreen(_desc.Mode);
+        }
+
+        // TODO
     }
 
     void LinuxRenderWindow::GetCustomAttribute(const String& name, void* pData) const

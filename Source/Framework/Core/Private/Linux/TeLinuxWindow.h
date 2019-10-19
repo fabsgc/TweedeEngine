@@ -16,10 +16,7 @@ namespace te
 		String Title;
 		bool ShowDecorations;
 		bool AllowResize;
-		bool Modal;
-		bool ShowOnTaskBar;
 		bool Hidden;
-		::Window Parent;
 		::Window External;
 		XVisualInfo VisualInfo;
 		// SPtr<PixelData> background; TODO

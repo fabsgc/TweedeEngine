@@ -84,7 +84,7 @@ namespace te
         errstr = dlerror();
 
         TE_PRINT(errstr);
-        return String();
+        return String(errstr);
 #endif
     }
 }
