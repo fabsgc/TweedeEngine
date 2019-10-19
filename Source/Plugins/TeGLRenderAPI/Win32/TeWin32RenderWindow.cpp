@@ -52,6 +52,8 @@ namespace te
         _properties.Top = _window->GetTop();
         _properties.Left = _window->GetLeft();
 
+        _properties.IsFullScreen = _desc.Fullscreen;
+
         if (_properties.IsFullScreen)
         {
         }

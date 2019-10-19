@@ -59,6 +59,8 @@ namespace te
 
         CreateSwapChain();
 
+        _properties.IsFullScreen = _desc.Fullscreen;
+
         if (_properties.IsFullScreen)
         {
             /*if (outputInfo != nullptr)
