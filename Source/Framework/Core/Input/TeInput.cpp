@@ -129,7 +129,7 @@ namespace te
         OSPointerButtonStates pointerState;
 
         {
-            Lock lock(_mutex);
+            //Lock lock(_mutex);
 
             std::swap(_queuedEvents[0], _queuedEvents[1]);
 

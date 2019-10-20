@@ -16,7 +16,7 @@ int main()
 {
     te::START_UP_DESC desc;
 
-    desc.RenderAPI = "TeGLRenderAPI";
+    desc.RenderAPI = TE_RENDER_API_MODULE;
     desc.Renderer = TE_RENDERER_MODULE;
     desc.Audio = TE_AUDIO_MODULE;
 

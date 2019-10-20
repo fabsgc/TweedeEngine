@@ -276,8 +276,8 @@ namespace te
 	{
 		while(true)
 		{
-			// if(XPending(_data->XDisplay) <= 0)
-			//	break;
+			if(XPending(_data->XDisplay) <= 0)
+				break;
 
 			XEvent event;
 			XNextEvent(_data->XDisplay, &event);
@@ -351,15 +351,17 @@ namespace te
 			_data->MainXWindow = xWindow;
 
 			// Input context client window must be set before use
+			/*
 			XSetICValues(_data->IC,
 					XNClientWindow, xWindow,
 					XNFocusWindow, xWindow,
 					nullptr);
+			*/
 		}
 
-		_data->EmptyCursor = XCreateFontCursor(_data->XDisplay, XC_arrow); 
-		_data->CurrentCursor = XCreateFontCursor(_data->XDisplay, XC_arrow); 
+		//_data->EmptyCursor = XCreateFontCursor(_data->XDisplay, XC_arrow); 
+		//_data->CurrentCursor = XCreateFontCursor(_data->XDisplay, XC_arrow); 
 
-		ApplyCurrentCursor(_data, xWindow);
+		//ApplyCurrentCursor(_data, xWindow);
 	}
 }

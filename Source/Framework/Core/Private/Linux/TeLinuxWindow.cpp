@@ -26,8 +26,8 @@ namespace te
 		::Display* display = LinuxPlatform::GetXDisplay();
 
 		// Find the screen of the chosen monitor, as well as its current dimensions
-		INT32 screen = XDefaultScreen(display);
-		UINT32 outputIdx = 0;
+		INT32 screen = DefaultScreen(display);
+		//UINT32 outputIdx = 0;
 
 		/*
 		RROutput primaryOutput = XRRGetOutputPrimary(display, RootWindow(display, screen));
@@ -123,8 +123,8 @@ namespace te
 			InputOutput, desc.VisualInfo->visual,
 			CWBackPixel | CWBorderPixel | CWColormap | CWBackPixmap, &attributes);*/
 
-		unsigned long black=BlackPixel(dis,screen),	/* get color black */
-		unsigned long white=WhitePixel(dis, screen);  /* get color white */
+		unsigned long black=BlackPixel(display,screen);	/* get color black */
+		unsigned long white=WhitePixel(display, screen);  /* get color white */
 
 		_data->XWindow = XCreateSimpleWindow(display,DefaultRootWindow(display),0,0, 200, 300, 5, white, black);
 
@@ -188,8 +188,8 @@ namespace te
 
     	XMapWindow(display, _data->XWindow);
 
-		XClearWindow(display, _data->XWindow);
-		XMapRaised(display, _data->XWindow);
+		//XClearWindow(display, _data->XWindow);
+		//XMapRaised(display, _data->XWindow);
 
 		LinuxPlatform::RegisterWindow(_data->XWindow, this);
 

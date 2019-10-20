@@ -34,7 +34,7 @@ namespace te
 
     void RenderWindow::TriggerCallback()
     {
-        Lock lock(_windowMutex);
+        // Lock lock(_windowMutex);
 
         if(_moveOrResized)
             OnResized();
