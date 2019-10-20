@@ -276,21 +276,24 @@ namespace te
 	{
 		while(true)
 		{
-			if(XPending(_data->XDisplay) <= 0)
-				break;
+			// if(XPending(_data->XDisplay) <= 0)
+			//	break;
 
 			XEvent event;
 			XNextEvent(_data->XDisplay, &event);
 
+			if (event.type == KeyPress)
+            	break;
 		}
 	}
 
 	void Platform::StartUp()
 	{
-		_data->XDisplay = XOpenDisplay(":0.0");
+		_data->XDisplay = XOpenDisplay(NULL);
 		XSetErrorHandler(X11ErrorHandler);
 
 		// For raw, relative mouse motion events, XInput2 extension is required
+		/*
 		int firstEvent;
 		int firstError;
 		if (!XQueryExtension(_data->XDisplay, "XInputExtension", &_data->XInput2Opcode, &firstEvent, &firstError))
@@ -300,8 +303,9 @@ namespace te
 		int minorVersion = 0;
 		if (XIQueryVersion(_data->XDisplay, &majorVersion, &minorVersion) != Success)
 			TE_ASSERT_ERROR(false, "X Server doesn't support at least the XInput 2.0 extension", __FILE__, __LINE__);
-
+		*/
 		// Let XInput know we are interested in raw mouse movement events
+		/*
 		constexpr int maskLen = XIMaskLen(XI_LASTEVENT);
 		XIEventMask mask;
 		mask.deviceid = XIAllDevices;
@@ -310,11 +314,13 @@ namespace te
 		unsigned char maskBuffer[maskLen] = {0};
 		mask.mask = maskBuffer;
 		XISetMask(mask.mask, XI_RawMotion);
-
+		*/
 		// "RawEvents are sent exclusively to all root windows", so this should receive all events, even though we only
 		// select on one display's root window (untested for lack of second screen).
+		/*
 		XISelectEvents(_data->XDisplay, XRootWindow(_data->XDisplay, DefaultScreen(_data->XDisplay)), &mask, 1);
 		XFlush(_data->XDisplay);
+		*/
 	}
 
 	::Display* LinuxPlatform::GetXDisplay()

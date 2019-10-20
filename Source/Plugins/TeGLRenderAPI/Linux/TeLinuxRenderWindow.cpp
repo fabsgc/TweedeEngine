@@ -25,6 +25,17 @@ namespace te
 
     void LinuxRenderWindow::Initialize()
     {
+        /*
+        XVisualInfo visualInfoTempl = {};
+		visualInfoTempl.screen = XDefaultScreen(LinuxPlatform::GetXDisplay());
+		visualInfoTempl.depth = 24;
+		visualInfoTempl.c_class = TrueColor;
+
+		int32_t numVisuals;
+		XVisualInfo* visualInfo = XGetVisualInfo(LinuxPlatform::GetXDisplay(),
+				VisualScreenMask | VisualDepthMask | VisualClassMask, &visualInfoTempl, &numVisuals);
+        */
+
         WINDOW_DESC windowDesc;
 		windowDesc.X = _desc.Left;
 		windowDesc.Y = _desc.Top;
@@ -33,9 +44,8 @@ namespace te
 		windowDesc.Title = _desc.Title;
 		windowDesc.ShowDecorations = _desc.ShowTitleBar;
 		windowDesc.AllowResize = _desc.AllowResize;
-		// windowDesc.VisualInfo = visualConfig.visualInfo; TODO
-
-        _properties.IsFullScreen = _desc.Fullscreen;
+        //windowDesc.VisualInfo = visualInfo;
+        windowDesc.Screen = 0;
 
         _window = te_new<LinuxWindow>(windowDesc);
 
@@ -43,6 +53,7 @@ namespace te
 		_properties.Height = _window->GetHeight();
 		_properties.Top = _window->GetTop();
 		_properties.Left = _window->GetLeft();
+        _properties.IsFullScreen = _desc.Fullscreen;
 
         if(_desc.Fullscreen)
         {

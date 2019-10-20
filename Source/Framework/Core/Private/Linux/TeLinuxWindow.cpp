@@ -21,8 +21,6 @@ namespace te
 
     LinuxWindow::LinuxWindow(const WINDOW_DESC &desc)
 	{
-		TE_PRINT("MAP WINDOW")
-		
 		_data = te_new<Pimpl>();
 
 		::Display* display = LinuxPlatform::GetXDisplay();
@@ -31,6 +29,7 @@ namespace te
 		INT32 screen = XDefaultScreen(display);
 		UINT32 outputIdx = 0;
 
+		/*
 		RROutput primaryOutput = XRRGetOutputPrimary(display, RootWindow(display, screen));
 		INT32 monitorX = 0;
 		INT32 monitorY = 0;
@@ -49,7 +48,6 @@ namespace te
 				if (outputInfo == nullptr || outputInfo->crtc == 0 || outputInfo->connection == RR_Disconnected)
 				{
 					XRRFreeOutputInfo(outputInfo);
-
 					continue;
 				}
 
@@ -58,17 +56,20 @@ namespace te
 				{
 					XRRFreeCrtcInfo(crtcInfo);
 					XRRFreeOutputInfo(outputInfo);
-
 					continue;
 				}
 
 				if(desc.Screen == (UINT32)-1)
 				{
 					if(screenRes->outputs[j] == primaryOutput)
+					{
 						foundMonitor = true;
+					}
 				}
 				else
+				{
 					foundMonitor = outputIdx == desc.Screen;
+				}
 
 				if(foundMonitor)
 				{
@@ -85,17 +86,10 @@ namespace te
 			}
 
 			if(foundMonitor)
+			{
 				break;
+			}
 		}
-
-		XVisualInfo visualInfoTempl = {};
-		visualInfoTempl.screen = XDefaultScreen(LinuxPlatform::GetXDisplay());
-		visualInfoTempl.depth = 24;
-		visualInfoTempl.c_class = TrueColor;
-
-		int32_t numVisuals;
-		XVisualInfo* visualInfo = XGetVisualInfo(LinuxPlatform::GetXDisplay(),
-				VisualScreenMask | VisualDepthMask | VisualClassMask, &visualInfoTempl, &numVisuals);
 
 		XSetWindowAttributes attributes;
 		attributes.background_pixel = XWhitePixel(display, screen);
@@ -119,18 +113,25 @@ namespace te
 
 		_data->Width = desc.Width;
 		_data->Height = desc.Height;
+		*/
 
-		_data->XWindow = XCreateWindow(display,
+		/*_data->XWindow = XCreateWindow(display,
 			XRootWindow(display, screen),
 			_data->X, _data->Y,
 			_data->Width, _data->Height,
-			0, visualInfo->depth,
-			InputOutput, visualInfo->visual,
-			CWBackPixel | CWBorderPixel | CWColormap | CWBackPixmap, &attributes);
+			0, desc.VisualInfo->depth,
+			InputOutput, desc.VisualInfo->visual,
+			CWBackPixel | CWBorderPixel | CWColormap | CWBackPixmap, &attributes);*/
 
-		XStoreName(display, _data->XWindow, desc.Title.c_str());
+		unsigned long black=BlackPixel(dis,screen),	/* get color black */
+		unsigned long white=WhitePixel(dis, screen);  /* get color white */
+
+		_data->XWindow = XCreateSimpleWindow(display,DefaultRootWindow(display),0,0, 200, 300, 5, white, black);
+
+		//XStoreName(display, _data->XWindow, desc.Title.c_str());
 
 		// Position/size might have (and usually will) get overridden by the WM, so re-apply them
+		/*
 		XSizeHints hints;
 		hints.flags = PPosition | PSize;
 		hints.x = _data->X;
@@ -181,6 +182,14 @@ namespace te
 
 		_data->HasTitleBar = true;
 		_data->ResizeDisabled = !desc.AllowResize;
+		*/
+
+		XSelectInput(display, _data->XWindow, ExposureMask|ButtonPressMask|KeyPressMask);
+
+    	XMapWindow(display, _data->XWindow);
+
+		XClearWindow(display, _data->XWindow);
+		XMapRaised(display, _data->XWindow);
 
 		LinuxPlatform::RegisterWindow(_data->XWindow, this);
 
@@ -199,6 +208,8 @@ namespace te
 
 			_data->XWindow = 0;
 		}
+
+		XCloseDisplay(LinuxPlatform::GetXDisplay());
 
 		te_delete(_data);
 	}
