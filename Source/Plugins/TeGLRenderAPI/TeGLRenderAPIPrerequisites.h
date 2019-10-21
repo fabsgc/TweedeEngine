@@ -22,7 +22,6 @@
 #   include <windows.h>
 #   include <wingdi.h>
 #   include <GL/glew.h>
-#   include <GL/glxew.h>
 #   include <GL/wglew.h>
 #elif TE_PLATFORM == TE_PLATFORM_LINUX
 #   include <GL/glew.h>
