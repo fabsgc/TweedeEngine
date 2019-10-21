@@ -16,6 +16,7 @@ set(TE_GLRENDERAPI_INC_WIN32
 
 set(TE_GLRENDERAPI_SRC_WIN32
 	"Win32/TeWin32RenderWindow.cpp"
+	"glew.cpp"
 )
 
 set(TE_GLRENDERAPI_INC_LINUX
@@ -24,6 +25,7 @@ set(TE_GLRENDERAPI_INC_LINUX
 
 set(TE_GLRENDERAPI_SRC_LINUX
 	"Linux/TeLinuxRenderWindow.cpp"
+	"glew.cpp"
 )
 
 source_group ("" FILES ${TE_GLRENDERAPI_SRC_NOFILTER} ${TE_GLRENDERAPI_INC_NOFILTER})

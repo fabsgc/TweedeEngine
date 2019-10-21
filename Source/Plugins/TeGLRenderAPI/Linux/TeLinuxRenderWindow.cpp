@@ -36,6 +36,8 @@ namespace te
 				VisualScreenMask | VisualDepthMask | VisualClassMask, &visualInfoTempl, &numVisuals);
         */
 
+        //GLVisualConfig visualConfig = FindBestVisual(LinuxPlatform::GetXDisplay(), _desc.DepthBuffer, _desc.MultisampleCount, _desc.Gamma);
+
         WINDOW_DESC windowDesc;
 		windowDesc.X = _desc.Left;
 		windowDesc.Y = _desc.Top;
@@ -44,7 +46,7 @@ namespace te
 		windowDesc.Title = _desc.Title;
 		windowDesc.ShowDecorations = _desc.ShowTitleBar;
 		windowDesc.AllowResize = _desc.AllowResize;
-        //windowDesc.VisualInfo = visualInfo;
+        //windowDesc.VisualInfo = visualConfig.VisualInfo;
         windowDesc.Screen = 0;
 
         _window = te_new<LinuxWindow>(windowDesc);
@@ -148,5 +150,44 @@ namespace te
     void LinuxRenderWindow::WindowMovedOrResized()
     {
         //TODO
+    }
+
+    GLVisualConfig LinuxRenderWindow::FindBestVisual(::Display* display, bool depthStencil, UINT32 multisample, bool srgb)
+    {
+        GLVisualConfig output;
+
+        /*INT32 VISUAL_ATTRIBS[] =
+		{
+			GLX_X_RENDERABLE, 		True,
+			GLX_DRAWABLE_TYPE, 		GLX_WINDOW_BIT,
+			GLX_RENDER_TYPE,		GLX_RGBA_BIT,
+			GLX_X_VISUAL_TYPE,		GLX_TRUE_COLOR,
+			GLX_RED_SIZE,			8,
+			GLX_GREEN_SIZE,			8,
+			GLX_BLUE_SIZE,			8,
+			GLX_ALPHA_SIZE,			8,
+			GLX_DOUBLEBUFFER,		True,
+			GLX_DEPTH_SIZE,			depthStencil ? 24 : 0,
+			GLX_STENCIL_SIZE,		depthStencil ? 8 : 0,
+			GLX_SAMPLE_BUFFERS,		multisample > 1 ? 1 : 0,
+			0
+		};
+
+        INT32 numConfigs;
+		GLXFBConfig* configs = glXChooseFBConfig(display, DefaultScreen(display), VISUAL_ATTRIBS, &numConfigs);
+		GLVisualCapabilities* caps = (GLVisualCapabilities*)te_allocate(sizeof(GLVisualCapabilities) * numConfigs);
+
+        XVisualInfo* visualInfo = glXGetVisualFromFBConfig(display, configs[0]);
+
+        output.VisualInfo = *visualInfo;
+		output.Caps = caps[0];
+
+        // If we have several configs found, we simply take the first one
+        XFree(configs);
+		XFree(visualInfo);
+
+        te_delete(caps);*/
+
+        return output;
     }
 }

@@ -19,7 +19,6 @@ namespace te
 		bool Hidden;
 		::Window External;
 		XVisualInfo VisualInfo;
-		// SPtr<PixelData> background; TODO
     };
 
     /** Represents a X11 window. */
