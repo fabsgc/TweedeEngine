@@ -14,7 +14,7 @@ namespace te
 
     Input::DeviceData::DeviceData()
     {
-        for (UINT32 i = 0; i < BC_Count; i++)
+        for (UINT32 i = 0; i < TE_Count; i++)
             KeyStates[i] = ButtonState::Off;
     }
 
@@ -75,7 +75,7 @@ namespace te
 
         for (auto& deviceData : _devices)
         {
-            for (UINT32 i = 0; i < BC_Count; i++)
+            for (UINT32 i = 0; i < TE_Count; i++)
             {
                 if (deviceData.KeyStates[i] == ButtonState::ToggledOff || deviceData.KeyStates[i] == ButtonState::ToggledOnOff)
                     deviceData.KeyStates[i] = ButtonState::Off;

@@ -25,7 +25,7 @@ namespace te
 
     void LinuxRenderWindow::Initialize()
     {
-        /*
+        
         XVisualInfo visualInfoTempl = {};
 		visualInfoTempl.screen = XDefaultScreen(LinuxPlatform::GetXDisplay());
 		visualInfoTempl.depth = 24;
@@ -34,7 +34,6 @@ namespace te
 		int32_t numVisuals;
 		XVisualInfo* visualInfo = XGetVisualInfo(LinuxPlatform::GetXDisplay(),
 				VisualScreenMask | VisualDepthMask | VisualClassMask, &visualInfoTempl, &numVisuals);
-        */
 
         //GLVisualConfig visualConfig = FindBestVisual(LinuxPlatform::GetXDisplay(), _desc.DepthBuffer, _desc.MultisampleCount, _desc.Gamma);
 
@@ -46,10 +45,11 @@ namespace te
 		windowDesc.Title = _desc.Title;
 		windowDesc.ShowDecorations = _desc.ShowTitleBar;
 		windowDesc.AllowResize = _desc.AllowResize;
-        //windowDesc.VisualInfo = visualConfig.VisualInfo;
+        windowDesc.VisualInfo = *visualInfo;
         windowDesc.Screen = 0;
 
         _window = te_new<LinuxWindow>(windowDesc);
+        _window->SetRenderWindow(this);
 
 		_properties.Width = _window->GetWidth();
 		_properties.Height = _window->GetHeight();
@@ -76,7 +76,7 @@ namespace te
 		else if(name == "WINDOW")
 		{
 			::Window* window = (::Window*)pData;
-			*window = _window->_getXWindow();
+			*window = _window->GetXWindow();
 			return;
 		}
 
@@ -155,6 +155,8 @@ namespace te
     GLVisualConfig LinuxRenderWindow::FindBestVisual(::Display* display, bool depthStencil, UINT32 multisample, bool srgb)
     {
         GLVisualConfig output;
+
+        // TODO
 
         /*INT32 VISUAL_ATTRIBS[] =
 		{

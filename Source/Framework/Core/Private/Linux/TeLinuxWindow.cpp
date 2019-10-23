@@ -11,6 +11,7 @@ namespace te
     struct LinuxWindow::Pimpl
 	{
 		::Window XWindow = 0;
+		te::RenderWindow* RenderWindow = nullptr;
 
 		INT32 X, Y;
 		UINT32 Width, Height;
@@ -279,8 +280,18 @@ namespace te
 		return Vector2I(); // TODO
 	}
 
-	::Window LinuxWindow::_getXWindow() const
+	::Window LinuxWindow::GetXWindow() const
 	{
 		return _data->XWindow;
+	}
+
+	void LinuxWindow::SetRenderWindow(RenderWindow* renderWindow)
+	{
+		_data->RenderWindow = renderWindow;
+	}
+
+	RenderWindow* LinuxWindow::GetRenderWindow() const
+	{
+		return _data->RenderWindow;
 	}
 }

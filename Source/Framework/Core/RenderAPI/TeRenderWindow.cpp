@@ -34,8 +34,6 @@ namespace te
 
     void RenderWindow::TriggerCallback()
     {
-        // Lock lock(_windowMutex);
-
         if(_moveOrResized)
             OnResized();
 
@@ -44,6 +42,8 @@ namespace te
 
         if (_closeRequested)
         {
+            TE_PRINT("Close requested");
+
             OnCloseRequested();
             gCoreApplication().OnStopRequested();
         }

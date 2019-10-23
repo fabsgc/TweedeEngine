@@ -112,28 +112,28 @@ namespace te
             switch (diBuff[i].dwOfs)
             {
             case DIMOFS_BUTTON0:
-                DoMouseClick(_owner, BC_MOUSE_LEFT, diBuff[i]);
+                DoMouseClick(_owner, TE_MOUSE_LEFT, diBuff[i]);
                 break;
             case DIMOFS_BUTTON1:
-                DoMouseClick(_owner, BC_MOUSE_RIGHT, diBuff[i]);
+                DoMouseClick(_owner, TE_MOUSE_RIGHT, diBuff[i]);
                 break;
             case DIMOFS_BUTTON2:
-                DoMouseClick(_owner, BC_MOUSE_MIDDLE, diBuff[i]);
+                DoMouseClick(_owner, TE_MOUSE_MIDDLE, diBuff[i]);
                 break;
             case DIMOFS_BUTTON3:
-                DoMouseClick(_owner, BC_MOUSE_BTN4, diBuff[i]);
+                DoMouseClick(_owner, TE_MOUSE_BTN4, diBuff[i]);
                 break;
             case DIMOFS_BUTTON4:
-                DoMouseClick(_owner, BC_MOUSE_BTN5, diBuff[i]);
+                DoMouseClick(_owner, TE_MOUSE_BTN5, diBuff[i]);
                 break;
             case DIMOFS_BUTTON5:
-                DoMouseClick(_owner, BC_MOUSE_BTN6, diBuff[i]);
+                DoMouseClick(_owner, TE_MOUSE_BTN6, diBuff[i]);
                 break;
             case DIMOFS_BUTTON6:
-                DoMouseClick(_owner, BC_MOUSE_BTN7, diBuff[i]);
+                DoMouseClick(_owner, TE_MOUSE_BTN7, diBuff[i]);
                 break;
             case DIMOFS_BUTTON7:
-                DoMouseClick(_owner, BC_MOUSE_BTN8, diBuff[i]);
+                DoMouseClick(_owner, TE_MOUSE_BTN8, diBuff[i]);
                 break;
             case DIMOFS_X:
                 relX += diBuff[i].dwData;

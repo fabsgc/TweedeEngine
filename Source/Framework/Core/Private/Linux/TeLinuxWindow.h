@@ -7,6 +7,8 @@
 
 namespace te
 {
+	class RenderWindow;
+
     /**	Descriptor used for creating a platform specific native window. */
 	struct WINDOW_DESC
 	{
@@ -68,7 +70,13 @@ namespace te
 		Vector2I WindowToScreenPos(const Vector2I& windowPos) const;
 
 		/** Returns the internal X11 window handle. */
-		::Window _getXWindow() const;
+		::Window GetXWindow() const;
+
+		/** Attaches renderWindow that can later be retrieved through _getUserData(). */
+		void SetRenderWindow(RenderWindow* renderWindow);
+
+		/** Returns user data attached to the object when _setUserData was called. */
+		RenderWindow* GetRenderWindow() const;
 
     private:
         struct Pimpl;

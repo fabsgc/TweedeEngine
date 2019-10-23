@@ -32,7 +32,7 @@ namespace te
             DeviceData();
 
             Vector<float> Axes;
-            ButtonState KeyStates[BC_Count];
+            ButtonState KeyStates[TE_Count];
         };
 
         /**	Different types of possible input event callbacks. */

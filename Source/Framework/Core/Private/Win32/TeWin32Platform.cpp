@@ -236,6 +236,10 @@ namespace te
     {
     }
 
+    void Platform::ShutDown()
+    {
+    }
+
     void Platform::Update()
     {
         MessagePump();

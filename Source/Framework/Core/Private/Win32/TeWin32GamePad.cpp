@@ -88,35 +88,35 @@ namespace te
             switch (di.dwData)
             {
             case 0:
-                newPOVState.code = BC_GAMEPAD_DPAD_UP;
+                newPOVState.code = TE_GAMEPAD_DPAD_UP;
                 newPOVState.pressed = true;
                 break;
             case 4500:
-                newPOVState.code = BC_GAMEPAD_DPAD_UPRIGHT;
+                newPOVState.code = TE_GAMEPAD_DPAD_UPRIGHT;
                 newPOVState.pressed = true;
                 break;
             case 9000:
-                newPOVState.code = BC_GAMEPAD_DPAD_RIGHT;
+                newPOVState.code = TE_GAMEPAD_DPAD_RIGHT;
                 newPOVState.pressed = true;
                 break;
             case 13500:
-                newPOVState.code = BC_GAMEPAD_DPAD_DOWNRIGHT;
+                newPOVState.code = TE_GAMEPAD_DPAD_DOWNRIGHT;
                 newPOVState.pressed = true;
                 break;
             case 18000:
-                newPOVState.code = BC_GAMEPAD_DPAD_DOWN;
+                newPOVState.code = TE_GAMEPAD_DPAD_DOWN;
                 newPOVState.pressed = true;
                 break;
             case 22500:
-                newPOVState.code = BC_GAMEPAD_DPAD_DOWNLEFT;
+                newPOVState.code = TE_GAMEPAD_DPAD_DOWNLEFT;
                 newPOVState.pressed = true;
                 break;
             case 27000:
-                newPOVState.code = BC_GAMEPAD_DPAD_LEFT;
+                newPOVState.code = TE_GAMEPAD_DPAD_LEFT;
                 newPOVState.pressed = true;
                 break;
             case 31500:
-                newPOVState.code = BC_GAMEPAD_DPAD_UPLEFT;
+                newPOVState.code = TE_GAMEPAD_DPAD_UPLEFT;
                 newPOVState.pressed = true;
                 break;
             }
@@ -152,40 +152,40 @@ namespace te
         switch (code)
         {
         case 0:
-            return BC_GAMEPAD_DPAD_UP;
+            return TE_GAMEPAD_DPAD_UP;
         case 1:
-            return BC_GAMEPAD_DPAD_DOWN;
+            return TE_GAMEPAD_DPAD_DOWN;
         case 2:
-            return BC_GAMEPAD_DPAD_LEFT;
+            return TE_GAMEPAD_DPAD_LEFT;
         case 3:
-            return BC_GAMEPAD_DPAD_RIGHT;
+            return TE_GAMEPAD_DPAD_RIGHT;
         case 4:
-            return BC_GAMEPAD_START;
+            return TE_GAMEPAD_START;
         case 5:
-            return BC_GAMEPAD_BACK;
+            return TE_GAMEPAD_BACK;
         case 6:
-            return BC_GAMEPAD_LS;
+            return TE_GAMEPAD_LS;
         case 7:
-            return BC_GAMEPAD_RS;
+            return TE_GAMEPAD_RS;
         case 8:
-            return BC_GAMEPAD_LB;
+            return TE_GAMEPAD_LB;
         case 9:
-            return BC_GAMEPAD_RB;
+            return TE_GAMEPAD_RB;
         case 10:
-            return BC_GAMEPAD_BTN1;
+            return TE_GAMEPAD_BTN1;
         case 11:
-            return BC_GAMEPAD_LS;
+            return TE_GAMEPAD_LS;
         case 12:
-            return BC_GAMEPAD_A;
+            return TE_GAMEPAD_A;
         case 13:
-            return BC_GAMEPAD_B;
+            return TE_GAMEPAD_B;
         case 14:
-            return BC_GAMEPAD_X;
+            return TE_GAMEPAD_X;
         case 15:
-            return BC_GAMEPAD_Y;
+            return TE_GAMEPAD_Y;
         }
 
-        return (ButtonCode)(BC_GAMEPAD_BTN1 + (code - 15));
+        return (ButtonCode)(TE_GAMEPAD_BTN1 + (code - 15));
     }
 
     GamePad::GamePad(const String& name, const GamePadInfo& gamepadInfo, Input* owner)
@@ -257,17 +257,17 @@ namespace te
             }
 
             // DPAD (POV)
-            ButtonCode dpadButton = BC_UNASSIGNED;
+            ButtonCode dpadButton = TE_UNASSIGNED;
             if ((inputState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP) != 0)
-                dpadButton = BC_GAMEPAD_DPAD_UP;
+                dpadButton = TE_GAMEPAD_DPAD_UP;
             else if ((inputState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN) != 0)
-                dpadButton = BC_GAMEPAD_DPAD_DOWN;
+                dpadButton = TE_GAMEPAD_DPAD_DOWN;
             if ((inputState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT) != 0)
-                dpadButton = BC_GAMEPAD_DPAD_LEFT;
+                dpadButton = TE_GAMEPAD_DPAD_LEFT;
             else if ((inputState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT) != 0)
-                dpadButton = BC_GAMEPAD_DPAD_RIGHT;
+                dpadButton = TE_GAMEPAD_DPAD_RIGHT;
 
-            if (dpadButton != BC_UNASSIGNED) // Pressed
+            if (dpadButton != TE_UNASSIGNED) // Pressed
             {
                 // Another button was previously pressed
                 if (_data->PovState[0].pressed)

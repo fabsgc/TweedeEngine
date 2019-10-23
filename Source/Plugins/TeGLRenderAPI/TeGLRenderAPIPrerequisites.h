@@ -32,6 +32,4 @@
 #endif
 
 namespace te
-{
-
-}
+{}

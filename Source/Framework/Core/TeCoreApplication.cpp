@@ -58,9 +58,9 @@ namespace te
 
         SPtr<InputConfiguration> inputConfig = gVirtualInput().GetConfiguration();
 
-        inputConfig->RegisterButton("Forward", BC_A);
-        inputConfig->RegisterButton("Forward", BC_U);
-        inputConfig->RegisterButton("Forward", BC_UP);
+        inputConfig->RegisterButton("Forward", TE_A);
+        inputConfig->RegisterButton("Forward", TE_U);
+        inputConfig->RegisterButton("Forward", TE_UP);
 
         auto handleButtonHeld = [&](const VirtualButton& btn, UINT32 deviceIdx)
         {
@@ -104,6 +104,7 @@ namespace te
         ResourceManager::ShutDown();
         RendererManager::ShutDown();
         RenderAPIManager::ShutDown();
+        Platform::ShutDown();
 
         DynLibManager::ShutDown();
         Time::ShutDown();

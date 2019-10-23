@@ -195,11 +195,11 @@ namespace te
 
     void VirtualInput::ButtonDown(const ButtonEvent& event)
     {
-        if (event.buttonCode == BC_LSHIFT || event.buttonCode == BC_RSHIFT)
+        if (event.buttonCode == TE_LSHIFT || event.buttonCode == TE_RSHIFT)
             _activeModifiers |= (UINT32)ButtonModifier::Shift;
-        else if (event.buttonCode == BC_LCONTROL || event.buttonCode == BC_RCONTROL)
+        else if (event.buttonCode == TE_LCONTROL || event.buttonCode == TE_RCONTROL)
             _activeModifiers |= (UINT32)ButtonModifier::Ctrl;
-        else if (event.buttonCode == BC_LMENU || event.buttonCode == BC_RMENU)
+        else if (event.buttonCode == TE_LMENU || event.buttonCode == TE_RMENU)
             _activeModifiers |= (UINT32)ButtonModifier::Alt;
 
         _tempButtons.clear();
@@ -238,11 +238,11 @@ namespace te
 
     void VirtualInput::ButtonUp(const ButtonEvent& event)
     {
-        if (event.buttonCode == BC_LSHIFT || event.buttonCode == BC_RSHIFT)
+        if (event.buttonCode == TE_LSHIFT || event.buttonCode == TE_RSHIFT)
             _activeModifiers &= ~(UINT32)ButtonModifier::Shift;
-        else if (event.buttonCode == BC_LCONTROL || event.buttonCode == BC_RCONTROL)
+        else if (event.buttonCode == TE_LCONTROL || event.buttonCode == TE_RCONTROL)
             _activeModifiers &= ~(UINT32)ButtonModifier::Ctrl;
-        else if (event.buttonCode == BC_LMENU || event.buttonCode == BC_RMENU)
+        else if (event.buttonCode == TE_LMENU || event.buttonCode == TE_RMENU)
             _activeModifiers &= ~(UINT32)ButtonModifier::Alt;
 
         _tempButtons.clear();

@@ -95,14 +95,13 @@ namespace te
         /** Called during application start up from the sim thread. Must be called before any other operations are done. */
 		static void StartUp();
 
-        /** 
-         * Called once per frame
-         */
+        /** Called during application shut down from the sim thread. */
+        static void ShutDown();
+
+        /** Called once per frame */
         static void Update();
 
-        /**
-         * Message pump. Processes OS messages and returns when it's free.
-         */
+        /** Message pump. Processes OS messages and returns when it's free. */
         static void MessagePump();
 
     public:
