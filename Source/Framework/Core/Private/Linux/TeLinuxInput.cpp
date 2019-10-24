@@ -29,7 +29,10 @@ namespace te
             te_delete(gamepad);
         }
 
-        te_delete(_platformData);
+        if(_platformData != nullptr)
+        {
+            te_delete(_platformData);
+        }
     }
 
     UINT32 Input::GetDeviceCount(InputDevice device) const

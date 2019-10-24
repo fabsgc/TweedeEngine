@@ -552,6 +552,8 @@ namespace te
 
 	void Platform::ShutDown()
 	{
+		TE_PRINT("closing");
+
 		XFreeCursor(_data->XDisplay, _data->EmptyCursor);
 		_data->EmptyCursor = None;
 

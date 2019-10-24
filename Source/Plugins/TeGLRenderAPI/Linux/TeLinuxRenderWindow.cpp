@@ -57,6 +57,12 @@ namespace te
 		_properties.Left = _window->GetLeft();
         _properties.IsFullScreen = _desc.Fullscreen;
 
+		_properties.MultisampleCount = 4;
+        _properties.IsWindow = true;
+
+        XWindowAttributes windowAttributes;
+		XGetWindowAttributes(LinuxPlatform::GetXDisplay(), _window->GetXWindow(), &windowAttributes);
+
         if(_desc.Fullscreen)
         {
 			SetFullscreen(_desc.Mode);

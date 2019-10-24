@@ -95,6 +95,8 @@ namespace te
     
     void CoreApplication::OnShutDown()
     {
+        TE_PRINT("Shutting down");
+
         _renderer.reset();
         _window.reset();
 
@@ -104,7 +106,7 @@ namespace te
         ResourceManager::ShutDown();
         RendererManager::ShutDown();
         RenderAPIManager::ShutDown();
-        Platform::ShutDown();
+        //Platform::ShutDown();
 
         DynLibManager::ShutDown();
         Time::ShutDown();

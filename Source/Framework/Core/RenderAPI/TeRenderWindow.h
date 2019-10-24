@@ -103,6 +103,9 @@ namespace te
          * is origin top left or bottom left. Engine default is top left.)
          */
         bool RequiresTextureFlipping = false;
+
+        /** True if the target is a window, false if an offscreen target. */
+		bool IsWindow = false;
     };
 
     class TE_CORE_EXPORT RenderWindow

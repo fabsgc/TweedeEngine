@@ -21,6 +21,7 @@ namespace te
     Input::Input()
         : _mouse(nullptr)
         , _keyboard(nullptr)
+        , _platformData(nullptr)
     {
         SPtr<RenderWindow> window = gCoreApplication().GetWindow();
         window->GetCustomAttribute("WINDOW", &_windowHandle);

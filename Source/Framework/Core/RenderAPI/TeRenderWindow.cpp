@@ -42,8 +42,6 @@ namespace te
 
         if (_closeRequested)
         {
-            TE_PRINT("Close requested");
-
             OnCloseRequested();
             gCoreApplication().OnStopRequested();
         }

@@ -211,7 +211,10 @@ namespace te
             _platformData->DirectInput->Release();
         }
 
-        te_delete(_platformData);
+        if(_platformData != nullptr)
+        {
+            te_delete(_platformData);
+        }
     }
 
     UINT32 Input::GetDeviceCount(InputDevice device) const

@@ -27,10 +27,9 @@ namespace te
 		::Display* display = LinuxPlatform::GetXDisplay();
 
 		// Find the screen of the chosen monitor, as well as its current dimensions
-		INT32 screen = DefaultScreen(display);
-		//UINT32 outputIdx = 0;
+		INT32 screen = XDefaultScreen(display);
+		UINT32 outputIdx = 0;
 
-		/*
 		RROutput primaryOutput = XRRGetOutputPrimary(display, RootWindow(display, screen));
 		INT32 monitorX = 0;
 		INT32 monitorY = 0;
@@ -97,6 +96,11 @@ namespace te
 		attributes.border_pixel = XBlackPixel(display, screen);
 		attributes.background_pixmap = 0;
 
+		attributes.colormap = XCreateColormap(display,
+			XRootWindow(display, screen),
+			desc.VisualInfo.visual,
+			AllocNone);
+
 		// If no position specified, center on the requested monitor
 		if (desc.X == -1)
 			_data->X = monitorX + (monitorWidth - desc.Width) / 2;
@@ -114,25 +118,18 @@ namespace te
 
 		_data->Width = desc.Width;
 		_data->Height = desc.Height;
-		*/
 
-		/*_data->XWindow = XCreateWindow(display,
+		_data->XWindow = XCreateWindow(display,
 			XRootWindow(display, screen),
 			_data->X, _data->Y,
 			_data->Width, _data->Height,
-			0, desc.VisualInfo->depth,
-			InputOutput, desc.VisualInfo->visual,
-			CWBackPixel | CWBorderPixel | CWColormap | CWBackPixmap, &attributes);*/
+			0, desc.VisualInfo.depth,
+			InputOutput, desc.VisualInfo.visual,
+			CWBackPixel | CWBorderPixel | CWColormap | CWBackPixmap, &attributes);
 
-		unsigned long black=BlackPixel(display,screen);	/* get color black */
-		unsigned long white=WhitePixel(display, screen);  /* get color white */
-
-		_data->XWindow = XCreateSimpleWindow(display,DefaultRootWindow(display),0,0, 200, 300, 5, white, black);
-
-		//XStoreName(display, _data->XWindow, desc.Title.c_str());
+		XStoreName(display, _data->XWindow, desc.Title.c_str());
 
 		// Position/size might have (and usually will) get overridden by the WM, so re-apply them
-		/*
 		XSizeHints hints;
 		hints.flags = PPosition | PSize;
 		hints.x = _data->X;
@@ -152,9 +149,6 @@ namespace te
 		}
 
 		XSetNormalHints(display, _data->XWindow, &hints);
-
-		//SetShowDecorations(desc.showDecorations);
-		//setIsModal(desc.modal);
 
 		XClassHint* classHint = XAllocClassHint();
 
@@ -183,18 +177,12 @@ namespace te
 
 		_data->HasTitleBar = true;
 		_data->ResizeDisabled = !desc.AllowResize;
-		*/
 
 		XSelectInput(display, _data->XWindow, ExposureMask|ButtonPressMask|KeyPressMask);
 
     	XMapWindow(display, _data->XWindow);
 
-		//XClearWindow(display, _data->XWindow);
-		//XMapRaised(display, _data->XWindow);
-
 		LinuxPlatform::RegisterWindow(_data->XWindow, this);
-
-		// TODO
     }
 
     LinuxWindow::~LinuxWindow()
