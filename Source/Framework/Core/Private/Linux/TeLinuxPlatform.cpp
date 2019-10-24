@@ -442,6 +442,25 @@ namespace te
 			XEvent event;
 			XNextEvent(_data->XDisplay, &event);
 
+			XGenericEventCookie* cookie = &event.xcookie;
+			if (cookie->type == GenericEvent && cookie->extension == _data->XInput2Opcode)
+			{
+				XGetEventData(_data->XDisplay, cookie);
+				XIRawEvent* xInput2Event = (XIRawEvent*) cookie->data;
+				switch (xInput2Event->evtype)
+				{
+					case XI_RawMotion:
+					{
+						if (xInput2Event->valuators.mask_len > 0)
+						{
+						}
+					}
+					break;
+				}
+
+				XFreeEventData(_data->XDisplay, cookie);
+			}
+
 			switch (event.type)
 			{
 				case ClientMessage:
@@ -456,6 +475,42 @@ namespace te
 						}
 					}
 				}
+				break;
+
+				case KeyPress:
+				break;
+
+				case KeyRelease:
+				break;
+
+				case ButtonPress:
+				break;
+
+				case ButtonRelease:
+				break;
+
+				case MotionNotify:
+				break;
+
+				case EnterNotify:
+				break;
+
+				case LeaveNotify:
+				break;
+
+				case ConfigureNotify:
+				break;
+
+				case FocusIn:
+				break;
+
+				case FocusOut:
+				break;
+
+				case PropertyNotify:
+				break;
+
+				default:
 				break;
 			}
 		}

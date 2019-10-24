@@ -95,8 +95,6 @@ namespace te
     
     void CoreApplication::OnShutDown()
     {
-        TE_PRINT("Shutting down");
-
         _renderer.reset();
         _window.reset();
 
