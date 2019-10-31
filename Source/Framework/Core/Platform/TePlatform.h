@@ -16,16 +16,16 @@ namespace te
     {
         OSPointerButtonStates()
         {
-            mouseButtons[0] = false;
-            mouseButtons[1] = false;
-            mouseButtons[2] = false;
+            MouseButtons[0] = false;
+            MouseButtons[1] = false;
+            MouseButtons[2] = false;
 
-            shift = false;
-            ctrl = false;
+            Shift = false;
+            Ctrl = false;
         }
 
-        bool mouseButtons[(UINT32)OSMouseButton::Count];
-        bool shift, ctrl;
+        bool MouseButtons[(UINT32)OSMouseButton::Count];
+        bool Shift, Ctrl;
     };
 
     class TE_CORE_EXPORT Platform

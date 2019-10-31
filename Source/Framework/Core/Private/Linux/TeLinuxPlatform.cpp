@@ -68,6 +68,22 @@ namespace te
 		return 0;
 	}
 
+	/** Maps X11 mouse button codes to Banshee button codes. */
+	ButtonCode XButtonToButtonCode(int button)
+	{
+		switch (button)
+		{
+		case Button1:
+			return TE_MOUSE_LEFT;
+		case Button2:
+			return TE_MOUSE_MIDDLE;
+		case Button3:
+			return TE_MOUSE_RIGHT;
+		default:
+			return (ButtonCode)(TE_MOUSE_LEFT + button - 1);
+		}
+	}
+
 	/** Maps engine button codes to X11 names for physical key locations. */
 	const char* ButtonCodeToKeyName(ButtonCode code)
 	{
@@ -307,8 +323,26 @@ namespace te
 		ApplyCurrentCursor(data, data->MainXWindow);
 	}
 
+	/**
+	 * Enqueue a button press/release event to be handled by the main thread
+	 * @param bc        ButtonCode for the button that was pressed or released
+	 * @param pressed   true if the button was pressed, false if it was released
+	 * @param timestamp Time when the event happened
+	 */
+	void EnqueueButtonEvent(ButtonCode bc, bool pressed, UINT64 timestamp)
+	{
+		if (bc == TE_UNASSIGNED)
+			return;
+
+		LinuxButtonEvent event;
+		event.Button = bc;
+		event.Pressed = pressed;
+		event.Timestamp = timestamp;
+		LinuxPlatform::ButtonEvents.push(event);
+	}
+
 	Vector2I Platform::GetCursorPosition()
-    {
+	{
 		Vector2I pos;
 		UINT32 screenCount = (UINT32)XScreenCount(_data->XDisplay);
 
@@ -453,6 +487,26 @@ namespace te
 					{
 						if (xInput2Event->valuators.mask_len > 0)
 						{
+							// Assume X/Y delta is stored in valuators 0/1 and vertical scroll in valuator 3.
+							// While there is an API that reliably tells us the valuator index for vertical scroll, there's
+							// nothing "more reliable" for X/Y axes, as the only way to possibly identify them from device
+							// info is by axis name, so we can use the axis index directly just as well. GDK seems to assume
+							// 0 for x and 1 for y too, so that's hopefully safe, and 3 appears to be common for the scroll
+							// wheel.
+							float deltas[4] = {0};
+							int currentValuesIndex = 0;
+
+							for (UINT8 valuator = 0; valuator < 4; valuator++)
+							{
+								if (XIMaskIsSet(xInput2Event->valuators.mask, valuator))
+								{
+									deltas[valuator] = xInput2Event->raw_values[currentValuesIndex++];
+								}
+							}
+
+							LinuxPlatform::MouseMotionEvent.DeltaX += deltas[0];
+							LinuxPlatform::MouseMotionEvent.DeltaY += deltas[1];
+							LinuxPlatform::MouseMotionEvent.DeltaZ += deltas[3];
 						}
 					}
 					break;
@@ -478,12 +532,84 @@ namespace te
 				break;
 
 				case KeyPress:
+				{
+					XKeyPressedEvent* keyEvent = (XKeyPressedEvent*) &event;
+					EnqueueButtonEvent(_data->KeyCodeMap[keyEvent->keycode], true, (UINT64) keyEvent->time);
+				}
 				break;
 
 				case KeyRelease:
+				{
+					XKeyReleasedEvent* keyEvent = (XKeyReleasedEvent*) &event;
+					EnqueueButtonEvent(_data->KeyCodeMap[keyEvent->keycode], false, (UINT64) keyEvent->time);
+				}
 				break;
 
 				case ButtonPress:
+				{
+					XButtonPressedEvent* buttonEvent = (XButtonPressedEvent*) &event;
+					UINT32 button = event.xbutton.button;
+
+					EnqueueButtonEvent(XButtonToButtonCode(button), true, (UINT64) buttonEvent->time);
+
+					OSPointerButtonStates btnStates;
+					btnStates.MouseButtons[0] = (event.xbutton.state & Button1Mask) != 0;
+					btnStates.MouseButtons[1] = (event.xbutton.state & Button2Mask) != 0;
+					btnStates.MouseButtons[2] = (event.xbutton.state & Button3Mask) != 0;
+
+					OSMouseButton mouseButton;
+					bool validPress = false;
+					switch(button)
+					{
+						case Button1:
+							mouseButton = OSMouseButton::Left;
+							btnStates.MouseButtons[0] = true;
+							validPress = true;
+						break;
+						
+						case Button2:
+							mouseButton = OSMouseButton::Middle;
+							btnStates.MouseButtons[1] = true;
+							validPress = true;
+						break;
+						
+						case Button3:
+							mouseButton = OSMouseButton::Right;
+							btnStates.MouseButtons[2] = true;
+							validPress = true;
+						break;
+
+						default:
+						break;
+					}
+
+					if(validPress)
+					{
+						// Send event
+						Vector2I pos;
+						pos.x = event.xbutton.x_root;
+						pos.y = event.xbutton.y_root;
+
+						btnStates.Ctrl = (event.xbutton.state & ControlMask) != 0;
+						btnStates.Shift = (event.xbutton.state & ShiftMask) != 0;
+
+						OnCursorButtonPressed(pos, mouseButton, btnStates);
+
+						// Handle double-click
+						if(button == Button1)
+						{
+							if (event.xbutton.time < (_data->LastButtonPressTime + DOUBLE_CLICK_MS))
+							{
+								OnCursorDoubleClick(pos, btnStates);
+								_data->LastButtonPressTime = 0;
+							}
+							else
+							{
+								_data->LastButtonPressTime = event.xbutton.time;
+							}
+						}
+					}
+				}
 				break;
 
 				case ButtonRelease:

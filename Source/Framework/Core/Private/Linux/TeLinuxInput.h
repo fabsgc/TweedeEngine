@@ -36,17 +36,17 @@ namespace te
 	/** Data about relative pointer / scroll wheel movement. */
 	struct LinuxMouseMotionEvent
 	{
-		double deltaX; /**< Relative pointer movement in X direction. */
-		double deltaY; /**< Relative pointer movement in Y direction. */
-		double deltaZ; /**< Relative vertical scroll amount. */
+		double DeltaX; /**< Relative pointer movement in X direction. */
+		double DeltaY; /**< Relative pointer movement in Y direction. */
+		double DeltaZ; /**< Relative vertical scroll amount. */
 	};
 
 	/** Data about a single button press or release. */
 	struct LinuxButtonEvent
 	{
-		UINT64 timestamp;
-		ButtonCode button;
-		bool pressed;
+		UINT64 Timestamp;
+		ButtonCode Button;
+		bool Pressed;
 	};
 
 #define BUFFER_SIZE_GAMEPAD 64

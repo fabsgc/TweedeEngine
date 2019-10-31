@@ -154,11 +154,11 @@ namespace te
         {
             PointerEvent event;
             event.alt = false;
-            event.shift = pointerState.shift;
-            event.control = pointerState.ctrl;
-            event.buttonStates[0] = pointerState.mouseButtons[0];
-            event.buttonStates[1] = pointerState.mouseButtons[1];
-            event.buttonStates[2] = pointerState.mouseButtons[2];
+            event.shift = pointerState.Shift;
+            event.control = pointerState.Ctrl;
+            event.buttonStates[0] = pointerState.MouseButtons[0];
+            event.buttonStates[1] = pointerState.MouseButtons[1];
+            event.buttonStates[2] = pointerState.MouseButtons[2];
             event.mouseWheelScrollAmount = mouseScroll;
 
             event.type = PointerEventType::CursorMoved;
@@ -415,11 +415,11 @@ namespace te
 
         PointerEvent event;
         event.alt = false;
-        event.shift = btnStates.shift;
-        event.control = btnStates.ctrl;
-        event.buttonStates[0] = btnStates.mouseButtons[0];
-        event.buttonStates[1] = btnStates.mouseButtons[1];
-        event.buttonStates[2] = btnStates.mouseButtons[2];
+        event.shift = btnStates.Shift;
+        event.control = btnStates.Ctrl;
+        event.buttonStates[0] = btnStates.MouseButtons[0];
+        event.buttonStates[1] = btnStates.MouseButtons[1];
+        event.buttonStates[2] = btnStates.MouseButtons[2];
 
         switch (button)
         {
@@ -449,11 +449,11 @@ namespace te
 
         PointerEvent event;
         event.alt = false;
-        event.shift = btnStates.shift;
-        event.control = btnStates.ctrl;
-        event.buttonStates[0] = btnStates.mouseButtons[0];
-        event.buttonStates[1] = btnStates.mouseButtons[1];
-        event.buttonStates[2] = btnStates.mouseButtons[2];
+        event.shift = btnStates.Shift;
+        event.control = btnStates.Ctrl;
+        event.buttonStates[0] = btnStates.MouseButtons[0];
+        event.buttonStates[1] = btnStates.MouseButtons[1];
+        event.buttonStates[2] = btnStates.MouseButtons[2];
 
         switch (button)
         {
@@ -483,11 +483,11 @@ namespace te
 
         PointerEvent event;
         event.alt = false;
-        event.shift = btnStates.shift;
-        event.control = btnStates.ctrl;
-        event.buttonStates[0] = btnStates.mouseButtons[0];
-        event.buttonStates[1] = btnStates.mouseButtons[1];
-        event.buttonStates[2] = btnStates.mouseButtons[2];
+        event.shift = btnStates.Shift;
+        event.control = btnStates.Ctrl;
+        event.buttonStates[0] = btnStates.MouseButtons[0];
+        event.buttonStates[1] = btnStates.MouseButtons[1];
+        event.buttonStates[2] = btnStates.MouseButtons[2];
         event.button = PointerEventButton::Left;
         event.screenPos = cursorPos;
         event.type = PointerEventType::DoubleClick;
