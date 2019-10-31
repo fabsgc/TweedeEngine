@@ -613,18 +613,67 @@ namespace te
 				break;
 
 				case ButtonRelease:
+				{
+					// TODO
+				}
 				break;
 
 				case MotionNotify:
+				{
+					Vector2I pos;
+					pos.x = event.xmotion.x_root;
+					pos.y = event.xmotion.y_root;
+
+					// Handle clipping if enabled
+					if(ClipCursor(_data, pos))
+						SetCursorPosition(pos);
+
+					// Send event
+					OSPointerButtonStates btnStates;
+					btnStates.Ctrl = (event.xmotion.state & ControlMask) != 0;
+					btnStates.Shift = (event.xmotion.state & ShiftMask) != 0;
+					btnStates.MouseButtons[0] = (event.xmotion.state & Button1Mask) != 0;
+					btnStates.MouseButtons[1] = (event.xmotion.state & Button2Mask) != 0;
+					btnStates.MouseButtons[2] = (event.xmotion.state & Button3Mask) != 0;
+
+					OnCursorMoved(pos, btnStates);
+				}
 				break;
 
 				case EnterNotify:
+					// Nothing to do
 				break;
 
 				case LeaveNotify:
+				{
+					if (event.xcrossing.mode == NotifyNormal)
+					{
+						Vector2I pos;
+						pos.x = event.xcrossing.x_root;
+						pos.y = event.xcrossing.y_root;
+
+						if (ClipCursor(_data, pos))
+							SetCursorPosition(pos);
+					}
+
+					_data->Window->GetRenderWindow()->NotifyWindowEvent(WindowEventType::MouseLeft);
+				}
 				break;
 
 				case ConfigureNotify:
+				{
+					if(_data->Window != nullptr)
+					{
+						UpdateClipBounds(_data, _data->Window);
+
+						RenderWindow* renderWindow = _data->Window->GetRenderWindow();
+						if(renderWindow != nullptr)
+						{
+							renderWindow->NotifyWindowEvent(WindowEventType::Resized);
+							renderWindow->NotifyWindowEvent(WindowEventType::Moved);
+						}
+					}
+				}
 				break;
 
 				case FocusIn:
