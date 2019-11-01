@@ -69,11 +69,11 @@ namespace te
 
         HEvent event = gVirtualInput().OnButtonDown.Connect(handleButtonHeld);
 
-        Vector3 position(TeZero);
-        Vector3 delta(TeZero);
-
         auto handlePointerMove = [&](const PointerEvent& event)
         {
+            Vector3 position(TeZero);
+            Vector3 delta(TeZero);
+
             position.x = (float)event.screenPos.x;
             position.y = (float)event.screenPos.y;
 
@@ -84,8 +84,9 @@ namespace te
             TE_PRINT("Mouse delta : " + ToString(delta.x) + "/" + ToString(delta.y));
         };
 
-        auto handlePointerRelativeMove = [&](const Vector3I& d)
+        auto handlePointerRelativeMove = [&](const Vector3I& delta)
         {
+            TE_PRINT("Mouse absolute delta : " + ToString(delta.x) + "/" + ToString(delta.y));
         };
 
         gInput().OnPointerMoved.Connect(handlePointerMove);
