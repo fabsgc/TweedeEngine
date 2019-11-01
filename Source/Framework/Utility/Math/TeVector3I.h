@@ -18,6 +18,10 @@ namespace te
             :x(x), y(y), z(z)
         { }
 
+        constexpr explicit Vector3I(int val)
+            :x(val), y(val), z(val)
+        { }
+
         INT32 operator[] (size_t i) const
         {
             assert(i < 3);
@@ -44,6 +48,15 @@ namespace te
             }
         }
 
+        Vector3I& operator= (int val)
+        {
+            x = val;
+            y = val;
+            z = val;
+
+            return *this;
+        }
+
         bool operator== (const Vector3I& rhs) const
         {
             return x == rhs.x && y == rhs.y && z == rhs.z;
@@ -53,5 +66,7 @@ namespace te
         {
             return !operator==(rhs);
         }
+
+        static const Vector3I ZERO;
     };
 }

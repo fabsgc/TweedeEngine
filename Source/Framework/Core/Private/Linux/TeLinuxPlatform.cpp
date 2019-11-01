@@ -468,14 +468,14 @@ namespace te
 
 	void Platform::MessagePump()
 	{
-		Atom atom_type_prop; /* not interested */
-		int actual_format;   /* should be 32 after the call */
-		unsigned long n_items, bytes_after_ret;
-		Window *props; /* since we are interested just in the first value, which is a Window id */
-		int root_x, root_y;
-		int win_x, win_y;
-		unsigned int mask;
-		::Window root_ret, child_ret;
+		// Atom atom_type_prop; /* not interested */
+		// int actual_format;   /* should be 32 after the call */
+		// unsigned long n_items, bytes_after_ret;
+		// Window *props; /* since we are interested just in the first value, which is a Window id */
+		// int root_x, root_y;
+		// int win_x, win_y;
+		// unsigned int mask;
+		// ::Window root_ret, child_ret;
 
 		while(true)
 		{
@@ -495,19 +495,6 @@ namespace te
 				{
 					case XI_RawMotion:
 					{
-						/*(void)XGetWindowProperty(_data->XDisplay, DefaultRootWindow(_data->XDisplay),
-						XInternAtom(_data->XDisplay, "_NET_ACTIVE_WINDOW", True),
-						0, 1, False, AnyPropertyType,
-						&atom_type_prop, &actual_format,
-						&n_items, &bytes_after_ret, (unsigned char**)&props);
-
-						XQueryPointer(_data->XDisplay, props[0], &root_ret, &child_ret, &root_x, &root_y, &win_x, &win_y, &mask);
-
-						LinuxPlatform::MouseMotionEvent.DeltaX = win_x;
-						LinuxPlatform::MouseMotionEvent.DeltaY = win_y;
-
-						TE_PRINT("### delta mouse " + ToString(win_x) + "/" + ToString(win_y))*/
-
 						if (xInput2Event->valuators.mask_len > 0)
 						{
 							// Assume X/Y delta is stored in valuators 0/1 and vertical scroll in valuator 3.
@@ -527,11 +514,9 @@ namespace te
 								}
 							}
 
-							//TE_PRINT("### delta mouse" + ToString(deltas[0]) + "/" + ToString(deltas[1]) + "/" + ToString(deltas[3]))
-
-							LinuxPlatform::MouseMotionEvent.DeltaX += deltas[0];
-							LinuxPlatform::MouseMotionEvent.DeltaY += deltas[1];
-							LinuxPlatform::MouseMotionEvent.DeltaZ += deltas[3];
+							LinuxPlatform::MouseMotionEvent.DeltaX = deltas[0];
+							LinuxPlatform::MouseMotionEvent.DeltaY = deltas[1];
+							LinuxPlatform::MouseMotionEvent.DeltaZ = deltas[3];
 						}
 					}
 					break;
