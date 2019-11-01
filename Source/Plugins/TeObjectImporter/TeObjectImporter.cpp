@@ -1,5 +1,6 @@
 #include "TeObjectImporter.h"
 #include "Importer/TeMeshImportOptions.h"
+#include "Mesh/TeMesh.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -41,6 +42,8 @@ namespace te
 
         TE_ASSERT_ERROR(scene != nullptr, "Failed to load object '" + filePath + "' : " + importer.GetErrorString(), __FILE__, __LINE__);
 
-        return SPtr<Resource>();
+        SPtr<Mesh> mesh = te_shared_ptr_new<Mesh>();
+
+        return mesh;
     }
 }
