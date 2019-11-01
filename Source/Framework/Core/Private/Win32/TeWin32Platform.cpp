@@ -86,8 +86,9 @@ namespace te
         clientPoint.x = GET_X_LPARAM(lParam);
         clientPoint.y = GET_Y_LPARAM(lParam);
 
-        if (!nonClient)
-            ClientToScreen(hWnd, &clientPoint);
+        //We want mouse position relative to screen not to monitor
+        //if (!nonClient)
+        //    ClientToScreen(hWnd, &clientPoint);
 
         mousePos.x = clientPoint.x;
         mousePos.y = clientPoint.y;

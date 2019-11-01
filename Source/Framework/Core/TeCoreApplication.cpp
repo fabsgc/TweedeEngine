@@ -70,14 +70,18 @@ namespace te
         HEvent event = gVirtualInput().OnButtonDown.Connect(handleButtonHeld);
 
         Vector3 position(TeZero);
+        Vector3 delta(TeZero);
 
         auto handlePointerMove = [&](const PointerEvent& event)
         {
-            // Move the object in 2D plane together with the pointer, if left mouse button is pressed
             position.x = (float)event.screenPos.x;
             position.y = (float)event.screenPos.y;
 
+            delta.x = (float)event.delta.x;
+            delta.y = (float)event.delta.y;
+
             TE_PRINT("Mouse position : " + ToString(position.x) + "/" + ToString(position.y));
+            TE_PRINT("Mouse delta : " + ToString(delta.x) + "/" + ToString(delta.y));
         };
 
         // Connect the callback to the event
