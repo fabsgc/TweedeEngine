@@ -91,7 +91,7 @@ namespace te
 
         mousePos.x = clientPoint.x;
         mousePos.y = clientPoint.y;
-
+        
         btnStates.MouseButtons[0] = (wParam & MK_LBUTTON) != 0;
         btnStates.MouseButtons[1] = (wParam & MK_MBUTTON) != 0;
         btnStates.MouseButtons[2] = (wParam & MK_RBUTTON) != 0;
@@ -594,15 +594,6 @@ namespace te
                     IsCtrlPressed = true;
                     break;
                 }
-
-                /*InputCommandType command = InputCommandType::Backspace;
-                if (getCommand((unsigned int)wParam, command))
-                {
-                    if (!onInputCommand.empty())
-                        onInputCommand(command);
-
-                    return 0;
-                }*/
 
                 break;
             }
