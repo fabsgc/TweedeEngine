@@ -41,6 +41,14 @@ namespace te
 
         TE_ASSERT_ERROR(scene != nullptr, "Failed to load object '" + filePath + "' : " + importer.GetErrorString(), __FILE__, __LINE__);
 
+        if (scene->HasMaterials())
+        {
+        }
+
+        if (scene->HasMeshes())
+        {
+        }
+
         return SPtr<Resource>();
     }
 }
