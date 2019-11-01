@@ -614,7 +614,45 @@ namespace te
 
 				case ButtonRelease:
 				{
-					// TODO
+					XButtonReleasedEvent* buttonEvent = (XButtonReleasedEvent*) &event;
+					UINT32 button = event.xbutton.button;
+					EnqueueButtonEvent(XButtonToButtonCode(button), false, (UINT64) buttonEvent->time);
+
+					Vector2I pos;
+					pos.x = event.xbutton.x_root;
+					pos.y = event.xbutton.y_root;
+
+					OSPointerButtonStates btnStates;
+					btnStates.Ctrl = (event.xbutton.state & ControlMask) != 0;
+					btnStates.Shift = (event.xbutton.state & ShiftMask) != 0;
+					btnStates.MouseButtons[0] = (event.xbutton.state & Button1Mask) != 0;
+					btnStates.MouseButtons[1] = (event.xbutton.state & Button2Mask) != 0;
+					btnStates.MouseButtons[2] = (event.xbutton.state & Button3Mask) != 0;
+
+					switch(button)
+					{
+						case Button1:
+							btnStates.MouseButtons[0] = false;
+							OnCursorButtonReleased(pos, OSMouseButton::Left, btnStates);
+						break;
+						case Button2:
+							btnStates.MouseButtons[1] = false;
+							OnCursorButtonReleased(pos, OSMouseButton::Middle, btnStates);
+						break;
+						case Button3:
+							btnStates.MouseButtons[2] = false;
+							OnCursorButtonReleased(pos, OSMouseButton::Right, btnStates);
+						break;
+						case Button4: // Vertical mouse wheel
+						case Button5:
+						{
+							INT32 delta = button == Button4 ? 1 : -1;
+							OnMouseWheelScrolled((float)delta);
+						}
+						break;
+						default:
+						break;
+					}
 				}
 				break;
 
@@ -626,7 +664,9 @@ namespace te
 
 					// Handle clipping if enabled
 					if(ClipCursor(_data, pos))
+					{
 						SetCursorPosition(pos);
+					}
 
 					// Send event
 					OSPointerButtonStates btnStates;
@@ -653,7 +693,9 @@ namespace te
 						pos.y = event.xcrossing.y_root;
 
 						if (ClipCursor(_data, pos))
+						{
 							SetCursorPosition(pos);
+						}
 					}
 
 					_data->Window->GetRenderWindow()->NotifyWindowEvent(WindowEventType::MouseLeft);
@@ -677,9 +719,39 @@ namespace te
 				break;
 
 				case FocusIn:
+				{
+					// Update input context focus
+					XSetICFocus(_data->IC);
+
+					// Send event to render window
+					RenderWindow* renderWindow = _data->Window->GetRenderWindow();
+
+					// Not a render window, so it doesn't care about these events
+					if (renderWindow != nullptr)
+					{
+						if (!renderWindow->GetRenderWindowProperties().HasFocus)
+						{
+							renderWindow->NotifyWindowEvent(WindowEventType::FocusReceived);
+						}
+					}
+				}
 				break;
 
 				case FocusOut:
+				{
+					// Update input context focus
+					XUnsetICFocus(_data->IC);
+
+					// Send event to render window
+					RenderWindow* renderWindow = _data->Window->GetRenderWindow();
+
+					// Not a render window, so it doesn't care about these events
+					if (renderWindow != nullptr)
+					{
+						if (renderWindow->GetRenderWindowProperties().HasFocus)
+							renderWindow->NotifyWindowEvent(WindowEventType::FocusLost);
+					}
+				}
 				break;
 
 				case PropertyNotify:

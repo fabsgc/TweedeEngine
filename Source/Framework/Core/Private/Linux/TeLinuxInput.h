@@ -14,7 +14,7 @@ namespace te
 	};
 
 	/** Information about a gamepad. */
-	struct GamepadInfo
+	struct GamePadInfo
 	{
 		UINT32 Id;
 		UINT32 EventHandlerIdx;
@@ -30,7 +30,7 @@ namespace te
 	 */
 	struct InputPrivateData
 	{
-		Vector<GamepadInfo> GamepadInfos;
+		Vector<GamePadInfo> GamepadInfos;
 	};
 
 	/** Data about relative pointer / scroll wheel movement. */

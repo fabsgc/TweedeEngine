@@ -178,8 +178,6 @@ namespace te
 		_data->HasTitleBar = true;
 		_data->ResizeDisabled = !desc.AllowResize;
 
-		XSelectInput(display, _data->XWindow, ExposureMask|ButtonPressMask|KeyPressMask);
-
     	XMapWindow(display, _data->XWindow);
 
 		LinuxPlatform::RegisterWindow(_data->XWindow, this);

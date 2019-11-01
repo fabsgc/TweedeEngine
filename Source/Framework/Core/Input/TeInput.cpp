@@ -248,8 +248,11 @@ namespace te
         UINT64 hWnd = 0;
         win.GetCustomAttribute("WINDOW", &hWnd);
 
-        _keyboard->ChangeCaptureContext(hWnd);
-        _mouse->ChangeCaptureContext(hWnd);
+        if(_keyboard != nullptr)
+            _keyboard->ChangeCaptureContext(hWnd);
+        
+        if(_mouse != nullptr)
+            _mouse->ChangeCaptureContext(hWnd);
 
         for (auto& gamepad : _gamepads)
         {
@@ -259,8 +262,11 @@ namespace te
 
     void Input::InputFocusLost()
     {
-        _keyboard->ChangeCaptureContext((UINT64)-1);
-        _mouse->ChangeCaptureContext((UINT64)-1);
+        if(_keyboard != nullptr)
+            _keyboard->ChangeCaptureContext((UINT64)-1);
+
+        if(_mouse != nullptr)
+            _mouse->ChangeCaptureContext((UINT64)-1);
 
         for (auto& gamepad : _gamepads)
         {
@@ -392,8 +398,6 @@ namespace te
     {
         std::cout << "Char input : " << chr << std::endl;
 
-        Lock lock(_mutex);
-
         TextInputEvent textInputEvent;
         textInputEvent.textChar = chr;
 
@@ -403,16 +407,12 @@ namespace te
 
     void Input::CursorMoved(const Vector2I& cursorPos, const OSPointerButtonStates& btnStates)
     {
-        Lock lock(_mutex);
-
         _pointerPosition = cursorPos;
         _pointerState = btnStates;
     }
 
     void Input::CursorPressed(const Vector2I& cursorPos, OSMouseButton button, const OSPointerButtonStates& btnStates)
     {
-        Lock lock(_mutex);
-
         PointerEvent event;
         event.alt = false;
         event.shift = btnStates.Shift;
@@ -445,8 +445,6 @@ namespace te
 
     void Input::CursorReleased(const Vector2I& cursorPos, OSMouseButton button, const OSPointerButtonStates& btnStates)
     {
-        Lock lock(_mutex);
-
         PointerEvent event;
         event.alt = false;
         event.shift = btnStates.Shift;
@@ -479,8 +477,6 @@ namespace te
 
     void Input::CursorDoubleClick(const Vector2I& cursorPos, const OSPointerButtonStates& btnStates)
     {
-        Lock lock(_mutex);
-
         PointerEvent event;
         event.alt = false;
         event.shift = btnStates.Shift;
@@ -503,10 +499,10 @@ namespace te
 
     void Input::ButtonDown(UINT32 deviceIdx, ButtonCode code, UINT64 timestamp)
     {
-        Lock lock(_mutex);
-
         while (deviceIdx >= (UINT32)_devices.size())
+        {
             _devices.push_back(DeviceData());
+        }
 
         ButtonEvent btnEvent;
         btnEvent.buttonCode = code;
@@ -519,8 +515,6 @@ namespace te
 
     void Input::ButtonUp(UINT32 deviceIdx, ButtonCode code, UINT64 timestamp)
     {
-        Lock lock(_mutex);
-
         ButtonEvent btnEvent;
         btnEvent.buttonCode = code;
         btnEvent.timestamp = timestamp;

@@ -25,6 +25,32 @@ namespace te
 
     void Keyboard::Capture()
 	{
+        if(_data->HasInputFocus)
+		{
+			while (!LinuxPlatform::ButtonEvents.empty())
+			{
+				LinuxButtonEvent& event = LinuxPlatform::ButtonEvents.front();
+				
+                if(event.Pressed)
+                {
+					_owner->NotifyButtonPressed(0, event.Button, event.Timestamp);
+                }
+				else
+                {
+					_owner->NotifyButtonReleased(0, event.Button, event.Timestamp);
+                }
+
+				LinuxPlatform::ButtonEvents.pop();
+			}
+		}
+		else
+		{
+			// Discard queued data
+			while (!LinuxPlatform::ButtonEvents.empty())
+            {
+				LinuxPlatform::ButtonEvents.pop();
+            }
+		}
     }
 
     void Keyboard::ChangeCaptureContext(UINT64 windowHandle)
