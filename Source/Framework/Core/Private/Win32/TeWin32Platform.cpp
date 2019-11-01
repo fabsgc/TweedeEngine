@@ -92,11 +92,11 @@ namespace te
         mousePos.x = clientPoint.x;
         mousePos.y = clientPoint.y;
 
-        btnStates.mouseButtons[0] = (wParam & MK_LBUTTON) != 0;
-        btnStates.mouseButtons[1] = (wParam & MK_MBUTTON) != 0;
-        btnStates.mouseButtons[2] = (wParam & MK_RBUTTON) != 0;
-        btnStates.shift = (wParam & MK_SHIFT) != 0;
-        btnStates.ctrl = (wParam & MK_CONTROL) != 0;
+        btnStates.MouseButtons[0] = (wParam & MK_LBUTTON) != 0;
+        btnStates.MouseButtons[1] = (wParam & MK_MBUTTON) != 0;
+        btnStates.MouseButtons[2] = (wParam & MK_RBUTTON) != 0;
+        btnStates.Shift = (wParam & MK_SHIFT) != 0;
+        btnStates.Ctrl = (wParam & MK_CONTROL) != 0;
     }
 
     Platform::~Platform()
