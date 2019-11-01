@@ -93,15 +93,15 @@ namespace te
             delta.x = (float)event.delta.x;
             delta.y = (float)event.delta.y;
 
-            TE_PRINT("Mouse position : " + ToString(position.x) + "/" + ToString(position.y));
-            TE_PRINT("Mouse delta : " + ToString(delta.x) + "/" + ToString(delta.y));
+            //TE_PRINT("Mouse position : " + ToString(position.x) + "/" + ToString(position.y));
+            //TE_PRINT("Mouse delta : " + ToString(delta.x) + "/" + ToString(delta.y));
         };
 
         gInput().OnPointerMoved.Connect(handlePointerMove);
 
         auto handlePointerRelativeMove = [&](const Vector2I& delta)
         {
-            TE_PRINT("Mouse absolute delta : " + ToString(delta.x) + "/" + ToString(delta.y));
+            //TE_PRINT("Mouse absolute delta : " + ToString(delta.x) + "/" + ToString(delta.y));
         };
 
         gInput().OnPointerRelativeMoved.Connect(handlePointerRelativeMove);
@@ -171,7 +171,9 @@ namespace te
             float value = gVirtualInput().GetAxisValue(lookLeftRightAxis);
 
             if(value != 0.0f)
-                std::cout << value << std::endl;
+            {
+                TE_PRINT(value)
+            }
 
             for (auto& pluginUpdateFunc : _pluginUpdateFunctions)
                 pluginUpdateFunc.second();
