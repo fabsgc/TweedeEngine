@@ -390,7 +390,7 @@ namespace te
 
     void Input::CharInput(UINT32 chr)
     {
-        TE_PRINT("Char input : " + chr);
+        TE_PRINT("Char input : " + ToString(chr));
 
         TextInputEvent textInputEvent;
         textInputEvent.textChar = chr;

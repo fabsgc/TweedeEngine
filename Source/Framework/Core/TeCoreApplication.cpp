@@ -58,16 +58,29 @@ namespace te
 
         SPtr<InputConfiguration> inputConfig = gVirtualInput().GetConfiguration();
 
-        inputConfig->RegisterButton("Forward", TE_A);
-        inputConfig->RegisterButton("Forward", TE_U);
+        inputConfig->RegisterButton("Select All", TE_A);
+        inputConfig->RegisterButton("Unwrap", TE_U);
         inputConfig->RegisterButton("Forward", TE_UP);
 
         auto handleButtonHeld = [&](const VirtualButton& btn, UINT32 deviceIdx)
         {
-            std::cout << btn.ButtonIdentifier << std::endl;
+            TE_PRINT(btn.ButtonIdentifier);
         };
 
-        HEvent event = gVirtualInput().OnButtonDown.Connect(handleButtonHeld);
+        gVirtualInput().OnButtonDown.Connect(handleButtonHeld);
+
+        // Callback method that triggers when any button is pressed
+        auto handleButtonDown = [&](const ButtonEvent& event)
+        {
+            // If user presses space, "jump"
+            if (event.buttonCode == TE_A)
+            {
+                TE_PRINT("A");
+            }
+        };
+
+        // Connect the callback to the event
+        gInput().OnButtonDown.Connect(handleButtonDown);
 
         auto handlePointerMove = [&](const PointerEvent& event)
         {
@@ -84,12 +97,13 @@ namespace te
             TE_PRINT("Mouse delta : " + ToString(delta.x) + "/" + ToString(delta.y));
         };
 
+        gInput().OnPointerMoved.Connect(handlePointerMove);
+
         auto handlePointerRelativeMove = [&](const Vector2I& delta)
         {
             TE_PRINT("Mouse absolute delta : " + ToString(delta.x) + "/" + ToString(delta.y));
         };
 
-        gInput().OnPointerMoved.Connect(handlePointerMove);
         gInput().OnPointerRelativeMoved.Connect(handlePointerRelativeMove);
 
         VIRTUAL_AXIS_DESC desc;
