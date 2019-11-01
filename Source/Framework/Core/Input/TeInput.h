@@ -5,7 +5,6 @@
 #include "Utility/TeEvent.h"
 #include "Platform/TePlatform.h"
 #include "Math/TeVector2I.h"
-#include "Math/TeVector3I.h"
 #include "Input/TeInputData.h"
 
 namespace te
@@ -200,7 +199,7 @@ namespace te
         Event<void(const PointerEvent&)> OnPointerMoved;
 
         /**	Triggers when some pointing device (mouse cursor, touch) has a relative move. */
-        Event<void(const Vector3I&)> OnPointerRelativeMoved;
+        Event<void(const Vector2I&)> OnPointerRelativeMoved;
 
         /**	Triggers when some pointing device (mouse cursor, touch) button is pressed. */
         Event<void(const PointerEvent&)> OnPointerPressed;

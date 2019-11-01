@@ -364,7 +364,7 @@ namespace te
 
         AxisMoved(0, (float)relZ, (UINT32)InputAxis::MouseZ);
 
-        OnPointerRelativeMoved(Vector3I(relX, relY, relZ));
+        OnPointerRelativeMoved(Vector2I(relX, relY));
     }
 
     void Input::NotifyAxisMoved(UINT32 gamepadIdx, UINT32 axisIdx, INT32 value)
@@ -378,21 +378,19 @@ namespace te
 
     void Input::NotifyButtonPressed(UINT32 deviceIdx, ButtonCode code, UINT64 timestamp)
     {
-        std::cout << "Button pressed : " << code << ":" << timestamp << std::endl;
-
+        TE_PRINT("Button pressed : " + ToString(code) + ":" + ToString(timestamp));
         ButtonDown(deviceIdx, code, timestamp);
     }
 
     void Input::NotifyButtonReleased(UINT32 deviceIdx, ButtonCode code, UINT64 timestamp)
     {
-        std::cout << "Button released : " << code << ":" << timestamp << std::endl;
-
+        TE_PRINT("Button released : " + ToString(code) + ":" + ToString(timestamp));
         ButtonUp(deviceIdx, code, timestamp);
     }
 
     void Input::CharInput(UINT32 chr)
     {
-        std::cout << "Char input : " << chr << std::endl;
+        TE_PRINT("Char input : " + chr);
 
         TextInputEvent textInputEvent;
         textInputEvent.textChar = chr;
@@ -490,6 +488,7 @@ namespace te
 
     void Input::MouseWheelScrolled(float scrollPos)
     {
+        TE_PRINT("MouseWheel moved : " + ToString(scrollPos));
         _mouseScroll = scrollPos;
     }
 

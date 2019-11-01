@@ -468,15 +468,6 @@ namespace te
 
 	void Platform::MessagePump()
 	{
-		// Atom atom_type_prop; /* not interested */
-		// int actual_format;   /* should be 32 after the call */
-		// unsigned long n_items, bytes_after_ret;
-		// Window *props; /* since we are interested just in the first value, which is a Window id */
-		// int root_x, root_y;
-		// int win_x, win_y;
-		// unsigned int mask;
-		// ::Window root_ret, child_ret;
-
 		while(true)
 		{
 			if(XPending(_data->XDisplay) <= 0)

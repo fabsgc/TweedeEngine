@@ -84,7 +84,7 @@ namespace te
             TE_PRINT("Mouse delta : " + ToString(delta.x) + "/" + ToString(delta.y));
         };
 
-        auto handlePointerRelativeMove = [&](const Vector3I& delta)
+        auto handlePointerRelativeMove = [&](const Vector2I& delta)
         {
             TE_PRINT("Mouse absolute delta : " + ToString(delta.x) + "/" + ToString(delta.y));
         };

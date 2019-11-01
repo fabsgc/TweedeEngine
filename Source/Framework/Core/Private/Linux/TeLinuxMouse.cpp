@@ -8,7 +8,7 @@ namespace te
     struct Mouse::Pimpl
 	{
 		bool HasInputFocus;
-		Vector3I LastPosition;
+		Vector2I LastPosition;
 	};
 
     Mouse::Mouse(const String& name, Input* owner)
@@ -31,14 +31,13 @@ namespace te
 		{
 			INT16 deltaX = round(LinuxPlatform::MouseMotionEvent.DeltaX) - _data->LastPosition.x;
 			INT16 deltaY = round(LinuxPlatform::MouseMotionEvent.DeltaY) - _data->LastPosition.y;
-			INT16 deltaZ = round(LinuxPlatform::MouseMotionEvent.DeltaZ) - _data->LastPosition.z;
+			INT16 deltaZ = 0;
 
 			if (deltaX != 0 || deltaY != 0 || deltaZ != 0)
 				_owner->NotifyMouseMoved(deltaX, deltaY, deltaZ);
 
 			_data->LastPosition.x = LinuxPlatform::MouseMotionEvent.DeltaX;
 			_data->LastPosition.y = LinuxPlatform::MouseMotionEvent.DeltaY;
-			_data->LastPosition.z = LinuxPlatform::MouseMotionEvent.DeltaZ;
 		}
     }
 
