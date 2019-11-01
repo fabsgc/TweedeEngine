@@ -488,7 +488,6 @@ namespace te
 
     void Input::MouseWheelScrolled(float scrollPos)
     {
-        TE_PRINT("MouseWheel moved : " + ToString(scrollPos));
         _mouseScroll = scrollPos;
     }
 
