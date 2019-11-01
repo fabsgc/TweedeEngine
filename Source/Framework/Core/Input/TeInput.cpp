@@ -343,6 +343,8 @@ namespace te
 
     void Input::NotifyMouseMoved(INT32 relX, INT32 relY, INT32 relZ)
     {
+        std::cout << "Mouse moved : " << relX << ":" << relY << ":" << relZ << std::endl;
+
         _mouseSampleAccumulator[0] += relX;
         _mouseSampleAccumulator[1] += relY;
 
@@ -363,6 +365,8 @@ namespace te
         }
 
         AxisMoved(0, (float)relZ, (UINT32)InputAxis::MouseZ);
+
+        //OnPointerRelativeMoved(Vector3I(relX, relY, relZ));
     }
 
     void Input::NotifyAxisMoved(UINT32 gamepadIdx, UINT32 axisIdx, INT32 value)

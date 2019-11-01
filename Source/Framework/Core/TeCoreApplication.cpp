@@ -84,8 +84,12 @@ namespace te
             TE_PRINT("Mouse delta : " + ToString(delta.x) + "/" + ToString(delta.y));
         };
 
-        // Connect the callback to the event
+        auto handlePointerRelativeMove = [&](const Vector3I& d)
+        {
+        };
+
         gInput().OnPointerMoved.Connect(handlePointerMove);
+        gInput().OnPointerRelativeMoved.Connect(handlePointerRelativeMove);
 
         VIRTUAL_AXIS_DESC desc;
         desc.DeadZone = 0.1f;
