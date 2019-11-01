@@ -343,8 +343,6 @@ namespace te
 
     void Input::NotifyMouseMoved(INT32 relX, INT32 relY, INT32 relZ)
     {
-        std::cout << "Mouse moved : " << relX << ":" << relY << ":" << relZ << std::endl;
-
         _mouseSampleAccumulator[0] += relX;
         _mouseSampleAccumulator[1] += relY;
 
@@ -369,8 +367,6 @@ namespace te
 
     void Input::NotifyAxisMoved(UINT32 gamepadIdx, UINT32 axisIdx, INT32 value)
     {
-        //std::cout << "Axis moved : " << axisIdx << ":" << value << std::endl;
-
         // Move axis values into [-1.0f, 1.0f] range
         float axisRange = Math::Abs((float)GamePad::MAX_AXIS) + Math::Abs((float)GamePad::MIN_AXIS);
 

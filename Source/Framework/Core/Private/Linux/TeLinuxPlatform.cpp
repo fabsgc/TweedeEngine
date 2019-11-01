@@ -468,6 +468,15 @@ namespace te
 
 	void Platform::MessagePump()
 	{
+		Atom atom_type_prop; /* not interested */
+		int actual_format;   /* should be 32 after the call */
+		unsigned long n_items, bytes_after_ret;
+		Window *props; /* since we are interested just in the first value, which is a Window id */
+		int root_x, root_y;
+		int win_x, win_y;
+		unsigned int mask;
+		::Window root_ret, child_ret;
+
 		while(true)
 		{
 			if(XPending(_data->XDisplay) <= 0)
@@ -481,10 +490,24 @@ namespace te
 			{
 				XGetEventData(_data->XDisplay, cookie);
 				XIRawEvent* xInput2Event = (XIRawEvent*) cookie->data;
+
 				switch (xInput2Event->evtype)
 				{
 					case XI_RawMotion:
 					{
+						/*(void)XGetWindowProperty(_data->XDisplay, DefaultRootWindow(_data->XDisplay),
+						XInternAtom(_data->XDisplay, "_NET_ACTIVE_WINDOW", True),
+						0, 1, False, AnyPropertyType,
+						&atom_type_prop, &actual_format,
+						&n_items, &bytes_after_ret, (unsigned char**)&props);
+
+						XQueryPointer(_data->XDisplay, props[0], &root_ret, &child_ret, &root_x, &root_y, &win_x, &win_y, &mask);
+
+						LinuxPlatform::MouseMotionEvent.DeltaX = win_x;
+						LinuxPlatform::MouseMotionEvent.DeltaY = win_y;
+
+						TE_PRINT("### delta mouse " + ToString(win_x) + "/" + ToString(win_y))*/
+
 						if (xInput2Event->valuators.mask_len > 0)
 						{
 							// Assume X/Y delta is stored in valuators 0/1 and vertical scroll in valuator 3.
@@ -503,6 +526,8 @@ namespace te
 									deltas[valuator] = xInput2Event->raw_values[currentValuesIndex++];
 								}
 							}
+
+							//TE_PRINT("### delta mouse" + ToString(deltas[0]) + "/" + ToString(deltas[1]) + "/" + ToString(deltas[3]))
 
 							LinuxPlatform::MouseMotionEvent.DeltaX += deltas[0];
 							LinuxPlatform::MouseMotionEvent.DeltaY += deltas[1];
@@ -662,6 +687,10 @@ namespace te
 					pos.x = event.xmotion.x_root;
 					pos.y = event.xmotion.y_root;
 
+					Vector2I relativePos;
+					relativePos.x = event.xmotion.x;
+					relativePos.y = event.xmotion.y;
+
 					// Handle clipping if enabled
 					if(ClipCursor(_data, pos))
 					{
@@ -676,7 +705,7 @@ namespace te
 					btnStates.MouseButtons[1] = (event.xmotion.state & Button2Mask) != 0;
 					btnStates.MouseButtons[2] = (event.xmotion.state & Button3Mask) != 0;
 
-					OnCursorMoved(pos, btnStates);
+					OnCursorMoved(relativePos, btnStates);
 				}
 				break;
 
