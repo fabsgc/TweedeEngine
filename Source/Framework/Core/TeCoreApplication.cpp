@@ -49,6 +49,8 @@ namespace te
         LoadPlugin(_startUpDesc.RenderAPI, &_renderAPIPlugin);
 
         RenderAPIManager::Instance().Initialize(_startUpDesc.RenderAPI, _startUpDesc.WindowDesc);
+        RenderAPI::Instance().Initialize();
+
         _renderer = RendererManager::Instance().Initialize(_startUpDesc.Renderer);
         _window = RenderAPI::Instance().CreateRenderWindow(_startUpDesc.WindowDesc);
         _window->Initialize();

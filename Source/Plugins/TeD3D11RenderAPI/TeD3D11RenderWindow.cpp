@@ -3,9 +3,12 @@
 
 namespace te
 {
-    D3D11RenderWindow::D3D11RenderWindow(const RENDER_WINDOW_DESC& desc)
+    D3D11RenderWindow::D3D11RenderWindow(const RENDER_WINDOW_DESC& desc, D3D11Device& device, IDXGIFactory1* DXGIFactory)
         : RenderWindow(desc)
         , _swapChainDesc()
+        , _device(device)
+        , _DXGIFactory(DXGIFactory)
+        , _multisampleType()
     {
     }
 
@@ -27,6 +30,9 @@ namespace te
     void D3D11RenderWindow::Initialize()
     {
         ZeroMemory(&_swapChainDesc, sizeof(DXGI_SWAP_CHAIN_DESC));
+
+        _multisampleType.Count = 1;
+        _multisampleType.Quality = 0;
 
         WINDOW_DESC windowDesc;
         windowDesc.ShowTitleBar = _desc.ShowTitleBar;
@@ -278,5 +284,20 @@ namespace te
     void D3D11RenderWindow::ResizeSwapChainBuffers(UINT32 width, UINT32 height)
     {
         //TODO
+    }
+
+    IDXGIDevice* D3D11RenderWindow::QueryDxgiDevice()
+	{
+        TE_ASSERT_ERROR(_device.GetD3D11Device() != nullptr, "D3D11Device is null.", __FILE__, __LINE__);
+
+        IDXGIDevice* pDXGIDevice = nullptr;
+        HRESULT hr = _device.GetD3D11Device()->QueryInterface(__uuidof(IDXGIDevice), (void**)&pDXGIDevice);
+
+        if (FAILED(hr))
+        {
+            TE_ASSERT_ERROR(false, "Unable to query a DXGIDevice.", __FILE__, __LINE__);
+        }
+
+        return pDXGIDevice;
     }
 }

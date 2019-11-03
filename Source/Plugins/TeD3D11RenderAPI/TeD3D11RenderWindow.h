@@ -4,13 +4,14 @@
 #include "RenderAPI/TeRenderWindow.h"
 #include "Private/Win32/TeWin32Window.h"
 #include "Math/TeVector2I.h"
+#include "TeD3D11Device.h"
 
 namespace te
 {
     class D3D11RenderWindow : public RenderWindow
 	{
 	public:
-        D3D11RenderWindow(const RENDER_WINDOW_DESC& desc);
+        D3D11RenderWindow(const RENDER_WINDOW_DESC& desc, D3D11Device& device, IDXGIFactory1* DXGIFactory);
 		~D3D11RenderWindow();
 
         void Update() override;
@@ -68,9 +69,20 @@ namespace te
 
         void CreateSizeDependedD3DResources();
         void DestroySizeDependedD3DResources();
+		IDXGIDevice* QueryDxgiDevice();
         void ResizeSwapChainBuffers(UINT32 width, UINT32 height);
 
     protected:
+        D3D11Device& _device;
+		IDXGIFactory1* _DXGIFactory;
+
+        DXGI_SAMPLE_DESC _multisampleType;
+		UINT32 _refreshRateNumerator = 0;
+		UINT32 _refreshRateDenominator = 0;
+
+        ID3D11Texture2D* _backBuffer = nullptr;
+		ID3D11RenderTargetView* _renderTargetView = nullptr;
+
         IDXGISwapChain* _swapChain = nullptr;
         DXGI_SWAP_CHAIN_DESC _swapChainDesc;
         Win32Window* _window = nullptr;
