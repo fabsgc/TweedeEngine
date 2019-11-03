@@ -4,6 +4,7 @@ namespace te
 {
     D3D11Device::D3D11Device(ID3D11Device* device)
 		: _D3D11Device(device)
+        , _D3D11FeatureOptions()
 	{
         // assert(device != nullptr);
         // TODO

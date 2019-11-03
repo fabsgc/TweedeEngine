@@ -56,6 +56,8 @@ namespace te
     class RenderWindow;
     struct RENDER_WINDOW_DESC;
     class VideoMode;
+    class VideoOutputInfo;
+    class VideoModeInfo;
     class RenderWindowProperties;
 
     class Renderer;

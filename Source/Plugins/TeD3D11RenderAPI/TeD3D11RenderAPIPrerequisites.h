@@ -20,6 +20,11 @@
 namespace te
 {
     class D3D11RenderAPI;
+    class D3D11Driver;
+    class D3D11DriverList;
     class D3D11RenderAPIFactory;
     class D3D11RenderWindow;
+    class D3D11HLSLProgramFactory;
+    class D3D11Device;
+    class D3D11InputLayoutManager;
 }

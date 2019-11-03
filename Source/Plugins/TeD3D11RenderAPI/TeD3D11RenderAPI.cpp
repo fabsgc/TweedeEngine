@@ -26,7 +26,7 @@ namespace te
             TE_ASSERT_ERROR(false, "Failed to create Direct3D11 DXGIFactory", __FILE__, __LINE__);
         }
 
-        _driverList = te_new<D3D11DriverList>();
+        _driverList = te_new<D3D11DriverList>(_DXGIFactory);
 
         ID3D11Device* device = nullptr;
         _device = te_new<D3D11Device>(device);
