@@ -37,12 +37,12 @@ namespace te
         D3D11DriverList* _driverList = nullptr;
 		D3D11Driver* _activeD3DDriver = nullptr;
 
-        D3D_FEATURE_LEVEL mFeatureLevel = ::D3D_FEATURE_LEVEL_11_0;
+        D3D_FEATURE_LEVEL _featureLevel = ::D3D_FEATURE_LEVEL_11_0;
 
         D3D11HLSLProgramFactory* _HLSLFactory = nullptr;
         D3D11InputLayoutManager* _IAManager = nullptr;
 
-        UINT32 stencilRef = 0;
+        UINT32 _stencilRef = 0;
 		Rect2 _viewportNorm = Rect2(0.0f, 0.0f, 1.0f, 1.0f);
         D3D11_VIEWPORT _viewport;
         D3D11_RECT _scissorRect;

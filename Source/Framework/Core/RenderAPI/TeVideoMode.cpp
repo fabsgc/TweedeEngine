@@ -2,8 +2,8 @@
 
 namespace te
 {
-    VideoMode::VideoMode(UINT32 width, UINT32 height, float refreshRate)
-        : _width(width), _height(height), _refreshRate(refreshRate)
+    VideoMode::VideoMode(UINT32 width, UINT32 height, float refreshRate, UINT32 outputIdx)
+        : _width(width), _height(height), _refreshRate(refreshRate), _outputIdx(outputIdx)
     {}
 
     VideoMode::~VideoMode()
@@ -11,7 +11,7 @@ namespace te
 
     bool VideoMode::operator== (const VideoMode& other) const
     {
-        return _width == other._width && _height == other._height && _refreshRate == other._refreshRate;
+        return _width == other._width && _height == other._height && _refreshRate == other._refreshRate && _outputIdx == other._outputIdx;
     }
 
     VideoOutputInfo::~VideoOutputInfo()

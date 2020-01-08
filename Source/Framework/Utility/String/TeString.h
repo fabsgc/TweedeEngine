@@ -25,6 +25,7 @@ namespace te
     using BasicIStringStream = std::basic_istringstream<T, std::char_traits<T>>;
 
     typedef BasicIStringStream<char> IStringStream;
+    typedef BasicIStringStream<wchar_t> IWStringStream;
 
     /** \brief Wide string used UTF-16 encoded strings. */
     typedef BasicString<char16_t> U16String;
@@ -202,4 +203,9 @@ namespace te
     * \brief Split string according to delimiter
     */
     TE_UTILITY_EXPORT Vector<String> Split(const String& s, char delimiter);
+
+    /**
+    * \brief Split string according to delimiter
+    */
+    TE_UTILITY_EXPORT Vector<String> Split(const WString& s, char delimiter);
 }

@@ -33,6 +33,18 @@ namespace te
         /** @copydoc StringUtil::split(const String&, const String&, unsigned int) */
         static Vector<WString> Split(const WString& str, const WString& delims = L"\t\n ", UINT16 maxSplits = 0);
 
+        /** Removes any whitespace characters from beginning or end of the string. */
+        static void Trim(String& str, bool left = true, bool right = true);
+
+        /** Removes any whitespace characters from beginning or end of the string. */
+        static void Trim(WString& str, bool left = true, bool right = true);
+
+        /** Removes any whitespace characters from beginning or end of the string. */
+        static void Trim(String& str, const String& delims, bool left = true, bool right = true);
+
+        /** Removes any whitespace characters from beginning or end of the string. */
+        static void Trim(WString& str, const WString& delims, bool left = true, bool right = true);
+
         /** Converts all the characters in the string to lower case. Does not handle UTF8 encoded strings. */
         static void ToLowerCase(String& str);
 

@@ -135,6 +135,20 @@ namespace te
         return (T*)MemoryAllocator::Allocate(count);
     }
 
+    /** Creates and constructs an array of @p count elements. */
+    template<class T>
+    T* te_newN(size_t count)
+    {
+        T* ptr = (T*)te_allocate<T>(sizeof(T) * count);
+
+        for (size_t i = 0; i < count; ++i)
+        {
+            new (&ptr[i]) T;
+        }
+
+        return ptr;
+    }
+
     /**
     * Create a new object with the specified allocator and the specified parameters.
     */
@@ -157,6 +171,18 @@ namespace te
     inline void te_delete(T* ptr)
     {
         (ptr)->~T();
+        MemoryAllocator::Deallocate(ptr);
+    }
+
+    /** Destructs and frees the specified array of objects. */
+    template<class T>
+    void te_deleteN(T* ptr, size_t count)
+    {
+        for (size_t i = 0; i < count; ++i)
+        {
+            ptr[i].~T();
+        }
+
         MemoryAllocator::Deallocate(ptr);
     }
 

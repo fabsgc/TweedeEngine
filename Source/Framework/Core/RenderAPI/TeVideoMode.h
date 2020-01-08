@@ -19,9 +19,10 @@ namespace te
 		 * @param[in]	width		Width of the frame buffer in pixels.
 		 * @param[in]	height		Height of the frame buffer in pixels.
 		 * @param[in]	refreshRate	How often should the output device refresh the output image in hertz.
+		 * @param[in]	outputIdx	Output index of the output device. Normally this means output monitor. 0th index always
 		 *							represents the primary device while order of others is undefined.
 		 */
-		VideoMode(UINT32 width, UINT32 height, float refreshRate = 60.0f);
+		VideoMode(UINT32 width, UINT32 height, float refreshRate = 60.0f, UINT32 outputIdx = 0);
 		virtual ~VideoMode();
 
 		bool operator== (const VideoMode& other) const;
@@ -39,6 +40,7 @@ namespace te
 		UINT32 _width = 1280;
 		UINT32 _height = 720;
 		float _refreshRate = 60.0f;
+		UINT32 _outputIdx = 0;
 	};
 
     /** Contains information about a video output device, including a list of all available video modes. */
@@ -52,16 +54,16 @@ namespace te
         VideoOutputInfo& operator=(const VideoOutputInfo&) = delete; // Make non-copyable
 
         /**	Name of the output device. */
-        const String& getName() const { return _name; }
+        const String& GetName() const { return _name; }
 
         /**	Number of available video modes for this output. */
-        UINT32 getNumVideoModes() const { return (UINT32)_videoModes.size(); }
+        UINT32 GetNumVideoModes() const { return (UINT32)_videoModes.size(); }
 
         /**	Returns video mode at the specified index. */
-        const VideoMode& getVideoMode(UINT32 idx) const { return *_videoModes.at(idx); }
+        const VideoMode& GetVideoMode(UINT32 idx) const { return *_videoModes.at(idx); }
 
         /**	Returns the video mode currently used by the desktop. */
-        const VideoMode& getDesktopVideoMode() const { return *_desktopVideoMode; }
+        const VideoMode& GetDesktopVideoMode() const { return *_desktopVideoMode; }
 
     protected:
         String _name;
@@ -80,13 +82,13 @@ namespace te
         VideoModeInfo& operator=(const VideoModeInfo&) = delete; // Make non-copyable
 
         /**	Returns the number of available output devices. */
-        UINT32 getNumOutputs() const { return (UINT32)_outputs.size(); }
+        UINT32 GetNumOutputs() const { return (UINT32)_outputs.size(); }
 
         /**
          * Returns video mode information about a specific output device. 0th index always represents the primary device
          * while order of others is undefined.
          */
-        const VideoOutputInfo& getOutputInfo(UINT32 idx) const { return *_outputs[idx]; }
+        const VideoOutputInfo& GetOutputInfo(UINT32 idx) const { return *_outputs[idx]; }
 
     protected:
         Vector<VideoOutputInfo*> _outputs;

@@ -8,6 +8,7 @@ set (TE_D3D11RENDERAPI_INC_NOFILTER
     "TeD3D11Driver.h"
     "TeD3D11InputLayoutManager.h"
     "TeD3D11HLSLProgramFactory.h"
+    "TeD3D11VideoModeInfo.h"
 )
 
 set (TE_D3D11RENDERAPI_SRC_NOFILTER
@@ -20,6 +21,7 @@ set (TE_D3D11RENDERAPI_SRC_NOFILTER
     "TeD3D11Driver.cpp"
     "TeD3D11InputLayoutManager.cpp"
     "TeD3D11HLSLProgramFactory.cpp"
+    "TeD3D11VideoModeInfo.cpp"
 )
 
 source_group ("" FILES ${TE_D3D11RENDERAPI_SRC_NOFILTER} ${TE_D3D11RENDERAPI_INC_NOFILTER})

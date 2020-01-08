@@ -317,4 +317,19 @@ namespace te
 
         return tokens;
     }
+
+    Vector<String> Split(const WString& s, char delimiter)
+    {
+        Vector<String> tokens;
+        String str = ToString(s);
+        String token;
+        IStringStream tokenStream(str);
+
+        while (std::getline(tokenStream, token, delimiter))
+        {
+            tokens.push_back(token);
+        }
+
+        return tokens;
+    }
 }

@@ -13,6 +13,42 @@ namespace te
         return SplitInternal<wchar_t>(str, delims, maxSplits);
     }
 
+    void Util::Trim(String& str, bool left, bool right)
+    {
+        static const String delims = " \t\r";
+        Trim(str, delims, left, right);
+    }
+
+    void Util::Trim(WString& str, bool left, bool right)
+    {
+        static const WString delims = L" \t\r";
+        Trim(str, delims, left, right);
+    }
+
+    void Util::Trim(String& str, const String& delims, bool left, bool right)
+    {
+        if (right)
+        {
+            str.erase(str.find_last_not_of(delims) + 1); // trim right
+        }
+        if (left)
+        {
+            str.erase(0, str.find_first_not_of(delims)); // trim left
+        }
+    }
+
+    void Util::Trim(WString& str, const WString& delims, bool left, bool right)
+    {
+        if (right)
+        {
+            str.erase(str.find_last_not_of(delims) + 1); // trim right
+        }
+        if (left)
+        {
+            str.erase(0, str.find_first_not_of(delims)); // trim left
+        }
+    }
+
     void Util::ToLowerCase(String& str)
     {
         std::transform(str.begin(), str.end(), str.begin(), tolower);

@@ -54,7 +54,9 @@ namespace te
         for (auto it = _driverList.begin(); it != _driverList.end(); ++it)
         {
             if ((*it)->GetDriverDescription() == name)
+            {
                 return (*it);
+            }
         }
 
         TE_ASSERT_ERROR(false, "Cannot find video mode with the specified name.", __FILE__, __LINE__);
