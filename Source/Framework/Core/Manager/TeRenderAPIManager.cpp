@@ -14,6 +14,11 @@ namespace te
 
     RenderAPIManager::~RenderAPIManager()
     {
+        if (_renderAPIInitialized)
+        {
+            RenderAPI::Instance().Destroy();
+            RenderAPI::ShutDown();
+        }
     }
 
     void RenderAPIManager::Initialize(const String& pluginFilename, const RENDER_WINDOW_DESC& windowDesc)
@@ -37,6 +42,7 @@ namespace te
             if ((*iter)->Name() == name)
             {
                 (*iter)->Create();
+                _renderAPIInitialized = true;
             }
         }
     }

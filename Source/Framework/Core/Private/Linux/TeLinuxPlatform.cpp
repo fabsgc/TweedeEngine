@@ -734,7 +734,7 @@ namespace te
 					// Not a render window, so it doesn't care about these events
 					if (renderWindow != nullptr)
 					{
-						if (!renderWindow->GetRenderWindowProperties().HasFocus)
+						if (!renderWindow->GetProperties().HasFocus)
 						{
 							renderWindow->NotifyWindowEvent(WindowEventType::FocusReceived);
 						}
@@ -753,7 +753,7 @@ namespace te
 					// Not a render window, so it doesn't care about these events
 					if (renderWindow != nullptr)
 					{
-						if (renderWindow->GetRenderWindowProperties().HasFocus)
+						if (renderWindow->GetProperties().HasFocus)
 							renderWindow->NotifyWindowEvent(WindowEventType::FocusLost);
 					}
 				}

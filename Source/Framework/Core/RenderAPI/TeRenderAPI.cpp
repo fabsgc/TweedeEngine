@@ -12,4 +12,14 @@ namespace te
 	RenderAPI::~RenderAPI()
 	{
 	}
+
+    void RenderAPI::Initialize()
+    {
+        // Do nothing
+    }
+
+    void RenderAPI::Destroy()
+    {
+        _activeRenderTarget = nullptr;
+    }
 }

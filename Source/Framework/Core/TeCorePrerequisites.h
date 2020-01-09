@@ -51,6 +51,11 @@ namespace te
     struct START_UP_DESC;
 
     class RenderAPI;
+    class HardwareBuffer;
+    class IndexBuffer;
+    class VertexBuffer;
+    class VertexDeclaration;
+    class RenderTarget;
     class RenderWindow;
     class RenderAPIFactory;
     class RenderWindow;

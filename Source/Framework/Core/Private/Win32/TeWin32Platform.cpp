@@ -310,14 +310,14 @@ namespace te
             }
             case WM_SETFOCUS:
             {
-                if (!win->GetRenderWindowProperties().HasFocus)
+                if (!win->GetProperties().HasFocus)
                     win->NotifyWindowEvent(WindowEventType::FocusReceived);
 
                 return 0;
             }
             case WM_KILLFOCUS:
             {
-                if (win->GetRenderWindowProperties().HasFocus)
+                if (win->GetProperties().HasFocus)
                     win->NotifyWindowEvent(WindowEventType::FocusLost);
 
                 return 0;

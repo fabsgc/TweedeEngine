@@ -3,11 +3,18 @@ set (TE_CORE_INC_RENDERAPI
     "Core/RenderAPI/TeRenderWindow.h"
     "Core/RenderAPI/TeVideoMode.h"
     "Core/RenderAPI/TeRenderAPIFactory.h"
+    "Core/RenderAPI/TeRenderTarget.h"
+    "Core/RenderAPI/TeVertexBuffer.h"
+    "Core/RenderAPI/TeVertexDeclaration.h"
 )
 set (TE_CORE_SRC_RENDERAPI
     "Core/RenderAPI/TeRenderAPI.cpp"
     "Core/RenderAPI/TeRenderWindow.cpp"
     "Core/RenderAPI/TeVideoMode.cpp"
+    "Core/RenderAPI/TeRenderTarget.cpp"
+    "Core/RenderAPI/TeHardwareBuffer.h"
+    "Core/RenderAPI/TeVertexBuffer.h"
+    "Core/RenderAPI/TeVertexDeclaration.h"
 )
 
 set (TE_CORE_INC_RENDERER

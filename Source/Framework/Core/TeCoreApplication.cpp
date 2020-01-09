@@ -182,7 +182,6 @@ namespace te
 
             PostUpdate();
 
-            RenderAPI::Instance().Update();
             _renderer->Update();
         }
     }

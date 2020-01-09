@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
+#include "RenderAPI/TeRenderTarget.h"
 #include "RenderAPI/TeVideoMode.h"
 #include "Utility/TeEvent.h"
 
@@ -59,7 +60,7 @@ namespace te
     };
 
     /**	Contains various properties that describe a render window. */
-    class TE_CORE_EXPORT RenderWindowProperties
+    class TE_CORE_EXPORT RenderWindowProperties : public RenderTargetProperties
     {
     public:
         RenderWindowProperties(const RENDER_WINDOW_DESC& desc);
@@ -108,7 +109,7 @@ namespace te
 		bool IsWindow = false;
     };
 
-    class TE_CORE_EXPORT RenderWindow
+    class TE_CORE_EXPORT RenderWindow : public RenderTarget
     {
     public:
         RenderWindow(const RENDER_WINDOW_DESC& desc);
@@ -123,7 +124,7 @@ namespace te
         virtual void GetCustomAttribute(const String& name, void* pData) const {}
 
         /**	Returns properties that describe the render window. */
-        const RenderWindowProperties& GetRenderWindowProperties() { return _properties; }
+        virtual const RenderWindowProperties& GetProperties() const override { return _properties; }
 
         /**	Converts screen position into window local position. */
         virtual Vector2I ScreenToWindowPos(const Vector2I& screenPos) const = 0;

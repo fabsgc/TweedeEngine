@@ -5,7 +5,6 @@ namespace te
 {
     D3D11RenderAPI::D3D11RenderAPI()
         : _viewport()
-        , _scissorRect()
     {
     }
 
@@ -66,9 +65,152 @@ namespace te
         }
 
         _device = te_new<D3D11Device>(device);
+
+        // Create & register HLSL factory		
+        _HLSLFactory = te_new<D3D11HLSLProgramFactory>();
+
+        // Create Input Layout Manager	
+        _IAManager = te_new<D3D11InputLayoutManager>();
     }
 
-    void D3D11RenderAPI::Update()
+    void D3D11RenderAPI::Destroy()
     {
+        // Ensure that all GPU commands finish executing before shutting down the device. If we don't do this a crash
+        // on shutdown may occurr as the driver is still executing the commands, and we unload this library.
+        _device->GetImmediateContext()->Flush();
+
+        if (_IAManager != nullptr)
+        {
+            te_delete(_IAManager);
+            _IAManager = nullptr;
+        }
+
+        if (_HLSLFactory != nullptr)
+        {
+            te_delete(_HLSLFactory);
+            _HLSLFactory = nullptr;
+        }
+
+        SAFE_RELEASE(_DXGIFactory);
+
+        if (_device != nullptr)
+        {
+            te_delete(_device);
+            _device = nullptr;
+        }
+
+        if (_driverList != nullptr)
+        {
+            te_delete(_driverList);
+            _driverList = nullptr;
+        }
+
+        _activeD3DDriver = nullptr;
+
+        _activeVertexDeclaration = nullptr;
+
+        RenderAPI::Destroy();
+    }
+
+    void D3D11RenderAPI::SetViewport(const Rect2& area)
+    {
+        _viewportNorm = area;
+        ApplyViewport();
+    }
+
+    void D3D11RenderAPI::SetVertexBuffers(UINT32 index, SPtr<VertexBuffer>* buffers, UINT32 numBuffers)
+    {
+        // TODO
+    }
+
+    void D3D11RenderAPI::SetIndexBuffer(const SPtr<IndexBuffer>& buffer)
+    {
+        // TODO
+    }
+
+    void D3D11RenderAPI::Draw(UINT32 vertexOffset, UINT32 vertexCount, UINT32 instanceCount)
+    {
+        // TODO
+    }
+
+    void D3D11RenderAPI::DrawIndexed(UINT32 startIndex, UINT32 indexCount, UINT32 vertexOffset, UINT32 vertexCount, UINT32 instanceCount)
+    {
+        // TODO
+    }
+
+    void D3D11RenderAPI::SwapBuffers(const SPtr<RenderTarget>& target)
+    {
+        target->SwapBuffers();
+    }
+
+    void D3D11RenderAPI::SetRenderTarget(const SPtr<RenderTarget>& target)
+    {
+        // TODO
+    }
+
+    void D3D11RenderAPI::ClearRenderTarget(UINT32 buffers, float depth, UINT16 stencil, UINT8 targetMask)
+    {
+        // TODO
+    }
+
+    void D3D11RenderAPI::ClearViewport(UINT32 buffers, float depth, UINT16 stencil, UINT8 targetMask)
+    {
+        // TODO
+    }
+
+    void D3D11RenderAPI::ApplyInputLayout()
+    {
+        if (_activeVertexDeclaration == nullptr)
+        {
+            TE_DEBUG("Cannot apply input layout without a vertex declaration. Set vertex declaration before calling this method.", __FILE__, __LINE__);
+            return;
+        }
+
+        /*if (_activeVertexShader == nullptr)
+        {
+            TE_DEBUG("Cannot apply input layout without a vertex shader. Set vertex shader before calling this method.", __FILE__, __LINE__);
+            return;
+        }*/
+
+        ID3D11InputLayout* ia = NULL; // TODO
+        _device->GetImmediateContext()->IASetInputLayout(ia);
+    }
+
+    void D3D11RenderAPI::ApplyViewport()
+    {
+        if (_activeRenderTarget == nullptr)
+        {
+            return;
+        }
+
+        const RenderTargetProperties& rtProps = _activeRenderTarget->GetProperties();
+
+        // Set viewport dimensions
+        _viewport.TopLeftX = (FLOAT)(rtProps.Width * _viewportNorm.x);
+        _viewport.TopLeftY = (FLOAT)(rtProps.Height * _viewportNorm.y);
+        _viewport.Width = (FLOAT)(rtProps.Width * _viewportNorm.width);
+        _viewport.Height = (FLOAT)(rtProps.Height * _viewportNorm.height);
+
+        if (rtProps.RequiresTextureFlipping)
+        {
+            // Convert "top-left" to "bottom-left"
+            _viewport.TopLeftY = rtProps.Height - _viewport.Height - _viewport.TopLeftY;
+        }
+
+        _viewport.MinDepth = 0.0f;
+        _viewport.MaxDepth = 1.0f;
+
+        _device->GetImmediateContext()->RSSetViewports(1, &_viewport);
+    }
+
+    void D3D11RenderAPI::NotifyRenderTargetModified()
+    {
+        if (_activeRenderTarget == nullptr || _activeRenderTargetModified)
+        {
+            return;
+        }
+
+        //_activeRenderTarget->_tickUpdateCount();
+        _activeRenderTargetModified = true;
     }
 }

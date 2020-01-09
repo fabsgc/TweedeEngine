@@ -19,16 +19,60 @@ namespace te
 
         SPtr<RenderWindow> CreateRenderWindow(const RENDER_WINDOW_DESC& windowDesc) override;
         void Initialize() override;
-        void Update() override;
 
         /**	Returns the main DXGI factory object. */
-		IDXGIFactory1* getDXGIFactory() const { return _DXGIFactory; }
+		IDXGIFactory1* GetDXGIFactory() const { return _DXGIFactory; }
 
 		/**	Returns the primary DX11 device object. */
-		D3D11Device& getPrimaryDevice() const { return *_device; }
+		D3D11Device& GetPrimaryDevice() const { return *_device; }
 
         /**	Returns information describing all available drivers. */
 		D3D11DriverList* GetDriverList() const { return _driverList; }
+
+        void Destroy() override;
+
+        /** @copydoc RenderAPI::SetViewport */
+        void SetViewport(const Rect2& area) override;
+
+        /** @copydoc RenderAPI::SetVertexBuffers */
+        void SetVertexBuffers(UINT32 index, SPtr<VertexBuffer>* buffers, UINT32 numBuffers) override;
+
+        /** @copydoc RenderAPI::SetIndexBuffer */
+        void SetIndexBuffer(const SPtr<IndexBuffer>& buffer) override;
+
+        /** @copydoc RenderAPI::Draw */
+        void Draw(UINT32 vertexOffset, UINT32 vertexCount, UINT32 instanceCount = 0) override;
+
+        /** @copydoc RenderAPI::DrawIndexed */
+        void DrawIndexed(UINT32 startIndex, UINT32 indexCount, UINT32 vertexOffset, UINT32 vertexCount, UINT32 instanceCount = 0) override;
+
+        /** @copydoc RenderAPI::SwapBuffers */
+        void SwapBuffers(const SPtr<RenderTarget>& target) override;
+
+        /** @copydoc RenderAPI::SetRenderTarget */
+        void SetRenderTarget(const SPtr<RenderTarget>& target) override;
+
+        /** @copydoc RenderAPI::ClearRenderTarget */
+        void ClearRenderTarget(UINT32 buffers, float depth = 1.0f, UINT16 stencil = 0, UINT8 targetMask = 0xFF) override;
+
+        /** @copydoc RenderAPI::ClearViewport */
+        void ClearViewport(UINT32 buffers, float depth = 1.0f, UINT16 stencil = 0, UINT8 targetMask = 0xFF) override;
+
+    private:
+        /**
+         * Creates or retrieves a proper input layout depending on the currently set vertex shader and vertex buffer.
+         * Applies the input layout to the pipeline.
+         */
+        void ApplyInputLayout();
+
+        /**
+         * Recalculates actual viewport dimensions based on currently set viewport normalized dimensions and render target
+         * and applies them for further rendering.
+         */
+        void ApplyViewport();
+
+        /** Notifies the active render target that a rendering command was queued that will potentially change its contents. */
+        void NotifyRenderTargetModified();
 
     private:
         IDXGIFactory1* _DXGIFactory = nullptr;
@@ -45,6 +89,7 @@ namespace te
         UINT32 _stencilRef = 0;
 		Rect2 _viewportNorm = Rect2(0.0f, 0.0f, 1.0f, 1.0f);
         D3D11_VIEWPORT _viewport;
-        D3D11_RECT _scissorRect;
+
+        SPtr<VertexDeclaration> _activeVertexDeclaration;
     };
 }
