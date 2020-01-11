@@ -181,4 +181,8 @@ namespace te
             // TODO
         }
     }
+
+    void Win32RenderWindow::SetTitle(const String& title)
+    {
+    }
 }

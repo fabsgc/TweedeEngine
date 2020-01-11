@@ -60,6 +60,9 @@ namespace te
         /** @copydoc RenderWindow::SwapBuffers */
         void SwapBuffers() override;
 
+        /** @copydoc RenderWindow::SetTitle */
+        void SetTitle(const String& title) override;
+
     protected:
         /**	Creates internal resources dependent on window size. */
         void CreateSizeDependedD3DResources();

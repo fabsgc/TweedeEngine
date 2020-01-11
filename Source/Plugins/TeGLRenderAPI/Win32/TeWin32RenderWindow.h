@@ -56,6 +56,9 @@ namespace te
         /** @copydoc RenderWindow::windowToScreenPos */
         Vector2I WindowToScreenPos(const Vector2I& windowPos) const override;
 
+        /** @copydoc RenderWindow::SetTitle */
+        void SetTitle(const String& title) override;
+
     protected:
         Win32Window* _window = nullptr;
     };

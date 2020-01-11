@@ -56,6 +56,9 @@ namespace te
         /** Check if the number of FPS has already been reached. */
         void CheckFPSLimit();
 
+        /** Display frame rate on window titlebar */
+        void DisplayFrameRate();
+
         /** Issues a request for the application to close. Application may choose to ignore the request */
         virtual void OnStopRequested();
 

@@ -71,6 +71,9 @@ namespace te
         /** @copydoc RenderWindow::windowToScreenPos */
         Vector2I WindowToScreenPos(const Vector2I& windowPos) const override;
 
+        /** @copydoc RenderWindow::SetTitle */
+        void SetTitle(const String& title) override;
+
         /**
 		 * Selects an appropriate X11 visual info depending on the provided parameters. Visual info should then be used
 		 * for creation of an X11 window.

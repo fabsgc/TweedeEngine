@@ -205,7 +205,7 @@ namespace te
 
     void CoreApplication::PostUpdate()
     {
-        // Do nothing
+        DisplayFrameRate();
     }
 
     void CoreApplication::StopMainLoop()
@@ -274,6 +274,26 @@ namespace te
             }
 
             _lastFrameTime = currentTime;
+        }
+    }
+
+    void CoreApplication::DisplayFrameRate()
+    {
+        static int   frameCnt = 0;
+        static float timeElapsed = 0.0f;
+
+        frameCnt++;
+
+        if (gTime().GetTime() - timeElapsed >= 1.0f)
+        {
+            String outs;
+
+            float fps = 1.0f / gTime().GetFrameDelta();
+
+            _window->SetTitle(_window->GetDesc().Title + " | FPS : " + ToString(fps) + " | ELAPSED : " + ToString(gTime().GetFrameDelta() * 1000));
+
+            frameCnt = 0;
+            timeElapsed += 1.0f;
         }
     }
 

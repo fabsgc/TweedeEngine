@@ -397,7 +397,7 @@ namespace te
         if (FAILED(hr))
         {
             String errorDescription = _device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Unable to create rendertagert view\nError Description:" + errorDescription, __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Unable to create rendertarget view\nError Description:" + errorDescription, __FILE__, __LINE__);
         }
 
         // TODO
@@ -539,5 +539,10 @@ namespace te
                 TE_ASSERT_ERROR(false, "Error Presenting surfaces", __FILE__, __LINE__);
             }
         }
+    }
+
+    void D3D11RenderWindow::SetTitle(const String& title)
+    {
+        SetWindowText(GetHWnd(), title.c_str());
     }
 }

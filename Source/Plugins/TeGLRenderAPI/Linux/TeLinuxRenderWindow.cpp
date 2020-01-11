@@ -193,4 +193,9 @@ namespace te
 
         return output;
     }
+
+    void LinuxRenderWindow::SetTitle(const String& title)
+    {
+
+    }
 }

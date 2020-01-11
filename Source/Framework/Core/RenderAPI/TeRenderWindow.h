@@ -101,6 +101,9 @@ namespace te
         /**	Returns properties that describe the render window. */
         virtual const RenderWindowProperties& GetProperties() const override { return _properties; }
 
+        /**	Returns properties that describe the render window. */
+        virtual const RENDER_WINDOW_DESC& GetDesc() const { return _desc; }
+
         /**	Converts screen position into window local position. */
         virtual Vector2I ScreenToWindowPos(const Vector2I& screenPos) const = 0;
 
@@ -177,6 +180,9 @@ namespace te
          * @param[in]	height	Window height in pixels.
          */
         virtual void SetWindowed(UINT32 width, UINT32 height) {}
+
+        /** Allows to change titlebar of the window. */
+        virtual void SetTitle(const String& title) {}
 
         /** Closes and destroys the window. */
         void Destroy();
