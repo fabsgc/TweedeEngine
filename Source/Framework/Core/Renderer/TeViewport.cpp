@@ -1,4 +1,4 @@
-#include "TeViewPort.h"
+#include "TeViewport.h"
 #include "RenderAPI/TeRenderTarget.h"
 #include "Utility/TeColor.h"
 
