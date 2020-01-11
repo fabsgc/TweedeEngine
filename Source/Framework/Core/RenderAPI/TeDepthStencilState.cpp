@@ -1,4 +1,5 @@
 #include "TeDepthStencilState.h"
+#include "RenderAPI/TeRenderStateManager.h"
 
 namespace te
 {
@@ -20,7 +21,7 @@ namespace te
 
     const SPtr<DepthStencilState>& DepthStencilState::GetDefault()
 	{
-		return DepthStencilState::Create(DEPTH_STENCIL_STATE_DESC());
+        return RenderStateManager::Instance().GetDefaultDepthStencilState();
 	}
 
     const DepthStencilProperties& DepthStencilState::GetProperties() const
@@ -30,10 +31,6 @@ namespace te
 
     SPtr<DepthStencilState> DepthStencilState::Create(const DEPTH_STENCIL_STATE_DESC& desc)
 	{
-        DepthStencilState* depthStencilState = new (te_allocate<DepthStencilState>()) DepthStencilState(desc);
-        SPtr<DepthStencilState> handlerPtr = te_shared_ptr<DepthStencilState>(depthStencilState);
-        handlerPtr->SetThisPtr(handlerPtr);
-
-		return handlerPtr;
+        return RenderStateManager::Instance().CreateDepthStencilState(desc);
 	}
 }

@@ -44,10 +44,12 @@ namespace te
 		static const SPtr<DepthStencilState>& GetDefault();
     
     protected:
+		friend class RenderStateManager;
+
         DepthStencilState(const DEPTH_STENCIL_STATE_DESC& desc);
 
-        /** @copydoc CoreObject::initialize */
-		void Initialize() override;
+		/** @copydoc CoreObject::initialize */
+        void Initialize() override;
 
 		/**	Creates any API-specific state objects. */
 		virtual void CreateInternal() { }

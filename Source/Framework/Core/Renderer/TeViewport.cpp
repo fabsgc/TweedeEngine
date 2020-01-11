@@ -86,7 +86,7 @@ namespace te
     SPtr<Viewport> Viewport::Create(const SPtr<RenderTarget>& target, float x, float y, float width, float height)
 	{
         Viewport* viewport = new (te_allocate<Viewport>()) Viewport();
-        SPtr<Viewport> handlerPtr = te_shared_ptr<Viewport>(viewport);
+        SPtr<Viewport> handlerPtr = te_core_ptr<Viewport>(viewport);
         handlerPtr->SetThisPtr(handlerPtr);
         handlerPtr->Initialize();
 

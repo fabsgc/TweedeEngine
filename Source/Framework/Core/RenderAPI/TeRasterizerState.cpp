@@ -1,4 +1,5 @@
 #include "TeRasterizerState.h"
+#include "TeRenderStateManager.h"
 
 namespace te
 {
@@ -26,7 +27,7 @@ namespace te
 
 	const SPtr<RasterizerState>& RasterizerState::GetDefault()
 	{
-        return RasterizerState::Create(RASTERIZER_STATE_DESC());
+        return RenderStateManager::Instance().GetDefaultRasterizerState();
 	}
 
     const RasterizerProperties& RasterizerState::GetProperties() const
@@ -36,10 +37,6 @@ namespace te
 
     SPtr<RasterizerState> RasterizerState::Create(const RASTERIZER_STATE_DESC& desc)
 	{
-        RasterizerState* rasterizeState = new (te_allocate<RASTERIZER_STATE_DESC>()) RasterizerState(desc);
-        SPtr<RasterizerState> handlerPtr = te_shared_ptr<RasterizerState>(rasterizeState);
-        handlerPtr->SetThisPtr(handlerPtr);
-
-		return handlerPtr;
+        return RenderStateManager::Instance().CreateRasterizerState(desc);
 	}
 }

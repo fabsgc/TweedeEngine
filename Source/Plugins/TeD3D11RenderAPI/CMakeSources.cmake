@@ -12,6 +12,7 @@ set (TE_D3D11RENDERAPI_INC_NOFILTER
     "TeD3D11Mappings.h"
     "TeD3D11DepthStencilState.h"
     "TeD3D11RasterizerState.h"
+    "TeD3D11RenderStateManager.h"
 )
 
 set (TE_D3D11RENDERAPI_SRC_NOFILTER
@@ -28,6 +29,7 @@ set (TE_D3D11RENDERAPI_SRC_NOFILTER
     "TeD3D11Mappings.cpp"
     "TeD3D11DepthStencilState.cpp"
     "TeD3D11RasterizerState.cpp"
+    "TeD3D11RenderStateManager.cpp"
 )
 
 source_group ("" FILES ${TE_D3D11RENDERAPI_SRC_NOFILTER} ${TE_D3D11RENDERAPI_INC_NOFILTER})

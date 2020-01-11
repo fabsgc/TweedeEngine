@@ -34,6 +34,8 @@ namespace te
 		static SPtr<GraphicsPipelineState> Create(const PIPELINE_STATE_DESC& desc);
 
 	protected:
+		friend class RenderStateManager;
+
 		GraphicsPipelineState() = default;
 		GraphicsPipelineState(const PIPELINE_STATE_DESC& desc);
 

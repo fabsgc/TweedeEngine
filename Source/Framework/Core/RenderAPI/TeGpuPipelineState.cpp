@@ -1,10 +1,11 @@
 #include "TeGpuPipelineState.h"
+#include "RenderAPI/TeRenderStateManager.h"
 
 namespace te
 {
     GraphicsPipelineState::GraphicsPipelineState(const PIPELINE_STATE_DESC& desc)
-    {
-    }
+        : _data(desc)
+    { }
 
     void GraphicsPipelineState::Initialize()
 	{
@@ -13,10 +14,6 @@ namespace te
 
     SPtr<GraphicsPipelineState> GraphicsPipelineState::Create(const PIPELINE_STATE_DESC& desc)
     {
-        GraphicsPipelineState* graphicsPipelineState = new (te_allocate<GraphicsPipelineState>()) GraphicsPipelineState(desc);
-        SPtr<GraphicsPipelineState> handlerPtr = te_shared_ptr<GraphicsPipelineState>(graphicsPipelineState);
-        handlerPtr->SetThisPtr(handlerPtr);
-
-        return handlerPtr;
+        return RenderStateManager::Instance().CreateGraphicsPipelineState(desc);
     }
 }

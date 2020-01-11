@@ -4,6 +4,8 @@
 #include "TeD3D11Mappings.h"
 #include "RenderAPI/TeGpuPipelineState.h"
 #include "TeD3D11RasterizerState.h"
+#include "RenderAPI/TeRenderStateManager.h"
+#include "TeD3D11RenderStateManager.h"
 
 namespace te
 {
@@ -73,6 +75,9 @@ namespace te
         // Create & register HLSL factory		
         _HLSLFactory = te_new<D3D11HLSLProgramFactory>();
 
+        // Create render state manager
+        RenderStateManager::StartUp<D3D11RenderStateManager>();
+
         // Create Input Layout Manager	
         _IAManager = te_new<D3D11InputLayoutManager>();
     }
@@ -110,8 +115,12 @@ namespace te
         }
 
         _activeD3DDriver = nullptr;
-
+        _activeDepthStencilState = nullptr;
         _activeVertexDeclaration = nullptr;
+
+        RenderStateManager::ShutDown();
+
+        SAFE_RELEASE(_DXGIFactory);
 
         RenderAPI::Destroy();
     }
@@ -128,10 +137,14 @@ namespace te
             _activeDepthStencilState = std::static_pointer_cast<D3D11DepthStencilState>(pipelineState->GetDepthStencilState());
 
             if (d3d11RasterizerState == nullptr)
+            {
                 d3d11RasterizerState = static_cast<D3D11RasterizerState*>(RasterizerState::GetDefault().get());
+            }
 
             if (_activeDepthStencilState == nullptr)
+            {
                 _activeDepthStencilState = std::static_pointer_cast<D3D11DepthStencilState>(DepthStencilState::GetDefault());
+            }
         }
         else
         {

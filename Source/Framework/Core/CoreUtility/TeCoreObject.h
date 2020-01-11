@@ -18,6 +18,16 @@ namespace te
 		};
 
     public:
+		/** Schedules the object to be destroyed, and then deleted. */
+		template<class T>
+		static void _delete(CoreObject* obj)
+		{
+			if (!obj->IsDestroyed())
+				obj->Destroy();
+
+			te_delete<T>((T*)obj);
+		}
+
 		/**
 		 * Initializes all the internal resources of this object. Must be called right after construction. Generally you
 		 * should call this from a factory method to avoid the issue where user forgets to call it.
@@ -60,4 +70,17 @@ namespace te
         WPtr<CoreObject> _this;
 		volatile UINT8 _flags;
     };
+
+	/**
+	 * Creates a core object shared pointer using a previously constructed object.
+	 *
+	 * @note	
+	 * All core thread object shared pointers must be created using this method or its overloads and you should not create
+	 * them manually.
+	 */
+	template<class Type>
+	SPtr<Type> te_core_ptr(Type* data)
+	{
+		return SPtr<Type>(data, &CoreObject::_delete<Type>);
+	}
 }

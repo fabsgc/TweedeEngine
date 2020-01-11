@@ -13,6 +13,8 @@ namespace te
 		ID3D11RasterizerState* GetInternal() const { return _rasterizerState; }
 
 	protected:
+        friend class D3D11RenderStateManager;
+
 		D3D11RasterizerState(const RASTERIZER_STATE_DESC& desc);
 
 		/** @copydoc RasterizerState::CreateInternal */

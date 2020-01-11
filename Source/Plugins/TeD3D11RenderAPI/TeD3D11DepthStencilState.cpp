@@ -5,7 +5,7 @@
 
 namespace te
 {
-    D3D11DepthStencilState::D3D11DepthStencilState(const DEPTH_STENCIL_STATE_DESC& desc, UINT32 id)
+    D3D11DepthStencilState::D3D11DepthStencilState(const DEPTH_STENCIL_STATE_DESC& desc)
         : DepthStencilState(desc)
     { }
 

@@ -88,6 +88,8 @@ namespace te
     class CoreObject;
     class CoreObjectManager;
 
+    class RenderStateManager;
+
     class Input;
     class GamePad;
     class Keyboard;

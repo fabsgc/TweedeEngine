@@ -17,6 +17,7 @@
 #include "Renderer/TeCamera.h"
 #include "Scene/TeSceneManager.h"
 #include "CoreUtility/TeCoreObjectManager.h"
+#include "RenderAPI/TeRenderStateManager.h"
 
 namespace te
 {
@@ -44,11 +45,11 @@ namespace te
         Time::StartUp();
         DynLibManager::StartUp();
 
+        CoreObjectManager::StartUp();
         RenderAPIManager::StartUp();
         RendererManager::StartUp();
         ResourceManager::StartUp();
         SceneManager::StartUp();
-        CoreObjectManager::StartUp();
 
         LoadPlugin(_startUpDesc.Renderer, &_rendererPlugin);
         LoadPlugin(_startUpDesc.RenderAPI, &_renderAPIPlugin);
@@ -142,6 +143,21 @@ namespace te
         _camera = Camera::Create();
         _camera->SetRenderTarget(gCoreApplication().GetWindow());
         _camera->SetMain(true);
+
+        RASTERIZER_STATE_DESC rastDesc;
+        rastDesc.polygonMode = PM_WIREFRAME; // Draw wireframe instead of solid
+        rastDesc.cullMode = CULL_NONE; // Disable blackface culling
+        DEPTH_STENCIL_STATE_DESC depthDesc;
+        SPtr<RasterizerState> rasterizerState = RasterizerState::Create(rastDesc);
+        SPtr<DepthStencilState> depthStencilState = DepthStencilState::Create(depthDesc);
+
+        PIPELINE_STATE_DESC pipeDesc;
+        pipeDesc.rasterizerState = rasterizerState;
+        pipeDesc.depthStencilState = depthStencilState;
+
+        SPtr<GraphicsPipelineState> graphicsPipeline = GraphicsPipelineState::Create(pipeDesc);
+
+        RenderAPI::Instance().SetGraphicsPipeline(graphicsPipeline);
     }
     
     void CoreApplication::OnShutDown()
@@ -154,11 +170,11 @@ namespace te
         Importer::ShutDown();
         VirtualInput::ShutDown();
         Input::ShutDown();
-        CoreObjectManager::ShutDown();
         SceneManager::ShutDown();
         ResourceManager::ShutDown();
         RendererManager::ShutDown();
         RenderAPIManager::ShutDown();
+        CoreObjectManager::ShutDown();
         Platform::ShutDown();
 
         DynLibManager::ShutDown();

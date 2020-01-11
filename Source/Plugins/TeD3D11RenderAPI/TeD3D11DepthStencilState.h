@@ -17,7 +17,7 @@ namespace te
 	protected:
 		friend class D3D11RenderStateManager;
 
-		D3D11DepthStencilState(const DEPTH_STENCIL_STATE_DESC& desc, UINT32 id);
+		D3D11DepthStencilState(const DEPTH_STENCIL_STATE_DESC& desc);
 
 		/** @copydoc DepthStencilState::CreateInternal() */
 		void CreateInternal() override;

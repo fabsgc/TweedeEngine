@@ -58,10 +58,12 @@ namespace te
 		static const SPtr<RasterizerState>& GetDefault();
 
     protected:
+        friend class RenderStateManager;
+
         RasterizerState(const RASTERIZER_STATE_DESC& desc);
 
         /** @copydoc CoreObject::Initialize */
-		void Initialize() override;
+        void Initialize() override;
 
 		/**	Creates any API-specific state objects. */
 		virtual void CreateInternal() { }

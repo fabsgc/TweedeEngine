@@ -46,7 +46,7 @@ namespace te
     SPtr<Camera> Camera::Create()
     {
         Camera* camera = new (te_allocate<Camera>()) Camera();
-        SPtr<Camera> handlerPtr = te_shared_ptr<Camera>(camera);
+        SPtr<Camera> handlerPtr = te_core_ptr<Camera>(camera);
         handlerPtr->SetThisPtr(handlerPtr);
         handlerPtr->Initialize();
 
