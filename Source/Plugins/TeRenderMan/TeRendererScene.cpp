@@ -55,7 +55,6 @@ namespace te
 
     void RendererScene::UnregisterCamera(Camera* camera)
     {
-        bool found = false;
         for (auto iterTarget = _info.RenderTargets.begin(); iterTarget != _info.RenderTargets.end(); ++iterTarget)
         {
             RendererRenderTarget& target = *iterTarget;

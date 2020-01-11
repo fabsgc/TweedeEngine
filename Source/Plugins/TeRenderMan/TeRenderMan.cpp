@@ -43,9 +43,6 @@ namespace te
 
         for (auto& rtInfo : sceneInfo.RenderTargets)
         {
-            // Render everything
-            bool anythingDrawn = true;
-
             if (rtInfo.target->GetProperties().IsWindow)
             {
                 RenderOverlay(rtInfo.target, rtInfo.camera);
