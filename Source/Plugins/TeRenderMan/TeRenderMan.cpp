@@ -46,10 +46,10 @@ namespace te
             // Render everything
             bool anythingDrawn = true;
 
-            if (rtInfo.Target->GetProperties().IsWindow)
+            if (rtInfo.target->GetProperties().IsWindow)
             {
-                RenderOverlay(rtInfo.Target, rtInfo.Camera);
-                RenderAPI::Instance().SwapBuffers(rtInfo.Target);
+                RenderOverlay(rtInfo.target, rtInfo.camera);
+                RenderAPI::Instance().SwapBuffers(rtInfo.target);
             }
         }
     }

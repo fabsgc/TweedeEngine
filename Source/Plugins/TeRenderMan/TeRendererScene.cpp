@@ -21,7 +21,7 @@ namespace te
         {
             RendererRenderTarget& target = *iterTarget;
 
-            if (camera == target.Camera)
+            if (camera == target.camera)
             {
                 newCamera = false;
                 break;
@@ -31,8 +31,8 @@ namespace te
         if (newCamera)
         {
             RendererRenderTarget rendererTarget;
-            rendererTarget.Camera = camera;
-            rendererTarget.Target = camera->GetViewport()->GetTarget();
+            rendererTarget.camera = camera;
+            rendererTarget.target = camera->GetViewport()->GetTarget();
             _info.RenderTargets.push_back(rendererTarget);
         }
     }
@@ -45,9 +45,9 @@ namespace te
         {
             RendererRenderTarget& target = *iterTarget;
 
-            if (camera == target.Camera)
+            if (camera == target.camera)
             {
-                target.Target = renderTarget;
+                target.target = renderTarget;
                 break;
             }
         }
@@ -60,7 +60,7 @@ namespace te
         {
             RendererRenderTarget& target = *iterTarget;
 
-            if (camera == target.Camera)
+            if (camera == target.camera)
             {
                 _info.RenderTargets.erase(iterTarget);
                 break;

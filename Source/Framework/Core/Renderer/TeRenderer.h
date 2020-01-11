@@ -51,7 +51,7 @@ namespace te
     /**	Renderer information specific to a single render target. */
 	struct TE_CORE_EXPORT RendererRenderTarget
 	{
-        SPtr<RenderTarget> Target = nullptr;
-        Camera* Camera = nullptr;
+        SPtr<RenderTarget> target = nullptr;
+        Camera* camera = nullptr;
 	};
 }

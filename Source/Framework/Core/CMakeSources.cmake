@@ -23,13 +23,11 @@ set (TE_CORE_INC_RENDERER
     "Core/Renderer/TeRendererFactory.h"
     "Core/Renderer/TeCamera.h"
     "Core/Renderer/TeViewport.h"
-    "Core/Renderer/TeCoreObject.h"
 )
 set (TE_CORE_SRC_RENDERER
     "Core/Renderer/TeRenderer.cpp"
     "Core/Renderer/TeCamera.cpp"
     "Core/Renderer/TeViewport.cpp"
-    "Core/Renderer/TeCoreObject.cpp"
 )
 
 set (TE_CORE_INC_SCENE
@@ -78,10 +76,12 @@ set (TE_CORE_SRC_PLATFORM_LINUX
 set(TE_CORE_INC_NOFILTER
 	"Core/TeCoreApplication.h"
 	"Core/TeCorePrerequisites.h"
-	"Core/TeEngineConfig.h"
+    "Core/TeEngineConfig.h"
+    "Core/TeCoreObject.h"
 )
 set(TE_CORE_SRC_NOFILTER
-	"Core/TeCoreApplication.cpp"
+    "Core/TeCoreApplication.cpp"
+    "Core/TeCoreObject.cpp"
 )
 
 set (TE_CORE_INC_INPUT
