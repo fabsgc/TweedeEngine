@@ -67,7 +67,11 @@ namespace te
     struct DEPTH_STENCIL_STATE_DESC;
     class DepthStencilState;
     struct PIPELINE_STATE_DESC;
+    class DepthStencilProperties;
     class GraphicsPipelineState;
+    struct RASTERIZER_STATE_DESC;
+    class RasterizerProperties;
+    class RasterizerState;
     class HardwareBuffer;
     class VertexBuffer;
     class VertexDeclaration;

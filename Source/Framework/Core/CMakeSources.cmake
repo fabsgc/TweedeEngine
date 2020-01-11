@@ -9,6 +9,7 @@ set (TE_CORE_INC_RENDERAPI
     "Core/RenderAPI/TeCommonTypes.h"
     "Core/RenderAPI/TeDepthStencilState.h"
     "Core/RenderAPI/TeGpuPipelineState.h"
+    "Core/RenderAPI/TeRasterizerState.h"
 )
 set (TE_CORE_SRC_RENDERAPI
     "Core/RenderAPI/TeRenderAPI.cpp"
@@ -18,6 +19,7 @@ set (TE_CORE_SRC_RENDERAPI
     "Core/RenderAPI/TeVertexDeclaration.cpp"
     "Core/RenderAPI/TeDepthStencilState.cpp"
     "Core/RenderAPI/TeGpuPipelineState.cpp"
+    "Core/RenderAPI/TeRasterizerState.cpp"
 )
 
 set (TE_CORE_INC_RENDERER

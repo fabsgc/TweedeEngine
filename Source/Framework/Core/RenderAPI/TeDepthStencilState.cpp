@@ -14,14 +14,12 @@ namespace te
 
 	void DepthStencilState::Initialize()
 	{
-        // TODO
 		CreateInternal();
 		CoreObject::Initialize();
 	}
 
     const SPtr<DepthStencilState>& DepthStencilState::GetDefault()
 	{
-        // TODO
 		return DepthStencilState::Create(DEPTH_STENCIL_STATE_DESC());
 	}
 

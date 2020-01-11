@@ -3,6 +3,7 @@
 #include "Math/TeRect2I.h"
 #include "TeD3D11Mappings.h"
 #include "RenderAPI/TeGpuPipelineState.h"
+#include "TeD3D11RasterizerState.h"
 
 namespace te
 {
@@ -119,19 +120,27 @@ namespace te
     {
         // TODO
 
+        D3D11RasterizerState* d3d11RasterizerState;
+
         if (pipelineState != nullptr)
         {
+            d3d11RasterizerState = static_cast<D3D11RasterizerState*>(pipelineState->GetRasterizerState().get());
             _activeDepthStencilState = std::static_pointer_cast<D3D11DepthStencilState>(pipelineState->GetDepthStencilState());
+
+            if (d3d11RasterizerState == nullptr)
+                d3d11RasterizerState = static_cast<D3D11RasterizerState*>(RasterizerState::GetDefault().get());
 
             if (_activeDepthStencilState == nullptr)
                 _activeDepthStencilState = std::static_pointer_cast<D3D11DepthStencilState>(DepthStencilState::GetDefault());
         }
         else
         {
+            d3d11RasterizerState = static_cast<D3D11RasterizerState*>(RasterizerState::GetDefault().get());
             _activeDepthStencilState = std::static_pointer_cast<D3D11DepthStencilState>(DepthStencilState::GetDefault());
         }
 
         ID3D11DeviceContext* d3d11Context = _device->GetImmediateContext();
+        d3d11Context->RSSetState(d3d11RasterizerState->GetInternal());
         d3d11Context->OMSetDepthStencilState(_activeDepthStencilState->GetInternal(), _stencilRef);
     }
 

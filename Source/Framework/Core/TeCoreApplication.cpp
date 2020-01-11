@@ -55,6 +55,7 @@ namespace te
 
         RenderAPIManager::Instance().Initialize(_startUpDesc.RenderAPI, _startUpDesc.WindowDesc);
         RenderAPI::Instance().Initialize();
+        RenderAPI::Instance().SetDrawOperation(DOT_TRIANGLE_LIST);
 
         _renderer = RendererManager::Instance().Initialize(_startUpDesc.Renderer);
         _window = RenderAPI::Instance().CreateRenderWindow(_startUpDesc.WindowDesc);

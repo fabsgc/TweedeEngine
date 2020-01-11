@@ -3,12 +3,14 @@
 #include "TeCorePrerequisites.h"
 #include "CoreUtility/TeCoreObject.h"
 #include "TeDepthStencilState.h"
+#include "TeRasterizerState.h"
 
 namespace te
 {
 	/** Descriptor structure used for initializing a GPU pipeline state. */
 	struct PIPELINE_STATE_DESC
 	{
+        SPtr<RasterizerState> rasterizerState;
 		SPtr<DepthStencilState> depthStencilState;
 
         // TODO
@@ -24,8 +26,9 @@ namespace te
 	public:
 		virtual ~GraphicsPipelineState() = default;
 
-		SPtr<DepthStencilState> GetDepthStencilState() const { return _data.depthStencilState; }
-
+        SPtr<RasterizerState> GetRasterizerState() const { return _data.rasterizerState; }
+        SPtr<DepthStencilState> GetDepthStencilState() const { return _data.depthStencilState; }
+        
         /** @copydoc RenderStateManager::CreateGraphicsPipelineState */
 		static SPtr<GraphicsPipelineState> Create(const PIPELINE_STATE_DESC& desc);
 
