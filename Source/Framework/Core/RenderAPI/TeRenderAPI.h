@@ -23,12 +23,39 @@ namespace te
         /** Shuts down the render API system and cleans up all resources. */
         virtual void Destroy();
 
+		/**
+		 * Sets a pipeline state that controls how will subsequent draw commands render primitives.
+		 *
+		 * @param[in]	pipelineState		Pipeline state to bind, or null to unbind.
+		 *
+		 * @see		GraphicsPipelineState
+		 */
+		virtual void SetGraphicsPipeline(const SPtr<GraphicsPipelineState>& pipelineState) = 0;
+
         /**
          * Sets the active viewport that will be used for all render operations.
          *
          * @param[in]	area			Area of the viewport, in normalized ([0,1] range) coordinates.
          */
         virtual void SetViewport(const Rect2& area) = 0;
+
+		/**
+		 * Allows you to set up a region in which rendering can take place. Coordinates are in pixels. No rendering will be
+		 * done to render target pixels outside of the provided region.
+		 *
+		 * @param[in]	left			Left border of the scissor rectangle, in pixels.
+		 * @param[in]	top				Top border of the scissor rectangle, in pixels.
+		 * @param[in]	right			Right border of the scissor rectangle, in pixels.
+		 * @param[in]	bottom			Bottom border of the scissor rectangle, in pixels.
+		 */
+		virtual void SetScissorRect(UINT32 left, UINT32 top, UINT32 right, UINT32 bottom) = 0;
+
+		/**
+		 * Sets a reference value that will be used for stencil compare operations.
+		 *
+		 * @param[in]	value			Reference value to set.
+		 */
+		virtual void SetStencilRef(UINT32 value) = 0;
 
         /**
 		 * Sets the provided vertex buffers starting at the specified source index.	Set buffer to nullptr to clear the
@@ -47,6 +74,21 @@ namespace te
 		 * @param[in]	buffer			Index buffer to bind, null to unbind.
 		 */
 		virtual void SetIndexBuffer(const SPtr<IndexBuffer>& buffer) = 0;
+
+		/**
+		 * Sets the vertex declaration to use when drawing. Vertex declaration is used to decode contents of a single
+		 * vertex in a vertex buffer.
+		 *
+		 * @param[in]	vertexDeclaration	Vertex declaration to bind.
+		 */
+		virtual void SetVertexDeclaration(const SPtr<VertexDeclaration>& vertexDeclaration) = 0;
+
+		/**
+		 * Sets the draw operation that determines how to interpret the elements of the index or vertex buffers.
+		 *
+		 * @param[in]	op				Draw operation to enable.
+		 */
+		virtual void SetDrawOperation(DrawOperationType op) = 0;
         
         /**
 		 * Draw an object based on currently bound GPU programs, vertex declaration and vertex buffers. Draws directly from

@@ -8,6 +8,7 @@
 #include "TeD3D11InputLayoutManager.h"
 #include "TeD3D11HLSLProgramFactory.h"
 #include "Math/TeRect2.h"
+#include "TeD3D11DepthStencilState.h"
 
 namespace te
 {
@@ -31,14 +32,29 @@ namespace te
 
         void Destroy() override;
 
+        /** @copydoc RenderAPI::SetGraphicsPipeline */
+        void SetGraphicsPipeline(const SPtr<GraphicsPipelineState>& pipelineState) override;
+
         /** @copydoc RenderAPI::SetViewport */
         void SetViewport(const Rect2& area) override;
+
+        /** @copydoc RenderAPI::SetScissorRect */
+		void SetScissorRect(UINT32 left, UINT32 top, UINT32 right, UINT32 bottom) override;
+
+        /** @copydoc RenderAPI::SetStencilRef */
+        void SetStencilRef(UINT32 value) override;
 
         /** @copydoc RenderAPI::SetVertexBuffers */
         void SetVertexBuffers(UINT32 index, SPtr<VertexBuffer>* buffers, UINT32 numBuffers) override;
 
         /** @copydoc RenderAPI::SetIndexBuffer */
         void SetIndexBuffer(const SPtr<IndexBuffer>& buffer) override;
+
+        /** @copydoc RenderAPI::SetVertexDeclaration */
+        void SetVertexDeclaration(const SPtr<VertexDeclaration>& vertexDeclaration) override;
+
+        /** @copydoc RenderAPI::SetDrawOperation */
+        void SetDrawOperation(DrawOperationType op) override;
 
         /** @copydoc RenderAPI::Draw */
         void Draw(UINT32 vertexOffset, UINT32 vertexCount, UINT32 instanceCount = 0) override;
@@ -98,7 +114,11 @@ namespace te
         UINT32 _stencilRef = 0;
 		Rect2 _viewportNorm = Rect2(0.0f, 0.0f, 1.0f, 1.0f);
         D3D11_VIEWPORT _viewport;
+        D3D11_RECT _scissorRect;
 
         SPtr<VertexDeclaration> _activeVertexDeclaration;
+        SPtr<D3D11DepthStencilState> _activeDepthStencilState;
+
+        DrawOperationType _activeDrawOp = DOT_TRIANGLE_LIST;
     };
 }

@@ -29,4 +29,6 @@ namespace te
     class D3D11HLSLProgramFactory;
     class D3D11Device;
     class D3D11InputLayoutManager;
+    class D3D11DepthStencilState;
+    class D3D11Mappings;
 }

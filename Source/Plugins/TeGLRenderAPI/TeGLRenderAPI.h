@@ -13,15 +13,30 @@ namespace te
 
         SPtr<RenderWindow> CreateRenderWindow(const RENDER_WINDOW_DESC& windowDesc) override;
         void Initialize() override;
+
+        /** @copydoc RenderAPI::setGraphicsPipeline */
+        void SetGraphicsPipeline(const SPtr<GraphicsPipelineState>& pipelineState) override;
         
         /** @copydoc RenderAPI::SetViewport */
         void SetViewport(const Rect2& area) override;
+
+        /** @copydoc RenderAPI::SetScissorRect */
+		void SetScissorRect(UINT32 left, UINT32 top, UINT32 right, UINT32 bottom) override;
+
+        /** @copydoc RenderAPI::SetStencilRef */
+        void SetStencilRef(UINT32 value) override;
 
         /** @copydoc RenderAPI::SetVertexBuffers */
         void SetVertexBuffers(UINT32 index, SPtr<VertexBuffer>* buffers, UINT32 numBuffers) override;
 
         /** @copydoc RenderAPI::SetIndexBuffer */
         void SetIndexBuffer(const SPtr<IndexBuffer>& buffer) override;
+
+        /** @copydoc RenderAPI::SetVertexDeclaration */
+        void SetVertexDeclaration(const SPtr<VertexDeclaration>& vertexDeclaration) override;
+
+        /** @copydoc RenderAPI::SetDrawOperation */
+        void SetDrawOperation(DrawOperationType op) override;
 
         /** @copydoc RenderAPI::Draw */
         void Draw(UINT32 vertexOffset, UINT32 vertexCount, UINT32 instanceCount = 0) override;

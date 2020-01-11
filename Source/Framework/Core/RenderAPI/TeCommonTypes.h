@@ -2,6 +2,19 @@
 
 namespace te
 {
+	/**	Comparison functions used for the depth/stencil buffer. */
+	enum CompareFunction
+	{
+		CMPF_ALWAYS_FAIL, /**< Operation will always fail. */
+		CMPF_ALWAYS_PASS, /**< Operation will always pass. */
+		CMPF_LESS, /**< Operation will pass if the new value is less than existing value. */
+		CMPF_LESS_EQUAL, /**< Operation will pass if the new value is less or equal than existing value. */
+		CMPF_EQUAL, /**< Operation will pass if the new value is equal to the existing value. */
+		CMPF_NOT_EQUAL, /**< Operation will pass if the new value is not equal to the existing value. */
+		CMPF_GREATER_EQUAL, /**< Operation will pass if the new value greater or equal than the existing value. */
+		CMPF_GREATER /**< Operation will pass if the new value greater than the existing value. */
+	};
+	
     /**	Types of frame buffers. */
 	enum FrameBufferType
 	{
@@ -22,6 +35,13 @@ namespace te
 		CULL_COUNTERCLOCKWISE = 2 /**< Hardware culls faces that have a counter-clockwise vertex ordering. */
 	};
 
+	/**	Polygon mode to use when rasterizing. */
+	enum PolygonMode
+	{
+		PM_WIREFRAME = 1, /**< Render as wireframe showing only polygon outlines. */
+		PM_SOLID = 2 /**< Render as solid showing whole polygons. */
+	};
+
     /** Types of programs that may run on GPU. */
 	enum GpuProgramType
 	{
@@ -32,6 +52,23 @@ namespace te
 		GPT_HULL_PROGRAM, /**< Hull (tesselation control) program. */
 		GPT_COMPUTE_PROGRAM, /**< Compute program. */
 		GPT_COUNT // Keep at end
+	};
+
+	/** Describes operation that will be used for rendering a certain set of vertices. */
+	enum  DrawOperationType
+	{
+		/** Each vertex represents a point. */
+		DOT_POINT_LIST = 1,
+		/** Each sequential pair of vertices represent a line. */
+		DOT_LINE_LIST = 2,
+		/** Each vertex (except the first) forms a line with the previous vertex. */
+		DOT_LINE_STRIP = 3,
+		/** Each sequential 3-tuple of vertices represent a triangle. */
+		DOT_TRIANGLE_LIST = 4,
+		/** Each vertex (except the first two) form a triangle with the previous two vertices. */
+		DOT_TRIANGLE_STRIP = 5,
+		/** Each vertex (except the first two) form a triangle with the first vertex and previous vertex. */
+		DOT_TRIANGLE_FAN = 6
 	};
 
 	/**

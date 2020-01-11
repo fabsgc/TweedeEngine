@@ -112,31 +112,6 @@ namespace te
         RenderWindow::Initialize();
     }
 
-    void D3D11RenderWindow::CreateDevice()
-    {
-        //TODO
-    }
-
-    void D3D11RenderWindow::CreateDepthStencilBuffer()
-    {
-        //TODO
-    }
-
-    void D3D11RenderWindow::CreateViewport()
-    {
-        //TODO
-    }
-
-    void D3D11RenderWindow::SetPrimitiveTopology()
-    {
-        //TODO
-    }
-
-    void D3D11RenderWindow::SetBackfaceCulling()
-    {
-        //TODO
-    }
-
     void D3D11RenderWindow::GetCustomAttribute(const String& name, void* pData) const
     {
         if (name == "WINDOW")

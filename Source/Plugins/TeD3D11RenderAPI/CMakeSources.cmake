@@ -9,6 +9,8 @@ set (TE_D3D11RENDERAPI_INC_NOFILTER
     "TeD3D11InputLayoutManager.h"
     "TeD3D11HLSLProgramFactory.h"
     "TeD3D11VideoModeInfo.h"
+    "TeD3D11Mappings.h"
+    "TeD3D11DepthStencilState.h"
 )
 
 set (TE_D3D11RENDERAPI_SRC_NOFILTER
@@ -22,6 +24,8 @@ set (TE_D3D11RENDERAPI_SRC_NOFILTER
     "TeD3D11InputLayoutManager.cpp"
     "TeD3D11HLSLProgramFactory.cpp"
     "TeD3D11VideoModeInfo.cpp"
+    "TeD3D11Mappings.cpp"
+    "TeD3D11DepthStencilState.cpp"
 )
 
 source_group ("" FILES ${TE_D3D11RENDERAPI_SRC_NOFILTER} ${TE_D3D11RENDERAPI_INC_NOFILTER})

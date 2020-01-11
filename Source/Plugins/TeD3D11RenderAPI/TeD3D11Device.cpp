@@ -7,7 +7,6 @@ namespace te
         , _D3D11FeatureOptions()
 	{
         assert(device != nullptr);
-        // TODO
 
 		if (device)
 		{

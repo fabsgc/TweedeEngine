@@ -29,7 +29,22 @@ namespace te
     {
     }
 
+    void GLRenderAPI::SetGraphicsPipeline(const SPtr<GraphicsPipelineState>& pipelineState)
+    {
+        // TODO
+    }
+
     void GLRenderAPI::SetViewport(const Rect2& area)
+    {
+        // TODO
+    }
+
+    void GLRenderAPI::SetScissorRect(UINT32 left, UINT32 top, UINT32 right, UINT32 bottom)
+    {
+        // TODO
+    }
+
+    void GLRenderAPI::SetStencilRef(UINT32 value)
     {
         // TODO
     }
@@ -40,6 +55,16 @@ namespace te
     }
 
     void GLRenderAPI::SetIndexBuffer(const SPtr<IndexBuffer>& buffer)
+    {
+        // TODO
+    }
+
+    void GLRenderAPI::SetVertexDeclaration(const SPtr<VertexDeclaration>& vertexDeclaration)
+    {
+        // TODO
+    }
+
+    void GLRenderAPI::SetDrawOperation(DrawOperationType op)
     {
         // TODO
     }

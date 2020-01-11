@@ -80,13 +80,6 @@ namespace te
         void ResizeSwapChainBuffers(UINT32 width, UINT32 height);
 
     protected:
-        void CreateDevice();
-        void CreateDepthStencilBuffer();
-        void CreateViewport();
-        void SetPrimitiveTopology();
-        void SetBackfaceCulling();
-
-    protected:
         D3D11Device& _device;
 		IDXGIFactory1* _DXGIFactory;
 

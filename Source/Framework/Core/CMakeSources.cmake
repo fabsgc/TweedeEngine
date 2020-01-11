@@ -7,15 +7,17 @@ set (TE_CORE_INC_RENDERAPI
     "Core/RenderAPI/TeVertexBuffer.h"
     "Core/RenderAPI/TeVertexDeclaration.h"
     "Core/RenderAPI/TeCommonTypes.h"
+    "Core/RenderAPI/TeDepthStencilState.h"
+    "Core/RenderAPI/TeGpuPipelineState.h"
 )
 set (TE_CORE_SRC_RENDERAPI
     "Core/RenderAPI/TeRenderAPI.cpp"
     "Core/RenderAPI/TeRenderWindow.cpp"
     "Core/RenderAPI/TeVideoMode.cpp"
     "Core/RenderAPI/TeRenderTarget.cpp"
-    "Core/RenderAPI/TeHardwareBuffer.h"
-    "Core/RenderAPI/TeVertexBuffer.h"
-    "Core/RenderAPI/TeVertexDeclaration.h"
+    "Core/RenderAPI/TeVertexDeclaration.cpp"
+    "Core/RenderAPI/TeDepthStencilState.cpp"
+    "Core/RenderAPI/TeGpuPipelineState.cpp"
 )
 
 set (TE_CORE_INC_RENDERER

@@ -1,6 +1,8 @@
 #include "TeD3D11RenderAPI.h"
 #include "TeD3D11RenderWindow.h"
 #include "Math/TeRect2I.h"
+#include "TeD3D11Mappings.h"
+#include "RenderAPI/TeGpuPipelineState.h"
 
 namespace te
 {
@@ -27,7 +29,7 @@ namespace te
         }
 
         _driverList = te_new<D3D11DriverList>(_DXGIFactory);
-        _activeD3DDriver = _driverList->Item(0); // TODO: Always get first driver, for now
+        _activeD3DDriver = _driverList->Item(0);
 		_videoModeInfo = _activeD3DDriver->GetVideoModeInfo();
 
         IDXGIAdapter* selectedAdapter = _activeD3DDriver->GetDeviceAdapter();
@@ -113,10 +115,54 @@ namespace te
         RenderAPI::Destroy();
     }
 
+    void D3D11RenderAPI::SetGraphicsPipeline(const SPtr<GraphicsPipelineState>& pipelineState)
+    {
+        // TODO
+
+        if (pipelineState != nullptr)
+        {
+            _activeDepthStencilState = std::static_pointer_cast<D3D11DepthStencilState>(pipelineState->GetDepthStencilState());
+
+            if (_activeDepthStencilState == nullptr)
+                _activeDepthStencilState = std::static_pointer_cast<D3D11DepthStencilState>(DepthStencilState::GetDefault());
+        }
+        else
+        {
+            _activeDepthStencilState = std::static_pointer_cast<D3D11DepthStencilState>(DepthStencilState::GetDefault());
+        }
+
+        ID3D11DeviceContext* d3d11Context = _device->GetImmediateContext();
+        d3d11Context->OMSetDepthStencilState(_activeDepthStencilState->GetInternal(), _stencilRef);
+    }
+
     void D3D11RenderAPI::SetViewport(const Rect2& area)
     {
         _viewportNorm = area;
         ApplyViewport();
+    }
+
+    void D3D11RenderAPI::SetScissorRect(UINT32 left, UINT32 top, UINT32 right, UINT32 bottom)
+    {
+        _scissorRect.left = static_cast<LONG>(left);
+        _scissorRect.top = static_cast<LONG>(top);
+        _scissorRect.bottom = static_cast<LONG>(bottom);
+        _scissorRect.right = static_cast<LONG>(right);
+
+        _device->GetImmediateContext()->RSSetScissorRects(1, &_scissorRect);
+    }
+
+    void D3D11RenderAPI::SetStencilRef(UINT32 value)
+    {
+        _stencilRef = value;
+
+        if(_activeDepthStencilState != nullptr)
+        {
+            _device->GetImmediateContext()->OMSetDepthStencilState(_activeDepthStencilState->GetInternal(), _stencilRef);
+        }
+        else
+        {
+            _device->GetImmediateContext()->OMSetDepthStencilState(nullptr, _stencilRef);
+        }
     }
 
     void D3D11RenderAPI::SetVertexBuffers(UINT32 index, SPtr<VertexBuffer>* buffers, UINT32 numBuffers)
@@ -129,14 +175,61 @@ namespace te
         // TODO
     }
 
+    void D3D11RenderAPI::SetVertexDeclaration(const SPtr<VertexDeclaration>& vertexDeclaration)
+    {
+        _activeVertexDeclaration = vertexDeclaration;
+    }
+
+    void D3D11RenderAPI::SetDrawOperation(DrawOperationType op)
+    {
+        _device->GetImmediateContext()->IASetPrimitiveTopology(D3D11Mappings::GetPrimitiveType(op));
+		_activeDrawOp = op;
+    }
+
     void D3D11RenderAPI::Draw(UINT32 vertexOffset, UINT32 vertexCount, UINT32 instanceCount)
     {
-        // TODO
+        ApplyInputLayout();
+
+        if (instanceCount <= 1)
+        {
+            _device->GetImmediateContext()->Draw(vertexCount, vertexOffset);
+        }
+        else
+        {
+            _device->GetImmediateContext()->DrawInstanced(vertexCount, instanceCount, vertexOffset, 0);
+        }
+
+#if TE_DEBUG_MODE
+			if (_device->HasError())
+            {
+				TE_DEBUG(_device->GetErrorDescription(), __FILE__, __LINE__);
+            }
+#endif
+
+        NotifyRenderTargetModified();
     }
 
     void D3D11RenderAPI::DrawIndexed(UINT32 startIndex, UINT32 indexCount, UINT32 vertexOffset, UINT32 vertexCount, UINT32 instanceCount)
     {
-        // TODO
+        ApplyInputLayout();
+
+        if (instanceCount <= 1)
+        {
+            _device->GetImmediateContext()->DrawIndexed(indexCount, startIndex, vertexOffset);
+        }
+        else
+        {
+            _device->GetImmediateContext()->DrawIndexedInstanced(indexCount, instanceCount, startIndex, vertexOffset, 0);
+        }
+
+#if TE_DEBUG_MODE
+			if (_device->HasError())
+            {
+				TE_DEBUG(_device->GetErrorDescription(), __FILE__, __LINE__);
+            }
+#endif
+
+        NotifyRenderTargetModified();
     }
 
     void D3D11RenderAPI::SwapBuffers(const SPtr<RenderTarget>& target)
@@ -341,7 +434,6 @@ namespace te
             return;
         }
 
-        //_activeRenderTarget->_tickUpdateCount();
         _activeRenderTargetModified = true;
     }
 }

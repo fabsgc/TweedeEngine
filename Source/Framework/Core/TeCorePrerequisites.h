@@ -64,6 +64,13 @@ namespace te
     class VideoOutputInfo;
     class VideoModeInfo;
     class RenderWindowProperties;
+    struct DEPTH_STENCIL_STATE_DESC;
+    class DepthStencilState;
+    struct PIPELINE_STATE_DESC;
+    class GraphicsPipelineState;
+    class HardwareBuffer;
+    class VertexBuffer;
+    class VertexDeclaration;
 
     class Renderer;
     class RendererFactory;
