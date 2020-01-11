@@ -11,6 +11,8 @@ namespace te
     class TE_CORE_EXPORT RendererManager : public Module<RendererManager>
     {
     public:
+        ~RendererManager();
+
         /** Initializes the renderer, making it ready to render. */
         SPtr<Renderer> Initialize(const String& pluginFilename);
 

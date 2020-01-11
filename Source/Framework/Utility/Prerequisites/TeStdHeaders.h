@@ -135,9 +135,18 @@ namespace te
         return (T*)MemoryAllocator::Allocate(count);
     }
 
+    /**
+    * Allocates enough bytes to hold the specified type, but doesn't construct it.
+    */
+    template<class T>
+    inline T* te_allocate()
+    {
+        return (T*)MemoryAllocator::Allocate(sizeof(T));
+    }
+
     /** Creates and constructs an array of @p count elements. */
     template<class T>
-    T* te_newN(size_t count)
+    T* te_newN(uint32_t count)
     {
         T* ptr = (T*)te_allocate<T>(sizeof(T) * count);
 
@@ -173,6 +182,22 @@ namespace te
         (ptr)->~T();
         MemoryAllocator::Deallocate(ptr);
     }
+
+    /** Callable struct that acts as a proxy for bs_delete */
+    template<class T>
+    struct Deleter
+    {
+        constexpr Deleter() noexcept = default;
+
+        /** Constructor enabling deleter conversion and therefore polymorphism with smart points (if they use the same allocator). */
+        template <class T2, std::enable_if_t<std::is_convertible<T2*, T*>::value, int> = 0>
+        constexpr Deleter(const Deleter<T2>& other) noexcept { }
+
+        void operator()(T* ptr) const
+        {
+            te_delete<T>(ptr);
+        }
+    };
 
     /** Destructs and frees the specified array of objects. */
     template<class T>
@@ -302,6 +327,16 @@ namespace te
     SPtr<Type> te_shared_ptr_new(Args &&... args)
     {
         return std::allocate_shared<Type>(std::allocator<Type>(), std::forward<Args>(args)...);
+    }
+
+    /**
+     * Create a new shared pointer from a previously constructed object.
+     * Pointer specific data will be allocated using the provided allocator category.
+     */
+    template<typename Type, typename Delete = Deleter<Type>>
+    SPtr<Type> te_shared_ptr(Type* data, Delete del = Delete())
+    {
+        return SPtr<Type>(data, std::move(del));
     }
 
     /* ###################################################################

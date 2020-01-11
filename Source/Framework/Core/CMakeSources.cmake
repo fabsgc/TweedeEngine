@@ -6,6 +6,7 @@ set (TE_CORE_INC_RENDERAPI
     "Core/RenderAPI/TeRenderTarget.h"
     "Core/RenderAPI/TeVertexBuffer.h"
     "Core/RenderAPI/TeVertexDeclaration.h"
+    "Core/RenderAPI/TeCommonTypes.h"
 )
 set (TE_CORE_SRC_RENDERAPI
     "Core/RenderAPI/TeRenderAPI.cpp"
@@ -20,9 +21,24 @@ set (TE_CORE_SRC_RENDERAPI
 set (TE_CORE_INC_RENDERER
     "Core/Renderer/TeRenderer.h"
     "Core/Renderer/TeRendererFactory.h"
+    "Core/Renderer/TeCamera.h"
+    "Core/Renderer/TeViewport.h"
+    "Core/Renderer/TeCoreObject.h"
 )
 set (TE_CORE_SRC_RENDERER
     "Core/Renderer/TeRenderer.cpp"
+    "Core/Renderer/TeCamera.cpp"
+    "Core/Renderer/TeViewport.cpp"
+    "Core/Renderer/TeCoreObject.cpp"
+)
+
+set (TE_CORE_INC_SCENE
+    "Core/Scene/TeSceneActor.h"
+    "Core/Scene/TeSceneManager.h"
+)
+set (TE_CORE_SRC_SCENE
+    "Core/Scene/TeSceneActor.cpp"
+    "Core/Scene/TeSceneManager.cpp"
 )
 
 set(TE_CORE_INC_PLATFORM
@@ -153,6 +169,7 @@ source_group("Core\\Importer" FILES ${TE_CORE_INC_IMPORTER} ${TE_CORE_SRC_IMPORT
 source_group("Core\\Image" FILES ${TE_CORE_INC_IMAGE} ${TE_CORE_SRC_IMAGE})
 source_group("Core\\Mesh" FILES ${TE_CORE_INC_MESH} ${TE_CORE_SRC_MESH})
 source_group("Core\\Resources" FILES ${TE_CORE_INC_RESOURCE} ${TE_CORE_SRC_RESOURCE})
+source_group("Core\\Scene" FILES ${TE_CORE_INC_SCENE} ${TE_CORE_SRC_SCENE})
 source_group("Core" FILES ${TE_CORE_INC_NOFILTER} ${TE_CORE_SRC_NOFILTER})
 
 set(TE_CORE_SRC
@@ -176,4 +193,6 @@ set(TE_CORE_SRC
     ${TE_CORE_SRC_MESH}
     ${TE_CORE_INC_RESOURCE}
     ${TE_CORE_SRC_RESOURCE}
+    ${TE_CORE_INC_SCENE}
+    ${TE_CORE_SRC_SCENE}
 )

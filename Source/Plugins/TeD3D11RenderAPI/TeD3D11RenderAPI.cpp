@@ -1,5 +1,6 @@
 #include "TeD3D11RenderAPI.h"
 #include "TeD3D11RenderWindow.h"
+#include "Math/TeRect2I.h"
 
 namespace te
 {
@@ -145,17 +146,147 @@ namespace te
 
     void D3D11RenderAPI::SetRenderTarget(const SPtr<RenderTarget>& target)
     {
-        // TODO
+        _activeRenderTarget = target;
+        _activeRenderTargetModified = false;
+
+        UINT32 maxRenderTargets = D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT;
+        ID3D11RenderTargetView** views = te_newN<ID3D11RenderTargetView*>(maxRenderTargets);
+        memset(views, 0, sizeof(ID3D11RenderTargetView*) * maxRenderTargets);
+
+        ID3D11DepthStencilView* depthStencilView = nullptr;
+
+        if (target != nullptr)
+        {
+            target->GetCustomAttribute("RTV", views);
+            target->GetCustomAttribute("RODSV", &depthStencilView);
+        }
+
+        // Bind render targets
+        _device->GetImmediateContext()->OMSetRenderTargets(maxRenderTargets, views, depthStencilView);
+
+        if (_device->HasError())
+        {
+            TE_ASSERT_ERROR(false, "Failed to setRenderTarget : " + _device->GetErrorDescription(), __FILE__, __LINE__);
+        }
+
+        te_deleteN(views, maxRenderTargets);
+        ApplyViewport();
     }
 
-    void D3D11RenderAPI::ClearRenderTarget(UINT32 buffers, float depth, UINT16 stencil, UINT8 targetMask)
+    void D3D11RenderAPI::ClearRenderTarget(UINT32 buffers, const Color& color, float depth, UINT16 stencil, UINT8 targetMask)
     {
-        // TODO
+        if (_activeRenderTarget == nullptr)
+        {
+            return;
+        }
+
+        // Clear render surfaces
+        if (buffers & FBT_COLOR)
+        {
+            UINT32 maxRenderTargets = D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT;
+
+            ID3D11RenderTargetView** views = te_newN<ID3D11RenderTargetView*>(maxRenderTargets);
+            memset(views, 0, sizeof(ID3D11RenderTargetView*) * maxRenderTargets);
+
+            _activeRenderTarget->GetCustomAttribute("RTV", views);
+            if (!views[0])
+            {
+                te_deleteN(views, maxRenderTargets);
+                return;
+            }
+
+            float clearColor[4];
+            clearColor[0] = color.r;
+            clearColor[1] = color.g;
+            clearColor[2] = color.b;
+            clearColor[3] = color.a;
+
+            for (UINT32 i = 0; i < maxRenderTargets; i++)
+            {
+                if (views[i] != nullptr && ((1 << i) & targetMask) != 0)
+                {
+                    _device->GetImmediateContext()->ClearRenderTargetView(views[i], clearColor);
+                }
+            }
+
+            te_deleteN(views, maxRenderTargets);
+        }
+
+        // Clear depth stencil
+        if ((buffers & FBT_DEPTH) != 0 || (buffers & FBT_STENCIL) != 0)
+        {
+            ID3D11DepthStencilView* depthStencilView = nullptr;
+            _activeRenderTarget->GetCustomAttribute("DSV", &depthStencilView);
+
+            if (depthStencilView != nullptr)
+            {
+                D3D11_CLEAR_FLAG clearFlag;
+
+                if ((buffers & FBT_DEPTH) != 0 && (buffers & FBT_STENCIL) != 0)
+                {
+                    clearFlag = (D3D11_CLEAR_FLAG)(D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL);
+                }
+                else if ((buffers & FBT_STENCIL) != 0)
+                {
+                    clearFlag = D3D11_CLEAR_STENCIL;
+                }
+                else
+                {
+                    clearFlag = D3D11_CLEAR_DEPTH;
+                }
+
+                if (depthStencilView != nullptr)
+                {
+                    _device->GetImmediateContext()->ClearDepthStencilView(depthStencilView, clearFlag, depth, (UINT8)stencil);
+                }
+            }
+        }
+
+        NotifyRenderTargetModified();
     }
 
-    void D3D11RenderAPI::ClearViewport(UINT32 buffers, float depth, UINT16 stencil, UINT8 targetMask)
+    void D3D11RenderAPI::ClearViewport(UINT32 buffers, const Color& color, float depth, UINT16 stencil, UINT8 targetMask)
     {
-        // TODO
+        if (_activeRenderTarget == nullptr)
+        {
+            return;
+        }
+
+        const RenderTargetProperties& rtProps = _activeRenderTarget->GetProperties();
+
+        Rect2I clearArea((int)_viewport.TopLeftX, (int)_viewport.TopLeftY, (int)_viewport.Width, (int)_viewport.Height);
+
+        bool clearEntireTarget = clearArea.width == 0 || clearArea.height == 0;
+        clearEntireTarget |= (clearArea.x == 0 && clearArea.y == 0 && clearArea.width == rtProps.Width &&
+            clearArea.height == rtProps.Height);
+
+        if (!clearEntireTarget)
+        {
+            // D3D11RenderUtility::Instance().DrawClearQuad(buffers, color, depth, stencil); TODO
+            NotifyRenderTargetModified();
+        }
+        else
+        {
+            ClearRenderTarget(buffers, color, depth, stencil, targetMask);
+        }
+    }
+
+    void D3D11RenderAPI::DetermineMultisampleSettings(UINT32 multisampleCount, DXGI_FORMAT format, DXGI_SAMPLE_DESC* outputSampleDesc)
+    {
+        if (multisampleCount == 0 || multisampleCount == 1)
+        {
+            outputSampleDesc->Count = 1;
+            outputSampleDesc->Quality = 0;
+
+            return;
+        }
+
+        UINT outQuality = 0;
+        _device->GetD3D11Device()->CheckMultisampleQualityLevels(DXGI_FORMAT_R8G8B8A8_UNORM, 4, &outQuality);
+        assert(outQuality > 0);
+
+        outputSampleDesc->Count = 4;
+        outputSampleDesc->Quality = outQuality - 1;
     }
 
     void D3D11RenderAPI::ApplyInputLayout()

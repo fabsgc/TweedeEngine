@@ -14,7 +14,6 @@ namespace te
         D3D11RenderWindow(const RENDER_WINDOW_DESC& desc, D3D11Device& device, IDXGIFactory1* DXGIFactory);
 		~D3D11RenderWindow();
 
-        void Update() override;
         void Initialize() override;
         void GetCustomAttribute(const String& name, void* pData) const override;
         void WindowMovedOrResized() override;
@@ -22,55 +21,67 @@ namespace te
         /**	Retrieves internal window handle. */
         HWND GetHWnd() const;
 
-        /** @copydoc RenderWindow::move */
+        /** @copydoc RenderWindow::Move */
         void Move(INT32 left, INT32 top) override;
 
-        /** @copydoc RenderWindow::resize */
+        /** @copydoc RenderWindow::Resize */
         void Resize(UINT32 width, UINT32 height) override;
 
-        /** @copydoc RenderWindow::setHidden */
+        /** @copydoc RenderWindow::SetHidden */
         void SetHidden(bool hidden) override;
 
-        /** @copydoc RenderWindow::setActive */
+        /** @copydoc RenderWindow::SetActive */
         void SetActive(bool state) override;
 
-        /** @copydoc RenderWindow::minimize */
+        /** @copydoc RenderWindow::Minimize */
         void Minimize() override;
 
-        /** @copydoc RenderWindow::maximize */
+        /** @copydoc RenderWindow::Maximize */
         void Maximize() override;
 
-        /** @copydoc RenderWindow::restore */
+        /** @copydoc RenderWindow::Restore */
         void Restore() override;
 
-        /** @copydoc RenderWindow::setFullscreen(UINT32, UINT32, float, UINT32) */
+        /** @copydoc RenderWindow::SetFullscreen(UINT32, UINT32, float, UINT32) */
         void SetFullscreen(UINT32 width, UINT32 height, float refreshRate = 60.0f, UINT32 monitorIdx = 0) override;
 
-        /** @copydoc RenderWindow::setFullscreen(const VideoMode&) */
-        void SetFullscreen(const VideoMode& videoMode) override;
+        /** @copydoc RenderWindow::SetFullscreen(const VideoMode&) */
+        void SetFullscreen(const VideoMode& mode) override;
 
-        /** @copydoc RenderWindow::setWindowed */
+        /** @copydoc RenderWindow::SetWindowed */
         void SetWindowed(UINT32 width, UINT32 height) override;
 
-        /** @copydoc RenderWindow::screenToWindowPos */
+        /** @copydoc RenderWindow::ScreenToWindowPos */
         Vector2I ScreenToWindowPos(const Vector2I& screenPos) const override;
 
-        /** @copydoc RenderWindow::windowToScreenPos */
+        /** @copydoc RenderWindow::WindowToScreenPos */
         Vector2I WindowToScreenPos(const Vector2I& windowPos) const override;
+
+        /** @copydoc RenderWindow::SwapBuffers */
+        void SwapBuffers() override;
+
+    protected:
+        /**	Creates internal resources dependent on window size. */
+        void CreateSizeDependedD3DResources();
+
+        /**	Destroys internal resources dependent on window size. */
+        void DestroySizeDependedD3DResources();
+
+        /**	Creates a swap chain for the window. */
+        void CreateSwapChain();
+
+        /**	Queries the current DXGI device. Make sure to release the returned object when done with it. */
+        IDXGIDevice* QueryDxgiDevice();
+
+        /**	Resizes all buffers attached to the swap chain to the specified size. */
+        void ResizeSwapChainBuffers(UINT32 width, UINT32 height);
 
     protected:
         void CreateDevice();
-        void CheckMSAASupport();
-        void CreateSwapChain();
         void CreateDepthStencilBuffer();
         void CreateViewport();
         void SetPrimitiveTopology();
         void SetBackfaceCulling();
-
-        void CreateSizeDependedD3DResources();
-        void DestroySizeDependedD3DResources();
-		IDXGIDevice* QueryDxgiDevice();
-        void ResizeSwapChainBuffers(UINT32 width, UINT32 height);
 
     protected:
         D3D11Device& _device;

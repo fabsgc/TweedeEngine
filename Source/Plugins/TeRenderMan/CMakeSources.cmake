@@ -2,12 +2,15 @@ set (TE_RENDERMAN_INC_NOFILTER
     "TeRenderManPrerequisites.h"
     "TeRenderManFactory.h"
     "TeRenderMan.h"
+    "TeRenderManOptions.h"
+    "TeRendererScene.h"
 )
 
 set (TE_RENDERERMAN_SRC_NOFILTER
     "TeRenderManFactory.cpp"
     "TeRenderManPlugin.cpp"
     "TeRenderMan.cpp"
+    "TeRendererScene.cpp"
 )
 
 source_group ("" FILES ${TE_RENDERERMAN_SRC_NOFILTER} ${TE_RENDERMAN_INC_NOFILTER})

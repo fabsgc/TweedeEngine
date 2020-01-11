@@ -1,5 +1,7 @@
 #include "TeD3D11RenderWindow.h"
 #include "Private/Win32/TeWin32Platform.h"
+#include "TeD3D11VideoModeInfo.h"
+#include "TeD3D11RenderAPI.h"
 
 namespace te
 {
@@ -14,6 +16,13 @@ namespace te
 
     D3D11RenderWindow::~D3D11RenderWindow()
     {
+        RenderWindowProperties& props = _properties;
+
+        if (props.IsFullScreen)
+        {
+            _swapChain->SetFullscreenState(false, nullptr);
+        }
+
         SAFE_RELEASE(_swapChain);
 
         if (_window != nullptr)
@@ -21,10 +30,8 @@ namespace te
             _window->Destroy();
             te_delete(_window);
         }
-    }
 
-    void D3D11RenderWindow::Update()
-    {
+        DestroySizeDependedD3DResources();
     }
 
     void D3D11RenderWindow::Initialize()
@@ -56,6 +63,25 @@ namespace te
         windowDesc.Module = GetModuleHandle("TeD3D11RenderAPI.dll");
 #endif
 
+        const D3D11VideoMode& d3d11videoMode = static_cast<const D3D11VideoMode&>(_desc.Mode);
+        _refreshRateNumerator = d3d11videoMode.GetRefreshRateNumerator();
+        _refreshRateDenominator = d3d11videoMode.GetRefreshRateDenominator();
+
+        const D3D11VideoOutputInfo* outputInfo = nullptr;
+
+        const D3D11VideoModeInfo& videoModeInfo = static_cast<const D3D11VideoModeInfo&>(RenderAPI::Instance().GetVideoModeInfo());
+        UINT32 numOutputs = videoModeInfo.GetNumOutputs();
+        if (numOutputs > 0)
+        {
+            UINT32 actualMonitorIdx = std::min(_desc.Mode.GetOutputIdx(), numOutputs - 1);
+            outputInfo = static_cast<const D3D11VideoOutputInfo*>(&videoModeInfo.GetOutputInfo(actualMonitorIdx));
+
+            DXGI_OUTPUT_DESC desc;
+            outputInfo->GetDXGIOutput()->GetDesc(&desc);
+
+            windowDesc.Monitor = desc.Monitor;
+        }
+
         _window = te_new<Win32Window>(windowDesc);
 
         _properties.Width = _window->GetWidth();
@@ -66,31 +92,27 @@ namespace te
         CreateSwapChain();
 
         _properties.IsFullScreen = _desc.Fullscreen;
+        _properties.IsWindow = true;
 
         if (_properties.IsFullScreen)
         {
-            /*if (outputInfo != nullptr)
-                mSwapChain->SetFullscreenState(true, outputInfo->getDXGIOutput());
+            if (outputInfo != nullptr)
+            {
+                _swapChain->SetFullscreenState(true, outputInfo->GetDXGIOutput());
+            }
             else
-                mSwapChain->SetFullscreenState(true, nullptr);*/
+            {
+                _swapChain->SetFullscreenState(true, nullptr);
+            }
         }
 
-        //createSizeDependedD3DResources();
-        //mDXGIFactory->MakeWindowAssociation(mWindow->getHWnd(), NULL);
+        CreateSizeDependedD3DResources();
+        _DXGIFactory->MakeWindowAssociation(_window->GetHWnd(), NULL);
 
-        //TODO
+        RenderWindow::Initialize();
     }
 
     void D3D11RenderWindow::CreateDevice()
-    {
-        //TODO
-    }
-    void D3D11RenderWindow::CheckMSAASupport()
-    {
-        //TODO
-    }
-
-    void D3D11RenderWindow::CreateSwapChain()
     {
         //TODO
     }
@@ -121,6 +143,32 @@ namespace te
         {
             UINT64 *pWnd = (UINT64*)pData;
             *pWnd = (UINT64)_window->GetHWnd();
+            return;
+        }
+
+        if (name == "RTV")
+        {
+            *static_cast<ID3D11RenderTargetView**>(pData) = _renderTargetView;
+            return;
+        }
+        else if (name == "DSV")
+        {
+            // TODO
+            return;
+        }
+        else if (name == "RODSV")
+        {
+            // TODO
+            return;
+        }
+        else if (name == "RODWSV")
+        {
+            // TODO
+            return;
+        }
+        else if (name == "WDROSV")
+        {
+            // TODO
             return;
         }
 
@@ -195,12 +243,64 @@ namespace te
 
     void D3D11RenderWindow::SetFullscreen(UINT32 width, UINT32 height, float refreshRate, UINT32 monitorIdx)
     {
-        //TODO
+        const D3D11VideoModeInfo& videoModeInfo = static_cast<const D3D11VideoModeInfo&>(RenderAPI::Instance().GetVideoModeInfo());
+		UINT32 numOutputs = videoModeInfo.GetNumOutputs();
+		if (numOutputs == 0)
+        {
+			return;
+        }
+
+		UINT32 actualMonitorIdx = std::min(monitorIdx, numOutputs - 1);
+		const D3D11VideoOutputInfo& outputInfo = static_cast<const D3D11VideoOutputInfo&>(videoModeInfo.GetOutputInfo(actualMonitorIdx));
+
+		DXGI_MODE_DESC modeDesc;
+		ZeroMemory(&modeDesc, sizeof(modeDesc));
+
+		modeDesc.Width = width;
+		modeDesc.Height = height;
+		modeDesc.RefreshRate.Numerator = Math::RoundToInt(refreshRate);
+		modeDesc.RefreshRate.Denominator = 1;
+		modeDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		modeDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+		modeDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+
+		DXGI_MODE_DESC nearestMode;
+		ZeroMemory(&nearestMode, sizeof(nearestMode));
+
+		outputInfo.GetDXGIOutput()->FindClosestMatchingMode(&modeDesc, &nearestMode, nullptr);
+
+		_properties.IsFullScreen = true;
+		_properties.Width = width;
+		_properties.Height = height;
+
+		_swapChain->ResizeTarget(&nearestMode);
+		_swapChain->SetFullscreenState(true, outputInfo.GetDXGIOutput());
+
+		NotifyMovedOrResized();
     }
 
-    void D3D11RenderWindow::SetFullscreen(const VideoMode& videoMode)
+    void D3D11RenderWindow::SetFullscreen(const VideoMode& mode)
     {
-        //TODO
+        const D3D11VideoModeInfo& videoModeInfo = static_cast<const D3D11VideoModeInfo&>(RenderAPI::Instance().GetVideoModeInfo());
+        UINT32 numOutputs = videoModeInfo.GetNumOutputs();
+        if (numOutputs == 0)
+        {
+            return;
+        }
+
+        UINT32 actualMonitorIdx = std::min(mode.GetOutputIdx(), numOutputs - 1);
+        const D3D11VideoOutputInfo& outputInfo = static_cast<const D3D11VideoOutputInfo&>(videoModeInfo.GetOutputInfo(actualMonitorIdx));
+
+        const D3D11VideoMode& videoMode = static_cast<const D3D11VideoMode&>(mode);
+
+        _properties.IsFullScreen = true;
+        _properties.Width = mode.GetWidth();
+        _properties.Height = mode.GetHeight();
+
+        _swapChain->ResizeTarget(&videoMode.GetDXGIModeDesc());
+        _swapChain->SetFullscreenState(true, outputInfo.GetDXGIOutput());
+
+        NotifyMovedOrResized();
     }
 
     void D3D11RenderWindow::SetWindowed(UINT32 width, UINT32 height)
@@ -273,17 +373,144 @@ namespace te
 
     void D3D11RenderWindow::CreateSizeDependedD3DResources()
     {
-        //TODO
+        SAFE_RELEASE(_backBuffer);
+
+        HRESULT hr = _swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&_backBuffer);
+        if (FAILED(hr))
+        {
+            TE_ASSERT_ERROR(false, "Unable to Get Back Buffer for swap chain", __FILE__, __LINE__);
+        }
+
+        assert(_backBuffer && !_renderTargetView);
+
+        D3D11_TEXTURE2D_DESC BBDesc;
+        _backBuffer->GetDesc(&BBDesc);
+
+        D3D11_RENDER_TARGET_VIEW_DESC RTVDesc;
+        ZeroMemory(&RTVDesc, sizeof(RTVDesc));
+
+        RTVDesc.Format = BBDesc.Format;
+        RTVDesc.ViewDimension = GetProperties().MultisampleCount > 1 ? D3D11_RTV_DIMENSION_TEXTURE2DMS : D3D11_RTV_DIMENSION_TEXTURE2D;
+        RTVDesc.Texture2D.MipSlice = 0;
+        hr = _device.GetD3D11Device()->CreateRenderTargetView(_backBuffer, &RTVDesc, &_renderTargetView);
+
+        if (FAILED(hr))
+        {
+            String errorDescription = _device.GetErrorDescription();
+            TE_ASSERT_ERROR(false, "Unable to create rendertagert view\nError Description:" + errorDescription, __FILE__, __LINE__);
+        }
+
+        // TODO
+
+        //_depthStencilView = nullptr;
+
+        if (_desc.DepthBuffer)
+        {
+            /*TEXTURE_DESC texDesc;
+            texDesc.type = TEX_TYPE_2D;
+            texDesc.width = BBDesc.Width;
+            texDesc.height = BBDesc.Height;
+            texDesc.format = PF_D32_S8X24;
+            texDesc.usage = TU_DEPTHSTENCIL;
+            texDesc.numSamples = getProperties().multisampleCount;
+
+            _depthStencilBuffer = Texture::create(texDesc);
+            _depthStencilView = _depthStencilBuffer->requestView(0, 1, 0, 1, GVU_DEPTHSTENCIL);*/
+        }
+        else
+        {
+            // _depthStencilBuffer = nullptr;
+        }
     }
 
     void D3D11RenderWindow::DestroySizeDependedD3DResources()
     {
-        //TODO
+        SAFE_RELEASE(_backBuffer);
+        SAFE_RELEASE(_renderTargetView);
+
+        // _depthStencilBuffer = nullptr;
     }
 
     void D3D11RenderWindow::ResizeSwapChainBuffers(UINT32 width, UINT32 height)
     {
-        //TODO
+        DestroySizeDependedD3DResources();
+
+        UINT Flags = _properties.IsFullScreen ? DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH : 0;
+        HRESULT hr = _swapChain->ResizeBuffers(_swapChainDesc.BufferCount, width, height, _swapChainDesc.BufferDesc.Format, Flags);
+
+        if (hr != S_OK)
+        {
+            TE_ASSERT_ERROR(false, "Call to ResizeBuffers failed.", __FILE__, __LINE__);
+        }
+
+        _swapChain->GetDesc(&_swapChainDesc);
+        _properties.Width = _swapChainDesc.BufferDesc.Width;
+        _properties.Height = _swapChainDesc.BufferDesc.Height;
+        _properties.IsFullScreen = (0 == _swapChainDesc.Windowed); // Alt-Enter together with SetWindowAssociation() can change this state
+
+        CreateSizeDependedD3DResources();
+
+        _device.GetImmediateContext()->OMSetRenderTargets(0, 0, 0);
+    }
+
+    void D3D11RenderWindow::CreateSwapChain()
+    {
+        ZeroMemory(&_swapChainDesc, sizeof(DXGI_SWAP_CHAIN_DESC));
+
+        RenderWindowProperties& props = _properties;
+        IDXGIDevice* pDXGIDevice = QueryDxgiDevice();
+
+        ZeroMemory(&_swapChainDesc, sizeof(DXGI_SWAP_CHAIN_DESC));
+        DXGI_FORMAT format = DXGI_FORMAT_R8G8B8A8_UNORM;
+        _swapChainDesc.OutputWindow = _window->GetHWnd();
+        _swapChainDesc.BufferDesc.Width = props.Width;
+        _swapChainDesc.BufferDesc.Height = props.Height;
+        _swapChainDesc.BufferDesc.Format = format;
+
+        if (props.IsFullScreen)
+        {
+            _swapChainDesc.BufferDesc.RefreshRate.Numerator = _refreshRateNumerator;
+            _swapChainDesc.BufferDesc.RefreshRate.Denominator = _refreshRateDenominator;
+        }
+        else
+        {
+            _swapChainDesc.BufferDesc.RefreshRate.Numerator = 0;
+            _swapChainDesc.BufferDesc.RefreshRate.Denominator = 0;
+        }
+
+        _swapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+        _swapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+        _swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+
+        _swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+        _swapChainDesc.BufferCount = 1;
+        _swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+
+        _swapChainDesc.Windowed = true;
+
+        D3D11RenderAPI* rs = static_cast<D3D11RenderAPI*>(RenderAPI::InstancePtr());
+        rs->DetermineMultisampleSettings(props.MultisampleCount, format, &_multisampleType);
+        _swapChainDesc.SampleDesc.Count = _multisampleType.Count;
+        _swapChainDesc.SampleDesc.Quality = _multisampleType.Quality;
+
+        HRESULT hr;
+
+        // Create swap chain			
+        hr = _DXGIFactory->CreateSwapChain(pDXGIDevice, &_swapChainDesc, &_swapChain);
+
+        if (FAILED(hr))
+        {
+            // Try a second time, may fail the first time due to back buffer count,
+            // which will be corrected by the runtime
+            hr = _DXGIFactory->CreateSwapChain(pDXGIDevice, &_swapChainDesc, &_swapChain);
+        }
+
+        SAFE_RELEASE(pDXGIDevice);
+
+        if (FAILED(hr))
+        {
+            TE_ASSERT_ERROR(false, "Unable to create swap chain. Error code: " + ToString(hr), __FILE__, __LINE__);
+        }
     }
 
     IDXGIDevice* D3D11RenderWindow::QueryDxgiDevice()
@@ -299,5 +526,18 @@ namespace te
         }
 
         return pDXGIDevice;
+    }
+
+    void D3D11RenderWindow::SwapBuffers()
+    {
+        if (_device.GetD3D11Device() != nullptr)
+        {
+            HRESULT hr = _swapChain->Present(GetProperties().VSync ? 1 : 0, 0);
+
+            if (FAILED(hr))
+            {
+                TE_ASSERT_ERROR(false, "Error Presenting surfaces", __FILE__, __LINE__);
+            }
+        }
     }
 }

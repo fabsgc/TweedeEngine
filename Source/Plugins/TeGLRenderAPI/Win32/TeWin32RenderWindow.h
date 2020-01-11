@@ -13,7 +13,6 @@ namespace te
         Win32RenderWindow(const RENDER_WINDOW_DESC& desc);
 		~Win32RenderWindow();
 
-        void Update() override;
         void Initialize() override;
         void GetCustomAttribute(const String& name, void* pData) const override;
         void WindowMovedOrResized() override;

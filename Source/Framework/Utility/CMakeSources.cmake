@@ -93,6 +93,7 @@ set(TE_UTILITY_INC_UTILITY
     "Utility/Utility/TeUUID.h"
     "Utility/Utility/TeEvent.h"
     "Utility/Utility/TePlatformUtility.h"
+    "Utility/Utility/TeColor.h"
 )
 set(TE_UTILITY_SRC_UTILITY
     "Utility/Utility/TeDynLib.cpp"
@@ -101,6 +102,7 @@ set(TE_UTILITY_SRC_UTILITY
     "Utility/Utility/TeTimer.cpp"
     "Utility/Utility/TeUtility.cpp"
     "Utility/Utility/TeUUID.cpp"
+    "Utility/Utility/TeColor.cpp"
 )
 
 set(TE_UTILITY_INC_THREADING

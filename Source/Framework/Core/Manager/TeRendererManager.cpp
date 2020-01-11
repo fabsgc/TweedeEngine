@@ -8,6 +8,14 @@ namespace te
 {
     TE_MODULE_STATIC_MEMBER(RendererManager)
 
+    RendererManager::~RendererManager()
+    {
+        if (_renderer != nullptr)
+        {
+            _renderer->Destroy();
+        }
+    }
+
     SPtr<Renderer> RendererManager::Initialize(const String& pluginFilename)
     {
         DynLib* loadedLibrary = gDynLibManager().Load(pluginFilename);
@@ -26,10 +34,16 @@ namespace te
             if ((*iter)->Name() == name)
             {
                 SPtr<Renderer> newRenderer = (*iter)->Create();
+
                 if (newRenderer != nullptr)
                 {
+                    newRenderer->Initialize();
+
                     if (_renderer != nullptr)
+                    {
+                        _renderer->Destroy();
                         te_delete(&_renderer);
+                    }
 
                     _renderer = newRenderer;
                     return _renderer;

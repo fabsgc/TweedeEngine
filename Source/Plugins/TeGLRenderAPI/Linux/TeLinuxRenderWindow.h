@@ -31,7 +31,6 @@ namespace te
         LinuxRenderWindow(const RENDER_WINDOW_DESC& desc);
 		~LinuxRenderWindow();
 
-        void Update() override;
         void Initialize() override;
         void GetCustomAttribute(const String& name, void* pData) const override;
         void WindowMovedOrResized() override;

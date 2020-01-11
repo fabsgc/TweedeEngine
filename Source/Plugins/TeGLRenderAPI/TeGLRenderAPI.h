@@ -36,9 +36,9 @@ namespace te
         void SetRenderTarget(const SPtr<RenderTarget>& target) override;
 
         /** @copydoc RenderAPI::ClearRenderTarget */
-        void ClearRenderTarget(UINT32 buffers, float depth = 1.0f, UINT16 stencil = 0, UINT8 targetMask = 0xFF) override;
+        void ClearRenderTarget(UINT32 buffers, const Color& color = Color::Black, float depth = 1.0f, UINT16 stencil = 0, UINT8 targetMask = 0xFF) override;
 
         /** @copydoc RenderAPI::ClearViewport */
-        void ClearViewport(UINT32 buffers, float depth = 1.0f, UINT16 stencil = 0, UINT8 targetMask = 0xFF) override;
+        void ClearViewport(UINT32 buffers, const Color& color = Color::Black, float depth = 1.0f, UINT16 stencil = 0, UINT8 targetMask = 0xFF) override;
     };
 }

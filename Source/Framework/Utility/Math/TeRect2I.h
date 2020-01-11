@@ -68,6 +68,4 @@ namespace te
 
         static const Rect2I EMPTY;
     };
-
-    /** @} */
 }

@@ -67,6 +67,12 @@ namespace te
 
     class Renderer;
     class RendererFactory;
+    class CameraBase;
+    class Camera;
+    class ViewportBase;
+    class Viewport;
+
+    class SceneActor;
 
     class Input;
     class GamePad;
@@ -95,6 +101,8 @@ namespace te
     class Texture;
 
     class Mesh;
+
+    class Color;
 }
 
 #include "Resources/TeResourceHandle.h"
@@ -105,3 +113,5 @@ namespace te
     typedef ResourceHandle<Texture> HTexture;
     typedef ResourceHandle<Mesh> HMesh;
 }
+
+#include "RenderAPI/TeCommonTypes.h"

@@ -64,12 +64,12 @@ namespace te
         // TODO
     }
 
-    void GLRenderAPI::ClearRenderTarget(UINT32 buffers, float depth, UINT16 stencil, UINT8 targetMask)
+    void GLRenderAPI::ClearRenderTarget(UINT32 buffers, const Color& color, float depth, UINT16 stencil, UINT8 targetMask)
     {
         // TODO
     }
 
-    void GLRenderAPI::ClearViewport(UINT32 buffers, float depth, UINT16 stencil, UINT8 targetMask)
+    void GLRenderAPI::ClearViewport(UINT32 buffers, const Color& color, float depth, UINT16 stencil, UINT8 targetMask)
     {
         // TODO
     }

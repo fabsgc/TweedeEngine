@@ -14,6 +14,8 @@
 #include "Renderer/TeRenderer.h"
 #include "Importer/TeImporter.h"
 #include "Resources/TeResourceManager.h"
+#include "Renderer/TeCamera.h"
+#include "Scene/TeSceneManager.h"
 
 namespace te
 {
@@ -57,6 +59,8 @@ namespace te
 
         Input::StartUp();
         VirtualInput::StartUp();
+        SceneManager::StartUp();
+        gSceneManager().Initialize();
 
         SPtr<InputConfiguration> inputConfig = gVirtualInput().GetConfiguration();
 
@@ -130,6 +134,10 @@ namespace te
 
         TE_PRINT((loadTexture.GetHandleData())->data);
         TE_PRINT((loadTexture.GetHandleData())->uuid.ToString());
+
+        SPtr<Camera> camera = Camera::Create();
+        camera->SetRenderTarget(gCoreApplication().GetWindow());
+        camera->SetMain(true);
     }
     
     void CoreApplication::OnShutDown()
@@ -137,13 +145,14 @@ namespace te
         _renderer.reset();
         _window.reset();
 
+        SceneManager::ShutDown();
         Importer::ShutDown();
         VirtualInput::ShutDown();
         Input::ShutDown();
         ResourceManager::ShutDown();
         RendererManager::ShutDown();
         RenderAPIManager::ShutDown();
-        //Platform::ShutDown();
+        Platform::ShutDown();
 
         DynLibManager::ShutDown();
         Time::ShutDown();
@@ -162,7 +171,6 @@ namespace te
             gTime().Update();
             gInput().Update();
             _window->TriggerCallback();
-            _window->Update();
             gInput().TriggerCallbacks();
             gVirtualInput().Update();
 
@@ -170,19 +178,23 @@ namespace te
 
             VirtualAxis lookLeftRightAxis("LookLeftRight");
 
-            float value = gVirtualInput().GetAxisValue(lookLeftRightAxis);
+            //float value = gVirtualInput().GetAxisValue(lookLeftRightAxis);
 
-            if(value != 0.0f)
-            {
-                TE_PRINT(value)
-            }
+            //if(value != 0.0f)
+            //{
+            //    TE_PRINT(value)
+            //}
 
             for (auto& pluginUpdateFunc : _pluginUpdateFunctions)
+            {
                 pluginUpdateFunc.second();
+            }
+
+            _renderer->Update();
 
             PostUpdate();
 
-            _renderer->Update();
+            RendererManager::Instance().GetRenderer()->RenderAll();
         }
     }
 

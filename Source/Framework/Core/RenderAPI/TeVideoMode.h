@@ -36,6 +36,8 @@ namespace te
 		/**	Returns a refresh rate in hertz. */
 		virtual float GetRefreshRate() const { return _refreshRate; }
 
+        UINT32 GetOutputIdx() const { return _outputIdx;  }
+
 	protected:
 		UINT32 _width = 1280;
 		UINT32 _height = 720;

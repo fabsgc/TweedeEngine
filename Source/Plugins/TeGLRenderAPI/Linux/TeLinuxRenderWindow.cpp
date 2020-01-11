@@ -18,11 +18,6 @@ namespace te
         }
     }
 
-    void LinuxRenderWindow::Update()
-    {
-        //TODO
-    }
-
     void LinuxRenderWindow::Initialize()
     {
         

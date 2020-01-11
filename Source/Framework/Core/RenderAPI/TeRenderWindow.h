@@ -66,21 +66,6 @@ namespace te
         RenderWindowProperties(const RENDER_WINDOW_DESC& desc);
         virtual ~RenderWindowProperties() = default;
 
-        /** Width of the render target, in pixels. */
-        UINT32 Width = 0;
-
-        /** Height of the render target, in pixels. */
-        UINT32 Height = 0;
-
-        /**
-         * True if the render target will wait for vertical sync before swapping buffers. This will eliminate
-         * tearing but may increase input latency.
-         */
-        bool Vsync = true;
-
-        /** Controls how many samples are used for multisampling. (0 or 1 if multisampling is not used). */
-        UINT32 MultisampleCount = 4;
-
         /**	True if window is running in fullscreen mode. */
         bool IsFullScreen = false;
 
@@ -98,15 +83,6 @@ namespace te
 
         /**	True if the window is maximized. */
         bool IsMaximized = false;
-
-        /**
-         * Does the texture need to be vertically flipped because of different screen space coordinate systems.	(Determines
-         * is origin top left or bottom left. Engine default is top left.)
-         */
-        bool RequiresTextureFlipping = false;
-
-        /** True if the target is a window, false if an offscreen target. */
-		bool IsWindow = false;
     };
 
     class TE_CORE_EXPORT RenderWindow : public RenderTarget
@@ -117,8 +93,7 @@ namespace te
 
         void TriggerCallback();
 
-        virtual void Update() = 0;
-        virtual void Initialize() = 0;
+        virtual void Initialize() {};
 
         /** Queries the render target for a custom attribute. This may be anything and is implementation specific. */
         virtual void GetCustomAttribute(const String& name, void* pData) const {}

@@ -58,6 +58,8 @@ namespace te
 
     class NonCopyable;
 
+    class Color;
+
     struct BaseConnectionData;
     class InternalData;
     class EventHandler;

@@ -17,10 +17,6 @@ namespace te
         }
     }
 
-    void Win32RenderWindow::Update()
-    {
-    }
-
     void Win32RenderWindow::Initialize()
     {
         WINDOW_DESC windowDesc;

@@ -4,6 +4,7 @@
 #include "Utility/TeModule.h"
 #include "RenderAPI/TeRenderTarget.h"
 #include "RenderAPI/TeRenderWindow.h"
+#include "Utility/TeColor.h"
 
 namespace te
 {
@@ -93,7 +94,7 @@ namespace te
 		 * @param[in]	targetMask		In case multiple render targets are bound, this allows you to control which ones to
 		 *									clear (0x01 first, 0x02 second, 0x04 third, etc., and combinations).
 		 */
-		virtual void ClearRenderTarget(UINT32 buffers, /*const Color& color = Color::Black,*/ float depth = 1.0f,
+		virtual void ClearRenderTarget(UINT32 buffers, const Color& color = Color::Black, float depth = 1.0f,
 			UINT16 stencil = 0, UINT8 targetMask = 0xFF) = 0;
 
 		/**
@@ -108,8 +109,11 @@ namespace te
 		 * @param[in]	targetMask		In case multiple render targets are bound, this allows you to control which ones to
 		 *								clear (0x01 first, 0x02 second, 0x04 third, etc., and combinations).
 		 */
-		virtual void ClearViewport(UINT32 buffers, /*const Color& color = Color::Black,*/ float depth = 1.0f,
+		virtual void ClearViewport(UINT32 buffers, const Color& color = Color::Black, float depth = 1.0f,
 			UINT16 stencil = 0, UINT8 targetMask = 0xFF) = 0;
+
+        /** Returns information about available output devices and their video modes. */
+        const VideoModeInfo& GetVideoModeInfo() const { return *_videoModeInfo; }
 
     protected:
         SPtr<RenderTarget> _activeRenderTarget;

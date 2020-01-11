@@ -7,7 +7,7 @@ namespace te
     {
         Width = desc.Mode.GetWidth();
         Height = desc.Mode.GetHeight();
-        Vsync = desc.Vsync;
+        VSync = desc.Vsync;
         MultisampleCount = desc.MultisampleCount;
         Left = desc.Left;
         Top = desc.Top;

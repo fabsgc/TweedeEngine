@@ -53,10 +53,19 @@ namespace te
         void SetRenderTarget(const SPtr<RenderTarget>& target) override;
 
         /** @copydoc RenderAPI::ClearRenderTarget */
-        void ClearRenderTarget(UINT32 buffers, float depth = 1.0f, UINT16 stencil = 0, UINT8 targetMask = 0xFF) override;
+        void ClearRenderTarget(UINT32 buffers, const Color& color = Color::Black, float depth = 1.0f, UINT16 stencil = 0, UINT8 targetMask = 0xFF) override;
 
         /** @copydoc RenderAPI::ClearViewport */
-        void ClearViewport(UINT32 buffers, float depth = 1.0f, UINT16 stencil = 0, UINT8 targetMask = 0xFF) override;
+        void ClearViewport(UINT32 buffers, const Color& color = Color::Black, float depth = 1.0f, UINT16 stencil = 0, UINT8 targetMask = 0xFF) override;
+
+        /**
+         * Determines DXGI multisample settings from the provided parameters.
+         *
+         * @param[in]	multisampleCount	Number of requested samples.
+         * @param[in]	format				Pixel format used by the render target.
+         * @param[out]	outputSampleDesc	Output structure that will contain the requested multisample settings.
+         */
+        void DetermineMultisampleSettings(UINT32 multisampleCount, DXGI_FORMAT format, DXGI_SAMPLE_DESC* outputSampleDesc);
 
     private:
         /**
