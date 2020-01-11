@@ -11,6 +11,8 @@ set (TE_CORE_INC_RENDERAPI
     "Core/RenderAPI/TeGpuPipelineState.h"
     "Core/RenderAPI/TeRasterizerState.h"
     "Core/RenderAPI/TeRenderStateManager.h"
+    "Core/RenderAPI/TeBlendState.h"
+    "Core/RenderAPI/TeSamplerState.h"
 )
 set (TE_CORE_SRC_RENDERAPI
     "Core/RenderAPI/TeRenderAPI.cpp"
@@ -22,6 +24,8 @@ set (TE_CORE_SRC_RENDERAPI
     "Core/RenderAPI/TeGpuPipelineState.cpp"
     "Core/RenderAPI/TeRasterizerState.cpp"
     "Core/RenderAPI/TeRenderStateManager.cpp"
+    "Core/RenderAPI/TeBlendState.cpp"
+    "Core/RenderAPI/TeSamplerState.cpp"
 )
 
 set (TE_CORE_INC_RENDERER

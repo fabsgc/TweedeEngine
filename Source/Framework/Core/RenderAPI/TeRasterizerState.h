@@ -19,7 +19,54 @@ namespace te
 		 */
 		CullingMode cullMode = CULL_COUNTERCLOCKWISE;
 
-        // TODO
+        /**
+         * Represents a constant depth bias that will offset the depth values of new pixels by the specified amount.
+         *
+         * @note		This is useful if you want to avoid z fighting for objects at the same or similar depth.
+         */
+        float depthBias = 0;
+
+        /**	Maximum depth bias value. */
+        float depthBiasClamp = 0.0f;
+
+        /**
+         * Represents a dynamic depth bias that increases as the slope of the rendered polygons surface increases.
+         * Resulting value offsets depth values of new pixels. This offset will be added on top of the constant depth bias.
+         *
+         * @note	This is useful if you want to avoid z fighting for objects at the same or similar depth.
+         */
+        float slopeScaledDepthBias = 0.0f;
+
+        /**
+         * If true, clipping of polygons past the far Z plane is enabled. This ensures proper Z ordering for polygons
+         * outside of valid depth range (otherwise they all have the same depth). It can be useful to disable if you are
+         * performing stencil operations that count on objects having a front and a back (like stencil shadow) and don't
+         * want to clip the back.
+         */
+        bool depthClipEnable = true;
+
+        /**
+         * Scissor rectangle allows you to cull all pixels outside of the scissor rectangle.
+         *
+         * @see		ct::RenderAPI::setScissorRect
+         */
+        bool scissorEnable = false;
+
+        /**
+         * Determines how are samples in multi-sample render targets handled. If disabled all samples in the render target
+         * will be written the same value, and if enabled each sample will be generated separately.
+         *
+         * @note	In order to get an antialiased image you need to both enable this option and use a MSAA render target.
+         */
+        bool multisampleEnable = true;
+
+        /**
+         * Determines should the lines be antialiased. This is separate from multi-sample antialiasing setting as lines can
+         * be antialiased without multi-sampling.
+         *
+         * @note	This setting is usually ignored if MSAA is used, as that provides sufficient antialiasing.
+         */
+        bool antialiasedLineEnable = false;
     };
 
     /** Properties of RasterizerState. Shared between sim and core thread versions of RasterizerState. */
@@ -28,15 +75,37 @@ namespace te
 	public:
 		RasterizerProperties(const RASTERIZER_STATE_DESC& desc);
 
-		/** @copydoc RASTERIZER_STATE_DESC::PolygonMode */
+		/** @copydoc RASTERIZER_STATE_DESC::polygonMode */
 		PolygonMode GetPolygonMode() const { return _data.polygonMode; }
 
-		/** @copydoc RASTERIZER_STATE_DESC::CullMode */
+		/** @copydoc RASTERIZER_STATE_DESC::cullMode */
 		CullingMode GetCullMode() const { return _data.cullMode; }
 
-    protected:
-        RASTERIZER_STATE_DESC _data;
+        /** @copydoc RASTERIZER_STATE_DESC::depthBias */
+        float GetDepthBias() const { return _data.depthBias; }
 
+        /** @copydoc RASTERIZER_STATE_DESC::depthBiasClamp */
+        float GetDepthBiasClamp() const { return _data.depthBiasClamp; }
+
+        /** @copydoc RASTERIZER_STATE_DESC::slopeScaledDepthBias */
+        float GetSlopeScaledDepthBias() const { return _data.slopeScaledDepthBias; }
+
+        /** @copydoc RASTERIZER_STATE_DESC::depthClipEnable */
+        bool GetDepthClipEnable() const { return _data.depthClipEnable; }
+
+        /** @copydoc RASTERIZER_STATE_DESC::scissorEnable */
+        bool GetScissorEnable() const { return _data.scissorEnable; }
+
+        /** @copydoc RASTERIZER_STATE_DESC::multisampleEnable */
+        bool GetMultisampleEnable() const { return _data.multisampleEnable; }
+
+        /** @copydoc RASTERIZER_STATE_DESC::antialiasedLineEnable */
+        bool GetAntialiasedLineEnable() const { return _data.antialiasedLineEnable; }
+
+    protected:
+        friend class RasterizerState;
+
+        RASTERIZER_STATE_DESC _data;
     };
 
     /**

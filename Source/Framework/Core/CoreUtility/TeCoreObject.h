@@ -22,8 +22,10 @@ namespace te
 		template<class T>
 		static void _delete(CoreObject* obj)
 		{
-			if (!obj->IsDestroyed())
-				obj->Destroy();
+            if (!obj->IsDestroyed())
+            {
+                obj->Destroy();
+            }
 
 			te_delete<T>((T*)obj);
 		}

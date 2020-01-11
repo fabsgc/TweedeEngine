@@ -19,23 +19,31 @@ namespace te
         D3D11_DEPTH_STENCIL_DESC depthStencilState;
         ZeroMemory(&depthStencilState, sizeof(D3D11_DEPTH_STENCIL_DESC));
 
-        // TODO
-        // Default depthStencilState create without using _properties (which is empty)
+        bool depthEnable = _properties.GetDepthWriteEnable() || _properties.GetDepthReadEnable();
+        CompareFunction compareFunc;
+        if (_properties.GetDepthReadEnable())
+        {
+            compareFunc = _properties.GetDepthComparisonFunc();
+        }
+        else
+        {
+            compareFunc = CMPF_ALWAYS_PASS;
+        }
 
-        depthStencilState.DepthEnable = true;
-        depthStencilState.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-        depthStencilState.DepthFunc = D3D11_COMPARISON_LESS;
-        depthStencilState.StencilEnable = true;
-        depthStencilState.StencilReadMask = 0xFF;
-        depthStencilState.StencilWriteMask = 0xFF;
-        depthStencilState.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-        depthStencilState.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
-        depthStencilState.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-        depthStencilState.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-        depthStencilState.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-        depthStencilState.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
-        depthStencilState.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-        depthStencilState.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+        depthStencilState.BackFace.StencilPassOp = D3D11Mappings::Get(_properties.GetStencilBackPassOp());
+        depthStencilState.BackFace.StencilFailOp = D3D11Mappings::Get(_properties.GetStencilBackFailOp());
+        depthStencilState.BackFace.StencilDepthFailOp = D3D11Mappings::Get(_properties.GetStencilBackZFailOp());
+        depthStencilState.BackFace.StencilFunc = D3D11Mappings::Get(_properties.GetStencilBackCompFunc());
+        depthStencilState.FrontFace.StencilPassOp = D3D11Mappings::Get(_properties.GetStencilFrontPassOp());
+        depthStencilState.FrontFace.StencilFailOp = D3D11Mappings::Get(_properties.GetStencilFrontFailOp());
+        depthStencilState.FrontFace.StencilDepthFailOp = D3D11Mappings::Get(_properties.GetStencilFrontZFailOp());
+        depthStencilState.FrontFace.StencilFunc = D3D11Mappings::Get(_properties.GetStencilFrontCompFunc());
+        depthStencilState.DepthEnable = depthEnable;
+        depthStencilState.DepthWriteMask = _properties.GetDepthWriteEnable() ? D3D11_DEPTH_WRITE_MASK_ALL : D3D11_DEPTH_WRITE_MASK_ZERO;
+        depthStencilState.DepthFunc = D3D11Mappings::Get(compareFunc);
+        depthStencilState.StencilEnable = _properties.GetStencilEnable();
+        depthStencilState.StencilReadMask = _properties.GetStencilReadMask();
+        depthStencilState.StencilWriteMask = _properties.GetStencilWriteMask();
 
         D3D11RenderAPI* rs = static_cast<D3D11RenderAPI*>(RenderAPI::InstancePtr());
         D3D11Device& device = rs->GetPrimaryDevice();

@@ -9,6 +9,15 @@ namespace te
 	class D3D11Mappings
 	{
 	public:
+		/**	Converts engine to DX11 specific blend factor. */
+		static D3D11_BLEND Get(BlendFactor bf);
+
+		/**	Converts engine to DX11 specific blend operation. */
+		static D3D11_BLEND_OP Get(BlendOperation bo);
+
+        /** Return DirectX 11 stencil operation and optionally invert it (greater than becomes less than, etc.). */
+        static D3D11_STENCIL_OP Get(StencilOperation op, bool invert = false);
+
         /**	Converts engine to DX11 specific comparison function. */
 		static D3D11_COMPARISON_FUNC Get(CompareFunction cf);
 

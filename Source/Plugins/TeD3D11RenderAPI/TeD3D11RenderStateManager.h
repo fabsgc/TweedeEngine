@@ -11,6 +11,9 @@ namespace te
 	protected:
         // TODO
 
+        /** @copydoc RenderStateManager::createRasterizerStateInternal */
+        SPtr<BlendState> CreateBlendStateInternal(const BLEND_STATE_DESC& desc) const override;
+
 		/** @copydoc RenderStateManager::createRasterizerStateInternal */
 		SPtr<RasterizerState> CreateRasterizerStateInternal(const RASTERIZER_STATE_DESC& desc) const override;
 

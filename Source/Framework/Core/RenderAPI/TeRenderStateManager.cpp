@@ -20,6 +20,14 @@ namespace te
 		return state;
 	}
 
+    SPtr<BlendState> RenderStateManager::CreateBlendState(const BLEND_STATE_DESC& desc) const
+    {
+        SPtr<BlendState> state = _createBlendState(desc);
+        state->Initialize();
+
+        return state;
+    }
+
     SPtr<GraphicsPipelineState> RenderStateManager::CreateGraphicsPipelineState(const PIPELINE_STATE_DESC& desc) const
 	{
 		SPtr<GraphicsPipelineState> state = _createGraphicsPipelineState(desc);
@@ -49,6 +57,12 @@ namespace te
 		return state;
 	}
 
+    SPtr<BlendState> RenderStateManager::_createBlendState(const BLEND_STATE_DESC& desc) const
+    {
+        SPtr<BlendState> state = CreateBlendStateInternal(desc);
+        return state;
+    }
+
     const SPtr<RasterizerState>& RenderStateManager::GetDefaultRasterizerState() const
 	{
 		if(_defaultRasterizerState == nullptr)
@@ -69,6 +83,16 @@ namespace te
 		return _defaultDepthStencilState;
 	}
 
+    const SPtr<BlendState>& RenderStateManager::GetDefaultBlendState() const
+    {
+        if (_defaultBlendState == nullptr)
+        {
+            _defaultBlendState = CreateBlendState(BLEND_STATE_DESC());
+        }
+
+        return _defaultBlendState;
+    }
+
     SPtr<DepthStencilState> RenderStateManager::CreateDepthStencilStateInternal(const DEPTH_STENCIL_STATE_DESC& desc) const
 	{
 		SPtr<DepthStencilState> state = te_core_ptr<DepthStencilState>(new (te_allocate<DepthStencilState>()) DepthStencilState(desc));
@@ -84,6 +108,14 @@ namespace te
 
 		return state;
 	}
+
+    SPtr<BlendState> RenderStateManager::CreateBlendStateInternal(const BLEND_STATE_DESC& desc) const
+    {
+        SPtr<BlendState> state = te_core_ptr<BlendState>(new (te_allocate<BlendState>()) BlendState(desc));
+        state->SetThisPtr(state);
+
+        return state;
+    }
 
     void RenderStateManager::OnShutDown()
 	{

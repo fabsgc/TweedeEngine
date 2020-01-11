@@ -2,6 +2,31 @@
 
 namespace te
 {
+    /**	Factors used when blending new pixels with existing pixels. */
+    enum BlendFactor
+    {
+        BF_ONE, /**< Use a value of one for all pixel components. */
+        BF_ZERO, /**< Use a value of zero for all pixel components. */
+        BF_DEST_COLOR, /**< Use the existing pixel value. */
+        BF_SOURCE_COLOR, /**< Use the newly generated pixel value. */
+        BF_INV_DEST_COLOR, /**< Use the inverse of the existing value. */
+        BF_INV_SOURCE_COLOR, /**< Use the inverse of the newly generated pixel value. */
+        BF_DEST_ALPHA, /**< Use the existing alpha value. */
+        BF_SOURCE_ALPHA, /**< Use the newly generated alpha value. */
+        BF_INV_DEST_ALPHA, /**< Use the inverse of the existing alpha value. */
+        BF_INV_SOURCE_ALPHA /**< Use the inverse of the newly generated alpha value. */
+    };
+
+    /**	Operations that determines how are blending factors combined. */
+    enum BlendOperation
+    {
+        BO_ADD, /**< Blend factors are added together. */
+        BO_SUBTRACT, /**< Blend factors are subtracted in "srcFactor - dstFactor" order. */
+        BO_REVERSE_SUBTRACT, /**< Blend factors are subtracted in "dstFactor - srcFactor" order. */
+        BO_MIN, /**< Minimum of the two factors is chosen. */
+        BO_MAX /**< Maximum of the two factors is chosen. */
+    };
+
 	/**	Comparison functions used for the depth/stencil buffer. */
 	enum CompareFunction
 	{
@@ -41,6 +66,19 @@ namespace te
 		PM_WIREFRAME = 1, /**< Render as wireframe showing only polygon outlines. */
 		PM_SOLID = 2 /**< Render as solid showing whole polygons. */
 	};
+
+    /**	Types of action that can happen on the stencil buffer. */
+    enum StencilOperation
+    {
+        SOP_KEEP, /**< Leave the stencil buffer unchanged. */
+        SOP_ZERO, /**< Set the stencil value to zero. */
+        SOP_REPLACE, /**< Replace the stencil value with the reference value. */
+        SOP_INCREMENT, /**< Increase the stencil value by 1, clamping at the maximum value. */
+        SOP_DECREMENT, /**< Decrease the stencil value by 1, clamping at 0. */
+        SOP_INCREMENT_WRAP, /**< Increase the stencil value by 1, wrapping back to 0 when incrementing past the maximum value. */
+        SOP_DECREMENT_WRAP, /**< Decrease the stencil value by 1, wrapping when decrementing 0. */
+        SOP_INVERT /**< Invert the bits of the stencil buffer. */
+    };
 
     /** Types of programs that may run on GPU. */
 	enum GpuProgramType

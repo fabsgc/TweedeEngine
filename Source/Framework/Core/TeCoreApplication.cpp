@@ -50,6 +50,7 @@ namespace te
         RendererManager::StartUp();
         ResourceManager::StartUp();
         SceneManager::StartUp();
+        gSceneManager().Initialize();
 
         LoadPlugin(_startUpDesc.Renderer, &_rendererPlugin);
         LoadPlugin(_startUpDesc.RenderAPI, &_renderAPIPlugin);
@@ -61,8 +62,6 @@ namespace te
         _renderer = RendererManager::Instance().Initialize(_startUpDesc.Renderer);
         _window = RenderAPI::Instance().CreateRenderWindow(_startUpDesc.WindowDesc);
         _window->Initialize();
-
-        gSceneManager().Initialize();
 
         Input::StartUp();
         VirtualInput::StartUp();
@@ -144,14 +143,19 @@ namespace te
         _camera->SetRenderTarget(gCoreApplication().GetWindow());
         _camera->SetMain(true);
 
+        BLEND_STATE_DESC blendDesc;
         RASTERIZER_STATE_DESC rastDesc;
+        DEPTH_STENCIL_STATE_DESC depthDesc;
+
         rastDesc.polygonMode = PM_WIREFRAME; // Draw wireframe instead of solid
         rastDesc.cullMode = CULL_NONE; // Disable blackface culling
-        DEPTH_STENCIL_STATE_DESC depthDesc;
+
+        SPtr<BlendState> blendState = BlendState::Create(blendDesc);
         SPtr<RasterizerState> rasterizerState = RasterizerState::Create(rastDesc);
         SPtr<DepthStencilState> depthStencilState = DepthStencilState::Create(depthDesc);
 
         PIPELINE_STATE_DESC pipeDesc;
+        pipeDesc.blendState = blendState;
         pipeDesc.rasterizerState = rasterizerState;
         pipeDesc.depthStencilState = depthStencilState;
 

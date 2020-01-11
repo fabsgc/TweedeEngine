@@ -3,6 +3,82 @@
 
 namespace te
 {
+	D3D11_BLEND D3D11Mappings::Get(BlendFactor bf)
+	{
+		switch(bf)
+		{
+		case BF_ONE:
+			return D3D11_BLEND_ONE;
+		case BF_ZERO:
+			return D3D11_BLEND_ZERO;
+		case BF_DEST_COLOR:
+			return D3D11_BLEND_DEST_COLOR;
+		case BF_SOURCE_COLOR:
+			return D3D11_BLEND_SRC_COLOR;
+		case BF_INV_DEST_COLOR:
+			return D3D11_BLEND_INV_DEST_COLOR;
+		case BF_INV_SOURCE_COLOR:
+			return D3D11_BLEND_INV_SRC_COLOR;
+		case BF_DEST_ALPHA:
+			return D3D11_BLEND_DEST_ALPHA;
+		case BF_SOURCE_ALPHA:
+			return D3D11_BLEND_SRC_ALPHA;
+		case BF_INV_DEST_ALPHA:
+			return D3D11_BLEND_INV_DEST_ALPHA;
+		case BF_INV_SOURCE_ALPHA:
+			return D3D11_BLEND_INV_SRC_ALPHA;
+		}
+
+		// Unsupported type
+		return D3D11_BLEND_ZERO;
+	}
+
+	D3D11_BLEND_OP D3D11Mappings::Get(BlendOperation bo)
+	{
+		switch(bo)
+		{
+		case BO_ADD:
+			return D3D11_BLEND_OP_ADD;
+		case BO_SUBTRACT:
+			return D3D11_BLEND_OP_SUBTRACT;
+		case BO_REVERSE_SUBTRACT:
+			return D3D11_BLEND_OP_REV_SUBTRACT;
+		case BO_MIN:
+			return D3D11_BLEND_OP_MIN;
+		case BO_MAX:
+			return D3D11_BLEND_OP_MAX;
+		}
+
+		// Unsupported type
+		return D3D11_BLEND_OP_ADD;
+	}
+
+    D3D11_STENCIL_OP D3D11Mappings::Get(StencilOperation op, bool invert)
+    {
+        switch (op)
+        {
+        case SOP_KEEP:
+            return D3D11_STENCIL_OP_KEEP;
+        case SOP_ZERO:
+            return D3D11_STENCIL_OP_ZERO;
+        case SOP_REPLACE:
+            return D3D11_STENCIL_OP_REPLACE;
+        case SOP_INCREMENT:
+            return invert ? D3D11_STENCIL_OP_DECR_SAT : D3D11_STENCIL_OP_INCR_SAT;
+        case SOP_DECREMENT:
+            return invert ? D3D11_STENCIL_OP_INCR_SAT : D3D11_STENCIL_OP_DECR_SAT;
+        case SOP_INCREMENT_WRAP:
+            return invert ? D3D11_STENCIL_OP_DECR : D3D11_STENCIL_OP_INCR;
+        case SOP_DECREMENT_WRAP:
+            return invert ? D3D11_STENCIL_OP_INCR : D3D11_STENCIL_OP_DECR;
+        case SOP_INVERT:
+            return D3D11_STENCIL_OP_INVERT;
+        }
+
+        // Unsupported type
+        return D3D11_STENCIL_OP_KEEP;
+    }
+
     D3D11_COMPARISON_FUNC D3D11Mappings::Get(CompareFunction cf)
 	{
 		switch(cf)

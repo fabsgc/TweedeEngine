@@ -4,6 +4,7 @@
 #include "CoreUtility/TeCoreObject.h"
 #include "TeDepthStencilState.h"
 #include "TeRasterizerState.h"
+#include "TeBlendState.h"
 #include "TeCommonTypes.h"
 
 namespace te
@@ -11,6 +12,7 @@ namespace te
 	/** Descriptor structure used for initializing a GPU pipeline state. */
 	struct PIPELINE_STATE_DESC
 	{
+        SPtr<BlendState> blendState;
         SPtr<RasterizerState> rasterizerState;
 		SPtr<DepthStencilState> depthStencilState;
 
@@ -27,6 +29,7 @@ namespace te
 	public:
 		virtual ~GraphicsPipelineState() = default;
 
+        SPtr<BlendState> GetBlendState() const { return _data.blendState; }
         SPtr<RasterizerState> GetRasterizerState() const { return _data.rasterizerState; }
         SPtr<DepthStencilState> GetDepthStencilState() const { return _data.depthStencilState; }
         

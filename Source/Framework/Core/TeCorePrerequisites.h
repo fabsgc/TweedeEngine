@@ -72,6 +72,10 @@ namespace te
     struct RASTERIZER_STATE_DESC;
     class RasterizerProperties;
     class RasterizerState;
+    struct RENDER_TARGET_BLEND_STATE_DESC;
+    struct BLEND_STATE_DESC;
+    class BlendProperties;
+    class BlendState;
     class HardwareBuffer;
     class VertexBuffer;
     class VertexDeclaration;

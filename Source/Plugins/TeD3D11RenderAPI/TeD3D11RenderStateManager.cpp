@@ -1,9 +1,18 @@
 #include "TeD3D11RenderStateManager.h"
 #include "TeD3D11DepthStencilState.h"
 #include "TeD3D11RasterizerState.h"
+#include "TeD3D11BlendState.h"
 
 namespace te
 {
+    SPtr<BlendState> D3D11RenderStateManager::CreateBlendStateInternal(const BLEND_STATE_DESC& desc) const
+    {
+        SPtr<BlendState> ret = te_core_ptr<D3D11BlendState>(new (te_allocate<D3D11BlendState>()) D3D11BlendState(desc));
+        ret->SetThisPtr(ret);
+
+        return ret;
+    }
+
 	SPtr<RasterizerState> D3D11RenderStateManager::CreateRasterizerStateInternal(const RASTERIZER_STATE_DESC& desc) const
 	{
 		SPtr<RasterizerState> ret = te_core_ptr<D3D11RasterizerState>(new (te_allocate<D3D11RasterizerState>()) D3D11RasterizerState(desc));
