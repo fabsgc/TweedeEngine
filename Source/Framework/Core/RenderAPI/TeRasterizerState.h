@@ -11,13 +11,13 @@ namespace te
         bool operator==(const RASTERIZER_STATE_DESC& rhs) const;
 
         /** Polygon mode allows you to draw polygons as solid objects or as wireframe by just drawing their edges. */
-		PolygonMode PolygonMode = PM_SOLID;
+		PolygonMode polygonMode = PM_SOLID;
 
 		/**
 		 * Sets vertex winding order. Faces that contain vertices with this order will be culled and not rasterized. Used
 		 * primarily for saving cycles by not rendering backfacing faces.
 		 */
-		CullingMode CullMode = CULL_COUNTERCLOCKWISE;
+		CullingMode cullMode = CULL_COUNTERCLOCKWISE;
 
         // TODO
     };
@@ -29,10 +29,10 @@ namespace te
 		RasterizerProperties(const RASTERIZER_STATE_DESC& desc);
 
 		/** @copydoc RASTERIZER_STATE_DESC::PolygonMode */
-		PolygonMode GetPolygonMode() const { return _data.PolygonMode; }
+		PolygonMode GetPolygonMode() const { return _data.polygonMode; }
 
 		/** @copydoc RASTERIZER_STATE_DESC::CullMode */
-		CullingMode GetCullMode() const { return _data.CullMode; }
+		CullingMode GetCullMode() const { return _data.cullMode; }
 
     protected:
         RASTERIZER_STATE_DESC _data;

@@ -4,6 +4,7 @@
 #include "CoreUtility/TeCoreObject.h"
 #include "TeDepthStencilState.h"
 #include "TeRasterizerState.h"
+#include "TeCommonTypes.h"
 
 namespace te
 {

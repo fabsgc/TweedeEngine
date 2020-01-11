@@ -4,7 +4,7 @@ namespace te
 {
     bool RASTERIZER_STATE_DESC::operator == (const RASTERIZER_STATE_DESC& rhs) const
 	{
-		return PolygonMode == rhs.PolygonMode && CullMode == rhs.CullMode;
+		return polygonMode == rhs.polygonMode && cullMode == rhs.cullMode;
 	}
 
     RasterizerProperties::RasterizerProperties(const RASTERIZER_STATE_DESC& desc)
