@@ -244,6 +244,9 @@ namespace te
     using SPtr = std::shared_ptr<T>;
 
     template <typename T>
+    using WPtr = std::weak_ptr<T>;
+
+    template <typename T>
     using UPtr = std::unique_ptr<T>;
 
     /** Hasher that handles custom enums automatically. */

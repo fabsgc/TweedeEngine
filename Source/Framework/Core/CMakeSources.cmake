@@ -45,6 +45,15 @@ set(TE_CORE_INC_PLATFORM
 set(TE_CORE_SRC_PLATFORM 
 )
 
+set(TE_CORE_INC_CORE_UTILITY
+    "Core/CoreUtility/TeCoreObject.h"
+    "Core/CoreUtility/TeCoreObjectManager.h"
+)
+set(TE_CORE_SRC_CORE_UTILITY
+    "Core/CoreUtility/TeCoreObject.cpp"
+    "Core/CoreUtility/TeCoreObjectManager.cpp"
+)
+
 set (TE_CORE_INC_PLATFORM_WIN32
     "Core/Private/Win32/TeWin32Window.h"
     "Core/Private/Win32/TeWin32Input.h"
@@ -77,11 +86,9 @@ set(TE_CORE_INC_NOFILTER
 	"Core/TeCoreApplication.h"
 	"Core/TeCorePrerequisites.h"
     "Core/TeEngineConfig.h"
-    "Core/TeCoreObject.h"
 )
 set(TE_CORE_SRC_NOFILTER
     "Core/TeCoreApplication.cpp"
-    "Core/TeCoreObject.cpp"
 )
 
 set (TE_CORE_INC_INPUT
@@ -170,6 +177,7 @@ source_group("Core\\Image" FILES ${TE_CORE_INC_IMAGE} ${TE_CORE_SRC_IMAGE})
 source_group("Core\\Mesh" FILES ${TE_CORE_INC_MESH} ${TE_CORE_SRC_MESH})
 source_group("Core\\Resources" FILES ${TE_CORE_INC_RESOURCE} ${TE_CORE_SRC_RESOURCE})
 source_group("Core\\Scene" FILES ${TE_CORE_INC_SCENE} ${TE_CORE_SRC_SCENE})
+source_group("Core\\CoreUtility" FILES ${TE_CORE_INC_CORE_UTILITY} ${TE_CORE_SRC_CORE_UTILITY})
 source_group("Core" FILES ${TE_CORE_INC_NOFILTER} ${TE_CORE_SRC_NOFILTER})
 
 set(TE_CORE_SRC
@@ -195,4 +203,6 @@ set(TE_CORE_SRC
     ${TE_CORE_SRC_RESOURCE}
     ${TE_CORE_INC_SCENE}
     ${TE_CORE_SRC_SCENE}
+    ${TE_CORE_INC_CORE_UTILITY}
+    ${TE_CORE_SRC_CORE_UTILITY}
 )

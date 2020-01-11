@@ -74,10 +74,12 @@ namespace te
 
     void Viewport::Initialize()
     {
+        CoreObject::Initialize();
     }
 
     void Viewport::Destroy()
     {
+        CoreObject::Destroy();
         _target = nullptr;
     }
 

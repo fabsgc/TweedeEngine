@@ -16,6 +16,7 @@
 #include "Resources/TeResourceManager.h"
 #include "Renderer/TeCamera.h"
 #include "Scene/TeSceneManager.h"
+#include "CoreUtility/TeCoreObjectManager.h"
 
 namespace te
 {
@@ -46,6 +47,8 @@ namespace te
         RenderAPIManager::StartUp();
         RendererManager::StartUp();
         ResourceManager::StartUp();
+        SceneManager::StartUp();
+        CoreObjectManager::StartUp();
 
         LoadPlugin(_startUpDesc.Renderer, &_rendererPlugin);
         LoadPlugin(_startUpDesc.RenderAPI, &_renderAPIPlugin);
@@ -57,10 +60,10 @@ namespace te
         _window = RenderAPI::Instance().CreateRenderWindow(_startUpDesc.WindowDesc);
         _window->Initialize();
 
+        gSceneManager().Initialize();
+
         Input::StartUp();
         VirtualInput::StartUp();
-        SceneManager::StartUp();
-        gSceneManager().Initialize();
 
         SPtr<InputConfiguration> inputConfig = gVirtualInput().GetConfiguration();
 
@@ -135,20 +138,23 @@ namespace te
         TE_PRINT((loadTexture.GetHandleData())->data);
         TE_PRINT((loadTexture.GetHandleData())->uuid.ToString());
 
-        SPtr<Camera> camera = Camera::Create();
-        camera->SetRenderTarget(gCoreApplication().GetWindow());
-        camera->SetMain(true);
+        _camera = Camera::Create();
+        _camera->SetRenderTarget(gCoreApplication().GetWindow());
+        _camera->SetMain(true);
     }
     
     void CoreApplication::OnShutDown()
     {
+        _camera->Destroy();
+
         _renderer.reset();
         _window.reset();
-
-        SceneManager::ShutDown();
+        
         Importer::ShutDown();
         VirtualInput::ShutDown();
         Input::ShutDown();
+        CoreObjectManager::ShutDown();
+        SceneManager::ShutDown();
         ResourceManager::ShutDown();
         RendererManager::ShutDown();
         RenderAPIManager::ShutDown();
@@ -288,7 +294,7 @@ namespace te
             float fps = 1.0f / gTime().GetFrameDelta();
             _window->SetTitle(_window->GetDesc().Title + " | FPS : " + ToString(fps) + " | ELAPSED : " + ToString(gTime().GetFrameDelta() * 1000));
             frameCnt = 0;
-            timeElapsed += 1.0f;
+            timeElapsed += 1.0f; 
         }
     }
 

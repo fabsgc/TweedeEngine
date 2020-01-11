@@ -116,6 +116,8 @@ namespace te
 
         volatile bool _runMainLoop;
         volatile bool _pause;
+
+        SPtr<Camera> _camera;
     };
 
     /**	Provides easy access to CoreApplication. */

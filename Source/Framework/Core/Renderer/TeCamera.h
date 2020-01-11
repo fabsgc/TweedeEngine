@@ -3,7 +3,7 @@
 #include "TeCorePrerequisites.h"
 #include "Scene/TeSceneActor.h"
 #include "Renderer/TeViewport.h"
-#include "TeCoreObject.h"
+#include "CoreUtility/TeCoreObject.h"
 
 namespace te
 {

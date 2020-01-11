@@ -1,5 +1,6 @@
 #include "TeRendererScene.h"
 #include "Renderer/TeCamera.h"
+#include "TeCoreApplication.h"
 
 namespace te
 {

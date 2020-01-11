@@ -32,6 +32,6 @@ namespace te
     private:
         SceneInfo _info;
         SPtr<RenderManOptions> _options;
-
+        SPtr<Camera> _camera;
     };
 }

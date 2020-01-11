@@ -74,6 +74,9 @@ namespace te
 
     class SceneActor;
 
+    class CoreObject;
+    class CoreObjectManager;
+
     class Input;
     class GamePad;
     class Keyboard;

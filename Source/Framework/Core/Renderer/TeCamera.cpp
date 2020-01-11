@@ -21,15 +21,18 @@ namespace te
 
     void Camera::Initialize()
     {
+        CoreObject::Initialize();
         gSceneManager().RegisterCamera(std::static_pointer_cast<Camera>(this->GetThisPtr()));
         RendererManager::Instance().GetRenderer()->NotifyCameraAdded(this);
     }
 
     void Camera::Destroy()
     {
+        CoreObject::Destroy();
         gSceneManager().UnregisterCamera(std::static_pointer_cast<Camera>(this->GetThisPtr()));
         RendererManager::Instance().GetRenderer()->NotifyCameraRemoved(this);
 
+        _viewport->Destroy();
         _viewport = nullptr;
     }
 
