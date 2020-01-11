@@ -68,9 +68,9 @@ namespace te
 		void SetIsDestroyed(bool destroyed) { _flags = destroyed ? _flags | CGO_DESTROYED : _flags & ~CGO_DESTROYED; }
 
     private:
+        volatile UINT8 _flags;
 		UINT64 _internalID; // ID == 0 is not a valid ID
         WPtr<CoreObject> _this;
-		volatile UINT8 _flags;
     };
 
 	/**

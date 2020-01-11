@@ -39,6 +39,34 @@ namespace te
 		CMPF_GREATER_EQUAL, /**< Operation will pass if the new value greater or equal than the existing value. */
 		CMPF_GREATER /**< Operation will pass if the new value greater than the existing value. */
 	};
+
+    /**
+     * Types of texture addressing modes that determine what happens when texture coordinates are outside of the valid range.
+     */
+    enum TextureAddressingMode
+    {
+        TAM_WRAP, /**< Coordinates wrap back to the valid range. */
+        TAM_MIRROR, /**< Coordinates flip every time the size of the valid range is passed. */
+        TAM_CLAMP, /**< Coordinates are clamped within the valid range. */
+        TAM_BORDER /**< Coordinates outside of the valid range will return a separately set border color. */
+    };
+
+    /**	Types of available filtering situations. */
+    enum FilterType
+    {
+        FT_MIN, /**< The filter used when shrinking a texture. */
+        FT_MAG, /**< The filter used when magnifying a texture. */
+        FT_MIP /**< The filter used when filtering between mipmaps. */
+    };
+
+    /**	Filtering options for textures. */
+    enum FilterOptions
+    {
+        FO_NONE = 0, /**< Use no filtering. Only relevant for mipmap filtering. */
+        FO_POINT = 1, /**< Filter using the nearest found pixel. Most basic filtering. */
+        FO_LINEAR = 2, /**< Average a 2x2 pixel area, signifies bilinear filtering for texture, trilinear for mipmaps. */
+        FO_ANISOTROPIC = 3, /**< More advanced filtering that improves quality when viewing textures at a steep angle */
+    };
 	
     /**	Types of frame buffers. */
 	enum FrameBufferType
