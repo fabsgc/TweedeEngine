@@ -146,6 +146,7 @@ namespace te
         BLEND_STATE_DESC blendDesc;
         RASTERIZER_STATE_DESC rastDesc;
         DEPTH_STENCIL_STATE_DESC depthDesc;
+        SAMPLER_STATE_DESC samplerDesc;
 
         rastDesc.polygonMode = PM_WIREFRAME; // Draw wireframe instead of solid
         rastDesc.cullMode = CULL_NONE; // Disable blackface culling
@@ -153,6 +154,7 @@ namespace te
         SPtr<BlendState> blendState = BlendState::Create(blendDesc);
         SPtr<RasterizerState> rasterizerState = RasterizerState::Create(rastDesc);
         SPtr<DepthStencilState> depthStencilState = DepthStencilState::Create(depthDesc);
+        SPtr<SamplerState> samplerState = SamplerState::Create(samplerDesc);
 
         PIPELINE_STATE_DESC pipeDesc;
         pipeDesc.blendState = blendState;
@@ -162,6 +164,7 @@ namespace te
         SPtr<GraphicsPipelineState> graphicsPipeline = GraphicsPipelineState::Create(pipeDesc);
 
         RenderAPI::Instance().SetGraphicsPipeline(graphicsPipeline);
+
     }
     
     void CoreApplication::OnShutDown()

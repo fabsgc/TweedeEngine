@@ -131,7 +131,7 @@ namespace te
         UINT8 GetRenderTargetWriteMask(UINT32 renderTargetIdx) const;
 
     protected:
-        friend class RenderStateManager;
+        friend class BlendState;
 
         BLEND_STATE_DESC _data;
     };

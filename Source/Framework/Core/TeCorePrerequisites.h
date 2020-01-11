@@ -76,6 +76,9 @@ namespace te
     struct BLEND_STATE_DESC;
     class BlendProperties;
     class BlendState;
+    struct SAMPLER_STATE_DESC;
+    class SampleProperties;
+    class SamplerState;
     class HardwareBuffer;
     class VertexBuffer;
     class VertexDeclaration;

@@ -31,4 +31,8 @@ namespace te
     class D3D11InputLayoutManager;
     class D3D11DepthStencilState;
     class D3D11Mappings;
+    class D3D11RenderStateManager;
+    class D3D11BlendState;
+    class D3D11RasterizerState;
+    class D3D11SamplerState;
 }

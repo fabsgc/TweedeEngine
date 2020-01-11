@@ -153,4 +153,19 @@ namespace te
 		/** Scene object isn't allowed to be moved nor is it allowed to be visually changed. Object must be fully static. */
 		Static
 	};
+
+    /**	Texture addressing mode, per component. */
+    struct UVWAddressingMode
+    {
+        UVWAddressingMode()
+            :u(TAM_WRAP), v(TAM_WRAP), w(TAM_WRAP)
+        { }
+
+        bool operator==(const UVWAddressingMode& rhs) const
+        {
+            return u == rhs.u && v == rhs.v && w == rhs.w;
+        }
+
+        TextureAddressingMode u, v, w;
+    };
 }

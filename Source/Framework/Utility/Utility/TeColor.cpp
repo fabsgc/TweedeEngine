@@ -24,6 +24,19 @@ namespace te
 		return output;
 	}
 
+    bool Color::operator==(const Color& rhs) const
+    {
+        return (r == rhs.r &&
+            g == rhs.g &&
+            b == rhs.b &&
+            a == rhs.a);
+    }
+
+    bool Color::operator!=(const Color& rhs) const
+    {
+        return !(*this == rhs);
+    }
+
     RGBA Color::GetAsRGBA() const
 	{
 		UINT8 val8;

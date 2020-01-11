@@ -9,15 +9,16 @@ namespace te
 	class D3D11RenderStateManager : public RenderStateManager
 	{
 	protected:
-        // TODO
+        /** @copydoc RenderStateManager::CreateSamplerStateInternal */
+        SPtr<SamplerState> CreateSamplerStateInternal(const SAMPLER_STATE_DESC& desc) const override;
 
-        /** @copydoc RenderStateManager::createRasterizerStateInternal */
+        /** @copydoc RenderStateManager::CreateBlendStateInternal */
         SPtr<BlendState> CreateBlendStateInternal(const BLEND_STATE_DESC& desc) const override;
 
-		/** @copydoc RenderStateManager::createRasterizerStateInternal */
+		/** @copydoc RenderStateManager::CreateRasterizerStateInternal */
 		SPtr<RasterizerState> CreateRasterizerStateInternal(const RASTERIZER_STATE_DESC& desc) const override;
 
-		/** @copydoc RenderStateManager::createDepthStencilStateInternal */
+		/** @copydoc RenderStateManager::CreateDepthStencilStateInternal */
 		SPtr<DepthStencilState> CreateDepthStencilStateInternal(const DEPTH_STENCIL_STATE_DESC& desc) const override;
 	};
 }

@@ -28,6 +28,20 @@ namespace te
         bool operator==(const Color& rhs) const;
 		bool operator!=(const Color& rhs) const;
 
+        float operator[] (const UINT32 i) const
+        {
+            assert(i < 4);
+
+            return *(&r + i);
+        }
+
+        float& operator[] (const UINT32 i)
+        {
+            assert(i < 4);
+
+            return *(&r + i);
+        }
+
 		/** Returns the color as a 32-bit value in RGBA order. */
 		RGBA GetAsRGBA() const;
 

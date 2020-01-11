@@ -6,6 +6,7 @@
 #include "RenderAPI/TeDepthStencilState.h"
 #include "RenderAPI/TeGpuPipelineState.h"
 #include "RenderAPI/TeBlendState.h"
+#include "RenderAPI/TeSamplerState.h"
 
 namespace te
 {
@@ -14,6 +15,9 @@ namespace te
 	{
 	public:
         RenderStateManager() = default;
+
+        /** Creates and initializes a new SamplerState. */
+        SPtr<SamplerState> CreateSamplerState(const SAMPLER_STATE_DESC& desc) const;
 
 		/** Creates and initializes a new DepthStencilState. */
 		SPtr<DepthStencilState> CreateDepthStencilState(const DEPTH_STENCIL_STATE_DESC& desc) const;
@@ -27,6 +31,9 @@ namespace te
 		/** Creates and initializes a new GraphicsPipelineState. */
 		SPtr<GraphicsPipelineState> CreateGraphicsPipelineState(const PIPELINE_STATE_DESC& desc) const;
 
+        /** Creates an uninitialized sampler state. Requires manual initialization after creation. */
+        SPtr<SamplerState> _createSamplerState(const SAMPLER_STATE_DESC& desc) const;
+
         /** Creates an uninitialized depth-stencil state. Requires manual initialization after creation. */
 		SPtr<DepthStencilState> _createDepthStencilState(const DEPTH_STENCIL_STATE_DESC& desc) const;
 
@@ -38,6 +45,9 @@ namespace te
 
         /**	Creates an uninitialized GraphicsPipelineState. Requires manual initialization after creation. */
 		virtual SPtr<GraphicsPipelineState> _createGraphicsPipelineState(const PIPELINE_STATE_DESC& desc) const;
+
+        /** Gets a sampler state initialized with default options. */
+        const SPtr<SamplerState>& GetDefaultSamplerState() const;
 
         /**	Gets a rasterizer state initialized with default options. */
 		const SPtr<RasterizerState>& GetDefaultRasterizerState() const;
@@ -52,6 +62,9 @@ namespace te
         /** @copydoc Module::OnShutDown */
 		void OnShutDown() override;
 
+        /** @copydoc CreateSamplerState */
+        virtual SPtr<SamplerState> CreateSamplerStateInternal(const SAMPLER_STATE_DESC& desc) const;
+
         /** @copydoc CreateRasterizerState */
 		virtual SPtr<RasterizerState> CreateRasterizerStateInternal(const RASTERIZER_STATE_DESC& desc) const;
 
@@ -63,11 +76,13 @@ namespace te
 
     private:
         friend class BlendState;
+        friend class SamplerState;
 		friend class RasterizerState;
 		friend class DepthStencilState;
-        friend class GraphicsPipelineState;
+        friend class GraphicsPipelineState; 
 
         mutable SPtr<BlendState> _defaultBlendState;
+        mutable SPtr<SamplerState> _defaultSamplerState;
 		mutable SPtr<RasterizerState> _defaultRasterizerState;
 		mutable SPtr<DepthStencilState> _defaultDepthStencilState;
     };

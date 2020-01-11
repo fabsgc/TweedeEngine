@@ -1,9 +1,19 @@
 #include "RenderAPI/TeRenderStateManager.h"
 #include "RenderAPI/TeDepthStencilState.h"
 #include "RenderAPI/TeRasterizerState.h"
+#include "RenderAPI/TeSamplerState.h"
+#include "RenderAPI/TeBlendState.h"
 
 namespace te
 {
+    SPtr<SamplerState> RenderStateManager::CreateSamplerState(const SAMPLER_STATE_DESC& desc) const
+    {
+        SPtr<SamplerState> state = _createSamplerState(desc);
+        state->Initialize();
+
+        return state;
+    }
+
     SPtr<DepthStencilState> RenderStateManager::CreateDepthStencilState(const DEPTH_STENCIL_STATE_DESC& desc) const
 	{
 		SPtr<DepthStencilState> state = _createDepthStencilState(desc);
@@ -45,6 +55,12 @@ namespace te
 		return pipelineState;
 	}
 
+    SPtr<SamplerState> RenderStateManager::_createSamplerState(const SAMPLER_STATE_DESC& desc) const
+    {
+        SPtr<SamplerState> state = CreateSamplerStateInternal(desc);
+        return state;
+    }
+
     SPtr<DepthStencilState> RenderStateManager::_createDepthStencilState(const DEPTH_STENCIL_STATE_DESC& desc) const
 	{
 		SPtr<DepthStencilState> state = CreateDepthStencilStateInternal(desc);
@@ -61,6 +77,16 @@ namespace te
     {
         SPtr<BlendState> state = CreateBlendStateInternal(desc);
         return state;
+    }
+
+    const SPtr<SamplerState>& RenderStateManager::GetDefaultSamplerState() const
+    {
+        if (_defaultSamplerState == nullptr)
+        {
+            _defaultSamplerState = CreateSamplerState(SAMPLER_STATE_DESC());
+        }
+
+        return _defaultSamplerState;
     }
 
     const SPtr<RasterizerState>& RenderStateManager::GetDefaultRasterizerState() const
@@ -93,6 +119,14 @@ namespace te
         return _defaultBlendState;
     }
 
+    SPtr<SamplerState> RenderStateManager::CreateSamplerStateInternal(const SAMPLER_STATE_DESC& desc) const
+    {
+        SPtr<SamplerState> state = te_core_ptr<SamplerState>(new (te_allocate<SamplerState>()) SamplerState(desc));
+        state->SetThisPtr(state);
+
+        return state;
+    }
+
     SPtr<DepthStencilState> RenderStateManager::CreateDepthStencilStateInternal(const DEPTH_STENCIL_STATE_DESC& desc) const
 	{
 		SPtr<DepthStencilState> state = te_core_ptr<DepthStencilState>(new (te_allocate<DepthStencilState>()) DepthStencilState(desc));
@@ -120,6 +154,8 @@ namespace te
     void RenderStateManager::OnShutDown()
 	{
 		_defaultDepthStencilState = nullptr;
-		_defaultRasterizerState = nullptr;
+        _defaultRasterizerState = nullptr;
+        _defaultSamplerState = nullptr;
+        _defaultBlendState = nullptr;
 	}
 }

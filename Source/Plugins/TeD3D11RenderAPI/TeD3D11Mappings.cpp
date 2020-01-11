@@ -3,6 +3,23 @@
 
 namespace te
 {
+    D3D11_TEXTURE_ADDRESS_MODE D3D11Mappings::Get(TextureAddressingMode tam)
+    {
+        switch (tam)
+        {
+        case TAM_WRAP:
+            return D3D11_TEXTURE_ADDRESS_WRAP;
+        case TAM_MIRROR:
+            return D3D11_TEXTURE_ADDRESS_MIRROR;
+        case TAM_CLAMP:
+            return D3D11_TEXTURE_ADDRESS_CLAMP;
+        case TAM_BORDER:
+            return D3D11_TEXTURE_ADDRESS_BORDER;
+        }
+
+        return D3D11_TEXTURE_ADDRESS_MIRROR_ONCE;
+    }
+
 	D3D11_BLEND D3D11Mappings::Get(BlendFactor bf)
 	{
 		switch(bf)
@@ -154,6 +171,90 @@ namespace te
 
 		return D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	}
+
+    DWORD D3D11Mappings::Get(FilterType ft)
+    {
+        switch (ft)
+        {
+        case FT_MIN:
+            return D3D11_MIN_FILTER_SHIFT;
+        case FT_MAG:
+            return D3D11_MAG_FILTER_SHIFT;
+        case FT_MIP:
+            return D3D11_MIP_FILTER_SHIFT;
+        }
+
+        // Unsupported type
+        return D3D11_MIP_FILTER_SHIFT;
+    }
+
+    D3D11_FILTER D3D11Mappings::Get(const FilterOptions min, const FilterOptions mag, const FilterOptions mip, const bool comparison)
+    {
+        D3D11_FILTER res;
+#define MERGE_FOR_SWITCH(_comparison_, _min_ , _mag_, _mip_ ) ((_comparison_ << 16) | (_min_ << 8) | (_mag_ << 4) | (_mip_))
+
+        switch ((MERGE_FOR_SWITCH(comparison, min, mag, mip)))
+        {
+        case MERGE_FOR_SWITCH(true, FO_POINT, FO_POINT, FO_POINT):
+            res = D3D11_FILTER_COMPARISON_MIN_MAG_MIP_POINT;
+            break;
+        case MERGE_FOR_SWITCH(true, FO_POINT, FO_POINT, FO_LINEAR):
+            res = D3D11_FILTER_COMPARISON_MIN_MAG_POINT_MIP_LINEAR;
+            break;
+        case MERGE_FOR_SWITCH(true, FO_POINT, FO_LINEAR, FO_POINT):
+            res = D3D11_FILTER_COMPARISON_MIN_POINT_MAG_LINEAR_MIP_POINT;
+            break;
+        case MERGE_FOR_SWITCH(true, FO_POINT, FO_LINEAR, FO_LINEAR):
+            res = D3D11_FILTER_COMPARISON_MIN_POINT_MAG_MIP_LINEAR;
+            break;
+        case MERGE_FOR_SWITCH(true, FO_LINEAR, FO_POINT, FO_POINT):
+            res = D3D11_FILTER_COMPARISON_MIN_LINEAR_MAG_MIP_POINT;
+            break;
+        case MERGE_FOR_SWITCH(true, FO_LINEAR, FO_POINT, FO_LINEAR):
+            res = D3D11_FILTER_COMPARISON_MIN_LINEAR_MAG_POINT_MIP_LINEAR;
+            break;
+        case MERGE_FOR_SWITCH(true, FO_LINEAR, FO_LINEAR, FO_POINT):
+            res = D3D11_FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT;
+            break;
+        case MERGE_FOR_SWITCH(true, FO_LINEAR, FO_LINEAR, FO_LINEAR):
+            res = D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;
+            break;
+        case MERGE_FOR_SWITCH(true, FO_ANISOTROPIC, FO_ANISOTROPIC, FO_ANISOTROPIC):
+            res = D3D11_FILTER_COMPARISON_ANISOTROPIC;
+            break;
+        case MERGE_FOR_SWITCH(false, FO_POINT, FO_POINT, FO_POINT):
+            res = D3D11_FILTER_MIN_MAG_MIP_POINT;
+            break;
+        case MERGE_FOR_SWITCH(false, FO_POINT, FO_POINT, FO_LINEAR):
+            res = D3D11_FILTER_MIN_MAG_POINT_MIP_LINEAR;
+            break;
+        case MERGE_FOR_SWITCH(false, FO_POINT, FO_LINEAR, FO_POINT):
+            res = D3D11_FILTER_MIN_POINT_MAG_LINEAR_MIP_POINT;
+            break;
+        case MERGE_FOR_SWITCH(false, FO_POINT, FO_LINEAR, FO_LINEAR):
+            res = D3D11_FILTER_MIN_POINT_MAG_MIP_LINEAR;
+            break;
+        case MERGE_FOR_SWITCH(false, FO_LINEAR, FO_POINT, FO_POINT):
+            res = D3D11_FILTER_MIN_LINEAR_MAG_MIP_POINT;
+            break;
+        case MERGE_FOR_SWITCH(false, FO_LINEAR, FO_POINT, FO_LINEAR):
+            res = D3D11_FILTER_MIN_LINEAR_MAG_POINT_MIP_LINEAR;
+            break;
+        case MERGE_FOR_SWITCH(false, FO_LINEAR, FO_LINEAR, FO_POINT):
+            res = D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT;
+            break;
+        case MERGE_FOR_SWITCH(false, FO_LINEAR, FO_LINEAR, FO_LINEAR):
+            res = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+            break;
+        case MERGE_FOR_SWITCH(false, FO_ANISOTROPIC, FO_ANISOTROPIC, FO_ANISOTROPIC):
+            res = D3D11_FILTER_ANISOTROPIC;
+            break;
+        default:
+            res = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+        }
+
+        return res;
+    }
 
     void D3D11Mappings::Get(const Color& inColor, float* outColor)
 	{
