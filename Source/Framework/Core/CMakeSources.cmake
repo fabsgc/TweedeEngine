@@ -145,9 +145,13 @@ set (TE_CORE_SRC_IMPORTER
 
 set (TE_CORE_INC_IMAGE
     "Core/Image/TeTexture.h"
+    "Core/Image/TeTextureManager.h"
+    "Core/Image/TePixelData.h"
 )
 set (TE_CORE_SRC_IMAGE
     "Core/Image/TeTexture.cpp"
+    "Core/Image/TeTextureManager.cpp"
+    "Core/Image/TePixelData.cpp"
 )
 
 set (TE_CORE_INC_MESH

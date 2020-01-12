@@ -120,6 +120,25 @@ namespace te
 		GPT_COUNT // Keep at end
 	};
 
+	/**
+	 * Values that represent hardware buffer usage. These usually determine in what type of memory is buffer placed in,
+	 * however that depends on rendering API.
+	 */
+	enum GpuBufferUsage
+	{
+		/**
+		 * Signifies that you don't plan on modifying the buffer often (or at all) after creation. Modifying such buffer
+		 * will involve a larger performance hit. Mutually exclusive with GBU_DYNAMIC.
+		 */
+		GBU_STATIC = 1 << 0,
+		/**
+		 * Signifies that you will modify this buffer fairly often (e.g. every frame). Mutually exclusive with GBU_STATIC.
+		 */
+		GBU_DYNAMIC = 1 << 1,
+		/** Siginifies that the buffer can be used for arbitrary load/store operations on the GPU. Implies GBU_STATIC. */
+		GBU_LOADSTORE = GBU_STATIC | 1 << 2
+	};
+
 	/** Describes operation that will be used for rendering a certain set of vertices. */
 	enum DrawOperationType
 	{
@@ -171,6 +190,28 @@ namespace te
 
 		/** Source is a single cylindrical panoramic image. */
 		Cylindrical
+	};
+
+	/**	Available texture types. */
+	enum TextureType
+	{
+		/** One dimensional texture. Just a row of pixels. */
+		TEX_TYPE_1D = 1,
+		/** Two dimensional texture. */
+		TEX_TYPE_2D = 2,
+		/** Three dimensional texture. */
+		TEX_TYPE_3D = 3,
+		/** Texture consisting out of six 2D textures describing an inside of a cube. Allows special sampling. */
+		TEX_TYPE_CUBE_MAP = 4
+	};
+
+	/**	Projection type to use by the camera. */
+	enum ProjectionType
+	{
+		/** Projection type where object size remains constant and parallel lines remain parallel. */
+		PT_ORTHOGRAPHIC,
+		/** Projection type that emulates human vision. Objects farther away appear smaller. */
+		PT_PERSPECTIVE
 	};
 
     /**	Texture addressing mode, per component. */
