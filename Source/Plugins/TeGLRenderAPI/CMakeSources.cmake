@@ -4,6 +4,10 @@ set (TE_GLRENDERAPI_INC_NOFILTER
 	"TeGLRenderAPI.h"
 	"TeGLTextureManager.h"
 	"TeGLRenderStateManager.h"
+	"TeGLBlendState.h"
+	"TeGLDepthStencilState.h"
+	"TeGLRasterizerState.h"
+	"TeGLSamplerState.h"
 )
 
 set (TE_GLRENDERAPI_SRC_NOFILTER
@@ -12,6 +16,10 @@ set (TE_GLRENDERAPI_SRC_NOFILTER
 	"TeGLRenderAPI.cpp"
 	"TeGLTextureManager.cpp"
 	"TeGLRenderStateManager.cpp"
+	"TeGLBlendState.cpp"
+	"TeGLDepthStencilState.cpp"
+	"TeGLRasterizerState.cpp"
+	"TeGLSamplerState.cpp"
 )
 
 set(TE_GLRENDERAPI_INC_WIN32

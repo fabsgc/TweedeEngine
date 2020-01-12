@@ -57,6 +57,8 @@ namespace te
         {
         }
 
+        RenderWindow::Initialize();
+
         //TODO
     }
 
@@ -184,5 +186,6 @@ namespace te
 
     void Win32RenderWindow::SetTitle(const String& title)
     {
+        SetWindowText(GetHWnd(), title.c_str());
     }
 }

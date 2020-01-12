@@ -31,4 +31,13 @@
 #endif
 
 namespace te
-{}
+{
+    class GLRenderAPI;
+    class GLRenderStateManager;
+    class GLBlendState;
+    class GLDepthStencilState;
+    class GLRasterizerState;
+    class GLSamplerState;
+    class GLTextureManager;
+
+}
