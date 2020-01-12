@@ -2,12 +2,14 @@ set (TE_GLRENDERAPI_INC_NOFILTER
 	"TeGLRenderAPIPrerequisites.h"
 	"TeGLRenderAPIFactory.h"
 	"TeGLRenderAPI.h"
+	"TeGLTextureManager.h"
 )
 
 set (TE_GLRENDERAPI_SRC_NOFILTER
 	"TeGLRenderAPIFactory.cpp"
 	"TeGLRenderAPIPlugin.cpp"
 	"TeGLRenderAPI.cpp"
+	"TeGLTextureManager.cpp"
 )
 
 set(TE_GLRENDERAPI_INC_WIN32

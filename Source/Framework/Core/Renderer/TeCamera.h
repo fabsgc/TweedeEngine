@@ -46,7 +46,7 @@ namespace te
 		static SPtr<Camera> Create();
 
         /**	Returns the viewport used by the camera. */
-        const SPtr<Viewport> GetViewport() const { return _viewport; }
+        const SPtr<Viewport> GetViewport() { return _viewport; }
 
         void SetRenderTarget(SPtr<RenderTarget> renderTarget);
 

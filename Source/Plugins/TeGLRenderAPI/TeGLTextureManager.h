@@ -1,12 +1,12 @@
 #pragma once
 
-#include "TeD3D11RenderAPIPrerequisites.h"
+#include "TeGLRenderAPIPrerequisites.h"
 #include "Image/TeTextureManager.h"
 
 namespace te
 {
-	/**	Handles creation of DirectX 11 textures. */
-	class D3D11TextureManager : public TextureManager
+	/**	Handles creation of OpenGL textures. */
+	class GLTextureManager : public TextureManager
 	{
 	public:
 		/** @copydoc TextureManager::GetNativeFormat */

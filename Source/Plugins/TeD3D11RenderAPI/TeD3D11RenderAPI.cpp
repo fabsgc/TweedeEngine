@@ -13,6 +13,7 @@ namespace te
 {
     D3D11RenderAPI::D3D11RenderAPI()
         : _viewport()
+        , _scissorRect(D3D11_RECT())
     {
     }
 
