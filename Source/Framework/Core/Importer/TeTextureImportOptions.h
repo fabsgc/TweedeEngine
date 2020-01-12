@@ -23,6 +23,9 @@ namespace te
 		 */
 		bool SRGB = false;
 
+		/** Determines whether the texture data is also stored in main memory, available for fast CPU access. */
+		bool CpuCached = false;
+
 		/**
 		 * Determines should the texture be imported as a cubemap. See setCubemapSource to choose how will the source
 		 * texture be converted to a cubemap.
