@@ -58,7 +58,7 @@ namespace te
 		 * Size of indices, use smaller size for better performance, however be careful not to go over the number of
 		 * vertices limited by the size.
 		 */
-		IndexType IndexType = IT_32BIT;
+		IndexType IndType = IT_32BIT;
 
 		static MESH_DESC DEFAULT;
 

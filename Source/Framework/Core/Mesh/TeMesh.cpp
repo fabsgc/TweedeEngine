@@ -45,7 +45,7 @@ namespace te
 		: _properties(desc.NumVertices, desc.NumIndices, desc.SubMeshes)
         , _vertexDesc(desc.VertexDesc)
         , _usage(desc.Usage)
-		, _indexType(desc.IndexType)
+		, _indexType(desc.IndType)
 	{ }
 
     Mesh::Mesh()
@@ -78,7 +78,7 @@ namespace te
 		desc.VertexDesc = vertexDesc;
 		desc.Usage = usage;
 		desc.SubMeshes.push_back(SubMesh(0, numIndices, drawOp));
-		desc.IndexType = indexType;
+		desc.IndType = indexType;
 
 		SPtr<Mesh> meshPtr = _createPtr(desc);
 		return static_resource_cast<Mesh>(ResourceManager()._createResourceHandle(meshPtr));
