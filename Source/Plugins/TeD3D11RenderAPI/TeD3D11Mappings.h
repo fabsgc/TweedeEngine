@@ -2,6 +2,7 @@
 
 #include "TeD3D11RenderAPIPrerequisites.h"
 #include "RenderAPI/TeCommonTypes.h"
+#include "Image/TePixelData.h"
 
 namespace te
 {
@@ -45,6 +46,36 @@ namespace te
          */
         static D3D11_FILTER Get(const FilterOptions min, const FilterOptions mag,
             const FilterOptions mip, const bool comparison = false);
+
+        /**	Converts DX11 pixel format to engine pixel format. */
+        static PixelFormat GetPF(DXGI_FORMAT d3dPF);
+
+        /**
+         * Converts engine pixel format to DX11 pixel format. Some formats depend on whether hardware gamma is used or not,
+         * in which case set the @p hwGamma parameter as needed.
+         */
+        static DXGI_FORMAT GetPF(PixelFormat format, bool hwGamma);
+
+        /**
+         * Returns a typeless version of a depth stencil format. Required for creating a depth stencil texture it can be
+         * bound both for shader reading and depth/stencil writing.
+         */
+        static DXGI_FORMAT GetTypelessDepthStencilPF(PixelFormat format);
+
+        /**	Finds the closest pixel format that DX11 supports. */
+        static PixelFormat GetClosestSupportedPF(PixelFormat format, TextureType texType, int usage);
+
+        /** Returns a format of a depth stencil texture that can be used for reading the texture in the shader. */
+        static DXGI_FORMAT GetShaderResourceDepthStencilPF(PixelFormat format);
+
+        /**	Converts engine to DX11 buffer usage. */
+        static D3D11_USAGE GetUsage(GpuBufferUsage mUsage);
+
+        /**	Converts engine to DX11 buffer access flags. */
+        static UINT GetAccessFlags(GpuBufferUsage mUsage);
+
+        /**	Checks is the provided buffer usage dynamic. */
+        static bool IsDynamic(GpuBufferUsage mUsage);
 
 		/**	Converts engine color to DX11 color. */
 		static void Get(const Color& inColor, float* outColor);

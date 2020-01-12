@@ -13,6 +13,8 @@ set (TE_CORE_INC_RENDERAPI
     "Core/RenderAPI/TeRenderStateManager.h"
     "Core/RenderAPI/TeBlendState.h"
     "Core/RenderAPI/TeSamplerState.h"
+    "Core/RenderAPI/TeVertexDataDesc.h"
+    "Core/RenderAPI/TeSubMesh.h"
 )
 set (TE_CORE_SRC_RENDERAPI
     "Core/RenderAPI/TeRenderAPI.cpp"
@@ -26,6 +28,7 @@ set (TE_CORE_SRC_RENDERAPI
     "Core/RenderAPI/TeRenderStateManager.cpp"
     "Core/RenderAPI/TeBlendState.cpp"
     "Core/RenderAPI/TeSamplerState.cpp"
+    "Core/RenderAPI/TeVertexDataDesc.cpp"
 )
 
 set (TE_CORE_INC_RENDERER
@@ -172,11 +175,13 @@ set (TE_CORE_INC_RESOURCE
     "Core/Resources/TeResource.h"
     "Core/Resources/TeResourceManager.h"
     "Core/Resources/TeResourceHandle.h"
+    "Core/Resources/TeGpuResourceData.h"
 )
 set (TE_CORE_SRC_RESOURCE
     "Core/Resources/TeResource.cpp"
     "Core/Resources/TeResourceManager.cpp"
     "Core/Resources/TeResourceHandle.cpp"
+    "Core/Resources/TeGpuResourceData.cpp"
 )
 
 if (WIN32)

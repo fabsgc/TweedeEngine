@@ -12,7 +12,7 @@ namespace te
 		/** Values that represent current state of the core object */
         enum Flags
         {
-            CGO_NONE = 0x00,  /**< Object has not yet been initialized of destroyed. */
+            CGO_NONE = 0x00,  /**< Object has not yet been initialized nor destroyed. */
 			CGO_DESTROYED = 0x01, /**< Object has been destroyed and shouldn't be used. */
 			CGO_INITIALIZED = 0x02 /**< Object's initialize() method has been called. */
 		};

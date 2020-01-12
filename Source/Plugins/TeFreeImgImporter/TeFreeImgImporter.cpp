@@ -84,8 +84,8 @@ namespace te
 
     SPtr<Resource> FreeImgImporter::Import(const String& filePath, const SPtr<const ImportOptions> importOptions)
     {
-        SPtr<Texture> texture = te_shared_ptr_new<Texture>();
-
+        SPtr<Texture> texture = Texture::_createPtr(TEXTURE_DESC());
+        texture->SetName(filePath);
         return texture;
     }
 }

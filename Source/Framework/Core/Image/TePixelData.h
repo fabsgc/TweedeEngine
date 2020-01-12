@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
+#include "Resources/TeGpuResourceData.h"
 
 namespace te
 {
@@ -131,4 +132,30 @@ namespace te
 		/** Number of pixel formats currently defined. */
 		PF_COUNT
 	};
+
+    /**
+     * A buffer describing a volume (3D), image (2D) or line (1D) of pixels in memory. Pixels are stored as a succession
+     * of "depth" slices, each containing "height" rows of "width" pixels.
+     *
+     * @note
+     * If using the constructor instead of create() you must call GpuResourceData::allocateInternalBuffer or set the buffer
+     * in some other way before reading/writing from this object, as by the default there is no buffer allocated.
+     *
+     * @see		GpuResourceData
+     */
+    class TE_CORE_EXPORT PixelData : public GpuResourceData
+    {
+    public:
+        PixelData() = default;
+        ~PixelData() = default;
+
+        /**	Return the size (in bytes) of the buffer this image requires. */
+		UINT32 GetSize() const;
+
+    private:
+        /**	Returns the needed size of the internal buffer, in bytes. */
+		UINT32 GetInternalBufferSize() const override;
+
+        // TODO
+    };
 }

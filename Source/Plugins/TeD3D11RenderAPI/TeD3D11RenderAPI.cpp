@@ -7,6 +7,7 @@
 #include "TeD3D11BlendState.h"
 #include "RenderAPI/TeRenderStateManager.h"
 #include "TeD3D11RenderStateManager.h"
+#include "TeD3D11TextureManager.h"
 
 namespace te
 {
@@ -72,6 +73,9 @@ namespace te
         }
 
         _device = te_new<D3D11Device>(device);
+
+        // Create the texture manager for use by others		
+        TextureManager::StartUp<D3D11TextureManager>();
 
         // Create & register HLSL factory		
         _HLSLFactory = te_new<D3D11HLSLProgramFactory>();

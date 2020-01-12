@@ -20,6 +20,8 @@
 #include "RenderAPI/TeRenderStateManager.h"
 #include "Importer/TeMeshImportOptions.h"
 #include "Importer/TeTextureImportOptions.h"
+#include "Importer/TeShaderImportOptions.h"
+#include "Shader/TeShader.h"
 
 namespace te
 {
@@ -135,15 +137,20 @@ namespace te
         auto meshImportOptions = MeshImportOptions::Create();
         meshImportOptions->ImportNormals = false;
         auto textureImportOptions = TextureImportOptions::Create();
+        auto shaderImportOptions = ShaderImportOptions::Create();
 
         HMesh loadedMesh = gResourceManager().Load<Mesh>("Data/Mesh/cube.obj", meshImportOptions);
         HTexture loadTexture = gResourceManager().Load<Texture>("Data/Texture/default.png", textureImportOptions);
+        HShader loadShader = gResourceManager().Load<Shader>("Data/Shader/default.shader", shaderImportOptions);
 
         TE_PRINT((loadedMesh.GetHandleData())->data);
         TE_PRINT((loadedMesh.GetHandleData())->uuid.ToString());
 
         TE_PRINT((loadTexture.GetHandleData())->data);
         TE_PRINT((loadTexture.GetHandleData())->uuid.ToString());
+
+        TE_PRINT((loadShader.GetHandleData())->data);
+        TE_PRINT((loadShader.GetHandleData())->uuid.ToString());
 
         _camera = Camera::Create();
         _camera->SetRenderTarget(gCoreApplication().GetWindow());

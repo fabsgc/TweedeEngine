@@ -49,8 +49,8 @@ namespace te
         {
         }
 
-        SPtr<Mesh> mesh = te_shared_ptr_new<Mesh>();
-
+        SPtr<Mesh> mesh = Mesh::_createPtr(MESH_DESC());
+        mesh->SetName(filePath);
         return mesh;
     }
 }

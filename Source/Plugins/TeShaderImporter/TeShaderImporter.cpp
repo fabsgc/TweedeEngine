@@ -27,8 +27,8 @@ namespace te
 
     SPtr<Resource> ShaderImporter::Import(const String& filePath, const SPtr<const ImportOptions> importOptions)
     {
-        SPtr<Shader> shader = te_shared_ptr_new<Shader>();
-
+        SPtr<Shader> shader = Shader::_createPtr(SHADER_DESC());
+        shader->SetName(filePath);
         return shader;
     }
 }

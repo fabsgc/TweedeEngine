@@ -82,6 +82,8 @@ namespace te
     class HardwareBuffer;
     class VertexBuffer;
     class VertexDeclaration;
+    class VertexDataDesc;
+    struct SubMesh;
 
     class Renderer;
     class RendererFactory;
@@ -120,9 +122,12 @@ namespace te
 
     class Resource;
     class ResourceManager;
+    class GpuResourceData;
 
     class Texture;
 
+    struct MESH_DESC;
+    class MeshProperties;
     class Mesh;
 
     class Shader;

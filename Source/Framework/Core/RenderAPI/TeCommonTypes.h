@@ -156,6 +156,13 @@ namespace te
 		DOT_TRIANGLE_FAN = 6
 	};
 
+	/**	Type of mesh indices used, used for determining maximum number of vertices in a mesh. */
+	enum IndexType
+	{
+		IT_16BIT,	/**< 16-bit indices. */
+		IT_32BIT    /**< 32-bit indices. */
+	};
+
 	/**
 	 * Controls what kind of mobility restrictions a scene object has. This is used primarily as a performance hint to
 	 * other systems. Generally the more restricted the mobility the higher performance can be achieved.

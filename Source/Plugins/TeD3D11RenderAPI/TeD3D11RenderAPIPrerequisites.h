@@ -35,4 +35,6 @@ namespace te
     class D3D11BlendState;
     class D3D11RasterizerState;
     class D3D11SamplerState;
+    class D3D11Texture;
+    class D3D11TextureManager;
 }
