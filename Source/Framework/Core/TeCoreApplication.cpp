@@ -18,6 +18,8 @@
 #include "Scene/TeSceneManager.h"
 #include "CoreUtility/TeCoreObjectManager.h"
 #include "RenderAPI/TeRenderStateManager.h"
+#include "Importer/TeMeshImportOptions.h"
+#include "Importer/TeTextureImportOptions.h"
 
 namespace te
 {
@@ -130,8 +132,12 @@ namespace te
             LoadPlugin(importerName);
         }
 
-        HMesh loadedMesh = gResourceManager().Load<Mesh>("Data/Mesh/cube.obj");
-        HTexture loadTexture = gResourceManager().Load<Texture>("Data/Texture/default.png");
+        auto meshImportOptions = MeshImportOptions::Create();
+        meshImportOptions->ImportNormals = false;
+        auto textureImportOptions = TextureImportOptions::Create();
+
+        HMesh loadedMesh = gResourceManager().Load<Mesh>("Data/Mesh/cube.obj", meshImportOptions);
+        HTexture loadTexture = gResourceManager().Load<Texture>("Data/Texture/default.png", textureImportOptions);
 
         TE_PRINT((loadedMesh.GetHandleData())->data);
         TE_PRINT((loadedMesh.GetHandleData())->uuid.ToString());

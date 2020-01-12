@@ -14,8 +14,7 @@ namespace te
     }
 
     ObjectImporter::~ObjectImporter()
-    {
-    }
+    { }
 
     bool ObjectImporter::IsExtensionSupported(const String& ext) const
     {

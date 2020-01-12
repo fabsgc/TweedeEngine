@@ -1,6 +1,7 @@
 #include "TeFreeImgImporter.h"
 #include "Importer/TeTextureImportOptions.h"
 #include "FreeImage.h"
+#include "Image/TeTexture.h"
 
 namespace te
 {
@@ -81,8 +82,10 @@ namespace te
         return te_shared_ptr_new<TextureImportOptions>();
     }
 
-    SPtr<Resource> FreeImgImporter::Import(const String& filePath, SPtr<const ImportOptions> importOptions)
+    SPtr<Resource> FreeImgImporter::Import(const String& filePath, const SPtr<const ImportOptions> importOptions)
     {
-        return SPtr<Resource>();
+        SPtr<Texture> texture = te_shared_ptr_new<Texture>();
+
+        return texture;
     }
 }

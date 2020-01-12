@@ -1,4 +1,4 @@
-#include "Mesh/TeMesh.h"
+#include "Shader/TeShader.h"
 
 namespace te
 {

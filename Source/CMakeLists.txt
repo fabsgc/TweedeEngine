@@ -58,6 +58,7 @@ endif ()
 add_subdirectory (Plugins/TeRenderMan)
 add_subdirectory (Plugins/TeObjectImporter)
 add_subdirectory (Plugins/TeFreeImgImporter)
+add_subdirectory (Plugins/TeShaderImporter)
 
 add_subdirectory (Examples)
 

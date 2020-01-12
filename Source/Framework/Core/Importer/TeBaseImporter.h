@@ -33,7 +33,7 @@ namespace te
          * @param[in]	importOptions	Options that can control how is the resource imported.
          * @return						null if it fails, otherwise the loaded object.
          */
-        virtual SPtr<Resource> Import(const String& filePath, SPtr<const ImportOptions> importOptions) = 0;
+        virtual SPtr<Resource> Import(const String& filePath, const SPtr<const ImportOptions> importOptions) = 0;
 
         /**
          * Creates import options specific for this importer. Import options are provided when calling import() in order

@@ -5,10 +5,10 @@
 
 namespace te
 {
-	class TE_CORE_EXPORT Mesh : public Resource
+	class TE_CORE_EXPORT Shader : public Resource
 	{
 	public:
-		Mesh() = default;
-		virtual ~Mesh() = default;
+		Shader() = default;
+		virtual ~Shader() = default;
     };
 }

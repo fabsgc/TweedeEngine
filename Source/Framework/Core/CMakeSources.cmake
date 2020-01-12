@@ -132,6 +132,7 @@ set (TE_CORE_INC_IMPORTER
     "Core/Importer/TeBaseImporter.h"
     "Core/Importer/TeTextureImportOptions.h"
     "Core/Importer/TeMeshImportOptions.h"
+    "Core/Importer/TeShaderImportOptions.h"
 )
 set (TE_CORE_SRC_IMPORTER
     "Core/Importer/TeImporter.cpp"
@@ -139,6 +140,7 @@ set (TE_CORE_SRC_IMPORTER
     "Core/Importer/TeBaseImporter.cpp"
     "Core/Importer/TeTextureImportOptions.cpp"
     "Core/Importer/TeMeshImportOptions.cpp"
+    "Core/Importer/TeShaderImportOptions.cpp"
 )
 
 set (TE_CORE_INC_IMAGE
@@ -153,6 +155,13 @@ set (TE_CORE_INC_MESH
 )
 set (TE_CORE_SRC_MESH
     "Core/Mesh/TeMesh.cpp"
+)
+
+set (TE_CORE_INC_SHADER
+    "Core/Shader/TeShader.h"
+)
+set (TE_CORE_SRC_SHADER
+    "Core/Shader/TeShader.cpp"
 )
 
 set (TE_CORE_INC_RESOURCE
@@ -187,6 +196,7 @@ source_group("Core\\Image" FILES ${TE_CORE_INC_IMAGE} ${TE_CORE_SRC_IMAGE})
 source_group("Core\\Mesh" FILES ${TE_CORE_INC_MESH} ${TE_CORE_SRC_MESH})
 source_group("Core\\Resources" FILES ${TE_CORE_INC_RESOURCE} ${TE_CORE_SRC_RESOURCE})
 source_group("Core\\Scene" FILES ${TE_CORE_INC_SCENE} ${TE_CORE_SRC_SCENE})
+source_group("Core\\Shader" FILES ${TE_CORE_INC_SHADER} ${TE_CORE_SRC_SHADER})
 source_group("Core\\CoreUtility" FILES ${TE_CORE_INC_CORE_UTILITY} ${TE_CORE_SRC_CORE_UTILITY})
 source_group("Core" FILES ${TE_CORE_INC_NOFILTER} ${TE_CORE_SRC_NOFILTER})
 
@@ -213,6 +223,8 @@ set(TE_CORE_SRC
     ${TE_CORE_SRC_RESOURCE}
     ${TE_CORE_INC_SCENE}
     ${TE_CORE_SRC_SCENE}
+    ${TE_CORE_INC_SHADER}
+    ${TE_CORE_SRC_SHADER}
     ${TE_CORE_INC_CORE_UTILITY}
     ${TE_CORE_SRC_CORE_UTILITY}
 )

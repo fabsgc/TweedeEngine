@@ -125,7 +125,7 @@ namespace te
 
     class Mesh;
 
-    class Color;
+    class Shader;
 }
 
 #include "Resources/TeResourceHandle.h"
@@ -134,7 +134,9 @@ namespace te
 {
     typedef ResourceHandle<Resource> HResource;
     typedef ResourceHandle<Texture> HTexture;
+    typedef ResourceHandle<Shader> HShader;
     typedef ResourceHandle<Mesh> HMesh;
+    
 }
 
 #include "RenderAPI/TeCommonTypes.h"

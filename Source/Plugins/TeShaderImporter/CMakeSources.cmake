@@ -1,0 +1,16 @@
+set (TE_SHADERIMPORTER_INC_NOFILTER
+    "TeShaderImporterPrerequisites.h"
+    "TeShaderImporter.h"
+)
+
+set (TE_SHADERIMPORTER_SRC_NOFILTER
+    "TeShaderImporter.cpp"
+    "TeShaderImporterPlugin.cpp"
+)
+
+source_group ("" FILES ${TE_SHADERIMPORTER_SRC_NOFILTER} ${TE_SHADERIMPORTER_INC_NOFILTER})
+
+set (TE_SHADERIMPORTER_SRC
+    ${TE_SHADERIMPORTER_INC_NOFILTER}
+    ${TE_SHADERIMPORTER_SRC_NOFILTER}
+)

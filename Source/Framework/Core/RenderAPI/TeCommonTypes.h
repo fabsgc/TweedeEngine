@@ -121,7 +121,7 @@ namespace te
 	};
 
 	/** Describes operation that will be used for rendering a certain set of vertices. */
-	enum  DrawOperationType
+	enum DrawOperationType
 	{
 		/** Each vertex represents a point. */
 		DOT_POINT_LIST = 1,
@@ -152,6 +152,25 @@ namespace te
 		Immovable,
 		/** Scene object isn't allowed to be moved nor is it allowed to be visually changed. Object must be fully static. */
 		Static
+	};
+
+	/** Determines the type of the source image for generating cubemaps. */
+	enum class CubemapSourceType
+	{
+		/** Source is a single image that will be replicated on all cubemap faces. */
+		Single,
+
+		/**
+		 * Source is a list of 6 images, either sequentially next to each other or in a cross format. The system will
+		 * automatically guess the layout and orientation based on the aspect ratio.
+		 */
+		Faces,
+
+		/** Source is a single spherical panoramic image. */
+		Spherical,
+
+		/** Source is a single cylindrical panoramic image. */
+		Cylindrical
 	};
 
     /**	Texture addressing mode, per component. */

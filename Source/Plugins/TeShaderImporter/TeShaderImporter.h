@@ -1,15 +1,15 @@
 #pragma once
 
-#include "TeObjectImporterPrerequisites.h"
+#include "TeShaderImporterPrerequisites.h"
 #include "Importer/TeBaseImporter.h"
 
 namespace te
 {
-    class ObjectImporter : public BaseImporter
+    class ShaderImporter : public BaseImporter
     {
     public:
-        ObjectImporter();
-        virtual ~ObjectImporter();
+        ShaderImporter();
+        virtual ~ShaderImporter();
 
         /** @copydoc BasicImporter::IsExtensionSupported */
         bool IsExtensionSupported(const String& ext) const override;
