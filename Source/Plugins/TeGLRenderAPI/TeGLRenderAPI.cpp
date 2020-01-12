@@ -1,6 +1,8 @@
 #include "TeGLRenderAPI.h"
 #include "Image/TeTextureManager.h"
 #include "TeGLTextureManager.h"
+#include "RenderAPI/TeRenderStateManager.h"
+#include "TeGLRenderStateManager.h"
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
 #   include "Win32/TeWin32RenderWindow.h"
@@ -31,6 +33,9 @@ namespace te
     {
         // Create the texture manager for use by others		
         TextureManager::StartUp<GLTextureManager>();
+
+        // Create render state manager
+        RenderStateManager::StartUp<GLRenderStateManager>();
     }
 
     void GLRenderAPI::SetGraphicsPipeline(const SPtr<GraphicsPipelineState>& pipelineState)

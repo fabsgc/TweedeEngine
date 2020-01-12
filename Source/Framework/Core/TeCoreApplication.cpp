@@ -178,7 +178,6 @@ namespace te
         SPtr<GraphicsPipelineState> graphicsPipeline = GraphicsPipelineState::Create(pipeDesc);
 
         RenderAPI::Instance().SetGraphicsPipeline(graphicsPipeline);
-
     }
     
     void CoreApplication::OnShutDown()

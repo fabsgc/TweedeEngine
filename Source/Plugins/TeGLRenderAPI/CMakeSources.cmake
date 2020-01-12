@@ -3,6 +3,7 @@ set (TE_GLRENDERAPI_INC_NOFILTER
 	"TeGLRenderAPIFactory.h"
 	"TeGLRenderAPI.h"
 	"TeGLTextureManager.h"
+	"TeGLRenderStateManager.h"
 )
 
 set (TE_GLRENDERAPI_SRC_NOFILTER
@@ -10,6 +11,7 @@ set (TE_GLRENDERAPI_SRC_NOFILTER
 	"TeGLRenderAPIPlugin.cpp"
 	"TeGLRenderAPI.cpp"
 	"TeGLTextureManager.cpp"
+	"TeGLRenderStateManager.cpp"
 )
 
 set(TE_GLRENDERAPI_INC_WIN32
