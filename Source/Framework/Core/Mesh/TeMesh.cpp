@@ -62,6 +62,8 @@ namespace te
         _size = 8; // TODO
         bool isDynamic = (_usage & MU_DYNAMIC) != 0;
 		int usage = isDynamic ? GBU_DYNAMIC : GBU_STATIC;
+
+        CoreObject::Initialize();
     }
 
     SPtr<VertexDataDesc> Mesh::GetVertexDesc() const

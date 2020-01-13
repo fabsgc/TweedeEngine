@@ -53,6 +53,10 @@ namespace te
         return dst;
     }
 
+    SPtr<Texture> Texture::WHITE;
+    SPtr<Texture> Texture::BLACK;
+    SPtr<Texture> Texture::NORMAL;
+
     Texture::Texture(const TEXTURE_DESC& desc)
         : _properties(desc)
     { }
@@ -68,6 +72,26 @@ namespace te
         Resource::Initialize();
 
         CoreObject::Initialize();
+    }
+
+    void Texture::Copy(const SPtr<Texture>& target, const TEXTURE_COPY_DESC& desc)
+    {
+        // TODO
+    }
+
+    void Texture::Clear(const Color& value, UINT32 mipLevel, UINT32 face, UINT32 queueIdx)
+    {
+        // TODO
+    }
+
+    void Texture::ReadData(PixelData& dest, UINT32 mipLevel , UINT32 face, UINT32 deviceIdx, UINT32 queueIdx)
+    {
+        // TODO
+    }
+
+    void Texture::WriteData(const PixelData& src, UINT32 mipLevel, UINT32 face, bool discardWholeBuffer, UINT32 queueIdx)
+    {
+        // TODO
     }
 
     UINT32 Texture::CalculateSize() const

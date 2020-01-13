@@ -13,6 +13,12 @@ namespace te
     public:
         virtual ~TextureManager() = default;
 
+        /** @copydoc Module::OnStartUp */
+        void OnStartUp() override;
+
+        /** @copydoc Module::OnShutDown */
+        void OnShutDown() override;
+
         /** @copydoc Texture::create(const TEXTURE_DESC&) */
         SPtr<Texture> CreateTexture(const TEXTURE_DESC& desc);
 

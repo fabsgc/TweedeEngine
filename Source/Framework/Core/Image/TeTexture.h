@@ -4,6 +4,7 @@
 #include "Resources/TeResource.h"
 #include "CoreUtility/TeCoreObject.h"
 #include "TePixelData.h"
+#include "Math/TeVector3I.h"
 
 namespace te
 {
@@ -71,6 +72,39 @@ namespace te
 		/** Number of texture slices to create if creating a texture array. Ignored for 3D textures. */
 		UINT32 NumArraySlices = 1;
 	};
+
+    /** Structure used for specifying information about a texture copy operation. */
+    struct TEXTURE_COPY_DESC
+    {
+        /**
+         * Face from which to copy. This can be an entry in an array of textures, or a single face of a cube map. If cubemap
+         * array, then each array entry takes up six faces.
+         */
+        UINT32 SrcFace = 0;
+
+        /** Mip level from which to copy. */
+        UINT32 SrcMip = 0;
+
+        /** Pixel volume from which to copy from. This defaults to all pixels of the face. */
+        PixelVolume SrcVolume = PixelVolume(0, 0, 0, 0, 0, 0);
+
+        /**
+         * Face to which to copy. This can be an entry in an array of textures, or a single face of a cube map. If cubemap
+         * array, then each array entry takes up six faces.
+         */
+        UINT32 DstFace = 0;
+
+        /** Mip level to which to copy. */
+        UINT32 DstMip = 0;
+
+        /**
+         * Coordinates to write the source pixels to. The destination texture must have enough pixels to fit the entire
+         * source volume.
+         */
+        Vector3I DstPosition;
+
+        TE_CORE_EXPORT static TEXTURE_COPY_DESC DEFAULT;
+    };
 
     /** Properties of a Texture. Shared between sim and core thread versions of a Texture. */
     class TE_CORE_EXPORT TextureProperties
@@ -160,6 +194,55 @@ namespace te
         /** @copydoc CoreObject::Initialize */
         void Initialize() override;
 
+        /**
+         * Copies the contents a subresource in this texture to another texture. Texture format and size of the subresource
+         * must match.
+         *
+         * You are allowed to copy from a multisampled to non-multisampled surface, which will resolve the multisampled
+         * surface before copying.
+         *
+         * @param[in]	target				Texture that contains the destination subresource.
+         * @param[in]	desc				Structure used for customizing the copy operation.
+         */
+        void Copy(const SPtr<Texture>& target, const TEXTURE_COPY_DESC& desc = TEXTURE_COPY_DESC::DEFAULT);
+
+        /**
+         * Sets all the pixels of the specified face and mip level to the provided value.
+         *
+         * @param[in]	value			Color to clear the pixels to.
+         * @param[in]	mipLevel		Mip level to clear.
+         * @param[in]	face			Face (array index or cubemap face) to clear.
+         * @param[in]	queueIdx		Device queue to perform the write operation on. See @ref queuesDoc.
+         */
+        void Clear(const Color& value, UINT32 mipLevel = 0, UINT32 face = 0, UINT32 queueIdx = 0);
+
+        /**
+         * Reads data from the texture buffer into the provided buffer.
+         *
+         * @param[out]	dest		Previously allocated buffer to read data into.
+         * @param[in]	mipLevel	(optional) Mipmap level to read from.
+         * @param[in]	face		(optional) Texture face to read from.
+         * @param[in]	deviceIdx	Index of the device whose memory to read. If the buffer doesn't exist on this device,
+         *							no data will be read.
+         * @param[in]	queueIdx	Device queue to perform the read operation on. See @ref queuesDoc.
+         */
+        void ReadData(PixelData& dest, UINT32 mipLevel = 0, UINT32 face = 0, UINT32 deviceIdx = 0, UINT32 queueIdx = 0);
+
+        /**
+         * Writes data from the provided buffer into the texture buffer.
+         *
+         * @param[in]	src					Buffer to retrieve the data from.
+         * @param[in]	mipLevel			(optional) Mipmap level to write into.
+         * @param[in]	face				(optional) Texture face to write into.
+         * @param[in]	discardWholeBuffer	(optional) If true any existing texture data will be discard. This can improve
+         *									performance of the write operation.
+         * @param[in]	queueIdx			Device queue to perform the write operation on. See @ref queuesDoc.
+         */
+        void WriteData(const PixelData& src, UINT32 mipLevel = 0, UINT32 face = 0, bool discardWholeBuffer = false, UINT32 queueIdx = 0);
+
+        /**	Returns properties that contain information about the texture. */
+        const TextureProperties& GetProperties() const { return _properties; }
+
         /** Calculates the size of the texture, in bytes. */
         UINT32 CalculateSize() const;
 
@@ -181,6 +264,15 @@ namespace te
 
         /** Same as create() excepts it creates a pointer to the texture instead of a texture handle. */
         static SPtr<Texture> _createPtr(const SPtr<PixelData>& pixelData, int usage = TU_DEFAULT, bool hwGammaCorrection = false);
+
+        /** Returns a plain white texture. */
+        static SPtr<Texture> WHITE;
+
+        /** Returns a plain black texture. */
+        static SPtr<Texture> BLACK;
+
+        /** Returns a plain normal map texture with normal pointing up (in Y direction). */
+        static SPtr<Texture> NORMAL;
 
     protected:
         friend class TextureManager;
