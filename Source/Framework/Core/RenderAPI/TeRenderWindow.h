@@ -35,7 +35,7 @@ namespace te
     {
         RENDER_WINDOW_DESC()
             : Fullscreen(false), Vsync(false), Hidden(false), DepthBuffer(true)
-            , MultisampleCount(4), MultisampleHint(""), Gamma(false), Left(-1), Top(-1), Title("Application")
+            , MultisampleCount(0), MultisampleHint(""), Gamma(false), Left(-1), Top(-1), Title("Application")
             , ShowTitleBar(true), ShowBorder(true), AllowResize(true), ToolWindow(false), Modal(false)
             , HideUntilSwap(false)
         { }

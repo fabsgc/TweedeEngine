@@ -150,11 +150,14 @@ set (TE_CORE_INC_IMAGE
     "Core/Image/TeTexture.h"
     "Core/Image/TeTextureManager.h"
     "Core/Image/TePixelData.h"
+    "Core/Image/TePixelUtil.h"
+    "Core/Image/TePixelVolume.h"
 )
 set (TE_CORE_SRC_IMAGE
     "Core/Image/TeTexture.cpp"
     "Core/Image/TeTextureManager.cpp"
     "Core/Image/TePixelData.cpp"
+    "Core/Image/TePixelUtil.cpp"
 )
 
 set (TE_CORE_INC_MESH

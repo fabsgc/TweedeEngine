@@ -115,20 +115,6 @@ namespace te
 
                     if (top < 0)
                         top = (screenh - height) / 2;
-
-                    UINT classStyle = 0;
-                    if (desc.EnableDoubleClick)
-                        classStyle |= CS_DBLCLKS;
-
-                    // Register the window class
-                    WNDCLASS wc = { classStyle, desc.WndProc, 0, 0, desc.Module,
-                        LoadIcon(nullptr, IDI_APPLICATION), LoadCursor(nullptr, IDC_ARROW),
-                        (HBRUSH)GetStockObject(BLACK_BRUSH), 0, "Win32Wnd" };
-
-                    RegisterClass(&wc);
-
-                    _data->HWnd = CreateWindowEx(_data->StyleEx, "Win32Wnd", desc.Title.c_str(), _data->Style,
-                        left, top, width, height, nullptr, nullptr, desc.Module, desc.CreationParams);
                 }
             }
             else
@@ -137,6 +123,20 @@ namespace te
                 top = 0;
                 left = 0;
             }
+
+            UINT classStyle = 0;
+            if (desc.EnableDoubleClick)
+                classStyle |= CS_DBLCLKS;
+
+            // Register the window class
+            WNDCLASS wc = { classStyle, desc.WndProc, 0, 0, desc.Module,
+                LoadIcon(nullptr, IDI_APPLICATION), LoadCursor(nullptr, IDC_ARROW),
+                (HBRUSH)GetStockObject(BLACK_BRUSH), 0, "Win32Wnd" };
+
+            RegisterClass(&wc);
+
+            _data->HWnd = CreateWindowEx(_data->StyleEx, "Win32Wnd", desc.Title.c_str(), _data->Style,
+                left, top, width, height, nullptr, nullptr, desc.Module, desc.CreationParams);
         }
 
         RECT rect;

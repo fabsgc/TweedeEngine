@@ -411,12 +411,36 @@ namespace te
             return;
         }
 
-        UINT outQuality = 0;
-        _device->GetD3D11Device()->CheckMultisampleQualityLevels(DXGI_FORMAT_R8G8B8A8_UNORM, 4, &outQuality);
-        assert(outQuality > 0);
+        bool foundValid = false;
+        size_t origNumSamples = multisampleCount;
 
-        outputSampleDesc->Count = 4;
-        outputSampleDesc->Quality = outQuality - 1;
+        outputSampleDesc->Count = multisampleCount == 0 ? 1 : multisampleCount;
+        outputSampleDesc->Quality = D3D11_STANDARD_MULTISAMPLE_PATTERN;
+
+        while (!foundValid)
+        {
+            HRESULT hr = S_OK;
+            UINT outQuality = 0;
+            hr = _device->GetD3D11Device()->CheckMultisampleQualityLevels(format, outputSampleDesc->Count, &outQuality);
+
+            if (SUCCEEDED(hr))
+            {
+                outputSampleDesc->Quality = outQuality - 1;
+                foundValid = true;
+            }
+            else
+            {
+                // Drop samples
+                multisampleCount--;
+
+                if (multisampleCount == 1)
+                {
+                    // Ran out of options, no multisampling
+                    multisampleCount = 0;
+                    foundValid = true;
+                }
+            }
+        }
     }
 
     void D3D11RenderAPI::ApplyInputLayout()

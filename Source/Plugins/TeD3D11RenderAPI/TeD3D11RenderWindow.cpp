@@ -2,6 +2,7 @@
 #include "Private/Win32/TeWin32Platform.h"
 #include "TeD3D11VideoModeInfo.h"
 #include "TeD3D11RenderAPI.h"
+#include "Image/TeTexture.h"
 
 namespace te
 {
@@ -375,26 +376,24 @@ namespace te
             TE_ASSERT_ERROR(false, "Unable to create rendertarget view\nError Description:" + errorDescription, __FILE__, __LINE__);
         }
 
-        // TODO
-
-        //_depthStencilView = nullptr;
+        //_depthStencilView = nullptr; TODO
 
         if (_desc.DepthBuffer)
         {
-            /*TEXTURE_DESC texDesc;
-            texDesc.type = TEX_TYPE_2D;
-            texDesc.width = BBDesc.Width;
-            texDesc.height = BBDesc.Height;
-            texDesc.format = PF_D32_S8X24;
-            texDesc.usage = TU_DEPTHSTENCIL;
-            texDesc.numSamples = getProperties().multisampleCount;
+            TEXTURE_DESC texDesc;
+            texDesc.Type = TEX_TYPE_2D;
+            texDesc.Width = BBDesc.Width;
+            texDesc.Height = BBDesc.Height;
+            texDesc.Format = PF_D32_S8X24;
+            texDesc.Usage = TU_DEPTHSTENCIL;
+            texDesc.NumSamples = GetProperties().MultisampleCount;
 
-            _depthStencilBuffer = Texture::create(texDesc);
-            _depthStencilView = _depthStencilBuffer->requestView(0, 1, 0, 1, GVU_DEPTHSTENCIL);*/
+            _depthStencilBuffer = Texture::_createPtr(texDesc);
+            // _depthStencilView = _depthStencilBuffer->requestView(0, 1, 0, 1, GVU_DEPTHSTENCIL); TODO
         }
         else
         {
-            // _depthStencilBuffer = nullptr;
+            _depthStencilBuffer = nullptr;
         }
     }
 
@@ -403,7 +402,7 @@ namespace te
         SAFE_RELEASE(_backBuffer);
         SAFE_RELEASE(_renderTargetView);
 
-        // _depthStencilBuffer = nullptr;
+        _depthStencilBuffer = nullptr;
     }
 
     void D3D11RenderWindow::ResizeSwapChainBuffers(UINT32 width, UINT32 height)

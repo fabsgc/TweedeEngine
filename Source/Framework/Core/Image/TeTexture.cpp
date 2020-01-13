@@ -2,6 +2,7 @@
 #include "Math/TeMath.h"
 #include "Resources/TeResourceManager.h"
 #include "Image/TeTextureManager.h"
+#include "Image/TePixelUtil.h"
 
 namespace te
 {
@@ -11,8 +12,7 @@ namespace te
 
     bool TextureProperties::HasAlpha() const
     {
-        // return PixelUtil::hasAlpha(_desc.format); TODO
-        return false;
+        return PixelUtil::HasAlpha(_desc.Format);
     }
 
     UINT32 TextureProperties::GetNumFaces() const
@@ -47,8 +47,7 @@ namespace te
             if (depth != 1) depth /= 2;
         }
 
-        // SPtr<PixelData> dst = te_shared_ptr_new<PixelData>(width, height, depth, getFormat()); TODO
-        SPtr<PixelData> dst = te_shared_ptr_new<PixelData>();
+        SPtr<PixelData> dst = te_shared_ptr_new<PixelData>(width, height, depth, GetFormat());
         dst->AllocateInternalBuffer();
 
         return dst;
@@ -73,10 +72,8 @@ namespace te
 
     UINT32 Texture::CalculateSize() const
     {
-        // return _properties.GetNumFaces() * PixelUtil::GetMemorySize(_properties.GetWidth(),
-        //    _properties.GetHeight(), _properties.GetDepth(), _properties.GetFormat()); TODO
-
-        return 8;
+        return _properties.GetNumFaces() * PixelUtil::GetMemorySize(_properties.GetWidth(),
+               _properties.GetHeight(), _properties.GetDepth(), _properties.GetFormat());
     }
 
     HTexture Texture::Create(const TEXTURE_DESC& desc)
@@ -100,21 +97,12 @@ namespace te
 
     SPtr<Texture> Texture::_createPtr(const SPtr<PixelData>& pixelData, int usage, bool hwGammaCorrection)
     {
-        /*TEXTURE_DESC desc;
+        TEXTURE_DESC desc;
         desc.Type = pixelData->GetDepth() > 1 ? TEX_TYPE_3D : TEX_TYPE_2D;
         desc.Width = pixelData->GetWidth();
         desc.Height = pixelData->GetHeight();
         desc.Depth = pixelData->GetDepth();
         desc.Format = pixelData->GetFormat();
-        desc.Usage = usage;
-        desc.HwGamma = hwGammaCorrection; TODO */
-
-        TEXTURE_DESC desc;
-        desc.Type = TEX_TYPE_2D;
-        desc.Width = 1;
-        desc.Height = 1;
-        desc.Depth = 1;
-        desc.Format = PF_R8;
         desc.Usage = usage;
         desc.HwGamma = hwGammaCorrection;
 

@@ -1,5 +1,7 @@
 #include "TeD3D11Mappings.h"
 #include "Utility/TeColor.h"
+#include "Image/TeTexture.h"
+#include "Image/TePixelUtil.h"
 
 namespace te
 {
@@ -586,7 +588,33 @@ namespace te
 
     PixelFormat D3D11Mappings::GetClosestSupportedPF(PixelFormat pf, TextureType texType, int usage)
     {
-        return PF_RGBA8; // TODO
+        // Check for any obvious issues first
+        PixelUtil::CheckFormat(pf, texType, usage);
+
+        // Check for formats that are not supported at all by DX11
+        switch (pf)
+        {
+        case PF_RGB8:
+            pf = PF_RGBA8;
+            break;
+        default:
+            break;
+        }
+
+        // Check for usage specific format restrictions
+        if ((usage & TU_LOADSTORE) != 0)
+        {
+            switch (pf)
+            {
+            case PF_BGRA8:
+                pf = PF_RGBA8;
+                break;
+            default:
+                break;
+            }
+        }
+
+        return pf;
     }
 
     DXGI_FORMAT D3D11Mappings::GetTypelessDepthStencilPF(PixelFormat format)

@@ -94,6 +94,7 @@ set(TE_UTILITY_INC_UTILITY
     "Utility/Utility/TeEvent.h"
     "Utility/Utility/TePlatformUtility.h"
     "Utility/Utility/TeColor.h"
+    "Utility/Utility/TeBitwise.h"
 )
 set(TE_UTILITY_SRC_UTILITY
     "Utility/Utility/TeDynLib.cpp"

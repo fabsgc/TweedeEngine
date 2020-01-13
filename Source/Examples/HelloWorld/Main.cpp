@@ -27,6 +27,8 @@ int main()
     };
 
     desc.WindowDesc.Mode = te::VideoMode(960, 480);
+    desc.WindowDesc.Fullscreen = false;
+    desc.WindowDesc.MultisampleCount = 4;
 
     te::CoreApplication::StartUp(desc);
 
