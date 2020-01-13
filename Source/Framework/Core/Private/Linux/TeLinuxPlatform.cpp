@@ -876,9 +876,6 @@ namespace te
 			_data->IM = 0;
 		}
 
-		XCloseDisplay(_data->XDisplay);
-		_data->XDisplay = nullptr;
-
 		te_delete(_data);
 		_data = nullptr;
 	}
