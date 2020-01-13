@@ -38,6 +38,15 @@ namespace te
         RenderStateManager::StartUp<GLRenderStateManager>();
     }
 
+    void GLRenderAPI::Destroy()
+    {
+        TextureManager::ShutDown();
+
+        RenderStateManager::ShutDown();
+
+        RenderAPI::Destroy();
+    }
+
     void GLRenderAPI::SetGraphicsPipeline(const SPtr<GraphicsPipelineState>& pipelineState)
     {
         // TODO

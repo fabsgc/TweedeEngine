@@ -13,6 +13,7 @@ namespace te
 
         SPtr<RenderWindow> CreateRenderWindow(const RENDER_WINDOW_DESC& windowDesc) override;
         void Initialize() override;
+        void Destroy() override;
 
         /** @copydoc RenderAPI::setGraphicsPipeline */
         void SetGraphicsPipeline(const SPtr<GraphicsPipelineState>& pipelineState) override;

@@ -124,6 +124,8 @@ namespace te
         _activeDepthStencilState = nullptr;
         _activeVertexDeclaration = nullptr;
 
+        TextureManager::ShutDown();
+
         RenderStateManager::ShutDown();
 
         SAFE_RELEASE(_DXGIFactory);

@@ -63,6 +63,7 @@ namespace te
         bool isDynamic = (_usage & MU_DYNAMIC) != 0;
 		int usage = isDynamic ? GBU_DYNAMIC : GBU_STATIC;
 
+        Resource::Initialize();
         CoreObject::Initialize();
     }
 

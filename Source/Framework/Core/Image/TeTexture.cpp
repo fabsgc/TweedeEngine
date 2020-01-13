@@ -69,8 +69,8 @@ namespace te
     void Texture::Initialize()
     {
         _size = CalculateSize();
+        
         Resource::Initialize();
-
         CoreObject::Initialize();
     }
 
