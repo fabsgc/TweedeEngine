@@ -277,10 +277,17 @@ namespace te
 
         _DXGIFormat = desc.Format;
 
-        // Create texture view
+         
         if ((usage & TU_DEPTHSTENCIL) == 0 || readableDepth)
         {
-            // TODO
+            TEXTURE_VIEW_DESC viewDesc;
+			viewDesc.MostDetailMip = 0;
+			viewDesc.NumMips = desc.MipLevels;
+			viewDesc.FirstArraySlice = 0;
+			viewDesc.NumArraySlices = desc.ArraySize;
+			viewDesc.Usage = GVU_DEFAULT;
+
+			_shaderResourceView = te_shared_ptr<D3D11TextureView>(new (te_allocate<D3D11TextureView>()) D3D11TextureView(this, viewDesc));
         }
     }
 
@@ -406,7 +413,14 @@ namespace te
         // Create shader texture view
         if ((usage & TU_DEPTHSTENCIL) == 0 || readableDepth)
         {
-            // TODO
+            TEXTURE_VIEW_DESC viewDesc;
+			viewDesc.MostDetailMip = 0;
+			viewDesc.NumMips = desc.MipLevels;
+			viewDesc.FirstArraySlice = 0;
+			viewDesc.NumArraySlices = desc.ArraySize;
+			viewDesc.Usage = GVU_DEFAULT;
+
+			_shaderResourceView = te_shared_ptr<D3D11TextureView>(new (te_allocate<D3D11TextureView>()) D3D11TextureView(this, viewDesc));
         }
     }
 
@@ -505,7 +519,14 @@ namespace te
 
         if ((usage & TU_DEPTHSTENCIL) == 0 || readableDepth)
         {
-            // TODO
+            TEXTURE_VIEW_DESC viewDesc;
+			viewDesc.MostDetailMip = 0;
+			viewDesc.NumMips = desc.MipLevels;
+			viewDesc.FirstArraySlice = 0;
+			viewDesc.NumArraySlices = 1;
+			viewDesc.Usage = GVU_DEFAULT;
+
+			_shaderResourceView = te_shared_ptr<D3D11TextureView>(new (te_allocate<D3D11TextureView>()) D3D11TextureView(this, viewDesc));
         }
     }
 

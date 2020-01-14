@@ -2,6 +2,7 @@
 
 #include "TeCorePrerequisites.h"
 #include "Importer/TeImportOptions.h"
+#include "Image/TePixelData.h"
 
 namespace te
 {
@@ -10,6 +11,9 @@ namespace te
 	{
 	public:
 		TextureImportOptions() = default;
+
+        /** Pixel format to import as. */
+        PixelFormat Format = PF_RGBA8;
 
 		/** Enables or disables mipmap generation for the texture. */
 		bool GenerateMips = false;

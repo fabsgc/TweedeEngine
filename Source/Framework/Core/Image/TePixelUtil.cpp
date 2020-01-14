@@ -1208,7 +1208,6 @@ namespace te
 		default:
 			return GetNumElemBytes(format);
 		}
-
 	}
 
 	Vector2I PixelUtil::GetBlockDimensions(PixelFormat format)
@@ -2020,14 +2019,14 @@ namespace te
 
     void PixelUtil::Compress(const PixelData& src, PixelData& dst, const CompressionOptions& options)
 	{
-        // TODO
+        TE_ASSERT_ERROR(false, "Compression not yet supported", __FILE__, __LINE__); // TODO
     }
 
     Vector<SPtr<PixelData>> PixelUtil::GenMipmaps(const PixelData& src, const MipMapGenOptions& options)
 	{
 		Vector<SPtr<PixelData>> outputMipBuffers;
 
-        // TODO
+        TE_ASSERT_ERROR(false, "Mipmap not yet supported", __FILE__, __LINE__); // TODO
 
 		return outputMipBuffers;
 	}
