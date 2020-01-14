@@ -152,7 +152,7 @@ namespace te
         default:
 #if TE_PLATFORM == TE_PLATFORM_WIN32
             ParseWindowsPath();
-#elif TE_PLATFORM == TE_PLATFORM == TE_PLATFORM_LINUX
+#elif TE_PLATFORM == TE_PLATFORM_LINUX
             ParseUnixPath();
 #else
             static_assert(false, "Unsupported platform for path.");
