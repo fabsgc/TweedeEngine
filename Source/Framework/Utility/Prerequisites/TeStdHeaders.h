@@ -224,7 +224,7 @@ namespace te
      * http://www.open-std.org/jtc1/sc22/wg21/docs/lwg-defects.html#2148).  But
      * even with C++14, as of october 2016, std::hash for enums is not widely
      * implemented by compilers, so here when T is a enum, we use EnumClassHash
-     * instead of std::hash. (For instance, in bs::hash_combine(), or
+     * instead of std::hash. (For instance, in te::hash_combine(), or
      * bs::UnorderedMap.)
      */
     struct EnumClassHash

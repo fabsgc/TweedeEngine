@@ -5,6 +5,8 @@
 #include "CoreUtility/TeCoreObject.h"
 #include "TePixelData.h"
 #include "Math/TeVector3I.h"
+#include "RenderAPI/TeCommonTypes.h"
+#include "RenderAPI/TeTextureView.h"
 
 namespace te
 {
@@ -195,6 +197,29 @@ namespace te
         void Initialize() override;
 
         /**
+		 * Locks the buffer for reading or writing.
+		 *
+		 * @param[in]	options 	Options for controlling what you may do with the locked data.
+		 * @param[in]	mipLevel	(optional) Mipmap level to lock.
+		 * @param[in]	face		(optional) Texture face to lock.
+		 * @param[in]	deviceIdx	Index of the device whose memory to map. If the buffer doesn't exist on this device,
+		 *							the method returns null.
+		 * @param[in]	queueIdx	Device queue to perform the read/write operations on. See @ref queuesDoc.
+		 * 			
+		 * @note	
+		 * If you are just reading or writing one block of data use readData()/writeData() methods as they can be much faster
+		 * in certain situations.
+		 */
+		PixelData Lock(GpuLockOptions options, UINT32 mipLevel = 0, UINT32 face = 0, UINT32 deviceIdx = 0, UINT32 queueIdx = 0);
+
+		/**
+		 * Unlocks a previously locked buffer. After the buffer is unlocked, any data returned by lock becomes invalid.
+		 *
+		 * @see	lock()
+		 */
+		void Unlock();
+
+        /**
          * Copies the contents a subresource in this texture to another texture. Texture format and size of the subresource
          * must match.
          *
@@ -265,6 +290,12 @@ namespace te
         /** Same as create() excepts it creates a pointer to the texture instead of a texture handle. */
         static SPtr<Texture> _createPtr(const SPtr<PixelData>& pixelData, int usage = TU_DEFAULT, bool hwGammaCorrection = false);
 
+        /**
+         * Requests a texture view for the specified mip and array ranges. Returns an existing view of one for the specified
+         * ranges already exists, otherwise creates a new one. You must release all views by calling releaseView() when done.
+         */
+        SPtr<TextureView> RequestView(UINT32 mostDetailMip, UINT32 numMips, UINT32 firstArraySlice, UINT32 numArraySlices, GpuViewUsage usage);
+
         /** Returns a plain white texture. */
         static SPtr<Texture> WHITE;
 
@@ -280,7 +311,33 @@ namespace te
         Texture(const TEXTURE_DESC& desc);
         Texture(const TEXTURE_DESC& desc, const SPtr<PixelData>& pixelData);
 
+        /** @copydoc Lock */
+		virtual PixelData LockImpl(GpuLockOptions options, UINT32 mipLevel = 0, UINT32 face = 0, UINT32 deviceIdx = 0, UINT32 queueIdx = 0) = 0;
+
+		/** @copydoc unlock */
+		virtual void UnlockImpl() = 0;
+
+		/** @copydoc copy */
+		virtual void CopyImpl(const SPtr<Texture>& target, const TEXTURE_COPY_DESC& desc) = 0;
+
+		/** @copydoc readData */
+		virtual void ReadDataImpl(PixelData& dest, UINT32 mipLevel = 0, UINT32 face = 0, UINT32 deviceIdx = 0, UINT32 queueIdx = 0) = 0;
+
+		/** @copydoc writeData */
+		virtual void WriteDataImpl(const PixelData& src, UINT32 mipLevel = 0, UINT32 face = 0, bool discardWholeBuffer = false, UINT32 queueIdx = 0) = 0;
+
+		/** @copydoc clear */
+		virtual void ClearImpl(const Color& value, UINT32 mipLevel = 0, UINT32 face = 0, UINT32 queueIdx = 0);
+
+        /**	Creates a view of a specific subresource in a texture. */
+        virtual SPtr<TextureView> CreateView(const TEXTURE_VIEW_DESC& desc);
+
+        /** Releases all internal texture view references. */
+        void ClearBufferViews();
+
     protected:
+        UnorderedMap<TEXTURE_VIEW_DESC, SPtr<TextureView>, TextureView::HashFunction, TextureView::EqualFunction> _textureViews;
+
         TextureProperties _properties;
         mutable SPtr<PixelData> _initData;
     };

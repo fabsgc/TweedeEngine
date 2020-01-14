@@ -1,5 +1,5 @@
 #include "TeGLTextureManager.h"
-#include "Image/TeTexture.h"
+#include "TeGLTexture.h"
 
 namespace te
 {
@@ -10,7 +10,7 @@ namespace te
 
 	SPtr<Texture> GLTextureManager::CreateTextureInternal(const TEXTURE_DESC& desc, const SPtr<PixelData>& initialData)
 	{
-        SPtr<Texture> texPtr = te_core_ptr<Texture>(new (te_allocate<Texture>()) Texture()); // TODO
+        SPtr<GLTexture> texPtr = te_core_ptr<GLTexture>(new (te_allocate<GLTexture>()) GLTexture(desc, initialData));
 		texPtr->SetThisPtr(texPtr);
 
 		return texPtr;

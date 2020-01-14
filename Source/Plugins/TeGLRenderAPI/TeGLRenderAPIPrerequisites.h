@@ -39,5 +39,6 @@ namespace te
     class GLRasterizerState;
     class GLSamplerState;
     class GLTextureManager;
+    class GLTexture;
 
 }

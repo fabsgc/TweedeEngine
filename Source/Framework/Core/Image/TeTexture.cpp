@@ -74,24 +74,192 @@ namespace te
         CoreObject::Initialize();
     }
 
+    PixelData Texture::Lock(GpuLockOptions options, UINT32 mipLevel, UINT32 face, UINT32 deviceIdx, UINT32 queueIdx)
+    {
+        if (mipLevel > _properties.GetNumMipmaps())
+        {
+            TE_DEBUG("Invalid mip level: " + ToString(mipLevel) + ". Min is 0, max is " + ToString(_properties.GetNumMipmaps()), __FILE__, __LINE__);
+            return PixelData(0, 0, 0, PF_UNKNOWN);
+        }
+
+        if (face >= _properties.GetNumFaces())
+        {
+            TE_DEBUG("Invalid face index: " + ToString(face) + ". Min is 0, max is " + ToString(_properties.GetNumFaces()), __FILE__, __LINE__);
+            return PixelData(0, 0, 0, PF_UNKNOWN);
+        }
+
+        return LockImpl(options, mipLevel, face, deviceIdx, queueIdx);
+    }
+
+    void Texture::Unlock()
+    {
+        UnlockImpl();
+    }
+
     void Texture::Copy(const SPtr<Texture>& target, const TEXTURE_COPY_DESC& desc)
     {
-        // TODO
+        if (target->_properties.GetTextureType() != _properties.GetTextureType())
+        {
+            TE_DEBUG("Source and destination textures must be of same type.", __FILE__, __LINE__);
+            return;
+        }
+
+        if (_properties.GetFormat() != target->_properties.GetFormat()) // Note: It might be okay to use different formats of the same size
+        {
+            TE_DEBUG("Source and destination texture formats must match.", __FILE__, __LINE__);
+            return;
+        }
+
+        if (target->_properties.GetNumSamples() > 1 && _properties.GetNumSamples() != target->_properties.GetNumSamples())
+        {
+            TE_DEBUG("When copying to a multisampled texture, source texture must have the same number of samples.", __FILE__, __LINE__);
+            return;
+        }
+
+        if (desc.SrcFace >= _properties.GetNumFaces())
+        {
+            TE_DEBUG("Invalid source face index.", __FILE__, __LINE__);
+            return;
+        }
+
+        if (desc.DstFace >= target->_properties.GetNumFaces())
+        {
+            TE_DEBUG("Invalid destination face index.", __FILE__, __LINE__);
+            return;
+        }
+
+        if (desc.SrcMip > _properties.GetNumMipmaps())
+        {
+            TE_DEBUG("Source mip level out of range. Valid range is [0, " + ToString(_properties.GetNumMipmaps()) + "].", __FILE__, __LINE__);
+            return;
+        }
+
+        if (desc.DstMip > target->_properties.GetNumMipmaps())
+        {
+            TE_DEBUG("Destination mip level out of range. Valid range is [0, " + ToString(target->_properties.GetNumMipmaps()) + "].", __FILE__, __LINE__);
+            return;
+        }
+
+        UINT32 srcWidth, srcHeight, srcDepth;
+        PixelUtil::GetSizeForMipLevel(
+            _properties.GetWidth(),
+            _properties.GetHeight(),
+            _properties.GetDepth(),
+            desc.SrcMip,
+            srcWidth,
+            srcHeight,
+            srcDepth);
+
+        UINT32 dstWidth, dstHeight, dstDepth;
+        PixelUtil::GetSizeForMipLevel(
+            target->_properties.GetWidth(),
+            target->_properties.GetHeight(),
+            target->_properties.GetDepth(),
+            desc.DstMip,
+            dstWidth,
+            dstHeight,
+            dstDepth);
+
+        if (desc.DstPosition.x < 0 || desc.DstPosition.x >= (INT32)dstWidth ||
+            desc.DstPosition.y < 0 || desc.DstPosition.y >= (INT32)dstHeight ||
+            desc.DstPosition.z < 0 || desc.DstPosition.z >= (INT32)dstDepth)
+        {
+            TE_DEBUG("Destination position falls outside the destination texture.", __FILE__, __LINE__);
+            return;
+        }
+
+        bool entireSurface = desc.SrcVolume.GetWidth() == 0 ||
+            desc.SrcVolume.GetHeight() == 0 ||
+            desc.SrcVolume.GetDepth() == 0;
+
+        UINT32 dstRight = (UINT32)desc.DstPosition.x;
+        UINT32 dstBottom = (UINT32)desc.DstPosition.y;
+        UINT32 dstBack = (UINT32)desc.DstPosition.z;
+        if (!entireSurface)
+        {
+            if (desc.SrcVolume.Left >= srcWidth || desc.SrcVolume.Right > srcWidth ||
+                desc.SrcVolume.Top >= srcHeight || desc.SrcVolume.Bottom > srcHeight ||
+                desc.SrcVolume.Front >= srcDepth || desc.SrcVolume.Back > srcDepth)
+            {
+                TE_DEBUG("Source volume falls outside the source texture.", __FILE__, __LINE__);
+                return;
+            }
+
+            dstRight += desc.SrcVolume.GetWidth();
+            dstBottom += desc.SrcVolume.GetHeight();
+            dstBack += desc.SrcVolume.GetDepth();
+        }
+        else
+        {
+            dstRight += srcWidth;
+            dstBottom += srcHeight;
+            dstBack += srcDepth;
+        }
+
+        if (dstRight > dstWidth || dstBottom > dstHeight || dstBack > dstDepth)
+        {
+            TE_DEBUG("Destination volume falls outside the destination texture.", __FILE__, __LINE__);
+            return;
+        }
+
+        CopyImpl(target, desc);
     }
 
     void Texture::Clear(const Color& value, UINT32 mipLevel, UINT32 face, UINT32 queueIdx)
     {
-        // TODO
+        if (face >= _properties.GetNumFaces())
+        {
+            TE_DEBUG("Invalid face index.", __FILE__, __LINE__);
+            return;
+        }
+
+        if (mipLevel > _properties.GetNumMipmaps())
+        {
+            TE_DEBUG("Mip level out of range. Valid range is [0, " + ToString(_properties.GetNumMipmaps()) + "].", __FILE__, __LINE__);
+            return;
+        }
+
+        ClearImpl(value, mipLevel, face, queueIdx);
+    }
+
+    void Texture::ClearImpl(const Color& value, UINT32 mipLevel, UINT32 face, UINT32 queueIdx)
+    {
+        SPtr<PixelData> data = _properties.AllocBuffer(face, mipLevel);
+        data->SetColors(value);
+
+        WriteData(*data, mipLevel, face, true, queueIdx);
     }
 
     void Texture::ReadData(PixelData& dest, UINT32 mipLevel , UINT32 face, UINT32 deviceIdx, UINT32 queueIdx)
     {
-        // TODO
+        PixelData& pixelData = static_cast<PixelData&>(dest);
+
+        UINT32 mipWidth, mipHeight, mipDepth;
+        PixelUtil::GetSizeForMipLevel(_properties.GetWidth(), _properties.GetHeight(), _properties.GetDepth(),
+            mipLevel, mipWidth, mipHeight, mipDepth);
+
+        if (pixelData.GetWidth() != mipWidth || pixelData.GetHeight() != mipHeight ||
+            pixelData.GetDepth() != mipDepth || pixelData.GetFormat() != _properties.GetFormat())
+        {
+            TE_DEBUG("Provided buffer is not of valid dimensions or format in order to read from this texture.", __FILE__, __LINE__);
+            return;
+        }
+
+        ReadDataImpl(pixelData, mipLevel, face, deviceIdx, queueIdx);
     }
 
     void Texture::WriteData(const PixelData& src, UINT32 mipLevel, UINT32 face, bool discardWholeBuffer, UINT32 queueIdx)
     {
-        // TODO
+        if (discardWholeBuffer)
+        {
+            if ((_properties.GetUsage() & TU_DYNAMIC) == 0)
+            {
+                // Buffer discard is enabled but buffer was not created as dynamic. Disabling discard.
+                discardWholeBuffer = false;
+            }
+        }
+
+        WriteDataImpl(src, mipLevel, face, discardWholeBuffer, queueIdx);
     }
 
     UINT32 Texture::CalculateSize() const
@@ -131,5 +299,37 @@ namespace te
         desc.HwGamma = hwGammaCorrection;
 
         return TextureManager::Instance().CreateTexture(desc, pixelData);
+    }
+
+    SPtr<TextureView> Texture::CreateView(const TEXTURE_VIEW_DESC& desc)
+    {
+        return te_shared_ptr<TextureView>(new (te_allocate<TextureView>()) TextureView(desc));
+    }
+
+    void Texture::ClearBufferViews()
+    {
+        _textureViews.clear();
+    }
+
+    SPtr<TextureView> Texture::RequestView(UINT32 mostDetailMip, UINT32 numMips, UINT32 firstArraySlice, UINT32 numArraySlices, GpuViewUsage usage)
+    {
+        const TextureProperties& texProps = GetProperties();
+
+        TEXTURE_VIEW_DESC key;
+        key.MostDetailMip = mostDetailMip;
+        key.NumMips = numMips == 0 ? (texProps.GetNumMipmaps() + 1) : numMips;
+        key.FirstArraySlice = firstArraySlice;
+        key.NumArraySlices = numArraySlices == 0 ? texProps.GetNumFaces() : numArraySlices;
+        key.Usage = usage;
+
+        auto iterFind = _textureViews.find(key);
+        if (iterFind == _textureViews.end())
+        {
+            _textureViews[key] = CreateView(key);
+
+            iterFind = _textureViews.find(key);
+        }
+
+        return iterFind->second;
     }
 }

@@ -17,6 +17,7 @@ set (TE_D3D11RENDERAPI_INC_NOFILTER
     "TeD3D11RenderStateManager.h"
     "TeD3D11TextureManager.h"
     "TeD3D11Texture.h"
+    "TeD3D11TextureView.h"
 )
 
 set (TE_D3D11RENDERAPI_SRC_NOFILTER
@@ -38,6 +39,7 @@ set (TE_D3D11RENDERAPI_SRC_NOFILTER
     "TeD3D11RenderStateManager.cpp"
     "TeD3D11TextureManager.cpp"
     "TeD3D11Texture.cpp"
+    "TeD3D11TextureView.cpp"
 )
 
 source_group ("" FILES ${TE_D3D11RENDERAPI_SRC_NOFILTER} ${TE_D3D11RENDERAPI_INC_NOFILTER})

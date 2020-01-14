@@ -84,6 +84,7 @@ namespace te
     class VertexDeclaration;
     class VertexDataDesc;
     struct SubMesh;
+    class TextureView;
 
     class Renderer;
     class RendererFactory;

@@ -2,6 +2,7 @@
 #include "TeD3D11RenderAPI.h"
 #include "TeD3D11Device.h"
 #include "TeD3D11Mappings.h"
+#include "TeD3D11TextureView.h"
 
 namespace te
 {
@@ -39,6 +40,36 @@ namespace te
         }
 
         Texture::Initialize();
+    }
+
+    ID3D11ShaderResourceView* D3D11Texture::GetSRV() const
+    {
+        return _shaderResourceView->GetSRV();
+    }
+
+    PixelData D3D11Texture::LockImpl(GpuLockOptions options, UINT32 mipLevel, UINT32 face, UINT32 deviceIdx, UINT32 queueIdx)
+    {
+        return PixelData();
+    }
+
+    void D3D11Texture::UnlockImpl()
+    {
+
+    }
+
+    void D3D11Texture::CopyImpl(const SPtr<Texture>& target, const TEXTURE_COPY_DESC& desc)
+    {
+
+    }
+
+    void D3D11Texture::ReadDataImpl(PixelData& dest, UINT32 mipLevel, UINT32 face, UINT32 deviceIdx, UINT32 queueIdx)
+    {
+
+    }
+
+    void D3D11Texture::WriteDataImpl(const PixelData& src, UINT32 mipLevel, UINT32 face, bool discardWholeBuffer, UINT32 queueIdx)
+    {
+
     }
 
     void D3D11Texture::Create1DTex()
@@ -367,6 +398,41 @@ namespace te
         {
             // TODO
         }
+    }
+
+    void* D3D11Texture::D3D11Texture::Map(ID3D11Resource* res, D3D11_MAP flags, UINT32 mipLevel, UINT32 face, UINT32& rowPitch, UINT32& slicePitch)
+    {
+        return nullptr;
+    }
+
+    void D3D11Texture::Unmap(ID3D11Resource* res)
+    {
+
+    }
+
+    void* D3D11Texture::Mapstagingbuffer(D3D11_MAP flags, UINT32 mipLevel, UINT32 face, UINT32& rowPitch, UINT32& slicePitch)
+    {
+        return nullptr;
+    }
+
+    void D3D11Texture::Unmapstagingbuffer()
+    {
+
+    }
+
+    void* D3D11Texture::Mapstaticbuffer(PixelData lock, UINT32 mipLevel, UINT32 face)
+    {
+        return nullptr;
+    }
+
+    void D3D11Texture::Unmapstaticbuffer()
+    {
+
+    }
+
+    SPtr<TextureView> D3D11Texture::CreateView(const TEXTURE_VIEW_DESC& desc)
+    {
+        return te_shared_ptr<D3D11TextureView>(new (te_allocate<D3D11TextureView>()) D3D11TextureView(this, desc));
     }
 
     /**

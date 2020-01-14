@@ -4,6 +4,26 @@
 
 namespace te
 {
+    /** Generates a new hash for the provided type using the default standard hasher and combines it with a previous hash. */
+    template <class T>
+    void te_hash_combine(std::size_t& seed, const T& v)
+    {
+        using HashType = typename std::conditional<std::is_enum<T>::value, EnumClassHash, std::hash<T>>::type;
+
+        HashType hasher;
+        seed ^= hasher(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+    }
+
+    /** Generates a hash for the provided type. Type must have a std::hash specialization. */
+    template <class T>
+    size_t te_hash(const T& v)
+    {
+        using HashType = typename std::conditional<std::is_enum<T>::value, EnumClassHash, std::hash<T>>::type;
+
+        HashType hasher;
+        return hasher(v);
+    }
+
     class TE_UTILITY_EXPORT Util
     {
     public:
@@ -98,17 +118,6 @@ namespace te
             return ret;
         }
     };
-
-
-    /** Generates a new hash for the provided type using the default standard hasher and combines it with a previous hash. */
-    template <class T>
-    void hash_combine(std::size_t& seed, const T& v)
-    {
-        using HashType = typename std::conditional<std::is_enum<T>::value, EnumClassHash, std::hash<T>>::type;
-
-        HashType hasher;
-        seed ^= hasher(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
-    }
 
     /** Sets contents of a struct to zero. */
     template<class T>

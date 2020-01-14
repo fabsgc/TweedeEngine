@@ -82,10 +82,10 @@ namespace std
         size_t operator()(const te::UUID& value) const
         {
             size_t hash = 0;
-            te::hash_combine(hash, value._data[0]);
-            te::hash_combine(hash, value._data[1]);
-            te::hash_combine(hash, value._data[2]);
-            te::hash_combine(hash, value._data[3]);
+            te::te_hash_combine(hash, value._data[0]);
+            te::te_hash_combine(hash, value._data[1]);
+            te::te_hash_combine(hash, value._data[2]);
+            te::te_hash_combine(hash, value._data[3]);
 
             return hash;
         }
