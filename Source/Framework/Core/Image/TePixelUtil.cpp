@@ -1,5 +1,3 @@
-#pragma once
-
 #include "Image/TePixelUtil.h"
 #include "Utility/TeColor.h"
 #include "Math/TeMath.h"
