@@ -95,6 +95,7 @@ set(TE_UTILITY_INC_UTILITY
     "Utility/Utility/TePlatformUtility.h"
     "Utility/Utility/TeColor.h"
     "Utility/Utility/TeBitwise.h"
+    "Utility/Utility/TeFileStream.h"
 )
 set(TE_UTILITY_SRC_UTILITY
     "Utility/Utility/TeDynLib.cpp"
@@ -104,6 +105,7 @@ set(TE_UTILITY_SRC_UTILITY
     "Utility/Utility/TeUtility.cpp"
     "Utility/Utility/TeUUID.cpp"
     "Utility/Utility/TeColor.cpp"
+    "Utility/Utility/TeFileStream.cpp"
 )
 
 set(TE_UTILITY_INC_THREADING

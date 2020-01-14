@@ -22,6 +22,7 @@
 #include "Importer/TeTextureImportOptions.h"
 #include "Importer/TeShaderImportOptions.h"
 #include "Shader/TeShader.h"
+#include "Utility/TeFileStream.h"
 
 namespace te
 {
@@ -178,6 +179,8 @@ namespace te
         SPtr<GraphicsPipelineState> graphicsPipeline = GraphicsPipelineState::Create(pipeDesc);
 
         RenderAPI::Instance().SetGraphicsPipeline(graphicsPipeline);
+
+        FileStream file("Data/Texture/default.png");
     }
     
     void CoreApplication::OnShutDown()
