@@ -3,6 +3,7 @@
 #include "TeD3D11Device.h"
 #include "TeD3D11Mappings.h"
 #include "TeD3D11TextureView.h"
+#include "Image/TePixelUtil.h"
 
 namespace te
 {
@@ -49,27 +50,135 @@ namespace te
 
     PixelData D3D11Texture::LockImpl(GpuLockOptions options, UINT32 mipLevel, UINT32 face, UINT32 deviceIdx, UINT32 queueIdx)
     {
-        return PixelData();
+        if (_properties.GetNumSamples() > 1)
+        {
+            TE_ASSERT_ERROR(false, "Multisampled textures cannot be accessed from the CPU directly.", __FILE__, __LINE__);
+        }
+
+        UINT32 mipWidth = std::max(1u, _properties.GetWidth() >> mipLevel);
+        UINT32 mipHeight = std::max(1u, _properties.GetHeight() >> mipLevel);
+        UINT32 mipDepth = std::max(1u, _properties.GetDepth() >> mipLevel);
+
+        PixelData lockedArea(mipWidth, mipHeight, mipDepth, _internalFormat);
+
+        D3D11_MAP flags = D3D11Mappings::GetLockOptions(options);
+        UINT32 rowPitch, slicePitch;
+        if (flags == D3D11_MAP_READ || flags == D3D11_MAP_READ_WRITE)
+        {
+            UINT8* data = (UINT8*)Mapstagingbuffer(flags, face, mipLevel, rowPitch, slicePitch);
+            lockedArea.SetExternalBuffer(data);
+            lockedArea.SetRowPitch(rowPitch);
+            lockedArea.SetSlicePitch(slicePitch);
+
+            _lockedForReading = true;
+        }
+        else
+        {
+            if ((_properties.GetUsage() & TU_DYNAMIC) != 0)
+            {
+                if (flags == D3D11_MAP_WRITE)
+                {
+                    TE_DEBUG("Dynamic textures only support discard or no-overwrite writes. Falling back to no-overwrite.", __FILE__, __LINE__);
+                    flags = D3D11_MAP_WRITE_DISCARD;
+                }
+
+                UINT8* data = (UINT8*)Map(_tex, flags, face, mipLevel, rowPitch, slicePitch);
+                lockedArea.SetExternalBuffer(data);
+                lockedArea.SetRowPitch(rowPitch);
+                lockedArea.SetSlicePitch(slicePitch);
+            }
+            else
+                lockedArea.SetExternalBuffer((UINT8*)Mapstaticbuffer(lockedArea, mipLevel, face));
+
+            _lockedForReading = false;
+        }
+
+        return lockedArea;
     }
 
     void D3D11Texture::UnlockImpl()
     {
-
+        if (_lockedForReading)
+        {
+            Unmapstagingbuffer();
+        }
+        else
+        {
+            if ((_properties.GetUsage() & TU_DYNAMIC) != 0)
+            {
+                Unmap(_tex);
+            }
+            else
+            {
+                Unmapstaticbuffer();
+            }
+        }
     }
 
     void D3D11Texture::CopyImpl(const SPtr<Texture>& target, const TEXTURE_COPY_DESC& desc)
     {
-
+        
     }
 
     void D3D11Texture::ReadDataImpl(PixelData& dest, UINT32 mipLevel, UINT32 face, UINT32 deviceIdx, UINT32 queueIdx)
     {
+        if (_properties.GetNumSamples() > 1)
+        {
+            TE_DEBUG("Multisampled textures cannot be accessed from the CPU directly.", __FILE__, __LINE__);
+            return;
+        }
 
+        PixelData myData = Lock(GBL_READ_ONLY, mipLevel, face, deviceIdx, queueIdx);
+        PixelUtil::BulkPixelConversion(myData, dest);
+        Unlock();
     }
 
     void D3D11Texture::WriteDataImpl(const PixelData& src, UINT32 mipLevel, UINT32 face, bool discardWholeBuffer, UINT32 queueIdx)
     {
+        PixelFormat format = _properties.GetFormat();
 
+        if (_properties.GetNumSamples() > 1)
+        {
+            TE_DEBUG("Multisampled textures cannot be accessed from the CPU directly.", __FILE__, __LINE__);
+            return;
+        }
+
+        mipLevel = Math::Clamp(mipLevel, (UINT32)mipLevel, _properties.GetNumMipmaps());
+        face = Math::Clamp(face, (UINT32)0, _properties.GetNumFaces() - 1);
+
+        if (face > 0 && _properties.GetTextureType() == TEX_TYPE_3D)
+        {
+            TE_DEBUG("3D texture arrays are not supported.", __FILE__, __LINE__);
+            return;
+        }
+
+        if ((_properties.GetUsage() & TU_DYNAMIC) != 0)
+        {
+            PixelData myData = Lock(discardWholeBuffer ? GBL_WRITE_ONLY_DISCARD : GBL_WRITE_ONLY, mipLevel, face, 0, queueIdx);
+            PixelUtil::BulkPixelConversion(src, myData);
+            Unlock();
+        }
+        else if ((_properties.GetUsage() & TU_DEPTHSTENCIL) == 0)
+        {
+            D3D11RenderAPI* rs = static_cast<D3D11RenderAPI*>(RenderAPI::InstancePtr());
+            D3D11Device& device = rs->GetPrimaryDevice();
+
+            UINT subresourceIdx = D3D11CalcSubresource(mipLevel, face, _properties.GetNumMipmaps() + 1);
+            UINT32 rowWidth = D3D11Mappings::GetSizeInBytes(format, src.GetWidth());
+            UINT32 sliceWidth = D3D11Mappings::GetSizeInBytes(format, src.GetWidth(), src.GetHeight());
+
+            device.GetImmediateContext()->UpdateSubresource(_tex, subresourceIdx, nullptr, src.GetData(), rowWidth, sliceWidth);
+
+            if (device.HasError())
+            {
+                String errorDescription = device.GetErrorDescription();
+                TE_ASSERT_ERROR(false, "D3D11 device cannot map texture\nError Description:" + errorDescription, __FILE__, __LINE__);
+            }
+        }
+        else
+        {
+            TE_ASSERT_ERROR(false, "Trying to write into a buffer with unsupported usage: " + ToString(_properties.GetUsage()), __FILE__, __LINE__);
+        }
     }
 
     void D3D11Texture::Create1DTex()
@@ -402,32 +511,96 @@ namespace te
 
     void* D3D11Texture::D3D11Texture::Map(ID3D11Resource* res, D3D11_MAP flags, UINT32 mipLevel, UINT32 face, UINT32& rowPitch, UINT32& slicePitch)
     {
-        return nullptr;
+        D3D11_MAPPED_SUBRESOURCE pMappedResource;
+        pMappedResource.pData = nullptr;
+
+        mipLevel = Math::Clamp(mipLevel, (UINT32)mipLevel, _properties.GetNumMipmaps());
+        face = Math::Clamp(face, (UINT32)0, _properties.GetNumFaces() - 1);
+
+        if (_properties.GetTextureType() == TEX_TYPE_3D)
+            face = 0;
+
+        D3D11RenderAPI* rs = static_cast<D3D11RenderAPI*>(RenderAPI::InstancePtr());
+        D3D11Device& device = rs->GetPrimaryDevice();
+
+        _lockedSubresourceIdx = D3D11CalcSubresource(mipLevel, face, _properties.GetNumMipmaps() + 1);
+        device.GetImmediateContext()->Map(res, _lockedSubresourceIdx, flags, 0, &pMappedResource);
+
+        if (device.HasError())
+        {
+            String errorDescription = device.GetErrorDescription();
+            TE_ASSERT_ERROR(false, "D3D11 device cannot map texture\nError Description:" + errorDescription, __FILE__, __LINE__);
+        }
+
+        rowPitch = pMappedResource.RowPitch;
+        slicePitch = pMappedResource.DepthPitch;
+
+        return pMappedResource.pData;
     }
 
     void D3D11Texture::Unmap(ID3D11Resource* res)
     {
+        D3D11RenderAPI* rs = static_cast<D3D11RenderAPI*>(RenderAPI::InstancePtr());
+        D3D11Device& device = rs->GetPrimaryDevice();
+        device.GetImmediateContext()->Unmap(res, _lockedSubresourceIdx);
 
+        if (device.HasError())
+        {
+            String errorDescription = device.GetErrorDescription();
+            TE_ASSERT_ERROR(false, "D3D11 device unmap resource\nError Description:" + errorDescription, __FILE__, __LINE__);
+        }
     }
 
     void* D3D11Texture::Mapstagingbuffer(D3D11_MAP flags, UINT32 mipLevel, UINT32 face, UINT32& rowPitch, UINT32& slicePitch)
     {
-        return nullptr;
+        // Note: I am creating and destroying a staging resource every time a texture is read.
+        // Consider offering a flag on init that will keep this active all the time (at the cost of double memory).
+        // Reading is slow operation anyway so I don't believe doing it as we are now will influence it much.
+
+        if (!_stagingBuffer)
+            CreateStagingBuffer();
+
+        D3D11RenderAPI* rs = static_cast<D3D11RenderAPI*>(RenderAPI::InstancePtr());
+        D3D11Device& device = rs->GetPrimaryDevice();
+        device.GetImmediateContext()->CopyResource(_stagingBuffer, _tex);
+
+        return Map(_stagingBuffer, flags, face, mipLevel, rowPitch, slicePitch);
     }
 
     void D3D11Texture::Unmapstagingbuffer()
     {
-
+        Unmap(_stagingBuffer);
+        SAFE_RELEASE(_stagingBuffer);
     }
 
     void* D3D11Texture::Mapstaticbuffer(PixelData lock, UINT32 mipLevel, UINT32 face)
     {
-        return nullptr;
+        UINT32 sizeOfImage = lock.GetConsecutiveSize();
+        _lockedSubresourceIdx = D3D11CalcSubresource(mipLevel, face, _properties.GetNumMipmaps() + 1);
+
+        _staticBuffer = te_new<PixelData>(lock.GetWidth(), lock.GetHeight(), lock.GetDepth(), lock.GetFormat());
+        _staticBuffer->AllocateInternalBuffer();
+
+        return _staticBuffer->GetData();
     }
 
     void D3D11Texture::Unmapstaticbuffer()
     {
+        UINT32 rowWidth = D3D11Mappings::GetSizeInBytes(_staticBuffer->GetFormat(), _staticBuffer->GetWidth());
+        UINT32 sliceWidth = D3D11Mappings::GetSizeInBytes(_staticBuffer->GetFormat(), _staticBuffer->GetWidth(), _staticBuffer->GetHeight());
 
+        D3D11RenderAPI* rs = static_cast<D3D11RenderAPI*>(RenderAPI::InstancePtr());
+        D3D11Device& device = rs->GetPrimaryDevice();
+        device.GetImmediateContext()->UpdateSubresource(_tex, _lockedSubresourceIdx, nullptr, _staticBuffer->GetData(), rowWidth, sliceWidth);
+
+        if (device.HasError())
+        {
+            String errorDescription = device.GetErrorDescription();
+            TE_ASSERT_ERROR(false, "D3D11 device cannot map texture\nError Description:" + errorDescription, __FILE__, __LINE__);
+        }
+
+        if (_staticBuffer != nullptr)
+            te_delete(_staticBuffer);
     }
 
     SPtr<TextureView> D3D11Texture::CreateView(const TEXTURE_VIEW_DESC& desc)

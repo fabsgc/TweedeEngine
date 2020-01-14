@@ -3,6 +3,7 @@
 #include "TeD3D11VideoModeInfo.h"
 #include "TeD3D11RenderAPI.h"
 #include "Image/TeTexture.h"
+#include "TeD3D11TextureView.h"
 
 namespace te
 {
@@ -129,22 +130,58 @@ namespace te
         }
         else if (name == "DSV")
         {
-            // TODO
+            if (_depthStencilView != nullptr)
+            {
+                D3D11TextureView* d3d11TextureView = static_cast<D3D11TextureView*>(_depthStencilView.get());
+                *static_cast<ID3D11DepthStencilView**>(pData) = d3d11TextureView->GetDSV(false, false);
+            }
+            else
+            {
+                *static_cast<ID3D11DepthStencilView**>(pData) = nullptr;
+            }
+
             return;
         }
         else if (name == "RODSV")
         {
-            // TODO
+            if (_depthStencilView != nullptr)
+            {
+                D3D11TextureView* d3d11TextureView = static_cast<D3D11TextureView*>(_depthStencilView.get());
+                *static_cast<ID3D11DepthStencilView**>(pData) = d3d11TextureView->GetDSV(true, true);
+            }
+            else
+            {
+                *static_cast<ID3D11DepthStencilView**>(pData) = nullptr;
+            }
+
             return;
         }
         else if (name == "RODWSV")
         {
-            // TODO
+            if (_depthStencilView != nullptr)
+            {
+                D3D11TextureView* d3d11TextureView = static_cast<D3D11TextureView*>(_depthStencilView.get());
+                *static_cast<ID3D11DepthStencilView**>(pData) = d3d11TextureView->GetDSV(true, false);
+            }
+            else
+            {
+                *static_cast<ID3D11DepthStencilView**>(pData) = nullptr;
+            }
+
             return;
         }
         else if (name == "WDROSV")
         {
-            // TODO
+            if (_depthStencilView != nullptr)
+            {
+                D3D11TextureView* d3d11TextureView = static_cast<D3D11TextureView*>(_depthStencilView.get());
+                *static_cast<ID3D11DepthStencilView**>(pData) = d3d11TextureView->GetDSV(false, true);
+            }
+            else
+            {
+                *static_cast<ID3D11DepthStencilView**>(pData) = nullptr;
+            }
+
             return;
         }
 
@@ -376,7 +413,7 @@ namespace te
             TE_ASSERT_ERROR(false, "Unable to create rendertarget view\nError Description:" + errorDescription, __FILE__, __LINE__);
         }
 
-        //_depthStencilView = nullptr; TODO
+        _depthStencilView = nullptr;
 
         if (_desc.DepthBuffer)
         {
@@ -389,7 +426,7 @@ namespace te
             texDesc.NumSamples = GetProperties().MultisampleCount;
 
             _depthStencilBuffer = Texture::_createPtr(texDesc);
-            // _depthStencilView = _depthStencilBuffer->requestView(0, 1, 0, 1, GVU_DEPTHSTENCIL); TODO
+            _depthStencilView = _depthStencilBuffer->RequestView(0, 1, 0, 1, GVU_DEPTHSTENCIL);
         }
         else
         {

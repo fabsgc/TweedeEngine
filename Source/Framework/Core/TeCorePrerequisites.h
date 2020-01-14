@@ -85,6 +85,7 @@ namespace te
     class VertexDataDesc;
     struct SubMesh;
     class TextureView;
+    class HardwareBuffer;
 
     class Renderer;
     class RendererFactory;

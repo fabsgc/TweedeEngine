@@ -89,7 +89,7 @@ namespace te
 
         ID3D11Texture2D* _backBuffer = nullptr;
 		ID3D11RenderTargetView* _renderTargetView = nullptr;
-        //SPtr<TextureView> _depthStencilView = nullptr;
+        SPtr<TextureView> _depthStencilView = nullptr;
         SPtr<Texture> _depthStencilBuffer;
 
         IDXGISwapChain* _swapChain = nullptr;

@@ -667,9 +667,61 @@ namespace te
             return 0;
     }
 
+    D3D11_MAP D3D11Mappings::GetLockOptions(GpuLockOptions lockOptions)
+    {
+        switch (lockOptions)
+        {
+        case GBL_WRITE_ONLY_NO_OVERWRITE:
+            return D3D11_MAP_WRITE_NO_OVERWRITE;
+            break;
+        case GBL_READ_WRITE:
+            return D3D11_MAP_READ_WRITE;
+            break;
+        case GBL_WRITE_ONLY_DISCARD:
+            return D3D11_MAP_WRITE_DISCARD;
+            break;
+        case GBL_READ_ONLY:
+            return D3D11_MAP_READ;
+            break;
+        case GBL_WRITE_ONLY:
+            return D3D11_MAP_WRITE;
+            break;
+        default:
+            break;
+        };
+
+        TE_ASSERT_ERROR(false, "Invalid lock option. No DX11 equivalent of: " + ToString(lockOptions), __FILE__, __LINE__);
+        return D3D11_MAP_WRITE;
+    }
+
     bool D3D11Mappings::IsDynamic(GpuBufferUsage usage)
     {
         return (usage & GBU_DYNAMIC) != 0;
+    }
+
+    UINT32 D3D11Mappings::GetSizeInBytes(PixelFormat pf, UINT32 width, UINT32 height)
+    {
+        if (PixelUtil::IsCompressed(pf))
+        {
+            UINT32 blockWidth = Math::DivideAndRoundUp(width, 4U);
+            UINT32 blockHeight = Math::DivideAndRoundUp(height, 4U);
+
+            // D3D wants the width of one row of cells in bytes
+            if (pf == PF_BC1 || pf == PF_BC4)
+            {
+                // 64 bits (8 bytes) per 4x4 block
+                return blockWidth * blockHeight * 8;
+            }
+            else
+            {
+                // 128 bits (16 bytes) per 4x4 block
+                return blockWidth * blockHeight * 16;
+            }
+        }
+        else
+        {
+            return width * height * PixelUtil::GetNumElemBytes(pf);
+        }
     }
 
     void D3D11Mappings::Get(const Color& inColor, float* outColor)

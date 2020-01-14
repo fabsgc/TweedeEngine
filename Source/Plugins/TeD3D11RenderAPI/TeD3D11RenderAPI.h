@@ -111,6 +111,9 @@ namespace te
         D3D11HLSLProgramFactory* _HLSLFactory = nullptr;
         D3D11InputLayoutManager* _IAManager = nullptr;
 
+        bool _PSUAVsBound = false;
+        bool _CSUAVsBound = false;
+
         UINT32 _stencilRef = 0;
 		Rect2 _viewportNorm = Rect2(0.0f, 0.0f, 1.0f, 1.0f);
         D3D11_VIEWPORT _viewport;

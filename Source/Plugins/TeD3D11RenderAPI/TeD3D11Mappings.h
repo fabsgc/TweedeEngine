@@ -74,8 +74,17 @@ namespace te
         /**	Converts engine to DX11 buffer access flags. */
         static UINT GetAccessFlags(GpuBufferUsage mUsage);
 
+        /**	Converts engine to DX11 lock options. */
+        static D3D11_MAP GetLockOptions(GpuLockOptions lockOptions);
+
         /**	Checks is the provided buffer usage dynamic. */
         static bool IsDynamic(GpuBufferUsage mUsage);
+
+        /**
+         * Returns size in bytes of a pixel surface of the specified size and format, while using DX11 allocation rules for
+         * padding.
+         */
+        static UINT32 GetSizeInBytes(PixelFormat pf, UINT32 width = 1, UINT32 height = 1);
 
 		/**	Converts engine color to DX11 color. */
 		static void Get(const Color& inColor, float* outColor);
