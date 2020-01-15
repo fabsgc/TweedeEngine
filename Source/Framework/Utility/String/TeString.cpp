@@ -332,4 +332,14 @@ namespace te
 
         return tokens;
     }
+
+    const String ReplaceAll(const String& source, const String& replaceWhat, const String& replaceWithWhat)
+    {
+        return ReplaceAllInternal<char>(source, replaceWhat, replaceWithWhat);
+    }
+
+    const WString ReplaceAll(const WString& source, const WString& replaceWhat, const WString& replaceWithWhat)
+    {
+        return ReplaceAllInternal<wchar_t>(source, replaceWhat, replaceWithWhat);
+    }
 }

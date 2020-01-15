@@ -60,6 +60,8 @@ namespace te
 
     class Color;
 
+    class FileStream;
+
     struct BaseConnectionData;
     class InternalData;
     class EventHandler;

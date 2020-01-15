@@ -180,7 +180,14 @@ namespace te
 
         RenderAPI::Instance().SetGraphicsPipeline(graphicsPipeline);
 
-        FileStream file("Data/Texture/default.png");
+        /*FileStream file1("Data/Texture/default.png");
+        FileStream file2("Data\\Texture\\default.png");
+        FileStream file3("Data\\Texture\\img.txt", FileStream::WRITE);
+
+        char buffer[13] = "Hello world\0";
+
+        file3.Write((void*)&buffer, 13);
+        file3.Close();*/
     }
     
     void CoreApplication::OnShutDown()

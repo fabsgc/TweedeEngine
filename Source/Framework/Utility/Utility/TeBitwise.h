@@ -15,7 +15,7 @@ namespace te
 		UINT32 raw;
 		float value;
 		struct {
-#if BS_ENDIAN == BS_ENDIAN_BIG
+#if TE_ENDIAN == TE_ENDIAN_BIG
 			UINT32 negative : 1;
 			UINT32 exponent : 8;
 			UINT32 mantissa : 23;
@@ -32,7 +32,7 @@ namespace te
 	{
 		UINT32 raw;
 		struct {
-#if BS_ENDIAN == BS_ENDIAN_BIG
+#if TE_ENDIAN == TE_ENDIAN_BIG
 			UINT32 exponent : 5;
 			UINT32 mantissa : 5;
 #else
@@ -47,7 +47,7 @@ namespace te
 	{
 		UINT32 raw;
 		struct {
-#if BS_ENDIAN == BS_ENDIAN_BIG
+#if TE_ENDIAN == TE_ENDIAN_BIG
 			UINT32 exponent : 5;
 			UINT32 mantissa : 6;
 #else
@@ -418,7 +418,7 @@ namespace te
 					((UINT16*)dest)[0] = (UINT16)value;
 					break;
 				case 3:
-#if BS_ENDIAN == BS_ENDIAN_BIG
+#if TE_ENDIAN == TE_ENDIAN_BIG
 					((UINT8*)dest)[0] = (UINT8)((value >> 16) & 0xFF);
 					((UINT8*)dest)[1] = (UINT8)((value >> 8) & 0xFF);
 					((UINT8*)dest)[2] = (UINT8)(value & 0xFF);
@@ -442,7 +442,7 @@ namespace te
 				case 2:
 					return ((UINT16*)src)[0];
 				case 3:
-#if BS_ENDIAN == BS_ENDIAN_BIG
+#if TE_ENDIAN == TE_ENDIAN_BIG
 					return ((UINT32)((UINT8*)src)[0]<<16)|
 							((UINT32)((UINT8*)src)[1]<<8)|
 							((UINT32)((UINT8*)src)[2]);

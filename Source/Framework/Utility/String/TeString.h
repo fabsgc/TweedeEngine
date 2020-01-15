@@ -208,4 +208,34 @@ namespace te
     * \brief Split string according to delimiter
     */
     TE_UTILITY_EXPORT Vector<String> Split(const WString& s, char delimiter);
+
+    /**
+    * Replace all instances of a substring with a another substring.
+    *
+    * @param[in]	source		   	String to search.
+    * @param[in]	replaceWhat	   	Substring to find and replace
+    * @param[in]	replaceWithWhat	Substring to replace with (the new sub-string)
+    *
+    * @return	An updated string with the substrings replaced.
+    */
+    const String ReplaceAll(const String& source, const String& replaceWhat, const String& replaceWithWhat);
+
+    /** @copydoc replaceAll(const String&, const String&, const String&) */
+    const WString ReplaceAll(const WString& source, const WString& replaceWhat, const WString& replaceWithWhat);
+
+    template <class T>
+    BasicString<T> ReplaceAllInternal(const BasicString<T>& source,
+        const BasicString<T>& replaceWhat, const BasicString<T>& replaceWithWhat)
+    {
+        BasicString<T> result = source;
+        typename BasicString<T>::size_type pos = 0;
+        while (1)
+        {
+            pos = result.find(replaceWhat, pos);
+            if (pos == BasicString<T>::npos) break;
+            result.replace(pos, replaceWhat.size(), replaceWithWhat);
+            pos += replaceWithWhat.size();
+        }
+        return result;
+    }
 }

@@ -2,18 +2,23 @@
 
 namespace te
 {
-    FileStream::FileStream(String path, AccessMode mode, PathType pathType)
+    FileStream::FileStream(const String& path, AccessMode mode)
         : _path(path)
         , _mode(mode)
-        , _pathType(pathType)
     {
         SetInternalPath();
+        SetExtension();
         Open();
     }
 
     FileStream::~FileStream()
     {
         Close();
+    }
+
+    bool FileStream::Fail()
+    {
+        return _inStream->fail();
     }
 
     void FileStream::Open()
@@ -46,9 +51,7 @@ namespace te
             return;
         }
 
-        _inStream->seekg(0, std::ios_base::end);
-        _size = (size_t)_inStream->tellg();
-        _inStream->seekg(0, std::ios_base::beg);
+        CalculteSize();
     }
 
     size_t FileStream::Read(void* buf, size_t count)
@@ -64,6 +67,7 @@ namespace te
         {
             _FStream->write(static_cast<const char*>(buf), static_cast<std::streamsize>(count));
             written = count;
+            CalculteSize();
         }
 
         return written;
@@ -131,53 +135,39 @@ namespace te
         }
     }
 
-
-    String FileStream::GetPlatformPath()
-    {
-        return _internalPath;
-    }
-
     void FileStream::SetInternalPath()
     {
-        _internalPath = _path;
-
-        switch (_pathType)
-        {
-        case PathType::Windows:
-            ParseWindowsPath();
-            break;
-        case PathType::Unix:
-            ParseUnixPath();
-            break;
-        default:
 #if TE_PLATFORM == TE_PLATFORM_WIN32
-            ParseWindowsPath();
+        _internalPath = ReplaceAll(_path, "/", "\\");
 #elif TE_PLATFORM == TE_PLATFORM_LINUX
-            ParseUnixPath();
-#else
-            static_assert(false, "Unsupported platform for path.");
+        _internalPath = ReplaceAll(_path, "\\", "/");
 #endif
-            break;
+    }
+
+    void FileStream::SetExtension()
+    {
+        String::size_type pos = _internalPath.rfind('.');
+        if (pos != String::npos)
+        {
+            _extension = _internalPath.substr(pos);
+        }
+        else
+        {
+            _extension = String();
         }
     }
 
-    void FileStream::ParseWindowsPath()
+    void FileStream::CalculteSize()
     {
-
-    }
-
-    void FileStream::ParseUnixPath()
-    {
-
-    }
-
-    String FileStream::BuildWindowsPath()
-    {
-        return _internalPath;
-    }
-
-    String FileStream::BuildUnixPath()
-    {
-        return _internalPath;
+        if (!_inStream->fail())
+        {
+            _inStream->seekg(0, std::ios_base::end);
+            _size = (size_t)_inStream->tellg();
+            _inStream->seekg(0, std::ios_base::beg);
+        }
+        else
+        {
+            _size = 0;
+        }
     }
 }

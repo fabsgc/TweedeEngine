@@ -1,12 +1,11 @@
 #pragma once
 
 #include "Prerequisites/TePrerequisitesUtility.h"
-
 #include <istream>
 
 namespace te
 {
-    class FileStream
+    class TE_UTILITY_EXPORT FileStream
     {
     public:
         enum AccessMode
@@ -15,16 +14,11 @@ namespace te
 			WRITE = 2
 		};
 
-        enum PathType
-		{
-			Windows,
-			Unix,
-			Default
-		};
-
     public:
-        FileStream(String path, AccessMode mode = READ, PathType pathType = Default);
+        FileStream(const String& path, AccessMode mode = READ);
         ~FileStream();
+
+        bool Fail();
 
         /**
 		 * Read the requisite number of bytes from the stream, stopping at the end of the file. Advances
@@ -74,28 +68,25 @@ namespace te
         const String& GetPath() const { return _path; }
 
         /** Returns the system dependant path computed internally. */
-        String GetPlatformPath() const { return GetPlatformPath(); }
+        String GetPlatformPath() const {return  _internalPath; }
+
+        String GetExtension() const { return _extension; }
 
         virtual bool IsReadable() const { return (_mode & READ) != 0; }
         virtual bool IsWriteable() const { return (_mode & WRITE) != 0; }
 
     protected:
-        String GetPlatformPath();
         void SetInternalPath();
+        void SetExtension();
+        void CalculteSize();
         void Open();
-
-        void ParseWindowsPath();
-        void ParseUnixPath();
-
-        String BuildWindowsPath();
-        String BuildUnixPath();
 
     protected:
         String _path;
         String _internalPath;
+        String _extension;
 
         AccessMode _mode;
-        PathType _pathType;
 
         size_t _size = 0;
 

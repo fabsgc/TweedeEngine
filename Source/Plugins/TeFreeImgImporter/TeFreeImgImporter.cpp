@@ -5,8 +5,7 @@
 #include "Image/TePixelData.h"
 #include "Utility/TeBitwise.h"
 #include "Image/TePixelUtil.h"
-
-#include <istream>
+#include "Utility/TeFileStream.h"
 
 namespace te
 {
@@ -219,22 +218,16 @@ namespace te
 
     SPtr<PixelData> FreeImgImporter::ImportRawImage(const String& filePath)
     {
-        std::ios::openmode mode = std::ios::binary;
-
-        std::ifstream file;
-        file.open(filePath.c_str(), mode);
-
+        FileStream file(filePath);
         FREE_IMAGE_FORMAT imageFormat;
 
-        if (file.fail())
+        if (file.Fail())
         {
             TE_ASSERT_ERROR(false, "Cannot open file: " + filePath, __FILE__, __LINE__);
             return nullptr;
         }
 
-        file.seekg(0, std::ios_base::end);
-        size_t size = (size_t)file.tellg();
-        file.seekg(0, std::ios_base::beg);
+        size_t size = file.Size();
 
         if (size > std::numeric_limits<UINT32>::max())
         {
@@ -243,8 +236,8 @@ namespace te
 
         UINT32 magicLen = std::min((UINT32)size, 32u);
         UINT8 magicBuf[32];
-        file.read(static_cast<char*>((void*)magicBuf), static_cast<std::streamsize>(magicLen));
-        file.seekg(static_cast<std::streamoff>(0), std::ios::beg);
+        file.Read(static_cast<char*>((void*)magicBuf), static_cast<std::streamsize>(magicLen));
+        file.Seek(0);
 
         String fileExtension = MagicNumToExtension(magicBuf, magicLen);
         auto findFormat = _extensionToFID.find(fileExtension);
@@ -256,9 +249,9 @@ namespace te
         imageFormat = (FREE_IMAGE_FORMAT)findFormat->second;
         
         uint8_t* data = static_cast<uint8_t*>(te_allocate(size));
-        file.read(static_cast<char*>((void*)data), static_cast<std::streamsize>(size));
+        file.Read(static_cast<char*>((void*)data), static_cast<std::streamsize>(size));
 
-        file.close();
+        file.Close();
 
         FIMEMORY* fiMem = FreeImage_OpenMemory(data, static_cast<DWORD>(size));
 
