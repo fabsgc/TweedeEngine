@@ -85,5 +85,7 @@ execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_SOU
 execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_SOURCE_DIR}/../bin/${PLATFORM_DATA}/MinSizeRel/Log/")
 execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_SOURCE_DIR}/../bin/${PLATFORM_DATA}/Debug/Log/")
 
-add_custom_target(AlwaysBuild ALL DEPENDS "MissingFile.h")
-install_pre_build_data(${PLATFORM_DATA})
+if (WIN32)
+    add_custom_target(AlwaysBuild ALL DEPENDS "MissingFile.h")
+    install_pre_build_data(${PLATFORM_DATA})
+endif()
