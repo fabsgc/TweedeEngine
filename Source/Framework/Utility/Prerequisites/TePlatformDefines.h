@@ -19,6 +19,7 @@
 #define TE_RENDER_API_DIRECTX11 1
 #define TE_RENDER_API_OPENGL 2
 
+
 #define TE_RENDER_API TE_RENDER_API_DIRECTX11
 
 // Finds the compiler type and version.

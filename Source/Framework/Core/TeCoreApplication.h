@@ -68,6 +68,9 @@ namespace te
         /**	Returns the main window that was created on application start-up. */
         SPtr<RenderWindow> GetWindow() const { return _window; }
 
+        /**	Returns startup desc. */
+        const START_UP_DESC& GetStartUpDesc() const { return _startUpDesc; }
+
         /**
          * Loads a plugin.
          *

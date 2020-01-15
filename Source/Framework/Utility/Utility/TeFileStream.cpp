@@ -159,10 +159,14 @@ namespace te
 
     void FileStream::CalculteSize()
     {
+        std::streamsize length = 0;
+
         if (!_inStream->fail())
         {
-            _inStream->seekg(0, std::ios_base::end);
-            _size = (size_t)_inStream->tellg();
+            _inStream->ignore(std::numeric_limits<std::streamsize>::max());
+            _size = _inStream->gcount() + 1; //We add the terminal charactet \0
+
+            _inStream->clear(); 
             _inStream->seekg(0, std::ios_base::beg);
         }
         else

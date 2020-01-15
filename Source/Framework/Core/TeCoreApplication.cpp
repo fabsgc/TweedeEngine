@@ -140,9 +140,9 @@ namespace te
         auto textureImportOptions = TextureImportOptions::Create();
         auto shaderImportOptions = ShaderImportOptions::Create();
 
-        HMesh loadedMesh = gResourceManager().Load<Mesh>("Data/Mesh/cube.obj", meshImportOptions);
-        HTexture loadTexture = gResourceManager().Load<Texture>("Data/Texture/default.png", textureImportOptions);
-        HShader loadShader = gResourceManager().Load<Shader>("Data/Shader/default.shader", shaderImportOptions);
+        HMesh loadedMesh = gResourceManager().Load<Mesh>("Data/Meshes/cube.obj", meshImportOptions);
+        HTexture loadTexture = gResourceManager().Load<Texture>("Data/Textures/default.png", textureImportOptions);
+        HShader loadShader = gResourceManager().Load<Shader>("Data/Shaders/default.shader", shaderImportOptions);
 
         TE_PRINT((loadedMesh.GetHandleData())->data);
         TE_PRINT((loadedMesh.GetHandleData())->uuid.ToString());
@@ -158,10 +158,10 @@ namespace te
         _camera->GetViewport()->SetClearColorValue(Color(0.6f, 0.0f, 0.2f, 1.0f));
         _camera->SetMain(true);
 
-        BLEND_STATE_DESC blendDesc;
-        RASTERIZER_STATE_DESC rastDesc;
+        BLEND_STATE_DESC blendDesc; 
+        RASTERIZER_STATE_DESC rastDesc; 
         DEPTH_STENCIL_STATE_DESC depthDesc;
-        SAMPLER_STATE_DESC samplerDesc;
+        SAMPLER_STATE_DESC samplerDesc;  
 
         rastDesc.polygonMode = PM_WIREFRAME; // Draw wireframe instead of solid
         rastDesc.cullMode = CULL_NONE; // Disable blackface culling
@@ -180,14 +180,8 @@ namespace te
 
         RenderAPI::Instance().SetGraphicsPipeline(graphicsPipeline);
 
-        /*FileStream file1("Data/Texture/default.png");
-        FileStream file2("Data\\Texture\\default.png");
-        FileStream file3("Data\\Texture\\img.txt", FileStream::WRITE);
-
-        char buffer[13] = "Hello world\0";
-
-        file3.Write((void*)&buffer, 13);
-        file3.Close();*/
+        FileStream file1("Data/Textures/default.png");
+        FileStream file2("Data\\Textures\\default.png");
     }
     
     void CoreApplication::OnShutDown()

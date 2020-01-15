@@ -19,6 +19,17 @@ function (strip_symbols targetName outputFilename)
     endif ()
 endfunction ()
 
+function (install_pre_build_data platform)
+    add_custom_command (
+        TARGET AlwaysBuild
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/../Data" "${CMAKE_CURRENT_SOURCE_DIR}/../bin/${platform}/Release/Data/"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/../Data" "${CMAKE_CURRENT_SOURCE_DIR}/../bin/${platform}/RelWithDebInfo/Data/"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/../Data" "${CMAKE_CURRENT_SOURCE_DIR}/../bin/${platform}/MinSizeRel/Data/"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/../Data" "${CMAKE_CURRENT_SOURCE_DIR}/../bin/${platform}/Debug/Data/"
+    )
+endfunction()
+
 function (install_tef_target targetName)
     strip_symbols (${targetName} symbolsFile)
     
