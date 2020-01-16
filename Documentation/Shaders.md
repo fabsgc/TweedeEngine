@@ -48,6 +48,7 @@ independant    	 | true, false			           | @te::BLEND_STATE_DESC::Independant
 target			 | Target block					   | Blend operations for a specific render target. Multiple Target blocks can exist under a single blend block.
 
 **Target** block accepts the following options:
+
 Name                 | Valid values				   | Reference
 ---------------------|---------------------------- |----------
 index    	  	     | positive integer		       | Index of the render target these options are applied to. If not specified the index is derived from the order in which Target blocks are defined.
@@ -57,19 +58,22 @@ color    	  	     | BlendOp block	       	   | Represents the blend operation to
 alpha				 | BlendOp block			   | Represents the blend operation to execute on the alpha channel. Only relevant if independant blend is enabled.
 
 **BlendOp** block accepts the following options:
+
 Name                 | Valid values				   | Reference
 ---------------------|---------------------------- |----------
 source    	  	     | one, zero, dstRGB, srcRGB, dstIRGB, srcIRGB, dstA, srcA, dstIA, srcIA (See @te::BlendFactor)		       | @te::RENDER_TARGET_BLEND_STATE_DESC::SrcBlend, @te::RENDER_TARGET_BLEND_STATE_DESC::SrcBlendAlpha
 dest    	  	     | one, zero, dstRGB, srcRGB, dstIRGB, srcIRGB, dstA, srcA, dstIA, srcIA (See @te::BlendFactor)		       | @te::RENDER_TARGET_BLEND_STATE_DESC::DstBlend, @te::RENDER_TARGET_BLEND_STATE_DESC::DstBlendAlpha
 op    	  	     | add, sub, rsub, min, max (See @te::BlendOperation)		       | @te::RENDER_TARGET_BLEND_STATE_DESC::BlendOp, @te::RENDER_TARGET_BLEND_STATE_DESC::BlendOpAlpha
 
-GPU Program
+#GPU Program
 
-~~~~~~~~~~~~~~
 Name                 | Valid values				  
 ---------------------|-------------
 type                 | vertex, pixel, geometry, hull, domain, compute
 language             | hlsl, glsl
 compiled             | true, false
 path                 | relative path to shader file
+
+~~~~~~~~~~~~~~
+
 ~~~~~~~~~~~~~~
