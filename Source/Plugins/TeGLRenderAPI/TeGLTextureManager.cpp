@@ -1,4 +1,5 @@
 #include "TeGLTextureManager.h"
+#include "TeGlRenderTexture.h"
 #include "TeGLTexture.h"
 
 namespace te
@@ -18,6 +19,9 @@ namespace te
 
     SPtr<RenderTexture> GLTextureManager::CreateRenderTextureInternal(const RENDER_TEXTURE_DESC& desc, UINT32 deviceIdx)
     {
-        return nullptr;
+        SPtr<GLRenderTexture> texPtr = te_core_ptr<GLRenderTexture>(new (te_allocate<GLRenderTexture>()) GLRenderTexture(desc, deviceIdx));
+        texPtr->SetThisPtr(texPtr);
+
+        return texPtr;
     }
 }

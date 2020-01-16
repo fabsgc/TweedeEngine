@@ -9,6 +9,7 @@ set (TE_GLRENDERAPI_INC_NOFILTER
 	"TeGLDepthStencilState.h"
 	"TeGLRasterizerState.h"
 	"TeGLSamplerState.h"
+	"TeGLRenderTexture.h"
 )
 
 set (TE_GLRENDERAPI_SRC_NOFILTER
@@ -22,6 +23,7 @@ set (TE_GLRENDERAPI_SRC_NOFILTER
 	"TeGLDepthStencilState.cpp"
 	"TeGLRasterizerState.cpp"
 	"TeGLSamplerState.cpp"
+	"TeGLRenderTexture.cpp"
 )
 
 set(TE_GLRENDERAPI_INC_WIN32

@@ -7,7 +7,7 @@ namespace te
         , _properties(desc, false)
 	{}
 
-	void D3D11RenderTexture::GetCustomAttribute(const String& name, void* data) const
+	void GLRenderTexture::GetCustomAttribute(const String& name, void* data) const
 	{
 		return;
 	}

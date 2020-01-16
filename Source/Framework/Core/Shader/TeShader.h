@@ -12,7 +12,7 @@ namespace te
          * least overdraw and is preferable. Transparent objects need to be sorted back to front. You may also specify no
          * sorting and the elements will be rendered in the order they were added to the render queue.
          */
-        QueueSortType QueueSortType;
+        QueueSortType QueueType;
 
         /**
          * Priority that allows you to control in what order are your shaders rendered. See QueuePriority for a list of
