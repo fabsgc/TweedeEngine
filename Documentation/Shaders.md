@@ -32,6 +32,7 @@ front				 | StencilOp block			   | Stencil operations and compare function for f
 back				 | StencilOp block			   | Stencil operations and compare function for back facing geometry
  
 **front** and **back** options are blocks themselves, and they accept the following options:
+
 Name                 | Valid values				   | Reference
 ---------------------|---------------------------- |----------
 fail    	  	 	| keep, zero, replace, inc, dec, incwrap, decwrap, inverse (See @te::StencilOperation)			           | @te::DEPTH_STENCIL_STATE_DESC::frontStencilFailOp & @te::DEPTH_STENCIL_STATE_DESC::backStencilFailOp
