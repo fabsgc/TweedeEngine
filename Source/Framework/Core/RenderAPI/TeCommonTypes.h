@@ -2,6 +2,9 @@
 
 namespace te
 {
+#undef None
+#undef Convex
+
     /**	Factors used when blending new pixels with existing pixels. */
     enum BlendFactor
     {

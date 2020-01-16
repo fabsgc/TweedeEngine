@@ -308,6 +308,8 @@ namespace te
 
             RendererManager::Instance().GetRenderer()->RenderAll();
 
+            RenderTarget& renderTexture1 = (static_cast<RenderTarget&>(*(_camera->GetViewport()->GetTarget())));
+
             SPtr<Texture> renderTexture = (static_cast<RenderTexture&>(*(_cameraHidden->GetViewport()->GetTarget()))).GetColorTexture(0);
 
             SPtr<PixelData> pixelData = renderTexture->GetProperties().AllocBuffer(0, 0);
