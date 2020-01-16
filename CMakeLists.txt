@@ -7,7 +7,7 @@ set (APP_ROOT_DIR ${PROJECT_SOURCE_DIR})
 
 if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     if (LINUX)
-        set(CMAKE_INSTALL_PREFIX /usr/local/opt/tef CACHE PATH "..." FORCE) 	
+        set(CMAKE_INSTALL_PREFIX /usr/local/opt/tef CACHE PATH "..." FORCE)
     endif () 
 endif ()
 

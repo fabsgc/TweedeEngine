@@ -161,11 +161,35 @@ namespace te
     {
         if (!_inStream->fail())
         {
-            _inStream->ignore(std::numeric_limits<std::streamsize>::max());
-            _size = _inStream->gcount() + 1; //We add the terminal charactet \0
+#if TE_PLATFORM == TE_PLATFORM_WIN32 // Windows
+            WIN32_FILE_ATTRIBUTE_DATA attrData;
+            if (GetFileAttributesExW(ToWString(_internalPath).c_str(), GetFileExInfoStandard, &attrData) == FALSE)
+            {
+                TE_DEBUG("Can't get file size : " + _internalPath, __FILE__, __LINE__)
+            }
 
-            _inStream->clear(); 
-            _inStream->seekg(0, std::ios_base::beg);
+            LARGE_INTEGER li;
+            li.LowPart = attrData.nFileSizeLow;
+            li.HighPart = attrData.nFileSizeHigh;
+            _size = (size_t)li.QuadPart;
+#else
+            struct stat st_buf;
+
+            if (stat(_internalPath.c_str(), &st_buf) == 0)
+            {
+                _size = (size_t)st_buf.st_size;
+            }
+            else
+            {
+                TE_DEBUG("Can't get file size : " + _internalPath, __FILE__, __LINE__)
+                _size = 0;
+            }
+#endif
+            //_inStream->ignore(std::numeric_limits<std::streamsize>::max());
+            //_size = _inStream->gcount() + 1; //We add the terminal charactet \0
+
+            //_inStream->clear(); 
+            //_inStream->seekg(0, std::ios_base::beg);
         }
         else
         {

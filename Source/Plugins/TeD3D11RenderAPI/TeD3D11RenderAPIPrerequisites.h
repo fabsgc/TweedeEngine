@@ -37,4 +37,6 @@ namespace te
     class D3D11SamplerState;
     class D3D11Texture;
     class D3D11TextureManager;
+    class D3D11TextureView;
+    class D3D11RenderTexture;
 }

@@ -48,6 +48,11 @@ namespace te
                 RenderOverlay(rtInfo.target, rtInfo.camera);
                 RenderAPI::Instance().SwapBuffers(rtInfo.target);
             }
+            else
+            {
+                RenderOverlay(rtInfo.target, rtInfo.camera);
+                RenderAPI::Instance().SwapBuffers(rtInfo.target);
+            }
         }
     }
 

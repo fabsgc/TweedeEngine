@@ -27,7 +27,9 @@ target_link_libraries (TeShaderImporter tef)
 # IDE specific
 set_property (TARGET TeShaderImporter PROPERTY FOLDER Plugins)
 
+if (LINUX)
+    install_pre_build_data(TeShaderImporter)
+endif()
+
 # Install
-if (!WIN32)
-    install_tef_target (TeShaderImporter)
-endif ()
+install_tef_target (TeShaderImporter)

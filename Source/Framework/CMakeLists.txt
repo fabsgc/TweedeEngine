@@ -99,4 +99,8 @@ install (
     PATTERN "Private" EXCLUDE
 )
 
+if (LINUX)
+    install_pre_build_data(tef)
+endif()
+
 install_tef_target(tef)

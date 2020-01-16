@@ -86,6 +86,9 @@ namespace te
     struct SubMesh;
     class TextureView;
     class HardwareBuffer;
+    struct RENDER_TEXTURE_DESC;
+    struct RENDER_SURFACE_DESC;
+    class RenderTexture;
 
     class Renderer;
     class RendererFactory;

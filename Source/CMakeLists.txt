@@ -68,24 +68,17 @@ install (
     DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/../bin/
 )
 
-## Copy data elements inside bin directory
-if (TE_64BIT)
-    set (PLATFORM_DATA "x64")
-else ()
-    set (PLATFORM_DATA "x86")
-endif ()
+execute_process (COMMAND ${CMAKE_COMMAND} -E copy_directory "${APP_ROOT_DIR}/Data" "${APP_ROOT_DIR}/bin/${PLATFORM_DATA}/Release/Data/")
+execute_process (COMMAND ${CMAKE_COMMAND} -E copy_directory "${APP_ROOT_DIR}/Data" "${APP_ROOT_DIR}/bin/${PLATFORM_DATA}/RelWithDebInfo/Data/")
+execute_process (COMMAND ${CMAKE_COMMAND} -E copy_directory "${APP_ROOT_DIR}/Data" "${APP_ROOT_DIR}/bin/${PLATFORM_DATA}/MinSizeRel/Data/")
+execute_process (COMMAND ${CMAKE_COMMAND} -E copy_directory "${APP_ROOT_DIR}/Data" "${APP_ROOT_DIR}/bin/${PLATFORM_DATA}/Debug/Data/")
 
-execute_process (COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/../Data" "${CMAKE_CURRENT_SOURCE_DIR}/../bin/${PLATFORM_DATA}/Release/Data/")
-execute_process (COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/../Data" "${CMAKE_CURRENT_SOURCE_DIR}/../bin/${PLATFORM_DATA}/RelWithDebInfo/Data/")
-execute_process (COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/../Data" "${CMAKE_CURRENT_SOURCE_DIR}/../bin/${PLATFORM_DATA}/MinSizeRel/Data/")
-execute_process (COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/../Data" "${CMAKE_CURRENT_SOURCE_DIR}/../bin/${PLATFORM_DATA}/Debug/Data/")
-
-execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_SOURCE_DIR}/../bin/${PLATFORM_DATA}/Release/Log/")
-execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_SOURCE_DIR}/../bin/${PLATFORM_DATA}/RelWithDebInfo/Log/")
-execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_SOURCE_DIR}/../bin/${PLATFORM_DATA}/MinSizeRel/Log/")
-execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_SOURCE_DIR}/../bin/${PLATFORM_DATA}/Debug/Log/")
+execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_ROOT_DIR}/bin/${PLATFORM_DATA}/Release/Log/")
+execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_ROOT_DIR}/bin/${PLATFORM_DATA}/RelWithDebInfo/Log/")
+execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_ROOT_DIR}/bin/${PLATFORM_DATA}/MinSizeRel/Log/")
+execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_ROOT_DIR}/bin/${PLATFORM_DATA}/Debug/Log/")
 
 if (WIN32)
     add_custom_target(AlwaysBuild ALL DEPENDS "MissingFile.h")
-    install_pre_build_data(${PLATFORM_DATA})
+    install_pre_build_data(AlwaysBuild)
 endif()

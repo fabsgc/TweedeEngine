@@ -69,6 +69,17 @@ namespace te
     void Texture::Initialize()
     {
         _size = CalculateSize();
+
+        // Allocate CPU buffers if needed
+        if ((_properties.GetUsage() & TU_CPUCACHED) != 0)
+        {
+            CreateCPUBuffers();
+
+            if (_initData != nullptr)
+            {
+                UpdateCPUBuffers(0, *_initData);
+            }
+        }
         
         Resource::Initialize();
         CoreObject::Initialize();
@@ -248,8 +259,48 @@ namespace te
         ReadDataImpl(pixelData, mipLevel, face, deviceIdx, queueIdx);
     }
 
+    void Texture::ReadCachedData(PixelData& dest, UINT32 face, UINT32 mipLevel)
+    {
+        if ((_properties.GetUsage() & TU_CPUCACHED) == 0)
+        {
+            TE_DEBUG("Attempting to read CPU data from a texture that is created without CPU caching.", __FILE__, __LINE__);
+            return;
+        }
+
+        UINT32 mipWidth, mipHeight, mipDepth;
+        PixelUtil::GetSizeForMipLevel(_properties.GetWidth(), _properties.GetHeight(), _properties.GetDepth(),
+            mipLevel, mipWidth, mipHeight, mipDepth);
+
+        if (dest.GetWidth() != mipWidth || dest.GetHeight() != mipHeight ||
+            dest.GetDepth() != mipDepth || dest.GetFormat() != _properties.GetFormat())
+        {
+            TE_DEBUG("Provided buffer is not of valid dimensions or format in order to read from this texture.", __FILE__, __LINE__);
+            return;
+        }
+
+        UINT32 subresourceIdx = _properties.MapToSubresourceIdx(face, mipLevel);
+        if (subresourceIdx >= (UINT32)_CPUSubresourceData.size())
+        {
+            TE_DEBUG("Invalid subresource index: " + ToString(subresourceIdx) + ". Supported range: 0 .. " + ToString(_CPUSubresourceData.size()), __FILE__, __LINE__);
+            return;
+        }
+
+        if (_CPUSubresourceData[subresourceIdx]->GetSize() != dest.GetSize())
+        {
+            TE_ASSERT_ERROR(false, "Buffer sizes don't match.", __FILE__, __LINE__);
+        }
+
+        UINT8* srcPtr = _CPUSubresourceData[subresourceIdx]->GetData();
+        UINT8* destPtr = dest.GetData();
+
+        memcpy(destPtr, srcPtr, dest.GetSize());
+    }
+
     void Texture::WriteData(const PixelData& src, UINT32 mipLevel, UINT32 face, bool discardWholeBuffer, UINT32 queueIdx)
     {
+        UINT32 subresourceIdx = _properties.MapToSubresourceIdx(face, mipLevel);
+        UpdateCPUBuffers(subresourceIdx, src);
+
         if (discardWholeBuffer)
         {
             if ((_properties.GetUsage() & TU_DYNAMIC) == 0)
@@ -309,6 +360,78 @@ namespace te
     void Texture::ClearBufferViews()
     {
         _textureViews.clear();
+    }
+
+    void Texture::CreateCPUBuffers()
+    {
+        UINT32 numFaces = _properties.GetNumFaces();
+        UINT32 numMips = _properties.GetNumMipmaps() + 1;
+
+        UINT32 numSubresources = numFaces * numMips;
+        _CPUSubresourceData.resize(numSubresources);
+
+        for (UINT32 i = 0; i < numFaces; i++)
+        {
+            UINT32 curWidth = _properties.GetWidth();
+            UINT32 curHeight = _properties.GetHeight();
+            UINT32 curDepth = _properties.GetDepth();
+
+            for (UINT32 j = 0; j < numMips; j++)
+            {
+                UINT32 subresourceIdx = _properties.MapToSubresourceIdx(i, j);
+
+                _CPUSubresourceData[subresourceIdx] = te_shared_ptr_new<PixelData>(curWidth, curHeight, curDepth, _properties.GetFormat());
+                _CPUSubresourceData[subresourceIdx]->AllocateInternalBuffer();
+
+                if (curWidth > 1)
+                    curWidth = curWidth / 2;
+
+                if (curHeight > 1)
+                    curHeight = curHeight / 2;
+
+                if (curDepth > 1)
+                    curDepth = curDepth / 2;
+            }
+        }
+    }
+
+    void Texture::UpdateCPUBuffers(UINT32 subresourceIdx, const PixelData& pixelData)
+    {
+        if ((_properties.GetUsage() & TU_CPUCACHED) == 0)
+        {
+            return;
+        }
+
+        if (subresourceIdx >= (UINT32)_CPUSubresourceData.size())
+        {
+            TE_DEBUG("Invalid subresource index: " + ToString(subresourceIdx) + ". Supported range: 0 .. " + ToString(_CPUSubresourceData.size()), __FILE__, __LINE__);
+            return;
+        }
+
+        UINT32 mipLevel;
+        UINT32 face;
+        _properties.MapFromSubresourceIdx(subresourceIdx, face, mipLevel);
+
+        UINT32 mipWidth, mipHeight, mipDepth;
+        PixelUtil::GetSizeForMipLevel(_properties.GetWidth(), _properties.GetHeight(), _properties.GetDepth(),
+            mipLevel, mipWidth, mipHeight, mipDepth);
+
+        if (pixelData.GetWidth() != mipWidth || pixelData.GetHeight() != mipHeight ||
+            pixelData.GetDepth() != mipDepth || pixelData.GetFormat() != _properties.GetFormat())
+        {
+            TE_DEBUG("Provided buffer is not of valid dimensions or format in order to update this texture.", __FILE__, __LINE__);
+            return;
+        }
+
+        if (_CPUSubresourceData[subresourceIdx]->GetSize() != pixelData.GetSize())
+        {
+            TE_ASSERT_ERROR(false, "Buffer sizes don't match.", __FILE__, __LINE__);
+        }
+
+        UINT8* dest = _CPUSubresourceData[subresourceIdx]->GetData();
+        UINT8* src = pixelData.GetData();
+
+        memcpy(dest, src, pixelData.GetSize());
     }
 
     SPtr<TextureView> Texture::RequestView(UINT32 mostDetailMip, UINT32 numMips, UINT32 firstArraySlice, UINT32 numArraySlices, GpuViewUsage usage)

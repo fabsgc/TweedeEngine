@@ -36,6 +36,10 @@ target_link_libraries (TeD3D11RenderAPI tef)
 # IDE specific
 set_property (TARGET TeD3D11RenderAPI PROPERTY FOLDER Plugins)
 
+if (LINUX)
+    install_pre_build_data(TeD3D11RenderAPI)
+endif()
+
 # Install
 if(RENDER_API_MODULE MATCHES "DirectX 11" AND !WIN32)
     install_tef_target(TeD3D11RenderAPI)

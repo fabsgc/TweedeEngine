@@ -13,8 +13,11 @@ namespace te
 		PixelFormat GetNativeFormat(TextureType type, PixelFormat format, int usage, bool hwGamma) override;
 
 	protected:		
-		/** @copydoc TextureManager::createTextureInternal */
+		/** @copydoc TextureManager::CreateTextureInternal */
 		SPtr<Texture> CreateTextureInternal(const TEXTURE_DESC& desc, const SPtr<PixelData>& initialData = nullptr) override;
+
+        /** @copydoc TextureManager::CreateRenderTextureInternal */
+        SPtr<RenderTexture> CreateRenderTextureInternal(const RENDER_TEXTURE_DESC& desc, UINT32 deviceIdx = 0) override;
 	};
 
     // TODO

@@ -17,7 +17,9 @@ target_link_libraries (TeRenderMan tef)
 # IDE specific
 set_property (TARGET TeRenderMan PROPERTY FOLDER Plugins)
 
+if (LINUX)
+    install_pre_build_data(TeRenderMan)
+endif()
+
 # Install
-if (!WIN32)
-    install_tef_target (TeRenderMan)
-endif ()
+install_tef_target (TeRenderMan)

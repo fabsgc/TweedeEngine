@@ -15,7 +15,8 @@ namespace te
 	protected:		
 		/** @copydoc TextureManager::createTextureInternal */
 		SPtr<Texture> CreateTextureInternal(const TEXTURE_DESC& desc, const SPtr<PixelData>& initialData = nullptr) override;
-	};
 
-    // TODO
+        /** @copydoc TextureManager::CreateRenderTextureInternal */
+        SPtr<RenderTexture> CreateRenderTextureInternal(const RENDER_TEXTURE_DESC& desc, UINT32 deviceIdx = 0) override;
+	};
 }

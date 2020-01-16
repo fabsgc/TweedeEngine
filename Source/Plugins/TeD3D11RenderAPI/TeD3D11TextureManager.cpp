@@ -2,6 +2,7 @@
 #include "TeD3D11Texture.h"
 #include "TeD3D11Mappings.h"
 #include "TeD3D11RenderAPI.h"
+#include "TeD3D11RenderTexture.h"
 
 namespace te
 {
@@ -18,4 +19,12 @@ namespace te
 
 		return texPtr;
 	}
+
+    SPtr<RenderTexture> D3D11TextureManager::CreateRenderTextureInternal(const RENDER_TEXTURE_DESC& desc, UINT32 deviceIdx)
+    {
+        SPtr<D3D11RenderTexture> texPtr = te_core_ptr<D3D11RenderTexture>(new (te_allocate<D3D11RenderTexture>()) D3D11RenderTexture(desc, deviceIdx));
+        texPtr->SetThisPtr(texPtr);
+
+        return texPtr;
+    }
 }

@@ -77,6 +77,8 @@ namespace te
     void RenderWindow::Destroy()
     {
         NotifyCloseRequested();
+
+        RenderTarget::Destroy();
     }
 
     void RenderWindow::NotifyWindowEvent(WindowEventType type)

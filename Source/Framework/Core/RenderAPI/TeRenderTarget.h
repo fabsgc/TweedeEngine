@@ -3,9 +3,29 @@
 #include "TeCorePrerequisites.h"
 #include "RenderAPI/TeVideoMode.h"
 #include "Utility/TeEvent.h"
+#include "CoreUtility/TeCoreObject.h"
 
 namespace te
 {
+	struct TE_CORE_EXPORT RENDER_SURFACE_DESC
+	{
+		RENDER_SURFACE_DESC() { }
+
+		SPtr<Texture> Tex;
+
+		/** First face of the texture to bind (array index in texture arrays, or Z slice in 3D textures). */
+		UINT32 Face = 0;
+
+		/**
+		 * Number of faces to bind (entries in a texture array, or Z slices in 3D textures). When zero the entire resource
+		 * will be bound.
+		 */
+		UINT32 NumFaces = 0;
+
+		/** If the texture has multiple mips, which one to bind (only one can be bound for rendering). */
+		UINT32 MipLevel = 0;
+	};
+
     /** Contains various properties that describe a render target. */
 	class TE_CORE_EXPORT RenderTargetProperties
 	{
@@ -17,6 +37,18 @@ namespace te
 
 		/** Height of the render target, in pixels. */
 		UINT32 Height = 0;
+
+        /**
+         * Number of three dimensional slices of the render target. This will be number of layers for array
+         * textures or number of faces cube textures.
+         */
+        UINT32 NumSlices = 0;
+
+        /**
+         * Controls in what order is the render target rendered to compared to other render targets. Targets with higher
+         * priority will be rendered before ones with lower priority.
+         */
+        INT32 Priority = 0;
 
 		/**
 		 * True if the render target will wait for vertical sync before swapping buffers. This will eliminate
@@ -43,7 +75,7 @@ namespace te
     /**
 	 * Provides access to internal render target implementation
 	 */
-	class TE_CORE_EXPORT RenderTarget
+	class TE_CORE_EXPORT RenderTarget : public CoreObject
 	{
 	public:
 		/** Frame buffer type when double-buffering is used. */
@@ -56,6 +88,13 @@ namespace te
 
         RenderTarget() = default;
 		virtual ~RenderTarget() = default;
+
+        /**
+         * Sets a priority that determines in which orders the render targets the processed.
+         *
+         * @param[in]	priority	The priority. Higher value means the target will be rendered sooner.
+         */
+        void SetPriority(INT32 priority);
 
         /** Event that gets triggered whenever the render target is resized. */
 		mutable Event<void()> OnResized;

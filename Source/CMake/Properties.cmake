@@ -22,6 +22,13 @@ else ()
 	message(FATAL_ERROR "The framework could not be compiled on a x86 architecture")
 endif ()
 
+## Copy data elements inside bin directory
+if (TE_64BIT)
+    set (PLATFORM_TARGET "x64")
+else ()
+    set (PLATFORM_TARGET "x86")
+endif ()
+
 if (UNIX)
 	set (LINUX TRUE)
 endif ()

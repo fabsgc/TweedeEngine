@@ -93,7 +93,7 @@ namespace te
 
         void TriggerCallback();
 
-        virtual void Initialize() {};
+        virtual void Initialize() { RenderTarget::Initialize(); };
 
         /** Queries the render target for a custom attribute. This may be anything and is implementation specific. */
         virtual void GetCustomAttribute(const String& name, void* pData) const {}
@@ -185,7 +185,7 @@ namespace te
         virtual void SetTitle(const String& title) {}
 
         /** Closes and destroys the window. */
-        void Destroy();
+        void Destroy() override;
 
     public:
         /** Notifies the window that a specific event occurred. Usually called by the platform specific main event loop. */

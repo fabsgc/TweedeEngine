@@ -17,6 +17,7 @@ set (TE_CORE_INC_RENDERAPI
     "Core/RenderAPI/TeSubMesh.h"
     "Core/RenderAPI/TeTextureView.h"
     "Core/RenderAPI/TeHardwareBuffer.h"
+    "Core/RenderAPI/TeRenderTexture.h"
 )
 set (TE_CORE_SRC_RENDERAPI
     "Core/RenderAPI/TeRenderAPI.cpp"
@@ -33,6 +34,7 @@ set (TE_CORE_SRC_RENDERAPI
     "Core/RenderAPI/TeVertexDataDesc.cpp"
     "Core/RenderAPI/TeTextureView.cpp"
     "Core/RenderAPI/TeHardwareBuffer.cpp"
+    "Core/RenderAPI/TeRenderTexture.cpp"
 )
 
 set (TE_CORE_INC_RENDERER

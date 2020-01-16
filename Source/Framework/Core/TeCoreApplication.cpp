@@ -23,6 +23,9 @@
 #include "Importer/TeShaderImportOptions.h"
 #include "Shader/TeShader.h"
 #include "Utility/TeFileStream.h"
+#include "Image/TeTexture.h"
+#include "RenderAPI/TeCommonTypes.h"
+#include "RenderAPI/TeRenderTexture.h"
 
 namespace te
 {
@@ -67,6 +70,13 @@ namespace te
         _renderer = RendererManager::Instance().Initialize(_startUpDesc.Renderer);
         _window = RenderAPI::Instance().CreateRenderWindow(_startUpDesc.WindowDesc);
         _window->Initialize();
+
+        auto resizedCallback = []()
+        {
+            TE_DEBUG("Window was resized.", __FILE__, __LINE__);
+        };
+
+        _window->OnResized.Connect(resizedCallback);
 
         Input::StartUp();
         VirtualInput::StartUp();
@@ -138,6 +148,7 @@ namespace te
         auto meshImportOptions = MeshImportOptions::Create();
         meshImportOptions->ImportNormals = false;
         auto textureImportOptions = TextureImportOptions::Create();
+        textureImportOptions->CpuCached = true;
         auto shaderImportOptions = ShaderImportOptions::Create();
 
         HMesh loadedMesh = gResourceManager().Load<Mesh>("Data/Meshes/cube.obj", meshImportOptions);
@@ -156,6 +167,7 @@ namespace te
         _camera = Camera::Create();
         _camera->SetRenderTarget(gCoreApplication().GetWindow());
         _camera->GetViewport()->SetClearColorValue(Color(0.6f, 0.0f, 0.2f, 1.0f));
+        _camera->GetViewport()->SetArea(Rect2(0.5, 0.5, 0.5, 0.5));
         _camera->SetMain(true);
 
         BLEND_STATE_DESC blendDesc; 
@@ -182,11 +194,64 @@ namespace te
 
         FileStream file1("Data/Textures/default.png");
         FileStream file2("Data\\Textures\\default.png");
+
+        // ######################
+
+        // Create a 960x480 texture with 32-bit RGBA format
+        TEXTURE_DESC targetColorDesc;
+        targetColorDesc.Type = TEX_TYPE_2D;
+        targetColorDesc.Width = 960;
+        targetColorDesc.Height = 480;
+        targetColorDesc.Format = PF_RGBA8;
+        targetColorDesc.Usage = TU_RENDERTARGET | TU_CPUCACHED;
+
+        HTexture color = Texture::Create(targetColorDesc);
+
+        // Create a 960x480 texture with a 32-bit depth-stencil format
+        TEXTURE_DESC targetDepthDesc;
+        targetDepthDesc.Type = TEX_TYPE_2D;
+        targetDepthDesc.Width = 960;
+        targetDepthDesc.Height = 480;
+        targetDepthDesc.Format = PF_RGBA8;
+        targetDepthDesc.Usage = TU_DEPTHSTENCIL | TU_CPUCACHED;
+
+        HTexture depthStencil = Texture::Create(targetDepthDesc);
+
+        RENDER_TEXTURE_DESC renderTextureDesc;
+        renderTextureDesc.ColorSurfaces[0].Tex = color.GetInternalPtr();
+        renderTextureDesc.ColorSurfaces[0].Face = 0;
+        renderTextureDesc.ColorSurfaces[0].MipLevel = 0;
+
+        renderTextureDesc.DepthStencilSurface.Tex = depthStencil.GetInternalPtr();
+        renderTextureDesc.DepthStencilSurface.Face = 0;
+        renderTextureDesc.DepthStencilSurface.MipLevel = 0;
+
+        SPtr<RenderTexture> renderTexture = RenderTexture::Create(renderTextureDesc);
+
+        _cameraHidden = Camera::Create();
+        _cameraHidden->SetRenderTarget(renderTexture);
+        _cameraHidden->GetViewport()->SetClearColorValue(Color(0.2f, 0.0f, 0.2f, 1.0f));
+        _cameraHidden->SetMain(false);
+
+        SPtr<PixelData> pixelData = loadTexture->GetProperties().AllocBuffer(0, 0);
+        loadTexture->ReadCachedData(*pixelData);
+
+        // Read pixel at 50x50
+        Color pixelColor = pixelData->GetColorAt(50, 50);
+
+        // ######################
     }
     
     void CoreApplication::OnShutDown()
     {
+        _window->Destroy();
+        _window = nullptr;
+
         _camera->Destroy();
+        _camera = nullptr;
+
+        _cameraHidden->Destroy();
+        _cameraHidden = nullptr;
 
         _renderer.reset();
         _window.reset();
@@ -242,6 +307,14 @@ namespace te
             PostUpdate();
 
             RendererManager::Instance().GetRenderer()->RenderAll();
+
+            SPtr<Texture> renderTexture = (static_cast<RenderTexture&>(*(_cameraHidden->GetViewport()->GetTarget()))).GetColorTexture(0);
+
+            SPtr<PixelData> pixelData = renderTexture->GetProperties().AllocBuffer(0, 0);
+            renderTexture->ReadData(*pixelData);
+
+            // Read pixel at 50x50
+            Color pixelColor = pixelData->GetColorAt(50, 50);
         }
     }
 

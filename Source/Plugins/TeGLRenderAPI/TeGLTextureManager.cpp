@@ -15,4 +15,9 @@ namespace te
 
 		return texPtr;
 	}
+
+    SPtr<RenderTexture> GLTextureManager::CreateRenderTextureInternal(const RENDER_TEXTURE_DESC& desc, UINT32 deviceIdx)
+    {
+        return nullptr;
+    }
 }

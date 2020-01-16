@@ -13,6 +13,8 @@ namespace te
     const String ShaderImporter::TypeStencil = "stencil";
     const String ShaderImporter::TypeBlend = "blend";
     const String ShaderImporter::TypePrograms = "programs";
+    const String ShaderImporter::TypeSampler = "sampler";
+    const String ShaderImporter::TypeOptions = "options";
 
     ShaderImporter::ShaderImporter()
     {
@@ -75,8 +77,9 @@ namespace te
         ParserData parsedData = Parse(jsonDocument);
 #endif
      
-        SPtr<Shader> shader = Shader::_createPtr(SHADER_DESC());
+        SPtr<Shader> shader = Shader::_createPtr("shader", SHADER_DESC());
         shader->SetName(filePath);
+        //shader->SetId();
 
         te_delete(data);
 
@@ -114,6 +117,14 @@ namespace te
             else if (type == TypeBlend)
             {
                 ParseBlendBlock(doc, data);
+            }
+            else if (type == TypeSampler)
+            {
+                ParseSamplerBlock(doc, data);
+            }
+            else if (type == TypeOptions)
+            {
+                ParseOptionsBlock(doc, data);
             }
         }
 
@@ -178,7 +189,34 @@ namespace te
 
     void ShaderImporter::ParseBlendBlock(nlohmann::json& doc, ParserData& data)
     {
+        Blend blend
+        {
+            doc["dither"].get<bool>(),
+            doc["independant"].get<bool>()
+        };
 
+        auto fillBlendOp = [](Blend::BlendOp& op, nlohmann::json& doc) -> void {
+            op = {
+                doc["source"].get<String>(),
+                doc["dest"].get<String>(),
+                doc["op"].get<String>()
+            };
+        };
+
+        for (auto it = doc["targets"].begin(); it != doc["targets"].end(); ++it)
+        {
+            Blend::Target target
+            {
+                it.value()["index"].get<UINT8>(),
+                it.value()["enabled"].get<bool>(),
+                it.value()["writemask"].get<String>()
+            };
+
+            fillBlendOp(target.color, it.value()["color"]);
+            fillBlendOp(target.alpha, it.value()["alpha"]);
+
+            blend.targets.push_back(target);
+        }
     }
 
     void ShaderImporter::ParseProgramsBlock(nlohmann::json& doc, ParserData& data)
@@ -187,14 +225,15 @@ namespace te
         {
             ParseProgramBlock(it.value(), data);
         }
-
-        // Check is there is at leat one vertex buffer and one pixel buffer
     }
 
     void ShaderImporter::ParseProgramBlock(nlohmann::json& doc, ParserData& data)
     {
+        // Check is there is exactly only one vertex buffer and only one pixel buffer
+        UINT8 countVertexShader = 0;
+        UINT8 countPixelShader = 0;
+
         String acceptedLanguage = "hlsl";
-        
         if (gCoreApplication().GetStartUpDesc().RenderAPI == TE_RENDER_API_MODULE_OPENGL)
         {
             acceptedLanguage = "glsl";
@@ -205,12 +244,44 @@ namespace te
             doc["type"].get<String>(),
             doc["language"].get<String>(),
             doc["compiled"].get<bool>(),
-            doc["path"].get<String>()
+            doc["path"].get<String>(),
+            doc["version"].get<String>(),
+            doc["entry"].get<String>(),
         };
 
         if (acceptedLanguage == program.language)
         {
-
+            // TODO
         }
+    }
+
+    void ShaderImporter::ParseSamplerBlock(nlohmann::json& doc, ParserData& data)
+    {
+        Sampler sampler
+        {
+            doc["name"].get<String>(),
+            doc["addressu"].get<String>(),
+            doc["addressv"].get<String>(),
+            doc["addressw"].get<String>(),
+            doc["bordercolor"].get<UINT32>(),
+            doc["filter"].get<String>(),
+            doc["maxanisotropy"].get<UINT32>(),
+            doc["maxlod"].get<float>(),
+            doc["minlod"].get<float>(),
+            doc["miplodbias"].get<float>(),
+            doc["compare"].get<String>()
+        };
+    }
+
+    void ShaderImporter::ParseOptionsBlock(nlohmann::json& doc, ParserData& data)
+    {
+        Options options
+        {
+            doc["name"].get<String>(),
+            doc["separable"].get<bool>(),
+            doc["sort"].get<String>(),
+            doc["transparent"].get<bool>(),
+            doc["priority"].get<UINT64>()
+        };
     }
 }

@@ -5,7 +5,9 @@
 #include "RenderAPI/TeBlendState.h"
 #include "RenderAPI/TeRasterizerState.h"
 #include "RenderAPI/TeDepthStencilState.h"
+#include "RenderAPI/TeSamplerState.h"
 #include "Json/json.h"
+#include "Shader/TeShader.h"
 
 namespace te
 {
@@ -17,6 +19,8 @@ namespace te
         static const String TypeStencil;
         static const String TypeBlend;
         static const String TypePrograms;
+        static const String TypeSampler;
+        static const String TypeOptions;
 
         enum Language
         {
@@ -32,6 +36,7 @@ namespace te
 
         struct ParserData
         {
+            SHADER_DESC ShaderDesc;
             BLEND_STATE_DESC BlendDesc;
             RASTERIZER_STATE_DESC RasterizerDesc;
             DEPTH_STENCIL_STATE_DESC DepthStencilDesc;
@@ -47,16 +52,19 @@ namespace te
             ParserProgram GeometryProgram;
             ParserProgram HullProgram;
             ParserProgram DomainProgram;
-            ParserProgram ComputeProgram;
+
+            Map<String, SamplerState> Samplers;
+
+            String Name;
         };
 
         struct Raster
         {
             String fill = "solid";
-            String cull = "cw";
-            bool scissor = true;
-            bool multisample = true;
-            bool lineaa = true;
+            String cull = "ccw";
+            bool scissor = false;
+            bool multisample = false;
+            bool lineaa = false;
         };
 
         struct Depth
@@ -64,8 +72,8 @@ namespace te
             bool read = true;
             bool write = true;
             String compare = "less";
-            float bias = 0.2f;
-            float scaledBias = 0.2f;
+            float bias = 0.0f;
+            float scaledBias = 0.0f;
             bool clip = true;
         };
 
@@ -74,12 +82,12 @@ namespace te
             struct StencilOp
             {
                 String fail = "keep";
-                String zfail = "incr";
+                String zfail = "keep";
                 String pass = "keep";
                 String compare = "always";
             };
 
-            bool enabled = true;
+            bool enabled = false;
             int reference = 1;
             int readmask = 0;
             int writemask = 0;
@@ -89,15 +97,66 @@ namespace te
 
         struct Blend
         {
+            struct BlendOp
+            {
+                String source = "one";
+                String dest = "one";
+                String op = "add";
+            };
 
+            struct Target
+            {
+                UINT8 index = 1;
+                bool enabled = true;
+                String writemask = "RGBA";
+                BlendOp color;
+                BlendOp alpha;
+            };
+
+            bool dither = false;
+            bool independant = false;
+            Vector<Target> targets;
         };
 
         struct Program
         {
+            struct Include
+            {
+                String type = "sampler";
+                String name = "color";
+            };
+
             String type = "vertex";
             String language = "hlsl";
             bool compiled = false;
             String path = "vertex.hlsl";
+            String version = "vs_5_0";
+            String entry = "main";
+            Vector<Include> includes;
+        };
+
+        struct Sampler
+        {
+            String name = "color";
+            String addressu = "WRAP";
+            String addressv = "WRAP";
+            String addressw = "WRAP";
+            UINT32 bordercolor = 0;
+            String filter = "MIN_MAG_MIP_POINT";
+            UINT32 maxanisotropy = 0;
+            float maxlod = 0.0f;
+            float minlod = 0.0f;
+            float miplodbias = 0.0f;
+            String compare = "never";
+        };
+
+        struct Options
+        {
+            String name = "name";
+            bool separable = true;
+            String sort = "backtofront";
+            bool transparent = false;
+            UINT64 priority = 100000;
         };
 
     public:
@@ -122,6 +181,8 @@ namespace te
         void ParseBlendBlock(nlohmann::json& doc, ParserData& data);
         void ParseProgramsBlock(nlohmann::json& doc, ParserData& data);
         void ParseProgramBlock(nlohmann::json& doc, ParserData& data);
+        void ParseSamplerBlock(nlohmann::json& doc, ParserData& data);
+        void ParseOptionsBlock(nlohmann::json& doc, ParserData& data);
 
     private:
         Vector<String> _extensions;

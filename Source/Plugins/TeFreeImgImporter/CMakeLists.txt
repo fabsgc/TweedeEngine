@@ -30,7 +30,9 @@ target_link_libraries (TeFreeImgImporter tef)
 # IDE specific
 set_property (TARGET TeFreeImgImporter PROPERTY FOLDER Plugins)
 
+if (LINUX)
+    install_pre_build_data(TeFreeImgImporter)
+endif()
+
 # Install
-if (!WIN32)
-    install_tef_target (TeFreeImgImporter)
-endif ()
+install_tef_target (TeFreeImgImporter)

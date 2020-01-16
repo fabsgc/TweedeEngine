@@ -73,4 +73,48 @@ namespace te
 
         return newTex;
     }
+
+    SPtr<RenderTexture> TextureManager::CreateRenderTexture(const TEXTURE_DESC& colorDesc, bool createDepth, 
+        PixelFormat depthStencilFormat)
+    {
+        TEXTURE_DESC textureDesc = colorDesc;
+        textureDesc.Usage = TU_RENDERTARGET;
+        textureDesc.NumMips = 0;
+
+        HTexture texture = Texture::Create(textureDesc);
+
+        HTexture depthStencil;
+        if (createDepth)
+        {
+            textureDesc.Format = depthStencilFormat;
+            textureDesc.HwGamma = false;
+            textureDesc.Usage = TU_DEPTHSTENCIL;
+
+            depthStencil = Texture::Create(textureDesc);
+        }
+
+        RENDER_TEXTURE_DESC desc;
+        desc.ColorSurfaces[0].Tex = texture.GetInternalPtr();
+        desc.ColorSurfaces[0].Face = 0;
+        desc.ColorSurfaces[0].NumFaces = 1;
+        desc.ColorSurfaces[0].MipLevel = 0;
+
+        desc.DepthStencilSurface.Tex = depthStencil.GetInternalPtr();
+        desc.DepthStencilSurface.Face = 0;
+        desc.DepthStencilSurface.NumFaces = 1;
+        desc.DepthStencilSurface.MipLevel = 0;
+
+        SPtr<RenderTexture> newRT = CreateRenderTexture(desc);
+
+        return newRT;
+    }
+
+    SPtr<RenderTexture> TextureManager::CreateRenderTexture(const RENDER_TEXTURE_DESC& desc)
+    {
+        SPtr<RenderTexture> newRT = CreateRenderTextureInternal(desc);
+        newRT->SetThisPtr(newRT);
+        newRT->Initialize();
+
+        return newRT;
+    }
 }

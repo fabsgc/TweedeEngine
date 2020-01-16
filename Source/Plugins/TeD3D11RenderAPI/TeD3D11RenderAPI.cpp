@@ -23,7 +23,10 @@ namespace te
 
     SPtr<RenderWindow> D3D11RenderAPI::CreateRenderWindow(const RENDER_WINDOW_DESC& windowDesc)
     {
-        return te_shared_ptr_new<D3D11RenderWindow>(windowDesc, *_device, _DXGIFactory);
+        SPtr<D3D11RenderWindow> window = te_shared_ptr_new<D3D11RenderWindow>(windowDesc, *_device, _DXGIFactory);
+        window->SetThisPtr(window);
+
+        return window;
     }
 
     void D3D11RenderAPI::Initialize()

@@ -19,14 +19,14 @@ function (strip_symbols targetName outputFilename)
     endif ()
 endfunction ()
 
-function (install_pre_build_data platform)
+function (install_pre_build_data target)
     add_custom_command (
-        TARGET AlwaysBuild
+        TARGET ${target}
         POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/../Data" "${CMAKE_CURRENT_SOURCE_DIR}/../bin/${platform}/Release/Data/"
-        COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/../Data" "${CMAKE_CURRENT_SOURCE_DIR}/../bin/${platform}/RelWithDebInfo/Data/"
-        COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/../Data" "${CMAKE_CURRENT_SOURCE_DIR}/../bin/${platform}/MinSizeRel/Data/"
-        COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/../Data" "${CMAKE_CURRENT_SOURCE_DIR}/../bin/${platform}/Debug/Data/"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory "${APP_ROOT_DIR}/Data" "${APP_ROOT_DIR}/bin/${PLATFORM_TARGET}/Release/Data/"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory "${APP_ROOT_DIR}/Data" "${APP_ROOT_DIR}/bin/${PLATFORM_TARGET}/RelWithDebInfo/Data/"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory "${APP_ROOT_DIR}/Data" "${APP_ROOT_DIR}/bin/${PLATFORM_TARGET}/MinSizeRel/Data/"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory "${APP_ROOT_DIR}/Data" "${APP_ROOT_DIR}/bin/${PLATFORM_TARGET}/Debug/Data/"
     )
 endfunction()
 

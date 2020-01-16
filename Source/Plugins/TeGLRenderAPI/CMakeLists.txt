@@ -41,5 +41,9 @@ target_link_libraries (TeGLRenderAPI PUBLIC tef)
 # IDE specific
 set_property (TARGET TeGLRenderAPI PROPERTY FOLDER Plugins)
 
+if (LINUX)
+    install_pre_build_data(TeGLRenderAPI)
+endif()
+
 # Install
 install_tef_target (TeGLRenderAPI)

@@ -1,11 +1,33 @@
 {
+    "options":
+    {
+        "name": "default",
+        "separable" : true,
+        "sort" : "backtofront",
+        "transparent" : true,
+        "priority" : 100
+    },
+    "sampler":
+    {
+        "name" : "color",
+        "addressu" : "WRAP",
+        "addressv" : "WRAP",
+        "addressw" : "WRAP",
+        "bordercolor" : 0,
+        "filter" : "MIN_MAG_MIP_POINT",
+        "maxanisotropy" : 0,
+        "maxlod" : 0.0,
+        "minlod" : 0.0,
+        "miplodbias" : 0.0,
+        "compare" : "never"
+    },
     "raster" : 
     {
         "fill" : "solid",
         "cull" : "cw",
-        "scissor" : true,
-        "multisample": true,
-        "lineaa": true
+        "scissor" : false,
+        "multisample": false,
+        "lineaa": false
     },
     "depth" : 
     {
@@ -66,25 +88,57 @@
             "type": "vertex",
             "language": "hlsl",
             "compiled": false,
-            "path" : "Data/Shaders/Raw/vertex.hlsl"
+            "version": "vs_5",
+            "entry": "main",
+            "path" : "Data/Shaders/Raw/vertex.hlsl",
+            "includes": 
+            [
+                {
+                    "type": "sampler", "name": "color"
+                }
+            ]
         },
         {
             "type": "pixel",
             "language": "glsl",
             "compiled": false,
-            "path" : "Data/Shaders/Raw/vertex.glsl"
+            "version": "4",
+            "entry": "main",
+            "path" : "Data/Shaders/Raw/pixel.glsl",
+            "includes": 
+            [
+                {
+                    "type": "sampler", "name": "color"
+                }
+            ]
         },
         {
             "type": "vertex",
             "language": "hlsl",
             "compiled": false,
-            "path" : "Data/Shaders/Raw/pixel.hlsl"
+            "version": "ps_5",
+            "entry": "main",
+            "path" : "Data/Shaders/Raw/vertex.hlsl",
+            "includes": 
+            [
+                {
+                    "type": "sampler", "name": "color"
+                }
+            ]
         },
         {
             "type": "pixel",
             "language": "glsl",
             "compiled": false,
-            "path" : "Data/Shaders/Raw/pixel.glsl"
+            "version": "4",
+            "entry": "main",
+            "path" : "Data/Shaders/Raw/pixel.glsl",
+            "includes": 
+            [
+                {
+                    "type": "sampler", "name": "color"
+                }
+            ]
         }
     ]
 }

@@ -30,7 +30,9 @@ target_link_libraries (TeObjectImporter tef)
 # IDE specific
 set_property (TARGET TeObjectImporter PROPERTY FOLDER Plugins)
 
+if (LINUX)
+    install_pre_build_data(TeObjectImporter)
+endif()
+
 # Install
-if (!WIN32)
-    install_tef_target (TeObjectImporter)
-endif ()
+install_tef_target (TeObjectImporter)

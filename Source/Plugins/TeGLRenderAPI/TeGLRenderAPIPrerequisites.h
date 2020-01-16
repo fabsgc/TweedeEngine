@@ -40,5 +40,6 @@ namespace te
     class GLSamplerState;
     class GLTextureManager;
     class GLTexture;
+    class GLRenderTexture;
 
 }

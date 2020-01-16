@@ -254,6 +254,22 @@ namespace te
         void ReadData(PixelData& dest, UINT32 mipLevel = 0, UINT32 face = 0, UINT32 deviceIdx = 0, UINT32 queueIdx = 0);
 
         /**
+         * Reads data from the cached system memory texture buffer into the provided buffer.
+         *
+         * @param[out]	data		Pre-allocated buffer of proper size and format where data will be read to. You can use
+         *							TextureProperties::allocBuffer() to allocate a buffer of a correct format and size.
+         * @param[in]	face		Texture face to read from.
+         * @param[in]	mipLevel	Mipmap level to read from.
+         *
+         * @note
+         * The data read is the cached texture data. Any data written to the texture from the GPU or core thread will not
+         * be reflected in this data. Use readData() if you require those changes.
+         * @note
+         * The texture must have been created with TU_CPUCACHED usage otherwise this method will not return any data.
+         */
+        void ReadCachedData(PixelData& data, UINT32 face = 0, UINT32 mipLevel = 0);
+
+        /**
          * Writes data from the provided buffer into the texture buffer.
          *
          * @param[in]	src					Buffer to retrieve the data from.
@@ -335,10 +351,21 @@ namespace te
         /** Releases all internal texture view references. */
         void ClearBufferViews();
 
+        /**
+         * Creates buffers used for caching of CPU texture data.
+         *
+         * @note	Make sure to initialize all texture properties before calling this.
+         */
+        void CreateCPUBuffers();
+
+        /**	Updates the cached CPU buffers with new data. */
+        void UpdateCPUBuffers(UINT32 subresourceIdx, const PixelData& data);
+
     protected:
         UnorderedMap<TEXTURE_VIEW_DESC, SPtr<TextureView>, TextureView::HashFunction, TextureView::EqualFunction> _textureViews;
 
         TextureProperties _properties;
         mutable SPtr<PixelData> _initData;
+        Vector<SPtr<PixelData>> _CPUSubresourceData;
     };
 }

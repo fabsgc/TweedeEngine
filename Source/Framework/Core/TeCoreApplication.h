@@ -121,6 +121,7 @@ namespace te
         volatile bool _pause;
 
         SPtr<Camera> _camera;
+        SPtr<Camera> _cameraHidden;
     };
 
     /**	Provides easy access to CoreApplication. */
