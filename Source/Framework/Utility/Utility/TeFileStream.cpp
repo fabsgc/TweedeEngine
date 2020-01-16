@@ -159,8 +159,6 @@ namespace te
 
     void FileStream::CalculteSize()
     {
-        std::streamsize length = 0;
-
         if (!_inStream->fail())
         {
             _inStream->ignore(std::numeric_limits<std::streamsize>::max());
