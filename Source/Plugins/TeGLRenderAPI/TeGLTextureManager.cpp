@@ -1,5 +1,5 @@
 #include "TeGLTextureManager.h"
-#include "TeGlRenderTexture.h"
+#include "TeGLRenderTexture.h"
 #include "TeGLTexture.h"
 
 namespace te
