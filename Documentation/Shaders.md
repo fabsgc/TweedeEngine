@@ -91,12 +91,12 @@ addressu			 | wrap, mirror, clamp, border, mirror_once   | @te::SAMPLER_STATE_DE
 addressv			 | wrap, mirror, clamp, border, mirror_once   | @te::SAMPLER_STATE_DESC::AddressMode
 addressw			 | wrap, mirror, clamp, border, mirror_once   | @te::SAMPLER_STATE_DESC::AddressMode
 borderColor			 | float4									  | @te::SAMPLER_STATE_DESC::BorderColor
-filter				 | See table below							  | @te::SAMPLER_STATE_DESC::MinFilter, @bs::SAMPLER_STATE_DESC::magFilter, @bs::SAMPLER_STATE_DESC::mipFilter
+filter				 | See table below							  | @te::SAMPLER_STATE_DESC::MinFilter, @te::SAMPLER_STATE_DESC::magFilter, @te::SAMPLER_STATE_DESC::mipFilter
 maxanisotropy		 | uint										  | @te::SAMPLER_STATE_DESC::MaxAniso
 maxLOD				 | float									  | @te::SAMPLER_STATE_DESC::MipMax
 minLOD				 | float									  | @te::SAMPLER_STATE_DESC::MipMin
 mipLODBias			 | float									  | @te::SAMPLER_STATE_DESC::MipmapBias
-comparisonfunc		 | never, less, equal, less_equal, greater, not_equal, greater_equal, always | @bs::SAMPLER_STATE_DESC::ComparisonFunc
+comparisonfunc		 | never, less, equal, less_equal, greater, not_equal, greater_equal, always | @te::SAMPLER_STATE_DESC::ComparisonFunc
 
 Filter valid values:
 - min_mag_mip_point
@@ -139,6 +139,7 @@ Filter valid values:
 ## options
 
 Valid options are:
+
 Name                 | Valid values				   | Default value			| Description
 ---------------------|---------------------------- |------------------------|------------
 separable			 | true, false				   | false					| When true, tells the renderer that passes within the shader don't need to be renderered one straight after another. This allows the system to perform rendering more optimally, but can be unfeasible for most materials which will depend on exact rendering order. Only relevant if a shader has multiple passes.
