@@ -58,8 +58,8 @@ namespace te
                 }
 
                 // TODO
-                //inputParams->push_back(VertexElement(inputParamDesc.Stream, inputParamDesc.Register,
-                //    D3D11Mappings::getInputType(inputParamDesc.ComponentType), D3D11Mappings::get(inputParamDesc.SemanticName), inputParamDesc.SemanticIndex));
+                inputParams->push_back(VertexElement(inputParamDesc.Stream, inputParamDesc.Register,
+                    D3D11Mappings::GetInputType(inputParamDesc.ComponentType), D3D11Mappings::Get(inputParamDesc.SemanticName), inputParamDesc.SemanticIndex));
             }
         }
 

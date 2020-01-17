@@ -33,8 +33,6 @@ namespace te
 		rasterizerStateDesc.SlopeScaledDepthBias = _properties.GetSlopeScaledDepthBias();
 		rasterizerStateDesc.FrontCounterClockwise = false;
 
-        RasterizerState::CreateInternal();
-
         D3D11RenderAPI* rs = static_cast<D3D11RenderAPI*>(RenderAPI::InstancePtr());
 		D3D11Device& device = rs->GetPrimaryDevice();
 		HRESULT hr = device.GetD3D11Device()->CreateRasterizerState(&rasterizerStateDesc, &_rasterizerState);

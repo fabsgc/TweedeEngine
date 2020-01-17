@@ -3,6 +3,7 @@
 #include "TeD3D11RenderAPIPrerequisites.h"
 #include "RenderAPI/TeCommonTypes.h"
 #include "Image/TePixelData.h"
+#include "RenderAPI/TeVertexDeclaration.h"
 
 namespace te
 {
@@ -30,6 +31,18 @@ namespace te
 
 		/**	Converts engine to DX11 specific polygon fill mode. */
 		static D3D11_FILL_MODE Get(PolygonMode mode);
+
+        /**	Converts engine to DX11 vertex element type. */
+        static DXGI_FORMAT Get(VertexElementType type);
+
+        /**	Returns a string describing the provided vertex element semantic. */
+        static LPCSTR Get(VertexElementSemantic sem);
+
+        /** Returns engine semantic from the provided semantic string. Throws an exception for semantics that do not exist. */
+        static VertexElementSemantic Get(LPCSTR sem);
+
+        /**	Converts DirectX 11 GPU parameter component type to engine vertex element type. */
+        static VertexElementType GetInputType(D3D_REGISTER_COMPONENT_TYPE type);
 
         /**	Returns DX11 primitive topology based on the provided draw operation type. */
 		static D3D11_PRIMITIVE_TOPOLOGY GetPrimitiveType(DrawOperationType type);

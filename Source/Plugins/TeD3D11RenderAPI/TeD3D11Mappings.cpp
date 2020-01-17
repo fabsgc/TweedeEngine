@@ -153,6 +153,131 @@ namespace te
 		return D3D11_FILL_SOLID;
 	}
 
+    DXGI_FORMAT D3D11Mappings::Get(VertexElementType type)
+    {
+        switch (type)
+        {
+        case VET_COLOR:
+        case VET_COLOR_ABGR:
+        case VET_COLOR_ARGB:
+        case VET_UBYTE4_NORM:
+            return DXGI_FORMAT_R8G8B8A8_UNORM;
+        case VET_FLOAT1:
+            return DXGI_FORMAT_R32_FLOAT;
+        case VET_FLOAT2:
+            return DXGI_FORMAT_R32G32_FLOAT;
+        case VET_FLOAT3:
+            return DXGI_FORMAT_R32G32B32_FLOAT;
+        case VET_FLOAT4:
+            return DXGI_FORMAT_R32G32B32A32_FLOAT;
+        case VET_USHORT1:
+            return DXGI_FORMAT_R16_UINT;
+        case VET_USHORT2:
+            return DXGI_FORMAT_R16G16_UINT;
+        case VET_USHORT4:
+            return DXGI_FORMAT_R16G16B16A16_UINT;
+        case VET_SHORT1:
+            return DXGI_FORMAT_R16_SINT;
+        case VET_SHORT2:
+            return DXGI_FORMAT_R16G16_SINT;
+        case VET_SHORT4:
+            return DXGI_FORMAT_R16G16B16A16_SINT;
+        case VET_UINT1:
+            return DXGI_FORMAT_R32_UINT;
+        case VET_UINT2:
+            return DXGI_FORMAT_R32G32_UINT;
+        case VET_UINT3:
+            return DXGI_FORMAT_R32G32B32_UINT;
+        case VET_UINT4:
+            return DXGI_FORMAT_R32G32B32A32_UINT;
+        case VET_INT1:
+            return DXGI_FORMAT_R32_SINT;
+        case VET_INT2:
+            return DXGI_FORMAT_R32G32_SINT;
+        case VET_INT3:
+            return DXGI_FORMAT_R32G32B32_SINT;
+        case VET_INT4:
+            return DXGI_FORMAT_R32G32B32A32_SINT;
+        case VET_UBYTE4:
+            return DXGI_FORMAT_R8G8B8A8_UINT;
+        }
+
+        // Unsupported type
+        return DXGI_FORMAT_R32G32B32A32_FLOAT;
+    }
+
+    VertexElementSemantic D3D11Mappings::Get(LPCSTR sem)
+    {
+        if (strcmp(sem, "BLENDINDICES") == 0)
+            return VES_BLEND_INDICES;
+        if (strcmp(sem, "BLENDWEIGHT") == 0)
+            return VES_BLEND_WEIGHTS;
+        if (strcmp(sem, "COLOR") == 0)
+            return VES_COLOR;
+        if (strcmp(sem, "NORMAL") == 0)
+            return VES_NORMAL;
+        if (strcmp(sem, "POSITION") == 0)
+            return VES_POSITION;
+        if (strcmp(sem, "TEXCOORD") == 0)
+            return VES_TEXCOORD;
+        if (strcmp(sem, "BINORMAL") == 0)
+            return VES_BITANGENT;
+        if (strcmp(sem, "TANGENT") == 0)
+            return VES_TANGENT;
+        if (strcmp(sem, "POSITIONT") == 0)
+            return VES_POSITIONT;
+        if (strcmp(sem, "PSIZE") == 0)
+            return VES_PSIZE;
+
+        // Unsupported type
+        return VES_POSITION;
+    }
+
+    LPCSTR D3D11Mappings::Get(VertexElementSemantic sem)
+    {
+        switch (sem)
+        {
+        case VES_BLEND_INDICES:
+            return "BLENDINDICES";
+        case VES_BLEND_WEIGHTS:
+            return "BLENDWEIGHT";
+        case VES_COLOR:
+            return "COLOR";
+        case VES_NORMAL:
+            return "NORMAL";
+        case VES_POSITION:
+            return "POSITION";
+        case VES_TEXCOORD:
+            return "TEXCOORD";
+        case VES_BITANGENT:
+            return "BINORMAL";
+        case VES_TANGENT:
+            return "TANGENT";
+        case VES_POSITIONT:
+            return "POSITIONT";
+        case VES_PSIZE:
+            return "PSIZE";
+        }
+
+        // Unsupported type
+        return "";
+    }
+
+    VertexElementType D3D11Mappings::GetInputType(D3D_REGISTER_COMPONENT_TYPE type)
+    {
+        switch (type)
+        {
+        case D3D_REGISTER_COMPONENT_FLOAT32:
+            return VET_FLOAT4;
+        case D3D_REGISTER_COMPONENT_SINT32:
+            return VET_INT4;
+        case D3D_REGISTER_COMPONENT_UINT32:
+            return VET_UINT4;
+        default:
+            return VET_FLOAT4;
+        }
+    }
+
     D3D11_PRIMITIVE_TOPOLOGY D3D11Mappings::GetPrimitiveType(DrawOperationType type)
 	{
 		switch(type)

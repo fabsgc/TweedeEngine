@@ -1,6 +1,159 @@
 #include "TeVertexDeclaration.h"
+#include "Utility/TeColor.h"
 
 namespace te
 {
+    VertexElement::VertexElement(UINT16 source, UINT32 offset,
+        VertexElementType theType, VertexElementSemantic semantic, UINT16 index, UINT32 instanceStepRate)
+        : _source(source)
+        , _offset(offset)
+        , _type(theType)
+        , _semantic(semantic)
+        , _index(index)
+        , _instanceStepRate(instanceStepRate)
+    {
+    }
+
+    UINT32 VertexElement::GetSize(void) const
+    {
+        return GetTypeSize(_type);
+    }
+
+    UINT32 VertexElement::GetTypeSize(VertexElementType etype)
+    {
+        switch (etype)
+        {
+        case VET_COLOR:
+        case VET_COLOR_ABGR:
+        case VET_COLOR_ARGB:
+            return sizeof(RGBA);
+        case VET_UBYTE4_NORM:
+            return sizeof(UINT32);
+        case VET_FLOAT1:
+            return sizeof(float);
+        case VET_FLOAT2:
+            return sizeof(float) * 2;
+        case VET_FLOAT3:
+            return sizeof(float) * 3;
+        case VET_FLOAT4:
+            return sizeof(float) * 4;
+        case VET_USHORT1:
+            return sizeof(UINT16);
+        case VET_USHORT2:
+            return sizeof(UINT16) * 2;
+        case VET_USHORT4:
+            return sizeof(UINT16) * 4;
+        case VET_SHORT1:
+            return sizeof(INT16);
+        case VET_SHORT2:
+            return sizeof(INT16) * 2;
+        case VET_SHORT4:
+            return sizeof(INT16) * 4;
+        case VET_UINT1:
+            return sizeof(UINT32);
+        case VET_UINT2:
+            return sizeof(UINT32) * 2;
+        case VET_UINT3:
+            return sizeof(UINT32) * 3;
+        case VET_UINT4:
+            return sizeof(UINT32) * 4;
+        case VET_INT4:
+            return sizeof(INT32) * 4;
+        case VET_INT1:
+            return sizeof(INT32);
+        case VET_INT2:
+            return sizeof(INT32) * 2;
+        case VET_INT3:
+            return sizeof(INT32) * 3;
+        case VET_UBYTE4:
+            return sizeof(UINT8) * 4;
+        default:
+            break;
+        }
+
+        return 0;
+    }
+
+    unsigned short VertexElement::GetTypeCount(VertexElementType etype)
+    {
+        switch (etype)
+        {
+        case VET_COLOR:
+        case VET_COLOR_ABGR:
+        case VET_COLOR_ARGB:
+            return 4;
+        case VET_FLOAT1:
+        case VET_SHORT1:
+        case VET_USHORT1:
+        case VET_INT1:
+        case VET_UINT1:
+            return 1;
+        case VET_FLOAT2:
+        case VET_SHORT2:
+        case VET_USHORT2:
+        case VET_INT2:
+        case VET_UINT2:
+            return 2;
+        case VET_FLOAT3:
+        case VET_INT3:
+        case VET_UINT3:
+            return 3;
+        case VET_FLOAT4:
+        case VET_SHORT4:
+        case VET_USHORT4:
+        case VET_INT4:
+        case VET_UINT4:
+        case VET_UBYTE4:
+        case VET_UBYTE4_NORM:
+            return 4;
+        default:
+            break;
+        }
+
+        TE_ASSERT_ERROR(false, "Invalid type", __FILE__, __LINE__);
+        return 0;
+    }
+
+    VertexElementType VertexElement::GetBestColorVertexElementType()
+    {
+        // We can't know the specific type right now, so pick a type based on platform
+#if TE_PLATFORM == TE_PLATFORM_WIN32
+        return VET_COLOR_ARGB; // prefer D3D format on Windows
+#else
+        return VET_COLOR_ABGR; // prefer GL format on everything else
+#endif
+    }
+
+    bool VertexElement::operator== (const VertexElement& rhs) const
+    {
+        if (_type != rhs._type || _index != rhs._index || _offset != rhs._offset ||
+            _semantic != rhs._semantic || _source != rhs._source || _instanceStepRate != rhs._instanceStepRate)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    bool VertexElement::operator!= (const VertexElement& rhs) const
+    {
+        return !(*this == rhs);
+    }
+
+    size_t VertexElement::GetHash(const VertexElement& element)
+    {
+        size_t hash = 0;
+        te_hash_combine(hash, element._type);
+        te_hash_combine(hash, element._index);
+        te_hash_combine(hash, element._offset);
+        te_hash_combine(hash, element._semantic);
+        te_hash_combine(hash, element._source);
+        te_hash_combine(hash, element._instanceStepRate);
+
+        return hash;
+    }
+
     // TODO
 }
