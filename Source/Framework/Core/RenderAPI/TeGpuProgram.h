@@ -62,7 +62,7 @@ namespace te
         /** Information returned when compiling a GPU program. */
         struct CompilationStatus
         {
-            bool Success = false;
+            bool Successful = false;
             String Message;
         };
     
@@ -73,7 +73,7 @@ namespace te
         virtual bool IsSupported() const;
 
         /** Returns true if program was successfully compiled. */
-        virtual bool IsCompiled() const { return _status.Success; }
+        virtual bool IsCompiled() const { return _status.Successful; }
 
         /** Returns an error message returned by the compiler, if the compilation failed. */
         String GetCompileErrorMessage() const { return _status.Message; }
