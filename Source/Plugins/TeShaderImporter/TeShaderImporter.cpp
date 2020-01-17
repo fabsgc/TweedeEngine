@@ -192,7 +192,8 @@ namespace te
         Blend blend
         {
             doc["dither"].get<bool>(),
-            doc["independant"].get<bool>()
+            doc["independant"].get<bool>(),
+            {}
         };
 
         auto fillBlendOp = [](Blend::BlendOp& op, nlohmann::json& doc) -> void {
@@ -209,7 +210,9 @@ namespace te
             {
                 it.value()["index"].get<UINT8>(),
                 it.value()["enabled"].get<bool>(),
-                it.value()["writemask"].get<String>()
+                it.value()["writemask"].get<String>(),
+                Blend::BlendOp(),
+                Blend::BlendOp()
             };
 
             fillBlendOp(target.color, it.value()["color"]);
@@ -229,9 +232,9 @@ namespace te
 
     void ShaderImporter::ParseProgramBlock(nlohmann::json& doc, ParserData& data)
     {
-        // Check is there is exactly only one vertex buffer and only one pixel buffer
-        UINT8 countVertexShader = 0;
-        UINT8 countPixelShader = 0;
+        // Check is there is exactly only one vertex buffer and only one pixel buffer TODO
+        // UINT8 countVertexShader = 0;
+        // UINT8 countPixelShader = 0;
 
         String acceptedLanguage = "hlsl";
         if (gCoreApplication().GetStartUpDesc().RenderAPI == TE_RENDER_API_MODULE_OPENGL)
@@ -247,6 +250,7 @@ namespace te
             doc["path"].get<String>(),
             doc["version"].get<String>(),
             doc["entry"].get<String>(),
+            {}
         };
 
         if (acceptedLanguage == program.language)
