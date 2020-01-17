@@ -16,8 +16,8 @@ namespace te
         , _language(desc.Language)
         , _entryPoint(desc.EntryPoint)
         , _source(desc.Source)
-        , _bytecode(desc.Bytecode)
         , _needsAdjacencyInfo(desc.RequiresAdjacency)
+        , _bytecode(desc.Bytecode)
     {
         _parametersDesc = te_shared_ptr_new<GpuParamDesc>();
     }
