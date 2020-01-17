@@ -124,6 +124,7 @@ namespace te
         SPtr<Camera> _camera;
         SPtr<Camera> _cameraHidden;
         SPtr<GpuProgram> _vertexShader;
+        SPtr<GpuProgram> _pixelShader;
     };
 
     /**	Provides easy access to CoreApplication. */

@@ -27,7 +27,7 @@ namespace te
 		UINT32 _programId = 0;
 	};
 
-    /**	Implementation of a DX11 vertex shader. */
+    /**	Implementation of a OpenGL vertex shader. */
     class GLGpuVertexProgram : public GLGpuProgram
     {
     public:
@@ -39,7 +39,7 @@ namespace te
         GLGpuVertexProgram(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask);
     };
 
-    /**	Implementation of a DX11 pixel shader. */
+    /**	Implementation of a OpenGL fragment shader. */
     class GLGpuFragmentProgram : public GLGpuProgram
     {
     public:
@@ -51,7 +51,7 @@ namespace te
         GLGpuFragmentProgram(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask);
     };
 
-    /**	Implementation of a DX11 domain shader. */
+    /**	Implementation of a OpenGL domain shader. */
     class GLGpuDomainProgram : public GLGpuProgram
     {
     public:
@@ -63,7 +63,7 @@ namespace te
         GLGpuDomainProgram(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask);
     };
 
-    /**	Implementation of a DX11 hull shader. */
+    /**	Implementation of a OpenGL hull shader. */
     class GLGpuHullProgram : public GLGpuProgram
     {
     public:
@@ -75,7 +75,7 @@ namespace te
         GLGpuHullProgram(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask);
     };
 
-    /**	Implementation of a DX11 geometry shader. */
+    /**	Implementation of a OpenGL geometry shader. */
     class GLGpuGeometryProgram : public GLGpuProgram
     {
     public:

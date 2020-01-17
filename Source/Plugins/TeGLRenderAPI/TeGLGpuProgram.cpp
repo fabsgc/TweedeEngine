@@ -23,7 +23,7 @@ namespace te
 	{
         if (!IsSupported())
         {
-            _status.Success = false;
+            _status.Successful = false;
             _status.Message = "Specified program is not supported by the current render system.";
 
             GpuProgram::Initialize();
@@ -42,9 +42,9 @@ namespace te
         }
 
         _status.Message = _bytecode->Message;
-        _status.Success = _bytecode->Instructions.Data != nullptr;
+        _status.Successful = _bytecode->Instructions.Data != nullptr;
 
-        if (_status.Success) 
+        if (_status.Successful) 
         {
             _parametersDesc = _bytecode->ParamDesc;
 

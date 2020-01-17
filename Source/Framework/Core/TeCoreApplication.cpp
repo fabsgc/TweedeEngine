@@ -481,14 +481,28 @@ namespace te
         // ######################################################
         FileStream vertexShaderFile("Data/Shaders/Raw/Test/VS.hlsl");
 
-        GPU_PROGRAM_DESC gpuProgramDesc;
-        gpuProgramDesc.Type = GPT_VERTEX_PROGRAM;
-        gpuProgramDesc.EntryPoint = "main";
-        gpuProgramDesc.Language = "hlsl";
-        gpuProgramDesc.Source = vertexShaderFile.GetAsString();        
+        GPU_PROGRAM_DESC vertexShaderProgramDesc;
+        vertexShaderProgramDesc.Type = GPT_VERTEX_PROGRAM;
+        vertexShaderProgramDesc.EntryPoint = "main";
+        vertexShaderProgramDesc.Language = "hlsl";
+        vertexShaderProgramDesc.Source = vertexShaderFile.GetAsString();
 
-        _vertexShader = GpuProgram::Create(gpuProgramDesc);
+        _vertexShader = GpuProgram::Create(vertexShaderProgramDesc);
         // ######################################################
+
+        // ######################################################
+        FileStream pixelShaderFile("Data/Shaders/Raw/Test/PS.hlsl");
+
+        GPU_PROGRAM_DESC pixelShaderProgramDesc;
+        pixelShaderProgramDesc.Type = GPT_PIXEL_PROGRAM;
+        pixelShaderProgramDesc.EntryPoint = "main";
+        pixelShaderProgramDesc.Language = "hlsl";
+        pixelShaderProgramDesc.Source = pixelShaderFile.GetAsString();
+
+        _pixelShader = GpuProgram::Create(pixelShaderProgramDesc);
+        // ######################################################
+
+        CoreObjectManager& i = CoreObjectManager::Instance();
     }
 
     void CoreApplication::TestRun()
@@ -503,6 +517,9 @@ namespace te
     {
         _vertexShader->Destroy();
         _vertexShader = nullptr;
+
+        _pixelShader->Destroy();
+        _pixelShader = nullptr;
 
         _window->Destroy();
         _window = nullptr;

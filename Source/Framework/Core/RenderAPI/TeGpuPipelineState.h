@@ -21,7 +21,7 @@ namespace te
 
 	/**
 	 * Describes the state of the GPU pipeline that determines how are primitives rendered. It consists of programmable
-	 * states (vertex, fragment, geometry, etc. GPU programs), as well as a set of fixed states (blend, rasterizer,
+	 * states (vertex, pixel, geometry, etc. GPU programs), as well as a set of fixed states (blend, rasterizer,
 	 * depth-stencil). Once created the state is immutable, and can be bound to RenderAPI for rendering.
 	 */
 	class TE_CORE_EXPORT GraphicsPipelineState : public CoreObject

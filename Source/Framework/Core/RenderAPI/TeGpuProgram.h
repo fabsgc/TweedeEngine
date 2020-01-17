@@ -16,7 +16,7 @@ namespace te
         String Source; /**< Source code to compile the program from. */
 		String EntryPoint; /**< Name of the entry point function, for example "main". */
 		String Language; /**< Language the source is written in, for example "hlsl" or "glsl". */
-		GpuProgramType Type = GPT_VERTEX_PROGRAM; /**< Type of the program, for example vertex or fragment. */
+		GpuProgramType Type = GPT_VERTEX_PROGRAM; /**< Type of the program, for example vertex or pixel. */
 		bool RequiresAdjacency = false; /**< If true then adjacency information will be provided when rendering. */
 
 		/**
@@ -54,7 +54,7 @@ namespace te
     };
 
     /**
-     * Contains a GPU program such as vertex or fragment program which gets compiled from the provided source code.
+     * Contains a GPU program such as vertex or pixel program which gets compiled from the provided source code.
      */
     class TE_CORE_EXPORT GpuProgram : public CoreObject
     {
@@ -92,7 +92,7 @@ namespace te
          */
         virtual bool IsAdjacencyInfoRequired() const { return _needsAdjacencyInfo; }
 
-        /**	Type of GPU program (for example fragment, vertex). */
+        /**	Type of GPU program (for example pixel, vertex). */
         GpuProgramType GetType() const { return _type; }
 
         /** Returns description of all parameters in this GPU program. */
