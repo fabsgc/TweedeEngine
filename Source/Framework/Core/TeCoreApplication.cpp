@@ -406,30 +406,6 @@ namespace te
         // ######################################################
 
         // ######################################################
-        BLEND_STATE_DESC blendDesc;
-        RASTERIZER_STATE_DESC rastDesc;
-        DEPTH_STENCIL_STATE_DESC depthDesc;
-        SAMPLER_STATE_DESC samplerDesc;
-
-        rastDesc.polygonMode = PM_WIREFRAME; // Draw wireframe instead of solid
-        rastDesc.cullMode = CULL_NONE; // Disable blackface culling
-
-        SPtr<BlendState> blendState = BlendState::Create(blendDesc);
-        SPtr<RasterizerState> rasterizerState = RasterizerState::Create(rastDesc);
-        SPtr<DepthStencilState> depthStencilState = DepthStencilState::Create(depthDesc);
-        SPtr<SamplerState> samplerState = SamplerState::Create(samplerDesc);
-
-        PIPELINE_STATE_DESC pipeDesc;
-        pipeDesc.blendState = blendState;
-        pipeDesc.rasterizerState = rasterizerState;
-        pipeDesc.depthStencilState = depthStencilState;
-
-        SPtr<GraphicsPipelineState> graphicsPipeline = GraphicsPipelineState::Create(pipeDesc);
-
-        RenderAPI::Instance().SetGraphicsPipeline(graphicsPipeline);
-        // ######################################################
-
-        // ######################################################
         FileStream file1("Data/Textures/default.png");
         FileStream file2("Data\\Textures\\default.png");
         // ######################################################
@@ -500,6 +476,32 @@ namespace te
         pixelShaderProgramDesc.Source = pixelShaderFile.GetAsString();
 
         _pixelShader = GpuProgram::Create(pixelShaderProgramDesc);
+        // ######################################################
+
+        // ######################################################
+        BLEND_STATE_DESC blendDesc;
+        RASTERIZER_STATE_DESC rastDesc;
+        DEPTH_STENCIL_STATE_DESC depthDesc;
+        SAMPLER_STATE_DESC samplerDesc;
+
+        rastDesc.polygonMode = PM_WIREFRAME; // Draw wireframe instead of solid
+        rastDesc.cullMode = CULL_NONE; // Disable blackface culling
+
+        SPtr<BlendState> blendState = BlendState::Create(blendDesc);
+        SPtr<RasterizerState> rasterizerState = RasterizerState::Create(rastDesc);
+        SPtr<DepthStencilState> depthStencilState = DepthStencilState::Create(depthDesc);
+        SPtr<SamplerState> samplerState = SamplerState::Create(samplerDesc);
+
+        PIPELINE_STATE_DESC pipeDesc;
+        pipeDesc.blendState = blendState;
+        pipeDesc.rasterizerState = rasterizerState;
+        pipeDesc.depthStencilState = depthStencilState;
+        pipeDesc.vertexProgram = _vertexShader;
+        pipeDesc.fragmentProgram = _pixelShader;
+
+        SPtr<GraphicsPipelineState> graphicsPipeline = GraphicsPipelineState::Create(pipeDesc);
+
+        RenderAPI::Instance().SetGraphicsPipeline(graphicsPipeline);
         // ######################################################
 
         CoreObjectManager& i = CoreObjectManager::Instance();

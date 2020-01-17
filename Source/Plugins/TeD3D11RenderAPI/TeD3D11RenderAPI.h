@@ -120,6 +120,7 @@ namespace te
         D3D11_RECT _scissorRect;
 
         SPtr<VertexDeclaration> _activeVertexDeclaration;
+        SPtr<D3D11GpuProgram>  _activeVertexShader;
         SPtr<D3D11DepthStencilState> _activeDepthStencilState;
 
         DrawOperationType _activeDrawOp = DOT_TRIANGLE_LIST;

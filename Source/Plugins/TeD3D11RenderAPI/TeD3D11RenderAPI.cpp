@@ -9,6 +9,7 @@
 #include "TeD3D11RenderStateManager.h"
 #include "TeD3D11TextureManager.h"
 #include "RenderAPI/TeGpuProgramManager.h"
+#include "TeD3D11GpuProgram.h"
 
 namespace te
 {
@@ -127,6 +128,10 @@ namespace te
             _driverList = nullptr;
         }
 
+
+        _activeVertexDeclaration = nullptr;
+		_activeVertexShader = nullptr;
+        _activeRenderTarget = nullptr;
         _activeD3DDriver = nullptr;
         _activeDepthStencilState = nullptr;
         _activeVertexDeclaration = nullptr;
@@ -142,16 +147,25 @@ namespace te
 
     void D3D11RenderAPI::SetGraphicsPipeline(const SPtr<GraphicsPipelineState>& pipelineState)
     {
-        // TODO
-
         D3D11RasterizerState* d3d11RasterizerState;
         D3D11BlendState* d3d11BlendState;
+
+        D3D11GpuFragmentProgram* d3d11FragmentProgram;
+        D3D11GpuGeometryProgram* d3d11GeometryProgram;
+        D3D11GpuDomainProgram* d3d11DomainProgram;
+        D3D11GpuHullProgram* d3d11HullProgram;
 
         if (pipelineState != nullptr)
         {
             d3d11BlendState = static_cast<D3D11BlendState*>(pipelineState->GetBlendState().get());
             d3d11RasterizerState = static_cast<D3D11RasterizerState*>(pipelineState->GetRasterizerState().get());
             _activeDepthStencilState = std::static_pointer_cast<D3D11DepthStencilState>(pipelineState->GetDepthStencilState());
+
+            _activeVertexShader = std::static_pointer_cast<D3D11GpuVertexProgram>(pipelineState->GetVertexProgram());
+            d3d11FragmentProgram = static_cast<D3D11GpuFragmentProgram*>(pipelineState->GetFragmentProgram().get());
+            d3d11GeometryProgram = static_cast<D3D11GpuGeometryProgram*>(pipelineState->GetGeometryProgram().get());
+            d3d11DomainProgram = static_cast<D3D11GpuDomainProgram*>(pipelineState->GetDomainProgram().get());
+            d3d11HullProgram = static_cast<D3D11GpuHullProgram*>(pipelineState->GetHullProgram().get());
 
             if (d3d11BlendState == nullptr)
             {
@@ -173,12 +187,64 @@ namespace te
             d3d11BlendState = static_cast<D3D11BlendState*>(BlendState::GetDefault().get());
             d3d11RasterizerState = static_cast<D3D11RasterizerState*>(RasterizerState::GetDefault().get());
             _activeDepthStencilState = std::static_pointer_cast<D3D11DepthStencilState>(DepthStencilState::GetDefault());
+
+            _activeVertexShader = nullptr;
+            d3d11FragmentProgram = nullptr;
+            d3d11GeometryProgram = nullptr;
+            d3d11DomainProgram = nullptr;
+            d3d11HullProgram = nullptr;
         }
 
         ID3D11DeviceContext* d3d11Context = _device->GetImmediateContext();
         d3d11Context->OMSetBlendState(d3d11BlendState->GetInternal(), nullptr, 0xFFFFFFFF);
         d3d11Context->RSSetState(d3d11RasterizerState->GetInternal());
         d3d11Context->OMSetDepthStencilState(_activeDepthStencilState->GetInternal(), _stencilRef);
+
+        if (_activeVertexShader != nullptr)
+        {
+            D3D11GpuVertexProgram* vertexProgram = static_cast<D3D11GpuVertexProgram*>(_activeVertexShader.get());
+            d3d11Context->VSSetShader(vertexProgram->GetVertexShader(), nullptr, 0);
+        }
+        else
+        {
+            d3d11Context->VSSetShader(nullptr, nullptr, 0);
+        }
+
+        if (d3d11FragmentProgram != nullptr)
+        {
+            d3d11Context->PSSetShader(d3d11FragmentProgram->GetPixelShader(), nullptr, 0);
+        }
+        else
+        {
+            d3d11Context->PSSetShader(nullptr, nullptr, 0);
+        }
+
+        if (d3d11GeometryProgram != nullptr)
+        {
+            d3d11Context->GSSetShader(d3d11GeometryProgram->GetGeometryShader(), nullptr, 0);
+        }
+        else
+        {
+            d3d11Context->GSSetShader(nullptr, nullptr, 0);
+        }
+
+        if (d3d11DomainProgram != nullptr)
+        {
+            d3d11Context->DSSetShader(d3d11DomainProgram->GetDomainShader(), nullptr, 0);
+        }
+        else
+        {
+            d3d11Context->DSSetShader(nullptr, nullptr, 0);
+        }
+
+        if (d3d11HullProgram != nullptr)
+        {
+            d3d11Context->HSSetShader(d3d11HullProgram->GetHullShader(), nullptr, 0);
+        }
+        else 
+        {
+            d3d11Context->HSSetShader(nullptr, nullptr, 0);
+        }
     }
 
     void D3D11RenderAPI::SetViewport(const Rect2& area)
@@ -246,10 +312,10 @@ namespace te
         }
 
 #if TE_DEBUG_MODE
-			if (_device->HasError())
-            {
-				TE_DEBUG(_device->GetErrorDescription(), __FILE__, __LINE__);
-            }
+		if (_device->HasError())
+        {
+			TE_DEBUG(_device->GetErrorDescription(), __FILE__, __LINE__);
+        }
 #endif
 
         NotifyRenderTargetModified();
@@ -460,11 +526,11 @@ namespace te
             return;
         }
 
-        /*if (_activeVertexShader == nullptr)
+        if (_activeVertexShader == nullptr)
         {
             TE_DEBUG("Cannot apply input layout without a vertex shader. Set vertex shader before calling this method.", __FILE__, __LINE__);
             return;
-        }*/
+        }
 
         ID3D11InputLayout* ia = NULL; // TODO
         _device->GetImmediateContext()->IASetInputLayout(ia);

@@ -17,13 +17,21 @@ namespace te
 
 	void D3D11RasterizerState::CreateInternal()
 	{
+		INT32 scaledDepthBias = Math::FloorToInt(-_properties.GetDepthBias() * float((1 << 24))); // Note: Assumes 24-bit depth buffer
+
         D3D11_RASTERIZER_DESC rasterizerStateDesc;
 		ZeroMemory(&rasterizerStateDesc, sizeof(D3D11_RASTERIZER_DESC));
 
         rasterizerStateDesc.CullMode = D3D11Mappings::Get(_properties.GetCullMode());
         rasterizerStateDesc.FillMode = D3D11Mappings::Get(_properties.GetPolygonMode());
-
-        rasterizerStateDesc.FrontCounterClockwise = false;
+		rasterizerStateDesc.DepthBias = scaledDepthBias;
+		rasterizerStateDesc.DepthBiasClamp = _properties.GetDepthBiasClamp();
+		rasterizerStateDesc.DepthClipEnable = _properties.GetDepthClipEnable();
+		rasterizerStateDesc.FillMode = D3D11Mappings::Get(_properties.GetPolygonMode());
+		rasterizerStateDesc.MultisampleEnable = _properties.GetMultisampleEnable();
+		rasterizerStateDesc.ScissorEnable = _properties.GetScissorEnable();
+		rasterizerStateDesc.SlopeScaledDepthBias = _properties.GetSlopeScaledDepthBias();
+		rasterizerStateDesc.FrontCounterClockwise = false;
 
         RasterizerState::CreateInternal();
 
@@ -37,6 +45,6 @@ namespace te
 			TE_ASSERT_ERROR(false, "Cannot create rasterizer state.\nError Description:" + errorDescription, __FILE__, __LINE__);
 		}
 
-        // TODO
+        RasterizerState::CreateInternal();
     }
 }
