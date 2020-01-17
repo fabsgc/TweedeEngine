@@ -2,6 +2,7 @@
 
 #include "TeGLRenderAPIPrerequisites.h"
 #include "RenderAPI/TeRenderAPI.h"
+#include "TeGLGLSLProgramFactory.h"
 
 namespace te
 {
@@ -56,5 +57,8 @@ namespace te
 
         /** @copydoc RenderAPI::ClearViewport */
         void ClearViewport(UINT32 buffers, const Color& color = Color::Black, float depth = 1.0f, UINT16 stencil = 0, UINT8 targetMask = 0xFF) override;
+
+    private:
+        GLGLSLProgramFactory* _GLSLFactory = nullptr;
     };
 }

@@ -183,7 +183,7 @@ namespace te
         MemoryAllocator::Deallocate(ptr);
     }
 
-    /** Callable struct that acts as a proxy for bs_delete */
+    /** Callable struct that acts as a proxy for te_delete */
     template<class T>
     struct Deleter
     {

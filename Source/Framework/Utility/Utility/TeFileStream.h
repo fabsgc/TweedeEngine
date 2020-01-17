@@ -43,6 +43,9 @@ namespace te
 		 */
 		size_t Write(const void* buf, size_t count);
 
+        /** Returns data as String */
+        String GetAsString();
+
         /**
 		 * Skip a defined number of bytes. This can also be a negative value, in which case the file pointer rewinds a
 		 * defined number of bytes.

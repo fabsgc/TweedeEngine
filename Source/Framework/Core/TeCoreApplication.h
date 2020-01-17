@@ -97,8 +97,9 @@ namespace te
         /**	Called for each iteration of the main loop. Called after all game objects and plugins are updated. */
         virtual void PostUpdate();
 
-        /**	Initializes the renderer specified during construction. Called during initialization. */
-        virtual void StartUpRenderer();
+        void TestStartUp();
+        void TestRun();
+        void TestShutDown();
 
     protected:
         typedef void(*UpdatePluginFunc)();
@@ -122,6 +123,7 @@ namespace te
 
         SPtr<Camera> _camera;
         SPtr<Camera> _cameraHidden;
+        SPtr<GpuProgram> _vertexShader;
     };
 
     /**	Provides easy access to CoreApplication. */

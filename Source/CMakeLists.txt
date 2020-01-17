@@ -68,15 +68,15 @@ install (
     DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/../bin/
 )
 
-execute_process (COMMAND ${CMAKE_COMMAND} -E copy_directory "${APP_ROOT_DIR}/Data" "${APP_ROOT_DIR}/bin/${PLATFORM_DATA}/Release/Data/")
-execute_process (COMMAND ${CMAKE_COMMAND} -E copy_directory "${APP_ROOT_DIR}/Data" "${APP_ROOT_DIR}/bin/${PLATFORM_DATA}/RelWithDebInfo/Data/")
-execute_process (COMMAND ${CMAKE_COMMAND} -E copy_directory "${APP_ROOT_DIR}/Data" "${APP_ROOT_DIR}/bin/${PLATFORM_DATA}/MinSizeRel/Data/")
-execute_process (COMMAND ${CMAKE_COMMAND} -E copy_directory "${APP_ROOT_DIR}/Data" "${APP_ROOT_DIR}/bin/${PLATFORM_DATA}/Debug/Data/")
+execute_process (COMMAND ${CMAKE_COMMAND} -E copy_directory "${APP_ROOT_DIR}/Data" "${APP_ROOT_DIR}/bin/${PLATFORM_TARGET}/Release/Data/")
+execute_process (COMMAND ${CMAKE_COMMAND} -E copy_directory "${APP_ROOT_DIR}/Data" "${APP_ROOT_DIR}/bin/${PLATFORM_TARGET}/RelWithDebInfo/Data/")
+execute_process (COMMAND ${CMAKE_COMMAND} -E copy_directory "${APP_ROOT_DIR}/Data" "${APP_ROOT_DIR}/bin/${PLATFORM_TARGET}/MinSizeRel/Data/")
+execute_process (COMMAND ${CMAKE_COMMAND} -E copy_directory "${APP_ROOT_DIR}/Data" "${APP_ROOT_DIR}/bin/${PLATFORM_TARGET}/Debug/Data/")
 
-execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_ROOT_DIR}/bin/${PLATFORM_DATA}/Release/Log/")
-execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_ROOT_DIR}/bin/${PLATFORM_DATA}/RelWithDebInfo/Log/")
-execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_ROOT_DIR}/bin/${PLATFORM_DATA}/MinSizeRel/Log/")
-execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_ROOT_DIR}/bin/${PLATFORM_DATA}/Debug/Log/")
+execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_ROOT_DIR}/bin/${PLATFORM_TARGET}/Release/Log/")
+execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_ROOT_DIR}/bin/${PLATFORM_TARGET}/RelWithDebInfo/Log/")
+execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_ROOT_DIR}/bin/${PLATFORM_TARGET}/MinSizeRel/Log/")
+execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_ROOT_DIR}/bin/${PLATFORM_TARGET}/Debug/Log/")
 
 if (WIN32)
     add_custom_target(AlwaysBuild ALL DEPENDS "MissingFile.h")

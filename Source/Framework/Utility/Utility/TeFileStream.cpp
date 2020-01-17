@@ -73,6 +73,24 @@ namespace te
         return written;
     }
 
+    String FileStream::GetAsString()
+    {
+        // Read the entire buffer - ideally in one read, but if the size of
+        // the buffer is unknown, do multiple fixed size reads.
+        size_t bufSize = (_size > 0 ? _size : 4096);
+        char * pBuf = static_cast<char*>(te_allocate(static_cast<UINT32>(bufSize)));
+        // Ensure read from begin of stream
+        Seek(0);
+        String result;
+        while (!Eof())
+        {
+            size_t nr = Read(pBuf, bufSize);
+            result.append(pBuf, nr);
+        }
+        te_delete(pBuf);
+        return result;
+    }
+
     void FileStream::Skip(size_t count)
     {
         _inStream->clear(); // Clear fail status in case eof was set

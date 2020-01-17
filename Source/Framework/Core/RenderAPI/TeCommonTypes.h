@@ -173,11 +173,10 @@ namespace te
 	enum GpuProgramType
 	{
 		GPT_VERTEX_PROGRAM, /**< Vertex program. */
-		GPT_FRAGMENT_PROGRAM, /**< Fragment(pixel) program. */
+		GPT_PIXEL_PROGRAM, /**< Fragment(pixel) program. */
 		GPT_GEOMETRY_PROGRAM, /**< Geometry program. */
 		GPT_DOMAIN_PROGRAM, /**< Domain (tesselation evaluation) program. */
 		GPT_HULL_PROGRAM, /**< Hull (tesselation control) program. */
-		GPT_COMPUTE_PROGRAM, /**< Compute program. */
 		GPT_COUNT // Keep at end
 	};
 
@@ -212,6 +211,137 @@ namespace te
 		/** Buffer that allows you to write to any part of it from within a GPU program. */
 		GVU_RANDOMWRITE = 0x08
 	};
+
+    /** Combineable set of bits that describe a set of physical GPU's. */
+    enum GpuDeviceFlags
+    {
+        /**
+         * Use the default set of devices. This may be the primary device or multiple devices. Cannot be used together with
+         * other device flags.
+         */
+        GDF_DEFAULT = 0,
+        /** Use only the primary GPU. */
+        GDF_PRIMARY = 0x01,
+        /** Use the second GPU. */
+        GDF_GPU2 = 0x02,
+        /** Use the third GPU. */
+        GDF_GPU3 = 0x04,
+        /** Use the fourth GPU. */
+        GDF_GPU4 = 0x08,
+        /** Use the fifth GPU. */
+        GDF_GPU5 = 0x10
+    };
+
+    /** Type of a parameter in a GPU program. */
+    enum GpuParamType
+    {
+        GPT_DATA, /**< Raw data type like float, Vector3, Color, etc. */
+        GPT_TEXTURE, /**< Texture type (2D, 3D, cube, etc.) */
+        GPT_BUFFER, /**< Data buffer (raw, structured, etc.) */
+        GPT_SAMPLER /**< Sampler type (2D, 3D, cube, etc.) */
+    };
+
+    /**	Type of GPU data parameters that can be used as inputs to a GPU program. */
+    enum GpuParamDataType
+    {
+        GPDT_FLOAT1 = 1, /**< 1D floating point value. */
+        GPDT_FLOAT2 = 2, /**< 2D floating point value. */
+        GPDT_FLOAT3 = 3, /**< 3D floating point value. */
+        GPDT_FLOAT4 = 4, /**< 4D floating point value. */
+        GPDT_MATRIX_2X2 = 11, /**< 2x2 matrix. */
+        GPDT_MATRIX_2X3 = 12, /**< 2x3 matrix. */
+        GPDT_MATRIX_2X4 = 13, /**< 2x4 matrix. */
+        GPDT_MATRIX_3X2 = 14, /**< 3x2 matrix. */
+        GPDT_MATRIX_3X3 = 15, /**< 3x3 matrix. */
+        GPDT_MATRIX_3X4 = 16, /**< 3x4 matrix. */
+        GPDT_MATRIX_4X2 = 17, /**< 4x2 matrix. */
+        GPDT_MATRIX_4X3 = 18, /**< 4x3 matrix. */
+        GPDT_MATRIX_4X4 = 19, /**< 4x4 matrix. */
+        GPDT_INT1 = 20, /**< 1D signed integer value. */
+        GPDT_INT2 = 21, /**< 2D signed integer value. */
+        GPDT_INT3 = 22, /**< 3D signed integer value. */
+        GPDT_INT4 = 23, /**< 4D signed integer value. */
+        GPDT_BOOL = 24, /**< Boolean value. */
+        GPDT_STRUCT = 25, /**< Variable size structure. */
+        GPDT_COLOR = 26, /**< Same as GPDT_FLOAT4, but can be used to better deduce usage. */
+        GPDT_COUNT = 27, // Keep at end before GPDT_UNKNOWN
+        GPDT_UNKNOWN = 0xffff
+    };
+
+    /**	Type of GPU object parameters that can be used as inputs to a GPU program. */
+    enum GpuParamObjectType
+    {
+        GPOT_SAMPLER1D = 1, /**< Sampler state for a 1D texture. */
+        GPOT_SAMPLER2D = 2, /**< Sampler state for a 2D texture. */
+        GPOT_SAMPLER3D = 3, /**< Sampler state for a 3D texture. */
+        GPOT_SAMPLERCUBE = 4, /**< Sampler state for a cube texture. */
+        GPOT_SAMPLER2DMS = 5, /**< Sampler state for a 2D texture with multiple samples. */
+        GPOT_TEXTURE1D = 11, /**< 1D texture. */
+        GPOT_TEXTURE2D = 12, /**< 2D texture. */
+        GPOT_TEXTURE3D = 13, /**< 3D texture. */
+        GPOT_TEXTURECUBE = 14, /**< Cube texture. */
+        GPOT_TEXTURE2DMS = 15, /**< 2D texture with multiple samples. */
+        GPOT_BYTE_BUFFER = 32, /**< Buffer containing raw bytes (no interpretation). */
+        GPOT_STRUCTURED_BUFFER = 33, /**< Buffer containing a set of structures. */
+        GPOT_RWTYPED_BUFFER = 41, /**< Read-write buffer containing a set of primitives. */
+        GPOT_RWBYTE_BUFFER = 42, /**< Read-write buffer containing raw bytes (no interpretation). */
+        GPOT_RWSTRUCTURED_BUFFER = 43, /**< Read-write buffer containing a set of structures. */
+        GPOT_RWSTRUCTURED_BUFFER_WITH_COUNTER = 44, /**< Read-write buffer containing a set of structures, with a counter. */
+        GPOT_RWAPPEND_BUFFER = 45, /**< Buffer that can be used for appending data in a stack-like fashion. */
+        GPOT_RWCONSUME_BUFFER = 46, /**< Buffer that can be used for consuming data in a stack-like fashion. */
+        GPOT_RWTEXTURE1D = 50, /**< 1D texture with unordered read/writes. */
+        GPOT_RWTEXTURE2D = 51, /**< 2D texture with unordered read/writes. */
+        GPOT_RWTEXTURE3D = 52, /**< 3D texture with unordered read/writes. */
+        GPOT_RWTEXTURE2DMS = 53, /**< 2D texture with multiple samples and unordered read/writes. */
+        GPOT_TEXTURE1DARRAY = 54, /**< 1D texture with multiple array entries. */
+        GPOT_TEXTURE2DARRAY = 55, /**< 2D texture with multiple array entries. */
+        GPOT_TEXTURECUBEARRAY = 56, /**< Cubemap texture with multiple array entries. */
+        GPOT_TEXTURE2DMSARRAY = 57, /**< 2D texture with multiple samples and array entries. */
+        GPOT_RWTEXTURE1DARRAY = 58, /**< 1D texture with multiple array entries and unordered read/writes. */
+        GPOT_RWTEXTURE2DARRAY = 59, /**< 2D texture with multiple array entries and unordered read/writes. */
+        GPOT_RWTEXTURE2DMSARRAY = 60, /**< 2D texture with multiple array entries, samples and unordered read/writes. */
+        GPOT_UNKNOWN = 0xffff
+    };
+
+    /** Types of valid formats used for standard GPU buffers. */
+    enum GpuBufferFormat
+    {
+        BF_16X1F, /**< 1D 16-bit floating-point format. */
+        BF_16X2F, /**< 2D 16-bit floating-point format. */
+        BF_16X4F, /**< 4D 16-bit floating-point format. */
+        BF_32X1F, /**< 1D 32-bit floating-point format. */
+        BF_32X2F, /**< 2D 32-bit floating-point format. */
+        BF_32X3F, /**< 3D 32-bit floating-point format. */
+        BF_32X4F, /**< 4D 32-bit floating-point format. */
+        BF_8X1,   /**< 1D 8-bit normalized format. */
+        BF_8X2,   /**< 2D 8-bit normalized format. */
+        BF_8X4,   /**< 4D 8-bit normalized format. */
+        BF_16X1,  /**< 1D 16-bit normalized format. */
+        BF_16X2,  /**< 2D 16-bit normalized format. */
+        BF_16X4,  /**< 4D 16-bit normalized format. */
+        BF_8X1S,  /**< 1D 8-bit signed integer format. */
+        BF_8X2S,  /**< 2D 8-bit signed integer format. */
+        BF_8X4S,  /**< 4D 8-bit signed integer format. */
+        BF_16X1S, /**< 1D 16-bit signed integer format. */
+        BF_16X2S, /**< 2D 16-bit signed integer format. */
+        BF_16X4S, /**< 4D 16-bit signed integer format. */
+        BF_32X1S, /**< 1D 32-bit signed integer format. */
+        BF_32X2S, /**< 2D 32-bit signed integer format. */
+        BF_32X3S, /**< 3D 32-bit signed integer format. */
+        BF_32X4S, /**< 4D 32-bit signed integer format. */
+        BF_8X1U,  /**< 1D 8-bit unsigned integer format. */
+        BF_8X2U,  /**< 2D 8-bit unsigned integer format. */
+        BF_8X4U,  /**< 4D 8-bit unsigned integer format. */
+        BF_16X1U, /**< 1D 16-bit unsigned integer format. */
+        BF_16X2U, /**< 2D 16-bit unsigned integer format. */
+        BF_16X4U, /**< 4D 16-bit unsigned integer format. */
+        BF_32X1U, /**< 1D 32-bit unsigned integer format. */
+        BF_32X2U, /**< 2D 32-bit unsigned integer format. */
+        BF_32X3U, /**< 3D 32-bit unsigned integer format. */
+        BF_32X4U, /**< 4D 32-bit unsigned integer format. */
+        BF_COUNT, /**< Not a valid format. Keep just before BS_UNKNOWN. */
+        BF_UNKNOWN = 0xffff /**< Unknown format (used for non-standard buffers, like structured or raw. */
+    };
 
 	/** Describes operation that will be used for rendering a certain set of vertices. */
 	enum DrawOperationType

@@ -1,31 +1,41 @@
 #include "TeCoreApplication.h"
 
+#include "Error/TeConsole.h"
+#include "Utility/TeTime.h"
+
 #include "Utility/TeDynLibManager.h"
 #include "Utility/TeDynLib.h"
 #include "Threading/TeThreading.h"
 #include "Manager/TePluginManager.h"
 #include "Manager/TeRenderAPIManager.h"
 #include "Manager/TeRendererManager.h"
-#include "Error/TeConsole.h"
-#include "Utility/TeTime.h"
+#include "Resources/TeResourceManager.h"
+#include "RenderAPI/TeRenderStateManager.h"
+#include "RenderAPI/TeGpuProgramManager.h"
+
 #include "Input/TeInput.h"
 #include "Input/TeVirtualInput.h"
+
 #include "RenderAPI/TeRenderAPI.h"
 #include "Renderer/TeRenderer.h"
+#include "RenderAPI/TeCommonTypes.h"
+#include "RenderAPI/TeRenderTexture.h"
+#include "Image/TeTexture.h"
+
 #include "Importer/TeImporter.h"
-#include "Resources/TeResourceManager.h"
-#include "Renderer/TeCamera.h"
-#include "Scene/TeSceneManager.h"
-#include "CoreUtility/TeCoreObjectManager.h"
-#include "RenderAPI/TeRenderStateManager.h"
 #include "Importer/TeMeshImportOptions.h"
 #include "Importer/TeTextureImportOptions.h"
 #include "Importer/TeShaderImportOptions.h"
+
+#include "Renderer/TeCamera.h"
+#include "Scene/TeSceneManager.h"
+#include "CoreUtility/TeCoreObjectManager.h"
+
 #include "Shader/TeShader.h"
+
 #include "Utility/TeFileStream.h"
-#include "Image/TeTexture.h"
-#include "RenderAPI/TeCommonTypes.h"
-#include "RenderAPI/TeRenderTexture.h"
+
+#include "RenderAPI/TeGpuProgram.h"
 
 namespace te
 {
@@ -57,6 +67,7 @@ namespace te
         RenderAPIManager::StartUp();
         RendererManager::StartUp();
         ResourceManager::StartUp();
+        GpuProgramManager::StartUp();
         SceneManager::StartUp();
         gSceneManager().Initialize();
 
@@ -71,73 +82,8 @@ namespace te
         _window = RenderAPI::Instance().CreateRenderWindow(_startUpDesc.WindowDesc);
         _window->Initialize();
 
-        auto resizedCallback = []()
-        {
-            TE_DEBUG("Window was resized.", __FILE__, __LINE__);
-        };
-
-        _window->OnResized.Connect(resizedCallback);
-
         Input::StartUp();
         VirtualInput::StartUp();
-
-        SPtr<InputConfiguration> inputConfig = gVirtualInput().GetConfiguration();
-
-        inputConfig->RegisterButton("Select All", TE_A);
-        inputConfig->RegisterButton("Unwrap", TE_U);
-        inputConfig->RegisterButton("Forward", TE_UP);
-
-        auto handleButtonHeld = [&](const VirtualButton& btn, UINT32 deviceIdx)
-        {
-            TE_PRINT(btn.ButtonIdentifier);
-        };
-
-        gVirtualInput().OnButtonDown.Connect(handleButtonHeld);
-
-        // Callback method that triggers when any button is pressed
-        auto handleButtonDown = [&](const ButtonEvent& event)
-        {
-            // If user presses space, "jump"
-            if (event.buttonCode == TE_A)
-            {
-                TE_PRINT("A");
-            }
-        };
-
-        // Connect the callback to the event
-        gInput().OnButtonDown.Connect(handleButtonDown);
-
-        auto handlePointerMove = [&](const PointerEvent& event)
-        {
-            Vector3 position(TeZero);
-            Vector3 delta(TeZero);
-
-            position.x = (float)event.screenPos.x;
-            position.y = (float)event.screenPos.y;
-
-            delta.x = (float)event.delta.x;
-            delta.y = (float)event.delta.y;
-
-            //TE_PRINT("Mouse position : " + ToString(position.x) + "/" + ToString(position.y));
-            //TE_PRINT("Mouse delta : " + ToString(delta.x) + "/" + ToString(delta.y));
-        };
-
-        gInput().OnPointerMoved.Connect(handlePointerMove);
-
-        auto handlePointerRelativeMove = [&](const Vector2I& delta)
-        {
-            //TE_PRINT("Mouse absolute delta : " + ToString(delta.x) + "/" + ToString(delta.y));
-        };
-
-        gInput().OnPointerRelativeMoved.Connect(handlePointerRelativeMove);
-
-        VIRTUAL_AXIS_DESC desc;
-        desc.DeadZone = 0.1f;
-        desc.Normalize = true;
-        desc.Type = (int)InputAxis::RightStickX;
-
-        inputConfig->RegisterAxis("LookLeftRight", desc);
-
         Importer::StartUp();
         
         for (auto& importerName : _startUpDesc.Importers)
@@ -145,121 +91,18 @@ namespace te
             LoadPlugin(importerName);
         }
 
-        auto meshImportOptions = MeshImportOptions::Create();
-        meshImportOptions->ImportNormals = false;
-        auto textureImportOptions = TextureImportOptions::Create();
-        textureImportOptions->CpuCached = true;
-        auto shaderImportOptions = ShaderImportOptions::Create();
-
-        HMesh loadedMesh = gResourceManager().Load<Mesh>("Data/Meshes/cube.obj", meshImportOptions);
-        HTexture loadTexture = gResourceManager().Load<Texture>("Data/Textures/default.png", textureImportOptions);
-        HShader loadShader = gResourceManager().Load<Shader>("Data/Shaders/default.shader", shaderImportOptions);
-
-        TE_PRINT((loadedMesh.GetHandleData())->data);
-        TE_PRINT((loadedMesh.GetHandleData())->uuid.ToString());
-
-        TE_PRINT((loadTexture.GetHandleData())->data);
-        TE_PRINT((loadTexture.GetHandleData())->uuid.ToString());
-
-        TE_PRINT((loadShader.GetHandleData())->data);
-        TE_PRINT((loadShader.GetHandleData())->uuid.ToString());
-
-        _camera = Camera::Create();
-        _camera->SetRenderTarget(gCoreApplication().GetWindow());
-        _camera->GetViewport()->SetClearColorValue(Color(0.6f, 0.0f, 0.2f, 1.0f));
-        _camera->GetViewport()->SetArea(Rect2(0.5, 0.5, 0.5, 0.5));
-        _camera->SetMain(true);
-
-        BLEND_STATE_DESC blendDesc; 
-        RASTERIZER_STATE_DESC rastDesc; 
-        DEPTH_STENCIL_STATE_DESC depthDesc;
-        SAMPLER_STATE_DESC samplerDesc;  
-
-        rastDesc.polygonMode = PM_WIREFRAME; // Draw wireframe instead of solid
-        rastDesc.cullMode = CULL_NONE; // Disable blackface culling
-
-        SPtr<BlendState> blendState = BlendState::Create(blendDesc);
-        SPtr<RasterizerState> rasterizerState = RasterizerState::Create(rastDesc);
-        SPtr<DepthStencilState> depthStencilState = DepthStencilState::Create(depthDesc);
-        SPtr<SamplerState> samplerState = SamplerState::Create(samplerDesc);
-
-        PIPELINE_STATE_DESC pipeDesc;
-        pipeDesc.blendState = blendState;
-        pipeDesc.rasterizerState = rasterizerState;
-        pipeDesc.depthStencilState = depthStencilState;
-
-        SPtr<GraphicsPipelineState> graphicsPipeline = GraphicsPipelineState::Create(pipeDesc);
-
-        RenderAPI::Instance().SetGraphicsPipeline(graphicsPipeline);
-
-        FileStream file1("Data/Textures/default.png");
-        FileStream file2("Data\\Textures\\default.png");
-
-        // ######################
-
-        // Create a 960x480 texture with 32-bit RGBA format
-        TEXTURE_DESC targetColorDesc;
-        targetColorDesc.Type = TEX_TYPE_2D;
-        targetColorDesc.Width = 960;
-        targetColorDesc.Height = 480;
-        targetColorDesc.Format = PF_RGBA8;
-        targetColorDesc.Usage = TU_RENDERTARGET | TU_CPUCACHED;
-
-        HTexture color = Texture::Create(targetColorDesc);
-
-        // Create a 960x480 texture with a 32-bit depth-stencil format
-        TEXTURE_DESC targetDepthDesc;
-        targetDepthDesc.Type = TEX_TYPE_2D;
-        targetDepthDesc.Width = 960;
-        targetDepthDesc.Height = 480;
-        targetDepthDesc.Format = PF_RGBA8;
-        targetDepthDesc.Usage = TU_DEPTHSTENCIL | TU_CPUCACHED;
-
-        HTexture depthStencil = Texture::Create(targetDepthDesc);
-
-        RENDER_TEXTURE_DESC renderTextureDesc;
-        renderTextureDesc.ColorSurfaces[0].Tex = color.GetInternalPtr();
-        renderTextureDesc.ColorSurfaces[0].Face = 0;
-        renderTextureDesc.ColorSurfaces[0].MipLevel = 0;
-
-        renderTextureDesc.DepthStencilSurface.Tex = depthStencil.GetInternalPtr();
-        renderTextureDesc.DepthStencilSurface.Face = 0;
-        renderTextureDesc.DepthStencilSurface.MipLevel = 0;
-
-        SPtr<RenderTexture> renderTexture = RenderTexture::Create(renderTextureDesc);
-
-        _cameraHidden = Camera::Create();
-        _cameraHidden->SetRenderTarget(renderTexture);
-        _cameraHidden->GetViewport()->SetClearColorValue(Color(0.2f, 0.0f, 0.2f, 1.0f));
-        _cameraHidden->SetMain(false);
-
-        SPtr<PixelData> pixelData = loadTexture->GetProperties().AllocBuffer(0, 0);
-        loadTexture->ReadCachedData(*pixelData);
-
-        // Read pixel at 50x50
-        Color pixelColor = pixelData->GetColorAt(50, 50);
-
-        // ######################
+        TestStartUp();
     }
     
     void CoreApplication::OnShutDown()
     {
-        _window->Destroy();
-        _window = nullptr;
-
-        _camera->Destroy();
-        _camera = nullptr;
-
-        _cameraHidden->Destroy();
-        _cameraHidden = nullptr;
-
-        _renderer.reset();
-        _window.reset();
+        TestShutDown();
         
         Importer::ShutDown();
         VirtualInput::ShutDown();
         Input::ShutDown();
         SceneManager::ShutDown();
+        GpuProgramManager::ShutDown();
         ResourceManager::ShutDown();
         RendererManager::ShutDown();
         RenderAPIManager::ShutDown();
@@ -277,7 +120,7 @@ namespace te
 
         while (_runMainLoop && !_pause)
         {
-            CheckFPSLimit();
+            //CheckFPSLimit();
 
             Platform::Update();
             gTime().Update();
@@ -287,15 +130,6 @@ namespace te
             gVirtualInput().Update();
 
             PreUpdate();
-
-            VirtualAxis lookLeftRightAxis("LookLeftRight");
-
-            //float value = gVirtualInput().GetAxisValue(lookLeftRightAxis);
-
-            //if(value != 0.0f)
-            //{
-            //    TE_PRINT(value)
-            //}
 
             for (auto& pluginUpdateFunc : _pluginUpdateFunctions)
             {
@@ -308,15 +142,7 @@ namespace te
 
             RendererManager::Instance().GetRenderer()->RenderAll();
 
-            RenderTarget& renderTexture1 = (static_cast<RenderTarget&>(*(_camera->GetViewport()->GetTarget())));
-
-            SPtr<Texture> renderTexture = (static_cast<RenderTexture&>(*(_cameraHidden->GetViewport()->GetTarget()))).GetColorTexture(0);
-
-            SPtr<PixelData> pixelData = renderTexture->GetProperties().AllocBuffer(0, 0);
-            renderTexture->ReadData(*pixelData);
-
-            // Read pixel at 50x50
-            Color pixelColor = pixelData->GetColorAt(50, 50);
+            TestRun();
         }
     }
 
@@ -414,10 +240,6 @@ namespace te
         }
     }
 
-    void CoreApplication::StartUpRenderer()
-    {
-    }
-
     void* CoreApplication::LoadPlugin(const String& pluginName, DynLib** library, void* passThrough)
     {
         DynLib* loadedLibrary = gDynLibManager().Load(pluginName);
@@ -474,6 +296,225 @@ namespace te
 
         _pluginUpdateFunctions.erase(library);
         gDynLibManager().Unload(library);
+    }
+
+    void CoreApplication::TestStartUp()
+    {
+        // ######################################################
+        auto resizedCallback = []()
+        {
+            TE_DEBUG("Window was resized.", __FILE__, __LINE__);
+        };
+
+        _window->OnResized.Connect(resizedCallback);
+        // ######################################################
+
+        // ######################################################
+        SPtr<InputConfiguration> inputConfig = gVirtualInput().GetConfiguration();
+
+        inputConfig->RegisterButton("Select All", TE_A);
+        inputConfig->RegisterButton("Unwrap", TE_U);
+        inputConfig->RegisterButton("Forward", TE_UP);
+        // ######################################################
+
+        // ######################################################
+        auto handleButtonHeld = [&](const VirtualButton& btn, UINT32 deviceIdx)
+        {
+            TE_PRINT(btn.ButtonIdentifier);
+        };
+
+        gVirtualInput().OnButtonDown.Connect(handleButtonHeld);
+        // ######################################################
+
+        // ######################################################
+        // Callback method that triggers when any button is pressed
+        auto handleButtonDown = [&](const ButtonEvent& event)
+        {
+            // If user presses space, "jump"
+            if (event.buttonCode == TE_A)
+            {
+                TE_PRINT("A");
+            }
+        };
+
+        // Connect the callback to the event
+        gInput().OnButtonDown.Connect(handleButtonDown);
+
+        auto handlePointerMove = [&](const PointerEvent& event)
+        {
+            Vector3 position(TeZero);
+            Vector3 delta(TeZero);
+
+            position.x = (float)event.screenPos.x;
+            position.y = (float)event.screenPos.y;
+
+            delta.x = (float)event.delta.x;
+            delta.y = (float)event.delta.y;
+
+            //TE_PRINT("Mouse position : " + ToString(position.x) + "/" + ToString(position.y));
+            //TE_PRINT("Mouse delta : " + ToString(delta.x) + "/" + ToString(delta.y));
+        };
+        // ######################################################
+
+        // ######################################################
+        gInput().OnPointerMoved.Connect(handlePointerMove);
+
+        auto handlePointerRelativeMove = [&](const Vector2I& delta)
+        {
+            //TE_PRINT("Mouse absolute delta : " + ToString(delta.x) + "/" + ToString(delta.y));
+        };
+
+        gInput().OnPointerRelativeMoved.Connect(handlePointerRelativeMove);
+        // ######################################################
+
+        // ######################################################
+        VIRTUAL_AXIS_DESC desc;
+        desc.DeadZone = 0.1f;
+        desc.Normalize = true;
+        desc.Type = (int)InputAxis::RightStickX;
+
+        inputConfig->RegisterAxis("LookLeftRight", desc);
+        // ######################################################
+
+        // ######################################################
+        auto meshImportOptions = MeshImportOptions::Create();
+        meshImportOptions->ImportNormals = false;
+        auto textureImportOptions = TextureImportOptions::Create();
+        textureImportOptions->CpuCached = true;
+        auto shaderImportOptions = ShaderImportOptions::Create();
+
+        HMesh loadedMesh = gResourceManager().Load<Mesh>("Data/Meshes/cube.obj", meshImportOptions);
+        HTexture loadTexture = gResourceManager().Load<Texture>("Data/Textures/default.png", textureImportOptions);
+        HShader loadShader = gResourceManager().Load<Shader>("Data/Shaders/default.shader", shaderImportOptions);
+
+        TE_PRINT((loadedMesh.GetHandleData())->data);
+        TE_PRINT((loadedMesh.GetHandleData())->uuid.ToString());
+
+        TE_PRINT((loadTexture.GetHandleData())->data);
+        TE_PRINT((loadTexture.GetHandleData())->uuid.ToString());
+
+        TE_PRINT((loadShader.GetHandleData())->data);
+        TE_PRINT((loadShader.GetHandleData())->uuid.ToString());
+        // ######################################################
+
+        // ######################################################
+        _camera = Camera::Create();
+        _camera->SetRenderTarget(gCoreApplication().GetWindow());
+        _camera->GetViewport()->SetClearColorValue(Color(0.6f, 0.0f, 0.2f, 1.0f));
+        _camera->GetViewport()->SetArea(Rect2(0.5, 0.5, 0.5, 0.5));
+        _camera->SetMain(true);
+        // ######################################################
+
+        // ######################################################
+        BLEND_STATE_DESC blendDesc;
+        RASTERIZER_STATE_DESC rastDesc;
+        DEPTH_STENCIL_STATE_DESC depthDesc;
+        SAMPLER_STATE_DESC samplerDesc;
+
+        rastDesc.polygonMode = PM_WIREFRAME; // Draw wireframe instead of solid
+        rastDesc.cullMode = CULL_NONE; // Disable blackface culling
+
+        SPtr<BlendState> blendState = BlendState::Create(blendDesc);
+        SPtr<RasterizerState> rasterizerState = RasterizerState::Create(rastDesc);
+        SPtr<DepthStencilState> depthStencilState = DepthStencilState::Create(depthDesc);
+        SPtr<SamplerState> samplerState = SamplerState::Create(samplerDesc);
+
+        PIPELINE_STATE_DESC pipeDesc;
+        pipeDesc.blendState = blendState;
+        pipeDesc.rasterizerState = rasterizerState;
+        pipeDesc.depthStencilState = depthStencilState;
+
+        SPtr<GraphicsPipelineState> graphicsPipeline = GraphicsPipelineState::Create(pipeDesc);
+
+        RenderAPI::Instance().SetGraphicsPipeline(graphicsPipeline);
+        // ######################################################
+
+        // ######################################################
+        FileStream file1("Data/Textures/default.png");
+        FileStream file2("Data\\Textures\\default.png");
+        // ######################################################
+
+        // ######################################################
+        // Create a 960x480 texture with 32-bit RGBA format
+        TEXTURE_DESC targetColorDesc;
+        targetColorDesc.Type = TEX_TYPE_2D;
+        targetColorDesc.Width = 960;
+        targetColorDesc.Height = 480;
+        targetColorDesc.Format = PF_RGBA8;
+        targetColorDesc.Usage = TU_RENDERTARGET | TU_CPUCACHED;
+
+        HTexture color = Texture::Create(targetColorDesc);
+
+        // Create a 960x480 texture with a 32-bit depth-stencil format
+        TEXTURE_DESC targetDepthDesc;
+        targetDepthDesc.Type = TEX_TYPE_2D;
+        targetDepthDesc.Width = 960;
+        targetDepthDesc.Height = 480;
+        targetDepthDesc.Format = PF_RGBA8;
+        targetDepthDesc.Usage = TU_DEPTHSTENCIL | TU_CPUCACHED;
+
+        HTexture depthStencil = Texture::Create(targetDepthDesc);
+
+        RENDER_TEXTURE_DESC renderTextureDesc;
+        renderTextureDesc.ColorSurfaces[0].Tex = color.GetInternalPtr();
+        renderTextureDesc.ColorSurfaces[0].Face = 0;
+        renderTextureDesc.ColorSurfaces[0].MipLevel = 0;
+
+        renderTextureDesc.DepthStencilSurface.Tex = depthStencil.GetInternalPtr();
+        renderTextureDesc.DepthStencilSurface.Face = 0;
+        renderTextureDesc.DepthStencilSurface.MipLevel = 0;
+
+        SPtr<RenderTexture> renderTexture = RenderTexture::Create(renderTextureDesc);
+        // ######################################################
+
+        // ######################################################
+        _cameraHidden = Camera::Create();
+        _cameraHidden->SetRenderTarget(renderTexture);
+        _cameraHidden->GetViewport()->SetClearColorValue(Color(0.2f, 0.0f, 0.2f, 1.0f));
+        _cameraHidden->SetMain(false);
+
+        SPtr<PixelData> pixelData = loadTexture->GetProperties().AllocBuffer(0, 0);
+        loadTexture->ReadCachedData(*pixelData);
+        Color pixelColor = pixelData->GetColorAt(50, 50);
+        // ######################################################
+
+        // ######################################################
+        FileStream vertexShaderFile("Data/Shaders/Raw/Test/VS.hlsl");
+
+        GPU_PROGRAM_DESC gpuProgramDesc;
+        gpuProgramDesc.Type = GPT_VERTEX_PROGRAM;
+        gpuProgramDesc.EntryPoint = "main";
+        gpuProgramDesc.Language = "hlsl";
+        gpuProgramDesc.Source = vertexShaderFile.GetAsString();        
+
+        _vertexShader = GpuProgram::Create(gpuProgramDesc);
+        // ######################################################
+    }
+
+    void CoreApplication::TestRun()
+    {
+        SPtr<Texture> renderTexture = (static_cast<RenderTexture&>(*(_cameraHidden->GetViewport()->GetTarget()))).GetColorTexture(0);
+        SPtr<PixelData> pixelData = renderTexture->GetProperties().AllocBuffer(0, 0);
+        renderTexture->ReadData(*pixelData);
+        Color pixelColor = pixelData->GetColorAt(50, 50);
+    }
+
+    void CoreApplication::TestShutDown()
+    {
+        _vertexShader->Destroy();
+        _vertexShader = nullptr;
+
+        _window->Destroy();
+        _window = nullptr;
+
+        _camera->Destroy();
+        _camera = nullptr;
+
+        _cameraHidden->Destroy();
+        _cameraHidden = nullptr;
+
+        _renderer.reset();
+        _window.reset();
     }
 
     CoreApplication& gCoreApplication()

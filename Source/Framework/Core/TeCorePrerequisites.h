@@ -89,6 +89,14 @@ namespace te
     struct RENDER_TEXTURE_DESC;
     struct RENDER_SURFACE_DESC;
     class RenderTexture;
+    struct GpuProgramBytecode;
+    struct GPU_PROGRAM_DESC;
+    class GpuProgram;
+    struct GpuParamDataDesc;
+    struct GpuParamObjectDesc;
+    struct GpuParamBlockDesc;
+    struct GpuParamDesc;
+    class GpuProgramManager;
 
     class Renderer;
     class RendererFactory;

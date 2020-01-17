@@ -8,6 +8,7 @@
 #include "RenderAPI/TeRenderStateManager.h"
 #include "TeD3D11RenderStateManager.h"
 #include "TeD3D11TextureManager.h"
+#include "RenderAPI/TeGpuProgramManager.h"
 
 namespace te
 {
@@ -83,12 +84,15 @@ namespace te
 
         // Create & register HLSL factory		
         _HLSLFactory = te_new<D3D11HLSLProgramFactory>();
+        GpuProgramManager::Instance().AddFactory("hlsl", _HLSLFactory);
 
         // Create render state manager
         RenderStateManager::StartUp<D3D11RenderStateManager>();
 
         // Create Input Layout Manager	
         _IAManager = te_new<D3D11InputLayoutManager>();
+
+        RenderAPI::Initialize();
     }
 
     void D3D11RenderAPI::Destroy()

@@ -55,7 +55,7 @@ namespace te
             TE_ASSERT_ERROR(false, "File size larger than supported!", __FILE__, __LINE__);
         }
 
-        uint8_t* data = static_cast<uint8_t*>(te_allocate(size+1));
+        uint8_t* data = static_cast<uint8_t*>(te_allocate(static_cast<UINT32>(size)+1));
         memset(data, 0, size);
         file.Read(static_cast<char*>((void*)data), static_cast<std::streamsize>(size));
         data[size] = (uint8_t)'\0';

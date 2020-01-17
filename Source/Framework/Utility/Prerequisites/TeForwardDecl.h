@@ -71,4 +71,6 @@ namespace te
     class Event;
     template <class ReturnType, class... Args>
     class Event<ReturnType(Args...) >;
+
+    struct DataBlob;
 }

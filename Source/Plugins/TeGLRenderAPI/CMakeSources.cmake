@@ -10,6 +10,8 @@ set (TE_GLRENDERAPI_INC_NOFILTER
 	"TeGLRasterizerState.h"
 	"TeGLSamplerState.h"
 	"TeGLRenderTexture.h"
+	"TeGLGLSLProgramFactory.h"
+	"TeGLGpuProgram.h"
 )
 
 set (TE_GLRENDERAPI_SRC_NOFILTER
@@ -24,6 +26,8 @@ set (TE_GLRENDERAPI_SRC_NOFILTER
 	"TeGLRasterizerState.cpp"
 	"TeGLSamplerState.cpp"
 	"TeGLRenderTexture.cpp"
+	"TeGLGLSLProgramFactory.cpp"
+	"TeGLGpuProgram.cpp"
 )
 
 set(TE_GLRENDERAPI_INC_WIN32

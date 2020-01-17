@@ -3,6 +3,7 @@
 #include "TeGLTextureManager.h"
 #include "RenderAPI/TeRenderStateManager.h"
 #include "TeGLRenderStateManager.h"
+#include "RenderAPI/TeGpuProgramManager.h"
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
 #   include "Win32/TeWin32RenderWindow.h"
@@ -36,6 +37,10 @@ namespace te
 
         // Create render state manager
         RenderStateManager::StartUp<GLRenderStateManager>();
+
+        // Create & register GLSL factory		
+        _GLSLFactory = te_new<GLGLSLProgramFactory>();
+        GpuProgramManager::Instance().AddFactory("glsl", _GLSLFactory);
     }
 
     void GLRenderAPI::Destroy()

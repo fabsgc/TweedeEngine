@@ -18,6 +18,10 @@ set (TE_CORE_INC_RENDERAPI
     "Core/RenderAPI/TeTextureView.h"
     "Core/RenderAPI/TeHardwareBuffer.h"
     "Core/RenderAPI/TeRenderTexture.h"
+    "Core/RenderAPI/TeGpuProgram.h"
+    "Core/RenderAPI/TeGpuBuffer.h"
+    "Core/RenderAPI/TeGpuParamDesc.h"
+    "Core/RenderAPI/TeGpuProgramManager.h"
 )
 set (TE_CORE_SRC_RENDERAPI
     "Core/RenderAPI/TeRenderAPI.cpp"
@@ -35,6 +39,9 @@ set (TE_CORE_SRC_RENDERAPI
     "Core/RenderAPI/TeTextureView.cpp"
     "Core/RenderAPI/TeHardwareBuffer.cpp"
     "Core/RenderAPI/TeRenderTexture.cpp"
+    "Core/RenderAPI/TeGpuProgram.cpp"
+    "Core/RenderAPI/TeGpuBuffer.cpp"
+    "Core/RenderAPI/TeGpuProgramManager.cpp"
 )
 
 set (TE_CORE_INC_RENDERER

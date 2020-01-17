@@ -1,16 +1,16 @@
 #pragma once
 
-#include "TeD3D11RenderAPIPrerequisites.h"
+#include "TeGLRenderAPIPrerequisites.h"
 #include "RenderAPI/TeGpuProgramManager.h"
 
 namespace te
 {
-    /**	Handles creation of DirectX 11 HLSL GPU programs. */
-    class D3D11HLSLProgramFactory : public GpuProgramFactory
+    /**	Handles creation of OpenGL GPU programs. */
+    class GLGLSLProgramFactory : public GpuProgramFactory
     {
     public:
-        D3D11HLSLProgramFactory() = default;
-        ~D3D11HLSLProgramFactory() = default;
+        GLGLSLProgramFactory() = default;
+        ~GLGLSLProgramFactory() = default;
 
         /** @copydoc GpuProgramFactory::Create(const GPU_PROGRAM_DESC&, GpuDeviceFlags) */
         SPtr<GpuProgram> Create(const GPU_PROGRAM_DESC & desc, GpuDeviceFlags deviceMask = GDF_DEFAULT) override;
