@@ -11,7 +11,7 @@ namespace te
 	struct GpuProgramBytecode;
 
 	/** Descriptor structure used for initialization of a GpuProgram. */
-	struct GPU_PROGRAM_DESC
+	struct TE_CORE_EXPORT GPU_PROGRAM_DESC
 	{
         String Source; /**< Source code to compile the program from. */
 		String EntryPoint; /**< Name of the entry point function, for example "main". */
