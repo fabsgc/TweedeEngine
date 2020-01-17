@@ -41,4 +41,5 @@ namespace te
     class D3D11RenderTexture;
     class D3D11HLSLProgramFactory;
     class D3D11GpuProgram;
+    class D3D11HLSLParamParser;
 }

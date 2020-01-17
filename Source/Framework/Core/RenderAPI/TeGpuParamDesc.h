@@ -22,17 +22,17 @@ namespace te
 	/**	Describes a single GPU program object (for example texture, sampler state) parameter. */
 	struct GpuParamObjectDesc
 	{
-		String name;
-		GpuParamObjectType type;
+		String Name;
+		GpuParamObjectType Type;
 
 		/** Slot within a set. Uniquely identifies bind location in the GPU pipeline, together with the set. */
-		UINT32 slot;
+		UINT32 Slot;
 
 		/** Uniquely identifies the bind location in the GPU pipeline, together with the slot. */
-		UINT32 set;
+		UINT32 Set;
 
 		/** Underlying type of individual elements in the buffer or texture. */
-		GpuBufferFormat elementType = BF_UNKNOWN;
+		GpuBufferFormat ElementType = BF_UNKNOWN;
 	};
 
 	/**	Describes a GPU program parameter block (collection of GPU program data parameters). */

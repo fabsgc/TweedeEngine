@@ -209,6 +209,57 @@ namespace te
     */
     TE_UTILITY_EXPORT Vector<String> Split(const WString& s, char delimiter);
 
+    /** Converts all the characters in the string to lower case. Does not handle UTF8 encoded strings. */
+    TE_UTILITY_EXPORT void ToLowerCase(String& str);
+
+    /** Converts all the characters in the string to lower case. Does not handle UTF8 encoded strings. */
+    TE_UTILITY_EXPORT void ToLowerCase(WString& str);
+
+    /** Converts all the characters in the string to upper case. Does not handle UTF8 encoded strings. */
+    TE_UTILITY_EXPORT void ToUpperCase(String& str);
+
+    /**	Converts all the characters in the string to upper case. Does not handle UTF8 encoded strings. */
+    TE_UTILITY_EXPORT void ToUpperCase(WString& str);
+
+    /**
+    * Returns whether the string begins with the pattern passed in.
+    *
+    * @param[in]	str		 	String to compare.
+    * @param[in]	pattern		Pattern to compare with.
+    * @param[in]	lowerCase	(optional) If true, the start of the string will be lower cased before comparison, and
+    *							the pattern should also be in lower case.
+    */
+    TE_UTILITY_EXPORT bool StartsWith(const String& str, const String& pattern, bool lowerCase = true);
+
+    /** @copydoc StartsWith(const String&, const String&, bool) */
+    TE_UTILITY_EXPORT bool StartsWith(const WString& str, const WString& pattern, bool lowerCase = true);
+
+    /**
+     * Returns whether the string end with the pattern passed in.
+     *
+     * @param[in]	str		 	String to compare.
+     * @param[in]	pattern		Pattern to compare with.
+     * @param[in]	lowerCase	(optional) If true, the start of the string will be lower cased before comparison, and
+     *							the pattern should also be in lower case.
+     */
+    TE_UTILITY_EXPORT bool EndsWith(const String& str, const String& pattern, bool lowerCase = true);
+
+    /** @copydoc EndsWith(const String&, const String&, bool) */
+    TE_UTILITY_EXPORT  bool EndsWith(const WString& str, const WString& pattern, bool lowerCase = true);
+
+    /**
+     * Returns true if the string matches the provided pattern. Pattern may use a "*" wildcard for matching any
+     * characters.
+     *
+     * @param[in]	str			 	The string to test.
+     * @param[in]	pattern		 	Patterns to look for.
+     * @param[in]	caseSensitive	(optional) Should the match be case sensitive or not.
+     */
+    TE_UTILITY_EXPORT  bool Match(const String& str, const String& pattern, bool caseSensitive = true);
+
+    /** @copydoc Match(const String&, const String&, bool) */
+    TE_UTILITY_EXPORT  bool Match(const WString& str, const WString& pattern, bool caseSensitive = true);
+
     /**
     * Replace all instances of a substring with a another substring.
     *
@@ -218,10 +269,105 @@ namespace te
     *
     * @return	An updated string with the substrings replaced.
     */
-    const String ReplaceAll(const String& source, const String& replaceWhat, const String& replaceWithWhat);
+    TE_UTILITY_EXPORT const String ReplaceAll(const String& source, const String& replaceWhat, const String& replaceWithWhat);
 
-    /** @copydoc replaceAll(const String&, const String&, const String&) */
-    const WString ReplaceAll(const WString& source, const WString& replaceWhat, const WString& replaceWithWhat);
+    /** @copydoc ReplaceAll(const String&, const String&, const String&) */
+    TE_UTILITY_EXPORT const WString ReplaceAll(const WString& source, const WString& replaceWhat, const WString& replaceWithWhat);
+
+    template <class T>
+    static bool StartsWithInternal(const BasicString<T>& str, const BasicString<T>& pattern, bool lowerCase)
+    {
+        size_t thisLen = str.length();
+        size_t patternLen = pattern.length();
+        if (thisLen < patternLen || patternLen == 0)
+            return false;
+
+        BasicString<T> startOfThis = str.substr(0, patternLen);
+        if (lowerCase)
+            ToLowerCase(startOfThis);
+
+        return (startOfThis == pattern);
+    }
+
+    template <class T>
+    static bool EndsWithInternal(const BasicString<T>& str, const BasicString<T>& pattern, bool lowerCase)
+    {
+        size_t thisLen = str.length();
+        size_t patternLen = pattern.length();
+        if (thisLen < patternLen || patternLen == 0)
+            return false;
+
+        BasicString<T> endOfThis = str.substr(thisLen - patternLen, patternLen);
+        if (lowerCase)
+            ToLowerCase(endOfThis);
+
+        return (endOfThis == pattern);
+    }
+
+    template <class T>
+    static bool MatchInternal(const BasicString<T>& str, const BasicString<T>& pattern, bool caseSensitive)
+    {
+        BasicString<T> tmpStr = str;
+        BasicString<T> tmpPattern = pattern;
+        if (!caseSensitive)
+        {
+            ToLowerCase(tmpStr);
+            ToLowerCase(tmpPattern);
+        }
+
+        typename BasicString<T>::const_iterator strIt = tmpStr.begin();
+        typename BasicString<T>::const_iterator patIt = tmpPattern.begin();
+        typename BasicString<T>::const_iterator lastWildCardIt = tmpPattern.end();
+        while (strIt != tmpStr.end() && patIt != tmpPattern.end())
+        {
+            if (*patIt == '*')
+            {
+                lastWildCardIt = patIt;
+                // Skip over looking for next character
+                ++patIt;
+                if (patIt == tmpPattern.end())
+                {
+                    // Skip right to the end since * matches the entire rest of the string
+                    strIt = tmpStr.end();
+                }
+                else
+                {
+                    // scan until we find next pattern character
+                    while (strIt != tmpStr.end() && *strIt != *patIt)
+                        ++strIt;
+                }
+            }
+            else
+            {
+                if (*patIt != *strIt)
+                {
+                    if (lastWildCardIt != tmpPattern.end())
+                    {
+                        // The last wildcard can match this incorrect sequence
+                        // rewind pattern to wildcard and keep searching
+                        patIt = lastWildCardIt;
+                        lastWildCardIt = tmpPattern.end();
+                    }
+                    else
+                    {
+                        // no wildwards left
+                        return false;
+                    }
+                }
+                else
+                {
+                    ++patIt;
+                    ++strIt;
+                }
+            }
+        }
+
+        // If we reached the end of both the pattern and the string, we succeeded
+        if (patIt == tmpPattern.end() && strIt == tmpStr.end())
+            return true;
+        else
+            return false;
+    }
 
     template <class T>
     BasicString<T> ReplaceAllInternal(const BasicString<T>& source,

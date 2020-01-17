@@ -333,6 +333,56 @@ namespace te
         return tokens;
     }
 
+    void ToLowerCase(String& str)
+    {
+        std::transform(str.begin(), str.end(), str.begin(), tolower);
+    }
+
+    void ToLowerCase(WString& str)
+    {
+        std::transform(str.begin(), str.end(), str.begin(), tolower);
+    }
+
+    void ToUpperCase(String& str)
+    {
+        std::transform(str.begin(), str.end(), str.begin(), toupper);
+    }
+
+    void ToUpperCase(WString& str)
+    {
+        std::transform(str.begin(), str.end(), str.begin(), toupper);
+    }
+
+    bool StartsWith(const String& str, const String& pattern, bool lowerCase)
+    {
+        return StartsWithInternal<char>(str, pattern, lowerCase);
+    }
+
+    bool StartsWith(const WString& str, const WString& pattern, bool lowerCase)
+    {
+        return StartsWithInternal<wchar_t>(str, pattern, lowerCase);
+    }
+
+    bool EndsWith(const String& str, const String& pattern, bool lowerCase)
+    {
+        return EndsWithInternal<char>(str, pattern, lowerCase);
+    }
+
+    bool EndsWith(const WString& str, const WString& pattern, bool lowerCase)
+    {
+        return EndsWithInternal<wchar_t>(str, pattern, lowerCase);
+    }
+
+    bool Match(const String& str, const String& pattern, bool caseSensitive)
+    {
+        return MatchInternal<char>(str, pattern, caseSensitive);
+    }
+
+    bool Match(const WString& str, const WString& pattern, bool caseSensitive)
+    {
+        return MatchInternal<wchar_t>(str, pattern, caseSensitive);
+    }
+
     const String ReplaceAll(const String& source, const String& replaceWhat, const String& replaceWithWhat)
     {
         return ReplaceAllInternal<char>(source, replaceWhat, replaceWithWhat);

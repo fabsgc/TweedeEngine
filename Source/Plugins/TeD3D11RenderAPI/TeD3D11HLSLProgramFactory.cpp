@@ -1,7 +1,7 @@
 #include "TeD3D11HLSLProgramFactory.h"
 #include "TeD3D11GpuProgram.h"
 #include "RenderAPI/TeVertexDeclaration.h"
-//#include "TeD3D11HLSLParamParser.h"
+#include "TeD3D11HLSLParamParser.h"
 #include "RenderAPI/TeGpuParamDesc.h"
 #include <regex>
 
@@ -201,17 +201,17 @@ namespace te
 
             memcpy(bytecode->Instructions.Data, microcode->GetBufferPointer(), bytecode->Instructions.Size);
 
-            /*D3D11HLSLParamParser parser;
+            D3D11HLSLParamParser parser;
             bytecode->ParamDesc = te_shared_ptr_new<GpuParamDesc>();
 
             if (desc.Type == GPT_VERTEX_PROGRAM)
             {
-                parser.parse(microcode, desc.Type, *bytecode->ParamDesc, &bytecode->VertexInput);
+                parser.Parse(microcode, desc.Type, *bytecode->ParamDesc, &bytecode->VertexInput);
             }
             else
             {
-                parser.parse(microcode, desc.Type, *bytecode->ParamDesc, nullptr);
-            }*/
+                parser.Parse(microcode, desc.Type, *bytecode->ParamDesc, nullptr);
+            }
         }
 
         SAFE_RELEASE(microcode);
