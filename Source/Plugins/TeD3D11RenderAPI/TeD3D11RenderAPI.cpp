@@ -11,6 +11,8 @@
 #include "RenderAPI/TeGpuProgramManager.h"
 #include "TeD3D11GpuProgram.h"
 #include "TeD3D11HardwareBufferManager.h"
+#include "TeD3D11VertexBuffer.h"
+#include "TeD3D11IndexBuffer.h"
 
 namespace te
 {
@@ -283,12 +285,50 @@ namespace te
 
     void D3D11RenderAPI::SetVertexBuffers(UINT32 index, SPtr<VertexBuffer>* buffers, UINT32 numBuffers)
     {
-        // TODO
+        UINT32 maxBoundVertexBuffers = D3D11_MAX_BOUND_VERTEX_BUFFER;
+        if (index < 0 || (index + numBuffers) >= maxBoundVertexBuffers)
+        {
+            TE_ASSERT_ERROR(false, "Invalid vertex index: " + ToString(index) +
+                ". Valid range is 0 .. " + ToString(maxBoundVertexBuffers - 1), __FILE__, __LINE__);
+        }
+
+        ID3D11Buffer* dx11buffers[D3D11_MAX_BOUND_VERTEX_BUFFER];
+        UINT32 strides[D3D11_MAX_BOUND_VERTEX_BUFFER];
+        UINT32 offsets[D3D11_MAX_BOUND_VERTEX_BUFFER];
+
+        for (UINT32 i = 0; i < numBuffers; i++)
+        {
+            SPtr<D3D11VertexBuffer> vertexBuffer = std::static_pointer_cast<D3D11VertexBuffer>(buffers[i]);
+            const VertexBufferProperties& vbProps = vertexBuffer->GetProperties();
+
+            dx11buffers[i] = vertexBuffer->GetD3DVertexBuffer();
+
+            strides[i] = vbProps.GetVertexSize();
+            offsets[i] = 0;
+        }
+
+        _device->GetImmediateContext()->IASetVertexBuffers(index, numBuffers, dx11buffers, strides, offsets);
     }
 
     void D3D11RenderAPI::SetIndexBuffer(const SPtr<IndexBuffer>& buffer)
     {
-        // TODO
+        SPtr<D3D11IndexBuffer> indexBuffer = std::static_pointer_cast<D3D11IndexBuffer>(buffer);
+
+        DXGI_FORMAT indexFormat = DXGI_FORMAT_R16_UINT;
+        if (indexBuffer->GetProperties().GetType() == IT_16BIT)
+        {
+            indexFormat = DXGI_FORMAT_R16_UINT;
+        }
+        else if (indexBuffer->GetProperties().GetType() == IT_32BIT)
+        {
+            indexFormat = DXGI_FORMAT_R32_UINT;
+        }
+        else
+        {
+            TE_ASSERT_ERROR(false, "Unsupported index format: " + ToString(indexBuffer->GetProperties().GetType()), __FILE__, __LINE__);
+        }
+
+        _device->GetImmediateContext()->IASetIndexBuffer(indexBuffer->GetD3DIndexBuffer(), indexFormat, 0);
     }
 
     void D3D11RenderAPI::SetVertexDeclaration(const SPtr<VertexDeclaration>& vertexDeclaration)

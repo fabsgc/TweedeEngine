@@ -2,6 +2,7 @@
 //#include "RenderAPI/TeGpuParams.h"
 #include "TeGLRenderAPI.h"
 #include "RenderAPI/TeGpuProgramManager.h"
+#include "RenderAPI/TeHardwareBufferManager.h"
 #include <regex>
 
 namespace te
@@ -53,7 +54,7 @@ namespace te
 
             if (_type == GPT_VERTEX_PROGRAM)
             {
-                //_inputDeclaration = HardwareBufferManager::Instance().CreateVertexDeclaration(_bytecode->VertexInput); TODO
+                _inputDeclaration = HardwareBufferManager::Instance().CreateVertexDeclaration(_bytecode->VertexInput);
             }
         }
 

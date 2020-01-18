@@ -57,7 +57,6 @@ namespace te
                     continue;
                 }
 
-                // TODO
                 inputParams->push_back(VertexElement(inputParamDesc.Stream, inputParamDesc.Register,
                     D3D11Mappings::GetInputType(inputParamDesc.ComponentType), D3D11Mappings::Get(inputParamDesc.SemanticName), inputParamDesc.SemanticIndex));
             }

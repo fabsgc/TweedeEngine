@@ -10,6 +10,8 @@
 #include "Math/TeRect2.h"
 #include "TeD3D11DepthStencilState.h"
 
+#define D3D11_MAX_BOUND_VERTEX_BUFFER 32
+
 namespace te
 {
     class D3D11RenderAPI: public RenderAPI

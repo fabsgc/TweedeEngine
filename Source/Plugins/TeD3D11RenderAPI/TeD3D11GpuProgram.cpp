@@ -3,8 +3,7 @@
 //#include "RenderAPI/TeGpuParams.h"
 #include "TeD3D11RenderAPI.h"
 #include "RenderAPI/TeGpuProgramManager.h"
-//#include "RenderAPI/TeHardwareBufferManager.h"
-//#include "TeD3D11HLSLParamParser.h"
+#include "RenderAPI/TeHardwareBufferManager.h"
 #include <regex>
 
 namespace te
@@ -19,6 +18,11 @@ namespace te
 
 	D3D11GpuProgram::~D3D11GpuProgram()
 	{
+        if (_inputDeclaration)
+        {
+            _inputDeclaration->Destroy();
+        }
+
 		_inputDeclaration = nullptr;
 	}
 
@@ -56,11 +60,11 @@ namespace te
 
             if (_type == GPT_VERTEX_PROGRAM)
             {
-                //_inputDeclaration = HardwareBufferManager::Instance().CreateVertexDeclaration(_bytecode->VertexInput); TODO
+                _inputDeclaration = HardwareBufferManager::Instance().CreateVertexDeclaration(_bytecode->VertexInput);
             }
         }
 
-        _programId = GlobalProgramId++;
+         _programId = GlobalProgramId++;
 
         GpuProgram::Initialize();
     }
