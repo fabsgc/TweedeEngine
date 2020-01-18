@@ -299,6 +299,26 @@ namespace te
 		return D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	}
 
+    bool D3D11Mappings::IsMappingWrite(D3D11_MAP map)
+    {
+        if (map == D3D11_MAP_READ)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    bool D3D11Mappings::IsMappingRead(D3D11_MAP map)
+    {
+        if (map == D3D11_MAP_READ || map == D3D11_MAP_READ_WRITE)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     DWORD D3D11Mappings::Get(FilterType ft)
     {
         switch (ft)

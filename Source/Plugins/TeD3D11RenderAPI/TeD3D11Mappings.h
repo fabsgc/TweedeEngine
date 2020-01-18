@@ -47,6 +47,12 @@ namespace te
         /**	Returns DX11 primitive topology based on the provided draw operation type. */
 		static D3D11_PRIMITIVE_TOPOLOGY GetPrimitiveType(DrawOperationType type);
 
+        /**	Checks does the provided map value include writing. */
+        static bool IsMappingWrite(D3D11_MAP map);
+
+        /**	Checks does the provided map value include reading. */
+        static bool IsMappingRead(D3D11_MAP map);
+
         /**
          * Converts engine texture filter type to DirectX 11 filter shift (used for combining to get actual min/mag/mip
          * filter bit location).

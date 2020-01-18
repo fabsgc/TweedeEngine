@@ -10,6 +10,7 @@
 #include "TeD3D11TextureManager.h"
 #include "RenderAPI/TeGpuProgramManager.h"
 #include "TeD3D11GpuProgram.h"
+#include "TeD3D11HardwareBufferManager.h"
 
 namespace te
 {
@@ -83,6 +84,9 @@ namespace te
         // Create the texture manager for use by others		
         TextureManager::StartUp<D3D11TextureManager>();
 
+        // Create hardware buffer manager
+        HardwareBufferManager::StartUp<D3D11HardwareBufferManager>(std::ref(*_device));
+
         // Create & register HLSL factory		
         _HLSLFactory = te_new<D3D11HLSLProgramFactory>();
         GpuProgramManager::Instance().AddFactory("hlsl", _HLSLFactory);
@@ -137,8 +141,8 @@ namespace te
         _activeVertexDeclaration = nullptr;
 
         TextureManager::ShutDown();
-
         RenderStateManager::ShutDown();
+        HardwareBufferManager::ShutDown();
 
         SAFE_RELEASE(_DXGIFactory);
 

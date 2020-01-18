@@ -400,7 +400,7 @@ namespace te
         // ######################################################
         _camera = Camera::Create();
         _camera->SetRenderTarget(gCoreApplication().GetWindow());
-        _camera->GetViewport()->SetClearColorValue(Color(0.6f, 0.0f, 0.2f, 1.0f));
+        //_camera->GetViewport()->SetClearColorValue(Color(0.6f, 0.0f, 0.2f, 1.0f));
         _camera->GetViewport()->SetArea(Rect2(0.5, 0.5, 0.5, 0.5));
         _camera->SetMain(true);
         // ######################################################
