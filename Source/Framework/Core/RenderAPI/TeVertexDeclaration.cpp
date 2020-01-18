@@ -1,8 +1,11 @@
 #include "TeVertexDeclaration.h"
 #include "Utility/TeColor.h"
+#include "RenderAPI/TeHardwareBufferManager.h"
 
 namespace te
 {
+    UINT32 VertexDeclaration::NextFreeId = 0;
+
     VertexElement::VertexElement(UINT16 source, UINT32 offset,
         VertexElementType theType, VertexElementSemantic semantic, UINT16 index, UINT32 instanceStepRate)
         : _source(source)
@@ -155,5 +158,196 @@ namespace te
         return hash;
     }
 
-    // TODO
+    VertexDeclarationProperties::VertexDeclarationProperties(const Vector<VertexElement>& elements)
+    {
+        for (auto& elem : elements)
+        {
+            VertexElementType type = elem.GetType();
+
+            if (elem.GetType() == VET_COLOR)
+            {
+                type = VertexElement::GetBestColorVertexElementType();
+            }
+
+            _elementList.push_back(VertexElement(elem.GetStreamIdx(), elem.GetOffset(), type, elem.GetSemantic(),
+                elem.GetSemanticIdx(), elem.GetInstanceStepRate()));
+        }
+    }
+
+    bool VertexDeclarationProperties::operator== (const VertexDeclarationProperties& rhs) const
+    {
+        if (_elementList.size() != rhs._elementList.size())
+        {
+            return false;
+        }
+
+        auto myIter = _elementList.begin();
+        auto theirIter = rhs._elementList.begin();
+
+        for (; myIter != _elementList.end() && theirIter != rhs._elementList.end(); ++myIter, ++theirIter)
+        {
+            if (!(*myIter == *theirIter))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    bool VertexDeclarationProperties::operator!= (const VertexDeclarationProperties& rhs) const
+    {
+        return !(*this == rhs);
+    }
+
+    const VertexElement* VertexDeclarationProperties::GetElement(UINT16 index) const
+    {
+        assert(index < _elementList.size() && "Index out of bounds");
+
+        auto iter = _elementList.begin();
+        for (UINT16 i = 0; i < index; ++i)
+        {
+            ++iter;
+        }
+
+        return &(*iter);
+    }
+
+    const VertexElement* VertexDeclarationProperties::FindElementBySemantic(VertexElementSemantic sem, UINT16 index) const
+    {
+        for (auto& elem : _elementList)
+        {
+            if (elem.GetSemantic() == sem && elem.GetSemanticIdx() == index)
+            {
+                return &elem;
+            }
+        }
+
+        return nullptr;
+    }
+
+    Vector<VertexElement> VertexDeclarationProperties::FindElementsBySource(UINT16 source) const
+    {
+        Vector<VertexElement> retList;
+        for (auto& elem : _elementList)
+        {
+            if (elem.GetStreamIdx() == source)
+            {
+                retList.push_back(elem);
+            }
+        }
+
+        return retList;
+    }
+
+    UINT32 VertexDeclarationProperties::GetVertexSize(UINT16 source) const
+    {
+        UINT32 size = 0;
+
+        for (auto& elem : _elementList)
+        {
+            if (elem.GetStreamIdx() == source)
+            {
+                size += elem.GetSize();
+            }
+        }
+
+        return size;
+    }
+
+    VertexDeclaration::VertexDeclaration(const Vector<VertexElement>& elements, GpuDeviceFlags deviceMask)
+        : _properties(elements)
+    { }
+
+    void VertexDeclaration::Initialize()
+    {
+        _id = NextFreeId++;
+        CoreObject::Initialize();
+    }
+
+    SPtr<VertexDeclaration> VertexDeclaration::Create(const SPtr<VertexDataDesc>& desc, GpuDeviceFlags deviceMask)
+    {
+        return HardwareBufferManager::Instance().CreateVertexDeclaration(desc, deviceMask);
+    }
+
+    bool VertexDeclaration::IsCompatible(const SPtr<VertexDeclaration>& shaderDecl)
+    {
+        const Vector<VertexElement>& shaderElems = shaderDecl->GetProperties().GetElements();
+        const Vector<VertexElement>& bufferElems = GetProperties().GetElements();
+
+        for (auto shaderIter = shaderElems.begin(); shaderIter != shaderElems.end(); ++shaderIter)
+        {
+            const VertexElement* foundElement = nullptr;
+            for (auto bufferIter = bufferElems.begin(); bufferIter != bufferElems.end(); ++bufferIter)
+            {
+                if (shaderIter->GetSemantic() == bufferIter->GetSemantic() && shaderIter->GetSemanticIdx() == bufferIter->GetSemanticIdx())
+                {
+                    foundElement = &(*bufferIter);
+                    break;
+                }
+            }
+
+            if (foundElement == nullptr)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    Vector<VertexElement> VertexDeclaration::GetMissingElements(const SPtr<VertexDeclaration>& shaderDecl)
+    {
+        Vector<VertexElement> missingElements;
+
+        const Vector<VertexElement>& shaderElems = shaderDecl->GetProperties().GetElements();
+        const Vector<VertexElement>& bufferElems = GetProperties().GetElements();
+
+        for (auto shaderIter = shaderElems.begin(); shaderIter != shaderElems.end(); ++shaderIter)
+        {
+            const VertexElement* foundElement = nullptr;
+            for (auto bufferIter = bufferElems.begin(); bufferIter != bufferElems.end(); ++bufferIter)
+            {
+                if (shaderIter->GetSemantic() == bufferIter->GetSemantic() && shaderIter->GetSemanticIdx() == bufferIter->GetSemanticIdx())
+                {
+                    foundElement = &(*bufferIter);
+                    break;
+                }
+            }
+
+            if (foundElement == nullptr)
+                missingElements.push_back(*shaderIter);
+        }
+
+        return missingElements;
+    }
+
+    String ToString(const VertexElementSemantic& val)
+    {
+        switch (val)
+        {
+        case VES_POSITION:
+            return "POSITION";
+        case VES_BLEND_WEIGHTS:
+            return "BLEND_WEIGHTS";
+        case VES_BLEND_INDICES:
+            return "BLEND_INDICES";
+        case VES_NORMAL:
+            return "NORMAL";
+        case VES_COLOR:
+            return "COLOR";
+        case VES_TEXCOORD:
+            return "TEXCOORD";
+        case VES_BITANGENT:
+            return "BITANGENT";
+        case VES_TANGENT:
+            return "TANGENT";
+        case VES_POSITIONT:
+            return "POSITIONT";
+        case VES_PSIZE:
+            return "PSIZE";
+        }
+
+        return "";
+    }
 }

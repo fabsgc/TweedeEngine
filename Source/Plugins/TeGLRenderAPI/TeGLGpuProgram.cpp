@@ -70,11 +70,11 @@ namespace te
     {
     }
 
-    GLGpuFragmentProgram::GLGpuFragmentProgram(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask)
+    GLGpuPixelProgram::GLGpuPixelProgram(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask)
         : GLGpuProgram(desc, deviceMask)
     { }
 
-    GLGpuFragmentProgram::~GLGpuFragmentProgram()
+    GLGpuPixelProgram::~GLGpuPixelProgram()
     {
     }
 

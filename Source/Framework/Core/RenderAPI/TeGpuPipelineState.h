@@ -17,7 +17,7 @@ namespace te
 		SPtr<DepthStencilState> depthStencilState;
 
         SPtr<GpuProgram> vertexProgram;
-        SPtr<GpuProgram> fragmentProgram;
+        SPtr<GpuProgram> pixelProgram;
         SPtr<GpuProgram> geometryProgram;
         SPtr<GpuProgram> hullProgram;
         SPtr<GpuProgram> domainProgram;
@@ -38,13 +38,13 @@ namespace te
         SPtr<DepthStencilState> GetDepthStencilState() const { return _data.depthStencilState; }
 
         bool HasVertexProgram() const { return _data.vertexProgram != nullptr; }
-        bool HasFragmentProgram() const { return _data.fragmentProgram != nullptr; }
+        bool HasPixelProgram() const { return _data.pixelProgram != nullptr; }
         bool HasGeometryProgram() const { return _data.geometryProgram != nullptr; }
         bool HasHullProgram() const { return _data.hullProgram != nullptr; }
         bool HasDomainProgram() const { return _data.domainProgram != nullptr; }
 
         const SPtr<GpuProgram>& GetVertexProgram() const { return _data.vertexProgram; }
-        const SPtr<GpuProgram>& GetFragmentProgram() const { return _data.fragmentProgram; }
+        const SPtr<GpuProgram>& GetPixelProgram() const { return _data.pixelProgram; }
         const SPtr<GpuProgram>& GetGeometryProgram() const { return _data.geometryProgram; }
         const SPtr<GpuProgram>& GetHullProgram() const { return _data.hullProgram; }
         const SPtr<GpuProgram>& GetDomainProgram() const { return _data.domainProgram; }

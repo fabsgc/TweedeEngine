@@ -80,7 +80,14 @@ namespace te
     class SampleProperties;
     class SamplerState;
     class HardwareBuffer;
+    struct INDEX_BUFFER_DESC;
+    class IndexBufferProperties;
+    class IndexBuffer;
+    struct VERTEX_BUFFER_DESC;
+    class VerteBufferProperties;
     class VertexBuffer;
+    class VertexElement;
+    class VertexDeclarationProperties;
     class VertexDeclaration;
     class VertexDataDesc;
     struct SubMesh;
@@ -97,6 +104,7 @@ namespace te
     struct GpuParamBlockDesc;
     struct GpuParamDesc;
     class GpuProgramManager;
+    class HardwareBufferManager;
 
     class Renderer;
     class RendererFactory;

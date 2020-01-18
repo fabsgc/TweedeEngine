@@ -52,10 +52,10 @@ namespace te
     };
 
     /**	Implementation of a DX11 pixel shader. */
-    class D3D11GpuFragmentProgram : public D3D11GpuProgram
+    class D3D11GpuPixelProgram : public D3D11GpuProgram
     {
     public:
-        ~D3D11GpuFragmentProgram();
+        ~D3D11GpuPixelProgram();
 
         /**	Returns internal DX11 pixel shader object. */
         ID3D11PixelShader* GetPixelShader() const;
@@ -63,7 +63,7 @@ namespace te
     protected:
         friend class D3D11HLSLProgramFactory;
 
-        D3D11GpuFragmentProgram(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask);
+        D3D11GpuPixelProgram(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask);
 
         /** @copydoc D3D11GpuProgram::LoadFromMicrocode */
         void LoadFromMicrocode(D3D11Device& device, const DataBlob& microcode) override;

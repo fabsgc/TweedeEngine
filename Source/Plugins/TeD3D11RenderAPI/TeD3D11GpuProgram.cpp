@@ -92,17 +92,17 @@ namespace te
         return _vertexShader;
     }
 
-    D3D11GpuFragmentProgram::D3D11GpuFragmentProgram(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask)
+    D3D11GpuPixelProgram::D3D11GpuPixelProgram(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask)
         : D3D11GpuProgram(desc, deviceMask)
         , _pixelShader(nullptr)
     { }
 
-    D3D11GpuFragmentProgram::~D3D11GpuFragmentProgram()
+    D3D11GpuPixelProgram::~D3D11GpuPixelProgram()
     {
         SAFE_RELEASE(_pixelShader);
     }
 
-    void D3D11GpuFragmentProgram::LoadFromMicrocode(D3D11Device& device, const DataBlob& microcode)
+    void D3D11GpuPixelProgram::LoadFromMicrocode(D3D11Device& device, const DataBlob& microcode)
     {
         HRESULT hr = device.GetD3D11Device()->CreatePixelShader(
             microcode.Data, microcode.Size, device.GetClassLinkage(), &_pixelShader);
@@ -114,7 +114,7 @@ namespace te
         }
     }
 
-    ID3D11PixelShader* D3D11GpuFragmentProgram::GetPixelShader() const
+    ID3D11PixelShader* D3D11GpuPixelProgram::GetPixelShader() const
     {
         return _pixelShader;
     }

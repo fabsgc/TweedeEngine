@@ -114,15 +114,83 @@ namespace te
         UINT32 _instanceStepRate;
     };
 
-    /**
-     * Describes a set of vertex elements, used for describing contents of a vertex buffer or inputs to a vertex GPU program.
-     */
+    /**	Contains information about a vertex declaration. */
+    class TE_CORE_EXPORT VertexDeclarationProperties
+    {
+    public:
+        VertexDeclarationProperties(const Vector<VertexElement>& elements);
+
+        bool operator== (const VertexDeclarationProperties& rhs) const;
+        bool operator!= (const VertexDeclarationProperties& rhs) const;
+
+        /**	Get the number of elements in the declaration. */
+        UINT32 GetElementCount() const { return (UINT32)_elementList.size(); }
+
+        /**	Returns a list of vertex elements in the declaration. */
+        const Vector<VertexElement>& GetElements() const { return _elementList; }
+
+        /**	Returns a single vertex element at the specified index. */
+        const VertexElement* GetElement(UINT16 index) const;
+
+        /**
+         * Attempts to find an element by the given semantic and semantic index. If no element can be found null is returned.
+         */
+        const VertexElement* FindElementBySemantic(VertexElementSemantic sem, UINT16 index = 0) const;
+
+        /**	Returns a list of all elements that use the provided source index. */
+        Vector<VertexElement> FindElementsBySource(UINT16 source) const;
+
+        /**	Returns the total size of all vertex elements using the provided source index. */
+        UINT32 GetVertexSize(UINT16 source) const;
+
+    protected:
+        friend class VertexDeclaration;
+
+        Vector<VertexElement> _elementList;
+    };
+
+    /** Describes a set of vertex elements, used for describing contents of a vertex buffer or inputs to a vertex GPU program. */
     class TE_CORE_EXPORT VertexDeclaration : public CoreObject
     {
     public:
-        virtual ~VertexDeclaration() { }
+        virtual ~VertexDeclaration() = default;
+
+        /** @copydoc CoreObject::Initialize */
+        void Initialize() override;
+
+        /** Returns properties describing the vertex declaration. */
+        const VertexDeclarationProperties& GetProperties() const { return _properties; }
+
+        /**	Returns an ID unique to this declaration. */
+        UINT32 GetId() const { return _id; }
+
+        /**
+         * Checks can a vertex buffer declared with this declaration be bound to a shader defined with the provided
+         * declaration.
+         */
+        bool IsCompatible(const SPtr<VertexDeclaration>& shaderDecl);
+
+        /**
+         * Returns a list of vertex elements that the provided shader's vertex declaration expects but aren't present in
+         * this vertex declaration.
+         */
+        Vector<VertexElement> GetMissingElements(const SPtr<VertexDeclaration>& shaderDecl);
+
+        /** @copydoc HardwareBufferManager::createVertexDeclaration */
+        static SPtr<VertexDeclaration> Create(const SPtr<VertexDataDesc>& desc, GpuDeviceFlags deviceMask = GDF_DEFAULT);
 
     protected:
         friend class HardwareBufferManager;
+
+        VertexDeclaration(const Vector<VertexElement>& elements, GpuDeviceFlags deviceMask);
+
+    protected:
+        VertexDeclarationProperties _properties;
+        UINT32 _id;
+
+        static UINT32 NextFreeId;
     };
+
+    /**	Converts a vertex semantic enum to a readable name. */
+    TE_CORE_EXPORT String ToString(const VertexElementSemantic& val);
 }

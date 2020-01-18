@@ -42,4 +42,9 @@ namespace te
     class D3D11HLSLProgramFactory;
     class D3D11GpuProgram;
     class D3D11HLSLParamParser;
+    class D3D11HardwareBuffer;
+    class D3D11HardwareBufferManager;
+    class D3D11VertexBuffer;
+    class D3D11IndexBuffer;
+    class D3D11InputLayoutManager;
 }

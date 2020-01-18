@@ -18,8 +18,8 @@ namespace te
                 D3D11GpuVertexProgram(desc, deviceMask));
             break;
         case GPT_PIXEL_PROGRAM:
-            gpuProgram = te_shared_ptr<D3D11GpuFragmentProgram>(new (te_allocate<D3D11GpuFragmentProgram>())
-                D3D11GpuFragmentProgram(desc, deviceMask));
+            gpuProgram = te_shared_ptr<D3D11GpuPixelProgram>(new (te_allocate<D3D11GpuPixelProgram>())
+                D3D11GpuPixelProgram(desc, deviceMask));
             break;
         case GPT_HULL_PROGRAM:
             gpuProgram = te_shared_ptr<D3D11GpuHullProgram>(new (te_allocate<D3D11GpuHullProgram>())
@@ -57,8 +57,8 @@ namespace te
                 D3D11GpuVertexProgram(desc, deviceMask));
             break;
         case GPT_PIXEL_PROGRAM:
-            gpuProgram = te_shared_ptr<D3D11GpuFragmentProgram>(new (te_allocate<D3D11GpuFragmentProgram>())
-                D3D11GpuFragmentProgram(desc, deviceMask));
+            gpuProgram = te_shared_ptr<D3D11GpuPixelProgram>(new (te_allocate<D3D11GpuPixelProgram>())
+                D3D11GpuPixelProgram(desc, deviceMask));
             break;
         case GPT_HULL_PROGRAM:
             gpuProgram = te_shared_ptr<D3D11GpuHullProgram>(new (te_allocate<D3D11GpuHullProgram>())

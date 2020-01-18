@@ -5,6 +5,7 @@ set (TE_CORE_INC_RENDERAPI
     "Core/RenderAPI/TeRenderAPIFactory.h"
     "Core/RenderAPI/TeRenderTarget.h"
     "Core/RenderAPI/TeVertexBuffer.h"
+    "Core/RenderAPI/TeIndexBuffer.h"
     "Core/RenderAPI/TeVertexDeclaration.h"
     "Core/RenderAPI/TeCommonTypes.h"
     "Core/RenderAPI/TeDepthStencilState.h"
@@ -22,12 +23,15 @@ set (TE_CORE_INC_RENDERAPI
     "Core/RenderAPI/TeGpuBuffer.h"
     "Core/RenderAPI/TeGpuParamDesc.h"
     "Core/RenderAPI/TeGpuProgramManager.h"
+    "Core/RenderAPI/TeHardwareBufferManager.h"
 )
 set (TE_CORE_SRC_RENDERAPI
     "Core/RenderAPI/TeRenderAPI.cpp"
     "Core/RenderAPI/TeRenderWindow.cpp"
     "Core/RenderAPI/TeVideoMode.cpp"
     "Core/RenderAPI/TeRenderTarget.cpp"
+    "Core/RenderAPI/TeVertexBuffer.cpp"
+    "Core/RenderAPI/TeIndexBuffer.cpp"
     "Core/RenderAPI/TeVertexDeclaration.cpp"
     "Core/RenderAPI/TeDepthStencilState.cpp"
     "Core/RenderAPI/TeGpuPipelineState.cpp"
@@ -42,6 +46,7 @@ set (TE_CORE_SRC_RENDERAPI
     "Core/RenderAPI/TeGpuProgram.cpp"
     "Core/RenderAPI/TeGpuBuffer.cpp"
     "Core/RenderAPI/TeGpuProgramManager.cpp"
+    "Core/RenderAPI/TeHardwareBufferManager.cpp"
 )
 
 set (TE_CORE_INC_RENDERER

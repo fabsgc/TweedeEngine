@@ -40,15 +40,15 @@ namespace te
     };
 
     /**	Implementation of a OpenGL fragment shader. */
-    class GLGpuFragmentProgram : public GLGpuProgram
+    class GLGpuPixelProgram : public GLGpuProgram
     {
     public:
-        ~GLGpuFragmentProgram();
+        ~GLGpuPixelProgram();
 
     protected:
         friend class GLGLSLProgramFactory;
 
-        GLGpuFragmentProgram(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask);
+        GLGpuPixelProgram(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask);
     };
 
     /**	Implementation of a OpenGL domain shader. */

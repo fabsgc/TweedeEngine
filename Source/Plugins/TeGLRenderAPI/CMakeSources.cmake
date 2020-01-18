@@ -12,6 +12,10 @@ set (TE_GLRENDERAPI_INC_NOFILTER
 	"TeGLRenderTexture.h"
 	"TeGLGLSLProgramFactory.h"
 	"TeGLGpuProgram.h"
+	"TeGLHardwareBuffer.h"
+    "TeGLHardwareBufferManager.h"
+    "TeGLVertexBuffer.h"
+    "TeGLIndexBuffer.h"
 )
 
 set (TE_GLRENDERAPI_SRC_NOFILTER
@@ -28,6 +32,10 @@ set (TE_GLRENDERAPI_SRC_NOFILTER
 	"TeGLRenderTexture.cpp"
 	"TeGLGLSLProgramFactory.cpp"
 	"TeGLGpuProgram.cpp"
+	"TeGLHardwareBuffer.cpp"
+    "TeGLHardwareBufferManager.cpp"
+    "TeGLVertexBuffer.cpp"
+    "TeGLIndexBuffer.cpp"
 )
 
 set(TE_GLRENDERAPI_INC_WIN32

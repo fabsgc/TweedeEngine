@@ -41,5 +41,10 @@ namespace te
     class GLTextureManager;
     class GLTexture;
     class GLRenderTexture;
+    class GLHardwareBuffer;
+    class GLHardwareBufferManager;
+    class GLVertexBuffer;
+    class GLIndexBuffer;
+    class GLInputLayoutManager;
 
 }

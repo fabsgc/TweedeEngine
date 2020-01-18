@@ -18,8 +18,8 @@ namespace te
                 GLGpuVertexProgram(desc, deviceMask));
             break;
         case GPT_PIXEL_PROGRAM:
-            gpuProgram = te_shared_ptr<GLGpuFragmentProgram>(new (te_allocate<GLGpuFragmentProgram>())
-                GLGpuFragmentProgram(desc, deviceMask));
+            gpuProgram = te_shared_ptr<GLGpuPixelProgram>(new (te_allocate<GLGpuPixelProgram>())
+                GLGpuPixelProgram(desc, deviceMask));
             break;
         case GPT_HULL_PROGRAM:
             gpuProgram = te_shared_ptr<GLGpuHullProgram>(new (te_allocate<GLGpuHullProgram>())
@@ -57,8 +57,8 @@ namespace te
                 GLGpuVertexProgram(desc, deviceMask));
             break;
         case GPT_PIXEL_PROGRAM:
-            gpuProgram = te_shared_ptr<GLGpuFragmentProgram>(new (te_allocate<GLGpuFragmentProgram>())
-                GLGpuFragmentProgram(desc, deviceMask));
+            gpuProgram = te_shared_ptr<GLGpuPixelProgram>(new (te_allocate<GLGpuPixelProgram>())
+                GLGpuPixelProgram(desc, deviceMask));
             break;
         case GPT_HULL_PROGRAM:
             gpuProgram = te_shared_ptr<GLGpuHullProgram>(new (te_allocate<GLGpuHullProgram>())

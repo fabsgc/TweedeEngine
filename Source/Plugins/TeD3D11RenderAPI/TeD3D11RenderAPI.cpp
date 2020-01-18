@@ -150,7 +150,7 @@ namespace te
         D3D11RasterizerState* d3d11RasterizerState;
         D3D11BlendState* d3d11BlendState;
 
-        D3D11GpuFragmentProgram* d3d11FragmentProgram;
+        D3D11GpuPixelProgram* d3d11PixelProgram;
         D3D11GpuGeometryProgram* d3d11GeometryProgram;
         D3D11GpuDomainProgram* d3d11DomainProgram;
         D3D11GpuHullProgram* d3d11HullProgram;
@@ -162,7 +162,7 @@ namespace te
             _activeDepthStencilState = std::static_pointer_cast<D3D11DepthStencilState>(pipelineState->GetDepthStencilState());
 
             _activeVertexShader = std::static_pointer_cast<D3D11GpuVertexProgram>(pipelineState->GetVertexProgram());
-            d3d11FragmentProgram = static_cast<D3D11GpuFragmentProgram*>(pipelineState->GetFragmentProgram().get());
+            d3d11PixelProgram = static_cast<D3D11GpuPixelProgram*>(pipelineState->GetPixelProgram().get());
             d3d11GeometryProgram = static_cast<D3D11GpuGeometryProgram*>(pipelineState->GetGeometryProgram().get());
             d3d11DomainProgram = static_cast<D3D11GpuDomainProgram*>(pipelineState->GetDomainProgram().get());
             d3d11HullProgram = static_cast<D3D11GpuHullProgram*>(pipelineState->GetHullProgram().get());
@@ -189,7 +189,7 @@ namespace te
             _activeDepthStencilState = std::static_pointer_cast<D3D11DepthStencilState>(DepthStencilState::GetDefault());
 
             _activeVertexShader = nullptr;
-            d3d11FragmentProgram = nullptr;
+            d3d11PixelProgram = nullptr;
             d3d11GeometryProgram = nullptr;
             d3d11DomainProgram = nullptr;
             d3d11HullProgram = nullptr;
@@ -210,9 +210,9 @@ namespace te
             d3d11Context->VSSetShader(nullptr, nullptr, 0);
         }
 
-        if (d3d11FragmentProgram != nullptr)
+        if (d3d11PixelProgram != nullptr)
         {
-            d3d11Context->PSSetShader(d3d11FragmentProgram->GetPixelShader(), nullptr, 0);
+            d3d11Context->PSSetShader(d3d11PixelProgram->GetPixelShader(), nullptr, 0);
         }
         else
         {
