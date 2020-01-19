@@ -24,6 +24,7 @@ set (TE_CORE_INC_RENDERAPI
     "Core/RenderAPI/TeGpuParamDesc.h"
     "Core/RenderAPI/TeGpuProgramManager.h"
     "Core/RenderAPI/TeHardwareBufferManager.h"
+    "Core/RenderAPI/TeGpuPipelineParamInfo.h"
 )
 set (TE_CORE_SRC_RENDERAPI
     "Core/RenderAPI/TeRenderAPI.cpp"
@@ -47,6 +48,7 @@ set (TE_CORE_SRC_RENDERAPI
     "Core/RenderAPI/TeGpuBuffer.cpp"
     "Core/RenderAPI/TeGpuProgramManager.cpp"
     "Core/RenderAPI/TeHardwareBufferManager.cpp"
+    "Core/RenderAPI/TeGpuPipelineParamInfo.cpp"
 )
 
 set (TE_CORE_INC_RENDERER

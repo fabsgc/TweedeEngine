@@ -105,6 +105,8 @@ namespace te
     struct GpuParamDesc;
     class GpuProgramManager;
     class HardwareBufferManager;
+    struct GPU_PIPELINE_PARAMS_DESC;
+    class GpuPipelineParamInfo;
 
     class Renderer;
     class RendererFactory;

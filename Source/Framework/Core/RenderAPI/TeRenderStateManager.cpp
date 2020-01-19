@@ -46,6 +46,15 @@ namespace te
 		return state;
 	}
 
+    SPtr<GpuPipelineParamInfo> RenderStateManager::CreatePipelineParamInfo(
+        const GPU_PIPELINE_PARAMS_DESC& desc, GpuDeviceFlags deviceMask) const
+    {
+        SPtr<GpuPipelineParamInfo> paramInfo = _createPipelineParamInfo(desc, deviceMask);
+        paramInfo->Initialize();
+
+        return paramInfo;
+    }
+
     SPtr<GraphicsPipelineState> RenderStateManager::_createGraphicsPipelineState(const PIPELINE_STATE_DESC& desc) const
 	{
 		SPtr<GraphicsPipelineState> pipelineState =
@@ -77,6 +86,18 @@ namespace te
     {
         SPtr<BlendState> state = CreateBlendStateInternal(desc);
         return state;
+    }
+
+    SPtr<GpuPipelineParamInfo> RenderStateManager::_createPipelineParamInfo(
+        const GPU_PIPELINE_PARAMS_DESC& desc, GpuDeviceFlags deviceMask) const
+    {
+        SPtr<GpuPipelineParamInfo> paramInfo =
+            te_core_ptr<GpuPipelineParamInfo>(new (te_allocate<GpuPipelineParamInfo>())
+                GpuPipelineParamInfo(desc, deviceMask));
+
+        paramInfo->SetThisPtr(paramInfo);
+
+        return paramInfo;
     }
 
     const SPtr<SamplerState>& RenderStateManager::GetDefaultSamplerState() const

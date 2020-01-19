@@ -7,6 +7,7 @@
 #include "RenderAPI/TeGpuPipelineState.h"
 #include "RenderAPI/TeBlendState.h"
 #include "RenderAPI/TeSamplerState.h"
+#include "RenderAPI\TeGpuPipelineParamInfo.h"
 
 namespace te
 {
@@ -31,6 +32,10 @@ namespace te
 		/** Creates and initializes a new GraphicsPipelineState. */
 		SPtr<GraphicsPipelineState> CreateGraphicsPipelineState(const PIPELINE_STATE_DESC& desc) const;
 
+        /** @copydoc GpuPipelineParamInfo::Create */
+        SPtr<GpuPipelineParamInfo> CreatePipelineParamInfo(const GPU_PIPELINE_PARAMS_DESC& desc,
+            GpuDeviceFlags deviceMask = GDF_DEFAULT) const;
+
         /** Creates an uninitialized sampler state. Requires manual initialization after creation. */
         SPtr<SamplerState> _createSamplerState(const SAMPLER_STATE_DESC& desc) const;
 
@@ -45,6 +50,10 @@ namespace te
 
         /**	Creates an uninitialized GraphicsPipelineState. Requires manual initialization after creation. */
 		virtual SPtr<GraphicsPipelineState> _createGraphicsPipelineState(const PIPELINE_STATE_DESC& desc) const;
+
+        /**	Creates an uninitialized GpuPipelineParamInfo. Requires manual initialization after creation. */
+        virtual SPtr<GpuPipelineParamInfo> _createPipelineParamInfo(const GPU_PIPELINE_PARAMS_DESC& desc,
+            GpuDeviceFlags deviceMask = GDF_DEFAULT) const;
 
         /** Gets a sampler state initialized with default options. */
         const SPtr<SamplerState>& GetDefaultSamplerState() const;

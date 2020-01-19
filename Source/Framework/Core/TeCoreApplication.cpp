@@ -456,7 +456,7 @@ namespace te
         // ######################################################
         _camera = Camera::Create();
         _camera->SetRenderTarget(gCoreApplication().GetWindow());
-        _camera->GetViewport()->SetArea(Rect2(0.0f, 0.0f, 0.5f, 0.5f));
+        //_camera->GetViewport()->SetArea(Rect2(0.0f, 0.0f, 0.5f, 0.5f));
         _camera->SetMain(true);
         // ######################################################
 
@@ -559,7 +559,7 @@ namespace te
         UINT32 clearBuffers = FBT_COLOR | FBT_DEPTH | FBT_STENCIL;
         rapi.ClearViewport(clearBuffers, _camera->GetViewport()->GetClearColorValue());
 
-        rapi.SetViewport(_camera->GetViewport()->GetArea());
+        //rapi.SetViewport(_camera->GetViewport()->GetArea());
     
         UINT32 numIndices = _indexBuffer->GetProperties().GetNumIndices();
         UINT32 numVertices = _vertexBuffer->GetProperties().GetNumVertices();

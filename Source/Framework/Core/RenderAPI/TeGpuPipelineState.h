@@ -6,6 +6,7 @@
 #include "TeRasterizerState.h"
 #include "TeBlendState.h"
 #include "TeCommonTypes.h"
+#include "TeGpuPipelineParamInfo.h"
 
 namespace te
 {
@@ -23,6 +24,12 @@ namespace te
         SPtr<GpuProgram> domainProgram;
 	};
 
+    struct GpuPipelineStateTypes
+    {
+        typedef GpuPipelineParamInfo GpuPipelineParamInfoType;
+        typedef PIPELINE_STATE_DESC StateDescType;
+    };
+
 	/**
 	 * Describes the state of the GPU pipeline that determines how are primitives rendered. It consists of programmable
 	 * states (vertex, pixel, geometry, etc. GPU programs), as well as a set of fixed states (blend, rasterizer,
@@ -31,6 +38,8 @@ namespace te
 	class TE_CORE_EXPORT GraphicsPipelineState : public CoreObject
 	{
 	public:
+        using GpuPipelineParamInfoType = typename GpuPipelineStateTypes::GpuPipelineParamInfoType;
+
 		virtual ~GraphicsPipelineState() = default;
 
         SPtr<BlendState> GetBlendState() const { return _data.blendState; }
@@ -62,5 +71,6 @@ namespace te
 		void Initialize() override;
 
 		PIPELINE_STATE_DESC _data;
+        SPtr<GpuPipelineParamInfoType> _paramInfo;
 	};
 }
