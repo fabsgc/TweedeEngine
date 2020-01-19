@@ -474,7 +474,7 @@ namespace te
         vertexShaderProgramDesc.Type = GPT_VERTEX_PROGRAM;
         vertexShaderProgramDesc.EntryPoint = "main";
 #if TE_PLATFORM == TE_PLATFORM_WIN32
-        vertexShaderProgramDesc.Language = "hlsl";
+        vertexShaderProgramDesc.Language = "glsl";
 #else
         vertexShaderProgramDesc.Language = "glsl";
 #endif
@@ -490,7 +490,7 @@ namespace te
         pixelShaderProgramDesc.Type = GPT_PIXEL_PROGRAM;
         pixelShaderProgramDesc.EntryPoint = "main";
 #if TE_PLATFORM == TE_PLATFORM_WIN32
-        pixelShaderProgramDesc.Language = "hlsl";
+        pixelShaderProgramDesc.Language = "glsl";
 #else
         pixelShaderProgramDesc.Language = "glsl";
 #endif
@@ -527,6 +527,7 @@ namespace te
         // ######################################################
 
         // ######################################################
+#if TE_PLATFORM == TE_PLATFORM_WIN32
         _vertexDeclaration = _vertexShader->GetInputDeclaration();
         
         RenderAPI& rapi = RenderAPI::Instance();
@@ -562,12 +563,13 @@ namespace te
         rapi.SetVertexBuffers(0, &_vertexBuffer, 1);
         rapi.SetIndexBuffer(_indexBuffer);
         // ######################################################
+#endif
     }
 
     void CoreApplication::TestRun()
     {
         RenderAPI& rapi = RenderAPI::Instance();
-
+#if TE_PLATFORM == TE_PLATFORM_WIN32
         rapi.SetRenderTarget(_camera->GetViewport()->GetTarget());
 
         UINT32 clearBuffers = FBT_COLOR | FBT_DEPTH | FBT_STENCIL;
@@ -580,15 +582,18 @@ namespace te
         rapi.DrawIndexed(0, numIndices, 0, numVertices);
 
         RenderAPI::Instance().SwapBuffers(_camera->GetViewport()->GetTarget());
+#endif
     }
 
     void CoreApplication::TestShutDown()
     {
+#if TE_PLATFORM == TE_PLATFORM_WIN32
         _indexBuffer->Destroy();
         _indexBuffer = nullptr;
 
         _vertexBuffer->Destroy();
         _vertexBuffer = nullptr;
+#endif
 
         _vertexShader->Destroy();
         _vertexShader = nullptr;

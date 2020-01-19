@@ -57,6 +57,14 @@ namespace te
                 _inputDeclaration = HardwareBufferManager::Instance().CreateVertexDeclaration(_bytecode->VertexInput);
             }
         }
+        else
+        {
+            // TODO to remove
+            if (_type == GPT_VERTEX_PROGRAM)
+            {
+                _inputDeclaration = HardwareBufferManager::Instance().CreateVertexDeclaration(_bytecode->VertexInput);
+            }
+        }
 
         _programId = GlobalProgramId++;
 
