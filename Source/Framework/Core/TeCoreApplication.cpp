@@ -42,7 +42,7 @@
 
 #include "Math/TeVector4.h"
 
-#include "RenderAPI\TeVertexDataDesc.h"
+#include "RenderAPI/TeVertexDataDesc.h"
 
 namespace te
 {
