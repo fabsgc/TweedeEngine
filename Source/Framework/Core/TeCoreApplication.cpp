@@ -132,7 +132,6 @@ namespace te
             Platform::Update();
             gTime().Update();
             gInput().Update();
-            _window->TriggerCallback();
             gInput().TriggerCallbacks();
             gVirtualInput().Update();
 
@@ -150,6 +149,8 @@ namespace te
             TestRun();
 
             //RendererManager::Instance().GetRenderer()->RenderAll();
+
+            _window->TriggerCallback();
         }
     }
 
@@ -308,15 +309,6 @@ namespace te
     void CoreApplication::TestStartUp()
     {
         // ######################################################
-        auto resizedCallback = []()
-        {
-            TE_DEBUG("Window was resized.", __FILE__, __LINE__);
-        };
-
-        _window->OnResized.Connect(resizedCallback);
-        // ######################################################
-
-        // ######################################################
         SPtr<InputConfiguration> inputConfig = gVirtualInput().GetConfiguration();
 
         inputConfig->RegisterButton("Select All", TE_A);
@@ -338,9 +330,9 @@ namespace te
         auto handleButtonDown = [&](const ButtonEvent& event)
         {
             // If user presses space, "jump"
-            if (event.buttonCode == TE_A)
+            if (event.buttonCode == TE_SPACE)
             {
-                TE_PRINT("A");
+                TE_PRINT("SPACE");
             }
         };
 

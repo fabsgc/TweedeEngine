@@ -7,20 +7,6 @@
         "transparent" : true,
         "priority" : 100
     },
-    "sampler":
-    {
-        "name" : "color",
-        "addressu" : "WRAP",
-        "addressv" : "WRAP",
-        "addressw" : "WRAP",
-        "bordercolor" : 0,
-        "filter" : "MIN_MAG_MIP_POINT",
-        "maxanisotropy" : 0,
-        "maxlod" : 0.0,
-        "minlod" : 0.0,
-        "miplodbias" : 0.0,
-        "compare" : "never"
-    },
     "raster" : 
     {
         "fill" : "solid",
@@ -82,6 +68,29 @@
             }
         ]
     },
+    "samplers": 
+    [
+        {
+            "name" : "color",
+            "addressu" : "WRAP",
+            "addressv" : "WRAP",
+            "addressw" : "WRAP",
+            "bordercolor" : 0,
+            "filter" : "MIN_MAG_MIP_POINT",
+            "maxanisotropy" : 0,
+            "maxlod" : 0.0,
+            "minlod" : 0.0,
+            "miplodbias" : 0.0,
+            "compare" : "never"
+        }
+    ],
+    "textures":
+    [
+        {
+            "name": "texture",
+            "type": "texture2d"
+        }
+    ],
     "programs" : 
     [
         {
@@ -90,40 +99,37 @@
             "compiled": false,
             "version": "vs_5",
             "entry": "main",
-            "path" : "Data/Shaders/Raw/vertex.hlsl",
+            "path" : "Data/Shaders/Raw/Default_VS.hlsl",
             "includes": 
             [
-                {
-                    "type": "sampler", "name": "color"
-                }
+                { "type": "sampler", "name": "color" },
+                { "type": "texture", "name": "texture" }
             ]
         },
         {
             "type": "pixel",
-            "language": "glsl",
-            "compiled": false,
-            "version": "4",
-            "entry": "main",
-            "path" : "Data/Shaders/Raw/pixel.glsl",
-            "includes": 
-            [
-                {
-                    "type": "sampler", "name": "color"
-                }
-            ]
-        },
-        {
-            "type": "vertex",
             "language": "hlsl",
             "compiled": false,
             "version": "ps_5",
             "entry": "main",
-            "path" : "Data/Shaders/Raw/vertex.hlsl",
+            "path" : "Data/Shaders/Raw/Default_PS.hlsl",
             "includes": 
             [
-                {
-                    "type": "sampler", "name": "color"
-                }
+                { "type": "sampler", "name": "color" },
+                { "type": "texture", "name": "texture" }
+            ]
+        },
+        {
+            "type": "vertex",
+            "language": "glsl",
+            "compiled": false,
+            "version": "4",
+            "entry": "main",
+            "path" : "Data/Shaders/Raw/Default_VS.glsl",
+            "includes": 
+            [
+                { "type": "sampler", "name": "color" },
+                { "type": "texture", "name": "texture" }
             ]
         },
         {
@@ -132,12 +138,11 @@
             "compiled": false,
             "version": "4",
             "entry": "main",
-            "path" : "Data/Shaders/Raw/pixel.glsl",
+            "path" : "Data/Shaders/Raw/Default_PS.glsl",
             "includes": 
             [
-                {
-                    "type": "sampler", "name": "color"
-                }
+                { "type": "sampler", "name": "color" },
+                { "type": "texture", "name": "texture" }
             ]
         }
     ]

@@ -13,8 +13,9 @@ namespace te
     const String ShaderImporter::TypeStencil = "stencil";
     const String ShaderImporter::TypeBlend = "blend";
     const String ShaderImporter::TypePrograms = "programs";
-    const String ShaderImporter::TypeSampler = "sampler";
+    const String ShaderImporter::TypeSampler = "samplers";
     const String ShaderImporter::TypeOptions = "options";
+    const String ShaderImporter::TypeTextures = "textures";
 
     ShaderImporter::ShaderImporter()
     {
@@ -118,19 +119,26 @@ namespace te
             {
                 ParseBlendBlock(doc, data);
             }
-            else if (type == TypeSampler)
-            {
-                ParseSamplerBlock(doc, data);
-            }
             else if (type == TypeOptions)
             {
                 ParseOptionsBlock(doc, data);
             }
         }
 
-        if (doc.is_array() && type == TypePrograms)
+        if (doc.is_array())
         {
-            ParseProgramsBlock(doc, data);
+            if (type == TypePrograms)
+            {
+                ParseProgramsBlock(doc, data);
+            }
+            else if (type == TypeTextures)
+            {
+                ParseTexturesBlock(doc, data);
+            }
+            else if (type == TypeSampler)
+            {
+                ParseSamplersBlock(doc, data);
+            }
         }
     }
 
@@ -259,6 +267,14 @@ namespace te
         }
     }
 
+    void ShaderImporter::ParseSamplersBlock(nlohmann::json& doc, ParserData& data)
+    {
+        for (auto it = doc.begin(); it != doc.end(); ++it)
+        {
+            ParseSamplerBlock(it.value(), data);
+        }
+    }
+
     void ShaderImporter::ParseSamplerBlock(nlohmann::json& doc, ParserData& data)
     {
         Sampler sampler
@@ -274,6 +290,23 @@ namespace te
             doc["minlod"].get<float>(),
             doc["miplodbias"].get<float>(),
             doc["compare"].get<String>()
+        };
+    }
+
+    void ShaderImporter::ParseTexturesBlock(nlohmann::json& doc, ParserData& data)
+    {
+        for (auto it = doc.begin(); it != doc.end(); ++it)
+        {
+            ParseTextureBlock(it.value(), data);
+        }
+    }
+
+    void ShaderImporter::ParseTextureBlock(nlohmann::json& doc, ParserData& data)
+    {
+        Texture texture
+        {
+            doc["name"].get<String>(),
+            doc["type"].get<String>()
         };
     }
 

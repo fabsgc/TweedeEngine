@@ -28,13 +28,9 @@ int main()
 
     desc.WindowDesc.Mode = te::VideoMode(960, 540);
     desc.WindowDesc.Fullscreen = false;
-    desc.WindowDesc.MultisampleCount = 4;
+    desc.WindowDesc.MultisampleCount = 8;
 
     te::CoreApplication::StartUp(desc);
-
-    te::String startMessage = "Application start";
-    TE_PRINT(startMessage);
-
     te::gCoreApplication().RunMainLoop();
     te::CoreApplication::ShutDown();
 

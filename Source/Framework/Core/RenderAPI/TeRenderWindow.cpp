@@ -34,11 +34,16 @@ namespace te
 
     void RenderWindow::TriggerCallback()
     {
-        if(_moveOrResized)
+        if (_moveOrResized)
+        {
+            WindowMovedOrResized();
             OnResized();
+        }
 
         if (_mouseLeft)
+        {
             OnMouseLeftWindow(*this);
+        }
 
         if (_closeRequested)
         {
@@ -46,11 +51,15 @@ namespace te
             gCoreApplication().OnStopRequested();
         }
 
-        if(_focusReceived)
+        if (_focusReceived)
+        {
             OnFocusGained(*this);
+        }
 
-        if(_focusLost)
+        if (_focusLost)
+        {
             OnFocusLost(*this);
+        }
 
         _moveOrResized = false;
         _mouseLeft = false;
@@ -87,14 +96,13 @@ namespace te
         {
             case WindowEventType::Resized:
             {
-                WindowMovedOrResized();
                 NotifyMovedOrResized();
                 TE_PRINT("Event resized");
                 break;
             }
             case WindowEventType::Moved:
             {
-                WindowMovedOrResized();
+                NotifyMovedOrResized();
                 TE_PRINT("Event moved");
                 break;
             }

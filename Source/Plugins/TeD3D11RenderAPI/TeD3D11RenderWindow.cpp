@@ -31,6 +31,7 @@ namespace te
         {
             _window->Destroy();
             te_delete(_window);
+            _window = nullptr;
         }
 
         DestroySizeDependedD3DResources();

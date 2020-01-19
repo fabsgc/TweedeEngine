@@ -21,6 +21,7 @@ namespace te
         static const String TypePrograms;
         static const String TypeSampler;
         static const String TypeOptions;
+        static const String TypeTextures;
 
         enum Language
         {
@@ -150,6 +151,12 @@ namespace te
             String compare = "never";
         };
 
+        struct Texture
+        {
+            String name = "texture";
+            String type = "texture2d";
+        };
+
         struct Options
         {
             String name = "name";
@@ -181,7 +188,10 @@ namespace te
         void ParseBlendBlock(nlohmann::json& doc, ParserData& data);
         void ParseProgramsBlock(nlohmann::json& doc, ParserData& data);
         void ParseProgramBlock(nlohmann::json& doc, ParserData& data);
+        void ParseSamplersBlock(nlohmann::json& doc, ParserData& data);
         void ParseSamplerBlock(nlohmann::json& doc, ParserData& data);
+        void ParseTexturesBlock(nlohmann::json& doc, ParserData& data);
+        void ParseTextureBlock(nlohmann::json& doc, ParserData& data);
         void ParseOptionsBlock(nlohmann::json& doc, ParserData& data);
 
     private:

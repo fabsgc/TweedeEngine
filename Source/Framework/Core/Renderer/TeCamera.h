@@ -39,7 +39,7 @@ namespace te
 		 */	
         void SetMain(bool main) { _main = main; };
 
-		/** @copydoc setMain() */
+		/** @copydoc SetMain() */
 		bool IsMain() const { return _main; }
 
         /**	Creates a new camera that renders to the specified portion of the provided render target. */

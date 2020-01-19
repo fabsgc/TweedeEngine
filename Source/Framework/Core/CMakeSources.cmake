@@ -64,10 +64,12 @@ set (TE_CORE_SRC_RENDERER
 set (TE_CORE_INC_SCENE
     "Core/Scene/TeSceneActor.h"
     "Core/Scene/TeSceneManager.h"
+    "Core/Scene/TeTransform.h"
 )
 set (TE_CORE_SRC_SCENE
     "Core/Scene/TeSceneActor.cpp"
     "Core/Scene/TeSceneManager.cpp"
+    "Core/Scene/TeTransform.cpp"
 )
 
 set(TE_CORE_INC_PLATFORM

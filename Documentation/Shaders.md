@@ -79,8 +79,8 @@ includes             | Include block
 
 Name                 | Valid values				  
 ---------------------|-------------
-type                 | sampler
-name                 | sample name declared in file
+type                 | sampler, texture
+name                 | sample or texture name declared in file
 
 ## sampler
 
@@ -97,6 +97,14 @@ maxLOD				 | float									  | @te::SAMPLER_STATE_DESC::MipMax
 minLOD				 | float									  | @te::SAMPLER_STATE_DESC::MipMin
 mipLODBias			 | float									  | @te::SAMPLER_STATE_DESC::MipmapBias
 comparisonfunc		 | never, less, equal, less_equal, greater, not_equal, greater_equal, always | @te::SAMPLER_STATE_DESC::ComparisonFunc
+
+## texture
+
+Name                 | Valid values				  
+---------------------|-------------
+type                 | texture1d, texture2d, texture3d, texturecube
+name                 | texture
+
 
 Filter valid values:
 - min_mag_mip_point
