@@ -473,7 +473,11 @@ namespace te
         GPU_PROGRAM_DESC vertexShaderProgramDesc;
         vertexShaderProgramDesc.Type = GPT_VERTEX_PROGRAM;
         vertexShaderProgramDesc.EntryPoint = "main";
+#if TE_PLATFORM == TE_PLATFORM_WIN32
         vertexShaderProgramDesc.Language = "hlsl";
+#elif
+        vertexShaderProgramDesc.Language = "glsl";
+#endif
         vertexShaderProgramDesc.Source = vertexShaderFile.GetAsString();
 
         _vertexShader = GpuProgram::Create(vertexShaderProgramDesc);
@@ -485,7 +489,11 @@ namespace te
         GPU_PROGRAM_DESC pixelShaderProgramDesc;
         pixelShaderProgramDesc.Type = GPT_PIXEL_PROGRAM;
         pixelShaderProgramDesc.EntryPoint = "main";
+#if TE_PLATFORM == TE_PLATFORM_WIN32
         pixelShaderProgramDesc.Language = "hlsl";
+#elif
+        pixelShaderProgramDesc.Language = "glsl";
+#endif
         pixelShaderProgramDesc.Source = pixelShaderFile.GetAsString();
 
         _pixelShader = GpuProgram::Create(pixelShaderProgramDesc);
