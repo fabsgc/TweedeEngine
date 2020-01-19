@@ -7,7 +7,7 @@
 #include "RenderAPI/TeGpuPipelineState.h"
 #include "RenderAPI/TeBlendState.h"
 #include "RenderAPI/TeSamplerState.h"
-#include "RenderAPI\TeGpuPipelineParamInfo.h"
+#include "RenderAPI/TeGpuPipelineParamInfo.h"
 
 namespace te
 {
