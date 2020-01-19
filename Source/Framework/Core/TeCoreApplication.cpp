@@ -467,17 +467,14 @@ namespace te
         _camera->SetMain(true);
         // ######################################################
 
+#if TE_PLATFORM == TE_PLATFORM_WIN32
         // ######################################################
         FileStream vertexShaderFile("Data/Shaders/Raw/Test/Color_VS.hlsl");
 
         GPU_PROGRAM_DESC vertexShaderProgramDesc;
         vertexShaderProgramDesc.Type = GPT_VERTEX_PROGRAM;
         vertexShaderProgramDesc.EntryPoint = "main";
-#if TE_PLATFORM == TE_PLATFORM_WIN32
-        vertexShaderProgramDesc.Language = "glsl";
-#else
-        vertexShaderProgramDesc.Language = "glsl";
-#endif
+        vertexShaderProgramDesc.Language = "hlsl";
         vertexShaderProgramDesc.Source = vertexShaderFile.GetAsString();
 
         _vertexShader = GpuProgram::Create(vertexShaderProgramDesc);
@@ -489,11 +486,7 @@ namespace te
         GPU_PROGRAM_DESC pixelShaderProgramDesc;
         pixelShaderProgramDesc.Type = GPT_PIXEL_PROGRAM;
         pixelShaderProgramDesc.EntryPoint = "main";
-#if TE_PLATFORM == TE_PLATFORM_WIN32
-        pixelShaderProgramDesc.Language = "glsl";
-#else
-        pixelShaderProgramDesc.Language = "glsl";
-#endif
+        pixelShaderProgramDesc.Language = "hlsl";
         pixelShaderProgramDesc.Source = pixelShaderFile.GetAsString();
 
         _pixelShader = GpuProgram::Create(pixelShaderProgramDesc);
@@ -527,7 +520,6 @@ namespace te
         // ######################################################
 
         // ######################################################
-#if TE_PLATFORM == TE_PLATFORM_WIN32
         _vertexDeclaration = _vertexShader->GetInputDeclaration();
         
         RenderAPI& rapi = RenderAPI::Instance();
@@ -593,7 +585,6 @@ namespace te
 
         _vertexBuffer->Destroy();
         _vertexBuffer = nullptr;
-#endif
 
         _vertexShader->Destroy();
         _vertexShader = nullptr;
@@ -601,14 +592,14 @@ namespace te
         _pixelShader->Destroy();
         _pixelShader = nullptr;
 
-        _window->Destroy();
-        _window = nullptr;
-
         _camera->Destroy();
         _camera = nullptr;
 
         _cameraHidden->Destroy();
         _cameraHidden = nullptr;
+#endif
+        _window->Destroy();
+        _window = nullptr;
 
         _renderer.reset();
         _window.reset();
