@@ -134,7 +134,6 @@ namespace te
             _driverList = nullptr;
         }
 
-
         _activeVertexDeclaration = nullptr;
 		_activeVertexShader = nullptr;
         _activeRenderTarget = nullptr;
@@ -512,6 +511,7 @@ namespace te
         if (!clearEntireTarget)
         {
             // D3D11RenderUtility::Instance().DrawClearQuad(buffers, color, depth, stencil); TODO
+            ClearRenderTarget(buffers, color, depth, stencil, targetMask);
             NotifyRenderTargetModified();
         }
         else
@@ -576,7 +576,7 @@ namespace te
             return;
         }
 
-        ID3D11InputLayout* ia = NULL; // TODO
+        ID3D11InputLayout* ia = _IAManager->RetrieveInputLayout(_activeVertexShader->GetInputDeclaration(), _activeVertexDeclaration, *_activeVertexShader);
         _device->GetImmediateContext()->IASetInputLayout(ia);
     }
 
@@ -605,6 +605,11 @@ namespace te
         _viewport.MaxDepth = 1.0f;
 
         _device->GetImmediateContext()->RSSetViewports(1, &_viewport);
+
+        if (_device->HasError())
+        {
+            TE_ASSERT_ERROR(false, "Unable to set Viewport" + _device->GetErrorDescription(), __FILE__, __LINE__);
+        }
     }
 
     void D3D11RenderAPI::NotifyRenderTargetModified()

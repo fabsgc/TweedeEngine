@@ -26,7 +26,7 @@ int main()
         "TeShaderImporter"
     };
 
-    desc.WindowDesc.Mode = te::VideoMode(960, 480);
+    desc.WindowDesc.Mode = te::VideoMode(960, 540);
     desc.WindowDesc.Fullscreen = false;
     desc.WindowDesc.MultisampleCount = 4;
 

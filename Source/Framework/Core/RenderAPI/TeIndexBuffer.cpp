@@ -33,6 +33,7 @@ namespace te
     IndexBuffer::IndexBuffer(const INDEX_BUFFER_DESC& desc, GpuDeviceFlags deviceMask)
         : HardwareBuffer(CalcIndexSize(desc.Type)* desc.NumIndices, desc.Usage, deviceMask)
         , _properties(desc.Type, desc.NumIndices)
+        , _usage(desc.Usage)
     {
 #if TE_DEBUG_MODE
         CheckValidDesc(desc);

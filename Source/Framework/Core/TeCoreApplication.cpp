@@ -37,6 +37,13 @@
 
 #include "RenderAPI/TeGpuProgram.h"
 
+#include "RenderAPI/TeVertexBuffer.h"
+#include "RenderAPI/TeIndexBuffer.h"
+
+#include "Math/TeVector4.h"
+
+#include "RenderAPI\TeVertexDataDesc.h"
+
 namespace te
 {
     TE_MODULE_STATIC_MEMBER(CoreApplication)
@@ -140,9 +147,9 @@ namespace te
 
             PostUpdate();
 
-            RendererManager::Instance().GetRenderer()->RenderAll();
-
             TestRun();
+
+            //RendererManager::Instance().GetRenderer()->RenderAll();
         }
     }
 
@@ -398,14 +405,6 @@ namespace te
         // ######################################################
 
         // ######################################################
-        _camera = Camera::Create();
-        _camera->SetRenderTarget(gCoreApplication().GetWindow());
-        //_camera->GetViewport()->SetClearColorValue(Color(0.6f, 0.0f, 0.2f, 1.0f));
-        _camera->GetViewport()->SetArea(Rect2(0.5, 0.5, 0.5, 0.5));
-        _camera->SetMain(true);
-        // ######################################################
-
-        // ######################################################
         FileStream file1("Data/Textures/default.png");
         FileStream file2("Data\\Textures\\default.png");
         // ######################################################
@@ -449,13 +448,27 @@ namespace te
         _cameraHidden->GetViewport()->SetClearColorValue(Color(0.2f, 0.0f, 0.2f, 1.0f));
         _cameraHidden->SetMain(false);
 
-        SPtr<PixelData> pixelData = loadTexture->GetProperties().AllocBuffer(0, 0);
-        loadTexture->ReadCachedData(*pixelData);
+        SPtr<PixelData> pixelDataCameraHidden = loadTexture->GetProperties().AllocBuffer(0, 0);
+        loadTexture->ReadCachedData(*pixelDataCameraHidden);
+        Color pixelColorCameraHidden = pixelDataCameraHidden->GetColorAt(50, 50);
+        // ######################################################
+
+        // ######################################################
+        SPtr<Texture> cameraHiddenTexture = (static_cast<RenderTexture&>(*(_cameraHidden->GetViewport()->GetTarget()))).GetColorTexture(0);
+        SPtr<PixelData> pixelData = cameraHiddenTexture->GetProperties().AllocBuffer(0, 0);
+        cameraHiddenTexture->ReadData(*pixelData);
         Color pixelColor = pixelData->GetColorAt(50, 50);
         // ######################################################
 
         // ######################################################
-        FileStream vertexShaderFile("Data/Shaders/Raw/Test/VS.hlsl");
+        _camera = Camera::Create();
+        _camera->SetRenderTarget(gCoreApplication().GetWindow());
+        _camera->GetViewport()->SetArea(Rect2(0.0f, 0.0f, 0.5f, 0.5f));
+        _camera->SetMain(true);
+        // ######################################################
+
+        // ######################################################
+        FileStream vertexShaderFile("Data/Shaders/Raw/Test/Color_VS.hlsl");
 
         GPU_PROGRAM_DESC vertexShaderProgramDesc;
         vertexShaderProgramDesc.Type = GPT_VERTEX_PROGRAM;
@@ -467,7 +480,7 @@ namespace te
         // ######################################################
 
         // ######################################################
-        FileStream pixelShaderFile("Data/Shaders/Raw/Test/PS.hlsl");
+        FileStream pixelShaderFile("Data/Shaders/Raw/Test/Color_PS.hlsl");
 
         GPU_PROGRAM_DESC pixelShaderProgramDesc;
         pixelShaderProgramDesc.Type = GPT_PIXEL_PROGRAM;
@@ -486,6 +499,7 @@ namespace te
 
         rastDesc.polygonMode = PM_SOLID; // Draw wireframe instead of solid
         rastDesc.cullMode = CULL_NONE; // Disable blackface culling
+        rastDesc.multisampleEnable = true;
 
         SPtr<BlendState> blendState = BlendState::Create(blendDesc);
         SPtr<RasterizerState> rasterizerState = RasterizerState::Create(rastDesc);
@@ -504,19 +518,70 @@ namespace te
         RenderAPI::Instance().SetGraphicsPipeline(graphicsPipeline);
         // ######################################################
 
-        CoreObjectManager& i = CoreObjectManager::Instance();
+        // ######################################################
+        _vertexDeclaration = _vertexShader->GetInputDeclaration();
+        
+        RenderAPI& rapi = RenderAPI::Instance();
+
+        VERTEX_BUFFER_DESC vertexBufferDesc;
+        vertexBufferDesc.VertexSize = _vertexDeclaration->GetProperties().GetVertexSize(0);
+        vertexBufferDesc.NumVerts = 3;
+        vertexBufferDesc.Usage = GBU_DYNAMIC;
+        _vertexBuffer = VertexBuffer::Create(vertexBufferDesc);
+
+        Vector4* positions = (Vector4*)_vertexBuffer->Lock(0, sizeof(Vector4) * 6, GBL_WRITE_ONLY_DISCARD);
+        positions[0] = Vector4(0.0f, 0.6f, 0.0f, 1.0f);
+        positions[1] = Vector4(0.6f, 0.2f, 0.2f, 1.0f);
+        positions[2] = Vector4(0.45f, -0.5f, 0.0f, 1.0f);
+        positions[3] = Vector4(0.3f, 0.8f, 0.8f, 1.0f);
+        positions[4] = Vector4(-0.45f, -0.5f, 0.0f, 1.0f);
+        positions[5] = Vector4(1.0f, 0.8f, 0.4f, 1.0f);
+        _vertexBuffer->Unlock();
+
+        INDEX_BUFFER_DESC indexBufferDesc;
+        indexBufferDesc.Type = IT_16BIT;
+        indexBufferDesc.NumIndices = 3;
+        indexBufferDesc.Usage = GBU_DYNAMIC;
+        _indexBuffer = IndexBuffer::Create(indexBufferDesc);
+
+        UINT16* indices = (UINT16*)_indexBuffer->Lock(0, sizeof(UINT16) * 3, GBL_WRITE_ONLY_DISCARD);
+        indices[0] = 0;
+        indices[1] = 1;
+        indices[2] = 2;
+        _indexBuffer->Unlock();
+
+        rapi.SetVertexDeclaration(_vertexDeclaration);
+        rapi.SetVertexBuffers(0, &_vertexBuffer, 1);
+        rapi.SetIndexBuffer(_indexBuffer);
+        // ######################################################
     }
 
     void CoreApplication::TestRun()
     {
-        SPtr<Texture> renderTexture = (static_cast<RenderTexture&>(*(_cameraHidden->GetViewport()->GetTarget()))).GetColorTexture(0);
-        SPtr<PixelData> pixelData = renderTexture->GetProperties().AllocBuffer(0, 0);
-        renderTexture->ReadData(*pixelData);
-        Color pixelColor = pixelData->GetColorAt(50, 50);
+        RenderAPI& rapi = RenderAPI::Instance();
+
+        rapi.SetRenderTarget(_camera->GetViewport()->GetTarget());
+
+        UINT32 clearBuffers = FBT_COLOR | FBT_DEPTH | FBT_STENCIL;
+        rapi.ClearViewport(clearBuffers, _camera->GetViewport()->GetClearColorValue());
+
+        rapi.SetViewport(_camera->GetViewport()->GetArea());
+    
+        UINT32 numIndices = _indexBuffer->GetProperties().GetNumIndices();
+        UINT32 numVertices = _vertexBuffer->GetProperties().GetNumVertices();
+        rapi.DrawIndexed(0, numIndices, 0, numVertices);
+
+        RenderAPI::Instance().SwapBuffers(_camera->GetViewport()->GetTarget());
     }
 
     void CoreApplication::TestShutDown()
     {
+        _indexBuffer->Destroy();
+        _indexBuffer = nullptr;
+
+        _vertexBuffer->Destroy();
+        _vertexBuffer = nullptr;
+
         _vertexShader->Destroy();
         _vertexShader = nullptr;
 

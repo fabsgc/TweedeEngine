@@ -316,7 +316,7 @@ namespace te
         }
         else
         {
-            TE_DEBUG("Trying to write into a buffer with unsupported usage: {0}", _desc.Usage, __FILE__, __LINE__);
+            TE_DEBUG("Trying to write into a buffer with unsupported usage: " + ToString(_desc.Usage), __FILE__, __LINE__);
         }
     }
 }

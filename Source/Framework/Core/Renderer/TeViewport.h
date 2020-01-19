@@ -16,7 +16,7 @@ namespace te
         /** Determines the area that the viewport covers. Coordinates are in normalized [0, 1] range. */
         void SetArea(const Rect2& area);
 
-        /** @copydoc setArea() */
+        /** @copydoc SetArea() */
         Rect2 GetArea() const { return _normArea; }
 
         /**	Sets values to clear color, depth and stencil buffers to. */

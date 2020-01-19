@@ -35,6 +35,9 @@ namespace te
         /**	Converts engine to DX11 vertex element type. */
         static DXGI_FORMAT Get(VertexElementType type);
 
+        /** Convert DXGI_FORMAT to its size in byte */
+        static UINT32 GetSize(DXGI_FORMAT format);
+
         /**	Returns a string describing the provided vertex element semantic. */
         static LPCSTR Get(VertexElementSemantic sem);
 

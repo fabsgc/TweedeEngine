@@ -27,7 +27,6 @@ namespace te
 		rasterizerStateDesc.DepthBias = scaledDepthBias;
 		rasterizerStateDesc.DepthBiasClamp = _properties.GetDepthBiasClamp();
 		rasterizerStateDesc.DepthClipEnable = _properties.GetDepthClipEnable();
-		rasterizerStateDesc.FillMode = D3D11Mappings::Get(_properties.GetPolygonMode());
 		rasterizerStateDesc.MultisampleEnable = _properties.GetMultisampleEnable();
 		rasterizerStateDesc.ScissorEnable = _properties.GetScissorEnable();
 		rasterizerStateDesc.SlopeScaledDepthBias = _properties.GetSlopeScaledDepthBias();

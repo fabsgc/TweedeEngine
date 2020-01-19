@@ -9,7 +9,8 @@ namespace te
     }
 
     D3D11IndexBuffer::D3D11IndexBuffer(D3D11Device& device, const INDEX_BUFFER_DESC& desc, GpuDeviceFlags deviceMask)
-        :IndexBuffer(desc, deviceMask), _device(device)
+        : IndexBuffer(desc, deviceMask)
+        , _device(device)
     {
         assert((deviceMask == GDF_DEFAULT || deviceMask == GDF_PRIMARY) && "Multiple GPUs not supported natively on DirectX.");
     }

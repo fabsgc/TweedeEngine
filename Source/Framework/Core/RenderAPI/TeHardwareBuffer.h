@@ -126,7 +126,9 @@ namespace te
          */
         HardwareBuffer(UINT32 size, GpuBufferUsage usage, GpuDeviceFlags deviceMask)
             : _size(size), _usage(usage), _deviceMask(deviceMask)
-        {  }
+        {  
+        
+        }
 
         /** @copydoc Lock */
         virtual void* Map(UINT32 offset, UINT32 length, GpuLockOptions options, UINT32 deviceIdx,
