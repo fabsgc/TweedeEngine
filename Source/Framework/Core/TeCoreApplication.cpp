@@ -475,7 +475,7 @@ namespace te
         vertexShaderProgramDesc.EntryPoint = "main";
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         vertexShaderProgramDesc.Language = "hlsl";
-#elif
+#else
         vertexShaderProgramDesc.Language = "glsl";
 #endif
         vertexShaderProgramDesc.Source = vertexShaderFile.GetAsString();
