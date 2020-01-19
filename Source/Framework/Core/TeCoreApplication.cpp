@@ -409,6 +409,7 @@ namespace te
         FileStream file2("Data\\Textures\\default.png");
         // ######################################################
 
+#if TE_PLATFORM == TE_PLATFORM_WIN32
         // ######################################################
         // Create a 960x480 texture with 32-bit RGBA format
         TEXTURE_DESC targetColorDesc;
@@ -467,7 +468,6 @@ namespace te
         _camera->SetMain(true);
         // ######################################################
 
-#if TE_PLATFORM == TE_PLATFORM_WIN32
         // ######################################################
         FileStream vertexShaderFile("Data/Shaders/Raw/Test/Color_VS.hlsl");
 
