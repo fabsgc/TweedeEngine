@@ -491,7 +491,7 @@ namespace te
         pixelShaderProgramDesc.EntryPoint = "main";
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         pixelShaderProgramDesc.Language = "hlsl";
-#elif
+#else
         pixelShaderProgramDesc.Language = "glsl";
 #endif
         pixelShaderProgramDesc.Source = pixelShaderFile.GetAsString();
