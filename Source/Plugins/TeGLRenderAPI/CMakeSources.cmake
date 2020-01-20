@@ -15,7 +15,8 @@ set (TE_GLRENDERAPI_INC_NOFILTER
 	"TeGLHardwareBuffer.h"
     "TeGLHardwareBufferManager.h"
     "TeGLVertexBuffer.h"
-    "TeGLIndexBuffer.h"
+	"TeGLIndexBuffer.h"
+	"TeGLGpuParamBlockBuffer.h"
 )
 
 set (TE_GLRENDERAPI_SRC_NOFILTER
@@ -35,7 +36,8 @@ set (TE_GLRENDERAPI_SRC_NOFILTER
 	"TeGLHardwareBuffer.cpp"
     "TeGLHardwareBufferManager.cpp"
     "TeGLVertexBuffer.cpp"
-    "TeGLIndexBuffer.cpp"
+	"TeGLIndexBuffer.cpp"
+	"TeGLGpuParamBlockBuffer.cpp"
 )
 
 set(TE_GLRENDERAPI_INC_WIN32

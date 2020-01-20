@@ -12,8 +12,8 @@ namespace te
     {
         te_zero_out(_numElementsPerType);
 
-        _paramDescs[GPT_VERTEX_PROGRAM] = desc.PixelParams;
         _paramDescs[GPT_VERTEX_PROGRAM] = desc.VertexParams;
+        _paramDescs[GPT_PIXEL_PROGRAM] = desc.PixelParams;
         _paramDescs[GPT_GEOMETRY_PROGRAM] = desc.GeometryParams;
         _paramDescs[GPT_HULL_PROGRAM] = desc.HullParams;
         _paramDescs[GPT_DOMAIN_PROGRAM] = desc.DomainParams;

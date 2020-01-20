@@ -1,6 +1,8 @@
 #include "RenderAPI/TeHardwareBufferManager.h"
 #include "RenderAPI/TeVertexDeclaration.h"
 #include "RenderAPI/TeVertexDataDesc.h"
+#include "RenderAPI/TeGpuParamBlockBuffer.h"
+#include "RenderAPI/TeGpuParams.h"
 
 namespace te
 {
@@ -93,5 +95,33 @@ namespace te
         ret->SetThisPtr(ret);
 
         return ret;
+    }
+
+    SPtr<GpuParamBlockBuffer> HardwareBufferManager::CreateGpuParamBlockBuffer(UINT32 size,
+        GpuBufferUsage usage, GpuDeviceFlags deviceMask)
+    {
+        SPtr<GpuParamBlockBuffer> paramBlockPtr = CreateGpuParamBlockBufferInternal(size, usage, deviceMask);
+        paramBlockPtr->Initialize();
+
+        return paramBlockPtr;
+    }
+
+    SPtr<GpuParams> HardwareBufferManager::CreateGpuParams(const SPtr<GpuPipelineParamInfo>& paramInfo,
+        GpuDeviceFlags deviceMask)
+    {
+        SPtr<GpuParams> params = CreateGpuParamsInternal(paramInfo, deviceMask);
+        params->Initialize();
+
+        return params;
+    }
+
+    SPtr<GpuParams> HardwareBufferManager::CreateGpuParamsInternal(
+        const SPtr<GpuPipelineParamInfo>& paramInfo, GpuDeviceFlags deviceMask)
+    {
+        GpuParams* params = new (te_allocate<GpuParams>()) GpuParams(paramInfo, deviceMask);
+        SPtr<GpuParams> paramsPtr = te_core_ptr<GpuParams>(params);
+        paramsPtr->SetThisPtr(paramsPtr);
+
+        return paramsPtr;
     }
 }

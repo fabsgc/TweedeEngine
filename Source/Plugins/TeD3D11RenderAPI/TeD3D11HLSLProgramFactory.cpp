@@ -182,6 +182,8 @@ namespace te
                 "Line " + ToString(lineIdx) + ": " + sourceLine;
 
             SAFE_RELEASE(messages);
+
+            TE_ASSERT_ERROR(false, "Can't compile shader file : " + compileMessage, __FILE__, __LINE__);
         }
 
         SPtr<GpuProgramBytecode> bytecode = te_shared_ptr_new<GpuProgramBytecode>();

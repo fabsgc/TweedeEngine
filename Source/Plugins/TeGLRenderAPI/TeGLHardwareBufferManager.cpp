@@ -1,6 +1,7 @@
 #include "TeGLHardwareBufferManager.h"
 #include "TeGLVertexBuffer.h"
 #include "TeGLIndexBuffer.h"
+#include "TeGLGpuParamBlockBuffer.h"
 
 namespace te
 {
@@ -23,5 +24,17 @@ namespace te
         ret->SetThisPtr(ret);
 
         return ret;
+    }
+
+    SPtr<GpuParamBlockBuffer> GLHardwareBufferManager::CreateGpuParamBlockBufferInternal(UINT32 size,
+        GpuBufferUsage usage, GpuDeviceFlags deviceMask)
+    {
+        GLGpuParamBlockBuffer* paramBlockBuffer =
+            new (te_allocate<GLGpuParamBlockBuffer>()) GLGpuParamBlockBuffer(size, usage, deviceMask);
+
+        SPtr<GpuParamBlockBuffer> paramBlockBufferPtr = te_core_ptr<GLGpuParamBlockBuffer>(paramBlockBuffer);
+        paramBlockBufferPtr->SetThisPtr(paramBlockBufferPtr);
+
+        return paramBlockBufferPtr;
     }
 }

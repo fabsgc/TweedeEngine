@@ -20,6 +20,11 @@ namespace te
         SPtr<IndexBuffer> CreateIndexBufferInternal(const INDEX_BUFFER_DESC& desc,
             GpuDeviceFlags deviceMask = GDF_DEFAULT) override;
 
+        /** @copydoc HardwareBufferManager::CreateGpuParamBlockBufferInternal  */
+        SPtr<GpuParamBlockBuffer> CreateGpuParamBlockBufferInternal(UINT32 size,
+            GpuBufferUsage usage = GBU_DYNAMIC, GpuDeviceFlags deviceMask = GDF_DEFAULT) override;
+
+
     protected:
         D3D11Device& _device;
     };

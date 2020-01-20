@@ -30,6 +30,7 @@ set(TE_UTILITY_INC_MATH
     "Utility/Math/TeMath.h"
     "Utility/Math/TeLineSegment3.h"
     "Utility/Math/TeLine2.h"
+    "Utility/Math/TeMatrixNxM.h"
 )
 set(TE_UTILITY_SRC_MATH
     "Utility/Math/TeAABox.cpp"

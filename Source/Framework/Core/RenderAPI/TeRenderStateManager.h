@@ -30,7 +30,8 @@ namespace te
         SPtr<BlendState> CreateBlendState(const BLEND_STATE_DESC& desc) const;
 
 		/** Creates and initializes a new GraphicsPipelineState. */
-		SPtr<GraphicsPipelineState> CreateGraphicsPipelineState(const PIPELINE_STATE_DESC& desc) const;
+		SPtr<GraphicsPipelineState> CreateGraphicsPipelineState(const PIPELINE_STATE_DESC& desc,
+            GpuDeviceFlags deviceMask = GDF_DEFAULT) const;
 
         /** @copydoc GpuPipelineParamInfo::Create */
         SPtr<GpuPipelineParamInfo> CreatePipelineParamInfo(const GPU_PIPELINE_PARAMS_DESC& desc,
@@ -49,7 +50,8 @@ namespace te
         SPtr<BlendState> _createBlendState(const BLEND_STATE_DESC& desc) const;
 
         /**	Creates an uninitialized GraphicsPipelineState. Requires manual initialization after creation. */
-		virtual SPtr<GraphicsPipelineState> _createGraphicsPipelineState(const PIPELINE_STATE_DESC& desc) const;
+		virtual SPtr<GraphicsPipelineState> _createGraphicsPipelineState(const PIPELINE_STATE_DESC& desc,
+            GpuDeviceFlags deviceMask = GDF_DEFAULT) const;
 
         /**	Creates an uninitialized GpuPipelineParamInfo. Requires manual initialization after creation. */
         virtual SPtr<GpuPipelineParamInfo> _createPipelineParamInfo(const GPU_PIPELINE_PARAMS_DESC& desc,

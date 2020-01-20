@@ -36,13 +36,14 @@
 #include "Utility/TeFileStream.h"
 
 #include "RenderAPI/TeGpuProgram.h"
-
 #include "RenderAPI/TeVertexBuffer.h"
 #include "RenderAPI/TeIndexBuffer.h"
+#include "RenderAPI/TeVertexDataDesc.h"
+#include "RenderAPI/TeGpuParams.h"
 
 #include "Math/TeVector4.h"
 
-#include "RenderAPI/TeVertexDataDesc.h"
+
 
 namespace te
 {
@@ -507,6 +508,7 @@ namespace te
         pipeDesc.pixelProgram = _pixelShader;
 
         SPtr<GraphicsPipelineState> graphicsPipeline = GraphicsPipelineState::Create(pipeDesc);
+        SPtr<GpuParams> params = GpuParams::Create(graphicsPipeline);
 
         RenderAPI::Instance().SetGraphicsPipeline(graphicsPipeline);
         // ######################################################
@@ -522,13 +524,16 @@ namespace te
         vertexBufferDesc.Usage = GBU_DYNAMIC;
         _vertexBuffer = VertexBuffer::Create(vertexBufferDesc);
 
-        Vector4* positions = (Vector4*)_vertexBuffer->Lock(0, sizeof(Vector4) * 6, GBL_WRITE_ONLY_DISCARD);
+        Vector4* positions = (Vector4*)_vertexBuffer->Lock(0, sizeof(Vector4) * 9, GBL_WRITE_ONLY_DISCARD);
         positions[0] = Vector4(0.0f, 0.6f, 0.0f, 1.0f);
         positions[1] = Vector4(0.6f, 0.2f, 0.2f, 1.0f);
-        positions[2] = Vector4(0.45f, -0.5f, 0.0f, 1.0f);
-        positions[3] = Vector4(0.3f, 0.8f, 0.8f, 1.0f);
-        positions[4] = Vector4(-0.45f, -0.5f, 0.0f, 1.0f);
-        positions[5] = Vector4(1.0f, 0.8f, 0.4f, 1.0f);
+        positions[2] = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+        positions[3] = Vector4(0.45f, -0.5f, 0.0f, 1.0f);
+        positions[4] = Vector4(0.3f, 0.8f, 0.8f, 1.0f);
+        positions[5] = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+        positions[6] = Vector4(-0.45f, -0.5f, 0.0f, 1.0f);
+        positions[7] = Vector4(1.0f, 0.8f, 0.4f, 1.0f);
+        positions[8] = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
         _vertexBuffer->Unlock();
 
         INDEX_BUFFER_DESC indexBufferDesc;

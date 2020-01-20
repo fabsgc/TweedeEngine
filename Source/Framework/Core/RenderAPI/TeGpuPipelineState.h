@@ -59,18 +59,22 @@ namespace te
         const SPtr<GpuProgram>& GetDomainProgram() const { return _data.domainProgram; }
         
         /** @copydoc RenderStateManager::CreateGraphicsPipelineState */
-		static SPtr<GraphicsPipelineState> Create(const PIPELINE_STATE_DESC& desc);
+		static SPtr<GraphicsPipelineState> Create(const PIPELINE_STATE_DESC& desc, GpuDeviceFlags deviceMask = GDF_DEFAULT);
+
+        /** Returns an object containing meta-data for parameters of all GPU programs used in this pipeline state. */
+        const SPtr<GpuPipelineParamInfoType>& GetParamInfo() const { return _paramInfo; }
 
 	protected:
 		friend class RenderStateManager;
 
 		GraphicsPipelineState() = default;
-		GraphicsPipelineState(const PIPELINE_STATE_DESC& desc);
+		GraphicsPipelineState(const PIPELINE_STATE_DESC& desc, GpuDeviceFlags deviceMask);
 
         /** @copydoc CoreObject::Initialize() */
 		void Initialize() override;
 
 		PIPELINE_STATE_DESC _data;
+        GpuDeviceFlags _deviceMask = GDF_DEFAULT;
         SPtr<GpuPipelineParamInfoType> _paramInfo;
 	};
 }

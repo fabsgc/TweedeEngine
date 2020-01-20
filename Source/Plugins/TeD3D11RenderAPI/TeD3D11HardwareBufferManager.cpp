@@ -1,6 +1,7 @@
 #include "TeD3D11HardwareBufferManager.h"
 #include "TeD3D11VertexBuffer.h"
 #include "TeD3D11IndexBuffer.h"
+#include "TeD3D11GpuParamBlockBuffer.h"
 
 namespace te
 {
@@ -24,5 +25,17 @@ namespace te
         ret->SetThisPtr(ret);
 
         return ret;
+    }
+
+    SPtr<GpuParamBlockBuffer> D3D11HardwareBufferManager::CreateGpuParamBlockBufferInternal(UINT32 size,
+        GpuBufferUsage usage, GpuDeviceFlags deviceMask)
+    {
+        D3D11GpuParamBlockBuffer* paramBlockBuffer =
+            new (te_allocate<D3D11GpuParamBlockBuffer>()) D3D11GpuParamBlockBuffer(size, usage, deviceMask);
+
+        SPtr<GpuParamBlockBuffer> paramBlockBufferPtr = te_core_ptr<D3D11GpuParamBlockBuffer>(paramBlockBuffer);
+        paramBlockBufferPtr->SetThisPtr(paramBlockBufferPtr);
+
+        return paramBlockBufferPtr;
     }
 }

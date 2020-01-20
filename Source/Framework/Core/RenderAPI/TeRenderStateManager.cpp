@@ -38,9 +38,10 @@ namespace te
         return state;
     }
 
-    SPtr<GraphicsPipelineState> RenderStateManager::CreateGraphicsPipelineState(const PIPELINE_STATE_DESC& desc) const
+    SPtr<GraphicsPipelineState> RenderStateManager::CreateGraphicsPipelineState(const PIPELINE_STATE_DESC& desc,
+        GpuDeviceFlags deviceMask) const
 	{
-		SPtr<GraphicsPipelineState> state = _createGraphicsPipelineState(desc);
+		SPtr<GraphicsPipelineState> state = _createGraphicsPipelineState(desc, deviceMask);
 		state->Initialize();
 
 		return state;
@@ -55,10 +56,11 @@ namespace te
         return paramInfo;
     }
 
-    SPtr<GraphicsPipelineState> RenderStateManager::_createGraphicsPipelineState(const PIPELINE_STATE_DESC& desc) const
+    SPtr<GraphicsPipelineState> RenderStateManager::_createGraphicsPipelineState(const PIPELINE_STATE_DESC& desc,
+        GpuDeviceFlags deviceMask) const
 	{
 		SPtr<GraphicsPipelineState> pipelineState =
-			te_core_ptr<GraphicsPipelineState>(new (te_allocate<GraphicsPipelineState>()) GraphicsPipelineState(desc));
+			te_core_ptr<GraphicsPipelineState>(new (te_allocate<GraphicsPipelineState>()) GraphicsPipelineState(desc, deviceMask));
 		pipelineState->SetThisPtr(pipelineState);
 
 		return pipelineState;

@@ -461,4 +461,31 @@ namespace te
 
         TextureAddressingMode u, v, w;
     };
+
+    /**	References a subset of surfaces within a texture. */
+    struct TextureSurface
+    {
+        TextureSurface(UINT32 mipLevel = 0, UINT32 numMipLevels = 1, UINT32 face = 0, UINT32 numFaces = 1)
+            : MipLevel(mipLevel)
+            , NumMipLevels(numMipLevels)
+            , Face(face)
+            , NumFaces(numFaces)
+        { }
+
+        /** First mip level to reference. */
+        UINT32 MipLevel;
+
+        /** Number of mip levels to reference. Must be greater than zero. */
+        UINT32 NumMipLevels;
+
+        /**
+         * First face to reference. Face can represent a single cubemap face, or a single array entry in a
+         * texture array. If cubemaps are laid out in a texture array then every six sequential faces represent a single
+         * array entry.
+         */
+        UINT32 Face;
+
+        /** Number of faces to reference, if the texture has more than one. */
+        UINT32 NumFaces;
+    };    
 }
