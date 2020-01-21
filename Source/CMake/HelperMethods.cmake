@@ -198,6 +198,8 @@ MACRO (add_imported_library LIB_NAME RELEASE_NAME DEBUG_NAME IS_SHARED)
 ENDMACRO ()
 
 MACRO (install_dependency_binaries FOLDER_NAME)
+    message (STATUS "...${${FOLDER_NAME}_SHARED_LIBS} OK---.")
+
     foreach (LOOP_ENTRY ${${FOLDER_NAME}_SHARED_LIBS})
         get_filename_component (RELEASE_FILENAME ${${LOOP_ENTRY}_LIBRARY_RELEASE} NAME_WE)
         get_filename_component (DEBUG_FILENAME ${${LOOP_ENTRY}_LIBRARY_DEBUG} NAME_WE)
@@ -234,6 +236,9 @@ MACRO (install_dependency_binaries FOLDER_NAME)
             set (SRC_RELEASE ${${LOOP_ENTRY}_LIBRARY_RELEASE})
             set (SRC_DEBUG ${${LOOP_ENTRY}_LIBRARY_DEBUG})
             set (DESTINATION_DIR lib)
+
+            message (STATUS "...${SRC_RELEASE} OK---.")
+            message (STATUS "...${SRC_DEBUG} OK---.")
 
             list(GET SRC_RELEASE 0 HEAD)
             get_filename_component (SRC_DIR ${HEAD} DIRECTORY)
