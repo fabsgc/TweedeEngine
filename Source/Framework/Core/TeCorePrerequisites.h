@@ -45,6 +45,10 @@
 #  define TE_CORE_HIDDEN __attribute__ ((visibility ("hidden")))
 #endif
 
+#if TE_PLATFORM == TE_PLATFORM_WIN32
+#   define _ITERATOR_DEBUG_LEVEL 2
+#endif
+
 namespace te
 {
     class CoreApplication;
