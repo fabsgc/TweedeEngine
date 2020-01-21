@@ -1,6 +1,6 @@
 image: Visual Studio 2019
 platform: x64
-configuration: Release
+configuration: Debug
 clone_folder: C:\Projects\TweedeFrameworkRedux
 
 build_script:
@@ -8,4 +8,4 @@ build_script:
   - cmd: cd Build
   - cmd: cmake --version
   - cmd: cmake -G "Visual Studio 16 2019" ..
-  - cmd: cmake --build ./ --config Release
+  - cmd: cmake --build ./ --config Debug
