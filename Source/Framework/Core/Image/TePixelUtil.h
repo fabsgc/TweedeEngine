@@ -41,11 +41,12 @@ namespace te
 	};
 
 	/** Determines on which axes to mirror an image. */
-	enum class MirrorModeBits
+	enum MirrorMode
 	{
-		X = 1 << 0,
-		Y = 1 << 1,
-		Z = 1 << 2
+		None = 0x00,
+		X = 0x01,
+		Y = 0x02,
+		Z = 0x03
 	};
 
     /**	Options used to control texture compression. */
@@ -269,6 +270,10 @@ namespace te
 		 * when scaling.
 		 */
 		static void Scale(const PixelData& src, PixelData& dst, Filter filter = FILTER_LINEAR);
+
+		/**
+		 * Mirrors the contents of the provided object along the X, Y and/or Z axes. */
+		static void Mirror(PixelData& pixelData, INT32 mode);
 
 		/**
 		 * Copies the contents of the @p src buffer into the @p dst buffer. The size of the copied contents is determined

@@ -2226,6 +2226,94 @@ namespace te
 		return outputMipBuffers;
 	}
 
+	void PixelUtil::Mirror(PixelData& pixelData, INT32 mode)
+	{
+		UINT32 width = pixelData.GetWidth();
+		UINT32 height = pixelData.GetHeight();
+		UINT32 depth = pixelData.GetDepth();
+
+		UINT32 elemSize = GetNumElemBytes(pixelData.GetFormat());
+
+		if (mode & MirrorMode::Z)
+		{
+			UINT32 sliceSize = width * height * elemSize;
+			UINT8* sliceTemp = te_allocate<UINT8>(sliceSize * sizeof(UINT8));
+
+			UINT8* dataPtr = pixelData.GetData();
+			UINT32 halfDepth = depth / 2;
+			for (UINT32 z = 0; z < halfDepth; z++)
+			{
+				UINT32 srcZ = z * sliceSize;
+				UINT32 dstZ = (depth - z - 1) * sliceSize;
+
+				memcpy(sliceTemp, &dataPtr[dstZ], sliceSize);
+				memcpy(&dataPtr[dstZ], &dataPtr[srcZ], sliceSize);
+				memcpy(&dataPtr[srcZ], sliceTemp, sliceSize);
+			}
+
+			// Note: If flipping Y or X as well I could do it here without an extra set of memcpys
+
+			te_free(sliceTemp);
+		}
+
+		if(mode & MirrorMode::Y)
+		{
+			UINT32 rowSize = width * elemSize;
+			UINT8* rowTemp = te_allocate<UINT8>(rowSize * sizeof(UINT8));
+
+			UINT8* slicePtr = pixelData.GetData();
+			for (UINT32 z = 0; z < depth; z++)
+			{
+				UINT32 halfHeight = height / 2;
+				for (UINT32 y = 0; y < halfHeight; y++)
+				{
+					UINT32 srcY = y * rowSize;
+					UINT32 dstY = (height - y - 1) * rowSize;
+
+					memcpy(rowTemp, &slicePtr[dstY], rowSize);
+					memcpy(&slicePtr[dstY], &slicePtr[srcY], rowSize);
+					memcpy(&slicePtr[srcY], rowTemp, rowSize);
+				}
+
+				// Note: If flipping X as well I could do it here without an extra set of memcpys
+
+				slicePtr += pixelData.GetSlicePitch();
+			}
+
+			te_free(rowTemp);
+		}
+
+		if (mode & MirrorMode::X)
+		{
+			UINT8* elemTemp = te_allocate<UINT8>(elemSize * sizeof(UINT8));
+
+			UINT8* slicePtr = pixelData.GetData();
+			for (UINT32 z = 0; z < depth; z++)
+			{
+				UINT8* rowPtr = slicePtr;
+				for (UINT32 y = 0; y < height; y++)
+				{
+					UINT32 halfWidth = width / 2;
+					for (UINT32 x = 0; x < halfWidth; x++)
+					{
+						UINT32 srcX = x * elemSize;
+						UINT32 dstX = (width - x - 1) * elemSize;
+
+						memcpy(elemTemp, &rowPtr[dstX], elemSize);
+						memcpy(&rowPtr[dstX], &rowPtr[srcX], elemSize);
+						memcpy(&rowPtr[srcX], elemTemp, elemSize);
+					}
+
+					rowPtr += pixelData.GetRowPitch();
+				}
+
+				slicePtr += pixelData.GetSlicePitch();
+			}
+
+			te_free(elemTemp);
+		}
+	}
+
 	void PixelUtil::Scale(const PixelData& src, PixelData& scaled, Filter filter)
 	{
 		assert(PixelUtil::IsAccessible(src.GetFormat()));
