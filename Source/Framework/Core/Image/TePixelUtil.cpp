@@ -2219,122 +2219,122 @@ namespace te
 
 	Vector<SPtr<PixelData>> PixelUtil::GenMipmaps(const PixelData& src, const MipMapGenOptions& options)
 	{
-        Vector<SPtr<PixelData>> outputMipBuffers;
+		Vector<SPtr<PixelData>> outputMipBuffers;
 
-        if (src.GetDepth() != 1)
-        {
-            TE_DEBUG("Mipmap generation failed. 3D texture formats not supported.", __FILE__, __LINE__);
-            return outputMipBuffers;
-        }
+		if (src.GetDepth() != 1)
+		{
+			TE_DEBUG("Mipmap generation failed. 3D texture formats not supported.", __FILE__, __LINE__);
+			return outputMipBuffers;
+		}
 
-        if (IsCompressed(src.GetFormat()))
-        {
-            TE_DEBUG("Mipmap generation failed. Source data cannot be compressed.", __FILE__, __LINE__);
-            return outputMipBuffers;
-        }
+		if (IsCompressed(src.GetFormat()))
+		{
+			TE_DEBUG("Mipmap generation failed. Source data cannot be compressed.", __FILE__, __LINE__);
+			return outputMipBuffers;
+		}
 
-        if (!Bitwise::IsPow2(src.GetWidth()) || !Bitwise::IsPow2(src.GetHeight()))
-        {
-            TE_DEBUG("Mipmap generation failed. Texture width & height must be powers of 2.", __FILE__, __LINE__);
-            return outputMipBuffers;
-        }
+		if (!Bitwise::IsPow2(src.GetWidth()) || !Bitwise::IsPow2(src.GetHeight()))
+		{
+			TE_DEBUG("Mipmap generation failed. Texture width & height must be powers of 2.", __FILE__, __LINE__);
+			return outputMipBuffers;
+		}
 
-        PixelFormat interimFormat = IsFloatingPoint(src.GetFormat()) ? PF_RGBA32F : PF_BGRA8;
+		PixelFormat interimFormat = IsFloatingPoint(src.GetFormat()) ? PF_RGBA32F : PF_BGRA8;
 
-        PixelData interimData(src.GetWidth(), src.GetHeight(), 1, interimFormat);
-        interimData.AllocateInternalBuffer();
-        BulkPixelConversion(src, interimData);
+		PixelData interimData(src.GetWidth(), src.GetHeight(), 1, interimFormat);
+		interimData.AllocateInternalBuffer();
+		BulkPixelConversion(src, interimData);
 
-        if (interimFormat != PF_RGBA32F)
-        {
-            FlipComponentOrder(interimData);
-        }
+		if (interimFormat != PF_RGBA32F)
+		{
+			FlipComponentOrder(interimData);
+		}
 
-        nvtt::InputOptions io;
-        io.setTextureLayout(nvtt::TextureType_2D, src.GetWidth(), src.GetHeight());
-        io.setMipmapGeneration(true);
-        io.setNormalMap(options.isNormalMap);
-        io.setNormalizeMipmaps(options.normalizeMipmaps);
-        io.setWrapMode(toNVTTWrapMode(options.wrapMode));
+		nvtt::InputOptions io;
+		io.setTextureLayout(nvtt::TextureType_2D, src.GetWidth(), src.GetHeight());
+		io.setMipmapGeneration(true);
+		io.setNormalMap(options.isNormalMap);
+		io.setNormalizeMipmaps(options.normalizeMipmaps);
+		io.setWrapMode(toNVTTWrapMode(options.wrapMode));
 
-        if (interimFormat == PF_RGBA32F)
-            io.setFormat(nvtt::InputFormat_RGBA_32F);
-        else
-            io.setFormat(nvtt::InputFormat_BGRA_8UB);
+		if (interimFormat == PF_RGBA32F)
+			io.setFormat(nvtt::InputFormat_RGBA_32F);
+		else
+			io.setFormat(nvtt::InputFormat_BGRA_8UB);
 
-        if (options.isSRGB)
-            io.setGamma(2.2f, 2.2f);
-        else
-            io.setGamma(1.0f, 1.0f);
+		if (options.isSRGB)
+			io.setGamma(2.2f, 2.2f);
+		else
+			io.setGamma(1.0f, 1.0f);
 
-        io.setMipmapData(interimData.GetData(), src.GetWidth(), src.GetHeight());
+		io.setMipmapData(interimData.GetData(), src.GetWidth(), src.GetHeight());
 
-        nvtt::CompressionOptions co;
-        co.setFormat(nvtt::Format_RGBA);
+		nvtt::CompressionOptions co;
+		co.setFormat(nvtt::Format_RGBA);
 
-        if (interimFormat == PF_RGBA32F)
-        {
-            co.setPixelType(nvtt::PixelType_Float);
-            co.setPixelFormat(32, 32, 32, 32);
-        }
-        else
-        {
-            co.setPixelType(nvtt::PixelType_UnsignedNorm);
-            co.setPixelFormat(32, 0x0000FF00, 0x00FF0000, 0xFF000000, 0x000000FF);
-        }
+		if (interimFormat == PF_RGBA32F)
+		{
+			co.setPixelType(nvtt::PixelType_Float);
+			co.setPixelFormat(32, 32, 32, 32);
+		}
+		else
+		{
+			co.setPixelType(nvtt::PixelType_UnsignedNorm);
+			co.setPixelFormat(32, 0x0000FF00, 0x00FF0000, 0xFF000000, 0x000000FF);
+		}
 
-        UINT32 numMips = GetMaxMipmaps(src.GetWidth(), src.GetHeight(), 1, src.GetFormat());
+		UINT32 numMips = GetMaxMipmaps(src.GetWidth(), src.GetHeight(), 1, src.GetFormat());
 
-        Vector<SPtr<PixelData>> rgbaMipBuffers;
+		Vector<SPtr<PixelData>> rgbaMipBuffers;
 
-        // Note: This can be done more effectively without creating so many temp buffers
-        // and working with the original formats directly, but it would complicate the code
-        // too much at the moment.
-        UINT32 curWidth = src.GetWidth();
-        UINT32 curHeight = src.GetHeight();
-        for (UINT32 i = 0; i < numMips; i++)
-        {
-            rgbaMipBuffers.push_back(te_shared_ptr_new<PixelData>(curWidth, curHeight, 1, interimFormat));
-            rgbaMipBuffers.back()->AllocateInternalBuffer();
+		// Note: This can be done more effectively without creating so many temp buffers
+		// and working with the original formats directly, but it would complicate the code
+		// too much at the moment.
+		UINT32 curWidth = src.GetWidth();
+		UINT32 curHeight = src.GetHeight();
+		for (UINT32 i = 0; i < numMips; i++)
+		{
+			rgbaMipBuffers.push_back(te_shared_ptr_new<PixelData>(curWidth, curHeight, 1, interimFormat));
+			rgbaMipBuffers.back()->AllocateInternalBuffer();
 
-            if (curWidth > 1)
-                curWidth = curWidth / 2;
+			if (curWidth > 1)
+				curWidth = curWidth / 2;
 
-            if (curHeight > 1)
-                curHeight = curHeight / 2;
-        }
+			if (curHeight > 1)
+				curHeight = curHeight / 2;
+		}
 
-        rgbaMipBuffers.push_back(te_shared_ptr_new<PixelData>(curWidth, curHeight, 1, interimFormat));
-        rgbaMipBuffers.back()->AllocateInternalBuffer();
+		rgbaMipBuffers.push_back(te_shared_ptr_new<PixelData>(curWidth, curHeight, 1, interimFormat));
+		rgbaMipBuffers.back()->AllocateInternalBuffer();
 
-        NVTTMipmapOutputHandler outputHandler(rgbaMipBuffers);
+		NVTTMipmapOutputHandler outputHandler(rgbaMipBuffers);
 
-        nvtt::OutputOptions oo;
-        oo.setOutputHeader(false);
-        oo.setOutputHandler(&outputHandler);
+		nvtt::OutputOptions oo;
+		oo.setOutputHeader(false);
+		oo.setOutputHandler(&outputHandler);
 
-        nvtt::Compressor compressor;
-        if (!compressor.process(io, co, oo))
-        {
-            TE_DEBUG("Mipmap generation failed. Internal error.", __FILE__, __LINE__);
-            return outputMipBuffers;
-        }
+		nvtt::Compressor compressor;
+		if (!compressor.process(io, co, oo))
+		{
+			TE_DEBUG("Mipmap generation failed. Internal error.", __FILE__, __LINE__);
+			return outputMipBuffers;
+		}
 
-        interimData.FreeInternalBuffer();
+		interimData.FreeInternalBuffer();
 
-        for (UINT32 i = 0; i < (UINT32)rgbaMipBuffers.size(); i++)
-        {
-            SPtr<PixelData> argbBuffer = rgbaMipBuffers[i];
-            SPtr<PixelData> outputBuffer = te_shared_ptr_new<PixelData>(argbBuffer->GetWidth(), argbBuffer->GetHeight(), 1, src.GetFormat());
-            outputBuffer->AllocateInternalBuffer();
+		for (UINT32 i = 0; i < (UINT32)rgbaMipBuffers.size(); i++)
+		{
+			SPtr<PixelData> argbBuffer = rgbaMipBuffers[i];
+			SPtr<PixelData> outputBuffer = te_shared_ptr_new<PixelData>(argbBuffer->GetWidth(), argbBuffer->GetHeight(), 1, src.GetFormat());
+			outputBuffer->AllocateInternalBuffer();
 
-            BulkPixelConversion(*argbBuffer, *outputBuffer);
-            argbBuffer->FreeInternalBuffer();
+			BulkPixelConversion(*argbBuffer, *outputBuffer);
+			argbBuffer->FreeInternalBuffer();
 
-            outputMipBuffers.push_back(outputBuffer);
-        }
+			outputMipBuffers.push_back(outputBuffer);
+		}
 
-        return outputMipBuffers;
+		return outputMipBuffers;
 	}
 
 	void PixelUtil::Mirror(PixelData& pixelData, INT32 mode)

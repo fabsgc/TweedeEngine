@@ -281,7 +281,7 @@ namespace te
         UINT32 subresourceIdx = _properties.MapToSubresourceIdx(face, mipLevel);
         if (subresourceIdx >= (UINT32)_CPUSubresourceData.size())
         {
-            TE_DEBUG("Invalid subresource index: " + ToString(subresourceIdx) + ". Supported range: 0 .. " + ToString(_CPUSubresourceData.size()), __FILE__, __LINE__);
+            TE_DEBUG("Invalid subresource index: " + ToString(subresourceIdx) + ". Supported range: 0 .. " + ToString(_CPUSubresourceData.size() - 1), __FILE__, __LINE__);
             return;
         }
 
@@ -404,7 +404,7 @@ namespace te
 
         if (subresourceIdx >= (UINT32)_CPUSubresourceData.size())
         {
-            TE_DEBUG("Invalid subresource index: " + ToString(subresourceIdx) + ". Supported range: 0 .. " + ToString(_CPUSubresourceData.size()), __FILE__, __LINE__);
+            TE_DEBUG("Invalid subresource index: " + ToString(subresourceIdx) + ". Supported range: 0 .. " + ToString(_CPUSubresourceData.size() - 1), __FILE__, __LINE__);
             return;
         }
 

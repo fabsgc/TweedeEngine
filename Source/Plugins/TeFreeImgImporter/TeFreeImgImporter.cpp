@@ -123,9 +123,6 @@ namespace te
 		TextureType texType;
 		if (textureImportOptions->IsCubemap)
 		{
-			TE_ASSERT_ERROR(false, "CubeMap is not supported yet", __FILE__, __LINE__);
-			return nullptr;
-
 			texType = TEX_TYPE_CUBE_MAP;
 
 			std::array<SPtr<PixelData>, 6> cubemapFaces;
@@ -146,19 +143,25 @@ namespace te
 		}
 
 		UINT32 numMips = 0;
-		if (textureImportOptions->GenerateMips &&
-			Bitwise::IsPow2(faceData[0]->GetWidth()) && Bitwise::IsPow2(faceData[0]->GetHeight()))
+		if (textureImportOptions->GenerateMips)
 		{
-			UINT32 maxPossibleMip = PixelUtil::GetMaxMipmaps(faceData[0]->GetWidth(), faceData[0]->GetHeight(),
-				faceData[0]->GetDepth(), faceData[0]->GetFormat());
-
-			if (textureImportOptions->MaxMip == 0)
+			if (Bitwise::IsPow2(faceData[0]->GetWidth()) && Bitwise::IsPow2(faceData[0]->GetHeight()))
 			{
-				numMips = maxPossibleMip;
+				UINT32 maxPossibleMip = PixelUtil::GetMaxMipmaps(faceData[0]->GetWidth(), faceData[0]->GetHeight(),
+					faceData[0]->GetDepth(), faceData[0]->GetFormat());
+
+				if (textureImportOptions->MaxMip == 0)
+				{
+					numMips = maxPossibleMip;
+				}
+				else
+				{
+					numMips = std::min(maxPossibleMip, textureImportOptions->MaxMip);
+				}
 			}
 			else
 			{
-				numMips = std::min(maxPossibleMip, textureImportOptions->MaxMip);
+				TE_DEBUG("Width and height of your image must be a power of 2", __FILE__, __LINE__);
 			}
 		}
 
@@ -200,7 +203,7 @@ namespace te
 				SPtr<PixelData> dst = texture->GetProperties().AllocBuffer(0, mip);
 
 				PixelUtil::BulkPixelConversion(*mipLevels[mip], *dst);
-				texture->WriteData(*dst, i, mip);
+				texture->WriteData(*dst, mip, i); //BUG in original version
 			}
 		}
 
