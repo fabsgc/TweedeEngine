@@ -9,6 +9,7 @@ set(TE_UTILITY_SRC_THIRDPARTY
 )
 
 set(TE_UTILITY_INC_MATH
+    "Utility/Math/TeAABox.h"
     "Utility/Math/TeBounds.h"
     "Utility/Math/TeVector2.h"
     "Utility/Math/TeVector2I.h"
