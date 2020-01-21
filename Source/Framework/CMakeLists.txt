@@ -2,6 +2,8 @@
 include (Core/CMakeSources.cmake)
 include (Utility/CMakeSources.cmake)
 
+find_package(nvtt REQUIRED)
+
 if (LINUX)
     find_package (X11 REQUIRED)
     find_package (LibUUID REQUIRED)
