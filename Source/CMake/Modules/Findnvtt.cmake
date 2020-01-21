@@ -12,6 +12,8 @@ set (nvtt_INSTALL_DIR ${TE_SOURCE_DIR}/../Dependencies/nvtt CACHE PATH "")
 gen_default_lib_search_dirs(nvtt)
 
 find_imported_includes(nvtt nvtt.h)
-find_imported_library(nvtt nvtt)
+find_imported_library_shared(nvtt nvtt)
+
+install_dependency_binaries (nvtt)
 
 end_find_package(nvtt nvtt)

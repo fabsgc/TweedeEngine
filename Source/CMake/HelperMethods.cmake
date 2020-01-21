@@ -65,10 +65,6 @@ function (target_link_framework TARGET FRAMEWORK)
     mark_as_advanced (FM_${FRAMEWORK})
 endfunction ()
 
-MACRO (start_find_package FOLDER_NAME)
-    message (STATUS "Looking for ${FOLDER_NAME} installation...")
-ENDMACRO ()
-
 # Generates a set of variables pointing to the default locations for library's includes and binaries.
 # Must be defined before calling:
 #  - ${LIB_NAME}_INSTALL_DIR
@@ -216,12 +212,19 @@ MACRO (install_dependency_binaries FOLDER_NAME)
             if (RELEASE_FILENAME STREQUAL libFLAC)
                 set (RELEASE_FILENAME libFLAC_dynamic.dll)
                 set (DEBUG_FILENAME libFLAC_dynamic.dll)
+                message (STATUS "...${DEBUG_FILENAME} OK.")
             elseif (RELEASE_FILENAME STREQUAL FreeImage)
                 set (RELEASE_FILENAME FreeImage.dll)
                 set (DEBUG_FILENAME FreeImaged.dll)
+                message (STATUS "...${DEBUG_FILENAME} OK.")
+            elseif (RELEASE_FILENAME STREQUAL nvtt)
+                set (RELEASE_FILENAME nvtt.dll)
+                set (DEBUG_FILENAME nvtt.dll)
+                message (STATUS "...${DEBUG_FILENAME} OK.")
             else ()
                 set (RELEASE_FILENAME ${RELEASE_FILENAME}.dll)
                 set (DEBUG_FILENAME ${DEBUG_FILENAME}.dll)
+                message (STATUS "...${DEBUG_FILENAME} OK.")
             endif ()
             
             set (SRC_RELEASE "${PROJECT_SOURCE_DIR}/Dependencies/binaries/Release/${RELEASE_FILENAME}")

@@ -33,6 +33,6 @@ set(LibUUID_INCLUDE_DIRS ${LibUUID_INCLUDE_DIR})
 set(LibUUID_LIBRARIES LibUUID)
 
 mark_as_advanced(
-        LibUUID_INCLUDE_DIR
-        LibUUID_LIBRARY
+    LibUUID_INCLUDE_DIR
+    LibUUID_LIBRARY
 )

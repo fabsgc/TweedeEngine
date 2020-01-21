@@ -3,10 +3,11 @@
 #include "Math/TeMath.h"
 #include "Image/TeTexture.h"
 #include "Utility/TeBitwise.h"
+#include <nvtt.h>
 
 namespace te
 {
-    /**
+	/**
 	 * Performs pixel data resampling using the point filter (nearest neighbor). Does not perform format conversions.
 	 *
 	 * @tparam elementSize	Size of a single pixel in bytes.
@@ -332,7 +333,7 @@ namespace te
 		}
 	};
 
-    /**	Data describing a pixel format. */
+	/**	Data describing a pixel format. */
 	struct PixelFormatDescription
 	{
 		const char* name; /**< Name of the format. */
@@ -1184,9 +1185,148 @@ namespace te
 		return _pixelFormats[ord];
 	}
 
-    UINT32 PixelUtil::GetNumElemBytes(PixelFormat format)
+	UINT32 PixelUtil::GetNumElemBytes(PixelFormat format)
 	{
 		return GetDescriptionFor(format).elemBytes;
+	}
+
+	/**	Handles compression output from NVTT library for a single image. */
+	struct NVTTCompressOutputHandler : public nvtt::OutputHandler
+	{
+		NVTTCompressOutputHandler(UINT8* buffer, UINT32 sizeBytes)
+			:buffer(buffer), bufferWritePos(buffer), bufferEnd(buffer + sizeBytes)
+		{ }
+
+		void beginImage(int size, int width, int height, int depth, int face, int miplevel) override
+		{ }
+
+		bool writeData(const void* data, int size) override
+		{
+			assert((bufferWritePos + size) <= bufferEnd);
+			memcpy(bufferWritePos, data, size);
+			bufferWritePos += size;
+
+			return true;
+		}
+
+		void endImage() override
+		{ }
+
+		UINT8* buffer;
+		UINT8* bufferWritePos;
+		UINT8* bufferEnd;
+	};
+
+	/**	Handles output from NVTT library for a mip-map chain. */
+	struct NVTTMipmapOutputHandler : public nvtt::OutputHandler
+	{
+		NVTTMipmapOutputHandler(const Vector<SPtr<PixelData>>& buffers)
+			:buffers(buffers), bufferWritePos(nullptr), bufferEnd(nullptr)
+		{ }
+
+		void beginImage(int size, int width, int height, int depth, int face, int miplevel) override
+		{
+			assert(miplevel >= 0 && miplevel < (int)buffers.size());
+			assert((UINT32)size == buffers[miplevel]->GetConsecutiveSize());
+
+			activeBuffer = buffers[miplevel];
+
+			bufferWritePos = activeBuffer->GetData();
+			bufferEnd = bufferWritePos + activeBuffer->GetConsecutiveSize();
+		}
+
+		bool writeData(const void* data, int size) override
+		{
+			assert((bufferWritePos + size) <= bufferEnd);
+			memcpy(bufferWritePos, data, size);
+			bufferWritePos += size;
+
+			return true;
+		}
+
+		void endImage() override
+		{ }
+
+		Vector<SPtr<PixelData>> buffers;
+		SPtr<PixelData> activeBuffer;
+
+		UINT8* bufferWritePos;
+		UINT8* bufferEnd;
+	};
+
+	nvtt::Format toNVTTFormat(PixelFormat format)
+	{
+		switch (format)
+		{
+		case PF_BC1:
+			return nvtt::Format_BC1;
+		case PF_BC1a:
+			return nvtt::Format_BC1a;
+		case PF_BC2:
+			return nvtt::Format_BC2;
+		case PF_BC3:
+			return nvtt::Format_BC3;
+		case PF_BC4:
+			return nvtt::Format_BC4;
+		case PF_BC5:
+			return nvtt::Format_BC5;
+		case PF_BC6H:
+			return nvtt::Format_BC6;
+		case PF_BC7:
+			return nvtt::Format_BC7;
+		default: // Unsupported format
+			return nvtt::Format_BC3;
+		}
+	}
+
+	nvtt::Quality toNVTTQuality(CompressionQuality quality)
+	{
+		switch (quality)
+		{
+		case CompressionQuality::Fastest:
+			return nvtt::Quality_Fastest;
+		case CompressionQuality::Highest:
+			return nvtt::Quality_Highest;
+		case CompressionQuality::Normal:
+			return nvtt::Quality_Normal;
+		case CompressionQuality::Production:
+			return nvtt::Quality_Normal;
+		}
+
+		// Unknown quality level
+		return nvtt::Quality_Normal;
+	}
+
+	nvtt::AlphaMode toNVTTAlphaMode(AlphaMode alphaMode)
+	{
+		switch (alphaMode)
+		{
+		case AlphaMode::None:
+			return nvtt::AlphaMode_None;
+		case AlphaMode::Premultiplied:
+			return nvtt::AlphaMode_Premultiplied;
+		case AlphaMode::Transparency:
+			return nvtt::AlphaMode_Transparency;
+		}
+
+		// Unknown alpha mode
+		return nvtt::AlphaMode_None;
+	}
+
+	nvtt::WrapMode toNVTTWrapMode(MipMapWrapMode wrapMode)
+	{
+		switch (wrapMode)
+		{
+		case MipMapWrapMode::Clamp:
+			return nvtt::WrapMode_Clamp;
+		case MipMapWrapMode::Mirror:
+			return nvtt::WrapMode_Mirror;
+		case MipMapWrapMode::Repeat:
+			return nvtt::WrapMode_Repeat;
+		}
+
+		// Unknown alpha mode
+		return nvtt::WrapMode_Mirror;
 	}
 
 	UINT32 PixelUtil::GetBlockSize(PixelFormat format)
@@ -1297,7 +1437,7 @@ namespace te
 		}
 	}
 
-    UINT32 PixelUtil::GetNumElemBits(PixelFormat format)
+	UINT32 PixelUtil::GetNumElemBits(PixelFormat format)
 	{
 		return GetDescriptionFor(format).elemBytes * 8;
 	}
@@ -1312,22 +1452,22 @@ namespace te
 		return (PixelUtil::GetFlags(format) & PFF_FLOAT) > 0;
 	}
 
-    UINT32 PixelUtil::GetFlags(PixelFormat format)
+	UINT32 PixelUtil::GetFlags(PixelFormat format)
 	{
 		return GetDescriptionFor(format).flags;
 	}
 
-    bool PixelUtil::IsDepth(PixelFormat format)
+	bool PixelUtil::IsDepth(PixelFormat format)
 	{
 		return (PixelUtil::GetFlags(format) & PFF_DEPTH) > 0;
 	}
 
-    bool PixelUtil::IsCompressed(PixelFormat format)
+	bool PixelUtil::IsCompressed(PixelFormat format)
 	{
 		return (PixelUtil::GetFlags(format) & PFF_COMPRESSED) > 0;
 	}
 
-    bool PixelUtil::CheckFormat(PixelFormat& format, TextureType texType, int usage)
+	bool PixelUtil::CheckFormat(PixelFormat& format, TextureType texType, int usage)
 	{
 		// First check just the usage since it's the most limiting factor
 
@@ -1394,7 +1534,7 @@ namespace te
 		}
 	}
 
-    bool PixelUtil::IsValidExtent(UINT32 width, UINT32 height, UINT32 depth, PixelFormat format)
+	bool PixelUtil::IsValidExtent(UINT32 width, UINT32 height, UINT32 depth, PixelFormat format)
 	{
 		if(IsCompressed(format))
 		{
@@ -1490,7 +1630,7 @@ namespace te
 		return count;
 	}
 
-    void PixelUtil::PackColor(const Color& color, PixelFormat format, void* dest)
+	void PixelUtil::PackColor(const Color& color, PixelFormat format, void* dest)
 	{
 		PackColor(color.r, color.g, color.b, color.a, format, dest);
 	}
@@ -1533,7 +1673,7 @@ namespace te
 
 		if (format == PF_RGB10A2)
 		{
-            TE_DEBUG("packColor() not implemented for format \"" + GetFormatName(PF_RGB10A2) + "\"", __FILE__, __LINE__);
+			TE_DEBUG("packColor() not implemented for format \"" + GetFormatName(PF_RGB10A2) + "\"", __FILE__, __LINE__);
 			return;
 		}
 
@@ -1660,7 +1800,7 @@ namespace te
 
 		if(format == PF_RGB10A2)
 		{
-            TE_DEBUG("unpackColor() not implemented for format \"" + GetFormatName(PF_RGB10A2) + "\"", __FILE__, __LINE__);
+			TE_DEBUG("unpackColor() not implemented for format \"" + GetFormatName(PF_RGB10A2) + "\"", __FILE__, __LINE__);
 			return;
 		}
 
@@ -1723,7 +1863,7 @@ namespace te
 			*outputs[3] = 1.0f;
 	}
 
-    void PixelUtil::PackDepth(float depth, const PixelFormat format, void* dest)
+	void PixelUtil::PackDepth(float depth, const PixelFormat format, void* dest)
 	{
 		if (!IsDepth(format))
 		{
@@ -1768,7 +1908,7 @@ namespace te
 		}
 	}
 
-    void PixelUtil::BulkPixelConversion(const PixelData &src, PixelData &dst)
+	void PixelUtil::BulkPixelConversion(const PixelData &src, PixelData &dst)
 	{
 		if(src.GetWidth() != dst.GetWidth() || src.GetHeight() != dst.GetHeight() || src.GetDepth() != dst.GetDepth())
 		{
@@ -1897,7 +2037,7 @@ namespace te
 		}
 	}
 
-    void PixelUtil::FlipComponentOrder(PixelData& data)
+	void PixelUtil::FlipComponentOrder(PixelData& data)
 	{
 		if (IsCompressed(data.GetFormat()))
 		{
@@ -2015,16 +2155,73 @@ namespace te
 		}
 	}
 
-    void PixelUtil::Compress(const PixelData& src, PixelData& dst, const CompressionOptions& options)
+	void PixelUtil::Compress(const PixelData& src, PixelData& dst, const CompressionOptions& options)
 	{
-        TE_ASSERT_ERROR(false, "Compression not yet supported", __FILE__, __LINE__); // TODO
-    }
+		if (!IsCompressed(options.format))
+		{
+			TE_DEBUG("Compression failed. Destination format is not a valid compressed format.", __FILE__, __LINE__);
+			return;
+		}
 
-    Vector<SPtr<PixelData>> PixelUtil::GenMipmaps(const PixelData& src, const MipMapGenOptions& options)
+		if (src.GetDepth() != 1)
+		{
+			TE_DEBUG("Compression failed. 3D texture compression not supported.", __FILE__, __LINE__);
+			return;
+		}
+
+		if (IsCompressed(src.GetFormat()))
+		{
+			TE_DEBUG("Compression failed. Source data cannot be compressed.", __FILE__, __LINE__);
+			return;
+		}
+
+		PixelFormat interimFormat = options.format == PF_BC6H ? PF_RGBA32F : PF_BGRA8;
+
+		PixelData interimData(src.GetWidth(), src.GetHeight(), 1, interimFormat);
+		interimData.AllocateInternalBuffer();
+		BulkPixelConversion(src, interimData);
+
+		nvtt::InputOptions io;
+		io.setTextureLayout(nvtt::TextureType_2D, src.GetWidth(), src.GetHeight());
+		io.setMipmapGeneration(false);
+		io.setAlphaMode(toNVTTAlphaMode(options.alphaMode));
+		io.setNormalMap(options.isNormalMap);
+
+		if (interimFormat == PF_RGBA32F)
+			io.setFormat(nvtt::InputFormat_RGBA_32F);
+		else
+			io.setFormat(nvtt::InputFormat_BGRA_8UB);
+
+		if (options.isSRGB)
+			io.setGamma(2.2f, 2.2f);
+		else
+			io.setGamma(1.0f, 1.0f);
+
+		io.setMipmapData(interimData.GetData(), src.GetWidth(), src.GetHeight());
+
+		nvtt::CompressionOptions co;
+		co.setFormat(toNVTTFormat(options.format));
+		co.setQuality(toNVTTQuality(options.quality));
+
+		NVTTCompressOutputHandler outputHandler(dst.GetData(), dst.GetConsecutiveSize());
+
+		nvtt::OutputOptions oo;
+		oo.setOutputHeader(false);
+		oo.setOutputHandler(&outputHandler);
+
+		nvtt::Compressor compressor;
+		if (!compressor.process(io, co, oo))
+		{
+			TE_DEBUG("Compression failed. Internal error.", __FILE__, __LINE__);
+			return;
+		}
+	}
+
+	Vector<SPtr<PixelData>> PixelUtil::GenMipmaps(const PixelData& src, const MipMapGenOptions& options)
 	{
 		Vector<SPtr<PixelData>> outputMipBuffers;
 
-        TE_ASSERT_ERROR(false, "Mipmap not yet supported", __FILE__, __LINE__); // TODO
+		TE_ASSERT_ERROR(false, "Mipmap not yet supported", __FILE__, __LINE__); // TODO
 
 		return outputMipBuffers;
 	}

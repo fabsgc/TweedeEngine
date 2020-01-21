@@ -2,8 +2,6 @@
 include (Core/CMakeSources.cmake)
 include (Utility/CMakeSources.cmake)
 
-find_package(nvtt REQUIRED)
-
 if (LINUX)
     find_package (X11 REQUIRED)
     find_package (LibUUID REQUIRED)
@@ -54,6 +52,9 @@ endif ()
 
 ## External libs: Header only libraries
 target_link_libraries (tef PUBLIC ThirdParty)
+
+## External lib: NVTT
+target_link_libraries(tef PRIVATE ${nvtt_LIBRARIES})	
 
 if (LINUX)
     ## External lib: X11, LibUUID, LibICU

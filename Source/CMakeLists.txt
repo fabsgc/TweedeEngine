@@ -38,6 +38,7 @@ configure_file("${TE_SOURCE_DIR}/CMake/TeEngineConfig.h.in" "${TE_SOURCE_DIR}/Fr
 ## External libs
 include (${CMAKE_MODULE_PATH}/Findassimp.cmake)
 include (${CMAKE_MODULE_PATH}/Findfreeimg.cmake)
+include (${CMAKE_MODULE_PATH}/Findnvtt.cmake)
 
 # Sub-directories
 ## Framework
