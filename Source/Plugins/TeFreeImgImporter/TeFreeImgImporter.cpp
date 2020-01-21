@@ -149,9 +149,6 @@ namespace te
 		if (textureImportOptions->GenerateMips &&
 			Bitwise::IsPow2(faceData[0]->GetWidth()) && Bitwise::IsPow2(faceData[0]->GetHeight()))
 		{
-			TE_ASSERT_ERROR(false, "Mipmap is not supported yet", __FILE__, __LINE__);
-			return nullptr;
-
 			UINT32 maxPossibleMip = PixelUtil::GetMaxMipmaps(faceData[0]->GetWidth(), faceData[0]->GetHeight(),
 				faceData[0]->GetDepth(), faceData[0]->GetFormat());
 

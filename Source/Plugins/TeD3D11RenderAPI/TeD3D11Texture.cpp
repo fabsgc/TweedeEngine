@@ -117,7 +117,75 @@ namespace te
 
     void D3D11Texture::CopyImpl(const SPtr<Texture>& target, const TEXTURE_COPY_DESC& desc)
     {
-        // TODO
+        D3D11Texture* other = static_cast<D3D11Texture*>(target.get());
+
+			UINT32 srcResIdx = D3D11CalcSubresource(desc.SrcMip, desc.SrcFace, _properties.GetNumMipmaps() + 1);
+			UINT32 destResIdx = D3D11CalcSubresource(desc.DstMip, desc.DstFace, target->GetProperties().GetNumMipmaps() + 1);
+
+			D3D11RenderAPI* rs = static_cast<D3D11RenderAPI*>(RenderAPI::InstancePtr());
+			D3D11Device& device = rs->GetPrimaryDevice();
+
+			bool srcHasMultisample = _properties.GetNumSamples() > 1;
+			bool destHasMultisample = target->GetProperties().GetNumSamples() > 1;
+
+			bool copyEntireSurface = desc.SrcVolume.GetWidth() == 0 ||
+				desc.SrcVolume.GetHeight() == 0 ||
+				desc.SrcVolume.GetDepth() == 0;
+
+			if (srcHasMultisample && !destHasMultisample) // Resolving from MS to non-MS texture
+			{
+				if(copyEntireSurface)
+					device.GetImmediateContext()->ResolveSubresource(other->GetDX11Resource(), destResIdx, _tex, srcResIdx, _DXGIFormat);
+				else
+				{
+					// Need to first resolve to a temporary texture, then copy
+					TEXTURE_DESC tempDesc;
+					tempDesc.Width = _properties.GetWidth();
+					tempDesc.Height = _properties.GetHeight();
+					tempDesc.Format = _properties.GetFormat();
+					tempDesc.HwGamma = _properties.IsHardwareGammaEnabled();
+
+					SPtr<D3D11Texture> temporary = std::static_pointer_cast<D3D11Texture>(Texture::_createPtr(tempDesc));
+					device.GetImmediateContext()->ResolveSubresource(temporary->GetDX11Resource(), 0, _tex, srcResIdx, _DXGIFormat);
+
+					TEXTURE_COPY_DESC tempCopyDesc;
+					tempCopyDesc.DstMip = desc.DstMip;
+					tempCopyDesc.DstFace = desc.DstFace;
+					tempCopyDesc.DstPosition = desc.DstPosition;
+
+					temporary->Copy(target, tempCopyDesc);
+				}
+			}
+			else
+			{
+				D3D11_BOX srcRegion;
+				srcRegion.left = desc.SrcVolume.Left;
+				srcRegion.right = desc.SrcVolume.Right;
+				srcRegion.top = desc.SrcVolume.Top;
+				srcRegion.bottom = desc.SrcVolume.Bottom;
+				srcRegion.front = desc.SrcVolume.Front;
+				srcRegion.back = desc.SrcVolume.Back;
+
+				D3D11_BOX* srcRegionPtr = nullptr;
+				if(!copyEntireSurface)
+					srcRegionPtr = &srcRegion;
+
+				device.GetImmediateContext()->CopySubresourceRegion(
+					other->GetDX11Resource(),
+					destResIdx,
+					(UINT32)desc.DstPosition.x,
+					(UINT32)desc.DstPosition.y,
+					(UINT32)desc.DstPosition.z,
+					_tex,
+					srcResIdx,
+					srcRegionPtr);
+
+				if (device.HasError())
+				{
+					String errorDescription = device.GetErrorDescription();
+					TE_ASSERT_ERROR(false, "D3D11 device cannot copy subresource\nError Description:" + errorDescription, __FILE__, __LINE__);
+				}
+			}
     }
 
     void D3D11Texture::ReadDataImpl(PixelData& dest, UINT32 mipLevel, UINT32 face, UINT32 deviceIdx, UINT32 queueIdx)

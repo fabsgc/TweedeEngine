@@ -379,6 +379,7 @@ namespace te
         meshImportOptions->ImportNormals = false;
         auto textureImportOptions = TextureImportOptions::Create();
         textureImportOptions->CpuCached = true;
+        textureImportOptions->GenerateMips = true;
         auto shaderImportOptions = ShaderImportOptions::Create();
 
         HMesh loadedMesh = gResourceManager().Load<Mesh>("Data/Meshes/cube.obj", meshImportOptions);
