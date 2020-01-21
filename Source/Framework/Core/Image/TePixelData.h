@@ -188,22 +188,22 @@ namespace te
 		CF_NegativeZ
 	};
 
-    /**
-     * A buffer describing a volume (3D), image (2D) or line (1D) of pixels in memory. Pixels are stored as a succession
-     * of "depth" slices, each containing "height" rows of "width" pixels.
-     *
-     * @note
-     * If using the constructor instead of create() you must call GpuResourceData::allocateInternalBuffer or set the buffer
-     * in some other way before reading/writing from this object, as by the default there is no buffer allocated.
-     *
-     * @see		GpuResourceData
-     */
-    class TE_CORE_EXPORT PixelData : public GpuResourceData
-    {
-    public:
-        PixelData() = default;
+	/**
+	 * A buffer describing a volume (3D), image (2D) or line (1D) of pixels in memory. Pixels are stored as a succession
+	 * of "depth" slices, each containing "height" rows of "width" pixels.
+	 *
+	 * @note
+	 * If using the constructor instead of create() you must call GpuResourceData::allocateInternalBuffer or set the buffer
+	 * in some other way before reading/writing from this object, as by the default there is no buffer allocated.
+	 *
+	 * @see		GpuResourceData
+	 */
+	class TE_CORE_EXPORT PixelData : public GpuResourceData
+	{
+	public:
+		PixelData() = default;
 
-        /**	Return the size (in bytes) of the buffer this image requires. */
+		/**	Return the size (in bytes) of the buffer this image requires. */
 		UINT32 GetSize() const;
 
 		/**
@@ -386,7 +386,7 @@ namespace te
 		 */
 		static SPtr<PixelData> Create(UINT32 width, UINT32 height, UINT32 depth, PixelFormat pixelFormat);
 
-    private:
+	private:
 		/**
 		 * Initializes the internal buffer with the provided set of colors. The array should be of width * height * depth
 		 * size and mapped as such: arrayIdx = x + y * width + z * width * height.
@@ -396,7 +396,7 @@ namespace te
 		template<class T>
 		void SetColorsInternal(const T& colors, UINT32 numElements);
 
-        /**	Returns the needed size of the internal buffer, in bytes. */
+		/**	Returns the needed size of the internal buffer, in bytes. */
 		UINT32 GetInternalBufferSize() const override;
 
 	private:
@@ -404,5 +404,5 @@ namespace te
 		PixelFormat _format = PF_UNKNOWN;
 		UINT32 _rowPitch = 0;
 		UINT32 _slicePitch = 0;
-    };
+	};
 }

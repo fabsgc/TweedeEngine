@@ -7,7 +7,7 @@
 
 namespace te
 {
-    /**	Types of texture compression quality. */
+	/**	Types of texture compression quality. */
 	enum class CompressionQuality
 	{
 		Fastest,
@@ -49,7 +49,7 @@ namespace te
 		Z = 0x03
 	};
 
-    /**	Options used to control texture compression. */
+	/**	Options used to control texture compression. */
 	struct CompressionOptions
 	{
 		PixelFormat format = PF_BC1; /*< Format to compress to. Must be a format containing compressed data. */
@@ -69,7 +69,7 @@ namespace te
 		bool isSRGB = false; /*< Determines has the input data been gamma corrected. */
 	};
 
-    /**	Utility methods for converting and managing pixel data and formats. */
+	/**	Utility methods for converting and managing pixel data and formats. */
 	class TE_CORE_EXPORT PixelUtil
 	{
 	public:
@@ -80,7 +80,7 @@ namespace te
 			FILTER_LINEAR /*< Box filter is applied, averaging nearby pixels. */
 		};
 
-        /**	Returns the size of a single pixel of the provided pixel format, in bytes. */
+		/**	Returns the size of a single pixel of the provided pixel format, in bytes. */
 		static UINT32 GetNumElemBytes(PixelFormat format);
 
 		/**
@@ -115,14 +115,14 @@ namespace te
 		static void GetPitch(UINT32 width, UINT32 height, UINT32 depth, PixelFormat format,
 			UINT32& rowPitch, UINT32& depthPitch);
 
-        /**
+		/**
 		 * Returns property flags for this pixel format.
 		 *
 		 * @see		PixelFormatFlags
 		 */
 		static UINT32 GetFlags(PixelFormat format);
 
-        /**	Checks if the provided pixel format has an alpha channel. */
+		/**	Checks if the provided pixel format has an alpha channel. */
 		static bool HasAlpha(PixelFormat format);
 
 		/**	Checks is the provided pixel format a floating point format. */
@@ -137,7 +137,7 @@ namespace te
 		/** Checks does the provided format store data in normalized range. */
 		static bool IsNormalized(PixelFormat format);
 
-        /**
+		/**
 		 * Checks is the provided format valid for the texture type and usage.
 		 *
 		 * @param[in, out]	format	Format to check. If format is not valid the method will update this with the closest
@@ -156,7 +156,7 @@ namespace te
 		 */
 		static bool CheckFormat(PixelFormat& format, TextureType texType, int usage);
 
-        /**
+		/**
 		 * Checks are the provided dimensions valid for the specified pixel format. Some formats (like BC) require
 		 * width/height to be multiples of four and some formats dont allow depth larger than 1.
 		 */
@@ -252,7 +252,7 @@ namespace te
 		/** Flips the order of components in each individual pixel. For example RGBA -> ABGR. */
 		static void FlipComponentOrder(PixelData& data);
 
-        /** Compresses the provided data using the specified compression options.  */
+		/** Compresses the provided data using the specified compression options.  */
 		static void Compress(const PixelData& src, PixelData& dst, const CompressionOptions& options);
 
 		/**
@@ -281,5 +281,5 @@ namespace te
 		 * @p offsetX, @p offsetY and @p offsetZ parameters.
 		 */
 		static void Copy(const PixelData& src, PixelData& dst, UINT32 offsetX = 0, UINT32 offsetY = 0, UINT32 offsetZ = 0);
-    };
+	};
 }

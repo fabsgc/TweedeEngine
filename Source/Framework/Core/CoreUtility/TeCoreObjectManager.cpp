@@ -3,7 +3,7 @@
 
 namespace te
 {
-    CoreObjectManager::CoreObjectManager()
+	CoreObjectManager::CoreObjectManager()
 		:_nextAvailableID(1)
 	{
 	}
@@ -33,10 +33,10 @@ namespace te
 		_objects[objId] = object;
 	}
 
-    void CoreObjectManager::UnregisterObject(CoreObject* object)
+	void CoreObjectManager::UnregisterObject(CoreObject* object)
 	{
 		assert(object != nullptr && !object->IsDestroyed());
 		UINT64 internalId = object->GetInternalID();
-        _objects.erase(internalId);
-    }
+		_objects.erase(internalId);
+	}
 }

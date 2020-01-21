@@ -3,7 +3,7 @@
 namespace te
 {
 	CoreObject::CoreObject()
-        : _flags(CGO_NONE)
+		: _flags(CGO_NONE)
 		, _internalID(CoreObjectManager::Instance().GenerateId())
 	{
 	}
@@ -38,7 +38,7 @@ namespace te
 		SetIsDestroyed(true);
 	}
 
-    void CoreObject::SetThisPtr(SPtr<CoreObject> ptrThis)
+	void CoreObject::SetThisPtr(SPtr<CoreObject> ptrThis)
 	{
 		_this = ptrThis;
 	}

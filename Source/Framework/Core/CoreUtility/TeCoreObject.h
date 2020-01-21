@@ -5,27 +5,27 @@
 
 namespace te
 {
-    /** Core objects provides a standardized way to initialize/destroy objects. */
+	/** Core objects provides a standardized way to initialize/destroy objects. */
 	class TE_CORE_EXPORT CoreObject
 	{
 	protected:
 		/** Values that represent current state of the core object */
-        enum Flags
-        {
-            CGO_NONE = 0x00,  /**< Object has not yet been initialized nor destroyed. */
+		enum Flags
+		{
+			CGO_NONE = 0x00,  /**< Object has not yet been initialized nor destroyed. */
 			CGO_DESTROYED = 0x01, /**< Object has been destroyed and shouldn't be used. */
 			CGO_INITIALIZED = 0x02 /**< Object's initialize() method has been called. */
 		};
 
-    public:
+	public:
 		/** Schedules the object to be destroyed, and then deleted. */
 		template<class T>
 		static void _delete(CoreObject* obj)
 		{
-            if (!obj->IsDestroyed())
-            {
-                obj->Destroy();
-            }
+			if (!obj->IsDestroyed())
+			{
+				obj->Destroy();
+			}
 
 			te_delete<T>((T*)obj);
 		}
@@ -36,8 +36,8 @@ namespace te
 		 */
 		virtual void Initialize();
 
-        /** Frees all the data held by this object. */
-        virtual void Destroy();
+		/** Frees all the data held by this object. */
+		virtual void Destroy();
 
 		/** Returns true if the object has been initialized. Non-initialized object should not be used. */
 		bool IsInitialized() const { return (_flags & CGO_INITIALIZED) != 0; }
@@ -48,10 +48,10 @@ namespace te
 		/** Returns an unique identifier for this object. */
 		UINT64 GetInternalID() const { return _internalID; }
 
-        /** Returns a shared_ptr version of "this" pointer. */
+		/** Returns a shared_ptr version of "this" pointer. */
 		SPtr<CoreObject> GetThisPtr() const { return _this.lock(); };
 
-        /**
+		/**
 		 * Sets a shared this pointer to this object. This must be called immediately after construction, but before
 		 * initialize().
 		 *
@@ -67,11 +67,11 @@ namespace te
 
 		void SetIsDestroyed(bool destroyed) { _flags = destroyed ? _flags | CGO_DESTROYED : _flags & ~CGO_DESTROYED; }
 
-    private:
-        volatile UINT8 _flags;
+	private:
+		volatile UINT8 _flags;
 		UINT64 _internalID; // ID == 0 is not a valid ID
-        WPtr<CoreObject> _this;
-    };
+		WPtr<CoreObject> _this;
+	};
 
 	/**
 	 * Creates a core object shared pointer using a previously constructed object.

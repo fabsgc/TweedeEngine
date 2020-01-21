@@ -24,9 +24,9 @@ endif ()
 
 ## Copy data elements inside bin directory
 if (TE_64BIT)
-    set (PLATFORM_TARGET "x64")
+	set (PLATFORM_TARGET "x64")
 else ()
-    set (PLATFORM_TARGET "x86")
+	set (PLATFORM_TARGET "x86")
 endif ()
 
 if (UNIX)
@@ -123,7 +123,7 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 	set (CMAKE_EXE_LINKER_FLAGS_MINSIZEDEL "${CMAKE_EXE_LINKER_FLAGS_MINSIZEDEL} -no-pie")
 	set (CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} -no-pie")
 else()
-    message(FATAL_ERROR "Compiler not supported")
+	message(FATAL_ERROR "Compiler not supported")
 endif()
 
 # Enable colored output
@@ -169,9 +169,9 @@ endif()
 # Look for global/system dependencies
 if (UNIX)
 	# Find tools used for stripping binaries
-    find_program(OBJCOPY_TOOL objcopy)
+	find_program(OBJCOPY_TOOL objcopy)
 
-    if (NOT OBJCOPY_TOOL)
-        message(FATAL_ERROR "Could not find 'objcopy' tool.")
-    endif()
+	if (NOT OBJCOPY_TOOL)
+		message(FATAL_ERROR "Could not find 'objcopy' tool.")
+	endif()
 endif()
