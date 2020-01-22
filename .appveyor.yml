@@ -9,3 +9,37 @@ build_script:
   - cmd: cmake --version
   - cmd: cmake -G "Visual Studio 16 2019" ..
   - cmd: cmake --build ./ --config Debug
+  - cmd: cmake --build ./ --config Debug --target INSTALL
+#  - cmd: cmake --build ./ --config Release
+#  - cmd: cmake --build ./ --config Release --target INSTALL
+
+after_build:
+ - ps: cd ..
+ - ps: mkdir packaged
+ - ps: cd packaged
+ - ps: >-
+       if($env:APPVEYOR_REPO_TAG -eq "true") 
+       {
+         Move-Item -Path ../../install/Debug/bin/* -Destination ./Debug
+         cd ..
+         mkdir lib
+         cd lib
+         mkdir Release
+         Move-Item -Path ../../install/Release/lib/* -Destination ./Release
+         mkdir Debug
+         Move-Item -Path ../../install/Debug/lib/* -Destination ./Debug
+         cd ..
+       }
+       else
+       {
+         Move-Item -Path ../install/Release/* -Destination ./
+       }
+ - ps: cd ..
+ - ps: >-
+      if($env:APPVEYOR_REPO_TAG -eq "true") 
+      { $buildName = $env:APPVEYOR_REPO_TAG_NAME } 
+      else 
+      { $buildName = "$(Get-Date -format yyyy.MM.dd)" }
+ - ps: Set-AppveyorBuildVariable "TE_BUILD_NAME" "$buildName"
+ - cmd: 7z a te_%TE_BUILD_NAME%_win64.zip ./packaged/* -xr!*pdb
+ - cmd: 7z a te_%TE_BUILD_NAME%_win64_symbols.zip ./packaged/*pdb -r
