@@ -17,23 +17,7 @@ after_build:
  - ps: cd ..
  - ps: mkdir packaged
  - ps: cd packaged
- - ps: >-
-       if($env:APPVEYOR_REPO_TAG -eq "true") 
-       {
-         Move-Item -Path ../../install/Debug/bin/* -Destination ./Debug
-         cd ..
-         mkdir lib
-         cd lib
-         mkdir Release
-         Move-Item -Path ../../install/Release/lib/* -Destination ./Release
-         mkdir Debug
-         Move-Item -Path ../../install/Debug/lib/* -Destination ./Debug
-         cd ..
-       }
-       else
-       {
-         Move-Item -Path ../install/Release/* -Destination ./
-       }
+ - ps: Move-Item -Path ../install/Debug/* -Destination ./
  - ps: cd ..
  - ps: >-
       if($env:APPVEYOR_REPO_TAG -eq "true") 
