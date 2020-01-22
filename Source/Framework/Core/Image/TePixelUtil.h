@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "TeCorePrerequisites.h"
@@ -7,6 +6,9 @@
 
 namespace te
 {
+
+#undef None
+
 	/**	Types of texture compression quality. */
 	enum class CompressionQuality
 	{

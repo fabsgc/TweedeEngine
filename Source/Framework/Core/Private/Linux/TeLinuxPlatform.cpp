@@ -3,6 +3,7 @@
 #include "Private/Linux/TeLinuxWindow.h"
 #include "RenderAPI/TeRenderWindow.h"
 #include "Image/TePixelData.h"
+#include "Image/TePixelUtil.h"
 #include "Math/TeRect2I.h"
 #include "TeCoreApplication.h"
 #include <X11/X.h>
@@ -47,8 +48,8 @@ namespace te
 		Vector<ButtonCode> KeyCodeMap; /**< Maps system-specific X11 KeyCode to Banshee ButtonCode. */
 
 		// Cursor
-		::Cursor CurrentCursor = None;
-		::Cursor EmptyCursor = None;
+		::Cursor CurrentCursor = 0;
+		::Cursor EmptyCursor = 0;
 		bool IsCursorHidden = false;
 
 		Rect2I CursorClipRect;
@@ -310,7 +311,7 @@ namespace te
 	void ClipCursorDisable(Platform::Pimpl* data)
 	{
 		data->CursorClipEnabled = false;
-		data->CursorClipWindow = None;
+		data->CursorClipWindow = nullptr;
 	}
 
 	void SetCurrentCursor(Platform::Pimpl* data, ::Cursor cursor)
@@ -329,8 +330,6 @@ namespace te
 		SPtr<PixelData> bgraData = PixelData::Create(pixelData.GetWidth(), pixelData.GetHeight(), 1, PF_BGRA8);
 		PixelUtil::BulkPixelConversion(pixelData, *bgraData);
 
-		Lock lock(mData->lock);
-
 		XcursorImage* image = XcursorImageCreate((int)bgraData->GetWidth(), (int)bgraData->GetHeight());
 		image->xhot = (XcursorDim)hotSpot.x;
 		image->yhot = (XcursorDim)hotSpot.y;
@@ -338,25 +337,18 @@ namespace te
 
 		memcpy(image->pixels, bgraData->GetData(), bgraData->GetSize());
 
-		::Cursor cursor = XcursorImageLoadCursor(data->XDisplay, image);
+		::Cursor cursor = XcursorImageLoadCursor(_data->XDisplay, image);
 		XcursorImageDestroy(image);
 
-		SetCurrentCursor(data, cursor);
+		SetCurrentCursor(_data, cursor);
 	}
 
 	void Platform::SetIcon(const PixelData& pixelData)
 	{
-		if(!mData->mainXWindow)
+		if(!_data->MainXWindow)
 			return;
 
-		auto iterFind = data->windowMap.find(mData->mainXWindow);
-		if(iterFind == data->windowMap.end())
-			return;
-
-		LinuxWindow* linuxWindow;
-		window.GetCustomAttribute("LINUX_WINDOW", &linuxWindow);
-
-		linuxWindow->SetIcon(pixelData);
+		_data->Window->SetIcon(pixelData);
 	}
 
 	/**

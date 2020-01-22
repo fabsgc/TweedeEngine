@@ -206,7 +206,7 @@ namespace te
 		_data->X = x;
 		_data->Y = y;
 
-		XMoveWindow(LinuxPlatform::GetXDisplay(), m->XWindow, x, y);
+		XMoveWindow(LinuxPlatform::GetXDisplay(), _data->XWindow, x, y);
 	}
 
 	void LinuxWindow::SetIcon(const PixelData& data)
@@ -227,7 +227,7 @@ namespace te
 	void LinuxWindow::Show()
 	{
 		XMapWindow(LinuxPlatform::GetXDisplay(), _data->XWindow);
-		XMoveResizeWindow(LinuxPlatform::getXDisplay(), _data->XWindow, _data->X, _data->Y, _data->Width, m->Height);
+		XMoveResizeWindow(LinuxPlatform::GetXDisplay(), _data->XWindow, _data->X, _data->Y, _data->Width, _data->Height);
 	}
 
 	void LinuxWindow::Maximize()

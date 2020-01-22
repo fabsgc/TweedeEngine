@@ -2,6 +2,7 @@
 
 #include "Prerequisites/TePrerequisitesUtility.h"
 #include "Math/TeVector2I.h"
+#include "Image/TePixelData.h"
 #include <X11/X.h>
 #include <X11/Xutil.h>
 
