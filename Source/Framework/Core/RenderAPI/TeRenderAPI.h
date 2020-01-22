@@ -23,6 +23,13 @@ namespace te
         /** Shuts down the render API system and cleans up all resources. */
         virtual void Destroy();
 
+        /**
+         * @see RenderAPI::setGpuParams()
+         *
+         * @note This is an @ref asyncMethod "asynchronous method".
+         */
+        virtual void SetGpuParams(const SPtr<GpuParams>& gpuParams) = 0;
+
 		/**
 		 * Sets a pipeline state that controls how will subsequent draw commands render primitives.
 		 *

@@ -225,7 +225,7 @@ namespace te
      * even with C++14, as of october 2016, std::hash for enums is not widely
      * implemented by compilers, so here when T is a enum, we use EnumClassHash
      * instead of std::hash. (For instance, in te::hash_combine(), or
-     * bs::UnorderedMap.)
+     * te::UnorderedMap.)
      */
     struct EnumClassHash
     {

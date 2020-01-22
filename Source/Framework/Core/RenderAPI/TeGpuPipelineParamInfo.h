@@ -72,7 +72,7 @@ namespace te
         const SPtr<GpuParamDesc>& GetParamDesc(GpuProgramType type) const { return _paramDescs[(int)type]; }
 
         /**
-         * @copydoc bs::GpuPipelineParamInfo::create
+         * @copydoc te::GpuPipelineParamInfo::Create
          * @param[in]	deviceMask		Mask that determines on which GPU devices should the buffer be created on.
          */
         static SPtr<GpuPipelineParamInfo> Create(const GPU_PIPELINE_PARAMS_DESC& desc,

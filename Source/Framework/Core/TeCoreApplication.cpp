@@ -384,7 +384,6 @@ namespace te
 
 		auto textureCubeMapImportOptions = TextureImportOptions::Create();
 		textureCubeMapImportOptions->CpuCached = true;
-		//textureCubeMapImportOptions->GenerateMips = true;
 		textureCubeMapImportOptions->CpuCached = true;
 		textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
 
@@ -409,7 +408,7 @@ namespace te
 
 		SPtr<PixelData> pixelDataLoadTexture = loadTextureCubeMap->GetProperties().AllocBuffer(0, 0);
 		loadTextureCubeMap->ReadCachedData(*pixelDataLoadTexture, 0, 0);
-		Color pixelColorLoadTexture = pixelDataLoadTexture->GetColorAt(100, 100);
+		Color pixelColorLoadTexture = pixelDataLoadTexture->GetColorAt(200, 100);
 
 		// ######################################################
 
@@ -567,6 +566,7 @@ namespace te
 		rapi.SetVertexDeclaration(_vertexDeclaration);
 		rapi.SetVertexBuffers(0, &_vertexBuffer, 1);
 		rapi.SetIndexBuffer(_indexBuffer);
+		rapi.SetGpuParams(params);
 		// ######################################################
 #endif
 	}

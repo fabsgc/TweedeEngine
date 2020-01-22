@@ -113,6 +113,9 @@ namespace te
 	class GpuPipelineParamInfo;
 	class GpuParamBlockBuffer;
 	class GpuParams;
+	struct GPU_BUFFER_DESC;
+	class GpuBufferProperties;
+	class GpuBuffer;
 
 	class Renderer;
 	class RendererFactory;

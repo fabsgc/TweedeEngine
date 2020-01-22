@@ -14,17 +14,21 @@
 #include "TeD3D11VertexBuffer.h"
 #include "TeD3D11IndexBuffer.h"
 
+#include "RenderAPI/TeGpuParams.h"
+#include "RenderAPI/TeGpuParamDesc.h"
+
+#include "TeD3D11TextureView.h"
+#include "TeD3D11SamplerState.h"
+
 namespace te
 {
     D3D11RenderAPI::D3D11RenderAPI()
         : _viewport()
         , _scissorRect(D3D11_RECT())
-    {
-    }
+    { }
 
     D3D11RenderAPI::~D3D11RenderAPI()
-    {
-    }
+    { }
 
     SPtr<RenderWindow> D3D11RenderAPI::CreateRenderWindow(const RENDER_WINDOW_DESC& windowDesc)
     {
@@ -250,6 +254,131 @@ namespace te
         {
             d3d11Context->HSSetShader(nullptr, nullptr, 0);
         }
+    }
+
+    void D3D11RenderAPI::SetGpuParams(const SPtr<GpuParams>& gpuParams)
+    {
+        ID3D11DeviceContext* context = _device->GetImmediateContext();
+
+        // Clear any previously bound UAVs (otherwise shaders attempting to read resources viewed by those views will be unable to)
+        if (_PSUAVsBound || _CSUAVsBound)
+        {
+            ID3D11UnorderedAccessView* emptyUAVs[D3D11_PS_CS_UAV_REGISTER_COUNT];
+            te_zero_out(emptyUAVs);
+
+            if (_PSUAVsBound)
+            {
+                context->OMSetRenderTargetsAndUnorderedAccessViews(
+                    D3D11_KEEP_RENDER_TARGETS_AND_DEPTH_STENCIL, nullptr, nullptr, 0,
+                    D3D11_PS_CS_UAV_REGISTER_COUNT, emptyUAVs, nullptr);
+
+                _PSUAVsBound = false;
+            }
+
+            if (_CSUAVsBound)
+            {
+                context->CSSetUnorderedAccessViews(0, D3D11_PS_CS_UAV_REGISTER_COUNT, emptyUAVs, nullptr);
+                _CSUAVsBound = false;
+            }
+        }
+
+        Vector<ID3D11ShaderResourceView*> srvs(8);
+        Vector<ID3D11UnorderedAccessView*> uavs(8);
+        Vector<ID3D11Buffer*> constBuffers(8);
+        Vector<ID3D11SamplerState*> samplers(8);
+
+        auto populateViews = [&](GpuProgramType type)
+        {
+            srvs.clear();
+            uavs.clear();
+            constBuffers.clear();
+            samplers.clear();
+
+            SPtr<GpuParamDesc> paramDesc = gpuParams->GetParamDesc(type);
+            if (paramDesc == nullptr)
+            {
+                return;
+            }
+
+            for (auto iter = paramDesc->Textures.begin(); iter != paramDesc->Textures.end(); ++iter)
+            {
+                // TODO
+            }
+
+            for (auto iter = paramDesc->Buffers.begin(); iter != paramDesc->Buffers.end(); ++iter)
+            {
+                // TODO
+            }
+
+            for (auto iter = paramDesc->Samplers.begin(); iter != paramDesc->Samplers.end(); ++iter)
+            {
+                // TODO
+            }
+
+            for (auto iter = paramDesc->ParamBlocks.begin(); iter != paramDesc->ParamBlocks.end(); ++iter)
+            {
+                // TODO
+            }
+        };
+
+        UINT32 numSRVs = 0;
+        UINT32 numUAVs = 0;
+        UINT32 numConstBuffers = 0;
+        UINT32 numSamplers = 0;
+
+        populateViews(GPT_VERTEX_PROGRAM);
+        numSRVs = (UINT32)srvs.size();
+        numConstBuffers = (UINT32)constBuffers.size();
+        numSamplers = (UINT32)samplers.size();
+
+        if (numSRVs > 0) context->VSSetShaderResources(0, numSRVs, srvs.data());
+        if (numConstBuffers > 0) context->VSSetConstantBuffers(0, numConstBuffers, constBuffers.data());
+        if (numSamplers > 0) context->VSSetSamplers(0, numSamplers, samplers.data());
+
+        populateViews(GPT_PIXEL_PROGRAM);
+        numSRVs = (UINT32)srvs.size();
+        numUAVs = (UINT32)uavs.size();
+        numConstBuffers = (UINT32)constBuffers.size();
+        numSamplers = (UINT32)samplers.size();
+
+        if (numSRVs > 0) context->PSSetShaderResources(0, numSRVs, srvs.data());
+
+        if (numUAVs > 0)
+        {
+            context->OMSetRenderTargetsAndUnorderedAccessViews(
+                D3D11_KEEP_RENDER_TARGETS_AND_DEPTH_STENCIL, nullptr, nullptr, 0, numUAVs, uavs.data(), nullptr);
+            _PSUAVsBound = true;
+        }
+
+        if (numConstBuffers > 0) context->PSSetConstantBuffers(0, numConstBuffers, constBuffers.data());
+        if (numSamplers > 0) context->PSSetSamplers(0, numSamplers, samplers.data());
+
+        populateViews(GPT_GEOMETRY_PROGRAM);
+        numSRVs = (UINT32)srvs.size();
+        numConstBuffers = (UINT32)constBuffers.size();
+        numSamplers = (UINT32)samplers.size();
+
+        if (numSRVs > 0) context->GSSetShaderResources(0, numSRVs, srvs.data());
+        if (numConstBuffers > 0) context->GSSetConstantBuffers(0, numConstBuffers, constBuffers.data());
+        if (numSamplers > 0) context->GSSetSamplers(0, numSamplers, samplers.data());
+
+        populateViews(GPT_HULL_PROGRAM);
+        numSRVs = (UINT32)srvs.size();
+        numConstBuffers = (UINT32)constBuffers.size();
+        numSamplers = (UINT32)samplers.size();
+
+        if (numSRVs > 0) context->HSSetShaderResources(0, numSRVs, srvs.data());
+        if (numConstBuffers > 0) context->HSSetConstantBuffers(0, numConstBuffers, constBuffers.data());
+        if (numSamplers > 0) context->HSSetSamplers(0, numSamplers, samplers.data());
+
+        populateViews(GPT_DOMAIN_PROGRAM);
+        numSRVs = (UINT32)srvs.size();
+        numConstBuffers = (UINT32)constBuffers.size();
+        numSamplers = (UINT32)samplers.size();
+
+        if (numSRVs > 0) context->DSSetShaderResources(0, numSRVs, srvs.data());
+        if (numConstBuffers > 0) context->DSSetConstantBuffers(0, numConstBuffers, constBuffers.data());
+        if (numSamplers > 0) context->DSSetSamplers(0, numSamplers, samplers.data());
     }
 
     void D3D11RenderAPI::SetViewport(const Rect2& area)

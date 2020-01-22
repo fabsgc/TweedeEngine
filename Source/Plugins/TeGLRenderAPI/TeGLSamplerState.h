@@ -1,4 +1,4 @@
-//************************************ bs::framework - Copyright 2018 Marko Pin#pragma once
+#pragma once
 
 #include "TeGLRenderAPIPrerequisites.h"
 #include "RenderAPI/TeSamplerState.h"

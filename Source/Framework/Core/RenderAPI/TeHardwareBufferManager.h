@@ -5,17 +5,18 @@
 #include "RenderAPI/TeVertexBuffer.h"
 #include "RenderAPI/TeIndexBuffer.h"
 #include "RenderAPI/TeVertexDeclaration.h"
+#include "RenderAPI/TeGpuParams.h"
 
 namespace te
 {
-    /** Handles creation of various hardware buffers. */
+	/** Handles creation of various hardware buffers. */
 	class TE_CORE_EXPORT HardwareBufferManager : public Module<HardwareBufferManager>
 	{
 	public:
 		HardwareBufferManager() = default;
 		virtual ~HardwareBufferManager() = default;
 
-        /**
+		/**
 		 * Creates a new vertex buffer used for holding number of vertices and other per-vertex data. Buffer can be bound
 		 * to the pipeline and its data can be passed to the active vertex GPU program.
 		 *
@@ -31,14 +32,14 @@ namespace te
 		 */
 		SPtr<IndexBuffer> CreateIndexBuffer(const INDEX_BUFFER_DESC& desc, GpuDeviceFlags deviceMask = GDF_DEFAULT);
 
-        /**
+		/**
 		 * Creates a new vertex declaration from a list of vertex elements.
 		 *
 		 * @param[in]	desc	Description of the object to create.
 		 */
 		SPtr<VertexDeclaration> CreateVertexDeclaration(const SPtr<VertexDataDesc>& desc, GpuDeviceFlags deviceMask = GDF_DEFAULT);
 
-        /**
+		/**
 		 * Creates a new vertex declaration from a list of vertex elements.
 		 *
 		 * @param[in]	elements		List of elements to initialize the declaration with.
@@ -47,23 +48,34 @@ namespace te
 		SPtr<VertexDeclaration> CreateVertexDeclaration(const Vector<VertexElement>& elements,
 			GpuDeviceFlags deviceMask = GDF_DEFAULT);
 
-        /**
-         * @copydoc bs::HardwareBufferManager::createGpuParamBlockBuffer
-         * @param[in]	deviceMask		Mask that determines on which GPU devices should the object be created on.
-         */
-        SPtr<GpuParamBlockBuffer> CreateGpuParamBlockBuffer(UINT32 size,
-            GpuBufferUsage usage = GBU_DYNAMIC, GpuDeviceFlags deviceMask = GDF_DEFAULT);
+		/**
+		 * @copydoc te::HardwareBufferManager::CreateGpuParamBlockBuffer
+		 * @param[in]	deviceMask		Mask that determines on which GPU devices should the object be created on.
+		 */
+		SPtr<GpuParamBlockBuffer> CreateGpuParamBlockBuffer(UINT32 size,
+			GpuBufferUsage usage = GBU_DYNAMIC, GpuDeviceFlags deviceMask = GDF_DEFAULT);
 
-        /** @copydoc GpuParams::create(const SPtr<GpuPipelineParamInfo>&, GpuDeviceFlags) */
-        SPtr<GpuParams> CreateGpuParams(const SPtr<GpuPipelineParamInfo>& paramInfo,
-            GpuDeviceFlags deviceMask = GDF_DEFAULT);
+		/**
+		 * @copydoc bs::HardwareBufferManager::createGpuBuffer
+		 * @param[in]	deviceMask		Mask that determines on which GPU devices should the object be created on.
+		 */
+		SPtr<GpuBuffer> CreateGpuBuffer(const GPU_BUFFER_DESC& desc, GpuDeviceFlags deviceMask = GDF_DEFAULT);
 
-    protected:
+		/** @copydoc GpuBuffer::Create(const GPU_BUFFER_DESC&, SPtr<HardwareBuffer>) */
+		SPtr<GpuBuffer> CreateGpuBuffer(const GPU_BUFFER_DESC& desc, SPtr<HardwareBuffer> underlyingBuffer);
+
+		/** @copydoc GpuParams::create(const SPtr<GpuPipelineParamInfo>&, GpuDeviceFlags) */
+		SPtr<GpuParams> CreateGpuParams(const SPtr<GpuPipelineParamInfo>& paramInfo,
+			GpuDeviceFlags deviceMask = GDF_DEFAULT);
+
+	protected:
 		friend class IndexBuffer;
 		friend class VertexBuffer;
 		friend class VertexDeclaration;
+		friend class GpuParamBlockBuffer;
+		friend class GpuBuffer;
 
-        /** Key for use in the vertex declaration map. */
+		/** Key for use in the vertex declaration map. */
 		struct VertexDeclarationKey
 		{
 			VertexDeclarationKey(const Vector<VertexElement>& elements);
@@ -83,7 +95,7 @@ namespace te
 			Vector<VertexElement> elements;
 		};
 
-        /** @copydoc createVertexBuffer */
+		/** @copydoc createVertexBuffer */
 		virtual SPtr<VertexBuffer> CreateVertexBufferInternal(const VERTEX_BUFFER_DESC& desc,
 			GpuDeviceFlags deviceMask = GDF_DEFAULT) = 0;
 
@@ -91,22 +103,30 @@ namespace te
 		virtual SPtr<IndexBuffer> CreateIndexBufferInternal(const INDEX_BUFFER_DESC& desc,
 			GpuDeviceFlags deviceMask = GDF_DEFAULT) = 0;
 
-        /** @copydoc createVertexDeclaration(const Vector<VertexElement>&, GpuDeviceFlags) */
+		/** @copydoc createVertexDeclaration(const Vector<VertexElement>&, GpuDeviceFlags) */
 		virtual SPtr<VertexDeclaration> createVertexDeclarationInternal(const Vector<VertexElement>& elements,
 			GpuDeviceFlags deviceMask = GDF_DEFAULT);
 
-        /** @copydoc CreateGpuParamBlockBuffer */
-        virtual SPtr<GpuParamBlockBuffer> CreateGpuParamBlockBufferInternal(UINT32 size,
-            GpuBufferUsage usage = GBU_DYNAMIC, GpuDeviceFlags deviceMask = GDF_DEFAULT) = 0;
+		/** @copydoc CreateGpuParamBlockBuffer */
+		virtual SPtr<GpuParamBlockBuffer> CreateGpuParamBlockBufferInternal(UINT32 size,
+			GpuBufferUsage usage = GBU_DYNAMIC, GpuDeviceFlags deviceMask = GDF_DEFAULT) = 0;
 
-        /** @copydoc CreateGpuParams */
-        virtual SPtr<GpuParams> CreateGpuParamsInternal(const SPtr<GpuPipelineParamInfo>& paramInfo,
-            GpuDeviceFlags deviceMask = GDF_DEFAULT);
+		/** @copydoc CreateGpuBuffer(const GPU_BUFFER_DESC&, GpuDeviceFlags) */
+		virtual SPtr<GpuBuffer> CreateGpuBufferInternal(const GPU_BUFFER_DESC& desc,
+			GpuDeviceFlags deviceMask = GDF_DEFAULT) = 0;
 
-        typedef UnorderedMap<VertexDeclarationKey, SPtr<VertexDeclaration>,
+		/** @copydoc CreateGpuBuffer(const GPU_BUFFER_DESC&, SPtr<HardwareBuffer>) */
+		virtual SPtr<GpuBuffer> CreateGpuBufferInternal(const GPU_BUFFER_DESC& desc,
+			SPtr<HardwareBuffer> underlyingBuffer) = 0;
+
+		/** @copydoc CreateGpuParams */
+		virtual SPtr<GpuParams> CreateGpuParamsInternal(const SPtr<GpuPipelineParamInfo>& paramInfo,
+			GpuDeviceFlags deviceMask = GDF_DEFAULT);
+
+		typedef UnorderedMap<VertexDeclarationKey, SPtr<VertexDeclaration>,
 			VertexDeclarationKey::HashFunction, VertexDeclarationKey::EqualFunction> DeclarationMap;
-    
-    protected:
+	
+	protected:
 		DeclarationMap _cachedDeclarations;
-    };
+	};
 }

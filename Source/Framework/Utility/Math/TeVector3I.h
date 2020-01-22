@@ -1,4 +1,4 @@
-//************************************ bs::framework#pragma once
+#pragma once
 
 #include "Prerequisites/TePrerequisitesUtility.h"
 

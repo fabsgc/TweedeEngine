@@ -37,6 +37,9 @@ namespace te
         /** @copydoc RenderAPI::SetGraphicsPipeline */
         void SetGraphicsPipeline(const SPtr<GraphicsPipelineState>& pipelineState) override;
 
+        /** @copydoc RenderAPI::SetGpuParams */
+        void SetGpuParams(const SPtr<GpuParams>& gpuParams) override;
+
         /** @copydoc RenderAPI::SetViewport */
         void SetViewport(const Rect2& area) override;
 

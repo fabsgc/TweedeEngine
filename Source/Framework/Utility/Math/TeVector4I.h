@@ -1,4 +1,4 @@
-//************************************ bs::framework - Copyright 2018 Marko Pintera ***#pragma once
+#pragma once
 
 #include "Prerequisites/TePrerequisitesUtility.h"
 

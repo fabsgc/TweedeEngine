@@ -23,5 +23,13 @@ namespace te
         /** @copydoc HardwareBufferManager::CreateGpuParamBlockBufferInternal  */
         SPtr<GpuParamBlockBuffer> CreateGpuParamBlockBufferInternal(UINT32 size,
             GpuBufferUsage usage = GBU_DYNAMIC, GpuDeviceFlags deviceMask = GDF_DEFAULT) override;
+
+            /** @copydoc HardwareBufferManager::createGpuBufferInternal(const GPU_BUFFER_DESC&, GpuDeviceFlags) */
+        SPtr<GpuBuffer> CreateGpuBufferInternal(const GPU_BUFFER_DESC& desc,
+            GpuDeviceFlags deviceMask = GDF_DEFAULT) override;
+
+        /** @copydoc HardwareBufferManager::createGpuBufferInternal(const GPU_BUFFER_DESC&, SPtr<HardwareBuffer>) */
+        SPtr<GpuBuffer> CreateGpuBufferInternal(const GPU_BUFFER_DESC& desc,
+            SPtr<HardwareBuffer> underlyingBuffer) override;
     };
 }
