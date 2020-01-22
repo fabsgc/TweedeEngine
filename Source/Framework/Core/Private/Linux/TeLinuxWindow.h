@@ -63,6 +63,9 @@ namespace te
 		/**	Reposition the window. */
 		void Move(INT32 left, INT32 top);
 
+		/** Sets the icon to display for the window. */
+		void SetIcon(const PixelData& icon);
+
 		/**	Converts screen position into window local position. */
 		Vector2I ScreenToWindowPos(const Vector2I& screenPos) const;
 

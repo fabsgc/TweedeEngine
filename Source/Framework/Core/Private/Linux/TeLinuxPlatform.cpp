@@ -2,6 +2,7 @@
 #include "Private/Linux/TeLinuxPlatform.h"
 #include "Private/Linux/TeLinuxWindow.h"
 #include "RenderAPI/TeRenderWindow.h"
+#include "Image/TePixelData.h"
 #include "Math/TeRect2I.h"
 #include "TeCoreApplication.h"
 #include <X11/X.h>
@@ -14,7 +15,7 @@
 
 namespace te
 {
-    Event<void(const Vector2I&, const OSPointerButtonStates&)> Platform::OnCursorMoved;
+	Event<void(const Vector2I&, const OSPointerButtonStates&)> Platform::OnCursorMoved;
 	Event<void(const Vector2I&, OSMouseButton button, const OSPointerButtonStates&)> Platform::OnCursorButtonPressed;
 	Event<void(const Vector2I&, OSMouseButton button, const OSPointerButtonStates&)> Platform::OnCursorButtonReleased;
 	Event<void(const Vector2I&, const OSPointerButtonStates&)> Platform::OnCursorDoubleClick;
@@ -24,7 +25,7 @@ namespace te
 	Queue<LinuxButtonEvent> LinuxPlatform::ButtonEvents;
 	LinuxMouseMotionEvent LinuxPlatform::MouseMotionEvent;
 
-    struct Platform::Pimpl
+	struct Platform::Pimpl
 	{
 		::Display* XDisplay = nullptr;
 		::Window MainXWindow = 0;
@@ -55,7 +56,7 @@ namespace te
 		bool CursorClipEnabled = false;
 
 		LinuxWindow* Window;
-    };
+	};
 
 	int X11ErrorHandler(::Display* display, XErrorEvent* event)
 	{
@@ -321,6 +322,41 @@ namespace te
 
 		data->CurrentCursor = cursor;
 		ApplyCurrentCursor(data, data->MainXWindow);
+	}
+
+	void Platform::ChangeCursor(PixelData& pixelData, const Vector2I& hotSpot)
+	{
+		SPtr<PixelData> bgraData = PixelData::Create(pixelData.GetWidth(), pixelData.GetHeight(), 1, PF_BGRA8);
+		PixelUtil::BulkPixelConversion(pixelData, *bgraData);
+
+		Lock lock(mData->lock);
+
+		XcursorImage* image = XcursorImageCreate((int)bgraData->GetWidth(), (int)bgraData->GetHeight());
+		image->xhot = (XcursorDim)hotSpot.x;
+		image->yhot = (XcursorDim)hotSpot.y;
+		image->delay = 0;
+
+		memcpy(image->pixels, bgraData->GetData(), bgraData->GetSize());
+
+		::Cursor cursor = XcursorImageLoadCursor(data->XDisplay, image);
+		XcursorImageDestroy(image);
+
+		SetCurrentCursor(data, cursor);
+	}
+
+	void Platform::SetIcon(const PixelData& pixelData)
+	{
+		if(!mData->mainXWindow)
+			return;
+
+		auto iterFind = data->windowMap.find(mData->mainXWindow);
+		if(iterFind == data->windowMap.end())
+			return;
+
+		LinuxWindow* linuxWindow;
+		window.GetCustomAttribute("LINUX_WINDOW", &linuxWindow);
+
+		linuxWindow->SetIcon(pixelData);
 	}
 
 	/**

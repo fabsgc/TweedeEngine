@@ -63,7 +63,7 @@ namespace te
 
     void GLRenderAPI::SetGpuParams(const SPtr<GpuParams>& gpuParams)
     {
-        //
+        // TODO
     }
 
     void GLRenderAPI::SetViewport(const Rect2& area)

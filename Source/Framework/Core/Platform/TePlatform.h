@@ -2,6 +2,7 @@
 
 #include "TeCorePrerequisites.h"
 #include "Input/TeInputData.h"
+#include "Image/TePixelData.h"
 
 namespace te
 {
@@ -91,6 +92,27 @@ namespace te
          * Query if the cursor is hidden.
          */
         static bool IsCursorHidden();
+
+        /**
+         * Sets a cursor using a custom image.
+         *
+         * @param[in] 	pixelData	Cursor image data.
+         * @param[in]	hotSpot		Offset on the cursor image to where the actual input happens (for example tip of the
+         *							Arrow cursor).
+         *
+         * @note	Thread safe.
+         */
+        static void ChangeCursor(PixelData& pixelData, const Vector2I& hotSpot);
+
+        /**
+         * Sets an icon for the main application window.
+         *
+         * @param[in] 	pixelData	Icon image data. This will be resized to the required icon size, depending on platform
+         * 							implementation.
+         *
+         * @note	Thread safe.
+         */
+        static void SetIcon(const PixelData& pixelData);
 
         /** Called during application start up from the sim thread. Must be called before any other operations are done. */
 		static void StartUp();

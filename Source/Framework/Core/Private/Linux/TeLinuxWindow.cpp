@@ -203,6 +203,14 @@ namespace te
 
 	void LinuxWindow::Move(INT32 x, INT32 y)
 	{
+		_data->X = x;
+		_data->Y = y;
+
+		XMoveWindow(LinuxPlatform::GetXDisplay(), m->XWindow, x, y);
+	}
+
+	void LinuxWindow::SetIcon(const PixelData& data)
+	{
 		// TODO
 	}
 
@@ -213,12 +221,13 @@ namespace te
 
 	void LinuxWindow::Hide()
 	{
-		// TODO
+		XUnmapWindow(LinuxPlatform::GetXDisplay(), _data->XWindow);
 	}
 
 	void LinuxWindow::Show()
 	{
-		// TODO
+		XMapWindow(LinuxPlatform::GetXDisplay(), _data->XWindow);
+		XMoveResizeWindow(LinuxPlatform::getXDisplay(), _data->XWindow, _data->X, _data->Y, _data->Width, m->Height);
 	}
 
 	void LinuxWindow::Maximize()

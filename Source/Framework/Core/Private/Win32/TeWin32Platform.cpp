@@ -6,6 +6,7 @@
 #include "Threading/TeThreading.h"
 #include "Utility/TeEvent.h"
 #include "Utility/TePlatformUtility.h"
+#include "Image/TePixelData.h"
 #include <shellapi.h>
 
 namespace te
@@ -192,6 +193,16 @@ namespace te
         {
             ApplyClipping(_data);
         }
+    }
+
+    void Platform::ChangeCursor(PixelData& pixelData, const Vector2I& hotSpot)
+    {
+        // TODO
+    }
+
+    void Platform::SetIcon(const PixelData& pixelData)
+    {
+        // TODO
     }
 
     void Platform::HideCursor()
