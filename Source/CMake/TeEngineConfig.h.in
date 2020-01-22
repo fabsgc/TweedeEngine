@@ -24,10 +24,10 @@ static constexpr const char* SECONDARY_APP_ROOT = "@SECONDARY_APP_ROOT_DIR@/";
 #   define TE_BINARIES_PATH = "@CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE@";
 #endif
 
-#ifdef _ITERATOR_DEBUG_LEVEL
+/*#ifdef _ITERATOR_DEBUG_LEVEL
 #undef _ITERATOR_DEBUG_LEVEL
 #endif
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
 #   define _ITERATOR_DEBUG_LEVEL 2
-#endif
+#endif*/

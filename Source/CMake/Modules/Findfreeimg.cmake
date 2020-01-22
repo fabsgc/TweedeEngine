@@ -7,7 +7,7 @@
 
 start_find_package (freeimg)
 
-set (freeimg_INSTALL_DIR ${TE_SOURCE_DIR}/../Dependencies/freeimg CACHE PATH "")
+set (freeimg_INSTALL_DIR ${APP_ROOT_DIR}/Dependencies/freeimg CACHE PATH "")
 gen_default_lib_search_dirs (freeimg)
 
 find_imported_includes (freeimg FreeImage.h)
