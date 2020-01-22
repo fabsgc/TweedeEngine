@@ -44,7 +44,7 @@ after_build:
  - cmd: 7z a te_%TE_BUILD_NAME%_win64.zip ./packaged/* -xr!*pdb
  - cmd: 7z a te_%TE_BUILD_NAME%_win64_symbols.zip ./packaged/*pdb -r
 
- artifacts:
+artifacts:
   - path: te_%TE_BUILD_NAME%_win64.zip
     name: teBinaries
     type: zip
