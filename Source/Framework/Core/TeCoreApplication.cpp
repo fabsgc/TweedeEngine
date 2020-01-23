@@ -389,7 +389,7 @@ namespace te
 
 		auto shaderImportOptions = ShaderImportOptions::Create();
 
-		HMesh loadedMesh = gResourceManager().Load<Mesh>("Data/Meshes/cube.obj", meshImportOptions);
+		HMesh loadedMesh = gResourceManager().Load<Mesh>("Data/Meshes/cube.fbx", meshImportOptions);
 		HTexture loadTexture = gResourceManager().Load<Texture>("Data/Textures/default.png", textureImportOptions);
 		HTexture loadTextureCubeMap = gResourceManager().Load<Texture>("Data/Textures/cubemap.png", textureCubeMapImportOptions);
 		HShader loadShader = gResourceManager().Load<Shader>("Data/Shaders/default.shader", shaderImportOptions);

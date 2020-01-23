@@ -11,6 +11,8 @@ namespace te
 	ObjectImporter::ObjectImporter()
 	{
 		_extensions.push_back(u8"obj");
+		_extensions.push_back(u8"dae");
+		_extensions.push_back(u8"fbx");
 	}
 
 	ObjectImporter::~ObjectImporter()
@@ -32,6 +34,7 @@ namespace te
 	SPtr<Resource> ObjectImporter::Import(const String& filePath, SPtr<const ImportOptions> importOptions)
 	{
 		Assimp::Importer importer;
+        const MeshImportOptions* meshImportOptions = static_cast<const MeshImportOptions*>(importOptions.get());
 
 		const aiScene* scene = importer.ReadFile(filePath.c_str(),
 			aiProcess_CalcTangentSpace |
@@ -47,6 +50,14 @@ namespace te
 
 		if (scene->HasMeshes())
 		{
+		}
+
+		MESH_DESC meshDesc;
+		meshDesc.Usage = MU_STATIC;
+
+		if (meshImportOptions->CpuCached)
+		{
+			meshDesc.Usage |= MU_CPUCACHED;
 		}
 
 		SPtr<Mesh> mesh = Mesh::_createPtr(MESH_DESC());

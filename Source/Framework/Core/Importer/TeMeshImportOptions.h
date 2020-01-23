@@ -11,6 +11,9 @@ namespace te
 	public:
 		MeshImportOptions() = default;
 
+        /**	Determines whether the texture data is also stored in CPU memory. */
+        bool CpuCached = false;
+
         /**	Determines should mesh normals be imported if available. */
         bool ImportNormals = true;
 

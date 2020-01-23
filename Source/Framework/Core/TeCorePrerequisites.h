@@ -161,6 +161,7 @@ namespace te
 	struct MESH_DESC;
 	class MeshProperties;
 	class Mesh;
+	class MeshData;
 
 	class Shader;
 }

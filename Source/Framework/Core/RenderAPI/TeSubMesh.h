@@ -9,8 +9,10 @@ namespace te
 	{
 		SubMesh() = default;
 
-		SubMesh(UINT32 indexOffset, UINT32 indexCount, DrawOperationType drawOp):
-			IndexOffset(indexOffset), IndexCount(indexCount), DrawOp(drawOp)
+		SubMesh(UINT32 indexOffset, UINT32 indexCount, DrawOperationType drawOp)
+			: IndexOffset(indexOffset)
+			, IndexCount(indexCount)
+			, DrawOp(drawOp)
 		{ }
 
 		UINT32 IndexOffset = 0;

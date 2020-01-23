@@ -28,6 +28,7 @@ set (TE_CORE_INC_RENDERAPI
     "Core/RenderAPI/TeGpuParams.h"
     "Core/RenderAPI/TeGpuParam.h"
     "Core/RenderAPI/TeGpuParamBlockBuffer.h"
+    "Core/RenderAPI/TeVertexData.h"
 )
 set (TE_CORE_SRC_RENDERAPI
     "Core/RenderAPI/TeRenderAPI.cpp"
@@ -55,6 +56,7 @@ set (TE_CORE_SRC_RENDERAPI
     "Core/RenderAPI/TeGpuParams.cpp"
     "Core/RenderAPI/TeGpuParam.cpp"
     "Core/RenderAPI/TeGpuParamBlockBuffer.cpp"
+    "Core/RenderAPI/TeVertexData.cpp"
 )
 
 set (TE_CORE_INC_RENDERER
@@ -190,9 +192,11 @@ set (TE_CORE_SRC_IMAGE
 
 set (TE_CORE_INC_MESH
     "Core/Mesh/TeMesh.h"
+    "Core/Mesh/TeMeshData.h"
 )
 set (TE_CORE_SRC_MESH
     "Core/Mesh/TeMesh.cpp"
+    "Core/Mesh/TeMeshData.cpp"
 )
 
 set (TE_CORE_INC_SHADER

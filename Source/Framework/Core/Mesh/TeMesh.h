@@ -5,7 +5,9 @@
 #include "Math/TeBounds.h"
 #include "RenderAPI/TeCommonTypes.h"
 #include "RenderAPI/TeVertexDataDesc.h"
+#include "RenderAPI/TeVertexData.h"
 #include "RenderAPI/TeSubMesh.h"
+#include "TeMeshData.h"
 
 namespace te
 {
@@ -61,8 +63,6 @@ namespace te
 		IndexType IndType = IT_32BIT;
 
 		static MESH_DESC DEFAULT;
-
-		// TODO
 	};
 
 	/** Properties of a Mesh. Shared between sim and core thread versions of a Mesh. */
@@ -105,10 +105,93 @@ namespace te
 	class TE_CORE_EXPORT Mesh : public Resource
 	{
 	public:
-        ~Mesh();
+		~Mesh();
+
+		/** @copydoc CoreObject::Initialize */
+		void Initialize() override;
+
+		/**	Get vertex data used for rendering. */
+		SPtr<VertexData> GetVertexData() const;
+
+		/**	Get index data used for rendering. */
+		SPtr<IndexBuffer> GetIndexBuffer() const;
 
 		/** Returns a structure that describes how are the vertices stored in the mesh's vertex buffer. */
-		SPtr<VertexDataDesc> GetVertexDesc() const;
+		SPtr<VertexDataDesc> GetVertexDesc() const ;
+
+		/**
+		 * Returns an offset into the vertex buffers that is returned by getVertexData() that signifies where this meshes
+		 * vertices begin.
+		 * 			
+		 * @note	Used when multiple meshes share the same buffers.
+		 */
+		virtual UINT32 GetVertexOffset() const { return 0; }
+
+		/**
+		 * Returns an offset into the index buffer that is returned by getIndexData() that signifies where this meshes
+		 * indices begin.
+		 * 			
+		 * @note	Used when multiple meshes share the same buffers.
+		 */
+		virtual UINT32 GetIndexOffset() const { return 0; }
+
+        /**
+         * Allocates a buffer that exactly matches the size of this mesh. This is a helper function, primarily meant for
+         * creating buffers when reading from, or writing to a mesh.
+         *
+         * @note	Thread safe.
+         */
+        SPtr<MeshData> AllocateBuffer() const;
+
+        /**
+         * Returns mesh data cached in the system memory. If the mesh wasn't created with CPU cached usage flag this
+         * method will not return any data. Caller should not modify the returned data.
+         *
+         * @note
+         * The data read is the cached mesh data. Any data written to the mesh from the GPU or core thread will not be
+         * reflected in this data. Use readData() if you require those changes.
+         */
+        SPtr<MeshData> GetCachedData() const { return _CPUData; }
+
+		/**
+		 * Called whenever this mesh starts being used on the GPU.
+		 * 			
+		 * @note	Needs to be called after all commands referencing this mesh have been sent to the GPU.
+		 */
+		virtual void _notifyUsedOnGPU() { }
+
+		/**	Returns properties that contain information about the mesh. */
+		const MeshProperties& GetProperties() const { return _properties; }
+	
+		/**
+		 * Creates a new empty mesh.
+		 *
+		 * @param[in]	desc	Descriptor containing the properties of the mesh to create.
+		 */
+		static HMesh Create(const MESH_DESC& desc, GpuDeviceFlags deviceMask = GDF_DEFAULT);
+
+		/**
+		 * Creates a new mesh from an existing mesh data. Created mesh will match the vertex and index buffers described
+		 * by the mesh data exactly. Mesh will have no sub-meshes.
+		 *
+		 * @param[in]	initialData		Vertex and index data to initialize the mesh with.
+		 * @param[in]	desc			Descriptor containing the properties of the mesh to create. Vertex and index count,
+		 *								vertex descriptor and index type properties are ignored and are read from provided
+		 *								mesh data instead.
+		 */
+		static HMesh Create(const SPtr<MeshData>& initialData, const MESH_DESC& desc, GpuDeviceFlags deviceMask = GDF_DEFAULT);
+
+		/**
+		 * Creates a new mesh from an existing mesh data. Created mesh will match the vertex and index buffers described
+		 * by the mesh data exactly. Mesh will have no sub-meshes.
+		 *
+		 * @param[in]	initialData		Vertex and index data to initialize the mesh with.
+		 * @param[in]	usage			Optimizes performance depending on planned usage of the mesh.
+		 * @param[in]	drawOp			Determines how should the provided indices be interpreted by the pipeline. Default
+		 *								option is a triangle strip, where three indices represent a single triangle.
+		 */
+		static HMesh Create(const SPtr<MeshData>& initialData, int usage = MU_STATIC,
+			DrawOperationType drawOp = DOT_TRIANGLE_LIST, GpuDeviceFlags deviceMask = GDF_DEFAULT);
 
 		/**
 		 * Creates a new empty mesh. Created mesh will have no sub-meshes.
@@ -124,23 +207,33 @@ namespace te
 		 *								option is a triangle list, where three indices represent a single triangle.
 		 * @param[in]	indexType		Size of indices, use smaller size for better performance, however be careful not to
 		 *								go over the number of vertices limited by the size.
+		 * @param[in]	deviceMask		Mask that determines on which GPU devices should the object be created on.
 		 */
 		static HMesh Create(UINT32 numVertices, UINT32 numIndices, const SPtr<VertexDataDesc>& vertexDesc,
-			int usage = MU_STATIC, DrawOperationType drawOp = DOT_TRIANGLE_LIST, IndexType indexType = IT_32BIT);
+			int usage = MU_STATIC, DrawOperationType drawOp = DOT_TRIANGLE_LIST, IndexType indexType = IT_32BIT, 
+			GpuDeviceFlags deviceMask = GDF_DEFAULT);
 
 		/**
-		 * Creates a new empty mesh.
-		 *
-		 * @param[in]	desc	Descriptor containing the properties of the mesh to create.
-		 */
-		static HMesh Create(const MESH_DESC& desc);
-
-		/**
-		 * @copydoc	create(const MESH_DESC&)
+		 * @copydoc	Create(const MESH_DESC&)
 		 *
 		 * @note	Internal method. Use create() for normal use.
 		 */
-		static SPtr<Mesh> _createPtr(const MESH_DESC& desc);
+		static SPtr<Mesh> _createPtr(const MESH_DESC& desc, GpuDeviceFlags deviceMask = GDF_DEFAULT);
+
+		/**
+		 * @copydoc	Create(const SPtr<MeshData>&, const MESH_DESC&)
+		 *
+		 * @note	Internal method. Use create() for normal use.
+		 */
+		static SPtr<Mesh> _createPtr(const SPtr<MeshData>& initialData, const MESH_DESC& desc, GpuDeviceFlags deviceMask = GDF_DEFAULT);
+
+		/**
+		 * @copydoc	Create(const SPtr<MeshData>&, int, DrawOperationType)
+		 *
+		 * @note	Internal method. Use create() for normal use.
+		 */
+		static SPtr<Mesh> _createPtr(const SPtr<MeshData>& initialData, int usage = MU_STATIC,
+			DrawOperationType drawOp = DOT_TRIANGLE_LIST, GpuDeviceFlags deviceMask = GDF_DEFAULT);
 
 		/**
 		 * Creates a new empty and uninitialized mesh. You will need to manually initialize the mesh before using it.
@@ -149,25 +242,70 @@ namespace te
 		 */
 		static SPtr<Mesh> CreateEmpty();
 
-		/** @copydoc CoreObject::Initialize */
-		void Initialize() override;
+        /**
+         * Updates the current mesh with the provided data.
+         *
+         * @param[in]	data				Data to update the mesh with.
+         * @param[in]	discardEntireBuffer When true the existing contents of the resource you are updating will be
+         *									discarded. This can make the operation faster. Resources with certain buffer
+         *									types might require this flag to be in a specific state otherwise the operation
+         *									will fail.
+         * @param[in]	updateBounds		If true the internal bounds of the mesh will be recalculated based on the
+         *									provided data.
+         * @param[in]	queueIdx			Device queue to perform the write operation on. See @ref queuesDoc.
+         */
+        virtual void WriteData(const MeshData& data, bool discardEntireBuffer, bool updateBounds = true,
+            UINT32 queueIdx = 0);
+
+        /**
+         * Reads the current mesh data into the provided @p data parameter. Data buffer needs to be pre-allocated.
+         *
+         * @param[out]	data				Pre-allocated buffer of proper vertex/index format and size where data will be
+         *									read to. You can use Mesh::allocBuffer() to allocate a buffer of a correct
+         *									format and size.
+         * @param[in]	deviceIdx			Index of the device whose memory to read. If the buffer doesn't exist on this
+         *									device, no data will be read.
+         * @param[in]	queueIdx			Device queue to perform the read operation on. See @ref queuesDoc.
+         */
+        virtual void ReadData(MeshData& data, UINT32 deviceIdx = 0, UINT32 queueIdx = 0);
 
 	protected:
 		friend class MeshManager;
 
-		Mesh(const MESH_DESC& desc);
-
-		/**	Returns properties that contain information about the mesh. */
-		const MeshProperties& GetProperties() const { return _properties; }
+		Mesh(const MESH_DESC& desc, GpuDeviceFlags deviceMask);
+		Mesh(const SPtr<MeshData>& initialMeshData, const MESH_DESC& desc, GpuDeviceFlags deviceMask);
 
 	private:
-        Mesh();
+		Mesh();
+
+		/** Updates bounds by calculating them from the vertices in the provided mesh data object. */
+		void UpdateBounds(const MeshData& meshData);
+
+		/**
+		 * Creates buffers used for caching of CPU mesh data.
+		 *
+		 * @note	Make sure to initialize all mesh properties before calling this.
+		 */
+		void CreateCPUBuffer();
+
+		/**	Updates the cached CPU buffers with new data. */
+		void UpdateCPUBuffer(UINT32 subresourceIdx, const MeshData& meshData);
+
+	private:
+		mutable SPtr<MeshData> _CPUData;
 
 		MeshProperties _properties;
+
+		SPtr<VertexData> _vertexData;
+		SPtr<IndexBuffer> _indexBuffer;
 		SPtr<VertexDataDesc> _vertexDesc;
+
+		GpuDeviceFlags _deviceMask;
+		SPtr<MeshData> _tempInitialMeshData;
+
 		int _usage;
 		IndexType _indexType;
 
 		// TODO
-    };
+	};
 }
