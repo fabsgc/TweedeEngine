@@ -18,11 +18,6 @@ namespace te
 
 	D3D11GpuProgram::~D3D11GpuProgram()
 	{
-        if (_inputDeclaration)
-        {
-            _inputDeclaration->Destroy();
-        }
-
 		_inputDeclaration = nullptr;
 	}
 

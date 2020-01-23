@@ -36,6 +36,7 @@ namespace te
 
         const UUID& uuid = resource.GetUUID();
         OnResourceDestroyed(uuid);
+        resource._handleData->data->Destroy();
 
         auto iterFind = _loadedResources.find(uuid);
         if (iterFind != _loadedResources.end())

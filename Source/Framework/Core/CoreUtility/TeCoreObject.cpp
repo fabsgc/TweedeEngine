@@ -12,7 +12,7 @@ namespace te
 	{
 		if(!IsDestroyed())
 		{
-			// Object must be released with destroy() otherwise engine can still try to use it, even if it was destructed
+			// Object must be released with Destroy() otherwise engine can still try to use it, even if it was destructed
 			// (e.g. if an object has one of its methods queued in a command queue, and is destructed, you will be accessing invalid memory)
 			TE_ASSERT_ERROR(false, "Destructor called but object is not destroyed. This will result in nasty issues.", __FILE__, __LINE__);
 		}

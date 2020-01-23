@@ -25,9 +25,9 @@ namespace te
     SPtr<RenderWindow> GLRenderAPI::CreateRenderWindow(const RENDER_WINDOW_DESC& windowDesc)
     {
 #if TE_PLATFORM == TE_PLATFORM_WIN32
-        return te_shared_ptr_new<Win32RenderWindow>(windowDesc);
+        return te_core_ptr_new<Win32RenderWindow>(windowDesc);
 #elif TE_PLATFORM == TE_PLATFORM_LINUX
-        return te_shared_ptr_new<LinuxRenderWindow>(windowDesc);
+        return te_core_ptr_new<LinuxRenderWindow>(windowDesc);
 #endif
     }
 

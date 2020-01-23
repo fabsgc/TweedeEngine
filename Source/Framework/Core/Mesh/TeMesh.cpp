@@ -68,9 +68,14 @@ namespace te
 	Mesh::~Mesh()
 	{
 		_vertexData = nullptr;
-		_indexBuffer = nullptr;
 		_vertexDesc = nullptr;
 		_tempInitialMeshData = nullptr;
+
+        if (_indexBuffer != nullptr)
+        {
+            _indexBuffer->Destroy();
+            _indexBuffer = nullptr;
+        }
 	}
 
 	void Mesh::Initialize()
@@ -87,10 +92,10 @@ namespace te
 			CreateCPUBuffer();
 		}
 
-        bool isDynamic = (_usage & MU_DYNAMIC) != 0;
-        int usage = isDynamic ? GBU_DYNAMIC : GBU_STATIC;
+		bool isDynamic = (_usage & MU_DYNAMIC) != 0;
+		int usage = isDynamic ? GBU_DYNAMIC : GBU_STATIC;
 
-		/*INDEX_BUFFER_DESC ibDesc;
+		INDEX_BUFFER_DESC ibDesc;
 		ibDesc.Type = _indexType;
 		ibDesc.NumIndices = _properties._numIndices;
 		ibDesc.Usage = (GpuBufferUsage)_usage;
@@ -113,7 +118,7 @@ namespace te
 
 			SPtr<VertexBuffer> vertexBuffer = VertexBuffer::Create(vbDesc, _deviceMask);
 			_vertexData->SetBuffer(i, vertexBuffer);
-		}*/
+		}
 
 		// TODO Low priority - DX11 (and maybe OpenGL)? allow an optimization that allows you to set
 		// buffer data upon buffer construction, instead of setting it in a second step like I do here
@@ -269,172 +274,172 @@ namespace te
 
 	void Mesh::WriteData(const MeshData& meshData, bool discardEntireBuffer, bool performUpdateBounds, UINT32 queueIdx)
 	{
-        if (discardEntireBuffer)
-        {
-            if ((_usage & MU_STATIC) != 0)
-            {
-                TE_DEBUG("Buffer discard is enabled but buffer was not created as dynamic. Disabling discard.", __FILE__, __LINE__);
-                discardEntireBuffer = false;
-            }
-        }
-        else
-        {
-            if ((_usage & MU_DYNAMIC) != 0)
-            {
-                TE_DEBUG("Buffer discard is not enabled but buffer was created as dynamic. Enabling discard.", __FILE__, __LINE__);
-                discardEntireBuffer = true;
-            }
-        }
+		if (discardEntireBuffer)
+		{
+			if ((_usage & MU_STATIC) != 0)
+			{
+				TE_DEBUG("Buffer discard is enabled but buffer was not created as dynamic. Disabling discard.", __FILE__, __LINE__);
+				discardEntireBuffer = false;
+			}
+		}
+		else
+		{
+			if ((_usage & MU_DYNAMIC) != 0)
+			{
+				TE_DEBUG("Buffer discard is not enabled but buffer was created as dynamic. Enabling discard.", __FILE__, __LINE__);
+				discardEntireBuffer = true;
+			}
+		}
 
-        // Indices
-        const IndexBufferProperties& ibProps = _indexBuffer->GetProperties();
+		// Indices
+		const IndexBufferProperties& ibProps = _indexBuffer->GetProperties();
 
-        UINT32 indicesSize = meshData.GetIndexBufferSize();
-        UINT8* srcIdxData = meshData.GetIndexData();
+		UINT32 indicesSize = meshData.GetIndexBufferSize();
+		UINT8* srcIdxData = meshData.GetIndexData();
 
-        if (meshData.GetIndexElementSize() != ibProps.GetIndexSize())
-        {
-            TE_DEBUG("Provided index size doesn't match meshes index size. Needed: {" + ToString(ibProps.GetIndexSize()) + "}. " +
-                "Got: {" + ToString(meshData.GetIndexElementSize()) + "}", __FILE__, __LINE__);
+		if (meshData.GetIndexElementSize() != ibProps.GetIndexSize())
+		{
+			TE_DEBUG("Provided index size doesn't match meshes index size. Needed: {" + ToString(ibProps.GetIndexSize()) + "}. " +
+				"Got: {" + ToString(meshData.GetIndexElementSize()) + "}", __FILE__, __LINE__);
 
-            return;
-        }
+			return;
+		}
 
-        if (indicesSize > _indexBuffer->GetSize())
-        {
-            indicesSize = _indexBuffer->GetSize();
-            TE_DEBUG("Index buffer values are being written out of valid range.", __FILE__, __LINE__);
-        }
+		if (indicesSize > _indexBuffer->GetSize())
+		{
+			indicesSize = _indexBuffer->GetSize();
+			TE_DEBUG("Index buffer values are being written out of valid range.", __FILE__, __LINE__);
+		}
 
-        _indexBuffer->WriteData(0, indicesSize, srcIdxData, discardEntireBuffer ? BWT_DISCARD : BWT_NORMAL, queueIdx);
+		_indexBuffer->WriteData(0, indicesSize, srcIdxData, discardEntireBuffer ? BWT_DISCARD : BWT_NORMAL, queueIdx);
 
-        // Vertices
-        for (UINT32 i = 0; i <= _vertexDesc->GetMaxStreamIdx(); i++)
-        {
-            if (!_vertexDesc->HasStream(i))
-            {
-                continue;
-            }
+		// Vertices
+		for (UINT32 i = 0; i <= _vertexDesc->GetMaxStreamIdx(); i++)
+		{
+			if (!_vertexDesc->HasStream(i))
+			{
+				continue;
+			}
 
-            if (!meshData.GetVertexDesc()->HasStream(i))
-                continue;
+			if (!meshData.GetVertexDesc()->HasStream(i))
+				continue;
 
-            // Ensure both have the same sized vertices
-            UINT32 myVertSize = _vertexDesc->GetVertexStride(i);
-            UINT32 otherVertSize = meshData.GetVertexDesc()->GetVertexStride(i);
-            if (myVertSize != otherVertSize)
-            {
-                TE_DEBUG("Provided vertex size for stream {" + ToString(i) + "} doesn't match meshes vertex size. "
-                    "Needed: {" + ToString(myVertSize) + "}. Got: {" + ToString(otherVertSize) + "}", __FILE__, __LINE__);
+			// Ensure both have the same sized vertices
+			UINT32 myVertSize = _vertexDesc->GetVertexStride(i);
+			UINT32 otherVertSize = meshData.GetVertexDesc()->GetVertexStride(i);
+			if (myVertSize != otherVertSize)
+			{
+				TE_DEBUG("Provided vertex size for stream {" + ToString(i) + "} doesn't match meshes vertex size. "
+					"Needed: {" + ToString(myVertSize) + "}. Got: {" + ToString(otherVertSize) + "}", __FILE__, __LINE__);
 
-                continue;
-            }
+				continue;
+			}
 
-            SPtr<VertexBuffer> vertexBuffer = _vertexData->GetBuffer(i);
+			SPtr<VertexBuffer> vertexBuffer = _vertexData->GetBuffer(i);
 
-            UINT32 bufferSize = meshData.GetStreamSize(i);
-            UINT8* srcVertBufferData = meshData.GetStreamData(i);
+			UINT32 bufferSize = meshData.GetStreamSize(i);
+			UINT8* srcVertBufferData = meshData.GetStreamData(i);
 
-            if (bufferSize > vertexBuffer->GetSize())
-            {
-                bufferSize = vertexBuffer->GetSize();
-                TE_DEBUG("Vertex buffer values for stream \"{" + ToString(i) + "}\" are being written out of valid range.", __FILE__, __LINE__);
-            }
+			if (bufferSize > vertexBuffer->GetSize())
+			{
+				bufferSize = vertexBuffer->GetSize();
+				TE_DEBUG("Vertex buffer values for stream \"{" + ToString(i) + "}\" are being written out of valid range.", __FILE__, __LINE__);
+			}
 
-            vertexBuffer->WriteData(0, bufferSize, srcVertBufferData, discardEntireBuffer ? BWT_DISCARD : BWT_NORMAL, queueIdx);
-        }
+			vertexBuffer->WriteData(0, bufferSize, srcVertBufferData, discardEntireBuffer ? BWT_DISCARD : BWT_NORMAL, queueIdx);
+		}
 
-        if (performUpdateBounds)
-        {
-            UpdateBounds(meshData);
-        }
+		if (performUpdateBounds)
+		{
+			UpdateBounds(meshData);
+		}
 	}
 
 	void Mesh::ReadData(MeshData& meshData, UINT32 deviceIdx, UINT32 queueIdx)
 	{
-        IndexType indexType = IT_32BIT;
-        if (_indexBuffer)
-        {
-            indexType = _indexBuffer->GetProperties().GetType();
-        }
+		IndexType indexType = IT_32BIT;
+		if (_indexBuffer)
+		{
+			indexType = _indexBuffer->GetProperties().GetType();
+		}
 
-        if (_indexBuffer)
-        {
-            const IndexBufferProperties& ibProps = _indexBuffer->GetProperties();
+		if (_indexBuffer)
+		{
+			const IndexBufferProperties& ibProps = _indexBuffer->GetProperties();
 
-            if (meshData.GetIndexElementSize() != ibProps.GetIndexSize())
-            {
-                TE_DEBUG("Provided index size doesn't match meshes index size. Needed: {" + ToString(ibProps.GetIndexSize()) + "}. " + 
-                         "Got: {" + ToString(meshData.GetIndexElementSize()) + "}", __FILE__, __LINE__);
-                return;
-            }
+			if (meshData.GetIndexElementSize() != ibProps.GetIndexSize())
+			{
+				TE_DEBUG("Provided index size doesn't match meshes index size. Needed: {" + ToString(ibProps.GetIndexSize()) + "}. " + 
+						 "Got: {" + ToString(meshData.GetIndexElementSize()) + "}", __FILE__, __LINE__);
+				return;
+			}
 
-            UINT8* idxData = static_cast<UINT8*>(_indexBuffer->Lock(GBL_READ_ONLY, deviceIdx, queueIdx));
-            UINT32 idxElemSize = ibProps.GetIndexSize();
+			UINT8* idxData = static_cast<UINT8*>(_indexBuffer->Lock(GBL_READ_ONLY, deviceIdx, queueIdx));
+			UINT32 idxElemSize = ibProps.GetIndexSize();
 
-            UINT8* indices = nullptr;
+			UINT8* indices = nullptr;
 
-            if (indexType == IT_16BIT)
-                indices = (UINT8*)meshData.GetIndices16();
-            else
-                indices = (UINT8*)meshData.GetIndices32();
+			if (indexType == IT_16BIT)
+				indices = (UINT8*)meshData.GetIndices16();
+			else
+				indices = (UINT8*)meshData.GetIndices32();
 
-            UINT32 numIndicesToCopy = std::min(_properties._numIndices, meshData.GetNumIndices());
+			UINT32 numIndicesToCopy = std::min(_properties._numIndices, meshData.GetNumIndices());
 
-            UINT32 indicesSize = numIndicesToCopy * idxElemSize;
-            if (indicesSize > meshData.GetIndexBufferSize())
-            {
-                TE_DEBUG("Provided buffer doesn't have enough space to store mesh indices.", __FILE__, __LINE__);
-                return;
-            }
+			UINT32 indicesSize = numIndicesToCopy * idxElemSize;
+			if (indicesSize > meshData.GetIndexBufferSize())
+			{
+				TE_DEBUG("Provided buffer doesn't have enough space to store mesh indices.", __FILE__, __LINE__);
+				return;
+			}
 
-            memcpy(indices, idxData, numIndicesToCopy * idxElemSize);
+			memcpy(indices, idxData, numIndicesToCopy * idxElemSize);
 
-            _indexBuffer->Unlock();
-        }
+			_indexBuffer->Unlock();
+		}
 
-        if (_vertexData)
-        {
-            auto vertexBuffers = _vertexData->GetBuffers();
+		if (_vertexData)
+		{
+			auto vertexBuffers = _vertexData->GetBuffers();
 
-            UINT32 streamIdx = 0;
-            for (auto iter = vertexBuffers.begin(); iter != vertexBuffers.end(); ++iter)
-            {
-                if (!meshData.GetVertexDesc()->HasStream(streamIdx))
-                    continue;
+			UINT32 streamIdx = 0;
+			for (auto iter = vertexBuffers.begin(); iter != vertexBuffers.end(); ++iter)
+			{
+				if (!meshData.GetVertexDesc()->HasStream(streamIdx))
+					continue;
 
-                SPtr<VertexBuffer> vertexBuffer = iter->second;
-                const VertexBufferProperties& vbProps = vertexBuffer->GetProperties();
+				SPtr<VertexBuffer> vertexBuffer = iter->second;
+				const VertexBufferProperties& vbProps = vertexBuffer->GetProperties();
 
-                // Ensure both have the same sized vertices
-                UINT32 myVertSize = _vertexDesc->GetVertexStride(streamIdx);
-                UINT32 otherVertSize = meshData.GetVertexDesc()->GetVertexStride(streamIdx);
-                if (myVertSize != otherVertSize)
-                {
-                    TE_DEBUG("Provided vertex size for stream {" + ToString(streamIdx) + "} doesn't match meshes vertex size. "
-                        "Needed: {" + ToString(myVertSize) + "}. Got: {" + ToString(otherVertSize) + "}", __FILE__, __LINE__);
+				// Ensure both have the same sized vertices
+				UINT32 myVertSize = _vertexDesc->GetVertexStride(streamIdx);
+				UINT32 otherVertSize = meshData.GetVertexDesc()->GetVertexStride(streamIdx);
+				if (myVertSize != otherVertSize)
+				{
+					TE_DEBUG("Provided vertex size for stream {" + ToString(streamIdx) + "} doesn't match meshes vertex size. "
+						"Needed: {" + ToString(myVertSize) + "}. Got: {" + ToString(otherVertSize) + "}", __FILE__, __LINE__);
 
-                    continue;
-                }
+					continue;
+				}
 
-                UINT32 numVerticesToCopy = meshData.GetNumVertices();
-                UINT32 bufferSize = vbProps.GetVertexSize() * numVerticesToCopy;
+				UINT32 numVerticesToCopy = meshData.GetNumVertices();
+				UINT32 bufferSize = vbProps.GetVertexSize() * numVerticesToCopy;
 
-                if (bufferSize > vertexBuffer->GetSize())
-                {
-                    TE_DEBUG("Vertex buffer values for stream \"{" + ToString(streamIdx) + "}\" are being read out of valid range.", __FILE__, __LINE__);
-                    continue;
-                }
+				if (bufferSize > vertexBuffer->GetSize())
+				{
+					TE_DEBUG("Vertex buffer values for stream \"{" + ToString(streamIdx) + "}\" are being read out of valid range.", __FILE__, __LINE__);
+					continue;
+				}
 
-                UINT8* vertDataPtr = static_cast<UINT8*>(vertexBuffer->Lock(GBL_READ_ONLY, deviceIdx, queueIdx));
+				UINT8* vertDataPtr = static_cast<UINT8*>(vertexBuffer->Lock(GBL_READ_ONLY, deviceIdx, queueIdx));
 
-                UINT8* dest = meshData.GetStreamData(streamIdx);
-                memcpy(dest, vertDataPtr, bufferSize);
+				UINT8* dest = meshData.GetStreamData(streamIdx);
+				memcpy(dest, vertDataPtr, bufferSize);
 
-                vertexBuffer->Unlock();
+				vertexBuffer->Unlock();
 
-                streamIdx++;
-            }
-        }
+				streamIdx++;
+			}
+		}
 	}
 }

@@ -135,23 +135,23 @@ namespace te
 		 */
 		virtual UINT32 GetIndexOffset() const { return 0; }
 
-        /**
-         * Allocates a buffer that exactly matches the size of this mesh. This is a helper function, primarily meant for
-         * creating buffers when reading from, or writing to a mesh.
-         *
-         * @note	Thread safe.
-         */
-        SPtr<MeshData> AllocateBuffer() const;
+		/**
+		 * Allocates a buffer that exactly matches the size of this mesh. This is a helper function, primarily meant for
+		 * creating buffers when reading from, or writing to a mesh.
+		 *
+		 * @note	Thread safe.
+		 */
+		SPtr<MeshData> AllocateBuffer() const;
 
-        /**
-         * Returns mesh data cached in the system memory. If the mesh wasn't created with CPU cached usage flag this
-         * method will not return any data. Caller should not modify the returned data.
-         *
-         * @note
-         * The data read is the cached mesh data. Any data written to the mesh from the GPU or core thread will not be
-         * reflected in this data. Use readData() if you require those changes.
-         */
-        SPtr<MeshData> GetCachedData() const { return _CPUData; }
+		/**
+		 * Returns mesh data cached in the system memory. If the mesh wasn't created with CPU cached usage flag this
+		 * method will not return any data. Caller should not modify the returned data.
+		 *
+		 * @note
+		 * The data read is the cached mesh data. Any data written to the mesh from the GPU or core thread will not be
+		 * reflected in this data. Use readData() if you require those changes.
+		 */
+		SPtr<MeshData> GetCachedData() const { return _CPUData; }
 
 		/**
 		 * Called whenever this mesh starts being used on the GPU.
@@ -242,32 +242,32 @@ namespace te
 		 */
 		static SPtr<Mesh> CreateEmpty();
 
-        /**
-         * Updates the current mesh with the provided data.
-         *
-         * @param[in]	data				Data to update the mesh with.
-         * @param[in]	discardEntireBuffer When true the existing contents of the resource you are updating will be
-         *									discarded. This can make the operation faster. Resources with certain buffer
-         *									types might require this flag to be in a specific state otherwise the operation
-         *									will fail.
-         * @param[in]	updateBounds		If true the internal bounds of the mesh will be recalculated based on the
-         *									provided data.
-         * @param[in]	queueIdx			Device queue to perform the write operation on. See @ref queuesDoc.
-         */
-        virtual void WriteData(const MeshData& data, bool discardEntireBuffer, bool updateBounds = true,
-            UINT32 queueIdx = 0);
+		/**
+		 * Updates the current mesh with the provided data.
+		 *
+		 * @param[in]	data				Data to update the mesh with.
+		 * @param[in]	discardEntireBuffer When true the existing contents of the resource you are updating will be
+		 *									discarded. This can make the operation faster. Resources with certain buffer
+		 *									types might require this flag to be in a specific state otherwise the operation
+		 *									will fail.
+		 * @param[in]	updateBounds		If true the internal bounds of the mesh will be recalculated based on the
+		 *									provided data.
+		 * @param[in]	queueIdx			Device queue to perform the write operation on. See @ref queuesDoc.
+		 */
+		virtual void WriteData(const MeshData& data, bool discardEntireBuffer, bool updateBounds = true,
+			UINT32 queueIdx = 0);
 
-        /**
-         * Reads the current mesh data into the provided @p data parameter. Data buffer needs to be pre-allocated.
-         *
-         * @param[out]	data				Pre-allocated buffer of proper vertex/index format and size where data will be
-         *									read to. You can use Mesh::allocBuffer() to allocate a buffer of a correct
-         *									format and size.
-         * @param[in]	deviceIdx			Index of the device whose memory to read. If the buffer doesn't exist on this
-         *									device, no data will be read.
-         * @param[in]	queueIdx			Device queue to perform the read operation on. See @ref queuesDoc.
-         */
-        virtual void ReadData(MeshData& data, UINT32 deviceIdx = 0, UINT32 queueIdx = 0);
+		/**
+		 * Reads the current mesh data into the provided @p data parameter. Data buffer needs to be pre-allocated.
+		 *
+		 * @param[out]	data				Pre-allocated buffer of proper vertex/index format and size where data will be
+		 *									read to. You can use Mesh::allocBuffer() to allocate a buffer of a correct
+		 *									format and size.
+		 * @param[in]	deviceIdx			Index of the device whose memory to read. If the buffer doesn't exist on this
+		 *									device, no data will be read.
+		 * @param[in]	queueIdx			Device queue to perform the read operation on. See @ref queuesDoc.
+		 */
+		virtual void ReadData(MeshData& data, UINT32 deviceIdx = 0, UINT32 queueIdx = 0);
 
 	protected:
 		friend class MeshManager;

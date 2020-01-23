@@ -43,6 +43,9 @@
 
 #include "Math/TeVector4.h"
 
+#include "Mesh/TeMesh.h"
+#include "Mesh/TeMeshData.h"
+
 namespace te
 {
 	TE_MODULE_STATIC_MEMBER(CoreApplication)
@@ -55,12 +58,10 @@ namespace te
 		, _isFrameRenderingFinished(true)
 		, _runMainLoop(false)
 		, _pause(false)
-	{
-	}
+	{ }
 
 	CoreApplication::~CoreApplication()
-	{
-	}
+	{ }
 
 	void CoreApplication::OnStartUp()
 	{
@@ -593,29 +594,19 @@ namespace te
 	void CoreApplication::TestShutDown()
 	{
 #if TE_PLATFORM == TE_PLATFORM_WIN32
-		_indexBuffer->Destroy();
+        _vertexDeclaration = nullptr;
 		_indexBuffer = nullptr;
-
-		_vertexBuffer->Destroy();
 		_vertexBuffer = nullptr;
-
-		_vertexShader->Destroy();
 		_vertexShader = nullptr;
-
-		_pixelShader->Destroy();
 		_pixelShader = nullptr;
 
-		_camera->Destroy();
 		_camera = nullptr;
-
-		_cameraHidden->Destroy();
 		_cameraHidden = nullptr;
 #endif
-		_window->Destroy();
 		_window = nullptr;
 
-		_renderer.reset();
-		_window.reset();
+		_renderer = nullptr;
+		_window = nullptr;
 	}
 
 	CoreApplication& gCoreApplication()

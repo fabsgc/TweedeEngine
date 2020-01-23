@@ -14,23 +14,23 @@ namespace te
         switch (desc.Type)
         {
         case GPT_VERTEX_PROGRAM:
-            gpuProgram = te_shared_ptr<GLGpuVertexProgram>(new (te_allocate<GLGpuVertexProgram>())
+            gpuProgram = te_core_ptr<GLGpuVertexProgram>(new (te_allocate<GLGpuVertexProgram>())
                 GLGpuVertexProgram(desc, deviceMask));
             break;
         case GPT_PIXEL_PROGRAM:
-            gpuProgram = te_shared_ptr<GLGpuPixelProgram>(new (te_allocate<GLGpuPixelProgram>())
+            gpuProgram = te_core_ptr<GLGpuPixelProgram>(new (te_allocate<GLGpuPixelProgram>())
                 GLGpuPixelProgram(desc, deviceMask));
             break;
         case GPT_HULL_PROGRAM:
-            gpuProgram = te_shared_ptr<GLGpuHullProgram>(new (te_allocate<GLGpuHullProgram>())
+            gpuProgram = te_core_ptr<GLGpuHullProgram>(new (te_allocate<GLGpuHullProgram>())
                 GLGpuHullProgram(desc, deviceMask));
             break;
         case GPT_DOMAIN_PROGRAM:
-            gpuProgram = te_shared_ptr<GLGpuDomainProgram>(new (te_allocate<GLGpuDomainProgram>())
+            gpuProgram = te_core_ptr<GLGpuDomainProgram>(new (te_allocate<GLGpuDomainProgram>())
                 GLGpuDomainProgram(desc, deviceMask));
             break;
         case GPT_GEOMETRY_PROGRAM:
-            gpuProgram = te_shared_ptr<GLGpuGeometryProgram>(new (te_allocate<GLGpuGeometryProgram>())
+            gpuProgram = te_core_ptr<GLGpuGeometryProgram>(new (te_allocate<GLGpuGeometryProgram>())
                 GLGpuGeometryProgram(desc, deviceMask));
             break;
         }

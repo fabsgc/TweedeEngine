@@ -12,7 +12,7 @@ namespace te
 	SPtr<VertexBuffer> GLHardwareBufferManager::CreateVertexBufferInternal(const VERTEX_BUFFER_DESC& desc,
 		GpuDeviceFlags deviceMask)
 	{
-		SPtr<GLVertexBuffer> ret = te_shared_ptr_new<GLVertexBuffer>(desc, deviceMask);
+		SPtr<GLVertexBuffer> ret = te_core_ptr_new<GLVertexBuffer>(desc, deviceMask);
 		ret->SetThisPtr(ret);
 
 		return ret;
@@ -21,7 +21,7 @@ namespace te
 	SPtr<IndexBuffer> GLHardwareBufferManager::CreateIndexBufferInternal(const INDEX_BUFFER_DESC& desc,
 		GpuDeviceFlags deviceMask)
 	{
-		SPtr<GLIndexBuffer> ret = te_shared_ptr_new<GLIndexBuffer>(desc, deviceMask);
+		SPtr<GLIndexBuffer> ret = te_core_ptr_new<GLIndexBuffer>(desc, deviceMask);
 		ret->SetThisPtr(ret);
 
 		return ret;

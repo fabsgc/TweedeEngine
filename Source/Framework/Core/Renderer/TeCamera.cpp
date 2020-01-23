@@ -28,12 +28,13 @@ namespace te
 
     void Camera::Destroy()
     {
-        CoreObject::Destroy();
         gSceneManager().UnregisterCamera(std::static_pointer_cast<Camera>(this->GetThisPtr()));
         RendererManager::Instance().GetRenderer()->NotifyCameraRemoved(this);
 
         _viewport->Destroy();
         _viewport = nullptr;
+
+        CoreObject::Destroy();
     }
 
     /**	Returns the viewport used by the camera. */

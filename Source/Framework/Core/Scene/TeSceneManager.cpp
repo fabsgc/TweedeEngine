@@ -10,6 +10,7 @@ namespace te
 
     SceneManager::~SceneManager()
     {
+        _cameras.clear();
     }
 
     void SceneManager::Initialize()

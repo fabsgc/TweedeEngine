@@ -36,7 +36,7 @@ namespace te
 	{
 	public:
         RenderTexture(const RENDER_TEXTURE_DESC& desc, UINT32 deviceIdx);
-		virtual ~RenderTexture() = default;
+		virtual ~RenderTexture() {}
 
         /** @copydoc CoreObject::Initialize */
 		void Initialize() override;

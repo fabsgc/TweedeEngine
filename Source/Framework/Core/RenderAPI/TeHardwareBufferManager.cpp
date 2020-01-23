@@ -10,7 +10,6 @@ namespace te
 		:elements(elements)
 	{ }
 
-
 	size_t HardwareBufferManager::VertexDeclarationKey::HashFunction::operator()(const VertexDeclarationKey& v) const
 	{
 		size_t hash = 0;
@@ -49,7 +48,6 @@ namespace te
 		SPtr<IndexBuffer> ibuf = CreateIndexBufferInternal(desc, deviceMask);
 		ibuf->Initialize();
 		return ibuf;
-
 	}
 
 	SPtr<VertexBuffer> HardwareBufferManager::CreateVertexBuffer(const VERTEX_BUFFER_DESC& desc,
@@ -91,7 +89,7 @@ namespace te
 	{
 		VertexDeclaration* decl = new (te_allocate<VertexDeclaration>()) VertexDeclaration(elements, deviceMask);
 
-		SPtr<VertexDeclaration> ret = te_shared_ptr<VertexDeclaration>(decl);
+		SPtr<VertexDeclaration> ret = te_core_ptr<VertexDeclaration>(decl);
 		ret->SetThisPtr(ret);
 
 		return ret;

@@ -14,23 +14,23 @@ namespace te
         switch (desc.Type)
         {
         case GPT_VERTEX_PROGRAM:
-            gpuProgram = te_shared_ptr<D3D11GpuVertexProgram>(new (te_allocate<D3D11GpuVertexProgram>())
+            gpuProgram = te_core_ptr<D3D11GpuVertexProgram>(new (te_allocate<D3D11GpuVertexProgram>())
                 D3D11GpuVertexProgram(desc, deviceMask));
             break;
         case GPT_PIXEL_PROGRAM:
-            gpuProgram = te_shared_ptr<D3D11GpuPixelProgram>(new (te_allocate<D3D11GpuPixelProgram>())
+            gpuProgram = te_core_ptr<D3D11GpuPixelProgram>(new (te_allocate<D3D11GpuPixelProgram>())
                 D3D11GpuPixelProgram(desc, deviceMask));
             break;
         case GPT_HULL_PROGRAM:
-            gpuProgram = te_shared_ptr<D3D11GpuHullProgram>(new (te_allocate<D3D11GpuHullProgram>())
+            gpuProgram = te_core_ptr<D3D11GpuHullProgram>(new (te_allocate<D3D11GpuHullProgram>())
                 D3D11GpuHullProgram(desc, deviceMask));
             break;
         case GPT_DOMAIN_PROGRAM:
-            gpuProgram = te_shared_ptr<D3D11GpuDomainProgram>(new (te_allocate<D3D11GpuDomainProgram>())
+            gpuProgram = te_core_ptr<D3D11GpuDomainProgram>(new (te_allocate<D3D11GpuDomainProgram>())
                 D3D11GpuDomainProgram(desc, deviceMask));
             break;
         case GPT_GEOMETRY_PROGRAM:
-            gpuProgram = te_shared_ptr<D3D11GpuGeometryProgram>(new (te_allocate<D3D11GpuGeometryProgram>())
+            gpuProgram = te_core_ptr<D3D11GpuGeometryProgram>(new (te_allocate<D3D11GpuGeometryProgram>())
                 D3D11GpuGeometryProgram(desc, deviceMask));
             break;
         }

@@ -1,6 +1,7 @@
 #include "TeObjectImporter.h"
 #include "Importer/TeMeshImportOptions.h"
 #include "Mesh/TeMesh.h"
+#include "Mesh/TeMeshData.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -60,8 +61,47 @@ namespace te
 			meshDesc.Usage |= MU_CPUCACHED;
 		}
 
-		SPtr<Mesh> mesh = Mesh::_createPtr(MESH_DESC());
+        // ###################
+        SPtr<VertexDataDesc> vertexDataxDesc = VertexDataDesc::Create();
+        vertexDataxDesc->AddVertElem(VET_FLOAT4, VES_POSITION);
+        vertexDataxDesc->AddVertElem(VET_FLOAT4, VES_COLOR);
+
+        meshDesc.NumVertices = 4;
+        meshDesc.NumIndices = 6;
+        meshDesc.Usage = MU_STATIC | MU_CPUCACHED;
+        meshDesc.VertexDesc = vertexDataxDesc;
+
+        HMesh mesh = Mesh::Create(meshDesc);
+        SPtr<MeshData> meshData = MeshData::Create(4, 6, vertexDataxDesc);
+
+        Vector4 vertexPositions[4];
+        for (UINT32 i = 0; i < 4; i++)
+        {
+            vertexPositions[i] = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+        }
+
+        Vector4 vertexColor[4];
+        for (UINT32 i = 0; i < 4; i++)
+        {
+            vertexColor[i] = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+        }
+
+        // Write the vertices
+        meshData->SetVertexData(VES_POSITION, (UINT8*)vertexPositions, sizeof(vertexPositions));
+        meshData->SetVertexData(VES_COLOR, (UINT8*)vertexColor, sizeof(vertexColor));
+
+        UINT32* indices = meshData->GetIndices32();
+        indices[0] = 0;
+        indices[1] = 1;
+        indices[2] = 2;
+
+        indices[3] = 2;
+        indices[4] = 1;
+        indices[5] = 3;
+        // ###################
+
+        mesh->WriteData(*meshData, true);
 		mesh->SetName(filePath);
-		return mesh;
+		return mesh.GetInternalPtr();
 	}
 }

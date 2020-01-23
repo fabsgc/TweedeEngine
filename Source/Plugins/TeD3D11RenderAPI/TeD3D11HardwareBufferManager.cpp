@@ -13,7 +13,7 @@ namespace te
 	SPtr<VertexBuffer> D3D11HardwareBufferManager::CreateVertexBufferInternal(const VERTEX_BUFFER_DESC& desc,
 		GpuDeviceFlags deviceMask)
 	{
-		SPtr<D3D11VertexBuffer> ret = te_shared_ptr_new<D3D11VertexBuffer>(_device, desc, deviceMask);
+		SPtr<D3D11VertexBuffer> ret = te_core_ptr_new<D3D11VertexBuffer>(_device, desc, deviceMask);
 		ret->SetThisPtr(ret);
 
 		return ret;
@@ -22,7 +22,7 @@ namespace te
 	SPtr<IndexBuffer> D3D11HardwareBufferManager::CreateIndexBufferInternal(const INDEX_BUFFER_DESC& desc,
 		GpuDeviceFlags deviceMask)
 	{
-		SPtr<D3D11IndexBuffer> ret = te_shared_ptr_new<D3D11IndexBuffer>(_device, desc, deviceMask);
+		SPtr<D3D11IndexBuffer> ret = te_core_ptr_new<D3D11IndexBuffer>(_device, desc, deviceMask);
 		ret->SetThisPtr(ret);
 
 		return ret;

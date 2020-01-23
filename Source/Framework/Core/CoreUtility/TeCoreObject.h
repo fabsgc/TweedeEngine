@@ -85,4 +85,17 @@ namespace te
 	{
 		return SPtr<Type>(data, &CoreObject::_delete<Type>);
 	}
+
+    /**
+     * Creates a new core object using the specified allocators and returns a shared pointer to it.
+     *
+     * @note
+     * All core thread object shared pointers must be created using this method or its overloads and you should not create
+     * them manually.
+     */
+    template<class Type, class... Args>
+    SPtr<Type> te_core_ptr_new(Args&&...args)
+    {
+        return SPtr<Type>(te_new<Type>(std::forward<Args>(args)...), &CoreObject::_delete<Type>);
+    }
 }
