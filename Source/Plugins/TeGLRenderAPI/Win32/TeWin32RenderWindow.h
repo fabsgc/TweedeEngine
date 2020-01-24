@@ -8,16 +8,16 @@
 namespace te
 {
     class Win32RenderWindow : public RenderWindow
-	{
-	public:
+    {
+    public:
         Win32RenderWindow(const RENDER_WINDOW_DESC& desc);
-		~Win32RenderWindow();
+        ~Win32RenderWindow();
 
         void Initialize() override;
         void GetCustomAttribute(const String& name, void* pData) const override;
         void WindowMovedOrResized() override;
 
-        /**	Retrieves internal window handle. */
+        /** Retrieves internal window handle. */
         HWND GetHWnd() const;
 
         /** @copydoc RenderWindow::move */

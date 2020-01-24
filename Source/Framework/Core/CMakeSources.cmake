@@ -126,8 +126,8 @@ set (TE_CORE_SRC_PLATFORM_LINUX
 )
 
 set(TE_CORE_INC_NOFILTER
-	"Core/TeCoreApplication.h"
-	"Core/TeCorePrerequisites.h"
+    "Core/TeCoreApplication.h"
+    "Core/TeCorePrerequisites.h"
     "Core/TeEngineConfig.h"
 )
 set(TE_CORE_SRC_NOFILTER

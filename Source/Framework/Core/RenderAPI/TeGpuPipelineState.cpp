@@ -15,7 +15,7 @@ namespace te
     { }
 
     void GraphicsPipelineState::Initialize()
-	{
+    {
         GPU_PIPELINE_PARAMS_DESC paramsDesc;
 
         if (_data.vertexProgram != nullptr)

@@ -5,7 +5,7 @@
 
 namespace te
 {
-    /**	Handles creation of OpenGL hardware buffers. */
+    /** Handles creation of OpenGL hardware buffers. */
     class GLHardwareBufferManager : public HardwareBufferManager
     {
     public:

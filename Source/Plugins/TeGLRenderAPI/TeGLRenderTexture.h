@@ -5,22 +5,22 @@
 namespace te
 {
     class GLRenderTexture : public RenderTexture
-	{
-	public:
-		GLRenderTexture(const RENDER_TEXTURE_DESC& desc, UINT32 deviceIdx);
-		virtual ~GLRenderTexture() { }
+    {
+    public:
+        GLRenderTexture(const RENDER_TEXTURE_DESC& desc, UINT32 deviceIdx);
+        virtual ~GLRenderTexture() { }
 
-		/** @copydoc RenderTexture::GetCustomAttribute */
-		void GetCustomAttribute(const String& name, void* data) const override;
+        /** @copydoc RenderTexture::GetCustomAttribute */
+        void GetCustomAttribute(const String& name, void* data) const override;
 
-	protected:
-		friend class GLTextureManager;
+    protected:
+        friend class GLTextureManager;
 
-		GLRenderTexture(const RENDER_TEXTURE_DESC& desc);
+        GLRenderTexture(const RENDER_TEXTURE_DESC& desc);
 
-		/** @copydoc RenderTexture::GetProperties */
-		const RenderTargetProperties& GetProperties() const override { return _properties; }
+        /** @copydoc RenderTexture::GetProperties */
+        const RenderTargetProperties& GetProperties() const override { return _properties; }
 
-		RenderTextureProperties _properties;
-	};
+        RenderTextureProperties _properties;
+    };
 }

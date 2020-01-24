@@ -5,7 +5,7 @@
 
 namespace te
 {
-    /**	Handles creation of DirectX 11 HLSL GPU programs. */
+    /** Handles creation of DirectX 11 HLSL GPU programs. */
     class D3D11HLSLProgramFactory : public GpuProgramFactory
     {
     public:

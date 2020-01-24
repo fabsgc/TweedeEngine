@@ -6,13 +6,13 @@
 
 namespace te 
 {
-    /**	DirectX 11 implementation of a vertex buffer. */
+    /** DirectX 11 implementation of a vertex buffer. */
     class D3D11VertexBuffer : public VertexBuffer
     {
     public:
         D3D11VertexBuffer(D3D11Device& device, const VERTEX_BUFFER_DESC& desc, GpuDeviceFlags deviceMask);
 
-        /**	Get the D3D-specific index buffer */
+        /** Get the D3D-specific index buffer */
         ID3D11Buffer* GetD3DVertexBuffer() const { return static_cast<D3D11HardwareBuffer*>(_buffer)->GetD3DBuffer(); }
 
     protected:

@@ -9,16 +9,16 @@
 namespace te
 {
     class D3D11RenderWindow : public RenderWindow
-	{
-	public:
+    {
+    public:
         D3D11RenderWindow(const RENDER_WINDOW_DESC& desc, D3D11Device& device, IDXGIFactory1* DXGIFactory);
-		~D3D11RenderWindow();
+        ~D3D11RenderWindow();
 
         void Initialize() override;
         void GetCustomAttribute(const String& name, void* pData) const override;
         void WindowMovedOrResized() override;
 
-        /**	Retrieves internal window handle. */
+        /** Retrieves internal window handle. */
         HWND GetHWnd() const;
 
         /** @copydoc RenderWindow::Move */
@@ -64,31 +64,31 @@ namespace te
         void SetTitle(const String& title) override;
 
     protected:
-        /**	Creates internal resources dependent on window size. */
+        /** Creates internal resources dependent on window size. */
         void CreateSizeDependedD3DResources();
 
-        /**	Destroys internal resources dependent on window size. */
+        /** Destroys internal resources dependent on window size. */
         void DestroySizeDependedD3DResources();
 
-        /**	Creates a swap chain for the window. */
+        /** Creates a swap chain for the window. */
         void CreateSwapChain();
 
-        /**	Queries the current DXGI device. Make sure to release the returned object when done with it. */
+        /** Queries the current DXGI device. Make sure to release the returned object when done with it. */
         IDXGIDevice* QueryDxgiDevice();
 
-        /**	Resizes all buffers attached to the swap chain to the specified size. */
+        /** Resizes all buffers attached to the swap chain to the specified size. */
         void ResizeSwapChainBuffers(UINT32 width, UINT32 height);
 
     protected:
         D3D11Device& _device;
-		IDXGIFactory1* _DXGIFactory;
+        IDXGIFactory1* _DXGIFactory;
 
         DXGI_SAMPLE_DESC _multisampleType;
-		UINT32 _refreshRateNumerator = 0;
-		UINT32 _refreshRateDenominator = 0;
+        UINT32 _refreshRateNumerator = 0;
+        UINT32 _refreshRateDenominator = 0;
 
         ID3D11Texture2D* _backBuffer = nullptr;
-		ID3D11RenderTargetView* _renderTargetView = nullptr;
+        ID3D11RenderTargetView* _renderTargetView = nullptr;
         SPtr<TextureView> _depthStencilView = nullptr;
         SPtr<Texture> _depthStencilBuffer;
 

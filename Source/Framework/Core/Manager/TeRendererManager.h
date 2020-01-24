@@ -16,10 +16,10 @@ namespace te
         /** Initializes the renderer, making it ready to render. */
         SPtr<Renderer> Initialize(const String& pluginFilename);
 
-        /**	Returns the current renderer. Null if no renderer is active. */
+        /** Returns the current renderer. Null if no renderer is active. */
         SPtr<Renderer> GetRenderer() { return _renderer; }
 
-        /**	Registers a new render API factory responsible for creating a specific render system type. */
+        /** Registers a new render API factory responsible for creating a specific render system type. */
         void RegisterFactory(SPtr<RendererFactory> factory);
 
         TE_MODULE_STATIC_HEADER_MEMBER(RendererManager)

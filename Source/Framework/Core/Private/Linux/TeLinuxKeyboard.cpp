@@ -6,16 +6,16 @@
 namespace te
 {
     struct Keyboard::Pimpl
-	{
-		bool HasInputFocus;
-	};
+    {
+        bool HasInputFocus;
+    };
 
     Keyboard::Keyboard(const String& name, Input* owner)
         : _name(name)
         , _owner(owner)
     {
         _data = te_new<Pimpl>();
-		_data->HasInputFocus = true;
+        _data->HasInputFocus = true;
     }
 
     Keyboard::~Keyboard()
@@ -24,37 +24,37 @@ namespace te
     }
 
     void Keyboard::Capture()
-	{
+    {
         if(_data->HasInputFocus)
-		{
-			while (!LinuxPlatform::ButtonEvents.empty())
-			{
-				LinuxButtonEvent& event = LinuxPlatform::ButtonEvents.front();
-				
+        {
+            while (!LinuxPlatform::ButtonEvents.empty())
+            {
+                LinuxButtonEvent& event = LinuxPlatform::ButtonEvents.front();
+                
                 if(event.Pressed)
                 {
-					_owner->NotifyButtonPressed(0, event.Button, event.Timestamp);
+                    _owner->NotifyButtonPressed(0, event.Button, event.Timestamp);
                 }
-				else
+                else
                 {
-					_owner->NotifyButtonReleased(0, event.Button, event.Timestamp);
+                    _owner->NotifyButtonReleased(0, event.Button, event.Timestamp);
                 }
 
-				LinuxPlatform::ButtonEvents.pop();
-			}
-		}
-		else
-		{
-			// Discard queued data
-			while (!LinuxPlatform::ButtonEvents.empty())
-            {
-				LinuxPlatform::ButtonEvents.pop();
+                LinuxPlatform::ButtonEvents.pop();
             }
-		}
+        }
+        else
+        {
+            // Discard queued data
+            while (!LinuxPlatform::ButtonEvents.empty())
+            {
+                LinuxPlatform::ButtonEvents.pop();
+            }
+        }
     }
 
     void Keyboard::ChangeCaptureContext(UINT64 windowHandle)
-	{
-		_data->HasInputFocus = windowHandle != (UINT64)-1;
-	}
+    {
+        _data->HasInputFocus = windowHandle != (UINT64)-1;
+    }
 }

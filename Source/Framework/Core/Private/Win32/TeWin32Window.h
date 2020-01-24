@@ -6,7 +6,7 @@
 
 namespace te
 {
-    /**	Descriptor used for creating a platform specific native window. */
+    /** Descriptor used for creating a platform specific native window. */
     struct TE_UTILITY_EXPORT WINDOW_DESC
     {
         WINDOW_DESC() = default;
@@ -30,7 +30,7 @@ namespace te
         WNDPROC WndProc = nullptr; /**< Pointer to a function that handles windows message processing. */
     };
 
-    /**	Represents a Windows native window. */
+    /** Represents a Windows native window. */
     class TE_UTILITY_EXPORT Win32Window
     {
     public:
@@ -39,52 +39,52 @@ namespace te
 
         void Destroy();
         
-        /**	Returns position of the left-most border of the window, relative to the screen. */
+        /** Returns position of the left-most border of the window, relative to the screen. */
         INT32 GetLeft() const;
 
-        /**	Returns position of the top-most border of the window, relative to the screen. */
+        /** Returns position of the top-most border of the window, relative to the screen. */
         INT32 GetTop() const;
 
-        /**	Returns width of the window in pixels. */
+        /** Returns width of the window in pixels. */
         UINT32 GetWidth() const;
 
-        /**	Returns height of the window in pixels. */
+        /** Returns height of the window in pixels. */
         UINT32 GetHeight() const;
 
-        /**	Returns the native window handle. */
+        /** Returns the native window handle. */
         HWND GetHWnd() const;
 
-        /**	Returns the window style flags used for creating it. */
+        /** Returns the window style flags used for creating it. */
         DWORD GetStyle() const;
 
-        /**	Returns the extended window style flags used for creating it. */
+        /** Returns the extended window style flags used for creating it. */
         DWORD GetStyleEx() const;
 
-        /**	Hide or show the window. */
+        /** Hide or show the window. */
         void SetHidden(bool hidden);
 
-        /**	Restores or minimizes the window. */
+        /** Restores or minimizes the window. */
         void SetActive(bool state);
 
-        /**	Minimizes the window to the taskbar. */
+        /** Minimizes the window to the taskbar. */
         void Minimize();
 
-        /**	Maximizes the window over the entire current screen. */
+        /** Maximizes the window over the entire current screen. */
         void Maximize();
 
-        /**	Restores the window to original position and size if it is minimized or maximized. */
+        /** Restores the window to original position and size if it is minimized or maximized. */
         void Restore();
 
-        /**	Change the size of the window. */
+        /** Change the size of the window. */
         void Resize(UINT32 width, UINT32 height);
 
-        /**	Reposition the window. */
+        /** Reposition the window. */
         void Move(INT32 left, INT32 top);
 
-        /**	Converts screen position into window local position. */
+        /** Converts screen position into window local position. */
         Vector2I ScreenToWindowPos(const Vector2I& screenPos) const;
 
-        /**	Converts window local position to screen position. */
+        /** Converts window local position to screen position. */
         Vector2I windowToScreenPos(const Vector2I& windowPos) const;
 
         /** Called when window is moved or resized externally. */

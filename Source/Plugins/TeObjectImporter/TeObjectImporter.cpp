@@ -9,57 +9,57 @@
 
 namespace te
 {
-	ObjectImporter::ObjectImporter()
-	{
-		_extensions.push_back(u8"obj");
-		_extensions.push_back(u8"dae");
-		_extensions.push_back(u8"fbx");
-	}
+    ObjectImporter::ObjectImporter()
+    {
+        _extensions.push_back(u8"obj");
+        _extensions.push_back(u8"dae");
+        _extensions.push_back(u8"fbx");
+    }
 
-	ObjectImporter::~ObjectImporter()
-	{ }
+    ObjectImporter::~ObjectImporter()
+    { }
 
-	bool ObjectImporter::IsExtensionSupported(const String& ext) const
-	{
-		String lowerCaseExt = ext;
-		std::transform(lowerCaseExt.begin(), lowerCaseExt.end(), lowerCaseExt.begin(), tolower);
+    bool ObjectImporter::IsExtensionSupported(const String& ext) const
+    {
+        String lowerCaseExt = ext;
+        std::transform(lowerCaseExt.begin(), lowerCaseExt.end(), lowerCaseExt.begin(), tolower);
 
-		return find(_extensions.begin(), _extensions.end(), lowerCaseExt) != _extensions.end();
-	}
+        return find(_extensions.begin(), _extensions.end(), lowerCaseExt) != _extensions.end();
+    }
 
-	SPtr<ImportOptions> ObjectImporter::CreateImportOptions() const
-	{
-		return te_shared_ptr_new<MeshImportOptions>();
-	}
+    SPtr<ImportOptions> ObjectImporter::CreateImportOptions() const
+    {
+        return te_shared_ptr_new<MeshImportOptions>();
+    }
 
-	SPtr<Resource> ObjectImporter::Import(const String& filePath, SPtr<const ImportOptions> importOptions)
-	{
-		Assimp::Importer importer;
+    SPtr<Resource> ObjectImporter::Import(const String& filePath, SPtr<const ImportOptions> importOptions)
+    {
+        Assimp::Importer importer;
         const MeshImportOptions* meshImportOptions = static_cast<const MeshImportOptions*>(importOptions.get());
 
-		const aiScene* scene = importer.ReadFile(filePath.c_str(),
-			aiProcess_CalcTangentSpace |
-			aiProcess_Triangulate |
-			aiProcess_JoinIdenticalVertices |
-			aiProcess_SortByPType);
+        const aiScene* scene = importer.ReadFile(filePath.c_str(),
+            aiProcess_CalcTangentSpace |
+            aiProcess_Triangulate |
+            aiProcess_JoinIdenticalVertices |
+            aiProcess_SortByPType);
 
-		TE_ASSERT_ERROR(scene != nullptr, "Failed to load object '" + filePath + "' : " + importer.GetErrorString(), __FILE__, __LINE__);
+        TE_ASSERT_ERROR(scene != nullptr, "Failed to load object '" + filePath + "' : " + importer.GetErrorString(), __FILE__, __LINE__);
 
-		if (scene->HasMaterials())
-		{
-		}
+        if (scene->HasMaterials())
+        {
+        }
 
-		if (scene->HasMeshes())
-		{
-		}
+        if (scene->HasMeshes())
+        {
+        }
 
-		MESH_DESC meshDesc;
-		meshDesc.Usage = MU_STATIC;
+        MESH_DESC meshDesc;
+        meshDesc.Usage = MU_STATIC;
 
-		if (meshImportOptions->CpuCached)
-		{
-			meshDesc.Usage |= MU_CPUCACHED;
-		}
+        if (meshImportOptions->CpuCached)
+        {
+            meshDesc.Usage |= MU_CPUCACHED;
+        }
 
         // ###################
         SPtr<VertexDataDesc> vertexDataxDesc = VertexDataDesc::Create();
@@ -101,7 +101,7 @@ namespace te
         // ###################
 
         mesh->WriteData(*meshData, true);
-		mesh->SetName(filePath);
-		return mesh.GetInternalPtr();
-	}
+        mesh->SetName(filePath);
+        return mesh.GetInternalPtr();
+    }
 }

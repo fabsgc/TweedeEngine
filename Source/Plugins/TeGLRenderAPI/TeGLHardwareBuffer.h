@@ -5,7 +5,7 @@
 
 namespace te
 {
-    /**	Class containing common functionality for all OpenGL hardware buffers. */
+    /** Class containing common functionality for all OpenGL hardware buffers. */
     class GLHardwareBuffer : public HardwareBuffer
     {
     public:

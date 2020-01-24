@@ -20,7 +20,7 @@ namespace te
         VES_PSIZE = 10 /**< Point size */
     };
 
-    /**	Types used to identify base types of vertex element contents. */
+    /** Types used to identify base types of vertex element contents. */
     enum VertexElementType
     {
         VET_FLOAT1 = 0, /**< 1D floating point value */
@@ -50,7 +50,7 @@ namespace te
         VET_UNKNOWN = 0xffff
     };
 
-    /**	Describes a single vertex element in a vertex declaration. */
+    /** Describes a single vertex element in a vertex declaration. */
     class TE_CORE_EXPORT VertexElement
     {
     public:
@@ -61,7 +61,7 @@ namespace te
         bool operator== (const VertexElement & rhs) const;
         bool operator!= (const VertexElement & rhs) const;
 
-        /**	Returns index of the vertex buffer from which this element is stored. */
+        /** Returns index of the vertex buffer from which this element is stored. */
         UINT16 GetStreamIdx() const { return _source; }
 
         /**
@@ -73,7 +73,7 @@ namespace te
         /** Gets the base data type of this element. */
         VertexElementType GetType() const { return _type; }
 
-        /**	Gets a semantic that describes what this element contains. */
+        /** Gets a semantic that describes what this element contains. */
         VertexElementSemantic GetSemantic() const { return _semantic; }
 
         /**
@@ -94,13 +94,13 @@ namespace te
          */
         UINT32 GetInstanceStepRate() const { return _instanceStepRate; }
 
-        /**	Returns the size of a base element type. */
+        /** Returns the size of a base element type. */
         static UINT32 GetTypeSize(VertexElementType etype);
 
         /** Returns the number of values in the provided base element type. For example float4 has four values. */
         static UINT16 GetTypeCount(VertexElementType etype);
 
-        /**	Gets packed color vertex element type used by the active render system. */
+        /** Gets packed color vertex element type used by the active render system. */
         static VertexElementType GetBestColorVertexElementType();
 
         /** Calculates a hash value for the provided vertex element. */
@@ -114,7 +114,7 @@ namespace te
         UINT32 _instanceStepRate;
     };
 
-    /**	Contains information about a vertex declaration. */
+    /** Contains information about a vertex declaration. */
     class TE_CORE_EXPORT VertexDeclarationProperties
     {
     public:
@@ -123,13 +123,13 @@ namespace te
         bool operator== (const VertexDeclarationProperties& rhs) const;
         bool operator!= (const VertexDeclarationProperties& rhs) const;
 
-        /**	Get the number of elements in the declaration. */
+        /** Get the number of elements in the declaration. */
         UINT32 GetElementCount() const { return (UINT32)_elementList.size(); }
 
-        /**	Returns a list of vertex elements in the declaration. */
+        /** Returns a list of vertex elements in the declaration. */
         const Vector<VertexElement>& GetElements() const { return _elementList; }
 
-        /**	Returns a single vertex element at the specified index. */
+        /** Returns a single vertex element at the specified index. */
         const VertexElement* GetElement(UINT16 index) const;
 
         /**
@@ -137,10 +137,10 @@ namespace te
          */
         const VertexElement* FindElementBySemantic(VertexElementSemantic sem, UINT16 index = 0) const;
 
-        /**	Returns a list of all elements that use the provided source index. */
+        /** Returns a list of all elements that use the provided source index. */
         Vector<VertexElement> FindElementsBySource(UINT16 source) const;
 
-        /**	Returns the total size of all vertex elements using the provided source index. */
+        /** Returns the total size of all vertex elements using the provided source index. */
         UINT32 GetVertexSize(UINT16 source) const;
 
     protected:
@@ -161,7 +161,7 @@ namespace te
         /** Returns properties describing the vertex declaration. */
         const VertexDeclarationProperties& GetProperties() const { return _properties; }
 
-        /**	Returns an ID unique to this declaration. */
+        /** Returns an ID unique to this declaration. */
         UINT32 GetId() const { return _id; }
 
         /**
@@ -191,6 +191,6 @@ namespace te
         static UINT32 NextFreeId;
     };
 
-    /**	Converts a vertex semantic enum to a readable name. */
+    /** Converts a vertex semantic enum to a readable name. */
     TE_CORE_EXPORT String ToString(const VertexElementSemantic& val);
 }

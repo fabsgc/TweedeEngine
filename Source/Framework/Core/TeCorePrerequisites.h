@@ -27,7 +27,7 @@
 #      else
 #        define TE_CORE_EXPORT __declspec(dllimport)
 #      endif
-#	 endif
+# endif
 #  else
 #    if defined(TE_STATIC_LIB)
 #      define TE_CORE_EXPORT
@@ -37,7 +37,7 @@
 #      else
 #        define TE_CORE_EXPORT __attribute__ ((dllimport))
 #      endif
-#	 endif
+#    endif
 #  endif
 #  define TE_CORE_HIDDEN
 #else // Linux/Mac settings
@@ -51,130 +51,130 @@
 
 namespace te
 {
-	class CoreApplication;
-	struct START_UP_DESC;
+    class CoreApplication;
+    struct START_UP_DESC;
 
-	class RenderAPI;
-	class HardwareBuffer;
-	class IndexBuffer;
-	class VertexBuffer;
-	class VertexDeclaration;
-	class RenderTarget;
-	class RenderWindow;
-	class RenderAPIFactory;
-	class RenderWindow;
-	struct RENDER_WINDOW_DESC;
-	class VideoMode;
-	class VideoOutputInfo;
-	class VideoModeInfo;
-	class RenderWindowProperties;
-	struct DEPTH_STENCIL_STATE_DESC;
-	class DepthStencilState;
-	struct PIPELINE_STATE_DESC;
-	class DepthStencilProperties;
-	class GraphicsPipelineState;
-	struct RASTERIZER_STATE_DESC;
-	class RasterizerProperties;
-	class RasterizerState;
-	struct RENDER_TARGET_BLEND_STATE_DESC;
-	struct BLEND_STATE_DESC;
-	class BlendProperties;
-	class BlendState;
-	struct SAMPLER_STATE_DESC;
-	class SampleProperties;
-	class SamplerState;
-	class HardwareBuffer;
-	struct INDEX_BUFFER_DESC;
-	class IndexBufferProperties;
-	class IndexBuffer;
-	struct VERTEX_BUFFER_DESC;
-	class VerteBufferProperties;
-	class VertexBuffer;
-	class VertexElement;
-	class VertexDeclarationProperties;
-	class VertexDeclaration;
-	class VertexDataDesc;
-	struct SubMesh;
-	class TextureView;
-	class HardwareBuffer;
-	struct RENDER_TEXTURE_DESC;
-	struct RENDER_SURFACE_DESC;
-	class RenderTexture;
-	struct GpuProgramBytecode;
-	struct GPU_PROGRAM_DESC;
-	class GpuProgram;
-	struct GpuParamDataDesc;
-	struct GpuParamObjectDesc;
-	struct GpuParamBlockDesc;
-	struct GpuParamDesc;
-	class GpuProgramManager;
-	class HardwareBufferManager;
-	struct GPU_PIPELINE_PARAMS_DESC;
-	class GpuPipelineParamInfo;
-	class GpuParamBlockBuffer;
-	class GpuParams;
-	struct GPU_BUFFER_DESC;
-	class GpuBufferProperties;
-	class GpuBuffer;
+    class RenderAPI;
+    class HardwareBuffer;
+    class IndexBuffer;
+    class VertexBuffer;
+    class VertexDeclaration;
+    class RenderTarget;
+    class RenderWindow;
+    class RenderAPIFactory;
+    class RenderWindow;
+    struct RENDER_WINDOW_DESC;
+    class VideoMode;
+    class VideoOutputInfo;
+    class VideoModeInfo;
+    class RenderWindowProperties;
+    struct DEPTH_STENCIL_STATE_DESC;
+    class DepthStencilState;
+    struct PIPELINE_STATE_DESC;
+    class DepthStencilProperties;
+    class GraphicsPipelineState;
+    struct RASTERIZER_STATE_DESC;
+    class RasterizerProperties;
+    class RasterizerState;
+    struct RENDER_TARGET_BLEND_STATE_DESC;
+    struct BLEND_STATE_DESC;
+    class BlendProperties;
+    class BlendState;
+    struct SAMPLER_STATE_DESC;
+    class SampleProperties;
+    class SamplerState;
+    class HardwareBuffer;
+    struct INDEX_BUFFER_DESC;
+    class IndexBufferProperties;
+    class IndexBuffer;
+    struct VERTEX_BUFFER_DESC;
+    class VerteBufferProperties;
+    class VertexBuffer;
+    class VertexElement;
+    class VertexDeclarationProperties;
+    class VertexDeclaration;
+    class VertexDataDesc;
+    struct SubMesh;
+    class TextureView;
+    class HardwareBuffer;
+    struct RENDER_TEXTURE_DESC;
+    struct RENDER_SURFACE_DESC;
+    class RenderTexture;
+    struct GpuProgramBytecode;
+    struct GPU_PROGRAM_DESC;
+    class GpuProgram;
+    struct GpuParamDataDesc;
+    struct GpuParamObjectDesc;
+    struct GpuParamBlockDesc;
+    struct GpuParamDesc;
+    class GpuProgramManager;
+    class HardwareBufferManager;
+    struct GPU_PIPELINE_PARAMS_DESC;
+    class GpuPipelineParamInfo;
+    class GpuParamBlockBuffer;
+    class GpuParams;
+    struct GPU_BUFFER_DESC;
+    class GpuBufferProperties;
+    class GpuBuffer;
 
-	class Renderer;
-	class RendererFactory;
-	class CameraBase;
-	class Camera;
-	class ViewportBase;
-	class Viewport;
+    class Renderer;
+    class RendererFactory;
+    class CameraBase;
+    class Camera;
+    class ViewportBase;
+    class Viewport;
 
-	class SceneActor;
+    class SceneActor;
 
-	class CoreObject;
-	class CoreObjectManager;
+    class CoreObject;
+    class CoreObjectManager;
 
-	class RenderStateManager;
+    class RenderStateManager;
 
-	class Input;
-	class GamePad;
-	class Keyboard;
-	class Mouse;
-	struct VIRTUAL_BUTTON_DESC;
-	struct VIRTUAL_AXIS_DESC;
-	class VirtualButton;
-	class VirtualAxis;
-	class InputConfiguration;
-	class VirtualInput;
+    class Input;
+    class GamePad;
+    class Keyboard;
+    class Mouse;
+    struct VIRTUAL_BUTTON_DESC;
+    struct VIRTUAL_AXIS_DESC;
+    class VirtualButton;
+    class VirtualAxis;
+    class InputConfiguration;
+    class VirtualInput;
 
-	class Win32Window;
+    class Win32Window;
 
-	template<typename PluginFactory, class ...Args>
-	class PluginManager;
-	class RenderAPIManager;
-	class RendererManager;
+    template<typename PluginFactory, class ...Args>
+    class PluginManager;
+    class RenderAPIManager;
+    class RendererManager;
 
-	class Platform;
-	struct OSPointerButtonStates;
+    class Platform;
+    struct OSPointerButtonStates;
 
-	class Resource;
-	class ResourceManager;
-	class GpuResourceData;
+    class Resource;
+    class ResourceManager;
+    class GpuResourceData;
 
-	class Texture;
+    class Texture;
 
-	struct MESH_DESC;
-	class MeshProperties;
-	class Mesh;
-	class MeshData;
+    struct MESH_DESC;
+    class MeshProperties;
+    class Mesh;
+    class MeshData;
 
-	class Shader;
+    class Shader;
 }
 
 #include "Resources/TeResourceHandle.h"
 
 namespace te
 {
-	typedef ResourceHandle<Resource> HResource;
-	typedef ResourceHandle<Texture> HTexture;
-	typedef ResourceHandle<Shader> HShader;
-	typedef ResourceHandle<Mesh> HMesh;
-	
+    typedef ResourceHandle<Resource> HResource;
+    typedef ResourceHandle<Texture> HTexture;
+    typedef ResourceHandle<Shader> HShader;
+    typedef ResourceHandle<Mesh> HMesh;
+    
 }
 
 #include "RenderAPI/TeCommonTypes.h"

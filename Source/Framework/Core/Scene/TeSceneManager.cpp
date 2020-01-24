@@ -18,17 +18,17 @@ namespace te
     }
 
     void SceneManager::RegisterCamera(const SPtr<Camera>& camera)
-	{
-		_cameras[camera.get()] = camera;
-	}
+    {
+        _cameras[camera.get()] = camera;
+    }
 
-	void SceneManager::UnregisterCamera(const SPtr<Camera>& camera)
-	{
-		_cameras.erase(camera.get());
-	}
+    void SceneManager::UnregisterCamera(const SPtr<Camera>& camera)
+    {
+        _cameras.erase(camera.get());
+    }
 
     SceneManager& gSceneManager()
-	{
-		return SceneManager::Instance();
-	}
+    {
+        return SceneManager::Instance();
+    }
 }

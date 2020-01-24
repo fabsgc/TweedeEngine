@@ -63,19 +63,19 @@ namespace te
     /**
      * Utility class for generating universally unique identifiers.
      *
-     * @note	Thread safe.
+     * @note Thread safe.
      */
     class TE_UTILITY_EXPORT UUIDGenerator
     {
     public:
-        /**	Generate a new random universally unique identifier. */
+        /** Generate a new random universally unique identifier. */
         static UUID GenerateRandom();
     };
 }
 
 namespace std
 {
-    /**	Hash value generator for UUID. */
+    /** Hash value generator for UUID. */
     template<>
     struct hash<te::UUID>
     {

@@ -5,12 +5,12 @@
 #define SAFE_RELEASE(p)      { if(p) { (p)->Release(); (p)=NULL; } }
 
 #if TE_DEBUG_MODE
-#	define D3D_DEBUG_INFO
+#   define D3D_DEBUG_INFO
 #endif
 
 #define WIN32_LEAN_AND_MEAN
 #if !defined(NOMINMAX) && defined(_MSC_VER)
-#	define NOMINMAX // Required to stop windows.h messing up std::min
+#   define NOMINMAX // Required to stop windows.h messing up std::min
 #endif
 
 #include <d3d11.h>
@@ -23,7 +23,7 @@ namespace te
     class D3D11Driver;
     class D3D11DriverList;
     class D3D11VideoMode;
-	class D3D11VideoModeList;
+    class D3D11VideoModeList;
     class D3D11RenderAPIFactory;
     class D3D11RenderWindow;
     class D3D11HLSLProgramFactory;

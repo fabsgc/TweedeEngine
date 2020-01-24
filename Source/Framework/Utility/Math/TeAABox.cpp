@@ -399,15 +399,15 @@ namespace te
         float start = 0, end = Math::POS_INFINITY;
 
 #define _CALC_AXIS(i)                                       \
-	do {                                                    \
-	float denom = 1 / raydir[i];                         \
-	float newstart = (min[i] - rayorig[i]) * denom;      \
-	float newend = (max[i] - rayorig[i]) * denom;        \
-	if (newstart > newend) std::swap(newstart, newend); \
-	if (newstart > end || newend < start) return false; \
-	if (newstart > start) start = newstart;             \
-	if (newend < end) end = newend;                     \
-	} while(0)
+    do {                                                    \
+    float denom = 1 / raydir[i];                         \
+    float newstart = (min[i] - rayorig[i]) * denom;      \
+    float newend = (max[i] - rayorig[i]) * denom;        \
+    if (newstart > newend) std::swap(newstart, newend); \
+    if (newstart > end || newend < start) return false; \
+    if (newstart > start) start = newstart;             \
+    if (newend < end) end = newend;                     \
+    } while(0)
 
         // Check each axis in turn
 

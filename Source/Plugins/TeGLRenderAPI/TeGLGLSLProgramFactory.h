@@ -5,7 +5,7 @@
 
 namespace te
 {
-    /**	Handles creation of OpenGL GPU programs. */
+    /** Handles creation of OpenGL GPU programs. */
     class GLGLSLProgramFactory : public GpuProgramFactory
     {
     public:

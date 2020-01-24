@@ -8,8 +8,8 @@
 namespace te
 {
     /** Manager that handles resource loading.*/
-	class TE_CORE_EXPORT ResourceManager: public Module<ResourceManager>
-	{
+    class TE_CORE_EXPORT ResourceManager: public Module<ResourceManager>
+    {
         struct LoadedResourceData
         {
             ResourceHandle<Resource> resource;
@@ -20,9 +20,9 @@ namespace te
             {}
         };
 
-	public:
-		ResourceManager();
-		~ResourceManager();
+    public:
+        ResourceManager();
+        ~ResourceManager();
 
         TE_MODULE_STATIC_HEADER_MEMBER(ResourceManager)
 

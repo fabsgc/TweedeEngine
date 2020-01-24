@@ -6,7 +6,7 @@
 
 namespace te
 {
-    /**	OpenGL implementation of a vertex buffer. */
+    /** OpenGL implementation of a vertex buffer. */
     class GLVertexBuffer : public VertexBuffer
     {
     public:

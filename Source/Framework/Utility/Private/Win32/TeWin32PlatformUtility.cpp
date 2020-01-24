@@ -12,12 +12,12 @@
 namespace te
 {
     void PlatformUtility::Terminate(bool force)
-	{
-		if (!force)
-			PostQuitMessage(0);
-		else
-			TerminateProcess(GetCurrentProcess(), 0);
-	}
+    {
+        if (!force)
+            PostQuitMessage(0);
+        else
+            TerminateProcess(GetCurrentProcess(), 0);
+    }
 
     UUID PlatformUtility::GenerateUUID()
     {

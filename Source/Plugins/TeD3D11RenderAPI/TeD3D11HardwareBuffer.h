@@ -5,11 +5,11 @@
 
 namespace te
 {
-    /**	Class containing common functionality for all DirectX 11 hardware buffers. */
+    /** Class containing common functionality for all DirectX 11 hardware buffers. */
     class D3D11HardwareBuffer : public HardwareBuffer
     {
     public:
-        /**	Available types of DX11 buffers. */
+        /** Available types of DX11 buffers. */
         enum BufferType
         {
             /** Contains geometry vertices and their properties. */
@@ -43,7 +43,7 @@ namespace te
         void CopyData(HardwareBuffer& srcBuffer, UINT32 srcOffset, UINT32 dstOffset,
             UINT32 length, bool discardWholeBuffer = false) override;
 
-        /**	Returns the internal DX11 buffer object. */
+        /** Returns the internal DX11 buffer object. */
         ID3D11Buffer* GetD3DBuffer() const { return _D3DBuffer; }
 
     protected:

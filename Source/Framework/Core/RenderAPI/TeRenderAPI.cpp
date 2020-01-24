@@ -5,13 +5,13 @@ namespace te
 {
     TE_MODULE_STATIC_MEMBER(RenderAPI)
 
-	RenderAPI::RenderAPI()
-	{
-	}
+    RenderAPI::RenderAPI()
+    {
+    }
 
-	RenderAPI::~RenderAPI()
-	{
-	}
+    RenderAPI::~RenderAPI()
+    {
+    }
 
     void RenderAPI::Initialize()
     {

@@ -174,10 +174,10 @@ namespace te
     };
 
     /** Event handler. Allows you to track to which events you subscribed to and disconnect from them when needed. */
-	class HEvent
-	{
-	public:
-		HEvent() = default;
+    class HEvent
+    {
+    public:
+        HEvent() = default;
 
         HEvent(SPtr<InternalData> eventData, BaseConnectionData* connection)
             : _connection(connection)
@@ -193,7 +193,7 @@ namespace te
         }
 
         void Disconnect()
-		{
+        {
             if (_connection != nullptr)
             {
                 _eventData->Disconnect(_connection);
@@ -219,8 +219,8 @@ namespace te
     };
 
     /**
-	 * Events allows you to register method callbacks that get notified when the event is triggered.
-	 */
+     * Events allows you to register method callbacks that get notified when the event is triggered.
+     */
     template <class ReturnType, class... Args>
     class InternalEvent
     {
@@ -353,9 +353,9 @@ namespace te
     };
 
     template <typename Signature>
-	class Event;
+    class Event;
 
     template <class ReturnType, class... Args>
-	class TE_UTILITY_EXPORT Event<ReturnType(Args...) > : public InternalEvent <ReturnType, Args...>
-	{ };
+    class TE_UTILITY_EXPORT Event<ReturnType(Args...) > : public InternalEvent <ReturnType, Args...>
+    { };
 }

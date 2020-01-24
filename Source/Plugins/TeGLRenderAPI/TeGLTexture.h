@@ -5,7 +5,7 @@
 
 namespace te
 {
-	/**	OpenGL implementation of a texture. */
+    /** OpenGL implementation of a texture. */
     class GLTexture : public Texture
     {
     public:
@@ -20,18 +20,18 @@ namespace te
         void Initialize() override;
 
         /** @copydoc Texture::LockImpl */
-		PixelData LockImpl(GpuLockOptions options, UINT32 mipLevel = 0, UINT32 face = 0, UINT32 deviceIdx = 0, UINT32 queueIdx = 0) override;
+        PixelData LockImpl(GpuLockOptions options, UINT32 mipLevel = 0, UINT32 face = 0, UINT32 deviceIdx = 0, UINT32 queueIdx = 0) override;
 
-		/** @copydoc Texture::UnlockImpl */
-		void UnlockImpl() override;
+        /** @copydoc Texture::UnlockImpl */
+        void UnlockImpl() override;
 
-		/** @copydoc Texture::CopyImpl */
-		void CopyImpl(const SPtr<Texture>& target, const TEXTURE_COPY_DESC& desc) override;
+        /** @copydoc Texture::CopyImpl */
+        void CopyImpl(const SPtr<Texture>& target, const TEXTURE_COPY_DESC& desc) override;
 
-		/** @copydoc Texture::ReadData */
-		void ReadDataImpl(PixelData& dest, UINT32 mipLevel = 0, UINT32 face = 0, UINT32 deviceIdx = 0, UINT32 queueIdx = 0) override;
+        /** @copydoc Texture::ReadData */
+        void ReadDataImpl(PixelData& dest, UINT32 mipLevel = 0, UINT32 face = 0, UINT32 deviceIdx = 0, UINT32 queueIdx = 0) override;
 
-		/** @copydoc Texture::WriteData */
-		void WriteDataImpl(const PixelData& src, UINT32 mipLevel = 0, UINT32 face = 0, bool discardWholeBuffer = false, UINT32 queueIdx = 0) override;
+        /** @copydoc Texture::WriteData */
+        void WriteDataImpl(const PixelData& src, UINT32 mipLevel = 0, UINT32 face = 0, bool discardWholeBuffer = false, UINT32 queueIdx = 0) override;
     };
 }

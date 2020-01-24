@@ -7,11 +7,11 @@
 namespace te
 {
     /** Contains private data for the Linux Gamepad implementation. */
-	struct GamePad::Pimpl
-	{
+    struct GamePad::Pimpl
+    {
         GamePadInfo Info;
-		INT32 FileHandle;
-		ButtonCode PovState;
+        INT32 FileHandle;
+        ButtonCode PovState;
         bool HasInputFocus;
     };
 
@@ -21,15 +21,15 @@ namespace te
     {
         _data = te_new<Pimpl>();
         _data->Info = gamepadInfo;
-		_data->PovState = TE_UNASSIGNED;
-		_data->HasInputFocus = true;
+        _data->PovState = TE_UNASSIGNED;
+        _data->HasInputFocus = true;
 
         String eventPath = "/dev/input/event" + ToString(gamepadInfo.EventHandlerIdx);
-		_data->FileHandle = open(eventPath.c_str(), O_RDWR | O_NONBLOCK);
+        _data->FileHandle = open(eventPath.c_str(), O_RDWR | O_NONBLOCK);
 
-		if(_data->FileHandle == -1)
+        if(_data->FileHandle == -1)
         {
-			TE_DEBUG("Failed to open input event file handle for device", __FILE__, __LINE__);
+            TE_DEBUG("Failed to open input event file handle for device", __FILE__, __LINE__);
         }
     }
 
@@ -37,43 +37,43 @@ namespace te
     {
         if(_data->FileHandle != -1)
         {
-			close(_data->FileHandle);
+            close(_data->FileHandle);
         }
 
         te_delete(_data);
     }
 
     void GamePad::Capture()
-	{
+    {
         if(_data->FileHandle == -1)
-			return;
+            return;
 
-		struct AxisState
-		{
-			bool Moved;
-			INT32 Value;
-		};
+        struct AxisState
+        {
+            bool Moved;
+            INT32 Value;
+        };
 
         AxisState axisState[24];
-		te_zero_out(axisState);
+        te_zero_out(axisState);
 
         input_event events[BUFFER_SIZE_GAMEPAD];
-		while(true)
-		{
-			ssize_t numReadBytes = read(_data->FileHandle, &events, sizeof(events));
-			if(numReadBytes < 0)
-				break;
+        while(true)
+        {
+            ssize_t numReadBytes = read(_data->FileHandle, &events, sizeof(events));
+            if(numReadBytes < 0)
+                break;
 
-			if(!_data->HasInputFocus)
-				continue;
+            if(!_data->HasInputFocus)
+                continue;
 
             UINT32 numEvents = numReadBytes / sizeof(input_event);
-			for(UINT32 i = 0; i < numEvents; ++i)
-			{
+            for(UINT32 i = 0; i < numEvents; ++i)
+            {
                 switch(events[i].type)
-				{
-				    case EV_KEY:
-				    {
+                {
+                    case EV_KEY:
+                    {
                         auto findIter = _data->Info.ButtonMap.find(events[i].code);
                         if(findIter == _data->Info.ButtonMap.end())
                             continue;
@@ -110,7 +110,7 @@ namespace te
                             }
                         }
                         else if(events[i].code <= ABS_HAT3Y) // POV
-					    {
+                        {
                             // Note: We only support a single POV and report events from all POVs as if they were from the
                             // same source
                             INT32 povIdx = events[i].code - ABS_HAT0X;
@@ -153,16 +153,16 @@ namespace te
         }
 
         for(UINT32 i = 0; i < 24; i++)
-		{
-			if(axisState[i].Moved)
+        {
+            if(axisState[i].Moved)
             {
-				_owner->NotifyAxisMoved(_data->Info.Id, i, axisState[i].Value);
+                _owner->NotifyAxisMoved(_data->Info.Id, i, axisState[i].Value);
             }
-		}
+        }
     }
 
     void GamePad::ChangeCaptureContext(UINT64 windowHandle)
-	{
-		_data->HasInputFocus = windowHandle != (UINT64)-1;
-	}
+    {
+        _data->HasInputFocus = windowHandle != (UINT64)-1;
+    }
 }

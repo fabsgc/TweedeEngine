@@ -8,7 +8,7 @@
 start_find_package(LibICU)
 
 if(USE_BUNDLED_LIBRARIES)
-	set(LibICU_INSTALL_DIR ${APP_ROOT_DIR}/Dependencies/libICU CACHE PATH "")
+    set(LibICU_INSTALL_DIR ${APP_ROOT_DIR}/Dependencies/libICU CACHE PATH "")
 endif()
 gen_default_lib_search_dirs(LibICU)
 

@@ -8,22 +8,22 @@
 
 namespace te
 {
-	struct GpuProgramBytecode;
+    struct GpuProgramBytecode;
 
-	/** Descriptor structure used for initialization of a GpuProgram. */
-	struct TE_CORE_EXPORT GPU_PROGRAM_DESC
-	{
+    /** Descriptor structure used for initialization of a GpuProgram. */
+    struct TE_CORE_EXPORT GPU_PROGRAM_DESC
+    {
         String Source; /**< Source code to compile the program from. */
-		String EntryPoint; /**< Name of the entry point function, for example "main". */
-		String Language; /**< Language the source is written in, for example "hlsl" or "glsl". */
-		GpuProgramType Type = GPT_VERTEX_PROGRAM; /**< Type of the program, for example vertex or pixel. */
-		bool RequiresAdjacency = false; /**< If true then adjacency information will be provided when rendering. */
+        String EntryPoint; /**< Name of the entry point function, for example "main". */
+        String Language; /**< Language the source is written in, for example "hlsl" or "glsl". */
+        GpuProgramType Type = GPT_VERTEX_PROGRAM; /**< Type of the program, for example vertex or pixel. */
+        bool RequiresAdjacency = false; /**< If true then adjacency information will be provided when rendering. */
 
-		/**
-		 * Optional intermediate version of the GPU program. Can significantly speed up GPU program compilation/creation
-		 * when supported by the render backend. Call ct::GpuProgram::compileBytecode to generate it.
-		 */
-		SPtr<GpuProgramBytecode> Bytecode;
+        /**
+         * Optional intermediate version of the GPU program. Can significantly speed up GPU program compilation/creation
+         * when supported by the render backend. Call ct::GpuProgram::compileBytecode to generate it.
+         */
+        SPtr<GpuProgramBytecode> Bytecode;
     };
 
     /**

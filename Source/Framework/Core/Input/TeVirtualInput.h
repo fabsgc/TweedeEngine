@@ -22,7 +22,7 @@ namespace te
             ToggledOff
         };
 
-        /**	Data container for a single virtual button. */
+        /** Data container for a single virtual button. */
         struct ButtonData
         {
             VirtualButton Button;
@@ -32,13 +32,13 @@ namespace te
             bool AllowRepeat;
         };
 
-        /**	Contains button data for a specific input device. */
+        /** Contains button data for a specific input device. */
         struct DeviceData
         {
             Map<UINT32, ButtonData> CachedStates;
         };
 
-        /**	Data container for a virtual button event. */
+        /** Data container for a virtual button event. */
         struct VirtualButtonEvent
         {
             VirtualButton Button;

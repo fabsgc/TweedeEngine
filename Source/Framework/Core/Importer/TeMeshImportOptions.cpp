@@ -3,7 +3,7 @@
 namespace te
 {
     SPtr<MeshImportOptions> MeshImportOptions::Create()
-	{
-		return te_shared_ptr_new<MeshImportOptions>();
-	}
+    {
+        return te_shared_ptr_new<MeshImportOptions>();
+    }
 }

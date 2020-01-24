@@ -3,12 +3,12 @@
 namespace te
 {
     const String& Resource::GetName() const
-	{
-		return _name;
-	}
+    {
+        return _name;
+    }
 
-	void Resource::SetName(const String& name)
-	{
-		_name = name;
-	}
+    void Resource::SetName(const String& name)
+    {
+        _name = name;
+    }
 }

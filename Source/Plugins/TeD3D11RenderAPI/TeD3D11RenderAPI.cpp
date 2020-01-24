@@ -48,7 +48,7 @@ namespace te
 
         _driverList = te_new<D3D11DriverList>(_DXGIFactory);
         _activeD3DDriver = _driverList->Item(0);
-		_videoModeInfo = _activeD3DDriver->GetVideoModeInfo();
+        _videoModeInfo = _activeD3DDriver->GetVideoModeInfo();
 
         IDXGIAdapter* selectedAdapter = _activeD3DDriver->GetDeviceAdapter();
 
@@ -87,20 +87,20 @@ namespace te
 
         _device = te_new<D3D11Device>(device);
 
-        // Create the texture manager for use by others		
+        // Create the texture manager for use by others
         TextureManager::StartUp<D3D11TextureManager>();
 
         // Create hardware buffer manager
         HardwareBufferManager::StartUp<D3D11HardwareBufferManager>(std::ref(*_device));
 
-        // Create & register HLSL factory		
+        // Create & register HLSL factory
         _HLSLFactory = te_new<D3D11HLSLProgramFactory>();
         GpuProgramManager::Instance().AddFactory("hlsl", _HLSLFactory);
 
         // Create render state manager
         RenderStateManager::StartUp<D3D11RenderStateManager>();
 
-        // Create Input Layout Manager	
+        // Create Input Layout Manager
         _IAManager = te_new<D3D11InputLayoutManager>();
 
         RenderAPI::Initialize();
@@ -139,7 +139,7 @@ namespace te
         }
 
         _activeVertexDeclaration = nullptr;
-		_activeVertexShader = nullptr;
+        _activeVertexShader = nullptr;
         _activeRenderTarget = nullptr;
         _activeD3DDriver = nullptr;
         _activeDepthStencilState = nullptr;
@@ -467,7 +467,7 @@ namespace te
     void D3D11RenderAPI::SetDrawOperation(DrawOperationType op)
     {
         _device->GetImmediateContext()->IASetPrimitiveTopology(D3D11Mappings::GetPrimitiveType(op));
-		_activeDrawOp = op;
+        _activeDrawOp = op;
     }
 
     void D3D11RenderAPI::Draw(UINT32 vertexOffset, UINT32 vertexCount, UINT32 instanceCount)
@@ -484,9 +484,9 @@ namespace te
         }
 
 #if TE_DEBUG_MODE
-		if (_device->HasError())
+        if (_device->HasError())
         {
-			TE_DEBUG(_device->GetErrorDescription(), __FILE__, __LINE__);
+            TE_DEBUG(_device->GetErrorDescription(), __FILE__, __LINE__);
         }
 #endif
 
@@ -507,9 +507,9 @@ namespace te
         }
 
 #if TE_DEBUG_MODE
-			if (_device->HasError())
+            if (_device->HasError())
             {
-				TE_DEBUG(_device->GetErrorDescription(), __FILE__, __LINE__);
+                TE_DEBUG(_device->GetErrorDescription(), __FILE__, __LINE__);
             }
 #endif
 

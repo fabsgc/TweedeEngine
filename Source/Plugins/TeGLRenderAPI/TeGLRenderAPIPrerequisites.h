@@ -16,7 +16,7 @@
 #if !defined( __MINGW32__ )
 #   define WIN32_LEAN_AND_MEAN
 #   ifndef NOMINMAX
-#	    define NOMINMAX // required to stop windows.h messing up std::min
+#       define NOMINMAX // required to stop windows.h messing up std::min
 #   endif
 #endif
 #   include <windows.h>

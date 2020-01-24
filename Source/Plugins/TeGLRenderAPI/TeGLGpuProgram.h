@@ -3,31 +3,31 @@
 
 namespace te
 {
-    /**	Abstraction of a DirectX 11 shader object. */
-	class GLGpuProgram : public GpuProgram
-	{
-	public:
-		virtual ~GLGpuProgram();
+    /** Abstraction of a DirectX 11 shader object. */
+    class GLGpuProgram : public GpuProgram
+    {
+    public:
+        virtual ~GLGpuProgram();
 
-		/**	Returns compiled shader microcode. */
-		const DataBlob& GetMicroCode() const { return _bytecode->Instructions; }
+        /** Returns compiled shader microcode. */
+        const DataBlob& GetMicroCode() const { return _bytecode->Instructions; }
 
-		/**	Returns unique GPU program ID. */
-		UINT32 GetProgramId() const { return _programId; }
+        /** Returns unique GPU program ID. */
+        UINT32 GetProgramId() const { return _programId; }
 
-	protected:
-		GLGpuProgram(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask);
+    protected:
+        GLGpuProgram(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask);
 
-		/** @copydoc GpuProgram::Initialize */
-		void Initialize() override;
+        /** @copydoc GpuProgram::Initialize */
+        void Initialize() override;
 
-	protected:
-		static UINT32 GlobalProgramId;
+    protected:
+        static UINT32 GlobalProgramId;
 
-		UINT32 _programId = 0;
-	};
+        UINT32 _programId = 0;
+    };
 
-    /**	Implementation of a OpenGL vertex shader. */
+    /** Implementation of a OpenGL vertex shader. */
     class GLGpuVertexProgram : public GLGpuProgram
     {
     public:
@@ -39,7 +39,7 @@ namespace te
         GLGpuVertexProgram(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask);
     };
 
-    /**	Implementation of a OpenGL fragment shader. */
+    /** Implementation of a OpenGL fragment shader. */
     class GLGpuPixelProgram : public GLGpuProgram
     {
     public:
@@ -51,7 +51,7 @@ namespace te
         GLGpuPixelProgram(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask);
     };
 
-    /**	Implementation of a OpenGL domain shader. */
+    /** Implementation of a OpenGL domain shader. */
     class GLGpuDomainProgram : public GLGpuProgram
     {
     public:
@@ -63,7 +63,7 @@ namespace te
         GLGpuDomainProgram(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask);
     };
 
-    /**	Implementation of a OpenGL hull shader. */
+    /** Implementation of a OpenGL hull shader. */
     class GLGpuHullProgram : public GLGpuProgram
     {
     public:
@@ -75,7 +75,7 @@ namespace te
         GLGpuHullProgram(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask);
     };
 
-    /**	Implementation of a OpenGL geometry shader. */
+    /** Implementation of a OpenGL geometry shader. */
     class GLGpuGeometryProgram : public GLGpuProgram
     {
     public:

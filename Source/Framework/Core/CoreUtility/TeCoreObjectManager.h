@@ -5,24 +5,23 @@
 
 namespace te
 {
-	class CoreObjectManager : public Module<CoreObjectManager>
-	{
-	public:
-		CoreObjectManager();
-		~CoreObjectManager();
+    class CoreObjectManager : public Module<CoreObjectManager>
+    {
+    public:
+        CoreObjectManager();
+        ~CoreObjectManager();
 
-		/** Generates a new unique ID for a core object. */
-		UINT64 GenerateId();
+        /** Generates a new unique ID for a core object. */
+        UINT64 GenerateId();
 
-		/** Registers a new CoreObject notifying the manager the object	is created. */
-		void RegisterObject(CoreObject* object);
+        /** Registers a new CoreObject notifying the manager the object is created. */
+        void RegisterObject(CoreObject* object);
 
-		/** Unregisters a CoreObject notifying the manager the object is destroyed. */
-		void UnregisterObject(CoreObject* object);
+        /** Unregisters a CoreObject notifying the manager the object is destroyed. */
+        void UnregisterObject(CoreObject* object);
 
-	private:
-		UINT64 _nextAvailableID;
-		Map<UINT64, CoreObject*> _objects;
-	};
+    private:
+        UINT64 _nextAvailableID;
+        Map<UINT64, CoreObject*> _objects;
+    };
 }
-

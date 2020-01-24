@@ -7,19 +7,19 @@
 
 namespace te
 {
-	/**
-	 * Contains information about 3D object's position, rotation and scale, and provides methods to manipulate it.
-	 */
-	class TE_CORE_EXPORT Transform
-	{
-	public:
-		Transform() = default;
-		Transform(const Vector3& position, const Quaternion& rotation, const Vector3& scale);
-	private:
+    /**
+     * Contains information about 3D object's position, rotation and scale, and provides methods to manipulate it.
+     */
+    class TE_CORE_EXPORT Transform
+    {
+    public:
+        Transform() = default;
+        Transform(const Vector3& position, const Quaternion& rotation, const Vector3& scale);
+    private:
         static Transform IDENTITY;
 
-		Vector3 _position = Vector3::ZERO;
-		Quaternion _rotation = Quaternion::IDENTITY;
-		Vector3 _scale = Vector3::ONE;
+        Vector3 _position = Vector3::ZERO;
+        Quaternion _rotation = Quaternion::IDENTITY;
+        Vector3 _scale = Vector3::ONE;
     };
 }

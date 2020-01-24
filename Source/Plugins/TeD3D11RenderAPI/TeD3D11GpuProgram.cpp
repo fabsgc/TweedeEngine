@@ -8,21 +8,21 @@
 
 namespace te
 {
-	UINT32 D3D11GpuProgram::GlobalProgramId = 0;
+    UINT32 D3D11GpuProgram::GlobalProgramId = 0;
 
-	D3D11GpuProgram::D3D11GpuProgram(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask)
-		: GpuProgram(desc, deviceMask)
-	{
-		assert((deviceMask == GDF_DEFAULT || deviceMask == GDF_PRIMARY) && "Multiple GPUs not supported natively on DirectX 11.");
-	}
+    D3D11GpuProgram::D3D11GpuProgram(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask)
+        : GpuProgram(desc, deviceMask)
+    {
+        assert((deviceMask == GDF_DEFAULT || deviceMask == GDF_PRIMARY) && "Multiple GPUs not supported natively on DirectX 11.");
+    }
 
-	D3D11GpuProgram::~D3D11GpuProgram()
-	{
-		_inputDeclaration = nullptr;
-	}
+    D3D11GpuProgram::~D3D11GpuProgram()
+    {
+        _inputDeclaration = nullptr;
+    }
 
-	void D3D11GpuProgram::Initialize()
-	{
+    void D3D11GpuProgram::Initialize()
+    {
         if (!IsSupported())
         {
             _status.Successful = false;

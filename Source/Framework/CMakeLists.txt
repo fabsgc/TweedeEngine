@@ -54,7 +54,7 @@ endif ()
 target_link_libraries (tef PUBLIC ThirdParty)
 
 ## External lib: NVTT
-target_link_libraries(tef PRIVATE ${nvtt_LIBRARIES})	
+target_link_libraries(tef PRIVATE ${nvtt_LIBRARIES})
 
 if (LINUX)
     ## External lib: X11, LibUUID, LibICU

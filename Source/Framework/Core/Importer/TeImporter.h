@@ -8,11 +8,11 @@
 namespace te
 {
     /** Module responsible for importing various asset types and converting them to types usable by the engine. */
-	class TE_CORE_EXPORT Importer : public Module<Importer>
-	{
-	public:
-		Importer(); 
-		~Importer();
+    class TE_CORE_EXPORT Importer : public Module<Importer>
+    {
+    public:
+        Importer(); 
+        ~Importer();
 
         TE_MODULE_STATIC_HEADER_MEMBER(Importer)
 

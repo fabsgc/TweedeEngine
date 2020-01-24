@@ -14,19 +14,19 @@ namespace te
         GpuBufferUsage Usage = GBU_STATIC; /**< Usage that tells the hardware how will be buffer be used. */
     };
 
-    /**	Contains information about an index buffer. */
+    /** Contains information about an index buffer. */
     class TE_CORE_EXPORT IndexBufferProperties
     {
     public:
         IndexBufferProperties(IndexType idxType, UINT32 numIndexes);
 
-        /**	Returns the type of indices stored. */
+        /** Returns the type of indices stored. */
         IndexType GetType() const { return _indexType; }
 
-        /**	Returns the number of indices this buffer can hold. */
+        /** Returns the number of indices this buffer can hold. */
         UINT32 GetNumIndices() const { return _numIndices; }
 
-        /**	Returns the size of a single index in bytes. */
+        /** Returns the size of a single index in bytes. */
         UINT32 GetIndexSize() const { return _indexSize; }
 
     protected:
@@ -43,7 +43,7 @@ namespace te
         IndexBuffer(const INDEX_BUFFER_DESC& desc, GpuDeviceFlags deviceMask = GDF_DEFAULT);
         virtual ~IndexBuffer();
 
-        /**	Returns information about the index buffer. */
+        /** Returns information about the index buffer. */
         const IndexBufferProperties& GetProperties() const { return _properties; }
 
         /** @copydoc HardwareBuffer::ReadData */

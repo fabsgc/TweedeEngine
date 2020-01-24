@@ -4,16 +4,16 @@
 
 namespace te
 {
-	GLRasterizerState::GLRasterizerState(const RASTERIZER_STATE_DESC& desc)
-		: RasterizerState(desc)
-	{ }
+    GLRasterizerState::GLRasterizerState(const RASTERIZER_STATE_DESC& desc)
+        : RasterizerState(desc)
+    { }
 
-	GLRasterizerState::~GLRasterizerState()
-	{ }
+    GLRasterizerState::~GLRasterizerState()
+    { }
 
-	void GLRasterizerState::CreateInternal()
-	{
-		// TODO
-		RasterizerState::CreateInternal();
-	}
+    void GLRasterizerState::CreateInternal()
+    {
+        // TODO
+        RasterizerState::CreateInternal();
+    }
 }

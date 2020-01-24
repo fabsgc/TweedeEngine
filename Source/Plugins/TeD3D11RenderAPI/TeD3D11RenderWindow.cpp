@@ -258,39 +258,39 @@ namespace te
     void D3D11RenderWindow::SetFullscreen(UINT32 width, UINT32 height, float refreshRate, UINT32 monitorIdx)
     {
         const D3D11VideoModeInfo& videoModeInfo = static_cast<const D3D11VideoModeInfo&>(RenderAPI::Instance().GetVideoModeInfo());
-		UINT32 numOutputs = videoModeInfo.GetNumOutputs();
-		if (numOutputs == 0)
+        UINT32 numOutputs = videoModeInfo.GetNumOutputs();
+        if (numOutputs == 0)
         {
-			return;
+            return;
         }
 
-		UINT32 actualMonitorIdx = std::min(monitorIdx, numOutputs - 1);
-		const D3D11VideoOutputInfo& outputInfo = static_cast<const D3D11VideoOutputInfo&>(videoModeInfo.GetOutputInfo(actualMonitorIdx));
+        UINT32 actualMonitorIdx = std::min(monitorIdx, numOutputs - 1);
+        const D3D11VideoOutputInfo& outputInfo = static_cast<const D3D11VideoOutputInfo&>(videoModeInfo.GetOutputInfo(actualMonitorIdx));
 
-		DXGI_MODE_DESC modeDesc;
-		ZeroMemory(&modeDesc, sizeof(modeDesc));
+        DXGI_MODE_DESC modeDesc;
+        ZeroMemory(&modeDesc, sizeof(modeDesc));
 
-		modeDesc.Width = width;
-		modeDesc.Height = height;
-		modeDesc.RefreshRate.Numerator = Math::RoundToInt(refreshRate);
-		modeDesc.RefreshRate.Denominator = 1;
-		modeDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-		modeDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-		modeDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+        modeDesc.Width = width;
+        modeDesc.Height = height;
+        modeDesc.RefreshRate.Numerator = Math::RoundToInt(refreshRate);
+        modeDesc.RefreshRate.Denominator = 1;
+        modeDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+        modeDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+        modeDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 
-		DXGI_MODE_DESC nearestMode;
-		ZeroMemory(&nearestMode, sizeof(nearestMode));
+        DXGI_MODE_DESC nearestMode;
+        ZeroMemory(&nearestMode, sizeof(nearestMode));
 
-		outputInfo.GetDXGIOutput()->FindClosestMatchingMode(&modeDesc, &nearestMode, nullptr);
+        outputInfo.GetDXGIOutput()->FindClosestMatchingMode(&modeDesc, &nearestMode, nullptr);
 
-		_properties.IsFullScreen = true;
-		_properties.Width = width;
-		_properties.Height = height;
+        _properties.IsFullScreen = true;
+        _properties.Width = width;
+        _properties.Height = height;
 
-		_swapChain->ResizeTarget(&nearestMode);
-		_swapChain->SetFullscreenState(true, outputInfo.GetDXGIOutput());
+        _swapChain->ResizeTarget(&nearestMode);
+        _swapChain->SetFullscreenState(true, outputInfo.GetDXGIOutput());
 
-		NotifyMovedOrResized();
+        NotifyMovedOrResized();
     }
 
     void D3D11RenderWindow::SetFullscreen(const VideoMode& mode)
@@ -507,7 +507,7 @@ namespace te
 
         HRESULT hr;
 
-        // Create swap chain			
+        // Create swap chain
         hr = _DXGIFactory->CreateSwapChain(pDXGIDevice, &_swapChainDesc, &_swapChain);
 
         if (FAILED(hr))
@@ -526,7 +526,7 @@ namespace te
     }
 
     IDXGIDevice* D3D11RenderWindow::QueryDxgiDevice()
-	{
+    {
         TE_ASSERT_ERROR(_device.GetD3D11Device() != nullptr, "D3D11Device is null.", __FILE__, __LINE__);
 
         IDXGIDevice* pDXGIDevice = nullptr;

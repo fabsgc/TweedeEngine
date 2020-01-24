@@ -7,21 +7,21 @@
 
 namespace te
 {
-	UINT32 GLGpuProgram::GlobalProgramId = 0;
+    UINT32 GLGpuProgram::GlobalProgramId = 0;
 
-	GLGpuProgram::GLGpuProgram(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask)
-		: GpuProgram(desc, deviceMask)
-	{
-		assert((deviceMask == GDF_DEFAULT || deviceMask == GDF_PRIMARY) && "Multiple GPUs not supported natively on OpenGL.");
-	}
+    GLGpuProgram::GLGpuProgram(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask)
+        : GpuProgram(desc, deviceMask)
+    {
+        assert((deviceMask == GDF_DEFAULT || deviceMask == GDF_PRIMARY) && "Multiple GPUs not supported natively on OpenGL.");
+    }
 
-	GLGpuProgram::~GLGpuProgram()
-	{
-		_inputDeclaration = nullptr;
-	}
+    GLGpuProgram::~GLGpuProgram()
+    {
+        _inputDeclaration = nullptr;
+    }
 
-	void GLGpuProgram::Initialize()
-	{
+    void GLGpuProgram::Initialize()
+    {
         if (!IsSupported())
         {
             _status.Successful = false;

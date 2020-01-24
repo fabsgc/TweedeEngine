@@ -5,21 +5,21 @@
 
 namespace te
 {
-	/**	OpenGL implementation of a generic GPU buffer. */
-	class GLGpuBuffer : public GpuBuffer
-	{
-	public:
-		~GLGpuBuffer();
+    /** OpenGL implementation of a generic GPU buffer. */
+    class GLGpuBuffer : public GpuBuffer
+    {
+    public:
+        ~GLGpuBuffer();
 
-	protected:
-		friend class GLHardwareBufferManager;
+    protected:
+        friend class GLHardwareBufferManager;
 
-		GLGpuBuffer(const GPU_BUFFER_DESC& desc, GpuDeviceFlags deviceMask);
-		GLGpuBuffer(const GPU_BUFFER_DESC& desc, SPtr<HardwareBuffer> underlyingBuffer);
+        GLGpuBuffer(const GPU_BUFFER_DESC& desc, GpuDeviceFlags deviceMask);
+        GLGpuBuffer(const GPU_BUFFER_DESC& desc, SPtr<HardwareBuffer> underlyingBuffer);
 
-		/** @copydoc GpuBuffer::Initialize */
-		void Initialize() override;
+        /** @copydoc GpuBuffer::Initialize */
+        void Initialize() override;
 
-		// TODO
-	};
+        // TODO
+    };
 }

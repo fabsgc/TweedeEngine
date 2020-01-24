@@ -54,7 +54,7 @@ namespace te
         SPtr<RenderManOptions> _options;
     };
 
-    /**	Provides easy access to the RenderBeast renderer. */
+    /** Provides easy access to the RenderBeast renderer. */
     SPtr<RenderMan> gRenderMan();
 
 }

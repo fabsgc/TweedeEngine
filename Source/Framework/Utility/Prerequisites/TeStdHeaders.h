@@ -54,9 +54,9 @@ extern "C" {
 #if TE_PLATFORM == TE_PLATFORM_WIN32
 #  undef min
 #  undef max
-#	if !defined(NOMINMAX) && defined(_MSC_VER)
-#		define NOMINMAX // required to stop windows.h messing up std::min
-#	endif
+#   if !defined(NOMINMAX) && defined(_MSC_VER)
+#       define NOMINMAX // required to stop windows.h messing up std::min
+#   endif
 #  if defined( __MINGW32__ )
 #    include <unistd.h>
 #  endif
@@ -347,14 +347,14 @@ namespace te
     *  ################################################################ */
 
     /**
-	 * Create a new unique pointer from a previously constructed object.
-	 * Pointer specific data will be allocated using the provided allocator category.
-	 */
-	template<typename Type>
-	UPtr<Type> te_unique_ptr(Type* data)
-	{
-		return std::unique_ptr<Type>(data);
-	}
+     * Create a new unique pointer from a previously constructed object.
+     * Pointer specific data will be allocated using the provided allocator category.
+     */
+    template<typename Type>
+    UPtr<Type> te_unique_ptr(Type* data)
+    {
+        return std::unique_ptr<Type>(data);
+    }
 
     /**
     * Create a new unique pointer using a custom allocator category.

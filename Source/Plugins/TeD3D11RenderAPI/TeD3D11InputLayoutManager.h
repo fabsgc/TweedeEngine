@@ -8,28 +8,28 @@ namespace te
     class D3D11InputLayoutManager
     {
     public:
-        /**	Key uniquely identifying vertex declaration and vertex shader combination. */
+        /** Key uniquely identifying vertex declaration and vertex shader combination. */
         struct VertexDeclarationKey
         {
             UINT64 vertxDeclId;
             UINT32 vertexProgramId;
         };
 
-        /**	Creates a hash from vertex declaration key. */
+        /** Creates a hash from vertex declaration key. */
         class HashFunc
         {
         public:
             ::std::size_t operator()(const VertexDeclarationKey& key) const;
         };
 
-        /**	Compares two vertex declaration keys. */
+        /** Compares two vertex declaration keys. */
         class EqualFunc
         {
         public:
             bool operator()(const VertexDeclarationKey& a, const VertexDeclarationKey& b) const;
         };
 
-        /**	Contains data about a single instance of DX11 input layout object. */
+        /** Contains data about a single instance of DX11 input layout object. */
         struct InputLayoutEntry
         {
             InputLayoutEntry() {}
@@ -57,11 +57,11 @@ namespace te
             const SPtr<VertexDeclaration>& vertexBufferDecl, D3D11GpuProgram& vertexProgram);
 
     private:
-        /**	Creates a new input layout using the specified parameters and stores it in the input layout map. */
+        /** Creates a new input layout using the specified parameters and stores it in the input layout map. */
         void AddNewInputLayout(const SPtr<VertexDeclaration>& vertexShaderDecl, const SPtr<VertexDeclaration>& vertexBufferDecl,
             D3D11GpuProgram& vertexProgram);
 
-        /**	Destroys least used input layout. */
+        /** Destroys least used input layout. */
         void RemoveLeastUsed();
 
     private:

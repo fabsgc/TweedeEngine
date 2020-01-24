@@ -6,14 +6,14 @@
 namespace te
 {
     Camera::Camera(SPtr<RenderTarget> target, float left, float top, float width, float height)
-	{
-		_viewport = Viewport::Create(target, left, top, width, height);
-	}
+    {
+        _viewport = Viewport::Create(target, left, top, width, height);
+    }
 
-	Camera::Camera(const SPtr<Viewport>& viewport)
-	{
-		_viewport = viewport;
-	}
+    Camera::Camera(const SPtr<Viewport>& viewport)
+    {
+        _viewport = viewport;
+    }
 
     Camera::~Camera()
     {
@@ -37,7 +37,7 @@ namespace te
         CoreObject::Destroy();
     }
 
-    /**	Returns the viewport used by the camera. */
+    /** Returns the viewport used by the camera. */
     void Camera::SetRenderTarget(SPtr<RenderTarget> renderTarget)
     {
         _viewport->SetTarget(renderTarget);
@@ -51,6 +51,6 @@ namespace te
         handlerPtr->SetThisPtr(handlerPtr);
         handlerPtr->Initialize();
 
-		return handlerPtr;
+        return handlerPtr;
     }
 }

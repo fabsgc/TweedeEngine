@@ -79,7 +79,7 @@ namespace te
         }
     }
 
-    /**	Method triggered whenever a mouse event happens. */
+    /** Method triggered whenever a mouse event happens. */
     void GetMouseData(HWND hWnd, WPARAM wParam, LPARAM lParam, bool nonClient, Vector2I& mousePos, OSPointerButtonStates& btnStates)
     {
         POINT clientPoint;
@@ -270,7 +270,7 @@ namespace te
     LRESULT CALLBACK Win32Platform::_win32WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
         if (uMsg == WM_CREATE)
-        {	// Store pointer to Win32Window in user data area
+        { // Store pointer to Win32Window in user data area
             SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)(((LPCREATESTRUCT)lParam)->lpCreateParams));
 
             RenderWindow* newWindow = (RenderWindow*)GetWindowLongPtr(hWnd, GWLP_USERDATA);

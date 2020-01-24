@@ -5,21 +5,21 @@
 
 namespace te
 {
-	/** DirectX 11 implementation of a rasterizer state. Wraps a DX11 rasterizer state object. */
-	class D3D11RasterizerState : public RasterizerState
-	{
-	public:
-		~D3D11RasterizerState();
-		ID3D11RasterizerState* GetInternal() const { return _rasterizerState; }
+    /** DirectX 11 implementation of a rasterizer state. Wraps a DX11 rasterizer state object. */
+    class D3D11RasterizerState : public RasterizerState
+    {
+    public:
+        ~D3D11RasterizerState();
+        ID3D11RasterizerState* GetInternal() const { return _rasterizerState; }
 
-	protected:
+    protected:
         friend class D3D11RenderStateManager;
 
-		D3D11RasterizerState(const RASTERIZER_STATE_DESC& desc);
+        D3D11RasterizerState(const RASTERIZER_STATE_DESC& desc);
 
-		/** @copydoc RasterizerState::CreateInternal */
-		void CreateInternal() override;
+        /** @copydoc RasterizerState::CreateInternal */
+        void CreateInternal() override;
 
-		ID3D11RasterizerState* _rasterizerState = nullptr;
-	};
+        ID3D11RasterizerState* _rasterizerState = nullptr;
+    };
 }

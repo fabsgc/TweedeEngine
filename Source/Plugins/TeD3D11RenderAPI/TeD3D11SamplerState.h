@@ -4,7 +4,7 @@
 #include "RenderAPI/TeSamplerState.h"
 
 namespace te {
-        /**	DirectX 11 implementation of a sampler state. Wraps a DX11 sampler state object. */
+        /** DirectX 11 implementation of a sampler state. Wraps a DX11 sampler state object. */
     class D3D11SamplerState : public SamplerState
     {
     public:

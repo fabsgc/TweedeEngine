@@ -10,7 +10,7 @@ namespace te
     template <typename T>
     using BasicString = std::basic_string <T, std::char_traits<T>>;
 
-    /**	\brief Basic string stream that uses Banshee memory allocators. */
+    /** \brief Basic string stream that uses Banshee memory allocators. */
     template <typename T>
     using BasicStringStream = std::basic_stringstream <T, std::char_traits<T>>;
 
@@ -52,7 +52,7 @@ namespace te
     /** \brief Converts a narrow string to a wide string. */
     TE_UTILITY_EXPORT WString ToWString(const String& source);
 
-    /**	\brief Converts a narrow string to a wide string. */
+    /** \brief Converts a narrow string to a wide string. */
     TE_UTILITY_EXPORT WString ToWString(const char* source);
 
     /** \brief Converts a float to a string. */
@@ -66,32 +66,32 @@ namespace te
         unsigned short precision = 6, unsigned short width = 0,
         char fill = ' ', std::ios::fmtflags flags = std::ios::fmtflags(0));
 
-    /**	\brief Converts an int to a string. */
+    /** \brief Converts an int to a string. */
     TE_UTILITY_EXPORT WString ToWString(int val,
         unsigned short width = 0, char fill = ' ',
         std::ios::fmtflags flags = std::ios::fmtflags(0));
 
-    /**	\brief Converts an unsigned int to a string. */
+    /** \brief Converts an unsigned int to a string. */
     TE_UTILITY_EXPORT WString ToWString(unsigned int val,
         unsigned short width = 0, char fill = ' ',
         std::ios::fmtflags flags = std::ios::fmtflags(0));
 
-    /**	\brief Converts an 64bit integer to a string. */
+    /** \brief Converts an 64bit integer to a string. */
     TE_UTILITY_EXPORT WString ToWString(INT64 val,
         unsigned short width = 0, char fill = ' ',
         std::ios::fmtflags flags = std::ios::fmtflags(0));
 
-    /**	\brief Converts an 64bit unsigned to a string. */
+    /** \brief Converts an 64bit unsigned to a string. */
     TE_UTILITY_EXPORT WString ToWString(UINT64 val,
         unsigned short width = 0, char fill = ' ',
         std::ios::fmtflags flags = std::ios::fmtflags(0));
 
-    /**	\brief Converts an narrow char unsigned to a string. */
+    /** \brief Converts an narrow char unsigned to a string. */
     TE_UTILITY_EXPORT WString ToWString(char val,
         unsigned short width = 0, char fill = ' ',
         std::ios::fmtflags flags = std::ios::fmtflags(0));
 
-    /**	\brief Converts an wide bit char unsigned to a string. */
+    /** \brief Converts an wide bit char unsigned to a string. */
     TE_UTILITY_EXPORT WString ToWString(wchar_t val,
         unsigned short width = 0, char fill = ' ',
         std::ios::fmtflags flags = std::ios::fmtflags(0));
@@ -99,15 +99,15 @@ namespace te
     /** \brief Converts a wide string to a narrow string. */
     TE_UTILITY_EXPORT String ToString(const WString& source);
 
-    /**	\brief Converts a wide string to a narrow string. */
+    /** \brief Converts a wide string to a narrow string. */
     TE_UTILITY_EXPORT String ToString(const wchar_t* source);
 
-    /**	\brief Converts a float to a string. */
+    /** \brief Converts a float to a string. */
     TE_UTILITY_EXPORT String ToString(float val,
         unsigned short precision = 6, unsigned short width = 0,
         char fill = ' ', std::ios::fmtflags flags = std::ios::fmtflags(0));
 
-    /**	\brief Converts a double to a string. */
+    /** \brief Converts a double to a string. */
     TE_UTILITY_EXPORT String ToString(double val,
         unsigned short precision = 6, unsigned short width = 0,
         char fill = ' ', std::ios::fmtflags flags = std::ios::fmtflags(0));
@@ -116,17 +116,17 @@ namespace te
         unsigned short width = 0, char fill = ' ',
         std::ios::fmtflags flags = std::ios::fmtflags(0));
 
-    /**	\brief Converts an unsigned int to a string. */
+    /** \brief Converts an unsigned int to a string. */
     TE_UTILITY_EXPORT String ToString(unsigned int val,
         unsigned short width = 0, char fill = ' ',
         std::ios::fmtflags flags = std::ios::fmtflags(0));
 
-    /**	\brief Converts a 64bit int to a string. */
+    /** \brief Converts a 64bit int to a string. */
     TE_UTILITY_EXPORT String ToString(INT64 val,
         unsigned short width = 0, char fill = ' ',
         std::ios::fmtflags flags = std::ios::fmtflags(0));
 
-    /**	\brief Converts an 64bit unsigned int to a string. */
+    /** \brief Converts an 64bit unsigned int to a string. */
     TE_UTILITY_EXPORT String ToString(UINT64 val,
         unsigned short width = 0, char fill = ' ',
         std::ios::fmtflags flags = std::ios::fmtflags(0));
@@ -218,7 +218,7 @@ namespace te
     /** Converts all the characters in the string to upper case. Does not handle UTF8 encoded strings. */
     TE_UTILITY_EXPORT void ToUpperCase(String& str);
 
-    /**	Converts all the characters in the string to upper case. Does not handle UTF8 encoded strings. */
+    /** Converts all the characters in the string to upper case. Does not handle UTF8 encoded strings. */
     TE_UTILITY_EXPORT void ToUpperCase(WString& str);
 
     /**

@@ -7,70 +7,70 @@
 namespace te
 {
     RenderTextureProperties::RenderTextureProperties(const RENDER_TEXTURE_DESC& desc, bool requiresFlipping)
-	{
-		UINT32 firstIdx = (UINT32)-1;
-		bool requiresHwGamma = false;
-		for (UINT32 i = 0; i < TE_MAX_MULTIPLE_RENDER_TARGETS; i++)
-		{
-			SPtr<Texture> texture = desc.ColorSurfaces[i].Tex;
+    {
+        UINT32 firstIdx = (UINT32)-1;
+        bool requiresHwGamma = false;
+        for (UINT32 i = 0; i < TE_MAX_MULTIPLE_RENDER_TARGETS; i++)
+        {
+            SPtr<Texture> texture = desc.ColorSurfaces[i].Tex;
 
             if (texture == nullptr)
-				continue;
+                continue;
 
-			if (firstIdx == (UINT32)-1)
-				firstIdx = i;
+            if (firstIdx == (UINT32)-1)
+                firstIdx = i;
 
-			requiresHwGamma |= texture->GetProperties().IsHardwareGammaEnabled();
-		}
+            requiresHwGamma |= texture->GetProperties().IsHardwareGammaEnabled();
+        }
 
-		if (firstIdx == (UINT32)-1)
-		{
-			SPtr<Texture> texture = desc.DepthStencilSurface.Tex;
+        if (firstIdx == (UINT32)-1)
+        {
+            SPtr<Texture> texture = desc.DepthStencilSurface.Tex;
 
             if(texture != nullptr)
-			{
+            {
                 const TextureProperties& texProps = texture->GetProperties();
                 Construct(&texProps, desc.DepthStencilSurface.NumFaces, desc.DepthStencilSurface.MipLevel,
                             requiresFlipping, false);
             }
-		}
-		else
-		{
-			SPtr<Texture> texture = desc.ColorSurfaces[firstIdx].Tex;
+        }
+        else
+        {
+            SPtr<Texture> texture = desc.ColorSurfaces[firstIdx].Tex;
 
-			const TextureProperties& texProps = texture->GetProperties();
-			Construct(&texProps, desc.ColorSurfaces[firstIdx].NumFaces, desc.ColorSurfaces[firstIdx].MipLevel,
-					  requiresFlipping, requiresHwGamma);
-		}
-	}
+            const TextureProperties& texProps = texture->GetProperties();
+            Construct(&texProps, desc.ColorSurfaces[firstIdx].NumFaces, desc.ColorSurfaces[firstIdx].MipLevel,
+                      requiresFlipping, requiresHwGamma);
+        }
+    }
 
-	void RenderTextureProperties::Construct(const TextureProperties* textureProps, UINT32 numSlices,
-											UINT32 mipLevel, bool requiresFlipping, bool hwGamma)
-	{
-		if (textureProps != nullptr)
-		{
-			PixelUtil::GetSizeForMipLevel(textureProps->GetWidth(), textureProps->GetHeight(), textureProps->GetDepth(),
-										  mipLevel, Width, Height, numSlices);
+    void RenderTextureProperties::Construct(const TextureProperties* textureProps, UINT32 numSlices,
+                                            UINT32 mipLevel, bool requiresFlipping, bool hwGamma)
+    {
+        if (textureProps != nullptr)
+        {
+            PixelUtil::GetSizeForMipLevel(textureProps->GetWidth(), textureProps->GetHeight(), textureProps->GetDepth(),
+                                          mipLevel, Width, Height, numSlices);
 
-			numSlices *= numSlices;
-			MultisampleCount = textureProps->GetNumSamples();
-		}
+            numSlices *= numSlices;
+            MultisampleCount = textureProps->GetNumSamples();
+        }
 
-		IsWindow = false;
-		RequiresTextureFlipping = requiresFlipping;
-		this->HWGamma = hwGamma;
-	}
+        IsWindow = false;
+        RequiresTextureFlipping = requiresFlipping;
+        this->HWGamma = hwGamma;
+    }
 
-	SPtr<RenderTexture> RenderTexture::Create(const TEXTURE_DESC& desc,
-		bool createDepth, PixelFormat depthStencilFormat)
-	{
-		return TextureManager::Instance().CreateRenderTexture(desc, createDepth, depthStencilFormat);
-	}
+    SPtr<RenderTexture> RenderTexture::Create(const TEXTURE_DESC& desc,
+        bool createDepth, PixelFormat depthStencilFormat)
+    {
+        return TextureManager::Instance().CreateRenderTexture(desc, createDepth, depthStencilFormat);
+    }
 
-	SPtr<RenderTexture> RenderTexture::Create(const RENDER_TEXTURE_DESC& desc)
-	{
-		return TextureManager::Instance().CreateRenderTexture(desc);
-	}
+    SPtr<RenderTexture> RenderTexture::Create(const RENDER_TEXTURE_DESC& desc)
+    {
+        return TextureManager::Instance().CreateRenderTexture(desc);
+    }
 
     RenderTexture::RenderTexture(const RENDER_TEXTURE_DESC& desc, UINT32 deviceIdx)
         : _desc(desc)

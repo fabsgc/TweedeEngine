@@ -9,60 +9,60 @@ namespace te
     }
 
     GpuResourceData::~GpuResourceData()
-	{
-		FreeInternalBuffer();
-	}
+    {
+        FreeInternalBuffer();
+    }
 
     GpuResourceData& GpuResourceData::operator=(const GpuResourceData& rhs)
-	{
-		_data = rhs._data;
-		_ownsData = false;
+    {
+        _data = rhs._data;
+        _ownsData = false;
 
-		return *this;
-	}
+        return *this;
+    }
 
-	UINT8* GpuResourceData::GetData() const
-	{
-		return _data;
-	}
+    UINT8* GpuResourceData::GetData() const
+    {
+        return _data;
+    }
 
-	void GpuResourceData::SetData(UPtr<UINT8[]> &data)
-	{
-		FreeInternalBuffer();
+    void GpuResourceData::SetData(UPtr<UINT8[]> &data)
+    {
+        FreeInternalBuffer();
 
-		_data = data.release();
-		_ownsData = true;
-	}
+        _data = data.release();
+        _ownsData = true;
+    }
 
-	void GpuResourceData::AllocateInternalBuffer()
-	{
-		AllocateInternalBuffer(GetInternalBufferSize());
-	}
+    void GpuResourceData::AllocateInternalBuffer()
+    {
+        AllocateInternalBuffer(GetInternalBufferSize());
+    }
 
-	void GpuResourceData::AllocateInternalBuffer(UINT32 size)
-	{
-		FreeInternalBuffer();
+    void GpuResourceData::AllocateInternalBuffer(UINT32 size)
+    {
+        FreeInternalBuffer();
 
-		_data = (UINT8*)te_allocate(size);
-		_ownsData = true;
-	}
+        _data = (UINT8*)te_allocate(size);
+        _ownsData = true;
+    }
 
-	void GpuResourceData::FreeInternalBuffer()
-	{
-		if(_data == nullptr || !_ownsData)
+    void GpuResourceData::FreeInternalBuffer()
+    {
+        if(_data == nullptr || !_ownsData)
         {
-			return;
+            return;
         }
 
-		te_free(_data);
-		_data = nullptr;
-	}
+        te_free(_data);
+        _data = nullptr;
+    }
 
-	void GpuResourceData::SetExternalBuffer(UINT8* data)
-	{
-		FreeInternalBuffer();
+    void GpuResourceData::SetExternalBuffer(UINT8* data)
+    {
+        FreeInternalBuffer();
 
-		_data = data;
-		_ownsData = false;
-	}
+        _data = data;
+        _ownsData = false;
+    }
 }

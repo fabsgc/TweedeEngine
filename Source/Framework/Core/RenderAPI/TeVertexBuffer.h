@@ -16,44 +16,44 @@ namespace te
     };
 
     /** Contains information about a vertex buffer buffer. */
-	class TE_CORE_EXPORT VertexBufferProperties
-	{
-	public:
-		VertexBufferProperties(UINT32 numVertices, UINT32 vertexSize);
+    class TE_CORE_EXPORT VertexBufferProperties
+    {
+    public:
+        VertexBufferProperties(UINT32 numVertices, UINT32 vertexSize);
 
-		/**	Gets the size in bytes of a single vertex in this buffer. */
-		UINT32 GetVertexSize() const { return _vertexSize; }
+        /** Gets the size in bytes of a single vertex in this buffer. */
+        UINT32 GetVertexSize() const { return _vertexSize; }
 
-		/**	Get the number of vertices in this buffer. */
-		UINT32 GetNumVertices() const { return _numVertices; }
+        /** Get the number of vertices in this buffer. */
+        UINT32 GetNumVertices() const { return _numVertices; }
 
-	protected:
-		friend class VertexBuffer;
+    protected:
+        friend class VertexBuffer;
 
-		UINT32 _numVertices;
-		UINT32 _vertexSize;
-	};
+        UINT32 _numVertices;
+        UINT32 _vertexSize;
+    };
 
     /** Specific implementation of a VertexBuffer. */
     class TE_CORE_EXPORT VertexBuffer : public CoreObject, public HardwareBuffer
     {
     public:
-		VertexBuffer(const VERTEX_BUFFER_DESC& desc, GpuDeviceFlags deviceMask = GDF_DEFAULT);
-		virtual ~VertexBuffer();
+        VertexBuffer(const VERTEX_BUFFER_DESC& desc, GpuDeviceFlags deviceMask = GDF_DEFAULT);
+        virtual ~VertexBuffer();
 
-        /**	Returns information about the vertex buffer. */
-		const VertexBufferProperties& GetProperties() const { return _properties; }
+        /** Returns information about the vertex buffer. */
+        const VertexBufferProperties& GetProperties() const { return _properties; }
 
-		/** @copydoc HardwareBuffer::ReadData */
-		void ReadData(UINT32 offset, UINT32 length, void* dest, UINT32 deviceIdx = 0, UINT32 queueIdx = 0) override;
+        /** @copydoc HardwareBuffer::ReadData */
+        void ReadData(UINT32 offset, UINT32 length, void* dest, UINT32 deviceIdx = 0, UINT32 queueIdx = 0) override;
 
-		/** @copydoc HardwareBuffer::WriteData */
-		void WriteData(UINT32 offset, UINT32 length, const void* source,
-			BufferWriteType writeFlags = BWT_NORMAL, UINT32 queueIdx = 0) override;
+        /** @copydoc HardwareBuffer::WriteData */
+        void WriteData(UINT32 offset, UINT32 length, const void* source,
+            BufferWriteType writeFlags = BWT_NORMAL, UINT32 queueIdx = 0) override;
 
-		/** @copydoc HardwareBuffer::CopyData */
-		void CopyData(HardwareBuffer& srcBuffer, UINT32 srcOffset, UINT32 dstOffset, UINT32 length,
-			bool discardWholeBuffer = false) override;
+        /** @copydoc HardwareBuffer::CopyData */
+        void CopyData(HardwareBuffer& srcBuffer, UINT32 srcOffset, UINT32 dstOffset, UINT32 length,
+            bool discardWholeBuffer = false) override;
 
         /** @copydoc HardwareBufferManager::CreateVertexBuffer */
         static SPtr<VertexBuffer> Create(const VERTEX_BUFFER_DESC& desc, GpuDeviceFlags deviceMask = GDF_DEFAULT);
@@ -62,27 +62,26 @@ namespace te
         static const int MAX_SEMANTIC_IDX = 8;
 
     protected:
-		friend class HardwareBufferManager;
+        friend class HardwareBufferManager;
 
-		/** @copydoc HardwareBuffer::Map */
-		void* Map(UINT32 offset, UINT32 length, GpuLockOptions options, UINT32 deviceIdx, UINT32 queueIdx) override;
+        /** @copydoc HardwareBuffer::Map */
+        void* Map(UINT32 offset, UINT32 length, GpuLockOptions options, UINT32 deviceIdx, UINT32 queueIdx) override;
 
-		/** @copydoc HardwareBuffer::Unmap */
-		void Unmap() override;
+        /** @copydoc HardwareBuffer::Unmap */
+        void Unmap() override;
 
-		/** @copydoc CoreObject::Initialize */
-		void Initialize() override;
+        /** @copydoc CoreObject::Initialize */
+        void Initialize() override;
 
     protected:
-		VertexBufferProperties _properties;
-        GpuBufferUsage _usage;
-		bool _streamOut;
+        VertexBufferProperties _properties;
+        bool _streamOut;
 
-		HardwareBuffer* _buffer = nullptr;
-		SPtr<HardwareBuffer> _sharedBuffer;
+        HardwareBuffer* _buffer = nullptr;
+        SPtr<HardwareBuffer> _sharedBuffer;
 
-		typedef void(*Deleter)(HardwareBuffer*);
-		Deleter _bufferDeleter = nullptr;
+        typedef void(*Deleter)(HardwareBuffer*);
+        Deleter _bufferDeleter = nullptr;
 
         // TODO
     };

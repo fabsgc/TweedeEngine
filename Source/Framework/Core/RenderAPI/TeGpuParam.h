@@ -33,7 +33,7 @@ namespace te
         static bool TransposeEnabled(bool enabled) { return enabled; }
     };
 
-    /**	Transpose policy for 4x4 matrix. */
+    /** Transpose policy for 4x4 matrix. */
     template<>
     struct TransposePolicy<Matrix4>
     {
@@ -41,7 +41,7 @@ namespace te
         static bool TransposeEnabled(bool enabled) { return enabled; }
     };
 
-    /**	Transpose policy for NxM matrix. */
+    /** Transpose policy for NxM matrix. */
     template<int N, int M>
     struct TransposePolicy<MatrixNxM<N, M>>
     {

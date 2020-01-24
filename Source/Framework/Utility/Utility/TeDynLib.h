@@ -19,45 +19,45 @@ namespace te
 #    define DYNLIB_UNLOAD( a ) dlclose( a )
 #endif
 
-	class TE_UTILITY_EXPORT DynLib
-	{
-	public:
-		DynLib(const String& name);
-		~DynLib() = default;
+    class TE_UTILITY_EXPORT DynLib
+    {
+    public:
+        DynLib(const String& name);
+        ~DynLib() = default;
 
-		void  Load();
-		void  Unload();
-		const String& GetName() const { return _name; }
-		void* GetSymbol(const String& strName) const;
+        void  Load();
+        void  Unload();
+        const String& GetName() const { return _name; }
+        void* GetSymbol(const String& strName) const;
 
-	public:
+    public:
 #if TE_PLATFORM == TE_PLATFORM_LINUX
-	static constexpr const char* EXTENSION = "so";
+    static constexpr const char* EXTENSION = "so";
 #elif TE_PLATFORM == TE_PLATFORM_WIN32
-	static constexpr const char* EXTENSION = "dll";
+    static constexpr const char* EXTENSION = "dll";
 #else
 #   error Unhandled platform
 #endif
 
 #if TE_PLATFORM == TE_PLATFORM_LINUX
-	static constexpr const char* PREFIX = "lib";
+    static constexpr const char* PREFIX = "lib";
 #elif TE_PLATFORM == TE_PLATFORM_WIN32
 #   if defined(_MSC_VER)
-		static constexpr const char* PREFIX = nullptr;
+        static constexpr const char* PREFIX = nullptr;
 #   else
-		static constexpr const char* PREFIX = "lib";
+        static constexpr const char* PREFIX = "lib";
 #   endif
 #else
 #   error Unhandled platform
 #endif
 
-	protected:
-		friend class DynLibManager;
+    protected:
+        friend class DynLibManager;
 
-		String DynLibError();
+        String DynLibError();
 
-	protected:
-		String        _name;
-		DYNLIB_HANDLE _handle = nullptr;
-	};
+    protected:
+        String        _name;
+        DYNLIB_HANDLE _handle = nullptr;
+    };
 }

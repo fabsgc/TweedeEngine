@@ -6,7 +6,7 @@
 
 namespace te
 {
-    /**	Handles creation of DirectX 11 hardware buffers. */
+    /** Handles creation of DirectX 11 hardware buffers. */
     class D3D11HardwareBufferManager : public HardwareBufferManager
     {
     public:

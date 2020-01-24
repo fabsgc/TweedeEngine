@@ -12,7 +12,7 @@ namespace te
     public:
         D3D11IndexBuffer(D3D11Device& device, const INDEX_BUFFER_DESC& desc, GpuDeviceFlags deviceMask);
 
-        /**	Gets the internal DX11 index buffer object. */
+        /** Gets the internal DX11 index buffer object. */
         ID3D11Buffer* GetD3DIndexBuffer() const { return static_cast<D3D11HardwareBuffer*>(_buffer)->GetD3DBuffer(); }
 
     protected:

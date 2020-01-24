@@ -4,10 +4,10 @@
 
 namespace te
 {
-	/** Serializable blob of raw memory. */
-	struct DataBlob
-	{
-		UINT8* Data = nullptr;
-		UINT32 Size = 0;
-	};
+    /** Serializable blob of raw memory. */
+    struct DataBlob
+    {
+        UINT8* Data = nullptr;
+        UINT32 Size = 0;
+    };
 }

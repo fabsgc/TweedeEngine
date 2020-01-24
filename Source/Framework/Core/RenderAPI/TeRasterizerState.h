@@ -6,18 +6,18 @@
 namespace te
 {
     /** Structure that describes pipeline rasterizer state. Used for initializing a RasterizerState. */
-	struct TE_CORE_EXPORT RASTERIZER_STATE_DESC
-	{
+    struct TE_CORE_EXPORT RASTERIZER_STATE_DESC
+    {
         bool operator==(const RASTERIZER_STATE_DESC& rhs) const;
 
         /** Polygon mode allows you to draw polygons as solid objects or as wireframe by just drawing their edges. */
-		PolygonMode polygonMode = PM_SOLID;
+        PolygonMode polygonMode = PM_SOLID;
 
-		/**
-		 * Sets vertex winding order. Faces that contain vertices with this order will be culled and not rasterized. Used
-		 * primarily for saving cycles by not rendering backfacing faces.
-		 */
-		CullingMode cullMode = CULL_COUNTERCLOCKWISE;
+        /**
+         * Sets vertex winding order. Faces that contain vertices with this order will be culled and not rasterized. Used
+         * primarily for saving cycles by not rendering backfacing faces.
+         */
+        CullingMode cullMode = CULL_COUNTERCLOCKWISE;
 
         /**
          * Represents a constant depth bias that will offset the depth values of new pixels by the specified amount.
@@ -70,16 +70,16 @@ namespace te
     };
 
     /** Properties of RasterizerState. Shared between sim and core thread versions of RasterizerState. */
-	class TE_CORE_EXPORT RasterizerProperties
-	{
-	public:
-		RasterizerProperties(const RASTERIZER_STATE_DESC& desc);
+    class TE_CORE_EXPORT RasterizerProperties
+    {
+    public:
+        RasterizerProperties(const RASTERIZER_STATE_DESC& desc);
 
-		/** @copydoc RASTERIZER_STATE_DESC::polygonMode */
-		PolygonMode GetPolygonMode() const { return _data.polygonMode; }
+        /** @copydoc RASTERIZER_STATE_DESC::polygonMode */
+        PolygonMode GetPolygonMode() const { return _data.polygonMode; }
 
-		/** @copydoc RASTERIZER_STATE_DESC::cullMode */
-		CullingMode GetCullMode() const { return _data.cullMode; }
+        /** @copydoc RASTERIZER_STATE_DESC::cullMode */
+        CullingMode GetCullMode() const { return _data.cullMode; }
 
         /** @copydoc RASTERIZER_STATE_DESC::depthBias */
         float GetDepthBias() const { return _data.depthBias; }
@@ -109,22 +109,22 @@ namespace te
     };
 
     /**
-	 * Render system pipeline state that allows you to modify how an object is rasterized (how are polygons converted
-	 * to pixels).
-	 */
-	class TE_CORE_EXPORT RasterizerState : public CoreObject
-	{
-	public:
+     * Render system pipeline state that allows you to modify how an object is rasterized (how are polygons converted
+     * to pixels).
+     */
+    class TE_CORE_EXPORT RasterizerState : public CoreObject
+    {
+    public:
         virtual ~RasterizerState();
 
-		/**	Returns information about the rasterizer state. */
-		const RasterizerProperties& GetProperties() const;
+        /**	Returns information about the rasterizer state. */
+        const RasterizerProperties& GetProperties() const;
 
         /** Creates a new rasterizer state using the specified rasterizer state descriptor structure. */
-		static SPtr<RasterizerState> Create(const RASTERIZER_STATE_DESC& desc);
+        static SPtr<RasterizerState> Create(const RASTERIZER_STATE_DESC& desc);
 
-		/**	Returns the default rasterizer state. */
-		static const SPtr<RasterizerState>& GetDefault();
+        /**	Returns the default rasterizer state. */
+        static const SPtr<RasterizerState>& GetDefault();
 
     protected:
         friend class RenderStateManager;
@@ -134,8 +134,8 @@ namespace te
         /** @copydoc CoreObject::Initialize */
         void Initialize() override;
 
-		/**	Creates any API-specific state objects. */
-		virtual void CreateInternal() { }
+        /**	Creates any API-specific state objects. */
+        virtual void CreateInternal() { }
 
     protected:
         RasterizerProperties _properties;

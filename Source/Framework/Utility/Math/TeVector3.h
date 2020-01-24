@@ -240,7 +240,7 @@ namespace te
             return x * x + y * y + z * z;
         }
 
-        /**	Returns the distance to another vector. */
+        /** Returns the distance to another vector. */
         float Distance(const Vector3& rhs) const
         {
             return (*this - rhs).Length();

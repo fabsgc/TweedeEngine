@@ -59,29 +59,29 @@ namespace te
         bool HideUntilSwap; /**< Window will be created as hidden and only be shown when the first framebuffer swap happens. */
     };
 
-    /**	Contains various properties that describe a render window. */
+    /** Contains various properties that describe a render window. */
     class TE_CORE_EXPORT RenderWindowProperties : public RenderTargetProperties
     {
     public:
         RenderWindowProperties(const RENDER_WINDOW_DESC& desc);
         virtual ~RenderWindowProperties() = default;
 
-        /**	True if window is running in fullscreen mode. */
+        /** True if window is running in fullscreen mode. */
         bool IsFullScreen = false;
 
-        /**	Horizontal origin of the window in pixels. */
+        /** Horizontal origin of the window in pixels. */
         INT32 Left = 0;
 
-        /**	Vertical origin of the window in pixels. */
+        /** Vertical origin of the window in pixels. */
         INT32 Top = 0;
 
-        /**	Indicates whether the window currently has keyboard focus. */
+        /** Indicates whether the window currently has keyboard focus. */
         bool HasFocus = true;
 
-        /**	True if the window is hidden. */
+        /** True if the window is hidden. */
         bool IsHidden = false;
 
-        /**	True if the window is maximized. */
+        /** True if the window is maximized. */
         bool IsMaximized = false;
     };
 
@@ -98,16 +98,16 @@ namespace te
         /** Queries the render target for a custom attribute. This may be anything and is implementation specific. */
         virtual void GetCustomAttribute(const String& name, void* pData) const {}
 
-        /**	Returns properties that describe the render window. */
+        /** Returns properties that describe the render window. */
         virtual const RenderWindowProperties& GetProperties() const override { return _properties; }
 
-        /**	Returns properties that describe the render window. */
+        /** Returns properties that describe the render window. */
         virtual const RENDER_WINDOW_DESC& GetDesc() const { return _desc; }
 
-        /**	Converts screen position into window local position. */
+        /** Converts screen position into window local position. */
         virtual Vector2I ScreenToWindowPos(const Vector2I& screenPos) const = 0;
 
-        /**	Converts window local position to screen position. */
+        /** Converts window local position to screen position. */
         virtual Vector2I WindowToScreenPos(const Vector2I& windowPos) const = 0;
 
         /**
@@ -118,7 +118,7 @@ namespace te
          */
         virtual void Resize(UINT32 width, UINT32 height) {}
 
-        /**	Hide or show the window. */
+        /** Hide or show the window. */
         virtual void SetHidden(bool hidden);
 
         /**
@@ -145,13 +145,13 @@ namespace te
          */
         virtual void Show();
 
-        /**	Minimizes the window to the taskbar. */
+        /** Minimizes the window to the taskbar. */
         virtual void Minimize() {}
 
-        /**	Maximizes the window over the entire current screen. */
+        /** Maximizes the window over the entire current screen. */
         virtual void Maximize() {}
 
-        /**	Restores the window to original position and size if it is minimized or maximized. */
+        /** Restores the window to original position and size if it is minimized or maximized. */
         virtual void Restore() {}
 
         /**
@@ -197,16 +197,16 @@ namespace te
         /** Called by the core thread when window is destroyed. */
         void NotifyWindowDestroyed();
 
-        /**	Called by the core thread when window receives focus. */
+        /** Called by the core thread when window receives focus. */
         void NotifyFocusReceived();
 
-        /**	Called by the core thread when window loses focus. */
+        /** Called by the core thread when window loses focus. */
         void NotifyFocusLost();
 
-        /**	Called by the core thread when window is moved or resized. */
+        /** Called by the core thread when window is moved or resized. */
         void NotifyMovedOrResized();
 
-        /**	Called by the core thread when mouse leaves a window. */
+        /** Called by the core thread when mouse leaves a window. */
         void NotifyMouseLeft();
 
         /** Called by the core thread when the user requests for the window to close. */
@@ -216,10 +216,10 @@ namespace te
         /** Event that is triggered when a window gains focus. */
         Event<void(RenderWindow&)> OnFocusGained;
 
-        /**	Event that is triggered when a window loses focus. */
+        /** Event that is triggered when a window loses focus. */
         Event<void(RenderWindow&)> OnFocusLost;
 
-        /**	Event that is triggered when mouse leaves a window. */
+        /** Event that is triggered when mouse leaves a window. */
         Event<void(RenderWindow&)> OnMouseLeftWindow;
 
         /** Triggers when the OS requests that the window is closed (e.g. user clicks on the X button in the title bar). */

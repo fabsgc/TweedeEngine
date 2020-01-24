@@ -6,12 +6,12 @@
 namespace te
 {
     /**
-	 * Descriptor structured used for initializing DepthStencilState.
-	 *
-	 * @see		DepthStencilState
-	 */
-	struct TE_CORE_EXPORT DEPTH_STENCIL_STATE_DESC
-	{
+     * Descriptor structured used for initializing DepthStencilState.
+     *
+     * @see DepthStencilState
+     */
+    struct TE_CORE_EXPORT DEPTH_STENCIL_STATE_DESC
+    {
         bool operator==(const DEPTH_STENCIL_STATE_DESC& rhs) const;
 
         /**
@@ -39,16 +39,16 @@ namespace te
         /** Mask to apply to any value read from the stencil buffer, before applying the stencil comparison function. */
         UINT8 StencilReadMask = 0xFF;
 
-        /**	Mask to apply to any value about to be written in the stencil buffer. */
+        /** Mask to apply to any value about to be written in the stencil buffer. */
         UINT8 StencilWriteMask = 0xFF;
 
-        /**	Operation that happens when stencil comparison function fails on a front facing polygon. */
+        /** Operation that happens when stencil comparison function fails on a front facing polygon. */
         StencilOperation FrontStencilFailOp = SOP_KEEP;
 
         /** Operation that happens when stencil comparison function passes but depth test fails on a front facing polygon. */
         StencilOperation FrontStencilZFailOp = SOP_KEEP;
 
-        /**	Operation that happens when stencil comparison function passes on a front facing polygon. */
+        /** Operation that happens when stencil comparison function passes on a front facing polygon. */
         StencilOperation FrontStencilPassOp = SOP_KEEP;
 
         /**
@@ -63,18 +63,18 @@ namespace te
         /** Operation that happens when stencil comparison function passes but depth test fails on a back facing polygon. */
         StencilOperation BackStencilZFailOp = SOP_KEEP;
 
-        /**	Operation that happens when stencil comparison function passes on a back facing polygon. */
+        /** Operation that happens when stencil comparison function passes on a back facing polygon. */
         StencilOperation BackStencilPassOp = SOP_KEEP;
 
         /**
-         * Stencil comparison function used for back facing polygons. Stencil buffer will be modified according	to
+         * Stencil comparison function used for back facing polygons. Stencil buffer will be modified according to
          * previously set stencil operations depending whether this comparison passes or fails.
          */
         CompareFunction BackStencilComparisonFunc = CMPF_ALWAYS_PASS;
     };
 
     class TE_CORE_EXPORT DepthStencilProperties
-	{
+    {
     public:
         DepthStencilProperties(const DEPTH_STENCIL_STATE_DESC& desc);
         
@@ -127,33 +127,33 @@ namespace te
     };
 
     /**
-	 * Render system pipeline state that allows you to modify how an object is rendered. More exactly this state allows to
-	 * you to control how are depth and stencil buffers modified upon rendering.
-	 */
-	class TE_CORE_EXPORT DepthStencilState : public CoreObject
-	{
-	public:
-		virtual ~DepthStencilState() = default;
+     * Render system pipeline state that allows you to modify how an object is rendered. More exactly this state allows to
+     * you to control how are depth and stencil buffers modified upon rendering.
+     */
+    class TE_CORE_EXPORT DepthStencilState : public CoreObject
+    {
+    public:
+        virtual ~DepthStencilState() = default;
 
-		/**	Returns information about the depth stencil state. */
-		const DepthStencilProperties& GetProperties() const;
+        /** Returns information about the depth stencil state. */
+        const DepthStencilProperties& GetProperties() const;
 
-		/**	Creates a new depth stencil state using the specified depth stencil state description structure. */
-		static SPtr<DepthStencilState> Create(const DEPTH_STENCIL_STATE_DESC& desc);
+        /** Creates a new depth stencil state using the specified depth stencil state description structure. */
+        static SPtr<DepthStencilState> Create(const DEPTH_STENCIL_STATE_DESC& desc);
 
-		/**	Returns the default depth stencil state that you may use when no other is available. */
-		static const SPtr<DepthStencilState>& GetDefault();
+        /** Returns the default depth stencil state that you may use when no other is available. */
+        static const SPtr<DepthStencilState>& GetDefault();
     
     protected:
-		friend class RenderStateManager;
+        friend class RenderStateManager;
 
         DepthStencilState(const DEPTH_STENCIL_STATE_DESC& desc);
 
-		/** @copydoc CoreObject::initialize */
+        /** @copydoc CoreObject::initialize */
         void Initialize() override;
 
-		/**	Creates any API-specific state objects. */
-		virtual void CreateInternal() { }
+        /** Creates any API-specific state objects. */
+        virtual void CreateInternal() { }
 
     protected:
         DepthStencilProperties _properties;

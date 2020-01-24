@@ -8,14 +8,14 @@
 #if TE_COMPILER == TE_COMPILER_MSVC
 // disable: "<type> needs to have dll-interface to be used by clients'
 // Happens on STL member variables which are not public therefore is ok
-#	pragma warning (disable: 4251)
+#   pragma warning (disable: 4251)
 
 // disable: 'X' Function call with parameters that may be unsafe
-#	pragma warning(disable: 4996)
+#   pragma warning(disable: 4996)
 
 // disable: usage of the macro - based offsetof pattern in constant expressions is non 
 //- standard; use offsetof defined in the C++ standard library instead
-#	pragma warning(disable: 4644)
+#   pragma warning(disable: 4644)
 
 // disable: decorated name length exceeded, name was truncated
 // Happens with really long type names. Even fairly standard use
@@ -23,11 +23,11 @@
 // really do much to avoid it. It shouldn't effect execution
 // but might cause problems if you compile library
 // with one compiler and use it in another.
-#	pragma warning(disable: 4503)
+#   pragma warning(disable: 4503)
 
 // disable: C++ exception handler used, but unwind semantics are not enabled
 // We don't care about this as any exception is meant to crash the program.
-#	pragma warning(disable: 4530)
+#   pragma warning(disable: 4530)
 #endif
 
 // Windows Settings

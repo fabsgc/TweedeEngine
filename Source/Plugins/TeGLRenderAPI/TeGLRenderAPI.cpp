@@ -33,7 +33,7 @@ namespace te
 
     void GLRenderAPI::Initialize()
     {
-        // Create the texture manager for use by others		
+        // Create the texture manager for use by others
         TextureManager::StartUp<GLTextureManager>();
 
         // Create render state manager
@@ -42,7 +42,7 @@ namespace te
         // Create hardware buffer manager
         HardwareBufferManager::StartUp<GLHardwareBufferManager>();
 
-        // Create & register GLSL factory		
+        // Create & register GLSL factory
         _GLSLFactory = te_new<GLGLSLProgramFactory>();
         GpuProgramManager::Instance().AddFactory("glsl", _GLSLFactory);
     }

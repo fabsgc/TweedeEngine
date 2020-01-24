@@ -26,7 +26,7 @@ namespace te
         void SetViewport(const Rect2& area) override;
 
         /** @copydoc RenderAPI::SetScissorRect */
-		void SetScissorRect(UINT32 left, UINT32 top, UINT32 right, UINT32 bottom) override;
+        void SetScissorRect(UINT32 left, UINT32 top, UINT32 right, UINT32 bottom) override;
 
         /** @copydoc RenderAPI::SetStencilRef */
         void SetStencilRef(UINT32 value) override;

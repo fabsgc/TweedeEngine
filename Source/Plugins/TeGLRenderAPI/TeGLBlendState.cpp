@@ -2,16 +2,16 @@
 #include "TeGLRenderAPI.h"
 namespace te
 {
-	GLBlendState::GLBlendState(const BLEND_STATE_DESC& desc)
-		: BlendState(desc)
-	{ }
+    GLBlendState::GLBlendState(const BLEND_STATE_DESC& desc)
+        : BlendState(desc)
+    { }
 
-	GLBlendState::~GLBlendState()
-	{ }
+    GLBlendState::~GLBlendState()
+    { }
 
-	void GLBlendState::CreateInternal()
-	{
-		// TODO
-		BlendState::CreateInternal();
-	}
+    void GLBlendState::CreateInternal()
+    {
+        // TODO
+        BlendState::CreateInternal();
+    }
 }

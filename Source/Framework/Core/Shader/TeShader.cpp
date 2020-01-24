@@ -31,10 +31,10 @@ namespace te
     void Shader::Initialize()
     { }
 
-	HShader Shader::Create(const String& name, const SHADER_DESC& desc)
+    HShader Shader::Create(const String& name, const SHADER_DESC& desc)
     {
         SPtr<Shader> shaderPtr = _createPtr(name, desc);
-		return static_resource_cast<Shader>(ResourceManager()._createResourceHandle(shaderPtr));
+        return static_resource_cast<Shader>(ResourceManager()._createResourceHandle(shaderPtr));
     }
 
     SPtr<Shader> Shader::CreateEmpty()
@@ -43,9 +43,9 @@ namespace te
         assert(id < std::numeric_limits<UINT32>::max() && "Created too many shaders, reached maximum id.");
 
         SPtr<Shader> shader = te_core_ptr<Shader>(new (te_allocate<Shader>()) Shader());
-		shader->SetThisPtr(shader);
+        shader->SetThisPtr(shader);
 
-		return shader;
+        return shader;
     }
 
     SPtr<Shader> Shader::_createPtr(const String& name, const SHADER_DESC& desc)
@@ -54,9 +54,9 @@ namespace te
         assert(id < std::numeric_limits<UINT32>::max() && "Created too many shaders, reached maximum id.");
 
         SPtr<Shader> shader = te_core_ptr<Shader>(new (te_allocate<Shader>()) Shader(desc, name, id));
-		shader->SetThisPtr(shader);
-		shader->Initialize();
+        shader->SetThisPtr(shader);
+        shader->Initialize();
 
-		return shader;
+        return shader;
     }
 }
