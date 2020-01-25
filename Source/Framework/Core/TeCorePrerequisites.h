@@ -178,6 +178,3 @@ namespace te
 }
 
 #include "RenderAPI/TeCommonTypes.h"
-
-/** Used for marking a CoreObject dependency as dirty. */
-static constexpr INT32 DIRTY_DEPENDENCY_MASK = 1 << 31;
