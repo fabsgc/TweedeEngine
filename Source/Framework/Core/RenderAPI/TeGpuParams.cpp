@@ -240,7 +240,7 @@ namespace te
         if (globalSlot == (UINT32)-1)
         {
             TE_DEBUG("Texture not found in set {" + ToString(set) + "} and slot {" + ToString(slot) + "}", __FILE__, __LINE__);
-            nullptr;
+            return nullptr;
         }
 
         return _sampledTextureData[globalSlot].Tex;

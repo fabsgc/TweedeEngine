@@ -292,19 +292,19 @@ namespace te
         void UpdateCPUBuffer(UINT32 subresourceIdx, const MeshData& meshData);
 
     private:
-        mutable SPtr<MeshData> _CPUData;
-
         MeshProperties _properties;
+
+        mutable SPtr<MeshData> _CPUData;
 
         SPtr<VertexData> _vertexData;
         SPtr<IndexBuffer> _indexBuffer;
         SPtr<VertexDataDesc> _vertexDesc;
 
-        GpuDeviceFlags _deviceMask;
         SPtr<MeshData> _tempInitialMeshData;
 
         int _usage;
         IndexType _indexType;
+        GpuDeviceFlags _deviceMask;
 
         // TODO
     };
