@@ -93,7 +93,6 @@ namespace te
             elementDesc.SemanticIndex = iter->GetSemanticIdx();
             elementDesc.Format = D3D11Mappings::Get(iter->GetType());
             elementDesc.InputSlot = iter->GetStreamIdx();
-            //elementDesc.AlignedByteOffset = static_cast<WORD>(iter->GetOffset());
             elementDesc.AlignedByteOffset = currentByteOffset;
 
             currentByteOffset += (D3D11Mappings::GetSize(D3D11Mappings::Get(iter->GetType())) / 8);
