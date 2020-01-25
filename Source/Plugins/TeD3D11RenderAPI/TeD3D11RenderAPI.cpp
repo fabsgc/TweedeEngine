@@ -19,6 +19,7 @@
 #include "TeD3D11TextureView.h"
 #include "TeD3D11SamplerState.h"
 #include "TeD3D11GpuParamBlockBuffer.h"
+#include "TeD3D11GpuBuffer.h"
 
 namespace te
 {
@@ -327,7 +328,6 @@ namespace te
                 UINT32 slot = iter->second.Slot;
                 SPtr<GpuBuffer> buffer = gpuParams->GetBuffer(iter->second.Set, slot);
 
-               
                 while (slot >= (UINT32)uavs.size())
                 {
                     uavs.push_back(nullptr);
@@ -335,9 +335,8 @@ namespace te
 
                 if (buffer != nullptr)
                 {
-                    //D3D11GpuBuffer* d3d11buffer = static_cast<D3D11GpuBuffer*>(buffer.get());
-                    //uavs[slot] = d3d11buffer->getUAV();
-                    // TODO
+                    D3D11GpuBuffer* d3d11buffer = static_cast<D3D11GpuBuffer*>(buffer.get());
+                    uavs[slot] = d3d11buffer->GetUAV();
                 }
             }
 

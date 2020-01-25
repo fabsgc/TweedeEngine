@@ -37,7 +37,7 @@ namespace te
         _sampledTextureData = (TextureData*)data;
         for (UINT32 i = 0; i < numTextures; i++)
         {
-            new (&_sampledTextureData[i].Texture) SPtr<Texture>();
+            new (&_sampledTextureData[i].Tex) SPtr<Texture>();
             new (&_sampledTextureData[i].Surface) TextureSurface(0, 0, 0, 0);
         }
         data += texturesSize;
@@ -71,7 +71,7 @@ namespace te
 
         for (UINT32 i = 0; i < numTextures; i++)
         {
-            _sampledTextureData[i].Texture.~shared_ptr();
+            _sampledTextureData[i].Tex.~shared_ptr();
             _sampledTextureData[i].Surface.~TextureSurface();
         }
 
@@ -243,7 +243,7 @@ namespace te
             nullptr;
         }
 
-        return _sampledTextureData[globalSlot].Texture;
+        return _sampledTextureData[globalSlot].Tex;
     }
 
     SPtr<GpuBuffer> GpuParams::GetBuffer(UINT32 set, UINT32 slot) const
@@ -351,7 +351,7 @@ namespace te
             return;
         }
 
-        _sampledTextureData[globalSlot].Texture = texture;
+        _sampledTextureData[globalSlot].Tex = texture;
         _sampledTextureData[globalSlot].Surface = surface;
         _hasChanged = true;
     }

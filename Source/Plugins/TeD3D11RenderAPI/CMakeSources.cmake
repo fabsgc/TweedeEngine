@@ -27,6 +27,7 @@ set (TE_D3D11RENDERAPI_INC_NOFILTER
     "TeD3D11IndexBuffer.h"
     "TeD3D11GpuParamBlockBuffer.h"
     "TeD3D11GpuBuffer.h"
+    "TeD3D11GpuBufferView.h"
 )
 
 set (TE_D3D11RENDERAPI_SRC_NOFILTER
@@ -58,6 +59,7 @@ set (TE_D3D11RENDERAPI_SRC_NOFILTER
     "TeD3D11IndexBuffer.cpp"
     "TeD3D11GpuParamBlockBuffer.cpp"
     "TeD3D11GpuBuffer.cpp"
+    "TeD3D11GpuBufferView.cpp"
 )
 
 source_group ("" FILES ${TE_D3D11RENDERAPI_SRC_NOFILTER} ${TE_D3D11RENDERAPI_INC_NOFILTER})

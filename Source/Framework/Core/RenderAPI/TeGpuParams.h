@@ -128,7 +128,7 @@ namespace te
         /** Data for a single bound texture. */
         struct TextureData
         {
-            SPtr<Texture> Texture;
+            SPtr<Texture> Tex;
             TextureSurface Surface;
         };
 

@@ -23,7 +23,7 @@ namespace te
 
     D3D11GpuBuffer::~D3D11GpuBuffer()
     {
-        // clearBufferViews(); TODO
+        ClearBufferViews();
     }
 
     void D3D11GpuBuffer::Initialize()
@@ -63,8 +63,92 @@ namespace te
         }
 
         // Keep a single view of the entire buffer, we don't support views of sub-sets (yet)
-        // _bufferView = requestView(this, 0, props.GetElementCount(), (GpuViewUsage)usage); TODO
+        _bufferView = RequestView(this, 0, props.GetElementCount(), (GpuViewUsage)usage);
 
         GpuBuffer::Initialize();
+    }
+
+    ID3D11Buffer* D3D11GpuBuffer::GetDX11Buffer() const
+    {
+        return static_cast<D3D11HardwareBuffer*>(_buffer)->GetD3DBuffer();
+    }
+
+    GpuBufferView* D3D11GpuBuffer::RequestView(D3D11GpuBuffer* buffer, UINT32 firstElement, UINT32 numElements,
+        GpuViewUsage usage)
+    {
+        const auto& props = buffer->GetProperties();
+
+        GPU_BUFFER_VIEW_DESC key;
+        key.FirstElement = firstElement;
+        key.ElementWidth = props.GetElementSize();
+        key.NumElements = numElements;
+        key.Usage = usage;
+        key.Format = props.GetFormat();
+        key.UseCounter = false;
+
+        auto iterFind = buffer->_bufferViews.find(key);
+        if (iterFind == buffer->_bufferViews.end())
+        {
+            GpuBufferView* newView = te_new<GpuBufferView>();
+            newView->Initialize(buffer, key);
+            buffer->_bufferViews[key] = te_new<GpuBufferReference>(newView);
+
+            iterFind = buffer->_bufferViews.find(key);
+        }
+
+        iterFind->second->RefCount++;
+        return iterFind->second->View;
+    }
+
+    void D3D11GpuBuffer::ReleaseView(GpuBufferView* view)
+    {
+        D3D11GpuBuffer* buffer = view->GetBuffer();
+
+        auto iterFind = buffer->_bufferViews.find(view->GetDesc());
+        if (iterFind == buffer->_bufferViews.end())
+        {
+            TE_ASSERT_ERROR(false, "Trying to release a buffer view that doesn't exist!", __FILE__, __LINE__);
+        }
+
+        iterFind->second->RefCount--;
+
+        if (iterFind->second->RefCount == 0)
+        {
+            GpuBufferReference* toRemove = iterFind->second;
+
+            buffer->_bufferViews.erase(iterFind);
+
+            if (toRemove->View != nullptr)
+            {
+                te_delete(toRemove->View);
+            }
+
+            te_delete(toRemove);
+        }
+    }
+
+    void D3D11GpuBuffer::ClearBufferViews()
+    {
+        for (auto iter = _bufferViews.begin(); iter != _bufferViews.end(); ++iter)
+        {
+            if (iter->second->View != nullptr)
+            {
+                te_delete(iter->second->View);
+            }
+
+            te_delete(iter->second);
+        }
+
+        _bufferViews.clear();
+    }
+
+    ID3D11ShaderResourceView* D3D11GpuBuffer::GetSRV() const
+    {
+        return _bufferView->GetSRV();
+    }
+
+    ID3D11UnorderedAccessView* D3D11GpuBuffer::GetUAV() const
+    {
+        return _bufferView->GetUAV();
     }
 }
