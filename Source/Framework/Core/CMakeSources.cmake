@@ -63,11 +63,13 @@ set (TE_CORE_INC_RENDERER
     "Core/Renderer/TeRendererFactory.h"
     "Core/Renderer/TeCamera.h"
     "Core/Renderer/TeViewport.h"
+    "Core/Renderer/TeRenderSettings.h"
 )
 set (TE_CORE_SRC_RENDERER
     "Core/Renderer/TeRenderer.cpp"
     "Core/Renderer/TeCamera.cpp"
     "Core/Renderer/TeViewport.cpp"
+    "Core/Renderer/TeRenderSettings.cpp"
 )
 
 set (TE_CORE_INC_SCENE

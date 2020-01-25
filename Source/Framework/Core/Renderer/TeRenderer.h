@@ -14,7 +14,7 @@ namespace te
         virtual void Initialize() {};
 
         /**	Cleans up the renderer. Must be called before the renderer is deleted. */
-        virtual void Destroy() { }
+        virtual void Destroy() {}
 
         /** Called every frame. Triggers render task callbacks. */
         virtual void Update() = 0;

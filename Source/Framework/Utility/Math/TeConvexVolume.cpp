@@ -9,12 +9,12 @@
 namespace te
 {
     ConvexVolume::ConvexVolume(const Vector<Plane>& planes)
-        :mPlanes(planes)
+        : _planes(planes)
     { }
 
     ConvexVolume::ConvexVolume(const Matrix4& projectionMatrix, bool useNearPlane)
     {
-        mPlanes.reserve(6);
+        _planes.reserve(6);
 
         const Matrix4& proj = projectionMatrix;
 
@@ -26,7 +26,7 @@ namespace te
             plane.normal.z = proj[3][2] + proj[0][2];
             plane.d = proj[3][3] + proj[0][3];
 
-            mPlanes.push_back(plane);
+            _planes.push_back(plane);
         }
 
         // Right
@@ -37,7 +37,7 @@ namespace te
             plane.normal.z = proj[3][2] - proj[0][2];
             plane.d = proj[3][3] - proj[0][3];
 
-            mPlanes.push_back(plane);
+            _planes.push_back(plane);
         }
 
         // Top
@@ -48,7 +48,7 @@ namespace te
             plane.normal.z = proj[3][2] - proj[1][2];
             plane.d = proj[3][3] - proj[1][3];
 
-            mPlanes.push_back(plane);
+            _planes.push_back(plane);
         }
 
         // Bottom
@@ -59,7 +59,7 @@ namespace te
             plane.normal.z = proj[3][2] + proj[1][2];
             plane.d = proj[3][3] + proj[1][3];
 
-            mPlanes.push_back(plane);
+            _planes.push_back(plane);
         }
 
         // Far
@@ -70,7 +70,7 @@ namespace te
             plane.normal.z = proj[3][2] - proj[2][2];
             plane.d = proj[3][3] - proj[2][3];
 
-            mPlanes.push_back(plane);
+            _planes.push_back(plane);
         }
 
         // Near
@@ -82,23 +82,23 @@ namespace te
             plane.normal.z = proj[3][2] + proj[2][2];
             plane.d = proj[3][3] + proj[2][3];
 
-            mPlanes.push_back(plane);
+            _planes.push_back(plane);
         }
 
-        for (UINT32 i = 0; i < (UINT32)mPlanes.size(); i++)
+        for (UINT32 i = 0; i < (UINT32)_planes.size(); i++)
         {
-            float length = mPlanes[i].normal.Normalize();
-            mPlanes[i].d /= -length;
+            float length = _planes[i].normal.Normalize();
+            _planes[i].d /= -length;
         }
     }
 
-    bool ConvexVolume::intersects(const AABox& box) const
+    bool ConvexVolume::Intersects(const AABox& box) const
     {
         Vector3 center = box.GetCenter();
         Vector3 extents = box.GetHalfSize();
         Vector3 absExtents(Math::Abs(extents.x), Math::Abs(extents.y), Math::Abs(extents.z));
 
-        for (auto& plane : mPlanes)
+        for (auto& plane : _planes)
         {
             float dist = center.Dot(plane.normal) - plane.d;
 
@@ -113,12 +113,12 @@ namespace te
         return true;
     }
 
-    bool ConvexVolume::intersects(const Sphere& sphere) const
+    bool ConvexVolume::Intersects(const Sphere& sphere) const
     {
         Vector3 center = sphere.GetCenter();
         float radius = sphere.GetRadius();
 
-        for (auto& plane : mPlanes)
+        for (auto& plane : _planes)
         {
             float dist = center.Dot(plane.normal) - plane.d;
 
@@ -129,9 +129,9 @@ namespace te
         return true;
     }
 
-    bool ConvexVolume::contains(const Vector3& p, float expand) const
+    bool ConvexVolume::Contains(const Vector3& p, float expand) const
     {
-        for (auto& plane : mPlanes)
+        for (auto& plane : _planes)
         {
             if (plane.GetDistance(p) < -expand)
                 return false;
@@ -140,13 +140,13 @@ namespace te
         return true;
     }
 
-    const Plane& ConvexVolume::getPlane(FrustumPlane whichPlane) const
+    const Plane& ConvexVolume::GetPlane(FrustumPlane whichPlane) const
     {
-        if (whichPlane >= mPlanes.size())
+        if (whichPlane >= _planes.size())
         {
             TE_ASSERT_ERROR(false, "Requested plane does not exist in this volume.", __FILE__, __LINE__);
         }
 
-        return mPlanes[whichPlane];
+        return _planes[whichPlane];
     }
 }

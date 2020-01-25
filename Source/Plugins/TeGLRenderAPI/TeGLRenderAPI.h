@@ -61,6 +61,9 @@ namespace te
         /** @copydoc RenderAPI::ClearViewport */
         void ClearViewport(UINT32 buffers, const Color& color = Color::Black, float depth = 1.0f, UINT16 stencil = 0, UINT8 targetMask = 0xFF) override;
 
+        /** @copydoc RenderAPI::ConvertProjectionMatrix() */
+        void ConvertProjectionMatrix(const Matrix4& matrix, Matrix4& dest) override;
+
     private:
         GLGLSLProgramFactory* _GLSLFactory = nullptr;
     };

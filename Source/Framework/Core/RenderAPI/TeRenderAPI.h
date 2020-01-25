@@ -8,6 +8,34 @@
 
 namespace te
 {
+    /** Conventions used for a specific render backend. */
+    struct TE_CORE_EXPORT Conventions
+    {
+        enum class Axis : UINT8
+        {
+            Up, Down
+        };
+
+        enum class MatrixOrder : UINT8
+        {
+            ColumnMajor, RowMajor
+        };
+
+        /** Determines the direction of the Y axis in UV (texture mapping) space. */
+        Axis UV_YAxis = Axis::Down;
+
+        /** Determines the direction of the Y axis in normalized device coordinate (NDC) space. */
+        Axis NDC_YAxis = Axis::Up;
+
+        /** Determines the order in which matrices are laid out in GPU programs. */
+        MatrixOrder matrixOrder = MatrixOrder::RowMajor;
+    };
+
+    struct RenderAPICapabilities
+    {
+        Conventions Convention;
+    };
+
     class TE_CORE_EXPORT RenderAPI : public Module<RenderAPI>
     {
     public:
@@ -164,10 +192,18 @@ namespace te
         /** Returns information about available output devices and their video modes. */
         const VideoModeInfo& GetVideoModeInfo() const { return *_videoModeInfo; }
 
+        /** Get capabilities for specified device */
+        const RenderAPICapabilities& GetCapabilities(UINT32 deviceIdx = 0) const;
+
+        /** Contains a default matrix into a matrix suitable for use by this specific render system. */
+        virtual void ConvertProjectionMatrix(const Matrix4& matrix, Matrix4& dest) = 0;
+
     protected:
         SPtr<RenderTarget> _activeRenderTarget;
         bool _activeRenderTargetModified = false;
 
         SPtr<VideoModeInfo> _videoModeInfo;
+        UINT32 _numDevices;
+        RenderAPICapabilities* _capabilities;
     };
 }

@@ -130,4 +130,9 @@ namespace te
     {
         // TODO
     }
+
+    void GLRenderAPI::ConvertProjectionMatrix(const Matrix4& matrix, Matrix4& dest)
+    {
+        dest = matrix;
+    }
 }

@@ -1,6 +1,7 @@
 #include "TeViewport.h"
 #include "RenderAPI/TeRenderTarget.h"
 #include "Utility/TeColor.h"
+#include "Math/TeRect2I.h"
 
 namespace te
 {
@@ -17,6 +18,20 @@ namespace te
     void ViewportBase::SetArea(const Rect2& area)
     {
         _normArea = area;
+    }
+
+    Rect2I ViewportBase::GetPixelArea() const
+    {
+        float width = (float)GetTargetWidth();
+        float height = (float)GetTargetHeight();
+
+        Rect2I area;
+        area.x = (int)(_normArea.x * width);
+        area.y = (int)(_normArea.y * height);
+        area.width = (int)(_normArea.width * width);
+        area.height = (int)(_normArea.height * height);
+
+        return area;
     }
 
     void ViewportBase::SetClearValues(const Color& clearColor, float clearDepth, UINT16 clearStencil)

@@ -104,6 +104,9 @@ namespace te
         /** Notifies the active render target that a rendering command was queued that will potentially change its contents. */
         void NotifyRenderTargetModified();
 
+        /** @copydoc RenderAPI::ConvertProjectionMatrix() */
+        void ConvertProjectionMatrix(const Matrix4& matrix, Matrix4& dest) override;
+
     private:
         IDXGIFactory1* _DXGIFactory = nullptr;
         D3D11Device* _device = nullptr;

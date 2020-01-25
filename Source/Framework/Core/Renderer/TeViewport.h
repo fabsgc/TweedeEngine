@@ -19,6 +19,9 @@ namespace te
         /** @copydoc SetArea() */
         Rect2 GetArea() const { return _normArea; }
 
+        /**	Returns the area of the render target covered by the viewport, in pixels. */
+        Rect2I GetPixelArea() const;
+
         /** Sets values to clear color, depth and stencil buffers to. */
         void SetClearValues(const Color& clearColor, float clearDepth = 0.0f, UINT16 clearStencil = 0);
 

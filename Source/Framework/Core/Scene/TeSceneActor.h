@@ -44,7 +44,7 @@ namespace te
         /** @copydoc SetMobility */
         ObjectMobility GetMobility() const { return _mobility; }
 
-    private:
+    protected:
         friend class SceneManager;
 
         Transform _transform;

@@ -32,6 +32,7 @@ set(TE_UTILITY_INC_MATH
     "Utility/Math/TeLineSegment3.h"
     "Utility/Math/TeLine2.h"
     "Utility/Math/TeMatrixNxM.h"
+    "Utility/Math/TeConvexVolume.h"
 )
 set(TE_UTILITY_SRC_MATH
     "Utility/Math/TeAABox.cpp"
@@ -56,6 +57,7 @@ set(TE_UTILITY_SRC_MATH
     "Utility/Math/TeMath.cpp"
     "Utility/Math/TeLineSegment3.cpp"
     "Utility/Math/TeLine2.cpp"
+    "Utility/Math/TeConvexVolume.cpp"
 )
 
 set(TE_UTILITY_INC_PREPREQUISITES

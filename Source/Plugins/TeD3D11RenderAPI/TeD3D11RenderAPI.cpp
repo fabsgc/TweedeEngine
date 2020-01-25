@@ -104,6 +104,9 @@ namespace te
         // Create Input Layout Manager
         _IAManager = te_new<D3D11InputLayoutManager>();
 
+        _numDevices = 1;
+        _capabilities = te_newN<RenderAPICapabilities>(_numDevices);
+
         RenderAPI::Initialize();
     }
 
@@ -809,5 +812,16 @@ namespace te
         }
 
         _activeRenderTargetModified = true;
+    }
+
+    void D3D11RenderAPI::ConvertProjectionMatrix(const Matrix4& matrix, Matrix4& dest)
+    {
+        dest = matrix;
+
+        // Convert depth range from [-1,+1] to [0,1]
+        dest[2][0] = (dest[2][0] + dest[3][0]) / 2;
+        dest[2][1] = (dest[2][1] + dest[3][1]) / 2;
+        dest[2][2] = (dest[2][2] + dest[3][2]) / 2;
+        dest[2][3] = (dest[2][3] + dest[3][3]) / 2;
     }
 }
