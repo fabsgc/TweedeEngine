@@ -40,6 +40,7 @@
 #include "RenderAPI/TeIndexBuffer.h"
 #include "RenderAPI/TeVertexDataDesc.h"
 #include "RenderAPI/TeGpuParams.h"
+#include "RenderAPI/TeGpuParamBlockBuffer.h"
 
 #include "Math/TeVector4.h"
 
@@ -378,6 +379,8 @@ namespace te
         // ######################################################
         auto meshImportOptions = MeshImportOptions::Create();
         meshImportOptions->ImportNormals = false;
+        meshImportOptions->CpuCached = true;
+        meshImportOptions->ImportTangents = true;
 
         auto textureImportOptions = TextureImportOptions::Create();
         textureImportOptions->CpuCached = true;
@@ -385,18 +388,22 @@ namespace te
 
         auto textureCubeMapImportOptions = TextureImportOptions::Create();
         textureCubeMapImportOptions->CpuCached = true;
-        textureCubeMapImportOptions->CpuCached = true;
         textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
 
         auto shaderImportOptions = ShaderImportOptions::Create();
 
-        HMesh loadedMesh = gResourceManager().Load<Mesh>("Data/Meshes/cube.fbx", meshImportOptions);
+        HMesh loadedCubeMesh = gResourceManager().Load<Mesh>("Data/Meshes/cube.fbx", meshImportOptions);
+        HMesh loadedPlaneMesh = gResourceManager().Load<Mesh>("Data/Meshes/plane.fbx", meshImportOptions);
         HTexture loadTexture = gResourceManager().Load<Texture>("Data/Textures/default.png", textureImportOptions);
+        HTexture loadTextureBrick = gResourceManager().Load<Texture>("Data/Textures/brick-small.jpg", textureImportOptions);
         HTexture loadTextureCubeMap = gResourceManager().Load<Texture>("Data/Textures/cubemap.png", textureCubeMapImportOptions);
         HShader loadShader = gResourceManager().Load<Shader>("Data/Shaders/default.shader", shaderImportOptions);
 
-        TE_PRINT((loadedMesh.GetHandleData())->data);
-        TE_PRINT((loadedMesh.GetHandleData())->uuid.ToString());
+        TE_PRINT((loadedCubeMesh.GetHandleData())->data);
+        TE_PRINT((loadedCubeMesh.GetHandleData())->uuid.ToString());
+
+        TE_PRINT((loadedPlaneMesh.GetHandleData())->data);
+        TE_PRINT((loadedPlaneMesh.GetHandleData())->uuid.ToString());
 
         TE_PRINT((loadTexture.GetHandleData())->data);
         TE_PRINT((loadTexture.GetHandleData())->uuid.ToString());
@@ -478,34 +485,72 @@ namespace te
         // ######################################################
 
         // ######################################################
-        FileStream vertexShaderFile("Data/Shaders/Raw/Test/Color_VS.hlsl");
+        {
+            FileStream shaderFile("Data/Shaders/Raw/Test/Color_VS.hlsl");
 
-        GPU_PROGRAM_DESC vertexShaderProgramDesc;
-        vertexShaderProgramDesc.Type = GPT_VERTEX_PROGRAM;
-        vertexShaderProgramDesc.EntryPoint = "main";
-        vertexShaderProgramDesc.Language = "hlsl";
-        vertexShaderProgramDesc.Source = vertexShaderFile.GetAsString();
+            GPU_PROGRAM_DESC vertexShaderProgramDesc;
+            vertexShaderProgramDesc.Type = GPT_VERTEX_PROGRAM;
+            vertexShaderProgramDesc.EntryPoint = "main";
+            vertexShaderProgramDesc.Language = "hlsl";
+            vertexShaderProgramDesc.Source = shaderFile.GetAsString();
 
-        _vertexShader = GpuProgram::Create(vertexShaderProgramDesc);
+            _colorVertexShader = GpuProgram::Create(vertexShaderProgramDesc);
+        }
         // ######################################################
 
         // ######################################################
-        FileStream pixelShaderFile("Data/Shaders/Raw/Test/Color_PS.hlsl");
+        {
+            FileStream shaderFile("Data/Shaders/Raw/Test/Color_PS.hlsl");
 
-        GPU_PROGRAM_DESC pixelShaderProgramDesc;
-        pixelShaderProgramDesc.Type = GPT_PIXEL_PROGRAM;
-        pixelShaderProgramDesc.EntryPoint = "main";
-        pixelShaderProgramDesc.Language = "hlsl";
-        pixelShaderProgramDesc.Source = pixelShaderFile.GetAsString();
+            GPU_PROGRAM_DESC pixelShaderProgramDesc;
+            pixelShaderProgramDesc.Type = GPT_PIXEL_PROGRAM;
+            pixelShaderProgramDesc.EntryPoint = "main";
+            pixelShaderProgramDesc.Language = "hlsl";
+            pixelShaderProgramDesc.Source = shaderFile.GetAsString();
 
-        _pixelShader = GpuProgram::Create(pixelShaderProgramDesc);
+            _colorPixelShader = GpuProgram::Create(pixelShaderProgramDesc);
+        }
+        // ######################################################
+
+        // ######################################################
+        {
+            FileStream shaderFile("Data/Shaders/Raw/Test/Texture_VS.hlsl");
+
+            GPU_PROGRAM_DESC vertexShaderProgramDesc;
+            vertexShaderProgramDesc.Type = GPT_VERTEX_PROGRAM;
+            vertexShaderProgramDesc.EntryPoint = "main";
+            vertexShaderProgramDesc.Language = "hlsl";
+            vertexShaderProgramDesc.Source = shaderFile.GetAsString();
+
+            _textureVertexShader = GpuProgram::Create(vertexShaderProgramDesc);
+        }
+        // ######################################################
+
+        // ######################################################
+        {
+            FileStream shaderFile("Data/Shaders/Raw/Test/Texture_PS.hlsl");
+
+            GPU_PROGRAM_DESC pixelShaderProgramDesc;
+            pixelShaderProgramDesc.Type = GPT_PIXEL_PROGRAM;
+            pixelShaderProgramDesc.EntryPoint = "main";
+            pixelShaderProgramDesc.Language = "hlsl";
+            pixelShaderProgramDesc.Source = shaderFile.GetAsString();
+
+            _texturePixelShader = GpuProgram::Create(pixelShaderProgramDesc);
+        }
         // ######################################################
 
         // ######################################################
         BLEND_STATE_DESC blendDesc;
         RASTERIZER_STATE_DESC rastDesc;
         DEPTH_STENCIL_STATE_DESC depthDesc;
+
         SAMPLER_STATE_DESC samplerDesc;
+        samplerDesc.AddressMode = UVWAddressingMode();
+        samplerDesc.MinFilter = FO_ANISOTROPIC;
+        samplerDesc.MagFilter = FO_ANISOTROPIC;
+        samplerDesc.MipFilter = FO_ANISOTROPIC;
+        samplerDesc.MaxAnisotropy = 4;
 
         rastDesc.polygonMode = PM_SOLID; // Draw wireframe instead of solid
         rastDesc.cullMode = CULL_NONE; // Disable blackface culling
@@ -520,48 +565,85 @@ namespace te
         pipeDesc.blendState = blendState;
         pipeDesc.rasterizerState = rasterizerState;
         pipeDesc.depthStencilState = depthStencilState;
-        pipeDesc.vertexProgram = _vertexShader;
-        pipeDesc.pixelProgram = _pixelShader;
+        pipeDesc.vertexProgram = _textureVertexShader;
+        pipeDesc.pixelProgram = _texturePixelShader;
 
         SPtr<GraphicsPipelineState> graphicsPipeline = GraphicsPipelineState::Create(pipeDesc);
-        SPtr<GpuParams> params = GpuParams::Create(graphicsPipeline);
-
         RenderAPI::Instance().SetGraphicsPipeline(graphicsPipeline);
+
+        SPtr<GpuParams> params = GpuParams::Create(graphicsPipeline);
+        params->SetTexture(5, 0, loadTextureBrick.GetInternalPtr(), GpuParams::COMPLETE);
+        params->SetSamplerState(6, 0, samplerState);
         // ######################################################
 
         // ######################################################
-        _vertexDeclaration = _vertexShader->GetInputDeclaration();
+        SPtr<GpuParamDesc> paramDesc = _textureVertexShader->GetParamDesc();
+
+        if (paramDesc->ParamBlocks.size() > 0)
+        {
+            float constantBufferSpecular = 12.0f;
+            UINT32 sizeBytes = paramDesc->ParamBlocks["ObjectConstantBuffer"].BlockSize * 4;
+            _constantBuffer = GpuParamBlockBuffer::Create(sizeBytes);
+            _constantBuffer->Write(0, &constantBufferSpecular, sizeof(float));
+
+            params->SetParamBlockBuffer(0, 0, _constantBuffer);
+        }
+        // ######################################################
+
+        // ######################################################
+        _vertexDeclaration = _textureVertexShader->GetInputDeclaration();
         
         RenderAPI& rapi = RenderAPI::Instance();
 
         VERTEX_BUFFER_DESC vertexBufferDesc;
         vertexBufferDesc.VertexSize = _vertexDeclaration->GetProperties().GetVertexSize(0);
-        vertexBufferDesc.NumVerts = 3;
+        vertexBufferDesc.NumVerts = 4;
         vertexBufferDesc.Usage = GBU_DYNAMIC;
         _vertexBuffer = VertexBuffer::Create(vertexBufferDesc);
 
-        Vector4* positions = (Vector4*)_vertexBuffer->Lock(0, sizeof(Vector4) * 9, GBL_WRITE_ONLY_DISCARD);
-        positions[0] = Vector4(0.0f, 0.6f, 0.0f, 1.0f);
-        positions[1] = Vector4(0.6f, 0.2f, 0.2f, 1.0f);
-        positions[2] = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-        positions[3] = Vector4(0.45f, -0.5f, 0.0f, 1.0f);
-        positions[4] = Vector4(0.3f, 0.8f, 0.8f, 1.0f);
-        positions[5] = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-        positions[6] = Vector4(-0.45f, -0.5f, 0.0f, 1.0f);
-        positions[7] = Vector4(1.0f, 0.8f, 0.4f, 1.0f);
-        positions[8] = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-        _vertexBuffer->Unlock();
+        {
+            struct VertexData_t
+            {
+                Vector4 Position;
+                Vector4 Color;
+                Vector2 Texture;
+            };
+
+            VertexData_t* vertex = (VertexData_t*)_vertexBuffer->Lock(0, sizeof(VertexData_t) * 4, GBL_WRITE_ONLY_DISCARD);
+            
+            vertex[0].Position = Vector4(-0.8f, -0.8f, 0.0f, 1.0f);
+            vertex[0].Color    = Vector4(0.6f, 0.2f, 0.2f, 1.0f);
+            vertex[0].Texture  = Vector2(0.0f, 1.0f);
+
+            vertex[1].Position = Vector4(0.8f, -0.8f, 0.0f, 1.0f);
+            vertex[1].Color    = Vector4(0.3f, 0.8f, 0.8f, 1.0f);
+            vertex[1].Texture  = Vector2(1.0f, 1.0f);
+
+            vertex[2].Position = Vector4(-0.8f, 0.8f, 0.0f, 1.0f);
+            vertex[2].Color    = Vector4(1.0f, 0.8f, 0.4f, 1.0f);
+            vertex[2].Texture  = Vector2(0.0f, 0.0f);
+
+            vertex[3].Position = Vector4(0.8f, 0.8f, 0.0f, 1.0f);
+            vertex[3].Color    = Vector4(0.5f, 0.2f, 0.9f, 1.0f);
+            vertex[3].Texture  = Vector2(1.0f, 0.0f);
+            
+            _vertexBuffer->Unlock();
+        }
 
         INDEX_BUFFER_DESC indexBufferDesc;
         indexBufferDesc.Type = IT_16BIT;
-        indexBufferDesc.NumIndices = 3;
+        indexBufferDesc.NumIndices = 6;
         indexBufferDesc.Usage = GBU_DYNAMIC;
         _indexBuffer = IndexBuffer::Create(indexBufferDesc);
 
-        UINT16* indices = (UINT16*)_indexBuffer->Lock(0, sizeof(UINT16) * 3, GBL_WRITE_ONLY_DISCARD);
+        UINT16* indices = (UINT16*)_indexBuffer->Lock(0, sizeof(UINT16) * 6, GBL_WRITE_ONLY_DISCARD);
         indices[0] = 0;
         indices[1] = 1;
         indices[2] = 2;
+
+        indices[3] = 2;
+        indices[4] = 1;
+        indices[5] = 3;
         _indexBuffer->Unlock();
 
         rapi.SetVertexDeclaration(_vertexDeclaration);
@@ -597,8 +679,11 @@ namespace te
         _vertexDeclaration = nullptr;
         _indexBuffer = nullptr;
         _vertexBuffer = nullptr;
-        _vertexShader = nullptr;
-        _pixelShader = nullptr;
+        _colorVertexShader = nullptr;
+        _colorPixelShader = nullptr;
+        _textureVertexShader = nullptr;
+        _texturePixelShader = nullptr;
+        _constantBuffer = nullptr;
 
         _camera = nullptr;
         _cameraHidden = nullptr;

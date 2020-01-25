@@ -13,12 +13,12 @@
 #include "TeD3D11HardwareBufferManager.h"
 #include "TeD3D11VertexBuffer.h"
 #include "TeD3D11IndexBuffer.h"
-
 #include "RenderAPI/TeGpuParams.h"
 #include "RenderAPI/TeGpuParamDesc.h"
-
+#include "RenderAPI/TeGpuParamBlockBuffer.h"
 #include "TeD3D11TextureView.h"
 #include "TeD3D11SamplerState.h"
+#include "TeD3D11GpuParamBlockBuffer.h"
 
 namespace te
 {
@@ -302,22 +302,83 @@ namespace te
 
             for (auto iter = paramDesc->Textures.begin(); iter != paramDesc->Textures.end(); ++iter)
             {
-                // TODO
+                UINT32 slot = iter->second.Slot;
+
+                SPtr<Texture> texture = gpuParams->GetTexture(iter->second.Set, slot);
+                const TextureSurface& surface = gpuParams->GetTextureSurface(iter->second.Set, slot);
+
+                while (slot >= (UINT32)srvs.size())
+                {
+                    srvs.push_back(nullptr);
+                }
+
+                if (texture != nullptr)
+                {
+                    SPtr<TextureView> texView = texture->RequestView(surface.MipLevel, surface.NumMipLevels,
+                        surface.Face, surface.NumFaces, GVU_DEFAULT);
+
+                    D3D11TextureView* d3d11texView = static_cast<D3D11TextureView*>(texView.get());
+                    srvs[slot] = d3d11texView->GetSRV();
+                }
             }
 
             for (auto iter = paramDesc->Buffers.begin(); iter != paramDesc->Buffers.end(); ++iter)
             {
-                // TODO
+                UINT32 slot = iter->second.Slot;
+                SPtr<GpuBuffer> buffer = gpuParams->GetBuffer(iter->second.Set, slot);
+
+               
+                while (slot >= (UINT32)uavs.size())
+                {
+                    uavs.push_back(nullptr);
+                }
+
+                if (buffer != nullptr)
+                {
+                    //D3D11GpuBuffer* d3d11buffer = static_cast<D3D11GpuBuffer*>(buffer.get());
+                    //uavs[slot] = d3d11buffer->getUAV();
+                    // TODO
+                }
             }
 
             for (auto iter = paramDesc->Samplers.begin(); iter != paramDesc->Samplers.end(); ++iter)
             {
-                // TODO
+                UINT32 slot = iter->second.Slot;
+                SPtr<SamplerState> samplerState = gpuParams->GetSamplerState(iter->second.Set, slot);
+
+                while (slot >= (UINT32)samplers.size())
+                {
+                    samplers.push_back(nullptr);
+                }
+
+                if (samplerState == nullptr)
+                {
+                    samplerState = SamplerState::GetDefault();
+                }
+
+                D3D11SamplerState* d3d11SamplerState =
+                    static_cast<D3D11SamplerState*>(const_cast<SamplerState*>(samplerState.get()));
+                samplers[slot] = d3d11SamplerState->GetInternal();
             }
 
             for (auto iter = paramDesc->ParamBlocks.begin(); iter != paramDesc->ParamBlocks.end(); ++iter)
             {
-                // TODO
+                UINT32 slot = iter->second.Slot;
+                SPtr<GpuParamBlockBuffer> buffer = gpuParams->GetParamBlockBuffer(iter->second.Set, slot);
+
+                while (slot >= (UINT32)constBuffers.size())
+                {
+                    constBuffers.push_back(nullptr);
+                }
+
+                if (buffer != nullptr)
+                {
+                    buffer->FlushToGPU();
+
+                    const D3D11GpuParamBlockBuffer* d3d11paramBlockBuffer =
+                        static_cast<const D3D11GpuParamBlockBuffer*>(buffer.get());
+                    constBuffers[slot] = d3d11paramBlockBuffer->GetD3D11Buffer();
+                }
             }
         };
 

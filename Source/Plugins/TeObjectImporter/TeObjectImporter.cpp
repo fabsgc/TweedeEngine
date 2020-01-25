@@ -100,7 +100,7 @@ namespace te
         indices[5] = 3;
         // ###################
 
-        mesh->WriteData(*meshData, true);
+        mesh->WriteData(*meshData, false, true);
         mesh->SetName(filePath);
         return mesh.GetInternalPtr();
     }

@@ -9,7 +9,7 @@ namespace te
             MinFilter == rhs.MinFilter &&
             MagFilter == rhs.MagFilter &&
             MipFilter == rhs.MipFilter &&
-            MaxAniso == rhs.MaxAniso &&
+            MaxAnisotropy == rhs.MaxAnisotropy &&
             MipmapBias == rhs.MipmapBias &&
             MipMin == rhs.MipMin &&
             MipMax == rhs.MipMax &&

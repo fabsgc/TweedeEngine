@@ -96,7 +96,7 @@ namespace te
             //elementDesc.AlignedByteOffset = static_cast<WORD>(iter->GetOffset());
             elementDesc.AlignedByteOffset = currentByteOffset;
 
-            currentByteOffset = (D3D11Mappings::GetSize(D3D11Mappings::Get(iter->GetType())) / 8);
+            currentByteOffset += (D3D11Mappings::GetSize(D3D11Mappings::Get(iter->GetType())) / 8);
 
             if (iter->GetInstanceStepRate() == 0)
             {

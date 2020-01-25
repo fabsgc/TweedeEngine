@@ -68,4 +68,3 @@ namespace te
         GpuBuffer::Initialize();
     }
 }
-

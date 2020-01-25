@@ -123,11 +123,14 @@ namespace te
 
         SPtr<Camera> _camera;
         SPtr<Camera> _cameraHidden;
-        SPtr<GpuProgram> _vertexShader;
-        SPtr<GpuProgram> _pixelShader;
+        SPtr<GpuProgram> _colorVertexShader;
+        SPtr<GpuProgram> _colorPixelShader;
+        SPtr<GpuProgram> _textureVertexShader;
+        SPtr<GpuProgram> _texturePixelShader;
 
         SPtr<VertexBuffer> _vertexBuffer;
         SPtr<IndexBuffer> _indexBuffer;
+        SPtr<GpuParamBlockBuffer> _constantBuffer;
         SPtr<VertexDeclaration> _vertexDeclaration;
     };
 

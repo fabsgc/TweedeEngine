@@ -306,6 +306,7 @@ namespace te
             if ((_properties.GetUsage() & TU_DYNAMIC) == 0)
             {
                 // Buffer discard is enabled but buffer was not created as dynamic. Disabling discard.
+                TE_DEBUG("Buffer discard is enabled but buffer was not created as dynamic. Disabling discard.", __FILE__, __LINE__);
                 discardWholeBuffer = false;
             }
         }

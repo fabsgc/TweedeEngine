@@ -45,7 +45,7 @@ namespace te
         static VertexElementSemantic Get(LPCSTR sem);
 
         /** Converts DirectX 11 GPU parameter component type to engine vertex element type. */
-        static VertexElementType GetInputType(D3D_REGISTER_COMPONENT_TYPE type);
+        static VertexElementType GetInputType(D3D_REGISTER_COMPONENT_TYPE type, UINT8 mask);
 
         /** Returns DX11 primitive topology based on the provided draw operation type. */
         static D3D11_PRIMITIVE_TOPOLOGY GetPrimitiveType(DrawOperationType type);

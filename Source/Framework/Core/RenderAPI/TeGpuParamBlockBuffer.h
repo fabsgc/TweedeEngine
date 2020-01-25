@@ -1,3 +1,5 @@
+#pragma once
+
 #include "TeCorePrerequisites.h"
 #include "CoreUtility/TeCoreObject.h"
 

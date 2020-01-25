@@ -21,17 +21,14 @@ namespace te
         /** Type of the buffer. Determines how is buffer seen by the GPU program and in what ways can it be used. */
         GpuBufferType Type = GBT_STANDARD;
 
-        /** Format if the data in the buffer. Only relevant for standard buffers, must be BF_UNKNOWN otherwise. */
+        /** Format of the data in the buffer. Only relevant for standard buffers, must be BF_UNKNOWN otherwise. */
         GpuBufferFormat Format = BF_32X4F;
 
         /** Usage that tells the hardware how will be buffer be used. */
         GpuBufferUsage Usage = GBU_STATIC;
     };
 
-    /**
-     * Information about a GpuBuffer. Allows core and non-core versions of GpuBuffer to share the same structure for
-     * properties.
-     */
+    /** Information about a GpuBuffer. */
     class TE_CORE_EXPORT GpuBufferProperties
     {
     public:

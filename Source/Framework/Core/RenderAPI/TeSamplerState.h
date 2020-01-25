@@ -32,7 +32,7 @@ namespace te
         FilterOptions MipFilter = FO_LINEAR;
 
         /** Maximum number of samples if anisotropic filtering is enabled. Max is 16. */
-        UINT32 MaxAniso = 0;
+        UINT32 MaxAnisotropy = 0;
 
         /**
          * Mipmap bias allows you to adjust the mipmap selection calculation. Negative values  force a larger mipmap to be
@@ -73,7 +73,7 @@ namespace te
          * Gets the anisotropy level. Higher anisotropy means better filtering for textures displayed on an angled slope
          * relative to the viewer.
          */
-        unsigned int GetTextureAnisotropy() const { return _data.MaxAniso; }
+        unsigned int GetTextureAnisotropy() const { return _data.MaxAnisotropy; }
 
         /** Gets a function that compares sampled data with existing sampled data. */
         CompareFunction GetComparisonFunction() const { return _data.ComparisonFunc; }

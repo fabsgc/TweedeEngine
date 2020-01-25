@@ -371,19 +371,66 @@ namespace te
         return "";
     }
 
-    VertexElementType D3D11Mappings::GetInputType(D3D_REGISTER_COMPONENT_TYPE type)
+    VertexElementType D3D11Mappings::GetInputType(D3D_REGISTER_COMPONENT_TYPE type, UINT8 mask)
     {
-        switch (type)
+        if (mask == 1)
         {
-        case D3D_REGISTER_COMPONENT_FLOAT32:
-            return VET_FLOAT4;
-        case D3D_REGISTER_COMPONENT_SINT32:
-            return VET_INT4;
-        case D3D_REGISTER_COMPONENT_UINT32:
-            return VET_UINT4;
-        default:
-            return VET_FLOAT4;
+            switch (type)
+            {
+            case D3D_REGISTER_COMPONENT_FLOAT32:
+                return VET_FLOAT1;
+            case D3D_REGISTER_COMPONENT_SINT32:
+                return VET_INT1;
+            case D3D_REGISTER_COMPONENT_UINT32:
+                return VET_UINT1;
+            default:
+                return VET_FLOAT2;
+            }
         }
+        else if (mask <= 3)
+        {
+            switch (type)
+            {
+            case D3D_REGISTER_COMPONENT_FLOAT32:
+                return VET_FLOAT2;
+            case D3D_REGISTER_COMPONENT_SINT32:
+                return VET_INT2;
+            case D3D_REGISTER_COMPONENT_UINT32:
+                return VET_UINT2;
+            default:
+                return VET_FLOAT2;
+            }
+        }
+        else if (mask <= 7)
+        {
+            switch (type)
+            {
+            case D3D_REGISTER_COMPONENT_FLOAT32:
+                return VET_FLOAT3;
+            case D3D_REGISTER_COMPONENT_SINT32:
+                return VET_INT3;
+            case D3D_REGISTER_COMPONENT_UINT32:
+                return VET_UINT3;
+            default:
+                return VET_FLOAT3;
+            }
+        }
+        else if (mask <= 15)
+        {
+            switch (type)
+            {
+            case D3D_REGISTER_COMPONENT_FLOAT32:
+                return VET_FLOAT4;
+            case D3D_REGISTER_COMPONENT_SINT32:
+                return VET_INT4;
+            case D3D_REGISTER_COMPONENT_UINT32:
+                return VET_UINT4;
+            default:
+                return VET_FLOAT4;
+            }
+        }
+        
+        return VET_FLOAT4;
     }
 
     D3D11_PRIMITIVE_TOPOLOGY D3D11Mappings::GetPrimitiveType(DrawOperationType type)
