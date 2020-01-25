@@ -17,7 +17,7 @@ namespace te
 
         virtual ~GpuParams();
 
-        const bool HasChange() const { return _hasChanged; }
+        bool HasChanged() const { return _hasChanged; }
 
         /** Returns a description of all stored parameters. */
         SPtr<GpuParamDesc> GetParamDesc(GpuProgramType type) const { return _paramInfo->GetParamDesc(type); }
