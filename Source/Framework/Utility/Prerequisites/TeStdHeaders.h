@@ -18,6 +18,7 @@
 #include <cstdio>
 #include <new>
 #include <string>
+#include <cfloat>
 
 // STL containers
 #include <vector>
