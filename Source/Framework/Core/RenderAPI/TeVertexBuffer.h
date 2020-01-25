@@ -82,7 +82,5 @@ namespace te
 
         typedef void(*Deleter)(HardwareBuffer*);
         Deleter _bufferDeleter = nullptr;
-
-        // TODO
     };
 }

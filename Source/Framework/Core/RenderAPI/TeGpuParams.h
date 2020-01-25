@@ -17,7 +17,11 @@ namespace te
 
         virtual ~GpuParams();
 
+        /** Allow to know if a parameter has changed */
         bool HasChanged() const { return _hasChanged; }
+
+        /** Set _hasChanged attribute */
+        void SetChanged(bool changed = true) { _hasChanged = changed; }
 
         /** Returns a description of all stored parameters. */
         SPtr<GpuParamDesc> GetParamDesc(GpuProgramType type) const { return _paramInfo->GetParamDesc(type); }

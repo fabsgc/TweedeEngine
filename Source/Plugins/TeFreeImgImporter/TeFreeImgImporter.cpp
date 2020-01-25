@@ -316,12 +316,12 @@ namespace te
                 // cannot be 16-bit greyscale since that's FIT_UINT16
                 if (FreeImage_GetGreenMask(fiBitmap) == FI16_565_GREEN_MASK)
                 {
-                    assert(false && "Format not supported by the engine. TODO.");
+                    assert(false && "Format not supported by the engine.");
                     return nullptr;
                 }
                 else
                 {
-                    assert(false && "Format not supported by the engine. TODO.");
+                    assert(false && "Format not supported by the engine.");
                     return nullptr;
                     // FreeImage doesn't support 4444 format so must be 1555
                 }
@@ -351,7 +351,7 @@ namespace te
         case FIT_UINT16:
         case FIT_INT16:
             // 16-bit greyscale
-            assert(false && "No INT pixel formats supported currently. TODO.");
+            assert(false && "No INT pixel formats supported currently.");
             return nullptr;
             break;
         case FIT_FLOAT:

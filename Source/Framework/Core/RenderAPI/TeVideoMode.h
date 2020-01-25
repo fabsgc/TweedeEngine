@@ -38,7 +38,7 @@ namespace te
 
         UINT32 GetOutputIdx() const { return _outputIdx;  }
 
-    protected:
+    public:
         UINT32 _width = 1280;
         UINT32 _height = 720;
         float _refreshRate = 60.0f;

@@ -58,8 +58,6 @@ namespace te
         }
 
         RenderWindow::Initialize();
-
-        //TODO
     }
 
     void Win32RenderWindow::GetCustomAttribute(const String& name, void* pData) const
@@ -130,12 +128,12 @@ namespace te
 
     void Win32RenderWindow::SetFullscreen(UINT32 width, UINT32 height, float refreshRate, UINT32 monitorIdx)
     {
-        //TODO
+        // TODO
     }
 
-    void Win32RenderWindow::SetFullscreen(const VideoMode& videoMode)
+    void Win32RenderWindow::SetFullscreen(const VideoMode& mode)
     {
-        //TODO
+        SetFullscreen(mode._width, mode._height, mode._refreshRate, mode._outputIdx);
     }
 
     void Win32RenderWindow::SetWindowed(UINT32 width, UINT32 height)
@@ -174,13 +172,13 @@ namespace te
 
         _window->WindowMovedOrResized();
 
-        if (_properties.IsFullScreen) // Fullscreen is handled directly by this object
+        RenderWindowProperties& props = _properties;
+        if (_properties.IsFullScreen)
         {
-            // TODO
-        }
-        else
-        {
-            // TODO
+            props.Top = _window->GetTop();
+            props.Left = _window->GetLeft();
+            props.Width = _window->GetWidth();
+            props.Height = _window->GetHeight();
         }
     }
 

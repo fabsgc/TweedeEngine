@@ -46,7 +46,6 @@ set (TE_CORE_SRC_RENDERAPI
     "Core/RenderAPI/TeSamplerState.cpp"
     "Core/RenderAPI/TeVertexDataDesc.cpp"
     "Core/RenderAPI/TeTextureView.cpp"
-    "Core/RenderAPI/TeHardwareBuffer.cpp"
     "Core/RenderAPI/TeRenderTexture.cpp"
     "Core/RenderAPI/TeGpuProgram.cpp"
     "Core/RenderAPI/TeGpuBuffer.cpp"

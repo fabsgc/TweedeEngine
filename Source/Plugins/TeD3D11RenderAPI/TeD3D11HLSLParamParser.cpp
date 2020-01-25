@@ -196,7 +196,7 @@ namespace te
                 {
                     memberDesc.Set = MapParameterToSet(type, ParamType::UAV);
 
-                    TE_DEBUG("UAV not supported yet", __FILE__, __LINE__); // TODO
+                    TE_DEBUG("Load store texture UAV not supported yet", __FILE__, __LINE__); // TODO
 
                     break;
                 }
