@@ -91,12 +91,56 @@ namespace te
          */
         virtual void SetParamBlockBuffer(UINT32 set, UINT32 slot, const SPtr<GpuParamBlockBuffer>& paramBlockBuffer);
 
+        /**
+         * Assigns the provided texture to a buffer with the specified name, for the specified GPU program
+         * It is up to the caller to guarantee the provided buffer matches parameter block descriptor for this slot.
+         */
+        void SetTexture(GpuProgramType type, const String& name, const SPtr<Texture>& texture);
+
+        /**
+         * Assigns the provided texture buffer to a buffer with the specified name, for any stages that reference
+         * the buffer. Any following parameter reads or writes that are referencing that buffer will use the new buffer.
+         *
+         * It is up to the caller to guarantee the provided buffer matches parameter block descriptor for this slot.
+         * It is up to the caller that all stages using this buffer name refer to the same buffer type.
+         */
+        void SetTexture(const String& name, const SPtr<Texture>& texture);
+
         /**	Sets a texture at the specified set/slot combination. */
-        virtual void SetTexture(UINT32 set, UINT32 slot, const SPtr<Texture>& texture,
-            const TextureSurface& surface = COMPLETE);
+        virtual void SetTexture(UINT32 set, UINT32 slot, const SPtr<Texture>& texture, const TextureSurface& surface = COMPLETE);
+
+        /**
+         * Assigns the provided gpu buffer to a buffer with the specified name, for the specified GPU program
+         * It is up to the caller to guarantee the provided gpu buffer matches parameter block descriptor for this slot.
+         */
+        void SetBuffer(GpuProgramType type, const String& name, const SPtr<GpuBuffer>& buffer);
+
+        /**
+         * Assigns the provided gpu buffer to a buffer with the specified name, for any stages that reference
+         * the buffer. Any following parameter reads or writes that are referencing that buffer will use the new buffer.
+         *
+         * It is up to the caller to guarantee the provided buffer matches parameter block descriptor for this slot.
+         * It is up to the caller that all stages using this buffer name refer to the same buffer type.
+         */
+        void SetBuffer(const String& name, const SPtr<GpuBuffer>& buffer);
 
         /**	Sets a buffer at the specified set/slot combination. */
         virtual void SetBuffer(UINT32 set, UINT32 slot, const SPtr<GpuBuffer>& buffer);
+
+        /**
+         * Assigns the provided gpu buffer to a buffer with the specified name, for the specified GPU program
+         * It is up to the caller to guarantee the provided gpu buffer matches parameter block descriptor for this slot.
+         */
+        void SetSamplerState(GpuProgramType type, const String& name, const SPtr<SamplerState>& sampler);
+
+        /**
+         * Assigns the provided sampler state to a buffer with the specified name, for any stages that reference
+         * the buffer. Any following parameter reads or writes that are referencing that buffer will use the new buffer.
+         *
+         * It is up to the caller to guarantee the provided buffer matches parameter block descriptor for this slot.
+         * It is up to the caller that all stages using this buffer name refer to the same buffer type.
+         */
+        void SetSamplerState(const String& name, const SPtr<SamplerState>& sampler);
 
         /**	Sets a sampler state at the specified set/slot combination. */
         virtual void SetSamplerState(UINT32 set, UINT32 slot, const SPtr<SamplerState>& sampler);

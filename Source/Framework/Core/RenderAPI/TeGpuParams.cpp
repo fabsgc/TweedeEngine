@@ -318,8 +318,7 @@ namespace te
 
     void GpuParams::SetParamBlockBuffer(const String& name, const SPtr<GpuParamBlockBuffer>& paramBlockBuffer)
     {
-        bool found = false;
-        for (UINT32 i = 0; i < 6; i++)
+        for (UINT32 i = 0; i < _paramInfo->GetNumSets(); i++)
         {
             const SPtr<GpuParamDesc>& paramDescs = _paramInfo->GetParamDesc((GpuProgramType)i);
             if (paramDescs == nullptr)
@@ -333,13 +332,46 @@ namespace te
                 continue;
             }
             
-            found = true;
             SetParamBlockBuffer(iterFind->second.Set, iterFind->second.Slot, paramBlockBuffer);
         }
+    }
 
-        if (!found)
+    void GpuParams::SetTexture(GpuProgramType type, const String& name, const SPtr<Texture>& texture)
+    {
+        const SPtr<GpuParamDesc>& paramDescs = _paramInfo->GetParamDesc(type);
+        if (paramDescs == nullptr)
         {
             TE_DEBUG("Cannot find parameter block with the name: {" + name + "}", __FILE__, __LINE__);
+            return;
+        }
+
+        auto iterFind = paramDescs->Textures.find(name);
+        if (iterFind == paramDescs->Textures.end())
+        {
+            TE_DEBUG("Cannot find texture with the name: {" + name + "}", __FILE__, __LINE__);
+            return;
+        }
+
+        SetTexture(iterFind->second.Set, iterFind->second.Slot, texture);
+    }
+
+    void GpuParams::SetTexture(const String& name, const SPtr<Texture>& texture)
+    {
+        for (UINT32 i = 0; i < _paramInfo->GetNumSets(); i++)
+        {
+            const SPtr<GpuParamDesc>& paramDescs = _paramInfo->GetParamDesc((GpuProgramType)i);
+            if (paramDescs == nullptr)
+            {
+                continue;
+            }
+
+            auto iterFind = paramDescs->ParamBlocks.find(name);
+            if (iterFind == paramDescs->ParamBlocks.end())
+            {
+                continue;
+            }
+
+            SetTexture(iterFind->second.Set, iterFind->second.Slot, texture);
         }
     }
 
@@ -356,6 +388,45 @@ namespace te
         _hasChanged = true;
     }
 
+    void GpuParams::SetBuffer(GpuProgramType type, const String& name, const SPtr<GpuBuffer>& buffer)
+    {
+        const SPtr<GpuParamDesc>& paramDescs = _paramInfo->GetParamDesc(type);
+        if (paramDescs == nullptr)
+        {
+            TE_DEBUG("Cannot find parameter block with the name: {" + name + "}", __FILE__, __LINE__);
+            return;
+        }
+
+        auto iterFind = paramDescs->Buffers.find(name);
+        if (iterFind == paramDescs->Buffers.end())
+        {
+            TE_DEBUG("Cannot find gpu buffer with the name: {" + name + "}", __FILE__, __LINE__);
+            return;
+        }
+
+        SetBuffer(iterFind->second.Set, iterFind->second.Slot, buffer);
+    }
+
+    void GpuParams::SetBuffer(const String& name, const SPtr<GpuBuffer>& buffer)
+    {
+        for (UINT32 i = 0; i < _paramInfo->GetNumSets(); i++)
+        {
+            const SPtr<GpuParamDesc>& paramDescs = _paramInfo->GetParamDesc((GpuProgramType)i);
+            if (paramDescs == nullptr)
+            {
+                continue;
+            }
+
+            auto iterFind = paramDescs->ParamBlocks.find(name);
+            if (iterFind == paramDescs->ParamBlocks.end())
+            {
+                continue;
+            }
+
+            SetBuffer(iterFind->second.Set, iterFind->second.Slot, buffer);
+        }
+    }
+
     void GpuParams::SetBuffer(UINT32 set, UINT32 slot, const SPtr<GpuBuffer>& buffer)
     {
         UINT32 globalSlot = _paramInfo->GetSequentialSlot(GpuPipelineParamInfo::ParamType::Buffer, set, slot);
@@ -367,6 +438,45 @@ namespace te
 
         _buffers[globalSlot] = buffer;
         _hasChanged = true;
+    }
+
+    void GpuParams::SetSamplerState(GpuProgramType type, const String& name, const SPtr<SamplerState>& sampler)
+    {
+        const SPtr<GpuParamDesc>& paramDescs = _paramInfo->GetParamDesc(type);
+        if (paramDescs == nullptr)
+        {
+            TE_DEBUG("Cannot find parameter block with the name: {" + name + "}", __FILE__, __LINE__);
+            return;
+        }
+
+        auto iterFind = paramDescs->Buffers.find(name);
+        if (iterFind == paramDescs->Buffers.end())
+        {
+            TE_DEBUG("Cannot find sampler state with the name: {" + name + "}", __FILE__, __LINE__);
+            return;
+        }
+
+        SetSamplerState(iterFind->second.Set, iterFind->second.Slot, sampler);
+    }
+
+    void GpuParams::SetSamplerState(const String& name, const SPtr<SamplerState>& sampler)
+    {
+        for (UINT32 i = 0; i < _paramInfo->GetNumSets(); i++)
+        {
+            const SPtr<GpuParamDesc>& paramDescs = _paramInfo->GetParamDesc((GpuProgramType)i);
+            if (paramDescs == nullptr)
+            {
+                continue;
+            }
+
+            auto iterFind = paramDescs->ParamBlocks.find(name);
+            if (iterFind == paramDescs->ParamBlocks.end())
+            {
+                continue;
+            }
+
+            SetSamplerState(iterFind->second.Set, iterFind->second.Slot, sampler);
+        }
     }
 
     void GpuParams::SetSamplerState(UINT32 set, UINT32 slot, const SPtr<SamplerState>& sampler)
