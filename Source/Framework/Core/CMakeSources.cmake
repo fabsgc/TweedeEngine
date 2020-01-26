@@ -64,12 +64,14 @@ set (TE_CORE_INC_RENDERER
     "Core/Renderer/TeCamera.h"
     "Core/Renderer/TeViewport.h"
     "Core/Renderer/TeRenderSettings.h"
+    "Core/Renderer/TeRendererMeshData.h"
 )
 set (TE_CORE_SRC_RENDERER
     "Core/Renderer/TeRenderer.cpp"
     "Core/Renderer/TeCamera.cpp"
     "Core/Renderer/TeViewport.cpp"
     "Core/Renderer/TeRenderSettings.cpp"
+    "Core/Renderer/TeRendererMeshData.cpp"
 )
 
 set (TE_CORE_INC_SCENE

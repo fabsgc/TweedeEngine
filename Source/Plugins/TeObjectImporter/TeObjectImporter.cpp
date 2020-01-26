@@ -3,12 +3,10 @@
 #include "Mesh/TeMesh.h"
 #include "Mesh/TeMeshData.h"
 
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-
 namespace te
 {
+    SPtr<Resource> GetTempMesh(SPtr<const ImportOptions> importOptions);
+
     ObjectImporter::ObjectImporter()
     {
         _extensions.push_back(u8"obj");
@@ -34,6 +32,7 @@ namespace te
 
     SPtr<Resource> ObjectImporter::Import(const String& filePath, SPtr<const ImportOptions> importOptions)
     {
+        MESH_DESC desc;
         Assimp::Importer importer;
         const MeshImportOptions* meshImportOptions = static_cast<const MeshImportOptions*>(importOptions.get());
 
@@ -45,6 +44,27 @@ namespace te
 
         TE_ASSERT_ERROR(scene != nullptr, "Failed to load object '" + filePath + "' : " + importer.GetErrorString(), __FILE__, __LINE__);
 
+        desc.Usage = MU_STATIC;
+        if (meshImportOptions->CpuCached)
+        {
+            desc.Usage |= MU_CPUCACHED;
+        }
+
+        SPtr<RendererMeshData> rendererMeshData = ImportMeshData(scene, importOptions, desc.SubMeshes);
+        //SPtr<MeshData> meshData = rendererMeshData->GetData();
+        //SPtr<Mesh> mesh = Mesh::_createPtr(rendererMeshData->GetData(), desc);
+        //SPtr<Mesh> mesh = Mesh::_createPtr(MESH_DESC());
+        //mesh->SetName(filePath);
+        
+        return GetTempMesh(importOptions);
+    }
+
+    SPtr<RendererMeshData> ObjectImporter::ImportMeshData(const aiScene* scene, SPtr<const ImportOptions> importOptions, Vector<SubMesh>& subMeshes)
+    {
+        const MeshImportOptions* meshImportOptions = static_cast<const MeshImportOptions*>(importOptions.get());
+        Vector<SPtr<MeshData>> allMeshData;
+        Vector<Vector<SubMesh>> allSubMeshes;
+
         if (scene->HasMaterials())
         {
         }
@@ -52,6 +72,13 @@ namespace te
         if (scene->HasMeshes())
         {
         }
+
+        return nullptr;
+    }
+
+    SPtr<Resource> GetTempMesh(SPtr<const ImportOptions> importOptions)
+    {
+        const MeshImportOptions* meshImportOptions = static_cast<const MeshImportOptions*>(importOptions.get());
 
         MESH_DESC meshDesc;
         meshDesc.Usage = MU_STATIC;
@@ -64,44 +91,31 @@ namespace te
         // ###################
         SPtr<VertexDataDesc> vertexDataxDesc = VertexDataDesc::Create();
         vertexDataxDesc->AddVertElem(VET_FLOAT4, VES_POSITION);
-        vertexDataxDesc->AddVertElem(VET_FLOAT4, VES_COLOR);
 
-        meshDesc.NumVertices = 4;
-        meshDesc.NumIndices = 6;
+        meshDesc.NumVertices = 3;
+        meshDesc.NumIndices = 3;
         meshDesc.Usage = MU_STATIC | MU_CPUCACHED;
         meshDesc.VertexDesc = vertexDataxDesc;
 
         HMesh mesh = Mesh::Create(meshDesc);
-        SPtr<MeshData> meshData = MeshData::Create(4, 6, vertexDataxDesc);
+        SPtr<MeshData> meshData = MeshData::Create(3, 3, vertexDataxDesc);
 
-        Vector4 vertexPositions[4];
-        for (UINT32 i = 0; i < 4; i++)
+        Vector4 vertexPositions[3];
+        for (UINT32 i = 0; i < 3; i++)
         {
-            vertexPositions[i] = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+            vertexPositions[i] = Vector4((float)i, (float)i, (float)i, 1.0f);
         }
-
-        Vector4 vertexColor[4];
-        for (UINT32 i = 0; i < 4; i++)
-        {
-            vertexColor[i] = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-        }
-
         // Write the vertices
         meshData->SetVertexData(VES_POSITION, (UINT8*)vertexPositions, sizeof(vertexPositions));
-        meshData->SetVertexData(VES_COLOR, (UINT8*)vertexColor, sizeof(vertexColor));
 
         UINT32* indices = meshData->GetIndices32();
         indices[0] = 0;
         indices[1] = 1;
         indices[2] = 2;
-
-        indices[3] = 2;
-        indices[4] = 1;
-        indices[5] = 3;
         // ###################
 
         mesh->WriteData(*meshData, false, true);
-        mesh->SetName(filePath);
+        mesh->SetName("dummy mesh");
         return mesh.GetInternalPtr();
     }
 }

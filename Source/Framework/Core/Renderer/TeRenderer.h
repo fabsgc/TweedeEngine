@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
+#include "Renderer/TeRendererMeshData.h"
 
 namespace te
 {
@@ -37,21 +38,37 @@ namespace te
 
         /** Called whenever a camera is destroyed. */
         virtual void NotifyCameraRemoved(Camera* camera) { }
+
+        /**
+         * Creates a new empty renderer mesh data.
+         *
+         * @note Sim thread.
+         * @see RendererMeshData
+         */
+        virtual SPtr<RendererMeshData> _createMeshData(UINT32 numVertices, UINT32 numIndices, VertexLayout layout, IndexType indexType = IT_32BIT);
+
+        /**
+         * Creates a new renderer mesh data using an existing generic mesh data buffer.
+         *
+         * @note Sim thread.
+         * @see RendererMeshData
+         */
+        virtual SPtr<RendererMeshData> _createMeshData(const SPtr<MeshData>& meshData);
     };
 
     /**	Provides easy access to Renderer. */
     SPtr<Renderer> TE_CORE_EXPORT gRenderer();
 
     /**	Set of options that can be used for controlling the renderer. */	
-	struct TE_CORE_EXPORT RendererOptions
-	{
-		virtual ~RendererOptions() = default;
-	};
+    struct TE_CORE_EXPORT RendererOptions
+    {
+        virtual ~RendererOptions() = default;
+    };
 
     /**	Renderer information specific to a single render target. */
-	struct TE_CORE_EXPORT RendererRenderTarget
-	{
+    struct TE_CORE_EXPORT RendererRenderTarget
+    {
         SPtr<RenderTarget> target = nullptr;
         Camera* camera = nullptr;
-	};
+    };
 }

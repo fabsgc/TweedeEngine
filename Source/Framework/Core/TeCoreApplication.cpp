@@ -408,6 +408,9 @@ namespace te
         TE_PRINT((loadTexture.GetHandleData())->data);
         TE_PRINT((loadTexture.GetHandleData())->uuid.ToString());
 
+        TE_PRINT((loadTextureBrick.GetHandleData())->data);
+        TE_PRINT((loadTextureBrick.GetHandleData())->uuid.ToString());
+
         TE_PRINT((loadTextureCubeMap.GetHandleData())->data);
         TE_PRINT((loadTextureCubeMap.GetHandleData())->uuid.ToString());
 
@@ -651,6 +654,8 @@ namespace te
         rapi.SetIndexBuffer(_indexBuffer);
         rapi.SetGpuParams(params);
         // ######################################################
+
+        CoreObjectManager& i = CoreObjectManager::Instance();
 #endif
     }
 
