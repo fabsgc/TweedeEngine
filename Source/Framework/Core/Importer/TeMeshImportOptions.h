@@ -21,10 +21,13 @@ namespace te
         bool ImportTangents = true;
 
         /** Uniformly scales the imported mesh by the specified value. */
-        float ImportScale = 1.0f;
+        float ImportScale = 1.0f; //TODO useless ?
 
         /** Determines should mesh skin data like bone weights, indices and bind poses be imported if available. */
         bool ImportSkin = false;
+
+        /** Determines should mesh materials be imported if available. */
+        bool ImportMaterials = true;
 
         /** Determine if we need to flip UV mapping when importing object */
         bool SplitUV = true;
@@ -33,7 +36,7 @@ namespace te
         bool LeftHanded = false;
 
         /** Determine if we need to flip winding order in order to adjusts the output face winding order to be CW */
-        bool FlipWinding = false;
+        bool FlipWinding = false; //TODO useless ?
 
         /** Creates a new import options object that allows you to customize how are Meshs imported. */
         static SPtr<MeshImportOptions> Create();

@@ -378,9 +378,10 @@ namespace te
 
         // ######################################################
         auto meshImportOptions = MeshImportOptions::Create();
-        meshImportOptions->ImportNormals = false;
-        meshImportOptions->CpuCached = true;
+        meshImportOptions->ImportNormals = true;
         meshImportOptions->ImportTangents = true;
+        meshImportOptions->CpuCached = true;
+        
 
         auto textureImportOptions = TextureImportOptions::Create();
         textureImportOptions->CpuCached = true;
@@ -392,7 +393,7 @@ namespace te
 
         auto shaderImportOptions = ShaderImportOptions::Create();
 
-        HMesh loadedCubeMesh = gResourceManager().Load<Mesh>("Data/Meshes/cube.fbx", meshImportOptions);
+        HMesh loadedCubeMesh = gResourceManager().Load<Mesh>("Data/Meshes/cube.dae", meshImportOptions);
         //HMesh loadedPlaneMesh = gResourceManager().Load<Mesh>("Data/Meshes/plane.fbx", meshImportOptions);
         HTexture loadTexture = gResourceManager().Load<Texture>("Data/Textures/default.png", textureImportOptions);
         HTexture loadTextureBrick = gResourceManager().Load<Texture>("Data/Textures/brick-small.jpg", textureImportOptions);

@@ -196,10 +196,12 @@ set (TE_CORE_SRC_IMAGE
 set (TE_CORE_INC_MESH
     "Core/Mesh/TeMesh.h"
     "Core/Mesh/TeMeshData.h"
+    "Core/Mesh/TeMeshUtility.h"
 )
 set (TE_CORE_SRC_MESH
     "Core/Mesh/TeMesh.cpp"
     "Core/Mesh/TeMeshData.cpp"
+    "Core/Mesh/TeMeshUtility.cpp"
 )
 
 set (TE_CORE_INC_SHADER

@@ -42,12 +42,11 @@ namespace te
         }
 
         SPtr<RendererMeshData> rendererMeshData = ImportMeshData(filePath, importOptions, desc.SubMeshes);
-        //SPtr<MeshData> meshData = rendererMeshData->GetData();
-        //SPtr<Mesh> mesh = Mesh::_createPtr(rendererMeshData->GetData(), desc);
-        //SPtr<Mesh> mesh = Mesh::_createPtr(MESH_DESC());
-        //mesh->SetName(filePath);
+        SPtr<MeshData> meshData = rendererMeshData->GetData();
+        SPtr<Mesh> mesh = Mesh::_createPtr(rendererMeshData->GetData(), desc);
+        mesh->SetName(filePath);
         
-        return GetTempMesh(importOptions);
+        return mesh;
     }
 
     SPtr<RendererMeshData> ObjectImporter::ImportMeshData(const String& filePath, SPtr<const ImportOptions> importOptions, Vector<SubMesh>& subMeshes)
@@ -63,6 +62,8 @@ namespace te
             aiProcess_GenUVCoords |
             aiProcess_FlipUVs |
             aiProcess_FlipWindingOrder |
+            aiProcess_OptimizeMeshes |
+            aiProcess_OptimizeGraph |
             aiProcess_SortByPType;
 
         if (meshImportOptions->SplitUV)
@@ -83,6 +84,8 @@ namespace te
         assimpImportOptions.ImportNormals = meshImportOptions->ImportNormals;
         assimpImportOptions.ImportTangents = meshImportOptions->ImportTangents;
         assimpImportOptions.ImportScale = meshImportOptions->ImportScale;
+        assimpImportOptions.ImportMaterials = meshImportOptions->ImportMaterials;
+        assimpImportOptions.ImportSkin = meshImportOptions->ImportSkin;
 
         ParseScene(scene, assimpImportOptions, importedScene);
 
@@ -127,8 +130,15 @@ namespace te
     {
         unsigned int vertexCount = mesh->mNumVertices;
         unsigned int triangleCount = mesh->mNumFaces;
+        unsigned int indexCount = mesh->mNumFaces * 3;
 
         if (vertexCount == 0 || triangleCount == 0)
+            return;
+
+        if (!mesh->HasFaces())
+            return;
+
+        if (!(mesh->mPrimitiveTypes | aiPrimitiveType_TRIANGLE || mesh->mPrimitiveTypes | aiPrimitiveType_POLYGON))
             return;
 
         // Register in global mesh array
@@ -139,7 +149,6 @@ namespace te
         {
             UINT32 meshIdx = iterFindMesh->second;
             outputScene.Meshes[meshIdx]->ReferencedBy.push_back(parentNode);
-
             return;
         }
         else
@@ -153,19 +162,254 @@ namespace te
             outputScene.MeshMap[mesh] = (UINT32)outputScene.Meshes.size() - 1;
         }
 
+        // Import colors
+        if (options.ImportColors)
+        {
+            importMesh->Colors.resize(vertexCount);
+        }
+
         // Import vertices
+        importMesh->Positions.resize(vertexCount);
+        for (UINT32 i = 0; i < vertexCount; i++)
+        {
+            importMesh->Positions[i] = ConvertToNativeType(mesh->mVertices[i]);
+
+            if (mesh->HasVertexColors(i) && options.ImportColors)
+            {
+                importMesh->Colors[i] = ConvertToNativeType(*mesh->mColors[i]);
+            }
+            else
+            {
+                importMesh->Colors[i] = Color::LightGray.GetAsRGBA();
+            }
+        }
 
         // Import triangles
+        importMesh->Indices.resize(indexCount);
+        for (UINT i = 0; i < triangleCount; i++)
+        {
+            aiFace* face = &mesh->mFaces[i];
+            for (UINT j = 0; j < face->mNumIndices; j++)
+            {
+                importMesh->Indices[(i * 3) + j] = face->mIndices[j]; 
+            }
+        }
+
+        // Import normals 
+        if (mesh->HasNormals() && options.ImportNormals)
+        {
+            importMesh->Normals.resize(vertexCount);
+
+            for (UINT32 i = 0; i < vertexCount; i++)
+            {
+                importMesh->Normals[i] = ConvertToNativeType(mesh->mNormals[i]);
+            }
+        }
+        
+        // Import tangents and bitangents
+        if (mesh->HasTangentsAndBitangents() && options.ImportTangents)
+        {
+            importMesh->Tangents.resize(vertexCount);
+            importMesh->Bitangents.resize(vertexCount);
+
+            for (UINT32 i = 0; i < vertexCount; i++)
+            {
+                importMesh->Tangents[i] = ConvertToNativeType(mesh->mTangents[i]);
+                importMesh->Bitangents[i] = ConvertToNativeType(mesh->mBitangents[i]);
+            }
+        }
 
         // Import UVs
+        for (UINT i = 0; i < OBJECT_IMPORT_MAX_UV_LAYERS; i++)
+        {
+            if (!mesh->HasTextureCoords(i))
+                break;
 
-        // Import tangents
+            importMesh->Textures[i].resize(vertexCount);
+            for (UINT j = 0; j < vertexCount; j++)
+            {
+                Vector3 coord = ConvertToNativeType(mesh->mTextureCoords[i][j]);
+                importMesh->Textures[i][j] = Vector2(coord.x, coord.y);
+            }
+        }
+
+        // Import material
+        importMesh->MaterialIndex = mesh->mMaterialIndex;
+    }
+
+    void ObjectImporter::ParseMaterial(aiScene* scene, AssimpImportScene& outputScene)
+    {
     }
 
     SPtr<RendererMeshData> ObjectImporter::GenerateMeshData(AssimpImportScene& scene, AssimpImportOptions& options, Vector<SubMesh> subMeshes)
     {
         Vector<SPtr<MeshData>> allMeshData;
         Vector<Vector<SubMesh>> allSubMeshes;
+
+        for (auto& mesh : scene.Meshes)
+        {
+            Vector<SubMesh> subMeshes;
+            UINT32 numIndices = (UINT32)mesh->Indices.size();
+
+            UINT32 vertexLayout = (UINT32)VertexLayout::Position;
+
+            size_t numVertices = mesh->Positions.size();
+            bool hasColors = mesh->Colors.size() == numVertices;
+            bool hasNormals = mesh->Normals.size() == numVertices;
+            bool hasTangents = false;
+
+            if (hasColors)
+                vertexLayout |= (UINT32)VertexLayout::Color;
+
+            if (hasNormals)
+            {
+                vertexLayout |= (UINT32)VertexLayout::Normal;
+
+                if (mesh->Tangents.size() == numVertices &&
+                    mesh->Bitangents.size() == numVertices)
+                {
+                    vertexLayout |= (UINT32)VertexLayout::Tangent;
+                    vertexLayout |= (UINT32)VertexLayout::BiTangent;
+                    hasTangents = true;
+                }
+            }
+
+            for (UINT32 i = 0; i < OBJECT_IMPORT_MAX_UV_LAYERS; i++)
+            {
+                if (mesh->Textures[i].size() == numVertices)
+                {
+                    if (i == 0)
+                        vertexLayout |= (UINT32)VertexLayout::UV0;
+                    else if (i == 1)
+                        vertexLayout |= (UINT32)VertexLayout::UV1;
+                }
+            }
+
+            for (auto& node : mesh->ReferencedBy)
+            {
+                Matrix4 worldTransform = node->WorldTransform;
+                Matrix4 worldTransformIT = worldTransform.Inverse();
+                worldTransformIT = worldTransformIT.Transpose();
+
+                SPtr<RendererMeshData> meshData = RendererMeshData::Create((UINT32)numVertices, numIndices, (VertexLayout)vertexLayout);
+
+                // Copy indices TODO flipwinding
+                meshData->SetIndices(mesh->Indices.data(), numIndices * sizeof(UINT32));
+
+                // Copy & transform positions
+                UINT32 positionsSize = sizeof(Vector3) * (UINT32)numVertices;
+                Vector3* transformedPositions = (Vector3*)te_allocate(positionsSize * sizeof(Vector3));
+
+                for (UINT32 i = 0; i < (UINT32)numVertices; i++)
+                {
+                    transformedPositions[i] = worldTransform.MultiplyAffine((Vector3)mesh->Positions[i]);
+                }
+
+                meshData->SetPositions(transformedPositions, positionsSize);
+                te_delete(transformedPositions);
+
+                // Copy & transform normals
+                if (hasNormals)
+                {
+                    UINT32 normalsSize = sizeof(Vector3) * (UINT32)numVertices;
+                    Vector3* transformedNormals = (Vector3*)te_allocate(normalsSize * sizeof(Vector3));
+
+                    // Copy, convert & transform tangents & bitangents
+                    if (hasTangents)
+                    {
+                        UINT32 tangentsSize = sizeof(Vector4) * (UINT32)numVertices;
+                        Vector4* transformedTangents = (Vector4*)te_allocate(tangentsSize * sizeof(Vector4));
+                        Vector4* transformedBiTangents = (Vector4*)te_allocate(tangentsSize * sizeof(Vector4));
+
+                        for (UINT32 i = 0; i < (UINT32)numVertices; i++)
+                        {
+                            Vector3 normal = (Vector3)mesh->Normals[i];
+                            normal = worldTransformIT.MultiplyDirection(normal);
+                            transformedNormals[i] = Vector3::Normalize(normal);
+
+                            Vector3 tangent = (Vector3)mesh->Tangents[i];
+                            tangent = Vector3::Normalize(worldTransformIT.MultiplyDirection(tangent));
+
+                            Vector3 bitangent = (Vector3)mesh->Bitangents[i];
+                            bitangent = worldTransformIT.MultiplyDirection(bitangent);
+
+                            Vector3 engineBitangent = Vector3::Cross(normal, tangent);
+                            float sign = Vector3::Dot(engineBitangent, bitangent);
+
+                            bitangent = Vector3::Normalize(bitangent);
+
+                            transformedTangents[i] = Vector4(tangent.x, tangent.y, tangent.z, sign > 0 ? 1.0f : -1.0f);
+                            transformedBiTangents[i] = Vector4(bitangent.x, bitangent.y, bitangent.z, sign > 0 ? 1.0f : -1.0f);
+                        }
+
+                        meshData->SetTangents(transformedTangents, tangentsSize);
+                        meshData->SetBiTangents(transformedBiTangents, tangentsSize);
+                        te_delete(transformedTangents);
+                        te_delete(transformedBiTangents);
+                    }
+                    else
+                    {
+                        for (UINT32 i = 0; i < (UINT32)numVertices; i++)
+                        {
+                            transformedNormals[i] = Vector3::Normalize(worldTransformIT.MultiplyDirection((Vector3)mesh->Normals[i]));
+                        }
+                    }
+
+                    meshData->SetNormals(transformedNormals, normalsSize);
+                    te_delete(transformedNormals);
+                }
+
+                // Copy colors
+                if (hasColors)
+                {
+                    meshData->SetColors(mesh->Colors.data(), sizeof(UINT32) * (UINT32)numVertices);
+                }
+
+                // Copy UV
+                int writeUVIDx = 0;
+                for (auto& uvLayer : mesh->Textures)
+                {
+                    if (uvLayer.size() == numVertices)
+                    {
+                        UINT32 size = sizeof(Vector2) * (UINT32)numVertices;
+                        Vector2* transformedUV = (Vector2*)te_allocate(size * sizeof(Vector2));
+
+                        UINT32 i = 0;
+                        for (auto& uv : uvLayer)
+                        {
+                            transformedUV[i] = uv;
+                            transformedUV[i].y = 1.0f - uv.y;
+                            i++;
+                        }
+
+                        if (writeUVIDx == 0)
+                            meshData->SetUV0(transformedUV, size);
+                        else if (writeUVIDx == 1)
+                            meshData->SetUV1(transformedUV, size);
+
+                        te_delete(transformedUV);
+
+                        writeUVIDx++;
+                    }
+                }
+
+                allMeshData.push_back(meshData->GetData());
+            }
+        }
+
+        if (allMeshData.size() > 1)
+        {
+            return RendererMeshData::Create(MeshData::Combine(allMeshData, allSubMeshes, subMeshes));
+        }
+        else if (allMeshData.size() == 1)
+        {
+            SubMesh subMesh;
+            subMesh.IndexOffset = 0;
+            subMesh.IndexCount = allMeshData[0]->GetNumIndices();
+
+            subMeshes.push_back(subMesh);
+            return RendererMeshData::Create(allMeshData[0]);
+        }
 
         return nullptr;
     }
@@ -192,7 +436,7 @@ namespace te
         return node;
     }
 
-    Matrix4 ObjectImporter::ConvertToNativeType(const aiMatrix4x4 matrix)
+    Matrix4 ObjectImporter::ConvertToNativeType(const aiMatrix4x4& matrix)
     {
         return Matrix4(
             (float)matrix.a1, (float)matrix.a2, (float)matrix.a3, (float)matrix.a4,
@@ -202,17 +446,18 @@ namespace te
         );
     }
 
-    Color ObjectImporter::ConvertToNativeType(const aiColor4D color)
+    RGBA ObjectImporter::ConvertToNativeType(const aiColor4D& color)
     {
-        return Color((float)color.a, (float)color.g, (float)color.b, (float)color.a);
+        Color c((float)color.r, (float)color.g, (float)color.b, (float)color.a);
+        return c.GetAsRGBA();
     }
 
-    Vector3 ObjectImporter::ConvertToNativeType(const aiVector3D vector)
+    Vector3 ObjectImporter::ConvertToNativeType(const aiVector3D& vector)
     {
         return Vector3((float)vector.x, (float)vector.y, (float)vector.z);
     }
 
-    Vector2 ObjectImporter::ConvertToNativeType(const aiVector2D vector)
+    Vector2 ObjectImporter::ConvertToNativeType(const aiVector2D& vector)
     {
         return Vector2((float)vector.x, (float)vector.y);
     }
