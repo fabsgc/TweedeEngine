@@ -417,8 +417,6 @@ namespace te
     AssimpImportNode* ObjectImporter::CreateImportNode(AssimpImportScene& scene, aiNode* assimpNode, AssimpImportNode* parent)
     {
         AssimpImportNode* node = te_new<AssimpImportNode>();
-        aiMatrix4x4 assimpWorldTransform = assimpNode->mTransformation;
-
         node->LocalTransform = ConvertToNativeType(assimpNode->mTransformation);
 
         if (parent != nullptr)
