@@ -384,7 +384,7 @@ namespace te
 
         auto textureImportOptions = TextureImportOptions::Create();
         textureImportOptions->CpuCached = true;
-        textureImportOptions->GenerateMips = true;
+        textureImportOptions->GenerateMips = false;
 
         auto textureCubeMapImportOptions = TextureImportOptions::Create();
         textureCubeMapImportOptions->CpuCached = true;
@@ -393,7 +393,7 @@ namespace te
         auto shaderImportOptions = ShaderImportOptions::Create();
 
         HMesh loadedCubeMesh = gResourceManager().Load<Mesh>("Data/Meshes/cube.fbx", meshImportOptions);
-        HMesh loadedPlaneMesh = gResourceManager().Load<Mesh>("Data/Meshes/plane.fbx", meshImportOptions);
+        //HMesh loadedPlaneMesh = gResourceManager().Load<Mesh>("Data/Meshes/plane.fbx", meshImportOptions);
         HTexture loadTexture = gResourceManager().Load<Texture>("Data/Textures/default.png", textureImportOptions);
         HTexture loadTextureBrick = gResourceManager().Load<Texture>("Data/Textures/brick-small.jpg", textureImportOptions);
         HTexture loadTextureCubeMap = gResourceManager().Load<Texture>("Data/Textures/cubemap.png", textureCubeMapImportOptions);
@@ -402,8 +402,8 @@ namespace te
         TE_PRINT((loadedCubeMesh.GetHandleData())->data);
         TE_PRINT((loadedCubeMesh.GetHandleData())->uuid.ToString());
 
-        TE_PRINT((loadedPlaneMesh.GetHandleData())->data);
-        TE_PRINT((loadedPlaneMesh.GetHandleData())->uuid.ToString());
+        //TE_PRINT((loadedPlaneMesh.GetHandleData())->data);
+        //TE_PRINT((loadedPlaneMesh.GetHandleData())->uuid.ToString());
 
         TE_PRINT((loadTexture.GetHandleData())->data);
         TE_PRINT((loadTexture.GetHandleData())->uuid.ToString());
