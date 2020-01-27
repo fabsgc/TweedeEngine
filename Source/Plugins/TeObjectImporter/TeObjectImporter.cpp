@@ -186,10 +186,10 @@ namespace te
 
         // Import triangles
         importMesh->Indices.resize(indexCount);
-        for (UINT i = 0; i < triangleCount; i++)
+        for (UINT32 i = 0; i < triangleCount; i++)
         {
             aiFace* face = &mesh->mFaces[i];
-            for (UINT j = 0; j < face->mNumIndices; j++)
+            for (UINT32 j = 0; j < face->mNumIndices; j++)
             {
                 importMesh->Indices[(i * 3) + j] = face->mIndices[j]; 
             }
@@ -220,13 +220,13 @@ namespace te
         }
 
         // Import UVs
-        for (UINT i = 0; i < OBJECT_IMPORT_MAX_UV_LAYERS; i++)
+        for (UINT32 i = 0; i < OBJECT_IMPORT_MAX_UV_LAYERS; i++)
         {
             if (!mesh->HasTextureCoords(i))
                 break;
 
             importMesh->Textures[i].resize(vertexCount);
-            for (UINT j = 0; j < vertexCount; j++)
+            for (UINT32 j = 0; j < vertexCount; j++)
             {
                 Vector3 coord = ConvertToNativeType(mesh->mTextureCoords[i][j]);
                 importMesh->Textures[i][j] = Vector2(coord.x, coord.y);
