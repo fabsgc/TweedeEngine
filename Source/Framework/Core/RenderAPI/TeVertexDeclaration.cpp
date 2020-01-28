@@ -29,7 +29,7 @@ namespace te
         case VET_COLOR:
         case VET_COLOR_ABGR:
         case VET_COLOR_ARGB:
-            return sizeof(RGBA);
+            return sizeof(float) * 4;
         case VET_UBYTE4_NORM:
             return sizeof(UINT32);
         case VET_FLOAT1:

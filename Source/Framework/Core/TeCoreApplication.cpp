@@ -46,6 +46,7 @@
 
 #include "Mesh/TeMesh.h"
 #include "Mesh/TeMeshData.h"
+#include "Mesh/TeMeshUtility.h"
 
 namespace te
 {
@@ -393,15 +394,15 @@ namespace te
 
         auto shaderImportOptions = ShaderImportOptions::Create();
 
-        HMesh loadedCubeMesh = gResourceManager().Load<Mesh>("Data/Meshes/cube.dae", meshImportOptions);
+        _loadedMesh = gResourceManager().Load<Mesh>("Data/Meshes/cube.obj", meshImportOptions);
         //HMesh loadedPlaneMesh = gResourceManager().Load<Mesh>("Data/Meshes/plane.fbx", meshImportOptions);
         HTexture loadTexture = gResourceManager().Load<Texture>("Data/Textures/default.png", textureImportOptions);
         HTexture loadTextureBrick = gResourceManager().Load<Texture>("Data/Textures/brick-small.jpg", textureImportOptions);
         HTexture loadTextureCubeMap = gResourceManager().Load<Texture>("Data/Textures/cubemap.png", textureCubeMapImportOptions);
         HShader loadShader = gResourceManager().Load<Shader>("Data/Shaders/default.shader", shaderImportOptions);
 
-        TE_PRINT((loadedCubeMesh.GetHandleData())->data);
-        TE_PRINT((loadedCubeMesh.GetHandleData())->uuid.ToString());
+        TE_PRINT((_loadedMesh.GetHandleData())->data);
+        TE_PRINT((_loadedMesh.GetHandleData())->uuid.ToString());
 
         //TE_PRINT((loadedPlaneMesh.GetHandleData())->data);
         //TE_PRINT((loadedPlaneMesh.GetHandleData())->uuid.ToString());
@@ -549,6 +550,10 @@ namespace te
         RASTERIZER_STATE_DESC rastDesc;
         DEPTH_STENCIL_STATE_DESC depthDesc;
 
+        depthDesc.DepthReadEnable = true;
+        depthDesc.DepthWriteEnable = true;
+        depthDesc.StencilEnable = true;
+
         SAMPLER_STATE_DESC samplerDesc;
         samplerDesc.AddressMode = UVWAddressingMode();
         samplerDesc.MinFilter = FO_ANISOTROPIC;
@@ -557,8 +562,9 @@ namespace te
         samplerDesc.MaxAnisotropy = 4;
 
         rastDesc.polygonMode = PM_SOLID; // Draw wireframe instead of solid
-        rastDesc.cullMode = CULL_NONE; // Disable blackface culling
+        rastDesc.cullMode = CULL_COUNTERCLOCKWISE; // Disable blackface culling
         rastDesc.multisampleEnable = true;
+        rastDesc.depthClipEnable = true;
 
         SPtr<BlendState> blendState = BlendState::Create(blendDesc);
         SPtr<RasterizerState> rasterizerState = RasterizerState::Create(rastDesc);
@@ -576,7 +582,7 @@ namespace te
         RenderAPI::Instance().SetGraphicsPipeline(graphicsPipeline);
 
         SPtr<GpuParams> params = GpuParams::Create(graphicsPipeline);
-        params->SetTexture(5, 0, loadTextureBrick.GetInternalPtr(), GpuParams::COMPLETE);
+        params->SetTexture(5, 0, loadTextureCubeMap.GetInternalPtr(), GpuParams::COMPLETE);
         params->SetSamplerState(6, 0, samplerState);
         // ######################################################
 
@@ -585,70 +591,89 @@ namespace te
 
         if (paramDesc->ParamBlocks.size() > 0)
         {
-            float constantBufferSpecular = 12.0f;
-            UINT32 sizeBytes = paramDesc->ParamBlocks["ObjectConstantBuffer"].BlockSize * 4;
-            _constantBuffer = GpuParamBlockBuffer::Create(sizeBytes);
-            _constantBuffer->Write(0, &constantBufferSpecular, sizeof(float));
-
-            params->SetParamBlockBuffer(0, 0, _constantBuffer);
-        }
-        // ######################################################
-
-        // ######################################################
-        _vertexDeclaration = _textureVertexShader->GetInputDeclaration();
-        
-        RenderAPI& rapi = RenderAPI::Instance();
-
-        VERTEX_BUFFER_DESC vertexBufferDesc;
-        vertexBufferDesc.VertexSize = _vertexDeclaration->GetProperties().GetVertexSize(0);
-        vertexBufferDesc.NumVerts = 4;
-        vertexBufferDesc.Usage = GBU_DYNAMIC;
-        _vertexBuffer = VertexBuffer::Create(vertexBufferDesc);
-
-        {
-            struct VertexData_t
             {
-                Vector4 Position;
-                Vector4 Color;
-                Vector2 Texture;
-            };
+                struct ObjectBuffer
+                {
+                    Matrix4 World;
+                };
 
-            VertexData_t* vertex = (VertexData_t*)_vertexBuffer->Lock(0, sizeof(VertexData_t) * 4, GBL_WRITE_ONLY_DISCARD);
-            
-            vertex[0].Position = Vector4(-0.8f, -0.8f, 0.0f, 1.0f);
-            vertex[0].Color    = Vector4(0.6f, 0.2f, 0.2f, 1.0f);
-            vertex[0].Texture  = Vector2(0.0f, 1.0f);
+                struct FrameBuffer
+                {
+                    Matrix4 ViewProj;
+                };
 
-            vertex[1].Position = Vector4(0.8f, -0.8f, 0.0f, 1.0f);
-            vertex[1].Color    = Vector4(0.3f, 0.8f, 0.8f, 1.0f);
-            vertex[1].Texture  = Vector2(1.0f, 1.0f);
+                UINT32 sizeObjectConstantBufferBytes = paramDesc->ParamBlocks["ObjectConstantBuffer"].BlockSize * 4;
+                UINT32 sizeFrameConstantBufferBytes = paramDesc->ParamBlocks["FrameConstantBuffer"].BlockSize * 4;
 
-            vertex[2].Position = Vector4(-0.8f, 0.8f, 0.0f, 1.0f);
-            vertex[2].Color    = Vector4(1.0f, 0.8f, 0.4f, 1.0f);
-            vertex[2].Texture  = Vector2(0.0f, 0.0f);
+                _objectConstantBuffer = GpuParamBlockBuffer::Create(sizeObjectConstantBufferBytes);
+                _frameConstantBuffer = GpuParamBlockBuffer::Create(sizeFrameConstantBufferBytes);
 
-            vertex[3].Position = Vector4(0.8f, 0.8f, 0.0f, 1.0f);
-            vertex[3].Color    = Vector4(0.5f, 0.2f, 0.9f, 1.0f);
-            vertex[3].Texture  = Vector2(1.0f, 0.0f);
-            
-            _vertexBuffer->Unlock();
+                Transform transformCamera;
+                Transform transformObject;
+                ObjectBuffer objectBuffer;
+                FrameBuffer frameBuffer;
+
+                UINT32 width = _window->GetProperties().Width;
+                UINT32 height = _window->GetProperties().Height;
+
+                transformCamera.Move(Vector3(2.0f, 2.0f, 3.0f));
+
+
+                Vector3 forward = Vector3(0.0f, 0.0f, 0.0f) - transformCamera.GetPosition();
+
+                Quaternion rotation = transformCamera.GetRotation();
+                rotation.LookRotation(forward, Vector3::UNIT_Y);
+                transformCamera.SetRotation(rotation);
+
+                _camera->SetTransform(transformCamera);
+                _camera->SetAspectRatio((float)width / (float)height);
+                //_camera->SetHorzFOV(Radian(5.0f));
+
+                //transformObject.Move(Vector3(0.0f, 0.0f, 5.0f));
+
+                frameBuffer.ViewProj = _camera->GetViewMatrix().Transpose() * _camera->GetProjectionMatrixRS().Transpose();
+
+                objectBuffer.World = transformObject.GetMatrix().Transpose();
+
+                _objectConstantBuffer->Write(0, &objectBuffer, sizeof(ObjectBuffer));
+                _frameConstantBuffer->Write(0, &frameBuffer, sizeof(FrameBuffer));
+
+                Vector4 point(1.0f, 1.0f, 1.0f, 1.0f);
+                Vector4 position = objectBuffer.World.Multiply(point);
+                position = frameBuffer.ViewProj.Multiply(point);
+
+                int i = 0;
+            }
+
+            params->SetParamBlockBuffer(0, 0, _frameConstantBuffer);
+            params->SetParamBlockBuffer(0, 1, _objectConstantBuffer);
         }
+        // ######################################################
 
-        INDEX_BUFFER_DESC indexBufferDesc;
-        indexBufferDesc.Type = IT_16BIT;
-        indexBufferDesc.NumIndices = 6;
-        indexBufferDesc.Usage = GBU_DYNAMIC;
-        _indexBuffer = IndexBuffer::Create(indexBufferDesc);
+        // ######################################################
+        RenderAPI& rapi = RenderAPI::Instance();
+        _vertexDeclaration = _loadedMesh->GetVertexData()->vertexDeclaration;
+        _vertexBuffer = _loadedMesh->GetVertexData()->GetBuffer(0);
+        _indexBuffer = _loadedMesh->GetIndexBuffer();
 
-        UINT16* indices = (UINT16*)_indexBuffer->Lock(0, sizeof(UINT16) * 6, GBL_WRITE_ONLY_DISCARD);
-        indices[0] = 0;
-        indices[1] = 1;
-        indices[2] = 2;
+        SPtr<MeshData> data = _loadedMesh->GetCachedData();
 
-        indices[3] = 2;
-        indices[4] = 1;
-        indices[5] = 3;
-        _indexBuffer->Unlock();
+        UINT8* srcVertBufferData = data->GetStreamData(0);
+        UINT32* srcIndexBufferData = data->GetIndices32();
+
+        struct VertexDump
+        {
+            Vector3 Position;
+            Vector3 Normal;
+            Vector4 Tangent;
+            Vector4 BiTangent;
+            Vector2 UV;
+            Vector4 Color;
+        };
+
+        VertexDump* dump = (VertexDump*)(srcVertBufferData);
+
+        _loadedMesh->WriteData(*_loadedMesh->GetCachedData(), false);
 
         rapi.SetVertexDeclaration(_vertexDeclaration);
         rapi.SetVertexBuffers(0, &_vertexBuffer, 1);
@@ -689,7 +714,8 @@ namespace te
         _colorPixelShader = nullptr;
         _textureVertexShader = nullptr;
         _texturePixelShader = nullptr;
-        _constantBuffer = nullptr;
+        _objectConstantBuffer = nullptr;
+        _frameConstantBuffer = nullptr;
 
         _camera = nullptr;
         _cameraHidden = nullptr;

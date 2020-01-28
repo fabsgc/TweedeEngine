@@ -1,20 +1,28 @@
-cbuffer ObjectConstantBuffer : register(b0)
+cbuffer FrameConstantBuffer : register(b0)
 {
-    float SpecularConstant;
+    matrix ViewProj;
+}
+
+cbuffer ObjectConstantBuffer : register(b1)
+{
+    matrix World;
 }
 
 struct VS_INPUT
 {
-    float4 Position : POSITION;
-    float4 Color : COLOR0;
+    float3 Position : POSITION;
+    float3 Normal : NORMAL;
+    float4 Tangent : TANGENT;
+    float4 BiTangent : BINORMAL;
     float2 Texture : TEXCOORD0;
+    float4 Color : COLOR0;
 };
 
 struct VS_OUTPUT
 {
     float4 Position : SV_POSITION;
-    float4 Specular : COLOR0;
-    float4 Color : COLOR1;
+    float3 Normal : NORMAL;
+    float4 Color : COLOR0;
     float2 Texture : TEXCOORD0;
 };
 
@@ -22,10 +30,15 @@ VS_OUTPUT main( VS_INPUT IN )
 {
     VS_OUTPUT OUT = (VS_OUTPUT)0;
 
-    OUT.Position = IN.Position;
-    OUT.Specular =  SpecularConstant;
+    OUT.Position.xyz = IN.Position;
+    OUT.Position.w = 1.0f;
+
+    OUT.Position = mul(OUT.Position, World);
+    OUT.Position = mul(OUT.Position, ViewProj);
+
     OUT.Color = IN.Color;
-    OUT.Texture = IN.Texture.xy;
+    OUT.Normal = IN.Normal;
+    OUT.Texture = float2(IN.Texture.x, 1.0 - IN.Texture.y);
 
     return OUT;
 }

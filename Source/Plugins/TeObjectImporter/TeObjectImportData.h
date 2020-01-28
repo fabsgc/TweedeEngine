@@ -20,7 +20,6 @@ namespace te
         bool ImportNormals = true;
         bool ImportTangents = true;
         bool ImportColors = true;
-        bool ImportMaterials = true;
         bool ImportSkin = false;
         float ImportScale = 0.01f;
     };
@@ -47,9 +46,8 @@ namespace te
         Vector<Vector3> Normals;
         Vector<Vector3> Tangents;
         Vector<Vector3> Bitangents;
-        Vector<RGBA> Colors;
+        Vector<Color> Colors;
         Vector<Vector2> Textures[OBJECT_IMPORT_MAX_UV_LAYERS];
-        UINT32 MaterialIndex;
 
         SPtr<MeshData> Data;
         Vector<SubMesh> SubMeshes;

@@ -127,15 +127,6 @@ namespace te
         void SetColors(Color* buffer, UINT32 size);
 
         /**
-         * Writes the vertex colors from the provided output buffer. Data will be copied and potentially compressed to
-         * fit the internal mesh data format as needed.
-         *
-         * @param[in]	buffer	Pre-allocated buffer to read the color data from. Colors should be in RGBA format.
-         * @param[in]	size	Size of the input buffer. Must be (numVertices * sizeof(UINT32)).
-         */
-        void SetColors(UINT32* buffer, UINT32 size);
-
-        /**
          * Reads the first UV channel coordinates into the provided output buffer. Data will be copied and potentially
          * uncompressed to fit the output format as needed.
          *

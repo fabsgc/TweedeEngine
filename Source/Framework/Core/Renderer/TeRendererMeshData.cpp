@@ -51,10 +51,7 @@ namespace te
         UINT32 numElements = _meshData->GetNumVertices();
         assert(numElements * sizeof(Vector3) == size);
 
-        UINT8* normalSrc = _meshData->GetElementData(VES_NORMAL);
-        UINT32 stride = _meshData->GetVertexDesc()->GetVertexStride(0);
-
-        MeshUtility::UnpackNormals(normalSrc, buffer, numElements, stride);
+        _meshData->SetVertexData(VES_NORMAL, buffer, size);
     }
 
     void RendererMeshData::SetNormals(Vector3* buffer, UINT32 size)
@@ -65,10 +62,7 @@ namespace te
         UINT32 numElements = _meshData->GetNumVertices();
         assert(numElements * sizeof(Vector3) == size);
 
-        UINT8* normalDst = _meshData->GetElementData(VES_NORMAL);
-        UINT32 stride = _meshData->GetVertexDesc()->GetVertexStride(0);
-
-        MeshUtility::PackNormals(buffer, normalDst, numElements, sizeof(Vector3), stride);
+        _meshData->SetVertexData(VES_NORMAL, buffer, size);
     }
 
     void RendererMeshData::GetTangents(Vector4* buffer, UINT32 size)
@@ -79,10 +73,7 @@ namespace te
         UINT32 numElements = _meshData->GetNumVertices();
         assert(numElements * sizeof(Vector4) == size);
 
-        UINT8* tangentSrc = _meshData->GetElementData(VES_TANGENT);
-        UINT32 stride = _meshData->GetVertexDesc()->GetVertexStride(0);
-
-        MeshUtility::UnpackNormals(tangentSrc, buffer, numElements, stride);
+        _meshData->SetVertexData(VES_TANGENT, buffer, size);
     }
 
     void RendererMeshData::SetTangents(Vector4* buffer, UINT32 size)
@@ -93,10 +84,7 @@ namespace te
         UINT32 numElements = _meshData->GetNumVertices();
         assert(numElements * sizeof(Vector4) == size);
 
-        UINT8* tangentDst = _meshData->GetElementData(VES_TANGENT);
-        UINT32 stride = _meshData->GetVertexDesc()->GetVertexStride(0);
-
-        MeshUtility::PackNormals(buffer, tangentDst, numElements, sizeof(Vector4), stride);
+        _meshData->SetVertexData(VES_TANGENT, buffer, size);
     }
 
     void RendererMeshData::GetBiTangents(Vector4* buffer, UINT32 size)
@@ -107,10 +95,7 @@ namespace te
         UINT32 numElements = _meshData->GetNumVertices();
         assert(numElements * sizeof(Vector4) == size);
 
-        UINT8* tangentSrc = _meshData->GetElementData(VES_BITANGENT);
-        UINT32 stride = _meshData->GetVertexDesc()->GetVertexStride(0);
-
-        MeshUtility::UnpackNormals(tangentSrc, buffer, numElements, stride);
+        _meshData->SetVertexData(VES_BITANGENT, buffer, size);
     }
 
     void RendererMeshData::SetBiTangents(Vector4* buffer, UINT32 size)
@@ -121,31 +106,29 @@ namespace te
         UINT32 numElements = _meshData->GetNumVertices();
         assert(numElements * sizeof(Vector4) == size);
 
-        UINT8* tangentDst = _meshData->GetElementData(VES_BITANGENT);
-        UINT32 stride = _meshData->GetVertexDesc()->GetVertexStride(0);
-
-        MeshUtility::PackNormals(buffer, tangentDst, numElements, sizeof(Vector4), stride);
+        _meshData->SetVertexData(VES_BITANGENT, buffer, size);
     }
 
     void RendererMeshData::GetColors(Color* buffer, UINT32 size)
     {
-        if (!_meshData->GetVertexDesc()->HasElement(VES_COLOR))
+        if (!_meshData->GetVertexDesc()->HasElement(VES_COLOR, 0))
             return;
 
+        Vector4* colors = te_allocate<Vector4>(sizeof(Vector4) * _meshData->GetNumVertices());
         UINT32 numElements = _meshData->GetNumVertices();
         assert(numElements * sizeof(Vector4) == size);
 
-        UINT8* colorSrc = _meshData->GetElementData(VES_COLOR);
-        UINT32 stride = _meshData->GetVertexDesc()->GetVertexStride(0);
+        _meshData->GetVertexData(VES_COLOR, colors, size, 0);
 
-        Color* colorDst = buffer;
-        for (UINT32 i = 0; i < numElements; i++)
+        for (UINT i = 0; i < _meshData->GetNumVertices(); i++)
         {
-            PixelUtil::UnpackColor(colorDst, PF_RGBA8, (void*)colorSrc);
-
-            colorSrc += stride;
-            colorDst++;
+           buffer[i].r = colors[i].x;
+           buffer[i].g = colors[i].y;
+           buffer[i].b = colors[i].z;
+           buffer[i].a = colors[i].w;
         }
+
+        te_delete(colors);
     }
 
     void RendererMeshData::SetColors(Color* buffer, UINT32 size)
@@ -153,31 +136,18 @@ namespace te
         if (!_meshData->GetVertexDesc()->HasElement(VES_COLOR))
             return;
 
+        Vector4* colors = te_allocate<Vector4>(sizeof(Vector4)* _meshData->GetNumVertices());
+        for (UINT i = 0; i < _meshData->GetNumVertices(); i++)
+        {
+            colors[i] = Vector4(buffer[i].r, buffer[i].g, buffer[i].b, buffer[i].a);
+        }
+
         UINT32 numElements = _meshData->GetNumVertices();
         assert(numElements * sizeof(Vector4) == size);
 
-        UINT8* colorDst = _meshData->GetElementData(VES_COLOR);
-        UINT32 stride = _meshData->GetVertexDesc()->GetVertexStride(0);
+        _meshData->SetVertexData(VES_COLOR, colors, size);
 
-        Color* colorSrc = buffer;
-        for (UINT32 i = 0; i < numElements; i++)
-        {
-            PixelUtil::PackColor(*colorSrc, PF_RGBA8, (void*)colorDst);
-
-            colorSrc++;
-            colorDst += stride;
-        }
-    }
-
-    void RendererMeshData::SetColors(UINT32* buffer, UINT32 size)
-    {
-        if (!_meshData->GetVertexDesc()->HasElement(VES_COLOR))
-            return;
-
-        UINT32 numElements = _meshData->GetNumVertices();
-        assert(numElements * sizeof(UINT32) == size);
-
-        _meshData->SetVertexData(VES_COLOR, buffer, size);
+        te_delete(colors);
     }
 
     void RendererMeshData::GetUV0(Vector2* buffer, UINT32 size)
@@ -299,13 +269,13 @@ namespace te
             vertexDesc->AddVertElem(VET_FLOAT3, VES_POSITION);
 
         if ((intType & (INT32)VertexLayout::Normal) != 0)
-            vertexDesc->AddVertElem(VET_UBYTE4_NORM, VES_NORMAL);
+            vertexDesc->AddVertElem(VET_FLOAT3, VES_NORMAL);
 
         if ((intType & (INT32)VertexLayout::Tangent) != 0)
-            vertexDesc->AddVertElem(VET_UBYTE4_NORM, VES_TANGENT);
+            vertexDesc->AddVertElem(VET_FLOAT4, VES_TANGENT);
 
         if ((intType & (INT32)VertexLayout::BiTangent) != 0)
-            vertexDesc->AddVertElem(VET_UBYTE4_NORM, VES_BITANGENT);
+            vertexDesc->AddVertElem(VET_FLOAT4, VES_BITANGENT);
 
         if ((intType & (INT32)VertexLayout::UV0) != 0)
             vertexDesc->AddVertElem(VET_FLOAT2, VES_TEXCOORD, 0);

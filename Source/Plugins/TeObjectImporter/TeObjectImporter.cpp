@@ -84,7 +84,6 @@ namespace te
         assimpImportOptions.ImportNormals = meshImportOptions->ImportNormals;
         assimpImportOptions.ImportTangents = meshImportOptions->ImportTangents;
         assimpImportOptions.ImportScale = meshImportOptions->ImportScale;
-        assimpImportOptions.ImportMaterials = meshImportOptions->ImportMaterials;
         assimpImportOptions.ImportSkin = meshImportOptions->ImportSkin;
 
         ParseScene(scene, assimpImportOptions, importedScene);
@@ -180,7 +179,7 @@ namespace te
             }
             else
             {
-                importMesh->Colors[i] = Color::LightGray.GetAsRGBA();
+                importMesh->Colors[i] = Color::LightGray;
             }
         }
 
@@ -232,13 +231,6 @@ namespace te
                 importMesh->Textures[i][j] = Vector2(coord.x, coord.y);
             }
         }
-
-        // Import material
-        importMesh->MaterialIndex = mesh->mMaterialIndex;
-    }
-
-    void ObjectImporter::ParseMaterial(aiScene* scene, AssimpImportScene& outputScene)
-    {
     }
 
     SPtr<RendererMeshData> ObjectImporter::GenerateMeshData(AssimpImportScene& scene, AssimpImportOptions& options, Vector<SubMesh> subMeshes)
@@ -362,7 +354,7 @@ namespace te
                 // Copy colors
                 if (hasColors)
                 {
-                    meshData->SetColors(mesh->Colors.data(), sizeof(UINT32) * (UINT32)numVertices);
+                    meshData->SetColors(mesh->Colors.data(), sizeof(Vector4) * (UINT32)numVertices);
                 }
 
                 // Copy UV
@@ -444,10 +436,10 @@ namespace te
         );
     }
 
-    RGBA ObjectImporter::ConvertToNativeType(const aiColor4D& color)
+    Color ObjectImporter::ConvertToNativeType(const aiColor4D& color)
     {
         Color c((float)color.r, (float)color.g, (float)color.b, (float)color.a);
-        return c.GetAsRGBA();
+        return c;
     }
 
     Vector3 ObjectImporter::ConvertToNativeType(const aiVector3D& vector)

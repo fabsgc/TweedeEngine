@@ -40,9 +40,6 @@ namespace te
         /** Parses a mesh. Converts it from Assimp format into a mesh data object containing one or multiple sub-meshes. */
         void ParseMesh(aiMesh* mesh, AssimpImportNode* parentNode, const AssimpImportOptions& options, AssimpImportScene& outputScene);
 
-        /** Parse material */
-        void ParseMaterial(aiScene* scene, AssimpImportScene& outputScene);
-
         /** Converts the mesh data from the imported assimp scene into mesh data that can be used for initializing a mesh. */
         SPtr<RendererMeshData> GenerateMeshData(AssimpImportScene& scene, AssimpImportOptions& options, Vector<SubMesh> subMeshes);
 
@@ -53,7 +50,7 @@ namespace te
         Matrix4 ConvertToNativeType(const aiMatrix4x4& matrix);
 
         /** Convert an assimp vector4 into engine vector4 */
-        RGBA ConvertToNativeType(const aiColor4D& color);
+        Color ConvertToNativeType(const aiColor4D& color);
 
         /** Convert an assimp vector3 into engine vector3 */
         Vector3 ConvertToNativeType(const aiVector3D& vector);

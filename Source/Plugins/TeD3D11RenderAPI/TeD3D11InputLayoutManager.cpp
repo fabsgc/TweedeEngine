@@ -136,6 +136,8 @@ namespace te
                 elementDesc.AlignedByteOffset = 0;
                 elementDesc.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
                 elementDesc.InstanceDataStepRate = 0;
+
+                TE_DEBUG("Element " + ToString(ToWString(elementDesc.SemanticName)) + " not found", __FILE__, __LINE__);
             }
         }
 

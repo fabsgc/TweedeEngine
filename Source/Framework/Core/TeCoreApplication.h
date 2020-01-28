@@ -130,8 +130,11 @@ namespace te
 
         SPtr<VertexBuffer> _vertexBuffer;
         SPtr<IndexBuffer> _indexBuffer;
-        SPtr<GpuParamBlockBuffer> _constantBuffer;
+        SPtr<GpuParamBlockBuffer> _objectConstantBuffer;
+        SPtr<GpuParamBlockBuffer> _frameConstantBuffer;
         SPtr<VertexDeclaration> _vertexDeclaration;
+
+        HMesh _loadedMesh;
     };
 
     /**	Provides easy access to CoreApplication. */
