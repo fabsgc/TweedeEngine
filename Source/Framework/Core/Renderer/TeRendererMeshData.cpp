@@ -120,7 +120,7 @@ namespace te
 
         _meshData->GetVertexData(VES_COLOR, colors, size, 0);
 
-        for (UINT i = 0; i < _meshData->GetNumVertices(); i++)
+        for (UINT32 i = 0; i < _meshData->GetNumVertices(); i++)
         {
            buffer[i].r = colors[i].x;
            buffer[i].g = colors[i].y;
@@ -137,7 +137,7 @@ namespace te
             return;
 
         Vector4* colors = te_allocate<Vector4>(sizeof(Vector4)* _meshData->GetNumVertices());
-        for (UINT i = 0; i < _meshData->GetNumVertices(); i++)
+        for (UINT32 i = 0; i < _meshData->GetNumVertices(); i++)
         {
             colors[i] = Vector4(buffer[i].r, buffer[i].g, buffer[i].b, buffer[i].a);
         }
