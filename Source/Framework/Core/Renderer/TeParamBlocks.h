@@ -64,18 +64,18 @@ namespace te
         T Get(const SPtr<GpuParamBlockBuffer>& paramBlock, UINT32 arrayIdx = 0) const
         {
 #if TE_DEBUG_MODE
-            if (arrayIdx >= _paramDesc.arraySize)
+            if (arrayIdx >= _paramDesc.ArraySize)
             {
-                TE_DEBUG("Array index out of range. Array size: {" + ToString(_paramDesc.arraySize) + "}. Requested size: {" + ToString(arrayIdx) + "}", __FILE__, __LINE__);
+                TE_DEBUG("Array index out of range. Array size: {" + ToString(_paramDesc.ArraySize) + "}. Requested size: {" + ToString(arrayIdx) + "}", __FILE__, __LINE__);
                 return T();
             }
 #endif
 
-            UINT32 elementSizeBytes = _paramDesc.elementSize * sizeof(UINT32);
+            UINT32 elementSizeBytes = _paramDesc.ElementSize * sizeof(UINT32);
             UINT32 sizeBytes = std::min(elementSizeBytes, (UINT32)sizeof(T));
 
             T value;
-            paramBlock->read((_paramDesc.cpuMemOffset + arrayIdx * _paramDesc.arrayElementStride) * sizeof(UINT32), &value,
+            paramBlock->read((_paramDesc.CpuMemOffset + arrayIdx * _paramDesc.ArrayElementStride) * sizeof(UINT32), &value,
                 sizeBytes);
 
             return value;
@@ -124,7 +124,7 @@ namespace te
 			ParamBlockManager::RegisterBlock(this);																			\
 		}																													\
 																															\
-		SPtr<GpuParamBlockBuffer> CreateBuffer() const { return GpuParamBlockBuffer::Create(mBlockSize); }					\
+		SPtr<GpuParamBlockBuffer> CreateBuffer() const { return GpuParamBlockBuffer::Create(_blockSize); }					\
 																															\
 	private:																												\
 		friend class ParamBlockManager;																						\
@@ -135,7 +135,7 @@ namespace te
 			RenderAPI& rapi = RenderAPI::Instance();																		\
 																															\
 			GpuParamBlockDesc blockDesc = rapi.GenerateParamBlockDesc(#Name, _params);										\
-			mBlockSize = blockDesc.BlockSize * sizeof(UINT32);																\
+			_blockSize = blockDesc.BlockSize * sizeof(UINT32);																\
 																															\
 			InitEntries();																									\
 		}																													\
@@ -199,6 +199,6 @@ namespace te
 		}																													\
 																															\
 		Vector<GpuParamDataDesc> _params;																					\
-		UINT32 mBlockSize;																									\
+		UINT32 _blockSize;																									\
 	};
 }
