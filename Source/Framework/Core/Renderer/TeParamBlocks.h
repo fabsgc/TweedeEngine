@@ -75,7 +75,7 @@ namespace te
             UINT32 sizeBytes = std::min(elementSizeBytes, (UINT32)sizeof(T));
 
             T value;
-            paramBlock->read((_paramDesc.CpuMemOffset + arrayIdx * _paramDesc.ArrayElementStride) * sizeof(UINT32), &value,
+            paramBlock->Read((_paramDesc.CpuMemOffset + arrayIdx * _paramDesc.ArrayElementStride) * sizeof(UINT32), &value,
                 sizeBytes);
 
             return value;
