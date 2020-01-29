@@ -124,9 +124,7 @@ namespace te
         UINT32 meshIdx = 0;
         for(auto& meshData : meshes)
         {
-            UINT32 numIndices = meshData->GetNumIndices();
             const Vector<SubMesh> curSubMeshes = allSubMeshes[meshIdx];
-
             for(auto& subMesh : curSubMeshes)
             {
                 subMeshes.push_back(SubMesh(subMesh.IndexOffset, subMesh.IndexCount, subMesh.DrawOp));

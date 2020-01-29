@@ -110,7 +110,7 @@ namespace te
         INDEX_BUFFER_DESC ibDesc;
         ibDesc.Type = _indexType;
         ibDesc.NumIndices = _properties._numIndices;
-        ibDesc.Usage = (GpuBufferUsage)_usage;
+        ibDesc.Usage = (GpuBufferUsage)usage;
 
         _indexBuffer = IndexBuffer::Create(ibDesc, _deviceMask);
 
@@ -126,7 +126,7 @@ namespace te
             VERTEX_BUFFER_DESC vbDesc;
             vbDesc.VertexSize = _vertexData->vertexDeclaration->GetProperties().GetVertexSize(i);
             vbDesc.NumVerts = _vertexData->vertexCount;
-            vbDesc.Usage = (GpuBufferUsage)_usage;
+            vbDesc.Usage = (GpuBufferUsage)usage;
 
             SPtr<VertexBuffer> vertexBuffer = VertexBuffer::Create(vbDesc, _deviceMask);
             _vertexData->SetBuffer(i, vertexBuffer);

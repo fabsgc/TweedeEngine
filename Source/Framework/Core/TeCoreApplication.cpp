@@ -496,8 +496,9 @@ namespace te
 
     void CoreApplication::TestRun()
     {
-        RenderAPI& rapi = RenderAPI::Instance();
 #if TE_PLATFORM == TE_PLATFORM_WIN32
+        RenderAPI& rapi = RenderAPI::Instance();
+
         rapi.SetRenderTarget(_camera->GetViewport()->GetTarget());
 
         if (_camera->IsCoreDirty())

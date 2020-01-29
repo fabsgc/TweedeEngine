@@ -260,7 +260,7 @@ namespace te
             Vector<Vector<UINT32>> indicesPerMaterial;
 
             // Trying to find all submeshes indices and offset
-            for (UINT i = 0; i < scene.MaterialsIndex.size(); i++)
+            for (UINT32 i = 0; i < scene.MaterialsIndex.size(); i++)
             {
                 indicesPerMaterial.push_back(Vector<UINT32>());
                 if (mesh->MaterialIndex == scene.MaterialsIndex[i])
