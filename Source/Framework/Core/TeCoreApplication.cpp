@@ -324,16 +324,6 @@ namespace te
 
     void CoreApplication::TestStartUp()
     {
-        TE_PARAM_BLOCK_BEGIN(DebugDrawParamsDef)
-            TE_PARAM_BLOCK_ENTRY(Vector3, Position)
-            TE_PARAM_BLOCK_ENTRY(Vector4, Normal)
-        TE_PARAM_BLOCK_END
-
-        DebugDrawParamsDef def;
-        SPtr<GpuParamBlockBuffer> paramBlock = def.CreateBuffer();
-        def.Position.Set(paramBlock, Vector3(0.707f, 0.707f, 0.0f));
-        def.Normal.Set(paramBlock, Vector4(0.707f, 0.707f, 0.0f, 0.0f));
-
         // ######################################################
         auto meshImportOptions = MeshImportOptions::Create();
         meshImportOptions->ImportNormals = true;
@@ -354,6 +344,17 @@ namespace te
         TE_PRINT((_loadTexture.GetHandleData())->uuid.ToString());
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
+
+        TE_PARAM_BLOCK_BEGIN(DebugDrawParamsDef)
+            TE_PARAM_BLOCK_ENTRY(Vector3, Position)
+            TE_PARAM_BLOCK_ENTRY(Vector4, Normal)
+            TE_PARAM_BLOCK_END
+
+            DebugDrawParamsDef def;
+        SPtr<GpuParamBlockBuffer> paramBlock = def.CreateBuffer();
+        def.Position.Set(paramBlock, Vector3(0.707f, 0.707f, 0.0f));
+        def.Normal.Set(paramBlock, Vector4(0.707f, 0.707f, 0.0f, 0.0f));
+
         // ######################################################
         _camera = Camera::Create();
         _camera->SetRenderTarget(gCoreApplication().GetWindow());
