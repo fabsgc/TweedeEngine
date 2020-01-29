@@ -10,6 +10,7 @@
 namespace te
 {
     const TextureSurface GpuParams::COMPLETE = TextureSurface(0, 0, 0, 0);
+    const GpuDataParamInfos GpuParams::PARAM_SIZES;
 
     GpuParams::GpuParams(const SPtr<GpuPipelineParamInfo>& paramInfo, GpuDeviceFlags deviceMask)
         : _paramInfo(paramInfo)

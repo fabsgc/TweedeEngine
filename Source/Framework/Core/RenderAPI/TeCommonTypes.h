@@ -268,41 +268,6 @@ namespace te
         GPDT_UNKNOWN = 0xffff
     };
 
-    /** Type of GPU object parameters that can be used as inputs to a GPU program. */
-    enum GpuParamObjectType
-    {
-        GPOT_SAMPLER1D = 1, /**< Sampler state for a 1D texture. */
-        GPOT_SAMPLER2D = 2, /**< Sampler state for a 2D texture. */
-        GPOT_SAMPLER3D = 3, /**< Sampler state for a 3D texture. */
-        GPOT_SAMPLERCUBE = 4, /**< Sampler state for a cube texture. */
-        GPOT_SAMPLER2DMS = 5, /**< Sampler state for a 2D texture with multiple samples. */
-        GPOT_TEXTURE1D = 11, /**< 1D texture. */
-        GPOT_TEXTURE2D = 12, /**< 2D texture. */
-        GPOT_TEXTURE3D = 13, /**< 3D texture. */
-        GPOT_TEXTURECUBE = 14, /**< Cube texture. */
-        GPOT_TEXTURE2DMS = 15, /**< 2D texture with multiple samples. */
-        GPOT_BYTE_BUFFER = 32, /**< Buffer containing raw bytes (no interpretation). */
-        GPOT_STRUCTURED_BUFFER = 33, /**< Buffer containing a set of structures. */
-        GPOT_RWTYPED_BUFFER = 41, /**< Read-write buffer containing a set of primitives. */
-        GPOT_RWBYTE_BUFFER = 42, /**< Read-write buffer containing raw bytes (no interpretation). */
-        GPOT_RWSTRUCTURED_BUFFER = 43, /**< Read-write buffer containing a set of structures. */
-        GPOT_RWSTRUCTURED_BUFFER_WITH_COUNTER = 44, /**< Read-write buffer containing a set of structures, with a counter. */
-        GPOT_RWAPPEND_BUFFER = 45, /**< Buffer that can be used for appending data in a stack-like fashion. */
-        GPOT_RWCONSUME_BUFFER = 46, /**< Buffer that can be used for consuming data in a stack-like fashion. */
-        GPOT_RWTEXTURE1D = 50, /**< 1D texture with unordered read/writes. */
-        GPOT_RWTEXTURE2D = 51, /**< 2D texture with unordered read/writes. */
-        GPOT_RWTEXTURE3D = 52, /**< 3D texture with unordered read/writes. */
-        GPOT_RWTEXTURE2DMS = 53, /**< 2D texture with multiple samples and unordered read/writes. */
-        GPOT_TEXTURE1DARRAY = 54, /**< 1D texture with multiple array entries. */
-        GPOT_TEXTURE2DARRAY = 55, /**< 2D texture with multiple array entries. */
-        GPOT_TEXTURECUBEARRAY = 56, /**< Cubemap texture with multiple array entries. */
-        GPOT_TEXTURE2DMSARRAY = 57, /**< 2D texture with multiple samples and array entries. */
-        GPOT_RWTEXTURE1DARRAY = 58, /**< 1D texture with multiple array entries and unordered read/writes. */
-        GPOT_RWTEXTURE2DARRAY = 59, /**< 2D texture with multiple array entries and unordered read/writes. */
-        GPOT_RWTEXTURE2DMSARRAY = 60, /**< 2D texture with multiple array entries, samples and unordered read/writes. */
-        GPOT_UNKNOWN = 0xffff
-    };
-
     /** These values represent a hint to the driver when writing to a GPU buffer. */
     enum BufferWriteType
     {
@@ -462,6 +427,83 @@ namespace te
         PT_ORTHOGRAPHIC,
         /** Projection type that emulates human vision. Objects farther away appear smaller. */
         PT_PERSPECTIVE
+    };
+
+    /**	Contains data about a type used for GPU data parameters. */
+    struct GpuParamDataTypeInfo
+    {
+        UINT32 baseTypeSize;
+        UINT32 size;
+        UINT32 alignment;
+        UINT32 numRows;
+        UINT32 numColumns;
+    };
+
+    /**	Contains a lookup table for various information of all types used for data GPU parameters. Sizes are in bytes. */
+    struct GpuDataParamInfos
+    {
+        GpuDataParamInfos()
+        {
+            memset(lookup, 0, sizeof(lookup));
+
+            lookup[(UINT32)GPDT_FLOAT1] = { 4, 4, 4, 1, 1 };
+            lookup[(UINT32)GPDT_FLOAT2] = { 4, 8, 8, 1, 2 };
+            lookup[(UINT32)GPDT_FLOAT3] = { 4, 16, 16, 1, 3 };
+            lookup[(UINT32)GPDT_FLOAT4] = { 4, 16, 16, 1, 4 };
+            lookup[(UINT32)GPDT_COLOR] = { 4, 16, 16, 1, 4 };
+            lookup[(UINT32)GPDT_MATRIX_2X2] = { 4, 16, 8, 2, 2 };
+            lookup[(UINT32)GPDT_MATRIX_2X3] = { 4, 32, 16, 2, 3 };
+            lookup[(UINT32)GPDT_MATRIX_2X4] = { 4, 32, 16, 2, 4 };
+            lookup[(UINT32)GPDT_MATRIX_3X2] = { 4, 24, 8, 3, 2 };
+            lookup[(UINT32)GPDT_MATRIX_3X3] = { 4, 48, 16, 3, 3 };
+            lookup[(UINT32)GPDT_MATRIX_3X4] = { 4, 48, 16, 3, 4 };
+            lookup[(UINT32)GPDT_MATRIX_4X2] = { 4, 32, 8, 4, 2 };
+            lookup[(UINT32)GPDT_MATRIX_4X3] = { 4, 64, 16, 4, 3 };
+            lookup[(UINT32)GPDT_MATRIX_4X4] = { 4, 64, 16, 4, 4 };
+            lookup[(UINT32)GPDT_INT1] = { 4, 4, 4, 1, 1 };
+            lookup[(UINT32)GPDT_INT2] = { 4, 8, 8, 1, 2 };
+            lookup[(UINT32)GPDT_INT3] = { 4, 12, 16, 1, 3 };
+            lookup[(UINT32)GPDT_INT4] = { 4, 16, 16, 1, 4 };
+            lookup[(UINT32)GPDT_BOOL] = { 4, 4, 4, 1, 1 };
+            lookup[(UINT32)GPDT_STRUCT] = { 4, 0, 16, 1, 1 };
+        }
+
+        GpuParamDataTypeInfo lookup[GPDT_COUNT];
+    };
+
+    /**	Type of GPU object parameters that can be used as inputs to a GPU program. */
+    enum GpuParamObjectType
+    {
+        GPOT_SAMPLER1D = 1, /**< Sampler state for a 1D texture. */
+        GPOT_SAMPLER2D = 2, /**< Sampler state for a 2D texture. */
+        GPOT_SAMPLER3D = 3, /**< Sampler state for a 3D texture. */
+        GPOT_SAMPLERCUBE = 4, /**< Sampler state for a cube texture. */
+        GPOT_SAMPLER2DMS = 5, /**< Sampler state for a 2D texture with multiple samples. */
+        GPOT_TEXTURE1D = 11, /**< 1D texture. */
+        GPOT_TEXTURE2D = 12, /**< 2D texture. */
+        GPOT_TEXTURE3D = 13, /**< 3D texture. */
+        GPOT_TEXTURECUBE = 14, /**< Cube texture. */
+        GPOT_TEXTURE2DMS = 15, /**< 2D texture with multiple samples. */
+        GPOT_BYTE_BUFFER = 32, /**< Buffer containing raw bytes (no interpretation). */
+        GPOT_STRUCTURED_BUFFER = 33, /**< Buffer containing a set of structures. */
+        GPOT_RWTYPED_BUFFER = 41, /**< Read-write buffer containing a set of primitives. */
+        GPOT_RWBYTE_BUFFER = 42, /**< Read-write buffer containing raw bytes (no interpretation). */
+        GPOT_RWSTRUCTURED_BUFFER = 43, /**< Read-write buffer containing a set of structures. */
+        GPOT_RWSTRUCTURED_BUFFER_WITH_COUNTER = 44, /**< Read-write buffer containing a set of structures, with a counter. */
+        GPOT_RWAPPEND_BUFFER = 45, /**< Buffer that can be used for appending data in a stack-like fashion. */
+        GPOT_RWCONSUME_BUFFER = 46, /**< Buffer that can be used for consuming data in a stack-like fashion. */
+        GPOT_RWTEXTURE1D = 50, /**< 1D texture with unordered read/writes. */
+        GPOT_RWTEXTURE2D = 51, /**< 2D texture with unordered read/writes. */
+        GPOT_RWTEXTURE3D = 52, /**< 3D texture with unordered read/writes. */
+        GPOT_RWTEXTURE2DMS = 53, /**< 2D texture with multiple samples and unordered read/writes. */
+        GPOT_TEXTURE1DARRAY = 54, /**< 1D texture with multiple array entries. */
+        GPOT_TEXTURE2DARRAY = 55, /**< 2D texture with multiple array entries. */
+        GPOT_TEXTURECUBEARRAY = 56, /**< Cubemap texture with multiple array entries. */
+        GPOT_TEXTURE2DMSARRAY = 57, /**< 2D texture with multiple samples and array entries. */
+        GPOT_RWTEXTURE1DARRAY = 58, /**< 1D texture with multiple array entries and unordered read/writes. */
+        GPOT_RWTEXTURE2DARRAY = 59, /**< 2D texture with multiple array entries and unordered read/writes. */
+        GPOT_RWTEXTURE2DMSARRAY = 60, /**< 2D texture with multiple array entries, samples and unordered read/writes. */
+        GPOT_UNKNOWN = 0xffff
     };
 
     /** Texture addressing mode, per component. */

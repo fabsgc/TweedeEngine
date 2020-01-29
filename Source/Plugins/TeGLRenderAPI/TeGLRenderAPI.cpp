@@ -5,6 +5,7 @@
 #include "TeGLRenderStateManager.h"
 #include "RenderAPI/TeGpuProgramManager.h"
 #include "TeGLHardwareBufferManager.h"
+#include "TeGLGLSLParamParser.h"
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
 #   include "Win32/TeWin32RenderWindow.h"
@@ -144,5 +145,57 @@ namespace te
     void GLRenderAPI::ConvertProjectionMatrix(const Matrix4& matrix, Matrix4& dest)
     {
         dest = matrix;
+    }
+
+    GpuParamBlockDesc GLRenderAPI::GenerateParamBlockDesc(const String& name, Vector<GpuParamDataDesc>& params)
+    {
+        GpuParamBlockDesc block;
+        block.BlockSize = 0;
+        block.IsShareable = true;
+        block.Name = name;
+        block.Slot = 0;
+        block.Set = 0;
+
+        for (auto& param : params)
+        {
+            UINT32 size;
+
+            if (param.Type == GPDT_STRUCT)
+            {
+                // Structs are always aligned and rounded up to vec4
+                size = Math::DivideAndRoundUp(param.ElementSize, 16U) * 4;
+                block.BlockSize = Math::DivideAndRoundUp(block.BlockSize, 4U) * 4;
+            }
+            else
+                size = GLGLSLParamParser::CalcInterfaceBlockElementSizeAndOffset(param.Type, param.ArraySize, block.BlockSize);
+
+            if (param.ArraySize > 1)
+            {
+                param.ElementSize = size;
+                param.ArrayElementStride = size;
+                param.CpuMemOffset = block.BlockSize;
+                param.GpuMemOffset = 0;
+
+                block.BlockSize += size * param.ArraySize;
+            }
+            else
+            {
+                param.ElementSize = size;
+                param.ArrayElementStride = size;
+                param.CpuMemOffset = block.BlockSize;
+                param.GpuMemOffset = 0;
+
+                block.BlockSize += size;
+            }
+
+            param.ParamBlockSlot = 0;
+            param.ParamBlockSet = 0;
+        }
+
+        // Constant buffer size must always be a multiple of 16
+        if (block.BlockSize % 4 != 0)
+            block.BlockSize += (4 - (block.BlockSize % 4));
+
+        return block;
     }
 }

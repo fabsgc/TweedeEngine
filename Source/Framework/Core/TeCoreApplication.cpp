@@ -48,6 +48,8 @@
 #include "Mesh/TeMeshData.h"
 #include "Mesh/TeMeshUtility.h"
 
+#include "Renderer/TeParamBlocks.h"
+
 namespace te
 {
     TE_MODULE_STATIC_MEMBER(CoreApplication)
@@ -94,7 +96,8 @@ namespace te
         Input::StartUp();
         VirtualInput::StartUp();
         Importer::StartUp();
-        
+        ParamBlockManager::StartUp();
+
         for (auto& importerName : _startUpDesc.Importers)
         {
             LoadPlugin(importerName);
@@ -107,6 +110,7 @@ namespace te
     {
         TestShutDown();
         
+        ParamBlockManager::ShutDown();
         Importer::ShutDown();
         VirtualInput::ShutDown();
         Input::ShutDown();
@@ -320,6 +324,16 @@ namespace te
 
     void CoreApplication::TestStartUp()
     {
+        TE_PARAM_BLOCK_BEGIN(DebugDrawParamsDef)
+            TE_PARAM_BLOCK_ENTRY(Vector3, Position)
+            TE_PARAM_BLOCK_ENTRY(Vector4, Normal)
+        TE_PARAM_BLOCK_END
+
+        DebugDrawParamsDef def;
+        SPtr<GpuParamBlockBuffer> paramBlock = def.CreateBuffer();
+        def.Position.Set(paramBlock, Vector3(0.707f, 0.707f, 0.0f));
+        def.Normal.Set(paramBlock, Vector4(0.707f, 0.707f, 0.0f, 0.0f));
+
         // ######################################################
         auto meshImportOptions = MeshImportOptions::Create();
         meshImportOptions->ImportNormals = true;
@@ -523,7 +537,6 @@ namespace te
         UINT32 numVertices = _vertexBuffer->GetProperties().GetNumVertices();
         
         rapi.DrawIndexed(0, numIndices, 0, numVertices);
-        //rapi.DrawIndexed(_loadedMesh->GetProperties().GetSubMesh(1).IndexOffset, _loadedMesh->GetProperties().GetSubMesh(1).IndexCount, 0, numVertices);
 
         RenderAPI::Instance().SwapBuffers(_camera->GetViewport()->GetTarget());
 #endif

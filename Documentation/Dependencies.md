@@ -25,7 +25,7 @@ Note that on Windows most dependencies do not have default install paths and sho
 Legend:
 - (TeSource) - root directory of the framework
 - (DepName) - name of the dependency (title of each dependency shown below)
-- (Platform) - x86 for 32-bit builds, x64 for 64-bit builds
+- (Platform) - x64 for 64-bit builds
 - (Configuration) - Debug, RelWithDebInfo, MinSizeRel, or Release 
 
 Each library is accompanied by a Find***.cmake CMake module that is responsible for finding the library. These modules are located under `Source/CMake/Modules`. They follow the rules described above, but if you are unsure where library outputs should be placed you can look at the source code for those modules to find their search paths.
@@ -38,9 +38,13 @@ Additionally, if the dependency structure still isn't clear, download one of the
 - FreeImage 3.17
 - http://freeimage.sourceforge.net
 - Required by TeFreeImgImporter
-- Compile as a static library
 
 **Assimp**
 - assimp 3.1.1
 - http://www.assimp.org/
 - Required by TeObjectImpoter
+
+**NVIDIA Texture Tools**
+- NVIDIA Texture Tools 2.0
+- https://github.com/BearishSun/nvidia-texture-tools
+- Required by tef

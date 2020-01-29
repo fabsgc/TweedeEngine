@@ -107,6 +107,9 @@ namespace te
         /** @copydoc RenderAPI::ConvertProjectionMatrix() */
         void ConvertProjectionMatrix(const Matrix4& matrix, Matrix4& dest) override;
 
+        /** @copydoc RenderAPI::GenerateParamBlockDesc() */
+        GpuParamBlockDesc GenerateParamBlockDesc(const String& name, Vector<GpuParamDataDesc>& params) override;
+
     private:
         IDXGIFactory1* _DXGIFactory = nullptr;
         D3D11Device* _device = nullptr;

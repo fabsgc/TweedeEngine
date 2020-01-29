@@ -838,4 +838,83 @@ namespace te
         dest[2][2] = (dest[2][2] + dest[3][2]) / 2;
         dest[2][3] = (dest[2][3] + dest[3][3]) / 2;
     }
+
+    GpuParamBlockDesc D3D11RenderAPI::GenerateParamBlockDesc(const String& name, Vector<GpuParamDataDesc>& params)
+    {
+        GpuParamBlockDesc block;
+        block.BlockSize = 0;
+        block.IsShareable = true;
+        block.Name = name;
+        block.Slot = 0;
+        block.Set = 0;
+
+        for (auto& param : params)
+        {
+            const GpuParamDataTypeInfo& typeInfo = te::GpuParams::PARAM_SIZES.lookup[param.Type];
+
+            if (param.ArraySize > 1)
+            {
+                // Arrays perform no packing and their elements are always padded and aligned to four component vectors
+                UINT32 size;
+                if (param.Type == GPDT_STRUCT)
+                    size = Math::DivideAndRoundUp(param.ElementSize, 16U) * 4;
+                else
+                    size = Math::DivideAndRoundUp(typeInfo.size, 16U) * 4;
+
+                block.BlockSize = Math::DivideAndRoundUp(block.BlockSize, 4U) * 4;
+
+                param.ElementSize = size;
+                param.ArrayElementStride = size;
+                param.CpuMemOffset = block.BlockSize;
+                param.GpuMemOffset = 0;
+
+                // Last array element isn't rounded up to four component vectors unless it's a struct
+                if (param.Type != GPDT_STRUCT)
+                {
+                    block.BlockSize += size * (param.ArraySize - 1);
+                    block.BlockSize += typeInfo.size / 4;
+                }
+                else
+                    block.BlockSize += param.ArraySize * size;
+            }
+            else
+            {
+                UINT32 size;
+                if (param.Type == GPDT_STRUCT)
+                {
+                    // Structs are always aligned and arounded up to 4 component vectors
+                    size = Math::DivideAndRoundUp(param.ElementSize, 16U) * 4;
+                    block.BlockSize = Math::DivideAndRoundUp(block.BlockSize, 4U) * 4;
+                }
+                else
+                {
+                    size = typeInfo.baseTypeSize * (typeInfo.numRows * typeInfo.numColumns) / 4;
+
+                    // Pack everything as tightly as possible as long as the data doesn't cross 16 byte boundary
+                    UINT32 alignOffset = block.BlockSize % 4;
+                    if (alignOffset != 0 && size > (4 - alignOffset))
+                    {
+                        UINT32 padding = (4 - alignOffset);
+                        block.BlockSize += padding;
+                    }
+                }
+
+                param.ElementSize = size;
+                param.ArrayElementStride = size;
+                param.CpuMemOffset = block.BlockSize;
+                param.GpuMemOffset = 0;
+
+                block.BlockSize += size;
+            }
+
+            param.ParamBlockSlot = 0;
+            param.ParamBlockSet = 0;
+        }
+
+        // Constant buffer size must always be a multiple of 16
+        if (block.BlockSize % 4 != 0)
+            block.BlockSize += (4 - (block.BlockSize % 4));
+
+        return block;
+    }
 }

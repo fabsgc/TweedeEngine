@@ -65,6 +65,7 @@ set (TE_CORE_INC_RENDERER
     "Core/Renderer/TeViewport.h"
     "Core/Renderer/TeRenderSettings.h"
     "Core/Renderer/TeRendererMeshData.h"
+    "Core/Renderer/TeParamBlocks.h"
 )
 set (TE_CORE_SRC_RENDERER
     "Core/Renderer/TeRenderer.cpp"
@@ -72,6 +73,7 @@ set (TE_CORE_SRC_RENDERER
     "Core/Renderer/TeViewport.cpp"
     "Core/Renderer/TeRenderSettings.cpp"
     "Core/Renderer/TeRendererMeshData.cpp"
+    "Core/Renderer/TeParamBlocks.cpp"
 )
 
 set (TE_CORE_INC_SCENE

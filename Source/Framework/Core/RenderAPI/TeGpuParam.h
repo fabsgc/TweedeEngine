@@ -22,7 +22,7 @@ namespace te
     struct TransposePolicy
     {
         static Type Transpose(const Type& value) { return value; }
-        static bool TansposeEnabled(bool enabled) { return false; }
+        static bool TransposeEnabled(bool enabled) { return false; }
     };
 
     /** Transpose policy for 3x3 matrix. */

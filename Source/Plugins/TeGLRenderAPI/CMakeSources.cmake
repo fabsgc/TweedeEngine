@@ -18,6 +18,7 @@ set (TE_GLRENDERAPI_INC_NOFILTER
     "TeGLIndexBuffer.h"
     "TeGLGpuParamBlockBuffer.h"
     "TeGLGpuBuffer.h"
+    "TeGLGLSLParamParser.h"
 )
 
 set (TE_GLRENDERAPI_SRC_NOFILTER
@@ -40,6 +41,7 @@ set (TE_GLRENDERAPI_SRC_NOFILTER
     "TeGLIndexBuffer.cpp"
     "TeGLGpuParamBlockBuffer.cpp"
     "TeGLGpuBuffer.cpp"
+    "TeGLGLSLParamParser.cpp"
 )
 
 set(TE_GLRENDERAPI_INC_WIN32

@@ -45,6 +45,10 @@ namespace te
     class GLHardwareBufferManager;
     class GLVertexBuffer;
     class GLIndexBuffer;
+    class GLGpuBuffer;
+	class GLGpuParamBlockBuffer;
     class GLInputLayoutManager;
+	class GLGLSLParamParser;
+	class GLGLSLProgramFactory;
 
 }
