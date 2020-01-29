@@ -56,7 +56,6 @@ namespace te
         unsigned int assimpFlags = aiProcess_CalcTangentSpace |
             aiProcess_Triangulate |
             aiProcess_JoinIdenticalVertices |
-            aiProcess_GenNormals |
             aiProcess_GenSmoothNormals |
             aiProcess_CalcTangentSpace |
             aiProcess_GenUVCoords |
