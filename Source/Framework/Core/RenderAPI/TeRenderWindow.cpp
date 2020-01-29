@@ -97,49 +97,49 @@ namespace te
             case WindowEventType::Resized:
             {
                 NotifyMovedOrResized();
-                TE_PRINT("Event resized");
+                // TE_PRINT("Event resized");
                 break;
             }
             case WindowEventType::Moved:
             {
                 NotifyMovedOrResized();
-                TE_PRINT("Event moved");
+                // TE_PRINT("Event moved");
                 break;
             }
             case WindowEventType::FocusReceived:
             {
                 NotifyFocusReceived();
-                TE_PRINT("Event focus received");
+                // TE_PRINT("Event focus received");
                 break;
             }
             case WindowEventType::FocusLost:
             {
                 NotifyFocusLost();
-                TE_PRINT("Event focus lost");
+                // TE_PRINT("Event focus lost");
                 break;
             }
             case WindowEventType::Minimized:
             {
                 _properties.IsMaximized = false;
-                TE_PRINT("Event minimized");
+                // TE_PRINT("Event minimized");
                 break;
             }
             case WindowEventType::Maximized:
             {
                 _properties.IsMaximized = true;
-                TE_PRINT("Event maximized");
+                // TE_PRINT("Event maximized");
                 break;
             }
             case WindowEventType::Restored:
             {
                 _properties.IsMaximized = false;
-                TE_PRINT("Event restored");
+                //TE_PRINT("Event restored");
                 break;
             }
             case WindowEventType::MouseLeft:
             {
                 NotifyMouseLeft();
-                TE_PRINT("Event mouse left");
+                // TE_PRINT("Event mouse left");
                 break;
             }
             case WindowEventType::CloseRequested:

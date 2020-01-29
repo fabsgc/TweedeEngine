@@ -45,6 +45,16 @@ namespace te
         // Create & register GLSL factory
         _GLSLFactory = te_new<GLGLSLProgramFactory>();
         GpuProgramManager::Instance().AddFactory("glsl", _GLSLFactory);
+
+        _numDevices = 1;
+        _capabilities = te_newN<RenderAPICapabilities>(_numDevices);
+        InitCapabilities(_capabilities[0]);
+    }
+
+    void GLRenderAPI::InitCapabilities(RenderAPICapabilities& caps) const
+    {
+        caps.Convention.UV_YAxis = Conventions::Axis::Up;
+        caps.Convention.matrixOrder = Conventions::MatrixOrder::ColumnMajor;
     }
 
     void GLRenderAPI::Destroy()
@@ -116,7 +126,7 @@ namespace te
         // TODO
     }
 
-    void GLRenderAPI::SetRenderTarget(const SPtr<RenderTarget>& target)
+    void GLRenderAPI::SetRenderTarget(const SPtr<RenderTarget>& target, UINT32 readOnlyFlags)
     {
         // TODO
     }

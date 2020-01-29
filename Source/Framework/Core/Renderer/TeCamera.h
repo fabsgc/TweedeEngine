@@ -26,6 +26,15 @@ namespace te
         OnDemand = 1 << 0,
     };
 
+    /**	Signals which portion of a Camera is dirty. */
+    enum class CameraDirtyFlag
+    {
+        // First few bits reserved by ActorDirtyFlag
+        RenderSettings = 1 << 4,
+        Redraw = 1 << 5,
+        Viewport = 1 << 31
+    };
+
     /**
      * Camera determines how is world geometry projected onto a 2D surface. You may position and orient it in space, set
      * options like aspect ratio and field or view and it outputs view and projection matrices required for rendering.
@@ -379,6 +388,9 @@ namespace te
 
         /**	Retrieves an ID that can be used for uniquely identifying this object by the renderer. */
         UINT32 GetRendererId() const { return _rendererId; }
+
+        /** @copydoc CoreObject::_markCoreDirty */
+        void _markCoreDirty(ActorDirtyFlag flag = ActorDirtyFlag::Everything) override;
 
     protected:
         ProjectionType _projType = PT_PERSPECTIVE; /**< Type of camera projection. */

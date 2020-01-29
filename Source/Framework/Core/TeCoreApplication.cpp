@@ -308,213 +308,47 @@ namespace te
         gDynLibManager().Unload(library);
     }
 
+    struct ObjectBuffer
+    {
+        Matrix4 World;
+    };
+
+    struct FrameBuffer
+    {
+        Matrix4 ViewProj;
+    };
+
     void CoreApplication::TestStartUp()
     {
-        // ######################################################
-        SPtr<InputConfiguration> inputConfig = gVirtualInput().GetConfiguration();
-
-        inputConfig->RegisterButton("Select All", TE_A);
-        inputConfig->RegisterButton("Unwrap", TE_U);
-        inputConfig->RegisterButton("Forward", TE_UP);
-        // ######################################################
-
-        // ######################################################
-        auto handleButtonHeld = [&](const VirtualButton& btn, UINT32 deviceIdx)
-        {
-            TE_PRINT(btn.ButtonIdentifier);
-        };
-
-        gVirtualInput().OnButtonDown.Connect(handleButtonHeld);
-        // ######################################################
-
-        // ######################################################
-        // Callback method that triggers when any button is pressed
-        auto handleButtonDown = [&](const ButtonEvent& event)
-        {
-            // If user presses space, "jump"
-            if (event.buttonCode == TE_SPACE)
-            {
-                TE_PRINT("SPACE");
-            }
-        };
-
-        // Connect the callback to the event
-        gInput().OnButtonDown.Connect(handleButtonDown);
-
-        auto handlePointerMove = [&](const PointerEvent& event)
-        {
-            Vector3 position(TeZero);
-            Vector3 delta(TeZero);
-
-            position.x = (float)event.screenPos.x;
-            position.y = (float)event.screenPos.y;
-
-            delta.x = (float)event.delta.x;
-            delta.y = (float)event.delta.y;
-
-            //TE_PRINT("Mouse position : " + ToString(position.x) + "/" + ToString(position.y));
-            //TE_PRINT("Mouse delta : " + ToString(delta.x) + "/" + ToString(delta.y));
-        };
-        // ######################################################
-
-        // ######################################################
-        gInput().OnPointerMoved.Connect(handlePointerMove);
-
-        auto handlePointerRelativeMove = [&](const Vector2I& delta)
-        {
-            //TE_PRINT("Mouse absolute delta : " + ToString(delta.x) + "/" + ToString(delta.y));
-        };
-
-        gInput().OnPointerRelativeMoved.Connect(handlePointerRelativeMove);
-        // ######################################################
-
-        // ######################################################
-        VIRTUAL_AXIS_DESC desc;
-        desc.DeadZone = 0.1f;
-        desc.Normalize = true;
-        desc.Type = (int)InputAxis::RightStickX;
-
-        inputConfig->RegisterAxis("LookLeftRight", desc);
-        // ######################################################
-
         // ######################################################
         auto meshImportOptions = MeshImportOptions::Create();
         meshImportOptions->ImportNormals = true;
         meshImportOptions->ImportTangents = true;
         meshImportOptions->CpuCached = true;
         
-
         auto textureImportOptions = TextureImportOptions::Create();
         textureImportOptions->CpuCached = true;
-        textureImportOptions->GenerateMips = false;
+        textureImportOptions->GenerateMips = true;
 
-        auto textureCubeMapImportOptions = TextureImportOptions::Create();
-        textureCubeMapImportOptions->CpuCached = true;
-        textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
-
-        auto shaderImportOptions = ShaderImportOptions::Create();
-
-        _loadedMesh = gResourceManager().Load<Mesh>("Data/Meshes/cube.obj", meshImportOptions);
-        //HMesh loadedPlaneMesh = gResourceManager().Load<Mesh>("Data/Meshes/plane.fbx", meshImportOptions);
-        HTexture loadTexture = gResourceManager().Load<Texture>("Data/Textures/default.png", textureImportOptions);
-        HTexture loadTextureBrick = gResourceManager().Load<Texture>("Data/Textures/brick-small.jpg", textureImportOptions);
-        HTexture loadTextureCubeMap = gResourceManager().Load<Texture>("Data/Textures/cubemap.png", textureCubeMapImportOptions);
-        HShader loadShader = gResourceManager().Load<Shader>("Data/Shaders/default.shader", shaderImportOptions);
+        _loadedMesh = gResourceManager().Load<Mesh>("Data/Meshes/multi-cube-material.dae", meshImportOptions);
+        _loadTexture = gResourceManager().Load<Texture>("Data/Textures/cube.png", textureImportOptions);
 
         TE_PRINT((_loadedMesh.GetHandleData())->data);
         TE_PRINT((_loadedMesh.GetHandleData())->uuid.ToString());
 
-        //TE_PRINT((loadedPlaneMesh.GetHandleData())->data);
-        //TE_PRINT((loadedPlaneMesh.GetHandleData())->uuid.ToString());
-
-        TE_PRINT((loadTexture.GetHandleData())->data);
-        TE_PRINT((loadTexture.GetHandleData())->uuid.ToString());
-
-        TE_PRINT((loadTextureBrick.GetHandleData())->data);
-        TE_PRINT((loadTextureBrick.GetHandleData())->uuid.ToString());
-
-        TE_PRINT((loadTextureCubeMap.GetHandleData())->data);
-        TE_PRINT((loadTextureCubeMap.GetHandleData())->uuid.ToString());
-
-        TE_PRINT((loadShader.GetHandleData())->data);
-        TE_PRINT((loadShader.GetHandleData())->uuid.ToString());
-
-        SPtr<PixelData> pixelDataLoadTexture = loadTextureCubeMap->GetProperties().AllocBuffer(0, 0);
-        loadTextureCubeMap->ReadCachedData(*pixelDataLoadTexture, 0, 0);
-        Color pixelColorLoadTexture = pixelDataLoadTexture->GetColorAt(200, 100);
-
-        // ######################################################
-
-        // ######################################################
-        FileStream file1("Data/Textures/default.png");
-        FileStream file2("Data\\Textures\\default.png");
-        // ######################################################
+        TE_PRINT((_loadTexture.GetHandleData())->data);
+        TE_PRINT((_loadTexture.GetHandleData())->uuid.ToString());
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         // ######################################################
-        // Create a 960x480 texture with 32-bit RGBA format
-        TEXTURE_DESC targetColorDesc;
-        targetColorDesc.Type = TEX_TYPE_2D;
-        targetColorDesc.Width = 960;
-        targetColorDesc.Height = 480;
-        targetColorDesc.Format = PF_RGBA8;
-        targetColorDesc.Usage = TU_RENDERTARGET | TU_CPUCACHED;
-
-        HTexture color = Texture::Create(targetColorDesc);
-
-        // Create a 960x480 texture with a 32-bit depth-stencil format
-        TEXTURE_DESC targetDepthDesc;
-        targetDepthDesc.Type = TEX_TYPE_2D;
-        targetDepthDesc.Width = 960;
-        targetDepthDesc.Height = 480;
-        targetDepthDesc.Format = PF_RGBA8;
-        targetDepthDesc.Usage = TU_DEPTHSTENCIL | TU_CPUCACHED;
-
-        HTexture depthStencil = Texture::Create(targetDepthDesc);
-
-        RENDER_TEXTURE_DESC renderTextureDesc;
-        renderTextureDesc.ColorSurfaces[0].Tex = color.GetInternalPtr();
-        renderTextureDesc.ColorSurfaces[0].Face = 0;
-        renderTextureDesc.ColorSurfaces[0].MipLevel = 0;
-
-        renderTextureDesc.DepthStencilSurface.Tex = depthStencil.GetInternalPtr();
-        renderTextureDesc.DepthStencilSurface.Face = 0;
-        renderTextureDesc.DepthStencilSurface.MipLevel = 0;
-
-        SPtr<RenderTexture> renderTexture = RenderTexture::Create(renderTextureDesc);
-        // ######################################################
-
-        // ######################################################
-        _cameraHidden = Camera::Create();
-        _cameraHidden->SetRenderTarget(renderTexture);
-        _cameraHidden->GetViewport()->SetClearColorValue(Color(0.2f, 0.0f, 0.2f, 1.0f));
-        _cameraHidden->SetMain(false);
-
-        SPtr<PixelData> pixelDataCameraHidden = loadTexture->GetProperties().AllocBuffer(0, 0);
-        loadTexture->ReadCachedData(*pixelDataCameraHidden);
-        Color pixelColorCameraHidden = pixelDataCameraHidden->GetColorAt(50, 50);
-        // ######################################################
-
-        // ######################################################
-        SPtr<Texture> cameraHiddenTexture = (static_cast<RenderTexture&>(*(_cameraHidden->GetViewport()->GetTarget()))).GetColorTexture(0);
-        SPtr<PixelData> pixelData = cameraHiddenTexture->GetProperties().AllocBuffer(0, 0);
-        cameraHiddenTexture->ReadData(*pixelData);
-        Color pixelColor = pixelData->GetColorAt(50, 50);
-        // ######################################################
-
-        // ######################################################
         _camera = Camera::Create();
         _camera->SetRenderTarget(gCoreApplication().GetWindow());
-        //_camera->GetViewport()->SetArea(Rect2(0.0f, 0.0f, 0.5f, 0.5f));
+        _camera->GetViewport()->SetClearColorValue(Color(0.17f, 0.64f, 1.0f, 1.0f));
         _camera->SetMain(true);
         // ######################################################
 
         // ######################################################
-        {
-            FileStream shaderFile("Data/Shaders/Raw/Test/Color_VS.hlsl");
-
-            GPU_PROGRAM_DESC vertexShaderProgramDesc;
-            vertexShaderProgramDesc.Type = GPT_VERTEX_PROGRAM;
-            vertexShaderProgramDesc.EntryPoint = "main";
-            vertexShaderProgramDesc.Language = "hlsl";
-            vertexShaderProgramDesc.Source = shaderFile.GetAsString();
-
-            _colorVertexShader = GpuProgram::Create(vertexShaderProgramDesc);
-        }
-        // ######################################################
-
-        // ######################################################
-        {
-            FileStream shaderFile("Data/Shaders/Raw/Test/Color_PS.hlsl");
-
-            GPU_PROGRAM_DESC pixelShaderProgramDesc;
-            pixelShaderProgramDesc.Type = GPT_PIXEL_PROGRAM;
-            pixelShaderProgramDesc.EntryPoint = "main";
-            pixelShaderProgramDesc.Language = "hlsl";
-            pixelShaderProgramDesc.Source = shaderFile.GetAsString();
-
-            _colorPixelShader = GpuProgram::Create(pixelShaderProgramDesc);
-        }
+        gSceneManager().SetMainRenderTarget(gCoreApplication().GetWindow());
         // ######################################################
 
         // ######################################################
@@ -547,24 +381,34 @@ namespace te
 
         // ######################################################
         BLEND_STATE_DESC blendDesc;
-        RASTERIZER_STATE_DESC rastDesc;
-        DEPTH_STENCIL_STATE_DESC depthDesc;
 
+        RASTERIZER_STATE_DESC rastDesc;
+        rastDesc.polygonMode = PM_SOLID;
+        rastDesc.cullMode = CULL_CLOCKWISE;
+        rastDesc.multisampleEnable = true;
+        rastDesc.depthClipEnable = true;
+
+        DEPTH_STENCIL_STATE_DESC depthDesc;
         depthDesc.DepthReadEnable = true;
         depthDesc.DepthWriteEnable = true;
         depthDesc.StencilEnable = true;
+
+        depthDesc.FrontStencilFailOp = SOP_KEEP;
+        depthDesc.FrontStencilZFailOp = SOP_INCREMENT_WRAP;
+        depthDesc.FrontStencilPassOp = SOP_KEEP;
+        depthDesc.FrontStencilComparisonFunc = CMPF_ALWAYS_PASS;
+
+        depthDesc.BackStencilFailOp = SOP_KEEP;
+        depthDesc.BackStencilZFailOp = SOP_DECREMENT_WRAP;
+        depthDesc.BackStencilPassOp = SOP_KEEP;
+        depthDesc.BackStencilComparisonFunc = CMPF_ALWAYS_PASS;
 
         SAMPLER_STATE_DESC samplerDesc;
         samplerDesc.AddressMode = UVWAddressingMode();
         samplerDesc.MinFilter = FO_ANISOTROPIC;
         samplerDesc.MagFilter = FO_ANISOTROPIC;
         samplerDesc.MipFilter = FO_ANISOTROPIC;
-        samplerDesc.MaxAnisotropy = 4;
-
-        rastDesc.polygonMode = PM_SOLID; // Draw wireframe instead of solid
-        rastDesc.cullMode = CULL_COUNTERCLOCKWISE; // Disable blackface culling
-        rastDesc.multisampleEnable = true;
-        rastDesc.depthClipEnable = true;
+        samplerDesc.MaxAnisotropy = 8;
 
         SPtr<BlendState> blendState = BlendState::Create(blendDesc);
         SPtr<RasterizerState> rasterizerState = RasterizerState::Create(rastDesc);
@@ -581,9 +425,9 @@ namespace te
         SPtr<GraphicsPipelineState> graphicsPipeline = GraphicsPipelineState::Create(pipeDesc);
         RenderAPI::Instance().SetGraphicsPipeline(graphicsPipeline);
 
-        SPtr<GpuParams> params = GpuParams::Create(graphicsPipeline);
-        params->SetTexture(5, 0, loadTextureCubeMap.GetInternalPtr(), GpuParams::COMPLETE);
-        params->SetSamplerState(6, 0, samplerState);
+        _params = GpuParams::Create(graphicsPipeline);
+        _params->SetTexture(5, 0, _loadTexture.GetInternalPtr(), GpuParams::COMPLETE);
+        _params->SetSamplerState(6, 0, samplerState);
         // ######################################################
 
         // ######################################################
@@ -591,62 +435,32 @@ namespace te
 
         if (paramDesc->ParamBlocks.size() > 0)
         {
-            {
-                struct ObjectBuffer
-                {
-                    Matrix4 World;
-                };
+            UINT32 sizeObjectConstantBufferBytes = paramDesc->ParamBlocks["ObjectConstantBuffer"].BlockSize * 4;
+            UINT32 sizeFrameConstantBufferBytes = paramDesc->ParamBlocks["FrameConstantBuffer"].BlockSize * 4;
 
-                struct FrameBuffer
-                {
-                    Matrix4 ViewProj;
-                };
+            _objectConstantBuffer = GpuParamBlockBuffer::Create(sizeObjectConstantBufferBytes);
+            _frameConstantBuffer = GpuParamBlockBuffer::Create(sizeFrameConstantBufferBytes);
 
-                UINT32 sizeObjectConstantBufferBytes = paramDesc->ParamBlocks["ObjectConstantBuffer"].BlockSize * 4;
-                UINT32 sizeFrameConstantBufferBytes = paramDesc->ParamBlocks["FrameConstantBuffer"].BlockSize * 4;
+            Transform transformCamera;
+            Transform transformObject;
+            ObjectBuffer objectBuffer;
 
-                _objectConstantBuffer = GpuParamBlockBuffer::Create(sizeObjectConstantBufferBytes);
-                _frameConstantBuffer = GpuParamBlockBuffer::Create(sizeFrameConstantBufferBytes);
+            UINT32 width = _window->GetProperties().Width;
+            UINT32 height = _window->GetProperties().Height;
 
-                Transform transformCamera;
-                Transform transformObject;
-                ObjectBuffer objectBuffer;
-                FrameBuffer frameBuffer;
+            transformCamera.Move(Vector3(5.0f, 2.0f, 4.0f));
+            Vector3 forward = Vector3(1.5f, 0.0f, 0.0f) - transformCamera.GetPosition();
+            Quaternion rotation = transformCamera.GetRotation();
+            rotation.LookRotation(forward, Vector3::UNIT_Y);
+            transformCamera.SetRotation(rotation);
 
-                UINT32 width = _window->GetProperties().Width;
-                UINT32 height = _window->GetProperties().Height;
+            _camera->SetTransform(transformCamera);
+            _camera->SetHorzFOV(Radian(Math::HALF_PI));
 
-                transformCamera.Move(Vector3(2.0f, 2.0f, 3.0f));
-
-
-                Vector3 forward = Vector3(0.0f, 0.0f, 0.0f) - transformCamera.GetPosition();
-
-                Quaternion rotation = transformCamera.GetRotation();
-                rotation.LookRotation(forward, Vector3::UNIT_Y);
-                transformCamera.SetRotation(rotation);
-
-                _camera->SetTransform(transformCamera);
-                _camera->SetAspectRatio((float)width / (float)height);
-                //_camera->SetHorzFOV(Radian(5.0f));
-
-                //transformObject.Move(Vector3(0.0f, 0.0f, 5.0f));
-
-                frameBuffer.ViewProj = _camera->GetViewMatrix().Transpose() * _camera->GetProjectionMatrixRS().Transpose();
-
-                objectBuffer.World = transformObject.GetMatrix().Transpose();
-
-                _objectConstantBuffer->Write(0, &objectBuffer, sizeof(ObjectBuffer));
-                _frameConstantBuffer->Write(0, &frameBuffer, sizeof(FrameBuffer));
-
-                Vector4 point(1.0f, 1.0f, 1.0f, 1.0f);
-                Vector4 position = objectBuffer.World.Multiply(point);
-                position = frameBuffer.ViewProj.Multiply(point);
-
-                int i = 0;
-            }
-
-            params->SetParamBlockBuffer(0, 0, _frameConstantBuffer);
-            params->SetParamBlockBuffer(0, 1, _objectConstantBuffer);
+            objectBuffer.World = transformObject.GetMatrix().Transpose();
+            _objectConstantBuffer->Write(0, &objectBuffer, sizeof(ObjectBuffer));
+            _params->SetParamBlockBuffer(0, 1, _objectConstantBuffer);
+            _camera->MarkCoreClean();
         }
         // ######################################################
 
@@ -657,7 +471,6 @@ namespace te
         _indexBuffer = _loadedMesh->GetIndexBuffer();
 
         SPtr<MeshData> data = _loadedMesh->GetCachedData();
-
         UINT8* srcVertBufferData = data->GetStreamData(0);
         UINT32* srcIndexBufferData = data->GetIndices32();
 
@@ -673,15 +486,11 @@ namespace te
 
         VertexDump* dump = (VertexDump*)(srcVertBufferData);
 
-        _loadedMesh->WriteData(*_loadedMesh->GetCachedData(), false);
-
         rapi.SetVertexDeclaration(_vertexDeclaration);
         rapi.SetVertexBuffers(0, &_vertexBuffer, 1);
         rapi.SetIndexBuffer(_indexBuffer);
-        rapi.SetGpuParams(params);
+        rapi.SetGpuParams(_params);
         // ######################################################
-
-        CoreObjectManager& i = CoreObjectManager::Instance();
 #endif
     }
 
@@ -691,14 +500,29 @@ namespace te
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         rapi.SetRenderTarget(_camera->GetViewport()->GetTarget());
 
+        if (_camera->IsCoreDirty())
+        {
+            SPtr<GpuParamDesc> paramDesc = _textureVertexShader->GetParamDesc();
+            if (paramDesc->ParamBlocks.size() > 0)
+            {
+                FrameBuffer frameBuffer;
+                frameBuffer.ViewProj = _camera->GetViewMatrix().Transpose() * _camera->GetProjectionMatrix().Transpose();
+                _frameConstantBuffer->Write(0, &frameBuffer, sizeof(FrameBuffer));
+                _params->SetParamBlockBuffer(0, 0, _frameConstantBuffer);
+                rapi.SetGpuParams(_params);
+            }
+
+            _camera->MarkCoreClean();
+        }
+
         UINT32 clearBuffers = FBT_COLOR | FBT_DEPTH | FBT_STENCIL;
         rapi.ClearViewport(clearBuffers, _camera->GetViewport()->GetClearColorValue());
-
-        //rapi.SetViewport(_camera->GetViewport()->GetArea());
     
         UINT32 numIndices = _indexBuffer->GetProperties().GetNumIndices();
         UINT32 numVertices = _vertexBuffer->GetProperties().GetNumVertices();
+        
         rapi.DrawIndexed(0, numIndices, 0, numVertices);
+        //rapi.DrawIndexed(_loadedMesh->GetProperties().GetSubMesh(1).IndexOffset, _loadedMesh->GetProperties().GetSubMesh(1).IndexCount, 0, numVertices);
 
         RenderAPI::Instance().SwapBuffers(_camera->GetViewport()->GetTarget());
 #endif
@@ -710,15 +534,12 @@ namespace te
         _vertexDeclaration = nullptr;
         _indexBuffer = nullptr;
         _vertexBuffer = nullptr;
-        _colorVertexShader = nullptr;
-        _colorPixelShader = nullptr;
         _textureVertexShader = nullptr;
         _texturePixelShader = nullptr;
         _objectConstantBuffer = nullptr;
         _frameConstantBuffer = nullptr;
-
         _camera = nullptr;
-        _cameraHidden = nullptr;
+        _params = nullptr;
 #endif
         _window = nullptr;
 

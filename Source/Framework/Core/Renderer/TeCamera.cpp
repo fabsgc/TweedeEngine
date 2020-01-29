@@ -72,17 +72,24 @@ namespace te
     {
         SceneActor::SetTransform(transform);
         _needComputeView = true;
+        _markCoreDirty();
     }
 
     void Camera::SetFlags(UINT32 flags)
     {
         _cameraFlags = flags;
+        _markCoreDirty();
     }
 
     void Camera::SetHorzFOV(const Radian& fov)
     {
-        _horzFOV = fov;
+        if (fov <= Radian(Math::PI))
+            _horzFOV = fov;
+        else
+            _horzFOV = Radian(Math::PI);
+
         InvalidateFrustum();
+        _markCoreDirty();
     }
 
     void Camera::SetNearClipDistance(float nearPlane)
@@ -95,18 +102,21 @@ namespace te
 
         _nearDist = nearPlane;
         InvalidateFrustum();
+        _markCoreDirty();
     }
 
     void Camera::SetFarClipDistance(float farPlane)
     {
         _farDist = farPlane;
         InvalidateFrustum();
+        _markCoreDirty();
     }
 
     void Camera::SetAspectRatio(float r)
     {
         _aspect = r;
         InvalidateFrustum();
+        _markCoreDirty();
     }
 
     float Camera::GetAspectRatio() const
@@ -187,6 +197,7 @@ namespace te
     {
         _projType = pt;
         InvalidateFrustum();
+        _markCoreDirty();
     }
 
     ProjectionType Camera::GetProjectionType() const
@@ -200,12 +211,14 @@ namespace te
         _aspect = w / h;
 
         InvalidateFrustum();
+        _markCoreDirty();
     }
 
     void Camera::SetOrthoWindowHeight(float h)
     {
         _orthoHeight = h;
         InvalidateFrustum();
+        _markCoreDirty();
     }
 
     float Camera::GetOrthoWindowHeight() const
@@ -217,6 +230,7 @@ namespace te
     {
         _orthoHeight = w / _aspect;
         InvalidateFrustum();
+        _markCoreDirty();
     }
 
     float Camera::GetOrthoWindowWidth() const
@@ -279,7 +293,7 @@ namespace te
         Vector2 ndcPoint;
         ndcPoint.x = (float)(((screenPoint.x - viewport.x) / (float)viewport.width) * 2.0f - 1.0f);
 
-        const Conventions& rapiConventions = RenderAPI::Instance().GetCapabilities().Convention;
+        const Conventions& rapiConventions = gCaps().Convention;
         if (rapiConventions.NDC_YAxis == Conventions::Axis::Down)
         {
             ndcPoint.y = (float)(((screenPoint.y - viewport.y) / (float)viewport.height) * 2.0f - 1.0f);
@@ -327,7 +341,7 @@ namespace te
         Vector2I screenPoint;
         screenPoint.x = Math::RoundToInt(viewport.x + ((ndcPoint.x + 1.0f) * 0.5f) * viewport.width);
 
-        const Conventions& rapiConventions = RenderAPI::Instance().GetCapabilities().Convention;
+        const Conventions& rapiConventions = gCaps().Convention;
         if (rapiConventions.NDC_YAxis == Conventions::Axis::Down)
         {
             screenPoint.y = Math::RoundToInt(viewport.y + (ndcPoint.y + 1.0f) * 0.5f * viewport.height);
@@ -605,5 +619,10 @@ namespace te
     Rect2I Camera::GetViewportRect() const
     {
         return _viewport->GetPixelArea();
+    }
+
+    void Camera::_markCoreDirty(ActorDirtyFlag flag)
+    {
+        MarkCoreDirty((UINT32)flag);
     }
 }

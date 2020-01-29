@@ -53,7 +53,7 @@ namespace te
         void SwapBuffers(const SPtr<RenderTarget>& target) override;
 
         /** @copydoc RenderAPI::SetRenderTarget */
-        void SetRenderTarget(const SPtr<RenderTarget>& target) override;
+        void SetRenderTarget(const SPtr<RenderTarget>& target, UINT32 readOnlyFlags) override;
 
         /** @copydoc RenderAPI::ClearRenderTarget */
         void ClearRenderTarget(UINT32 buffers, const Color& color = Color::Black, float depth = 1.0f, UINT16 stencil = 0, UINT8 targetMask = 0xFF) override;
@@ -63,6 +63,9 @@ namespace te
 
         /** @copydoc RenderAPI::ConvertProjectionMatrix() */
         void ConvertProjectionMatrix(const Matrix4& matrix, Matrix4& dest) override;
+
+        /**	Creates render system capabilities that specify which features are or aren't supported. */
+        void InitCapabilities(RenderAPICapabilities& caps) const;
 
     private:
         GLGLSLProgramFactory* _GLSLFactory = nullptr;

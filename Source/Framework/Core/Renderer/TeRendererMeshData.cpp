@@ -131,6 +131,17 @@ namespace te
         te_delete(colors);
     }
 
+    void RendererMeshData::GetColors(Vector4* buffer, UINT32 size)
+    {
+        if (!_meshData->GetVertexDesc()->HasElement(VES_COLOR))
+            return;
+
+        UINT32 numElements = _meshData->GetNumVertices();
+        assert(numElements * sizeof(Vector4) == size);
+
+        _meshData->SetVertexData(VES_COLOR, buffer, size);
+    }
+
     void RendererMeshData::SetColors(Color* buffer, UINT32 size)
     {
         if (!_meshData->GetVertexDesc()->HasElement(VES_COLOR))
@@ -148,6 +159,17 @@ namespace te
         _meshData->SetVertexData(VES_COLOR, colors, size);
 
         te_delete(colors);
+    }
+
+    void RendererMeshData::SetColors(Vector4* buffer, UINT32 size)
+    {
+        if (!_meshData->GetVertexDesc()->HasElement(VES_COLOR))
+            return;
+
+        UINT32 numElements = _meshData->GetNumVertices();
+        assert(numElements * sizeof(Vector4) == size);
+
+        _meshData->SetVertexData(VES_COLOR, buffer, size);
     }
 
     void RendererMeshData::GetUV0(Vector2* buffer, UINT32 size)

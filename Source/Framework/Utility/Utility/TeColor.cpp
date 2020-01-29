@@ -1,5 +1,6 @@
 #include "TeColor.h"
 #include "Math/TeMath.h"
+#include "Math/TeVector4.h"
 
 namespace te
 {
@@ -62,5 +63,10 @@ namespace te
         val32 += val8;
 
         return val32;
+    }
+
+    Vector4 Color::GetAsVector4() const
+    {
+        return Vector4(r, g, b, a);
     }
 }

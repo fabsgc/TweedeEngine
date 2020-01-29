@@ -2,11 +2,12 @@
 
 #include "TeCorePrerequisites.h"
 #include "CoreUtility/TeCoreObject.h"
+#include "Utility/TeNonCopyable.h"
 
 namespace te
 {
     /** Base class for all resources. */
-    class TE_CORE_EXPORT Resource : public CoreObject
+    class TE_CORE_EXPORT Resource : public CoreObject, public NonCopyable
     {
     public:
         Resource() {};

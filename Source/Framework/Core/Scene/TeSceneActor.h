@@ -5,6 +5,15 @@
 
 namespace te
 {
+    /**	Signals which portion of a scene actor is dirty. */
+    enum class ActorDirtyFlag
+    {
+        Transform = 1 << 0,
+        Mobility = 1 << 1,
+        Active = 1 << 2,
+        Everything = 1 << 3
+    };
+
     /**
      * A base class for objects that can be placed in the scene. It has a transform object that allows it to be positioned,
      * scaled and rotated, as well a properties that control its mobility (movable vs. immovable) and active status.
@@ -43,6 +52,13 @@ namespace te
 
         /** @copydoc SetMobility */
         ObjectMobility GetMobility() const { return _mobility; }
+
+    protected:
+        /**
+         * Marks the simulation thread object as dirty and notifies the system its data should be synced with its core
+         * thread counterpart.
+         */
+        virtual void _markCoreDirty(ActorDirtyFlag flag = ActorDirtyFlag::Everything) { }
 
     protected:
         friend class SceneManager;

@@ -42,4 +42,14 @@ namespace te
     {
         _this = ptrThis;
     }
+
+    void CoreObject::MarkCoreDirty(UINT32 flags)
+    {
+        _coreDirtyFlags |= flags;
+    }
+
+    void CoreObject::RemoveDirtyFlag(UINT32 flags)
+    {
+        _coreDirtyFlags &= ~flags;
+    }
 }

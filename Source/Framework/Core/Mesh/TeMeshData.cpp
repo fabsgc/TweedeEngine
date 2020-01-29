@@ -122,7 +122,6 @@ namespace te
 
         // Copy sub-meshes
         UINT32 meshIdx = 0;
-        indexOffset = 0;
         for(auto& meshData : meshes)
         {
             UINT32 numIndices = meshData->GetNumIndices();
@@ -130,10 +129,9 @@ namespace te
 
             for(auto& subMesh : curSubMeshes)
             {
-                subMeshes.push_back(SubMesh(subMesh.IndexOffset + indexOffset, subMesh.IndexCount, subMesh.DrawOp));
+                subMeshes.push_back(SubMesh(subMesh.IndexOffset, subMesh.IndexCount, subMesh.DrawOp));
             }
 
-            indexOffset += numIndices;
             meshIdx++;
         }
 

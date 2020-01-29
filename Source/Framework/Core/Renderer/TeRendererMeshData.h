@@ -118,6 +118,16 @@ namespace te
         void GetColors(Color* buffer, UINT32 size);
 
         /**
+         * Reads the vertex colors into the provided output buffer. Data will be copied and potentially uncompressed to
+         * fit the output format as needed.
+         *
+         * @param[in]	buffer	Pre-allocated buffer to output the color data to.
+         * @param[in]	size	Size of the pre-allocated buffer. Must be big enough to fit all contents (numVertices *
+         *						sizeof(Color)).
+         */
+        void GetColors(Vector4* buffer, UINT32 size);
+
+        /**
          * Writes the vertex colors from the provided output buffer. Data will be copied and potentially compressed to
          * fit the internal mesh data format as needed.
          *
@@ -125,6 +135,15 @@ namespace te
          * @param[in]	size	Size of the input buffer. Must be (numVertices * sizeof(Color)).
          */
         void SetColors(Color* buffer, UINT32 size);
+
+        /**
+         * Writes the vertex colors from the provided output buffer. Data will be copied and potentially compressed to
+         * fit the internal mesh data format as needed.
+         *
+         * @param[in]	buffer	Pre-allocated buffer to read the color data from.
+         * @param[in]	size	Size of the input buffer. Must be (numVertices * sizeof(Color)).
+         */
+        void SetColors(Vector4* buffer, UINT32 size);
 
         /**
          * Reads the first UV channel coordinates into the provided output buffer. Data will be copied and potentially

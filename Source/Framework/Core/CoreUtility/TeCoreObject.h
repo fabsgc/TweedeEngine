@@ -59,6 +59,33 @@ namespace te
          */
         void SetThisPtr(SPtr<CoreObject> ptrThis);
 
+        /**
+         * Marks the core data as dirty. 
+         *
+         * @param[in]	flags	(optional)	Flags in case you want to signal that only part of the internal data is dirty.
+         */
+        void MarkCoreDirty(UINT32 flags = 0xFFFFFFFF);
+
+        /**
+         * Marks the provided dirty flag
+         *
+         * @param[in]	flags	(optional)	Flags in case you want to signal that only part of the internal data is dirty.
+         */
+        void RemoveDirtyFlag(UINT32 flags);
+
+        /** Marks the core data as clean. Normally called right after syncToCore() has been called. */
+        void MarkCoreClean() { _coreDirtyFlags = 0; }
+
+        /**
+         * Checks is the core dirty flag set. This is used by external systems to know when internal data has changed and
+         * core thread potentially needs to be notified.
+         */
+        bool IsCoreDirty() const { return _coreDirtyFlags != 0; }
+
+        /**
+         * Returns the exact value of the internal flag that signals whether an object needs to be synced with the core thread.
+         */
+        UINT32 GetCoreDirtyFlags() const { return _coreDirtyFlags; }
 
     protected:
         /** Constructs a new core object. */
@@ -69,6 +96,7 @@ namespace te
 
     private:
         volatile UINT8 _flags;
+        UINT32 _coreDirtyFlags;
         UINT64 _internalID; // ID == 0 is not a valid ID
         WPtr<CoreObject> _this;
     };

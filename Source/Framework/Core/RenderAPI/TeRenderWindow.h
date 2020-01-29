@@ -225,9 +225,6 @@ namespace te
         /** Triggers when the OS requests that the window is closed (e.g. user clicks on the X button in the title bar). */
         Event<void()> OnCloseRequested;
 
-        /** Event that gets triggered whenever the render target is resized. */
-        Event<void()> OnResized;
-
     protected:
         RENDER_WINDOW_DESC _desc;
         mutable Mutex _windowMutex;

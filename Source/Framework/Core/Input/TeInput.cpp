@@ -378,19 +378,19 @@ namespace te
 
     void Input::NotifyButtonPressed(UINT32 deviceIdx, ButtonCode code, UINT64 timestamp)
     {
-        TE_PRINT("Button pressed : " + ToString(code) + ":" + ToString(timestamp));
+        // TE_PRINT("Button pressed : " + ToString(code) + ":" + ToString(timestamp));
         ButtonDown(deviceIdx, code, timestamp);
     }
 
     void Input::NotifyButtonReleased(UINT32 deviceIdx, ButtonCode code, UINT64 timestamp)
     {
-        TE_PRINT("Button released : " + ToString(code) + ":" + ToString(timestamp));
+        // TE_PRINT("Button released : " + ToString(code) + ":" + ToString(timestamp));
         ButtonUp(deviceIdx, code, timestamp);
     }
 
     void Input::CharInput(UINT32 chr)
     {
-        TE_PRINT("Char input : " + ToString(chr));
+        // TE_PRINT("Char input : " + ToString(chr));
 
         TextInputEvent textInputEvent;
         textInputEvent.textChar = chr;

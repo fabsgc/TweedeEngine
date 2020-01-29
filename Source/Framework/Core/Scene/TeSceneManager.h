@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
+#include "Utility/TeEvent.h"
 
 namespace te
 {
@@ -22,8 +23,21 @@ namespace te
         /** Notifies the scene manager that a camera was removed. */
         void UnregisterCamera(const SPtr<Camera>& camera);
 
+        /**
+         * Sets the render target that the main camera in the scene (if any) will render its view to. This generally means
+         * the main game window when running standalone, or the Game viewport when running in editor.
+         */
+        void SetMainRenderTarget(const SPtr<RenderTarget>& rt);
+
+    protected:
+        /**	Callback that is triggered when the main render target size is changed. */
+        void OnMainRenderTargetResized();
+
     protected:
         UnorderedMap<Camera*, SPtr<Camera>> _cameras;
+        SPtr<RenderTarget> _mainRenderTarget;
+
+        HEvent _mainRTResizedConn;
     };
 
     /** Provides easy access to the SceneManager. */

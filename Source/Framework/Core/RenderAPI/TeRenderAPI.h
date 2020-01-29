@@ -157,8 +157,12 @@ namespace te
          * Change the render target into which we want to draw.
          * 
          * @param[in]	target					Render target to draw to.
+         * @param[in]	readOnlyFlags			Combination of one or more elements of FrameBufferType denoting which buffers
+         *										will be bound for read-only operations. This is useful for depth or stencil
+         *										buffers which need to be bound both for depth/stencil tests, as well as
+         *										shader reads.
          */
-        virtual void SetRenderTarget(const SPtr<RenderTarget>& target) = 0;
+        virtual void SetRenderTarget(const SPtr<RenderTarget>& target, UINT32 readOnlyFlags = 0) = 0;
 
         /**
          * Clears the currently active render target.
@@ -206,4 +210,10 @@ namespace te
         UINT32 _numDevices;
         RenderAPICapabilities* _capabilities;
     };
+
+    /** Shorthand for RenderAPI::GetCapabilities(). */
+    inline const RenderAPICapabilities& gCaps(UINT32 deviceIdx = 0)
+    {
+        return RenderAPI::Instance().GetCapabilities(deviceIdx);
+    }
 }

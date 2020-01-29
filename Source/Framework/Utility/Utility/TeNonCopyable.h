@@ -5,7 +5,7 @@ namespace te
     /** Interface that prevents copies be made of any type that implements it. */
     class NonCopyable
     {
-    protected:
+    public:
         NonCopyable() = default;
         ~NonCopyable() = default;
 

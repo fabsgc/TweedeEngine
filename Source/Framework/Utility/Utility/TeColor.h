@@ -45,6 +45,9 @@ namespace te
         /** Returns the color as a 32-bit value in RGBA order. */
         RGBA GetAsRGBA() const;
 
+        /** Returns the color as a 4*32-bit float vector in RGBA order. */
+        Vector4 GetAsVector4() const;
+
         /** Pointer accessor for direct copying. */
         float* Ptr()
         {

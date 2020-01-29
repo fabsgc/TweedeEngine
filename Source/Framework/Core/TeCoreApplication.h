@@ -122,9 +122,6 @@ namespace te
         volatile bool _pause;
 
         SPtr<Camera> _camera;
-        SPtr<Camera> _cameraHidden;
-        SPtr<GpuProgram> _colorVertexShader;
-        SPtr<GpuProgram> _colorPixelShader;
         SPtr<GpuProgram> _textureVertexShader;
         SPtr<GpuProgram> _texturePixelShader;
 
@@ -135,6 +132,9 @@ namespace te
         SPtr<VertexDeclaration> _vertexDeclaration;
 
         HMesh _loadedMesh;
+        HTexture _loadTexture;
+
+        SPtr<GpuParams> _params;
     };
 
     /**	Provides easy access to CoreApplication. */

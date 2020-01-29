@@ -1,3 +1,8 @@
+float2 FlipUV(float2 coord)
+{
+    return float2(coord.x - 1.0f, coord.y);
+}
+
 cbuffer FrameConstantBuffer : register(b0)
 {
     matrix ViewProj;
@@ -38,7 +43,7 @@ VS_OUTPUT main( VS_INPUT IN )
 
     OUT.Color = IN.Color;
     OUT.Normal = IN.Normal;
-    OUT.Texture = float2(IN.Texture.x, 1.0 - IN.Texture.y);
+    OUT.Texture = FlipUV(IN.Texture);
 
     return OUT;
 }

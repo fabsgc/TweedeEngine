@@ -21,7 +21,6 @@ namespace te
         bool ImportTangents = true;
         bool ImportColors = true;
         bool ImportSkin = false;
-        float ImportScale = 0.01f;
     };
 
     struct AssimpImportNode
@@ -46,8 +45,9 @@ namespace te
         Vector<Vector3> Normals;
         Vector<Vector3> Tangents;
         Vector<Vector3> Bitangents;
-        Vector<Color> Colors;
+        Vector<Vector4> Colors;
         Vector<Vector2> Textures[OBJECT_IMPORT_MAX_UV_LAYERS];
+        UINT32 MaterialIndex;
 
         SPtr<MeshData> Data;
         Vector<SubMesh> SubMeshes;
@@ -61,6 +61,7 @@ namespace te
         ~AssimpImportScene();
 
         Vector<AssimpImportMesh*> Meshes;
+        Vector<UINT32> MaterialsIndex;
 
         AssimpImportNode* RootNode = nullptr;
 

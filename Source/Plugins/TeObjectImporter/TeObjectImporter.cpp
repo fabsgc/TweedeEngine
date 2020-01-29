@@ -6,8 +6,6 @@
 
 namespace te
 {
-    SPtr<Resource> GetTempMesh(SPtr<const ImportOptions> importOptions);
-
     ObjectImporter::ObjectImporter()
     {
         _extensions.push_back(u8"obj");
@@ -59,16 +57,21 @@ namespace te
             aiProcess_Triangulate |
             aiProcess_JoinIdenticalVertices |
             aiProcess_GenNormals |
+            aiProcess_GenSmoothNormals |
+            aiProcess_CalcTangentSpace |
             aiProcess_GenUVCoords |
-            aiProcess_FlipUVs |
-            aiProcess_FlipWindingOrder |
             aiProcess_OptimizeMeshes |
             aiProcess_OptimizeGraph |
             aiProcess_SortByPType;
 
-        if (meshImportOptions->SplitUV)
+        if (meshImportOptions->FplitUV)
         {
             assimpFlags |= aiProcess_FlipUVs;
+        }
+
+        if (meshImportOptions->FlipWinding)
+        {
+            assimpFlags |= aiProcess_FlipWindingOrder;
         }
 
         if (meshImportOptions->LeftHanded)
@@ -83,7 +86,6 @@ namespace te
         AssimpImportOptions assimpImportOptions;
         assimpImportOptions.ImportNormals = meshImportOptions->ImportNormals;
         assimpImportOptions.ImportTangents = meshImportOptions->ImportTangents;
-        assimpImportOptions.ImportScale = meshImportOptions->ImportScale;
         assimpImportOptions.ImportSkin = meshImportOptions->ImportSkin;
 
         ParseScene(scene, assimpImportOptions, importedScene);
@@ -121,6 +123,14 @@ namespace te
                 CreateImportNode(outputScene, childNode, curImportNode);
 
                 todo.push(childNode);
+            }
+        }
+
+        if (scene->HasMaterials())
+        {
+            for (unsigned int i = 0; i < scene->mNumMaterials; i++)
+            {
+                outputScene.MaterialsIndex.push_back(i);
             }
         }
     }
@@ -179,7 +189,7 @@ namespace te
             }
             else
             {
-                importMesh->Colors[i] = Color::LightGray;
+                importMesh->Colors[i] = Color::LightGray.GetAsVector4();
             }
         }
 
@@ -231,17 +241,46 @@ namespace te
                 importMesh->Textures[i][j] = Vector2(coord.x, coord.y);
             }
         }
+
+        // Import Materials
+        importMesh->MaterialIndex = mesh->mMaterialIndex;
     }
 
-    SPtr<RendererMeshData> ObjectImporter::GenerateMeshData(AssimpImportScene& scene, AssimpImportOptions& options, Vector<SubMesh> subMeshes)
+    SPtr<RendererMeshData> ObjectImporter::GenerateMeshData(AssimpImportScene& scene, AssimpImportOptions& options, Vector<SubMesh>& outputSubMeshes)
     {
         Vector<SPtr<MeshData>> allMeshData;
         Vector<Vector<SubMesh>> allSubMeshes;
+        UINT32 currentIndex = 0;
 
         for (auto& mesh : scene.Meshes)
         {
             Vector<SubMesh> subMeshes;
             UINT32 numIndices = (UINT32)mesh->Indices.size();
+
+            Vector<Vector<UINT32>> indicesPerMaterial;
+
+            // Trying to find all submeshes indices and offset
+            for (UINT i = 0; i < scene.MaterialsIndex.size(); i++)
+            {
+                indicesPerMaterial.push_back(Vector<UINT32>());
+                if (mesh->MaterialIndex == scene.MaterialsIndex[i])
+                {
+                    for (UINT32 j = 0; j < (UINT32)mesh->Indices.size(); j++)
+                    {
+                        UINT32 materialIdx = (UINT32)scene.MaterialsIndex[i];
+                        indicesPerMaterial[materialIdx].push_back(mesh->Indices[j]);
+                    }
+                }
+            }
+            for (auto& subMeshIndices : indicesPerMaterial)
+            {
+                if (subMeshIndices.size() == 0)
+                    continue;
+
+                UINT32 indexCount = (UINT32)subMeshIndices.size();
+                subMeshes.push_back(SubMesh(currentIndex, indexCount, DOT_TRIANGLE_LIST));
+                currentIndex += indexCount;
+            }
 
             UINT32 vertexLayout = (UINT32)VertexLayout::Position;
 
@@ -285,7 +324,7 @@ namespace te
 
                 SPtr<RendererMeshData> meshData = RendererMeshData::Create((UINT32)numVertices, numIndices, (VertexLayout)vertexLayout);
 
-                // Copy indices TODO flipwinding
+                // Copy indices
                 meshData->SetIndices(mesh->Indices.data(), numIndices * sizeof(UINT32));
 
                 // Copy & transform positions
@@ -386,20 +425,17 @@ namespace te
                 }
 
                 allMeshData.push_back(meshData->GetData());
+                allSubMeshes.push_back(subMeshes);
             }
         }
 
         if (allMeshData.size() > 1)
         {
-            return RendererMeshData::Create(MeshData::Combine(allMeshData, allSubMeshes, subMeshes));
+            return RendererMeshData::Create(MeshData::Combine(allMeshData, allSubMeshes, outputSubMeshes));
         }
         else if (allMeshData.size() == 1)
         {
-            SubMesh subMesh;
-            subMesh.IndexOffset = 0;
-            subMesh.IndexCount = allMeshData[0]->GetNumIndices();
-
-            subMeshes.push_back(subMesh);
+            outputSubMeshes = allSubMeshes[0];
             return RendererMeshData::Create(allMeshData[0]);
         }
 
@@ -436,10 +472,14 @@ namespace te
         );
     }
 
-    Color ObjectImporter::ConvertToNativeType(const aiColor4D& color)
+    Vector4 ObjectImporter::ConvertToNativeType(const aiColor4D& color)
     {
-        Color c((float)color.r, (float)color.g, (float)color.b, (float)color.a);
-        return c;
+        return Vector4(
+            (float)color.r,
+            (float)color.g,
+            (float)color.b,
+            (float)color.a
+        );
     }
 
     Vector3 ObjectImporter::ConvertToNativeType(const aiVector3D& vector)
@@ -450,48 +490,5 @@ namespace te
     Vector2 ObjectImporter::ConvertToNativeType(const aiVector2D& vector)
     {
         return Vector2((float)vector.x, (float)vector.y);
-    }
-
-    SPtr<Resource> GetTempMesh(SPtr<const ImportOptions> importOptions)
-    {
-        const MeshImportOptions* meshImportOptions = static_cast<const MeshImportOptions*>(importOptions.get());
-
-        MESH_DESC meshDesc;
-        meshDesc.Usage = MU_STATIC;
-
-        if (meshImportOptions->CpuCached)
-        {
-            meshDesc.Usage |= MU_CPUCACHED;
-        }
-
-        // ###################
-        SPtr<VertexDataDesc> vertexDataxDesc = VertexDataDesc::Create();
-        vertexDataxDesc->AddVertElem(VET_FLOAT4, VES_POSITION);
-
-        meshDesc.NumVertices = 3;
-        meshDesc.NumIndices = 3;
-        meshDesc.Usage = MU_STATIC | MU_CPUCACHED;
-        meshDesc.VertexDesc = vertexDataxDesc;
-
-        HMesh mesh = Mesh::Create(meshDesc);
-        SPtr<MeshData> meshData = MeshData::Create(3, 3, vertexDataxDesc);
-
-        Vector4 vertexPositions[3];
-        for (UINT32 i = 0; i < 3; i++)
-        {
-            vertexPositions[i] = Vector4((float)i, (float)i, (float)i, 1.0f);
-        }
-        // Write the vertices
-        meshData->SetVertexData(VES_POSITION, (UINT8*)vertexPositions, sizeof(vertexPositions));
-
-        UINT32* indices = meshData->GetIndices32();
-        indices[0] = 0;
-        indices[1] = 1;
-        indices[2] = 2;
-        // ###################
-
-        mesh->WriteData(*meshData, false, true);
-        mesh->SetName("dummy mesh");
-        return mesh.GetInternalPtr();
     }
 }

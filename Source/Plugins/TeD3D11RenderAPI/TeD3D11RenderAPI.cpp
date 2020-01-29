@@ -584,7 +584,7 @@ namespace te
         target->SwapBuffers();
     }
 
-    void D3D11RenderAPI::SetRenderTarget(const SPtr<RenderTarget>& target)
+    void D3D11RenderAPI::SetRenderTarget(const SPtr<RenderTarget>& target, UINT32 readOnlyFlags)
     {
         _activeRenderTarget = target;
         _activeRenderTargetModified = false;
@@ -598,7 +598,21 @@ namespace te
         if (target != nullptr)
         {
             target->GetCustomAttribute("RTV", views);
-            target->GetCustomAttribute("RODSV", &depthStencilView);
+            
+            if ((readOnlyFlags & FBT_DEPTH) == 0)
+            {
+                if ((readOnlyFlags & FBT_STENCIL) == 0)
+                    target->GetCustomAttribute("DSV", &depthStencilView);
+                else
+                    target->GetCustomAttribute("WDROSV", &depthStencilView);
+            }
+            else
+            {
+                if ((readOnlyFlags & FBT_STENCIL) == 0)
+                    target->GetCustomAttribute("RODWSV", &depthStencilView);
+                else
+                    target->GetCustomAttribute("RODSV", &depthStencilView);
+            }
         }
 
         // Bind render targets
