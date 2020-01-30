@@ -66,6 +66,8 @@ set (TE_CORE_INC_RENDERER
     "Core/Renderer/TeRenderSettings.h"
     "Core/Renderer/TeRendererMeshData.h"
     "Core/Renderer/TeParamBlocks.h"
+    "Core/Renderer/TeRenderable.h"
+    "Core/Renderer/TeLight.h"
 )
 set (TE_CORE_SRC_RENDERER
     "Core/Renderer/TeRenderer.cpp"
@@ -74,6 +76,8 @@ set (TE_CORE_SRC_RENDERER
     "Core/Renderer/TeRenderSettings.cpp"
     "Core/Renderer/TeRendererMeshData.cpp"
     "Core/Renderer/TeParamBlocks.cpp"
+    "Core/Renderer/TeRenderable.cpp"
+    "Core/Renderer/TeLight.cpp"
 )
 
 set (TE_CORE_INC_SCENE
@@ -229,6 +233,17 @@ set (TE_CORE_INC_SERIALIZATION
     "Core/Serialization/TeSerializable.h"
 )
 set (TE_CORE_SRC_SERIALIZATION
+)
+
+set (TE_CORE_INC_COMPONENTS
+    "Core/Components/TeCCamera.h"
+    "Core/Components/TeCRenderable.h"
+    "Core/Components/TeCLight.h"
+)
+set (TE_CORE_SRC_COMPONENTS
+    "Core/Components/TeCCamera.cpp"
+    "Core/Components/TeCRenderable.cpp"
+    "Core/Components/TeCLight.cpp"
 )
 
 set (TE_CORE_INC_RESOURCE

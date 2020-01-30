@@ -74,9 +74,9 @@ namespace te
         RendererManager::StartUp();
         ResourceManager::StartUp();
         GpuProgramManager::StartUp();
+        GameObjectManager::StartUp();
         SceneManager::StartUp();
         gSceneManager().Initialize();
-        GameObjectManager::StartUp();
 
         LoadPlugin(_startUpDesc.Renderer, &_rendererPlugin);
         LoadPlugin(_startUpDesc.RenderAPI, &_renderAPIPlugin);
@@ -110,8 +110,8 @@ namespace te
         Importer::ShutDown();
         VirtualInput::ShutDown();
         Input::ShutDown();
-        GameObjectManager::ShutDown();
         SceneManager::ShutDown();
+        GameObjectManager::ShutDown();
         GpuProgramManager::ShutDown();
         ResourceManager::ShutDown();
         RendererManager::ShutDown();

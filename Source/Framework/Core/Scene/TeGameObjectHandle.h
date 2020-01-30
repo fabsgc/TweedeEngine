@@ -59,7 +59,7 @@ namespace te
         bool IsDestroyed(bool checkQueued = false) const;
 
         /**	Returns the instance ID of the object the handle is referencing. */
-        UINT64 getInstanceId() const { return _data->Ptr != nullptr ? _data->Ptr->InstanceId : 0; }
+        UINT64 GetInstanceId() const { return _data->Ptr != nullptr ? _data->Ptr->InstanceId : 0; }
 
         /**
          * Returns pointer to the referenced GameObject.
@@ -220,6 +220,25 @@ namespace te
         GameObjectHandle(SPtr<GameObjectHandleData> data)
             :GameObjectHandleBase(std::move(data))
         { }
+
+    public:
+        template<class _Ty>
+        struct Bool_struct
+        {
+            int _Member;
+        };
+
+        /**
+         * Allows direct conversion of handle to bool.
+         *
+         * @note
+         * This is needed because we can't directly convert to bool since then we can assign pointer to bool and that's
+         * weird.
+         */
+        operator int Bool_struct<T>::* () const
+        {
+            return (((_data->Ptr != nullptr) && (_data->Ptr->Object != nullptr)) ? &Bool_struct<T>::_Member : 0);
+        }
     };
 
     /**	Casts one GameObject handle type to another. */
@@ -240,8 +259,8 @@ namespace te
     template<class _Ty1, class _Ty2>
     bool operator==(const GameObjectHandle<_Ty1>& _Left, const GameObjectHandle<_Ty2>& _Right)
     {
-        return (_Left.mData == nullptr && _Right.mData == nullptr) ||
-            (_Left.mData != nullptr && _Right.mData != nullptr && _Left.getInstanceId() == _Right.getInstanceId());
+        return (_Left._data == nullptr && _Right._data == nullptr) ||
+            (_Left._data != nullptr && _Right._data != nullptr && _Left.GetInstanceId() == _Right.GetInstanceId());
     }
 
     /**	Compares if two handles point to different GameObject%s. */

@@ -55,7 +55,8 @@ namespace te
     {
         TID_Component   = 1001,
         TID_CCamera     = 1002,
-        TID_CRenderable = 1003
+        TID_CRenderable = 1003,
+        TID_CLight      = 1004
     };
 }
 
@@ -133,6 +134,8 @@ namespace te
     class Camera;
     class ViewportBase;
     class Viewport;
+    class Light;
+    class Renderable;
 
     class SceneActor;
     class SceneManager;
@@ -183,6 +186,10 @@ namespace te
     class Shader;
 
     class Serializable;
+
+    class CCamera;
+    class CRenderable;
+    class CLight;
 }
 
 #include "RenderAPI/TeCommonTypes.h"
