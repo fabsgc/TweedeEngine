@@ -25,10 +25,10 @@ namespace te
         friend class SceneObject;
 
         /** @copydoc Component::OnInitialized */
-        void OnInitialized() override;
+        void OnInitialized() override { } 
 
         /** @copydoc Component::onDestroyed */
-        void OnDestroyed() override;
+        void OnDestroyed() override { }
 
         /** @copydoc Component::update */
         void Update() override { }
