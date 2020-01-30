@@ -192,7 +192,7 @@ namespace te
          */
         SPtr<T> GetInternalPtr() const
         {
-            ThrowIfDestroyed()
+            ThrowIfDestroyed():
             return std::static_pointer_cast<T>(_data->Ptr->Object);
         }
 
