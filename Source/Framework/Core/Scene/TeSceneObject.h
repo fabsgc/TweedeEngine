@@ -378,7 +378,7 @@ namespace te
             const HComponent newComponent =
                 static_object_cast<Component>(GameObjectManager::Instance().RegisterObject(gameObject));
 
-            addAndInitializeComponent(newComponent);
+            AddAndInitializeComponent(newComponent);
             return static_object_cast<T>(newComponent);
         }
 
@@ -428,6 +428,16 @@ namespace te
 
             return gameObject;
         }
+
+    private:
+        /**	Adds the component to the internal component array. */
+        void AddComponentInternal(const SPtr<Component>& component);
+
+        /**	Adds the component to the internal component array, and initializes it. */
+        void AddAndInitializeComponent(const HComponent& component);
+
+        /**	Adds the component to the internal component array, and initializes it. */
+        void AddAndInitializeComponent(const SPtr<Component>& component);
 
     private:
         Transform _localTfrm;

@@ -27,10 +27,10 @@ namespace te
         /** @copydoc Component::OnInitialized */
         void OnInitialized() override { }
 
-        /** @copydoc Component::onDestroyed */
+        /** @copydoc Component::OnDestroyed */
         void OnDestroyed() override { }
 
-        /** @copydoc Component::update */
+        /** @copydoc Component::Update */
         void Update() override { }
 
     protected:

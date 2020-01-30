@@ -635,4 +635,40 @@ namespace te
 
         return HComponent();
     }
+
+    void SceneObject::AddComponentInternal(const SPtr<Component>& component)
+    {
+        HComponent newComponent = static_object_cast<Component>(
+            GameObjectManager::Instance().GetObjectHandle(component->GetInstanceId()));
+        newComponent->_parent = _thisHandle;
+        newComponent->mThisHandle = newComponent;
+
+        _components.push_back(newComponent);
+    }
+
+    void SceneObject::AddAndInitializeComponent(const HComponent& component)
+    {
+        component->mThisHandle = component;
+
+        if (component->_UUID.Empty())
+            component->_UUID = UUIDGenerator::GenerateRandom();
+
+        _components.push_back(component);
+
+        if (IsInstantiated())
+        {
+            component->_instantiate();
+
+            gSceneManager()._notifyComponentCreated(component, GetActive());
+        }
+    }
+
+    void SceneObject::AddAndInitializeComponent(const SPtr<Component>& component)
+    {
+        HComponent newComponent = static_object_cast<Component>(
+            GameObjectManager::Instance().GetObjectHandle(component->GetInstanceId()));
+        newComponent->_parent = _thisHandle;
+
+        AddAndInitializeComponent(newComponent);
+    }
 }
