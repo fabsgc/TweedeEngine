@@ -164,7 +164,7 @@ namespace te
         /**	Invalidates the handle. */
         GameObjectHandle<T>& operator=(std::nullptr_t ptr)
         {
-            _data = te_shared_ptr_new<GameObjectHandleData>()
+            _data = te_shared_ptr_new<GameObjectHandleData>();
             return *this;
         }
 
