@@ -2,7 +2,7 @@
 #include "Importer/TeMeshImportOptions.h"
 #include "Mesh/TeMesh.h"
 #include "Mesh/TeMeshData.h"
-#include "Utility/TeColor.h"
+#include "Image/TeColor.h"
 
 namespace te
 {

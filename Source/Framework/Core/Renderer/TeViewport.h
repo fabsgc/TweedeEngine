@@ -2,7 +2,7 @@
 
 #include "TeCorePrerequisites.h"
 #include "Math/TeRect2.h"
-#include "Utility/TeColor.h"
+#include "Image/TeColor.h"
 #include "CoreUtility/TeCoreObject.h"
 
 namespace te

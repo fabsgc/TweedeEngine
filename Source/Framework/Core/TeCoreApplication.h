@@ -3,6 +3,7 @@
 #include "TeCorePrerequisites.h"
 #include "RenderAPI/TeRenderWindow.h"
 #include "Utility/TeModule.h"
+#include "Renderer/TeParamBlocks.h"
 
 namespace te
 {
@@ -18,6 +19,15 @@ namespace te
 
         Vector<String> Importers; /** A list of importer plugins to load. */
     };
+
+    TE_PARAM_BLOCK_BEGIN(FrameConstantBuffer)
+        TE_PARAM_BLOCK_ENTRY(Matrix4, ViewProj)
+        TE_PARAM_BLOCK_ENTRY(Vector3, WorldCamera)
+    TE_PARAM_BLOCK_END
+
+    TE_PARAM_BLOCK_BEGIN(ObjectConstantBuffer)
+        TE_PARAM_BLOCK_ENTRY(Matrix4, World)
+    TE_PARAM_BLOCK_END
 
     /**
      * Represents the primary entry point for the core systems. Handles start-up, shutdown, primary loop and allows you to
@@ -130,6 +140,8 @@ namespace te
         SPtr<GpuParamBlockBuffer> _objectConstantBuffer;
         SPtr<GpuParamBlockBuffer> _frameConstantBuffer;
         SPtr<VertexDeclaration> _vertexDeclaration;
+        FrameConstantBuffer _defFrameBuffer;
+        ObjectConstantBuffer _defObjectBuffer;
 
         HMesh _loadedMesh;
         HTexture _loadTexture;

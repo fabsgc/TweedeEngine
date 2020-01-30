@@ -1,6 +1,6 @@
 #include "TePixelData.h"
 #include "Image/TePixelUtil.h"
-#include "Utility/TeColor.h"
+#include "Image/TeColor.h"
 #include "Math/TeVector2.h"
 #include "Math/TeMath.h"
 

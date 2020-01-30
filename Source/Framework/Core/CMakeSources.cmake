@@ -187,12 +187,14 @@ set (TE_CORE_INC_IMAGE
     "Core/Image/TePixelData.h"
     "Core/Image/TePixelUtil.h"
     "Core/Image/TePixelVolume.h"
+    "Core/Image/TeColor.h"
 )
 set (TE_CORE_SRC_IMAGE
     "Core/Image/TeTexture.cpp"
     "Core/Image/TeTextureManager.cpp"
     "Core/Image/TePixelData.cpp"
     "Core/Image/TePixelUtil.cpp"
+    "Core/Image/TeColor.cpp"
 )
 
 set (TE_CORE_INC_MESH

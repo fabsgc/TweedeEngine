@@ -1,5 +1,5 @@
 #include "TeTextureManager.h"
-#include "Utility/TeColor.h"
+#include "Image/TeColor.h"
 
 namespace te
 {

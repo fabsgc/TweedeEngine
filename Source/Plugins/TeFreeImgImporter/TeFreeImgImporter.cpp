@@ -1,12 +1,12 @@
 #include "TeFreeImgImporter.h"
 #include "Importer/TeTextureImportOptions.h"
-#include "FreeImage.h"
+#include "Image/TeColor.h"
 #include "Image/TeTexture.h"
 #include "Image/TePixelData.h"
-#include "Utility/TeBitwise.h"
 #include "Image/TePixelUtil.h"
+#include "Utility/TeBitwise.h"
 #include "Utility/TeFileStream.h"
-#include "Utility/TeColor.h"
+#include "FreeImage.h"
 
 namespace te
 {

@@ -3,7 +3,7 @@
 #include "Math/TeVector2.h"
 #include "Math/TeVector3.h"
 #include "Math/TeVector4.h"
-#include "Utility/TeColor.h"
+#include "Image/TeColor.h"
 #include "Image/TePixelUtil.h"
 #include "Manager/TeRendererManager.h"
 #include "Renderer/TeRenderer.h"

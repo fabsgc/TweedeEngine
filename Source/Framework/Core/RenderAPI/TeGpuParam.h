@@ -9,7 +9,7 @@
 #include "Math/TeMatrixNxM.h"
 #include "Math/TeVector3I.h"
 #include "Math/TeVector4I.h"
-#include "Utility/TeColor.h"
+#include "Image/TeColor.h"
 
 namespace te
 {

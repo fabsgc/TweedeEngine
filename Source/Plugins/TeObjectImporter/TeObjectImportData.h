@@ -2,7 +2,7 @@
 
 #include "TeObjectImporterPrerequisites.h"
 #include "Renderer/TeRendererMeshData.h"
-#include "Utility/TeColor.h"
+#include "Image/TeColor.h"
 #include "Math/TeVector3.h"
 #include "Math/TeVector2.h"
 #include "Math/TeMatrix4.h"

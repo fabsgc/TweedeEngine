@@ -1,5 +1,5 @@
 #include "TeD3D11Mappings.h"
-#include "Utility/TeColor.h"
+#include "Image/TeColor.h"
 #include "Image/TeTexture.h"
 #include "Image/TePixelUtil.h"
 

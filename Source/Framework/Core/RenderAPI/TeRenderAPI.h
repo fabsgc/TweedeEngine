@@ -4,7 +4,7 @@
 #include "Utility/TeModule.h"
 #include "RenderAPI/TeRenderTarget.h"
 #include "RenderAPI/TeRenderWindow.h"
-#include "Utility/TeColor.h"
+#include "Image/TeColor.h"
 
 namespace te
 {

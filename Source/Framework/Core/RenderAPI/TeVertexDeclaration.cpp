@@ -1,5 +1,5 @@
 #include "TeVertexDeclaration.h"
-#include "Utility/TeColor.h"
+#include "Image/TeColor.h"
 #include "RenderAPI/TeHardwareBufferManager.h"
 
 namespace te

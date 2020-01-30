@@ -1,7 +1,7 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
-#include "Utility/TeColor.h"
+#include "Image/TeColor.h"
 #include "CoreUtility/TeCoreObject.h"
 
 #include <cfloat>

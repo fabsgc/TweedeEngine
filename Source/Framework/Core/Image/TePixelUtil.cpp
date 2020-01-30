@@ -1,5 +1,5 @@
 #include "Image/TePixelUtil.h"
-#include "Utility/TeColor.h"
+#include "Image/TeColor.h"
 #include "Math/TeMath.h"
 #include "Image/TeTexture.h"
 #include "Utility/TeBitwise.h"

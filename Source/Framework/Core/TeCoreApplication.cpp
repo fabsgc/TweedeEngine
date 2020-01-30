@@ -48,8 +48,6 @@
 #include "Mesh/TeMeshData.h"
 #include "Mesh/TeMeshUtility.h"
 
-#include "Renderer/TeParamBlocks.h"
-
 namespace te
 {
     TE_MODULE_STATIC_MEMBER(CoreApplication)
@@ -312,15 +310,6 @@ namespace te
         gDynLibManager().Unload(library);
     }
 
-    struct ObjectBuffer
-    {
-        Matrix4 World;
-    };
-
-    struct FrameBuffer
-    {
-        Matrix4 ViewProj;
-    };
 
     void CoreApplication::TestStartUp()
     {
@@ -344,17 +333,6 @@ namespace te
         TE_PRINT((_loadTexture.GetHandleData())->uuid.ToString());
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
-
-        TE_PARAM_BLOCK_BEGIN(DebugDrawParamsDef)
-            TE_PARAM_BLOCK_ENTRY(Vector3, Position)
-            TE_PARAM_BLOCK_ENTRY(Vector4, Normal)
-            TE_PARAM_BLOCK_END
-
-            DebugDrawParamsDef def;
-        SPtr<GpuParamBlockBuffer> paramBlock = def.CreateBuffer();
-        def.Position.Set(paramBlock, Vector3(0.707f, 0.707f, 0.0f));
-        def.Normal.Set(paramBlock, Vector4(0.707f, 0.707f, 0.0f, 0.0f));
-
         // ######################################################
         _camera = Camera::Create();
         _camera->SetRenderTarget(gCoreApplication().GetWindow());
@@ -450,21 +428,17 @@ namespace te
 
         if (paramDesc->ParamBlocks.size() > 0)
         {
-            UINT32 sizeObjectConstantBufferBytes = paramDesc->ParamBlocks["ObjectConstantBuffer"].BlockSize * 4;
-            UINT32 sizeFrameConstantBufferBytes = paramDesc->ParamBlocks["FrameConstantBuffer"].BlockSize * 4;
-
-            _objectConstantBuffer = GpuParamBlockBuffer::Create(sizeObjectConstantBufferBytes);
-            _frameConstantBuffer = GpuParamBlockBuffer::Create(sizeFrameConstantBufferBytes);
-
-            Transform transformCamera;
-            Transform transformObject;
-            ObjectBuffer objectBuffer;
+            _objectConstantBuffer = _defObjectBuffer.CreateBuffer();
+            _frameConstantBuffer = _defFrameBuffer.CreateBuffer();
 
             UINT32 width = _window->GetProperties().Width;
             UINT32 height = _window->GetProperties().Height;
 
-            transformCamera.Move(Vector3(5.0f, 2.0f, 4.0f));
-            Vector3 forward = Vector3(1.5f, 0.0f, 0.0f) - transformCamera.GetPosition();
+            Transform transformCamera;
+            Transform transformObject;
+
+            transformCamera.Move(Vector3(4.0f, 2.0f, 5.0f));
+            Vector3 forward = Vector3(1.0f, 0.5f, 0.0f) - transformCamera.GetPosition();
             Quaternion rotation = transformCamera.GetRotation();
             rotation.LookRotation(forward, Vector3::UNIT_Y);
             transformCamera.SetRotation(rotation);
@@ -472,8 +446,7 @@ namespace te
             _camera->SetTransform(transformCamera);
             _camera->SetHorzFOV(Radian(Math::HALF_PI));
 
-            objectBuffer.World = transformObject.GetMatrix().Transpose();
-            _objectConstantBuffer->Write(0, &objectBuffer, sizeof(ObjectBuffer));
+            _defObjectBuffer.World.Set(_objectConstantBuffer, transformObject.GetMatrix().Transpose());
             _params->SetParamBlockBuffer(0, 1, _objectConstantBuffer);
             _camera->MarkCoreClean();
         }
@@ -521,10 +494,11 @@ namespace te
             SPtr<GpuParamDesc> paramDesc = _textureVertexShader->GetParamDesc();
             if (paramDesc->ParamBlocks.size() > 0)
             {
-                FrameBuffer frameBuffer;
-                frameBuffer.ViewProj = _camera->GetViewMatrix().Transpose() * _camera->GetProjectionMatrix().Transpose();
-                _frameConstantBuffer->Write(0, &frameBuffer, sizeof(FrameBuffer));
-                _params->SetParamBlockBuffer(0, 0, _frameConstantBuffer);
+                _defFrameBuffer.ViewProj.Set(_frameConstantBuffer, _camera->GetViewMatrix().Transpose() * _camera->GetProjectionMatrix().Transpose());
+                _defFrameBuffer.WorldCamera.Set(_frameConstantBuffer, _camera->GetTransform().GetPosition());
+
+                _params->SetParamBlockBuffer(GPT_VERTEX_PROGRAM, "FrameConstantBuffer", _frameConstantBuffer);
+                _params->SetParamBlockBuffer(GPT_PIXEL_PROGRAM, "FrameConstantBuffer", _frameConstantBuffer);
                 rapi.SetGpuParams(_params);
             }
 

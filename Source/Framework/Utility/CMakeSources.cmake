@@ -97,7 +97,6 @@ set(TE_UTILITY_INC_UTILITY
     "Utility/Utility/TeUUID.h"
     "Utility/Utility/TeEvent.h"
     "Utility/Utility/TePlatformUtility.h"
-    "Utility/Utility/TeColor.h"
     "Utility/Utility/TeBitwise.h"
     "Utility/Utility/TeFileStream.h"
     "Utility/Utility/TeDataBlob.h"
@@ -109,7 +108,6 @@ set(TE_UTILITY_SRC_UTILITY
     "Utility/Utility/TeTimer.cpp"
     "Utility/Utility/TeUtility.cpp"
     "Utility/Utility/TeUUID.cpp"
-    "Utility/Utility/TeColor.cpp"
     "Utility/Utility/TeFileStream.cpp"
 )
 
