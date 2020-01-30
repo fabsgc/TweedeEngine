@@ -51,6 +51,16 @@
 
 namespace te
 {
+    enum TypeID_Core
+    {
+        TID_Component   = 1001,
+        TID_CCamera     = 1002,
+        TID_CRenderable = 1003
+    };
+}
+
+namespace te
+{
     class CoreApplication;
     struct START_UP_DESC;
 
@@ -125,6 +135,13 @@ namespace te
     class Viewport;
 
     class SceneActor;
+    class SceneManager;
+    class SceneObject;
+    class GameObject;
+    class Component;
+    template <typename T>
+    class GameObjectHandle;
+    class GameObjectManager;
 
     class CoreObject;
     class CoreObjectManager;
@@ -164,7 +181,11 @@ namespace te
     class MeshData;
 
     class Shader;
+
+    class Serializable;
 }
+
+#include "RenderAPI/TeCommonTypes.h"
 
 #include "Resources/TeResourceHandle.h"
 
@@ -177,4 +198,11 @@ namespace te
     
 }
 
-#include "RenderAPI/TeCommonTypes.h"
+#include "Scene/TeGameObjectHandle.h"
+
+namespace te
+{
+    typedef GameObjectHandle<GameObject> HGameObject;
+    typedef GameObjectHandle<SceneObject> HSceneObject;
+    typedef GameObjectHandle<Component> HComponent;
+}

@@ -80,11 +80,21 @@ set (TE_CORE_INC_SCENE
     "Core/Scene/TeSceneActor.h"
     "Core/Scene/TeSceneManager.h"
     "Core/Scene/TeTransform.h"
+    "Core/Scene/TeComponent.h"
+    "Core/Scene/TeGameObject.h"
+    "Core/Scene/TeGameObjectHandle.h"
+    "Core/Scene/TeGameObjectManager.h"
+    "Core/Scene/TeSceneObject.h"
 )
 set (TE_CORE_SRC_SCENE
     "Core/Scene/TeSceneActor.cpp"
     "Core/Scene/TeSceneManager.cpp"
     "Core/Scene/TeTransform.cpp"
+    "Core/Scene/TeComponent.cpp"
+    "Core/Scene/TeGameObject.cpp"
+    "Core/Scene/TeGameObjectHandle.cpp"
+    "Core/Scene/TeGameObjectManager.cpp"
+    "Core/Scene/TeSceneObject.cpp"
 )
 
 set(TE_CORE_INC_PLATFORM
@@ -215,6 +225,12 @@ set (TE_CORE_SRC_SHADER
     "Core/Shader/TeShader.cpp"
 )
 
+set (TE_CORE_INC_SERIALIZATION
+    "Core/Serialization/TeSerializable.h"
+)
+set (TE_CORE_SRC_SERIALIZATION
+)
+
 set (TE_CORE_INC_RESOURCE
     "Core/Resources/TeResource.h"
     "Core/Resources/TeResourceManager.h"
@@ -280,4 +296,6 @@ set(TE_CORE_SRC
     ${TE_CORE_SRC_SHADER}
     ${TE_CORE_INC_CORE_UTILITY}
     ${TE_CORE_SRC_CORE_UTILITY}
+    ${TE_CORE_INC_SERIALIZATION}
+    ${TE_CORE_SRC_SERIALIZATION}
 )

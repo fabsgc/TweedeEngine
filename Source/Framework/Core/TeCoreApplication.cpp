@@ -2,10 +2,12 @@
 
 #include "Error/TeConsole.h"
 #include "Utility/TeTime.h"
-
 #include "Utility/TeDynLibManager.h"
 #include "Utility/TeDynLib.h"
+#include "Utility/TeFileStream.h"
+
 #include "Threading/TeThreading.h"
+
 #include "Manager/TePluginManager.h"
 #include "Manager/TeRenderAPIManager.h"
 #include "Manager/TeRendererManager.h"
@@ -17,24 +19,8 @@
 #include "Input/TeVirtualInput.h"
 
 #include "RenderAPI/TeRenderAPI.h"
-#include "Renderer/TeRenderer.h"
 #include "RenderAPI/TeCommonTypes.h"
 #include "RenderAPI/TeRenderTexture.h"
-#include "Image/TeTexture.h"
-
-#include "Importer/TeImporter.h"
-#include "Importer/TeMeshImportOptions.h"
-#include "Importer/TeTextureImportOptions.h"
-#include "Importer/TeShaderImportOptions.h"
-
-#include "Renderer/TeCamera.h"
-#include "Scene/TeSceneManager.h"
-#include "CoreUtility/TeCoreObjectManager.h"
-
-#include "Shader/TeShader.h"
-
-#include "Utility/TeFileStream.h"
-
 #include "RenderAPI/TeGpuProgram.h"
 #include "RenderAPI/TeVertexBuffer.h"
 #include "RenderAPI/TeIndexBuffer.h"
@@ -42,7 +28,18 @@
 #include "RenderAPI/TeGpuParams.h"
 #include "RenderAPI/TeGpuParamBlockBuffer.h"
 
-#include "Math/TeVector4.h"
+#include "Importer/TeImporter.h"
+#include "Importer/TeMeshImportOptions.h"
+#include "Importer/TeTextureImportOptions.h"
+#include "Importer/TeShaderImportOptions.h"
+
+#include "Renderer/TeRenderer.h"
+#include "Renderer/TeCamera.h"
+
+#include "Scene/TeSceneManager.h"
+#include "Scene/TeGameObjectManager.h"
+
+#include "CoreUtility/TeCoreObjectManager.h"
 
 #include "Mesh/TeMesh.h"
 #include "Mesh/TeMeshData.h"
@@ -79,6 +76,7 @@ namespace te
         GpuProgramManager::StartUp();
         SceneManager::StartUp();
         gSceneManager().Initialize();
+        GameObjectManager::StartUp();
 
         LoadPlugin(_startUpDesc.Renderer, &_rendererPlugin);
         LoadPlugin(_startUpDesc.RenderAPI, &_renderAPIPlugin);
@@ -112,6 +110,7 @@ namespace te
         Importer::ShutDown();
         VirtualInput::ShutDown();
         Input::ShutDown();
+        GameObjectManager::ShutDown();
         SceneManager::ShutDown();
         GpuProgramManager::ShutDown();
         ResourceManager::ShutDown();
@@ -119,7 +118,6 @@ namespace te
         RenderAPIManager::ShutDown();
         CoreObjectManager::ShutDown();
         Platform::ShutDown();
-
         DynLibManager::ShutDown();
         Time::ShutDown();
         Console::ShutDown();
