@@ -3,10 +3,11 @@
 
 namespace te
 {
+    TE_MODULE_STATIC_MEMBER(CoreObjectManager)
+
     CoreObjectManager::CoreObjectManager()
         :_nextAvailableID(1)
-    {
-    }
+    { }
 
     CoreObjectManager::~CoreObjectManager()
     {

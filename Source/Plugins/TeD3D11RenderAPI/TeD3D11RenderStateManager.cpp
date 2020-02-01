@@ -6,6 +6,8 @@
 
 namespace te
 {
+    TE_MODULE_STATIC_MEMBER(D3D11RenderStateManager)
+
     SPtr<SamplerState> D3D11RenderStateManager::CreateSamplerStateInternal(const SAMPLER_STATE_DESC& desc) const
     {
         SPtr<SamplerState> ret = te_core_ptr<D3D11SamplerState>(new (te_allocate<D3D11SamplerState>()) D3D11SamplerState(desc));

@@ -3,6 +3,8 @@
 
 namespace te
 { 
+    UINT32 Component::ComponentType = TID_Component;
+
     Component::Component(HSceneObject parent, UINT32 type)
         : Serializable(type)
         , _parent(std::move(parent))

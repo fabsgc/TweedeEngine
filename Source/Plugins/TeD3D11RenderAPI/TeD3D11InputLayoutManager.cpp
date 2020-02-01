@@ -6,6 +6,8 @@
 #include "RenderAPI/TeHardwareBufferManager.h"
 namespace te
 {
+    TE_MODULE_STATIC_MEMBER(D3D11InputLayoutManager)
+
     size_t D3D11InputLayoutManager::HashFunc::operator()
         (const D3D11InputLayoutManager::VertexDeclarationKey& key) const
     {

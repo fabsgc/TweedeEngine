@@ -212,4 +212,7 @@ namespace te
     typedef GameObjectHandle<GameObject> HGameObject;
     typedef GameObjectHandle<SceneObject> HSceneObject;
     typedef GameObjectHandle<Component> HComponent;
+    typedef GameObjectHandle<CCamera> HCamera;
+    typedef GameObjectHandle<CRenderable> HRenderable;
+    typedef GameObjectHandle<CLight> HLight;
 }

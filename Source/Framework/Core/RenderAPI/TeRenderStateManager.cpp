@@ -6,6 +6,8 @@
 
 namespace te
 {
+    TE_MODULE_STATIC_MEMBER(RenderStateManager)
+
     SPtr<SamplerState> RenderStateManager::CreateSamplerState(const SAMPLER_STATE_DESC& desc) const
     {
         SPtr<SamplerState> state = _createSamplerState(desc);

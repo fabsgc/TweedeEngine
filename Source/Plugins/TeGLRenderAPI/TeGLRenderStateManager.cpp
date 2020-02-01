@@ -6,6 +6,8 @@
 
 namespace te
 {
+    TE_MODULE_STATIC_MEMBER(GLRenderStateManager)
+
     SPtr<SamplerState> GLRenderStateManager::CreateSamplerStateInternal(const SAMPLER_STATE_DESC& desc) const
     {
         SPtr<SamplerState> ret = te_core_ptr<SamplerState>(new (te_allocate<GLSamplerState>()) GLSamplerState(desc));

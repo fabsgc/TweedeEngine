@@ -3,6 +3,8 @@
 
 namespace te
 {
+    TE_MODULE_STATIC_MEMBER(TextureManager)
+
     void TextureManager::OnStartUp()
     {
         TEXTURE_DESC desc;

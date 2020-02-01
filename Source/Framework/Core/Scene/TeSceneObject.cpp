@@ -159,7 +159,9 @@ namespace te
             GameObjectManager::Instance().UnregisterObject(handle);
         }
         else
+        {
             GameObjectManager::Instance().QueueForDestroy(handle);
+        }
     }
 
     const Transform& SceneObject::GetTransform() const
@@ -641,14 +643,14 @@ namespace te
         HComponent newComponent = static_object_cast<Component>(
             GameObjectManager::Instance().GetObjectHandle(component->GetInstanceId()));
         newComponent->_parent = _thisHandle;
-        newComponent->mThisHandle = newComponent;
+        newComponent->_thisHandle = newComponent;
 
         _components.push_back(newComponent);
     }
 
     void SceneObject::AddAndInitializeComponent(const HComponent& component)
     {
-        component->mThisHandle = component;
+        component->_thisHandle = component;
 
         if (component->_UUID.Empty())
             component->_UUID = UUIDGenerator::GenerateRandom();

@@ -73,7 +73,7 @@ namespace te
          */
         void RemoveDirtyFlag(UINT32 flags);
 
-        /** Marks the core data as clean. Normally called right after syncToCore() has been called. */
+        /** Marks the core data as clean. */
         void MarkCoreClean() { _coreDirtyFlags = 0; }
 
         /**

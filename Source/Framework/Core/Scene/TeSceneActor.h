@@ -53,6 +53,16 @@ namespace te
         /** @copydoc SetMobility */
         ObjectMobility GetMobility() const { return _mobility; }
 
+        /**
+         * Updates the internal actor state by transfering the relevant state from the scene object. The system tracks
+         * the last state and only performs the update if the scene object was modified since the last call. You can force
+         * an update by setting the @p force parameter to true.
+         *
+         * This method is used by the scene manager to update actors that have been bound to a scene object. Never call this
+         * method for multiple different scene objects, as actor can only ever be bound to one during its lifetime.
+         */
+        virtual void _updateState(const SceneObject& so, bool force = false);
+
     protected:
         /**
          * Marks the simulation thread object as dirty and notifies the system its data should be synced with its core

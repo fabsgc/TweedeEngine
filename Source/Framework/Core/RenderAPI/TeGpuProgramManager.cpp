@@ -2,6 +2,8 @@
 
 namespace te
 {
+    TE_MODULE_STATIC_MEMBER(GpuProgramManager)
+
     String sNullLang = "null";
 
     /** Null GPU program used in place of GPU programs we cannot create. Null programs don't do anything. */

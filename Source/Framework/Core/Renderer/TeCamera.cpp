@@ -17,6 +17,7 @@ namespace te
     {
         InvalidateFrustum();
         _viewport = Viewport::Create(target, left, top, width, height);
+        _renderSettings = te_shared_ptr_new<RenderSettings>();
     }
 
     Camera::Camera(const SPtr<Viewport>& viewport)
@@ -27,22 +28,22 @@ namespace te
     {
         InvalidateFrustum();
         _viewport = viewport;
+        _renderSettings = te_shared_ptr_new<RenderSettings>();
     }
 
     Camera::~Camera()
-    {
-    }
+    { }
 
     void Camera::Initialize()
     {
         CoreObject::Initialize();
-        gSceneManager().RegisterCamera(std::static_pointer_cast<Camera>(this->GetThisPtr()));
+        gSceneManager()._registerCamera(std::static_pointer_cast<Camera>(this->GetThisPtr()));
         RendererManager::Instance().GetRenderer()->NotifyCameraAdded(this);
     }
 
     void Camera::Destroy()
     {
-        gSceneManager().UnregisterCamera(std::static_pointer_cast<Camera>(this->GetThisPtr()));
+        gSceneManager()._unregisterCamera(std::static_pointer_cast<Camera>(this->GetThisPtr()));
         RendererManager::Instance().GetRenderer()->NotifyCameraRemoved(this);
 
         _viewport->Destroy();

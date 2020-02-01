@@ -50,7 +50,6 @@ namespace te
     private:
         // Scene data
         SPtr<RendererScene> _scene;
-
         SPtr<RenderManOptions> _options;
     };
 

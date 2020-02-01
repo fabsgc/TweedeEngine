@@ -6,6 +6,8 @@
 
 namespace te
 {
+    TE_MODULE_STATIC_MEMBER(D3D11TextureManager)
+
     PixelFormat D3D11TextureManager::GetNativeFormat(TextureType ttype, PixelFormat format, int usage, bool hwGamma)
     {
         DXGI_FORMAT d3dPF = D3D11Mappings::GetPF(D3D11Mappings::GetClosestSupportedPF(format, ttype, usage), hwGamma);

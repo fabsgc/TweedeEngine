@@ -43,6 +43,12 @@ namespace te
     class TE_CORE_EXPORT Component : public GameObject, public Serializable
     {
     public:
+        /** Checks if the Module has been started up. */
+        static UINT32 GetComponentType()
+        {
+            return TID_Component;
+        }
+
         /**	Returns the SceneObject this Component is assigned to. */
         const HSceneObject& GetSceneObject() const { return _parent; }
 
@@ -50,17 +56,10 @@ namespace te
         const HSceneObject& SO() const { return GetSceneObject(); }
 
         /**	Returns a handle to this object. */
-        const HComponent& GetHandle() const { return mThisHandle; }
+        const HComponent& GetHandle() const { return _thisHandle; }
 
         /** Called once per frame. Only called if the component is in Running state. */
         virtual void Update() { }
-
-        /**
-         * Called at fixed time intervals (e.g. 60 times per frame). Generally any physics-related functionality should
-         * go in this method in order to ensure stability of calculations. Only called if the component is in Running
-         * state.
-         */
-        virtual void FixedTimeUpdate() { }
 
         /**
          * Calculates bounds of the visible contents represented by this component (for example a mesh for Renderable).
@@ -96,7 +95,7 @@ namespace te
         virtual void _instantiate() {}
 
         /** Sets new flags that determine when is onTransformChanged called. */
-        void setNotifyFlags(TransformChangedFlags flags) { _notifyFlags = flags; }
+        void _setNotifyFlags(TransformChangedFlags flags) { _notifyFlags = flags; }
 
         /** Gets the currently assigned notify flags. See _setNotifyFlags(). */
         TransformChangedFlags _getNotifyFlags() const { return _notifyFlags; }
@@ -171,12 +170,15 @@ namespace te
         friend class SceneManager;
         friend class SceneObject;
 
-        HComponent mThisHandle;
+        HComponent _thisHandle;
         TransformChangedFlags _notifyFlags = TCF_None;
         ComponentFlags _flags;
-        UINT32 _sceneManagerId = 0; 
+        UINT32 _sceneManagerId = 0;
 
     private:
         HSceneObject _parent;
+
+    public:
+        static UINT32 ComponentType;
     };
 }

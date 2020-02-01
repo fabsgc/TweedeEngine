@@ -18,6 +18,11 @@ namespace te
 
         virtual ~CLight();
 
+        static UINT32 GetComponentType()
+        {
+            return TID_CLight;
+        }
+
     protected:
         mutable SPtr<Light> _internal;
 

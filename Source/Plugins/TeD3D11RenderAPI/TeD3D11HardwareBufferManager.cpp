@@ -6,6 +6,8 @@
 
 namespace te
 {
+    TE_MODULE_STATIC_MEMBER(D3D11HardwareBufferManager)
+
     D3D11HardwareBufferManager::D3D11HardwareBufferManager(D3D11Device& device)
         : _device(device)
     { }

@@ -17,6 +17,32 @@ namespace te
         SetName("Renderable");
     }
 
-    CRenderable::~CRenderable()
-    { }
+    void CRenderable::SetMesh(HMesh mesh)
+    {
+        _internal->SetMesh(mesh);
+    }
+
+    Bounds CRenderable::GetBounds() const
+    {
+        _internal->_updateState(*SO());
+        return _internal->GetBounds();
+    }
+
+    bool CRenderable::CalculateBounds(Bounds& bounds)
+    {
+        bounds = GetBounds();
+        return true;
+    }
+
+    void CRenderable::OnInitialized()
+    {
+        _internal = Renderable::Create();
+        gSceneManager()._bindActor(_internal, GetSceneObject());
+    }
+
+    void CRenderable::OnDestroyed()
+    {
+        gSceneManager()._unbindActor(_internal);
+        _internal->Destroy();
+    }
 }

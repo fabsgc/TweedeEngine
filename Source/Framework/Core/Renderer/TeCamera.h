@@ -187,22 +187,22 @@ namespace te
          * Determines number of samples to use when rendering to this camera. Values larger than 1 will enable MSAA
          * rendering.
          */
-        void setMSAACount(UINT32 count) { _MSAA = count; }
+        void SetMSAACount(UINT32 count) { _MSAA = count; }
 
         /** @copydoc setMSAACount() */
-        UINT32 getMSAACount() const { return _MSAA; }
+        UINT32 GetMSAACount() const { return _MSAA; }
 
         /**
          * Notifies a on-demand camera that it should re-draw its contents on the next frame. Ignored for a camera
          * that isn't on-demand.
          */
-        void notifyNeedsRedraw() { _redraw = true; }
+        void NotifyNeedsRedraw() { _redraw = true; }
 
         /**
          * Determines a priority that determines in which orders the cameras are rendered. This only applies to cameras rendering
          * to the same render target. Higher value means the camera will be rendered sooner.
          */
-        void setPriority(INT32 priority) { _priority = priority; }
+        void SetPriority(INT32 priority) { _priority = priority; }
 
         /** @copydoc SetPriority() */
         INT32 GetPriority() const { return _priority; }
@@ -351,6 +351,18 @@ namespace te
          * @return						3D point relative to the camera's coordinate system.
          */
         Vector3 UnprojectPoint(const Vector3& point) const;
+
+        /**
+         * Settings that control rendering for this view. They determine how will the renderer process this view, which
+         * effects will be enabled, and what properties will those effects use.
+         */
+        void SetRenderSettings(const SPtr<RenderSettings>& settings)
+        {
+            _renderSettings = settings; _markCoreDirty((ActorDirtyFlag)CameraDirtyFlag::RenderSettings);
+        }
+
+        /** @copydoc SetRenderSettings() */
+        const SPtr<RenderSettings>& GetRenderSettings() const { return _renderSettings; }
 
         static const float INFINITE_FAR_PLANE_ADJUST; /**< Small constant used to reduce far plane projection to avoid inaccuracies. */
 

@@ -131,7 +131,6 @@ namespace te
         volatile bool _runMainLoop;
         volatile bool _pause;
 
-        SPtr<Camera> _camera;
         SPtr<GpuProgram> _textureVertexShader;
         SPtr<GpuProgram> _texturePixelShader;
 
@@ -143,6 +142,7 @@ namespace te
         FrameConstantBuffer _defFrameBuffer;
         ObjectConstantBuffer _defObjectBuffer;
 
+        HCamera _sceneCamera;
         HMesh _loadedMesh;
         HTexture _loadTexture;
 

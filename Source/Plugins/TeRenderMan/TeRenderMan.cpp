@@ -39,7 +39,7 @@ namespace te
 
     void RenderMan::RenderAll()
     {
-        const SceneInfo& sceneInfo = _scene->GetSceneInfo();
+        /*const SceneInfo& sceneInfo = _scene->GetSceneInfo();
 
         for (auto& rtInfo : sceneInfo.RenderTargets)
         {
@@ -53,7 +53,7 @@ namespace te
                 RenderOverlay(rtInfo.target, rtInfo.camera);
                 RenderAPI::Instance().SwapBuffers(rtInfo.target);
             }
-        }
+        }*/
     }
 
     void RenderMan::RenderOverlay(const SPtr<RenderTarget> target, Camera* camera)

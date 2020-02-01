@@ -4,6 +4,8 @@
 
 namespace te
 {
+    TE_MODULE_STATIC_MEMBER(GLTextureManager)
+
     PixelFormat GLTextureManager::GetNativeFormat(TextureType ttype, PixelFormat format, int usage, bool hwGamma)
     {
         return PF_R8; // TODO

@@ -40,6 +40,27 @@ namespace te
         virtual void NotifyCameraRemoved(Camera* camera) { }
 
         /**
+         * Called whenever a new renderable is created.
+         *
+         * @note	Core thread.
+         */
+        virtual void NotifyRenderableAdded(Renderable* renderable) { }
+
+        /**
+         * Called whenever a renderable is updated.
+         *
+         * @note	Core thread.
+         */
+        virtual void NotifyRenderableUpdated(Renderable* renderable) { }
+
+        /**
+         * Called whenever a renderable is destroyed.
+         *
+         * @note	Core thread.
+         */
+        virtual void NotifyRenderableRemoved(Renderable* renderable) { }
+
+        /**
          * Creates a new empty renderer mesh data.
          *
          * @note Sim thread.

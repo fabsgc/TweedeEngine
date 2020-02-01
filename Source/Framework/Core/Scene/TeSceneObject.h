@@ -17,10 +17,7 @@ namespace te
     enum SceneObjectFlags
     {
         SOF_DontInstantiate = 0x01, /**< Object wont be in the main scene and its components won't receive updates. */
-        SOF_DontSave = 0x02,		/**< Object will be skipped when saving the scene hierarchy or a prefab. */
-        SOF_Persistent = 0x04,		/**< Object will remain in the scene even after scene clear, unless destroyed directly.
-                                         This only works with top-level objects. */
-        SOF_Internal = 0x08			/**< Provides a hint to external systems that his object is used by engine internals.
+        SOF_Internal = 0x04			/**< Provides a hint to external systems that his object is used by engine internals.
                                          For example, those systems might not want to display those objects together with the
                                          user created ones. */
     };
@@ -29,7 +26,7 @@ namespace te
      * have other scene objects as children, and will have a scene object as a parent, in which case transform changes
      * to the parent are reflected to the child scene objects (children are relative to the parent).
      *
-     * Each scene object can have one or multiple Component%s attached to it, where the components inherit the scene
+     * Each scene object can have one or multiple Components attached to it, where the components inherit the scene
      * object's transform, and receive updates about transform and hierarchy changes.
      */
     class TE_CORE_EXPORT SceneObject : public GameObject
