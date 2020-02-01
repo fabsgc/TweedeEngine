@@ -13,14 +13,6 @@ namespace te
 {
     class SceneInstance;
 
-    /** Possible modifiers that can be applied to a SceneObject. */
-    enum SceneObjectFlags
-    {
-        SOF_DontInstantiate = 0x01, /**< Object wont be in the main scene and its components won't receive updates. */
-        SOF_Internal = 0x04			/**< Provides a hint to external systems that his object is used by engine internals.
-                                         For example, those systems might not want to display those objects together with the
-                                         user created ones. */
-    };
     /**
      * An object in the scene graph. It has a transform object that allows it to be positioned, scaled and rotated. It can
      * have other scene objects as children, and will have a scene object as a parent, in which case transform changes
@@ -69,9 +61,6 @@ namespace te
         /** @copydoc GameObject::_setInstanceData */
         void _setInstanceData(GameObjectInstanceDataPtr& other) override;
 
-        /** Register the scene object with the scene and activate all of its components. */
-        void _instantiate();
-
         /** Recursively enables the provided set of flags on this object and all children. */
         void _setFlags(UINT32 flags);
 
@@ -109,9 +98,6 @@ namespace te
          * @note	Unlike destroy(), does not remove the object from its parent.
          */
         void DestroyInternal(GameObjectHandleBase& handle, bool immediate = false) override;
-
-        /**	Checks is the scene object instantiated and visible in the scene. */
-        bool IsInstantiated() const { return (_flags & SOF_DontInstantiate) == 0; }
 
     public:
         /** Gets the transform object representing object's position/rotation/scale in world space. */
@@ -305,20 +291,6 @@ namespace te
         const SPtr<SceneInstance>& GetScene() const;
 
         /**
-         * Enables or disables this object. Disabled objects also implicitly disable all their child objects. No components
-         * on the disabled object are updated.
-         */
-        void SetActive(bool active);
-
-        /**
-         * Returns whether or not an object is active.
-         *
-         * @param[in]	self	If true, the method will only check if this particular object was activated or deactivated
-         *						directly via setActive. If false we we also check if any of the objects parents are inactive.
-         */
-        bool GetActive(bool self = false) const;
-
-        /**
          * Sets the mobility of a scene object. This is used primarily as a performance hint to engine systems. Objects
          * with more restricted mobility will result in higher performance. Some mobility constraints will be enforced by
          * the engine itself, while for others the caller must be sure not to break the promise he made when mobility was
@@ -357,9 +329,6 @@ namespace te
          * @param[in]	object	Child to remove.
          */
         void RemoveChild(const HSceneObject& object);
-
-        /** Changes the object active in hierarchy state, and triggers necessary events. */
-        void SetActiveHierarchy(bool active, bool triggerEvents = true);
 
     public: // ***** COMPONENT ******
         /** Constructs a new component of the specified type and adds it to the internal component list. */
@@ -452,8 +421,6 @@ namespace te
         SPtr<SceneInstance> _parentScene;
         HSceneObject _parent;
         Vector<HSceneObject> _children;
-        bool _activeSelf = true;
-        bool _activeHierarchy = true;
         ObjectMobility _mobility = ObjectMobility::Movable;
 
         Vector<HComponent> _components;

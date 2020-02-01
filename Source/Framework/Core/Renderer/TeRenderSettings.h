@@ -1,18 +1,12 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
-#include "Math/TeVector3.h"
-#include "Image/TeColor.h"
-#include "Image/TeTexture.h"
 
 namespace te
 {
     /** Base class for both sim and core thread variants of RenderSettings. */
     struct TE_CORE_EXPORT RenderSettings
     {
-        RenderSettings() = default;
-        ~RenderSettings() = default;
-
         /**
          * Determines if scene objects will be lit by lights. If disabled everything will be rendered using their albedo
          * texture with no lighting applied.
@@ -33,7 +27,7 @@ namespace te
          * If enabled the camera will use the skybox for rendering the background. A skybox has to be present in the scene.
          * When disabled the camera will use the clear color for rendering the background.
          */
-        bool EnableSkybox = true;
+        bool EnableSkybox = false;
 
         /**
          * The absolute base cull-distance for objects rendered through this camera in world units. Objects will use this

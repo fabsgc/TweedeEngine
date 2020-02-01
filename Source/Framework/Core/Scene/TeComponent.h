@@ -7,17 +7,6 @@
 
 namespace te
 {
-    /** Flags that control behavior of a Component. */
-    enum class ComponentFlag
-    {
-        /**
-         * Ensures that scene manager cannot pause or stop component callbacks from executing. Off by default.
-         * Note that this flag must be specified on component creation, in its constructor and any later changes
-         * to the flag could be ignored.
-         */
-        AlwaysRun = 1
-    };
-
     typedef UINT32 ComponentFlags;
 
     /**
@@ -26,19 +15,6 @@ namespace te
      * You should implement some or all of update/fixedUpdate/onCreated/onInitialized/onEnabled/onDisabled/
      * onTransformChanged/onDestroyed methods to implement the relevant component logic. Avoid putting logic in constructors
      * or destructors.
-     *
-     * Components can be in different states. These states control which of the events listed above trigger:
-     *  - Running - Scene manager is sending out events.
-     *  - Paused - Scene manager is sending out all events except per-frame update().
-     *	- Stopped - Scene manager is not sending out events except for onCreated/onDestroyed.
-     *
-     * These states can be changed globally though SceneManager and affect all components. Individual components can
-     * override these states in two ways:
-     *  - Set the ComponentFlag::AlwaysRun to true and the component will always stay in Running state, regardless of
-     *    state set in SceneManager. This flag should be set in constructor and not change during component lifetime.
-     *  - If the component's parent SceneObject is inactive (SceneObject::setActive(false)), or any of his parents are
-     *    inactive, then the component is considered to be in Stopped state, regardless whether the ComponentFlag::AlwaysRun
-     *    flag is set or not.
      **/
     class TE_CORE_EXPORT Component : public GameObject, public Serializable
     {
@@ -57,6 +33,11 @@ namespace te
 
         /**	Returns a handle to this object. */
         const HComponent& GetHandle() const { return _thisHandle; }
+
+        virtual void Initialize() 
+        {
+            OnInitialized();
+        }
 
         /** Called once per frame. Only called if the component is in Running state. */
         virtual void Update() { }
@@ -90,7 +71,7 @@ namespace te
     public:
         /**
          * Construct any resources the component needs before use. Called when the parent scene object is instantiated.
-         * A non-instantiated component shouldn't be used for any other purpose than serialization.
+         * A non-instantiated component shouldn't be used
          */
         virtual void _instantiate() {}
 
@@ -115,13 +96,6 @@ namespace te
 
         /**	Called once just before the component is destroyed. Called regardless of the state the component is in. */
         virtual void OnDestroyed() {}
-
-        /**
-         * Called every time a component is placed into the Stopped state. This includes component destruction if component
-         * wasn't already in Stopped state during destruction. When called during destruction it is called before
-         * onDestroyed.
-         */
-        virtual void OnDisabled() {}
 
         /**
          * Called every time a component leaves the Stopped state. This includes component creation if requirements

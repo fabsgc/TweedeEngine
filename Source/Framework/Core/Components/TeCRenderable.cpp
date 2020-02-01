@@ -6,18 +6,26 @@ namespace te
     CRenderable::CRenderable()
         : Component(HSceneObject(), (UINT32)TID_CRenderable)
     {
-        SetFlag((UINT32)ComponentFlag::AlwaysRun, true);
         SetName("Renderable");
     }
 
     CRenderable::CRenderable(const HSceneObject& parent)
         : Component(parent, (UINT32)TID_CRenderable)
     {
-        SetFlag((UINT32)ComponentFlag::AlwaysRun, true);
         SetName("Renderable");
     }
 
+    void CRenderable::Initialize()
+    {
+        Component::Initialize();
+    }
+
     void CRenderable::SetMesh(HMesh mesh)
+    {
+        _internal->SetMesh(mesh.GetInternalPtr());
+    }
+
+    void CRenderable::SetMesh(SPtr<Mesh> mesh)
     {
         _internal->SetMesh(mesh);
     }
@@ -34,9 +42,13 @@ namespace te
         return true;
     }
 
-    void CRenderable::OnInitialized()
+    void CRenderable::_instantiate()
     {
         _internal = Renderable::Create();
+    }
+
+    void CRenderable::OnInitialized()
+    {
         gSceneManager()._bindActor(_internal, GetSceneObject());
     }
 

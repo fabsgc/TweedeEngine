@@ -50,6 +50,9 @@ namespace te
         /** @copydoc CoreObject::Destroy */
         void Destroy() override;
 
+        /** @copydoc SceneActor::Destroy */
+        void SetMobility(ObjectMobility mobility) override;
+
         /**
          * Determines whether this is the main application camera. Main camera controls the final render surface that is
          * displayed to the user.
@@ -125,7 +128,7 @@ namespace te
         /**
          * Returns the standard projection matrix that determines how are 3D points projected to two dimensions. Returned
          * matrix is standard following right-hand rules and depth range of [-1, 1]. In case you need a render-system specific
-         * projection matrix call getProjectionMatrixRS().
+         * projection matrix call GetProjectionMatrixRS().
          */
         virtual const Matrix4& GetProjectionMatrix() const;
 
@@ -189,14 +192,14 @@ namespace te
          */
         void SetMSAACount(UINT32 count) { _MSAA = count; }
 
-        /** @copydoc setMSAACount() */
+        /** @copydoc SetMSAACount() */
         UINT32 GetMSAACount() const { return _MSAA; }
 
         /**
          * Notifies a on-demand camera that it should re-draw its contents on the next frame. Ignored for a camera
          * that isn't on-demand.
          */
-        void NotifyNeedsRedraw() { _redraw = true; }
+        void NotifyNeedsRedraw() { _markCoreDirty((ActorDirtyFlag)CameraDirtyFlag::Redraw); }
 
         /**
          * Determines a priority that determines in which orders the cameras are rendered. This only applies to cameras rendering
@@ -364,6 +367,15 @@ namespace te
         /** @copydoc SetRenderSettings() */
         const SPtr<RenderSettings>& GetRenderSettings() const { return _renderSettings; }
 
+        /**	Returns a rectangle that defines the viewport position and size, in pixels. */
+        virtual Rect2I GetViewportRect() const;
+
+        /**	Sets an ID that can be used for uniquely identifying this object by the renderer. */
+        void SetRendererId(UINT32 id) { _rendererId = id; }
+
+        /**	Retrieves an ID that can be used for uniquely identifying this object by the renderer. */
+        UINT32 GetRendererId() const { return _rendererId; }
+
         static const float INFINITE_FAR_PLANE_ADJUST; /**< Small constant used to reduce far plane projection to avoid inaccuracies. */
 
     protected:
@@ -392,15 +404,6 @@ namespace te
         /**	Notify camera that the frustum requires to be updated. */
         virtual void InvalidateFrustum() const;
 
-        /**	Returns a rectangle that defines the viewport position and size, in pixels. */
-        virtual Rect2I GetViewportRect() const;
-
-        /**	Sets an ID that can be used for uniquely identifying this object by the renderer. */
-        void SetRendererId(UINT32 id) { _rendererId = id; }
-
-        /**	Retrieves an ID that can be used for uniquely identifying this object by the renderer. */
-        UINT32 GetRendererId() const { return _rendererId; }
-
         /** @copydoc CoreObject::_markCoreDirty */
         void _markCoreDirty(ActorDirtyFlag flag = ActorDirtyFlag::Everything) override;
 
@@ -414,7 +417,6 @@ namespace te
         INT32 _priority = 0; /**< Determines in what order will the camera be rendered. Higher priority means the camera will be rendered sooner. */
         bool _main = false; /**< Determines does this camera render to the main render surface. */
         UINT32 _cameraFlags; /**< Flags for controlling various behaviour. */
-        bool _redraw = false; /** For on demande camera, notify that should redraw on next frame */
 
         SPtr<Viewport> _viewport; /** Viewport that describes a 2D rendering surface. */
 

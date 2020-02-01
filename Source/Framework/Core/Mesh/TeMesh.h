@@ -305,7 +305,5 @@ namespace te
         int _usage;
         IndexType _indexType;
         GpuDeviceFlags _deviceMask;
-
-        // TODO
     };
 }

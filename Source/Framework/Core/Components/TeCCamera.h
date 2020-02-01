@@ -14,7 +14,8 @@ namespace te
     class TE_CORE_EXPORT CCamera : public Component
     {
     public:
-        virtual ~CCamera() = default;
+        /** @copydoc Component::Initialize */
+        void Initialize() override;
 
         /** Return Component type */
         static UINT32 GetComponentType() { return TID_CCamera; }
@@ -109,8 +110,8 @@ namespace te
         /** @copydoc Camera::GetRenderSettings() */
         const SPtr<RenderSettings>& GetRenderSettings() const { return _internal->GetRenderSettings(); }
 
-        /** @copydoc Camera::notifyNeedsRedraw() */
-        void notifyNeedsRedraw() { _internal->NotifyNeedsRedraw(); }
+        /** @copydoc Camera::NotifyNeedsRedraw() */
+        void NotifyNeedsRedraw() { _internal->NotifyNeedsRedraw(); }
 
         /** @copydoc Camera::worldToScreenPoint */
         Vector2I worldToScreenPoint(const Vector3& worldPoint) const { UpdateView(); return _internal->WorldToScreenPoint(worldPoint); }

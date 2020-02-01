@@ -16,11 +16,7 @@ namespace te
     void SceneActor::SetMobility(ObjectMobility mobility)
     {
         _mobility = mobility;
-    }
-
-    void SceneActor::SetActive(bool active)
-    {
-        _active = active;
+        _markCoreDirty(ActorDirtyFlag::Mobility);
     }
 
     void SceneActor::_updateState(const SceneObject& so, bool force)
@@ -31,9 +27,6 @@ namespace te
             SetTransform(so.GetTransform());
             _hash = curHash;
         }
-
-        if (so.GetActive() != _active || force)
-            SetActive(so.GetActive());
 
         if (so.GetMobility() != _mobility || force)
             SetMobility(so.GetMobility());

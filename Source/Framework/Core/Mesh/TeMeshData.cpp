@@ -122,15 +122,14 @@ namespace te
 
         // Copy sub-meshes
         UINT32 meshIdx = 0;
-        for(auto& meshData : meshes)
+        size_t meshCount = meshes.size();
+        for(auto meshIdx = 0; meshIdx < meshCount; meshIdx++)
         {
             const Vector<SubMesh> curSubMeshes = allSubMeshes[meshIdx];
             for(auto& subMesh : curSubMeshes)
             {
                 subMeshes.push_back(SubMesh(subMesh.IndexOffset, subMesh.IndexCount, subMesh.DrawOp));
             }
-
-            meshIdx++;
         }
 
         // Copy vertices

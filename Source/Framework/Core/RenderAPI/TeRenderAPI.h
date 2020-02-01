@@ -6,6 +6,8 @@
 #include "RenderAPI/TeRenderWindow.h"
 #include "Image/TeColor.h"
 
+#define TE_MAX_BOUND_VERTEX_BUFFERS 16
+
 namespace te
 {
     /** Conventions used for a specific render backend. */

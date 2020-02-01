@@ -26,10 +26,7 @@ namespace te
     HSceneObject SceneObject::Create(const String& name, UINT32 flags)
     {
         HSceneObject newObject = CreateInternal(name, flags);
-
-        if (newObject->IsInstantiated())
-            gSceneManager().RegisterNewSO(newObject);
-
+        gSceneManager().RegisterNewSO(newObject);
         return newObject;
     }
 
@@ -78,39 +75,6 @@ namespace te
         _thisHandle._setHandleData(thisPtr);
     }
 
-    void SceneObject::_instantiate()
-    {
-        std::function<void(SceneObject*)> instantiateRecursive = [&](SceneObject* obj)
-        {
-            obj->_flags &= ~SOF_DontInstantiate;
-
-            if (obj->_parent == nullptr)
-                gSceneManager().RegisterNewSO(obj->_thisHandle);
-
-            for (auto& component : obj->_components)
-                component->_instantiate();
-
-            for (auto& child : obj->_children)
-            {
-                instantiateRecursive(child.Get());
-            }
-        };
-
-        std::function<void(SceneObject*)> triggerEventsRecursive = [&](SceneObject* obj)
-        {
-            for (auto& component : obj->_components)
-                gSceneManager()._notifyComponentCreated(component, obj->GetActive());
-
-            for (auto& child : obj->_children)
-            {
-                triggerEventsRecursive(child.Get());
-            }
-        };
-
-        instantiateRecursive(this);
-        triggerEventsRecursive(this);
-    }
-
     HSceneObject SceneObject::CreateInternal(const String& name, UINT32 flags)
     {
         SPtr<SceneObject> sceneObjectPtr = SPtr<SceneObject>(new (te_allocate<SceneObject>()) SceneObject(name, flags),
@@ -148,9 +112,6 @@ namespace te
             {
                 HComponent component = _components.back();
                 component->_setIsDestroyed();
-
-                if (IsInstantiated())
-                    gSceneManager()._notifyComponentDestroyed(component, immediate);
 
                 component->DestroyInternal(component, true);
                 _components.erase(_components.end() - 1);
@@ -369,8 +330,7 @@ namespace te
         {
             (*iter)->_setIsDestroyed();
 
-            if (IsInstantiated())
-                gSceneManager()._notifyComponentDestroyed(*iter, immediate);
+            gSceneManager()._notifyComponentDestroyed(*iter);
 
             (*iter)->DestroyInternal(*iter, immediate);
             _components.erase(iter);
@@ -415,9 +375,7 @@ namespace te
             {
                 if (entry->SupportsNotify(flags))
                 {
-                    bool alwaysRun = entry->HasFlag((UINT32)ComponentFlag::AlwaysRun);
-                    if (alwaysRun || gSceneManager().IsRunning())
-                        entry->OnTransformChanged(componentFlags);
+                    entry->OnTransformChanged(componentFlags);
                 }
             }
         }
@@ -508,49 +466,6 @@ namespace te
             child->SetScene(scene);
     }
 
-    void SceneObject::SetActive(bool active)
-    {
-        _activeSelf = active;
-        SetActiveHierarchy(active);
-    }
-
-    bool SceneObject::GetActive(bool self) const
-    {
-        if (self)
-            return _activeSelf;
-        else
-            return _activeHierarchy;
-    }
-
-    void SceneObject::SetActiveHierarchy(bool active, bool triggerEvents)
-    {
-        bool activeHierarchy = active && _activeSelf;
-
-        if (_activeHierarchy != activeHierarchy)
-        {
-            _activeHierarchy = activeHierarchy;
-
-            if (triggerEvents)
-            {
-                if (activeHierarchy)
-                {
-                    for (auto& component : _components)
-                        gSceneManager()._notifyComponentActivated(component, triggerEvents);
-                }
-                else
-                {
-                    for (auto& component : _components)
-                        gSceneManager()._notifyComponentDeactivated(component, triggerEvents);
-                }
-            }
-        }
-
-        for (auto child : _children)
-        {
-            child->SetActiveHierarchy(_activeHierarchy, triggerEvents);
-        }
-    }
-
     void SceneObject::SetMobility(ObjectMobility mobility)
     {
         if (_mobility != mobility)
@@ -599,9 +514,7 @@ namespace te
                     _localTfrm.MakeLocal(_parent->GetTransform());
             }
 
-            bool isInstantiated = (_flags & SOF_DontInstantiate) == 0;
-            if (isInstantiated)
-                NotifyTransformChanged((TransformChangedFlags)(TCF_Parent | TCF_Transform));
+            NotifyTransformChanged((TransformChangedFlags)(TCF_Parent | TCF_Transform));
         }
     }
 
@@ -657,12 +570,9 @@ namespace te
 
         _components.push_back(component);
 
-        if (IsInstantiated())
-        {
-            component->_instantiate();
+        component->_instantiate();
 
-            gSceneManager()._notifyComponentCreated(component, GetActive());
-        }
+        gSceneManager()._notifyComponentCreated(component);
     }
 
     void SceneObject::AddAndInitializeComponent(const SPtr<Component>& component)

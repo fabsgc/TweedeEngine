@@ -10,8 +10,7 @@ namespace te
 
     Renderable::~Renderable()
     {
-        if (_active)
-            gRenderer()->NotifyRenderableRemoved(this);
+        gRenderer()->NotifyRenderableRemoved(this);
     }
 
     void Renderable::Initialize()
@@ -23,6 +22,13 @@ namespace te
     void Renderable::_markCoreDirty(ActorDirtyFlag flag) 
     {
         MarkCoreDirty((UINT32)flag);
+        gRenderer()->NotifyRenderableUpdated(this);
+    }
+
+    void Renderable::SetMobility(ObjectMobility mobility)
+    {
+        SceneActor::SetMobility(mobility);
+        _markCoreDirty(ActorDirtyFlag::Mobility);
     }
 
     void Renderable::SetTransform(const Transform& transform)
@@ -37,16 +43,22 @@ namespace te
         _markCoreDirty(ActorDirtyFlag::Transform);
     }
 
-    void Renderable::SetMesh(HMesh& mesh)
+    void Renderable::SetMesh(SPtr<Mesh> mesh)
     {
         _mesh = mesh;
         OnMeshChanged();
         _markCoreDirty();
     }
 
+    void Renderable::SetCullDistanceFactor(float factor)
+    {
+        _cullDistanceFactor = factor;
+        _markCoreDirty();
+    }
+
     Bounds Renderable::GetBounds() const
     {
-        SPtr<Mesh> mesh = GetMesh().GetInternalPtr();
+        SPtr<Mesh> mesh = GetMesh();
 
         if (mesh == nullptr)
         {
@@ -72,7 +84,6 @@ namespace te
         if (curHash != _hash || force)
         {
             SetTransform(so.GetTransform());
-
             _hash = curHash;
         }
 

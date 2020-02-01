@@ -32,31 +32,39 @@ namespace te
     }
 
     Camera::~Camera()
-    { }
+    { 
+        gRenderer()->NotifyCameraRemoved(this);
+    }
 
     void Camera::Initialize()
     {
         CoreObject::Initialize();
-        gSceneManager()._registerCamera(std::static_pointer_cast<Camera>(this->GetThisPtr()));
-        RendererManager::Instance().GetRenderer()->NotifyCameraAdded(this);
+        gSceneManager()._registerCamera(std::static_pointer_cast<Camera>(GetThisPtr()));
+        gRenderer()->NotifyCameraAdded(this);
     }
 
     void Camera::Destroy()
     {
-        gSceneManager()._unregisterCamera(std::static_pointer_cast<Camera>(this->GetThisPtr()));
-        RendererManager::Instance().GetRenderer()->NotifyCameraRemoved(this);
-
-        _viewport->Destroy();
-        _viewport = nullptr;
-
         CoreObject::Destroy();
+    }
+
+    void Camera::_markCoreDirty(ActorDirtyFlag flag)
+    {
+        MarkCoreDirty((UINT32)flag);
+        gRenderer()->NotifyCameraUpdated(this, (UINT32)flag);
+    }
+
+    void Camera::SetMobility(ObjectMobility mobility)
+    {
+        SceneActor::SetMobility(mobility);
+        _markCoreDirty(ActorDirtyFlag::Mobility);
     }
 
     /** Returns the viewport used by the camera. */
     void Camera::SetRenderTarget(SPtr<RenderTarget> renderTarget)
     {
         _viewport->SetTarget(renderTarget);
-        RendererManager::Instance().GetRenderer()->NotifyCameraUpdated(this);
+        _markCoreDirty();
     }
 
     SPtr<Camera> Camera::Create()
@@ -73,7 +81,7 @@ namespace te
     {
         SceneActor::SetTransform(transform);
         _needComputeView = true;
-        _markCoreDirty();
+        _markCoreDirty(ActorDirtyFlag::Transform);
     }
 
     void Camera::SetFlags(UINT32 flags)
@@ -266,7 +274,7 @@ namespace te
     {
         Vector2 ndcPoint = ScreenToNdcPoint(screenPoint);
         Vector4 worldPoint(ndcPoint.x, ndcPoint.y, deviceDepth, 1.0f);
-        worldPoint = GetProjectionMatrixRS().Inverse().Multiply(worldPoint);
+        worldPoint = GetProjectionMatrix().Inverse().Multiply(worldPoint); //RS
 
         Vector3 worldPoint3D;
         if (Math::Abs(worldPoint.w) > 1e-7f)
@@ -371,7 +379,7 @@ namespace te
     Vector3 Camera::ProjectPoint(const Vector3& point) const
     {
         Vector4 projPoint4(point.x, point.y, point.z, 1.0f);
-        projPoint4 = GetProjectionMatrixRS().Multiply(projPoint4);
+        projPoint4 = GetProjectionMatrix().Multiply(projPoint4); //RS
 
         if (Math::Abs(projPoint4.w) > 1e-7f)
         {
@@ -397,7 +405,7 @@ namespace te
 
         // Get world position for a point near the far plane (0.95f)
         Vector4 farAwayPoint(point.x, point.y, 0.95f, 1.0f);
-        farAwayPoint = GetProjectionMatrixRS().Inverse().Multiply(farAwayPoint);
+        farAwayPoint = GetProjectionMatrix().Inverse().Multiply(farAwayPoint); //RS
 
         // Can't proceed if w is too small
         if (Math::Abs(farAwayPoint.w) > 1e-7f)
@@ -620,10 +628,5 @@ namespace te
     Rect2I Camera::GetViewportRect() const
     {
         return _viewport->GetPixelArea();
-    }
-
-    void Camera::_markCoreDirty(ActorDirtyFlag flag)
-    {
-        MarkCoreDirty((UINT32)flag);
     }
 }

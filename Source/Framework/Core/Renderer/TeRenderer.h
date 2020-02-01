@@ -5,6 +5,12 @@
 
 namespace te
 {
+    /**	Set of options that can be used for controlling the renderer. */
+    struct TE_CORE_EXPORT RendererOptions
+    {
+        virtual ~RendererOptions() = default;
+    };
+
     class TE_CORE_EXPORT Renderer
     {
     public:
@@ -26,6 +32,12 @@ namespace te
         /** Called in order to render all currently active cameras. */
         virtual void RenderAll() = 0;
 
+        /**	Sets options used for controlling the rendering. */
+        virtual void SetOptions(const SPtr<RendererOptions>& options) { }
+
+        /**	Returns current set of options used for controlling the rendering. */
+        virtual SPtr<RendererOptions> GetOptions() const { return SPtr<RendererOptions>(); }
+
         /** Called whenever a new camera is created. */
         virtual void NotifyCameraAdded(Camera* camera) { }
 
@@ -34,7 +46,7 @@ namespace te
          *
          * @param[in]	camera		Camera that was updated.
          */
-        virtual void NotifyCameraUpdated(Camera* camera) { }
+        virtual void NotifyCameraUpdated(Camera* camera, UINT32 updateFlag) { }
 
         /** Called whenever a camera is destroyed. */
         virtual void NotifyCameraRemoved(Camera* camera) { }
@@ -61,6 +73,27 @@ namespace te
         virtual void NotifyRenderableRemoved(Renderable* renderable) { }
 
         /**
+         * Called whenever a new light is created.
+         *
+         * @note	Core thread.
+         */
+        virtual void NotifyLightAdded(Light* light) { }
+
+        /**
+         * Called whenever a light is updated.
+         *
+         * @note	Core thread.
+         */
+        virtual void NotifyLightUpdated(Light* light) { }
+
+        /**
+         * Called whenever a light is destroyed.
+         *
+         * @note	Core thread.
+         */
+        virtual void NotifyLightRemoved(Light* light) { }
+
+        /**
          * Creates a new empty renderer mesh data.
          *
          * @note Sim thread.
@@ -79,17 +112,4 @@ namespace te
 
     /**	Provides easy access to Renderer. */
     SPtr<Renderer> TE_CORE_EXPORT gRenderer();
-
-    /**	Set of options that can be used for controlling the renderer. */	
-    struct TE_CORE_EXPORT RendererOptions
-    {
-        virtual ~RendererOptions() = default;
-    };
-
-    /**	Renderer information specific to a single render target. */
-    struct TE_CORE_EXPORT RendererRenderTarget
-    {
-        SPtr<RenderTarget> target = nullptr;
-        Camera* camera = nullptr;
-    };
 }

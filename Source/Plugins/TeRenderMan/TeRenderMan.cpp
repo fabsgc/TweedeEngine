@@ -1,9 +1,8 @@
 #include "TeRenderMan.h"
-#include "TeRendererScene.h"
 #include "Manager/TeRendererManager.h"
 #include "RenderAPI/TeRenderAPI.h"
-#include "TeRenderManOptions.h"
 #include "Renderer/TeCamera.h"
+#include "Utility/TeTime.h"
 
 namespace te
 {
@@ -24,7 +23,6 @@ namespace te
     void RenderMan::Destroy()
     {
         Renderer::Destroy();
-
         _scene = nullptr;
     }
 
@@ -39,26 +37,43 @@ namespace te
 
     void RenderMan::RenderAll()
     {
-        /*const SceneInfo& sceneInfo = _scene->GetSceneInfo();
+        const SceneInfo& sceneInfo = _scene->GetSceneInfo();
 
+        FrameTimings timings;
+        timings.Time = gTime().GetTime();
+        timings.TimeDelta = gTime().GetFrameDelta();
+        timings.FrameIdx = gTime().GetFrameIdx();
+
+        // Update global per-frame hardware buffers
+        _scene->SetParamFrameParams(timings.Time);
+
+        sceneInfo.RenderableReady.resize(sceneInfo.Renderables.size(), false);
+        sceneInfo.RenderableReady.assign(sceneInfo.Renderables.size(), false);
+
+        // Update per-frame data for all renderable objects
+        for (UINT32 i = 0; i < sceneInfo.Renderables.size(); i++)
+            _scene->PrepareRenderable(i);
+
+        // Gather all views
         for (auto& rtInfo : sceneInfo.RenderTargets)
         {
-            if (rtInfo.target->GetProperties().IsWindow)
+            Vector<RendererView*> views;
+            SPtr<RenderTarget> target = rtInfo.Target;
+            const Vector<Camera*>& cameras = rtInfo.Cameras;
+
+            UINT32 numCameras = (UINT32)cameras.size();
+            for (UINT32 i = 0; i < numCameras; i++)
             {
-                RenderOverlay(rtInfo.target, rtInfo.camera);
-                RenderAPI::Instance().SwapBuffers(rtInfo.target);
+                UINT32 viewIdx = sceneInfo.CameraToView.at(cameras[i]);
+                RendererView* viewInfo = sceneInfo.Views[viewIdx];
+                views.push_back(viewInfo);
             }
-            else
-            {
-                RenderOverlay(rtInfo.target, rtInfo.camera);
-                RenderAPI::Instance().SwapBuffers(rtInfo.target);
-            }
-        }*/
+        }
     }
 
     void RenderMan::RenderOverlay(const SPtr<RenderTarget> target, Camera* camera)
     {
-        RenderAPI& rapi = RenderAPI::Instance();
+        /*RenderAPI& rapi = RenderAPI::Instance();
         UINT32 clearBuffers = FBT_COLOR | FBT_DEPTH | FBT_STENCIL;
 
         if (clearBuffers != 0)
@@ -69,7 +84,18 @@ namespace te
         else
         {
             rapi.SetRenderTarget(target);
-        }
+        }*/
+    }
+
+    void RenderMan::SetOptions(const SPtr<RendererOptions>& options)
+    {
+        _options = std::static_pointer_cast<RenderManOptions>(options);
+        _scene->SetOptions(_options);
+    }
+
+    SPtr<RendererOptions> RenderMan::GetOptions() const
+    {
+        return _options;
     }
 
     void RenderMan::NotifyCameraAdded(Camera* camera)
@@ -77,14 +103,44 @@ namespace te
         _scene->RegisterCamera(camera);
     }
 
-    void RenderMan::NotifyCameraUpdated(Camera* camera)
+    void RenderMan::NotifyCameraUpdated(Camera* camera, UINT32 updateFlag)
     {
-        _scene->UpdateCamera(camera);
+        _scene->UpdateCamera(camera, updateFlag);
     }
 
     void RenderMan::NotifyCameraRemoved(Camera* camera)
     {
         _scene->UnregisterCamera(camera);
+    }
+
+    void RenderMan::NotifyRenderableAdded(Renderable* renderable)
+    {
+        _scene->RegisterRenderable(renderable);
+    }
+
+    void RenderMan::NotifyRenderableRemoved(Renderable* renderable)
+    {
+        _scene->UnregisterRenderable(renderable);
+    }
+
+    void RenderMan::NotifyRenderableUpdated(Renderable* renderable)
+    {
+        _scene->UpdateRenderable(renderable);
+    }
+
+    void RenderMan::NotifyLightAdded(Light* light)
+    {
+        _scene->RegisterLight(light);
+    }
+
+    void RenderMan::NotifyLightUpdated(Light* light)
+    {
+        _scene->UpdateLight(light);
+    }
+
+    void RenderMan::NotifyLightRemoved(Light* light)
+    {
+        _scene->UnregisterLight(light);
     }
 
     SPtr<RenderMan> gRenderMan()

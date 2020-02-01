@@ -19,14 +19,6 @@ namespace te
         HSceneObject So;
     };
 
-    /** Possible states components can be in. Controls which component callbacks are triggered. */
-    enum class ComponentState
-    {
-        Running, /**< All components callbacks are being triggered normally. */
-        Paused, /**< All component callbacks except update are being triggered normally. */
-        Stopped /**< No component callbacks are being triggered. */
-    };
-
     /** Contains information about an instantiated scene. */
     class TE_CORE_EXPORT SceneInstance
     {
@@ -39,19 +31,15 @@ namespace te
         /** Root object of the scene. */
         const HSceneObject& GetRoot() const { return _root; }
 
-        /** Checks is the scene currently active. IF inactive the scene properties aside from the name are undefined. */
-        bool IsActive() const { return _isActive; }
-
     private:
         friend class SceneManager;
 
         String _name;
         HSceneObject _root;
-        bool _isActive = true;
     };
 
     /**
-     * Keeps track of all active SceneObject%s and their components. Keeps track of component state and triggers their
+     * Keeps track of all active SceneObjects and their components. Keeps track of component state and triggers their
      * events. Updates the transforms of objects as SceneObject%s move.
      */
     class TE_CORE_EXPORT SceneManager : public Module<SceneManager>
@@ -71,24 +59,14 @@ namespace te
         void ClearScene();
 
         /**
-         * Changes the component state that globally determines which component callbacks are activated. Only affects
-         * components that don't have the ComponentFlag::AlwaysRun flag set.
-         */
-        void SetComponentState(ComponentState state);
-
-        /** Checks are the components currently in the Running state. */
-        bool IsRunning() const { return _componentState == ComponentState::Running; }
-
-        /**
          * Returns a list of all components of the specified type currently in the scene.
          *
          * @tparam		T			Type of the component to search for.
-         *
-         * @param[in]	activeOnly	If true only active components are returned, otherwise all components are returned.
+
          * @return					A list of all matching components in the scene.
          */
         template<class T>
-        Vector<GameObjectHandle<T>> FindComponents(bool activeOnly = true);
+        Vector<GameObjectHandle<T>> FindComponents();
 
         /** Returns all cameras in the scene. */
         const UnorderedMap<Camera*, SPtr<Camera>>& GetAllCameras() const { return _cameras; }
@@ -136,43 +114,13 @@ namespace te
         void _updateCoreObjectTransforms();
 
         /** Notifies the manager that a new component has just been created. The manager triggers necessary callbacks. */
-        void _notifyComponentCreated(const HComponent& component, bool parentActive);
-
-        /**
-         * Notifies the manager that a scene object the component belongs to was activated. The manager triggers necessary
-         * callbacks.
-         */
-        void _notifyComponentActivated(const HComponent& component, bool triggerEvent);
-
-        /**
-         * Notifies the manager that a scene object the component belongs to was deactivated. The manager triggers necessary
-         * callbacks.
-         */
-        void _notifyComponentDeactivated(const HComponent& component, bool triggerEvent);
+        void _notifyComponentCreated(const HComponent& component);
 
         /** Notifies the manager that a component is about to be destroyed. The manager triggers necessary callbacks. */
-        void _notifyComponentDestroyed(const HComponent& component, bool immediate);
+        void _notifyComponentDestroyed(const HComponent& component);
 
     protected:
         friend class SceneObject;
-
-        /** Types of events that represent component state changes relevant to the scene manager. */
-        enum class ComponentStateEventType
-        {
-            Created, Activated, Deactivated, Destroyed
-        };
-
-        /** Describes a single component state change. */
-        struct ComponentStateChange
-        {
-            ComponentStateChange(HComponent obj, ComponentStateEventType type)
-                : Obj(std::move(obj))
-                , Type(type)
-            { }
-
-            HComponent Obj;
-            ComponentStateEventType Type;
-        };
 
         /**
          * Register a new node in the scene manager, on the top-most level of the hierarchy.
@@ -190,27 +138,6 @@ namespace te
         /**	Callback that is triggered when the main render target size is changed. */
         void OnMainRenderTargetResized();
 
-        /**
-         * Adds a component to the specified state list. Caller is expected to first remove the component from any
-         * existing state lists.
-         */
-        void AddToStateList(const HComponent& component, UINT32 listType);
-
-        /** Removes a component from its current scene manager state list (if any). */
-        void RemoveFromStateList(const HComponent& component);
-
-        /** Iterates over components that had their state modified and moves them to the appropriate state lists. */
-        void ProcessStateChanges();
-
-        /**
-         * Encodes an index and a type into a single 32-bit integer. Top 2 bits represent the type, while the rest represent
-         * the index.
-         */
-        static UINT32 EncodeComponentId(UINT32 idx, UINT32 type);
-
-        /** Decodes an id encoded with encodeComponentId(). */
-        static void DecodeComponentId(UINT32 id, UINT32& idx, UINT32& type);
-
         /** Checks does the specified component type match the provided id. */
         static bool IsComponentOfType(const HComponent& component, UINT32 id);
 
@@ -221,47 +148,22 @@ namespace te
         UnorderedMap<Camera*, SPtr<Camera>> _cameras;
         Vector<SPtr<Camera>> _mainCameras;
 
-        Vector<HComponent> _activeComponents;
-        Vector<HComponent> _inactiveComponents;
-        Vector<HComponent> _uninitializedComponents;
-
-        std::array<Vector<HComponent>*, 3> _componentsPerState = {
-            { &_activeComponents, &_inactiveComponents, &_uninitializedComponents } 
-        };
+        Vector<HComponent> _components;
 
         SPtr<RenderTarget> _mainRenderTarget;
         HEvent _mainRTResizedConn;
-
-        ComponentState _componentState = ComponentState::Running;
-        bool _disableStateChange = false;
-        Vector<ComponentStateChange> _stateChanges;
     };
 
     template<class T>
-    Vector<GameObjectHandle<T>> SceneManager::FindComponents(bool activeOnly)
+    Vector<GameObjectHandle<T>> SceneManager::FindComponents()
     {
         UINT32 typeId = T::GetComponentType();
 
         Vector<GameObjectHandle<T>> output;
-        for (auto& entry : _activeComponents)
+        for (auto& entry : _components)
         {
             if (IsComponentOfType(entry, typeId))
                 output.push_back(static_object_cast<T>(entry));
-        }
-
-        if (!activeOnly)
-        {
-            for (auto& entry : _inactiveComponents)
-            {
-                if (IsComponentOfType(entry, typeId))
-                    output.push_back(static_object_cast<T>(entry));
-            }
-
-            for (auto& entry : _uninitializedComponents)
-            {
-                if (IsComponentOfType(entry, typeId))
-                    output.push_back(static_object_cast<T>(entry));
-            }
         }
 
         return output;

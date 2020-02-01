@@ -12,6 +12,7 @@ namespace te
         , _clearColorValue(DEFAULT_CLEAR_COLOR)
         , _clearDepthValue(1.0f)
         , _clearStencilValue(0)
+        , _clearFlags(FBT_COLOR | FBT_DEPTH | FBT_STENCIL)
     {
     }
 

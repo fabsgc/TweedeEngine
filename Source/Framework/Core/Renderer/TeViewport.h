@@ -43,6 +43,12 @@ namespace te
         /** @copydoc setClearStencilValue() */
         UINT16 GetClearStencilValue() const { return _clearStencilValue; }
 
+        /** Determines which portions of the render target should be cleared before rendering to this viewport is performed. */
+        void setClearFlags(UINT32 flags);
+
+        /** @copydoc SetClearFlags() */
+        UINT32 GetClearFlags() const { return _clearFlags; }
+
     protected:
         ViewportBase(float x = 0.0f, float y = 0.0f, float width = 1.0f, float height = 1.0f);
 
@@ -58,6 +64,7 @@ namespace te
         Color _clearColorValue;
         float _clearDepthValue;
         UINT16 _clearStencilValue;
+        UINT32 _clearFlags;
 
         static const Color DEFAULT_CLEAR_COLOR;
     };

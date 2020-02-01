@@ -16,17 +16,30 @@ namespace te
     public:
         virtual ~CRenderable() = default;
 
+        /** @copydoc Component::Initialize */
+        void Initialize() override;
+
         static UINT32 GetComponentType() { return TID_CRenderable; }
 
         /** @copydoc Renderable::SetMesh */
         void SetMesh(HMesh mesh);
 
-        /** @copydoc Renderable::GetMesh */
-        HMesh GetMesh() const { return _internal->GetMesh(); }
+        /** @copydoc Renderable::SetMesh */
+        void SetMesh(SPtr<Mesh> mesh);
 
+        /** @copydoc Renderable::GetMesh */
+        SPtr<Mesh> GetMesh() const { return _internal->GetMesh(); }
+
+        /** @copydoc Renderable::SetCullDistanceFactor */
+        void SetCullDistanceFactor(float factor) { _internal->SetCullDistanceFactor(factor); }
+
+        /** @copydoc Renderable::GetCullDistanceFactor */
+        float GetCullDistanceFactor() const { return _internal->GetCullDistanceFactor(); }
+
+        /**	Gets world bounds of the mesh rendered by this object. */
         Bounds GetBounds() const;
 
-        /** @copydoc Component::calculateBounds */
+        /** @copydoc Component::CalculateBounds */
         bool CalculateBounds(Bounds& bounds) override;
 
          /** Returns the internal renderable that is used for majority of operations by this component. */
@@ -39,6 +52,9 @@ namespace te
         friend class SceneObject;
 
         CRenderable(const HSceneObject& parent);
+
+        /** @copydoc Component::_instantiate */
+        void _instantiate() override;
 
         /** @copydoc Component::OnInitialized */
         void OnInitialized() override;

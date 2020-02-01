@@ -18,6 +18,9 @@ namespace te
         /** @copydoc CoreObject::Initialize */
         void Initialize() override;
 
+        /** @copydoc SceneActor::Destroy */
+        void SetMobility(ObjectMobility mobility) override;
+
         /** @copydoc CoreObject::_markCoreDirty */
         void _markCoreDirty(ActorDirtyFlag flag = ActorDirtyFlag::Everything) override;
 
@@ -28,10 +31,16 @@ namespace te
          * Determines the mesh to render. All sub-meshes of the mesh will be rendered, and you may set individual materials
          * for each sub-mesh.
          */
-        void SetMesh(HMesh& mesh);
+        void SetMesh(SPtr<Mesh> mesh);
 
         /**	@copydoc SetMesh() */
-        HMesh GetMesh() const { return _mesh; }
+        SPtr<Mesh> GetMesh() const { return _mesh; }
+
+        /** Factor to be applied to the cull distance set in the camera's render settings.  */
+        void SetCullDistanceFactor(float factor);
+
+        /** @copydoc SetCullDistanceFactor() */
+        float GetCullDistanceFactor() const { return _cullDistanceFactor; }
 
         /**	Returns the transform matrix that is applied to the object when its being rendered. */
         Matrix4 GetMatrix() const { return _tfrmMatrix; }
@@ -64,9 +73,10 @@ namespace te
         static SPtr<Renderable> CreateEmpty();
 
     protected:
-        HMesh _mesh;
+        SPtr<Mesh> _mesh;
         UINT32 _rendererId;
         Matrix4 _tfrmMatrix = TeIdentity;
         Matrix4 _tfrmMatrixNoScale = TeIdentity;
+        float _cullDistanceFactor = 1.0f;
     };
 }

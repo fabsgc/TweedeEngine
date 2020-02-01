@@ -14,14 +14,25 @@ namespace te
     class TE_CORE_EXPORT CLight : public Component
     {
     public:
-        CLight(const HSceneObject& parent);
-
+        CLight(const HSceneObject& parent, LightType type = LightType::Directional);
         virtual ~CLight();
 
-        static UINT32 GetComponentType()
-        {
-            return TID_CLight;
-        }
+        /** @copydoc Component::Initialize */
+        void Initialize() override;
+
+        /** @copydoc Light::SetType */
+        void setType(LightType type) { _internal->SetType(type); }
+
+        /** @copydoc Light::GetType */
+        LightType getType() const { return _internal->GetType(); }
+
+        /** @copydoc Light::GetBounds */
+        Sphere GetBounds() const;
+
+        /** Returns the light that this component wraps. */
+        SPtr<Light> _getLight() const { return _internal; }
+
+        static UINT32 GetComponentType() { return TID_CLight; }
 
     protected:
         mutable SPtr<Light> _internal;
@@ -29,16 +40,22 @@ namespace te
     protected:
         friend class SceneObject;
 
+        /** @copydoc Component::_instantiate */
+        void _instantiate() override;
+
         /** @copydoc Component::OnInitialized */
-        void OnInitialized() override { }
+        void OnInitialized() override;
 
         /** @copydoc Component::OnDestroyed */
-        void OnDestroyed() override { }
+        void OnDestroyed() override;
 
         /** @copydoc Component::Update */
         void Update() override { }
 
-    protected:
         CLight();
+
+    protected:
+        // Only valid during construction
+        LightType _type = LightType::Directional;
     };
 }

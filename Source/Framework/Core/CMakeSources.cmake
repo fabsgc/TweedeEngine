@@ -73,7 +73,6 @@ set (TE_CORE_SRC_RENDERER
     "Core/Renderer/TeRenderer.cpp"
     "Core/Renderer/TeCamera.cpp"
     "Core/Renderer/TeViewport.cpp"
-    "Core/Renderer/TeRenderSettings.cpp"
     "Core/Renderer/TeRendererMeshData.cpp"
     "Core/Renderer/TeParamBlocks.cpp"
     "Core/Renderer/TeRenderable.cpp"

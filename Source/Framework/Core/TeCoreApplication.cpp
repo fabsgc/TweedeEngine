@@ -48,6 +48,7 @@
 #include "Scene/TeSceneObject.h"
 #include "Components/TeCCamera.h"
 #include "Components/TeCRenderable.h"
+#include "Components/TeCLight.h"
 
 namespace te
 {
@@ -72,13 +73,12 @@ namespace te
         Console::StartUp();
         Time::StartUp();
         DynLibManager::StartUp();
-
         CoreObjectManager::StartUp();
         RenderAPIManager::StartUp();
-        RendererManager::StartUp();
-        ResourceManager::StartUp();
         GpuProgramManager::StartUp();
         GameObjectManager::StartUp();
+        RendererManager::StartUp();
+        ResourceManager::StartUp();
         SceneManager::StartUp();
 
         LoadPlugin(_startUpDesc.Renderer, &_rendererPlugin);
@@ -88,14 +88,15 @@ namespace te
         RenderAPI::Instance().Initialize();
         RenderAPI::Instance().SetDrawOperation(DOT_TRIANGLE_LIST);
 
+        ParamBlockManager::StartUp();
+
         _renderer = RendererManager::Instance().Initialize(_startUpDesc.Renderer);
         _window = RenderAPI::Instance().CreateRenderWindow(_startUpDesc.WindowDesc);
         _window->Initialize();
 
         Input::StartUp();
         VirtualInput::StartUp();
-        Importer::StartUp();
-        ParamBlockManager::StartUp();
+        Importer::StartUp(); 
 
         for (auto& importerName : _startUpDesc.Importers)
         {
@@ -109,15 +110,15 @@ namespace te
     {
         TestShutDown();
 
-        ParamBlockManager::ShutDown();
         Importer::ShutDown();
         VirtualInput::ShutDown();
         Input::ShutDown();
+        ParamBlockManager::ShutDown();
         SceneManager::ShutDown();
+        RendererManager::ShutDown();
         GameObjectManager::ShutDown();
         GpuProgramManager::ShutDown();
         ResourceManager::ShutDown();
-        RendererManager::ShutDown();
         RenderAPIManager::ShutDown();
         CoreObjectManager::ShutDown();
         Platform::ShutDown();
@@ -132,8 +133,6 @@ namespace te
 
         while (_runMainLoop && !_pause)
         {
-            //CheckFPSLimit();
-
             Platform::Update();
             gTime().Update();
             gInput().Update();
@@ -194,14 +193,8 @@ namespace te
 
     void CoreApplication::SetFPSLimit(UINT32 limit)
     {
-        if (limit > 0)
-        {
-            _frameStep = (UINT64)1000000 / limit;
-        } 
-        else
-        {
-            _frameStep = 0;
-        } 
+        if (limit > 0) _frameStep = (UINT64)1000000 / limit;
+        else _frameStep = 0;
     }
 
     void CoreApplication::CheckFPSLimit()
@@ -415,10 +408,15 @@ namespace te
         _sceneCamera = sceneCameraSO->AddComponent<CCamera>();
         _sceneCamera->GetViewport()->SetClearColorValue(Color(0.17f, 0.64f, 1.0f, 1.0f));
         _sceneCamera->SetMain(true);
+        _sceneCamera->Initialize();
 
         HSceneObject renderableSO = SceneObject::Create("Cube");
         HRenderable renderable = renderableSO->AddComponent<CRenderable>();
         renderable->SetMesh(_loadedMesh);
+        renderable->Initialize();
+
+        HLight light = renderableSO->AddComponent<CLight>();
+        light->Initialize();
 
         sceneCameraSO->SetPosition(Vector3(4.0f, 2.0f, 5.0f));
         sceneCameraSO->LookAt(Vector3(1.0f, 0.5f, 0.0f));

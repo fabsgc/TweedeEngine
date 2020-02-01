@@ -40,5 +40,5 @@ namespace te
         SPtr<Timer> _timer;
     };
 
-    Time& gTime();
+    TE_UTILITY_EXPORT Time& gTime();
 }

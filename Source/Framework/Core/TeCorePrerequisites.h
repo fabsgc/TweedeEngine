@@ -136,6 +136,7 @@ namespace te
     class Viewport;
     class Light;
     class Renderable;
+    struct RenderSettings;
 
     class SceneActor;
     class SceneManager;
