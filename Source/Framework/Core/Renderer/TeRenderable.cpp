@@ -21,14 +21,35 @@ namespace te
 
     void Renderable::OnMeshChanged()
     {
-        gRenderer()->NotifyRenderableRemoved(this);
-        gRenderer()->NotifyRenderableAdded(this);
+        _markCoreDirty();
     }
 
     void Renderable::_markCoreDirty(ActorDirtyFlag flag) 
     {
         MarkCoreDirty((UINT32)flag);
-        gRenderer()->NotifyRenderableUpdated(this);
+    }
+
+    void Renderable::FrameSync()
+    {
+        TE_PRINT("# SYNC RENDERABLE");
+
+        UINT32 dirtyFlag = GetCoreDirtyFlags();
+        UINT32 updateEverythingFlag = (UINT32)ActorDirtyFlag::Everything;
+
+        if ((dirtyFlag & updateEverythingFlag) != 0)
+        {
+            gRenderer()->NotifyRenderableRemoved(this);
+            gRenderer()->NotifyRenderableAdded(this);
+        }
+        else if ((dirtyFlag & (UINT32)ActorDirtyFlag::Mobility) != 0)
+        {
+            gRenderer()->NotifyRenderableRemoved(this);
+            gRenderer()->NotifyRenderableAdded(this);
+        }
+        else if ((dirtyFlag & (UINT32)ActorDirtyFlag::Transform) != 0)
+        {
+            gRenderer()->NotifyRenderableUpdated(this);
+        }
     }
 
     void Renderable::SetMobility(ObjectMobility mobility)

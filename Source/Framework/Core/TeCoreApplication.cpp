@@ -416,7 +416,8 @@ namespace te
         renderable->SetMesh(_loadedMesh);
         renderable->Initialize();
 
-        HLight light = renderableSO->AddComponent<CLight>();
+        HSceneObject sceneLightSO = SceneObject::Create("Light");
+        HLight light = sceneLightSO->AddComponent<CLight>();
         light->Initialize();
 
         sceneCameraSO->SetPosition(Vector3(4.0f, 2.0f, 5.0f));

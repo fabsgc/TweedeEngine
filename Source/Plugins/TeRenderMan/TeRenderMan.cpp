@@ -3,6 +3,7 @@
 #include "RenderAPI/TeRenderAPI.h"
 #include "Renderer/TeCamera.h"
 #include "Utility/TeTime.h"
+#include "CoreUtility/TeCoreObjectManager.h"
 
 namespace te
 {
@@ -39,6 +40,8 @@ namespace te
 
     void RenderMan::RenderAll()
     {
+        CoreObjectManager::Instance().FrameSync();
+
         const SceneInfo& sceneInfo = _scene->GetSceneInfo();
 
         FrameTimings timings;
@@ -203,65 +206,56 @@ namespace te
 
     void RenderMan::NotifyCameraAdded(Camera* camera)
     {
-        TE_PRINT("Camera added");
+        TE_PRINT("# Camera added");
         _scene->RegisterCamera(camera);
-        camera->MarkCoreClean();
     }
 
     void RenderMan::NotifyCameraUpdated(Camera* camera, UINT32 updateFlag)
     {
-        TE_PRINT("Camera updated");
+        TE_PRINT("# Camera updated");
         _scene->UpdateCamera(camera, updateFlag);
-        camera->MarkCoreClean();
     }
 
     void RenderMan::NotifyCameraRemoved(Camera* camera)
     {
-        TE_PRINT("Camera removed");
+        TE_PRINT("# Camera removed");
         _scene->UnregisterCamera(camera);
-        camera->MarkCoreClean();
     }
 
     void RenderMan::NotifyRenderableAdded(Renderable* renderable)
     {
-        TE_PRINT("Renderable added");
+        TE_PRINT("# Renderable added");
         _scene->RegisterRenderable(renderable);
-        renderable->MarkCoreClean();
     }
 
     void RenderMan::NotifyRenderableUpdated(Renderable* renderable)
     {
-        TE_PRINT("Renderable updated");
+        TE_PRINT("# Renderable updated");
         _scene->UpdateRenderable(renderable);
-        renderable->MarkCoreClean();
     }
 
     void RenderMan::NotifyRenderableRemoved(Renderable* renderable)
     {
-        TE_PRINT("Renderable removed");
+        TE_PRINT("# Renderable removed");
         _scene->UnregisterRenderable(renderable);
-        renderable->MarkCoreClean();
     }
 
     void RenderMan::NotifyLightAdded(Light* light)
     {
-        TE_PRINT("Light added");
+        TE_PRINT("# Light added");
         _scene->RegisterLight(light);
-        light->MarkCoreClean();
     }
 
     void RenderMan::NotifyLightUpdated(Light* light)
     {
-        TE_PRINT("Light updated");
+        TE_PRINT("# Light updated");
         _scene->UpdateLight(light);
-        light->MarkCoreClean();
     }
 
     void RenderMan::NotifyLightRemoved(Light* light)
     {
-        TE_PRINT("Light removed");
+        TE_PRINT("# Light removed");
         _scene->UnregisterLight(light);
-        light->MarkCoreClean();
     }
 
     SPtr<RenderMan> gRenderMan()

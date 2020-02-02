@@ -39,5 +39,35 @@ namespace te
         assert(object != nullptr && !object->IsDestroyed());
         UINT64 internalId = object->GetInternalID();
         _objects.erase(internalId);
+
+        bool isDirty = object->IsCoreDirty() || (_dirtyObjects.find(internalId) != _dirtyObjects.end());
+
+        if (isDirty)
+        {
+            _dirtyObjects.erase(object->GetInternalID());
+        }
+    }
+
+    void CoreObjectManager::NotifyCoreDirty(CoreObject* object)
+    {
+        TE_PRINT("CORE DIRTY");
+        UINT64 id = object->GetInternalID();
+        _dirtyObjects[id] = object;
+    }
+
+    void CoreObjectManager::FrameSync()
+    {
+        if (_dirtyObjects.size() == 0)
+            return;
+
+        TE_PRINT("## FRAME SYNC");
+
+        auto it = _dirtyObjects.begin();
+        while (it != _dirtyObjects.end())
+        {
+            it->second->FrameSync();
+            it->second->MarkCoreClean();
+            _dirtyObjects.erase(it++);
+        }
     }
 }

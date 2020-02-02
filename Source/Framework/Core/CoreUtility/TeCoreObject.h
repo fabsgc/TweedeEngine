@@ -83,9 +83,12 @@ namespace te
         bool IsCoreDirty() const { return _coreDirtyFlags != 0; }
 
         /**
-         * Returns the exact value of the internal flag that signals whether an object needs to be synced with the core thread.
+         * Returns the exact value of the internal flag that signals whether an object needs to be synced
          */
         UINT32 GetCoreDirtyFlags() const { return _coreDirtyFlags; }
+
+        /** Synchronize object once per frame */
+        virtual void FrameSync() { }
 
     protected:
         /** Constructs a new core object. */

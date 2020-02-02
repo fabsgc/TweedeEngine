@@ -25,7 +25,35 @@ namespace te
     void Light::_markCoreDirty(ActorDirtyFlag flag) 
     {
         MarkCoreDirty((UINT32)flag);
-        gRenderer()->NotifyLightUpdated(const_cast<Light*>(this));
+    }
+
+    void Light::FrameSync()
+    {
+        TE_PRINT("# SYNC LIGHT");
+
+        LightType oldType = _type;
+        UINT32 dirtyFlag = GetCoreDirtyFlags();
+        UINT32 updateEverythingFlag = (UINT32)ActorDirtyFlag::Everything;
+
+        UpdateBounds();
+
+        if ((dirtyFlag & updateEverythingFlag) != 0)
+        {
+            LightType newType = _type;
+            _type = oldType;
+            gRenderer()->NotifyLightRemoved(this);
+            _type = newType;
+            gRenderer()->NotifyLightAdded(this);
+        }
+        else if ((dirtyFlag & (UINT32)ActorDirtyFlag::Mobility) != 0)
+        {
+            gRenderer()->NotifyLightRemoved(this);
+            gRenderer()->NotifyLightAdded(this);
+        }
+        else if ((dirtyFlag & (UINT32)ActorDirtyFlag::Transform) != 0)
+        {
+            gRenderer()->NotifyLightUpdated(this);
+        }
     }
 
     void Light::SetMobility(ObjectMobility mobility)

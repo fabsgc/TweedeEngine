@@ -407,6 +407,9 @@ namespace te
         /** @copydoc CoreObject::_markCoreDirty */
         void _markCoreDirty(ActorDirtyFlag flag = ActorDirtyFlag::Everything) override;
 
+        /** @copydoc CoreObject::FrameSync */
+        void FrameSync() override;
+
     protected:
         ProjectionType _projType = PT_PERSPECTIVE; /**< Type of camera projection. */
         Radian _horzFOV = Degree(90.0f); /**< Horizontal field of view represents how wide is the camera angle. */

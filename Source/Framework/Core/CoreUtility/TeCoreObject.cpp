@@ -4,6 +4,7 @@ namespace te
 {
     CoreObject::CoreObject()
         : _flags(CGO_NONE)
+        , _coreDirtyFlags(0)
         , _internalID(CoreObjectManager::Instance().GenerateId())
     {
     }
@@ -45,7 +46,12 @@ namespace te
 
     void CoreObject::MarkCoreDirty(UINT32 flags)
     {
+        bool wasDirty = IsCoreDirty();
+
         _coreDirtyFlags |= flags;
+
+        if (!wasDirty && IsCoreDirty())
+            CoreObjectManager::Instance().NotifyCoreDirty(this);
     }
 
     void CoreObject::RemoveDirtyFlag(UINT32 flags)

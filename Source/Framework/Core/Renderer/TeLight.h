@@ -36,6 +36,9 @@ namespace te
         /** @copydoc CoreObject::_markCoreDirty */
         void _markCoreDirty(ActorDirtyFlag flag = ActorDirtyFlag::Everything) override;
 
+        /** @copydoc CoreObject::FrameSync */
+        void FrameSync() override;
+
         /**	Determines the type of the light. */
         LightType GetType() const { return _type; }
 

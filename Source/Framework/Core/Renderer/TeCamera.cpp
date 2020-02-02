@@ -53,7 +53,22 @@ namespace te
     void Camera::_markCoreDirty(ActorDirtyFlag flag)
     {
         MarkCoreDirty((UINT32)flag);
-        gRenderer()->NotifyCameraUpdated(this, (UINT32)flag);
+    }
+
+    void Camera::FrameSync()
+    {
+        TE_PRINT("# SYNC CAMERA");
+
+        UINT32 dirtyFlag = GetCoreDirtyFlags();
+
+        if ((dirtyFlag & ~(INT32)CameraDirtyFlag::Redraw) != 0)
+        {
+            _needComputeFrustum = true;
+            _needComputeFrustumPlanes = true;
+            _needComputeView = true;
+        }
+
+        RendererManager::Instance().GetRenderer()->NotifyCameraUpdated(this, (UINT32)dirtyFlag);
     }
 
     void Camera::SetMobility(ObjectMobility mobility)

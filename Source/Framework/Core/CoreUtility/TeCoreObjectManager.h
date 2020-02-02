@@ -5,7 +5,7 @@
 
 namespace te
 {
-    class CoreObjectManager : public Module<CoreObjectManager>
+    class TE_CORE_EXPORT CoreObjectManager : public Module<CoreObjectManager>
     {
     public:
         CoreObjectManager();
@@ -20,8 +20,15 @@ namespace te
         /** Unregisters a CoreObject notifying the manager the object is destroyed. */
         void UnregisterObject(CoreObject* object);
 
+        /**	Notifies the system that a CoreObject is dirty and needs to be synced with the core thread. */
+        void NotifyCoreDirty(CoreObject* object);
+
+        /** Synchronize all dirty objects once per frame */
+        void FrameSync();
+
     private:
         UINT64 _nextAvailableID;
         Map<UINT64, CoreObject*> _objects;
+        Map<UINT64, CoreObject*> _dirtyObjects;
     };
 }
