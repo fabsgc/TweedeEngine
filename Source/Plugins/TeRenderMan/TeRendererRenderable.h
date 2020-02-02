@@ -68,7 +68,7 @@ namespace te
 
         Matrix4 WorldTfrm = Matrix4::IDENTITY;
         Matrix4 PrevWorldTfrm = Matrix4::IDENTITY;
-        PrevFrameDirtyState PrevFrameDirtyState = PrevFrameDirtyState::Clean;
+        PrevFrameDirtyState PreviousFrameDirtyState = PrevFrameDirtyState::Clean;
 
         Renderable* RenderablePtr;
         Vector<RenderableElement> Elements;

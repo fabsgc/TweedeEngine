@@ -2,6 +2,7 @@
 
 #include "TeRenderManPrerequisites.h"
 #include "Renderer/TeRenderer.h"
+#include "Renderer/TeRenderSettings.h"
 #include "Renderer/TeLight.h"
 #include "Math/TeBounds.h"
 #include "Math/TeRect2I.h"
@@ -11,6 +12,9 @@
 
 namespace te
 {
+    struct SceneInfo;
+    struct FrameInfo;
+
     TE_PARAM_BLOCK_BEGIN(PerCameraParamDef)
         TE_PARAM_BLOCK_ENTRY(Vector3, gViewDir)
         TE_PARAM_BLOCK_ENTRY(Vector3, gViewOrigin)
@@ -136,16 +140,55 @@ namespace te
         Camera* GetSceneCamera() const { return _camera; }
 
         /** Prepares render targets for rendering. When done call endFrame(). */
-        void BeginFrame();
+        void BeginFrame(const FrameInfo& frameInfo);
 
         /** Ends rendering and frees any acquired resources. */
         void EndFrame();
+
+        /**
+         * Populates view render queues by determining visible renderable objects.
+         *
+         * @param[in]	renderables			A set of renderable objects to iterate over and determine visibility for.
+         * @param[in]	cullInfos			A set of world bounds & other information relevant for culling the provided
+         *									renderable objects. Must be the same size as the @p renderables array.
+         * @param[out]	visibility			Output parameter that will have the true bit set for any visible renderable
+         *									object. If the bit for an object is already set to true, the method will never
+         *									change it to false which allows the same bitfield to be provided to multiple
+         *									renderer views. Must be the same size as the @p renderables array.
+         */
+        void DetermineVisible(const Vector<RendererRenderable*>& renderables, const Vector<CullInfo>& cullInfos,
+            Vector<bool>* visibility = nullptr);
+
+        /**
+         * Culls the provided set of bounds against the current frustum and outputs a set of visibility flags determining
+         * which entry is or isn't visible by this view. Both inputs must be arrays of the same size.
+         */
+        void CalculateVisibility(const Vector<CullInfo>& cullInfos, Vector<bool>& visibility) const;
+
+        /**
+         * Inserts all visible renderable elements into render queues. Assumes visibility has been calculated beforehand
+         * by calling determineVisible(). After the call render elements can be retrieved from the queues using
+         * getOpaqueQueue or getTransparentQueue() calls.
+         */
+        void QueueRenderElements(const SceneInfo& sceneInfo);
 
         /** Updates the GPU buffer containing per-view information, with the latest internal data. */
         void UpdatePerViewBuffer();
 
         /** Returns a buffer that stores per-view parameters. */
         SPtr<GpuParamBlockBuffer> GetPerViewBuffer() const { return _paramBuffer; }
+
+        /** Assigns a view index to the view. To be called by the parent view group when the view is added to it. */
+        void _setViewIdx(UINT32 viewIdx) { _viewIdx = viewIdx; }
+
+        /** Returns an index of this view within the parent view group. */
+        UINT32 GetViewIdx() const { return _viewIdx; }
+
+        /** Determines if a view should be rendered this frame. */
+        bool ShouldDraw() const;
+
+        /** Determines if view's 3D geometry should be rendered this frame. */
+        bool ShouldDraw3D() const;
 
         /** Lets an on-demand view know that it should be redrawn this frame. */
         void _notifyNeedsRedraw();
@@ -158,8 +201,51 @@ namespace te
         SPtr<GpuParamBlockBuffer> _paramBuffer;
 
         VisibilityInfo _visibility;
+        UINT32 _viewIdx = 0;
 
         // On-demand drawing
+        float _redrawForSeconds = 0.0f;
+        UINT32 _redrawForFrames = 0;
         bool _redrawThisFrame = false;
+
+        // Current frame info
+        FrameTimings _frameTimings;
+    };
+
+    /** Contains one or multiple RendererView%s that are in some way related. */
+    class RendererViewGroup
+    {
+    public:
+        RendererViewGroup(RendererView** views, UINT32 numViews);
+
+        /**
+         * Updates the internal list of views. This is more efficient than always constructing a new instance of this class
+         * when views change, as internal buffers don't need to be re-allocated.
+         */
+        void SetViews(RendererView** views, UINT32 numViews);
+
+        /** Returns a view at the specified index. Index must be less than the value returned by getNumViews(). */
+        RendererView* GetView(UINT32 idx) const { return _views[idx]; }
+
+        /** Returns the total number of views in the group. */
+        UINT32 GetNumViews() const { return (UINT32)_views.size(); }
+
+        /**
+         * Returns information about visibility of various scene objects, from the perspective of all the views in the
+         * group (visibility will be true if the object is visible from any of the views. determineVisibility() must be
+         * called whenever the scene or view information changes (usually every frame).
+         */
+        const VisibilityInfo& GetVisibilityInfo() const { return _visibility; }
+
+        /**
+         * Updates visibility information for the provided scene objects, from the perspective of all views in this group,
+         * and updates the render queues of each individual view. Use getVisibilityInfo() to retrieve the calculated
+         * visibility information.
+         */
+        void DetermineVisibility(const SceneInfo& sceneInfo);
+
+    private:
+        Vector<RendererView*> _views;
+        VisibilityInfo _visibility;
     };
 }

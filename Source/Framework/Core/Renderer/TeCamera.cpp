@@ -14,6 +14,7 @@ namespace te
         , _needComputeFrustumPlanes(true)
         , _needComputeView(true)
         , _rendererId(0)
+        , _cameraFlags(0)
     {
         InvalidateFrustum();
         _viewport = Viewport::Create(target, left, top, width, height);
@@ -25,6 +26,7 @@ namespace te
         , _needComputeFrustumPlanes(true)
         , _needComputeView(true)
         , _rendererId(0)
+        , _cameraFlags(0)
     {
         InvalidateFrustum();
         _viewport = viewport;

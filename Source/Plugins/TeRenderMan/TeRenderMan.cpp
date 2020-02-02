@@ -18,6 +18,8 @@ namespace te
 
         _options = te_shared_ptr_new<RenderManOptions>();
         _scene = te_shared_ptr_new<RendererScene>(_options);
+
+        _mainViewGroup = te_new<RendererViewGroup>(nullptr, 0);
     }
 
     void RenderMan::Destroy()
@@ -50,9 +52,11 @@ namespace te
         sceneInfo.RenderableReady.resize(sceneInfo.Renderables.size(), false);
         sceneInfo.RenderableReady.assign(sceneInfo.Renderables.size(), false);
 
+        FrameInfo frameInfo(timings);
+
         // Update per-frame data for all renderable objects
         for (UINT32 i = 0; i < sceneInfo.Renderables.size(); i++)
-            _scene->PrepareRenderable(i);
+            _scene->PrepareRenderable(i, frameInfo);
 
         // Gather all views
         for (auto& rtInfo : sceneInfo.RenderTargets)
@@ -68,23 +72,122 @@ namespace te
                 RendererView* viewInfo = sceneInfo.Views[viewIdx];
                 views.push_back(viewInfo);
             }
+
+            _mainViewGroup->SetViews(views.data(), (UINT32)views.size());
+            _mainViewGroup->DetermineVisibility(sceneInfo);
+
+            // Render everything
+            bool anythingDrawn = RenderViews(*_mainViewGroup, frameInfo);
+
+            if (rtInfo.Target->GetProperties().IsWindow && anythingDrawn)
+            {
+                // RenderAPI::Instance().SwapBuffers(rtInfo.Target);
+            }
         }
     }
 
-    void RenderMan::RenderOverlay(const SPtr<RenderTarget> target, Camera* camera)
+    /** Renders all views in the provided view group. Returns true if anything has been draw to any of the views. */
+    bool RenderMan::RenderViews(RendererViewGroup& viewGroup, const FrameInfo& frameInfo)
     {
-        /*RenderAPI& rapi = RenderAPI::Instance();
-        UINT32 clearBuffers = FBT_COLOR | FBT_DEPTH | FBT_STENCIL;
+        bool needs3DRender = false;
+        UINT32 numViews = viewGroup.GetNumViews();
+        for (UINT32 i = 0; i < numViews; i++)
+        {
+            RendererView* view = viewGroup.GetView(i);
 
-        if (clearBuffers != 0)
+            if (view->ShouldDraw3D())
+            {
+                needs3DRender = true;
+                break;
+            }
+        }
+
+        if (needs3DRender)
+        {
+            const SceneInfo& sceneInfo = _scene->GetSceneInfo();
+            const VisibilityInfo& visibility = viewGroup.GetVisibilityInfo();
+
+            // Update various buffers required by each renderable
+            UINT32 numRenderables = (UINT32)sceneInfo.Renderables.size();
+            for (UINT32 i = 0; i < numRenderables; i++)
+            {
+                if (!visibility.Renderables[i])
+                    continue;
+
+                _scene->PrepareVisibleRenderable(i, frameInfo);
+            }
+        }
+
+        bool anythingDrawn = false;
+        for (UINT32 i = 0; i < numViews; i++)
+        {
+            RendererView* view = viewGroup.GetView(i);
+
+            if (!view->ShouldDraw())
+            {
+                continue;
+            }
+
+            const RenderSettings& settings = view->GetRenderSettings();
+            if (settings.OverlayOnly)
+            {
+                if (RenderOverlay(*view, frameInfo))
+                    anythingDrawn = true;
+            }
+            else
+            {
+                RenderSingleView(viewGroup, *view, frameInfo);
+                anythingDrawn = true;
+            }
+        }
+
+        return anythingDrawn;
+    }
+
+    /** Renders all objects visible by the provided view. */
+    void RenderMan::RenderSingleView(const RendererViewGroup& viewGroup, RendererView& view, const FrameInfo& frameInfo)
+    {
+        const SceneInfo& sceneInfo = _scene->GetSceneInfo();
+        auto& viewProps = view.GetProperties();
+
+        SPtr<GpuParamBlockBuffer> perCameraBuffer = view.GetPerViewBuffer();
+
+        view.BeginFrame(frameInfo);
+
+        // COMPOSITOR
+
+        view.EndFrame();
+    }
+
+    bool RenderMan::RenderOverlay(RendererView& view, const FrameInfo& frameInfo)
+    {
+        view.GetPerViewBuffer()->FlushToGPU();
+        view.BeginFrame(frameInfo);
+
+        auto& viewProps = view.GetProperties();
+        Camera* camera = view.GetSceneCamera();
+        SPtr<RenderTarget> target = viewProps.Target.Target;
+        SPtr<Viewport> viewport = camera->GetViewport();
+
+        UINT32 clearFlags = viewport->GetClearFlags();
+
+        RenderAPI& rapi = RenderAPI::Instance();
+        if (clearFlags != 0)
         {
             rapi.SetRenderTarget(target);
-            rapi.ClearViewport(clearBuffers, camera->GetViewport()->GetClearColorValue());
+            rapi.ClearViewport(clearFlags, viewport->GetClearColorValue(),
+                viewport->GetClearDepthValue(), viewport->GetClearStencilValue());
         }
         else
         {
-            rapi.SetRenderTarget(target);
-        }*/
+            rapi.SetRenderTarget(target, 0);
+        }
+
+        rapi.SetViewport(viewport->GetArea());
+
+        view.EndFrame();
+
+        return false;
     }
 
     void RenderMan::SetOptions(const SPtr<RendererOptions>& options)

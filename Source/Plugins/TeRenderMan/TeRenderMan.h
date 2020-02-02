@@ -8,6 +8,16 @@
 
 namespace te
 {
+    /** Contains information global to an entire frame. */
+    struct FrameInfo
+    {
+        FrameInfo(const FrameTimings& timings)
+            : Timings(timings)
+        { }
+
+        FrameTimings Timings;
+    };
+
     class RenderMan: public Renderer
     {
     public:
@@ -35,7 +45,13 @@ namespace te
         /**	Returns current set of options used for controlling the rendering. */
         SPtr<RendererOptions> GetOptions() const override;
 
-        void RenderOverlay(const SPtr<RenderTarget> target, Camera* camera);
+        bool RenderOverlay(RendererView& view, const FrameInfo& frameInfo);
+
+        /** Renders all views in the provided view group. Returns true if anything has been draw to any of the views. */
+        bool RenderViews(RendererViewGroup& viewGroup, const FrameInfo& frameInfo);
+
+        /** Renders all objects visible by the provided view. */
+        void RenderSingleView(const RendererViewGroup& viewGroup, RendererView& view, const FrameInfo& frameInfo);
 
         /** @copydoc Renderer::NotifyCameraAdded */
         void NotifyCameraAdded(Camera* camera) override;
@@ -67,6 +83,9 @@ namespace te
     private:
         SPtr<RendererScene> _scene;
         SPtr<RenderManOptions> _options;
+
+        // Helpers to avoid memory allocations
+        RendererViewGroup* _mainViewGroup = nullptr;
     };
 
     /** Provides easy access to the RenderBeast renderer. */

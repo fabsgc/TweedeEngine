@@ -9,6 +9,8 @@
 
 namespace te
 {
+    struct FrameInfo;
+
     TE_PARAM_BLOCK_BEGIN(PerFrameParamDef)
         TE_PARAM_BLOCK_ENTRY(float, gTime)
     TE_PARAM_BLOCK_END
@@ -72,6 +74,9 @@ namespace te
         /** Removes a renderable object from the scene. */
         void UnregisterRenderable(Renderable* renderable);
 
+        /** Sometimes, mesh is missing on creation, need to be added afeter */
+        void SetMeshData(RendererRenderable* rendererRenderable, Renderable* renderable);
+
         /** Updates scene according to the newly provided renderer options. */
         void SetOptions(const SPtr<RenderManOptions>& options);
 
@@ -84,7 +89,7 @@ namespace te
          * @param[in]	idx			Index of the renderable to prepare.
          * @param[in]	frameInfo	Global information describing the current frame.
          */
-        void PrepareRenderable(UINT32 idx);
+        void PrepareRenderable(UINT32 idx, const FrameInfo& frameInfo);
 
         /**
          * Performs necessary steps to make a renderable ready for rendering. This must be called at least once every frame
@@ -94,7 +99,7 @@ namespace te
          * @param[in]	idx			Index of the renderable to prepare.
          * @param[in]	frameInfo	Global information describing the current frame.
          */
-        void PrepareVisibleRenderable(UINT32 idx);
+        void PrepareVisibleRenderable(UINT32 idx, const FrameInfo& frameInfo);
 
     private:
         /** Creates a renderer view descriptor for the particular camera. */

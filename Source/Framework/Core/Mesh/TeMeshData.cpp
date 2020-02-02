@@ -121,9 +121,8 @@ namespace te
         }
 
         // Copy sub-meshes
-        UINT32 meshIdx = 0;
         size_t meshCount = meshes.size();
-        for(auto meshIdx = 0; meshIdx < meshCount; meshIdx++)
+        for(size_t meshIdx = 0; meshIdx < meshCount; meshIdx++)
         {
             const Vector<SubMesh> curSubMeshes = allSubMeshes[meshIdx];
             for(auto& subMesh : curSubMeshes)

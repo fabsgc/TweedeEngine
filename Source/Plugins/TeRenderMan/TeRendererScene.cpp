@@ -57,7 +57,6 @@ namespace te
             view->SetRenderSettings(camera->GetRenderSettings());
 
             UpdateCameraRenderTargets(camera);
-            return;
         }
 
         if ((updateFlag & (UINT32)CameraDirtyFlag::RenderSettings) != 0)
@@ -154,30 +153,10 @@ namespace te
         RendererRenderable* rendererRenderable = _info.Renderables.back();
         rendererRenderable->RenderablePtr = renderable;
         rendererRenderable->WorldTfrm = renderable->GetMatrix();
-        rendererRenderable->PrevFrameDirtyState = PrevFrameDirtyState::Clean;
+        rendererRenderable->PreviousFrameDirtyState = PrevFrameDirtyState::Clean;
         rendererRenderable->UpdatePerObjectBuffer();
 
-        SPtr<Mesh> mesh = renderable->GetMesh();
-        if (mesh != nullptr)
-        {
-            const MeshProperties& meshProps = mesh->GetProperties();
-            SPtr<VertexDeclaration> vertexDecl = mesh->GetVertexData()->vertexDeclaration;
-
-            for (UINT32 i = 0; i < meshProps.GetNumSubMeshes(); i++)
-            {
-                rendererRenderable->Elements.push_back(RenderableElement());
-                RenderableElement& renElement = rendererRenderable->Elements.back();
-
-                renElement.Type = (UINT32)RenderElementType::Renderable;
-                renElement.MeshElem = mesh;
-            }
-        }
-
-        // Prepare all parameter bindings
-        for (auto& element : rendererRenderable->Elements)
-        {
-            // TODO
-        }
+        SetMeshData(rendererRenderable, renderable);
     }
 
     /** Updates information about a previously registered renderable object. */
@@ -187,11 +166,13 @@ namespace te
 
         RendererRenderable* rendererRenderable = _info.Renderables[renderableId];
 
-        if(rendererRenderable->PrevFrameDirtyState != PrevFrameDirtyState::Updated)
+        SetMeshData(rendererRenderable, renderable);
+
+        if(rendererRenderable->PreviousFrameDirtyState != PrevFrameDirtyState::Updated)
             rendererRenderable->PrevWorldTfrm = rendererRenderable->WorldTfrm;
 
         rendererRenderable->WorldTfrm = renderable->GetMatrix();
-        rendererRenderable->PrevFrameDirtyState = PrevFrameDirtyState::Updated;
+        rendererRenderable->PreviousFrameDirtyState = PrevFrameDirtyState::Updated;
 
         _info.Renderables[renderableId]->UpdatePerObjectBuffer();
         _info.RenderableCullInfos[renderableId].Boundaries = renderable->GetBounds();
@@ -224,6 +205,31 @@ namespace te
         te_delete(rendererRenderable);
     }
 
+    void RendererScene::SetMeshData(RendererRenderable* rendererRenderable, Renderable* renderable)
+    {
+        SPtr<Mesh> mesh = renderable->GetMesh();
+        if (mesh != nullptr && rendererRenderable->Elements.size() == 0)
+        {
+            const MeshProperties& meshProps = mesh->GetProperties();
+            SPtr<VertexDeclaration> vertexDecl = mesh->GetVertexData()->vertexDeclaration;
+
+            for (UINT32 i = 0; i < meshProps.GetNumSubMeshes(); i++)
+            {
+                rendererRenderable->Elements.push_back(RenderableElement());
+                RenderableElement& renElement = rendererRenderable->Elements.back();
+
+                renElement.Type = (UINT32)RenderElementType::Renderable;
+                renElement.MeshElem = mesh;
+            }
+
+            // Prepare all parameter bindings
+            for (auto& element : rendererRenderable->Elements)
+            {
+                // TODO
+            }
+        }
+    }
+
     void RendererScene::SetOptions(const SPtr<RenderManOptions>& options)
     {
         _options = options;
@@ -234,24 +240,24 @@ namespace te
         gPerFrameParamDef.gTime.Set(_perFrameParamBuffer, time);
     }
 
-    void RendererScene::PrepareRenderable(UINT32 idx)
+    void RendererScene::PrepareRenderable(UINT32 idx, const FrameInfo& frameInfo)
     {
         RendererRenderable* rendererRenderable = _info.Renderables[idx];
 
-        if (rendererRenderable->PrevFrameDirtyState != PrevFrameDirtyState::Clean)
+        if (rendererRenderable->PreviousFrameDirtyState != PrevFrameDirtyState::Clean)
         {
-            if (rendererRenderable->PrevFrameDirtyState == PrevFrameDirtyState::Updated)
-                rendererRenderable->PrevFrameDirtyState = PrevFrameDirtyState::CopyMostRecent;
-            else if (rendererRenderable->PrevFrameDirtyState == PrevFrameDirtyState::CopyMostRecent)
+            if (rendererRenderable->PreviousFrameDirtyState == PrevFrameDirtyState::Updated)
+                rendererRenderable->PreviousFrameDirtyState = PrevFrameDirtyState::CopyMostRecent;
+            else if (rendererRenderable->PreviousFrameDirtyState == PrevFrameDirtyState::CopyMostRecent)
             {
                 rendererRenderable->PrevWorldTfrm = _info.Renderables[idx]->WorldTfrm;
-                rendererRenderable->PrevFrameDirtyState = PrevFrameDirtyState::Clean;
+                rendererRenderable->PreviousFrameDirtyState = PrevFrameDirtyState::Clean;
                 rendererRenderable->UpdatePerObjectBuffer();
             }
         }
     }
 
-    void RendererScene::PrepareVisibleRenderable(UINT32 idx)
+    void RendererScene::PrepareVisibleRenderable(UINT32 idx, const FrameInfo& frameInfo)
     {
         if (_info.RenderableReady[idx])
             return;
@@ -291,7 +297,9 @@ namespace te
         viewDesc.Target.NumSamples = camera->GetMSAACount();
 
         viewDesc.MainView = camera->IsMain();
-        viewDesc.OnDemand = (camera->GetFlags() | (UINT32)CameraFlag::OnDemand) ? true : false;
+
+        UINT32 flag = (UINT32)camera->GetFlags();
+        viewDesc.OnDemand = (flag & (UINT32)CameraFlag::OnDemand) ? true : false;
 
         viewDesc.CullFrustum = camera->GetWorldFrustum();
         viewDesc.NearPlane = camera->GetNearClipDistance();

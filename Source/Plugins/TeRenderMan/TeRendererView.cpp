@@ -2,6 +2,8 @@
 #include "Renderer/TeCamera.h"
 #include "Renderer/TeRenderable.h"
 #include "Renderer/TeRenderSettings.h"
+#include "TeRendererScene.h"
+#include "TeRenderMan.h"
 
 namespace te
 {
@@ -59,7 +61,7 @@ namespace te
         _properties.Target = desc.Target;
     }
 
-    void RendererView::BeginFrame()
+    void RendererView::BeginFrame(const FrameInfo& frameInfo)
     {
         bool perViewBufferDirty = false;
         if (_camera)
@@ -89,6 +91,8 @@ namespace te
 
         if (perViewBufferDirty)
             UpdatePerViewBuffer();
+
+        _frameTimings = frameInfo.Timings;
     }
 
     void RendererView::EndFrame()
@@ -97,7 +101,86 @@ namespace te
         // allows you to freeze the current rendering as is, without temporal artifacts.
         //_properties.FrameIdx++;
 
+        if (_redrawForFrames > 0)
+            _redrawForFrames--;
+
+        if (_redrawForSeconds > 0.0f)
+            _redrawForSeconds -= _frameTimings.TimeDelta;
+
         _redrawThisFrame = false;
+    }
+
+    void RendererView::DetermineVisible(const Vector<RendererRenderable*>& renderables, const Vector<CullInfo>& cullInfos,
+        Vector<bool>* visibility)
+    {
+        _visibility.Renderables.clear();
+        _visibility.Renderables.resize(renderables.size(), false);
+
+        if (!ShouldDraw3D())
+            return;
+
+        CalculateVisibility(cullInfos, _visibility.Renderables);
+
+        if (visibility != nullptr)
+        {
+            for (UINT32 i = 0; i < (UINT32)renderables.size(); i++)
+            {
+                bool visible = (*visibility)[i];
+
+                (*visibility)[i] = visible || _visibility.Renderables[i];
+            }
+        }
+    }
+
+    void RendererView::CalculateVisibility(const Vector<CullInfo>& cullInfos, Vector<bool>& visibility) const
+    {
+        const ConvexVolume& worldFrustum = _properties.CullFrustum;
+        const Vector3& worldCameraPosition = _properties.ViewOrigin;
+        float baseCullDistance = _renderSettings->CullDistance;
+
+        for (UINT32 i = 0; i < (UINT32)cullInfos.size(); i++)
+        {
+            // Do distance culling
+            const Sphere& boundingSphere = cullInfos[i].Boundaries.GetSphere();
+            const Vector3& worldRenderablePosition = boundingSphere.GetCenter();
+
+            float distanceToCameraSq = worldCameraPosition.SquaredDistance(worldRenderablePosition);
+            float correctedCullDistance = cullInfos[i].CullDistanceFactor * baseCullDistance;
+            float maxDistanceToCamera = correctedCullDistance + boundingSphere.GetRadius();
+
+            if (distanceToCameraSq > maxDistanceToCamera* maxDistanceToCamera)
+                continue;
+
+            // Do frustum culling
+            // Note: This is bound to be a bottleneck at some point. When it is ensure that intersect methods use vector
+            // operations, as it is trivial to update them. Also consider spatial partitioning.
+            if (worldFrustum.Intersects(boundingSphere))
+            {
+                // More precise with the box
+                const AABox& boundingBox = cullInfos[i].Boundaries.GetBox();
+
+                if (worldFrustum.Intersects(boundingBox))
+                    visibility[i] = true;
+            }
+        }
+    }
+
+    void RendererView::QueueRenderElements(const SceneInfo& sceneInfo)
+    {
+        // Queue renderables
+        for (UINT32 i = 0; i < (UINT32)sceneInfo.Renderables.size(); i++)
+        {
+            if (!_visibility.Renderables[i])
+                continue;
+
+            const AABox& boundingBox = sceneInfo.RenderableCullInfos[i].Boundaries.GetBox();
+            const float distanceToCamera = (_properties.ViewOrigin - boundingBox.GetCenter()).Length();
+
+            for (auto& renderElem : sceneInfo.Renderables[i]->Elements)
+            {
+
+            }
+        }
     }
 
     void RendererView::UpdatePerViewBuffer()
@@ -112,8 +195,72 @@ namespace te
         gPerCameraParamDef.gViewOrigin.Set(_paramBuffer, _properties.ViewOrigin);
     }
 
+    bool RendererView::ShouldDraw() const
+    {
+        if (!_properties.OnDemand)
+            return true;
+
+        return _redrawForFrames > 0 || _redrawForSeconds > 0.0f;
+    }
+
+    bool RendererView::ShouldDraw3D() const
+    { 
+        return !_renderSettings->OverlayOnly && ShouldDraw(); 
+    }
+
     void RendererView::_notifyNeedsRedraw()
     {
         _redrawThisFrame = true;
+    }
+
+    RendererViewGroup::RendererViewGroup(RendererView** views, UINT32 numViews)
+    {
+        SetViews(views, numViews);
+    }
+
+    void RendererViewGroup::SetViews(RendererView** views, UINT32 numViews)
+    {
+        _views.clear();
+
+        for (UINT32 i = 0; i < numViews; i++)
+        {
+            _views.push_back(views[i]);
+            views[i]->_setViewIdx(i);
+        }
+    }
+
+    void RendererViewGroup::DetermineVisibility(const SceneInfo& sceneInfo)
+    {
+        const auto numViews = (UINT32)_views.size();
+
+        // Early exit if no views render scene geometry
+        bool anyViewsNeed3DDrawing = false;
+        for (UINT32 i = 0; i < numViews; i++)
+        {
+            if (_views[i]->ShouldDraw3D())
+            {
+                anyViewsNeed3DDrawing = true;
+                break;
+            }
+        }
+
+        if (!anyViewsNeed3DDrawing)
+            return;
+
+        // Calculate renderable visibility per view
+        _visibility.Renderables.resize(sceneInfo.Renderables.size(), false);
+        _visibility.Renderables.assign(sceneInfo.Renderables.size(), false);
+
+        for (UINT32 i = 0; i < numViews; i++)
+        {
+            _views[i]->DetermineVisible(sceneInfo.Renderables, sceneInfo.RenderableCullInfos, &_visibility.Renderables);
+        }
+
+        // Generate render queues per camera
+        for (UINT32 i = 0; i < numViews; i++)
+        {
+            if (_views[i]->ShouldDraw3D())
+                _views[i]->QueueRenderElements(sceneInfo);
+        }
     }
 }
