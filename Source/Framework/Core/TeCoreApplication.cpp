@@ -421,8 +421,6 @@ namespace te
 
         sceneCameraSO->SetPosition(Vector3(4.0f, 2.0f, 5.0f));
         sceneCameraSO->LookAt(Vector3(1.0f, 0.5f, 0.0f));
-
-        int o = gSceneManager().GetMainScene()->GetRoot()->GetNumChildren();
         // ######################################################
 
         // ######################################################
