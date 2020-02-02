@@ -154,7 +154,7 @@ namespace te
 
         view.BeginFrame(frameInfo);
 
-        // COMPOSITOR
+        // COMPOSITOR TODO
 
         view.EndFrame();
     }

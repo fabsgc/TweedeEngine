@@ -68,6 +68,7 @@ set (TE_CORE_INC_RENDERER
     "Core/Renderer/TeParamBlocks.h"
     "Core/Renderer/TeRenderable.h"
     "Core/Renderer/TeLight.h"
+    "Core/Renderer/TeRenderQueue.h"
 )
 set (TE_CORE_SRC_RENDERER
     "Core/Renderer/TeRenderer.cpp"
@@ -77,6 +78,7 @@ set (TE_CORE_SRC_RENDERER
     "Core/Renderer/TeParamBlocks.cpp"
     "Core/Renderer/TeRenderable.cpp"
     "Core/Renderer/TeLight.cpp"
+    "Core/Renderer/TeRenderQueue.cpp"
 )
 
 set (TE_CORE_INC_SCENE

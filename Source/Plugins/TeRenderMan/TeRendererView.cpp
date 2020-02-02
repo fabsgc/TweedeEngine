@@ -22,6 +22,7 @@ namespace te
         : _camera(nullptr)
     {
         _paramBuffer = gPerCameraParamDef.CreateBuffer();
+        _forwardOpaqueQueue = te_shared_ptr_new<RenderQueue>();
     }
 
     RendererView::RendererView(const RENDERER_VIEW_DESC& desc)
@@ -29,6 +30,7 @@ namespace te
         , _camera(desc.SceneCamera)
     {
         _paramBuffer = gPerCameraParamDef.CreateBuffer();
+        _forwardOpaqueQueue = te_shared_ptr_new<RenderQueue>();
     }
 
     void RendererView::SetRenderSettings(const SPtr<RenderSettings>& settings)
@@ -99,7 +101,9 @@ namespace te
     {
         // Advance per-view frame index. This is used primarily by temporal rendering effects, and pausing the frame index
         // allows you to freeze the current rendering as is, without temporal artifacts.
-        //_properties.FrameIdx++;
+        _properties.FrameIdx++;
+
+        _forwardOpaqueQueue->Clear();
 
         if (_redrawForFrames > 0)
             _redrawForFrames--;
@@ -178,7 +182,9 @@ namespace te
 
             for (auto& renderElem : sceneInfo.Renderables[i]->Elements)
             {
+                _forwardOpaqueQueue->Add();
 
+                // TODO
             }
         }
     }

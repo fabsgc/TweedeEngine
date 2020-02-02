@@ -187,7 +187,6 @@ namespace te
         UINT32 lastRenderableId = lastRenderable->GetRendererId();
 
         RendererRenderable* rendererRenderable = _info.Renderables[renderableId];
-        Vector<RenderableElement>& elements = rendererRenderable->Elements;
         
         if (renderableId != lastRenderableId)
         {
@@ -263,6 +262,8 @@ namespace te
             return;
 
         RendererRenderable* rendererRenderable = _info.Renderables[idx];
+
+        // TODO
 
         _info.Renderables[idx]->PerObjectParamBuffer->FlushToGPU();
         _info.RenderableReady[idx] = true;

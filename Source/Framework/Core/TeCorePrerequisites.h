@@ -137,6 +137,7 @@ namespace te
     class Light;
     class Renderable;
     struct RenderSettings;
+    class RenderQueue;
 
     class SceneActor;
     class SceneManager;

@@ -9,6 +9,7 @@
 #include "Math/TeRect2.h"
 #include "Math/TeConvexVolume.h"
 #include "Renderer/TeParamBlocks.h"
+#include "Renderer/TeRenderQueue.h"
 
 namespace te
 {
@@ -210,6 +211,8 @@ namespace te
 
         // Current frame info
         FrameTimings _frameTimings;
+
+        SPtr<RenderQueue> _forwardOpaqueQueue;
     };
 
     /** Contains one or multiple RendererView%s that are in some way related. */
