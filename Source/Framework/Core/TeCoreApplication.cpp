@@ -421,6 +421,9 @@ namespace te
 
         sceneCameraSO->SetPosition(Vector3(4.0f, 2.0f, 5.0f));
         sceneCameraSO->LookAt(Vector3(1.0f, 0.5f, 0.0f));
+
+        renderableSO->Move(Vector3(1.0f, 0.0f, 0.0f));
+        sceneCameraSO->Move(Vector3(1.0f, 0.0f, 0.0f));
         // ######################################################
 
         // ######################################################
@@ -433,9 +436,8 @@ namespace te
         UINT32 height = _window->GetProperties().Height;
 
         Transform transformObject;
-        _defObjectBuffer.World.Set(_objectConstantBuffer, transformObject.GetMatrix().Transpose());
+        _defObjectBuffer.World.Set(_objectConstantBuffer, renderableSO.GetInternalPtr()->GetWorldMatrix().Transpose());
         _params->SetParamBlockBuffer(0, 1, _objectConstantBuffer);
-        _sceneCamera->_getCamera()->MarkCoreClean();
         // ######################################################
 
         // ######################################################
@@ -467,20 +469,15 @@ namespace te
 
         rapi.SetRenderTarget(_sceneCamera->GetViewport()->GetTarget());
 
-        if (_sceneCamera->_getCamera()->IsCoreDirty())
+        SPtr<GpuParamDesc> paramDesc = _textureVertexShader->GetParamDesc();
+        if (paramDesc->ParamBlocks.size() > 0)
         {
-            SPtr<GpuParamDesc> paramDesc = _textureVertexShader->GetParamDesc();
-            if (paramDesc->ParamBlocks.size() > 0)
-            {
-                _defFrameBuffer.ViewProj.Set(_frameConstantBuffer, _sceneCamera->GetViewMatrix().Transpose() * _sceneCamera->GetProjectionMatrix().Transpose());
-                _defFrameBuffer.WorldCamera.Set(_frameConstantBuffer, _sceneCamera->_getCamera()->GetTransform().GetPosition());
+            _defFrameBuffer.ViewProj.Set(_frameConstantBuffer, _sceneCamera->GetViewMatrix().Transpose() * _sceneCamera->GetProjectionMatrix().Transpose());
+            _defFrameBuffer.WorldCamera.Set(_frameConstantBuffer, _sceneCamera->_getCamera()->GetTransform().GetPosition());
 
-                _params->SetParamBlockBuffer(GPT_VERTEX_PROGRAM, "FrameConstantBuffer", _frameConstantBuffer);
-                _params->SetParamBlockBuffer(GPT_PIXEL_PROGRAM, "FrameConstantBuffer", _frameConstantBuffer);
-                rapi.SetGpuParams(_params);
-            }
-
-            _sceneCamera->_getCamera()->MarkCoreClean();
+            _params->SetParamBlockBuffer(GPT_VERTEX_PROGRAM, "FrameConstantBuffer", _frameConstantBuffer);
+            _params->SetParamBlockBuffer(GPT_PIXEL_PROGRAM, "FrameConstantBuffer", _frameConstantBuffer);
+            rapi.SetGpuParams(_params);
         }
 
         UINT32 clearBuffers = FBT_COLOR | FBT_DEPTH | FBT_STENCIL;

@@ -11,6 +11,7 @@ namespace te
         }
 
         _transform = transform;
+        _markCoreDirty(ActorDirtyFlag::Transform);
     }
 
     void SceneActor::SetMobility(ObjectMobility mobility)

@@ -44,7 +44,7 @@ namespace te
     class TE_CORE_EXPORT Shader : public Resource
     {
     public:
-        ~Shader();
+        virtual ~Shader();
 
         /**	Creates a new shader resource using the provided descriptor and techniques. */
         static HShader Create(const String& name, const SHADER_DESC& desc);
@@ -71,10 +71,12 @@ namespace te
         /** Set shader name */
         void SetName(const String& name) { _name = name; }
 
-    private:
-        Shader();
-        Shader(UINT32 id);
+    protected:
+        //Shader(UINT32 id);
         Shader(const SHADER_DESC& desc, const String& name, UINT32 id);
+
+    private:
+        Shader() = default;
 
     protected:
         SHADER_DESC _desc;

@@ -138,6 +138,7 @@ namespace te
     class Renderable;
     struct RenderSettings;
     class RenderQueue;
+    class RenderElement;
 
     class SceneActor;
     class SceneManager;
@@ -186,6 +187,7 @@ namespace te
     class MeshData;
 
     class Shader;
+    class Material;
 
     class Serializable;
 
@@ -201,20 +203,20 @@ namespace te
 namespace te
 {
     typedef ResourceHandle<Resource> HResource;
+    typedef ResourceHandle<Material> HMaterial;
     typedef ResourceHandle<Texture> HTexture;
     typedef ResourceHandle<Shader> HShader;
     typedef ResourceHandle<Mesh> HMesh;
-    
 }
 
 #include "Scene/TeGameObjectHandle.h"
 
 namespace te
 {
-    typedef GameObjectHandle<GameObject> HGameObject;
     typedef GameObjectHandle<SceneObject> HSceneObject;
+    typedef GameObjectHandle<GameObject> HGameObject;
+    typedef GameObjectHandle<CRenderable> HRenderable;
     typedef GameObjectHandle<Component> HComponent;
     typedef GameObjectHandle<CCamera> HCamera;
-    typedef GameObjectHandle<CRenderable> HRenderable;
     typedef GameObjectHandle<CLight> HLight;
 }

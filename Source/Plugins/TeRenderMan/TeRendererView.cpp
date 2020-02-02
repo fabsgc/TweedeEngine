@@ -182,7 +182,7 @@ namespace te
 
             for (auto& renderElem : sceneInfo.Renderables[i]->Elements)
             {
-                _forwardOpaqueQueue->Add();
+                _forwardOpaqueQueue->Add(&renderElem, distanceToCamera);
 
                 // TODO
             }

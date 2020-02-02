@@ -19,6 +19,12 @@ namespace te
         CoreObject::Initialize();
     }
 
+    void Renderable::OnMeshChanged()
+    {
+        gRenderer()->NotifyRenderableRemoved(this);
+        gRenderer()->NotifyRenderableAdded(this);
+    }
+
     void Renderable::_markCoreDirty(ActorDirtyFlag flag) 
     {
         MarkCoreDirty((UINT32)flag);
@@ -47,7 +53,6 @@ namespace te
     {
         _mesh = mesh;
         OnMeshChanged();
-        _markCoreDirty();
     }
 
     void Renderable::SetCullDistanceFactor(float factor)

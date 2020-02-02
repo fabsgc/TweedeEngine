@@ -105,7 +105,7 @@ namespace te
     class TE_CORE_EXPORT Mesh : public Resource
     {
     public:
-        ~Mesh();
+        virtual ~Mesh();
 
         /** @copydoc CoreObject::Initialize */
         void Initialize() override;

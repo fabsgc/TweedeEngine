@@ -1,12 +1,13 @@
-#include "Shader/TeShader.h"
+#include "Material/TeShader.h"
 #include "Resources/TeResourceManager.h"
 
 namespace te
 {
     std::atomic<UINT32> Shader::NextShaderId;
 
-    Shader::Shader()
-        : _desc(SHADER_DESC())
+    /*Shader::Shader()
+        : Resource()
+        , _desc(SHADER_DESC())
         , _name("shader")
     {
         UINT32 id = Shader::NextShaderId.fetch_add(1, std::memory_order_relaxed);
@@ -14,13 +15,15 @@ namespace te
     }
 
     Shader::Shader(UINT32 id)
-        : _desc(SHADER_DESC())
+        : Resource()
+        , _desc(SHADER_DESC())
         , _name("shader")
         , _id(id)
-    { }
+    { }*/
 
     Shader::Shader(const SHADER_DESC& desc, const String& name, UINT32 id)
-        : _desc(desc)
+        : Resource()
+        , _desc(desc)
         , _name(name)
         , _id(id)
     { }

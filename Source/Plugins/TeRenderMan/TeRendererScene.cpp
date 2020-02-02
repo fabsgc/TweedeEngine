@@ -166,8 +166,6 @@ namespace te
 
         RendererRenderable* rendererRenderable = _info.Renderables[renderableId];
 
-        SetMeshData(rendererRenderable, renderable);
-
         if(rendererRenderable->PreviousFrameDirtyState != PrevFrameDirtyState::Updated)
             rendererRenderable->PrevWorldTfrm = rendererRenderable->WorldTfrm;
 

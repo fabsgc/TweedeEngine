@@ -51,12 +51,18 @@ namespace te
         _internal = Camera::Create();
     }
 
+    void CCamera::OnCreated()
+    { }
+
     void CCamera::OnInitialized()
     {
         gSceneManager()._bindActor(_internal, SO());
-
-        // Make sure primary RT gets applied if camera gets deserialized with main camera state
         gSceneManager()._notifyMainCameraStateChanged(_internal);
+    }
+
+    void CCamera::OnTransformChanged(TransformChangedFlags flags)
+    {
+        _internal->_updateState(*SO());
     }
 
     void CCamera::OnDestroyed()

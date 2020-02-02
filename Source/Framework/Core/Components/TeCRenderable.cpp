@@ -47,9 +47,17 @@ namespace te
         _internal = Renderable::Create();
     }
 
+    void CRenderable::OnCreated()
+    { }
+
     void CRenderable::OnInitialized()
     {
         gSceneManager()._bindActor(_internal, GetSceneObject());
+    }
+
+    void CRenderable::OnTransformChanged(TransformChangedFlags flags)
+    {
+        _internal->_updateState(*SO());
     }
 
     void CRenderable::OnDestroyed()

@@ -57,7 +57,13 @@ namespace te
         void _instantiate() override;
 
         /** @copydoc Component::OnInitialized */
+        void OnCreated() override;
+
+        /** @copydoc Component::OnInitialized */
         void OnInitialized() override;
+
+        /** @copydoc Component::OnTransformChanged */
+        void OnTransformChanged(TransformChangedFlags flags) override;
 
         /** @copydoc Component::OnDestroyed */
         void OnDestroyed() override;

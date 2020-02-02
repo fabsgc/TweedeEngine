@@ -3,6 +3,7 @@
 #include "TeRenderManPrerequisites.h"
 #include "Renderer/TeRenderable.h"
 #include "Renderer/TeParamBlocks.h"
+#include "Renderer/TeRenderElement.h"
 #include "Mesh/TeMesh.h"
 
 namespace te
@@ -33,20 +34,11 @@ namespace te
      * Contains information required for rendering a single Renderable sub-mesh, representing a generic static or animated
      * 3D model.
      */
-    class RenderableElement
+    class RenderableElement : public RenderElement
     {
     public:
-        /**	Reference to the mesh to render. */
-        SPtr<Mesh> MeshElem;
-
-        /**	Portion of the mesh to render. */
-        SubMesh SubMeshElem;
-
-        /** Renderer specific value that identifies the type of this renderable element. */
-        UINT32 Type = 0;
-
         /** @copydoc RenderElement::Draw */
-        void Draw() const;
+        void Draw() const override;
     };
 
     /** Contains information about a Renderable, used by the Renderer. */

@@ -69,6 +69,7 @@ set (TE_CORE_INC_RENDERER
     "Core/Renderer/TeRenderable.h"
     "Core/Renderer/TeLight.h"
     "Core/Renderer/TeRenderQueue.h"
+    "Core/Renderer/TeRenderElement.h"
 )
 set (TE_CORE_SRC_RENDERER
     "Core/Renderer/TeRenderer.cpp"
@@ -79,6 +80,7 @@ set (TE_CORE_SRC_RENDERER
     "Core/Renderer/TeRenderable.cpp"
     "Core/Renderer/TeLight.cpp"
     "Core/Renderer/TeRenderQueue.cpp"
+    "Core/Renderer/TeRenderElement.cpp"
 )
 
 set (TE_CORE_INC_SCENE
@@ -223,11 +225,13 @@ set (TE_CORE_SRC_MESH
     "Core/Mesh/TeMeshUtility.cpp"
 )
 
-set (TE_CORE_INC_SHADER
-    "Core/Shader/TeShader.h"
+set (TE_CORE_INC_MATERIAL
+    "Core/Material/TeShader.h"
+    "Core/Material/TeMaterial.h"
 )
-set (TE_CORE_SRC_SHADER
-    "Core/Shader/TeShader.cpp"
+set (TE_CORE_SRC_MATERIAL
+    "Core/Material/TeShader.cpp"
+    "Core/Material/TeMaterial.cpp"
 )
 
 set (TE_CORE_INC_SERIALIZATION
@@ -281,7 +285,7 @@ source_group("Core\\Image" FILES ${TE_CORE_INC_IMAGE} ${TE_CORE_SRC_IMAGE})
 source_group("Core\\Mesh" FILES ${TE_CORE_INC_MESH} ${TE_CORE_SRC_MESH})
 source_group("Core\\Resources" FILES ${TE_CORE_INC_RESOURCE} ${TE_CORE_SRC_RESOURCE})
 source_group("Core\\Scene" FILES ${TE_CORE_INC_SCENE} ${TE_CORE_SRC_SCENE})
-source_group("Core\\Shader" FILES ${TE_CORE_INC_SHADER} ${TE_CORE_SRC_SHADER})
+source_group("Core\\Material" FILES ${TE_CORE_INC_MATERIAL} ${TE_CORE_SRC_MATERIAL})
 source_group("Core\\CoreUtility" FILES ${TE_CORE_INC_CORE_UTILITY} ${TE_CORE_SRC_CORE_UTILITY})
 source_group("Core\\Serialization" FILES ${TE_CORE_INC_SERIALIZATION} ${TE_CORE_SRC_SERIALIZATION})
 source_group("Core\\Components" FILES ${TE_CORE_INC_COMPONENTS} ${TE_CORE_SRC_COMPONENTS})
@@ -310,8 +314,8 @@ set(TE_CORE_SRC
     ${TE_CORE_SRC_RESOURCE}
     ${TE_CORE_INC_SCENE}
     ${TE_CORE_SRC_SCENE}
-    ${TE_CORE_INC_SHADER}
-    ${TE_CORE_SRC_SHADER}
+    ${TE_CORE_INC_MATERIAL}
+    ${TE_CORE_SRC_MATERIAL}
     ${TE_CORE_INC_CORE_UTILITY}
     ${TE_CORE_SRC_CORE_UTILITY}
     ${TE_CORE_INC_SERIALIZATION}

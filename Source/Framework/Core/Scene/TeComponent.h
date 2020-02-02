@@ -76,10 +76,10 @@ namespace te
         virtual void _instantiate() {}
 
         /** Sets new flags that determine when is onTransformChanged called. */
-        void _setNotifyFlags(TransformChangedFlags flags) { _notifyFlags = flags; }
+        void _setNotifyFlags(UINT32 flags) { _notifyFlags = flags; }
 
         /** Gets the currently assigned notify flags. See _setNotifyFlags(). */
-        TransformChangedFlags _getNotifyFlags() const { return _notifyFlags; }
+        UINT32 _getNotifyFlags() const { return _notifyFlags; }
 
     protected:
         Component(HSceneObject parent, UINT32 type);
@@ -145,7 +145,7 @@ namespace te
         friend class SceneObject;
 
         HComponent _thisHandle;
-        TransformChangedFlags _notifyFlags = TCF_None;
+        UINT32 _notifyFlags = TCF_Transform | TCF_Mobility | TCF_Parent;
         ComponentFlags _flags;
         UINT32 _sceneManagerId = 0;
 

@@ -30,10 +30,18 @@ namespace te
     void CLight::_instantiate()
     { }
 
+    void CLight::OnCreated()
+    { }
+
     void CLight::OnInitialized()
     {
         _internal = Light::Create(_type);
         gSceneManager()._bindActor(_internal, GetSceneObject());
+    }
+
+    void CLight::OnTransformChanged(TransformChangedFlags flags)
+    {
+        _internal->_updateState(*SO());
     }
 
     void CLight::OnDestroyed()

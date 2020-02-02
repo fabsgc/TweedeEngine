@@ -61,7 +61,7 @@ namespace te
         UINT32 GetRendererId() const { return _rendererId; }
 
         /** Triggered whenever the renderable's mesh changes. */
-        void OnMeshChanged() { }
+        void OnMeshChanged();
 
          /** @copydoc SceneActor::_updateState */
         void _updateState(const SceneObject& so, bool force = false) override;
