@@ -5,10 +5,11 @@ namespace te
 {
     std::atomic<UINT32> Shader::NextShaderId;
 
-    /*Shader::Shader()
+    Shader::Shader()
         : Resource()
         , _desc(SHADER_DESC())
         , _name("shader")
+        , _id(0)
     {
         UINT32 id = Shader::NextShaderId.fetch_add(1, std::memory_order_relaxed);
         assert(id < std::numeric_limits<UINT32>::max() && "Created too many shaders, reached maximum id.");
@@ -19,7 +20,7 @@ namespace te
         , _desc(SHADER_DESC())
         , _name("shader")
         , _id(id)
-    { }*/
+    { }
 
     Shader::Shader(const SHADER_DESC& desc, const String& name, UINT32 id)
         : Resource()

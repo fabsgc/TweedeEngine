@@ -10,6 +10,7 @@
 #include "Math/TeConvexVolume.h"
 #include "Renderer/TeParamBlocks.h"
 #include "Renderer/TeRenderQueue.h"
+#include "TeRenderCompositor.h"
 
 namespace te
 {
@@ -43,10 +44,10 @@ namespace te
         bool MainView;
 
         /** If true the view will only be rendered when requested, otherwise it will be rendered every frame. */
-        ConvexVolume CullFrustum;
-
-        /** If true the view will only be rendered when requested, otherwise it will be rendered every frame. */
         bool OnDemand;
+
+        UINT64 VisibleLayers;
+        ConvexVolume CullFrustum;
     };
 
     /** Data shared between RENDERER_VIEW_TARGET_DESC and RendererViewTargetProperties */
@@ -83,9 +84,9 @@ namespace te
         RendererViewProperties() {}
         RendererViewProperties(const RENDERER_VIEW_DESC& src);
 
-        Matrix4 ViewProjTransform;
-        Matrix4 ProjTransformNoAA;
-        UINT32 FrameIdx;
+        Matrix4 ViewProjTransform = Matrix4::IDENTITY;
+        Matrix4 ProjTransformNoAA = Matrix4::IDENTITY;
+        UINT32 FrameIdx = 0;
 
         RendererViewTargetData Target;
     };
@@ -105,11 +106,13 @@ namespace te
     /** Information used for culling an object against a view. */
     struct CullInfo
     {
-        CullInfo(const Bounds& bounds, float cullDistanceFactor = 1.0f)
-            : Boundaries(bounds)
+        CullInfo(const Bounds& bounds, UINT64 layer = -1, float cullDistanceFactor = 1.0f)
+            : Layer(layer)
+            , Boundaries(bounds)
             , CullDistanceFactor(cullDistanceFactor)
         { }
 
+        UINT64 Layer;
         Bounds Boundaries;
         float CullDistanceFactor;
     };
@@ -147,6 +150,23 @@ namespace te
         void EndFrame();
 
         /**
+         * Returns a render queue containing all opaque objects for the specified pipeline. Make sure to call
+         * determineVisible() beforehand if view or object transforms changed since the last time it was called. If @p
+         * forward is true then opaque objects using the forward pipeline are returned, otherwise deferred pipeline objects
+         * are returned.
+         */
+        const SPtr<RenderQueue>& GetOpaqueQueue() const { return _forwardOpaqueQueue; }
+
+        /**
+         * Returns a render queue containing all transparent objects. Make sure to call determineVisible() beforehand if
+         * view or object transforms changed since the last time it was called.
+         */
+        const SPtr<RenderQueue>& GetTransparentQueue() const { return _forwardTransparentQueue; }
+
+        /** Returns the compositor in charge of rendering for this view. */
+        const RenderCompositor& GetCompositor() const { return _compositor; }
+
+        /**
          * Populates view render queues by determining visible renderable objects.
          *
          * @param[in]	renderables			A set of renderable objects to iterate over and determine visibility for.
@@ -173,6 +193,9 @@ namespace te
          */
         void QueueRenderElements(const SceneInfo& sceneInfo);
 
+        /** Returns the visibility mask calculated with the last call to determineVisible(). */
+		const VisibilityInfo& GetVisibilityInfo() const { return _visibility; }
+
         /** Updates the GPU buffer containing per-view information, with the latest internal data. */
         void UpdatePerViewBuffer();
 
@@ -198,6 +221,7 @@ namespace te
         RendererViewProperties _properties;
         Camera* _camera;
 
+        RenderCompositor _compositor;
         SPtr<RenderSettings> _renderSettings;
         SPtr<GpuParamBlockBuffer> _paramBuffer;
 
@@ -213,6 +237,7 @@ namespace te
         FrameTimings _frameTimings;
 
         SPtr<RenderQueue> _forwardOpaqueQueue;
+        SPtr<RenderQueue> _forwardTransparentQueue;
     };
 
     /** Contains one or multiple RendererView%s that are in some way related. */

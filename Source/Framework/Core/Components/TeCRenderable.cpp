@@ -20,14 +20,12 @@ namespace te
         Component::Initialize();
     }
 
-    void CRenderable::SetMesh(HMesh mesh)
+    void CRenderable::SetMaterials(const Vector<HMaterial>& materials)
     {
-        _internal->SetMesh(mesh.GetInternalPtr());
-    }
-
-    void CRenderable::SetMesh(SPtr<Mesh> mesh)
-    {
-        _internal->SetMesh(mesh);
+        for (auto& material : materials)
+        {
+            SetMaterial(material);
+        }
     }
 
     Bounds CRenderable::GetBounds() const

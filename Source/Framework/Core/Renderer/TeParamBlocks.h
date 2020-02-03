@@ -199,6 +199,6 @@ namespace te
 		}																													\
 																															\
 		Vector<GpuParamDataDesc> _params;																					\
-		UINT32 _blockSize;																									\
+		UINT32 _blockSize = 0;																								\
 	};
 }

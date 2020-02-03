@@ -48,7 +48,7 @@ namespace te
     struct RenderManOptions;
     class RenderMan;
     class RendererScene;
-    class RenderView;
+    class RendererView;
     struct LightData;
     class RendererLight;
     class RenderableElement;

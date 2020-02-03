@@ -98,6 +98,12 @@ namespace te
         /** @copydoc Camera::GetPriority */
         INT32 GetPriority() const { return _internal->GetPriority(); }
 
+        /** @copydoc Camera::SetLayers */
+        void SetLayers(UINT64 layers) { _internal->SetLayers(layers); }
+
+        /** @copydoc Camera::GetLayers */
+        UINT64 GetLayers() const { return _internal->GetLayers(); }
+
         /** @copydoc Camera::SetMSAACount */
         void SetMSAACount(UINT32 count) { _internal->SetMSAACount(count); }
 

@@ -43,6 +43,15 @@ namespace te
         return static_resource_cast<Material>(gResourceManager()._createResourceHandle(materialPtr));
     }
 
+    HMaterial Material::Create(const SPtr<Shader>& shader)
+    {
+        SPtr<Material> materialPtr = te_core_ptr<Material>(new (te_allocate<Material>()) Material(shader));
+        materialPtr->SetThisPtr(materialPtr);
+        materialPtr->Initialize();
+
+        return static_resource_cast<Material>(gResourceManager()._createResourceHandle(materialPtr));
+    }
+
     SPtr<Material> Material::CreateEmpty()
     {
         SPtr<Material> newMat = te_core_ptr<Material>(new (te_allocate<Material>()) Material());

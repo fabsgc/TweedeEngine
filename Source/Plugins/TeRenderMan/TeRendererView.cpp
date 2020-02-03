@@ -4,6 +4,9 @@
 #include "Renderer/TeRenderSettings.h"
 #include "TeRendererScene.h"
 #include "TeRenderMan.h"
+#include "TeRendererRenderable.h"
+#include "Material/TeMaterial.h"
+#include "Material/TeShader.h"
 
 namespace te
 {
@@ -23,6 +26,7 @@ namespace te
     {
         _paramBuffer = gPerCameraParamDef.CreateBuffer();
         _forwardOpaqueQueue = te_shared_ptr_new<RenderQueue>();
+        _forwardTransparentQueue = te_shared_ptr_new<RenderQueue>();
     }
 
     RendererView::RendererView(const RENDERER_VIEW_DESC& desc)
@@ -31,6 +35,7 @@ namespace te
     {
         _paramBuffer = gPerCameraParamDef.CreateBuffer();
         _forwardOpaqueQueue = te_shared_ptr_new<RenderQueue>();
+        _forwardTransparentQueue = te_shared_ptr_new<RenderQueue>();
     }
 
     void RendererView::SetRenderSettings(const SPtr<RenderSettings>& settings)
@@ -40,6 +45,8 @@ namespace te
 
         if (settings != nullptr)
             *_renderSettings = *settings;
+
+        _compositor.Build(*this, RCNodeFinalResolve::GetNodeId());
     }
 
     void RendererView::SetTransform(const Vector3& origin, const Vector3& direction, const Matrix4& view,
@@ -104,6 +111,7 @@ namespace te
         _properties.FrameIdx++;
 
         _forwardOpaqueQueue->Clear();
+        _forwardTransparentQueue->Clear();
 
         if (_redrawForFrames > 0)
             _redrawForFrames--;
@@ -130,7 +138,6 @@ namespace te
             for (UINT32 i = 0; i < (UINT32)renderables.size(); i++)
             {
                 bool visible = (*visibility)[i];
-
                 (*visibility)[i] = visible || _visibility.Renderables[i];
             }
         }
@@ -138,12 +145,16 @@ namespace te
 
     void RendererView::CalculateVisibility(const Vector<CullInfo>& cullInfos, Vector<bool>& visibility) const
     {
+        UINT64 cameraLayers = _properties.VisibleLayers;
         const ConvexVolume& worldFrustum = _properties.CullFrustum;
         const Vector3& worldCameraPosition = _properties.ViewOrigin;
         float baseCullDistance = _renderSettings->CullDistance;
 
         for (UINT32 i = 0; i < (UINT32)cullInfos.size(); i++)
         {
+            if ((cullInfos[i].Layer & cameraLayers) == 0)
+                continue;
+
             // Do distance culling
             const Sphere& boundingSphere = cullInfos[i].Boundaries.GetSphere();
             const Vector3& worldRenderablePosition = boundingSphere.GetCenter();
@@ -182,11 +193,18 @@ namespace te
 
             for (auto& renderElem : sceneInfo.Renderables[i]->Elements)
             {
-                _forwardOpaqueQueue->Add(&renderElem, distanceToCamera);
+                UINT32 shaderFlags = renderElem.MaterialElem->GetShader()->GetFlags();
 
-                // TODO
+                // Note: I could keep renderables in multiple separate arrays, so I don't need to do the check here
+                if (shaderFlags & (UINT32)ShaderFlag::Transparent)
+                    _forwardTransparentQueue->Add(&renderElem, distanceToCamera);
+                else
+                    _forwardOpaqueQueue->Add(&renderElem, distanceToCamera);
             }
         }
+
+        _forwardOpaqueQueue->Sort();
+        _forwardTransparentQueue->Sort();
     }
 
     void RendererView::UpdatePerViewBuffer()

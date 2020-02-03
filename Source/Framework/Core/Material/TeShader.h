@@ -12,7 +12,7 @@ namespace te
          * least overdraw and is preferable. Transparent objects need to be sorted back to front. You may also specify no
          * sorting and the elements will be rendered in the order they were added to the render queue.
          */
-        QueueSortType QueueType;
+        QueueSortType QueueType = QueueSortType::FrontToBack;
 
         /**
          * Priority that allows you to control in what order are your shaders rendered. See QueuePriority for a list of
@@ -25,7 +25,7 @@ namespace te
          * guidance and feel free to increase them or decrease them for finer tuning. (for example QueuePriority::Opaque +
          * 1).
          */
-        INT32 QueuePriority;
+        INT32 QueuePriority = 0;
 
         /**
          * Enables or disables separable passes. When separable passes are disabled all shader passes will be executed in a
@@ -35,10 +35,10 @@ namespace te
          *
          * @note	Shaders with transparency generally can't be separable, while opaque can.
          */
-        bool SeparablePasses;
+        bool SeparablePasses = false;
 
         /** Flags that let the renderer know how should it interpret the shader. */
-        ShaderFlag Flag;
+        UINT32 Flags = (UINT32)ShaderFlag::Forward;
     };
 
     class TE_CORE_EXPORT Shader : public Resource
@@ -71,12 +71,39 @@ namespace te
         /** Set shader name */
         void SetName(const String& name) { _name = name; }
 
+        /**
+         * Returns currently active queue sort type.
+         *
+         * @see		SHADER_DESC::queueSortType
+         */
+        QueueSortType GetQueueSortType() const { return _desc.QueueType; }
+
+        /**
+         * Returns currently active queue priority.
+         *
+         * @see		SHADER_DESC::queuePriority
+         */
+        INT32 GetQueuePriority() const { return _desc.QueuePriority; }
+
+        /**
+         * Returns if separable passes are allowed.
+         *
+         * @see		SHADER_DESC::separablePasses
+         */
+        bool GetAllowSeparablePasses() const { return _desc.SeparablePasses; }
+
+        /**
+         * Returns flags that control how the renderer interprets the shader. Actual interpretation of the flags depends on
+         * the active renderer.
+         */
+        UINT32 GetFlags() const { return _desc.Flags; }
+
     protected:
-        //Shader(UINT32 id);
+        Shader(UINT32 id);
         Shader(const SHADER_DESC& desc, const String& name, UINT32 id);
 
     private:
-        Shader() = default;
+        Shader();
 
     protected:
         SHADER_DESC _desc;

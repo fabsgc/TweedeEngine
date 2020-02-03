@@ -73,7 +73,65 @@ namespace te
     void Renderable::SetMesh(SPtr<Mesh> mesh)
     {
         _mesh = mesh;
+
+        int numSubMeshes = mesh->GetProperties().GetNumSubMeshes();
+        _materials.resize(numSubMeshes);
+
         OnMeshChanged();
+
+        _markCoreDirty();
+    }
+
+    void Renderable::SetMaterial(UINT32 idx, const SPtr<Material>& material)
+    {
+        if (idx >= (UINT32)_materials.size())
+            return;
+
+        _materials[idx] = material;
+
+        _markCoreDirty();
+    }
+
+    void Renderable::SetMaterials(const Vector<SPtr<Material>>& materials)
+    {
+        UINT32 numMaterials = (UINT32)_materials.size();
+        UINT32 min = std::min(numMaterials, (UINT32)materials.size());
+
+        for (UINT32 i = 0; i < min; i++)
+            _materials[i] = materials[i];
+
+        for (UINT32 i = min; i < numMaterials; i++)
+            _materials[i] = nullptr;
+
+        _markCoreDirty();
+    }
+
+    void Renderable::SetMaterial(const SPtr<Material>& material)
+    {
+        SetMaterial(0, material);
+        _markCoreDirty();
+    }
+
+    SPtr<Material> Renderable::GetMaterial(UINT32 idx) const
+    {
+        if (idx >= (UINT32)_materials.size())
+            return nullptr;
+
+        return _materials[idx];
+    }
+
+    void Renderable::SetLayer(UINT64 layer)
+    {
+        const bool isPow2 = layer && !((layer - 1) & layer);
+
+        if (!isPow2)
+        {
+            TE_DEBUG("Invalid layer provided. Only one layer bit may be set. Ignoring.", __FILE__, __LINE__);
+            return;
+        }
+
+        _layer = layer;
+        _markCoreDirty();
     }
 
     void Renderable::SetCullDistanceFactor(float factor)

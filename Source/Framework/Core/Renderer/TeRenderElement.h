@@ -3,6 +3,7 @@
 #include "TeCorePrerequisites.h"
 #include "RenderAPI/TeSubMesh.h"
 #include "Mesh/TeMesh.h"
+#include "Material/TeMaterial.h"
 
 namespace te
 {
@@ -14,6 +15,9 @@ namespace te
 
         /**	Portion of the mesh to render. */
         SubMesh SubMeshElem;
+
+        /**	Material to render the mesh with. */
+        SPtr<Material> MaterialElem;
 
         /** Renderer specific value that identifies the type of this renderable element. */
         UINT32 Type = 0;

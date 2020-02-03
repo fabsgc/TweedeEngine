@@ -44,6 +44,9 @@ namespace te
         /** Creates a new material with the specified shader. */
         static HMaterial Create(const HShader& shader);
 
+        /** Creates a new material with the specified shader. */
+        static HMaterial Create(const SPtr<Shader>& shader);
+
         /**	Creates a new empty material but doesn't initialize it. */
         static SPtr<Material> CreateEmpty();
 

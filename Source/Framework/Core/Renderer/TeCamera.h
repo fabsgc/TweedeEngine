@@ -205,10 +205,16 @@ namespace te
          * Determines a priority that determines in which orders the cameras are rendered. This only applies to cameras rendering
          * to the same render target. Higher value means the camera will be rendered sooner.
          */
-        void SetPriority(INT32 priority) { _priority = priority; }
+        void SetPriority(INT32 priority) { _priority = priority; _markCoreDirty();  }
 
         /** @copydoc SetPriority() */
         INT32 GetPriority() const { return _priority; }
+
+        /**	Determines layer bitfield that is used when determining which object should the camera render. */
+        void SetLayers(UINT64 layers) { _layers = layers; _markCoreDirty(); }
+
+        /** @copydoc SetLayers() */
+        UINT64 GetLayers() const { return _layers; }
 
         /**
          * Converts a point in world space to screen coordinates.
@@ -411,6 +417,8 @@ namespace te
         void FrameSync() override;
 
     protected:
+        UINT64 _layers = 0xFFFFFFFFFFFFFFFF; /**< Bitfield that can be used for filtering what objects the camera sees. */
+
         ProjectionType _projType = PT_PERSPECTIVE; /**< Type of camera projection. */
         Radian _horzFOV = Degree(90.0f); /**< Horizontal field of view represents how wide is the camera angle. */
         float _farDist = 500.0f; /**< Clip any objects further than this. Larger value decreases depth precision at smaller depths. */

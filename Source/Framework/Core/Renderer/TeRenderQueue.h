@@ -32,6 +32,9 @@ namespace te
             UINT32 SeqIdx;
             INT32 Priority;
             float DistFromCamera;
+            UINT32 ShaderId;
+            UINT32 TechniqueIdx;
+            UINT32 PassIdx;
         };
 
     public:
@@ -58,6 +61,12 @@ namespace te
         void SetStateReduction(StateReduction mode) { _stateReductionMode = mode; }
 
     protected:
+        /**	Callback used for sorting elements with no material grouping. */
+        static bool ElementSorterNoGroup(UINT32 aIdx, UINT32 bIdx, const Vector<SortableElement>& lookup);
+
+        /**	Callback used for sorting elements with preferred material grouping. */
+        static bool ElementSorterPreferGroup(UINT32 aIdx, UINT32 bIdx, const Vector<SortableElement>& lookup);
+
         /**	Callback used for sorting elements with material grouping after sorting. */
         static bool ElementSorterPreferDistance(UINT32 aIdx, UINT32 bIdx, const Vector<SortableElement>& lookup);
 

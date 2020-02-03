@@ -50,6 +50,9 @@
 #include "Components/TeCRenderable.h"
 #include "Components/TeCLight.h"
 
+#include "Material/TeMaterial.h"
+#include "Material/TeShader.h"
+
 namespace te
 {
     TE_MODULE_STATIC_MEMBER(CoreApplication)
@@ -317,11 +320,20 @@ namespace te
         _loadedMesh = gResourceManager().Load<Mesh>("Data/Meshes/multi-cube-material.dae", meshImportOptions);
         _loadTexture = gResourceManager().Load<Texture>("Data/Textures/cube.png", textureImportOptions);
 
+        HShader shader = Shader::Create("shader", SHADER_DESC());
+        HMaterial material = Material::Create(shader);
+
         TE_PRINT((_loadedMesh.GetHandleData())->data);
         TE_PRINT((_loadedMesh.GetHandleData())->uuid.ToString());
 
         TE_PRINT((_loadTexture.GetHandleData())->data);
         TE_PRINT((_loadTexture.GetHandleData())->uuid.ToString());
+
+        TE_PRINT((shader.GetHandleData())->data);
+        TE_PRINT((shader.GetHandleData())->uuid.ToString());
+
+        TE_PRINT((material.GetHandleData())->data);
+        TE_PRINT((material.GetHandleData())->uuid.ToString());
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         // ######################################################
@@ -414,6 +426,7 @@ namespace te
         HSceneObject renderableSO = SceneObject::Create("Cube");
         HRenderable renderable = renderableSO->AddComponent<CRenderable>();
         renderable->SetMesh(_loadedMesh);
+        renderable->SetMaterial(material);
         renderable->Initialize();
 
         HSceneObject sceneLightSO = SceneObject::Create("Light");
@@ -438,7 +451,7 @@ namespace te
 
         Transform transformObject;
         _defObjectBuffer.World.Set(_objectConstantBuffer, renderableSO.GetInternalPtr()->GetWorldMatrix().Transpose());
-        _params->SetParamBlockBuffer(0, 1, _objectConstantBuffer);
+        _params->SetParamBlockBuffer(GPT_VERTEX_PROGRAM, "ObjectConstantBuffer", _objectConstantBuffer);
         // ######################################################
 
         // ######################################################

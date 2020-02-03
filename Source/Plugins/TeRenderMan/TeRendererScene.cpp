@@ -1,6 +1,8 @@
 #include "TeRendererScene.h"
 #include "Renderer/TeCamera.h"
 #include "TeCoreApplication.h"
+#include "Material/TeMaterial.h"
+#include "Material/TeShader.h"
 
 namespace te
 {
@@ -104,7 +106,7 @@ namespace te
 
     /** Registers a new light in the scene. */
     void RendererScene::RegisterLight(Light* light)
-    { 
+    {
         if (light->GetType() == LightType::Directional)
         {
             UINT32 lightId = (UINT32)_info.DirectionalLights.size();
@@ -148,7 +150,7 @@ namespace te
 
         renderable->SetRendererId(renderableId);
         _info.Renderables.push_back(te_new<RendererRenderable>());
-        _info.RenderableCullInfos.push_back(CullInfo(renderable->GetBounds(), renderable->GetCullDistanceFactor()));
+        _info.RenderableCullInfos.push_back(CullInfo(renderable->GetBounds(), renderable->GetLayer(), renderable->GetCullDistanceFactor()));
 
         RendererRenderable* rendererRenderable = _info.Renderables.back();
         rendererRenderable->RenderablePtr = renderable;
@@ -173,6 +175,7 @@ namespace te
         rendererRenderable->PreviousFrameDirtyState = PrevFrameDirtyState::Updated;
 
         _info.Renderables[renderableId]->UpdatePerObjectBuffer();
+        _info.RenderableCullInfos[renderableId].Layer = renderable->GetLayer();
         _info.RenderableCullInfos[renderableId].Boundaries = renderable->GetBounds();
         _info.RenderableCullInfos[renderableId].CullDistanceFactor = renderable->GetCullDistanceFactor();
     }
@@ -217,12 +220,38 @@ namespace te
 
                 renElement.Type = (UINT32)RenderElementType::Renderable;
                 renElement.MeshElem = mesh;
+                renElement.SubMeshElem = meshProps.GetSubMesh(i);
+
+                renElement.MaterialElem = renderable->GetMaterial(i);
+                if (renElement.MaterialElem == nullptr)
+                    renElement.MaterialElem = renderable->GetMaterial(0);
+
+                if (renElement.MaterialElem != nullptr && renElement.MaterialElem->GetShader() == nullptr)
+                    renElement.MaterialElem = nullptr;
+
+                // If no material use the default material
+                if (renElement.MaterialElem == nullptr)
+                    renElement.MaterialElem = Material::Create(Shader::CreateEmpty()).GetInternalPtr();
+
+                const SPtr<Shader>& shader = renElement.MaterialElem->GetShader();
+
+                UINT32 shaderFlags = shader->GetFlags();
+                const bool useForwardRendering = (shaderFlags & (UINT32)ShaderFlag::Forward) || (shaderFlags & (UINT32)ShaderFlag::Transparent);
+
+                // TODO params
             }
 
             // Prepare all parameter bindings
             for (auto& element : rendererRenderable->Elements)
             {
-                // TODO
+                SPtr<Shader> shader = element.MaterialElem->GetShader();
+                if (shader == nullptr)
+                {
+                    TE_DEBUG("Missing shader on material.", __FILE__, __LINE__);
+                    continue;
+                }
+
+                // TODO params
             }
         }
     }
@@ -261,7 +290,7 @@ namespace te
 
         RendererRenderable* rendererRenderable = _info.Renderables[idx];
 
-        // TODO
+        // TODO params
 
         _info.Renderables[idx]->PerObjectParamBuffer->FlushToGPU();
         _info.RenderableReady[idx] = true;
@@ -301,6 +330,7 @@ namespace te
         viewDesc.OnDemand = (flag & (UINT32)CameraFlag::OnDemand) ? true : false;
 
         viewDesc.CullFrustum = camera->GetWorldFrustum();
+        viewDesc.VisibleLayers = camera->GetLayers();
         viewDesc.NearPlane = camera->GetNearClipDistance();
         viewDesc.FarPlane = camera->GetFarClipDistance();
         viewDesc.FlipView = false;

@@ -4,6 +4,7 @@
 #include "Renderer/TeCamera.h"
 #include "Utility/TeTime.h"
 #include "CoreUtility/TeCoreObjectManager.h"
+#include "TeRenderCompositor.h"
 
 namespace te
 {
@@ -21,16 +22,23 @@ namespace te
         _scene = te_shared_ptr_new<RendererScene>(_options);
 
         _mainViewGroup = te_new<RendererViewGroup>(nullptr, 0);
+
+        RenderCompositor::RegisterNodeType<RCNodeForwardPass>();
+        RenderCompositor::RegisterNodeType<RCNodeFinalResolve>();
     }
 
     void RenderMan::Destroy()
     {
         Renderer::Destroy();
         _scene = nullptr;
+
+        RenderCompositor::CleanUp();
+
+        te_delete(_mainViewGroup);
     }
 
     void RenderMan::Update()
-    {}
+    { }
 
     const String& RenderMan::GetName() const
     {
@@ -154,17 +162,22 @@ namespace te
         auto& viewProps = view.GetProperties();
 
         SPtr<GpuParamBlockBuffer> perCameraBuffer = view.GetPerViewBuffer();
+        // perCameraBuffer->FlushToGPU(); TODO
 
         view.BeginFrame(frameInfo);
 
         // COMPOSITOR TODO
+        RenderCompositorNodeInputs inputs(viewGroup, view, sceneInfo, *_options, frameInfo);
+
+        const RenderCompositor& compositor = view.GetCompositor();
+        compositor.Execute(inputs);
 
         view.EndFrame();
     }
 
     bool RenderMan::RenderOverlay(RendererView& view, const FrameInfo& frameInfo)
     {
-        view.GetPerViewBuffer()->FlushToGPU();
+        // view.GetPerViewBuffer()->FlushToGPU(); TODO
         view.BeginFrame(frameInfo);
 
         auto& viewProps = view.GetProperties();

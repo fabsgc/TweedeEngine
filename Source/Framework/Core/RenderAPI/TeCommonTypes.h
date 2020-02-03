@@ -134,6 +134,7 @@ namespace te
     /** Flags that may be assigned to a shader that let the renderer know how to interpret the shader. */
     enum class ShaderFlag
     {
+        Transparent = 0x1, /**< Signifies that the shader is rendering a transparent object. */
         Forward = 0x2 /**< Signifies the shader should use the forward rendering pipeline, if relevant. */
     };
 

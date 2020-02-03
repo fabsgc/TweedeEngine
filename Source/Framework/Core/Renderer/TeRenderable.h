@@ -5,6 +5,7 @@
 #include "Scene/TeSceneActor.h"
 #include "Mesh/TeMesh.h"
 #include "Math/TeMatrix4.h"
+#include "Material/TeMaterial.h"
 
 namespace te
 {
@@ -30,14 +31,47 @@ namespace te
         /** @copydoc SceneActor::SetTransform */
         void SetTransform(const Transform& transform) override;
 
-        /**
-         * Determines the mesh to render. All sub-meshes of the mesh will be rendered, and you may set individual materials
-         * for each sub-mesh.
-         */
+        /** Determines the mesh to render. All sub-meshes of the mesh will be rendered, and you may set individual materials for each sub-mesh. */
         void SetMesh(SPtr<Mesh> mesh);
 
         /**	@copydoc SetMesh() */
         SPtr<Mesh> GetMesh() const { return _mesh; }
+
+        /**
+         * Sets a material that will be used for rendering a sub-mesh with the specified index. If a sub-mesh doesn't have
+         * a specific material set then the primary material will be used.
+         */
+        void SetMaterial(UINT32 idx, const SPtr<Material>& material);
+
+        /**
+         * Sets the primary material to use for rendering. Any sub-mesh that doesn't have an explicit material set will use
+         * this material.
+         *
+         * @note	This is equivalent to calling setMaterial(0, material).
+         */
+        void SetMaterial(const SPtr<Material>& material);
+
+        /** @copydoc SetMaterials() */
+        const Vector<SPtr<Material>>& GetMaterials() { return _materials; }
+
+        /**	Returns the material used for rendering a sub-mesh with the specified index. */
+        SPtr<Material> GetMaterial(UINT32 idx) const;
+
+        /**
+         * Determines all materials used for rendering this renderable. Each of the materials is used for rendering a single
+         * sub-mesh. If number of materials is larger than number of sub-meshes, they will be ignored. If lower, the
+         * remaining materials will be removed.
+         */
+        void SetMaterials(const Vector<SPtr<Material>>& materials);
+
+        /**
+         * Determines the layer bitfield that controls whether a renderable is considered visible in a specific camera.
+         * Renderable layer must match camera layer in order for the camera to render the component.
+         */
+        void SetLayer(UINT64 layer);
+
+        /** @copydoc setLayer() */
+        UINT64 GetLayer() const { return _layer; }
 
         /** Factor to be applied to the cull distance set in the camera's render settings.  */
         void SetCullDistanceFactor(float factor);
@@ -77,6 +111,8 @@ namespace te
 
     protected:
         SPtr<Mesh> _mesh;
+        Vector<SPtr<Material>> _materials;
+        UINT64 _layer = 1;
         UINT32 _rendererId;
         Matrix4 _tfrmMatrix = TeIdentity;
         Matrix4 _tfrmMatrixNoScale = TeIdentity;
