@@ -188,6 +188,8 @@ namespace te
 
     class Shader;
     class Material;
+    class Technique;
+    class Pass;
 
     class Serializable;
 

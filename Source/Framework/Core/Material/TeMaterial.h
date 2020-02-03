@@ -53,6 +53,9 @@ namespace te
         /** Marks the contents of the sim thread object as dirty, causing it to sync with its core thread counterpart. */
         virtual void _markCoreDirty(MaterialDirtyFlags flags = MaterialDirtyFlags::Param);
 
+        /** @copydoc CoreObject::FrameSync */
+        void FrameSync() override;
+
     protected:
         Material();
         Material(const HShader& shader);

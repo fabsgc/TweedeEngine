@@ -228,10 +228,14 @@ set (TE_CORE_SRC_MESH
 set (TE_CORE_INC_MATERIAL
     "Core/Material/TeShader.h"
     "Core/Material/TeMaterial.h"
+    "Core/Material/TeTechnique.h"
+    "Core/Material/TePass.h"
 )
 set (TE_CORE_SRC_MATERIAL
     "Core/Material/TeShader.cpp"
     "Core/Material/TeMaterial.cpp"
+    "Core/Material/TeTechnique.cpp"
+    "Core/Material/TePass.cpp"
 )
 
 set (TE_CORE_INC_SERIALIZATION
