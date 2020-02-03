@@ -76,7 +76,7 @@ namespace te
 
                 NodeInfo& nodeInfo = _nodeInfos.back();
                 nodeInfo.Node = nodeType->Create();
-                nodeInfo.NodeType = nodeType;
+                nodeInfo.Type = nodeType;
                 nodeInfo.LastUseIdx = -1;
 
                 for (auto& depId : depIds)

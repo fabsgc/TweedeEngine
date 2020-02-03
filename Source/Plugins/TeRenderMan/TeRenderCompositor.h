@@ -71,7 +71,7 @@ namespace te
         struct NodeInfo
         {
             RenderCompositorNode* Node;
-            NodeType* NodeType;
+            NodeType* Type;
             UINT32 LastUseIdx;
             Vector<RenderCompositorNode*> Inputs;
         };
