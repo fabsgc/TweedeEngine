@@ -44,7 +44,7 @@ namespace te
         SPtr<RendererMeshData> GenerateMeshData(AssimpImportScene& scene, AssimpImportOptions& options, Vector<SubMesh>& subMeshes);
 
         /**	Creates an internal representation of an assimp node from an aiNode object. */
-        AssimpImportNode* CreateImportNode(AssimpImportScene& scene, aiNode* assimpNode, AssimpImportNode* parent);
+        AssimpImportNode* CreateImportNode(const AssimpImportOptions& options, AssimpImportScene& scene, aiNode* assimpNode, AssimpImportNode* parent);
 
         /** Convert an assimp matrix into engine matrix */
         Matrix4 ConvertToNativeType(const aiMatrix4x4& matrix);

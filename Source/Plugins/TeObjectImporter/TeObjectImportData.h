@@ -21,6 +21,8 @@ namespace te
         bool ImportTangents = true;
         bool ImportColors = true;
         bool ImportSkin = false;
+        bool ScaleSystemUnit = false;
+        float ScaleFactor = 0.01f;
     };
 
     struct AssimpImportNode

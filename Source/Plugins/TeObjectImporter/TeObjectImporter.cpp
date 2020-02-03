@@ -31,12 +31,21 @@ namespace te
     SPtr<Resource> ObjectImporter::Import(const String& filePath, SPtr<const ImportOptions> importOptions)
     {
         MESH_DESC desc;
-        const MeshImportOptions* meshImportOptions = static_cast<const MeshImportOptions*>(importOptions.get());
+        MeshImportOptions* meshImportOptions = const_cast<MeshImportOptions*>
+            (static_cast<const MeshImportOptions*>(importOptions.get()));
 
         desc.Usage = MU_STATIC;
         if (meshImportOptions->CpuCached)
         {
             desc.Usage |= MU_CPUCACHED;
+        }
+
+        String extension = Util::GetFileExtension(filePath);
+        std::transform(extension.begin(), extension.end(), extension.begin(), tolower);
+        if (extension == ".fbx")
+        {
+            meshImportOptions->ScaleSystemUnit = true;
+            meshImportOptions->ScaleFactor = 0.01f;
         }
 
         SPtr<RendererMeshData> rendererMeshData = ImportMeshData(filePath, importOptions, desc.SubMeshes);
@@ -83,9 +92,11 @@ namespace te
         TE_ASSERT_ERROR(scene != nullptr, "Failed to load object '" + filePath + "' : " + importer.GetErrorString(), __FILE__, __LINE__);
 
         AssimpImportOptions assimpImportOptions;
-        assimpImportOptions.ImportNormals = meshImportOptions->ImportNormals;
-        assimpImportOptions.ImportTangents = meshImportOptions->ImportTangents;
-        assimpImportOptions.ImportSkin = meshImportOptions->ImportSkin;
+        assimpImportOptions.ImportNormals   = meshImportOptions->ImportNormals;
+        assimpImportOptions.ImportTangents  = meshImportOptions->ImportTangents;
+        assimpImportOptions.ImportSkin      = meshImportOptions->ImportSkin;
+        assimpImportOptions.ScaleSystemUnit = meshImportOptions->ScaleSystemUnit;
+        assimpImportOptions.ScaleFactor     = meshImportOptions->ScaleFactor;
 
         ParseScene(scene, assimpImportOptions, importedScene);
 
@@ -96,7 +107,7 @@ namespace te
 
     void ObjectImporter::ParseScene(aiScene* scene, const AssimpImportOptions& options, AssimpImportScene& outputScene)
     {
-        outputScene.RootNode = CreateImportNode(outputScene, scene->mRootNode, nullptr);
+        outputScene.RootNode = CreateImportNode(options, outputScene, scene->mRootNode, nullptr);
 
         Stack<aiNode*> todo;
         todo.push(scene->mRootNode);
@@ -119,7 +130,7 @@ namespace te
             for (unsigned int i = 0; i < curNode->mNumChildren; i++)
             {
                 aiNode* childNode = curNode->mChildren[i];
-                CreateImportNode(outputScene, childNode, curImportNode);
+                CreateImportNode(options, outputScene, childNode, curImportNode);
 
                 todo.push(childNode);
             }
@@ -181,6 +192,11 @@ namespace te
         for (UINT32 i = 0; i < vertexCount; i++)
         {
             importMesh->Positions[i] = ConvertToNativeType(mesh->mVertices[i]);
+
+            if (options.ScaleSystemUnit)
+            {
+                importMesh->Positions[i] *= options.ScaleFactor;
+            }
 
             if (mesh->HasVertexColors(i) && options.ImportColors)
             {
@@ -441,7 +457,7 @@ namespace te
         return nullptr;
     }
 
-    AssimpImportNode* ObjectImporter::CreateImportNode(AssimpImportScene& scene, aiNode* assimpNode, AssimpImportNode* parent)
+    AssimpImportNode* ObjectImporter::CreateImportNode(const AssimpImportOptions& options, AssimpImportScene& scene, aiNode* assimpNode, AssimpImportNode* parent)
     {
         AssimpImportNode* node = te_new<AssimpImportNode>();
         node->LocalTransform = ConvertToNativeType(assimpNode->mTransformation);

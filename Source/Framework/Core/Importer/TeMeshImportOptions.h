@@ -32,6 +32,12 @@ namespace te
         /** Determine if we need to flip winding order in order to adjusts the output face winding order to be CW */
         bool FlipWinding = false;
 
+        /** For FBX format, scale is in centimeters instead of meters, we must scale matrices using scale factor */
+        bool ScaleSystemUnit = false;
+
+        /** Factor used to convert unit system */
+        float ScaleFactor = 0.01f;
+
         /** Creates a new import options object that allows you to customize how are Meshs imported. */
         static SPtr<MeshImportOptions> Create();
     };
