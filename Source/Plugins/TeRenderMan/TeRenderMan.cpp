@@ -166,7 +166,6 @@ namespace te
 
         view.BeginFrame(frameInfo);
 
-        // COMPOSITOR TODO
         RenderCompositorNodeInputs inputs(viewGroup, view, sceneInfo, *_options, frameInfo);
 
         const RenderCompositor& compositor = view.GetCompositor();
