@@ -464,7 +464,7 @@ namespace te
         UINT32 height = _window->GetProperties().Height;
 
         Transform transformObject;
-        _defObjectBuffer.World.Set(_objectConstantBuffer, renderableSO.GetInternalPtr()->GetWorldMatrix().Transpose());
+        _defObjectBuffer.gMatWorld.Set(_objectConstantBuffer, renderableSO.GetInternalPtr()->GetWorldMatrix().Transpose());
         _params->SetParamBlockBuffer(GPT_VERTEX_PROGRAM, "ObjectConstantBuffer", _objectConstantBuffer);
         // ######################################################
 
@@ -500,8 +500,8 @@ namespace te
         SPtr<GpuParamDesc> paramDesc = _textureVertexShader->GetParamDesc();
         if (paramDesc->ParamBlocks.size() > 0)
         {
-            _defFrameBuffer.ViewProj.Set(_frameConstantBuffer, _sceneCamera->GetViewMatrix().Transpose() * _sceneCamera->GetProjectionMatrix().Transpose());
-            _defFrameBuffer.WorldCamera.Set(_frameConstantBuffer, _sceneCamera->_getCamera()->GetTransform().GetPosition());
+            _defFrameBuffer.gMatViewProj.Set(_frameConstantBuffer, _sceneCamera->GetViewMatrix().Transpose() * _sceneCamera->GetProjectionMatrix().Transpose());
+            _defFrameBuffer.gViewOrigin.Set(_frameConstantBuffer, _sceneCamera->_getCamera()->GetTransform().GetPosition());
 
             _params->SetParamBlockBuffer(GPT_VERTEX_PROGRAM, "FrameConstantBuffer", _frameConstantBuffer);
             _params->SetParamBlockBuffer(GPT_PIXEL_PROGRAM, "FrameConstantBuffer", _frameConstantBuffer);

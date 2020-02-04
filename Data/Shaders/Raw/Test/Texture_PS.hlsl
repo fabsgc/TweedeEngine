@@ -1,7 +1,10 @@
 cbuffer FrameConstantBuffer : register(b0)
 {
-    matrix ViewProj;
-    float3 WorldCamera;
+    float3 gViewDir;
+    float3 gViewOrigin;
+    matrix gMatViewProj;
+    matrix gMatView;
+    matrix gMatProj;
 }
 
 struct PS_INPUT
@@ -33,7 +36,7 @@ float4 main( PS_INPUT IN ) : SV_Target
     float3 ambient   = color.rgb * AmbientColor.rgb * AmbientColor.a;
 
     float3 ambientDirection = -normalize(AmbientDirection);
-    float3 viewDirection    = normalize(IN.WorldPosition.xyz - WorldCamera);
+    float3 viewDirection    = normalize(IN.WorldPosition.xyz - gViewOrigin);
     float  n_dot_l          = dot(ambientDirection, IN.Normal);
 
     if(n_dot_l > 0)

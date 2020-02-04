@@ -5,13 +5,18 @@ float2 FlipUV(float2 coord)
 
 cbuffer FrameConstantBuffer : register(b0)
 {
-    matrix ViewProj;
-    float3 WorldCamera;
+    float3 gViewDir;
+    float3 gViewOrigin;
+    matrix gMatViewProj;
+    matrix gMatView;
+    matrix gMatProj;
 }
 
 cbuffer ObjectConstantBuffer : register(b1)
 {
-    matrix World;
+    matrix gMatWorld;
+    matrix gMatPrevWorld;
+    matrix gMatWorldNoScale;
 }
 
 struct VS_INPUT
@@ -39,8 +44,8 @@ VS_OUTPUT main( VS_INPUT IN )
 
     OUT.Position.xyz = IN.Position;
     OUT.Position.w = 1.0f;
-    OUT.Position = mul(OUT.Position, World);
-    OUT.Position = mul(OUT.Position, ViewProj);
+    OUT.Position = mul(OUT.Position, gMatWorld);
+    OUT.Position = mul(OUT.Position, gMatViewProj);
 
     OUT.Color = IN.Color;
     OUT.Normal = IN.Normal;
@@ -48,7 +53,7 @@ VS_OUTPUT main( VS_INPUT IN )
 
     OUT.WorldPosition.xyz = IN.Position;
     OUT.WorldPosition.w = 1.0f;
-    OUT.WorldPosition = mul(OUT.WorldPosition, World);
+    OUT.WorldPosition = mul(OUT.WorldPosition, gMatWorld);
 
     return OUT;
 }

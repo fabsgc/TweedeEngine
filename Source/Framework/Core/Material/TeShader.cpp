@@ -256,7 +256,7 @@ namespace te
         return false;
     }
 
-    typename SPtr<Texture> Shader::GetDefaultTexture(UINT32 index) const
+    SPtr<Texture> Shader::GetDefaultTexture(UINT32 index) const
     {
         if (index < (UINT32)_desc.TextureDefaultValues.size())
             return _desc.TextureDefaultValues[index];
@@ -264,7 +264,7 @@ namespace te
         return SPtr<Texture>();
     }
 
-    typename SPtr<SamplerState> Shader::GetDefaultSampler(UINT32 index) const
+    SPtr<SamplerState> Shader::GetDefaultSampler(UINT32 index) const
     {
         if (index < (UINT32)_desc.SamplerDefaultValues.size())
             return _desc.SamplerDefaultValues[index];

@@ -21,12 +21,17 @@ namespace te
     };
 
     TE_PARAM_BLOCK_BEGIN(FrameConstantBuffer)
-        TE_PARAM_BLOCK_ENTRY(Matrix4, ViewProj)
-        TE_PARAM_BLOCK_ENTRY(Vector3, WorldCamera)
+        TE_PARAM_BLOCK_ENTRY(Vector3, gViewDir)
+        TE_PARAM_BLOCK_ENTRY(Vector3, gViewOrigin)
+        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatViewProj)
+        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatView)
+        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatProj)
     TE_PARAM_BLOCK_END
 
     TE_PARAM_BLOCK_BEGIN(ObjectConstantBuffer)
-        TE_PARAM_BLOCK_ENTRY(Matrix4, World)
+        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatWorld)
+        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatPrevWorld)
+        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatWorldNoScale)
     TE_PARAM_BLOCK_END
 
     /**
