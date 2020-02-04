@@ -3,10 +3,63 @@
 #include "TeCoreApplication.h"
 #include "Material/TeMaterial.h"
 #include "Material/TeShader.h"
+#include "TeRenderManOptions.h"
 
 namespace te
 {
     PerFrameParamDef gPerFrameParamDef;
+
+    /** Initializes a specific base pass technique on the provided material and returns the technique index. */
+    static UINT32 InitAndRetrieveBasePassTechnique(Material& material)
+    {
+        UINT32 techniqueIdx  = material.GetDefaultTechnique();
+        UINT32 numTechniques = material.GetNumTechniques();
+
+        /*if (numTechniques == 0) TODO
+            TE_ASSERT_ERROR(false, "A material must a leat have one technique", __FILE__, __LINE__);
+
+        // Make sure the technique shaders are compiled
+        const SPtr<Technique>& technique = material.GetTechnique(techniqueIdx);
+
+        UINT32 numPasses = technique->GetNumPasses();
+        if (numPasses == 0)
+            TE_ASSERT_ERROR(false, "A technique must a leat have one technique", __FILE__, __LINE__);
+
+        if (!technique)
+            technique->Compile();*/
+
+        return techniqueIdx;
+    }
+
+    static void ValidateBasePassMaterial(Material& material, UINT32 techniqueIdx, VertexDeclaration& vertexDecl)
+    {
+        // Validate mesh <-> shader vertex bindings
+        UINT32 numPasses = material.GetNumPasses(techniqueIdx);
+        for (UINT32 j = 0; j < numPasses; j++)
+        {
+            SPtr<Pass> pass = material.GetPass(j, techniqueIdx);
+            SPtr<GraphicsPipelineState> graphicsPipeline = pass->GetGraphicsPipelineState();
+
+            SPtr<VertexDeclaration> shaderDecl = graphicsPipeline->GetVertexProgram()->GetInputDeclaration();
+            if (shaderDecl && !vertexDecl.IsCompatible(shaderDecl))
+            {
+                Vector<VertexElement> missingElements = vertexDecl.GetMissingElements(shaderDecl);
+
+                if (!missingElements.empty())
+                {
+                    StringStream wrnStream;
+                    wrnStream << "Provided mesh is missing required vertex attributes to render with the \
+									provided shader. Missing elements: " << std::endl;
+
+                    for (auto& entry : missingElements)
+                        wrnStream << "\t" << ToString(entry.GetSemantic()) << entry.GetSemanticIdx() << std::endl;
+
+                    TE_DEBUG(wrnStream.str(), __FILE__, __LINE__);
+                    break;
+                }
+            }
+        }
+    }
 
     RendererScene::RendererScene(const SPtr<RenderManOptions>& options)
         : _options(options)
@@ -114,12 +167,36 @@ namespace te
 
             _info.DirectionalLights.push_back(RendererLight(light));
         }
+        else
+        {
+            if (light->GetType() == LightType::Radial)
+            {
+                UINT32 lightId = (UINT32)_info.RadialLights.size();
+                light->SetRendererId(lightId);
+
+                _info.RadialLights.push_back(RendererLight(light));
+                _info.RadialLightWorldBounds.push_back(light->GetBounds());
+            }
+            else // Spot
+            {
+                UINT32 lightId = (UINT32)_info.SpotLights.size();
+                light->SetRendererId(lightId);
+
+                _info.SpotLights.push_back(RendererLight(light));
+                _info.SpotLightWorldBounds.push_back(light->GetBounds());
+            }
+        }
     }
 
     /** Updates information about a previously registered light. */
     void RendererScene::UpdateLight(Light* light)
     {
-        // Nothing for the moment
+        UINT32 lightId = light->GetRendererId();
+
+        if (light->GetType() == LightType::Radial)
+            _info.RadialLightWorldBounds[lightId] = light->GetBounds();
+        else if (light->GetType() == LightType::Spot)
+            _info.SpotLightWorldBounds[lightId] = light->GetBounds();
     }
 
     /** Removes a light from the scene. */
@@ -140,6 +217,45 @@ namespace te
 
             // Last element is the one we want to erase
             _info.DirectionalLights.erase(_info.DirectionalLights.end() - 1);
+        }
+        else
+        {
+            if (light->GetType() == LightType::Radial)
+            {
+                Light* lastLight = _info.RadialLights.back()._internal;
+                UINT32 lastLightId = lastLight->GetRendererId();
+
+                if (lightId != lastLightId)
+                {
+                    // Swap current last element with the one we want to erase
+                    std::swap(_info.RadialLights[lightId], _info.RadialLights[lastLightId]);
+                    std::swap(_info.RadialLightWorldBounds[lightId], _info.RadialLightWorldBounds[lastLightId]);
+
+                    lastLight->SetRendererId(lightId);
+                }
+
+                // Last element is the one we want to erase
+                _info.RadialLights.erase(_info.RadialLights.end() - 1);
+                _info.RadialLightWorldBounds.erase(_info.RadialLightWorldBounds.end() - 1);
+            }
+            else
+            {
+                Light* lastLight = _info.SpotLights.back()._internal;
+                UINT32 lastLightId = lastLight->GetRendererId();
+
+                if (lightId != lastLightId)
+                {
+                    // Swap current last element with the one we want to erase
+                    std::swap(_info.SpotLights[lightId], _info.SpotLights[lastLightId]);
+                    std::swap(_info.SpotLightWorldBounds[lightId], _info.SpotLightWorldBounds[lastLightId]);
+
+                    lastLight->SetRendererId(lightId);
+                }
+
+                // Last element is the one we want to erase
+                _info.SpotLights.erase(_info.SpotLights.end() - 1);
+                _info.SpotLightWorldBounds.erase(_info.SpotLightWorldBounds.end() - 1);
+            }
         }
     }
 
@@ -233,12 +349,17 @@ namespace te
                 if (renElement.MaterialElem == nullptr)
                     renElement.MaterialElem = Material::Create(Shader::CreateEmpty()).GetInternalPtr();
 
+                // Determine which technique to use
                 const SPtr<Shader>& shader = renElement.MaterialElem->GetShader();
 
-                UINT32 shaderFlags = shader->GetFlags();
-                const bool useForwardRendering = (shaderFlags & (UINT32)ShaderFlag::Forward) || (shaderFlags & (UINT32)ShaderFlag::Transparent);
+                renElement.DefaultTechniqueIdx = InitAndRetrieveBasePassTechnique(*renElement.MaterialElem);
 
+                // Generate or assigned renderer specific data for the material
                 // TODO params
+
+#if TE_DEBUG_MODE
+                ValidateBasePassMaterial(*renElement.MaterialElem, renElement.DefaultTechniqueIdx, *vertexDecl);
+#endif
             }
 
             // Prepare all parameter bindings
@@ -259,6 +380,9 @@ namespace te
     void RendererScene::SetOptions(const SPtr<RenderManOptions>& options)
     {
         _options = options;
+
+        for (auto& entry : _info.Views)
+            entry->SetStateReductionMode(_options->ReductionMode);
     }
 
     void RendererScene::SetParamFrameParams(float time)
@@ -342,6 +466,7 @@ namespace te
         viewDesc.ViewTransform = camera->GetViewMatrix();
         viewDesc.ProjType = camera->GetProjectionType();
 
+        viewDesc.ReductionMode = _options->ReductionMode;
         viewDesc.SceneCamera = camera;
 
         return viewDesc;

@@ -17,6 +17,9 @@ namespace te
     struct RenderQueueElement
     { 
         const RenderElement* RenderElem = nullptr;
+        UINT32 PassIdx = 0;
+        UINT32 TechniqueIdx = 0;
+        bool ApplyPass = true;
     };
 
     /**
@@ -43,11 +46,12 @@ namespace te
          *
          * @param[in]	element			Renderable element to add to the queue.
          * @param[in]	distFromCamera	Distance of this object from the camera. Used for distance sorting.
+         * @param[in]	techniqueIdx	Index of the technique within @p element's material that's to be used to render the element with.
          */
         RenderQueue(StateReduction grouping = StateReduction::Distance);
         ~RenderQueue();
 
-        void Add(const RenderElement* element, float distFromCamera);
+        void Add(const RenderElement* element, float distFromCamera, UINT32 techniqueIdx);
         void Sort();
         void Clear();
 

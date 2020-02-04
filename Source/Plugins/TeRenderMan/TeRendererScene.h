@@ -31,6 +31,10 @@ namespace te
 
         // Lights
         Vector<RendererLight> DirectionalLights;
+        Vector<RendererLight> RadialLights;
+        Vector<RendererLight> SpotLights;
+        Vector<Sphere> RadialLightWorldBounds;
+        Vector<Sphere> SpotLightWorldBounds;
 
         // Buffers for various transient data that gets rebuilt every frame
         //// Rebuilt every frame

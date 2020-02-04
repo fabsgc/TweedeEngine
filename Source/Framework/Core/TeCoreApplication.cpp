@@ -52,6 +52,8 @@
 
 #include "Material/TeMaterial.h"
 #include "Material/TeShader.h"
+#include "Material/TeTechnique.h"
+#include "Material/TePass.h"
 
 namespace te
 {
@@ -337,10 +339,10 @@ namespace te
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         // ######################################################
+        GPU_PROGRAM_DESC vertexShaderProgramDesc;
         {
             FileStream shaderFile("Data/Shaders/Raw/Test/Texture_VS.hlsl");
 
-            GPU_PROGRAM_DESC vertexShaderProgramDesc;
             vertexShaderProgramDesc.Type = GPT_VERTEX_PROGRAM;
             vertexShaderProgramDesc.EntryPoint = "main";
             vertexShaderProgramDesc.Language = "hlsl";
@@ -351,10 +353,10 @@ namespace te
         // ######################################################
 
         // ######################################################
+        GPU_PROGRAM_DESC pixelShaderProgramDesc;
         {
             FileStream shaderFile("Data/Shaders/Raw/Test/Texture_PS.hlsl");
 
-            GPU_PROGRAM_DESC pixelShaderProgramDesc;
             pixelShaderProgramDesc.Type = GPT_PIXEL_PROGRAM;
             pixelShaderProgramDesc.EntryPoint = "main";
             pixelShaderProgramDesc.Language = "hlsl";
@@ -413,6 +415,18 @@ namespace te
         _params = GpuParams::Create(graphicsPipeline);
         _params->SetTexture(5, 0, _loadTexture.GetInternalPtr(), GpuParams::COMPLETE);
         _params->SetSamplerState(6, 0, samplerState);
+        // ######################################################
+
+        // ######################################################
+        PASS_DESC passDesc;
+        passDesc.BlendStateDesc = blendDesc;
+        passDesc.DepthStencilStateDesc = depthDesc;
+        passDesc.RasterizerStateDesc = rastDesc;
+        passDesc.VertexProgramDesc = vertexShaderProgramDesc;
+        passDesc.PixelProgramDesc = pixelShaderProgramDesc;
+
+        SPtr<Pass> pass = Pass::Create(passDesc);
+        SPtr<Technique> technique = Technique::Create("hlsl", { pass });
         // ######################################################
 
         // ######################################################

@@ -19,6 +19,9 @@ namespace te
         /**	Material to render the mesh with. */
         SPtr<Material> MaterialElem;
 
+        /** Index of the technique in the material to render the element with. */
+        UINT32 DefaultTechniqueIdx = 0;
+
         /** Renderer specific value that identifies the type of this renderable element. */
         UINT32 Type = 0;
 

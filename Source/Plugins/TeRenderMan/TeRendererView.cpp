@@ -25,6 +25,7 @@ namespace te
         : _camera(nullptr)
     {
         _paramBuffer = gPerCameraParamDef.CreateBuffer();
+
         _forwardOpaqueQueue = te_shared_ptr_new<RenderQueue>();
         _forwardTransparentQueue = te_shared_ptr_new<RenderQueue>();
     }
@@ -34,8 +35,22 @@ namespace te
         , _camera(desc.SceneCamera)
     {
         _paramBuffer = gPerCameraParamDef.CreateBuffer();
+
         _forwardOpaqueQueue = te_shared_ptr_new<RenderQueue>();
         _forwardTransparentQueue = te_shared_ptr_new<RenderQueue>();
+
+        SetStateReductionMode(desc.ReductionMode);
+    }
+
+    void RendererView::SetStateReductionMode(StateReduction reductionMode)
+    {
+        _forwardOpaqueQueue = te_shared_ptr_new<RenderQueue>(reductionMode);
+
+        StateReduction transparentStateReduction = reductionMode;
+        if (transparentStateReduction == StateReduction::Material)
+            transparentStateReduction = StateReduction::Distance; // Transparent object MUST be sorted by distance
+
+        _forwardTransparentQueue = te_shared_ptr_new<RenderQueue>(transparentStateReduction);
     }
 
     void RendererView::SetRenderSettings(const SPtr<RenderSettings>& settings)
@@ -68,6 +83,8 @@ namespace te
         _properties.ProjTransformNoAA = desc.ProjTransform;
         _properties.ViewProjTransform = desc.ProjTransform * desc.ViewTransform;
         _properties.Target = desc.Target;
+
+        SetStateReductionMode(desc.ReductionMode);
     }
 
     void RendererView::BeginFrame(const FrameInfo& frameInfo)
@@ -194,12 +211,13 @@ namespace te
             for (auto& renderElem : sceneInfo.Renderables[i]->Elements)
             {
                 UINT32 shaderFlags = renderElem.MaterialElem->GetShader()->GetFlags();
+                UINT32 techniqueIdx = renderElem.DefaultTechniqueIdx;
 
                 // Note: I could keep renderables in multiple separate arrays, so I don't need to do the check here
                 if (shaderFlags & (UINT32)ShaderFlag::Transparent)
-                    _forwardTransparentQueue->Add(&renderElem, distanceToCamera);
+                    _forwardTransparentQueue->Add(&renderElem, distanceToCamera, techniqueIdx);
                 else
-                    _forwardOpaqueQueue->Add(&renderElem, distanceToCamera);
+                    _forwardOpaqueQueue->Add(&renderElem, distanceToCamera, techniqueIdx);
             }
         }
 

@@ -3,6 +3,8 @@
 #include "TeCorePrerequisites.h"
 #include "Resources/TeResource.h"
 #include "Mesh/TeMesh.h"
+#include "TeTechnique.h"
+#include "TePass.h"
 
 namespace te
 {
@@ -37,7 +39,39 @@ namespace te
 
         /** Returns the currently active shader. */
         SPtr<Shader> GetShader() const { return _shader; } 
-    
+
+        /** Returns the total number of techniques supported by this material. */
+        UINT32 GetNumTechniques() const { return (UINT32)_techniques.size(); }
+
+        /** Returns the technique at the specified index. */
+        const SPtr<Technique>& GetTechnique(UINT32 idx) const { return _techniques[idx]; }
+
+        /**
+         * Finds the index of the default (primary) technique to use. This will be the first technique that matches the
+         * currently set variation parameters (if any).
+         */
+        UINT32 GetDefaultTechnique() const;
+
+        /**
+         * Returns the number of passes that are used by the technique at the specified index.
+         *
+         * @param[in]	techniqueIdx	Index of the technique to retrieve the number of passes for. 0 is always guaranteed
+         *								to be the default technique.
+         * @return						Number of passes used by the technique.
+         */
+        UINT32 GetNumPasses(UINT32 techniqueIdx = 0) const;
+
+        /**
+         * Retrieves a specific shader pass from the provided technique.
+         *
+         * @param[in]	passIdx			Sequential index of the pass to retrieve.
+         * @param[in]	techniqueIdx	Index of the technique to retrieve the pass for. 0 is always guaranteed to be
+         *								the default technique.
+         * @return						Pass if found, null otherwise.
+         */
+        SPtr<Pass> GetPass(UINT32 passIdx = 0, UINT32 techniqueIdx = 0) const;
+
+    public:    
         /** Creates a new empty material. */
         static HMaterial Create();
 
@@ -60,8 +94,17 @@ namespace te
         Material();
         Material(const HShader& shader);
         Material(const SPtr<Shader>& shader);
+        Material(const HShader& shader, const Vector<SPtr<Technique>>& techniques);
+        Material(const SPtr<Shader>& shader, const Vector<SPtr<Technique>>& techniques);
+
+        /**
+         * Initializes the material by using the compatible techniques from the currently set shader. Shader must contain
+         * the techniques that matches the current renderer and render system.
+         */
+        void InitializeTechniques();
 
     protected:
         SPtr<Shader> _shader;
+        Vector<SPtr<Technique>> _techniques;
     };
 }

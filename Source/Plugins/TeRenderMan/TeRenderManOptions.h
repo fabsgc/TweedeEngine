@@ -2,6 +2,7 @@
 
 #include "TeRenderManPrerequisites.h"
 #include "Renderer/TeRenderer.h"
+#include "Renderer/TeRenderQueue.h"
 
 namespace te
 {
@@ -30,5 +31,11 @@ namespace te
          * shadows far away, but will never increase the resolution past the provided value.
          */
         UINT32 ShadowMapSize = 2048;
+
+        /**
+         * Controls if and how a render queue groups renderable objects by material in order to reduce number of state
+         * changes. Sorting by material can reduce CPU usage but could increase overdraw.
+         */
+        StateReduction ReductionMode = StateReduction::Distance;
     };
 }

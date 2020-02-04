@@ -76,6 +76,8 @@ namespace te
     {
         RENDERER_VIEW_TARGET_DESC Target;
         Camera* SceneCamera;
+
+        StateReduction ReductionMode;
     };
 
     /** Set of properties used describing a specific view that the renderer can render. */
@@ -123,6 +125,9 @@ namespace te
     public:
         RendererView();
         RendererView(const RENDERER_VIEW_DESC& desc);
+
+        /** Sets state reduction mode that determines how do render queues group & sort renderables. */
+        void SetStateReductionMode(StateReduction reductionMode);
 
         /** Updates the internal camera render settings. */
         void SetRenderSettings(const SPtr<RenderSettings>& settings);
