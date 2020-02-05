@@ -25,6 +25,14 @@ namespace te
         TE_PARAM_BLOCK_ENTRY(Matrix4, gMatProj)
     TE_PARAM_BLOCK_END
 
+    extern PerCameraParamDef gPerCameraParamDef;
+
+    TE_PARAM_BLOCK_BEGIN(SkyboxParamDef)
+        TE_PARAM_BLOCK_ENTRY(Color, gClearColor)
+    TE_PARAM_BLOCK_END
+
+    extern SkyboxParamDef gSkyboxParamDef;
+
     /** Data shared between RENDERER_VIEW_DESC and RendererViewProperties */
     struct RendererViewData
     {

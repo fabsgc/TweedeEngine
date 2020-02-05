@@ -54,7 +54,7 @@ namespace te
 
     void Light::FrameSync()
     {
-        TE_PRINT("# SYNC LIGHT");
+        // TE_PRINT("# SYNC LIGHT");
 
         LightType oldType = _type;
         UINT32 dirtyFlag = GetCoreDirtyFlags();

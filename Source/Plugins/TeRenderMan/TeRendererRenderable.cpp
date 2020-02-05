@@ -1,16 +1,21 @@
 #include "TeRendererRenderable.h"
 #include "Mesh/TeMesh.h"
+#include "Utility/TeBitwise.h"
 
 namespace te
 { 
     PerObjectParamDef gPerObjectParamDef;
     PerCallParamDef gPerCallParamDef;
 
-    void PerObjectBuffer::Update(SPtr<GpuParamBlockBuffer>& buffer, const Matrix4& tfrm, const Matrix4& tfrmNoScale, const Matrix4& prevTfrm)
+    void PerObjectBuffer::Update(SPtr<GpuParamBlockBuffer>& buffer, const Matrix4& tfrm, 
+        const Matrix4& tfrmNoScale, const Matrix4& prevTfrm, UINT32 layer)
     {
-        gPerObjectParamDef.gMatWorld.Set(buffer, tfrm);
-        gPerObjectParamDef.gMatWorldNoScale.Set(buffer, tfrmNoScale);
-        gPerObjectParamDef.gMatPrevWorld.Set(buffer, prevTfrm);
+        gPerObjectParamDef.gMatWorld.Set(buffer, tfrm.Transpose());
+        gPerObjectParamDef.gMatInvWorld.Set(buffer, tfrm.InverseAffine().Transpose());
+        gPerObjectParamDef.gMatWorldNoScale.Set(buffer, tfrmNoScale.Transpose());
+        gPerObjectParamDef.gMatInvWorldNoScale.Set(buffer, tfrmNoScale.InverseAffine().Transpose());
+        gPerObjectParamDef.gMatPrevWorld.Set(buffer, prevTfrm.Transpose());
+        gPerObjectParamDef.gLayer.Set(buffer, (INT32)layer);
     }
 
     void RenderableElement::Draw() const
@@ -68,14 +73,15 @@ namespace te
     void RendererRenderable::UpdatePerObjectBuffer()
     {
         const Matrix4 worldNoScaleTransform = RenderablePtr->GetMatrixNoScale();
-        PerObjectBuffer::Update(PerObjectParamBuffer, WorldTfrm, worldNoScaleTransform, PrevWorldTfrm);
+        const UINT32 layer = Bitwise::mostSignificantBit(RenderablePtr->GetLayer());
+        PerObjectBuffer::Update(PerObjectParamBuffer, WorldTfrm, worldNoScaleTransform, PrevWorldTfrm, layer);
     }
 
     void RendererRenderable::UpdatePerCallBuffer(const Matrix4& viewProj, bool flush)
     {
         const Matrix4 worldViewProjMatrix = viewProj * RenderablePtr->GetMatrix();
 
-        gPerCallParamDef.gMatWorldViewProj.Set(PerCallParamBuffer, worldViewProjMatrix);
+        gPerCallParamDef.gMatWorldViewProj.Set(PerCallParamBuffer, worldViewProjMatrix.Transpose());
 
         if (flush)
             PerCallParamBuffer->FlushToGPU();

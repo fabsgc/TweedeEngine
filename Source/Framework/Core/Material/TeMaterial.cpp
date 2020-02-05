@@ -49,9 +49,23 @@ namespace te
             if (_techniques.empty())
                 return;
         }
-        else
+
+        InitializeGraphicsPipelineStates();
+    }
+
+    void Material::InitializeGraphicsPipelineStates()
+    {
+        _passesGpuParams.clear();
+
+        UINT32 techniqueIdx = 0;
+        for (auto& technique : _techniques)
         {
-            // TODO params
+            for (UINT32 idx = 0; idx < technique->GetNumPasses(); idx++)
+            {
+                _passesGpuParams[techniqueIdx].push_back(technique->GetPass(idx)->GetGpuParams());
+            }
+
+            techniqueIdx++; 
         }
     }
 
@@ -84,6 +98,30 @@ namespace te
             return nullptr;
 
         return _techniques[techniqueIdx]->GetPass(passIdx);
+    }
+
+    /** Assigns a texture to the shader parameter with the specified name. */
+    void Material::SetTexture(const String& name, const SPtr<Texture>& value, const TextureSurface& surface)
+    {
+        for (auto& technique : _passesGpuParams)
+            for (auto& passParams : technique.second)
+                passParams->SetTexture(name, value, surface);
+    }
+
+    /** Assigns a buffer to the shader parameter with the specified name. */
+    void Material::SetBuffer(const String& name, const SPtr<GpuBuffer>& value)
+    {
+        for (auto& technique : _passesGpuParams)
+            for (auto& passParams : technique.second)
+                passParams->SetBuffer(name, value);
+    }
+
+    /** Assigns a sampler state to the shader parameter with the specified name. */
+    void Material::SetSamplerState(const String& name, const SPtr<SamplerState>& value)
+    {
+        for (auto& technique : _passesGpuParams)
+            for (auto& passParams : technique.second)
+                passParams->SetSamplerState(name, value);
     }
 
     UINT32 Material::GetDefaultTechnique() const

@@ -33,7 +33,9 @@ namespace te
             memcpy(&DataDefaultValues[paramDesc.DefaultValueIdx], defaultValue, defaultValueSize);
         }
         else
+        {
             paramDesc.DefaultValueIdx = (UINT32)-1;
+        }
 
         DataParams[paramDesc.Name] = paramDesc;
     }

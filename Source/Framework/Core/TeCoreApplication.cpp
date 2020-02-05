@@ -60,6 +60,9 @@ namespace te
 {
     TE_MODULE_STATIC_MEMBER(CoreApplication)
 
+    AppPerCameraParamDef gAppPerCameraParamDef;
+    AppPerObjectParamDef gAppPerObjectParamDef;
+
     CoreApplication::CoreApplication(START_UP_DESC desc)
         : _window(nullptr)
         , _startUpDesc(desc)
@@ -327,6 +330,7 @@ namespace te
         textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
 
         _loadedMesh = gResourceManager().Load<Mesh>("Data/Meshes/multi-cube-material.dae", meshImportOptions);
+        _loadedMesh2 = gResourceManager().Load<Mesh>("Data/Meshes/cube.dae", meshImportOptions);
         _loadedTexture = gResourceManager().Load<Texture>("Data/Textures/cube.png", textureImportOptions);
         _loadedCubemapTexture = gResourceManager().Load<Texture>("Data/Textures/cubemap.png", textureCubeMapImportOptions);
 
@@ -410,13 +414,6 @@ namespace te
         pipeDesc.depthStencilState = depthStencilState;
         pipeDesc.vertexProgram = _textureVertexShader;
         pipeDesc.pixelProgram = _texturePixelShader;
-
-        SPtr<GraphicsPipelineState> graphicsPipeline = GraphicsPipelineState::Create(pipeDesc);
-        RenderAPI::Instance().SetGraphicsPipeline(graphicsPipeline);
-
-        _params = GpuParams::Create(graphicsPipeline);
-        _params->SetTexture(5, 0, _loadedTexture.GetInternalPtr(), GpuParams::COMPLETE);
-        _params->SetSamplerState(6, 0, samplerState);
         // ######################################################
 
         // ######################################################
@@ -429,6 +426,7 @@ namespace te
 
         _pass = Pass::Create(passDesc);
         _technique = Technique::Create("hlsl", { _pass });
+        _technique->Compile();
 
         SHADER_DATA_PARAM_DESC gViewDirDesc("gViewDir", "gViewDir", GPDT_FLOAT3);
         SHADER_DATA_PARAM_DESC gViewOriginDesc("gViewOrigin", "gViewOrigin", GPDT_FLOAT3);
@@ -437,8 +435,15 @@ namespace te
         SHADER_DATA_PARAM_DESC gMatProjDesc("gMatProj", "gMatProj", GPDT_MATRIX_4X4);
 
         SHADER_DATA_PARAM_DESC gMatWorldDesc("gMatWorld", "gMatWorld", GPDT_MATRIX_4X4);
-        SHADER_DATA_PARAM_DESC gMatPrevWorldDesc("gMatPrevWorld", "gMatPrevWorld", GPDT_MATRIX_4X4);
+        SHADER_DATA_PARAM_DESC gMatInvWorldDesc("gMatInvWorld", "gMatInvWorld", GPDT_MATRIX_4X4);
         SHADER_DATA_PARAM_DESC gMatWorldNoScaleDesc("gMatWorldNoScale", "gMatWorldNoScale", GPDT_MATRIX_4X4);
+        SHADER_DATA_PARAM_DESC gMatInvWorldNoScaleDesc("gMatInvWorldNoScale", "gMatInvWorldNoScale", GPDT_MATRIX_4X4);
+        SHADER_DATA_PARAM_DESC gMatPrevWorldDesc("gMatPrevWorld", "gMatPrevWorld", GPDT_MATRIX_4X4);
+        SHADER_DATA_PARAM_DESC gLayerDesc("gLayer", "gLayer", GPDT_INT1);
+
+        SHADER_DATA_PARAM_DESC gTime("gTime", "gTime", GPDT_FLOAT1);
+
+        SHADER_DATA_PARAM_DESC gMatWorldViewProj("gMatWorldViewProj", "gMatWorldViewProj", GPDT_MATRIX_4X4);
 
         SHADER_OBJECT_PARAM_DESC anisotropicSamplerDesc("AnisotropicSampler", "AnisotropicSampler", GPOT_SAMPLER2D);
         SHADER_OBJECT_PARAM_DESC colorTextureDesc("ColorTexture", "ColorTexture", GPOT_TEXTURE2D);
@@ -451,8 +456,17 @@ namespace te
         shaderDesc.AddParameter(gMatProjDesc);
 
         shaderDesc.AddParameter(gMatWorldDesc);
-        shaderDesc.AddParameter(gMatPrevWorldDesc);
+        shaderDesc.AddParameter(gMatInvWorldDesc);
         shaderDesc.AddParameter(gMatWorldNoScaleDesc);
+        shaderDesc.AddParameter(gMatInvWorldNoScaleDesc);
+        shaderDesc.AddParameter(gMatPrevWorldDesc);
+        shaderDesc.AddParameter(gLayerDesc);
+
+        shaderDesc.AddParameter(gLayerDesc);
+
+        shaderDesc.AddParameter(gTime);
+
+        shaderDesc.AddParameter(gMatWorldViewProj);
 
         shaderDesc.AddParameter(anisotropicSamplerDesc);
         shaderDesc.AddParameter(colorTextureDesc);
@@ -463,6 +477,8 @@ namespace te
         _shader->SetName("Shader");
         _material = Material::Create(_shader);
         _material->SetName("Material");
+        _material->SetTexture("ColorTexture", _loadedTexture);
+        _material->SetSamplerState("AnisotropicSampler", samplerState);
         // ######################################################
 
         // ######################################################
@@ -479,6 +495,12 @@ namespace te
         _renderable->SetMaterial(_material);
         _renderable->Initialize();
 
+        _sceneRenderable2SO = SceneObject::Create("Cube-2");
+        _renderable2 = _sceneRenderable2SO->AddComponent<CRenderable>();
+        _renderable2->SetMesh(_loadedMesh2);
+        _renderable2->SetMaterial(_material);
+        _renderable2->Initialize();
+
         _sceneSkyboxSO = SceneObject::Create("Skybox");
         _skybox = _sceneSkyboxSO->AddComponent<CSkybox>();
         _skybox->SetTexture(_loadedCubemapTexture);
@@ -488,77 +510,24 @@ namespace te
         _light = _sceneLightSO->AddComponent<CLight>();
         _light->Initialize();
 
-        _sceneCameraSO->SetPosition(Vector3(4.0f, 2.0f, 5.0f));
-        _sceneCameraSO->LookAt(Vector3(1.0f, 0.5f, 0.0f));
+        _sceneCameraSO->SetPosition(Vector3(0.0f, 2.0f, 6.0f));
+        _sceneCameraSO->LookAt(Vector3(0.0f, 0.0f, 0.0f));
 
-        _sceneRenderableSO->Move(Vector3(1.0f, 0.0f, 0.0f));
-        _sceneCameraSO->Move(Vector3(1.0f, 0.0f, 0.0f));
-        // ######################################################
-
-        // ######################################################
-        SPtr<GpuParamDesc> paramDesc = _textureVertexShader->GetParamDesc();
-
-        _objectConstantBuffer = _defObjectBuffer.CreateBuffer();
-        _frameConstantBuffer = _defFrameBuffer.CreateBuffer();
-
-        UINT32 width = _window->GetProperties().Width;
-        UINT32 height = _window->GetProperties().Height;
-
-        Transform transformObject;
-        _defObjectBuffer.gMatWorld.Set(_objectConstantBuffer, _sceneRenderableSO.GetInternalPtr()->GetWorldMatrix().Transpose());
-        _params->SetParamBlockBuffer(GPT_VERTEX_PROGRAM, "ObjectConstantBuffer", _objectConstantBuffer);
+        _sceneRenderableSO->Move(Vector3(0.0f, 0.0f, 0.0f));
+        _sceneRenderable2SO->Move(Vector3(0.0f, 0.0f, -3.0f));
+        _sceneCameraSO->Move(Vector3(0.0f, 0.0f, 0.0f));
         // ######################################################
 
         // ######################################################
         gSceneManager().SetMainRenderTarget(gCoreApplication().GetWindow());
-        // ######################################################
-
-        // ######################################################
-        RenderAPI& rapi = RenderAPI::Instance();
-        _vertexDeclaration = _loadedMesh->GetVertexData()->vertexDeclaration;
-        _vertexBuffer = _loadedMesh->GetVertexData()->GetBuffer(0);
-        _indexBuffer = _loadedMesh->GetIndexBuffer();
-
-        SPtr<MeshData> data = _loadedMesh->GetCachedData();
-        UINT8* srcVertBufferData = data->GetStreamData(0);
-        UINT32* srcIndexBufferData = data->GetIndices32();
-
-        rapi.SetVertexDeclaration(_vertexDeclaration);
-        rapi.SetVertexBuffers(0, &_vertexBuffer, 1);
-        rapi.SetIndexBuffer(_indexBuffer);
-        rapi.SetGpuParams(_params);
         // ######################################################
 #endif
     }
 
     void CoreApplication::TestRun()
     {
-#if TE_PLATFORM == TE_PLATFORM_WIN32
-        RenderAPI& rapi = RenderAPI::Instance();
-
-        rapi.SetRenderTarget(_sceneCamera->GetViewport()->GetTarget());
-
-        SPtr<GpuParamDesc> paramDesc = _textureVertexShader->GetParamDesc();
-        if (paramDesc->ParamBlocks.size() > 0)
-        {
-            _defFrameBuffer.gMatViewProj.Set(_frameConstantBuffer, _sceneCamera->GetViewMatrix().Transpose() * _sceneCamera->GetProjectionMatrix().Transpose());
-            _defFrameBuffer.gViewOrigin.Set(_frameConstantBuffer, _sceneCamera->_getCamera()->GetTransform().GetPosition());
-
-            _params->SetParamBlockBuffer(GPT_VERTEX_PROGRAM, "FrameConstantBuffer", _frameConstantBuffer);
-            _params->SetParamBlockBuffer(GPT_PIXEL_PROGRAM, "FrameConstantBuffer", _frameConstantBuffer);
-            rapi.SetGpuParams(_params);
-        }
-
-        UINT32 clearBuffers = FBT_COLOR | FBT_DEPTH | FBT_STENCIL;
-        rapi.ClearViewport(clearBuffers, _sceneCamera->GetViewport()->GetClearColorValue());
-    
-        UINT32 numIndices = _indexBuffer->GetProperties().GetNumIndices();
-        UINT32 numVertices = _vertexBuffer->GetProperties().GetNumVertices();
-        
-        rapi.DrawIndexed(0, numIndices, 0, numVertices);
-
-        RenderAPI::Instance().SwapBuffers(_sceneCamera->GetViewport()->GetTarget());
-#endif
+        _sceneRenderableSO->Rotate(Vector3(0.0f, 1.0f, 0.0f), Radian(1.5f * gTime().GetFrameDelta()));
+        _sceneRenderable2SO->Rotate(Vector3(0.0f, 1.0f, 0.0f), Radian(-0.5f * gTime().GetFrameDelta()));
     }
 
     void CoreApplication::TestShutDown()
@@ -569,8 +538,8 @@ namespace te
         _vertexBuffer = nullptr;
         _textureVertexShader = nullptr;
         _texturePixelShader = nullptr;
-        _objectConstantBuffer = nullptr;
-        _frameConstantBuffer = nullptr;
+        _perObjectConstantBuffer = nullptr;
+        _perCameraConstantBuffer = nullptr;
         _params = nullptr;
 
         _pass = nullptr;

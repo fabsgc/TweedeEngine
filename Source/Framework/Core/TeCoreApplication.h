@@ -20,7 +20,7 @@ namespace te
         Vector<String> Importers; /** A list of importer plugins to load. */
     };
 
-    TE_PARAM_BLOCK_BEGIN(FrameConstantBuffer)
+    TE_PARAM_BLOCK_BEGIN(AppPerCameraParamDef)
         TE_PARAM_BLOCK_ENTRY(Vector3, gViewDir)
         TE_PARAM_BLOCK_ENTRY(Vector3, gViewOrigin)
         TE_PARAM_BLOCK_ENTRY(Matrix4, gMatViewProj)
@@ -28,11 +28,36 @@ namespace te
         TE_PARAM_BLOCK_ENTRY(Matrix4, gMatProj)
     TE_PARAM_BLOCK_END
 
-    TE_PARAM_BLOCK_BEGIN(ObjectConstantBuffer)
-        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatWorld)
-        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatPrevWorld)
-        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatWorldNoScale)
+    extern AppPerCameraParamDef gAppPerCameraParamDef;
+
+    TE_PARAM_BLOCK_BEGIN(AppSkyboxParamDef)
+        TE_PARAM_BLOCK_ENTRY(Color, gClearColor)
     TE_PARAM_BLOCK_END
+
+    extern AppSkyboxParamDef gAppSkyboxParamDef;
+
+    TE_PARAM_BLOCK_BEGIN(AppPerFrameParamDef)
+        TE_PARAM_BLOCK_ENTRY(float, gTime)
+    TE_PARAM_BLOCK_END
+
+    extern AppPerFrameParamDef gAppPerFrameParamDef;
+
+    TE_PARAM_BLOCK_BEGIN(AppPerObjectParamDef)
+        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatWorld)
+        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatInvWorld)
+        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatWorldNoScale)
+        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatInvWorldNoScale)
+        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatPrevWorld)
+        TE_PARAM_BLOCK_ENTRY(INT32, gLayer)
+    TE_PARAM_BLOCK_END
+
+    extern AppPerObjectParamDef gAppPerObjectParamDef;
+
+    TE_PARAM_BLOCK_BEGIN(AppPerCallParamDef)
+        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatWorldViewProj)
+    TE_PARAM_BLOCK_END
+
+    extern AppPerCallParamDef gAppPerCallParamDef;
 
     /**
      * Represents the primary entry point for the core systems. Handles start-up, shutdown, primary loop and allows you to
@@ -141,18 +166,18 @@ namespace te
 
         SPtr<VertexBuffer> _vertexBuffer;
         SPtr<IndexBuffer> _indexBuffer;
-        SPtr<GpuParamBlockBuffer> _objectConstantBuffer;
-        SPtr<GpuParamBlockBuffer> _frameConstantBuffer;
+        SPtr<GpuParamBlockBuffer> _perCameraConstantBuffer;
+        SPtr<GpuParamBlockBuffer> _perObjectConstantBuffer;
         SPtr<VertexDeclaration> _vertexDeclaration;
-        FrameConstantBuffer _defFrameBuffer;
-        ObjectConstantBuffer _defObjectBuffer;
 
         HCamera _sceneCamera;
         HMesh _loadedMesh;
+        HMesh _loadedMesh2;
         HTexture _loadedTexture;
         HTexture _loadedCubemapTexture;
 
         HRenderable _renderable;
+        HRenderable _renderable2;
         HLight _light;
         HSkybox _skybox;
 
@@ -166,6 +191,7 @@ namespace te
 
         HSceneObject _sceneCameraSO;
         HSceneObject _sceneRenderableSO;
+        HSceneObject _sceneRenderable2SO;
         HSceneObject _sceneLightSO;
         HSceneObject _sceneSkyboxSO;
     };

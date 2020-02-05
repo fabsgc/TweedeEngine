@@ -10,8 +10,11 @@ namespace te
 {
     TE_PARAM_BLOCK_BEGIN(PerObjectParamDef)
         TE_PARAM_BLOCK_ENTRY(Matrix4, gMatWorld)
-        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatPrevWorld)
+        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatInvWorld)
         TE_PARAM_BLOCK_ENTRY(Matrix4, gMatWorldNoScale)
+        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatInvWorldNoScale)
+        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatPrevWorld)
+        TE_PARAM_BLOCK_ENTRY(INT32, gLayer)
     TE_PARAM_BLOCK_END
 
     extern PerObjectParamDef gPerObjectParamDef;
@@ -27,7 +30,8 @@ namespace te
     {
     public:
         /** Updates the provided buffer with the data from the provided matrices. */
-        static void Update(SPtr<GpuParamBlockBuffer>& buffer, const Matrix4& tfrm, const Matrix4& tfrmNoScale, const Matrix4& prevTfrm);
+        static void Update(SPtr<GpuParamBlockBuffer>& buffer, const Matrix4& tfrm, const Matrix4& tfrmNoScale, 
+            const Matrix4& prevTfrm, UINT32 layer);
     };
 
     /**

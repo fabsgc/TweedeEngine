@@ -10,20 +10,41 @@ namespace te
 {
     UnorderedMap<String, RenderCompositor::NodeType*> RenderCompositor::_nodeTypes;
 
+    void SetPass(const SPtr<Material>& material, UINT32 passIdx, UINT32 techniqueIdx)
+    {
+        RenderAPI& rapi = RenderAPI::Instance();
+
+        SPtr<Pass> pass = material->GetPass(passIdx, techniqueIdx);
+        rapi.SetGraphicsPipeline(pass->GetGraphicsPipelineState());
+        rapi.SetStencilRef(pass->GetStencilRefValue());
+    }
+
+    void SetPassParams(const SPtr<Material>& material, UINT32 techniqueIdx, UINT32 passIdx)
+    {
+        SPtr<GpuParams> gpuParams = material->GetPassesGpuParams(techniqueIdx)[passIdx];
+        if (gpuParams == nullptr)
+            return;
+
+        RenderAPI& rapi = RenderAPI::Instance();
+        rapi.SetGpuParams(gpuParams);
+    }
+
     /** Renders all elements in a render queue. */
-	void RenderQueueElements(const Vector<RenderQueueElement>& elements)
-	{
-		for(auto& entry : elements)
-		{
-            // TODO
-            // entry.RenderElem->Draw();
+    void RenderQueueElements(const Vector<RenderQueueElement>& elements)
+    {
+        for(auto& entry : elements)
+        {
+            SetPass(entry.RenderElem->MaterialElem, entry.TechniqueIdx, entry.PassIdx);
+            SetPassParams(entry.RenderElem->MaterialElem, entry.TechniqueIdx, entry.PassIdx);
+
+            entry.RenderElem->Draw();
         }
     }
 
     RenderCompositor::~RenderCompositor()
-	{
-		Clear();
-	}
+    {
+        Clear();
+    }
 
     void RenderCompositor::Build(const RendererView& view, const String& finalNode)
     {
@@ -166,16 +187,42 @@ namespace te
 
     void RCNodeForwardPass::Render(const RenderCompositorNodeInputs& inputs)
     { 
-        // TODO
+        const RendererViewProperties& viewProps = inputs.View.GetProperties();
+        const VisibilityInfo& visibility = inputs.View.GetVisibilityInfo();
+        const auto numRenderables = (UINT32)inputs.Scene.Renderables.size();
+        for (UINT32 i = 0; i < numRenderables; i++)
+        {
+            if (!visibility.Renderables[i])
+                continue;
+
+            RendererRenderable* rendererRenderable = inputs.Scene.Renderables[i];
+            rendererRenderable->UpdatePerCallBuffer(viewProps.ViewProjTransform);
+
+            for (auto& element : inputs.Scene.Renderables[i]->Elements)
+            {
+                Vector<SPtr<GpuParams>>& passesGpuParams = element.MaterialElem->GetPassesGpuParams(element.DefaultTechniqueIdx);
+
+                for (auto& gpuParams : passesGpuParams)
+                {
+                    gpuParams->SetParamBlockBuffer("PerCameraBuffer", inputs.View.GetPerViewBuffer());
+                }
+            }
+        }
+
+        RenderAPI& rapi = RenderAPI::Instance();
+
+        rapi.SetRenderTarget(inputs.View.GetProperties().Target.Target);
+
+        UINT32 clearBuffers = FBT_COLOR | FBT_DEPTH | FBT_STENCIL;
+        rapi.ClearViewport(clearBuffers, inputs.View.GetProperties().Target.ClearColor);
+
         // Render all visible opaque elements
         RenderQueue* opaqueElements = inputs.View.GetOpaqueQueue().get();
         RenderQueueElements(opaqueElements->GetSortedElements());
     }
 
     void RCNodeForwardPass::Clear()
-    {
-        // TODO
-    }
+    { }
 
     Vector<String> RCNodeForwardPass::GetDependencies(const RendererView& view)
     {
@@ -183,9 +230,7 @@ namespace te
     }
 
     void RCNodeFinalResolve::Render(const RenderCompositorNodeInputs& inputs)
-    { 
-        // TODO
-    }
+    { }
 
     void RCNodeFinalResolve::Clear()
     { }

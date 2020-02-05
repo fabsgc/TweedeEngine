@@ -31,7 +31,7 @@ namespace te
 
     void Renderable::FrameSync()
     {
-        TE_PRINT("# SYNC RENDERABLE");
+        // TE_PRINT("# SYNC RENDERABLE");
 
         UINT32 dirtyFlag = GetCoreDirtyFlags();
         UINT32 updateEverythingFlag = (UINT32)ActorDirtyFlag::Everything;

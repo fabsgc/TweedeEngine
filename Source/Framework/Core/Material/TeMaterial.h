@@ -5,6 +5,11 @@
 #include "Mesh/TeMesh.h"
 #include "TeTechnique.h"
 #include "TePass.h"
+#include "RenderAPI/TeGpuPipelineState.h"
+#include "RenderAPI/TeGpuParams.h"
+#include "Image/TeTexture.h"
+#include "RenderAPI/TeGpuBuffer.h"
+#include "RenderAPI/TeSamplerState.h"
 
 namespace te
 {
@@ -71,7 +76,25 @@ namespace te
          */
         SPtr<Pass> GetPass(UINT32 passIdx = 0, UINT32 techniqueIdx = 0) const;
 
-    public:    
+        /** Assigns a texture to the shader parameter with the specified name. */
+        void SetTexture(const String& name, const SPtr<Texture>& value, const TextureSurface& surface = GpuParams::COMPLETE);
+
+        /** Assigns a buffer to the shader parameter with the specified name. */
+        void SetBuffer(const String& name, const SPtr<GpuBuffer>& value);
+
+        /** Assigns a sampler state to the shader parameter with the specified name. */
+        void SetSamplerState(const String& name, const SPtr<SamplerState>& value);
+
+        /** @copydoc Material::SetTexture */
+        void SetTexture(const String& name, const HTexture& value, const TextureSurface& surface = GpuParams::COMPLETE)
+        {
+            SetTexture(name, value.GetInternalPtr(), surface);
+        }
+
+        /* Get all gpu params for a set of passes related to the current technique */
+        Vector<SPtr<GpuParams>>& GetPassesGpuParams(UINT32 techniqueIdx) { return _passesGpuParams[techniqueIdx]; }
+
+    public:
         /** Creates a new empty material. */
         static HMaterial Create();
 
@@ -103,8 +126,14 @@ namespace te
          */
         void InitializeTechniques();
 
+        /*
+         * Material keep a handle on all graphicsPipelineStates from every pass
+         */
+        void InitializeGraphicsPipelineStates();
+
     protected:
         SPtr<Shader> _shader;
         Vector<SPtr<Technique>> _techniques;
+        UnorderedMap<UINT32, Vector<SPtr<GpuParams>>> _passesGpuParams;
     };
 }

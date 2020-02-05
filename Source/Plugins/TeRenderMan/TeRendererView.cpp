@@ -234,9 +234,9 @@ namespace te
     {
         Matrix4 viewProj = _properties.ProjTransform * _properties.ViewTransform;
 
-        gPerCameraParamDef.gMatProj.Set(_paramBuffer, _properties.ProjTransform);
-        gPerCameraParamDef.gMatView.Set(_paramBuffer, _properties.ViewTransform);
-        gPerCameraParamDef.gMatViewProj.Set(_paramBuffer, viewProj);
+        gPerCameraParamDef.gMatProj.Set(_paramBuffer, _properties.ProjTransform.Transpose());
+        gPerCameraParamDef.gMatView.Set(_paramBuffer, _properties.ViewTransform.Transpose());
+        gPerCameraParamDef.gMatViewProj.Set(_paramBuffer, viewProj.Transpose());
 
         gPerCameraParamDef.gViewDir.Set(_paramBuffer, _properties.ViewDirection);
         gPerCameraParamDef.gViewOrigin.Set(_paramBuffer, _properties.ViewOrigin);

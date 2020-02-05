@@ -50,7 +50,7 @@ namespace te
 
     void CoreObjectManager::NotifyCoreDirty(CoreObject* object)
     {
-        TE_PRINT("CORE DIRTY");
+        // TE_PRINT("CORE DIRTY");
         UINT64 id = object->GetInternalID();
         _dirtyObjects[id] = object;
     }
@@ -60,7 +60,7 @@ namespace te
         if (_dirtyObjects.size() == 0)
             return;
 
-        TE_PRINT("## FRAME SYNC");
+        // TE_PRINT("## FRAME SYNC");
 
         auto it = _dirtyObjects.begin();
         while (it != _dirtyObjects.end())

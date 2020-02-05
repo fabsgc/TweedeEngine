@@ -82,6 +82,7 @@ namespace te
         desc.depthStencilState = DepthStencilState::Create(_data.DepthStencilStateDesc);
 
         _graphicsPipelineState = GraphicsPipelineState::Create(desc);
+        _gpuParams = GpuParams::Create(_graphicsPipelineState);
     }
 
     void Pass::Compile()

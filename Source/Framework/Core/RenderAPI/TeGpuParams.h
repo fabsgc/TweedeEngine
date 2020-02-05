@@ -116,7 +116,7 @@ namespace te
          * Assigns the provided texture to a buffer with the specified name, for the specified GPU program
          * It is up to the caller to guarantee the provided buffer matches parameter block descriptor for this slot.
          */
-        void SetTexture(GpuProgramType type, const String& name, const SPtr<Texture>& texture);
+        void SetTexture(GpuProgramType type, const String& name, const SPtr<Texture>& texture, const TextureSurface& surface = COMPLETE);
 
         /**
          * Assigns the provided texture buffer to a buffer with the specified name, for any stages that reference
@@ -125,7 +125,7 @@ namespace te
          * It is up to the caller to guarantee the provided buffer matches parameter block descriptor for this slot.
          * It is up to the caller that all stages using this buffer name refer to the same buffer type.
          */
-        void SetTexture(const String& name, const SPtr<Texture>& texture);
+        void SetTexture(const String& name, const SPtr<Texture>& texture, const TextureSurface& surface = COMPLETE);
 
         /**	Sets a texture at the specified set/slot combination. */
         virtual void SetTexture(UINT32 set, UINT32 slot, const SPtr<Texture>& texture, const TextureSurface& surface = COMPLETE);

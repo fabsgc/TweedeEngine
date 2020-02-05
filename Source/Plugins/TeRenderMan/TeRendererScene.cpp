@@ -354,9 +354,6 @@ namespace te
 
                 renElement.DefaultTechniqueIdx = InitAndRetrieveBasePassTechnique(*renElement.MaterialElem);
 
-                // Generate or assigned renderer specific data for the material
-                // TODO params
-
 #if TE_DEBUG_MODE
                 ValidateBasePassMaterial(*renElement.MaterialElem, renElement.DefaultTechniqueIdx, *vertexDecl);
 #endif
@@ -372,7 +369,14 @@ namespace te
                     continue;
                 }
 
-                // TODO params
+                Vector<SPtr<GpuParams>>& passesGpuParams = element.MaterialElem->GetPassesGpuParams(element.DefaultTechniqueIdx);
+
+                for (auto& gpuParams : passesGpuParams)
+                {
+                    gpuParams->SetParamBlockBuffer("PerFrameBuffer", _perFrameParamBuffer);
+                    gpuParams->SetParamBlockBuffer("PerObjectBuffer", rendererRenderable->PerObjectParamBuffer);
+                    gpuParams->SetParamBlockBuffer("PerCallBuffer", rendererRenderable->PerCallParamBuffer);
+                }
             }
         }
     }
@@ -425,8 +429,6 @@ namespace te
 
         RendererRenderable* rendererRenderable = _info.Renderables[idx];
 
-        // TODO params
-
         _info.Renderables[idx]->PerObjectParamBuffer->FlushToGPU();
         _info.RenderableReady[idx] = true;
     }
@@ -473,7 +475,7 @@ namespace te
         const Transform& tfrm = camera->GetTransform();
         viewDesc.ViewOrigin = tfrm.GetPosition();
         viewDesc.ViewDirection = tfrm.GetForward();
-        viewDesc.ProjTransform = camera->GetProjectionMatrixRS();
+        viewDesc.ProjTransform = camera->GetProjectionMatrix();
         viewDesc.ViewTransform = camera->GetViewMatrix();
         viewDesc.ProjType = camera->GetProjectionType();
 

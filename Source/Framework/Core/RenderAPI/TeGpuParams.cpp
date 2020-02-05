@@ -319,7 +319,7 @@ namespace te
 
     void GpuParams::SetParamBlockBuffer(const String& name, const SPtr<GpuParamBlockBuffer>& paramBlockBuffer)
     {
-        for (UINT32 i = 0; i < _paramInfo->GetNumSets(); i++)
+        for (UINT32 i = 0; i < GPT_COUNT; i++)
         {
             const SPtr<GpuParamDesc>& paramDescs = _paramInfo->GetParamDesc((GpuProgramType)i);
             if (paramDescs == nullptr)
@@ -337,7 +337,7 @@ namespace te
         }
     }
 
-    void GpuParams::SetTexture(GpuProgramType type, const String& name, const SPtr<Texture>& texture)
+    void GpuParams::SetTexture(GpuProgramType type, const String& name, const SPtr<Texture>& texture, const TextureSurface& surface)
     {
         const SPtr<GpuParamDesc>& paramDescs = _paramInfo->GetParamDesc(type);
         if (paramDescs == nullptr)
@@ -353,12 +353,12 @@ namespace te
             return;
         }
 
-        SetTexture(iterFind->second.Set, iterFind->second.Slot, texture);
+        SetTexture(iterFind->second.Set, iterFind->second.Slot, texture, surface);
     }
 
-    void GpuParams::SetTexture(const String& name, const SPtr<Texture>& texture)
+    void GpuParams::SetTexture(const String& name, const SPtr<Texture>& texture, const TextureSurface& surface)
     {
-        for (UINT32 i = 0; i < _paramInfo->GetNumSets(); i++)
+        for (UINT32 i = 0; i < GPT_COUNT; i++)
         {
             const SPtr<GpuParamDesc>& paramDescs = _paramInfo->GetParamDesc((GpuProgramType)i);
             if (paramDescs == nullptr)
@@ -366,13 +366,13 @@ namespace te
                 continue;
             }
 
-            auto iterFind = paramDescs->ParamBlocks.find(name);
-            if (iterFind == paramDescs->ParamBlocks.end())
+            auto iterFind = paramDescs->Textures.find(name);
+            if (iterFind == paramDescs->Textures.end())
             {
                 continue;
             }
 
-            SetTexture(iterFind->second.Set, iterFind->second.Slot, texture);
+            SetTexture(iterFind->second.Set, iterFind->second.Slot, texture, surface);
         }
     }
 
@@ -410,7 +410,7 @@ namespace te
 
     void GpuParams::SetBuffer(const String& name, const SPtr<GpuBuffer>& buffer)
     {
-        for (UINT32 i = 0; i < _paramInfo->GetNumSets(); i++)
+        for (UINT32 i = 0; i < GPT_COUNT; i++)
         {
             const SPtr<GpuParamDesc>& paramDescs = _paramInfo->GetParamDesc((GpuProgramType)i);
             if (paramDescs == nullptr)
@@ -418,8 +418,8 @@ namespace te
                 continue;
             }
 
-            auto iterFind = paramDescs->ParamBlocks.find(name);
-            if (iterFind == paramDescs->ParamBlocks.end())
+            auto iterFind = paramDescs->Buffers.find(name);
+            if (iterFind == paramDescs->Buffers.end())
             {
                 continue;
             }
@@ -450,8 +450,8 @@ namespace te
             return;
         }
 
-        auto iterFind = paramDescs->Buffers.find(name);
-        if (iterFind == paramDescs->Buffers.end())
+        auto iterFind = paramDescs->Samplers.find(name);
+        if (iterFind == paramDescs->Samplers.end())
         {
             TE_DEBUG("Cannot find sampler state with the name: {" + name + "}", __FILE__, __LINE__);
             return;
@@ -462,7 +462,7 @@ namespace te
 
     void GpuParams::SetSamplerState(const String& name, const SPtr<SamplerState>& sampler)
     {
-        for (UINT32 i = 0; i < _paramInfo->GetNumSets(); i++)
+        for (UINT32 i = 0; i < GPT_COUNT; i++)
         {
             const SPtr<GpuParamDesc>& paramDescs = _paramInfo->GetParamDesc((GpuProgramType)i);
             if (paramDescs == nullptr)
@@ -470,8 +470,8 @@ namespace te
                 continue;
             }
 
-            auto iterFind = paramDescs->ParamBlocks.find(name);
-            if (iterFind == paramDescs->ParamBlocks.end())
+            auto iterFind = paramDescs->Samplers.find(name);
+            if (iterFind == paramDescs->Samplers.end())
             {
                 continue;
             }

@@ -40,10 +40,16 @@ namespace te
         const GPU_PROGRAM_DESC& GetProgramDesc(GpuProgramType type) const;
 
         /**
-         * Returns the graphics pipeline state describing this pass, or null if its a compute pass.
-         * Only valid after compile() has been called.
+         * Returns the graphics pipeline state describing this pass
+         * Only valid after Compile() has been called.
          */
         const SPtr<GraphicsPipelineState>& GetGraphicsPipelineState() const { return _graphicsPipelineState; }
+
+        /**
+         * Returns the params created using the pipeline state
+         * Only valid after Compile() has been called.
+         */
+        SPtr<GpuParams>& GetGpuParams() { return _gpuParams; }
 
         /** Creates either the graphics or the compute pipeline state from the stored pass data. */
         void CreatePipelineState();
@@ -71,5 +77,6 @@ namespace te
     protected:
         PASS_DESC _data;
 		SPtr<GraphicsPipelineState> _graphicsPipelineState;
+        SPtr<GpuParams> _gpuParams;
     };
 }
