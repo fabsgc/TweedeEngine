@@ -270,6 +270,18 @@ namespace te
         _scene->UnregisterLight(light);
     }
 
+    void RenderMan::NotifySkyboxAdded(Skybox* skybox)
+    {
+        TE_PRINT("# Skybox added");
+        _scene->RegisterSkybox(skybox);
+    }
+
+    void RenderMan::NotifySkyboxRemoved(Skybox* skybox)
+    {
+        TE_PRINT("# Skybox removed");
+        _scene->UnregisterSkybox(skybox);
+    }
+
     SPtr<RenderMan> gRenderMan()
     {
         return std::static_pointer_cast<RenderMan>(RendererManager::Instance().GetRenderer());

@@ -2,10 +2,14 @@
 
 #include "TeRenderManPrerequisites.h"
 #include "Renderer/TeRenderer.h"
+#include "Renderer/TeSkybox.h"
+#include "Renderer/TeCamera.h"
+#include "Renderer/TeLight.h"
+#include "Renderer/TeRenderable.h"
+#include "Renderer/TeParamBlocks.h"
 #include "TeRendererView.h"
 #include "TeRendererLight.h"
 #include "TeRendererRenderable.h"
-#include "Renderer/TeParamBlocks.h"
 
 namespace te
 {
@@ -39,6 +43,9 @@ namespace te
         // Buffers for various transient data that gets rebuilt every frame
         //// Rebuilt every frame
         mutable Vector<bool> RenderableReady;
+
+        // Sky
+        Skybox* SkyboxElem = nullptr;
     };
 
     /** Contains information about the scene (e.g. renderables, lights, cameras) required by the renderer. */
@@ -68,6 +75,12 @@ namespace te
 
         /** Removes a light from the scene. */
         void UnregisterLight(Light* light);
+
+        /** Registers a new sky texture in the scene. */
+        void RegisterSkybox(Skybox* skybox);
+
+        /** Removes a skybox from the scene. */
+        void UnregisterSkybox(Skybox* skybox);
 
         /** Registers a new renderable object in the scene. */
         void RegisterRenderable(Renderable* renderable);

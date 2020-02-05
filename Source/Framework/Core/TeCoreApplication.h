@@ -149,7 +149,12 @@ namespace te
 
         HCamera _sceneCamera;
         HMesh _loadedMesh;
-        HTexture _loadTexture;
+        HTexture _loadedTexture;
+        HTexture _loadedCubemapTexture;
+
+        HRenderable _renderable;
+        HLight _light;
+        HSkybox _skybox;
 
         SPtr<GpuParams> _params;
 
@@ -160,10 +165,9 @@ namespace te
         HMaterial _material;
 
         HSceneObject _sceneCameraSO;
-        HSceneObject _renderableSO;
-        HRenderable _renderable;
+        HSceneObject _sceneRenderableSO;
         HSceneObject _sceneLightSO;
-        HLight _light;
+        HSceneObject _sceneSkyboxSO;
     };
 
     /**	Provides easy access to CoreApplication. */

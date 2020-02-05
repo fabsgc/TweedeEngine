@@ -94,6 +94,20 @@ namespace te
         virtual void NotifyLightRemoved(Light* light) { }
 
         /**
+         * Called whenever a skybox is created.
+         *
+         * @note	Core thread.
+         */
+        virtual void NotifySkyboxAdded(Skybox* skybox) { }
+
+        /**
+         * Called whenever a skybox is destroyed.
+         *
+         * @note	Core thread.
+         */
+        virtual void NotifySkyboxRemoved(Skybox* skybox) { }
+
+        /**
          * Creates a new empty renderer mesh data.
          *
          * @note Sim thread.

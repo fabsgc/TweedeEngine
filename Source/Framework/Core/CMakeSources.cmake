@@ -70,6 +70,7 @@ set (TE_CORE_INC_RENDERER
     "Core/Renderer/TeLight.h"
     "Core/Renderer/TeRenderQueue.h"
     "Core/Renderer/TeRenderElement.h"
+    "Core/Renderer/TeSkybox.h"
 )
 set (TE_CORE_SRC_RENDERER
     "Core/Renderer/TeRenderer.cpp"
@@ -81,6 +82,7 @@ set (TE_CORE_SRC_RENDERER
     "Core/Renderer/TeLight.cpp"
     "Core/Renderer/TeRenderQueue.cpp"
     "Core/Renderer/TeRenderElement.cpp"
+    "Core/Renderer/TeSkybox.cpp"
 )
 
 set (TE_CORE_INC_SCENE
@@ -248,11 +250,13 @@ set (TE_CORE_INC_COMPONENTS
     "Core/Components/TeCCamera.h"
     "Core/Components/TeCRenderable.h"
     "Core/Components/TeCLight.h"
+    "Core/Components/TeCSkybox.h"
 )
 set (TE_CORE_SRC_COMPONENTS
     "Core/Components/TeCCamera.cpp"
     "Core/Components/TeCRenderable.cpp"
     "Core/Components/TeCLight.cpp"
+    "Core/Components/TeCSkybox.cpp"
 )
 
 set (TE_CORE_INC_RESOURCE

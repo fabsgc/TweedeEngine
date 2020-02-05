@@ -80,6 +80,12 @@ namespace te
         /** @copydoc Renderer::NotifyRenderableRemoved */
         void NotifyRenderableRemoved(Renderable* renderable) override;
 
+        /** @copydoc Renderer::NotifySkyboxAdded */
+        void NotifySkyboxAdded(Skybox* skybox) override;
+
+        /** @copydoc Renderer::NotifySkyboxRemoved */
+        void NotifySkyboxRemoved(Skybox* skybox) override;
+
     private:
         SPtr<RendererScene> _scene;
         SPtr<RenderManOptions> _options;

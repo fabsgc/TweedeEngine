@@ -9,11 +9,23 @@ namespace te
         SetName("Light");
     }
 
-    CLight::CLight(const HSceneObject& parent, LightType type)
+    CLight::CLight(const HSceneObject& parent, LightType type, Color color,
+        float intensity, float range, bool castsShadows, Degree spotAngle, Degree spotFalloffAngle)
         : Component(parent, (UINT32)TID_CLight)
         , _type(type)
+        , _color(color)
+        , _intensity(intensity)
+        , _range(range)
+        , _castsShadows(castsShadows)
+        , _spotAngle(spotAngle)
+        , _spotFalloffAngle(spotFalloffAngle)
     {
         SetName("Light");
+    }
+
+    CLight::~CLight()
+    { 
+        _internal->Destroy();
     }
 
     void CLight::Initialize()
@@ -28,14 +40,16 @@ namespace te
     }
 
     void CLight::_instantiate()
-    { }
+    {
+        _internal = Light::Create(_type, _color, _intensity, _range,
+            _castsShadows, _spotAngle, _spotFalloffAngle);
+    }
 
     void CLight::OnCreated()
     { }
 
     void CLight::OnInitialized()
     {
-        _internal = Light::Create(_type);
         gSceneManager()._bindActor(_internal, GetSceneObject());
     }
 
@@ -49,7 +63,4 @@ namespace te
         gSceneManager()._unbindActor(_internal);
         _internal->Destroy();
     }
-
-    CLight::~CLight()
-    { }
 }

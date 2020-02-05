@@ -56,7 +56,8 @@ namespace te
         TID_Component   = 1001,
         TID_CCamera     = 1002,
         TID_CRenderable = 1003,
-        TID_CLight      = 1004
+        TID_CLight      = 1004,
+        TID_CSkybox     = 1005
     };
 }
 
@@ -139,6 +140,7 @@ namespace te
     struct RenderSettings;
     class RenderQueue;
     class RenderElement;
+    class Skybox;
 
     class SceneActor;
     class SceneManager;
@@ -196,6 +198,7 @@ namespace te
     class CCamera;
     class CRenderable;
     class CLight;
+    class CSkybox;
 }
 
 #include "RenderAPI/TeCommonTypes.h"
@@ -221,4 +224,5 @@ namespace te
     typedef GameObjectHandle<Component> HComponent;
     typedef GameObjectHandle<CCamera> HCamera;
     typedef GameObjectHandle<CLight> HLight;
+    typedef GameObjectHandle<CSkybox> HSkybox;
 }

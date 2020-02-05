@@ -377,6 +377,17 @@ namespace te
         }
     }
 
+    void RendererScene::RegisterSkybox(Skybox* skybox)
+    {
+        _info.SkyboxElem = skybox;
+    }
+
+    void RendererScene::UnregisterSkybox(Skybox* skybox)
+    {
+        if (_info.SkyboxElem == skybox)
+            _info.SkyboxElem = nullptr;
+    }
+
     void RendererScene::SetOptions(const SPtr<RenderManOptions>& options)
     {
         _options = options;

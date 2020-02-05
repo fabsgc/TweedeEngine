@@ -49,6 +49,7 @@
 #include "Components/TeCCamera.h"
 #include "Components/TeCRenderable.h"
 #include "Components/TeCLight.h"
+#include "Components/TeCSkybox.h"
 
 #include "Material/TeMaterial.h"
 #include "Material/TeShader.h"
@@ -321,19 +322,22 @@ namespace te
         textureImportOptions->CpuCached = true;
         textureImportOptions->GenerateMips = true;
 
-        _loadedMesh = gResourceManager().Load<Mesh>("Data/Meshes/multi-cube-material.dae", meshImportOptions);
-        _loadTexture = gResourceManager().Load<Texture>("Data/Textures/cube.png", textureImportOptions);
+        auto textureCubeMapImportOptions = TextureImportOptions::Create();
+        textureCubeMapImportOptions->CpuCached = true;
+        textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
 
-        //HShader loadShader = Shader::Create("shader", SHADER_DESC());
+        _loadedMesh = gResourceManager().Load<Mesh>("Data/Meshes/multi-cube-material.dae", meshImportOptions);
+        _loadedTexture = gResourceManager().Load<Texture>("Data/Textures/cube.png", textureImportOptions);
+        _loadedCubemapTexture = gResourceManager().Load<Texture>("Data/Textures/cubemap.png", textureCubeMapImportOptions);
 
         TE_PRINT((_loadedMesh.GetHandleData())->data);
         TE_PRINT((_loadedMesh.GetHandleData())->uuid.ToString());
 
-        TE_PRINT((_loadTexture.GetHandleData())->data);
-        TE_PRINT((_loadTexture.GetHandleData())->uuid.ToString());
+        TE_PRINT((_loadedTexture.GetHandleData())->data);
+        TE_PRINT((_loadedTexture.GetHandleData())->uuid.ToString());
 
-        //TE_PRINT((loadShader.GetHandleData())->data);
-        //TE_PRINT((loadShader.GetHandleData())->uuid.ToString());
+        TE_PRINT((_loadedCubemapTexture.GetHandleData())->data);
+        TE_PRINT((_loadedCubemapTexture.GetHandleData())->uuid.ToString());
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         // ######################################################
@@ -411,7 +415,7 @@ namespace te
         RenderAPI::Instance().SetGraphicsPipeline(graphicsPipeline);
 
         _params = GpuParams::Create(graphicsPipeline);
-        _params->SetTexture(5, 0, _loadTexture.GetInternalPtr(), GpuParams::COMPLETE);
+        _params->SetTexture(5, 0, _loadedTexture.GetInternalPtr(), GpuParams::COMPLETE);
         _params->SetSamplerState(6, 0, samplerState);
         // ######################################################
 
@@ -469,11 +473,16 @@ namespace te
         _sceneCamera->SetMain(true);
         _sceneCamera->Initialize();
 
-        _renderableSO = SceneObject::Create("Cube");
-        _renderable = _renderableSO->AddComponent<CRenderable>();
+        _sceneRenderableSO = SceneObject::Create("Cube");
+        _renderable = _sceneRenderableSO->AddComponent<CRenderable>();
         _renderable->SetMesh(_loadedMesh);
         _renderable->SetMaterial(_material);
         _renderable->Initialize();
+
+        _sceneSkyboxSO = SceneObject::Create("Skybox");
+        _skybox = _sceneSkyboxSO->AddComponent<CSkybox>();
+        _skybox->SetTexture(_loadedCubemapTexture);
+        _skybox->Initialize();
 
         _sceneLightSO = SceneObject::Create("Light");
         _light = _sceneLightSO->AddComponent<CLight>();
@@ -482,7 +491,7 @@ namespace te
         _sceneCameraSO->SetPosition(Vector3(4.0f, 2.0f, 5.0f));
         _sceneCameraSO->LookAt(Vector3(1.0f, 0.5f, 0.0f));
 
-        _renderableSO->Move(Vector3(1.0f, 0.0f, 0.0f));
+        _sceneRenderableSO->Move(Vector3(1.0f, 0.0f, 0.0f));
         _sceneCameraSO->Move(Vector3(1.0f, 0.0f, 0.0f));
         // ######################################################
 
@@ -496,7 +505,7 @@ namespace te
         UINT32 height = _window->GetProperties().Height;
 
         Transform transformObject;
-        _defObjectBuffer.gMatWorld.Set(_objectConstantBuffer, _renderableSO.GetInternalPtr()->GetWorldMatrix().Transpose());
+        _defObjectBuffer.gMatWorld.Set(_objectConstantBuffer, _sceneRenderableSO.GetInternalPtr()->GetWorldMatrix().Transpose());
         _params->SetParamBlockBuffer(GPT_VERTEX_PROGRAM, "ObjectConstantBuffer", _objectConstantBuffer);
         // ######################################################
 
