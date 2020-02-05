@@ -104,6 +104,10 @@ namespace te
     {
         SHADER_DESC();
 
+        ~SHADER_DESC()
+        {
+        }
+
         /**
          * Registers a new data (int, Vector2, etc.) parameter you that you may then use via Material by providing the
          * parameter name. All parameters internally map to variables defined in GPU programs.
@@ -332,19 +336,19 @@ namespace te
         bool HasParamBlock(const String& name) const;
 
         /**	Returns a map of all data parameters in the shader. */
-        const Map<String, SHADER_DATA_PARAM_DESC>& getDataParams() const { return _desc.DataParams; }
+        const Map<String, SHADER_DATA_PARAM_DESC>& GetDataParams() const { return _desc.DataParams; }
 
         /**	Returns a map of all texture parameters in the shader. */
-        const Map<String, SHADER_OBJECT_PARAM_DESC>& getTextureParams() const { return _desc.TextureParams; }
+        const Map<String, SHADER_OBJECT_PARAM_DESC>& GetTextureParams() const { return _desc.TextureParams; }
 
         /**	Returns a map of all buffer parameters in the shader. */
-        const Map<String, SHADER_OBJECT_PARAM_DESC>& getBufferParams() const { return _desc.BufferParams; }
+        const Map<String, SHADER_OBJECT_PARAM_DESC>& GetBufferParams() const { return _desc.BufferParams; }
 
         /** Returns a map of all sampler parameters in the shader. */
-        const Map<String, SHADER_OBJECT_PARAM_DESC>& getSamplerParams() const { return _desc.SamplerParams; }
+        const Map<String, SHADER_OBJECT_PARAM_DESC>& GetSamplerParams() const { return _desc.SamplerParams; }
 
         /** Returns a map of all parameter blocks. */
-        const Map<String, SHADER_PARAM_BLOCK_DESC>& getParamBlocks() const { return _desc.ParamBlocks; }
+        const Map<String, SHADER_PARAM_BLOCK_DESC>& GetParamBlocks() const { return _desc.ParamBlocks; }
 
         /**
          * Returns a default texture for a parameter that has the specified default value index (retrieved from the

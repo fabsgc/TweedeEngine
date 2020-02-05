@@ -9,10 +9,10 @@
 namespace te
 {
     RenderMan::RenderMan()
-    {}
+    { }
 
     RenderMan::~RenderMan()
-    {}
+    { }
 
     void RenderMan::Initialize()
     {

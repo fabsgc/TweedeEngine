@@ -8,6 +8,9 @@ namespace te
     Material::Material()
     { }
 
+    Material::~Material()
+    { }
+
     Material::Material(const HShader& shader)
     {
         SetShader(shader.GetInternalPtr());

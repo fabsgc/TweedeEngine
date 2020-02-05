@@ -28,6 +28,8 @@ namespace te
     class TE_CORE_EXPORT Pass : public CoreObject
     {
     public:
+        virtual ~Pass();
+
         /**	Returns true if this pass has some element of transparency. */
         bool HasBlending() const;
 

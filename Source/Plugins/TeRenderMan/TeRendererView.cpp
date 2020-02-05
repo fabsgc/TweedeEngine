@@ -42,6 +42,11 @@ namespace te
         SetStateReductionMode(desc.ReductionMode);
     }
 
+    RendererView::~RendererView()
+    {
+
+    }
+
     void RendererView::SetStateReductionMode(StateReduction reductionMode)
     {
         _forwardOpaqueQueue = te_shared_ptr_new<RenderQueue>(reductionMode);

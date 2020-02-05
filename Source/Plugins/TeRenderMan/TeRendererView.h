@@ -125,6 +125,7 @@ namespace te
     public:
         RendererView();
         RendererView(const RENDERER_VIEW_DESC& desc);
+        ~RendererView();
 
         /** Sets state reduction mode that determines how do render queues group & sort renderables. */
         void SetStateReductionMode(StateReduction reductionMode);

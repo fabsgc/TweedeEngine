@@ -215,7 +215,7 @@ namespace te
     HMesh Mesh::Create(const MESH_DESC& desc, GpuDeviceFlags deviceMask)
     {
         SPtr<Mesh> meshPtr = _createPtr(desc);
-        return static_resource_cast<Mesh>(ResourceManager()._createResourceHandle(meshPtr));
+        return static_resource_cast<Mesh>(gResourceManager()._createResourceHandle(meshPtr));
     }
 
     HMesh Mesh::Create(const SPtr<MeshData>& initialMeshData, const MESH_DESC& desc, GpuDeviceFlags deviceMask)
@@ -242,7 +242,7 @@ namespace te
         desc.IndType = indexType;
 
         SPtr<Mesh> meshPtr = _createPtr(desc, deviceMask);
-        return static_resource_cast<Mesh>(ResourceManager()._createResourceHandle(meshPtr));
+        return static_resource_cast<Mesh>(gResourceManager()._createResourceHandle(meshPtr));
     }
 
     SPtr<Mesh> Mesh::_createPtr(const MESH_DESC& desc, GpuDeviceFlags deviceMask)

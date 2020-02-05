@@ -24,7 +24,7 @@ namespace te
         for (auto& loadedResourcePair : loadedResourcesCopy)
         {
             Destroy(loadedResourcePair.second.resource);
-        } 
+        }
     }
 
     void ResourceManager::Destroy(ResourceHandleBase& resource)
@@ -160,9 +160,16 @@ namespace te
             return _createResourceHandle(obj);
         }
 
-        return HResource(obj, UUID);
-    }
+        ResourceHandle<Resource> hr = ResourceHandle<Resource>(obj, UUID);
 
+        if (_loadedResources.find(UUID) == _loadedResources.end())
+        {
+            _loadedResources[UUID] = static_resource_cast<Resource>(hr);
+            OnResourceLoaded(Get(UUID));
+        }
+
+        return static_resource_cast<Resource>(Get(UUID));;
+    }
 
     TE_CORE_EXPORT ResourceManager& gResourceManager()
     {

@@ -282,8 +282,14 @@ namespace te
 
     HShader Shader::Create(const String& name, const SHADER_DESC& desc)
     {
-        SPtr<Shader> shaderPtr = _createPtr(name, desc);
-        return static_resource_cast<Shader>(ResourceManager()._createResourceHandle(shaderPtr));
+        UINT32 id = Shader::NextShaderId.fetch_add(1, std::memory_order_relaxed);
+        assert(id < std::numeric_limits<UINT32>::max() && "Created too many shaders, reached maximum id.");
+
+        SPtr<Shader> shader = te_core_ptr<Shader>(new (te_allocate<Shader>()) Shader(desc, name, id));
+        shader->SetThisPtr(shader);
+        shader->Initialize();
+
+        return static_resource_cast<Shader>(gResourceManager()._createResourceHandle(shader));
     }
 
     SPtr<Shader> Shader::CreateEmpty()

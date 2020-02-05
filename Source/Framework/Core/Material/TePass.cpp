@@ -17,6 +17,9 @@ namespace te
         : _data(desc)
     { }
 
+    Pass::~Pass()
+    { }
+
     bool Pass::HasBlending() const
     {
         bool transparent = false;

@@ -15,7 +15,7 @@ namespace te
         UINT32 techniqueIdx  = material.GetDefaultTechnique();
         UINT32 numTechniques = material.GetNumTechniques();
 
-        /*if (numTechniques == 0) TODO
+        if (numTechniques == 0)
             TE_ASSERT_ERROR(false, "A material must a leat have one technique", __FILE__, __LINE__);
 
         // Make sure the technique shaders are compiled
@@ -23,10 +23,10 @@ namespace te
 
         UINT32 numPasses = technique->GetNumPasses();
         if (numPasses == 0)
-            TE_ASSERT_ERROR(false, "A technique must a leat have one technique", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "A technique must a leat have one pass", __FILE__, __LINE__);
 
-        if (!technique)
-            technique->Compile();*/
+        if (technique)
+            technique->Compile();
 
         return techniqueIdx;
     }

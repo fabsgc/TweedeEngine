@@ -46,6 +46,7 @@ namespace te
     {
     public:
         RendererRenderable();
+        ~RendererRenderable();
 
         /** Updates the per-object GPU buffer according to the currently set properties. */
         void UpdatePerObjectBuffer();

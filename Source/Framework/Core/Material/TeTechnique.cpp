@@ -10,6 +10,9 @@ namespace te
     Technique::Technique()
     { }
 
+    Technique::~Technique()
+    { }
+
     Technique::Technique(const String& language, const Vector<SPtr<Pass>>& passes)
         : _language(language)
         , _passes(passes)

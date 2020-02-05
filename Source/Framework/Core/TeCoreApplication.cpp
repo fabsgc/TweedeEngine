@@ -113,6 +113,8 @@ namespace te
     
     void CoreApplication::OnShutDown()
     {
+        auto& i = CoreObjectManager::Instance();
+        auto& j = ResourceManager::Instance();
         TestShutDown();
 
         Importer::ShutDown();
@@ -120,8 +122,8 @@ namespace te
         Input::ShutDown();
         ParamBlockManager::ShutDown();
         SceneManager::ShutDown();
-        RendererManager::ShutDown();
         GameObjectManager::ShutDown();
+        RendererManager::ShutDown();
         GpuProgramManager::ShutDown();
         ResourceManager::ShutDown();
         RenderAPIManager::ShutDown();
@@ -322,8 +324,7 @@ namespace te
         _loadedMesh = gResourceManager().Load<Mesh>("Data/Meshes/multi-cube-material.dae", meshImportOptions);
         _loadTexture = gResourceManager().Load<Texture>("Data/Textures/cube.png", textureImportOptions);
 
-        HShader shader = Shader::Create("shader", SHADER_DESC());
-        HMaterial material = Material::Create(shader);
+        //HShader loadShader = Shader::Create("shader", SHADER_DESC());
 
         TE_PRINT((_loadedMesh.GetHandleData())->data);
         TE_PRINT((_loadedMesh.GetHandleData())->uuid.ToString());
@@ -331,11 +332,8 @@ namespace te
         TE_PRINT((_loadTexture.GetHandleData())->data);
         TE_PRINT((_loadTexture.GetHandleData())->uuid.ToString());
 
-        TE_PRINT((shader.GetHandleData())->data);
-        TE_PRINT((shader.GetHandleData())->uuid.ToString());
-
-        TE_PRINT((material.GetHandleData())->data);
-        TE_PRINT((material.GetHandleData())->uuid.ToString());
+        //TE_PRINT((loadShader.GetHandleData())->data);
+        //TE_PRINT((loadShader.GetHandleData())->uuid.ToString());
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         // ######################################################
@@ -425,33 +423,67 @@ namespace te
         passDesc.VertexProgramDesc = vertexShaderProgramDesc;
         passDesc.PixelProgramDesc = pixelShaderProgramDesc;
 
-        SPtr<Pass> pass = Pass::Create(passDesc);
-        SPtr<Technique> technique = Technique::Create("hlsl", { pass });
+        _pass = Pass::Create(passDesc);
+        _technique = Technique::Create("hlsl", { _pass });
+
+        SHADER_DATA_PARAM_DESC gViewDirDesc("gViewDir", "gViewDir", GPDT_FLOAT3);
+        SHADER_DATA_PARAM_DESC gViewOriginDesc("gViewOrigin", "gViewOrigin", GPDT_FLOAT3);
+        SHADER_DATA_PARAM_DESC gMatViewProjDesc("gMatViewProj", "gMatViewProj", GPDT_MATRIX_4X4);
+        SHADER_DATA_PARAM_DESC gMatViewDesc("gMatView", "gMatView", GPDT_MATRIX_4X4);
+        SHADER_DATA_PARAM_DESC gMatProjDesc("gMatProj", "gMatProj", GPDT_MATRIX_4X4);
+
+        SHADER_DATA_PARAM_DESC gMatWorldDesc("gMatWorld", "gMatWorld", GPDT_MATRIX_4X4);
+        SHADER_DATA_PARAM_DESC gMatPrevWorldDesc("gMatPrevWorld", "gMatPrevWorld", GPDT_MATRIX_4X4);
+        SHADER_DATA_PARAM_DESC gMatWorldNoScaleDesc("gMatWorldNoScale", "gMatWorldNoScale", GPDT_MATRIX_4X4);
+
+        SHADER_OBJECT_PARAM_DESC anisotropicSamplerDesc("AnisotropicSampler", "AnisotropicSampler", GPOT_SAMPLER2D);
+        SHADER_OBJECT_PARAM_DESC colorTextureDesc("ColorTexture", "ColorTexture", GPOT_TEXTURE2D);
+
+        SHADER_DESC shaderDesc;
+        shaderDesc.AddParameter(gViewDirDesc);
+        shaderDesc.AddParameter(gViewOriginDesc);
+        shaderDesc.AddParameter(gMatViewProjDesc);
+        shaderDesc.AddParameter(gMatViewDesc);
+        shaderDesc.AddParameter(gMatProjDesc);
+
+        shaderDesc.AddParameter(gMatWorldDesc);
+        shaderDesc.AddParameter(gMatPrevWorldDesc);
+        shaderDesc.AddParameter(gMatWorldNoScaleDesc);
+
+        shaderDesc.AddParameter(anisotropicSamplerDesc);
+        shaderDesc.AddParameter(colorTextureDesc);
+
+        shaderDesc.Techniques.push_back(_technique);
+
+        _shader = Shader::Create("Texture", shaderDesc);
+        _shader->SetName("Shader");
+        _material = Material::Create(_shader);
+        _material->SetName("Material");
         // ######################################################
 
         // ######################################################
-        HSceneObject sceneCameraSO = SceneObject::Create("SceneCamera");
-        _sceneCamera = sceneCameraSO->AddComponent<CCamera>();
+        _sceneCameraSO = SceneObject::Create("SceneCamera");
+        _sceneCamera = _sceneCameraSO->AddComponent<CCamera>();
         _sceneCamera->GetViewport()->SetClearColorValue(Color(0.17f, 0.64f, 1.0f, 1.0f));
         _sceneCamera->GetViewport()->SetTarget(gCoreApplication().GetWindow());
         _sceneCamera->SetMain(true);
         _sceneCamera->Initialize();
 
-        HSceneObject renderableSO = SceneObject::Create("Cube");
-        HRenderable renderable = renderableSO->AddComponent<CRenderable>();
-        renderable->SetMesh(_loadedMesh);
-        renderable->SetMaterial(material);
-        renderable->Initialize();
+        _renderableSO = SceneObject::Create("Cube");
+        _renderable = _renderableSO->AddComponent<CRenderable>();
+        _renderable->SetMesh(_loadedMesh);
+        _renderable->SetMaterial(_material);
+        _renderable->Initialize();
 
-        HSceneObject sceneLightSO = SceneObject::Create("Light");
-        HLight light = sceneLightSO->AddComponent<CLight>();
-        light->Initialize();
+        _sceneLightSO = SceneObject::Create("Light");
+        _light = _sceneLightSO->AddComponent<CLight>();
+        _light->Initialize();
 
-        sceneCameraSO->SetPosition(Vector3(4.0f, 2.0f, 5.0f));
-        sceneCameraSO->LookAt(Vector3(1.0f, 0.5f, 0.0f));
+        _sceneCameraSO->SetPosition(Vector3(4.0f, 2.0f, 5.0f));
+        _sceneCameraSO->LookAt(Vector3(1.0f, 0.5f, 0.0f));
 
-        renderableSO->Move(Vector3(1.0f, 0.0f, 0.0f));
-        sceneCameraSO->Move(Vector3(1.0f, 0.0f, 0.0f));
+        _renderableSO->Move(Vector3(1.0f, 0.0f, 0.0f));
+        _sceneCameraSO->Move(Vector3(1.0f, 0.0f, 0.0f));
         // ######################################################
 
         // ######################################################
@@ -464,7 +496,7 @@ namespace te
         UINT32 height = _window->GetProperties().Height;
 
         Transform transformObject;
-        _defObjectBuffer.gMatWorld.Set(_objectConstantBuffer, renderableSO.GetInternalPtr()->GetWorldMatrix().Transpose());
+        _defObjectBuffer.gMatWorld.Set(_objectConstantBuffer, _renderableSO.GetInternalPtr()->GetWorldMatrix().Transpose());
         _params->SetParamBlockBuffer(GPT_VERTEX_PROGRAM, "ObjectConstantBuffer", _objectConstantBuffer);
         // ######################################################
 
@@ -531,6 +563,9 @@ namespace te
         _objectConstantBuffer = nullptr;
         _frameConstantBuffer = nullptr;
         _params = nullptr;
+
+        _pass = nullptr;
+        _technique = nullptr;
 #endif
         _window = nullptr;
 

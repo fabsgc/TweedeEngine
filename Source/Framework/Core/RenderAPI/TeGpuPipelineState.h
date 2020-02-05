@@ -40,7 +40,7 @@ namespace te
     public:
         using GpuPipelineParamInfoType = typename GpuPipelineStateTypes::GpuPipelineParamInfoType;
 
-        virtual ~GraphicsPipelineState() = default;
+        virtual ~GraphicsPipelineState();
 
         SPtr<BlendState> GetBlendState() const { return _data.blendState; }
         SPtr<RasterizerState> GetRasterizerState() const { return _data.rasterizerState; }

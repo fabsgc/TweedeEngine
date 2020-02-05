@@ -62,6 +62,9 @@ namespace te
         PerCallParamBuffer = gPerCallParamDef.CreateBuffer();
     }
 
+    RendererRenderable::~RendererRenderable()
+    { }
+
     void RendererRenderable::UpdatePerObjectBuffer()
     {
         const Matrix4 worldNoScaleTransform = RenderablePtr->GetMatrixNoScale();

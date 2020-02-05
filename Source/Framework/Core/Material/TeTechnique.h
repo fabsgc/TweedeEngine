@@ -2,13 +2,14 @@
 
 #include "TeCorePrerequisites.h"
 #include "CoreUtility/TeCoreObject.h"
+#include "Utility/TeNonCopyable.h"
 
 namespace te
 {
-    class TE_CORE_EXPORT Technique : public CoreObject
+    class TE_CORE_EXPORT Technique : public CoreObject, public NonCopyable
     {
     public:
-        virtual ~Technique() = default;
+        virtual ~Technique();
 
         /**	Checks if this technique is supported based on current render and other systems. */
         bool IsSupported() const;

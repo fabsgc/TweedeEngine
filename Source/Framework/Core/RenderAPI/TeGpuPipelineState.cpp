@@ -14,6 +14,11 @@ namespace te
         , _deviceMask(deviceMask)
     { }
 
+    GraphicsPipelineState::~GraphicsPipelineState()
+    {
+
+    }
+
     void GraphicsPipelineState::Initialize()
     {
         GPU_PIPELINE_PARAMS_DESC paramsDesc;

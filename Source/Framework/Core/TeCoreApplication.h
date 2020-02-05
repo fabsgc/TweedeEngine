@@ -152,6 +152,18 @@ namespace te
         HTexture _loadTexture;
 
         SPtr<GpuParams> _params;
+
+        SPtr<Pass> _pass;
+        SPtr<Technique> _technique;
+
+        HShader _shader;
+        HMaterial _material;
+
+        HSceneObject _sceneCameraSO;
+        HSceneObject _renderableSO;
+        HRenderable _renderable;
+        HSceneObject _sceneLightSO;
+        HLight _light;
     };
 
     /**	Provides easy access to CoreApplication. */
