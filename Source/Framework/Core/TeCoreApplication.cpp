@@ -526,8 +526,10 @@ namespace te
 
     void CoreApplication::TestRun()
     {
+#if TE_PLATFORM == TE_PLATFORM_WIN32
         _sceneRenderableSO->Rotate(Vector3(0.0f, 1.0f, 0.0f), Radian(1.5f * gTime().GetFrameDelta()));
         _sceneRenderable2SO->Rotate(Vector3(0.0f, 1.0f, 0.0f), Radian(-0.5f * gTime().GetFrameDelta()));
+#endif
     }
 
     void CoreApplication::TestShutDown()

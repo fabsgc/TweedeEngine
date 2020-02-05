@@ -34,7 +34,9 @@ namespace te
     {
         for(auto& entry : elements)
         {
-            SetPass(entry.RenderElem->MaterialElem, entry.TechniqueIdx, entry.PassIdx);
+            if(entry.ApplyPass)
+                SetPass(entry.RenderElem->MaterialElem, entry.TechniqueIdx, entry.PassIdx);
+
             SetPassParams(entry.RenderElem->MaterialElem, entry.TechniqueIdx, entry.PassIdx);
 
             entry.RenderElem->Draw();
