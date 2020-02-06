@@ -36,8 +36,8 @@ namespace te
     {
         _paramBuffer = gPerCameraParamDef.CreateBuffer();
 
-        _forwardOpaqueQueue = te_shared_ptr_new<RenderQueue>();
-        _forwardTransparentQueue = te_shared_ptr_new<RenderQueue>();
+        _forwardOpaqueQueue = te_shared_ptr_new<RenderQueue>(desc.ReductionMode);
+        _forwardTransparentQueue = te_shared_ptr_new<RenderQueue>(desc.ReductionMode);
 
         SetStateReductionMode(desc.ReductionMode);
     }

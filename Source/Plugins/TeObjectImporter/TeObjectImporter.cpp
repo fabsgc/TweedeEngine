@@ -62,14 +62,12 @@ namespace te
         AssimpImportScene importedScene;
         const MeshImportOptions* meshImportOptions = static_cast<const MeshImportOptions*>(importOptions.get());
 
-        unsigned int assimpFlags = aiProcess_CalcTangentSpace |
-            aiProcess_Triangulate |
-            aiProcess_JoinIdenticalVertices |
-            aiProcess_GenSmoothNormals |
+        unsigned int assimpFlags =
             aiProcess_CalcTangentSpace |
+            aiProcess_Triangulate |
             aiProcess_GenUVCoords |
-            aiProcess_OptimizeMeshes |
-            aiProcess_OptimizeGraph |
+            aiProcess_GenSmoothNormals |
+            aiProcess_JoinIdenticalVertices |
             aiProcess_SortByPType;
 
         if (meshImportOptions->FplitUV)

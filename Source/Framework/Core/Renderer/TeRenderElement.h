@@ -25,6 +25,9 @@ namespace te
         /** Renderer specific value that identifies the type of this renderable element. */
         UINT32 Type = 0;
 
+        /*  All params used by this element for all passes */
+        Vector<SPtr<GpuParams>> GpuParams;
+
         /** Executes the draw call for the render element. */
         virtual void Draw() const = 0;
 

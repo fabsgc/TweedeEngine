@@ -9,6 +9,7 @@
 #include "TeD3D11HLSLProgramFactory.h"
 #include "Math/TeRect2.h"
 #include "TeD3D11DepthStencilState.h"
+#include "TeD3D11GpuProgram.h"
 
 #define D3D11_MAX_BOUND_VERTEX_BUFFER 32
 
@@ -16,6 +17,40 @@ namespace te
 {
     class D3D11RenderAPI: public RenderAPI
     {
+        struct LastFrameGraphicPipeline
+        {
+            D3D11RasterizerState* d3d11RasterizerState = nullptr;
+            D3D11BlendState* d3d11BlendState = nullptr;
+            D3D11DepthStencilState* d3d11DepthStencilState = nullptr;
+
+            D3D11GpuProgram* d3d11VertexProgram = nullptr;
+            D3D11GpuPixelProgram* d3d11PixelProgram = nullptr;
+            D3D11GpuGeometryProgram* d3d11GeometryProgram = nullptr;
+            D3D11GpuDomainProgram* d3d11DomainProgram = nullptr;
+            D3D11GpuHullProgram* d3d11HullProgram = nullptr;
+
+            DrawOperationType drawOperationType = DOT_TRIANGLE_LIST;
+
+            ID3D11InputLayout* ia = nullptr;
+
+            ID3D11Buffer* vertexBuffer = nullptr;
+        };
+
+        struct GpuResourcesContainer {
+            GpuResourcesContainer()
+            {
+                srvs.reserve(8);
+                uavs.reserve(8);
+                constBuffers.reserve(8);
+                samplers.reserve(8);
+            }
+
+            Vector<ID3D11ShaderResourceView*> srvs;
+            Vector<ID3D11UnorderedAccessView*> uavs;
+            Vector<ID3D11Buffer*> constBuffers;
+            Vector<ID3D11SamplerState*> samplers;
+        };
+
     public:
         D3D11RenderAPI();
         ~D3D11RenderAPI();
@@ -109,6 +144,10 @@ namespace te
 
         /** @copydoc RenderAPI::GenerateParamBlockDesc() */
         GpuParamBlockDesc GenerateParamBlockDesc(const String& name, Vector<GpuParamDataDesc>& params) override;
+
+    private:
+        SPtr<LastFrameGraphicPipeline> _lastFrameGraphicPipeline;
+        GpuResourcesContainer _gpuResourcesContainer;
 
     private:
         IDXGIFactory1* _DXGIFactory = nullptr;

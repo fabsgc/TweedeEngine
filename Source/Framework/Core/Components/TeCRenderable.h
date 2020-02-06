@@ -61,10 +61,10 @@ namespace te
         float GetCullDistanceFactor() const { return _internal->GetCullDistanceFactor(); }
 
         /** @copydoc Renderable::SetLayer */
-        void setLayer(UINT64 layer) { _internal->SetLayer(layer); }
+        void SetLayer(UINT64 layer) { _internal->SetLayer(layer); }
 
         /** @copydoc Renderable::GetLayer */
-        UINT64 getLayer() const { return _internal->GetLayer(); }
+        UINT64 GetLayer() const { return _internal->GetLayer(); }
 
         /**	Gets world bounds of the mesh rendered by this object. */
         Bounds GetBounds() const;

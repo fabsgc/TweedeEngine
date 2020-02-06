@@ -9,7 +9,6 @@
 #include "TeD3D11RenderStateManager.h"
 #include "TeD3D11TextureManager.h"
 #include "RenderAPI/TeGpuProgramManager.h"
-#include "TeD3D11GpuProgram.h"
 #include "TeD3D11HardwareBufferManager.h"
 #include "TeD3D11VertexBuffer.h"
 #include "TeD3D11IndexBuffer.h"
@@ -209,55 +208,73 @@ namespace te
         }
 
         ID3D11DeviceContext* d3d11Context = _device->GetImmediateContext();
-        d3d11Context->OMSetBlendState(d3d11BlendState->GetInternal(), nullptr, 0xFFFFFFFF);
-        d3d11Context->RSSetState(d3d11RasterizerState->GetInternal());
-        d3d11Context->OMSetDepthStencilState(_activeDepthStencilState->GetInternal(), _stencilRef);
 
-        if (_activeVertexShader != nullptr)
-        {
-            D3D11GpuVertexProgram* vertexProgram = static_cast<D3D11GpuVertexProgram*>(_activeVertexShader.get());
-            d3d11Context->VSSetShader(vertexProgram->GetVertexShader(), nullptr, 0);
-        }
-        else
-        {
-            d3d11Context->VSSetShader(nullptr, nullptr, 0);
-        }
+        if(!_lastFrameGraphicPipeline || d3d11BlendState != _lastFrameGraphicPipeline->d3d11BlendState)
+            d3d11Context->OMSetBlendState(d3d11BlendState->GetInternal(), nullptr, 0xFFFFFFFF);
 
-        if (d3d11PixelProgram != nullptr)
-        {
-            d3d11Context->PSSetShader(d3d11PixelProgram->GetPixelShader(), nullptr, 0);
-        }
-        else
-        {
-            d3d11Context->PSSetShader(nullptr, nullptr, 0);
-        }
+        if (!_lastFrameGraphicPipeline || d3d11RasterizerState != _lastFrameGraphicPipeline->d3d11RasterizerState)
+            d3d11Context->RSSetState(d3d11RasterizerState->GetInternal());
 
-        if (d3d11GeometryProgram != nullptr)
+        if (!_lastFrameGraphicPipeline || &*_activeDepthStencilState != _lastFrameGraphicPipeline->d3d11DepthStencilState)
+            d3d11Context->OMSetDepthStencilState(_activeDepthStencilState->GetInternal(), _stencilRef);
+
+        if (!_lastFrameGraphicPipeline || &*_activeVertexShader != _lastFrameGraphicPipeline->d3d11VertexProgram)
         {
-            d3d11Context->GSSetShader(d3d11GeometryProgram->GetGeometryShader(), nullptr, 0);
-        }
-        else
-        {
-            d3d11Context->GSSetShader(nullptr, nullptr, 0);
+            if (_activeVertexShader != nullptr)
+            {
+                D3D11GpuVertexProgram* vertexProgram = static_cast<D3D11GpuVertexProgram*>(_activeVertexShader.get());
+                d3d11Context->VSSetShader(vertexProgram->GetVertexShader(), nullptr, 0);
+            }
+            else
+            {
+                d3d11Context->VSSetShader(nullptr, nullptr, 0);
+            }
         }
 
-        if (d3d11DomainProgram != nullptr)
+        if (!_lastFrameGraphicPipeline || d3d11PixelProgram != _lastFrameGraphicPipeline->d3d11PixelProgram)
         {
-            d3d11Context->DSSetShader(d3d11DomainProgram->GetDomainShader(), nullptr, 0);
-        }
-        else
-        {
-            d3d11Context->DSSetShader(nullptr, nullptr, 0);
+            if (d3d11PixelProgram != nullptr)
+                d3d11Context->PSSetShader(d3d11PixelProgram->GetPixelShader(), nullptr, 0);
+            else
+                d3d11Context->PSSetShader(nullptr, nullptr, 0);
         }
 
-        if (d3d11HullProgram != nullptr)
+        if (!_lastFrameGraphicPipeline || d3d11GeometryProgram != _lastFrameGraphicPipeline->d3d11GeometryProgram)
         {
-            d3d11Context->HSSetShader(d3d11HullProgram->GetHullShader(), nullptr, 0);
+            if (d3d11GeometryProgram != nullptr)
+                d3d11Context->GSSetShader(d3d11GeometryProgram->GetGeometryShader(), nullptr, 0);
+            else
+                d3d11Context->GSSetShader(nullptr, nullptr, 0);
         }
-        else 
+
+        if (!_lastFrameGraphicPipeline || d3d11DomainProgram != _lastFrameGraphicPipeline->d3d11DomainProgram)
         {
-            d3d11Context->HSSetShader(nullptr, nullptr, 0);
+            if (d3d11DomainProgram != nullptr)
+                d3d11Context->DSSetShader(d3d11DomainProgram->GetDomainShader(), nullptr, 0);
+            else
+                d3d11Context->DSSetShader(nullptr, nullptr, 0);
         }
+
+        if (!_lastFrameGraphicPipeline || d3d11HullProgram != _lastFrameGraphicPipeline->d3d11HullProgram)
+        {
+            if (d3d11HullProgram != nullptr)
+                d3d11Context->HSSetShader(d3d11HullProgram->GetHullShader(), nullptr, 0);
+            else
+                d3d11Context->HSSetShader(nullptr, nullptr, 0);
+        }
+
+        if (!_lastFrameGraphicPipeline)
+            _lastFrameGraphicPipeline = te_shared_ptr_new<LastFrameGraphicPipeline>();
+
+        _lastFrameGraphicPipeline->d3d11RasterizerState = d3d11RasterizerState;
+        _lastFrameGraphicPipeline->d3d11BlendState = d3d11BlendState;
+        _lastFrameGraphicPipeline->d3d11DepthStencilState = &*_activeDepthStencilState;
+
+        _lastFrameGraphicPipeline->d3d11VertexProgram = &*_activeVertexShader;
+        _lastFrameGraphicPipeline->d3d11PixelProgram = d3d11PixelProgram;
+        _lastFrameGraphicPipeline->d3d11GeometryProgram = d3d11GeometryProgram;
+        _lastFrameGraphicPipeline->d3d11DomainProgram = d3d11DomainProgram;
+        _lastFrameGraphicPipeline->d3d11HullProgram = d3d11HullProgram;
     }
 
     void D3D11RenderAPI::SetGpuParams(const SPtr<GpuParams>& gpuParams)
@@ -286,17 +303,12 @@ namespace te
             }
         }
 
-        Vector<ID3D11ShaderResourceView*> srvs(8);
-        Vector<ID3D11UnorderedAccessView*> uavs(8);
-        Vector<ID3D11Buffer*> constBuffers(8);
-        Vector<ID3D11SamplerState*> samplers(8);
-
         auto populateViews = [&](GpuProgramType type)
         {
-            srvs.clear();
-            uavs.clear();
-            constBuffers.clear();
-            samplers.clear();
+            _gpuResourcesContainer.srvs.clear();
+            _gpuResourcesContainer.uavs.clear();
+            _gpuResourcesContainer.constBuffers.clear();
+            _gpuResourcesContainer.samplers.clear();
 
             SPtr<GpuParamDesc> paramDesc = gpuParams->GetParamDesc(type);
             if (paramDesc == nullptr)
@@ -311,9 +323,9 @@ namespace te
                 SPtr<Texture> texture = gpuParams->GetTexture(iter->second.Set, slot);
                 const TextureSurface& surface = gpuParams->GetTextureSurface(iter->second.Set, slot);
 
-                while (slot >= (UINT32)srvs.size())
+                while (slot >= (UINT32)_gpuResourcesContainer.srvs.size())
                 {
-                    srvs.push_back(nullptr);
+                    _gpuResourcesContainer.srvs.push_back(nullptr);
                 }
 
                 if (texture != nullptr)
@@ -322,7 +334,7 @@ namespace te
                         surface.Face, surface.NumFaces, GVU_DEFAULT);
 
                     D3D11TextureView* d3d11texView = static_cast<D3D11TextureView*>(texView.get());
-                    srvs[slot] = d3d11texView->GetSRV();
+                    _gpuResourcesContainer.srvs[slot] = d3d11texView->GetSRV();
                 }
             }
 
@@ -331,15 +343,15 @@ namespace te
                 UINT32 slot = iter->second.Slot;
                 SPtr<GpuBuffer> buffer = gpuParams->GetBuffer(iter->second.Set, slot);
 
-                while (slot >= (UINT32)uavs.size())
+                while (slot >= (UINT32)_gpuResourcesContainer.uavs.size())
                 {
-                    uavs.push_back(nullptr);
+                    _gpuResourcesContainer.uavs.push_back(nullptr);
                 }
 
                 if (buffer != nullptr)
                 {
                     D3D11GpuBuffer* d3d11buffer = static_cast<D3D11GpuBuffer*>(buffer.get());
-                    uavs[slot] = d3d11buffer->GetUAV();
+                    _gpuResourcesContainer.uavs[slot] = d3d11buffer->GetUAV();
                 }
             }
 
@@ -348,9 +360,9 @@ namespace te
                 UINT32 slot = iter->second.Slot;
                 SPtr<SamplerState> samplerState = gpuParams->GetSamplerState(iter->second.Set, slot);
 
-                while (slot >= (UINT32)samplers.size())
+                while (slot >= (UINT32)_gpuResourcesContainer.samplers.size())
                 {
-                    samplers.push_back(nullptr);
+                    _gpuResourcesContainer.samplers.push_back(nullptr);
                 }
 
                 if (samplerState == nullptr)
@@ -360,7 +372,7 @@ namespace te
 
                 D3D11SamplerState* d3d11SamplerState =
                     static_cast<D3D11SamplerState*>(const_cast<SamplerState*>(samplerState.get()));
-                samplers[slot] = d3d11SamplerState->GetInternal();
+                _gpuResourcesContainer.samplers[slot] = d3d11SamplerState->GetInternal();
             }
 
             for (auto iter = paramDesc->ParamBlocks.begin(); iter != paramDesc->ParamBlocks.end(); ++iter)
@@ -368,9 +380,9 @@ namespace te
                 UINT32 slot = iter->second.Slot;
                 SPtr<GpuParamBlockBuffer> buffer = gpuParams->GetParamBlockBuffer(iter->second.Set, slot);
 
-                while (slot >= (UINT32)constBuffers.size())
+                while (slot >= (UINT32)_gpuResourcesContainer.constBuffers.size())
                 {
-                    constBuffers.push_back(nullptr);
+                    _gpuResourcesContainer.constBuffers.push_back(nullptr);
                 }
 
                 if (buffer != nullptr)
@@ -379,7 +391,7 @@ namespace te
 
                     const D3D11GpuParamBlockBuffer* d3d11paramBlockBuffer =
                         static_cast<const D3D11GpuParamBlockBuffer*>(buffer.get());
-                    constBuffers[slot] = d3d11paramBlockBuffer->GetD3D11Buffer();
+                    _gpuResourcesContainer.constBuffers[slot] = d3d11paramBlockBuffer->GetD3D11Buffer();
                 }
             }
         };
@@ -390,58 +402,67 @@ namespace te
         UINT32 numSamplers = 0;
 
         populateViews(GPT_VERTEX_PROGRAM);
-        numSRVs = (UINT32)srvs.size();
-        numConstBuffers = (UINT32)constBuffers.size();
-        numSamplers = (UINT32)samplers.size();
+        numSRVs = (UINT32)_gpuResourcesContainer.srvs.size();
+        numConstBuffers = (UINT32)_gpuResourcesContainer.constBuffers.size();
+        numSamplers = (UINT32)_gpuResourcesContainer.samplers.size();
 
-        if (numSRVs > 0) context->VSSetShaderResources(0, numSRVs, srvs.data());
-        if (numConstBuffers > 0) context->VSSetConstantBuffers(0, numConstBuffers, constBuffers.data());
-        if (numSamplers > 0) context->VSSetSamplers(0, numSamplers, samplers.data());
+        if (numSRVs > 0) context->VSSetShaderResources(0, numSRVs, _gpuResourcesContainer.srvs.data());
+        if (numConstBuffers > 0) context->VSSetConstantBuffers(0, numConstBuffers, _gpuResourcesContainer.constBuffers.data());
+        if (numSamplers > 0) context->VSSetSamplers(0, numSamplers, _gpuResourcesContainer.samplers.data());
 
         populateViews(GPT_PIXEL_PROGRAM);
-        numSRVs = (UINT32)srvs.size();
-        numUAVs = (UINT32)uavs.size();
-        numConstBuffers = (UINT32)constBuffers.size();
-        numSamplers = (UINT32)samplers.size();
+        numSRVs = (UINT32)_gpuResourcesContainer.srvs.size();
+        numUAVs = (UINT32)_gpuResourcesContainer.uavs.size();
+        numConstBuffers = (UINT32)_gpuResourcesContainer.constBuffers.size();
+        numSamplers = (UINT32)_gpuResourcesContainer.samplers.size();
 
-        if (numSRVs > 0) context->PSSetShaderResources(0, numSRVs, srvs.data());
+        if (numSRVs > 0) context->PSSetShaderResources(0, numSRVs, _gpuResourcesContainer.srvs.data());
 
         if (numUAVs > 0)
         {
             context->OMSetRenderTargetsAndUnorderedAccessViews(
-                D3D11_KEEP_RENDER_TARGETS_AND_DEPTH_STENCIL, nullptr, nullptr, 0, numUAVs, uavs.data(), nullptr);
+                D3D11_KEEP_RENDER_TARGETS_AND_DEPTH_STENCIL, nullptr, nullptr, 0, numUAVs, _gpuResourcesContainer.uavs.data(), nullptr);
             _PSUAVsBound = true;
         }
 
-        if (numConstBuffers > 0) context->PSSetConstantBuffers(0, numConstBuffers, constBuffers.data());
-        if (numSamplers > 0) context->PSSetSamplers(0, numSamplers, samplers.data());
+        if (numConstBuffers > 0) context->PSSetConstantBuffers(0, numConstBuffers, _gpuResourcesContainer.constBuffers.data());
+        if (numSamplers > 0) context->PSSetSamplers(0, numSamplers, _gpuResourcesContainer.samplers.data());
 
-        populateViews(GPT_GEOMETRY_PROGRAM);
-        numSRVs = (UINT32)srvs.size();
-        numConstBuffers = (UINT32)constBuffers.size();
-        numSamplers = (UINT32)samplers.size();
+        if (_lastFrameGraphicPipeline->d3d11GeometryProgram)
+        {
+            populateViews(GPT_GEOMETRY_PROGRAM);
+            numSRVs = (UINT32)_gpuResourcesContainer.srvs.size();
+            numConstBuffers = (UINT32)_gpuResourcesContainer.constBuffers.size();
+            numSamplers = (UINT32)_gpuResourcesContainer.samplers.size();
 
-        if (numSRVs > 0) context->GSSetShaderResources(0, numSRVs, srvs.data());
-        if (numConstBuffers > 0) context->GSSetConstantBuffers(0, numConstBuffers, constBuffers.data());
-        if (numSamplers > 0) context->GSSetSamplers(0, numSamplers, samplers.data());
+            if (numSRVs > 0) context->GSSetShaderResources(0, numSRVs, _gpuResourcesContainer.srvs.data());
+            if (numConstBuffers > 0) context->GSSetConstantBuffers(0, numConstBuffers, _gpuResourcesContainer.constBuffers.data());
+            if (numSamplers > 0) context->GSSetSamplers(0, numSamplers, _gpuResourcesContainer.samplers.data());
+        }
 
-        populateViews(GPT_HULL_PROGRAM);
-        numSRVs = (UINT32)srvs.size();
-        numConstBuffers = (UINT32)constBuffers.size();
-        numSamplers = (UINT32)samplers.size();
+        if (_lastFrameGraphicPipeline->d3d11HullProgram)
+        {
+            populateViews(GPT_HULL_PROGRAM);
+            numSRVs = (UINT32)_gpuResourcesContainer.srvs.size();
+            numConstBuffers = (UINT32)_gpuResourcesContainer.constBuffers.size();
+            numSamplers = (UINT32)_gpuResourcesContainer.samplers.size();
 
-        if (numSRVs > 0) context->HSSetShaderResources(0, numSRVs, srvs.data());
-        if (numConstBuffers > 0) context->HSSetConstantBuffers(0, numConstBuffers, constBuffers.data());
-        if (numSamplers > 0) context->HSSetSamplers(0, numSamplers, samplers.data());
+            if (numSRVs > 0) context->HSSetShaderResources(0, numSRVs, _gpuResourcesContainer.srvs.data());
+            if (numConstBuffers > 0) context->HSSetConstantBuffers(0, numConstBuffers, _gpuResourcesContainer.constBuffers.data());
+            if (numSamplers > 0) context->HSSetSamplers(0, numSamplers, _gpuResourcesContainer.samplers.data());
+        }
 
-        populateViews(GPT_DOMAIN_PROGRAM);
-        numSRVs = (UINT32)srvs.size();
-        numConstBuffers = (UINT32)constBuffers.size();
-        numSamplers = (UINT32)samplers.size();
+        if (_lastFrameGraphicPipeline->d3d11DomainProgram)
+        {
+            populateViews(GPT_DOMAIN_PROGRAM);
+            numSRVs = (UINT32)_gpuResourcesContainer.srvs.size();
+            numConstBuffers = (UINT32)_gpuResourcesContainer.constBuffers.size();
+            numSamplers = (UINT32)_gpuResourcesContainer.samplers.size();
 
-        if (numSRVs > 0) context->DSSetShaderResources(0, numSRVs, srvs.data());
-        if (numConstBuffers > 0) context->DSSetConstantBuffers(0, numConstBuffers, constBuffers.data());
-        if (numSamplers > 0) context->DSSetSamplers(0, numSamplers, samplers.data());
+            if (numSRVs > 0) context->DSSetShaderResources(0, numSRVs, _gpuResourcesContainer.srvs.data());
+            if (numConstBuffers > 0) context->DSSetConstantBuffers(0, numConstBuffers, _gpuResourcesContainer.constBuffers.data());
+            if (numSamplers > 0) context->DSSetSamplers(0, numSamplers, _gpuResourcesContainer.samplers.data());
+        }
     }
 
     void D3D11RenderAPI::SetViewport(const Rect2& area)
@@ -465,13 +486,9 @@ namespace te
         _stencilRef = value;
 
         if(_activeDepthStencilState != nullptr)
-        {
             _device->GetImmediateContext()->OMSetDepthStencilState(_activeDepthStencilState->GetInternal(), _stencilRef);
-        }
         else
-        {
             _device->GetImmediateContext()->OMSetDepthStencilState(nullptr, _stencilRef);
-        }
     }
 
     void D3D11RenderAPI::SetVertexBuffers(UINT32 index, SPtr<VertexBuffer>* buffers, UINT32 numBuffers)
@@ -498,7 +515,15 @@ namespace te
             offsets[i] = 0;
         }
 
-        _device->GetImmediateContext()->IASetVertexBuffers(index, numBuffers, dx11buffers, strides, offsets);
+        if (!_lastFrameGraphicPipeline || _lastFrameGraphicPipeline->vertexBuffer != dx11buffers[0])
+        {
+            _device->GetImmediateContext()->IASetVertexBuffers(index, numBuffers, dx11buffers, strides, offsets);
+
+            if (!_lastFrameGraphicPipeline)
+                _lastFrameGraphicPipeline = te_shared_ptr_new<LastFrameGraphicPipeline>();
+
+            _lastFrameGraphicPipeline->vertexBuffer = dx11buffers[0];
+        }
     }
 
     void D3D11RenderAPI::SetIndexBuffer(const SPtr<IndexBuffer>& buffer)
@@ -507,17 +532,11 @@ namespace te
 
         DXGI_FORMAT indexFormat = DXGI_FORMAT_R16_UINT;
         if (indexBuffer->GetProperties().GetType() == IT_16BIT)
-        {
             indexFormat = DXGI_FORMAT_R16_UINT;
-        }
         else if (indexBuffer->GetProperties().GetType() == IT_32BIT)
-        {
             indexFormat = DXGI_FORMAT_R32_UINT;
-        }
         else
-        {
             TE_ASSERT_ERROR(false, "Unsupported index format: " + ToString(indexBuffer->GetProperties().GetType()), __FILE__, __LINE__);
-        }
 
         _device->GetImmediateContext()->IASetIndexBuffer(indexBuffer->GetD3DIndexBuffer(), indexFormat, 0);
     }
@@ -529,8 +548,16 @@ namespace te
 
     void D3D11RenderAPI::SetDrawOperation(DrawOperationType op)
     {
-        _device->GetImmediateContext()->IASetPrimitiveTopology(D3D11Mappings::GetPrimitiveType(op));
-        _activeDrawOp = op;
+        if (!_lastFrameGraphicPipeline || _lastFrameGraphicPipeline->drawOperationType != op)
+        {
+            _device->GetImmediateContext()->IASetPrimitiveTopology(D3D11Mappings::GetPrimitiveType(op));
+            _activeDrawOp = op;
+
+            if (!_lastFrameGraphicPipeline)
+                _lastFrameGraphicPipeline = te_shared_ptr_new<LastFrameGraphicPipeline>();
+
+            _lastFrameGraphicPipeline->drawOperationType = op;
+        }
     }
 
     void D3D11RenderAPI::Draw(UINT32 vertexOffset, UINT32 vertexCount, UINT32 instanceCount)
@@ -538,19 +565,13 @@ namespace te
         ApplyInputLayout();
 
         if (instanceCount <= 1)
-        {
             _device->GetImmediateContext()->Draw(vertexCount, vertexOffset);
-        }
         else
-        {
             _device->GetImmediateContext()->DrawInstanced(vertexCount, instanceCount, vertexOffset, 0);
-        }
 
 #if TE_DEBUG_MODE
         if (_device->HasError())
-        {
             TE_DEBUG(_device->GetErrorDescription(), __FILE__, __LINE__);
-        }
 #endif
 
         NotifyRenderTargetModified();
@@ -561,19 +582,13 @@ namespace te
         ApplyInputLayout();
 
         if (instanceCount <= 1)
-        {
             _device->GetImmediateContext()->DrawIndexed(indexCount, startIndex, vertexOffset);
-        }
         else
-        {
             _device->GetImmediateContext()->DrawIndexedInstanced(indexCount, instanceCount, startIndex, vertexOffset, 0);
-        }
 
 #if TE_DEBUG_MODE
             if (_device->HasError())
-            {
                 TE_DEBUG(_device->GetErrorDescription(), __FILE__, __LINE__);
-            }
 #endif
 
         NotifyRenderTargetModified();
@@ -617,11 +632,8 @@ namespace te
 
         // Bind render targets
         _device->GetImmediateContext()->OMSetRenderTargets(maxRenderTargets, views, depthStencilView);
-
         if (_device->HasError())
-        {
             TE_ASSERT_ERROR(false, "Failed to setRenderTarget : " + _device->GetErrorDescription(), __FILE__, __LINE__);
-        }
 
         te_deleteN(views, maxRenderTargets);
         ApplyViewport();
@@ -783,7 +795,16 @@ namespace te
         }
 
         ID3D11InputLayout* ia = _IAManager->RetrieveInputLayout(_activeVertexShader->GetInputDeclaration(), _activeVertexDeclaration, *_activeVertexShader);
-        _device->GetImmediateContext()->IASetInputLayout(ia);
+
+        if (!_lastFrameGraphicPipeline || _lastFrameGraphicPipeline->ia != ia)
+        {
+            _device->GetImmediateContext()->IASetInputLayout(ia);
+
+            if (!_lastFrameGraphicPipeline)
+                _lastFrameGraphicPipeline = te_shared_ptr_new<LastFrameGraphicPipeline>();
+
+            _lastFrameGraphicPipeline->ia = ia;
+        }
     }
 
     void D3D11RenderAPI::ApplyViewport()

@@ -49,23 +49,29 @@ namespace te
             if (_techniques.empty())
                 return;
         }
-
-        InitializeGraphicsPipelineStates();
     }
 
-    void Material::InitializeGraphicsPipelineStates()
+    void Material::CreateGpuParams(UINT32 techniqueIdx, Vector<SPtr<GpuParams>>& outputParams)
     {
-        _passesGpuParams.clear();
+        outputParams.clear();
+        SPtr<Technique> currentTechnique = _techniques[techniqueIdx];
 
-        UINT32 techniqueIdx = 0;
-        for (auto& technique : _techniques)
+        if (!currentTechnique)
+            return;
+
+        for (UINT32 idx = 0; idx < currentTechnique->GetNumPasses(); idx++)
         {
-            for (UINT32 idx = 0; idx < technique->GetNumPasses(); idx++)
-            {
-                _passesGpuParams[techniqueIdx].push_back(technique->GetPass(idx)->GetGpuParams());
-            }
+            SPtr<GraphicsPipelineState> graphicPipelineState = _techniques[techniqueIdx]->GetPass(idx)->GetGraphicsPipelineState();
+            outputParams.push_back(GpuParams::Create(graphicPipelineState));
 
-            techniqueIdx++; 
+            for (auto& texture : _textures)
+                outputParams[idx]->SetTexture(texture.first, texture.second->TextureElem, texture.second->TextureSurfaceElem);
+
+            for (auto& samplerState : _samplerStates)
+                outputParams[idx]->SetSamplerState(samplerState.first, samplerState.second);
+
+            for (auto& buffer : _buffers)
+                outputParams[idx]->SetBuffer(buffer.first, buffer.second);
         }
     }
 
@@ -103,25 +109,26 @@ namespace te
     /** Assigns a texture to the shader parameter with the specified name. */
     void Material::SetTexture(const String& name, const SPtr<Texture>& value, const TextureSurface& surface)
     {
-        for (auto& technique : _passesGpuParams)
-            for (auto& passParams : technique.second)
-                passParams->SetTexture(name, value, surface);
+        if (_textures.find(name) == _textures.end())
+        {
+            _textures[name] = te_shared_ptr_new<TextureData>(value, surface);
+            return;
+        }
+
+        _textures[name]->TextureElem = value;
+        _textures[name]->TextureSurfaceElem = surface;
     }
 
     /** Assigns a buffer to the shader parameter with the specified name. */
     void Material::SetBuffer(const String& name, const SPtr<GpuBuffer>& value)
     {
-        for (auto& technique : _passesGpuParams)
-            for (auto& passParams : technique.second)
-                passParams->SetBuffer(name, value);
+        _buffers[name] = value;
     }
 
     /** Assigns a sampler state to the shader parameter with the specified name. */
     void Material::SetSamplerState(const String& name, const SPtr<SamplerState>& value)
     {
-        for (auto& technique : _passesGpuParams)
-            for (auto& passParams : technique.second)
-                passParams->SetSamplerState(name, value);
+        _samplerStates[name] = value;
     }
 
     UINT32 Material::GetDefaultTechnique() const

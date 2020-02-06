@@ -49,6 +49,7 @@ struct VS_OUTPUT
     float3 Normal : NORMAL;
     float4 Color : COLOR0;
     float2 Texture : TEXCOORD0;
+    float3 ViewDirection : POSITION1;
 };
 
 VS_OUTPUT main( VS_INPUT IN )
@@ -67,6 +68,8 @@ VS_OUTPUT main( VS_INPUT IN )
     OUT.WorldPosition.xyz = IN.Position;
     OUT.WorldPosition.w = 1.0f;
     OUT.WorldPosition = mul(OUT.WorldPosition, gMatWorld);
+
+    OUT.ViewDirection = normalize(OUT.WorldPosition.xyz - gViewOrigin);
 
     return OUT;
 }

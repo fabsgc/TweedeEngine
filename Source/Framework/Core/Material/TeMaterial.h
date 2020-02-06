@@ -91,8 +91,8 @@ namespace te
             SetTexture(name, value.GetInternalPtr(), surface);
         }
 
-        /* Get all gpu params for a set of passes related to the current technique */
-        Vector<SPtr<GpuParams>>& GetPassesGpuParams(UINT32 techniqueIdx) { return _passesGpuParams[techniqueIdx]; }
+        /* Create all gpu params for a set of passes related to the current technique */
+        void CreateGpuParams(UINT32 techniqueIdx, Vector<SPtr<GpuParams>>& outputParams);
 
     public:
         /** Creates a new empty material. */
@@ -126,14 +126,29 @@ namespace te
          */
         void InitializeTechniques();
 
-        /*
-         * Material keep a handle on all graphicsPipelineStates from every pass
-         */
-        void InitializeGraphicsPipelineStates();
+    protected:
+        struct TextureData
+        {
+            TextureData()
+                : TextureElem(nullptr)
+                , TextureSurfaceElem(TextureSurface(0, 0, 0, 0))
+            { }
+
+            TextureData(const SPtr<Texture>& value, const TextureSurface& surface = GpuParams::COMPLETE)
+                : TextureElem(value)
+                , TextureSurfaceElem(surface)
+            { }
+
+            SPtr<Texture> TextureElem;
+            TextureSurface TextureSurfaceElem;
+        };
 
     protected:
         SPtr<Shader> _shader;
         Vector<SPtr<Technique>> _techniques;
-        UnorderedMap<UINT32, Vector<SPtr<GpuParams>>> _passesGpuParams;
+
+        UnorderedMap<String, SPtr<TextureData>> _textures;
+        UnorderedMap<String, SPtr<GpuBuffer>> _buffers;
+        UnorderedMap<String, SPtr<SamplerState>> _samplerStates;
     };
 }

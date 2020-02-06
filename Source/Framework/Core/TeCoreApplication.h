@@ -171,13 +171,16 @@ namespace te
         SPtr<VertexDeclaration> _vertexDeclaration;
 
         HCamera _sceneCamera;
-        HMesh _loadedMesh;
-        HMesh _loadedMesh2;
-        HTexture _loadedTexture;
+
+        HMesh _loadedMeshCube;
+        HMesh _loadedMeshMonkey;
+
+        HTexture _loadedTextureCube;
+        HTexture _loadedTextureMonkey;
+
         HTexture _loadedCubemapTexture;
 
-        HRenderable _renderable;
-        HRenderable _renderable2;
+        HRenderable _renderableCube;
         HLight _light;
         HSkybox _skybox;
 
@@ -187,13 +190,15 @@ namespace te
         SPtr<Technique> _technique;
 
         HShader _shader;
-        HMaterial _material;
+        HMaterial _materialCube;
+        HMaterial _materialMonkey;
 
         HSceneObject _sceneCameraSO;
         HSceneObject _sceneRenderableSO;
-        HSceneObject _sceneRenderable2SO;
         HSceneObject _sceneLightSO;
         HSceneObject _sceneSkyboxSO;
+
+        Vector<HSceneObject> _sceneRenderablesMonkeySO;
     };
 
     /**	Provides easy access to CoreApplication. */

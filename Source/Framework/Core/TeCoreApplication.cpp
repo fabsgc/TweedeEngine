@@ -267,32 +267,22 @@ namespace te
             if (passThrough == nullptr)
             {
                 typedef void* (*LoadPluginFunc)();
-
                 LoadPluginFunc loadPluginFunc = (LoadPluginFunc)loadedLibrary->GetSymbol("LoadPlugin");
-
                 if (loadPluginFunc != nullptr)
-                {
                     retVal = loadPluginFunc();
-                }
             }
             else
             {
                 typedef void* (*LoadPluginFunc)(void*);
-
                 LoadPluginFunc loadPluginFunc = (LoadPluginFunc)loadedLibrary->GetSymbol("LoadPlugin");
-
                 if (loadPluginFunc != nullptr)
-                {
                     retVal = loadPluginFunc(passThrough);
-                }
             }
 
             UpdatePluginFunc updatePluginFunc = (UpdatePluginFunc)loadedLibrary->GetSymbol("UpdatePlugin");
 
             if (updatePluginFunc != nullptr)
-            {
                 _pluginUpdateFunctions[loadedLibrary] = updatePluginFunc;
-            }  
         }
 
         return retVal;
@@ -325,20 +315,27 @@ namespace te
         textureImportOptions->CpuCached = true;
         textureImportOptions->GenerateMips = true;
 
-        auto textureCubeMapImportOptions = TextureImportOptions::Create();
+        auto textureCubeMapImportOptions = TextureImportOptions::Create(); 
         textureCubeMapImportOptions->CpuCached = true;
         textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
 
-        _loadedMesh = gResourceManager().Load<Mesh>("Data/Meshes/multi-cube-material.dae", meshImportOptions);
-        _loadedMesh2 = gResourceManager().Load<Mesh>("Data/Meshes/cube.dae", meshImportOptions);
-        _loadedTexture = gResourceManager().Load<Texture>("Data/Textures/cube.png", textureImportOptions);
+        _loadedMeshCube = gResourceManager().Load<Mesh>("Data/Meshes/multi-cube-material.dae", meshImportOptions);
+        _loadedMeshMonkey = gResourceManager().Load<Mesh>("Data/Meshes/monkey.dae", meshImportOptions);
+        _loadedTextureCube = gResourceManager().Load<Texture>("Data/Textures/cube.png", textureImportOptions);
+        _loadedTextureMonkey = gResourceManager().Load<Texture>("Data/Textures/monkey.png", textureImportOptions);
         _loadedCubemapTexture = gResourceManager().Load<Texture>("Data/Textures/cubemap.png", textureCubeMapImportOptions);
 
-        TE_PRINT((_loadedMesh.GetHandleData())->data);
-        TE_PRINT((_loadedMesh.GetHandleData())->uuid.ToString());
+        TE_PRINT((_loadedMeshCube.GetHandleData())->data);
+        TE_PRINT((_loadedMeshCube.GetHandleData())->uuid.ToString());
 
-        TE_PRINT((_loadedTexture.GetHandleData())->data);
-        TE_PRINT((_loadedTexture.GetHandleData())->uuid.ToString());
+        TE_PRINT((_loadedMeshMonkey.GetHandleData())->data);
+        TE_PRINT((_loadedMeshMonkey.GetHandleData())->uuid.ToString());
+
+        TE_PRINT((_loadedTextureCube.GetHandleData())->data);
+        TE_PRINT((_loadedTextureCube.GetHandleData())->uuid.ToString());
+
+        TE_PRINT((_loadedTextureMonkey.GetHandleData())->data);
+        TE_PRINT((_loadedTextureMonkey.GetHandleData())->uuid.ToString());
 
         TE_PRINT((_loadedCubemapTexture.GetHandleData())->data);
         TE_PRINT((_loadedCubemapTexture.GetHandleData())->uuid.ToString());
@@ -475,10 +472,16 @@ namespace te
 
         _shader = Shader::Create("Texture", shaderDesc);
         _shader->SetName("Shader");
-        _material = Material::Create(_shader);
-        _material->SetName("Material");
-        _material->SetTexture("ColorTexture", _loadedTexture);
-        _material->SetSamplerState("AnisotropicSampler", samplerState);
+        
+        _materialCube = Material::Create(_shader);
+        _materialCube->SetName("Material");
+        _materialCube->SetTexture("ColorTexture", _loadedTextureCube);
+        _materialCube->SetSamplerState("AnisotropicSampler", samplerState);
+
+        _materialMonkey = Material::Create(_shader);
+        _materialMonkey->SetName("Material");
+        _materialMonkey->SetTexture("ColorTexture", _loadedTextureMonkey);
+        _materialMonkey->SetSamplerState("AnisotropicSampler", samplerState);
         // ######################################################
 
         // ######################################################
@@ -489,17 +492,11 @@ namespace te
         _sceneCamera->SetMain(true);
         _sceneCamera->Initialize();
 
-        _sceneRenderableSO = SceneObject::Create("Cube");
-        _renderable = _sceneRenderableSO->AddComponent<CRenderable>();
-        _renderable->SetMesh(_loadedMesh);
-        _renderable->SetMaterial(_material);
-        _renderable->Initialize();
-
-        _sceneRenderable2SO = SceneObject::Create("Cube-2");
-        _renderable2 = _sceneRenderable2SO->AddComponent<CRenderable>();
-        _renderable2->SetMesh(_loadedMesh2);
-        _renderable2->SetMaterial(_material);
-        _renderable2->Initialize();
+        /*_sceneRenderableSO = SceneObject::Create("Cube");
+        _renderableCube = _sceneRenderableSO->AddComponent<CRenderable>();
+        _renderableCube->SetMesh(_loadedMeshCube);
+        _renderableCube->SetMaterial(_materialCube);
+        _renderableCube->Initialize();*/
 
         _sceneSkyboxSO = SceneObject::Create("Skybox");
         _skybox = _sceneSkyboxSO->AddComponent<CSkybox>();
@@ -510,12 +507,27 @@ namespace te
         _light = _sceneLightSO->AddComponent<CLight>();
         _light->Initialize();
 
-        _sceneCameraSO->SetPosition(Vector3(0.0f, 2.0f, 6.0f));
-        _sceneCameraSO->LookAt(Vector3(0.0f, 0.0f, 0.0f));
+        _sceneCameraSO->SetPosition(Vector3(0.0f, 5.0f, 7.5f));
+        _sceneCameraSO->LookAt(Vector3(0.0f, 0.0f, -3.0f));
 
-        _sceneRenderableSO->Move(Vector3(0.0f, 0.0f, 0.0f));
-        _sceneRenderable2SO->Move(Vector3(0.0f, 0.0f, -3.0f));
-        _sceneCameraSO->Move(Vector3(0.0f, 0.0f, 0.0f));
+        //_sceneRenderableSO->Move(Vector3(0.0f, 0.0f, 4.0f));
+
+        for (INT16 i = -4; i < 5; i++)
+        {
+            for (INT16 j = -1; j < 32; j++)
+            {
+                HSceneObject sceneRenderable = SceneObject::Create("Monkey_" + ToString(i) + "_" + ToString(j));
+                HRenderable renderableCube = sceneRenderable->AddComponent<CRenderable>();
+                renderableCube->SetMesh(_loadedMeshMonkey);
+                renderableCube->SetMaterial(_materialMonkey);
+                renderableCube->Initialize();
+
+                sceneRenderable->Move(Vector3((float)i * 3.0f, 0.0f, -(float)j * 3.0f));
+
+                _sceneRenderablesMonkeySO.push_back(sceneRenderable);
+            }
+        }
+
         // ######################################################
 
         // ######################################################
@@ -527,8 +539,12 @@ namespace te
     void CoreApplication::TestRun()
     {
 #if TE_PLATFORM == TE_PLATFORM_WIN32
-        _sceneRenderableSO->Rotate(Vector3(0.0f, 1.0f, 0.0f), Radian(1.5f * gTime().GetFrameDelta()));
-        _sceneRenderable2SO->Rotate(Vector3(0.0f, 1.0f, 0.0f), Radian(-0.5f * gTime().GetFrameDelta()));
+        //_sceneRenderableSO->Rotate(Vector3(0.0f, 1.0f, 0.0f), Radian(1.5f * gTime().GetFrameDelta()));
+
+        for (auto& so : _sceneRenderablesMonkeySO)
+        {
+            so->Rotate(Vector3(0.0f, 1.0f, 0.0f), Radian(2.0f * gTime().GetFrameDelta()));
+        }
 #endif
     }
 

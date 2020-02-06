@@ -417,7 +417,7 @@ namespace te
         void FrameSync() override;
 
     protected:
-        UINT64 _layers = 0xFFFFFFFFFFFFFFFF; /**< Bitfield that can be used for filtering what objects the camera sees. */
+        UINT64 _layers = 1; /**< Bitfield that can be used for filtering what objects the camera sees. */
 
         ProjectionType _projType = PT_PERSPECTIVE; /**< Type of camera projection. */
         Radian _horzFOV = Degree(90.0f); /**< Horizontal field of view represents how wide is the camera angle. */

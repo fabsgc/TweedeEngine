@@ -19,9 +19,8 @@ namespace te
         rapi.SetStencilRef(pass->GetStencilRefValue());
     }
 
-    void SetPassParams(const SPtr<Material>& material, UINT32 techniqueIdx, UINT32 passIdx)
+    void SetPassParams(const SPtr<GpuParams> gpuParams)
     {
-        SPtr<GpuParams> gpuParams = material->GetPassesGpuParams(techniqueIdx)[passIdx];
         if (gpuParams == nullptr)
             return;
 
@@ -37,8 +36,7 @@ namespace te
             if(entry.ApplyPass)
                 SetPass(entry.RenderElem->MaterialElem, entry.TechniqueIdx, entry.PassIdx);
 
-            SetPassParams(entry.RenderElem->MaterialElem, entry.TechniqueIdx, entry.PassIdx);
-
+            SetPassParams(entry.RenderElem->GpuParams[entry.PassIdx]);
             entry.RenderElem->Draw();
         }
     }
@@ -202,10 +200,10 @@ namespace te
 
             for (auto& element : inputs.Scene.Renderables[i]->Elements)
             {
-                Vector<SPtr<GpuParams>>& passesGpuParams = element.MaterialElem->GetPassesGpuParams(element.DefaultTechniqueIdx);
-
+                Vector<SPtr<GpuParams>>& passesGpuParams = element.GpuParams;
                 for (auto& gpuParams : passesGpuParams)
                 {
+                    // TODO call only if view has changed
                     gpuParams->SetParamBlockBuffer("PerCameraBuffer", inputs.View.GetPerViewBuffer());
                 }
             }
