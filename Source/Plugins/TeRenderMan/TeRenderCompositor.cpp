@@ -36,7 +36,7 @@ namespace te
             if(entry.ApplyPass)
                 SetPass(entry.RenderElem->MaterialElem, entry.TechniqueIdx, entry.PassIdx);
 
-            SetPassParams(entry.RenderElem->GpuParams[entry.PassIdx]);
+            SetPassParams(entry.RenderElem->GpuParamsElem[entry.PassIdx]);
             entry.RenderElem->Draw();
         }
     }
@@ -200,7 +200,7 @@ namespace te
 
             for (auto& element : inputs.Scene.Renderables[i]->Elements)
             {
-                Vector<SPtr<GpuParams>>& passesGpuParams = element.GpuParams;
+                Vector<SPtr<GpuParams>>& passesGpuParams = element.GpuParamsElem;
                 for (auto& gpuParams : passesGpuParams)
                 {
                     // TODO call only if view has changed

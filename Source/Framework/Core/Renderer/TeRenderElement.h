@@ -26,7 +26,7 @@ namespace te
         UINT32 Type = 0;
 
         /*  All params used by this element for all passes */
-        Vector<SPtr<GpuParams>> GpuParams;
+        Vector<SPtr<GpuParams>> GpuParamsElem;
 
         /** Executes the draw call for the render element. */
         virtual void Draw() const = 0;

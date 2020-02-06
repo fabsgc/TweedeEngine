@@ -355,7 +355,7 @@ namespace te
                 renElement.DefaultTechniqueIdx = InitAndRetrieveBasePassTechnique(*renElement.MaterialElem);
 
                 // Generate or assigned renderer specific data for the material
-                renElement.MaterialElem->CreateGpuParams(renElement.DefaultTechniqueIdx, renElement.GpuParams);
+                renElement.MaterialElem->CreateGpuParams(renElement.DefaultTechniqueIdx, renElement.GpuParamsElem);
 
 #if TE_DEBUG_MODE
                 ValidateBasePassMaterial(*renElement.MaterialElem, renElement.DefaultTechniqueIdx, *vertexDecl);
@@ -372,7 +372,7 @@ namespace te
                     continue;
                 }
 
-                for (auto& gpuParams : element.GpuParams)
+                for (auto& gpuParams : element.GpuParamsElem)
                 {
                     gpuParams->SetParamBlockBuffer("PerFrameBuffer", _perFrameParamBuffer);
                     gpuParams->SetParamBlockBuffer("PerObjectBuffer", rendererRenderable->PerObjectParamBuffer);
