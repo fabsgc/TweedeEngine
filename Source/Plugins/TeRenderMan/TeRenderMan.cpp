@@ -162,7 +162,7 @@ namespace te
         auto& viewProps = view.GetProperties();
 
         SPtr<GpuParamBlockBuffer> perCameraBuffer = view.GetPerViewBuffer();
-        // perCameraBuffer->FlushToGPU(); TODO
+        perCameraBuffer->FlushToGPU();
 
         view.BeginFrame(frameInfo);
 

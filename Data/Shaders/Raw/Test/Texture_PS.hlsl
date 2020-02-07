@@ -7,11 +7,6 @@ cbuffer PerCameraBuffer : register(b0)
     matrix gMatProj;
 }
 
-cbuffer PerFrameBuffer : register(b1)
-{
-    float gTime;
-}
-
 struct PS_INPUT
 {
     float4 Position : SV_POSITION;

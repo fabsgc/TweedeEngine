@@ -251,12 +251,14 @@ set (TE_CORE_INC_COMPONENTS
     "Core/Components/TeCRenderable.h"
     "Core/Components/TeCLight.h"
     "Core/Components/TeCSkybox.h"
+    "Core/Components/TeCCameraFlyer.h"
 )
 set (TE_CORE_SRC_COMPONENTS
     "Core/Components/TeCCamera.cpp"
     "Core/Components/TeCRenderable.cpp"
     "Core/Components/TeCLight.cpp"
     "Core/Components/TeCSkybox.cpp"
+    "Core/Components/TeCCameraFlyer.cpp"
 )
 
 set (TE_CORE_INC_RESOURCE

@@ -6,8 +6,11 @@
 
 namespace te 
 {
+    class RendererView;
+
     enum class StateReduction
     {
+        Never, /** Do not sort at all, reduces CPU cost */
         None, /**< No grouping based on material will be done. */
         Material, /**< Elements will be grouped by material first, by distance second. */
         Distance /**< Elements will be grouped by distance first, material second. */
@@ -17,6 +20,7 @@ namespace te
     struct RenderQueueElement
     { 
         const RenderElement* RenderElem = nullptr;
+        const RendererView* RendererViewElem = nullptr;
         UINT32 PassIdx = 0;
         UINT32 TechniqueIdx = 0;
         bool ApplyPass = true;
@@ -41,6 +45,9 @@ namespace te
         };
 
     public:
+        RenderQueue(StateReduction grouping = StateReduction::Distance);
+        ~RenderQueue();
+
         /**
          * Adds a new entry to the render queue.
          *
@@ -48,9 +55,6 @@ namespace te
          * @param[in]	distFromCamera	Distance of this object from the camera. Used for distance sorting.
          * @param[in]	techniqueIdx	Index of the technique within @p element's material that's to be used to render the element with.
          */
-        RenderQueue(StateReduction grouping = StateReduction::Distance);
-        ~RenderQueue();
-
         void Add(const RenderElement* element, float distFromCamera, UINT32 techniqueIdx);
         void Sort();
         void Clear();

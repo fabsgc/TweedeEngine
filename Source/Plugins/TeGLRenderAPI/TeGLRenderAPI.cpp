@@ -72,7 +72,8 @@ namespace te
         // TODO
     }
 
-    void GLRenderAPI::SetGpuParams(const SPtr<GpuParams>& gpuParams)
+    void GLRenderAPI::SetGpuParams(const SPtr<GpuParams>& gpuParams, UINT32 gpuParamsBindFlags,
+        UINT32 gpuParamsBlockBindFlags, const Vector<String>& paramBlocksToBind)
     {
         // TODO
     }

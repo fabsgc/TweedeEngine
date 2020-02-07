@@ -242,6 +242,24 @@ namespace te
         GPT_SAMPLER /**< Sampler type (2D, 3D, cube, etc.) */
     };
 
+    /** GPU param bind flags */
+    enum GpuParamsBindFlag
+    {
+        GPU_BIND_TEXTURE = 0x01,
+        GPU_BIND_SAMPLER = 0x02,
+        GPU_BIND_BUFFER = 0x04,
+        GPU_BIND_PARAM_BLOCK = 0x08,
+        GPU_BIND_ALL = GPU_BIND_TEXTURE | GPU_BIND_SAMPLER | GPU_BIND_BUFFER | GPU_BIND_PARAM_BLOCK
+    };
+
+    /** GPU param bind flags for choosing bind method for param blocks */
+    enum GpuParamsBindParamsBlockFlag
+    {
+        GPU_BIND_PARAM_BLOCK_ALL = 0x01,
+        GPU_BIND_PARAM_BLOCK_LISTED = 0x02,
+        GPU_BIND_PARAM_BLOCK_ALL_EXCEPT = 0x04
+    };
+
     /** Type of GPU data parameters that can be used as inputs to a GPU program. */
     enum GpuParamDataType
     {

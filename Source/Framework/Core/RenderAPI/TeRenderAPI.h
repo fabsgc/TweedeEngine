@@ -54,11 +54,18 @@ namespace te
         virtual void Destroy();
 
         /**
-         * @see RenderAPI::setGpuParams()
-         *
-         * @note This is an @ref asyncMethod "asynchronous method".
+         * Applies a set of parameters that control execution of all currently bound GPU programs. These are the uniforms
+         * like textures, samplers, or uniform buffers. Caller is expected to ensure the provided parameters actually
+         * match the currently bound programs.
+         * 
+         * @param[in]	gpuParams			GpuPArams containing all elements to bind
+         * @param[in]	gpuParamsBindFlags			Specify with kind of params you want to bind
+         * @param[in]	gpuParamsBlockBindFlags		In case you only want to bind constant buffer, you can specify how there are selected
+         * @param[in]	paramBlocksToBind			All constants buffers you want to bind by name. Be careful, buffers must to be consecutive in memory
+         * 
          */
-        virtual void SetGpuParams(const SPtr<GpuParams>& gpuParams) = 0;
+        virtual void SetGpuParams(const SPtr<GpuParams>& gpuParams, UINT32 gpuParamsBindFlags = (UINT32)GPU_BIND_ALL,
+            UINT32 gpuParamsBlockBindFlags = (UINT32)GPU_BIND_PARAM_BLOCK_ALL, const Vector<String>& paramBlocksToBind = {}) = 0;
 
         /**
          * Sets a pipeline state that controls how will subsequent draw commands render primitives.

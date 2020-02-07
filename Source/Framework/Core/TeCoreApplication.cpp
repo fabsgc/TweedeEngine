@@ -50,6 +50,7 @@
 #include "Components/TeCRenderable.h"
 #include "Components/TeCLight.h"
 #include "Components/TeCSkybox.h"
+#include "Components/TeCCameraFlyer.h"
 
 #include "Material/TeMaterial.h"
 #include "Material/TeShader.h"
@@ -306,6 +307,32 @@ namespace te
     void CoreApplication::TestStartUp()
     {
         // ######################################################
+        // Register input configuration
+        // Engine allows you to use VirtualInput system which will map input device buttons and axes to arbitrary names,
+        // which allows you to change input buttons without affecting the code that uses it, since the code is only
+        // aware of the virtual names.  If you want more direct input, see Input class.
+        auto inputConfig = gVirtualInput().GetConfiguration();
+
+        // Camera controls for buttons (digital 0-1 input, e.g. keyboard or gamepad button)
+        inputConfig->RegisterButton("Forward", TE_W);
+        inputConfig->RegisterButton("Back", TE_S);
+        inputConfig->RegisterButton("Left", TE_A);
+        inputConfig->RegisterButton("Right", TE_D);
+        inputConfig->RegisterButton("Forward", TE_UP);
+        inputConfig->RegisterButton("Back", TE_DOWN);
+        inputConfig->RegisterButton("Left", TE_LEFT);
+        inputConfig->RegisterButton("Right", TE_RIGHT);
+        inputConfig->RegisterButton("FastMove", TE_LSHIFT);
+        inputConfig->RegisterButton("RotateObj", TE_MOUSE_LEFT);
+        inputConfig->RegisterButton("RotateCam", TE_MOUSE_RIGHT);
+
+        // Camera controls for axes (analog input, e.g. mouse or gamepad thumbstick)
+        // These return values in [-1.0, 1.0] range.
+        inputConfig->RegisterAxis("Horizontal", VIRTUAL_AXIS_DESC((UINT32)InputAxis::MouseX));
+        inputConfig->RegisterAxis("Vertical", VIRTUAL_AXIS_DESC((UINT32)InputAxis::MouseY));
+        // ######################################################
+
+        // ######################################################
         auto meshImportOptions = MeshImportOptions::Create();
         meshImportOptions->ImportNormals = true;
         meshImportOptions->ImportTangents = true;
@@ -486,17 +513,18 @@ namespace te
 
         // ######################################################
         _sceneCameraSO = SceneObject::Create("SceneCamera");
+        _sceneCameraSO->AddComponent<CCameraFlyer>();
         _sceneCamera = _sceneCameraSO->AddComponent<CCamera>();
         _sceneCamera->GetViewport()->SetClearColorValue(Color(0.17f, 0.64f, 1.0f, 1.0f));
         _sceneCamera->GetViewport()->SetTarget(gCoreApplication().GetWindow());
         _sceneCamera->SetMain(true);
         _sceneCamera->Initialize();
 
-        /*_sceneRenderableSO = SceneObject::Create("Cube");
+        _sceneRenderableSO = SceneObject::Create("Cube");
         _renderableCube = _sceneRenderableSO->AddComponent<CRenderable>();
         _renderableCube->SetMesh(_loadedMeshCube);
         _renderableCube->SetMaterial(_materialCube);
-        _renderableCube->Initialize();*/
+        _renderableCube->Initialize();
 
         _sceneSkyboxSO = SceneObject::Create("Skybox");
         _skybox = _sceneSkyboxSO->AddComponent<CSkybox>();
@@ -510,9 +538,9 @@ namespace te
         _sceneCameraSO->SetPosition(Vector3(0.0f, 5.0f, 7.5f));
         _sceneCameraSO->LookAt(Vector3(0.0f, 0.0f, -3.0f));
 
-        //_sceneRenderableSO->Move(Vector3(0.0f, 0.0f, 4.0f));
+        _sceneRenderableSO->Move(Vector3(-45.0f, 0.0f, -50.0f));
 
-        for (INT16 i = -4; i < 5; i++)
+        for (INT16 i = -5; i < 6; i++)
         {
             for (INT16 j = -1; j < 32; j++)
             {
@@ -540,10 +568,10 @@ namespace te
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         //_sceneRenderableSO->Rotate(Vector3(0.0f, 1.0f, 0.0f), Radian(1.5f * gTime().GetFrameDelta()));
 
-        for (auto& so : _sceneRenderablesMonkeySO)
+        /*for (auto& so : _sceneRenderablesMonkeySO)
         {
             so->Rotate(Vector3(0.0f, 1.0f, 0.0f), Radian(2.0f * gTime().GetFrameDelta()));
-        }
+        }*/
 #endif
     }
 

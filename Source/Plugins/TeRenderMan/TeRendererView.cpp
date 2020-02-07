@@ -43,9 +43,7 @@ namespace te
     }
 
     RendererView::~RendererView()
-    {
-
-    }
+    { }
 
     void RendererView::SetStateReductionMode(StateReduction reductionMode)
     {

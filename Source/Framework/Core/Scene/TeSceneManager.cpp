@@ -185,11 +185,18 @@ namespace te
     void SceneManager::_notifyComponentCreated(const HComponent& component)
     {
         component->OnCreated();
+        _components.push_back(component);
     }
 
     void SceneManager::_notifyComponentDestroyed(const HComponent& component)
     {
         component->OnDestroyed();
+
+        auto co = std::find(_components.begin(), _components.end(), component);
+        if (co != _components.end())
+        {
+            _components.erase(co);
+        }
     }
 
     bool SceneManager::IsComponentOfType(const HComponent& component, UINT32 id)
@@ -199,6 +206,9 @@ namespace te
 
     void SceneManager::_update()
     {
+        for (auto& entry : _components)
+            entry->Update();
+
         GameObjectManager::Instance().DestroyQueuedObjects();
     }
 

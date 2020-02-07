@@ -73,7 +73,8 @@ namespace te
         void SetGraphicsPipeline(const SPtr<GraphicsPipelineState>& pipelineState) override;
 
         /** @copydoc RenderAPI::SetGpuParams */
-        void SetGpuParams(const SPtr<GpuParams>& gpuParams) override;
+        void SetGpuParams(const SPtr<GpuParams>& gpuParams, UINT32 gpuParamsBindFlags = (UINT32)GPU_BIND_ALL, 
+            UINT32 gpuParamsBlockBindFlags = (UINT32)GPU_BIND_PARAM_BLOCK_ALL, const Vector<String>& paramBlocksToBind = {}) override;
 
         /** @copydoc RenderAPI::SetViewport */
         void SetViewport(const Rect2& area) override;

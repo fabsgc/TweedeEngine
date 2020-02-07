@@ -277,7 +277,8 @@ namespace te
         _lastFrameGraphicPipeline->d3d11HullProgram = d3d11HullProgram;
     }
 
-    void D3D11RenderAPI::SetGpuParams(const SPtr<GpuParams>& gpuParams)
+    void D3D11RenderAPI::SetGpuParams(const SPtr<GpuParams>& gpuParams, UINT32 gpuParamsBindFlags, 
+        UINT32 gpuParamsBlockBindFlags, const Vector<String>& paramBlocksToBind)
     {
         ID3D11DeviceContext* context = _device->GetImmediateContext();
 
@@ -303,7 +304,22 @@ namespace te
             }
         }
 
-        auto populateViews = [&](GpuProgramType type)
+        auto PopulateParamBlocks = [&](GpuParamBlockDesc& gpuParamBlockDesc)
+        {
+            UINT32 slot = gpuParamBlockDesc.Slot;
+            SPtr<GpuParamBlockBuffer> buffer = gpuParams->GetParamBlockBuffer(gpuParamBlockDesc.Set, slot);
+
+            if (buffer != nullptr)
+            {
+                buffer->FlushToGPU();
+
+                const D3D11GpuParamBlockBuffer* d3d11paramBlockBuffer =
+                    static_cast<const D3D11GpuParamBlockBuffer*>(buffer.get());
+                _gpuResourcesContainer.constBuffers.push_back(d3d11paramBlockBuffer->GetD3D11Buffer());
+            }
+        };
+
+        auto PopulateViews = [&](GpuProgramType type, UINT32& slotConstBuffers)
         {
             _gpuResourcesContainer.srvs.clear();
             _gpuResourcesContainer.uavs.clear();
@@ -316,82 +332,99 @@ namespace te
                 return;
             }
 
-            for (auto iter = paramDesc->Textures.begin(); iter != paramDesc->Textures.end(); ++iter)
+            if (gpuParamsBindFlags & (UINT32)GPU_BIND_TEXTURE)
             {
-                UINT32 slot = iter->second.Slot;
-
-                SPtr<Texture> texture = gpuParams->GetTexture(iter->second.Set, slot);
-                const TextureSurface& surface = gpuParams->GetTextureSurface(iter->second.Set, slot);
-
-                while (slot >= (UINT32)_gpuResourcesContainer.srvs.size())
+                for (auto iter = paramDesc->Textures.begin(); iter != paramDesc->Textures.end(); ++iter)
                 {
-                    _gpuResourcesContainer.srvs.push_back(nullptr);
-                }
+                    UINT32 slot = iter->second.Slot;
 
-                if (texture != nullptr)
-                {
-                    SPtr<TextureView> texView = texture->RequestView(surface.MipLevel, surface.NumMipLevels,
-                        surface.Face, surface.NumFaces, GVU_DEFAULT);
+                    SPtr<Texture> texture = gpuParams->GetTexture(iter->second.Set, slot);
+                    const TextureSurface& surface = gpuParams->GetTextureSurface(iter->second.Set, slot);
 
-                    D3D11TextureView* d3d11texView = static_cast<D3D11TextureView*>(texView.get());
-                    _gpuResourcesContainer.srvs[slot] = d3d11texView->GetSRV();
+                    while (slot >= (UINT32)_gpuResourcesContainer.srvs.size())
+                        _gpuResourcesContainer.srvs.push_back(nullptr);
+
+                    if (texture != nullptr)
+                    {
+                        SPtr<TextureView> texView = texture->RequestView(surface.MipLevel, surface.NumMipLevels,
+                            surface.Face, surface.NumFaces, GVU_DEFAULT);
+
+                        D3D11TextureView* d3d11texView = static_cast<D3D11TextureView*>(texView.get());
+                        _gpuResourcesContainer.srvs[slot] = d3d11texView->GetSRV();
+                    }
                 }
             }
 
-            for (auto iter = paramDesc->Buffers.begin(); iter != paramDesc->Buffers.end(); ++iter)
+            if (gpuParamsBindFlags & (UINT32)GPU_BIND_BUFFER)
             {
-                UINT32 slot = iter->second.Slot;
-                SPtr<GpuBuffer> buffer = gpuParams->GetBuffer(iter->second.Set, slot);
-
-                while (slot >= (UINT32)_gpuResourcesContainer.uavs.size())
+                for (auto iter = paramDesc->Buffers.begin(); iter != paramDesc->Buffers.end(); ++iter)
                 {
-                    _gpuResourcesContainer.uavs.push_back(nullptr);
-                }
+                    UINT32 slot = iter->second.Slot;
+                    SPtr<GpuBuffer> buffer = gpuParams->GetBuffer(iter->second.Set, slot);
 
-                if (buffer != nullptr)
-                {
-                    D3D11GpuBuffer* d3d11buffer = static_cast<D3D11GpuBuffer*>(buffer.get());
-                    _gpuResourcesContainer.uavs[slot] = d3d11buffer->GetUAV();
+                    while (slot >= (UINT32)_gpuResourcesContainer.uavs.size())
+                        _gpuResourcesContainer.uavs.push_back(nullptr);
+
+                    if (buffer != nullptr)
+                    {
+                        D3D11GpuBuffer* d3d11buffer = static_cast<D3D11GpuBuffer*>(buffer.get());
+                        _gpuResourcesContainer.uavs[slot] = d3d11buffer->GetUAV();
+                    }
                 }
             }
 
-            for (auto iter = paramDesc->Samplers.begin(); iter != paramDesc->Samplers.end(); ++iter)
+            if (gpuParamsBindFlags & (UINT32)GPU_BIND_SAMPLER)
             {
-                UINT32 slot = iter->second.Slot;
-                SPtr<SamplerState> samplerState = gpuParams->GetSamplerState(iter->second.Set, slot);
-
-                while (slot >= (UINT32)_gpuResourcesContainer.samplers.size())
+                for (auto iter = paramDesc->Samplers.begin(); iter != paramDesc->Samplers.end(); ++iter)
                 {
-                    _gpuResourcesContainer.samplers.push_back(nullptr);
-                }
+                    UINT32 slot = iter->second.Slot;
+                    SPtr<SamplerState> samplerState = gpuParams->GetSamplerState(iter->second.Set, slot);
 
-                if (samplerState == nullptr)
-                {
-                    samplerState = SamplerState::GetDefault();
-                }
+                    while (slot >= (UINT32)_gpuResourcesContainer.samplers.size())
+                        _gpuResourcesContainer.samplers.push_back(nullptr);
 
-                D3D11SamplerState* d3d11SamplerState =
-                    static_cast<D3D11SamplerState*>(const_cast<SamplerState*>(samplerState.get()));
-                _gpuResourcesContainer.samplers[slot] = d3d11SamplerState->GetInternal();
+                    if (samplerState == nullptr)
+                    {
+                        samplerState = SamplerState::GetDefault();
+                    }
+
+                    D3D11SamplerState* d3d11SamplerState =
+                        static_cast<D3D11SamplerState*>(const_cast<SamplerState*>(samplerState.get()));
+                    _gpuResourcesContainer.samplers[slot] = d3d11SamplerState->GetInternal();
+                }
             }
 
-            for (auto iter = paramDesc->ParamBlocks.begin(); iter != paramDesc->ParamBlocks.end(); ++iter)
+            if (gpuParamsBindFlags & (UINT32)GPU_BIND_PARAM_BLOCK)
             {
-                UINT32 slot = iter->second.Slot;
-                SPtr<GpuParamBlockBuffer> buffer = gpuParams->GetParamBlockBuffer(iter->second.Set, slot);
-
-                while (slot >= (UINT32)_gpuResourcesContainer.constBuffers.size())
+                //The easiest case : we bind all paramblock buffers (constant buffers)
+                if (gpuParamsBlockBindFlags & (UINT32)GPU_BIND_PARAM_BLOCK_ALL)
                 {
-                    _gpuResourcesContainer.constBuffers.push_back(nullptr);
+                    slotConstBuffers = 0;
+                    for (auto iter = paramDesc->ParamBlocks.begin(); iter != paramDesc->ParamBlocks.end(); ++iter)
+                        PopulateParamBlocks(iter->second);
                 }
-
-                if (buffer != nullptr)
+                else //He we only bind 
                 {
-                    buffer->FlushToGPU();
+                    INT8 firstSlot = -1;
+                    slotConstBuffers = 0;
 
-                    const D3D11GpuParamBlockBuffer* d3d11paramBlockBuffer =
-                        static_cast<const D3D11GpuParamBlockBuffer*>(buffer.get());
-                    _gpuResourcesContainer.constBuffers[slot] = d3d11paramBlockBuffer->GetD3D11Buffer();
+                    for (auto iter = paramDesc->ParamBlocks.begin(); iter != paramDesc->ParamBlocks.end(); ++iter)
+                    {
+                        auto findNameInList = std::find(paramBlocksToBind.begin(), paramBlocksToBind.end(), iter->second.Name);
+                        if (gpuParamsBlockBindFlags & (UINT32)GPU_BIND_PARAM_BLOCK_ALL_EXCEPT && findNameInList == paramBlocksToBind.end())
+                        {
+                            PopulateParamBlocks(iter->second);
+                            if (firstSlot == -1) firstSlot = iter->second.Slot;
+                        }
+                        else if (gpuParamsBlockBindFlags & (UINT32)GPU_BIND_PARAM_BLOCK_LISTED && findNameInList != paramBlocksToBind.end())
+                        {
+                            PopulateParamBlocks(iter->second);
+                            if (firstSlot == -1) firstSlot = iter->second.Slot;
+                        }
+                    }
+
+                    if(firstSlot != -1)
+                        slotConstBuffers = (UINT32)firstSlot;
                 }
             }
         };
@@ -399,68 +432,75 @@ namespace te
         UINT32 numSRVs = 0;
         UINT32 numUAVs = 0;
         UINT32 numConstBuffers = 0;
+        UINT32 slotConstBuffers = 0;
         UINT32 numSamplers = 0;
 
-        populateViews(GPT_VERTEX_PROGRAM);
-        numSRVs = (UINT32)_gpuResourcesContainer.srvs.size();
-        numConstBuffers = (UINT32)_gpuResourcesContainer.constBuffers.size();
-        numSamplers = (UINT32)_gpuResourcesContainer.samplers.size();
-
-        if (numSRVs > 0) context->VSSetShaderResources(0, numSRVs, _gpuResourcesContainer.srvs.data());
-        if (numConstBuffers > 0) context->VSSetConstantBuffers(0, numConstBuffers, _gpuResourcesContainer.constBuffers.data());
-        if (numSamplers > 0) context->VSSetSamplers(0, numSamplers, _gpuResourcesContainer.samplers.data());
-
-        populateViews(GPT_PIXEL_PROGRAM);
-        numSRVs = (UINT32)_gpuResourcesContainer.srvs.size();
-        numUAVs = (UINT32)_gpuResourcesContainer.uavs.size();
-        numConstBuffers = (UINT32)_gpuResourcesContainer.constBuffers.size();
-        numSamplers = (UINT32)_gpuResourcesContainer.samplers.size();
-
-        if (numSRVs > 0) context->PSSetShaderResources(0, numSRVs, _gpuResourcesContainer.srvs.data());
-
-        if (numUAVs > 0)
+        if (_lastFrameGraphicPipeline->d3d11VertexProgram)
         {
-            context->OMSetRenderTargetsAndUnorderedAccessViews(
-                D3D11_KEEP_RENDER_TARGETS_AND_DEPTH_STENCIL, nullptr, nullptr, 0, numUAVs, _gpuResourcesContainer.uavs.data(), nullptr);
-            _PSUAVsBound = true;
+            PopulateViews(GPT_VERTEX_PROGRAM, slotConstBuffers);
+            numSRVs = (UINT32)_gpuResourcesContainer.srvs.size();
+            numConstBuffers = (UINT32)_gpuResourcesContainer.constBuffers.size();
+            numSamplers = (UINT32)_gpuResourcesContainer.samplers.size();
+
+            if (numSRVs > 0) context->VSSetShaderResources(0, numSRVs, _gpuResourcesContainer.srvs.data());
+            if (numConstBuffers > 0) context->VSSetConstantBuffers(slotConstBuffers, numConstBuffers, _gpuResourcesContainer.constBuffers.data());
+            if (numSamplers > 0) context->VSSetSamplers(0, numSamplers, _gpuResourcesContainer.samplers.data());
         }
 
-        if (numConstBuffers > 0) context->PSSetConstantBuffers(0, numConstBuffers, _gpuResourcesContainer.constBuffers.data());
-        if (numSamplers > 0) context->PSSetSamplers(0, numSamplers, _gpuResourcesContainer.samplers.data());
+        if (_lastFrameGraphicPipeline->d3d11PixelProgram)
+        {
+            PopulateViews(GPT_PIXEL_PROGRAM, slotConstBuffers);
+            numSRVs = (UINT32)_gpuResourcesContainer.srvs.size();
+            numUAVs = (UINT32)_gpuResourcesContainer.uavs.size();
+            numConstBuffers = (UINT32)_gpuResourcesContainer.constBuffers.size();
+            numSamplers = (UINT32)_gpuResourcesContainer.samplers.size();
+
+            if (numSRVs > 0) context->PSSetShaderResources(0, numSRVs, _gpuResourcesContainer.srvs.data());
+
+            if (numUAVs > 0)
+            {
+                context->OMSetRenderTargetsAndUnorderedAccessViews(
+                    D3D11_KEEP_RENDER_TARGETS_AND_DEPTH_STENCIL, nullptr, nullptr, 0, numUAVs, _gpuResourcesContainer.uavs.data(), nullptr);
+                _PSUAVsBound = true;
+            }
+
+            if (numConstBuffers > 0) context->PSSetConstantBuffers(slotConstBuffers, numConstBuffers, _gpuResourcesContainer.constBuffers.data());
+            if (numSamplers > 0) context->PSSetSamplers(0, numSamplers, _gpuResourcesContainer.samplers.data());
+        }
 
         if (_lastFrameGraphicPipeline->d3d11GeometryProgram)
         {
-            populateViews(GPT_GEOMETRY_PROGRAM);
+            PopulateViews(GPT_GEOMETRY_PROGRAM, slotConstBuffers);
             numSRVs = (UINT32)_gpuResourcesContainer.srvs.size();
             numConstBuffers = (UINT32)_gpuResourcesContainer.constBuffers.size();
             numSamplers = (UINT32)_gpuResourcesContainer.samplers.size();
 
             if (numSRVs > 0) context->GSSetShaderResources(0, numSRVs, _gpuResourcesContainer.srvs.data());
-            if (numConstBuffers > 0) context->GSSetConstantBuffers(0, numConstBuffers, _gpuResourcesContainer.constBuffers.data());
+            if (numConstBuffers > 0) context->GSSetConstantBuffers(slotConstBuffers, numConstBuffers, _gpuResourcesContainer.constBuffers.data());
             if (numSamplers > 0) context->GSSetSamplers(0, numSamplers, _gpuResourcesContainer.samplers.data());
         }
 
         if (_lastFrameGraphicPipeline->d3d11HullProgram)
         {
-            populateViews(GPT_HULL_PROGRAM);
+            PopulateViews(GPT_HULL_PROGRAM, slotConstBuffers);
             numSRVs = (UINT32)_gpuResourcesContainer.srvs.size();
             numConstBuffers = (UINT32)_gpuResourcesContainer.constBuffers.size();
             numSamplers = (UINT32)_gpuResourcesContainer.samplers.size();
 
             if (numSRVs > 0) context->HSSetShaderResources(0, numSRVs, _gpuResourcesContainer.srvs.data());
-            if (numConstBuffers > 0) context->HSSetConstantBuffers(0, numConstBuffers, _gpuResourcesContainer.constBuffers.data());
+            if (numConstBuffers > 0) context->HSSetConstantBuffers(slotConstBuffers, numConstBuffers, _gpuResourcesContainer.constBuffers.data());
             if (numSamplers > 0) context->HSSetSamplers(0, numSamplers, _gpuResourcesContainer.samplers.data());
         }
 
         if (_lastFrameGraphicPipeline->d3d11DomainProgram)
         {
-            populateViews(GPT_DOMAIN_PROGRAM);
+            PopulateViews(GPT_DOMAIN_PROGRAM, slotConstBuffers);
             numSRVs = (UINT32)_gpuResourcesContainer.srvs.size();
             numConstBuffers = (UINT32)_gpuResourcesContainer.constBuffers.size();
             numSamplers = (UINT32)_gpuResourcesContainer.samplers.size();
 
             if (numSRVs > 0) context->DSSetShaderResources(0, numSRVs, _gpuResourcesContainer.srvs.data());
-            if (numConstBuffers > 0) context->DSSetConstantBuffers(0, numConstBuffers, _gpuResourcesContainer.constBuffers.data());
+            if (numConstBuffers > 0) context->DSSetConstantBuffers(slotConstBuffers, numConstBuffers, _gpuResourcesContainer.constBuffers.data());
             if (numSamplers > 0) context->DSSetSamplers(0, numSamplers, _gpuResourcesContainer.samplers.data());
         }
     }

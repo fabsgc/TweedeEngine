@@ -19,24 +19,44 @@ namespace te
         rapi.SetStencilRef(pass->GetStencilRefValue());
     }
 
-    void SetPassParams(const SPtr<GpuParams> gpuParams)
+    void SetPassParams(const SPtr<GpuParams> gpuParams, UINT32 gpuParamsBindFlags)
     {
         if (gpuParams == nullptr)
             return;
 
         RenderAPI& rapi = RenderAPI::Instance();
-        rapi.SetGpuParams(gpuParams);
+        rapi.SetGpuParams(gpuParams, gpuParamsBindFlags, GPU_BIND_PARAM_BLOCK_ALL_EXCEPT, { "PerCameraBuffer" });
     }
 
     /** Renders all elements in a render queue. */
-    void RenderQueueElements(const Vector<RenderQueueElement>& elements)
+    void RenderQueueElements(const Vector<RenderQueueElement>& elements, const RendererView& view)
     {
+        SPtr<Material> lastMaterial = nullptr;
+        UINT32 gpuParamsBindFlags = 0;
+
         for(auto& entry : elements)
         {
             if(entry.ApplyPass)
                 SetPass(entry.RenderElem->MaterialElem, entry.TechniqueIdx, entry.PassIdx);
 
-            SetPassParams(entry.RenderElem->GpuParamsElem[entry.PassIdx]);
+            // If Material is the same as the previous object, we only set constant buffer params
+            // Instead, we set full gpu params
+            // We also set camera buffer view here (because it will set PerCameraBuffer correctly for the current pass on this material only once)
+            if (!lastMaterial || lastMaterial != entry.RenderElem->MaterialElem)
+            {
+                gpuParamsBindFlags = GPU_BIND_ALL;
+                lastMaterial = entry.RenderElem->MaterialElem;
+
+                RenderAPI& rapi = RenderAPI::Instance();
+                entry.RenderElem->GpuParamsElem[entry.PassIdx]
+                    ->SetParamBlockBuffer("PerCameraBuffer", view.GetPerViewBuffer());
+                rapi.SetGpuParams(entry.RenderElem->GpuParamsElem[entry.PassIdx], 
+                    GPU_BIND_PARAM_BLOCK, GPU_BIND_PARAM_BLOCK_LISTED, { "PerCameraBuffer" });
+            }
+            else
+                gpuParamsBindFlags = GPU_BIND_PARAM_BLOCK;
+
+            SetPassParams(entry.RenderElem->GpuParamsElem[entry.PassIdx], gpuParamsBindFlags);
             entry.RenderElem->Draw();
         }
     }
@@ -197,16 +217,6 @@ namespace te
 
             RendererRenderable* rendererRenderable = inputs.Scene.Renderables[i];
             rendererRenderable->UpdatePerCallBuffer(viewProps.ViewProjTransform);
-
-            for (auto& element : inputs.Scene.Renderables[i]->Elements)
-            {
-                Vector<SPtr<GpuParams>>& passesGpuParams = element.GpuParamsElem;
-                for (auto& gpuParams : passesGpuParams)
-                {
-                    // TODO call only if view has changed
-                    gpuParams->SetParamBlockBuffer("PerCameraBuffer", inputs.View.GetPerViewBuffer());
-                }
-            }
         }
 
         RenderAPI& rapi = RenderAPI::Instance();
@@ -218,7 +228,7 @@ namespace te
 
         // Render all visible opaque elements
         RenderQueue* opaqueElements = inputs.View.GetOpaqueQueue().get();
-        RenderQueueElements(opaqueElements->GetSortedElements());
+        RenderQueueElements(opaqueElements->GetSortedElements(), inputs.View);
     }
 
     void RCNodeForwardPass::Clear()

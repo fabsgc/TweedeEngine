@@ -37,7 +37,7 @@
 #   endif
 #else 
 #   ifndef TE_DEBUG
-#   define TE_DEBUG(message, file, line)
+#   define TE_DEBUG(message, file, line) 
 #   endif
 #   ifndef TE_PRINT
 #   define TE_PRINT(message)
