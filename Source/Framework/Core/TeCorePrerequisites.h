@@ -225,6 +225,7 @@ namespace te
     typedef GameObjectHandle<CRenderable> HRenderable;
     typedef GameObjectHandle<Component> HComponent;
     typedef GameObjectHandle<CCamera> HCamera;
+    typedef GameObjectHandle<CCameraFlyer> HCameraFlyer;
     typedef GameObjectHandle<CLight> HLight;
     typedef GameObjectHandle<CSkybox> HSkybox;
 }

@@ -20,7 +20,6 @@ namespace te
     struct RenderQueueElement
     { 
         const RenderElement* RenderElem = nullptr;
-        const RendererView* RendererViewElem = nullptr;
         UINT32 PassIdx = 0;
         UINT32 TechniqueIdx = 0;
         bool ApplyPass = true;

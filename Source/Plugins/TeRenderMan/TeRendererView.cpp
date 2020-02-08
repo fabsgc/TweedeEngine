@@ -12,6 +12,27 @@ namespace te
 {
     PerCameraParamDef gPerCameraParamDef;
 
+    /** Struct used to compare two instanced buffer */
+    bool operator==(const InstancedBuffer& lhs, const InstancedBuffer& rhs)
+    {
+        size_t lhsSize = lhs.Materials.size();
+        size_t rhsSize = rhs.Materials.size();
+
+        if (lhs.MeshElem != rhs.MeshElem) return false;
+        if (lhsSize != rhsSize) return false;
+
+        if (lhsSize == rhsSize)
+        {
+            for (size_t i = 0; i < lhsSize; i++)
+            {
+                if (lhs.Materials[i].get() != rhs.Materials[i].get())
+                    return false;
+            }
+        }
+
+        return true;
+    }
+
     RendererViewProperties::RendererViewProperties(const RENDERER_VIEW_DESC& src)
         : RendererViewData(src)
         , FrameIdx(0)
@@ -228,6 +249,62 @@ namespace te
         _forwardTransparentQueue->Sort();
     }
 
+    void RendererView::QueueRenderInstancedElements(const SceneInfo& sceneInfo, InstancedBuffer& instancedBuffer)
+    {
+        UINT32 idx = instancedBuffer.Idx[0];
+        Vector<PerInstanceData> instanceData;
+
+        const AABox& boundingBox = sceneInfo.RenderableCullInfos[idx].Boundaries.GetBox();
+        const float distanceToCamera = (_properties.ViewOrigin - boundingBox.GetCenter()).Length();
+
+        for (auto& elemId : instancedBuffer.Idx)
+        {
+            //Once all this stuff is done, we need to write into perinstance buffer
+            SPtr<GpuParamBlockBuffer> buffer = sceneInfo.Renderables[elemId]->PerObjectParamBuffer;
+
+            PerInstanceData data;
+
+            data.gMatWorld = gPerObjectParamDef.gMatWorld.Get(buffer);
+            data.gMatInvWorld = gPerObjectParamDef.gMatInvWorld.Get(buffer);
+            data.gMatWorldNoScale = gPerObjectParamDef.gMatWorldNoScale.Get(buffer);
+            data.gMatInvWorldNoScale = gPerObjectParamDef.gMatInvWorldNoScale.Get(buffer);
+            data.gMatPrevWorld = gPerObjectParamDef.gMatPrevWorld.Get(buffer);
+            data.gLayer = gPerObjectParamDef.gLayer.Get(buffer);
+
+            instanceData.push_back(data);
+        }
+
+        // We update per object and per instance buffer
+        sceneInfo.Renderables[idx]->UpdatePerInstanceBuffer(instanceData);
+
+        // We create all instanced render element using first RendererRenderable data
+        for (auto& renderElem : sceneInfo.Renderables[idx]->Elements)
+        {
+            SPtr<RenderableElement> elem = te_shared_ptr_new<RenderableElement>();
+            elem->MeshElem = renderElem.MeshElem;
+            elem->SubMeshElem = renderElem.SubMeshElem;
+            elem->MaterialElem = renderElem.MaterialElem;
+            elem->DefaultTechniqueIdx = renderElem.DefaultTechniqueIdx;
+            elem->Type = renderElem.Type;
+            elem->InstanceCount = instancedBuffer.Idx.size();
+            elem->GpuParamsElem = renderElem.GpuParamsElem;
+
+            _instancedElements.push_back(elem);
+
+            UINT32 shaderFlags = renderElem.MaterialElem->GetShader()->GetFlags();
+            UINT32 techniqueIdx = renderElem.DefaultTechniqueIdx;
+
+            // Note: I could keep renderables in multiple separate arrays, so I don't need to do the check here
+            if (shaderFlags & (UINT32)ShaderFlag::Transparent)
+                _forwardTransparentQueue->Add(elem.get(), distanceToCamera, techniqueIdx);
+            else
+                _forwardOpaqueQueue->Add(elem.get(), distanceToCamera, techniqueIdx);
+        }
+
+        sceneInfo.Renderables[idx]->PerObjectParamBuffer->FlushToGPU();
+        sceneInfo.Renderables[idx]->PerInstanceParamBuffer->FlushToGPU();
+    }
+
     void RendererView::UpdatePerViewBuffer()
     {
         Matrix4 viewProj = _properties.ProjTransform * _properties.ViewTransform;
@@ -300,10 +377,48 @@ namespace te
         {
             _views[i]->DetermineVisible(sceneInfo.Renderables, sceneInfo.RenderableCullInfos, &_visibility.Renderables);
         }
+    }
+
+    void RendererViewGroup::GenerateRenderQueue(const SceneInfo& sceneInfo, bool instancingEnabled)
+    {
+        const auto numViews = (UINT32)_views.size();
+        const auto numRenderables = (UINT32)sceneInfo.Renderables.size();
+
+        Vector<InstancedBuffer> instancedBuffers;
+
+        // We will separate renderables based on <Material*> and <Renderable*>
+        for (UINT32 i = 0; i < numRenderables; i++)
+        {
+            InstancedBuffer key;
+            key.MeshElem = sceneInfo.Renderables[i]->RenderablePtr->GetMesh().get();
+            key.Materials = sceneInfo.Renderables[i]->RenderablePtr->GetMaterials();
+            key.Idx.push_back(i);
+
+            auto iter = find(instancedBuffers.begin(), instancedBuffers.end(), key);
+
+            if (iter == instancedBuffers.end())
+                instancedBuffers.push_back(key);
+            else
+                iter->Idx.push_back(i);
+        }
 
         // Generate render queues per camera
         for (UINT32 i = 0; i < numViews; i++)
         {
+            _views[i]->_instancedElements.clear();
+
+            // If we have 5 times the same element, we try to instance it
+            for (auto& instancedBuffer : instancedBuffers)
+            {
+                if (instancedBuffer.Idx.size() > 5)
+                {
+                    for (auto& idx : instancedBuffer.Idx)
+                        _views[i]->_visibility.Renderables[idx] = false;
+
+                    _views[i]->QueueRenderInstancedElements(sceneInfo, instancedBuffer);
+                }
+            }
+
             if (_views[i]->ShouldDraw3D())
                 _views[i]->QueueRenderElements(sceneInfo);
         }

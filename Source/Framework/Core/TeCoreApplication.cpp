@@ -61,8 +61,15 @@ namespace te
 {
     TE_MODULE_STATIC_MEMBER(CoreApplication)
 
-    AppPerCameraParamDef gAppPerCameraParamDef;
-    AppPerObjectParamDef gAppPerObjectParamDef;
+    struct PerInstanceData
+    {
+        Matrix4 gMatWorld;
+        Matrix4 gMatInvWorld;
+        Matrix4 gMatWorldNoScale;
+        Matrix4 gMatInvWorldNoScale;
+        Matrix4 gMatPrevWorld;
+        INT32   gLayer;
+    };
 
     CoreApplication::CoreApplication(START_UP_DESC desc)
         : _window(nullptr)
@@ -425,7 +432,7 @@ namespace te
         samplerDesc.MinFilter = FO_ANISOTROPIC;
         samplerDesc.MagFilter = FO_ANISOTROPIC;
         samplerDesc.MipFilter = FO_ANISOTROPIC;
-        samplerDesc.MaxAnisotropy = 8;
+        samplerDesc.MaxAnisotropy = 2;
 
         SPtr<BlendState> blendState = BlendState::Create(blendDesc);
         SPtr<RasterizerState> rasterizerState = RasterizerState::Create(rastDesc);
@@ -464,10 +471,14 @@ namespace te
         SHADER_DATA_PARAM_DESC gMatInvWorldNoScaleDesc("gMatInvWorldNoScale", "gMatInvWorldNoScale", GPDT_MATRIX_4X4);
         SHADER_DATA_PARAM_DESC gMatPrevWorldDesc("gMatPrevWorld", "gMatPrevWorld", GPDT_MATRIX_4X4);
         SHADER_DATA_PARAM_DESC gLayerDesc("gLayer", "gLayer", GPDT_INT1);
+        SHADER_DATA_PARAM_DESC gInstancedDesc("gInstaced", "gInstaced", GPDT_INT1);
 
         SHADER_DATA_PARAM_DESC gTime("gTime", "gTime", GPDT_FLOAT1);
 
         SHADER_DATA_PARAM_DESC gMatWorldViewProj("gMatWorldViewProj", "gMatWorldViewProj", GPDT_MATRIX_4X4);
+
+        SHADER_DATA_PARAM_DESC gInstanceData("gInstanceData", "gInstanceData", GPDT_STRUCT);
+        gInstanceData.ElementSize = sizeof(PerInstanceData);
 
         SHADER_OBJECT_PARAM_DESC anisotropicSamplerDesc("AnisotropicSampler", "AnisotropicSampler", GPOT_SAMPLER2D);
         SHADER_OBJECT_PARAM_DESC colorTextureDesc("ColorTexture", "ColorTexture", GPOT_TEXTURE2D);
@@ -485,12 +496,13 @@ namespace te
         shaderDesc.AddParameter(gMatInvWorldNoScaleDesc);
         shaderDesc.AddParameter(gMatPrevWorldDesc);
         shaderDesc.AddParameter(gLayerDesc);
-
-        shaderDesc.AddParameter(gLayerDesc);
+        shaderDesc.AddParameter(gInstancedDesc);
 
         shaderDesc.AddParameter(gTime);
 
         shaderDesc.AddParameter(gMatWorldViewProj);
+
+        shaderDesc.AddParameter(gInstanceData);
 
         shaderDesc.AddParameter(anisotropicSamplerDesc);
         shaderDesc.AddParameter(colorTextureDesc);
@@ -513,10 +525,12 @@ namespace te
 
         // ######################################################
         _sceneCameraSO = SceneObject::Create("SceneCamera");
-        _sceneCameraSO->AddComponent<CCameraFlyer>();
+        _sceneCameraFlyer = _sceneCameraSO->AddComponent<CCameraFlyer>();
         _sceneCamera = _sceneCameraSO->AddComponent<CCamera>();
         _sceneCamera->GetViewport()->SetClearColorValue(Color(0.17f, 0.64f, 1.0f, 1.0f));
         _sceneCamera->GetViewport()->SetTarget(gCoreApplication().GetWindow());
+        _sceneCamera->SetMSAACount(8);
+        _sceneCamera->SetProjectionType(ProjectionType::PT_PERSPECTIVE);
         _sceneCamera->SetMain(true);
         _sceneCamera->Initialize();
 
@@ -542,7 +556,7 @@ namespace te
 
         for (INT16 i = -5; i < 6; i++)
         {
-            for (INT16 j = -1; j < 32; j++)
+            for (INT16 j = -1; j < 8; j++)
             {
                 HSceneObject sceneRenderable = SceneObject::Create("Monkey_" + ToString(i) + "_" + ToString(j));
                 HRenderable renderableCube = sceneRenderable->AddComponent<CRenderable>();
@@ -551,6 +565,7 @@ namespace te
                 renderableCube->Initialize();
 
                 sceneRenderable->Move(Vector3((float)i * 3.0f, 0.0f, -(float)j * 3.0f));
+                //sceneRenderable->SetMobility(ObjectMobility::Static);
 
                 _sceneRenderablesMonkeySO.push_back(sceneRenderable);
             }

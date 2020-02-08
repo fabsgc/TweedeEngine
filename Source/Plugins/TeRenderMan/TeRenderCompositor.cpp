@@ -228,7 +228,9 @@ namespace te
 
         // Render all visible opaque elements
         RenderQueue* opaqueElements = inputs.View.GetOpaqueQueue().get();
+        RenderQueue* transparentElements = inputs.View.GetTransparentQueue().get();
         RenderQueueElements(opaqueElements->GetSortedElements(), inputs.View);
+        RenderQueueElements(transparentElements->GetSortedElements(), inputs.View);
     }
 
     void RCNodeForwardPass::Clear()

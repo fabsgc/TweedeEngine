@@ -7,6 +7,7 @@
 
 namespace te
 {
+    /** Contains all information needed for rendering a single sub-mesh. Closely tied with Renderer. */
     class TE_CORE_EXPORT RenderElement
     {
     public:
@@ -25,11 +26,17 @@ namespace te
         /** Renderer specific value that identifies the type of this renderable element. */
         UINT32 Type = 0;
 
+        /** We can know if the element is instanced or not */
+        int InstanceCount = 0;
+
         /*  All params used by this element for all passes */
         Vector<SPtr<GpuParams>> GpuParamsElem;
 
         /** Executes the draw call for the render element. */
         virtual void Draw() const = 0;
+
+        /** Set GpuParams for this element. */
+        virtual void UpdateGpuParams() const = 0;
 
     protected:
         RenderElement();

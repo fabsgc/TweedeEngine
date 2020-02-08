@@ -20,45 +20,6 @@ namespace te
         Vector<String> Importers; /** A list of importer plugins to load. */
     };
 
-    TE_PARAM_BLOCK_BEGIN(AppPerCameraParamDef)
-        TE_PARAM_BLOCK_ENTRY(Vector3, gViewDir)
-        TE_PARAM_BLOCK_ENTRY(Vector3, gViewOrigin)
-        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatViewProj)
-        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatView)
-        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatProj)
-    TE_PARAM_BLOCK_END
-
-    extern AppPerCameraParamDef gAppPerCameraParamDef;
-
-    TE_PARAM_BLOCK_BEGIN(AppSkyboxParamDef)
-        TE_PARAM_BLOCK_ENTRY(Color, gClearColor)
-    TE_PARAM_BLOCK_END
-
-    extern AppSkyboxParamDef gAppSkyboxParamDef;
-
-    TE_PARAM_BLOCK_BEGIN(AppPerFrameParamDef)
-        TE_PARAM_BLOCK_ENTRY(float, gTime)
-    TE_PARAM_BLOCK_END
-
-    extern AppPerFrameParamDef gAppPerFrameParamDef;
-
-    TE_PARAM_BLOCK_BEGIN(AppPerObjectParamDef)
-        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatWorld)
-        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatInvWorld)
-        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatWorldNoScale)
-        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatInvWorldNoScale)
-        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatPrevWorld)
-        TE_PARAM_BLOCK_ENTRY(INT32, gLayer)
-    TE_PARAM_BLOCK_END
-
-    extern AppPerObjectParamDef gAppPerObjectParamDef;
-
-    TE_PARAM_BLOCK_BEGIN(AppPerCallParamDef)
-        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatWorldViewProj)
-    TE_PARAM_BLOCK_END
-
-    extern AppPerCallParamDef gAppPerCallParamDef;
-
     /**
      * Represents the primary entry point for the core systems. Handles start-up, shutdown, primary loop and allows you to
      * load and unload plugins.
@@ -171,6 +132,7 @@ namespace te
         SPtr<VertexDeclaration> _vertexDeclaration;
 
         HCamera _sceneCamera;
+        HCameraFlyer _sceneCameraFlyer;
 
         HMesh _loadedMeshCube;
         HMesh _loadedMeshMonkey;

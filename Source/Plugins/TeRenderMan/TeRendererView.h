@@ -113,6 +113,14 @@ namespace te
         Vector<Camera*> Cameras;
     };
 
+    /** Struct used to store elements that can be instanced in renderQueue */
+    struct InstancedBuffer
+    {
+        Mesh* MeshElem;
+        Vector<SPtr<Material>> Materials;
+        Vector<UINT32> Idx;
+    };
+
     /** Information used for culling an object against a view. */
     struct CullInfo
     {
@@ -207,6 +215,13 @@ namespace te
          */
         void QueueRenderElements(const SceneInfo& sceneInfo);
 
+        /**
+         * Inserts all visible instanced renderable elements into render queues. Assumes visibility has been calculated beforehand
+         * by calling determineVisible(). After the call render elements can be retrieved from the queues using
+         * getOpaqueQueue or getTransparentQueue() calls.
+         */
+        void QueueRenderInstancedElements(const SceneInfo& sceneInfo, InstancedBuffer& instancedBuffers);
+
         /** Returns the visibility mask calculated with the last call to determineVisible(). */
 		const VisibilityInfo& GetVisibilityInfo() const { return _visibility; }
 
@@ -232,6 +247,9 @@ namespace te
         void _notifyNeedsRedraw();
 
     private:
+        friend class RendererViewGroup;
+
+    private:
         RendererViewProperties _properties;
         Camera* _camera;
 
@@ -252,6 +270,8 @@ namespace te
 
         SPtr<RenderQueue> _forwardOpaqueQueue;
         SPtr<RenderQueue> _forwardTransparentQueue;
+
+        Vector<SPtr<RenderableElement>> _instancedElements; //Elements are updated every frame
     };
 
     /** Contains one or multiple RendererView%s that are in some way related. */
@@ -285,6 +305,14 @@ namespace te
          * visibility information.
          */
         void DetermineVisibility(const SceneInfo& sceneInfo);
+    
+        /**
+        * Once we have set visibility information for all Renderables, we wil decide if some of them can be instanced
+        */
+        void GenerateRenderQueue(const SceneInfo& sceneInfo, bool instancingEnabled = true);
+
+    private:
+        friend class RenderView;
 
     private:
         Vector<RendererView*> _views;

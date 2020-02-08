@@ -4,6 +4,7 @@
 
 namespace te
 { 
+    PerInstanceParamDef gPerInstanceParamDef;
     PerObjectParamDef gPerObjectParamDef;
     PerCallParamDef gPerCallParamDef;
 
@@ -16,7 +17,22 @@ namespace te
         gPerObjectParamDef.gMatInvWorldNoScale.Set(buffer, tfrmNoScale.InverseAffine().Transpose());
         gPerObjectParamDef.gMatPrevWorld.Set(buffer, prevTfrm.Transpose());
         gPerObjectParamDef.gLayer.Set(buffer, (INT32)layer);
+        gPerObjectParamDef.gInstanced.Set(buffer, (INT32)0);
     }
+
+    void PerObjectBuffer::UpdatePerInstance(SPtr<GpuParamBlockBuffer>& perObjectBuffer, 
+        SPtr<GpuParamBlockBuffer>& perInstanceBuffer, const Vector<PerInstanceData>& instanceData)
+    {
+        gPerObjectParamDef.gInstanced.Set(perObjectBuffer, (UINT32)1);
+
+        for (size_t i = 0; i < instanceData.size(); i++)
+        {
+            gPerInstanceParamDef.gInstances.Set(perInstanceBuffer, instanceData[i], (UINT32)i);
+        }
+    }
+
+    void RenderableElement::UpdateGpuParams() const
+    { }
 
     void RenderableElement::Draw() const
     {
@@ -55,8 +71,17 @@ namespace te
         rapi.SetDrawOperation(SubMeshElem.DrawOp);
 
         UINT32 indexCount = SubMeshElem.IndexCount;
-        rapi.DrawIndexed(SubMeshElem.IndexOffset + MeshElem->GetIndexOffset(), indexCount, MeshElem->GetVertexOffset(),
-            vertexData->vertexCount, 0);
+
+        if (InstanceCount > 0)
+        {
+            rapi.DrawIndexed(SubMeshElem.IndexOffset + MeshElem->GetIndexOffset(), indexCount, MeshElem->GetVertexOffset(),
+                vertexData->vertexCount, InstanceCount);
+        }
+        else
+        {
+            rapi.DrawIndexed(SubMeshElem.IndexOffset + MeshElem->GetIndexOffset(), indexCount, MeshElem->GetVertexOffset(),
+                vertexData->vertexCount, 0);
+        }
 
         MeshElem->_notifyUsedOnGPU();
     }
@@ -64,6 +89,7 @@ namespace te
     RendererRenderable::RendererRenderable()
     {
         PerObjectParamBuffer = gPerObjectParamDef.CreateBuffer();
+        PerInstanceParamBuffer = gPerInstanceParamDef.CreateBuffer();
         PerCallParamBuffer = gPerCallParamDef.CreateBuffer();
     }
 
@@ -75,6 +101,11 @@ namespace te
         const Matrix4 worldNoScaleTransform = RenderablePtr->GetMatrixNoScale();
         const UINT32 layer = Bitwise::mostSignificantBit(RenderablePtr->GetLayer());
         PerObjectBuffer::Update(PerObjectParamBuffer, WorldTfrm, worldNoScaleTransform, PrevWorldTfrm, layer);
+    }
+
+    void RendererRenderable::UpdatePerInstanceBuffer(Vector<PerInstanceData>& instanceData)
+    {
+        PerObjectBuffer::UpdatePerInstance(PerObjectParamBuffer, PerInstanceParamBuffer, instanceData);
     }
 
     void RendererRenderable::UpdatePerCallBuffer(const Matrix4& viewProj, bool flush)

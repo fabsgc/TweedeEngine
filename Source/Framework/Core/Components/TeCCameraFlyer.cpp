@@ -14,6 +14,7 @@ namespace te
     const float CCameraFlyer::FAST_MODE_MULTIPLIER = 2.0f;
     const float CCameraFlyer::ROTATION_SPEED = 2.0f;
 
+
     /** Wraps an angle so it always stays in [0, 360) range. */
     Degree wrapAngle(Degree angle)
     {

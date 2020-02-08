@@ -86,6 +86,7 @@ namespace te
 
             _mainViewGroup->SetViews(views.data(), (UINT32)views.size());
             _mainViewGroup->DetermineVisibility(sceneInfo);
+            _mainViewGroup->GenerateRenderQueue(sceneInfo, _options->InstancingEnabled);
 
             // Render everything
             bool anythingDrawn = RenderViews(*_mainViewGroup, frameInfo);
