@@ -277,9 +277,6 @@ namespace te
         // We update per object and per instance buffer
         sceneInfo.Renderables[idx]->UpdatePerInstanceBuffer(instanceData);
 
-        sceneInfo.Renderables[idx]->PerObjectParamBuffer->FlushToGPU();
-        sceneInfo.Renderables[idx]->PerInstanceParamBuffer->FlushToGPU();
-
         // We create all instanced render element using first RendererRenderable data
         for (auto& renderElem : sceneInfo.Renderables[idx]->Elements)
         {

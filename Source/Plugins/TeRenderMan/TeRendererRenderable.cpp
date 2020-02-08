@@ -114,7 +114,7 @@ namespace te
 
         gPerCallParamDef.gMatWorldViewProj.Set(PerCallParamBuffer, worldViewProjMatrix.Transpose());
 
-        if (flush)
-            PerCallParamBuffer->FlushToGPU();
+        //if (flush)
+        //    PerCallParamBuffer->FlushToGPU();
     }
 }

@@ -430,7 +430,7 @@ namespace te
 
         RendererRenderable* rendererRenderable = _info.Renderables[idx];
 
-        _info.Renderables[idx]->PerObjectParamBuffer->FlushToGPU();
+        //_info.Renderables[idx]->PerObjectParamBuffer->FlushToGPU();
         _info.RenderableReady[idx] = true;
     }
 
