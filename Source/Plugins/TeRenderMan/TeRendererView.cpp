@@ -259,7 +259,6 @@ namespace te
         // We now have a list of similar objects to render
         // However, each instance can't be bigger than 128 elements
         // So we divide the size of the list by 128 to know how many instance blocks we will render
-
         UINT32 instBlockCount = ((UINT32)instancedBuffer.Idx.size() / STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE) + 1;
         UINT32 instancedObjectCounter = 0;
 
@@ -422,6 +421,8 @@ namespace te
     void RendererViewGroup::GenerateInstanced(const SceneInfo& sceneInfo, bool instancingEnabled)
     {
         const auto numRenderables = (UINT32)sceneInfo.Renderables.size();
+        const UINT32 maxInstElement = STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE * STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE;
+        UINT32 totalInstElem = 0;
 
         if (instancingEnabled)
         {
@@ -449,14 +450,21 @@ namespace te
     void RendererViewGroup::GenerateRenderQueue(const SceneInfo& sceneInfo, RendererView& view, bool instancingEnabled)
     {
         const auto numRenderables = (UINT32)sceneInfo.Renderables.size();
-        const UINT32 maxInstElement = STANDARD_FORWARD_MIN_INSTANCED_BLOCK_SIZE * STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER;
-        UINT32 totalElem = 0;
+        const UINT32 maxInstElement = STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE * STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER;
+        UINT32 totalInstElem = 0;
 
         if (instancingEnabled)
         {
             view._instancedElements.clear();
             for (auto& instancedBuffer : RendererView::_instancedBuffersPool)
             {
+                totalInstElem += ((UINT32)instancedBuffer.Idx.size() / STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE + 1) * STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE;
+                if (totalInstElem > maxInstElement)
+                {
+                    UINT32 amountInstToRemove = totalInstElem - maxInstElement;
+                    instancedBuffer.Idx.resize(instancedBuffer.Idx.size() - amountInstToRemove);
+                }
+
                 bool hasTransparentElement = false;
 
                 for (UINT32 i = 0; i < instancedBuffer.MaterialCount; i++)
@@ -476,6 +484,9 @@ namespace te
 
                     view.QueueRenderInstancedElements(sceneInfo, instancedBuffer);
                 }
+
+                if (totalInstElem > maxInstElement)
+                    break;
             }
 
             if (view.ShouldDraw3D())
