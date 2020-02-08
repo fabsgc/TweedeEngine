@@ -21,11 +21,11 @@ namespace te
     }
 
     void PerObjectBuffer::UpdatePerInstance(SPtr<GpuParamBlockBuffer>& perObjectBuffer, 
-        SPtr<GpuParamBlockBuffer>& perInstanceBuffer, const Vector<PerInstanceData>& instanceData)
+        SPtr<GpuParamBlockBuffer>& perInstanceBuffer, PerInstanceData* instanceData, UINT32 instanceCounter)
     {
         gPerObjectParamDef.gInstanced.Set(perObjectBuffer, (UINT32)2);
 
-        for (size_t i = 0; i < instanceData.size(); i++)
+        for (size_t i = 0; i < instanceCounter; i++)
         {
             gPerInstanceParamDef.gInstances.Set(perInstanceBuffer, instanceData[i], (UINT32)i);
         }
@@ -89,7 +89,6 @@ namespace te
     RendererRenderable::RendererRenderable()
     {
         PerObjectParamBuffer = gPerObjectParamDef.CreateBuffer();
-        PerInstanceParamBuffer = gPerInstanceParamDef.CreateBuffer();
         PerCallParamBuffer = gPerCallParamDef.CreateBuffer();
     }
 
@@ -103,9 +102,9 @@ namespace te
         PerObjectBuffer::Update(PerObjectParamBuffer, WorldTfrm, worldNoScaleTransform, PrevWorldTfrm, layer);
     }
 
-    void RendererRenderable::UpdatePerInstanceBuffer(Vector<PerInstanceData>& instanceData)
+    void RendererRenderable::UpdatePerInstanceBuffer(PerInstanceData* instanceData, UINT32 instanceCounter, UINT blockId)
     {
-        PerObjectBuffer::UpdatePerInstance(PerObjectParamBuffer, PerInstanceParamBuffer, instanceData);
+        PerObjectBuffer::UpdatePerInstance(PerObjectParamBuffer, gPerInstanceParamBuffer[blockId], instanceData, instanceCounter);
     }
 
     void RendererRenderable::UpdatePerCallBuffer(const Matrix4& viewProj, bool flush)

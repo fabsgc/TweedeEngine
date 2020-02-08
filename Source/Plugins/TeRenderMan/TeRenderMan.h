@@ -48,10 +48,10 @@ namespace te
         bool RenderOverlay(RendererView& view, const FrameInfo& frameInfo);
 
         /** Renders all views in the provided view group. Returns true if anything has been draw to any of the views. */
-        bool RenderViews(RendererViewGroup& viewGroup, const FrameInfo& frameInfo);
+        bool RenderSingleView(RendererViewGroup& viewGroup, RendererView& view, const FrameInfo& frameInfo);
 
         /** Renders all objects visible by the provided view. */
-        void RenderSingleView(const RendererViewGroup& viewGroup, RendererView& view, const FrameInfo& frameInfo);
+        void RenderSingleViewInternal(const RendererViewGroup& viewGroup, RendererView& view, const FrameInfo& frameInfo);
 
         /** @copydoc Renderer::NotifyCameraAdded */
         void NotifyCameraAdded(Camera* camera) override;

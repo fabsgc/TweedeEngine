@@ -54,6 +54,10 @@ namespace te
         /** @copydoc SetMaterials() */
         const Vector<SPtr<Material>>& GetMaterials() { return _materials; }
 
+        const SPtr<Material>* GetMaterialsPtr() { return _materials.data(); }
+
+        UINT32 GetNumMaterials() { return (UINT32)_materials.size(); }
+
         /**	Returns the material used for rendering a sub-mesh with the specified index. */
         SPtr<Material> GetMaterial(UINT32 idx) const;
 
@@ -112,6 +116,7 @@ namespace te
     protected:
         SPtr<Mesh> _mesh;
         Vector<SPtr<Material>> _materials;
+        UINT32 _numMaterials = 0;
         UINT64 _layer = 1;
         UINT32 _rendererId;
         Matrix4 _tfrmMatrix = TeIdentity;

@@ -57,6 +57,8 @@ namespace te
          * Applies a set of parameters that control execution of all currently bound GPU programs. These are the uniforms
          * like textures, samplers, or uniform buffers. Caller is expected to ensure the provided parameters actually
          * match the currently bound programs.
+         *
+         * WARNING : Be careful when you set different way of binding buffers. All buffers you want to bind must be consecutives in memory
          * 
          * @param[in]	gpuParams			GpuPArams containing all elements to bind
          * @param[in]	gpuParamsBindFlags			Specify with kind of params you want to bind

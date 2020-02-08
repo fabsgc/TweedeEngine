@@ -17,22 +17,6 @@ namespace te
     struct SceneInfo;
     struct FrameInfo;
 
-    TE_PARAM_BLOCK_BEGIN(PerCameraParamDef)
-        TE_PARAM_BLOCK_ENTRY(Vector3, gViewDir)
-        TE_PARAM_BLOCK_ENTRY(Vector3, gViewOrigin)
-        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatViewProj)
-        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatView)
-        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatProj)
-    TE_PARAM_BLOCK_END
-
-    extern PerCameraParamDef gPerCameraParamDef;
-
-    TE_PARAM_BLOCK_BEGIN(SkyboxParamDef)
-        TE_PARAM_BLOCK_ENTRY(Color, gClearColor)
-    TE_PARAM_BLOCK_END
-
-    extern SkyboxParamDef gSkyboxParamDef;
-
     /** Data shared between RENDERER_VIEW_DESC and RendererViewProperties */
     struct RendererViewData
     {
@@ -117,7 +101,8 @@ namespace te
     struct InstancedBuffer
     {
         Mesh* MeshElem;
-        Vector<SPtr<Material>> Materials;
+        const SPtr<Material>* Materials;
+        UINT32 MaterialCount = 0;
         Vector<UINT32> Idx;
     };
 
@@ -248,6 +233,7 @@ namespace te
 
     private:
         friend class RendererViewGroup;
+        friend class Renderable;
 
     private:
         RendererViewProperties _properties;
@@ -272,6 +258,9 @@ namespace te
         SPtr<RenderQueue> _forwardTransparentQueue;
 
         Vector<SPtr<RenderableElement>> _instancedElements; //Elements are updated every frame
+
+        static PerInstanceData _instanceDataPool[STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER][STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE];
+        static Vector<InstancedBuffer> _instancedBuffersPool;
     };
 
     /** Contains one or multiple RendererView%s that are in some way related. */
@@ -305,11 +294,16 @@ namespace te
          * visibility information.
          */
         void DetermineVisibility(const SceneInfo& sceneInfo);
+
+        /**
+        * Before creating render queue, we look for all possibly instanced elements
+        */
+        void GenerateInstanced(const SceneInfo& sceneInfo, bool instancingEnabled);
     
         /**
         * Once we have set visibility information for all Renderables, we wil decide if some of them can be instanced
         */
-        void GenerateRenderQueue(const SceneInfo& sceneInfo, bool instancingEnabled = true);
+        void GenerateRenderQueue(const SceneInfo& sceneInfo, RendererView& view, bool instancingEnabled = true);
 
     private:
         friend class RenderView;

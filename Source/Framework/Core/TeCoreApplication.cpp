@@ -343,14 +343,14 @@ namespace te
         auto meshImportOptions = MeshImportOptions::Create();
         meshImportOptions->ImportNormals = true;
         meshImportOptions->ImportTangents = true;
-        meshImportOptions->CpuCached = true;
+        meshImportOptions->CpuCached = false;
         
         auto textureImportOptions = TextureImportOptions::Create();
-        textureImportOptions->CpuCached = true;
+        textureImportOptions->CpuCached = false;
         textureImportOptions->GenerateMips = true;
 
         auto textureCubeMapImportOptions = TextureImportOptions::Create(); 
-        textureCubeMapImportOptions->CpuCached = true;
+        textureCubeMapImportOptions->CpuCached = false;
         textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
 
         _loadedMeshCube = gResourceManager().Load<Mesh>("Data/Meshes/multi-cube-material.dae", meshImportOptions);
@@ -554,9 +554,9 @@ namespace te
 
         _sceneRenderableSO->Move(Vector3(-45.0f, 0.0f, -50.0f));
 
-        for (INT16 i = -5; i < 6; i++)
+        for (INT16 i = -10; i < 11; i++)
         {
-            for (INT16 j = -1; j < 8; j++)
+            for (INT16 j = -1; j < 256; j++)
             {
                 HSceneObject sceneRenderable = SceneObject::Create("Monkey_" + ToString(i) + "_" + ToString(j));
                 HRenderable renderableCube = sceneRenderable->AddComponent<CRenderable>();
@@ -567,7 +567,8 @@ namespace te
                 sceneRenderable->Move(Vector3((float)i * 3.0f, 0.0f, -(float)j * 3.0f));
                 //sceneRenderable->SetMobility(ObjectMobility::Static);
 
-                _sceneRenderablesMonkeySO.push_back(sceneRenderable);
+                //_sceneRenderablesMonkeySO.push_back(sceneRenderable);
+
             }
         }
         // ######################################################
@@ -583,10 +584,10 @@ namespace te
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         //_sceneRenderableSO->Rotate(Vector3(0.0f, 1.0f, 0.0f), Radian(1.5f * gTime().GetFrameDelta()));
 
-        for (auto& so : _sceneRenderablesMonkeySO)
+        /*for (auto& so : _sceneRenderablesMonkeySO)
         {
             so->Rotate(Vector3(0.0f, 1.0f, 0.0f), Radian(2.0f * gTime().GetFrameDelta()));
-        }
+        }*/
 #endif
     }
 

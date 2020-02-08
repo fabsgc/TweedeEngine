@@ -6,45 +6,8 @@
 #include "Renderer/TeRenderElement.h"
 #include "Mesh/TeMesh.h"
 
-#define STANDARD_FORWARD_MAX_INSTANCED_BLOCK 128
-#define STANDARD_FORWARD_MIN_INSTANCED_BLOCK 8
-
 namespace te
 {
-    struct PerInstanceData
-    {
-        Matrix4 gMatWorld;
-        Matrix4 gMatInvWorld;
-        Matrix4 gMatWorldNoScale;
-        Matrix4 gMatInvWorldNoScale;
-        Matrix4 gMatPrevWorld;
-        INT32   gLayer;
-    };
-
-    TE_PARAM_BLOCK_BEGIN(PerObjectParamDef)
-        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatWorld)
-        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatInvWorld)
-        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatWorldNoScale)
-        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatInvWorldNoScale)
-        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatPrevWorld)
-        TE_PARAM_BLOCK_ENTRY(INT32, gLayer)
-        TE_PARAM_BLOCK_ENTRY(INT32, gInstanced) // default 0 for non instanced object
-    TE_PARAM_BLOCK_END
-
-    extern PerObjectParamDef gPerObjectParamDef;
-
-    TE_PARAM_BLOCK_BEGIN(PerCallParamDef)
-        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatWorldViewProj)
-    TE_PARAM_BLOCK_END
-
-    extern PerCallParamDef gPerCallParamDef;
-
-    TE_PARAM_BLOCK_BEGIN(PerInstanceParamDef)
-        TE_PARAM_BLOCK_ENTRY_ARRAY(PerInstanceData, gInstances, STANDARD_FORWARD_MAX_INSTANCED_BLOCK)
-    TE_PARAM_BLOCK_END
-
-    extern PerInstanceParamDef gPerInstanceParamDef;
-
     /** Helper class used for manipulating the PerObject parameter buffer. */
     class PerObjectBuffer
     {
@@ -69,7 +32,7 @@ namespace te
          *  @param[in]	instanceData	    data list we want to store inside instance buffer
          */
         static void UpdatePerInstance(SPtr<GpuParamBlockBuffer>& perObjectBuffer,
-            SPtr<GpuParamBlockBuffer>& perInstanceBuffer, const Vector<PerInstanceData>& instanceData);
+            SPtr<GpuParamBlockBuffer>& perInstanceBuffer, PerInstanceData* instanceData, UINT32 instanceCounter);
     };
 
     /**
@@ -99,9 +62,11 @@ namespace te
         /** 
          * Updates the per-instance GPU buffer according to the currently set properties. 
          *
-         * @param[in]	instanceData	Vector with max with of 128 
+         * @param[in]	instanceData	Array with max with of 64
+         * @param[in]	instanceCounter	Number of valid element to store in array
+         * @param[in]	blockId	        We create only 8 instance buffer, we need to know in which we want to register data
          */
-        void UpdatePerInstanceBuffer(Vector<PerInstanceData>& instanceData);
+        void UpdatePerInstanceBuffer(PerInstanceData* instanceData, UINT32 instanceCounter, UINT blockId);
 
         /**
          * Updates the per-call GPU buffer according to the provided parameters.
@@ -119,7 +84,6 @@ namespace te
         Vector<RenderableElement> Elements;
 
         SPtr<GpuParamBlockBuffer> PerObjectParamBuffer;
-        SPtr<GpuParamBlockBuffer> PerInstanceParamBuffer;
         SPtr<GpuParamBlockBuffer> PerCallParamBuffer;
     };
 }

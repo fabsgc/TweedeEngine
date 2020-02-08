@@ -12,11 +12,14 @@ namespace te
 {
     PerCameraParamDef gPerCameraParamDef;
 
+    PerInstanceData RendererView::_instanceDataPool[STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER][STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE];
+    Vector<InstancedBuffer> RendererView::_instancedBuffersPool(8);
+
     /** Struct used to compare two instanced buffer */
     bool operator==(const InstancedBuffer& lhs, const InstancedBuffer& rhs)
     {
-        size_t lhsSize = lhs.Materials.size();
-        size_t rhsSize = rhs.Materials.size();
+        size_t lhsSize = lhs.MaterialCount;
+        size_t rhsSize = rhs.MaterialCount;
 
         if (lhs.MeshElem != rhs.MeshElem) return false;
         if (lhsSize != rhsSize) return false;
@@ -64,7 +67,9 @@ namespace te
     }
 
     RendererView::~RendererView()
-    { }
+    { 
+        _instancedBuffersPool.clear();
+    }
 
     void RendererView::SetStateReductionMode(StateReduction reductionMode)
     {
@@ -251,59 +256,92 @@ namespace te
 
     void RendererView::QueueRenderInstancedElements(const SceneInfo& sceneInfo, InstancedBuffer& instancedBuffer)
     {
-        UINT32 idx = instancedBuffer.Idx[0];
-        Vector<PerInstanceData> instanceData;
+        // We now have a list of similar objects to render
+        // However, each instance can't be bigger than 128 elements
+        // So we divide the size of the list by 128 to know how many instance blocks we will render
 
-        const AABox& boundingBox = sceneInfo.RenderableCullInfos[idx].Boundaries.GetBox();
-        const float distanceToCamera = (_properties.ViewOrigin - boundingBox.GetCenter()).Length();
+        UINT32 instBlockCount = ((UINT32)instancedBuffer.Idx.size() / STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE) + 1;
+        UINT32 instancedObjectCounter = 0;
 
-        for (auto& elemId : instancedBuffer.Idx)
+        if (instBlockCount > STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER)
         {
-            //Once all this stuff is done, we need to write into perinstance buffer
-            SPtr<GpuParamBlockBuffer> buffer = sceneInfo.Renderables[elemId]->PerObjectParamBuffer;
-
-            PerInstanceData data;
-
-            data.gMatWorld = gPerObjectParamDef.gMatWorld.Get(buffer);
-            data.gMatInvWorld = gPerObjectParamDef.gMatInvWorld.Get(buffer);
-            data.gMatWorldNoScale = gPerObjectParamDef.gMatWorldNoScale.Get(buffer);
-            data.gMatInvWorldNoScale = gPerObjectParamDef.gMatInvWorldNoScale.Get(buffer);
-            data.gMatPrevWorld = gPerObjectParamDef.gMatPrevWorld.Get(buffer);
-            data.gLayer = gPerObjectParamDef.gLayer.Get(buffer);
-
-            instanceData.push_back(data);
+            instBlockCount = STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER;
+            // TE_DEBUG("Maximum number of instanced block reached : " + ToString(instBlockCount), __FILE__, __LINE__);
         }
 
-        // We update per object and per instance buffer
-        sceneInfo.Renderables[idx]->UpdatePerInstanceBuffer(instanceData);
-
-        // We create all instanced render element using first RendererRenderable data
-        for (auto& renderElem : sceneInfo.Renderables[idx]->Elements)
+        // For each instance block we retrieve all necessary data
+        for (UINT32 currInstBlock = 0; currInstBlock < instBlockCount; currInstBlock++)
         {
-            SPtr<RenderableElement> elem = te_shared_ptr_new<RenderableElement>();
-            elem->MeshElem = renderElem.MeshElem;
-            elem->SubMeshElem = renderElem.SubMeshElem;
-            elem->MaterialElem = renderElem.MaterialElem;
-            elem->DefaultTechniqueIdx = renderElem.DefaultTechniqueIdx;
-            elem->Type = renderElem.Type;
-            elem->InstanceCount = (UINT32)instancedBuffer.Idx.size();
-            elem->GpuParamsElem = renderElem.GpuParamsElem;
+            // We need to know start and end of element for this instance block
+            UINT32 lowerBlockBound = currInstBlock * STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE;
+            UINT32 upperBlockBound = (currInstBlock + 1) * STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE;
 
-            _instancedElements.push_back(elem);
+            if (upperBlockBound > (UINT32)instancedBuffer.Idx.size())
+                upperBlockBound = (UINT32)instancedBuffer.Idx.size();
 
-            UINT32 shaderFlags = renderElem.MaterialElem->GetShader()->GetFlags();
-            UINT32 techniqueIdx = renderElem.DefaultTechniqueIdx;
+            // We will use first element of this block for its data (each element has same internal data)
+            UINT32 idx = instancedBuffer.Idx[lowerBlockBound];
 
-            // Note: I could keep renderables in multiple separate arrays, so I don't need to do the check here
-            if (shaderFlags & (UINT32)ShaderFlag::Transparent)
-                _forwardTransparentQueue->Add(elem.get(), distanceToCamera, techniqueIdx);
-            else
-                _forwardOpaqueQueue->Add(elem.get(), distanceToCamera, techniqueIdx);
+            const AABox& boundingBox = sceneInfo.RenderableCullInfos[idx].Boundaries.GetBox();
+            const float distanceToCamera = (_properties.ViewOrigin - boundingBox.GetCenter()).Length();
 
-            for (auto& gpuParams : renderElem.GpuParamsElem)
+            for (auto subElemIdx = lowerBlockBound; subElemIdx < upperBlockBound; subElemIdx++)
             {
-                gpuParams->SetParamBlockBuffer("PerInstanceBuffer", sceneInfo.Renderables[idx]->PerInstanceParamBuffer);
+                UINT32 elemId = instancedBuffer.Idx[subElemIdx];
+
+                //Once all this stuff is done, we need to write into perinstance buffer
+                SPtr<GpuParamBlockBuffer> buffer = sceneInfo.Renderables[elemId]->PerObjectParamBuffer;
+
+                PerInstanceData data;
+
+                data.gMatWorld = gPerObjectParamDef.gMatWorld.Get(buffer);
+                data.gMatInvWorld = gPerObjectParamDef.gMatInvWorld.Get(buffer);
+                data.gMatWorldNoScale = gPerObjectParamDef.gMatWorldNoScale.Get(buffer);
+                data.gMatInvWorldNoScale = gPerObjectParamDef.gMatInvWorldNoScale.Get(buffer);
+                data.gMatPrevWorld = gPerObjectParamDef.gMatPrevWorld.Get(buffer);
+                data.gLayer = gPerObjectParamDef.gLayer.Get(buffer);
+
+                _instanceDataPool[currInstBlock][subElemIdx - lowerBlockBound] = data;
+                instancedObjectCounter++;
+
+                if (instancedObjectCounter > STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE* STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER)
+                    break;
             }
+
+            // We update per object and per instance buffer
+            sceneInfo.Renderables[idx]->UpdatePerInstanceBuffer(_instanceDataPool[currInstBlock], upperBlockBound - lowerBlockBound, currInstBlock);
+
+            // We create all instanced render element using first RendererRenderable data
+            for (auto& renderElem : sceneInfo.Renderables[idx]->Elements)
+            {
+                SPtr<RenderableElement> elem = te_shared_ptr_new<RenderableElement>(); // TODO, need a pool of object
+                elem->MeshElem = renderElem.MeshElem;
+                elem->SubMeshElem = renderElem.SubMeshElem;
+                elem->MaterialElem = renderElem.MaterialElem;
+                elem->DefaultTechniqueIdx = renderElem.DefaultTechniqueIdx;
+                elem->Type = renderElem.Type;
+                elem->InstanceCount = (UINT32)(upperBlockBound - lowerBlockBound);
+                elem->GpuParamsElem = renderElem.GpuParamsElem;
+
+                UINT32 shaderFlags = renderElem.MaterialElem->GetShader()->GetFlags();
+                UINT32 techniqueIdx = renderElem.DefaultTechniqueIdx;
+
+                _instancedElements.push_back(elem);
+
+                // Note: I could keep renderables in multiple separate arrays, so I don't need to do the check here
+                if (shaderFlags & (UINT32)ShaderFlag::Transparent)
+                    _forwardTransparentQueue->Add(elem.get(), distanceToCamera, techniqueIdx);
+                else
+                    _forwardOpaqueQueue->Add(elem.get(), distanceToCamera, techniqueIdx);
+
+                for (auto& gpuParams : renderElem.GpuParamsElem)
+                {
+                    gpuParams->SetParamBlockBuffer("PerInstanceBuffer", gPerInstanceParamBuffer[currInstBlock]);
+                }
+            }
+
+            if (instancedObjectCounter > STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE* STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER)
+                break;
         }
     }
 
@@ -381,60 +419,72 @@ namespace te
         }
     }
 
-    void RendererViewGroup::GenerateRenderQueue(const SceneInfo& sceneInfo, bool instancingEnabled)
+    void RendererViewGroup::GenerateInstanced(const SceneInfo& sceneInfo, bool instancingEnabled)
     {
-        const auto numViews = (UINT32)_views.size();
         const auto numRenderables = (UINT32)sceneInfo.Renderables.size();
 
-        Vector<InstancedBuffer> instancedBuffers;
-
-        // We will separate renderables based on <Material*> and <Renderable*>
-        for (UINT32 i = 0; i < numRenderables; i++)
+        if (instancingEnabled)
         {
-            InstancedBuffer key;
-            key.MeshElem = sceneInfo.Renderables[i]->RenderablePtr->GetMesh().get();
-            key.Materials = sceneInfo.Renderables[i]->RenderablePtr->GetMaterials();
-            key.Idx.push_back(i);
+            RendererView::_instancedBuffersPool.clear();
 
-            auto iter = find(instancedBuffers.begin(), instancedBuffers.end(), key);
+            // We will separate renderables based on <Material*> and <Renderable*>
+            for (UINT32 i = 0; i < numRenderables; i++)
+            {
+                InstancedBuffer key;
+                key.MeshElem = sceneInfo.Renderables[i]->RenderablePtr->GetMesh().get();
+                key.Materials = sceneInfo.Renderables[i]->RenderablePtr->GetMaterialsPtr();
+                key.MaterialCount = sceneInfo.Renderables[i]->RenderablePtr->GetNumMaterials();
+                key.Idx.push_back(i);
 
-            if (iter == instancedBuffers.end())
-                instancedBuffers.push_back(key);
-            else
-                iter->Idx.push_back(i);
+                auto iter = find(RendererView::_instancedBuffersPool.begin(), RendererView::_instancedBuffersPool.end(), key);
+
+                if (iter == RendererView::_instancedBuffersPool.end())
+                    RendererView::_instancedBuffersPool.push_back(key);
+                else
+                    iter->Idx.push_back(i);
+            }
         }
+    }
 
-        // Generate render queues per camera
-        for (UINT32 i = 0; i < numViews; i++)
+    void RendererViewGroup::GenerateRenderQueue(const SceneInfo& sceneInfo, RendererView& view, bool instancingEnabled)
+    {
+        const auto numRenderables = (UINT32)sceneInfo.Renderables.size();
+        const UINT32 maxInstElement = STANDARD_FORWARD_MIN_INSTANCED_BLOCK_SIZE * STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER;
+        UINT32 totalElem = 0;
+
+        if (instancingEnabled)
         {
-            _views[i]->_instancedElements.clear();
-
-            // If we have 5 times the same element, we try to instance it
-            for (auto& instancedBuffer : instancedBuffers)
+            view._instancedElements.clear();
+            for (auto& instancedBuffer : RendererView::_instancedBuffersPool)
             {
                 bool hasTransparentElement = false;
 
-                for (auto& material : instancedBuffer.Materials)
+                for (UINT32 i = 0; i < instancedBuffer.MaterialCount; i++)
                 {
-                    if (!material)
+                    if (!instancedBuffer.Materials[i])
                         continue;
 
-                    UINT32 shaderFlags = material->GetShader()->GetFlags();
+                    UINT32 shaderFlags = instancedBuffer.Materials[i]->GetShader()->GetFlags();
                     if (shaderFlags & (UINT32)ShaderFlag::Transparent)
                         hasTransparentElement = true;
                 }
 
-                if (instancedBuffer.Idx.size() > STANDARD_FORWARD_MIN_INSTANCED_BLOCK && !hasTransparentElement)
+                if (instancedBuffer.Idx.size() > STANDARD_FORWARD_MIN_INSTANCED_BLOCK_SIZE && !hasTransparentElement)
                 {
                     for (auto& idx : instancedBuffer.Idx)
-                        _views[i]->_visibility.Renderables[idx] = false;
+                        view._visibility.Renderables[idx] = false;
 
-                    _views[i]->QueueRenderInstancedElements(sceneInfo, instancedBuffer);
+                    view.QueueRenderInstancedElements(sceneInfo, instancedBuffer);
                 }
             }
 
-            if (_views[i]->ShouldDraw3D())
-                _views[i]->QueueRenderElements(sceneInfo);
+            if (view.ShouldDraw3D())
+                view.QueueRenderElements(sceneInfo);
+        }
+        else
+        {
+            if (view.ShouldDraw3D())
+                view.QueueRenderElements(sceneInfo);
         }
     }
 }

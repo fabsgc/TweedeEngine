@@ -1,9 +1,72 @@
 #pragma once
 
 #include "Prerequisites/TePrerequisitesUtility.h"
+#include "Renderer/TeParamBlocks.h"
+#include "Math/TeMatrix4.h"
+
+#define STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE 128
+#define STANDARD_FORWARD_MIN_INSTANCED_BLOCK_SIZE 8
+#define STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER 32
 
 namespace te
 {
+    struct PerInstanceData
+    {
+        Matrix4 gMatWorld;
+        Matrix4 gMatInvWorld;
+        Matrix4 gMatWorldNoScale;
+        Matrix4 gMatInvWorldNoScale;
+        Matrix4 gMatPrevWorld;
+        INT32   gLayer;
+    };
+
+    TE_PARAM_BLOCK_BEGIN(PerCameraParamDef)
+        TE_PARAM_BLOCK_ENTRY(Vector3, gViewDir)
+        TE_PARAM_BLOCK_ENTRY(Vector3, gViewOrigin)
+        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatViewProj)
+        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatView)
+        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatProj)
+    TE_PARAM_BLOCK_END
+
+    extern PerCameraParamDef gPerCameraParamDef;
+
+    TE_PARAM_BLOCK_BEGIN(SkyboxParamDef)
+        TE_PARAM_BLOCK_ENTRY(Color, gClearColor)
+    TE_PARAM_BLOCK_END
+
+    extern SkyboxParamDef gSkyboxParamDef;
+
+    TE_PARAM_BLOCK_BEGIN(PerFrameParamDef)
+        TE_PARAM_BLOCK_ENTRY(float, gTime)
+    TE_PARAM_BLOCK_END
+
+    extern PerFrameParamDef gPerFrameParamDef;
+
+    TE_PARAM_BLOCK_BEGIN(PerObjectParamDef)
+        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatWorld)
+        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatInvWorld)
+        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatWorldNoScale)
+        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatInvWorldNoScale)
+        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatPrevWorld)
+        TE_PARAM_BLOCK_ENTRY(INT32, gLayer)
+        TE_PARAM_BLOCK_ENTRY(INT32, gInstanced) // default 0 for non instanced object
+    TE_PARAM_BLOCK_END
+
+    extern PerObjectParamDef gPerObjectParamDef;
+
+    TE_PARAM_BLOCK_BEGIN(PerCallParamDef)
+        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatWorldViewProj)
+    TE_PARAM_BLOCK_END
+
+    extern PerCallParamDef gPerCallParamDef;
+
+    TE_PARAM_BLOCK_BEGIN(PerInstanceParamDef)
+        TE_PARAM_BLOCK_ENTRY_ARRAY(PerInstanceData, gInstances, STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE)
+    TE_PARAM_BLOCK_END
+
+    extern PerInstanceParamDef gPerInstanceParamDef;
+    extern SPtr<GpuParamBlockBuffer> gPerInstanceParamBuffer[STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER];
+
     /** Available implementation of the RenderElement class. */
     enum class RenderElementType
     {

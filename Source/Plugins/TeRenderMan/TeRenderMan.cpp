@@ -8,6 +8,8 @@
 
 namespace te
 {
+    SPtr<GpuParamBlockBuffer> gPerInstanceParamBuffer[STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER];
+
     RenderMan::RenderMan()
     { }
 
@@ -18,7 +20,14 @@ namespace te
     {
         Renderer::Initialize();
 
+        for (UINT32 i = 0; i < STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER; i++)
+        {
+            gPerInstanceParamBuffer[i] = gPerInstanceParamDef.CreateBuffer();
+        }
+
         _options = te_shared_ptr_new<RenderManOptions>();
+        _options->InstancingEnabled = true;
+
         _scene = te_shared_ptr_new<RendererScene>(_options);
 
         _mainViewGroup = te_new<RendererViewGroup>(nullptr, 0);
@@ -29,6 +38,11 @@ namespace te
 
     void RenderMan::Destroy()
     {
+        for (UINT32 i = 0; i < STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER; i++)
+        {
+            gPerInstanceParamBuffer[i]->Destroy();
+        }
+
         Renderer::Destroy();
         _scene = nullptr;
 
@@ -86,10 +100,16 @@ namespace te
 
             _mainViewGroup->SetViews(views.data(), (UINT32)views.size());
             _mainViewGroup->DetermineVisibility(sceneInfo);
-            _mainViewGroup->GenerateRenderQueue(sceneInfo, _options->InstancingEnabled);
 
-            // Render everything
-            bool anythingDrawn = RenderViews(*_mainViewGroup, frameInfo);
+            bool anythingDrawn = false;
+
+            for (auto& view : views)
+            {
+                _mainViewGroup->GenerateInstanced(sceneInfo, _options->InstancingEnabled);
+                _mainViewGroup->GenerateRenderQueue(sceneInfo, *view, _options->InstancingEnabled);
+                if (RenderSingleView(*_mainViewGroup, *view, frameInfo))
+                    anythingDrawn = true;
+            }
 
             if (rtInfo.Target->GetProperties().IsWindow && anythingDrawn)
             {
@@ -99,7 +119,7 @@ namespace te
     }
 
     /** Renders all views in the provided view group. Returns true if anything has been draw to any of the views. */
-    bool RenderMan::RenderViews(RendererViewGroup& viewGroup, const FrameInfo& frameInfo)
+    bool RenderMan::RenderSingleView(RendererViewGroup& viewGroup, RendererView& view, const FrameInfo& frameInfo)
     {
         bool needs3DRender = false;
         UINT32 numViews = viewGroup.GetNumViews();
@@ -148,7 +168,7 @@ namespace te
             }
             else
             {
-                RenderSingleView(viewGroup, *view, frameInfo);
+                RenderSingleViewInternal(viewGroup, *view, frameInfo);
                 anythingDrawn = true;
             }
         }
@@ -157,7 +177,7 @@ namespace te
     }
 
     /** Renders all objects visible by the provided view. */
-    void RenderMan::RenderSingleView(const RendererViewGroup& viewGroup, RendererView& view, const FrameInfo& frameInfo)
+    void RenderMan::RenderSingleViewInternal(const RendererViewGroup& viewGroup, RendererView& view, const FrameInfo& frameInfo)
     {
         const SceneInfo& sceneInfo = _scene->GetSceneInfo();
         auto& viewProps = view.GetProperties();
@@ -177,7 +197,7 @@ namespace te
 
     bool RenderMan::RenderOverlay(RendererView& view, const FrameInfo& frameInfo)
     {
-        // view.GetPerViewBuffer()->FlushToGPU(); TODO
+        // view.GetPerViewBuffer()->FlushToGPU();
         view.BeginFrame(frameInfo);
 
         auto& viewProps = view.GetProperties();

@@ -94,13 +94,13 @@ namespace te
 
     void Renderable::SetMaterials(const Vector<SPtr<Material>>& materials)
     {
-        UINT32 numMaterials = (UINT32)_materials.size();
-        UINT32 min = std::min(numMaterials, (UINT32)materials.size());
+        _numMaterials = (UINT32)_materials.size();
+        UINT32 min = std::min(_numMaterials, (UINT32)materials.size());
 
         for (UINT32 i = 0; i < min; i++)
             _materials[i] = materials[i];
 
-        for (UINT32 i = min; i < numMaterials; i++)
+        for (UINT32 i = min; i < _numMaterials; i++)
             _materials[i] = nullptr;
 
         _markCoreDirty();
