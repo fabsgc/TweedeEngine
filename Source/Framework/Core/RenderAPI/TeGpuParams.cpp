@@ -32,6 +32,11 @@ namespace te
         for (UINT32 i = 0; i < numParamBlocks; i++)
         {
             new (&_paramBlockBuffers[i]) SPtr<GpuParamBlockBuffer>();
+
+            if (!_paramBlockBuffers)
+            {
+                TE_PRINT("FAILED TO CREATE PARAM BLOCK BUFFER");
+            }
         }
         data += paramBlocksSize;
 

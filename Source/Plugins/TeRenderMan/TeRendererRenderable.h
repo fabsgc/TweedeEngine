@@ -7,6 +7,7 @@
 #include "Mesh/TeMesh.h"
 
 #define STANDARD_FORWARD_MAX_INSTANCED_BLOCK 128
+#define STANDARD_FORWARD_MIN_INSTANCED_BLOCK 8
 
 namespace te
 {
@@ -48,11 +49,25 @@ namespace te
     class PerObjectBuffer
     {
     public:
-        /** Updates the provided buffer with the data from the provided matrices. */
+        /** 
+         * Updates the provided buffer with the data from the provided matrices. 
+         *
+         *  @param[in]	buffer	    Buffer which will be filled with data
+         *  @param[in]	tfrm	    World matrix of current object
+         *  @param[in]	tfrmNoScale	World matrix of current object without scale
+         *  @param[in]	prevTfrm	Previous World matrix of current object
+         *  @param[in]	layer       Layer of the current object
+         */
         static void Update(SPtr<GpuParamBlockBuffer>& buffer, const Matrix4& tfrm, const Matrix4& tfrmNoScale, 
             const Matrix4& prevTfrm, UINT32 layer);
 
-        /** Update the provided instance buffer and set per object buffer to enable instancing for this object */
+        /** 
+         * Update the provided instance buffer and set per object buffer to enable instancing for this object 
+         * 
+         *  @param[in]	perObjectBuffer	    Per object Buffer which will be filled with data
+         *  @param[in]	perInstanceBuffer	Per instance Buffer which will be filled with data
+         *  @param[in]	instanceData	    data list we want to store inside instance buffer
+         */
         static void UpdatePerInstance(SPtr<GpuParamBlockBuffer>& perObjectBuffer,
             SPtr<GpuParamBlockBuffer>& perInstanceBuffer, const Vector<PerInstanceData>& instanceData);
     };
@@ -81,7 +96,11 @@ namespace te
         /** Updates the per-object GPU buffer according to the currently set properties. */
         void UpdatePerObjectBuffer();
 
-        /** Updates the per-instance GPU buffer according to the currently set properties. */
+        /** 
+         * Updates the per-instance GPU buffer according to the currently set properties. 
+         *
+         * @param[in]	instanceData	Vector with max with of 128 
+         */
         void UpdatePerInstanceBuffer(Vector<PerInstanceData>& instanceData);
 
         /**

@@ -277,6 +277,9 @@ namespace te
         // We update per object and per instance buffer
         sceneInfo.Renderables[idx]->UpdatePerInstanceBuffer(instanceData);
 
+        sceneInfo.Renderables[idx]->PerObjectParamBuffer->FlushToGPU();
+        sceneInfo.Renderables[idx]->PerInstanceParamBuffer->FlushToGPU();
+
         // We create all instanced render element using first RendererRenderable data
         for (auto& renderElem : sceneInfo.Renderables[idx]->Elements)
         {
@@ -286,7 +289,7 @@ namespace te
             elem->MaterialElem = renderElem.MaterialElem;
             elem->DefaultTechniqueIdx = renderElem.DefaultTechniqueIdx;
             elem->Type = renderElem.Type;
-            elem->InstanceCount = instancedBuffer.Idx.size();
+            elem->InstanceCount = (UINT32)instancedBuffer.Idx.size();
             elem->GpuParamsElem = renderElem.GpuParamsElem;
 
             _instancedElements.push_back(elem);
@@ -299,10 +302,12 @@ namespace te
                 _forwardTransparentQueue->Add(elem.get(), distanceToCamera, techniqueIdx);
             else
                 _forwardOpaqueQueue->Add(elem.get(), distanceToCamera, techniqueIdx);
-        }
 
-        sceneInfo.Renderables[idx]->PerObjectParamBuffer->FlushToGPU();
-        sceneInfo.Renderables[idx]->PerInstanceParamBuffer->FlushToGPU();
+            for (auto& gpuParams : renderElem.GpuParamsElem)
+            {
+                gpuParams->SetParamBlockBuffer("PerInstanceBuffer", sceneInfo.Renderables[idx]->PerInstanceParamBuffer);
+            }
+        }
     }
 
     void RendererView::UpdatePerViewBuffer()
@@ -410,7 +415,19 @@ namespace te
             // If we have 5 times the same element, we try to instance it
             for (auto& instancedBuffer : instancedBuffers)
             {
-                if (instancedBuffer.Idx.size() > 5)
+                bool hasTransparentElement = false;
+
+                for (auto& material : instancedBuffer.Materials)
+                {
+                    if (!material)
+                        continue;
+
+                    UINT32 shaderFlags = material->GetShader()->GetFlags();
+                    if (shaderFlags & (UINT32)ShaderFlag::Transparent)
+                        hasTransparentElement = true;
+                }
+
+                if (instancedBuffer.Idx.size() > STANDARD_FORWARD_MIN_INSTANCED_BLOCK && !hasTransparentElement)
                 {
                     for (auto& idx : instancedBuffer.Idx)
                         _views[i]->_visibility.Renderables[idx] = false;

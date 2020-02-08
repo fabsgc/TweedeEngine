@@ -24,7 +24,12 @@ cbuffer PerCameraBuffer : register(b0)
     matrix gMatProj;
 }
 
-cbuffer PerObjectBuffer : register(b1)
+cbuffer PerInstanceBuffer : register(b1)
+{
+    PerInstanceData gInstanceData[STANDARD_FORWARD_MAX_INSTANCED_BLOCK];
+}
+
+cbuffer PerObjectBuffer : register(b2)
 {
     matrix gMatWorld;
     matrix gMatInvWorld;
@@ -35,19 +40,14 @@ cbuffer PerObjectBuffer : register(b1)
     uint   gInstanced;
 }
 
-cbuffer PerFrameBuffer : register(b2)
+cbuffer PerFrameBuffer : register(b3)
 {
     float gTime;
 }
 
-cbuffer PerCallBuffer : register(b3)
+cbuffer PerCallBuffer : register(b4)
 {
     matrix gMatWorldViewProj;
-}
-
-cbuffer PerInstanceBuffer : register(b4)
-{
-    PerInstanceData gInstanceData[STANDARD_FORWARD_MAX_INSTANCED_BLOCK];
 }
 
 struct VS_INPUT
@@ -75,7 +75,7 @@ VS_OUTPUT main( VS_INPUT IN )
 {
     VS_OUTPUT OUT = (VS_OUTPUT)0;
 
-    if(gInstanced != 0)
+    if(gInstanced == 1)
     {
         OUT.Position.xyz = IN.Position;
         OUT.Position.w = 1.0f;
@@ -95,7 +95,6 @@ VS_OUTPUT main( VS_INPUT IN )
     else
     {
         OUT.Position.xyz = IN.Position;
-        OUT.Position.x += 5;
         OUT.Position.w = 1.0f;
         OUT.Position = mul(OUT.Position, gInstanceData[IN.Instanceid].gMatWorld);
         OUT.Position = mul(OUT.Position, gMatViewProj);
@@ -104,10 +103,7 @@ VS_OUTPUT main( VS_INPUT IN )
         OUT.Normal = normalize(mul(float4(IN.Normal, 0.0f), gInstanceData[IN.Instanceid].gMatWorld)).xyz;
         OUT.Texture = FlipUV(IN.Texture);
 
-        matrix output = gInstanceData[IN.Instanceid].gMatWorld;
-
         OUT.WorldPosition.xyz = IN.Position;
-        OUT.Position.x += IN.Instanceid * 5;
         OUT.WorldPosition.w = 1.0f;
         OUT.WorldPosition = mul(OUT.WorldPosition, gInstanceData[IN.Instanceid].gMatWorld);
 

@@ -471,7 +471,7 @@ namespace te
         SHADER_DATA_PARAM_DESC gMatInvWorldNoScaleDesc("gMatInvWorldNoScale", "gMatInvWorldNoScale", GPDT_MATRIX_4X4);
         SHADER_DATA_PARAM_DESC gMatPrevWorldDesc("gMatPrevWorld", "gMatPrevWorld", GPDT_MATRIX_4X4);
         SHADER_DATA_PARAM_DESC gLayerDesc("gLayer", "gLayer", GPDT_INT1);
-        SHADER_DATA_PARAM_DESC gInstancedDesc("gInstaced", "gInstaced", GPDT_INT1);
+        SHADER_DATA_PARAM_DESC gInstancedDesc("gInstanced", "gInstanced", GPDT_INT1);
 
         SHADER_DATA_PARAM_DESC gTime("gTime", "gTime", GPDT_FLOAT1);
 
@@ -490,6 +490,8 @@ namespace te
         shaderDesc.AddParameter(gMatViewDesc);
         shaderDesc.AddParameter(gMatProjDesc);
 
+        shaderDesc.AddParameter(gInstanceData);
+
         shaderDesc.AddParameter(gMatWorldDesc);
         shaderDesc.AddParameter(gMatInvWorldDesc);
         shaderDesc.AddParameter(gMatWorldNoScaleDesc);
@@ -501,8 +503,6 @@ namespace te
         shaderDesc.AddParameter(gTime);
 
         shaderDesc.AddParameter(gMatWorldViewProj);
-
-        shaderDesc.AddParameter(gInstanceData);
 
         shaderDesc.AddParameter(anisotropicSamplerDesc);
         shaderDesc.AddParameter(colorTextureDesc);
@@ -583,10 +583,10 @@ namespace te
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         //_sceneRenderableSO->Rotate(Vector3(0.0f, 1.0f, 0.0f), Radian(1.5f * gTime().GetFrameDelta()));
 
-        /*for (auto& so : _sceneRenderablesMonkeySO)
+        for (auto& so : _sceneRenderablesMonkeySO)
         {
             so->Rotate(Vector3(0.0f, 1.0f, 0.0f), Radian(2.0f * gTime().GetFrameDelta()));
-        }*/
+        }
 #endif
     }
 

@@ -309,14 +309,13 @@ namespace te
             UINT32 slot = gpuParamBlockDesc.Slot;
             SPtr<GpuParamBlockBuffer> buffer = gpuParams->GetParamBlockBuffer(gpuParamBlockDesc.Set, slot);
 
-            if (buffer != nullptr)
-            {
-                buffer->FlushToGPU();
+            if(!buffer)
+                TE_ASSERT_ERROR(false, "EMPTY BUFFER, slot : " + ToString(gpuParamBlockDesc.Slot) + ", set : " + ToString(gpuParamBlockDesc.Set), __FILE__, __LINE__);
 
-                const D3D11GpuParamBlockBuffer* d3d11paramBlockBuffer =
-                    static_cast<const D3D11GpuParamBlockBuffer*>(buffer.get());
-                _gpuResourcesContainer.constBuffers.push_back(d3d11paramBlockBuffer->GetD3D11Buffer());
-            }
+            buffer->FlushToGPU();
+            const D3D11GpuParamBlockBuffer* d3d11paramBlockBuffer =
+                static_cast<const D3D11GpuParamBlockBuffer*>(buffer.get());
+            _gpuResourcesContainer.constBuffers.push_back(d3d11paramBlockBuffer->GetD3D11Buffer());
         };
 
         auto PopulateViews = [&](GpuProgramType type, UINT32& slotConstBuffers)
@@ -405,8 +404,8 @@ namespace te
                 }
                 else //He we only bind 
                 {
-                    INT8 firstSlot = -1;
-                    slotConstBuffers = 0;
+                    UINT32 currentSlot = 0;
+                    slotConstBuffers = 32;
 
                     for (auto iter = paramDesc->ParamBlocks.begin(); iter != paramDesc->ParamBlocks.end(); ++iter)
                     {
@@ -414,17 +413,20 @@ namespace te
                         if (gpuParamsBlockBindFlags & (UINT32)GPU_BIND_PARAM_BLOCK_ALL_EXCEPT && findNameInList == paramBlocksToBind.end())
                         {
                             PopulateParamBlocks(iter->second);
-                            if (firstSlot == -1) firstSlot = iter->second.Slot;
+                            currentSlot = iter->second.Slot;
+
+                            if (currentSlot < slotConstBuffers)
+                                slotConstBuffers = (UINT32)currentSlot;
                         }
                         else if (gpuParamsBlockBindFlags & (UINT32)GPU_BIND_PARAM_BLOCK_LISTED && findNameInList != paramBlocksToBind.end())
                         {
                             PopulateParamBlocks(iter->second);
-                            if (firstSlot == -1) firstSlot = iter->second.Slot;
+                            currentSlot = iter->second.Slot;
+
+                            if (currentSlot < slotConstBuffers)
+                                slotConstBuffers = (UINT32)currentSlot;
                         }
                     }
-
-                    if(firstSlot != -1)
-                        slotConstBuffers = (UINT32)firstSlot;
                 }
             }
         };

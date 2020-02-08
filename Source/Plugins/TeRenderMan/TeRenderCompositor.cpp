@@ -19,13 +19,17 @@ namespace te
         rapi.SetStencilRef(pass->GetStencilRefValue());
     }
 
-    void SetPassParams(const SPtr<GpuParams> gpuParams, UINT32 gpuParamsBindFlags)
+    void SetPassParams(const SPtr<GpuParams> gpuParams, UINT32 gpuParamsBindFlags, bool isInstanced)
     {
         if (gpuParams == nullptr)
             return;
 
         RenderAPI& rapi = RenderAPI::Instance();
-        rapi.SetGpuParams(gpuParams, gpuParamsBindFlags, GPU_BIND_PARAM_BLOCK_ALL_EXCEPT, { "PerCameraBuffer" });
+
+        if(isInstanced)
+            rapi.SetGpuParams(gpuParams, gpuParamsBindFlags, GPU_BIND_PARAM_BLOCK_ALL_EXCEPT, { "PerCameraBuffer" });
+        else
+            rapi.SetGpuParams(gpuParams, gpuParamsBindFlags, GPU_BIND_PARAM_BLOCK_ALL_EXCEPT, { "PerCameraBuffer", "PerInstanceBuffer" });
     }
 
     /** Renders all elements in a render queue. */
@@ -56,7 +60,8 @@ namespace te
             else
                 gpuParamsBindFlags = GPU_BIND_PARAM_BLOCK;
 
-            SetPassParams(entry.RenderElem->GpuParamsElem[entry.PassIdx], gpuParamsBindFlags);
+            bool isInstanced = (entry.RenderElem->InstanceCount > 0) ? true : false;
+            SetPassParams(entry.RenderElem->GpuParamsElem[entry.PassIdx], gpuParamsBindFlags, isInstanced);
             entry.RenderElem->Draw();
         }
     }
