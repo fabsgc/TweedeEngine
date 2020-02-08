@@ -74,7 +74,13 @@ namespace te
          */
         void SetLayer(UINT64 layer);
 
-        /** @copydoc setLayer() */
+        /** Determines if this object can be instanced */
+        void SetInstancing(bool instancing) { _instancing = instancing; _markCoreDirty(); }
+
+        /** @copydoc SetInstancing() */
+        bool GetInstancing() const { return _instancing; }
+
+        /** @copydoc SetLayer() */
         UINT64 GetLayer() const { return _layer; }
 
         /** Factor to be applied to the cull distance set in the camera's render settings.  */
@@ -122,5 +128,6 @@ namespace te
         Matrix4 _tfrmMatrix = TeIdentity;
         Matrix4 _tfrmMatrixNoScale = TeIdentity;
         float _cullDistanceFactor = 1.0f;
+        bool _instancing = false;
     };
 }

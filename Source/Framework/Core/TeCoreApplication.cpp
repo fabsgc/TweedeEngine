@@ -552,22 +552,23 @@ namespace te
         _sceneCameraSO->SetPosition(Vector3(0.0f, 5.0f, 7.5f));
         _sceneCameraSO->LookAt(Vector3(0.0f, 0.0f, -3.0f));
 
-        _sceneRenderableSO->Move(Vector3(-45.0f, 0.0f, -50.0f));
+        _sceneRenderableSO->Move(Vector3(-48.0f, 0.0f, -55.0f));
 
-        for (INT16 i = -10; i < 11; i++)
+        for (INT16 i = -14; i < 15; i++)
         {
-            for (INT16 j = -1; j < 256; j++)
+            for (INT16 j = -1; j < 32; j++)
             {
                 HSceneObject sceneRenderable = SceneObject::Create("Monkey_" + ToString(i) + "_" + ToString(j));
                 HRenderable renderableCube = sceneRenderable->AddComponent<CRenderable>();
                 renderableCube->SetMesh(_loadedMeshMonkey);
                 renderableCube->SetMaterial(_materialMonkey);
+                renderableCube->SetInstancing(true);
                 renderableCube->Initialize();
 
                 sceneRenderable->Move(Vector3((float)i * 3.0f, 0.0f, -(float)j * 3.0f));
                 //sceneRenderable->SetMobility(ObjectMobility::Static);
 
-                //_sceneRenderablesMonkeySO.push_back(sceneRenderable);
+                _sceneRenderablesMonkeySO.push_back(sceneRenderable);
 
             }
         }
@@ -584,10 +585,10 @@ namespace te
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         //_sceneRenderableSO->Rotate(Vector3(0.0f, 1.0f, 0.0f), Radian(1.5f * gTime().GetFrameDelta()));
 
-        /*for (auto& so : _sceneRenderablesMonkeySO)
+        for (auto& so : _sceneRenderablesMonkeySO)
         {
             so->Rotate(Vector3(0.0f, 1.0f, 0.0f), Radian(2.0f * gTime().GetFrameDelta()));
-        }*/
+        }
 #endif
     }
 

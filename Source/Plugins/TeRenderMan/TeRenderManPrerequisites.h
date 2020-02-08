@@ -5,8 +5,10 @@
 #include "Math/TeMatrix4.h"
 
 #define STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE 128
-#define STANDARD_FORWARD_MIN_INSTANCED_BLOCK_SIZE 8
+#define STANDARD_FORWARD_MIN_INSTANCED_BLOCK_SIZE 16
 #define STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER 32
+
+#define STANDARD_FORWARD_MAX_VERTICES_COMBINED_MESH 4096
 
 namespace te
 {
@@ -66,6 +68,22 @@ namespace te
 
     extern PerInstanceParamDef gPerInstanceParamDef;
     extern SPtr<GpuParamBlockBuffer> gPerInstanceParamBuffer[STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER];
+
+    /** Instancing method for RenderMan */
+    enum class RenderManInstancing
+    {
+        Automatic, /**< We loop each frame through all objects to find those who can be instanced. (CPU cost) */
+        Manual, /**< User must set on its own the instancing property for each object */
+        None /**< No instancing is used */
+    };
+
+    /** Texture filtering options for RenderMan. */
+    enum class RenderManFiltering
+    {
+        Bilinear, /**< Sample linearly in X and Y directions within a texture mip level. */
+        Trilinear, /**< Sample bilinearly and also between texture mip levels to hide the mip transitions. */
+        Anisotropic /**< High quality dynamic filtering that improves quality of angled surfaces */
+    };
 
     /** Available implementation of the RenderElement class. */
     enum class RenderElementType

@@ -102,7 +102,7 @@ namespace te
         PerObjectBuffer::Update(PerObjectParamBuffer, WorldTfrm, worldNoScaleTransform, PrevWorldTfrm, layer);
     }
 
-    void RendererRenderable::UpdatePerInstanceBuffer(PerInstanceData* instanceData, UINT32 instanceCounter, UINT blockId)
+    void RendererRenderable::UpdatePerInstanceBuffer(PerInstanceData* instanceData, UINT32 instanceCounter, UINT32 blockId)
     {
         PerObjectBuffer::UpdatePerInstance(PerObjectParamBuffer, gPerInstanceParamBuffer[blockId], instanceData, instanceCounter);
     }
@@ -110,7 +110,6 @@ namespace te
     void RendererRenderable::UpdatePerCallBuffer(const Matrix4& viewProj, bool flush)
     {
         const Matrix4 worldViewProjMatrix = viewProj * RenderablePtr->GetMatrix();
-
         gPerCallParamDef.gMatWorldViewProj.Set(PerCallParamBuffer, worldViewProjMatrix.Transpose());
 
         //if (flush)

@@ -66,7 +66,7 @@ namespace te
          * @param[in]	instanceCounter	Number of valid element to store in array
          * @param[in]	blockId	        We create only 8 instance buffer, we need to know in which we want to register data
          */
-        void UpdatePerInstanceBuffer(PerInstanceData* instanceData, UINT32 instanceCounter, UINT blockId);
+        void UpdatePerInstanceBuffer(PerInstanceData* instanceData, UINT32 instanceCounter, UINT32 blockId);
 
         /**
          * Updates the per-call GPU buffer according to the provided parameters.

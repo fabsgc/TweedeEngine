@@ -53,57 +53,41 @@ namespace te
 
         /**
          * Called whenever a new renderable is created.
-         *
-         * @note	Core thread.
          */
         virtual void NotifyRenderableAdded(Renderable* renderable) { }
 
         /**
          * Called whenever a renderable is updated.
-         *
-         * @note	Core thread.
          */
         virtual void NotifyRenderableUpdated(Renderable* renderable) { }
 
         /**
          * Called whenever a renderable is destroyed.
-         *
-         * @note	Core thread.
          */
         virtual void NotifyRenderableRemoved(Renderable* renderable) { }
 
         /**
          * Called whenever a new light is created.
-         *
-         * @note	Core thread.
          */
         virtual void NotifyLightAdded(Light* light) { }
 
         /**
          * Called whenever a light is updated.
-         *
-         * @note	Core thread.
          */
         virtual void NotifyLightUpdated(Light* light) { }
 
         /**
          * Called whenever a light is destroyed.
-         *
-         * @note	Core thread.
          */
         virtual void NotifyLightRemoved(Light* light) { }
 
         /**
          * Called whenever a skybox is created.
-         *
-         * @note	Core thread.
          */
         virtual void NotifySkyboxAdded(Skybox* skybox) { }
 
         /**
          * Called whenever a skybox is destroyed.
-         *
-         * @note	Core thread.
          */
         virtual void NotifySkyboxRemoved(Skybox* skybox) { }
 

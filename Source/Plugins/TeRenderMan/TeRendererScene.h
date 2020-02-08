@@ -7,6 +7,7 @@
 #include "Renderer/TeLight.h"
 #include "Renderer/TeRenderable.h"
 #include "Renderer/TeParamBlocks.h"
+#include "Renderer/TeRenderable.h"
 #include "TeRendererView.h"
 #include "TeRendererLight.h"
 #include "TeRendererRenderable.h"
@@ -25,6 +26,7 @@ namespace te
 
         // Renderables
         Vector<RendererRenderable*> Renderables;
+        Vector<RendererRenderable*> RenderablesInstanced;
         Vector<CullInfo> RenderableCullInfos;
 
         // Lights

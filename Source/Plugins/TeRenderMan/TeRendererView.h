@@ -298,12 +298,12 @@ namespace te
         /**
         * Before creating render queue, we look for all possibly instanced elements
         */
-        void GenerateInstanced(const SceneInfo& sceneInfo, bool instancingEnabled);
+        void GenerateInstanced(const SceneInfo& sceneInfo, RenderManInstancing instancingMode);
     
         /**
         * Once we have set visibility information for all Renderables, we wil decide if some of them can be instanced
         */
-        void GenerateRenderQueue(const SceneInfo& sceneInfo, RendererView& view, bool instancingEnabled = true);
+        void GenerateRenderQueue(const SceneInfo& sceneInfo, RendererView& view, RenderManInstancing instancingMode);
 
     private:
         friend class RenderView;

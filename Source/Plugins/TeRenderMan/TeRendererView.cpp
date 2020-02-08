@@ -418,43 +418,68 @@ namespace te
         }
     }
 
-    void RendererViewGroup::GenerateInstanced(const SceneInfo& sceneInfo, bool instancingEnabled)
+    void RendererViewGroup::GenerateInstanced(const SceneInfo& sceneInfo, RenderManInstancing instancingMode)
     {
-        const auto numRenderables = (UINT32)sceneInfo.Renderables.size();
-        const UINT32 maxInstElement = STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE * STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE;
-        UINT32 totalInstElem = 0;
-
-        if (instancingEnabled)
+        auto PopulateInstanceBuffer = [&](Renderable* renderable, UINT32 current)
         {
+            if (!renderable->GetInstancing())
+                return;
+
+            InstancedBuffer key;
+            key.MeshElem = renderable->GetMesh().get();
+            key.Materials = renderable->GetMaterialsPtr();
+            key.MaterialCount = renderable->GetNumMaterials();
+
+            auto iter = find(RendererView::_instancedBuffersPool.begin(), RendererView::_instancedBuffersPool.end(), key);
+
+            if (iter == RendererView::_instancedBuffersPool.end())
+            {
+                key.Idx.reserve(64);
+                key.Idx.push_back(current);
+                RendererView::_instancedBuffersPool.push_back(key);
+            }
+            else
+                iter->Idx.push_back(current);
+        };
+
+        if (instancingMode == RenderManInstancing::Automatic)
+        {
+            const auto numRenderables = (UINT32)sceneInfo.Renderables.size();
+            const UINT32 maxInstElement = STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE * STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE;
+            UINT32 totalInstElem = 0;
+
             RendererView::_instancedBuffersPool.clear();
 
             // We will separate renderables based on <Material*> and <Renderable*>
             for (UINT32 i = 0; i < numRenderables; i++)
             {
-                InstancedBuffer key;
-                key.MeshElem = sceneInfo.Renderables[i]->RenderablePtr->GetMesh().get();
-                key.Materials = sceneInfo.Renderables[i]->RenderablePtr->GetMaterialsPtr();
-                key.MaterialCount = sceneInfo.Renderables[i]->RenderablePtr->GetNumMaterials();
-                key.Idx.push_back(i);
+                PopulateInstanceBuffer(sceneInfo.Renderables[i]->RenderablePtr, i);
+            }
+        }
+        else if (instancingMode == RenderManInstancing::Manual)
+        {
+            const auto numRenderables = (UINT32)sceneInfo.RenderablesInstanced.size();
+            const UINT32 maxInstElement = STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE * STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE;
+            UINT32 totalInstElem = 0;
 
-                auto iter = find(RendererView::_instancedBuffersPool.begin(), RendererView::_instancedBuffersPool.end(), key);
+            RendererView::_instancedBuffersPool.clear();
 
-                if (iter == RendererView::_instancedBuffersPool.end())
-                    RendererView::_instancedBuffersPool.push_back(key);
-                else
-                    iter->Idx.push_back(i);
+            // We will separate renderables based on <Material*> and <Renderable*>
+            for (auto& renderable : sceneInfo.RenderablesInstanced)
+            {
+                PopulateInstanceBuffer(renderable->RenderablePtr, renderable->RenderablePtr->GetRendererId());
             }
         }
     }
 
-    void RendererViewGroup::GenerateRenderQueue(const SceneInfo& sceneInfo, RendererView& view, bool instancingEnabled)
+    void RendererViewGroup::GenerateRenderQueue(const SceneInfo& sceneInfo, RendererView& view, RenderManInstancing instancingMode)
     {
-        const auto numRenderables = (UINT32)sceneInfo.Renderables.size();
-        const UINT32 maxInstElement = STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE * STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER;
-        UINT32 totalInstElem = 0;
-
-        if (instancingEnabled)
+        if (instancingMode == RenderManInstancing::Automatic || instancingMode == RenderManInstancing::Manual)
         {
+            const auto numRenderables = (UINT32)sceneInfo.Renderables.size();
+            const UINT32 maxInstElement = STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE * STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER;
+            UINT32 totalInstElem = 0;
+
             view._instancedElements.clear();
             for (auto& instancedBuffer : RendererView::_instancedBuffersPool)
             {

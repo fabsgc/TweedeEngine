@@ -275,6 +275,15 @@ namespace te
         rendererRenderable->UpdatePerObjectBuffer();
 
         SetMeshData(rendererRenderable, renderable);
+
+        if (_options->InstancingMode == RenderManInstancing::Manual)
+        {
+            auto iter = std::find(_info.RenderablesInstanced.begin(), _info.RenderablesInstanced.end(), rendererRenderable);
+            if (renderable->GetInstancing() && iter == _info.RenderablesInstanced.end())
+                _info.RenderablesInstanced.push_back(rendererRenderable);
+            else if (!renderable->GetInstancing() && iter != _info.RenderablesInstanced.end())
+                _info.RenderablesInstanced.erase(iter);
+        }
     }
 
     /** Updates information about a previously registered renderable object. */
@@ -294,6 +303,15 @@ namespace te
         _info.RenderableCullInfos[renderableId].Layer = renderable->GetLayer();
         _info.RenderableCullInfos[renderableId].Boundaries = renderable->GetBounds();
         _info.RenderableCullInfos[renderableId].CullDistanceFactor = renderable->GetCullDistanceFactor();
+
+        if (_options->InstancingMode == RenderManInstancing::Manual)
+        {
+            auto iter = std::find(_info.RenderablesInstanced.begin(), _info.RenderablesInstanced.end(), rendererRenderable);
+            if (renderable->GetInstancing() && iter == _info.RenderablesInstanced.end())
+                _info.RenderablesInstanced.push_back(rendererRenderable);
+            else if (!renderable->GetInstancing() && iter != _info.RenderablesInstanced.end())
+                _info.RenderablesInstanced.erase(iter);
+        }
     }
 
     /** Removes a renderable object from the scene. */
@@ -314,9 +332,17 @@ namespace te
             lastRenderable->SetRendererId(renderableId);
         }
 
+        if (_options->InstancingMode == RenderManInstancing::Manual)
+        {
+            auto iter = std::find(_info.RenderablesInstanced.begin(), _info.RenderablesInstanced.end(), rendererRenderable);
+            if (iter != _info.RenderablesInstanced.end())
+                _info.RenderablesInstanced.erase(iter);
+        }
+
         // Last element is the one we want to erase
         _info.Renderables.erase(_info.Renderables.end() - 1);
         _info.RenderableCullInfos.erase(_info.RenderableCullInfos.end() - 1);
+        
 
         te_delete(rendererRenderable);
     }

@@ -26,7 +26,7 @@ namespace te
         }
 
         _options = te_shared_ptr_new<RenderManOptions>();
-        _options->InstancingEnabled = true;
+        _options->InstancingMode = RenderManInstancing::Manual;
 
         _scene = te_shared_ptr_new<RendererScene>(_options);
 
@@ -105,8 +105,8 @@ namespace te
 
             for (auto& view : views)
             {
-                _mainViewGroup->GenerateInstanced(sceneInfo, _options->InstancingEnabled);
-                _mainViewGroup->GenerateRenderQueue(sceneInfo, *view, _options->InstancingEnabled);
+                _mainViewGroup->GenerateInstanced(sceneInfo, _options->InstancingMode);
+                _mainViewGroup->GenerateRenderQueue(sceneInfo, *view, _options->InstancingMode);
                 if (RenderSingleView(*_mainViewGroup, *view, frameInfo))
                     anythingDrawn = true;
             }

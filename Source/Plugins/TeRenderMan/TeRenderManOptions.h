@@ -6,14 +6,6 @@
 
 namespace te
 {
-    /** Texture filtering options for RenderMan. */
-    enum class RenderManFiltering
-    {
-        Bilinear, /**< Sample linearly in X and Y directions within a texture mip level. */
-        Trilinear, /**< Sample bilinearly and also between texture mip levels to hide the mip transitions. */
-        Anisotropic /**< High quality dynamic filtering that improves quality of angled surfaces */
-    };
-
     /** A set of options used for controlling the rendering of the RenderMan renderer. */
     struct RenderManOptions : public RendererOptions
     {
@@ -41,6 +33,6 @@ namespace te
         /**
          * By default, we will try to batch object who share same geometry and same material
         */
-        bool InstancingEnabled = true;
+        RenderManInstancing InstancingMode = RenderManInstancing::Manual;
     };
 }
