@@ -80,6 +80,12 @@ namespace te
         /** @copydoc SetInstancing() */
         bool GetInstancing() const { return _instancing; }
 
+        /** Determines if this object can be merged with another */
+        void SetCanBeMerged(bool merged) { _canBeMerged = merged; _markCoreDirty(); }
+
+        /** @copydoc SetInstancing() */
+        bool GetCanBeMerged() const { return _canBeMerged; }
+
         /** @copydoc SetLayer() */
         UINT64 GetLayer() const { return _layer; }
 
@@ -129,5 +135,6 @@ namespace te
         Matrix4 _tfrmMatrixNoScale = TeIdentity;
         float _cullDistanceFactor = 1.0f;
         bool _instancing = false;
+        bool _canBeMerged = false;
     };
 }

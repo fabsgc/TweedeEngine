@@ -6,7 +6,7 @@
 
 #define STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE 128
 #define STANDARD_FORWARD_MIN_INSTANCED_BLOCK_SIZE 16
-#define STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER 32
+#define STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER 128
 
 #define STANDARD_FORWARD_MAX_VERTICES_COMBINED_MESH 4096
 
@@ -51,7 +51,6 @@ namespace te
         TE_PARAM_BLOCK_ENTRY(Matrix4, gMatInvWorldNoScale)
         TE_PARAM_BLOCK_ENTRY(Matrix4, gMatPrevWorld)
         TE_PARAM_BLOCK_ENTRY(INT32, gLayer)
-        TE_PARAM_BLOCK_ENTRY(INT32, gInstanced) // default 0 for non instanced object
     TE_PARAM_BLOCK_END
 
     extern PerObjectParamDef gPerObjectParamDef;
@@ -68,6 +67,12 @@ namespace te
 
     extern PerInstanceParamDef gPerInstanceParamDef;
     extern SPtr<GpuParamBlockBuffer> gPerInstanceParamBuffer[STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER];
+
+    enum class RenderManCulling
+    {
+        Frustum = 1 << 0,
+        Occlusion = 1 << 1
+    };
 
     /** Instancing method for RenderMan */
     enum class RenderManInstancing

@@ -61,7 +61,7 @@ namespace te
          * Gets the parameter in the provided parameter block buffer. Caller is responsible for ensuring the param block
          * buffer contains this parameter.
          */
-        T Get(const SPtr<GpuParamBlockBuffer>& paramBlock, UINT32 arrayIdx = 0) const
+        T Get(GpuParamBlockBuffer* paramBlock, UINT32 arrayIdx = 0) const
         {
 #if TE_DEBUG_MODE
             if (arrayIdx >= _paramDesc.ArraySize)
@@ -79,6 +79,15 @@ namespace te
                 sizeBytes);
 
             return value;
+        }
+
+        /**
+         * Gets the parameter in the provided parameter block buffer. Caller is responsible for ensuring the param block
+         * buffer contains this parameter.
+         */
+        T Get(const SPtr<GpuParamBlockBuffer>& paramBlock, UINT32 arrayIdx = 0) const
+        {
+            return Get(paramBlock.get(), arrayIdx);
         }
 
     protected:

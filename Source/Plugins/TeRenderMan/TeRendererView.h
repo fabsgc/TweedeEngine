@@ -85,9 +85,16 @@ namespace te
         RendererViewTargetData Target;
     };
 
+    struct RenderableVisibility
+    {
+        bool Visible = false;
+        bool Instanced = false;
+    };
+
     struct VisibilityInfo
     {
-        Vector<bool> Renderables;
+        /* Say if a renderable is currently visible or not */
+        Vector<RenderableVisibility> Renderables;
     };
 
     /**	Renderer information specific to a single render target. */
@@ -185,13 +192,13 @@ namespace te
          *									renderer views. Must be the same size as the @p renderables array.
          */
         void DetermineVisible(const Vector<RendererRenderable*>& renderables, const Vector<CullInfo>& cullInfos,
-            Vector<bool>* visibility = nullptr);
+            Vector<RenderableVisibility>* visibility = nullptr);
 
         /**
          * Culls the provided set of bounds against the current frustum and outputs a set of visibility flags determining
          * which entry is or isn't visible by this view. Both inputs must be arrays of the same size.
          */
-        void CalculateVisibility(const Vector<CullInfo>& cullInfos, Vector<bool>& visibility) const;
+        void CalculateVisibility(const Vector<CullInfo>& cullInfos, Vector<RenderableVisibility>& visibility) const;
 
         /**
          * Inserts all visible renderable elements into render queues. Assumes visibility has been calculated beforehand
@@ -267,7 +274,7 @@ namespace te
     class RendererViewGroup
     {
     public:
-        RendererViewGroup(RendererView** views, UINT32 numViews);
+        RendererViewGroup(RendererView** views, UINT32 numViews, SPtr<RenderManOptions> options);
 
         /**
          * Updates the internal list of views. This is more efficient than always constructing a new instance of this class
@@ -296,6 +303,11 @@ namespace te
         void DetermineVisibility(const SceneInfo& sceneInfo);
 
         /**
+         * Updates visibility (true) for for the provided scene objects
+         */
+        void SetAllObjectsAsVisible(const SceneInfo& sceneInfo);
+
+        /**
         * Before creating render queue, we look for all possibly instanced elements
         */
         void GenerateInstanced(const SceneInfo& sceneInfo, RenderManInstancing instancingMode);
@@ -309,6 +321,7 @@ namespace te
         friend class RenderView;
 
     private:
+        SPtr<RenderManOptions> _options;
         Vector<RendererView*> _views;
         VisibilityInfo _visibility;
     };

@@ -75,7 +75,7 @@ VS_OUTPUT main( VS_INPUT IN )
 {
     VS_OUTPUT OUT = (VS_OUTPUT)0;
 
-    if(gInstanced == 1)
+    if(IN.Instanceid == 0)
     {
         OUT.Position.xyz = IN.Position;
         OUT.Position.w = 1.0f;

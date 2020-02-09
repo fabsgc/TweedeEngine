@@ -291,6 +291,15 @@ namespace te
     {
         UINT32 renderableId = renderable->GetRendererId();
 
+        // If element can be merged, we check if it still exist on renderer side
+        if (renderable->GetCanBeMerged())
+        {
+            if (renderableId > _info.Renderables.size())
+                return;
+            if (_info.Renderables[renderableId]->RenderablePtr != renderable)
+                return;
+        }
+
         RendererRenderable* rendererRenderable = _info.Renderables[renderableId];
 
         if(rendererRenderable->PreviousFrameDirtyState != PrevFrameDirtyState::Updated)
@@ -318,6 +327,16 @@ namespace te
     void RendererScene::UnregisterRenderable(Renderable* renderable)
     { 
         UINT32 renderableId = renderable->GetRendererId();
+
+        // If element can be merged, we check if it still exist on renderer side
+        if (renderable->GetCanBeMerged())
+        {
+            if (renderableId > _info.Renderables.size())
+                return;
+            if (_info.Renderables[renderableId]->RenderablePtr != renderable)
+                return;
+        }
+
         Renderable* lastRenderable = _info.Renderables.back()->RenderablePtr;
         UINT32 lastRenderableId = lastRenderable->GetRendererId();
 
@@ -345,6 +364,11 @@ namespace te
         
 
         te_delete(rendererRenderable);
+    }
+
+    void RendererScene::BatchRenderables()
+    {
+
     }
 
     void RendererScene::SetMeshData(RendererRenderable* rendererRenderable, Renderable* renderable)
@@ -451,13 +475,8 @@ namespace te
 
     void RendererScene::PrepareVisibleRenderable(UINT32 idx, const FrameInfo& frameInfo)
     {
-        if (_info.RenderableReady[idx])
-            return;
-
-        RendererRenderable* rendererRenderable = _info.Renderables[idx];
-
+        // Update animation when animation system will be done
         //_info.Renderables[idx]->PerObjectParamBuffer->FlushToGPU();
-        _info.RenderableReady[idx] = true;
     }
 
     RENDERER_VIEW_DESC RendererScene::CreateViewDesc(Camera* camera) const

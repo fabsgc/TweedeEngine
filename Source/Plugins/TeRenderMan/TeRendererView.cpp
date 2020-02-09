@@ -169,10 +169,10 @@ namespace te
     }
 
     void RendererView::DetermineVisible(const Vector<RendererRenderable*>& renderables, const Vector<CullInfo>& cullInfos,
-        Vector<bool>* visibility)
+        Vector<RenderableVisibility>* visibility)
     {
         _visibility.Renderables.clear();
-        _visibility.Renderables.resize(renderables.size(), false);
+        _visibility.Renderables.resize(renderables.size(), RenderableVisibility());
 
         if (!ShouldDraw3D())
             return;
@@ -183,13 +183,13 @@ namespace te
         {
             for (UINT32 i = 0; i < (UINT32)renderables.size(); i++)
             {
-                bool visible = (*visibility)[i];
-                (*visibility)[i] = visible || _visibility.Renderables[i];
+                bool visible = (*visibility)[i].Visible;
+                (*visibility)[i].Visible = visible || _visibility.Renderables[i].Visible;
             }
         }
     }
 
-    void RendererView::CalculateVisibility(const Vector<CullInfo>& cullInfos, Vector<bool>& visibility) const
+    void RendererView::CalculateVisibility(const Vector<CullInfo>& cullInfos, Vector<RenderableVisibility>& visibility) const
     {
         UINT64 cameraLayers = _properties.VisibleLayers;
         const ConvexVolume& worldFrustum = _properties.CullFrustum;
@@ -221,7 +221,7 @@ namespace te
                 const AABox& boundingBox = cullInfos[i].Boundaries.GetBox();
 
                 if (worldFrustum.Intersects(boundingBox))
-                    visibility[i] = true;
+                    visibility[i].Visible = true;
             }
         }
     }
@@ -231,7 +231,7 @@ namespace te
         // Queue renderables
         for (UINT32 i = 0; i < (UINT32)sceneInfo.Renderables.size(); i++)
         {
-            if (!_visibility.Renderables[i])
+            if (!_visibility.Renderables[i].Visible)
                 continue;
 
             const AABox& boundingBox = sceneInfo.RenderableCullInfos[i].Boundaries.GetBox();
@@ -278,20 +278,23 @@ namespace te
             if (upperBlockBound > (UINT32)instancedBuffer.Idx.size())
                 upperBlockBound = (UINT32)instancedBuffer.Idx.size();
 
+            if (lowerBlockBound == upperBlockBound)
+                break;
+
             // We will use first element of this block for its data (each element has same internal data)
             UINT32 idx = instancedBuffer.Idx[lowerBlockBound];
 
             const AABox& boundingBox = sceneInfo.RenderableCullInfos[idx].Boundaries.GetBox();
             const float distanceToCamera = (_properties.ViewOrigin - boundingBox.GetCenter()).Length();
 
+            PerInstanceData data;
+
             for (auto subElemIdx = lowerBlockBound; subElemIdx < upperBlockBound; subElemIdx++)
             {
                 UINT32 elemId = instancedBuffer.Idx[subElemIdx];
 
                 //Once all this stuff is done, we need to write into perinstance buffer
-                SPtr<GpuParamBlockBuffer> buffer = sceneInfo.Renderables[elemId]->PerObjectParamBuffer;
-
-                PerInstanceData data;
+                GpuParamBlockBuffer* buffer = sceneInfo.Renderables[elemId]->PerObjectParamBuffer.get();
 
                 data.gMatWorld = gPerObjectParamDef.gMatWorld.Get(buffer);
                 data.gMatInvWorld = gPerObjectParamDef.gMatInvWorld.Get(buffer);
@@ -374,7 +377,8 @@ namespace te
         _redrawThisFrame = true;
     }
 
-    RendererViewGroup::RendererViewGroup(RendererView** views, UINT32 numViews)
+    RendererViewGroup::RendererViewGroup(RendererView** views, UINT32 numViews, SPtr<RenderManOptions> options)
+        : _options(options)
     {
         SetViews(views, numViews);
     }
@@ -409,8 +413,8 @@ namespace te
             return;
 
         // Calculate renderable visibility per view
-        _visibility.Renderables.resize(sceneInfo.Renderables.size(), false);
-        _visibility.Renderables.assign(sceneInfo.Renderables.size(), false);
+        _visibility.Renderables.resize(sceneInfo.Renderables.size(), RenderableVisibility());
+        _visibility.Renderables.assign(sceneInfo.Renderables.size(), RenderableVisibility());
 
         for (UINT32 i = 0; i < numViews; i++)
         {
@@ -418,23 +422,53 @@ namespace te
         }
     }
 
+    void RendererViewGroup::SetAllObjectsAsVisible(const SceneInfo& sceneInfo)
+    {
+        const auto numViews = (UINT32)_views.size();
+
+        // Early exit if no views render scene geometry
+        bool anyViewsNeed3DDrawing = false;
+        for (UINT32 i = 0; i < numViews; i++)
+        {
+            if (_views[i]->ShouldDraw3D())
+            {
+                anyViewsNeed3DDrawing = true;
+                break;
+            }
+        }
+
+        if (!anyViewsNeed3DDrawing)
+            return;
+
+        // Calculate renderable visibility per view
+        _visibility.Renderables.resize(sceneInfo.Renderables.size(), RenderableVisibility());
+        _visibility.Renderables.assign(sceneInfo.Renderables.size(), RenderableVisibility());
+
+        for (UINT32 i = 0; i < (UINT32)_visibility.Renderables.size(); i++)
+        {
+            _visibility.Renderables[i].Visible = true;
+        }
+    }
+
     void RendererViewGroup::GenerateInstanced(const SceneInfo& sceneInfo, RenderManInstancing instancingMode)
     {
+        InstancedBuffer key;
+
         auto PopulateInstanceBuffer = [&](Renderable* renderable, UINT32 current)
         {
             if (!renderable->GetInstancing())
                 return;
 
-            InstancedBuffer key;
             key.MeshElem = renderable->GetMesh().get();
             key.Materials = renderable->GetMaterialsPtr();
             key.MaterialCount = renderable->GetNumMaterials();
+            if(key.Idx.size() > 0) key.Idx.clear();
 
             auto iter = find(RendererView::_instancedBuffersPool.begin(), RendererView::_instancedBuffersPool.end(), key);
 
             if (iter == RendererView::_instancedBuffersPool.end())
             {
-                key.Idx.reserve(64);
+                key.Idx.reserve(32);
                 key.Idx.push_back(current);
                 RendererView::_instancedBuffersPool.push_back(key);
             }
@@ -453,6 +487,13 @@ namespace te
             // We will separate renderables based on <Material*> and <Renderable*>
             for (UINT32 i = 0; i < numRenderables; i++)
             {
+                if (!_visibility.Renderables[sceneInfo.Renderables[i]->RenderablePtr->GetRendererId()].Visible &&
+                    (_options->CullingFlags & (UINT32)RenderManCulling::Frustum ||
+                        _options->CullingFlags & (UINT32)RenderManCulling::Occlusion))
+                {
+                    continue;
+                }
+
                 PopulateInstanceBuffer(sceneInfo.Renderables[i]->RenderablePtr, i);
             }
         }
@@ -467,6 +508,13 @@ namespace te
             // We will separate renderables based on <Material*> and <Renderable*>
             for (auto& renderable : sceneInfo.RenderablesInstanced)
             {
+                if (!_visibility.Renderables[renderable->RenderablePtr->GetRendererId()].Visible &&
+                    (_options->CullingFlags & (UINT32)RenderManCulling::Frustum ||
+                        _options->CullingFlags & (UINT32)RenderManCulling::Occlusion))
+                {
+                    continue;
+                }
+
                 PopulateInstanceBuffer(renderable->RenderablePtr, renderable->RenderablePtr->GetRendererId());
             }
         }
@@ -505,7 +553,10 @@ namespace te
                 if (instancedBuffer.Idx.size() > STANDARD_FORWARD_MIN_INSTANCED_BLOCK_SIZE && !hasTransparentElement)
                 {
                     for (auto& idx : instancedBuffer.Idx)
-                        view._visibility.Renderables[idx] = false;
+                    {
+                        view._visibility.Renderables[idx].Visible = false;
+                        view._visibility.Renderables[idx].Instanced = true;
+                    }
 
                     view.QueueRenderInstancedElements(sceneInfo, instancedBuffer);
                 }

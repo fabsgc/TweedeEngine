@@ -25,6 +25,12 @@ namespace te
         UINT32 ShadowMapSize = 2048;
 
         /**
+         * Determines which occlusion are currently used to cull object before rendering. Note that frustum culling can be
+         * CPU time consuming if scene partitioning does not use an efficient algorithm
+         */
+        UINT32 CullingFlags = (UINT32)RenderManCulling::Frustum | (UINT32)RenderManCulling::Occlusion;
+
+        /**
          * Controls if and how a render queue groups renderable objects by material in order to reduce number of state
          * changes. Sorting by material can reduce CPU usage but could increase overdraw.
          */

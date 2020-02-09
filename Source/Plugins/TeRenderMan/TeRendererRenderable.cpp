@@ -17,14 +17,11 @@ namespace te
         gPerObjectParamDef.gMatInvWorldNoScale.Set(buffer, tfrmNoScale.InverseAffine().Transpose());
         gPerObjectParamDef.gMatPrevWorld.Set(buffer, prevTfrm.Transpose());
         gPerObjectParamDef.gLayer.Set(buffer, (INT32)layer);
-        gPerObjectParamDef.gInstanced.Set(buffer, (INT32)1);
     }
 
     void PerObjectBuffer::UpdatePerInstance(SPtr<GpuParamBlockBuffer>& perObjectBuffer, 
         SPtr<GpuParamBlockBuffer>& perInstanceBuffer, PerInstanceData* instanceData, UINT32 instanceCounter)
     {
-        gPerObjectParamDef.gInstanced.Set(perObjectBuffer, (UINT32)2);
-
         for (size_t i = 0; i < instanceCounter; i++)
         {
             gPerInstanceParamDef.gInstances.Set(perInstanceBuffer, instanceData[i], (UINT32)i);

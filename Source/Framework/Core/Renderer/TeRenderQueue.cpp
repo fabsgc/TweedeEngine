@@ -81,7 +81,7 @@ namespace te
         if (_stateReductionMode != StateReduction::Never)
         {
             // Sort only indices since we generate an entirely new data set anyway, it doesn't make sense to move sortable elements
-            //std::sort(_sortableElementIdx.begin(), _sortableElementIdx.end(), std::bind(sortMethod, _1, _2, _sortableElements));
+            std::sort(_sortableElementIdx.begin(), _sortableElementIdx.end(), std::bind(sortMethod, _1, _2, _sortableElements));
         }
 
         UINT32 prevShaderId = (UINT32)-1;

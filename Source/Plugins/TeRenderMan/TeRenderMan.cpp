@@ -30,7 +30,7 @@ namespace te
 
         _scene = te_shared_ptr_new<RendererScene>(_options);
 
-        _mainViewGroup = te_new<RendererViewGroup>(nullptr, 0);
+        _mainViewGroup = te_new<RendererViewGroup>(nullptr, 0, _options);
 
         RenderCompositor::RegisterNodeType<RCNodeForwardPass>();
         RenderCompositor::RegisterNodeType<RCNodeFinalResolve>();
@@ -74,8 +74,8 @@ namespace te
         // Update global per-frame hardware buffers
         _scene->SetParamFrameParams(timings.Time);
 
-        sceneInfo.RenderableReady.resize(sceneInfo.Renderables.size(), false);
-        sceneInfo.RenderableReady.assign(sceneInfo.Renderables.size(), false);
+        //sceneInfo.RenderableReady.resize(sceneInfo.Renderables.size(), false); TODO
+        //sceneInfo.RenderableReady.assign(sceneInfo.Renderables.size(), false); TODO
 
         FrameInfo frameInfo(timings);
 
@@ -86,6 +86,7 @@ namespace te
         // Gather all views
         for (auto& rtInfo : sceneInfo.RenderTargets)
         {
+            bool anythingDrawn = false;
             Vector<RendererView*> views;
             SPtr<RenderTarget> target = rtInfo.Target;
             const Vector<Camera*>& cameras = rtInfo.Cameras;
@@ -99,9 +100,16 @@ namespace te
             }
 
             _mainViewGroup->SetViews(views.data(), (UINT32)views.size());
-            _mainViewGroup->DetermineVisibility(sceneInfo);
 
-            bool anythingDrawn = false;
+            if (_options->CullingFlags & (UINT32)RenderManCulling::Frustum ||
+                _options->CullingFlags & (UINT32)RenderManCulling::Occlusion)
+            {
+                _mainViewGroup->DetermineVisibility(sceneInfo);
+            }
+            else // Set all objects as visible
+            {
+                _mainViewGroup->SetAllObjectsAsVisible(sceneInfo);
+            }
 
             for (auto& view : views)
             {
@@ -143,7 +151,7 @@ namespace te
             UINT32 numRenderables = (UINT32)sceneInfo.Renderables.size();
             for (UINT32 i = 0; i < numRenderables; i++)
             {
-                if (!visibility.Renderables[i])
+                if (!visibility.Renderables[i].Visible && !visibility.Renderables[i].Instanced)
                     continue;
 
                 _scene->PrepareVisibleRenderable(i, frameInfo);
@@ -183,7 +191,7 @@ namespace te
         auto& viewProps = view.GetProperties();
 
         SPtr<GpuParamBlockBuffer> perCameraBuffer = view.GetPerViewBuffer();
-        //perCameraBuffer->FlushToGPU();
+        //perCameraBuffer->FlushToGPU(); TODO
 
         view.BeginFrame(frameInfo);
 
@@ -197,7 +205,7 @@ namespace te
 
     bool RenderMan::RenderOverlay(RendererView& view, const FrameInfo& frameInfo)
     {
-        // view.GetPerViewBuffer()->FlushToGPU();
+        // view.GetPerViewBuffer()->FlushToGPU(); TODO
         view.BeginFrame(frameInfo);
 
         auto& viewProps = view.GetProperties();
@@ -301,6 +309,11 @@ namespace te
     {
         // TE_PRINT("# Skybox removed");
         _scene->UnregisterSkybox(skybox);
+    }
+
+    void RenderMan::BatchRenderables()
+    {
+        _scene->BatchRenderables();
     }
 
     SPtr<RenderMan> gRenderMan()

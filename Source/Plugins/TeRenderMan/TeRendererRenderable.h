@@ -12,6 +12,17 @@ namespace te
     class PerObjectBuffer
     {
     public:
+        /**
+         * If object has been instanced during previous frame, we reset its value inside its constant buffer
+         *
+         *  @param[in]	buffer	    Buffer which will be filled with data
+         *  @param[in]	tfrm	    World matrix of current object
+         *  @param[in]	tfrmNoScale	World matrix of current object without scale
+         *  @param[in]	prevTfrm	Previous World matrix of current object
+         *  @param[in]	layer       Layer of the current object
+         */
+        static void ResetInstanced(SPtr<GpuParamBlockBuffer>& buffer);
+
         /** 
          * Updates the provided buffer with the data from the provided matrices. 
          *

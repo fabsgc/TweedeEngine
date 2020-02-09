@@ -471,7 +471,6 @@ namespace te
         SHADER_DATA_PARAM_DESC gMatInvWorldNoScaleDesc("gMatInvWorldNoScale", "gMatInvWorldNoScale", GPDT_MATRIX_4X4);
         SHADER_DATA_PARAM_DESC gMatPrevWorldDesc("gMatPrevWorld", "gMatPrevWorld", GPDT_MATRIX_4X4);
         SHADER_DATA_PARAM_DESC gLayerDesc("gLayer", "gLayer", GPDT_INT1);
-        SHADER_DATA_PARAM_DESC gInstancedDesc("gInstanced", "gInstanced", GPDT_INT1);
 
         SHADER_DATA_PARAM_DESC gTime("gTime", "gTime", GPDT_FLOAT1);
 
@@ -498,7 +497,6 @@ namespace te
         shaderDesc.AddParameter(gMatInvWorldNoScaleDesc);
         shaderDesc.AddParameter(gMatPrevWorldDesc);
         shaderDesc.AddParameter(gLayerDesc);
-        shaderDesc.AddParameter(gInstancedDesc);
 
         shaderDesc.AddParameter(gTime);
 
@@ -556,7 +554,7 @@ namespace te
 
         for (INT16 i = -14; i < 15; i++)
         {
-            for (INT16 j = -1; j < 32; j++)
+            for (INT16 j = -1; j < 256; j++)
             {
                 HSceneObject sceneRenderable = SceneObject::Create("Monkey_" + ToString(i) + "_" + ToString(j));
                 HRenderable renderableCube = sceneRenderable->AddComponent<CRenderable>();
@@ -566,10 +564,9 @@ namespace te
                 renderableCube->Initialize();
 
                 sceneRenderable->Move(Vector3((float)i * 3.0f, 0.0f, -(float)j * 3.0f));
-                //sceneRenderable->SetMobility(ObjectMobility::Static);
+                sceneRenderable->SetMobility(ObjectMobility::Immovable);
 
                 _sceneRenderablesMonkeySO.push_back(sceneRenderable);
-
             }
         }
         // ######################################################
@@ -585,10 +582,10 @@ namespace te
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         //_sceneRenderableSO->Rotate(Vector3(0.0f, 1.0f, 0.0f), Radian(1.5f * gTime().GetFrameDelta()));
 
-        for (auto& so : _sceneRenderablesMonkeySO)
+        /*for (auto& so : _sceneRenderablesMonkeySO)
         {
             so->Rotate(Vector3(0.0f, 1.0f, 0.0f), Radian(2.0f * gTime().GetFrameDelta()));
-        }
+        }*/
 #endif
     }
 

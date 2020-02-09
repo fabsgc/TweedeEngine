@@ -86,6 +86,9 @@ namespace te
         /** @copydoc Renderer::NotifySkyboxRemoved */
         void NotifySkyboxRemoved(Skybox* skybox) override;
 
+        /** @copydoc Renderer::BatchRenderables */
+        void BatchRenderables() override;
+
     private:
         SPtr<RendererScene> _scene;
         SPtr<RenderManOptions> _options;

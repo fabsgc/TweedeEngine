@@ -38,7 +38,7 @@ namespace te
 
         // Buffers for various transient data that gets rebuilt every frame
         //// Rebuilt every frame
-        mutable Vector<bool> RenderableReady;
+        //mutable Vector<bool> RenderableReady; TODO
 
         // Sky
         Skybox* SkyboxElem = nullptr;
@@ -86,6 +86,9 @@ namespace te
 
         /** Removes a renderable object from the scene. */
         void UnregisterRenderable(Renderable* renderable);
+
+        /** All renderables market as "mergeable" will be merged into several bigger mesh according to their material */
+        void BatchRenderables();
 
         /** Sometimes, mesh is missing on creation, need to be added afeter */
         void SetMeshData(RendererRenderable* rendererRenderable, Renderable* renderable);

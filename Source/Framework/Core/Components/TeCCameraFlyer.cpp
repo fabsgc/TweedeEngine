@@ -1,10 +1,12 @@
 #include "TeCCameraFlyer.h"
 #include "Math/TeVector3.h"
+#include "Math/TeVector2I.h"
 #include "Utility/TeTime.h"
 #include "Math/TeMath.h"
 #include "Scene/TeSceneObject.h"
 #include "Components/TeCCamera.h"
 #include "Platform/TePlatform.h"
+#include "TeCoreApplication.h"
 
 namespace te
 {
@@ -13,7 +15,6 @@ namespace te
     const float CCameraFlyer::ACCELERATION = 8.0f;
     const float CCameraFlyer::FAST_MODE_MULTIPLIER = 2.0f;
     const float CCameraFlyer::ROTATION_SPEED = 2.0f;
-
 
     /** Wraps an angle so it always stays in [0, 360) range. */
     Degree wrapAngle(Degree angle)
@@ -60,7 +61,15 @@ namespace te
             if (camRotating)
                 Platform::HideCursor();
             else
+            {
+                UINT32 width = gCoreApplication().GetWindow()->GetProperties().Width;
+                UINT32 height = gCoreApplication().GetWindow()->GetProperties().Height;
+                UINT32 left = gCoreApplication().GetWindow()->GetProperties().Left;
+                UINT32 top = gCoreApplication().GetWindow()->GetProperties().Top;
+
                 Platform::ShowCursor();
+                Platform::SetCursorPosition(Vector2I(width/2 + left, height/2 + top));
+            }
 
             _lastButtonState = camRotating;
         }
