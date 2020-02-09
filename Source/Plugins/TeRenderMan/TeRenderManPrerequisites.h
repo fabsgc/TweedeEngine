@@ -2,6 +2,7 @@
 
 #include "Prerequisites/TePrerequisitesUtility.h"
 #include "Renderer/TeParamBlocks.h"
+#include "Material/TeMaterial.h"
 #include "Math/TeMatrix4.h"
 
 #define STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE 128
@@ -19,7 +20,21 @@ namespace te
         Matrix4 gMatWorldNoScale;
         Matrix4 gMatInvWorldNoScale;
         Matrix4 gMatPrevWorld;
-        INT32   gLayer;
+        UINT32  gLayer;
+    };
+
+    struct MaterialData
+    {
+        Vector4 gDiffuse;
+        Vector4 gSpecular;
+        Vector4 gEmissive;
+
+        UINT32 gUseDiffuseMap;
+        UINT32 gUseSpecularMap;
+        UINT32 gUseNormalMap;
+        UINT32 gUseDepthMap;
+
+        float SpecularPower;
     };
 
     TE_PARAM_BLOCK_BEGIN(PerCameraParamDef)
@@ -51,6 +66,7 @@ namespace te
         TE_PARAM_BLOCK_ENTRY(Matrix4, gMatInvWorldNoScale)
         TE_PARAM_BLOCK_ENTRY(Matrix4, gMatPrevWorld)
         TE_PARAM_BLOCK_ENTRY(INT32, gLayer)
+        TE_PARAM_BLOCK_ENTRY(MaterialData, gMaterialData)
     TE_PARAM_BLOCK_END
 
     extern PerObjectParamDef gPerObjectParamDef;

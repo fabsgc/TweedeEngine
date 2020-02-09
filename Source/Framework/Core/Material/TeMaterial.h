@@ -10,6 +10,7 @@
 #include "Image/TeTexture.h"
 #include "RenderAPI/TeGpuBuffer.h"
 #include "RenderAPI/TeSamplerState.h"
+#include "Image/TeColor.h"
 
 namespace te
 {
@@ -22,6 +23,21 @@ namespace te
         ParamResource		= 1 << 1,
         /** Material shader has changed. */
         Shader				= 2 << 2
+    };
+
+    struct MaterialProperties
+    {
+        Color Diffuse = Color(0.5f, 0.5f, 0.5f, 1.0f);
+
+        Color Specular = Color(0.0f, 0.0f, 0.0f, 1.0f);
+        float SpecularPower = 64.0f;
+
+        Color Emissive = Color(0.0f, 0.0f, 0.0f, 0.0f);
+
+        bool UseDiffuseMap = false;
+        bool UseSpecularMap = false;
+        bool UseNormalMap = false;
+        bool UseDepthMap = false;
     };
 
     /**
@@ -94,6 +110,15 @@ namespace te
         /* Create all gpu params for a set of passes related to the current technique */
         void CreateGpuParams(UINT32 techniqueIdx, Vector<SPtr<GpuParams>>& outputParams);
 
+        /** Here you can set all properties for a given material*/
+        const MaterialProperties& GetProperties() { return _properties; }
+
+        void SetProperties(const MaterialProperties& properties) 
+        { 
+            _properties = properties;  
+            _markCoreDirty(MaterialDirtyFlags::Param);
+        }
+
     public:
         /** Creates a new empty material. */
         static HMaterial Create();
@@ -150,5 +175,7 @@ namespace te
         UnorderedMap<String, SPtr<TextureData>> _textures;
         UnorderedMap<String, SPtr<GpuBuffer>> _buffers;
         UnorderedMap<String, SPtr<SamplerState>> _samplerStates;
+
+        MaterialProperties _properties;
     };
 }

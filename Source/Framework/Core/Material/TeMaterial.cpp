@@ -117,18 +117,22 @@ namespace te
 
         _textures[name]->TextureElem = value;
         _textures[name]->TextureSurfaceElem = surface;
+
+        _markCoreDirty(MaterialDirtyFlags::ParamResource);
     }
 
     /** Assigns a buffer to the shader parameter with the specified name. */
     void Material::SetBuffer(const String& name, const SPtr<GpuBuffer>& value)
     {
         _buffers[name] = value;
+        _markCoreDirty(MaterialDirtyFlags::ParamResource);
     }
 
     /** Assigns a sampler state to the shader parameter with the specified name. */
     void Material::SetSamplerState(const String& name, const SPtr<SamplerState>& value)
     {
         _samplerStates[name] = value;
+        _markCoreDirty(MaterialDirtyFlags::ParamResource);
     }
 
     UINT32 Material::GetDefaultTechnique() const

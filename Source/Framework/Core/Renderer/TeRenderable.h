@@ -9,6 +9,17 @@
 
 namespace te
 {
+    struct RenderableProperties
+    {
+        RenderableProperties()
+        { }
+
+        bool Instancing  = false;
+        bool CanBeMerged = false;
+        bool CastShadow  = true;
+        float CullDistanceFactor = 1.0f;
+    };
+
     /** Illuminates a portion of the scene covered by the Renderable. */
     class TE_CORE_EXPORT Renderable : public CoreObject, public SceneActor
     {
@@ -75,16 +86,28 @@ namespace te
         void SetLayer(UINT64 layer);
 
         /** Determines if this object can be instanced */
-        void SetInstancing(bool instancing) { _instancing = instancing; _markCoreDirty(); }
+        void SetInstancing(bool instancing) { _properties.Instancing = instancing; _markCoreDirty(); }
 
         /** @copydoc SetInstancing() */
-        bool GetInstancing() const { return _instancing; }
+        bool GetInstancing() const { return  _properties.Instancing; }
 
         /** Determines if this object can be merged with another */
-        void SetCanBeMerged(bool merged) { _canBeMerged = merged; _markCoreDirty(); }
+        void SetCanBeMerged(bool merged) { _properties.CanBeMerged = merged; _markCoreDirty(); }
 
         /** @copydoc SetInstancing() */
-        bool GetCanBeMerged() const { return _canBeMerged; }
+        bool GetCanBeMerged() const { return _properties.CanBeMerged; }
+
+        /** Determines if this object cast shadow */
+        void SetCastShadow(bool castShadow) { _properties.CastShadow = castShadow; _markCoreDirty(); }
+
+        /** @copydoc SetCastShadow() */
+        bool GetCastShadow() const { return _properties.CastShadow; }
+
+        /** Set whole properties in a row */
+        void SetPorperties(RenderableProperties& properties) { _properties = properties; _markCoreDirty(); }
+
+        /** @copydoc SetPorperties() */
+        const RenderableProperties& GetProperties() { return _properties; }
 
         /** @copydoc SetLayer() */
         UINT64 GetLayer() const { return _layer; }
@@ -134,6 +157,10 @@ namespace te
         Matrix4 _tfrmMatrix = TeIdentity;
         Matrix4 _tfrmMatrixNoScale = TeIdentity;
         float _cullDistanceFactor = 1.0f;
+
+        RenderableProperties _properties;
+
+        
         bool _instancing = false;
         bool _canBeMerged = false;
     };

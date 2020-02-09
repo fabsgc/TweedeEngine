@@ -39,6 +39,7 @@ namespace te
             desc.EntryPoint = _entryPoint;
             desc.Source = _source;
             desc.Language = "hlsl";
+            desc.IncludePath = _includePath;
 
             _bytecode = CompileBytecode(desc);
         }

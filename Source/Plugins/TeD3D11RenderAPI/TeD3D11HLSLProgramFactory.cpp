@@ -3,10 +3,60 @@
 #include "RenderAPI/TeVertexDeclaration.h"
 #include "TeD3D11HLSLParamParser.h"
 #include "RenderAPI/TeGpuParamDesc.h"
+#include "Utility/TeFileStream.h"
 #include <regex>
 
 namespace te
 {
+    D3D11HLSLInclude::D3D11HLSLInclude(const String& directory)
+        : _directory(directory)
+    { }
+
+    HRESULT __stdcall D3D11HLSLInclude::Open(D3D_INCLUDE_TYPE IncludeType, LPCSTR pFileName, LPCVOID pParentData, LPCVOID *ppData, UINT *pBytes)
+    {
+        String includePath;
+        switch (IncludeType)
+        {
+        case D3D_INCLUDE_LOCAL: // #include "FILE"
+            includePath = GetFullPath(_directory) + "\\" + String(pFileName);
+            break;
+        case D3D_INCLUDE_SYSTEM: // #include "<FILE>"
+            includePath = GetFullPath(_directory) + "\\" + String(pFileName);
+            break;
+        default:
+            TE_ASSERT_ERROR(false, "Only local and system directory is currently supported for HLSL includes", __FILE__, __LINE__);
+            break;
+        }
+
+        FileStream includeFile(includePath.c_str());
+        TE_ASSERT_ERROR(!includeFile.Fail(), "Can't open include file {" + includePath + "}", __FILE__, __LINE__);
+
+        _data = includeFile.GetAsString();
+        *ppData = _data.c_str();
+        *pBytes = (UINT)includeFile.Size();
+
+        return S_OK;
+    }
+
+    HRESULT __stdcall D3D11HLSLInclude::Close(LPCVOID pData)
+    {
+        return S_OK;
+    }
+
+    String D3D11HLSLInclude::GetFullPath(String relativePath)
+    {
+        DWORD  retval = 0;
+        TCHAR  buffer[512] = TEXT("");
+        TCHAR  buf[512]    = TEXT("");
+        TCHAR** lppPart    = { NULL };
+
+        retval = GetFullPathName(relativePath.c_str(), 512, buffer, lppPart);
+        TE_ASSERT_ERROR((retval != 0), "GetFullPathName failed", __FILE__, __LINE__);
+
+        String finalPath(buffer);
+        return finalPath;
+    }
+
     SPtr<GpuProgram> D3D11HLSLProgramFactory::Create(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask)
     {
         SPtr<GpuProgram> gpuProgram;
@@ -139,6 +189,10 @@ namespace te
 
         const String& source = desc.Source;
         const String& entryPoint = desc.EntryPoint;
+        D3D11HLSLInclude* include = nullptr;
+
+        if (desc.IncludePath != "")
+            include = te_new<D3D11HLSLInclude>(desc.IncludePath);
 
         const D3D_SHADER_MACRO defines[] =
         {
@@ -152,7 +206,7 @@ namespace te
             nullptr,			// [in] The name of the file that contains the shader code.
             defines,			// [in] Optional. Pointer to a NULL-terminated array of macro definitions.
                                 //		See D3D_SHADER_MACRO. If not used, set this to NULL.
-            nullptr,			// [in] Optional. Pointer to an ID3DInclude Interface interface for handling include files.
+            include,			// [in] Optional. Pointer to an ID3DInclude Interface interface for handling include files.
                                 //		Setting this to NULL will cause a compile error if a shader contains a #include.
             entryPoint.c_str(),	// [in] Name of the shader-entrypoint function where shader execution begins.
             hlslProfile.c_str(),// [in] A string that specifies the shader model; can be any profile in shader model 4 or higher.
@@ -215,6 +269,9 @@ namespace te
                 parser.Parse(microcode, desc.Type, *bytecode->ParamDesc, nullptr);
             }
         }
+
+        if (include)
+            te_delete(include);
 
         SAFE_RELEASE(microcode);
         return bytecode;

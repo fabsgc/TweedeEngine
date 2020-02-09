@@ -35,9 +35,6 @@ namespace te
         /** Executes the draw call for the render element. */
         virtual void Draw() const = 0;
 
-        /** Set GpuParams for this element. */
-        virtual void UpdateGpuParams() const = 0;
-
     protected:
         RenderElement();
         virtual ~RenderElement();

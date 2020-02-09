@@ -16,6 +16,7 @@ namespace te
         String Source; /**< Source code to compile the program from. */
         String EntryPoint; /**< Name of the entry point function, for example "main". */
         String Language; /**< Language the source is written in, for example "hlsl" or "glsl". */
+        String IncludePath; /**< For hlsl, you can specify an include path here */
         GpuProgramType Type = GPT_VERTEX_PROGRAM; /**< Type of the program, for example vertex or pixel. */
         bool RequiresAdjacency = false; /**< If true then adjacency information will be provided when rendering. */
 
@@ -130,6 +131,7 @@ namespace te
         String _language;
         String _entryPoint;
         String _source;
+        String _includePath;
         bool _needsAdjacencyInfo;
 
         SPtr<GpuParamDesc> _parametersDesc;

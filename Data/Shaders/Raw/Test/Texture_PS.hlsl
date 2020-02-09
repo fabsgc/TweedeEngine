@@ -1,3 +1,5 @@
+#include "Include/Common.hlsli"
+
 cbuffer PerCameraBuffer : register(b0)
 {
     float3 gViewDir;
@@ -18,7 +20,10 @@ struct PS_INPUT
 };
 
 SamplerState AnisotropicSampler : register(s0);
-Texture2D ColorTexture : register(t0);
+Texture2D DiffuseMap : register(t0);
+Texture2D NormalMap : register(t1);
+Texture2D SpecularMap : register(t2);
+Texture2D DepthMap : register(t3);
 
 static const float4 AmbientColor = float4(1.0f, 0.95f, 0.9f, 0.5f);
 static const float3 AmbientDirection = float3(1.0f, -2.0f, -2.0f);
@@ -29,7 +34,7 @@ static const float SpecularPower = 64.0f;
 float4 main( PS_INPUT IN ) : SV_Target
 {
     float4 outColor  = float4(1.0f, 1.0f, 1.0f, 1.0f);
-    float4 color     = ColorTexture.Sample(AnisotropicSampler, IN.Texture);
+    float4 color     = DiffuseMap.Sample(AnisotropicSampler, IN.Texture);
 
     float3 diffuse   = (float3)0;
     float3 specular  = (float3)0;

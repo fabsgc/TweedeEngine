@@ -8,9 +8,12 @@ namespace te
     PerObjectParamDef gPerObjectParamDef;
     PerCallParamDef gPerCallParamDef;
 
-    void PerObjectBuffer::Update(SPtr<GpuParamBlockBuffer>& buffer, const Matrix4& tfrm, 
-        const Matrix4& tfrmNoScale, const Matrix4& prevTfrm, UINT32 layer)
+    void PerObjectBuffer::UpdatePerObject(SPtr<GpuParamBlockBuffer>& buffer, const Matrix4& tfrm,
+        const Matrix4& prevTfrm, Renderable* renderable)
     {
+        const Matrix4 tfrmNoScale = renderable->GetMatrixNoScale();
+        const UINT32 layer = Bitwise::mostSignificantBit(renderable->GetLayer());
+
         gPerObjectParamDef.gMatWorld.Set(buffer, tfrm.Transpose());
         gPerObjectParamDef.gMatInvWorld.Set(buffer, tfrm.InverseAffine().Transpose());
         gPerObjectParamDef.gMatWorldNoScale.Set(buffer, tfrmNoScale.Transpose());
@@ -23,13 +26,13 @@ namespace te
         SPtr<GpuParamBlockBuffer>& perInstanceBuffer, PerInstanceData* instanceData, UINT32 instanceCounter)
     {
         for (size_t i = 0; i < instanceCounter; i++)
-        {
             gPerInstanceParamDef.gInstances.Set(perInstanceBuffer, instanceData[i], (UINT32)i);
-        }
     }
 
-    void RenderableElement::UpdateGpuParams() const
-    { }
+    MaterialData PerObjectBuffer::ConvertMaterialProperties(const MaterialProperties& properties)
+    {
+        return MaterialData();
+    }
 
     void RenderableElement::Draw() const
     {
@@ -94,9 +97,7 @@ namespace te
 
     void RendererRenderable::UpdatePerObjectBuffer()
     {
-        const Matrix4 worldNoScaleTransform = RenderablePtr->GetMatrixNoScale();
-        const UINT32 layer = Bitwise::mostSignificantBit(RenderablePtr->GetLayer());
-        PerObjectBuffer::Update(PerObjectParamBuffer, WorldTfrm, worldNoScaleTransform, PrevWorldTfrm, layer);
+        PerObjectBuffer::UpdatePerObject(PerObjectParamBuffer, WorldTfrm, PrevWorldTfrm, RenderablePtr);
     }
 
     void RendererRenderable::UpdatePerInstanceBuffer(PerInstanceData* instanceData, UINT32 instanceCounter, UINT32 blockId)
@@ -110,6 +111,6 @@ namespace te
         gPerCallParamDef.gMatWorldViewProj.Set(PerCallParamBuffer, worldViewProjMatrix.Transpose());
 
         //if (flush)
-        //    PerCallParamBuffer->FlushToGPU();
+        //    PerCallParamBuffer->FlushToGPU(); TODO
     }
 }

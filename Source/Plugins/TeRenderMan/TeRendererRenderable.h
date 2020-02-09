@@ -12,28 +12,16 @@ namespace te
     class PerObjectBuffer
     {
     public:
-        /**
-         * If object has been instanced during previous frame, we reset its value inside its constant buffer
-         *
-         *  @param[in]	buffer	    Buffer which will be filled with data
-         *  @param[in]	tfrm	    World matrix of current object
-         *  @param[in]	tfrmNoScale	World matrix of current object without scale
-         *  @param[in]	prevTfrm	Previous World matrix of current object
-         *  @param[in]	layer       Layer of the current object
-         */
-        static void ResetInstanced(SPtr<GpuParamBlockBuffer>& buffer);
-
         /** 
          * Updates the provided buffer with the data from the provided matrices. 
          *
-         *  @param[in]	buffer	    Buffer which will be filled with data
-         *  @param[in]	tfrm	    World matrix of current object
-         *  @param[in]	tfrmNoScale	World matrix of current object without scale
-         *  @param[in]	prevTfrm	Previous World matrix of current object
-         *  @param[in]	layer       Layer of the current object
+         *  @param[in]	buffer	      Buffer which will be filled with data
+         *  @param[in]	tfrm	      World matrix of current object
+         *  @param[in]	prevTfrm	  Previous World matrix of current object
+         *  @param[in]	RenderablePtr Pointer to the current Renderable we want to update
          */
-        static void Update(SPtr<GpuParamBlockBuffer>& buffer, const Matrix4& tfrm, const Matrix4& tfrmNoScale, 
-            const Matrix4& prevTfrm, UINT32 layer);
+        static void UpdatePerObject(SPtr<GpuParamBlockBuffer>& buffer, const Matrix4& tfrm,
+            const Matrix4& prevTfrm, Renderable* RenderablePtr);
 
         /** 
          * Update the provided instance buffer and set per object buffer to enable instancing for this object 
@@ -44,6 +32,11 @@ namespace te
          */
         static void UpdatePerInstance(SPtr<GpuParamBlockBuffer>& perObjectBuffer,
             SPtr<GpuParamBlockBuffer>& perInstanceBuffer, PerInstanceData* instanceData, UINT32 instanceCounter);
+
+        /*
+         * Create MaterialData based on MaterialProperties
+         */
+        static MaterialData ConvertMaterialProperties(const MaterialProperties& properties);
     };
 
     /**
@@ -53,9 +46,6 @@ namespace te
     class RenderableElement : public RenderElement
     {
     public:
-        /** @copydoc RenderElement::UpdateGpuParams */
-        void UpdateGpuParams() const override;
-
         /** @copydoc RenderElement::Draw */
         void Draw() const override;
     };

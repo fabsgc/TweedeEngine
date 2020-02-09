@@ -68,7 +68,21 @@ namespace te
         Matrix4 gMatWorldNoScale;
         Matrix4 gMatInvWorldNoScale;
         Matrix4 gMatPrevWorld;
-        INT32   gLayer;
+        UINT32  gLayer;
+    };
+
+    struct MaterialData
+    {
+        Vector4 gDiffuse;
+        Vector4 gSpecular;
+        Vector4 gEmissive;
+
+        UINT32 gUseDiffuseMap;
+        UINT32 gUseSpecularMap;
+        UINT32 gUseNormalMap;
+        UINT32 gUseDepthMap;
+
+        float SpecularPower;
     };
 
     CoreApplication::CoreApplication(START_UP_DESC desc)
@@ -383,9 +397,8 @@ namespace te
             vertexShaderProgramDesc.Type = GPT_VERTEX_PROGRAM;
             vertexShaderProgramDesc.EntryPoint = "main";
             vertexShaderProgramDesc.Language = "hlsl";
+            vertexShaderProgramDesc.IncludePath = "Data/Shaders/Raw/Test/";
             vertexShaderProgramDesc.Source = shaderFile.GetAsString();
-
-            _textureVertexShader = GpuProgram::Create(vertexShaderProgramDesc);
         }
         // ######################################################
 
@@ -397,9 +410,8 @@ namespace te
             pixelShaderProgramDesc.Type = GPT_PIXEL_PROGRAM;
             pixelShaderProgramDesc.EntryPoint = "main";
             pixelShaderProgramDesc.Language = "hlsl";
+            pixelShaderProgramDesc.IncludePath = "Data/Shaders/Raw/Test/";
             pixelShaderProgramDesc.Source = shaderFile.GetAsString();
-
-            _texturePixelShader = GpuProgram::Create(pixelShaderProgramDesc);
         }
         // ######################################################
 
@@ -443,8 +455,6 @@ namespace te
         pipeDesc.blendState = blendState;
         pipeDesc.rasterizerState = rasterizerState;
         pipeDesc.depthStencilState = depthStencilState;
-        pipeDesc.vertexProgram = _textureVertexShader;
-        pipeDesc.pixelProgram = _texturePixelShader;
         // ######################################################
 
         // ######################################################
@@ -479,6 +489,9 @@ namespace te
         SHADER_DATA_PARAM_DESC gInstanceData("gInstanceData", "gInstanceData", GPDT_STRUCT);
         gInstanceData.ElementSize = sizeof(PerInstanceData);
 
+        SHADER_DATA_PARAM_DESC gMaterialData("gMaterialData", "gMaterialData", GPDT_STRUCT);
+        gInstanceData.ElementSize = sizeof(MaterialData);
+
         SHADER_OBJECT_PARAM_DESC anisotropicSamplerDesc("AnisotropicSampler", "AnisotropicSampler", GPOT_SAMPLER2D);
         SHADER_OBJECT_PARAM_DESC colorTextureDesc("ColorTexture", "ColorTexture", GPOT_TEXTURE2D);
 
@@ -497,6 +510,7 @@ namespace te
         shaderDesc.AddParameter(gMatInvWorldNoScaleDesc);
         shaderDesc.AddParameter(gMatPrevWorldDesc);
         shaderDesc.AddParameter(gLayerDesc);
+        //shaderDesc.AddParameter(gMaterialData);
 
         shaderDesc.AddParameter(gTime);
 
@@ -512,12 +526,12 @@ namespace te
         
         _materialCube = Material::Create(_shader);
         _materialCube->SetName("Material");
-        _materialCube->SetTexture("ColorTexture", _loadedTextureCube);
+        _materialCube->SetTexture("DiffuseMap", _loadedTextureCube);
         _materialCube->SetSamplerState("AnisotropicSampler", samplerState);
 
         _materialMonkey = Material::Create(_shader);
         _materialMonkey->SetName("Material");
-        _materialMonkey->SetTexture("ColorTexture", _loadedTextureMonkey);
+        _materialMonkey->SetTexture("DiffuseMap", _loadedTextureMonkey);
         _materialMonkey->SetSamplerState("AnisotropicSampler", samplerState);
         // ######################################################
 
@@ -550,11 +564,11 @@ namespace te
         _sceneCameraSO->SetPosition(Vector3(0.0f, 5.0f, 7.5f));
         _sceneCameraSO->LookAt(Vector3(0.0f, 0.0f, -3.0f));
 
-        _sceneRenderableSO->Move(Vector3(-48.0f, 0.0f, -55.0f));
+        _sceneRenderableSO->Move(Vector3(-50.0f, 0.0f, -55.0f));
 
-        for (INT16 i = -14; i < 15; i++)
+        for (INT16 i = -15; i < 16; i++)
         {
-            for (INT16 j = -1; j < 256; j++)
+            for (INT16 j = -1; j < 32; j++)
             {
                 HSceneObject sceneRenderable = SceneObject::Create("Monkey_" + ToString(i) + "_" + ToString(j));
                 HRenderable renderableCube = sceneRenderable->AddComponent<CRenderable>();
@@ -564,11 +578,13 @@ namespace te
                 renderableCube->Initialize();
 
                 sceneRenderable->Move(Vector3((float)i * 3.0f, 0.0f, -(float)j * 3.0f));
-                sceneRenderable->SetMobility(ObjectMobility::Immovable);
+                //sceneRenderable->SetMobility(ObjectMobility::Immovable);
 
                 _sceneRenderablesMonkeySO.push_back(sceneRenderable);
             }
         }
+
+        gRenderer()->BatchRenderables();
         // ######################################################
 
         // ######################################################

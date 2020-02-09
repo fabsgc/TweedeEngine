@@ -62,19 +62,19 @@ namespace te
     {
         GpuPipelineStateTypes::StateDescType desc;
 
-        if (!_data.VertexProgramDesc.Source.empty())
+        if (!_data.VertexProgramDesc.Source.empty() && !desc.vertexProgram)
             desc.vertexProgram = GpuProgram::Create(_data.VertexProgramDesc);
 
-        if (!_data.PixelProgramDesc.Source.empty())
+        if (!_data.PixelProgramDesc.Source.empty() && !desc.pixelProgram)
             desc.pixelProgram = GpuProgram::Create(_data.PixelProgramDesc);
 
-        if (!_data.GeometryProgramDesc.Source.empty())
+        if (!_data.GeometryProgramDesc.Source.empty() && !desc.geometryProgram)
             desc.geometryProgram = GpuProgram::Create(_data.GeometryProgramDesc);
 
-        if (!_data.HullProgramDesc.Source.empty())
+        if (!_data.HullProgramDesc.Source.empty() && !desc.hullProgram)
             desc.hullProgram = GpuProgram::Create(_data.HullProgramDesc);
 
-        if (!_data.DomainProgramDesc.Source.empty())
+        if (!_data.DomainProgramDesc.Source.empty() && !desc.domainProgram)
             desc.domainProgram = GpuProgram::Create(_data.DomainProgramDesc);
 
         desc.blendState = BlendState::Create(_data.BlendStateDesc);
@@ -90,11 +90,7 @@ namespace te
         if (_graphicsPipelineState)
             return; // Already compiled
 
-        // Note: It's possible (and quite likely) the pass has already been compiled on the core thread, so this will
-        // unnecessarily recompile it. However syncing them in a clean way is not trivial hard and this method is currently
-        // not being used much (at all) to warrant a complex solution. Something to keep in mind for later though.
         CreatePipelineState();
-
         MarkCoreDirty();
     }
 

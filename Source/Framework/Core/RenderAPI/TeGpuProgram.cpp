@@ -18,6 +18,7 @@ namespace te
         , _source(desc.Source)
         , _needsAdjacencyInfo(desc.RequiresAdjacency)
         , _bytecode(desc.Bytecode)
+        , _includePath(desc.IncludePath)
     {
         _parametersDesc = te_shared_ptr_new<GpuParamDesc>();
     }
