@@ -568,7 +568,7 @@ namespace te
 
         for (INT16 i = -15; i < 16; i++)
         {
-            for (INT16 j = -1; j < 32; j++)
+            for (INT16 j = -1; j < 16; j++)
             {
                 HSceneObject sceneRenderable = SceneObject::Create("Monkey_" + ToString(i) + "_" + ToString(j));
                 HRenderable renderableCube = sceneRenderable->AddComponent<CRenderable>();
