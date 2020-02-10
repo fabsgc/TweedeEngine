@@ -119,11 +119,13 @@ namespace te
         textureCubeMapImportOptions->CpuCached = false;
         textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
 
-        _loadedMeshCube = gResourceManager().Load<Mesh>("Data/Meshes/multi-cube-material.dae", meshImportOptions);
-        _loadedMeshMonkey = gResourceManager().Load<Mesh>("Data/Meshes/monkey.dae", meshImportOptions);
-        _loadedTextureCube = gResourceManager().Load<Texture>("Data/Textures/cube.png", textureImportOptions);
-        _loadedTextureMonkey = gResourceManager().Load<Texture>("Data/Textures/monkey.png", textureImportOptions);
-        _loadedCubemapTexture = gResourceManager().Load<Texture>("Data/Textures/cubemap.png", textureCubeMapImportOptions);
+        _loadedMeshCube = gResourceManager().Load<Mesh>("Data/Meshes/MultiCubeMaterial/multi-cube-material.dae", meshImportOptions);
+        //_loadedMeshCube = gResourceManager().Load<Mesh>("Data/Meshes/Sponza/sponza.dae", meshImportOptions);
+        _loadedMeshMonkey = gResourceManager().Load<Mesh>("Data/Meshes/Monkey/monkey.dae", meshImportOptions);
+        _loadedTextureCube = gResourceManager().Load<Texture>("Data/Textures/Cube/diffuse.png", textureImportOptions);
+        //_loadedTextureCube = gResourceManager().Load<Texture>("Data/Textures/Sponza/spnza_bricks_a_diff.png", textureImportOptions);
+        _loadedTextureMonkey = gResourceManager().Load<Texture>("Data/Textures/Monkey/diffuse.png", textureImportOptions);
+        _loadedCubemapTexture = gResourceManager().Load<Texture>("Data/Textures/Skybox/cubemap.png", textureCubeMapImportOptions);
 
         TE_PRINT((_loadedMeshCube.GetHandleData())->data);
         TE_PRINT((_loadedMeshCube.GetHandleData())->uuid.ToString());
