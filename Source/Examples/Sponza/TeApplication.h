@@ -1,0 +1,42 @@
+#pragma once
+
+#include "TeCorePrerequisites.h"
+#include "TeCoreApplication.h"
+
+namespace te
+{
+    /**
+     * Represents the primary entry point for the core systems. Handles start-up, shutdown, primary loop and allows you to
+     * load and unload plugins.
+     */
+    class Application : public CoreApplication
+    {
+    public:
+        Application(START_UP_DESC desc) : CoreApplication(desc) {}
+        virtual ~Application() = default;
+
+        TE_MODULE_STATIC_HEADER_MEMBER(Application)
+
+        /** Starts the framework. If using a custom Application system, provide it as a template parameter. */
+        template<class T = Application>
+        static void StartUp(const START_UP_DESC& desc)
+        {
+            CoreApplication::StartUp<T>(desc);
+        }
+
+    protected:
+        /** @copydoc Module::OnStartUp */
+        void OnStartUp() override;
+
+        /** @copydoc Module::OnShutDown */
+        void OnShutDown() override;
+
+        /**	Called for each iteration of the main loop. Called before any game objects or plugins are updated. */
+        void PreUpdate() override;
+
+        /**	Called for each iteration of the main loop. Called after all game objects and plugins are updated. */
+        void PostUpdate() override;
+
+    protected:
+    };
+}

@@ -23,8 +23,6 @@ namespace te
     /**
      * Represents the primary entry point for the core systems. Handles start-up, shutdown, primary loop and allows you to
      * load and unload plugins.
-     *
-     * @note	Sim thread only.
      */
     class TE_CORE_EXPORT CoreApplication : public Module<CoreApplication>
     {
@@ -98,10 +96,6 @@ namespace te
         /**	Called for each iteration of the main loop. Called after all game objects and plugins are updated. */
         virtual void PostUpdate();
 
-        void TestStartUp();
-        void TestRun();
-        void TestShutDown();
-
     protected:
         typedef void(*UpdatePluginFunc)();
 
@@ -121,46 +115,6 @@ namespace te
 
         volatile bool _runMainLoop;
         volatile bool _pause;
-
-        SPtr<GpuProgram> _textureVertexShader;
-        SPtr<GpuProgram> _texturePixelShader;
-
-        SPtr<VertexBuffer> _vertexBuffer;
-        SPtr<IndexBuffer> _indexBuffer;
-        SPtr<GpuParamBlockBuffer> _perCameraConstantBuffer;
-        SPtr<GpuParamBlockBuffer> _perObjectConstantBuffer;
-        SPtr<VertexDeclaration> _vertexDeclaration;
-
-        HCamera _sceneCamera;
-        HCameraFlyer _sceneCameraFlyer;
-
-        HMesh _loadedMeshCube;
-        HMesh _loadedMeshMonkey;
-
-        HTexture _loadedTextureCube;
-        HTexture _loadedTextureMonkey;
-
-        HTexture _loadedCubemapTexture;
-
-        HRenderable _renderableCube;
-        HLight _light;
-        HSkybox _skybox;
-
-        SPtr<GpuParams> _params;
-
-        SPtr<Pass> _pass;
-        SPtr<Technique> _technique;
-
-        HShader _shader;
-        HMaterial _materialCube;
-        HMaterial _materialMonkey;
-
-        HSceneObject _sceneCameraSO;
-        HSceneObject _sceneRenderableSO;
-        HSceneObject _sceneLightSO;
-        HSceneObject _sceneSkyboxSO;
-
-        Vector<HSceneObject> _sceneRenderablesMonkeySO;
     };
 
     /**	Provides easy access to CoreApplication. */

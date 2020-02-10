@@ -8,7 +8,7 @@
 namespace te
 {
     /** Component that controls movement and rotation of the scene object it's attached to. */
-    class CCameraFlyer : public Component
+    class TE_CORE_EXPORT CCameraFlyer : public Component
     {
     public:
         CCameraFlyer(const HSceneObject& parent);

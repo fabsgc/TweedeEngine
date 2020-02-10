@@ -27,7 +27,7 @@ namespace te
          * If enabled the camera will use the skybox for rendering the background. A skybox has to be present in the scene.
          * When disabled the camera will use the clear color for rendering the background.
          */
-        bool EnableSkybox = false;
+        bool EnableSkybox = true;
 
         /**
          * The absolute base cull-distance for objects rendered through this camera in world units. Objects will use this

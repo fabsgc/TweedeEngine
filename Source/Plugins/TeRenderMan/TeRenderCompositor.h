@@ -180,6 +180,23 @@ namespace te
         void Clear() override;
     };
 
+    /**
+     * Renders the skybox into the scene color texture. If skybox texture is not available, a solid color will be rendered
+     * instead.
+     */
+    class RCNodeSkybox : public RenderCompositorNode
+    {
+    public:
+        static String GetNodeId() { return "Skybox"; }
+        static Vector<String> GetDependencies(const RendererView& view);
+    protected:
+        /** @copydoc RenderCompositorNode::Render */
+        void Render(const RenderCompositorNodeInputs& inputs) override;
+
+        /** @copydoc RenderCompositorNode::Clear */
+        void Clear() override;
+    };
+
     /** Moves the contents of the scene color texture into the view's output target. */
     class RCNodeFinalResolve : public RenderCompositorNode
     {

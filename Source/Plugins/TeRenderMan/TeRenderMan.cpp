@@ -33,6 +33,7 @@ namespace te
         _mainViewGroup = te_new<RendererViewGroup>(nullptr, 0, _options);
 
         RenderCompositor::RegisterNodeType<RCNodeForwardPass>();
+        RenderCompositor::RegisterNodeType<RCNodeSkybox>();
         RenderCompositor::RegisterNodeType<RCNodeFinalResolve>();
     }
 

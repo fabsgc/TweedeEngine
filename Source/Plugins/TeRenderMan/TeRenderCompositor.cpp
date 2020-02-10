@@ -221,7 +221,6 @@ namespace te
                 (inputs.Options.CullingFlags & (UINT32)RenderManCulling::Frustum ||
                     inputs.Options.CullingFlags & (UINT32)RenderManCulling::Occlusion))
             {
-               // TE_PRINT("culled");
                 continue;
             }
 
@@ -259,6 +258,22 @@ namespace te
         return { };
     }
 
+    void RCNodeSkybox::Render(const RenderCompositorNodeInputs& inputs)
+    { 
+        Skybox* skybox = nullptr;
+        if (inputs.View.GetRenderSettings().EnableSkybox)
+            skybox = inputs.Scene.SkyboxElem;
+
+    }
+
+    void RCNodeSkybox::Clear()
+    { }
+
+    Vector<String> RCNodeSkybox::GetDependencies(const RendererView& view)
+    {
+        return { };
+    }
+
     void RCNodeFinalResolve::Render(const RenderCompositorNodeInputs& inputs)
     { }
 
@@ -269,7 +284,8 @@ namespace te
     {
         return
         {
-            RCNodeForwardPass::GetNodeId()
+            RCNodeForwardPass::GetNodeId(),
+            RCNodeSkybox::GetNodeId(),
         };
     }
 }

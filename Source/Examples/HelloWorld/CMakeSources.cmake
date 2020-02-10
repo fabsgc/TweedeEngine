@@ -1,8 +1,10 @@
 set (TE_HELLOWORLD_INC_NOFILTER
+    "TeApplication.h"
 )
 
 set (TE_HELLOWORLD_SRC_NOFILTER
     "Main.cpp"
+    "TeApplication.cpp"
 )
 
 source_group ("" FILES ${TE_HELLOWORLD_SRC_NOFILTER} ${TE_HELLOWORLD_INC_NOFILTER})
