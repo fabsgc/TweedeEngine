@@ -16,7 +16,6 @@ if (WIN32)
         HelloWorld WIN32
         ${TE_HELLOWORLD_SRC}
     )
-
     set_target_properties(HelloWorld PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/x64/Debug")
 else ()
     add_executable(
@@ -28,4 +27,3 @@ endif ()
 # Libraries
 ## Local libs
 target_link_libraries (HelloWorld tef)
-target_link_libraries (Sponza tef)

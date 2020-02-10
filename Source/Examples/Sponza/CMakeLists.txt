@@ -16,7 +16,6 @@ if (WIN32)
         Sponza WIN32
         ${TE_SPONZA_SRC}
     )
-
     set_target_properties(Sponza PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/x64/Debug")
 else ()
     add_executable(
