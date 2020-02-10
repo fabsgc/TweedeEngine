@@ -28,3 +28,4 @@ endif ()
 # Libraries
 ## Local libs
 target_link_libraries (HelloWorld tef)
+target_link_libraries (Sponza tef)
