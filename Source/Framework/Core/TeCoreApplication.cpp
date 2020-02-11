@@ -109,10 +109,14 @@ namespace te
         {
             LoadPlugin(importerName);
         }
+
+        PostStartUp();
     }
     
     void CoreApplication::OnShutDown()
     {
+        PreShutDown();
+
         _window = nullptr;
         _renderer = nullptr;
 
@@ -157,17 +161,11 @@ namespace te
 
             PostUpdate();
 
+            DisplayFrameRate();
+
             RendererManager::Instance().GetRenderer()->Update();
             RendererManager::Instance().GetRenderer()->RenderAll();
         }
-    }
-
-    void CoreApplication::PreUpdate()
-    { }
-
-    void CoreApplication::PostUpdate()
-    {
-        DisplayFrameRate();
     }
 
     void CoreApplication::StopMainLoop()
@@ -223,9 +221,7 @@ namespace te
                     // millisecond otherwise. 
                     // Note: For mobiles where power might be more important than input latency, consider using sleep.
                     while (nextFrameTime > currentTime)
-                    {
                         currentTime = gTime().GetTimePrecise();
-                    }  
                 }
             }
 

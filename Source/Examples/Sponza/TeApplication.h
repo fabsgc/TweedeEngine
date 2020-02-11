@@ -25,18 +25,33 @@ namespace te
         }
 
     protected:
-        /** @copydoc Module::OnStartUp */
-        void OnStartUp() override;
+        /** @copydoc CoreApplication::PostStartUp */
+        void PostStartUp() override;
 
-        /** @copydoc Module::OnShutDown */
-        void OnShutDown() override;
+        /** @copydoc CoreApplication::PreShutDown */
+        void PreShutDown() override;
 
-        /**	Called for each iteration of the main loop. Called before any game objects or plugins are updated. */
+        /** @copydoc CoreApplication::PreUpdate */
         void PreUpdate() override;
 
-        /**	Called for each iteration of the main loop. Called after all game objects and plugins are updated. */
+        /** @copydoc CoreApplication::PreUpdate */
         void PostUpdate() override;
 
     protected:
+        HCamera _sceneCamera;
+        HCameraFlyer _sceneCameraFlyer;
+
+        HMesh _loadedSponza;
+        HTexture _loadedTextureSponza;
+        HRenderable _renderableSponza;
+
+        SPtr<Pass> _pass;
+        SPtr<Technique> _technique;
+
+        HShader _shader;
+        HMaterial _materialSponza;
+
+        HSceneObject _sceneCameraSO;
+        HSceneObject _sceneRenderableSponzaSO;
     };
 }

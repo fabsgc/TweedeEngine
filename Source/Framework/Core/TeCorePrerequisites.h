@@ -203,8 +203,9 @@ namespace te
     class CSkybox;
 }
 
+#include "Utility/TeNonCopyable.h"
+#include "Serialization/TeSerializable.h"
 #include "RenderAPI/TeCommonTypes.h"
-
 #include "Resources/TeResourceHandle.h"
 
 namespace te

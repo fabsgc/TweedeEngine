@@ -37,10 +37,16 @@ namespace te
         void SetMaterial(HMaterial material) { _internal->SetMaterial(material.GetInternalPtr()); }
 
         /** @copydoc Renderable::SetMaterial */
+        void SetMaterial(const String& name, HMaterial material) { _internal->SetMaterial(name, material.GetInternalPtr()); }
+
+        /** @copydoc Renderable::SetMaterial */
         void SetMaterial(UINT32 idx, SPtr<Material> material) { _internal->SetMaterial(idx, material); }
 
         /** @copydoc Renderable::SetMaterial */
         void SetMaterial(SPtr<Material> material) { _internal->SetMaterial(material); }
+
+        /** @copydoc Renderable::SetMaterial */
+        void SetMaterial(const String& name, SPtr<Material> material) { _internal->SetMaterial(name, material); }
 
         /** @copydoc Renderable::GetMaterial */
         SPtr<Material> GetMaterial(UINT32 idx) const { return _internal->GetMaterial(idx); }

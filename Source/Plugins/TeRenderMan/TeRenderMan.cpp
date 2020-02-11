@@ -5,6 +5,7 @@
 #include "Utility/TeTime.h"
 #include "CoreUtility/TeCoreObjectManager.h"
 #include "TeRenderCompositor.h"
+#include "Renderer/TeRendererUtility.h"
 
 namespace te
 {
@@ -19,6 +20,7 @@ namespace te
     void RenderMan::Initialize()
     {
         Renderer::Initialize();
+        RendererUtility::StartUp();
 
         for (UINT32 i = 0; i < STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER; i++)
         {
@@ -50,6 +52,8 @@ namespace te
         RenderCompositor::CleanUp();
 
         te_delete(_mainViewGroup);
+
+        RendererUtility::ShutDown();
     }
 
     void RenderMan::Update()

@@ -4,6 +4,7 @@
 #include "Material/TeMaterial.h"
 #include "Material/TeShader.h"
 #include "TeRenderManOptions.h"
+#include "TeRendererRenderable.h"
 
 namespace te
 {
@@ -321,6 +322,10 @@ namespace te
             else if (!renderable->GetInstancing() && iter != _info.RenderablesInstanced.end())
                 _info.RenderablesInstanced.erase(iter);
         }
+
+        UINT32 dirtyFlag = renderable->GetCoreDirtyFlags();
+        if (dirtyFlag & (UINT32)ActorDirtyFlag::GpuParams)
+            SetMeshData(rendererRenderable, renderable);
     }
 
     /** Removes a renderable object from the scene. */
@@ -361,54 +366,58 @@ namespace te
         // Last element is the one we want to erase
         _info.Renderables.erase(_info.Renderables.end() - 1);
         _info.RenderableCullInfos.erase(_info.RenderableCullInfos.end() - 1);
-        
 
         te_delete(rendererRenderable);
     }
 
     void RendererScene::BatchRenderables()
-    {
-
-    }
+    { }
 
     void RendererScene::SetMeshData(RendererRenderable* rendererRenderable, Renderable* renderable)
     {
+        UINT32 dirtyFlag = renderable->GetCoreDirtyFlags();
         SPtr<Mesh> mesh = renderable->GetMesh();
-        if (mesh != nullptr && rendererRenderable->Elements.size() == 0)
+        if (mesh != nullptr)
         {
             const MeshProperties& meshProps = mesh->GetProperties();
             SPtr<VertexDeclaration> vertexDecl = mesh->GetVertexData()->vertexDeclaration;
 
             for (UINT32 i = 0; i < meshProps.GetNumSubMeshes(); i++)
             {
-                rendererRenderable->Elements.push_back(RenderableElement());
-                RenderableElement& renElement = rendererRenderable->Elements.back();
+                RenderableElement* renElement = nullptr;
 
-                renElement.Type = (UINT32)RenderElementType::Renderable;
-                renElement.MeshElem = mesh;
-                renElement.SubMeshElem = meshProps.GetSubMesh(i);
+                if (rendererRenderable->Elements.size() == i)
+                    rendererRenderable->Elements.push_back(RenderableElement());
 
-                renElement.MaterialElem = renderable->GetMaterial(i);
-                if (renElement.MaterialElem == nullptr)
-                    renElement.MaterialElem = renderable->GetMaterial(0);
+                renElement = &rendererRenderable->Elements[i];
 
-                if (renElement.MaterialElem != nullptr && renElement.MaterialElem->GetShader() == nullptr)
-                    renElement.MaterialElem = nullptr;
+                renElement->Type = (UINT32)RenderElementType::Renderable;
+                renElement->MeshElem = mesh;
+                renElement->SubMeshElem = meshProps.GetSubMesh(i);
+
+                renElement->MaterialElem = renderable->GetMaterial(i);
+                if (renElement->MaterialElem == nullptr)
+                    renElement->MaterialElem = renderable->GetMaterial(0);
+
+                if (renElement->MaterialElem != nullptr && renElement->MaterialElem->GetShader() == nullptr)
+                    renElement->MaterialElem = nullptr;
 
                 // If no material use the default material
-                if (renElement.MaterialElem == nullptr)
-                    renElement.MaterialElem = Material::Create(Shader::CreateEmpty()).GetInternalPtr();
+                if (renElement->MaterialElem == nullptr)
+                    renElement->MaterialElem = Material::Create(Shader::CreateEmpty()).GetInternalPtr();
 
                 // Determine which technique to use
-                const SPtr<Shader>& shader = renElement.MaterialElem->GetShader();
-
-                renElement.DefaultTechniqueIdx = InitAndRetrieveBasePassTechnique(*renElement.MaterialElem);
+                const SPtr<Shader>& shader = renElement->MaterialElem->GetShader();
+                renElement->DefaultTechniqueIdx = InitAndRetrieveBasePassTechnique(*renElement->MaterialElem);
 
                 // Generate or assigned renderer specific data for the material
-                renElement.MaterialElem->CreateGpuParams(renElement.DefaultTechniqueIdx, renElement.GpuParamsElem);
+                renElement->MaterialElem->CreateGpuParams(renElement->DefaultTechniqueIdx, renElement->GpuParamsElem);
+
+                // We update gpu paremeters such as diffuse or specular defined for this material
+                PerObjectBuffer::UpdatePerMaterial(renElement->PerMaterialParamBuffer, renElement->MaterialElem->GetProperties());
 
 #if TE_DEBUG_MODE
-                ValidateBasePassMaterial(*renElement.MaterialElem, renElement.DefaultTechniqueIdx, *vertexDecl);
+                ValidateBasePassMaterial(*renElement->MaterialElem, renElement->DefaultTechniqueIdx, *vertexDecl);
 #endif
             }
 
@@ -427,6 +436,7 @@ namespace te
                     gpuParams->SetParamBlockBuffer("PerFrameBuffer", _perFrameParamBuffer);
                     gpuParams->SetParamBlockBuffer("PerObjectBuffer", rendererRenderable->PerObjectParamBuffer);
                     gpuParams->SetParamBlockBuffer("PerCallBuffer", rendererRenderable->PerCallParamBuffer);
+                    gpuParams->SetParamBlockBuffer("PerMaterialBuffer", element.PerMaterialParamBuffer);
                 }
             }
         }

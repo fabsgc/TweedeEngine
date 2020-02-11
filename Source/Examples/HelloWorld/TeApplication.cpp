@@ -3,23 +3,10 @@
 #include "Error/TeConsole.h"
 #include "Utility/TeFileStream.h"
 
-#include "Manager/TeRendererManager.h"
 #include "Resources/TeResourceManager.h"
-#include "RenderAPI/TeRenderStateManager.h"
-#include "RenderAPI/TeGpuProgramManager.h"
 
 #include "Input/TeInput.h"
 #include "Input/TeVirtualInput.h"
-
-#include "RenderAPI/TeRenderAPI.h"
-#include "RenderAPI/TeCommonTypes.h"
-#include "RenderAPI/TeRenderTexture.h"
-#include "RenderAPI/TeGpuProgram.h"
-#include "RenderAPI/TeVertexBuffer.h"
-#include "RenderAPI/TeIndexBuffer.h"
-#include "RenderAPI/TeVertexDataDesc.h"
-#include "RenderAPI/TeGpuParams.h"
-#include "RenderAPI/TeGpuParamBlockBuffer.h"
 
 #include "Importer/TeImporter.h"
 #include "Importer/TeMeshImportOptions.h"
@@ -32,8 +19,6 @@
 #include "Scene/TeSceneManager.h"
 
 #include "Mesh/TeMesh.h"
-#include "Mesh/TeMeshData.h"
-#include "Mesh/TeMeshUtility.h"
 
 #include "Scene/TeSceneObject.h"
 #include "Components/TeCCamera.h"
@@ -47,6 +32,8 @@
 #include "Material/TeTechnique.h"
 #include "Material/TePass.h"
 
+#include "Utility/TeTime.h"
+
 namespace te
 {
     struct PerInstanceData
@@ -59,31 +46,11 @@ namespace te
         UINT32  gLayer;
     };
 
-    struct MaterialData
-    {
-        Vector4 gDiffuse;
-        Vector4 gSpecular;
-        Vector4 gEmissive;
-
-        UINT32 gUseDiffuseMap;
-        UINT32 gUseSpecularMap;
-        UINT32 gUseNormalMap;
-        UINT32 gUseDepthMap;
-
-        float SpecularPower;
-    };
-
     TE_MODULE_STATIC_MEMBER(Application)
 
-    void Application::OnStartUp()
+    void Application::PostStartUp()
     {
-        CoreApplication::OnStartUp();
-
         // ######################################################
-        // Register input configuration
-        // Engine allows you to use VirtualInput system which will map input device buttons and axes to arbitrary names,
-        // which allows you to change input buttons without affecting the code that uses it, since the code is only
-        // aware of the virtual names.  If you want more direct input, see Input class.
         auto inputConfig = gVirtualInput().GetConfiguration();
 
         // Camera controls for buttons (digital 0-1 input, e.g. keyboard or gamepad button)
@@ -141,6 +108,7 @@ namespace te
 
         TE_PRINT((_loadedCubemapTexture.GetHandleData())->data);
         TE_PRINT((_loadedCubemapTexture.GetHandleData())->uuid.ToString());
+        // ######################################################
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         // ######################################################
@@ -243,8 +211,14 @@ namespace te
         SHADER_DATA_PARAM_DESC gInstanceData("gInstanceData", "gInstanceData", GPDT_STRUCT);
         gInstanceData.ElementSize = sizeof(PerInstanceData);
 
-        SHADER_DATA_PARAM_DESC gMaterialData("gMaterialData", "gMaterialData", GPDT_STRUCT);
-        gInstanceData.ElementSize = sizeof(MaterialData);
+        SHADER_DATA_PARAM_DESC gDiffuse("gDiffuse", "gDiffuse", GPDT_FLOAT4);
+        SHADER_DATA_PARAM_DESC gSpecular("gSpecular", "gSpecular", GPDT_FLOAT4);
+        SHADER_DATA_PARAM_DESC gEmissive("gEmissive", "gEmissive", GPDT_FLOAT4);
+        SHADER_DATA_PARAM_DESC gUseDiffuseMap("gUseDiffuseMap", "gUseDiffuseMap", GPDT_INT1);
+        SHADER_DATA_PARAM_DESC gUseSpecularMap("gUseSpecularMap", "gUseSpecularMap", GPDT_INT1);
+        SHADER_DATA_PARAM_DESC gUseNormalMap("gUseNormalMap", "gUseNormalMap", GPDT_INT1);
+        SHADER_DATA_PARAM_DESC gUseDepthMap("gUseDepthMap", "gUseDepthMap", GPDT_INT1);
+        SHADER_DATA_PARAM_DESC SpecularPower("SpecularPower", "SpecularPower", GPDT_FLOAT1);
 
         SHADER_OBJECT_PARAM_DESC anisotropicSamplerDesc("AnisotropicSampler", "AnisotropicSampler", GPOT_SAMPLER2D);
         SHADER_OBJECT_PARAM_DESC colorTextureDesc("ColorTexture", "ColorTexture", GPOT_TEXTURE2D);
@@ -264,7 +238,15 @@ namespace te
         shaderDesc.AddParameter(gMatInvWorldNoScaleDesc);
         shaderDesc.AddParameter(gMatPrevWorldDesc);
         shaderDesc.AddParameter(gLayerDesc);
-        //shaderDesc.AddParameter(gMaterialData);
+        
+        shaderDesc.AddParameter(gDiffuse);
+        shaderDesc.AddParameter(gSpecular);
+        shaderDesc.AddParameter(gEmissive);
+        shaderDesc.AddParameter(gUseDiffuseMap);
+        shaderDesc.AddParameter(gUseSpecularMap);
+        shaderDesc.AddParameter(gUseNormalMap);
+        shaderDesc.AddParameter(gUseDepthMap);
+        shaderDesc.AddParameter(SpecularPower);
 
         shaderDesc.AddParameter(gTime);
 
@@ -327,7 +309,7 @@ namespace te
                 HSceneObject sceneRenderable = SceneObject::Create("Monkey_" + ToString(i) + "_" + ToString(j));
                 HRenderable renderableCube = sceneRenderable->AddComponent<CRenderable>();
                 renderableCube->SetMesh(_loadedMeshMonkey);
-                renderableCube->SetMaterial(_materialMonkey);
+                renderableCube->SetMaterial("Material-material", _materialMonkey);
                 renderableCube->SetInstancing(true);
                 renderableCube->Initialize();
 
@@ -337,32 +319,39 @@ namespace te
                 _sceneRenderablesMonkeySO.push_back(sceneRenderable);
             }
         }
+        // ######################################################
 
+        // ######################################################
         gRenderer()->BatchRenderables();
         // ######################################################
 
         // ######################################################
         gSceneManager().SetMainRenderTarget(gCoreApplication().GetWindow());
         // ######################################################
+
+        // ######################################################
+        auto handleButtonDown = [&](const ButtonEvent& event)
+        {
+            if (event.buttonCode == TE_SPACE)
+            {
+                _materialCube->SetTexture("DiffuseMap", _loadedTextureMonkey);
+                _renderableCube->SetMaterial(_materialCube);
+                TE_PRINT("SPACE");
+            }
+        };
+
+        // Connect the callback to the event
+        gInput().OnButtonDown.Connect(handleButtonDown);
+        // ######################################################
 #endif
     }
 
-    void Application::OnShutDown()
+    void Application::PreShutDown()
     {
 #if TE_PLATFORM == TE_PLATFORM_WIN32
-        _vertexDeclaration = nullptr;
-        _indexBuffer = nullptr;
-        _vertexBuffer = nullptr;
-        _textureVertexShader = nullptr;
-        _texturePixelShader = nullptr;
-        _perObjectConstantBuffer = nullptr;
-        _perCameraConstantBuffer = nullptr;
-        _params = nullptr;
-
         _pass = nullptr;
         _technique = nullptr;
 #endif
-        CoreApplication::OnShutDown();
     }
 
     void Application::PreUpdate()
@@ -375,11 +364,8 @@ namespace te
             so->Rotate(Vector3(0.0f, 1.0f, 0.0f), Radian(2.0f * gTime().GetFrameDelta()));
         }*/
 #endif
-        CoreApplication::PreUpdate();
     }
 
     void Application::PostUpdate()
-    { 
-        CoreApplication::PostUpdate();
-    }
+    { }
 }

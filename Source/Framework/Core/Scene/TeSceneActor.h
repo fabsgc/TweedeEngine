@@ -10,7 +10,8 @@ namespace te
     {
         Transform = 1 << 0,
         Mobility = 1 << 1,
-        Everything = 1 << 2
+        Everything = 1 << 2,
+        GpuParams = 1 << 4
     };
 
     /**
@@ -21,7 +22,7 @@ namespace te
      * some functionality directly, rather than relying on attached Components. Scene actors can be considered as a
      * lower-level alternative to SceneObject/Component model. In fact many Components internally just wrap scene actors.
      */
-    class TE_CORE_EXPORT SceneActor
+    class TE_CORE_EXPORT SceneActor : public NonCopyable
     {
     public:
         SceneActor() = default;

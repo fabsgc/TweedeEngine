@@ -24,7 +24,7 @@ namespace te
             const Matrix4& prevTfrm, Renderable* RenderablePtr);
 
         /** 
-         * Update the provided instance buffer and set per object buffer to enable instancing for this object 
+         * Update the provided instance buffer
          * 
          *  @param[in]	perObjectBuffer	    Per object Buffer which will be filled with data
          *  @param[in]	perInstanceBuffer	Per instance Buffer which will be filled with data
@@ -33,8 +33,18 @@ namespace te
         static void UpdatePerInstance(SPtr<GpuParamBlockBuffer>& perObjectBuffer,
             SPtr<GpuParamBlockBuffer>& perInstanceBuffer, PerInstanceData* instanceData, UINT32 instanceCounter);
 
+        /**
+         * Update the provided material buffer
+         *
+         *  @param[in]	perMaterialBuffer	    Per object Buffer which will be filled with data
+         *  @param[in]	properties              Material properties
+         */
+        static void UpdatePerMaterial(SPtr<GpuParamBlockBuffer>& perMaterialBuffer, const MaterialProperties& properties);
+
         /*
          * Create MaterialData based on MaterialProperties
+         *
+         * @param[in]	properties material properties
          */
         static MaterialData ConvertMaterialProperties(const MaterialProperties& properties);
     };
@@ -46,6 +56,8 @@ namespace te
     class RenderableElement : public RenderElement
     {
     public:
+        RenderableElement();
+
         /** @copydoc RenderElement::Draw */
         void Draw() const override;
     };

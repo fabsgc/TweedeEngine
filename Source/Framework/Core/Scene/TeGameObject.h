@@ -17,7 +17,7 @@ namespace te
      * Type of object that can be referenced by a GameObject handle. Each object has an unique ID and is registered with
      * the GameObjectManager.
      */
-    class TE_CORE_EXPORT GameObject
+    class TE_CORE_EXPORT GameObject : public NonCopyable
     {
     public:
         GameObject() = default;

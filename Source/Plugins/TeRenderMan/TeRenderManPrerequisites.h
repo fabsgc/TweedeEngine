@@ -26,15 +26,13 @@ namespace te
     struct MaterialData
     {
         Vector4 gDiffuse;
-        Vector4 gSpecular;
         Vector4 gEmissive;
-
+        Vector4 gSpecular;
         UINT32 gUseDiffuseMap;
-        UINT32 gUseSpecularMap;
         UINT32 gUseNormalMap;
         UINT32 gUseDepthMap;
-
-        float SpecularPower;
+        UINT32 gUseSpecularMap;
+        float gSpecularPower;
     };
 
     TE_PARAM_BLOCK_BEGIN(PerCameraParamDef)
@@ -66,10 +64,22 @@ namespace te
         TE_PARAM_BLOCK_ENTRY(Matrix4, gMatInvWorldNoScale)
         TE_PARAM_BLOCK_ENTRY(Matrix4, gMatPrevWorld)
         TE_PARAM_BLOCK_ENTRY(INT32, gLayer)
-        TE_PARAM_BLOCK_ENTRY(MaterialData, gMaterialData)
     TE_PARAM_BLOCK_END
 
     extern PerObjectParamDef gPerObjectParamDef;
+
+    TE_PARAM_BLOCK_BEGIN(PerMaterialParamDef)
+        TE_PARAM_BLOCK_ENTRY(Vector4, gDiffuse)
+        TE_PARAM_BLOCK_ENTRY(Vector4, gEmissive)
+        TE_PARAM_BLOCK_ENTRY(Vector4, gSpecular)
+        TE_PARAM_BLOCK_ENTRY(INT32, gUseDiffuseMap)
+        TE_PARAM_BLOCK_ENTRY(INT32, gUseNormalMap)
+        TE_PARAM_BLOCK_ENTRY(INT32, gUseDepthMap)
+        TE_PARAM_BLOCK_ENTRY(INT32, gUseSpecularMap)
+        TE_PARAM_BLOCK_ENTRY(float, gSpecularPower)
+    TE_PARAM_BLOCK_END
+
+    extern PerMaterialParamDef gPerMaterialParamDef;
 
     TE_PARAM_BLOCK_BEGIN(PerCallParamDef)
         TE_PARAM_BLOCK_ENTRY(Matrix4, gMatWorldViewProj)

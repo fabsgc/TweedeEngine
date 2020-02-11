@@ -50,6 +50,10 @@ namespace te
         {
             gRenderer()->NotifyRenderableUpdated(this);
         }
+        else if ((dirtyFlag & (UINT32)ActorDirtyFlag::GpuParams) != 0)
+        {
+            gRenderer()->NotifyRenderableUpdated(this);
+        }
     }
 
     void Renderable::SetMobility(ObjectMobility mobility)
@@ -74,12 +78,11 @@ namespace te
     {
         _mesh = mesh;
 
-        int numSubMeshes = mesh->GetProperties().GetNumSubMeshes();
+        UINT32 numSubMeshes = mesh->GetProperties().GetNumSubMeshes();
         _materials.resize(numSubMeshes);
 
         OnMeshChanged();
-
-        _markCoreDirty();
+        _markCoreDirty(ActorDirtyFlag::GpuParams);
     }
 
     void Renderable::SetMaterial(UINT32 idx, const SPtr<Material>& material)
@@ -88,8 +91,7 @@ namespace te
             return;
 
         _materials[idx] = material;
-
-        _markCoreDirty();
+        _markCoreDirty(ActorDirtyFlag::GpuParams);
     }
 
     void Renderable::SetMaterials(const Vector<SPtr<Material>>& materials)
@@ -103,13 +105,37 @@ namespace te
         for (UINT32 i = min; i < _numMaterials; i++)
             _materials[i] = nullptr;
 
-        _markCoreDirty();
+        _markCoreDirty(ActorDirtyFlag::GpuParams);
     }
 
     void Renderable::SetMaterial(const SPtr<Material>& material)
     {
         SetMaterial(0, material);
-        _markCoreDirty();
+        _markCoreDirty(ActorDirtyFlag::GpuParams);
+    }
+
+    void Renderable::SetMaterial(const String& name, const SPtr<Material>& material)
+    {
+        if (!_mesh)
+            return;
+
+        UINT32 numSubMeshes = _mesh->GetProperties().GetNumSubMeshes();
+        UINT32 assignedSubMeshed = 0;
+        
+        for (UINT32 i = 0; i < numSubMeshes; i++)
+        {
+            const SubMesh& subMesh = _mesh->GetProperties().GetSubMesh();
+            if (subMesh.MaterialName == name)
+            {
+                _materials[i] = material;
+                assignedSubMeshed++;
+            }
+        }
+
+        _markCoreDirty(ActorDirtyFlag::GpuParams);
+
+        if (assignedSubMeshed == 0)
+            TE_DEBUG("No submesh currently use the material {" + name + "} in {" + _mesh->GetName() + "}", __FILE__, __LINE__);
     }
 
     SPtr<Material> Renderable::GetMaterial(UINT32 idx) const

@@ -3,7 +3,6 @@
 #include "TeCorePrerequisites.h"
 #include "Scene/TeGameObject.h"
 #include "Math/TeBounds.h"
-#include "Serialization/TeSerializable.h"
 
 namespace te
 {

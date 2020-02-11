@@ -20,6 +20,9 @@ namespace te
         /**	Material to render the mesh with. */
         SPtr<Material> MaterialElem;
 
+        /** Material data buffer assigned to this material */
+        SPtr<GpuParamBlockBuffer> PerMaterialParamBuffer;
+
         /** Index of the technique in the material to render the element with. */
         UINT32 DefaultTechniqueIdx = 0;
 

@@ -91,10 +91,16 @@ namespace te
         void OnShutDown() override;
 
         /**	Called for each iteration of the main loop. Called before any game objects or plugins are updated. */
-        virtual void PreUpdate();
+        virtual void PreUpdate() { }
 
         /**	Called for each iteration of the main loop. Called after all game objects and plugins are updated. */
-        virtual void PostUpdate();
+        virtual void PostUpdate() { }
+
+        /** Called after core initialization */
+        virtual void PostStartUp() { }
+
+        /** Call before core shutdown */
+        virtual void PreShutDown() { }
 
     protected:
         typedef void(*UpdatePluginFunc)();

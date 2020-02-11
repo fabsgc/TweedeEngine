@@ -136,9 +136,22 @@ namespace te
 
         if (scene->HasMaterials())
         {
+            AssimpImportMaterial material;
+            aiMaterial* mat = nullptr;
+
             for (unsigned int i = 0; i < scene->mNumMaterials; i++)
             {
-                outputScene.MaterialsIndex.push_back(i);
+                mat = scene->mMaterials[i];
+                if (!mat)
+                    continue;
+
+                aiString name;
+                mat->Get(AI_MATKEY_NAME, name);
+
+                material.Index = i;
+                material.Name = name.C_Str();
+
+                outputScene.Materials.push_back(material);
             }
         }
     }
@@ -273,25 +286,25 @@ namespace te
             Vector<Vector<UINT32>> indicesPerMaterial;
 
             // Trying to find all submeshes indices and offset
-            for (UINT32 i = 0; i < scene.MaterialsIndex.size(); i++)
+            for (UINT32 i = 0; i < scene.Materials.size(); i++)
             {
                 indicesPerMaterial.push_back(Vector<UINT32>());
-                if (mesh->MaterialIndex == scene.MaterialsIndex[i])
+                if (mesh->MaterialIndex == scene.Materials[i].Index)
                 {
                     for (UINT32 j = 0; j < (UINT32)mesh->Indices.size(); j++)
                     {
-                        UINT32 materialIdx = (UINT32)scene.MaterialsIndex[i];
+                        UINT32 materialIdx = (UINT32)scene.Materials[i].Index;
                         indicesPerMaterial[materialIdx].push_back(mesh->Indices[j]);
                     }
                 }
             }
-            for (auto& subMeshIndices : indicesPerMaterial)
+            for (auto key = 0; key < indicesPerMaterial.size(); key++)
             {
-                if (subMeshIndices.size() == 0)
+                if (indicesPerMaterial[key].size() == 0)
                     continue;
 
-                UINT32 indexCount = (UINT32)subMeshIndices.size();
-                subMeshes.push_back(SubMesh(currentIndex, indexCount, DOT_TRIANGLE_LIST));
+                UINT32 indexCount = (UINT32)indicesPerMaterial[key].size();
+                subMeshes.push_back(SubMesh(currentIndex, indexCount, DOT_TRIANGLE_LIST, scene.Materials[key].Name));
                 currentIndex += indexCount;
             }
 

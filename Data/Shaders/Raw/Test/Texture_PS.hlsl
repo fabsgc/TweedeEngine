@@ -9,6 +9,18 @@ cbuffer PerCameraBuffer : register(b0)
     matrix gMatProj;
 }
 
+cbuffer PerMaterialBuffer : register(b1)
+{
+    float4 gDiffuse;
+    float4 gEmissive;
+    float4 gSpecular;
+    uint   gUseDiffuseMap;
+    uint   gUseNormalMap;
+    uint   gUseDepthMap;
+    uint   gUseSpecularMap;
+    float  gSpecularPower;
+};
+
 struct PS_INPUT
 {
     float4 Position : SV_POSITION;
@@ -29,7 +41,6 @@ static const float4 AmbientColor = float4(1.0f, 0.95f, 0.9f, 0.5f);
 static const float3 AmbientDirection = float3(1.0f, -2.0f, -2.0f);
 
 static const float4 SpecularColor = float4(1.0f, 0.95f, 0.9f, 4.0f);
-static const float SpecularPower = 64.0f;
 
 float4 main( PS_INPUT IN ) : SV_Target
 {
@@ -51,7 +62,7 @@ float4 main( PS_INPUT IN ) : SV_Target
         // R = I - 2(n.I) * n
         refVector = normalize(reflect(ambientDirection, IN.Normal));
         // S = max(dot(V.R),0)^P * SpecularColor.rgb * SpecularColor.a * color.rgb;
-        specular = pow(max(dot(IN.ViewDirection, refVector), 0), SpecularPower.x) * SpecularColor.rgb * SpecularColor.a;
+        specular = pow(max(dot(IN.ViewDirection, refVector), 0), gSpecularPower) * SpecularColor.rgb * SpecularColor.a;
     }
     
     outColor.rgb = color.rgb * (ambient.rgb + diffuse.rgb) + specular.rgb;

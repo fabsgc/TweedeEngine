@@ -90,7 +90,10 @@ namespace te
         /** All renderables market as "mergeable" will be merged into several bigger mesh according to their material */
         void BatchRenderables();
 
-        /** Sometimes, mesh is missing on creation, need to be added afeter */
+        /** Sometimes, we just want to update data on a mesh without removing and adding renderable (heavy operation) */
+        void UpdateMeshData(RendererRenderable* rendererRenderable, Renderable* renderable);
+
+        /** Sometimes, mesh is missing on creation, need to be added after */
         void SetMeshData(RendererRenderable* rendererRenderable, Renderable* renderable);
 
         /** Updates scene according to the newly provided renderer options. */

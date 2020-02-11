@@ -9,12 +9,24 @@ cbuffer PerCameraBuffer : register(b0)
     matrix gMatProj;
 }
 
-cbuffer PerInstanceBuffer : register(b1)
+cbuffer PerMaterialBuffer : register(b1)
+{
+    float4 gDiffuse;
+    float4 gEmissive;
+    float4 gSpecular;
+    uint   gUseDiffuseMap;
+    uint   gUseNormalMap;
+    uint   gUseDepthMap;
+    uint   gUseSpecularMap;
+    float  gSpecularPower;
+};
+
+cbuffer PerInstanceBuffer : register(b2)
 {
     PerInstanceData gInstanceData[STANDARD_FORWARD_MAX_INSTANCED_BLOCK];
 }
 
-cbuffer PerObjectBuffer : register(b2)
+cbuffer PerObjectBuffer : register(b3)
 {
     matrix gMatWorld;
     matrix gMatInvWorld;
@@ -24,12 +36,12 @@ cbuffer PerObjectBuffer : register(b2)
     uint   gLayer;
 }
 
-cbuffer PerFrameBuffer : register(b3)
+cbuffer PerFrameBuffer : register(b4)
 {
     float gTime;
 }
 
-cbuffer PerCallBuffer : register(b4)
+cbuffer PerCallBuffer : register(b5)
 {
     matrix gMatWorldViewProj;
 }
@@ -58,6 +70,8 @@ struct VS_OUTPUT
 VS_OUTPUT main( VS_INPUT IN )
 {
     VS_OUTPUT OUT = (VS_OUTPUT)0;
+
+    float SpecularPower = gSpecularPower;
 
     if(IN.Instanceid == 0)
     {

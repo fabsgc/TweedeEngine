@@ -1,10 +1,12 @@
 #include "TeRendererRenderable.h"
 #include "Mesh/TeMesh.h"
 #include "Utility/TeBitwise.h"
+#include "Renderer/TeRendererUtility.h"
 
 namespace te
 { 
     PerInstanceParamDef gPerInstanceParamDef;
+    PerMaterialParamDef gPerMaterialParamDef;
     PerObjectParamDef gPerObjectParamDef;
     PerCallParamDef gPerCallParamDef;
 
@@ -29,61 +31,44 @@ namespace te
             gPerInstanceParamDef.gInstances.Set(perInstanceBuffer, instanceData[i], (UINT32)i);
     }
 
+    void PerObjectBuffer::UpdatePerMaterial(SPtr<GpuParamBlockBuffer>& perMaterialBuffer, const MaterialProperties& properties)
+    {
+        MaterialData data = ConvertMaterialProperties(properties);
+
+        gPerMaterialParamDef.gDiffuse.Set(perMaterialBuffer, data.gDiffuse);
+        gPerMaterialParamDef.gEmissive.Set(perMaterialBuffer, data.gEmissive);
+        gPerMaterialParamDef.gSpecular.Set(perMaterialBuffer, data.gSpecular);
+        gPerMaterialParamDef.gUseDiffuseMap.Set(perMaterialBuffer, data.gUseDiffuseMap);
+        gPerMaterialParamDef.gUseNormalMap.Set(perMaterialBuffer, data.gUseNormalMap);
+        gPerMaterialParamDef.gUseDepthMap.Set(perMaterialBuffer, data.gUseDepthMap);
+        gPerMaterialParamDef.gUseSpecularMap.Set(perMaterialBuffer, data.gUseSpecularMap);
+        gPerMaterialParamDef.gSpecularPower.Set(perMaterialBuffer, data.gSpecularPower);
+    }
+
     MaterialData PerObjectBuffer::ConvertMaterialProperties(const MaterialProperties& properties)
     {
-        return MaterialData();
+        MaterialData data;
+        data.gDiffuse = properties.Diffuse.GetAsVector4();
+        data.gEmissive = properties.Emissive.GetAsVector4();
+        data.gSpecular = properties.Specular.GetAsVector4();
+        data.gUseDiffuseMap = (UINT32)properties.UseDiffuseMap;
+        data.gUseNormalMap = (UINT32)properties.UseNormalMap;
+        data.gUseDepthMap = (UINT32)properties.UseDepthMap;
+        data.gUseSpecularMap = (UINT32)properties.UseSpecularMap;
+        data.gSpecularPower = properties.SpecularPower;
+
+        return data;
+    }
+
+    RenderableElement::RenderableElement()
+        : RenderElement()
+    {
+        PerMaterialParamBuffer = gPerMaterialParamDef.CreateBuffer();
     }
 
     void RenderableElement::Draw() const
     {
-        RenderAPI& rapi = RenderAPI::Instance();
-        SPtr<VertexData> vertexData = MeshElem->GetVertexData();
-
-        rapi.SetVertexDeclaration(MeshElem->GetVertexData()->vertexDeclaration);
-
-        auto& vertexBuffers = vertexData->GetBuffers();
-        if (vertexBuffers.size() > 0)
-        {
-            SPtr<VertexBuffer> buffers[TE_MAX_BOUND_VERTEX_BUFFERS];
-
-            UINT32 endSlot = 0;
-            UINT32 startSlot = TE_MAX_BOUND_VERTEX_BUFFERS;
-            for (auto iter = vertexBuffers.begin(); iter != vertexBuffers.end(); ++iter)
-            {
-                if (iter->first >= TE_MAX_BOUND_VERTEX_BUFFERS)
-                    TE_ASSERT_ERROR(false, "Buffer index out of range", __FILE__, __LINE__);
-
-                startSlot = std::min(iter->first, startSlot);
-                endSlot = std::max(iter->first, endSlot);
-            }
-
-            for (auto iter = vertexBuffers.begin(); iter != vertexBuffers.end(); ++iter)
-            {
-                buffers[iter->first - startSlot] = iter->second;
-            }
-
-            rapi.SetVertexBuffers(startSlot, buffers, endSlot - startSlot + 1);
-        }
-
-        SPtr<IndexBuffer> indexBuffer = MeshElem->GetIndexBuffer();
-        rapi.SetIndexBuffer(indexBuffer);
-
-        rapi.SetDrawOperation(SubMeshElem.DrawOp);
-
-        UINT32 indexCount = SubMeshElem.IndexCount;
-
-        if (InstanceCount > 0)
-        {
-            rapi.DrawIndexed(SubMeshElem.IndexOffset + MeshElem->GetIndexOffset(), indexCount, MeshElem->GetVertexOffset(),
-                vertexData->vertexCount, InstanceCount);
-        }
-        else
-        {
-            rapi.DrawIndexed(SubMeshElem.IndexOffset + MeshElem->GetIndexOffset(), indexCount, MeshElem->GetVertexOffset(),
-                vertexData->vertexCount, 0);
-        }
-
-        MeshElem->_notifyUsedOnGPU();
+        gRendererUtility().Draw(MeshElem, SubMeshElem, InstanceCount);
     }
 
     RendererRenderable::RendererRenderable()

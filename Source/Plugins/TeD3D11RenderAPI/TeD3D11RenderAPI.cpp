@@ -437,6 +437,8 @@ namespace te
         UINT32 slotConstBuffers = 0;
         UINT32 numSamplers = 0;
 
+        // NOTE : if constant buffer are not consecutive, we might bind them in several calls
+
         if (_lastFrameGraphicPipeline->d3d11VertexProgram)
         {
             PopulateViews(GPT_VERTEX_PROGRAM, slotConstBuffers);

@@ -1,4 +1,4 @@
-#include "TeCoreApplication.h"
+#include "TeApplication.h"
 #include "RenderAPI/TeVideoMode.h"
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
@@ -31,9 +31,9 @@ int main()
     desc.WindowDesc.MultisampleCount = 8;
     desc.WindowDesc.Title = "Sponza";
 
-    te::CoreApplication::StartUp(desc);
-    te::gCoreApplication().RunMainLoop();
-    te::CoreApplication::ShutDown();
+    te::Application::StartUp(desc);
+    te::Application::Instance().RunMainLoop();
+    te::Application::ShutDown();
 
     return 0;
 }

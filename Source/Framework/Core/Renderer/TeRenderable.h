@@ -62,6 +62,14 @@ namespace te
          */
         void SetMaterial(const SPtr<Material>& material);
 
+        /**
+         * Sets a material, given its name in parameter. It's useful when you export a model and you want to set quickly
+         * a material per submeshes
+         *
+         * Be careful, submeshes with another material will not be assigned. A default material will be applied by renderer
+         */
+        void SetMaterial(const String& name, const SPtr<Material>& material);
+
         /** @copydoc SetMaterials() */
         const Vector<SPtr<Material>>& GetMaterials() { return _materials; }
 

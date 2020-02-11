@@ -57,17 +57,25 @@ namespace te
         Vector<AssimpImportNode*> ReferencedBy;
     };
 
+    struct AssimpImportMaterial
+    {
+        UINT32 Index;
+        String Name;
+    };
+
     struct AssimpImportScene
     {
         AssimpImportScene() = default;
         ~AssimpImportScene();
 
         Vector<AssimpImportMesh*> Meshes;
-        Vector<UINT32> MaterialsIndex;
+        Vector<AssimpImportMaterial> Materials;
 
         AssimpImportNode* RootNode = nullptr;
 
         UnorderedMap<aiNode*, AssimpImportNode*> NodeMap;
         UnorderedMap<aiMesh*, UINT32> MeshMap;
     };
+
+    
 }

@@ -5,32 +5,11 @@
 #include "TeRenderManOptions.h"
 #include "TeRendererScene.h"
 #include "TeRenderMan.h"
+#include "Renderer/TeRendererUtility.h"
 
 namespace te
 {
     UnorderedMap<String, RenderCompositor::NodeType*> RenderCompositor::_nodeTypes;
-
-    void SetPass(const SPtr<Material>& material, UINT32 passIdx, UINT32 techniqueIdx)
-    {
-        RenderAPI& rapi = RenderAPI::Instance();
-
-        SPtr<Pass> pass = material->GetPass(passIdx, techniqueIdx);
-        rapi.SetGraphicsPipeline(pass->GetGraphicsPipelineState());
-        rapi.SetStencilRef(pass->GetStencilRefValue());
-    }
-
-    void SetPassParams(const SPtr<GpuParams> gpuParams, UINT32 gpuParamsBindFlags, bool isInstanced)
-    {
-        if (gpuParams == nullptr)
-            return;
-
-        RenderAPI& rapi = RenderAPI::Instance();
-
-        if(isInstanced)
-            rapi.SetGpuParams(gpuParams, gpuParamsBindFlags, GPU_BIND_PARAM_BLOCK_ALL_EXCEPT, { "PerCameraBuffer" });
-        else
-            rapi.SetGpuParams(gpuParams, gpuParamsBindFlags, GPU_BIND_PARAM_BLOCK_ALL_EXCEPT, { "PerCameraBuffer", "PerInstanceBuffer" });
-    }
 
     /** Renders all elements in a render queue. */
     void RenderQueueElements(const Vector<RenderQueueElement>& elements, const RendererView& view)
@@ -41,27 +20,29 @@ namespace te
         for(auto& entry : elements)
         {
             if(entry.ApplyPass)
-                SetPass(entry.RenderElem->MaterialElem, entry.TechniqueIdx, entry.PassIdx);
+                gRendererUtility().SetPass(entry.RenderElem->MaterialElem, entry.TechniqueIdx, entry.PassIdx);
 
             // If Material is the same as the previous object, we only set constant buffer params
             // Instead, we set full gpu params
             // We also set camera buffer view here (because it will set PerCameraBuffer correctly for the current pass on this material only once)
             if (!lastMaterial || lastMaterial != entry.RenderElem->MaterialElem)
             {
+                RenderAPI& rapi = RenderAPI::Instance();
                 gpuParamsBindFlags = GPU_BIND_ALL;
                 lastMaterial = entry.RenderElem->MaterialElem;
 
-                RenderAPI& rapi = RenderAPI::Instance();
                 entry.RenderElem->GpuParamsElem[entry.PassIdx]
                     ->SetParamBlockBuffer("PerCameraBuffer", view.GetPerViewBuffer());
-                rapi.SetGpuParams(entry.RenderElem->GpuParamsElem[entry.PassIdx], 
+                rapi.SetGpuParams(entry.RenderElem->GpuParamsElem[entry.PassIdx],
                     GPU_BIND_PARAM_BLOCK, GPU_BIND_PARAM_BLOCK_LISTED, { "PerCameraBuffer" });
             }
             else
+            {
                 gpuParamsBindFlags = GPU_BIND_PARAM_BLOCK;
+            }
 
             bool isInstanced = (entry.RenderElem->InstanceCount > 0) ? true : false;
-            SetPassParams(entry.RenderElem->GpuParamsElem[entry.PassIdx], gpuParamsBindFlags, isInstanced);
+            gRendererUtility().SetPassParams(entry.RenderElem->GpuParamsElem[entry.PassIdx], gpuParamsBindFlags, isInstanced);
             entry.RenderElem->Draw();
         }
     }

@@ -127,7 +127,7 @@ namespace te
             const Vector<SubMesh> curSubMeshes = allSubMeshes[meshIdx];
             for(auto& subMesh : curSubMeshes)
             {
-                subMeshes.push_back(SubMesh(subMesh.IndexOffset, subMesh.IndexCount, subMesh.DrawOp));
+                subMeshes.push_back(SubMesh(subMesh.IndexOffset, subMesh.IndexCount, subMesh.DrawOp, subMesh.MaterialName));
             }
         }
 
