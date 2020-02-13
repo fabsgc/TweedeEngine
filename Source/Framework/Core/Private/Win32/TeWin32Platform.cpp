@@ -264,6 +264,12 @@ namespace te
         {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
+
+            if (msg.message == WM_QUIT)
+            {
+                PlatformUtility::Terminate(true); // Program don't want to stop sometimes, we force it
+                break;
+            }
         }
     }
 
@@ -429,7 +435,7 @@ namespace te
             case WM_CLOSE:
             {
                 win->NotifyWindowEvent(WindowEventType::CloseRequested);
-                PostMessage(hWnd, WM_QUIT, 0, 0);
+                PostMessage(NULL, WM_QUIT, 0, 0);
                 return 0;
             }
             case WM_NCLBUTTONDBLCLK:
