@@ -1,15 +1,17 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
-#include "CoreUtility/TeCoreObject.h"
-#include "Utility/TeNonCopyable.h"
+#include "Resources/TeResource.h"
 
 namespace te
 {
-    class TE_CORE_EXPORT Technique : public CoreObject, public NonCopyable
+    class TE_CORE_EXPORT Technique : public Resource
     {
     public:
         virtual ~Technique();
+
+        /** @copydoc CoreObject::Initialize */
+        void Initialize() override;
 
         /**	Checks if this technique is supported based on current render and other systems. */
         bool IsSupported() const;
@@ -31,7 +33,10 @@ namespace te
          * @param[in]	passes		A set of passes that define the technique.
          * @return					Newly creted technique.
          */
-        static SPtr<Technique> Create(const String& language, const Vector<SPtr<Pass>>& passes);
+        static HTechnique Create(const String& language, const Vector<SPtr<Pass>>& passes);
+
+        /** /** @copydoc Technique::Create */
+        static SPtr<Technique> CreatePtr(const String& language, const Vector<SPtr<Pass>>& passes);
 
         /**	Creates a new technique but doesn't initialize it. */
         static SPtr<Technique> CreateEmpty();

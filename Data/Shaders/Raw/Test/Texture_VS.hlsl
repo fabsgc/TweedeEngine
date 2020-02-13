@@ -11,14 +11,17 @@ cbuffer PerCameraBuffer : register(b0)
 
 cbuffer PerMaterialBuffer : register(b1)
 {
+    float4 gAmbient;
     float4 gDiffuse;
     float4 gEmissive;
     float4 gSpecular;
     uint   gUseDiffuseMap;
     uint   gUseNormalMap;
-    uint   gUseDepthMap;
+    uint   gUseBumpMap;
     uint   gUseSpecularMap;
     float  gSpecularPower;
+    float  gTransparency;
+    float  gAbsorbance;
 };
 
 cbuffer PerInstanceBuffer : register(b2)
@@ -62,6 +65,8 @@ struct VS_OUTPUT
     float4 Position : SV_POSITION;
     float4 WorldPosition : POSITION;
     float3 Normal : NORMAL;
+    float3 Tangent : TANGENT;
+    float3 BiTangent : BINORMAL;
     float4 Color : COLOR0;
     float2 Texture : TEXCOORD0;
     float3 ViewDirection : POSITION1;
@@ -82,6 +87,8 @@ VS_OUTPUT main( VS_INPUT IN )
 
         OUT.Color = IN.Color;
         OUT.Normal = normalize(mul(float4(IN.Normal, 0.0f), gMatWorld)).xyz;
+        OUT.Tangent = normalize(mul(float4(IN.Tangent.xyz, 0.0f), gMatWorld)).xyz;
+        OUT.BiTangent = normalize(mul(float4(IN.BiTangent.xyz, 0.0f), gMatWorld)).xyz;
         OUT.Texture = FlipUV(IN.Texture);
 
         OUT.WorldPosition.xyz = IN.Position;
@@ -99,6 +106,8 @@ VS_OUTPUT main( VS_INPUT IN )
 
         OUT.Color = IN.Color;
         OUT.Normal = normalize(mul(float4(IN.Normal, 0.0f), gInstanceData[IN.Instanceid].gMatWorld)).xyz;
+        OUT.Tangent = normalize(mul(float4(IN.Tangent.xyz, 0.0f), gInstanceData[IN.Instanceid].gMatWorld)).xyz;
+        OUT.BiTangent = normalize(mul(float4(IN.BiTangent.xyz, 0.0f), gInstanceData[IN.Instanceid].gMatWorld)).xyz;
         OUT.Texture = FlipUV(IN.Texture);
 
         OUT.WorldPosition.xyz = IN.Position;

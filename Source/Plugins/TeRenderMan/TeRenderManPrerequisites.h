@@ -25,14 +25,17 @@ namespace te
 
     struct MaterialData
     {
+        Vector4 gAmbient;
         Vector4 gDiffuse;
         Vector4 gEmissive;
         Vector4 gSpecular;
         UINT32 gUseDiffuseMap;
         UINT32 gUseNormalMap;
-        UINT32 gUseDepthMap;
+        UINT32 gUseBumpMap;
         UINT32 gUseSpecularMap;
         float gSpecularPower;
+        float gTransparency;
+        float gAbsorbance;
     };
 
     TE_PARAM_BLOCK_BEGIN(PerCameraParamDef)
@@ -69,14 +72,17 @@ namespace te
     extern PerObjectParamDef gPerObjectParamDef;
 
     TE_PARAM_BLOCK_BEGIN(PerMaterialParamDef)
+        TE_PARAM_BLOCK_ENTRY(Vector4, gAmbient)
         TE_PARAM_BLOCK_ENTRY(Vector4, gDiffuse)
         TE_PARAM_BLOCK_ENTRY(Vector4, gEmissive)
         TE_PARAM_BLOCK_ENTRY(Vector4, gSpecular)
         TE_PARAM_BLOCK_ENTRY(INT32, gUseDiffuseMap)
         TE_PARAM_BLOCK_ENTRY(INT32, gUseNormalMap)
-        TE_PARAM_BLOCK_ENTRY(INT32, gUseDepthMap)
+        TE_PARAM_BLOCK_ENTRY(INT32, gUseBumpMap)
         TE_PARAM_BLOCK_ENTRY(INT32, gUseSpecularMap)
         TE_PARAM_BLOCK_ENTRY(float, gSpecularPower)
+        TE_PARAM_BLOCK_ENTRY(float, gTransparency)
+        TE_PARAM_BLOCK_ENTRY(float, gAbsorbance)
     TE_PARAM_BLOCK_END
 
     extern PerMaterialParamDef gPerMaterialParamDef;

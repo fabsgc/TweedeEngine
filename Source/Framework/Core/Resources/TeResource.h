@@ -25,6 +25,6 @@ namespace te
 
     protected:
         String _name;
-        UINT32 _size;
+        UINT32 _size = 0;
     };
 }

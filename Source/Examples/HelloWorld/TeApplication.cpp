@@ -188,7 +188,7 @@ namespace te
         passDesc.PixelProgramDesc = pixelShaderProgramDesc;
 
         _pass = Pass::Create(passDesc);
-        _technique = Technique::Create("hlsl", { _pass });
+        _technique = Technique::Create("hlsl", { _pass.GetInternalPtr() });
         _technique->Compile();
 
         SHADER_DATA_PARAM_DESC gViewDirDesc("gViewDir", "gViewDir", GPDT_FLOAT3);
@@ -211,14 +211,17 @@ namespace te
         SHADER_DATA_PARAM_DESC gInstanceData("gInstanceData", "gInstanceData", GPDT_STRUCT);
         gInstanceData.ElementSize = sizeof(PerInstanceData);
 
+        SHADER_DATA_PARAM_DESC gAmbient("gAmbient", "gAmbient", GPDT_FLOAT4);
         SHADER_DATA_PARAM_DESC gDiffuse("gDiffuse", "gDiffuse", GPDT_FLOAT4);
         SHADER_DATA_PARAM_DESC gSpecular("gSpecular", "gSpecular", GPDT_FLOAT4);
         SHADER_DATA_PARAM_DESC gEmissive("gEmissive", "gEmissive", GPDT_FLOAT4);
         SHADER_DATA_PARAM_DESC gUseDiffuseMap("gUseDiffuseMap", "gUseDiffuseMap", GPDT_INT1);
         SHADER_DATA_PARAM_DESC gUseSpecularMap("gUseSpecularMap", "gUseSpecularMap", GPDT_INT1);
         SHADER_DATA_PARAM_DESC gUseNormalMap("gUseNormalMap", "gUseNormalMap", GPDT_INT1);
-        SHADER_DATA_PARAM_DESC gUseDepthMap("gUseDepthMap", "gUseDepthMap", GPDT_INT1);
-        SHADER_DATA_PARAM_DESC SpecularPower("SpecularPower", "SpecularPower", GPDT_FLOAT1);
+        SHADER_DATA_PARAM_DESC gUseBumpMap("gUseBumpMap", "gUseBumpMap", GPDT_INT1);
+        SHADER_DATA_PARAM_DESC gSpecularPower("gSpecularPower", "gSpecularPower", GPDT_FLOAT1);
+        SHADER_DATA_PARAM_DESC gTransparency("gTransparency", "gTransparency", GPDT_FLOAT1);
+        SHADER_DATA_PARAM_DESC gAbsorbance("gAbsorbance", "gAbsorbance", GPDT_FLOAT1);
 
         SHADER_OBJECT_PARAM_DESC anisotropicSamplerDesc("AnisotropicSampler", "AnisotropicSampler", GPOT_SAMPLER2D);
         SHADER_OBJECT_PARAM_DESC colorTextureDesc("ColorTexture", "ColorTexture", GPOT_TEXTURE2D);
@@ -239,14 +242,17 @@ namespace te
         shaderDesc.AddParameter(gMatPrevWorldDesc);
         shaderDesc.AddParameter(gLayerDesc);
         
+        shaderDesc.AddParameter(gAmbient);
         shaderDesc.AddParameter(gDiffuse);
         shaderDesc.AddParameter(gSpecular);
         shaderDesc.AddParameter(gEmissive);
         shaderDesc.AddParameter(gUseDiffuseMap);
         shaderDesc.AddParameter(gUseSpecularMap);
         shaderDesc.AddParameter(gUseNormalMap);
-        shaderDesc.AddParameter(gUseDepthMap);
-        shaderDesc.AddParameter(SpecularPower);
+        shaderDesc.AddParameter(gUseBumpMap);
+        shaderDesc.AddParameter(gSpecularPower);
+        shaderDesc.AddParameter(gTransparency);
+        shaderDesc.AddParameter(gAbsorbance);
 
         shaderDesc.AddParameter(gTime);
 
@@ -255,20 +261,26 @@ namespace te
         shaderDesc.AddParameter(anisotropicSamplerDesc);
         shaderDesc.AddParameter(colorTextureDesc);
 
-        shaderDesc.Techniques.push_back(_technique);
+        shaderDesc.Techniques.push_back(_technique.GetInternalPtr());
 
         _shader = Shader::Create("Texture", shaderDesc);
         _shader->SetName("Shader");
+
+        MaterialProperties properties;
+        properties.UseDiffuseMap = true;
 
         _materialCube = Material::Create(_shader);
         _materialCube->SetName("Material");
         _materialCube->SetTexture("DiffuseMap", _loadedTextureCube);
         _materialCube->SetSamplerState("AnisotropicSampler", samplerState);
+        _materialCube->SetProperties(properties);
 
         _materialMonkey = Material::Create(_shader);
         _materialMonkey->SetName("Material");
         _materialMonkey->SetTexture("DiffuseMap", _loadedTextureMonkey);
         _materialMonkey->SetSamplerState("AnisotropicSampler", samplerState);
+        _materialMonkey->SetProperties(properties);
+
         // ######################################################
 
         // ######################################################

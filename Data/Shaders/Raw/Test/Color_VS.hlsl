@@ -1,14 +1,4 @@
-#define STANDARD_FORWARD_MAX_INSTANCED_BLOCK 128
-
-struct PerInstanceData
-{
-    matrix gMatWorld;
-    matrix gMatInvWorld;
-    matrix gMatWorldNoScale;
-    matrix gMatInvWorldNoScale;
-    matrix gMatPrevWorld;
-    uint   gLayer;
-};
+#include "Include/Common.hlsli"
 
 cbuffer PerCameraBuffer : register(b0)
 {
@@ -19,12 +9,27 @@ cbuffer PerCameraBuffer : register(b0)
     matrix gMatProj;
 }
 
-cbuffer PerInstanceBuffer : register(b1)
+cbuffer PerMaterialBuffer : register(b1)
+{
+    float4 gAmbient;
+    float4 gDiffuse;
+    float4 gEmissive;
+    float4 gSpecular;
+    uint   gUseDiffuseMap;
+    uint   gUseNormalMap;
+    uint   gUseBumpMap;
+    uint   gUseSpecularMap;
+    float  gSpecularPower;
+    float  gTransparency;
+    float  gAbsorbance;
+};
+
+cbuffer PerInstanceBuffer : register(b2)
 {
     PerInstanceData gInstanceData[STANDARD_FORWARD_MAX_INSTANCED_BLOCK];
 }
 
-cbuffer PerObjectBuffer : register(b2)
+cbuffer PerObjectBuffer : register(b3)
 {
     matrix gMatWorld;
     matrix gMatInvWorld;
@@ -34,12 +39,12 @@ cbuffer PerObjectBuffer : register(b2)
     uint   gLayer;
 }
 
-cbuffer PerFrameBuffer : register(b3)
+cbuffer PerFrameBuffer : register(b4)
 {
     float gTime;
 }
 
-cbuffer PerCallBuffer : register(b4)
+cbuffer PerCallBuffer : register(b5)
 {
     matrix gMatWorldViewProj;
 }
@@ -61,6 +66,7 @@ struct VS_OUTPUT
     float4 WorldPosition : POSITION;
     float3 Normal : NORMAL;
     float4 Color : COLOR0;
+    float2 Texture : TEXCOORD0;
     float3 ViewDirection : POSITION1;
 };
 

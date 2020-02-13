@@ -27,17 +27,18 @@ namespace te
 
     struct MaterialProperties
     {
-        Color Diffuse = Color(0.5f, 0.5f, 0.5f, 1.0f);
-
-        Color Specular = Color(0.0f, 0.0f, 0.0f, 1.0f);
-        float SpecularPower = 64.0f;
-
-        Color Emissive = Color(0.0f, 0.0f, 0.0f, 0.0f);
+        Color Ambient = Color(1.0f, 1.0f, 1.0f, 0.5f);
+        Color Diffuse = Color(1.0f, 1.0f, 1.0f, 1.0f);
+        Color Emissive = Color(0.0f, 0.0f, 0.0f, 1.0f);
+        Color Specular = Color(1.0f, 1.0f, 1.0f, 0.5f);
+        float SpecularPower = 32.0f;
+        float Transparency = 1.0f;
+        float Absorbance = 1.0f;
 
         bool UseDiffuseMap = false;
-        bool UseSpecularMap = false;
         bool UseNormalMap = false;
-        bool UseDepthMap = false;
+        bool UseBumpMap = false;
+        bool UseSpecularMap = false;
     };
 
     /**

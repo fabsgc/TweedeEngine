@@ -124,7 +124,7 @@ namespace te
         
         for (UINT32 i = 0; i < numSubMeshes; i++)
         {
-            const SubMesh& subMesh = _mesh->GetProperties().GetSubMesh();
+            const SubMesh& subMesh = _mesh->GetProperties().GetSubMesh(i);
             if (subMesh.MaterialName == name)
             {
                 _materials[i] = material;

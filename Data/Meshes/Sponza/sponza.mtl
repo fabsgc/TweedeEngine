@@ -1,30 +1,6 @@
 # Blender MTL File: 'sponza.blend'
 # Material Count: 25
 
-newmtl Material__25
-Ns 10.000002
-Ka 1.000000 1.000000 1.000000
-Kd 1.000000 1.000000 1.000000
-Ks 0.010000 0.010000 0.010000
-Ke 0.0 0.0 0.0
-Ni 1.500000
-d 1.000000
-illum 2
-map_Bump textures\\lion_bump.png
-map_Kd textures\\lion.png
-
-newmtl Material__298
-Ns 10.000002
-Ka 1.000000 1.000000 1.000000
-Kd 1.000000 1.000000 1.000000
-Ks 0.010000 0.010000 0.010000
-Ke 0.0 0.0 0.0
-Ni 1.500000
-d 1.000000
-illum 2
-map_Bump textures\\background_bump.png
-map_Kd textures\\background.png
-
 newmtl Material__47
 Ns 10.000002
 Ka 1.000000 1.000000 1.000000
@@ -34,18 +10,6 @@ Ke 0.0 0.0 0.0
 Ni 1.500000
 d 1.000000
 illum 1
-
-newmtl Material__57
-Ns 10.000002
-Ka 1.000000 1.000000 1.000000
-Kd 1.000000 1.000000 1.000000
-Ks 0.000000 0.000000 0.000000
-Ke 0.0 0.0 0.0
-Ni 1.500000
-d 1.000000
-illum 1
-map_Kd textures\\vase_plant.png
-map_d textures\\vase_plant_mask.png
 
 newmtl arch
 Ns 40.000007
@@ -57,6 +21,18 @@ Ni 1.500000
 d 1.000000
 illum 2
 map_Kd textures\\sponza_arch_diff.png
+
+newmtl background
+Ns 10.000002
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.010000 0.010000 0.010000
+Ke 0.0 0.0 0.0
+Ni 1.500000
+d 1.000000
+illum 2
+map_Bump textures\\background_bump.png
+map_Kd textures\\background.png
 
 newmtl bricks
 Ns 10.000002
@@ -244,6 +220,18 @@ map_Bump textures\\sponza_thorn_bump.png
 map_Kd textures\\sponza_thorn_diff.png
 map_d textures\\sponza_thorn_mask.png
 
+newmtl lion
+Ns 10.000002
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.010000 0.010000 0.010000
+Ke 0.0 0.0 0.0
+Ni 1.500000
+d 1.000000
+illum 2
+map_Bump textures\\lion_bump.png
+map_Kd textures\\lion.png
+
 newmtl roof
 Ns 10.000002
 Ka 1.000000 1.000000 1.000000
@@ -278,6 +266,18 @@ d 1.000000
 illum 2
 map_Kd textures\\vase_hanging.png
 map_Ks textures\\vase_hanging.png
+
+newmtl vase_plant
+Ns 10.000002
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.0 0.0 0.0
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd textures\\vase_plant.png
+map_d textures\\vase_plant_mask.png
 
 newmtl vase_round
 Ns 10.000002

@@ -191,6 +191,7 @@ namespace te
 
     class Shader;
     class Material;
+    struct MaterialProperties;
     class Technique;
     class Pass;
 
@@ -212,6 +213,8 @@ namespace te
 {
     typedef ResourceHandle<Resource> HResource;
     typedef ResourceHandle<Material> HMaterial;
+    typedef ResourceHandle<Technique> HTechnique;
+    typedef ResourceHandle<Pass> HPass;
     typedef ResourceHandle<Texture> HTexture;
     typedef ResourceHandle<Shader> HShader;
     typedef ResourceHandle<Mesh> HMesh;

@@ -3,6 +3,8 @@
 #include "RenderAPI/TeRenderAPI.h"
 #include "Manager/TeRendererManager.h"
 #include "Renderer/TeRenderer.h"
+#include "Resources/TeResourceHandle.h"
+#include "Resources/TeResourceManager.h"
 #include "TePass.h"
 
 namespace te
@@ -12,6 +14,11 @@ namespace te
 
     Technique::~Technique()
     { }
+
+    void Technique::Initialize()
+    {
+        CoreObject::Initialize();
+    }
 
     Technique::Technique(const String& language, const Vector<SPtr<Pass>>& passes)
         : _language(language)
@@ -40,7 +47,15 @@ namespace te
         return _passes[idx];
     }
 
-    SPtr<Technique> Technique::Create(const String& language, const Vector<SPtr<Pass>>& passes)
+    HTechnique Technique::Create(const String& language, const Vector<SPtr<Pass>>& passes)
+    {
+        const SPtr<Technique> techniquePtr = CreatePtr(language, passes);
+        techniquePtr->Initialize();
+
+        return static_resource_cast<Technique>(gResourceManager()._createResourceHandle(techniquePtr));
+    }
+
+    SPtr<Technique> Technique::CreatePtr(const String& language, const Vector<SPtr<Pass>>& passes)
     {
         Technique* technique = new (te_allocate<Technique>()) Technique(language, passes);
         SPtr<Technique> techniquePtr = te_core_ptr<Technique>(technique);

@@ -35,28 +35,33 @@ namespace te
     {
         MaterialData data = ConvertMaterialProperties(properties);
 
+        gPerMaterialParamDef.gAmbient.Set(perMaterialBuffer, data.gAmbient);
         gPerMaterialParamDef.gDiffuse.Set(perMaterialBuffer, data.gDiffuse);
         gPerMaterialParamDef.gEmissive.Set(perMaterialBuffer, data.gEmissive);
         gPerMaterialParamDef.gSpecular.Set(perMaterialBuffer, data.gSpecular);
         gPerMaterialParamDef.gUseDiffuseMap.Set(perMaterialBuffer, data.gUseDiffuseMap);
         gPerMaterialParamDef.gUseNormalMap.Set(perMaterialBuffer, data.gUseNormalMap);
-        gPerMaterialParamDef.gUseDepthMap.Set(perMaterialBuffer, data.gUseDepthMap);
+        gPerMaterialParamDef.gUseBumpMap.Set(perMaterialBuffer, data.gUseBumpMap);
         gPerMaterialParamDef.gUseSpecularMap.Set(perMaterialBuffer, data.gUseSpecularMap);
         gPerMaterialParamDef.gSpecularPower.Set(perMaterialBuffer, data.gSpecularPower);
+        gPerMaterialParamDef.gTransparency.Set(perMaterialBuffer, data.gTransparency);
+        gPerMaterialParamDef.gAbsorbance.Set(perMaterialBuffer, data.gAbsorbance);
     }
 
     MaterialData PerObjectBuffer::ConvertMaterialProperties(const MaterialProperties& properties)
     {
         MaterialData data;
+        data.gAmbient = properties.Ambient.GetAsVector4();
         data.gDiffuse = properties.Diffuse.GetAsVector4();
         data.gEmissive = properties.Emissive.GetAsVector4();
         data.gSpecular = properties.Specular.GetAsVector4();
-        data.gUseDiffuseMap = (UINT32)properties.UseDiffuseMap;
-        data.gUseNormalMap = (UINT32)properties.UseNormalMap;
-        data.gUseDepthMap = (UINT32)properties.UseDepthMap;
-        data.gUseSpecularMap = (UINT32)properties.UseSpecularMap;
+        data.gUseDiffuseMap = (UINT32)properties.UseDiffuseMap ? 1 : 0;
+        data.gUseNormalMap = (UINT32)properties.UseNormalMap ? 1 : 0;
+        data.gUseBumpMap = (UINT32)properties.UseBumpMap ? 1 : 0;
+        data.gUseSpecularMap = (UINT32)properties.UseSpecularMap ? 1 : 0;
         data.gSpecularPower = properties.SpecularPower;
-
+        data.gTransparency = properties.Transparency;
+        data.gAbsorbance = properties.Absorbance;
         return data;
     }
 

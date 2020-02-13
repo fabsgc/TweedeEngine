@@ -5,6 +5,8 @@
 #include "RenderAPI/TeGpuParams.h"
 #include "RenderAPI/TeGpuProgram.h"
 #include "RenderAPI/TeGpuPipelineState.h"
+#include "Resources/TeResourceHandle.h"
+#include "Resources/TeResourceManager.h"
 
 namespace te
 {
@@ -19,6 +21,11 @@ namespace te
 
     Pass::~Pass()
     { }
+
+    void Pass::Initialize()
+    {
+        CoreObject::Initialize();
+    }
 
     bool Pass::HasBlending() const
     {
@@ -94,7 +101,15 @@ namespace te
         MarkCoreDirty();
     }
 
-    SPtr<Pass> Pass::Create(const PASS_DESC& desc)
+    HPass Pass::Create(const PASS_DESC& desc)
+    {
+        const SPtr<Pass> passPtr = CreatePtr(desc);
+        passPtr->Initialize();
+
+        return static_resource_cast<Pass>(gResourceManager()._createResourceHandle(passPtr));
+    }
+
+    SPtr<Pass> Pass::CreatePtr(const PASS_DESC& desc)
     {
         Pass* newPass = new (te_allocate<Pass>()) Pass(desc);
         SPtr<Pass> newPassPtr = te_core_ptr<Pass>(newPass);

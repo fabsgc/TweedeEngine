@@ -53,8 +53,8 @@ namespace te
         HLight _light;
         HSkybox _skybox;
 
-        SPtr<Pass> _pass;
-        SPtr<Technique> _technique;
+        HPass _pass;
+        HTechnique _technique;
 
         HShader _shader;
         HMaterial _materialCube;

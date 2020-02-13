@@ -9,7 +9,9 @@ namespace te
     { }
 
     Material::~Material()
-    { }
+    { 
+    
+    }
 
     Material::Material(const HShader& shader)
     {
@@ -36,6 +38,7 @@ namespace te
     void Material::Initialize()
     {
         InitializeTechniques();
+        CoreObject::Initialize();
     }
 
     void Material::InitializeTechniques()

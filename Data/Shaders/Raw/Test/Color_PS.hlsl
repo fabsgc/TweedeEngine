@@ -7,6 +7,21 @@ cbuffer PerCameraBuffer : register(b0)
     matrix gMatProj;
 }
 
+cbuffer PerMaterialBuffer : register(b1)
+{
+    float4 gAmbient;
+    float4 gDiffuse;
+    float4 gEmissive;
+    float4 gSpecular;
+    uint   gUseDiffuseMap;
+    uint   gUseNormalMap;
+    uint   gUseBumpMap;
+    uint   gUseSpecularMap;
+    float  gSpecularPower;
+    float  gTransparency;
+    float  gAbsorbance;
+};
+
 struct PS_INPUT
 {
     float4 Position : SV_POSITION;
@@ -21,7 +36,7 @@ SamplerState AnisotropicSampler : register(s0);
 Texture2D DiffuseMap : register(t0);
 Texture2D NormalMap : register(t1);
 Texture2D SpecularMap : register(t2);
-Texture2D DepthMap : register(t3);
+Texture2D BumpMap : register(t3);
 
 static const float4 AmbientColor = float4(1.0f, 0.95f, 0.9f, 0.5f);
 static const float3 AmbientDirection = float3(1.0f, -2.0f, -2.0f);

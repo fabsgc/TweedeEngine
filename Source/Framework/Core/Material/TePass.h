@@ -1,12 +1,12 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
-#include "CoreUtility/TeCoreObject.h"
 #include "RenderAPI/TeBlendState.h"
 #include "RenderAPI/TeRasterizerState.h"
 #include "RenderAPI/TeDepthStencilState.h"
 #include "RenderAPI/TeGpuProgram.h"
 #include "RenderAPI/TeGpuPipelineState.h"
+#include "Resources/TeResource.h"
 
 namespace te
 {
@@ -25,10 +25,13 @@ namespace te
 		GPU_PROGRAM_DESC DomainProgramDesc;
 	};
 
-    class TE_CORE_EXPORT Pass : public CoreObject
+    class TE_CORE_EXPORT Pass : public Resource
     {
     public:
         virtual ~Pass();
+
+        /** @copydoc CoreObject::Initialize */
+        void Initialize() override;
 
         /**	Returns true if this pass has some element of transparency. */
         bool HasBlending() const;
@@ -62,7 +65,10 @@ namespace te
         void Compile();
 
         /**	Creates a new empty pass. */
-        static SPtr<Pass> Create(const PASS_DESC& desc);
+        static HPass Create(const PASS_DESC& desc);
+
+        /** @copydoc Pass::Create */
+        static SPtr<Pass> CreatePtr(const PASS_DESC& desc);
 
         /**	Creates a new empty pass but doesn't initialize it. */
         static SPtr<Pass> CreateEmpty();

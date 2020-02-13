@@ -2,6 +2,7 @@
 
 #include "TeCorePrerequisites.h"
 #include "TeCoreApplication.h"
+#include "Material/TeMaterial.h"
 
 namespace te
 {
@@ -38,20 +39,52 @@ namespace te
         void PostUpdate() override;
 
     protected:
+        struct SponzaMaterialData
+        {
+            String Name;
+            String Diffuse;
+            String Normal;
+            String Bump;
+            String Specular;
+
+            HTexture DiffuseTexture;
+            HTexture NormalTexture;
+            HTexture BumpTexture;
+            HTexture SpecularTexture;
+
+            HMaterial MaterialElement;
+
+            MaterialProperties MaterialProp;
+        };
+
+        void InitInputHandling();
+
+        void InitShader();
+
+        void InitMaterials();
+
+        void InitMesh();
+
+        void InitScene();
+
+    protected:
+        Vector<SponzaMaterialData> _materials;
+
+        HPass _pass;
+        HTechnique _technique;
+        HShader _shader;
+
+        SPtr<BlendState> _blendState;
+        SPtr<RasterizerState> _rasterizerState;
+        SPtr<DepthStencilState> _depthStencilState;
+        SPtr<SamplerState> _samplerState;
+
         HCamera _sceneCamera;
         HCameraFlyer _sceneCameraFlyer;
-
-        HMesh _loadedSponza;
-        HTexture _loadedTextureSponza;
-        HRenderable _renderableSponza;
-
-        SPtr<Pass> _pass;
-        SPtr<Technique> _technique;
-
-        HShader _shader;
-        HMaterial _materialSponza;
+        HMesh _sponzaMesh;
+        HRenderable _sponzaRenderable;
 
         HSceneObject _sceneCameraSO;
-        HSceneObject _sceneRenderableSponzaSO;
+        HSceneObject _sceneSponzaSO;
     };
 }
