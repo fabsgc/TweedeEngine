@@ -17,7 +17,6 @@ cbuffer PerMaterialBuffer : register(b1)
     float4 gSpecular;
     uint   gUseDiffuseMap;
     uint   gUseNormalMap;
-    uint   gUseBumpMap;
     uint   gUseSpecularMap;
     float  gSpecularPower;
     float  gTransparency;
@@ -39,13 +38,10 @@ struct PS_INPUT
 SamplerState AnisotropicSampler : register(s0);
 Texture2D DiffuseMap : register(t0);
 Texture2D NormalMap : register(t1);
-Texture2D BumpMap : register(t2);
-Texture2D SpecularMap : register(t3);
+Texture2D SpecularMap : register(t2);
 
 static const float4 LightColor = float4(1.0f, 0.9f, 0.8f, 0.6f);
-static const float3 LightDirection = float3(1.0f, -2.0f, -2.0f);
-
-static const float4 SpecularColor = float4(1.0f, 0.95f, 0.9f, 4.0f);
+static const float3 LightDirection = float3(0.75f, -2.0f, -2.0f);
 
 float4 main( PS_INPUT IN ) : SV_Target
 {
@@ -73,11 +69,6 @@ float4 main( PS_INPUT IN ) : SV_Target
         normal = normalize(normal);
     }
 
-    if(gUseBumpMap == 1)
-    {
-
-    }
-
     if(gUseSpecularMap == 1)
     {
         specular.rgb = SpecularMap.Sample(AnisotropicSampler, IN.Texture).xyz;
@@ -92,6 +83,6 @@ float4 main( PS_INPUT IN ) : SV_Target
     float3 specFactor = pow(max(dot(IN.ViewDirection, refVector), 0.0), gSpecularPower);
     specular = (specFactor * specular.rgb);  
     
-    outColor.rgb = ambient + diffuse + specular;
+    outColor.rgb = ambient + diffuse + specular + emissive;
     return outColor;
 }

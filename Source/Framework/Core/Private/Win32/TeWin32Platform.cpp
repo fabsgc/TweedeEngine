@@ -429,7 +429,7 @@ namespace te
             case WM_CLOSE:
             {
                 win->NotifyWindowEvent(WindowEventType::CloseRequested);
-
+                PostMessage(hWnd, WM_QUIT, 0, 0);
                 return 0;
             }
             case WM_NCLBUTTONDBLCLK:
@@ -654,6 +654,12 @@ namespace te
             case WM_TE_RELEASECAPTURE:
                 ReleaseCapture();
                 break;
+            case WM_QUIT:
+                PostQuitMessage(0);
+                return 0;
+            case WM_DESTROY:
+                PostQuitMessage(0);
+                return 0;
             case WM_CAPTURECHANGED:
                 if (!OnMouseCaptureChanged.Empty())
                     OnMouseCaptureChanged();

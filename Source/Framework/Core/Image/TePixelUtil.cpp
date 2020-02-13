@@ -2217,7 +2217,7 @@ namespace te
         }
     }
 
-    Vector<SPtr<PixelData>> PixelUtil::GenMipmaps(const PixelData& src, const MipMapGenOptions& options)
+    Vector<SPtr<PixelData>> PixelUtil::GenMipmaps(const PixelData& src, const MipMapGenOptions& options, UINT32 maxMip)
     {
         Vector<SPtr<PixelData>> outputMipBuffers;
 
@@ -2250,9 +2250,13 @@ namespace te
             FlipComponentOrder(interimData);
         }
 
+        UINT32 numMips = GetMaxMipmaps(src.GetWidth(), src.GetHeight(), 1, src.GetFormat());
+        if (maxMip > 0)
+            numMips = std::min(numMips, maxMip);
+
         nvtt::InputOptions io;
         io.setTextureLayout(nvtt::TextureType_2D, src.GetWidth(), src.GetHeight());
-        io.setMipmapGeneration(true);
+        io.setMipmapGeneration(true, numMips);
         io.setNormalMap(options.isNormalMap);
         io.setNormalizeMipmaps(options.normalizeMipmaps);
         io.setWrapMode(toNVTTWrapMode(options.wrapMode));
@@ -2282,8 +2286,6 @@ namespace te
             co.setPixelType(nvtt::PixelType_UnsignedNorm);
             co.setPixelFormat(32, 0x0000FF00, 0x00FF0000, 0xFF000000, 0x000000FF);
         }
-
-        UINT32 numMips = GetMaxMipmaps(src.GetWidth(), src.GetHeight(), 1, src.GetFormat());
 
         Vector<SPtr<PixelData>> rgbaMipBuffers;
 

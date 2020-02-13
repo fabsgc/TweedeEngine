@@ -170,7 +170,6 @@ namespace te
         SHADER_DATA_PARAM_DESC gUseDiffuseMap("gUseDiffuseMap", "gUseDiffuseMap", GPDT_INT1);
         SHADER_DATA_PARAM_DESC gUseSpecularMap("gUseSpecularMap", "gUseSpecularMap", GPDT_INT1);
         SHADER_DATA_PARAM_DESC gUseNormalMap("gUseNormalMap", "gUseNormalMap", GPDT_INT1);
-        SHADER_DATA_PARAM_DESC gUseBumpMap("gUseBumpMap", "gUseBumpMap", GPDT_INT1);
         SHADER_DATA_PARAM_DESC gSpecularPower("gSpecularPower", "gSpecularPower", GPDT_FLOAT1);
         SHADER_DATA_PARAM_DESC gTransparency("gTransparency", "gTransparency", GPDT_FLOAT1);
         SHADER_DATA_PARAM_DESC gAbsorbance("gAbsorbance", "gAbsorbance", GPDT_FLOAT1);
@@ -201,7 +200,6 @@ namespace te
         shaderDesc.AddParameter(gUseDiffuseMap);
         shaderDesc.AddParameter(gUseSpecularMap);
         shaderDesc.AddParameter(gUseNormalMap);
-        shaderDesc.AddParameter(gUseBumpMap);
         shaderDesc.AddParameter(gSpecularPower);
         shaderDesc.AddParameter(gTransparency);
         shaderDesc.AddParameter(gAbsorbance);
@@ -227,125 +225,107 @@ namespace te
                 "arch",
                 "Data/Textures/Sponza/arch/arch_COLOR.jpeg",
                 "Data/Textures/Sponza/arch/arch_NRM.jpeg",
-                "Data/Textures/Sponza/arch/arch_DISP.jpeg",
                 "Data/Textures/Sponza/arch/arch_SPEC.jpeg"
             },
             {
                 "background",
                 "Data/Textures/Sponza/background/background_COLOR.jpeg",
                 "Data/Textures/Sponza/background/background_NRM.jpeg",
-                "Data/Textures/Sponza/background/background_DISP.jpeg",
                 "Data/Textures/Sponza/background/background_SPEC.jpeg"
             },
             {
                 "bricks",
                 "Data/Textures/Sponza/bricks/bricks_COLOR.jpeg",
                 "Data/Textures/Sponza/bricks/bricks_NRM.jpeg",
-                "Data/Textures/Sponza/bricks/bricks_DISP.jpeg",
                 "Data/Textures/Sponza/bricks/bricks_SPEC.jpeg"
             },
             {
                 "ceiling",
                 "Data/Textures/Sponza/ceiling/ceiling_COLOR.jpeg",
                 "Data/Textures/Sponza/ceiling/ceiling_NRM.jpeg",
-                "Data/Textures/Sponza/ceiling/ceiling_DISP.jpeg",
                 "Data/Textures/Sponza/ceiling/ceiling_SPEC.jpeg"
             },
             {
                 "chain",
                 "Data/Textures/Sponza/chain/chain_COLOR.jpeg",
                 "Data/Textures/Sponza/chain/chain_NRM.jpeg",
-                "Data/Textures/Sponza/chain/chain_DISP.jpeg",
                 "Data/Textures/Sponza/chain/chain_SPEC.jpeg"
             },
             {
                 "column_a",
                 "Data/Textures/Sponza/column_a/column_a_COLOR.jpeg",
                 "Data/Textures/Sponza/column_a/column_a_NRM.jpeg",
-                "Data/Textures/Sponza/column_a/column_a_DISP.jpeg",
                 "Data/Textures/Sponza/column_a/column_a_SPEC.jpeg"
             },
             {
                 "column_b",
                 "Data/Textures/Sponza/column_b/column_b_COLOR.jpeg",
                 "Data/Textures/Sponza/column_b/column_b_NRM.jpeg",
-                "Data/Textures/Sponza/column_b/column_b_DISP.jpeg",
                 "Data/Textures/Sponza/column_b/column_b_SPEC.jpeg"
             },
             {
                 "column_c",
                 "Data/Textures/Sponza/column_c/column_c_COLOR.jpeg",
                 "Data/Textures/Sponza/column_c/column_c_NRM.jpeg",
-                "Data/Textures/Sponza/column_c/column_c_DISP.jpeg",
                 "Data/Textures/Sponza/column_c/column_c_SPEC.jpeg"
             },
             {
                 "details",
                 "Data/Textures/Sponza/details/details_COLOR.jpeg",
                 "Data/Textures/Sponza/details/details_NRM.jpeg",
-                "Data/Textures/Sponza/details/details_DISP.jpeg",
                 "Data/Textures/Sponza/details/details_SPEC.jpeg"
             },
             {
                 "fabric_a",
                 "Data/Textures/Sponza/fabric_a/fabric_a_COLOR.jpeg",
                 "Data/Textures/Sponza/fabric_a/fabric_a_NRM.jpeg",
-                "",
                 "Data/Textures/Sponza/fabric_a/fabric_a_SPEC.jpeg"
             },
             {
                 "fabric_c",
                 "Data/Textures/Sponza/fabric_c/fabric_c_COLOR.jpeg",
                 "Data/Textures/Sponza/fabric_c/fabric_c_NRM.jpeg",
-                "",
                 "Data/Textures/Sponza/fabric_c/fabric_c_SPEC.jpeg"
             },
             {
                 "fabric_d",
                 "Data/Textures/Sponza/fabric_d/fabric_d_COLOR.jpeg",
                 "Data/Textures/Sponza/fabric_a/fabric_a_NRM.jpeg",
-                "",
                 "Data/Textures/Sponza/fabric_a/fabric_a_SPEC.jpeg"
             },
             {
                 "fabric_e",
                 "Data/Textures/Sponza/fabric_e/fabric_e_COLOR.jpeg",
                 "Data/Textures/Sponza/fabric_a/fabric_a_NRM.jpeg",
-                "",
                 "Data/Textures/Sponza/fabric_a/fabric_a_SPEC.jpeg"
             },
             {
                 "fabric_f",
                 "Data/Textures/Sponza/fabric_f/fabric_f_COLOR.jpeg",
                 "Data/Textures/Sponza/fabric_c/fabric_c_NRM.jpeg",
-                "",
                 "Data/Textures/Sponza/fabric_c/fabric_c_SPEC.jpeg"
             },
             {
                 "fabric_g",
                 "Data/Textures/Sponza/fabric_g/fabric_g_COLOR.jpeg",
                 "Data/Textures/Sponza/fabric_c/fabric_c_NRM.jpeg",
-                "",
                 "Data/Textures/Sponza/fabric_c/fabric_c_SPEC.jpeg"
             },
             {
                 "flagpole",
                 "Data/Textures/Sponza/flagpole/flagpole_COLOR.jpeg",
                 "Data/Textures/Sponza/flagpole/flagpole_NRM.jpeg",
-                "Data/Textures/Sponza/flagpole/flagpole_DISP.jpeg",
                 "Data/Textures/Sponza/flagpole/flagpole_SPEC.jpeg"
             },
             {
                 "floor",
                 "Data/Textures/Sponza/floor/floor_COLOR.jpeg",
                 "Data/Textures/Sponza/floor/floor_NRM.jpeg",
-                "Data/Textures/Sponza/floor/floor_DISP.jpeg",
                 "Data/Textures/Sponza/floor/floor_SPEC.jpeg"
             },
             {
                 "leaf",
                 "Data/Textures/Sponza/leaf/leaf_COLOR.jpeg",
-                "",
                 "",
                 "Data/Textures/Sponza/leaf/leaf_SPEC.jpeg"
             },
@@ -353,34 +333,29 @@ namespace te
                 "lion",
                 "Data/Textures/Sponza/lion/lion_COLOR.jpeg",
                 "Data/Textures/Sponza/lion/lion_NRM.jpeg",
-                "Data/Textures/Sponza/lion/lion_DISP.jpeg",
                 "Data/Textures/Sponza/lion/lion_SPEC.jpeg"
             },
             {
                 "roof",
                 "Data/Textures/Sponza/roof/roof_COLOR.jpeg",
                 "Data/Textures/Sponza/roof/roof_NRM.jpeg",
-                "",
                 "Data/Textures/Sponza/roof/roof_SPEC.jpeg"
             },
             {
                 "vase",
                 "Data/Textures/Sponza/vase/vase_COLOR.jpeg",
                 "Data/Textures/Sponza/vase/vase_NRM.jpeg",
-                "Data/Textures/Sponza/vase/vase_DISP.jpeg",
                 "Data/Textures/Sponza/vase/vase_SPEC.jpeg"
             },
             {
                 "vase_hanging",
                 "Data/Textures/Sponza/vase_hanging/vase_hanging_COLOR.jpeg",
                 "Data/Textures/Sponza/vase_hanging/vase_hanging_NRM.jpeg",
-                "Data/Textures/Sponza/vase_hanging/vase_hanging_DISP.jpeg",
                 "Data/Textures/Sponza/vase_hanging/vase_hanging_SPEC.jpeg"
             },
             {
                 "vase_plant",
                 "Data/Textures/Sponza/vase_plant/vase_plant_COLOR.jpeg",
-                "",
                 "",
                 "Data/Textures/Sponza/vase_plant/vase_plant_SPEC.jpeg"
             },
@@ -388,7 +363,6 @@ namespace te
                 "vase_round",
                 "Data/Textures/Sponza/vase_round/vase_round_COLOR.jpeg",
                 "Data/Textures/Sponza/vase_round/vase_round_NRM.jpeg",
-                "Data/Textures/Sponza/vase_round/vase_round_DISP.jpeg",
                 "Data/Textures/Sponza/vase_round/vase_round_SPEC.jpeg"
             }
         };
@@ -396,15 +370,21 @@ namespace te
         auto textureDiffuseImportOptions = TextureImportOptions::Create();
         textureDiffuseImportOptions->CpuCached = false;
         textureDiffuseImportOptions->GenerateMips = true;
+        textureDiffuseImportOptions->MaxMip = 10;
 
         auto textureImportOptions = TextureImportOptions::Create();
         textureImportOptions->CpuCached = false;
         textureImportOptions->GenerateMips = true;
+        textureImportOptions->MaxMip = 10;
+
+        TextureSurface surface;
+        surface.MipLevel = 0;
+        surface.NumMipLevels = 10;
 
         for (auto& material : _materials)
         {
-            material.MaterialProp.SpecularPower = 4.0f;
-            material.MaterialProp.Specular = Color(1.0f, 1.0f, 1.0f, 0.1f);
+            material.MaterialProp.SpecularPower = 16.0f;
+            material.MaterialProp.Ambient = Color(1.0f, 1.0f, 1.0f, 0.75f);
 
             if (material.Diffuse != "")
             {
@@ -418,12 +398,6 @@ namespace te
                 material.MaterialProp.UseNormalMap = true;
             }
 
-            if (material.Bump != "")
-            {
-                //material.BumpTexture = gResourceManager().Load<Texture>(material.Bump, textureImportOptions);
-                //material.MaterialProp.UseBumpMap = true;
-            }
-
             if (material.Specular != "")
             {
                 material.SpecularTexture = gResourceManager().Load<Texture>(material.Specular, textureImportOptions);
@@ -434,10 +408,9 @@ namespace te
             material.MaterialElement->SetName(material.Name);
             material.MaterialElement->SetSamplerState("AnisotropicSampler", _samplerState);
 
-            if (material.Diffuse != "") material.MaterialElement->SetTexture("DiffuseMap", material.DiffuseTexture);
-            if (material.Normal != "") material.MaterialElement->SetTexture("NormalMap", material.NormalTexture);
-            //if (material.Bump != "") material.MaterialElement->SetTexture("BumpMap", material.BumpTexture);
-            if (material.Specular != "") material.MaterialElement->SetTexture("SpecularMap", material.SpecularTexture);
+            if (material.Diffuse != "") material.MaterialElement->SetTexture("DiffuseMap", material.DiffuseTexture, surface);
+            if (material.Normal != "") material.MaterialElement->SetTexture("NormalMap", material.NormalTexture, surface);
+            if (material.Specular != "") material.MaterialElement->SetTexture("SpecularMap", material.SpecularTexture, surface);
 
             material.MaterialElement->SetProperties(material.MaterialProp);
         }

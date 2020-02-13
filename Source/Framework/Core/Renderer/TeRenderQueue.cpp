@@ -76,6 +76,9 @@ namespace te
         case StateReduction::Distance:
             sortMethod = &ElementSorterPreferDistance;
             break;
+        case StateReduction::Never:
+            sortMethod = &ElementSorterNoGroup;
+            break;
         }
 
         if (_stateReductionMode != StateReduction::Never)

@@ -264,7 +264,7 @@ namespace te
          * @return	A list of calculated mip-map data. First entry is the largest mip and other follow in order from
          *			largest to smallest.
          */
-        static Vector<SPtr<PixelData>> GenMipmaps(const PixelData& src, const MipMapGenOptions& options);
+        static Vector<SPtr<PixelData>> GenMipmaps(const PixelData& src, const MipMapGenOptions& options, UINT32 maxMip = 0);
 
         /**
          * Scales pixel data in the source buffer and stores the scaled data in the destination buffer. Provided pixel data

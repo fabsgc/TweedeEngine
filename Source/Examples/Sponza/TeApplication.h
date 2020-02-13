@@ -44,12 +44,10 @@ namespace te
             String Name;
             String Diffuse;
             String Normal;
-            String Bump;
             String Specular;
 
             HTexture DiffuseTexture;
             HTexture NormalTexture;
-            HTexture BumpTexture;
             HTexture SpecularTexture;
 
             HMaterial MaterialElement;

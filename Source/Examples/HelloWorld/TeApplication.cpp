@@ -87,10 +87,8 @@ namespace te
         textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
 
         _loadedMeshCube = gResourceManager().Load<Mesh>("Data/Meshes/MultiCubeMaterial/multi-cube-material.dae", meshImportOptions);
-        //_loadedMeshCube = gResourceManager().Load<Mesh>("Data/Meshes/Sponza/sponza.dae", meshImportOptions);
         _loadedMeshMonkey = gResourceManager().Load<Mesh>("Data/Meshes/Monkey/monkey.dae", meshImportOptions);
         _loadedTextureCube = gResourceManager().Load<Texture>("Data/Textures/Cube/diffuse.png", textureImportOptions);
-        //_loadedTextureCube = gResourceManager().Load<Texture>("Data/Textures/Sponza/spnza_bricks_a_diff.png", textureImportOptions);
         _loadedTextureMonkey = gResourceManager().Load<Texture>("Data/Textures/Monkey/diffuse.png", textureImportOptions);
         _loadedCubemapTexture = gResourceManager().Load<Texture>("Data/Textures/Skybox/cubemap.png", textureCubeMapImportOptions);
 
@@ -218,7 +216,6 @@ namespace te
         SHADER_DATA_PARAM_DESC gUseDiffuseMap("gUseDiffuseMap", "gUseDiffuseMap", GPDT_INT1);
         SHADER_DATA_PARAM_DESC gUseSpecularMap("gUseSpecularMap", "gUseSpecularMap", GPDT_INT1);
         SHADER_DATA_PARAM_DESC gUseNormalMap("gUseNormalMap", "gUseNormalMap", GPDT_INT1);
-        SHADER_DATA_PARAM_DESC gUseBumpMap("gUseBumpMap", "gUseBumpMap", GPDT_INT1);
         SHADER_DATA_PARAM_DESC gSpecularPower("gSpecularPower", "gSpecularPower", GPDT_FLOAT1);
         SHADER_DATA_PARAM_DESC gTransparency("gTransparency", "gTransparency", GPDT_FLOAT1);
         SHADER_DATA_PARAM_DESC gAbsorbance("gAbsorbance", "gAbsorbance", GPDT_FLOAT1);
@@ -249,7 +246,6 @@ namespace te
         shaderDesc.AddParameter(gUseDiffuseMap);
         shaderDesc.AddParameter(gUseSpecularMap);
         shaderDesc.AddParameter(gUseNormalMap);
-        shaderDesc.AddParameter(gUseBumpMap);
         shaderDesc.AddParameter(gSpecularPower);
         shaderDesc.AddParameter(gTransparency);
         shaderDesc.AddParameter(gAbsorbance);

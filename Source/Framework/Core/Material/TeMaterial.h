@@ -37,7 +37,6 @@ namespace te
 
         bool UseDiffuseMap = false;
         bool UseNormalMap = false;
-        bool UseBumpMap = false;
         bool UseSpecularMap = false;
     };
 

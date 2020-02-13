@@ -5,24 +5,18 @@ namespace te
     TE_MODULE_STATIC_MEMBER(Console)
 
     Console::Console()
-        : _hCrtIn(0)
-        , _hCrtOut(0)
     {}
 
     void Console::OnStartUp()
     {
 #if TE_DEBUG_MODE == 1 && TE_PLATFORM == TE_PLATFORM_WIN32
         AllocConsole();
-        AttachConsole(GetCurrentProcessId());
 
-        HANDLE handle_out = GetStdHandle(STD_OUTPUT_HANDLE);
-        _hCrtOut = _open_osfhandle((intptr_t)handle_out, _O_TEXT);
-        FILE* hf_out = _fdopen(_hCrtOut, "w");
-        setvbuf(hf_out, NULL, _IONBF, 1);
-        *stdout = *hf_out;
+        fpstdin = stdin;
+        fpstdout = stdout;
+        fpstderr = stderr;
 
-        FILE *fpstdout = stdout, *fpstderr = stderr;
-
+        freopen_s(&fpstdin, "CONIN$", "r", stdin);
         freopen_s(&fpstdout, "CONOUT$", "w", stdout);
         freopen_s(&fpstderr, "CONOUT$", "w", stderr);
 #endif
@@ -31,6 +25,10 @@ namespace te
     void Console::OnShutDown()
     {
 #if TE_DEBUG_MODE == 1 && TE_PLATFORM == TE_PLATFORM_WIN32
+        fclose(stdin);
+        fclose(stdout);
+        fclose(stderr);
+        FreeConsole();
 #endif
     }
 

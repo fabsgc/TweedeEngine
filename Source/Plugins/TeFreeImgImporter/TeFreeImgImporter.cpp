@@ -191,7 +191,7 @@ namespace te
                 MipMapGenOptions mipOptions;
                 mipOptions.isSRGB = sRGB;
 
-                mipLevels = PixelUtil::GenMipmaps(*faceData[i], mipOptions);
+                mipLevels = PixelUtil::GenMipmaps(*faceData[i], mipOptions, numMips);
             }
             else
             {

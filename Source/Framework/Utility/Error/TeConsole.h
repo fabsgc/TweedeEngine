@@ -18,8 +18,7 @@ namespace te
         void OnShutDown() override;
 
     protected:
-        int _hCrtIn;
-        int _hCrtOut;
+        FILE* fpstdin = stdin, * fpstdout = stdout, * fpstderr = stderr;
     };
 
     Console& gConsole();

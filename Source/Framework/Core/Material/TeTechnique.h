@@ -35,7 +35,7 @@ namespace te
          */
         static HTechnique Create(const String& language, const Vector<SPtr<Pass>>& passes);
 
-        /** /** @copydoc Technique::Create */
+        /** @copydoc Technique::Create */
         static SPtr<Technique> CreatePtr(const String& language, const Vector<SPtr<Pass>>& passes);
 
         /**	Creates a new technique but doesn't initialize it. */

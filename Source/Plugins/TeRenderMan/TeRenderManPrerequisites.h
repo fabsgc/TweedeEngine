@@ -31,7 +31,6 @@ namespace te
         Vector4 gSpecular;
         UINT32 gUseDiffuseMap;
         UINT32 gUseNormalMap;
-        UINT32 gUseBumpMap;
         UINT32 gUseSpecularMap;
         float gSpecularPower;
         float gTransparency;
@@ -78,7 +77,6 @@ namespace te
         TE_PARAM_BLOCK_ENTRY(Vector4, gSpecular)
         TE_PARAM_BLOCK_ENTRY(INT32, gUseDiffuseMap)
         TE_PARAM_BLOCK_ENTRY(INT32, gUseNormalMap)
-        TE_PARAM_BLOCK_ENTRY(INT32, gUseBumpMap)
         TE_PARAM_BLOCK_ENTRY(INT32, gUseSpecularMap)
         TE_PARAM_BLOCK_ENTRY(float, gSpecularPower)
         TE_PARAM_BLOCK_ENTRY(float, gTransparency)
