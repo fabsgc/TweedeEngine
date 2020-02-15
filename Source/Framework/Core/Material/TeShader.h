@@ -190,7 +190,7 @@ namespace te
         bool SeparablePasses = false;
 
         /** Flags that let the renderer know how should it interpret the shader. */
-        UINT32 Flags = (UINT32)ShaderFlag::Forward;
+        UINT32 Flags = 0;
 
         /** Techniques to initialize the shader with. */
         Vector<SPtr<Technique>> Techniques;
@@ -207,7 +207,7 @@ namespace te
 
     private:
         /**
-         * @copydoc	addParameter(SHADER_OBJECT_PARAM_DESC)
+         * @copydoc	AddParameter(SHADER_OBJECT_PARAM_DESC)
          *
          * @note	Common method shared by different addParameter overloads.
          */
@@ -234,21 +234,21 @@ namespace te
         /**
          * Returns currently active queue sort type.
          *
-         * @see		SHADER_DESC::queueSortType
+         * @see		SHADER_DESC::QueueSortType
          */
         QueueSortType GetQueueSortType() const { return _desc.QueueType; }
 
         /**
          * Returns currently active queue priority.
          *
-         * @see		SHADER_DESC::queuePriority
+         * @see		SHADER_DESC::QueuePriority
          */
         INT32 GetQueuePriority() const { return _desc.QueuePriority; }
 
         /**
          * Returns if separable passes are allowed.
          *
-         * @see		SHADER_DESC::separablePasses
+         * @see		SHADER_DESC::SeparablePasses
          */
         bool GetAllowSeparablePasses() const { return _desc.SeparablePasses; }
 
@@ -273,7 +273,7 @@ namespace te
         /**
          * Creates a new shader object using the provided descriptor and techniques.
          *
-         * @note	Internal method. Use create() for normal use.
+         * @note	Internal method. Use Create() for normal use.
          */
         static SPtr<Shader> _createPtr(const String& name, const SHADER_DESC& desc);
 

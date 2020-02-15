@@ -21,7 +21,7 @@ namespace te
 
         blendStateDesc.AlphaToCoverageEnable = _properties.GetAlphaToCoverageEnabled();
         blendStateDesc.IndependentBlendEnable = _properties.GetIndependantBlendEnable();
-        
+
         for(UINT32 i = 0; i < TE_MAX_MULTIPLE_RENDER_TARGETS; i++)
         {
             blendStateDesc.RenderTarget[i].BlendEnable = _properties.GetBlendEnabled(i);

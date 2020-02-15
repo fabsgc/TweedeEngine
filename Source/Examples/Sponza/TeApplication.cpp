@@ -209,8 +209,8 @@ namespace te
                 "Data/Textures/Sponza/fabric_a/fabric_a_SPEC.jpeg",
                 "",
                 "",
-                1.0f,
-                0.5f
+                0.5f,
+                0.2f
             },
             {
                 "fabric_f",
@@ -350,6 +350,7 @@ namespace te
             material.MaterialProp.Ambient = Color(1.0f, 1.0f, 1.0f, 0.75f);
             //material.MaterialProp.Emissive = Color(1.0f, 1.0f, 1.0f, 0.75f);
             material.MaterialProp.AlphaThreshold = material.AlphaTreshold;
+            material.MaterialProp.Transparency = material.Opacity;
 
             if (material.Diffuse != "")
             {
@@ -387,7 +388,11 @@ namespace te
                 material.MaterialProp.UseTransparencyMap = true;
             }
 
-            material.MaterialElement = Material::Create(_shaderOpaque);
+            if(material.Opacity < 1.0f)
+                material.MaterialElement = Material::Create(_shaderTransparent);
+            else
+                material.MaterialElement = Material::Create(_shaderOpaque);
+
             material.MaterialElement->SetName(material.Name);
             material.MaterialElement->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetAnisotropicSamplerState());
 
@@ -401,7 +406,7 @@ namespace te
             material.MaterialElement->SetProperties(material.MaterialProp);
         };
 
-        //materialFunction(_materials[17]);
+        //materialFunction(_materials[16]);
 
         for (auto& material : _materials)
         {
@@ -442,7 +447,7 @@ namespace te
             _sponzaRenderable->SetMaterial(material.Name, material.MaterialElement);
         }
 
-        //_sponzaRenderable->SetMaterial(_materials[17].MaterialElement);
+        //_sponzaRenderable->SetMaterial(_materials[16].MaterialElement);
 
         _sponzaRenderable->Initialize();
 

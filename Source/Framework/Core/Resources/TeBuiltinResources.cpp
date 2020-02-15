@@ -63,9 +63,9 @@ namespace te
     }
     void BuiltinResources::InitStates()
     {
-        _blendOpaqueStateDesc;
-
         _blendTransparentStateDesc;
+        _blendTransparentStateDesc.AlphaToCoverageEnable = true;
+        _blendTransparentStateDesc.IndependantBlendEnable = true;
 
         _rasterizerStateDesc.polygonMode = PM_SOLID;
         _rasterizerStateDesc.cullMode = CULL_CLOCKWISE;
@@ -212,7 +212,7 @@ namespace te
     void BuiltinResources::InitShaderTransparent()
     {
         PASS_DESC passDesc;
-        passDesc.BlendStateDesc = _blendOpaqueStateDesc;
+        passDesc.BlendStateDesc = _blendTransparentStateDesc;
         passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
         passDesc.RasterizerStateDesc = _rasterizerStateDesc;
         passDesc.VertexProgramDesc = _vertexShaderProgramDesc;
@@ -223,6 +223,7 @@ namespace te
         technique->Compile();
 
         SHADER_DESC shaderDesc = _shaderDesc;
+        shaderDesc.Flags = (UINT32)ShaderFlag::Transparent;
         shaderDesc.Techniques.push_back(technique.GetInternalPtr());
         
         _shaderTransparent = Shader::Create("Transparent", shaderDesc);

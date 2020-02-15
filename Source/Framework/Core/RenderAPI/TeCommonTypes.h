@@ -135,7 +135,6 @@ namespace te
     enum class ShaderFlag
     {
         Transparent = 0x1, /**< Signifies that the shader is rendering a transparent object. */
-        Forward = 0x2 /**< Signifies the shader should use the forward rendering pipeline, if relevant. */
     };
 
     /** These values represent a hint to the driver when locking a hardware buffer. */
