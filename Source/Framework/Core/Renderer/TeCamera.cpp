@@ -291,7 +291,7 @@ namespace te
     {
         Vector2 ndcPoint = ScreenToNdcPoint(screenPoint);
         Vector4 worldPoint(ndcPoint.x, ndcPoint.y, deviceDepth, 1.0f);
-        worldPoint = GetProjectionMatrix().Inverse().Multiply(worldPoint); //RS
+        worldPoint = GetProjectionMatrixRS().Inverse().Multiply(worldPoint); //RS
 
         Vector3 worldPoint3D;
         if (Math::Abs(worldPoint.w) > 1e-7f)
@@ -396,7 +396,7 @@ namespace te
     Vector3 Camera::ProjectPoint(const Vector3& point) const
     {
         Vector4 projPoint4(point.x, point.y, point.z, 1.0f);
-        projPoint4 = GetProjectionMatrix().Multiply(projPoint4); //RS
+        projPoint4 = GetProjectionMatrixRS().Multiply(projPoint4); //RS
 
         if (Math::Abs(projPoint4.w) > 1e-7f)
         {
@@ -422,7 +422,7 @@ namespace te
 
         // Get world position for a point near the far plane (0.95f)
         Vector4 farAwayPoint(point.x, point.y, 0.95f, 1.0f);
-        farAwayPoint = GetProjectionMatrix().Inverse().Multiply(farAwayPoint); //RS
+        farAwayPoint = GetProjectionMatrixRS().Inverse().Multiply(farAwayPoint); //RS
 
         // Can't proceed if w is too small
         if (Math::Abs(farAwayPoint.w) > 1e-7f)
@@ -542,6 +542,22 @@ namespace te
                     qn = -2 * (_farDist * _nearDist) * inv_d;
                 }
 
+                // NB: This creates 'uniform' perspective projection matrix,
+                // which depth range [-1,1], right-handed rules
+                // note: this comment assumes standard Z math in range [-1;1]
+                //
+                // [ A   0   C   0  ]
+                // [ 0   B   D   0  ]
+                // [ 0   0   q   qn ]
+                // [ 0   0   -1  0  ]
+                //
+                // A = 2 * near / (right - left)
+                // B = 2 * near / (top - bottom)
+                // C = (right + left) / (right - left)
+                // D = (top + bottom) / (top - bottom)
+                // q = - (far + near) / (far - near)
+                // qn = - 2 * (far * near) / (far - near)
+
                 _projMatrix = Matrix4::ZERO;
                 _projMatrix[0][0] = A;
                 _projMatrix[0][2] = C;
@@ -570,6 +586,21 @@ namespace te
                     q = -2 * inv_d;
                     qn = -(_farDist + _nearDist) * inv_d;
                 }
+
+                // NB: This creates 'uniform' orthographic projection matrix,
+                // which depth range [-1,1], right-handed rules
+                //
+                // [ A   0   0   C  ]
+                // [ 0   B   0   D  ]
+                // [ 0   0   q   qn ]
+                // [ 0   0   0   1  ]
+                //
+                // A = 2 * / (right - left)
+                // B = 2 * / (top - bottom)
+                // C = - (right + left) / (right - left)
+                // D = - (top + bottom) / (top - bottom)
+                // q = - 2 / (far - near)
+                // qn = - (far + near) / (far - near)
 
                 _projMatrix = Matrix4::ZERO;
                 _projMatrix[0][0] = A;

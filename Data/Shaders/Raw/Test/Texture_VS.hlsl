@@ -17,7 +17,6 @@ cbuffer PerMaterialBuffer : register(b1)
     float4 gSpecular;
     uint   gUseDiffuseMap;
     uint   gUseNormalMap;
-    uint   gUseBumpMap;
     uint   gUseSpecularMap;
     float  gSpecularPower;
     float  gTransparency;

@@ -164,7 +164,7 @@ namespace te
         samplerDesc.MinFilter = FO_ANISOTROPIC;
         samplerDesc.MagFilter = FO_ANISOTROPIC;
         samplerDesc.MipFilter = FO_ANISOTROPIC;
-        samplerDesc.MaxAnisotropy = 2;
+        samplerDesc.MaxAnisotropy = 8;
 
         SPtr<BlendState> blendState = BlendState::Create(blendDesc);
         SPtr<RasterizerState> rasterizerState = RasterizerState::Create(rastDesc);

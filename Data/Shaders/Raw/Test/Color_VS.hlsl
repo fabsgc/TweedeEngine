@@ -17,7 +17,6 @@ cbuffer PerMaterialBuffer : register(b1)
     float4 gSpecular;
     uint   gUseDiffuseMap;
     uint   gUseNormalMap;
-    uint   gUseBumpMap;
     uint   gUseSpecularMap;
     float  gSpecularPower;
     float  gTransparency;
@@ -65,6 +64,8 @@ struct VS_OUTPUT
     float4 Position : SV_POSITION;
     float4 WorldPosition : POSITION;
     float3 Normal : NORMAL;
+    float3 Tangent : TANGENT;
+    float3 BiTangent : BINORMAL;
     float4 Color : COLOR0;
     float2 Texture : TEXCOORD0;
     float3 ViewDirection : POSITION1;

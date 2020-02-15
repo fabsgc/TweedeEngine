@@ -123,7 +123,7 @@ namespace te
             tfrm.GetPosition(),
             tfrm.GetForward(),
             camera->GetViewMatrix(),
-            camera->GetProjectionMatrix(),
+            camera->GetProjectionMatrixRS(),
             camera->GetWorldFrustum());
 
         view->UpdatePerViewBuffer();
@@ -531,7 +531,7 @@ namespace te
         const Transform& tfrm = camera->GetTransform();
         viewDesc.ViewOrigin = tfrm.GetPosition();
         viewDesc.ViewDirection = tfrm.GetForward();
-        viewDesc.ProjTransform = camera->GetProjectionMatrix();
+        viewDesc.ProjTransform = camera->GetProjectionMatrixRS();
         viewDesc.ViewTransform = camera->GetViewMatrix();
         viewDesc.ProjType = camera->GetProjectionType();
 
