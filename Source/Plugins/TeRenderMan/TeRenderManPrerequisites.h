@@ -30,11 +30,17 @@ namespace te
         Vector4 gEmissive;
         Vector4 gSpecular;
         UINT32 gUseDiffuseMap;
+        UINT32 gUseEmissiveMap;
         UINT32 gUseNormalMap;
         UINT32 gUseSpecularMap;
+        UINT32 gUseBumpMap;
+        UINT32 gUseTransparencyMap;
         float gSpecularPower;
         float gTransparency;
+        float gIndexOfRefraction;
         float gAbsorbance;
+        float gBumpScale;
+        float gAlphaThreshold;
     };
 
     TE_PARAM_BLOCK_BEGIN(PerCameraParamDef)
@@ -76,11 +82,17 @@ namespace te
         TE_PARAM_BLOCK_ENTRY(Vector4, gEmissive)
         TE_PARAM_BLOCK_ENTRY(Vector4, gSpecular)
         TE_PARAM_BLOCK_ENTRY(INT32, gUseDiffuseMap)
+        TE_PARAM_BLOCK_ENTRY(INT32, gUseEmissiveMap)
         TE_PARAM_BLOCK_ENTRY(INT32, gUseNormalMap)
         TE_PARAM_BLOCK_ENTRY(INT32, gUseSpecularMap)
+        TE_PARAM_BLOCK_ENTRY(INT32, gUseBumpMap)
+        TE_PARAM_BLOCK_ENTRY(INT32, gUseTransparencyMap)
         TE_PARAM_BLOCK_ENTRY(float, gSpecularPower)
         TE_PARAM_BLOCK_ENTRY(float, gTransparency)
+        TE_PARAM_BLOCK_ENTRY(float, gIndexOfRefraction)
         TE_PARAM_BLOCK_ENTRY(float, gAbsorbance)
+        TE_PARAM_BLOCK_ENTRY(float, gBumpScale)
+        TE_PARAM_BLOCK_ENTRY(float, gAlphaThreshold)
     TE_PARAM_BLOCK_END
 
     extern PerMaterialParamDef gPerMaterialParamDef;

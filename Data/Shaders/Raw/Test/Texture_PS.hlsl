@@ -16,29 +16,27 @@ cbuffer PerMaterialBuffer : register(b1)
     float4 gEmissive;
     float4 gSpecular;
     uint   gUseDiffuseMap;
+    uint   gUseEmissiveMap;
     uint   gUseNormalMap;
     uint   gUseSpecularMap;
+    uint   gUseBumpMap;
+    uint   gUseTransparencyMap;
     float  gSpecularPower;
     float  gTransparency;
+    float  gIndexOfRefraction;
     float  gAbsorbance;
-};
-
-struct PS_INPUT
-{
-    float4 Position : SV_POSITION;
-    float4 WorldPosition : POSITION;
-    float3 Normal : NORMAL;
-    float3 Tangent : TANGENT;
-    float3 BiTangent : BINORMAL;
-    float4 Color : COLOR0;
-    float2 Texture : TEXCOORD0;
-    float3 ViewDirection: POSITION1;
+    float  gBumpScale;
+    float  gAlphaThreshold;
 };
 
 SamplerState AnisotropicSampler : register(s0);
+
 Texture2D DiffuseMap : register(t0);
-Texture2D NormalMap : register(t1);
-Texture2D SpecularMap : register(t2);
+Texture2D EmissiveMap : register(t1);
+Texture2D NormalMap : register(t2);
+Texture2D SpecularMap : register(t3);
+Texture2D BumpMap : register(t4);
+Texture2D TransparencyMap : register(t5);
 
 static const float4 LightColor = float4(1.0f, 0.9f, 0.8f, 0.6f);
 static const float3 LightDirection = float3(0.75f, -2.0f, -2.0f);
@@ -61,6 +59,11 @@ float4 main( PS_INPUT IN ) : SV_Target
         diffuse = DiffuseMap.Sample(AnisotropicSampler, IN.Texture).rgb;
     }
 
+    if(gUseEmissiveMap == 1)
+    {
+        // TODO
+    }
+
     if(gUseNormalMap == 1)
     {
         float3 bump = NormalMap.Sample(AnisotropicSampler, IN.Texture).xyz;
@@ -72,6 +75,16 @@ float4 main( PS_INPUT IN ) : SV_Target
     if(gUseSpecularMap == 1)
     {
         specular.rgb = SpecularMap.Sample(AnisotropicSampler, IN.Texture).xyz;
+    }
+
+    if(gUseBumpMap == 1)
+    {
+        // TODO
+    }
+
+    if(gUseTransparencyMap == 1)
+    {
+        // TODO
     }
 
     // Diffuse

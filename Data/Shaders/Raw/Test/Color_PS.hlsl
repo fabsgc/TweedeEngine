@@ -16,28 +16,18 @@ cbuffer PerMaterialBuffer : register(b1)
     float4 gEmissive;
     float4 gSpecular;
     uint   gUseDiffuseMap;
+    uint   gUseEmissiveMap;
     uint   gUseNormalMap;
     uint   gUseSpecularMap;
+    uint   gUseBumpMap;
+    uint   gUseTransparencyMap;
     float  gSpecularPower;
     float  gTransparency;
+    float  gIndexOfRefraction;
     float  gAbsorbance;
+    float  gBumpScale;
+    float  gAlphaThreshold;
 };
-
-struct PS_INPUT
-{
-    float4 Position : SV_POSITION;
-    float4 WorldPosition : POSITION;
-    float3 Normal : NORMAL;
-    float3 Tangent : TANGENT;
-    float3 BiTangent : BINORMAL;
-    float4 Color : COLOR0;
-    float2 Texture : TEXCOORD0;
-    float3 ViewDirection: POSITION1;
-};
-
-Texture2D DiffuseMap : register(t0);
-Texture2D NormalMap : register(t1);
-Texture2D SpecularMap : register(t2);
 
 static const float4 LightColor = float4(1.0f, 0.9f, 0.8f, 0.6f);
 static const float3 LightDirection = float3(0.75f, -2.0f, -2.0f);

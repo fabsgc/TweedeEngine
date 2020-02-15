@@ -40,11 +40,17 @@ namespace te
         gPerMaterialParamDef.gEmissive.Set(perMaterialBuffer, data.gEmissive);
         gPerMaterialParamDef.gSpecular.Set(perMaterialBuffer, data.gSpecular);
         gPerMaterialParamDef.gUseDiffuseMap.Set(perMaterialBuffer, data.gUseDiffuseMap);
+        gPerMaterialParamDef.gUseEmissiveMap.Set(perMaterialBuffer, data.gUseEmissiveMap);
         gPerMaterialParamDef.gUseNormalMap.Set(perMaterialBuffer, data.gUseNormalMap);
         gPerMaterialParamDef.gUseSpecularMap.Set(perMaterialBuffer, data.gUseSpecularMap);
+        gPerMaterialParamDef.gUseBumpMap.Set(perMaterialBuffer, data.gUseBumpMap);
+        gPerMaterialParamDef.gUseTransparencyMap.Set(perMaterialBuffer, data.gUseTransparencyMap);
         gPerMaterialParamDef.gSpecularPower.Set(perMaterialBuffer, data.gSpecularPower);
         gPerMaterialParamDef.gTransparency.Set(perMaterialBuffer, data.gTransparency);
+        gPerMaterialParamDef.gIndexOfRefraction.Set(perMaterialBuffer, data.gIndexOfRefraction);
         gPerMaterialParamDef.gAbsorbance.Set(perMaterialBuffer, data.gAbsorbance);
+        gPerMaterialParamDef.gBumpScale.Set(perMaterialBuffer, data.gBumpScale);
+        gPerMaterialParamDef.gAlphaThreshold.Set(perMaterialBuffer, data.gAlphaThreshold);
     }
 
     MaterialData PerObjectBuffer::ConvertMaterialProperties(const MaterialProperties& properties)
@@ -55,11 +61,17 @@ namespace te
         data.gEmissive = properties.Emissive.GetAsVector4();
         data.gSpecular = properties.Specular.GetAsVector4();
         data.gUseDiffuseMap = (UINT32)properties.UseDiffuseMap ? 1 : 0;
+        data.gUseEmissiveMap = (UINT32)properties.UseEmissiveMap ? 1 : 0;
         data.gUseNormalMap = (UINT32)properties.UseNormalMap ? 1 : 0;
         data.gUseSpecularMap = (UINT32)properties.UseSpecularMap ? 1 : 0;
+        data.gUseBumpMap = (UINT32)properties.UseBumpMap ? 1 : 0;
+        data.gUseTransparencyMap = (UINT32)properties.UseTransparencyMap ? 1 : 0;
         data.gSpecularPower = properties.SpecularPower;
         data.gTransparency = properties.Transparency;
+        data.gIndexOfRefraction = properties.IndexOfRefraction;
         data.gAbsorbance = properties.Absorbance;
+        data.gBumpScale = properties.BumpScale;
+        data.gAlphaThreshold = properties.AlphaThreshold;
         return data;
     }
 

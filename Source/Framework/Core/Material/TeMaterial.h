@@ -33,11 +33,17 @@ namespace te
         Color Specular = Color(1.0f, 1.0f, 1.0f, 0.5f);
         float SpecularPower = 32.0f;
         float Transparency = 1.0f;
+        float IndexOfRefraction = 1.0f;
         float Absorbance = 1.0f;
+        float BumpScale = 1.0f;
+        float AlphaThreshold = 0.0f;
 
         bool UseDiffuseMap = false;
+        bool UseEmissiveMap = false;
         bool UseNormalMap = false;
         bool UseSpecularMap = false;
+        bool UseBumpMap = false;
+        bool UseTransparencyMap = false;
     };
 
     /**

@@ -214,14 +214,25 @@ namespace te
         SHADER_DATA_PARAM_DESC gSpecular("gSpecular", "gSpecular", GPDT_FLOAT4);
         SHADER_DATA_PARAM_DESC gEmissive("gEmissive", "gEmissive", GPDT_FLOAT4);
         SHADER_DATA_PARAM_DESC gUseDiffuseMap("gUseDiffuseMap", "gUseDiffuseMap", GPDT_INT1);
-        SHADER_DATA_PARAM_DESC gUseSpecularMap("gUseSpecularMap", "gUseSpecularMap", GPDT_INT1);
+        SHADER_DATA_PARAM_DESC gUseEmissiveMap("gUseEmissiveMap", "gUseEmissiveMap", GPDT_INT1);
         SHADER_DATA_PARAM_DESC gUseNormalMap("gUseNormalMap", "gUseNormalMap", GPDT_INT1);
+        SHADER_DATA_PARAM_DESC gUseSpecularMap("gUseSpecularMap", "gUseSpecularMap", GPDT_INT1);
+        SHADER_DATA_PARAM_DESC gUseBumpMap("gUseBumpMap", "gUseBumpMap", GPDT_INT1);
+        SHADER_DATA_PARAM_DESC gUseTransparencyMap("gUseTransparencyMap", "gUseTransparencyMap", GPDT_INT1);
         SHADER_DATA_PARAM_DESC gSpecularPower("gSpecularPower", "gSpecularPower", GPDT_FLOAT1);
         SHADER_DATA_PARAM_DESC gTransparency("gTransparency", "gTransparency", GPDT_FLOAT1);
+        SHADER_DATA_PARAM_DESC gIndexOfRefraction("gIndexOfRefraction", "gIndexOfRefraction", GPDT_FLOAT1);
         SHADER_DATA_PARAM_DESC gAbsorbance("gAbsorbance", "gAbsorbance", GPDT_FLOAT1);
+        SHADER_DATA_PARAM_DESC gBumpScale("gBumScale", "gBumScale", GPDT_FLOAT1);
+        SHADER_DATA_PARAM_DESC gAlphaThreshold("gAlphaThreshold", "gAlphaThreshold", GPDT_FLOAT1);
 
         SHADER_OBJECT_PARAM_DESC anisotropicSamplerDesc("AnisotropicSampler", "AnisotropicSampler", GPOT_SAMPLER2D);
-        SHADER_OBJECT_PARAM_DESC colorTextureDesc("ColorTexture", "ColorTexture", GPOT_TEXTURE2D);
+        SHADER_OBJECT_PARAM_DESC diffuseMapDesc("DiffuseMap", "DiffuseMap", GPOT_TEXTURE2D);
+        SHADER_OBJECT_PARAM_DESC emissiveMapDesc("EmissiveMap", "EmissiveMap", GPOT_TEXTURE2D);
+        SHADER_OBJECT_PARAM_DESC normalMapDesc("NormalMap", "NormalMap", GPOT_TEXTURE2D);
+        SHADER_OBJECT_PARAM_DESC specularMapDesc("SpecularMap", "SpecularMap", GPOT_TEXTURE2D);
+        SHADER_OBJECT_PARAM_DESC bumpMapDesc("BumpMap", "BumpMap", GPOT_TEXTURE2D);
+        SHADER_OBJECT_PARAM_DESC transparencyMapDesc("TransparencyMap", "TransparencyMap", GPOT_TEXTURE2D);
 
         SHADER_DESC shaderDesc;
         shaderDesc.AddParameter(gViewDirDesc);
@@ -241,21 +252,32 @@ namespace te
         
         shaderDesc.AddParameter(gAmbient);
         shaderDesc.AddParameter(gDiffuse);
-        shaderDesc.AddParameter(gSpecular);
         shaderDesc.AddParameter(gEmissive);
+        shaderDesc.AddParameter(gSpecular);
         shaderDesc.AddParameter(gUseDiffuseMap);
-        shaderDesc.AddParameter(gUseSpecularMap);
+        shaderDesc.AddParameter(gUseEmissiveMap);
         shaderDesc.AddParameter(gUseNormalMap);
+        shaderDesc.AddParameter(gUseSpecularMap);
+        shaderDesc.AddParameter(gUseBumpMap);
+        shaderDesc.AddParameter(gUseTransparencyMap);
         shaderDesc.AddParameter(gSpecularPower);
         shaderDesc.AddParameter(gTransparency);
+        shaderDesc.AddParameter(gIndexOfRefraction);
         shaderDesc.AddParameter(gAbsorbance);
+        shaderDesc.AddParameter(gBumpScale);
+        shaderDesc.AddParameter(gAlphaThreshold);
 
         shaderDesc.AddParameter(gTime);
 
         shaderDesc.AddParameter(gMatWorldViewProj);
 
         shaderDesc.AddParameter(anisotropicSamplerDesc);
-        shaderDesc.AddParameter(colorTextureDesc);
+        shaderDesc.AddParameter(diffuseMapDesc);
+        shaderDesc.AddParameter(emissiveMapDesc);
+        shaderDesc.AddParameter(normalMapDesc);
+        shaderDesc.AddParameter(specularMapDesc);
+        shaderDesc.AddParameter(bumpMapDesc);
+        shaderDesc.AddParameter(transparencyMapDesc);
 
         shaderDesc.Techniques.push_back(_technique.GetInternalPtr());
 

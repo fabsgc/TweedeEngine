@@ -15,8 +15,8 @@ namespace te
         : _type(desc.Type)
         , _language(desc.Language)
         , _entryPoint(desc.EntryPoint)
-        , _includePath(desc.IncludePath)
         , _source(desc.Source)
+        , _includePath(desc.IncludePath)
         , _needsAdjacencyInfo(desc.RequiresAdjacency)
         , _bytecode(desc.Bytecode)
     {
