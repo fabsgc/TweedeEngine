@@ -1,10 +1,5 @@
 #define STANDARD_FORWARD_MAX_INSTANCED_BLOCK 128
 
-float2 FlipUV(float2 coord)
-{
-    return float2(coord.x - 1.0f, coord.y);
-}
-
 struct PerInstanceData
 {
     matrix gMatWorld;
@@ -49,3 +44,45 @@ struct PS_INPUT
     float2 Texture : TEXCOORD0;
     float3 ViewDirection: POSITION1;
 };
+
+float2 FlipUV(float2 coord)
+{
+    return float2(coord.x - 1.0f, coord.y);
+}
+
+float3 ExpandNormal( float3 n )
+{
+    return n * 2.0f - 1.0f;
+}
+ 
+float3 DoNormalMapping( float3x3 TBN, Texture2D tex, sampler s, float2 uv )
+{
+    float3 normal = tex.Sample( s, uv ).xyz;
+    normal = ExpandNormal( normal );
+ 
+    // Transform normal from tangent space to view space.
+    normal = mul( normal, TBN );
+    return normalize( normal );
+}
+
+float3 DoBumpMapping( float3x3 TBN, Texture2D tex, sampler s, float2 uv, float bumpScale )
+{
+    // Sample the heightmap at the current texture coordinate.
+    float height = tex.Sample( s, uv ).r * bumpScale;
+    // Sample the heightmap in the U texture coordinate direction.
+    float heightU = tex.Sample( s, uv, int2( 1, 0 ) ).r * bumpScale;
+    // Sample the heightmap in the V texture coordinate direction.
+    float heightV = tex.Sample( s, uv, int2( 0, 1 ) ).r * bumpScale;
+ 
+    float3 p = { 0, 0, height };
+    float3 pU = { 0.2, 0, heightU };
+    float3 pV = { 0, 0.2, heightV };
+ 
+    // normal = tangent x bitangent
+    float3 normal = cross( normalize(pU - p), normalize(pV - p) );
+ 
+    // Transform normal from tangent space to view space.
+    normal = mul( normal, TBN );
+ 
+    return normal;
+}

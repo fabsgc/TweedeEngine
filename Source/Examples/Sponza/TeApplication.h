@@ -43,12 +43,20 @@ namespace te
         {
             String Name;
             String Diffuse;
+            String Emissive;
             String Normal;
             String Specular;
+            String Bump;
+            String Transparency;
+            float  Opacity;
+            float  AlphaTreshold;
 
             HTexture DiffuseTexture;
+            HTexture EmissiveTexture;
             HTexture NormalTexture;
             HTexture SpecularTexture;
+            HTexture BumpTexture;
+            HTexture TransparencyTexture;
 
             HMaterial MaterialElement;
 
@@ -64,7 +72,8 @@ namespace te
     protected:
         Vector<SponzaMaterialData> _materials;
 
-        HShader _shader;
+        HShader _shaderOpaque;
+        HShader _shaderTransparent;
 
         HCamera _sceneCamera;
         HCameraFlyer _sceneCameraFlyer;

@@ -50,8 +50,18 @@ float4 main( PS_INPUT IN ) : SV_Target
     float3 diffuse   = gDiffuse.rgb * gDiffuse.a;
     float3 emissive  = gEmissive.rgb * gEmissive.a;
     float3 specular  = gSpecular.rgb * gSpecular.a;
-
     float3 normal = IN.Normal;
+    float alpha = gTransparency;
+
+    if(gUseTransparencyMap == 1)
+    {
+        alpha = TransparencyMap.Sample( AnisotropicSampler, IN.Texture ).r;
+    }
+
+    if(alpha <= gAlphaThreshold)
+    {
+        discard;
+    }
 
     if(gUseDiffuseMap == 1)
     {
@@ -61,15 +71,13 @@ float4 main( PS_INPUT IN ) : SV_Target
 
     if(gUseEmissiveMap == 1)
     {
-        // TODO
+        emissive = emissive * EmissiveMap.Sample( AnisotropicSampler, IN.Texture ).rgb;
     }
 
     if(gUseNormalMap == 1)
     {
-        float3 bump = NormalMap.Sample(AnisotropicSampler, IN.Texture).xyz;
-        bump = normalize(bump * 2.0 - 1.0);
-        normal =  (bump.x * IN.Tangent) + (bump.y * IN.BiTangent) + (bump.z * IN.Normal);
-        normal = normalize(normal);
+        float3x3 TBN = float3x3(IN.Tangent.xyz, IN.BiTangent.xyz, IN.Normal.xyz);
+        normal = DoNormalMapping(TBN, NormalMap, AnisotropicSampler, IN.Texture);
     }
 
     if(gUseSpecularMap == 1)
@@ -79,12 +87,8 @@ float4 main( PS_INPUT IN ) : SV_Target
 
     if(gUseBumpMap == 1)
     {
-        // TODO
-    }
-
-    if(gUseTransparencyMap == 1)
-    {
-        // TODO
+        float3x3 TBN = float3x3(IN.Tangent.xyz, IN.BiTangent.xyz, IN.Normal.xyz);
+        normal = DoBumpMapping(TBN, BumpMap, AnisotropicSampler, IN.Texture, 1.0f);
     }
 
     // Diffuse
@@ -97,5 +101,6 @@ float4 main( PS_INPUT IN ) : SV_Target
     specular = (specFactor * specular.rgb);  
 
     outColor.rgb = ambient + diffuse + specular + emissive;
+    outColor.a = alpha;
     return outColor;
 }
