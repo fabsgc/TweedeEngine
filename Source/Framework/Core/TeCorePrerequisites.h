@@ -202,6 +202,8 @@ namespace te
     class CRenderable;
     class CLight;
     class CSkybox;
+
+    class BuiltinResources;
 }
 
 #include "Utility/TeNonCopyable.h"

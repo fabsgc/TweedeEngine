@@ -56,26 +56,15 @@ namespace te
         };
 
         void InitInputHandling();
-
         void InitShader();
-
         void InitMaterials();
-
         void InitMesh();
-
         void InitScene();
 
     protected:
         Vector<SponzaMaterialData> _materials;
 
-        HPass _pass;
-        HTechnique _technique;
         HShader _shader;
-
-        SPtr<BlendState> _blendState;
-        SPtr<RasterizerState> _rasterizerState;
-        SPtr<DepthStencilState> _depthStencilState;
-        SPtr<SamplerState> _samplerState;
 
         HCamera _sceneCamera;
         HCameraFlyer _sceneCameraFlyer;

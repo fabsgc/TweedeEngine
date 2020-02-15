@@ -4,9 +4,6 @@
 #include "Utility/TeTime.h"
 #include "Utility/TeDynLibManager.h"
 #include "Utility/TeDynLib.h"
-#include "Utility/TeFileStream.h"
-
-#include "Threading/TeThreading.h"
 
 #include "Manager/TePluginManager.h"
 #include "Manager/TeRenderAPIManager.h"
@@ -14,48 +11,18 @@
 #include "Resources/TeResourceManager.h"
 #include "RenderAPI/TeRenderStateManager.h"
 #include "RenderAPI/TeGpuProgramManager.h"
+#include "Renderer/TeParamBlocks.h"
+#include "Resources/TeBuiltinResources.h"
+#include "Scene/TeSceneManager.h"
+#include "Scene/TeGameObjectManager.h"
+#include "CoreUtility/TeCoreObjectManager.h"
 
 #include "Input/TeInput.h"
 #include "Input/TeVirtualInput.h"
 
 #include "RenderAPI/TeRenderAPI.h"
-#include "RenderAPI/TeCommonTypes.h"
-#include "RenderAPI/TeRenderTexture.h"
-#include "RenderAPI/TeGpuProgram.h"
-#include "RenderAPI/TeVertexBuffer.h"
-#include "RenderAPI/TeIndexBuffer.h"
-#include "RenderAPI/TeVertexDataDesc.h"
-#include "RenderAPI/TeGpuParams.h"
-#include "RenderAPI/TeGpuParamBlockBuffer.h"
-
 #include "Importer/TeImporter.h"
-#include "Importer/TeMeshImportOptions.h"
-#include "Importer/TeTextureImportOptions.h"
-#include "Importer/TeShaderImportOptions.h"
-
 #include "Renderer/TeRenderer.h"
-#include "Renderer/TeCamera.h"
-
-#include "Scene/TeSceneManager.h"
-#include "Scene/TeGameObjectManager.h"
-
-#include "CoreUtility/TeCoreObjectManager.h"
-
-#include "Mesh/TeMesh.h"
-#include "Mesh/TeMeshData.h"
-#include "Mesh/TeMeshUtility.h"
-
-#include "Scene/TeSceneObject.h"
-#include "Components/TeCCamera.h"
-#include "Components/TeCRenderable.h"
-#include "Components/TeCLight.h"
-#include "Components/TeCSkybox.h"
-#include "Components/TeCCameraFlyer.h"
-
-#include "Material/TeMaterial.h"
-#include "Material/TeShader.h"
-#include "Material/TeTechnique.h"
-#include "Material/TePass.h"
 
 namespace te
 {
@@ -104,6 +71,7 @@ namespace te
         Input::StartUp();
         VirtualInput::StartUp();
         Importer::StartUp(); 
+        BuiltinResources::StartUp();
 
         for (auto& importerName : _startUpDesc.Importers)
         {
@@ -120,6 +88,7 @@ namespace te
         _window = nullptr;
         _renderer = nullptr;
 
+        BuiltinResources::ShutDown();
         Importer::ShutDown();
         VirtualInput::ShutDown();
         Input::ShutDown();

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Prerequisites/TePrerequisitesUtility.h"
+#include "Utility/TeNonCopyable.h"
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32 && TE_COMPILER == TE_COMPILER_GNUC
 #   ifndef TE_MODULE_STATIC_MEMBER
@@ -101,7 +102,7 @@ namespace te
      * and shut down before and after use.
      */
     template <class T>
-    class Module
+    class Module : public NonCopyable
     {
     public:
 #if !(TE_PLATFORM == TE_PLATFORM_WIN32 && TE_COMPILER == TE_COMPILER_GNUC)

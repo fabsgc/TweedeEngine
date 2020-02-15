@@ -1,9 +1,7 @@
 #include "TeApplication.h"
 
-#include "Error/TeConsole.h"
-#include "Utility/TeFileStream.h"
-
 #include "Resources/TeResourceManager.h"
+#include "Resources/TeBuiltinResources.h"
 
 #include "Input/TeInput.h"
 #include "Input/TeVirtualInput.h"
@@ -11,7 +9,6 @@
 #include "Importer/TeImporter.h"
 #include "Importer/TeMeshImportOptions.h"
 #include "Importer/TeTextureImportOptions.h"
-#include "Importer/TeShaderImportOptions.h"
 
 #include "Renderer/TeRenderer.h"
 #include "Renderer/TeCamera.h"
@@ -29,23 +26,11 @@
 
 #include "Material/TeMaterial.h"
 #include "Material/TeShader.h"
-#include "Material/TeTechnique.h"
-#include "Material/TePass.h"
 
 #include "Utility/TeTime.h"
 
 namespace te
 {
-    struct PerInstanceData
-    {
-        Matrix4 gMatWorld;
-        Matrix4 gMatInvWorld;
-        Matrix4 gMatWorldNoScale;
-        Matrix4 gMatInvWorldNoScale;
-        Matrix4 gMatPrevWorld;
-        UINT32  gLayer;
-    };
-
     TE_MODULE_STATIC_MEMBER(Application)
 
     void Application::PostStartUp()
@@ -109,180 +94,7 @@ namespace te
         // ######################################################
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
-        // ######################################################
-        GPU_PROGRAM_DESC vertexShaderProgramDesc;
-        {
-            FileStream shaderFile("Data/Shaders/Raw/Test/Texture_VS.hlsl");
-
-            vertexShaderProgramDesc.Type = GPT_VERTEX_PROGRAM;
-            vertexShaderProgramDesc.EntryPoint = "main";
-            vertexShaderProgramDesc.Language = "hlsl";
-            vertexShaderProgramDesc.IncludePath = "Data/Shaders/Raw/Test/";
-            vertexShaderProgramDesc.Source = shaderFile.GetAsString();
-        }
-        // ######################################################
-
-        // ######################################################
-        GPU_PROGRAM_DESC pixelShaderProgramDesc;
-        {
-            FileStream shaderFile("Data/Shaders/Raw/Test/Texture_PS.hlsl");
-
-            pixelShaderProgramDesc.Type = GPT_PIXEL_PROGRAM;
-            pixelShaderProgramDesc.EntryPoint = "main";
-            pixelShaderProgramDesc.Language = "hlsl";
-            pixelShaderProgramDesc.IncludePath = "Data/Shaders/Raw/Test/";
-            pixelShaderProgramDesc.Source = shaderFile.GetAsString();
-        }
-        // ######################################################
-
-        // ######################################################
-        BLEND_STATE_DESC blendDesc;
-
-        RASTERIZER_STATE_DESC rastDesc;
-        rastDesc.polygonMode = PM_SOLID;
-        rastDesc.cullMode = CULL_CLOCKWISE;
-        rastDesc.multisampleEnable = true;
-        rastDesc.depthClipEnable = true;
-
-        DEPTH_STENCIL_STATE_DESC depthDesc;
-        depthDesc.DepthReadEnable = true;
-        depthDesc.DepthWriteEnable = true;
-        depthDesc.StencilEnable = true;
-
-        depthDesc.FrontStencilFailOp = SOP_KEEP;
-        depthDesc.FrontStencilZFailOp = SOP_INCREMENT_WRAP;
-        depthDesc.FrontStencilPassOp = SOP_KEEP;
-        depthDesc.FrontStencilComparisonFunc = CMPF_ALWAYS_PASS;
-
-        depthDesc.BackStencilFailOp = SOP_KEEP;
-        depthDesc.BackStencilZFailOp = SOP_DECREMENT_WRAP;
-        depthDesc.BackStencilPassOp = SOP_KEEP;
-        depthDesc.BackStencilComparisonFunc = CMPF_ALWAYS_PASS;
-
-        SAMPLER_STATE_DESC samplerDesc;
-        samplerDesc.AddressMode = UVWAddressingMode();
-        samplerDesc.MinFilter = FO_ANISOTROPIC;
-        samplerDesc.MagFilter = FO_ANISOTROPIC;
-        samplerDesc.MipFilter = FO_ANISOTROPIC;
-        samplerDesc.MaxAnisotropy = 8;
-
-        SPtr<BlendState> blendState = BlendState::Create(blendDesc);
-        SPtr<RasterizerState> rasterizerState = RasterizerState::Create(rastDesc);
-        SPtr<DepthStencilState> depthStencilState = DepthStencilState::Create(depthDesc);
-        SPtr<SamplerState> samplerState = SamplerState::Create(samplerDesc);
-
-        PIPELINE_STATE_DESC pipeDesc;
-        pipeDesc.blendState = blendState;
-        pipeDesc.rasterizerState = rasterizerState;
-        pipeDesc.depthStencilState = depthStencilState;
-        // ######################################################
-
-        // ######################################################
-        PASS_DESC passDesc;
-        passDesc.BlendStateDesc = blendDesc;
-        passDesc.DepthStencilStateDesc = depthDesc;
-        passDesc.RasterizerStateDesc = rastDesc;
-        passDesc.VertexProgramDesc = vertexShaderProgramDesc;
-        passDesc.PixelProgramDesc = pixelShaderProgramDesc;
-
-        _pass = Pass::Create(passDesc);
-        _technique = Technique::Create("hlsl", { _pass.GetInternalPtr() });
-        _technique->Compile();
-
-        SHADER_DATA_PARAM_DESC gViewDirDesc("gViewDir", "gViewDir", GPDT_FLOAT3);
-        SHADER_DATA_PARAM_DESC gViewOriginDesc("gViewOrigin", "gViewOrigin", GPDT_FLOAT3);
-        SHADER_DATA_PARAM_DESC gMatViewProjDesc("gMatViewProj", "gMatViewProj", GPDT_MATRIX_4X4);
-        SHADER_DATA_PARAM_DESC gMatViewDesc("gMatView", "gMatView", GPDT_MATRIX_4X4);
-        SHADER_DATA_PARAM_DESC gMatProjDesc("gMatProj", "gMatProj", GPDT_MATRIX_4X4);
-
-        SHADER_DATA_PARAM_DESC gMatWorldDesc("gMatWorld", "gMatWorld", GPDT_MATRIX_4X4);
-        SHADER_DATA_PARAM_DESC gMatInvWorldDesc("gMatInvWorld", "gMatInvWorld", GPDT_MATRIX_4X4);
-        SHADER_DATA_PARAM_DESC gMatWorldNoScaleDesc("gMatWorldNoScale", "gMatWorldNoScale", GPDT_MATRIX_4X4);
-        SHADER_DATA_PARAM_DESC gMatInvWorldNoScaleDesc("gMatInvWorldNoScale", "gMatInvWorldNoScale", GPDT_MATRIX_4X4);
-        SHADER_DATA_PARAM_DESC gMatPrevWorldDesc("gMatPrevWorld", "gMatPrevWorld", GPDT_MATRIX_4X4);
-        SHADER_DATA_PARAM_DESC gLayerDesc("gLayer", "gLayer", GPDT_INT1);
-
-        SHADER_DATA_PARAM_DESC gTime("gTime", "gTime", GPDT_FLOAT1);
-
-        SHADER_DATA_PARAM_DESC gMatWorldViewProj("gMatWorldViewProj", "gMatWorldViewProj", GPDT_MATRIX_4X4);
-
-        SHADER_DATA_PARAM_DESC gInstanceData("gInstanceData", "gInstanceData", GPDT_STRUCT);
-        gInstanceData.ElementSize = sizeof(PerInstanceData);
-
-        SHADER_DATA_PARAM_DESC gAmbient("gAmbient", "gAmbient", GPDT_FLOAT4);
-        SHADER_DATA_PARAM_DESC gDiffuse("gDiffuse", "gDiffuse", GPDT_FLOAT4);
-        SHADER_DATA_PARAM_DESC gSpecular("gSpecular", "gSpecular", GPDT_FLOAT4);
-        SHADER_DATA_PARAM_DESC gEmissive("gEmissive", "gEmissive", GPDT_FLOAT4);
-        SHADER_DATA_PARAM_DESC gUseDiffuseMap("gUseDiffuseMap", "gUseDiffuseMap", GPDT_INT1);
-        SHADER_DATA_PARAM_DESC gUseEmissiveMap("gUseEmissiveMap", "gUseEmissiveMap", GPDT_INT1);
-        SHADER_DATA_PARAM_DESC gUseNormalMap("gUseNormalMap", "gUseNormalMap", GPDT_INT1);
-        SHADER_DATA_PARAM_DESC gUseSpecularMap("gUseSpecularMap", "gUseSpecularMap", GPDT_INT1);
-        SHADER_DATA_PARAM_DESC gUseBumpMap("gUseBumpMap", "gUseBumpMap", GPDT_INT1);
-        SHADER_DATA_PARAM_DESC gUseTransparencyMap("gUseTransparencyMap", "gUseTransparencyMap", GPDT_INT1);
-        SHADER_DATA_PARAM_DESC gSpecularPower("gSpecularPower", "gSpecularPower", GPDT_FLOAT1);
-        SHADER_DATA_PARAM_DESC gTransparency("gTransparency", "gTransparency", GPDT_FLOAT1);
-        SHADER_DATA_PARAM_DESC gIndexOfRefraction("gIndexOfRefraction", "gIndexOfRefraction", GPDT_FLOAT1);
-        SHADER_DATA_PARAM_DESC gAbsorbance("gAbsorbance", "gAbsorbance", GPDT_FLOAT1);
-        SHADER_DATA_PARAM_DESC gBumpScale("gBumScale", "gBumScale", GPDT_FLOAT1);
-        SHADER_DATA_PARAM_DESC gAlphaThreshold("gAlphaThreshold", "gAlphaThreshold", GPDT_FLOAT1);
-
-        SHADER_OBJECT_PARAM_DESC anisotropicSamplerDesc("AnisotropicSampler", "AnisotropicSampler", GPOT_SAMPLER2D);
-        SHADER_OBJECT_PARAM_DESC diffuseMapDesc("DiffuseMap", "DiffuseMap", GPOT_TEXTURE2D);
-        SHADER_OBJECT_PARAM_DESC emissiveMapDesc("EmissiveMap", "EmissiveMap", GPOT_TEXTURE2D);
-        SHADER_OBJECT_PARAM_DESC normalMapDesc("NormalMap", "NormalMap", GPOT_TEXTURE2D);
-        SHADER_OBJECT_PARAM_DESC specularMapDesc("SpecularMap", "SpecularMap", GPOT_TEXTURE2D);
-        SHADER_OBJECT_PARAM_DESC bumpMapDesc("BumpMap", "BumpMap", GPOT_TEXTURE2D);
-        SHADER_OBJECT_PARAM_DESC transparencyMapDesc("TransparencyMap", "TransparencyMap", GPOT_TEXTURE2D);
-
-        SHADER_DESC shaderDesc;
-        shaderDesc.AddParameter(gViewDirDesc);
-        shaderDesc.AddParameter(gViewOriginDesc);
-        shaderDesc.AddParameter(gMatViewProjDesc);
-        shaderDesc.AddParameter(gMatViewDesc);
-        shaderDesc.AddParameter(gMatProjDesc);
-
-        shaderDesc.AddParameter(gInstanceData);
-
-        shaderDesc.AddParameter(gMatWorldDesc);
-        shaderDesc.AddParameter(gMatInvWorldDesc);
-        shaderDesc.AddParameter(gMatWorldNoScaleDesc);
-        shaderDesc.AddParameter(gMatInvWorldNoScaleDesc);
-        shaderDesc.AddParameter(gMatPrevWorldDesc);
-        shaderDesc.AddParameter(gLayerDesc);
-        
-        shaderDesc.AddParameter(gAmbient);
-        shaderDesc.AddParameter(gDiffuse);
-        shaderDesc.AddParameter(gEmissive);
-        shaderDesc.AddParameter(gSpecular);
-        shaderDesc.AddParameter(gUseDiffuseMap);
-        shaderDesc.AddParameter(gUseEmissiveMap);
-        shaderDesc.AddParameter(gUseNormalMap);
-        shaderDesc.AddParameter(gUseSpecularMap);
-        shaderDesc.AddParameter(gUseBumpMap);
-        shaderDesc.AddParameter(gUseTransparencyMap);
-        shaderDesc.AddParameter(gSpecularPower);
-        shaderDesc.AddParameter(gTransparency);
-        shaderDesc.AddParameter(gIndexOfRefraction);
-        shaderDesc.AddParameter(gAbsorbance);
-        shaderDesc.AddParameter(gBumpScale);
-        shaderDesc.AddParameter(gAlphaThreshold);
-
-        shaderDesc.AddParameter(gTime);
-
-        shaderDesc.AddParameter(gMatWorldViewProj);
-
-        shaderDesc.AddParameter(anisotropicSamplerDesc);
-        shaderDesc.AddParameter(diffuseMapDesc);
-        shaderDesc.AddParameter(emissiveMapDesc);
-        shaderDesc.AddParameter(normalMapDesc);
-        shaderDesc.AddParameter(specularMapDesc);
-        shaderDesc.AddParameter(bumpMapDesc);
-        shaderDesc.AddParameter(transparencyMapDesc);
-
-        shaderDesc.Techniques.push_back(_technique.GetInternalPtr());
-
-        _shader = Shader::Create("Texture", shaderDesc);
-        _shader->SetName("Shader");
+        HShader _shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque);
 
         MaterialProperties properties;
         properties.UseDiffuseMap = true;
@@ -290,13 +102,13 @@ namespace te
         _materialCube = Material::Create(_shader);
         _materialCube->SetName("Material");
         _materialCube->SetTexture("DiffuseMap", _loadedTextureCube);
-        _materialCube->SetSamplerState("AnisotropicSampler", samplerState);
+        _materialCube->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetAnisotropicSamplerState());
         _materialCube->SetProperties(properties);
 
         _materialMonkey = Material::Create(_shader);
         _materialMonkey->SetName("Material");
         _materialMonkey->SetTexture("DiffuseMap", _loadedTextureMonkey);
-        _materialMonkey->SetSamplerState("AnisotropicSampler", samplerState);
+        _materialMonkey->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetAnisotropicSamplerState());
         _materialMonkey->SetProperties(properties);
 
         // ######################################################
@@ -377,12 +189,7 @@ namespace te
     }
 
     void Application::PreShutDown()
-    {
-#if TE_PLATFORM == TE_PLATFORM_WIN32
-        _pass = nullptr;
-        _technique = nullptr;
-#endif
-    }
+    { }
 
     void Application::PreUpdate()
     {

@@ -46,17 +46,8 @@ namespace te
 
         HTexture _loadedTextureCube;
         HTexture _loadedTextureMonkey;
-
         HTexture _loadedCubemapTexture;
 
-        HRenderable _renderableCube;
-        HLight _light;
-        HSkybox _skybox;
-
-        HPass _pass;
-        HTechnique _technique;
-
-        HShader _shader;
         HMaterial _materialCube;
         HMaterial _materialMonkey;
 
@@ -64,6 +55,10 @@ namespace te
         HSceneObject _sceneRenderableSO;
         HSceneObject _sceneLightSO;
         HSceneObject _sceneSkyboxSO;
+
+        HRenderable _renderableCube;
+        HLight _light;
+        HSkybox _skybox;
 
         Vector<HSceneObject> _sceneRenderablesMonkeySO;
     };

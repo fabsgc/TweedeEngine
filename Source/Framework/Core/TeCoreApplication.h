@@ -3,7 +3,6 @@
 #include "TeCorePrerequisites.h"
 #include "RenderAPI/TeRenderWindow.h"
 #include "Utility/TeModule.h"
-#include "Renderer/TeParamBlocks.h"
 
 namespace te
 {

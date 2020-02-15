@@ -268,12 +268,14 @@ set (TE_CORE_INC_RESOURCE
     "Core/Resources/TeResourceManager.h"
     "Core/Resources/TeResourceHandle.h"
     "Core/Resources/TeGpuResourceData.h"
+    "Core/Resources/TeBuiltinResources.h"
 )
 set (TE_CORE_SRC_RESOURCE
     "Core/Resources/TeResource.cpp"
     "Core/Resources/TeResourceManager.cpp"
     "Core/Resources/TeResourceHandle.cpp"
     "Core/Resources/TeGpuResourceData.cpp"
+    "Core/Resources/TeBuiltinResources.cpp"
 )
 
 if (WIN32)
