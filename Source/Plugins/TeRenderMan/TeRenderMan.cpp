@@ -193,7 +193,6 @@ namespace te
     void RenderMan::RenderSingleViewInternal(const RendererViewGroup& viewGroup, RendererView& view, const FrameInfo& frameInfo)
     {
         const SceneInfo& sceneInfo = _scene->GetSceneInfo();
-        auto& viewProps = view.GetProperties();
 
         SPtr<GpuParamBlockBuffer> perCameraBuffer = view.GetPerViewBuffer();
         //perCameraBuffer->FlushToGPU(); TODO

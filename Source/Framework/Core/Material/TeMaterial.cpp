@@ -103,7 +103,7 @@ namespace te
         if (techniqueIdx >= (UINT32)_techniques.size())
             return nullptr;
 
-        if (passIdx < 0 || passIdx >= _techniques[techniqueIdx]->GetNumPasses())
+        if (passIdx >= _techniques[techniqueIdx]->GetNumPasses())
             return nullptr;
 
         return _techniques[techniqueIdx]->GetPass(passIdx);

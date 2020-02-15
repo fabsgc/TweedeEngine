@@ -375,7 +375,6 @@ namespace te
 
     void RendererScene::SetMeshData(RendererRenderable* rendererRenderable, Renderable* renderable)
     {
-        UINT32 dirtyFlag = renderable->GetCoreDirtyFlags();
         SPtr<Mesh> mesh = renderable->GetMesh();
         if (mesh != nullptr)
         {
