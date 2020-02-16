@@ -2,6 +2,7 @@
 
 #include "TeCorePrerequisites.h"
 #include "TeCommonTypes.h"
+#include "Utility/TeNonCopyable.h"
 
 namespace te
 {
@@ -39,7 +40,7 @@ namespace te
      *
      * They also allow you to re-purpose a texture (for example make a render target a bindable texture).
      */
-    class TE_CORE_EXPORT TextureView
+    class TE_CORE_EXPORT TextureView : public NonCopyable
     {
     public:
         class HashFunction

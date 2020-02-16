@@ -196,7 +196,90 @@ namespace te
 
     void RCNodeForwardPass::Render(const RenderCompositorNodeInputs& inputs)
     { 
+        // Allocate necessary textures & targets
+        GpuResourcePool& resPool = gGpuResourcePool();
         const RendererViewProperties& viewProps = inputs.View.GetProperties();
+
+        const UINT32 width = viewProps.Target.ViewRect.width;
+        const UINT32 height = viewProps.Target.ViewRect.height;
+        const UINT32 numSamples = viewProps.Target.NumSamples;
+
+        bool needsVelocity = inputs.View.RequiresVelocityWrites();
+
+        // Note: Consider customizable formats. e.g. for testing if quality can be improved with higher precision normals.
+        SceneTex = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA8, width, height, TU_RENDERTARGET,
+            numSamples, true));
+        AlbedoTex = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA8, width, height, TU_RENDERTARGET,
+            numSamples, true));
+        NormalTex = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA8, width, height, TU_RENDERTARGET,
+            numSamples, true));
+        EmissiveTex = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA8, width, height, TU_RENDERTARGET,
+            numSamples, true));
+
+        if (needsVelocity)
+        {
+            VelocityTex = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RG16S, width, height, TU_RENDERTARGET,
+                numSamples, false));
+        }
+
+        DepthTex = gGpuResourcePool().Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_D32_S8X24, width, height, TU_DEPTHSTENCIL,
+            numSamples, false));
+
+        bool rebuildRT = false;
+        if (RenderTargetTex != nullptr)
+        {
+            UINT32 targetIdx = 0;
+            // TODO might lead to a potential bug here
+        }
+        else
+            rebuildRT = true;
+
+        if (RenderTargetTex == nullptr || rebuildRT)
+        {
+            TE_PRINT("rebuilt")
+            UINT32 targetIdx = 0;
+
+            RENDER_TEXTURE_DESC gbufferDesc;
+            gbufferDesc.ColorSurfaces[targetIdx].Tex = SceneTex->Tex;
+            gbufferDesc.ColorSurfaces[targetIdx].Face = 0;
+            gbufferDesc.ColorSurfaces[targetIdx].NumFaces = 1;
+            gbufferDesc.ColorSurfaces[targetIdx].MipLevel = 0;
+            targetIdx++;
+
+            gbufferDesc.ColorSurfaces[targetIdx].Tex = AlbedoTex->Tex;
+            gbufferDesc.ColorSurfaces[targetIdx].Face = 0;
+            gbufferDesc.ColorSurfaces[targetIdx].NumFaces = 1;
+            gbufferDesc.ColorSurfaces[targetIdx].MipLevel = 0;
+            targetIdx++;
+
+            gbufferDesc.ColorSurfaces[targetIdx].Tex = NormalTex->Tex;
+            gbufferDesc.ColorSurfaces[targetIdx].Face = 0;
+            gbufferDesc.ColorSurfaces[targetIdx].NumFaces = 1;
+            gbufferDesc.ColorSurfaces[targetIdx].MipLevel = 0;
+            targetIdx++;
+
+            gbufferDesc.ColorSurfaces[targetIdx].Tex = EmissiveTex->Tex;
+            gbufferDesc.ColorSurfaces[targetIdx].Face = 0;
+            gbufferDesc.ColorSurfaces[targetIdx].NumFaces = 1;
+            gbufferDesc.ColorSurfaces[targetIdx].MipLevel = 0;
+            targetIdx++;
+
+            if (needsVelocity)
+            {
+                gbufferDesc.ColorSurfaces[targetIdx].Tex = VelocityTex->Tex;
+                gbufferDesc.ColorSurfaces[targetIdx].Face = 0;
+                gbufferDesc.ColorSurfaces[targetIdx].NumFaces = 1;
+                gbufferDesc.ColorSurfaces[targetIdx].MipLevel = 0;
+                targetIdx++;
+            }
+
+            gbufferDesc.DepthStencilSurface.Tex = DepthTex->Tex;
+            gbufferDesc.DepthStencilSurface.Face = 0;
+            gbufferDesc.DepthStencilSurface.MipLevel = 0;
+
+            RenderTargetTex = RenderTexture::Create(gbufferDesc);
+        }
+
         const VisibilityInfo& visibility = inputs.View.GetVisibilityInfo();
         const auto numRenderables = (UINT32)inputs.Scene.Renderables.size();
         for (UINT32 i = 0; i < numRenderables; i++)

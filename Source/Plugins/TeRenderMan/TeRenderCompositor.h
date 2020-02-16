@@ -1,6 +1,8 @@
 #pragma once
 
 #include "TeRenderManPrerequisites.h"
+#include "Renderer/TeGpuResourcePool.h"
+#include "RenderAPI/TeRenderTexture.h"
 
 namespace te
 {
@@ -170,6 +172,16 @@ namespace te
     class RCNodeForwardPass : public RenderCompositorNode
     {
     public:
+        // Outputs
+        SPtr<PooledRenderTexture> SceneTex;
+        SPtr<PooledRenderTexture> AlbedoTex;
+        SPtr<PooledRenderTexture> DepthTex;
+        SPtr<PooledRenderTexture> NormalTex;
+        SPtr<PooledRenderTexture> VelocityTex;
+        SPtr<PooledRenderTexture> EmissiveTex;
+
+        SPtr<RenderTexture> RenderTargetTex;
+
         static String GetNodeId() { return "ForwardPass"; }
         static Vector<String> GetDependencies(const RendererView& view);
     protected:

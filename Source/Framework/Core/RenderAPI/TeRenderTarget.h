@@ -4,6 +4,7 @@
 #include "RenderAPI/TeVideoMode.h"
 #include "Utility/TeEvent.h"
 #include "CoreUtility/TeCoreObject.h"
+#include "Utility/TeNonCopyable.h"
 
 namespace te
 {
@@ -75,7 +76,7 @@ namespace te
     /**
      * Provides access to internal render target implementation
      */
-    class TE_CORE_EXPORT RenderTarget : public CoreObject
+    class TE_CORE_EXPORT RenderTarget : public CoreObject, public NonCopyable
     {
     public:
         /** Frame buffer type when double-buffering is used. */

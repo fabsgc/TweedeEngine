@@ -20,6 +20,7 @@ cbuffer PerMaterialBuffer : register(b1)
     uint   gUseNormalMap;
     uint   gUseSpecularMap;
     uint   gUseBumpMap;
+    uint   gUseParallaxMap;
     uint   gUseTransparencyMap;
     float  gSpecularPower;
     float  gTransparency;

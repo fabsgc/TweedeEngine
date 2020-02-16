@@ -1,11 +1,12 @@
 #include "TeRenderMan.h"
-#include "Manager/TeRendererManager.h"
 #include "RenderAPI/TeRenderAPI.h"
-#include "Renderer/TeCamera.h"
-#include "Utility/TeTime.h"
+#include "Manager/TeRendererManager.h"
 #include "CoreUtility/TeCoreObjectManager.h"
-#include "TeRenderCompositor.h"
 #include "Renderer/TeRendererUtility.h"
+#include "Renderer/TeGpuResourcePool.h"
+#include "Renderer/TeCamera.h"
+#include "TeRenderCompositor.h"
+#include "Utility/TeTime.h"
 
 namespace te
 {
@@ -21,6 +22,7 @@ namespace te
     {
         Renderer::Initialize();
         RendererUtility::StartUp();
+        GpuResourcePool::StartUp();
 
         for (UINT32 i = 0; i < STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER; i++)
         {
@@ -53,6 +55,7 @@ namespace te
 
         te_delete(_mainViewGroup);
 
+        GpuResourcePool::ShutDown();
         RendererUtility::ShutDown();
     }
 
@@ -129,6 +132,8 @@ namespace te
                 RenderAPI::Instance().SwapBuffers(rtInfo.Target);
             }
         }
+
+        GpuResourcePool::Instance().Update();
     }
 
     /** Renders all views in the provided view group. Returns true if anything has been draw to any of the views. */

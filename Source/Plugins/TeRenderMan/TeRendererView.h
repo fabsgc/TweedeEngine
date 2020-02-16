@@ -238,6 +238,15 @@ namespace te
         /** Lets an on-demand view know that it should be redrawn this frame. */
         void _notifyNeedsRedraw();
 
+        /** Returns true if the view should write to the velocity buffer. */
+        bool RequiresVelocityWrites() const;
+
+        /**
+         * Gets the current exposure of the view, used for transforming scene light values from HDR in a range that can be
+         * displayed on a display device.
+         */
+        float GetCurrentExposure() const;
+
     private:
         friend class RendererViewGroup;
         friend class Renderable;
@@ -257,6 +266,7 @@ namespace te
         float _redrawForSeconds = 0.0f;
         UINT32 _redrawForFrames = 0;
         bool _redrawThisFrame = false;
+        UINT64 _waitingOnAutoExposureFrame = std::numeric_limits<UINT64>::max();
 
         // Current frame info
         FrameTimings _frameTimings;
@@ -268,6 +278,10 @@ namespace te
 
         static PerInstanceData _instanceDataPool[STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER][STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE];
         static Vector<InstancedBuffer> _instancedBuffersPool;
+
+        // Exposure
+        float _previousEyeAdaptation = 0.0f;
+        float _currentEyeAdaptation = 0.0f;
     };
 
     /** Contains one or multiple RendererView%s that are in some way related. */

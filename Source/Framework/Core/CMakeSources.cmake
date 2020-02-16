@@ -72,6 +72,7 @@ set (TE_CORE_INC_RENDERER
     "Core/Renderer/TeRenderElement.h"
     "Core/Renderer/TeSkybox.h"
     "Core/Renderer/TeRendererUtility.h"
+    "Core/Renderer/TeGpuResourcePool.h"
 )
 set (TE_CORE_SRC_RENDERER
     "Core/Renderer/TeRenderer.cpp"
@@ -85,6 +86,7 @@ set (TE_CORE_SRC_RENDERER
     "Core/Renderer/TeRenderElement.cpp"
     "Core/Renderer/TeSkybox.cpp"
     "Core/Renderer/TeRendererUtility.cpp"
+    "Core/Renderer/TeGpuResourcePool.cpp"
 )
 
 set (TE_CORE_INC_SCENE

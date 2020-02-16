@@ -44,6 +44,7 @@ namespace te
         gPerMaterialParamDef.gUseNormalMap.Set(perMaterialBuffer, data.gUseNormalMap);
         gPerMaterialParamDef.gUseSpecularMap.Set(perMaterialBuffer, data.gUseSpecularMap);
         gPerMaterialParamDef.gUseBumpMap.Set(perMaterialBuffer, data.gUseBumpMap);
+        gPerMaterialParamDef.gUseParallaxMap.Set(perMaterialBuffer, data.gUseParallaxMap);
         gPerMaterialParamDef.gUseTransparencyMap.Set(perMaterialBuffer, data.gUseTransparencyMap);
         gPerMaterialParamDef.gSpecularPower.Set(perMaterialBuffer, data.gSpecularPower);
         gPerMaterialParamDef.gTransparency.Set(perMaterialBuffer, data.gTransparency);
@@ -65,6 +66,7 @@ namespace te
         data.gUseNormalMap = (UINT32)properties.UseNormalMap ? 1 : 0;
         data.gUseSpecularMap = (UINT32)properties.UseSpecularMap ? 1 : 0;
         data.gUseBumpMap = (UINT32)properties.UseBumpMap ? 1 : 0;
+        data.gUseParallaxMap = (UINT32)properties.UseParallaxMap ? 1 : 0;
         data.gUseTransparencyMap = (UINT32)properties.UseTransparencyMap ? 1 : 0;
         data.gSpecularPower = properties.SpecularPower;
         data.gTransparency = properties.Transparency;

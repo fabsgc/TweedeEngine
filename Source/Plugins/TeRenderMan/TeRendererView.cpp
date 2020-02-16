@@ -148,6 +148,16 @@ namespace te
             UpdatePerViewBuffer();
 
         _frameTimings = frameInfo.Timings;
+
+        // Account for auto-exposure taking multiple frames
+        if (_redrawThisFrame)
+        {
+            // Note: Doing this here instead of _notifyNeedsRedraw because we need an up-to-date frame index
+            if (_renderSettings->EnableHDR && _renderSettings->EnableAutoExposure)
+                _waitingOnAutoExposureFrame = _frameTimings.FrameIdx;
+            else
+                _waitingOnAutoExposureFrame = std::numeric_limits<UINT64>::max();
+        }
     }
 
     void RendererView::EndFrame()
@@ -367,6 +377,21 @@ namespace te
         if (!_properties.OnDemand)
             return true;
 
+        if (_renderSettings->EnableHDR && _renderSettings->EnableAutoExposure)
+        {
+            constexpr float AUTO_EXPOSURE_TOLERANCE = 0.01f;
+
+            // The view was redrawn but we still haven't received the eye adaptation results from the GPU, so
+            // we keep redrawing until we do
+            if (_waitingOnAutoExposureFrame != std::numeric_limits<UINT64>::max())
+                return true;
+
+            // Need to render until the auto-exposure reaches the target exposure
+            float eyeAdaptationDiff = Math::Abs(_currentEyeAdaptation - _previousEyeAdaptation);
+            if (eyeAdaptationDiff > AUTO_EXPOSURE_TOLERANCE)
+                return true;
+        }
+
         return _redrawForFrames > 0 || _redrawForSeconds > 0.0f;
     }
 
@@ -568,5 +593,18 @@ namespace te
             if (view.ShouldDraw3D())
                 view.QueueRenderElements(sceneInfo);
         }
+    }
+
+    bool RendererView::RequiresVelocityWrites() const
+    {
+        return _renderSettings->EnableVelocityBuffer;
+    }
+
+    float RendererView::GetCurrentExposure() const
+    {
+        if (_renderSettings->EnableAutoExposure)
+            return _previousEyeAdaptation;
+
+        return Math::Pow(2.0f, _renderSettings->ExposureScale);
     }
 }

@@ -22,9 +22,9 @@ namespace te
         InitStates();
         InitShaderDesc();
 #if TE_PLATFORM == TE_PLATFORM_WIN32 //TODO to remove when OpenGL will be done
-        //InitShaderOpaque();
-        //InitShaderTransparent();
-endif
+        InitShaderOpaque();
+        InitShaderTransparent();
+#endif
     }
 
     void BuiltinResources::OnShutDown()
@@ -127,6 +127,7 @@ endif
         SHADER_DATA_PARAM_DESC gUseNormalMap("gUseNormalMap", "gUseNormalMap", GPDT_INT1);
         SHADER_DATA_PARAM_DESC gUseSpecularMap("gUseSpecularMap", "gUseSpecularMap", GPDT_INT1);
         SHADER_DATA_PARAM_DESC gUseBumpMap("gUseBumpMap", "gUseBumpMap", GPDT_INT1);
+        SHADER_DATA_PARAM_DESC gUseParallaxMap("gUseParallaxMap", "gUseParallaxMap", GPDT_INT1);
         SHADER_DATA_PARAM_DESC gUseTransparencyMap("gUseTransparencyMap", "gUseTransparencyMap", GPDT_INT1);
         SHADER_DATA_PARAM_DESC gSpecularPower("gSpecularPower", "gSpecularPower", GPDT_FLOAT1);
         SHADER_DATA_PARAM_DESC gTransparency("gTransparency", "gTransparency", GPDT_FLOAT1);
@@ -167,6 +168,7 @@ endif
         _shaderDesc.AddParameter(gUseNormalMap);
         _shaderDesc.AddParameter(gUseSpecularMap);
         _shaderDesc.AddParameter(gUseBumpMap);
+        _shaderDesc.AddParameter(gUseParallaxMap);
         _shaderDesc.AddParameter(gUseTransparencyMap);
         _shaderDesc.AddParameter(gSpecularPower);
         _shaderDesc.AddParameter(gTransparency);

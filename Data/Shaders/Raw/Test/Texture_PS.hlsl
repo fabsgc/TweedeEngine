@@ -20,6 +20,7 @@ cbuffer PerMaterialBuffer : register(b1)
     uint   gUseNormalMap;
     uint   gUseSpecularMap;
     uint   gUseBumpMap;
+    uint   gUseParallaxMap;
     uint   gUseTransparencyMap;
     float  gSpecularPower;
     float  gTransparency;
@@ -36,7 +37,8 @@ Texture2D EmissiveMap : register(t1);
 Texture2D NormalMap : register(t2);
 Texture2D SpecularMap : register(t3);
 Texture2D BumpMap : register(t4);
-Texture2D TransparencyMap : register(t5);
+Texture2D ParallaxMap : register(t5);
+Texture2D TransparencyMap : register(t6);
 
 static const float4 LightColor = float4(1.0f, 0.9f, 0.8f, 0.6f);
 static const float3 LightDirection = float3(0.75f, -2.0f, -2.0f);
@@ -91,6 +93,11 @@ float4 main( PS_INPUT IN ) : SV_Target
         normal = DoBumpMapping(TBN, BumpMap, AnisotropicSampler, IN.Texture, 1.0f);
     }
 
+    if(gUseParallaxMap == 1)
+    {
+        // TODO
+    }
+
     // Diffuse
     float  diff = max(dot(lightDirection, normal), 0.0);
     diffuse = (diff * diffuse.rgb);
@@ -98,7 +105,7 @@ float4 main( PS_INPUT IN ) : SV_Target
     // specular
     float3 refVector = normalize(reflect(lightDirection, normal));
     float3 specFactor = pow(max(dot(IN.ViewDirection, refVector), 0.0), gSpecularPower);
-    specular = (specFactor * specular.rgb);  
+    specular = (specFactor * specular.rgb);
 
     outColor.rgb = ambient + diffuse + specular + emissive;
     outColor.a = alpha;

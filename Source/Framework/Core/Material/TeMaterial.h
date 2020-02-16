@@ -43,6 +43,7 @@ namespace te
         bool UseNormalMap = false;
         bool UseSpecularMap = false;
         bool UseBumpMap = false;
+        bool UseParallaxMap = false;
         bool UseTransparencyMap = false;
     };
 
