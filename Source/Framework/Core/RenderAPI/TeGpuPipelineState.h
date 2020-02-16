@@ -7,6 +7,7 @@
 #include "TeBlendState.h"
 #include "TeCommonTypes.h"
 #include "TeGpuPipelineParamInfo.h"
+#include "Utility/TeNonCopyable.h"
 
 namespace te
 {
@@ -35,7 +36,7 @@ namespace te
      * states (vertex, pixel, geometry, etc. GPU programs), as well as a set of fixed states (blend, rasterizer,
      * depth-stencil). Once created the state is immutable, and can be bound to RenderAPI for rendering.
      */
-    class TE_CORE_EXPORT GraphicsPipelineState : public CoreObject
+    class TE_CORE_EXPORT GraphicsPipelineState : public CoreObject, public NonCopyable
     {
     public:
         using GpuPipelineParamInfoType = typename GpuPipelineStateTypes::GpuPipelineParamInfoType;
@@ -73,7 +74,43 @@ namespace te
         /** @copydoc CoreObject::Initialize() */
         void Initialize() override;
 
+    protected:
         PIPELINE_STATE_DESC _data;
+        GpuDeviceFlags _deviceMask = GDF_DEFAULT;
+        SPtr<GpuPipelineParamInfoType> _paramInfo;
+    };
+
+    /**
+     * Describes the state of the GPU pipeline that determines how are compute programs executed. It consists of
+     * of a single programmable state (GPU program). Once created the state is immutable, and can be bound to RenderAPI for
+     * use.
+     */
+    class TE_CORE_EXPORT ComputePipelineState : public CoreObject, public NonCopyable
+    {
+    public:
+        using GpuPipelineParamInfoType = typename GpuPipelineStateTypes::GpuPipelineParamInfoType;
+
+        virtual ~ComputePipelineState() = default;
+
+        const SPtr<GpuProgram>& GetProgram() const { return _program; }
+
+        /** Returns an object containing meta-data for parameters of the GPU program used in this pipeline state. */
+        const SPtr<GpuPipelineParamInfoType>& GetParamInfo() const { return _paramInfo; }
+
+        /** @copydoc RenderStateManager::CreateComputePipelineState */
+        static SPtr<ComputePipelineState> Create(const SPtr<GpuProgram>& program, GpuDeviceFlags deviceMask = GDF_DEFAULT);
+
+    protected:
+        friend class RenderStateManager;
+
+        ComputePipelineState();
+        ComputePipelineState(const SPtr<GpuProgram>& program, GpuDeviceFlags deviceMask);
+
+        /** @copydoc CoreObject::Initialize() */
+        void Initialize() override;
+
+    protected:
+        SPtr<GpuProgram> _program;
         GpuDeviceFlags _deviceMask = GDF_DEFAULT;
         SPtr<GpuPipelineParamInfoType> _paramInfo;
     };

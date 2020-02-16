@@ -177,6 +177,7 @@ namespace te
         GPT_GEOMETRY_PROGRAM, /**< Geometry program. */
         GPT_DOMAIN_PROGRAM, /**< Domain (tesselation evaluation) program. */
         GPT_HULL_PROGRAM, /**< Hull (tesselation control) program. */
+        GPT_COMPUTE_PROGRAM, /**< Compute program. */
         GPT_COUNT // Keep at end
     };
 

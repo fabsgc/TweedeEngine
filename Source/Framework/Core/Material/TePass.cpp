@@ -62,39 +62,49 @@ namespace te
             return _data.HullProgramDesc;
         case GPT_DOMAIN_PROGRAM:
             return _data.DomainProgramDesc;
+        case GPT_COMPUTE_PROGRAM:
+            return _data.ComputeProgramDesc;
         }
     }
 
     void Pass::CreatePipelineState()
     {
-        GpuPipelineStateTypes::StateDescType desc;
+        if (IsCompute())
+        {
+            SPtr<GpuProgram> program = GpuProgram::Create(_data.ComputeProgramDesc);
+            _computePipelineState = ComputePipelineState::Create(program);
+        }
+        else
+        {
+            GpuPipelineStateTypes::StateDescType desc;
 
-        if (!_data.VertexProgramDesc.Source.empty() && !desc.vertexProgram)
-            desc.vertexProgram = GpuProgram::Create(_data.VertexProgramDesc);
+            if (!_data.VertexProgramDesc.Source.empty() && !desc.vertexProgram)
+                desc.vertexProgram = GpuProgram::Create(_data.VertexProgramDesc);
 
-        if (!_data.PixelProgramDesc.Source.empty() && !desc.pixelProgram)
-            desc.pixelProgram = GpuProgram::Create(_data.PixelProgramDesc);
+            if (!_data.PixelProgramDesc.Source.empty() && !desc.pixelProgram)
+                desc.pixelProgram = GpuProgram::Create(_data.PixelProgramDesc);
 
-        if (!_data.GeometryProgramDesc.Source.empty() && !desc.geometryProgram)
-            desc.geometryProgram = GpuProgram::Create(_data.GeometryProgramDesc);
+            if (!_data.GeometryProgramDesc.Source.empty() && !desc.geometryProgram)
+                desc.geometryProgram = GpuProgram::Create(_data.GeometryProgramDesc);
 
-        if (!_data.HullProgramDesc.Source.empty() && !desc.hullProgram)
-            desc.hullProgram = GpuProgram::Create(_data.HullProgramDesc);
+            if (!_data.HullProgramDesc.Source.empty() && !desc.hullProgram)
+                desc.hullProgram = GpuProgram::Create(_data.HullProgramDesc);
 
-        if (!_data.DomainProgramDesc.Source.empty() && !desc.domainProgram)
-            desc.domainProgram = GpuProgram::Create(_data.DomainProgramDesc);
+            if (!_data.DomainProgramDesc.Source.empty() && !desc.domainProgram)
+                desc.domainProgram = GpuProgram::Create(_data.DomainProgramDesc);
 
-        desc.blendState = BlendState::Create(_data.BlendStateDesc);
-        desc.rasterizerState = RasterizerState::Create(_data.RasterizerStateDesc);
-        desc.depthStencilState = DepthStencilState::Create(_data.DepthStencilStateDesc);
+            desc.blendState = BlendState::Create(_data.BlendStateDesc);
+            desc.rasterizerState = RasterizerState::Create(_data.RasterizerStateDesc);
+            desc.depthStencilState = DepthStencilState::Create(_data.DepthStencilStateDesc);
 
-        _graphicsPipelineState = GraphicsPipelineState::Create(desc);
-        _gpuParams = GpuParams::Create(_graphicsPipelineState);
+            _graphicsPipelineState = GraphicsPipelineState::Create(desc);
+            _gpuParams = GpuParams::Create(_graphicsPipelineState);
+        }
     }
 
     void Pass::Compile()
     {
-        if (_graphicsPipelineState)
+        if (_computePipelineState || _graphicsPipelineState)
             return; // Already compiled
 
         CreatePipelineState();

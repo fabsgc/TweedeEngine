@@ -70,6 +70,7 @@ namespace te
         void InitScene();
 
     protected:
+#if TE_PLATFORM == TE_PLATFORM_WIN32
         Vector<SponzaMaterialData> _materials;
 
         HShader _shaderOpaque;
@@ -82,5 +83,6 @@ namespace te
 
         HSceneObject _sceneCameraSO;
         HSceneObject _sceneSponzaSO;
+#endif
     };
 }

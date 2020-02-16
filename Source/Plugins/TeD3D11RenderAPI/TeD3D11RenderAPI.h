@@ -72,6 +72,9 @@ namespace te
         /** @copydoc RenderAPI::SetGraphicsPipeline */
         void SetGraphicsPipeline(const SPtr<GraphicsPipelineState>& pipelineState) override;
 
+        /** @copydoc RenderAPI::SetComputePipeline */
+        void SetComputePipeline(const SPtr<ComputePipelineState>& pipelineState) override;
+
         /** @copydoc RenderAPI::SetGpuParams */
         void SetGpuParams(const SPtr<GpuParams>& gpuParams, UINT32 gpuParamsBindFlags = (UINT32)GPU_BIND_ALL, 
             UINT32 gpuParamsBlockBindFlags = (UINT32)GPU_BIND_PARAM_BLOCK_ALL, const Vector<String>& paramBlocksToBind = {}) override;
@@ -102,6 +105,9 @@ namespace te
 
         /** @copydoc RenderAPI::DrawIndexed */
         void DrawIndexed(UINT32 startIndex, UINT32 indexCount, UINT32 vertexOffset, UINT32 vertexCount, UINT32 instanceCount = 0) override;
+
+        /** @copydoc RenderAPI::DispatchCompute */
+        void DispatchCompute(UINT32 numGroupsX, UINT32 numGroupsY = 1, UINT32 numGroupsZ = 1) override;
 
         /** @copydoc RenderAPI::SwapBuffers */
         void SwapBuffers(const SPtr<RenderTarget>& target) override;

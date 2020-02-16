@@ -79,6 +79,13 @@ namespace te
         virtual void SetGraphicsPipeline(const SPtr<GraphicsPipelineState>& pipelineState) = 0;
 
         /**
+         * Sets a pipeline state that controls how will subsequent dispatch commands execute.
+         *
+         * @param[in]	pipelineState		Pipeline state to bind, or null to unbind.
+         */
+        virtual void SetComputePipeline(const SPtr<ComputePipelineState>& pipelineState) = 0;
+
+        /**
          * Sets the active viewport that will be used for all render operations.
          *
          * @param[in]	area			Area of the viewport, in normalized ([0,1] range) coordinates.
@@ -156,6 +163,15 @@ namespace te
          * @param[in]	instanceCount	Number of times to draw the provided geometry, each time with an (optionally)
          */
         virtual void DrawIndexed(UINT32 startIndex, UINT32 indexCount, UINT32 vertexOffset, UINT32 vertexCount, UINT32 instanceCount = 0) = 0;
+
+        /**
+         * Executes the currently bound compute shader.
+         *
+         * @param[in]	numGroupsX		Number of groups to start in the X direction. Must be in range [1, 65535].
+         * @param[in]	numGroupsY		Number of groups to start in the Y direction. Must be in range [1, 65535].
+         * @param[in]	numGroupsZ		Number of groups to start in the Z direction. Must be in range [1, 64].
+         */
+        virtual void DispatchCompute(UINT32 numGroupsX, UINT32 numGroupsY = 1, UINT32 numGroupsZ = 1) = 0;
 
         /**
          * Swap the front and back buffer of the specified render target.

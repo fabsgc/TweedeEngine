@@ -23,6 +23,7 @@ namespace te
 		GPU_PROGRAM_DESC GeometryProgramDesc;
 		GPU_PROGRAM_DESC HullProgramDesc;
 		GPU_PROGRAM_DESC DomainProgramDesc;
+        GPU_PROGRAM_DESC ComputeProgramDesc;
 	};
 
     class TE_CORE_EXPORT Pass : public Resource
@@ -36,6 +37,9 @@ namespace te
         /**	Returns true if this pass has some element of transparency. */
         bool HasBlending() const;
 
+        /** Returns true if the pass executes a compute program. */
+        bool IsCompute() const { return !_data.ComputeProgramDesc.Source.empty(); }
+
         /** Gets the stencil reference value that is used when performing operations using the stencil buffer. */
         UINT32 GetStencilRefValue() const { return _data.StencilRefValue; }
 
@@ -43,10 +47,16 @@ namespace te
         const GPU_PROGRAM_DESC& GetProgramDesc(GpuProgramType type) const;
 
         /**
-         * Returns the graphics pipeline state describing this pass
+         * Returns the graphics pipeline state describing this pass, or null if its a compute pass.
          * Only valid after Compile() has been called.
          */
         const SPtr<GraphicsPipelineState>& GetGraphicsPipelineState() const { return _graphicsPipelineState; }
+
+        /**
+         * Returns the compute pipeline state describing this pass, or null if its a graphics pass.
+         * Only valid after compile has been called.
+         */
+        const SPtr<ComputePipelineState>& GetComputePipelineState() const { return _computePipelineState; }
 
         /**
          * Returns the params created using the pipeline state
@@ -83,6 +93,7 @@ namespace te
     protected:
         PASS_DESC _data;
 		SPtr<GraphicsPipelineState> _graphicsPipelineState;
+        SPtr<ComputePipelineState> _computePipelineState;
         SPtr<GpuParams> _gpuParams;
     };
 }

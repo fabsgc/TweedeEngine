@@ -61,12 +61,15 @@ namespace te
 
     void Application::InitShader()
     {
+#if TE_PLATFORM == TE_PLATFORM_WIN32
         _shaderOpaque = gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque);
         _shaderTransparent = gBuiltinResources().GetBuiltinShader(BuiltinShader::Transparent);
+#endif
     }
 
     void Application::InitMaterials()
     {
+#if TE_PLATFORM == TE_PLATFORM_WIN32
         _materials =
         {
             {
@@ -415,10 +418,12 @@ namespace te
         {
             materialFunction(material);
         }
+#endif
     }
 
     void Application::InitMesh()
     {
+#if TE_PLATFORM == TE_PLATFORM_WIN32
         auto meshImportOptions = MeshImportOptions::Create();
         meshImportOptions->ImportNormals = true;
         meshImportOptions->ImportTangents = true;
@@ -428,10 +433,12 @@ namespace te
 
         TE_PRINT((_sponzaMesh.GetHandleData())->data);
         TE_PRINT((_sponzaMesh.GetHandleData())->uuid.ToString());
+#endif
     }
 
     void Application::InitScene()
     {
+#if TE_PLATFORM == TE_PLATFORM_WIN32
         _sceneCameraSO = SceneObject::Create("SceneCamera");
         _sceneCameraFlyer = _sceneCameraSO->AddComponent<CCameraFlyer>();
         _sceneCamera = _sceneCameraSO->AddComponent<CCamera>();
@@ -456,6 +463,7 @@ namespace te
 
         _sceneCameraSO->SetPosition(Vector3(0.0f, 2.0f, 0.0f));
         _sceneCameraSO->LookAt(Vector3(0.0f, 1.5f, -3.0f));
+#endif
     }
 
     void Application::PostStartUp()

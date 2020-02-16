@@ -100,6 +100,11 @@ namespace te
         return HardwareBufferManager::Instance().CreateGpuParams(pipelineState->GetParamInfo(), deviceMask);
     }
 
+    SPtr<GpuParams> GpuParams::Create(const SPtr<ComputePipelineState>& pipelineState, GpuDeviceFlags deviceMask)
+    {
+        return HardwareBufferManager::Instance().CreateGpuParams(pipelineState->GetParamInfo());
+    }
+
     SPtr<GpuParams> GpuParams::Create(const SPtr<GpuPipelineParamInfo>& paramInfo, GpuDeviceFlags deviceMask)
     {
         return HardwareBufferManager::Instance().CreateGpuParams(paramInfo, deviceMask);

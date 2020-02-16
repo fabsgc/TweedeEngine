@@ -38,6 +38,7 @@ namespace te
         void PostUpdate() override;
 
     protected:
+#if TE_PLATFORM == TE_PLATFORM_WIN32
         HCamera _sceneCamera;
         HCameraFlyer _sceneCameraFlyer;
 
@@ -61,5 +62,6 @@ namespace te
         HSkybox _skybox;
 
         Vector<HSceneObject> _sceneRenderablesMonkeySO;
+#endif
     };
 }

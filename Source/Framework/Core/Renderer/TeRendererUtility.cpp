@@ -46,6 +46,14 @@ namespace te
         rapi.SetStencilRef(pass->GetStencilRefValue());
     }
 
+    void RendererUtility::SetComputePass(const SPtr<Material>& material, UINT32 passIdx)
+    {
+        RenderAPI& rapi = RenderAPI::Instance();
+
+        SPtr<Pass> pass = material->GetPass(passIdx);
+        rapi.SetComputePipeline(pass->GetComputePipelineState());
+    }
+
     void RendererUtility::SetPassParams(const SPtr<GpuParams> gpuParams, UINT32 gpuParamsBindFlags, bool isInstanced)
     {
         if (gpuParams == nullptr)

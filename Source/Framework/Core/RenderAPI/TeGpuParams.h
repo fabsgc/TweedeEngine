@@ -173,10 +173,16 @@ namespace te
         virtual void SetSamplerState(UINT32 set, UINT32 slot, const SPtr<SamplerState>& sampler);
 
         /**
-         * @copydoc te::GpuParams::Create(const SPtr<GraphicsPipelineState>&, GpuDeviceFlags)
+         * Creates new GpuParams object that can serve for changing the GPU program parameters on the specified pipeline.
+         *
+         * @param[in]	pipelineState	Pipeline state for which this object can set parameters for.
          * @param[in]	deviceMask		Mask that determines on which GPU devices should the buffer be created on.
          */
         static SPtr<GpuParams> Create(const SPtr<GraphicsPipelineState>& pipelineState,
+            GpuDeviceFlags deviceMask = GDF_DEFAULT);
+
+        /** @copydoc GpuParams::Create(const SPtr<GraphicsPipelineState>&) */
+        static SPtr<GpuParams> Create(const SPtr<ComputePipelineState>& pipelineState,
             GpuDeviceFlags deviceMask = GDF_DEFAULT);
 
         /**

@@ -17,6 +17,7 @@ namespace te
         _paramDescs[GPT_GEOMETRY_PROGRAM] = desc.GeometryParams;
         _paramDescs[GPT_HULL_PROGRAM] = desc.HullParams;
         _paramDescs[GPT_DOMAIN_PROGRAM] = desc.DomainParams;
+        _paramDescs[GPT_COMPUTE_PROGRAM] = desc.ComputeParams;
 
         auto countElements = [&](auto& entry, ParamType type)
         {

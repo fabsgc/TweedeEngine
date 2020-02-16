@@ -49,6 +49,15 @@ namespace te
         return state;
     }
 
+    SPtr<ComputePipelineState> RenderStateManager::CreateComputePipelineState(const SPtr<GpuProgram>& program,
+        GpuDeviceFlags deviceMask) const
+    {
+        SPtr<ComputePipelineState> state = _createComputePipelineState(program, deviceMask);
+        state->Initialize();
+
+        return state;
+    }
+
     SPtr<GpuPipelineParamInfo> RenderStateManager::CreatePipelineParamInfo(
         const GPU_PIPELINE_PARAMS_DESC& desc, GpuDeviceFlags deviceMask) const
     {
@@ -63,6 +72,16 @@ namespace te
     {
         SPtr<GraphicsPipelineState> pipelineState =
             te_core_ptr<GraphicsPipelineState>(new (te_allocate<GraphicsPipelineState>()) GraphicsPipelineState(desc, deviceMask));
+        pipelineState->SetThisPtr(pipelineState);
+
+        return pipelineState;
+    }
+
+    SPtr<ComputePipelineState> RenderStateManager::_createComputePipelineState(const SPtr<GpuProgram>& program,
+        GpuDeviceFlags deviceMask) const
+    {
+        SPtr<ComputePipelineState> pipelineState =
+            te_core_ptr<ComputePipelineState>(new (te_allocate<ComputePipelineState>()) ComputePipelineState(program, deviceMask));
         pipelineState->SetThisPtr(pipelineState);
 
         return pipelineState;

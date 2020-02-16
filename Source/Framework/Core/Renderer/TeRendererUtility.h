@@ -29,6 +29,16 @@ namespace te
         void SetPass(const SPtr<Material>& material, UINT32 passIdx, UINT32 techniqueIdx);
 
         /**
+         * Activates the specified material pass for compute. Any further dispatch calls will be executed using this pass.
+         *
+         * @param[in]	material		Material containing the pass.
+         * @param[in]	passIdx			Index of the pass in the material.
+         *
+         * @note	Core thread.
+         */
+        void SetComputePass(const SPtr<Material>& material, UINT32 passIdx = 0);
+
+        /**
          * Sets parameters (textures, samplers, buffers) for the currently active pass.
          *
          * @param[in]	params		        Object containing the parameters.

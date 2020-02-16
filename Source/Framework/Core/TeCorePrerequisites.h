@@ -86,6 +86,7 @@ namespace te
     struct PIPELINE_STATE_DESC;
     class DepthStencilProperties;
     class GraphicsPipelineState;
+    class ComputePipelineState;
     struct RASTERIZER_STATE_DESC;
     class RasterizerProperties;
     class RasterizerState;

@@ -277,6 +277,21 @@ namespace te
         _lastFrameGraphicPipeline->d3d11HullProgram = d3d11HullProgram;
     }
 
+    void D3D11RenderAPI::SetComputePipeline(const SPtr<ComputePipelineState>& pipelineState)
+    {
+        SPtr<GpuProgram> program;
+        if (pipelineState != nullptr)
+            program = pipelineState->GetProgram();
+
+        if (program != nullptr && program->GetType() == GPT_COMPUTE_PROGRAM)
+        {
+            D3D11GpuComputeProgram* d3d11ComputeProgram = static_cast<D3D11GpuComputeProgram*>(program.get());
+            _device->GetImmediateContext()->CSSetShader(d3d11ComputeProgram->GetComputeShader(), nullptr, 0);
+        }
+        else
+            _device->GetImmediateContext()->CSSetShader(nullptr, nullptr, 0);
+    }
+
     void D3D11RenderAPI::SetGpuParams(const SPtr<GpuParams>& gpuParams, UINT32 gpuParamsBindFlags, 
         UINT32 gpuParamsBlockBindFlags, const Vector<String>& paramBlocksToBind)
     {
@@ -636,6 +651,16 @@ namespace te
 #endif
 
         NotifyRenderTargetModified();
+    }
+
+    void D3D11RenderAPI::DispatchCompute(UINT32 numGroupsX, UINT32 numGroupsY, UINT32 numGroupsZ)
+    {
+        _device->GetImmediateContext()->Dispatch(numGroupsX, numGroupsY, numGroupsZ);
+
+#if TE_DEBUG_MODE
+        if (_device->HasError())
+            TE_DEBUG(_device->GetErrorDescription(), __FILE__, __LINE__);
+#endif
     }
 
     void D3D11RenderAPI::SwapBuffers(const SPtr<RenderTarget>& target)

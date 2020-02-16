@@ -35,6 +35,7 @@ namespace te
 
     void Application::PostStartUp()
     {
+#if TE_PLATFORM == TE_PLATFORM_WIN32
         // ######################################################
         auto inputConfig = gVirtualInput().GetConfiguration();
 
@@ -93,7 +94,6 @@ namespace te
         TE_PRINT((_loadedCubemapTexture.GetHandleData())->uuid.ToString());
         // ######################################################
 
-#if TE_PLATFORM == TE_PLATFORM_WIN32
         HShader _shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque);
 
         MaterialProperties properties;

@@ -33,6 +33,14 @@ namespace te
         SPtr<GraphicsPipelineState> CreateGraphicsPipelineState(const PIPELINE_STATE_DESC& desc,
             GpuDeviceFlags deviceMask = GDF_DEFAULT) const;
 
+        /**
+         * Creates and initializes a new ComputePipelineState.
+         *
+         * @param[in]	program		Compute GPU program to be executed by the pipeline.
+         */
+        SPtr<ComputePipelineState> CreateComputePipelineState(const SPtr<GpuProgram>& program,
+            GpuDeviceFlags deviceMask = GDF_DEFAULT) const;
+
         /** @copydoc GpuPipelineParamInfo::Create */
         SPtr<GpuPipelineParamInfo> CreatePipelineParamInfo(const GPU_PIPELINE_PARAMS_DESC& desc,
             GpuDeviceFlags deviceMask = GDF_DEFAULT) const;
@@ -51,6 +59,10 @@ namespace te
 
         /** Creates an uninitialized GraphicsPipelineState. Requires manual initialization after creation. */
         virtual SPtr<GraphicsPipelineState> _createGraphicsPipelineState(const PIPELINE_STATE_DESC& desc,
+            GpuDeviceFlags deviceMask = GDF_DEFAULT) const;
+
+        /**	Creates an uninitialized ComputePipelineState. Requires manual initialization after creation. */
+        virtual SPtr<ComputePipelineState> _createComputePipelineState(const SPtr<GpuProgram>& program,
             GpuDeviceFlags deviceMask = GDF_DEFAULT) const;
 
         /** Creates an uninitialized GpuPipelineParamInfo. Requires manual initialization after creation. */
@@ -90,7 +102,8 @@ namespace te
         friend class SamplerState;
         friend class RasterizerState;
         friend class DepthStencilState;
-        friend class GraphicsPipelineState; 
+        friend class ComputePipelineState;
+        friend class GraphicsPipelineState;
 
         mutable SPtr<BlendState> _defaultBlendState;
         mutable SPtr<SamplerState> _defaultSamplerState;

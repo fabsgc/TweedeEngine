@@ -137,6 +137,27 @@ namespace te
         ID3D11GeometryShader* _geometryShader;
     };
 
+    /**	Implementation of a DX11 compute shader. */
+    class D3D11GpuComputeProgram : public D3D11GpuProgram
+    {
+    public:
+        ~D3D11GpuComputeProgram();
+
+        /**	Returns internal DX11 compute shader object. */
+        ID3D11ComputeShader* GetComputeShader() const;
+
+    protected:
+        friend class D3D11HLSLProgramFactory;
+
+        D3D11GpuComputeProgram(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask);
+
+        /** @copydoc D3D11GpuProgram::LoadFromMicrocode */
+        void LoadFromMicrocode(D3D11Device& device, const DataBlob& microcode) override;
+
+    protected:
+        ID3D11ComputeShader* _computeShader;
+    };
+
     /** Identifier of the compiler used for compiling DirectX 11 GPU programs. */
     static constexpr const char* DIRECTX_COMPILER_ID = "DirectX11";
 }

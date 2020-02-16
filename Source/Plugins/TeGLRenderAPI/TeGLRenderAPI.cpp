@@ -72,6 +72,11 @@ namespace te
         // TODO
     }
 
+    void GLRenderAPI::SetComputePipeline(const SPtr<ComputePipelineState>& pipelineState)
+    {
+        // TODO
+    }
+
     void GLRenderAPI::SetGpuParams(const SPtr<GpuParams>& gpuParams, UINT32 gpuParamsBindFlags,
         UINT32 gpuParamsBlockBindFlags, const Vector<String>& paramBlocksToBind)
     {
@@ -119,6 +124,11 @@ namespace te
     }
 
     void GLRenderAPI::DrawIndexed(UINT32 startIndex, UINT32 indexCount, UINT32 vertexOffset, UINT32 vertexCount, UINT32 instanceCount)
+    {
+        // TODO
+    }
+
+    void GLRenderAPI::DispatchCompute(UINT32 numGroupsX, UINT32 numGroupsY, UINT32 numGroupsZ)
     {
         // TODO
     }

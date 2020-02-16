@@ -15,9 +15,7 @@ namespace te
     { }
 
     GraphicsPipelineState::~GraphicsPipelineState()
-    {
-
-    }
+    { }
 
     void GraphicsPipelineState::Initialize()
     {
@@ -42,5 +40,30 @@ namespace te
     SPtr<GraphicsPipelineState> GraphicsPipelineState::Create(const PIPELINE_STATE_DESC& desc, GpuDeviceFlags deviceMask)
     {
         return RenderStateManager::Instance().CreateGraphicsPipelineState(desc, deviceMask);
+    }
+
+    ComputePipelineState::ComputePipelineState()
+        : _program(nullptr)
+    { }
+
+    ComputePipelineState::ComputePipelineState(const SPtr<GpuProgram>& program, GpuDeviceFlags deviceMask)
+        : _program(program)
+        , _deviceMask(deviceMask)
+    { }
+
+    void ComputePipelineState::Initialize()
+    {
+        GPU_PIPELINE_PARAMS_DESC paramsDesc;
+        paramsDesc.ComputeParams = _program->GetParamDesc();
+
+        _paramInfo = GpuPipelineParamInfo::Create(paramsDesc, _deviceMask);
+
+        CoreObject::Initialize();
+    }
+
+    SPtr<ComputePipelineState> ComputePipelineState::Create(const SPtr<GpuProgram>& program,
+        GpuDeviceFlags deviceMask)
+    {
+        return RenderStateManager::Instance().CreateComputePipelineState(program, deviceMask);
     }
 }

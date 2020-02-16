@@ -34,6 +34,10 @@ namespace te
             gpuProgram = te_core_ptr<D3D11GpuGeometryProgram>(new (te_allocate<D3D11GpuGeometryProgram>())
                 D3D11GpuGeometryProgram(desc, deviceMask));
             break;
+        case GPT_COMPUTE_PROGRAM:
+            gpuProgram = te_core_ptr<D3D11GpuComputeProgram>(new (te_allocate<D3D11GpuComputeProgram>())
+                D3D11GpuComputeProgram(desc, deviceMask));
+            break;
         }
 
         if (gpuProgram != nullptr)
@@ -72,6 +76,10 @@ namespace te
         case GPT_GEOMETRY_PROGRAM:
             gpuProgram = te_shared_ptr<D3D11GpuGeometryProgram>(new (te_allocate<D3D11GpuGeometryProgram>())
                 D3D11GpuGeometryProgram(desc, deviceMask));
+            break;
+        case GPT_COMPUTE_PROGRAM:
+            gpuProgram = te_shared_ptr<D3D11GpuComputeProgram>(new (te_allocate<D3D11GpuComputeProgram>())
+                D3D11GpuComputeProgram(desc, deviceMask));
             break;
         }
 
@@ -122,6 +130,9 @@ namespace te
             break;
         case GPT_DOMAIN_PROGRAM:
             hlslProfile = "ds_5_0";
+            break;
+        case GPT_COMPUTE_PROGRAM:
+            hlslProfile = "cs_5_0";
             break;
         default:
             break;

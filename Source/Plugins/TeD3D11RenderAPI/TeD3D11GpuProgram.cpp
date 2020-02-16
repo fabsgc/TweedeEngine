@@ -200,4 +200,30 @@ namespace te
     {
         return _hullShader;
     }
+
+    D3D11GpuComputeProgram::D3D11GpuComputeProgram(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask)
+        : D3D11GpuProgram(desc, deviceMask), _computeShader(nullptr)
+    { }
+
+    D3D11GpuComputeProgram::~D3D11GpuComputeProgram()
+    {
+        SAFE_RELEASE(_computeShader);
+    }
+
+    void D3D11GpuComputeProgram::LoadFromMicrocode(D3D11Device& device, const DataBlob& microcode)
+    {
+        HRESULT hr = device.GetD3D11Device()->CreateComputeShader(
+            microcode.Data, microcode.Size, device.GetClassLinkage(), &_computeShader);
+
+        if (FAILED(hr) || device.HasError())
+        {
+            String errorDescription = device.GetErrorDescription();
+            TE_ASSERT_ERROR(false, "Cannot create D3D11 compute shader from microcode.\nError Description:" + errorDescription, __FILE__, __LINE__);
+        }
+    }
+
+    ID3D11ComputeShader* D3D11GpuComputeProgram::GetComputeShader() const
+    {
+        return _computeShader;
+    }
 }

@@ -13,6 +13,7 @@ namespace te
         SPtr<GpuParamDesc> GeometryParams;
         SPtr<GpuParamDesc> HullParams;
         SPtr<GpuParamDesc> DomainParams;
+        SPtr<GpuParamDesc> ComputeParams;
     };
 
     /** Binding location for a single GPU program parameter. */
@@ -95,7 +96,7 @@ namespace te
             UINT32 Slot;
         };
 
-        std::array<SPtr<GpuParamDesc>, 5> _paramDescs;
+        std::array<SPtr<GpuParamDesc>, 6> _paramDescs;
 
         UINT32 _numSets;
         UINT32 _numElements;
