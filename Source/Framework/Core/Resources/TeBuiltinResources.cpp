@@ -21,8 +21,10 @@ namespace te
         InitGpuPrograms();
         InitStates();
         InitShaderDesc();
-        InitShaderOpaque();
-        InitShaderTransparent();
+#if TE_PLATFORM == TE_PLATFORM_WIN32 //TODO to remove when OpenGL will be done
+        //InitShaderOpaque();
+        //InitShaderTransparent();
+endif
     }
 
     void BuiltinResources::OnShutDown()
