@@ -482,9 +482,6 @@ namespace te
         if (instancingMode == RenderManInstancing::Automatic)
         {
             const auto numRenderables = (UINT32)sceneInfo.Renderables.size();
-            const UINT32 maxInstElement = STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE * STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE;
-            UINT32 totalInstElem = 0;
-
             RendererView::_instancedBuffersPool.clear();
 
             // We will separate renderables based on <Material*> and <Renderable*>
@@ -502,10 +499,6 @@ namespace te
         }
         else if (instancingMode == RenderManInstancing::Manual)
         {
-            const auto numRenderables = (UINT32)sceneInfo.RenderablesInstanced.size();
-            const UINT32 maxInstElement = STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE * STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE;
-            UINT32 totalInstElem = 0;
-
             RendererView::_instancedBuffersPool.clear();
 
             // We will separate renderables based on <Material*> and <Renderable*>
@@ -527,7 +520,6 @@ namespace te
     {
         if (instancingMode == RenderManInstancing::Automatic || instancingMode == RenderManInstancing::Manual)
         {
-            const auto numRenderables = (UINT32)sceneInfo.Renderables.size();
             const UINT32 maxInstElement = STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE * STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER;
             UINT32 totalInstElem = 0;
 

@@ -12,7 +12,9 @@ namespace te
     { }
 
     BuiltinResources::~BuiltinResources()
-    { }
+    { 
+        _anisotropicSamplerState = nullptr;
+    }
 
     void BuiltinResources::OnStartUp()
     {
