@@ -33,15 +33,18 @@ namespace te
 
                 entry.RenderElem->GpuParamsElem[entry.PassIdx]
                     ->SetParamBlockBuffer("PerCameraBuffer", view.GetPerViewBuffer());
+                
                 rapi.SetGpuParams(entry.RenderElem->GpuParamsElem[entry.PassIdx],
                     GPU_BIND_PARAM_BLOCK, GPU_BIND_PARAM_BLOCK_LISTED, { "PerCameraBuffer" });
             }
             else
             {
+                entry.RenderElem->MaterialElem->SetGpuParam(entry.RenderElem->GpuParamsElem[entry.PassIdx]);
                 gpuParamsBindFlags = GPU_BIND_PARAM_BLOCK;
             }
 
             bool isInstanced = (entry.RenderElem->InstanceCount > 0) ? true : false;
+
             gRendererUtility().SetPassParams(entry.RenderElem->GpuParamsElem[entry.PassIdx], gpuParamsBindFlags, isInstanced);
             entry.RenderElem->Draw();
         }

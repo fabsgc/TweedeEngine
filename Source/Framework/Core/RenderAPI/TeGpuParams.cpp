@@ -290,6 +290,68 @@ namespace te
         return _sampledTextureData[globalSlot].Surface;
     }
 
+    void GpuParams::SetParam(GpuProgramType type, const String& name, const void* value, UINT32 sizeBytes, UINT32 arrayIdx)
+    {
+        if (!HasParam(type, name))
+        {
+            TE_PRINT("GpuProgram {" + ToString((UINT32)type) + "} does not have {" + name + "} parameter")
+            return;
+        }
+
+        GpuParamDataDesc* desc = GetParamDesc(type, name);
+
+        SPtr<GpuParamBlockBuffer> paramBlock = GetParamBlockBuffer(desc->ParamBlockSet, desc->ParamBlockSlot);
+        if (paramBlock == nullptr)
+            return;
+
+        UINT32 elementSizeBytes = desc->ElementSize * sizeof(UINT32);
+
+#if TE_DEBUG_MODE
+        if (sizeBytes > elementSizeBytes)
+        {
+            TE_DEBUG("Provided element size larger than maximum element size. Maximum size: {" + ToString(elementSizeBytes) + "}."
+                " Supplied size: {" + ToString(sizeBytes) + "}", __FILE__, __LINE__);
+        }
+
+        if (arrayIdx >= desc->ArraySize)
+        {
+            TE_ASSERT_ERROR(false, "Array index out of range. Array size: " +
+                ToString(desc->ArraySize) + ". Requested size: " + ToString(arrayIdx), __FILE__, __LINE__);
+        }
+#endif
+
+        sizeBytes = std::min(elementSizeBytes, sizeBytes);
+
+        paramBlock->Write((desc->CpuMemOffset + arrayIdx * desc->ArrayElementStride) * sizeof(UINT32), value, sizeBytes);
+
+        // Set unused bytes to 0
+        if (sizeBytes < elementSizeBytes)
+        {
+            UINT32 diffSize = elementSizeBytes - sizeBytes;
+            paramBlock->ZeroOut((desc->CpuMemOffset + arrayIdx * desc->ArrayElementStride) * sizeof(UINT32) + sizeBytes, diffSize);
+        }
+    }
+
+    void GpuParams::SetParam(const String& name, const void* value, UINT32 sizeBytes, UINT32 arrayIdx)
+    {
+        for (UINT32 i = 0; i < GPT_COUNT; i++)
+        {
+            const SPtr<GpuParamDesc>& paramDescs = _paramInfo->GetParamDesc((GpuProgramType)i);
+            if (paramDescs == nullptr)
+            {
+                continue;
+            }
+
+            auto iterFind = paramDescs->Params.find(name);
+            if (iterFind == paramDescs->Params.end())
+            {
+                continue;
+            }
+
+            SetParam((GpuProgramType)i, name, value, sizeBytes);
+        }
+    }
+
     void GpuParams::SetParamBlockBuffer(UINT32 set, UINT32 slot, const SPtr<GpuParamBlockBuffer>& paramBlockBuffer)
     {
         UINT32 globalSlot = _paramInfo->GetSequentialSlot(GpuPipelineParamInfo::ParamType::ParamBlock, set, slot);

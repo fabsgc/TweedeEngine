@@ -86,6 +86,12 @@ namespace te
         /** Gets information that determines which texture surfaces to bind as a sampled texture parameter. */
         const TextureSurface& GetTextureSurface(UINT32 set, UINT32 slot) const;
 
+        /** Assigns the provided param to any ParamBlockBuffer who own it for the specied gpu program */
+        void SetParam(GpuProgramType type, const String& name, const void* value, UINT32 sizeBytes, UINT32 arrayIdx = 0);
+
+        /** Assigns the provided param to any ParamBlockBuffer who own it */
+        void SetParam(const String& name, const void* value, UINT32 sizeBytes, UINT32 arrayIdx = 0);
+
         /**
          * Assigns the provided parameter block buffer to a buffer with the specified name, for the specified GPU program
          * stage. Any following parameter reads or writes that are referencing that buffer will use the new buffer.

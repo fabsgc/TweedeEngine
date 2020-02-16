@@ -103,7 +103,7 @@ namespace te
 
         /** Assigns a buffer to the shader parameter with the specified name. */
         void SetBuffer(const String& name, const SPtr<GpuBuffer>& value);
-
+         
         /** Assigns a sampler state to the shader parameter with the specified name. */
         void SetSamplerState(const String& name, const SPtr<SamplerState>& value);
 
@@ -113,11 +113,26 @@ namespace te
             SetTexture(name, value.GetInternalPtr(), surface);
         }
 
+        /** Assigns a value to an arbitrary constant buffer parameter. */
+        template <typename T>
+        void SetParam(const String& name, T& data)
+        {
+            ParamData param;
+            param.Param = te_new<T>();
+            param.Size = sizeof(T);
+            memcpy(param.Param, &data, param.Size);
+
+            _params[name] = param;
+        }
+
         /* Create all gpu params for a set of passes related to the current technique */
         void CreateGpuParams(UINT32 techniqueIdx, Vector<SPtr<GpuParams>>& outputParams);
 
-        /** Here you can set all properties for a given material*/
+        /** Here you can set all properties for a given material */
         const MaterialProperties& GetProperties() { return _properties; }
+
+        /** ParamBlockBuffer are sometimes not currently set when creating gpuparams. So we give the ability to set manually gpu params */
+        void SetGpuParam(SPtr<GpuParams> outparams);
 
         void SetProperties(const MaterialProperties& properties) 
         { 
@@ -174,6 +189,12 @@ namespace te
             TextureSurface TextureSurfaceElem;
         };
 
+        struct ParamData
+        {
+            void* Param;
+            size_t Size;
+        };
+
     protected:
         SPtr<Shader> _shader;
         Vector<SPtr<Technique>> _techniques;
@@ -181,6 +202,7 @@ namespace te
         UnorderedMap<String, SPtr<TextureData>> _textures;
         UnorderedMap<String, SPtr<GpuBuffer>> _buffers;
         UnorderedMap<String, SPtr<SamplerState>> _samplerStates;
+        UnorderedMap<String, ParamData> _params;
 
         MaterialProperties _properties;
     };

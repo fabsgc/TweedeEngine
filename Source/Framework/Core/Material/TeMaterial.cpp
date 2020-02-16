@@ -9,8 +9,12 @@ namespace te
     { }
 
     Material::~Material()
-    { 
-    
+    {
+        for (auto& param : _params)
+        {
+            if(param.second.Param)
+                te_delete(param.second.Param);
+        }
     }
 
     Material::Material(const HShader& shader)
@@ -75,7 +79,16 @@ namespace te
 
             for (auto& buffer : _buffers)
                 outputParams[idx]->SetBuffer(buffer.first, buffer.second);
+
+            for (auto& param : _params)
+                outputParams[idx]->SetParam(param.first, param.second.Param, (UINT32)param.second.Size);
         }
+    }
+
+    void Material::SetGpuParam(SPtr<GpuParams> outparams)
+    {
+        for (auto& param : _params)
+            outparams->SetParam(param.first, param.second.Param, (UINT32)param.second.Size);
     }
 
     void Material::SetShader(const SPtr<Shader>& shader)
