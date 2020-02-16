@@ -450,7 +450,7 @@ namespace te
             _sponzaRenderable->SetMaterial(material.Name, material.MaterialElement);
         }
 
-        _sponzaRenderable->SetMaterial(_materials[16].MaterialElement);
+        //_sponzaRenderable->SetMaterial(_materials[16].MaterialElement);
 
         _sponzaRenderable->Initialize();
 
