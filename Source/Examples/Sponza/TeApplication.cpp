@@ -121,7 +121,7 @@ namespace te
                 "Data/Textures/Sponza/chain/chain_SPEC.jpeg",
                 "",
                 "Data/Textures/Sponza/chain/chain_MASK.jpeg",
-                1.0f,
+                0.9f,
                 0.5f
             },
             {
@@ -264,7 +264,7 @@ namespace te
                 "Data/Textures/Sponza/leaf/leaf_SPEC.jpeg",
                 "",
                 "Data/Textures/Sponza/leaf/leaf_MASK.jpeg",
-                1.0f,
+                0.9f,
                 0.5f
             },
             {
@@ -319,7 +319,7 @@ namespace te
                 "Data/Textures/Sponza/vase_plant/vase_plant_SPEC.jpeg",
                 "",
                 "Data/Textures/Sponza/vase_plant/vase_plant_MASK.jpeg",
-                1.0f,
+                0.9f,
                 0.5f
             },
             {
@@ -466,7 +466,7 @@ namespace te
         InitMaterials();
         InitMesh();
         InitScene();
-#endif
+
 
         // ######################################################
         gRenderer()->BatchRenderables();
@@ -475,6 +475,7 @@ namespace te
         // ######################################################
         gSceneManager().SetMainRenderTarget(gCoreApplication().GetWindow());
         // ######################################################
+#endif
     }
 
     void Application::PreShutDown()

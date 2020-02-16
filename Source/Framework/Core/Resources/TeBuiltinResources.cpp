@@ -63,7 +63,6 @@ namespace te
     }
     void BuiltinResources::InitStates()
     {
-        _blendTransparentStateDesc;
         _blendTransparentStateDesc.AlphaToCoverageEnable = true;
         _blendTransparentStateDesc.IndependantBlendEnable = true;
 
@@ -217,6 +216,8 @@ namespace te
         passDesc.RasterizerStateDesc = _rasterizerStateDesc;
         passDesc.VertexProgramDesc = _vertexShaderProgramDesc;
         passDesc.PixelProgramDesc = _pixelShaderProgramDesc;
+
+        passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
 
         HPass pass = Pass::Create(passDesc);
         HTechnique technique = Technique::Create("hlsl", { pass.GetInternalPtr() });

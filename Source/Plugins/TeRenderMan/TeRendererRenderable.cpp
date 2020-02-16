@@ -110,7 +110,7 @@ namespace te
         const Matrix4 worldViewProjMatrix = viewProj * RenderablePtr->GetMatrix();
         gPerCallParamDef.gMatWorldViewProj.Set(PerCallParamBuffer, worldViewProjMatrix.Transpose());
 
-        if (flush)
-            PerCallParamBuffer->FlushToGPU();
+        //if (flush)
+        //    PerCallParamBuffer->FlushToGPU();
     }
 }

@@ -118,7 +118,7 @@ namespace te
         void SetParam(const String& name, T& data)
         {
             ParamData param;
-            param.Param = te_new<T>();
+            param.Param = te_allocate<T>(sizeof(T));
             param.Size = sizeof(T);
             memcpy(param.Param, &data, param.Size);
 
