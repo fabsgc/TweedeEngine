@@ -25,8 +25,6 @@ namespace te
             }
         }
 
-        TE_PRINT("new resource")
-
         SPtr<PooledRenderTexture> newTexture = te_shared_ptr_new<PooledRenderTexture>(_currentFrame);
         _textures.push_back(newTexture);
 

@@ -422,7 +422,7 @@ namespace te
         ProjectionType _projType = PT_PERSPECTIVE; /**< Type of camera projection. */
         Radian _horzFOV = Degree(90.0f); /**< Horizontal field of view represents how wide is the camera angle. */
         float _farDist = 500.0f; /**< Clip any objects further than this. Larger value decreases depth precision at smaller depths. */
-        float _nearDist = 0.005f; /**< Clip any objects close than this. Smaller value decreases depth precision at larger depths. */
+        float _nearDist = 0.1f; /**< Clip any objects close than this. Smaller value decreases depth precision at larger depths. */
         float _aspect = 1.33333333333333f; /**< Width/height viewport ratio. */
         float _orthoHeight = 5; /**< Height in world units used for orthographic cameras. */
         INT32 _priority = 0; /**< Determines in what order will the camera be rendered. Higher priority means the camera will be rendered sooner. */

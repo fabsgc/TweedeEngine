@@ -36,6 +36,7 @@ namespace te
         UINT32 gUseBumpMap;
         UINT32 gUseParallaxMap;
         UINT32 gUseTransparencyMap;
+        UINT32 gUseReflectionMap;
         float gSpecularPower;
         float gTransparency;
         float gIndexOfRefraction;
@@ -89,6 +90,7 @@ namespace te
         TE_PARAM_BLOCK_ENTRY(INT32, gUseBumpMap)
         TE_PARAM_BLOCK_ENTRY(INT32, gUseParallaxMap)
         TE_PARAM_BLOCK_ENTRY(INT32, gUseTransparencyMap)
+        TE_PARAM_BLOCK_ENTRY(INT32, gUseReflectionMap)
         TE_PARAM_BLOCK_ENTRY(float, gSpecularPower)
         TE_PARAM_BLOCK_ENTRY(float, gTransparency)
         TE_PARAM_BLOCK_ENTRY(float, gIndexOfRefraction)

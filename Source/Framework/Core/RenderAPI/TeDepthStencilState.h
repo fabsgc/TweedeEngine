@@ -28,7 +28,7 @@ namespace te
          * Determines what operation should the renderer use when comparing previous and current depth value. If the
          * operation passes, pixel with the current depth value will be considered visible.
          */
-        CompareFunction DepthComparisonFunc = CMPF_LESS;
+        CompareFunction DepthComparisonFunc = CMPF_LESS_EQUAL;
 
         /**
          * If true then stencil buffer will also be updated when a pixel is written, and pixels will be tested against

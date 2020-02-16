@@ -45,6 +45,7 @@ namespace te
         bool UseBumpMap = false;
         bool UseParallaxMap = false;
         bool UseTransparencyMap = false;
+        bool UseReflectionMap = false;
     };
 
     /**

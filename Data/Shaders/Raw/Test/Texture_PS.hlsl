@@ -22,6 +22,7 @@ cbuffer PerMaterialBuffer : register(b1)
     uint   gUseBumpMap;
     uint   gUseParallaxMap;
     uint   gUseTransparencyMap;
+    uint   gUseReflectionMap;
     float  gSpecularPower;
     float  gTransparency;
     float  gIndexOfRefraction;
@@ -39,6 +40,7 @@ Texture2D SpecularMap : register(t3);
 Texture2D BumpMap : register(t4);
 Texture2D ParallaxMap : register(t5);
 Texture2D TransparencyMap : register(t6);
+Texture2D ReflectionMap : register(t7);
 
 static const float4 LightColor = float4(1.0f, 0.9f, 0.8f, 0.6f);
 static const float3 LightDirection = float3(0.75f, -2.0f, -2.0f);
@@ -94,6 +96,11 @@ float4 main( PS_INPUT IN ) : SV_Target
     }
 
     if(gUseParallaxMap == 1)
+    {
+        // TODO
+    }
+
+    if(gUseReflectionMap == 1)
     {
         // TODO
     }

@@ -129,6 +129,7 @@ namespace te
         SHADER_DATA_PARAM_DESC gUseBumpMap("gUseBumpMap", "gUseBumpMap", GPDT_INT1);
         SHADER_DATA_PARAM_DESC gUseParallaxMap("gUseParallaxMap", "gUseParallaxMap", GPDT_INT1);
         SHADER_DATA_PARAM_DESC gUseTransparencyMap("gUseTransparencyMap", "gUseTransparencyMap", GPDT_INT1);
+        SHADER_DATA_PARAM_DESC gUseReflectionMap("gUseReflectionMap", "gUseReflectionMap", GPDT_INT1);
         SHADER_DATA_PARAM_DESC gSpecularPower("gSpecularPower", "gSpecularPower", GPDT_FLOAT1);
         SHADER_DATA_PARAM_DESC gTransparency("gTransparency", "gTransparency", GPDT_FLOAT1);
         SHADER_DATA_PARAM_DESC gIndexOfRefraction("gIndexOfRefraction", "gIndexOfRefraction", GPDT_FLOAT1);
@@ -170,6 +171,7 @@ namespace te
         _shaderDesc.AddParameter(gUseBumpMap);
         _shaderDesc.AddParameter(gUseParallaxMap);
         _shaderDesc.AddParameter(gUseTransparencyMap);
+        _shaderDesc.AddParameter(gUseReflectionMap);
         _shaderDesc.AddParameter(gSpecularPower);
         _shaderDesc.AddParameter(gTransparency);
         _shaderDesc.AddParameter(gIndexOfRefraction);

@@ -229,14 +229,19 @@ namespace te
         if (RenderTargetTex != nullptr)
         {
             UINT32 targetIdx = 0;
-            // TODO might lead to a potential bug here
+            rebuildRT |= RenderTargetTex->GetColorTexture(targetIdx++).get() != SceneTex->Tex.get();
+            rebuildRT |= RenderTargetTex->GetColorTexture(targetIdx++) != AlbedoTex->Tex;
+            rebuildRT |= RenderTargetTex->GetColorTexture(targetIdx++) != NormalTex->Tex;
+            rebuildRT |= RenderTargetTex->GetColorTexture(targetIdx++) != EmissiveTex->Tex;
+            if (needsVelocity) 
+                rebuildRT |= RenderTargetTex->GetColorTexture(targetIdx++) != VelocityTex->Tex;
+            rebuildRT |= RenderTargetTex->GetDepthStencilTexture() != DepthTex->Tex;
         }
         else
             rebuildRT = true;
 
         if (RenderTargetTex == nullptr || rebuildRT)
         {
-            TE_PRINT("rebuilt")
             UINT32 targetIdx = 0;
 
             RENDER_TEXTURE_DESC gbufferDesc;
@@ -318,7 +323,14 @@ namespace te
     }
 
     void RCNodeForwardPass::Clear()
-    { }
+    { 
+        SceneTex = nullptr;
+        AlbedoTex = nullptr;
+        NormalTex = nullptr;
+        EmissiveTex = nullptr;
+        VelocityTex = nullptr;
+        DepthTex = nullptr;
+    }
 
     Vector<String> RCNodeForwardPass::GetDependencies(const RendererView& view)
     {
