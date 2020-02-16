@@ -13,7 +13,7 @@ namespace te
         for (auto& param : _params)
         {
             if(param.second.Param)
-                te_delete(param.second.Param);
+                ::free(param.second.Param); //I's sure that types here are primitive or very simple type sush as Vector3
         }
     }
 

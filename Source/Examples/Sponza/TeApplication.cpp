@@ -245,23 +245,12 @@ namespace te
                 1.0f,
                 0.5f
             },
-            /*{
+            {
                 "floor",
                 "Data/Textures/Sponza/floor/floor_COLOR.jpeg",
                 "",
                 "Data/Textures/Sponza/floor/floor_NRM.jpeg",
                 "Data/Textures/Sponza/floor/floor_SPEC.jpeg",
-                "",
-                "",
-                1.0f,
-                0.5f
-            },*/
-            {
-                "floor",
-                "",
-                "",
-                "",
-                "",
                 "",
                 "",
                 1.0f,
@@ -420,12 +409,12 @@ namespace te
             material.MaterialElement->SetProperties(material.MaterialProp);
         };
 
-        materialFunction(_materials[16]);
+        //materialFunction(_materials[16]);
 
-        /*for (auto& material : _materials)
+        for (auto& material : _materials)
         {
             materialFunction(material);
-        }*/
+        }
     }
 
     void Application::InitMesh()
@@ -456,10 +445,10 @@ namespace te
         _sponzaRenderable = _sceneSponzaSO->AddComponent<CRenderable>();
         _sponzaRenderable->SetMesh(_sponzaMesh);
         
-        /*for (auto& material : _materials)
+        for (auto& material : _materials)
         {
             _sponzaRenderable->SetMaterial(material.Name, material.MaterialElement);
-        }*/
+        }
 
         _sponzaRenderable->SetMaterial(_materials[16].MaterialElement);
 
