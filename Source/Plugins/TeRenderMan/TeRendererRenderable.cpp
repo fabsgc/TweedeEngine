@@ -47,6 +47,7 @@ namespace te
         gPerMaterialParamDef.gUseParallaxMap.Set(perMaterialBuffer, data.gUseParallaxMap);
         gPerMaterialParamDef.gUseTransparencyMap.Set(perMaterialBuffer, data.gUseTransparencyMap);
         gPerMaterialParamDef.gUseReflectionMap.Set(perMaterialBuffer, data.gUseReflectionMap);
+        gPerMaterialParamDef.gUseOcclusionMap.Set(perMaterialBuffer, data.gUseOcclusionMap);
         gPerMaterialParamDef.gSpecularPower.Set(perMaterialBuffer, data.gSpecularPower);
         gPerMaterialParamDef.gTransparency.Set(perMaterialBuffer, data.gTransparency);
         gPerMaterialParamDef.gIndexOfRefraction.Set(perMaterialBuffer, data.gIndexOfRefraction);
@@ -70,6 +71,7 @@ namespace te
         data.gUseParallaxMap = (UINT32)properties.UseParallaxMap ? 1 : 0;
         data.gUseTransparencyMap = (UINT32)properties.UseTransparencyMap ? 1 : 0;
         data.gUseReflectionMap = (UINT32)properties.UseReflectionMap ? 1 : 0;
+        data.gUseOcclusionMap = (UINT32)properties.UseOcclusionMap ? 1 : 0;
         data.gSpecularPower = properties.SpecularPower;
         data.gTransparency = properties.Transparency;
         data.gIndexOfRefraction = properties.IndexOfRefraction;

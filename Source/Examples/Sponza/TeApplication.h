@@ -47,16 +47,21 @@ namespace te
             String Normal;
             String Specular;
             String Bump;
+            String Parallax;
             String Transparency;
-            float  Opacity;
-            float  AlphaTreshold;
+            String Occlusion;
+            float  Opacity = 1.0f;
+            float  AlphaTreshold = 0.1f;
+            Color EmissiveColor = Color(0.0f, 0.0f, 0.0f, 1.0f);
 
             HTexture DiffuseTexture;
             HTexture EmissiveTexture;
             HTexture NormalTexture;
             HTexture SpecularTexture;
             HTexture BumpTexture;
+            HTexture ParallaxTexture;
             HTexture TransparencyTexture;
+            HTexture OcclusionTexture;
 
             HMaterial MaterialElement;
 

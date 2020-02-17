@@ -23,6 +23,7 @@ cbuffer PerMaterialBuffer : register(b1)
     uint   gUseParallaxMap;
     uint   gUseTransparencyMap;
     uint   gUseReflectionMap;
+    uint   gUseOcclusionMap;
     float  gSpecularPower;
     float  gTransparency;
     float  gIndexOfRefraction;
@@ -41,6 +42,7 @@ Texture2D BumpMap : register(t4);
 Texture2D ParallaxMap : register(t5);
 Texture2D TransparencyMap : register(t6);
 Texture2D ReflectionMap : register(t7);
+Texture2D OcclusionMap : register(t8);
 
 static const float4 LightColor = float4(1.0f, 0.9f, 0.8f, 0.6f);
 static const float3 LightDirection = float3(0.75f, -2.0f, -2.0f);
@@ -56,6 +58,7 @@ float4 main( PS_INPUT IN ) : SV_Target
     float3 specular  = gSpecular.rgb * gSpecular.a;
     float3 normal = IN.Normal;
     float alpha = gTransparency;
+    float2 texCoords = IN.Texture;
 
     if(gUseTransparencyMap == 1)
     {
@@ -65,6 +68,17 @@ float4 main( PS_INPUT IN ) : SV_Target
     if(alpha <= gAlphaThreshold)
     {
         discard;
+    }
+
+    if(gUseParallaxMap == 1)
+    {
+        // TODO
+    }
+    
+    if(gUseNormalMap == 1)
+    {
+        float3x3 TBN = float3x3(IN.Tangent.xyz, IN.BiTangent.xyz, IN.Normal.xyz);
+        normal = DoNormalMapping(TBN, NormalMap, AnisotropicSampler, IN.Texture);
     }
 
     if(gUseDiffuseMap == 1)
@@ -78,12 +92,6 @@ float4 main( PS_INPUT IN ) : SV_Target
         emissive = emissive * EmissiveMap.Sample( AnisotropicSampler, IN.Texture ).rgb;
     }
 
-    if(gUseNormalMap == 1)
-    {
-        float3x3 TBN = float3x3(IN.Tangent.xyz, IN.BiTangent.xyz, IN.Normal.xyz);
-        normal = DoNormalMapping(TBN, NormalMap, AnisotropicSampler, IN.Texture);
-    }
-
     if(gUseSpecularMap == 1)
     {
         specular.rgb = SpecularMap.Sample(AnisotropicSampler, IN.Texture).xyz;
@@ -95,14 +103,14 @@ float4 main( PS_INPUT IN ) : SV_Target
         normal = DoBumpMapping(TBN, BumpMap, AnisotropicSampler, IN.Texture, 1.0f);
     }
 
-    if(gUseParallaxMap == 1)
+    if(gUseReflectionMap == 1)
     {
         // TODO
     }
 
-    if(gUseReflectionMap == 1)
+    if(gUseOcclusionMap == 1)
     {
-        // TODO
+        diffuse = diffuse * OcclusionMap.Sample(AnisotropicSampler, IN.Texture).rgb;
     }
 
     // Diffuse

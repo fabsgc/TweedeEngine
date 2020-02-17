@@ -80,6 +80,8 @@ namespace te
                 "Data/Textures/Sponza/arch/arch_SPEC.jpeg",
                 "",
                 "",
+                "",
+                "Data/Textures/Sponza/arch/arch_OCC.jpeg",
                 1.0f,
                 0.5f
             },
@@ -89,6 +91,8 @@ namespace te
                 "",
                 "Data/Textures/Sponza/background/background_NRM.jpeg",
                 "Data/Textures/Sponza/background/background_SPEC.jpeg",
+                "",
+                "",
                 "",
                 "",
                 1.0f,
@@ -102,6 +106,8 @@ namespace te
                 "Data/Textures/Sponza/bricks/bricks_SPEC.jpeg",
                 "",
                 "",
+                "",
+                "Data/Textures/Sponza/bricks/bricks_OCC.jpeg",
                 1.0f,
                 0.5f
             },
@@ -111,6 +117,8 @@ namespace te
                 "",
                 "Data/Textures/Sponza/ceiling/ceiling_NRM.jpeg",
                 "Data/Textures/Sponza/ceiling/ceiling_SPEC.jpeg",
+                "",
+                "",
                 "",
                 "",
                 1.0f,
@@ -123,7 +131,9 @@ namespace te
                 "Data/Textures/Sponza/chain/chain_NRM.jpeg",
                 "Data/Textures/Sponza/chain/chain_SPEC.jpeg",
                 "",
+                "",
                 "Data/Textures/Sponza/chain/chain_MASK.jpeg",
+                "",
                 0.9f,
                 0.5f
             },
@@ -135,6 +145,8 @@ namespace te
                 "Data/Textures/Sponza/column_a/column_a_SPEC.jpeg",
                 "",
                 "",
+                "",
+                "Data/Textures/Sponza/column_a/column_a_OCC.jpeg",
                 1.0f,
                 0.5f
             },
@@ -146,6 +158,8 @@ namespace te
                 "Data/Textures/Sponza/column_b/column_b_SPEC.jpeg",
                 "",
                 "",
+                "",
+                "Data/Textures/Sponza/column_b/column_b_OCC.jpeg",
                 1.0f,
                 0.5f
             },
@@ -157,6 +171,8 @@ namespace te
                 "Data/Textures/Sponza/column_c/column_c_SPEC.jpeg",
                 "",
                 "",
+                "",
+                "Data/Textures/Sponza/column_c/column_c_OCC.jpeg",
                 1.0f,
                 0.5f
             },
@@ -166,6 +182,8 @@ namespace te
                 "",
                 "Data/Textures/Sponza/details/details_NRM.jpeg",
                 "Data/Textures/Sponza/details/details_SPEC.jpeg",
+                "",
+                "",
                 "",
                 "",
                 1.0f,
@@ -179,6 +197,8 @@ namespace te
                 "Data/Textures/Sponza/fabric_a/fabric_a_SPEC.jpeg",
                 "",
                 "",
+                "",
+                "",
                 1.0f,
                 0.5f
             },
@@ -188,6 +208,8 @@ namespace te
                 "",
                 "Data/Textures/Sponza/fabric_c/fabric_c_NRM.jpeg",
                 "Data/Textures/Sponza/fabric_c/fabric_c_SPEC.jpeg",
+                "",
+                "",
                 "",
                 "",
                 1.0f,
@@ -201,6 +223,8 @@ namespace te
                 "Data/Textures/Sponza/fabric_a/fabric_a_SPEC.jpeg",
                 "",
                 "",
+                "",
+                "",
                 1.0f,
                 0.5f
             },
@@ -212,8 +236,10 @@ namespace te
                 "Data/Textures/Sponza/fabric_a/fabric_a_SPEC.jpeg",
                 "",
                 "",
-                0.5f,
-                0.2f
+                "",
+                "",
+                1.0f,
+                0.5f
             },
             {
                 "fabric_f",
@@ -221,6 +247,8 @@ namespace te
                 "",
                 "Data/Textures/Sponza/fabric_c/fabric_c_NRM.jpeg",
                 "Data/Textures/Sponza/fabric_c/fabric_c_SPEC.jpeg",
+                "",
+                "",
                 "",
                 "",
                 1.0f,
@@ -234,6 +262,8 @@ namespace te
                 "Data/Textures/Sponza/fabric_c/fabric_c_SPEC.jpeg",
                 "",
                 "",
+                "",
+                "",
                 1.0f,
                 0.5f
             },
@@ -243,6 +273,8 @@ namespace te
                 "",
                 "Data/Textures/Sponza/flagpole/flagpole_NRM.jpeg",
                 "Data/Textures/Sponza/flagpole/flagpole_SPEC.jpeg",
+                "",
+                "",
                 "",
                 "",
                 1.0f,
@@ -256,6 +288,8 @@ namespace te
                 "Data/Textures/Sponza/floor/floor_SPEC.jpeg",
                 "",
                 "",
+                "",
+                "Data/Textures/Sponza/floor/floor_OCC.jpeg",
                 1.0f,
                 0.5f
             },
@@ -266,7 +300,9 @@ namespace te
                 "",
                 "Data/Textures/Sponza/leaf/leaf_SPEC.jpeg",
                 "",
+                "",
                 "Data/Textures/Sponza/leaf/leaf_MASK.jpeg",
+                "",
                 0.9f,
                 0.5f
             },
@@ -276,6 +312,8 @@ namespace te
                 "",
                 "Data/Textures/Sponza/lion/lion_NRM.jpeg",
                 "Data/Textures/Sponza/lion/lion_SPEC.jpeg",
+                "",
+                "",
                 "",
                 "",
                 1.0f,
@@ -289,6 +327,8 @@ namespace te
                 "Data/Textures/Sponza/roof/roof_SPEC.jpeg",
                 "",
                 "",
+                "",
+                "",
                 1.0f,
                 0.5f
             },
@@ -298,6 +338,8 @@ namespace te
                 "",
                 "Data/Textures/Sponza/vase/vase_NRM.jpeg",
                 "Data/Textures/Sponza/vase/vase_SPEC.jpeg",
+                "",
+                "",
                 "",
                 "",
                 1.0f,
@@ -311,6 +353,8 @@ namespace te
                 "Data/Textures/Sponza/vase_hanging/vase_hanging_SPEC.jpeg",
                 "",
                 "",
+                "",
+                "",
                 1.0f,
                 0.5f
             },
@@ -321,7 +365,9 @@ namespace te
                 "",
                 "Data/Textures/Sponza/vase_plant/vase_plant_SPEC.jpeg",
                 "",
+                "",
                 "Data/Textures/Sponza/vase_plant/vase_plant_MASK.jpeg",
+                "",
                 0.9f,
                 0.5f
             },
@@ -331,6 +377,8 @@ namespace te
                 "",
                 "Data/Textures/Sponza/vase_round/vase_round_NRM.jpeg",
                 "Data/Textures/Sponza/vase_round/vase_round_SPEC.jpeg",
+                "",
+                "",
                 "",
                 "",
                 1.0f,
@@ -351,9 +399,9 @@ namespace te
         {
             material.MaterialProp.SpecularPower = 16.0f;
             material.MaterialProp.Ambient = Color(1.0f, 1.0f, 1.0f, 0.75f);
-            //material.MaterialProp.Emissive = Color(1.0f, 1.0f, 1.0f, 0.75f);
             material.MaterialProp.AlphaThreshold = material.AlphaTreshold;
             material.MaterialProp.Transparency = material.Opacity;
+            material.MaterialProp.Emissive = material.EmissiveColor;
 
             if (material.Diffuse != "")
             {
@@ -385,10 +433,22 @@ namespace te
                 material.MaterialProp.UseBumpMap = true;
             }
 
+            if (material.Parallax != "")
+            {
+                material.ParallaxTexture = gResourceManager().Load<Texture>(material.Parallax, textureImportOptions);
+                material.MaterialProp.UseParallaxMap = true;
+            }
+
             if (material.Transparency != "")
             {
                 material.TransparencyTexture = gResourceManager().Load<Texture>(material.Transparency, textureImportOptions);
                 material.MaterialProp.UseTransparencyMap = true;
+            }
+
+            if (material.Occlusion != "")
+            {
+                material.OcclusionTexture = gResourceManager().Load<Texture>(material.Occlusion, textureImportOptions);
+                material.MaterialProp.UseOcclusionMap = true;
             }
 
             if(material.Opacity < 1.0f)
@@ -396,9 +456,9 @@ namespace te
             else
                 material.MaterialElement = Material::Create(_shaderOpaque);
 
-            float g = 0.9f;
+            //float g = 0.9f;
 
-            material.MaterialElement->SetParam<float>("gTransparency", g);
+            //material.MaterialElement->SetParam<float>("gTransparency", g);
             material.MaterialElement->SetName(material.Name);
             material.MaterialElement->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetAnisotropicSamplerState());
 
@@ -406,8 +466,10 @@ namespace te
             if (material.Emissive != "") material.MaterialElement->SetTexture("EmissiveMap", material.EmissiveTexture, surface);
             if (material.Normal != "") material.MaterialElement->SetTexture("NormalMap", material.NormalTexture, surface);
             if (material.Specular != "") material.MaterialElement->SetTexture("SpecularMap", material.SpecularTexture, surface);
+            if (material.Parallax != "") material.MaterialElement->SetTexture("ParallaxMap", material.ParallaxTexture, surface);
             if (material.Bump != "") material.MaterialElement->SetTexture("BumpMap", material.BumpTexture, surface);
             if (material.Transparency != "") material.MaterialElement->SetTexture("TransparencyMap", material.TransparencyTexture, surface);
+            if (material.Occlusion != "") material.MaterialElement->SetTexture("OcclusionMap", material.OcclusionTexture, surface);
 
             material.MaterialElement->SetProperties(material.MaterialProp);
         };
