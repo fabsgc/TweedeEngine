@@ -81,6 +81,8 @@ VS_OUTPUT main( VS_INPUT IN )
         OUT.WorldPosition = mul(OUT.WorldPosition, gMatWorld);
 
         OUT.ViewDirection = normalize(OUT.WorldPosition.xyz - gViewOrigin);
+
+        OUT.WorldViewDistance = mul(OUT.WorldPosition, gMatView);
     }
     else
     {
@@ -100,6 +102,8 @@ VS_OUTPUT main( VS_INPUT IN )
         OUT.WorldPosition = mul(OUT.WorldPosition, gInstanceData[IN.Instanceid].gMatWorld);
 
         OUT.ViewDirection = normalize(OUT.WorldPosition.xyz - gViewOrigin);
+
+        OUT.WorldViewDistance = mul(OUT.WorldPosition, gMatView);
     }
 
     return OUT;

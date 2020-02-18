@@ -16,6 +16,7 @@
 #include "Scene/TeSceneManager.h"
 #include "Scene/TeGameObjectManager.h"
 #include "CoreUtility/TeCoreObjectManager.h"
+#include "Renderer/TeRendererMaterialManager.h"
 
 #include "Input/TeInput.h"
 #include "Input/TeVirtualInput.h"
@@ -72,6 +73,7 @@ namespace te
         VirtualInput::StartUp();
         Importer::StartUp(); 
         BuiltinResources::StartUp();
+        RendererMaterialManager::StartUp();
 
         for (auto& importerName : _startUpDesc.Importers)
         {
@@ -89,6 +91,7 @@ namespace te
         _renderer = nullptr;
 
         BuiltinResources::ShutDown();
+        RendererMaterialManager::ShutDown();
         Importer::ShutDown();
         VirtualInput::ShutDown();
         Input::ShutDown();

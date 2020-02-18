@@ -24,6 +24,7 @@ namespace te
 #if TE_PLATFORM == TE_PLATFORM_WIN32 //TODO to remove when OpenGL will be done
         InitShaderOpaque();
         InitShaderTransparent();
+        InitShaderBlit();
 #endif
     }
 
@@ -38,6 +39,8 @@ namespace te
             return _shaderOpaque;
         case BuiltinShader::Transparent:
             return _shaderTransparent;
+        case BuiltinShader::Blit:
+            return _shaderBlit;
         default:
             break;
         }
@@ -238,6 +241,26 @@ namespace te
         shaderDesc.Techniques.push_back(technique.GetInternalPtr());
         
         _shaderTransparent = Shader::Create("Transparent", shaderDesc);
+    }
+
+    void BuiltinResources::InitShaderBlit()
+    {
+        // TODO FIX SHADER PROGRAMS
+        PASS_DESC passDesc;
+        passDesc.BlendStateDesc = _blendOpaqueStateDesc;
+        passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
+        passDesc.RasterizerStateDesc = _rasterizerStateDesc;
+        passDesc.VertexProgramDesc = _vertexShaderProgramDesc;
+        passDesc.PixelProgramDesc = _pixelShaderProgramDesc;
+
+        HPass pass = Pass::Create(passDesc);
+        HTechnique technique = Technique::Create("hlsl", { pass.GetInternalPtr() });
+        technique->Compile();
+
+        SHADER_DESC shaderDesc = _shaderDesc;
+        shaderDesc.Techniques.push_back(technique.GetInternalPtr());
+
+        _shaderBlit = Shader::Create("Blit", shaderDesc);
     }
 
     BuiltinResources& gBuiltinResources()

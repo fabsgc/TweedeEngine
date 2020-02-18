@@ -47,17 +47,47 @@ Texture2D OcclusionMap : register(t8);
 static const float4 LightColor = float4(1.0f, 0.9f, 0.8f, 0.6f);
 static const float3 LightDirection = float3(0.75f, -2.0f, -2.0f);
 
-float4 main( PS_INPUT IN ) : SV_Target
+float4 ComputeAlbedoBuffer(float4 diffuse)
 {
-    float4 outColor  = float4(1.0f, 1.0f, 1.0f, 1.0f);
+    return diffuse;
+}
+
+float4 ComputeSpecularBuffer(float4 specular)
+{
+    return specular;
+}
+
+float4 ComputeNormalBuffer(float4 normal)
+{
+    return normal;
+}
+
+float4 ComputeEmissiveBuffer(float4 emissive)
+{
+    return emissive; // TODO
+}
+
+float4 ComputeVelocityBuffer(float4 velocity)
+{
+    return velocity; // TODO
+}
+
+PS_OUTPUT main( PS_INPUT IN )
+{
+    PS_OUTPUT OUT;
+
+    OUT.Scene  = float4(1.0f, 1.0f, 1.0f, 1.0f);
     float3 lightDirection = normalize(-LightDirection);
 
+    float3x3 TBN = float3x3(IN.Tangent.xyz, IN.BiTangent.xyz, IN.Normal.xyz);
+
+    float3 albedo    = gDiffuse.rgb * gDiffuse.a;
     float3 ambient   = gAmbient.rgb * gAmbient.a * (LightColor.rgb * LightColor.a);
     float3 diffuse   = gDiffuse.rgb * gDiffuse.a;
     float3 emissive  = gEmissive.rgb * gEmissive.a;
     float3 specular  = gSpecular.rgb * gSpecular.a;
-    float3 normal = IN.Normal;
-    float alpha = gTransparency;
+    float3 normal    = IN.Normal;
+    float  alpha     = gTransparency;
     float2 texCoords = IN.Texture;
 
     if(gUseTransparencyMap == 1)
@@ -77,14 +107,14 @@ float4 main( PS_INPUT IN ) : SV_Target
     
     if(gUseNormalMap == 1)
     {
-        float3x3 TBN = float3x3(IN.Tangent.xyz, IN.BiTangent.xyz, IN.Normal.xyz);
         normal = DoNormalMapping(TBN, NormalMap, AnisotropicSampler, IN.Texture);
     }
 
     if(gUseDiffuseMap == 1)
     {
         ambient = ambient * DiffuseMap.Sample(AnisotropicSampler, IN.Texture).rgb;
-        diffuse = DiffuseMap.Sample(AnisotropicSampler, IN.Texture).rgb;
+        albedo = DiffuseMap.Sample(AnisotropicSampler, IN.Texture).rgb;
+        diffuse = albedo;
     }
 
     if(gUseEmissiveMap == 1)
@@ -99,7 +129,6 @@ float4 main( PS_INPUT IN ) : SV_Target
 
     if(gUseBumpMap == 1)
     {
-        float3x3 TBN = float3x3(IN.Tangent.xyz, IN.BiTangent.xyz, IN.Normal.xyz);
         normal = DoBumpMapping(TBN, BumpMap, AnisotropicSampler, IN.Texture, 1.0f);
     }
 
@@ -122,7 +151,14 @@ float4 main( PS_INPUT IN ) : SV_Target
     float3 specFactor = pow(max(dot(IN.ViewDirection, refVector), 0.0), gSpecularPower);
     specular = (specFactor * specular.rgb);
 
-    outColor.rgb = ambient + diffuse + specular + emissive;
-    outColor.a = alpha;
-    return outColor;
+    OUT.Scene.rgb = ambient + diffuse + specular + emissive;
+    OUT.Scene.a = alpha;
+
+    OUT.Albedo = ComputeAlbedoBuffer(float4(albedo, 1.0f));
+    OUT.Specular = ComputeSpecularBuffer(float4(specular, 1.0f));
+    OUT.Normal = ComputeNormalBuffer(float4(normal, 0.0f));
+    OUT.Emissive = ComputeEmissiveBuffer((float4)0);
+    OUT.Velocity = ComputeVelocityBuffer((float4)0);
+
+    return OUT;
 }

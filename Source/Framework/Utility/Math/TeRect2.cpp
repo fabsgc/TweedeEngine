@@ -5,7 +5,7 @@
 
 namespace te
 {
-    //const Rect2 Rect2::EMPTY;
+    const Rect2 Rect2::EMPTY;
 
     bool Rect2::Contains(const Vector2& point) const
     {

@@ -143,6 +143,10 @@ namespace te
     class RenderQueue;
     class RenderElement;
     class Skybox;
+    class RendererMaterialManager;
+    class RendererMaterialBase;
+    template <typename T>
+    class RendererMaterial;
 
     class SceneActor;
     class SceneManager;

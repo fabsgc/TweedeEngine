@@ -38,6 +38,13 @@ namespace te
 
         RenderCompositor::RegisterNodeType<RCNodeForwardPass>();
         RenderCompositor::RegisterNodeType<RCNodeSkybox>();
+        RenderCompositor::RegisterNodeType<RCNodeTonemapping>();
+        RenderCompositor::RegisterNodeType<RCNodeMotionBlur>();
+        RenderCompositor::RegisterNodeType<RCNodeGaussianDOF>();
+        RenderCompositor::RegisterNodeType<RCNodeFXAA>();
+        RenderCompositor::RegisterNodeType<RCNodeSSAO>();
+        RenderCompositor::RegisterNodeType<RCNodeBloom>();
+        RenderCompositor::RegisterNodeType<RCNodePostProcess>();
         RenderCompositor::RegisterNodeType<RCNodeFinalResolve>();
     }
 

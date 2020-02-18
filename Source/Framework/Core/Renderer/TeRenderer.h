@@ -11,6 +11,16 @@ namespace te
         virtual ~RendererOptions() = default;
     };
 
+    /**
+     * Contains information about the current state of a particular renderer view. This will be updated
+     * during rendering of a single frame.
+     */
+    struct RendererViewContext
+    {
+        /** Current target the view is rendering to. */
+        SPtr<RenderTarget> CurrentTarget;
+    };
+
     class TE_CORE_EXPORT Renderer
     {
     public:

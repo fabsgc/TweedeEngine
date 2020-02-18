@@ -209,6 +209,8 @@ namespace te
         // Note: Consider customizable formats. e.g. for testing if quality can be improved with higher precision normals.
         SceneTex = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA8, width, height, TU_RENDERTARGET,
             numSamples, true));
+        SpecularTex = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA8, width, height, TU_RENDERTARGET,
+            numSamples, true));
         AlbedoTex = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA8, width, height, TU_RENDERTARGET,
             numSamples, true));
         NormalTex = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA8, width, height, TU_RENDERTARGET,
@@ -229,7 +231,8 @@ namespace te
         if (RenderTargetTex != nullptr)
         {
             UINT32 targetIdx = 0;
-            rebuildRT |= RenderTargetTex->GetColorTexture(targetIdx++).get() != SceneTex->Tex.get();
+            rebuildRT |= RenderTargetTex->GetColorTexture(targetIdx++) != SceneTex->Tex;
+            rebuildRT |= RenderTargetTex->GetColorTexture(targetIdx++) != SpecularTex->Tex;
             rebuildRT |= RenderTargetTex->GetColorTexture(targetIdx++) != AlbedoTex->Tex;
             rebuildRT |= RenderTargetTex->GetColorTexture(targetIdx++) != NormalTex->Tex;
             rebuildRT |= RenderTargetTex->GetColorTexture(targetIdx++) != EmissiveTex->Tex;
@@ -246,6 +249,12 @@ namespace te
 
             RENDER_TEXTURE_DESC gbufferDesc;
             gbufferDesc.ColorSurfaces[targetIdx].Tex = SceneTex->Tex;
+            gbufferDesc.ColorSurfaces[targetIdx].Face = 0;
+            gbufferDesc.ColorSurfaces[targetIdx].NumFaces = 1;
+            gbufferDesc.ColorSurfaces[targetIdx].MipLevel = 0;
+            targetIdx++;
+
+            gbufferDesc.ColorSurfaces[targetIdx].Tex = SpecularTex->Tex;
             gbufferDesc.ColorSurfaces[targetIdx].Face = 0;
             gbufferDesc.ColorSurfaces[targetIdx].NumFaces = 1;
             gbufferDesc.ColorSurfaces[targetIdx].MipLevel = 0;
@@ -310,9 +319,11 @@ namespace te
 
         RenderAPI& rapi = RenderAPI::Instance();
 
+        rapi.SetRenderTarget(RenderTargetTex);
         rapi.SetRenderTarget(inputs.View.GetProperties().Target.Target);
 
         UINT32 clearBuffers = FBT_COLOR | FBT_DEPTH | FBT_STENCIL;
+        rapi.ClearViewport(clearBuffers, Color::Black);
         rapi.ClearViewport(clearBuffers, inputs.View.GetProperties().Target.ClearColor);
 
         // Render all visible opaque elements
@@ -325,6 +336,7 @@ namespace te
     void RCNodeForwardPass::Clear()
     { 
         SceneTex = nullptr;
+        SpecularTex = nullptr;
         AlbedoTex = nullptr;
         NormalTex = nullptr;
         EmissiveTex = nullptr;
@@ -337,12 +349,13 @@ namespace te
         return { };
     }
 
+    // ############# SKYBOX
+
     void RCNodeSkybox::Render(const RenderCompositorNodeInputs& inputs)
     { 
         Skybox* skybox = nullptr;
         if (inputs.View.GetRenderSettings().EnableSkybox)
             skybox = inputs.Scene.SkyboxElem;
-
     }
 
     void RCNodeSkybox::Clear()
@@ -350,21 +363,187 @@ namespace te
 
     Vector<String> RCNodeSkybox::GetDependencies(const RendererView& view)
     {
-        return { };
+        return { RCNodeForwardPass::GetNodeId() };
     }
 
-    void RCNodeFinalResolve::Render(const RenderCompositorNodeInputs& inputs)
+    // ############# POST PROCESS
+
+    SPtr<Texture> RCNodePostProcess::GetLastOutput() const
+    {
+        UINT32 otherIdx = (_currentIdx + 1) % 2;
+        if (_output[otherIdx])
+            return _output[otherIdx]->Tex;
+
+        return nullptr;
+    }
+
+    void RCNodePostProcess::Render(const RenderCompositorNodeInputs& inputs)
     { }
+
+    void RCNodePostProcess::Clear()
+    { }
+
+    Vector<String> RCNodePostProcess::GetDependencies(const RendererView& view)
+    {
+        return {
+            RCNodeForwardPass::GetNodeId(),
+            RCNodeSkybox::GetNodeId()
+        };
+    }
+
+    // ############# TONE MAPPING
+
+    void RCNodeTonemapping::Render(const RenderCompositorNodeInputs& inputs)
+    { }
+
+    void RCNodeTonemapping::Clear()
+    { }
+
+    Vector<String> RCNodeTonemapping::GetDependencies(const RendererView& view)
+    {
+        Vector<String> deps = {
+            RCNodeMotionBlur::GetNodeId(),
+            RCNodePostProcess::GetNodeId()
+        };
+
+        if (view.GetRenderSettings().Bloom.Enabled)
+            deps.push_back(RCNodeBloom::GetNodeId());
+
+        return deps;
+    }
+
+    // ############# MOTION BLUR
+
+    void RCNodeMotionBlur::Render(const RenderCompositorNodeInputs& inputs)
+    { }
+
+    void RCNodeMotionBlur::Clear()
+    { }
+
+    Vector<String> RCNodeMotionBlur::GetDependencies(const RendererView& view)
+    {
+        return { RCNodePostProcess::GetNodeId() };
+    }
+
+    // ############# GAUSSIAN DOF
+
+    void RCNodeGaussianDOF::Render(const RenderCompositorNodeInputs& inputs)
+    { }
+
+    void RCNodeGaussianDOF::Clear()
+    { }
+
+    Vector<String> RCNodeGaussianDOF::GetDependencies(const RendererView& view)
+    {
+        return
+        {
+            RCNodeTonemapping::GetNodeId(),
+            RCNodePostProcess::GetNodeId()
+        };
+    }
+
+    // ############# FXAA
+
+    void RCNodeFXAA::Render(const RenderCompositorNodeInputs& inputs)
+    { }
+
+    void RCNodeFXAA::Clear()
+    { }
+
+    Vector<String> RCNodeFXAA::GetDependencies(const RendererView& view)
+    {
+        return
+        {
+            RCNodeGaussianDOF::GetNodeId(),
+            RCNodePostProcess::GetNodeId()
+        };
+    }
+
+    // ############# SSAO
+
+    void RCNodeSSAO::Render(const RenderCompositorNodeInputs& inputs)
+    { }
+
+    void RCNodeSSAO::Clear()
+    { 
+        _pooledOutput = nullptr;
+    }
+
+    Vector<String> RCNodeSSAO::GetDependencies(const RendererView& view)
+    {
+        return
+        {
+            RCNodePostProcess::GetNodeId()
+        };
+    }
+
+    // ############# BLOOM
+
+    void RCNodeBloom::Render(const RenderCompositorNodeInputs& inputs)
+    { }
+
+    void RCNodeBloom::Clear()
+    {
+        _pooledOutput = nullptr;
+    }
+
+    Vector<String> RCNodeBloom::GetDependencies(const RendererView& view)
+    {
+        return
+        {
+            RCNodePostProcess::GetNodeId()
+        };
+    }
+
+    // ############# FINAL RENDER
+
+    void RCNodeFinalResolve::Render(const RenderCompositorNodeInputs& inputs)
+    {
+        const RendererViewProperties& viewProps = inputs.View.GetProperties();
+
+        SPtr<Texture> input;
+        if (viewProps.RunPostProcessing)
+        {
+            RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[0]);
+
+            // Note: Ideally the last PP effect could write directly to the final target and we could avoid this copy
+            input = postProcessNode->GetLastOutput();
+        }
+        else
+        {
+            RCNodeForwardPass* forwardPaddNode = static_cast<RCNodeForwardPass*>(inputs.InputNodes[0]);
+            input = forwardPaddNode->SceneTex->Tex;
+        }
+
+        SPtr<RenderTarget> target = viewProps.Target.Target;
+
+        RenderAPI& rapi = RenderAPI::Instance();
+        rapi.SetRenderTarget(target);
+        rapi.SetViewport(viewProps.Target.NrmViewRect);
+
+        gRendererUtility().Blit(input, Rect2I::EMPTY, viewProps.FlipView);
+
+        inputs.View._notifyCompositorTargetChanged(nullptr);
+    }
 
     void RCNodeFinalResolve::Clear()
     { }
 
     Vector<String> RCNodeFinalResolve::GetDependencies(const RendererView& view)
     {
-        return
+        const RendererViewProperties& viewProps = view.GetProperties();
+
+        Vector<String> deps;
+        if (viewProps.RunPostProcessing)
         {
-            RCNodeForwardPass::GetNodeId(),
-            RCNodeSkybox::GetNodeId(),
-        };
+            deps.push_back(RCNodePostProcess::GetNodeId());
+        }
+        else
+        {
+            deps.push_back(RCNodeForwardPass::GetNodeId());
+            deps.push_back(RCNodeSkybox::GetNodeId());
+        }
+
+        return deps;
     }
 }

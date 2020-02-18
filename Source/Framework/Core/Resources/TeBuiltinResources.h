@@ -23,7 +23,9 @@ namespace te
         /** Shader used for opaque 3D geometry. */
         Opaque,
         /** Shader used for transparent 3D geometry. */
-        Transparent
+        Transparent,
+        /** Shader used to blit a texture on a screen quad */
+        Blit
     };
 
     /**	Holds references to built-in resources used by the core engine. */
@@ -72,10 +74,13 @@ namespace te
 
         void InitShaderOpaque();
         void InitShaderTransparent();
+        void InitShaderBlit();
 
     private:
         HShader _shaderOpaque;
         HShader _shaderTransparent;
+
+        HShader _shaderBlit;
 
         SPtr<SamplerState> _anisotropicSamplerState;
 

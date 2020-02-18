@@ -201,6 +201,23 @@ namespace te
         _nextQuadVBSlot = (_nextQuadVBSlot + 1) % NUM_QUAD_VB_SLOTS;
     }
 
+    void RendererUtility::Blit(const SPtr<Texture>& texture, const Rect2I& area, bool flipUV, bool isDepth, bool isFiltered)
+    {
+        auto& texProps = texture->GetProperties();
+
+        Rect2 fArea((float)area.x, (float)area.y, (float)area.width, (float)area.height);
+        if (area.width == 0 || area.height == 0)
+        {
+            fArea.x = 0.0f;
+            fArea.y = 0.0f;
+            fArea.width = (float)texProps.GetWidth();
+            fArea.height = (float)texProps.GetHeight();
+        }
+
+        // TODO
+        BlitMat* blitMat = nullptr;
+    }
+
     RendererUtility& gRendererUtility()
     {
         return RendererUtility::Instance();

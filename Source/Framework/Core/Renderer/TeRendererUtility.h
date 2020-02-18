@@ -5,9 +5,20 @@
 #include "Math/TeRect2.h"
 #include "Math/TeVector2I.h"
 #include "Math/TeRect2I.h"
+#include "Renderer/TeRendererMaterial.h"
+#include "Renderer/TeParamBlocks.h"
 
 namespace te
 {
+    /** Shader that copies a source texture into a render target, and optionally resolves it. */
+    class TE_CORE_EXPORT BlitMat : public RendererMaterial<BlitMat>
+    {
+        RMAT_DEF(BuiltinShader::Blit);
+
+    public:
+        BlitMat() = default;
+    };
+
     /**
      * Contains various utility methods that make various common operations in the renderer easier.
      */
@@ -98,6 +109,23 @@ namespace te
 
             DrawScreenQuad(uv, textureSize, numInstances);
         }
+
+        /**
+         * Blits contents of the provided texture into the currently bound render target. If the provided texture contains
+         * multiple samples, they will be resolved.
+         *
+         * @param[in]	texture	Source texture to blit.
+         * @param[in]	area	Area of the source texture to blit in pixels. If width or height is zero it is assumed
+         *						the entire texture should be blitted.
+         * @param[in]	flipUV	If true, vertical UV coordinate will be flipped upside down.
+         * @param[in]	isDepth	If true, the input texture is assumed to be a depth texture (instead of a color one).
+         *						Multisampled depth textures will be resolved by taking the minimum value of all samples,
+         *						unlike color textures which wil be averaged.
+         * @param	isFiltered	True if to apply bilinear filtering to the sampled texture. Only relevant for color
+         *						textures with no multiple samples.
+         */
+        void Blit(const SPtr<Texture>& texture, const Rect2I& area = Rect2I::EMPTY, bool flipUV = false,
+            bool isDepth = false, bool isFiltered = false);
 
     private:
         static constexpr UINT32 NUM_QUAD_VB_SLOTS = 1024;

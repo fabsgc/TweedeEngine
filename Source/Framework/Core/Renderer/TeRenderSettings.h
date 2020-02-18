@@ -4,6 +4,60 @@
 
 namespace te
 {
+    /** Settings that control automatic exposure (eye adaptation) post-process. */
+    struct TE_CORE_EXPORT AutoExposureSettings
+    {
+        AutoExposureSettings() = default;
+    };
+
+    /** Settings that control tonemap post-process. */
+    struct TE_CORE_EXPORT TonemappingSettings
+    {
+        TonemappingSettings() = default;
+    };
+
+    /** Settings that control screen space ambient occlusion. */
+    struct TE_CORE_EXPORT AmbientOcclusionSettings
+    {
+        AmbientOcclusionSettings() = default;
+
+        /** Enables or disables the screen space ambient occlusion effect. */
+        bool Enabled = true;
+    };
+
+    /** Base class for both sim and core thread variants of DepthOfFieldSettings. */
+    struct TE_CORE_EXPORT DepthOfFieldSettingsBase
+    {
+        DepthOfFieldSettingsBase() = default;
+
+        /** Enables or disables the depth of field effect. */
+        bool Enabled = false;
+    };
+
+    /** Settings that control the motion blur effect. */
+    struct TE_CORE_EXPORT MotionBlurSettings
+    {
+        MotionBlurSettings() = default;
+
+        /** Enables or disables the motion blur effect. */
+        bool Enabled = false;
+    };
+
+    /** Settings that control the bloom effect. Bloom adds an extra highlight to bright areas of the scene. */
+    struct TE_CORE_EXPORT BloomSettings
+    {
+        BloomSettings() = default;
+
+        /** Enables or disables the bloom effect. */
+        bool Enabled = false;
+    };
+
+    /** Various options that control shadow rendering for a specific view. */
+    struct TE_CORE_EXPORT ShadowSettings
+    {
+        ShadowSettings() = default;
+    };
+
     /** Base class for both sim and core thread variants of RenderSettings. */
     struct TE_CORE_EXPORT RenderSettings
     {
@@ -19,6 +73,13 @@ namespace te
         bool EnableAutoExposure = true;
 
         /**
+         * Parameters used for customizing automatic scene exposure.
+         *
+         * @see	enableAutoExposure
+         */
+         AutoExposureSettings AutoExposure;
+
+        /**
          * Determines should the image be tonemapped. Tonemapping converts an HDR image into LDR image by applying
          * a filmic curve to the image, simulating the effect of film cameras. Filmic curve improves image quality by
          * tapering off lows and highs, preventing under- and over-exposure. This is useful if an image contains both
@@ -29,6 +90,19 @@ namespace te
          * images.
          */
         bool EnableTonemapping = true;
+
+        /**
+         * Parameters used for customizing tonemapping.
+         *
+         * @see	enableTonemapping
+         */
+        TonemappingSettings Tonemapping;
+
+        /** Parameters used for customizing screen space ambient occlusion. */
+        AmbientOcclusionSettings AmbientOcclusion;
+
+        /** Parameters used for customizing the bloom effect. */
+        BloomSettings Bloom;
 
         /** Enables the fast approximate anti-aliasing effect. */
         bool EnableFXAA = true;

@@ -105,8 +105,7 @@ namespace te
         SHADER_DESC();
 
         ~SHADER_DESC()
-        {
-        }
+        { }
 
         /**
          * Registers a new data (int, Vector2, etc.) parameter you that you may then use via Material by providing the
@@ -263,6 +262,9 @@ namespace te
 
         /** Returns the list of all supported techniques based on current render API and renderer. */
         Vector<SPtr<Technique>> GetCompatibleTechniques() const;
+
+        /** Returns a list of all techniques in this shader. */
+        const Vector<SPtr<Technique>>& GetTechniques() const { return _desc.Techniques; }
 
         /**	Creates a new shader resource using the provided descriptor and techniques. */
         static HShader Create(const String& name, const SHADER_DESC& desc);

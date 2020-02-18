@@ -37,7 +37,7 @@ namespace te
      * Node in the render compositor hierarchy. Nodes can be implemented to perform specific rendering tasks. Each node
      * can depend on other nodes in the hierarchy.
      *
-     * @note	Implementations must provide a getNodeId() and getDependencies() static method, which are expected to
+     * @note	Implementations must provide a GetNodeId() and GetDependencies() static method, which are expected to
      *			return a unique name for the implemented node, as well as a set of nodes it depends on.
      */
     class RenderCompositorNode
@@ -175,10 +175,11 @@ namespace te
         // Outputs
         SPtr<PooledRenderTexture> SceneTex;
         SPtr<PooledRenderTexture> AlbedoTex;
-        SPtr<PooledRenderTexture> DepthTex;
+        SPtr<PooledRenderTexture> SpecularTex;
         SPtr<PooledRenderTexture> NormalTex;
         SPtr<PooledRenderTexture> VelocityTex;
         SPtr<PooledRenderTexture> EmissiveTex;
+        SPtr<PooledRenderTexture> DepthTex;
 
         SPtr<RenderTexture> RenderTargetTex;
 
@@ -207,6 +208,136 @@ namespace te
 
         /** @copydoc RenderCompositorNode::Clear */
         void Clear() override;
+    };
+
+    /************************************************************************/
+    /* 							POST PROCESS NODES                			*/
+    /************************************************************************/
+
+    /**
+     * Helper node used for post-processing. Takes care of allocating and switching between textures used for post process
+     * effects.
+     */
+    class RCNodePostProcess : public RenderCompositorNode
+    {
+    public:
+        /** Returns a texture that contains the last rendererd post process output. */
+        SPtr<Texture> GetLastOutput() const;
+
+        static String GetNodeId() { return "PostProcess"; }
+        static Vector<String> GetDependencies(const RendererView& view);
+    protected:
+        /** @copydoc RenderCompositorNode::Render */
+        void Render(const RenderCompositorNodeInputs& inputs) override;
+
+        /** @copydoc RenderCompositorNode::Clear */
+        void Clear() override;
+
+    protected:
+        mutable SPtr<PooledRenderTexture> _output[2];
+        mutable UINT32 _currentIdx = 0;
+    };
+
+    /**
+     * Performs tone mapping on the contents of the scene color texture. At the same time resolves MSAA into a non-MSAA
+     * scene color texture.
+     */
+    class RCNodeTonemapping : public RenderCompositorNode
+    {
+    public:
+        static String GetNodeId() { return "Tonemapping"; }
+        static Vector<String> GetDependencies(const RendererView& view);
+    protected:
+        /** @copydoc RenderCompositorNode::Render */
+        void Render(const RenderCompositorNodeInputs& inputs) override;
+
+        /** @copydoc RenderCompositorNode::Clear */
+        void Clear() override;
+
+        SPtr<PooledRenderTexture> _tonemapLUT;
+        UINT64 _tonemapLastUpdateHash = -1;
+    };
+
+    /**
+     * Renders the motion blur effect simulating light accumulation due to object and/or camera
+     * movement during a single frame. (In another words, it simulates blur due to exposure time
+     * as if on a real-world camera, i.e. depending on how long is the camera shutter open).
+     */
+    class RCNodeMotionBlur : public RenderCompositorNode
+    {
+    public:
+        static String GetNodeId() { return "MotionBlur"; }
+        static Vector<String> GetDependencies(const RendererView& view);
+    protected:
+        /** @copydoc RenderCompositorNode::render */
+        void Render(const RenderCompositorNodeInputs& inputs) override;
+
+        /** @copydoc RenderCompositorNode::clear */
+        void Clear() override;
+    };
+
+    /** Renders the depth of field effect using Gaussian blurring. */
+    class RCNodeGaussianDOF : public RenderCompositorNode
+    {
+    public:
+        static String GetNodeId() { return "GaussianDOF"; }
+        static Vector<String> GetDependencies(const RendererView& view);
+    protected:
+        /** @copydoc RenderCompositorNode::render */
+        void Render(const RenderCompositorNodeInputs& inputs) override;
+
+        /** @copydoc RenderCompositorNode::clear */
+        void Clear() override;
+    };
+
+    /** Renders FXAA. */
+    class RCNodeFXAA : public RenderCompositorNode
+    {
+    public:
+        static String GetNodeId() { return "FXAA"; }
+        static Vector<String> GetDependencies(const RendererView& view);
+    protected:
+        /** @copydoc RenderCompositorNode::render */
+        void Render(const RenderCompositorNodeInputs& inputs) override;
+
+        /** @copydoc RenderCompositorNode::Clear */
+        void Clear() override;
+    };
+
+    /** Renders screen space ambient occlusion. */
+    class RCNodeSSAO : public RenderCompositorNode
+    {
+    public:
+        SPtr<Texture> output;
+
+        static String GetNodeId() { return "SSAO"; }
+        static Vector<String> GetDependencies(const RendererView& view);
+    protected:
+        /** @copydoc RenderCompositorNode::Render */
+        void Render(const RenderCompositorNodeInputs& inputs) override;
+
+        /** @copydoc RenderCompositorNode::Clear */
+        void Clear() override;
+
+        SPtr<PooledRenderTexture> _pooledOutput;
+    };
+
+    /** Renders the bloom effect. */
+    class RCNodeBloom : public RenderCompositorNode
+    {
+    public:
+        SPtr<Texture> output;
+
+        static String GetNodeId() { return "Bloom"; }
+        static Vector<String> GetDependencies(const RendererView& view);
+    protected:
+        /** @copydoc RenderCompositorNode::Render */
+        void Render(const RenderCompositorNodeInputs& inputs) override;
+
+        /** @copydoc RenderCompositorNode::Clear */
+        void Clear() override;
+
+        SPtr<PooledRenderTexture> _pooledOutput;
     };
 
     /** Moves the contents of the scene color texture into the view's output target. */
