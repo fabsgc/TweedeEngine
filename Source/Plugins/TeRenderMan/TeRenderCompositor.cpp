@@ -209,10 +209,10 @@ namespace te
         // Note: Consider customizable formats. e.g. for testing if quality can be improved with higher precision normals.
         SceneTex = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA8, width, height, TU_RENDERTARGET,
             numSamples, true));
-        SpecularTex = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA8, width, height, TU_RENDERTARGET,
-            numSamples, true));
-        AlbedoTex = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA8, width, height, TU_RENDERTARGET,
-            numSamples, true));
+        //SpecularTex = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA8, width, height, TU_RENDERTARGET,
+        //    numSamples, true));
+        //AlbedoTex = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA8, width, height, TU_RENDERTARGET,
+        //    numSamples, true));
         NormalTex = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA8, width, height, TU_RENDERTARGET,
             numSamples, true));
         EmissiveTex = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA8, width, height, TU_RENDERTARGET,
@@ -220,8 +220,8 @@ namespace te
 
         if (needsVelocity)
         {
-            VelocityTex = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RG16S, width, height, TU_RENDERTARGET,
-                numSamples, false));
+        //    VelocityTex = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RG16S, width, height, TU_RENDERTARGET,
+        //        numSamples, false));
         }
 
         DepthTex = gGpuResourcePool().Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_D32_S8X24, width, height, TU_DEPTHSTENCIL,
@@ -232,12 +232,12 @@ namespace te
         {
             UINT32 targetIdx = 0;
             rebuildRT |= RenderTargetTex->GetColorTexture(targetIdx++) != SceneTex->Tex;
-            rebuildRT |= RenderTargetTex->GetColorTexture(targetIdx++) != SpecularTex->Tex;
-            rebuildRT |= RenderTargetTex->GetColorTexture(targetIdx++) != AlbedoTex->Tex;
+            //rebuildRT |= RenderTargetTex->GetColorTexture(targetIdx++) != SpecularTex->Tex;
+            //rebuildRT |= RenderTargetTex->GetColorTexture(targetIdx++) != AlbedoTex->Tex;
             rebuildRT |= RenderTargetTex->GetColorTexture(targetIdx++) != NormalTex->Tex;
             rebuildRT |= RenderTargetTex->GetColorTexture(targetIdx++) != EmissiveTex->Tex;
-            if (needsVelocity) 
-                rebuildRT |= RenderTargetTex->GetColorTexture(targetIdx++) != VelocityTex->Tex;
+            //if (needsVelocity) 
+            //    rebuildRT |= RenderTargetTex->GetColorTexture(targetIdx++) != VelocityTex->Tex;
             rebuildRT |= RenderTargetTex->GetDepthStencilTexture() != DepthTex->Tex;
         }
         else
@@ -254,17 +254,17 @@ namespace te
             gbufferDesc.ColorSurfaces[targetIdx].MipLevel = 0;
             targetIdx++;
 
-            gbufferDesc.ColorSurfaces[targetIdx].Tex = SpecularTex->Tex;
+            /*gbufferDesc.ColorSurfaces[targetIdx].Tex = SpecularTex->Tex;
             gbufferDesc.ColorSurfaces[targetIdx].Face = 0;
             gbufferDesc.ColorSurfaces[targetIdx].NumFaces = 1;
             gbufferDesc.ColorSurfaces[targetIdx].MipLevel = 0;
-            targetIdx++;
+            targetIdx++;*/
 
-            gbufferDesc.ColorSurfaces[targetIdx].Tex = AlbedoTex->Tex;
+            /*gbufferDesc.ColorSurfaces[targetIdx].Tex = AlbedoTex->Tex;
             gbufferDesc.ColorSurfaces[targetIdx].Face = 0;
             gbufferDesc.ColorSurfaces[targetIdx].NumFaces = 1;
             gbufferDesc.ColorSurfaces[targetIdx].MipLevel = 0;
-            targetIdx++;
+            targetIdx++;*/
 
             gbufferDesc.ColorSurfaces[targetIdx].Tex = NormalTex->Tex;
             gbufferDesc.ColorSurfaces[targetIdx].Face = 0;
@@ -278,14 +278,14 @@ namespace te
             gbufferDesc.ColorSurfaces[targetIdx].MipLevel = 0;
             targetIdx++;
 
-            if (needsVelocity)
+            /*if (needsVelocity)
             {
                 gbufferDesc.ColorSurfaces[targetIdx].Tex = VelocityTex->Tex;
                 gbufferDesc.ColorSurfaces[targetIdx].Face = 0;
                 gbufferDesc.ColorSurfaces[targetIdx].NumFaces = 1;
                 gbufferDesc.ColorSurfaces[targetIdx].MipLevel = 0;
                 targetIdx++;
-            }
+            }*/
 
             gbufferDesc.DepthStencilSurface.Tex = DepthTex->Tex;
             gbufferDesc.DepthStencilSurface.Face = 0;
