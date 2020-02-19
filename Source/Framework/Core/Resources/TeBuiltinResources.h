@@ -70,7 +70,7 @@ namespace te
         void InitStates();
         void InitShaderDesc();
 
-        void InitAnisotropicSampler();
+        void InitSamplers();
 
         void InitShaderOpaque();
         void InitShaderTransparent();
@@ -79,20 +79,25 @@ namespace te
     private:
         HShader _shaderOpaque;
         HShader _shaderTransparent;
-
         HShader _shaderBlit;
 
-        SPtr<SamplerState> _anisotropicSamplerState;
+        SPtr<SamplerState> _anisotropicSamplerState = nullptr;
+        SPtr<SamplerState> _bilinearSamplerState = nullptr;
 
-        SHADER_DESC _shaderDesc;
-        GPU_PROGRAM_DESC _vertexShaderProgramDesc;
-        GPU_PROGRAM_DESC _pixelShaderProgramDesc;
+        SHADER_DESC _forwardShaderDesc;
+        SHADER_DESC _blitShaderDesc;
+
+        GPU_PROGRAM_DESC _vertexShaderForwardDesc;
+        GPU_PROGRAM_DESC _pixelShaderForwardDesc;
+        GPU_PROGRAM_DESC _vertexShaderBlitDesc;
+        GPU_PROGRAM_DESC _pixelShaderBlitDesc;
 
         BLEND_STATE_DESC _blendOpaqueStateDesc;
         BLEND_STATE_DESC _blendTransparentStateDesc;
         RASTERIZER_STATE_DESC _rasterizerStateDesc;
         DEPTH_STENCIL_STATE_DESC _depthStencilStateDesc;
-        SAMPLER_STATE_DESC _samplerStateDesc;
+        SAMPLER_STATE_DESC _anisotropicSamplerStateDesc;
+        SAMPLER_STATE_DESC _bilinearSamplerStateDesc;
     };
 
     /**	Provides easy access to BuiltinResources. */

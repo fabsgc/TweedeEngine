@@ -44,10 +44,10 @@ namespace te
         virtual ~RendererMaterialBase() = default;
 
         /** Returns the shader used by the material. */
-        SPtr<Shader> FetShader() const { return _shader; }
+        SPtr<Shader> GetShader() const { return _shader; }
 
         /** Returns the internal parameter set containing GPU bindable parameters. */
-        SPtr<GpuParams> FetParams() const { return _params; }
+        SPtr<GpuParams> GetParams() const { return _params; }
 
     protected:
         friend class RendererMaterialManager;
@@ -67,15 +67,116 @@ namespace te
     public:
         virtual ~RendererMaterial() = default;
 
+        /**
+         * Retrieves an instance of this renderer material. If material has multiple variations the first available
+         * variation will be returned.
+         */
+        static T* Get()
+        {
+            if (_metaData.Instance == nullptr)
+            {
+                RendererMaterialBase* mat = te_allocate<T>();
+                new (mat) T();
+
+                _metaData.Instance = mat;
+            }
+
+            return (T*)_metaData.Instance;
+        }
+
+        /**
+         * Binds the materials and its parameters to the pipeline. This material will be used for rendering any subsequent
+         * draw calls, or executing dispatch calls. If @p bindParams is false you need to call bindParams() separately
+         * to bind material parameters (if any).
+         */
+        void Bind(bool bindParams = true) const
+        {
+            RenderAPI& rapi = RenderAPI::Instance();
+
+            if (_graphicsPipeline)
+            {
+                rapi.SetGraphicsPipeline(_graphicsPipeline);
+                rapi.SetStencilRef(_stencilRef);
+            }
+            else
+                rapi.SetComputePipeline(_computePipeline);
+
+            if (bindParams)
+                rapi.SetGpuParams(_params);
+        }
+
+        /** Binds the material parameters to the pipeline. */
+        void BindParams() const
+        {
+            RenderAPI& rapi = RenderAPI::Instance();
+            rapi.SetGpuParams(_params);
+        }
+
     protected:
         RendererMaterial()
         {
             _initOnStart.Instantiate();
             _shader = _metaData.ShaderElem;
+
             const Vector<SPtr<Technique>>& techniques = _shader->GetTechniques();
             for (auto& entry : techniques)
             {
-                // TODO
+                SPtr<Pass> pass = entry->GetPass(0);
+                pass->Compile();
+
+                _graphicsPipeline = pass->GetGraphicsPipelineState();
+                if (_graphicsPipeline != nullptr)
+                    _params = GpuParams::Create(_graphicsPipeline);
+                else
+                {
+                    _computePipeline = pass->GetComputePipelineState();
+                    _params = GpuParams::Create(_computePipeline);
+                }
+
+                // Assign default values from the shader
+                const auto& textureParams = _shader->GetTextureParams();
+                for (auto& param : textureParams)
+                {
+                    UINT32 defaultValueIdx = param.second.DefaultValueIdx;
+                    if (defaultValueIdx == (UINT32)-1)
+                        continue;
+
+                    for (UINT32 i = 0; i < GPT_COUNT; i++)
+                    {
+                        GpuProgramType progType = (GpuProgramType)i;
+                        for (auto& varName : param.second.GpuVariableNames)
+                        {
+                            if (_params->HasTexture(progType, varName))
+                            {
+                                SPtr<Texture> texture = _shader->GetDefaultTexture(defaultValueIdx);
+                                _params->SetTexture(progType, varName, texture);
+                            }
+                        }
+                    }
+                }
+
+                const auto& samplerParams = _shader->GetSamplerParams();
+                for (auto& param : samplerParams)
+                {
+                    UINT32 defaultValueIdx = param.second.DefaultValueIdx;
+                    if (defaultValueIdx == (UINT32)-1)
+                        continue;
+
+                    for (UINT32 i = 0; i < GPT_COUNT; i++)
+                    {
+                        GpuProgramType progType = (GpuProgramType)i;
+                        for (auto& varName : param.second.GpuVariableNames)
+                        {
+                            if (_params->HasSamplerState(progType, varName))
+                            {
+                                SPtr<SamplerState> samplerState = _shader->GetDefaultSampler(defaultValueIdx);
+                                _params->SetSamplerState(progType, varName, samplerState);
+                            }
+                        }
+                    }
+                }
+
+                _stencilRef = pass->GetStencilRefValue();
             }
         }
 

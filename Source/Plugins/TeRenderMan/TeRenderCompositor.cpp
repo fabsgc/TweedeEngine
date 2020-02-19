@@ -309,7 +309,6 @@ namespace te
                 (inputs.Options.InstancingMode == RenderManInstancing::Automatic||
                     inputs.Options.InstancingMode  == RenderManInstancing::Manual))
             {
-                TE_PRINT("instanced");
                 continue;
             }
 
@@ -320,17 +319,20 @@ namespace te
         RenderAPI& rapi = RenderAPI::Instance();
 
         rapi.SetRenderTarget(RenderTargetTex);
-        rapi.SetRenderTarget(inputs.View.GetProperties().Target.Target);
+        //rapi.SetRenderTarget(inputs.View.GetProperties().Target.Target);
 
         UINT32 clearBuffers = FBT_COLOR | FBT_DEPTH | FBT_STENCIL;
         rapi.ClearViewport(clearBuffers, Color::Black);
-        rapi.ClearViewport(clearBuffers, inputs.View.GetProperties().Target.ClearColor);
+        //rapi.ClearViewport(clearBuffers, inputs.View.GetPropertie s().Target.ClearColor);
 
         // Render all visible opaque elements
         RenderQueue* opaqueElements = inputs.View.GetOpaqueQueue().get();
         RenderQueue* transparentElements = inputs.View.GetTransparentQueue().get();
         RenderQueueElements(opaqueElements->GetSortedElements(), inputs.View);
         RenderQueueElements(transparentElements->GetSortedElements(), inputs.View);
+
+        // Make sure that any compute shaders are able to read g-buffer by unbinding it
+        rapi.SetRenderTarget(nullptr);
     }
 
     void RCNodeForwardPass::Clear()
@@ -511,8 +513,8 @@ namespace te
         }
         else
         {
-            RCNodeForwardPass* forwardPaddNode = static_cast<RCNodeForwardPass*>(inputs.InputNodes[0]);
-            input = forwardPaddNode->SceneTex->Tex;
+            RCNodeForwardPass* forwardPassNode = static_cast<RCNodeForwardPass*>(inputs.InputNodes[0]);
+            input = forwardPassNode->SceneTex->Tex;
         }
 
         SPtr<RenderTarget> target = viewProps.Target.Target;
@@ -521,9 +523,11 @@ namespace te
         rapi.SetRenderTarget(target);
         rapi.SetViewport(viewProps.Target.NrmViewRect);
 
-        gRendererUtility().Blit(input, Rect2I::EMPTY, viewProps.FlipView);
+        gRendererUtility().Blit(input, Rect2I::EMPTY, viewProps.FlipView, false);
 
         inputs.View._notifyCompositorTargetChanged(nullptr);
+
+        rapi.SetRenderTarget(nullptr);
     }
 
     void RCNodeFinalResolve::Clear()

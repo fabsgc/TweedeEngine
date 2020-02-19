@@ -506,7 +506,7 @@ namespace te
         _sceneCamera = _sceneCameraSO->AddComponent<CCamera>();
         _sceneCamera->GetViewport()->SetClearColorValue(Color(0.17f, 0.64f, 1.0f, 1.0f));
         _sceneCamera->GetViewport()->SetTarget(gCoreApplication().GetWindow());
-        _sceneCamera->SetMSAACount(8);
+        _sceneCamera->SetMSAACount(_window->GetDesc().MultisampleCount);
         _sceneCamera->SetMain(true);
         _sceneCamera->Initialize();
 

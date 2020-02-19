@@ -7,31 +7,52 @@
 
 namespace te
 {
+    BlitParamDef gBlitParamDef;
+
+    BlitMat::BlitMat()
+    {
+        _paramBuffer = gBlitParamDef.CreateBuffer();
+        _params->SetParamBlockBuffer("PerFrameBuffer", _paramBuffer);
+    }
+
+    void BlitMat::Execute(const SPtr<Texture>& source, const Rect2& area, bool flipUV, INT32 MSSACount, bool isDepth)
+    {
+        gBlitParamDef.gMSAACount.Set(_paramBuffer, MSSACount, 0);
+        gBlitParamDef.gIsDepth.Set(_paramBuffer, (isDepth) ? 1 : 0, 0);
+
+        if (MSSACount > 1 && isDepth) _params->SetTexture("SourceMapMSDepth", source);
+        else if (MSSACount > 1 && !isDepth) _params->SetTexture("SourceMapMS", source);
+        else _params->SetTexture("SourceMap", source);
+
+        Bind();
+        gRendererUtility().DrawScreenQuad(area, Vector2I(1, 1), 1, flipUV);
+    }
+
     RendererUtility::RendererUtility()
     {
         {
-			_fullscreenQuadVDesc = te_shared_ptr_new<VertexDataDesc>();
-			_fullscreenQuadVDesc->AddVertElem(VET_FLOAT3, VES_POSITION);
-			_fullscreenQuadVDesc->AddVertElem(VET_FLOAT2, VES_TEXCOORD);
+            _fullscreenQuadVDesc = te_shared_ptr_new<VertexDataDesc>();
+            _fullscreenQuadVDesc->AddVertElem(VET_FLOAT3, VES_POSITION);
+            _fullscreenQuadVDesc->AddVertElem(VET_FLOAT2, VES_TEXCOORD);
 
-			INDEX_BUFFER_DESC ibDesc;
-			ibDesc.Type = IT_32BIT;
-			ibDesc.NumIndices = 6;
-			ibDesc.Usage = GBU_DYNAMIC;
+            INDEX_BUFFER_DESC ibDesc;
+            ibDesc.Type = IT_32BIT;
+            ibDesc.NumIndices = 6;
+            ibDesc.Usage = GBU_DYNAMIC;
 
-			_fullScreenQuadIB = IndexBuffer::Create(ibDesc);
-			_fullscreenQuadVDecl = VertexDeclaration::Create(_fullscreenQuadVDesc);
+            _fullScreenQuadIB = IndexBuffer::Create(ibDesc);
+            _fullscreenQuadVDecl = VertexDeclaration::Create(_fullscreenQuadVDesc);
 
-			VERTEX_BUFFER_DESC vbDesc;
-			vbDesc.VertexSize = _fullscreenQuadVDecl->GetProperties().GetVertexSize(0);
-			vbDesc.NumVerts = 4 * NUM_QUAD_VB_SLOTS;
-			vbDesc.Usage = GBU_DYNAMIC;
+            VERTEX_BUFFER_DESC vbDesc;
+            vbDesc.VertexSize = _fullscreenQuadVDecl->GetProperties().GetVertexSize(0);
+            vbDesc.NumVerts = NUM_QUAD_VB_SLOTS * 4;
+            vbDesc.Usage = GBU_DYNAMIC;
 
-			_fullScreenQuadVB = VertexBuffer::Create(vbDesc);
+            _fullScreenQuadVB = VertexBuffer::Create(vbDesc);
 
-			UINT32 indices[] { 0, 1, 2, 1, 3, 2 };
-			_fullScreenQuadIB->WriteData(0, sizeof(indices), indices, BWT_DISCARD);
-		}
+            UINT32 indices[] { 0, 1, 2, 1, 3, 2 };
+            _fullScreenQuadIB->WriteData(0, sizeof(indices), indices, BWT_DISCARD);
+        }
     }
 
     RendererUtility::~RendererUtility()
@@ -40,7 +61,6 @@ namespace te
     void RendererUtility::SetPass(const SPtr<Material>& material, UINT32 passIdx, UINT32 techniqueIdx)
     {
         RenderAPI& rapi = RenderAPI::Instance();
-
         SPtr<Pass> pass = material->GetPass(passIdx, techniqueIdx);
         rapi.SetGraphicsPipeline(pass->GetGraphicsPipelineState());
         rapi.SetStencilRef(pass->GetStencilRefValue());
@@ -49,7 +69,6 @@ namespace te
     void RendererUtility::SetComputePass(const SPtr<Material>& material, UINT32 passIdx)
     {
         RenderAPI& rapi = RenderAPI::Instance();
-
         SPtr<Pass> pass = material->GetPass(passIdx);
         rapi.SetComputePipeline(pass->GetComputePipelineState());
     }
@@ -128,66 +147,54 @@ namespace te
     {
         // Note: Consider drawing the quad using a single large triangle for possibly better performance
         // Note2: Consider setting quad size in shader instead of rebuilding the mesh every time
-
         const Conventions& rapiConventions = gCaps().Convention;
-        Vector3 vertices[4];
+
+        struct VertexBuffer
+        {
+            Vector3 Position;
+            Vector2 Texture;
+        };
+
+        VertexBuffer* dstData = (VertexBuffer *)_fullScreenQuadVB->Lock(
+            _nextQuadVBSlot * sizeof(VertexBuffer) * 4, 
+            sizeof(VertexBuffer) * 4, GBL_WRITE_ONLY_NO_OVERWRITE);
 
         if (rapiConventions.NDC_YAxis == Conventions::Axis::Down)
         {
-            vertices[0] = Vector3(-1.0f, -1.0f, 0.0f);
-            vertices[1] = Vector3(1.0f, -1.0f, 0.0f);
-            vertices[2] = Vector3(-1.0f, 1.0f, 0.0f);
-            vertices[3] = Vector3(1.0f, 1.0f, 0.0f);
+            dstData[0].Position = Vector3(-1.0f, -1.0f, 0.0f);
+            dstData[1].Position = Vector3(1.0f, -1.0f, 0.0f);
+            dstData[2].Position = Vector3(-1.0f, 1.0f, 0.0f);
+            dstData[3].Position = Vector3(1.0f, 1.0f, 0.0f);
         }
         else
         {
-            vertices[0] = Vector3(-1.0f, 1.0f, 0.0f);
-            vertices[1] = Vector3(1.0f, 1.0f, 0.0f);
-            vertices[2] = Vector3(-1.0f, -1.0f, 0.0f);
-            vertices[3] = Vector3(1.0f, -1.0f, 0.0f);
+            dstData[0].Position = Vector3(-1.0f, 1.0f, 0.0f);
+            dstData[1].Position = Vector3(1.0f, 1.0f, 0.0f);
+            dstData[2].Position = Vector3(-1.0f, -1.0f, 0.0f);
+            dstData[3].Position = Vector3(1.0f, -1.0f, 0.0f);
         }
 
-        Vector2 uvs[4];
         if ((rapiConventions.UV_YAxis == Conventions::Axis::Up) ^ flipUV)
         {
-            uvs[0] = Vector2(uv.x, uv.y + uv.height);
-            uvs[1] = Vector2(uv.x + uv.width, uv.y + uv.height);
-            uvs[2] = Vector2(uv.x, uv.y);
-            uvs[3] = Vector2(uv.x + uv.width, uv.y);
+            dstData[0].Texture = Vector2(uv.x, uv.y + uv.height);
+            dstData[1].Texture = Vector2(uv.x + uv.width, uv.y + uv.height);
+            dstData[2].Texture = Vector2(uv.x, uv.y);
+            dstData[3].Texture = Vector2(uv.x + uv.width, uv.y);
         }
         else
         {
-            uvs[0] = Vector2(uv.x, uv.y);
-            uvs[1] = Vector2(uv.x + uv.width, uv.y);
-            uvs[2] = Vector2(uv.x, uv.y + uv.height);
-            uvs[3] = Vector2(uv.x + uv.width, uv.y + uv.height);
+            dstData[0].Texture = Vector2(uv.x, uv.y);
+            dstData[1].Texture = Vector2(uv.x + uv.width, uv.y);
+            dstData[2].Texture = Vector2(uv.x, uv.y + uv.height);
+            dstData[3].Texture = Vector2(uv.x + uv.width, uv.y + uv.height);
         }
 
         for (int i = 0; i < 4; i++)
         {
-            uvs[i].x /= (float)textureSize.x;
-            uvs[i].y /= (float)textureSize.y;
+            dstData[i].Texture.x /= (float)textureSize.x;
+            dstData[i].Texture.y /= (float)textureSize.y;
         }
 
-        SPtr<MeshData> meshData = te_shared_ptr_new<MeshData>(4, 6, _fullscreenQuadVDesc);
-
-        UINT8* vecIter = meshData->GetElementData(VES_POSITION);
-        for (UINT32 i = 0; i < 4; i++)
-        {
-            memcpy(vecIter, &vertices[i], sizeof(vertices[i]));
-        }
-
-        UINT8* uvIter = meshData->GetElementData(VES_TEXCOORD);
-        for (UINT32 i = 0; i < 4; i++)
-        {
-            memcpy(uvIter, &uvs[i], sizeof(uvs[i]));
-        }
-
-        UINT32 bufferSize = meshData->GetStreamSize(0);
-        UINT8* srcVertBufferData = meshData->GetStreamData(0);
-
-        void* dstData = _fullScreenQuadVB->Lock(_nextQuadVBSlot * bufferSize, bufferSize, GBL_WRITE_ONLY_NO_OVERWRITE);
-        memcpy(dstData, srcVertBufferData, bufferSize);
         _fullScreenQuadVB->Unlock();
 
         RenderAPI& rapi = RenderAPI::Instance();
@@ -199,6 +206,7 @@ namespace te
         rapi.DrawIndexed(0, 6, _nextQuadVBSlot * 4, 4, numInstances);
 
         _nextQuadVBSlot = (_nextQuadVBSlot + 1) % NUM_QUAD_VB_SLOTS;
+        _nextQuadVBSlot = 0;
     }
 
     void RendererUtility::Blit(const SPtr<Texture>& texture, const Rect2I& area, bool flipUV, bool isDepth, bool isFiltered)
@@ -214,8 +222,14 @@ namespace te
             fArea.height = (float)texProps.GetHeight();
         }
 
-        // TODO
-        BlitMat* blitMat = nullptr;
+        if (texProps.GetNumSamples() == 1) // RenderTarget without MSAA need Normalized device coordinates
+        {
+            fArea.width = 1.0f;
+            fArea.height = 1.0f;
+        }
+
+        BlitMat* blitMat = BlitMat::Get();
+        blitMat->Execute(texture, fArea, flipUV, texProps.GetNumSamples(), isDepth);
     }
 
     RendererUtility& gRendererUtility()

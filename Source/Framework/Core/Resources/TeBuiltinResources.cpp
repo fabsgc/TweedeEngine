@@ -14,6 +14,7 @@ namespace te
     BuiltinResources::~BuiltinResources()
     { 
         _anisotropicSamplerState = nullptr;
+        _bilinearSamplerState = nullptr;
     }
 
     void BuiltinResources::OnStartUp()
@@ -51,21 +52,39 @@ namespace te
     void BuiltinResources::InitGpuPrograms()
     {
         {
-            FileStream shaderFile("Data/Shaders/Raw/Test/Texture_VS.hlsl");
-            _vertexShaderProgramDesc.Type = GPT_VERTEX_PROGRAM;
-            _vertexShaderProgramDesc.EntryPoint = "main";
-            _vertexShaderProgramDesc.Language = "hlsl";
-            _vertexShaderProgramDesc.IncludePath = "Data/Shaders/Raw/Test/";
-            _vertexShaderProgramDesc.Source = shaderFile.GetAsString();
+            FileStream shaderFile(SHADERS_FOLDER + String("Raw/Test/Forward_VS.hlsl"));
+            _vertexShaderForwardDesc.Type = GPT_VERTEX_PROGRAM;
+            _vertexShaderForwardDesc.EntryPoint = "main";
+            _vertexShaderForwardDesc.Language = "hlsl";
+            _vertexShaderForwardDesc.IncludePath = SHADERS_FOLDER + String("Raw/Test/");
+            _vertexShaderForwardDesc.Source = shaderFile.GetAsString();
         }
 
         {
-            FileStream shaderFile("Data/Shaders/Raw/Test/Texture_PS.hlsl");
-            _pixelShaderProgramDesc.Type = GPT_PIXEL_PROGRAM;
-            _pixelShaderProgramDesc.EntryPoint = "main";
-            _pixelShaderProgramDesc.Language = "hlsl";
-            _pixelShaderProgramDesc.IncludePath = "Data/Shaders/Raw/Test/";
-            _pixelShaderProgramDesc.Source = shaderFile.GetAsString();
+            FileStream shaderFile(SHADERS_FOLDER + String("Raw/Test/Forward_PS.hlsl"));
+            _pixelShaderForwardDesc.Type = GPT_PIXEL_PROGRAM;
+            _pixelShaderForwardDesc.EntryPoint = "main";
+            _pixelShaderForwardDesc.Language = "hlsl";
+            _pixelShaderForwardDesc.IncludePath = SHADERS_FOLDER + String("Raw/Test/");
+            _pixelShaderForwardDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("Raw/Test/Blit_VS.hlsl"));
+            _vertexShaderBlitDesc.Type = GPT_VERTEX_PROGRAM;
+            _vertexShaderBlitDesc.EntryPoint = "main";
+            _vertexShaderBlitDesc.Language = "hlsl";
+            _vertexShaderBlitDesc.IncludePath = "";
+            _vertexShaderBlitDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("Raw/Test/Blit_PS.hlsl"));
+            _pixelShaderBlitDesc.Type = GPT_PIXEL_PROGRAM;
+            _pixelShaderBlitDesc.EntryPoint = "main";
+            _pixelShaderBlitDesc.Language = "hlsl";
+            _pixelShaderBlitDesc.IncludePath = "";
+            _pixelShaderBlitDesc.Source = shaderFile.GetAsString();
         }
     }
     void BuiltinResources::InitStates()
@@ -92,11 +111,16 @@ namespace te
         _depthStencilStateDesc.BackStencilPassOp = SOP_KEEP;
         _depthStencilStateDesc.BackStencilComparisonFunc = CMPF_ALWAYS_PASS;
 
-        _samplerStateDesc.AddressMode = UVWAddressingMode();
-        _samplerStateDesc.MinFilter = FO_ANISOTROPIC;
-        _samplerStateDesc.MagFilter = FO_ANISOTROPIC;
-        _samplerStateDesc.MipFilter = FO_ANISOTROPIC;
-        _samplerStateDesc.MaxAnisotropy = 8;
+        _anisotropicSamplerStateDesc.AddressMode = UVWAddressingMode();
+        _anisotropicSamplerStateDesc.MinFilter = FO_ANISOTROPIC;
+        _anisotropicSamplerStateDesc.MagFilter = FO_ANISOTROPIC;
+        _anisotropicSamplerStateDesc.MipFilter = FO_ANISOTROPIC;
+        _anisotropicSamplerStateDesc.MaxAnisotropy = 4;
+
+        _bilinearSamplerStateDesc.AddressMode = UVWAddressingMode();
+        _bilinearSamplerStateDesc.MinFilter = FO_POINT;
+        _bilinearSamplerStateDesc.MagFilter = FO_POINT;
+        _bilinearSamplerStateDesc.MipFilter = FO_POINT;
     }
 
     void BuiltinResources::InitShaderDesc()
@@ -149,57 +173,75 @@ namespace te
         SHADER_OBJECT_PARAM_DESC bumpMapDesc("BumpMap", "BumpMap", GPOT_TEXTURE2D);
         SHADER_OBJECT_PARAM_DESC transparencyMapDesc("TransparencyMap", "TransparencyMap", GPOT_TEXTURE2D);
 
-        _shaderDesc.AddParameter(gViewDirDesc);
-        _shaderDesc.AddParameter(gViewOriginDesc);
-        _shaderDesc.AddParameter(gMatViewProjDesc);
-        _shaderDesc.AddParameter(gMatViewDesc);
-        _shaderDesc.AddParameter(gMatProjDesc);
+        _forwardShaderDesc.AddParameter(gViewDirDesc);
+        _forwardShaderDesc.AddParameter(gViewOriginDesc);
+        _forwardShaderDesc.AddParameter(gMatViewProjDesc);
+        _forwardShaderDesc.AddParameter(gMatViewDesc);
+        _forwardShaderDesc.AddParameter(gMatProjDesc);
 
-        _shaderDesc.AddParameter(gInstanceData);
+        _forwardShaderDesc.AddParameter(gInstanceData);
 
-        _shaderDesc.AddParameter(gMatWorldDesc);
-        _shaderDesc.AddParameter(gMatInvWorldDesc);
-        _shaderDesc.AddParameter(gMatWorldNoScaleDesc);
-        _shaderDesc.AddParameter(gMatInvWorldNoScaleDesc);
-        _shaderDesc.AddParameter(gMatPrevWorldDesc);
-        _shaderDesc.AddParameter(gLayerDesc);
+        _forwardShaderDesc.AddParameter(gMatWorldDesc);
+        _forwardShaderDesc.AddParameter(gMatInvWorldDesc);
+        _forwardShaderDesc.AddParameter(gMatWorldNoScaleDesc);
+        _forwardShaderDesc.AddParameter(gMatInvWorldNoScaleDesc);
+        _forwardShaderDesc.AddParameter(gMatPrevWorldDesc);
+        _forwardShaderDesc.AddParameter(gLayerDesc);
         
-        _shaderDesc.AddParameter(gAmbient);
-        _shaderDesc.AddParameter(gDiffuse);
-        _shaderDesc.AddParameter(gEmissive);
-        _shaderDesc.AddParameter(gSpecular);
-        _shaderDesc.AddParameter(gUseDiffuseMap);
-        _shaderDesc.AddParameter(gUseEmissiveMap);
-        _shaderDesc.AddParameter(gUseNormalMap);
-        _shaderDesc.AddParameter(gUseSpecularMap);
-        _shaderDesc.AddParameter(gUseBumpMap);
-        _shaderDesc.AddParameter(gUseParallaxMap);
-        _shaderDesc.AddParameter(gUseTransparencyMap);
-        _shaderDesc.AddParameter(gUseReflectionMap);
-        _shaderDesc.AddParameter(gUseOcclusionMap);
-        _shaderDesc.AddParameter(gSpecularPower);
-        _shaderDesc.AddParameter(gTransparency);
-        _shaderDesc.AddParameter(gIndexOfRefraction);
-        _shaderDesc.AddParameter(gAbsorbance);
-        _shaderDesc.AddParameter(gBumpScale);
-        _shaderDesc.AddParameter(gAlphaThreshold);
+        _forwardShaderDesc.AddParameter(gAmbient);
+        _forwardShaderDesc.AddParameter(gDiffuse);
+        _forwardShaderDesc.AddParameter(gEmissive);
+        _forwardShaderDesc.AddParameter(gSpecular);
+        _forwardShaderDesc.AddParameter(gUseDiffuseMap);
+        _forwardShaderDesc.AddParameter(gUseEmissiveMap);
+        _forwardShaderDesc.AddParameter(gUseNormalMap);
+        _forwardShaderDesc.AddParameter(gUseSpecularMap);
+        _forwardShaderDesc.AddParameter(gUseBumpMap);
+        _forwardShaderDesc.AddParameter(gUseParallaxMap);
+        _forwardShaderDesc.AddParameter(gUseTransparencyMap);
+        _forwardShaderDesc.AddParameter(gUseReflectionMap);
+        _forwardShaderDesc.AddParameter(gUseOcclusionMap);
+        _forwardShaderDesc.AddParameter(gSpecularPower);
+        _forwardShaderDesc.AddParameter(gTransparency);
+        _forwardShaderDesc.AddParameter(gIndexOfRefraction);
+        _forwardShaderDesc.AddParameter(gAbsorbance);
+        _forwardShaderDesc.AddParameter(gBumpScale);
+        _forwardShaderDesc.AddParameter(gAlphaThreshold);
 
-        _shaderDesc.AddParameter(gTime);
+        _forwardShaderDesc.AddParameter(gTime);
 
-        _shaderDesc.AddParameter(gMatWorldViewProj);
+        _forwardShaderDesc.AddParameter(gMatWorldViewProj);
 
-        _shaderDesc.AddParameter(anisotropicSamplerDesc);
-        _shaderDesc.AddParameter(diffuseMapDesc);
-        _shaderDesc.AddParameter(emissiveMapDesc);
-        _shaderDesc.AddParameter(normalMapDesc);
-        _shaderDesc.AddParameter(specularMapDesc);
-        _shaderDesc.AddParameter(bumpMapDesc);
-        _shaderDesc.AddParameter(transparencyMapDesc);
+        _forwardShaderDesc.AddParameter(anisotropicSamplerDesc);
+        _forwardShaderDesc.AddParameter(diffuseMapDesc);
+        _forwardShaderDesc.AddParameter(emissiveMapDesc);
+        _forwardShaderDesc.AddParameter(normalMapDesc);
+        _forwardShaderDesc.AddParameter(specularMapDesc);
+        _forwardShaderDesc.AddParameter(bumpMapDesc);
+        _forwardShaderDesc.AddParameter(transparencyMapDesc);
+
+        SHADER_DATA_PARAM_DESC gMSAACountDesc("gMSAACount", "gMSAACount", GPDT_INT1);
+        SHADER_DATA_PARAM_DESC gIsDepthDesc("gIsDepth", "gIsDepth", GPDT_INT1);
+
+        SHADER_OBJECT_PARAM_DESC bilinearSamplerDesc("BilinearSampler", "BilinearSampler", GPOT_SAMPLER2D);
+        SHADER_OBJECT_PARAM_DESC sourceMapDesc("SourceMap", "SourceMap", GPOT_TEXTURE2D);
+        SHADER_OBJECT_PARAM_DESC SourceMapMSDesc("SourceMapMS", "SourceMapMS", GPOT_RWTEXTURE2DMS);
+        SHADER_OBJECT_PARAM_DESC SourceMapMSDepthDesc("SourceMapMSDepth", "SourceMapMSDepth", GPOT_RWTEXTURE2DMS);
+
+        _blitShaderDesc.AddParameter(gMSAACountDesc);
+        _blitShaderDesc.AddParameter(gIsDepthDesc);
+
+        _blitShaderDesc.AddParameter(bilinearSamplerDesc);
+
+        _blitShaderDesc.AddParameter(sourceMapDesc);
+        _blitShaderDesc.AddParameter(SourceMapMSDesc);
+        _blitShaderDesc.AddParameter(SourceMapMSDepthDesc);
     }
 
-    void BuiltinResources::InitAnisotropicSampler()
+    void BuiltinResources::InitSamplers()
     {
-        _anisotropicSamplerState = SamplerState::Create(_samplerStateDesc);
+        _anisotropicSamplerState = SamplerState::Create(_anisotropicSamplerStateDesc);
+        _anisotropicSamplerState = SamplerState::Create(_bilinearSamplerStateDesc);
     }
 
     void BuiltinResources::InitShaderOpaque()
@@ -208,14 +250,14 @@ namespace te
         passDesc.BlendStateDesc = _blendOpaqueStateDesc;
         passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
         passDesc.RasterizerStateDesc = _rasterizerStateDesc;
-        passDesc.VertexProgramDesc = _vertexShaderProgramDesc;
-        passDesc.PixelProgramDesc = _pixelShaderProgramDesc;
+        passDesc.VertexProgramDesc = _vertexShaderForwardDesc;
+        passDesc.PixelProgramDesc = _pixelShaderForwardDesc;
 
         HPass pass = Pass::Create(passDesc);
         HTechnique technique = Technique::Create("hlsl", { pass.GetInternalPtr() });
         technique->Compile();
 
-        SHADER_DESC shaderDesc = _shaderDesc;
+        SHADER_DESC shaderDesc = _forwardShaderDesc;
         shaderDesc.Techniques.push_back(technique.GetInternalPtr());
 
         _shaderOpaque = Shader::Create("Opaque", shaderDesc);
@@ -227,8 +269,8 @@ namespace te
         passDesc.BlendStateDesc = _blendTransparentStateDesc;
         passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
         passDesc.RasterizerStateDesc = _rasterizerStateDesc;
-        passDesc.VertexProgramDesc = _vertexShaderProgramDesc;
-        passDesc.PixelProgramDesc = _pixelShaderProgramDesc;
+        passDesc.VertexProgramDesc = _vertexShaderForwardDesc;
+        passDesc.PixelProgramDesc = _pixelShaderForwardDesc;
 
         passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
 
@@ -236,7 +278,7 @@ namespace te
         HTechnique technique = Technique::Create("hlsl", { pass.GetInternalPtr() });
         technique->Compile();
 
-        SHADER_DESC shaderDesc = _shaderDesc;
+        SHADER_DESC shaderDesc = _forwardShaderDesc;
         shaderDesc.Flags = (UINT32)ShaderFlag::Transparent;
         shaderDesc.Techniques.push_back(technique.GetInternalPtr());
         
@@ -245,19 +287,24 @@ namespace te
 
     void BuiltinResources::InitShaderBlit()
     {
-        // TODO FIX SHADER PROGRAMS
         PASS_DESC passDesc;
         passDesc.BlendStateDesc = _blendOpaqueStateDesc;
         passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
         passDesc.RasterizerStateDesc = _rasterizerStateDesc;
-        passDesc.VertexProgramDesc = _vertexShaderProgramDesc;
-        passDesc.PixelProgramDesc = _pixelShaderProgramDesc;
+        passDesc.VertexProgramDesc = _vertexShaderBlitDesc;
+        passDesc.PixelProgramDesc = _pixelShaderBlitDesc;
+
+        passDesc.DepthStencilStateDesc.StencilEnable = false;
+        passDesc.DepthStencilStateDesc.DepthReadEnable = false;
+        passDesc.DepthStencilStateDesc.DepthWriteEnable = false;
+
+        passDesc.RasterizerStateDesc.cullMode = CULL_NONE;
 
         HPass pass = Pass::Create(passDesc);
         HTechnique technique = Technique::Create("hlsl", { pass.GetInternalPtr() });
         technique->Compile();
 
-        SHADER_DESC shaderDesc = _shaderDesc;
+        SHADER_DESC shaderDesc = _blitShaderDesc;
         shaderDesc.Techniques.push_back(technique.GetInternalPtr());
 
         _shaderBlit = Shader::Create("Blit", shaderDesc);

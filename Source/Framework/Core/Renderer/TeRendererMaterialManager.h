@@ -3,6 +3,7 @@
 #include "TeCorePrerequisites.h"
 #include "Utility/TeModule.h"
 #include "Resources/TeBuiltinResources.h"
+#include <any>
 
 namespace te
 {
@@ -13,7 +14,7 @@ namespace te
     struct RendererMaterialData
     {
         RendererMaterialMetaData* MetaData;
-        BuiltinShader ShaderType;
+        std::any ShaderPath;
     };
 
     /**	Initializes and handles all renderer materials. */
@@ -26,7 +27,7 @@ namespace te
         TE_MODULE_STATIC_HEADER_MEMBER(RendererMaterialManager)
 
         /**	Registers a new material that should be initialized on module start-up. */
-        static void _registerMaterial(RendererMaterialMetaData* metaData, BuiltinShader shaderType);
+        static void _registerMaterial(RendererMaterialMetaData* metaData, const std::any& shaderPath);
     private:
         template<class T>
         friend class RendererMaterial;

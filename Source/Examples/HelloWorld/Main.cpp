@@ -28,7 +28,7 @@ int main()
 
     desc.WindowDesc.Mode = te::VideoMode(960, 540);
     desc.WindowDesc.Fullscreen = false;
-    desc.WindowDesc.MultisampleCount = 8;
+    desc.WindowDesc.MultisampleCount = 4;
 
     te::Application::StartUp(desc);
     te::Application::Instance().RunMainLoop();

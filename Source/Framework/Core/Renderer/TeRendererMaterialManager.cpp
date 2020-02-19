@@ -1,5 +1,7 @@
 #include "Renderer/TeRendererMaterialManager.h"
 #include "Renderer/TeRendererMaterial.h"
+#include "Importer/TeShaderImportOptions.h"
+#include "Resources/TeResourceManager.h"
 #include "Material/TeShader.h"
 
 namespace te
@@ -16,8 +18,17 @@ namespace te
         for (auto& material : materials)
         {
 #if TE_PLATFORM == TE_PLATFORM_WIN32 //TODO to remove when OpenGL will be done
-            HShader shader = br.GetBuiltinShader(material.ShaderType);
-            shaders.push_back(shader.GetInternalPtr());
+            if (material.ShaderPath.type() == typeid(BuiltinShader))
+            {
+                HShader shader = br.GetBuiltinShader(std::any_cast<BuiltinShader>(material.ShaderPath));
+                shaders.push_back(shader.GetInternalPtr());
+            }
+            else
+            {
+                auto shaderImportOptions = ShaderImportOptions::Create();
+                HShader shader = gResourceManager().Load<Shader>(
+                    std::any_cast<String>(material.ShaderPath), shaderImportOptions);
+            }
 #endif
         }
 
@@ -29,10 +40,19 @@ namespace te
         DestroyMaterials();
     }
 
-    void RendererMaterialManager::_registerMaterial(RendererMaterialMetaData* metaData, BuiltinShader shaderType)
+    void RendererMaterialManager::_registerMaterial(RendererMaterialMetaData* metaData, const std::any& shaderPath)
     {
+        const std::type_info& stringType = typeid(String);
+        const std::type_info& builtinShaderType = typeid(BuiltinShader);
+        const std::type_info& shaderType = shaderPath.type();
+
+        if (shaderType != stringType && shaderType != builtinShaderType)
+        {
+            TE_ASSERT_ERROR(false, "ShaderPath must be a String or a BuiltinShader", __FILE__, __LINE__);
+        }
+
         Vector<RendererMaterialData>& materials = GetMaterials();
-        materials.push_back({ metaData, shaderType });
+        materials.push_back({ metaData, shaderPath });
     }
 
     void RendererMaterialManager::InitMaterials(const Vector<SPtr<Shader>>& shaders)
@@ -40,12 +60,20 @@ namespace te
         Vector<RendererMaterialData>& materials = GetMaterials();
         for (UINT32 i = 0; i < materials.size(); i++)
         {
-            materials[i].ShaderType = materials[i].ShaderType;
+            materials[i].ShaderPath = materials[i].ShaderPath;
             materials[i].MetaData->ShaderElem = shaders[i];
 
             if (!shaders[i])
             {
-                TE_DEBUG("Failed to load renderer material: {" + ToString((UINT32)materials[i].ShaderType) + "}", __FILE__, __LINE__);
+                if (materials[i].ShaderPath.type() == typeid(String))
+                {
+                    TE_DEBUG("Failed to load renderer material: {" + std::any_cast<String>(materials[i].ShaderPath) + "}", __FILE__, __LINE__);
+                }
+                else
+                {
+                    TE_DEBUG("Failed to load renderer material: {" + ToString(std::any_cast<UINT32>(materials[i].ShaderPath)) + "}", __FILE__, __LINE__);
+                }
+
                 continue;
             }
         }
