@@ -95,7 +95,7 @@ if(MSVC)
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     # Note: Optionally add -ffunction-sections, -fdata-sections, but with linker option --gc-sections
     # TODO: Use link-time optimization -flto. Might require non-default linker.
-    set (TE_COMPILER_FLAGS_COMMON "-Wall -Wextra -Wno-unused-parameter -fPIC -fno-exceptions -fno-strict-aliasing -fno-rtti -fno-ms-compatibility -msse4.1")
+    set (TE_COMPILER_FLAGS_COMMON "-Wall -Wextra -Wno-unused-parameter -fPIC -fno-exceptions -fno-strict-aliasing -fno-ms-compatibility -msse4.1")
 
     set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${TE_COMPILER_FLAGS_COMMON} -ggdb -O0 -DDEBUG")
     set (CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} ${TE_COMPILER_FLAGS_COMMON} -ggdb -O2 -DDEBUG -Wno-unused-variable")
@@ -111,7 +111,7 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     # TODO: Use link-time optimization -flto. Might require non-default linker.
-    set (TE_COMPILER_FLAGS_COMMON "-Wall -Wextra -Wno-unused-parameter -fPIC -fno-exceptions -fno-strict-aliasing -fno-rtti -msse4.1")
+    set (TE_COMPILER_FLAGS_COMMON "-Wall -Wextra -Wno-unused-parameter -fPIC -fno-exceptions -fno-strict-aliasing -msse4.1")
 
     set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${TE_COMPILER_FLAGS_COMMON} -ggdb -O0 -DDEBUG")
     set (CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} ${TE_COMPILER_FLAGS_COMMON} -ggdb -O2 -DDEBUG -Wno-unused-variable")
