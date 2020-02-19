@@ -42,6 +42,7 @@ namespace te
 
     void RendererMaterialManager::_registerMaterial(RendererMaterialMetaData* metaData, const std::any& shaderPath)
     {
+#if TE_PLATFORM == TE_PLATFORM_WIN32 //TODO to remove when OpenGL will be done
         const std::type_info& stringType = typeid(String);
         const std::type_info& builtinShaderType = typeid(BuiltinShader);
         const std::type_info& shaderType = shaderPath.type();
@@ -53,6 +54,7 @@ namespace te
 
         Vector<RendererMaterialData>& materials = GetMaterials();
         materials.push_back({ metaData, shaderPath });
+#endif
     }
 
     void RendererMaterialManager::InitMaterials(const Vector<SPtr<Shader>>& shaders)
@@ -60,6 +62,7 @@ namespace te
         Vector<RendererMaterialData>& materials = GetMaterials();
         for (UINT32 i = 0; i < materials.size(); i++)
         {
+#if TE_PLATFORM == TE_PLATFORM_WIN32 //TODO to remove when OpenGL will be done
             materials[i].ShaderPath = materials[i].ShaderPath;
             materials[i].MetaData->ShaderElem = shaders[i];
 
@@ -76,6 +79,7 @@ namespace te
 
                 continue;
             }
+#endif
         }
     }
 
@@ -84,8 +88,10 @@ namespace te
         Vector<RendererMaterialData>& materials = GetMaterials();
         for (UINT32 i = 0; i < materials.size(); i++)
         {
+#if TE_PLATFORM == TE_PLATFORM_WIN32 //TODO to remove when OpenGL will be done
             materials[i].MetaData->ShaderElem = nullptr;
             te_delete(materials[i].MetaData->Instance);
+#endif
         }
     }
 
