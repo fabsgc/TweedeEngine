@@ -21,6 +21,7 @@
 #include "Components/TeCCamera.h"
 #include "Components/TeCRenderable.h"
 #include "Components/TeCCameraFlyer.h"
+#include "Components/TeCSkybox.h"
 
 #include "Material/TeMaterial.h"
 #include "Material/TeShader.h"
@@ -480,6 +481,14 @@ namespace te
         {
             materialFunction(material);
         }
+
+        auto textureCubeMapImportOptions = TextureImportOptions::Create();
+        textureCubeMapImportOptions->CpuCached = false;
+        textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
+        textureCubeMapImportOptions->Format = PF_RGBA8;
+        textureCubeMapImportOptions->IsCubemap = true;
+
+        _loadedSkyboxTexture = gResourceManager().Load<Texture>("Data/Textures/Skybox/sky_countryside_large.jpeg", textureCubeMapImportOptions);
 #endif
     }
 
@@ -509,6 +518,11 @@ namespace te
         _sceneCamera->SetMSAACount(_window->GetDesc().MultisampleCount);
         _sceneCamera->SetMain(true);
         _sceneCamera->Initialize();
+
+        _sceneSkyboxSO = SceneObject::Create("Skybox");
+        _skybox = _sceneSkyboxSO->AddComponent<CSkybox>();
+        _skybox->SetTexture(_loadedSkyboxTexture);
+        _skybox->Initialize();
 
         _sceneSponzaSO = SceneObject::Create("Sponza");
         _sponzaRenderable = _sceneSponzaSO->AddComponent<CRenderable>();

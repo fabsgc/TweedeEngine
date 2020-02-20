@@ -48,7 +48,7 @@ namespace te
             UINT32* indexData = meshData->GetIndices32();
             UINT8* positionData = meshData->GetElementData(VES_POSITION);
 
-            AABox localBox(-Vector3::ONE * 300.0f, Vector3::ONE * 300.0f);
+            AABox localBox(-Vector3::ONE * 500.0f, Vector3::ONE * 500.0f);
             ShapeMeshes3D::SolidAABox(localBox, positionData, nullptr, nullptr, 0,
                 vertexDesc->GetVertexStride(), indexData, 0);
 

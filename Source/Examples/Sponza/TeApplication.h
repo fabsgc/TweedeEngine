@@ -78,6 +78,8 @@ namespace te
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         Vector<SponzaMaterialData> _materials;
 
+        HTexture _loadedSkyboxTexture;
+
         HShader _shaderOpaque;
         HShader _shaderTransparent;
 
@@ -85,9 +87,11 @@ namespace te
         HCameraFlyer _sceneCameraFlyer;
         HMesh _sponzaMesh;
         HRenderable _sponzaRenderable;
+        HSkybox _skybox;
 
         HSceneObject _sceneCameraSO;
         HSceneObject _sceneSponzaSO;
+        HSceneObject _sceneSkyboxSO;
 #endif
     };
 }
