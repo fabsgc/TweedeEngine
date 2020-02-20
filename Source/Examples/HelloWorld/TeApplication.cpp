@@ -71,12 +71,14 @@ namespace te
         auto textureCubeMapImportOptions = TextureImportOptions::Create();
         textureCubeMapImportOptions->CpuCached = false;
         textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
+        textureCubeMapImportOptions->Format = PF_RGBA8;
+        textureCubeMapImportOptions->IsCubemap = true;
 
         _loadedMeshCube = gResourceManager().Load<Mesh>("Data/Meshes/MultiCubeMaterial/multi-cube-material.dae", meshImportOptions);
         _loadedMeshMonkey = gResourceManager().Load<Mesh>("Data/Meshes/Monkey/monkey.dae", meshImportOptions);
         _loadedTextureCube = gResourceManager().Load<Texture>("Data/Textures/Cube/diffuse.png", textureImportOptions);
         _loadedTextureMonkey = gResourceManager().Load<Texture>("Data/Textures/Monkey/diffuse.png", textureImportOptions);
-        _loadedCubemapTexture = gResourceManager().Load<Texture>("Data/Textures/Skybox/cubemap.png", textureCubeMapImportOptions);
+        _loadedCubemapTexture = gResourceManager().Load<Texture>("Data/Textures/Skybox/sky_countryside_medium.jpeg", textureCubeMapImportOptions);
 
         TE_PRINT((_loadedMeshCube.GetHandleData())->data);
         TE_PRINT((_loadedMeshCube.GetHandleData())->uuid.ToString());
@@ -102,13 +104,13 @@ namespace te
         _materialCube = Material::Create(_shader);
         _materialCube->SetName("Material");
         _materialCube->SetTexture("DiffuseMap", _loadedTextureCube);
-        _materialCube->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetAnisotropicSamplerState());
+        _materialCube->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
         _materialCube->SetProperties(properties);
 
         _materialMonkey = Material::Create(_shader);
         _materialMonkey->SetName("Material");
         _materialMonkey->SetTexture("DiffuseMap", _loadedTextureMonkey);
-        _materialMonkey->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetAnisotropicSamplerState());
+        _materialMonkey->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
         _materialMonkey->SetProperties(properties);
 
         // ######################################################

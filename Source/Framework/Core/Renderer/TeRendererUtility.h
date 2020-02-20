@@ -6,32 +6,9 @@
 #include "Math/TeVector2I.h"
 #include "Math/TeRect2I.h"
 #include "Renderer/TeRendererMaterial.h"
-#include "Renderer/TeParamBlocks.h"
 
 namespace te
 {
-    TE_PARAM_BLOCK_BEGIN(BlitParamDef)
-        TE_PARAM_BLOCK_ENTRY(INT32, gMSAACount)
-        TE_PARAM_BLOCK_ENTRY(INT32, gIsDepth)
-    TE_PARAM_BLOCK_END
-
-    extern BlitParamDef gBlitParamDef;
-
-    /** Shader that copies a source texture into a render target, and optionally resolves it. */
-    class TE_CORE_EXPORT BlitMat : public RendererMaterial<BlitMat>
-    {
-        RMAT_DEF(BuiltinShader::Blit);
-
-    public:
-        BlitMat();
-
-        /** Executes the material on the currently bound render target, copying from @p source. */
-        void Execute(const SPtr<Texture>& source, const Rect2& area, bool flipUV, INT32 MSSACount = 1, bool isDepth = false);
-
-    private:
-        SPtr<GpuParamBlockBuffer> _paramBuffer;
-    };
-
     /**
      * Contains various utility methods that make various common operations in the renderer easier.
      */
@@ -140,6 +117,9 @@ namespace te
         void Blit(const SPtr<Texture>& texture, const Rect2I& area = Rect2I::EMPTY, bool flipUV = false,
             bool isDepth = false, bool isFiltered = false);
 
+        /** Returns a mesh that can be used for rendering a skybox. */
+        SPtr<Mesh> GetSkyBoxMesh() const { return _skyBoxMesh; }
+
     private:
         static constexpr UINT32 NUM_QUAD_VB_SLOTS = 1024;
 
@@ -148,6 +128,8 @@ namespace te
         SPtr<VertexDataDesc> _fullscreenQuadVDesc;
         SPtr<VertexDeclaration> _fullscreenQuadVDecl;
         UINT32 _nextQuadVBSlot = 0;
+
+        SPtr<Mesh> _skyBoxMesh;
     };
 
     /** Provides easy access to RendererUtility. */

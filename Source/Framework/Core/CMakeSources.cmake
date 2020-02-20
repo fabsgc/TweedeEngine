@@ -75,6 +75,8 @@ set (TE_CORE_INC_RENDERER
     "Core/Renderer/TeGpuResourcePool.h"
     "Core/Renderer/TeRendererMaterialManager.h"
     "Core/Renderer/TeRendererMaterial.h"
+    "Core/Renderer/TeBlitMat.h"
+    "Core/Renderer/TeSkyBoxMat.h"
 )
 set (TE_CORE_SRC_RENDERER
     "Core/Renderer/TeRenderer.cpp"
@@ -90,6 +92,8 @@ set (TE_CORE_SRC_RENDERER
     "Core/Renderer/TeRendererUtility.cpp"
     "Core/Renderer/TeGpuResourcePool.cpp"
     "Core/Renderer/TeRendererMaterialManager.cpp"
+    "Core/Renderer/TeBlitMat.cpp"
+    "Core/Renderer/TeSkyBoxMat.cpp"
 )
 
 set (TE_CORE_INC_SCENE
@@ -227,11 +231,13 @@ set (TE_CORE_INC_MESH
     "Core/Mesh/TeMesh.h"
     "Core/Mesh/TeMeshData.h"
     "Core/Mesh/TeMeshUtility.h"
+    "Core/Mesh/TeShapeMeshes3D.h"
 )
 set (TE_CORE_SRC_MESH
     "Core/Mesh/TeMesh.cpp"
     "Core/Mesh/TeMeshData.cpp"
     "Core/Mesh/TeMeshUtility.cpp"
+    "Core/Mesh/TeShapeMeshes3D.cpp"
 )
 
 set (TE_CORE_INC_MATERIAL

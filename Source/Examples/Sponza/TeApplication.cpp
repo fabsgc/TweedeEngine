@@ -460,7 +460,7 @@ namespace te
 
             //material.MaterialElement->SetParam<float>("gTransparency", g);
             material.MaterialElement->SetName(material.Name);
-            material.MaterialElement->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetAnisotropicSamplerState());
+            material.MaterialElement->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
 
             if (material.Diffuse != "") material.MaterialElement->SetTexture("DiffuseMap", material.DiffuseTexture, surface);
             if (material.Emissive != "") material.MaterialElement->SetTexture("EmissiveMap", material.EmissiveTexture, surface);

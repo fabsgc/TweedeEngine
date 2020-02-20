@@ -26,6 +26,7 @@ namespace te
         InitShaderOpaque();
         InitShaderTransparent();
         InitShaderBlit();
+        InitShaderSkybox();
 #endif
     }
 
@@ -42,11 +43,28 @@ namespace te
             return _shaderTransparent;
         case BuiltinShader::Blit:
             return _shaderBlit;
+        case BuiltinShader::Skybox:
+            return _shaderSkybox;
         default:
             break;
         }
 
         return HShader();
+    }
+
+    SPtr<SamplerState> BuiltinResources::GetBuiltinSampler(BuiltinSampler type)
+    {
+        switch(type)
+        {
+        case BuiltinSampler::Anisotropic:
+            return _anisotropicSamplerState;
+        case BuiltinSampler::Bilinear:
+            return _bilinearSamplerState; 
+        default:
+            break;
+        }
+
+        return nullptr;
     }
 
     void BuiltinResources::InitGpuPrograms()
@@ -85,6 +103,24 @@ namespace te
             _pixelShaderBlitDesc.Language = "hlsl";
             _pixelShaderBlitDesc.IncludePath = "";
             _pixelShaderBlitDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("Raw/Test/Skybox_VS.hlsl"));
+            _vertexShaderSkyboxDesc.Type = GPT_VERTEX_PROGRAM;
+            _vertexShaderSkyboxDesc.EntryPoint = "main";
+            _vertexShaderSkyboxDesc.Language = "hlsl";
+            _vertexShaderSkyboxDesc.IncludePath = "";
+            _vertexShaderSkyboxDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("Raw/Test/Skybox_PS.hlsl"));
+            _pixelShaderSkyboxDesc.Type = GPT_PIXEL_PROGRAM;
+            _pixelShaderSkyboxDesc.EntryPoint = "main";
+            _pixelShaderSkyboxDesc.Language = "hlsl";
+            _pixelShaderSkyboxDesc.IncludePath = "";
+            _pixelShaderSkyboxDesc.Source = shaderFile.GetAsString();
         }
     }
     void BuiltinResources::InitStates()
@@ -125,123 +161,143 @@ namespace te
 
     void BuiltinResources::InitShaderDesc()
     {
-        SHADER_DATA_PARAM_DESC gViewDirDesc("gViewDir", "gViewDir", GPDT_FLOAT3);
-        SHADER_DATA_PARAM_DESC gViewOriginDesc("gViewOrigin", "gViewOrigin", GPDT_FLOAT3);
-        SHADER_DATA_PARAM_DESC gMatViewProjDesc("gMatViewProj", "gMatViewProj", GPDT_MATRIX_4X4);
-        SHADER_DATA_PARAM_DESC gMatViewDesc("gMatView", "gMatView", GPDT_MATRIX_4X4);
-        SHADER_DATA_PARAM_DESC gMatProjDesc("gMatProj", "gMatProj", GPDT_MATRIX_4X4);
+        {
+            SHADER_DATA_PARAM_DESC gViewDirDesc("gViewDir", "gViewDir", GPDT_FLOAT3);
+            SHADER_DATA_PARAM_DESC gViewOriginDesc("gViewOrigin", "gViewOrigin", GPDT_FLOAT3);
+            SHADER_DATA_PARAM_DESC gMatViewProjDesc("gMatViewProj", "gMatViewProj", GPDT_MATRIX_4X4);
+            SHADER_DATA_PARAM_DESC gMatViewDesc("gMatView", "gMatView", GPDT_MATRIX_4X4);
+            SHADER_DATA_PARAM_DESC gMatProjDesc("gMatProj", "gMatProj", GPDT_MATRIX_4X4);
 
-        SHADER_DATA_PARAM_DESC gMatWorldDesc("gMatWorld", "gMatWorld", GPDT_MATRIX_4X4);
-        SHADER_DATA_PARAM_DESC gMatInvWorldDesc("gMatInvWorld", "gMatInvWorld", GPDT_MATRIX_4X4);
-        SHADER_DATA_PARAM_DESC gMatWorldNoScaleDesc("gMatWorldNoScale", "gMatWorldNoScale", GPDT_MATRIX_4X4);
-        SHADER_DATA_PARAM_DESC gMatInvWorldNoScaleDesc("gMatInvWorldNoScale", "gMatInvWorldNoScale", GPDT_MATRIX_4X4);
-        SHADER_DATA_PARAM_DESC gMatPrevWorldDesc("gMatPrevWorld", "gMatPrevWorld", GPDT_MATRIX_4X4);
-        SHADER_DATA_PARAM_DESC gLayerDesc("gLayer", "gLayer", GPDT_INT1);
+            SHADER_DATA_PARAM_DESC gMatWorldDesc("gMatWorld", "gMatWorld", GPDT_MATRIX_4X4);
+            SHADER_DATA_PARAM_DESC gMatInvWorldDesc("gMatInvWorld", "gMatInvWorld", GPDT_MATRIX_4X4);
+            SHADER_DATA_PARAM_DESC gMatWorldNoScaleDesc("gMatWorldNoScale", "gMatWorldNoScale", GPDT_MATRIX_4X4);
+            SHADER_DATA_PARAM_DESC gMatInvWorldNoScaleDesc("gMatInvWorldNoScale", "gMatInvWorldNoScale", GPDT_MATRIX_4X4);
+            SHADER_DATA_PARAM_DESC gMatPrevWorldDesc("gMatPrevWorld", "gMatPrevWorld", GPDT_MATRIX_4X4);
+            SHADER_DATA_PARAM_DESC gLayerDesc("gLayer", "gLayer", GPDT_INT1);
 
-        SHADER_DATA_PARAM_DESC gTime("gTime", "gTime", GPDT_FLOAT1);
+            SHADER_DATA_PARAM_DESC gTime("gTime", "gTime", GPDT_FLOAT1);
 
-        SHADER_DATA_PARAM_DESC gMatWorldViewProj("gMatWorldViewProj", "gMatWorldViewProj", GPDT_MATRIX_4X4);
+            SHADER_DATA_PARAM_DESC gMatWorldViewProj("gMatWorldViewProj", "gMatWorldViewProj", GPDT_MATRIX_4X4);
 
-        SHADER_DATA_PARAM_DESC gInstanceData("gInstanceData", "gInstanceData", GPDT_STRUCT);
-        gInstanceData.ElementSize = sizeof(PerInstanceData);
+            SHADER_DATA_PARAM_DESC gInstanceData("gInstanceData", "gInstanceData", GPDT_STRUCT);
+            gInstanceData.ElementSize = sizeof(PerInstanceData);
 
-        SHADER_DATA_PARAM_DESC gAmbient("gAmbient", "gAmbient", GPDT_FLOAT4);
-        SHADER_DATA_PARAM_DESC gDiffuse("gDiffuse", "gDiffuse", GPDT_FLOAT4);
-        SHADER_DATA_PARAM_DESC gSpecular("gSpecular", "gSpecular", GPDT_FLOAT4);
-        SHADER_DATA_PARAM_DESC gEmissive("gEmissive", "gEmissive", GPDT_FLOAT4);
-        SHADER_DATA_PARAM_DESC gUseDiffuseMap("gUseDiffuseMap", "gUseDiffuseMap", GPDT_INT1);
-        SHADER_DATA_PARAM_DESC gUseEmissiveMap("gUseEmissiveMap", "gUseEmissiveMap", GPDT_INT1);
-        SHADER_DATA_PARAM_DESC gUseNormalMap("gUseNormalMap", "gUseNormalMap", GPDT_INT1);
-        SHADER_DATA_PARAM_DESC gUseSpecularMap("gUseSpecularMap", "gUseSpecularMap", GPDT_INT1);
-        SHADER_DATA_PARAM_DESC gUseBumpMap("gUseBumpMap", "gUseBumpMap", GPDT_INT1);
-        SHADER_DATA_PARAM_DESC gUseParallaxMap("gUseParallaxMap", "gUseParallaxMap", GPDT_INT1);
-        SHADER_DATA_PARAM_DESC gUseTransparencyMap("gUseTransparencyMap", "gUseTransparencyMap", GPDT_INT1);
-        SHADER_DATA_PARAM_DESC gUseReflectionMap("gUseReflectionMap", "gUseReflectionMap", GPDT_INT1);
-        SHADER_DATA_PARAM_DESC gUseOcclusionMap("gUseOcclusionMap", "gUseOcclusionMap", GPDT_INT1);
-        SHADER_DATA_PARAM_DESC gSpecularPower("gSpecularPower", "gSpecularPower", GPDT_FLOAT1);
-        SHADER_DATA_PARAM_DESC gTransparency("gTransparency", "gTransparency", GPDT_FLOAT1);
-        SHADER_DATA_PARAM_DESC gIndexOfRefraction("gIndexOfRefraction", "gIndexOfRefraction", GPDT_FLOAT1);
-        SHADER_DATA_PARAM_DESC gAbsorbance("gAbsorbance", "gAbsorbance", GPDT_FLOAT1);
-        SHADER_DATA_PARAM_DESC gBumpScale("gBumScale", "gBumScale", GPDT_FLOAT1);
-        SHADER_DATA_PARAM_DESC gAlphaThreshold("gAlphaThreshold", "gAlphaThreshold", GPDT_FLOAT1);
+            SHADER_DATA_PARAM_DESC gAmbient("gAmbient", "gAmbient", GPDT_FLOAT4);
+            SHADER_DATA_PARAM_DESC gDiffuse("gDiffuse", "gDiffuse", GPDT_FLOAT4);
+            SHADER_DATA_PARAM_DESC gSpecular("gSpecular", "gSpecular", GPDT_FLOAT4);
+            SHADER_DATA_PARAM_DESC gEmissive("gEmissive", "gEmissive", GPDT_FLOAT4);
+            SHADER_DATA_PARAM_DESC gUseDiffuseMap("gUseDiffuseMap", "gUseDiffuseMap", GPDT_INT1);
+            SHADER_DATA_PARAM_DESC gUseEmissiveMap("gUseEmissiveMap", "gUseEmissiveMap", GPDT_INT1);
+            SHADER_DATA_PARAM_DESC gUseNormalMap("gUseNormalMap", "gUseNormalMap", GPDT_INT1);
+            SHADER_DATA_PARAM_DESC gUseSpecularMap("gUseSpecularMap", "gUseSpecularMap", GPDT_INT1);
+            SHADER_DATA_PARAM_DESC gUseBumpMap("gUseBumpMap", "gUseBumpMap", GPDT_INT1);
+            SHADER_DATA_PARAM_DESC gUseParallaxMap("gUseParallaxMap", "gUseParallaxMap", GPDT_INT1);
+            SHADER_DATA_PARAM_DESC gUseTransparencyMap("gUseTransparencyMap", "gUseTransparencyMap", GPDT_INT1);
+            SHADER_DATA_PARAM_DESC gUseReflectionMap("gUseReflectionMap", "gUseReflectionMap", GPDT_INT1);
+            SHADER_DATA_PARAM_DESC gUseOcclusionMap("gUseOcclusionMap", "gUseOcclusionMap", GPDT_INT1);
+            SHADER_DATA_PARAM_DESC gSpecularPower("gSpecularPower", "gSpecularPower", GPDT_FLOAT1);
+            SHADER_DATA_PARAM_DESC gTransparency("gTransparency", "gTransparency", GPDT_FLOAT1);
+            SHADER_DATA_PARAM_DESC gIndexOfRefraction("gIndexOfRefraction", "gIndexOfRefraction", GPDT_FLOAT1);
+            SHADER_DATA_PARAM_DESC gAbsorbance("gAbsorbance", "gAbsorbance", GPDT_FLOAT1);
+            SHADER_DATA_PARAM_DESC gBumpScale("gBumScale", "gBumScale", GPDT_FLOAT1);
+            SHADER_DATA_PARAM_DESC gAlphaThreshold("gAlphaThreshold", "gAlphaThreshold", GPDT_FLOAT1);
 
-        SHADER_OBJECT_PARAM_DESC anisotropicSamplerDesc("AnisotropicSampler", "AnisotropicSampler", GPOT_SAMPLER2D);
-        SHADER_OBJECT_PARAM_DESC diffuseMapDesc("DiffuseMap", "DiffuseMap", GPOT_TEXTURE2D);
-        SHADER_OBJECT_PARAM_DESC emissiveMapDesc("EmissiveMap", "EmissiveMap", GPOT_TEXTURE2D);
-        SHADER_OBJECT_PARAM_DESC normalMapDesc("NormalMap", "NormalMap", GPOT_TEXTURE2D);
-        SHADER_OBJECT_PARAM_DESC specularMapDesc("SpecularMap", "SpecularMap", GPOT_TEXTURE2D);
-        SHADER_OBJECT_PARAM_DESC bumpMapDesc("BumpMap", "BumpMap", GPOT_TEXTURE2D);
-        SHADER_OBJECT_PARAM_DESC transparencyMapDesc("TransparencyMap", "TransparencyMap", GPOT_TEXTURE2D);
+            SHADER_OBJECT_PARAM_DESC anisotropicSamplerDesc("AnisotropicSampler", "AnisotropicSampler", GPOT_SAMPLER2D);
+            SHADER_OBJECT_PARAM_DESC diffuseMapDesc("DiffuseMap", "DiffuseMap", GPOT_TEXTURE2D);
+            SHADER_OBJECT_PARAM_DESC emissiveMapDesc("EmissiveMap", "EmissiveMap", GPOT_TEXTURE2D);
+            SHADER_OBJECT_PARAM_DESC normalMapDesc("NormalMap", "NormalMap", GPOT_TEXTURE2D);
+            SHADER_OBJECT_PARAM_DESC specularMapDesc("SpecularMap", "SpecularMap", GPOT_TEXTURE2D);
+            SHADER_OBJECT_PARAM_DESC bumpMapDesc("BumpMap", "BumpMap", GPOT_TEXTURE2D);
+            SHADER_OBJECT_PARAM_DESC transparencyMapDesc("TransparencyMap", "TransparencyMap", GPOT_TEXTURE2D);
 
-        _forwardShaderDesc.AddParameter(gViewDirDesc);
-        _forwardShaderDesc.AddParameter(gViewOriginDesc);
-        _forwardShaderDesc.AddParameter(gMatViewProjDesc);
-        _forwardShaderDesc.AddParameter(gMatViewDesc);
-        _forwardShaderDesc.AddParameter(gMatProjDesc);
+            _forwardShaderDesc.AddParameter(gViewDirDesc);
+            _forwardShaderDesc.AddParameter(gViewOriginDesc);
+            _forwardShaderDesc.AddParameter(gMatViewProjDesc);
+            _forwardShaderDesc.AddParameter(gMatViewDesc);
+            _forwardShaderDesc.AddParameter(gMatProjDesc);
 
-        _forwardShaderDesc.AddParameter(gInstanceData);
+            _forwardShaderDesc.AddParameter(gInstanceData);
 
-        _forwardShaderDesc.AddParameter(gMatWorldDesc);
-        _forwardShaderDesc.AddParameter(gMatInvWorldDesc);
-        _forwardShaderDesc.AddParameter(gMatWorldNoScaleDesc);
-        _forwardShaderDesc.AddParameter(gMatInvWorldNoScaleDesc);
-        _forwardShaderDesc.AddParameter(gMatPrevWorldDesc);
-        _forwardShaderDesc.AddParameter(gLayerDesc);
-        
-        _forwardShaderDesc.AddParameter(gAmbient);
-        _forwardShaderDesc.AddParameter(gDiffuse);
-        _forwardShaderDesc.AddParameter(gEmissive);
-        _forwardShaderDesc.AddParameter(gSpecular);
-        _forwardShaderDesc.AddParameter(gUseDiffuseMap);
-        _forwardShaderDesc.AddParameter(gUseEmissiveMap);
-        _forwardShaderDesc.AddParameter(gUseNormalMap);
-        _forwardShaderDesc.AddParameter(gUseSpecularMap);
-        _forwardShaderDesc.AddParameter(gUseBumpMap);
-        _forwardShaderDesc.AddParameter(gUseParallaxMap);
-        _forwardShaderDesc.AddParameter(gUseTransparencyMap);
-        _forwardShaderDesc.AddParameter(gUseReflectionMap);
-        _forwardShaderDesc.AddParameter(gUseOcclusionMap);
-        _forwardShaderDesc.AddParameter(gSpecularPower);
-        _forwardShaderDesc.AddParameter(gTransparency);
-        _forwardShaderDesc.AddParameter(gIndexOfRefraction);
-        _forwardShaderDesc.AddParameter(gAbsorbance);
-        _forwardShaderDesc.AddParameter(gBumpScale);
-        _forwardShaderDesc.AddParameter(gAlphaThreshold);
+            _forwardShaderDesc.AddParameter(gMatWorldDesc);
+            _forwardShaderDesc.AddParameter(gMatInvWorldDesc);
+            _forwardShaderDesc.AddParameter(gMatWorldNoScaleDesc);
+            _forwardShaderDesc.AddParameter(gMatInvWorldNoScaleDesc);
+            _forwardShaderDesc.AddParameter(gMatPrevWorldDesc);
+            _forwardShaderDesc.AddParameter(gLayerDesc);
+            
+            _forwardShaderDesc.AddParameter(gAmbient);
+            _forwardShaderDesc.AddParameter(gDiffuse);
+            _forwardShaderDesc.AddParameter(gEmissive);
+            _forwardShaderDesc.AddParameter(gSpecular);
+            _forwardShaderDesc.AddParameter(gUseDiffuseMap);
+            _forwardShaderDesc.AddParameter(gUseEmissiveMap);
+            _forwardShaderDesc.AddParameter(gUseNormalMap);
+            _forwardShaderDesc.AddParameter(gUseSpecularMap);
+            _forwardShaderDesc.AddParameter(gUseBumpMap);
+            _forwardShaderDesc.AddParameter(gUseParallaxMap);
+            _forwardShaderDesc.AddParameter(gUseTransparencyMap);
+            _forwardShaderDesc.AddParameter(gUseReflectionMap);
+            _forwardShaderDesc.AddParameter(gUseOcclusionMap);
+            _forwardShaderDesc.AddParameter(gSpecularPower);
+            _forwardShaderDesc.AddParameter(gTransparency);
+            _forwardShaderDesc.AddParameter(gIndexOfRefraction);
+            _forwardShaderDesc.AddParameter(gAbsorbance);
+            _forwardShaderDesc.AddParameter(gBumpScale);
+            _forwardShaderDesc.AddParameter(gAlphaThreshold);
 
-        _forwardShaderDesc.AddParameter(gTime);
+            _forwardShaderDesc.AddParameter(gTime);
 
-        _forwardShaderDesc.AddParameter(gMatWorldViewProj);
+            _forwardShaderDesc.AddParameter(gMatWorldViewProj);
 
-        _forwardShaderDesc.AddParameter(anisotropicSamplerDesc);
-        _forwardShaderDesc.AddParameter(diffuseMapDesc);
-        _forwardShaderDesc.AddParameter(emissiveMapDesc);
-        _forwardShaderDesc.AddParameter(normalMapDesc);
-        _forwardShaderDesc.AddParameter(specularMapDesc);
-        _forwardShaderDesc.AddParameter(bumpMapDesc);
-        _forwardShaderDesc.AddParameter(transparencyMapDesc);
+            _forwardShaderDesc.AddParameter(anisotropicSamplerDesc);
+            _forwardShaderDesc.AddParameter(diffuseMapDesc);
+            _forwardShaderDesc.AddParameter(emissiveMapDesc);
+            _forwardShaderDesc.AddParameter(normalMapDesc);
+            _forwardShaderDesc.AddParameter(specularMapDesc);
+            _forwardShaderDesc.AddParameter(bumpMapDesc);
+            _forwardShaderDesc.AddParameter(transparencyMapDesc);
+        }
 
-        SHADER_DATA_PARAM_DESC gMSAACountDesc("gMSAACount", "gMSAACount", GPDT_INT1);
-        SHADER_DATA_PARAM_DESC gIsDepthDesc("gIsDepth", "gIsDepth", GPDT_INT1);
+        {
+            SHADER_DATA_PARAM_DESC gMSAACountDesc("gMSAACount", "gMSAACount", GPDT_INT1);
+            SHADER_DATA_PARAM_DESC gIsDepthDesc("gIsDepth", "gIsDepth", GPDT_INT1);
 
-        SHADER_OBJECT_PARAM_DESC bilinearSamplerDesc("BilinearSampler", "BilinearSampler", GPOT_SAMPLER2D);
-        SHADER_OBJECT_PARAM_DESC sourceMapDesc("SourceMap", "SourceMap", GPOT_TEXTURE2D);
-        SHADER_OBJECT_PARAM_DESC SourceMapMSDesc("SourceMapMS", "SourceMapMS", GPOT_RWTEXTURE2DMS);
-        SHADER_OBJECT_PARAM_DESC SourceMapMSDepthDesc("SourceMapMSDepth", "SourceMapMSDepth", GPOT_RWTEXTURE2DMS);
+            SHADER_OBJECT_PARAM_DESC bilinearSamplerDesc("BilinearSampler", "BilinearSampler", GPOT_SAMPLER2D);
+            SHADER_OBJECT_PARAM_DESC sourceMapDesc("SourceMap", "SourceMap", GPOT_TEXTURE2D);
+            SHADER_OBJECT_PARAM_DESC SourceMapMSDesc("SourceMapMS", "SourceMapMS", GPOT_RWTEXTURE2DMS);
+            SHADER_OBJECT_PARAM_DESC SourceMapMSDepthDesc("SourceMapMSDepth", "SourceMapMSDepth", GPOT_RWTEXTURE2DMS);
 
-        _blitShaderDesc.AddParameter(gMSAACountDesc);
-        _blitShaderDesc.AddParameter(gIsDepthDesc);
+            _blitShaderDesc.AddParameter(gMSAACountDesc);
+            _blitShaderDesc.AddParameter(gIsDepthDesc);
 
-        _blitShaderDesc.AddParameter(bilinearSamplerDesc);
+            _blitShaderDesc.AddParameter(bilinearSamplerDesc);
 
-        _blitShaderDesc.AddParameter(sourceMapDesc);
-        _blitShaderDesc.AddParameter(SourceMapMSDesc);
-        _blitShaderDesc.AddParameter(SourceMapMSDepthDesc);
+            _blitShaderDesc.AddParameter(sourceMapDesc);
+            _blitShaderDesc.AddParameter(SourceMapMSDesc);
+            _blitShaderDesc.AddParameter(SourceMapMSDepthDesc);
+        }
+
+        {
+            SHADER_DATA_PARAM_DESC gClearColor("gClearColor", "gClearColor", GPDT_FLOAT4);
+            SHADER_DATA_PARAM_DESC gUseTexture("gUseTexture", "gUseTexture", GPDT_INT1);
+
+            SHADER_OBJECT_PARAM_DESC anisotropicSamplerDesc("AnisotropicSampler", "AnisotropicSampler", GPOT_SAMPLER2D);
+
+            SHADER_OBJECT_PARAM_DESC sourceMapDesc("TextureMap", "TextureMap", GPOT_TEXTURE2D);
+
+            _skyboxShaderDesc.AddParameter(gClearColor);
+            _skyboxShaderDesc.AddParameter(gUseTexture);
+            
+            _skyboxShaderDesc.AddParameter(anisotropicSamplerDesc);
+
+            _skyboxShaderDesc.AddParameter(sourceMapDesc);
+        }
     }
 
     void BuiltinResources::InitSamplers()
     {
         _anisotropicSamplerState = SamplerState::Create(_anisotropicSamplerStateDesc);
-        _anisotropicSamplerState = SamplerState::Create(_bilinearSamplerStateDesc);
+        _bilinearSamplerState = SamplerState::Create(_bilinearSamplerStateDesc);
     }
 
     void BuiltinResources::InitShaderOpaque()
@@ -260,7 +316,7 @@ namespace te
         SHADER_DESC shaderDesc = _forwardShaderDesc;
         shaderDesc.Techniques.push_back(technique.GetInternalPtr());
 
-        _shaderOpaque = Shader::Create("Opaque", shaderDesc);
+        _shaderOpaque = Shader::Create("Forward_Opaque", shaderDesc);
     }
 
     void BuiltinResources::InitShaderTransparent()
@@ -282,7 +338,7 @@ namespace te
         shaderDesc.Flags = (UINT32)ShaderFlag::Transparent;
         shaderDesc.Techniques.push_back(technique.GetInternalPtr());
         
-        _shaderTransparent = Shader::Create("Transparent", shaderDesc);
+        _shaderTransparent = Shader::Create("Forward_Transparent", shaderDesc);
     }
 
     void BuiltinResources::InitShaderBlit()
@@ -308,6 +364,27 @@ namespace te
         shaderDesc.Techniques.push_back(technique.GetInternalPtr());
 
         _shaderBlit = Shader::Create("Blit", shaderDesc);
+    }
+
+    void BuiltinResources::InitShaderSkybox()
+    {
+        PASS_DESC passDesc;
+        passDesc.BlendStateDesc = _blendOpaqueStateDesc;
+        passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
+        passDesc.RasterizerStateDesc = _rasterizerStateDesc;
+        passDesc.VertexProgramDesc = _vertexShaderSkyboxDesc;
+        passDesc.PixelProgramDesc = _pixelShaderSkyboxDesc;
+
+        passDesc.DepthStencilStateDesc.DepthWriteEnable = false;
+
+        HPass pass = Pass::Create(passDesc);
+        HTechnique technique = Technique::Create("hlsl", { pass.GetInternalPtr() });
+        technique->Compile();
+
+        SHADER_DESC shaderDesc = _skyboxShaderDesc;
+        shaderDesc.Techniques.push_back(technique.GetInternalPtr());
+
+        _shaderSkybox = Shader::Create("Skybox", shaderDesc);
     }
 
     BuiltinResources& gBuiltinResources()

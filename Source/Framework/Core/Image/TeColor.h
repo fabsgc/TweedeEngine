@@ -48,6 +48,45 @@ namespace te
         /** Returns the color as a 4*32-bit float vector in RGBA order. */
         Vector4 GetAsVector4() const;
 
+        /**
+         * Convert the current color to hue, saturation and brightness values.
+         *
+         * @param[in] hue			Output hue value, scaled to the [0,1] range.
+         * @param[in] saturation	Output saturation level, [0,1].
+         * @param[in] brightness	Output brightness level, [0,1].
+         */
+        void GetHSB(float* hue, float* saturation, float* brightness) const;
+
+        /** Converts the current color from gamma to linear space and returns the result. */
+        Color GetLinear() const;
+
+        /** Converts the current color from linear to gamma space and returns the result. */
+        Color GetGamma() const;
+
+        /** Clamps color value to the range [0, 1]. */
+        void Saturate()
+        {
+            if (r < 0)
+                r = 0;
+            else if (r > 1)
+                r = 1;
+
+            if (g < 0)
+                g = 0;
+            else if (g > 1)
+                g = 1;
+
+            if (b < 0)
+                b = 0;
+            else if (b > 1)
+                b = 1;
+
+            if (a < 0)
+                a = 0;
+            else if (a > 1)
+                a = 1;
+        }
+
         /** Pointer accessor for direct copying. */
         float* Ptr()
         {

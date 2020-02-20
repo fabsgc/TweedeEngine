@@ -1,33 +1,14 @@
 #include "TeRendererUtility.h"
+#include "Renderer/TeBlitMat.h"
 #include "RenderAPI/TeVertexDataDesc.h"
 #include "RenderAPI/TeRenderAPI.h"
 #include "Material/TeMaterial.h"
 #include "Material/TePass.h"
 #include "Mesh/TeMesh.h"
+#include "Mesh/TeShapeMeshes3D.h"
 
 namespace te
 {
-    BlitParamDef gBlitParamDef;
-
-    BlitMat::BlitMat()
-    {
-        _paramBuffer = gBlitParamDef.CreateBuffer();
-        _params->SetParamBlockBuffer("PerFrameBuffer", _paramBuffer);
-    }
-
-    void BlitMat::Execute(const SPtr<Texture>& source, const Rect2& area, bool flipUV, INT32 MSSACount, bool isDepth)
-    {
-        gBlitParamDef.gMSAACount.Set(_paramBuffer, MSSACount, 0);
-        gBlitParamDef.gIsDepth.Set(_paramBuffer, (isDepth) ? 1 : 0, 0);
-
-        if (MSSACount > 1 && isDepth) _params->SetTexture("SourceMapMSDepth", source);
-        else if (MSSACount > 1 && !isDepth) _params->SetTexture("SourceMapMS", source);
-        else _params->SetTexture("SourceMap", source);
-
-        Bind();
-        gRendererUtility().DrawScreenQuad(area, Vector2I(1, 1), 1, flipUV);
-    }
-
     RendererUtility::RendererUtility()
     {
         {
@@ -52,6 +33,26 @@ namespace te
 
             UINT32 indices[] { 0, 1, 2, 1, 3, 2 };
             _fullScreenQuadIB->WriteData(0, sizeof(indices), indices, BWT_DISCARD);
+        }
+
+        {
+            SPtr<VertexDataDesc> vertexDesc = te_shared_ptr_new<VertexDataDesc>();
+            vertexDesc->AddVertElem(VET_FLOAT3, VES_POSITION);
+
+            UINT32 numVertices = 0;
+            UINT32 numIndices = 0;
+
+            ShapeMeshes3D::GetNumElementsAABox(numVertices, numIndices);
+            SPtr<MeshData> meshData = te_shared_ptr_new<MeshData>(numVertices, numIndices, vertexDesc);
+
+            UINT32* indexData = meshData->GetIndices32();
+            UINT8* positionData = meshData->GetElementData(VES_POSITION);
+
+            AABox localBox(-Vector3::ONE * 300.0f, Vector3::ONE * 300.0f);
+            ShapeMeshes3D::SolidAABox(localBox, positionData, nullptr, nullptr, 0,
+                vertexDesc->GetVertexStride(), indexData, 0);
+
+            _skyBoxMesh = Mesh::_createPtr(meshData);
         }
     }
 
@@ -129,7 +130,7 @@ namespace te
 
         UINT32 indexCount = subMesh.IndexCount;
 
-        if (numInstances > 0)
+        if (numInstances > 1)
         {
             rapi.DrawIndexed(subMesh.IndexOffset + mesh->GetIndexOffset(), indexCount, mesh->GetVertexOffset(),
                 vertexData->vertexCount, numInstances);

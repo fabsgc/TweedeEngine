@@ -458,6 +458,27 @@ namespace te
         UINT32 numColumns;
     };
 
+    /**
+     * Bits that map to a specific surface of a render target. Combine the bits to generate a mask that references
+     * only specific render target surfaces.
+     */
+    enum RenderSurfaceMaskBits
+    {
+        RT_NONE = 0,
+        RT_COLOR0 = 1 << 0,
+        RT_COLOR1 = 1 << 1,
+        RT_COLOR2 = 1 << 2,
+        RT_COLOR3 = 1 << 3,
+        RT_COLOR4 = 1 << 4,
+        RT_COLOR5 = 1 << 5,
+        RT_COLOR6 = 1 << 6,
+        RT_COLOR7 = 1 << 7,
+        RT_DEPTH = 1 << 30,
+        RT_STENCIL = 1 << 31,
+        RT_DEPTH_STENCIL = (1 << 30) | (1 << 31),
+        RT_ALL = 0xFFFFFFFF
+    };
+
     /**	Contains a lookup table for various information of all types used for data GPU parameters. Sizes are in bytes. */
     struct GpuDataParamInfos
     {

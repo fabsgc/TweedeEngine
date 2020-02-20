@@ -12,6 +12,30 @@ namespace te
     const Color Color::Blue = Color(0.0f, 0.0f, 1.0f);
     const Color Color::LightGray = Color(200.0f / 255.0f, 200.0f / 255.0f, 200.0f / 255.0f);
 
+    float LinearToSRGB(float x)
+    {
+        if (x <= 0.0f)
+            return 0.0f;
+        else if (x >= 1.0f)
+            return 1.0f;
+        else if (x < 0.0031308f)
+            return x * 12.92f;
+        else
+            return std::pow(x, 1.0f / 2.4f) * 1.055f - 0.055f;
+    }
+
+    float SRGBToLinear(float x)
+    {
+        if (x <= 0.0f)
+            return 0.0f;
+        else if (x >= 1.0f)
+            return 1.0f;
+        else if (x < 0.04045f)
+            return x / 12.92f;
+        else
+            return std::pow((x + 0.055f) / 1.055f, 2.4f);
+    }
+
     Color Color::FromRGBA(RGBA val)
     {
         Color output;
@@ -68,5 +92,25 @@ namespace te
     Vector4 Color::GetAsVector4() const
     {
         return Vector4(r, g, b, a);
+    }
+
+    Color Color::GetGamma() const
+    {
+        return Color(
+            LinearToSRGB(r),
+            LinearToSRGB(g),
+            LinearToSRGB(b),
+            a
+        );
+    }
+
+    Color Color::GetLinear() const
+    {
+        return Color(
+            SRGBToLinear(r),
+            SRGBToLinear(g),
+            SRGBToLinear(b),
+            a
+        );
     }
 }

@@ -56,12 +56,6 @@ namespace te
 
     extern PerCameraParamDef gPerCameraParamDef;
 
-    TE_PARAM_BLOCK_BEGIN(SkyboxParamDef)
-        TE_PARAM_BLOCK_ENTRY(Color, gClearColor)
-    TE_PARAM_BLOCK_END
-
-    extern SkyboxParamDef gSkyboxParamDef;
-
     TE_PARAM_BLOCK_BEGIN(PerFrameParamDef)
         TE_PARAM_BLOCK_ENTRY(float, gTime)
     TE_PARAM_BLOCK_END

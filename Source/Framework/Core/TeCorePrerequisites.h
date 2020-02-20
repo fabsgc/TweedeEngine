@@ -109,6 +109,7 @@ namespace te
     class VertexDeclaration;
     class VertexDataDesc;
     struct SubMesh;
+    class ShapeMeshes3D;
     class TextureView;
     class HardwareBuffer;
     struct RENDER_TEXTURE_DESC;
@@ -147,6 +148,8 @@ namespace te
     class RendererMaterialBase;
     template <typename T>
     class RendererMaterial;
+    class BlitMat;
+    class SkyboxMat;
 
     class SceneActor;
     class SceneManager;

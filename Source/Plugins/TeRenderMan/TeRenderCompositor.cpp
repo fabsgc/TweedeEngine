@@ -6,6 +6,7 @@
 #include "TeRendererScene.h"
 #include "TeRenderMan.h"
 #include "Renderer/TeRendererUtility.h"
+#include "Renderer/TeSkyboxMat.h"
 
 namespace te
 {
@@ -358,6 +359,32 @@ namespace te
         Skybox* skybox = nullptr;
         if (inputs.View.GetRenderSettings().EnableSkybox)
             skybox = inputs.Scene.SkyboxElem;
+
+        SPtr<Texture> radiance = skybox ? skybox->GetTexture() : nullptr;
+
+        if (radiance != nullptr)
+        {
+            SkyboxMat* material = SkyboxMat::Get();
+            material->Bind(inputs.View.GetPerViewBuffer(), radiance, Color::White);
+        }
+        else
+        {
+            SkyboxMat* material = SkyboxMat::Get();
+            Color clearColor = inputs.View.GetProperties().Target.ClearColor.GetLinear();
+            material->Bind(inputs.View.GetPerViewBuffer(), nullptr, clearColor);
+        }
+
+        RCNodeForwardPass* forwardPassNode = static_cast<RCNodeForwardPass*>(inputs.InputNodes[0]);
+        int readOnlyFlags = FBT_DEPTH | FBT_STENCIL;
+
+        RenderAPI& rapi = RenderAPI::Instance();
+        rapi.SetRenderTarget(forwardPassNode->RenderTargetTex, readOnlyFlags);
+
+        Rect2 area(0.0f, 0.0f, 1.0f, 1.0f);
+        rapi.SetViewport(area);
+
+        SPtr<Mesh> mesh = gRendererUtility().GetSkyBoxMesh();
+        gRendererUtility().Draw(mesh, mesh->GetProperties().GetSubMesh(0));
     }
 
     void RCNodeSkybox::Clear()
