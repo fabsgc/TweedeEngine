@@ -1,0 +1,119 @@
+[1mdiff --git a/Source/Framework/Core/Resources/TeBuiltinResources.cpp b/Source/Framework/Core/Resources/TeBuiltinResources.cpp[m
+[1mindex 43656fc..902ae51 100644[m
+[1m--- a/Source/Framework/Core/Resources/TeBuiltinResources.cpp[m
+[1m+++ b/Source/Framework/Core/Resources/TeBuiltinResources.cpp[m
+[36m@@ -27,6 +27,7 @@[m [mnamespace te[m
+         InitShaderTransparent();[m
+         InitShaderBlit();[m
+         InitShaderSkybox();[m
+[32m+[m[32m        InitShaderFXAA();[m
+ #endif[m
+     }[m
+ [m
+[36m@@ -45,6 +46,8 @@[m [mnamespace te[m
+             return _shaderBlit;[m
+         case BuiltinShader::Skybox:[m
+             return _shaderSkybox;[m
+[32m+[m[32m        case BuiltinShader::FXAA:[m
+[32m+[m[32m            return _shaderFXAA;[m
+         default:[m
+             break;[m
+         }[m
+[36m@@ -122,6 +125,24 @@[m [mnamespace te[m
+             _pixelShaderSkyboxDesc.IncludePath = "";[m
+             _pixelShaderSkyboxDesc.Source = shaderFile.GetAsString();[m
+         }[m
+[32m+[m
+[32m+[m[32m        {[m
+[32m+[m[32m            FileStream shaderFile(SHADERS_FOLDER + String("Raw/Test/FXAA_VS.hlsl"));[m
+[32m+[m[32m            _vertexShaderSkyboxDesc.Type = GPT_VERTEX_PROGRAM;[m
+[32m+[m[32m            _vertexShaderSkyboxDesc.EntryPoint = "main";[m
+[32m+[m[32m            _vertexShaderSkyboxDesc.Language = "hlsl";[m
+[32m+[m[32m            _vertexShaderSkyboxDesc.IncludePath = SHADERS_FOLDER + String("Raw/Test/");[m
+[32m+[m[32m            _vertexShaderSkyboxDesc.Source = shaderFile.GetAsString();[m
+[32m+[m[32m        }[m
+[32m+[m
+[32m+[m[32m        {[m
+[32m+[m[32m            FileStream shaderFile(SHADERS_FOLDER + String("Raw/Test/FXAA_PS.hlsl"));[m
+[32m+[m[32m            _pixelShaderSkyboxDesc.Type = GPT_PIXEL_PROGRAM;[m
+[32m+[m[32m            _pixelShaderSkyboxDesc.EntryPoint = "main";[m
+[32m+[m[32m            _pixelShaderSkyboxDesc.Language = "hlsl";[m
+[32m+[m[32m            _pixelShaderSkyboxDesc.IncludePath = SHADERS_FOLDER + String("Raw/Test/");[m
+[32m+[m[32m            _pixelShaderSkyboxDesc.Source = shaderFile.GetAsString();[m
+[32m+[m[32m        }[m
+     }[m
+     void BuiltinResources::InitStates()[m
+     {[m
+[36m@@ -198,6 +219,7 @@[m [mnamespace te[m
+             SHADER_DATA_PARAM_DESC gSpecularPower("gSpecularPower", "gSpecularPower", GPDT_FLOAT1);[m
+             SHADER_DATA_PARAM_DESC gTransparency("gTransparency", "gTransparency", GPDT_FLOAT1);[m
+             SHADER_DATA_PARAM_DESC gIndexOfRefraction("gIndexOfRefraction", "gIndexOfRefraction", GPDT_FLOAT1);[m
+[32m+[m[32m            SHADER_DATA_PARAM_DESC gReflection("gReflection", "gReflection", GPDT_FLOAT1);[m
+             SHADER_DATA_PARAM_DESC gAbsorbance("gAbsorbance", "gAbsorbance", GPDT_FLOAT1);[m
+             SHADER_DATA_PARAM_DESC gBumpScale("gBumScale", "gBumScale", GPDT_FLOAT1);[m
+             SHADER_DATA_PARAM_DESC gAlphaThreshold("gAlphaThreshold", "gAlphaThreshold", GPDT_FLOAT1);[m
+[36m@@ -241,6 +263,7 @@[m [mnamespace te[m
+             _forwardShaderDesc.AddParameter(gSpecularPower);[m
+             _forwardShaderDesc.AddParameter(gTransparency);[m
+             _forwardShaderDesc.AddParameter(gIndexOfRefraction);[m
+[32m+[m[32m            _forwardShaderDesc.AddParameter(gReflection);[m
+             _forwardShaderDesc.AddParameter(gAbsorbance);[m
+             _forwardShaderDesc.AddParameter(gBumpScale);[m
+             _forwardShaderDesc.AddParameter(gAlphaThreshold);[m
+[36m@@ -283,14 +306,22 @@[m [mnamespace te[m
+ [m
+             SHADER_OBJECT_PARAM_DESC anisotropicSamplerDesc("AnisotropicSampler", "AnisotropicSampler", GPOT_SAMPLER2D);[m
+ [m
+[31m-            SHADER_OBJECT_PARAM_DESC sourceMapDesc("TextureMap", "TextureMap", GPOT_TEXTURE2D);[m
+[32m+[m[32m            SHADER_OBJECT_PARAM_DESC textureMapDesc("TextureMap", "TextureMap", GPOT_TEXTURE2D);[m
+ [m
+             _skyboxShaderDesc.AddParameter(gClearColor);[m
+             _skyboxShaderDesc.AddParameter(gUseTexture);[m
+             [m
+             _skyboxShaderDesc.AddParameter(anisotropicSamplerDesc);[m
+ [m
+[31m-            _skyboxShaderDesc.AddParameter(sourceMapDesc);[m
+[32m+[m[32m            _skyboxShaderDesc.AddParameter(textureMapDesc);[m
+[32m+[m[32m        }[m
+[32m+[m
+[32m+[m[32m        {[m
+[32m+[m[32m            SHADER_DATA_PARAM_DESC gInvTexSize("gInvTexSize", "gInvTexSize", GPDT_FLOAT2);[m
+[32m+[m[32m            SHADER_OBJECT_PARAM_DESC sourceMapDesc("SourceMap", "SourceMap", GPOT_TEXTURE2D);[m
+[32m+[m
+[32m+[m[32m            _FXAAShaderDesc.AddParameter(gInvTexSize);[m
+[32m+[m[32m            _FXAAShaderDesc.AddParameter(sourceMapDesc);[m
+         }[m
+     }[m
+ [m
+[36m@@ -387,6 +418,31 @@[m [mnamespace te[m
+         _shaderSkybox = Shader::Create("Skybox", shaderDesc);[m
+     }[m
+ [m
+[32m+[m[32m    void BuiltinResources::InitShaderFXAA()[m
+[32m+[m[32m    {[m
+[32m+[m[32m        PASS_DESC passDesc;[m
+[32m+[m[32m        passDesc.BlendStateDesc = _blendOpaqueStateDesc;[m
+[32m+[m[32m        passDesc.DepthStencilStateDesc = _depthStencilStateDesc;[m
+[32m+[m[32m        passDesc.RasterizerStateDesc = _rasterizerStateDesc;[m
+[32m+[m[32m        passDesc.VertexProgramDesc = _vertexShaderFXAADesc;[m
+[32m+[m[32m        passDesc.PixelProgramDesc = _pixelShaderFXAADesc;[m
+[32m+[m
+[32m+[m[32m        passDesc.DepthStencilStateDesc.StencilEnable = false;[m
+[32m+[m[32m        passDesc.DepthStencilStateDesc.DepthReadEnable = false;[m
+[32m+[m[32m        passDesc.DepthStencilStateDesc.DepthWriteEnable = false;[m
+[32m+[m
+[32m+[m[32m        passDesc.RasterizerStateDesc.cullMode = CULL_NONE;[m
+[32m+[m
+[32m+[m[32m        HPass pass = Pass::Create(passDesc);[m
+[32m+[m[32m        HTechnique technique = Technique::Create("hlsl", { pass.GetInternalPtr() });[m
+[32m+[m[32m        technique->Compile();[m
+[32m+[m
+[32m+[m[32m        SHADER_DESC shaderDesc = _FXAAShaderDesc;[m
+[32m+[m[32m        shaderDesc.Techniques.push_back(technique.GetInternalPtr());[m
+[32m+[m
+[32m+[m[32m        _shaderFXAA = Shader::Create("FXAA", shaderDesc);[m
+[32m+[m[32m    }[m
+[32m+[m
+     BuiltinResources& gBuiltinResources()[m
+     {[m
+         return BuiltinResources::Instance();[m

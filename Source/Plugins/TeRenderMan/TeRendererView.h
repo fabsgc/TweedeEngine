@@ -40,6 +40,9 @@ namespace te
 
         UINT64 VisibleLayers;
         ConvexVolume CullFrustum;
+
+        /** When enabled, post-processing effects (like tonemapping) will be executed. */
+        bool RunPostProcessing = false;
     };
 
     /** Data shared between RENDERER_VIEW_TARGET_DESC and RendererViewTargetProperties */
@@ -81,9 +84,6 @@ namespace te
         Matrix4 ViewProjTransform = Matrix4::IDENTITY;
         Matrix4 ProjTransformNoAA = Matrix4::IDENTITY;
         UINT32 FrameIdx = 0;
-
-        /** When enabled, post-processing effects (like tonemapping) will be executed. */
-        bool RunPostProcessing = false;
 
         RendererViewTargetData Target;
     };

@@ -27,6 +27,7 @@ namespace te
         InitShaderTransparent();
         InitShaderBlit();
         InitShaderSkybox();
+        InitShaderFXAA();
 #endif
     }
 
@@ -45,6 +46,8 @@ namespace te
             return _shaderBlit;
         case BuiltinShader::Skybox:
             return _shaderSkybox;
+        case BuiltinShader::FXAA:
+            return _shaderFXAA;
         default:
             break;
         }
@@ -122,6 +125,24 @@ namespace te
             _pixelShaderSkyboxDesc.IncludePath = "";
             _pixelShaderSkyboxDesc.Source = shaderFile.GetAsString();
         }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("Raw/Test/FXAA_VS.hlsl"));
+            _vertexShaderFXAADesc.Type = GPT_VERTEX_PROGRAM;
+            _vertexShaderFXAADesc.EntryPoint = "main";
+            _vertexShaderFXAADesc.Language = "hlsl";
+            _vertexShaderFXAADesc.IncludePath = SHADERS_FOLDER + String("Raw/Test/");
+            _vertexShaderFXAADesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("Raw/Test/FXAA_PS.hlsl"));
+            _pixelShaderFXAADesc.Type = GPT_PIXEL_PROGRAM;
+            _pixelShaderFXAADesc.EntryPoint = "main";
+            _pixelShaderFXAADesc.Language = "hlsl";
+            _pixelShaderFXAADesc.IncludePath = SHADERS_FOLDER + String("Raw/Test/");
+            _pixelShaderFXAADesc.Source = shaderFile.GetAsString();
+        }
     }
     void BuiltinResources::InitStates()
     {
@@ -198,6 +219,7 @@ namespace te
             SHADER_DATA_PARAM_DESC gSpecularPower("gSpecularPower", "gSpecularPower", GPDT_FLOAT1);
             SHADER_DATA_PARAM_DESC gTransparency("gTransparency", "gTransparency", GPDT_FLOAT1);
             SHADER_DATA_PARAM_DESC gIndexOfRefraction("gIndexOfRefraction", "gIndexOfRefraction", GPDT_FLOAT1);
+            SHADER_DATA_PARAM_DESC gReflection("gReflection", "gReflection", GPDT_FLOAT1);
             SHADER_DATA_PARAM_DESC gAbsorbance("gAbsorbance", "gAbsorbance", GPDT_FLOAT1);
             SHADER_DATA_PARAM_DESC gBumpScale("gBumScale", "gBumScale", GPDT_FLOAT1);
             SHADER_DATA_PARAM_DESC gAlphaThreshold("gAlphaThreshold", "gAlphaThreshold", GPDT_FLOAT1);
@@ -241,6 +263,7 @@ namespace te
             _forwardShaderDesc.AddParameter(gSpecularPower);
             _forwardShaderDesc.AddParameter(gTransparency);
             _forwardShaderDesc.AddParameter(gIndexOfRefraction);
+            _forwardShaderDesc.AddParameter(gReflection);
             _forwardShaderDesc.AddParameter(gAbsorbance);
             _forwardShaderDesc.AddParameter(gBumpScale);
             _forwardShaderDesc.AddParameter(gAlphaThreshold);
@@ -283,14 +306,22 @@ namespace te
 
             SHADER_OBJECT_PARAM_DESC anisotropicSamplerDesc("AnisotropicSampler", "AnisotropicSampler", GPOT_SAMPLER2D);
 
-            SHADER_OBJECT_PARAM_DESC sourceMapDesc("TextureMap", "TextureMap", GPOT_TEXTURE2D);
+            SHADER_OBJECT_PARAM_DESC textureMapDesc("TextureMap", "TextureMap", GPOT_TEXTURE2D);
 
             _skyboxShaderDesc.AddParameter(gClearColor);
             _skyboxShaderDesc.AddParameter(gUseTexture);
             
             _skyboxShaderDesc.AddParameter(anisotropicSamplerDesc);
 
-            _skyboxShaderDesc.AddParameter(sourceMapDesc);
+            _skyboxShaderDesc.AddParameter(textureMapDesc);
+        }
+
+        {
+            SHADER_DATA_PARAM_DESC gInvTexSize("gInvTexSize", "gInvTexSize", GPDT_FLOAT2);
+            SHADER_OBJECT_PARAM_DESC sourceMapDesc("SourceMap", "SourceMap", GPOT_TEXTURE2D);
+
+            _FXAAShaderDesc.AddParameter(gInvTexSize);
+            _FXAAShaderDesc.AddParameter(sourceMapDesc);
         }
     }
 
@@ -385,6 +416,31 @@ namespace te
         shaderDesc.Techniques.push_back(technique.GetInternalPtr());
 
         _shaderSkybox = Shader::Create("Skybox", shaderDesc);
+    }
+
+    void BuiltinResources::InitShaderFXAA()
+    {
+        PASS_DESC passDesc;
+        passDesc.BlendStateDesc = _blendOpaqueStateDesc;
+        passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
+        passDesc.RasterizerStateDesc = _rasterizerStateDesc;
+        passDesc.VertexProgramDesc = _vertexShaderFXAADesc;
+        passDesc.PixelProgramDesc = _pixelShaderFXAADesc;
+
+        passDesc.DepthStencilStateDesc.StencilEnable = false;
+        passDesc.DepthStencilStateDesc.DepthReadEnable = false;
+        passDesc.DepthStencilStateDesc.DepthWriteEnable = false;
+
+        passDesc.RasterizerStateDesc.cullMode = CULL_NONE;
+
+        HPass pass = Pass::Create(passDesc);
+        HTechnique technique = Technique::Create("hlsl", { pass.GetInternalPtr() });
+        technique->Compile();
+
+        SHADER_DESC shaderDesc = _FXAAShaderDesc;
+        shaderDesc.Techniques.push_back(technique.GetInternalPtr());
+
+        _shaderFXAA = Shader::Create("FXAA", shaderDesc);
     }
 
     BuiltinResources& gBuiltinResources()

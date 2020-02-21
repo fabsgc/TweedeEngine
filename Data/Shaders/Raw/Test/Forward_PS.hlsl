@@ -1,4 +1,4 @@
-#include "Include/Common.hlsli"
+#include "Include/ForwardBase.hlsli"
 
 cbuffer PerCameraBuffer : register(b0)
 {
@@ -27,6 +27,7 @@ cbuffer PerMaterialBuffer : register(b1)
     float  gSpecularPower;
     float  gTransparency;
     float  gIndexOfRefraction;
+    float  gReflection;
     float  gAbsorbance;
     float  gBumpScale;
     float  gAlphaThreshold;

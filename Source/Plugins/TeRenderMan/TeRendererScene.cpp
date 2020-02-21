@@ -519,6 +519,7 @@ namespace te
         viewDesc.MainView = camera->IsMain();
 
         UINT32 flag = (UINT32)camera->GetFlags();
+        viewDesc.RunPostProcessing = true;
         viewDesc.OnDemand = (flag & (UINT32)CameraFlag::OnDemand) ? true : false;
 
         viewDesc.CullFrustum = camera->GetWorldFrustum();

@@ -28,7 +28,7 @@ int main()
 
     desc.WindowDesc.Mode = te::VideoMode(960, 540);
     desc.WindowDesc.Fullscreen = false;
-    desc.WindowDesc.MultisampleCount = 4;
+    desc.WindowDesc.MultisampleCount = 1;
     desc.WindowDesc.Title = "Sponza";
 
     te::Application::StartUp(desc);

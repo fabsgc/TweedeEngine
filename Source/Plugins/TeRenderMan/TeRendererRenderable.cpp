@@ -51,6 +51,7 @@ namespace te
         gPerMaterialParamDef.gSpecularPower.Set(perMaterialBuffer, data.gSpecularPower);
         gPerMaterialParamDef.gTransparency.Set(perMaterialBuffer, data.gTransparency);
         gPerMaterialParamDef.gIndexOfRefraction.Set(perMaterialBuffer, data.gIndexOfRefraction);
+        gPerMaterialParamDef.gReflection.Set(perMaterialBuffer, data.gReflection);
         gPerMaterialParamDef.gAbsorbance.Set(perMaterialBuffer, data.gAbsorbance);
         gPerMaterialParamDef.gBumpScale.Set(perMaterialBuffer, data.gBumpScale);
         gPerMaterialParamDef.gAlphaThreshold.Set(perMaterialBuffer, data.gAlphaThreshold);
@@ -75,6 +76,7 @@ namespace te
         data.gSpecularPower = properties.SpecularPower;
         data.gTransparency = properties.Transparency;
         data.gIndexOfRefraction = properties.IndexOfRefraction;
+        data.gReflection = properties.Reflection;
         data.gAbsorbance = properties.Absorbance;
         data.gBumpScale = properties.BumpScale;
         data.gAlphaThreshold = properties.AlphaThreshold;

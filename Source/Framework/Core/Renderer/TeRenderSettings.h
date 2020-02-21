@@ -26,12 +26,24 @@ namespace te
     };
 
     /** Base class for both sim and core thread variants of DepthOfFieldSettings. */
-    struct TE_CORE_EXPORT DepthOfFieldSettingsBase
+    struct TE_CORE_EXPORT DepthOfFieldSettings
     {
-        DepthOfFieldSettingsBase() = default;
+        DepthOfFieldSettings() = default;
 
         /** Enables or disables the depth of field effect. */
         bool Enabled = false;
+
+        /**
+         * Determines the amount of blur to apply to fully unfocused objects that are closer to camera than the in-focus
+         * zone. Set to zero to disable near-field blur. Only relevant for Gaussian depth of field.
+         */
+        float NearBlurAmount = 0.02f;
+
+        /**
+         * Determines the amount of blur to apply to fully unfocused objects that are farther away from camera than the
+         * in-focus zone. Set to zero to disable far-field blur. Only relevant for Gaussian depth of field.
+         */
+        float FarBlurAmount = 0.02f;
     };
 
     /** Settings that control the motion blur effect. */
@@ -103,6 +115,12 @@ namespace te
 
         /** Parameters used for customizing the bloom effect. */
         BloomSettings Bloom;
+
+        /** Parameters used for customizing the motion blur effect. */
+        MotionBlurSettings MotionBlur;
+
+        /** Parameters used for customizing the gaussian depth of field effect. */
+        DepthOfFieldSettings DepthOfField;
 
         /** Enables the fast approximate anti-aliasing effect. */
         bool EnableFXAA = true;

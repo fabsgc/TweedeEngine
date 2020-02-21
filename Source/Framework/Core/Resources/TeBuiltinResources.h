@@ -27,7 +27,9 @@ namespace te
         /** Shader used to blit a texture on a screen quad */
         Blit,
         /** Shader used to render a skybox in a scene */
-        Skybox
+        Skybox,
+        /** Shader used to FXAA post process */
+        FXAA
     };
 
     /** Types of builtin shaders that are always available. */
@@ -87,12 +89,14 @@ namespace te
         void InitShaderTransparent();
         void InitShaderBlit();
         void InitShaderSkybox();
+        void InitShaderFXAA();
 
     private:
         HShader _shaderOpaque;
         HShader _shaderTransparent;
         HShader _shaderBlit;
         HShader _shaderSkybox;
+        HShader _shaderFXAA;
 
         SPtr<SamplerState> _anisotropicSamplerState = nullptr;
         SPtr<SamplerState> _bilinearSamplerState = nullptr;
@@ -100,6 +104,7 @@ namespace te
         SHADER_DESC _forwardShaderDesc;
         SHADER_DESC _blitShaderDesc;
         SHADER_DESC _skyboxShaderDesc;
+        SHADER_DESC _FXAAShaderDesc;
 
         GPU_PROGRAM_DESC _vertexShaderForwardDesc;
         GPU_PROGRAM_DESC _pixelShaderForwardDesc;
@@ -109,6 +114,9 @@ namespace te
 
         GPU_PROGRAM_DESC _vertexShaderSkyboxDesc;
         GPU_PROGRAM_DESC _pixelShaderSkyboxDesc;
+
+        GPU_PROGRAM_DESC _vertexShaderFXAADesc;
+        GPU_PROGRAM_DESC _pixelShaderFXAADesc;
 
         BLEND_STATE_DESC _blendOpaqueStateDesc;
         BLEND_STATE_DESC _blendTransparentStateDesc;

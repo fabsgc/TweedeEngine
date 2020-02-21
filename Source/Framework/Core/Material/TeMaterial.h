@@ -34,7 +34,8 @@ namespace te
         float SpecularPower = 32.0f;
         float Transparency = 1.0f;
         float IndexOfRefraction = 1.0f;
-        float Absorbance = 1.0f;
+        float Reflection = 0.0f;
+        float Absorbance = 0.0f;
         float BumpScale = 1.0f;
         float AlphaThreshold = 0.0f;
 

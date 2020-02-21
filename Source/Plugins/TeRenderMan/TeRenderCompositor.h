@@ -221,6 +221,12 @@ namespace te
     class RCNodePostProcess : public RenderCompositorNode
     {
     public:
+        /**
+         * Returns a texture that can be used for rendering a post-process effect, and the result of the previous
+         * output. Switches these textures so the next call they are returned in the opposite parameters.
+         */
+        void GetAndSwitch(const RendererView& view, SPtr<RenderTexture>& output, SPtr<Texture>& lastFrame) const;
+
         /** Returns a texture that contains the last rendererd post process output. */
         SPtr<Texture> GetLastOutput() const;
 

@@ -7,6 +7,7 @@
 #include "TeRenderMan.h"
 #include "Renderer/TeRendererUtility.h"
 #include "Renderer/TeSkyboxMat.h"
+#include "Renderer/TeFXAAMat.h"
 
 namespace te
 {
@@ -397,6 +398,27 @@ namespace te
 
     // ############# POST PROCESS
 
+    void RCNodePostProcess::GetAndSwitch(const RendererView& view, SPtr<RenderTexture>& output, SPtr<Texture>& lastFrame) const
+    {
+        const RendererViewProperties& viewProps = view.GetProperties();
+        UINT32 width = viewProps.Target.ViewRect.width;
+        UINT32 height = viewProps.Target.ViewRect.height;
+
+        if (!_output[_currentIdx])
+        {
+            _output[_currentIdx] = gGpuResourcePool().Get(
+                POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA8, width, height, TU_RENDERTARGET, 1, false));
+        }
+
+        output = _output[_currentIdx]->RenderTex;
+
+        UINT32 otherIdx = (_currentIdx + 1) % 2;
+        if (_output[otherIdx])
+            lastFrame = _output[otherIdx]->Tex;
+
+        _currentIdx = otherIdx;
+    }
+
     SPtr<Texture> RCNodePostProcess::GetLastOutput() const
     {
         UINT32 otherIdx = (_currentIdx + 1) % 2;
@@ -410,7 +432,11 @@ namespace te
     { }
 
     void RCNodePostProcess::Clear()
-    { }
+    {
+        _output[0] = nullptr;
+        _output[1] = nullptr;
+        _currentIdx = 0;
+    }
 
     Vector<String> RCNodePostProcess::GetDependencies(const RendererView& view)
     {
@@ -444,7 +470,11 @@ namespace te
     // ############# MOTION BLUR
 
     void RCNodeMotionBlur::Render(const RenderCompositorNodeInputs& inputs)
-    { }
+    {
+        const MotionBlurSettings& settings = inputs.View.GetRenderSettings().MotionBlur;
+        if (!settings.Enabled)
+            return;
+    }
 
     void RCNodeMotionBlur::Clear()
     { }
@@ -467,6 +497,7 @@ namespace te
         return
         {
             RCNodeTonemapping::GetNodeId(),
+            RCNodeForwardPass::GetNodeId(),
             RCNodePostProcess::GetNodeId()
         };
     }
@@ -474,7 +505,24 @@ namespace te
     // ############# FXAA
 
     void RCNodeFXAA::Render(const RenderCompositorNodeInputs& inputs)
-    { }
+    { 
+        const RendererViewProperties& viewProps = inputs.View.GetProperties();
+        const RenderSettings& settings = inputs.View.GetRenderSettings();
+        if (!settings.EnableFXAA || viewProps.Target.NumSamples > 1)
+            return;
+
+        RCNodeForwardPass* forwardPassNode = static_cast<RCNodeForwardPass*>(inputs.InputNodes[1]);
+        RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[2]);
+
+        SPtr<RenderTexture> ppOutput;
+        SPtr<Texture> ppLastFrame;
+        postProcessNode->GetAndSwitch(inputs.View, ppOutput, ppLastFrame);
+
+        // Note: I could skip executing FXAA over DOF and motion blurred pixels
+        FXAAMat* fxaa = FXAAMat::Get();
+        fxaa->Execute(forwardPassNode->SceneTex->Tex, ppOutput); 
+        // TODO when tonemapping will be done, we will need to use ppLastFrame (output of previous post process pass)
+    }
 
     void RCNodeFXAA::Clear()
     { }
@@ -484,6 +532,7 @@ namespace te
         return
         {
             RCNodeGaussianDOF::GetNodeId(),
+            RCNodeForwardPass::GetNodeId(),
             RCNodePostProcess::GetNodeId()
         };
     }
@@ -531,11 +580,9 @@ namespace te
         const RendererViewProperties& viewProps = inputs.View.GetProperties();
 
         SPtr<Texture> input;
-        if (viewProps.RunPostProcessing)
+        if (viewProps.RunPostProcessing && viewProps.Target.NumSamples == 1)
         {
             RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[0]);
-
-            // Note: Ideally the last PP effect could write directly to the final target and we could avoid this copy
             input = postProcessNode->GetLastOutput();
         }
         else
@@ -565,9 +612,10 @@ namespace te
         const RendererViewProperties& viewProps = view.GetProperties();
 
         Vector<String> deps;
-        if (viewProps.RunPostProcessing)
+        if (viewProps.RunPostProcessing && viewProps.Target.NumSamples == 1)
         {
             deps.push_back(RCNodePostProcess::GetNodeId());
+            deps.push_back(RCNodeFXAA::GetNodeId());
         }
         else
         {

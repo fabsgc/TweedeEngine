@@ -28,7 +28,8 @@ int main()
 
     desc.WindowDesc.Mode = te::VideoMode(960, 540);
     desc.WindowDesc.Fullscreen = false;
-    desc.WindowDesc.MultisampleCount = 4;
+    desc.WindowDesc.MultisampleCount = 1;
+    desc.WindowDesc.Title = "Hello World";
 
     te::Application::StartUp(desc);
     te::Application::Instance().RunMainLoop();

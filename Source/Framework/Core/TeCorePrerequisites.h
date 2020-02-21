@@ -150,6 +150,7 @@ namespace te
     class RendererMaterial;
     class BlitMat;
     class SkyboxMat;
+    class FXAAMat;
 
     class SceneActor;
     class SceneManager;

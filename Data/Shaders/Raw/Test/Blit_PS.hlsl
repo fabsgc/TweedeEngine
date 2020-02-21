@@ -1,5 +1,3 @@
-#define MSAA_COUNT 4
-
 cbuffer PerFrameBuffer : register(b0)
 {
     uint gMSAACount;

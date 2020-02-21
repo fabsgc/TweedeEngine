@@ -528,7 +528,7 @@ namespace te
         _sponzaRenderable = _sceneSponzaSO->AddComponent<CRenderable>();
         _sponzaRenderable->SetMesh(_sponzaMesh);
         
-        for (auto& material : _materials)
+        for (auto& material : _materials )
         {
             _sponzaRenderable->SetMaterial(material.Name, material.MaterialElement);
         }

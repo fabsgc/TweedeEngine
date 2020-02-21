@@ -41,6 +41,7 @@ namespace te
         float gSpecularPower;
         float gTransparency;
         float gIndexOfRefraction;
+        float gReflection;
         float gAbsorbance;
         float gBumpScale;
         float gAlphaThreshold;
@@ -90,6 +91,7 @@ namespace te
         TE_PARAM_BLOCK_ENTRY(float, gSpecularPower)
         TE_PARAM_BLOCK_ENTRY(float, gTransparency)
         TE_PARAM_BLOCK_ENTRY(float, gIndexOfRefraction)
+        TE_PARAM_BLOCK_ENTRY(float, gReflection)
         TE_PARAM_BLOCK_ENTRY(float, gAbsorbance)
         TE_PARAM_BLOCK_ENTRY(float, gBumpScale)
         TE_PARAM_BLOCK_ENTRY(float, gAlphaThreshold)
