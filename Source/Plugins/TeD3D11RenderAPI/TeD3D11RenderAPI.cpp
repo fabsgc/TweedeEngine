@@ -415,9 +415,12 @@ namespace te
                 {
                     slotConstBuffers = 0;
                     for (auto iter = paramDesc->ParamBlocks.begin(); iter != paramDesc->ParamBlocks.end(); ++iter)
+                    {
                         PopulateParamBlocks(iter->second);
+                        slotConstBuffers = (UINT32)iter->second.Slot;;
+                    }
                 }
-                else //He we only bind 
+                else //Here we only bind listed
                 {
                     UINT32 currentSlot = 0;
                     slotConstBuffers = 32;

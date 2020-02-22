@@ -39,7 +39,6 @@ namespace te
         // ######################################################
         auto inputConfig = gVirtualInput().GetConfiguration();
 
-        // Camera controls for buttons (digital 0-1 input, e.g. keyboard or gamepad button)
         inputConfig->RegisterButton("Forward", TE_W);
         inputConfig->RegisterButton("Back", TE_S);
         inputConfig->RegisterButton("Left", TE_A);
@@ -52,8 +51,6 @@ namespace te
         inputConfig->RegisterButton("RotateObj", TE_MOUSE_LEFT);
         inputConfig->RegisterButton("RotateCam", TE_MOUSE_RIGHT);
 
-        // Camera controls for axes (analog input, e.g. mouse or gamepad thumbstick)
-        // These return values in [-1.0, 1.0] range.
         inputConfig->RegisterAxis("Horizontal", VIRTUAL_AXIS_DESC((UINT32)InputAxis::MouseX));
         inputConfig->RegisterAxis("Vertical", VIRTUAL_AXIS_DESC((UINT32)InputAxis::MouseY));
         // ######################################################
@@ -96,6 +93,7 @@ namespace te
         TE_PRINT((_loadedCubemapTexture.GetHandleData())->uuid.ToString());
         // ######################################################
 
+        // ######################################################
         HShader _shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque);
 
         MaterialProperties properties;
@@ -112,7 +110,6 @@ namespace te
         _materialMonkey->SetTexture("DiffuseMap", _loadedTextureMonkey);
         _materialMonkey->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
         _materialMonkey->SetProperties(properties);
-
         // ######################################################
 
         // ######################################################

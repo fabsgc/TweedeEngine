@@ -1,4 +1,4 @@
-#include "TeRenderMan.h"
+ #include "TeRenderMan.h"
 #include "RenderAPI/TeRenderAPI.h"
 #include "Manager/TeRendererManager.h"
 #include "CoreUtility/TeCoreObjectManager.h"

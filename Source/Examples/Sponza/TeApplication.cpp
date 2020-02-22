@@ -28,16 +28,6 @@
 
 namespace te
 {
-    struct PerInstanceData
-    {
-        Matrix4 gMatWorld;
-        Matrix4 gMatInvWorld;
-        Matrix4 gMatWorldNoScale;
-        Matrix4 gMatInvWorldNoScale;
-        Matrix4 gMatPrevWorld;
-        UINT32  gLayer;
-    };
-
     TE_MODULE_STATIC_MEMBER(Application)
 
     void Application::InitInputHandling()

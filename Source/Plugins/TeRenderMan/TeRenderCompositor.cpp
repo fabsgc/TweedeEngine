@@ -403,11 +403,12 @@ namespace te
         const RendererViewProperties& viewProps = view.GetProperties();
         UINT32 width = viewProps.Target.ViewRect.width;
         UINT32 height = viewProps.Target.ViewRect.height;
+        UINT32 samples = viewProps.Target.NumSamples;
 
         if (!_output[_currentIdx])
         {
             _output[_currentIdx] = gGpuResourcePool().Get(
-                POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA8, width, height, TU_RENDERTARGET, 1, false));
+                POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA8, width, height, TU_RENDERTARGET, samples, false));
         }
 
         output = _output[_currentIdx]->RenderTex;
