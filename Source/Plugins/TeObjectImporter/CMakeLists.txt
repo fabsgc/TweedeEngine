@@ -1,6 +1,6 @@
 # Source files and their filters
 include(CMakeSources.cmake)
-    
+
 # Target
 add_library (TeObjectImporter SHARED ${TE_OBJECTIMPORTER_SRC})
 

@@ -17,6 +17,7 @@
 #include "Scene/TeGameObjectManager.h"
 #include "CoreUtility/TeCoreObjectManager.h"
 #include "Renderer/TeRendererMaterialManager.h"
+#include "Audio/TeAudioManager.h"
 
 #include "Input/TeInput.h"
 #include "Input/TeVirtualInput.h"
@@ -71,7 +72,8 @@ namespace te
 
         Input::StartUp();
         VirtualInput::StartUp();
-        Importer::StartUp(); 
+        Importer::StartUp();
+        AudioManager::StartUp(_startUpDesc.Audio);
         BuiltinResources::StartUp();
         RendererMaterialManager::StartUp();
 
@@ -92,6 +94,7 @@ namespace te
 
         BuiltinResources::ShutDown();
         RendererMaterialManager::ShutDown();
+        AudioManager::ShutDown();
         Importer::ShutDown();
         VirtualInput::ShutDown();
         Input::ShutDown();

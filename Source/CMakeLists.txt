@@ -3,6 +3,9 @@ set (TE_FRAMEWORK_VERSION_MAJOR 0)
 set (TE_FRAMEWORK_VERSION_MINOR 1)
 
 # Options
+set(AUDIO_MODULE "OpenAudio" CACHE STRING "Audio backend to use.")
+set_property(CACHE AUDIO_MODULE PROPERTY STRINGS OpenAudio)
+
 if (WIN32)
     set (RENDER_API_MODULE "DirectX 11" CACHE STRING "Render API to use.")
     set_property (CACHE RENDER_API_MODULE PROPERTY STRINGS "DirectX 11" "OpenGL")
@@ -27,6 +30,8 @@ if (RENDER_API_MODULE MATCHES "DirectX 11")
 else ()
     set (RENDER_API_MODULE_LIB TeGLRenderAPI)
 endif ()
+
+set(AUDIO_MODULE_LIB TeOpenAudio)
 
 set(RENDERER_MODULE_LIB TeRenderMan)
 
@@ -62,6 +67,7 @@ add_subdirectory (Plugins/TeRenderMan)
 add_subdirectory (Plugins/TeObjectImporter)
 add_subdirectory (Plugins/TeFreeImgImporter)
 add_subdirectory (Plugins/TeShaderImporter)
+add_subdirectory (Plugins/TeOpenAudio)
 
 add_subdirectory (Examples)
 

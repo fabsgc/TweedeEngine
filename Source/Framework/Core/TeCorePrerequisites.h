@@ -213,6 +213,9 @@ namespace te
     class CSkybox;
 
     class BuiltinResources;
+
+    class Audio;
+    struct AudioDevice;
 }
 
 #include "Utility/TeNonCopyable.h"

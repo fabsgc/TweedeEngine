@@ -7,6 +7,7 @@
 namespace te
 {
     ObjectImporter::ObjectImporter()
+        : BaseImporter()
     {
         _extensions.push_back(u8"obj");
         _extensions.push_back(u8"dae");

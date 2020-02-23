@@ -291,6 +291,17 @@ set (TE_CORE_SRC_RESOURCE
     "Core/Resources/TeBuiltinResources.cpp"
 )
 
+set (TE_CORE_INC_AUDIO
+    "Core/Audio/TeAudio.h"
+    "Core/Audio/TeAudioClipImportOptions.h"
+    "Core/Audio/TeAudioManager.h"
+)
+set (TE_CORE_SRC_AUDIO
+    "Core/Audio/TeAudio.cpp"
+    "Core/Audio/TeAudioClipImportOptions.cpp"
+    "Core/Audio/TeAudioManager.cpp"
+)
+
 if (WIN32)
     list(APPEND TE_CORE_INC_PLATFORM ${TE_CORE_INC_PLATFORM_WIN32})
     list(APPEND TE_CORE_SRC_PLATFORM ${TE_CORE_SRC_PLATFORM_WIN32})
@@ -316,6 +327,7 @@ source_group("Core\\Material" FILES ${TE_CORE_INC_MATERIAL} ${TE_CORE_SRC_MATERI
 source_group("Core\\CoreUtility" FILES ${TE_CORE_INC_CORE_UTILITY} ${TE_CORE_SRC_CORE_UTILITY})
 source_group("Core\\Serialization" FILES ${TE_CORE_INC_SERIALIZATION} ${TE_CORE_SRC_SERIALIZATION})
 source_group("Core\\Components" FILES ${TE_CORE_INC_COMPONENTS} ${TE_CORE_SRC_COMPONENTS})
+source_group("Core\\Audio" FILES ${TE_CORE_INC_AUDIO} ${TE_CORE_SRC_AUDIO})
 source_group("Core" FILES ${TE_CORE_INC_NOFILTER} ${TE_CORE_SRC_NOFILTER})
 
 set(TE_CORE_SRC
@@ -349,4 +361,6 @@ set(TE_CORE_SRC
     ${TE_CORE_SRC_SERIALIZATION}
     ${TE_CORE_INC_COMPONENTS}
     ${TE_CORE_SRC_COMPONENTS}
+    ${TE_CORE_INC_AUDIO}
+    ${TE_CORE_SRC_AUDIO}
 )

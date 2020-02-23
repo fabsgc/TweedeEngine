@@ -271,3 +271,31 @@ MACRO (install_dependency_binaries FOLDER_NAME)
         
     endforeach ()
 ENDMACRO ()
+
+# Dependency .dll install is handled automatically if the imported .lib has the same name as the .dll
+# and the .dll is in the project root bin folder. Otherwise you need to call this manually.
+MACRO(install_dependency_dll FOLDER_NAME SRC_DIR LIB_NAME)
+    if(TE_64BIT)
+        set(PLATFORM "x64")
+    else()
+        set(PLATFORM "x86")
+    endif()
+
+    set(BIN_DIR .)
+
+    set(FULL_FILE_NAME ${LIB_NAME}.dll)
+    set(SRC_RELEASE "${SRC_DIR}/bin/${PLATFORM}/Release/${FULL_FILE_NAME}")
+    set(SRC_DEBUG "${SRC_DIR}/bin/${PLATFORM}/Debug/${FULL_FILE_NAME}")
+    
+    install(
+        FILES ${SRC_RELEASE}
+        DESTINATION ${BIN_DIR}
+        CONFIGURATIONS Release RelWithDebInfo MinSizeRel
+    )
+        
+    install(
+        FILES ${SRC_DEBUG}
+        DESTINATION ${BIN_DIR}
+        CONFIGURATIONS Debug
+    )
+ENDMACRO()
