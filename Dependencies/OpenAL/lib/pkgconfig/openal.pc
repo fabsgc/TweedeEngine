@@ -1,0 +1,11 @@
+prefix=/home/bearishsun/Projects/Banshee/Dependencies/OpenAL/build/install
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: OpenAL
+Description: OpenAL is a cross-platform 3D audio API
+Requires: 
+Version: 1.17.2
+Libs: -L${libdir} -lopenal 
+Cflags: -I${includedir} -I${includedir}/AL 

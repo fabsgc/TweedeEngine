@@ -1,0 +1,15 @@
+# libvorbis pkg-config source file
+
+prefix=/media/bearishsun/FastData/FromLinux/Banshee/Dependencies/vorbis/build/install
+exec_prefix=/media/bearishsun/FastData/FromLinux/Banshee/Dependencies/vorbis/build/install/bin
+libdir=/media/bearishsun/FastData/FromLinux/Banshee/Dependencies/vorbis/build/install/lib
+includedir=/media/bearishsun/FastData/FromLinux/Banshee/Dependencies/vorbis/build/install/include
+
+Name: vorbis
+Description: vorbis is the primary Ogg Vorbis library
+Version: 1.3.5
+Requires.private: ogg
+Conflicts:
+Libs: -L${libdir} -lvorbis 
+Libs.private: -lm
+Cflags: -I${includedir}
