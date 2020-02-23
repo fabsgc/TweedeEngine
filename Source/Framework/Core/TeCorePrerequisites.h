@@ -53,12 +53,13 @@ namespace te
 {
     enum TypeID_Core
     {
-        TID_Component    = 1001,
-        TID_CCamera      = 1002,
-        TID_CRenderable  = 1003,
-        TID_CLight       = 1004,
-        TID_CSkybox      = 1005,
-        TID_CCameraFlyer = 1006
+        TID_Component     = 1001,
+        TID_CCamera       = 1002,
+        TID_CRenderable   = 1003,
+        TID_CLight        = 1004,
+        TID_CSkybox       = 1005,
+        TID_CCameraFlyer  = 1006,
+        TID_CCameraEditor = 1007
     };
 }
 
@@ -216,6 +217,7 @@ namespace te
 
     class Audio;
     struct AudioDevice;
+    class AudioManager;
 }
 
 #include "Utility/TeNonCopyable.h"

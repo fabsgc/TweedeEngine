@@ -528,10 +528,6 @@ namespace te
         }
     }
 
-
-
-
-
     void ShapeMeshes3D::SolidSphere(const Sphere& sphere, UINT8* outVertices, UINT8* outNormals, UINT8* outUV,
         UINT32 vertexOffset, UINT32 vertexStride, UINT32* outIndices, UINT32 indexOffset, UINT32 quality)
     {
