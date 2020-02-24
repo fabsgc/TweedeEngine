@@ -90,6 +90,8 @@ namespace te
 
     bool ResourceManager::GetUUIDFromFile(const String& filePath, UUID& uuid)
     {
+        ::RecursiveLock lock(_loadingUuidMutex);
+
         auto iterFind = _fileToUUID.find(filePath);
 
         if (iterFind != _fileToUUID.end())
@@ -106,6 +108,8 @@ namespace te
 
     bool ResourceManager::GetFileFromUUID(const UUID& uuid, String& filePath)
     {
+        ::RecursiveLock lock(_loadingUuidMutex);
+
         auto iterFind = _UUIDToFile.find(uuid);
 
         if (iterFind != _UUIDToFile.end())
@@ -122,6 +126,8 @@ namespace te
 
     void ResourceManager::RegisterResource(const UUID& uuid, const String& filePath)
     {
+        _loadingResourceMutex.lock();
+
         auto iterFind = _UUIDToFile.find(uuid);
 
         if (iterFind != _UUIDToFile.end())
@@ -145,6 +151,8 @@ namespace te
             _UUIDToFile[uuid] = filePath;
             _fileToUUID[filePath] = uuid;
         }
+
+        _loadingResourceMutex.unlock();
     }
 
     HResource ResourceManager::_createResourceHandle(const SPtr<Resource>& obj)
@@ -155,6 +163,8 @@ namespace te
 
     HResource ResourceManager::_createResourceHandle(const SPtr<Resource>& obj, const UUID& UUID)
     {
+        //_loadingResourceMutex.lock();
+
         if (UUID.Empty())
         {
             return _createResourceHandle(obj);
@@ -167,6 +177,8 @@ namespace te
             _loadedResources[UUID] = static_resource_cast<Resource>(hr);
             OnResourceLoaded(Get(UUID));
         }
+
+        //_loadingResourceMutex.unlock();
 
         return static_resource_cast<Resource>(Get(UUID));;
     }

@@ -7,6 +7,8 @@
 
 namespace te
 {
+    RecursiveMutex D3D11Texture::_deviceMutex;
+
     D3D11Texture::D3D11Texture(const TEXTURE_DESC& desc, const SPtr<PixelData>& initialData)
         : Texture(desc, initialData)
     { }
@@ -235,6 +237,8 @@ namespace te
             UINT32 rowWidth = D3D11Mappings::GetSizeInBytes(format, src.GetWidth());
             UINT32 sliceWidth = D3D11Mappings::GetSizeInBytes(format, src.GetWidth(), src.GetHeight());
 
+            _deviceMutex.lock();
+
             device.GetImmediateContext()->UpdateSubresource(_tex, subresourceIdx, nullptr, src.GetData(), rowWidth, sliceWidth);
 
             if (device.HasError())
@@ -242,6 +246,8 @@ namespace te
                 String errorDescription = device.GetErrorDescription();
                 TE_ASSERT_ERROR(false, "D3D11 device cannot map texture\nError Description:" + errorDescription, __FILE__, __LINE__);
             }
+
+            _deviceMutex.unlock();
         }
         else
         {

@@ -4,6 +4,7 @@
 #include "Utility/TeModule.h"
 #include "Utility/TeEvent.h"
 #include "Importer/TeImporter.h"
+#include "Threading/TeThreading.h"
 
 namespace te
 {
@@ -113,6 +114,9 @@ namespace te
         UnorderedMap<UUID, LoadedResourceData> _loadedResources;
         UnorderedMap<UUID, String> _UUIDToFile;
         UnorderedMap<String, UUID> _fileToUUID;
+
+        RecursiveMutex _loadingResourceMutex;
+        RecursiveMutex _loadingUuidMutex;
     };
 
     TE_CORE_EXPORT ResourceManager& gResourceManager();

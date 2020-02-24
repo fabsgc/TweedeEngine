@@ -3,6 +3,7 @@
 #include "TeD3D11RenderAPIPrerequisites.h"
 #include "TeD3D11TextureView.h"
 #include "Image/TeTexture.h"
+#include "Threading/TeThreading.h"
 
 namespace te
 {
@@ -134,5 +135,7 @@ namespace te
         PixelData* _staticBuffer = nullptr;
         UINT32 _lockedSubresourceIdx = -1;
         bool _lockedForReading = false;
+
+        static RecursiveMutex _deviceMutex;
     };
 }

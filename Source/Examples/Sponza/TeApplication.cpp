@@ -461,16 +461,44 @@ namespace te
             if (material.Bump != "") material.MaterialElement->SetTexture("BumpMap", material.BumpTexture, surface);
             if (material.Transparency != "") material.MaterialElement->SetTexture("TransparencyMap", material.TransparencyTexture, surface);
             if (material.Occlusion != "") material.MaterialElement->SetTexture("OcclusionMap", material.OcclusionTexture, surface);
+            if (material.Occlusion != "") material.MaterialElement->SetTexture("OcclusionMap", material.OcclusionTexture, surface);
+            //if (material.Reflection != "") material.MaterialElement->SetTexture("ReflectionMap", material.ReflectionTexture, surface);
 
             material.MaterialElement->SetProperties(material.MaterialProp);
         };
 
+        UINT8 initializedMaterialCounter = 0;
+        Vector<Thread> materialThreads;
+        materialThreads.reserve(8);
+
+        while (initializedMaterialCounter < _materials.size())
+        {
+            UINT8 rowInitializedMaterialCounter = 0;
+            for (UINT8 j = 0; j < 8; j++)
+            {
+                if (initializedMaterialCounter == _materials.size())
+                    break;
+
+                auto materialLoadFunction = std::bind(materialFunction, std::ref(_materials[initializedMaterialCounter]));
+                materialThreads.emplace_back(Thread(materialLoadFunction));
+                rowInitializedMaterialCounter++;
+                initializedMaterialCounter++;
+            }
+
+            for (UINT8 j = 0; j < rowInitializedMaterialCounter; j++)
+            {
+                materialThreads[j].join();
+            }
+
+            materialThreads.clear();
+        }
+
         //materialFunction(_materials[16]);
 
-        for (auto& material : _materials)
+        /*for (auto& material : _materials)
         {
             materialFunction(material);
-        }
+        }*/
 
         auto textureCubeMapImportOptions = TextureImportOptions::Create();
         textureCubeMapImportOptions->CpuCached = false;
