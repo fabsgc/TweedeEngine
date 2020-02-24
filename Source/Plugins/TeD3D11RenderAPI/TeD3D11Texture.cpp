@@ -13,7 +13,7 @@ namespace te
 
     D3D11Texture::~D3D11Texture()
     {
-        //clearBufferViews(); TODO
+        ClearBufferViews();
 
         SAFE_RELEASE(_tex);
         SAFE_RELEASE(_1DTex);
@@ -363,7 +363,6 @@ namespace te
     {
         UINT32 width = _properties.GetWidth();
         UINT32 height = _properties.GetHeight();
-        UINT32 depth = _properties.GetDepth();
         int usage = _properties.GetUsage();
         UINT32 numMips = _properties.GetNumMipmaps();
         PixelFormat format = _properties.GetFormat();
@@ -664,7 +663,6 @@ namespace te
 
     void* D3D11Texture::Mapstaticbuffer(PixelData lock, UINT32 mipLevel, UINT32 face)
     {
-        UINT32 sizeOfImage = lock.GetConsecutiveSize();
         _lockedSubresourceIdx = D3D11CalcSubresource(mipLevel, face, _properties.GetNumMipmaps() + 1);
 
         _staticBuffer = te_new<PixelData>(lock.GetWidth(), lock.GetHeight(), lock.GetDepth(), lock.GetFormat());

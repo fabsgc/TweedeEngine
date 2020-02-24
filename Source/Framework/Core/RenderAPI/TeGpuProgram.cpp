@@ -6,9 +6,7 @@ namespace te
     GpuProgramBytecode::~GpuProgramBytecode()
     {
         if (Instructions.Data)
-        {
             te_free(Instructions.Data);
-        }
     }
 
     GpuProgram::GpuProgram(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask)
@@ -19,9 +17,8 @@ namespace te
         , _includePath(desc.IncludePath)
         , _needsAdjacencyInfo(desc.RequiresAdjacency)
         , _bytecode(desc.Bytecode)
-    {
-        _parametersDesc = te_shared_ptr_new<GpuParamDesc>();
-    }
+        , _parametersDesc(te_shared_ptr_new<GpuParamDesc>())
+    { }
 
     GpuProgram::~GpuProgram()
     { }

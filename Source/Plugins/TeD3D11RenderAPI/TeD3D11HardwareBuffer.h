@@ -62,7 +62,7 @@ namespace te
 
         bool _useTempStagingBuffer = false;
         D3D11HardwareBuffer* _pTempStagingBuffer = nullptr;
-        bool _stagingUploadNeeded;
+        bool _stagingUploadNeeded = false;
 
         D3D11Device& _device;
         D3D11_BUFFER_DESC _desc;

@@ -50,7 +50,6 @@ namespace te
         }
 
         SPtr<RendererMeshData> rendererMeshData = ImportMeshData(filePath, importOptions, desc.SubMeshes);
-        SPtr<MeshData> meshData = rendererMeshData->GetData();
         SPtr<Mesh> mesh = Mesh::_createPtr(rendererMeshData->GetData(), desc);
         mesh->SetName(filePath);
         

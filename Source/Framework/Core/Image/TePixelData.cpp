@@ -22,12 +22,11 @@ namespace te
 
     PixelData::PixelData(const PixelData& copy)
         : GpuResourceData(copy)
-    {
-        _format = copy._format;
-        _rowPitch = copy._rowPitch;
-        _slicePitch = copy._slicePitch;
-        _extents = copy._extents;
-    }
+        , _format(copy._format)
+        , _rowPitch(copy._rowPitch)
+        , _slicePitch(copy._slicePitch)
+        , _extents(copy._extents)
+    { }
 
     PixelData& PixelData::operator=(const PixelData& rhs)
     {

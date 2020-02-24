@@ -17,7 +17,7 @@ namespace te
         void Update() override;
 
     private:
-        float _currentSpeed; /**< Current speed of the camera. */
+        float _currentSpeed = 0.0f; /**< Current speed of the camera. */
 
         Degree _pitch = Degree(0.0f); /**< Current pitch rotation of the camera (looking up or down). */
         Degree _yaw = Degree(0.0f); /**< Current yaw rotation of the camera (looking left or right). */

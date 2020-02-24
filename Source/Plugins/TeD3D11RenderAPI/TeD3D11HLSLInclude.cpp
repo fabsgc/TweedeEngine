@@ -41,8 +41,7 @@ namespace te
     String D3D11HLSLInclude::GetFullPath(String relativePath)
     {
         DWORD  retval = 0;
-        TCHAR  buffer[512] = TEXT("");
-        TCHAR  buf[512]    = TEXT("");
+        TCHAR  buffer[512];
         TCHAR** lppPart    = { NULL };
 
         retval = GetFullPathName(relativePath.c_str(), 512, buffer, lppPart);

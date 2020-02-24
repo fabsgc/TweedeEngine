@@ -156,12 +156,12 @@ namespace te
         const SortableElement& a = lookup[aIdx];
         const SortableElement& b = lookup[bIdx];
 
-        UINT8 isHigher = (a.Priority > b.Priority) << 2 |
-            (a.DistFromCamera < b.DistFromCamera) << 1 |
+        UINT8 isHigher = ((a.Priority > b.Priority) << 2) |
+            ((a.DistFromCamera < b.DistFromCamera) << 1) |
             (a.SeqIdx < b.SeqIdx);
 
-        UINT8 isLower = (a.Priority < b.Priority) << 2 |
-            (a.DistFromCamera > b.DistFromCamera) << 1 |
+        UINT8 isLower = ((a.Priority < b.Priority) << 2) |
+            ((a.DistFromCamera > b.DistFromCamera) << 1) |
             (a.SeqIdx > b.SeqIdx);
 
         return isHigher > isLower;
@@ -172,18 +172,18 @@ namespace te
         const SortableElement& a = lookup[aIdx];
         const SortableElement& b = lookup[bIdx];
 
-        UINT8 isHigher = (a.Priority > b.Priority) << 5 |
-            (a.ShaderId < b.ShaderId) << 4 |
-            (a.TechniqueIdx < b.TechniqueIdx) << 3 |
-            (a.PassIdx < b.PassIdx) << 2 |
-            (a.DistFromCamera < b.DistFromCamera) << 1 |
+        UINT8 isHigher = ((a.Priority > b.Priority) << 5) |
+            ((a.ShaderId < b.ShaderId) << 4) |
+            ((a.TechniqueIdx < b.TechniqueIdx) << 3) |
+            ((a.PassIdx < b.PassIdx) << 2) |
+            ((a.DistFromCamera < b.DistFromCamera) << 1) |
             (a.SeqIdx < b.SeqIdx);
 
-        UINT8 isLower = (a.Priority < b.Priority) << 5 |
-            (a.ShaderId > b.ShaderId) << 4 |
-            (a.TechniqueIdx > b.TechniqueIdx) << 3 |
-            (a.PassIdx > b.PassIdx) << 2 |
-            (a.DistFromCamera > b.DistFromCamera) << 1 |
+        UINT8 isLower = ((a.Priority < b.Priority) << 5) |
+            ((a.ShaderId > b.ShaderId) << 4) |
+            ((a.TechniqueIdx > b.TechniqueIdx) << 3) |
+            ((a.PassIdx > b.PassIdx) << 2) |
+            ((a.DistFromCamera > b.DistFromCamera) << 1) |
             (a.SeqIdx > b.SeqIdx);
 
         return isHigher > isLower;
@@ -194,18 +194,18 @@ namespace te
         const SortableElement& a = lookup[aIdx];
         const SortableElement& b = lookup[bIdx];
 
-        UINT8 isHigher = (a.Priority > b.Priority) << 5 |
-            (a.DistFromCamera < b.DistFromCamera) << 4 |
-            (a.ShaderId < b.ShaderId) << 3 |
-            (a.TechniqueIdx < b.TechniqueIdx) << 2 |
-            (a.PassIdx < b.PassIdx) << 1 |
+        UINT8 isHigher = ((a.Priority > b.Priority) << 5) |
+            ((a.DistFromCamera < b.DistFromCamera) << 4) |
+            ((a.ShaderId < b.ShaderId) << 3) |
+            ((a.TechniqueIdx < b.TechniqueIdx) << 2) |
+            ((a.PassIdx < b.PassIdx) << 1) |
             (a.SeqIdx < b.SeqIdx);
 
-        UINT8 isLower = (a.Priority < b.Priority) << 5 |
-            (a.DistFromCamera > b.DistFromCamera) << 4 |
-            (a.ShaderId > b.ShaderId) << 3 |
-            (a.TechniqueIdx > b.TechniqueIdx) << 2 |
-            (a.PassIdx > b.PassIdx) << 1 |
+        UINT8 isLower = ((a.Priority < b.Priority) << 5) |
+            ((a.DistFromCamera > b.DistFromCamera) << 4) |
+            ((a.ShaderId > b.ShaderId) << 3) |
+            ((a.TechniqueIdx > b.TechniqueIdx) << 2) |
+            ((a.PassIdx > b.PassIdx) << 1) |
             (a.SeqIdx > b.SeqIdx);
 
         return isHigher > isLower;

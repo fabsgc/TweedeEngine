@@ -28,16 +28,14 @@ namespace te
     }
 
     Material::Material(const HShader& shader, const Vector<SPtr<Technique>>& techniques)
-    {
-        _shader = shader.GetInternalPtr();
-        _techniques = techniques;
-    }
+        : _shader(shader.GetInternalPtr())
+        , _techniques(techniques)
+    { }
 
     Material::Material(const SPtr<Shader>& shader, const Vector<SPtr<Technique>>& techniques)
-    {
-        _shader = shader;
-        _techniques = techniques;
-    }
+        : _shader(shader)
+        , _techniques(techniques)
+    { }
 
     void Material::Initialize()
     {

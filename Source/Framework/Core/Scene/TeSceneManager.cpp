@@ -14,7 +14,7 @@ namespace te
 
     struct ScopeToggle
     {
-        ScopeToggle(bool& val) :val(val) { val = true; }
+        explicit ScopeToggle(bool& val) : val(val) { val = true; }
         ~ScopeToggle() { val = false; }
 
     private:

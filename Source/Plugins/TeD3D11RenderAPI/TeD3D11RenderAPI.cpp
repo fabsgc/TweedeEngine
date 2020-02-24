@@ -773,10 +773,7 @@ namespace te
                     clearFlag = D3D11_CLEAR_DEPTH;
                 }
 
-                if (depthStencilView != nullptr)
-                {
-                    _device->GetImmediateContext()->ClearDepthStencilView(depthStencilView, clearFlag, depth, (UINT8)stencil);
-                }
+                _device->GetImmediateContext()->ClearDepthStencilView(depthStencilView, clearFlag, depth, (UINT8)stencil);
             }
         }
 
@@ -821,9 +818,8 @@ namespace te
         }
 
         bool foundValid = false;
-        size_t origNumSamples = multisampleCount;
 
-        outputSampleDesc->Count = multisampleCount == 0 ? 1 : multisampleCount;
+        outputSampleDesc->Count = multisampleCount;
         outputSampleDesc->Quality = D3D11_STANDARD_MULTISAMPLE_PATTERN;
 
         while (!foundValid)

@@ -105,7 +105,6 @@ namespace te
 
         // Copy indices
         UINT32 vertexOffset = 0;
-        UINT32 indexOffset = 0;
         UINT32* idxPtr = combinedMeshData->GetIndices32();
         for(auto& meshData : meshes)
         {
@@ -115,7 +114,6 @@ namespace te
             for(UINT32 j = 0; j < numIndices; j++)
                 idxPtr[j] = srcData[j] + vertexOffset;
 
-            indexOffset += numIndices;
             idxPtr += numIndices;
             vertexOffset += meshData->GetNumVertices();
         }

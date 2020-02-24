@@ -172,9 +172,9 @@ namespace te
 
         _window->WindowMovedOrResized();
 
-        RenderWindowProperties& props = _properties;
         if (_properties.IsFullScreen)
         {
+            RenderWindowProperties& props = _properties;
             props.Top = _window->GetTop();
             props.Left = _window->GetLeft();
             props.Width = _window->GetWidth();
