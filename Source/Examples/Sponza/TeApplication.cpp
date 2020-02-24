@@ -73,6 +73,7 @@ namespace te
                 "",
                 "",
                 "Data/Textures/Sponza/arch/arch_OCC.jpeg",
+                "",
                 1.0f,
                 0.5f
             },
@@ -82,6 +83,7 @@ namespace te
                 "",
                 "Data/Textures/Sponza/background/background_NRM.jpeg",
                 "Data/Textures/Sponza/background/background_SPEC.jpeg",
+                "",
                 "",
                 "",
                 "",
@@ -99,6 +101,7 @@ namespace te
                 "",
                 "",
                 "Data/Textures/Sponza/bricks/bricks_OCC.jpeg",
+                "",
                 1.0f,
                 0.5f
             },
@@ -108,6 +111,7 @@ namespace te
                 "",
                 "Data/Textures/Sponza/ceiling/ceiling_NRM.jpeg",
                 "Data/Textures/Sponza/ceiling/ceiling_SPEC.jpeg",
+                "",
                 "",
                 "",
                 "",
@@ -125,6 +129,7 @@ namespace te
                 "",
                 "Data/Textures/Sponza/chain/chain_MASK.jpeg",
                 "",
+                "",
                 0.9f,
                 0.5f
             },
@@ -134,6 +139,7 @@ namespace te
                 "",
                 "Data/Textures/Sponza/column_a/column_a_NRM.jpeg",
                 "Data/Textures/Sponza/column_a/column_a_SPEC.jpeg",
+                "",
                 "",
                 "",
                 "",
@@ -150,6 +156,7 @@ namespace te
                 "",
                 "",
                 "",
+                "",
                 "Data/Textures/Sponza/column_b/column_b_OCC.jpeg",
                 1.0f,
                 0.5f
@@ -160,6 +167,7 @@ namespace te
                 "",
                 "Data/Textures/Sponza/column_c/column_c_NRM.jpeg",
                 "Data/Textures/Sponza/column_c/column_c_SPEC.jpeg",
+                "",
                 "",
                 "",
                 "",
@@ -177,6 +185,7 @@ namespace te
                 "",
                 "",
                 "",
+                "",
                 1.0f,
                 0.5f
             },
@@ -186,6 +195,7 @@ namespace te
                 "",
                 "Data/Textures/Sponza/fabric_a/fabric_a_NRM.jpeg",
                 "Data/Textures/Sponza/fabric_a/fabric_a_SPEC.jpeg",
+                "",
                 "",
                 "",
                 "",
@@ -203,6 +213,7 @@ namespace te
                 "",
                 "",
                 "",
+                "",
                 1.0f,
                 0.5f
             },
@@ -212,6 +223,7 @@ namespace te
                 "",
                 "Data/Textures/Sponza/fabric_a/fabric_a_NRM.jpeg",
                 "Data/Textures/Sponza/fabric_a/fabric_a_SPEC.jpeg",
+                "",
                 "",
                 "",
                 "",
@@ -229,6 +241,7 @@ namespace te
                 "",
                 "",
                 "",
+                "",
                 1.0f,
                 0.5f
             },
@@ -238,6 +251,7 @@ namespace te
                 "",
                 "Data/Textures/Sponza/fabric_c/fabric_c_NRM.jpeg",
                 "Data/Textures/Sponza/fabric_c/fabric_c_SPEC.jpeg",
+                "",
                 "",
                 "",
                 "",
@@ -255,6 +269,7 @@ namespace te
                 "",
                 "",
                 "",
+                "",
                 1.0f,
                 0.5f
             },
@@ -264,6 +279,7 @@ namespace te
                 "",
                 "Data/Textures/Sponza/flagpole/flagpole_NRM.jpeg",
                 "Data/Textures/Sponza/flagpole/flagpole_SPEC.jpeg",
+                "",
                 "",
                 "",
                 "",
@@ -281,6 +297,7 @@ namespace te
                 "",
                 "",
                 "Data/Textures/Sponza/floor/floor_OCC.jpeg",
+                "",
                 1.0f,
                 0.5f
             },
@@ -294,6 +311,7 @@ namespace te
                 "",
                 "Data/Textures/Sponza/leaf/leaf_MASK.jpeg",
                 "",
+                "",
                 0.9f,
                 0.5f
             },
@@ -303,6 +321,7 @@ namespace te
                 "",
                 "Data/Textures/Sponza/lion/lion_NRM.jpeg",
                 "Data/Textures/Sponza/lion/lion_SPEC.jpeg",
+                "",
                 "",
                 "",
                 "",
@@ -320,6 +339,7 @@ namespace te
                 "",
                 "",
                 "",
+                "",
                 1.0f,
                 0.5f
             },
@@ -329,6 +349,7 @@ namespace te
                 "",
                 "Data/Textures/Sponza/vase/vase_NRM.jpeg",
                 "Data/Textures/Sponza/vase/vase_SPEC.jpeg",
+                "",
                 "",
                 "",
                 "",
@@ -346,6 +367,7 @@ namespace te
                 "",
                 "",
                 "",
+                "",
                 1.0f,
                 0.5f
             },
@@ -359,6 +381,7 @@ namespace te
                 "",
                 "Data/Textures/Sponza/vase_plant/vase_plant_MASK.jpeg",
                 "",
+                "",
                 0.9f,
                 0.5f
             },
@@ -368,6 +391,7 @@ namespace te
                 "",
                 "Data/Textures/Sponza/vase_round/vase_round_NRM.jpeg",
                 "Data/Textures/Sponza/vase_round/vase_round_SPEC.jpeg",
+                "",
                 "",
                 "",
                 "",
@@ -442,6 +466,12 @@ namespace te
                 material.MaterialProp.UseOcclusionMap = true;
             }
 
+            if (material.Reflection != "")
+            {
+                material.ReflectionTexture = gResourceManager().Load<Texture>(material.Reflection, textureImportOptions);
+                material.MaterialProp.UseReflectionMap = true;
+            }
+
             if(material.Opacity < 1.0f)
                 material.MaterialElement = Material::Create(_shaderTransparent);
             else
@@ -461,8 +491,7 @@ namespace te
             if (material.Bump != "") material.MaterialElement->SetTexture("BumpMap", material.BumpTexture, surface);
             if (material.Transparency != "") material.MaterialElement->SetTexture("TransparencyMap", material.TransparencyTexture, surface);
             if (material.Occlusion != "") material.MaterialElement->SetTexture("OcclusionMap", material.OcclusionTexture, surface);
-            if (material.Occlusion != "") material.MaterialElement->SetTexture("OcclusionMap", material.OcclusionTexture, surface);
-            //if (material.Reflection != "") material.MaterialElement->SetTexture("ReflectionMap", material.ReflectionTexture, surface);
+            if (material.Reflection != "") material.MaterialElement->SetTexture("ReflectionMap", material.ReflectionTexture, surface);
 
             material.MaterialElement->SetProperties(material.MaterialProp);
         };

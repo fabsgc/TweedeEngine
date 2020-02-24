@@ -50,6 +50,7 @@ namespace te
             String Parallax;
             String Transparency;
             String Occlusion;
+            String Reflection;
             float  Opacity = 1.0f;
             float  AlphaTreshold = 0.1f;
             Color EmissiveColor = Color(0.0f, 0.0f, 0.0f, 1.0f);
@@ -62,6 +63,7 @@ namespace te
             HTexture ParallaxTexture;
             HTexture TransparencyTexture;
             HTexture OcclusionTexture;
+            HTexture ReflectionTexture;
 
             HMaterial MaterialElement;
 
