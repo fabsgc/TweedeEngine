@@ -81,6 +81,47 @@ namespace te
         _buffer->CopyData(*srcIndexBuffer._buffer, srcOffset, dstOffset, length, discardWholeBuffer);
     }
 
+    SPtr<GpuBuffer> IndexBuffer::GetLoadStore(GpuBufferType type, GpuBufferFormat format, UINT32 elementSize)
+    {
+        if ((_usage & GBU_LOADSTORE) != GBU_LOADSTORE)
+            return nullptr;
+
+        for (const auto& entry : _loadStoreViews)
+        {
+            const GpuBufferProperties& props = entry->GetProperties();
+            if (props.GetType() == type)
+            {
+                if (type == GBT_STANDARD && props.GetFormat() == format)
+                    return entry;
+
+                if (type == GBT_STRUCTURED && props.GetElementSize() == elementSize)
+                    return entry;
+            }
+        }
+
+        UINT32 elemSize = type == GBT_STANDARD ? te::GpuBuffer::GetFormatSize(format) : elementSize;
+        if ((_buffer->GetSize() % elemSize) != 0)
+        {
+            TE_DEBUG("Size of the buffer isn't divisible by individual element size provided for the buffer view.", __FILE__, __LINE__);
+            return nullptr;
+        }
+
+        GPU_BUFFER_DESC desc;
+        desc.Type = type;
+        desc.Format = format;
+        desc.Usage = _usage;
+        desc.ElementSize = elementSize;
+        desc.ElementCount = _buffer->GetSize() / elemSize;
+
+        if (!_sharedBuffer)
+            _sharedBuffer = te_shared_ptr(_buffer, _bufferDeleter);
+
+        SPtr<GpuBuffer> newView = GpuBuffer::Create(desc, _sharedBuffer);
+        _loadStoreViews.push_back(newView);
+
+        return newView;
+    }
+
     SPtr<IndexBuffer> IndexBuffer::Create(const INDEX_BUFFER_DESC& desc, GpuDeviceFlags deviceMask)
     {
         return HardwareBufferManager::Instance().CreateIndexBuffer(desc, deviceMask);

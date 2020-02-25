@@ -135,6 +135,20 @@ namespace te
         _markCoreDirty(MaterialDirtyFlags::ParamResource);
     }
 
+    void Material::SetLoadStoreTexture(const String& name, const SPtr<Texture>& value, const TextureSurface& surface)
+    {
+        if (_loadStoreTextures.find(name) == _loadStoreTextures.end())
+        {
+            _loadStoreTextures[name] = te_shared_ptr_new<TextureData>(value, surface);
+            return;
+        }
+
+        _loadStoreTextures[name]->TextureElem = value;
+        _loadStoreTextures[name]->TextureSurfaceElem = surface;
+
+        _markCoreDirty(MaterialDirtyFlags::ParamResource);
+    }
+
     /** Assigns a buffer to the shader parameter with the specified name. */
     void Material::SetBuffer(const String& name, const SPtr<GpuBuffer>& value)
     {

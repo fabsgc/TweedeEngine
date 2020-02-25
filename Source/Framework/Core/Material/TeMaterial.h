@@ -105,6 +105,9 @@ namespace te
         /** Assigns a texture to the shader parameter with the specified name. */
         void SetTexture(const String& name, const SPtr<Texture>& value, const TextureSurface& surface = GpuParams::COMPLETE);
 
+        /** Assigns a texture to the shader parameter with the specified name. */
+        void SetLoadStoreTexture(const String& name, const SPtr<Texture>& value, const TextureSurface& surface = GpuParams::COMPLETE);
+
         /** Assigns a buffer to the shader parameter with the specified name. */
         void SetBuffer(const String& name, const SPtr<GpuBuffer>& value);
          
@@ -115,6 +118,12 @@ namespace te
         void SetTexture(const String& name, const HTexture& value, const TextureSurface& surface = GpuParams::COMPLETE)
         {
             SetTexture(name, value.GetInternalPtr(), surface);
+        }
+
+        /** @copydoc Material::SetLoadStoreTexture */
+        void SetLoadStoreTexture(const String& name, const HTexture& value, const TextureSurface& surface = GpuParams::COMPLETE)
+        {
+            SetLoadStoreTexture(name, value.GetInternalPtr(), surface);
         }
 
         /** Assigns a value to an arbitrary constant buffer parameter. */
@@ -204,6 +213,7 @@ namespace te
         Vector<SPtr<Technique>> _techniques;
 
         UnorderedMap<String, SPtr<TextureData>> _textures;
+        UnorderedMap<String, SPtr<TextureData>> _loadStoreTextures;
         UnorderedMap<String, SPtr<GpuBuffer>> _buffers;
         UnorderedMap<String, SPtr<SamplerState>> _samplerStates;
         UnorderedMap<String, ParamData> _params;

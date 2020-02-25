@@ -30,7 +30,7 @@ namespace te
         /** Types of GPU parameters. */
         enum class ParamType
         {
-            ParamBlock, Texture, Buffer, SamplerState, Count
+            ParamBlock, Texture, LoadStoreTexture, Buffer, SamplerState, Count
         };
 
     public:

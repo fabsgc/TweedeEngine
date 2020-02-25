@@ -59,6 +59,9 @@ namespace te
         /**	Checks if texture parameter with the specified name exists. */
         bool HasTexture(GpuProgramType type, const String& name) const;
 
+        /**	Checks if load/store texture parameter with the specified name exists. */
+        bool HasLoadStoreTexture(GpuProgramType type, const String& name) const;
+
         /**	Checks if buffer parameter with the specified name exists. */
         bool HasBuffer(GpuProgramType type, const String& name) const;
 
@@ -77,6 +80,9 @@ namespace te
         /**	Gets a texture bound to the specified set/slot combination. */
         SPtr<Texture> GetTexture(UINT32 set, UINT32 slot) const;
 
+        /**	Gets a load/store texture bound to the specified set/slot combination. */
+        SPtr<Texture> GetLoadStoreTexture(UINT32 set, UINT32 slot) const;
+
         /**	Gets a buffer bound to the specified set/slot combination. */
         SPtr<GpuBuffer> GetBuffer(UINT32 set, UINT32 slot) const;
 
@@ -85,6 +91,9 @@ namespace te
 
         /** Gets information that determines which texture surfaces to bind as a sampled texture parameter. */
         const TextureSurface& GetTextureSurface(UINT32 set, UINT32 slot) const;
+
+        /** Gets information that determines which texture surfaces to bind as a load/store parameter. */
+        const TextureSurface& GetLoadStoreSurface(UINT32 set, UINT32 slot) const;
 
         /** Assigns the provided param to any ParamBlockBuffer who own it for the specied gpu program */
         void SetParam(GpuProgramType type, const String& name, const void* value, UINT32 sizeBytes, UINT32 arrayIdx = 0);
@@ -116,7 +125,7 @@ namespace te
          *
          * It is up to the caller to guarantee the provided buffer matches parameter block descriptor for this slot.
          */
-        virtual void SetParamBlockBuffer(UINT32 set, UINT32 slot, const SPtr<GpuParamBlockBuffer>& paramBlockBuffer);
+        void SetParamBlockBuffer(UINT32 set, UINT32 slot, const SPtr<GpuParamBlockBuffer>& paramBlockBuffer);
 
         /**
          * Assigns the provided texture to a buffer with the specified name, for the specified GPU program
@@ -134,7 +143,16 @@ namespace te
         void SetTexture(const String& name, const SPtr<Texture>& texture, const TextureSurface& surface = COMPLETE);
 
         /**	Sets a texture at the specified set/slot combination. */
-        virtual void SetTexture(UINT32 set, UINT32 slot, const SPtr<Texture>& texture, const TextureSurface& surface = COMPLETE);
+        void SetTexture(UINT32 set, UINT32 slot, const SPtr<Texture>& texture, const TextureSurface& surface = COMPLETE);
+
+        /**	Sets a load/store texture at the specified set/slot combination. */
+        void SetLoadStoreTexture(GpuProgramType type, const String& name, const SPtr<Texture>& texture, const TextureSurface& surface = COMPLETE);
+
+        /**	Sets a load/store texture at the specified set/slot combination. */
+        void SetLoadStoreTexture(const String& name, const SPtr<Texture>& texture, const TextureSurface& surface = COMPLETE);
+
+        /**	Sets a load/store texture at the specified set/slot combination. */
+        void SetLoadStoreTexture(UINT32 set, UINT32 slot, const SPtr<Texture>& texture, const TextureSurface& surface = COMPLETE);
 
         /**
          * Assigns the provided gpu buffer to a buffer with the specified name, for the specified GPU program
@@ -152,7 +170,7 @@ namespace te
         void SetBuffer(const String& name, const SPtr<GpuBuffer>& buffer);
 
         /**	Sets a buffer at the specified set/slot combination. */
-        virtual void SetBuffer(UINT32 set, UINT32 slot, const SPtr<GpuBuffer>& buffer);
+        void SetBuffer(UINT32 set, UINT32 slot, const SPtr<GpuBuffer>& buffer);
 
         /**
          * Assigns the provided gpu buffer to a buffer with the specified name, for the specified GPU program
@@ -170,7 +188,7 @@ namespace te
         void SetSamplerState(const String& name, const SPtr<SamplerState>& sampler);
 
         /**	Sets a sampler state at the specified set/slot combination. */
-        virtual void SetSamplerState(UINT32 set, UINT32 slot, const SPtr<SamplerState>& sampler);
+        void SetSamplerState(UINT32 set, UINT32 slot, const SPtr<SamplerState>& sampler);
 
         /**
          * Creates new GpuParams object that can serve for changing the GPU program parameters on the specified pipeline.
@@ -218,6 +236,7 @@ namespace te
 
         SPtr<GpuParamBlockBuffer>* _paramBlockBuffers = nullptr;
         TextureData* _sampledTextureData = nullptr;
+        TextureData* _loadStoreTextureData = nullptr;
         SPtr<GpuBuffer>* _buffers = nullptr;
         SPtr<SamplerState>* _samplerStates = nullptr;
 

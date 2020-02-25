@@ -342,9 +342,7 @@ namespace te
 
             SPtr<GpuParamDesc> paramDesc = gpuParams->GetParamDesc(type);
             if (paramDesc == nullptr)
-            {
                 return;
-            }
 
             if (gpuParamsBindFlags & (UINT32)GPU_BIND_TEXTURE)
             {
@@ -376,14 +374,55 @@ namespace te
                     UINT32 slot = iter->second.Slot;
                     SPtr<GpuBuffer> buffer = gpuParams->GetBuffer(iter->second.Set, slot);
 
-                    while (slot >= (UINT32)_gpuResourcesContainer.uavs.size())
-                        _gpuResourcesContainer.uavs.push_back(nullptr);
+                    bool isLoadStore = iter->second.Type != GPOT_BYTE_BUFFER &&
+                        iter->second.Type != GPOT_STRUCTURED_BUFFER;
 
-                    if (buffer != nullptr)
+                    if (!isLoadStore)
                     {
-                        D3D11GpuBuffer* d3d11buffer = static_cast<D3D11GpuBuffer*>(buffer.get());
-                        _gpuResourcesContainer.uavs[slot] = d3d11buffer->GetUAV();
+                        while (slot >= (UINT32)_gpuResourcesContainer.uavs.size())
+                            _gpuResourcesContainer.uavs.push_back(nullptr);
+
+                        if (buffer != nullptr)
+                        {
+                            D3D11GpuBuffer* d3d11buffer = static_cast<D3D11GpuBuffer*>(buffer.get());
+                            _gpuResourcesContainer.srvs[slot] = d3d11buffer->GetSRV();
+                        }
                     }
+                    else
+                    {
+                        while (slot >= (UINT32)_gpuResourcesContainer.uavs.size())
+                            _gpuResourcesContainer.uavs.push_back(nullptr);
+
+                        if (buffer != nullptr)
+                        {
+                            D3D11GpuBuffer* d3d11buffer = static_cast<D3D11GpuBuffer*>(buffer.get());
+                            _gpuResourcesContainer.uavs[slot] = d3d11buffer->GetUAV();
+                        }
+                    }
+                }
+            }
+
+            for (auto iter = paramDesc->LoadStoreTextures.begin(); iter != paramDesc->LoadStoreTextures.end(); ++iter)
+            {
+                UINT32 slot = iter->second.Slot;
+
+                SPtr<Texture> texture = gpuParams->GetLoadStoreTexture(iter->second.Set, slot);
+                const TextureSurface& surface = gpuParams->GetLoadStoreSurface(iter->second.Set, slot);
+
+                while (slot >= (UINT32)_gpuResourcesContainer.uavs.size())
+                    _gpuResourcesContainer.uavs.push_back(nullptr);
+
+                if (texture != nullptr)
+                {
+                    SPtr<TextureView> texView = texture->RequestView(surface.MipLevel, 1,
+                        surface.Face, surface.NumFaces, GVU_RANDOMWRITE);
+
+                    D3D11TextureView* d3d11texView = static_cast<D3D11TextureView*>(texView.get());
+                    _gpuResourcesContainer.uavs[slot] = d3d11texView->GetUAV();
+                }
+                else
+                {
+                    _gpuResourcesContainer.uavs[slot] = nullptr;
                 }
             }
 

@@ -13,14 +13,35 @@ namespace te
         , _usage(usage)
         , _device(device)
     {
-        // TODO load store
+        bool isLoadStore = (usage & GBU_LOADSTORE) == GBU_LOADSTORE;
 
         if (useSystemMem)
         {
+            if (isLoadStore)
+            {
+                TE_DEBUG("LoadStore usage and useSystemMem cannot be used together.", __FILE__, __LINE__);
+                isLoadStore = false;
+            }
+
             if (streamOut)
             {
                 TE_DEBUG("useSystemMem and streamOut cannot be used together.", __FILE__, __LINE__);
                 streamOut = false;
+            }
+        }
+
+        if (isLoadStore)
+        {
+            if (btype == BT_CONSTANT)
+            {
+                TE_DEBUG("Constant buffers cannot be bound with LoadStore usage.", __FILE__, __LINE__);
+                isLoadStore = false;
+            }
+
+            if (D3D11Mappings::IsDynamic(usage))
+            {
+                TE_DEBUG("Dynamic usage not supported with LoadStore usage.", __FILE__, __LINE__);
+                usage = (GpuBufferUsage)(usage & ~GBU_DYNAMIC);
             }
         }
 
@@ -78,10 +99,11 @@ namespace te
                 break;
             }
 
+            if (isLoadStore)
+                _desc.BindFlags |= D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
+
             if (streamOut)
-            {
                 _desc.BindFlags |= D3D11_BIND_STREAM_OUTPUT;
-            }
         }
 
         HRESULT hr = device.GetD3D11Device()->CreateBuffer(&_desc, nullptr, &_D3DBuffer);

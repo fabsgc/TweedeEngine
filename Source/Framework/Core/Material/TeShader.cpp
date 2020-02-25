@@ -351,6 +351,23 @@ namespace te
         }
     }
 
+    bool Shader::IsLoadStoreTexture(GpuParamObjectType type)
+    {
+        switch (type)
+        {
+        case GPOT_RWTEXTURE1D:
+        case GPOT_RWTEXTURE2D:
+        case GPOT_RWTEXTURE3D:
+        case GPOT_RWTEXTURE2DMS:
+        case GPOT_RWTEXTURE1DARRAY:
+        case GPOT_RWTEXTURE2DARRAY:
+        case GPOT_RWTEXTURE2DMSARRAY:
+            return true;
+        default:
+            return false;
+        }
+    }
+
     bool Shader::IsBuffer(GpuParamObjectType type)
     {
         switch (type)

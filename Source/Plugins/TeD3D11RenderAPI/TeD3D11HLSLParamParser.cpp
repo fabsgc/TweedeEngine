@@ -196,7 +196,43 @@ namespace te
                 {
                     memberDesc.Set = MapParameterToSet(type, ParamType::UAV);
 
-                    TE_DEBUG("Load store texture UAV not supported yet", __FILE__, __LINE__); // TODO
+                    switch (resourceDesc.Dimension)
+                    {
+                    case D3D_SRV_DIMENSION_TEXTURE1D:
+                        memberDesc.Type = GPOT_RWTEXTURE1D;
+                        desc.LoadStoreTextures.insert(std::make_pair(memberDesc.Name, memberDesc));
+                        break;
+                    case D3D_SRV_DIMENSION_TEXTURE1DARRAY:
+                        memberDesc.Type = GPOT_RWTEXTURE1DARRAY;
+                        desc.LoadStoreTextures.insert(std::make_pair(memberDesc.Name, memberDesc));
+                        break;
+                    case D3D_SRV_DIMENSION_TEXTURE2D:
+                        memberDesc.Type = GPOT_RWTEXTURE2D;
+                        desc.LoadStoreTextures.insert(std::make_pair(memberDesc.Name, memberDesc));
+                        break;
+                    case D3D_SRV_DIMENSION_TEXTURE2DARRAY:
+                        memberDesc.Type = GPOT_RWTEXTURE2DARRAY;
+                        desc.LoadStoreTextures.insert(std::make_pair(memberDesc.Name, memberDesc));
+                        break;
+                    case D3D_SRV_DIMENSION_TEXTURE3D:
+                        memberDesc.Type = GPOT_RWTEXTURE3D;
+                        desc.LoadStoreTextures.insert(std::make_pair(memberDesc.Name, memberDesc));
+                        break;
+                    case D3D_SRV_DIMENSION_TEXTURE2DMS:
+                        memberDesc.Type = GPOT_RWTEXTURE2DMS;
+                        desc.LoadStoreTextures.insert(std::make_pair(memberDesc.Name, memberDesc));
+                        break;
+                    case D3D_SRV_DIMENSION_TEXTURE2DMSARRAY:
+                        memberDesc.Type = GPOT_RWTEXTURE2DMSARRAY;
+                        desc.LoadStoreTextures.insert(std::make_pair(memberDesc.Name, memberDesc));
+                        break;
+                    case D3D_SRV_DIMENSION_BUFFER:
+                        memberDesc.Type = GPOT_RWTYPED_BUFFER;
+                        desc.Buffers.insert(std::make_pair(memberDesc.Name, memberDesc));
+                        break;
+                    default:
+                        TE_DEBUG("Skipping typed UAV because it has unsupported dimension: {" + ToString(resourceDesc.Dimension) + "}", __FILE__, __LINE__);
+                    }
 
                     break;
                 }

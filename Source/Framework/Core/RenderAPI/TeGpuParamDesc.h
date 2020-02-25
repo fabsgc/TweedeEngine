@@ -53,6 +53,7 @@ namespace te
 
         Map<String, GpuParamObjectDesc> Samplers;
         Map<String, GpuParamObjectDesc> Textures;
+        Map<String, GpuParamObjectDesc> LoadStoreTextures;
         Map<String, GpuParamObjectDesc> Buffers;
     };
 }

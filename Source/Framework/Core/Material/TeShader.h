@@ -286,6 +286,9 @@ namespace te
         /**	Checks is the provided object type a texture. */
         static bool IsTexture(GpuParamObjectType type);
 
+        /**	Checks is the provided object type a load/store (unordered read/write) texture. */
+        static bool IsLoadStoreTexture(GpuParamObjectType type);
+
         /** Checks is the provided object type a buffer. */
         static bool IsBuffer(GpuParamObjectType type);
 

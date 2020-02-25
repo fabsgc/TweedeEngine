@@ -24,9 +24,7 @@ namespace te
             int typeIdx = (int)type;
 
             if ((entry.Set + 1) > _numSets)
-            {
                 _numSets = entry.Set + 1;
-            }
 
             _numElementsPerType[typeIdx]++;
             _numElements++;
@@ -40,24 +38,19 @@ namespace te
                 continue;
 
             for (auto& paramBlock : paramDesc->ParamBlocks)
-            {
                 countElements(paramBlock.second, ParamType::ParamBlock);
-            }
 
             for (auto& texture : paramDesc->Textures)
-            {
                 countElements(texture.second, ParamType::Texture);
-            }
+
+            for (auto& texture : paramDesc->LoadStoreTextures)
+                countElements(texture.second, ParamType::LoadStoreTexture);
 
             for (auto& buffer : paramDesc->Buffers)
-            {
                 countElements(buffer.second, ParamType::Buffer);
-            }
 
             for (auto& sampler : paramDesc->Samplers)
-            {
                 countElements(sampler.second, ParamType::SamplerState);
-            }
         }
 
         UINT32* numSlotsPerSet = te_allocate<UINT32>(_numSets * sizeof(UINT32));
@@ -85,6 +78,12 @@ namespace te
             {
                 numSlotsPerSet[buffer.second.Set] =
                     std::max(numSlotsPerSet[buffer.second.Set], buffer.second.Slot + 1);
+            }
+
+            for (auto& texture : paramDesc->LoadStoreTextures)
+            {
+                numSlotsPerSet[texture.second.Set] =
+                    std::max(numSlotsPerSet[texture.second.Set], texture.second.Slot + 1);
             }
 
             for (auto& sampler : paramDesc->Samplers)
@@ -151,24 +150,19 @@ namespace te
         {
             const SPtr<GpuParamDesc>& paramDesc = _paramDescs[i];
             if (paramDesc == nullptr)
-            {
                 continue;
-            }
 
             for (auto& paramBlock : paramDesc->ParamBlocks)
-            {
                 populateSetInfo(paramBlock.second, ParamType::ParamBlock);
-            }
 
             for (auto& texture : paramDesc->Textures)
-            {
                 populateSetInfo(texture.second, ParamType::Texture);
-            }
+
+            for (auto& texture : paramDesc->LoadStoreTextures)
+                populateSetInfo(texture.second, ParamType::LoadStoreTexture);
 
             for (auto& buffer : paramDesc->Buffers)
-            {
                 populateSetInfo(buffer.second, ParamType::Buffer);
-            }
 
             // Samplers need to be handled specially because certain slots could be texture/buffer + sampler combinations
             {
@@ -220,9 +214,7 @@ namespace te
             if (type == ParamType::SamplerState)
             {
                 if (_setInfos[set].SlotSamplers[slot] != (UINT32)-1)
-                {
                     return _setInfos[set].SlotSamplers[slot];
-                }
             }
 
             TE_DEBUG("Requested parameter is not of the valid type. Requested: " + ToString((UINT32)type) + 
@@ -259,13 +251,11 @@ namespace te
         constexpr UINT32 numParamDescs = sizeof(_paramDescs) / sizeof(_paramDescs[0]);
         static_assert(
             numParamDescs == GPT_COUNT,
-            "Number of param descriptor structures must match the number of GPU program stages."
+                "Number of param descriptor structures must match the number of GPU program stages."
             );
 
         for (UINT32 i = 0; i < numParamDescs; i++)
-        {
             GetBinding((GpuProgramType)i, type, name, bindings[i]);
-        }
     }
 
     void GpuPipelineParamInfo::GetBinding(GpuProgramType progType, ParamType type, const String& name,
@@ -298,6 +288,8 @@ namespace te
         case ParamType::Texture:
             findBinding(paramDesc->Textures, name, binding);
             break;
+        case ParamType::LoadStoreTexture:
+            findBinding(paramDesc->LoadStoreTextures, name, binding);
         case ParamType::Buffer:
             findBinding(paramDesc->Buffers, name, binding);
             break;

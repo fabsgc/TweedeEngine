@@ -273,9 +273,7 @@ namespace te
         DXGI_FORMAT d3dPF = D3D11Mappings::GetPF(closestFormat, hwGamma);
 
         if (format != closestFormat)
-        {
             TE_DEBUG("Provided pixel format is not supported by the driver", __FILE__, __LINE__);
-        }
 
         _internalFormat = closestFormat;
         _DXGIColorFormat = d3dPF;
@@ -345,9 +343,7 @@ namespace te
         _1DTex->GetDesc(&desc);
 
         if (numMips != (desc.MipLevels - 1))
-        {
             TE_ASSERT_ERROR(false, "Driver returned different number of mip maps than requested. Requested: " + ToString(numMips) + ". Got: " + ToString(desc.MipLevels - 1) + ".", __FILE__, __LINE__);
-        }
 
         _DXGIFormat = desc.Format;
 
@@ -449,9 +445,7 @@ namespace te
             if (desc.SampleDesc.Count <= 1)
                 desc.BindFlags |= D3D11_BIND_UNORDERED_ACCESS;
             else
-            {
                 TE_DEBUG("Unable to create a load-store texture with multiple samples. This is not supported on DirectX 11. Ignoring load-store usage flag.", __FILE__, __LINE__);
-            }
         }
 
         // Create the texture
