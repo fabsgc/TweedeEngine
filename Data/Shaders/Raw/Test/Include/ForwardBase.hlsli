@@ -1,4 +1,5 @@
 #define STANDARD_FORWARD_MAX_INSTANCED_BLOCK 128
+#define MAX_LIGHTS 16
 
 struct PerInstanceData
 {
@@ -55,6 +56,20 @@ struct PS_OUTPUT
     float4 Normal : SV_Target1;
     float4 Emissive : SV_Target2;
     //float4 Velocity : SV_Target5;
+};
+
+struct LightData
+{
+    float3 Position;
+    float BoundRadius;
+    float3 Direction;
+    float Luminance;
+    float3 SpotAngles;
+    float AttRadiusSqrdInv;
+    float3 Color;
+    float SrcRadius;
+    float3 ShiftedLightPosition;
+    float Padding;
 };
 
 float2 FlipUV(float2 coord)
