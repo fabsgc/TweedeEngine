@@ -17,7 +17,7 @@ namespace te
     const float CCameraFlyer::ROTATION_SPEED = 2.0f;
 
     /** Wraps an angle so it always stays in [0, 360) range. */
-    Degree wrapAngle(Degree angle)
+    Degree WrapAngle(Degree angle)
     {
         if (angle.ValueDegrees() < -360.0f)
             angle += Degree(360.0f);
@@ -82,8 +82,8 @@ namespace te
             _yaw += Degree(gVirtualInput().GetAxisValue(_horizontalAxis) * ROTATION_SPEED);
             _pitch += Degree(gVirtualInput().GetAxisValue(_verticalAxis) * ROTATION_SPEED);
 
-            _yaw = wrapAngle(_yaw);
-            _pitch = wrapAngle(_pitch);
+            _yaw = WrapAngle(_yaw);
+            _pitch = WrapAngle(_pitch);
 
             Quaternion yRot;
             yRot.FromAxisAngle(Vector3::UNIT_Y, Radian(_yaw));
@@ -126,7 +126,7 @@ namespace te
         }
 
         // If the current speed isn't too small, move the camera in the wanted direction
-        float tooSmall = std::numeric_limits<float>::epsilon();
+        constexpr float tooSmall = std::numeric_limits<float>::epsilon();
         if (_currentSpeed > tooSmall)
         {
             Vector3 velocity = direction * _currentSpeed;
