@@ -478,7 +478,6 @@ namespace te
                 material.MaterialElement = Material::Create(_shaderOpaque);
 
             //float g = 0.9f;
-
             //material.MaterialElement->SetParam<float>("gTransparency", g);
             material.MaterialElement->SetName(material.Name);
             material.MaterialElement->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
@@ -524,11 +523,6 @@ namespace te
 
         //materialFunction(_materials[16]);
 
-        /*for (auto& material : _materials)
-        {
-            materialFunction(material);
-        }*/
-
         auto textureCubeMapImportOptions = TextureImportOptions::Create();
         textureCubeMapImportOptions->CpuCached = false;
         textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
@@ -563,6 +557,7 @@ namespace te
         _sceneCamera->GetViewport()->SetClearColorValue(Color(0.17f, 0.64f, 1.0f, 1.0f));
         _sceneCamera->GetViewport()->SetTarget(gCoreApplication().GetWindow());
         _sceneCamera->SetMSAACount(_window->GetDesc().MultisampleCount);
+        _sceneCamera->SetHorzFOV(Radian(1.65f));
         _sceneCamera->SetMain(true);
         _sceneCamera->Initialize();
 
@@ -574,13 +569,13 @@ namespace te
         _sceneSponzaSO = SceneObject::Create("Sponza");
         _sponzaRenderable = _sceneSponzaSO->AddComponent<CRenderable>();
         _sponzaRenderable->SetMesh(_sponzaMesh);
+
+        //_sponzaRenderable->SetMaterial(_materials[16].MaterialElement);
         
         for (auto& material : _materials )
         {
             _sponzaRenderable->SetMaterial(material.Name, material.MaterialElement);
         }
-
-        //_sponzaRenderable->SetMaterial(_materials[16].MaterialElement);
 
         _sponzaRenderable->Initialize();
 
