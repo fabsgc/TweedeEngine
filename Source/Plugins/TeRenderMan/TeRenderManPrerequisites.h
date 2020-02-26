@@ -11,6 +11,8 @@
 
 #define STANDARD_FORWARD_MAX_VERTICES_COMBINED_MESH 4096
 
+#define STANDARD_FORWARD_MAX_NUM_LIGHTS 16;
+
 namespace te
 {
     struct PerInstanceData
@@ -45,6 +47,20 @@ namespace te
         float gAbsorbance;
         float gBumpScale;
         float gAlphaThreshold;
+    };
+
+    struct LightData
+    {
+        Vector3 Position;
+        float BoundsRadius;
+        Vector3 Direction;
+        float Luminance;
+        Vector3 SpotAngles;
+        float AttRadiusSqrdInv;
+        Vector3 Color;
+        float SrcRadius;
+        Vector3 ShiftedLightPosition;
+        float Padding;
     };
 
     TE_PARAM_BLOCK_BEGIN(PerCameraParamDef)
@@ -111,6 +127,14 @@ namespace te
 
     extern PerInstanceParamDef gPerInstanceParamDef;
     extern SPtr<GpuParamBlockBuffer> gPerInstanceParamBuffer[STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER];
+
+    TE_PARAM_BLOCK_BEGIN(PerLightsParamDef)
+        TE_PARAM_BLOCK_ENTRY_ARRAY(LightData, gLights, STANDARD_FORWARD_MAX_NUM_LIGHTS)
+        TE_PARAM_BLOCK_ENTRY(INT32, gLightsNumber)
+    TE_PARAM_BLOCK_END
+
+    extern PerLightsParamDef gPerLightsParamDef;
+    extern SPtr<GpuParamBlockBuffer> gPerLightsParamBuffer;
 
     enum class RenderManCulling
     {

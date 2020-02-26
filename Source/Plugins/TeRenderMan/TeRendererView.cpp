@@ -199,6 +199,50 @@ namespace te
         }
     }
 
+    void RendererView::DetermineVisible(const Vector<RendererLight>& lights, const Vector<Sphere>& bounds,
+        LightType lightType, Vector<bool>* visibility)
+    {
+        // Special case for directional lights, they're always visible
+        if (lightType == LightType::Directional)
+        {
+            if (visibility)
+                visibility->assign(lights.size(), true);
+
+            return;
+        }
+
+        Vector<bool>* perViewVisibility;
+        if (lightType == LightType::Radial)
+        {
+            _visibility.RadialLights.clear();
+            _visibility.RadialLights.resize(lights.size(), false);
+
+            perViewVisibility = &_visibility.RadialLights;
+        }
+        else // Spot
+        {
+            _visibility.SpotLights.clear();
+            _visibility.SpotLights.resize(lights.size(), false);
+
+            perViewVisibility = &_visibility.SpotLights;
+        }
+
+        if (!ShouldDraw3D())
+            return;
+
+        CalculateVisibility(bounds, *perViewVisibility);
+
+        if (visibility != nullptr)
+        {
+            for (UINT32 i = 0; i < (UINT32)lights.size(); i++)
+            {
+                bool visible = (*visibility)[i];
+
+                (*visibility)[i] = visible || (*perViewVisibility)[i];
+            }
+        }
+    }
+
     void RendererView::CalculateVisibility(const Vector<CullInfo>& cullInfos, Vector<RenderableVisibility>& visibility) const
     {
         UINT64 cameraLayers = _properties.VisibleLayers;
@@ -236,6 +280,28 @@ namespace te
                 if (worldFrustum.Intersects(boundingBox))
                     visibility[i].Visible = true;
             }
+        }
+    }
+
+    void RendererView::CalculateVisibility(const Vector<Sphere>& bounds, Vector<bool>& visibility) const
+    {
+        const ConvexVolume& worldFrustum = _properties.CullFrustum;
+
+        for (UINT32 i = 0; i < (UINT32)bounds.size(); i++)
+        {
+            if (worldFrustum.Intersects(bounds[i]))
+                visibility[i] = true;
+        }
+    }
+
+    void RendererView::CalculateVisibility(const Vector<AABox>& bounds, Vector<bool>& visibility) const
+    {
+        const ConvexVolume& worldFrustum = _properties.CullFrustum;
+
+        for (UINT32 i = 0; i < (UINT32)bounds.size(); i++)
+        {
+            if (worldFrustum.Intersects(bounds[i]))
+                visibility[i] = true;
         }
     }
 
@@ -447,6 +513,27 @@ namespace te
         for (UINT32 i = 0; i < numViews; i++)
         {
             _views[i]->DetermineVisible(sceneInfo.Renderables, sceneInfo.RenderableCullInfos, &_visibility.Renderables);
+        }
+
+        // Calculate light visibility for all views
+        const auto numRadialLights = (UINT32)sceneInfo.RadialLights.size();
+        _visibility.RadialLights.resize(numRadialLights, false);
+        _visibility.RadialLights.assign(numRadialLights, false);
+
+        const auto numSpotLights = (UINT32)sceneInfo.SpotLights.size();
+        _visibility.SpotLights.resize(numSpotLights, false);
+        _visibility.SpotLights.assign(numSpotLights, false);
+
+        for (UINT32 i = 0; i < numViews; i++)
+        {
+            if (!_views[i]->ShouldDraw3D())
+                continue;
+
+            _views[i]->DetermineVisible(sceneInfo.RadialLights, sceneInfo.RadialLightWorldBounds, LightType::Radial,
+                &_visibility.RadialLights);
+
+            _views[i]->DetermineVisible(sceneInfo.SpotLights, sceneInfo.SpotLightWorldBounds, LightType::Spot,
+                &_visibility.SpotLights);
         }
     }
 

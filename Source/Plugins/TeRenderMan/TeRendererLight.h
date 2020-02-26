@@ -8,22 +8,19 @@
 
 namespace te
 {
-    struct LightData
-    { 
-        Vector3 Position;
-        float BoundsRadius;
-        Vector3 Direction;
-        float Luminance;
-        Vector3 SpotAngles;
-        float AttRadiusSqrdInv;
-        Vector3 Color;
-        float SrcRadius;
-        Vector3 ShiftedLightPosition;
-        float Padding;
+    /** Helper class used for manipulating the PerObject parameter buffer. */
+    class PerLightsBuffer
+    {
+    public:
+        /**
+         * Updates the provided buffer with the data from the provided matrices.
+         *
+         *  @param[in]	buffer	      Buffer which will be filled with data
+         *  @param[in]	lightNumber	  Number of lights to be rendered for this pass
+         *  @param[in]	lights  	  Vector of lights data
+         */
+        static void UpdatePerLights(SPtr<GpuParamBlockBuffer>& buffer, UINT8 lightNumber, Vector<LightData>& lights);
     };
-
-    /** Maximum number of lights that can influence an object when basic forward rendering is used. */
-    static constexpr UINT32 STANDARD_FORWARD_MAX_NUM_LIGHTS = 16;
 
     /**	Renderer information specific to a single light. */
     class RendererLight
@@ -67,10 +64,4 @@ namespace te
 
         // TODO
     };
-
-    TE_PARAM_BLOCK_BEGIN(LightsParamDef)
-        TE_PARAM_BLOCK_ENTRY_ARRAY(LightData, gLights, STANDARD_FORWARD_MAX_NUM_LIGHTS)
-    TE_PARAM_BLOCK_END
-
-    extern LightsParamDef gLightsParamDef;
 }

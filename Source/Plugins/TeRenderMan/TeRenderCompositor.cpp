@@ -8,16 +8,20 @@
 #include "Renderer/TeRendererUtility.h"
 #include "Renderer/TeSkyboxMat.h"
 #include "Renderer/TeFXAAMat.h"
+#include "TeRendererLight.h"
 
 namespace te
 {
     UnorderedMap<String, RenderCompositor::NodeType*> RenderCompositor::_nodeTypes;
 
     /** Renders all elements in a render queue. */
-    void RenderQueueElements(const Vector<RenderQueueElement>& elements, const RendererView& view)
+    void RenderQueueElements(const Vector<RenderQueueElement>& elements, const RendererView& view, const SceneInfo& scene)
     {
         SPtr<Material> lastMaterial = nullptr;
         UINT32 gpuParamsBindFlags = 0;
+
+        // First of all, we need to construct light buffer, using all visible lights
+        // TODO Lights
 
         for(auto& entry : elements)
         {
@@ -330,8 +334,8 @@ namespace te
         // Render all visible opaque elements
         RenderQueue* opaqueElements = inputs.View.GetOpaqueQueue().get();
         RenderQueue* transparentElements = inputs.View.GetTransparentQueue().get();
-        RenderQueueElements(opaqueElements->GetSortedElements(), inputs.View);
-        RenderQueueElements(transparentElements->GetSortedElements(), inputs.View);
+        RenderQueueElements(opaqueElements->GetSortedElements(), inputs.View, inputs.Scene);
+        RenderQueueElements(transparentElements->GetSortedElements(), inputs.View, inputs.Scene);
 
         // Make sure that any compute shaders are able to read g-buffer by unbinding it
         rapi.SetRenderTarget(nullptr);

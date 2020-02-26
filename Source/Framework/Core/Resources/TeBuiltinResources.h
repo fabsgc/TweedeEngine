@@ -78,6 +78,20 @@ namespace te
             UINT32  gLayer;
         };
 
+        struct LightData
+        {
+            Vector3 Position;
+            float BoundsRadius;
+            Vector3 Direction;
+            float Luminance;
+            Vector3 SpotAngles;
+            float AttRadiusSqrdInv;
+            Vector3 Color;
+            float SrcRadius;
+            Vector3 ShiftedLightPosition;
+            float Padding;
+        };
+
     private:
         void InitGpuPrograms();
         void InitStates();

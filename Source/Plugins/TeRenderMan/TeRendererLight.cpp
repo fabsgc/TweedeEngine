@@ -2,7 +2,16 @@
 
 namespace te
 {
+    PerLightsParamDef gPerLightsParamDef;
+    SPtr<GpuParamBlockBuffer> gPerLightsParamBuffer;
+
     static const UINT32 LIGHT_DATA_BUFFER_INCREMENT = 16 * sizeof(LightData);
+
+    void PerLightsBuffer::UpdatePerLights(SPtr<GpuParamBlockBuffer>& buffer, UINT8 lightNumber, Vector<LightData>& lights)
+    {
+        if (!gPerLightsParamBuffer)
+            gPerLightsParamBuffer = gPerLightsParamDef.CreateBuffer();
+    }
 
     RendererLight::RendererLight(Light* light)
         : _internal(light)
@@ -32,6 +41,4 @@ namespace te
 
     VisibleLightData::VisibleLightData()
     { }
-
-    LightsParamDef gLightsParamDef;
 }

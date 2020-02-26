@@ -232,6 +232,10 @@ namespace te
             SHADER_OBJECT_PARAM_DESC bumpMapDesc("BumpMap", "BumpMap", GPOT_TEXTURE2D);
             SHADER_OBJECT_PARAM_DESC transparencyMapDesc("TransparencyMap", "TransparencyMap", GPOT_TEXTURE2D);
 
+            SHADER_DATA_PARAM_DESC gLightsDesc("gLights", "gLights", GPDT_STRUCT);
+            gLightsDesc.ElementSize = sizeof(LightData);
+            SHADER_DATA_PARAM_DESC gLightsNumberDesc("gLightsNumber", "gLightsNumber", GPDT_INT1);
+
             _forwardShaderDesc.AddParameter(gViewDirDesc);
             _forwardShaderDesc.AddParameter(gViewOriginDesc);
             _forwardShaderDesc.AddParameter(gMatViewProjDesc);
@@ -279,6 +283,9 @@ namespace te
             _forwardShaderDesc.AddParameter(specularMapDesc);
             _forwardShaderDesc.AddParameter(bumpMapDesc);
             _forwardShaderDesc.AddParameter(transparencyMapDesc);
+
+            _forwardShaderDesc.AddParameter(gLightsDesc);
+            _forwardShaderDesc.AddParameter(gLightsNumberDesc);
         }
 
         {

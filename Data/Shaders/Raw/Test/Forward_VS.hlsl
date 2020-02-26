@@ -58,11 +58,6 @@ cbuffer PerCallBuffer : register(b5)
     matrix gMatWorldViewProj;
 }
 
-cbuffer PerLightsBuffer
-{
-    LightData gLights[MAX_LIGHTS];
-}
-
 VS_OUTPUT main( VS_INPUT IN )
 {
     VS_OUTPUT OUT = (VS_OUTPUT)0;

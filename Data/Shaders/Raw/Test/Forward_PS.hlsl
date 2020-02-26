@@ -33,6 +33,12 @@ cbuffer PerMaterialBuffer : register(b1)
     float  gAlphaThreshold;
 };
 
+cbuffer PerLightsBuffer : register(b2)
+{
+    LightData gLights[MAX_LIGHTS];
+    uint gLightsNumber;
+}
+
 SamplerState AnisotropicSampler : register(s0);
 
 Texture2D DiffuseMap : register(t0);
