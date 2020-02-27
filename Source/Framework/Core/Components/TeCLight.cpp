@@ -15,10 +15,8 @@ namespace te
         , _type(type)
         , _color(color)
         , _intensity(intensity)
-        , _range(range)
         , _castsShadows(castsShadows)
         , _spotAngle(spotAngle)
-        , _spotFalloffAngle(spotFalloffAngle)
     {
         SetName("Light");
     }
@@ -42,7 +40,7 @@ namespace te
     void CLight::_instantiate()
     {
         _internal = Light::Create(_type, _color, _intensity, _range,
-            _castsShadows, _spotAngle, _spotFalloffAngle);
+            _castsShadows, _spotAngle);
     }
 
     void CLight::OnCreated()

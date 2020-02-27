@@ -79,31 +79,6 @@ namespace te
         float GetAttenuationRadius() const { return _attRadius; }
 
         /**
-         * Radius of the light source. If non-zero then this light represents an area light, otherwise it is a punctual
-         * light. Area lights have different attenuation then punctual lights, and their appearance in specular reflections
-         * is realistic. Shape of the area light depends on light type:
-         *  - For directional light the shape is a disc projected on the hemisphere on the sky. This parameter
-         *    represents angular radius (in degrees) of the disk and should be very small (think of how much space the Sun
-         *    takes on the sky - roughly 0.25 degree radius).
-         *  - For radial light the shape is a sphere and the source radius is the radius of the sphere.
-         *  - For spot lights the shape is a disc oriented in the direction of the spot light and the source radius is the
-         *    radius of the disc.
-         */
-        void SetSourceRadius(float radius);
-
-        /**	@copydoc SetSourceRadius */
-        float GetSourceRadius() const { return _sourceRadius; }
-
-        /**
-         * If enabled the attenuation radius will automatically be controlled in order to provide reasonable light radius,
-         * depending on its intensity.
-         */
-        void SetUseAutoAttenuation(bool enabled);
-
-        /** @copydoc SetUseAutoAttenuation */
-        bool GetUseAutoAttenuation() const { return _autoAttenuation; }
-
-        /**
          * Determines the power of the light source. This will be luminous flux for radial & spot lights,
          * luminance for directional lights with no area, and illuminance for directional lights with area (non-zero source
          * radius).
@@ -119,27 +94,8 @@ namespace te
         /** @copydoc SetSpotAngle */
         Degree GetSpotAngle() const { return _spotAngle; }
 
-        /**
-         * Determines the falloff angle covered by a spot light. Falloff angle determines at what point does light intensity
-         * starts quadratically falling off as the angle approaches the total spot angle.
-         */
-        void SetSpotFalloffAngle(const Degree& spotFallofAngle)
-        { _spotFalloffAngle = spotFallofAngle; _markCoreDirty(); UpdateBounds(); }
-
-        /** @copydoc SetSpotFalloffAngle */
-        Degree GetSpotFalloffAngle() const { return _spotFalloffAngle; }
-
         /**	Returns world space bounds that completely encompass the light's area of influence. */
         Sphere GetBounds() const { return _bounds; }
-
-        /**
-         * Returns the luminance of the light source. This is the value that should be used in lighting equations.
-         *
-         * @note
-         * For point light sources this method returns luminous intensity and not luminance. We use the same method for both
-         * as a convenience since in either case its used as a measure of intensity in lighting equations.
-         */
-        float GetLuminance() const;
 
         /**
          * Creates a new light with provided settings.
@@ -172,9 +128,6 @@ namespace te
         /** Updates the internal bounds for the light. Call this whenever a property affecting the bounds changes. */
         void UpdateBounds();
 
-        /** Calculates maximum light range based on light intensity. */
-        void UpdateAttenuationRange();
-
         /** @copydoc SceneActor::SetTransform */
         void SetTransform(const Transform& transform) override;
 
@@ -183,12 +136,9 @@ namespace te
         bool _castsShadows; /**< Determines whether the light casts shadows. */
         Color _color; /**< Color of the light. */
         float _attRadius; /**< Radius at which light intensity falls off to zero. */
-        float _sourceRadius; /**< Radius of the light source. If > 0 the light is an area light. */
-        float _intensity; /**< Power of the light source. @see setIntensity. */
+        float _intensity; /**< Power of the light source. @see SetIntensity. */
         Degree _spotAngle; /**< Total angle covered by a spot light. */
-        Degree _spotFalloffAngle; /**< Spot light angle at which falloff starts. Must be smaller than total angle. */
         Sphere _bounds; /**< Sphere that bounds the light area of influence. */
-        bool _autoAttenuation; /**< Determines is attenuation radius is automatically determined. */
         float _shadowBias; /**< See SetShadowBias() */
         UINT32 _rendererId;
     };

@@ -60,15 +60,13 @@ struct PS_OUTPUT
 
 struct LightData
 {
-    float3 Position;
-    float BoundRadius;
-    float3 Direction;
-    float Luminance;
-    float3 SpotAngles;
-    float AttRadiusSqrdInv;
     float3 Color;
-    float SrcRadius;
-    float3 ShiftedLightPosition;
+    float Type;
+    float3 Position;
+    float Intensity;
+    float3 Direction;
+    float AttenuationRadius;
+    float3 SpotAngles;
     float Padding;
 };
 

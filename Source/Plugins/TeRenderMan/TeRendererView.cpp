@@ -535,6 +535,13 @@ namespace te
             _views[i]->DetermineVisible(sceneInfo.SpotLights, sceneInfo.SpotLightWorldBounds, LightType::Spot,
                 &_visibility.SpotLights);
         }
+
+        // Organize light visibility information in a more GPU friendly manner
+
+        // Note: I'm determining light visibility for the entire group. It might be more performance
+        // efficient to do it per view. Additionally I'm using a single GPU buffer to hold their information, which is
+        // then updated when each view group is rendered. It might be better to keep one buffer reserved per-view.
+        _visibleLightData.Update(sceneInfo, *this);
     }
 
     void RendererViewGroup::SetAllObjectsAsVisible(const SceneInfo& sceneInfo)

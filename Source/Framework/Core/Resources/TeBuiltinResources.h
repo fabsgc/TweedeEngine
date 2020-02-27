@@ -80,15 +80,13 @@ namespace te
 
         struct LightData
         {
-            Vector3 Position;
-            float BoundsRadius;
-            Vector3 Direction;
-            float Luminance;
-            Vector3 SpotAngles;
-            float AttRadiusSqrdInv;
             Vector3 Color;
-            float SrcRadius;
-            Vector3 ShiftedLightPosition;
+            float Type;
+            Vector3 Position;
+            float Intensity;
+            Vector3 Direction;
+            float AttenuationRadius;
+            Vector3 SpotAngles;
             float Padding;
         };
 

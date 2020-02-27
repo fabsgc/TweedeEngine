@@ -11,11 +11,13 @@
 #include "Renderer/TeParamBlocks.h"
 #include "Renderer/TeRenderQueue.h"
 #include "TeRenderCompositor.h"
+#include "TeRendererLight.h"
 
 namespace te
 {
     struct SceneInfo;
     struct FrameInfo;
+    class RendererLight;
 
     /** Data shared between RENDERER_VIEW_DESC and RendererViewProperties */
     struct RendererViewData
@@ -357,6 +359,12 @@ namespace te
         const VisibilityInfo& GetVisibilityInfo() const { return _visibility; }
 
         /**
+         * Returns information about lights visible from this group of views. Only valid after a call to
+         * determineVisibility().
+         */
+        const VisibleLightData& GetVisibleLightData() const { return _visibleLightData; }
+
+        /**
          * Updates visibility information for the provided scene objects, from the perspective of all views in this group,
          * and updates the render queues of each individual view. Use getVisibilityInfo() to retrieve the calculated
          * visibility information.
@@ -385,5 +393,7 @@ namespace te
         SPtr<RenderManOptions> _options;
         Vector<RendererView*> _views;
         VisibilityInfo _visibility;
+
+        VisibleLightData _visibleLightData;
     };
 }

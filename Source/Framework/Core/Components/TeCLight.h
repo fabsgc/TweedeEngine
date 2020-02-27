@@ -40,35 +40,17 @@ namespace te
         /** @copydoc Light::getIntensity */
         float GetIntensity() const { return _internal->GetIntensity(); }
 
-        /**  @copydoc Light::setUseAutoAttenuation */
-        void SetUseAutoAttenuation(bool enabled) { _internal->SetUseAutoAttenuation(enabled); }
-
-        /** @copydoc Light::getUseAutoAttenuation */
-        bool GetUseAutoAttenuation() const { return _internal->GetUseAutoAttenuation(); }
-
         /** @copydoc Light::setAttenuationRadius */
         void SetAttenuationRadius(float radius) { _internal->SetAttenuationRadius(radius); }
 
         /** @copydoc Light::getAttenuationRadius */
         float GetAttenuationRadius() const { return _internal->GetAttenuationRadius(); }
 
-        /** @copydoc Light::setSourceRadius */
-        void SetSourceRadius(float radius) { _internal->SetSourceRadius(radius); }
-
-        /** @copydoc Light::getSourceRadius */
-        float GetSourceRadius() const { return _internal->GetSourceRadius(); }
-
         /** @copydoc Light::setSpotAngle */
         void SetSpotAngle(const Degree& spotAngle) { _internal->SetSpotAngle(spotAngle); }
 
         /** @copydoc Light::getSpotAngle */
         Degree GetSpotAngle() const { return _internal->GetSpotAngle(); }
-
-        /** @copydoc Light::setSpotFalloffAngle */
-        void SetSpotFalloffAngle(const Degree& spotAngle) { _internal->SetSpotFalloffAngle(spotAngle); }
-
-        /** @copydoc Light::getSpotFalloffAngle */
-        Degree GetSpotFalloffAngle() const { return _internal->GetSpotFalloffAngle(); }
 
         /** @copydoc Light::setCastsShadow */
         void SetCastsShadow(bool castsShadow) { _internal->SetCastsShadow(castsShadow); }
@@ -100,7 +82,6 @@ namespace te
         float _range = 1.0f;
         bool _castsShadows = false;
         Degree _spotAngle = Degree(45);
-        Degree _spotFalloffAngle = Degree(40);
 
     protected:
         friend class SceneObject;
