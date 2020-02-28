@@ -51,8 +51,8 @@ Texture2D TransparencyMap : register(t6);
 Texture2D ReflectionMap : register(t7);
 Texture2D OcclusionMap : register(t8);
 
-static const float4 LightColor = float4(1.0f, 0.9f, 0.8f, 0.6f);
-static const float3 LightDirection = float3(0.75f, -2.0f, -2.0f);
+static const float LinearAttenuation = 0.08;
+static const float QuadraticAttenuation = 0.0;
 
 float4 ComputeAlbedoBuffer(float4 diffuse)
 {
@@ -79,17 +79,150 @@ float4 ComputeVelocityBuffer(float4 velocity)
     return velocity; // TODO
 }
 
+struct LightingResult
+{
+    float3 Diffuse;
+    float3 Specular;
+};
+
+// d : distance from light
+float DoAttenuation( LightData light, float d )
+{
+    return 1.0f / ( light.AttenuationRadius + LinearAttenuation * d + QuadraticAttenuation * d * d );
+}
+
+// V : view vector
+// N : surface normal
+float3 DoDiffuse( LightData light, float3 L, float3 N )
+{
+    float NdotL = max( 0, dot( N, L ) );
+    return light.Color * NdotL * light.Intensity;
+}
+
+// V : view vector
+// L : light vector
+// N : surface normal
+float3 DoSpecular( LightData light, float3 V, float3 L, float3 N )
+{
+    // Phong lighting.
+    float3 R = normalize( reflect( -L, N ) );
+    float RdotV = max( 0, dot( R, V ) );
+ 
+    // Blinn-Phong lighting
+    float3 H = normalize( L + V );
+    float NdotH = max( 0, dot( N, H ) );
+ 
+    return light.Color * pow( RdotV, gSpecularPower ) * light.Intensity;
+}
+
+// V : view vector
+// P : position vector in worldspace
+// N : surface normal
+LightingResult DoPointLight( LightData light, float3 V, float3 P, float3 N )
+{
+    LightingResult result;
+
+    float3 L = ( light.Position - P );
+    float distance = length(L);
+    L = L / distance;
+ 
+    float attenuation = DoAttenuation( light, distance );
+ 
+    result.Diffuse = DoDiffuse( light, L, N ) * attenuation;
+    result.Specular = DoSpecular( light, V, L, N ) * attenuation;
+
+    return result;
+}
+
+// V : view vector
+// P : position vector in worldspace
+// N : surface normal
+LightingResult DoDirectionalLight( LightData light, float3 V, float3 P, float3 N )
+{
+    LightingResult result;
+
+    float3 L = -light.Direction.xyz;
+ 
+    result.Diffuse = DoDiffuse( light, L, N );
+    result.Specular = DoSpecular( light, V, L, N );
+
+    return result;
+}
+
+// L : light vector
+float DoSpotCone( LightData light, float3 L )
+{
+    float minCos = cos( light.SpotAngles.x );
+    float maxCos = ( minCos + 1.0f ) / 2.0f;
+    float cosAngle = dot( light.Direction.xyz, -L );
+    return smoothstep( minCos, maxCos, cosAngle ); 
+}
+
+// V : view vector
+// P : position vector in worldspace
+// N : surface normal
+LightingResult DoSpotLight( LightData light, float3 V, float3 P, float3 N )
+{
+    LightingResult result;
+
+    float3 L = ( light.Position - P );
+    float distance = length(L);
+    L = L / distance;
+ 
+    float attenuation = DoAttenuation( light, distance );
+    float spotIntensity = DoSpotCone( light, L );
+ 
+    result.Diffuse = DoDiffuse( light, L, N ) * attenuation * spotIntensity;
+    result.Specular = DoSpecular( light, V, L, N ) * attenuation * spotIntensity;
+
+    return result;
+}
+
+// P : position vector in world space
+// N : normal
+LightingResult ComputeLighting( float3 P, float3 N )
+{
+    float3 V = normalize( gViewOrigin - P );
+
+    LightingResult totalResult = { {0, 0, 0}, {0, 0, 0} };
+
+    [unroll]
+    for( uint i = 0; i < gLightsNumber; ++i )
+    {
+        LightingResult result = { {0, 0, 0}, {0, 0, 0} };
+
+        if(gLights[i].Type == DIRECTIONAL_LIGHT)
+        {
+            result = DoDirectionalLight( gLights[i], V, P, N );
+        }
+        else if(gLights[i].Type == POINT_LIGHT)
+        {
+            result = DoPointLight( gLights[i], V, P, N );
+        }
+        else if(gLights[i].Type == SPOT_LIGHT)
+        {
+            result = DoSpotLight( gLights[i], V, P, N );
+        }
+
+        totalResult.Diffuse += result.Diffuse;
+        totalResult.Specular += result.Specular;
+    }
+
+    totalResult.Diffuse = saturate(totalResult.Diffuse);
+    totalResult.Specular = saturate(totalResult.Specular);
+ 
+    return totalResult;
+}
+
 PS_OUTPUT main( PS_INPUT IN )
 {
     PS_OUTPUT OUT;
 
     OUT.Scene  = float4(1.0f, 1.0f, 1.0f, 1.0f);
-    float3 lightDirection = normalize(-LightDirection);
-
     float3x3 TBN = float3x3(IN.Tangent.xyz, IN.BiTangent.xyz, IN.Normal.xyz);
 
     float3 albedo    = gDiffuse.rgb * gDiffuse.a;
-    float3 ambient   = gAmbient.rgb * gAmbient.a * (LightColor.rgb * LightColor.a);
+    float3 ambient   = gAmbient.rgb * gAmbient.a;
     float3 diffuse   = gDiffuse.rgb * gDiffuse.a;
     float3 emissive  = gEmissive.rgb * gEmissive.a;
     float3 specular  = gSpecular.rgb * gSpecular.a;
@@ -98,72 +231,32 @@ PS_OUTPUT main( PS_INPUT IN )
     float2 texCoords = IN.Texture;
 
     if(gUseTransparencyMap == 1)
-    {
         alpha = TransparencyMap.Sample( AnisotropicSampler, IN.Texture ).r;
-    }
-
     if(alpha <= gAlphaThreshold)
-    {
         discard;
-    }
-
     if(gUseParallaxMap == 1)
-    {
-        // TODO
-    }
-    
-    if(gUseNormalMap == 1)
-    {
-        normal = DoNormalMapping(TBN, NormalMap, AnisotropicSampler, IN.Texture);
-    }
-
-    if(gUseDiffuseMap == 1)
-    {
-        ambient = ambient * DiffuseMap.Sample(AnisotropicSampler, IN.Texture).rgb;
-        albedo = DiffuseMap.Sample(AnisotropicSampler, IN.Texture).rgb;
-        diffuse = albedo;
-    }
-
-    if(gUseEmissiveMap == 1)
-    {
-        emissive = emissive * EmissiveMap.Sample( AnisotropicSampler, IN.Texture ).rgb;
-    }
-
-    if(gUseSpecularMap == 1)
-    {
-        specular.rgb = SpecularMap.Sample(AnisotropicSampler, IN.Texture).xyz;
-    }
-
-    if(gUseBumpMap == 1)
-    {
-        normal = DoBumpMapping(TBN, BumpMap, AnisotropicSampler, IN.Texture, 1.0f);
-    }
-
+        { /* TODO */ }
     if(gUseReflectionMap == 1)
-    {
-        // TODO
-    }
-
+        { /* TODO */ }
+    if(gUseNormalMap == 1)
+        normal = DoNormalMapping(TBN, NormalMap, AnisotropicSampler, IN.Texture);
+    if(gUseBumpMap == 1)
+        normal = DoBumpMapping(TBN, BumpMap, AnisotropicSampler, IN.Texture, 1.0f);
+    if(gUseDiffuseMap == 1)
+        albedo = DiffuseMap.Sample(AnisotropicSampler, IN.Texture).rgb;
+    if(gUseSpecularMap == 1)
+        specular.rgb = SpecularMap.Sample(AnisotropicSampler, IN.Texture).xyz;
+    if(gUseEmissiveMap == 1)
+        emissive = emissive * EmissiveMap.Sample( AnisotropicSampler, IN.Texture ).rgb;
     if(gUseOcclusionMap == 1)
-    {
-        diffuse = diffuse * OcclusionMap.Sample(AnisotropicSampler, IN.Texture).rgb;
-    }
+        albedo = albedo * OcclusionMap.Sample(AnisotropicSampler, IN.Texture).rgb;
 
-    if(gLightsNumber == 3)
-    {
-        diffuse.x = 0.55;
-    }
+    LightingResult lit = ComputeLighting( IN.WorldPosition.xyz, normalize(normal) );
 
-    // Diffuse
-    float  diff = max(dot(lightDirection, normal), 0.0);
-    diffuse = (diff * diffuse.rgb);
+    diffuse = diffuse * lit.Diffuse.rgb;
+    specular = specular * lit.Specular.rgb;
 
-    // specular
-    float3 refVector = normalize(reflect(lightDirection, normal));
-    float3 specFactor = pow(max(dot(IN.ViewDirection, refVector), 0.0), gSpecularPower);
-    specular = (specFactor * specular.rgb);
-
-    OUT.Scene.rgb = ambient + diffuse + specular + emissive;
+    OUT.Scene.rgb = (ambient + emissive + diffuse + specular) * albedo;
     OUT.Scene.a = alpha;
 
     //OUT.Albedo = ComputeAlbedoBuffer(float4(albedo, 1.0f));

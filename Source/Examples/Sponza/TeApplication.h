@@ -90,10 +90,12 @@ namespace te
         HMesh _sponzaMesh;
         HRenderable _sponzaRenderable;
         HSkybox _skybox;
+        HLight _pointLight;
 
         HSceneObject _sceneCameraSO;
         HSceneObject _sceneSponzaSO;
         HSceneObject _sceneSkyboxSO;
+        HSceneObject _scenePointLightSO;
 #endif
     };
 }

@@ -10,7 +10,7 @@ namespace te
     }
 
     CLight::CLight(const HSceneObject& parent, LightType type, Color color,
-        float intensity, float range, bool castsShadows, Degree spotAngle, Degree spotFalloffAngle)
+        float intensity, float range, bool castsShadows, Degree spotAngle)
         : Component(parent, (UINT32)TID_CLight)
         , _type(type)
         , _color(color)

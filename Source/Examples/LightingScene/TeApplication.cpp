@@ -100,20 +100,20 @@ namespace te
         auto materialFunction = [&](MaterialData& material)
         {
             material.MaterialProp.UseDiffuseMap = true;
-            //material.MaterialProp.UseNormalMap = true;
-            //material.MaterialProp.UseSpecularMap = true;
+            material.MaterialProp.UseNormalMap = true;
+            material.MaterialProp.UseSpecularMap = true;
             material.MaterialProp.SpecularPower = 16.0f;
-            material.MaterialProp.Ambient = Color(1.0f, 1.0f, 1.0f, 0.75f);
+            material.MaterialProp.Ambient = Color(1.0f, 1.0f, 1.0f, 0.1f);
 
             material.DiffuseTexture = gResourceManager().Load<Texture>(material.DiffusePath, textureImportOptions);
-            //material.NormalTexture = gResourceManager().Load<Texture>(material.NormalPath, textureImportOptions);
-            //material.SpecularTexture = gResourceManager().Load<Texture>(material.SpecularPath, textureImportOptions);
+            material.NormalTexture = gResourceManager().Load<Texture>(material.NormalPath, textureImportOptions);
+            material.SpecularTexture = gResourceManager().Load<Texture>(material.SpecularPath, textureImportOptions);
 
             material.MaterialElement = Material::Create(_shader);
             material.MaterialElement->SetName(material.Name);
             material.MaterialElement->SetTexture("DiffuseMap", material.DiffuseTexture);
-            //material.MaterialElement->SetTexture("NormalMap", material.NormalTexture);
-            //material.MaterialElement->SetTexture("SpecularMap", material.SpecularTexture);
+            material.MaterialElement->SetTexture("NormalMap", material.NormalTexture);
+            material.MaterialElement->SetTexture("SpecularMap", material.SpecularTexture);
             material.MaterialElement->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
             material.MaterialElement->SetProperties(material.MaterialProp);
         };

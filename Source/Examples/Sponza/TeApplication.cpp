@@ -22,6 +22,7 @@
 #include "Components/TeCRenderable.h"
 #include "Components/TeCCameraFlyer.h"
 #include "Components/TeCSkybox.h"
+#include "Components/TeCLight.h"
 
 #include "Material/TeMaterial.h"
 #include "Material/TeShader.h"
@@ -413,7 +414,7 @@ namespace te
         auto materialFunction = [&](SponzaMaterialData& material)
         {
             material.MaterialProp.SpecularPower = 16.0f;
-            material.MaterialProp.Ambient = Color(1.0f, 1.0f, 1.0f, 0.75f);
+            material.MaterialProp.Ambient = Color(1.0f, 1.0f, 1.0f, 0.1f);
             material.MaterialProp.AlphaThreshold = material.AlphaTreshold;
             material.MaterialProp.Transparency = material.Opacity;
             material.MaterialProp.Emissive = material.EmissiveColor;
@@ -569,6 +570,12 @@ namespace te
         _sceneSponzaSO = SceneObject::Create("Sponza");
         _sponzaRenderable = _sceneSponzaSO->AddComponent<CRenderable>();
         _sponzaRenderable->SetMesh(_sponzaMesh);
+
+        _scenePointLightSO = SceneObject::Create("PointLight");
+        _pointLight = _scenePointLightSO->AddComponent<CLight>(LightType::Radial);
+        _pointLight->Initialize();
+
+        _scenePointLightSO->SetPosition(Vector3(0.0f, 2.0f, 0.0f));
 
         //_sponzaRenderable->SetMaterial(_materials[16].MaterialElement);
         

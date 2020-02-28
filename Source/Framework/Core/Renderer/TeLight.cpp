@@ -8,7 +8,7 @@ namespace te
         , _castsShadows(false)
         , _color(Color::White)
         , _attRadius(10.0f)
-        , _intensity(100.0f)
+        , _intensity(0.2f)
         , _spotAngle(45)
         , _shadowBias(0.5f)
     { }

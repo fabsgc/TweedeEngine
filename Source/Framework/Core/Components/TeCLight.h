@@ -15,8 +15,7 @@ namespace te
     {
     public:
         CLight(const HSceneObject& parent, LightType type = LightType::Directional, Color color = Color::White,
-            float intensity = 100.0f, float range = 1.0f, bool castsShadows = false, Degree spotAngle = Degree(45),
-            Degree spotFalloffAngle = Degree(40));
+            float intensity = 0.5f, float range = 1.0f, bool castsShadows = false, Degree spotAngle = Degree(45));
         virtual ~CLight();
 
         /** @copydoc Component::Initialize */

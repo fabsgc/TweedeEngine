@@ -1,6 +1,10 @@
 #define STANDARD_FORWARD_MAX_INSTANCED_BLOCK 128
 #define MAX_LIGHTS 16
 
+#define DIRECTIONAL_LIGHT 0.0
+#define POINT_LIGHT 1.0
+#define SPOT_LIGHT 2.0
+
 struct PerInstanceData
 {
     matrix gMatWorld;
@@ -9,6 +13,18 @@ struct PerInstanceData
     matrix gMatInvWorldNoScale;
     matrix gMatPrevWorld;
     uint   gLayer;
+};
+
+struct LightData
+{
+    float3 Color;
+    float Type;
+    float3 Position;
+    float Intensity;
+    float3 Direction;
+    float AttenuationRadius;
+    float3 SpotAngles;
+    float BoundsRadius;
 };
 
 struct VS_INPUT
@@ -56,18 +72,6 @@ struct PS_OUTPUT
     float4 Normal : SV_Target1;
     float4 Emissive : SV_Target2;
     //float4 Velocity : SV_Target5;
-};
-
-struct LightData
-{
-    float3 Color;
-    float Type;
-    float3 Position;
-    float Intensity;
-    float3 Direction;
-    float AttenuationRadius;
-    float3 SpotAngles;
-    float BoundsRadius;
 };
 
 float2 FlipUV(float2 coord)
