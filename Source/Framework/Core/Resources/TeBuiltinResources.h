@@ -87,7 +87,7 @@ namespace te
             Vector3 Direction;
             float AttenuationRadius;
             Vector3 SpotAngles;
-            float Padding;
+            float BoundsRadius;
         };
 
     private:

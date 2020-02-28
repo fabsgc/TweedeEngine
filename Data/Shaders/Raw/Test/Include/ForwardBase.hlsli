@@ -67,7 +67,7 @@ struct LightData
     float3 Direction;
     float AttenuationRadius;
     float3 SpotAngles;
-    float Padding;
+    float BoundsRadius;
 };
 
 float2 FlipUV(float2 coord)

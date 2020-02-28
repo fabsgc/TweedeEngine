@@ -18,11 +18,10 @@ namespace te
         /**
          * Updates the provided buffer with the data from the provided matrices.
          *
-         *  @param[in]	buffer	      Buffer which will be filled with data
          *  @param[in]	lightNumber	  Number of lights to be rendered for this pass
-         *  @param[in]	lights  	  Vector of lights data
+         *  @param[in]	lights  	  Array of lights data
          */
-        static void UpdatePerLights(SPtr<GpuParamBlockBuffer>& buffer, UINT8 lightNumber, Vector<LightData>& lights);
+        static void UpdatePerLights(const LightData* (&lights)[STANDARD_FORWARD_MAX_NUM_LIGHTS], UINT32 lightNumber);
     };
 
     /**	Renderer information specific to a single light. */
@@ -64,6 +63,19 @@ namespace te
          * Update() must have been called with most recent scene/view information before calling this method.
          */
         void GatherInfluencingLights(const Bounds& bounds, const LightData* (&output)[STANDARD_FORWARD_MAX_NUM_LIGHTS],
+            Vector3I& counts) const;
+
+        /**
+         * Scans the list of lights visible in the view frustum. A maximum number of STANDARD_FORWARD_MAX_NUM_LIGHTS will be output. 
+         * If there are more influencing lights, only the most important ones will be returned.
+         *
+         * The lights will be output in the following order: directional, radial, spot. @p counts will contain the number
+         * of directional lights (component 'x'), number of radial lights (component 'y') and number of spot lights
+         * (component 'z');
+         *
+         * Update() must have been called with most recent scene/view information before calling this method.
+         */
+        void GatherLights(const LightData* (&output)[STANDARD_FORWARD_MAX_NUM_LIGHTS],
             Vector3I& counts) const;
 
         /** Returns the number of directional lights in the lights buffer. */

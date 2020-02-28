@@ -160,11 +160,11 @@ namespace te
         _pointLight->Initialize();
 
         _sceneSpotLightSO = SceneObject::Create("SpotLight");
-        _spotLight = _scenePointLightSO->AddComponent<CLight>(LightType::Spot);
+        _spotLight = _sceneSpotLightSO->AddComponent<CLight>(LightType::Spot);
         _spotLight->Initialize();
 
         _sceneDirectionalLightSO = SceneObject::Create("DirectionalLight");
-        _directionalLight = _scenePointLightSO->AddComponent<CLight>(LightType::Directional);
+        _directionalLight = _sceneDirectionalLightSO->AddComponent<CLight>(LightType::Directional);
         _directionalLight->Initialize();
 
         _sceneSkyboxSO = SceneObject::Create("Skybox");

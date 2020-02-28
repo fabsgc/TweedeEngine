@@ -9,10 +9,15 @@ namespace te
 
     static const UINT32 LIGHT_DATA_BUFFER_INCREMENT = 16 * sizeof(LightData);
 
-    void PerLightsBuffer::UpdatePerLights(SPtr<GpuParamBlockBuffer>& buffer, UINT8 lightNumber, Vector<LightData>& lights)
+    void PerLightsBuffer::UpdatePerLights(const LightData* (&lights)[STANDARD_FORWARD_MAX_NUM_LIGHTS], UINT32 lightNumber)
     {
         if (!gPerLightsParamBuffer)
             gPerLightsParamBuffer = gPerLightsParamDef.CreateBuffer();
+
+        gPerLightsParamDef.gLightsNumber.Set(gPerLightsParamBuffer, lightNumber);
+
+        for (size_t i = 0; i < lightNumber; i++)
+            gPerLightsParamDef.gLights.Set(gPerLightsParamBuffer, const_cast<LightData&>(*lights[i]), (UINT32)i);
     }
 
     RendererLight::RendererLight(Light* light)
@@ -24,6 +29,22 @@ namespace te
         Radian spotAngle = Math::Clamp(_internal->GetSpotAngle() * 0.5f, Degree(0), Degree(89));
         Color color = _internal->GetColor();
 
+        float type = 0.0f;
+        switch (_internal->GetType())
+        {
+        case LightType::Directional:
+            type = 0.0;
+            break;
+        case LightType::Radial:
+            type = 1.0f;
+            break;
+        case LightType::Spot:
+            type = 2.0f;
+            break;
+        default:
+            break;
+        }
+
         const Transform& tfrm = _internal->GetTransform();
         output.Position = tfrm.GetPosition();
         output.Direction = -tfrm.GetRotation().ZAxis();
@@ -33,6 +54,8 @@ namespace te
         output.SpotAngles.z = 1.0f / std::max(1.0f - output.SpotAngles.y, 0.001f);
         output.AttenuationRadius = _internal->GetAttenuationRadius();
         output.Color = Vector3(color.r, color.g, color.b);
+        output.BoundsRadius = _internal->GetBounds().GetRadius();
+        output.Type = type;
     }
 
     VisibleLightData::VisibleLightData()
@@ -122,6 +145,112 @@ namespace te
     void VisibleLightData::GatherInfluencingLights(const Bounds& bounds,
         const LightData* (&output)[STANDARD_FORWARD_MAX_NUM_LIGHTS], Vector3I& counts) const
     {
-        // TODO
+        UINT32 outputIndices[STANDARD_FORWARD_MAX_NUM_LIGHTS];
+        UINT32 numInfluencingLights = 0;
+
+        UINT32 numDirLights = GetNumDirLights();
+        for (UINT32 i = 0; i < numDirLights; i++)
+        {
+            if (numInfluencingLights >= STANDARD_FORWARD_MAX_NUM_LIGHTS)
+                return;
+
+            outputIndices[numInfluencingLights] = i;
+            numInfluencingLights++;
+        }
+
+        UINT32 pointLightOffset = numInfluencingLights;
+
+        float distances[STANDARD_FORWARD_MAX_NUM_LIGHTS];
+        for (UINT32 i = 0; i < STANDARD_FORWARD_MAX_NUM_LIGHTS; i++)
+            distances[i] = std::numeric_limits<float>::max();
+
+        // Note: This is an ad-hoc way of evaluating light influence, a better way might be wanted
+        UINT32 numLights = (UINT32)_visibleLightData.size();
+        UINT32 furthestLightIdx = (UINT32)-1;
+        float furthestDistance = 0.0f;
+        for (UINT32 j = numDirLights; j < numLights; j++)
+        {
+            const LightData* lightData = &_visibleLightData[j];
+
+            Sphere lightSphere(lightData->Position, lightData->BoundsRadius);
+            if (bounds.GetSphere().Intersects(lightSphere))
+            {
+                float distance = bounds.GetSphere().GetCenter().SquaredDistance(lightData->Position);
+
+                // See where in the array can we fit the light
+                if (numInfluencingLights < STANDARD_FORWARD_MAX_NUM_LIGHTS)
+                {
+                    outputIndices[numInfluencingLights] = j;
+                    distances[numInfluencingLights] = distance;
+
+                    if (distance > furthestDistance)
+                    {
+                        furthestLightIdx = numInfluencingLights;
+                        furthestDistance = distance;
+                    }
+
+                    numInfluencingLights++;
+                }
+                else if (distance < furthestDistance)
+                {
+                    outputIndices[furthestLightIdx] = j;
+                    distances[furthestLightIdx] = distance;
+
+                    furthestDistance = distance;
+                    for (UINT32 k = 0; k < STANDARD_FORWARD_MAX_NUM_LIGHTS; k++)
+                    {
+                        if (distances[k] > furthestDistance)
+                        {
+                            furthestDistance = distances[k];
+                            furthestLightIdx = k;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Output actual light data, sorted by type
+        counts = Vector3I(0, 0, 0);
+
+        for (UINT32 i = 0; i < pointLightOffset; i++)
+        {
+            output[i] = &_visibleLightData[outputIndices[i]];
+            counts.x += 1;
+        }
+
+        UINT32 outputIdx = pointLightOffset;
+        UINT32 spotLightIdx = GetNumDirLights() + GetNumRadialLights();
+        for (UINT32 i = pointLightOffset; i < numInfluencingLights; i++)
+        {
+            bool isSpot = outputIndices[i] >= spotLightIdx;
+            if (isSpot)
+                continue;
+
+            output[outputIdx++] = &_visibleLightData[outputIndices[i]];
+            counts.y += 1;
+        }
+
+        for (UINT32 i = pointLightOffset; i < numInfluencingLights; i++)
+        {
+            bool isSpot = outputIndices[i] >= spotLightIdx;
+            if (!isSpot)
+                continue;
+
+            output[outputIdx++] = &_visibleLightData[outputIndices[i]];
+            counts.z += 1;
+        }
+    }
+    
+    void VisibleLightData::GatherLights(const LightData* (&output)[STANDARD_FORWARD_MAX_NUM_LIGHTS],
+        Vector3I& counts) const
+    {
+        for (UINT32 i = 0; i < _visibleLightData.size(); i++)
+        {
+            output[i] = &_visibleLightData[i];
+
+            if ((UINT32)_visibleLightData[i].Type == 0) counts.x++;
+            if ((UINT32)_visibleLightData[i].Type == 1) counts.y++;
+            if ((UINT32)_visibleLightData[i].Type == 2) counts.z++;
+        }
     }
 }

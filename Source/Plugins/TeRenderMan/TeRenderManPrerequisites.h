@@ -58,7 +58,7 @@ namespace te
         Vector3 Direction;
         float AttenuationRadius;
         Vector3 SpotAngles;
-        float Padding;
+        float BoundsRadius;
     };
 
     TE_PARAM_BLOCK_BEGIN(PerCameraParamDef)

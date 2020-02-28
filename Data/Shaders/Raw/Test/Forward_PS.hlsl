@@ -149,6 +149,11 @@ PS_OUTPUT main( PS_INPUT IN )
         diffuse = diffuse * OcclusionMap.Sample(AnisotropicSampler, IN.Texture).rgb;
     }
 
+    if(gLightsNumber == 3)
+    {
+        diffuse.x = 0.55;
+    }
+
     // Diffuse
     float  diff = max(dot(lightDirection, normal), 0.0);
     diffuse = (diff * diffuse.rgb);

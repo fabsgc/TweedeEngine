@@ -15,13 +15,17 @@ namespace te
     UnorderedMap<String, RenderCompositor::NodeType*> RenderCompositor::_nodeTypes;
 
     /** Renders all elements in a render queue. */
-    void RenderQueueElements(const Vector<RenderQueueElement>& elements, const RendererView& view, const SceneInfo& scene)
+    void RenderQueueElements(const Vector<RenderQueueElement>& elements, const RendererView& view, const SceneInfo& scene, const RendererViewGroup& viewGroup)
     {
+        RenderAPI& rapi = RenderAPI::Instance();
         SPtr<Material> lastMaterial = nullptr;
         UINT32 gpuParamsBindFlags = 0;
 
         // First of all, we need to construct light buffer, using all visible lights
-        // TODO Lights
+        Vector3I lightCounts;
+        const LightData* lights[STANDARD_FORWARD_MAX_NUM_LIGHTS];
+        viewGroup.GetVisibleLightData().GatherLights(lights, lightCounts);
+        PerLightsBuffer::UpdatePerLights(lights, lightCounts.x + lightCounts.y + lightCounts.z);
 
         for(auto& entry : elements)
         {
@@ -33,9 +37,14 @@ namespace te
             // We also set camera buffer view here (because it will set PerCameraBuffer correctly for the current pass on this material only once)
             if (!lastMaterial || lastMaterial != entry.RenderElem->MaterialElem)
             {
-                RenderAPI& rapi = RenderAPI::Instance();
                 gpuParamsBindFlags = GPU_BIND_ALL;
                 lastMaterial = entry.RenderElem->MaterialElem;
+
+                entry.RenderElem->GpuParamsElem[entry.PassIdx]
+                    ->SetParamBlockBuffer("PerLightsBuffer", gPerLightsParamBuffer);
+
+                rapi.SetGpuParams(entry.RenderElem->GpuParamsElem[entry.PassIdx],
+                    GPU_BIND_PARAM_BLOCK, GPU_BIND_PARAM_BLOCK_LISTED, { "PerLightsBuffer" });
 
                 entry.RenderElem->GpuParamsElem[entry.PassIdx]
                     ->SetParamBlockBuffer("PerCameraBuffer", view.GetPerViewBuffer());
@@ -334,8 +343,8 @@ namespace te
         // Render all visible opaque elements
         RenderQueue* opaqueElements = inputs.View.GetOpaqueQueue().get();
         RenderQueue* transparentElements = inputs.View.GetTransparentQueue().get();
-        RenderQueueElements(opaqueElements->GetSortedElements(), inputs.View, inputs.Scene);
-        RenderQueueElements(transparentElements->GetSortedElements(), inputs.View, inputs.Scene);
+        RenderQueueElements(opaqueElements->GetSortedElements(), inputs.View, inputs.Scene, inputs.ViewGroup);
+        RenderQueueElements(transparentElements->GetSortedElements(), inputs.View, inputs.Scene, inputs.ViewGroup);
 
         // Make sure that any compute shaders are able to read g-buffer by unbinding it
         rapi.SetRenderTarget(nullptr);
