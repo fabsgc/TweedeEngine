@@ -467,7 +467,6 @@ namespace te
 
     void RCNodeTonemapping::Render(const RenderCompositorNodeInputs& inputs)
     {
-        const RendererViewProperties& viewProps = inputs.View.GetProperties();
         const RenderSettings& settings = inputs.View.GetRenderSettings();
         if (!settings.EnableTonemapping || !settings.EnableHDR)
             return;
