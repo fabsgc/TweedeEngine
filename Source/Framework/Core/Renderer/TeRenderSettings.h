@@ -52,7 +52,7 @@ namespace te
         MotionBlurSettings() = default;
 
         /** Enables or disables the motion blur effect. */
-        bool Enabled = false;
+        bool Enabled = true;
     };
 
     /** Settings that control the bloom effect. Bloom adds an extra highlight to bright areas of the scene. */
@@ -61,7 +61,7 @@ namespace te
         BloomSettings() = default;
 
         /** Enables or disables the bloom effect. */
-        bool Enabled = false;
+        bool Enabled = true;
     };
 
     /** Various options that control shadow rendering for a specific view. */
@@ -89,7 +89,7 @@ namespace te
          *
          * @see	enableAutoExposure
          */
-         AutoExposureSettings AutoExposure;
+         AutoExposureSettings AutoExposure; // TODO not used currently
 
         /**
          * Determines should the image be tonemapped. Tonemapping converts an HDR image into LDR image by applying
@@ -130,14 +130,14 @@ namespace te
          * yield brighter image. Allows you to customize exposure manually, applied on top of eye adaptation exposure (if
          * enabled). In range [-8, 8].
          */
-        float ExposureScale = 1.25f;
+        float ExposureScale = 1.1f;
 
         /**
          * Gamma value to adjust the image for. Larger values result in a brighter image. When tonemapping is turned
          * on the best gamma curve for the output device is chosen automatically and this value can by used to merely tweak
          * that curve. If tonemapping is turned off this is the exact value of the gamma curve that will be applied.
          */
-        float Gamma = 2.2f;
+        float Gamma = 1.25f;
 
         /**
          * High dynamic range allows light intensity to be more correctly recorded when rendering by allowing for a larger

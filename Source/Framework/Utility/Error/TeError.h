@@ -40,7 +40,7 @@
             std::cout << "############################################: " << std::endl;                 \
             TE_ASSERT_ERROR_ERROR(condition);                                                           \
         }                                                                                               \
-    }                                                                                   
+    }
 #endif
 
 #ifndef TE_ASSERT_ERROR_SHORT
@@ -65,5 +65,5 @@
             std::cout << "############################################: " << std::endl;                 \
             TE_ASSERT_ERROR_ERROR(condition);                                                           \
         }                                                                                               \
-    }                                                                                   
+    }
 #endif

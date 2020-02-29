@@ -26,7 +26,7 @@
             std::cout << "Time: " << __TIME__ << std::endl;                                      \
             std::cout << "Message: " << message << std::endl;                                    \
             std::cout << "############################################: " << std::endl;          \
-        }                                                                                   
+        }
 #   endif
 
 #   ifndef TE_PRINT

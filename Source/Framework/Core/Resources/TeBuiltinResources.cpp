@@ -28,6 +28,7 @@ namespace te
         InitShaderBlit();
         InitShaderSkybox();
         InitShaderFXAA();
+        InitShaderToneMapping();
         InitDefaultMaterial();
 #endif
     }
@@ -49,6 +50,8 @@ namespace te
             return _shaderSkybox;
         case BuiltinShader::FXAA:
             return _shaderFXAA;
+        case BuiltinShader::ToneMapping:
+            return _shaderToneMapping;
         default:
             break;
         }
@@ -143,6 +146,24 @@ namespace te
             _pixelShaderFXAADesc.Language = "hlsl";
             _pixelShaderFXAADesc.IncludePath = SHADERS_FOLDER + String("Raw/Test/");
             _pixelShaderFXAADesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("Raw/Test/ToneMapping_VS.hlsl"));
+            _vertexShaderToneMappingDesc.Type = GPT_VERTEX_PROGRAM;
+            _vertexShaderToneMappingDesc.EntryPoint = "main";
+            _vertexShaderToneMappingDesc.Language = "hlsl";
+            _vertexShaderToneMappingDesc.IncludePath = SHADERS_FOLDER + String("Raw/Test/");
+            _vertexShaderToneMappingDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("Raw/Test/ToneMapping_PS.hlsl"));
+            _pixelShaderToneMappingDesc.Type = GPT_PIXEL_PROGRAM;
+            _pixelShaderToneMappingDesc.EntryPoint = "main";
+            _pixelShaderToneMappingDesc.Language = "hlsl";
+            _pixelShaderToneMappingDesc.IncludePath = SHADERS_FOLDER + String("Raw/Test/");
+            _pixelShaderToneMappingDesc.Source = shaderFile.GetAsString();
         }
     }
     void BuiltinResources::InitStates()
@@ -325,11 +346,33 @@ namespace te
         }
 
         {
-            SHADER_DATA_PARAM_DESC gInvTexSize("gInvTexSize", "gInvTexSize", GPDT_FLOAT2);
+            SHADER_DATA_PARAM_DESC gInvTexSizeDesc("gInvTexSize", "gInvTexSize", GPDT_FLOAT2);
+            SHADER_OBJECT_PARAM_DESC bilinearSamplerDesc("BilinearSampler", "BilinearSampler", GPOT_SAMPLER2D);
             SHADER_OBJECT_PARAM_DESC sourceMapDesc("SourceMap", "SourceMap", GPOT_TEXTURE2D);
 
-            _FXAAShaderDesc.AddParameter(gInvTexSize);
+            _FXAAShaderDesc.AddParameter(gInvTexSizeDesc);
+            _FXAAShaderDesc.AddParameter(bilinearSamplerDesc);
             _FXAAShaderDesc.AddParameter(sourceMapDesc);
+        }
+
+        {
+            SHADER_DATA_PARAM_DESC gGammaDesc("gGamma", "gGamma", GPDT_FLOAT1);
+            SHADER_DATA_PARAM_DESC gExposureDesc("gExposure", "gExposure", GPDT_FLOAT1);
+            SHADER_DATA_PARAM_DESC gMSAACountDesc("gMSAACount", "gMSAACount", GPDT_INT1);
+
+            SHADER_OBJECT_PARAM_DESC bilinearSamplerDesc("BilinearSampler", "BilinearSampler", GPOT_SAMPLER2D);
+
+            SHADER_OBJECT_PARAM_DESC sourceMapDesc("SourceMap", "SourceMap", GPOT_TEXTURE2D);
+            SHADER_OBJECT_PARAM_DESC SourceMapMSDesc("SourceMapMS", "SourceMapMS", GPOT_RWTEXTURE2DMS);
+
+            _toneMappingShaderDesc.AddParameter(gGammaDesc);
+            _toneMappingShaderDesc.AddParameter(gExposureDesc);
+            _toneMappingShaderDesc.AddParameter(gMSAACountDesc);
+
+            _toneMappingShaderDesc.AddParameter(bilinearSamplerDesc);
+
+            _toneMappingShaderDesc.AddParameter(sourceMapDesc);
+            _toneMappingShaderDesc.AddParameter(SourceMapMSDesc);
         }
     }
 
@@ -449,6 +492,31 @@ namespace te
         shaderDesc.Techniques.push_back(technique.GetInternalPtr());
 
         _shaderFXAA = Shader::Create("FXAA", shaderDesc);
+    }
+
+    void BuiltinResources::InitShaderToneMapping()
+    {
+        PASS_DESC passDesc;
+        passDesc.BlendStateDesc = _blendOpaqueStateDesc;
+        passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
+        passDesc.RasterizerStateDesc = _rasterizerStateDesc;
+        passDesc.VertexProgramDesc = _vertexShaderToneMappingDesc;
+        passDesc.PixelProgramDesc = _pixelShaderToneMappingDesc;
+
+        passDesc.DepthStencilStateDesc.StencilEnable = false;
+        passDesc.DepthStencilStateDesc.DepthReadEnable = false;
+        passDesc.DepthStencilStateDesc.DepthWriteEnable = false;
+
+        passDesc.RasterizerStateDesc.cullMode = CULL_NONE;
+
+        HPass pass = Pass::Create(passDesc);
+        HTechnique technique = Technique::Create("hlsl", { pass.GetInternalPtr() });
+        technique->Compile();
+
+        SHADER_DESC shaderDesc = _toneMappingShaderDesc;
+        shaderDesc.Techniques.push_back(technique.GetInternalPtr());
+
+        _shaderToneMapping = Shader::Create("ToneMapping", shaderDesc);
     }
 
     void BuiltinResources::InitDefaultMaterial()

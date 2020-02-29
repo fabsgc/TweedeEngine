@@ -8,6 +8,7 @@
 #include "Renderer/TeRendererUtility.h"
 #include "Renderer/TeSkyboxMat.h"
 #include "Renderer/TeFXAAMat.h"
+#include "Renderer/TeToneMappingMat.h"
 #include "TeRendererLight.h"
 
 namespace te
@@ -222,7 +223,7 @@ namespace te
         bool needsVelocity = inputs.View.RequiresVelocityWrites();
 
         // Note: Consider customizable formats. e.g. for testing if quality can be improved with higher precision normals.
-        SceneTex = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA8, width, height, TU_RENDERTARGET,
+        SceneTex = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA16F, width, height, TU_RENDERTARGET,
             numSamples, true));
         //SpecularTex = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA8, width, height, TU_RENDERTARGET,
         //    numSamples, true));
@@ -373,6 +374,8 @@ namespace te
         Skybox* skybox = nullptr;
         if (inputs.View.GetRenderSettings().EnableSkybox)
             skybox = inputs.Scene.SkyboxElem;
+        else
+            return;
 
         SPtr<Texture> radiance = skybox ? skybox->GetTexture() : nullptr;
 
@@ -421,7 +424,7 @@ namespace te
         if (!_output[_currentIdx])
         {
             _output[_currentIdx] = gGpuResourcePool().Get(
-                POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA8, width, height, TU_RENDERTARGET, samples, false));
+                POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA16F, width, height, TU_RENDERTARGET, samples, false));
         }
 
         output = _output[_currentIdx]->RenderTex;
@@ -463,7 +466,32 @@ namespace te
     // ############# TONE MAPPING
 
     void RCNodeTonemapping::Render(const RenderCompositorNodeInputs& inputs)
-    { }
+    {
+        const RendererViewProperties& viewProps = inputs.View.GetProperties();
+        const RenderSettings& settings = inputs.View.GetRenderSettings();
+        if (!settings.EnableTonemapping || !settings.EnableHDR)
+            return;
+
+        RCNodeForwardPass* forwardPassNode = static_cast<RCNodeForwardPass*>(inputs.InputNodes[0]);
+        RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[1]);
+
+        SPtr<RenderTexture> ppOutput;
+        SPtr<Texture> ppLastFrame;
+        postProcessNode->GetAndSwitch(inputs.View, ppOutput, ppLastFrame);
+
+        ToneMappingMat* toneMapping = ToneMappingMat::Get();
+
+        if (ppLastFrame)
+        {
+            auto& texProps = ppLastFrame->GetProperties();
+            toneMapping->Execute(ppLastFrame, ppOutput, texProps.GetNumSamples(), settings.Gamma, settings.ExposureScale);
+        }
+        else
+        {
+            auto& texProps = forwardPassNode->SceneTex->Tex->GetProperties();
+            toneMapping->Execute(forwardPassNode->SceneTex->Tex, ppOutput, texProps.GetNumSamples(), settings.Gamma, settings.ExposureScale);
+        }
+    }
 
     void RCNodeTonemapping::Clear()
     { }
@@ -471,8 +499,9 @@ namespace te
     Vector<String> RCNodeTonemapping::GetDependencies(const RendererView& view)
     {
         Vector<String> deps = {
-            RCNodeMotionBlur::GetNodeId(),
-            RCNodePostProcess::GetNodeId()
+            RCNodeForwardPass::GetNodeId(),
+            RCNodePostProcess::GetNodeId(),
+            RCNodeMotionBlur::GetNodeId()
         };
 
         if (view.GetRenderSettings().Bloom.Enabled)
@@ -534,8 +563,11 @@ namespace te
 
         // Note: I could skip executing FXAA over DOF and motion blurred pixels
         FXAAMat* fxaa = FXAAMat::Get();
-        fxaa->Execute(forwardPassNode->SceneTex->Tex, ppOutput); 
-        // TODO when tonemapping will be done, we will need to use ppLastFrame (output of previous post process pass)
+
+        if(ppLastFrame)
+            fxaa->Execute(ppLastFrame, ppOutput);
+        else
+            fxaa->Execute(forwardPassNode->SceneTex->Tex, ppOutput);
     }
 
     void RCNodeFXAA::Clear()

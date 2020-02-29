@@ -202,6 +202,16 @@ namespace te
     void RendererView::DetermineVisible(const Vector<RendererLight>& lights, const Vector<Sphere>& bounds,
         LightType lightType, Vector<bool>* visibility)
     {
+        if (!_renderSettings->EnableLighting)
+        {
+            for (UINT32 i = 0; i < (UINT32)lights.size(); i++)
+            {
+                bool visible = (*visibility)[i];
+
+                (*visibility)[i] = false;
+            }
+        }
+
         // Special case for directional lights, they're always visible
         if (lightType == LightType::Directional)
         {

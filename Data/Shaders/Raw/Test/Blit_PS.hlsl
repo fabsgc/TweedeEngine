@@ -10,11 +10,6 @@ struct PS_INPUT
     float2 Texture : TEXCOORD0;
 };
 
-struct PS_OUTPUT
-{
-    float4 Color : SV_Target0;
-};
-
 SamplerState BilinearSampler : register(s0);
 
 Texture2D SourceMap : register(t0);

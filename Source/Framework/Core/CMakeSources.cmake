@@ -78,6 +78,7 @@ set (TE_CORE_INC_RENDERER
     "Core/Renderer/TeBlitMat.h"
     "Core/Renderer/TeSkyboxMat.h"
     "Core/Renderer/TeFXAAMat.h"
+    "Core/Renderer/TeToneMappingMat.h"
 )
 set (TE_CORE_SRC_RENDERER
     "Core/Renderer/TeRenderer.cpp"
@@ -96,6 +97,7 @@ set (TE_CORE_SRC_RENDERER
     "Core/Renderer/TeBlitMat.cpp"
     "Core/Renderer/TeSkyboxMat.cpp"
     "Core/Renderer/TeFXAAMat.cpp"
+    "Core/Renderer/TeToneMappingMat.cpp"
 )
 
 set (TE_CORE_INC_SCENE

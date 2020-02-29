@@ -534,7 +534,7 @@ namespace te
         textureCubeMapImportOptions->Format = PF_RGBA8;
         textureCubeMapImportOptions->IsCubemap = true;
 
-        _loadedSkyboxTexture = gResourceManager().Load<Texture>("Data/Textures/Skybox/sky_night_large.jpeg", textureCubeMapImportOptions);
+        _loadedSkyboxTexture = gResourceManager().Load<Texture>("Data/Textures/Skybox/sky_night_2_large.jpeg", textureCubeMapImportOptions);
 #endif
     }
 
@@ -591,6 +591,7 @@ namespace te
             _scenePointLightSOs.push_back(SceneObject::Create("PointLight"));
             HSceneObject lightSO = _scenePointLightSOs.back();
             HLight light = lightSO->AddComponent<CLight>(LightType::Radial);
+            light->SetIntensity(0.9f);
             light->Initialize();
             lightSO->SetPosition(Vector3(0.0f, -0.5f, i * 15.0f));
 

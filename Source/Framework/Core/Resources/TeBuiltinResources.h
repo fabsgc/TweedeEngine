@@ -29,8 +29,10 @@ namespace te
         Blit,
         /** Shader used to render a skybox in a scene */
         Skybox,
-        /** Shader used to FXAA post process */
-        FXAA
+        /** Shader used for FXAA post process */
+        FXAA,
+        /** Shader used for tone mapping post process */
+        ToneMapping
     };
 
     /** Types of builtin shaders that are always available. */
@@ -109,6 +111,7 @@ namespace te
         void InitShaderBlit();
         void InitShaderSkybox();
         void InitShaderFXAA();
+        void InitShaderToneMapping();
 
         void InitDefaultMaterial();
 
@@ -118,6 +121,7 @@ namespace te
         HShader _shaderBlit;
         HShader _shaderSkybox;
         HShader _shaderFXAA;
+        HShader _shaderToneMapping;
 
         SPtr<SamplerState> _anisotropicSamplerState = nullptr;
         SPtr<SamplerState> _bilinearSamplerState = nullptr;
@@ -126,6 +130,7 @@ namespace te
         SHADER_DESC _blitShaderDesc;
         SHADER_DESC _skyboxShaderDesc;
         SHADER_DESC _FXAAShaderDesc;
+        SHADER_DESC _toneMappingShaderDesc;
 
         GPU_PROGRAM_DESC _vertexShaderForwardDesc;
         GPU_PROGRAM_DESC _pixelShaderForwardDesc;
@@ -138,6 +143,9 @@ namespace te
 
         GPU_PROGRAM_DESC _vertexShaderFXAADesc;
         GPU_PROGRAM_DESC _pixelShaderFXAADesc;
+
+        GPU_PROGRAM_DESC _vertexShaderToneMappingDesc;
+        GPU_PROGRAM_DESC _pixelShaderToneMappingDesc;
 
         BLEND_STATE_DESC _blendOpaqueStateDesc;
         BLEND_STATE_DESC _blendTransparentStateDesc;

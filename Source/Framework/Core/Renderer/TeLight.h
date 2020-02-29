@@ -119,8 +119,9 @@ namespace te
          * @param[in]	spotFalloffAngle	Spot light angle at which falloff starts. Must be smaller than total angle.
          */
         static SPtr<Light> Create(LightType type = LightType::Directional, Color color = Color::White,
-            float intensity = 100.0f, float attRadius = 10.0f, float linearAtt = 0.08f, float quadraticAtt = 0.0f, bool castsShadows = false,
-            Degree spotAngle = Degree(45), Degree spotFalloffAngle = Degree(40));
+            float intensity = DefaultIntensity, float attRadius = DefaultAttRadius, float linearAtt = DefaultLinearAtt, 
+            float quadraticAtt = DefaultQuadraticAtt, bool castsShadows = DefaultCastShadow,
+            Degree spotAngle = Degree(DefaultSpotAngle));
 
         /** @copydoc CoreObject::_markCoreDirty */
         void _markCoreDirty(ActorDirtyFlag flag = ActorDirtyFlag::Everything) override;
@@ -130,7 +131,6 @@ namespace te
 
     public:
         static bool DefaultCastShadow;
-        static Color DefaultColor;
         static float DefaultAttRadius;
         static float DefaultLinearAtt;
         static float DefaultQuadraticAtt;
@@ -141,7 +141,7 @@ namespace te
     protected:
         Light();
         Light(LightType type, Color color, float intensity, float attRadius, float linearAtt, 
-            float quadraticAtt, bool castsShadows, Degree spotAngle, Degree spotFalloffAngle);
+            float quadraticAtt, bool castsShadows, Degree spotAngle);
 
         /** Updates the internal bounds for the light. Call this whenever a property affecting the bounds changes. */
         void UpdateBounds();

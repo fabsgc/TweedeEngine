@@ -66,9 +66,20 @@ float4 ComputeNormalBuffer(float4 normal)
     return normal;
 }
 
-float4 ComputeEmissiveBuffer(float4 emissive)
+float4 ComputeEmissiveBuffer(float4 color, float4 emissive)
 {
-    return emissive; // TODO
+    if(any(emissive != (float4)0))
+    {
+        return emissive;
+    }
+    else
+    {
+        float brightness = dot(color.rgb, float3(0.4126, 0.7152, 0.0722));
+        if(brightness > 0.95)
+            return float4(color.rgb, 1.0);
+        else
+            return (float4)0;
+    }
 }
 
 float4 ComputeVelocityBuffer(float4 velocity)
@@ -227,6 +238,11 @@ PS_OUTPUT main( PS_INPUT IN )
     float  alpha     = gTransparency;
     float2 texCoords = IN.Texture;
 
+    if(gIndexOfRefraction != 1.0)
+        { /* TODO */ }
+    if(gReflection != 0.0)
+        { /* TODO */ }
+
     if(gUseTransparencyMap == 1)
         alpha = TransparencyMap.Sample( AnisotropicSampler, IN.Texture ).r;
     if(alpha <= gAlphaThreshold)
@@ -259,7 +275,7 @@ PS_OUTPUT main( PS_INPUT IN )
     //OUT.Albedo = ComputeAlbedoBuffer(float4(albedo, 1.0f));
     //OUT.Specular = ComputeSpecularBuffer(float4(specular, 1.0f));
     OUT.Normal = ComputeNormalBuffer(float4(normal, 0.0f));
-    OUT.Emissive = ComputeEmissiveBuffer(float4(emissive, 0.0));
+    OUT.Emissive = ComputeEmissiveBuffer(OUT.Scene, float4(emissive, 0.0));
     //OUT.Velocity = ComputeVelocityBuffer((float4)0);
 
     return OUT;
