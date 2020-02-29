@@ -203,7 +203,7 @@ namespace te
     void Matrix3::Bidiagonalize(Matrix3& matA, Matrix3& matL, Matrix3& matR)
     {
         float v[3], w[3];
-        float length, sign, t1, invT1, t2;
+        float length, sign, t1, t2;
         bool bIdentity;
 
         // Map first column to (*,0,0)
@@ -212,7 +212,7 @@ namespace te
         {
             sign = (matA[0][0] > 0.0f ? 1.0f : -1.0f);
             t1 = matA[0][0] + sign * length;
-            invT1 = 1.0f / t1;
+            float invT1 = 1.0f / t1;
             v[1] = matA[1][0] * invT1;
             v[2] = matA[2][0] * invT1;
 

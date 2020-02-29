@@ -446,7 +446,7 @@ namespace te
         mutable bool _needComputeFrustum : 1; /**< Should frustum be recalculated. */
         mutable bool _needComputeFrustumPlanes : 1; /**< Should frustum planes be recalculated. */
         mutable bool _needComputeView : 1; /**< Should view matrix be recalculated. */
-        mutable float _left, _right, _top, _bottom; /**< Frustum extents. */
+        mutable float _left = 0.0f, _right = 0.0f, _top = 0.0f, _bottom = 0.0f; /**< Frustum extents. */
         mutable AABox _boundingBox; /**< Frustum bounding box. */
 
         UINT32 _rendererId;
