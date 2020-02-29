@@ -16,8 +16,8 @@ namespace te
         , _source(desc.Source)
         , _includePath(desc.IncludePath)
         , _needsAdjacencyInfo(desc.RequiresAdjacency)
-        , _bytecode(desc.Bytecode)
         , _parametersDesc(te_shared_ptr_new<GpuParamDesc>())
+        , _bytecode(desc.Bytecode)
     { }
 
     GpuProgram::~GpuProgram()

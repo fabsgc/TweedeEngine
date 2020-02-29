@@ -24,8 +24,8 @@ namespace te
         : GpuResourceData(copy)
         , _format(copy._format)
         , _rowPitch(copy._rowPitch)
-        , _slicePitch(copy._slicePitch)
         , _extents(copy._extents)
+        , _slicePitch(copy._slicePitch)
     { }
 
     PixelData& PixelData::operator=(const PixelData& rhs)
