@@ -55,6 +55,8 @@ namespace te
         output.AttenuationRadius = _internal->GetAttenuationRadius();
         output.Color = Vector3(color.r, color.g, color.b);
         output.BoundsRadius = _internal->GetBounds().GetRadius();
+        output.LinearAttenuation = _internal->GetLinearAttenuation();
+        output.QuadraticAttenuation = _internal->GetQuadraticAttenuation();
         output.Type = type;
     }
 

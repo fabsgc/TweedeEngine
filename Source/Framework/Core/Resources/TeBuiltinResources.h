@@ -10,6 +10,7 @@
 
 #include "Math/TeMath.h"
 #include "Math/TeMatrix4.h"
+#include "Math/TeVector2.h"
 
 #include "RenderAPI/TeGpuProgram.h"
 
@@ -88,6 +89,9 @@ namespace te
             float AttenuationRadius;
             Vector3 SpotAngles;
             float BoundsRadius;
+            float LinearAttenuation;
+            float QuadraticAttenuation;
+            Vector2 Padding;
         };
 
     private:

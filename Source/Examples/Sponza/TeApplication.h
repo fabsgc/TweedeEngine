@@ -78,24 +78,27 @@ namespace te
 
     protected:
 #if TE_PLATFORM == TE_PLATFORM_WIN32
-        Vector<SponzaMaterialData> _materials;
-
-        HTexture _loadedSkyboxTexture;
-
         HShader _shaderOpaque;
         HShader _shaderTransparent;
+
+        Vector<SponzaMaterialData> _materials;
+        HMaterial _lightMaterial;
+
+        HTexture _loadedSkyboxTexture;
 
         HCamera _sceneCamera;
         HCameraFlyer _sceneCameraFlyer;
         HMesh _sponzaMesh;
-        HRenderable _sponzaRenderable;
+        HMesh _lightMesh;
         HSkybox _skybox;
-        HLight _pointLight;
+        HLight _directionalLight;
+        HRenderable _sponzaRenderable;
 
         HSceneObject _sceneCameraSO;
         HSceneObject _sceneSponzaSO;
         HSceneObject _sceneSkyboxSO;
-        HSceneObject _scenePointLightSO;
+        HSceneObject _sceneDirectionalLightSO;
+        Vector<HSceneObject> _scenePointLightSOs;
 #endif
     };
 }

@@ -290,6 +290,12 @@ namespace te
         for (UINT32 i = 0; i < (UINT32)bounds.size(); i++)
         {
             if (worldFrustum.Intersects(bounds[i]))
+            {
+                visibility[i] = true;
+                continue;
+            }
+
+            if(_properties.ViewOrigin.Distance(bounds[i].GetCenter()) < bounds[i].GetRadius() * 75.0f)
                 visibility[i] = true;
         }
     }

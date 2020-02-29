@@ -39,8 +39,8 @@ namespace te
 
     void CLight::_instantiate()
     {
-        _internal = Light::Create(_type, _color, _intensity, _range,
-            _castsShadows, _spotAngle);
+        _internal = Light::Create(_type, _color, _intensity, _range, 
+            _linearAtt, _quadraticAtt, _castsShadows, _spotAngle);
     }
 
     void CLight::OnCreated()

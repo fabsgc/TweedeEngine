@@ -496,6 +496,7 @@ namespace te
             material.MaterialElement->SetProperties(material.MaterialProp);
         };
 
+        //materialFunction(_materials[16]);
         UINT8 initializedMaterialCounter = 0;
         Vector<Thread> materialThreads;
         materialThreads.reserve(8);
@@ -522,7 +523,10 @@ namespace te
             materialThreads.clear();
         }
 
-        //materialFunction(_materials[16]);
+        MaterialProperties properties;
+        properties.Emissive = Color(1.0f, 1.0f, 1.0f, 1.0f);
+        _lightMaterial = Material::Create(_shaderOpaque);
+        _lightMaterial->SetProperties(properties);
 
         auto textureCubeMapImportOptions = TextureImportOptions::Create();
         textureCubeMapImportOptions->CpuCached = false;
@@ -530,7 +534,7 @@ namespace te
         textureCubeMapImportOptions->Format = PF_RGBA8;
         textureCubeMapImportOptions->IsCubemap = true;
 
-        _loadedSkyboxTexture = gResourceManager().Load<Texture>("Data/Textures/Skybox/sky_countryside_large.jpeg", textureCubeMapImportOptions);
+        _loadedSkyboxTexture = gResourceManager().Load<Texture>("Data/Textures/Skybox/sky_night_large.jpeg", textureCubeMapImportOptions);
 #endif
     }
 
@@ -543,6 +547,7 @@ namespace te
         meshImportOptions->CpuCached = false;
 
         _sponzaMesh = gResourceManager().Load<Mesh>("Data/Meshes/Sponza/sponza.obj", meshImportOptions);
+        _lightMesh = gResourceManager().Load<Mesh>("Data/Meshes/Sphere/sphere.obj", meshImportOptions);
 
         TE_PRINT((_sponzaMesh.GetHandleData())->data);
         TE_PRINT((_sponzaMesh.GetHandleData())->uuid.ToString());
@@ -571,23 +576,34 @@ namespace te
         _sponzaRenderable = _sceneSponzaSO->AddComponent<CRenderable>();
         _sponzaRenderable->SetMesh(_sponzaMesh);
 
-        _scenePointLightSO = SceneObject::Create("PointLight");
-        _pointLight = _scenePointLightSO->AddComponent<CLight>(LightType::Radial);
-        _pointLight->Initialize();
-
-        _scenePointLightSO->SetPosition(Vector3(0.0f, 2.0f, 0.0f));
-
         //_sponzaRenderable->SetMaterial(_materials[16].MaterialElement);
-        
-        for (auto& material : _materials )
-        {
+        for (auto& material : _materials)
             _sponzaRenderable->SetMaterial(material.Name, material.MaterialElement);
-        }
-
         _sponzaRenderable->Initialize();
+
+        _sceneDirectionalLightSO = SceneObject::Create("DirectionalLight");
+        _directionalLight = _sceneDirectionalLightSO->AddComponent<CLight>(LightType::Directional);
+        _directionalLight->SetIntensity(0.1f);
+        _directionalLight->Initialize();
+
+        for (INT32 i = -1; i < 2; i++)
+        {
+            _scenePointLightSOs.push_back(SceneObject::Create("PointLight"));
+            HSceneObject lightSO = _scenePointLightSOs.back();
+            HLight light = lightSO->AddComponent<CLight>(LightType::Radial);
+            light->Initialize();
+            lightSO->SetPosition(Vector3(0.0f, -0.5f, i * 15.0f));
+
+            HRenderable mesh = lightSO->AddComponent<CRenderable>();
+            mesh->SetMesh(_lightMesh);
+            mesh->SetMaterial(_lightMaterial);
+            mesh->Initialize();
+        }
 
         _sceneCameraSO->SetPosition(Vector3(0.0f, 2.0f, 0.0f));
         _sceneCameraSO->LookAt(Vector3(0.0f, 1.5f, -3.0f));
+
+        _sceneDirectionalLightSO->Rotate(Vector3(0.0f, 1.0f, 1.0f), -Radian(Math::HALF_PI));
 #endif
     }
 

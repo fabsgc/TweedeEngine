@@ -176,10 +176,10 @@ namespace te
         _sceneCameraSO->LookAt(Vector3(0.0f, 0.0f, 0.0f));
 
         _scenePointLightSO->SetPosition(Vector3(2.0f, 2.0f, 0.0f));
-        _sceneSpotLightSO->SetPosition(Vector3(-2.0f, 2.0f, 0.0f));
-        _sceneSpotLightSO->Rotate(Vector3(-2.0f, 2.0f, 0.0f), Radian(Math::HALF_PI));
+        _sceneSpotLightSO->SetPosition(Vector3(3.0f, 3.0f, 3.0f));
+        _sceneSpotLightSO->Rotate(Vector3(0.0f, 1.0f, 1.0f), Radian(Math::HALF_PI / 2.0f));
         _sceneDirectionalLightSO->SetPosition(Vector3(3.0f, 10.0f, 10.0f));
-        _sceneDirectionalLightSO->Rotate(Vector3(3.0f, 10.0f, 10.0f), -Radian(Math::HALF_PI));
+        _sceneDirectionalLightSO->Rotate(Vector3(0.0f, 1.0f, 1.0f), -Radian(Math::HALF_PI));
         // ######################################################
 
         // ######################################################

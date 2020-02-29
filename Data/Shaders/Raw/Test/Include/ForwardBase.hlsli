@@ -25,6 +25,9 @@ struct LightData
     float AttenuationRadius;
     float3 SpotAngles;
     float BoundsRadius;
+    float LinearAttenuation;
+    float QuadraticAttenuation;
+    float2 padding;
 };
 
 struct VS_INPUT

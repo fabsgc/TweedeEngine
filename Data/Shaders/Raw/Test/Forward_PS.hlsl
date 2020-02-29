@@ -51,9 +51,6 @@ Texture2D TransparencyMap : register(t6);
 Texture2D ReflectionMap : register(t7);
 Texture2D OcclusionMap : register(t8);
 
-static const float LinearAttenuation = 0.08;
-static const float QuadraticAttenuation = 0.0;
-
 float4 ComputeAlbedoBuffer(float4 diffuse)
 {
     return diffuse;
@@ -88,7 +85,7 @@ struct LightingResult
 // d : distance from light
 float DoAttenuation( LightData light, float d )
 {
-    return 1.0f / ( light.AttenuationRadius + LinearAttenuation * d + QuadraticAttenuation * d * d );
+    return 1.0f / ( light.AttenuationRadius + light.LinearAttenuation * d + light.QuadraticAttenuation * d * d );
 }
 
 // V : view vector

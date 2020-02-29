@@ -59,6 +59,9 @@ namespace te
         float AttenuationRadius;
         Vector3 SpotAngles;
         float BoundsRadius;
+        float LinearAttenuation;
+        float QuadraticAttenuation;
+        Vector2 Padding;
     };
 
     TE_PARAM_BLOCK_BEGIN(PerCameraParamDef)

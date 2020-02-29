@@ -27,40 +27,52 @@ namespace te
         /** @copydoc Light::GetType */
         LightType GetType() const { return _internal->GetType(); }
 
-        /** @copydoc Light::setColor */
+        /** @copydoc Light::SetColor */
         void SetColor(const Color& color) { _internal->SetColor(color); }
 
-        /** @copydoc Light::getColor */
+        /** @copydoc Light::GetColor */
         Color GetColor() const { return _internal->GetColor(); }
 
-        /** @copydoc Light::setIntensity */
+        /** @copydoc Light::SetIntensity */
         void SetIntensity(float intensity) { _internal->SetIntensity(intensity); }
 
-        /** @copydoc Light::getIntensity */
+        /** @copydoc Light::GetIntensity */
         float GetIntensity() const { return _internal->GetIntensity(); }
 
-        /** @copydoc Light::setAttenuationRadius */
+        /** @copydoc Light::SetAttenuationRadius */
         void SetAttenuationRadius(float radius) { _internal->SetAttenuationRadius(radius); }
 
-        /** @copydoc Light::getAttenuationRadius */
+        /** @copydoc Light::GetAttenuationRadius */
         float GetAttenuationRadius() const { return _internal->GetAttenuationRadius(); }
 
-        /** @copydoc Light::setSpotAngle */
+        /** @copydoc Light::SetLinearAttenuation */
+        void SetLinearAttenuation(float attenuation) { _internal->SetLinearAttenuation(attenuation); }
+
+        /** @copydoc Light::GetLinearAttenuation */
+        float GetLinearAttenuation() const { return _internal->GetLinearAttenuation(); }
+
+        /** @copydoc Light::SetQuadraticAttenuation */
+        void SetQuadraticAttenuation(float attenuation) { _internal->SetQuadraticAttenuation(attenuation); }
+
+        /** @copydoc Light::GetQuadraticAttenuation */
+        float GetQuadraticAttenuation() const { return _internal->GetQuadraticAttenuation(); }
+
+        /** @copydoc Light::SetSpotAngle */
         void SetSpotAngle(const Degree& spotAngle) { _internal->SetSpotAngle(spotAngle); }
 
-        /** @copydoc Light::getSpotAngle */
+        /** @copydoc Light::GetSpotAngle */
         Degree GetSpotAngle() const { return _internal->GetSpotAngle(); }
 
-        /** @copydoc Light::setCastsShadow */
+        /** @copydoc Light::SetCastsShadow */
         void SetCastsShadow(bool castsShadow) { _internal->SetCastsShadow(castsShadow); }
 
-        /** @copydoc Light::getCastsShadow */
+        /** @copydoc Light::GetCastsShadow */
         bool GetCastsShadow() const { return _internal->GetCastsShadow(); }
 
-        /** @copydoc Light::setShadowBias */
+        /** @copydoc Light::SetShadowBias */
         void SetShadowBias(float bias) { _internal->SetShadowBias(bias); }
 
-        /** @copydoc Light::setShadowBias() */
+        /** @copydoc Light::SetShadowBias() */
         float GetShadowBias() const { return _internal->GetShadowBias(); }
 
         /** @copydoc Light::GetBounds */
@@ -77,8 +89,10 @@ namespace te
         // Only valid during construction
         LightType _type = LightType::Directional;
         Color _color = Color::White;
-        float _intensity = 100.0f;
+        float _intensity = 0.5f;
         float _range = 1.0f;
+        float _linearAtt = 0.08f;
+        float _quadraticAtt = 0.0f;
         bool _castsShadows = false;
         Degree _spotAngle = Degree(45);
 

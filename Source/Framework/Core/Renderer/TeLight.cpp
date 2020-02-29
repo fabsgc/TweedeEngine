@@ -7,21 +7,27 @@ namespace te
         : _type(LightType::Directional)
         , _castsShadows(false)
         , _color(Color::White)
-        , _attRadius(10.0f)
-        , _intensity(0.2f)
+        , _attRadius(1.0f)
+        , _linearAttenuation(0.08f)
+        , _quadraticAttenuation(0.0f)
+        , _intensity(0.5f)
         , _spotAngle(45)
         , _shadowBias(0.5f)
+        , _rendererId(0)
     { }
 
-    Light::Light(LightType type, Color color, float intensity, float attRadius, float srcRadius,
-        bool castsShadows, Degree spotAngle, Degree spotFalloffAngle)
+    Light::Light(LightType type, Color color, float intensity, float attRadius, float linearAtt,
+        float quadraticAtt, bool castsShadows, Degree spotAngle, Degree spotFalloffAngle)
         : _type(type)
         , _castsShadows(castsShadows)
         , _color(color)
         , _attRadius(attRadius)
+        , _linearAttenuation(linearAtt)
+        , _quadraticAttenuation(quadraticAtt)
         , _intensity(intensity)
         , _spotAngle(spotAngle)
         , _shadowBias(0.5f)
+        , _rendererId(0)
     { }
 
     Light::~Light()
@@ -93,6 +99,18 @@ namespace te
         UpdateBounds();
     }
 
+    void Light::SetLinearAttenuation(float attenuation)
+    {
+        _linearAttenuation = attenuation;
+        _markCoreDirty();
+    }
+
+    void Light::SetQuadraticAttenuation(float attenuation)
+    {
+        _quadraticAttenuation = attenuation;
+        _markCoreDirty();
+    }
+
     void Light::SetIntensity(float intensity)
     {
         _intensity = intensity;
@@ -136,9 +154,9 @@ namespace te
     }
 
     SPtr<Light> Light::Create(LightType type, Color color, float intensity, float attRadius, 
-        bool castsShadows, Degree spotAngle, Degree spotFalloffAngle)
+        float linearAtt, float quadraticAtt, bool castsShadows, Degree spotAngle, Degree spotFalloffAngle)
     {
-        Light* handler = new (te_allocate<Light>())Light(type, color, intensity, attRadius, 0.0f, castsShadows, spotAngle, spotFalloffAngle);
+        Light* handler = new (te_allocate<Light>())Light(type, color, intensity, attRadius, linearAtt, quadraticAtt, castsShadows, spotAngle, spotFalloffAngle);
         SPtr<Light> handlerPtr = te_core_ptr<Light>(handler);
         handlerPtr->SetThisPtr(handlerPtr);
         handlerPtr->Initialize();
