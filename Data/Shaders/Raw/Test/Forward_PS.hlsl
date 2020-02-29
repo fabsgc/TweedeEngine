@@ -259,7 +259,7 @@ PS_OUTPUT main( PS_INPUT IN )
     //OUT.Albedo = ComputeAlbedoBuffer(float4(albedo, 1.0f));
     //OUT.Specular = ComputeSpecularBuffer(float4(specular, 1.0f));
     OUT.Normal = ComputeNormalBuffer(float4(normal, 0.0f));
-    OUT.Emissive = ComputeEmissiveBuffer((float4)0);
+    OUT.Emissive = ComputeEmissiveBuffer(float4(emissive, 0.0));
     //OUT.Velocity = ComputeVelocityBuffer((float4)0);
 
     return OUT;
