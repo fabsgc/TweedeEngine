@@ -1,5 +1,6 @@
 | CI            |
 | ------------- |
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/17a1a070180f49eebd0538531cba1cf6)](https://app.codacy.com/manual/fabsgc/TweedeFrameworkRedux?utm_source=github.com&utm_medium=referral&utm_content=fabsgc/TweedeFrameworkRedux&utm_campaign=Badge_Grade_Dashboard)
 [![Build Status](https://travis-ci.org/fabsgc/TweedeFrameworkRedux.svg?branch=master)](https://travis-ci.org/fabsgc/TweedeFrameworkRedux) [![Build Status](https://ci.appveyor.com/api/projects/status/github/fabsgc/TweedeFrameworkRedux?branch=master&svg=true)](https://ci.appveyor.com/project/fabsgc/tweedeframeworkredux)
 
 # TweedeEngine Framework
