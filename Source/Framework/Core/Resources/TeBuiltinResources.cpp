@@ -28,6 +28,7 @@ namespace te
         InitShaderBlit();
         InitShaderSkybox();
         InitShaderFXAA();
+        InitDefaultMaterial();
 #endif
     }
 
@@ -448,6 +449,13 @@ namespace te
         shaderDesc.Techniques.push_back(technique.GetInternalPtr());
 
         _shaderFXAA = Shader::Create("FXAA", shaderDesc);
+    }
+
+    void BuiltinResources::InitDefaultMaterial()
+    {
+        MaterialProperties properties;
+        _defaultMaterial = Material::Create(_shaderOpaque);
+        _defaultMaterial->SetProperties(properties);
     }
 
     BuiltinResources& gBuiltinResources()

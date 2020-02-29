@@ -60,6 +60,9 @@ namespace te
         /**	Returns one of the builtin shader types. */
         HShader GetBuiltinShader(BuiltinShader type);
 
+        /** If no material has been specified, it's useful to use the default one */
+        HMaterial GetDefaultMaterial() { return _defaultMaterial;  }
+
         /**	Returns one of the builtin sampler types. */
         SPtr<SamplerState> GetBuiltinSampler(BuiltinSampler type);
 
@@ -107,6 +110,8 @@ namespace te
         void InitShaderSkybox();
         void InitShaderFXAA();
 
+        void InitDefaultMaterial();
+
     private:
         HShader _shaderOpaque;
         HShader _shaderTransparent;
@@ -142,6 +147,8 @@ namespace te
 
         SAMPLER_STATE_DESC _anisotropicSamplerStateDesc;
         SAMPLER_STATE_DESC _bilinearSamplerStateDesc;
+
+        HMaterial _defaultMaterial;
     };
 
     /**	Provides easy access to BuiltinResources. */

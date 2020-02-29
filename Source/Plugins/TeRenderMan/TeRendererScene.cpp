@@ -403,7 +403,7 @@ namespace te
 
                 // If no material use the default material
                 if (renElement->MaterialElem == nullptr)
-                    renElement->MaterialElem = Material::Create(Shader::CreateEmpty()).GetInternalPtr();
+                    renElement->MaterialElem = gBuiltinResources().GetDefaultMaterial().GetInternalPtr();
 
                 // Determine which technique to use
                 const SPtr<Shader>& shader = renElement->MaterialElem->GetShader();
