@@ -128,6 +128,16 @@ namespace te
         /** @copydoc CoreObject::FrameSync */
         void FrameSync() override;
 
+    public:
+        static bool DefaultCastShadow;
+        static Color DefaultColor;
+        static float DefaultAttRadius;
+        static float DefaultLinearAtt;
+        static float DefaultQuadraticAtt;
+        static float DefaultIntensity;
+        static float DefaultSpotAngle;
+        static float DefaultShadowBias;
+
     protected:
         Light();
         Light(LightType type, Color color, float intensity, float attRadius, float linearAtt, 

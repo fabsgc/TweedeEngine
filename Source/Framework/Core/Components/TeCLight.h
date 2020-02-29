@@ -14,8 +14,9 @@ namespace te
     class TE_CORE_EXPORT CLight : public Component
     {
     public:
-        CLight(const HSceneObject& parent, LightType type = LightType::Directional, Color color = Color::White,
-            float intensity = 0.5f, float range = 1.0f, bool castsShadows = false, Degree spotAngle = Degree(45));
+        CLight(const HSceneObject& parent, LightType type = LightType::Directional, Color color = Light::DefaultColor,
+            float intensity = Light::DefaultIntensity, float range = Light::DefaultAttRadius, bool castsShadows = Light::DefaultCastShadow, 
+            Degree spotAngle = Degree(Light::DefaultSpotAngle));
         virtual ~CLight();
 
         /** @copydoc Component::Initialize */
@@ -88,13 +89,13 @@ namespace te
 
         // Only valid during construction
         LightType _type = LightType::Directional;
-        Color _color = Color::White;
-        float _intensity = 0.5f;
-        float _range = 1.0f;
-        float _linearAtt = 0.08f;
-        float _quadraticAtt = 0.0f;
-        bool _castsShadows = false;
-        Degree _spotAngle = Degree(45);
+        Color _color = Light::DefaultColor;
+        float _intensity = Light::DefaultAttRadius;
+        float _range = Light::DefaultAttRadius;
+        float _linearAtt = Light::DefaultLinearAtt;
+        float _quadraticAtt = Light::DefaultQuadraticAtt;
+        bool _castsShadows = Light::DefaultCastShadow;
+        Degree _spotAngle = Degree(Light::DefaultSpotAngle);
 
     protected:
         friend class SceneObject;

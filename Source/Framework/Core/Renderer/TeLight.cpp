@@ -3,16 +3,25 @@
 
 namespace te
 {
+    bool Light::DefaultCastShadow = false;
+    Color Light::DefaultColor = Color::White;
+    float Light::DefaultAttRadius = 1.0f;
+    float Light::DefaultLinearAtt = 0.08f;
+    float Light::DefaultQuadraticAtt = 0.0f;
+    float Light::DefaultIntensity = 0.5f;
+    float Light::DefaultSpotAngle = 45.0f;
+    float Light::DefaultShadowBias = 0.5f;
+
     Light::Light()
         : _type(LightType::Directional)
-        , _castsShadows(false)
-        , _color(Color::White)
-        , _attRadius(1.0f)
-        , _linearAttenuation(0.08f)
-        , _quadraticAttenuation(0.0f)
-        , _intensity(0.5f)
-        , _spotAngle(45)
-        , _shadowBias(0.5f)
+        , _castsShadows(DefaultCastShadow)
+        , _color(DefaultColor)
+        , _attRadius(DefaultAttRadius)
+        , _linearAttenuation(DefaultLinearAtt)
+        , _quadraticAttenuation(DefaultQuadraticAtt)
+        , _intensity(DefaultIntensity)
+        , _spotAngle(DefaultSpotAngle)
+        , _shadowBias(DefaultShadowBias)
         , _rendererId(0)
     { }
 
@@ -26,7 +35,7 @@ namespace te
         , _quadraticAttenuation(quadraticAtt)
         , _intensity(intensity)
         , _spotAngle(spotAngle)
-        , _shadowBias(0.5f)
+        , _shadowBias(DefaultShadowBias)
         , _rendererId(0)
     { }
 
