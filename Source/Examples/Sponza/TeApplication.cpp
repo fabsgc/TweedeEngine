@@ -292,7 +292,7 @@ namespace te
                 "floor",
                 "Data/Textures/Sponza/floor/floor_COLOR.jpeg",
                 "",
-                "Data/Textures/Sponza/floor/floor_NRM.jpeg",
+                "Data/Textures/Sponza/floor/floor_NRM_2.jpeg",
                 "Data/Textures/Sponza/floor/floor_SPEC.jpeg",
                 "",
                 "",
