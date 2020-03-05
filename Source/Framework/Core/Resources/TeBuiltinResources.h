@@ -38,10 +38,12 @@ namespace te
     /** Types of builtin shaders that are always available. */
     enum class BuiltinSampler
     {
-        /** Shader used for opaque 3D geometry. */
+        /** Anistropic sampler. */
         Anisotropic,
-        /** Shader used for transparent 3D geometry. */
-        Bilinear
+        /** Bilinear sampler. */
+        Bilinear,
+        /** Trilinear sampler. */
+        Trilinear
     };
 
     /**	Holds references to built-in resources used by the core engine. */
@@ -125,6 +127,7 @@ namespace te
 
         SPtr<SamplerState> _anisotropicSamplerState = nullptr;
         SPtr<SamplerState> _bilinearSamplerState = nullptr;
+        SPtr<SamplerState> _trilinearSamplerState = nullptr;
 
         SHADER_DESC _forwardShaderDesc;
         SHADER_DESC _blitShaderDesc;
@@ -155,6 +158,7 @@ namespace te
 
         SAMPLER_STATE_DESC _anisotropicSamplerStateDesc;
         SAMPLER_STATE_DESC _bilinearSamplerStateDesc;
+        SAMPLER_STATE_DESC _trilinearSamplerStateDesc;
 
         HMaterial _defaultMaterial;
     };

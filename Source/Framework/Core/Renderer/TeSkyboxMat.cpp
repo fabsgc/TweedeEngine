@@ -9,7 +9,7 @@ namespace te
     { 
         _paramBuffer = gSkyboxParamDef.CreateBuffer();
         _params->SetParamBlockBuffer("PerFrameBuffer", _paramBuffer);
-        _params->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
+        _params->SetSamplerState("BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
     }
 
     void SkyboxMat::Bind(const SPtr<GpuParamBlockBuffer>& perCamera, const SPtr<Texture>& texture, const Color& solidColor)

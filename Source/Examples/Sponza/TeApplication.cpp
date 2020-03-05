@@ -525,6 +525,7 @@ namespace te
 
         MaterialProperties properties;
         properties.Emissive = Color(1.0f, 1.0f, 1.0f, 1.0f);
+        properties.Ambient = Color(0.05f, 0.05f, 0.05f, 1.0f);
         _lightMaterial = Material::Create(_shaderOpaque);
         _lightMaterial->SetProperties(properties);
 
@@ -624,7 +625,7 @@ namespace te
         _sceneCameraSO->LookAt(Vector3(0.0f, 1.5f, -3.0f));
 
         auto settings = _sceneCamera->GetRenderSettings();
-        settings->ExposureScale = 1.5f;
+        settings->ExposureScale = 1.3f;
         settings->Gamma = 1.0f;
 
         /*_sceneDirectionalLightSO = SceneObject::Create("DirectionalLight");

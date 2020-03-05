@@ -19,7 +19,7 @@ struct PS_INPUT
     float3 Direction : TEXCOORD0;
 };
 
-SamplerState AnisotropicSampler : register(s0);
+SamplerState BilinearSampler : register(s0);
 TextureCube TextureMap : register(t0);
 
 float4 main( PS_INPUT IN ) : SV_Target
@@ -27,5 +27,5 @@ float4 main( PS_INPUT IN ) : SV_Target
     if(gUseTexture == 0)
         return gClearColor;
     else
-        return TextureMap.SampleLevel(AnisotropicSampler, IN.Direction, 0);
+        return TextureMap.SampleLevel(BilinearSampler, IN.Direction, 0);
 }

@@ -9,7 +9,7 @@ namespace te
     {
         _paramBuffer = gFXAAParamDef.CreateBuffer();
         _params->SetParamBlockBuffer("PerFrameBuffer", _paramBuffer);
-        _params->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
+        _params->SetSamplerState("BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
     }
 
     void FXAAMat::Execute(const SPtr<Texture>& source, const SPtr<RenderTarget>& destination)

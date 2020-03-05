@@ -7,7 +7,7 @@ cbuffer PerFrameBuffer : register(b0)
     uint gMSAACount;
 }
 
-SamplerState AnisotropicSampler : register(s0);
+SamplerState BilinearSampler : register(s0);
 
 Texture2D SourceMap : register(t0);
 Texture2DMS<float4> SourceMapMS : register(t1);
@@ -26,7 +26,7 @@ float4 main( PS_INPUT IN ) : SV_Target0
         color = sum / gMSAACount;
     }
 
-    color = SourceMap.Sample(AnisotropicSampler, IN.Texture);
+    color = SourceMap.Sample(BilinearSampler, IN.Texture);
 
     // Exposure tone mapping
     float4 mapped = float4(1.0, 1.0, 1.0, 1.0) - exp(-color * gExposure);

@@ -432,7 +432,7 @@ NOTE the other tuning knobs are now in the shader function inputs!
     #define FXAA_QUALITY__P11 8.0
 #endif
 
-SamplerState AnisotropicSampler : register(s0);
+SamplerState BilinearSampler : register(s0);
 Texture2D SourceMap : register(t0);
 
 /*============================================================================
@@ -451,12 +451,12 @@ Texture2D SourceMap : register(t0);
 #define FxaaSat(x) saturate(x)
 /*--------------------------------------------------------------------------*/
 #define FxaaInt2 int2
-#define FxaaTexTop(p) SourceMap.SampleLevel(AnisotropicSampler, p, 0.0)
-#define FxaaTexOff(p, o, r) SourceMap.SampleLevel(AnisotropicSampler, p, 0.0, o)
-#define FxaaTexAlpha4(p) SourceMap.GatherAlpha(AnisotropicSampler, p)
-#define FxaaTexOffAlpha4(p, o) SourceMap.GatherAlpha(AnisotropicSampler, p, o)
-#define FxaaTexGreen4(p) SourceMap.GatherGreen(AnisotropicSampler, p)
-#define FxaaTexOffGreen4(p, o) SourceMap.GatherGreen(AnisotropicSampler, p, o)
+#define FxaaTexTop(p) SourceMap.SampleLevel(BilinearSampler, p, 0.0)
+#define FxaaTexOff(p, o, r) SourceMap.SampleLevel(BilinearSampler, p, 0.0, o)
+#define FxaaTexAlpha4(p) SourceMap.GatherAlpha(BilinearSampler, p)
+#define FxaaTexOffAlpha4(p, o) SourceMap.GatherAlpha(BilinearSampler, p, o)
+#define FxaaTexGreen4(p) SourceMap.GatherGreen(BilinearSampler, p)
+#define FxaaTexOffGreen4(p, o) SourceMap.GatherGreen(BilinearSampler, p, o)
 
 
 /*============================================================================
