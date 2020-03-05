@@ -23,6 +23,7 @@ namespace te
         InitStates();
         InitShaderDesc();
 #if TE_PLATFORM == TE_PLATFORM_WIN32 //TODO to remove when OpenGL will be done
+        InitSamplers();
         InitShaderOpaque();
         InitShaderTransparent();
         InitShaderBlit();
@@ -347,11 +348,11 @@ namespace te
 
         {
             SHADER_DATA_PARAM_DESC gInvTexSizeDesc("gInvTexSize", "gInvTexSize", GPDT_FLOAT2);
-            SHADER_OBJECT_PARAM_DESC bilinearSamplerDesc("BilinearSampler", "BilinearSampler", GPOT_SAMPLER2D);
+            SHADER_OBJECT_PARAM_DESC anisotropicSamplerDesc("AnisotropicSampler", "AnisotropicSampler", GPOT_SAMPLER2D);
             SHADER_OBJECT_PARAM_DESC sourceMapDesc("SourceMap", "SourceMap", GPOT_TEXTURE2D);
 
             _FXAAShaderDesc.AddParameter(gInvTexSizeDesc);
-            _FXAAShaderDesc.AddParameter(bilinearSamplerDesc);
+            _FXAAShaderDesc.AddParameter(anisotropicSamplerDesc);
             _FXAAShaderDesc.AddParameter(sourceMapDesc);
         }
 
@@ -360,7 +361,7 @@ namespace te
             SHADER_DATA_PARAM_DESC gExposureDesc("gExposure", "gExposure", GPDT_FLOAT1);
             SHADER_DATA_PARAM_DESC gMSAACountDesc("gMSAACount", "gMSAACount", GPDT_INT1);
 
-            SHADER_OBJECT_PARAM_DESC bilinearSamplerDesc("BilinearSampler", "BilinearSampler", GPOT_SAMPLER2D);
+            SHADER_OBJECT_PARAM_DESC anisotropicSamplerDesc("AnisotropicSampler", "AnisotropicSampler", GPOT_SAMPLER2D);
 
             SHADER_OBJECT_PARAM_DESC sourceMapDesc("SourceMap", "SourceMap", GPOT_TEXTURE2D);
             SHADER_OBJECT_PARAM_DESC SourceMapMSDesc("SourceMapMS", "SourceMapMS", GPOT_RWTEXTURE2DMS);
@@ -369,7 +370,7 @@ namespace te
             _toneMappingShaderDesc.AddParameter(gExposureDesc);
             _toneMappingShaderDesc.AddParameter(gMSAACountDesc);
 
-            _toneMappingShaderDesc.AddParameter(bilinearSamplerDesc);
+            _toneMappingShaderDesc.AddParameter(anisotropicSamplerDesc);
 
             _toneMappingShaderDesc.AddParameter(sourceMapDesc);
             _toneMappingShaderDesc.AddParameter(SourceMapMSDesc);

@@ -9,7 +9,7 @@ namespace te
     {
         _paramBuffer = gToneMappingParamDef.CreateBuffer();
         _params->SetParamBlockBuffer("PerFrameBuffer", _paramBuffer);
-        _params->SetSamplerState("BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
+        _params->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
     }
 
     void ToneMappingMat::Execute(const SPtr<Texture>& source, const SPtr<RenderTarget>& destination, INT32 MSSACount, float gamma, float exposure)

@@ -528,6 +528,20 @@ namespace te
         _lightMaterial = Material::Create(_shaderOpaque);
         _lightMaterial->SetProperties(properties);
 
+        _loadedTextureMonkey = gResourceManager().Load<Texture>("Data/Textures/Monkey/diffuse.png", textureImportOptions);
+
+        properties.Emissive = Color(0.0f, 0.0f, 0.0f, 1.0f);
+        properties.UseDiffuseMap = true;
+        properties.SpecularPower = 128.0f;
+        properties.Specular = Color(1.0f, 1.0f, 1.0f, 1.0);
+        properties.Reflection = 0.5f;
+        _monkeyMaterial = Material::Create(_shaderOpaque);
+        _monkeyMaterial->SetProperties(properties);
+        _monkeyMaterial->SetName("Material");
+        _monkeyMaterial->SetTexture("DiffuseMap", _loadedTextureMonkey, surface);
+        _monkeyMaterial->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
+        _monkeyMaterial->SetProperties(properties);
+
         auto textureCubeMapImportOptions = TextureImportOptions::Create();
         textureCubeMapImportOptions->CpuCached = false;
         textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
@@ -548,6 +562,7 @@ namespace te
 
         _sponzaMesh = gResourceManager().Load<Mesh>("Data/Meshes/Sponza/sponza.obj", meshImportOptions);
         _lightMesh = gResourceManager().Load<Mesh>("Data/Meshes/Sphere/sphere.obj", meshImportOptions);
+        _monkeyMesh = gResourceManager().Load<Mesh>("Data/Meshes/Monkey/monkey.obj", meshImportOptions);
 
         TE_PRINT((_sponzaMesh.GetHandleData())->data);
         TE_PRINT((_sponzaMesh.GetHandleData())->uuid.ToString());
@@ -581,11 +596,12 @@ namespace te
             _sponzaRenderable->SetMaterial(material.Name, material.MaterialElement);
         _sponzaRenderable->Initialize();
 
-        /*_sceneDirectionalLightSO = SceneObject::Create("DirectionalLight");
-        _directionalLight = _sceneDirectionalLightSO->AddComponent<CLight>(LightType::Directional);
-        _directionalLight->SetIntensity(0.1f);
-        _directionalLight->Initialize();
-        _sceneDirectionalLightSO->Rotate(Vector3(0.0f, 1.0f, 1.0f), -Radian(Math::HALF_PI));*/
+        _sceneMonkeySO = SceneObject::Create("Monkey");
+        _monkeyRenderable = _sceneMonkeySO->AddComponent<CRenderable>();
+        _monkeyRenderable->SetMesh(_monkeyMesh);
+        _monkeyRenderable->SetMaterial(_monkeyMaterial);
+        _monkeyRenderable->Initialize();
+        _sceneMonkeySO->SetPosition(Vector3(2.0f, -3.05f, -28.0f));
 
         for (INT32 i = -1; i < 2; i++)
         {
@@ -610,6 +626,12 @@ namespace te
         auto settings = _sceneCamera->GetRenderSettings();
         settings->ExposureScale = 1.5f;
         settings->Gamma = 1.0f;
+
+        /*_sceneDirectionalLightSO = SceneObject::Create("DirectionalLight");
+        _directionalLight = _sceneDirectionalLightSO->AddComponent<CLight>(LightType::Directional);
+        _directionalLight->SetIntensity(0.1f);
+        _directionalLight->Initialize();
+        _sceneDirectionalLightSO->Rotate(Vector3(0.0f, 1.0f, 1.0f), -Radian(Math::HALF_PI));*/
 #endif
     }
 

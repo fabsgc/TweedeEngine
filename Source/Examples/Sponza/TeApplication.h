@@ -83,20 +83,25 @@ namespace te
 
         Vector<SponzaMaterialData> _materials;
         HMaterial _lightMaterial;
+        HMaterial _monkeyMaterial;
 
         HTexture _loadedSkyboxTexture;
+        HTexture _loadedTextureMonkey;
 
         HCamera _sceneCamera;
         HCameraFlyer _sceneCameraFlyer;
         HMesh _sponzaMesh;
         HMesh _lightMesh;
+        HMesh _monkeyMesh;
         HSkybox _skybox;
         HLight _directionalLight;
         HRenderable _sponzaRenderable;
+        HRenderable _monkeyRenderable;
 
         HSceneObject _sceneCameraSO;
         HSceneObject _sceneSponzaSO;
         HSceneObject _sceneSkyboxSO;
+        HSceneObject _sceneMonkeySO;
         HSceneObject _sceneDirectionalLightSO;
         Vector<HSceneObject> _scenePointLightSOs;
 #endif

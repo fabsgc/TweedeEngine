@@ -123,6 +123,10 @@ namespace te
     /** Assigns a texture to the shader parameter with the specified name. */
     void Material::SetTexture(const String& name, const SPtr<Texture>& value, const TextureSurface& surface)
     {
+#if TE_DEBUG_MODE
+        TE_ASSERT_ERROR(value != nullptr, "Texture should not be null", __FILE__, __LINE__);
+#endif
+
         if (_textures.find(name) == _textures.end())
         {
             _textures[name] = te_shared_ptr_new<TextureData>(value, surface);
@@ -137,6 +141,10 @@ namespace te
 
     void Material::SetLoadStoreTexture(const String& name, const SPtr<Texture>& value, const TextureSurface& surface)
     {
+#if TE_DEBUG_MODE
+        TE_ASSERT_ERROR(value != nullptr, "Load store texture should not be null", __FILE__, __LINE__);
+#endif
+
         if (_loadStoreTextures.find(name) == _loadStoreTextures.end())
         {
             _loadStoreTextures[name] = te_shared_ptr_new<TextureData>(value, surface);
@@ -152,6 +160,10 @@ namespace te
     /** Assigns a buffer to the shader parameter with the specified name. */
     void Material::SetBuffer(const String& name, const SPtr<GpuBuffer>& value)
     {
+#if TE_DEBUG_MODE
+        TE_ASSERT_ERROR(value != nullptr, "Buffer should not be null", __FILE__, __LINE__);
+#endif
+
         _buffers[name] = value;
         _markCoreDirty(MaterialDirtyFlags::ParamResource);
     }
@@ -159,6 +171,9 @@ namespace te
     /** Assigns a sampler state to the shader parameter with the specified name. */
     void Material::SetSamplerState(const String& name, const SPtr<SamplerState>& value)
     {
+#if TE_DEBUG_MODE
+        TE_ASSERT_ERROR(value != nullptr, "Sampler state should not be null", __FILE__, __LINE__);
+#endif
         _samplerStates[name] = value;
         _markCoreDirty(MaterialDirtyFlags::ParamResource);
     }

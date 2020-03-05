@@ -76,6 +76,10 @@ namespace te
 
     void Renderable::SetMesh(SPtr<Mesh> mesh)
     {
+#if TE_DEBUG_MODE
+        TE_ASSERT_ERROR(mesh != nullptr, "Mesh should not be null", __FILE__, __LINE__);
+#endif
+
         _mesh = mesh;
 
         UINT32 numSubMeshes = mesh->GetProperties().GetNumSubMeshes();
@@ -87,6 +91,10 @@ namespace te
 
     void Renderable::SetMaterial(UINT32 idx, const SPtr<Material>& material)
     {
+#if TE_DEBUG_MODE
+        TE_ASSERT_ERROR(material != nullptr, "Material should not be null", __FILE__, __LINE__);
+#endif
+
         if (idx >= (UINT32)_materials.size())
             return;
 
@@ -100,7 +108,13 @@ namespace te
         UINT32 min = std::min(_numMaterials, (UINT32)materials.size());
 
         for (UINT32 i = 0; i < min; i++)
+        {
+#if TE_DEBUG_MODE
+            TE_ASSERT_ERROR(materials[i] != nullptr, "Material should not be null", __FILE__, __LINE__);
+#endif
+
             _materials[i] = materials[i];
+        }
 
         for (UINT32 i = min; i < _numMaterials; i++)
             _materials[i] = nullptr;
@@ -110,12 +124,20 @@ namespace te
 
     void Renderable::SetMaterial(const SPtr<Material>& material)
     {
+#if TE_DEBUG_MODE
+        TE_ASSERT_ERROR(material != nullptr, "Material should not be null", __FILE__, __LINE__);
+#endif
+
         SetMaterial(0, material);
         _markCoreDirty(ActorDirtyFlag::GpuParams);
     }
 
     void Renderable::SetMaterial(const String& name, const SPtr<Material>& material)
     {
+#if TE_DEBUG_MODE
+        TE_ASSERT_ERROR(material != nullptr, "Material should not be null", __FILE__, __LINE__);
+#endif
+
         if (!_mesh)
             return;
 
