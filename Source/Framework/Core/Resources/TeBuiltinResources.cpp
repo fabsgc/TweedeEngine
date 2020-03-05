@@ -197,7 +197,7 @@ namespace te
         _anisotropicSamplerStateDesc.MinFilter = FO_ANISOTROPIC;
         _anisotropicSamplerStateDesc.MagFilter = FO_ANISOTROPIC;
         _anisotropicSamplerStateDesc.MipFilter = FO_ANISOTROPIC;
-        _anisotropicSamplerStateDesc.MaxAnisotropy = 4;
+        _anisotropicSamplerStateDesc.MaxAnisotropy = 8;
 
         _bilinearSamplerStateDesc.AddressMode = UVWAddressingMode();
         _bilinearSamplerStateDesc.MinFilter = FO_LINEAR;
