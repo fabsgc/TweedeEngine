@@ -32,7 +32,9 @@ namespace te
         /** Shader used for FXAA post process */
         FXAA,
         /** Shader used for tone mapping post process */
-        ToneMapping
+        ToneMapping,
+        /** Shader used for bloom post process */
+        Bloom
     };
 
     /** Types of builtin shaders that are always available. */
@@ -114,6 +116,7 @@ namespace te
         void InitShaderSkybox();
         void InitShaderFXAA();
         void InitShaderToneMapping();
+        void InitShaderBloom();
 
         void InitDefaultMaterial();
 
@@ -124,6 +127,7 @@ namespace te
         HShader _shaderSkybox;
         HShader _shaderFXAA;
         HShader _shaderToneMapping;
+        HShader _shaderBloom;
 
         SPtr<SamplerState> _anisotropicSamplerState = nullptr;
         SPtr<SamplerState> _bilinearSamplerState = nullptr;
@@ -134,6 +138,7 @@ namespace te
         SHADER_DESC _skyboxShaderDesc;
         SHADER_DESC _FXAAShaderDesc;
         SHADER_DESC _toneMappingShaderDesc;
+        SHADER_DESC _bloomShaderDesc;
 
         GPU_PROGRAM_DESC _vertexShaderForwardDesc;
         GPU_PROGRAM_DESC _pixelShaderForwardDesc;
@@ -149,6 +154,9 @@ namespace te
 
         GPU_PROGRAM_DESC _vertexShaderToneMappingDesc;
         GPU_PROGRAM_DESC _pixelShaderToneMappingDesc;
+
+        GPU_PROGRAM_DESC _vertexShaderBloomDesc;
+        GPU_PROGRAM_DESC _pixelShaderBloomDesc;
 
         BLEND_STATE_DESC _blendOpaqueStateDesc;
         BLEND_STATE_DESC _blendTransparentStateDesc;

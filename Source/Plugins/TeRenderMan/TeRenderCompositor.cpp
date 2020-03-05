@@ -9,6 +9,7 @@
 #include "Renderer/TeSkyboxMat.h"
 #include "Renderer/TeFXAAMat.h"
 #include "Renderer/TeToneMappingMat.h"
+#include "Renderer/TeBloomMat.h"
 #include "TeRendererLight.h"
 
 namespace te
@@ -553,8 +554,8 @@ namespace te
         if (!settings.EnableFXAA || viewProps.Target.NumSamples > 1)
             return;
 
-        RCNodeForwardPass* forwardPassNode = static_cast<RCNodeForwardPass*>(inputs.InputNodes[1]);
-        RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[2]);
+        RCNodeForwardPass* forwardPassNode = static_cast<RCNodeForwardPass*>(inputs.InputNodes[2]);
+        RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[3]);
 
         SPtr<RenderTexture> ppOutput;
         SPtr<Texture> ppLastFrame;
@@ -575,6 +576,7 @@ namespace te
     {
         return
         {
+            RCNodeBloom::GetNodeId(),
             RCNodeGaussianDOF::GetNodeId(),
             RCNodeForwardPass::GetNodeId(),
             RCNodePostProcess::GetNodeId()
@@ -602,7 +604,32 @@ namespace te
     // ############# BLOOM
 
     void RCNodeBloom::Render(const RenderCompositorNodeInputs& inputs)
-    { }
+    {
+        const RendererViewProperties& viewProps = inputs.View.GetProperties();
+        const RenderSettings& settings = inputs.View.GetRenderSettings();
+        if (!settings.Bloom.Enabled)
+            return;
+
+        RCNodeForwardPass* forwardPassNode = static_cast<RCNodeForwardPass*>(inputs.InputNodes[0]);
+        RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[1]);
+
+        SPtr<RenderTexture> ppOutput;
+        SPtr<Texture> ppLastFrame;
+        postProcessNode->GetAndSwitch(inputs.View, ppOutput, ppLastFrame);
+
+        BloomMat* bloom = BloomMat::Get();
+
+        if (ppLastFrame)
+        {
+            auto& texProps = ppLastFrame->GetProperties();
+            bloom->Execute(ppLastFrame, ppOutput, forwardPassNode->EmissiveTex->Tex, texProps.GetNumSamples());
+        }
+        else
+        {
+            auto& texProps = forwardPassNode->SceneTex->Tex->GetProperties();
+            bloom->Execute(forwardPassNode->SceneTex->Tex, ppOutput, forwardPassNode->EmissiveTex->Tex, texProps.GetNumSamples());
+        }
+    }
 
     void RCNodeBloom::Clear()
     {
@@ -613,6 +640,7 @@ namespace te
     {
         return
         {
+            RCNodeForwardPass::GetNodeId(),
             RCNodePostProcess::GetNodeId()
         };
     }

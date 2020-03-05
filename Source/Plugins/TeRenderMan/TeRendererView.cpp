@@ -301,7 +301,7 @@ namespace te
                 continue;
             }
 
-            if(_properties.ViewOrigin.Distance(bounds[i].GetCenter()) < bounds[i].GetRadius() * 75.0f)
+            if(_properties.ViewOrigin.Distance(bounds[i].GetCenter()) < bounds[i].GetRadius())
                 visibility[i] = true;
         }
     }

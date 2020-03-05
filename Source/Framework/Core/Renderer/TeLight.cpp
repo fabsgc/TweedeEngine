@@ -135,18 +135,18 @@ namespace te
             _bounds = Sphere(tfrm.GetPosition(), std::numeric_limits<float>::infinity());
             break;
         case LightType::Radial:
-            _bounds = Sphere(tfrm.GetPosition(), _attRadius);
+            _bounds = Sphere(tfrm.GetPosition(), _attRadius * 150.0f);
             break;
         case LightType::Spot:
         {
             // Note: We could use the formula for calculating the circumcircle of a triangle (after projecting the cone),
             // but the radius of the sphere is the same as in the formula we use here, yet it is much simpler with no need
             // to calculate multiple determinants. Neither are good approximations when cone angle is wide.
-            Vector3 offset(0, 0, _attRadius * 0.5f);
+            Vector3 offset(0, 0, _attRadius * 75.0f);
 
             // Direction along the edge of the cone, on the YZ plane (doesn't matter if we used XZ instead)
             Degree angle = Math::Clamp(_spotAngle * 0.5f, Degree(-89), Degree(89));
-            Vector3 coneDir(0, Math::Tan(angle) * _attRadius, _attRadius);
+            Vector3 coneDir(0, Math::Tan(angle) * _attRadius * 150.0f, _attRadius * 150.0f);
 
             // Distance between the "corner" of the cone and our center, must be the radius (provided the center is at
             // the middle of the range)
