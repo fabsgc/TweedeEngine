@@ -414,7 +414,7 @@ namespace te
         auto materialFunction = [&](SponzaMaterialData& material)
         {
             material.MaterialProp.SpecularPower = 16.0f;
-            material.MaterialProp.Ambient = Color(1.0f, 1.0f, 1.0f, 0.1f);
+            material.MaterialProp.Ambient = Color(0.05f, 0.05f, 0.05f, 1.0f);
             material.MaterialProp.AlphaThreshold = material.AlphaTreshold;
             material.MaterialProp.Transparency = material.Opacity;
             material.MaterialProp.Emissive = material.EmissiveColor;
@@ -581,19 +581,22 @@ namespace te
             _sponzaRenderable->SetMaterial(material.Name, material.MaterialElement);
         _sponzaRenderable->Initialize();
 
-        _sceneDirectionalLightSO = SceneObject::Create("DirectionalLight");
+        /*_sceneDirectionalLightSO = SceneObject::Create("DirectionalLight");
         _directionalLight = _sceneDirectionalLightSO->AddComponent<CLight>(LightType::Directional);
         _directionalLight->SetIntensity(0.1f);
         _directionalLight->Initialize();
+        _sceneDirectionalLightSO->Rotate(Vector3(0.0f, 1.0f, 1.0f), -Radian(Math::HALF_PI));*/
 
         for (INT32 i = -1; i < 2; i++)
         {
             _scenePointLightSOs.push_back(SceneObject::Create("PointLight"));
             HSceneObject lightSO = _scenePointLightSOs.back();
             HLight light = lightSO->AddComponent<CLight>(LightType::Radial);
-            light->SetIntensity(0.9f);
-            light->Initialize();
-            lightSO->SetPosition(Vector3(0.0f, -0.5f, i * 15.0f));
+            light->SetIntensity(25.0f);
+            light->SetAttenuationRadius(1.0f);
+            light->SetLinearAttenuation(0.35f);
+            light->SetQuadraticAttenuation(0.44f);
+            lightSO->SetPosition(Vector3(0.0f + i * 2.5f, -0.5f, i * 15.0f));
 
             HRenderable mesh = lightSO->AddComponent<CRenderable>();
             mesh->SetMesh(_lightMesh);
@@ -604,7 +607,9 @@ namespace te
         _sceneCameraSO->SetPosition(Vector3(0.0f, 2.0f, 0.0f));
         _sceneCameraSO->LookAt(Vector3(0.0f, 1.5f, -3.0f));
 
-        _sceneDirectionalLightSO->Rotate(Vector3(0.0f, 1.0f, 1.0f), -Radian(Math::HALF_PI));
+        auto settings = _sceneCamera->GetRenderSettings();
+        settings->ExposureScale = 1.5f;
+        settings->Gamma = 1.0f;
 #endif
     }
 

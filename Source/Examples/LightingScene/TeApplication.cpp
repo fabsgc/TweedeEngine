@@ -103,7 +103,7 @@ namespace te
             material.MaterialProp.UseNormalMap = true;
             material.MaterialProp.UseSpecularMap = true;
             material.MaterialProp.SpecularPower = 16.0f;
-            material.MaterialProp.Ambient = Color(1.0f, 1.0f, 1.0f, 0.1f);
+            material.MaterialProp.Ambient = Color(0.05f, 0.05f, 0.05f, 1.0f);
 
             material.DiffuseTexture = gResourceManager().Load<Texture>(material.DiffusePath, textureImportOptions);
             material.NormalTexture = gResourceManager().Load<Texture>(material.NormalPath, textureImportOptions);
@@ -157,14 +157,23 @@ namespace te
 
         _scenePointLightSO = SceneObject::Create("PointLight");
         _pointLight = _scenePointLightSO->AddComponent<CLight>(LightType::Radial);
+        _pointLight->SetIntensity(5.0f);
+        _pointLight->SetAttenuationRadius(1.0f);
+        _pointLight->SetLinearAttenuation(0.35f);
+        _pointLight->SetQuadraticAttenuation(0.44f);
         _pointLight->Initialize();
 
         _sceneSpotLightSO = SceneObject::Create("SpotLight");
         _spotLight = _sceneSpotLightSO->AddComponent<CLight>(LightType::Spot);
+        _spotLight->SetIntensity(12.0f);
+        _spotLight->SetAttenuationRadius(1.0f);
+        _spotLight->SetLinearAttenuation(0.35f);
+        _spotLight->SetQuadraticAttenuation(0.44f);
         _spotLight->Initialize();
 
         _sceneDirectionalLightSO = SceneObject::Create("DirectionalLight");
         _directionalLight = _sceneDirectionalLightSO->AddComponent<CLight>(LightType::Directional);
+        _directionalLight->SetIntensity(0.1f);
         _directionalLight->Initialize();
 
         _sceneSkyboxSO = SceneObject::Create("Skybox");
@@ -180,6 +189,10 @@ namespace te
         _sceneSpotLightSO->Rotate(Vector3(0.0f, 1.0f, 1.0f), Radian(Math::HALF_PI / 2.0f));
         _sceneDirectionalLightSO->SetPosition(Vector3(3.0f, 10.0f, 10.0f));
         _sceneDirectionalLightSO->Rotate(Vector3(0.0f, 1.0f, 1.0f), -Radian(Math::HALF_PI));
+
+        auto settings = _sceneCamera->GetRenderSettings();
+        settings->ExposureScale = 1.5f;
+        settings->Gamma = 1.0f;
         // ######################################################
 
         // ######################################################

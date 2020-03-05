@@ -560,7 +560,6 @@ namespace te
         SPtr<Texture> ppLastFrame;
         postProcessNode->GetAndSwitch(inputs.View, ppOutput, ppLastFrame);
 
-        // Note: I could skip executing FXAA over DOF and motion blurred pixels
         FXAAMat* fxaa = FXAAMat::Get();
 
         if(ppLastFrame)
