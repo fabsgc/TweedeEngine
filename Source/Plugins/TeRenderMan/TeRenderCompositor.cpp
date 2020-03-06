@@ -646,8 +646,11 @@ namespace te
         SPtr<Texture> input;
         if (viewProps.RunPostProcessing && viewProps.Target.NumSamples == 1)
         {
-            RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[0]);
+            RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[1]);
+            RCNodeForwardPass* forwardPassNode = static_cast<RCNodeForwardPass*>(inputs.InputNodes[0]);
+            
             input = postProcessNode->GetLastOutput();
+            //input = forwardPassNode->VelocityTex->Tex;
         }
         else
         {
@@ -678,6 +681,7 @@ namespace te
         Vector<String> deps;
         if (viewProps.RunPostProcessing && viewProps.Target.NumSamples == 1)
         {
+            deps.push_back(RCNodeForwardPass::GetNodeId());
             deps.push_back(RCNodePostProcess::GetNodeId());
             deps.push_back(RCNodeFXAA::GetNodeId());
         }

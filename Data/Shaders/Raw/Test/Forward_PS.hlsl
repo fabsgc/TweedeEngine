@@ -87,9 +87,16 @@ float4 ComputeEmissiveBuffer(float4 color, float4 emissive)
     }
 }
 
-float4 ComputeVelocityBuffer(float4 velocity)
+float2 ComputeVelocityBuffer(float4 position, float4 prevPosition)
 {
-    return velocity;
+    float3 a = (position.xyz / position.w);
+    float3 b = (prevPosition.xyz / prevPosition.w);
+    float3 oVelocity = (a - b);
+    oVelocity = normalize(oVelocity);
+    //oVelocity.x = pow(oVelocity.x, 12.0);
+    //oVelocity.y = pow(oVelocity.y, 12.0);
+
+    return oVelocity.xy;
 }
 
 struct LightingResult
@@ -274,7 +281,7 @@ PS_OUTPUT main( PS_INPUT IN )
     //OUT.Specular = ComputeSpecularBuffer(float4(specular, 1.0f));
     OUT.Normal = ComputeNormalBuffer(float4(normal, 0.0f));
     OUT.Emissive = ComputeEmissiveBuffer(OUT.Scene, float4(emissive, 0.0));
-    OUT.Velocity = ComputeVelocityBuffer((float4)0);
+    OUT.Velocity = ComputeVelocityBuffer(IN.VelocityPosition, IN.PrevVelocityPosition);
 
     return OUT;
 }

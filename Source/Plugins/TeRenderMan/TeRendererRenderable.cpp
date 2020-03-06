@@ -115,8 +115,9 @@ namespace te
 
     void RendererRenderable::UpdatePerCallBuffer(const Matrix4& viewProj, bool flush)
     {
-        const Matrix4 worldViewProjMatrix = viewProj * RenderablePtr->GetMatrixNoScale();
-        gPerCallParamDef.gMatWorldViewProj.Set(PerCallParamBuffer, worldViewProjMatrix.Transpose());
+        // TODO is instance, it does not work
+        // const Matrix4 worldViewProjMatrix = viewProj * RenderablePtr->GetMatrixNoScale();
+        // gPerCallParamDef.gMatWorldViewProj.Set(PerCallParamBuffer, worldViewProjMatrix.Transpose());
 
         //if (flush)
         //    PerCallParamBuffer->FlushToGPU();

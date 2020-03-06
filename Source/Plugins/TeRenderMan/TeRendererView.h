@@ -23,6 +23,7 @@ namespace te
     struct RendererViewData
     {
         Matrix4 ViewTransform;
+        Matrix4 PrevViewProjTransform;
         Matrix4 ProjTransform;
         Vector3 ViewDirection;
         Vector3 ViewOrigin;

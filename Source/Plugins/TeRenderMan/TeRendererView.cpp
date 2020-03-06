@@ -36,13 +36,13 @@ namespace te
         return true;
     }
 
-    RendererViewProperties::RendererViewProperties(const RENDERER_VIEW_DESC& src)
-        : RendererViewData(src)
+    RendererViewProperties::RendererViewProperties(const RENDERER_VIEW_DESC& desc)
+        : RendererViewData(desc)
         , FrameIdx(0)
-        , Target(src.Target)
+        , Target(desc.Target)
     {
-        ProjTransformNoAA = src.ProjTransform;
-        ViewProjTransform = src.ProjTransform * src.ViewTransform;
+        ProjTransformNoAA = desc.ProjTransform;
+        ViewProjTransform = desc.ProjTransform * desc.ViewTransform;
     }
 
     RendererView::RendererView()
@@ -59,6 +59,7 @@ namespace te
         , _camera(desc.SceneCamera)
     {
         _paramBuffer = gPerCameraParamDef.CreateBuffer();
+        _properties.PrevViewProjTransform = desc.ProjTransform * desc.ViewTransform;
 
         _forwardOpaqueQueue = te_shared_ptr_new<RenderQueue>(desc.ReductionMode);
         _forwardTransparentQueue = te_shared_ptr_new<RenderQueue>(desc.ReductionMode);
@@ -111,6 +112,7 @@ namespace te
         _properties = desc;
         _properties.ProjTransformNoAA = desc.ProjTransform;
         _properties.ViewProjTransform = desc.ProjTransform * desc.ViewTransform;
+        _properties.PrevViewProjTransform = Matrix4::IDENTITY;
         _properties.Target = desc.Target;
 
         SetStateReductionMode(desc.ReductionMode);
@@ -144,6 +146,11 @@ namespace te
             }
         }
 
+        perViewBufferDirty = true;
+
+        _properties.ProjTransform = _properties.ProjTransformNoAA;
+        _properties.ViewProjTransform = _properties.ProjTransform * _properties.ViewTransform;
+
         if (perViewBufferDirty)
             UpdatePerViewBuffer();
 
@@ -162,6 +169,9 @@ namespace te
 
     void RendererView::EndFrame()
     {
+        // Save view-projection matrix to use for temporal filtering
+        _properties.PrevViewProjTransform = _properties.ViewProjTransform;
+
         // Advance per-view frame index. This is used primarily by temporal rendering effects, and pausing the frame index
         // allows you to freeze the current rendering as is, without temporal artifacts.
         _properties.FrameIdx++;
@@ -442,6 +452,12 @@ namespace te
         gPerCameraParamDef.gMatProj.Set(_paramBuffer, _properties.ProjTransform.Transpose());
         gPerCameraParamDef.gMatView.Set(_paramBuffer, _properties.ViewTransform.Transpose());
         gPerCameraParamDef.gMatViewProj.Set(_paramBuffer, viewProj.Transpose());
+        gPerCameraParamDef.gMatPrevViewProj.Set(_paramBuffer, _properties.PrevViewProjTransform.Transpose());
+
+        if (_properties.PrevViewProjTransform != viewProj)
+        {
+            //TE_PRINT("velocity");
+        }
 
         gPerCameraParamDef.gViewDir.Set(_paramBuffer, _properties.ViewDirection);
         gPerCameraParamDef.gViewOrigin.Set(_paramBuffer, _properties.ViewOrigin);
