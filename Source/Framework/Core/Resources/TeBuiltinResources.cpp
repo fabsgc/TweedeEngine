@@ -239,6 +239,7 @@ namespace te
             SHADER_DATA_PARAM_DESC gMatViewProjDesc("gMatViewProj", "gMatViewProj", GPDT_MATRIX_4X4);
             SHADER_DATA_PARAM_DESC gMatViewDesc("gMatView", "gMatView", GPDT_MATRIX_4X4);
             SHADER_DATA_PARAM_DESC gMatProjDesc("gMatProj", "gMatProj", GPDT_MATRIX_4X4);
+            SHADER_DATA_PARAM_DESC gMatPrevViewProjDesc("gMatPrevViewProj", "gMatPrevViewProj", GPDT_MATRIX_4X4);
 
             SHADER_DATA_PARAM_DESC gMatWorldDesc("gMatWorld", "gMatWorld", GPDT_MATRIX_4X4);
             SHADER_DATA_PARAM_DESC gMatInvWorldDesc("gMatInvWorld", "gMatInvWorld", GPDT_MATRIX_4X4);
@@ -292,6 +293,7 @@ namespace te
             _forwardShaderDesc.AddParameter(gMatViewProjDesc);
             _forwardShaderDesc.AddParameter(gMatViewDesc);
             _forwardShaderDesc.AddParameter(gMatProjDesc);
+            _forwardShaderDesc.AddParameter(gMatPrevViewProjDesc);
 
             _forwardShaderDesc.AddParameter(gInstanceData);
 

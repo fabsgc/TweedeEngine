@@ -7,6 +7,7 @@ cbuffer PerCameraBuffer : register(b0)
     matrix gMatViewProj;
     matrix gMatView;
     matrix gMatProj;
+    matrix gMatPrevViewProj;
 }
 
 cbuffer PerMaterialBuffer : register(b1)

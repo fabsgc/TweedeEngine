@@ -131,7 +131,7 @@ namespace te
                 "Data/Textures/Sponza/chain/chain_MASK.jpeg",
                 "",
                 "",
-                0.9f,
+                1.0f,
                 0.5f
             },
             {
@@ -313,7 +313,7 @@ namespace te
                 "Data/Textures/Sponza/leaf/leaf_MASK.jpeg",
                 "",
                 "",
-                0.9f,
+                1.0f,
                 0.5f
             },
             {
@@ -383,7 +383,7 @@ namespace te
                 "Data/Textures/Sponza/vase_plant/vase_plant_MASK.jpeg",
                 "",
                 "",
-                0.9f,
+                1.0f,
                 0.5f
             },
             {

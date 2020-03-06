@@ -39,6 +39,11 @@ cbuffer PerLightsBuffer : register(b2)
     uint gLightsNumber;
 }
 
+cbuffer PerFrameBuffer : register(b3)
+{
+    float gTime;
+}
+
 SamplerState AnisotropicSampler : register(s0);
 
 Texture2D DiffuseMap : register(t0);
@@ -84,7 +89,7 @@ float4 ComputeEmissiveBuffer(float4 color, float4 emissive)
 
 float4 ComputeVelocityBuffer(float4 velocity)
 {
-    return velocity; // TODO
+    return velocity;
 }
 
 struct LightingResult
@@ -115,11 +120,11 @@ float3 DoSpecular( LightData light, float3 V, float3 L, float3 N )
     // Phong lighting.
     float3 R = normalize( reflect( -L, N ) );
     float RdotV = max( 0, dot( R, V ) );
- 
+
     // Blinn-Phong lighting
     float3 H = normalize( L + V );
     float NdotH = max( 0, dot( N, H ) );
- 
+
     return light.Color * pow( RdotV, gSpecularPower ) * light.Intensity;
 }
 
@@ -191,7 +196,6 @@ LightingResult DoSpotLight( LightData light, float3 V, float3 P, float3 N )
 LightingResult ComputeLighting( float3 P, float3 N )
 {
     float3 V = normalize( gViewOrigin - P );
-
     LightingResult totalResult = { {0, 0, 0}, {0, 0, 0} };
 
     [unroll]
@@ -200,17 +204,11 @@ LightingResult ComputeLighting( float3 P, float3 N )
         LightingResult result = { {0, 0, 0}, {0, 0, 0} };
 
         if(gLights[i].Type == DIRECTIONAL_LIGHT)
-        {
             result = DoDirectionalLight( gLights[i], V, P, N );
-        }
         else if(gLights[i].Type == POINT_LIGHT)
-        {
             result = DoPointLight( gLights[i], V, P, N );
-        }
         else if(gLights[i].Type == SPOT_LIGHT)
-        {
             result = DoSpotLight( gLights[i], V, P, N );
-        }
 
         totalResult.Diffuse += result.Diffuse;
         totalResult.Specular += result.Specular;
@@ -218,7 +216,7 @@ LightingResult ComputeLighting( float3 P, float3 N )
 
     totalResult.Diffuse = saturate(totalResult.Diffuse);
     totalResult.Specular = saturate(totalResult.Specular);
- 
+
     return totalResult;
 }
 
@@ -276,7 +274,7 @@ PS_OUTPUT main( PS_INPUT IN )
     //OUT.Specular = ComputeSpecularBuffer(float4(specular, 1.0f));
     OUT.Normal = ComputeNormalBuffer(float4(normal, 0.0f));
     OUT.Emissive = ComputeEmissiveBuffer(OUT.Scene, float4(emissive, 0.0));
-    //OUT.Velocity = ComputeVelocityBuffer((float4)0);
+    OUT.Velocity = ComputeVelocityBuffer((float4)0);
 
     return OUT;
 }

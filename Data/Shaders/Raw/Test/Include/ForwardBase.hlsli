@@ -45,12 +45,13 @@ struct VS_OUTPUT
 {
     float4 Position : SV_POSITION;
     float4 WorldPosition : POSITION;
+    float4 PrevPosition : POSITION1;
     float3 Normal : NORMAL;
     float3 Tangent : TANGENT;
     float3 BiTangent : BINORMAL;
     float4 Color : COLOR0;
     float2 Texture : TEXCOORD0;
-    float3 ViewDirection : POSITION1;
+    float3 ViewDirection : POSITION2;
     float4 WorldViewDistance : TEXCOORD1;
 };
 
@@ -58,12 +59,13 @@ struct PS_INPUT
 {
     float4 Position : SV_POSITION;
     float4 WorldPosition : POSITION;
+    float4 PrevPosition : POSITION1;
     float3 Normal : NORMAL;
     float3 Tangent : TANGENT;
     float3 BiTangent : BINORMAL;
     float4 Color : COLOR0;
     float2 Texture : TEXCOORD0;
-    float3 ViewDirection: POSITION1;
+    float3 ViewDirection: POSITION2;
     float4 WorldViewDistance : TEXCOORD1;
 };
 
@@ -74,7 +76,7 @@ struct PS_OUTPUT
     //float4 Specular : SV_Target2;
     float4 Normal : SV_Target1;
     float4 Emissive : SV_Target2;
-    //float4 Velocity : SV_Target5;
+    float4 Velocity : SV_Target3;
 };
 
 float2 FlipUV(float2 coord)
@@ -82,39 +84,39 @@ float2 FlipUV(float2 coord)
     return float2(coord.x - 1.0f, coord.y);
 }
 
-float3 ExpandNormal( float3 n )
+float3 ExpandNormal(float3 normal)
 {
-    return n * 2.0f - 1.0f;
-}
- 
-float3 DoNormalMapping( float3x3 TBN, Texture2D tex, sampler s, float2 uv )
-{
-    float3 normal = tex.Sample( s, uv ).xyz;
-    normal = ExpandNormal( normal );
- 
-    // Transform normal from tangent space to view space.
-    normal = mul( normal, TBN );
-    return normalize( normal );
+    return normal * 2.0f - 1.0f;
 }
 
-float3 DoBumpMapping( float3x3 TBN, Texture2D tex, sampler s, float2 uv, float bumpScale )
+float3 DoNormalMapping(float3x3 TBN, Texture2D tex, SamplerState samplerState, float2 uv)
+{
+    float3 normal = tex.Sample(samplerState, uv).xyz;
+    normal = ExpandNormal(normal);
+
+    // Transform normal from tangent space to view space.
+    normal = mul(normal, TBN);
+    return normalize(normal);
+}
+
+float3 DoBumpMapping(float3x3 TBN, Texture2D tex, SamplerState samplerState, float2 uv, float bumpScale)
 {
     // Sample the heightmap at the current texture coordinate.
-    float height = tex.Sample( s, uv ).r * bumpScale;
+    float height = tex.Sample(samplerState, uv).r * bumpScale;
     // Sample the heightmap in the U texture coordinate direction.
-    float heightU = tex.Sample( s, uv, int2( 1, 0 ) ).r * bumpScale;
+    float heightU = tex.Sample(samplerState, uv, int2( 1, 0 )).r * bumpScale;
     // Sample the heightmap in the V texture coordinate direction.
-    float heightV = tex.Sample( s, uv, int2( 0, 1 ) ).r * bumpScale;
- 
+    float heightV = tex.Sample(samplerState, uv, int2( 0, 1 )).r * bumpScale;
+
     float3 p = { 0, 0, height };
     float3 pU = { 0.2, 0, heightU };
     float3 pV = { 0, 0.2, heightV };
- 
+
     // normal = tangent x bitangent
-    float3 normal = cross( normalize(pU - p), normalize(pV - p) );
- 
+    float3 normal = cross(normalize(pU - p), normalize(pV - p));
+
     // Transform normal from tangent space to view space.
-    normal = mul( normal, TBN );
- 
+    normal = mul(normal, TBN);
+
     return normal;
 }

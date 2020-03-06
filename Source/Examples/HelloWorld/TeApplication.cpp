@@ -160,6 +160,10 @@ namespace te
                 _sceneRenderablesMonkeySO.push_back(sceneRenderable);
             }
         }
+
+        auto settings = _sceneCamera->GetRenderSettings();
+        settings->ExposureScale = 1.3f;
+        settings->Gamma = 1.0f;
         // ######################################################
 
         // ######################################################

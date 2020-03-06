@@ -7,6 +7,7 @@ cbuffer PerCameraBuffer : register(b0)
     matrix gMatViewProj;
     matrix gMatView;
     matrix gMatProj;
+    matrix gMatPrevViewProj;
 }
 
 cbuffer PerMaterialBuffer : register(b1)
@@ -71,6 +72,11 @@ VS_OUTPUT main( VS_INPUT IN )
         OUT.Position = mul(OUT.Position, gMatWorld);
         OUT.Position = mul(OUT.Position, gMatViewProj);
 
+        OUT.PrevPosition.xyz = IN.Position;
+        OUT.PrevPosition.w = 1.0f;
+        OUT.PrevPosition = mul(OUT.PrevPosition, gMatWorld);
+        OUT.PrevPosition = mul(OUT.PrevPosition, gMatPrevViewProj);
+
         OUT.Color = IN.Color;
         OUT.Normal = normalize(mul(float4(IN.Normal, 0.0f), gMatWorld)).xyz;
         OUT.Tangent = normalize(mul(float4(IN.Tangent.xyz, 0.0f), gMatWorld)).xyz;
@@ -91,6 +97,11 @@ VS_OUTPUT main( VS_INPUT IN )
         OUT.Position.w = 1.0f;
         OUT.Position = mul(OUT.Position, gInstanceData[IN.Instanceid].gMatWorld);
         OUT.Position = mul(OUT.Position, gMatViewProj);
+
+        OUT.PrevPosition.xyz = IN.Position;
+        OUT.PrevPosition.w = 1.0f;
+        OUT.PrevPosition = mul(OUT.PrevPosition, gInstanceData[IN.Instanceid].gMatWorld);
+        OUT.PrevPosition = mul(OUT.PrevPosition, gMatPrevViewProj);
 
         OUT.Color = IN.Color;
         OUT.Normal = normalize(mul(float4(IN.Normal, 0.0f), gInstanceData[IN.Instanceid].gMatWorld)).xyz;

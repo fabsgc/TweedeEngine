@@ -115,7 +115,7 @@ namespace te
 
     void RendererRenderable::UpdatePerCallBuffer(const Matrix4& viewProj, bool flush)
     {
-        const Matrix4 worldViewProjMatrix = viewProj * RenderablePtr->GetMatrix();
+        const Matrix4 worldViewProjMatrix = viewProj * RenderablePtr->GetMatrixNoScale();
         gPerCallParamDef.gMatWorldViewProj.Set(PerCallParamBuffer, worldViewProjMatrix.Transpose());
 
         //if (flush)

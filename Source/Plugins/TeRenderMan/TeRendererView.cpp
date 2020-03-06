@@ -258,9 +258,6 @@ namespace te
 
         for (UINT32 i = 0; i < (UINT32)cullInfos.size(); i++)
         {
-            visibility[i].Visible = true;
-            continue;
-
             if ((cullInfos[i].Layer & cameraLayers) == 0)
                 continue;
 
