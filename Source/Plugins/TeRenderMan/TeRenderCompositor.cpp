@@ -648,7 +648,7 @@ namespace te
         {
             RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[1]);
             RCNodeForwardPass* forwardPassNode = static_cast<RCNodeForwardPass*>(inputs.InputNodes[0]);
-            
+
             input = postProcessNode->GetLastOutput();
             //input = forwardPassNode->VelocityTex->Tex;
         }

@@ -272,6 +272,7 @@ namespace te
         RendererRenderable* rendererRenderable = _info.Renderables.back();
         rendererRenderable->RenderablePtr = renderable;
         rendererRenderable->WorldTfrm = renderable->GetMatrix();
+        rendererRenderable->PrevWorldTfrm = rendererRenderable->WorldTfrm;
         rendererRenderable->PreviousFrameDirtyState = PrevFrameDirtyState::Clean;
         rendererRenderable->UpdatePerObjectBuffer();
 

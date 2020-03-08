@@ -7,6 +7,8 @@ cbuffer PerCameraBuffer : register(b0)
     matrix gMatViewProj;
     matrix gMatView;
     matrix gMatProj;
+    matrix gMatPrevViewProj;
+    matrix gNDCToPrevNDC;
 }
 
 cbuffer PerMaterialBuffer : register(b1)
@@ -89,14 +91,11 @@ float4 ComputeEmissiveBuffer(float4 color, float4 emissive)
 
 float2 ComputeVelocityBuffer(float4 position, float4 prevPosition)
 {
-    float3 a = (position.xyz / position.w);
-    float3 b = (prevPosition.xyz / prevPosition.w);
-    float3 oVelocity = (a - b);
-    oVelocity = normalize(oVelocity);
-    //oVelocity.x = pow(oVelocity.x, 12.0);
-    //oVelocity.y = pow(oVelocity.y, 12.0);
+    float2 a = (position.xy) * 0.5 + 0.5;
+    float2 b = (prevPosition.xy) * 0.5 + 0.5;
+    float2 oVelocity = (b - a) * 0.5 + 0.5;
 
-    return oVelocity.xy;
+    return oVelocity;
 }
 
 struct LightingResult
@@ -276,12 +275,16 @@ PS_OUTPUT main( PS_INPUT IN )
 
     OUT.Scene.rgb = (ambient + emissive + diffuse + specular) * albedo;
     OUT.Scene.a = alpha;
+    
+    float4 currentNDC = float4(IN.Position.xyz, 1);
+    float4 prevClip = mul(currentNDC, gNDCToPrevNDC);
+    float3 prevNdcPos = prevClip.xyz / prevClip.w;
 
     //OUT.Albedo = ComputeAlbedoBuffer(float4(albedo, 1.0f));
     //OUT.Specular = ComputeSpecularBuffer(float4(specular, 1.0f));
     OUT.Normal = ComputeNormalBuffer(float4(normal, 0.0f));
     OUT.Emissive = ComputeEmissiveBuffer(OUT.Scene, float4(emissive, 0.0));
-    OUT.Velocity = ComputeVelocityBuffer(IN.VelocityPosition, IN.PrevVelocityPosition);
+    OUT.Velocity = ComputeVelocityBuffer(currentNDC, float4(prevNdcPos, 1));
 
     return OUT;
 }

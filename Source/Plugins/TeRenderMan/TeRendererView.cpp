@@ -445,22 +445,57 @@ namespace te
         }
     }
 
+    Matrix4 invertProjectionMatrix(const Matrix4& mat)
+    {
+        // Try to solve the most common case using high percision calculations, in order to reduce depth error
+        if (mat[0][1] == 0.0f && mat[0][3] == 0.0f &&
+            mat[1][0] == 0.0f && mat[1][3] == 0.0f &&
+            mat[2][0] == 0.0f && mat[2][1] == 0.0f &&
+            mat[3][0] == 0.0f && mat[3][1] == 0.0f &&
+            mat[3][2] == -1.0f && mat[3][3] == 0.0f)
+        {
+            double a = mat[0][0];
+            double b = mat[1][1];
+            double c = mat[2][2];
+            double d = mat[2][3];
+            double s = mat[0][2];
+            double t = mat[1][2];
+
+            return Matrix4(
+                (float)(1.0 / a), 0.0f, 0.0f, (float)(-s / a),
+                0.0f, (float)(1.0 / b), 0.0f, (float)(-t / b),
+                0.0f, 0.0f, 0.0f, -1.0f,
+                0.0f, 0.0f, (float)(1.0 / d), (float)(c / d)
+            );
+        }
+        else
+        {
+            return mat.Inverse();
+        }
+    }
+
     void RendererView::UpdatePerViewBuffer()
     {
         Matrix4 viewProj = _properties.ProjTransform * _properties.ViewTransform;
+        Matrix4 invProj = invertProjectionMatrix(_properties.ProjTransform);
+        Matrix4 invView = _properties.ViewTransform.InverseAffine();
+        Matrix4 invViewProj = invView * invProj;
 
         gPerCameraParamDef.gMatProj.Set(_paramBuffer, _properties.ProjTransform.Transpose());
         gPerCameraParamDef.gMatView.Set(_paramBuffer, _properties.ViewTransform.Transpose());
         gPerCameraParamDef.gMatViewProj.Set(_paramBuffer, viewProj.Transpose());
         gPerCameraParamDef.gMatPrevViewProj.Set(_paramBuffer, _properties.PrevViewProjTransform.Transpose());
 
+        Matrix4 NDCToPrevNDC = _properties.PrevViewProjTransform * invViewProj;
+
+        gPerCameraParamDef.gNDCToPrevNDC.Set(_paramBuffer, NDCToPrevNDC.Transpose());
+        gPerCameraParamDef.gViewDir.Set(_paramBuffer, _properties.ViewDirection);
+        gPerCameraParamDef.gViewOrigin.Set(_paramBuffer, _properties.ViewOrigin);
+
         if (_properties.PrevViewProjTransform != viewProj)
         {
             //TE_PRINT("velocity");
         }
-
-        gPerCameraParamDef.gViewDir.Set(_paramBuffer, _properties.ViewDirection);
-        gPerCameraParamDef.gViewOrigin.Set(_paramBuffer, _properties.ViewOrigin);
     }
 
     bool RendererView::ShouldDraw() const

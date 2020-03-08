@@ -8,6 +8,7 @@ cbuffer PerCameraBuffer : register(b0)
     matrix gMatView;
     matrix gMatProj;
     matrix gMatPrevViewProj;
+    matrix gNDCToPrevNDC;
 }
 
 cbuffer PerMaterialBuffer : register(b1)
@@ -72,16 +73,6 @@ VS_OUTPUT main( VS_INPUT IN )
         OUT.Position = mul(OUT.Position, gMatWorld);
         OUT.Position = mul(OUT.Position, gMatViewProj);
 
-        OUT.VelocityPosition.xyz = IN.Position;
-        OUT.VelocityPosition.w = 1.0f;
-        OUT.VelocityPosition = mul(OUT.VelocityPosition, gMatWorld);
-        OUT.VelocityPosition = mul(OUT.VelocityPosition, gMatViewProj);
-
-        OUT.PrevVelocityPosition.xyz = IN.Position;
-        OUT.PrevVelocityPosition.w = 1.0f;
-        OUT.PrevVelocityPosition = mul(OUT.PrevVelocityPosition, gMatWorld);
-        OUT.PrevVelocityPosition = mul(OUT.PrevVelocityPosition, gMatViewProj);
-
         OUT.Color = IN.Color;
         OUT.Normal = normalize(mul(float4(IN.Normal, 0.0f), gMatWorld)).xyz;
         OUT.Tangent = normalize(mul(float4(IN.Tangent.xyz, 0.0f), gMatWorld)).xyz;
@@ -102,16 +93,6 @@ VS_OUTPUT main( VS_INPUT IN )
         OUT.Position.w = 1.0f;
         OUT.Position = mul(OUT.Position, gInstanceData[IN.Instanceid].gMatWorld);
         OUT.Position = mul(OUT.Position, gMatViewProj);
-
-        OUT.VelocityPosition.xyz = IN.Position;
-        OUT.VelocityPosition.w = 1.0f;
-        OUT.VelocityPosition = mul(OUT.VelocityPosition, gInstanceData[IN.Instanceid].gMatWorld);
-        OUT.VelocityPosition = mul(OUT.VelocityPosition, gMatViewProj);
-
-        OUT.PrevVelocityPosition.xyz = IN.Position;
-        OUT.PrevVelocityPosition.w = 1.0f;
-        OUT.PrevVelocityPosition = mul(OUT.PrevVelocityPosition, gInstanceData[IN.Instanceid].gMatWorld);
-        OUT.PrevVelocityPosition = mul(OUT.PrevVelocityPosition, gMatPrevViewProj);
 
         OUT.Color = IN.Color;
         OUT.Normal = normalize(mul(float4(IN.Normal, 0.0f), gInstanceData[IN.Instanceid].gMatWorld)).xyz;
