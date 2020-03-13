@@ -23,7 +23,8 @@ int main()
     desc.Importers = {
         "TeFreeImgImporter",
         "TeObjectImporter",
-        "TeShaderImporter"
+        "TeShaderImporter",
+        "TeFontImporter"
     };
 
     desc.WindowDesc.Mode = te::VideoMode(960, 540);

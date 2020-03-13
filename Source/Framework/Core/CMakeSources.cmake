@@ -308,6 +308,16 @@ set (TE_CORE_SRC_AUDIO
     "Core/Audio/TeAudioManager.cpp"
 )
 
+set (TE_CORE_INC_TEXT
+    "Core/Text/TeFont.h"
+    "Core/Text/TeFontDesc.h"
+    "Core/Text/TeFontImportOptions.h"
+)
+set (TE_CORE_SRC_TEXT
+    "Core/Text/TeFont.cpp"
+    "Core/Text/TeFontImportOptions.cpp"
+)
+
 if (WIN32)
     list(APPEND TE_CORE_INC_PLATFORM ${TE_CORE_INC_PLATFORM_WIN32})
     list(APPEND TE_CORE_SRC_PLATFORM ${TE_CORE_SRC_PLATFORM_WIN32})
@@ -334,6 +344,7 @@ source_group("Core\\CoreUtility" FILES ${TE_CORE_INC_CORE_UTILITY} ${TE_CORE_SRC
 source_group("Core\\Serialization" FILES ${TE_CORE_INC_SERIALIZATION} ${TE_CORE_SRC_SERIALIZATION})
 source_group("Core\\Components" FILES ${TE_CORE_INC_COMPONENTS} ${TE_CORE_SRC_COMPONENTS})
 source_group("Core\\Audio" FILES ${TE_CORE_INC_AUDIO} ${TE_CORE_SRC_AUDIO})
+source_group("Core\\Text" FILES ${TE_CORE_INC_TEXT} ${TE_CORE_SRC_TEXT})
 source_group("Core" FILES ${TE_CORE_INC_NOFILTER} ${TE_CORE_SRC_NOFILTER})
 
 set(TE_CORE_SRC
@@ -369,4 +380,6 @@ set(TE_CORE_SRC
     ${TE_CORE_SRC_COMPONENTS}
     ${TE_CORE_INC_AUDIO}
     ${TE_CORE_SRC_AUDIO}
+    ${TE_CORE_INC_TEXT}
+    ${TE_CORE_SRC_TEXT}
 )

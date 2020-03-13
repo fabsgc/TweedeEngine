@@ -46,6 +46,7 @@ set(USE_BUNDLED_LIBRARIES ON CACHE BOOL "Use and install bundled libraries")
 include (${CMAKE_MODULE_PATH}/Findassimp.cmake)
 include (${CMAKE_MODULE_PATH}/Findfreeimg.cmake)
 include (${CMAKE_MODULE_PATH}/Findnvtt.cmake)
+include (${CMAKE_MODULE_PATH}/Findfreetype.cmake)
 
 # Sub-directories
 ## Framework
@@ -66,6 +67,7 @@ endif ()
 add_subdirectory (Plugins/TeRenderMan)
 add_subdirectory (Plugins/TeObjectImporter)
 add_subdirectory (Plugins/TeFreeImgImporter)
+add_subdirectory (Plugins/TeFontImporter)
 add_subdirectory (Plugins/TeShaderImporter)
 add_subdirectory (Plugins/TeOpenAudio)
 

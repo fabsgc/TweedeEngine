@@ -218,6 +218,8 @@ namespace te
     class Audio;
     struct AudioDevice;
     class AudioManager;
+
+    class Font;
 }
 
 #include "Utility/TeNonCopyable.h"
@@ -234,6 +236,7 @@ namespace te
     typedef ResourceHandle<Texture> HTexture;
     typedef ResourceHandle<Shader> HShader;
     typedef ResourceHandle<Mesh> HMesh;
+    typedef ResourceHandle<Font> HFont;
 }
 
 #include "Scene/TeGameObjectHandle.h"

@@ -23,6 +23,9 @@
 #include "Components/TeCSkybox.h"
 #include "Components/TeCCameraFlyer.h"
 
+#include "Text/TeFont.h"
+#include "Text/TeFontImportOptions.h"
+
 namespace te
 {
     TE_MODULE_STATIC_MEMBER(Application)
@@ -50,7 +53,7 @@ namespace te
         // ######################################################
 
         // ######################################################
-        auto textureCubeMapImportOptions = TextureImportOptions::Create();
+        /*auto textureCubeMapImportOptions = TextureImportOptions::Create();
         textureCubeMapImportOptions->CpuCached = false;
         textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
         textureCubeMapImportOptions->Format = PF_RGBA8;
@@ -59,8 +62,11 @@ namespace te
         _loadedCubemapTexture = gResourceManager().Load<Texture>("Data/Textures/Skybox/sky_countryside_large.jpeg", textureCubeMapImportOptions);
 
         TE_PRINT((_loadedCubemapTexture.GetHandleData())->data);
-        TE_PRINT((_loadedCubemapTexture.GetHandleData())->uuid.ToString());
+        TE_PRINT((_loadedCubemapTexture.GetHandleData())->uuid.ToString());*/
         // ######################################################
+
+        auto fontImportOptions = FontImportOptions::Create();
+        HFont font = gResourceManager().Load<Font>("Data/Fonts/arial.ttf", fontImportOptions);
 
         // ######################################################
         _sceneCameraSO = SceneObject::Create("SceneCamera");
@@ -73,10 +79,10 @@ namespace te
         _sceneCamera->SetMain(true);
         _sceneCamera->Initialize();
 
-        _sceneSkyboxSO = SceneObject::Create("Skybox");
+        /*_sceneSkyboxSO = SceneObject::Create("Skybox");
         _skybox = _sceneSkyboxSO->AddComponent<CSkybox>();
         _skybox->SetTexture(_loadedCubemapTexture);
-        _skybox->Initialize();
+        _skybox->Initialize();*/
         // ######################################################
 
         // ######################################################

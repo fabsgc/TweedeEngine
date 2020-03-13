@@ -17,13 +17,13 @@ namespace te
         ObjectImporter();
         virtual ~ObjectImporter();
 
-        /** @copydoc BasicImporter::IsExtensionSupported */
+        /** @copydoc BaseImporter::IsExtensionSupported */
         bool IsExtensionSupported(const String& ext) const override;
 
-        /** @copydoc BasicImporter::Import */
+        /** @copydoc BaseImporter::Import */
         SPtr<Resource> Import(const String& filePath, const SPtr<const ImportOptions> importOptions) override;
 
-        /** @copydoc BasicImporter::CreateImportOptions */
+        /** @copydoc BaseImporter::CreateImportOptions */
         SPtr<ImportOptions> CreateImportOptions() const override;
 
     private:
