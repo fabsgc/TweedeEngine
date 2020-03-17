@@ -96,7 +96,7 @@ namespace te
                 "bricks",
                 "Data/Textures/Sponza/bricks/bricks_COLOR.jpeg",
                 "",
-                "Data/Textures/Sponza/bricks/bricks_NRM.jpeg",
+                "Data/Textures/Sponza/bricks/bricks_NRM_3.jpeg",
                 "Data/Textures/Sponza/bricks/bricks_SPEC.jpeg",
                 "",
                 "",
@@ -138,7 +138,7 @@ namespace te
                 "column_a",
                 "Data/Textures/Sponza/column_a/column_a_COLOR.jpeg",
                 "",
-                "Data/Textures/Sponza/column_a/column_a_NRM.jpeg",
+                "Data/Textures/Sponza/column_a/sponza_column_a_ddn.png",
                 "Data/Textures/Sponza/column_a/column_a_SPEC.jpeg",
                 "",
                 "",
@@ -625,8 +625,8 @@ namespace te
         _sceneCameraSO->LookAt(Vector3(0.0f, 1.5f, -3.0f));
 
         auto settings = _sceneCamera->GetRenderSettings();
-        settings->ExposureScale = 1.5f;
-        settings->Gamma = 1.0f;
+        settings->ExposureScale = 1.3f;
+        settings->Gamma = 0.9f;
 
         /*_sceneDirectionalLightSO = SceneObject::Create("DirectionalLight");
         _directionalLight = _sceneDirectionalLightSO->AddComponent<CLight>(LightType::Directional);
