@@ -89,11 +89,23 @@ float4 ComputeEmissiveBuffer(float4 color, float4 emissive)
     }
 }
 
-float2 ComputeVelocityBuffer(float4 position, float4 prevPosition)
+float2 ComputeVelocityBuffer(float4 position, float4 prevPosition, float alpha)
 {
-    float2 a = (position.xy) * 0.5 + 0.5;
-    float2 b = (prevPosition.xy) * 0.5 + 0.5;
-    float2 oVelocity = (b - a) * 0.5 + 0.5;
+    float2 oVelocity = (float2)0;
+
+    if(alpha >= 1.0)
+    {
+        float2 a = float2(position.xy);
+        float2 b = float2(prevPosition.xy);
+
+        a.x = a.x / 960.0;
+        a.y = a.y / 480.0;
+
+        b.x = b.x / 960.0;
+        b.y = b.y / 480.0;
+
+        oVelocity = (b - a);
+    }
 
     return oVelocity;
 }
@@ -275,16 +287,21 @@ PS_OUTPUT main( PS_INPUT IN )
 
     OUT.Scene.rgb = (ambient + emissive + diffuse + specular) * albedo;
     OUT.Scene.a = alpha;
-    
-    float4 currentNDC = float4(IN.Position.xyz, 1);
-    float4 prevClip = mul(currentNDC, gNDCToPrevNDC);
-    float3 prevNdcPos = prevClip.xyz / prevClip.w;
+
+    //float4 currentClipSpace = float4(IN.WorldPosition.xyz, 1);
+    //float4 prevClipSpace = float4(IN.WorldPosition.xyz, 1);
+
+    //currentClipSpace = mul(currentClipSpace, gMatViewProj);
+    //prevClipSpace = mul(prevClipSpace, gMatPrevViewProj);
+
+    //float4 prevClip = mul(currentNDC, gNDCToPrevNDC);
+    //float3 prevNdcPos = prevClip.xyz / prevClip.w;
 
     //OUT.Albedo = ComputeAlbedoBuffer(float4(albedo, 1.0f));
     //OUT.Specular = ComputeSpecularBuffer(float4(specular, 1.0f));
     OUT.Normal = ComputeNormalBuffer(float4(normal, 0.0f));
     OUT.Emissive = ComputeEmissiveBuffer(OUT.Scene, float4(emissive, 0.0));
-    OUT.Velocity = ComputeVelocityBuffer(currentNDC, float4(prevNdcPos, 1));
+    //OUT.Velocity = ComputeVelocityBuffer(currentClipSpace, prevClipSpace, alpha);
 
     return OUT;
 }

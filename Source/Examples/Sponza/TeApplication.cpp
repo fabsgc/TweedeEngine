@@ -625,7 +625,7 @@ namespace te
         _sceneCameraSO->LookAt(Vector3(0.0f, 1.5f, -3.0f));
 
         auto settings = _sceneCamera->GetRenderSettings();
-        settings->ExposureScale = 1.3f;
+        settings->ExposureScale = 1.5f;
         settings->Gamma = 1.0f;
 
         /*_sceneDirectionalLightSO = SceneObject::Create("DirectionalLight");

@@ -74,7 +74,7 @@ struct PS_OUTPUT
     //float4 Specular : SV_Target2;
     float4 Normal : SV_Target1;
     float4 Emissive : SV_Target2;
-    float2 Velocity : SV_Target3;
+    //float2 Velocity : SV_Target3;
 };
 
 float2 FlipUV(float2 coord)

@@ -480,22 +480,16 @@ namespace te
         Matrix4 invProj = invertProjectionMatrix(_properties.ProjTransform);
         Matrix4 invView = _properties.ViewTransform.InverseAffine();
         Matrix4 invViewProj = invView * invProj;
+        Matrix4 NDCToPrevNDC = _properties.PrevViewProjTransform * invViewProj;
 
         gPerCameraParamDef.gMatProj.Set(_paramBuffer, _properties.ProjTransform.Transpose());
         gPerCameraParamDef.gMatView.Set(_paramBuffer, _properties.ViewTransform.Transpose());
         gPerCameraParamDef.gMatViewProj.Set(_paramBuffer, viewProj.Transpose());
         gPerCameraParamDef.gMatPrevViewProj.Set(_paramBuffer, _properties.PrevViewProjTransform.Transpose());
 
-        Matrix4 NDCToPrevNDC = _properties.PrevViewProjTransform * invViewProj;
-
         gPerCameraParamDef.gNDCToPrevNDC.Set(_paramBuffer, NDCToPrevNDC.Transpose());
         gPerCameraParamDef.gViewDir.Set(_paramBuffer, _properties.ViewDirection);
         gPerCameraParamDef.gViewOrigin.Set(_paramBuffer, _properties.ViewOrigin);
-
-        if (_properties.PrevViewProjTransform != viewProj)
-        {
-            //TE_PRINT("velocity");
-        }
     }
 
     bool RendererView::ShouldDraw() const

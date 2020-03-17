@@ -234,8 +234,8 @@ namespace te
             numSamples, true));
         EmissiveTex = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA8, width, height, TU_RENDERTARGET,
             numSamples, true));
-        VelocityTex = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RG16S, width, height, TU_RENDERTARGET,
-            numSamples, false));
+        //VelocityTex = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RG16S, width, height, TU_RENDERTARGET,
+        //    numSamples, false));
 
         DepthTex = gGpuResourcePool().Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_D32_S8X24, width, height, TU_DEPTHSTENCIL,
             numSamples, false));
@@ -249,7 +249,7 @@ namespace te
             //rebuildRT |= RenderTargetTex->GetColorTexture(targetIdx++) != AlbedoTex->Tex;
             rebuildRT |= RenderTargetTex->GetColorTexture(targetIdx++) != NormalTex->Tex;
             rebuildRT |= RenderTargetTex->GetColorTexture(targetIdx++) != EmissiveTex->Tex;
-            rebuildRT |= RenderTargetTex->GetColorTexture(targetIdx++) != VelocityTex->Tex;
+            //rebuildRT |= RenderTargetTex->GetColorTexture(targetIdx++) != VelocityTex->Tex;
             rebuildRT |= RenderTargetTex->GetDepthStencilTexture() != DepthTex->Tex;
         }
         else
@@ -290,11 +290,11 @@ namespace te
             gbufferDesc.ColorSurfaces[targetIdx].MipLevel = 0;
             targetIdx++;
 
-            gbufferDesc.ColorSurfaces[targetIdx].Tex = VelocityTex->Tex;
+            /*gbufferDesc.ColorSurfaces[targetIdx].Tex = VelocityTex->Tex;
             gbufferDesc.ColorSurfaces[targetIdx].Face = 0;
             gbufferDesc.ColorSurfaces[targetIdx].NumFaces = 1;
             gbufferDesc.ColorSurfaces[targetIdx].MipLevel = 0;
-            targetIdx++;
+            targetIdx++;*/
 
             gbufferDesc.DepthStencilSurface.Tex = DepthTex->Tex;
             gbufferDesc.DepthStencilSurface.Face = 0;
@@ -647,7 +647,7 @@ namespace te
         if (viewProps.RunPostProcessing && viewProps.Target.NumSamples == 1)
         {
             RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[1]);
-            RCNodeForwardPass* forwardPassNode = static_cast<RCNodeForwardPass*>(inputs.InputNodes[0]);
+            //RCNodeForwardPass* forwardPassNode = static_cast<RCNodeForwardPass*>(inputs.InputNodes[0]);
 
             input = postProcessNode->GetLastOutput();
             //input = forwardPassNode->VelocityTex->Tex;
