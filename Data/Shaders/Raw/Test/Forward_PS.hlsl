@@ -91,7 +91,7 @@ float4 ComputeEmissiveBuffer(float4 color, float4 emissive)
 
 float2 ComputeVelocityBuffer(float4 position, float4 prevPosition, float alpha)
 {
-    float2 oVelocity = (float2)0; 
+    float2 oVelocity = (float2)0;
 
     if(alpha >= 1.0)
     {
