@@ -10,6 +10,7 @@
 #include "Renderer/TeFXAAMat.h"
 #include "Renderer/TeToneMappingMat.h"
 #include "Renderer/TeBloomMat.h"
+#include "Renderer/TeMotionBlurMat.h"
 #include "TeRendererLight.h"
 
 namespace te
@@ -509,6 +510,29 @@ namespace te
         const MotionBlurSettings& settings = inputs.View.GetRenderSettings().MotionBlur;
         if (!settings.Enabled)
             return;
+
+        RCNodeForwardPass* forwardPassNode = static_cast<RCNodeForwardPass*>(inputs.InputNodes[0]);
+        RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[1]);
+
+        SPtr<RenderTexture> ppOutput;
+        SPtr<Texture> ppLastFrame;
+        SPtr<Texture> depth = forwardPassNode->DepthTex->Tex;
+        postProcessNode->GetAndSwitch(inputs.View, ppOutput, ppLastFrame);
+
+        MotionBlurMat* toneMapping = MotionBlurMat::Get();
+
+        if (ppLastFrame)
+        {
+            auto& texProps = ppLastFrame->GetProperties();
+            toneMapping->Execute(ppLastFrame, ppOutput, depth, inputs.View.GetPerViewBuffer(), 
+                settings, texProps.GetNumSamples());
+        }
+        else
+        {
+            auto& texProps = forwardPassNode->SceneTex->Tex->GetProperties();
+            toneMapping->Execute(forwardPassNode->SceneTex->Tex, ppOutput, depth, inputs.View.GetPerViewBuffer(), 
+                settings, texProps.GetNumSamples());
+        }
     }
 
     void RCNodeMotionBlur::Clear()
@@ -516,7 +540,10 @@ namespace te
 
     Vector<String> RCNodeMotionBlur::GetDependencies(const RendererView& view)
     {
-        return { RCNodePostProcess::GetNodeId() };
+        return { 
+            RCNodeForwardPass::GetNodeId(),
+            RCNodePostProcess::GetNodeId()
+        };
     }
 
     // ############# GAUSSIAN DOF

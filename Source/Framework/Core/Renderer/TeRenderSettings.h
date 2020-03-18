@@ -46,6 +46,53 @@ namespace te
         float FarBlurAmount = 0.02f;
     };
 
+    /** Determines which parts of the scene will trigger motion blur. */
+    enum class TE_CORE_EXPORT MotionBlurDomain
+    {
+        /** Camera movement and rotation will result in full-screen motion blur. */
+        CameraOnly,
+
+        /**
+         * Object movement and rotation will result in blurring of the moving object. Can be significantly more
+         * expensive than just using camera blur due to the requirement to use a velocity buffer (unless some
+         * other effect also requires it, in which case it will be re-used).
+         */
+        ObjectOnly,
+
+        /** Both the camera movement and object movement will result in motion blur. */
+        CameraAndObject
+    };
+
+    /** Type of filter to use when filtering samples contributing to a blurred pixel. */
+    enum class TE_CORE_EXPORT MotionBlurFilter
+    {
+        /** Samples will be simply averaged together to create the blurred pixel. */
+        Simple,
+
+        /**
+         * A more advanced reconstruction filter will be used. This filter provides better blur quality at a
+         * performance cost. In particular the filter will improve blurring at object boundaries, allowing blur
+         * to extend beyond the object silhouette. It will also try to estimate blurred background and provide
+         * better weighting between background, center and foreground samples.
+         */
+        Reconstruction
+    };
+
+    /** Determines the number of samples to take during motion blur filtering. */
+    enum class TE_CORE_EXPORT MotionBlurQuality
+    {
+        /** 4 samples per pixel. */
+        VeryLow,
+        /** 6 samples per pixel. */
+        Low,
+        /** 8 samples per pixel. */
+        Medium,
+        /** 12 samples per pixel. */
+        High,
+        /** 16 samples per pixel. */
+        Ultra
+    };
+
     /** Settings that control the motion blur effect. */
     struct TE_CORE_EXPORT MotionBlurSettings
     {
@@ -53,6 +100,26 @@ namespace te
 
         /** Enables or disables the motion blur effect. */
         bool Enabled = true;
+
+        /** Determines which parts of the scene will trigger motion blur. */
+        MotionBlurDomain Domain = MotionBlurDomain::CameraOnly;
+
+        /** Type of filter to use when filtering samples contributing to a blurred pixel. */
+        MotionBlurFilter Filter = MotionBlurFilter::Reconstruction;
+
+        /**
+         * Determines the number of samples to take during motion blur filtering. Increasing this value will
+         * yield higher quality blur at the cost of the performance.
+         */
+        MotionBlurQuality Quality = MotionBlurQuality::Medium;
+
+        /**
+         * Determines the maximum radius over which the blur samples are allowed to be taken, in percent of the
+         * screen width (e.g. with 1% radius, on 1920x1028 resolution the maximum radius in pixels will be
+         * 1920 * 0.01 = 20px). This clamps the maximum velocity that can affect the blur, as higher velocities
+         * require higher radius. Very high values can adversely affect performance as cache accesses become more random. 
+         */
+        float MaximumRadius = 0.01f; // TODO - Set this in pixels, but always up/downsample to a specific resolution? Would improve cache performance.
     };
 
     /** Settings that control the bloom effect. Bloom adds an extra highlight to bright areas of the scene. */

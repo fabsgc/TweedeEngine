@@ -80,6 +80,7 @@ set (TE_CORE_INC_RENDERER
     "Core/Renderer/TeFXAAMat.h"
     "Core/Renderer/TeToneMappingMat.h"
     "Core/Renderer/TeBloomMat.h"
+    "Core/Renderer/TeMotionBlurMat.h"
 )
 set (TE_CORE_SRC_RENDERER
     "Core/Renderer/TeRenderer.cpp"
@@ -100,6 +101,7 @@ set (TE_CORE_SRC_RENDERER
     "Core/Renderer/TeFXAAMat.cpp"
     "Core/Renderer/TeToneMappingMat.cpp"
     "Core/Renderer/TeBloomMat.cpp"
+    "Core/Renderer/TeMotionBlurMat.cpp"
 )
 
 set (TE_CORE_INC_SCENE

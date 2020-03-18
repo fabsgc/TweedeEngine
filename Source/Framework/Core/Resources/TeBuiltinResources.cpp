@@ -31,6 +31,7 @@ namespace te
         InitShaderFXAA();
         InitShaderToneMapping();
         InitShaderBloom();
+        InitShaderMotionBlur();
         InitDefaultMaterial();
 #endif
     }
@@ -56,6 +57,8 @@ namespace te
             return _shaderToneMapping;
         case BuiltinShader::Bloom:
             return _shaderBloom;
+        case BuiltinShader::MotionBlur:
+            return _shaderMotionBlur;
         default:
             break;
         }
@@ -188,6 +191,24 @@ namespace te
             _pixelShaderBloomDesc.Language = "hlsl";
             _pixelShaderBloomDesc.IncludePath = SHADERS_FOLDER + String("Raw/Test/");
             _pixelShaderBloomDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("Raw/Test/MotionBlur_VS.hlsl"));
+            _vertexShaderMotionBlurDesc.Type = GPT_VERTEX_PROGRAM;
+            _vertexShaderMotionBlurDesc.EntryPoint = "main";
+            _vertexShaderMotionBlurDesc.Language = "hlsl";
+            _vertexShaderMotionBlurDesc.IncludePath = SHADERS_FOLDER + String("Raw/Test/");
+            _vertexShaderMotionBlurDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("Raw/Test/MotionBlur_PS.hlsl"));
+            _pixelShaderMotionBlurDesc.Type = GPT_PIXEL_PROGRAM;
+            _pixelShaderMotionBlurDesc.EntryPoint = "main";
+            _pixelShaderMotionBlurDesc.Language = "hlsl";
+            _pixelShaderMotionBlurDesc.IncludePath = SHADERS_FOLDER + String("Raw/Test/");
+            _pixelShaderMotionBlurDesc.Source = shaderFile.GetAsString();
         }
     }
     void BuiltinResources::InitStates()
@@ -412,14 +433,44 @@ namespace te
             SHADER_OBJECT_PARAM_DESC bilinearSamplerDesc("BilinearSampler", "BilinearSampler", GPOT_SAMPLER2D);
 
             SHADER_OBJECT_PARAM_DESC sourceMapDesc("SourceMap", "SourceMap", GPOT_TEXTURE2D);
-            SHADER_OBJECT_PARAM_DESC SourceMapMSDesc("SourceMapMS", "SourceMapMS", GPOT_RWTEXTURE2DMS);
+            SHADER_OBJECT_PARAM_DESC sourceMapMSDesc("SourceMapMS", "SourceMapMS", GPOT_RWTEXTURE2DMS);
+
+            SHADER_OBJECT_PARAM_DESC emissiveMapDesc("EmissiveMap", "EmissiveMap", GPOT_TEXTURE2D);
+            SHADER_OBJECT_PARAM_DESC emissiveMapMSDesc("EmissiveMapMS", "EmissiveMapMS", GPOT_RWTEXTURE2DMS);
 
             _bloomShaderDesc.AddParameter(gMSAACountDesc);
 
             _bloomShaderDesc.AddParameter(bilinearSamplerDesc);
 
             _bloomShaderDesc.AddParameter(sourceMapDesc);
-            _bloomShaderDesc.AddParameter(SourceMapMSDesc);
+            _bloomShaderDesc.AddParameter(sourceMapMSDesc);
+
+            _bloomShaderDesc.AddParameter(emissiveMapDesc);
+            _bloomShaderDesc.AddParameter(emissiveMapMSDesc);
+        }
+
+        {
+            SHADER_DATA_PARAM_DESC gHalfNumSamples("gHalfNumSamples", "gHalfNumSamples", GPDT_INT1);
+            SHADER_DATA_PARAM_DESC gMSAACountDesc("gMSAACount", "gMSAACount", GPDT_INT1);
+
+            SHADER_OBJECT_PARAM_DESC bilinearSamplerDesc("BilinearSampler", "BilinearSampler", GPOT_SAMPLER2D);
+
+            SHADER_OBJECT_PARAM_DESC sourceMapDesc("SourceMap", "SourceMap", GPOT_TEXTURE2D);
+            SHADER_OBJECT_PARAM_DESC SourceMapMSDesc("SourceMapMS", "SourceMapMS", GPOT_RWTEXTURE2DMS);
+
+            SHADER_OBJECT_PARAM_DESC depthMapDesc("DepthMap", "DepthMap", GPOT_TEXTURE2D);
+            SHADER_OBJECT_PARAM_DESC depthMapMSDesc("DepthMapMS", "DepthMapMS", GPOT_RWTEXTURE2DMS);
+
+            _motionBlurShaderDesc.AddParameter(gHalfNumSamples);
+            _motionBlurShaderDesc.AddParameter(gMSAACountDesc);
+
+            _motionBlurShaderDesc.AddParameter(bilinearSamplerDesc);
+
+            _motionBlurShaderDesc.AddParameter(sourceMapDesc);
+            _motionBlurShaderDesc.AddParameter(SourceMapMSDesc);
+
+            _motionBlurShaderDesc.AddParameter(depthMapDesc);
+            _motionBlurShaderDesc.AddParameter(depthMapMSDesc);
         }
     }
 
@@ -590,6 +641,31 @@ namespace te
         shaderDesc.Techniques.push_back(technique.GetInternalPtr());
 
         _shaderBloom = Shader::Create("Bloom", shaderDesc);
+    }
+
+    void BuiltinResources::InitShaderMotionBlur()
+    {
+        PASS_DESC passDesc;
+        passDesc.BlendStateDesc = _blendOpaqueStateDesc;
+        passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
+        passDesc.RasterizerStateDesc = _rasterizerStateDesc;
+        passDesc.VertexProgramDesc = _vertexShaderMotionBlurDesc;
+        passDesc.PixelProgramDesc = _pixelShaderMotionBlurDesc;
+
+        passDesc.DepthStencilStateDesc.StencilEnable = false;
+        passDesc.DepthStencilStateDesc.DepthReadEnable = false;
+        passDesc.DepthStencilStateDesc.DepthWriteEnable = false;
+
+        passDesc.RasterizerStateDesc.cullMode = CULL_NONE;
+
+        HPass pass = Pass::Create(passDesc);
+        HTechnique technique = Technique::Create("hlsl", { pass.GetInternalPtr() });
+        technique->Compile();
+
+        SHADER_DESC shaderDesc = _motionBlurShaderDesc;
+        shaderDesc.Techniques.push_back(technique.GetInternalPtr());
+
+        _shaderMotionBlur = Shader::Create("MotionBlur", shaderDesc);
     }
 
     void BuiltinResources::InitDefaultMaterial()

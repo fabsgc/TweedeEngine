@@ -25,7 +25,8 @@ namespace te
          *
          * @param[in]	source		Input texture to apply ToneMappingMat to.
          * @param[in]	destination	Output target to which to write the antialiased image to.
-         * @param[in]	destination	emissive buffer created during first pass
+         * @param[in]	emissive	emissive buffer created during first pass
+         * @param[in]	MSSACount	how many samples used for input and output textures
          */
         void Execute(const SPtr<Texture>& source, const SPtr<RenderTarget>& destination, const SPtr<Texture>& emissive, INT32 MSSACount = 1);
 
