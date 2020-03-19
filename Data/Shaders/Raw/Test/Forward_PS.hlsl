@@ -9,6 +9,10 @@ cbuffer PerCameraBuffer : register(b0)
     matrix gMatProj;
     matrix gMatPrevViewProj;
     matrix gNDCToPrevNDC;
+    // xy - (Viewport size in pixels / 2) / Target size in pixels
+    // zw - (Viewport offset in pixels + (Viewport size in pixels / 2) + Optional pixel center offset) / Target size in pixels
+    float4 	 gClipToUVScaleOffset;
+    float4 	 gUVToClipScaleOffset;	
 }
 
 cbuffer PerMaterialBuffer : register(b1)

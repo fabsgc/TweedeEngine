@@ -72,6 +72,8 @@ namespace te
         TE_PARAM_BLOCK_ENTRY(Matrix4, gMatProj)
         TE_PARAM_BLOCK_ENTRY(Matrix4, gMatPrevViewProj)
         TE_PARAM_BLOCK_ENTRY(Matrix4, gNDCToPrevNDC)
+        TE_PARAM_BLOCK_ENTRY(Vector4, gClipToUVScaleOffset)
+        TE_PARAM_BLOCK_ENTRY(Vector4, gUVToClipScaleOffset)
     TE_PARAM_BLOCK_END
 
     extern PerCameraParamDef gPerCameraParamDef;

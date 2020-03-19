@@ -243,6 +243,16 @@ namespace te
         bool EnableSkybox = true;
 
         /**
+         * Add contrast to image output
+         */
+        float Contrast = 1.0f;
+
+        /**
+         * make image brighter
+         */
+        float Brightness = 0.0f;
+
+        /**
          * The absolute base cull-distance for objects rendered through this camera in world units. Objects will use this
          * distance and apply their own factor to it to determine whether they should be visible.
          */

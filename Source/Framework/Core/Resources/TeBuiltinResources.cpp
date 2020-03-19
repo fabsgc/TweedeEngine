@@ -261,6 +261,9 @@ namespace te
             SHADER_DATA_PARAM_DESC gMatViewDesc("gMatView", "gMatView", GPDT_MATRIX_4X4);
             SHADER_DATA_PARAM_DESC gMatProjDesc("gMatProj", "gMatProj", GPDT_MATRIX_4X4);
             SHADER_DATA_PARAM_DESC gMatPrevViewProjDesc("gMatPrevViewProj", "gMatPrevViewProj", GPDT_MATRIX_4X4);
+            SHADER_DATA_PARAM_DESC gNDCToPrevNDCDesc("gNDCToPrevNDC", "gNDCToPrevNDC", GPDT_MATRIX_4X4);
+            SHADER_DATA_PARAM_DESC gClipToUVScaleOffsetDesc("gClipToUVScaleOffset", "gClipToUVScaleOffset", GPDT_FLOAT4);
+            SHADER_DATA_PARAM_DESC gUVToClipScaleOffsetDesc("gUVToClipScaleOffset", "gUVToClipScaleOffset", GPDT_FLOAT4);
 
             SHADER_DATA_PARAM_DESC gMatWorldDesc("gMatWorld", "gMatWorld", GPDT_MATRIX_4X4);
             SHADER_DATA_PARAM_DESC gMatInvWorldDesc("gMatInvWorld", "gMatInvWorld", GPDT_MATRIX_4X4);
@@ -315,6 +318,9 @@ namespace te
             _forwardShaderDesc.AddParameter(gMatViewDesc);
             _forwardShaderDesc.AddParameter(gMatProjDesc);
             _forwardShaderDesc.AddParameter(gMatPrevViewProjDesc);
+            _forwardShaderDesc.AddParameter(gNDCToPrevNDCDesc);
+            _forwardShaderDesc.AddParameter(gClipToUVScaleOffsetDesc);
+            _forwardShaderDesc.AddParameter(gUVToClipScaleOffsetDesc);
 
             _forwardShaderDesc.AddParameter(gInstanceData);
 
@@ -410,6 +416,8 @@ namespace te
         {
             SHADER_DATA_PARAM_DESC gGammaDesc("gGamma", "gGamma", GPDT_FLOAT1);
             SHADER_DATA_PARAM_DESC gExposureDesc("gExposure", "gExposure", GPDT_FLOAT1);
+            SHADER_DATA_PARAM_DESC gContrastDesc("gContrast", "gContrast", GPDT_FLOAT1);
+            SHADER_DATA_PARAM_DESC gBrightnessDesc("gBrightness", "gBrightness", GPDT_FLOAT1);
             SHADER_DATA_PARAM_DESC gMSAACountDesc("gMSAACount", "gMSAACount", GPDT_INT1);
 
             SHADER_OBJECT_PARAM_DESC bilinearSamplerDesc("BilinearSampler", "BilinearSampler", GPOT_SAMPLER2D);
@@ -419,6 +427,8 @@ namespace te
 
             _toneMappingShaderDesc.AddParameter(gGammaDesc);
             _toneMappingShaderDesc.AddParameter(gExposureDesc);
+            _toneMappingShaderDesc.AddParameter(gContrastDesc);
+            _toneMappingShaderDesc.AddParameter(gBrightnessDesc);
             _toneMappingShaderDesc.AddParameter(gMSAACountDesc);
 
             _toneMappingShaderDesc.AddParameter(bilinearSamplerDesc);
@@ -450,6 +460,16 @@ namespace te
         }
 
         {
+            SHADER_DATA_PARAM_DESC gViewDirDesc("gViewDir", "gViewDir", GPDT_FLOAT3);
+            SHADER_DATA_PARAM_DESC gViewOriginDesc("gViewOrigin", "gViewOrigin", GPDT_FLOAT3);
+            SHADER_DATA_PARAM_DESC gMatViewProjDesc("gMatViewProj", "gMatViewProj", GPDT_MATRIX_4X4);
+            SHADER_DATA_PARAM_DESC gMatViewDesc("gMatView", "gMatView", GPDT_MATRIX_4X4);
+            SHADER_DATA_PARAM_DESC gMatProjDesc("gMatProj", "gMatProj", GPDT_MATRIX_4X4);
+            SHADER_DATA_PARAM_DESC gMatPrevViewProjDesc("gMatPrevViewProj", "gMatPrevViewProj", GPDT_MATRIX_4X4);
+            SHADER_DATA_PARAM_DESC gNDCToPrevNDCDesc("gNDCToPrevNDC", "gNDCToPrevNDC", GPDT_MATRIX_4X4);
+            SHADER_DATA_PARAM_DESC gClipToUVScaleOffsetDesc("gClipToUVScaleOffset", "gClipToUVScaleOffset", GPDT_FLOAT4);
+            SHADER_DATA_PARAM_DESC gUVToClipScaleOffsetDesc("gUVToClipScaleOffset", "gUVToClipScaleOffset", GPDT_FLOAT4);
+
             SHADER_DATA_PARAM_DESC gHalfNumSamples("gHalfNumSamples", "gHalfNumSamples", GPDT_INT1);
             SHADER_DATA_PARAM_DESC gMSAACountDesc("gMSAACount", "gMSAACount", GPDT_INT1);
 
@@ -460,6 +480,16 @@ namespace te
 
             SHADER_OBJECT_PARAM_DESC depthMapDesc("DepthMap", "DepthMap", GPOT_TEXTURE2D);
             SHADER_OBJECT_PARAM_DESC depthMapMSDesc("DepthMapMS", "DepthMapMS", GPOT_RWTEXTURE2DMS);
+
+            _motionBlurShaderDesc.AddParameter(gViewDirDesc);
+            _motionBlurShaderDesc.AddParameter(gViewOriginDesc);
+            _motionBlurShaderDesc.AddParameter(gMatViewProjDesc);
+            _motionBlurShaderDesc.AddParameter(gMatViewDesc);
+            _motionBlurShaderDesc.AddParameter(gMatProjDesc);
+            _motionBlurShaderDesc.AddParameter(gMatPrevViewProjDesc);
+            _motionBlurShaderDesc.AddParameter(gNDCToPrevNDCDesc);
+            _motionBlurShaderDesc.AddParameter(gClipToUVScaleOffsetDesc);
+            _motionBlurShaderDesc.AddParameter(gUVToClipScaleOffsetDesc);
 
             _motionBlurShaderDesc.AddParameter(gHalfNumSamples);
             _motionBlurShaderDesc.AddParameter(gMSAACountDesc);

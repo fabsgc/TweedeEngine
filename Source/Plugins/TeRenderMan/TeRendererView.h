@@ -258,6 +258,14 @@ namespace te
         /** Updates the GPU buffer containing per-view information, with the latest internal data. */
         void UpdatePerViewBuffer();
 
+        /**
+         * Returns a value that can be used for transforming x, y coordinates from NDC into UV coordinates that can be used
+         * for sampling a texture projected on the view.
+         *
+         * @return	Returns two 2D values that can be used to transform the coordinate as such: UV = NDC * xy + zw.
+         */
+        Vector4 GetNDCToUV() const;
+
         /** Returns a buffer that stores per-view parameters. */
         SPtr<GpuParamBlockBuffer> GetPerViewBuffer() const { return _paramBuffer; }
 

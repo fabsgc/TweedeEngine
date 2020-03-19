@@ -26,7 +26,7 @@ namespace te
             case MotionBlurQuality::Ultra: numSamples = 16;  break;
         }
 
-        gMotionBlurParamDef.gHalfNumSamples.Set(_paramBuffer, numSamples / 2);
+        gMotionBlurParamDef.gHalfNumSamples.Set(_paramBuffer, numSamples / 2, 0);
         gMotionBlurParamDef.gMSAACount.Set(_paramBuffer, MSSACount, 0);
 
         if (MSSACount > 1)
@@ -40,7 +40,7 @@ namespace te
             _params->SetTexture("DepthMap", depth);
         }
 
-        _params->SetParamBlockBuffer("PerCamera", perViewBuffer);
+        _params->SetParamBlockBuffer("PerCameraBuffer", perViewBuffer);
 
         RenderAPI& rapi = RenderAPI::Instance();
         rapi.SetRenderTarget(destination);

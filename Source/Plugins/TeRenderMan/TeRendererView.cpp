@@ -59,7 +59,8 @@ namespace te
         , _camera(desc.SceneCamera)
     {
         _paramBuffer = gPerCameraParamDef.CreateBuffer();
-        _properties.PrevViewProjTransform = desc.ProjTransform * desc.ViewTransform;
+        _properties.ViewProjTransform = desc.ProjTransform * desc.ViewTransform;
+        _properties.PrevViewProjTransform = _properties.ViewProjTransform;
 
         _forwardOpaqueQueue = te_shared_ptr_new<RenderQueue>(desc.ReductionMode);
         _forwardTransparentQueue = te_shared_ptr_new<RenderQueue>(desc.ReductionMode);
@@ -112,7 +113,7 @@ namespace te
         _properties = desc;
         _properties.ProjTransformNoAA = desc.ProjTransform;
         _properties.ViewProjTransform = desc.ProjTransform * desc.ViewTransform;
-        _properties.PrevViewProjTransform = Matrix4::IDENTITY;
+        _properties.PrevViewProjTransform = _properties.ViewProjTransform;
         _properties.Target = desc.Target;
 
         SetStateReductionMode(desc.ReductionMode);
@@ -490,6 +491,40 @@ namespace te
         gPerCameraParamDef.gNDCToPrevNDC.Set(_paramBuffer, NDCToPrevNDC.Transpose());
         gPerCameraParamDef.gViewDir.Set(_paramBuffer, _properties.ViewDirection);
         gPerCameraParamDef.gViewOrigin.Set(_paramBuffer, _properties.ViewOrigin);
+
+        Vector4 ndcToUV = GetNDCToUV();
+        gPerCameraParamDef.gClipToUVScaleOffset.Set(_paramBuffer, ndcToUV);
+
+        Vector4 uvToNDC(
+            1.0f / ndcToUV.x,
+            1.0f / ndcToUV.y,
+            -ndcToUV.z / ndcToUV.x,
+            -ndcToUV.w / ndcToUV.y);
+        gPerCameraParamDef.gUVToClipScaleOffset.Set(_paramBuffer, uvToNDC);
+    }
+
+    Vector4 RendererView::GetNDCToUV() const
+    {
+        const RenderAPICapabilities& caps = gCaps();
+        const Rect2I& viewRect = _properties.Target.ViewRect;
+
+        float halfWidth = viewRect.width * 0.5f;
+        float halfHeight = viewRect.height * 0.5f;
+
+        float rtWidth = _properties.Target.TargetWidth != 0 ? (float)_properties.Target.TargetWidth : 20.0f;
+        float rtHeight = _properties.Target.TargetHeight != 0 ? (float)_properties.Target.TargetHeight : 20.0f;
+
+        Vector4 ndcToUV;
+        ndcToUV.x = halfWidth / rtWidth;
+        ndcToUV.y = -halfHeight / rtHeight;
+        ndcToUV.z = viewRect.x / rtWidth + (halfWidth + caps.HorizontalTexelOffset) / rtWidth;
+        ndcToUV.w = viewRect.y / rtHeight + (halfHeight + caps.VerticalTexelOffset) / rtHeight;
+
+        // Either of these flips the Y axis, but if they're both true they cancel out
+        if ((caps.Convention.UV_YAxis == Conventions::Axis::Up) ^ (caps.Convention.NDC_YAxis == Conventions::Axis::Down))
+            ndcToUV.y = -ndcToUV.y;
+
+        return ndcToUV;
     }
 
     bool RendererView::ShouldDraw() const

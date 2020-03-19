@@ -35,6 +35,19 @@ namespace te
 
     struct RenderAPICapabilities
     {
+        /** Horizontal texel offset used for mapping texels to pixels. */
+        float HorizontalTexelOffset = 0.0f;
+
+        /** Vertical texel offset used for mapping texels to pixels. */
+        float VerticalTexelOffset = 0.0f;
+
+        /** Minimum (closest) depth value used by this render backend */
+        float MinDepth = 0.0f;
+
+        /** Maximum (farthest) depth value used by this render backend. */
+        float MaxDepth = 1.0f;
+
+        /** Returns various conventions expected by the render backend. */
         Conventions Convention;
     };
 

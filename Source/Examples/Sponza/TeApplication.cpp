@@ -524,7 +524,7 @@ namespace te
         }
 
         MaterialProperties properties;
-        properties.Emissive = Color(1.0f, 1.0f, 1.0f, 1.0f);
+        properties.Emissive = Color(1.0f, 0.9f, 0.7f, 1.0f);
         properties.Ambient = Color(0.05f, 0.05f, 0.05f, 1.0f);
         _lightMaterial = Material::Create(_shaderOpaque);
         _lightMaterial->SetProperties(properties);
@@ -613,6 +613,7 @@ namespace te
             light->SetAttenuationRadius(1.0f);
             light->SetLinearAttenuation(0.35f);
             light->SetQuadraticAttenuation(0.44f);
+            light->SetColor(Color(1.0f, 0.95f, 0.85f));
             lightSO->SetPosition(Vector3(0.0f + i * 2.5f, -0.5f, i * 15.0f));
 
             HRenderable mesh = lightSO->AddComponent<CRenderable>();
@@ -625,8 +626,10 @@ namespace te
         _sceneCameraSO->LookAt(Vector3(0.0f, 1.5f, -3.0f));
 
         auto settings = _sceneCamera->GetRenderSettings();
-        settings->ExposureScale = 1.3f;
-        settings->Gamma = 0.9f;
+        settings->ExposureScale = 1.2f;
+        settings->Gamma = 0.8f;
+        settings->Contrast = 1.60f;
+        settings->Brightness = -0.02f;
 
         /*_sceneDirectionalLightSO = SceneObject::Create("DirectionalLight");
         _directionalLight = _sceneDirectionalLightSO->AddComponent<CLight>(LightType::Directional);

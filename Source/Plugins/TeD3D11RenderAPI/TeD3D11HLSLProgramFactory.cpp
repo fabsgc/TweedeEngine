@@ -139,6 +139,7 @@ namespace te
         }
 
         UINT compileFlags = 0;
+
 #if defined(TE_DEBUG_MODE)
         compileFlags |= D3DCOMPILE_DEBUG;
         compileFlags |= D3DCOMPILE_SKIP_OPTIMIZATION;

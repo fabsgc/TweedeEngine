@@ -164,6 +164,8 @@ namespace te
         auto settings = _sceneCamera->GetRenderSettings();
         settings->ExposureScale = 1.3f;
         settings->Gamma = 1.0f;
+        settings->Contrast = 1.60f;
+        settings->Brightness = -0.05f;
         // ######################################################
 
         // ######################################################

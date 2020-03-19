@@ -477,12 +477,14 @@ namespace te
         if (ppLastFrame)
         {
             auto& texProps = ppLastFrame->GetProperties();
-            toneMapping->Execute(ppLastFrame, ppOutput, texProps.GetNumSamples(), settings.Gamma, settings.ExposureScale);
+            toneMapping->Execute(ppLastFrame, ppOutput, texProps.GetNumSamples(), 
+                settings.Gamma, settings.ExposureScale, settings.Contrast, settings.Brightness);
         }
         else
         {
             auto& texProps = forwardPassNode->SceneTex->Tex->GetProperties();
-            toneMapping->Execute(forwardPassNode->SceneTex->Tex, ppOutput, texProps.GetNumSamples(), settings.Gamma, settings.ExposureScale);
+            toneMapping->Execute(forwardPassNode->SceneTex->Tex, ppOutput, texProps.GetNumSamples(), 
+                settings.Gamma, settings.ExposureScale, settings.Contrast, settings.Brightness);
         }
     }
 
@@ -519,18 +521,18 @@ namespace te
         SPtr<Texture> depth = forwardPassNode->DepthTex->Tex;
         postProcessNode->GetAndSwitch(inputs.View, ppOutput, ppLastFrame);
 
-        MotionBlurMat* toneMapping = MotionBlurMat::Get();
+        MotionBlurMat* motionBlur = MotionBlurMat::Get();
 
         if (ppLastFrame)
         {
             auto& texProps = ppLastFrame->GetProperties();
-            toneMapping->Execute(ppLastFrame, ppOutput, depth, inputs.View.GetPerViewBuffer(), 
+            motionBlur->Execute(ppLastFrame, ppOutput, depth, inputs.View.GetPerViewBuffer(),
                 settings, texProps.GetNumSamples());
         }
         else
         {
             auto& texProps = forwardPassNode->SceneTex->Tex->GetProperties();
-            toneMapping->Execute(forwardPassNode->SceneTex->Tex, ppOutput, depth, inputs.View.GetPerViewBuffer(), 
+            motionBlur->Execute(forwardPassNode->SceneTex->Tex, ppOutput, depth, inputs.View.GetPerViewBuffer(),
                 settings, texProps.GetNumSamples());
         }
     }
