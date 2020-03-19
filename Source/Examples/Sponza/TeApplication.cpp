@@ -138,7 +138,7 @@ namespace te
                 "column_a",
                 "Data/Textures/Sponza/column_a/column_a_COLOR.jpeg",
                 "",
-                "Data/Textures/Sponza/column_a/sponza_column_a_ddn.png",
+                "Data/Textures/Sponza/column_a/column_a_NRM.jpeg",
                 "Data/Textures/Sponza/column_a/column_a_SPEC.jpeg",
                 "",
                 "",
