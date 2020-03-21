@@ -41,7 +41,7 @@ float4 main( PS_INPUT IN ) : SV_Target0
     float2 currentUV = IN.Texture;
     float2 ndcPos = IN.ScreenPosition;
 
-    float curDepth = TextureSampling(BilinearSampler, DepthMap, DepthMapMS, currentUV, gMSAACount).r;
+    // float curDepth = TextureSampling(BilinearSampler, DepthMap, DepthMapMS, currentUV, gMSAACount).r;
 
     float4 currentNDC = float4(ndcPos, 1, 1);
     float4 prevClip = mul(currentNDC, gNDCToPrevNDC);
