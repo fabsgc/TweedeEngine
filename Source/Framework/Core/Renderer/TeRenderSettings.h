@@ -111,7 +111,7 @@ namespace te
          * Determines the number of samples to take during motion blur filtering. Increasing this value will
          * yield higher quality blur at the cost of the performance.
          */
-        MotionBlurQuality Quality = MotionBlurQuality::Medium;
+        MotionBlurQuality Quality = MotionBlurQuality::High;
 
         /**
          * Determines the maximum radius over which the blur samples are allowed to be taken, in percent of the

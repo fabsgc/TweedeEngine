@@ -11,8 +11,8 @@ cbuffer PerCameraBuffer : register(b0)
     matrix gNDCToPrevNDC;
     // xy - (Viewport size in pixels / 2) / Target size in pixels
     // zw - (Viewport offset in pixels + (Viewport size in pixels / 2) + Optional pixel center offset) / Target size in pixels
-    float4 	 gClipToUVScaleOffset;
-    float4 	 gUVToClipScaleOffset;	
+    float4 gClipToUVScaleOffset;
+    float4 gUVToClipScaleOffset;
 }
 
 cbuffer PerFrameBuffer : register(b1)
@@ -43,29 +43,44 @@ float4 main( PS_INPUT IN ) : SV_Target0
 
     float curDepth = TextureSampling(BilinearSampler, DepthMap, DepthMapMS, currentUV, gMSAACount).r;
 
-    float4 currentNDC = float4(ndcPos, curDepth, 1);
+    float4 currentNDC = float4(ndcPos, 1, 1);
     float4 prevClip = mul(currentNDC, gNDCToPrevNDC);
     float2 prevNdcPos = prevClip.xy / prevClip.w;
     float2 prevUV = NDCToUV(prevNdcPos);
 
     // TODO - Scale blue length by framerate
-    // TODO - Clamp to maximum blur radius
     float2 blurDir = (prevUV - currentUV) * 0.5;
-    float2 testdir = float2(0.5, 0.5);
+
+    while(abs(length(blurDir)) > 0.05)
+    {
+        blurDir /= 2.0;
+    }
 
     float4 output = TextureSampling(BilinearSampler, SourceMap, SourceMapMS, currentUV, gMSAACount);
     for (i = -gHalfNumSamples; i < 0; ++i) 
     {
-        float2 offset = blurDir;
-        // float2 offset = blurDir * (i / (float)gHalfNumSamples);
-        output += TextureSampling(BilinearSampler, SourceMap, SourceMapMS, currentUV, gMSAACount);
+        float2 offset = blurDir * (i / (float)gHalfNumSamples);
+        float2 uv = currentUV + offset;
+
+        if(uv.x > 1.0) uv.x = 0.991;
+        if(uv.x < 0.0) uv.x = 0.001;
+        if(uv.y > 1.0) uv.y = 0.991;
+        if(uv.y < 0.0) uv.y = 0.001;
+
+        output += TextureSampling(BilinearSampler, SourceMap, SourceMapMS, uv, gMSAACount);
     }
 
     for (i = 1; i <= gHalfNumSamples; ++i) 
     {
-        float2 offset = blurDir;
-        // float2 offset = blurDir * (i / (float)gHalfNumSamples);
-        output += TextureSampling(BilinearSampler, SourceMap, SourceMapMS, currentUV, gMSAACount);
+        float2 offset = blurDir * (i / (float)gHalfNumSamples);
+        float2 uv = currentUV + offset;
+
+        if(uv.x > 1.0) uv.x = 0.991;
+        if(uv.x < 0.0) uv.x = 0.001;
+        if(uv.y > 1.0) uv.y = 0.991;
+        if(uv.y < 0.0) uv.y = 0.001;
+
+        output += TextureSampling(BilinearSampler, SourceMap, SourceMapMS, uv, gMSAACount);
     }
 
     output /= gHalfNumSamples * 2 + 1;

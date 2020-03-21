@@ -31,6 +31,7 @@ int main()
     desc.WindowDesc.Fullscreen = false;
     desc.WindowDesc.MultisampleCount = 1;
     desc.WindowDesc.Title = "Sponza";
+    desc.WindowDesc.Vsync = true;
 
     te::Application::StartUp(desc);
     te::Application::Instance().RunMainLoop();

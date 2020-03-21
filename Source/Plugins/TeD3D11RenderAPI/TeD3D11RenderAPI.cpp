@@ -452,11 +452,16 @@ namespace te
                 //The easiest case : we bind all paramblock buffers (constant buffers)
                 if (gpuParamsBlockBindFlags & (UINT32)GPU_BIND_PARAM_BLOCK_ALL)
                 {
-                    slotConstBuffers = 0;
+                    UINT32 currentSlot = 0;
+                    slotConstBuffers = 32;
+
                     for (auto iter = paramDesc->ParamBlocks.begin(); iter != paramDesc->ParamBlocks.end(); ++iter)
                     {
                         PopulateParamBlocks(iter->second);
-                        slotConstBuffers = (UINT32)iter->second.Slot;;
+                        currentSlot = (UINT32)iter->second.Slot;
+
+                        if (currentSlot < slotConstBuffers)
+                            slotConstBuffers = (UINT32)currentSlot;
                     }
                 }
                 else //Here we only bind listed

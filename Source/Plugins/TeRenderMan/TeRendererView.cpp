@@ -59,7 +59,7 @@ namespace te
         , _camera(desc.SceneCamera)
     {
         _paramBuffer = gPerCameraParamDef.CreateBuffer();
-        _properties.ViewProjTransform = desc.ProjTransform * desc.ViewTransform;
+        //_properties.ViewProjTransform = desc.ProjTransform * desc.ViewTransform;
         _properties.PrevViewProjTransform = _properties.ViewProjTransform;
 
         _forwardOpaqueQueue = te_shared_ptr_new<RenderQueue>(desc.ReductionMode);
@@ -138,7 +138,7 @@ namespace te
                 if (newTargetWidth != _properties.Target.TargetWidth ||
                     newTargetHeight != _properties.Target.TargetHeight)
                 {
-                    _properties.Target.ViewRect = viewport->GetPixelArea();
+                   _properties.Target.ViewRect = viewport->GetPixelArea();
                     _properties.Target.TargetWidth = newTargetWidth;
                     _properties.Target.TargetHeight = newTargetHeight;
 
@@ -154,6 +154,13 @@ namespace te
 
         if (perViewBufferDirty)
             UpdatePerViewBuffer();
+
+        // Note: inverse view-projection can be cached, it doesn't change every frame
+        Matrix4 viewProj = _properties.ProjTransform * _properties.ViewTransform;
+        Matrix4 invViewProj = viewProj.Inverse();
+        Matrix4 NDCToPrevNDC = _properties.PrevViewProjTransform * invViewProj;
+
+        gPerCameraParamDef.gNDCToPrevNDC.Set(_paramBuffer, NDCToPrevNDC.Transpose());
 
         _frameTimings = frameInfo.Timings;
 
@@ -521,7 +528,7 @@ namespace te
         ndcToUV.w = viewRect.y / rtHeight + (halfHeight + caps.VerticalTexelOffset) / rtHeight;
 
         // Either of these flips the Y axis, but if they're both true they cancel out
-        if ((caps.Convention.UV_YAxis == Conventions::Axis::Up) ^ (caps.Convention.NDC_YAxis == Conventions::Axis::Down))
+       if ((caps.Convention.UV_YAxis == Conventions::Axis::Up) ^ (caps.Convention.NDC_YAxis == Conventions::Axis::Down))
             ndcToUV.y = -ndcToUV.y;
 
         return ndcToUV;
