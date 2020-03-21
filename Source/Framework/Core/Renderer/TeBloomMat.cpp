@@ -12,9 +12,12 @@ namespace te
         _params->SetSamplerState("BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
     }
 
-    void BloomMat::Execute(const SPtr<Texture>& source, const SPtr<RenderTarget>& destination, const SPtr<Texture>& emissive, INT32 MSSACount)
+    void BloomMat::Execute(const SPtr<Texture>& source, const SPtr<RenderTarget>& destination, const SPtr<Texture>& emissive, 
+        const Color& tint, const float& intensity, UINT32 MSSACount)
     {
         gBloomParamDef.gMSAACount.Set(_paramBuffer, MSSACount, 0);
+        gBloomParamDef.gTint.Set(_paramBuffer, tint.GetAsVector4(), 0);
+        gBloomParamDef.gIntensity.Set(_paramBuffer, intensity, 0);
 
         if (MSSACount > 1)
         {

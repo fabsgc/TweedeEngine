@@ -102,10 +102,10 @@ namespace te
         bool Enabled = true;
 
         /** Determines which parts of the scene will trigger motion blur. */
-        MotionBlurDomain Domain = MotionBlurDomain::CameraOnly;
+        MotionBlurDomain Domain = MotionBlurDomain::CameraOnly; // TODO
 
         /** Type of filter to use when filtering samples contributing to a blurred pixel. */
-        MotionBlurFilter Filter = MotionBlurFilter::Reconstruction;
+        MotionBlurFilter Filter = MotionBlurFilter::Reconstruction; // TODO
 
         /**
          * Determines the number of samples to take during motion blur filtering. Increasing this value will
@@ -129,6 +129,12 @@ namespace te
 
         /** Enables or disables the bloom effect. */
         bool Enabled = true;
+
+        /** Determines the intensity of the bloom effect. Ideally should be in [0, 4] range but higher values are allowed.*/
+        float Intensity = 0.5f;
+
+        /** Tint color to apply to the bloom highlight. A pure white means the bloom inherits the underlying scene color. */
+        Color Tint = Color::White;
     };
 
     /** Various options that control shadow rendering for a specific view. */

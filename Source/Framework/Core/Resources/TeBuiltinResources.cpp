@@ -439,6 +439,8 @@ namespace te
 
         {
             SHADER_DATA_PARAM_DESC gMSAACountDesc("gMSAACount", "gMSAACount", GPDT_INT1);
+            SHADER_DATA_PARAM_DESC gTintDesc("gTint", "gTint", GPDT_FLOAT4);
+            SHADER_DATA_PARAM_DESC gIntensityDesc("gIntensity", "gIntensity", GPDT_FLOAT1);
 
             SHADER_OBJECT_PARAM_DESC bilinearSamplerDesc("BilinearSampler", "BilinearSampler", GPOT_SAMPLER2D);
 
@@ -449,6 +451,8 @@ namespace te
             SHADER_OBJECT_PARAM_DESC emissiveMapMSDesc("EmissiveMapMS", "EmissiveMapMS", GPOT_RWTEXTURE2DMS);
 
             _bloomShaderDesc.AddParameter(gMSAACountDesc);
+            _bloomShaderDesc.AddParameter(gTintDesc);
+            _bloomShaderDesc.AddParameter(gIntensityDesc);
 
             _bloomShaderDesc.AddParameter(bilinearSamplerDesc);
 

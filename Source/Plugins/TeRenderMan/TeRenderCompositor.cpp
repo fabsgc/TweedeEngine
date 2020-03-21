@@ -643,12 +643,14 @@ namespace te
         if (ppLastFrame)
         {
             auto& texProps = ppLastFrame->GetProperties();
-            bloom->Execute(ppLastFrame, ppOutput, forwardPassNode->EmissiveTex->Tex, texProps.GetNumSamples());
+            bloom->Execute(ppLastFrame, ppOutput, forwardPassNode->EmissiveTex->Tex, 
+                settings.Bloom.Tint, settings.Bloom.Intensity, texProps.GetNumSamples());
         }
         else
         {
             auto& texProps = forwardPassNode->SceneTex->Tex->GetProperties();
-            bloom->Execute(forwardPassNode->SceneTex->Tex, ppOutput, forwardPassNode->EmissiveTex->Tex, texProps.GetNumSamples());
+            bloom->Execute(forwardPassNode->SceneTex->Tex, ppOutput, forwardPassNode->EmissiveTex->Tex, 
+                settings.Bloom.Tint, settings.Bloom.Intensity, texProps.GetNumSamples());
         }
     }
 
@@ -676,10 +678,10 @@ namespace te
         if (viewProps.RunPostProcessing && viewProps.Target.NumSamples == 1)
         {
             RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[1]);
-            //RCNodeForwardPass* forwardPassNode = static_cast<RCNodeForwardPass*>(inputs.InputNodes[0]);
+            RCNodeForwardPass* forwardPassNode = static_cast<RCNodeForwardPass*>(inputs.InputNodes[0]);
 
             input = postProcessNode->GetLastOutput();
-            //input = forwardPassNode->VelocityTex->Tex;
+            //input = forwardPassNode->EmissiveTex->Tex;
         }
         else
         {

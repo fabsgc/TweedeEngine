@@ -7,7 +7,9 @@
 namespace te
 {
     TE_PARAM_BLOCK_BEGIN(BloomParamDef)
-        TE_PARAM_BLOCK_ENTRY(INT32, gMSAACount)
+        TE_PARAM_BLOCK_ENTRY(Vector4, gTint)
+        TE_PARAM_BLOCK_ENTRY(float, gIntensity)
+        TE_PARAM_BLOCK_ENTRY(UINT32, gMSAACount)
     TE_PARAM_BLOCK_END
 
     extern BloomParamDef gBloomParamDef;
@@ -28,7 +30,8 @@ namespace te
          * @param[in]	emissive	emissive buffer created during first pass
          * @param[in]	MSSACount	how many samples used for input and output textures
          */
-        void Execute(const SPtr<Texture>& source, const SPtr<RenderTarget>& destination, const SPtr<Texture>& emissive, INT32 MSSACount = 1);
+        void Execute(const SPtr<Texture>& source, const SPtr<RenderTarget>& destination, const SPtr<Texture>& emissive, 
+            const Color& tint = Color::White, const float& intensity = 0.5f, UINT32 MSSACount = 1);
 
     private:
         SPtr<GpuParamBlockBuffer> _paramBuffer;
