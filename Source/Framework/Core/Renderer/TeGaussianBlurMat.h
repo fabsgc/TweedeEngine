@@ -26,7 +26,7 @@ namespace te
 
     public:
         // Direction of the Gaussian filter pass
-        enum Direction
+        enum class Direction
         {
             DirVertical,
             DirHorizontal
