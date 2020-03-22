@@ -111,15 +111,7 @@ namespace te
          * Determines the number of samples to take during motion blur filtering. Increasing this value will
          * yield higher quality blur at the cost of the performance.
          */
-        MotionBlurQuality Quality = MotionBlurQuality::High;
-
-        /**
-         * Determines the maximum radius over which the blur samples are allowed to be taken, in percent of the
-         * screen width (e.g. with 1% radius, on 1920x1028 resolution the maximum radius in pixels will be
-         * 1920 * 0.01 = 20px). This clamps the maximum velocity that can affect the blur, as higher velocities
-         * require higher radius. Very high values can adversely affect performance as cache accesses become more random. 
-         */
-        float MaximumRadius = 0.01f; // TODO - Set this in pixels, but always up/downsample to a specific resolution? Would improve cache performance.
+        MotionBlurQuality Quality = MotionBlurQuality::Ultra;
     };
 
     /** Settings that control the bloom effect. Bloom adds an extra highlight to bright areas of the scene. */

@@ -1,5 +1,6 @@
 #include "TeMotionBlurMat.h"
 #include "TeRendererUtility.h"
+#include "Utility/TeTime.h"
 
 namespace te
 {
@@ -26,6 +27,7 @@ namespace te
             case MotionBlurQuality::Ultra: numSamples = 16;  break;
         }
 
+        gMotionBlurParamDef.gFrameDelta.Set(_paramBuffer, gTime().GetFrameDelta(), 0);
         gMotionBlurParamDef.gHalfNumSamples.Set(_paramBuffer, numSamples / 2, 0);
         gMotionBlurParamDef.gMSAACount.Set(_paramBuffer, MSSACount, 0);
 

@@ -474,7 +474,8 @@ namespace te
             SHADER_DATA_PARAM_DESC gClipToUVScaleOffsetDesc("gClipToUVScaleOffset", "gClipToUVScaleOffset", GPDT_FLOAT4);
             SHADER_DATA_PARAM_DESC gUVToClipScaleOffsetDesc("gUVToClipScaleOffset", "gUVToClipScaleOffset", GPDT_FLOAT4);
 
-            SHADER_DATA_PARAM_DESC gHalfNumSamples("gHalfNumSamples", "gHalfNumSamples", GPDT_INT1);
+            SHADER_DATA_PARAM_DESC gFrameDeltaDesc("gFrameDelta", "gFrameDelta", GPDT_FLOAT1);
+            SHADER_DATA_PARAM_DESC gHalfNumSamplesDesc("gHalfNumSamples", "gHalfNumSamples", GPDT_INT1);
             SHADER_DATA_PARAM_DESC gMSAACountDesc("gMSAACount", "gMSAACount", GPDT_INT1);
 
             SHADER_OBJECT_PARAM_DESC bilinearSamplerDesc("BilinearSampler", "BilinearSampler", GPOT_SAMPLER2D);
@@ -495,7 +496,8 @@ namespace te
             _motionBlurShaderDesc.AddParameter(gClipToUVScaleOffsetDesc);
             _motionBlurShaderDesc.AddParameter(gUVToClipScaleOffsetDesc);
 
-            _motionBlurShaderDesc.AddParameter(gHalfNumSamples);
+            _motionBlurShaderDesc.AddParameter(gFrameDeltaDesc);
+            _motionBlurShaderDesc.AddParameter(gHalfNumSamplesDesc);
             _motionBlurShaderDesc.AddParameter(gMSAACountDesc);
 
             _motionBlurShaderDesc.AddParameter(bilinearSamplerDesc);

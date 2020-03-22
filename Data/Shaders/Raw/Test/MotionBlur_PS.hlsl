@@ -17,6 +17,7 @@ cbuffer PerCameraBuffer : register(b0)
 
 cbuffer PerFrameBuffer : register(b1)
 {
+    float gFrameDelta;
     int gHalfNumSamples;
     uint gMSAACount;
 }
@@ -35,6 +36,8 @@ Texture2DMS<float4> SourceMapMS : register(t1);
 Texture2D DepthMap : register(t2);
 Texture2DMS<float4> DepthMapMS : register(t3);
 
+static const float FrameDelta = 1 / 60.0;
+
 float4 main( PS_INPUT IN ) : SV_Target0
 {
     int i = 0;
@@ -48,8 +51,8 @@ float4 main( PS_INPUT IN ) : SV_Target0
     float2 prevNdcPos = prevClip.xy / prevClip.w;
     float2 prevUV = NDCToUV(prevNdcPos);
 
-    // TODO - Scale blue length by framerate
-    float2 blurDir = (prevUV - currentUV) * 0.5;
+    float fixDelta = FrameDelta / gFrameDelta; 
+    float2 blurDir = (prevUV - currentUV) * 0.5 * fixDelta;
 
     while(abs(length(blurDir)) > 0.05)
     {
