@@ -12,13 +12,13 @@ namespace te
         _params->SetSamplerState("BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
     }
 
-    void BlitMat::Execute(const SPtr<Texture>& source, const Rect2& area, bool flipUV, INT32 MSSACount, bool isDepth)
+    void BlitMat::Execute(const SPtr<Texture>& source, const Rect2& area, bool flipUV, INT32 MSAACount, bool isDepth)
     {
-        gBlitParamDef.gMSAACount.Set(_paramBuffer, MSSACount, 0);
+        gBlitParamDef.gMSAACount.Set(_paramBuffer, MSAACount, 0);
         gBlitParamDef.gIsDepth.Set(_paramBuffer, (isDepth) ? 1 : 0, 0);
 
-        if (MSSACount > 1 && isDepth) _params->SetTexture("SourceMapMSDepth", source);
-        else if (MSSACount > 1 && !isDepth) _params->SetTexture("SourceMapMS", source);
+        if (MSAACount > 1 && isDepth) _params->SetTexture("SourceMapMSDepth", source);
+        else if (MSAACount > 1 && !isDepth) _params->SetTexture("SourceMapMS", source);
         else _params->SetTexture("SourceMap", source);
 
         Bind();

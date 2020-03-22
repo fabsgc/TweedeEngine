@@ -1,3 +1,5 @@
+#define STANDARD_MAX_BLUR_SAMPLES 128
+
 struct VS_INPUT
 {
     float3 ScreenPosition : POSITION;

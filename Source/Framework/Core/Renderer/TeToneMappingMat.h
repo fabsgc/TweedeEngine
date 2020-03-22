@@ -31,7 +31,7 @@ namespace te
          * @param[in]	destination	Output target to which to write the antialiased image to.
          */
         void Execute(const SPtr<Texture>& source, const SPtr<RenderTarget>& destination, 
-            INT32 MSSACount = 1, float gamma = 2.2f, float exposure = 1.0f, float contrast = 1.0f, float brightness = 0.0f);
+            INT32 MSAACount = 1, float gamma = 2.2f, float exposure = 1.0f, float contrast = 1.0f, float brightness = 0.0f);
 
     private:
         SPtr<GpuParamBlockBuffer> _paramBuffer;

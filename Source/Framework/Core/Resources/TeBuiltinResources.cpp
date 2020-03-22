@@ -32,6 +32,7 @@ namespace te
         InitShaderToneMapping();
         InitShaderBloom();
         InitShaderMotionBlur();
+        InitShaderGaussianBlur();
         InitDefaultMaterial();
 #endif
     }
@@ -59,6 +60,8 @@ namespace te
             return _shaderBloom;
         case BuiltinShader::MotionBlur:
             return _shaderMotionBlur;
+        case BuiltinShader::GaussianBlur:
+            return _shaderGaussianBlur;
         default:
             break;
         }
@@ -209,6 +212,24 @@ namespace te
             _pixelShaderMotionBlurDesc.Language = "hlsl";
             _pixelShaderMotionBlurDesc.IncludePath = SHADERS_FOLDER + String("Raw/Test/");
             _pixelShaderMotionBlurDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("Raw/Test/GaussianBlur_VS.hlsl"));
+            _vertexShaderGaussianBlurDesc.Type = GPT_VERTEX_PROGRAM;
+            _vertexShaderGaussianBlurDesc.EntryPoint = "main";
+            _vertexShaderGaussianBlurDesc.Language = "hlsl";
+            _vertexShaderGaussianBlurDesc.IncludePath = SHADERS_FOLDER + String("Raw/Test/");
+            _vertexShaderGaussianBlurDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("Raw/Test/GaussianBlur_PS.hlsl"));
+            _pixelShaderGaussianBlurDesc.Type = GPT_PIXEL_PROGRAM;
+            _pixelShaderGaussianBlurDesc.EntryPoint = "main";
+            _pixelShaderGaussianBlurDesc.Language = "hlsl";
+            _pixelShaderGaussianBlurDesc.IncludePath = SHADERS_FOLDER + String("Raw/Test/");
+            _pixelShaderGaussianBlurDesc.Source = shaderFile.GetAsString();
         }
     }
     void BuiltinResources::InitStates()
@@ -508,6 +529,28 @@ namespace te
             _motionBlurShaderDesc.AddParameter(depthMapDesc);
             _motionBlurShaderDesc.AddParameter(depthMapMSDesc);
         }
+
+        {
+            SHADER_DATA_PARAM_DESC gSampleOffsetsDesc("gSampleOffsets", "gSampleOffsets", GPDT_FLOAT4);
+            SHADER_DATA_PARAM_DESC gSampleWeightsDesc("gSampleWeights", "gSampleWeights", GPDT_FLOAT4);
+            SHADER_DATA_PARAM_DESC gNumSamplesDesc("gNumSamples", "gNumSamples", GPDT_INT1);
+            SHADER_DATA_PARAM_DESC gMSAACountDesc("gMSAACount", "gMSAACount", GPDT_INT1);
+
+            SHADER_OBJECT_PARAM_DESC bilinearSamplerDesc("BilinearSampler", "BilinearSampler", GPOT_SAMPLER2D);
+
+            SHADER_OBJECT_PARAM_DESC sourceMapDesc("SourceMap", "SourceMap", GPOT_TEXTURE2D);
+            SHADER_OBJECT_PARAM_DESC SourceMapMSDesc("SourceMapMS", "SourceMapMS", GPOT_RWTEXTURE2DMS);
+            
+            _gaussianBlurShaderDesc.AddParameter(bilinearSamplerDesc);
+
+            _gaussianBlurShaderDesc.AddParameter(sourceMapDesc);
+            _gaussianBlurShaderDesc.AddParameter(SourceMapMSDesc);
+
+            _gaussianBlurShaderDesc.AddParameter(gSampleOffsetsDesc);
+            _gaussianBlurShaderDesc.AddParameter(gSampleWeightsDesc);
+            _gaussianBlurShaderDesc.AddParameter(gNumSamplesDesc);
+            _gaussianBlurShaderDesc.AddParameter(gMSAACountDesc);
+        }
     }
 
     void BuiltinResources::InitSamplers()
@@ -702,6 +745,31 @@ namespace te
         shaderDesc.Techniques.push_back(technique.GetInternalPtr());
 
         _shaderMotionBlur = Shader::Create("MotionBlur", shaderDesc);
+    }
+
+    void BuiltinResources::InitShaderGaussianBlur()
+    {
+        PASS_DESC passDesc;
+        passDesc.BlendStateDesc = _blendOpaqueStateDesc;
+        passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
+        passDesc.RasterizerStateDesc = _rasterizerStateDesc;
+        passDesc.VertexProgramDesc = _vertexShaderGaussianBlurDesc;
+        passDesc.PixelProgramDesc = _pixelShaderGaussianBlurDesc;
+
+        passDesc.DepthStencilStateDesc.StencilEnable = false;
+        passDesc.DepthStencilStateDesc.DepthReadEnable = false;
+        passDesc.DepthStencilStateDesc.DepthWriteEnable = false;
+
+        passDesc.RasterizerStateDesc.cullMode = CULL_NONE;
+
+        HPass pass = Pass::Create(passDesc);
+        HTechnique technique = Technique::Create("hlsl", { pass.GetInternalPtr() });
+        technique->Compile();
+
+        SHADER_DESC shaderDesc = _motionBlurShaderDesc;
+        shaderDesc.Techniques.push_back(technique.GetInternalPtr());
+
+        _shaderGaussianBlur = Shader::Create("GaussianBlur", shaderDesc);
     }
 
     void BuiltinResources::InitDefaultMaterial()

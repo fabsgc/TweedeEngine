@@ -3,6 +3,9 @@
 #include "TeCorePrerequisites.h"
 #include "Renderer/TeRendererMaterial.h"
 #include "Renderer/TeParamBlocks.h"
+#include "Renderer/TeGaussianBlurMat.h"
+
+#define STANDARD_MAX_BLUR_SAMPLES 128
 
 namespace te
 {
@@ -28,10 +31,10 @@ namespace te
          * @param[in]	source		Input texture to apply ToneMappingMat to.
          * @param[in]	destination	Output target to which to write the antialiased image to.
          * @param[in]	emissive	emissive buffer created during first pass
-         * @param[in]	MSSACount	how many samples used for input and output textures
+         * @param[in]	MSAACount	how many samples used for input and output textures
          */
         void Execute(const SPtr<Texture>& source, const SPtr<RenderTarget>& destination, const SPtr<Texture>& emissive, 
-            const Color& tint = Color::White, const float& intensity = 0.5f, UINT32 MSSACount = 1);
+            const Color& tint = Color::White, const float& intensity = 0.5f, UINT32 MSAACount = 1);
 
     private:
         SPtr<GpuParamBlockBuffer> _paramBuffer;

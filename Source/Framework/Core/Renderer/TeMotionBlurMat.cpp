@@ -14,7 +14,7 @@ namespace te
     }
 
     void MotionBlurMat::Execute(const SPtr<Texture>& source, const SPtr<RenderTarget>& destination, const SPtr<Texture>& depth, 
-        SPtr<GpuParamBlockBuffer> perViewBuffer, const MotionBlurSettings& settings, INT32 MSSACount)
+        SPtr<GpuParamBlockBuffer> perViewBuffer, const MotionBlurSettings& settings, INT32 MSAACount)
     {
         UINT32 numSamples;
         switch(settings.Quality)
@@ -29,9 +29,9 @@ namespace te
 
         gMotionBlurParamDef.gFrameDelta.Set(_paramBuffer, gTime().GetFrameDelta(), 0);
         gMotionBlurParamDef.gHalfNumSamples.Set(_paramBuffer, numSamples / 2, 0);
-        gMotionBlurParamDef.gMSAACount.Set(_paramBuffer, MSSACount, 0);
+        gMotionBlurParamDef.gMSAACount.Set(_paramBuffer, MSAACount, 0);
 
-        if (MSSACount > 1)
+        if (MSAACount > 1)
         {
             _params->SetTexture("SourceMapMS", source);
             _params->SetTexture("DepthMapMS", depth);

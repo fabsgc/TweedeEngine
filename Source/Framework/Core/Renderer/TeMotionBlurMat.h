@@ -32,10 +32,10 @@ namespace te
          * @param[in]	depth			Depth buffer created during first pass
          * @param[in]	perViewBuffer	Camera frame buffer
          * @param[in]	settings		Motion blur settings
-         * @param[in]	MSSACount		How many samples used for input and output textures
+         * @param[in]	MSAACount		How many samples used for input and output textures
          */
         void Execute(const SPtr<Texture>& source, const SPtr<RenderTarget>& destination, const SPtr<Texture>& depth, 
-            SPtr<GpuParamBlockBuffer> perViewBuffer, const MotionBlurSettings& settings, INT32 MSSACount = 1);
+            SPtr<GpuParamBlockBuffer> perViewBuffer, const MotionBlurSettings& settings, INT32 MSAACount = 1);
 
     private:
         SPtr<GpuParamBlockBuffer> _paramBuffer;
