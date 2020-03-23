@@ -15,6 +15,7 @@ namespace te
         TE_PARAM_BLOCK_ENTRY_ARRAY(Vector4, gSampleWeights, STANDARD_MAX_BLUR_SAMPLES)
         TE_PARAM_BLOCK_ENTRY(UINT32, gNumSamples)
         TE_PARAM_BLOCK_ENTRY(UINT32, gMSAACount)
+        TE_PARAM_BLOCK_ENTRY(UINT32, gIsAdditive)
     TE_PARAM_BLOCK_END
 
     extern GaussianBlurParamDef gGaussianBlurParamDef;
@@ -44,9 +45,10 @@ namespace te
          * @param[in]	additive	Optional texture whose values to add to the destination texture (won't be included
          *							in filtering). Only used if using the variation of this shader that supports additive
          *							input.
+         * @param[in]	isAdditive  Specify if the shader supports additive
          */
         void Execute(const SPtr<Texture>& source, const SPtr<RenderTexture>& destination, float filterSize, 
-            const Color& tint = Color::White, const SPtr<Texture>& additive = nullptr, UINT32 MSAACount = 1);
+            const Color& tint = Color::White, const SPtr<Texture>& additive = nullptr, bool isAdditive = true, UINT32 MSAACount = 1);
 
         /**
          * Populates the provided parameter buffer with parameters required for a shader including gaussian blur.
