@@ -122,23 +122,8 @@ namespace te
         /** Enables or disables the bloom effect. */
         bool Enabled = true;
 
-        /**
-         * Quality of the bloom effect. Higher values will use higher resolution texture for calculating bloom, at the cost
-         * of lower performance. Valid range is [0, 3], default is 2.
-         */
-        UINT32 Quality = 2;
-
         /** Determines the intensity of the bloom effect. Ideally should be in [0, 4] range but higher values are allowed.*/
-        float Intensity = 0.5f;
-
-        /** Tint color to apply to the bloom highlight. A pure white means the bloom inherits the underlying scene color. */
-        Color Tint = Color::White;
-
-        /**
-         * Determines the percent of the texture to account for when filtering for bloom. Larger values will include
-         * farther away pixels.
-         */
-        float FilterSize = 0.15f;
+        float Intensity = 1.0f;
     };
 
     /** Various options that control shadow rendering for a specific view. */

@@ -2,7 +2,6 @@
 
 cbuffer PerFrameBuffer : register(b0)
 {
-    float4 gTint;
     float gIntensity;
     uint gMSAACount;
 }
@@ -18,7 +17,10 @@ Texture2DMS<float4> EmissiveMapMS : register(t3);
 float4 main( PS_INPUT IN ) : SV_Target0
 {
     float2 currentUV = IN.Texture;
-
-    return TextureSampling(BilinearSampler, SourceMap, SourceMapMS,
+    float4 color =  TextureSampling(BilinearSampler, SourceMap, SourceMapMS,
         IN.Texture, gMSAACount);
+    float4 bloom =  TextureSampling(BilinearSampler, EmissiveMap, EmissiveMapMS,
+        IN.Texture, gMSAACount);
+
+    return color + (bloom * gIntensity);
 }

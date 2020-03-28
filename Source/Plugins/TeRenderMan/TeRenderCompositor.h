@@ -332,10 +332,9 @@ namespace te
     class RCNodeBloom : public RenderCompositorNode
     {
     public:
-        SPtr<Texture> output;
-
         static String GetNodeId() { return "Bloom"; }
         static Vector<String> GetDependencies(const RendererView& view);
+
     protected:
         /** @copydoc RenderCompositorNode::Render */
         void Render(const RenderCompositorNodeInputs& inputs) override;

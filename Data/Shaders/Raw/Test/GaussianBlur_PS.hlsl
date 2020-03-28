@@ -1,69 +1,10 @@
 #include "Include/PostProcessBase.hlsli"
 
-#define MAX_BLUR_SAMPLES 128
-
 cbuffer PerFrameBuffer : register(b0)
 {
-    float4 gSampleOffsets[(STANDARD_MAX_BLUR_SAMPLES + 1) / 2];
-    float4 gSampleWeights[STANDARD_MAX_BLUR_SAMPLES];
-    uint gNumSamples;
+    float2 gSourceDimensions;
     uint gMSAACount;
-    uint gIsAdditive;
-}
-
-float4 GaussianBlur(Texture2D source, Texture2DMS<float4> sourceMS, 
-    SamplerState samplerState, float2 uv)
-{
-    // Note: Consider adding a version of this shader with unrolled loop for small number of samples
-    float4 output = 0;
-
-    uint idx = 0;
-    for(; idx < (gNumSamples / 4); idx++)
-    {
-        {
-            float2 sampleUV = uv + gSampleOffsets[idx * 2 + 0].xy;
-            output += TextureSampling(samplerState, source, sourceMS, uv, gMSAACount) * gSampleWeights[idx * 4 + 0];
-        }
-        
-        {
-            float2 sampleUV = uv + gSampleOffsets[idx * 2 + 0].zw;
-            output += TextureSampling(samplerState, source, sourceMS, uv, gMSAACount) * gSampleWeights[idx * 4 + 1];
-        }
-        
-        {
-            float2 sampleUV = uv + gSampleOffsets[idx * 2 + 1].xy;
-            output += TextureSampling(samplerState, source, sourceMS, uv, gMSAACount) * gSampleWeights[idx * 4 + 2];
-        }
-        
-        {
-            float2 sampleUV = uv + gSampleOffsets[idx * 2 + 1].zw;
-            output += TextureSampling(samplerState, source, sourceMS, uv, gMSAACount) * gSampleWeights[idx * 4 + 3];
-        }
-    }
-
-    uint extraSamples = gNumSamples - idx * 4;
-    [branch]
-    if(extraSamples >= 1)
-    {
-        float2 sampleUV = uv + gSampleOffsets[idx * 2 + 0].xy;
-        output += TextureSampling(samplerState, source, sourceMS, uv, gMSAACount) * gSampleWeights[idx * 4 + 0];
-        
-        [branch]
-        if(extraSamples >= 2)
-        {
-            float2 sampleUV = uv + gSampleOffsets[idx * 2 + 0].zw;
-            output += TextureSampling(samplerState, source, sourceMS, uv, gMSAACount) * gSampleWeights[idx * 4 + 1];
-            
-            [branch]
-            if(extraSamples >= 3)
-            {
-                float2 sampleUV = uv + gSampleOffsets[idx * 2 + 1].xy;
-                output += TextureSampling(samplerState, source, sourceMS, uv, gMSAACount) * gSampleWeights[idx * 4 + 2];
-            }
-        }
-    }
-
-    return output;
+    uint gHorizontal;
 }
 
 SamplerState BilinearSampler : register(s0);
@@ -71,16 +12,39 @@ SamplerState BilinearSampler : register(s0);
 Texture2D SourceMap : register(t0);
 Texture2DMS<float4> SourceMapMS : register(t1);
 
-Texture2D AdditiveMap : register(t2);
+static const float weight[7] = { 0.257027, 0.2145946, 0.1516216, 0.094054, 0.046216, 0.021525, 0.009204 };
+
+float4 GaussianBlur(Texture2D source, Texture2DMS<float4> sourceMS, 
+    SamplerState samplerState, float2 uv)
+{
+    float2 textureOffset = 1.0 / gSourceDimensions;
+    float3 result = TextureSampling(BilinearSampler, source, sourceMS, uv, gMSAACount).rgb * weight[0];
+    if(gHorizontal == 1)
+    {
+        for(int i = 1; i < 7; ++i)
+        {
+            result += TextureSampling(BilinearSampler, source, sourceMS, 
+                uv + float2(textureOffset.x * i, 0.0), gMSAACount).rgb * weight[i];
+            result += TextureSampling(BilinearSampler, source, sourceMS, 
+                uv - float2(textureOffset.x * i, 0.0), gMSAACount).rgb * weight[i];
+        }
+    }
+    else
+    {
+        for(int i = 1; i < 7; ++i)
+        {
+            result += TextureSampling(BilinearSampler, source, sourceMS, 
+                uv + float2(0.0, textureOffset.y * i), gMSAACount).rgb * weight[i];
+            result += TextureSampling(BilinearSampler, source, sourceMS, 
+                uv - float2(0.0, textureOffset.y * i), gMSAACount).rgb * weight[i];
+        }
+    }
+
+    return float4(result, 1.0);
+}
 
 float4 main( PS_INPUT IN ) : SV_Target0
 {
-    //float4 output = GaussianBlur(SourceMap, SourceMapMS, BilinearSampler, IN.Texture);
-
-    float4 output = TextureSampling(BilinearSampler, SourceMap, SourceMapMS, IN.Texture, gMSAACount);
-
-
-    output += AdditiveMap.Sample(BilinearSampler, IN.Texture);
-
+    float4 output = GaussianBlur(SourceMap, SourceMapMS, BilinearSampler, IN.Texture);
     return output;
 }

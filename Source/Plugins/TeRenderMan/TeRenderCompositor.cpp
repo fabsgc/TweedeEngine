@@ -637,42 +637,21 @@ namespace te
 
         // ### First, we get emissive texture from forward pass, use it as input for our GaussianBlur material
         // ### and create a new tex representing the blured result
-        SPtr<Texture> output;
         GaussianBlurMat* gaussianBlur = GaussianBlurMat::Get();
         SPtr<PooledRenderTexture> emissiveTex = forwardPassNode->EmissiveTex;
-        const UINT32 quality = Math::Clamp(settings.Bloom.Quality, 0U, 3U);
-        constexpr UINT32 NUM_STEPS_PER_QUALITY[] = { 3, 4, 5, 6 };
 
-        const UINT32 numSteps = NUM_STEPS_PER_QUALITY[quality];
-        SPtr<PooledRenderTexture> prevOutput;
-        for (UINT32 i = 0; i < numSteps; i++)
-        {
-            const TextureProperties& inputProps = emissiveTex->Tex->GetProperties();
+        const TextureProperties& inputProps = emissiveTex->Tex->GetProperties();
+        SPtr<PooledRenderTexture> blurOutput = gGpuResourcePool().Get(
+            POOLED_RENDER_TEXTURE_DESC::Create2D(
+                inputProps.GetFormat(),
+                inputProps.GetWidth(),
+                inputProps.GetHeight(),
+                TU_RENDERTARGET,
+                viewProps.Target.NumSamples
+            )
+        );
 
-            SPtr<PooledRenderTexture> filterOutput = gGpuResourcePool().Get(
-                POOLED_RENDER_TEXTURE_DESC::Create2D(
-                    inputProps.GetFormat(),
-                    inputProps.GetWidth(),
-                    inputProps.GetHeight(),
-                    TU_RENDERTARGET,
-                    viewProps.Target.NumSamples
-                )
-            );
-
-            SPtr<PooledRenderTexture> blurInput = emissiveTex;
-            SPtr<PooledRenderTexture> blurOutput = filterOutput;
-
-            SPtr<Texture> additiveInput;
-            if (prevOutput)
-                additiveInput = prevOutput->Tex;
-
-            const Color tint = Color::White * (settings.Bloom.Intensity / (float)numSteps);
-            gaussianBlur->Execute(blurInput->Tex, blurOutput->RenderTex, settings.Bloom.FilterSize,
-                tint, additiveInput, true, viewProps.Target.NumSamples);
-            prevOutput = blurOutput;
-        }
-
-        output = prevOutput->Tex;
+        gaussianBlur->Execute(emissiveTex->Tex, blurOutput->RenderTex, viewProps.Target.NumSamples);
 
         // ### Once we have our blured texture, we call our bloom material which will add this blured texture to the 
         // ### output final texture
@@ -684,14 +663,14 @@ namespace te
         if (ppLastFrame)
         {
             auto& texProps = ppLastFrame->GetProperties();
-            bloom->Execute(ppLastFrame, ppOutput, output,
-                settings.Bloom.Tint, settings.Bloom.Intensity, texProps.GetNumSamples());
+            bloom->Execute(ppLastFrame, ppOutput, blurOutput->Tex,
+                settings.Bloom.Intensity, texProps.GetNumSamples());
         }
         else
         {
             auto& texProps = forwardPassNode->SceneTex->Tex->GetProperties();
-            bloom->Execute(forwardPassNode->SceneTex->Tex, ppOutput, output,
-                settings.Bloom.Tint, settings.Bloom.Intensity, texProps.GetNumSamples());
+            bloom->Execute(forwardPassNode->SceneTex->Tex, ppOutput, blurOutput->Tex,
+                settings.Bloom.Intensity, texProps.GetNumSamples());
         }
     }
 

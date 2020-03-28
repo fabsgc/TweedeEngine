@@ -13,10 +13,9 @@ namespace te
     }
 
     void BloomMat::Execute(const SPtr<Texture>& source, const SPtr<RenderTarget>& destination, const SPtr<Texture>& emissive, 
-        const Color& tint, const float& intensity, UINT32 MSAACount)
+        const float& intensity, UINT32 MSAACount)
     {
         gBloomParamDef.gMSAACount.Set(_paramBuffer, MSAACount, 0);
-        gBloomParamDef.gTint.Set(_paramBuffer, tint.GetAsVector4(), 0);
         gBloomParamDef.gIntensity.Set(_paramBuffer, intensity, 0);
 
         if (MSAACount > 1)

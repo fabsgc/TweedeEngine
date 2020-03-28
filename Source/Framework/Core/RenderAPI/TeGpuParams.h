@@ -15,7 +15,8 @@ namespace te
     template<> struct TGpuDataParamInfo < Vector2 > { enum { TypeId = GPDT_FLOAT2 }; };
     template<> struct TGpuDataParamInfo < Vector3 > { enum { TypeId = GPDT_FLOAT3 }; };
     template<> struct TGpuDataParamInfo < Vector4 > { enum { TypeId = GPDT_FLOAT4 }; };
-    template<> struct TGpuDataParamInfo < int > { enum { TypeId = GPDT_INT1 }; };
+    template<> struct TGpuDataParamInfo < INT32 > { enum { TypeId = GPDT_INT1 }; };
+    template<> struct TGpuDataParamInfo < UINT32 > { enum { TypeId = GPDT_INT1 }; };
     template<> struct TGpuDataParamInfo < Vector2I > { enum { TypeId = GPDT_INT2 }; };
     template<> struct TGpuDataParamInfo < Vector3I > { enum { TypeId = GPDT_INT3 }; };
     template<> struct TGpuDataParamInfo < Vector4I > { enum { TypeId = GPDT_INT4 }; };
