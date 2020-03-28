@@ -86,7 +86,7 @@ float4 ComputeEmissiveBuffer(float4 color, float4 emissive)
     else
     {
         float brightness = dot(color.rgb, float3(0.2816, 0.7152, 0.0722));
-        if(brightness > 0.985)
+        if(brightness > 0.999)
             return float4(color.rgb, 1.0);
         else
             return (float4)0;

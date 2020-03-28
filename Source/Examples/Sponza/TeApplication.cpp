@@ -630,6 +630,7 @@ namespace te
         settings->Gamma = 0.8f;
         settings->Contrast = 1.60f;
         settings->Brightness = -0.02f;
+        settings->Bloom.Intensity = 0.5f;
 
         /*_sceneDirectionalLightSO = SceneObject::Create("DirectionalLight");
         _directionalLight = _sceneDirectionalLightSO->AddComponent<CLight>(LightType::Directional);
