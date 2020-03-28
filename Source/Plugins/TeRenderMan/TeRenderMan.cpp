@@ -42,6 +42,7 @@ namespace te
         RenderCompositor::RegisterNodeType<RCNodeMotionBlur>();
         RenderCompositor::RegisterNodeType<RCNodeGaussianDOF>();
         RenderCompositor::RegisterNodeType<RCNodeFXAA>();
+        RenderCompositor::RegisterNodeType<RCNodeTemporalAA>();
         RenderCompositor::RegisterNodeType<RCNodeSSAO>();
         RenderCompositor::RegisterNodeType<RCNodeBloom>();
         RenderCompositor::RegisterNodeType<RCNodePostProcess>();

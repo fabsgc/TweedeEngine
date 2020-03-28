@@ -127,9 +127,89 @@ namespace te
     };
 
     /** Various options that control shadow rendering for a specific view. */
-    struct TE_CORE_EXPORT ShadowSettings
+    struct TE_CORE_EXPORT ShadowsSettings
     {
-        ShadowSettings() = default;
+        ShadowsSettings() = default;
+
+        /**
+         * Maximum distance that directional light shadows are allowed to render at. Decreasing the distance can yield
+         * higher quality shadows nearer to the viewer, as the shadow map resolution isn't being used up on far away
+         * portions of the scene. In world units (meters).
+         */
+        float DirectionalShadowDistance = 250.0f;
+
+        /**
+         * Number of cascades to use for directional shadows. Higher number of cascades increases shadow quality as each
+         * individual cascade has less area to cover, but can significantly increase performance cost, as well as a minor
+         * increase in memory cost. Valid range is roughly [1, 6].
+         */
+        UINT32 NumCascades = 4;
+
+        /**
+         * Allows you to control how are directional shadow cascades distributed. Value of 1 means the cascades will be
+         * linearly split, each cascade taking up the same amount of space. Value of 2 means each subsequent split will be
+         * twice the size of the previous one (meaning cascades closer to the viewer cover a smaller area, and therefore
+         * yield higher resolution shadows). Higher values increase the size disparity between near and far cascades at
+         * an exponential rate. Valid range is roughly [1, 4].
+         */
+        float CascadeDistributionExponent = 3.0f;
+
+        /**
+         * Determines the number of samples used for percentage closer shadow map filtering. Higher values yield higher
+         * quality shadows, at the cost of performance. Valid range is [1, 4].
+         */
+        UINT32 ShadowFilteringQuality = 4;
+    };
+
+    /** Settings that control temporal anti-aliasing. */
+    struct TE_CORE_EXPORT TemporalAASettings
+    {
+        TemporalAASettings() = default;
+
+        /** Enables or disables temporal anti-aliasing. */
+        bool Enabled = false;
+
+        /**
+         * Number of different jittered positions to use. Each frame will use one position and subsequent frames
+         * will use subsequent positions until this number of reached, at which point the positions start getting
+         * re-used from the start.
+         */
+        UINT32 JitteredPositionCount = 8;
+
+        /** Determines the distance between temporal AA samples. Larger values result in a sharper image. */
+        float Sharpness = 1.0f;
+    };
+
+    /**
+     * Settings that control the screen space reflections effect. Screen space reflections provide high quality mirror-like
+     * reflections at low performance cost. They should be used together with reflection probes as the effects complement
+     * each other. As the name implies, the reflections are only limited to geometry drawn on the screen and the system will
+     * fall back to refl. probes when screen space data is unavailable. Similarly the system will fall back to refl. probes
+     * for rougher (more glossy rather than mirror-like) surfaces. Those surfaces require a higher number of samples to
+     * achieve the glossy look, so we instead fall back to refl. probes which are pre-filtered and can be quickly sampled.
+     */
+    struct TE_CORE_EXPORT ScreenSpaceReflectionsSettings
+    {
+        ScreenSpaceReflectionsSettings() = default;
+
+        /** Enables or disables the SSR effect. */
+        bool Enabled = true;
+
+        /**
+         * Quality of the SSR effect. Higher values cast more sample rays, and march those rays are lower increments for
+         * better precision. This results in higher quality, as well as a higher performance requirement. Valid range is
+         * [0, 4], default is 2.
+         */
+        UINT32 Quality = 2;
+
+        /** Intensity of the screen space reflections. Valid range is [0, 1]. Default is 1 (100%). */
+            float intensity = 1.0f;
+
+        /**
+         * Roughness at which screen space reflections start fading out and become replaced with refl. probes. Valid range
+         * is [0, 1]. Default is 0.8.
+         */
+        float MaxRoughness = 0.8f;
     };
 
     /** RenderSettings struct */
@@ -175,6 +255,9 @@ namespace te
         /** Parameters used for customizing screen space ambient occlusion. */
         AmbientOcclusionSettings AmbientOcclusion;
 
+        /** Parameters used for customizing screen space reflections. */
+        ScreenSpaceReflectionsSettings ScreenSpaceReflections;
+
         /** Parameters used for customizing the bloom effect. */
         BloomSettings Bloom;
 
@@ -183,6 +266,12 @@ namespace te
 
         /** Parameters used for customizing the gaussian depth of field effect. */
         DepthOfFieldSettings DepthOfField;
+
+        /** Parameters used for customizing the temporal anti-aliasing effect. */
+        TemporalAASettings TemporalAA;
+
+        /** Parameters used for customizing shadow rendering. */
+        ShadowsSettings ShadowSettings;
 
         /** Enables the fast approximate anti-aliasing effect. */
         bool EnableFXAA = true;

@@ -605,6 +605,38 @@ namespace te
         };
     }
 
+    // ############# TAA
+    void RCNodeTemporalAA::Render(const RenderCompositorNodeInputs& inputs)
+    {
+        const RendererViewProperties& viewProps = inputs.View.GetProperties();
+        const RenderSettings& settings = inputs.View.GetRenderSettings();
+        if (!settings.TemporalAA.Enabled || viewProps.Target.NumSamples > 1)
+            return;
+
+        RCNodeForwardPass* forwardPassNode = static_cast<RCNodeForwardPass*>(inputs.InputNodes[2]);
+        RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[3]);
+
+        SPtr<RenderTexture> ppOutput;
+        SPtr<Texture> ppLastFrame;
+        postProcessNode->GetAndSwitch(inputs.View, ppOutput, ppLastFrame);
+
+        // TODO
+    }
+
+    void RCNodeTemporalAA::Clear()
+    { }
+
+    Vector<String> RCNodeTemporalAA::GetDependencies(const RendererView& view)
+    {
+        return
+        {
+            RCNodeBloom::GetNodeId(),
+            RCNodeGaussianDOF::GetNodeId(),
+            RCNodeForwardPass::GetNodeId(),
+            RCNodePostProcess::GetNodeId()
+        };
+    }
+
     // ############# SSAO
 
     void RCNodeSSAO::Render(const RenderCompositorNodeInputs& inputs)
@@ -735,6 +767,7 @@ namespace te
             deps.push_back(RCNodeForwardPass::GetNodeId());
             deps.push_back(RCNodePostProcess::GetNodeId());
             deps.push_back(RCNodeFXAA::GetNodeId());
+            deps.push_back(RCNodeTemporalAA::GetNodeId());
         }
         else
         {

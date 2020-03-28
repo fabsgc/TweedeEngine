@@ -186,7 +186,7 @@ namespace te
         static String GetNodeId() { return "ForwardPass"; }
         static Vector<String> GetDependencies(const RendererView& view);
     protected:
-        /** @copydoc RenderCompositorNode::render */
+        /** @copydoc RenderCompositorNode::Render */
         void Render(const RenderCompositorNodeInputs& inputs) override;
 
         /** @copydoc RenderCompositorNode::clear */
@@ -275,7 +275,7 @@ namespace te
         static String GetNodeId() { return "MotionBlur"; }
         static Vector<String> GetDependencies(const RendererView& view);
     protected:
-        /** @copydoc RenderCompositorNode::render */
+        /** @copydoc RenderCompositorNode::Render */
         void Render(const RenderCompositorNodeInputs& inputs) override;
 
         /** @copydoc RenderCompositorNode::clear */
@@ -289,7 +289,7 @@ namespace te
         static String GetNodeId() { return "GaussianDOF"; }
         static Vector<String> GetDependencies(const RendererView& view);
     protected:
-        /** @copydoc RenderCompositorNode::render */
+        /** @copydoc RenderCompositorNode::Render */
         void Render(const RenderCompositorNodeInputs& inputs) override;
 
         /** @copydoc RenderCompositorNode::clear */
@@ -303,7 +303,21 @@ namespace te
         static String GetNodeId() { return "FXAA"; }
         static Vector<String> GetDependencies(const RendererView& view);
     protected:
-        /** @copydoc RenderCompositorNode::render */
+        /** @copydoc RenderCompositorNode::Render */
+        void Render(const RenderCompositorNodeInputs& inputs) override;
+
+        /** @copydoc RenderCompositorNode::Clear */
+        void Clear() override;
+    };
+
+    /** Renders TAA. */
+    class RCNodeTemporalAA : public RenderCompositorNode
+    {
+    public:
+        static String GetNodeId() { return "TAA"; }
+        static Vector<String> GetDependencies(const RendererView& view);
+    protected:
+        /** @copydoc RenderCompositorNode::Render */
         void Render(const RenderCompositorNodeInputs& inputs) override;
 
         /** @copydoc RenderCompositorNode::Clear */
@@ -352,7 +366,7 @@ namespace te
         static String GetNodeId() { return "FinalResolve"; }
         static Vector<String> GetDependencies(const RendererView& view);
     protected:
-        /** @copydoc RenderCompositorNode::render */
+        /** @copydoc RenderCompositorNode::Render */
         void Render(const RenderCompositorNodeInputs& inputs) override;
 
         /** @copydoc RenderCompositorNode::clear */
