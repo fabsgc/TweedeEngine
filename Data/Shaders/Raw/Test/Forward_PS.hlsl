@@ -62,15 +62,15 @@ Texture2D TransparencyMap : register(t6);
 Texture2D ReflectionMap : register(t7);
 Texture2D OcclusionMap : register(t8);
 
-float4 ComputeAlbedoBuffer(float4 diffuse)
+/*float4 ComputeAlbedoBuffer(float4 diffuse)
 {
     return diffuse;
-}
+}*/
 
-float4 ComputeSpecularBuffer(float4 specular)
+/*float4 ComputeSpecularBuffer(float4 specular)
 {
     return specular;
-}
+}*/
 
 float4 ComputeNormalBuffer(float4 normal)
 {
@@ -93,7 +93,7 @@ float4 ComputeEmissiveBuffer(float4 color, float4 emissive)
     }
 }
 
-float2 ComputeVelocityBuffer(float4 position, float4 prevPosition, float alpha)
+/*float2 ComputeVelocityBuffer(float4 position, float4 prevPosition, float alpha)
 {
     float2 oVelocity = (float2)0;
 
@@ -112,7 +112,7 @@ float2 ComputeVelocityBuffer(float4 position, float4 prevPosition, float alpha)
     }
 
     return oVelocity;
-}
+}*/
 
 struct LightingResult
 {
