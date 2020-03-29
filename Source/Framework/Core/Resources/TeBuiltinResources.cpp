@@ -313,21 +313,28 @@ namespace te
             SHADER_DATA_PARAM_DESC gUseTransparencyMap("gUseTransparencyMap", "gUseTransparencyMap", GPDT_INT1);
             SHADER_DATA_PARAM_DESC gUseReflectionMap("gUseReflectionMap", "gUseReflectionMap", GPDT_INT1);
             SHADER_DATA_PARAM_DESC gUseOcclusionMap("gUseOcclusionMap", "gUseOcclusionMap", GPDT_INT1);
+            SHADER_DATA_PARAM_DESC gUseEnvironmentMap("gUseEnvironmentMap", "gUseEnvironmentMap", GPDT_INT1);
             SHADER_DATA_PARAM_DESC gSpecularPower("gSpecularPower", "gSpecularPower", GPDT_FLOAT1);
             SHADER_DATA_PARAM_DESC gTransparency("gTransparency", "gTransparency", GPDT_FLOAT1);
             SHADER_DATA_PARAM_DESC gIndexOfRefraction("gIndexOfRefraction", "gIndexOfRefraction", GPDT_FLOAT1);
+            SHADER_DATA_PARAM_DESC gRefraction("gRefraction", "gRefraction", GPDT_FLOAT1);
             SHADER_DATA_PARAM_DESC gReflection("gReflection", "gReflection", GPDT_FLOAT1);
             SHADER_DATA_PARAM_DESC gAbsorbance("gAbsorbance", "gAbsorbance", GPDT_FLOAT1);
             SHADER_DATA_PARAM_DESC gBumpScale("gBumScale", "gBumScale", GPDT_FLOAT1);
             SHADER_DATA_PARAM_DESC gAlphaThreshold("gAlphaThreshold", "gAlphaThreshold", GPDT_FLOAT1);
 
             SHADER_OBJECT_PARAM_DESC anisotropicSamplerDesc("AnisotropicSampler", "AnisotropicSampler", GPOT_SAMPLER2D);
+
             SHADER_OBJECT_PARAM_DESC diffuseMapDesc("DiffuseMap", "DiffuseMap", GPOT_TEXTURE2D);
             SHADER_OBJECT_PARAM_DESC emissiveMapDesc("EmissiveMap", "EmissiveMap", GPOT_TEXTURE2D);
             SHADER_OBJECT_PARAM_DESC normalMapDesc("NormalMap", "NormalMap", GPOT_TEXTURE2D);
             SHADER_OBJECT_PARAM_DESC specularMapDesc("SpecularMap", "SpecularMap", GPOT_TEXTURE2D);
             SHADER_OBJECT_PARAM_DESC bumpMapDesc("BumpMap", "BumpMap", GPOT_TEXTURE2D);
+            SHADER_OBJECT_PARAM_DESC parallaxMapDesc("ParallaxMap", "ParallaxMap", GPOT_TEXTURE2D);
             SHADER_OBJECT_PARAM_DESC transparencyMapDesc("TransparencyMap", "TransparencyMap", GPOT_TEXTURE2D);
+            SHADER_OBJECT_PARAM_DESC reflectionMapDesc("ReflectionMap", "ReflectionMap", GPOT_TEXTURE2D);
+            SHADER_OBJECT_PARAM_DESC occlusionMapDesc("OcclusionMap", "OcclusionMap", GPOT_TEXTURE2D);
+            SHADER_OBJECT_PARAM_DESC environmentMapDesc("EnvironmentMap", "EnvironmentMap", GPOT_TEXTURE2D);
 
             SHADER_DATA_PARAM_DESC gLightsDesc("gLights", "gLights", GPDT_STRUCT);
             gLightsDesc.ElementSize = sizeof(LightData);
@@ -365,9 +372,11 @@ namespace te
             _forwardShaderDesc.AddParameter(gUseTransparencyMap);
             _forwardShaderDesc.AddParameter(gUseReflectionMap);
             _forwardShaderDesc.AddParameter(gUseOcclusionMap);
+            _forwardShaderDesc.AddParameter(gUseEnvironmentMap);
             _forwardShaderDesc.AddParameter(gSpecularPower);
             _forwardShaderDesc.AddParameter(gTransparency);
             _forwardShaderDesc.AddParameter(gIndexOfRefraction);
+            _forwardShaderDesc.AddParameter(gRefraction);
             _forwardShaderDesc.AddParameter(gReflection);
             _forwardShaderDesc.AddParameter(gAbsorbance);
             _forwardShaderDesc.AddParameter(gBumpScale);
@@ -378,12 +387,17 @@ namespace te
             _forwardShaderDesc.AddParameter(gMatWorldViewProj);
 
             _forwardShaderDesc.AddParameter(anisotropicSamplerDesc);
+
             _forwardShaderDesc.AddParameter(diffuseMapDesc);
             _forwardShaderDesc.AddParameter(emissiveMapDesc);
             _forwardShaderDesc.AddParameter(normalMapDesc);
             _forwardShaderDesc.AddParameter(specularMapDesc);
             _forwardShaderDesc.AddParameter(bumpMapDesc);
+            _forwardShaderDesc.AddParameter(parallaxMapDesc);
             _forwardShaderDesc.AddParameter(transparencyMapDesc);
+            _forwardShaderDesc.AddParameter(reflectionMapDesc);
+            _forwardShaderDesc.AddParameter(occlusionMapDesc);
+            _forwardShaderDesc.AddParameter(environmentMapDesc);
 
             _forwardShaderDesc.AddParameter(gLightsDesc);
             _forwardShaderDesc.AddParameter(gLightsNumberDesc);

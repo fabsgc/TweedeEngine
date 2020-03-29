@@ -11,8 +11,8 @@ cbuffer PerCameraBuffer : register(b0)
     matrix gNDCToPrevNDC;
     // xy - (Viewport size in pixels / 2) / Target size in pixels
     // zw - (Viewport offset in pixels + (Viewport size in pixels / 2) + Optional pixel center offset) / Target size in pixels
-    float4 	 gClipToUVScaleOffset;
-    float4 	 gUVToClipScaleOffset;	
+    float4  gClipToUVScaleOffset;
+    float4  gUVToClipScaleOffset;	
 }
 
 cbuffer PerMaterialBuffer : register(b1)
@@ -30,9 +30,11 @@ cbuffer PerMaterialBuffer : register(b1)
     uint   gUseTransparencyMap;
     uint   gUseReflectionMap;
     uint   gUseOcclusionMap;
+    uint   gUseEnvironmentMap;
     float  gSpecularPower;
     float  gTransparency;
     float  gIndexOfRefraction;
+    float  gRefraction;
     float  gReflection;
     float  gAbsorbance;
     float  gBumpScale;
@@ -61,6 +63,7 @@ Texture2D ParallaxMap : register(t5);
 Texture2D TransparencyMap : register(t6);
 Texture2D ReflectionMap : register(t7);
 Texture2D OcclusionMap : register(t8);
+TextureCube EnvironmentMap : register(t9);
 
 /*float4 ComputeAlbedoBuffer(float4 diffuse)
 {
@@ -242,6 +245,23 @@ LightingResult ComputeLighting( float3 P, float3 N )
     return totalResult;
 }
 
+float3 DoReflection(float3 P, float3 N)
+{
+    float3 I = normalize(P - gViewOrigin);
+    float3 R = reflect(I, normalize(N));
+
+    return EnvironmentMap.SampleLevel(AnisotropicSampler, R, 0).xyz * gReflection;
+}
+
+float3 DoRefraction(float3 P, float3 N)
+{
+    float ratio = 1.0 / gIndexOfRefraction;
+    float3 I = normalize(P - gViewOrigin);
+    float3 R = refract(I, normalize(N), ratio);
+
+    return EnvironmentMap.SampleLevel(AnisotropicSampler, R, 0).xyz * gRefraction;
+}
+
 PS_OUTPUT main( PS_INPUT IN )
 {
     PS_OUTPUT OUT;
@@ -249,19 +269,15 @@ PS_OUTPUT main( PS_INPUT IN )
     OUT.Scene  = float4(1.0f, 1.0f, 1.0f, 1.0f);
     float3x3 TBN = float3x3(IN.Tangent.xyz, IN.BiTangent.xyz, IN.Normal.xyz);
 
-    float3 albedo    = gDiffuse.rgb * gDiffuse.a;
-    float3 ambient   = gAmbient.rgb * gAmbient.a;
-    float3 diffuse   = gDiffuse.rgb * gDiffuse.a;
-    float3 emissive  = gEmissive.rgb * gEmissive.a;
-    float3 specular  = gSpecular.rgb * gSpecular.a;
-    float3 normal    = IN.Normal;
-    float  alpha     = gTransparency;
-    float2 texCoords = IN.Texture;
-
-    if(gIndexOfRefraction != 1.0)
-        { /* TODO */ }
-    if(gReflection != 0.0)
-        { /* TODO */ }
+    float3 albedo      = gDiffuse.rgb * gDiffuse.a;
+    float3 ambient     = gAmbient.rgb * gAmbient.a;
+    float3 diffuse     = gDiffuse.rgb * gDiffuse.a;
+    float3 emissive    = gEmissive.rgb * gEmissive.a;
+    float3 specular    = gSpecular.rgb * gSpecular.a;
+    float3 environment = (float3)0;
+    float3 normal      = IN.Normal;
+    float  alpha       = gTransparency;
+    float2 texCoords   = IN.Texture;
 
     if(gUseTransparencyMap == 1)
         alpha = TransparencyMap.Sample( AnisotropicSampler, IN.Texture ).r;
@@ -284,28 +300,41 @@ PS_OUTPUT main( PS_INPUT IN )
     if(gUseOcclusionMap == 1)
         albedo = albedo * OcclusionMap.Sample(AnisotropicSampler, IN.Texture).rgb;
 
-    LightingResult lit = ComputeLighting( IN.WorldPosition.xyz, normalize(normal) );
+    LightingResult lit = ComputeLighting(IN.WorldPosition.xyz, normalize(normal));
+
+    if(gUseEnvironmentMap == 1)
+    {
+        if(gIndexOfRefraction != 0.0)
+            environment = DoRefraction(IN.WorldPosition.xyz, normal);
+        if(gReflection != 0.0)
+            environment = environment + DoReflection(IN.WorldPosition.xyz, normal);
+
+        float reflectAndRefract = gReflection + gRefraction;
+        if(reflectAndRefract > 1.0) reflectAndRefract = 1.0;
+        albedo = albedo * (1.0 - reflectAndRefract);
+    }
 
     diffuse = diffuse * lit.Diffuse.rgb;
     specular = specular * lit.Specular.rgb;
 
-    OUT.Scene.rgb = (ambient + emissive + diffuse + specular) * albedo;
+    OUT.Scene.rgb = (ambient + emissive + diffuse + specular) * (albedo + environment);
     OUT.Scene.a = alpha;
 
-    //float4 currentClipSpace = float4(IN.WorldPosition.xyz, 1);
-    //float4 prevClipSpace = float4(IN.WorldPosition.xyz, 1);
-
-    //currentClipSpace = mul(currentClipSpace, gMatViewProj);
-    //prevClipSpace = mul(prevClipSpace, gMatPrevViewProj);
-
-    //float4 prevClip = mul(currentNDC, gNDCToPrevNDC);
-    //float3 prevNdcPos = prevClip.xyz / prevClip.w;
-
-    //OUT.Albedo = ComputeAlbedoBuffer(float4(albedo, 1.0f));
-    //OUT.Specular = ComputeSpecularBuffer(float4(specular, 1.0f));
     OUT.Normal = ComputeNormalBuffer(float4(normal, 0.0f));
     OUT.Emissive = ComputeEmissiveBuffer(OUT.Scene, float4(emissive, 0.0));
-    //OUT.Velocity = ComputeVelocityBuffer(currentClipSpace, prevClipSpace, alpha);
+
+    /*float4 currentClipSpace = float4(IN.WorldPosition.xyz, 1);
+    float4 prevClipSpace = float4(IN.WorldPosition.xyz, 1);
+
+    currentClipSpace = mul(currentClipSpace, gMatViewProj);
+    prevClipSpace = mul(prevClipSpace, gMatPrevViewProj);
+
+    float4 prevClip = mul(currentNDC, gNDCToPrevNDC);
+    float3 prevNdcPos = prevClip.xyz / prevClip.w;
+
+    OUT.Albedo = ComputeAlbedoBuffer(float4(albedo, 1.0f));
+    OUT.Specular = ComputeSpecularBuffer(float4(specular, 1.0f));
+    OUT.Velocity = ComputeVelocityBuffer(currentClipSpace, prevClipSpace, alpha);*/
 
     return OUT;
 }

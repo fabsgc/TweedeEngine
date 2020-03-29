@@ -26,9 +26,11 @@ cbuffer PerMaterialBuffer : register(b1)
     uint   gUseTransparencyMap;
     uint   gUseReflectionMap;
     uint   gUseOcclusionMap;
+    uint   gUseEnvironmentMap;
     float  gSpecularPower;
     float  gTransparency;
     float  gIndexOfRefraction;
+    float  gRefraction;
     float  gReflection;
     float  gAbsorbance;
     float  gBumpScale;

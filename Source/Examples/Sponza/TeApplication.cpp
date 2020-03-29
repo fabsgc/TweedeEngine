@@ -62,6 +62,14 @@ namespace te
     void Application::InitMaterials()
     {
 #if TE_PLATFORM == TE_PLATFORM_WIN32
+        auto textureCubeMapImportOptions = TextureImportOptions::Create();
+        textureCubeMapImportOptions->CpuCached = false;
+        textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
+        textureCubeMapImportOptions->Format = PF_RGBA8;
+        textureCubeMapImportOptions->IsCubemap = true;
+
+        _loadedSkyboxTexture = gResourceManager().Load<Texture>("Data/Textures/Skybox/sky_night_2_large.jpeg", textureCubeMapImportOptions);
+
         _materials =
         {
             {
@@ -75,6 +83,7 @@ namespace te
                 "",
                 "Data/Textures/Sponza/arch/arch_OCC.jpeg",
                 "",
+                true,
                 1.0f,
                 0.5f
             },
@@ -89,6 +98,7 @@ namespace te
                 "",
                 "",
                 "",
+                true,
                 1.0f,
                 0.5f
             },
@@ -103,6 +113,7 @@ namespace te
                 "",
                 "Data/Textures/Sponza/bricks/bricks_OCC.jpeg",
                 "",
+                true,
                 1.0f,
                 0.5f
             },
@@ -117,6 +128,7 @@ namespace te
                 "",
                 "",
                 "",
+                true,
                 1.0f,
                 0.5f
             },
@@ -131,6 +143,7 @@ namespace te
                 "Data/Textures/Sponza/chain/chain_MASK.jpeg",
                 "",
                 "",
+                true,
                 1.0f,
                 0.5f
             },
@@ -143,8 +156,9 @@ namespace te
                 "",
                 "",
                 "",
-                "",
                 "Data/Textures/Sponza/column_a/column_a_OCC.jpeg",
+                "",
+                true,
                 1.0f,
                 0.5f
             },
@@ -157,8 +171,9 @@ namespace te
                 "",
                 "",
                 "",
-                "",
                 "Data/Textures/Sponza/column_b/column_b_OCC.jpeg",
+                "",
+                true,
                 1.0f,
                 0.5f
             },
@@ -171,8 +186,9 @@ namespace te
                 "",
                 "",
                 "",
-                "",
                 "Data/Textures/Sponza/column_c/column_c_OCC.jpeg",
+                "",
+                true,
                 1.0f,
                 0.5f
             },
@@ -187,6 +203,7 @@ namespace te
                 "",
                 "",
                 "",
+                true,
                 1.0f,
                 0.5f
             },
@@ -201,6 +218,7 @@ namespace te
                 "",
                 "",
                 "",
+                true,
                 1.0f,
                 0.5f
             },
@@ -215,6 +233,7 @@ namespace te
                 "",
                 "",
                 "",
+                true,
                 1.0f,
                 0.5f
             },
@@ -229,6 +248,7 @@ namespace te
                 "",
                 "",
                 "",
+                true,
                 1.0f,
                 0.5f
             },
@@ -243,6 +263,7 @@ namespace te
                 "",
                 "",
                 "",
+                true,
                 1.0f,
                 0.5f
             },
@@ -257,6 +278,7 @@ namespace te
                 "",
                 "",
                 "",
+                true,
                 1.0f,
                 0.5f
             },
@@ -271,6 +293,7 @@ namespace te
                 "",
                 "",
                 "",
+                true,
                 1.0f,
                 0.5f
             },
@@ -285,6 +308,7 @@ namespace te
                 "",
                 "",
                 "",
+                true,
                 1.0f,
                 0.5f
             },
@@ -299,6 +323,7 @@ namespace te
                 "",
                 "Data/Textures/Sponza/floor/floor_OCC.jpeg",
                 "",
+                true,
                 1.0f,
                 0.5f
             },
@@ -313,6 +338,7 @@ namespace te
                 "Data/Textures/Sponza/leaf/leaf_MASK.jpeg",
                 "",
                 "",
+                true,
                 1.0f,
                 0.5f
             },
@@ -327,6 +353,7 @@ namespace te
                 "",
                 "",
                 "",
+                true,
                 1.0f,
                 0.5f
             },
@@ -341,6 +368,7 @@ namespace te
                 "",
                 "",
                 "",
+                true,
                 1.0f,
                 0.5f
             },
@@ -355,6 +383,7 @@ namespace te
                 "",
                 "",
                 "",
+                true,
                 1.0f,
                 0.5f
             },
@@ -369,6 +398,7 @@ namespace te
                 "",
                 "",
                 "",
+                true,
                 1.0f,
                 0.5f
             },
@@ -383,6 +413,7 @@ namespace te
                 "Data/Textures/Sponza/vase_plant/vase_plant_MASK.jpeg",
                 "",
                 "",
+                true,
                 1.0f,
                 0.5f
             },
@@ -397,6 +428,7 @@ namespace te
                 "",
                 "",
                 "",
+                true,
                 1.0f,
                 0.5f
             }
@@ -417,6 +449,9 @@ namespace te
             material.MaterialProp.Ambient = Color(0.05f, 0.05f, 0.05f, 1.0f);
             material.MaterialProp.AlphaThreshold = material.AlphaTreshold;
             material.MaterialProp.Transparency = material.Opacity;
+            material.MaterialProp.Reflection = material.ReflectionValue;
+            material.MaterialProp.Refraction = material.RefractionValue;
+            material.MaterialProp.IndexOfRefraction = material.IndexOfRefractionValue;
             material.MaterialProp.Emissive = material.EmissiveColor;
 
             if (material.Diffuse != "")
@@ -473,6 +508,12 @@ namespace te
                 material.MaterialProp.UseReflectionMap = true;
             }
 
+            if (material.Environment)
+            {
+                material.EnvironmentTexture = _loadedSkyboxTexture;
+                material.MaterialProp.UseEnvironmentMap = true;
+            }
+
             if(material.Opacity < 1.0f)
                 material.MaterialElement = Material::Create(_shaderTransparent);
             else
@@ -492,11 +533,11 @@ namespace te
             if (material.Transparency != "") material.MaterialElement->SetTexture("TransparencyMap", material.TransparencyTexture, surface);
             if (material.Occlusion != "") material.MaterialElement->SetTexture("OcclusionMap", material.OcclusionTexture, surface);
             if (material.Reflection != "") material.MaterialElement->SetTexture("ReflectionMap", material.ReflectionTexture, surface);
+            if (material.Environment) material.MaterialElement->SetTexture("EnvironmentMap", material.EnvironmentTexture);
 
             material.MaterialElement->SetProperties(material.MaterialProp);
         };
 
-        //materialFunction(_materials[16]);
         UINT8 initializedMaterialCounter = 0;
         Vector<Thread> materialThreads;
         materialThreads.reserve(8);
@@ -524,32 +565,28 @@ namespace te
         }
 
         MaterialProperties properties;
+
         properties.Emissive = Color(1.0f, 0.9f, 0.7f, 1.0f);
         properties.Ambient = Color(0.05f, 0.05f, 0.05f, 1.0f);
         _lightMaterial = Material::Create(_shaderOpaque);
         _lightMaterial->SetProperties(properties);
 
         _loadedTextureMonkey = gResourceManager().Load<Texture>("Data/Textures/Monkey/diffuse.png", textureImportOptions);
-
         properties.Emissive = Color(0.0f, 0.0f, 0.0f, 1.0f);
         properties.UseDiffuseMap = true;
+        properties.UseEnvironmentMap = true;
         properties.SpecularPower = 128.0f;
         properties.Specular = Color(1.0f, 1.0f, 1.0f, 1.0);
-        properties.Reflection = 0.5f;
+        properties.Reflection = 0.4f;
+        properties.Refraction = 0.1f;
+        properties.IndexOfRefraction = 1.5f;
         _monkeyMaterial = Material::Create(_shaderOpaque);
         _monkeyMaterial->SetProperties(properties);
         _monkeyMaterial->SetName("Material");
         _monkeyMaterial->SetTexture("DiffuseMap", _loadedTextureMonkey, surface);
+        _monkeyMaterial->SetTexture("EnvironmentMap", _loadedSkyboxTexture);
         _monkeyMaterial->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
         _monkeyMaterial->SetProperties(properties);
-
-        auto textureCubeMapImportOptions = TextureImportOptions::Create();
-        textureCubeMapImportOptions->CpuCached = false;
-        textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
-        textureCubeMapImportOptions->Format = PF_RGBA8;
-        textureCubeMapImportOptions->IsCubemap = true;
-
-        _loadedSkyboxTexture = gResourceManager().Load<Texture>("Data/Textures/Skybox/sky_night_2_large.jpeg", textureCubeMapImportOptions);
 #endif
     }
 
@@ -592,7 +629,6 @@ namespace te
         _sponzaRenderable = _sceneSponzaSO->AddComponent<CRenderable>();
         _sponzaRenderable->SetMesh(_sponzaMesh);
 
-        //_sponzaRenderable->SetMaterial(_materials[16].MaterialElement);
         for (auto& material : _materials)
             _sponzaRenderable->SetMaterial(material.Name, material.MaterialElement);
         _sponzaRenderable->Initialize();

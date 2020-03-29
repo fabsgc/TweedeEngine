@@ -40,9 +40,11 @@ namespace te
         UINT32 gUseTransparencyMap;
         UINT32 gUseReflectionMap;
         UINT32 gUseOcclusionMap;
+        UINT32 gUseEnvironmentMap;
         float gSpecularPower;
         float gTransparency;
         float gIndexOfRefraction;
+        float gRefraction;
         float gReflection;
         float gAbsorbance;
         float gBumpScale;
@@ -109,9 +111,11 @@ namespace te
         TE_PARAM_BLOCK_ENTRY(INT32, gUseTransparencyMap)
         TE_PARAM_BLOCK_ENTRY(INT32, gUseReflectionMap)
         TE_PARAM_BLOCK_ENTRY(INT32, gUseOcclusionMap)
+        TE_PARAM_BLOCK_ENTRY(INT32, gUseEnvironmentMap)
         TE_PARAM_BLOCK_ENTRY(float, gSpecularPower)
         TE_PARAM_BLOCK_ENTRY(float, gTransparency)
         TE_PARAM_BLOCK_ENTRY(float, gIndexOfRefraction)
+        TE_PARAM_BLOCK_ENTRY(float, gRefraction)
         TE_PARAM_BLOCK_ENTRY(float, gReflection)
         TE_PARAM_BLOCK_ENTRY(float, gAbsorbance)
         TE_PARAM_BLOCK_ENTRY(float, gBumpScale)
