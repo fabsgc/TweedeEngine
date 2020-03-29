@@ -203,7 +203,7 @@ namespace te
         UINT32 Quality = 2;
 
         /** Intensity of the screen space reflections. Valid range is [0, 1]. Default is 1 (100%). */
-            float intensity = 1.0f;
+        float intensity = 1.0f;
 
         /**
          * Roughness at which screen space reflections start fading out and become replaced with refl. probes. Valid range
@@ -315,9 +315,10 @@ namespace te
 
         /** 
          * It's possible to generate at each frame a dynamic cubemap environment texture. For each material, if
-         * UseDynamicEnvironmentMap is set, a cubemap will be generated and for each object using this material, this texture will
+         * UseDynamicEnvironmentMap is set, renderer will try to find a lighprobe for this object and material. 
+         * If not lightprobe has been found a cubemap will be generated and for each object using this material, this texture will
          * be bound on texture slot "EnvironmentMap"
-         * Only renderable with UseForDynamicEnvMapping set to true will be use for rendering
+         * Only renderables with UseForDynamicEnvMapping set to true will be use for rendering
          */
         bool EnableDynamicEnvMapping = false;
 
