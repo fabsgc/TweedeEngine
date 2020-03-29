@@ -311,7 +311,15 @@ namespace te
          * an effect that requires this information. Note that effects such as motion blur or temporal anti-aliasing
          * might force the velocity buffer to be enabled regardless of this setting.
          */
-        bool EnableVelocityBuffer = true;
+        bool EnableVelocityBuffer = true; // TODO
+
+        /** 
+         * It's possible to generate at each frame a dynamic cubemap environment texture. For each material, if
+         * UseDynamicEnvironmentMap is set, a cubemap will be generated and for each object using this material, this texture will
+         * be bound on texture slot "EnvironmentMap"
+         * Only renderable with UseForDynamicEnvMapping set to true will be use for rendering
+         */
+        bool EnableDynamicEnvMapping = false;
 
         /**
          * Signals the renderer to only render overlays (like GUI), and not scene objects. Such rendering doesn't require

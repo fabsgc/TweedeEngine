@@ -16,7 +16,8 @@ namespace te
 
         bool Instancing  = false;
         bool CanBeMerged = false;
-        bool CastShadow  = true;
+        bool CastShadow = true;
+        bool UseForDynamicEnvMapping  = true;
         float CullDistanceFactor = 1.0f;
     };
 

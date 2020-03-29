@@ -4,6 +4,7 @@
 #include "RenderAPI/TeSubMesh.h"
 #include "Mesh/TeMesh.h"
 #include "Material/TeMaterial.h"
+#include "Renderer/TeRenderable.h"
 
 namespace te
 {
@@ -22,6 +23,8 @@ namespace te
 
         /** Material data buffer assigned to this material */
         SPtr<GpuParamBlockBuffer> PerMaterialParamBuffer;
+
+        const RenderableProperties* Properties = nullptr;
 
         /** Index of the technique in the material to render the element with. */
         UINT32 DefaultTechniqueIdx = 0;

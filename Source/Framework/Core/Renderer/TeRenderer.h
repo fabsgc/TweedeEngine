@@ -102,7 +102,7 @@ namespace te
         virtual void NotifySkyboxRemoved(Skybox* skybox) { }
 
         /**
-         * Called whenever a skybox is destroyed.
+         * Call by the user when he went to batch several renderables into only one big renderable.
          */
         virtual void BatchRenderables() { }
 

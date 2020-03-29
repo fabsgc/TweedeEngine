@@ -88,6 +88,10 @@ namespace te
         Matrix4 ProjTransformNoAA = Matrix4::IDENTITY;
         UINT32 FrameIdx = 0;
 
+        // If RenderSettings.EnableDynamicEnvironmentMapping is true
+        // and if at least one renderable use a material where UseDynamicEnvironmentMap is true
+        bool NeedDynamicEnvMapCompute = false;
+
         RendererViewTargetData Target;
     };
 
@@ -307,6 +311,8 @@ namespace te
     private:
         friend class RendererViewGroup;
         friend class Renderable;
+
+        void CheckIfDynamicEnvMappingNeeded(const RenderElement& element);
 
     private:
         RendererViewProperties _properties;

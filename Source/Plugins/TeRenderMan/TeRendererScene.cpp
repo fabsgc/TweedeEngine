@@ -416,6 +416,9 @@ namespace te
                 // We update gpu paremeters such as diffuse or specular defined for this material
                 PerObjectBuffer::UpdatePerMaterial(renElement->PerMaterialParamBuffer, renElement->MaterialElem->GetProperties());
 
+                // Set renderable properties to renderElement
+                renElement->Properties = &renderable->GetProperties();
+
 #if TE_DEBUG_MODE
                 ValidateBasePassMaterial(*renElement->MaterialElem, renElement->DefaultTechniqueIdx, *vertexDecl);
 #endif
