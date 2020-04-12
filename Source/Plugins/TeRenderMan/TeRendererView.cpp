@@ -790,7 +790,7 @@ namespace te
 
     bool RendererView::RequiresVelocityWrites() const
     {
-        return _renderSettings->EnableVelocityBuffer;
+        return _renderSettings->MotionBlur.Enabled;
     }
 
     float RendererView::GetCurrentExposure() const

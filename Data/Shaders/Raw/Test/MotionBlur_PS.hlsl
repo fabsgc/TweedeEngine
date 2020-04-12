@@ -36,6 +36,9 @@ Texture2DMS<float4> SourceMapMS : register(t1);
 Texture2D DepthMap : register(t2);
 Texture2DMS<float4> DepthMapMS : register(t3);
 
+Texture2D VelocityMap : register(t4);
+Texture2DMS<float4> VelocityMapMS : register(t5);
+
 static const float FrameDelta = 1 / 60.0;
 
 float4 main( PS_INPUT IN ) : SV_Target0
@@ -51,7 +54,9 @@ float4 main( PS_INPUT IN ) : SV_Target0
     float2 prevNdcPos = prevClip.xy / prevClip.w;
     float2 prevUV = NDCToUV(prevNdcPos);
 
-    float fixDelta = FrameDelta / gFrameDelta; 
+    float fixDelta = FrameDelta / gFrameDelta;
+
+    // ##### CAMERA MOTION BLUR
     float2 blurDir = (prevUV - currentUV) * 0.5 * fixDelta;
 
     while(abs(length(blurDir)) > 0.05)
@@ -87,5 +92,8 @@ float4 main( PS_INPUT IN ) : SV_Target0
     }
 
     output /= gHalfNumSamples * 2 + 1;
+
+    // ##### OBJECT MOTION BLUR
+
     return output;
 }

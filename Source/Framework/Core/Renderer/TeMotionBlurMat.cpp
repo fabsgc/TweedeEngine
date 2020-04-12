@@ -13,7 +13,7 @@ namespace te
         _params->SetSamplerState("BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
     }
 
-    void MotionBlurMat::Execute(const SPtr<Texture>& source, const SPtr<RenderTarget>& destination, const SPtr<Texture>& depth, 
+    void MotionBlurMat::Execute(const SPtr<Texture>& source, const SPtr<RenderTarget>& destination, const SPtr<Texture>& depth, const SPtr<Texture>& velocity,
         SPtr<GpuParamBlockBuffer> perViewBuffer, const MotionBlurSettings& settings, INT32 MSAACount)
     {
         UINT32 numSamples;
@@ -35,11 +35,13 @@ namespace te
         {
             _params->SetTexture("SourceMapMS", source);
             _params->SetTexture("DepthMapMS", depth);
+            _params->SetTexture("VelocityMapMS", velocity);
         }
         else
         {
             _params->SetTexture("SourceMap", source);
             _params->SetTexture("DepthMap", depth);
+            _params->SetTexture("VelocityMap", velocity);
         }
 
         _params->SetParamBlockBuffer("PerCameraBuffer", perViewBuffer);

@@ -306,13 +306,6 @@ namespace te
         /** Determines if shadows cast by lights should be rendered. Only relevant if lighting is turned on. */
         bool EnableShadows = true;
 
-        /**
-         * Determines if the G-Buffer should contain per-pixel velocity information. This can be useful if you are rendering
-         * an effect that requires this information. Note that effects such as motion blur or temporal anti-aliasing
-         * might force the velocity buffer to be enabled regardless of this setting.
-         */
-        bool EnableVelocityBuffer = true; // TODO
-
         /** 
          * It's possible to generate at each frame a dynamic cubemap environment texture. For each material, if
          * UseDynamicEnvironmentMap is set, renderer will try to find a lighprobe for this object and material. 

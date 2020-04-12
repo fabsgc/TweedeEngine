@@ -523,6 +523,9 @@ namespace te
             SHADER_OBJECT_PARAM_DESC depthMapDesc("DepthMap", "DepthMap", GPOT_TEXTURE2D);
             SHADER_OBJECT_PARAM_DESC depthMapMSDesc("DepthMapMS", "DepthMapMS", GPOT_RWTEXTURE2DMS);
 
+            SHADER_OBJECT_PARAM_DESC velocityMapDesc("VelocityMap", "VelocityMap", GPOT_TEXTURE2D);
+            SHADER_OBJECT_PARAM_DESC velocityMapMSDesc("VelocityMapMS", "VelocityMapMS", GPOT_RWTEXTURE2DMS);
+
             _motionBlurShaderDesc.AddParameter(gViewDirDesc);
             _motionBlurShaderDesc.AddParameter(gViewOriginDesc);
             _motionBlurShaderDesc.AddParameter(gMatViewProjDesc);
@@ -544,6 +547,9 @@ namespace te
 
             _motionBlurShaderDesc.AddParameter(depthMapDesc);
             _motionBlurShaderDesc.AddParameter(depthMapMSDesc);
+
+            _motionBlurShaderDesc.AddParameter(velocityMapDesc);
+            _motionBlurShaderDesc.AddParameter(velocityMapMSDesc);
         }
 
         {

@@ -34,7 +34,7 @@ namespace te
          * @param[in]	settings		Motion blur settings
          * @param[in]	MSAACount		How many samples used for input and output textures
          */
-        void Execute(const SPtr<Texture>& source, const SPtr<RenderTarget>& destination, const SPtr<Texture>& depth, 
+        void Execute(const SPtr<Texture>& source, const SPtr<RenderTarget>& destination, const SPtr<Texture>& depth, const SPtr<Texture>& velocity,
             SPtr<GpuParamBlockBuffer> perViewBuffer, const MotionBlurSettings& settings, INT32 MSAACount = 1);
 
     private:
