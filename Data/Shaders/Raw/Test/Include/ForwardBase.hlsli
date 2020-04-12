@@ -45,12 +45,14 @@ struct VS_OUTPUT
 {
     float4 Position : SV_POSITION;
     float4 WorldPosition : POSITION;
+    float4 CurrPosition : POSITION1;
+    float4 PrevPosition : POSITION2;
     float3 Normal : NORMAL;
     float3 Tangent : TANGENT;
     float3 BiTangent : BINORMAL;
     float4 Color : COLOR0;
     float2 Texture : TEXCOORD0;
-    float3 ViewDirection : POSITION1;
+    float3 ViewDirection : POSITION3;
     float4 WorldViewDistance : TEXCOORD1;
 };
 
@@ -58,12 +60,14 @@ struct PS_INPUT
 {
     float4 Position : SV_POSITION;
     float4 WorldPosition : POSITION;
+    float4 CurrPosition : POSITION1;
+    float4 PrevPosition : POSITION2;
     float3 Normal : NORMAL;
     float3 Tangent : TANGENT;
     float3 BiTangent : BINORMAL;
     float4 Color : COLOR0;
     float2 Texture : TEXCOORD0;
-    float3 ViewDirection: POSITION1;
+    float3 ViewDirection: POSITION3;
     float4 WorldViewDistance : TEXCOORD1;
 };
 
@@ -74,7 +78,7 @@ struct PS_OUTPUT
     //float4 Specular : SV_Target2;
     float4 Normal : SV_Target1;
     float4 Emissive : SV_Target2;
-    //float2 Velocity : SV_Target3;
+    float2 Velocity : SV_Target3;
 };
 
 float2 FlipUV(float2 coord)

@@ -42,6 +42,9 @@ namespace te
 
         // Sky
         Skybox* SkyboxElem = nullptr;
+
+        // FrameBuffer data
+        SPtr<GpuParamBlockBuffer> PerFrameParamBuffer;
     };
 
     /** Contains information about the scene (e.g. renderables, lights, cameras) required by the renderer. */
@@ -100,7 +103,7 @@ namespace te
         void SetOptions(const SPtr<RenderManOptions>& options);
 
         /** Updates global per frame parameter buffers with new values. To be called at the start of every frame. */
-        void SetParamFrameParams(float time);
+        void SetParamFrameParams(const float& time, const float& delta);
 
         /**
          * Performs necessary per-frame updates to a renderable. This must be called once every frame for every renderable.
@@ -133,6 +136,5 @@ namespace te
     private:
         SceneInfo _info;
         SPtr<RenderManOptions> _options;
-        SPtr<GpuParamBlockBuffer> _perFrameParamBuffer;
     };
 }

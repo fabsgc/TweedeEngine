@@ -5,6 +5,7 @@
 #include "Material/TeShader.h"
 #include "TeRenderManOptions.h"
 #include "TeRendererRenderable.h"
+#include "Utility/TeTime.h"
 
 namespace te
 {
@@ -65,7 +66,7 @@ namespace te
     RendererScene::RendererScene(const SPtr<RenderManOptions>& options)
         : _options(options)
     { 
-        _perFrameParamBuffer = gPerFrameParamDef.CreateBuffer();
+        _info.PerFrameParamBuffer = gPerFrameParamDef.CreateBuffer();
     }
 
     RendererScene::~RendererScene()
@@ -436,7 +437,6 @@ namespace te
 
                 for (auto& gpuParams : element.GpuParamsElem)
                 {
-                    gpuParams->SetParamBlockBuffer("PerFrameBuffer", _perFrameParamBuffer);
                     gpuParams->SetParamBlockBuffer("PerObjectBuffer", rendererRenderable->PerObjectParamBuffer);
                     gpuParams->SetParamBlockBuffer("PerCallBuffer", rendererRenderable->PerCallParamBuffer);
                     gpuParams->SetParamBlockBuffer("PerMaterialBuffer", element.PerMaterialParamBuffer);
@@ -464,9 +464,10 @@ namespace te
             entry->SetStateReductionMode(_options->ReductionMode);
     }
 
-    void RendererScene::SetParamFrameParams(float time)
+    void RendererScene::SetParamFrameParams(const float& time, const float& delta)
     {
-        gPerFrameParamDef.gTime.Set(_perFrameParamBuffer, time);
+        gPerFrameParamDef.gTime.Set(_info.PerFrameParamBuffer, time);
+        gPerFrameParamDef.gFrameDelta.Set(_info.PerFrameParamBuffer, delta);
     }
 
     void RendererScene::PrepareRenderable(UINT32 idx, const FrameInfo& frameInfo)

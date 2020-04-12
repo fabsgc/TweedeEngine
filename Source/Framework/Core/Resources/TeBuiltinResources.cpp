@@ -294,6 +294,7 @@ namespace te
             SHADER_DATA_PARAM_DESC gLayerDesc("gLayer", "gLayer", GPDT_INT1);
 
             SHADER_DATA_PARAM_DESC gTime("gTime", "gTime", GPDT_FLOAT1);
+            SHADER_DATA_PARAM_DESC gFrameDeltaDesc("gFrameDelta", "gFrameDelta", GPDT_FLOAT1);
 
             SHADER_DATA_PARAM_DESC gMatWorldViewProj("gMatWorldViewProj", "gMatWorldViewProj", GPDT_MATRIX_4X4);
 
@@ -383,6 +384,7 @@ namespace te
             _forwardShaderDesc.AddParameter(gAlphaThreshold);
 
             _forwardShaderDesc.AddParameter(gTime);
+            _forwardShaderDesc.AddParameter(gFrameDeltaDesc);
 
             _forwardShaderDesc.AddParameter(gMatWorldViewProj);
 

@@ -55,6 +55,7 @@ cbuffer PerObjectBuffer : register(b3)
 cbuffer PerFrameBuffer : register(b4)
 {
     float gTime;
+    float gFrameDelta;
 }
 
 cbuffer PerCallBuffer : register(b5)
@@ -66,14 +67,22 @@ VS_OUTPUT main( VS_INPUT IN )
 {
     VS_OUTPUT OUT = (VS_OUTPUT)0;
 
-    float SpecularPower = gSpecularPower;
-
     if(IN.Instanceid == 0)
     {
         OUT.Position.xyz = IN.Position;
         OUT.Position.w = 1.0f;
         OUT.Position = mul(OUT.Position, gMatWorld);
         OUT.Position = mul(OUT.Position, gMatViewProj);
+
+        OUT.CurrPosition.xyz = IN.Position;
+        OUT.CurrPosition.w = 1.0f;
+        OUT.CurrPosition = mul(OUT.CurrPosition, gMatWorld);
+        OUT.CurrPosition = mul(OUT.CurrPosition, gMatViewProj);
+
+        OUT.PrevPosition.xyz = IN.Position;
+        OUT.PrevPosition.w = 1.0f;
+        OUT.PrevPosition = mul(OUT.PrevPosition, gMatPrevWorld);
+        OUT.PrevPosition = mul(OUT.PrevPosition, gMatViewProj);
 
         OUT.Color = IN.Color;
         OUT.Normal = normalize(mul(float4(IN.Normal, 0.0f), gMatWorld)).xyz;
@@ -95,6 +104,16 @@ VS_OUTPUT main( VS_INPUT IN )
         OUT.Position.w = 1.0f;
         OUT.Position = mul(OUT.Position, gInstanceData[IN.Instanceid].gMatWorld);
         OUT.Position = mul(OUT.Position, gMatViewProj);
+
+        OUT.CurrPosition.xyz = IN.Position;
+        OUT.CurrPosition.w = 1.0f;
+        OUT.CurrPosition = mul(OUT.CurrPosition, gInstanceData[IN.Instanceid].gMatWorld);
+        OUT.CurrPosition = mul(OUT.CurrPosition, gMatViewProj);
+
+        OUT.PrevPosition.xyz = IN.Position;
+        OUT.PrevPosition.w = 1.0f;
+        OUT.PrevPosition = mul(OUT.PrevPosition, gInstanceData[IN.Instanceid].gMatPrevWorld);
+        OUT.PrevPosition = mul(OUT.PrevPosition, gMatViewProj);
 
         OUT.Color = IN.Color;
         OUT.Normal = normalize(mul(float4(IN.Normal, 0.0f), gInstanceData[IN.Instanceid].gMatWorld)).xyz;

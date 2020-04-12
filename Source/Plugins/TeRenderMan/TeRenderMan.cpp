@@ -88,7 +88,7 @@ namespace te
         timings.FrameIdx = gTime().GetFrameIdx();
 
         // Update global per-frame hardware buffers
-        _scene->SetParamFrameParams(timings.Time);
+        _scene->SetParamFrameParams(timings.Time, timings.TimeDelta);
 
         //sceneInfo.RenderableReady.resize(sceneInfo.Renderables.size(), false); TODO
         //sceneInfo.RenderableReady.assign(sceneInfo.Renderables.size(), false); TODO

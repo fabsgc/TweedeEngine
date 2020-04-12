@@ -50,6 +50,7 @@ cbuffer PerLightsBuffer : register(b2)
 cbuffer PerFrameBuffer : register(b3)
 {
     float gTime;
+    float gFrameDelta;
 }
 
 SamplerState AnisotropicSampler : register(s0);
@@ -65,15 +66,7 @@ Texture2D ReflectionMap : register(t7);
 Texture2D OcclusionMap : register(t8);
 TextureCube EnvironmentMap : register(t9);
 
-/*float4 ComputeAlbedoBuffer(float4 diffuse)
-{
-    return diffuse;
-}*/
-
-/*float4 ComputeSpecularBuffer(float4 specular)
-{
-    return specular;
-}*/
+static const float FrameDelta = 1 / 60.0;
 
 float4 ComputeNormalBuffer(float4 normal)
 {
@@ -96,26 +89,31 @@ float4 ComputeEmissiveBuffer(float4 color, float4 emissive)
     }
 }
 
-/*float2 ComputeVelocityBuffer(float4 position, float4 prevPosition, float alpha)
+float2 ComputeVelocityBuffer(float4 position, float4 prevPosition, float alpha)
 {
     float2 oVelocity = (float2)0;
 
     if(alpha >= 1.0)
     {
+        float fixDelta = FrameDelta / gFrameDelta; 
         float2 a = float2(position.xy);
         float2 b = float2(prevPosition.xy);
 
-        a.x = a.x / 960.0;
-        a.y = a.y / 480.0;
-
-        b.x = b.x / 960.0;
-        b.y = b.y / 480.0;
-
         oVelocity = (b - a);
+        oVelocity *= fixDelta;
+
+        if(oVelocity.x < -0.99) oVelocity.x = -0.99;
+        if(oVelocity.y < -0.99) oVelocity.y = -0.99;
+
+        if(oVelocity.x > 0.99) oVelocity.x = 0.99;
+        if(oVelocity.y > 0.99) oVelocity.y = 0.99;
+
+        oVelocity /= 2.0;
+        oVelocity += 0.5;
     }
 
     return oVelocity;
-}*/
+}
 
 struct LightingResult
 {
@@ -322,19 +320,7 @@ PS_OUTPUT main( PS_INPUT IN )
 
     OUT.Normal = ComputeNormalBuffer(float4(normal, 0.0f));
     OUT.Emissive = ComputeEmissiveBuffer(OUT.Scene, float4(emissive, 0.0));
-
-    /*float4 currentClipSpace = float4(IN.WorldPosition.xyz, 1);
-    float4 prevClipSpace = float4(IN.WorldPosition.xyz, 1);
-
-    currentClipSpace = mul(currentClipSpace, gMatViewProj);
-    prevClipSpace = mul(prevClipSpace, gMatPrevViewProj);
-
-    float4 prevClip = mul(currentNDC, gNDCToPrevNDC);
-    float3 prevNdcPos = prevClip.xyz / prevClip.w;
-
-    OUT.Albedo = ComputeAlbedoBuffer(float4(albedo, 1.0f));
-    OUT.Specular = ComputeSpecularBuffer(float4(specular, 1.0f));
-    OUT.Velocity = ComputeVelocityBuffer(currentClipSpace, prevClipSpace, alpha);*/
+    OUT.Velocity = ComputeVelocityBuffer(IN.CurrPosition, IN.PrevPosition, alpha);
 
     return OUT;
 }
