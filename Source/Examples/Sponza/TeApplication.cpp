@@ -27,6 +27,8 @@
 #include "Material/TeMaterial.h"
 #include "Material/TeShader.h"
 
+#include "Utility/TeTime.h"
+
 namespace te
 {
     TE_MODULE_STATIC_MEMBER(Application)
@@ -638,7 +640,8 @@ namespace te
         _monkeyRenderable->SetMesh(_monkeyMesh);
         _monkeyRenderable->SetMaterial(_monkeyMaterial);
         _monkeyRenderable->Initialize();
-        _sceneMonkeySO->SetPosition(Vector3(2.0f, -3.05f, -28.0f));
+        //_sceneMonkeySO->SetPosition(Vector3(2.0f, -3.05f, -28.0f));
+        _sceneMonkeySO->SetPosition(Vector3(2.0f, -3.05f, -12.0f));
 
         for (INT32 i = -1; i < 2; i++)
         {
@@ -664,8 +667,8 @@ namespace te
         auto settings = _sceneCamera->GetRenderSettings();
         settings->ExposureScale = 1.2f;
         settings->Gamma = 0.8f;
-        settings->Contrast = 1.60f;
-        settings->Brightness = -0.02f;
+        settings->Contrast = 1.65f;
+        settings->Brightness = -0.05f;
         settings->Bloom.Intensity = 0.5f;
 
         /*_sceneDirectionalLightSO = SceneObject::Create("DirectionalLight");
@@ -699,7 +702,11 @@ namespace te
     { }
 
     void Application::PreUpdate()
-    { }
+    { 
+#if TE_PLATFORM == TE_PLATFORM_WIN32
+        _sceneMonkeySO->Rotate(Vector3(0.0f, 1.0f, 0.0f), Radian(2.0f * gTime().GetFrameDelta()));
+#endif
+    }
 
     void Application::PostUpdate()
     { }

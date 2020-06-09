@@ -41,30 +41,11 @@ Texture2DMS<float4> VelocityMapMS : register(t5);
 
 static const float FrameDelta = 1 / 60.0;
 
-float4 main( PS_INPUT IN ) : SV_Target0
+float4 ComputeMotionBlur(float4 input, float2 currentUV, float2 blurDir)
 {
     int i = 0;
-    float2 currentUV = IN.Texture;
-    float2 ndcPos = IN.ScreenPosition;
+    float4 output = input;
 
-    // float curDepth = TextureSampling(BilinearSampler, DepthMap, DepthMapMS, currentUV, gMSAACount).r;
-
-    float4 currentNDC = float4(ndcPos, 1, 1);
-    float4 prevClip = mul(currentNDC, gNDCToPrevNDC);
-    float2 prevNdcPos = prevClip.xy / prevClip.w;
-    float2 prevUV = NDCToUV(prevNdcPos);
-
-    float fixDelta = FrameDelta / gFrameDelta;
-
-    // ##### CAMERA MOTION BLUR
-    float2 blurDir = (prevUV - currentUV) * 0.5 * fixDelta;
-
-    while(abs(length(blurDir)) > 0.05)
-    {
-        blurDir /= 2.0;
-    }
-
-    float4 output = TextureSampling(BilinearSampler, SourceMap, SourceMapMS, currentUV, gMSAACount);
     for (i = -gHalfNumSamples; i < 0; ++i) 
     {
         float2 offset = blurDir * (i / (float)gHalfNumSamples);
@@ -91,9 +72,38 @@ float4 main( PS_INPUT IN ) : SV_Target0
         output += TextureSampling(BilinearSampler, SourceMap, SourceMapMS, uv, gMSAACount);
     }
 
+    return output;
+}
+
+float4 main( PS_INPUT IN ) : SV_Target0
+{
+    float2 currentUV = IN.Texture;
+    float2 ndcPos = IN.ScreenPosition;
+
+    // float curDepth = TextureSampling(BilinearSampler, DepthMap, DepthMapMS, currentUV, gMSAACount).r;
+
+    float4 currentNDC = float4(ndcPos, 1, 1);
+    float4 prevClip = mul(currentNDC, gNDCToPrevNDC);
+    float2 prevNdcPos = prevClip.xy / prevClip.w;
+    float2 prevUV = NDCToUV(prevNdcPos);
+
+    float fixDelta = FrameDelta / gFrameDelta;
+
+    // ##### CAMERA MOTION BLUR
+    float2 cameraBlurDir = (prevUV - currentUV) * 0.5 * fixDelta;
+
+    while(abs(length(cameraBlurDir)) > 0.05)
+    {
+        cameraBlurDir /= 2.0;
+    }
+
+    float4 output = TextureSampling(BilinearSampler, SourceMap, SourceMapMS, currentUV, gMSAACount);
+    output = ComputeMotionBlur(output, currentUV, cameraBlurDir);
+
     output /= gHalfNumSamples * 2 + 1;
 
     // ##### OBJECT MOTION BLUR
+    float2 objectBlurDir = (float2)0;
 
     return output;
 }
