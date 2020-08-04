@@ -109,6 +109,7 @@ namespace te
         HSceneObject _sceneMonkeySO;
         HSceneObject _sceneDirectionalLightSO;
         Vector<HSceneObject> _scenePointLightSOs;
+        Vector<HRenderable> _sceneLightMeshes;
 #endif
     };
 }

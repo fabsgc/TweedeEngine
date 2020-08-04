@@ -128,7 +128,7 @@ namespace te
 
     void Transform::Yaw(const Radian& angle)
     {
-        // Rotate around local Z axis
+        // Rotate around local Y axis
         Vector3 yAxis = _rotation.Rotate(Vector3::UNIT_Y);
         Rotate(yAxis, angle);
     }

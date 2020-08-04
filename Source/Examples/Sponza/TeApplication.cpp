@@ -222,7 +222,8 @@ namespace te
                 "",
                 true,
                 1.0f,
-                0.5f
+                0.5f,
+                0.75f
             },
             {
                 "fabric_c",
@@ -705,6 +706,16 @@ namespace te
     { 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         _sceneMonkeySO->Rotate(Vector3(0.0f, 1.0f, 0.0f), Radian(2.0f * gTime().GetFrameDelta()));
+
+        for (INT32 i = 0; i <= 2; i++)
+        {
+            float move = 1.5;
+            if (i % 2) move = -1.5;
+
+            _scenePointLightSOs[i]->MoveRelative(Vector3(move, 0.0f, 0.0f));
+            _scenePointLightSOs[i]->Rotate(Vector3(0.0f, 1.0f, 0.0f), Radian(2.0f * gTime().GetFrameDelta()));
+            _scenePointLightSOs[i]->MoveRelative(Vector3(-move, 0.0f, 0.0f));
+        }
 #endif
     }
 
