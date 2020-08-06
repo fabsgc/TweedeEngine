@@ -104,7 +104,7 @@ float4 main( PS_INPUT IN ) : SV_Target0
 
     // ##### OBJECT MOTION BLUR
     float2 objectBlurDirTexture = TextureSampling(BilinearSampler, VelocityMap, VelocityMapMS, currentUV, gMSAACount).xy;
-    float2 objectBlurDir = objectBlurDirTexture;
+    /*float2 objectBlurDir = objectBlurDirTexture;
 
     objectBlurDir.x -= 0.5;
     objectBlurDir.y -= 0.5;
@@ -128,7 +128,7 @@ float4 main( PS_INPUT IN ) : SV_Target0
         //output = ComputeMotionBlur(output, currentUV, objectBlurDir);
     }
 
-    output /= gHalfNumSamples * 2 + 1;
+    output /= gHalfNumSamples * 2 + 1;*/
 
     return output;
 }
