@@ -73,7 +73,7 @@ namespace te
         _loadedSkyboxTexture = gResourceManager().Load<Texture>("Data/Textures/Skybox/sky_night_2_large.jpeg", textureCubeMapImportOptions);
 
         _materials =
-        {
+          {
             {
                 "arch",
                 "Data/Textures/Sponza/arch/arch_COLOR.jpeg",
@@ -222,8 +222,7 @@ namespace te
                 "",
                 true,
                 1.0f,
-                0.5f,
-                0.75f
+                0.5f
             },
             {
                 "fabric_c",
@@ -672,11 +671,11 @@ namespace te
         settings->Brightness = -0.05f;
         settings->Bloom.Intensity = 0.5f;
 
-        /*_sceneDirectionalLightSO = SceneObject::Create("DirectionalLight");
+        _sceneDirectionalLightSO = SceneObject::Create("DirectionalLight");
         _directionalLight = _sceneDirectionalLightSO->AddComponent<CLight>(LightType::Directional);
-        _directionalLight->SetIntensity(0.1f);
+        _directionalLight->SetIntensity(0.075f);
         _directionalLight->Initialize();
-        _sceneDirectionalLightSO->Rotate(Vector3(0.0f, 1.0f, 1.0f), -Radian(Math::HALF_PI));*/
+        _sceneDirectionalLightSO->Rotate(Vector3(0.0f, 1.0f, 1.0f), -Radian(Math::HALF_PI));
 #endif
     }
 

@@ -203,7 +203,7 @@ namespace te
 
         for (auto& so : _sceneRenderablesMonkeySO)
         {
-            so->Rotate(Vector3(0.0f, 1.0f, 0.0f), Radian(45.0f * gTime().GetFrameDelta()));
+            so->Rotate(Vector3(0.0f, 1.0f, 0.0f), Radian(2.5f * gTime().GetFrameDelta()));
         }
 #endif
     }
