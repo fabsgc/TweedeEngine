@@ -24,7 +24,7 @@ namespace te
             case MotionBlurQuality::Low: numSamples = 6; break;
             case MotionBlurQuality::Medium: numSamples = 8; break;
             case MotionBlurQuality::High: numSamples = 12;  break;
-            case MotionBlurQuality::Ultra: numSamples = 32;  break;
+            case MotionBlurQuality::Ultra: numSamples = 16;  break;
         }
 
         gMotionBlurParamDef.gFrameDelta.Set(_paramBuffer, gTime().GetFrameDelta(), 0);

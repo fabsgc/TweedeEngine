@@ -89,9 +89,10 @@ float4 ComputeEmissiveBuffer(float4 color, float4 emissive)
     }
 }
 
-float2 ComputeVelocityBuffer(float4 position, float4 prevPosition, float alpha)
+float4 ComputeVelocityBuffer(float4 position, float4 prevPosition, float alpha)
 {
-    float2 oVelocity = (float2)0;
+    float2 velocity = (float2)0;
+    float4 output = (float4)0;
 
     if(alpha >= 1.0)
     {
@@ -99,20 +100,22 @@ float2 ComputeVelocityBuffer(float4 position, float4 prevPosition, float alpha)
         float2 a = float2(position.xy);
         float2 b = float2(prevPosition.xy);
 
-        oVelocity = (b - a);
-        oVelocity *= fixDelta;
+        velocity = (b - a);
+        velocity *= fixDelta;
 
-        if(oVelocity.x < -0.99) oVelocity.x = -0.99;
-        if(oVelocity.y < -0.99) oVelocity.y = -0.99;
+        if(velocity.x < -0.99) velocity.x = -0.99;
+        if(velocity.y < -0.99) velocity.y = -0.99;
 
-        if(oVelocity.x > 0.99) oVelocity.x = 0.99;
-        if(oVelocity.y > 0.99) oVelocity.y = 0.99;
+        if(velocity.x > 0.99) velocity.x = 0.99;
+        if(velocity.y > 0.99) velocity.y = 0.99;
 
-        oVelocity /= 2.0;
-        oVelocity += 0.5;
+        velocity /= 2.0;
+        velocity += 0.5;
     }
 
-    return oVelocity;
+    output.xy = velocity.xy;
+
+    return output;
 }
 
 struct LightingResult
@@ -318,9 +321,12 @@ PS_OUTPUT main( PS_INPUT IN )
     OUT.Scene.rgb = (ambient + emissive + diffuse + specular) * (albedo + environment);
     OUT.Scene.a = alpha;
 
+    float3 NDCPos = (IN.CurrPosition / IN.CurrPosition.w).xyz;
+    float3 PrevNDCPos = (IN.PrevPosition / IN.PrevPosition.w).xyz;
+
     OUT.Normal = ComputeNormalBuffer(float4(normal, 0.0f));
     OUT.Emissive = ComputeEmissiveBuffer(OUT.Scene, float4(emissive, 0.0));
-    OUT.Velocity = ComputeVelocityBuffer(IN.CurrPosition, IN.PrevPosition, alpha);
+    OUT.Velocity = ComputeVelocityBuffer(float4(NDCPos, 0.0), float4(PrevNDCPos, 0.0), alpha);
 
     return OUT;
 }

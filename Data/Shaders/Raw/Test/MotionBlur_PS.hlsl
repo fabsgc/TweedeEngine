@@ -75,6 +75,27 @@ float4 ComputeMotionBlur(float4 input, float2 currentUV, float2 blurDir)
     return output;
 }
 
+float4 ComputeObjectMotionBlur(float4 input, float2 currentUV, float2 blurDir)
+{
+    int i = 0;
+    float4 output = input;
+
+    for (i = 1; i <= gHalfNumSamples; ++i) 
+    {
+        float2 offset = blurDir * (i / (float)gHalfNumSamples);
+        float2 uv = currentUV + offset;
+
+        if(uv.x > 1.0) uv.x = 0.991;
+        if(uv.x < 0.0) uv.x = 0.001;
+        if(uv.y > 1.0) uv.y = 0.991;
+        if(uv.y < 0.0) uv.y = 0.001;
+
+        output += TextureSampling(BilinearSampler, SourceMap, SourceMapMS, uv, gMSAACount);
+    }
+
+    return output;
+}
+
 float4 main( PS_INPUT IN ) : SV_Target0
 {
     float2 currentUV = IN.Texture;
@@ -83,52 +104,50 @@ float4 main( PS_INPUT IN ) : SV_Target0
 
     // float curDepth = TextureSampling(BilinearSampler, DepthMap, DepthMapMS, currentUV, gMSAACount).r;
 
+    output = TextureSampling(BilinearSampler, SourceMap, SourceMapMS, currentUV, gMSAACount);
+
+    // ##### CAMERA MOTION BLUR
     float4 currentNDC = float4(ndcPos, 1, 1);
     float4 prevClip = mul(currentNDC, gNDCToPrevNDC);
     float2 prevNdcPos = prevClip.xy / prevClip.w;
     float2 prevUV = NDCToUV(prevNdcPos);
-
     float fixDelta = FrameDelta / gFrameDelta;
 
-    // ##### CAMERA MOTION BLUR
     float2 cameraBlurDir = (prevUV - currentUV) * 0.5 * fixDelta;
     while(abs(length(cameraBlurDir)) > 0.05)
     {
         cameraBlurDir /= 2.0;
     }
 
-    output = TextureSampling(BilinearSampler, SourceMap, SourceMapMS, currentUV, gMSAACount);
     output = ComputeMotionBlur(output, currentUV, cameraBlurDir);
 
     output /= gHalfNumSamples * 2 + 1;
 
     // ##### OBJECT MOTION BLUR
     float2 objectBlurDirTexture = TextureSampling(BilinearSampler, VelocityMap, VelocityMapMS, currentUV, gMSAACount).xy;
-    /*float2 objectBlurDir = objectBlurDirTexture;
+    float2 objectBlurDir = objectBlurDirTexture;
 
-    objectBlurDir.x -= 0.5;
-    objectBlurDir.y -= 0.5;
-
-    objectBlurDir.x *= 2.0;
-    objectBlurDir.y *= 2.0;
-
-    while(abs(length(objectBlurDir)) > 0.1)
+    if(abs(objectBlurDirTexture.x) > 0.05 || abs(objectBlurDirTexture.y) > 0.05)
     {
-        objectBlurDir /= 2.0;
-    }
+        objectBlurDir.x -= 0.5;
+        objectBlurDir.y -= 0.5;
 
-    //output = TextureSampling(BilinearSampler, SourceMap, SourceMapMS, currentUV, gMSAACount);
+        objectBlurDir.x *= 2.0;
+        objectBlurDir.y *= 2.0;
 
-    if(abs(objectBlurDirTexture.x) < 0.01 && abs(objectBlurDirTexture.y) < 0.01)
-    {
-        //output = ComputeMotionBlur(output, currentUV, objectBlurDirTexture);
+        while(abs(length(objectBlurDir)) > 0.05)
+        {
+            objectBlurDir /= 2.0;
+        }
     }
     else
     {
-        //output = ComputeMotionBlur(output, currentUV, objectBlurDir);
+        objectBlurDir.x = 0.0;
+        objectBlurDir.y = 0.0;
     }
 
-    output /= gHalfNumSamples * 2 + 1;*/
+    output = ComputeObjectMotionBlur(output, currentUV, objectBlurDir);
+    output /= gHalfNumSamples + 1;
 
     return output;
 }
