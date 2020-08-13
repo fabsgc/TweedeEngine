@@ -37,7 +37,7 @@ namespace te
         StateReduction ReductionMode = StateReduction::Distance;
 
         /**
-         * By default, we will try to batch object who share same geometry and same material
+         * By default, we will try to batch objects which share same geometry and same material
         */
         RenderManInstancing InstancingMode = RenderManInstancing::Manual;
     };
