@@ -21,8 +21,7 @@ namespace te
 #if TE_DEBUG_MODE
         if(!_this.expired())
         {
-            TE_ASSERT_ERROR(false, "Shared pointer to this object still has active references but the object is being deleted? You shouldn't delete CoreObjects manually.",
-                __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Shared pointer to this object still has active references but the object is being deleted? You shouldn't delete CoreObjects manually.");
         }
 #endif
     }
