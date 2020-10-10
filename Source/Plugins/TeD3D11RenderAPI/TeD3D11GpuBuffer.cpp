@@ -49,7 +49,7 @@ namespace te
                 bufferType = D3D11HardwareBuffer::BT_INDIRECTARGUMENT;
                 break;
             default:
-                TE_ASSERT_ERROR(false, "Unsupported buffer type " + ToString(props.GetType()), __FILE__, __LINE__);
+                TE_ASSERT_ERROR(false, "Unsupported buffer type " + ToString(props.GetType()));
             }
 
             _buffer = te_new<D3D11HardwareBuffer>(bufferType, props.GetUsage(), props.GetElementCount(),
@@ -107,7 +107,7 @@ namespace te
         auto iterFind = buffer->_bufferViews.find(view->GetDesc());
         if (iterFind == buffer->_bufferViews.end())
         {
-            TE_ASSERT_ERROR(false, "Trying to release a buffer view that doesn't exist!", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Trying to release a buffer view that doesn't exist!");
         }
 
         iterFind->second->RefCount--;

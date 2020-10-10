@@ -109,7 +109,7 @@ namespace te
             for (auto iter = vertexBuffers.begin(); iter != vertexBuffers.end(); ++iter)
             {
                 if (iter->first >= TE_MAX_BOUND_VERTEX_BUFFERS)
-                    TE_ASSERT_ERROR(false, "Buffer index out of range", __FILE__, __LINE__);
+                    TE_ASSERT_ERROR(false, "Buffer index out of range");
 
                 startSlot = std::min(iter->first, startSlot);
                 endSlot = std::max(iter->first, endSlot);

@@ -93,7 +93,7 @@ namespace te
             auto iterFind = _nodeTypes.find(nodeId);
             if (iterFind == _nodeTypes.end())
             {
-                TE_DEBUG("Cannot find render compositor node of type \"{" + String(nodeId.c_str()) + "}\".", __FILE__, __LINE__);
+                TE_DEBUG("Cannot find render compositor node of type \"{" + String(nodeId.c_str()) + "}\".");
                 return false;
             }
 
@@ -150,7 +150,7 @@ namespace te
                 if (curIdx == (UINT32)-1)
                 {
                     TE_DEBUG("Render compositor nodes recursion detected. Node \"{" + String(nodeId.c_str()) + "}\" "
-                        "depends on node \"{" + String(iterFind->first.c_str()) + "}\" which is not available at this stage.", __FILE__, __LINE__);
+                        "depends on node \"{" + String(iterFind->first.c_str()) + "}\" which is not available at this stage.");
                     return false;
                 }
             }

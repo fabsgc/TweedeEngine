@@ -160,7 +160,7 @@ namespace te
 
             break;
         default:
-            TE_ASSERT_ERROR(false, "Invalid texture type for this view type.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Invalid texture type for this view type.");
         }
 
         desc.Format = texture->GetColorFormat();
@@ -173,7 +173,7 @@ namespace te
         if (FAILED(hr) || d3d11rs->GetPrimaryDevice().HasError())
         {
             String msg = d3d11rs->GetPrimaryDevice().GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Cannot create ShaderResourceView: " + msg, __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Cannot create ShaderResourceView: " + msg);
         }
 
         return srv;
@@ -247,7 +247,7 @@ namespace te
             desc.Texture2DArray.MipSlice = mipSlice;
             break;
         default:
-            TE_ASSERT_ERROR(false, "Invalid texture type for this view type.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Invalid texture type for this view type.");
         }
 
         desc.Format = texture->GetColorFormat();
@@ -260,7 +260,7 @@ namespace te
         if (FAILED(hr) || d3d11rs->GetPrimaryDevice().HasError())
         {
             String msg = d3d11rs->GetPrimaryDevice().GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Cannot create RenderTargetView: " + msg, __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Cannot create RenderTargetView: " + msg);
         }
 
         return rtv;
@@ -318,7 +318,7 @@ namespace te
             desc.Texture2DArray.MipSlice = mipSlice;
             break;
         default:
-            TE_ASSERT_ERROR(false, "Invalid texture type for this view type.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Invalid texture type for this view type.");
         }
 
         desc.Format = texture->GetDXGIFormat();
@@ -331,7 +331,7 @@ namespace te
         if (FAILED(hr) || d3d11rs->GetPrimaryDevice().HasError())
         {
             String msg = d3d11rs->GetPrimaryDevice().GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Cannot create UnorderedAccessView: " + msg, __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Cannot create UnorderedAccessView: " + msg);
         }
 
         return uav;
@@ -405,7 +405,7 @@ namespace te
             desc.Texture2DArray.MipSlice = mipSlice;
             break;
         default:
-            TE_ASSERT_ERROR(false, "Invalid texture type for this view type.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Invalid texture type for this view type.");
         }
 
         desc.Format = texture->GetDepthStencilFormat();
@@ -427,7 +427,7 @@ namespace te
         if (FAILED(hr) || d3d11rs->GetPrimaryDevice().HasError())
         {
             String msg = d3d11rs->GetPrimaryDevice().GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Cannot create DepthStencilView: " + msg, __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Cannot create DepthStencilView: " + msg);
         }
 
         return dsv;

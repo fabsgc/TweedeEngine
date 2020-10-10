@@ -19,12 +19,12 @@ namespace te
             includePath = GetFullPath(_directory) + "\\" + String(pFileName);
             break;
         default:
-            TE_ASSERT_ERROR(false, "Only local and system directory is currently supported for HLSL includes", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Only local and system directory is currently supported for HLSL includes");
             break;
         }
 
         FileStream includeFile(includePath.c_str());
-        TE_ASSERT_ERROR(!includeFile.Fail(), "Can't open include file {" + includePath + "}", __FILE__, __LINE__);
+        TE_ASSERT_ERROR(!includeFile.Fail(), "Can't open include file {" + includePath + "}");
 
         _data = includeFile.GetAsString();
         *ppData = _data.c_str();
@@ -45,7 +45,7 @@ namespace te
         TCHAR** lppPart    = { NULL };
 
         retval = GetFullPathName(relativePath.c_str(), 512, buffer, lppPart);
-        TE_ASSERT_ERROR((retval != 0), "GetFullPathName failed", __FILE__, __LINE__);
+        TE_ASSERT_ERROR((retval != 0), "GetFullPathName failed");
 
         return buffer;
     }

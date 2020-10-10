@@ -39,18 +39,18 @@ namespace te
 
         FT_Error error = FT_Init_FreeType(&library);
         if (error)
-            TE_ASSERT_ERROR(false, "Error occurred during FreeType library initialization.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Error occurred during FreeType library initialization.");
 
         FT_Face face;
         error = FT_New_Face(library, filePath.c_str(), 0, &face);
 
         if (error == FT_Err_Unknown_File_Format)
         {
-            TE_ASSERT_ERROR(false, "Failed to load font file: " + filePath + ". Unsupported file format.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Failed to load font file: " + filePath + ". Unsupported file format.");
         }
         else if (error)
         {
-            TE_ASSERT_ERROR(false, "Failed to load font file: " + filePath + ". Unknown error.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Failed to load font file: " + filePath + ". Unknown error.");
         }
 
         Vector<CharRange> charIndexRanges = fontImportOptions->CharIndexRanges;

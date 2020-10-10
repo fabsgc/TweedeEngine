@@ -122,7 +122,7 @@ namespace te
     {
         if (nearPlane <= 0)
         {
-            TE_DEBUG("Near clip distance must be greater than zero.", __FILE__, __LINE__);
+            TE_DEBUG("Near clip distance must be greater than zero.");
             return;
         }
 

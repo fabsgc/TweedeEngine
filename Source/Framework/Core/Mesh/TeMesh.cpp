@@ -30,7 +30,7 @@ namespace te
     {
         if (subMeshIdx >= _subMeshes.size())
         {
-            TE_ASSERT_ERROR(false, "Invalid sub-mesh index ("+ ToString(subMeshIdx) + "). Number of sub-meshes available: " + ToString((int)_subMeshes.size()), __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Invalid sub-mesh index ("+ ToString(subMeshIdx) + "). Number of sub-meshes available: " + ToString((int)_subMeshes.size()));
         }
 
         return _subMeshes[subMeshIdx];
@@ -158,7 +158,7 @@ namespace te
 
         if (subresourceIdx > 0)
         {
-            TE_DEBUG("Invalid subresource index: { " + ToString(subresourceIdx) + "}. Supported range: 0 .. 1.", __FILE__, __LINE__);
+            TE_DEBUG("Invalid subresource index: { " + ToString(subresourceIdx) + "}. Supported range: 0 .. 1.");
             return;
         }
 
@@ -167,13 +167,13 @@ namespace te
             meshData.GetIndexType() != _indexType ||
             meshData.GetVertexDesc()->GetVertexStride() != _vertexDesc->GetVertexStride())
         {
-            TE_DEBUG("Provided buffer is not of valid dimensions or format in order to update this mesh.", __FILE__, __LINE__);
+            TE_DEBUG("Provided buffer is not of valid dimensions or format in order to update this mesh.");
             return;
         }
 
         if (_CPUData->GetSize() != meshData.GetSize())
         {
-            TE_ASSERT_ERROR(false, "Buffer sizes don't match.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Buffer sizes don't match.");
         }
 
         UINT8* dest = _CPUData->GetData();
@@ -290,7 +290,7 @@ namespace te
         {
             if ((_usage & MU_STATIC) != 0)
             {
-                TE_DEBUG("Buffer discard is enabled but buffer was not created as dynamic. Disabling discard.", __FILE__, __LINE__);
+                TE_DEBUG("Buffer discard is enabled but buffer was not created as dynamic. Disabling discard.");
                 discardEntireBuffer = false;
             }
         }
@@ -298,7 +298,7 @@ namespace te
         {
             if ((_usage & MU_DYNAMIC) != 0)
             {
-                TE_DEBUG("Buffer discard is not enabled but buffer was created as dynamic. Enabling discard.", __FILE__, __LINE__);
+                TE_DEBUG("Buffer discard is not enabled but buffer was created as dynamic. Enabling discard.");
                 discardEntireBuffer = true;
             }
         }
@@ -312,7 +312,7 @@ namespace te
         if (meshData.GetIndexElementSize() != ibProps.GetIndexSize())
         {
             TE_DEBUG("Provided index size doesn't match meshes index size. Needed: {" + ToString(ibProps.GetIndexSize()) + "}. " +
-                "Got: {" + ToString(meshData.GetIndexElementSize()) + "}", __FILE__, __LINE__);
+                "Got: {" + ToString(meshData.GetIndexElementSize()) + "}");
 
             return;
         }
@@ -320,7 +320,7 @@ namespace te
         if (indicesSize > _indexBuffer->GetSize())
         {
             indicesSize = _indexBuffer->GetSize();
-            TE_DEBUG("Index buffer values are being written out of valid range.", __FILE__, __LINE__);
+            TE_DEBUG("Index buffer values are being written out of valid range.");
         }
 
         _indexBuffer->WriteData(0, indicesSize, srcIdxData, discardEntireBuffer ? BWT_DISCARD : BWT_NORMAL, queueIdx);
@@ -342,7 +342,7 @@ namespace te
             if (myVertSize != otherVertSize)
             {
                 TE_DEBUG("Provided vertex size for stream {" + ToString(i) + "} doesn't match meshes vertex size. "
-                    "Needed: {" + ToString(myVertSize) + "}. Got: {" + ToString(otherVertSize) + "}", __FILE__, __LINE__);
+                    "Needed: {" + ToString(myVertSize) + "}. Got: {" + ToString(otherVertSize) + "}");
 
                 continue;
             }
@@ -355,7 +355,7 @@ namespace te
             if (bufferSize > vertexBuffer->GetSize())
             {
                 bufferSize = vertexBuffer->GetSize();
-                TE_DEBUG("Vertex buffer values for stream \"{" + ToString(i) + "}\" are being written out of valid range.", __FILE__, __LINE__);
+                TE_DEBUG("Vertex buffer values for stream \"{" + ToString(i) + "}\" are being written out of valid range.");
             }
 
             vertexBuffer->WriteData(0, bufferSize, srcVertBufferData, discardEntireBuffer ? BWT_DISCARD : BWT_NORMAL, queueIdx);
@@ -382,7 +382,7 @@ namespace te
             if (meshData.GetIndexElementSize() != ibProps.GetIndexSize())
             {
                 TE_DEBUG("Provided index size doesn't match meshes index size. Needed: {" + ToString(ibProps.GetIndexSize()) + "}. " + 
-                         "Got: {" + ToString(meshData.GetIndexElementSize()) + "}", __FILE__, __LINE__);
+                         "Got: {" + ToString(meshData.GetIndexElementSize()) + "}");
                 return;
             }
 
@@ -401,7 +401,7 @@ namespace te
             UINT32 indicesSize = numIndicesToCopy * idxElemSize;
             if (indicesSize > meshData.GetIndexBufferSize())
             {
-                TE_DEBUG("Provided buffer doesn't have enough space to store mesh indices.", __FILE__, __LINE__);
+                TE_DEBUG("Provided buffer doesn't have enough space to store mesh indices.");
                 return;
             }
 
@@ -429,7 +429,7 @@ namespace te
                 if (myVertSize != otherVertSize)
                 {
                     TE_DEBUG("Provided vertex size for stream {" + ToString(streamIdx) + "} doesn't match meshes vertex size. "
-                        "Needed: {" + ToString(myVertSize) + "}. Got: {" + ToString(otherVertSize) + "}", __FILE__, __LINE__);
+                        "Needed: {" + ToString(myVertSize) + "}. Got: {" + ToString(otherVertSize) + "}");
 
                     continue;
                 }
@@ -439,7 +439,7 @@ namespace te
 
                 if (bufferSize > vertexBuffer->GetSize())
                 {
-                    TE_DEBUG("Vertex buffer values for stream \"{" + ToString(streamIdx) + "}\" are being read out of valid range.", __FILE__, __LINE__);
+                    TE_DEBUG("Vertex buffer values for stream \"{" + ToString(streamIdx) + "}\" are being read out of valid range.");
                     continue;
                 }
 

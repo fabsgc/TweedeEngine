@@ -44,7 +44,7 @@ namespace te
 
         if (file.Fail())
         {
-            TE_ASSERT_ERROR(false, "Cannot open file: " + filePath, __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Cannot open file: " + filePath);
             return nullptr;
         }
 
@@ -52,7 +52,7 @@ namespace te
 
         if (size > std::numeric_limits<UINT32>::max())
         {
-            TE_ASSERT_ERROR(false, "File size larger than supported!", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "File size larger than supported!");
         }
 
         uint8_t* data = static_cast<uint8_t*>(te_allocate(static_cast<UINT32>(size)+1));
@@ -70,7 +70,7 @@ namespace te
         }
         catch (...)
         {
-            TE_ASSERT_ERROR(false, "Can't read shader file " + filePath, __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Can't read shader file " + filePath);
         }
 #else
         jsonDocument = nlohmann::json::parse(dataStr);

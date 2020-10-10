@@ -39,7 +39,7 @@ namespace te
         if(FAILED(hr) || device.HasError())
         {
             String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Cannot create rasterizer state.\nError Description:" + errorDescription, __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Cannot create rasterizer state.\nError Description:" + errorDescription);
         }
 
         RasterizerState::CreateInternal();

@@ -18,7 +18,7 @@ namespace te
 
             if (FAILED(hr))
             {
-                TE_ASSERT_ERROR(false, "Unable to query D3D11InfoQueue", __FILE__, __LINE__);
+                TE_ASSERT_ERROR(false, "Unable to query D3D11InfoQueue");
             }
 
             SetExceptionsErrorLevel(D3D11ERR_ERROR);
@@ -32,7 +32,7 @@ namespace te
 
                 if (FAILED(hr))
                 {
-                    TE_ASSERT_ERROR(false, "Unable to create class linkage.", __FILE__, __LINE__);
+                    TE_ASSERT_ERROR(false, "Unable to create class linkage.");
                 }
             }
 

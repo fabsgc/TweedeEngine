@@ -1673,7 +1673,7 @@ namespace te
 
         if (format == PF_RGB10A2)
         {
-            TE_DEBUG("packColor() not implemented for format \"" + GetFormatName(PF_RGB10A2) + "\"", __FILE__, __LINE__);
+            TE_DEBUG("packColor() not implemented for format \"" + GetFormatName(PF_RGB10A2) + "\"");
             return;
         }
 
@@ -1732,7 +1732,7 @@ namespace te
             }
             else
             {
-                TE_DEBUG("packColor() not implemented for format \"" + GetFormatName(PF_RGB10A2) + "\"", __FILE__, __LINE__);
+                TE_DEBUG("packColor() not implemented for format \"" + GetFormatName(PF_RGB10A2) + "\"");
                 return;
             }
 
@@ -1800,7 +1800,7 @@ namespace te
 
         if(format == PF_RGB10A2)
         {
-            TE_DEBUG("unpackColor() not implemented for format \"" + GetFormatName(PF_RGB10A2) + "\"", __FILE__, __LINE__);
+            TE_DEBUG("unpackColor() not implemented for format \"" + GetFormatName(PF_RGB10A2) + "\"");
             return;
         }
 
@@ -1848,7 +1848,7 @@ namespace te
             }
             else
             {
-                TE_DEBUG("unpackColor() not implemented for format \"" + GetFormatName(format) + "\"", __FILE__, __LINE__);
+                TE_DEBUG("unpackColor() not implemented for format \"" + GetFormatName(format) + "\"");
                 return;
             }
 
@@ -1867,11 +1867,11 @@ namespace te
     {
         if (!IsDepth(format))
         {
-            TE_DEBUG("Cannot convert depth to {0}: it is not a depth format \"" + GetFormatName(format) + "\"", __FILE__, __LINE__);
+            TE_DEBUG("Cannot convert depth to {0}: it is not a depth format \"" + GetFormatName(format) + "\"");
             return;
         }
 
-        TE_DEBUG("Method is not implemented", __FILE__, __LINE__);
+        TE_DEBUG("Method is not implemented");
         // TODO implement depth packing
     }
 
@@ -1879,7 +1879,7 @@ namespace te
     {
         if (!IsDepth(format))
         {
-            TE_DEBUG("Cannot unpack from {0}: it is not a depth format \"" + GetFormatName(format) + "\"", __FILE__, __LINE__);
+            TE_DEBUG("Cannot unpack from {0}: it is not a depth format \"" + GetFormatName(format) + "\"");
             return 0;
         }
 
@@ -1902,7 +1902,7 @@ namespace te
             return *( (float*) &masked );
             break;
         default:
-            TE_DEBUG("Cannot unpack from \"" + GetFormatName(format) + "\"", __FILE__, __LINE__);
+            TE_DEBUG("Cannot unpack from \"" + GetFormatName(format) + "\"");
             return 0;
             break;
         }
@@ -1912,7 +1912,7 @@ namespace te
     {
         if(src.GetWidth() != dst.GetWidth() || src.GetHeight() != dst.GetHeight() || src.GetDepth() != dst.GetDepth())
         {
-            TE_DEBUG("Cannot convert pixels between buffers of different sizes.", __FILE__, __LINE__);
+            TE_DEBUG("Cannot convert pixels between buffers of different sizes.");
             return;
         }
 
@@ -1937,12 +1937,12 @@ namespace te
 
                 if(src.GetLeft() % blockDim.x != 0 || src.GetTop() % blockDim.y != 0)
                 {
-                    TE_DEBUG("Source offset must be a multiple of block size for compressed formats.", __FILE__, __LINE__);
+                    TE_DEBUG("Source offset must be a multiple of block size for compressed formats.");
                 }
 
                 if(dst.GetLeft() % blockDim.x != 0 || dst.GetTop() % blockDim.y != 0)
                 {
-                    TE_DEBUG("Destination offset must be a multiple of block size for compressed formats.", __FILE__, __LINE__);
+                    TE_DEBUG("Destination offset must be a multiple of block size for compressed formats.");
                 }
             }
 
@@ -1982,7 +1982,7 @@ namespace te
         {
             if (src.GetFormat() != dst.GetFormat())
             {
-                TE_DEBUG("Cannot convert from a compressed format to another format.", __FILE__, __LINE__);
+                TE_DEBUG("Cannot convert from a compressed format to another format.");
                 return;
             }
         }
@@ -2041,14 +2041,14 @@ namespace te
     {
         if (IsCompressed(data.GetFormat()))
         {
-            TE_DEBUG("FlipComponentOrder() not supported on compressed images.", __FILE__, __LINE__);
+            TE_DEBUG("FlipComponentOrder() not supported on compressed images.");
             return;
         }
 
         const PixelFormatDescription& pfd = GetDescriptionFor(data.GetFormat());
         if(pfd.elemBytes > 4)
         {
-            TE_DEBUG("FlipComponentOrder() only supported on 4 byte or smaller pixel formats.", __FILE__, __LINE__);
+            TE_DEBUG("FlipComponentOrder() only supported on 4 byte or smaller pixel formats.");
             return;
         }
 
@@ -2067,7 +2067,7 @@ namespace te
 
         if(bitCountMismatch)
         {
-            TE_DEBUG("flipComponentOrder() not supported for formats that don't have the same number of bytes for all components.", __FILE__, __LINE__);
+            TE_DEBUG("flipComponentOrder() not supported for formats that don't have the same number of bytes for all components.");
             return;
         }
 
@@ -2159,19 +2159,19 @@ namespace te
     {
         if (!IsCompressed(options.format))
         {
-            TE_DEBUG("Compression failed. Destination format is not a valid compressed format.", __FILE__, __LINE__);
+            TE_DEBUG("Compression failed. Destination format is not a valid compressed format.");
             return;
         }
 
         if (src.GetDepth() != 1)
         {
-            TE_DEBUG("Compression failed. 3D texture compression not supported.", __FILE__, __LINE__);
+            TE_DEBUG("Compression failed. 3D texture compression not supported.");
             return;
         }
 
         if (IsCompressed(src.GetFormat()))
         {
-            TE_DEBUG("Compression failed. Source data cannot be compressed.", __FILE__, __LINE__);
+            TE_DEBUG("Compression failed. Source data cannot be compressed.");
             return;
         }
 
@@ -2212,7 +2212,7 @@ namespace te
         nvtt::Compressor compressor;
         if (!compressor.process(io, co, oo))
         {
-            TE_DEBUG("Compression failed. Internal error.", __FILE__, __LINE__);
+            TE_DEBUG("Compression failed. Internal error.");
             return;
         }
     }
@@ -2223,19 +2223,19 @@ namespace te
 
         if (src.GetDepth() != 1)
         {
-            TE_DEBUG("Mipmap generation failed. 3D texture formats not supported.", __FILE__, __LINE__);
+            TE_DEBUG("Mipmap generation failed. 3D texture formats not supported.");
             return outputMipBuffers;
         }
 
         if (IsCompressed(src.GetFormat()))
         {
-            TE_DEBUG("Mipmap generation failed. Source data cannot be compressed.", __FILE__, __LINE__);
+            TE_DEBUG("Mipmap generation failed. Source data cannot be compressed.");
             return outputMipBuffers;
         }
 
         if (!Bitwise::IsPow2(src.GetWidth()) || !Bitwise::IsPow2(src.GetHeight()))
         {
-            TE_DEBUG("Mipmap generation failed. Texture width & height must be powers of 2.", __FILE__, __LINE__);
+            TE_DEBUG("Mipmap generation failed. Texture width & height must be powers of 2.");
             return outputMipBuffers;
         }
 
@@ -2318,7 +2318,7 @@ namespace te
         nvtt::Compressor compressor;
         if (!compressor.process(io, co, oo))
         {
-            TE_DEBUG("Mipmap generation failed. Internal error.", __FILE__, __LINE__);
+            TE_DEBUG("Mipmap generation failed. Internal error.");
             return outputMipBuffers;
         }
 
@@ -2534,7 +2534,7 @@ namespace te
     {
         if(src.GetFormat() != dst.GetFormat())
         {
-            TE_DEBUG("Source format is different from destination format for copy(). This operation cannot be used for a format conversion. Aborting copy.", __FILE__, __LINE__);
+            TE_DEBUG("Source format is different from destination format for copy(). This operation cannot be used for a format conversion. Aborting copy.");
             return;
         }
 
@@ -2544,7 +2544,7 @@ namespace te
 
         if(right > src.GetWidth() || bottom > src.GetHeight() || back > src.GetDepth())
         {
-            TE_DEBUG("Provided offset or destination size is too large and is referencing pixels that are out of bounds on the source texture. Aborting copy().", __FILE__, __LINE__);
+            TE_DEBUG("Provided offset or destination size is too large and is referencing pixels that are out of bounds on the source texture. Aborting copy().");
             return;
         }
 

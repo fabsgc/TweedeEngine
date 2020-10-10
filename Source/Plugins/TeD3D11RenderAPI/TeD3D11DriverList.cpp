@@ -29,7 +29,7 @@ namespace te
             if (FAILED(hr))
             {
                 SAFE_RELEASE(dxgiAdapter);
-                TE_ASSERT_ERROR(false, "Enumerating adapters failed.", __FILE__, __LINE__);
+                TE_ASSERT_ERROR(false, "Enumerating adapters failed.");
             }
 
             _driverList.push_back(te_new<D3D11Driver>(adapterIdx, dxgiAdapter));
@@ -59,7 +59,7 @@ namespace te
             }
         }
 
-        TE_ASSERT_ERROR(false, "Cannot find video mode with the specified name.", __FILE__, __LINE__);
+        TE_ASSERT_ERROR(false, "Cannot find video mode with the specified name.");
         return nullptr;
     }
 }

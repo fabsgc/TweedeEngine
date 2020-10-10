@@ -29,20 +29,20 @@ namespace te
         dipdw.dwData = DI_BUFFER_SIZE_KEYBOARD;
 
         if (FAILED(data->DirectInput->CreateDevice(GUID_SysKeyboard, &data->Keyboard, nullptr)))
-            TE_ASSERT_ERROR(false, "DirectInput keyboard init: Failed to create device.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "DirectInput keyboard init: Failed to create device.");
 
         if (FAILED(data->Keyboard->SetDataFormat(&c_dfDIKeyboard)))
-            TE_ASSERT_ERROR(false, "DirectInput keyboard init: Failed to set format.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "DirectInput keyboard init: Failed to set format.");
 
         if (FAILED(data->Keyboard->SetCooperativeLevel(hWnd, data->CoopSettings)))
-            TE_ASSERT_ERROR(false, "DirectInput keyboard init: Failed to set coop level.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "DirectInput keyboard init: Failed to set coop level.");
 
         if (FAILED(data->Keyboard->SetProperty(DIPROP_BUFFERSIZE, &dipdw.diph)))
-            TE_ASSERT_ERROR(false, "DirectInput keyboard init: Failed to set property.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "DirectInput keyboard init: Failed to set property.");
 
         HRESULT hr = data->Keyboard->Acquire();
         if (FAILED(hr) && hr != DIERR_OTHERAPPHASPRIO)
-            TE_ASSERT_ERROR(false, "DirectInput keyboard init: Failed to acquire device.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "DirectInput keyboard init: Failed to acquire device.");
 
         data->HWnd = hWnd;
     }
@@ -92,7 +92,7 @@ namespace te
             hr = _data->Keyboard->Acquire();
             if (hr == E_ACCESSDENIED)
             {
-                TE_DEBUG("Keyboard access denied", __FILE__, __LINE__);
+                TE_DEBUG("Keyboard access denied");
             }
             
             while (hr == DIERR_INPUTLOST)
@@ -103,7 +103,7 @@ namespace te
 
         if (FAILED(hr))
         {
-            TE_DEBUG("Failed to read keyboard input. Internal error. ", __FILE__, __LINE__);
+            TE_DEBUG("Failed to read keyboard input. Internal error. ");
             return;
         }
 

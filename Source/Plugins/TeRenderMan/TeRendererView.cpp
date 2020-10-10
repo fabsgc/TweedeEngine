@@ -374,7 +374,7 @@ namespace te
         if (instBlockCount > STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER)
         {
             instBlockCount = STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER;
-            TE_DEBUG("Maximum number of instanced block reached : " + ToString(instBlockCount), __FILE__, __LINE__);
+            TE_DEBUG("Maximum number of instanced block reached : " + ToString(instBlockCount));
         }
 
         // For each instance block we retrieve all necessary data

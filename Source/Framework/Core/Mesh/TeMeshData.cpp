@@ -30,7 +30,7 @@ namespace te
     {
         if(_indexType != IT_16BIT)
         {
-            TE_ASSERT_ERROR(false, "Attempting to get 16bit index buffer, but internally allocated buffer is 32 bit.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Attempting to get 16bit index buffer, but internally allocated buffer is 32 bit.");
         }
 
         UINT32 indexBufferOffset = GetIndexBufferOffset();
@@ -41,7 +41,7 @@ namespace te
     UINT32* MeshData::GetIndices32() const
     {
         if(_indexType != IT_32BIT)
-            TE_ASSERT_ERROR(false, "Attempting to get 32bit index buffer, but internally allocated buffer is 16 bit.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Attempting to get 32bit index buffer, but internally allocated buffer is 16 bit.");
 
         UINT32 indexBufferOffset = GetIndexBufferOffset();
 
@@ -83,7 +83,7 @@ namespace te
                     {
                         if(newElement.GetType() != existingElement.GetType())
                         {
-                            TE_ASSERT_ERROR(false, "Two elements have same semantics but different types. This is not supported.", __FILE__, __LINE__);
+                            TE_ASSERT_ERROR(false, "Two elements have same semantics but different types. This is not supported.");
                         }
 
                         alreadyExistsIdx = idx;
@@ -177,7 +177,7 @@ namespace te
         if(!_vertexData->HasElement(semantic, semanticIdx, streamIdx))
         {
             TE_DEBUG("MeshData doesn't contain an element of specified type: Semantic: " + ToString(semantic) +
-                "Semantic index: " + ToString(semanticIdx) + ", Stream index: " + ToString(streamIdx), __FILE__, __LINE__);
+                "Semantic index: " + ToString(semanticIdx) + ", Stream index: " + ToString(streamIdx));
             return;
         }
 
@@ -186,7 +186,7 @@ namespace te
 
         if(totalSize != size)
         {
-            TE_ASSERT_ERROR(false, "Buffer sizes don't match. Expected: " + ToString(totalSize) + ". Got: " + ToString(size), __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Buffer sizes don't match. Expected: " + ToString(totalSize) + ". Got: " + ToString(size));
         }
 
         UINT32 indexBufferOffset = GetIndexBufferSize();
@@ -211,7 +211,7 @@ namespace te
         if (!_vertexData->HasElement(semantic, semanticIdx, streamIdx))
         {
             TE_DEBUG("MeshData doesn't contain an element of specified type: Semantic: " + ToString(semantic) + ", "
-                "Semantic index: " + ToString(semanticIdx) + ", Stream index: " + ToString(streamIdx), __FILE__, __LINE__);
+                "Semantic index: " + ToString(semanticIdx) + ", Stream index: " + ToString(streamIdx));
             return;
         }
 
@@ -220,7 +220,7 @@ namespace te
 
         if (totalSize != size)
         {
-            TE_ASSERT_ERROR(false, "Buffer sizes don't match. Expected: " + ToString(totalSize) + ". Got: " + ToString(size), __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Buffer sizes don't match. Expected: " + ToString(totalSize) + ". Got: " + ToString(size));
         }
 
         UINT32 indexBufferOffset = GetIndexBufferSize();

@@ -43,7 +43,7 @@ namespace te
         HRESULT hr = CreateDXGIFactory1(__uuidof(IDXGIFactory1), (void**)&_DXGIFactory);
         if (FAILED(hr))
         {
-            TE_ASSERT_ERROR(false, "Failed to create Direct3D11 DXGIFactory", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Failed to create Direct3D11 DXGIFactory");
         }
 
         _driverList = te_new<D3D11DriverList>(_DXGIFactory);
@@ -82,7 +82,7 @@ namespace te
 
         if (FAILED(hr))
         {
-            TE_ASSERT_ERROR(false, "Failed to create Direct3D11 object. D3D11CreateDeviceN returned this error code: " + ToString(hr), __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Failed to create Direct3D11 object. D3D11CreateDeviceN returned this error code: " + ToString(hr));
         }
 
         _device = te_new<D3D11Device>(device);
@@ -325,7 +325,7 @@ namespace te
             SPtr<GpuParamBlockBuffer> buffer = gpuParams->GetParamBlockBuffer(gpuParamBlockDesc.Set, slot);
 
             if(!buffer)
-                TE_ASSERT_ERROR(false, "EMPTY BUFFER, slot : " + ToString(gpuParamBlockDesc.Slot) + ", set : " + ToString(gpuParamBlockDesc.Set), __FILE__, __LINE__);
+                TE_ASSERT_ERROR(false, "EMPTY BUFFER, slot : " + ToString(gpuParamBlockDesc.Slot) + ", set : " + ToString(gpuParamBlockDesc.Set));
 
             buffer->FlushToGPU();
             const D3D11GpuParamBlockBuffer* d3d11paramBlockBuffer =
@@ -603,7 +603,7 @@ namespace te
         if (index < 0 || (index + numBuffers) >= maxBoundVertexBuffers)
         {
             TE_ASSERT_ERROR(false, "Invalid vertex index: " + ToString(index) +
-                ". Valid range is 0 .. " + ToString(maxBoundVertexBuffers - 1), __FILE__, __LINE__);
+                ". Valid range is 0 .. " + ToString(maxBoundVertexBuffers - 1));
         }
 
         ID3D11Buffer* dx11buffers[D3D11_MAX_BOUND_VERTEX_BUFFER];
@@ -642,7 +642,7 @@ namespace te
         else if (indexBuffer->GetProperties().GetType() == IT_32BIT)
             indexFormat = DXGI_FORMAT_R32_UINT;
         else
-            TE_ASSERT_ERROR(false, "Unsupported index format: " + ToString(indexBuffer->GetProperties().GetType()), __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Unsupported index format: " + ToString(indexBuffer->GetProperties().GetType()));
 
         _device->GetImmediateContext()->IASetIndexBuffer(indexBuffer->GetD3DIndexBuffer(), indexFormat, 0);
     }
@@ -677,7 +677,7 @@ namespace te
 
 #if TE_DEBUG_MODE
         if (_device->HasError())
-            TE_DEBUG(_device->GetErrorDescription(), __FILE__, __LINE__);
+            TE_DEBUG(_device->GetErrorDescription());
 #endif
 
         NotifyRenderTargetModified();
@@ -694,7 +694,7 @@ namespace te
 
 #if TE_DEBUG_MODE
             if (_device->HasError())
-                TE_DEBUG(_device->GetErrorDescription(), __FILE__, __LINE__);
+                TE_DEBUG(_device->GetErrorDescription());
 #endif
 
         NotifyRenderTargetModified();
@@ -706,7 +706,7 @@ namespace te
 
 #if TE_DEBUG_MODE
         if (_device->HasError())
-            TE_DEBUG(_device->GetErrorDescription(), __FILE__, __LINE__);
+            TE_DEBUG(_device->GetErrorDescription());
 #endif
     }
 
@@ -749,7 +749,7 @@ namespace te
         // Bind render targets
         _device->GetImmediateContext()->OMSetRenderTargets(maxRenderTargets, views, depthStencilView);
         if (_device->HasError())
-            TE_ASSERT_ERROR(false, "Failed to setRenderTarget : " + _device->GetErrorDescription(), __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Failed to setRenderTarget : " + _device->GetErrorDescription());
 
         te_deleteN(views, maxRenderTargets);
         ApplyViewport();
@@ -896,13 +896,13 @@ namespace te
     {
         if (_activeVertexDeclaration == nullptr)
         {
-            TE_DEBUG("Cannot apply input layout without a vertex declaration. Set vertex declaration before calling this method.", __FILE__, __LINE__);
+            TE_DEBUG("Cannot apply input layout without a vertex declaration. Set vertex declaration before calling this method.");
             return;
         }
 
         if (_activeVertexShader == nullptr)
         {
-            TE_DEBUG("Cannot apply input layout without a vertex shader. Set vertex shader before calling this method.", __FILE__, __LINE__);
+            TE_DEBUG("Cannot apply input layout without a vertex shader. Set vertex shader before calling this method.");
             return;
         }
 
@@ -947,7 +947,7 @@ namespace te
 
         if (_device->HasError())
         {
-            TE_ASSERT_ERROR(false, "Unable to set Viewport" + _device->GetErrorDescription(), __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Unable to set Viewport" + _device->GetErrorDescription());
         }
     }
 

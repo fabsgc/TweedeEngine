@@ -18,14 +18,14 @@ namespace te
         UINT32 numTechniques = material.GetNumTechniques();
 
         if (numTechniques == 0)
-            TE_ASSERT_ERROR(false, "A material must a leat have one technique", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "A material must a leat have one technique");
 
         // Make sure the technique shaders are compiled
         const SPtr<Technique>& technique = material.GetTechnique(techniqueIdx);
 
         UINT32 numPasses = technique->GetNumPasses();
         if (numPasses == 0)
-            TE_ASSERT_ERROR(false, "A technique must a leat have one pass", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "A technique must a leat have one pass");
 
         if (technique)
             technique->Compile();
@@ -56,7 +56,7 @@ namespace te
                     for (auto& entry : missingElements)
                         wrnStream << "\t" << ToString(entry.GetSemantic()) << entry.GetSemanticIdx() << std::endl;
 
-                    TE_DEBUG(wrnStream.str(), __FILE__, __LINE__);
+                    TE_DEBUG(wrnStream.str());
                     break;
                 }
             }
@@ -431,7 +431,7 @@ namespace te
                 SPtr<Shader> shader = element.MaterialElem->GetShader();
                 if (shader == nullptr)
                 {
-                    TE_DEBUG("Missing shader on material.", __FILE__, __LINE__);
+                    TE_DEBUG("Missing shader on material.");
                     continue;
                 }
 

@@ -79,12 +79,12 @@ namespace te
                 return *this;
             }
 
-            TE_ASSERT_ERROR(false, "Cannot return subvolume of compressed PixelBuffer", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Cannot return subvolume of compressed PixelBuffer");
         }
 
         if (!_extents.Contains(volume))
         {
-            TE_ASSERT_ERROR(false, "Bounds out of range", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Bounds out of range");
         }
 
         const size_t elemSize = PixelUtil::GetNumElemBytes(_format);
@@ -202,7 +202,7 @@ namespace te
         UINT32 totalNumElements = width * height * depth;
         if (numElements != totalNumElements)
         {
-            TE_DEBUG("Unable to set colors, invalid array size.", __FILE__, __LINE__);
+            TE_DEBUG("Unable to set colors, invalid array size.");
             return;
         }
 

@@ -392,7 +392,7 @@ namespace te
         HRESULT hr = _swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&_backBuffer);
         if (FAILED(hr))
         {
-            TE_ASSERT_ERROR(false, "Unable to Get Back Buffer for swap chain", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Unable to Get Back Buffer for swap chain");
         }
 
         assert(_backBuffer && !_renderTargetView);
@@ -411,7 +411,7 @@ namespace te
         if (FAILED(hr))
         {
             String errorDescription = _device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Unable to create rendertarget view\nError Description:" + errorDescription, __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Unable to create rendertarget view\nError Description:" + errorDescription);
         }
 
         _depthStencilView = nullptr;
@@ -452,7 +452,7 @@ namespace te
 
         if (hr != S_OK)
         {
-            TE_ASSERT_ERROR(false, "Call to ResizeBuffers failed.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Call to ResizeBuffers failed.");
         }
 
         _swapChain->GetDesc(&_swapChainDesc);
@@ -521,20 +521,20 @@ namespace te
 
         if (FAILED(hr))
         {
-            TE_ASSERT_ERROR(false, "Unable to create swap chain. Error code: " + ToString(hr), __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Unable to create swap chain. Error code: " + ToString(hr));
         }
     }
 
     IDXGIDevice* D3D11RenderWindow::QueryDxgiDevice()
     {
-        TE_ASSERT_ERROR(_device.GetD3D11Device() != nullptr, "D3D11Device is null.", __FILE__, __LINE__);
+        TE_ASSERT_ERROR(_device.GetD3D11Device() != nullptr, "D3D11Device is null.");
 
         IDXGIDevice* pDXGIDevice = nullptr;
         HRESULT hr = _device.GetD3D11Device()->QueryInterface(__uuidof(IDXGIDevice), (void**)&pDXGIDevice);
 
         if (FAILED(hr))
         {
-            TE_ASSERT_ERROR(false, "Unable to query a DXGIDevice.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Unable to query a DXGIDevice.");
         }
 
         return pDXGIDevice;
@@ -548,7 +548,7 @@ namespace te
 
             if (FAILED(hr))
             {
-                TE_ASSERT_ERROR(false, "Error Presenting surfaces", __FILE__, __LINE__);
+                TE_ASSERT_ERROR(false, "Error Presenting surfaces");
             }
         }
     }

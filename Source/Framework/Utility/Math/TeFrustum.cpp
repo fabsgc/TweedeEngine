@@ -144,7 +144,7 @@ namespace te
     {
         if (whichPlane >= mPlanes.size())
         {
-            TE_ASSERT_ERROR(false, "Requested plane does not exist in this volume.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Requested plane does not exist in this volume.");
         }
 
         return mPlanes[whichPlane];

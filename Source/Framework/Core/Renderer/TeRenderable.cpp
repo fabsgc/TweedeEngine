@@ -77,7 +77,7 @@ namespace te
     void Renderable::SetMesh(SPtr<Mesh> mesh)
     {
 #if TE_DEBUG_MODE
-        TE_ASSERT_ERROR(mesh != nullptr, "Mesh should not be null", __FILE__, __LINE__);
+        TE_ASSERT_ERROR(mesh != nullptr, "Mesh should not be null");
 #endif
 
         _mesh = mesh;
@@ -92,7 +92,7 @@ namespace te
     void Renderable::SetMaterial(UINT32 idx, const SPtr<Material>& material)
     {
 #if TE_DEBUG_MODE
-        TE_ASSERT_ERROR(material != nullptr, "Material should not be null", __FILE__, __LINE__);
+        TE_ASSERT_ERROR(material != nullptr, "Material should not be null");
 #endif
 
         if (idx >= (UINT32)_materials.size())
@@ -110,7 +110,7 @@ namespace te
         for (UINT32 i = 0; i < min; i++)
         {
 #if TE_DEBUG_MODE
-            TE_ASSERT_ERROR(materials[i] != nullptr, "Material should not be null", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(materials[i] != nullptr, "Material should not be null");
 #endif
 
             _materials[i] = materials[i];
@@ -125,7 +125,7 @@ namespace te
     void Renderable::SetMaterial(const SPtr<Material>& material)
     {
 #if TE_DEBUG_MODE
-        TE_ASSERT_ERROR(material != nullptr, "Material should not be null", __FILE__, __LINE__);
+        TE_ASSERT_ERROR(material != nullptr, "Material should not be null");
 #endif
 
         SetMaterial(0, material);
@@ -135,7 +135,7 @@ namespace te
     void Renderable::SetMaterial(const String& name, const SPtr<Material>& material)
     {
 #if TE_DEBUG_MODE
-        TE_ASSERT_ERROR(material != nullptr, "Material should not be null", __FILE__, __LINE__);
+        TE_ASSERT_ERROR(material != nullptr, "Material should not be null");
 #endif
 
         if (!_mesh)
@@ -157,7 +157,7 @@ namespace te
         _markCoreDirty(ActorDirtyFlag::GpuParams);
 
         if (assignedSubMeshed == 0)
-            TE_DEBUG("No submesh currently use the material {" + name + "} in {" + _mesh->GetName() + "}", __FILE__, __LINE__);
+            TE_DEBUG("No submesh currently use the material {" + name + "} in {" + _mesh->GetName() + "}");
     }
 
     SPtr<Material> Renderable::GetMaterial(UINT32 idx) const
@@ -174,7 +174,7 @@ namespace te
 
         if (!isPow2)
         {
-            TE_DEBUG("Invalid layer provided. Only one layer bit may be set. Ignoring.", __FILE__, __LINE__);
+            TE_DEBUG("Invalid layer provided. Only one layer bit may be set. Ignoring.");
             return;
         }
 

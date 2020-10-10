@@ -124,7 +124,7 @@ namespace te
     void Material::SetTexture(const String& name, const SPtr<Texture>& value, const TextureSurface& surface)
     {
 #if TE_DEBUG_MODE
-        TE_ASSERT_ERROR(value != nullptr, "Texture should not be null", __FILE__, __LINE__);
+        TE_ASSERT_ERROR(value != nullptr, "Texture should not be null");
 #endif
 
         if (_textures.find(name) == _textures.end())
@@ -142,7 +142,7 @@ namespace te
     void Material::SetLoadStoreTexture(const String& name, const SPtr<Texture>& value, const TextureSurface& surface)
     {
 #if TE_DEBUG_MODE
-        TE_ASSERT_ERROR(value != nullptr, "Load store texture should not be null", __FILE__, __LINE__);
+        TE_ASSERT_ERROR(value != nullptr, "Load store texture should not be null");
 #endif
 
         if (_loadStoreTextures.find(name) == _loadStoreTextures.end())
@@ -161,7 +161,7 @@ namespace te
     void Material::SetBuffer(const String& name, const SPtr<GpuBuffer>& value)
     {
 #if TE_DEBUG_MODE
-        TE_ASSERT_ERROR(value != nullptr, "Buffer should not be null", __FILE__, __LINE__);
+        TE_ASSERT_ERROR(value != nullptr, "Buffer should not be null");
 #endif
 
         _buffers[name] = value;
@@ -172,7 +172,7 @@ namespace te
     void Material::SetSamplerState(const String& name, const SPtr<SamplerState>& value)
     {
 #if TE_DEBUG_MODE
-        TE_ASSERT_ERROR(value != nullptr, "Sampler state should not be null", __FILE__, __LINE__);
+        TE_ASSERT_ERROR(value != nullptr, "Sampler state should not be null");
 #endif
         _samplerStates[name] = value;
         _markCoreDirty(MaterialDirtyFlags::ParamResource);

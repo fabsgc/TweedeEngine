@@ -96,7 +96,7 @@ namespace te
         IDXGIOutput* output = nullptr;
         if (_DXGIAdapter->EnumOutputs(adapterOutputIdx, &output) == DXGI_ERROR_NOT_FOUND)
         {
-            TE_ASSERT_ERROR(false, "Cannot find output with the specified index: " + ToString(adapterOutputIdx), __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Cannot find output with the specified index: " + ToString(adapterOutputIdx));
         }
 
         output->GetDesc(&desc);

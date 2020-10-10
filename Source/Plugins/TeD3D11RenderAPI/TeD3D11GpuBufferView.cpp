@@ -45,7 +45,7 @@ namespace te
 
         if ((desc.Usage & GVU_RENDERTARGET) != 0 || (desc.Usage & GVU_DEPTHSTENCIL) != 0)
         {
-            TE_ASSERT_ERROR(false, "Invalid usage flags for a GPU buffer view.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Invalid usage flags for a GPU buffer view.");
         }
     }
 
@@ -86,7 +86,7 @@ namespace te
         if (FAILED(hr) || d3d11rs->GetPrimaryDevice().HasError())
         {
             String msg = d3d11rs->GetPrimaryDevice().GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Cannot create ShaderResourceView: " + msg, __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Cannot create ShaderResourceView: " + msg);
         }
 
         return srv;
@@ -140,7 +140,7 @@ namespace te
         if (FAILED(hr) || d3d11rs->GetPrimaryDevice().HasError())
         {
             String msg = d3d11rs->GetPrimaryDevice().GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Cannot create UnorderedAccessView: " + msg, __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Cannot create UnorderedAccessView: " + msg);
         }
 
         return uav;

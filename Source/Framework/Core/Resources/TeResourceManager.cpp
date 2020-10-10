@@ -46,7 +46,7 @@ namespace te
         else
         {
             // This should never happen but in case it does fail silently in release mode
-            TE_ASSERT_ERROR(false, "Trying to destroy an inexisting resource : " + uuid.ToString(), __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Trying to destroy an inexisting resource : " + uuid.ToString());
         }
 
         resource.ClearHandleData();
@@ -82,7 +82,7 @@ namespace te
         else
         {
             // This should never happen but in case it does fail silently in release mode
-            TE_ASSERT_ERROR(false, "Resource not found : " + uuid.ToString(), __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Resource not found : " + uuid.ToString());
         }
 
         return resource;

@@ -129,7 +129,7 @@ namespace te
         }
         else
         {
-            TE_DEBUG("Can't find extension for file : " + filePath, __FILE__, __LINE__);
+            TE_DEBUG("Can't find extension for file : " + filePath);
             return String();
         }
     }

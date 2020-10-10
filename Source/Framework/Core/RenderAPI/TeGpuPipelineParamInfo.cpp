@@ -197,7 +197,7 @@ namespace te
 #if TE_DEBUG_MODE
         if (set >= _numSets)
         {
-            TE_DEBUG("Set index out of range: Valid range: [0, " + ToString(_numSets) + "). Requested: " + ToString(set), __FILE__, __LINE__);
+            TE_DEBUG("Set index out of range: Valid range: [0, " + ToString(_numSets) + "). Requested: " + ToString(set));
             return -1;
         }
 
@@ -218,7 +218,7 @@ namespace te
             }
 
             TE_DEBUG("Requested parameter is not of the valid type. Requested: " + ToString((UINT32)type) + 
-                ". Actual: " + ToString((UINT32)_setInfos[set].SlotTypes[slot]), __FILE__, __LINE__);
+                ". Actual: " + ToString((UINT32)_setInfos[set].SlotTypes[slot]));
 
             return -1;
         }
@@ -234,7 +234,7 @@ namespace te
         if (sequentialSlot >= _numElementsPerType[(int)type])
         {
             TE_DEBUG("Sequential slot index out of range: Valid range: [0, " + ToString(_numElementsPerType[(int)type]) + "). Requested: " +
-                ToString(sequentialSlot), __FILE__, __LINE__);
+                ToString(sequentialSlot));
 
             set = 0;
             slot = 0;

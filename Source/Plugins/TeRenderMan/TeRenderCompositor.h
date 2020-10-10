@@ -148,7 +148,7 @@ namespace te
         {
             auto findIter = _nodeTypes.find(T::GetNodeId());
             if (findIter != _nodeTypes.end())
-                TE_DEBUG("Found two render compositor nodes with the same name \"{" + String(T::GetNodeId().c_str()) + "}\".", __FILE__, __LINE__);
+                TE_DEBUG("Found two render compositor nodes with the same name \"{" + String(T::GetNodeId().c_str()) + "}\".");
 
             _nodeTypes[T::GetNodeId()] = te_new<TNodeType<T>>();
         }

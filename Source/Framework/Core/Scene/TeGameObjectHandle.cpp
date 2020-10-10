@@ -24,7 +24,7 @@ namespace te
     {
         if (IsDestroyed())
         {
-            TE_ASSERT_ERROR(false, "Trying to access an object that has been destroyed.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Trying to access an object that has been destroyed.");
         }
     }
 }

@@ -16,7 +16,7 @@ namespace te
     {
         if (paramDesc.Type == GPDT_STRUCT && paramDesc.ElementSize <= 0)
         {
-            TE_DEBUG("You need to provide a non-zero element size for a struct parameter.", __FILE__, __LINE__);
+            TE_DEBUG("You need to provide a non-zero element size for a struct parameter.");
             return;
         }
 
@@ -165,7 +165,7 @@ namespace te
         if (findIterSampler != _desc.SamplerParams.end())
             return GPT_SAMPLER;
 
-        TE_ASSERT_ERROR(false, "Cannot find the parameter with the name: " + name, __FILE__, __LINE__);
+        TE_ASSERT_ERROR(false, "Cannot find the parameter with the name: " + name);
         return GPT_DATA;
     }
 
@@ -175,7 +175,7 @@ namespace te
         if (findIterData != _desc.DataParams.end())
             return findIterData->second;
 
-        TE_ASSERT_ERROR(false, "Cannot find the parameter with the name: " + name, __FILE__, __LINE__);
+        TE_ASSERT_ERROR(false, "Cannot find the parameter with the name: " + name);
         static SHADER_DATA_PARAM_DESC dummy;
         return dummy;
     }
@@ -186,7 +186,7 @@ namespace te
         if (findIterObject != _desc.TextureParams.end())
             return findIterObject->second;
 
-        TE_ASSERT_ERROR(false, "Cannot find the parameter with the name: " + name, __FILE__, __LINE__);
+        TE_ASSERT_ERROR(false, "Cannot find the parameter with the name: " + name);
         static SHADER_OBJECT_PARAM_DESC dummy;
         return dummy;
     }
@@ -197,7 +197,7 @@ namespace te
         if (findIterObject != _desc.SamplerParams.end())
             return findIterObject->second;
 
-        TE_ASSERT_ERROR(false, "Cannot find the parameter with the name: " + name, __FILE__, __LINE__);
+        TE_ASSERT_ERROR(false, "Cannot find the parameter with the name: " + name);
         static SHADER_OBJECT_PARAM_DESC dummy;
         return dummy;
     }
@@ -208,7 +208,7 @@ namespace te
         if (findIterObject != _desc.BufferParams.end())
             return findIterObject->second;
 
-        TE_ASSERT_ERROR(false, "Cannot find the parameter with the name: " + name, __FILE__, __LINE__);
+        TE_ASSERT_ERROR(false, "Cannot find the parameter with the name: " + name);
         static SHADER_OBJECT_PARAM_DESC dummy;
         return dummy;
     }

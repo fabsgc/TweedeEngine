@@ -39,20 +39,20 @@ namespace te
         dipdw.dwData = DI_BUFFER_SIZE_GAMEPAD;
 
         if (FAILED(data->DirectInput->CreateDevice(data->Info.GuidInstance, &data->Gamepad, nullptr)))
-            TE_ASSERT_ERROR(false, "DirectInput gamepad init: Failed to create device.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "DirectInput gamepad init: Failed to create device.");
 
         if (FAILED(data->Gamepad->SetDataFormat(&c_dfDIJoystick2)))
-            TE_ASSERT_ERROR(false, "DirectInput gamepad init: Failed to set format.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "DirectInput gamepad init: Failed to set format.");
 
         if (FAILED(data->Gamepad->SetCooperativeLevel(hWnd, data->CoopSettings)))
-            TE_ASSERT_ERROR(false, "DirectInput gamepad init: Failed to set coop level.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "DirectInput gamepad init: Failed to set coop level.");
 
         if (FAILED(data->Gamepad->SetProperty(DIPROP_BUFFERSIZE, &dipdw.diph)))
-            TE_ASSERT_ERROR(false, "DirectInput gamepad init: Failed to set property.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "DirectInput gamepad init: Failed to set property.");
 
         HRESULT hr = data->Gamepad->Acquire();
         if (FAILED(hr) && hr != DIERR_OTHERAPPHASPRIO)
-            TE_ASSERT_ERROR(false, "DirectInput gamepad init: Failed to acquire device.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "DirectInput gamepad init: Failed to acquire device.");
 
         data->HWnd = hWnd;
     }

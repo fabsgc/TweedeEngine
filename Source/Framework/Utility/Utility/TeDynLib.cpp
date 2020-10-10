@@ -28,11 +28,11 @@ namespace te
             String error = DynLibError();
             TE_ASSERT_ERROR(false,
                 "Could not load dynamic library " + _name +
-                ".  System Error: " + error, __FILE__, __LINE__);
+                ".  System Error: " + error);
         }
         else
         {
-            TE_DEBUG("Dynamic library " + _name + " has been successfully loaded", __FILE__, __LINE__);
+            TE_DEBUG("Dynamic library " + _name + " has been successfully loaded");
         }
     }
 
@@ -45,10 +45,10 @@ namespace te
         {
             TE_ASSERT_ERROR(false,
                 "Could not unload dynamic library " + _name +
-                ".  System Error: " + DynLibError(), __FILE__, __LINE__);
+                ".  System Error: " + DynLibError());
         }
 
-        TE_DEBUG("Dynamic library " + _name + " has been successfully unloaded", __FILE__, __LINE__);
+        TE_DEBUG("Dynamic library " + _name + " has been successfully unloaded");
     }
 
     void* DynLib::GetSymbol(const String& strName) const

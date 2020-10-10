@@ -28,7 +28,7 @@ namespace te
     {
         if(deviceIdx >= _numDevices)
         {
-            TE_DEBUG("Invalid device index provided: {" + ToString(deviceIdx) + "}. Valid range is: [0, {" + ToString(_numDevices) + "}).", __FILE__, __LINE__);
+            TE_DEBUG("Invalid device index provided: {" + ToString(deviceIdx) + "}. Valid range is: [0, {" + ToString(_numDevices) + "}).");
             return _capabilities[0];
         }
 

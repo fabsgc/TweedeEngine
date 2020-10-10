@@ -28,7 +28,7 @@ namespace te
             if (arrayIdx >= _paramDesc.ArraySize)
             {
                 TE_ASSERT_ERROR(false, "Array index out of range. Array size: " +
-                    ToString(_paramDesc.ArraySize) + ". Requested size: " + ToString(arrayIdx), __FILE__, __LINE__);
+                    ToString(_paramDesc.ArraySize) + ". Requested size: " + ToString(arrayIdx));
             }
 #endif
 
@@ -66,7 +66,7 @@ namespace te
 #if TE_DEBUG_MODE
             if (arrayIdx >= _paramDesc.ArraySize)
             {
-                TE_DEBUG("Array index out of range. Array size: {" + ToString(_paramDesc.ArraySize) + "}. Requested size: {" + ToString(arrayIdx) + "}", __FILE__, __LINE__);
+                TE_DEBUG("Array index out of range. Array size: {" + ToString(_paramDesc.ArraySize) + "}. Requested size: {" + ToString(arrayIdx) + "}");
                 return T();
             }
 #endif

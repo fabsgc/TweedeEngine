@@ -49,7 +49,7 @@ namespace te
 
         if (shaderType != stringType && shaderType != builtinShaderType)
         {
-            TE_ASSERT_ERROR(false, "ShaderPath must be a String or a BuiltinShader", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "ShaderPath must be a String or a BuiltinShader");
         }
 
         Vector<RendererMaterialData>& materials = GetMaterials();
@@ -70,11 +70,11 @@ namespace te
             {
                 if (materials[i].ShaderPath.type() == typeid(String))
                 {
-                    TE_DEBUG("Failed to load renderer material: {" + std::any_cast<String>(materials[i].ShaderPath) + "}", __FILE__, __LINE__);
+                    TE_DEBUG("Failed to load renderer material: {" + std::any_cast<String>(materials[i].ShaderPath) + "}");
                 }
                 else
                 {
-                    TE_DEBUG("Failed to load renderer material: {" + ToString(std::any_cast<UINT32>(materials[i].ShaderPath)) + "}", __FILE__, __LINE__);
+                    TE_DEBUG("Failed to load renderer material: {" + ToString(std::any_cast<UINT32>(materials[i].ShaderPath)) + "}");
                 }
 
                 continue;

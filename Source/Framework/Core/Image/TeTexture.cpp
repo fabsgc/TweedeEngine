@@ -89,13 +89,13 @@ namespace te
     {
         if (mipLevel > _properties.GetNumMipmaps())
         {
-            TE_DEBUG("Invalid mip level: " + ToString(mipLevel) + ". Min is 0, max is " + ToString(_properties.GetNumMipmaps()), __FILE__, __LINE__);
+            TE_DEBUG("Invalid mip level: " + ToString(mipLevel) + ". Min is 0, max is " + ToString(_properties.GetNumMipmaps()));
             return PixelData(0, 0, 0, PF_UNKNOWN);
         }
 
         if (face >= _properties.GetNumFaces())
         {
-            TE_DEBUG("Invalid face index: " + ToString(face) + ". Min is 0, max is " + ToString(_properties.GetNumFaces()), __FILE__, __LINE__);
+            TE_DEBUG("Invalid face index: " + ToString(face) + ". Min is 0, max is " + ToString(_properties.GetNumFaces()));
             return PixelData(0, 0, 0, PF_UNKNOWN);
         }
 
@@ -111,43 +111,43 @@ namespace te
     {
         if (target->_properties.GetTextureType() != _properties.GetTextureType())
         {
-            TE_DEBUG("Source and destination textures must be of same type.", __FILE__, __LINE__);
+            TE_DEBUG("Source and destination textures must be of same type.");
             return;
         }
 
         if (_properties.GetFormat() != target->_properties.GetFormat()) // Note: It might be okay to use different formats of the same size
         {
-            TE_DEBUG("Source and destination texture formats must match.", __FILE__, __LINE__);
+            TE_DEBUG("Source and destination texture formats must match.");
             return;
         }
 
         if (target->_properties.GetNumSamples() > 1 && _properties.GetNumSamples() != target->_properties.GetNumSamples())
         {
-            TE_DEBUG("When copying to a multisampled texture, source texture must have the same number of samples.", __FILE__, __LINE__);
+            TE_DEBUG("When copying to a multisampled texture, source texture must have the same number of samples.");
             return;
         }
 
         if (desc.SrcFace >= _properties.GetNumFaces())
         {
-            TE_DEBUG("Invalid source face index.", __FILE__, __LINE__);
+            TE_DEBUG("Invalid source face index.");
             return;
         }
 
         if (desc.DstFace >= target->_properties.GetNumFaces())
         {
-            TE_DEBUG("Invalid destination face index.", __FILE__, __LINE__);
+            TE_DEBUG("Invalid destination face index.");
             return;
         }
 
         if (desc.SrcMip > _properties.GetNumMipmaps())
         {
-            TE_DEBUG("Source mip level out of range. Valid range is [0, " + ToString(_properties.GetNumMipmaps()) + "].", __FILE__, __LINE__);
+            TE_DEBUG("Source mip level out of range. Valid range is [0, " + ToString(_properties.GetNumMipmaps()) + "].");
             return;
         }
 
         if (desc.DstMip > target->_properties.GetNumMipmaps())
         {
-            TE_DEBUG("Destination mip level out of range. Valid range is [0, " + ToString(target->_properties.GetNumMipmaps()) + "].", __FILE__, __LINE__);
+            TE_DEBUG("Destination mip level out of range. Valid range is [0, " + ToString(target->_properties.GetNumMipmaps()) + "].");
             return;
         }
 
@@ -175,7 +175,7 @@ namespace te
             desc.DstPosition.y < 0 || desc.DstPosition.y >= (INT32)dstHeight ||
             desc.DstPosition.z < 0 || desc.DstPosition.z >= (INT32)dstDepth)
         {
-            TE_DEBUG("Destination position falls outside the destination texture.", __FILE__, __LINE__);
+            TE_DEBUG("Destination position falls outside the destination texture.");
             return;
         }
 
@@ -192,7 +192,7 @@ namespace te
                 desc.SrcVolume.Top >= srcHeight || desc.SrcVolume.Bottom > srcHeight ||
                 desc.SrcVolume.Front >= srcDepth || desc.SrcVolume.Back > srcDepth)
             {
-                TE_DEBUG("Source volume falls outside the source texture.", __FILE__, __LINE__);
+                TE_DEBUG("Source volume falls outside the source texture.");
                 return;
             }
 
@@ -209,7 +209,7 @@ namespace te
 
         if (dstRight > dstWidth || dstBottom > dstHeight || dstBack > dstDepth)
         {
-            TE_DEBUG("Destination volume falls outside the destination texture.", __FILE__, __LINE__);
+            TE_DEBUG("Destination volume falls outside the destination texture.");
             return;
         }
 
@@ -220,13 +220,13 @@ namespace te
     {
         if (face >= _properties.GetNumFaces())
         {
-            TE_DEBUG("Invalid face index.", __FILE__, __LINE__);
+            TE_DEBUG("Invalid face index.");
             return;
         }
 
         if (mipLevel > _properties.GetNumMipmaps())
         {
-            TE_DEBUG("Mip level out of range. Valid range is [0, " + ToString(_properties.GetNumMipmaps()) + "].", __FILE__, __LINE__);
+            TE_DEBUG("Mip level out of range. Valid range is [0, " + ToString(_properties.GetNumMipmaps()) + "].");
             return;
         }
 
@@ -252,7 +252,7 @@ namespace te
         if (pixelData.GetWidth() != mipWidth || pixelData.GetHeight() != mipHeight ||
             pixelData.GetDepth() != mipDepth || pixelData.GetFormat() != _properties.GetFormat())
         {
-            TE_DEBUG("Provided buffer is not of valid dimensions or format in order to read from this texture.", __FILE__, __LINE__);
+            TE_DEBUG("Provided buffer is not of valid dimensions or format in order to read from this texture.");
             return;
         }
 
@@ -263,7 +263,7 @@ namespace te
     {
         if ((_properties.GetUsage() & TU_CPUCACHED) == 0)
         {
-            TE_DEBUG("Attempting to read CPU data from a texture that is created without CPU caching.", __FILE__, __LINE__);
+            TE_DEBUG("Attempting to read CPU data from a texture that is created without CPU caching.");
             return;
         }
 
@@ -274,20 +274,20 @@ namespace te
         if (dest.GetWidth() != mipWidth || dest.GetHeight() != mipHeight ||
             dest.GetDepth() != mipDepth || dest.GetFormat() != _properties.GetFormat())
         {
-            TE_DEBUG("Provided buffer is not of valid dimensions or format in order to read from this texture.", __FILE__, __LINE__);
+            TE_DEBUG("Provided buffer is not of valid dimensions or format in order to read from this texture.");
             return;
         }
 
         UINT32 subresourceIdx = _properties.MapToSubresourceIdx(face, mipLevel);
         if (subresourceIdx >= (UINT32)_CPUSubresourceData.size())
         {
-            TE_DEBUG("Invalid subresource index: " + ToString(subresourceIdx) + ". Supported range: 0 .. " + ToString(_CPUSubresourceData.size() - 1), __FILE__, __LINE__);
+            TE_DEBUG("Invalid subresource index: " + ToString(subresourceIdx) + ". Supported range: 0 .. " + ToString(_CPUSubresourceData.size() - 1));
             return;
         }
 
         if (_CPUSubresourceData[subresourceIdx]->GetSize() != dest.GetSize())
         {
-            TE_ASSERT_ERROR(false, "Buffer sizes don't match.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Buffer sizes don't match.");
         }
 
         UINT8* srcPtr = _CPUSubresourceData[subresourceIdx]->GetData();
@@ -306,7 +306,7 @@ namespace te
             if ((_properties.GetUsage() & TU_DYNAMIC) == 0)
             {
                 // Buffer discard is enabled but buffer was not created as dynamic. Disabling discard.
-                TE_DEBUG("Buffer discard is enabled but buffer was not created as dynamic. Disabling discard.", __FILE__, __LINE__);
+                TE_DEBUG("Buffer discard is enabled but buffer was not created as dynamic. Disabling discard.");
                 discardWholeBuffer = false;
             }
         }
@@ -405,7 +405,7 @@ namespace te
 
         if (subresourceIdx >= (UINT32)_CPUSubresourceData.size())
         {
-            TE_DEBUG("Invalid subresource index: " + ToString(subresourceIdx) + ". Supported range: 0 .. " + ToString(_CPUSubresourceData.size() - 1), __FILE__, __LINE__);
+            TE_DEBUG("Invalid subresource index: " + ToString(subresourceIdx) + ". Supported range: 0 .. " + ToString(_CPUSubresourceData.size() - 1));
             return;
         }
 
@@ -420,13 +420,13 @@ namespace te
         if (pixelData.GetWidth() != mipWidth || pixelData.GetHeight() != mipHeight ||
             pixelData.GetDepth() != mipDepth || pixelData.GetFormat() != _properties.GetFormat())
         {
-            TE_DEBUG("Provided buffer is not of valid dimensions or format in order to update this texture.", __FILE__, __LINE__);
+            TE_DEBUG("Provided buffer is not of valid dimensions or format in order to update this texture.");
             return;
         }
 
         if (_CPUSubresourceData[subresourceIdx]->GetSize() != pixelData.GetSize())
         {
-            TE_ASSERT_ERROR(false, "Buffer sizes don't match.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Buffer sizes don't match.");
         }
 
         UINT8* dest = _CPUSubresourceData[subresourceIdx]->GetData();

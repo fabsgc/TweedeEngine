@@ -26,7 +26,7 @@ namespace te
         if (FAILED(hr))
         {
             SAFE_RELEASE(output);
-            TE_ASSERT_ERROR(false, "Error while enumerating adapter output video modes.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Error while enumerating adapter output video modes.");
         }
 
         DXGI_MODE_DESC* modeDesc = te_newN<DXGI_MODE_DESC>(numModes);
@@ -37,7 +37,7 @@ namespace te
             te_deleteN(modeDesc, numModes);
 
             SAFE_RELEASE(output);
-            TE_ASSERT_ERROR(false, "Error while enumerating adapter output video modes.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Error while enumerating adapter output video modes.");
         }
 
         for (UINT32 i = 0; i < numModes; i++)

@@ -41,7 +41,7 @@ namespace te
         if(FAILED(hr) || device.HasError())
         {
             String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Cannot create blend state. Error Description:" + errorDescription, __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Cannot create blend state. Error Description:" + errorDescription);
         }
 
         BlendState::CreateInternal();

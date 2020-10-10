@@ -112,7 +112,7 @@ namespace te
         const UINT32 elemSize = type == GBT_STANDARD ? te::GpuBuffer::GetFormatSize(format) : elementSize;
         if ((_buffer->GetSize() % elemSize) != 0)
         {
-            TE_DEBUG("Size of the buffer isn't divisible by individual element size provided for the buffer view.", __FILE__, __LINE__);
+            TE_DEBUG("Size of the buffer isn't divisible by individual element size provided for the buffer view.");
             return nullptr;
         }
 

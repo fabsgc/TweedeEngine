@@ -87,7 +87,7 @@ namespace te
                 SPtr<Texture> texture = _desc.ColorSurfaces[i].Tex;
 
                 if ((texture->GetProperties().GetUsage() & TU_RENDERTARGET) == 0)
-                    TE_ASSERT_ERROR(false, "Provided texture is not created with render target usage.", __FILE__, __LINE__);
+                    TE_ASSERT_ERROR(false, "Provided texture is not created with render target usage.");
 
                 _colorSurfaces[i] = texture->RequestView(_desc.ColorSurfaces[i].MipLevel, 1,
                     _desc.ColorSurfaces[i].Face, _desc.ColorSurfaces[i].NumFaces, GVU_RENDERTARGET);
@@ -100,7 +100,7 @@ namespace te
 
             if ((texture->GetProperties().GetUsage() & TU_DEPTHSTENCIL) == 0)
             {
-                TE_ASSERT_ERROR(false, "Provided texture is not created with depth stencil usage.", __FILE__, __LINE__);
+                TE_ASSERT_ERROR(false, "Provided texture is not created with depth stencil usage.");
             }
 
             _depthStencilSurface = texture->RequestView(_desc.DepthStencilSurface.MipLevel, 1,
@@ -151,7 +151,7 @@ namespace te
                 errorInfo += "\nNum. slices: " + ToString(curNumSlices) + "/" + ToString(firstNumSlices);
                 errorInfo += "\nMultisample Count: " + ToString(curMsCount) + "/" + ToString(firstMsCount);
 
-                TE_ASSERT_ERROR(false, "Provided color textures don't match!" + errorInfo, __FILE__, __LINE__);
+                TE_ASSERT_ERROR(false, "Provided color textures don't match!" + errorInfo);
             }
         }
 
@@ -169,13 +169,13 @@ namespace te
             if ((firstSurfaceView->GetFirstArraySlice() + firstSurfaceView->GetNumArraySlices()) > numSlices)
             {
                 TE_ASSERT_ERROR(false, "Provided number of faces is out of range. Face: " +
-                    ToString(firstSurfaceView->GetFirstArraySlice() + firstSurfaceView->GetNumArraySlices()) + ". Max num faces: " + ToString(numSlices), __FILE__, __LINE__);
+                    ToString(firstSurfaceView->GetFirstArraySlice() + firstSurfaceView->GetNumArraySlices()) + ". Max num faces: " + ToString(numSlices));
             }
 
             if (firstSurfaceView->GetMostDetailedMip() > firstTexProps.GetNumMipmaps())
             {
                 TE_ASSERT_ERROR(false, "Provided number of mip maps is out of range. Mip level: " +
-                    ToString(firstSurfaceView->GetMostDetailedMip()) + ". Max num mipmaps: " + ToString(firstTexProps.GetNumMipmaps()), __FILE__, __LINE__);
+                    ToString(firstSurfaceView->GetMostDetailedMip()) + ". Max num mipmaps: " + ToString(firstTexProps.GetNumMipmaps()));
             }
 
             if (_depthStencilSurface == nullptr)
@@ -199,7 +199,7 @@ namespace te
                 errorInfo += "\nHeight: " + ToString(depthTexProps.GetHeight()) + "/" + ToString(firstTexProps.GetHeight());
                 errorInfo += "\nMultisample Count: " + ToString(depthMsCount) + "/" + ToString(colorMsCount);
 
-                TE_ASSERT_ERROR(false, "Provided texture and depth stencil buffer don't match!" + errorInfo, __FILE__, __LINE__);
+                TE_ASSERT_ERROR(false, "Provided texture and depth stencil buffer don't match!" + errorInfo);
             }
         }
     }

@@ -19,7 +19,7 @@ namespace te
 
         if (FAILED(hr))
         {
-            TE_ASSERT_ERROR(false, "Unable to disassemble shader.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Unable to disassemble shader.");
         }
 
         ID3D11ShaderReflection* shaderReflection;
@@ -28,7 +28,7 @@ namespace te
 
         if (FAILED(hr))
         {
-            TE_ASSERT_ERROR(false, "Cannot reflect D3D11 high-level shader.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Cannot reflect D3D11 high-level shader.");
         }
 
         D3D11_SHADER_DESC shaderDesc;
@@ -36,7 +36,7 @@ namespace te
 
         if (FAILED(hr))
         {
-            TE_ASSERT_ERROR(false, "Cannot reflect D3D11 high-level shader.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Cannot reflect D3D11 high-level shader.");
         }
 
         if (inputParams != nullptr)
@@ -48,7 +48,7 @@ namespace te
 
                 if (FAILED(hr))
                 {
-                    TE_ASSERT_ERROR(false, "Cannot get input param desc with index: " + ToString(i), __FILE__, __LINE__);
+                    TE_ASSERT_ERROR(false, "Cannot get input param desc with index: " + ToString(i));
                 }
 
                 // We don't care about system value semantics
@@ -69,7 +69,7 @@ namespace te
 
             if (FAILED(hr))
             {
-                TE_ASSERT_ERROR(false, "Cannot get resource binding desc with index: " + ToString(i), __FILE__, __LINE__);
+                TE_ASSERT_ERROR(false, "Cannot get resource binding desc with index: " + ToString(i));
             }
 
             ParseResource(bindingDesc, type, desc);
@@ -162,7 +162,7 @@ namespace te
                         isTexture = false;
                         break;
                     default:
-                        TE_DEBUG("Skipping texture because it has unsupported dimension: " + ToString(resourceDesc.Dimension), __FILE__, __LINE__);
+                        TE_DEBUG("Skipping texture because it has unsupported dimension: " + ToString(resourceDesc.Dimension));
                     }
 
                     if (memberDesc.Type != GPOT_UNKNOWN)
@@ -231,7 +231,7 @@ namespace te
                         desc.Buffers.insert(std::make_pair(memberDesc.Name, memberDesc));
                         break;
                     default:
-                        TE_DEBUG("Skipping typed UAV because it has unsupported dimension: {" + ToString(resourceDesc.Dimension) + "}", __FILE__, __LINE__);
+                        TE_DEBUG("Skipping typed UAV because it has unsupported dimension: {" + ToString(resourceDesc.Dimension) + "}");
                     }
 
                     break;
@@ -267,7 +267,7 @@ namespace te
                     desc.Buffers.insert(std::make_pair(memberDesc.Name, memberDesc));
                     break;
                 default:
-                    TE_DEBUG("Skipping resource because it has unsupported type: " + ToString(resourceDesc.Type), __FILE__, __LINE__);
+                    TE_DEBUG("Skipping resource because it has unsupported type: " + ToString(resourceDesc.Type));
                 }
             }
         }
@@ -280,7 +280,7 @@ namespace te
         HRESULT hr = bufferReflection->GetDesc(&constantBufferDesc);
         if (FAILED(hr))
         {
-            TE_ASSERT_ERROR(false, "Failed to retrieve HLSL constant buffer description.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Failed to retrieve HLSL constant buffer description.");
         }
 
         if (constantBufferDesc.Type != D3D_CT_CBUFFER && constantBufferDesc.Type != D3D_CT_TBUFFER)
@@ -299,7 +299,7 @@ namespace te
 
             if (FAILED(hr))
             {
-                TE_ASSERT_ERROR(false, "Failed to retrieve HLSL constant buffer variable description.", __FILE__, __LINE__);
+                TE_ASSERT_ERROR(false, "Failed to retrieve HLSL constant buffer variable description.");
             }
 
             ID3D11ShaderReflectionType* varRefType = varRef->GetType();
@@ -358,7 +358,7 @@ namespace te
                 memberDesc.Type = GPDT_FLOAT1;
                 break;
             default:
-                TE_DEBUG("Skipping variable because it has unsupported type " + ToString(varTypeDesc.Type), __FILE__, __LINE__);
+                TE_DEBUG("Skipping variable because it has unsupported type " + ToString(varTypeDesc.Type));
             }
         }
         break;
@@ -462,7 +462,7 @@ namespace te
             memberDesc.Type = GPDT_STRUCT;
             break;
         default:
-            TE_DEBUG("Skipping variable because it has unsupported class: " + ToString(varTypeDesc.Class), __FILE__, __LINE__);
+            TE_DEBUG("Skipping variable because it has unsupported class: " + ToString(varTypeDesc.Class));
         }
 
         desc.Params.insert(std::make_pair(memberDesc.Name, memberDesc));

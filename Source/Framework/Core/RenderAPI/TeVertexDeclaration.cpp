@@ -113,7 +113,7 @@ namespace te
             break;
         }
 
-        TE_ASSERT_ERROR(false, "Invalid type", __FILE__, __LINE__);
+        TE_ASSERT_ERROR(false, "Invalid type");
         return 0;
     }
 

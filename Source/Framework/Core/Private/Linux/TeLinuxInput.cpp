@@ -44,7 +44,7 @@ namespace te
 
                     if (ioctl(fileHandle, EVIOCGBIT(i, sizeof(absAxisBits)), absAxisBits) == -1)
                     {
-                        TE_DEBUG("Could not read device absolute axis features.", __FILE__, __LINE__);
+                        TE_DEBUG("Could not read device absolute axis features.");
                         continue;
                     }
 
@@ -70,7 +70,7 @@ namespace te
 
                     if (ioctl(fileHandle, EVIOCGBIT(i, sizeof(relAxisBits)), relAxisBits) == -1)
                     {
-                        TE_DEBUG("Could not read device relative axis features.", __FILE__, __LINE__);
+                        TE_DEBUG("Could not read device relative axis features.");
                         continue;
                     }
 
@@ -89,7 +89,7 @@ namespace te
 
                     if (ioctl(fileHandle, EVIOCGBIT(i, sizeof(keyBits)), keyBits) == -1)
                     {
-                        TE_DEBUG("Could not read device key features.", __FILE__, __LINE__);
+                        TE_DEBUG("Could not read device key features.");
                         continue;
                     }
 
@@ -213,7 +213,7 @@ namespace te
             if (ioctl(fileHandle, EVIOCGNAME(sizeof(name)), name) != -1)
                 info.Name = String(name);
             else
-                TE_DEBUG("Could not read device name.", __FILE__, __LINE__);
+                TE_DEBUG("Could not read device name.");
 
             // Get axis ranges
             UINT32 unknownAxisIdx = 0;
@@ -226,7 +226,7 @@ namespace te
                 input_absinfo absinfo;
                 if (ioctl(fileHandle, EVIOCGABS(entry), &absinfo) == -1)
                 {
-                    TE_DEBUG("Could not read absolute axis device features.", __FILE__, __LINE__);
+                    TE_DEBUG("Could not read absolute axis device features.");
                     continue;
                 }
 
@@ -269,7 +269,7 @@ namespace te
             }
             else
             {
-                TE_DEBUG("Can't parse GamePadInfo", __FILE__, __LINE__);
+                TE_DEBUG("Can't parse GamePadInfo");
             }
             
             close(file);

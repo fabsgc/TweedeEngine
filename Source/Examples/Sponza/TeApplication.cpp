@@ -603,9 +603,6 @@ namespace te
         _sponzaMesh = gResourceManager().Load<Mesh>("Data/Meshes/Sponza/sponza.obj", meshImportOptions);
         _lightMesh = gResourceManager().Load<Mesh>("Data/Meshes/Sphere/sphere.obj", meshImportOptions);
         _monkeyMesh = gResourceManager().Load<Mesh>("Data/Meshes/Monkey/monkey-hd.obj", meshImportOptions);
-
-        TE_PRINT((_sponzaMesh.GetHandleData())->data);
-        TE_PRINT((_sponzaMesh.GetHandleData())->uuid.ToString());
 #endif
     }
 

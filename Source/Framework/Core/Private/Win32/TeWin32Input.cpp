@@ -159,7 +159,7 @@ namespace te
 
         HRESULT hr = DirectInput8Create(hInst, DIRECTINPUT_VERSION, IID_IDirectInput8, (VOID**)&_platformData->DirectInput, nullptr);
         if (FAILED(hr))
-            TE_ASSERT_ERROR(false, "Unable to initialize DirectInput.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Unable to initialize DirectInput.");
 
         _platformData->KbSettings = DISCL_FOREGROUND | DISCL_NONEXCLUSIVE;
         _platformData->MouseSettings = DISCL_FOREGROUND | DISCL_NONEXCLUSIVE;

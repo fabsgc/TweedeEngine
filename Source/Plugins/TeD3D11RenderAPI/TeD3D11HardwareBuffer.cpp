@@ -19,13 +19,13 @@ namespace te
         {
             if (isLoadStore)
             {
-                TE_DEBUG("LoadStore usage and useSystemMem cannot be used together.", __FILE__, __LINE__);
+                TE_DEBUG("LoadStore usage and useSystemMem cannot be used together.");
                 isLoadStore = false;
             }
 
             if (streamOut)
             {
-                TE_DEBUG("useSystemMem and streamOut cannot be used together.", __FILE__, __LINE__);
+                TE_DEBUG("useSystemMem and streamOut cannot be used together.");
                 streamOut = false;
             }
         }
@@ -34,13 +34,13 @@ namespace te
         {
             if (btype == BT_CONSTANT)
             {
-                TE_DEBUG("Constant buffers cannot be bound with LoadStore usage.", __FILE__, __LINE__);
+                TE_DEBUG("Constant buffers cannot be bound with LoadStore usage.");
                 isLoadStore = false;
             }
 
             if (D3D11Mappings::IsDynamic(usage))
             {
-                TE_DEBUG("Dynamic usage not supported with LoadStore usage.", __FILE__, __LINE__);
+                TE_DEBUG("Dynamic usage not supported with LoadStore usage.");
                 usage = (GpuBufferUsage)(usage & ~GBU_DYNAMIC);
             }
         }
@@ -49,7 +49,7 @@ namespace te
         {
             if (btype == BT_CONSTANT)
             {
-                TE_DEBUG("Constant buffers cannot be used with streamOut.", __FILE__, __LINE__);
+                TE_DEBUG("Constant buffers cannot be used with streamOut.");
                 streamOut = false;
             }
         }
@@ -110,7 +110,7 @@ namespace te
         if (FAILED(hr) || _device.HasError())
         {
             String msg = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Cannot create D3D11 buffer: " + msg, __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Cannot create D3D11 buffer: " + msg);
         }
     }
 
@@ -127,7 +127,7 @@ namespace te
     void* D3D11HardwareBuffer::Map(UINT32 offset, UINT32 length, GpuLockOptions options, UINT32 deviceIdx, UINT32 queueIdx)
     {
         if (length > _size)
-            TE_ASSERT_ERROR(false, "Provided length " + ToString(length) + " larger than the buffer " + ToString(_size) + ".", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Provided length " + ToString(length) + " larger than the buffer " + ToString(_size) + ".");
 
         // Use direct (and faster) Map/Unmap if dynamic write, or a staging read/write
         if ((_desc.Usage == D3D11_USAGE_DYNAMIC && options != GBL_READ_ONLY) || _desc.Usage == D3D11_USAGE_STAGING)
@@ -190,12 +190,12 @@ namespace te
 
             if (D3D11Mappings::IsMappingRead(mapType) && (_desc.CPUAccessFlags & D3D11_CPU_ACCESS_READ) == 0)
             {
-                TE_ASSERT_ERROR(false, "Trying to read a buffer, but buffer wasn't created with a read access flag.", __FILE__, __LINE__);
+                TE_ASSERT_ERROR(false, "Trying to read a buffer, but buffer wasn't created with a read access flag.");
             }
 
             if (D3D11Mappings::IsMappingWrite(mapType) && (_desc.CPUAccessFlags & D3D11_CPU_ACCESS_WRITE) == 0)
             {
-                TE_DEBUG("Trying to write to a buffer, but buffer wasn't created with a write access flag.", __FILE__, __LINE__);
+                TE_DEBUG("Trying to write to a buffer, but buffer wasn't created with a write access flag.");
             }
 
             D3D11_MAPPED_SUBRESOURCE mappedSubResource;
@@ -206,7 +206,7 @@ namespace te
             if (FAILED(hr) || _device.HasError())
             {
                 String msg = _device.GetErrorDescription();
-                TE_ASSERT_ERROR(false, "Error calling Map: " + msg, __FILE__, __LINE__);
+                TE_ASSERT_ERROR(false, "Error calling Map: " + msg);
             }
 
             return static_cast<void*>(static_cast<char*>(mappedSubResource.pData) + offset);
@@ -269,7 +269,7 @@ namespace te
             if (_device.HasError())
             {
                 String errorDescription = _device.GetErrorDescription();
-                TE_ASSERT_ERROR(false, "Cannot copy D3D11 resource\nError Description:" + errorDescription, __FILE__, __LINE__);
+                TE_ASSERT_ERROR(false, "Cannot copy D3D11 resource\nError Description:" + errorDescription);
             }
         }
         else
@@ -288,7 +288,7 @@ namespace te
             if (_device.HasError())
             {
                 String errorDescription = _device.GetErrorDescription();
-                TE_ASSERT_ERROR(false, "Cannot copy D3D11 subresource region\nError Description:" + errorDescription, __FILE__, __LINE__);
+                TE_ASSERT_ERROR(false, "Cannot copy D3D11 subresource region\nError Description:" + errorDescription);
             }
         }
     }
@@ -338,7 +338,7 @@ namespace te
         }
         else
         {
-            TE_DEBUG("Trying to write into a buffer with unsupported usage: " + ToString(_desc.Usage), __FILE__, __LINE__);
+            TE_DEBUG("Trying to write into a buffer with unsupported usage: " + ToString(_desc.Usage));
         }
     }
 }

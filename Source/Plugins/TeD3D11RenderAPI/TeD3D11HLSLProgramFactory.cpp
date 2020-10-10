@@ -201,7 +201,7 @@ namespace te
 
             SAFE_RELEASE(messages);
 
-            TE_ASSERT_ERROR(false, "Can't compile shader file : " + compileMessage, __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Can't compile shader file : " + compileMessage);
         }
 
         SPtr<GpuProgramBytecode> bytecode = te_shared_ptr_new<GpuProgramBytecode>();

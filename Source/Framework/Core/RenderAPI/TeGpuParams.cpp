@@ -260,7 +260,7 @@ namespace te
         UINT32 globalSlot = _paramInfo->GetSequentialSlot(GpuPipelineParamInfo::ParamType::ParamBlock, set, slot);
         if (globalSlot == (UINT32)-1)
         {
-            TE_DEBUG("GpuParamBlockBuffer not found in set {" + ToString(set) + "} and slot {" + ToString(slot) + "}", __FILE__, __LINE__);
+            TE_DEBUG("GpuParamBlockBuffer not found in set {" + ToString(set) + "} and slot {" + ToString(slot) + "}");
             return nullptr;
         }
 
@@ -272,7 +272,7 @@ namespace te
         UINT32 globalSlot = _paramInfo->GetSequentialSlot(GpuPipelineParamInfo::ParamType::Texture, set, slot);
         if (globalSlot == (UINT32)-1)
         {
-            TE_DEBUG("Texture not found in set {" + ToString(set) + "} and slot {" + ToString(slot) + "}", __FILE__, __LINE__);
+            TE_DEBUG("Texture not found in set {" + ToString(set) + "} and slot {" + ToString(slot) + "}");
             return nullptr;
         }
 
@@ -284,7 +284,7 @@ namespace te
         UINT32 globalSlot = _paramInfo->GetSequentialSlot(GpuPipelineParamInfo::ParamType::LoadStoreTexture, set, slot);
         if (globalSlot == (UINT32)-1)
         {
-            TE_DEBUG("Load Store Texture not found in set {" + ToString(set) + "} and slot {" + ToString(slot) + "}", __FILE__, __LINE__);
+            TE_DEBUG("Load Store Texture not found in set {" + ToString(set) + "} and slot {" + ToString(slot) + "}");
             return nullptr;
         }
 
@@ -296,7 +296,7 @@ namespace te
         UINT32 globalSlot = _paramInfo->GetSequentialSlot(GpuPipelineParamInfo::ParamType::Buffer, set, slot);
         if (globalSlot == (UINT32)-1)
         {
-            TE_DEBUG("GpuBuffer not found in set {" + ToString(set) + "} and slot {" + ToString(slot) + "}", __FILE__, __LINE__);
+            TE_DEBUG("GpuBuffer not found in set {" + ToString(set) + "} and slot {" + ToString(slot) + "}");
             return nullptr;
         }
 
@@ -308,7 +308,7 @@ namespace te
         UINT32 globalSlot = _paramInfo->GetSequentialSlot(GpuPipelineParamInfo::ParamType::SamplerState, set, slot);
         if (globalSlot == (UINT32)-1)
         {
-            TE_DEBUG("SamplerState not found in set {" + ToString(set) + "} and slot {" + ToString(slot) + "}", __FILE__, __LINE__);
+            TE_DEBUG("SamplerState not found in set {" + ToString(set) + "} and slot {" + ToString(slot) + "}");
             return nullptr;
         }
 
@@ -322,7 +322,7 @@ namespace te
         UINT32 globalSlot = _paramInfo->GetSequentialSlot(GpuPipelineParamInfo::ParamType::Texture, set, slot);
         if (globalSlot == (UINT32)-1)
         {
-            TE_DEBUG("Texture surface not found in set {" + ToString(set) + "} and slot {" + ToString(slot) + "}", __FILE__, __LINE__);
+            TE_DEBUG("Texture surface not found in set {" + ToString(set) + "} and slot {" + ToString(slot) + "}");
             return emptySurface;
         }
 
@@ -360,13 +360,13 @@ namespace te
         if (sizeBytes > elementSizeBytes)
         {
             TE_DEBUG("Provided element size larger than maximum element size. Maximum size: {" + ToString(elementSizeBytes) + "}."
-                " Supplied size: {" + ToString(sizeBytes) + "}", __FILE__, __LINE__);
+                " Supplied size: {" + ToString(sizeBytes) + "}");
         }
 
         if (arrayIdx >= desc->ArraySize)
         {
             TE_ASSERT_ERROR(false, "Array index out of range. Array size: " +
-                ToString(desc->ArraySize) + ". Requested size: " + ToString(arrayIdx), __FILE__, __LINE__);
+                ToString(desc->ArraySize) + ". Requested size: " + ToString(arrayIdx));
         }
 #endif
 
@@ -407,7 +407,7 @@ namespace te
         UINT32 globalSlot = _paramInfo->GetSequentialSlot(GpuPipelineParamInfo::ParamType::ParamBlock, set, slot);
         if (globalSlot == (UINT32)-1)
         {
-            TE_DEBUG("ParamBlockBuffer can't be set in set {" + ToString(set) + "} and slot {" + ToString(slot) + "}", __FILE__, __LINE__);
+            TE_DEBUG("ParamBlockBuffer can't be set in set {" + ToString(set) + "} and slot {" + ToString(slot) + "}");
             return;
         }
 
@@ -420,14 +420,14 @@ namespace te
         const SPtr<GpuParamDesc>& paramDescs = _paramInfo->GetParamDesc(type);
         if (paramDescs == nullptr)
         {
-            TE_DEBUG("Cannot find parameter block with the name: {" + name + "}", __FILE__, __LINE__);
+            TE_DEBUG("Cannot find parameter block with the name: {" + name + "}");
             return;
         }
 
         auto iterFind = paramDescs->ParamBlocks.find(name);
         if (iterFind == paramDescs->ParamBlocks.end())
         {
-            TE_DEBUG("Cannot find parameter block with the name: {" + name + "}", __FILE__, __LINE__);
+            TE_DEBUG("Cannot find parameter block with the name: {" + name + "}");
             return;
         }
 
@@ -459,14 +459,14 @@ namespace te
         const SPtr<GpuParamDesc>& paramDescs = _paramInfo->GetParamDesc(type);
         if (paramDescs == nullptr)
         {
-            TE_DEBUG("Cannot find parameter block with the name: {" + name + "}", __FILE__, __LINE__);
+            TE_DEBUG("Cannot find parameter block with the name: {" + name + "}");
             return;
         }
 
         auto iterFind = paramDescs->Textures.find(name);
         if (iterFind == paramDescs->Textures.end())
         {
-            TE_DEBUG("Cannot find texture with the name: {" + name + "}", __FILE__, __LINE__);
+            TE_DEBUG("Cannot find texture with the name: {" + name + "}");
             return;
         }
 
@@ -511,14 +511,14 @@ namespace te
         const SPtr<GpuParamDesc>& paramDescs = _paramInfo->GetParamDesc(type);
         if (paramDescs == nullptr)
         {
-            TE_DEBUG("Cannot find parameter block with the name: {" + name + "}", __FILE__, __LINE__);
+            TE_DEBUG("Cannot find parameter block with the name: {" + name + "}");
             return;
         }
 
         auto iterFind = paramDescs->LoadStoreTextures.find(name);
         if (iterFind == paramDescs->LoadStoreTextures.end())
         {
-            TE_DEBUG("Cannot find texture with the name: {" + name + "}", __FILE__, __LINE__);
+            TE_DEBUG("Cannot find texture with the name: {" + name + "}");
             return;
         }
 
@@ -563,14 +563,14 @@ namespace te
         const SPtr<GpuParamDesc>& paramDescs = _paramInfo->GetParamDesc(type);
         if (paramDescs == nullptr)
         {
-            TE_DEBUG("Cannot find parameter block with the name: {" + name + "}", __FILE__, __LINE__);
+            TE_DEBUG("Cannot find parameter block with the name: {" + name + "}");
             return;
         }
 
         auto iterFind = paramDescs->Buffers.find(name);
         if (iterFind == paramDescs->Buffers.end())
         {
-            TE_DEBUG("Cannot find gpu buffer with the name: {" + name + "}", __FILE__, __LINE__);
+            TE_DEBUG("Cannot find gpu buffer with the name: {" + name + "}");
             return;
         }
 
@@ -602,7 +602,7 @@ namespace te
         UINT32 globalSlot = _paramInfo->GetSequentialSlot(GpuPipelineParamInfo::ParamType::Buffer, set, slot);
         if (globalSlot == (UINT32)-1)
         {
-            TE_DEBUG("GpuBuffer can't be set in set {" + ToString(set) + "} and slot {" + ToString(slot) + "}", __FILE__, __LINE__);
+            TE_DEBUG("GpuBuffer can't be set in set {" + ToString(set) + "} and slot {" + ToString(slot) + "}");
             return;
         }
 
@@ -615,14 +615,14 @@ namespace te
         const SPtr<GpuParamDesc>& paramDescs = _paramInfo->GetParamDesc(type);
         if (paramDescs == nullptr)
         {
-            TE_DEBUG("Cannot find parameter block with the name: {" + name + "}", __FILE__, __LINE__);
+            TE_DEBUG("Cannot find parameter block with the name: {" + name + "}");
             return;
         }
 
         auto iterFind = paramDescs->Samplers.find(name);
         if (iterFind == paramDescs->Samplers.end())
         {
-            TE_DEBUG("Cannot find sampler state with the name: {" + name + "}", __FILE__, __LINE__);
+            TE_DEBUG("Cannot find sampler state with the name: {" + name + "}");
             return;
         }
 
@@ -654,7 +654,7 @@ namespace te
         UINT32 globalSlot = _paramInfo->GetSequentialSlot(GpuPipelineParamInfo::ParamType::SamplerState, set, slot);
         if (globalSlot == (UINT32)-1)
         {
-            TE_DEBUG("SamplerState can't be set in set {" + ToString(set) + "} and slot {" + ToString(slot) + "}", __FILE__, __LINE__);
+            TE_DEBUG("SamplerState can't be set in set {" + ToString(set) + "} and slot {" + ToString(slot) + "}");
             return;
         }
 

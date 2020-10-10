@@ -39,7 +39,7 @@ namespace te
             Create3DTex();
             break;
         default:
-            TE_ASSERT_ERROR(false, "Unknown texture type", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Unknown texture type");
         }
 
         Texture::Initialize();
@@ -54,7 +54,7 @@ namespace te
     {
         if (_properties.GetNumSamples() > 1)
         {
-            TE_ASSERT_ERROR(false, "Multisampled textures cannot be accessed from the CPU directly.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Multisampled textures cannot be accessed from the CPU directly.");
         }
 
         UINT32 mipWidth = std::max(1u, _properties.GetWidth() >> mipLevel);
@@ -80,7 +80,7 @@ namespace te
             {
                 if (flags == D3D11_MAP_WRITE)
                 {
-                    TE_DEBUG("Dynamic textures only support discard or no-overwrite writes. Falling back to no-overwrite.", __FILE__, __LINE__);
+                    TE_DEBUG("Dynamic textures only support discard or no-overwrite writes. Falling back to no-overwrite.");
                     flags = D3D11_MAP_WRITE_DISCARD;
                 }
 
@@ -185,7 +185,7 @@ namespace te
             if (device.HasError())
             {
                 String errorDescription = device.GetErrorDescription();
-                TE_ASSERT_ERROR(false, "D3D11 device cannot copy subresource\nError Description:" + errorDescription, __FILE__, __LINE__);
+                TE_ASSERT_ERROR(false, "D3D11 device cannot copy subresource\nError Description:" + errorDescription);
             }
         }
     }
@@ -194,7 +194,7 @@ namespace te
     {
         if (_properties.GetNumSamples() > 1)
         {
-            TE_DEBUG("Multisampled textures cannot be accessed from the CPU directly.", __FILE__, __LINE__);
+            TE_DEBUG("Multisampled textures cannot be accessed from the CPU directly.");
             return;
         }
 
@@ -209,7 +209,7 @@ namespace te
 
         if (_properties.GetNumSamples() > 1)
         {
-            TE_DEBUG("Multisampled textures cannot be accessed from the CPU directly.", __FILE__, __LINE__);
+            TE_DEBUG("Multisampled textures cannot be accessed from the CPU directly.");
             return;
         }
 
@@ -218,7 +218,7 @@ namespace te
 
         if (face > 0 && _properties.GetTextureType() == TEX_TYPE_3D)
         {
-            TE_DEBUG("3D texture arrays are not supported.", __FILE__, __LINE__);
+            TE_DEBUG("3D texture arrays are not supported.");
             return;
         }
 
@@ -244,14 +244,14 @@ namespace te
             if (device.HasError())
             {
                 String errorDescription = device.GetErrorDescription();
-                TE_ASSERT_ERROR(false, "D3D11 device cannot map texture\nError Description:" + errorDescription, __FILE__, __LINE__);
+                TE_ASSERT_ERROR(false, "D3D11 device cannot map texture\nError Description:" + errorDescription);
             }
 
             _deviceMutex.unlock();
         }
         else
         {
-            TE_ASSERT_ERROR(false, "Trying to write into a buffer with unsupported usage: " + ToString(_properties.GetUsage()), __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Trying to write into a buffer with unsupported usage: " + ToString(_properties.GetUsage()));
         }
     }
 
@@ -273,7 +273,7 @@ namespace te
         DXGI_FORMAT d3dPF = D3D11Mappings::GetPF(closestFormat, hwGamma);
 
         if (format != closestFormat)
-            TE_DEBUG("Provided pixel format is not supported by the driver", __FILE__, __LINE__);
+            TE_DEBUG("Provided pixel format is not supported by the driver");
 
         _internalFormat = closestFormat;
         _DXGIColorFormat = d3dPF;
@@ -329,7 +329,7 @@ namespace te
         if (FAILED(hr) || device.HasError())
         {
             String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Error creating texture\nError Description:" + errorDescription, __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Error creating texture\nError Description:" + errorDescription);
         }
 
         hr = _1DTex->QueryInterface(__uuidof(ID3D11Resource), (void**)&_tex);
@@ -337,13 +337,13 @@ namespace te
         if (FAILED(hr) || device.HasError())
         {
             String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Can't get base texture\nError Description:" + errorDescription, __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Can't get base texture\nError Description:" + errorDescription);
         }
 
         _1DTex->GetDesc(&desc);
 
         if (numMips != (desc.MipLevels - 1))
-            TE_ASSERT_ERROR(false, "Driver returned different number of mip maps than requested. Requested: " + ToString(numMips) + ". Got: " + ToString(desc.MipLevels - 1) + ".", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Driver returned different number of mip maps than requested. Requested: " + ToString(numMips) + ". Got: " + ToString(desc.MipLevels - 1) + ".");
 
         _DXGIFormat = desc.Format;
 
@@ -445,7 +445,7 @@ namespace te
             if (desc.SampleDesc.Count <= 1)
                 desc.BindFlags |= D3D11_BIND_UNORDERED_ACCESS;
             else
-                TE_DEBUG("Unable to create a load-store texture with multiple samples. This is not supported on DirectX 11. Ignoring load-store usage flag.", __FILE__, __LINE__);
+                TE_DEBUG("Unable to create a load-store texture with multiple samples. This is not supported on DirectX 11. Ignoring load-store usage flag.");
         }
 
         // Create the texture
@@ -457,7 +457,7 @@ namespace te
         if (FAILED(hr) || device.HasError())
         {
             String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Error creating texture\nError Description:" + errorDescription, __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Error creating texture\nError Description:" + errorDescription);
         }
 
         hr = _2DTex->QueryInterface(__uuidof(ID3D11Resource), (void**)&_tex);
@@ -465,14 +465,14 @@ namespace te
         if (FAILED(hr) || device.HasError())
         {
             String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Can't get base texture\nError Description:" + errorDescription, __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Can't get base texture\nError Description:" + errorDescription);
         }
 
         _2DTex->GetDesc(&desc);
 
         if (numMips != (desc.MipLevels - 1))
         {
-            TE_ASSERT_ERROR(false, "Driver returned different number of mip maps than requested. Requested: " + ToString(numMips) + ". Got: " + ToString(desc.MipLevels - 1) + ".", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Driver returned different number of mip maps than requested. Requested: " + ToString(numMips) + ". Got: " + ToString(desc.MipLevels - 1) + ".");
         }
 
         _DXGIFormat = desc.Format;
@@ -563,7 +563,7 @@ namespace te
         if (FAILED(hr) || device.HasError())
         {
             String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Error creating texture\nError Description:" + errorDescription, __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Error creating texture\nError Description:" + errorDescription);
         }
 
         hr = _3DTex->QueryInterface(__uuidof(ID3D11Resource), (void**)&_tex);
@@ -571,7 +571,7 @@ namespace te
         if (FAILED(hr) || device.HasError())
         {
             String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Can't get base texture\nError Description:" + errorDescription, __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Can't get base texture\nError Description:" + errorDescription);
         }
 
         // Create texture view
@@ -579,7 +579,7 @@ namespace te
 
         if (_properties.GetNumMipmaps() != (desc.MipLevels - 1))
         {
-            TE_ASSERT_ERROR(false, "Driver returned different number of mip maps than requested. Requested: " + ToString(_properties.GetNumMipmaps()) + ". Got: " + ToString(desc.MipLevels - 1) + ".", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Driver returned different number of mip maps than requested. Requested: " + ToString(_properties.GetNumMipmaps()) + ". Got: " + ToString(desc.MipLevels - 1) + ".");
         }
 
         _DXGIFormat = desc.Format;
@@ -617,7 +617,7 @@ namespace te
         if (device.HasError())
         {
             String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "D3D11 device cannot map texture\nError Description:" + errorDescription, __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "D3D11 device cannot map texture\nError Description:" + errorDescription);
         }
 
         rowPitch = pMappedResource.RowPitch;
@@ -635,7 +635,7 @@ namespace te
         if (device.HasError())
         {
             String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "D3D11 device unmap resource\nError Description:" + errorDescription, __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "D3D11 device unmap resource\nError Description:" + errorDescription);
         }
     }
 
@@ -683,7 +683,7 @@ namespace te
         if (device.HasError())
         {
             String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "D3D11 device cannot map texture\nError Description:" + errorDescription, __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "D3D11 device cannot map texture\nError Description:" + errorDescription);
         }
 
         if (_staticBuffer != nullptr)

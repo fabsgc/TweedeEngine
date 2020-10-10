@@ -309,7 +309,7 @@ namespace te
             return 32;
         case DXGI_FORMAT_UNKNOWN:
         default:
-           TE_ASSERT_ERROR(false, "Cannot determine format element size; invalid format specified.", __FILE__, __LINE__);
+           TE_ASSERT_ERROR(false, "Cannot determine format element size; invalid format specified.");
            return 8;
         }
     }
@@ -448,7 +448,7 @@ namespace te
         case DOT_TRIANGLE_STRIP:
             return D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
         case DOT_TRIANGLE_FAN:
-            TE_ASSERT_ERROR(false, "D3D11 doesn't support triangle fan primitive type.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "D3D11 doesn't support triangle fan primitive type.");
         }
 
         return D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
@@ -1042,7 +1042,7 @@ namespace te
             break;
         };
 
-        TE_ASSERT_ERROR(false, "Invalid lock option. No DX11 equivalent of: " + ToString(lockOptions), __FILE__, __LINE__);
+        TE_ASSERT_ERROR(false, "Invalid lock option. No DX11 equivalent of: " + ToString(lockOptions));
         return D3D11_MAP_WRITE;
     }
 

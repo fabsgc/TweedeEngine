@@ -139,7 +139,7 @@ namespace te
                 elementDesc.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
                 elementDesc.InstanceDataStepRate = 0;
 
-                TE_DEBUG("Element " + ToString(ToWString(elementDesc.SemanticName)) + " not found", __FILE__, __LINE__);
+                TE_DEBUG("Element " + ToString(ToWString(elementDesc.SemanticName)) + " not found");
             }
         }
 
@@ -160,7 +160,7 @@ namespace te
 
         if (FAILED(hr) || device.HasError())
         {
-            TE_ASSERT_ERROR(false, "Unable to set D3D11 vertex declaration" + device.GetErrorDescription(), __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Unable to set D3D11 vertex declaration" + device.GetErrorDescription());
         }
 
         // Create key and add to the layout map
@@ -177,8 +177,7 @@ namespace te
         {
             TE_DEBUG("Input layout buffer is full, pruning last " + ToString(NUM_ELEMENTS_TO_PRUNE) + "elements. This is probably okay " +
                 "unless you are creating a massive amount of input layouts as they will get re-created every frame. "
-                "In that case you should increase the layout buffer size. This warning won't be shown again.",
-                __FILE__, __LINE__);
+                "In that case you should increase the layout buffer size. This warning won't be shown again.");
 
             _warningShown = true;
         }

@@ -36,7 +36,7 @@ namespace te
         if ((offset + size) > _size)
         {
             TE_ASSERT_ERROR(false, "Wanted range is out of buffer bounds. Available range: 0 .. " + ToString(_size) + ". " +
-                "Wanted range: " + ToString(offset) + " .. " + ToString(offset + size) + ".", __FILE__, __LINE__);
+                "Wanted range: " + ToString(offset) + " .. " + ToString(offset + size) + ".");
         }
 #endif
 
@@ -50,7 +50,7 @@ namespace te
         if ((offset + size) > _size)
         {
             TE_ASSERT_ERROR(false, "Wanted range is out of buffer bounds. Available range: 0 .. " + ToString(_size) + ". " +
-                "Wanted range: " + ToString(offset) + " .. " + ToString(offset + size) + ".", __FILE__, __LINE__);
+                "Wanted range: " + ToString(offset) + " .. " + ToString(offset + size) + ".");
         }
 #endif
 
@@ -64,7 +64,7 @@ namespace te
         if ((offset + size) > _size)
         {
             TE_ASSERT_ERROR(false, "Wanted range is out of buffer bounds. Available range: 0 .. " + ToString(_size) + ". " +
-                "Wanted range: " + ToString(offset) + " .. " + ToString(offset + size) + ".", __FILE__, __LINE__);
+                "Wanted range: " + ToString(offset) + " .. " + ToString(offset + size) + ".");
         }
 #endif
 

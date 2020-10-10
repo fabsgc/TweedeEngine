@@ -7,12 +7,12 @@ namespace te
     {
         if(desc.VertexSize == 0)
         {
-            TE_ASSERT_ERROR(false, "Vertex buffer vertex size is not allowed to be zero.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Vertex buffer vertex size is not allowed to be zero.");
         }
 
         if(desc.NumVerts == 0)
         {
-            TE_ASSERT_ERROR(false, "Vertex buffer vertex count is not allowed to be zero.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Vertex buffer vertex count is not allowed to be zero.");
         }
     }
 
@@ -93,7 +93,7 @@ namespace te
         UINT32 elemSize = type == GBT_STANDARD ? te::GpuBuffer::GetFormatSize(format) : elementSize;
         if ((_buffer->GetSize() % elemSize) != 0)
         {
-            TE_DEBUG("Size of the buffer isn't divisible by individual element size provided for the buffer view.", __FILE__, __LINE__);
+            TE_DEBUG("Size of the buffer isn't divisible by individual element size provided for the buffer view.");
             return nullptr;
         }
 

@@ -18,7 +18,7 @@ namespace te
     {
         if (!_thisHandle.IsDestroyed())
         {
-            TE_DEBUG("Object is being deleted without being destroyed first? {" + _name + "}", __FILE__, __LINE__);
+            TE_DEBUG("Object is being deleted without being destroyed first? {" + _name + "}");
             DestroyInternal(_thisHandle, true);
         }
     }
@@ -320,7 +320,7 @@ namespace te
     {
         if (component == nullptr)
         {
-            TE_DEBUG("Trying to remove a null component", __FILE__, __LINE__);
+            TE_DEBUG("Trying to remove a null component");
             return;
         }
 
@@ -336,7 +336,7 @@ namespace te
             _components.erase(iter);
         }
         else
-            TE_DEBUG("Trying to remove a component that doesn't exist on this SceneObject.", __FILE__, __LINE__);
+            TE_DEBUG("Trying to remove a component that doesn't exist on this SceneObject.");
     }
 
     void SceneObject::DestroyComponent(Component* component, bool immediate)
@@ -429,7 +429,7 @@ namespace te
     {
         if (idx >= _children.size())
         {
-            TE_ASSERT_ERROR(false, "Child index out of range.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Child index out of range.");
         }
 
         return _children[idx];
@@ -451,7 +451,7 @@ namespace te
         if (_parentScene)
             return _parentScene;
 
-        TE_DEBUG("Attempting to access a scene of a SceneObject with no scene, returning main scene instead.", __FILE__, __LINE__);
+        TE_DEBUG("Attempting to access a scene of a SceneObject with no scene, returning main scene instead.");
         return gSceneManager().GetMainScene();
     }
 
@@ -533,7 +533,7 @@ namespace te
             _children.erase(result);
         else
         {
-            TE_ASSERT_ERROR(false, "Trying to remove a child but it's not a child of the transform.", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Trying to remove a child but it's not a child of the transform.");
         }
     }
 

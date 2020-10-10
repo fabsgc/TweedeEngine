@@ -38,7 +38,7 @@ namespace te
     {
         SPtr<Resource> importedResource = _import(inputFilePath, importOptions);
 
-        TE_DEBUG("Resource " + inputFilePath + " has been successfully loaded", __FILE__, __LINE__);
+        TE_DEBUG("Resource " + inputFilePath + " has been successfully loaded");
 
         return gResourceManager()._createResourceHandle(importedResource, uuid);
     }
@@ -60,7 +60,7 @@ namespace te
     {
         if (!importer)
         {
-            TE_ASSERT_ERROR((importer == nullptr), "Trying to register a null asset importer!", __FILE__, __LINE__);
+            TE_ASSERT_ERROR((importer == nullptr), "Trying to register a null asset importer!");
             return;
         }
 
@@ -77,7 +77,7 @@ namespace te
         ext = ext.substr(1, ext.size() - 1); // Remove the .
         if (!SupportsFileType(ext))
         {
-            TE_ASSERT_ERROR(false, "There is no importer for the provided file" + inputFilePath, __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "There is no importer for the provided file" + inputFilePath);
             return nullptr;
         }
 

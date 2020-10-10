@@ -29,7 +29,7 @@ namespace te
 
         if(_data->FileHandle == -1)
         {
-            TE_DEBUG("Failed to open input event file handle for device", __FILE__, __LINE__);
+            TE_DEBUG("Failed to open input event file handle for device");
         }
     }
 

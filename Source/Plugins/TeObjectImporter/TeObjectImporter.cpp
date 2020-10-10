@@ -87,7 +87,7 @@ namespace te
 
         aiScene* scene = const_cast<aiScene*>(importer.ReadFile(filePath.c_str(), assimpFlags));
 
-        TE_ASSERT_ERROR(scene != nullptr, "Failed to load object '" + filePath + "' : " + importer.GetErrorString(), __FILE__, __LINE__);
+        TE_ASSERT_ERROR(scene != nullptr, "Failed to load object '" + filePath + "' : " + importer.GetErrorString());
 
         AssimpImportOptions assimpImportOptions;
         assimpImportOptions.ImportNormals   = meshImportOptions->ImportNormals;

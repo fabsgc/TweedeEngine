@@ -16,11 +16,11 @@ namespace te
         const char* typeName = FreeImage_GetFormatFromFIF(fif);
         if (typeName)
         {
-            TE_DEBUG("FreeImage error: " + String(message) + " when loading format " + String(typeName), __FILE__, __LINE__);
+            TE_DEBUG("FreeImage error: " + String(message) + " when loading format " + String(typeName));
         }
         else
         {
-            TE_DEBUG("FreeImage error: " + String(message), __FILE__, __LINE__);
+            TE_DEBUG("FreeImage error: " + String(message));
         }
     }
 
@@ -161,7 +161,7 @@ namespace te
             }
             else
             {
-                TE_DEBUG("Width and height of your image must be a power of 2", __FILE__, __LINE__);
+                TE_DEBUG("Width and height of your image must be a power of 2");
             }
         }
 
@@ -218,7 +218,7 @@ namespace te
 
         if (file.Fail())
         {
-            TE_ASSERT_ERROR(false, "Cannot open file: " + filePath, __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Cannot open file: " + filePath);
             return nullptr;
         }
 
@@ -226,7 +226,7 @@ namespace te
 
         if (size > std::numeric_limits<UINT32>::max())
         {
-            TE_ASSERT_ERROR(false, "File size larger than supported!", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "File size larger than supported!");
         }
 
         UINT32 magicLen = std::min((UINT32)size, 32u);
@@ -238,7 +238,7 @@ namespace te
         auto findFormat = _extensionToFID.find(fileExtension);
         if (findFormat == _extensionToFID.end())
         {
-            TE_ASSERT_ERROR(false, "Type of the file provided is not supported by this importer. File type: " + fileExtension, __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Type of the file provided is not supported by this importer. File type: " + fileExtension);
         }
 
         imageFormat = (FREE_IMAGE_FORMAT)findFormat->second;
@@ -254,7 +254,7 @@ namespace te
         FIBITMAP* fiBitmap = FreeImage_LoadFromMemory((FREE_IMAGE_FORMAT)imageFormat, fiMem);
         if (!fiBitmap)
         {
-            TE_ASSERT_ERROR(false, "Error decoding image", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Error decoding image");
         }
 
         UINT32 width = FreeImage_GetWidth(fiBitmap);
@@ -276,7 +276,7 @@ namespace te
         case FIT_INT32:
         case FIT_DOUBLE:
         default:
-            TE_ASSERT_ERROR(false, "Unknown or unsupported image format", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "Unknown or unsupported image format");
 
             break;
         case FIT_BITMAP:
@@ -639,7 +639,7 @@ namespace te
                 }
                 else
                 {
-                    TE_DEBUG("Unable to generate a cubemap: unrecognized face configuration.", __FILE__, __LINE__);
+                    TE_DEBUG("Unable to generate a cubemap: unrecognized face configuration.");
                     return false;
                 }
             }
@@ -664,13 +664,13 @@ namespace te
 
         if (faceSize.x != faceSize.y)
         {
-            TE_DEBUG("Unable to generate a cubemap: width & height must match.", __FILE__, __LINE__);
+            TE_DEBUG("Unable to generate a cubemap: width & height must match.");
             return false;
         }
 
         if (!Bitwise::IsPow2(faceSize.x))
         {
-            TE_DEBUG("Unable to generate a cubemap: width & height must be powers of 2.", __FILE__, __LINE__);
+            TE_DEBUG("Unable to generate a cubemap: width & height must be powers of 2.");
             return false;
         }
 

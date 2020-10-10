@@ -65,7 +65,7 @@ namespace te
 
         char buffer[256];
         XGetErrorText(display, event->error_code, buffer, sizeof(buffer));
-        TE_DEBUG("X11 error: " + String(buffer), __FILE__, __LINE__);
+        TE_DEBUG("X11 error: " + String(buffer));
 
         return 0;
     }
@@ -806,14 +806,14 @@ namespace te
         int firstError;
         if (!XQueryExtension(_data->XDisplay, "XInputExtension", &_data->XInput2Opcode, &firstEvent, &firstError))
         {
-            TE_ASSERT_ERROR(false, "X Server doesn't support the XInput extension", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "X Server doesn't support the XInput extension");
         }
 
         int majorVersion = 2;
         int minorVersion = 0;
         if (XIQueryVersion(_data->XDisplay, &majorVersion, &minorVersion) != Success)
         {
-            TE_ASSERT_ERROR(false, "X Server doesn't support at least the XInput 2.0 extension", __FILE__, __LINE__);
+            TE_ASSERT_ERROR(false, "X Server doesn't support at least the XInput 2.0 extension");
         }
 
         // Let XInput know we are interested in raw mouse movement events

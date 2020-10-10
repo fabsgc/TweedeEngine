@@ -47,7 +47,7 @@ namespace te
         // Should check ensure open succeeded, in case fail for some reason.
         if (_inStream->fail())
         {
-            TE_DEBUG("Cannot open file: " + _path, __FILE__, __LINE__);
+            TE_DEBUG("Cannot open file: " + _path);
             return;
         }
 
@@ -183,7 +183,7 @@ namespace te
             WIN32_FILE_ATTRIBUTE_DATA attrData;
             if (GetFileAttributesExW(ToWString(_internalPath).c_str(), GetFileExInfoStandard, &attrData) == FALSE)
             {
-                TE_DEBUG("Can't get file size : " + _internalPath, __FILE__, __LINE__)
+                TE_DEBUG("Can't get file size : " + _internalPath);
             }
 
             LARGE_INTEGER li;
@@ -199,7 +199,7 @@ namespace te
             }
             else
             {
-                TE_DEBUG("Can't get file size : " + _internalPath, __FILE__, __LINE__)
+                TE_DEBUG("Can't get file size : " + _internalPath);
                 _size = 0;
             }
 #endif
