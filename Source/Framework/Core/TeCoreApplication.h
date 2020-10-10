@@ -13,6 +13,7 @@ namespace te
         String Renderer; /** Name of the renderer plugin to use. */
         String Physics; /** Name of the physics plugin to use. */
         String Audio; /** Name of the audio plugin to use. */
+        String Gui; /** Name of the gui plugin to use. */
 
         RENDER_WINDOW_DESC WindowDesc; /** Describes the window to create during start-up. */
 
@@ -104,6 +105,7 @@ namespace te
     protected:
         typedef void(*UpdatePluginFunc)();
 
+        SPtr<GuiAPI> _gui;
         SPtr<Renderer> _renderer;
         SPtr<RenderWindow> _window;
         START_UP_DESC _startUpDesc;
@@ -114,6 +116,7 @@ namespace te
 
         DynLib* _rendererPlugin;
         DynLib* _renderAPIPlugin;
+        DynLib* _guiPlugin;
         Map<DynLib*, UpdatePluginFunc> _pluginUpdateFunctions;
 
         bool _isFrameRenderingFinished;

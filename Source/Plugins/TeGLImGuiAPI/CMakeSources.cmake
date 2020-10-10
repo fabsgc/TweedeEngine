@@ -1,0 +1,18 @@
+set (TE_GLIMGUIAPI_INC_NOFILTER
+    "TeGLImGuiAPIPrerequisites.h"
+    "TeGLImGuiAPIFactory.h"
+    "TeGLImGuiAPI.h"
+)
+
+set (TE_GLIMGUIAPI_SRC_NOFILTER
+    "TeGLImGuiAPIFactory.cpp"
+    "TeGLImGuiAPI.cpp"
+    "TeGLImGuiAPIPlugin.cpp"
+)
+
+source_group ("" FILES ${TE_GLIMGUIAPI_SRC_NOFILTER} ${TE_GLIMGUIAPI_INC_NOFILTER})
+
+set (TE_GLIMGUIAPI_SRC
+    ${TE_GLIMGUIAPI_INC_NOFILTER}
+    ${TE_GLIMGUIAPI_SRC_NOFILTER}
+)

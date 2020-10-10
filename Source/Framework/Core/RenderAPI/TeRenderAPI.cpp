@@ -13,7 +13,7 @@ namespace te
     RenderAPI::~RenderAPI()
     { 
         te_deleteN(_capabilities, _numDevices);
-		_capabilities = nullptr;
+        _capabilities = nullptr;
     }
 
     void RenderAPI::Initialize()

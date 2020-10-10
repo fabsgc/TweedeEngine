@@ -198,10 +198,12 @@ set (TE_CORE_INC_MANAGER
     "Core/Manager/TeRenderAPIManager.h"
     "Core/Manager/TeRendererManager.h"
     "Core/Manager/TePluginManager.h"
+    "Core/Manager/TeGuiManager.h"
 )
 set (TE_CORE_SRC_MANAGER
     "Core/Manager/TeRenderAPIManager.cpp"
     "Core/Manager/TeRendererManager.cpp"
+    "Core/Manager/TeGuiManager.cpp"
 )
 
 set (TE_CORE_INC_IMPORTER
@@ -321,11 +323,20 @@ set (TE_CORE_SRC_TEXT
     "Core/Text/TeFont.cpp"
     "Core/Text/TeFontImportOptions.cpp"
 )
+
 set (TE_CORE_INC_ANIMATION
     "Core/Animation/TeSkeleton.h"
 )
 set (TE_CORE_SRC_ANIMATION
     "Core/Animation/TeSkeleton.cpp"
+)
+
+set (TE_CORE_INC_GUI
+    "Core/Gui/TeGuiAPI.h"
+    "Core/Gui/TeGuiAPIFactory.h"
+)
+set (TE_CORE_SRC_GUI
+    "Core/Gui/TeGuiAPI.cpp"
 )
 
 if (WIN32)
@@ -356,6 +367,7 @@ source_group("Core\\Components" FILES ${TE_CORE_INC_COMPONENTS} ${TE_CORE_SRC_CO
 source_group("Core\\Audio" FILES ${TE_CORE_INC_AUDIO} ${TE_CORE_SRC_AUDIO})
 source_group("Core\\Text" FILES ${TE_CORE_INC_TEXT} ${TE_CORE_SRC_TEXT})
 source_group("Core\\Animation" FILES ${TE_CORE_INC_ANIMATION} ${TE_CORE_SRC_ANIMATION})
+source_group("Core\\Gui" FILES ${TE_CORE_INC_GUI} ${TE_CORE_SRC_GUI})
 source_group("Core" FILES ${TE_CORE_INC_NOFILTER} ${TE_CORE_SRC_NOFILTER})
 
 set(TE_CORE_SRC
@@ -395,4 +407,6 @@ set(TE_CORE_SRC
     ${TE_CORE_SRC_TEXT}
     ${TE_CORE_INC_ANIMATION}
     ${TE_CORE_SRC_ANIMATION}
+    ${TE_CORE_INC_GUI}
+    ${TE_CORE_SRC_GUI}
 )

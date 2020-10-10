@@ -184,6 +184,7 @@ namespace te
     class PluginManager;
     class RenderAPIManager;
     class RendererManager;
+    class GuiManager;
 
     class Platform;
     struct OSPointerButtonStates;
@@ -222,6 +223,9 @@ namespace te
     class Font;
 
     class Skeleton;
+
+    class GuiAPI;
+    class GuiAPIFactory;
 }
 
 #include "Utility/TeNonCopyable.h"

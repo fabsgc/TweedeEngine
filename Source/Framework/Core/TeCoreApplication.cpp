@@ -8,6 +8,7 @@
 #include "Manager/TePluginManager.h"
 #include "Manager/TeRenderAPIManager.h"
 #include "Manager/TeRendererManager.h"
+#include "Manager/TeGuiManager.h"
 #include "Resources/TeResourceManager.h"
 #include "RenderAPI/TeRenderStateManager.h"
 #include "RenderAPI/TeGpuProgramManager.h"
@@ -35,6 +36,7 @@ namespace te
         , _startUpDesc(desc)
         , _rendererPlugin(nullptr)
         , _renderAPIPlugin(nullptr)
+        , _guiPlugin(nullptr)
         , _isFrameRenderingFinished(true)
         , _runMainLoop(false)
         , _pause(false)
@@ -51,6 +53,7 @@ namespace te
         DynLibManager::StartUp();
         CoreObjectManager::StartUp();
         RenderAPIManager::StartUp();
+        GuiManager::StartUp();
         GpuProgramManager::StartUp();
         GameObjectManager::StartUp();
         RendererManager::StartUp();
@@ -59,10 +62,14 @@ namespace te
 
         LoadPlugin(_startUpDesc.Renderer, &_rendererPlugin);
         LoadPlugin(_startUpDesc.RenderAPI, &_renderAPIPlugin);
+        LoadPlugin(_startUpDesc.Gui, &_guiPlugin);
 
         RenderAPIManager::Instance().Initialize(_startUpDesc.RenderAPI, _startUpDesc.WindowDesc);
+
         RenderAPI::Instance().Initialize();
         RenderAPI::Instance().SetDrawOperation(DOT_TRIANGLE_LIST);
+
+        _gui = GuiManager::Instance().Initialize(_startUpDesc.Gui);
 
         ParamBlockManager::StartUp();
 
@@ -104,6 +111,7 @@ namespace te
         RendererManager::ShutDown();
         GpuProgramManager::ShutDown();
         ResourceManager::ShutDown();
+        GuiManager::ShutDown();
         RenderAPIManager::ShutDown();
         CoreObjectManager::ShutDown();
         Platform::ShutDown();
@@ -137,6 +145,8 @@ namespace te
             PostUpdate();
 
             DisplayFrameRate();
+
+            GuiManager::Instance().GetGui()->Update();
 
             RendererManager::Instance().GetRenderer()->Update();
             RendererManager::Instance().GetRenderer()->RenderAll();
