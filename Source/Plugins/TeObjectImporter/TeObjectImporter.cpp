@@ -50,7 +50,7 @@ namespace te
             meshImportOptions->ScaleFactor = 0.01f;
         }
 
-        SPtr<RendererMeshData> rendererMeshData = ImportMeshData(filePath, importOptions, desc.SubMeshes, desc.Skeleton);
+        SPtr<RendererMeshData> rendererMeshData = ImportMeshData(filePath, importOptions, desc.SubMeshes, desc.MeshSkeleton);
         SPtr<Mesh> mesh = Mesh::_createPtr(rendererMeshData->GetData(), desc);
         mesh->SetName(filePath);
         
