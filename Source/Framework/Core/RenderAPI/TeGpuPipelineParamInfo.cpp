@@ -203,7 +203,7 @@ namespace te
 
         if (slot >= _setInfos[set].NumSlots)
         {
-            TE_DEBUG("Slot index out of range: Valid range: [0, {0}). Requested: {1}.", _setInfos[set].NumSlots, slot);
+            TE_DEBUG("Slot index out of range: Valid range: [0, " + ToString(_setInfos[set].NumSlots) + "). Requested: " + ToString(set));
             return -1;
         }
 
