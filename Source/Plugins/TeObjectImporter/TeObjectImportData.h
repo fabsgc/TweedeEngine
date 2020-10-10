@@ -21,6 +21,8 @@ namespace te
         bool ImportTangents = true;
         bool ImportColors = true;
         bool ImportSkin = false;
+        bool ImportAnimation = true;
+        bool ImportBlendShapes = true;
         bool ScaleSystemUnit = false;
         float ScaleFactor = 0.01f;
     };
@@ -30,12 +32,36 @@ namespace te
         AssimpImportNode() = default;
         ~AssimpImportNode();
 
-        Matrix4 LocalTransform;
-        Matrix4 WorldTransform;
+        Matrix4 LocalTransform = Matrix4::IDENTITY;
+        Matrix4 WorldTransform = Matrix4::IDENTITY;
         String Name;
-        aiNode* Node;
+        aiNode* Node = nullptr;
 
         Vector<AssimpImportNode*> Children;
+    };
+
+    /**	Contains data about a single bone in a skinned mesh. */
+    struct AssimpBone
+    {
+        AssimpImportNode* Node;
+        Transform LocalTransform;
+        Matrix4 BindPose = Matrix4::IDENTITY;
+    };
+
+    /** Contains a set of bone weights and indices for a single vertex, used in a skinned mesh. */
+    struct AssimpBoneInfluence
+    {
+        AssimpBoneInfluence()
+        {
+            for (UINT32 i = 0; i < OBJECT_IMPORT_MAX_BONE_INFLUENCES; i++)
+            {
+                Weights[i] = 0.0f;
+                Indices[i] = -1;
+            }
+        }
+
+        float Weights[OBJECT_IMPORT_MAX_BONE_INFLUENCES];
+        INT32 Indices[OBJECT_IMPORT_MAX_BONE_INFLUENCES];
     };
     
     struct AssimpImportMesh
@@ -50,6 +76,9 @@ namespace te
         Vector<Vector4> Colors;
         Vector<Vector2> Textures[OBJECT_IMPORT_MAX_UV_LAYERS];
         UINT32 MaterialIndex;
+
+        Vector<AssimpBoneInfluence> BoneInfluences;
+        Vector<AssimpBone> Bones;
 
         SPtr<MeshData> Data;
         Vector<SubMesh> SubMeshes;

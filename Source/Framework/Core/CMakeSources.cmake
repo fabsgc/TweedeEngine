@@ -321,6 +321,12 @@ set (TE_CORE_SRC_TEXT
     "Core/Text/TeFont.cpp"
     "Core/Text/TeFontImportOptions.cpp"
 )
+set (TE_CORE_INC_ANIMATION
+    "Core/Animation/TeSkeleton.h"
+)
+set (TE_CORE_SRC_ANIMATION
+    "Core/Animation/TeSkeleton.cpp"
+)
 
 if (WIN32)
     list(APPEND TE_CORE_INC_PLATFORM ${TE_CORE_INC_PLATFORM_WIN32})
@@ -349,6 +355,7 @@ source_group("Core\\Serialization" FILES ${TE_CORE_INC_SERIALIZATION} ${TE_CORE_
 source_group("Core\\Components" FILES ${TE_CORE_INC_COMPONENTS} ${TE_CORE_SRC_COMPONENTS})
 source_group("Core\\Audio" FILES ${TE_CORE_INC_AUDIO} ${TE_CORE_SRC_AUDIO})
 source_group("Core\\Text" FILES ${TE_CORE_INC_TEXT} ${TE_CORE_SRC_TEXT})
+source_group("Core\\Animation" FILES ${TE_CORE_INC_ANIMATION} ${TE_CORE_SRC_ANIMATION})
 source_group("Core" FILES ${TE_CORE_INC_NOFILTER} ${TE_CORE_SRC_NOFILTER})
 
 set(TE_CORE_SRC
@@ -386,4 +393,6 @@ set(TE_CORE_SRC
     ${TE_CORE_SRC_AUDIO}
     ${TE_CORE_INC_TEXT}
     ${TE_CORE_SRC_TEXT}
+    ${TE_CORE_INC_ANIMATION}
+    ${TE_CORE_SRC_ANIMATION}
 )

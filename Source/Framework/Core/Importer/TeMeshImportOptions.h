@@ -23,6 +23,9 @@ namespace te
         /** Determines should mesh skin data like bone weights, indices and bind poses be imported if available. */
         bool ImportSkin = false;
 
+        /**	Determines should animation clips be imported if available. */
+        bool ImportAnimation = false;
+
         /** Determine if we need to flip UV mapping when importing object */
         bool FplitUV = false;
 

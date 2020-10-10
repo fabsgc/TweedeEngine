@@ -11,6 +11,8 @@
 
 namespace te
 {
+    class Skeleton;
+
     class ObjectImporter : public BaseImporter
     {
     public:
@@ -28,7 +30,7 @@ namespace te
 
     private:
         /** Reads the object file and outputs mesh data from the read file. Sub-mesh information will be output in @p subMeshes. */
-        SPtr<RendererMeshData> ImportMeshData(const String& filePath, SPtr<const ImportOptions> importOptions, Vector<SubMesh>& subMeshes);
+        SPtr<RendererMeshData> ImportMeshData(const String& filePath, SPtr<const ImportOptions> importOptions, Vector<SubMesh>& subMeshes, SPtr<Skeleton>& skeleton);
 
         /**
          * Parses an FBX scene. Find all meshes in the scene and returns mesh data object containing all vertices, indexes
@@ -40,11 +42,30 @@ namespace te
         /** Parses a mesh. Converts it from Assimp format into a mesh data object containing one or multiple sub-meshes. */
         void ParseMesh(aiMesh* mesh, AssimpImportNode* parentNode, const AssimpImportOptions& options, AssimpImportScene& outputScene);
 
+        /**	Imports skinning information and bones for all meshes. */
+        void ImportSkin(AssimpImportScene& scene, const AssimpImportOptions& options);
+
+        /**	Imports skinning information and bones for the specified mesh. */
+        void ImportSkin(AssimpImportScene& scene, AssimpImportMesh& mesh, const AssimpImportOptions& options);
+
+        /**	Imports all bone and blend shape animations from the FBX. */
+        void ImportAnimations(aiScene* scene, AssimpImportOptions& importOptions, AssimpImportScene& importScene);
+
         /** Converts the mesh data from the imported assimp scene into mesh data that can be used for initializing a mesh. */
         SPtr<RendererMeshData> GenerateMeshData(AssimpImportScene& scene, AssimpImportOptions& options, Vector<SubMesh>& subMeshes);
 
         /**	Creates an internal representation of an assimp node from an aiNode object. */
         AssimpImportNode* CreateImportNode(const AssimpImportOptions& options, AssimpImportScene& scene, aiNode* assimpNode, AssimpImportNode* parent);
+
+        /**
+         * Parses the scene and outputs a skeleton for the imported meshes using the imported raw data.
+         *
+         * @param[in]	scene		Scene whose meshes to parse.
+         * @param[in]	sharedRoot	Determines should a shared root bone be created. Set this to true if the scene contains
+         *							multiple sub-meshes (as there can't be multiple roots).
+         * @return					Skeleton containing a set of bones, or null if meshes don't contain a skeleton.
+         */
+        SPtr<Skeleton> CreateSkeleton(const AssimpImportScene& scene, bool sharedRoot);
 
         /** Convert an assimp matrix into engine matrix */
         Matrix4 ConvertToNativeType(const aiMatrix4x4& matrix);

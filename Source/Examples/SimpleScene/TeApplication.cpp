@@ -53,7 +53,7 @@ namespace te
         // ######################################################
 
         // ######################################################
-        /*auto textureCubeMapImportOptions = TextureImportOptions::Create();
+        auto textureCubeMapImportOptions = TextureImportOptions::Create();
         textureCubeMapImportOptions->CpuCached = false;
         textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
         textureCubeMapImportOptions->Format = PF_RGBA8;
@@ -62,7 +62,7 @@ namespace te
         _loadedCubemapTexture = gResourceManager().Load<Texture>("Data/Textures/Skybox/sky_countryside_large.jpeg", textureCubeMapImportOptions);
 
         TE_PRINT((_loadedCubemapTexture.GetHandleData())->data);
-        TE_PRINT((_loadedCubemapTexture.GetHandleData())->uuid.ToString());*/
+        TE_PRINT((_loadedCubemapTexture.GetHandleData())->uuid.ToString());
         // ######################################################
 
         auto fontImportOptions = FontImportOptions::Create();
@@ -79,10 +79,17 @@ namespace te
         _sceneCamera->SetMain(true);
         _sceneCamera->Initialize();
 
-        /*_sceneSkyboxSO = SceneObject::Create("Skybox");
+        _sceneSkyboxSO = SceneObject::Create("Skybox");
         _skybox = _sceneSkyboxSO->AddComponent<CSkybox>();
         _skybox->SetTexture(_loadedCubemapTexture);
-        _skybox->Initialize();*/
+        _skybox->Initialize();
+
+        auto settings = _sceneCamera->GetRenderSettings();
+        settings->ExposureScale = 1.3f;
+        settings->Gamma = 0.8f;
+        settings->Contrast = 1.65f;
+        settings->Brightness = -0.05f;
+        settings->Bloom.Intensity = 0.5f;
         // ######################################################
 
         // ######################################################

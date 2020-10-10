@@ -220,6 +220,8 @@ namespace te
     class AudioManager;
 
     class Font;
+
+    class Skeleton;
 }
 
 #include "Utility/TeNonCopyable.h"

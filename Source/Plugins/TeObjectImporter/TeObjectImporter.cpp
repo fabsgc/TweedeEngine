@@ -3,6 +3,7 @@
 #include "Mesh/TeMesh.h"
 #include "Mesh/TeMeshData.h"
 #include "Image/TeColor.h"
+#include "Animation/TeSkeleton.h"
 
 namespace te
 {
@@ -49,14 +50,14 @@ namespace te
             meshImportOptions->ScaleFactor = 0.01f;
         }
 
-        SPtr<RendererMeshData> rendererMeshData = ImportMeshData(filePath, importOptions, desc.SubMeshes);
+        SPtr<RendererMeshData> rendererMeshData = ImportMeshData(filePath, importOptions, desc.SubMeshes, desc.Skeleton);
         SPtr<Mesh> mesh = Mesh::_createPtr(rendererMeshData->GetData(), desc);
         mesh->SetName(filePath);
         
         return mesh;
     }
 
-    SPtr<RendererMeshData> ObjectImporter::ImportMeshData(const String& filePath, SPtr<const ImportOptions> importOptions, Vector<SubMesh>& subMeshes)
+    SPtr<RendererMeshData> ObjectImporter::ImportMeshData(const String& filePath, SPtr<const ImportOptions> importOptions, Vector<SubMesh>& subMeshes, SPtr<Skeleton>& skeleton)
     {
         Assimp::Importer importer;
         AssimpImportScene importedScene;
@@ -71,34 +72,37 @@ namespace te
             aiProcess_SortByPType;
 
         if (meshImportOptions->FplitUV)
-        {
             assimpFlags |= aiProcess_FlipUVs;
-        }
 
         if (meshImportOptions->FlipWinding)
-        {
             assimpFlags |= aiProcess_FlipWindingOrder;
-        }
 
         if (meshImportOptions->LeftHanded)
-        {
             assimpFlags |= aiProcess_MakeLeftHanded;
-        }
 
         aiScene* scene = const_cast<aiScene*>(importer.ReadFile(filePath.c_str(), assimpFlags));
 
         TE_ASSERT_ERROR(scene != nullptr, "Failed to load object '" + filePath + "' : " + importer.GetErrorString());
 
         AssimpImportOptions assimpImportOptions;
-        assimpImportOptions.ImportNormals   = meshImportOptions->ImportNormals;
-        assimpImportOptions.ImportTangents  = meshImportOptions->ImportTangents;
-        assimpImportOptions.ImportSkin      = meshImportOptions->ImportSkin;
-        assimpImportOptions.ScaleSystemUnit = meshImportOptions->ScaleSystemUnit;
-        assimpImportOptions.ScaleFactor     = meshImportOptions->ScaleFactor;
+        assimpImportOptions.ImportNormals      = meshImportOptions->ImportNormals;
+        assimpImportOptions.ImportTangents     = meshImportOptions->ImportTangents;
+        assimpImportOptions.ImportSkin         = meshImportOptions->ImportSkin;
+        assimpImportOptions.ImportAnimation    = meshImportOptions->ImportAnimation;
+        assimpImportOptions.ScaleSystemUnit    = meshImportOptions->ScaleSystemUnit;
+        assimpImportOptions.ScaleFactor        = meshImportOptions->ScaleFactor;
 
         ParseScene(scene, assimpImportOptions, importedScene);
 
+        if (assimpImportOptions.ImportSkin)
+            ImportSkin(importedScene, assimpImportOptions);
+
+        if (assimpImportOptions.ImportAnimation)
+            ImportAnimations(scene, assimpImportOptions, importedScene);
+
         SPtr<RendererMeshData> rendererMeshData = GenerateMeshData(importedScene, assimpImportOptions, subMeshes);
+
+        skeleton = CreateSkeleton(importedScene, subMeshes.size() > 1);
 
         return rendererMeshData;
     }
@@ -205,18 +209,12 @@ namespace te
             importMesh->Positions[i] = ConvertToNativeType(mesh->mVertices[i]);
 
             if (options.ScaleSystemUnit)
-            {
                 importMesh->Positions[i] *= options.ScaleFactor;
-            }
 
             if (mesh->HasVertexColors(i) && options.ImportColors)
-            {
                 importMesh->Colors[i] = ConvertToNativeType(*mesh->mColors[i]);
-            }
             else
-            {
                 importMesh->Colors[i] = Color::LightGray.GetAsVector4();
-            }
         }
 
         // Import triangles
@@ -270,6 +268,32 @@ namespace te
 
         // Import Materials
         importMesh->MaterialIndex = mesh->mMaterialIndex;
+    }
+
+    /**	Imports skinning information and bones for all meshes. */
+    void ObjectImporter::ImportSkin(AssimpImportScene& scene, const AssimpImportOptions& options)
+    {
+        for (auto& mesh : scene.Meshes)
+        {
+            aiMesh* assimpMesh = mesh->AssimpMesh;
+
+            if (assimpMesh->mNumBones == 0)
+                continue;
+
+            ImportSkin(scene, *mesh, options);
+        }
+    }
+
+    /**	Imports skinning information and bones for the specified mesh. */
+    void ObjectImporter::ImportSkin(AssimpImportScene& scene, AssimpImportMesh& mesh, const AssimpImportOptions& options)
+    {
+        Vector<AssimpBoneInfluence>& influences = mesh.BoneInfluences;
+        influences.resize(mesh.Positions.size());
+    }
+
+    void ObjectImporter::ImportAnimations(aiScene* scene, AssimpImportOptions& importOptions, AssimpImportScene& importScene)
+    {
+        // TODO
     }
 
     SPtr<RendererMeshData> ObjectImporter::GenerateMeshData(AssimpImportScene& scene, AssimpImportOptions& options, Vector<SubMesh>& outputSubMeshes)
@@ -486,6 +510,11 @@ namespace te
         scene.NodeMap.insert(std::make_pair(assimpNode, node));
 
         return node;
+    }
+
+    SPtr<Skeleton> ObjectImporter::CreateSkeleton(const AssimpImportScene& scene, bool sharedRoot)
+    {
+        return nullptr;
     }
 
     Matrix4 ObjectImporter::ConvertToNativeType(const aiMatrix4x4& matrix)

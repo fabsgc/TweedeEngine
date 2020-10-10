@@ -62,6 +62,9 @@ namespace te
          */
         IndexType IndType = IT_32BIT;
 
+        /** Optional skeleton that can be used for skeletal animation of the mesh. */
+        SPtr<Skeleton> Skeleton;
+
         static MESH_DESC DEFAULT;
     };
 
