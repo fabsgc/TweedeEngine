@@ -2,6 +2,8 @@
 
 #include "TeEngineConfig.h"
 
+char* strrchr(const char* string, int searchedChar);
+
 #if TE_DEBUG_MODE == 1
 #   ifndef TE_DEBUG_FILE
 #       define TE_DEBUG_FILE "Log/Debug.log"
