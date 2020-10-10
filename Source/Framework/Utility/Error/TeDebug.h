@@ -2,8 +2,6 @@
 
 #include "TeEngineConfig.h"
 
-char* strrchr(const char* string, int searchedChar);
-
 #if TE_DEBUG_MODE == 1
 #   ifndef TE_DEBUG_FILE
 #       define TE_DEBUG_FILE "Log/Debug.log"
@@ -12,6 +10,7 @@ char* strrchr(const char* string, int searchedChar);
 #if TE_PLATFORM == TE_PLATFORM_WIN32 && !defined __FILENAME__
 #   define __FILENAME__ (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)
 #elif TE_PLATFORM == TE_PLATFORM_LINUX && !defined __FILENAME__
+#   include <string.h>
 #   define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
 #endif
 
