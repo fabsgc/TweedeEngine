@@ -642,7 +642,7 @@ namespace te
                     // Send an input command event
                     if(isInputCommand)
                     {
-                        if(!onInputCommand.empty())
+                        if(!OnInputCommand.empty())
                             OnInputCommand(command);
                     }
                 }
