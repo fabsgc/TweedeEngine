@@ -50,5 +50,14 @@ namespace te
 
         /** @copydoc GuiAPI::ButtonDown */
         void ButtonDown(ButtonEvent event) override;
+
+        /** @copydoc GuiAPI::OnInputCommandEntered */
+        void OnInputCommandEntered(InputCommandType commandType);
+
+        /** @copydoc GuiAPI::KeyUp */
+        void KeyUp(UINT32 keyCode) override;
+
+        /** @copydoc GuiAPI::KeyDown */
+        void KeyDown(UINT32 keyCode) override;
     };
 }

@@ -23,6 +23,8 @@ namespace te
     Event<void(InputCommandType)> Platform::OnInputCommand;
     Event<void(float)> Platform::OnMouseWheelScrolled;
     Event<void(UINT32)> Platform::OnCharInput;
+    Event<void(UINT32)> Platform::OnKeyUp;
+    Event<void(UINT32)> Platform::OnKeyDown;
 
     Queue<LinuxButtonEvent> LinuxPlatform::ButtonEvents;
     LinuxMouseMotionEvent LinuxPlatform::MouseMotionEvent;
@@ -610,6 +612,9 @@ namespace te
                     XKeyPressedEvent* keyEvent = (XKeyPressedEvent*) &event;
                     EnqueueButtonEvent(_data->KeyCodeMap[keyEvent->keycode], true, (UINT64) keyEvent->time);
 
+                    if(!OnKeyDown.Empty())
+                        OnKeyDown((UINT32)keyEvent->keycode);
+
                     // Process text input
                     KeySym keySym = XkbKeycodeToKeysym(_data->XDisplay, (KeyCode)event.xkey.keycode, 0, 0);
 
@@ -633,7 +638,7 @@ namespace te
                         {
                             buffer[length] = '\0';
 
-                            // TODO 
+                            // TODO
                             /*U32String utfStr = UTF8::toUTF32(String(buffer));
                             if (utfStr.length() > 0)
                                 OnCharInput((UINT32) utfStr[0]);*/
@@ -646,6 +651,8 @@ namespace te
                         if(!OnInputCommand.Empty())
                             OnInputCommand(command);
                     }
+
+                    
                 }
                 break;
 
@@ -653,6 +660,9 @@ namespace te
                 {
                     XKeyReleasedEvent* keyEvent = (XKeyReleasedEvent*) &event;
                     EnqueueButtonEvent(_data->KeyCodeMap[keyEvent->keycode], false, (UINT64) keyEvent->time);
+
+                    if(!OnKeyUp.Empty())
+                        OnKeyUp((UINT32)keyEvent->keycode);
                 }
                 break;
 

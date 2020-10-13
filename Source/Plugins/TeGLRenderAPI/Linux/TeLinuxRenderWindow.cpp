@@ -66,6 +66,11 @@ namespace te
         // TODO
     }
 
+    void LinuxRenderWindow::InitializeGui()
+    { 
+        // TODO
+    }
+
     void LinuxRenderWindow::GetCustomAttribute(const String& name, void* pData) const
     {
         if(name == "LINUX_WINDOW")

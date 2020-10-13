@@ -73,14 +73,15 @@ namespace te
 
         ParamBlockManager::StartUp();
 
-        _gui = GuiManager::Instance().Initialize(_startUpDesc.Gui);
-
         _renderer = RendererManager::Instance().Initialize(_startUpDesc.Renderer);
         _window = RenderAPI::Instance().CreateRenderWindow(_startUpDesc.WindowDesc);
         _window->Initialize();
 
         Input::StartUp();
         VirtualInput::StartUp();
+
+        _gui = GuiManager::Instance().Initialize(_startUpDesc.Gui);
+        _window->InitializeGui();
 
         Importer::StartUp();
         AudioManager::StartUp(_startUpDesc.Audio);

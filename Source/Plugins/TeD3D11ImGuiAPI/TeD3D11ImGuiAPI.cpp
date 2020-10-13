@@ -52,8 +52,9 @@ namespace te
         ImGui::ShowDemoWindow(&open);
 
         ImGuiIO& io = ImGui::GetIO();
-        io.WantCaptureMouse;
-        io.WantCaptureKeyboard;
+        io.WantCaptureMouse = true;
+        io.WantCaptureKeyboard = true;
+        io.WantTextInput = true;
     }
 
     void D3D11ImGuiAPI::Begin()
@@ -78,23 +79,38 @@ namespace te
 
     /** Called from the message loop to notify user has entered a character. */
     void D3D11ImGuiAPI::CharInput(UINT32 character)
-    {
-        TE_PRINT("INPUT");
-    }
+    { }
 
     void D3D11ImGuiAPI::CursorMoved(const Vector2I& cursorPos, const OSPointerButtonStates& btnStates)
     {
-
+        ImGuiIO& io = ImGui::GetIO();
+        io.MousePos.x = (float)cursorPos.x;
+        io.MousePos.y = (float)cursorPos.y;
     }
 
     void D3D11ImGuiAPI::CursorPressed(const Vector2I& cursorPos, OSMouseButton button, const OSPointerButtonStates& btnStates)
     {
+        ImGuiIO& io = ImGui::GetIO();
+
+        switch (button)
+        {
+        case OSMouseButton::Left: { io.MouseDown[0] = true; } break;
+        case OSMouseButton::Middle: { io.MouseDown[2] = true; } break;
+        case OSMouseButton::Right: { io.MouseDown[1] = true; } break;
+        }
 
     }
 
     void D3D11ImGuiAPI::CursorReleased(const Vector2I& cursorPos, OSMouseButton button, const OSPointerButtonStates& btnStates)
     {
+        ImGuiIO& io = ImGui::GetIO();
 
+        switch (button)
+        {
+        case OSMouseButton::Left: { io.MouseDown[0] = false; } break;
+        case OSMouseButton::Middle: { io.MouseDown[2] = false; } break;
+        case OSMouseButton::Right: { io.MouseDown[1] = false; } break;
+        }
     }
  
     void D3D11ImGuiAPI::CursorDoubleClick(const Vector2I& cursorPos, const OSPointerButtonStates& btnStates)
@@ -104,16 +120,47 @@ namespace te
 
     void D3D11ImGuiAPI::MouseWheelScrolled(float scrollPos)
     {
+        ImGuiIO& io = ImGui::GetIO();
 
+        io.MouseWheel = scrollPos;
     }
 
     void D3D11ImGuiAPI::ButtonUp(ButtonEvent event)
     {
-        TE_PRINT("BUTTON UP");
+        /*if (event.isKeyboard())
+        {
+            ImGuiIO& io = ImGui::GetIO();
+            io.KeysDown[event.buttonCode] = false;
+        }*/
     }
 
     void D3D11ImGuiAPI::ButtonDown(ButtonEvent event)
     {
-        TE_PRINT("BUTTON DOWN");
+        /*if (event.isKeyboard())
+        {
+            ImGuiIO& io = ImGui::GetIO();
+            io.KeysDown[event.buttonCode] = true;
+        }*/
+    }
+
+    void D3D11ImGuiAPI::OnInputCommandEntered(InputCommandType commandType)
+    {
+        TE_PRINT("command");
+    }
+
+    void D3D11ImGuiAPI::KeyUp(UINT32 keyCode)
+    { 
+        ImGuiIO& io = ImGui::GetIO();
+        io.KeysDown[keyCode] = false;
+
+        TE_PRINT("key up");
+    }
+
+    void D3D11ImGuiAPI::KeyDown(UINT32 keyCode)
+    { 
+        ImGuiIO& io = ImGui::GetIO();
+        io.KeysDown[keyCode] = true;
+
+        TE_PRINT("key down");
     }
 }

@@ -143,6 +143,8 @@ namespace te
 
             std::swap(_textInputEvents[0], _textInputEvents[1]);
 
+            std::swap(_commandEvents[0], _commandEvents[1]);
+
             pointerPos = _pointerPosition;
             mouseScroll = _mouseScroll;
             pointerState = _pointerState;

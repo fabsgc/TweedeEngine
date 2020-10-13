@@ -204,6 +204,12 @@ namespace te
         /**	Triggers on special input commands. */
         Event<void(InputCommandType)> OnInputCommand;
 
+        /**	Triggers when any key up */
+        Event<void(UINT32)> OnKeyUp;
+
+        /**	Triggers when any key down */
+        Event<void(UINT32)> OnKeyDown;
+
     protected:
         /** Performs platform specific raw input system initialization. */
         void InitRawInput();
@@ -233,6 +239,8 @@ namespace te
         HEvent _cursorDoubleClickConn;
         HEvent _inputCommandConn;
         HEvent _mouseWheelScrolledConn;
+        HEvent _keyUp;
+        HEvent _keyDown;
 
         Vector<DeviceData> _devices;
         Vector2I _pointerPosition;

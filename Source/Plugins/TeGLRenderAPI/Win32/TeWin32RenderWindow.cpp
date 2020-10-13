@@ -61,14 +61,11 @@ namespace te
         {
         }
 
-        // Initialize Gui
-        GuiAPIData data;
-
-        SPtr<GuiAPI> guiAPI = GuiManager::Instance().GetGui();
-        guiAPI->Initialize(&data);
-
         RenderWindow::Initialize();
     }
+
+    void Win32RenderWindow::InitializeGui()
+    { }
 
     void Win32RenderWindow::GetCustomAttribute(const String& name, void* pData) const
     {

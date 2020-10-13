@@ -57,6 +57,15 @@ namespace te
         /** Called from the message loop to notify user has released a key. */
         virtual void ButtonDown(ButtonEvent event) = 0;
 
+        /**	Called whenever an input command is input. */
+        virtual void OnInputCommandEntered(InputCommandType commandType) = 0;
+
+        /** Called from the message loop to notify user has released a key. */
+        virtual void KeyUp(UINT32 keyCode) = 0;
+
+        /** Called from the message loop to notify user has released a key. */
+        virtual void KeyDown(UINT32 keyCode) = 0;
+
     protected:
         /** Triggered whenever a button is first pressed. */
         Event<void(const ButtonEvent&)> OnButtonDown;
@@ -82,6 +91,12 @@ namespace te
         /**	Triggers when some pointing device (mouse cursor, touch) button is double clicked. */
         Event<void(const PointerEvent&)> OnPointerDoubleClick;
 
+        /**	Triggers when some key is released. */
+        Event<void(const UINT32&)> OnKeyUp;
+
+        /**	Triggers when some key is pressed. */
+        Event<void(const UINT32&)> OnKeyDown;
+
     protected:
         // OS input events
         HEvent _charInputConn;
@@ -89,9 +104,11 @@ namespace te
         HEvent _cursorPressedConn;
         HEvent _cursorReleasedConn;
         HEvent _cursorDoubleClickConn;
-        HEvent _inputCommandConn;
+        HEvent _onInputCommandConn;
         HEvent _mouseWheelScrolledConn;
         HEvent _buttonDown;
         HEvent _buttonUp;
+        HEvent _keyDown;
+        HEvent _keyUp;
     };
 }

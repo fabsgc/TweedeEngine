@@ -39,6 +39,8 @@ namespace te
     Event<void(InputCommandType)> Platform::OnInputCommand;
     Event<void(float)> Platform::OnMouseWheelScrolled;
     Event<void(UINT32)> Platform::OnCharInput;
+    Event<void(UINT32)> Platform::OnKeyUp;
+    Event<void(UINT32)> Platform::OnKeyDown;
 
     Event<void()> Platform::OnMouseCaptureChanged;
 
@@ -646,6 +648,9 @@ namespace te
             case WM_SYSKEYDOWN:
             case WM_KEYDOWN:
             {
+                if (!OnKeyUp.Empty())
+                    OnKeyUp((UINT32)wParam);
+
                 InputCommandType command = InputCommandType::Backspace;
                 if(GetCommand((unsigned int)wParam, command))
                 {
@@ -660,7 +665,8 @@ namespace te
             case WM_SYSKEYUP:
             case WM_KEYUP:
             {
-                return 0;
+                if (!OnKeyUp.Empty())
+                    OnKeyUp((UINT32)wParam);
             }
             case WM_CHAR:
             {

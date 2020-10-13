@@ -52,4 +52,13 @@ namespace te
 
     void GLImGuiAPI::ButtonDown(ButtonEvent event)
     { }
+
+    void GLImGuiAPI::OnInputCommandEntered(InputCommandType commandType)
+    { }
+
+    void GLImGuiAPI::KeyUp(UINT32 keyCode)
+    { }
+
+    void GLImGuiAPI::KeyDown(UINT32 keyCode)
+    { }
 }

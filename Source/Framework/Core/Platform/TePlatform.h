@@ -163,6 +163,16 @@ namespace te
         static Event<void(UINT32)> OnCharInput;
 
         /**
+         * Triggered whenever a key is pressed
+         */
+        static Event<void(UINT32)> OnKeyUp;
+
+        /**
+         * Triggered whenever a key is released
+         */
+        static Event<void(UINT32)> OnKeyDown;
+
+        /**
          * Triggered whenever mouse capture state for the window is changed (it receives or loses it).
          */
         static Event<void()> OnMouseCaptureChanged;

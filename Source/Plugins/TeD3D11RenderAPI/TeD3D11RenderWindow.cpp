@@ -120,7 +120,11 @@ namespace te
         CreateSizeDependedD3DResources();
         _DXGIFactory->MakeWindowAssociation(_window->GetHWnd(), NULL);
 
-        // Initialize Gui
+        RenderWindow::Initialize();
+    }
+
+    void D3D11RenderWindow::InitializeGui()
+    {
         GuiAPIData data;
         data.HWnd = _window->GetHWnd();
         data.PD3D11Device = _device.GetD3D11Device();
@@ -128,8 +132,6 @@ namespace te
 
         SPtr<GuiAPI> guiAPI = GuiManager::Instance().GetGui();
         guiAPI->Initialize((void*)&data);
-
-        RenderWindow::Initialize();
     }
 
     void D3D11RenderWindow::GetCustomAttribute(const String& name, void* pData) const

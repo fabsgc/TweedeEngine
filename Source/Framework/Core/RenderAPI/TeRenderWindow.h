@@ -95,6 +95,8 @@ namespace te
 
         virtual void Initialize() { RenderTarget::Initialize(); };
 
+        virtual void InitializeGui() { };
+
         /** Queries the render target for a custom attribute. This may be anything and is implementation specific. */
         virtual void GetCustomAttribute(const String& name, void* pData) const {}
 
