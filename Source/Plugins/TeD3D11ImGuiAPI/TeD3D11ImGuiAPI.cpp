@@ -21,7 +21,7 @@ namespace te
     {
         GuiAPI::Initialize(data);
 
-        ImGuiData* guiData = (ImGuiData*)data;
+        ImGuiData* guiData = static_cast<ImGuiData*>(data);
 
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
