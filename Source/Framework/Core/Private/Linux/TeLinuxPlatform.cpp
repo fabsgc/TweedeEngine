@@ -611,7 +611,7 @@ namespace te
                     EnqueueButtonEvent(_data->KeyCodeMap[keyEvent->keycode], true, (UINT64) keyEvent->time);
 
                     // Process text input
-                    KeySym keySym = XkbKeycodeToKeysym(mData->xDisplay, (KeyCode)event.xkey.keycode, 0, 0);
+                    KeySym keySym = XkbKeycodeToKeysym(_data->xDisplay, (KeyCode)event.xkey.keycode, 0, 0);
 
                     // Handle input commands
                     InputCommandType command = InputCommandType::Backspace;
@@ -626,23 +626,24 @@ namespace te
                         Status status;
                         char buffer[16];
 
-                        INT32 length = Xutf8LookupString(mData->IC, &event.xkey, buffer, sizeof(buffer), nullptr,
+                        INT32 length = Xutf8LookupString(_data->IC, &event.xkey, buffer, sizeof(buffer), nullptr,
                                 &status);
 
                         if (length > 0)
                         {
                             buffer[length] = '\0';
 
-                            U32String utfStr = UTF8::toUTF32(String(buffer));
+                            // TODO 
+                            /*U32String utfStr = UTF8::toUTF32(String(buffer));
                             if (utfStr.length() > 0)
-                                OnCharInput((UINT32) utfStr[0]);
+                                OnCharInput((UINT32) utfStr[0]);*/
                         }
                     }
 
                     // Send an input command event
                     if(isInputCommand)
                     {
-                        if(!OnInputCommand.empty())
+                        if(!OnInputCommand.Empty())
                             OnInputCommand(command);
                     }
                 }

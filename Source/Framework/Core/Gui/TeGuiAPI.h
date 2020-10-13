@@ -51,6 +51,12 @@ namespace te
         /** Called from the message loop to notify user has scrolled the mouse wheel. */
         virtual void MouseWheelScrolled(float scrollPos) = 0;
 
+        /** Called from the message loop to notify user has entered a character. */
+        virtual void KeyUp(UINT32 character) = 0;
+
+        /** Called from the message loop to notify user has entered a character. */
+        virtual void KeyDown(UINT32 character) = 0;
+
     protected:
         /** Triggered whenever a button is first pressed. */
         Event<void(const ButtonEvent&)> OnButtonDown;
