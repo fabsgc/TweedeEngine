@@ -611,7 +611,7 @@ namespace te
                     EnqueueButtonEvent(_data->KeyCodeMap[keyEvent->keycode], true, (UINT64) keyEvent->time);
 
                     // Process text input
-                    KeySym keySym = XkbKeycodeToKeysym(_data->xDisplay, (KeyCode)event.xkey.keycode, 0, 0);
+                    KeySym keySym = XkbKeycodeToKeysym(_data->XDisplay, (KeyCode)event.xkey.keycode, 0, 0);
 
                     // Handle input commands
                     InputCommandType command = InputCommandType::Backspace;

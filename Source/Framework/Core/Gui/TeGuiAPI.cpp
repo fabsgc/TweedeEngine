@@ -1,4 +1,5 @@
 #include "TeGuiAPI.h"
+#include "Input/TeInput.h"
 
 using namespace std::placeholders;
 
@@ -14,6 +15,9 @@ namespace te
         _cursorReleasedConn = Platform::OnCursorButtonReleased.Connect(std::bind(&GuiAPI::CursorReleased, this, _1, _2, _3));
         _cursorDoubleClickConn = Platform::OnCursorDoubleClick.Connect(std::bind(&GuiAPI::CursorDoubleClick, this, _1, _2));
         _mouseWheelScrolledConn = Platform::OnMouseWheelScrolled.Connect(std::bind(&GuiAPI::MouseWheelScrolled, this, _1));
+
+        _buttonDown = Input::Instance().OnButtonDown.Connect(std::bind(&GuiAPI::ButtonDown, this, _1));
+        _buttonUp = Input::Instance().OnButtonUp.Connect(std::bind(&GuiAPI::ButtonUp, this, _1));
     }
 
     void GuiAPI::Destroy()

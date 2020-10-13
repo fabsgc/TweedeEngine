@@ -82,33 +82,38 @@ namespace te
         TE_PRINT("INPUT");
     }
 
-    /** Called from the message loop to notify user has moved the cursor. */
     void D3D11ImGuiAPI::CursorMoved(const Vector2I& cursorPos, const OSPointerButtonStates& btnStates)
     {
 
     }
 
-    /** Called from the message loop to notify user has pressed a mouse button. */
     void D3D11ImGuiAPI::CursorPressed(const Vector2I& cursorPos, OSMouseButton button, const OSPointerButtonStates& btnStates)
     {
 
     }
 
-    /** Called from the message loop to notify user has released a mouse button. */
     void D3D11ImGuiAPI::CursorReleased(const Vector2I& cursorPos, OSMouseButton button, const OSPointerButtonStates& btnStates)
     {
 
     }
-     
-    /** Called from the message loop to notify user has double-clicked a mouse button. */
+ 
     void D3D11ImGuiAPI::CursorDoubleClick(const Vector2I& cursorPos, const OSPointerButtonStates& btnStates)
     {
 
     }
 
-    /** Called from the message loop to notify user has scrolled the mouse wheel. */
     void D3D11ImGuiAPI::MouseWheelScrolled(float scrollPos)
     {
 
+    }
+
+    void D3D11ImGuiAPI::ButtonUp(ButtonEvent event)
+    {
+        TE_PRINT("BUTTON UP");
+    }
+
+    void D3D11ImGuiAPI::ButtonDown(ButtonEvent event)
+    {
+        TE_PRINT("BUTTON DOWN");
     }
 }

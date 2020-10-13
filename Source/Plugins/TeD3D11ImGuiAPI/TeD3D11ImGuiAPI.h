@@ -44,5 +44,11 @@ namespace te
 
         /** @copydoc GuiAPI::MouseWheelScrolled */
         void MouseWheelScrolled(float scrollPos) override;
+
+        /** @copydoc GuiAPI::ButtonUp */
+        void ButtonUp(ButtonEvent event) override;
+
+        /** @copydoc GuiAPI::ButtonDown */
+        void ButtonDown(ButtonEvent event) override;
     };
 }

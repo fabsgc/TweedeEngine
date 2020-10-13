@@ -51,11 +51,11 @@ namespace te
         /** Called from the message loop to notify user has scrolled the mouse wheel. */
         virtual void MouseWheelScrolled(float scrollPos) = 0;
 
-        /** Called from the message loop to notify user has entered a character. */
-        virtual void KeyUp(UINT32 character) = 0;
+        /** Called from the message loop to notify user has pressed a key. */
+        virtual void ButtonUp(ButtonEvent event) = 0;
 
-        /** Called from the message loop to notify user has entered a character. */
-        virtual void KeyDown(UINT32 character) = 0;
+        /** Called from the message loop to notify user has released a key. */
+        virtual void ButtonDown(ButtonEvent event) = 0;
 
     protected:
         /** Triggered whenever a button is first pressed. */
@@ -91,5 +91,7 @@ namespace te
         HEvent _cursorDoubleClickConn;
         HEvent _inputCommandConn;
         HEvent _mouseWheelScrolledConn;
+        HEvent _buttonDown;
+        HEvent _buttonUp;
     };
 }
