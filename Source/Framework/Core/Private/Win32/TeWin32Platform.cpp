@@ -648,8 +648,8 @@ namespace te
             case WM_SYSKEYDOWN:
             case WM_KEYDOWN:
             {
-                if (!OnKeyUp.Empty())
-                    OnKeyUp((UINT32)wParam);
+                if (!OnKeyDown.Empty())
+                    OnKeyDown((UINT32)wParam);
 
                 InputCommandType command = InputCommandType::Backspace;
                 if(GetCommand((unsigned int)wParam, command))
@@ -682,9 +682,10 @@ namespace te
                     default: // displayable character 
                     {
                         UINT32 finalChar = (UINT32)wParam;
-
-                        if (!OnCharInput.Empty())
+                        if ((lParam & 0x80000000) == 0 && !OnCharInput.Empty())
+                        {
                             OnCharInput(finalChar);
+                        }
 
                         return 0;
                     }

@@ -50,11 +50,6 @@ namespace te
         bool open = true;
 
         ImGui::ShowDemoWindow(&open);
-
-        ImGuiIO& io = ImGui::GetIO();
-        io.WantCaptureMouse = true;
-        io.WantCaptureKeyboard = true;
-        io.WantTextInput = true;
     }
 
     void D3D11ImGuiAPI::Begin()
@@ -79,7 +74,12 @@ namespace te
 
     /** Called from the message loop to notify user has entered a character. */
     void D3D11ImGuiAPI::CharInput(UINT32 character)
-    { }
+    {
+        ImGuiIO& io = ImGui::GetIO();
+
+        if (character > 0 && character < 0x10000)
+            io.AddInputCharacterUTF16((unsigned short)character);
+    }
 
     void D3D11ImGuiAPI::CursorMoved(const Vector2I& cursorPos, const OSPointerButtonStates& btnStates)
     {
@@ -126,22 +126,10 @@ namespace te
     }
 
     void D3D11ImGuiAPI::ButtonUp(ButtonEvent event)
-    {
-        /*if (event.isKeyboard())
-        {
-            ImGuiIO& io = ImGui::GetIO();
-            io.KeysDown[event.buttonCode] = false;
-        }*/
-    }
+    { }
 
     void D3D11ImGuiAPI::ButtonDown(ButtonEvent event)
-    {
-        /*if (event.isKeyboard())
-        {
-            ImGuiIO& io = ImGui::GetIO();
-            io.KeysDown[event.buttonCode] = true;
-        }*/
-    }
+    { }
 
     void D3D11ImGuiAPI::OnInputCommandEntered(InputCommandType commandType)
     {
@@ -150,6 +138,9 @@ namespace te
 
     void D3D11ImGuiAPI::KeyUp(UINT32 keyCode)
     { 
+        if (keyCode > 256)
+            return;
+
         ImGuiIO& io = ImGui::GetIO();
         io.KeysDown[keyCode] = false;
 
@@ -157,7 +148,10 @@ namespace te
     }
 
     void D3D11ImGuiAPI::KeyDown(UINT32 keyCode)
-    { 
+    {
+        if (keyCode > 256)
+            return;
+
         ImGuiIO& io = ImGui::GetIO();
         io.KeysDown[keyCode] = true;
 
