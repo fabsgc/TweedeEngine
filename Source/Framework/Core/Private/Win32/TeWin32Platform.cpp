@@ -682,7 +682,7 @@ namespace te
                     default: // displayable character 
                     {
                         UINT32 finalChar = (UINT32)wParam;
-                        if ((lParam & 0x80000000) == 0 && !OnCharInput.Empty())
+                        if ((lParam & 0x80000000) == 0 && !OnCharInput.Empty()) //We filter "key up" events
                         {
                             OnCharInput(finalChar);
                         }

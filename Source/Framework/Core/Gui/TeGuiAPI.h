@@ -104,11 +104,11 @@ namespace te
         HEvent _cursorPressedConn;
         HEvent _cursorReleasedConn;
         HEvent _cursorDoubleClickConn;
-        HEvent _onInputCommandConn;
+        HEvent _inputCommandConn;
         HEvent _mouseWheelScrolledConn;
-        HEvent _buttonDown;
-        HEvent _buttonUp;
-        HEvent _keyDown;
-        HEvent _keyUp;
+        HEvent _buttonDownConn;
+        HEvent _buttonUpConn;
+        HEvent _keyDownConn;
+        HEvent _keyUpConn;
     };
 }

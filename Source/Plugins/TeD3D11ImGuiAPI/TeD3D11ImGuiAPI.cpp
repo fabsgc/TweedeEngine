@@ -114,9 +114,7 @@ namespace te
     }
  
     void D3D11ImGuiAPI::CursorDoubleClick(const Vector2I& cursorPos, const OSPointerButtonStates& btnStates)
-    {
-
-    }
+    { }
 
     void D3D11ImGuiAPI::MouseWheelScrolled(float scrollPos)
     {
@@ -132,9 +130,7 @@ namespace te
     { }
 
     void D3D11ImGuiAPI::OnInputCommandEntered(InputCommandType commandType)
-    {
-        TE_PRINT("command");
-    }
+    { }
 
     void D3D11ImGuiAPI::KeyUp(UINT32 keyCode)
     { 
@@ -143,8 +139,6 @@ namespace te
 
         ImGuiIO& io = ImGui::GetIO();
         io.KeysDown[keyCode] = false;
-
-        TE_PRINT("key up");
     }
 
     void D3D11ImGuiAPI::KeyDown(UINT32 keyCode)
@@ -154,7 +148,5 @@ namespace te
 
         ImGuiIO& io = ImGui::GetIO();
         io.KeysDown[keyCode] = true;
-
-        TE_PRINT("key down");
     }
 }
