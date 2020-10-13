@@ -31,6 +31,7 @@ namespace te
         _cursorPressedConn = Platform::OnCursorButtonPressed.Connect(std::bind(&Input::CursorPressed, this, _1, _2, _3));
         _cursorReleasedConn = Platform::OnCursorButtonReleased.Connect(std::bind(&Input::CursorReleased, this, _1, _2, _3));
         _cursorDoubleClickConn = Platform::OnCursorDoubleClick.Connect(std::bind(&Input::CursorDoubleClick, this, _1, _2));
+        _inputCommandConn = Platform::OnInputCommand.Connect(std::bind(&Input::InputCommandEntered, this, _1));
 
         _mouseWheelScrolledConn = Platform::OnMouseWheelScrolled.Connect(std::bind(&Input::MouseWheelScrolled, this, _1));
 
@@ -63,6 +64,7 @@ namespace te
 
         _charInputConn.Disconnect();
         _cursorMovedConn.Disconnect();
+        _inputCommandConn.Disconnect();
         _cursorPressedConn.Disconnect();
         _cursorReleasedConn.Disconnect();
         _cursorDoubleClickConn.Disconnect();
@@ -226,6 +228,9 @@ namespace te
                 break;
             case EventType::TextInput:
                 OnCharInput(_textInputEvents[1][event.Idx]);
+                break;
+            case EventType::Command:
+                OnInputCommand(_commandEvents[1][event.Idx]);
                 break;
             default:
                 break;
@@ -484,6 +489,12 @@ namespace te
 
         _queuedEvents[0].push_back(QueuedEvent(EventType::PointerDoubleClick, (UINT32)_pointerDoubleClickEvents[0].size()));
         _pointerDoubleClickEvents[0].push_back(event);
+    }
+
+    void Input::InputCommandEntered(InputCommandType commandType)
+    {
+        _queuedEvents[0].push_back(QueuedEvent(EventType::Command, (UINT32)_commandEvents[0].size()));
+        _commandEvents[0].push_back(commandType);
     }
 
     void Input::MouseWheelScrolled(float scrollPos)

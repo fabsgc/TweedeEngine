@@ -147,6 +147,11 @@ namespace te
          */
         static Event<void(const Vector2I&, const OSPointerButtonStates&)> OnCursorDoubleClick;
 
+        /** 
+         * Triggered whenever an input command is entered. 
+         */
+        static Event<void(InputCommandType)> OnInputCommand;
+
         /**
          * Triggered whenever the mouse wheel is scolled.
          */

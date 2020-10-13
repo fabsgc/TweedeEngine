@@ -20,6 +20,7 @@ namespace te
     Event<void(const Vector2I&, OSMouseButton button, const OSPointerButtonStates&)> Platform::OnCursorButtonPressed;
     Event<void(const Vector2I&, OSMouseButton button, const OSPointerButtonStates&)> Platform::OnCursorButtonReleased;
     Event<void(const Vector2I&, const OSPointerButtonStates&)> Platform::OnCursorDoubleClick;
+    Event<void(InputCommandType)> Platform::OnInputCommand;
     Event<void(float)> Platform::OnMouseWheelScrolled;
     Event<void(UINT32)> Platform::OnCharInput;
 
@@ -236,6 +237,50 @@ namespace te
         }
 
         return nullptr;
+    }
+
+    /**
+     * Converts an X11 KeySym code into an input command, if possible. Returns true if conversion was done.
+     *
+     * @param[in]	keySym			KeySym to try to translate to a command.
+     * @param[in]	shift			True if the shift key was held down when the key was pressed.
+     * @param[out]	command			Input command. Only valid if function returns true.
+     * @return						True if the KeySym is an input command.
+     */
+    bool ParseInputCommand(KeySym keySym, bool shift, InputCommandType& command)
+    {
+        switch (keySym)
+        {
+        case XK_Left:
+            command = shift ? InputCommandType::SelectLeft : InputCommandType::CursorMoveLeft;
+            return true;
+        case XK_Right:
+            command = shift ? InputCommandType::SelectRight : InputCommandType::CursorMoveRight;
+            return true;
+        case XK_Up:
+            command = shift ? InputCommandType::SelectUp : InputCommandType::CursorMoveUp;
+            return true;
+        case XK_Down:
+            command = shift ? InputCommandType::SelectDown : InputCommandType::CursorMoveDown;
+            return true;
+        case XK_Escape:
+            command = InputCommandType::Escape;
+            return true;
+        case XK_Return:
+            command = shift ? InputCommandType::Return : InputCommandType::Confirm;
+            return true;
+        case XK_BackSpace:
+            command = InputCommandType::Backspace;
+            return true;
+        case XK_Delete:
+            command = InputCommandType::Delete;
+            return true;
+        case XK_Tab:
+            command = InputCommandType::Tab;
+            return true;
+        }
+
+        return false;
     }
 
     Platform::Pimpl* Platform::_data = te_new<Platform::Pimpl>();
@@ -564,6 +609,42 @@ namespace te
                 {
                     XKeyPressedEvent* keyEvent = (XKeyPressedEvent*) &event;
                     EnqueueButtonEvent(_data->KeyCodeMap[keyEvent->keycode], true, (UINT64) keyEvent->time);
+
+                    // Process text input
+                    KeySym keySym = XkbKeycodeToKeysym(mData->xDisplay, (KeyCode)event.xkey.keycode, 0, 0);
+
+                    // Handle input commands
+                    InputCommandType command = InputCommandType::Backspace;
+                    bool shift = (event.xkey.state & ShiftMask) != 0;
+
+                    bool isInputCommand = ParseInputCommand(keySym, shift, command);
+
+                    // Check if input manager wants this event. If not, we process it.
+                    if(XFilterEvent(&event, None) == False && !isInputCommand)
+                    {
+                        // Send a text input event
+                        Status status;
+                        char buffer[16];
+
+                        INT32 length = Xutf8LookupString(mData->IC, &event.xkey, buffer, sizeof(buffer), nullptr,
+                                &status);
+
+                        if (length > 0)
+                        {
+                            buffer[length] = '\0';
+
+                            U32String utfStr = UTF8::toUTF32(String(buffer));
+                            if (utfStr.length() > 0)
+                                OnCharInput((UINT32) utfStr[0]);
+                        }
+                    }
+
+                    // Send an input command event
+                    if(isInputCommand)
+                    {
+                        if(!onInputCommand.empty())
+                            OnInputCommand(command);
+                    }
                 }
                 break;
 

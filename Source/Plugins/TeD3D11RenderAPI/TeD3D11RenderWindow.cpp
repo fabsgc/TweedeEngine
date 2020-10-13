@@ -4,9 +4,17 @@
 #include "TeD3D11RenderAPI.h"
 #include "Image/TeTexture.h"
 #include "TeD3D11TextureView.h"
+#include "Manager/TeGuiManager.h"
 
 namespace te
 {
+    struct GuiAPIData
+    {
+        HWND HWnd;
+        ID3D11Device* PD3D11Device;
+        ID3D11DeviceContext* PD3D11DeviceContext;
+    };
+
     D3D11RenderWindow::D3D11RenderWindow(const RENDER_WINDOW_DESC& desc, D3D11Device& device, IDXGIFactory1* DXGIFactory)
         : RenderWindow(desc)
         , _swapChainDesc()
@@ -111,6 +119,15 @@ namespace te
 
         CreateSizeDependedD3DResources();
         _DXGIFactory->MakeWindowAssociation(_window->GetHWnd(), NULL);
+
+        // Initialize Gui
+        GuiAPIData data;
+        data.HWnd = _window->GetHWnd();
+        data.PD3D11Device = _device.GetD3D11Device();
+        data.PD3D11DeviceContext = _device.GetImmediateContext();
+
+        SPtr<GuiAPI> guiAPI = GuiManager::Instance().GetGui();
+        guiAPI->Initialize((void*)&data);
 
         RenderWindow::Initialize();
     }

@@ -359,6 +359,20 @@ namespace te
         SPtr<PooledRenderTexture> _pooledOutput;
     };
 
+    /** Renders Gui. */
+    class RCNodeGui : public RenderCompositorNode
+    {
+    public:
+        static String GetNodeId() { return "Gui"; }
+        static Vector<String> GetDependencies(const RendererView& view);
+    protected:
+        /** @copydoc RenderCompositorNode::Render */
+        void Render(const RenderCompositorNodeInputs& inputs) override;
+
+        /** @copydoc RenderCompositorNode::Clear */
+        void Clear() override;
+    };
+
     /** Moves the contents of the scene color texture into the view's output target. */
     class RCNodeFinalResolve : public RenderCompositorNode
     {

@@ -13,6 +13,7 @@
 #include "Renderer/TeMotionBlurMat.h"
 #include "Renderer/TeGaussianBlurMat.h"
 #include "TeRendererLight.h"
+#include "Gui/TeGuiAPI.h"
 
 namespace te
 {
@@ -762,10 +763,6 @@ namespace te
         rapi.SetViewport(viewProps.Target.NrmViewRect);
 
         gRendererUtility().Blit(input, Rect2I::EMPTY, viewProps.FlipView, false);
-
-        inputs.View._notifyCompositorTargetChanged(nullptr);
-
-        rapi.SetRenderTarget(nullptr);
     }
 
     void RCNodeFinalResolve::Clear()
@@ -790,5 +787,50 @@ namespace te
         }
 
         return deps;
+    }
+
+    // ############# Gui
+
+    void RCNodeGui::Render(const RenderCompositorNodeInputs& inputs)
+    {
+        const RendererViewProperties& viewProps = inputs.View.GetProperties();
+
+        SPtr<Texture> input;
+        if (viewProps.RunPostProcessing && viewProps.Target.NumSamples == 1)
+        {
+            RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[1]);
+            RCNodeForwardPass* forwardPassNode = static_cast<RCNodeForwardPass*>(inputs.InputNodes[0]);
+
+            input = postProcessNode->GetLastOutput();
+        }
+        else
+        {
+            RCNodeForwardPass* forwardPassNode = static_cast<RCNodeForwardPass*>(inputs.InputNodes[0]);
+            input = forwardPassNode->SceneTex->Tex;
+        }
+
+        SPtr<RenderTarget> target = viewProps.Target.Target;
+
+        RenderAPI& rapi = RenderAPI::Instance();
+        rapi.SetRenderTarget(target);
+        rapi.SetViewport(viewProps.Target.NrmViewRect);
+
+        GuiAPI::Instance().End();
+
+        inputs.View._notifyCompositorTargetChanged(nullptr);
+
+        rapi.SetRenderTarget(nullptr);
+    }
+
+    void RCNodeGui::Clear()
+    { }
+
+    Vector<String> RCNodeGui::GetDependencies(const RendererView& view)
+    {
+        return
+        {
+            RCNodeFinalResolve::GetNodeId(),
+            RCNodePostProcess::GetNodeId()
+        };
     }
 }

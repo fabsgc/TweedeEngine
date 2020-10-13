@@ -38,7 +38,7 @@ namespace te
         /**	Different types of possible input event callbacks. */
         enum class EventType
         {
-            ButtonUp, ButtonDown, PointerMoved, PointerUp, PointerDown, PointerDoubleClick, TextInput
+            ButtonUp, ButtonDown, PointerMoved, PointerUp, PointerDown, PointerDoubleClick, TextInput, Command
         };
 
         /**	Stores information about a queued input event that is to be triggered later. */
@@ -146,34 +146,25 @@ namespace te
         void NotifyButtonReleased(UINT32 deviceIdx, ButtonCode code, UINT64 timestamp);
 
     public:
-        /**
-         * Called from the message loop to notify user has entered a character.
-         */
+        /** Called from the message loop to notify user has entered a character. */
         void CharInput(UINT32 character);
 
-        /**
-         * Called from the message loop to notify user has moved the cursor.
-         */
+        /** Called from the message loop to notify user has moved the cursor. */
         void CursorMoved(const Vector2I& cursorPos, const OSPointerButtonStates& btnStates);
 
-        /**
-         * Called from the message loop to notify user has pressed a mouse button.
-         */
+        /** Called from the message loop to notify user has pressed a mouse button. */
         void CursorPressed(const Vector2I& cursorPos, OSMouseButton button, const OSPointerButtonStates& btnStates);
 
-        /**
-         * Called from the message loop to notify user has released a mouse button.
-         */
+        /** Called from the message loop to notify user has released a mouse button. */
         void CursorReleased(const Vector2I& cursorPos, OSMouseButton button, const OSPointerButtonStates& btnStates);
 
-        /**
-         * Called from the message loop to notify user has double-clicked a mouse button.
-         */
+        /** Called from the message loop to notify user has double-clicked a mouse button. */
         void CursorDoubleClick(const Vector2I& cursorPos, const OSPointerButtonStates& btnStates);
 
-        /**
-         * Called from the message loop to notify user has scrolled the mouse wheel.
-         */
+        /** Called from the message loop to notify user has entered an input command. */
+        void InputCommandEntered(InputCommandType commandType);
+
+        /** Called from the message loop to notify user has scrolled the mouse wheel. */
         void MouseWheelScrolled(float scrollPos);
 
         /** Called when window in focus changes, as reported by the OS. */
@@ -209,6 +200,9 @@ namespace te
 
         /**	Triggers when some pointing device (mouse cursor, touch) button is double clicked. */
         Event<void(const PointerEvent&)> OnPointerDoubleClick;
+
+        /**	Triggers on special input commands. */
+        Event<void(InputCommandType)> OnInputCommand;
 
     protected:
         /** Performs platform specific raw input system initialization. */
@@ -254,6 +248,7 @@ namespace te
         Vector<QueuedEvent> _queuedEvents[2];
 
         Vector<TextInputEvent> _textInputEvents[2];
+        Vector<InputCommandType> _commandEvents[2];
         Vector<PointerEvent> _pointerDoubleClickEvents[2];
         Vector<PointerEvent> _pointerReleasedEvents[2];
         Vector<PointerEvent> _pointerPressedEvents[2];

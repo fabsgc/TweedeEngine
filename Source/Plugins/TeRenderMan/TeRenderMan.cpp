@@ -46,6 +46,7 @@ namespace te
         RenderCompositor::RegisterNodeType<RCNodeSSAO>();
         RenderCompositor::RegisterNodeType<RCNodeBloom>();
         RenderCompositor::RegisterNodeType<RCNodePostProcess>();
+        RenderCompositor::RegisterNodeType<RCNodeGui>();
         RenderCompositor::RegisterNodeType<RCNodeFinalResolve>();
     }
 

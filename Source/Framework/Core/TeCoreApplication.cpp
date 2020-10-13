@@ -27,6 +27,8 @@
 #include "Importer/TeImporter.h"
 #include "Renderer/TeRenderer.h"
 
+#include "Gui/TeGuiAPI.h"
+
 namespace te
 {
     TE_MODULE_STATIC_MEMBER(CoreApplication)
@@ -69,9 +71,9 @@ namespace te
         RenderAPI::Instance().Initialize();
         RenderAPI::Instance().SetDrawOperation(DOT_TRIANGLE_LIST);
 
-        _gui = GuiManager::Instance().Initialize(_startUpDesc.Gui);
-
         ParamBlockManager::StartUp();
+
+        _gui = GuiManager::Instance().Initialize(_startUpDesc.Gui);
 
         _renderer = RendererManager::Instance().Initialize(_startUpDesc.Renderer);
         _window = RenderAPI::Instance().CreateRenderWindow(_startUpDesc.WindowDesc);
@@ -79,6 +81,7 @@ namespace te
 
         Input::StartUp();
         VirtualInput::StartUp();
+
         Importer::StartUp();
         AudioManager::StartUp(_startUpDesc.Audio);
         BuiltinResources::StartUp();
@@ -146,6 +149,7 @@ namespace te
 
             DisplayFrameRate();
 
+            GuiAPI::Instance().Begin();
             GuiManager::Instance().GetGui()->Update();
 
             RendererManager::Instance().GetRenderer()->Update();

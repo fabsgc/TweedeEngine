@@ -1,8 +1,12 @@
 #include "TeWin32RenderWindow.h"
 #include "Private/WIn32/TeWin32Platform.h"
+#include "Manager/TeGuiManager.h"
 
 namespace te
 {
+    struct GuiAPIData
+    { };
+
     Win32RenderWindow::Win32RenderWindow(const RENDER_WINDOW_DESC& desc)
         : RenderWindow(desc)
     {
@@ -56,6 +60,12 @@ namespace te
         if (_properties.IsFullScreen)
         {
         }
+
+        // Initialize Gui
+        GuiAPIData data;
+
+        SPtr<GuiAPI> guiAPI = GuiManager::Instance().GetGui();
+        guiAPI->Initialize(&data);
 
         RenderWindow::Initialize();
     }

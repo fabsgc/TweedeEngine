@@ -92,7 +92,7 @@ namespace te
         if (settings != nullptr)
             *_renderSettings = *settings;
 
-        _compositor.Build(*this, RCNodeFinalResolve::GetNodeId());
+        _compositor.Build(*this, RCNodeGui::GetNodeId());
     }
 
     void RendererView::SetTransform(const Vector3& origin, const Vector3& direction, const Matrix4& view,

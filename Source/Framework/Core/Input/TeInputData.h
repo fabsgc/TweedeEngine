@@ -350,6 +350,14 @@ namespace te
         mutable bool _isUsed;
     };
 
+    /**	Types of special input commands. */
+    enum class InputCommandType
+    {
+        CursorMoveLeft, CursorMoveRight, CursorMoveUp, CursorMoveDown,
+        SelectLeft, SelectRight, SelectUp, SelectDown,
+        Escape, Delete, Backspace, Return, Confirm, Tab
+    };
+
     /**
      * Event that gets sent out when user inputs some text. These events may be preceeded by normal button events if user
      * is typing on a keyboard.

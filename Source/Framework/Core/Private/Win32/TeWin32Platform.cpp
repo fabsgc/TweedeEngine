@@ -36,6 +36,7 @@ namespace te
     Event<void(const Vector2I&, OSMouseButton button, const OSPointerButtonStates&)> Platform::OnCursorButtonPressed;
     Event<void(const Vector2I&, OSMouseButton button, const OSPointerButtonStates&)> Platform::OnCursorButtonReleased;
     Event<void(const Vector2I&, const OSPointerButtonStates&)> Platform::OnCursorDoubleClick;
+    Event<void(InputCommandType)> Platform::OnInputCommand;
     Event<void(float)> Platform::OnMouseWheelScrolled;
     Event<void(UINT32)> Platform::OnCharInput;
 
@@ -271,6 +272,50 @@ namespace te
                 break;
             }
         }
+    }
+
+    /**
+     * Converts a virtual key code into an input command, if possible. Returns true if conversion was done.
+     *
+     * @param[in]	virtualKeyCode	Virtual key code to try to translate to a command.
+     * @param[out]	command			Input command. Only valid if function returns true.
+     */
+    bool GetCommand(unsigned int virtualKeyCode, InputCommandType& command)
+    {
+        bool isShiftPressed = GetAsyncKeyState(VK_SHIFT);
+        
+        switch (virtualKeyCode)
+        {
+        case VK_LEFT:
+            command = isShiftPressed ? InputCommandType::SelectLeft : InputCommandType::CursorMoveLeft;
+            return true;
+        case VK_RIGHT:
+            command = isShiftPressed ? InputCommandType::SelectRight : InputCommandType::CursorMoveRight;
+            return true;
+        case VK_UP:
+            command = isShiftPressed ? InputCommandType::SelectUp : InputCommandType::CursorMoveUp;
+            return true;
+        case VK_DOWN:
+            command = isShiftPressed ? InputCommandType::SelectDown : InputCommandType::CursorMoveDown;
+            return true;
+        case VK_ESCAPE:
+            command = InputCommandType::Escape;
+            return true;
+        case VK_RETURN:
+            command = isShiftPressed ? InputCommandType::Return : InputCommandType::Confirm;
+            return true;
+        case VK_BACK:
+            command = InputCommandType::Backspace;
+            return true;
+        case VK_DELETE:
+            command = InputCommandType::Delete;
+            return true;
+        case VK_TAB:
+            command = InputCommandType::Tab;
+            return true;
+        }
+
+        return false;
     }
 
     LRESULT CALLBACK Win32Platform::_win32WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -601,16 +646,13 @@ namespace te
             case WM_SYSKEYDOWN:
             case WM_KEYDOWN:
             {
-                if (wParam == VK_SHIFT)
+                InputCommandType command = InputCommandType::Backspace;
+                if(GetCommand((unsigned int)wParam, command))
                 {
-                    IsShiftPressed = true;
-                    break;
-                }
+                    if(!OnInputCommand.Empty())
+                        OnInputCommand(command);
 
-                if (wParam == VK_CONTROL)
-                {
-                    IsCtrlPressed = true;
-                    break;
+                    return 0;
                 }
 
                 break;
@@ -618,16 +660,6 @@ namespace te
             case WM_SYSKEYUP:
             case WM_KEYUP:
             {
-                if (wParam == VK_SHIFT)
-                {
-                    IsShiftPressed = false;
-                }
-
-                if (wParam == VK_CONTROL)
-                {
-                    IsCtrlPressed = false;
-                }
-
                 return 0;
             }
             case WM_CHAR:

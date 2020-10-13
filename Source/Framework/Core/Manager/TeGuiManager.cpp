@@ -43,8 +43,6 @@ namespace te
 
                 if (newGuiAPI != nullptr)
                 {
-                    newGuiAPI->Initialize();
-
                     if (_gui != nullptr)
                     {
                         _gui->Destroy();

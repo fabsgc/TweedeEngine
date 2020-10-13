@@ -61,6 +61,7 @@ namespace te
 
         virtual SPtr<RenderWindow> CreateRenderWindow(const RENDER_WINDOW_DESC& windowDesc) = 0;
 
+        /** Initialize render API (depending on configuration). */
         virtual void Initialize();
 
         /** Shuts down the render API system and cleans up all resources. */
