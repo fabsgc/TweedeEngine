@@ -21,7 +21,7 @@
 
 //---- Define attributes of all API symbols declarations, e.g. for DLL under Windows
 // Using dear imgui via a shared library is not recommended, because of function call overhead and because we don't guarantee backward nor forward ABI compatibility.
-#if TE_PLATFORM == TE_PLATFORM_WIN32
+#if defined( __WIN32__ ) || defined( _WIN32 )
 #       define IMGUI_API __declspec( dllexport )
 #endif
 //#define IMGUI_API __declspec( dllimport )
