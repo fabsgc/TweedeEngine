@@ -5,11 +5,12 @@
 namespace te
 {
     GpuParamBlockBuffer::GpuParamBlockBuffer(UINT32 size, GpuBufferUsage usage, GpuDeviceFlags deviceMask)
-        : _usage(usage)
+        : _buffer(nullptr)
+        , _usage(usage)
         , _size(size)
         , _cachedData(nullptr)
         , _GPUBufferDirty(false)
-        , _buffer(nullptr)
+        
     {
         if (_size > 0)
         {

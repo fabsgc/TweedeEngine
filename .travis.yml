@@ -19,6 +19,8 @@ matrix:
             - uuid-dev
             - gcc-8
             - g++-8
+            - libglfw3
+            - libglfw3-dev
       env: 
         - MATRIX_EVAL="CC=gcc-9 && CXX=g++-9"
 

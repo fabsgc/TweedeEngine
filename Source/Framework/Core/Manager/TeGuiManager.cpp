@@ -14,10 +14,9 @@ namespace te
 
     GuiManager::~GuiManager()
     {
-        if (_guiInitialized)
+        if (_gui != nullptr)
         {
-            GuiAPI::Instance().Destroy();
-            GuiAPI::ShutDown();
+            _gui->Destroy();
         }
     }
 

@@ -12,7 +12,6 @@ set (TE_GLIMGUIAPI_SRC_NOFILTER
 )
 
 set(TE_GLIMGUIAPI_INC_IMGUI
-    "ImGui/imgui_impl_dx11.h"
     "ImGui/imgui_impl_opengl3.h"
     "ImGui/imgui.h"
     "ImGui/imconfig.h"
@@ -23,7 +22,6 @@ set(TE_GLIMGUIAPI_INC_IMGUI
 )
 
 set(TE_GLIMGUIAPI_SRC_IMGUI
-    "ImGui/imgui_impl_dx11.cpp"
     "ImGui/imgui_impl_opengl3.cpp"
     "ImGui/imgui.cpp"
     "ImGui/imgui_demo.cpp"
@@ -32,8 +30,8 @@ set(TE_GLIMGUIAPI_SRC_IMGUI
 )
 
 if(WIN32)
-    list(APPEND TE_GLIMGUIAPI_INC_IMGUI "ImGui/imgui_impl_win32.h")
-    list(APPEND TE_GLIMGUIAPI_SRC_IMGUI "ImGui/imgui_impl_win32.cpp")
+    list(APPEND TE_GLIMGUIAPI_INC_IMGUI "ImGui/imgui_impl_win32.h" "ImGui/imgui_impl_dx11.h")
+    list(APPEND TE_GLIMGUIAPI_SRC_IMGUI "ImGui/imgui_impl_win32.cpp" "ImGui/imgui_impl_dx11.cpp")
 elseif(LINUX)
     list(APPEND TE_GLIMGUIAPI_INC_IMGUI "ImGui/imgui_impl_glfw.h")
     list(APPEND TE_GLIMGUIAPI_SRC_IMGUI "ImGui/imgui_impl_glfw.cpp")

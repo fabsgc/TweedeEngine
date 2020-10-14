@@ -4,6 +4,9 @@
 
 namespace te
 {
+    struct GuiAPIData
+    { };
+
     LinuxRenderWindow::LinuxRenderWindow(const RENDER_WINDOW_DESC& desc)
         : RenderWindow(desc)
         , _window(nullptr)
@@ -20,7 +23,6 @@ namespace te
 
     void LinuxRenderWindow::Initialize()
     {
-        
         XVisualInfo visualInfoTempl = {};
         visualInfoTempl.screen = XDefaultScreen(LinuxPlatform::GetXDisplay());
         visualInfoTempl.depth = 24;
