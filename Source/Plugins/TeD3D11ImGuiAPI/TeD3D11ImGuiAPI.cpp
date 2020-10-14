@@ -32,6 +32,8 @@ namespace te
 
         ImGui_ImplWin32_Init(guiData->HWnd);
         ImGui_ImplDX11_Init(guiData->PD3D11Device, guiData->PD3D11DeviceContext);
+
+        _guiInitialized = true;
     }
 
     void D3D11ImGuiAPI::Destroy()
@@ -46,10 +48,6 @@ namespace te
     void D3D11ImGuiAPI::Update()
     {
         GuiAPI::Update();
-
-        bool open = true;
-
-        ImGui::ShowDemoWindow(&open);
     }
 
     void D3D11ImGuiAPI::BeginFrame()
@@ -67,7 +65,6 @@ namespace te
 
         io.DisplaySize = ImVec2((float)width, (float)height);
 
-        // Rendering
         ImGui::Render();
         ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
     }
@@ -81,7 +78,6 @@ namespace te
         return false;
     }
 
-    /** Called from the message loop to notify user has entered a character. */
     void D3D11ImGuiAPI::CharInput(UINT32 character)
     {
         ImGuiIO& io = ImGui::GetIO();

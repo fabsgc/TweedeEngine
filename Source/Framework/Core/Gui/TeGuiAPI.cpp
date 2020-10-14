@@ -7,6 +7,10 @@ namespace te
 {
     TE_MODULE_STATIC_MEMBER(GuiAPI)
 
+    GuiAPI::GuiAPI()
+        : _guiInitialized(false)
+    { }
+
     void GuiAPI::Initialize(void* data)
     {
         _charInputConn = Platform::OnCharInput.Connect(std::bind(&GuiAPI::CharInput, this, _1));
@@ -28,7 +32,4 @@ namespace te
         _keyUpConn.Disconnect();
         _keyDownConn.Disconnect();
     }
-
-    void GuiAPI::Update()
-    { }
 }

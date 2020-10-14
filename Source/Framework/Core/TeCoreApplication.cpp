@@ -137,6 +137,9 @@ namespace te
             gVirtualInput().Update();
             _window->TriggerCallback();
 
+            GuiAPI::Instance().BeginFrame();
+            GuiManager::Instance().GetGui()->Update();
+
             PreUpdate();
 
             gSceneManager()._update();
@@ -149,9 +152,6 @@ namespace te
             PostUpdate();
 
             DisplayFrameRate();
-
-            GuiAPI::Instance().BeginFrame();
-            GuiManager::Instance().GetGui()->Update();
 
             RendererManager::Instance().GetRenderer()->Update();
             RendererManager::Instance().GetRenderer()->RenderAll();

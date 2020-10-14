@@ -13,20 +13,10 @@ set (TE_GLIMGUIAPI_SRC_NOFILTER
 
 set(TE_GLIMGUIAPI_INC_IMGUI
     "ImGui/imgui_impl_opengl3.h"
-    "ImGui/imgui.h"
-    "ImGui/imconfig.h"
-    "ImGui/imgui_internal.h"
-    "ImGui/imstb_rectpack.h"
-    "ImGui/imstb_textedit.h"
-    "ImGui/imstb_truetype.h"
 )
 
 set(TE_GLIMGUIAPI_SRC_IMGUI
     "ImGui/imgui_impl_opengl3.cpp"
-    "ImGui/imgui.cpp"
-    "ImGui/imgui_demo.cpp"
-    "ImGui/imgui_draw.cpp"
-    "ImGui/imgui_widgets.cpp"
 )
 
 if(WIN32)

@@ -26,6 +26,9 @@
 #include "Text/TeFont.h"
 #include "Text/TeFontImportOptions.h"
 
+#include "Gui/TeGuiAPI.h"
+#include "ImGui/imgui.h"
+
 namespace te
 {
     TE_MODULE_STATIC_MEMBER(Application)
@@ -79,6 +82,7 @@ namespace te
         _sceneCamera->SetMain(true);
         _sceneCamera->Initialize();
 
+        // ######################################################
         /*_sceneSkyboxSO = SceneObject::Create("Skybox");
         _skybox = _sceneSkyboxSO->AddComponent<CSkybox>();
         _skybox->SetTexture(_loadedCubemapTexture);
@@ -102,8 +106,20 @@ namespace te
     { }
 
     void Application::PreUpdate()
-    { }
+    {
+        if (GuiAPI::Instance().IsGuiInitialized())
+        {
+            DrawDebugWindow();
+        }
+    }
 
     void Application::PostUpdate()
     { }
+
+    void Application::DrawDebugWindow()
+    {
+        ImGui::Begin("Debug window");
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+        ImGui::End();
+    }
 }

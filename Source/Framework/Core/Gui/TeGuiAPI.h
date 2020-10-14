@@ -18,7 +18,7 @@ namespace te
     public:
         TE_MODULE_STATIC_HEADER_MEMBER(GuiAPI)
 
-        GuiAPI() = default;
+        GuiAPI();
         ~GuiAPI() = default;
 
         /**
@@ -31,7 +31,7 @@ namespace te
         virtual void Destroy();
 
         /** Update */
-        virtual void Update();
+        virtual void Update() { };
 
         /** Begin a new Gui frame */
         virtual void BeginFrame() = 0;
@@ -41,6 +41,9 @@ namespace te
 
         /** Return true if the Gui currently want to listen to event from keyboard or mouse */
         virtual bool HasFocus(FocusType type) = 0;
+
+        /** Before using ImGui somewhere, we want to be sure that gui context is initialized */
+        inline bool IsGuiInitialized() { return _guiInitialized; };
 
     public:
         /** Called from the message loop to notify user has entered a character. */
@@ -96,5 +99,7 @@ namespace te
         HEvent _mouseWheelScrolledConn;
         HEvent _keyDownConn;
         HEvent _keyUpConn;
+
+        bool  _guiInitialized;
     };
 }
