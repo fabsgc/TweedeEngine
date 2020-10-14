@@ -9,8 +9,7 @@ namespace te
 
     Win32RenderWindow::Win32RenderWindow(const RENDER_WINDOW_DESC& desc)
         : RenderWindow(desc)
-    {
-    }
+    { }
 
     Win32RenderWindow::~Win32RenderWindow()
     {
@@ -62,10 +61,18 @@ namespace te
         }
 
         RenderWindow::Initialize();
+
+        // TODO
     }
 
     void Win32RenderWindow::InitializeGui()
-    { }
+    {
+        // TODO
+        GuiAPIData data;
+
+        SPtr<GuiAPI> guiAPI = GuiManager::Instance().GetGui();
+        guiAPI->Initialize((void*)&data);
+    }
 
     void Win32RenderWindow::GetCustomAttribute(const String& name, void* pData) const
     {

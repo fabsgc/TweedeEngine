@@ -8,42 +8,42 @@ if(LINUX)
 endif()
     
 # Target
-add_library (TeGLImGui SHARED ${TE_GLIMGUIAPI_SRC})
+add_library (TeGLImGuiAPI SHARED ${TE_GLIMGUIAPI_SRC})
 
 # Defines
-target_compile_definitions (TeGLImGui PRIVATE -DTE_GL_EXPORTS -DGLEW_STATIC)
+target_compile_definitions (TeGLImGuiAPI PRIVATE -DTE_GL_EXPORTS -DGLEW_STATIC)
 
 if (WIN32)
     if (${CMAKE_SYSTEM_VERSION} EQUAL 6.1) # Windows 7
-        target_compile_definitions (TeGLImGui PRIVATE -DTE_WIN_SDK_7)
+        target_compile_definitions (TeGLImGuiAPI PRIVATE -DTE_WIN_SDK_7)
     elseif (${CMAKE_SYSTEM_VERSION} EQUAL 6.2) # Windows 8
-        target_compile_definitions (TeGLImGui PRIVATE -DTE_WIN_SDK_8)
+        target_compile_definitions (TeGLImGuiAPI PRIVATE -DTE_WIN_SDK_8)
     elseif (${CMAKE_SYSTEM_VERSION} EQUAL 10.0) # Windows 10
-        target_compile_definitions (TeGLImGui PRIVATE -DTE_WIN_SDK_10)
+        target_compile_definitions (TeGLImGuiAPI PRIVATE -DTE_WIN_SDK_10)
     endif ()
 endif ()
 
 # Includes
-target_include_directories (TeGLImGui PRIVATE "./")
+target_include_directories (TeGLImGuiAPI PRIVATE "./")
 
 # Libraries
 if(WIN32)
     ## External lib: OpenGL
-    target_link_libraries (TeGLImGui PRIVATE glu32 opengl32)
+    target_link_libraries (TeGLImGuiAPI PRIVATE glu32 opengl32)
 elseif(LINUX)
     ## External lib: OpenGL
-    target_link_libraries (TeGLImGui PRIVATE ${OPENGL_LIBRARIES})
+    target_link_libraries (TeGLImGuiAPI PRIVATE ${OPENGL_LIBRARIES})
 endif()
 
 ## Local libs
-target_link_libraries (TeGLImGui PUBLIC tef)
+target_link_libraries (TeGLImGuiAPI PUBLIC tef)
 
 # IDE specific
-set_property (TARGET TeGLImGui PROPERTY FOLDER Plugins)
+set_property (TARGET TeGLImGuiAPI PROPERTY FOLDER Plugins)
 
 if (LINUX)
-    install_pre_build_data(TeGLImGui)
+    install_pre_build_data(TeGLImGuiAPI)
 endif()
 
 # Install
-install_tef_target (TeGLImGui)
+install_tef_target (TeGLImGuiAPI)

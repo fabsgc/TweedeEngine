@@ -160,40 +160,49 @@ namespace te
             _nextQuadVBSlot * sizeof(VertexBuffer) * 4, 
             sizeof(VertexBuffer) * 4, GBL_WRITE_ONLY_NO_OVERWRITE);
 
-        if (rapiConventions.NDC_YAxis == Conventions::Axis::Down)
+        if (dstData)
         {
-            dstData[0].Position = Vector3(-1.0f, -1.0f, 0.0f);
-            dstData[1].Position = Vector3(1.0f, -1.0f, 0.0f);
-            dstData[2].Position = Vector3(-1.0f, 1.0f, 0.0f);
-            dstData[3].Position = Vector3(1.0f, 1.0f, 0.0f);
+            if (rapiConventions.NDC_YAxis == Conventions::Axis::Down)
+            {
+                dstData[0].Position = Vector3(-1.0f, -1.0f, 0.0f);
+                dstData[1].Position = Vector3(1.0f, -1.0f, 0.0f);
+                dstData[2].Position = Vector3(-1.0f, 1.0f, 0.0f);
+                dstData[3].Position = Vector3(1.0f, 1.0f, 0.0f);
+            }
+            else
+            {
+                dstData[0].Position = Vector3(-1.0f, 1.0f, 0.0f);
+                dstData[1].Position = Vector3(1.0f, 1.0f, 0.0f);
+                dstData[2].Position = Vector3(-1.0f, -1.0f, 0.0f);
+                dstData[3].Position = Vector3(1.0f, -1.0f, 0.0f);
+            }
+
+            if ((rapiConventions.UV_YAxis == Conventions::Axis::Up) ^ flipUV)
+            {
+                dstData[0].Texture = Vector2(uv.x, uv.y + uv.height);
+                dstData[1].Texture = Vector2(uv.x + uv.width, uv.y + uv.height);
+                dstData[2].Texture = Vector2(uv.x, uv.y);
+                dstData[3].Texture = Vector2(uv.x + uv.width, uv.y);
+            }
+            else
+            {
+                dstData[0].Texture = Vector2(uv.x, uv.y);
+                dstData[1].Texture = Vector2(uv.x + uv.width, uv.y);
+                dstData[2].Texture = Vector2(uv.x, uv.y + uv.height);
+                dstData[3].Texture = Vector2(uv.x + uv.width, uv.y + uv.height);
+            }
+
+            for (int i = 0; i < 4; i++)
+            {
+                dstData[i].Texture.x /= (float)textureSize.x;
+                dstData[i].Texture.y /= (float)textureSize.y;
+            }
         }
         else
         {
-            dstData[0].Position = Vector3(-1.0f, 1.0f, 0.0f);
-            dstData[1].Position = Vector3(1.0f, 1.0f, 0.0f);
-            dstData[2].Position = Vector3(-1.0f, -1.0f, 0.0f);
-            dstData[3].Position = Vector3(1.0f, -1.0f, 0.0f);
-        }
-
-        if ((rapiConventions.UV_YAxis == Conventions::Axis::Up) ^ flipUV)
-        {
-            dstData[0].Texture = Vector2(uv.x, uv.y + uv.height);
-            dstData[1].Texture = Vector2(uv.x + uv.width, uv.y + uv.height);
-            dstData[2].Texture = Vector2(uv.x, uv.y);
-            dstData[3].Texture = Vector2(uv.x + uv.width, uv.y);
-        }
-        else
-        {
-            dstData[0].Texture = Vector2(uv.x, uv.y);
-            dstData[1].Texture = Vector2(uv.x + uv.width, uv.y);
-            dstData[2].Texture = Vector2(uv.x, uv.y + uv.height);
-            dstData[3].Texture = Vector2(uv.x + uv.width, uv.y + uv.height);
-        }
-
-        for (int i = 0; i < 4; i++)
-        {
-            dstData[i].Texture.x /= (float)textureSize.x;
-            dstData[i].Texture.y /= (float)textureSize.y;
+#if TE_PLATFORM == TE_PLATFORM_WIN32
+            // TE_ASSERT_ERROR(false, "_fullScreenQuadVB buffer is NULL");
+#endif
         }
 
         _fullScreenQuadVB->Unlock();

@@ -16,10 +16,10 @@ int main()
 {
     te::START_UP_DESC desc;
 
-    desc.RenderAPI = TE_RENDER_API_MODULE;
+    desc.RenderAPI = TE_RENDER_API_MODULE_OPENGL;
     desc.Renderer = TE_RENDERER_MODULE;
     desc.Audio = TE_AUDIO_MODULE;
-    desc.Gui = TE_GUI_MODULE;
+    desc.Gui = "TeGLImGuiAPI";
 
     desc.Importers = {
         "TeFreeImgImporter",

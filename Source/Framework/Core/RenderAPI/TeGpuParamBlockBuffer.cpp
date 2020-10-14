@@ -9,6 +9,7 @@ namespace te
         , _size(size)
         , _cachedData(nullptr)
         , _GPUBufferDirty(false)
+        , _buffer(nullptr)
     {
         if (_size > 0)
         {

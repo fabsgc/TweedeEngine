@@ -1,13 +1,13 @@
 #include "TeLinuxRenderWindow.h"
 #include "Private/Linux/TeLinuxPlatform.h"
+#include "Manager/TeGuiManager.h"
 
 namespace te
 {
     LinuxRenderWindow::LinuxRenderWindow(const RENDER_WINDOW_DESC& desc)
         : RenderWindow(desc)
         , _window(nullptr)
-    {
-    }
+    { }
 
     LinuxRenderWindow::~LinuxRenderWindow()
     {
@@ -69,6 +69,10 @@ namespace te
     void LinuxRenderWindow::InitializeGui()
     { 
         // TODO
+        GuiAPIData data;
+
+        SPtr<GuiAPI> guiAPI = GuiManager::Instance().GetGui();
+        guiAPI->Initialize((void*)&data);
     }
 
     void LinuxRenderWindow::GetCustomAttribute(const String& name, void* pData) const

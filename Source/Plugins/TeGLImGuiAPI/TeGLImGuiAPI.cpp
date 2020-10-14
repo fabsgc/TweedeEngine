@@ -1,5 +1,31 @@
 #include "TeGLImGuiAPI.h"
 
+#if TE_PLATFORM == TE_PLATFORM_WIN32
+    #include "ImGui/imgui_impl_opengl3.h"
+    #include "ImGui/imgui_impl_win32.h"
+#else
+    #include "ImGui/imgui_impl_glfw.h"
+    #include "ImGui/imgui_impl_opengl3.h"
+#endif
+
+#if TE_PLATFORM == TE_PLATFORM_WIN32
+#if !defined( __MINGW32__ )
+#   define WIN32_LEAN_AND_MEAN
+#   ifndef NOMINMAX
+#       define NOMINMAX // required to stop windows.h messing up std::min
+#   endif
+#endif
+#   include <windows.h>
+#   include <wingdi.h>
+#   include <GL/glew.h>
+#   include <GL/wglew.h>
+#elif TE_PLATFORM == TE_PLATFORM_LINUX
+#   include <GL/glew.h>
+#   include <GL/glxew.h>
+#   include <GL/glu.h>
+#   define GL_GLEXT_PROTOTYPES
+#endif
+
 namespace te
 {
     GLImGuiAPI::GLImGuiAPI()
@@ -11,6 +37,12 @@ namespace te
     void GLImGuiAPI::Initialize(void* data)
     { 
         GuiAPI::Initialize(data);
+
+#if TE_PLATFORM == TE_PLATFORM_WIN32
+
+#else
+
+#endif
     }
 
     void GLImGuiAPI::Destroy()
