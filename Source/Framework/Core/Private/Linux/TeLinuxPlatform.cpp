@@ -629,14 +629,17 @@ namespace te
                     {
                         // Send a text input event
                         Status status;
+                        KeySym keysym = 0;
                         char buffer[16];
 
-                        INT32 length = Xutf8LookupString(_data->IC, &event.xkey, buffer, sizeof(buffer), nullptr,
+                        INT32 length = Xutf8LookupString(_data->IC, &event.xkey, buffer, sizeof(buffer), &keysym,
                                 &status);
 
                         if (length > 0)
                         {
                             buffer[length] = '\0';
+
+                            OnCharInput((UINT32) keysym);
 
                             // TODO
                             /*U32String utfStr = UTF8::toUTF32(String(buffer));
