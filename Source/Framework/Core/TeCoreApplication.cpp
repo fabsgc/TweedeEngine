@@ -150,7 +150,7 @@ namespace te
 
             DisplayFrameRate();
 
-            GuiAPI::Instance().Begin();
+            GuiAPI::Instance().BeginFrame();
             GuiManager::Instance().GetGui()->Update();
 
             RendererManager::Instance().GetRenderer()->Update();

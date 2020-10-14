@@ -7,6 +7,7 @@
 #include "Components/TeCCamera.h"
 #include "Platform/TePlatform.h"
 #include "TeCoreApplication.h"
+#include "Gui/TeGuiAPI.h"
 
 namespace te
 {
@@ -47,6 +48,9 @@ namespace te
 
     void CCameraFlyer::Update()
     {
+        if (GuiAPI::Instance().HasFocus(GuiAPI::FocusType::Keyboard) || GuiAPI::Instance().HasFocus(GuiAPI::FocusType::Mouse))
+            return;
+
         // Check if any movement or rotation keys are being held
         bool goingForward = gVirtualInput().IsButtonHeld(_moveForward);
         bool goingBack = gVirtualInput().IsButtonHeld(_moveBack);

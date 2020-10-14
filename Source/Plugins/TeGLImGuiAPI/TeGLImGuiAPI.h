@@ -21,10 +21,13 @@ namespace te
         void Update() override;
 
         /** @copydoc GuiAPI::Begin */
-        void Begin() override;
+        void BeginFrame() override;
 
         /** @copydoc GuiAPI::End */
-        void End() override;
+        void EndFrame() override;
+
+        /** @copydoc GuiAPI::HasFocus */
+        bool HasFocus(FocusType type) override;
 
     public:
         /** @copydoc GuiAPI::CharInput */
@@ -39,20 +42,8 @@ namespace te
         /** @copydoc GuiAPI::CursorReleased */
         void CursorReleased(const Vector2I& cursorPos, OSMouseButton button, const OSPointerButtonStates& btnStates) override;
 
-        /** @copydoc GuiAPI::CursorDoubleClick */
-        void CursorDoubleClick(const Vector2I& cursorPos, const OSPointerButtonStates& btnStates) override;
-
         /** @copydoc GuiAPI::MouseWheelScrolled */
         void MouseWheelScrolled(float scrollPos) override;
-
-        /** @copydoc GuiAPI::ButtonUp */
-        void ButtonUp(ButtonEvent event) override;
-
-        /** @copydoc GuiAPI::ButtonDown */
-        void ButtonDown(ButtonEvent event) override;
-
-        /** @copydoc GuiAPI::OnInputCommandEntered */
-        void OnInputCommandEntered(InputCommandType commandType);
 
         /** @copydoc GuiAPI::KeyUp */
         void KeyUp(UINT32 keyCode) override;

@@ -12,7 +12,7 @@ namespace te
         INT32 x = 0;
         INT32 y = 0;
 
-        constexpr Vector2I() = default;
+        Vector2I() = default;
 
         constexpr Vector2I(INT32 _x, INT32 _y)
             :x(_x), y(_y)

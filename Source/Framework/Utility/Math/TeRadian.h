@@ -7,7 +7,7 @@ namespace te
     class TE_UTILITY_EXPORT Radian
     {
     public:
-        constexpr Radian() = default;
+        Radian() = default;
         constexpr Radian(const Radian&) = default;
         constexpr Radian& operator= (const Radian&) = default;
 

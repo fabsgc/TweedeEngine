@@ -10,6 +10,12 @@ namespace te
     class TE_CORE_EXPORT GuiAPI : public Module<GuiAPI>
     {
     public:
+        enum class FocusType
+        {
+            Keyboard, Mouse
+        };
+
+    public:
         TE_MODULE_STATIC_HEADER_MEMBER(GuiAPI)
 
         GuiAPI() = default;
@@ -28,10 +34,14 @@ namespace te
         virtual void Update();
 
         /** Begin a new Gui frame */
-        virtual void Begin() = 0;
+        virtual void BeginFrame() = 0;
 
         /** End current Gui frame */
-        virtual void End() = 0;
+        virtual void EndFrame() = 0;
+
+        /** Return true if the Gui currently want to listen to event from keyboard or mouse */
+        virtual bool HasFocus(FocusType type) = 0;
+
     public:
         /** Called from the message loop to notify user has entered a character. */
         virtual void CharInput(UINT32 character) = 0;
@@ -45,20 +55,8 @@ namespace te
         /** Called from the message loop to notify user has released a mouse button. */
         virtual void CursorReleased(const Vector2I& cursorPos, OSMouseButton button, const OSPointerButtonStates& btnStates) = 0;
 
-        /** Called from the message loop to notify user has double-clicked a mouse button. */
-        virtual void CursorDoubleClick(const Vector2I& cursorPos, const OSPointerButtonStates& btnStates) = 0;
-
         /** Called from the message loop to notify user has scrolled the mouse wheel. */
         virtual void MouseWheelScrolled(float scrollPos) = 0;
-
-        /** Called from the message loop to notify user has pressed a key. */
-        virtual void ButtonUp(ButtonEvent event) = 0;
-
-        /** Called from the message loop to notify user has released a key. */
-        virtual void ButtonDown(ButtonEvent event) = 0;
-
-        /**	Called whenever an input command is input. */
-        virtual void OnInputCommandEntered(InputCommandType commandType) = 0;
 
         /** Called from the message loop to notify user has released a key. */
         virtual void KeyUp(UINT32 keyCode) = 0;
@@ -67,12 +65,6 @@ namespace te
         virtual void KeyDown(UINT32 keyCode) = 0;
 
     protected:
-        /** Triggered whenever a button is first pressed. */
-        Event<void(const ButtonEvent&)> OnButtonDown;
-
-        /**	Triggered whenever a button is first released. */
-        Event<void(const ButtonEvent&)> OnButtonUp;
-
         /**	Triggered whenever user inputs a text character. */
         Event<void(const TextInputEvent&)> OnCharInput;
 
@@ -88,9 +80,6 @@ namespace te
         /**	Triggers when some pointing device (mouse cursor, touch) button is released. */
         Event<void(const PointerEvent&)> OnPointerReleased;
 
-        /**	Triggers when some pointing device (mouse cursor, touch) button is double clicked. */
-        Event<void(const PointerEvent&)> OnPointerDoubleClick;
-
         /**	Triggers when some key is released. */
         Event<void(const UINT32&)> OnKeyUp;
 
@@ -104,10 +93,7 @@ namespace te
         HEvent _cursorPressedConn;
         HEvent _cursorReleasedConn;
         HEvent _cursorDoubleClickConn;
-        HEvent _inputCommandConn;
         HEvent _mouseWheelScrolledConn;
-        HEvent _buttonDownConn;
-        HEvent _buttonUpConn;
         HEvent _keyDownConn;
         HEvent _keyUpConn;
     };

@@ -23,11 +23,16 @@ namespace te
         GuiAPI::Update();
     }
 
-    void GLImGuiAPI::Begin()
+    void GLImGuiAPI::BeginFrame()
     { }
 
-    void GLImGuiAPI::End()
+    void GLImGuiAPI::EndFrame()
     { }
+
+    bool GLImGuiAPI::HasFocus(FocusType type)
+    {
+        return false;
+    }
 
     void GLImGuiAPI::CharInput(UINT32 character)
     { }
@@ -41,19 +46,7 @@ namespace te
     void GLImGuiAPI::CursorReleased(const Vector2I& cursorPos, OSMouseButton button, const OSPointerButtonStates& btnStates)
     { }
 
-    void GLImGuiAPI::CursorDoubleClick(const Vector2I& cursorPos, const OSPointerButtonStates& btnStates)
-    { }
-
     void GLImGuiAPI::MouseWheelScrolled(float scrollPos)
-    { }
-
-    void GLImGuiAPI::ButtonUp(ButtonEvent event)
-    { }
-
-    void GLImGuiAPI::ButtonDown(ButtonEvent event)
-    { }
-
-    void GLImGuiAPI::OnInputCommandEntered(InputCommandType commandType)
     { }
 
     void GLImGuiAPI::KeyUp(UINT32 keyCode)

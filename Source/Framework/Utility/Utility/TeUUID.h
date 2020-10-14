@@ -8,7 +8,7 @@ namespace te
     struct TE_UTILITY_EXPORT UUID
     {
         /** Initializes an empty UUID. */
-        constexpr UUID() = default;
+        UUID() = default;
 
         /** Initializes an UUID using framework UUID representation. */
         constexpr UUID(UINT32 data1, UINT32 data2, UINT32 data3, UINT32 data4)

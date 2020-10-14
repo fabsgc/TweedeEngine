@@ -52,14 +52,14 @@ namespace te
         ImGui::ShowDemoWindow(&open);
     }
 
-    void D3D11ImGuiAPI::Begin()
+    void D3D11ImGuiAPI::BeginFrame()
     {
         ImGui_ImplDX11_NewFrame();
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
     }
 
-    void D3D11ImGuiAPI::End()
+    void D3D11ImGuiAPI::EndFrame()
     {
         ImGuiIO& io = ImGui::GetIO();
         UINT32 width = gCoreApplication().GetWindow()->GetProperties().Width;
@@ -70,6 +70,15 @@ namespace te
         // Rendering
         ImGui::Render();
         ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+    }
+
+    bool D3D11ImGuiAPI::HasFocus(FocusType type)
+    {
+        ImGuiIO& io = ImGui::GetIO();
+        if (type == FocusType::Keyboard && io.WantCaptureKeyboard) return true;
+        if (type == FocusType::Mouse && io.WantCaptureMouse) return true;
+
+        return false;
     }
 
     /** Called from the message loop to notify user has entered a character. */
@@ -98,7 +107,6 @@ namespace te
         case OSMouseButton::Middle: { io.MouseDown[2] = true; } break;
         case OSMouseButton::Right: { io.MouseDown[1] = true; } break;
         }
-
     }
 
     void D3D11ImGuiAPI::CursorReleased(const Vector2I& cursorPos, OSMouseButton button, const OSPointerButtonStates& btnStates)
@@ -112,25 +120,12 @@ namespace te
         case OSMouseButton::Right: { io.MouseDown[1] = false; } break;
         }
     }
- 
-    void D3D11ImGuiAPI::CursorDoubleClick(const Vector2I& cursorPos, const OSPointerButtonStates& btnStates)
-    { }
 
     void D3D11ImGuiAPI::MouseWheelScrolled(float scrollPos)
     {
         ImGuiIO& io = ImGui::GetIO();
-
         io.MouseWheel = scrollPos;
     }
-
-    void D3D11ImGuiAPI::ButtonUp(ButtonEvent event)
-    { }
-
-    void D3D11ImGuiAPI::ButtonDown(ButtonEvent event)
-    { }
-
-    void D3D11ImGuiAPI::OnInputCommandEntered(InputCommandType commandType)
-    { }
 
     void D3D11ImGuiAPI::KeyUp(UINT32 keyCode)
     { 

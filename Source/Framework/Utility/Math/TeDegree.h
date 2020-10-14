@@ -15,7 +15,7 @@ namespace te
     class TE_UTILITY_EXPORT Degree
     {
     public:
-        constexpr Degree() = default;
+        Degree() = default;
         constexpr Degree(const Degree& d) = default;
         constexpr Degree&operator= (const Degree& d) = default;
 
