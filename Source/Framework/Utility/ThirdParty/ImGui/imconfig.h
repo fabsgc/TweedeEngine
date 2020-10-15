@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include "TeCorePrerequisites.h"
+
 //---- Define assertion handler. Defaults to calling assert().
 // If your macro uses multiple statements, make sure is enclosed in a 'do { .. } while (0)' block so it can be used as a single statement.
 //#define IM_ASSERT(_EXPR)  MyAssert(_EXPR)
@@ -22,9 +24,11 @@
 //---- Define attributes of all API symbols declarations, e.g. for DLL under Windows
 // Using dear imgui via a shared library is not recommended, because of function call overhead and because we don't guarantee backward nor forward ABI compatibility.
 #if defined( __WIN32__ ) || defined( _WIN32 )
-#       define IMGUI_API __declspec( dllexport )
+#   define IMGUI_API __declspec( dllexport )
 #endif
 //#define IMGUI_API __declspec( dllimport )
+
+
 
 //---- Don't define obsolete functions/enums/behaviors. Consider enabling from time to time after updating to avoid using soon-to-be obsolete function/names.
 //#define IMGUI_DISABLE_OBSOLETE_FUNCTIONS
@@ -78,12 +82,12 @@
 */
 
 //---- Use 32-bit vertex indices (default is 16-bit) is one way to allow large meshes with more than 64K vertices.
-// Your renderer back-end will need to support it (most example renderer back-ends support both 16/32-bit indices).
+// Your renderer backend will need to support it (most example renderer backends support both 16/32-bit indices).
 // Another way to allow large meshes while keeping 16-bit indices is to handle ImDrawCmd::VtxOffset in your renderer.
 // Read about ImGuiBackendFlags_RendererHasVtxOffset for details.
 //#define ImDrawIdx unsigned int
 
-//---- Override ImDrawCallback signature (will need to modify renderer back-ends accordingly)
+//---- Override ImDrawCallback signature (will need to modify renderer backends accordingly)
 //struct ImDrawList;
 //struct ImDrawCmd;
 //typedef void (*MyImDrawCallback)(const ImDrawList* draw_list, const ImDrawCmd* cmd, void* my_renderer_user_data);

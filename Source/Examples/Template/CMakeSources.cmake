@@ -1,0 +1,15 @@
+set (TE_TEMPLATE_INC_NOFILTER
+    "TeApplication.h"
+)
+
+set (TE_TEMPLATE_SRC_NOFILTER
+    "Main.cpp"
+    "TeApplication.cpp"
+)
+
+source_group ("" FILES ${TE_TEMPLATE_SRC_NOFILTER} ${TE_TEMPLATE_INC_NOFILTER})
+
+set (TE_TEMPLATE_SRC
+    ${TE_TEMPLATE_INC_NOFILTER}
+    ${TE_TEMPLATE_SRC_NOFILTER}
+)

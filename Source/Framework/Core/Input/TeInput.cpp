@@ -188,8 +188,8 @@ namespace te
 
                 _devices[eventData.deviceIdx].KeyStates[eventData.buttonCode & 0x0000FFFF] = ButtonState::ToggledOn;
 
-                if (!GuiAPI::Instance().HasFocus(GuiAPI::FocusType::Keyboard))
-                    OnButtonDown(_buttonDownEvents[1][event.Idx]);
+                //if (!GuiAPI::Instance().HasFocus(GuiAPI::FocusType::Keyboard))
+                OnButtonDown(_buttonDownEvents[1][event.Idx]);
             }
             break;
             case EventType::ButtonUp:
@@ -204,8 +204,8 @@ namespace te
                 else
                     _devices[eventData.deviceIdx].KeyStates[eventData.buttonCode & 0x0000FFFF] = ButtonState::ToggledOff;
 
-                if (!GuiAPI::Instance().HasFocus(GuiAPI::FocusType::Keyboard))
-                    OnButtonUp(_buttonUpEvents[1][event.Idx]);
+                //if (!GuiAPI::Instance().HasFocus(GuiAPI::FocusType::Keyboard))
+                OnButtonUp(_buttonUpEvents[1][event.Idx]);
             }
             break;
             case EventType::PointerDown:
@@ -213,8 +213,8 @@ namespace te
                 const PointerEvent& eventData = _pointerPressedEvents[1][event.Idx];
                 _pointerButtonStates[(UINT32)eventData.button] = ButtonState::ToggledOn;
 
-                if (!GuiAPI::Instance().HasFocus(GuiAPI::FocusType::Mouse))
-                    OnPointerPressed(eventData);
+                //if (!GuiAPI::Instance().HasFocus(GuiAPI::FocusType::Mouse))
+                OnPointerPressed(eventData);
             }
             break;
             case EventType::PointerUp:
@@ -226,28 +226,28 @@ namespace te
                 else
                     _pointerButtonStates[(UINT32)eventData.button] = ButtonState::ToggledOff;
 
-                if (!GuiAPI::Instance().HasFocus(GuiAPI::FocusType::Mouse))
-                    OnPointerReleased(eventData);
+                //if (!GuiAPI::Instance().HasFocus(GuiAPI::FocusType::Mouse))
+                OnPointerReleased(eventData);
             }
             break;
             case EventType::PointerDoubleClick:
             {
                 _pointerDoubleClicked = true;
 
-                if (!GuiAPI::Instance().HasFocus(GuiAPI::FocusType::Mouse))
-                    OnPointerDoubleClick(_pointerDoubleClickEvents[1][event.Idx]);
+                //if (!GuiAPI::Instance().HasFocus(GuiAPI::FocusType::Mouse))
+                OnPointerDoubleClick(_pointerDoubleClickEvents[1][event.Idx]);
             }
             break;
             case EventType::TextInput:
             {
-                if (!GuiAPI::Instance().HasFocus(GuiAPI::FocusType::Keyboard))
-                    OnCharInput(_textInputEvents[1][event.Idx]);
+                //if (!GuiAPI::Instance().HasFocus(GuiAPI::FocusType::Keyboard))
+                OnCharInput(_textInputEvents[1][event.Idx]);
             }
             break;
             case EventType::Command:
             {
-                if (!GuiAPI::Instance().HasFocus(GuiAPI::FocusType::Keyboard))
-                    OnInputCommand(_commandEvents[1][event.Idx]);
+                //if (!GuiAPI::Instance().HasFocus(GuiAPI::FocusType::Keyboard))
+                OnInputCommand(_commandEvents[1][event.Idx]);
             }
             break;
             default:

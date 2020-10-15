@@ -46,8 +46,6 @@ namespace te
         HCameraFlyer _sceneCameraFlyer;
         HTexture _loadedCubemapTexture;
         HSceneObject _sceneCameraSO;
-        HSceneObject _sceneSkyboxSO;
-        HSkybox _skybox;
 #endif
     };
 }

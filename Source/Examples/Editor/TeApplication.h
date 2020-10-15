@@ -37,17 +37,12 @@ namespace te
         /** @copydoc CoreApplication::PreUpdate */
         void PostUpdate() override;
 
-        /** Draw an ImGui debug windows at each frame */
-        void DrawDebugWindow();
-
     protected:
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         HCamera _sceneCamera;
         HCameraFlyer _sceneCameraFlyer;
         HTexture _loadedCubemapTexture;
         HSceneObject _sceneCameraSO;
-        HSceneObject _sceneSkyboxSO;
-        HSkybox _skybox;
 #endif
     };
 }

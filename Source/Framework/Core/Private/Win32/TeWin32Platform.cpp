@@ -9,6 +9,10 @@
 #include "Image/TePixelData.h"
 #include <shellapi.h>
 
+#ifndef WM_DPICHANGED
+#   define WM_DPICHANGED 0x02E0 // From Windows SDK 8.1+ headers
+#endif
+
 namespace te
 {
     /** Encapsulate native cursor data so we can avoid including windows.h as it pollutes the global namespace. */
@@ -248,12 +252,10 @@ namespace te
     }
 
     void Platform::StartUp()
-    {
-    }
+    { }
 
     void Platform::ShutDown()
-    {
-    }
+    { }
 
     void Platform::Update()
     {
@@ -695,6 +697,9 @@ namespace te
             }
             case WM_TE_SETCAPTURE:
                 SetCapture(hWnd);
+                break;
+            case WM_DPICHANGED:
+                // TODO
                 break;
             case WM_TE_RELEASECAPTURE:
                 ReleaseCapture();

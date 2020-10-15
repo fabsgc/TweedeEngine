@@ -9,7 +9,7 @@ int CALLBACK WinMain(
     _In_  HINSTANCE hPrevInstance,
     _In_  LPSTR lpCmdLine,
     _In_  int nCmdShow
-)
+)  
 #else
 int main()
 #endif
@@ -31,8 +31,7 @@ int main()
     desc.WindowDesc.Mode = te::VideoMode(1024, 576);
     desc.WindowDesc.Fullscreen = false;
     desc.WindowDesc.MultisampleCount = 1;
-    desc.WindowDesc.Title = "Lighting scene";
-    desc.WindowDesc.Vsync = true;
+    desc.WindowDesc.Title = "Template";
 
     te::Application::StartUp(desc);
     te::Application::Instance().RunMainLoop();
