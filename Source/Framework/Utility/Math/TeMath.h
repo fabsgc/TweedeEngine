@@ -825,6 +825,12 @@ namespace te
             coefficients[3] = pointA;
         }
 
+        template <class T>
+        static constexpr T Max(T a, T b) { return a > b ? a : b; }
+
+        template <class T>
+        static constexpr T Min(T a, T b) { return a < b ? a : b; }
+
         static constexpr float POS_INFINITY = std::numeric_limits<float>::infinity();
         static constexpr float NEG_INFINITY = -std::numeric_limits<float>::infinity();
         static constexpr float PI = 3.14159265358979323846f;

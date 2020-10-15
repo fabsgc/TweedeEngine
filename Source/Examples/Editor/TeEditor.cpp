@@ -5,6 +5,12 @@
 #include "ImGui/imgui_internal.h"
 
 #include "Widget/TeWidgetMenuBar.h"
+#include "Widget/TeWidgetToolBar.h"
+#include "Widget/TeWidgetProject.h"
+#include "Widget/TeWidgetProperties.h"
+#include "Widget/TeWidgetRenderOptions.h"
+#include "Widget/TeWidgetConsole.h"
+#include "Widget/TeWidgetViewport.h"
 
 #ifndef GImGui
 ImGuiContext* GImGui = NULL;
@@ -50,6 +56,10 @@ namespace te
                     widget->Update();
                     widget->EndGui();
                 }
+                else
+                {
+                    TE_PRINT("failed");
+                }
             }
 
             if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DockingEnable)
@@ -72,13 +82,18 @@ namespace te
         io.ConfigViewportsNoTaskBarIcon = true;
         ApplyStyleGui();
 
-        _widgets.emplace_back(te_shared_ptr_new<WidgetMenuBar>()); _settings.WidgetMenuBar = _widgets.back();
-        /*_widgets.emplace_back(te_shared_ptr_new<WidgetToolbar>(this)); _settings.WidgetToolbar = _widgets.back();
-        _widgets.emplace_back(te_shared_ptr_new<WidgetProject>(this)); _settings.WidgetProject = _widgets.back();
-        _widgets.emplace_back(te_shared_ptr_new<WidgetProperties>(this));
-        _widgets.emplace_back(te_shared_ptr_new<WidgetRenderOptions>(this));
-        _widgets.emplace_back(te_shared_ptr_new<WidgetConsole>(this));
-        _widgets.emplace_back(te_shared_ptr_new<WidgetViewport>(this));*/
+        _widgets.emplace_back(te_shared_ptr_new<WidgetMenuBar>()); _settings.WMenuBar = _widgets.back();
+        //_widgets.emplace_back(te_shared_ptr_new<WidgetToolBar>()); _settings.WToolbar = _widgets.back();
+        _widgets.emplace_back(te_shared_ptr_new<WidgetProject>()); _settings.WProject = _widgets.back();
+        _widgets.emplace_back(te_shared_ptr_new<WidgetProperties>());
+        _widgets.emplace_back(te_shared_ptr_new<WidgetRenderOptions>());
+        _widgets.emplace_back(te_shared_ptr_new<WidgetConsole>());
+        _widgets.emplace_back(te_shared_ptr_new<WidgetViewport>());
+
+        for (auto widget : _widgets)
+        {
+            widget->Initialize();
+        }
     }
 
     void Editor::ApplyStyleGui() const
@@ -183,12 +198,13 @@ namespace te
             ImGuiWindowFlags_NoResize |
             ImGuiWindowFlags_NoMove |
             ImGuiWindowFlags_NoBringToFrontOnFocus |
-            ImGuiWindowFlags_NoNavFocus;
+            ImGuiWindowFlags_NoNavFocus |
+            ImGuiWindowFlags_NoSavedSettings;
 
         // Set window position and size
         float offset_y = 0;
-        offset_y += _settings.WidgetMenuBar ? _settings.WidgetMenuBar->GetHeight() : 0;
-        offset_y += _settings.WidgetToolbar ? _settings.WidgetToolbar->GetHeight() : 0;
+        offset_y += _settings.WMenuBar ? _settings.WMenuBar->GetHeight() : 0;
+        offset_y += _settings.WToolbar ? _settings.WToolbar->GetHeight() : 0;
 
         const ImGuiViewport* viewport = ImGui::GetMainViewport();
         ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y + offset_y));

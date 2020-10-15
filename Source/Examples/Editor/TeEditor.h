@@ -4,6 +4,7 @@
 #include "Widget/TeWidget.h"
 #include "Utility/TeModule.h"
 #include <vector>
+#include <memory>
 
 namespace te
 {
@@ -24,15 +25,12 @@ namespace te
         /** Called every frame. */
         void Update();
 
-        template<typename T>
-        T* GetWidget()
+        Widget* GetWidget(Widget::WidgetType type)
         {
-            for (const auto& widget : _widgets)
+            for (auto& widget : _widgets)
             {
-                if (T* widget = dynamic_cast<T*>(widget.get()))
-                {
-                    return widget;
-                }
+                if (widget->GetType() == type)
+                    return widget.get();
             }
 
             return nullptr;
@@ -41,9 +39,9 @@ namespace te
     protected:
         struct EditorSettings
         {
-            SPtr<Widget> WidgetMenuBar = nullptr;
-            SPtr<Widget> WidgetToolbar = nullptr;
-            SPtr<Widget> WidgetProject = nullptr;
+            SPtr<Widget> WMenuBar = nullptr;
+            SPtr<Widget> WToolbar = nullptr;
+            SPtr<Widget> WProject = nullptr;
             const char* EditorName = "Editor";
             bool Show = true;
         };

@@ -4,19 +4,27 @@
 
 namespace te
 {
-    Widget::Widget()
+    Widget::Widget(WidgetType type)
         : _isVisible(true)
         , _isWindow(true)
         , _begun(false)
+        , _type(type)
     { }
 
     bool Widget::BeginGui()
     {
+        // Callback
+        if (_onStartCallback)
+            _onStartCallback();
+
         if (!_isWindow)
             return true;
 
         if (!_isVisible)
             return false;
+
+        if (_onVisibleCallback)
+            _onVisibleCallback();
 
         if (_position.x != -1.0f && _position.y != -1.0f)
             ImGui::SetNextWindowPos(ImVec2(_position.x, _position.y));
@@ -47,6 +55,13 @@ namespace te
             _height = ImGui::GetWindowHeight();
             _begun = true;
         }
+        else
+        {
+           _begun = true;
+        }
+
+        if (_begun && _onBeginCallback)
+            _onBeginCallback();
 
         return _begun;
     }

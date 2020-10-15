@@ -815,7 +815,10 @@ namespace te
         rapi.SetRenderTarget(target);
         rapi.SetViewport(viewProps.Target.NrmViewRect);
 
-        GuiAPI::Instance().EndFrame();
+        if (inputs.View.GetSceneCamera()->IsMain())
+        {
+            GuiAPI::Instance().EndFrame();
+        }
 
         inputs.View._notifyCompositorTargetChanged(nullptr);
 

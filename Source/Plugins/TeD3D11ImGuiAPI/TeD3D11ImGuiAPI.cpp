@@ -30,6 +30,8 @@ namespace te
         io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
         io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
+        io.IniFilename = NULL;
+
         io.ConfigDockingTransparentPayload = true;
 
         ImGui::StyleColorsDark();

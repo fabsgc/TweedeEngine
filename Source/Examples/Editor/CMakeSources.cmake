@@ -12,11 +12,23 @@ set (TE_EDITOR_SRC_NOFILTER
 set (TE_EDITOR_INC_WIDGET
     "Widget/TeWidget.h"
     "Widget/TeWidgetMenuBar.h"
+    "Widget/TeWidgetToolBar.h"
+    "Widget/TeWidgetConsole.h"
+    "Widget/TeWidgetProject.h"
+    "Widget/TeWidgetViewport.h"
+    "Widget/TeWidgetProperties.h"
+    "Widget/TeWidgetRenderOptions.h"
 )
 
 set (TE_EDITOR_SRC_WIDGET
     "Widget/TeWidget.cpp"
     "Widget/TeWidgetMenuBar.cpp"
+    "Widget/TeWidgetToolBar.cpp"
+    "Widget/TeWidgetConsole.cpp"
+    "Widget/TeWidgetProject.cpp"
+    "Widget/TeWidgetViewport.cpp"
+    "Widget/TeWidgetProperties.cpp"
+    "Widget/TeWidgetRenderOptions.cpp"
 )
 
 source_group ("" FILES ${TE_EDITOR_SRC_NOFILTER} ${TE_EDITOR_INC_NOFILTER})

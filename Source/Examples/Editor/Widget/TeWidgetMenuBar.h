@@ -13,5 +13,16 @@ namespace te
 
         virtual void Initialize() override;
         virtual void Update() override;
+
+        void ShowAboutWindow();
+
+    protected:
+        struct WidgetMenubarSettings
+        {
+            bool ShowAboutWindow = false;
+        };
+
+    protected:
+        WidgetMenubarSettings _settings;
     };
 }

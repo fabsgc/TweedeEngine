@@ -10,7 +10,26 @@ namespace te
     class Widget
     {
     public:
-        Widget();
+        enum class IconType
+        {
+            NotAssigned,
+            ComponentOptions
+        };
+
+        enum class WidgetType
+        {
+            Console,
+            MenuBar,
+            Project,
+            Properties,
+            RenderOptions,
+            ToolBar,
+            Viewport,
+            None
+        };
+
+    public:
+        Widget(WidgetType type);
         ~Widget() = default;
 
         virtual void Initialize() = 0;
@@ -27,21 +46,27 @@ namespace te
         bool GetVisible() const { return _isVisible; }
         void SetVisible(bool isVisible) { _isVisible = isVisible; }
         const auto& GetTitle() const { return _title; }
+        const WidgetType GetType() const { return _type; }
 
     protected:
         bool _isVisible;
         bool _isWindow;
         UINT32 _flags = ImGuiWindowFlags_NoCollapse;
-        float _height = 0;
+        float _height = 0.0f;
         float _alpha = -1.0f;
         Vector2 _position = Vector2(-1.0f, -1.0f);
         Vector2 _size = Vector2(-1.0f, -1.0f);
         Vector2 _sizeMax = Vector2(FLT_MAX, FLT_MAX);
         Vector2 _padding = Vector2(-1.0f, - 1.0f);
+        std::function<void()> _onStartCallback = nullptr;
+        std::function<void()> _onVisibleCallback = nullptr;
+        std::function<void()> _onBeginCallback = nullptr;
 
         String _title;
 
         bool _begun;
-        uint8_t _varPushes = 0;
+        UINT8 _varPushes = 0;
+
+        WidgetType _type;
     };
 }

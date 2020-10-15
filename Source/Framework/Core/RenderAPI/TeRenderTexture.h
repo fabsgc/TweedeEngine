@@ -49,7 +49,7 @@ namespace te
         static SPtr<RenderTexture> Create(const RENDER_TEXTURE_DESC& desc);
 
         /**
-         * Returns a color surface texture you may bind as an input to an GPU program.
+         * Returns a color surface texture you may bind as an input to a GPU program.
          *
          * @note Be aware that you cannot bind a render texture for reading and writing at the same time.
          */
