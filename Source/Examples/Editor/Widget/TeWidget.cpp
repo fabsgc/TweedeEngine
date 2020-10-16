@@ -42,7 +42,7 @@ namespace te
         }
 
         if (_size.x != -1.0f && _size.y != -1.0f)
-            ImGui::SetNextWindowSize(ImVec2(_size.x, _size.y), ImGuiCond_FirstUseEver);
+            ImGui::SetNextWindowSize(ImVec2(_size.x, _size.y), ImGuiCond_Always);
 
         if ((_size.x != -1.0f && _size.y != -1.0f) || (_sizeMax.x != FLT_MAX && _sizeMax.y != FLT_MAX))
         {

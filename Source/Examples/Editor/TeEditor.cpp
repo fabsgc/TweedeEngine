@@ -11,6 +11,13 @@
 #include "Widget/TeWidgetRenderOptions.h"
 #include "Widget/TeWidgetConsole.h"
 #include "Widget/TeWidgetViewport.h"
+#include "Widget/TeWidgetResources.h"
+
+#include "TeCoreApplication.h"
+#include "Renderer/TeCamera.h"
+#include "Scene/TeSceneManager.h"
+#include "Scene/TeSceneObject.h"
+#include "Components/TeCCamera.h"
 
 #ifndef GImGui
 ImGuiContext* GImGui = NULL;
@@ -31,6 +38,27 @@ namespace te
 
     void Editor::OnStartUp()
     {
+#if TE_PLATFORM == TE_PLATFORM_WIN32
+        // ######################################################
+        _uiCameraSO = SceneObject::Create("UICamera");
+        _uiCamera = _uiCameraSO->AddComponent<CCamera>();
+        _uiCamera->GetViewport()->SetClearColorValue(Color(0.17f, 0.64f, 1.0f, 1.0f));
+        _uiCamera->GetViewport()->SetTarget(gCoreApplication().GetWindow());
+        _uiCamera->SetMain(true);
+        _uiCamera->Initialize();
+
+        _uiCamera->SetNearClipDistance(5);
+        _uiCamera->SetLayers(0);
+
+        SPtr<RenderSettings> settings = _uiCamera->GetRenderSettings();
+        settings->OverlayOnly = true;
+        // ######################################################
+
+        // ######################################################
+        gSceneManager().SetMainRenderTarget(gCoreApplication().GetWindow());
+        // ######################################################
+#endif
+
         if (GuiAPI::Instance().IsGuiInitialized())
         {
             InitializeGui();
@@ -44,6 +72,9 @@ namespace te
     {
         if (GuiAPI::Instance().IsGuiInitialized())
         {
+            GuiAPI::Instance().BeginFrame();
+            GuiAPI::Instance().Update();
+
             if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DockingEnable)
             {
                 BeginGui();
@@ -55,10 +86,6 @@ namespace te
                 {
                     widget->Update();
                     widget->EndGui();
-                }
-                else
-                {
-                    TE_PRINT("failed");
                 }
             }
 
@@ -83,12 +110,13 @@ namespace te
         ApplyStyleGui();
 
         _widgets.emplace_back(te_shared_ptr_new<WidgetMenuBar>()); _settings.WMenuBar = _widgets.back();
-        //_widgets.emplace_back(te_shared_ptr_new<WidgetToolBar>()); _settings.WToolbar = _widgets.back();
+        _widgets.emplace_back(te_shared_ptr_new<WidgetToolBar>()); _settings.WToolbar = _widgets.back();
         _widgets.emplace_back(te_shared_ptr_new<WidgetProject>()); _settings.WProject = _widgets.back();
         _widgets.emplace_back(te_shared_ptr_new<WidgetProperties>());
         _widgets.emplace_back(te_shared_ptr_new<WidgetRenderOptions>());
         _widgets.emplace_back(te_shared_ptr_new<WidgetConsole>());
         _widgets.emplace_back(te_shared_ptr_new<WidgetViewport>());
+        _widgets.emplace_back(te_shared_ptr_new<WidgetResources>());
 
         for (auto widget : _widgets)
         {
@@ -247,8 +275,9 @@ namespace te
                 ImGui::DockBuilderDockWindow("Project", dockLeftId);
                 ImGui::DockBuilderDockWindow("Render Options", dockRightId);
                 ImGui::DockBuilderDockWindow("Console", dockBottomId);
-                ImGui::DockBuilderDockWindow("Properties", dockLeftBottomId);
                 ImGui::DockBuilderDockWindow("Viewport", dockMainId);
+                ImGui::DockBuilderDockWindow("Properties", dockLeftBottomId);
+                ImGui::DockBuilderDockWindow("Resources", dockRightBottomId);
                 ImGui::DockBuilderFinish(dockMainId);
             }
 

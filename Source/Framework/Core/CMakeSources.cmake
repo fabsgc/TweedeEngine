@@ -277,7 +277,7 @@ set (TE_CORE_INC_COMPONENTS
     "Core/Components/TeCLight.h"
     "Core/Components/TeCSkybox.h"
     "Core/Components/TeCCameraFlyer.h"
-    "Core/Components/TeCCameraEditor.h"
+    "Core/Components/TeCCameraUI.h"
 )
 set (TE_CORE_SRC_COMPONENTS
     "Core/Components/TeCCamera.cpp"
@@ -285,7 +285,7 @@ set (TE_CORE_SRC_COMPONENTS
     "Core/Components/TeCLight.cpp"
     "Core/Components/TeCSkybox.cpp"
     "Core/Components/TeCCameraFlyer.cpp"
-    "Core/Components/TeCCameraEditor.cpp"
+    "Core/Components/TeCCameraUI.cpp"
 )
 
 set (TE_CORE_INC_RESOURCE

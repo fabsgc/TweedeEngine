@@ -59,7 +59,7 @@ namespace te
         TID_CLight        = 1004,
         TID_CSkybox       = 1005,
         TID_CCameraFlyer  = 1006,
-        TID_CCameraEditor = 1007
+        TID_CCameraUI = 1007
     };
 }
 
@@ -210,6 +210,7 @@ namespace te
 
     class CCamera;
     class CCameraFlyer;
+    class CCameraUI;
     class CRenderable;
     class CLight;
     class CSkybox;
@@ -255,6 +256,7 @@ namespace te
     typedef GameObjectHandle<Component> HComponent;
     typedef GameObjectHandle<CCamera> HCamera;
     typedef GameObjectHandle<CCameraFlyer> HCameraFlyer;
+    typedef GameObjectHandle<CCameraUI> HCameraUI;
     typedef GameObjectHandle<CLight> HLight;
     typedef GameObjectHandle<CSkybox> HSkybox;
 }

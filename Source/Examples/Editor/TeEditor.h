@@ -56,5 +56,10 @@ namespace te
         std::vector<SPtr<Widget>> _widgets;
         EditorSettings _settings;
         bool _editorBegun;
+
+#if TE_PLATFORM == TE_PLATFORM_WIN32
+        HCamera _uiCamera;
+        HSceneObject _uiCameraSO;
+#endif
     };
 }

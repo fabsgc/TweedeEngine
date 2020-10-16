@@ -1,5 +1,7 @@
 #include "TeWidgetMenuBar.h"
 
+#include "../TeEditor.h"
+
 namespace te
 {
     WidgetMenuBar::WidgetMenuBar()
@@ -21,8 +23,66 @@ namespace te
         {
             if (ImGui::BeginMenu("File"))
             {
+                if (ImGui::MenuItem("New"))
+                { }
+
                 if (ImGui::MenuItem("Quit"))
                 { }
+
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::BeginMenu("Project"))
+            {
+                if (ImGui::MenuItem("Load resource"))
+                { }
+
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::BeginMenu("View"))
+            {
+                if (ImGui::MenuItem("Project"))
+                {
+                    Widget* widget = static_cast<Widget*>(Editor::Instance().GetWidget(WidgetType::Project));
+                    if(widget)
+                        widget->SetVisible(!widget->GetVisible());
+                }
+
+                if (ImGui::MenuItem("Properties"))
+                {
+                    Widget* widget = static_cast<Widget*>(Editor::Instance().GetWidget(WidgetType::Properties));
+                    if (widget)
+                        widget->SetVisible(!widget->GetVisible());
+                }
+
+                if (ImGui::MenuItem("Viewport"))
+                {
+                    Widget* widget = static_cast<Widget*>(Editor::Instance().GetWidget(WidgetType::Viewport));
+                    if (widget)
+                        widget->SetVisible(!widget->GetVisible());
+                }
+
+                if (ImGui::MenuItem("Console"))
+                { 
+                    Widget* widget = static_cast<Widget*>(Editor::Instance().GetWidget(WidgetType::Console));
+                    if (widget)
+                        widget->SetVisible(!widget->GetVisible());
+                }
+
+                if (ImGui::MenuItem("Render options"))
+                { 
+                    Widget* widget = static_cast<Widget*>(Editor::Instance().GetWidget(WidgetType::RenderOptions));
+                    if (widget)
+                        widget->SetVisible(!widget->GetVisible());
+                }
+
+                if (ImGui::MenuItem("Resources"))
+                { 
+                    Widget* widget = static_cast<Widget*>(Editor::Instance().GetWidget(WidgetType::Resources));
+                    if (widget)
+                        widget->SetVisible(!widget->GetVisible());
+                }
 
                 ImGui::EndMenu();
             }

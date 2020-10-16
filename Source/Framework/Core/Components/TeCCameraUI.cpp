@@ -1,4 +1,4 @@
-#include "TeCCameraEditor.h"
+#include "TeCCameraUI.h"
 #include "Scene/TeSceneObject.h"
 #include "Math/TeVector3.h"
 #include "Math/TeVector2I.h"
@@ -11,14 +11,14 @@
 
 namespace te
 {
-    const float CCameraEditor::MOVE_SPEED = 25.0f;
-    const float CCameraEditor::ROTATION_SPEED = 2.0f;
+    const float CCameraUI::MOVE_SPEED = 25.0f;
+    const float CCameraUI::ROTATION_SPEED = 2.0f;
 
-    CCameraEditor::CCameraEditor(const HSceneObject& parent)
-        : Component(parent, TID_CCameraEditor)
+    CCameraUI::CCameraUI(const HSceneObject& parent)
+        : Component(parent, TID_CCameraUI)
     {
         // Set a name for the component, so we can find it later if needed
-        SetName("CCameraEditor");
+        SetName("CCameraUI");
 
         // Get handles for key bindings. Actual keys attached to these bindings will be registered during app start-up.
         _zoomCam = VirtualButton("ZoomCam");
@@ -28,6 +28,6 @@ namespace te
         _verticalAxis = VirtualAxis("Vertical");
     }
 
-    void CCameraEditor::Update()
+    void CCameraUI::Update()
     { }
 }

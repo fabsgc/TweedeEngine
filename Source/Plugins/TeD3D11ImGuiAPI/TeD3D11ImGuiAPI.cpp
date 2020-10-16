@@ -58,27 +58,39 @@ namespace te
 
     void D3D11ImGuiAPI::BeginFrame()
     {
-        ImGui_ImplDX11_NewFrame();
-        ImGui_ImplWin32_NewFrame();
-        ImGui::NewFrame();
+        if (!_guiStarted && _guiEnded)
+        {
+            ImGui_ImplDX11_NewFrame();
+            ImGui_ImplWin32_NewFrame();
+            ImGui::NewFrame();
+
+            _guiStarted = true;
+            _guiEnded = false;
+        }
     }
 
     void D3D11ImGuiAPI::EndFrame()
     {
-        ImGuiIO& io = ImGui::GetIO();
-        UINT32 width = gCoreApplication().GetWindow()->GetProperties().Width;
-        UINT32 height = gCoreApplication().GetWindow()->GetProperties().Height;
-
-        io.DisplaySize = ImVec2((float)width, (float)height);
-
-        ImGui::Render();
-        ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-
-        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+        if (_guiStarted && !_guiEnded)
         {
-            ImGui::UpdatePlatformWindows();
-            ImGui::RenderPlatformWindowsDefault();
+            ImGuiIO& io = ImGui::GetIO();
+            UINT32 width = gCoreApplication().GetWindow()->GetProperties().Width;
+            UINT32 height = gCoreApplication().GetWindow()->GetProperties().Height;
+
+            io.DisplaySize = ImVec2((float)width, (float)height);
+
+            ImGui::Render();
+            ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+            if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+            {
+                ImGui::UpdatePlatformWindows();
+                ImGui::RenderPlatformWindowsDefault();
+            }
         }
+
+        _guiStarted = false;
+        _guiEnded = true;
     }
 
     bool D3D11ImGuiAPI::HasFocus(FocusType type)

@@ -43,8 +43,6 @@ namespace te
     protected:
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         HCamera _sceneCamera;
-        HCameraFlyer _sceneCameraFlyer;
-        HTexture _loadedCubemapTexture;
         HSceneObject _sceneCameraSO;
 #endif
     };

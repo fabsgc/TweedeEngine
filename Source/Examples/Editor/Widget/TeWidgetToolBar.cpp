@@ -30,10 +30,13 @@ namespace te
 
         _onVisibleCallback = [this]()
         {
+            float width = static_cast<float>(ImGui::GetWindowContentRegionMax().x - ImGui::GetWindowContentRegionMin().x);
+            float height = static_cast<float>(ImGui::GetWindowContentRegionMax().y - ImGui::GetWindowContentRegionMin().y);
+
             auto& ctx = *ImGui::GetCurrentContext();
             ctx.NextWindowData.MenuBarOffsetMinVal = ImVec2(ctx.Style.DisplaySafeAreaPadding.x, Math::Max(ctx.Style.DisplaySafeAreaPadding.y - ctx.Style.FramePadding.y, 0.0f));
             _position = Vector2(ctx.Viewports[0]->Pos.x, ctx.Viewports[0]->Pos.y + 22.0f);
-            _size = Vector2(ctx.Viewports[0]->Size.x, ctx.NextWindowData.MenuBarOffsetMinVal.y + ctx.FontBaseSize + ctx.Style.FramePadding.y + 20.0f);
+            _size = Vector2(width, ctx.NextWindowData.MenuBarOffsetMinVal.y + ctx.FontBaseSize + ctx.Style.FramePadding.y + 20.0f);
 
             ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 5));
         };
@@ -43,8 +46,8 @@ namespace te
             ImGui::PopStyleVar();
         };
 
-        WidgetRenderOptions* widget = static_cast<WidgetRenderOptions*>(Editor::Instance().GetWidget(WidgetType::RenderOptions));
-        _widgets[Widget::IconType::ComponentOptions] = te_shared_ptr<WidgetRenderOptions>(widget);
+        //WidgetRenderOptions* widget = static_cast<WidgetRenderOptions*>(Editor::Instance().GetWidget(WidgetType::RenderOptions));
+        //_widgets[Widget::IconType::ComponentOptions] = te_shared_ptr<WidgetRenderOptions>(widget);
     }
 
     void WidgetToolBar::Update()
@@ -59,6 +62,10 @@ namespace te
             }
             ImGui::PopStyleColor();
         };
+
+        // Play button    
+        showButton("Play", [this]() { return true; }, [this]() {});
+
 
         for (auto& widgetPair : _widgets)
         {

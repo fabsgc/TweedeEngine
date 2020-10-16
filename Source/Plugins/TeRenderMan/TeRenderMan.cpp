@@ -7,6 +7,7 @@
 #include "Renderer/TeCamera.h"
 #include "TeRenderCompositor.h"
 #include "Utility/TeTime.h"
+#include "Gui/TeGuiAPI.h"
 
 namespace te
 {
@@ -46,7 +47,6 @@ namespace te
         RenderCompositor::RegisterNodeType<RCNodeSSAO>();
         RenderCompositor::RegisterNodeType<RCNodeBloom>();
         RenderCompositor::RegisterNodeType<RCNodePostProcess>();
-        RenderCompositor::RegisterNodeType<RCNodeGui>();
         RenderCompositor::RegisterNodeType<RCNodeFinalResolve>();
     }
 
@@ -247,9 +247,15 @@ namespace te
 
         rapi.SetViewport(viewport->GetArea());
 
+        // The only overlay we can manage currently
+        if(view.GetSceneCamera()->IsMain() && GuiAPI::Instance().IsGuiInitialized())
+        {
+            GuiAPI::Instance().EndFrame();
+        }
+
         view.EndFrame();
 
-        return false;
+        return true;
     }
 
     void RenderMan::SetOptions(const SPtr<RendererOptions>& options)

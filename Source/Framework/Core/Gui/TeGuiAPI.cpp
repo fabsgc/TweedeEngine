@@ -9,6 +9,8 @@ namespace te
 
     GuiAPI::GuiAPI()
         : _guiInitialized(false)
+        , _guiStarted(false)
+        , _guiEnded(true)
     { }
 
     void GuiAPI::Initialize(void* data)

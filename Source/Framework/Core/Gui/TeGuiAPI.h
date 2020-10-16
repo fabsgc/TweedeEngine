@@ -101,5 +101,7 @@ namespace te
         HEvent _keyUpConn;
 
         bool  _guiInitialized;
+        bool  _guiStarted;
+        bool  _guiEnded;
     };
 }

@@ -25,6 +25,7 @@ namespace te
             RenderOptions,
             ToolBar,
             Viewport,
+            Resources,
             None
         };
 

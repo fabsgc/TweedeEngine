@@ -137,9 +137,6 @@ namespace te
             gVirtualInput().Update();
             _window->TriggerCallback();
 
-            GuiAPI::Instance().BeginFrame();
-            GuiManager::Instance().GetGui()->Update();
-
             PreUpdate();
 
             gSceneManager()._update();
