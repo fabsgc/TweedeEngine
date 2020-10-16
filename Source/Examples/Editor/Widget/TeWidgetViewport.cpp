@@ -54,8 +54,10 @@ namespace te
 
             if (renderTextureUpdated)
             {
+#if TE_PLATFORM == TE_PLATFORM_WIN32
                 _sceneCamera->GetViewport()->SetTarget(_renderData.RenderTex);
                 _sceneCamera->SetAspectRatio(width / height);
+#endif
             }
         }
     }
