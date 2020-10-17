@@ -1,6 +1,8 @@
 #include "TeWidgetMenuBar.h"
 
 #include "../TeEditor.h"
+#include "ImGui/imgui.h"
+#include "ImGui/imgui_internal.h"
 
 namespace te
 {

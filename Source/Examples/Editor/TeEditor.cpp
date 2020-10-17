@@ -1,6 +1,5 @@
 #include "TeEditor.h"
 
-#include "Gui/TeGuiAPI.h"
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
 
@@ -13,11 +12,25 @@
 #include "Widget/TeWidgetViewport.h"
 #include "Widget/TeWidgetResources.h"
 
+#include "Gui/TeGuiAPI.h"
 #include "TeCoreApplication.h"
 #include "Renderer/TeCamera.h"
 #include "Scene/TeSceneManager.h"
 #include "Scene/TeSceneObject.h"
 #include "Components/TeCCamera.h"
+#include "Scene/TeSceneManager.h"
+#include "Resources/TeResourceManager.h"
+#include "Resources/TeBuiltinResources.h"
+
+// TODO Temp for debug purpose
+#include "Importer/TeImporter.h"
+#include "Importer/TeMeshImportOptions.h"
+#include "Importer/TeTextureImportOptions.h"
+#include "Material/TeMaterial.h"
+#include "Material/TeShader.h"
+#include "Components/TeCLight.h"
+#include "Components/TeCSkybox.h"
+#include "Components/TeCRenderable.h"
 
 #ifndef GImGui
 ImGuiContext* GImGui = NULL;
@@ -42,7 +55,7 @@ namespace te
         // ######################################################
         _uiCameraSO = SceneObject::Create("UICamera");
         _uiCamera = _uiCameraSO->AddComponent<CCamera>();
-        _uiCamera->GetViewport()->SetClearColorValue(Color(0.17f, 0.64f, 1.0f, 1.0f));
+        _uiCamera->GetViewport()->SetClearColorValue(Color(0.2f, 0.2f, 0.2f, 1.0f));
         _uiCamera->GetViewport()->SetTarget(gCoreApplication().GetWindow());
         _uiCamera->SetMain(true);
         _uiCamera->Initialize();
@@ -56,6 +69,10 @@ namespace te
 
         // ######################################################
         gSceneManager().SetMainRenderTarget(gCoreApplication().GetWindow());
+        // ######################################################
+
+        // ######################################################
+        LoadScene();
         // ######################################################
 #endif
 
@@ -194,17 +211,17 @@ namespace te
             colors[ImGuiCol_ModalWindowDimBg] = color_background;             // Darken/colorize entire screen behind a modal window, when one is active
 
             // Spatial settings
-            const auto font_size = 24.0f;
-            const auto font_scale = 0.7f;
+            const auto fontSize = 20.0f;
+            const auto fontScale = 0.7f;
             const auto roundness = 2.0f;
 
             // Spatial
             ImGuiStyle& style = ImGui::GetStyle();
             style.WindowBorderSize = 1.0f;
             style.FrameBorderSize = 0.0f;
-            style.ScrollbarSize = 20.0f;
-            style.FramePadding = ImVec2(5, 5);
-            style.ItemSpacing = ImVec2(6, 5);
+            style.ScrollbarSize = 25.0f;
+            style.FramePadding = ImVec2(8, 8);
+            style.ItemSpacing = ImVec2(8, 8);
             style.WindowMenuButtonPosition = ImGuiDir_Right;
             style.WindowRounding = roundness;
             style.FrameRounding = roundness;
@@ -212,6 +229,11 @@ namespace te
             style.GrabRounding = roundness;
             style.ScrollbarRounding = roundness;
             style.Alpha = 1.0f;
+
+                // Font
+            auto& io = ImGui::GetIO();
+            io.Fonts->AddFontFromFileTTF("Data/Fonts/CalibriBold.ttf", fontSize);
+            io.FontGlobalScale = fontScale;
         }
     }
 
@@ -230,13 +252,13 @@ namespace te
             ImGuiWindowFlags_NoSavedSettings;
 
         // Set window position and size
-        float offset_y = 0;
-        offset_y += _settings.WMenuBar ? _settings.WMenuBar->GetHeight() : 0;
-        offset_y += _settings.WToolbar ? _settings.WToolbar->GetHeight() : 0;
+        float offsetY = 0;
+        offsetY += _settings.WMenuBar ? _settings.WMenuBar->GetHeight() : 0;
+        offsetY += _settings.WToolbar ? _settings.WToolbar->GetHeight() : 0;
 
         const ImGuiViewport* viewport = ImGui::GetMainViewport();
-        ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y + offset_y));
-        ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, viewport->Size.y - offset_y));
+        ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y + offsetY));
+        ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, viewport->Size.y - offsetY));
         ImGui::SetNextWindowViewport(viewport->ID);
 
         // Set window style
@@ -291,5 +313,61 @@ namespace te
         {
             ImGui::End();
         }
+    }
+
+    void Editor::LoadScene()
+    {
+        // ######################################################
+        auto meshImportOptions = MeshImportOptions::Create();
+        meshImportOptions->ImportNormals = true;
+        meshImportOptions->ImportTangents = true;
+        meshImportOptions->CpuCached = false;
+
+        auto textureImportOptions = TextureImportOptions::Create();
+        textureImportOptions->CpuCached = false;
+        textureImportOptions->GenerateMips = true;
+
+        auto textureCubeMapImportOptions = TextureImportOptions::Create();
+        textureCubeMapImportOptions->CpuCached = false;
+        textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
+        textureCubeMapImportOptions->Format = PF_RGBA8;
+        textureCubeMapImportOptions->IsCubemap = true;
+        // ######################################################
+
+        // ######################################################
+        _loadedMeshMonkey = gResourceManager().Load<Mesh>("Data/Meshes/Monkey/monkey.dae", meshImportOptions);
+        _loadedTextureMonkey = gResourceManager().Load<Texture>("Data/Textures/Monkey/diffuse.png", textureImportOptions);
+        _loadedCubemapTexture = gResourceManager().Load<Texture>("Data/Textures/Skybox/sky_countryside_medium.jpeg", textureCubeMapImportOptions);
+        // ###################################################### 
+
+        // ######################################################
+        HShader _shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque);
+
+        MaterialProperties properties;
+        properties.UseDiffuseMap = true;
+
+        _materialMonkey = Material::Create(_shader);
+        _materialMonkey->SetName("Material");
+        _materialMonkey->SetTexture("DiffuseMap", _loadedTextureMonkey);
+        _materialMonkey->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
+        _materialMonkey->SetProperties(properties);
+        // ######################################################
+
+        // ######################################################
+        _sceneSkyboxSO = SceneObject::Create("Skybox");
+        _skybox = _sceneSkyboxSO->AddComponent<CSkybox>();
+        _skybox->SetTexture(_loadedCubemapTexture);
+        _skybox->Initialize();
+
+        _sceneLightSO = SceneObject::Create("Light");
+        _light = _sceneLightSO->AddComponent<CLight>();
+        _light->Initialize();
+
+        _sceneRenderableMonkeySO = SceneObject::Create("Cube");
+        _renderableMonkey = _sceneRenderableMonkeySO->AddComponent<CRenderable>();
+        _renderableMonkey->SetMesh(_loadedMeshMonkey);
+        _renderableMonkey->SetMaterial(_materialMonkey);
+        _renderableMonkey->Initialize();
+        // ######################################################
     }
 }

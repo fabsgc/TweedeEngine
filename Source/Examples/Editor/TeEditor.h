@@ -53,6 +53,9 @@ namespace te
         void EndGui();
 
     protected:
+        void LoadScene();
+
+    protected:
         std::vector<SPtr<Widget>> _widgets;
         EditorSettings _settings;
         bool _editorBegun;
@@ -60,6 +63,21 @@ namespace te
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         HCamera _uiCamera;
         HSceneObject _uiCameraSO;
+
+        // TODO Temp for debug purpose
+        HMesh _loadedMeshMonkey;
+        HTexture _loadedTextureMonkey;
+        HTexture _loadedCubemapTexture;
+
+        HMaterial _materialMonkey;
+
+        HSceneObject _sceneRenderableMonkeySO;
+        HSceneObject _sceneLightSO;
+        HSceneObject _sceneSkyboxSO;
+
+        HLight _light;
+        HSkybox _skybox;
+        HRenderable _renderableMonkey;
 #endif
     };
 }

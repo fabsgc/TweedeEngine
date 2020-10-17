@@ -75,6 +75,9 @@ namespace te
         /** Returns the descriptor structure used for initializing the view. */
         const TEXTURE_VIEW_DESC& GetDesc() const { return _desc; }
 
+        /** Little trick in order to retrieve API dependent data such IShaderResourceView */
+        virtual void* GetRawData() { return nullptr; }
+
     protected:
         TextureView(const TEXTURE_VIEW_DESC& _desc);
 

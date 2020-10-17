@@ -4,7 +4,6 @@
 #include "ImGui/imgui.h"
 #include "../TeEditor.h"
 #include "ImGui/imgui_internal.h"
-
 #include "TeWidgetRenderOptions.h"
 
 namespace te
@@ -35,7 +34,7 @@ namespace te
 
             auto& ctx = *ImGui::GetCurrentContext();
             ctx.NextWindowData.MenuBarOffsetMinVal = ImVec2(ctx.Style.DisplaySafeAreaPadding.x, Math::Max(ctx.Style.DisplaySafeAreaPadding.y - ctx.Style.FramePadding.y, 0.0f));
-            _position = Vector2(ctx.Viewports[0]->Pos.x, ctx.Viewports[0]->Pos.y + 22.0f);
+            _position = Vector2(ctx.Viewports[0]->Pos.x, ctx.Viewports[0]->Pos.y + 30.0f);
             _size = Vector2(width, ctx.NextWindowData.MenuBarOffsetMinVal.y + ctx.FontBaseSize + ctx.Style.FramePadding.y + 20.0f);
 
             ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 5));

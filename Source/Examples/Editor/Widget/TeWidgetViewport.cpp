@@ -1,6 +1,7 @@
 #include "TeWidgetViewport.h"
 
 #include "ImGui/imgui.h"
+#include "ImGui/imgui_internal.h"
 #include "TeCoreApplication.h"
 #include "Renderer/TeCamera.h"
 #include "Scene/TeSceneObject.h"
@@ -37,8 +38,17 @@ namespace te
         _sceneCamera->GetViewport()->SetTarget(_renderData.RenderTex);
         _sceneCamera->Initialize();
 
+        _sceneCameraSO->SetPosition(Vector3(0.0f, 5.0f, 7.5f));
+        _sceneCameraSO->LookAt(Vector3(0.0f, 0.0f, -3.0f));
+
         if(renderTextureUpdated)
             _sceneCamera->SetAspectRatio(width / height);
+
+        auto settings = _sceneCamera->GetRenderSettings();
+        settings->ExposureScale = 1.3f;
+        settings->Gamma = 1.0f;
+        settings->Contrast = 1.60f;
+        settings->Brightness = -0.05f;
         // ######################################################
 #endif
     }
@@ -59,6 +69,26 @@ namespace te
                 _sceneCamera->SetAspectRatio(width / height);
 #endif
             }
+
+            SPtr<TextureView> textureView = _renderData.RenderTex->GetColorTexture(0)->RequestView(
+                _renderData.ColorTexSurface.MipLevel,
+                _renderData.ColorTexSurface.NumMipLevels,
+                _renderData.ColorTexSurface.Face,
+                _renderData.ColorTexSurface.NumFaces,
+                GVU_DEFAULT
+            );
+
+            void* rawData = textureView->GetRawData();
+
+            ImGui::Image(
+                static_cast<ImTextureID>(rawData),
+                ImVec2(static_cast<float>(width), static_cast<float>(height)),
+                ImVec2(0, 0),
+                ImVec2(1, 1)
+            );
+
+            //ImGui::GetWindowDrawList()->AddCallback(ImDrawCallback_ResetRenderState, nullptr);
+            //ImGui::GetWindowDrawList()->AddDrawCmd();
         }
     }
 

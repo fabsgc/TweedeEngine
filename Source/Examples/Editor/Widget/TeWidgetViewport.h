@@ -21,14 +21,11 @@ namespace te
         {
             TEXTURE_DESC TargetColorDesc;
             TEXTURE_DESC TargetDepthDesc;
-
             RENDER_TEXTURE_DESC RenderTexDesc;
-
             HTexture ColorTex;
             HTexture DepthStencilTex;
-
             SPtr<RenderTexture> RenderTex;
-
+            TextureSurface ColorTexSurface;
             UINT32 Width = 640;
             UINT32 Height = 480;
         };

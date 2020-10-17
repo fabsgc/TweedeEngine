@@ -38,6 +38,8 @@ namespace te
 
         ImGui_ImplWin32_Init(guiData->HWnd);
         ImGui_ImplDX11_Init(guiData->PD3D11Device, guiData->PD3D11DeviceContext);
+        //ImGui_ImplWin32_EnableDpiAwareness();
+        //ImGui_ImplWin32_GetDpiScaleForHwnd(guiData->HWnd);
 
         _guiInitialized = true;
     }

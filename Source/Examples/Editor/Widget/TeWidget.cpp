@@ -17,11 +17,11 @@ namespace te
         if (_onStartCallback)
             _onStartCallback();
 
-        if (!_isWindow)
-            return true;
-
         if (!_isVisible)
             return false;
+
+        if (!_isWindow)
+            return true;
 
         if (_onVisibleCallback)
             _onVisibleCallback();

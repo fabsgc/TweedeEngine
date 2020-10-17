@@ -8,5 +8,8 @@ cbuffer PerFrameBuffer
 
 float4 main( PS_INPUT IN ) : SV_Target0
 {
-    return FxaaPixelShader(IN.Texture, gInvTexSize, 0.75f, 0.125f, 0.0625f);
+    float4 output = FxaaPixelShader(IN.Texture, gInvTexSize, 0.75f, 0.125f, 0.0625f);
+    output.a = 1.0;
+
+    return output;
 }

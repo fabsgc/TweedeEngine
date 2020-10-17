@@ -26,6 +26,7 @@ float4 main( PS_INPUT IN ) : SV_Target0
     mapped.x = pow(mapped.x, power);
     mapped.y = pow(mapped.y, power);
     mapped.z = pow(mapped.z, power);
+    mapped.w = 1.0;
 
     mapped.rgb = mapped.rgb * gContrast;
     mapped.rgb = mapped.rgb + float3(gBrightness, gBrightness, gBrightness);

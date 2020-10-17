@@ -18,6 +18,6 @@ namespace te
 
     protected:
         std::unordered_map<Widget::IconType, SPtr<Widget>> _widgets;
-        float _buttonSize = 25.0f;
+        float _buttonSize = 30.0f;
     };
 }
