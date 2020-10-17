@@ -47,7 +47,7 @@ namespace te
         bool GetVisible() const { return _isVisible; }
         void SetVisible(bool isVisible) { _isVisible = isVisible; }
         const auto& GetTitle() const { return _title; }
-        const WidgetType GetType() const { return _type; }
+        WidgetType GetType() const { return _type; }
 
     protected:
         bool _isVisible;

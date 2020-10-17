@@ -290,6 +290,7 @@ namespace te
             break;
         case ParamType::LoadStoreTexture:
             findBinding(paramDesc->LoadStoreTextures, name, binding);
+            break;
         case ParamType::Buffer:
             findBinding(paramDesc->Buffers, name, binding);
             break;

@@ -628,7 +628,6 @@ namespace te
         if (!settings.TemporalAA.Enabled || viewProps.Target.NumSamples > 1)
             return;
 
-        RCNodeForwardPass* forwardPassNode = static_cast<RCNodeForwardPass*>(inputs.InputNodes[2]);
         RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[3]);
 
         SPtr<RenderTexture> ppOutput;
@@ -745,7 +744,7 @@ namespace te
         if (viewProps.RunPostProcessing && viewProps.Target.NumSamples == 1)
         {
             RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[1]);
-            RCNodeForwardPass* forwardPassNode = static_cast<RCNodeForwardPass*>(inputs.InputNodes[0]);
+            //RCNodeForwardPass* forwardPassNode = static_cast<RCNodeForwardPass*>(inputs.InputNodes[0]);
 
             input = postProcessNode->GetLastOutput();
             //input = forwardPassNode->VelocityTex->Tex;
