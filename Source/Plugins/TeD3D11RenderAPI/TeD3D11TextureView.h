@@ -42,7 +42,7 @@ namespace te
          */
         ID3D11DepthStencilView*	GetDSV(bool readOnlyDepth, bool readOnlyStencil) const;
 
-        /** @copydoc TextureView::GetRawSata */
+        /** @copydoc TextureView::GetRawData */
         void* GetRawData() override { return (void*)GetSRV(); }
 
     protected:

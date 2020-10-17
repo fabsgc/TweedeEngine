@@ -317,6 +317,7 @@ namespace te
 
     void Editor::LoadScene()
     {
+#if TE_PLATFORM == TE_PLATFORM_WIN32
         // ######################################################
         auto meshImportOptions = MeshImportOptions::Create();
         meshImportOptions->ImportNormals = true;
@@ -369,5 +370,6 @@ namespace te
         _renderableMonkey->SetMaterial(_materialMonkey);
         _renderableMonkey->Initialize();
         // ######################################################
+#endif
     }
 }

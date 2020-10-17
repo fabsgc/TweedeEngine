@@ -24,10 +24,7 @@ namespace te
 
     void WidgetViewport::Initialize()
     {
-        float width = 640;
-        float height = 480;
-
-        bool renderTextureUpdated = CheckRenderTexture(width, height);
+        bool renderTextureUpdated = CheckRenderTexture((float)_renderData.Width, (float)_renderData.Height);
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         // ######################################################
@@ -38,14 +35,14 @@ namespace te
         _sceneCamera->GetViewport()->SetTarget(_renderData.RenderTex);
         _sceneCamera->Initialize();
 
-        _sceneCameraSO->SetPosition(Vector3(0.0f, 5.0f, 7.5f));
+        _sceneCameraSO->SetPosition(Vector3(0.0f, 3.5f, 5.5f));
         _sceneCameraSO->LookAt(Vector3(0.0f, 0.0f, -3.0f));
 
         if(renderTextureUpdated)
-            _sceneCamera->SetAspectRatio(width / height);
+            _sceneCamera->SetAspectRatio((float)_renderData.Width / (float)_renderData.Height);
 
         auto settings = _sceneCamera->GetRenderSettings();
-        settings->ExposureScale = 1.3f;
+        settings->ExposureScale = 1.2f;
         settings->Gamma = 1.0f;
         settings->Contrast = 1.60f;
         settings->Brightness = -0.05f;
@@ -86,9 +83,6 @@ namespace te
                 ImVec2(0, 0),
                 ImVec2(1, 1)
             );
-
-            //ImGui::GetWindowDrawList()->AddCallback(ImDrawCallback_ResetRenderState, nullptr);
-            //ImGui::GetWindowDrawList()->AddDrawCmd();
         }
     }
 
