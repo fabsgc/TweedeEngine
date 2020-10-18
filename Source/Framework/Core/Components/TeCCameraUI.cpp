@@ -32,7 +32,6 @@ namespace te
         , _inputEnabled(false)
         , _lastHideCursorState(false)
     {
-        // Set a name for the component, so we can find it later if needed
         SetName("CCameraUI");
 
         _camera = static_object_cast<CCamera>(_parent->GetComponent(TID_CCamera)->GetHandle());
