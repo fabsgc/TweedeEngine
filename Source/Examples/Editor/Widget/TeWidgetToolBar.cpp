@@ -1,8 +1,8 @@
 #include "TeWidgetToolBar.h"
 
+#include "../TeEditor.h"
 #include "Math/TeMath.h"
 #include "ImGui/imgui.h"
-#include "../TeEditor.h"
 #include "ImGui/imgui_internal.h"
 #include "TeWidgetRenderOptions.h"
 

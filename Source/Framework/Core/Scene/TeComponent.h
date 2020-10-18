@@ -148,7 +148,7 @@ namespace te
         ComponentFlags _flags;
         UINT32 _sceneManagerId = 0;
 
-    private:
+    protected:
         HSceneObject _parent;
 
     public:

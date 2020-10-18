@@ -262,6 +262,15 @@ namespace te
         }
     }
 
+    void SceneObject::RotateAround(const Vector3& center, const Vector3& axis, const Radian& angle)
+    {
+        if (_mobility == ObjectMobility::Movable)
+        {
+            _localTfrm.RotateAround(center, axis, angle);
+            NotifyTransformChanged(TCF_Transform);
+        }
+    }
+
     void SceneObject::Rotate(const Quaternion& q)
     {
         if (_mobility == ObjectMobility::Movable)

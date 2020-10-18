@@ -109,6 +109,23 @@ namespace te
         Rotate(q);
     }
 
+    void Transform::RotateAround(const Vector3& center, const Vector3& axis, const Radian& angle)
+    {
+        Vector3 pos = _position;
+
+        Quaternion rot;
+        rot.FromAxisAngle(axis, angle); // get the desired rotation
+
+        Vector3 dir = pos - center; // find current direction relative to center
+        dir = rot.Rotate(dir); // rotate the direction
+
+        _position = center + dir; // define new position
+
+        // rotate object to keep looking at the center:
+        Quaternion myRot = _rotation;
+        _rotation *= myRot.Inverse() * rot * myRot;
+    }
+
     void Transform::Rotate(const Quaternion& q)
     {
         // Note the order of the mult, i.e. q comes after

@@ -17,18 +17,6 @@ namespace te
     const float CCameraFlyer::FAST_MODE_MULTIPLIER = 2.0f;
     const float CCameraFlyer::ROTATION_SPEED = 2.0f;
 
-    /** Wraps an angle so it always stays in [0, 360) range. */
-    Degree WrapAngle(Degree angle)
-    {
-        if (angle.ValueDegrees() < -360.0f)
-            angle += Degree(360.0f);
-
-        if (angle.ValueDegrees() > 360.0f)
-            angle -= Degree(360.0f);
-
-        return angle;
-    }
-
     CCameraFlyer::CCameraFlyer(const HSceneObject& parent)
         : Component(parent, TID_CCameraFlyer)
     {
@@ -86,8 +74,8 @@ namespace te
             _yaw += Degree(gVirtualInput().GetAxisValue(_horizontalAxis) * ROTATION_SPEED);
             _pitch += Degree(gVirtualInput().GetAxisValue(_verticalAxis) * ROTATION_SPEED);
 
-            _yaw = WrapAngle(_yaw);
-            _pitch = WrapAngle(_pitch);
+            _yaw = Math::WrapAngle(_yaw);
+            _pitch = Math::WrapAngle(_pitch);
 
             Quaternion yRot;
             yRot.FromAxisAngle(Vector3::UNIT_Y, Radian(_yaw));
@@ -95,10 +83,10 @@ namespace te
             Quaternion xRot;
             xRot.FromAxisAngle(Vector3::UNIT_X, Radian(_pitch));
 
-            Quaternion ca_rot = yRot * xRot;
-            ca_rot.Normalize();
+            Quaternion camRot = yRot * xRot;
+            camRot.Normalize();
 
-            SO()->SetRotation(ca_rot);
+            SO()->SetRotation(camRot);
         }
 
         const Transform& tfrm = SO()->GetTransform();

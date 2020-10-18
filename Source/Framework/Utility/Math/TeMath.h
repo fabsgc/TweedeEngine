@@ -831,6 +831,9 @@ namespace te
         template <class T>
         static constexpr T Min(T a, T b) { return a < b ? a : b; }
 
+        /** Wraps an angle so it always stays in [0, 360) range. */
+        static Degree WrapAngle(Degree angle);
+
         static constexpr float POS_INFINITY = std::numeric_limits<float>::infinity();
         static constexpr float NEG_INFINITY = -std::numeric_limits<float>::infinity();
         static constexpr float PI = 3.14159265358979323846f;

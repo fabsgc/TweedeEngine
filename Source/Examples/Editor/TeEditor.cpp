@@ -18,6 +18,7 @@
 #include "Scene/TeSceneManager.h"
 #include "Scene/TeSceneObject.h"
 #include "Components/TeCCamera.h"
+#include "Components/TeCCameraUI.h"
 #include "Scene/TeSceneManager.h"
 #include "Resources/TeResourceManager.h"
 #include "Resources/TeBuiltinResources.h"
@@ -53,14 +54,40 @@ namespace te
     {
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         // ######################################################
+        auto inputConfig = gVirtualInput().GetConfiguration();
+
+        inputConfig->RegisterButton(CCameraUI::MOVE_FORWARD_BINDING, TE_W);
+        inputConfig->RegisterButton(CCameraUI::MOVE_BACK_BINDING, TE_S);
+        inputConfig->RegisterButton(CCameraUI::MOVE_LEFT_BINDING, TE_A);
+        inputConfig->RegisterButton(CCameraUI::MOVE_RIGHT_BINDING, TE_D);
+        inputConfig->RegisterButton(CCameraUI::MOVE_UP_BINDING, TE_E);
+        inputConfig->RegisterButton(CCameraUI::MOVE_DOWN_BINDING, TE_Q);
+
+        inputConfig->RegisterButton(CCameraUI::MOVE_FORWARD_BINDING, TE_UP);
+        inputConfig->RegisterButton(CCameraUI::MOVE_BACK_BINDING, TE_DOWN);
+        inputConfig->RegisterButton(CCameraUI::MOVE_LEFT_BINDING, TE_LEFT);
+        inputConfig->RegisterButton(CCameraUI::MOVE_RIGHT_BINDING, TE_RIGHT);
+
+        inputConfig->RegisterButton(CCameraUI::ROTATE_BINDING, TE_MOUSE_RIGHT);
+        inputConfig->RegisterButton(CCameraUI::MOVE_BINDING, TE_LSHIFT);
+        inputConfig->RegisterButton(CCameraUI::ZOOM_BINDING, TE_LCONTROL);
+
+        inputConfig->RegisterAxis(CCameraUI::HORIZONTAL_AXIS_BINDING, VIRTUAL_AXIS_DESC((UINT32)InputAxis::MouseX));
+        inputConfig->RegisterAxis(CCameraUI::VERTICAL_AXIS_BINDING, VIRTUAL_AXIS_DESC((UINT32)InputAxis::MouseY));
+        inputConfig->RegisterAxis(CCameraUI::SCROLL_AXIS_BINDING, VIRTUAL_AXIS_DESC((UINT32)InputAxis::MouseZ));
+        // ######################################################
+
+        // ######################################################
         _uiCameraSO = SceneObject::Create("UICamera");
         _uiCamera = _uiCameraSO->AddComponent<CCamera>();
         _uiCamera->GetViewport()->SetClearColorValue(Color(0.2f, 0.2f, 0.2f, 1.0f));
         _uiCamera->GetViewport()->SetTarget(gCoreApplication().GetWindow());
         _uiCamera->SetMain(true);
+        _uiCamera->SetPriority(1);
         _uiCamera->Initialize();
 
         _uiCamera->SetNearClipDistance(5);
+        _uiCamera->SetFarClipDistance(10000);
         _uiCamera->SetLayers(0);
 
         SPtr<RenderSettings> settings = _uiCamera->GetRenderSettings();
@@ -161,7 +188,7 @@ namespace te
             ImVec4* colors = ImGui::GetStyle().Colors;
             colors[ImGuiCol_Text] = color_text;
             colors[ImGuiCol_TextDisabled] = color_text_disabled;
-            colors[ImGuiCol_WindowBg] = color_background;             // Background of normal windows
+            colors[ImGuiCol_WindowBg] = color_background;            // Background of normal windows
             colors[ImGuiCol_ChildBg] = color_background;             // Background of child windows
             colors[ImGuiCol_PopupBg] = color_background;             // Background of popups, menus, tooltips windows
             colors[ImGuiCol_Border] = color_interactive;
@@ -212,7 +239,7 @@ namespace te
 
             // Spatial settings
             const auto fontSize = 20.0f;
-            const auto fontScale = 0.7f;
+            const auto fontScale = 0.6f;
             const auto roundness = 2.0f;
 
             // Spatial
@@ -364,7 +391,7 @@ namespace te
         _light = _sceneLightSO->AddComponent<CLight>();
         _light->Initialize();
 
-        _sceneRenderableMonkeySO = SceneObject::Create("Cube");
+        _sceneRenderableMonkeySO = SceneObject::Create("Monkey");
         _renderableMonkey = _sceneRenderableMonkeySO->AddComponent<CRenderable>();
         _renderableMonkey->SetMesh(_loadedMeshMonkey);
         _renderableMonkey->SetMaterial(_materialMonkey);

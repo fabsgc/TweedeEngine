@@ -106,6 +106,12 @@ namespace te
         /** Gets the transform object representing object's position/rotation/scale relative to its parent. */
         const Transform& GetLocalTransform() const { return _localTfrm; }
 
+        void SetLocalTransform(Transform& transform) 
+        { 
+            _localTfrm = transform;
+            NotifyTransformChanged(TCF_Transform);
+        }
+
         /**	Sets the local position of the object. */
         void SetPosition(const Vector3& position);
 
@@ -132,7 +138,7 @@ namespace te
          * Orients the object so it is looking at the provided @p location (world space) where @p up is used for
          * determining the location of the object's Y axis.
          */
-        void LookAt(const Vector3& location, const Vector3& up = Vector3::UNIT_Y);
+        virtual void LookAt(const Vector3& location, const Vector3& up = Vector3::UNIT_Y);
 
         /**
          * Gets the objects world transform matrix.
@@ -168,6 +174,9 @@ namespace te
 
         /**	Rotate the object around an arbitrary axis. */
         void Rotate(const Vector3& axis, const Radian& angle);
+
+        /**	Rotate the object around an arbitrary point using an axis and an angle. */
+        void RotateAround(const Vector3& center, const Vector3& axis, const Radian& angle);
 
         /**	Rotate the object around an arbitrary axis using a Quaternion. */
         void Rotate(const Quaternion& q);

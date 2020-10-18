@@ -318,4 +318,15 @@ namespace te
 
         return tangent;
     }
+
+    Degree Math::WrapAngle(Degree angle)
+    {
+        if (angle.ValueDegrees() < -360.0f)
+            angle += Degree(360.0f);
+
+        if (angle.ValueDegrees() > 360.0f)
+            angle -= Degree(360.0f);
+
+        return angle;
+    }
 }

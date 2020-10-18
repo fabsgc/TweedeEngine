@@ -29,11 +29,11 @@ namespace te
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         // ######################################################
         _sceneCameraSO = SceneObject::Create("UICamera");
-        _sceneCameraUI = _sceneCameraSO->AddComponent<CCameraUI>();
         _sceneCamera = _sceneCameraSO->AddComponent<CCamera>();
-        _sceneCamera->GetViewport()->SetClearColorValue(Color(0.35f, 0.5f, 0.9f, 1.0f));
+        _sceneCamera->GetViewport()->SetClearColorValue(Color(0.42f, 0.67f, 0.94f, 1.0f));
         _sceneCamera->GetViewport()->SetTarget(_renderData.RenderTex);
         _sceneCamera->Initialize();
+        _sceneCameraUI = _sceneCameraSO->AddComponent<CCameraUI>();
 
         _sceneCameraSO->SetPosition(Vector3(0.0f, 3.5f, 5.5f));
         _sceneCameraSO->LookAt(Vector3(0.0f, 0.0f, -3.0f));
@@ -47,6 +47,13 @@ namespace te
         settings->Contrast = 1.60f;
         settings->Brightness = -0.05f;
         // ######################################################
+
+        _onBeginCallback = [this] {
+            if (ImGui::IsWindowFocused())
+                _sceneCameraUI->EnableInput(true);
+            else
+                _sceneCameraUI->EnableInput(false);
+        };
 #endif
     }
 

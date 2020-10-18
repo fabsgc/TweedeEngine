@@ -16,18 +16,59 @@ namespace te
         /** Triggered once per frame. Allows the component to handle input and move. */
         void Update() override;
 
-    private:
-        Degree _pitch = Degree(0.0f); /**< Current pitch rotation of the camera (looking up or down). */
-        Degree _yaw = Degree(0.0f); /**< Current yaw rotation of the camera (looking left or right). */
-        bool _lastButtonState = false; /**< Determines was the user rotating the camera last frame. */
+        /** Enables or disables camera controls. */
+        void EnableInput(bool enable);
 
-        VirtualButton _zoomCam; /**< Key that allows camera to be zoomed while held. */
-        VirtualButton _moveCam; /**< Key that allows camera to be moved while held. */
-        VirtualButton _rotateCam; /**< Key that allows camera to be rotated while held. */
-        VirtualAxis _verticalAxis; /**< Input device axis used for controlling camera's pitch rotation (up/down). */
-        VirtualAxis _horizontalAxis; /**< Input device axis used for controlling camera's yaw rotation (left/right). */
+        /** For rotation, we want to know the current reference position. */
+        void SetTarget(Vector3 target);
 
-        static const float MOVE_SPEED; /**< Movement speed. */
-        static const float ROTATION_SPEED; /**< Rotation speed. */
+    public:
+        static const String MOVE_FORWARD_BINDING;
+        static const String MOVE_LEFT_BINDING;
+        static const String MOVE_RIGHT_BINDING;
+        static const String MOVE_BACK_BINDING;
+        static const String MOVE_UP_BINDING;
+        static const String MOVE_DOWN_BINDING;
+
+        static const String ROTATE_BINDING;
+        static const String MOVE_BINDING;
+        static const String ZOOM_BINDING;
+
+        static const String HORIZONTAL_AXIS_BINDING;
+        static const String VERTICAL_AXIS_BINDING;
+        static const String SCROLL_AXIS_BINDING;
+
+        static const float START_SPEED;
+        static const float TOP_SPEED;
+        static const float ACCELERATION;
+        static const float ZOOM_SPEED;
+        static const float MOVE_SPEED;
+        static const float SCROLL_SPEED;
+        static const float ROTATIONAL_SPEED;
+        static const Degree FIELD_OF_VIEW;
+
+    protected:
+        VirtualButton _moveForwardBtn;
+        VirtualButton _moveLeftBtn;
+        VirtualButton _moveRightBtn;
+        VirtualButton _moveBackwardBtn;
+        VirtualButton _moveUpBtn;
+        VirtualButton _moveDownBtn;
+
+        VirtualButton _rotateBtn;
+        VirtualButton _moveBtn;
+        VirtualButton _zoomBtn;
+
+        VirtualAxis _horizontalAxis;
+        VirtualAxis _verticalAxis;
+        VirtualAxis _scrollAxis;
+
+        bool _inputEnabled;
+        float _currentSpeed;
+        Degree _yaw;
+        Degree _pitch;
+        bool _lastHideCursorState;
+        HCamera _camera;
+        Vector3 _target;
     };
 }

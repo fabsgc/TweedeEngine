@@ -169,8 +169,8 @@ namespace te
         TE_MAIL        = 0xEC,    // Mail
         TE_MEDIASELECT = 0xED,    // Media Select
         TE_MOUSE_LEFT = 0x800000EE, // Mouse buttons - Most important bit signifies this key is a mouse button
-        TE_MOUSE_RIGHT,
-        TE_MOUSE_MIDDLE,
+        TE_MOUSE_RIGHT = 0x800000EF,
+        TE_MOUSE_MIDDLE = 0x800000F0,
         TE_MOUSE_BTN4,
         TE_MOUSE_BTN5,
         TE_MOUSE_BTN6,
