@@ -56,18 +56,6 @@ namespace te
         // ######################################################
         auto inputConfig = gVirtualInput().GetConfiguration();
 
-        inputConfig->RegisterButton(CCameraUI::MOVE_FORWARD_BINDING, TE_W);
-        inputConfig->RegisterButton(CCameraUI::MOVE_BACK_BINDING, TE_S);
-        inputConfig->RegisterButton(CCameraUI::MOVE_LEFT_BINDING, TE_A);
-        inputConfig->RegisterButton(CCameraUI::MOVE_RIGHT_BINDING, TE_D);
-        inputConfig->RegisterButton(CCameraUI::MOVE_UP_BINDING, TE_E);
-        inputConfig->RegisterButton(CCameraUI::MOVE_DOWN_BINDING, TE_Q);
-
-        inputConfig->RegisterButton(CCameraUI::MOVE_FORWARD_BINDING, TE_UP);
-        inputConfig->RegisterButton(CCameraUI::MOVE_BACK_BINDING, TE_DOWN);
-        inputConfig->RegisterButton(CCameraUI::MOVE_LEFT_BINDING, TE_LEFT);
-        inputConfig->RegisterButton(CCameraUI::MOVE_RIGHT_BINDING, TE_RIGHT);
-
         inputConfig->RegisterButton(CCameraUI::ROTATE_BINDING, TE_MOUSE_RIGHT);
         inputConfig->RegisterButton(CCameraUI::MOVE_BINDING, TE_LSHIFT);
         inputConfig->RegisterButton(CCameraUI::ZOOM_BINDING, TE_LCONTROL);
@@ -365,7 +353,7 @@ namespace te
         // ######################################################
         _loadedMeshMonkey = gResourceManager().Load<Mesh>("Data/Meshes/Monkey/monkey.dae", meshImportOptions);
         _loadedTextureMonkey = gResourceManager().Load<Texture>("Data/Textures/Monkey/diffuse.png", textureImportOptions);
-        _loadedCubemapTexture = gResourceManager().Load<Texture>("Data/Textures/Skybox/sky_countryside_medium.jpeg", textureCubeMapImportOptions);
+        _loadedCubemapTexture = gResourceManager().Load<Texture>("Data/Textures/Skybox/sky_countryside_large.jpeg", textureCubeMapImportOptions);
         // ###################################################### 
 
         // ######################################################

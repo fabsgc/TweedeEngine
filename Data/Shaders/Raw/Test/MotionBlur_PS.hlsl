@@ -113,7 +113,7 @@ float4 main( PS_INPUT IN ) : SV_Target0
     float2 prevUV = NDCToUV(prevNdcPos);
 
     float2 cameraBlurDir = (prevUV - currentUV) * fixDelta;
-    while(abs(length(cameraBlurDir)) > 0.05)
+    while(abs(length(cameraBlurDir)) > 0.025)
     {
         cameraBlurDir /= 2.0;
     }
@@ -138,7 +138,7 @@ float4 main( PS_INPUT IN ) : SV_Target0
     }
 
     objectBlurDir = objectBlurDir * fixDelta;
-    while(abs(length(cameraBlurDir)) > 0.05)
+    while(abs(length(cameraBlurDir)) > 0.025)
     {
         cameraBlurDir /= 2.0;
     }

@@ -34,9 +34,10 @@ namespace te
         _sceneCamera->GetViewport()->SetTarget(_renderData.RenderTex);
         _sceneCamera->Initialize();
         _sceneCameraUI = _sceneCameraSO->AddComponent<CCameraUI>();
+        _sceneCameraUI->SetTarget(Vector3(0.0f, 0.0f, 0.0f));
 
         _sceneCameraSO->SetPosition(Vector3(0.0f, 3.5f, 5.5f));
-        _sceneCameraSO->LookAt(Vector3(0.0f, 0.0f, -3.0f));
+        _sceneCameraSO->LookAt(Vector3(0.0f, 0.0f, 0.0f));
 
         if(renderTextureUpdated)
             _sceneCamera->SetAspectRatio((float)_renderData.Width / (float)_renderData.Height);

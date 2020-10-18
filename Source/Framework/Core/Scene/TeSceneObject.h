@@ -106,12 +106,6 @@ namespace te
         /** Gets the transform object representing object's position/rotation/scale relative to its parent. */
         const Transform& GetLocalTransform() const { return _localTfrm; }
 
-        void SetLocalTransform(Transform& transform) 
-        { 
-            _localTfrm = transform;
-            NotifyTransformChanged(TCF_Transform);
-        }
-
         /**	Sets the local position of the object. */
         void SetPosition(const Vector3& position);
 
