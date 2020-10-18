@@ -81,7 +81,6 @@ namespace te
         }
 
         float frameDelta = gTime().GetFrameDelta();
-        TE_PRINT(ToString(frameDelta));
 
         auto scrolling = [&](const float& scrollAmount, const float& speed) {
             if (!isOrtographic)
