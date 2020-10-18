@@ -102,12 +102,24 @@ namespace te
         _renderData.Width = (UINT32)width;
         _renderData.Height = (UINT32)height;
 
-        if(_renderData.RenderTex)
+        if (_renderData.RenderTex)
+        {
             _renderData.RenderTex->Destroy();
-        if(_renderData.ColorTex.GetHandleData())
-            _renderData.ColorTex->Destroy();
-        if(_renderData.DepthStencilTex.GetHandleData())
-            _renderData.DepthStencilTex->Destroy();
+            _renderData.RenderTex = nullptr;
+        }        
+        if (_renderData.ColorTex.GetHandleData())
+        {
+            _renderData.ColorTex.Release();
+            _renderData.ColorTex = nullptr;
+            _renderData.RenderTexDesc.ColorSurfaces[0].Tex = nullptr;
+            
+        }
+        if (_renderData.DepthStencilTex.GetHandleData())
+        {
+            _renderData.DepthStencilTex.Release();
+            _renderData.DepthStencilTex = nullptr;
+            _renderData.RenderTexDesc.DepthStencilSurface.Tex = nullptr;
+        }
 
         _renderData.TargetColorDesc.Type = TEX_TYPE_2D;
         _renderData.TargetColorDesc.Width = _renderData.Width;

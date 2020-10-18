@@ -191,7 +191,7 @@ namespace te
     {
     public:
         Texture() = default;
-        virtual ~Texture() = default;
+        virtual ~Texture() { }
 
         /** @copydoc CoreObject::Initialize */
         void Initialize() override;
