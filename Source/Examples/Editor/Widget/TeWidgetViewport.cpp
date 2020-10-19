@@ -85,6 +85,7 @@ namespace te
         if (_isVisible && GuiAPI::Instance().IsGuiInitialized())
             ResetViewport();
 
+#if TE_PLATFORM == TE_PLATFORM_WIN32
         UINT32 flags = _sceneCamera->GetFlags();
         if (!gCoreApplication().GetState().IsFlagSet(ApplicationState::Game)) //We are in editor mode
         {
@@ -102,6 +103,7 @@ namespace te
                 _sceneCamera->SetFlags(flags);
             }
         }
+#endif
     }
 
     void WidgetViewport::ResetViewport()
