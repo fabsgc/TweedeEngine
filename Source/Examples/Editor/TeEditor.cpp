@@ -3,6 +3,9 @@
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
 
+#include "TeImGuiExt.h"
+#include "TeIconsFontAwesome5.h"
+
 #include "Widget/TeWidgetMenuBar.h"
 #include "Widget/TeWidgetToolBar.h"
 #include "Widget/TeWidgetProject.h"
@@ -226,7 +229,7 @@ namespace te
             colors[ImGuiCol_ModalWindowDimBg] = color_background;             // Darken/colorize entire screen behind a modal window, when one is active
 
             // Spatial settings
-            const auto fontSize = 20.0f;
+            const auto fontSize = 14.0f;
             const auto fontScale = 0.6f;
             const auto roundness = 2.0f;
 
@@ -245,10 +248,15 @@ namespace te
             style.ScrollbarRounding = roundness;
             style.Alpha = 1.0f;
 
-                // Font
+            // Font
             auto& io = ImGui::GetIO();
-            io.Fonts->AddFontFromFileTTF("Data/Fonts/CalibriBold.ttf", fontSize);
-            io.FontGlobalScale = fontScale;
+            ImFont* font = io.Fonts->AddFontFromFileTTF("Data/Fonts/CalibriBold.ttf", fontSize);
+            //io.FontGlobalScale = fontScale;
+
+            ImFontConfig config;
+            config.MergeMode = true;
+            static const ImWchar icon_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
+            font = io.Fonts->AddFontFromFileTTF("Data/Fonts/Fa-solid-900.ttf", fontSize, &config, icon_ranges);
         }
     }
 
@@ -309,12 +317,12 @@ namespace te
                 const ImGuiID dockRightBottomId = ImGui::DockBuilderSplitNode(dockRightId, ImGuiDir_Down, 0.6f, nullptr, &dockRightId);
 
                 // Dock windows
-                ImGui::DockBuilderDockWindow("Project", dockLeftId);
-                ImGui::DockBuilderDockWindow("Render Options", dockRightId);
-                ImGui::DockBuilderDockWindow("Console", dockBottomId);
-                ImGui::DockBuilderDockWindow("Viewport", dockMainId);
-                ImGui::DockBuilderDockWindow("Properties", dockLeftBottomId);
-                ImGui::DockBuilderDockWindow("Resources", dockRightBottomId);
+                ImGui::DockBuilderDockWindow(PROJECT_TITLE, dockLeftId);
+                ImGui::DockBuilderDockWindow(RENDER_OPTIONS_TITLE, dockRightId);
+                ImGui::DockBuilderDockWindow(CONSOLE_TITLE, dockBottomId);
+                ImGui::DockBuilderDockWindow(VIEWPORT_TITLE, dockMainId);
+                ImGui::DockBuilderDockWindow(PROPERTIES_TITLE, dockLeftBottomId);
+                ImGui::DockBuilderDockWindow(RESOURCES_TITLE, dockRightBottomId);
                 ImGui::DockBuilderFinish(dockMainId);
             }
 
@@ -343,17 +351,17 @@ namespace te
         textureImportOptions->CpuCached = false;
         textureImportOptions->GenerateMips = true;
 
-        auto textureCubeMapImportOptions = TextureImportOptions::Create();
+        /*auto textureCubeMapImportOptions = TextureImportOptions::Create();
         textureCubeMapImportOptions->CpuCached = false;
         textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
         textureCubeMapImportOptions->Format = PF_RGBA8;
-        textureCubeMapImportOptions->IsCubemap = true;
+        textureCubeMapImportOptions->IsCubemap = true;*/
         // ######################################################
 
         // ######################################################
         _loadedMeshMonkey = gResourceManager().Load<Mesh>("Data/Meshes/Monkey/monkey.dae", meshImportOptions);
         _loadedTextureMonkey = gResourceManager().Load<Texture>("Data/Textures/Monkey/diffuse.png", textureImportOptions);
-        _loadedCubemapTexture = gResourceManager().Load<Texture>("Data/Textures/Skybox/sky_countryside_large.jpeg", textureCubeMapImportOptions);
+        //_loadedCubemapTexture = gResourceManager().Load<Texture>("Data/Textures/Skybox/sky_countryside_large.jpeg", textureCubeMapImportOptions);
         // ###################################################### 
 
         // ######################################################
@@ -370,10 +378,10 @@ namespace te
         // ######################################################
 
         // ######################################################
-        _sceneSkyboxSO = SceneObject::Create("Skybox");
+        /*_sceneSkyboxSO = SceneObject::Create("Skybox");
         _skybox = _sceneSkyboxSO->AddComponent<CSkybox>();
         _skybox->SetTexture(_loadedCubemapTexture);
-        _skybox->Initialize();
+        _skybox->Initialize();*/
 
         _sceneLightSO = SceneObject::Create("Light");
         _light = _sceneLightSO->AddComponent<CLight>();

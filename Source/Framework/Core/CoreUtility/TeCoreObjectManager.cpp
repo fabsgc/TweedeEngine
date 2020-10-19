@@ -1,4 +1,4 @@
-#include "TeCoreObjectManager.h"
+ #include "TeCoreObjectManager.h"
 #include "TeCoreObject.h"
 
 namespace te

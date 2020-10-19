@@ -1,6 +1,8 @@
 set (TE_EDITOR_INC_NOFILTER
     "TeEditor.h"
     "TeApplication.h"
+    "TeIconsFontAwesome5.h"
+    "TeImGuiExt.h"
 )
 
 set (TE_EDITOR_SRC_NOFILTER

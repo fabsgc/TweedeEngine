@@ -2,8 +2,19 @@
 
 #include "TeCorePrerequisites.h"
 #include "Math/TeVector2.h"
-
 #include "ImGui/imgui.h"
+
+#include "../TeImGuiExt.h"
+#include "../TeIconsFontAwesome5.h"
+
+#define CONSOLE_TITLE ICON_FA_TERMINAL " Console"
+#define MENUBAR_TITLE "MenuBar"
+#define PROJECT_TITLE ICON_FA_BONG " Project"
+#define PROPERTIES_TITLE ICON_FA_TOOLS " Properties"
+#define RENDER_OPTIONS_TITLE ICON_FA_COG " Render Options"
+#define RESOURCES_TITLE ICON_FA_SUITCASE " Resources"
+#define TOOLBAR_TITLE "ToolBar"
+#define VIEWPORT_TITLE ICON_FA_IMAGE " Viewport"
 
 namespace te
 {

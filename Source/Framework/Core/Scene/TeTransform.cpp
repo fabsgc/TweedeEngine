@@ -111,19 +111,24 @@ namespace te
 
     void Transform::RotateAround(const Vector3& center, const Vector3& axis, const Radian& angle)
     {
-        Vector3 pos = _position;
+        Quaternion rotation;
+        rotation.FromAxisAngle(axis, angle); // get the desired rotation
 
-        Quaternion rot;
-        rot.FromAxisAngle(axis, angle); // get the desired rotation
+        RotateAround(center, rotation);
+    }
 
-        Vector3 dir = pos - center; // find current direction relative to center
-        dir = rot.Rotate(dir); // rotate the direction
+    void Transform::RotateAround(const Vector3& center, const Quaternion& rotation)
+    {
+        Vector3 position = _position;
 
-        _position = center + dir; // define new position
+        Vector3 direction = position - center; // find current direction relative to center
+        direction = rotation.Rotate(direction); // rotate the direction
+
+        _position = center + direction; // define new position
 
         // rotate object to keep looking at the center:
-        Quaternion myRot = _rotation;
-        _rotation *= myRot.Inverse() * rot * myRot;
+        Quaternion newRotation = _rotation;
+        _rotation *= newRotation.Inverse() * rotation * newRotation;
     }
 
     void Transform::Rotate(const Quaternion& q)

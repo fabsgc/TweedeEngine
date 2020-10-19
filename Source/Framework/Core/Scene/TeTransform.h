@@ -121,6 +121,9 @@ namespace te
         /**	Rotate the object around an arbitrary point using an axis and an angle. */
         void RotateAround(const Vector3& center, const Vector3& axis, const Radian& angle);
 
+        /**	Rotate the object around an arbitrary point using a quaternion. */
+        void RotateAround(const Vector3& center, const Quaternion& rotation);
+
         /**
          * Rotates around local Z axis.
          *

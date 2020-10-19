@@ -29,6 +29,7 @@ namespace te
     {
     public:
         RendererLight(Light* light);
+        ~RendererLight();
 
         /** Populates the structure with light parameters. */
         void GetParameters(LightData& output) const;

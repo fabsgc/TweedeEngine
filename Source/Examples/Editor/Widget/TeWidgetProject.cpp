@@ -5,7 +5,7 @@ namespace te
     WidgetProject::WidgetProject()
         : Widget(WidgetType::Project)
     { 
-        _title = "Project";
+        _title = PROJECT_TITLE;
     }
 
     WidgetProject::~WidgetProject()

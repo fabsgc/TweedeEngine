@@ -9,7 +9,7 @@ namespace te
     WidgetConsole::WidgetConsole()
         : Widget(WidgetType::Console)
     { 
-        _title = "Console";
+        _title = CONSOLE_TITLE;
     }
 
     WidgetConsole::~WidgetConsole()

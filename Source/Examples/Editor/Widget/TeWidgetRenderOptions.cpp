@@ -5,7 +5,7 @@ namespace te
     WidgetRenderOptions::WidgetRenderOptions()
         : Widget(WidgetType::RenderOptions)
     { 
-        _title = "Render Options";
+        _title = RENDER_OPTIONS_TITLE;
     }
 
     WidgetRenderOptions::~WidgetRenderOptions()

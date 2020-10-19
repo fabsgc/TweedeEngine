@@ -1,5 +1,6 @@
 #include "TeWidgetToolBar.h"
 
+#include "../TeIconsFontAwesome5.h"
 #include "../TeEditor.h"
 #include "Math/TeMath.h"
 #include "ImGui/imgui.h"
@@ -11,7 +12,7 @@ namespace te
     WidgetToolBar::WidgetToolBar()
         : Widget(WidgetType::ToolBar)
     { 
-        _title = "ToolBar";
+        _title = TOOLBAR_TITLE;
     }
 
     WidgetToolBar::~WidgetToolBar()
@@ -33,7 +34,7 @@ namespace te
 
             auto& ctx = *ImGui::GetCurrentContext();
             ctx.NextWindowData.MenuBarOffsetMinVal = ImVec2(ctx.Style.DisplaySafeAreaPadding.x, Math::Max(ctx.Style.DisplaySafeAreaPadding.y - ctx.Style.FramePadding.y, 0.0f));
-            _position = Vector2(ctx.Viewports[0]->Pos.x, ctx.Viewports[0]->Pos.y + 27.0f);
+            _position = Vector2(ctx.Viewports[0]->Pos.x, ctx.Viewports[0]->Pos.y + 29.0f);
             _size = Vector2(width, ctx.NextWindowData.MenuBarOffsetMinVal.y + ctx.FontBaseSize + ctx.Style.FramePadding.y + 20.0f);
 
             ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 5));
@@ -54,7 +55,7 @@ namespace te
         {
             ImGui::SameLine();
             ImGui::PushStyleColor(ImGuiCol_Button, getVisibility() ? ImGui::GetStyle().Colors[ImGuiCol_ButtonActive] : ImGui::GetStyle().Colors[ImGuiCol_Button]);
-            if (ImGui::Button(title, ImVec2(120.0f, _buttonSize)))
+            if (ImGui::Button(title))
             {
                 makeVisible();
             }
@@ -62,7 +63,7 @@ namespace te
         };
 
         // Play button    
-        ShowButton("Play", [this]() { return true; }, [this]() {});
+        ShowButton(ICON_FA_PLAY, [this]() { return true; }, [this]() {});
 
         for (auto& widgetPair : _widgets)
         {

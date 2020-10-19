@@ -20,7 +20,7 @@ namespace te
         , _lastRenderDataUpatedTime(0.0f)
         , _needResetViewport(true)
     {
-        _title = "Viewport";
+        _title = VIEWPORT_TITLE;
         _size = Vector2(640, 480);
         _flags |= ImGuiWindowFlags_NoScrollbar;
         _padding = Vector2(0.0f, 0.0f);
@@ -117,7 +117,7 @@ namespace te
         if ((UINT32)width == _renderData.Width && (UINT32)height == _renderData.Height)
             return false;
 
-        if (deltaElapsedTime < MIN_TIME_BETWEEN_UPDATE && _lastRenderDataUpatedTime > 5.0f && _needResetViewport == false)
+        if (deltaElapsedTime < MIN_TIME_BETWEEN_UPDATE && _lastRenderDataUpatedTime > 10.0f && _needResetViewport == false)
             return false;
 
         _renderData.Width = (UINT32)width;

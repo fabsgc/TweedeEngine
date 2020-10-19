@@ -24,6 +24,12 @@ namespace te
         : _internal(light)
     { }
 
+    RendererLight::~RendererLight()
+    {
+        if (gPerLightsParamBuffer)
+            gPerLightsParamBuffer = nullptr;
+    }
+
     void RendererLight::GetParameters(LightData& output) const
     {
         Radian spotAngle = Math::Clamp(_internal->GetSpotAngle() * 0.5f, Degree(0), Degree(89));

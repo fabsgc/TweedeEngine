@@ -9,7 +9,7 @@ namespace te
     WidgetMenuBar::WidgetMenuBar()
         : Widget(WidgetType::MenuBar)
     { 
-        _title = "MenuBar";
+        _title = MENUBAR_TITLE;
         _isWindow = false;
     }
 
@@ -25,11 +25,13 @@ namespace te
         {
             if (ImGui::BeginMenu("File"))
             {
-                if (ImGui::MenuItem("New"))
+                if (ImGui::MenuItem("New", "Ctrl+N"))
                 { }
 
-                if (ImGui::MenuItem("Quit"))
-                { }
+                if (ImGui::MenuItem("Quit", "Ctrl+Q"))
+                { 
+                    gCoreApplication().OnStopRequested();
+                }
 
                 ImGui::EndMenu();
             }

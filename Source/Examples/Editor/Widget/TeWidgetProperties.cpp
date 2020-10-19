@@ -5,7 +5,7 @@ namespace te
     WidgetProperties::WidgetProperties()
         : Widget(WidgetType::Properties)
     { 
-        _title = "Properties";
+        _title = PROPERTIES_TITLE;
     }
 
     WidgetProperties::~WidgetProperties()

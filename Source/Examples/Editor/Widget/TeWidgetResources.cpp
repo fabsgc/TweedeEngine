@@ -5,7 +5,7 @@ namespace te
     WidgetResources::WidgetResources()
         : Widget(WidgetType::Resources)
     { 
-        _title = "Resources";
+        _title = RESOURCES_TITLE;
     }
 
     WidgetResources::~WidgetResources()

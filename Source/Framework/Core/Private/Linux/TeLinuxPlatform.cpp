@@ -962,7 +962,7 @@ namespace te
         XkbFreeNames(desc, XkbKeyNamesMask, True);
         XkbFreeKeyboard(desc, 0, True);
 
-        for (UINT32 buttonCodeNum = TE_UNASSIGNED; buttonCodeNum <= TE_NumKeys; buttonCodeNum++)
+        for (UINT32 buttonCodeNum = TE_UNASSIGNED; buttonCodeNum <= TE_NUM_KEYS; buttonCodeNum++)
         {
             ButtonCode buttonCode = (ButtonCode) buttonCodeNum;
             const char* keyNameCStr = ButtonCodeToKeyName(buttonCode);
