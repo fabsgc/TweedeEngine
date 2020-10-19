@@ -33,7 +33,7 @@ namespace te
 
             auto& ctx = *ImGui::GetCurrentContext();
             ctx.NextWindowData.MenuBarOffsetMinVal = ImVec2(ctx.Style.DisplaySafeAreaPadding.x, Math::Max(ctx.Style.DisplaySafeAreaPadding.y - ctx.Style.FramePadding.y, 0.0f));
-            _position = Vector2(ctx.Viewports[0]->Pos.x, ctx.Viewports[0]->Pos.y + 30.0f);
+            _position = Vector2(ctx.Viewports[0]->Pos.x, ctx.Viewports[0]->Pos.y + 27.0f);
             _size = Vector2(width, ctx.NextWindowData.MenuBarOffsetMinVal.y + ctx.FontBaseSize + ctx.Style.FramePadding.y + 20.0f);
 
             ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 5));
@@ -50,7 +50,7 @@ namespace te
 
     void WidgetToolBar::Update()
     {
-        auto showButton = [this](const char* title, const std::function<bool()>& getVisibility, const std::function<void()>& makeVisible)
+        auto ShowButton = [this](const char* title, const std::function<bool()>& getVisibility, const std::function<void()>& makeVisible)
         {
             ImGui::SameLine();
             ImGui::PushStyleColor(ImGuiCol_Button, getVisibility() ? ImGui::GetStyle().Colors[ImGuiCol_ButtonActive] : ImGui::GetStyle().Colors[ImGuiCol_Button]);
@@ -62,15 +62,14 @@ namespace te
         };
 
         // Play button    
-        showButton("Play", [this]() { return true; }, [this]() {});
-
+        ShowButton("Play", [this]() { return true; }, [this]() {});
 
         for (auto& widgetPair : _widgets)
         {
             const IconType icon = widgetPair.first;
             SPtr<Widget> widget = widgetPair.second;
 
-            showButton(widget->GetTitle().c_str(), [this, &widget]() { return widget->GetVisible(); }, [this, &widget]() { widget->SetVisible(true); });
+            ShowButton(widget->GetTitle().c_str(), [this, &widget]() { return widget->GetVisible(); }, [this, &widget]() { widget->SetVisible(true); });
         }
     }
 }

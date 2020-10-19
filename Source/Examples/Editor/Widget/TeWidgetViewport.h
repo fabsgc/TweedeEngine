@@ -16,6 +16,11 @@ namespace te
         virtual void Initialize() override;
         virtual void Update() override;
 
+        void Resize();
+
+    protected:
+        void ResetViewport();
+
     public:
         struct RenderWindowData
         {
@@ -42,5 +47,9 @@ namespace te
 #endif
 
         RenderWindowData _renderData;
+        float _lastRenderDataUpatedTime;
+        bool _needResetViewport;
+
+        static const float MIN_TIME_BETWEEN_UPDATE;
     };
 }
