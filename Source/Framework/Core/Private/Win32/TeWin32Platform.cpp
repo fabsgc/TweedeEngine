@@ -669,6 +669,8 @@ namespace te
             {
                 if (!OnKeyUp.Empty())
                     OnKeyUp((UINT32)wParam);
+
+                break;
             }
             case WM_CHAR:
             {
@@ -676,6 +678,10 @@ namespace te
                 // combinations. (We want to keep ctrl+key free for shortcuts instead)
                 if (wParam <= 23)
                     break;
+
+                // Ignore shortcut key combinations
+                //if (GetAsyncKeyState(VK_CONTROL) != 0 || GetAsyncKeyState(VK_MENU) != 0)
+                //    break;
 
                 switch (wParam)
                 {

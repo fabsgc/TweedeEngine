@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
+#include "Input/TeVirtualInput.h"
 #include "TeWidget.h"
 
 namespace te
@@ -24,5 +25,7 @@ namespace te
 
     protected:
         WidgetMenubarSettings _settings;
+        VirtualButton _newBtn;
+        VirtualButton _quitBtn;
     };
 }

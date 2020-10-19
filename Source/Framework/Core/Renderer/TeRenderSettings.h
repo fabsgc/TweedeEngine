@@ -224,7 +224,7 @@ namespace te
          * manually adjust the automatic exposure. When automatic exposure is turned off you can use exposureScale to
          * manually set the exposure.
          */
-        bool EnableAutoExposure = true;
+        bool EnableAutoExposure = false;
 
         /**
          * Parameters used for customizing automatic scene exposure.

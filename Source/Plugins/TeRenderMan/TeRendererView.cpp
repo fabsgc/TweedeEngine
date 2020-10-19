@@ -542,6 +542,9 @@ namespace te
         if (!_properties.OnDemand)
             return true;
 
+        if (_redrawThisFrame)
+            return true;
+
         if (_renderSettings->EnableHDR && _renderSettings->EnableAutoExposure)
         {
             constexpr float AUTO_EXPOSURE_TOLERANCE = 0.01f;
@@ -557,7 +560,9 @@ namespace te
                 return true;
         }
 
-        return _redrawForFrames > 0 || _redrawForSeconds > 0.0f;
+        // TODO need to be used with auto exposure
+        // return _redrawForFrames > 0 || _redrawForSeconds > 0.0f;
+        return false;
     }
 
     bool RendererView::ShouldDraw3D() const
@@ -568,6 +573,12 @@ namespace te
     void RendererView::_notifyNeedsRedraw()
     {
         _redrawThisFrame = true;
+
+        // If doing async animation there is a one frame delay
+        _redrawForFrames = 1;
+
+        // This will be set once we get the new luminance data from the GPU
+        _redrawForSeconds = 0.0f;
     }
 
     RendererViewGroup::RendererViewGroup(RendererView** views, UINT32 numViews, SPtr<RenderManOptions> options)

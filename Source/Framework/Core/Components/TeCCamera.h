@@ -120,56 +120,56 @@ namespace te
         void NotifyNeedsRedraw() { _internal->NotifyNeedsRedraw(); }
 
         /** @copydoc Camera::worldToScreenPoint */
-        Vector2I worldToScreenPoint(const Vector3& worldPoint) const { UpdateView(); return _internal->WorldToScreenPoint(worldPoint); }
+        Vector2I WorldToScreenPoint(const Vector3& worldPoint) const { UpdateView(); return _internal->WorldToScreenPoint(worldPoint); }
 
         /** @copydoc Camera::worldToNdcPoint */
 
-        Vector2 worldToNdcPoint(const Vector3& worldPoint) const { UpdateView(); return _internal->WorldToNdcPoint(worldPoint); }
+        Vector2 WorldToNdcPoint(const Vector3& worldPoint) const { UpdateView(); return _internal->WorldToNdcPoint(worldPoint); }
 
         /** @copydoc Camera::worldToViewPoint */
-        Vector3 worldToViewPoint(const Vector3& worldPoint) const { UpdateView(); return _internal->WorldToViewPoint(worldPoint); }
+        Vector3 WorldToViewPoint(const Vector3& worldPoint) const { UpdateView(); return _internal->WorldToViewPoint(worldPoint); }
 
         /** @copydoc Camera::screenToWorldPoint */
-        Vector3 screenToWorldPoint(const Vector2I& screenPoint, float depth = 0.5f) const { UpdateView(); return _internal->ScreenToWorldPoint(screenPoint, depth); }
+        Vector3 ScreenToWorldPoint(const Vector2I& screenPoint, float depth = 0.5f) const { UpdateView(); return _internal->ScreenToWorldPoint(screenPoint, depth); }
 
         /** @copydoc Camera::screenToViewPoint */
-        Vector3 screenToViewPoint(const Vector2I& screenPoint, float depth = 0.5f) const { return _internal->ScreenToViewPoint(screenPoint, depth); }
+        Vector3 ScreenToViewPoint(const Vector2I& screenPoint, float depth = 0.5f) const { return _internal->ScreenToViewPoint(screenPoint, depth); }
 
         /** @copydoc Camera::screenToNdcPoint */
-        Vector2 screenToNdcPoint(const Vector2I& screenPoint) const { return _internal->ScreenToNdcPoint(screenPoint); }
+        Vector2 ScreenToNdcPoint(const Vector2I& screenPoint) const { return _internal->ScreenToNdcPoint(screenPoint); }
 
         /** @copydoc Camera::viewToWorldPoint */
-        Vector3 viewToWorldPoint(const Vector3& viewPoint) const { UpdateView(); return _internal->ViewToWorldPoint(viewPoint); }
+        Vector3 ViewToWorldPoint(const Vector3& viewPoint) const { UpdateView(); return _internal->ViewToWorldPoint(viewPoint); }
 
         /** @copydoc Camera::viewToScreenPoint */
-        Vector2I viewToScreenPoint(const Vector3& viewPoint) const { return _internal->ViewToScreenPoint(viewPoint); }
+        Vector2I ViewToScreenPoint(const Vector3& viewPoint) const { return _internal->ViewToScreenPoint(viewPoint); }
 
         /** @copydoc Camera::viewToNdcPoint */
-        Vector2 viewToNdcPoint(const Vector3& viewPoint) const { return _internal->ViewToNdcPoint(viewPoint); }
+        Vector2 ViewToNdcPoint(const Vector3& viewPoint) const { return _internal->ViewToNdcPoint(viewPoint); }
 
         /** @copydoc Camera::ndcToWorldPoint */
-        Vector3 ndcToWorldPoint(const Vector2& ndcPoint, float depth = 0.5f) const { UpdateView(); return _internal->NdcToWorldPoint(ndcPoint, depth); }
+        Vector3 NdcToWorldPoint(const Vector2& ndcPoint, float depth = 0.5f) const { UpdateView(); return _internal->NdcToWorldPoint(ndcPoint, depth); }
 
         /** @copydoc Camera::ndcToViewPoint */
-        Vector3 ndcToViewPoint(const Vector2& ndcPoint, float depth = 0.5f) const { return _internal->NdcToViewPoint(ndcPoint, depth); }
+        Vector3 NdcToViewPoint(const Vector2& ndcPoint, float depth = 0.5f) const { return _internal->NdcToViewPoint(ndcPoint, depth); }
 
         /** @copydoc Camera::ndcToScreenPoint */
-        Vector2I ndcToScreenPoint(const Vector2& ndcPoint) const { return _internal->NdcToScreenPoint(ndcPoint); }
+        Vector2I NdcToScreenPoint(const Vector2& ndcPoint) const { return _internal->NdcToScreenPoint(ndcPoint); }
 
         /** @copydoc Camera::screenPointToRay */
-        Ray screenPointToRay(const Vector2I& screenPoint) const { UpdateView(); return _internal->ScreenPointToRay(screenPoint); }
+        Ray ScreenPointToRay(const Vector2I& screenPoint) const { UpdateView(); return _internal->ScreenPointToRay(screenPoint); }
 
         /** @copydoc Camera::projectPoint */
-        Vector3 projectPoint(const Vector3& point) const { return _internal->ProjectPoint(point); }
+        Vector3 ProjectPoint(const Vector3& point) const { return _internal->ProjectPoint(point); }
 
         /** @copydoc Camera::unprojectPoint */
-        Vector3 unprojectPoint(const Vector3& point) const { return _internal->UnprojectPoint(point); }
+        Vector3 UnprojectPoint(const Vector3& point) const { return _internal->UnprojectPoint(point); }
 
         /** @copydoc Camera::SetMain */
         void SetMain(bool main);
 
         /** @copydoc Camera::isMain */
-        bool isMain() const { return _internal->IsMain(); }
+        bool IsMain() const { return _internal->IsMain(); }
 
         /** Returns the internal camera that is used for majority of operations by this component. */
         SPtr<Camera> _getCamera() const { UpdateView(); return _internal; }

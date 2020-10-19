@@ -153,8 +153,6 @@ namespace te
             RendererManager::Instance().GetRenderer()->Update();
             RendererManager::Instance().GetRenderer()->RenderAll();
         }
-
-        TE_PRINT("end");
     }
 
     void CoreApplication::StopMainLoop()

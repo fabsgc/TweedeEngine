@@ -51,7 +51,7 @@ namespace te
                 {
                     StringStream wrnStream;
                     wrnStream << "Provided mesh is missing required vertex attributes to render with the \
-									provided shader. Missing elements: " << std::endl;
+                        provided shader. Missing elements: " << std::endl;
 
                     for (auto& entry : missingElements)
                         wrnStream << "\t" << ToString(entry.GetSemantic()) << entry.GetSemanticIdx() << std::endl;

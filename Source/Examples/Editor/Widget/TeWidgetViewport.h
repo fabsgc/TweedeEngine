@@ -17,6 +17,7 @@ namespace te
         virtual void Update() override;
 
         void Resize();
+        void NeedsRedraw();
 
     protected:
         void ResetViewport();

@@ -17,10 +17,19 @@ namespace te
     { }
 
     void WidgetMenuBar::Initialize()
-    { }
+    { 
+        _newBtn = VirtualButton("New");
+        _quitBtn = VirtualButton("Quit");
+    }
 
     void WidgetMenuBar::Update()
     {
+        if (gVirtualInput().IsButtonDown(_newBtn))
+        { }
+
+        if(gVirtualInput().IsButtonHeld(_quitBtn))
+            gCoreApplication().OnStopRequested();
+
         if (ImGui::BeginMainMenuBar())
         {
             if (ImGui::BeginMenu("File"))
@@ -29,9 +38,7 @@ namespace te
                 { }
 
                 if (ImGui::MenuItem("Quit", "Ctrl+Q"))
-                { 
                     gCoreApplication().OnStopRequested();
-                }
 
                 ImGui::EndMenu();
             }

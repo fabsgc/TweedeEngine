@@ -20,7 +20,7 @@ namespace te
     const String CCameraUI::VERTICAL_AXIS_BINDING = "SceneVertical";
     const String CCameraUI::SCROLL_AXIS_BINDING = "SceneScroll";
 
-    const float CCameraUI::MOVE_SPEED = 0.4f;
+    const float CCameraUI::MOVE_SPEED = 0.3f;
     const float CCameraUI::ZOOM_SPEED = 32.0f;
     const float CCameraUI::SCROLL_SPEED = 6.0f;
     const float CCameraUI::ROTATIONAL_SPEED = 8.0f;
@@ -54,6 +54,8 @@ namespace te
         bool camZooming = gVirtualInput().IsButtonHeld(_zoomBtn);
 
         bool hideCursor = camRotating;
+
+        bool needRedraw = false;
 
         if (!_inputEnabled)
         {
@@ -91,6 +93,8 @@ namespace te
                 float orthoHeight = Math::Max(1.0f, _camera->GetOrthoWindowHeight() - scrollAmount * frameDelta);
                 _camera->SetOrthoWindowHeight(orthoHeight);
             }
+
+            needRedraw = true;
         };
 
         if (camRotating)
@@ -109,6 +113,8 @@ namespace te
 
                 SO()->Move(direction * MOVE_SPEED);
                 _target += direction * MOVE_SPEED;
+
+                needRedraw = true;
             }
             else
             {
@@ -119,6 +125,8 @@ namespace te
 
                 SO()->RotateAround(_target, tfrm.GetRight(), Radian(Degree(Math::Clamp(vertValue * ROTATIONAL_SPEED, -90.0f, 90.f))));
                 SO()->RotateAround(_target, Vector3::UNIT_Y, Radian(Degree(Math::Clamp(horzValue * ROTATIONAL_SPEED, -90.0f, 90.f))));
+
+                needRedraw = true;
             }
         }
         else
@@ -128,6 +136,9 @@ namespace te
             if (fabs(scrollAmount) > 1.0f)
                 scrolling(scrollAmount, SCROLL_SPEED);
         }
+
+        if(needRedraw)
+            _camera->NotifyNeedsRedraw();
     }
 
     void CCameraUI::EnableInput(bool enable)

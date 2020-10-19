@@ -63,6 +63,9 @@ namespace te
         inputConfig->RegisterButton(CCameraUI::MOVE_BINDING, TE_LSHIFT);
         inputConfig->RegisterButton(CCameraUI::ZOOM_BINDING, TE_LCONTROL);
 
+        inputConfig->RegisterButton("New", TE_N, ButtonModifier::Ctrl);
+        inputConfig->RegisterButton("Quit", TE_A, ButtonModifier::Ctrl);
+
         inputConfig->RegisterAxis(CCameraUI::HORIZONTAL_AXIS_BINDING, VIRTUAL_AXIS_DESC((UINT32)InputAxis::MouseX));
         inputConfig->RegisterAxis(CCameraUI::VERTICAL_AXIS_BINDING, VIRTUAL_AXIS_DESC((UINT32)InputAxis::MouseY));
         inputConfig->RegisterAxis(CCameraUI::SCROLL_AXIS_BINDING, VIRTUAL_AXIS_DESC((UINT32)InputAxis::MouseZ));
@@ -87,6 +90,11 @@ namespace te
 
         // ######################################################
         gSceneManager().SetMainRenderTarget(gCoreApplication().GetWindow());
+        // ######################################################
+
+        // ######################################################
+        gCoreApplication().GetState().SetFlag(ApplicationState::Mode::Game, false);
+        gCoreApplication().GetState().SetFlag(ApplicationState::Mode::Physics, false);
         // ######################################################
 
         // ######################################################

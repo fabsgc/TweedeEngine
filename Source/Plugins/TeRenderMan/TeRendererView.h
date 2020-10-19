@@ -326,7 +326,9 @@ namespace te
         VisibilityInfo _visibility;
         UINT32 _viewIdx = 0;
 
-        // On-demand drawing
+        // On-demand drawing 
+        // _redrawForFrames, _redrawForSeconds and _waitingOnAutoExposureFrame are not used because I don't manage auto exposure yet
+        // TODO need to be used with auto exposure
         float _redrawForSeconds = 0.0f;
         UINT32 _redrawForFrames = 0;
         bool _redrawThisFrame = false;

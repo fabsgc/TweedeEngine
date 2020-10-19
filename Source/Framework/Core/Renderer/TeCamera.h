@@ -20,7 +20,7 @@ namespace te
     enum class CameraFlag
     {
         /**
-         * If set the camera will only render when requested by the user through Camera::notifyNeedsRedraw().
+         * If set the camera will only render when requested by the user through Camera::NotifyNeedsRedraw().
          * Otherwise the camera will render every frame (unless disabled).
          */
         OnDemand = 1 << 0,
@@ -199,7 +199,11 @@ namespace te
          * Notifies a on-demand camera that it should re-draw its contents on the next frame. Ignored for a camera
          * that isn't on-demand.
          */
-        void NotifyNeedsRedraw() { _markCoreDirty((ActorDirtyFlag)CameraDirtyFlag::Redraw); }
+        void NotifyNeedsRedraw() 
+        {
+            if (GetFlags() & (UINT32)CameraFlag::OnDemand)
+                _markCoreDirty((ActorDirtyFlag)CameraDirtyFlag::Redraw); 
+        }
 
         /**
          * Determines a priority that determines in which orders the cameras are rendered. This only applies to cameras rendering

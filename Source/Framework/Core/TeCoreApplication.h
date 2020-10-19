@@ -20,6 +20,43 @@ namespace te
         Vector<String> Importers; /** A list of importer plugins to load. */
     };
 
+    /** Represents the current state of the application */
+    class ApplicationState
+    {
+    public:
+        enum Mode : UINT32
+        {
+            Physics = 1UL << 0, // Should the physics tick
+            Game = 1UL << 1,    // Is the engine running in game or editor mode?
+        };
+
+        ApplicationState()
+            : _flags(0)
+        {
+            _flags |= Mode::Physics;
+            _flags |= Mode::Game;
+        }
+
+        /** Enables or disabled a flag controlling application state. */
+        void SetFlag(Mode flag, bool enabled) { 
+            if (enabled) _flags |= flag; 
+            else _flags &= ~flag; 
+        }
+
+        /** Toggle a flag controlling application state. */
+        void ToggleFlag(Mode flag) { 
+            _flags = !IsFlagSet(flag) ? _flags | flag : _flags & ~flag; 
+        }
+
+        /** Checks if the application has a certain flag enabled. */
+        bool IsFlagSet(Mode flag) const { 
+            return _flags & flag;
+        }
+
+    protected:
+        UINT32 _flags;
+    };
+
     /**
      * Represents the primary entry point for the core systems. Handles start-up, shutdown, primary loop and allows you to
      * load and unload plugins.
@@ -48,6 +85,8 @@ namespace te
 
         /**	Return if the application is on pause or not */
         bool GetPaused();
+
+        ApplicationState& GetState() { return _state; }
 
         /** Changes the maximum FPS the application is allowed to run in. Zero means unlimited. */
         void SetFPSLimit(UINT32 limit);
@@ -123,6 +162,8 @@ namespace te
 
         volatile bool _runMainLoop;
         volatile bool _pause;
+
+        ApplicationState _state;
     };
 
     /**	Provides easy access to CoreApplication. */

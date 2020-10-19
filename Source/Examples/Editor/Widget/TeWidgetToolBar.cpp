@@ -51,26 +51,31 @@ namespace te
 
     void WidgetToolBar::Update()
     {
-        auto ShowButton = [this](const char* title, const std::function<bool()>& getVisibility, const std::function<void()>& makeVisible)
+        auto ShowButton = [this](const char* titleEnabled, const char* titleDisabled, const std::function<bool()>& getVisibility, const std::function<void()>& makeVisible)
         {
             ImGui::SameLine();
             ImGui::PushStyleColor(ImGuiCol_Button, getVisibility() ? ImGui::GetStyle().Colors[ImGuiCol_ButtonActive] : ImGui::GetStyle().Colors[ImGuiCol_Button]);
-            if (ImGui::Button(title))
+            if (ImGui::Button(getVisibility() ? titleEnabled : titleDisabled))
             {
                 makeVisible();
             }
             ImGui::PopStyleColor();
         };
 
-        // Play button    
-        ShowButton(ICON_FA_PLAY, [this]() { return true; }, [this]() {});
+        ShowButton(ICON_FA_PLAY, ICON_FA_STOP,
+            [this]() { return !gCoreApplication().GetState().IsFlagSet(ApplicationState::Game); },
+            [this]() { gCoreApplication().GetState().ToggleFlag(ApplicationState::Game); 
+        });
 
         for (auto& widgetPair : _widgets)
         {
             const IconType icon = widgetPair.first;
             SPtr<Widget> widget = widgetPair.second;
 
-            ShowButton(widget->GetTitle().c_str(), [this, &widget]() { return widget->GetVisible(); }, [this, &widget]() { widget->SetVisible(true); });
+            ShowButton(widget->GetTitle().c_str(), widget->GetTitle().c_str(), 
+                [this, &widget]() { return widget->GetVisible(); }, 
+                [this, &widget]() { widget->SetVisible(true); 
+            });
         }
     }
 }

@@ -73,10 +73,33 @@ namespace te
             _needResetViewport = true;
     }
 
+    void WidgetViewport::NeedsRedraw()
+    {
+        _sceneCamera->NotifyNeedsRedraw();
+    }
+
     void WidgetViewport::Update()
     {
         if (_isVisible && GuiAPI::Instance().IsGuiInitialized())
             ResetViewport();
+
+        UINT32 flags = _sceneCamera->GetFlags();
+        if (!gCoreApplication().GetState().IsFlagSet(ApplicationState::Game)) //We are in editor mode
+        {
+            if (!(flags & (UINT32)CameraFlag::OnDemand))
+            {
+                flags |= (UINT32)CameraFlag::OnDemand;
+                _sceneCamera->SetFlags(flags);
+            }
+        }
+        else
+        {
+            if (flags & (UINT32)CameraFlag::OnDemand)
+            {
+                flags &= ~(UINT32)CameraFlag::OnDemand;
+                _sceneCamera->SetFlags(flags);
+            }
+        }
     }
 
     void WidgetViewport::ResetViewport()
@@ -158,6 +181,8 @@ namespace te
 
         _lastRenderDataUpatedTime = gTime().GetTime();
         _needResetViewport = false;
+
+        _sceneCamera->NotifyNeedsRedraw();
 
         return true;
     }

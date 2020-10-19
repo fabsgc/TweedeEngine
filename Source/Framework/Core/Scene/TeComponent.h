@@ -80,6 +80,12 @@ namespace te
         /** Gets the currently assigned notify flags. See _setNotifyFlags(). */
         UINT32 _getNotifyFlags() const { return _notifyFlags; }
 
+        /** Enables or disabled a flag controlling component's behaviour. */
+        void SetFlag(UINT32 flag, bool enabled) { if (enabled) _flags |= flag; else _flags &= ~flag; }
+
+        /** Checks if the component has a certain flag enabled. */
+        bool HasFlag(UINT32 flag) const { return _flags | flag; }
+
     protected:
         Component(HSceneObject parent, UINT32 type);
         virtual ~Component() = default;
@@ -110,12 +116,6 @@ namespace te
 
         /** Checks whether the component wants to received the specified transform changed message. */
         bool SupportsNotify(TransformChangedFlags flags) const { return ( _notifyFlags & flags) != 0; }
-
-        /** Enables or disabled a flag controlling component's behaviour. */
-        void SetFlag(UINT32 flag, bool enabled) { if (enabled) _flags |= flag; else _flags &= ~flag; }
-
-        /** Checks if the component has a certain flag enabled. */
-        bool HasFlag(UINT32 flag) const { return _flags |flag; }
 
         /** Sets an index that uniquely identifies a component with the SceneManager. */
         void SetSceneManagerId(UINT32 id) { _sceneManagerId = id; }
