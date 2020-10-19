@@ -80,7 +80,7 @@ namespace te
     {
         Vector<UINT32> toRemove;
 
-        for (UINT32 i = 0; i < TE_Count; i++)
+        for (UINT32 i = 0; i < TE_COUNT; i++)
         {
             for (UINT32 j = 0; j < (UINT32)_buttons[i].size(); j++)
             {

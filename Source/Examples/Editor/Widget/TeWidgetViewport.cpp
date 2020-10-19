@@ -23,7 +23,7 @@ namespace te
         _title = "Viewport";
         _size = Vector2(640, 480);
         _flags |= ImGuiWindowFlags_NoScrollbar;
-        _padding = Vector2(4.0f, 4.0f);
+        _padding = Vector2(0.0f, 0.0f);
     }
 
     WidgetViewport::~WidgetViewport()
@@ -84,9 +84,7 @@ namespace te
         float width = static_cast<float>(ImGui::GetWindowContentRegionMax().x - ImGui::GetWindowContentRegionMin().x);
         float height = static_cast<float>(ImGui::GetWindowContentRegionMax().y - ImGui::GetWindowContentRegionMin().y);
 
-        bool renderTextureUpdated = CheckRenderTexture(width, height);
-
-        if (renderTextureUpdated)
+        if (CheckRenderTexture(width, height))
         {
 #if TE_PLATFORM == TE_PLATFORM_WIN32
             _sceneCamera->GetViewport()->SetTarget(_renderData.RenderTex);

@@ -196,7 +196,7 @@ namespace te
         bool GetAxis(const VirtualAxis& axis, VIRTUAL_AXIS_DESC& axisDesc) const;
 
     private:
-        Vector<VirtualButtonData> _buttons[TE_Count];
+        Vector<VirtualButtonData> _buttons[TE_COUNT];
         Vector<VirtualAxisData> _axes;
 
         UINT64 _repeatInterval = 300;
