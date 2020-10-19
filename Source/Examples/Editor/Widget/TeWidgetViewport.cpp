@@ -186,7 +186,9 @@ namespace te
         _lastRenderDataUpatedTime = gTime().GetTime();
         _needResetViewport = false;
 
+#if TE_PLATFORM == TE_PLATFORM_WIN32
         _sceneCamera->NotifyNeedsRedraw();
+#endif
 
         return true;
     }
