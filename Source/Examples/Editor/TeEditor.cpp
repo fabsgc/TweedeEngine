@@ -258,13 +258,13 @@ namespace te
 
             // Font
             auto& io = ImGui::GetIO();
-            ImFont* font = io.Fonts->AddFontFromFileTTF("Data/Fonts/CalibriBold.ttf", fontSize);
+            io.Fonts->AddFontFromFileTTF("Data/Fonts/CalibriBold.ttf", fontSize);
             //io.FontGlobalScale = fontScale;
 
             ImFontConfig config;
             config.MergeMode = true;
             static const ImWchar icon_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
-            font = io.Fonts->AddFontFromFileTTF("Data/Fonts/Fa-solid-900.ttf", fontSize, &config, icon_ranges);
+            io.Fonts->AddFontFromFileTTF("Data/Fonts/Fa-solid-900.ttf", fontSize, &config, icon_ranges);
         }
     }
 

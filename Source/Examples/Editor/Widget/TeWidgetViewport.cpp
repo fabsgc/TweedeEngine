@@ -75,7 +75,9 @@ namespace te
 
     void WidgetViewport::NeedsRedraw()
     {
+#if TE_PLATFORM == TE_PLATFORM_WIN32
         _sceneCamera->NotifyNeedsRedraw();
+#endif
     }
 
     void WidgetViewport::Update()

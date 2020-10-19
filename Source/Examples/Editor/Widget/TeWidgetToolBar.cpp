@@ -69,7 +69,6 @@ namespace te
 
         for (auto& widgetPair : _widgets)
         {
-            const IconType icon = widgetPair.first;
             SPtr<Widget> widget = widgetPair.second;
 
             ShowButton(widget->GetTitle().c_str(), widget->GetTitle().c_str(), 
