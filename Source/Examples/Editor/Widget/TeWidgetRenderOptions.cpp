@@ -16,4 +16,7 @@ namespace te
 
     void WidgetRenderOptions::Update()
     { }
+
+    void WidgetRenderOptions::UpdateBackground()
+    { }
 }

@@ -185,7 +185,7 @@ namespace te
             if (device.HasError())
             {
                 String errorDescription = device.GetErrorDescription();
-                TE_ASSERT_ERROR(false, "D3D11 device cannot copy subresource\nError Description:" + errorDescription);
+                TE_ASSERT_ERROR(false, "D3D11 device cannot copy subresource\nError Description: " + errorDescription);
             }
         }
     }
@@ -244,7 +244,7 @@ namespace te
             if (device.HasError())
             {
                 String errorDescription = device.GetErrorDescription();
-                TE_ASSERT_ERROR(false, "D3D11 device cannot map texture\nError Description:" + errorDescription);
+                TE_ASSERT_ERROR(false, "D3D11 device cannot map texture\nError Description: " + errorDescription);
             }
 
             _deviceMutex.unlock();
@@ -329,7 +329,7 @@ namespace te
         if (FAILED(hr) || device.HasError())
         {
             String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Error creating texture\nError Description:" + errorDescription);
+            TE_ASSERT_ERROR(false, "Error creating texture\nError Description: " + errorDescription);
         }
 
         hr = _1DTex->QueryInterface(__uuidof(ID3D11Resource), (void**)&_tex);
@@ -337,7 +337,7 @@ namespace te
         if (FAILED(hr) || device.HasError())
         {
             String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Can't get base texture\nError Description:" + errorDescription);
+            TE_ASSERT_ERROR(false, "Can't get base texture\nError Description: " + errorDescription);
         }
 
         _1DTex->GetDesc(&desc);
@@ -457,7 +457,7 @@ namespace te
         if (FAILED(hr) || device.HasError())
         {
             String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Error creating texture\nError Description:" + errorDescription);
+            TE_ASSERT_ERROR(false, "Error creating texture\nError Description: " + errorDescription);
         }
 
         hr = _2DTex->QueryInterface(__uuidof(ID3D11Resource), (void**)&_tex);
@@ -465,7 +465,7 @@ namespace te
         if (FAILED(hr) || device.HasError())
         {
             String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Can't get base texture\nError Description:" + errorDescription);
+            TE_ASSERT_ERROR(false, "Can't get base texture\nError Description: " + errorDescription);
         }
 
         _2DTex->GetDesc(&desc);
@@ -563,7 +563,7 @@ namespace te
         if (FAILED(hr) || device.HasError())
         {
             String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Error creating texture\nError Description:" + errorDescription);
+            TE_ASSERT_ERROR(false, "Error creating texture\nError Description: " + errorDescription);
         }
 
         hr = _3DTex->QueryInterface(__uuidof(ID3D11Resource), (void**)&_tex);
@@ -571,7 +571,7 @@ namespace te
         if (FAILED(hr) || device.HasError())
         {
             String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Can't get base texture\nError Description:" + errorDescription);
+            TE_ASSERT_ERROR(false, "Can't get base texture\nError Description: " + errorDescription);
         }
 
         // Create texture view
@@ -617,7 +617,7 @@ namespace te
         if (device.HasError())
         {
             String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "D3D11 device cannot map texture\nError Description:" + errorDescription);
+            TE_ASSERT_ERROR(false, "D3D11 device cannot map texture\nError Description: " + errorDescription);
         }
 
         rowPitch = pMappedResource.RowPitch;
@@ -635,7 +635,7 @@ namespace te
         if (device.HasError())
         {
             String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "D3D11 device unmap resource\nError Description:" + errorDescription);
+            TE_ASSERT_ERROR(false, "D3D11 device unmap resource\nError Description: " + errorDescription);
         }
     }
 
@@ -683,7 +683,7 @@ namespace te
         if (device.HasError())
         {
             String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "D3D11 device cannot map texture\nError Description:" + errorDescription);
+            TE_ASSERT_ERROR(false, "D3D11 device cannot map texture\nError Description: " + errorDescription);
         }
 
         if (_staticBuffer != nullptr)

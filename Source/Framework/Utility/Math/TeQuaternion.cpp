@@ -89,23 +89,23 @@ namespace te
     void Quaternion::FromEulerAngles(const Radian& xAngle, const Radian& yAngle, const Radian& zAngle)
     {
         Radian halfXAngle = xAngle * 0.5f;
-        Radian halfYAngle = yAngle * 0.5f;
-        Radian halfZAngle = zAngle * 0.5f;
+		Radian halfYAngle = yAngle * 0.5f;
+		Radian halfZAngle = zAngle * 0.5f;
 
-        float cx = Math::Cos(halfXAngle);
-        float sx = Math::Sin(halfXAngle);
+		float cx = Math::Cos(halfXAngle);
+		float sx = Math::Sin(halfXAngle);
 
-        float cy = Math::Cos(halfYAngle);
-        float sy = Math::Sin(halfYAngle);
+		float cy = Math::Cos(halfYAngle);
+		float sy = Math::Sin(halfYAngle);
 
-        float cz = Math::Cos(halfZAngle);
-        float sz = Math::Sin(halfZAngle);
+		float cz = Math::Cos(halfZAngle);
+		float sz = Math::Sin(halfZAngle);
 
-        Quaternion quatX(cx, sx, 0.0f, 0.0f);
-        Quaternion quatY(cy, 0.0f, sy, 0.0f);
-        Quaternion quatZ(cz, 0.0f, 0.0f, sz);
+		Quaternion quatX(cx, sx, 0.0f, 0.0f);
+		Quaternion quatY(cy, 0.0f, sy, 0.0f);
+		Quaternion quatZ(cz, 0.0f, 0.0f, sz);
 
-        *this = (quatZ * quatX) * quatY;
+		*this = quatZ * (quatX * quatY);
     }
 
     void Quaternion::FromEulerAngles(const Radian& xAngle, const Radian& yAngle, const Radian& zAngle, EulerAngleOrder order)
@@ -139,16 +139,16 @@ namespace te
     {
         float tx = x + x;
         float ty = y + y;
-        float fTz = z + z;
+        float tz = z + z;
         float twx = tx * w;
         float twy = ty * w;
-        float twz = fTz * w;
+        float twz = tz * w;
         float txx = tx * x;
         float txy = ty * x;
-        float txz = fTz * x;
+        float txz = tz * x;
         float tyy = ty * y;
-        float tyz = fTz * y;
-        float tzz = fTz * z;
+        float tyz = tz * y;
+        float tzz = tz * z;
 
         mat[0][0] = 1.0f - (tyy + tzz);
         mat[0][1] = txy - twz;

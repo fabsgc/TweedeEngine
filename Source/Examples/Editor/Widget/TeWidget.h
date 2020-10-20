@@ -46,6 +46,7 @@ namespace te
 
         virtual void Initialize() = 0;
         virtual void Update() = 0;
+        virtual void UpdateBackground() = 0; // Sometimes we want to update while widget is not visible
 
         template<typename T>
         void PushStyleVar(ImGuiStyleVar idx, T val) { ImGui::PushStyleVar(idx, val); _varPushes++; }

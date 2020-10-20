@@ -756,13 +756,14 @@ namespace te
 
     bool Matrix3::ToEulerAngles(Radian& xAngle, Radian& yAngle, Radian& zAngle) const
     {
-        xAngle = -Radian(Math::Asin(m[1][2]));
-        if (xAngle < Radian(Math::HALF_PI))
+        float m21 = m[2][1];
+        if (m21 < 1)
         {
-            if (xAngle > Radian(-Math::HALF_PI))
+            if (m21 > -1)
             {
-                yAngle = Math::Atan2(m[0][2], m[2][2]);
-                zAngle = Math::Atan2(m[1][0], m[1][1]);
+                xAngle = Radian(Math::Asin(m21));
+                yAngle = Math::Atan2(-m[2][0], m[2][2]);
+                zAngle = Math::Atan2(-m[0][1], m[1][1]);
 
                 return true;
             }
@@ -770,8 +771,8 @@ namespace te
             {
                 // Note: Not an unique solution.
                 xAngle = Radian(-Math::HALF_PI);
-                yAngle = Math::Atan2(-m[0][1], m[0][0]);
-                zAngle = Radian(0.0f);
+                yAngle = Radian(0.0f);
+                zAngle = -Math::Atan2(m[0][2], m[0][0]);
 
                 return false;
             }
@@ -780,8 +781,8 @@ namespace te
         {
             // Note: Not an unique solution.
             xAngle = Radian(Math::HALF_PI);
-            yAngle = Math::Atan2(m[0][1], m[0][0]);
-            zAngle = Radian(0.0f);
+            yAngle = Radian(0.0f);
+            zAngle = Math::Atan2(m[0][2], m[0][0]);
 
             return false;
         }
@@ -798,16 +799,16 @@ namespace te
         float cz = Math::Cos(zAngle);
         float sz = Math::Sin(zAngle);
 
-        m[0][0] = cy * cz + sx * sy * sz;
-        m[0][1] = cz * sx * sy - cy * sz;
-        m[0][2] = cx * sy;
+        m[0][0] = cy * cz - sx * sy * sz;
+        m[0][1] = -cx * sz;
+        m[0][2] = cz * sy + cy * sx * sz;
 
-        m[1][0] = cx * sz;
+        m[1][0] = cz * sx * sy + cy * sz;
         m[1][1] = cx * cz;
-        m[1][2] = -sx;
+        m[1][2] = -cy * cz * sx + sy * sz;
 
-        m[2][0] = -cz * sy + cy * sx * sz;
-        m[2][1] = cy * cz * sx + sy * sz;
+        m[2][0] = -cx * sy;
+        m[2][1] = sx;
         m[2][2] = cx * cy;
     }
 

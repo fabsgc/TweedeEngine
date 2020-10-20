@@ -744,10 +744,35 @@ namespace te
         if (viewProps.RunPostProcessing && viewProps.Target.NumSamples == 1)
         {
             RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[1]);
-            //RCNodeForwardPass* forwardPassNode = static_cast<RCNodeForwardPass*>(inputs.InputNodes[0]);
+            RCNodeForwardPass* forwardPassNode = static_cast<RCNodeForwardPass*>(inputs.InputNodes[0]);
 
-            input = postProcessNode->GetLastOutput();
-            //input = forwardPassNode->VelocityTex->Tex;
+            switch (inputs.View.GetSceneCamera()->GetRenderSettings()->OutputType)
+            {
+            case RenderOutputType::Final:
+                input = postProcessNode->GetLastOutput();
+                break;
+            case RenderOutputType::Color:
+                input = forwardPassNode->SceneTex->Tex;
+                break;
+            case RenderOutputType::Normal:
+                input = forwardPassNode->NormalTex->Tex;
+                break;
+            case RenderOutputType::Depth:
+                input = forwardPassNode->DepthTex->Tex;
+                break;
+            case RenderOutputType::Velocity:
+                if(inputs.View.RequiresVelocityWrites())
+                    input = forwardPassNode->VelocityTex->Tex;
+                else
+                    input = postProcessNode->GetLastOutput();
+                break;
+            case RenderOutputType::Emissive:
+                input = forwardPassNode->EmissiveTex->Tex;
+                break;
+            default:
+                input = postProcessNode->GetLastOutput();
+                break;
+            }
         }
         else
         {

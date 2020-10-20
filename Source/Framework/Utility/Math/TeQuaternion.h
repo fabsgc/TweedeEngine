@@ -53,7 +53,7 @@ namespace te
         /**
          * Construct a quaternion from euler angles, YXZ ordering.
          *
-         * @see		Quaternion::fromEulerAngles
+         * @see		Quaternion::FromEulerAngles
          */
         explicit Quaternion(const Radian& xAngle, const Radian& yAngle, const Radian& zAngle)
         {
@@ -63,7 +63,7 @@ namespace te
         /**
          * Construct a quaternion from euler angles, custom ordering.
          *
-         * @see		Quaternion::fromEulerAngles
+         * @see		Quaternion::FromEulerAngles
          */
         explicit Quaternion(const Radian& xAngle, const Radian& yAngle, const Radian& zAngle, EulerAngleOrder order)
         {

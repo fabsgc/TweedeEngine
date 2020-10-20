@@ -93,6 +93,17 @@ namespace te
         Ultra
     };
 
+    /** Type of output we want */
+    enum class TE_CORE_EXPORT RenderOutputType
+    {
+        Final,
+        Color,
+        Velocity,
+        Emissive,
+        Depth,
+        Normal
+    };
+
     /** Settings that control the motion blur effect. */
     struct TE_CORE_EXPORT MotionBlurSettings
     {
@@ -272,6 +283,9 @@ namespace te
 
         /** Parameters used for customizing shadow rendering. */
         ShadowsSettings ShadowSettings;
+
+        /** For debug purpose, we could want to see different output */
+        RenderOutputType OutputType = RenderOutputType::Final;
 
         /** Enables the fast approximate anti-aliasing effect. */
         bool EnableFXAA = true;

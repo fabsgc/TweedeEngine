@@ -130,6 +130,10 @@ namespace te
                     widget->Update();
                     widget->EndGui();
                 }
+                else
+                {
+                    widget->UpdateBackground();
+                }
             }
 
             if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DockingEnable)
@@ -359,17 +363,17 @@ namespace te
         textureImportOptions->CpuCached = false;
         textureImportOptions->GenerateMips = true;
 
-        /*auto textureCubeMapImportOptions = TextureImportOptions::Create();
+        auto textureCubeMapImportOptions = TextureImportOptions::Create();
         textureCubeMapImportOptions->CpuCached = false;
         textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
         textureCubeMapImportOptions->Format = PF_RGBA8;
-        textureCubeMapImportOptions->IsCubemap = true;*/
+        textureCubeMapImportOptions->IsCubemap = true;
         // ######################################################
 
         // ######################################################
         _loadedMeshMonkey = gResourceManager().Load<Mesh>("Data/Meshes/Monkey/monkey.dae", meshImportOptions);
         _loadedTextureMonkey = gResourceManager().Load<Texture>("Data/Textures/Monkey/diffuse.png", textureImportOptions);
-        //_loadedCubemapTexture = gResourceManager().Load<Texture>("Data/Textures/Skybox/sky_countryside_large.jpeg", textureCubeMapImportOptions);
+        _loadedCubemapTexture = gResourceManager().Load<Texture>("Data/Textures/Skybox/sky_medium.jpeg", textureCubeMapImportOptions);
         // ###################################################### 
 
         // ######################################################
@@ -386,10 +390,10 @@ namespace te
         // ######################################################
 
         // ######################################################
-        /*_sceneSkyboxSO = SceneObject::Create("Skybox");
+        _sceneSkyboxSO = SceneObject::Create("Skybox");
         _skybox = _sceneSkyboxSO->AddComponent<CSkybox>();
         _skybox->SetTexture(_loadedCubemapTexture);
-        _skybox->Initialize();*/
+        _skybox->Initialize();
 
         _sceneLightSO = SceneObject::Create("Light");
         _light = _sceneLightSO->AddComponent<CLight>();

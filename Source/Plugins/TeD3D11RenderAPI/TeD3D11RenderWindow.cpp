@@ -430,7 +430,7 @@ namespace te
         if (FAILED(hr))
         {
             String errorDescription = _device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Unable to create rendertarget view\nError Description:" + errorDescription);
+            TE_ASSERT_ERROR(false, "Unable to create rendertarget view\nError Description: " + errorDescription);
         }
 
         _depthStencilView = nullptr;

@@ -749,7 +749,10 @@ namespace te
         // Bind render targets
         _device->GetImmediateContext()->OMSetRenderTargets(maxRenderTargets, views, depthStencilView);
         if (_device->HasError())
-            TE_ASSERT_ERROR(false, "Failed to setRenderTarget : " + _device->GetErrorDescription());
+        {
+            String errorDescription = _device->GetErrorDescription();
+            TE_ASSERT_ERROR(false, "Failed to setRenderTarget : " + errorDescription);
+        }
 
         te_deleteN(views, maxRenderTargets);
         ApplyViewport();

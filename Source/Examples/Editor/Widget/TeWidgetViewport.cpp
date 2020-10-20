@@ -40,20 +40,22 @@ namespace te
         _sceneCamera->GetViewport()->SetClearColorValue(Color(0.42f, 0.67f, 0.94f, 1.0f));
         _sceneCamera->GetViewport()->SetTarget(_renderData.RenderTex);
         _sceneCamera->Initialize();
+        _sceneCamera->SetMSAACount(gCoreApplication().GetWindow()->GetDesc().MultisampleCount);
         _sceneCameraUI = _sceneCameraSO->AddComponent<CCameraUI>();
         _sceneCameraUI->SetTarget(Vector3(0.0f, 0.0f, 0.0f));
 
-        _sceneCameraSO->SetPosition(Vector3(0.0f, 3.5f, 5.5f));
-        _sceneCameraSO->LookAt(Vector3(0.0f, 0.0f, 0.0f));
+        _sceneCameraSO->SetPosition(Vector3(2.0f, 2.0f, 5.5f));
+        _sceneCameraSO->LookAt(Vector3(0.0f, 0.5f, 0.0f));
 
         if (renderTextureUpdated)
             _sceneCamera->SetAspectRatio((float)_renderData.Width / (float)_renderData.Height);
 
         auto settings = _sceneCamera->GetRenderSettings();
-        settings->ExposureScale = 1.2f;
+        settings->ExposureScale = 0.85f;
         settings->Gamma = 1.0f;
-        settings->Contrast = 1.60f;
-        settings->Brightness = -0.05f;
+        settings->Contrast = 2.0f;
+        settings->Brightness = -0.1f;
+        settings->MotionBlur.Enabled = false;
         // ######################################################
 
         _onBeginCallback = [this] {
@@ -75,6 +77,8 @@ namespace te
 
     void WidgetViewport::NeedsRedraw()
     {
+        _needResetViewport = true;
+
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         _sceneCamera->NotifyNeedsRedraw();
 #endif
@@ -104,6 +108,29 @@ namespace te
             }
         }
 #endif
+    }
+
+    void WidgetViewport::UpdateBackground()
+    { 
+#if TE_PLATFORM == TE_PLATFORM_WIN32
+        UINT32 flags = _sceneCamera->GetFlags();
+        if (gCoreApplication().GetState().IsFlagSet(ApplicationState::Game)) //We are in simulation mode, we switch to edit mode and change camera to onDemand
+        {
+            gCoreApplication().GetState().SetFlag(ApplicationState::Game, false);
+
+            if (!(flags & (UINT32)CameraFlag::OnDemand))
+            {
+                flags |= (UINT32)CameraFlag::OnDemand;
+                _sceneCamera->SetFlags(flags);
+            }
+        }
+#endif
+    }
+
+    void WidgetViewport::SetVisible(bool isVisible)
+    {
+        Widget::SetVisible(isVisible);
+        NeedsRedraw();
     }
 
     void WidgetViewport::ResetViewport()
@@ -168,6 +195,7 @@ namespace te
         _renderData.TargetDepthDesc.Width = _renderData.Width;
         _renderData.TargetDepthDesc.Height = _renderData.Height;
         _renderData.TargetDepthDesc.Format = PF_RGBA8;
+        _renderData.TargetDepthDesc.NumSamples = gCoreApplication().GetWindow()->GetDesc().MultisampleCount;
         _renderData.TargetDepthDesc.Usage = TU_DEPTHSTENCIL;
 
         _renderData.ColorTex = Texture::Create(_renderData.TargetColorDesc);

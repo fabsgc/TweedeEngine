@@ -110,6 +110,9 @@ namespace te
         ShowAboutWindow();
     }
 
+    void WidgetMenuBar::UpdateBackground()
+    { }
+
     void WidgetMenuBar::ShowAboutWindow()
     {
         if (!_settings.ShowAboutWindow)

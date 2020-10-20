@@ -15,6 +15,7 @@ namespace te
 
         virtual void Initialize() override;
         virtual void Update() override;
+        virtual void UpdateBackground() override;
 
     protected:
         std::unordered_map<Widget::IconType, SPtr<Widget>> _widgets;

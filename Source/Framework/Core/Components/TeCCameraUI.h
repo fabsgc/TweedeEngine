@@ -40,6 +40,7 @@ namespace te
     protected:
         HCamera _camera;
         Vector3 _target;
+        Vector3 _initialVector;
 
         bool _inputEnabled;
         bool _lastHideCursorState;

@@ -83,7 +83,7 @@ namespace te
         if (FAILED(hr) || device.HasError())
         {
             String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Cannot create D3D11 vertex shader from microcode\nError Description:" + errorDescription);
+            TE_ASSERT_ERROR(false, "Cannot create D3D11 vertex shader from microcode\nError Description: " + errorDescription);
         }
     }
 
@@ -110,7 +110,7 @@ namespace te
         if (FAILED(hr) || device.HasError())
         {
             String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Cannot create D3D11 pixel shader from microcode.\nError Description:" + errorDescription);
+            TE_ASSERT_ERROR(false, "Cannot create D3D11 pixel shader from microcode.\nError Description: " + errorDescription);
         }
     }
 
@@ -137,7 +137,7 @@ namespace te
         if (FAILED(hr) || device.HasError())
         {
             String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Cannot create D3D11 geometry shader from microcode.\nError Description:" + errorDescription);
+            TE_ASSERT_ERROR(false, "Cannot create D3D11 geometry shader from microcode.\nError Description: " + errorDescription);
         }
     }
 
@@ -164,7 +164,7 @@ namespace te
         if (FAILED(hr) || device.HasError())
         {
             String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Cannot create D3D11 domain shader from microcode.\nError Description:" + errorDescription);
+            TE_ASSERT_ERROR(false, "Cannot create D3D11 domain shader from microcode.\nError Description: " + errorDescription);
         }
     }
 
@@ -192,7 +192,7 @@ namespace te
         if (FAILED(hr) || device.HasError())
         {
             String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Cannot create D3D11 hull shader from microcode.\nError Description:" + errorDescription);
+            TE_ASSERT_ERROR(false, "Cannot create D3D11 hull shader from microcode.\nError Description: " + errorDescription);
         }
     }
 
@@ -218,7 +218,7 @@ namespace te
         if (FAILED(hr) || device.HasError())
         {
             String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Cannot create D3D11 compute shader from microcode.\nError Description:" + errorDescription);
+            TE_ASSERT_ERROR(false, "Cannot create D3D11 compute shader from microcode.\nError Description: " + errorDescription);
         }
     }
 

@@ -20,4 +20,7 @@ namespace te
 
     void WidgetConsole::Update()
     { }
+
+    void WidgetConsole::UpdateBackground()
+    { }
 }

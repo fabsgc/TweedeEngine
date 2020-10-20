@@ -16,4 +16,7 @@ namespace te
 
     void WidgetProperties::Update()
     { }
+
+    void WidgetProperties::UpdateBackground()
+    { }
 }

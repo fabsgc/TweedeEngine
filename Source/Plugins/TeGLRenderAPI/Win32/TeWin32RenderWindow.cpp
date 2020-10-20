@@ -51,7 +51,7 @@ namespace te
         _properties.Top = _window->GetTop();
         _properties.Left = _window->GetLeft();
 
-        _properties.MultisampleCount = 4;
+        _properties.MultisampleCount = _desc.MultisampleCount;
         _properties.IsWindow = true;
 
         _properties.IsFullScreen = _desc.Fullscreen;

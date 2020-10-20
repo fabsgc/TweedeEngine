@@ -79,6 +79,7 @@ namespace te
                 D3D11_MESSAGE* pMessage = (D3D11_MESSAGE*)malloc(messageLength);
                 _infoQueue->GetMessage(i, pMessage, &messageLength);
                 res = res + pMessage->pDescription + "\n";
+                res = res + ToString(pMessage->ID) + "\n";
                 free(pMessage);
             }
         }

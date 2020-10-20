@@ -269,7 +269,7 @@ namespace te
             if (_device.HasError())
             {
                 String errorDescription = _device.GetErrorDescription();
-                TE_ASSERT_ERROR(false, "Cannot copy D3D11 resource\nError Description:" + errorDescription);
+                TE_ASSERT_ERROR(false, "Cannot copy D3D11 resource\nError Description: " + errorDescription);
             }
         }
         else
@@ -288,7 +288,7 @@ namespace te
             if (_device.HasError())
             {
                 String errorDescription = _device.GetErrorDescription();
-                TE_ASSERT_ERROR(false, "Cannot copy D3D11 subresource region\nError Description:" + errorDescription);
+                TE_ASSERT_ERROR(false, "Cannot copy D3D11 subresource region\nError Description: " + errorDescription);
             }
         }
     }

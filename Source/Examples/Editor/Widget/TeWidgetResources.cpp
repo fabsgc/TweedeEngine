@@ -16,4 +16,7 @@ namespace te
 
     void WidgetResources::Update()
     { }
+
+    void WidgetResources::UpdateBackground()
+    { }
 }

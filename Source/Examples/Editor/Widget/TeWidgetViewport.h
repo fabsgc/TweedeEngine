@@ -15,9 +15,11 @@ namespace te
 
         virtual void Initialize() override;
         virtual void Update() override;
+        virtual void UpdateBackground() override;
 
         void Resize();
         void NeedsRedraw();
+        void SetVisible(bool isVisible);
 
     protected:
         void ResetViewport();

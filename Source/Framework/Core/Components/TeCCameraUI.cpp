@@ -20,9 +20,9 @@ namespace te
     const String CCameraUI::VERTICAL_AXIS_BINDING = "SceneVertical";
     const String CCameraUI::SCROLL_AXIS_BINDING = "SceneScroll";
 
-    const float CCameraUI::MOVE_SPEED = 0.3f;
+    const float CCameraUI::MOVE_SPEED = 0.2f;
     const float CCameraUI::ZOOM_SPEED = 32.0f;
-    const float CCameraUI::SCROLL_SPEED = 6.0f;
+    const float CCameraUI::SCROLL_SPEED = 10.0f;
     const float CCameraUI::ROTATIONAL_SPEED = 8.0f;
     const float CCameraUI::TOP_SCROLL_SPEED = 16.0f;
 
@@ -123,8 +123,26 @@ namespace te
 
                 const Transform& tfrm = SO()->GetLocalTransform();
 
-                SO()->RotateAround(_target, tfrm.GetRight(), Radian(Degree(Math::Clamp(vertValue * ROTATIONAL_SPEED, -90.0f, 90.f))));
-                SO()->RotateAround(_target, Vector3::UNIT_Y, Radian(Degree(Math::Clamp(horzValue * ROTATIONAL_SPEED, -90.0f, 90.f))));
+                Radian rotationRight = Radian(Degree(Math::Clamp(vertValue * ROTATIONAL_SPEED, -90.0f, 90.f)));
+                Radian rotationY = Radian(Degree(Math::Clamp(horzValue * ROTATIONAL_SPEED, -90.0f, 90.f)));
+
+                SO()->RotateAround(_target, Vector3::UNIT_Y, rotationY);
+                SO()->RotateAround(_target, tfrm.GetRight(), rotationRight);
+
+                // TODO prevent camera from rotating too much on X axis
+                /*Radian x, y, z;
+
+                Transform* transform = const_cast<Transform*>(&SO()->GetLocalTransform());
+
+                Quaternion rot = transform->GetRotation();
+                rot.ToEulerAngles(x, y, z);
+
+                float clampedX = Math::Clamp(y.ValueDegrees(), -30.0f, 30.0f);
+
+                Quaternion rotation;
+                rotation.FromEulerAngles(Radian(clampedX), y, z);
+
+                transform->SetRotation(rotation);*/
 
                 needRedraw = true;
             }
@@ -149,5 +167,6 @@ namespace te
     void CCameraUI::SetTarget(Vector3 target)
     {
         _target = target;
+        _initialVector = SO()->GetTransform().GetPosition() - _target;
     }
 }

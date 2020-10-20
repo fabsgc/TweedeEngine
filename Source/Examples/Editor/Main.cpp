@@ -30,7 +30,7 @@ int main()
 
     desc.WindowDesc.Mode = te::VideoMode(1024, 576);
     desc.WindowDesc.Fullscreen = false;
-    desc.WindowDesc.MultisampleCount = 1;
+    desc.WindowDesc.MultisampleCount = 1; //MSAA is useless for an editor
     desc.WindowDesc.Title = "Editor";
     desc.WindowDesc.Vsync = false;
 

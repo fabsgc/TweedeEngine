@@ -16,4 +16,7 @@ namespace te
 
     void WidgetProject::Update()
     { }
+
+    void WidgetProject::UpdateBackground()
+    { }
 }

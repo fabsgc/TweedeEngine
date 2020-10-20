@@ -77,4 +77,7 @@ namespace te
             });
         }
     }
+
+    void WidgetToolBar::UpdateBackground()
+    { }
 }

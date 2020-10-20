@@ -52,7 +52,7 @@ namespace te
         if (FAILED(hr) || device.HasError())
         {
             String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Cannot create depth stencil state.\nError Description:" + errorDescription);
+            TE_ASSERT_ERROR(false, "Cannot create depth stencil state.\nError Description: " + errorDescription);
         }
 
         DepthStencilState::CreateInternal();
