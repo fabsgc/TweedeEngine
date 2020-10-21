@@ -20,8 +20,8 @@ set(TE_GLIMGUIAPI_SRC_IMGUI
 )
 
 if(WIN32)
-    list(APPEND TE_GLIMGUIAPI_INC_IMGUI "ImGui/imgui_impl_win32.h" "ImGui/imgui_impl_dx11.h")
-    list(APPEND TE_GLIMGUIAPI_SRC_IMGUI "ImGui/imgui_impl_win32.cpp" "ImGui/imgui_impl_dx11.cpp")
+    list(APPEND TE_GLIMGUIAPI_INC_IMGUI "ImGui/imgui_impl_win32.h")
+    list(APPEND TE_GLIMGUIAPI_SRC_IMGUI "ImGui/imgui_impl_win32.cpp")
 elseif(LINUX)
     list(APPEND TE_GLIMGUIAPI_INC_IMGUI "ImGui/imgui_impl_glfw.h")
     list(APPEND TE_GLIMGUIAPI_SRC_IMGUI "ImGui/imgui_impl_glfw.cpp")

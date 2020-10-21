@@ -70,7 +70,7 @@ static const float FrameDelta = 1 / 60.0;
 
 float4 ComputeNormalBuffer(float4 normal)
 {
-    return normal;
+    return float4(normal.xyz, 1.0);
 }
 
 float4 ComputeEmissiveBuffer(float4 color, float4 emissive)
@@ -85,7 +85,7 @@ float4 ComputeEmissiveBuffer(float4 color, float4 emissive)
         if(brightness > 0.999)
             return float4(color.rgb, 1.0);
         else
-            return (float4)0;
+            return float4(0.0, 0.0, 0.0, 1.0);
     }
 }
 
@@ -114,6 +114,8 @@ float4 ComputeVelocityBuffer(float4 position, float4 prevPosition, float alpha)
     }
 
     output.xy = velocity.xy;
+    output.z = 1.0;
+    output.w = 1.0;
 
     return output;
 }

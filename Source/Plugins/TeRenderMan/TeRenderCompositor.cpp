@@ -245,7 +245,7 @@ namespace te
             numSamples, true));
         if(needsVelocity)
         {
-            VelocityTex = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA16F, width, height, TU_RENDERTARGET,
+            VelocityTex = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA8, width, height, TU_RENDERTARGET,
                 numSamples, false));
         }
 
