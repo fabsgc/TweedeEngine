@@ -277,11 +277,13 @@ namespace te
         }
 
         /** Normalizes this quaternion, and returns the previous length. */
-        float Normalize()
+        template<bool SAFE = true>
+        float Normalize(float tolerance = 1e-04f)
         {
-            float len = w * w + x * x + y * y + z * z;
-            float factor = 1.0f / Math::Sqrt(len);
-            *this = *this * factor;
+            float len = Math::Sqrt(Dot(*this, *this));
+            if (!SAFE || len > (tolerance * tolerance))
+                *this = *this * (1.0f / len);
+
             return len;
         }
 
@@ -324,12 +326,14 @@ namespace te
         }
 
         /** Normalizes the provided quaternion. */
-        static Quaternion Normalize(const Quaternion& q)
+        template<bool SAFE = true>
+        static Quaternion Normalize(const Quaternion& q, float tolerance = 1e-04f)
         {
-            float len = Dot(q, q);
-            float factor = 1.0f / Math::Sqrt(len);
+            float sqrdLen = Dot(q, q);
+            if (!SAFE || sqrdLen > tolerance)
+                return q * Math::InvSqrt(sqrdLen);
 
-            return q * factor;
+            return q;
         }
 
         /**

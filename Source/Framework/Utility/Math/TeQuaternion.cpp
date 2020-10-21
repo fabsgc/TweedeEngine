@@ -12,7 +12,7 @@ namespace te
     void Quaternion::FromRotationMatrix(const Matrix3& mat)
     {
         // Algorithm in Ken Shoemake's article in 1987 SIGGRAPH course notes
-        // article "Quaternion Calculus and Fast Animation".
+                // article "Quaternion Calculus and Fast Animation".
 
         float trace = mat[0][0] + mat[1][1] + mat[2][2];
         float root;
@@ -21,11 +21,11 @@ namespace te
         {
             // |w| > 1/2, may as well choose w > 1/2
             root = Math::Sqrt(trace + 1.0f);  // 2w
-            w = 0.5f*root;
+            w = 0.5f * root;
             root = 0.5f / root;  // 1/(4w)
-            x = (mat[2][1] - mat[1][2])*root;
-            y = (mat[0][2] - mat[2][0])*root;
-            z = (mat[1][0] - mat[0][1])*root;
+            x = (mat[2][1] - mat[1][2]) * root;
+            y = (mat[0][2] - mat[2][0]) * root;
+            z = (mat[1][0] - mat[0][1]) * root;
         }
         else
         {
@@ -45,12 +45,12 @@ namespace te
             root = Math::Sqrt(mat[i][i] - mat[j][j] - mat[k][k] + 1.0f);
 
             float* cmpntLookup[3] = { &x, &y, &z };
-            *cmpntLookup[i] = 0.5f*root;
+            *cmpntLookup[i] = 0.5f * root;
             root = 0.5f / root;
 
-            w = (mat[k][j] - mat[j][k])*root;
-            *cmpntLookup[j] = (mat[j][i] + mat[i][j])*root;
-            *cmpntLookup[k] = (mat[k][i] + mat[i][k])*root;
+            w = (mat[k][j] - mat[j][k]) * root;
+            *cmpntLookup[j] = (mat[j][i] + mat[i][j]) * root;
+            *cmpntLookup[k] = (mat[k][i] + mat[i][k]) * root;
         }
 
         Normalize();
@@ -58,7 +58,7 @@ namespace te
 
     void Quaternion::FromAxisAngle(const Vector3& axis, const Radian& angle)
     {
-        Radian halfAngle(0.5f*angle);
+        Radian halfAngle(0.5f * angle);
         float sin = Math::Sin(halfAngle);
 
         w = Math::Cos(halfAngle);
@@ -89,23 +89,23 @@ namespace te
     void Quaternion::FromEulerAngles(const Radian& xAngle, const Radian& yAngle, const Radian& zAngle)
     {
         Radian halfXAngle = xAngle * 0.5f;
-		Radian halfYAngle = yAngle * 0.5f;
-		Radian halfZAngle = zAngle * 0.5f;
+        Radian halfYAngle = yAngle * 0.5f;
+        Radian halfZAngle = zAngle * 0.5f;
 
-		float cx = Math::Cos(halfXAngle);
-		float sx = Math::Sin(halfXAngle);
+        float cx = Math::Cos(halfXAngle);
+        float sx = Math::Sin(halfXAngle);
 
-		float cy = Math::Cos(halfYAngle);
-		float sy = Math::Sin(halfYAngle);
+        float cy = Math::Cos(halfYAngle);
+        float sy = Math::Sin(halfYAngle);
 
-		float cz = Math::Cos(halfZAngle);
-		float sz = Math::Sin(halfZAngle);
+        float cz = Math::Cos(halfZAngle);
+        float sz = Math::Sin(halfZAngle);
 
-		Quaternion quatX(cx, sx, 0.0f, 0.0f);
-		Quaternion quatY(cy, 0.0f, sy, 0.0f);
-		Quaternion quatZ(cz, 0.0f, 0.0f, sz);
+        Quaternion quatX(cx, sx, 0.0f, 0.0f);
+        Quaternion quatY(cy, 0.0f, sy, 0.0f);
+        Quaternion quatZ(cz, 0.0f, 0.0f, sz);
 
-		*this = quatZ * (quatX * quatY);
+        *this = quatZ * (quatX * quatY);
     }
 
     void Quaternion::FromEulerAngles(const Radian& xAngle, const Radian& yAngle, const Radian& zAngle, EulerAngleOrder order)
@@ -132,7 +132,7 @@ namespace te
         quats[1] = Quaternion(cy, 0.0f, sy, 0.0f);
         quats[2] = Quaternion(cz, 0.0f, 0.0f, sz);
 
-        *this = (quats[l.c] * quats[l.b]) * quats[l.a];
+        *this = quats[l.c] * (quats[l.b] * quats[l.a]);
     }
 
     void Quaternion::ToRotationMatrix(Matrix3& mat) const
@@ -166,7 +166,7 @@ namespace te
         float sqrLength = x * x + y * y + z * z;
         if (sqrLength > 0.0)
         {
-            angle = 2.0*Math::Acos(w);
+            angle = 2.0 * Math::Acos(w);
             float invLength = Math::InvSqrt(sqrLength);
             axis.x = x * invLength;
             axis.y = y * invLength;
@@ -209,8 +209,8 @@ namespace te
 
     Vector3 Quaternion::XAxis() const
     {
-        float fTy = 2.0f*y;
-        float fTz = 2.0f*z;
+        float fTy = 2.0f * y;
+        float fTz = 2.0f * z;
         float fTwy = fTy * w;
         float fTwz = fTz * w;
         float fTxy = fTy * x;
@@ -223,9 +223,9 @@ namespace te
 
     Vector3 Quaternion::YAxis() const
     {
-        float fTx = 2.0f*x;
-        float fTy = 2.0f*y;
-        float fTz = 2.0f*z;
+        float fTx = 2.0f * x;
+        float fTy = 2.0f * y;
+        float fTz = 2.0f * z;
         float fTwx = fTx * w;
         float fTwz = fTz * w;
         float fTxx = fTx * x;
@@ -238,9 +238,9 @@ namespace te
 
     Vector3 Quaternion::ZAxis() const
     {
-        float fTx = 2.0f*x;
-        float fTy = 2.0f*y;
-        float fTz = 2.0f*z;
+        float fTx = 2.0f * x;
+        float fTy = 2.0f * y;
+        float fTz = 2.0f * z;
         float fTwx = fTx * w;
         float fTwy = fTy * w;
         float fTxx = fTx * x;
@@ -257,7 +257,7 @@ namespace te
         if (fNorm > 0.0f)
         {
             float fInvNorm = 1.0f / fNorm;
-            return Quaternion(w*fInvNorm, -x * fInvNorm, -y * fInvNorm, -z * fInvNorm);
+            return Quaternion(w * fInvNorm, -x * fInvNorm, -y * fInvNorm, -z * fInvNorm);
         }
         else
         {

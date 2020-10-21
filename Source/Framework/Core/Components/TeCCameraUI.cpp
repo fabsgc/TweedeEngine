@@ -97,6 +97,8 @@ namespace te
             needRedraw = true;
         };
 
+        float vertValue = 0.0f;
+
         if (camRotating)
         {
             if (camZooming)
@@ -118,31 +120,17 @@ namespace te
             }
             else
             {
-                float horzValue = gVirtualInput().GetAxisValue(_horizontalAxis);
-                float vertValue = gVirtualInput().GetAxisValue(_verticalAxis);
-
                 const Transform& tfrm = SO()->GetLocalTransform();
+                Radian x, y, z;
 
-                Radian rotationRight = Radian(Degree(Math::Clamp(vertValue * ROTATIONAL_SPEED, -90.0f, 90.f)));
-                Radian rotationY = Radian(Degree(Math::Clamp(horzValue * ROTATIONAL_SPEED, -90.0f, 90.f)));
+                float horzValue = gVirtualInput().GetAxisValue(_horizontalAxis);
+                float vertValue  = gVirtualInput().GetAxisValue(_verticalAxis);
+
+                Radian rotationRight = Radian(Degree(Math::Clamp(vertValue * ROTATIONAL_SPEED, -15.0f, 15.0f)));
+                Radian rotationY = Radian(Degree(Math::Clamp(horzValue * ROTATIONAL_SPEED, -15.0f, 15.0f)));
 
                 SO()->RotateAround(_target, Vector3::UNIT_Y, rotationY);
                 SO()->RotateAround(_target, tfrm.GetRight(), rotationRight);
-
-                // TODO prevent camera from rotating too much on X axis
-                /*Radian x, y, z;
-
-                Transform* transform = const_cast<Transform*>(&SO()->GetLocalTransform());
-
-                Quaternion rot = transform->GetRotation();
-                rot.ToEulerAngles(x, y, z);
-
-                float clampedX = Math::Clamp(y.ValueDegrees(), -30.0f, 30.0f);
-
-                Quaternion rotation;
-                rotation.FromEulerAngles(Radian(clampedX), y, z);
-
-                transform->SetRotation(rotation);*/
 
                 needRedraw = true;
             }
