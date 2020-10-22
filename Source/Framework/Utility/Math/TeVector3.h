@@ -315,7 +315,7 @@ namespace te
         }
 
         /** Gets the angle between 2 vectors. */
-        inline Radian AngleBetween(const Vector3& dest) const;
+        Radian AngleBetween(const Vector3& dest) const;
 
         /** Returns true if this vector is zero length. */
         bool IsZeroLength() const
