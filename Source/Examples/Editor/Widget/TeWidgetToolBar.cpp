@@ -86,7 +86,7 @@ namespace te
         {
             SPtr<Widget> widget = widgetPair.second;
 
-            ShowButton(widget->GetTitle().c_str(), widget->GetTitle().c_str(), 
+            ShowButton(widget->GetTitle().c_str(), widget->GetTitleActivated().c_str(), 
                 [this, &widget]() { return widget->GetVisible(); }, 
                 [this, &widget]() { widget->SetVisible(true); 
             });

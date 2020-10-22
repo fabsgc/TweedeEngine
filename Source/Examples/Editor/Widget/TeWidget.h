@@ -59,11 +59,14 @@ namespace te
         bool GetVisible() const { return _isVisible; }
         void SetVisible(bool isVisible) { _isVisible = isVisible; }
         const auto& GetTitle() const { return _title; }
+        const auto& GetTitleActivated() const { return _titleActivated; }
         WidgetType GetType() const { return _type; }
 
     protected:
         bool _isVisible;
         bool _isWindow;
+        bool _begun;
+        WidgetType _type;
         UINT32 _flags = ImGuiWindowFlags_NoCollapse;
         float _height = 0.0f;
         float _alpha = -1.0f;
@@ -76,10 +79,8 @@ namespace te
         std::function<void()> _onBeginCallback = nullptr;
 
         String _title;
+        String _titleActivated;
 
-        bool _begun;
-        UINT8 _varPushes = 0;
-
-        WidgetType _type;
+        UINT8 _varPushes = 0;        
     };
 }
