@@ -103,9 +103,7 @@ namespace te
 #endif
 
         if (GuiAPI::Instance().IsGuiInitialized())
-        {
             InitializeGui();
-        }
     }
 
     void Editor::OnShutDown()
@@ -119,9 +117,7 @@ namespace te
             GuiAPI::Instance().Update();
 
             if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DockingEnable)
-            {
                 BeginGui();
-            }
 
             for (auto widget : _widgets)
             {
@@ -137,10 +133,14 @@ namespace te
             }
 
             if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DockingEnable)
-            {
                 EndGui();
-            }
         }
+    }
+
+    void Editor::NeedsRedraw()
+    {
+        if(_settings.WViewport)
+            static_cast<WidgetViewport*>(_settings.WViewport.get())->NeedsRedraw();
     }
 
     void Editor::InitializeGui()
@@ -162,13 +162,11 @@ namespace te
         _widgets.emplace_back(te_shared_ptr_new<WidgetProperties>());
         _widgets.emplace_back(te_shared_ptr_new<WidgetRenderOptions>());
         _widgets.emplace_back(te_shared_ptr_new<WidgetConsole>());
-        _widgets.emplace_back(te_shared_ptr_new<WidgetViewport>());
+        _widgets.emplace_back(te_shared_ptr_new<WidgetViewport>()); _settings.WViewport = _widgets.back();
         _widgets.emplace_back(te_shared_ptr_new<WidgetResources>());
 
         for (auto widget : _widgets)
-        {
             widget->Initialize();
-        }
     }
 
     void Editor::ApplyStyleGui() const
@@ -345,9 +343,7 @@ namespace te
     void Editor::EndGui()
     {
         if (_editorBegun)
-        {
             ImGui::End();
-        }
     }
 
     void Editor::LoadScene()

@@ -21,16 +21,21 @@ namespace te
     const String CCameraUI::SCROLL_AXIS_BINDING = "SceneScroll";
 
     const float CCameraUI::MOVE_SPEED = 0.2f;
-    const float CCameraUI::ZOOM_SPEED = 32.0f;
-    const float CCameraUI::SCROLL_SPEED = 10.0f;
+    const float CCameraUI::ZOOM_SPEED = 6.0f;
+    const float CCameraUI::SCROLL_SPEED = 12.0f;
     const float CCameraUI::ROTATIONAL_SPEED = 8.0f;
-    const float CCameraUI::TOP_SCROLL_SPEED = 16.0f;
+    const float CCameraUI::TOP_SCROLL_SPEED = 12.0f;
+    const float CCameraUI::MAX_RIGHT_ANGLE = 89.0f;
+    const float CCameraUI::MAX_ZOOM_SPEED = 500.0f;
+    const float CCameraUI::MAX_ZOOM = 5000.0f;
+    const float CCameraUI::MIN_ZOOM = 0.5f;
 
     CCameraUI::CCameraUI(const HSceneObject& parent)
         : Component(parent, TID_CCameraUI)
         , _target(Vector3::ZERO)
         , _inputEnabled(false)
         , _lastHideCursorState(false)
+        , _localRotation(Vector3::ZERO)
     {
         SetName("CCameraUI");
 
@@ -45,28 +50,41 @@ namespace te
         _scrollAxis = VirtualAxis(SCROLL_AXIS_BINDING);
     }
 
+    void CCameraUI::InitDistanceToTarget()
+    {
+        _distanceToTarget = SO()->GetLocalTransform().GetPosition().Distance(_target);
+    }
+
+    void CCameraUI::InitLocalRotation()
+    {
+        Vector3 forwardAngle = SO()->GetLocalTransform().GetForward();
+        float oppositeAngle = (-forwardAngle).AngleBetween(Vector3::UNIT_Y).ValueDegrees();
+        _localRotation.x = -(180.0f - 90.0f - oppositeAngle);
+    }
+
     void CCameraUI::Update()
     { 
         bool isOrtographic = _camera->GetProjectionType() == ProjectionType::PT_ORTHOGRAPHIC;
-
         bool camRotating = gVirtualInput().IsButtonHeld(_rotateBtn);
         bool camMoving = gVirtualInput().IsButtonHeld(_moveBtn);
         bool camZooming = gVirtualInput().IsButtonHeld(_zoomBtn);
-
         bool hideCursor = camRotating;
-
-        bool needRedraw = false;
+        bool needsRedraw = false;
+        float frameDelta = gTime().GetFrameDelta();
 
         if (!_inputEnabled)
         {
-            if(_lastHideCursorState == hideCursor) Platform::ShowCursor();
+            if(_lastHideCursorState == hideCursor)
+                Platform::ShowCursor();
             return;
         }
 
         if (hideCursor != _lastHideCursorState)
         {
             if (hideCursor)
+            {
                 Platform::HideCursor();
+            }
             else
             {
                 UINT32 width = gCoreApplication().GetWindow()->GetProperties().Width;
@@ -81,23 +99,31 @@ namespace te
             _lastHideCursorState = hideCursor;
         }
 
-        float frameDelta = gTime().GetFrameDelta();
+        auto scrolling = [&](const float& amount, const float& sensitivity) {
+            if (_distanceToTarget < 0.5f && amount > 0.0f)
+                return;
 
-        auto scrolling = [&](const float& scrollAmount, const float& speed) {
+            if (_distanceToTarget > MAX_ZOOM && amount < 0.0f)
+                return;
+
+            float coefficient = (_distanceToTarget < MAX_ZOOM_SPEED) ? fabs(_distanceToTarget) : MAX_ZOOM_SPEED;
+            float scrollAmount = amount * coefficient * sensitivity * frameDelta;
+
             if (!isOrtographic)
             {
-                SO()->Move(SO()->GetLocalTransform().GetForward() * scrollAmount * speed * frameDelta);
+                Vector3 forward = SO()->GetLocalTransform().GetForward();
+                forward.Normalize();
+                SO()->Move(forward * scrollAmount);
             }
             else
             {
-                float orthoHeight = Math::Max(1.0f, _camera->GetOrthoWindowHeight() - scrollAmount * frameDelta);
+                float orthoHeight = Math::Max(1.0f, _camera->GetOrthoWindowHeight() - scrollAmount);
                 _camera->SetOrthoWindowHeight(orthoHeight);
             }
 
-            needRedraw = true;
+            InitDistanceToTarget();
+            needsRedraw = true;
         };
-
-        float vertValue = 0.0f;
 
         if (camRotating)
         {
@@ -116,23 +142,38 @@ namespace te
                 SO()->Move(direction * MOVE_SPEED);
                 _target += direction * MOVE_SPEED;
 
-                needRedraw = true;
+                needsRedraw = true;
             }
             else
             {
-                const Transform& tfrm = SO()->GetLocalTransform();
-                Radian x, y, z;
+                const Transform& tfrm = SO()->GetTransform();
 
                 float horzValue = gVirtualInput().GetAxisValue(_horizontalAxis);
                 float vertValue  = gVirtualInput().GetAxisValue(_verticalAxis);
 
-                Radian rotationRight = Radian(Degree(Math::Clamp(vertValue * ROTATIONAL_SPEED, -15.0f, 15.0f)));
-                Radian rotationY = Radian(Degree(Math::Clamp(horzValue * ROTATIONAL_SPEED, -15.0f, 15.0f)));
+                float rotationRight = Math::Clamp(vertValue * ROTATIONAL_SPEED, -15.0f, 15.0f);
+                float rotationY = Math::Clamp(horzValue * ROTATIONAL_SPEED, -15.0f, 15.0f);
 
-                SO()->RotateAround(_target, Vector3::UNIT_Y, rotationY);
-                SO()->RotateAround(_target, tfrm.GetRight(), rotationRight);
+                _localRotation.y += rotationY;
 
-                needRedraw = true;
+                if (fabs(_localRotation.x + rotationRight) > 89.0f)
+                {
+                    if (rotationRight > 0.0f)
+                        rotationRight = MAX_RIGHT_ANGLE - _localRotation.x;
+                    else
+                        rotationRight = -MAX_RIGHT_ANGLE - _localRotation.x;
+
+                    _localRotation.x += rotationRight;
+                }
+                else
+                    _localRotation.x += rotationRight;
+
+                if(rotationY != 0.0f)
+                    SO()->RotateAround(_target, Vector3::UNIT_Y, Radian::FromDegrees(rotationY));
+                if(rotationRight != 0.0f)
+                    SO()->RotateAround(_target, tfrm.GetRight(), Radian::FromDegrees(rotationRight));
+
+                needsRedraw = true;
             }
         }
         else
@@ -143,7 +184,7 @@ namespace te
                 scrolling(scrollAmount, SCROLL_SPEED);
         }
 
-        if(needRedraw)
+        if(needsRedraw)
             _camera->NotifyNeedsRedraw();
     }
 
@@ -155,6 +196,8 @@ namespace te
     void CCameraUI::SetTarget(Vector3 target)
     {
         _target = target;
-        _initialVector = SO()->GetTransform().GetPosition() - _target;
+
+        InitDistanceToTarget();
+        InitLocalRotation();
     }
 }

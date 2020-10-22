@@ -35,17 +35,25 @@ namespace te
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         // ######################################################
+
+        _viewportSO = SceneObject::Create("UIViewport");
+
         _sceneCameraSO = SceneObject::Create("UICamera");
+        _sceneCameraSO->SetParent(_viewportSO);
+
         _sceneCamera = _sceneCameraSO->AddComponent<CCamera>();
         _sceneCamera->GetViewport()->SetClearColorValue(Color(0.42f, 0.67f, 0.94f, 1.0f));
         _sceneCamera->GetViewport()->SetTarget(_renderData.RenderTex);
         _sceneCamera->Initialize();
         _sceneCamera->SetMSAACount(gCoreApplication().GetWindow()->GetDesc().MultisampleCount);
-        _sceneCameraUI = _sceneCameraSO->AddComponent<CCameraUI>();
-        _sceneCameraUI->SetTarget(Vector3(0.0f, 0.0f, 0.0f));
+        _sceneCamera->SetProjectionType(ProjectionType::PT_PERSPECTIVE);
 
-        _sceneCameraSO->SetPosition(Vector3(2.0f, 2.0f, 5.5f));
-        _sceneCameraSO->LookAt(Vector3(0.0f, 0.5f, 0.0f));
+        _sceneCameraUI = _sceneCameraSO->AddComponent<CCameraUI>();
+
+        _sceneCameraSO->SetPosition(Vector3(3.5f, 2.5f, 4.0f));
+        _sceneCameraSO->LookAt(Vector3(0.0f, 0.75f, 0.0f));
+
+        _sceneCameraUI->SetTarget(Vector3(0.0f, 0.75f, 0.0f));
 
         if (renderTextureUpdated)
             _sceneCamera->SetAspectRatio((float)_renderData.Width / (float)_renderData.Height);

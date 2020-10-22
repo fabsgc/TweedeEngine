@@ -47,6 +47,7 @@ namespace te
         HCamera _sceneCamera;
         HCameraUI _sceneCameraUI;
         HSceneObject _sceneCameraSO;
+        HSceneObject _viewportSO;
 #endif
 
         RenderWindowData _renderData;

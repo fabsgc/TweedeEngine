@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Prerequisites/TePrerequisitesUtility.h"
+#include "TeDegree.h"
 
 namespace te
 {
@@ -25,6 +26,8 @@ namespace te
 
         /** Wraps the angle in [0, 2 *  PI) range. */
         Radian Wrap();
+
+        static Radian FromDegrees(float f) { return Degree(f); }
 
         const Radian& operator+ () const { return *this; }
         Radian operator+ (const Radian& r) const { return Radian(_rad + r._rad); }

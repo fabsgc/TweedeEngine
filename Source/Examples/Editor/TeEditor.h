@@ -25,6 +25,9 @@ namespace te
         /** Called every frame. */
         void Update();
 
+        /** Called to inform the editor that some element has been modified and viewport must be updated */
+        void NeedsRedraw();
+
         Widget* GetWidget(Widget::WidgetType type)
         {
             for (auto& widget : _widgets)
@@ -39,9 +42,10 @@ namespace te
     protected:
         struct EditorSettings
         {
-            SPtr<Widget> WMenuBar = nullptr;
-            SPtr<Widget> WToolbar = nullptr;
-            SPtr<Widget> WProject = nullptr;
+            SPtr<Widget> WMenuBar  = nullptr;
+            SPtr<Widget> WToolbar  = nullptr;
+            SPtr<Widget> WProject  = nullptr;
+            SPtr<Widget> WViewport = nullptr;
             const char* EditorName = "Editor";
             bool Show = true;
         };

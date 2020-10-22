@@ -346,7 +346,7 @@ namespace te
          * Linearly interpolates between the two quaternions using @p t. t should be in [0, 1] range, where t = 0
          * corresponds to the left vector, while t = 1 corresponds to the right vector.
          */
-        static Quaternion lerp(float t, const Quaternion& a, const Quaternion& b)
+        static Quaternion Lerp(float t, const Quaternion& a, const Quaternion& b)
         {
             float d = Dot(a, b);
             float flip = d >= 0.0f ? 1.0f : -1.0f;

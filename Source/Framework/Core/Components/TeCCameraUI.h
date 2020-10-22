@@ -36,11 +36,20 @@ namespace te
         static const float SCROLL_SPEED;
         static const float TOP_SCROLL_SPEED;
         static const float ROTATIONAL_SPEED;
+        static const float MAX_RIGHT_ANGLE;
+        static const float MAX_ZOOM_SPEED;
+        static const float MAX_ZOOM;
+        static const float MIN_ZOOM;
+
+    protected:
+        void InitDistanceToTarget();
+        void InitLocalRotation();
 
     protected:
         HCamera _camera;
         Vector3 _target;
-        Vector3 _initialVector;
+        Vector3 _localRotation;
+        float _distanceToTarget;
 
         bool _inputEnabled;
         bool _lastHideCursorState;
@@ -52,5 +61,7 @@ namespace te
         VirtualAxis _horizontalAxis;
         VirtualAxis _verticalAxis;
         VirtualAxis _scrollAxis;
+
+        
     };
 }
