@@ -2,8 +2,8 @@
 
 #include "TeCorePrerequisites.h"
 #include "Scene/TeComponent.h"
-#include "Math/TeMath.h"
 #include "Input/TeVirtualInput.h"
+#include "Math/TeVector3.h"
 
 namespace te
 {
@@ -20,7 +20,7 @@ namespace te
         void EnableInput(bool enable);
 
         /** For rotation, we want to know the current reference position. */
-        void SetTarget(Vector3 target);
+        void SetTarget(const Vector3& target);
 
     public:
         static const String ROTATE_BINDING;

@@ -367,7 +367,7 @@ namespace te
         // ######################################################
 
         // ######################################################
-        _loadedMeshMonkey = gResourceManager().Load<Mesh>("Data/Meshes/Monkey/monkey.dae", meshImportOptions);
+        _loadedMeshMonkey = gResourceManager().Load<Mesh>("Data/Meshes/Monkey/monkey-hd.dae", meshImportOptions);
         _loadedTextureMonkey = gResourceManager().Load<Texture>("Data/Textures/Monkey/diffuse.png", textureImportOptions);
         _loadedCubemapTexture = gResourceManager().Load<Texture>("Data/Textures/Skybox/sky_medium.jpeg", textureCubeMapImportOptions);
         // ###################################################### 

@@ -1,6 +1,7 @@
 #include "TeCCameraUI.h"
 
 #include "Math/TeMath.h"
+#include "Math/TeRadian.h"
 #include "Math/TeVector3.h"
 #include "Math/TeVector2I.h"
 #include "Scene/TeSceneObject.h"
@@ -193,7 +194,7 @@ namespace te
         _inputEnabled = enable;
     }
 
-    void CCameraUI::SetTarget(Vector3 target)
+    void CCameraUI::SetTarget(const Vector3& target)
     {
         _target = target;
 
