@@ -202,7 +202,7 @@ namespace te
         void NotifyNeedsRedraw() 
         {
             if (GetFlags() & (UINT32)CameraFlag::OnDemand)
-                _markCoreDirty((ActorDirtyFlag)CameraDirtyFlag::Redraw); 
+                _markCoreDirty((ActorDirtyFlag)CameraDirtyFlag::Redraw);
         }
 
         /**
@@ -371,7 +371,18 @@ namespace te
          */
         void SetRenderSettings(const SPtr<RenderSettings>& settings)
         {
-            _renderSettings = settings; _markCoreDirty((ActorDirtyFlag)CameraDirtyFlag::RenderSettings);
+            _renderSettings = settings;
+            _markCoreDirty((ActorDirtyFlag)CameraDirtyFlag::RenderSettings);
+        }
+
+        /**
+         * @copydoc Camera::SetRenderSettings
+         * @note : this method will use copy constructor instead of just changing shared pointer value
+         */
+        void SetRenderSettings(const RenderSettings& settings)
+        {
+            (*_renderSettings) = settings;
+            _markCoreDirty((ActorDirtyFlag)CameraDirtyFlag::RenderSettings);
         }
 
         /** @copydoc SetRenderSettings() */

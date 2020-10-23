@@ -40,6 +40,7 @@ namespace te
         static const float MAX_ZOOM_SPEED;
         static const float MAX_ZOOM;
         static const float MIN_ZOOM;
+        static const float MAX_ROTATION;
 
     protected:
         void InitDistanceToTarget();

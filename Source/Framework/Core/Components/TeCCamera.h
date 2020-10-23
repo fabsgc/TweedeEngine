@@ -113,6 +113,9 @@ namespace te
         /** @copydoc Camera::SetRenderSettings() */
         void SetRenderSettings(const SPtr<RenderSettings>& settings) { _internal->SetRenderSettings(settings); }
 
+        /** @copydoc Camera::SetRenderSettings() */
+        void SetRenderSettings(const RenderSettings& settings) { _internal->SetRenderSettings(settings); }
+
         /** @copydoc Camera::GetRenderSettings() */
         const SPtr<RenderSettings>& GetRenderSettings() const { return _internal->GetRenderSettings(); }
 

@@ -21,6 +21,9 @@ namespace te
         void NeedsRedraw();
         void SetVisible(bool isVisible);
 
+        void ResetCameraSettings();
+        HCamera& GetSceneCamera() { return _sceneCamera; }
+
     protected:
         void ResetViewport();
 
@@ -43,12 +46,11 @@ namespace te
         bool CheckRenderTexture(const float& width, const float& height);
 
     protected:
-#if TE_PLATFORM == TE_PLATFORM_WIN32
         HCamera _sceneCamera;
         HCameraUI _sceneCameraUI;
         HSceneObject _sceneCameraSO;
         HSceneObject _viewportSO;
-#endif
+        SPtr<RenderSettings> _cameraSettings;
 
         RenderWindowData _renderData;
         float _lastRenderDataUpatedTime;

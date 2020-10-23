@@ -477,7 +477,7 @@ namespace te
     void RCNodeTonemapping::Render(const RenderCompositorNodeInputs& inputs)
     {
         const RenderSettings& settings = inputs.View.GetRenderSettings();
-        if (!settings.EnableTonemapping || !settings.EnableHDR)
+        if (!settings.Tonemapping.Enabled || !settings.EnableHDR)
             return;
 
         RCNodeForwardPass* forwardPassNode = static_cast<RCNodeForwardPass*>(inputs.InputNodes[0]);
@@ -588,7 +588,7 @@ namespace te
     { 
         const RendererViewProperties& viewProps = inputs.View.GetProperties();
         const RenderSettings& settings = inputs.View.GetRenderSettings();
-        if (!settings.EnableFXAA || viewProps.Target.NumSamples > 1)
+        if (settings.AntialiasingAglorithm != AntiAliasingAlgorithm::FXAA)
             return;
 
         RCNodeForwardPass* forwardPassNode = static_cast<RCNodeForwardPass*>(inputs.InputNodes[2]);
@@ -625,7 +625,7 @@ namespace te
     {
         const RendererViewProperties& viewProps = inputs.View.GetProperties();
         const RenderSettings& settings = inputs.View.GetRenderSettings();
-        if (!settings.TemporalAA.Enabled || viewProps.Target.NumSamples > 1)
+        if (settings.AntialiasingAglorithm != AntiAliasingAlgorithm::TAA)
             return;
 
         RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[3]);

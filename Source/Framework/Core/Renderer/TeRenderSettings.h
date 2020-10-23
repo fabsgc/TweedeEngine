@@ -14,6 +14,8 @@ namespace te
     struct TE_CORE_EXPORT TonemappingSettings
     {
         TonemappingSettings() = default;
+
+        bool Enabled = true;
     };
 
     /** Settings that control screen space ambient occlusion. */
@@ -104,6 +106,13 @@ namespace te
         Normal
     };
 
+    enum class TE_CORE_EXPORT AntiAliasingAlgorithm
+    {
+        FXAA = 0x1,
+        TAA = 0x2,
+        None = 0x3
+    };
+
     /** Settings that control the motion blur effect. */
     struct TE_CORE_EXPORT MotionBlurSettings
     {
@@ -176,9 +185,6 @@ namespace te
     struct TE_CORE_EXPORT TemporalAASettings
     {
         TemporalAASettings() = default;
-
-        /** Enables or disables temporal anti-aliasing. */
-        bool Enabled = false;
 
         /**
          * Number of different jittered positions to use. Each frame will use one position and subsequent frames
@@ -254,13 +260,6 @@ namespace te
          * If this is disabled, then color grading and white balancing will not be enabled either. Only relevant for HDR
          * images.
          */
-        bool EnableTonemapping = true;
-
-        /**
-         * Parameters used for customizing tonemapping.
-         *
-         * @see	enableTonemapping
-         */
         TonemappingSettings Tonemapping;
 
         /** Parameters used for customizing screen space ambient occlusion. */
@@ -288,7 +287,7 @@ namespace te
         RenderOutputType OutputType = RenderOutputType::Final;
 
         /** Enables the fast approximate anti-aliasing effect. */
-        bool EnableFXAA = true;
+        AntiAliasingAlgorithm AntialiasingAglorithm = AntiAliasingAlgorithm::FXAA;
 
         /**
          * Log2 value to scale the eye adaptation by (for example 2^0 = 1). Smaller values yield darker image, while larger

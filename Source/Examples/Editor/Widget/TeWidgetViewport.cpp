@@ -33,9 +33,7 @@ namespace te
     {
         bool renderTextureUpdated = CheckRenderTexture((float)_renderData.Width, (float)_renderData.Height);
 
-#if TE_PLATFORM == TE_PLATFORM_WIN32
         // ######################################################
-
         _viewportSO = SceneObject::Create("UIViewport");
 
         _sceneCameraSO = SceneObject::Create("UICamera");
@@ -66,6 +64,8 @@ namespace te
         settings->MotionBlur.Enabled = false;
         // ######################################################
 
+        _cameraSettings = _sceneCamera->GetRenderSettings();
+
         _onBeginCallback = [this] {
             if (ImGui::IsWindowFocused())
                 _sceneCameraUI->EnableInput(true);
@@ -74,7 +74,6 @@ namespace te
         };
 
         gCoreApplication().GetWindow()->OnResized.Connect(std::bind(&WidgetViewport::Resize, this));
-#endif
     }
 
     void WidgetViewport::Resize()
@@ -86,10 +85,12 @@ namespace te
     void WidgetViewport::NeedsRedraw()
     {
         _needResetViewport = true;
-
-#if TE_PLATFORM == TE_PLATFORM_WIN32
         _sceneCamera->NotifyNeedsRedraw();
-#endif
+    }
+
+    void WidgetViewport::ResetCameraSettings()
+    {
+        _sceneCamera->SetRenderSettings(_cameraSettings);
     }
 
     void WidgetViewport::Update()
@@ -97,7 +98,6 @@ namespace te
         if (_isVisible && GuiAPI::Instance().IsGuiInitialized())
             ResetViewport();
 
-#if TE_PLATFORM == TE_PLATFORM_WIN32
         UINT32 flags = _sceneCamera->GetFlags();
         if (!gCoreApplication().GetState().IsFlagSet(ApplicationState::Game)) //We are in editor mode
         {
@@ -115,12 +115,10 @@ namespace te
                 _sceneCamera->SetFlags(flags);
             }
         }
-#endif
     }
 
     void WidgetViewport::UpdateBackground()
-    { 
-#if TE_PLATFORM == TE_PLATFORM_WIN32
+    {
         UINT32 flags = _sceneCamera->GetFlags();
         if (gCoreApplication().GetState().IsFlagSet(ApplicationState::Game)) //We are in simulation mode, we switch to edit mode and change camera to onDemand
         {
@@ -132,7 +130,6 @@ namespace te
                 _sceneCamera->SetFlags(flags);
             }
         }
-#endif
     }
 
     void WidgetViewport::SetVisible(bool isVisible)
@@ -148,10 +145,8 @@ namespace te
 
         if (CheckRenderTexture(width, height))
         {
-#if TE_PLATFORM == TE_PLATFORM_WIN32
             _sceneCamera->GetViewport()->SetTarget(_renderData.RenderTex);
             _sceneCamera->SetAspectRatio(width / height);
-#endif
         }
 
         SPtr<TextureView> textureView = _renderData.RenderTex->GetColorTexture(0)->RequestView(
@@ -222,9 +217,7 @@ namespace te
         _lastRenderDataUpatedTime = gTime().GetTime();
         _needResetViewport = false;
 
-#if TE_PLATFORM == TE_PLATFORM_WIN32
         _sceneCamera->NotifyNeedsRedraw();
-#endif
 
         return true;
     }

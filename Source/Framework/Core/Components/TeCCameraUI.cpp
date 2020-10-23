@@ -30,6 +30,7 @@ namespace te
     const float CCameraUI::MAX_ZOOM_SPEED = 500.0f;
     const float CCameraUI::MAX_ZOOM = 5000.0f;
     const float CCameraUI::MIN_ZOOM = 0.5f;
+    const float CCameraUI::MAX_ROTATION = 15.0f;
 
     CCameraUI::CCameraUI(const HSceneObject& parent)
         : Component(parent, TID_CCameraUI)
@@ -152,12 +153,12 @@ namespace te
                 float horzValue = gVirtualInput().GetAxisValue(_horizontalAxis);
                 float vertValue  = gVirtualInput().GetAxisValue(_verticalAxis);
 
-                float rotationRight = Math::Clamp(vertValue * ROTATIONAL_SPEED, -15.0f, 15.0f);
-                float rotationY = Math::Clamp(horzValue * ROTATIONAL_SPEED, -15.0f, 15.0f);
+                float rotationRight = Math::Clamp(vertValue * ROTATIONAL_SPEED, -MAX_ROTATION, MAX_ROTATION);
+                float rotationY = Math::Clamp(horzValue * ROTATIONAL_SPEED, -MAX_ROTATION, MAX_ROTATION);
 
                 _localRotation.y += rotationY;
 
-                if (fabs(_localRotation.x + rotationRight) > 89.0f)
+                if (fabs(_localRotation.x + rotationRight) > MAX_RIGHT_ANGLE)
                 {
                     if (rotationRight > 0.0f)
                         rotationRight = MAX_RIGHT_ANGLE - _localRotation.x;
