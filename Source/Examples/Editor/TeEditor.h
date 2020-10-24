@@ -34,6 +34,9 @@ namespace te
         /** Get viewport camera UI handle */
         HCameraUI& GetViewportCameraUI() { return _viewportCameraUI;  }
 
+        /** Get scene root object */
+        HSceneObject& GetSceneRoot() { return _sceneSO; }
+
         /** Get a widget pointer given its type. Return nullptr if not widget has been found */
         Widget* GetWidget(Widget::WidgetType type)
         {

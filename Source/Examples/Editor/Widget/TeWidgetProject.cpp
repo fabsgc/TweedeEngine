@@ -1,5 +1,9 @@
 #include "TeWidgetProject.h"
 
+#include "Scene/TeSceneObject.h"
+
+#include "../TeEditor.h"
+
 namespace te
 {
     WidgetProject::WidgetProject()
@@ -15,8 +19,24 @@ namespace te
     { }
 
     void WidgetProject::Update()
-    { }
+    { 
+        HSceneObject& sceneSO = Editor::Instance().GetSceneRoot();
+
+        auto children = sceneSO->GetChildren();
+        auto components = sceneSO->GetComponents();
+
+        for (auto& component : components)
+        {
+
+        }
+
+        for (auto& child : children)
+        {
+
+        }
+    }
 
     void WidgetProject::UpdateBackground()
     { }
 }
+ 

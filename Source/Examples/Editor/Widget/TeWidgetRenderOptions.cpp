@@ -1,10 +1,6 @@
 #include "TeWidgetRenderOptions.h"
 #include "TeWidgetViewport.h"
 
-#include "Renderer/TeRenderer.h"
-#include "Manager/TeRendererManager.h"
-#include "Scene/TeSceneManager.h"
-
 #include "Renderer/TeRenderSettings.h"
 #include "Renderer/TeCamera.h"
 
@@ -29,8 +25,6 @@ namespace te
     void WidgetRenderOptions::Update()
     {
         bool hasChanged = false;
-        bool anotherCameraSelected = false;
-
         HCamera& camera = Editor::Instance().GetViewportCamera();
         auto cameraSettings = camera->GetRenderSettings();
 
@@ -128,7 +122,7 @@ namespace te
                 };
 
                 Vector<String> outputTypeLabels = {
-                    "Final", "Color", "Depth", "Emissive", "Velocity", "Normal"
+                    "Final", "Color", "Velocity", "Emissive", "Depth", "Normal"
                 };
 
                 renderOptionCombo((int*)(&cameraSettings->OutputType), "##output_type_option", "Output type",

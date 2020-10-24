@@ -285,6 +285,9 @@ namespace te
          */
         HSceneObject GetChild(UINT32 idx) const;
 
+        /**	Returns all children on this object. */
+        const Vector<HSceneObject>& GetChildren() const { return _children; }
+
         /**
          * Find the index of the specified child. Don't persist this value as it may change whenever you add/remove children.
          *
