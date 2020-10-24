@@ -55,53 +55,11 @@ namespace te
 
     void Editor::OnStartUp()
     {
-#if TE_PLATFORM == TE_PLATFORM_WIN32
-        // ######################################################
-        auto inputConfig = gVirtualInput().GetConfiguration();
-
-        inputConfig->RegisterButton(CCameraUI::ROTATE_BINDING, TE_MOUSE_RIGHT);
-        inputConfig->RegisterButton(CCameraUI::MOVE_BINDING, TE_LSHIFT);
-        inputConfig->RegisterButton(CCameraUI::ZOOM_BINDING, TE_LCONTROL);
-
-        inputConfig->RegisterButton("New", TE_N, ButtonModifier::Ctrl);
-        inputConfig->RegisterButton("Quit", TE_A, ButtonModifier::Ctrl);
-
-        inputConfig->RegisterAxis(CCameraUI::HORIZONTAL_AXIS_BINDING, VIRTUAL_AXIS_DESC((UINT32)InputAxis::MouseX));
-        inputConfig->RegisterAxis(CCameraUI::VERTICAL_AXIS_BINDING, VIRTUAL_AXIS_DESC((UINT32)InputAxis::MouseY));
-        inputConfig->RegisterAxis(CCameraUI::SCROLL_AXIS_BINDING, VIRTUAL_AXIS_DESC((UINT32)InputAxis::MouseZ));
-        // ######################################################
-
-        // ######################################################
-        _uiCameraSO = SceneObject::Create("UICamera");
-        _uiCamera = _uiCameraSO->AddComponent<CCamera>();
-        _uiCamera->GetViewport()->SetClearColorValue(Color(0.2f, 0.2f, 0.2f, 1.0f));
-        _uiCamera->GetViewport()->SetTarget(gCoreApplication().GetWindow());
-        _uiCamera->SetMain(true);
-        _uiCamera->SetPriority(1);
-        _uiCamera->Initialize();
-
-        _uiCamera->SetNearClipDistance(5);
-        _uiCamera->SetFarClipDistance(10000);
-        _uiCamera->SetLayers(0);
-
-        SPtr<RenderSettings> settings = _uiCamera->GetRenderSettings();
-        settings->OverlayOnly = true;
-        // ######################################################
-
-        // ######################################################
-        gSceneManager().SetMainRenderTarget(gCoreApplication().GetWindow());
-        // ######################################################
-
-        // ######################################################
-        gCoreApplication().GetState().SetFlag(ApplicationState::Mode::Game, false);
-        gCoreApplication().GetState().SetFlag(ApplicationState::Mode::Physics, false);
-        // ######################################################
-
-        // ######################################################
-        LoadScene();
-        // ######################################################
-#endif
-
+        InitializeInput();
+        InitializeScene();
+        InitializeUICamera();
+        InitializeViewportCamera();
+        
         if (GuiAPI::Instance().IsGuiInitialized())
             InitializeGui();
     }
@@ -139,14 +97,86 @@ namespace te
 
     void Editor::NeedsRedraw()
     {
-        if(_settings.WViewport)
-            static_cast<WidgetViewport*>(_settings.WViewport.get())->NeedsRedraw();
+        if (_settings.WViewport)
+            static_cast<WidgetViewport*>(&*_settings.WViewport)->NeedsRedraw();
+    }
+
+    void Editor::InitializeInput()
+    {
+        auto inputConfig = gVirtualInput().GetConfiguration();
+
+        inputConfig->RegisterButton(CCameraUI::ROTATE_BINDING, TE_MOUSE_RIGHT);
+        inputConfig->RegisterButton(CCameraUI::MOVE_BINDING, TE_LSHIFT);
+        inputConfig->RegisterButton(CCameraUI::ZOOM_BINDING, TE_LCONTROL);
+
+        inputConfig->RegisterButton("New", TE_N, ButtonModifier::Ctrl);
+        inputConfig->RegisterButton("Quit", TE_A, ButtonModifier::Ctrl);
+
+        inputConfig->RegisterAxis(CCameraUI::HORIZONTAL_AXIS_BINDING, VIRTUAL_AXIS_DESC((UINT32)InputAxis::MouseX));
+        inputConfig->RegisterAxis(CCameraUI::VERTICAL_AXIS_BINDING, VIRTUAL_AXIS_DESC((UINT32)InputAxis::MouseY));
+        inputConfig->RegisterAxis(CCameraUI::SCROLL_AXIS_BINDING, VIRTUAL_AXIS_DESC((UINT32)InputAxis::MouseZ));
+    }
+
+    void Editor::InitializeScene()
+    {
+        _sceneSO = SceneObject::Create("Scene");
+        LoadScene();
+    }
+
+    void Editor::InitializeUICamera()
+    {
+        _uiCameraSO = SceneObject::Create("UICamera");
+        _uiCamera = _uiCameraSO->AddComponent<CCamera>();
+        _uiCamera->GetViewport()->SetClearColorValue(Color(0.2f, 0.2f, 0.2f, 1.0f));
+        _uiCamera->GetViewport()->SetTarget(gCoreApplication().GetWindow());
+        _uiCamera->SetMain(true);
+        _uiCamera->SetPriority(1);
+        _uiCamera->Initialize();
+
+        _uiCamera->SetNearClipDistance(5);
+        _uiCamera->SetFarClipDistance(10000);
+        _uiCamera->SetLayers(0);
+
+        SPtr<RenderSettings> settings = _uiCamera->GetRenderSettings();
+        settings->OverlayOnly = true;
+
+        gSceneManager().SetMainRenderTarget(gCoreApplication().GetWindow());
+        gCoreApplication().GetState().SetFlag(ApplicationState::Mode::Game, false);
+        gCoreApplication().GetState().SetFlag(ApplicationState::Mode::Physics, false);
+    }
+
+    void Editor::InitializeViewportCamera()
+    {
+        _viewportSO = SceneObject::Create("UIViewport");
+
+        _viewportCameraSO = SceneObject::Create("UICamera");
+        _viewportCameraSO->SetParent(_viewportSO);
+
+        _viewportCamera = _viewportCameraSO->AddComponent<CCamera>();
+        _viewportCamera->GetViewport()->SetClearColorValue(Color(0.42f, 0.67f, 0.94f, 1.0f));
+        _viewportCamera->Initialize();
+        _viewportCamera->SetMSAACount(gCoreApplication().GetWindow()->GetDesc().MultisampleCount);
+        _viewportCamera->SetProjectionType(ProjectionType::PT_PERSPECTIVE);
+
+        _viewportCameraUI = _viewportCameraSO->AddComponent<CCameraUI>();
+
+        _viewportCameraSO->SetPosition(Vector3(3.5f, 2.5f, 4.0f));
+        _viewportCameraSO->LookAt(Vector3(0.0f, 0.75f, 0.0f));
+
+        _viewportCameraUI->SetTarget(Vector3(0.0f, 0.75f, 0.0f));
+
+        auto settings = _viewportCamera->GetRenderSettings();
+        settings->ExposureScale = 0.85f;
+        settings->Gamma = 1.0f;
+        settings->Contrast = 2.0f;
+        settings->Brightness = -0.1f;
+        settings->MotionBlur.Enabled = false;
     }
 
     void Editor::InitializeGui()
     {
         //Context already created in Gui plugin, we need to have the same pointed value in our local GimGui
-        GImGui = ImGui::GetCurrentContext(); 
+        GImGui = ImGui::GetCurrentContext();
 
         ImGuiIO& io = ImGui::GetIO();
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
@@ -247,9 +277,9 @@ namespace te
             ImGuiStyle& style = ImGui::GetStyle();
             style.WindowBorderSize = 1.0f;
             style.FrameBorderSize = 0.0f;
-            style.ScrollbarSize = 25.0f;
-            style.FramePadding = ImVec2(8, 8);
-            style.ItemSpacing = ImVec2(8, 8);
+            style.ScrollbarSize = 16.0f;
+            style.FramePadding = ImVec2(6, 6);
+            style.ItemSpacing = ImVec2(6, 6);
             style.WindowMenuButtonPosition = ImGuiDir_Right;
             style.WindowRounding = roundness;
             style.FrameRounding = roundness;
@@ -387,15 +417,18 @@ namespace te
 
         // ######################################################
         _sceneSkyboxSO = SceneObject::Create("Skybox");
+        _sceneSkyboxSO->SetParent(_sceneSO);
         _skybox = _sceneSkyboxSO->AddComponent<CSkybox>();
         _skybox->SetTexture(_loadedCubemapTexture);
         _skybox->Initialize();
 
         _sceneLightSO = SceneObject::Create("Light");
+        _sceneLightSO->SetParent(_sceneSO);
         _light = _sceneLightSO->AddComponent<CLight>();
         _light->Initialize();
 
         _sceneRenderableMonkeySO = SceneObject::Create("Monkey");
+        _sceneRenderableMonkeySO->SetParent(_sceneSO);
         _renderableMonkey = _sceneRenderableMonkeySO->AddComponent<CRenderable>();
         _renderableMonkey->SetMesh(_loadedMeshMonkey);
         _renderableMonkey->SetMaterial(_materialMonkey);

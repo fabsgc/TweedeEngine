@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Prerequisites/TePrerequisitesUtility.h"
+#include "Math/TeVector4.h"
 
 namespace te
 {
@@ -23,6 +24,10 @@ namespace te
 
         constexpr explicit Color(float red = 1.0f, float green = 1.0f, float blue = 1.0f, float alpha = 1.0f )
             :r(red), g(green), b(blue), a(alpha)
+        { }
+
+        constexpr explicit Color(const Vector4& c)
+            : r(c.x), g(c.y), b(c.z), a(c.w)
         { }
 
         bool operator==(const Color& rhs) const;

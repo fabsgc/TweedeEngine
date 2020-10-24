@@ -28,6 +28,13 @@ namespace te
         /** Called to inform the editor that some element has been modified and viewport must be updated */
         void NeedsRedraw();
 
+        /** Get viewport camera handle */
+        HCamera& GetViewportCamera() { return _viewportCamera; }
+
+        /** Get viewport camera UI handle */
+        HCameraUI& GetViewportCameraUI() { return _viewportCameraUI;  }
+
+        /** Get a widget pointer given its type. Return nullptr if not widget has been found */
         Widget* GetWidget(Widget::WidgetType type)
         {
             for (auto& widget : _widgets)
@@ -51,6 +58,10 @@ namespace te
         };
 
     protected:
+        void InitializeInput();
+        void InitializeScene();
+        void InitializeUICamera();
+        void InitializeViewportCamera();
         void InitializeGui();
         void ApplyStyleGui() const;
         void BeginGui();
@@ -64,10 +75,17 @@ namespace te
         EditorSettings _settings;
         bool _editorBegun;
 
-#if TE_PLATFORM == TE_PLATFORM_WIN32
+        HSceneObject _viewportSO;
+        HSceneObject _sceneSO;
+
+        HCamera _viewportCamera;
+        HCameraUI _viewportCameraUI;
+        HSceneObject _viewportCameraSO;
+        
         HCamera _uiCamera;
         HSceneObject _uiCameraSO;
 
+#if TE_PLATFORM == TE_PLATFORM_WIN32
         // TODO Temp for debug purpose
         HMesh _loadedMeshMonkey;
         HTexture _loadedTextureMonkey;

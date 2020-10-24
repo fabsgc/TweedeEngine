@@ -62,7 +62,5 @@ namespace te
         VirtualAxis _horizontalAxis;
         VirtualAxis _verticalAxis;
         VirtualAxis _scrollAxis;
-
-        
     };
 }

@@ -84,33 +84,33 @@ namespace te
     enum class TE_CORE_EXPORT MotionBlurQuality
     {
         /** 4 samples per pixel. */
-        VeryLow,
+        VeryLow = 0x0,
         /** 6 samples per pixel. */
-        Low,
+        Low = 0x1,
         /** 8 samples per pixel. */
-        Medium,
+        Medium = 0x2,
         /** 12 samples per pixel. */
-        High,
+        High = 0x3,
         /** 16 samples per pixel. */
-        Ultra
+        Ultra = 0x4
     };
 
     /** Type of output we want */
     enum class TE_CORE_EXPORT RenderOutputType
     {
-        Final,
-        Color,
-        Velocity,
-        Emissive,
-        Depth,
-        Normal
+        Final = 0x0,
+        Color = 0x1,
+        Velocity = 0x2,
+        Emissive = 0x3,
+        Depth = 0x4,
+        Normal = 0x5
     };
 
     enum class TE_CORE_EXPORT AntiAliasingAlgorithm
     {
-        FXAA = 0x1,
-        TAA = 0x2,
-        None = 0x3
+        FXAA = 0x0,
+        TAA = 0x1,
+        None = 0x2
     };
 
     /** Settings that control the motion blur effect. */

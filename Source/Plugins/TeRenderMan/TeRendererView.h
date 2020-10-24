@@ -105,6 +105,7 @@ namespace te
     {
         /* Say if a renderable is currently visible or not */
         Vector<RenderableVisibility> Renderables;
+        Vector<bool> DirectionalLights;
         Vector<bool> RadialLights;
         Vector<bool> SpotLights;
     };
@@ -221,7 +222,7 @@ namespace te
          *									As a side-effect, per-view visibility data is also calculated and can be
          *									retrieved by calling getVisibilityMask().
          */
-        void DetermineVisible(const Vector<RendererLight>& lights, const Vector<Sphere>& bounds, LightType type,
+        void DetermineVisible(const Vector<RendererLight>& lights, const Vector<Sphere>* bounds, LightType type,
             Vector<bool>* visibility = nullptr);
 
         /**

@@ -443,9 +443,9 @@ namespace te
     enum ProjectionType
     {
         /** Projection type where object size remains constant and parallel lines remain parallel. */
-        PT_ORTHOGRAPHIC,
+        PT_ORTHOGRAPHIC = 0x0,
         /** Projection type that emulates human vision. Objects farther away appear smaller. */
-        PT_PERSPECTIVE
+        PT_PERSPECTIVE = 0x1
     };
 
     /**	Contains data about a type used for GPU data parameters. */

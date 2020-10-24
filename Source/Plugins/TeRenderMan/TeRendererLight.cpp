@@ -81,7 +81,13 @@ namespace te
         // Generate a list of lights and their GPU buffers
         UINT32 numDirLights = (UINT32)sceneInfo.DirectionalLights.size();
         for (UINT32 i = 0; i < numDirLights; i++)
+        {
+            if (!visibility.DirectionalLights[i])
+                continue;
+
             _visibleLights[(UINT32)LightType::Directional].push_back(&sceneInfo.DirectionalLights[i]);
+        }
+            
 
         UINT32 numRadialLights = (UINT32)sceneInfo.RadialLights.size();
         for (UINT32 i = 0; i < numRadialLights; i++)

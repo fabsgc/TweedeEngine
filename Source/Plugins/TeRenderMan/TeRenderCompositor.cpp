@@ -628,11 +628,11 @@ namespace te
         if (settings.AntialiasingAglorithm != AntiAliasingAlgorithm::TAA)
             return;
 
-        RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[3]);
+        /*RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[3]);
 
         SPtr<RenderTexture> ppOutput;
         SPtr<Texture> ppLastFrame;
-        postProcessNode->GetAndSwitch(inputs.View, ppOutput, ppLastFrame);
+        postProcessNode->GetAndSwitch(inputs.View, ppOutput, ppLastFrame);*/
 
         // TODO
     }
@@ -740,12 +740,12 @@ namespace te
     {
         const RendererViewProperties& viewProps = inputs.View.GetProperties();
 
+        RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[1]);
+        RCNodeForwardPass* forwardPassNode = static_cast<RCNodeForwardPass*>(inputs.InputNodes[0]);
+
         SPtr<Texture> input;
         if (viewProps.RunPostProcessing && viewProps.Target.NumSamples == 1)
         {
-            RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[1]);
-            RCNodeForwardPass* forwardPassNode = static_cast<RCNodeForwardPass*>(inputs.InputNodes[0]);
-
             switch (inputs.View.GetSceneCamera()->GetRenderSettings()->OutputType)
             {
             case RenderOutputType::Final:
@@ -764,7 +764,7 @@ namespace te
                 if(inputs.View.RequiresVelocityWrites())
                     input = forwardPassNode->VelocityTex->Tex;
                 else
-                    input = postProcessNode->GetLastOutput();
+                    input = forwardPassNode->SceneTex->Tex;
                 break;
             case RenderOutputType::Emissive:
                 input = forwardPassNode->EmissiveTex->Tex;
@@ -776,7 +776,6 @@ namespace te
         }
         else
         {
-            RCNodeForwardPass* forwardPassNode = static_cast<RCNodeForwardPass*>(inputs.InputNodes[0]);
             input = forwardPassNode->SceneTex->Tex;
         }
 
@@ -785,6 +784,10 @@ namespace te
         RenderAPI& rapi = RenderAPI::Instance();
         rapi.SetRenderTarget(target);
         rapi.SetViewport(viewProps.Target.NrmViewRect);
+
+        // If no post process is active, the only available texture is orwardPassNode->SceneTex->Tex;
+        if(!input)
+            input = forwardPassNode->SceneTex->Tex;
 
         gRendererUtility().Blit(input, Rect2I::EMPTY, viewProps.FlipView, false);
 
