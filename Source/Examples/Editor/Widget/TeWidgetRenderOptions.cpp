@@ -27,6 +27,7 @@ namespace te
         bool hasChanged = false;
         HCamera& camera = Editor::Instance().GetViewportCamera();
         auto cameraSettings = camera->GetRenderSettings();
+        const float widgetWidth = ImGui::GetWindowContentRegionWidth() - 100.0f;
 
         const auto renderOptionFloat = [&](
             float& value,
@@ -38,7 +39,9 @@ namespace te
             const float previousValue = value;
 
             ImGui::PushID(id);
+            ImGui::PushItemWidth(widgetWidth);
             ImGui::SliderFloat(text, &value, min, max, "%.2f");
+            ImGui::PopItemWidth();
             ImGui::PopID();
             value = Math::Clamp(value, min, max);
 
@@ -56,7 +59,9 @@ namespace te
             const int previousValue = value;
 
             ImGui::PushID(id);
+            ImGui::PushItemWidth(widgetWidth);
             ImGui::SliderInt(text, &value, min, max, "%.d");
+            ImGui::PopItemWidth();
             ImGui::PopID();
             value = Math::Clamp(value, min, max);
 
@@ -89,6 +94,7 @@ namespace te
             )
         {
             ImGui::PushID(id);
+            ImGui::PushItemWidth(widgetWidth);
             if (ImGui::BeginCombo(text, labels[*value].c_str()))
             {
                 for (int i = 0; i < options.size(); i++)
@@ -105,6 +111,7 @@ namespace te
                 }
                 ImGui::EndCombo();
             }
+            ImGui::PopItemWidth();
             ImGui::PopID();
         };
 
@@ -211,9 +218,11 @@ namespace te
                 Vector4 oldColor = camera->GetViewport()->GetClearColorValue().GetAsVector4();
                 ImVec4 imColor = camera->GetViewport()->GetClearColorValue().GetAsVector4();
                 
+                ImGui::PushItemWidth(widgetWidth);
                 ImGui::ColorEdit4("##clear_color_option", (float*)&imColor, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel);
                 ImGui::SameLine();
                 ImGui::Text("Background color");
+                ImGui::PopItemWidth();
                 
                 Vector4 newColor = Vector4(imColor.x, imColor.y, imColor.z, imColor.w);
 
@@ -231,7 +240,9 @@ namespace te
                 float far = camera->GetFarClipDistance();
                 float oldNear = near, oldFar = far;
 
+                ImGui::PushItemWidth(widgetWidth);
                 ImGui::DragFloatRange2("Clip distance", &near, &far, 0.1f, 0.1f, 2500.0f, "Near: %.1f", "Far: %.1f", ImGuiSliderFlags_AlwaysClamp);
+                ImGui::PopItemWidth();
 
                 if (near != oldNear)
                 {

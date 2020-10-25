@@ -166,4 +166,10 @@ namespace te
         ImGuiIO& io = ImGui::GetIO();
         io.KeysDown[keyCode] = true;
     }
+
+    void D3D11ImGuiAPI::CursorDoubleClick(const Vector2I& cursorPos, const OSPointerButtonStates& btnStates)
+    {
+        ImGuiIO& io = ImGui::GetIO();
+        io.MouseDown[0] = true;
+    }
 }

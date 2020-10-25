@@ -58,6 +58,9 @@ namespace te
         /** Called from the message loop to notify user has released a mouse button. */
         virtual void CursorReleased(const Vector2I& cursorPos, OSMouseButton button, const OSPointerButtonStates& btnStates) = 0;
 
+        /** Called from the message loop to notify user has double click left. */
+        virtual void CursorDoubleClick(const Vector2I& cursorPos, const OSPointerButtonStates& btnStates) = 0;
+
         /** Called from the message loop to notify user has scrolled the mouse wheel. */
         virtual void MouseWheelScrolled(float scrollPos) = 0;
 
@@ -66,28 +69,6 @@ namespace te
 
         /** Called from the message loop to notify user has released a key. */
         virtual void KeyDown(UINT32 keyCode) = 0;
-
-    protected:
-        /**	Triggered whenever user inputs a text character. */
-        Event<void(const TextInputEvent&)> OnCharInput;
-
-        /**	Triggers when some pointing device (mouse cursor, touch) moves. */
-        Event<void(const PointerEvent&)> OnPointerMoved;
-
-        /**	Triggers when some pointing device (mouse cursor, touch) has a relative move. */
-        Event<void(const Vector2I&)> OnPointerRelativeMoved;
-
-        /**	Triggers when some pointing device (mouse cursor, touch) button is pressed. */
-        Event<void(const PointerEvent&)> OnPointerPressed;
-
-        /**	Triggers when some pointing device (mouse cursor, touch) button is released. */
-        Event<void(const PointerEvent&)> OnPointerReleased;
-
-        /**	Triggers when some key is released. */
-        Event<void(const UINT32&)> OnKeyUp;
-
-        /**	Triggers when some key is pressed. */
-        Event<void(const UINT32&)> OnKeyDown;
 
     protected:
         // OS input events

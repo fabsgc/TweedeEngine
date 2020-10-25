@@ -34,14 +34,13 @@ namespace te
 
     CCameraUI::CCameraUI(const HSceneObject& parent)
         : Component(parent, TID_CCameraUI)
+        , _cameraInitialized(false)
         , _target(Vector3::ZERO)
         , _inputEnabled(false)
         , _lastHideCursorState(false)
         , _localRotation(Vector3::ZERO)
     {
         SetName("CCameraUI");
-
-        _camera = static_object_cast<CCamera>(_parent->GetComponent(TID_CCamera)->GetHandle());
 
         _rotateBtn = VirtualButton(ROTATE_BINDING);
         _moveBtn = VirtualButton(MOVE_BINDING);
@@ -65,7 +64,13 @@ namespace te
     }
 
     void CCameraUI::Update()
-    { 
+    {
+        if (!_cameraInitialized)
+        {
+            _camera = static_object_cast<CCamera>(_parent->GetComponent(TID_CCamera)->GetHandle());
+            _cameraInitialized = true;
+        }
+
         bool isOrtographic = _camera->GetProjectionType() == ProjectionType::PT_ORTHOGRAPHIC;
         bool camRotating = gVirtualInput().IsButtonHeld(_rotateBtn);
         bool camMoving = gVirtualInput().IsButtonHeld(_moveBtn);

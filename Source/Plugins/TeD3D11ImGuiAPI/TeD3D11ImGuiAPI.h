@@ -42,6 +42,9 @@ namespace te
         /** @copydoc GuiAPI::CursorReleased */
         void CursorReleased(const Vector2I& cursorPos, OSMouseButton button, const OSPointerButtonStates& btnStates) override;
 
+        /** @copydoc GuiAPI::CursorDoubleClick */
+        virtual void CursorDoubleClick(const Vector2I& cursorPos, const OSPointerButtonStates& btnStates) override;
+
         /** @copydoc GuiAPI::MouseWheelScrolled */
         void MouseWheelScrolled(float scrollPos) override;
 

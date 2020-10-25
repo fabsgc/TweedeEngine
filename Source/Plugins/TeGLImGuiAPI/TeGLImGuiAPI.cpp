@@ -86,4 +86,7 @@ namespace te
 
     void GLImGuiAPI::KeyDown(UINT32 keyCode)
     { }
+
+    void GLImGuiAPI::CursorDoubleClick(const Vector2I& cursorPos, const OSPointerButtonStates& btnStates)
+    { }
 }

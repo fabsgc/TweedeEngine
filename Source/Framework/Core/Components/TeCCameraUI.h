@@ -47,6 +47,7 @@ namespace te
         void InitLocalRotation();
 
     protected:
+        bool _cameraInitialized; // on first update, we get CCamera component from parent sceneObject
         HCamera _camera;
         Vector3 _target;
         Vector3 _localRotation;

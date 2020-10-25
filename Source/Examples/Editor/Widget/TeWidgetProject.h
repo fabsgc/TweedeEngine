@@ -14,5 +14,9 @@ namespace te
         virtual void Initialize() override;
         virtual void Update() override;
         virtual void UpdateBackground() override;
+
+    protected:
+        void ShowTree(const HSceneObject& sceneObject, bool expand = false);
+        void ShowComponentTree(const HSceneObject& sceneObject);
     };
 }
