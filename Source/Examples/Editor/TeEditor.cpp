@@ -376,6 +376,17 @@ namespace te
             ImGui::End();
     }
 
+    Widget* Editor::GetWidget(Widget::WidgetType type)
+    {
+        for (auto& widget : _widgets)
+        {
+            if (widget->GetType() == type)
+                return widget.get();
+        }
+
+        return nullptr;
+    }
+
     void Editor::LoadScene()
     {
 #if TE_PLATFORM == TE_PLATFORM_WIN32

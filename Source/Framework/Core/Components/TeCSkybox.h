@@ -39,6 +39,9 @@ namespace te
         /**	Returns the skybox that this component wraps. */
         SPtr<Skybox> _getSkybox() const { return _internal; }
 
+        /** Return Component type */
+        static UINT32 GetComponentType() { return TID_CSkybox; }
+
     protected:
         mutable SPtr<Skybox> _internal;
 

@@ -68,6 +68,10 @@ namespace te
         if (!_cameraInitialized)
         {
             _camera = static_object_cast<CCamera>(_parent->GetComponent(TID_CCamera)->GetHandle());
+
+            if (!_camera)
+                return;
+
             _cameraInitialized = true;
         }
 

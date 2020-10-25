@@ -16,6 +16,9 @@ namespace te
         /** Triggered once per frame. Allows the component to handle input and move. */
         void Update() override;
 
+        /** Return Component type */
+        static UINT32 GetComponentType() { return TID_CCameraFlyer; }
+
     private:
         float _currentSpeed = 0.0f; /**< Current speed of the camera. */
 

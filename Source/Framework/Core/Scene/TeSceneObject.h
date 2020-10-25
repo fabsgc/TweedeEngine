@@ -8,6 +8,7 @@
 #include "Scene/TeGameObject.h"
 #include "Scene/TeComponent.h"
 #include "Scene/TeTransform.h"
+#include "Serialization/TeSerializable.h"
 
 namespace te
 {
@@ -21,7 +22,7 @@ namespace te
      * Each scene object can have one or multiple Components attached to it, where the components inherit the scene
      * object's transform, and receive updates about transform and hierarchy changes.
      */
-    class TE_CORE_EXPORT SceneObject : public GameObject
+    class TE_CORE_EXPORT SceneObject : public GameObject, public Serializable
     {
         /** Flags that signify which part of the SceneObject needs updating. */
         enum DirtyFlags

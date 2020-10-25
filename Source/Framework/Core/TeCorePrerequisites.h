@@ -59,7 +59,8 @@ namespace te
         TID_CLight        = 1004,
         TID_CSkybox       = 1005,
         TID_CCameraFlyer  = 1006,
-        TID_CCameraUI = 1007
+        TID_CCameraUI     = 1007,
+        TID_SceneObject   = 1008
     };
 }
 

@@ -11,6 +11,14 @@ namespace te
     class Editor : public Module<Editor>
     {
     public:
+        struct SelectionData
+        {
+            SPtr<SceneObject> HoveredSceneObject = nullptr;
+            SPtr<SceneObject> ClickedSceneObject = nullptr;
+            SPtr<Component> HoveredComponent = nullptr;
+            SPtr<Component> ClickedComponent = nullptr;
+        };
+    public:
         TE_MODULE_STATIC_HEADER_MEMBER(Editor)
 
         Editor();
@@ -38,16 +46,10 @@ namespace te
         HSceneObject& GetSceneRoot() { return _sceneSO; }
 
         /** Get a widget pointer given its type. Return nullptr if not widget has been found */
-        Widget* GetWidget(Widget::WidgetType type)
-        {
-            for (auto& widget : _widgets)
-            {
-                if (widget->GetType() == type)
-                    return widget.get();
-            }
+        Widget* GetWidget(Widget::WidgetType type);
 
-            return nullptr;
-        }
+        /** Here we store all data on object selected using project tree or 3d view */
+        SelectionData& GetSelectionData() { return _selections; }
 
     protected:
         struct EditorSettings
@@ -87,6 +89,8 @@ namespace te
         
         HCamera _uiCamera;
         HSceneObject _uiCameraSO;
+
+        SelectionData _selections;
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         // TODO Temp for debug purpose

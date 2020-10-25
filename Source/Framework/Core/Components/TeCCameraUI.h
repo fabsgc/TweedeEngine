@@ -22,6 +22,9 @@ namespace te
         /** For rotation, we want to know the current reference position. */
         void SetTarget(const Vector3& target);
 
+        /** Return Component type */
+        static UINT32 GetComponentType() { return TID_CCameraUI; }
+
     public:
         static const String ROTATE_BINDING;
         static const String MOVE_BINDING;

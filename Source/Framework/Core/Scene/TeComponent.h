@@ -18,7 +18,6 @@ namespace te
     class TE_CORE_EXPORT Component : public GameObject, public Serializable
     {
     public:
-        /** Checks if the Module has been started up. */
         static UINT32 GetComponentType()
         {
             return TID_Component;
