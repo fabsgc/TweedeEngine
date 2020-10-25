@@ -11,12 +11,14 @@
 namespace te
 {
     Pass::Pass()
+        : Resource(TID_Pass)
     {
         _data.StencilRefValue = 0;
     }
 
     Pass::Pass(const PASS_DESC& desc)
-        : _data(desc)
+        : Resource(TID_Pass)
+        , _data(desc)
     { }
 
     Pass::~Pass()

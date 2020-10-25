@@ -42,7 +42,8 @@ namespace te
     }
 
     Mesh::Mesh()
-        : _properties(0, 0, DOT_TRIANGLE_LIST)
+        : Resource(TID_Mesh)
+        , _properties(0, 0, DOT_TRIANGLE_LIST)
         , _CPUData(nullptr)
         , _vertexData(nullptr)
         , _indexBuffer(nullptr)
@@ -54,7 +55,8 @@ namespace te
     { }
 
     Mesh::Mesh(const MESH_DESC& desc, GpuDeviceFlags deviceMask)
-        : _properties(desc.NumVertices, desc.NumIndices, desc.SubMeshes)
+        : Resource(TID_Mesh)
+        , _properties(desc.NumVertices, desc.NumIndices, desc.SubMeshes)
         , _CPUData(nullptr)
         , _vertexData(nullptr)
         , _indexBuffer(nullptr)
@@ -66,7 +68,8 @@ namespace te
     { }
 
     Mesh::Mesh(const SPtr<MeshData>& initialMeshData, const MESH_DESC& desc, GpuDeviceFlags deviceMask)
-        : _properties(initialMeshData->GetNumVertices(), initialMeshData->GetNumIndices(), desc.SubMeshes)
+        : Resource(TID_Mesh)
+        , _properties(initialMeshData->GetNumVertices(), initialMeshData->GetNumIndices(), desc.SubMeshes)
         , _CPUData(initialMeshData)
         , _vertexData(nullptr)
         , _indexBuffer(nullptr)

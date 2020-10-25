@@ -6,6 +6,7 @@
 namespace te
 {
     Material::Material()
+        : Resource(TID_Material)
     { }
 
     Material::~Material()
@@ -18,22 +19,26 @@ namespace te
     }
 
     Material::Material(const HShader& shader)
+        : Material()
     {
         SetShader(shader.GetInternalPtr());
     }
 
     Material::Material(const SPtr<Shader>& shader)
+        : Material()
     {
         SetShader(shader);
     }
 
     Material::Material(const HShader& shader, const Vector<SPtr<Technique>>& techniques)
-        : _shader(shader.GetInternalPtr())
+        : Resource(TID_Material)
+        , _shader(shader.GetInternalPtr())
         , _techniques(techniques)
     { }
 
     Material::Material(const SPtr<Shader>& shader, const Vector<SPtr<Technique>>& techniques)
-        : _shader(shader)
+        : Resource(TID_Material)
+        , _shader(shader)
         , _techniques(techniques)
     { }
 

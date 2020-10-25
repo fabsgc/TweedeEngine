@@ -382,7 +382,6 @@ namespace te
 
     protected:
         SHADER_DESC _desc;
-        String _name;
         UINT32 _id;
 
         static std::atomic<UINT32> NextShaderId;

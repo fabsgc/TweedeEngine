@@ -15,8 +15,10 @@ namespace te
         {
             SPtr<SceneObject> HoveredSceneObject = nullptr;
             SPtr<SceneObject> ClickedSceneObject = nullptr;
+            SPtr<SceneObject> CopiedSceneObject = nullptr;
             SPtr<Component> HoveredComponent = nullptr;
             SPtr<Component> ClickedComponent = nullptr;
+            SPtr<Component> CopiedComponent = nullptr;
         };
     public:
         TE_MODULE_STATIC_HEADER_MEMBER(Editor)

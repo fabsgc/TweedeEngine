@@ -62,6 +62,7 @@ namespace te
 
     protected:
         friend class FontManager;
+
         Font();
 
     private:

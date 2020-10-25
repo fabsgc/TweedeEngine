@@ -47,7 +47,12 @@ namespace te
             ImGuiTreeNodeFlags_Framed;
 
         // Should we expand this node ?
-        if (expand) nodeFlags |= ImGuiTreeNodeFlags_DefaultOpen;
+        if (expand) 
+            nodeFlags |= ImGuiTreeNodeFlags_DefaultOpen;
+
+        // Selected style
+        if (_selections.ClickedSceneObject == sceneObject.GetInternalPtr())
+            nodeFlags |= ImGuiTreeNodeFlags_Selected;
 
         // Flag - Is expandable (has children) ?
         nodeFlags |= (children.size() || components.size()) ?
@@ -55,6 +60,9 @@ namespace te
 
         // Title
         String nodeTitle = ICON_FA_GLOBE_EUROPE + String(" ") + sceneObject->GetName();
+
+        if (_selections.ClickedSceneObject == sceneObject.GetInternalPtr())
+            nodeTitle += String("  ") + ICON_FA_CARET_RIGHT;
 
         const bool isNodeOpened = ImGui::TreeNodeEx(
             reinterpret_cast<void*>(static_cast<intptr_t>(sceneObjectId)), nodeFlags, nodeTitle.c_str());
@@ -89,6 +97,9 @@ namespace te
                 ImGuiTreeNodeFlags_SpanAvailWidth |
                 ImGuiTreeNodeFlags_Leaf |
                 ImGuiTreeNodeFlags_FramePadding;
+
+            if (_selections.ClickedComponent == component.GetInternalPtr())
+                componentFlags |= ImGuiTreeNodeFlags_Selected;
 
             String componentIcon = GetComponentIcon(component);
 
@@ -146,7 +157,7 @@ namespace te
         }
 
         // Clicking on empty space - Clear selection
-        if ((leftClick || rightClick) && !_selections.HoveredComponent && _selections.HoveredSceneObject)
+        if ((leftClick || rightClick) && !_selections.HoveredComponent && !_selections.HoveredSceneObject)
         {
             _selections.ClickedSceneObject = nullptr;
             _selections.ClickedComponent = nullptr;
@@ -155,13 +166,13 @@ namespace te
 
     void WidgetProject::SetSelectedSceneObject(SPtr<SceneObject> sceneObject)
     {
-        _selections.ClickedComponent = _selections.HoveredComponent;
+        _selections.ClickedSceneObject = sceneObject;
     }
 
     void WidgetProject::SetSelectedComponent(SPtr<Component> component)
     {
-        _selections.ClickedComponent = _selections.HoveredComponent;
-        _selections.ClickedSceneObject = _selections.ClickedComponent->GetSceneObject().GetInternalPtr();
+        _selections.ClickedComponent = component;
+        _selections.ClickedSceneObject = component->GetSceneObject().GetInternalPtr();
     }
 
     void WidgetProject::Popups()
@@ -169,13 +180,142 @@ namespace te
         PopupContextMenu();
     }
 
-    void WidgetProject::PopupContextMenu() const
+    void WidgetProject::PopupContextMenu()
     {
         if (!ImGui::BeginPopup("##ProjectContextMenu"))
             return;
 
+        // EMPTY
+        if (!_selections.ClickedComponent)
+        {
+            if (ImGui::BeginMenu(ICON_FA_PLUS_SQUARE " New"))
+            {
+                if (ImGui::MenuItem(ICON_FA_GLOBE_EUROPE " SceneObject"))
+                    CreateSceneObject();
+
+                if (_selections.ClickedSceneObject)
+                {
+                    if (ImGui::BeginMenu(ICON_FA_SHAPES " Component"))
+                    {
+                        if (ImGui::BeginMenu(ICON_FA_OBJECT_GROUP " Renderable"))
+                        {
+                            if (ImGui::MenuItem(ICON_FA_STICKY_NOTE " Empty"))
+                                CreateRenderable(RenderableType::Empty);
+
+                            if (ImGui::MenuItem(ICON_FA_CUBE " Cube"))
+                                CreateRenderable(RenderableType::Cube);
+
+                            if (ImGui::MenuItem(ICON_FA_CIRCLE " Sphere"))
+                                CreateRenderable(RenderableType::Sphere);
+
+                            if (ImGui::MenuItem(ICON_FA_CALENDAR " Cylinder"))
+                                CreateRenderable(RenderableType::Cylinder);
+
+                            if (ImGui::MenuItem(ICON_FA_PLAY " Cone"))
+                                CreateRenderable(RenderableType::Cone);
+
+                            ImGui::EndMenu();
+                        }
+
+                        if (ImGui::BeginMenu(ICON_FA_LIGHTBULB " Light"))
+                        {
+                            if (ImGui::MenuItem(ICON_FA_LIGHTBULB " Directional light"))
+                                CreateLight(LightType::Directional);
+
+                            if (ImGui::MenuItem(ICON_FA_LIGHTBULB " Point light"))
+                                CreateLight(LightType::Radial);
+
+                            if (ImGui::MenuItem(ICON_FA_LIGHTBULB " Spot light"))
+                                CreateLight(LightType::Spot);
+
+                            ImGui::EndMenu();
+                        }
+
+                        if (ImGui::BeginMenu(ICON_FA_CAMERA " Camera"))
+                        {
+                            if (ImGui::MenuItem(ICON_FA_CAMERA " Rendering camera"))
+                                CreateCamera(TypeID_Core::TID_CCamera);
+
+                            if (ImGui::MenuItem(ICON_FA_CAMERA " Flying camera"))
+                                CreateCamera(TypeID_Core::TID_CCameraFlyer);
+
+                            if (ImGui::MenuItem(ICON_FA_CAMERA" Orbital camera"))
+                                CreateCamera(TypeID_Core::TID_CCameraUI);
+
+                            ImGui::EndMenu();
+                        }
+
+                        if (ImGui::BeginMenu(ICON_FA_VOLUME_UP " Audio"))
+                        {
+                            if (ImGui::MenuItem(ICON_FA_MICROPHONE " Audio source"))
+                                CreateAudio();
+
+                            if (ImGui::MenuItem(ICON_FA_HEADPHONES " Audio listener"))
+                                CreateAudio();
+
+                            ImGui::EndMenu();
+                        }
+
+                        if (ImGui::MenuItem(ICON_FA_GLOBE " Skybox"))
+                            CreateSkybox();
+
+                        ImGui::EndMenu();
+                    }
+                }
+
+                ImGui::EndMenu();
+            }
+        }
+
+        if (_selections.ClickedSceneObject || _selections.ClickedComponent)
+        {
+            if (ImGui::MenuItem(ICON_FA_COPY " Copy"))
+            {
+                if (_selections.ClickedComponent)
+                    _selections.CopiedComponent = _selections.ClickedComponent;
+                else
+                    _selections.CopiedSceneObject = _selections.ClickedSceneObject;
+            }
+        }
+
+        if (_selections.CopiedSceneObject || _selections.CopiedComponent)
+        {
+            if (ImGui::MenuItem(ICON_FA_PASTE " Paste"))
+                Paste();
+        }
+
+        if (_selections.ClickedSceneObject || _selections.ClickedComponent)
+        {
+            if (ImGui::MenuItem(ICON_FA_TRASH " Delete"))
+                Delete();
+        }
+
         ImGui::EndPopup();
     }
+
+    void WidgetProject::CreateSceneObject()
+    { }
+
+    void WidgetProject::CreateRenderable(RenderableType type)
+    { }
+
+    void WidgetProject::CreateLight(LightType type)
+    { }
+
+    void WidgetProject::CreateCamera(TypeID_Core type)
+    { }
+
+    void WidgetProject::CreateAudio()
+    { }
+
+    void WidgetProject::CreateSkybox()
+    { }
+
+    void WidgetProject::Paste()
+    { }
+
+    void WidgetProject::Delete()
+    { }
 
     String WidgetProject::GetComponentIcon(const HComponent& component)
     {

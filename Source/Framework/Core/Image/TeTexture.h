@@ -190,7 +190,7 @@ namespace te
     class TE_CORE_EXPORT Texture : public Resource
     {
     public:
-        Texture() = default;
+        Texture();
         virtual ~Texture() = default;
 
         /** @copydoc CoreObject::Initialize */

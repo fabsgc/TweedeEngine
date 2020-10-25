@@ -15,7 +15,7 @@ namespace te
     }
 
     Font::Font()
-        : Resource()
+        : Resource(TID_Font)
     { }
 
     void Font::Initialize(const Vector<SPtr<FontBitmap>>& fontData)

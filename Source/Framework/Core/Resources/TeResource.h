@@ -3,14 +3,15 @@
 #include "TeCorePrerequisites.h"
 #include "CoreUtility/TeCoreObject.h"
 #include "Utility/TeNonCopyable.h"
+#include "Serialization/TeSerializable.h"
 
 namespace te
 {
     /** Base class for all resources. */
-    class TE_CORE_EXPORT Resource : public CoreObject, public NonCopyable
+    class TE_CORE_EXPORT Resource : public CoreObject, public Serializable, public NonCopyable
     {
     public:
-        Resource() {};
+        Resource(UINT32 type);
         virtual ~Resource() = default;
 
         /** Returns the name of the resource. */

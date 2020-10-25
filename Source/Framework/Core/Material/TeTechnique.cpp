@@ -10,6 +10,7 @@
 namespace te
 {
     Technique::Technique()
+        : Resource(TID_Technique)
     { }
 
     Technique::~Technique()
@@ -21,7 +22,8 @@ namespace te
     }
 
     Technique::Technique(const String& language, const Vector<SPtr<Pass>>& passes)
-        : _language(language)
+        : Resource(TID_Technique)
+        , _language(language)
         , _passes(passes)
     { }
 

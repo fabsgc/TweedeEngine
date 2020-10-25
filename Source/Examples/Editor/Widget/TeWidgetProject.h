@@ -3,6 +3,7 @@
 #include "TeCorePrerequisites.h"
 #include "TeWidget.h"
 #include "../TeEditor.h"
+#include "Renderer/TeLight.h"
 
 namespace te
 {
@@ -17,6 +18,12 @@ namespace te
         virtual void UpdateBackground() override;
 
     protected:
+        enum class RenderableType
+        {
+            Empty, Cube, Sphere, Cylinder, Cone
+        };
+
+    protected:
         void ShowTree(const HSceneObject& sceneObject);
         void ShowSceneObjectTree(const HSceneObject& sceneObject, bool expand = false);
         void ShowComponentsTree(const HSceneObject& sceneObject);
@@ -26,8 +33,15 @@ namespace te
         void SetSelectedSceneObject(SPtr<SceneObject> sceneObject);
         void SetSelectedComponent(SPtr<Component> component);
         void Popups();
-        void PopupContextMenu() const;
-
+        void PopupContextMenu();
+        void CreateSceneObject();
+        void CreateRenderable(RenderableType type);
+        void CreateLight(LightType type);
+        void CreateCamera(TypeID_Core type);
+        void CreateAudio();
+        void CreateSkybox();
+        void Paste();
+        void Delete();
         String GetComponentIcon(const HComponent& component);
 
     protected:

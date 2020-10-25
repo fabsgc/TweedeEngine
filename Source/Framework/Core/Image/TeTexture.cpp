@@ -57,12 +57,18 @@ namespace te
     SPtr<Texture> Texture::BLACK;
     SPtr<Texture> Texture::NORMAL;
 
+    Texture::Texture()
+        : Resource(TID_Texture)
+    { }
+
     Texture::Texture(const TEXTURE_DESC& desc)
-        : _properties(desc)
+        : Resource(TID_Texture)
+        , _properties(desc)
     { }
 
     Texture::Texture(const TEXTURE_DESC& desc, const SPtr<PixelData>& pixelData)
-        : _properties(desc)
+        : Resource(TID_Texture)
+        , _properties(desc)
         , _initData(pixelData)
     { }
 

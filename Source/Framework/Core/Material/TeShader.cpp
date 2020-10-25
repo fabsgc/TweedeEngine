@@ -113,28 +113,30 @@ namespace te
     }
 
     Shader::Shader()
-        : Resource()
+        : Resource(TID_Shader)
         , _desc(SHADER_DESC())
-        , _name("shader")
         , _id(0)
     {
         UINT32 id = Shader::NextShaderId.fetch_add(1, std::memory_order_relaxed);
         assert(id < std::numeric_limits<UINT32>::max() && "Created too many shaders, reached maximum id.");
+        _name = "shader";
     }
 
     Shader::Shader(UINT32 id)
-        : Resource()
+        : Resource(TID_Shader)
         , _desc(SHADER_DESC())
-        , _name("shader")
         , _id(id)
-    { }
+    {
+        _name = "shader";
+    }
 
     Shader::Shader(const SHADER_DESC& desc, const String& name, UINT32 id)
-        : Resource()
+        : Resource(TID_Shader)
         , _desc(desc)
-        , _name(name)
         , _id(id)
-    { }
+    { 
+        _name = "shader";
+    }
 
     Shader::~Shader()
     { }
