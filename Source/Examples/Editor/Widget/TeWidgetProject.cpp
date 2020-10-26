@@ -345,6 +345,9 @@ namespace te
             renderable.Get()->SetName("Cone");
             renderable.Get()->Initialize();
             break;
+
+        default:
+            break;
         }
 
         Editor::Instance().NeedsRedraw();
@@ -373,6 +376,9 @@ namespace te
             light.Get()->SetName("Spot");
             light.Get()->Initialize();
             break;
+
+        default:
+            break;
         }
 
         Editor::Instance().NeedsRedraw();
@@ -385,7 +391,7 @@ namespace te
 
         switch (type)
         {
-            case TID_CCamera:
+        case TID_CCamera:
             {
                 HCamera camera = _selections.ClickedSceneObject->AddComponent<CCamera>();
                 camera.Get()->SetName("Camera");
@@ -393,7 +399,7 @@ namespace te
             }
             break;
 
-            case TID_CCameraFlyer:
+        case TID_CCameraFlyer:
             {
                 HCameraFlyer camera = _selections.ClickedSceneObject->AddComponent<CCameraFlyer>();
                 camera.Get()->SetName("Flying Camera");
@@ -401,12 +407,15 @@ namespace te
             }
             break;
 
-            case TID_CCameraUI:
+        case TID_CCameraUI:
             {
                 HCameraUI camera = _selections.ClickedSceneObject->AddComponent<CCameraUI>();
                 camera.Get()->SetName("Orbital Camera");
                 camera.Get()->Initialize();
             }
+            break;
+
+        default:
             break;
         }
 
@@ -453,55 +462,58 @@ namespace te
             switch (type)
             {
             case TID_CCamera:
-            {
-                HCamera component = _selections.ClickedSceneObject->AddComponent<CCamera>();
-                component->Clone(_selections.CopiedComponent->GetHandle());
-                component->Initialize();
-            }
-            break;
+                {
+                    HCamera component = _selections.ClickedSceneObject->AddComponent<CCamera>();
+                    component->Clone(_selections.CopiedComponent->GetHandle());
+                    component->Initialize();
+                }
+                break;
 
             case TID_CCameraFlyer:
-            {
-                HCameraFlyer component = _selections.ClickedSceneObject->AddComponent<CCameraFlyer>();
-                component->Clone(_selections.CopiedComponent->GetHandle());
-                component->Initialize();
-            }
-            break;
+                {
+                    HCameraFlyer component = _selections.ClickedSceneObject->AddComponent<CCameraFlyer>();
+                    component->Clone(_selections.CopiedComponent->GetHandle());
+                    component->Initialize();
+                }
+                break;
 
             case TID_CCameraUI:
-            {
-                HCameraUI component = _selections.ClickedSceneObject->AddComponent<CCameraUI>();
-                component->Clone(_selections.CopiedComponent->GetHandle());
-                component->Initialize();
-            }
-            break;
+                {
+                    HCameraUI component = _selections.ClickedSceneObject->AddComponent<CCameraUI>();
+                    component->Clone(_selections.CopiedComponent->GetHandle());
+                    component->Initialize();
+                }
+                break;
 
             case TID_CLight:
-            {
-                HLight component = _selections.ClickedSceneObject->AddComponent<CLight>();
-                component->Clone(_selections.CopiedComponent->GetHandle());
-                component->Initialize();
-            }
-            break;
+                {
+                    HLight component = _selections.ClickedSceneObject->AddComponent<CLight>();
+                    component->Clone(_selections.CopiedComponent->GetHandle());
+                    component->Initialize();
+                }
+                break;
 
             case TID_CRenderable:
-            {
-                HRenderable component = _selections.ClickedSceneObject->AddComponent<CRenderable>();
-                component->Clone(_selections.CopiedComponent->GetHandle());
-                component->Initialize();
-            }
-            break;
+                {
+                    HRenderable component = _selections.ClickedSceneObject->AddComponent<CRenderable>();
+                    component->Clone(_selections.CopiedComponent->GetHandle());
+                    component->Initialize();
+                }
+                break;
 
             case TID_CSkybox:
-            {
-                if (SceneManager::Instance().FindComponents<CSkybox>().size() > 0)
-                    break;
+                {
+                    if (SceneManager::Instance().FindComponents<CSkybox>().size() > 0)
+                        break;
 
-                HSkybox component = _selections.ClickedSceneObject->AddComponent<CSkybox>();
-                component->Clone(_selections.CopiedComponent->GetHandle());
-                component->Initialize();
-            }
-            break;
+                    HSkybox component = _selections.ClickedSceneObject->AddComponent<CSkybox>();
+                    component->Clone(_selections.CopiedComponent->GetHandle());
+                    component->Initialize();
+                }
+                break;
+
+            default:
+                break;
             }
         }
         else if (_selections.CopiedSceneObject)
@@ -574,6 +586,8 @@ namespace te
             break;
         case TID_CCameraUI:
             title = ICON_FA_CAMERA + String(" ");
+            break;
+        default:
             break;
         }
 
