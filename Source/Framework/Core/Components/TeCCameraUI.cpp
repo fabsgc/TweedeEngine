@@ -212,4 +212,14 @@ namespace te
         InitDistanceToTarget();
         InitLocalRotation();
     }
+
+    void CCameraUI::Clone(const HComponent& c)
+    {
+        Clone(static_object_cast<CCameraUI>(c));
+    }
+
+    void CCameraUI::Clone(const HCameraUI& c)
+    {
+
+    }
 }

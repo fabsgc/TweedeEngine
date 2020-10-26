@@ -12,12 +12,19 @@ namespace te
     {
     public:
         CCameraFlyer(const HSceneObject& parent);
+        virtual ~CCameraFlyer() = default;
 
         /** Triggered once per frame. Allows the component to handle input and move. */
         void Update() override;
 
         /** Return Component type */
         static UINT32 GetComponentType() { return TID_CCameraFlyer; }
+
+        /** @copydoc Component::Clone */
+        void Clone(const HComponent& c) override;
+
+        /** @copydoc Component::Clone */
+        void Clone(const HCameraFlyer& c);
 
     private:
         float _currentSpeed = 0.0f; /**< Current speed of the camera. */

@@ -14,6 +14,8 @@ namespace te
     class TE_CORE_EXPORT CCamera : public Component
     {
     public:
+        virtual ~CCamera();
+
         /** @copydoc Component::Initialize */
         void Initialize() override;
 
@@ -176,6 +178,12 @@ namespace te
 
         /** Returns the internal camera that is used for majority of operations by this component. */
         SPtr<Camera> _getCamera() const { UpdateView(); return _internal; }
+
+        /** @copydoc Component::Clone */
+        void Clone(const HComponent& c) override;
+
+        /** @copydoc Component::Clone */
+        void Clone(const HCamera& c);
 
     protected:
         /** Checks if the world transform of the camera changed, and if needed updates the view matrix. */

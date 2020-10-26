@@ -68,6 +68,16 @@ namespace te
         return (_flags & flag) != 0;
     }
 
+    void SceneObject::Clone(const HSceneObject so)
+    {
+        Clone(so.GetInternalPtr());
+    }
+
+    void SceneObject::Clone(const SPtr<SceneObject>& so)
+    {
+
+    }
+
     void SceneObject::_setInstanceData(GameObjectInstanceDataPtr& other)
     {
         GameObject::_setInstanceData(other);
@@ -114,6 +124,8 @@ namespace te
             {
                 HComponent component = _components.back();
                 component->_setIsDestroyed();
+
+                gSceneManager()._notifyComponentDestroyed(component);
 
                 component->DestroyInternal(component, true);
                 _components.erase(_components.end() - 1);

@@ -14,7 +14,7 @@ namespace te
     class TE_CORE_EXPORT CRenderable : public Component
     {
     public:
-        virtual ~CRenderable() = default;
+        virtual ~CRenderable();
 
         /** @copydoc Component::Initialize */
         void Initialize() override;
@@ -86,6 +86,12 @@ namespace te
 
          /** Returns the internal renderable that is used for majority of operations by this component. */
         SPtr<Renderable> _getInternal() const { return _internal; }
+
+        /** @copydoc Component::Clone */
+        void Clone(const HComponent& c) override;
+
+        /** @copydoc Component::Clone */
+        void Clone(const HRenderable& c);
 
     protected:
         mutable SPtr<Renderable> _internal;

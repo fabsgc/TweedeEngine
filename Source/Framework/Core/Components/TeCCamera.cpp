@@ -15,6 +15,12 @@ namespace te
         SetName("Camera");
     }
 
+    CCamera::~CCamera()
+    {
+        if (!_internal->IsDestroyed())
+            _internal->Destroy();
+    }
+
     void CCamera::Initialize()
     {
         Component::Initialize();
@@ -69,5 +75,15 @@ namespace te
     {
         gSceneManager()._unbindActor(_internal);
         _internal->Destroy();
+    }
+
+    void CCamera::Clone(const HComponent& c)
+    {
+        Clone(static_object_cast<CCamera>(c));
+    }
+
+    void CCamera::Clone(const HCamera& c)
+    {
+
     }
 }

@@ -17,6 +17,7 @@ namespace te
         CLight(const HSceneObject& parent, LightType type = LightType::Directional, Color color = Color::White,
             float intensity = Light::DefaultIntensity, float range = Light::DefaultAttRadius, bool castsShadows = Light::DefaultCastShadow, 
             Degree spotAngle = Degree(Light::DefaultSpotAngle));
+
         virtual ~CLight();
 
         /** @copydoc Component::Initialize */
@@ -83,6 +84,12 @@ namespace te
         SPtr<Light> _getLight() const { return _internal; }
 
         static UINT32 GetComponentType() { return TID_CLight; }
+
+        /** @copydoc Component::Clone */
+        void Clone(const HComponent& c) override;
+
+        /** @copydoc Component::Clone */
+        void Clone(const HLight& c);
 
     protected:
         mutable SPtr<Light> _internal;

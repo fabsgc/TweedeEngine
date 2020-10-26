@@ -15,6 +15,12 @@ namespace te
         SetName("Renderable");
     }
 
+    CRenderable::~CRenderable()
+    {
+        if (!_internal->IsDestroyed())
+            _internal->Destroy();
+    }
+
     void CRenderable::Initialize()
     {
         Component::Initialize();
@@ -62,5 +68,15 @@ namespace te
     {
         gSceneManager()._unbindActor(_internal);
         _internal->Destroy();
+    }
+
+    void CRenderable::Clone(const HComponent& c)
+    {
+        Clone(static_object_cast<CRenderable>(c));
+    }
+
+    void CRenderable::Clone(const HRenderable& c)
+    {
+
     }
 }

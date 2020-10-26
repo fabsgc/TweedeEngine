@@ -18,7 +18,8 @@ namespace te
 
     CSkybox::~CSkybox()
     {
-        _internal->Destroy();
+        if (!_internal->IsDestroyed())
+            _internal->Destroy();
     }
 
     void CSkybox::_instantiate()
@@ -39,5 +40,15 @@ namespace te
     void CSkybox::OnDestroyed()
     {
         gSceneManager()._unbindActor(_internal);
+    }
+
+    void CSkybox::Clone(const HComponent& c)
+    {
+        Clone(static_object_cast<CSkybox>(c));
+    }
+
+    void CSkybox::Clone(const HSkybox& c)
+    {
+
     }
 }

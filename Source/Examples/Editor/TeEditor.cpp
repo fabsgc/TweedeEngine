@@ -153,12 +153,11 @@ namespace te
         _viewportCameraSO->SetParent(_viewportSO);
 
         _viewportCamera = _viewportCameraSO->AddComponent<CCamera>();
+        _viewportCameraUI = _viewportCameraSO->AddComponent<CCameraUI>();
         _viewportCamera->GetViewport()->SetClearColorValue(Color(0.42f, 0.67f, 0.94f, 1.0f));
         _viewportCamera->Initialize();
         _viewportCamera->SetMSAACount(gCoreApplication().GetWindow()->GetDesc().MultisampleCount);
         _viewportCamera->SetProjectionType(ProjectionType::PT_PERSPECTIVE);
-
-        _viewportCameraUI = _viewportCameraSO->AddComponent<CCameraUI>();
 
         _viewportCameraSO->SetPosition(Vector3(3.5f, 2.5f, 4.0f));
         _viewportCameraSO->LookAt(Vector3(0.0f, 0.75f, 0.0f));

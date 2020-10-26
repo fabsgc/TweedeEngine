@@ -58,6 +58,18 @@ namespace te
         /**	Checks if the scene object has a specific bit flag set. */
         bool HasFlag(UINT32 flag) const;
 
+        /**
+         * If you want to create a copy of a sceneObject, first use SceneObject::Create() then, use this method to
+         * properly copy all from "so" sceneObject
+         */
+        void Clone(const HSceneObject so);
+
+        /**
+         * If you want to create a copy of a sceneObject, first use SceneObject::Create() then, use this method to
+         * properly copy all from "so" sceneObject
+         */
+        void Clone(const SPtr<SceneObject>& so);
+
     public: // ***** INTERNAL ******
         /** @copydoc GameObject::_setInstanceData */
         void _setInstanceData(GameObjectInstanceDataPtr& other) override;
@@ -70,6 +82,9 @@ namespace te
 
     private:
         SceneObject(const String& name, UINT32 flags);
+
+        /** We can't allow user to create a copy of a scene object without using engine API */
+        SceneObject(const SceneObject& other) = delete;
 
         /**
          * Creates a new SceneObject instance, registers it with the game object manager, creates and returns a handle to

@@ -42,6 +42,12 @@ namespace te
         /** Return Component type */
         static UINT32 GetComponentType() { return TID_CSkybox; }
 
+        /** @copydoc Component::Clone */
+        void Clone(const HComponent& c) override;
+
+        /** @copydoc Component::Clone */
+        void Clone(const HSkybox& c);
+
     protected:
         mutable SPtr<Skybox> _internal;
 

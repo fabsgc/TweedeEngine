@@ -12,6 +12,7 @@ namespace te
     {
     public:
         CCameraUI(const HSceneObject& parent);
+        virtual ~CCameraUI() = default;
 
         /** Triggered once per frame. Allows the component to handle input and move. */
         void Update() override;
@@ -24,6 +25,12 @@ namespace te
 
         /** Return Component type */
         static UINT32 GetComponentType() { return TID_CCameraUI; }
+
+        /** @copydoc Component::Clone */
+        void Clone(const HComponent& c) override;
+
+        /** @copydoc Component::Clone */
+        void Clone(const HCameraUI& c);
 
     public:
         static const String ROTATE_BINDING;

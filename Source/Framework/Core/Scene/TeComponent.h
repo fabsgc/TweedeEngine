@@ -66,6 +66,13 @@ namespace te
          */
         void Destroy(bool immediate = false);
 
+        /**
+         * If you want to create a copy of a component, first use SceneObject::AddComponent() then, use this method to
+         * properly copy all from "c" component
+         */
+
+        virtual void Clone(const HComponent& c) { }
+
     public:
         /**
          * Construct any resources the component needs before use. Called when the parent scene object is instantiated.
@@ -134,9 +141,8 @@ namespace te
         void DestroyInternal(GameObjectHandleBase & handle, bool immediate) override;
 
     private:
-        Component(const Component & other)
-            : Serializable(other._coreType)
-        { }
+        /** We can't allow user to create a copy of a component without using engine API */
+        Component(const Component& other) = delete;
 
     protected:
         friend class SceneManager;

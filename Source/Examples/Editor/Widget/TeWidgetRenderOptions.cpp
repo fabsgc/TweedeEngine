@@ -230,6 +230,9 @@ namespace te
                 {
                     hasChanged = true;
                     camera->GetViewport()->SetClearColorValue(Color(newColor));
+
+                    // We need a more violent way to refresh camera (if skybox is null)
+                    camera->_getCamera()->MarkCoreDirty();
                 }
             }
             ImGui::Separator();

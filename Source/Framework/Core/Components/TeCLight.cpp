@@ -23,7 +23,8 @@ namespace te
 
     CLight::~CLight()
     { 
-        _internal->Destroy();
+        if(!_internal->IsDestroyed())
+            _internal->Destroy();
     }
 
     void CLight::Initialize()
@@ -60,5 +61,15 @@ namespace te
     {
         gSceneManager()._unbindActor(_internal);
         _internal->Destroy();
+    }
+
+    void CLight::Clone(const HComponent& c)
+    {
+        Clone(static_object_cast<CLight>(c));
+    }
+
+    void CLight::Clone(const HLight& c)
+    {
+
     }
 }

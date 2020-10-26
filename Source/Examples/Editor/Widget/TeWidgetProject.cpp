@@ -3,6 +3,13 @@
 #include "../TeEditor.h"
 
 #include "Resources/TeResourceManager.h"
+#include "Scene/TeSceneManager.h"
+#include "Components/TeCCamera.h"
+#include "Components/TeCCameraFlyer.h"
+#include "Components/TeCCameraUI.h"
+#include "Components/TeCLight.h"
+#include "Components/TeCRenderable.h"
+#include "Components/TeCSkybox.h"
 
 namespace te
 {
@@ -292,28 +299,222 @@ namespace te
     }
 
     void WidgetProject::CreateSceneObject()
-    { }
+    { 
+        HSceneObject sceneObject = SceneObject::Create("SceneObject");
+        sceneObject->SetParent(Editor::Instance().GetSceneRoot());
+
+        Editor::Instance().NeedsRedraw();
+    }
 
     void WidgetProject::CreateRenderable(RenderableType type)
-    { }
+    {
+        if (!_selections.ClickedSceneObject || _selections.ClickedComponent)
+            return;
+
+        HRenderable renderable = _selections.ClickedSceneObject->AddComponent<CRenderable>();
+
+        switch (type)
+        {
+        case RenderableType::Empty:
+            renderable.Get()->SetName("Empty renderable");
+            break;
+
+        case RenderableType::Cube:
+            renderable.Get()->SetName("Cube");
+            break;
+
+        case RenderableType::Cylinder:
+            renderable.Get()->SetName("Cylinder");
+            break;
+
+        case RenderableType::Sphere:
+            renderable.Get()->SetName("Sphere");
+            break;
+
+        case RenderableType::Cone:
+            renderable.Get()->SetName("Cone");
+            break;
+        }
+
+        Editor::Instance().NeedsRedraw();
+    }
 
     void WidgetProject::CreateLight(LightType type)
-    { }
+    { 
+        if (!_selections.ClickedSceneObject || _selections.ClickedComponent)
+            return;
+
+        HLight light = _selections.ClickedSceneObject->AddComponent<CLight>();
+
+        switch (type)
+        {
+        case LightType::Directional:
+            light.Get()->SetName("Directional");
+            break;
+
+        case LightType::Radial:
+            light.Get()->SetName("Point");
+            break;
+
+        case LightType::Spot:
+            light.Get()->SetName("Spot");
+            break;
+        }
+
+        Editor::Instance().NeedsRedraw();
+    }
 
     void WidgetProject::CreateCamera(TypeID_Core type)
-    { }
+    { 
+        if (!_selections.ClickedSceneObject || _selections.ClickedComponent)
+            return;
+
+        switch (type)
+        {
+            case TID_CCamera:
+            {
+                HCamera camera = _selections.ClickedSceneObject->AddComponent<CCamera>();
+                camera.Get()->SetName("Camera");
+            }
+            break;
+
+            case TID_CCameraFlyer:
+            {
+                HCameraFlyer camera = _selections.ClickedSceneObject->AddComponent<CCameraFlyer>();
+                camera.Get()->SetName("Flying Camera");
+            }
+            break;
+
+            case TID_CCameraUI:
+            {
+                HCameraUI camera = _selections.ClickedSceneObject->AddComponent<CCameraUI>();
+                camera.Get()->SetName("Orbital Camera");
+            }
+            break;
+        }
+
+        Editor::Instance().NeedsRedraw();
+    }
 
     void WidgetProject::CreateAudio()
-    { }
+    { 
+        if (!_selections.ClickedSceneObject || _selections.ClickedComponent)
+            return;
+
+        // TODO
+
+        Editor::Instance().NeedsRedraw();
+    }
 
     void WidgetProject::CreateSkybox()
-    { }
+    { 
+        if (!_selections.ClickedSceneObject || _selections.ClickedComponent)
+            return;
+
+        if (SceneManager::Instance().FindComponents<CSkybox>().size() > 0)
+            return;
+
+        HSkybox skybox = _selections.ClickedSceneObject->AddComponent<CSkybox>();
+        skybox.Get()->SetName("Skybox");
+
+        Editor::Instance().NeedsRedraw();
+    }
 
     void WidgetProject::Paste()
-    { }
+    { 
+        if (!_selections.CopiedSceneObject || !_selections.CopiedComponent)
+            return;
+
+        if (_selections.CopiedSceneObject)
+        {
+            HSceneObject sceneObject = SceneObject::Create("SceneObject");
+            sceneObject->Clone(_selections.CopiedSceneObject);
+
+            if (_selections.ClickedSceneObject)
+            {
+                _selections.ClickedSceneObject->GetHandle();
+                sceneObject->SetParent(_selections.ClickedSceneObject->GetHandle());
+            }
+            else
+            {
+                sceneObject->SetParent(Editor::Instance().GetSceneRoot());
+            }
+
+        }
+        else if (_selections.CopiedComponent && _selections.ClickedSceneObject)
+        {
+            UINT32 type = _selections.CopiedComponent->GetCoreType();
+
+            switch (type)
+            {
+                case TID_CCamera:
+                {
+                    HCamera component = _selections.ClickedSceneObject->AddComponent<CCamera>();
+                    component->Clone(_selections.CopiedComponent->GetHandle());
+                }
+                break;
+
+                case TID_CCameraFlyer:
+                {
+                    HCameraFlyer component = _selections.ClickedSceneObject->AddComponent<CCameraFlyer>();
+                    component->Clone(_selections.CopiedComponent->GetHandle());
+                }
+                break;
+
+                case TID_CCameraUI:
+                {
+                    HCameraUI component = _selections.ClickedSceneObject->AddComponent<CCameraUI>();
+                    component->Clone(_selections.CopiedComponent->GetHandle());
+                }
+                break;
+
+                case TID_CLight:
+                {
+                    HLight component = _selections.ClickedSceneObject->AddComponent<CLight>();
+                    component->Clone(_selections.CopiedComponent->GetHandle());
+                }
+                break;
+
+                case TID_CRenderable:
+                {
+                    HRenderable component = _selections.ClickedSceneObject->AddComponent<CRenderable>();
+                    component->Clone(_selections.CopiedComponent->GetHandle());
+                }
+                break;
+
+                case TID_CSkybox:
+                {
+                    if (SceneManager::Instance().FindComponents<CSkybox>().size() > 0)
+                        break;
+
+                    HSkybox component = _selections.ClickedSceneObject->AddComponent<CSkybox>();
+                    component->Clone(_selections.CopiedComponent->GetHandle());
+                }
+                break;
+            }
+        }
+
+        Editor::Instance().NeedsRedraw();
+    }
 
     void WidgetProject::Delete()
-    { }
+    { 
+        if (!_selections.ClickedSceneObject && !_selections.ClickedComponent)
+            return;
+
+        if (_selections.ClickedComponent)
+        {
+            _selections.ClickedComponent->GetSceneObject()->DestroyComponent(_selections.ClickedComponent.get(), true);
+            _selections.ClickedComponent = nullptr;
+        }
+        else if (_selections.ClickedSceneObject)
+        {
+            _selections.ClickedSceneObject->Destroy(true);
+            _selections.ClickedSceneObject = nullptr;
+        }
+
+        Editor::Instance().NeedsRedraw();
+    }
 
     String WidgetProject::GetComponentIcon(const HComponent& component)
     {

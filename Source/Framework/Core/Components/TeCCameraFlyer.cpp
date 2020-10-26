@@ -125,4 +125,14 @@ namespace te
             SO()->Move(velocity * frameDelta);
         }
     }
+
+    void CCameraFlyer::Clone(const HComponent& c)
+    {
+        Clone(static_object_cast<CCameraFlyer>(c));
+    }
+
+    void CCameraFlyer::Clone(const HCameraFlyer& c)
+    {
+
+    }
 }
