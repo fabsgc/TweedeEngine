@@ -139,6 +139,8 @@ namespace te
         static float DefaultShadowBias;
 
     protected:
+        friend class CLight;
+
         Light();
         Light(LightType type, Color color, float intensity, float attRadius, float linearAtt, 
             float quadraticAtt, bool castsShadows, Degree spotAngle);

@@ -158,6 +158,8 @@ namespace te
         static SPtr<Renderable> CreateEmpty();
 
     protected:
+        friend class CRenderable;
+
         SPtr<Mesh> _mesh;
         Vector<SPtr<Material>> _materials;
         UINT32 _numMaterials = 0;
@@ -169,7 +171,6 @@ namespace te
 
         RenderableProperties _properties;
 
-        
         bool _instancing = false;
         bool _canBeMerged = false;
     };

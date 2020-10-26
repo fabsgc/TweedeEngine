@@ -70,8 +70,16 @@ namespace te
          * If you want to create a copy of a component, first use SceneObject::AddComponent() then, use this method to
          * properly copy all from "c" component
          */
+        virtual void Clone(const HComponent& c) 
+        {
+            _name = c->GetName() + " (Copy)";
+        }
 
-        virtual void Clone(const HComponent& c) { }
+        /** @copydoc Component::Clone */
+        virtual void Clone(const SPtr<Component>& c)
+        {
+            _name = c->GetName() + " (Copy)";
+        }
 
     public:
         /**

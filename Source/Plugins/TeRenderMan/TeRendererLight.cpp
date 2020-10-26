@@ -25,10 +25,7 @@ namespace te
     { }
 
     RendererLight::~RendererLight()
-    {
-        if (gPerLightsParamBuffer)
-            gPerLightsParamBuffer = nullptr;
-    }
+    { }
 
     void RendererLight::GetParameters(LightData& output) const
     {

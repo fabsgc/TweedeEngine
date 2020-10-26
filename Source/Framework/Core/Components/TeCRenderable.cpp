@@ -77,6 +77,21 @@ namespace te
 
     void CRenderable::Clone(const HRenderable& c)
     {
+        SPtr<Renderable> renderable = c->_getInternal();
 
+        _internal->_mesh = renderable->_mesh;
+        _internal->_materials = renderable->_materials;
+        _internal->_numMaterials = renderable->_numMaterials;
+        _internal->_layer = renderable->_layer;
+        _internal->_tfrmMatrix = renderable->_tfrmMatrix;
+        _internal->_tfrmMatrixNoScale = renderable->_tfrmMatrixNoScale;
+        _internal->_cullDistanceFactor = renderable->_cullDistanceFactor;
+        _internal->_properties = renderable->_properties;
+        _internal->_instancing = renderable->_instancing;
+        _internal->_canBeMerged = renderable->_canBeMerged;
+
+        _internal->_markCoreDirty(ActorDirtyFlag::GpuParams);
+
+        Component::Clone(c.GetInternalPtr());
     }
 }

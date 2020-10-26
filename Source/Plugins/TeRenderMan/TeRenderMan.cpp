@@ -17,7 +17,10 @@ namespace te
     { }
 
     RenderMan::~RenderMan()
-    { }
+    {
+        if (gPerLightsParamBuffer)
+            gPerLightsParamBuffer = nullptr;
+    }
 
     void RenderMan::Initialize()
     {
@@ -271,67 +274,56 @@ namespace te
 
     void RenderMan::NotifyCameraAdded(Camera* camera)
     {
-        // TE_PRINT("# Camera added");
         _scene->RegisterCamera(camera);
     }
 
     void RenderMan::NotifyCameraUpdated(Camera* camera, UINT32 updateFlag)
     {
-        // TE_PRINT("# Camera updated");
         _scene->UpdateCamera(camera, updateFlag);
     }
 
     void RenderMan::NotifyCameraRemoved(Camera* camera)
     {
-        // TE_PRINT("# Camera removed");
         _scene->UnregisterCamera(camera);
     }
 
     void RenderMan::NotifyRenderableAdded(Renderable* renderable)
     {
-        // TE_PRINT("# Renderable added");
         _scene->RegisterRenderable(renderable);
     }
 
     void RenderMan::NotifyRenderableUpdated(Renderable* renderable)
     {
-        // TE_PRINT("# Renderable updated");
         _scene->UpdateRenderable(renderable);
     }
 
     void RenderMan::NotifyRenderableRemoved(Renderable* renderable)
     {
-        // TE_PRINT("# Renderable removed");
         _scene->UnregisterRenderable(renderable);
     }
 
     void RenderMan::NotifyLightAdded(Light* light)
     {
-        // TE_PRINT("# Light added");
         _scene->RegisterLight(light);
     }
 
     void RenderMan::NotifyLightUpdated(Light* light)
     {
-        // TE_PRINT("# Light updated");
         _scene->UpdateLight(light);
     }
 
     void RenderMan::NotifyLightRemoved(Light* light)
     {
-        // TE_PRINT("# Light removed");
         _scene->UnregisterLight(light);
     }
 
     void RenderMan::NotifySkyboxAdded(Skybox* skybox)
     {
-        // TE_PRINT("# Skybox added");
         _scene->RegisterSkybox(skybox);
     }
 
     void RenderMan::NotifySkyboxRemoved(Skybox* skybox)
     {
-        // TE_PRINT("# Skybox removed");
         _scene->UnregisterSkybox(skybox);
     }
 
