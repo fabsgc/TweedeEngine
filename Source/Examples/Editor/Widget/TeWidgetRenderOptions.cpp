@@ -97,7 +97,7 @@ namespace te
             ImGui::PushItemWidth(widgetWidth);
             if (ImGui::BeginCombo(text, labels[*value].c_str()))
             {
-                for (int i = 0; i < options.size(); i++)
+                for (size_t i = 0; i < options.size(); i++)
                 {
                     const bool isSelected = (*value == options[i]);
                     if (ImGui::Selectable(labels[i].c_str(), isSelected))

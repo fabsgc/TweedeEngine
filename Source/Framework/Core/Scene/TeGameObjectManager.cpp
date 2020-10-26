@@ -69,8 +69,6 @@ namespace te
 
     GameObjectHandleBase GameObjectManager::RegisterObject(const SPtr<GameObject>& object)
     {
-        // TE_PRINT("## REGISTER OBJECT");
-
         const UINT64 id = _nextAvailableID.fetch_add(1, std::memory_order_relaxed);
         object->Initialize(object, id);
 
@@ -84,8 +82,6 @@ namespace te
 
     void GameObjectManager::UnregisterObject(GameObjectHandleBase& object)
     {
-        // TE_PRINT("## UNREGISTER OBJECT");
-
         _objects.erase(object->GetInstanceId());
         OnDestroyed(static_object_cast<GameObject>(object));
         object.Destroy();

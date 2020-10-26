@@ -51,13 +51,13 @@ namespace te
 
     protected:
         bool _cameraInitialized; // on first update, we get CCamera component from parent sceneObject
-        HCamera _camera;
         Vector3 _target;
         Vector3 _localRotation;
         float _distanceToTarget;
-
         bool _inputEnabled;
         bool _lastHideCursorState;
+
+        HCamera _camera;
 
         VirtualButton _rotateBtn;
         VirtualButton _moveBtn;

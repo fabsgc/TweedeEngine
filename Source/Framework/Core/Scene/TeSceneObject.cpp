@@ -9,8 +9,9 @@
 namespace te
 {
     SceneObject::SceneObject(const String& name, UINT32 flags)
-        : GameObject(), _flags(flags)
+        : GameObject()
         , Serializable(TID_SceneObject)
+        , _flags(flags)
     {
         SetName(name);
     }

@@ -36,9 +36,10 @@ namespace te
         : Component(parent, TID_CCameraUI)
         , _cameraInitialized(false)
         , _target(Vector3::ZERO)
+        , _localRotation(Vector3::ZERO)
+        , _distanceToTarget(0.0f)
         , _inputEnabled(false)
         , _lastHideCursorState(false)
-        , _localRotation(Vector3::ZERO)
     {
         SetName("CCameraUI");
 

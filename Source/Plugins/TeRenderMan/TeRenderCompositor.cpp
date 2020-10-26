@@ -585,8 +585,7 @@ namespace te
     // ############# FXAA
 
     void RCNodeFXAA::Render(const RenderCompositorNodeInputs& inputs)
-    { 
-        const RendererViewProperties& viewProps = inputs.View.GetProperties();
+    {
         const RenderSettings& settings = inputs.View.GetRenderSettings();
         if (settings.AntialiasingAglorithm != AntiAliasingAlgorithm::FXAA)
             return;
@@ -623,7 +622,6 @@ namespace te
     // ############# TAA
     void RCNodeTemporalAA::Render(const RenderCompositorNodeInputs& inputs)
     {
-        const RendererViewProperties& viewProps = inputs.View.GetProperties();
         const RenderSettings& settings = inputs.View.GetRenderSettings();
         if (settings.AntialiasingAglorithm != AntiAliasingAlgorithm::TAA)
             return;

@@ -270,7 +270,6 @@ namespace te
 
             // Spatial settings
             const auto fontSize = 14.0f;
-            const auto fontScale = 0.6f;
             const auto roundness = 2.0f;
 
             // Spatial

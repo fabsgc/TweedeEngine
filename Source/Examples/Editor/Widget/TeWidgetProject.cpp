@@ -167,6 +167,7 @@ namespace te
     void WidgetProject::SetSelectedSceneObject(SPtr<SceneObject> sceneObject)
     {
         _selections.ClickedSceneObject = sceneObject;
+        _selections.ClickedComponent = nullptr;
     }
 
     void WidgetProject::SetSelectedComponent(SPtr<Component> component)
@@ -188,82 +189,77 @@ namespace te
         // EMPTY
         if (!_selections.ClickedComponent)
         {
-            if (ImGui::BeginMenu(ICON_FA_PLUS_SQUARE " New"))
+            if (ImGui::MenuItem(ICON_FA_GLOBE_EUROPE " Add SceneObject"))
+                CreateSceneObject();
+
+            if (_selections.ClickedSceneObject)
             {
-                if (ImGui::MenuItem(ICON_FA_GLOBE_EUROPE " SceneObject"))
-                    CreateSceneObject();
-
-                if (_selections.ClickedSceneObject)
+                if (ImGui::BeginMenu(ICON_FA_PLUS_SQUARE " Add Component"))
                 {
-                    if (ImGui::BeginMenu(ICON_FA_SHAPES " Component"))
+                    if (ImGui::BeginMenu(ICON_FA_OBJECT_GROUP " Renderable"))
                     {
-                        if (ImGui::BeginMenu(ICON_FA_OBJECT_GROUP " Renderable"))
-                        {
-                            if (ImGui::MenuItem(ICON_FA_STICKY_NOTE " Empty"))
-                                CreateRenderable(RenderableType::Empty);
+                        if (ImGui::MenuItem(ICON_FA_STICKY_NOTE " Empty"))
+                            CreateRenderable(RenderableType::Empty);
 
-                            if (ImGui::MenuItem(ICON_FA_CUBE " Cube"))
-                                CreateRenderable(RenderableType::Cube);
+                        if (ImGui::MenuItem(ICON_FA_CUBE " Cube"))
+                            CreateRenderable(RenderableType::Cube);
 
-                            if (ImGui::MenuItem(ICON_FA_CIRCLE " Sphere"))
-                                CreateRenderable(RenderableType::Sphere);
+                        if (ImGui::MenuItem(ICON_FA_CIRCLE " Sphere"))
+                            CreateRenderable(RenderableType::Sphere);
 
-                            if (ImGui::MenuItem(ICON_FA_CALENDAR " Cylinder"))
-                                CreateRenderable(RenderableType::Cylinder);
+                        if (ImGui::MenuItem(ICON_FA_CALENDAR " Cylinder"))
+                            CreateRenderable(RenderableType::Cylinder);
 
-                            if (ImGui::MenuItem(ICON_FA_PLAY " Cone"))
-                                CreateRenderable(RenderableType::Cone);
-
-                            ImGui::EndMenu();
-                        }
-
-                        if (ImGui::BeginMenu(ICON_FA_LIGHTBULB " Light"))
-                        {
-                            if (ImGui::MenuItem(ICON_FA_LIGHTBULB " Directional light"))
-                                CreateLight(LightType::Directional);
-
-                            if (ImGui::MenuItem(ICON_FA_LIGHTBULB " Point light"))
-                                CreateLight(LightType::Radial);
-
-                            if (ImGui::MenuItem(ICON_FA_LIGHTBULB " Spot light"))
-                                CreateLight(LightType::Spot);
-
-                            ImGui::EndMenu();
-                        }
-
-                        if (ImGui::BeginMenu(ICON_FA_CAMERA " Camera"))
-                        {
-                            if (ImGui::MenuItem(ICON_FA_CAMERA " Rendering camera"))
-                                CreateCamera(TypeID_Core::TID_CCamera);
-
-                            if (ImGui::MenuItem(ICON_FA_CAMERA " Flying camera"))
-                                CreateCamera(TypeID_Core::TID_CCameraFlyer);
-
-                            if (ImGui::MenuItem(ICON_FA_CAMERA" Orbital camera"))
-                                CreateCamera(TypeID_Core::TID_CCameraUI);
-
-                            ImGui::EndMenu();
-                        }
-
-                        if (ImGui::BeginMenu(ICON_FA_VOLUME_UP " Audio"))
-                        {
-                            if (ImGui::MenuItem(ICON_FA_MICROPHONE " Audio source"))
-                                CreateAudio();
-
-                            if (ImGui::MenuItem(ICON_FA_HEADPHONES " Audio listener"))
-                                CreateAudio();
-
-                            ImGui::EndMenu();
-                        }
-
-                        if (ImGui::MenuItem(ICON_FA_GLOBE " Skybox"))
-                            CreateSkybox();
+                        if (ImGui::MenuItem(ICON_FA_PLAY " Cone"))
+                            CreateRenderable(RenderableType::Cone);
 
                         ImGui::EndMenu();
                     }
-                }
 
-                ImGui::EndMenu();
+                    if (ImGui::BeginMenu(ICON_FA_LIGHTBULB " Light"))
+                    {
+                        if (ImGui::MenuItem(ICON_FA_LIGHTBULB " Directional light"))
+                            CreateLight(LightType::Directional);
+
+                        if (ImGui::MenuItem(ICON_FA_LIGHTBULB " Point light"))
+                            CreateLight(LightType::Radial);
+
+                        if (ImGui::MenuItem(ICON_FA_LIGHTBULB " Spot light"))
+                            CreateLight(LightType::Spot);
+
+                        ImGui::EndMenu();
+                    }
+
+                    if (ImGui::BeginMenu(ICON_FA_CAMERA " Camera"))
+                    {
+                        if (ImGui::MenuItem(ICON_FA_CAMERA " Rendering camera"))
+                            CreateCamera(TypeID_Core::TID_CCamera);
+
+                        if (ImGui::MenuItem(ICON_FA_CAMERA " Flying camera"))
+                            CreateCamera(TypeID_Core::TID_CCameraFlyer);
+
+                        if (ImGui::MenuItem(ICON_FA_CAMERA" Orbital camera"))
+                            CreateCamera(TypeID_Core::TID_CCameraUI);
+
+                        ImGui::EndMenu();
+                    }
+
+                    if (ImGui::BeginMenu(ICON_FA_VOLUME_UP " Audio"))
+                    {
+                        if (ImGui::MenuItem(ICON_FA_MICROPHONE " Audio source"))
+                            CreateAudio();
+
+                        if (ImGui::MenuItem(ICON_FA_HEADPHONES " Audio listener"))
+                            CreateAudio();
+
+                        ImGui::EndMenu();
+                    }
+
+                    if (ImGui::MenuItem(ICON_FA_GLOBE " Skybox"))
+                        CreateSkybox();
+
+                    ImGui::EndMenu();
+                }
             }
         }
 
