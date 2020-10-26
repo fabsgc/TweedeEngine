@@ -2,6 +2,8 @@
 #include "Scene/TeSceneObject.h"
 #include "../TeEditor.h"
 
+#include "Resources/TeResourceManager.h"
+
 namespace te
 {
     WidgetProject::WidgetProject()

@@ -88,6 +88,38 @@ namespace te
         return resource;
     }
 
+    Vector<HResource> ResourceManager::GetAll()
+    {
+        Vector<HResource> resources;
+        HResource resource;
+
+        for (auto& item : _loadedResources)
+        {
+            resource = item.second.resource.GetNewHandleFromExisting();
+            resources.push_back(resource);
+        }
+
+        return resources;
+    }
+
+    Vector<HResource> ResourceManager::FindByType(UINT32 type)
+    {
+        Vector<HResource> resources;
+        HResource resource;
+
+        for (auto& item : _loadedResources)
+        {
+            if (item.second.resource->GetCoreType() == type)
+            {
+                resource = item.second.resource.GetNewHandleFromExisting();
+                resources.push_back(resource);
+            }
+            
+        }
+
+        return resources;
+    }
+
     bool ResourceManager::GetUUIDFromFile(const String& filePath, UUID& uuid)
     {
         ::RecursiveLock lock(_loadingUuidMutex);

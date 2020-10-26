@@ -4,6 +4,7 @@ namespace te
 {
     Resource::Resource(UINT32 type)
         : Serializable(type)
+        , _name("Resource")
     { }
 
     const String& Resource::GetName() const

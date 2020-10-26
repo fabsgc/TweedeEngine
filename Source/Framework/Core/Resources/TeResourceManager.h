@@ -91,6 +91,15 @@ namespace te
         /** Creates a new resource handle from a resource pointer, with a user defined UUID. */
         HResource _createResourceHandle(const SPtr<Resource>& obj, const UUID& UUID);
 
+        /** Allow to retrieve a resource using its uuid */
+        HResource Get(const UUID& uuid);
+
+        /** Return an unordered map containing all resources loaded at call time */
+        Vector<HResource> GetAll();
+
+        /** Find all resources based on the _coreType (Serializable) */
+        Vector<HResource> FindByType(UINT32 type);
+
     public:
         Event<void(const HResource&)> OnResourceLoaded;
 
@@ -102,9 +111,6 @@ namespace te
 
     private:
         friend class ResourceHandleBase;
-
-    private:
-        HResource Get(const UUID& uuid);
 
         bool GetUUIDFromFile(const String& filePath, UUID& uuid);
         bool GetFileFromUUID(const UUID& uuid, String& filePath);
