@@ -38,7 +38,7 @@ namespace te
         bool ShowCRenderableProperties();
 
         /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
-        bool ShowScriptProperties();
+        bool ShowCScriptProperties();
 
         /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
         bool ShowCSkyboxProperties();

@@ -86,7 +86,7 @@ namespace te
 
             case TID_CScript:
             {
-                if (ShowCRenderableProperties())
+                if (ShowCScriptProperties())
                     hasChanged = true;
             }
             break;
@@ -201,7 +201,7 @@ namespace te
         return hasChanged;
     }
 
-    bool WidgetProperties::ShowScriptProperties()
+    bool WidgetProperties::ShowCScriptProperties()
     {
         bool hasChanged = false;
         SPtr<CScript> camera = std::static_pointer_cast<CScript>(_selections.ClickedComponent);
