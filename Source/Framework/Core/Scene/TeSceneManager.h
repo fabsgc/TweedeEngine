@@ -62,7 +62,6 @@ namespace te
          * Returns a list of all components of the specified type currently in the scene.
          *
          * @tparam		T			Type of the component to search for.
-
          * @return					A list of all matching components in the scene.
          */
         template<class T>
@@ -76,6 +75,9 @@ namespace te
          * to the user. If there are multiple main cameras, the first one found returned.
          */
         SPtr<Camera> GetMainCamera() const;
+
+        /** Retrieve current root node of the scene graph */
+        HSceneObject GetRootNode() const;
 
         /**
          * Sets the render target that the main camera in the scene (if any) will render its view to. This generally means

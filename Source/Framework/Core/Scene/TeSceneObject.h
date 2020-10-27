@@ -10,6 +10,8 @@
 #include "Scene/TeTransform.h"
 #include "Serialization/TeSerializable.h"
 
+#include <any>
+
 namespace te
 {
     class SceneInstance;
@@ -29,6 +31,11 @@ namespace te
         {
             LocalTfrmDirty = 0x01,
             WorldTfrmDirty = 0x02
+        };
+
+        enum class ComponentSearchType
+        {
+            CoreType, Name, UUID
         };
 
         friend class SceneManager;
@@ -70,7 +77,7 @@ namespace te
          */
         void Clone(const SPtr<SceneObject>& so);
 
-    public: // ***** INTERNAL ******
+    private: // ***** INTERNAL ******
         /** @copydoc GameObject::_setInstanceData */
         void _setInstanceData(GameObjectInstanceDataPtr& other) override;
 
@@ -110,7 +117,6 @@ namespace te
          * @param[in]	handle		Game object handle to this object.
          * @param[in]	immediate	If true, the object will be deallocated and become unusable right away. Otherwise the
          *							deallocation will be delayed to the end of frame (preferred method).
-         *
          * @note	Unlike destroy(), does not remove the object from its parent.
          */
         void DestroyInternal(GameObjectHandleBase& handle, bool immediate = false) override;
@@ -142,7 +148,6 @@ namespace te
 
         /**
          * Sets the world scale of the object.
-         *
          * @note	This will not work properly if this object or any of its parents have non-affine transform matrices.
          */
         void SetWorldScale(const Vector3& scale);
@@ -155,14 +160,12 @@ namespace te
 
         /**
          * Gets the objects world transform matrix.
-         *
          * @note	Performance warning: This might involve updating the transforms if the transform is dirty.
          */
         const Matrix4& GetWorldMatrix() const;
 
         /**
          * Gets the objects inverse world transform matrix.
-         *
          * @note	Performance warning: This might involve updating the transforms if the transform is dirty.
          */
         Matrix4 GetInvWorldMatrix() const;
@@ -178,9 +181,7 @@ namespace te
 
         /**
          * Rotates the game object so it's forward axis faces the provided direction.
-         *
          * @param[in]	forwardDir	The forward direction to face, in world space.
-         *
          * @note	Local forward axis is considered to be negative Z.
          */
         void SetForward(const Vector3& forwardDir);
@@ -199,21 +200,18 @@ namespace te
 
         /**
          * Rotates around local Z axis.
-         *
          * @param[in]	angle	Angle to rotate by.
          */
         void Roll(const Radian& angle);
 
         /**
          * Rotates around Y axis.
-         *
          * @param[in]	angle	Angle to rotate by.
          */
         void Yaw(const Radian& angle);
 
         /**
          * Rotates around X axis
-         *
          * @param[in]	angle	Angle to rotate by.
          */
         void Pitch(const Radian& angle);
@@ -254,7 +252,6 @@ namespace te
     private:
         /**
          * Notifies components and child scene object that a transform has been changed.
-         *
          * @param	flags		Specifies in what way was the transform changed.
          */
         void NotifyTransformChanged(TransformChangedFlags flags) const;
@@ -264,7 +261,6 @@ namespace te
 
         /**
          * Updates the world transform. Reconstructs the local transform matrix and multiplies it with any parent transforms.
-         *
          * @note	If parent transforms are dirty they will be updated.
          */
         void UpdateWorldTfrm() const;
@@ -288,7 +284,6 @@ namespace te
 
         /**
          * Gets the parent of this object.
-         *
          * @return	Parent object, or nullptr if this SceneObject is at root level.
          */
         HSceneObject GetParent() const { return _parent; }
@@ -326,9 +321,7 @@ namespace te
          */
         void SetMobility(ObjectMobility mobility);
 
-        /**
-         * Gets the mobility setting for this scene object. See setMobility();
-         */
+        /** Gets the mobility setting for this scene object. See setMobility(); */
         ObjectMobility GetMobility() const { return _mobility; }
 
     private: // ***** HIERARCHY ******
@@ -395,22 +388,6 @@ namespace te
             return false;
         }
 
-        /**
-         * Searches for a component with the specified type and returns the first one it finds. Will also return components
-         * derived from the type.
-         *
-         * @param[in]	type	RTTI information for the type.
-         * @return				Component if found, nullptr otherwise.
-         *
-         * @note
-         * Don't call this too often as it is relatively slow. It is more efficient to call it once and store the result
-         * for further use.
-         */
-        HComponent GetComponent(UINT32 type) const;
-
-        /**	Returns all components on this object. */
-        const Vector<HComponent>& GetComponents() const { return _components; }
-
         /**	Creates an empty component with the default constructor. Primarily used for RTTI purposes. */
         template <typename T>
         static SPtr<T> CreateEmptyComponent()
@@ -422,6 +399,140 @@ namespace te
 
             return gameObject;
         }
+
+    public: // ***** COMPONENT AND SCENEOBJECT SEARCH ******
+
+        /**	Returns all components on this object. */
+        const Vector<HComponent>& GetComponents() const { return _components; }
+
+        /**
+         * Searches for a component with the specified type accross all direct children and returns the first one it finds.
+         *
+         * @param[in]	type				RTTI information for the type.
+         * @param[in]	searchInChildren	if true, will also search in children SceneObject
+         * @return		Component if found, nullptr otherwise.
+         */
+        HComponent GetComponent(UINT32 type, bool searchInChildren = false) const;
+
+        /**
+         * Searches for components with the specified type accross all direct children and returns all that match.
+         *
+         * @param[in]	type				RTTI information for the type.
+         * @param[in]	searchInChildren	if true, will also search in children SceneObject
+         * @return		Vector of Components
+         */
+        Vector<HComponent> GetComponents(UINT32 type, bool searchInChildren = false) const;
+
+        /**
+         * Searches for a component with the specified name accross all direct children and returns the first one it finds.
+         *
+         * @param[in]	name				name of the component
+         * @param[in]	searchInChildren	if true, will also search in children SceneObject
+         * @return		Component if found, nullptr otherwise.
+         */
+        HComponent GetComponent(const String& name, bool searchInChildren = false) const;
+
+        /**
+         * Searches for components with the specified type accross all direct children and returns all that match.
+         *
+         * @param[in]	name				name of the component
+         * @param[in]	searchInChildren	if true, will also search in children SceneObject
+         * @return		Vector ofComponents
+         */
+        Vector<HComponent> GetComponents(const String& name, bool searchInChildren = false) const;
+
+        /**
+         * Searches for components with the specified uuid accross all direct children and returns all that match.
+         *
+         * @param[in]	uuid				uuid of the component
+         * @param[in]	searchInChildren	if true, will also search in children SceneObject
+         * @return		Vector of Components
+         */
+        Vector<HComponent> GetComponents(const UUID& uuid, bool searchInChildren = false) const;
+
+        /**
+         * Searches for a component with the specified uuid accross all direct children and returns the first one it finds.
+         *
+         * @param[in]	uuid				uuid of the component
+         * @param[in]	searchInChildren	if true, will also search in children SceneObject
+         * @return		Component if found, nullptr otherwise.
+         */
+        HComponent GetComponent(const UUID& uuid, bool searchInChildren = false) const;
+
+        /**
+         * Searches for a scene object with the specified name accross all direct children and returns the first one it finds.
+         *
+         * @param[in]	name				name of the scene object
+         * @return		SceneObject if found, nullptr otherwise.
+         */
+        HSceneObject GetSceneObject(const String& name, bool searchInChildren = false) const;
+
+        /**
+         * Searches for a scene object with the specified name accross all direct children and returns all that match.
+         *
+         * @param[in]	name				name of the scene object
+         * @return		Vector of SceneObjects
+         */
+        Vector<HSceneObject> GetSceneObjects(const String& name, bool searchInChildren = false) const;
+
+        /**
+         * Searches for a scene object with the specified name accross all direct children and returns the first one it finds.
+         *
+         * @param[in]	uuid				uuid of the scene object
+         * @return		SceneObject if found, nullptr otherwise.
+         */
+        HSceneObject GetSceneObject(const UUID& uuid, bool searchInChildren = false) const;
+
+        /**
+         * Searches for a scene object with the specified name accross all direct children and returns all that match.
+         *
+         * @param[in]	uuid				uuid of the scene object
+         * @return		Vector of SceneObjects
+         */
+        Vector<HSceneObject> GetSceneObjects(const UUID& uuid, bool searchInChildren = false) const;
+
+    private:
+        /**
+         * Searches for components with the specified type accross all direct children of the current sceneObject and returns the first one it finds.
+         *
+         * @param[in]	currentSO			current sceneObject of the search
+         * @param[in]	criteria			search criteria
+         * @param[in]	searchType			type of search we want to do (by type, name or uuid)
+         * @return		Component if found, nullptr otherwise.
+         */
+        HComponent _getComponentInternal(const HSceneObject& currentSO, std::any criteria, ComponentSearchType searchType, bool searchInChildren = false) const;
+
+        /**
+         * Searches for components with the specified type accross all direct children of the current sceneObject and returns all that match
+         *
+         * @param[in]	currentSO			current sceneObject of the search
+         * @param[in]	type				RTTI information for the type.
+         * @param[in]	components			vector of components where we can put all found components
+         * @param[in]	searchType			type of search we want to do (by type, name or uuid)
+         * @return		void
+         */
+        void _getComponentsInternal(const HSceneObject& currentSO, std::any criteria, Vector<HComponent>& components, ComponentSearchType searchType, bool searchInChildren = false) const;
+
+        /**
+         * Searches for scene object with the specified type accross all direct children of the current sceneObject and returns the first one it finds.
+         *
+         * @param[in]	currentSO			current sceneObject of the search
+         * @param[in]	criteria			search criteria
+         * @param[in]	searchType			type of search we want to do (by type, name or uuid)
+         * @return		SceneObject if found, nullptr otherwise.
+         */
+        HSceneObject _getSceneObjectInternal(const HSceneObject& currentSO, std::any criteria, ComponentSearchType searchType, bool searchInChildren = false) const;
+
+        /**
+         * Searches for components with the specified type accross all direct children of the current sceneObject returns all that match
+         *
+         * @param[in]	currentSO			current sceneObject of the search
+         * @param[in]	type				RTTI information for the type.
+         * @param[in]	sceneObjects		vector of SceneObjects where we can put all found SceneObjects
+         * @param[in]	searchType			type of search we want to do (by type, name or uuid)
+         * @return		void
+         */
+        void _getSceneObjectsInternal(const HSceneObject& currentSO, std::any criteria, Vector<HSceneObject>& sceneObjects, ComponentSearchType searchType, bool searchInChildren = false) const;
 
     private:
         /**	Adds the component to the internal component array. */

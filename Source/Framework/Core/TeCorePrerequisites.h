@@ -59,15 +59,16 @@ namespace te
         TID_CLight        = 1004,
         TID_CSkybox       = 1005,
         TID_CCameraFlyer  = 1006,
-        TID_CCameraUI     = 1007,
+        TID_CScript       = 1007,
+        TID_CCameraUI     = 1008,
         TID_SceneObject   = 1008,
-        TID_Texture       = 1009,
-        TID_Material      = 1010,
-        TID_Pass          = 1011,
-        TID_Shader        = 1012,
-        TID_Technique     = 1013,
-        TID_Mesh          = 1014,
-        TID_Font          = 1015,
+        TID_Texture       = 1010,
+        TID_Material      = 1011,
+        TID_Pass          = 1012,
+        TID_Shader        = 1013,
+        TID_Technique     = 1014,
+        TID_Mesh          = 1015,
+        TID_Font          = 1016
     };
 }
 

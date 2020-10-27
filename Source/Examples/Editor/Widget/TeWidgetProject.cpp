@@ -309,6 +309,7 @@ namespace te
         else
             sceneObject->SetParent(Editor::Instance().GetSceneRoot());
 
+        _selections.ClickedSceneObject = sceneObject.GetInternalPtr();
         Editor::Instance().NeedsRedraw();
     }
 
@@ -350,6 +351,7 @@ namespace te
             break;
         }
 
+        _selections.ClickedComponent = renderable.GetInternalPtr();
         Editor::Instance().NeedsRedraw();
     }
 
@@ -381,6 +383,7 @@ namespace te
             break;
         }
 
+        _selections.ClickedComponent = light.GetInternalPtr();
         Editor::Instance().NeedsRedraw();
     }
 
@@ -396,6 +399,7 @@ namespace te
                 HCamera camera = _selections.ClickedSceneObject->AddComponent<CCamera>();
                 camera.Get()->SetName("Camera");
                 camera.Get()->Initialize();
+                _selections.ClickedComponent = camera.GetInternalPtr();
             }
             break;
 
@@ -404,6 +408,7 @@ namespace te
                 HCameraFlyer camera = _selections.ClickedSceneObject->AddComponent<CCameraFlyer>();
                 camera.Get()->SetName("Flying Camera");
                 camera.Get()->Initialize();
+                _selections.ClickedComponent = camera.GetInternalPtr();
             }
             break;
 
@@ -412,6 +417,7 @@ namespace te
                 HCameraUI camera = _selections.ClickedSceneObject->AddComponent<CCameraUI>();
                 camera.Get()->SetName("Orbital Camera");
                 camera.Get()->Initialize();
+                _selections.ClickedComponent = camera.GetInternalPtr();
             }
             break;
 
@@ -432,6 +438,16 @@ namespace te
         Editor::Instance().NeedsRedraw();
     }
 
+    void WidgetProject::CreateScript()
+    {
+        if (!_selections.ClickedSceneObject || _selections.ClickedComponent)
+            return;
+
+        // TODO
+
+        Editor::Instance().NeedsRedraw();
+    }
+
     void WidgetProject::CreateSkybox()
     { 
         if (!_selections.ClickedSceneObject || _selections.ClickedComponent)
@@ -444,6 +460,7 @@ namespace te
         skybox.Get()->SetName("Skybox");
         skybox.Get()->Initialize();
 
+        _selections.ClickedComponent = skybox.GetInternalPtr();
         Editor::Instance().NeedsRedraw();
     }
 
@@ -452,63 +469,79 @@ namespace te
         if (!_selections.CopiedSceneObject && !_selections.CopiedComponent)
             return;
 
-        if (!_selections.ClickedSceneObject)
-            _selections.ClickedSceneObject = Editor::Instance().GetSceneRoot().GetInternalPtr();
+        SPtr<SceneObject> clickedSceneObject = _selections.ClickedSceneObject ? 
+            _selections.ClickedSceneObject : Editor::Instance().GetSceneRoot().GetInternalPtr();
 
         if (_selections.CopiedComponent)
         {
-            UINT32 type = _selections.CopiedComponent->GetCoreType();
-
-            switch (type)
+            switch (_selections.CopiedComponent->GetCoreType())
             {
             case TID_CCamera:
                 {
-                    HCamera component = _selections.ClickedSceneObject->AddComponent<CCamera>();
+                    HCamera component = clickedSceneObject->AddComponent<CCamera>();
                     component->Clone(_selections.CopiedComponent->GetHandle());
                     component->Initialize();
+                    _selections.ClickedComponent = component.GetInternalPtr();
+                    _selections.CopiedComponent = component.GetInternalPtr();
                 }
                 break;
 
             case TID_CCameraFlyer:
                 {
-                    HCameraFlyer component = _selections.ClickedSceneObject->AddComponent<CCameraFlyer>();
+                    HCameraFlyer component = clickedSceneObject->AddComponent<CCameraFlyer>();
                     component->Clone(_selections.CopiedComponent->GetHandle());
                     component->Initialize();
+                    _selections.ClickedComponent = component.GetInternalPtr();
+                    _selections.CopiedComponent = component.GetInternalPtr();
                 }
                 break;
 
             case TID_CCameraUI:
                 {
-                    HCameraUI component = _selections.ClickedSceneObject->AddComponent<CCameraUI>();
+                    HCameraUI component = clickedSceneObject->AddComponent<CCameraUI>();
                     component->Clone(_selections.CopiedComponent->GetHandle());
                     component->Initialize();
+                    _selections.ClickedComponent = component.GetInternalPtr();
+                    _selections.CopiedComponent = component.GetInternalPtr();
                 }
                 break;
 
             case TID_CLight:
                 {
-                    HLight component = _selections.ClickedSceneObject->AddComponent<CLight>();
+                    HLight component = clickedSceneObject->AddComponent<CLight>();
                     component->Clone(_selections.CopiedComponent->GetHandle());
                     component->Initialize();
+                    _selections.ClickedComponent = component.GetInternalPtr();
+                    _selections.CopiedComponent = component.GetInternalPtr();
                 }
                 break;
 
             case TID_CRenderable:
                 {
-                    HRenderable component = _selections.ClickedSceneObject->AddComponent<CRenderable>();
+                    HRenderable component = clickedSceneObject->AddComponent<CRenderable>();
                     component->Clone(_selections.CopiedComponent->GetHandle());
                     component->Initialize();
+                    _selections.ClickedComponent = component.GetInternalPtr();
+                    _selections.CopiedComponent = component.GetInternalPtr();
                 }
                 break;
+
+            case TID_CScript:
+            {
+                // TODO
+            }
+            break;
 
             case TID_CSkybox:
                 {
                     if (SceneManager::Instance().FindComponents<CSkybox>().size() > 0)
                         break;
 
-                    HSkybox component = _selections.ClickedSceneObject->AddComponent<CSkybox>();
+                    HSkybox component = clickedSceneObject->AddComponent<CSkybox>();
                     component->Clone(_selections.CopiedComponent->GetHandle());
                     component->Initialize();
+                    _selections.ClickedComponent = component.GetInternalPtr();
+                    _selections.CopiedComponent = component.GetInternalPtr();
                 }
                 break;
 
@@ -526,6 +559,9 @@ namespace te
 
             _selections.ClickedSceneObject->GetHandle();
             sceneObject->SetParent(_selections.ClickedSceneObject->GetHandle());
+
+            _selections.ClickedSceneObject = sceneObject.GetInternalPtr();
+            _selections.CopiedSceneObject = sceneObject.GetInternalPtr();
         }
 
         Editor::Instance().NeedsRedraw();

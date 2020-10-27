@@ -153,6 +153,11 @@ namespace te
         return nullptr;
     }
 
+    HSceneObject SceneManager::GetRootNode() const
+    {
+        return _mainScene->GetRoot();
+    }
+
     void SceneManager::SetMainRenderTarget(const SPtr<RenderTarget>& rt)
     {
         if (_mainRenderTarget == rt)

@@ -39,6 +39,7 @@ namespace te
         void CreateLight(LightType type);
         void CreateCamera(TypeID_Core type);
         void CreateAudio();
+        void CreateScript();
         void CreateSkybox();
         void Paste();
         void Delete();

@@ -569,18 +569,223 @@ namespace te
         }
     }
 
-    HComponent SceneObject::GetComponent(UINT32 type) const
+    HComponent SceneObject::GetComponent(UINT32 type, bool searchInChildren) const
     {
-        if (type != TID_Component)
+        if (type == TID_Component)
+            return HComponent();
+
+        return _getComponentInternal(_thisHandle, type, ComponentSearchType::CoreType, searchInChildren);
+    }
+
+    Vector<HComponent> SceneObject::GetComponents(UINT32 type, bool searchInChildren) const
+    {
+        if (type == TID_Component)
+            return Vector<HComponent>();
+
+        Vector<HComponent> components;
+        _getComponentsInternal(_thisHandle, type, components, ComponentSearchType::CoreType, searchInChildren);
+
+        return components;
+    }
+
+    HComponent SceneObject::GetComponent(const String& name, bool searchInChildren) const
+    {
+        return _getComponentInternal(_thisHandle, name, ComponentSearchType::Name, searchInChildren);
+    }
+
+    Vector<HComponent> SceneObject::GetComponents(const String& name, bool searchInChildren) const
+    {
+        Vector<HComponent> components;
+        _getComponentsInternal(_thisHandle, name, components, ComponentSearchType::Name, searchInChildren);
+
+        return components;
+    }
+
+    HComponent SceneObject::GetComponent(const UUID& uuid, bool searchInChildren) const
+    {
+        return _getComponentInternal(_thisHandle, uuid, ComponentSearchType::UUID, searchInChildren);
+    }
+
+    Vector<HComponent> SceneObject::GetComponents(const UUID& uuid, bool searchInChildren) const
+    {
+        Vector<HComponent> components;
+        _getComponentsInternal(_thisHandle, uuid, components, ComponentSearchType::UUID, searchInChildren);
+
+        return components;
+    }
+
+    HComponent SceneObject::_getComponentInternal(const HSceneObject& currentSO, std::any criteria, 
+        ComponentSearchType searchType, bool searchInChildren) const
+    {
+        HComponent component;
+
+        for (auto& entry : currentSO->GetComponents())
         {
-            for (auto& entry : _components)
+            if (searchType == ComponentSearchType::CoreType)
             {
-                if (entry->GetCoreType() == type)
-                    return entry;
+                if (entry->GetCoreType() == std::any_cast<UINT32>(criteria))
+                {
+                    component = entry.GetNewHandleFromExisting();
+                    break;
+                }
+            }
+            else if (searchType == ComponentSearchType::Name)
+            {
+                if (entry->GetName() == std::any_cast<String>(criteria))
+                {
+                    component = entry.GetNewHandleFromExisting();
+                    break;
+                }
+            }
+            else if (searchType == ComponentSearchType::UUID)
+            {
+                if (entry->GetUUID() == std::any_cast<UUID>(criteria))
+                {
+                    component = entry.GetNewHandleFromExisting();
+                    break;
+                }
+            }
+            else
+                break;
+        }
+
+        if (!component.GetInternalPtr() && searchInChildren)
+        {
+            for (auto& childSO : _children)
+                component = _getComponentInternal(childSO, criteria, searchType, searchInChildren);
+        }
+
+        return component;
+    }
+
+    void SceneObject::_getComponentsInternal(const HSceneObject& currentSO, std::any criteria, Vector<HComponent>& components, 
+        ComponentSearchType searchType, bool searchInChildren) const
+    {
+        for (auto& entry : currentSO->GetComponents())
+        {
+            if (searchType == ComponentSearchType::CoreType)
+            {
+                if (entry->GetCoreType() == std::any_cast<UINT32>(criteria))
+                {
+                    components.push_back(entry.GetNewHandleFromExisting());
+                    break;
+                }
+            }
+            else if (searchType == ComponentSearchType::Name)
+            {
+                if (entry->GetName() == std::any_cast<String>(criteria))
+                {
+                    components.push_back(entry.GetNewHandleFromExisting());
+                    break;
+                }
+            }
+            else if (searchType == ComponentSearchType::UUID)
+            {
+                if (entry->GetUUID() == std::any_cast<UUID>(criteria))
+                {
+                    components.push_back(entry.GetNewHandleFromExisting());
+                    break;
+                }
             }
         }
 
-        return HComponent();
+        if (searchInChildren)
+        {
+            for (auto& childSO : _children)
+                _getComponentsInternal(childSO, criteria, components, searchType, searchInChildren);
+        }
+    }
+
+    HSceneObject SceneObject::GetSceneObject(const String& name, bool searchInChildren) const
+    {
+        return _getSceneObjectInternal(_thisHandle, name, ComponentSearchType::Name, searchInChildren);
+    }
+
+    Vector<HSceneObject> SceneObject::GetSceneObjects(const String& name, bool searchInChildren) const
+    {
+        Vector<HSceneObject> sceneObjects;
+        _getSceneObjectsInternal(_thisHandle, name, sceneObjects, ComponentSearchType::Name, searchInChildren);
+
+        return sceneObjects;
+    }
+
+    HSceneObject SceneObject::GetSceneObject(const UUID& uuid, bool searchInChildren) const
+    {
+        return _getSceneObjectInternal(_thisHandle, uuid, ComponentSearchType::UUID, searchInChildren);
+    }
+
+    Vector<HSceneObject> SceneObject::GetSceneObjects(const UUID& uuid, bool searchInChildren) const
+    {
+        Vector<HSceneObject> sceneObjects;
+        _getSceneObjectsInternal(_thisHandle, uuid, sceneObjects, ComponentSearchType::UUID, searchInChildren);
+
+        return sceneObjects;
+    }
+
+    HSceneObject SceneObject::_getSceneObjectInternal(const HSceneObject& currentSO, std::any criteria, 
+        ComponentSearchType searchType, bool searchInChildren) const
+    {
+        HSceneObject sceneObject;
+
+        for (auto& entry : currentSO->GetChildren())
+        {
+            if (searchType == ComponentSearchType::Name)
+            {
+                if (entry->GetName() == std::any_cast<String>(criteria))
+                {
+                    sceneObject = entry.GetNewHandleFromExisting();
+                    break;
+                }
+            }
+            else if (searchType == ComponentSearchType::UUID)
+            {
+                if (entry->GetUUID() == std::any_cast<UUID>(criteria))
+                {
+                    sceneObject = entry.GetNewHandleFromExisting();
+                    break;
+                }
+            }
+            else
+                break;
+        }
+
+        if (!sceneObject.GetInternalPtr() && searchInChildren)
+        {
+            for (auto& childSO : _children)
+                sceneObject = _getSceneObjectInternal(childSO, criteria, searchType, searchInChildren);
+        }
+
+        return sceneObject;
+    }
+
+    void SceneObject::_getSceneObjectsInternal(const HSceneObject& currentSO, std::any criteria, Vector<HSceneObject>& sceneObjects, 
+        ComponentSearchType searchType, bool searchInChildren) const
+    {
+        for (auto& entry : currentSO->GetChildren())
+        {
+            if (searchType == ComponentSearchType::Name)
+            {
+                if (entry->GetName() == std::any_cast<String>(criteria))
+                {
+                    sceneObjects.push_back(entry.GetNewHandleFromExisting());
+                    break;
+                }
+            }
+            else if (searchType == ComponentSearchType::UUID)
+            {
+                if (entry->GetUUID() == std::any_cast<UUID>(criteria))
+                {
+                    sceneObjects.push_back(entry.GetNewHandleFromExisting());
+                    break;
+                }
+            }
+        }
+
+        if (searchInChildren)
+        {
+            for (auto& childSO : _children)
+                _getSceneObjectsInternal(childSO, criteria, sceneObjects, searchType, searchInChildren);
+        }
     }
 
     void SceneObject::AddComponentInternal(const SPtr<Component>& component)
