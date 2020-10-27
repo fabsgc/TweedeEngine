@@ -14,6 +14,7 @@ namespace te
         : Widget(WidgetType::RenderOptions)
     {
         _title = RENDER_OPTIONS_TITLE;
+        _flags |= ImGuiWindowFlags_HorizontalScrollbar;
     }
 
     WidgetRenderOptions::~WidgetRenderOptions()

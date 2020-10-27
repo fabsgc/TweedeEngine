@@ -70,6 +70,7 @@ namespace te
             SPtr<Widget> WToolbar  = nullptr;
             SPtr<Widget> WProject  = nullptr;
             SPtr<Widget> WViewport = nullptr;
+            SPtr<Widget> WScript   = nullptr;
             const char* EditorName = "Editor";
             bool Show = true;
         };

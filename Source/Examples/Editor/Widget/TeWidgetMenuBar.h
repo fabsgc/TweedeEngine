@@ -27,6 +27,7 @@ namespace te
     protected:
         WidgetMenubarSettings _settings;
         VirtualButton _newBtn;
+        VirtualButton _openBtn;
         VirtualButton _quitBtn;
     };
 }

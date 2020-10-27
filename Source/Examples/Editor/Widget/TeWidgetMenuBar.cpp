@@ -19,6 +19,7 @@ namespace te
     void WidgetMenuBar::Initialize()
     { 
         _newBtn = VirtualButton("New");
+        _openBtn = VirtualButton("Open");
         _quitBtn = VirtualButton("Quit");
     }
 
@@ -27,17 +28,23 @@ namespace te
         if (gVirtualInput().IsButtonDown(_newBtn))
         { }
 
-        if(gVirtualInput().IsButtonHeld(_quitBtn))
+        if (gVirtualInput().IsButtonDown(_openBtn))
+        { }
+
+        if(gVirtualInput().IsButtonDown(_quitBtn))
             gCoreApplication().OnStopRequested();
 
         if (ImGui::BeginMainMenuBar())
         {
             if (ImGui::BeginMenu("File"))
             {
-                if (ImGui::MenuItem("New", "Ctrl+N"))
+                if (ImGui::MenuItem(ICON_FA_FILE_ALT "   " ICON_FA_GRIP_LINES_VERTICAL "  New", "Ctrl+N"))
                 { }
 
-                if (ImGui::MenuItem("Quit", "Ctrl+Q"))
+                if (ImGui::MenuItem(ICON_FA_FOLDER_OPEN " " ICON_FA_GRIP_LINES_VERTICAL "  Open", "Ctrl+O"))
+                { }
+
+                if (ImGui::MenuItem(ICON_FA_SIGN_OUT_ALT "  " ICON_FA_GRIP_LINES_VERTICAL "  Quit", "Ctrl+Q"))
                     gCoreApplication().OnStopRequested();
 
                 ImGui::EndMenu();
@@ -45,7 +52,7 @@ namespace te
 
             if (ImGui::BeginMenu("Project"))
             {
-                if (ImGui::MenuItem("Load resource"))
+                if (ImGui::MenuItem(ICON_FA_FILE_DOWNLOAD "  " ICON_FA_GRIP_LINES_VERTICAL "  Load resource"))
                 { }
 
                 ImGui::EndMenu();
@@ -53,44 +60,51 @@ namespace te
 
             if (ImGui::BeginMenu("View"))
             {
-                if (ImGui::MenuItem("Project"))
+                if (ImGui::MenuItem(ICON_FA_BONG "  " ICON_FA_GRIP_LINES_VERTICAL "  Project"))
                 {
                     Widget* widget = static_cast<Widget*>(Editor::Instance().GetWidget(WidgetType::Project));
                     if(widget)
                         widget->SetVisible(!widget->GetVisible());
                 }
 
-                if (ImGui::MenuItem("Properties"))
+                if (ImGui::MenuItem(ICON_FA_TOOLS "  " ICON_FA_GRIP_LINES_VERTICAL "  Properties"))
                 {
                     Widget* widget = static_cast<Widget*>(Editor::Instance().GetWidget(WidgetType::Properties));
                     if (widget)
                         widget->SetVisible(!widget->GetVisible());
                 }
 
-                if (ImGui::MenuItem("Viewport"))
+                if (ImGui::MenuItem(ICON_FA_IMAGE "  " ICON_FA_GRIP_LINES_VERTICAL "  Viewport"))
                 {
                     Widget* widget = static_cast<Widget*>(Editor::Instance().GetWidget(WidgetType::Viewport));
                     if (widget)
                         widget->SetVisible(!widget->GetVisible());
                 }
 
-                if (ImGui::MenuItem("Console"))
+                if (ImGui::MenuItem(ICON_FA_TERMINAL " " ICON_FA_GRIP_LINES_VERTICAL "  Console"))
                 { 
                     Widget* widget = static_cast<Widget*>(Editor::Instance().GetWidget(WidgetType::Console));
                     if (widget)
                         widget->SetVisible(!widget->GetVisible());
                 }
 
-                if (ImGui::MenuItem("Render options"))
+                if (ImGui::MenuItem(ICON_FA_COG "  " ICON_FA_GRIP_LINES_VERTICAL "  Render options"))
                 { 
                     Widget* widget = static_cast<Widget*>(Editor::Instance().GetWidget(WidgetType::RenderOptions));
                     if (widget)
                         widget->SetVisible(!widget->GetVisible());
                 }
 
-                if (ImGui::MenuItem("Resources"))
+                if (ImGui::MenuItem(ICON_FA_SUITCASE "  " ICON_FA_GRIP_LINES_VERTICAL "  Resources"))
                 { 
                     Widget* widget = static_cast<Widget*>(Editor::Instance().GetWidget(WidgetType::Resources));
+                    if (widget)
+                        widget->SetVisible(!widget->GetVisible());
+                }
+
+                if (ImGui::MenuItem(ICON_FA_SCROLL " " ICON_FA_GRIP_LINES_VERTICAL "  Script"))
+                { 
+                    Widget* widget = static_cast<Widget*>(Editor::Instance().GetWidget(WidgetType::Script));
                     if (widget)
                         widget->SetVisible(!widget->GetVisible());
                 }
@@ -100,7 +114,7 @@ namespace te
 
             if (ImGui::BeginMenu("Help"))
             {
-                ImGui::MenuItem("About", nullptr, &_settings.ShowAboutWindow);
+                ImGui::MenuItem(ICON_FA_INFO_CIRCLE "  " ICON_FA_GRIP_LINES_VERTICAL "  About", nullptr, &_settings.ShowAboutWindow);
                 ImGui::EndMenu();
             }
 

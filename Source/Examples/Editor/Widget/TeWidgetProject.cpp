@@ -1,9 +1,9 @@
 #include "TeWidgetProject.h"
-#include "Scene/TeSceneObject.h"
 #include "../TeEditor.h"
 
 #include "Resources/TeResourceManager.h"
 #include "Scene/TeSceneManager.h"
+#include "Scene/TeSceneObject.h"
 #include "Components/TeCCamera.h"
 #include "Components/TeCCameraFlyer.h"
 #include "Components/TeCCameraUI.h"
@@ -19,13 +19,18 @@ namespace te
         , _selections(Editor::Instance().GetSelectionData())
     { 
         _title = PROJECT_TITLE;
+        _flags |= ImGuiWindowFlags_HorizontalScrollbar;
     }
 
     WidgetProject::~WidgetProject()
     { }
 
     void WidgetProject::Initialize()
-    { }
+    { 
+        _deleteBtn = VirtualButton("Delete");
+        _copyBtn = VirtualButton("Copy");
+        _pasteBtn = VirtualButton("Paste");
+    }
 
     void WidgetProject::Update()
     { 
@@ -73,6 +78,9 @@ namespace te
 
         if (_selections.ClickedSceneObject == sceneObject.GetInternalPtr())
             nodeTitle += String("  ") + ICON_FA_CARET_RIGHT;
+
+        if (components.size() == 0 && children.size() == 0)
+            nodeTitle = "          " + nodeTitle;
 
         const bool isNodeOpened = ImGui::TreeNodeEx(
             reinterpret_cast<void*>(static_cast<intptr_t>(sceneObjectId)), nodeFlags, nodeTitle.c_str());
@@ -133,6 +141,7 @@ namespace te
     void WidgetProject::OnTreeEnd()
     {
         HandleClicking();
+        HandleKeyShortcuts();
         Popups();
     }
 
@@ -171,6 +180,27 @@ namespace te
         {
             _selections.ClickedSceneObject = nullptr;
             _selections.ClickedComponent = nullptr;
+        }
+    }
+
+    void WidgetProject::HandleKeyShortcuts()
+    {
+        if (gVirtualInput().IsButtonDown(_deleteBtn))
+        {
+            Delete();
+        }
+
+        if (gVirtualInput().IsButtonDown(_copyBtn))
+        {
+            if (_selections.ClickedComponent)
+                _selections.CopiedComponent = _selections.ClickedComponent;
+            else
+                _selections.CopiedSceneObject = _selections.ClickedSceneObject;
+        }
+
+        if (gVirtualInput().IsButtonDown(_pasteBtn))
+        {
+            Paste();
         }
     }
 

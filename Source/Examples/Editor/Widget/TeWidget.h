@@ -15,6 +15,7 @@
 #define RESOURCES_TITLE ICON_FA_SUITCASE " Resources"
 #define TOOLBAR_TITLE "ToolBar"
 #define VIEWPORT_TITLE ICON_FA_IMAGE " Viewport"
+#define SCRIPT_TITLE ICON_FA_SCROLL " Script"
 
 namespace te
 {
@@ -37,6 +38,7 @@ namespace te
             ToolBar,
             Viewport,
             Resources,
+            Script,
             None
         };
 

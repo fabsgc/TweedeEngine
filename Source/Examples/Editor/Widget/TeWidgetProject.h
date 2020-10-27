@@ -4,6 +4,7 @@
 #include "TeWidget.h"
 #include "../TeEditor.h"
 #include "Renderer/TeLight.h"
+#include "Input/TeVirtualInput.h"
 
 namespace te
 {
@@ -30,6 +31,7 @@ namespace te
         void OnTreeBegin();
         void OnTreeEnd();
         void HandleClicking();
+        void HandleKeyShortcuts();
         void SetSelectedSceneObject(SPtr<SceneObject> sceneObject);
         void SetSelectedComponent(SPtr<Component> component);
         void Popups();
@@ -47,5 +49,8 @@ namespace te
 
     protected:
         Editor::SelectionData& _selections;
+        VirtualButton _deleteBtn;
+        VirtualButton _copyBtn;
+        VirtualButton _pasteBtn;
     };
 }

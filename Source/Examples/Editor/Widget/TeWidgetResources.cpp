@@ -6,6 +6,7 @@ namespace te
         : Widget(WidgetType::Resources)
     { 
         _title = RESOURCES_TITLE;
+        _flags |= ImGuiWindowFlags_HorizontalScrollbar;
     }
 
     WidgetResources::~WidgetResources()

@@ -74,7 +74,7 @@ namespace te
          * @param[in]	immediate	If true, the object will be deallocated and become unusable right away. Otherwise the
          *							deallocation will be delayed to the end of frame (preferred method).
          */
-        virtual void DestroyInternal(GameObjectHandleBase& handle, bool immediate = false) = 0;
+        virtual void DestroyInternal(GameObjectHandleBase& handle, bool immediate = false) { };
 
     protected:
         String _name;

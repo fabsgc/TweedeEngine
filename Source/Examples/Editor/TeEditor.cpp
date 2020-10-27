@@ -14,6 +14,7 @@
 #include "Widget/TeWidgetConsole.h"
 #include "Widget/TeWidgetViewport.h"
 #include "Widget/TeWidgetResources.h"
+#include "Widget/TeWidgetScript.h"
 
 #include "Gui/TeGuiAPI.h"
 #include "TeCoreApplication.h"
@@ -110,7 +111,11 @@ namespace te
         inputConfig->RegisterButton(CCameraUI::ZOOM_BINDING, TE_LCONTROL);
 
         inputConfig->RegisterButton("New", TE_N, ButtonModifier::Ctrl);
+        inputConfig->RegisterButton("Open", TE_O, ButtonModifier::Ctrl);
         inputConfig->RegisterButton("Quit", TE_A, ButtonModifier::Ctrl);
+        inputConfig->RegisterButton("Delete", TE_DELETE);
+        inputConfig->RegisterButton("Copy", TE_C, ButtonModifier::Ctrl);
+        inputConfig->RegisterButton("Paste", TE_V, ButtonModifier::Ctrl);
 
         inputConfig->RegisterAxis(CCameraUI::HORIZONTAL_AXIS_BINDING, VIRTUAL_AXIS_DESC((UINT32)InputAxis::MouseX));
         inputConfig->RegisterAxis(CCameraUI::VERTICAL_AXIS_BINDING, VIRTUAL_AXIS_DESC((UINT32)InputAxis::MouseY));
@@ -191,6 +196,7 @@ namespace te
         _widgets.emplace_back(te_shared_ptr_new<WidgetProperties>());
         _widgets.emplace_back(te_shared_ptr_new<WidgetRenderOptions>());
         _widgets.emplace_back(te_shared_ptr_new<WidgetConsole>());
+        _widgets.emplace_back(te_shared_ptr_new<WidgetScript>()); _settings.WViewport = _widgets.back();
         _widgets.emplace_back(te_shared_ptr_new<WidgetViewport>()); _settings.WViewport = _widgets.back();
         _widgets.emplace_back(te_shared_ptr_new<WidgetResources>());
 
@@ -359,6 +365,7 @@ namespace te
                 ImGui::DockBuilderDockWindow(RENDER_OPTIONS_TITLE, dockRightId);
                 ImGui::DockBuilderDockWindow(CONSOLE_TITLE, dockBottomId);
                 ImGui::DockBuilderDockWindow(VIEWPORT_TITLE, dockMainId);
+                ImGui::DockBuilderDockWindow(SCRIPT_TITLE, dockMainId);
                 ImGui::DockBuilderDockWindow(PROPERTIES_TITLE, dockLeftBottomId);
                 ImGui::DockBuilderDockWindow(RESOURCES_TITLE, dockRightBottomId);
                 ImGui::DockBuilderFinish(dockMainId);
