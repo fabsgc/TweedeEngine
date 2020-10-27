@@ -278,6 +278,7 @@ set (TE_CORE_INC_COMPONENTS
     "Core/Components/TeCSkybox.h"
     "Core/Components/TeCCameraFlyer.h"
     "Core/Components/TeCCameraUI.h"
+    "Core/Components/TeCScript.h"
 )
 set (TE_CORE_SRC_COMPONENTS
     "Core/Components/TeCCamera.cpp"
@@ -286,6 +287,7 @@ set (TE_CORE_SRC_COMPONENTS
     "Core/Components/TeCSkybox.cpp"
     "Core/Components/TeCCameraFlyer.cpp"
     "Core/Components/TeCCameraUI.cpp"
+    "Core/Components/TeCScript.cpp"
 )
 
 set (TE_CORE_INC_RESOURCE
@@ -339,6 +341,15 @@ set (TE_CORE_SRC_GUI
     "Core/Gui/TeGuiAPI.cpp"
 )
 
+set (TE_CORE_INC_SCRIPTING
+    "Core/Scripting/TeScript.h"
+    "Core/Scripting/TeNativeScript.h"
+)
+set (TE_CORE_SRC_SCRIPTING
+    "Core/Scripting/TeScript.cpp"
+    "Core/Scripting/TeNativeScript.cpp"
+)
+
 if (WIN32)
     list(APPEND TE_CORE_INC_PLATFORM ${TE_CORE_INC_PLATFORM_WIN32})
     list(APPEND TE_CORE_SRC_PLATFORM ${TE_CORE_SRC_PLATFORM_WIN32})
@@ -368,6 +379,7 @@ source_group("Core\\Audio" FILES ${TE_CORE_INC_AUDIO} ${TE_CORE_SRC_AUDIO})
 source_group("Core\\Text" FILES ${TE_CORE_INC_TEXT} ${TE_CORE_SRC_TEXT})
 source_group("Core\\Animation" FILES ${TE_CORE_INC_ANIMATION} ${TE_CORE_SRC_ANIMATION})
 source_group("Core\\Gui" FILES ${TE_CORE_INC_GUI} ${TE_CORE_SRC_GUI})
+source_group("Core\\Scripting" FILES ${TE_CORE_INC_SCRIPTING} ${TE_CORE_SRC_SCRIPTING})
 source_group("Core" FILES ${TE_CORE_INC_NOFILTER} ${TE_CORE_SRC_NOFILTER})
 
 set(TE_CORE_SRC
@@ -409,4 +421,6 @@ set(TE_CORE_SRC
     ${TE_CORE_SRC_ANIMATION}
     ${TE_CORE_INC_GUI}
     ${TE_CORE_SRC_GUI}
+    ${TE_CORE_INC_SCRIPTING}
+    ${TE_CORE_SRC_SCRIPTING}
 )

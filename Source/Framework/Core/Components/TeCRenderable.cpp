@@ -77,6 +77,7 @@ namespace te
 
     void CRenderable::Clone(const HRenderable& c)
     {
+        Component::Clone(c.GetInternalPtr());
         SPtr<Renderable> renderable = c->_getInternal();
 
         _internal->_mesh = renderable->_mesh;
@@ -90,8 +91,9 @@ namespace te
         _internal->_instancing = renderable->_instancing;
         _internal->_canBeMerged = renderable->_canBeMerged;
 
-        _internal->_markCoreDirty(ActorDirtyFlag::GpuParams);
+        _internal->_transform = renderable->_transform;
+        _internal->_mobility = renderable->_mobility;
 
-        Component::Clone(c.GetInternalPtr());
+        _internal->_markCoreDirty(ActorDirtyFlag::GpuParams);
     }
 }

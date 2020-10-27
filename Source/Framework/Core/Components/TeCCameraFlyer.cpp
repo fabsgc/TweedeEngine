@@ -133,6 +133,6 @@ namespace te
 
     void CCameraFlyer::Clone(const HCameraFlyer& c)
     {
-
+        Component::Clone(c.GetInternalPtr());
     }
 }

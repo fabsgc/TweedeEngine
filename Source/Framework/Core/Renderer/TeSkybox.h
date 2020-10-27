@@ -47,6 +47,8 @@ namespace te
         static SPtr<Skybox> CreateEmpty();
 
     protected:
+        friend class CSkybox;
+
         Skybox();
         Skybox(const SPtr<Texture>& radiance);
 

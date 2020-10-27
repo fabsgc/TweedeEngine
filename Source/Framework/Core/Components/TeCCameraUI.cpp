@@ -221,6 +221,21 @@ namespace te
 
     void CCameraUI::Clone(const HCameraUI& c)
     {
+        Component::Clone(c.GetInternalPtr());
 
+        // TODO : Be careful here (I'm not sure it's a good idea to copy this component)
+
+        //_cameraInitialized = true;
+
+        //_target = c->_target;
+        //_camera = c->_camera;
+
+        _rotateBtn = c->_rotateBtn;
+        _moveBtn = c->_moveBtn;
+        _zoomBtn = c->_zoomBtn;
+
+        _horizontalAxis = c->_horizontalAxis;
+        _verticalAxis = c->_verticalAxis;
+        _scrollAxis = c->_scrollAxis;
     }
 }

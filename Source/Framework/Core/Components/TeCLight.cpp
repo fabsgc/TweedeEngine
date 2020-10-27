@@ -70,6 +70,7 @@ namespace te
 
     void CLight::Clone(const HLight& c)
     {
+        Component::Clone(c.GetInternalPtr());
         SPtr<Light> light = c->_getLight();
 
         _internal->_type = light->_type;
@@ -82,8 +83,18 @@ namespace te
         _internal->_bounds = light->_bounds;
         _internal->_shadowBias = light->_shadowBias;
 
-        _internal->_markCoreDirty();
+        _internal->_transform = light->_transform;
+        _internal->_mobility = light->_mobility;
 
-        Component::Clone(c.GetInternalPtr());
+        c->_type = _type;
+        c->_color = _color;
+        c->_intensity = _intensity;
+        c->_range = _range;
+        c->_linearAtt = _linearAtt;
+        c->_quadraticAtt = _quadraticAtt;
+        c->_castsShadows = _castsShadows;
+        c->_spotAngle = _spotAngle;
+
+        _internal->_markCoreDirty();
     }
 }

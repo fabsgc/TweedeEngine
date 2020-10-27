@@ -6,6 +6,14 @@
 #include "TeCoreApplication.h"
 #include "String/TeString.h"
 
+#include "Components/TeCCamera.h"
+#include "Components/TeCCameraFlyer.h"
+#include "Components/TeCCameraUI.h"
+#include "Components/TeCLight.h"
+#include "Components/TeCRenderable.h"
+#include "Components/TeCSkybox.h"
+#include "Components/TeCScript.h"
+
 namespace te
 {
     SceneObject::SceneObject(const String& name, UINT32 flags)
@@ -75,7 +83,96 @@ namespace te
 
     void SceneObject::Clone(const SPtr<SceneObject>& so)
     {
+        this->_name = so->GetName() + " (Copy)";
 
+        for (auto& childSO : so->GetChildren())
+        {
+            // Create a copy of each children
+            // Add it to the list of children
+
+            HSceneObject sceneObject = SceneObject::Create("SceneObject");
+            sceneObject->Clone(childSO);
+            sceneObject->SetParent(this->GetHandle());
+            sceneObject->SetName(childSO->GetName());
+        }
+
+        for (auto& co : so->GetComponents())
+        {
+            // Create a copy a each component
+            // Add it to the list of components
+
+            switch (co->GetCoreType())
+            {
+            case TID_CCamera:
+            {
+                HCamera component = this->AddComponent<CCamera>();
+                component->Clone(co->GetHandle());
+                component->Initialize();
+                component->SetName(co->GetName());
+            }
+            break;
+
+            case TID_CCameraFlyer:
+            {
+                HCameraFlyer component = this->AddComponent<CCameraFlyer>();
+                component->Clone(co->GetHandle());
+                component->Initialize();
+                component->SetName(co->GetName());
+            }
+            break;
+
+            case TID_CCameraUI:
+            {
+                HCameraUI component = this->AddComponent<CCameraUI>();
+                component->Clone(co->GetHandle());
+                component->Initialize();
+                component->SetName(co->GetName());
+            }
+            break;
+
+            case TID_CLight:
+            {
+                HLight component = this->AddComponent<CLight>();
+                component->Clone(co->GetHandle());
+                component->Initialize();
+                component->SetName(co->GetName());
+            }
+            break;
+
+            case TID_CRenderable:
+            {
+                HRenderable component = this->AddComponent<CRenderable>();
+                component->Clone(co->GetHandle());
+                component->Initialize();
+                component->SetName(co->GetName());
+            }
+            break;
+
+            case TID_CScript:
+            {
+                HScript component = this->AddComponent<CScript>();
+                component->Clone(co->GetHandle());
+                component->Initialize();
+                component->SetName(co->GetName());
+            }
+            break;
+
+            case TID_CSkybox:
+            {
+                if (SceneManager::Instance().FindComponents<CSkybox>().size() > 0)
+                    break;
+
+                HSkybox component = this->AddComponent<CSkybox>();
+                component->Clone(co->GetHandle());
+                component->Initialize();
+                component->SetName(co->GetName());
+            }
+            break;
+
+            default:
+                break;
+            }
+        }
     }
 
     void SceneObject::_setInstanceData(GameObjectInstanceDataPtr& other)

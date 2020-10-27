@@ -10,6 +10,7 @@
 #include "Components/TeCLight.h"
 #include "Components/TeCRenderable.h"
 #include "Components/TeCSkybox.h"
+#include "Components/TeCScript.h"
 
 namespace te
 {
@@ -267,6 +268,9 @@ namespace te
                     if (ImGui::MenuItem(ICON_FA_GLOBE " Skybox"))
                         CreateSkybox();
 
+                    if (ImGui::MenuItem(ICON_FA_SCROLL " Script"))
+                        CreateScript();
+
                     ImGui::EndMenu();
                 }
             }
@@ -443,8 +447,11 @@ namespace te
         if (!_selections.ClickedSceneObject || _selections.ClickedComponent)
             return;
 
-        // TODO
+        HScript script = _selections.ClickedSceneObject->AddComponent<CScript>();
+        script.Get()->SetName("Script");
+        script.Get()->Initialize();
 
+        _selections.ClickedComponent = script.GetInternalPtr();
         Editor::Instance().NeedsRedraw();
     }
 
@@ -528,7 +535,11 @@ namespace te
 
             case TID_CScript:
             {
-                // TODO
+                HScript component = clickedSceneObject->AddComponent<CScript>();
+                component->Clone(_selections.CopiedComponent->GetHandle());
+                component->Initialize();
+                _selections.ClickedComponent = component.GetInternalPtr();
+                _selections.CopiedComponent = component.GetInternalPtr();
             }
             break;
 
@@ -556,9 +567,7 @@ namespace te
 
             HSceneObject sceneObject = SceneObject::Create("SceneObject");
             sceneObject->Clone(_selections.CopiedSceneObject);
-
-            _selections.ClickedSceneObject->GetHandle();
-            sceneObject->SetParent(_selections.ClickedSceneObject->GetHandle());
+            sceneObject->SetParent(clickedSceneObject->GetHandle());
 
             _selections.ClickedSceneObject = sceneObject.GetInternalPtr();
             _selections.CopiedSceneObject = sceneObject.GetInternalPtr();
@@ -622,6 +631,9 @@ namespace te
             break;
         case TID_CCameraUI:
             title = ICON_FA_CAMERA + String(" ");
+            break;
+        case TID_CScript:
+            title = ICON_FA_SCROLL + String(" ");
             break;
         default:
             break;

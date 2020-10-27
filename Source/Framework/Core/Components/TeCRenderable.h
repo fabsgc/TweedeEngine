@@ -84,7 +84,7 @@ namespace te
         /** @copydoc Component::CalculateBounds */
         bool CalculateBounds(Bounds& bounds) override;
 
-         /** Returns the internal renderable that is used for majority of operations by this component. */
+        /** Returns the internal renderable that is used for majority of operations by this component. */
         SPtr<Renderable> _getInternal() const { return _internal; }
 
         /** @copydoc Component::Clone */

@@ -400,6 +400,8 @@ namespace te
         static const float INFINITE_FAR_PLANE_ADJUST; /**< Small constant used to reduce far plane projection to avoid inaccuracies. */
 
     protected:
+        friend class CCamera;
+
         Camera(SPtr<RenderTarget> target = nullptr, float left = 0.0f, float top = 0.0f, float width = 1.0f, float height = 1.0f);
         Camera(const SPtr<Viewport>& viewport);
 

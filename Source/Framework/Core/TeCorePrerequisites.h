@@ -68,7 +68,8 @@ namespace te
         TID_Shader        = 1013,
         TID_Technique     = 1014,
         TID_Mesh          = 1015,
-        TID_Font          = 1016
+        TID_Font          = 1016,
+        TID_NativeScript  = 1017
     };
 }
 
@@ -223,6 +224,7 @@ namespace te
     class CRenderable;
     class CLight;
     class CSkybox;
+    class CScript;
 
     class BuiltinResources;
 
@@ -236,6 +238,9 @@ namespace te
 
     class GuiAPI;
     class GuiAPIFactory;
+
+    class Script;
+    class NativeScript;
 }
 
 #include "Utility/TeNonCopyable.h"
@@ -268,4 +273,5 @@ namespace te
     typedef GameObjectHandle<CCameraUI> HCameraUI;
     typedef GameObjectHandle<CLight> HLight;
     typedef GameObjectHandle<CSkybox> HSkybox;
+    typedef GameObjectHandle<CScript> HScript;
 }

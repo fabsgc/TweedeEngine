@@ -60,8 +60,6 @@ namespace te
 
     void Skybox::FrameSync()
     {
-        // TE_PRINT("# SYNC SKYBOX");
-
         gRenderer()->NotifySkyboxRemoved(this);
         gRenderer()->NotifySkyboxAdded(this);
     }

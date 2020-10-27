@@ -49,6 +49,13 @@ namespace te
 
     void CSkybox::Clone(const HSkybox& c)
     {
+        Component::Clone(c.GetInternalPtr());
+        SPtr<Skybox> skybox = c->_getSkybox();
 
+        _internal->_brightness = skybox->_brightness;
+        _internal->_texture = skybox->_texture;
+
+        _internal->_transform = skybox->_transform;
+        _internal->_mobility = skybox->_mobility;
     }
 }

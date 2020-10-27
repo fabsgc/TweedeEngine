@@ -84,6 +84,10 @@ namespace te
 
     void CCamera::Clone(const HCamera& c)
     {
+        Component::Clone(c.GetInternalPtr());
+        SPtr<Camera> camera = c->_getCamera();
 
+        _internal->_transform = camera->_transform;
+        _internal->_mobility = camera->_mobility;
     }
 }
