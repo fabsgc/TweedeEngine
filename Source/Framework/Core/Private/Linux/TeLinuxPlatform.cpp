@@ -5,6 +5,7 @@
 #include "Image/TePixelData.h"
 #include "Image/TePixelUtil.h"
 #include "Math/TeRect2I.h"
+#include "Utility/TeTime.h"
 #include "TeCoreApplication.h"
 #include <X11/X.h>
 #include <X11/Xatom.h>
@@ -654,8 +655,6 @@ namespace te
                         if(!OnInputCommand.Empty())
                             OnInputCommand(command);
                     }
-
-                    
                 }
                 break;
 
@@ -860,6 +859,8 @@ namespace te
                         if (!renderWindow->GetProperties().HasFocus)
                         {
                             renderWindow->NotifyWindowEvent(WindowEventType::FocusReceived);
+                            gCoreApplication().Pause(false);
+                            gTime().Start();
                         }
                     }
                 }
@@ -877,12 +878,65 @@ namespace te
                     if (renderWindow != nullptr)
                     {
                         if (renderWindow->GetProperties().HasFocus)
+                        {
                             renderWindow->NotifyWindowEvent(WindowEventType::FocusLost);
+                            gCoreApplication().Pause(true);
+                            gTime().Stop();
+                        }
                     }
                 }
                 break;
 
                 case PropertyNotify:
+                    // Report minimize, maximize and restore events
+                    if(event.xproperty.atom == _data->AtomWmState)
+                    {
+                        Atom type;
+                        INT32 format;
+                        unsigned long count, bytesRemaining;
+                        UINT8* data = nullptr;
+
+                        INT32 result = XGetWindowProperty(_data->XDisplay, event.xproperty.window, _data->AtomWmState,
+                                0, 1024, False, AnyPropertyType, &type, &format,
+                                &count, &bytesRemaining, &data);
+
+                        if (result == Success)
+                        {
+                            RenderWindow* renderWindow = _data->Window->GetRenderWindow();
+
+                            // Not a render window, so it doesn't care about these events
+                            if(renderWindow == nullptr)
+                                continue;
+
+                            Atom* atoms = (Atom*)data;
+
+                        bool foundHorz = false;
+                        bool foundVert = false;
+                        for (unsigned long i = 0; i < count; i++)
+                        {
+                            if (atoms[i] == _data->AtomWmStateMaxHorz) foundHorz = true;
+                            if (atoms[i] == _data->AtomWmStateMaxVert) foundVert = true;
+
+                            if (foundVert && foundHorz)
+                            {
+                                if(event.xproperty.state == PropertyNewValue)
+                                    renderWindow->NotifyWindowEvent(WindowEventType::Maximized);
+                                else
+                                    renderWindow->NotifyWindowEvent(WindowEventType::Restored);
+                            }
+
+                            if(atoms[i] == _data->AtomWmStateHidden)
+                            {
+                                if(event.xproperty.state == PropertyNewValue)
+                                    renderWindow->NotifyWindowEvent(WindowEventType::Minimized);
+                                else
+                                    renderWindow->NotifyWindowEvent(WindowEventType::Restored);
+                            }
+                        }
+
+                        XFree(atoms);
+                        }
+                    }
                 break;
 
                 default:
