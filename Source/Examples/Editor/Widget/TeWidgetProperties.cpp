@@ -37,7 +37,8 @@ namespace te
 
         if (_selections.ClickedComponent)
         {
-            if (ShowGameObjectInformation(std::static_pointer_cast<GameObject>(_selections.ClickedComponent)))
+            SPtr<GameObject> gameObject = std::static_pointer_cast<GameObject>(_selections.ClickedComponent);
+            if (ShowGameObjectInformation(gameObject))
                 hasChanged = true;
 
             switch (_selections.ClickedComponent->GetCoreType())
@@ -110,8 +111,9 @@ namespace te
         bool hasChanged = false;
         ObjectMobility mobility = _selections.ClickedSceneObject->GetMobility();
         Transform transform = _selections.ClickedSceneObject->GetTransform();
+        SPtr<GameObject> gameObject = std::static_pointer_cast<GameObject>(_selections.ClickedSceneObject);
 
-        ShowGameObjectInformation(std::static_pointer_cast<GameObject>(_selections.ClickedSceneObject));
+        ShowGameObjectInformation(gameObject);
         ShowTransform(transform, mobility);
 
         return hasChanged;

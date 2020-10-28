@@ -114,7 +114,7 @@ float4 ComputeVelocityBuffer(float4 position, float4 prevPosition, float alpha)
     }
 
     output.xy = velocity.xy;
-    output.z = 1.0;
+    output.z = 0.0;
     output.w = 1.0;
 
     return output;

@@ -6,6 +6,7 @@
 #include "Threading/TeThreading.h"
 #include "Utility/TeEvent.h"
 #include "Utility/TePlatformUtility.h"
+#include "Utility/TeTime.h"
 #include "Image/TePixelData.h"
 #include <shellapi.h>
 
@@ -351,6 +352,17 @@ namespace te
         {
             case WM_ACTIVATE:
             {
+                if (LOWORD(wParam) == WA_INACTIVE)
+                {
+                    gCoreApplication().Pause(true);
+                    gTime().Stop();
+                }
+                else
+                {
+                    gCoreApplication().Pause(false);
+                    gTime().Start();
+                }
+
                 switch (wParam)
                 {
                 case WA_ACTIVE:

@@ -128,7 +128,7 @@ namespace te
     {
         _runMainLoop = true;
 
-        while (_runMainLoop && !_pause)
+        while (_runMainLoop)
         {
             Platform::Update();
             gTime().Update();
@@ -136,6 +136,12 @@ namespace te
             gInput().TriggerCallbacks();
             gVirtualInput().Update();
             _window->TriggerCallback();
+
+            if(_pause)
+            {
+                TE_SLEEP(100);
+                continue;
+            }
 
             PreUpdate();
 
