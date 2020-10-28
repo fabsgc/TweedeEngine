@@ -491,6 +491,14 @@ namespace te
          */
         Vector<HSceneObject> GetSceneObjects(const UUID& uuid, bool searchInChildren = false) const;
 
+        /**
+         * Returns true if the current sceneObject is below the sceneObject given in parameter in the scene hierarchy
+         * 
+         * @param[in]	sceneObject			scene object handle
+         * @return		true if this is a descendant of the sceneObject given in paramter
+         */
+        bool IsDescendantOf(const HSceneObject& sceneObject);
+
     private:
         /**
          * Searches for components with the specified type accross all direct children of the current sceneObject and returns the first one it finds.

@@ -63,6 +63,9 @@ namespace te
         const auto& GetTitle() const { return _title; }
         const auto& GetTitleActivated() const { return _titleActivated; }
         WidgetType GetType() const { return _type; }
+        ImGuiWindow* GetWindow() const { return _window; }
+        ImGuiViewport* GetViewport() const { return _viewport; }
+        void PutFocus() const;
 
     protected:
         bool _isVisible;
@@ -82,6 +85,9 @@ namespace te
 
         String _title;
         String _titleActivated;
+
+        ImGuiWindow* _window = nullptr;
+        ImGuiViewport* _viewport = nullptr;
 
         UINT8 _varPushes = 0;        
     };

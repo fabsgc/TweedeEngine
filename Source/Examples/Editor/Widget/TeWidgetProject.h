@@ -32,6 +32,7 @@ namespace te
         void OnTreeEnd();
         void HandleClicking();
         void HandleKeyShortcuts();
+        void HandleSelectionWindowSwitch();
         void SetSelectedSceneObject(SPtr<SceneObject> sceneObject);
         void SetSelectedComponent(SPtr<Component> component);
         void Popups();
@@ -49,6 +50,10 @@ namespace te
 
     protected:
         Editor::SelectionData& _selections;
+        bool _expandToSelection;
+        bool _expandedToSelection;
+        ImRect _selectedSceneObjectRect;
+
         VirtualButton _deleteBtn;
         VirtualButton _copyBtn;
         VirtualButton _pasteBtn;

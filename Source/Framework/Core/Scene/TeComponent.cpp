@@ -37,4 +37,41 @@ namespace te
         else
             GameObjectManager::Instance().QueueForDestroy(handle);
     }
+
+    bool Component::IsDescendantOf(const HSceneObject& sceneObject)
+    {
+        for (const auto& componentSO : sceneObject->GetComponents())
+        {
+            if (GetUUID() == componentSO->GetUUID())
+                return true;
+        }
+
+        for (const auto& childSO : sceneObject->GetChildren())
+        {
+            for (const auto& componentSO : childSO->GetComponents())
+            {
+                if (GetUUID() == componentSO->GetUUID())
+                    return true;
+            }
+
+            if (childSO->GetNumChildren() > 0)
+            {
+                if (IsDescendantOf(childSO))
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    bool Component::IsChildOf(const HSceneObject& sceneObject)
+    {
+        for (const auto& componentSO : sceneObject->GetComponents())
+        {
+            if (GetUUID() == componentSO->GetUUID())
+                return true;
+        }
+
+        return false;
+    }
 }

@@ -11,6 +11,11 @@ namespace te
     class Editor : public Module<Editor>
     {
     public:
+        enum class WindowType
+        {
+            Script, Viewport
+        };
+
         struct SelectionData
         {
             SPtr<SceneObject> HoveredSceneObject = nullptr;
@@ -62,6 +67,9 @@ namespace te
 
         /** Here we store all data on object selected using project tree or 3d view */
         SelectionData& GetSelectionData() { return _selections; }
+
+        /** Depending on selections done wherever in the editor we could want to give focus to a window */
+        void PutFocus(WindowType type) const;
 
     protected:
         struct EditorSettings

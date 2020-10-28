@@ -17,6 +17,8 @@ namespace te
     WidgetProject::WidgetProject()
         : Widget(WidgetType::Project)
         , _selections(Editor::Instance().GetSelectionData())
+        , _expandToSelection(false)
+        , _expandedToSelection(false)
     { 
         _title = PROJECT_TITLE;
         _flags |= ImGuiWindowFlags_HorizontalScrollbar;
@@ -45,15 +47,24 @@ namespace te
     {
         OnTreeBegin();
         ShowSceneObjectTree(sceneObject, true);
+
+        // If we have been expanding to show an entity and no more expansions are taking place, we reached it.
+        // So, we stop expanding and we bring it into view.
+        if (_expandToSelection && !_expandedToSelection)
+        {
+            ImGui::ScrollToBringRectIntoView(_window, _selectedSceneObjectRect);
+            _expandToSelection = false;
+        }
+
         OnTreeEnd();
     }
 
     void WidgetProject::ShowSceneObjectTree(const HSceneObject& sceneObject, bool expand)
     {
         UINT64 sceneObjectId = sceneObject->GetInstanceId();
-
         auto children = sceneObject->GetChildren();
         auto components = sceneObject->GetComponents();
+        _expandedToSelection = false;
 
         // Flags
         ImGuiTreeNodeFlags nodeFlags =
@@ -65,13 +76,35 @@ namespace te
         if (expand) 
             nodeFlags |= ImGuiTreeNodeFlags_DefaultOpen;
 
-        // Selected style
-        if (_selections.ClickedSceneObject == sceneObject.GetInternalPtr())
-            nodeFlags |= ImGuiTreeNodeFlags_Selected;
-
         // Flag - Is expandable (has children) ?
         nodeFlags |= (children.size() || components.size()) ?
             ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick : ImGuiTreeNodeFlags_Leaf;
+
+        // Flag - Is selected?
+        if (_selections.ClickedSceneObject)
+        {
+            nodeFlags |= (_selections.ClickedSceneObject->GetUUID() == sceneObject->GetUUID()) ? ImGuiTreeNodeFlags_Selected : nodeFlags;
+
+            if (_expandToSelection)
+            {
+                // If the selected sceneObject is a descendant of the current one, start expanding (this can happen if an object is selected in the viewport)
+                if (_selections.ClickedSceneObject->IsDescendantOf(sceneObject))
+                {
+                    ImGui::SetNextItemOpen(true);
+                    _expandedToSelection = true;
+                }
+            }
+        }
+
+        if (_selections.ClickedComponent && _expandToSelection)
+        {
+            // If the selected sceneObject is a descendant of the current one, start expanding (this can happen if an object is selected in the viewport)
+            if (_selections.ClickedComponent->IsDescendantOf(sceneObject))
+            {
+                ImGui::SetNextItemOpen(true);
+                _expandedToSelection = true;
+            }
+        }
 
         // Title
         String nodeTitle = ICON_FA_GLOBE_EUROPE + String(" ") + sceneObject->GetName();
@@ -84,6 +117,10 @@ namespace te
 
         const bool isNodeOpened = ImGui::TreeNodeEx(
             reinterpret_cast<void*>(static_cast<intptr_t>(sceneObjectId)), nodeFlags, nodeTitle.c_str());
+
+        // Keep a copy of the selected item's rect so that we can scroll to bring it into view
+        if ((nodeFlags & ImGuiTreeNodeFlags_Selected) && _expandToSelection)
+            _selectedSceneObjectRect = _window->DC.LastItemRect;
 
         // Manually detect some useful states
         if (ImGui::IsItemHovered(ImGuiHoveredFlags_RectOnly))
@@ -106,6 +143,7 @@ namespace te
     void WidgetProject::ShowComponentsTree(const HSceneObject& sceneObject)
     {
         auto components = sceneObject->GetComponents();
+        _expandedToSelection = false;
 
         for (auto& component : components)
         {
@@ -115,6 +153,23 @@ namespace te
                 ImGuiTreeNodeFlags_SpanAvailWidth |
                 ImGuiTreeNodeFlags_Leaf |
                 ImGuiTreeNodeFlags_FramePadding;
+
+            // Flag - Is selected?
+            if (_selections.ClickedComponent)
+            {
+                componentFlags |= (_selections.ClickedComponent->GetUUID() == component->GetUUID()) ? ImGuiTreeNodeFlags_Selected : componentFlags;
+
+                if (_expandToSelection)
+                {
+                    // If the selected component is a descendant of the current one, but not its direct child
+                    // start expanding (this can happen if an object is selected in the viewport)
+                    if (!_selections.ClickedComponent->IsChildOf(sceneObject) && _selections.ClickedComponent->IsDescendantOf(sceneObject))
+                    {
+                        ImGui::SetNextItemOpen(true);
+                        _expandedToSelection = true;
+                    }
+                }
+            }
 
             if (_selections.ClickedComponent == component.GetInternalPtr())
                 componentFlags |= ImGuiTreeNodeFlags_Selected;
@@ -126,6 +181,10 @@ namespace te
                 // Manually detect some useful states
                 if (ImGui::IsItemHovered(ImGuiHoveredFlags_RectOnly))
                     _selections.HoveredComponent = component.GetInternalPtr();
+
+                // Keep a copy of the selected item's rect so that we can scroll to bring it into view
+                if ((componentFlags & ImGuiTreeNodeFlags_Selected) && _expandToSelection)
+                    _selectedSceneObjectRect = _window->DC.LastItemRect;
 
                 ImGui::TreePop();
             }
@@ -204,16 +263,41 @@ namespace te
         }
     }
 
+    void WidgetProject::HandleSelectionWindowSwitch()
+    {
+        if (_selections.ClickedComponent)
+        {
+            switch (_selections.ClickedComponent->GetCoreType())
+            {
+            case TID_CCamera:
+            case TID_CCameraUI:
+            case TID_CCameraFlyer:
+            case TID_CRenderable:
+            case TID_CLight:
+            case TID_CSkybox:
+                Editor::Instance().PutFocus(Editor::WindowType::Viewport);
+                break;
+
+            case TID_CScript:
+                Editor::Instance().PutFocus(Editor::WindowType::Script);
+                break;
+            }
+        }
+    }
+
     void WidgetProject::SetSelectedSceneObject(SPtr<SceneObject> sceneObject)
     {
         _selections.ClickedSceneObject = sceneObject;
         _selections.ClickedComponent = nullptr;
+        _expandToSelection = true;
     }
 
     void WidgetProject::SetSelectedComponent(SPtr<Component> component)
     {
         _selections.ClickedComponent = component;
         _selections.ClickedSceneObject = component->GetSceneObject().GetInternalPtr();
+        _expandToSelection = true;
+        HandleSelectionWindowSwitch();
     }
 
     void WidgetProject::Popups()
@@ -343,8 +427,10 @@ namespace te
         else
             sceneObject->SetParent(Editor::Instance().GetSceneRoot());
 
+        _expandToSelection = true;
         _selections.ClickedSceneObject = sceneObject.GetInternalPtr();
         Editor::Instance().NeedsRedraw();
+        HandleSelectionWindowSwitch();
     }
 
     void WidgetProject::CreateRenderable(RenderableType type)
@@ -385,8 +471,10 @@ namespace te
             break;
         }
 
+        _expandToSelection = true;
         _selections.ClickedComponent = renderable.GetInternalPtr();
         Editor::Instance().NeedsRedraw();
+        HandleSelectionWindowSwitch();
     }
 
     void WidgetProject::CreateLight(LightType type)
@@ -417,8 +505,10 @@ namespace te
             break;
         }
 
+        _expandToSelection = true;
         _selections.ClickedComponent = light.GetInternalPtr();
         Editor::Instance().NeedsRedraw();
+        HandleSelectionWindowSwitch();
     }
 
     void WidgetProject::CreateCamera(TypeID_Core type)
@@ -459,7 +549,9 @@ namespace te
             break;
         }
 
+        _expandToSelection = true;
         Editor::Instance().NeedsRedraw();
+        HandleSelectionWindowSwitch();
     }
 
     void WidgetProject::CreateAudio()
@@ -470,6 +562,7 @@ namespace te
         // TODO
 
         Editor::Instance().NeedsRedraw();
+        HandleSelectionWindowSwitch();
     }
 
     void WidgetProject::CreateScript()
@@ -481,8 +574,10 @@ namespace te
         script.Get()->SetName("Script");
         script.Get()->Initialize();
 
+        _expandToSelection = true;
         _selections.ClickedComponent = script.GetInternalPtr();
         Editor::Instance().NeedsRedraw();
+        HandleSelectionWindowSwitch();
     }
 
     void WidgetProject::CreateSkybox()
@@ -497,8 +592,10 @@ namespace te
         skybox.Get()->SetName("Skybox");
         skybox.Get()->Initialize();
 
+        _expandToSelection = true;
         _selections.ClickedComponent = skybox.GetInternalPtr();
         Editor::Instance().NeedsRedraw();
+        HandleSelectionWindowSwitch();
     }
 
     void WidgetProject::Paste()
@@ -601,9 +698,13 @@ namespace te
 
             _selections.ClickedSceneObject = sceneObject.GetInternalPtr();
             _selections.CopiedSceneObject = sceneObject.GetInternalPtr();
+
+            
         }
 
+        _expandToSelection = true;
         Editor::Instance().NeedsRedraw();
+        HandleSelectionWindowSwitch();
     }
 
     void WidgetProject::Delete()

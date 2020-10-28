@@ -9,6 +9,7 @@ namespace te
         , _isWindow(true)
         , _begun(false)
         , _type(type)
+        , _window(nullptr)
     { }
 
     bool Widget::BeginGui()
@@ -52,10 +53,12 @@ namespace te
         // Begin
         if (ImGui::Begin(_title.c_str(), &_isVisible, _flags))
         {
+            _window = ImGui::GetCurrentWindow();
+            _viewport = _window->Viewport;
             _height = ImGui::GetWindowHeight();
             _begun = true;
         }
-        else
+        else if(_window && _window->Hidden)
         {
            _begun = true;
         }
@@ -80,5 +83,11 @@ namespace te
         _begun = false;
 
         return true;
+    }
+
+    void Widget::PutFocus() const
+    {
+        if(_window)
+            ImGui::FocusWindow(_window);
     }
 }

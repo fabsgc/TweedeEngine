@@ -895,6 +895,23 @@ namespace te
         _components.push_back(newComponent);
     }
 
+    bool SceneObject::IsDescendantOf(const HSceneObject& sceneObject)
+    {
+        for (const auto& childSO : sceneObject->GetChildren())
+        {
+            if (GetUUID() == childSO->GetUUID())
+                return true;
+
+            if (childSO->GetNumChildren() > 0)
+            {
+                if (IsDescendantOf(childSO))
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
     void SceneObject::AddAndInitializeComponent(const HComponent& component)
     {
         component->_thisHandle = component;

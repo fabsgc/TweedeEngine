@@ -100,6 +100,22 @@ namespace te
         /** Checks if the component has a certain flag enabled. */
         bool HasFlag(UINT32 flag) const { return _flags | flag; }
 
+        /**
+         * Returns true if the this is below the sceneObject given in paramter in the scene hierarchy
+         *
+         * @param[in]	sceneObject			SceneObject handle
+         * @return		true if this is a descendant of the sceneObject given in paramter
+         */
+        bool IsDescendantOf(const HSceneObject& sceneObject);
+
+        /**
+         * Returns true if the this is a direct child of the SceneObject given in parameter
+         *
+         * @param[in]	sceneObject			SceneObject handle
+         * @return		true if this is a direct child of the sceneObject given in paramter
+         */
+        bool IsChildOf(const HSceneObject& sceneObject);
+
     protected:
         Component(HSceneObject parent, UINT32 type);
         virtual ~Component() = default;

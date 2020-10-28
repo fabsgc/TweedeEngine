@@ -196,7 +196,7 @@ namespace te
         _widgets.emplace_back(te_shared_ptr_new<WidgetProperties>());
         _widgets.emplace_back(te_shared_ptr_new<WidgetRenderOptions>());
         _widgets.emplace_back(te_shared_ptr_new<WidgetConsole>());
-        _widgets.emplace_back(te_shared_ptr_new<WidgetScript>()); _settings.WViewport = _widgets.back();
+        _widgets.emplace_back(te_shared_ptr_new<WidgetScript>()); _settings.WScript = _widgets.back();
         _widgets.emplace_back(te_shared_ptr_new<WidgetViewport>()); _settings.WViewport = _widgets.back();
         _widgets.emplace_back(te_shared_ptr_new<WidgetResources>());
 
@@ -390,6 +390,20 @@ namespace te
         }
 
         return nullptr;
+    }
+
+    void Editor::PutFocus(WindowType type) const
+    {
+        switch (type)
+        {
+        case WindowType::Viewport:
+            _settings.WViewport->PutFocus();
+            break;
+
+        case WindowType::Script:
+            _settings.WScript->PutFocus();
+            break;
+        }
     }
 
     void Editor::LoadScene()

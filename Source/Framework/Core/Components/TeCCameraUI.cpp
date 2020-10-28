@@ -209,6 +209,7 @@ namespace te
     void CCameraUI::SetTarget(const Vector3& target)
     {
         _target = target;
+        _parent->LookAt(target);
 
         InitDistanceToTarget();
         InitLocalRotation();
