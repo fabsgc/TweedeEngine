@@ -398,6 +398,7 @@ namespace te
                 light->SetColor(Color(color));
             }
         }
+        ImGui::Separator();
 
         // Light Type
         {
@@ -412,6 +413,7 @@ namespace te
                 hasChanged = true;
             }
         }
+        ImGui::Separator();
 
         // Attenuation radius
         {

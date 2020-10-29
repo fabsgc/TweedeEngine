@@ -19,7 +19,7 @@ namespace te
 
         UINT32 IndexOffset = 0;
         UINT32 IndexCount = 0;
-        DrawOperationType DrawOp = DOT_LINE_STRIP;
+        DrawOperationType DrawOp = DOT_TRIANGLE_LIST;
 
         /** It's possible to set a material name which will be use if you want to SetMaterial() on a mesh */
         String MaterialName = "";
