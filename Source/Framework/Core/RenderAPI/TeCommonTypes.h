@@ -397,14 +397,14 @@ namespace te
     enum class ObjectMobility
     {
         /** Scene object can be moved and has no mobility restrictions. */
-        Movable,
+        Movable = 0x0,
         /**
          * Scene object isn't allowed to be moved but is allowed to be visually changed in other ways (e.g. changing the
          * displayed mesh or light intensity (depends on attached components).
          */
-        Immovable,
+        Immovable = 0x1,
         /** Scene object isn't allowed to be moved nor is it allowed to be visually changed. Object must be fully static. */
-        Static
+        Static = 0x2
     };
 
     /** Determines the type of the source image for generating cubemaps. */

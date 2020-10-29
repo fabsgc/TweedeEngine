@@ -244,6 +244,24 @@ namespace te
         return _worldTfrm;
     }
 
+    void SceneObject::SetLocalTransform(Transform& tfrm)
+    { 
+        if (_mobility == ObjectMobility::Movable)
+        {
+            _localTfrm = tfrm;
+            NotifyTransformChanged(TCF_Transform);
+        }
+    }
+
+    void SceneObject::SetTransform(Transform& tfrm)
+    { 
+        if (_mobility == ObjectMobility::Movable)
+        {
+            _localTfrm = tfrm;
+            NotifyTransformChanged(TCF_Transform);
+        }
+    }
+
     void SceneObject::SetPosition(const Vector3& position)
     {
         if (_mobility == ObjectMobility::Movable)

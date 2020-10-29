@@ -290,6 +290,7 @@ namespace te
         _selections.ClickedSceneObject = sceneObject;
         _selections.ClickedComponent = nullptr;
         _expandToSelection = true;
+        HandleSelectionWindowSwitch();
     }
 
     void WidgetProject::SetSelectedComponent(SPtr<Component> component)
@@ -310,7 +311,6 @@ namespace te
         if (!ImGui::BeginPopup("##ProjectContextMenu"))
             return;
 
-        // EMPTY
         if (!_selections.ClickedComponent)
         {
             if (ImGui::MenuItem(ICON_FA_GLOBE_EUROPE " Add SceneObject"))

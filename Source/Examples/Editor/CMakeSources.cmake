@@ -9,6 +9,7 @@ set (TE_EDITOR_SRC_NOFILTER
     "Main.cpp"
     "TeEditor.cpp"
     "TeApplication.cpp"
+    "TeImGuiExt.cpp"
 )
 
 set (TE_EDITOR_INC_WIDGET

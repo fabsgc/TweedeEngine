@@ -29,6 +29,9 @@ namespace te
         /** @copydoc SceneActor::Destroy */
         void SetMobility(ObjectMobility mobility) override;
 
+        /** @copydoc SceneActor::SetTransform */
+        void SetTransform(const Transform& transform) override;
+
         /**	Sets an ID that can be used for uniquely identifying this object by the renderer. */
         void SetRendererId(UINT32 id) { _rendererId = id; }
 
@@ -147,9 +150,6 @@ namespace te
 
         /** Updates the internal bounds for the light. Call this whenever a property affecting the bounds changes. */
         void UpdateBounds();
-
-        /** @copydoc SceneActor::SetTransform */
-        void SetTransform(const Transform& transform) override;
 
     protected:
         LightType _type; /**< Type of light that determines how are the rest of the parameters interpreted. */

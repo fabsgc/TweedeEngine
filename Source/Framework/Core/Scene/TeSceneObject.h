@@ -128,8 +128,11 @@ namespace te
         /** Gets the transform object representing object's position/rotation/scale relative to its parent. */
         const Transform& GetLocalTransform() const { return _localTfrm; }
 
-        /** Gets the transform object representing object's position/rotation/scale relative to its parent. */
-        void SetLocalTransform(Transform& tfrm) { _localTfrm = tfrm; }
+        /** Sets the transform object representing object's position/rotation/scale relative to its parent. */
+        void SetLocalTransform(Transform& tfrm);
+
+        /** Sets the transform object representing object's position/rotation/scale in world space. */
+        void SetTransform(Transform& tfrm);
 
         /**	Sets the local position of the object. */
         void SetPosition(const Vector3& position);

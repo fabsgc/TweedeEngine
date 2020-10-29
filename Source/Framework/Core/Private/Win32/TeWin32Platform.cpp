@@ -354,13 +354,17 @@ namespace te
             {
                 if (LOWORD(wParam) == WA_INACTIVE)
                 {
+#if not defined(TE_DEBUG)
                     gCoreApplication().Pause(true);
                     gTime().Stop();
+#endif
                 }
                 else
                 {
+#if not defined(TE_DEBUG)
                     gCoreApplication().Pause(false);
                     gTime().Start();
+#endif
                 }
 
                 switch (wParam)

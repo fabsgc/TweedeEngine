@@ -6,9 +6,7 @@ namespace te
     void SceneActor::SetTransform(const Transform& transform)
     {
         if (_mobility != ObjectMobility::Movable)
-        {
             return;
-        }
 
         _transform = transform;
         _markCoreDirty(ActorDirtyFlag::Transform);

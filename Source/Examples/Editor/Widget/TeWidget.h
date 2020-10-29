@@ -3,7 +3,8 @@
 #include "TeCorePrerequisites.h"
 #include "Math/TeVector2.h"
 #include "ImGui/imgui.h"
-
+#include "ImGui/imgui_internal.h"
+#include "TeCoreApplication.h"
 #include "../TeImGuiExt.h"
 #include "../TeIconsFontAwesome5.h"
 

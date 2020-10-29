@@ -28,93 +28,7 @@ namespace te
         bool hasChanged = false;
         HCamera& camera = Editor::Instance().GetViewportCamera();
         auto cameraSettings = camera->GetRenderSettings();
-        const float widgetWidth = ImGui::GetWindowContentRegionWidth() - 100.0f;
-
-        const auto renderOptionFloat = [&](
-            float& value,
-            const char* id, 
-            const char* text,
-            float min = 0.0f, 
-            float max = std::numeric_limits<float>::max())
-        {
-            const float previousValue = value;
-
-            ImGui::PushID(id);
-            ImGui::PushItemWidth(widgetWidth);
-            ImGui::SliderFloat(text, &value, min, max, "%.2f");
-            ImGui::PopItemWidth();
-            ImGui::PopID();
-            value = Math::Clamp(value, min, max);
-
-            if (previousValue != value)
-                hasChanged = true;
-        };
-
-        const auto renderOptionInt = [&](
-            int& value,
-            const char* id,
-            const char* text,
-            int min = 0,
-            int max = std::numeric_limits<int>::max())
-        {
-            const int previousValue = value;
-
-            ImGui::PushID(id);
-            ImGui::PushItemWidth(widgetWidth);
-            ImGui::SliderInt(text, &value, min, max, "%.d");
-            ImGui::PopItemWidth();
-            ImGui::PopID();
-            value = Math::Clamp(value, min, max);
-
-            if (previousValue != value)
-                hasChanged = true;
-        };
-
-        const auto renderOptionBool = [&](
-            bool& value,
-            const char* id,
-            const char* text
-            )
-        {
-            const bool previousValue = value;
-
-            ImGui::PushID(id);
-            ImGui::Checkbox(text, &value);
-            ImGui::PopID();
-
-            if (previousValue != value)
-                hasChanged = true;
-        };
-
-        const auto renderOptionCombo = [&](
-            int* value,
-            const char* id,
-            const char* text,
-            Vector<int>& options,
-            Vector<String>& labels
-            )
-        {
-            ImGui::PushID(id);
-            ImGui::PushItemWidth(widgetWidth);
-            if (ImGui::BeginCombo(text, labels[*value].c_str()))
-            {
-                for (size_t i = 0; i < options.size(); i++)
-                {
-                    const bool isSelected = (*value == options[i]);
-                    if (ImGui::Selectable(labels[i].c_str(), isSelected))
-                    {
-                        *value = options[i];
-                        hasChanged = true;
-                    }
-
-                    if (isSelected)
-                        ImGui::SetItemDefaultFocus();
-                }
-                ImGui::EndCombo();
-            }
-            ImGui::PopItemWidth();
-            ImGui::PopID();
-        };
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
 
         if (ImGui::CollapsingHeader("Graphics", ImGuiTreeNodeFlags_DefaultOpen))
         {
@@ -133,8 +47,8 @@ namespace te
                     "Final", "Color", "Velocity", "Emissive", "Depth", "Normal"
                 };
 
-                renderOptionCombo((int*)(&cameraSettings->OutputType), "##output_type_option", "Output type",
-                    outputTypeOptions, outputTypeLabels);
+                if (ImGuiExt::RenderOptionCombo((int*)(&cameraSettings->OutputType), "##output_type_option", "Output type", outputTypeOptions, outputTypeLabels, width))
+                    hasChanged = true;
             }
             ImGui::Separator();
 
@@ -153,8 +67,8 @@ namespace te
                 int projectionType = camera->GetProjectionType();
                 int oldProjectionType = projectionType;
 
-                renderOptionCombo((int*)(&projectionType), "##projection_type_option", "Projection type",
-                    projectionTypeOptions, projectionTypeLabels);
+                if(ImGuiExt::RenderOptionCombo((int*)(&projectionType), "##projection_type_option", "Projection type", projectionTypeOptions, projectionTypeLabels, width))
+                    hasChanged = true;
 
                 if (projectionType != oldProjectionType)
                     camera->SetProjectionType((ProjectionType)projectionType);
@@ -173,13 +87,15 @@ namespace te
                     "FXAA", "TAA", "None"
                 };
 
-                renderOptionCombo((int*)(&cameraSettings->AntialiasingAglorithm), "##aa_option", "Antialiasing", 
-                    antialiasingOptions, antialiasingLabels);
+                if (ImGuiExt::RenderOptionCombo((int*)(&cameraSettings->AntialiasingAglorithm), "##aa_option", "Antialiasing", antialiasingOptions, antialiasingLabels, width))
+                    hasChanged = true;
 
                 if (cameraSettings->AntialiasingAglorithm == AntiAliasingAlgorithm::TAA)
                 {
-                    renderOptionInt((int&)(cameraSettings->TemporalAA.JitteredPositionCount), "##taa_jittered_option", "Jittered positions", 1, 8);
-                    renderOptionFloat((cameraSettings->TemporalAA.Sharpness), "##taa_sharpness_option", "Sharpness", 0.1f, 16.0f);
+                    if (ImGuiExt::RenderOptionInt((int&)(cameraSettings->TemporalAA.JitteredPositionCount), "##taa_jittered_option", "Jittered positions", 1, 8, width))
+                        hasChanged = true;
+                    if (ImGuiExt::RenderOptionFloat((cameraSettings->TemporalAA.Sharpness), "##taa_sharpness_option", "Sharpness", 0.1f, 16.0f, width))
+                        hasChanged = true;
                 }
             }
             ImGui::Separator();
@@ -188,7 +104,9 @@ namespace te
             {
                 float fov = camera->GetHorzFOV().ValueDegrees();
                 float oldFov = fov;
-                renderOptionFloat(fov, "##fov_option", "FOV", 1.0f, 179.0f);
+
+                if (ImGuiExt::RenderOptionFloat(fov, "##fov_option", "FOV", 1.0f, 179.0f, width))
+                    hasChanged = true;
 
                 if (fov != oldFov)
                     camera->SetHorzFOV(Radian(Degree(fov)));
@@ -197,20 +115,25 @@ namespace te
 
             // Lighting, Shadowing
             {
-                renderOptionBool(cameraSettings->EnableLighting, "##lighting_option", "Enable lighting");
-                renderOptionBool(cameraSettings->EnableShadows, "##shadows_option", "Enable shadows");
+                if (ImGuiExt::RenderOptionBool(cameraSettings->EnableLighting, "##lighting_option", "Enable lighting"))
+                    hasChanged = true;
+                
+                if (ImGuiExt::RenderOptionBool(cameraSettings->EnableShadows, "##shadows_option", "Enable shadows"))
+                    hasChanged = true;
             }
             ImGui::Separator();
 
             // Skybox
             {
-                renderOptionBool(cameraSettings->EnableSkybox, "##skybox_option", "Enable skybox");
+                if (ImGuiExt::RenderOptionBool(cameraSettings->EnableSkybox, "##skybox_option", "Enable skybox"))
+                    hasChanged = true;
             }
             ImGui::Separator();
 
             // Overlay Only
             {
-                renderOptionBool(cameraSettings->OverlayOnly, "##overlay_option", "Overlay only");
+                if (ImGuiExt::RenderOptionBool(cameraSettings->OverlayOnly, "##overlay_option", "Overlay only"))
+                    hasChanged = true;
             }
             ImGui::Separator();
 
@@ -219,7 +142,7 @@ namespace te
                 Vector4 oldColor = camera->GetViewport()->GetClearColorValue().GetAsVector4();
                 ImVec4 imColor = camera->GetViewport()->GetClearColorValue().GetAsVector4();
                 
-                ImGui::PushItemWidth(widgetWidth);
+                ImGui::PushItemWidth(width);
                 ImGui::ColorEdit4("##clear_color_option", (float*)&imColor, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel);
                 ImGui::SameLine();
                 ImGui::Text("Background color");
@@ -244,7 +167,7 @@ namespace te
                 float far = camera->GetFarClipDistance();
                 float oldNear = near, oldFar = far;
 
-                ImGui::PushItemWidth(widgetWidth);
+                ImGui::PushItemWidth(width);
                 ImGui::DragFloatRange2("Clip distance", &near, &far, 0.1f, 0.1f, 2500.0f, "Near: %.1f", "Far: %.1f", ImGuiSliderFlags_AlwaysClamp);
                 ImGui::PopItemWidth();
 
@@ -265,18 +188,25 @@ namespace te
         {
             // HDR, ToneMapping
             {
-                renderOptionBool(cameraSettings->EnableHDR, "##hdr_option", "Enable HDR");
-                renderOptionBool(cameraSettings->Tonemapping.Enabled, "##tonemapping_option", "Enable Tonemapping");
-                renderOptionFloat(cameraSettings->ExposureScale, "##exposure_option", "Exposure", 0.0f, 5.0f);
-                renderOptionFloat(cameraSettings->Gamma, "##gamma_option", "Gamma", 0.0f, 5.0f);
-                renderOptionFloat(cameraSettings->Contrast, "##contrast_option", "Contrast", 0.0f, 5.0f);
-                renderOptionFloat(cameraSettings->Brightness, "##brightness_option", "Brightness", -2.0f, 2.0f);
+                if (ImGuiExt::RenderOptionBool(cameraSettings->EnableHDR, "##hdr_option", "Enable HDR"))
+                    hasChanged = true;
+                if (ImGuiExt::RenderOptionBool(cameraSettings->Tonemapping.Enabled, "##tonemapping_option", "Enable Tonemapping"))
+                    hasChanged = true;
+                if (ImGuiExt::RenderOptionFloat(cameraSettings->ExposureScale, "##exposure_option", "Exposure", 0.0f, 5.0f, width))
+                    hasChanged = true;
+                if (ImGuiExt::RenderOptionFloat(cameraSettings->Gamma, "##gamma_option", "Gamma", 0.0f, 5.0f, width))
+                    hasChanged = true;
+                if (ImGuiExt::RenderOptionFloat(cameraSettings->Contrast, "##contrast_option", "Contrast", 0.0f, 5.0f, width))
+                    hasChanged = true;
+                if (ImGuiExt::RenderOptionFloat(cameraSettings->Brightness, "##brightness_option", "Brightness", -2.0f, 2.0f, width))
+                    hasChanged = true;
             }
             ImGui::Separator();
 
             // Blur
             {
-                renderOptionBool(cameraSettings->MotionBlur.Enabled, "##blur_option", "Enable blur");
+                if(ImGuiExt::RenderOptionBool(cameraSettings->MotionBlur.Enabled, "##blur_option", "Enable blur"))
+                    hasChanged = true;
 
                 if (cameraSettings->MotionBlur.Enabled)
                 {
@@ -292,19 +222,21 @@ namespace te
                         "Very low", "Low", "Medium", "High", "Ultra"
                     };
 
-                    renderOptionCombo((int*)(&cameraSettings->MotionBlur.Quality), "##blur_quality_option", "Quality",
-                        blurQualityOptions, blurQualityLabels);
+                    if(ImGuiExt::RenderOptionCombo((int*)(&cameraSettings->MotionBlur.Quality), "##blur_quality_option", "Quality", blurQualityOptions, blurQualityLabels, width))
+                        hasChanged = true;
                 }
             }
             ImGui::Separator();
 
             // Bloom
             {
-                renderOptionBool(cameraSettings->Bloom.Enabled, "##bloom_option", "Enable bloom");
+                if(ImGuiExt::RenderOptionBool(cameraSettings->Bloom.Enabled, "##bloom_option", "Enable bloom"))
+                    hasChanged = true;
 
                 if (cameraSettings->Bloom.Enabled)
                 {
-                    renderOptionFloat(cameraSettings->Bloom.Intensity, "##bloom_intensity_option", "Intensity", 0.0f, 5.0f);
+                    if(ImGuiExt::RenderOptionFloat(cameraSettings->Bloom.Intensity, "##bloom_intensity_option", "Intensity", 0.0f, 5.0f, width))
+                        hasChanged = true;
                 }
             }
         }

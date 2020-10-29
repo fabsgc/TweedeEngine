@@ -1,5 +1,4 @@
 #include "TeWidgetProperties.h"
-#include "../TeEditor.h"
 
 #include "Resources/TeResourceManager.h"
 #include "Scene/TeSceneManager.h"
@@ -12,11 +11,11 @@
 #include "Components/TeCSkybox.h"
 #include "Components/TeCScript.h"
 
+#include "ImGui/imgui.h"
+#include "ImGui/imgui_internal.h"
 
 namespace te
 {
-    bool RenderOptionBool(bool& value, const char* id, const char* text);
-
     WidgetProperties::WidgetProperties()
         : Widget(WidgetType::Properties)
         , _selections(Editor::Instance().GetSelectionData())
@@ -101,6 +100,9 @@ namespace te
             if (ShowSceneObjectProperties())
                 hasChanged = true;
         }
+
+        if (hasChanged)
+            Editor::Instance().NeedsRedraw();
     }
 
     void WidgetProperties::UpdateBackground()
@@ -110,11 +112,18 @@ namespace te
     {
         bool hasChanged = false;
         ObjectMobility mobility = _selections.ClickedSceneObject->GetMobility();
-        Transform transform = _selections.ClickedSceneObject->GetTransform();
+        Transform transform = _selections.ClickedSceneObject->GetLocalTransform();
         SPtr<GameObject> gameObject = std::static_pointer_cast<GameObject>(_selections.ClickedSceneObject);
 
-        ShowGameObjectInformation(gameObject);
-        ShowTransform(transform, mobility);
+        if (ShowGameObjectInformation(gameObject))
+            hasChanged = true;
+
+        if (ShowTransform(transform, mobility))
+        {
+            _selections.ClickedSceneObject->SetLocalTransform(transform);
+            _selections.ClickedSceneObject->SetMobility(mobility);
+            hasChanged = true;
+        }
 
         return hasChanged;
     }
@@ -127,7 +136,11 @@ namespace te
         Transform transform = camera->_getCamera()->GetTransform();
 
         if (ShowTransform(transform, mobility))
+        {
+            //camera->_getCamera()->SetTransform(transform);
+            camera->_getCamera()->SetMobility(mobility);
             hasChanged = true;
+        }
 
         if (ImGui::CollapsingHeader("Rendering Camera", ImGuiTreeNodeFlags_DefaultOpen))
         {
@@ -166,12 +179,14 @@ namespace te
     bool WidgetProperties::ShowCLightProperties()
     {
         bool hasChanged = false;
-        SPtr<CLight> camera = std::static_pointer_cast<CLight>(_selections.ClickedComponent);
-        ObjectMobility mobility = camera->_getLight()->GetMobility();
-        Transform transform = camera->_getLight()->GetTransform();
+        SPtr<CLight> light = std::static_pointer_cast<CLight>(_selections.ClickedComponent);
+        ObjectMobility mobility = light->_getLight()->GetMobility();
+        Transform transform = light->_getLight()->GetTransform();
 
         if (ShowTransform(transform, mobility))
         {
+            //light->_getLight()->SetTransform(transform);
+            light->_getLight()->SetMobility(mobility);
             hasChanged = true;
         }
 
@@ -186,12 +201,14 @@ namespace te
     bool WidgetProperties::ShowCRenderableProperties()
     {
         bool hasChanged = false;
-        SPtr<CRenderable> camera = std::static_pointer_cast<CRenderable>(_selections.ClickedComponent);
-        ObjectMobility mobility = camera->_getInternal()->GetMobility();
-        Transform transform = camera->_getInternal()->GetTransform();
+        SPtr<CRenderable> renderable = std::static_pointer_cast<CRenderable>(_selections.ClickedComponent);
+        ObjectMobility mobility = renderable->_getInternal()->GetMobility();
+        Transform transform = renderable->_getInternal()->GetTransform();
 
         if (ShowTransform(transform, mobility))
         {
+            //renderable->_getInternal()->SetTransform(transform);
+            renderable->_getInternal()->SetMobility(mobility);
             hasChanged = true;
         }
 
@@ -219,12 +236,14 @@ namespace te
     bool WidgetProperties::ShowCSkyboxProperties()
     {
         bool hasChanged = false;
-        SPtr<CSkybox> camera = std::static_pointer_cast<CSkybox>(_selections.ClickedComponent);
-        ObjectMobility mobility = camera->_getSkybox()->GetMobility();
-        Transform transform = camera->_getSkybox()->GetTransform();
+        SPtr<CSkybox> skybox = std::static_pointer_cast<CSkybox>(_selections.ClickedComponent);
+        ObjectMobility mobility = skybox->_getSkybox()->GetMobility();
+        Transform transform = skybox->_getSkybox()->GetTransform();
 
         if (ShowTransform(transform, mobility))
         {
+            //skybox->_getSkybox()->SetTransform(transform);
+            skybox->_getSkybox()->SetMobility(mobility);
             hasChanged = true;
         }
 
@@ -239,11 +258,25 @@ namespace te
     bool WidgetProperties::ShowTransform(Transform& transform, ObjectMobility& mobility)
     {
         bool hasChanged = false;
-
+        const float widgetWidth = ImGui::GetWindowContentRegionWidth() - 100.0f;
 
         if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
         {
+            Vector<int> mobilityOptions = {
+                (int)ObjectMobility::Movable,
+                (int)ObjectMobility::Immovable,
+                (int)ObjectMobility::Static
+            };
 
+            Vector<String> mobilityLabels = {
+                "Movable", "Immovable", "Static"
+            };
+
+            if (ImGuiExt::RenderOptionCombo((int*)(&mobility), "##transform_mobility_option", "Mobility", mobilityOptions, mobilityLabels, widgetWidth))
+                hasChanged = true;
+
+            if (ImGuiExt::RenderTransform(transform, "transform_option"))
+                hasChanged = true;
         }
 
         return hasChanged;
@@ -279,19 +312,4 @@ namespace te
 
         return hasChanged;
     }
-
-    bool RenderOptionBool(bool& value, const char* id, const char* text)
-    {
-        bool hasChanged = false;
-        const bool previousValue = value;
-
-        ImGui::PushID(id);
-        ImGui::Checkbox(text, &value);
-        ImGui::PopID();
-
-        if (previousValue != value)
-            hasChanged = true;
-
-        return hasChanged;
-    };
 }

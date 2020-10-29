@@ -3,7 +3,6 @@
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
 
-#include "TeImGuiExt.h"
 #include "TeIconsFontAwesome5.h"
 
 #include "Widget/TeWidgetMenuBar.h"
@@ -275,7 +274,7 @@ namespace te
 
             // Spatial settings
             const auto fontSize = 14.0f;
-            const auto roundness = 2.0f;
+            const auto roundness = 0.0f;
 
             // Spatial
             ImGuiStyle& style = ImGui::GetStyle();
