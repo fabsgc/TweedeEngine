@@ -23,6 +23,7 @@ set (TE_EDITOR_INC_WIDGET
     "Widget/TeWidgetRenderOptions.h"
     "Widget/TeWidgetResources.h"
     "Widget/TeWidgetScript.h"
+    "Widget/TeWidgetGame.h"
 )
 
 set (TE_EDITOR_SRC_WIDGET
@@ -36,6 +37,7 @@ set (TE_EDITOR_SRC_WIDGET
     "Widget/TeWidgetRenderOptions.cpp"
     "Widget/TeWidgetResources.cpp"
     "Widget/TeWidgetScript.cpp"
+    "Widget/TeWidgetGame.cpp"
 )
 
 source_group ("" FILES ${TE_EDITOR_SRC_NOFILTER} ${TE_EDITOR_INC_NOFILTER})

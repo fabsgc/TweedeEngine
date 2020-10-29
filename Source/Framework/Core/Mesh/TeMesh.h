@@ -101,8 +101,6 @@ namespace te
         UINT32 _numVertices;
         UINT32 _numIndices;
         Bounds _bounds;
-
-        // TODO
     };
 
     class TE_CORE_EXPORT Mesh : public Resource

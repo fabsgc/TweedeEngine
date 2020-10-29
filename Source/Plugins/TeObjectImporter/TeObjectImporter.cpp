@@ -328,7 +328,7 @@ namespace te
                     continue;
 
                 UINT32 indexCount = (UINT32)indicesPerMaterial[key].size();
-                subMeshes.push_back(SubMesh(currentIndex, indexCount, DOT_TRIANGLE_LIST, scene.Materials[key].Name));
+                subMeshes.push_back(SubMesh(currentIndex, indexCount, DOT_TRIANGLE_LIST, scene.Materials[key].Name, "SubMesh " + ToString(key)));
                 currentIndex += indexCount;
             }
 

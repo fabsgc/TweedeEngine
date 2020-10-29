@@ -184,7 +184,13 @@ namespace te
 
     void Renderable::SetCullDistanceFactor(float factor)
     {
-        _cullDistanceFactor = factor;
+        _properties.CullDistanceFactor = factor;
+        _markCoreDirty();
+    }
+
+    void Renderable::SetUseForDynamicEnvMapping(bool use)
+    {
+        _properties.UseForDynamicEnvMapping = use;
         _markCoreDirty();
     }
 

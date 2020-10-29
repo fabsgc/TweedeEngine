@@ -20,6 +20,8 @@ namespace te
     { 
         _newBtn = VirtualButton("New");
         _openBtn = VirtualButton("Open");
+        _saveBtn = VirtualButton("Save");
+        _saveAsBtn = VirtualButton("Save As");
         _quitBtn = VirtualButton("Quit");
     }
 
@@ -29,6 +31,12 @@ namespace te
         { }
 
         if (gVirtualInput().IsButtonDown(_openBtn))
+        { }
+
+        if (gVirtualInput().IsButtonDown(_saveBtn))
+        { }
+
+        if (gVirtualInput().IsButtonDown(_saveAsBtn))
         { }
 
         if(gVirtualInput().IsButtonDown(_quitBtn))
@@ -42,6 +50,12 @@ namespace te
                 { }
 
                 if (ImGui::MenuItem(ICON_FA_FOLDER_OPEN " " ICON_FA_GRIP_LINES_VERTICAL "  Open", "Ctrl+O"))
+                { }
+
+                if (ImGui::MenuItem(ICON_FA_SAVE "  " ICON_FA_GRIP_LINES_VERTICAL "  Save", "Ctrl+S"))
+                { }
+
+                if (ImGui::MenuItem(ICON_FA_SAVE "  " ICON_FA_GRIP_LINES_VERTICAL "  Save As", "Ctrl+Shift+S"))
                 { }
 
                 if (ImGui::MenuItem(ICON_FA_SIGN_OUT_ALT "  " ICON_FA_GRIP_LINES_VERTICAL "  Quit", "Ctrl+Q"))
@@ -105,6 +119,13 @@ namespace te
                 if (ImGui::MenuItem(ICON_FA_SCROLL " " ICON_FA_GRIP_LINES_VERTICAL "  Script"))
                 { 
                     Widget* widget = static_cast<Widget*>(Editor::Instance().GetWidget(WidgetType::Script));
+                    if (widget)
+                        widget->SetVisible(!widget->GetVisible());
+                }
+
+                if (ImGui::MenuItem(ICON_FA_GAMEPAD " " ICON_FA_GRIP_LINES_VERTICAL "  Game"))
+                {
+                    Widget* widget = static_cast<Widget*>(Editor::Instance().GetWidget(WidgetType::Game));
                     if (widget)
                         widget->SetVisible(!widget->GetVisible());
                 }

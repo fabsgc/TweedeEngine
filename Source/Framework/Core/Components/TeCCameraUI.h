@@ -20,10 +20,16 @@ namespace te
         /** Enables or disables camera controls. */
         void EnableInput(bool enable);
 
+        /** Enables or disables camera zooming control */
+        void EnableZooming(bool enable);
+
         /** For rotation, we want to know the current reference position. */
         void SetTarget(const Vector3& target);
 
-        /** Return Component type */
+        /** Returns current target vector (for editor) */
+        const Vector3& GetTarget() const { return _target; }
+
+        /** Returns Component type */
         static UINT32 GetComponentType() { return TID_CCameraUI; }
 
         /** @copydoc Component::Clone */
@@ -62,6 +68,7 @@ namespace te
         Vector3 _localRotation;
         float _distanceToTarget;
         bool _inputEnabled;
+        bool _zoomingEnabled;
         bool _lastHideCursorState;
 
         HCamera _camera;

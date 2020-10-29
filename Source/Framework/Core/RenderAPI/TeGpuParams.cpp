@@ -344,7 +344,7 @@ namespace te
     {
         if (!HasParam(type, name))
         {
-            TE_PRINT("GpuProgram {" + ToString((UINT32)type) + "} does not have {" + name + "} parameter")
+            TE_PRINT("GpuProgram {" + ToString((UINT32)type) + "} does not have {" + name + "} parameter");
             return;
         }
 

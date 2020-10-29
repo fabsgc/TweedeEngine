@@ -39,6 +39,7 @@ namespace te
         , _localRotation(Vector3::ZERO)
         , _distanceToTarget(0.0f)
         , _inputEnabled(false)
+        , _zoomingEnabled(false)
         , _lastHideCursorState(false)
     {
         SetName("CCameraUI");
@@ -80,7 +81,7 @@ namespace te
         bool isOrtographic = _camera->GetProjectionType() == ProjectionType::PT_ORTHOGRAPHIC;
         bool camRotating = gVirtualInput().IsButtonHeld(_rotateBtn);
         bool camMoving = gVirtualInput().IsButtonHeld(_moveBtn);
-        bool camZooming = gVirtualInput().IsButtonHeld(_zoomBtn);
+        bool camZooming = gVirtualInput().IsButtonHeld(_zoomBtn) && _zoomingEnabled;
         bool hideCursor = camRotating;
         bool needsRedraw = false;
         float frameDelta = gTime().GetFrameDelta();
@@ -189,7 +190,7 @@ namespace te
                 needsRedraw = true;
             }
         }
-        else
+        else if(_zoomingEnabled)
         {
             float scrollAmount = Math::Clamp(gVirtualInput().GetAxisValue(_scrollAxis), -TOP_SCROLL_SPEED, TOP_SCROLL_SPEED);
 
@@ -204,6 +205,11 @@ namespace te
     void CCameraUI::EnableInput(bool enable)
     {
         _inputEnabled = enable;
+    }
+
+    void CCameraUI::EnableZooming(bool enable)
+    {
+        _zoomingEnabled = enable;
     }
 
     void CCameraUI::SetTarget(const Vector3& target)

@@ -28,6 +28,8 @@ namespace te
         WidgetMenubarSettings _settings;
         VirtualButton _newBtn;
         VirtualButton _openBtn;
+        VirtualButton _saveBtn;
+        VirtualButton _saveAsBtn;
         VirtualButton _quitBtn;
     };
 }

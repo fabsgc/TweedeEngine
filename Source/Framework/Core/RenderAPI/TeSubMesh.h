@@ -9,18 +9,21 @@ namespace te
     {
         SubMesh() = default;
 
-        SubMesh(UINT32 indexOffset, UINT32 indexCount, DrawOperationType drawOp, const String& materialName = "")
+        SubMesh(UINT32 indexOffset, UINT32 indexCount, DrawOperationType drawOp, const String& materialName = "", const String& name = "")
             : IndexOffset(indexOffset)
             , IndexCount(indexCount)
             , DrawOp(drawOp)
             , MaterialName(materialName)
+            , Name(name)
         { }
 
         UINT32 IndexOffset = 0;
         UINT32 IndexCount = 0;
-        DrawOperationType DrawOp = DOT_TRIANGLE_LIST;
+        DrawOperationType DrawOp = DOT_LINE_STRIP;
 
         /** It's possible to set a material name which will be use if you want to SetMaterial() on a mesh */
         String MaterialName = "";
+        /** It's easier to have a name for identification in editor */
+        String Name = "";
     };
 }

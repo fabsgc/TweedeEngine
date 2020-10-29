@@ -14,6 +14,7 @@
 #include "Widget/TeWidgetViewport.h"
 #include "Widget/TeWidgetResources.h"
 #include "Widget/TeWidgetScript.h"
+#include "Widget/TeWidgetGame.h"
 
 #include "Gui/TeGuiAPI.h"
 #include "TeCoreApplication.h"
@@ -111,6 +112,8 @@ namespace te
 
         inputConfig->RegisterButton("New", TE_N, ButtonModifier::Ctrl);
         inputConfig->RegisterButton("Open", TE_O, ButtonModifier::Ctrl);
+        inputConfig->RegisterButton("Save", TE_S, ButtonModifier::Ctrl);
+        inputConfig->RegisterButton("Save As", TE_S, ButtonModifier::ShiftCtrl);
         inputConfig->RegisterButton("Quit", TE_A, ButtonModifier::Ctrl);
         inputConfig->RegisterButton("Delete", TE_DELETE);
         inputConfig->RegisterButton("Copy", TE_C, ButtonModifier::Ctrl);
@@ -194,10 +197,11 @@ namespace te
         _widgets.emplace_back(te_shared_ptr_new<WidgetProject>()); _settings.WProject = _widgets.back();
         _widgets.emplace_back(te_shared_ptr_new<WidgetProperties>());
         _widgets.emplace_back(te_shared_ptr_new<WidgetRenderOptions>());
-        _widgets.emplace_back(te_shared_ptr_new<WidgetConsole>());
+        _widgets.emplace_back(te_shared_ptr_new<WidgetConsole>()); _settings.WConsole = _widgets.back();
         _widgets.emplace_back(te_shared_ptr_new<WidgetScript>()); _settings.WScript = _widgets.back();
+        _widgets.emplace_back(te_shared_ptr_new<WidgetGame>()); _settings.WGame = _widgets.back();
         _widgets.emplace_back(te_shared_ptr_new<WidgetViewport>()); _settings.WViewport = _widgets.back();
-        _widgets.emplace_back(te_shared_ptr_new<WidgetResources>());
+        _widgets.emplace_back(te_shared_ptr_new<WidgetResources>()); _settings.WResources = _widgets.back();
 
         for (auto widget : _widgets)
             widget->Initialize();
@@ -352,21 +356,22 @@ namespace te
 
                 ImGuiID dockMainId = windowId;
 
-                ImGuiID dockLeftId = ImGui::DockBuilderSplitNode(dockMainId, ImGuiDir_Left, 0.2f, nullptr, &dockMainId);
-                ImGuiID dockRightId = ImGui::DockBuilderSplitNode(dockMainId, ImGuiDir_Right, 0.2f, nullptr, &dockMainId);
+                ImGuiID dockLeftId = ImGui::DockBuilderSplitNode(dockMainId, ImGuiDir_Left, 0.20f, nullptr, &dockMainId);
+                ImGuiID dockRightId = ImGui::DockBuilderSplitNode(dockMainId, ImGuiDir_Right, 0.25f, nullptr, &dockMainId);
                 ImGuiID dockBottomId = ImGui::DockBuilderSplitNode(dockMainId, ImGuiDir_Down, 0.25f, nullptr, &dockMainId);
 
                 const ImGuiID dockLeftBottomId = ImGui::DockBuilderSplitNode(dockLeftId, ImGuiDir_Down, 0.6f, nullptr, &dockLeftId);
-                const ImGuiID dockRightBottomId = ImGui::DockBuilderSplitNode(dockRightId, ImGuiDir_Down, 0.6f, nullptr, &dockRightId);
+                const ImGuiID dockRightBottomId = ImGui::DockBuilderSplitNode(dockRightId, ImGuiDir_Down, 0.4f, nullptr, &dockRightId);
 
                 // Dock windows
                 ImGui::DockBuilderDockWindow(PROJECT_TITLE, dockLeftId);
                 ImGui::DockBuilderDockWindow(RENDER_OPTIONS_TITLE, dockRightId);
                 ImGui::DockBuilderDockWindow(CONSOLE_TITLE, dockBottomId);
+                ImGui::DockBuilderDockWindow(RESOURCES_TITLE, dockBottomId);
                 ImGui::DockBuilderDockWindow(VIEWPORT_TITLE, dockMainId);
                 ImGui::DockBuilderDockWindow(SCRIPT_TITLE, dockMainId);
+                ImGui::DockBuilderDockWindow(GAME_TITLE, dockMainId);
                 ImGui::DockBuilderDockWindow(PROPERTIES_TITLE, dockLeftBottomId);
-                ImGui::DockBuilderDockWindow(RESOURCES_TITLE, dockRightBottomId);
                 ImGui::DockBuilderFinish(dockMainId);
             }
 
@@ -402,6 +407,18 @@ namespace te
         case WindowType::Script:
             _settings.WScript->PutFocus();
             break;
+
+        case WindowType::Game:
+            _settings.WGame->PutFocus();
+            break;
+
+        case WindowType::Resources:
+            _settings.WResources->PutFocus();
+            break;
+
+        case WindowType::Console:
+            _settings.WConsole->PutFocus();
+            break;
         }
     }
 
@@ -427,6 +444,7 @@ namespace te
 
         // ######################################################
         _loadedMeshMonkey = gResourceManager().Load<Mesh>("Data/Meshes/Monkey/monkey-hd.dae", meshImportOptions);
+        _loadedMeshPlane = gResourceManager().Load<Mesh>("Data/Meshes/PLane/plane.dae", meshImportOptions);
         _loadedTextureMonkey = gResourceManager().Load<Texture>("Data/Textures/Monkey/diffuse.png", textureImportOptions);
         _loadedCubemapTexture = gResourceManager().Load<Texture>("Data/Textures/Skybox/sky_medium.jpeg", textureCubeMapImportOptions);
         // ###################################################### 
@@ -436,10 +454,17 @@ namespace te
 
         MaterialProperties properties;
         properties.UseDiffuseMap = true;
+        properties.UseEnvironmentMap = true;
+        properties.SpecularPower = 128.0f;
+        properties.Specular = Color(1.0f, 1.0f, 1.0f, 1.0);
+        properties.Reflection = 0.4f;
+        properties.Refraction = 0.1f;
+        properties.IndexOfRefraction = 1.5f;
 
         _materialMonkey = Material::Create(_shader);
         _materialMonkey->SetName("Material");
         _materialMonkey->SetTexture("DiffuseMap", _loadedTextureMonkey);
+        _materialMonkey->SetTexture("EnvironmentMap", _loadedCubemapTexture);
         _materialMonkey->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
         _materialMonkey->SetProperties(properties);
         // ######################################################
@@ -455,13 +480,23 @@ namespace te
         _sceneLightSO->SetParent(_sceneSO);
         _light = _sceneLightSO->AddComponent<CLight>();
         _light->Initialize();
+        _sceneLightSO->Rotate(Vector3(0.0f, 1.0f, 1.0f), -Radian(Math::HALF_PI));
 
         _sceneRenderableMonkeySO = SceneObject::Create("Monkey");
         _sceneRenderableMonkeySO->SetParent(_sceneSO);
         _renderableMonkey = _sceneRenderableMonkeySO->AddComponent<CRenderable>();
         _renderableMonkey->SetMesh(_loadedMeshMonkey);
         _renderableMonkey->SetMaterial(_materialMonkey);
+        _renderableMonkey->SetName("Mesh Monkey");
         _renderableMonkey->Initialize();
+
+        _sceneRenderablePlaneSO = SceneObject::Create("Plane");
+        _sceneRenderablePlaneSO->SetParent(_sceneSO);
+        _renderablePlane = _sceneRenderablePlaneSO->AddComponent<CRenderable>();
+        _renderablePlane->SetMesh(_loadedMeshPlane);
+        _renderablePlane->SetName("Mesh Plane");
+        _renderablePlane->Initialize();
+        _sceneRenderablePlaneSO->Move(Vector3(0.0, 0.1f, 0.0f));
         // ######################################################
 #endif
     }

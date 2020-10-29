@@ -86,10 +86,7 @@ namespace te
         _internal->_layer = renderable->_layer;
         _internal->_tfrmMatrix = renderable->_tfrmMatrix;
         _internal->_tfrmMatrixNoScale = renderable->_tfrmMatrixNoScale;
-        _internal->_cullDistanceFactor = renderable->_cullDistanceFactor;
         _internal->_properties = renderable->_properties;
-        _internal->_instancing = renderable->_instancing;
-        _internal->_canBeMerged = renderable->_canBeMerged;
 
         _internal->_transform = renderable->_transform;
         _internal->_mobility = renderable->_mobility;

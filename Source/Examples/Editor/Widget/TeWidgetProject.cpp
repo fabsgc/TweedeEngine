@@ -244,13 +244,8 @@ namespace te
 
     void WidgetProject::HandleKeyShortcuts()
     {
-        if (!ImGui::IsWindowFocused())
+        if (!ImGui::IsWindowHovered())
             return;
-
-        if (gVirtualInput().IsButtonDown(_deleteBtn))
-        {
-            Delete();
-        }
 
         if (gVirtualInput().IsButtonDown(_copyBtn))
         {
@@ -261,9 +256,10 @@ namespace te
         }
 
         if (gVirtualInput().IsButtonDown(_pasteBtn))
-        {
             Paste();
-        }
+
+        if (gVirtualInput().IsButtonDown(_deleteBtn))
+            Delete();
     }
 
     void WidgetProject::HandleSelectionWindowSwitch()
@@ -720,6 +716,9 @@ namespace te
             if (_selections.CopiedComponent == _selections.ClickedComponent)
                 _selections.CopiedComponent = nullptr;
 
+            if (_selections.HoveredComponent == _selections.ClickedComponent)
+                _selections.HoveredComponent = nullptr;
+
             _selections.ClickedComponent->GetSceneObject()->DestroyComponent(_selections.ClickedComponent.get(), true);
             _selections.ClickedComponent = nullptr;
         }
@@ -728,8 +727,14 @@ namespace te
             if (_selections.ClickedSceneObject == Editor::Instance().GetSceneRoot().GetInternalPtr())
                 return;
 
+            _selections.CopiedComponent = nullptr;
+            _selections.HoveredComponent = nullptr;
+
             if (_selections.CopiedSceneObject == _selections.ClickedSceneObject)
                 _selections.CopiedSceneObject = nullptr;
+
+            if (_selections.HoveredSceneObject == _selections.ClickedSceneObject)
+                _selections.HoveredSceneObject = nullptr;
 
             _selections.ClickedSceneObject->Destroy(true);
             _selections.ClickedSceneObject = nullptr;

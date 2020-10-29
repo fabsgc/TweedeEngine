@@ -13,7 +13,7 @@ namespace te
     public:
         enum class WindowType
         {
-            Script, Viewport
+            Script, Viewport, Resources, Console, Game
         };
 
         struct SelectionData
@@ -74,12 +74,15 @@ namespace te
     protected:
         struct EditorSettings
         {
-            SPtr<Widget> WMenuBar  = nullptr;
-            SPtr<Widget> WToolbar  = nullptr;
-            SPtr<Widget> WProject  = nullptr;
-            SPtr<Widget> WViewport = nullptr;
-            SPtr<Widget> WScript   = nullptr;
-            const char* EditorName = "Editor";
+            SPtr<Widget> WMenuBar   = nullptr;
+            SPtr<Widget> WToolbar   = nullptr;
+            SPtr<Widget> WProject   = nullptr;
+            SPtr<Widget> WViewport  = nullptr;
+            SPtr<Widget> WScript    = nullptr;
+            SPtr<Widget> WResources = nullptr;
+            SPtr<Widget> WConsole   = nullptr;
+            SPtr<Widget> WGame      = nullptr;
+            const char* EditorName  = "Editor";
             bool Show = true;
         };
 
@@ -116,18 +119,21 @@ namespace te
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         // TODO Temp for debug purpose
         HMesh _loadedMeshMonkey;
+        HMesh _loadedMeshPlane;
         HTexture _loadedTextureMonkey;
         HTexture _loadedCubemapTexture;
 
         HMaterial _materialMonkey;
 
         HSceneObject _sceneRenderableMonkeySO;
+        HSceneObject _sceneRenderablePlaneSO;
         HSceneObject _sceneLightSO;
         HSceneObject _sceneSkyboxSO;
 
         HLight _light;
         HSkybox _skybox;
         HRenderable _renderableMonkey;
+        HRenderable _renderablePlane;
 #endif
     };
 }

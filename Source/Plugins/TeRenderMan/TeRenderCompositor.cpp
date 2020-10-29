@@ -387,17 +387,18 @@ namespace te
             return;
 
         SPtr<Texture> radiance = skybox ? skybox->GetTexture() : nullptr;
+        float brightness = skybox->GetBrightness();
 
         if (radiance != nullptr)
         {
             SkyboxMat* material = SkyboxMat::Get();
-            material->Bind(inputs.View.GetPerViewBuffer(), radiance, Color::White);
+            material->Bind(inputs.View.GetPerViewBuffer(), radiance, Color::White, brightness);
         }
         else
         {
             SkyboxMat* material = SkyboxMat::Get();
             Color clearColor = inputs.View.GetProperties().Target.ClearColor.GetLinear();
-            material->Bind(inputs.View.GetPerViewBuffer(), nullptr, clearColor);
+            material->Bind(inputs.View.GetPerViewBuffer(), nullptr, clearColor, brightness);
         }
 
         RCNodeForwardPass* forwardPassNode = static_cast<RCNodeForwardPass*>(inputs.InputNodes[0]);

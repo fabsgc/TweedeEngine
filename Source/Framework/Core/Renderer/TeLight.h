@@ -10,9 +10,9 @@ namespace te
 {
     enum class LightType
     {
-        Directional,
-        Radial,
-        Spot,
+        Directional = 0x0,
+        Radial = 0x1,
+        Spot = 0x2,
 
         Count // Keep at end
     };

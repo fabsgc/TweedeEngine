@@ -65,6 +65,11 @@ namespace te
         if (_isVisible && GuiAPI::Instance().IsGuiInitialized())
             ResetViewport();
 
+        if (ImGui::IsItemHovered(ImGuiHoveredFlags_RectOnly))
+            _viewportCameraUI->EnableZooming(true);
+        else
+            _viewportCameraUI->EnableZooming(false);
+
         UINT32 flags = _viewportCamera->GetFlags();
         if (!gCoreApplication().GetState().IsFlagSet(ApplicationState::Game)) //We are in editor mode
         {

@@ -41,9 +41,9 @@
 #   endif
 #else 
 #   ifndef TE_DEBUG
-#   define TE_DEBUG(message)
+#   define TE_DEBUG(message) (void)0
 #   endif
 #   ifndef TE_PRINT
-#   define TE_PRINT(message)
+#   define TE_PRINT(message) (void)0
 #   endif
 #endif

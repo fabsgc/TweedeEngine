@@ -66,6 +66,12 @@ namespace te
         /** @copydoc Renderable::GetCullDistanceFactor */
         float GetCullDistanceFactor() const { return _internal->GetCullDistanceFactor(); }
 
+        /** @copydoc Renderable::SetUseForDynamicEnvMapping */
+        void SetUseForDynamicEnvMapping(bool use) { _internal->SetUseForDynamicEnvMapping(use); }
+
+        /** @copydoc Renderable::GetUseForDynamicEnvMapping */
+        float GetUseForDynamicEnvMapping() const { return _internal->GetUseForDynamicEnvMapping(); }
+
         /** @copydoc Renderable::SetLayer */
         void SetLayer(UINT64 layer) { _internal->SetLayer(layer); }
 

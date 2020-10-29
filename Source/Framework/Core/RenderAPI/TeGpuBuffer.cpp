@@ -33,7 +33,6 @@ namespace te
         , desc.Usage, deviceMask)
         , _properties(desc)
     {
-        TE_PRINT("GPU BUFFER CREATION")
         if (desc.Type != GBT_STANDARD)
         {
             assert(desc.Format == BF_UNKNOWN && "Format must be set to BF_UNKNOWN when using non-standard buffers");

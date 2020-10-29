@@ -26,6 +26,12 @@ namespace te
         /** @copydoc Component::Clone */
         void Clone(const HCameraFlyer& c);
 
+        /** Returns current pitch angle (for editor) */
+        const Degree& GetPitch() const { return _pitch; }
+
+        /** Returns current yaw angle (for editor) */
+        const Degree& GetYaw() const { return _yaw; }
+
     private:
         float _currentSpeed = 0.0f; /**< Current speed of the camera. */
 

@@ -17,6 +17,7 @@
 #define TOOLBAR_TITLE "ToolBar"
 #define VIEWPORT_TITLE ICON_FA_IMAGE " Viewport"
 #define SCRIPT_TITLE ICON_FA_SCROLL " Script"
+#define GAME_TITLE ICON_FA_GAMEPAD " Game"
 
 namespace te
 {
@@ -40,6 +41,7 @@ namespace te
             Viewport,
             Resources,
             Script,
+            Game,
             None
         };
 

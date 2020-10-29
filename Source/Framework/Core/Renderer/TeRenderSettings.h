@@ -355,6 +355,6 @@ namespace te
          * The absolute base cull-distance for objects rendered through this camera in world units. Objects will use this
          * distance and apply their own factor to it to determine whether they should be visible.
          */
-        float CullDistance = FLT_MAX;
+        float CullDistance = 5000.0f;
     };
 }

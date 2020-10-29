@@ -27,7 +27,8 @@ namespace te
         enum Mode : UINT32
         {
             Physics = 1UL << 0, // Should the physics tick
-            Game = 1UL << 1,    // Is the engine running in game or editor mode?
+            Script = 1UL << 1,  // Should the scrips tick
+            Game = 1UL << 2,    // Is the engine running in game or editor mode?
         };
 
         ApplicationState()

@@ -12,12 +12,13 @@ namespace te
         _params->SetSamplerState("BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
     }
 
-    void SkyboxMat::Bind(const SPtr<GpuParamBlockBuffer>& perCamera, const SPtr<Texture>& texture, const Color& solidColor)
+    void SkyboxMat::Bind(const SPtr<GpuParamBlockBuffer>& perCamera, const SPtr<Texture>& texture, const Color& solidColor, const float& brightness)
     {
         _params->SetParamBlockBuffer("PerCameraBuffer", perCamera);
         _params->SetTexture("TextureMap", texture);
 
         gSkyboxParamDef.gClearColor.Set(_paramBuffer, solidColor);
+        gSkyboxParamDef.gBrightness.Set(_paramBuffer, brightness);
         gSkyboxParamDef.gUseTexture.Set(_paramBuffer, (texture != nullptr) ? 1 : 0);
 
         RendererMaterial::Bind();

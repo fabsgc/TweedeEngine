@@ -44,10 +44,34 @@ namespace te
         bool ShowCSkyboxProperties();
 
         /**  Show transform and mobility options */
-        bool ShowTransform(Transform& transform, ObjectMobility& mobility);
+        bool ShowTransform(Transform& transform, ObjectMobility& mobility, bool disableTransform = false);
 
-        /**  Show information about a GameOject (both Component and SceneObject) */
+        /**  Show information about a GameObject (both Component and SceneObject) */
         bool ShowGameObjectInformation(SPtr<GameObject>& gameObject);
+
+        /** Show information about a camera */
+        bool ShowCamera(SPtr<CCamera> camera);
+
+        /** Show information about a cameraFlyer */
+        bool ShowCameraFlyer(SPtr<CCameraFlyer> cameraFlyer);
+
+        /** Show information about a cameraUI */
+        bool ShowCamerUI(SPtr<CCameraUI> cameraUI);
+
+        /** Show information about a light */
+        bool ShowLight(SPtr<Light> light);
+
+        /** Show information about renderable properties */
+        bool ShowRenderableProperties(SPtr<Renderable> renderable);
+
+        /** Show information about renderable properties */
+        bool ShowRenderableSubMeshes(SPtr<Renderable> renderable);
+
+        /** Show information about a script */
+        bool ShowScript(SPtr<CScript> script);
+
+        /** Show information about a skybox */
+        bool ShowSkybox(SPtr<Skybox> skybox);
 
     protected:
         Editor::SelectionData& _selections;

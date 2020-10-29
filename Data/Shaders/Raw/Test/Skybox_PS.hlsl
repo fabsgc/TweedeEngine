@@ -11,6 +11,7 @@ cbuffer PerCameraBuffer : register(b0)
 cbuffer PerFrameBuffer : register(b1)
 {
     float4 gClearColor;
+    float gBrightness;
     uint gUseTexture;
 }
 
@@ -26,7 +27,7 @@ TextureCube TextureMap : register(t0);
 float4 main( PS_INPUT IN ) : SV_Target
 {
     if(gUseTexture == 0)
-        return gClearColor;
+        return gClearColor * gBrightness;
     else
-        return TextureMap.SampleLevel(BilinearSampler, IN.Direction, 0);
+        return TextureMap.SampleLevel(BilinearSampler, IN.Direction, 0) * gBrightness;
 }

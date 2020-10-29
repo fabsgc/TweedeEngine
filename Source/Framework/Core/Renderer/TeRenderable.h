@@ -17,7 +17,7 @@ namespace te
         bool Instancing  = false;
         bool CanBeMerged = false;
         bool CastShadow = true;
-        bool UseForDynamicEnvMapping  = true;
+        bool UseForDynamicEnvMapping  = false;
         float CullDistanceFactor = 1.0f;
     };
 
@@ -125,7 +125,13 @@ namespace te
         void SetCullDistanceFactor(float factor);
 
         /** @copydoc SetCullDistanceFactor() */
-        float GetCullDistanceFactor() const { return _cullDistanceFactor; }
+        float GetCullDistanceFactor() const { return _properties.CullDistanceFactor; }
+
+        /** The object can be used for dynamic env mapping. */
+        void SetUseForDynamicEnvMapping(bool use);
+
+        /** @copydoc SetUseForDynamicEnvMapping() */
+        bool GetUseForDynamicEnvMapping() const { return _properties.UseForDynamicEnvMapping; }
 
         /**	Returns the transform matrix that is applied to the object when its being rendered. */
         Matrix4 GetMatrix() const { return _tfrmMatrix; }
@@ -167,11 +173,7 @@ namespace te
         UINT32 _rendererId;
         Matrix4 _tfrmMatrix = TeIdentity;
         Matrix4 _tfrmMatrixNoScale = TeIdentity;
-        float _cullDistanceFactor = 1.0f;
 
         RenderableProperties _properties;
-
-        bool _instancing = false;
-        bool _canBeMerged = false;
     };
 }
