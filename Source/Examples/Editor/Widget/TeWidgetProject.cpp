@@ -244,6 +244,9 @@ namespace te
 
     void WidgetProject::HandleKeyShortcuts()
     {
+        if (!ImGui::IsWindowFocused())
+            return;
+
         if (gVirtualInput().IsButtonDown(_deleteBtn))
         {
             Delete();
