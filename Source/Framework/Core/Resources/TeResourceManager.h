@@ -62,6 +62,7 @@ namespace te
             {
                 ResourceHandle<T> resourceHandle = gImporter().Import<T>(filePath, options);
                 uuid = resourceHandle.GetHandleData()->uuid;
+                resourceHandle.GetInternalPtr()->_UUID = uuid;
                 RegisterResource(uuid, filePath);
                 _loadedResources[uuid] = static_resource_cast<Resource>(resourceHandle);
             }

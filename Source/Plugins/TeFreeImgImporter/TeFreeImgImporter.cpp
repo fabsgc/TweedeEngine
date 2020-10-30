@@ -208,6 +208,7 @@ namespace te
         }
 
         texture->SetName(filePath);
+        texture->SetPath(filePath);
         return texture;
     }
 

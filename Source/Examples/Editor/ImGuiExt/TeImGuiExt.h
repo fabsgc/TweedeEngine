@@ -10,35 +10,37 @@ namespace te
     class ImGuiExt
     {
     public:
+        template<typename T>
         struct ComboOption
         {
-            int Key;
+            T Key;
             String Label;
 
-            ComboOption(int key, const String& label)
+            ComboOption(T key, const String& label)
                 : Key(key)
                 , Label(label)
             { }
         };
 
+        template<typename T>
         struct ComboOptions
         {
-            Vector<ComboOption> Options;
+            Vector<ComboOption<T>> Options;
 
             ComboOptions()
             { }
 
-            void AddOption(int key, const String& label)
+            void AddOption(T key, const String& label)
             {
-                Options.push_back(ComboOption(key, label));
+                Options.push_back(ComboOption<T>(key, label));
             }
 
-            void AddOption(const ComboOption& option)
+            void AddOption(const ComboOption<T>& option)
             {
                 Options.push_back(option);
             }
 
-            const ComboOption& operator[](int key)
+            const ComboOption<T>& operator[](T key)
             {
                 for (const auto& option : Options)
                 {
@@ -61,9 +63,6 @@ namespace te
         static bool RenderOptionBool(bool& value, const char* id, const char* text, 
             bool disable = false);
 
-        static bool RenderOptionCombo(int* value, const char* id, const char* text, ComboOptions& options, 
-            float width = 0.0f, bool disable = false);
-
         static bool RenderVector3(Vector3& vector, const char* id, const char* text, float width = 0.0f, 
             bool disable = false);
 
@@ -75,5 +74,49 @@ namespace te
 
         static bool RenderCameraGraphics(HCamera& camera, SPtr<RenderSettings> cameraSettings, float width = 0.0f);
         static bool RenderCameraPostProcessing(HCamera& camera, SPtr<RenderSettings> cameraSettings, float width = 0.0f);
+
+        template<typename T>
+        static bool RenderOptionCombo(T* value, const char* id, const char* text, ComboOptions<T>& options,
+            float width = 0.0f, bool disable = false)
+        {
+            if (width != 0.0f && width < 75.0f)
+                width = 75.0f;
+
+            if (disable)
+            {
+                ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
+                ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
+            }
+
+            bool hasChanged = false;
+            ImGui::PushID(id);
+            if (width > 0.0f) ImGui::PushItemWidth(width);
+            if (ImGui::BeginCombo(text, options[*value].Label.c_str()))
+            {
+                for (const auto& option : options.Options)
+                {
+                    const bool isSelected = (*value == option.Key);
+                    if (ImGui::Selectable(option.Label.c_str(), isSelected))
+                    {
+                        *value = option.Key;
+                        hasChanged = true;
+                    }
+
+                    if (isSelected)
+                        ImGui::SetItemDefaultFocus();
+                }
+                ImGui::EndCombo();
+            }
+            if (width > 0.0f) ImGui::PushItemWidth(width);
+            ImGui::PopID();
+
+            if (disable)
+            {
+                ImGui::PopItemFlag();
+                ImGui::PopStyleVar();
+            }
+
+            return hasChanged;
+        };
     };
 }

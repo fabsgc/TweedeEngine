@@ -190,6 +190,7 @@ namespace te
     HResource ResourceManager::_createResourceHandle(const SPtr<Resource>& obj)
     {
         UUID uuid = UUIDGenerator::GenerateRandom();
+        obj->_setUUID(uuid);
         return _createResourceHandle(obj, uuid);
     }
 
@@ -212,7 +213,7 @@ namespace te
 
         //_loadingResourceMutex.unlock();
 
-        return static_resource_cast<Resource>(Get(UUID));;
+        return static_resource_cast<Resource>(Get(UUID));
     }
 
     TE_CORE_EXPORT ResourceManager& gResourceManager()

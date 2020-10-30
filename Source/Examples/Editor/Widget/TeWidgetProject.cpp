@@ -319,25 +319,8 @@ namespace te
             {
                 if (ImGui::BeginMenu(ICON_FA_PLUS_SQUARE " Add Component"))
                 {
-                    if (ImGui::BeginMenu(ICON_FA_OBJECT_GROUP " Renderable"))
-                    {
-                        if (ImGui::MenuItem(ICON_FA_STICKY_NOTE " Empty"))
-                            CreateRenderable(RenderableType::Empty);
-
-                        if (ImGui::MenuItem(ICON_FA_CUBE " Cube"))
-                            CreateRenderable(RenderableType::Cube);
-
-                        if (ImGui::MenuItem(ICON_FA_CIRCLE " Sphere"))
-                            CreateRenderable(RenderableType::Sphere);
-
-                        if (ImGui::MenuItem(ICON_FA_CALENDAR " Cylinder"))
-                            CreateRenderable(RenderableType::Cylinder);
-
-                        if (ImGui::MenuItem(ICON_FA_PLAY " Cone"))
-                            CreateRenderable(RenderableType::Cone);
-
-                        ImGui::EndMenu();
-                    }
+                    if (ImGui::MenuItem(ICON_FA_OBJECT_GROUP " Renderable"))
+                        CreateRenderable(RenderableType::Empty);
 
                     if (ImGui::BeginMenu(ICON_FA_LIGHTBULB " Light"))
                     {
@@ -443,26 +426,6 @@ namespace te
         {
         case RenderableType::Empty:
             renderable.Get()->SetName("Empty renderable");
-            renderable.Get()->Initialize();
-            break;
-
-        case RenderableType::Cube:
-            renderable.Get()->SetName("Cube");
-            renderable.Get()->Initialize();
-            break;
-
-        case RenderableType::Cylinder:
-            renderable.Get()->SetName("Cylinder");
-            renderable.Get()->Initialize();
-            break;
-
-        case RenderableType::Sphere:
-            renderable.Get()->SetName("Sphere");
-            renderable.Get()->Initialize();
-            break;
-
-        case RenderableType::Cone:
-            renderable.Get()->SetName("Cone");
             renderable.Get()->Initialize();
             break;
 

@@ -16,6 +16,8 @@
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
 
+#include "../TeEditorResManager.h"
+
 namespace te
 {
     WidgetProperties::WidgetProperties()
@@ -215,9 +217,15 @@ namespace te
                 hasChanged = true;
         }
 
-        if (ShowRenderableSubMeshes(renderable->_getInternal()))
-            hasChanged = true;
-
+        if (renderable->GetMesh())
+        {
+            if (ImGui::CollapsingHeader("SubMeshes", ImGuiTreeNodeFlags_DefaultOpen))
+            {
+                if (ShowRenderableSubMeshes(renderable->_getInternal()))
+                    hasChanged = true;
+            }
+        }
+        
         if (ShowTransform(transform, mobility, true))
         {
             renderable->_getInternal()->SetMobility(mobility);
@@ -270,13 +278,15 @@ namespace te
 
         if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
         {
-            ImGuiExt::ComboOptions mobilityOptions;
+            ImGuiExt::ComboOptions<int> mobilityOptions;
             mobilityOptions.AddOption((int)ObjectMobility::Movable, "Movable");
             mobilityOptions.AddOption((int)ObjectMobility::Immovable, "Immovable");
             mobilityOptions.AddOption((int)ObjectMobility::Static, "Static");
 
-            if (ImGuiExt::RenderOptionCombo((int*)(&mobility), "##transform_mobility_option", "Mobility", mobilityOptions, widgetWidth))
+            if (ImGuiExt::RenderOptionCombo<int>((int*)(&mobility), "##transform_mobility_option", "Mobility", mobilityOptions, widgetWidth, disableTransform))
                 hasChanged = true;
+
+            ImGui::Separator();
 
             if (ImGuiExt::RenderTransform(transform, "transform_option", disableTransform))
                 hasChanged = true;
@@ -305,6 +315,7 @@ namespace te
                 gameObject->SetName(inputName);
                 hasChanged = true;
             }
+            ImGui::Separator();
 
             ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
             if (ImGui::InputText("UUID", inputUUID, IM_ARRAYSIZE(inputUUID)))
@@ -402,12 +413,12 @@ namespace te
 
         // Light Type
         {
-            ImGuiExt::ComboOptions lightTypeOptions;
+            ImGuiExt::ComboOptions<int> lightTypeOptions;
             lightTypeOptions.AddOption((int)LightType::Directional, "Directional");
             lightTypeOptions.AddOption((int)LightType::Radial, "Radial");
             lightTypeOptions.AddOption((int)LightType::Spot, "Spot");
 
-            if (ImGuiExt::RenderOptionCombo((int*)(&lightType), "##light_type_option", "Type", lightTypeOptions, width, true))
+            if (ImGuiExt::RenderOptionCombo<int>((int*)(&lightType), "##light_type_option", "Type", lightTypeOptions, width, true))
             {
                 light->SetType((LightType)lightType);
                 hasChanged = true;
@@ -423,6 +434,7 @@ namespace te
                 light->SetAttenuationRadius(attenuationRadius);
             }
         }
+        ImGui::Separator();
 
         // Linear attenuation
         {
@@ -432,6 +444,7 @@ namespace te
                 light->SetLinearAttenuation(linearAttenuation);
             }
         }
+        ImGui::Separator();
 
         // quadratic attenuation
         {
@@ -441,6 +454,7 @@ namespace te
                 light->SetQuadraticAttenuation(quadraticAttenuation);
             }
         }
+        ImGui::Separator();
 
         // intensity
         {
@@ -450,6 +464,7 @@ namespace te
                 light->SetIntensity(intensity);
             }
         }
+        ImGui::Separator();
 
         // Spot angle
         if (light->GetType() == LightType::Spot)
@@ -462,6 +477,7 @@ namespace te
                     light->SetSpotAngle(Degree(angle));
                 }
             }
+            ImGui::Separator();
         }
 
         // Shadow bias
@@ -480,7 +496,44 @@ namespace te
     {
         bool hasChanged = false;
         const RenderableProperties& properties = renderable->GetProperties();
+        const SPtr<Mesh> mesh = renderable->GetMesh();
         const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
+
+        ImGuiExt::ComboOptions<UUID> meshesOptions;
+        UUID emptyMesh = UUID(50, 0, 0, 0);
+        UUID loadMesh = UUID::EMPTY;
+        UUID meshUUID = (mesh) ? mesh->GetUUID() : emptyMesh;
+        EditorResManager::ResourcesContainer& container = EditorResManager::Instance().Get<Mesh>();
+
+        // current mesh to use
+        {
+            for (auto& resource : container.Res)
+                meshesOptions.AddOption(resource.second->GetUUID(), resource.second->GetName());
+
+            meshesOptions.AddOption(emptyMesh, "No mesh");
+            meshesOptions.AddOption(UUID::EMPTY, ICON_FA_FOLDER_OPEN " Load");
+
+            if (ImGuiExt::RenderOptionCombo<UUID>(&meshUUID, "##meshes_option", "Mesh", meshesOptions, width))
+            {
+                if (meshUUID == loadMesh)
+                {
+                    // TODO
+                }
+                else if (meshUUID == emptyMesh)
+                {
+                    renderable->SetMesh(nullptr);
+                    renderable->ClearAllMaterials();
+                }
+                else if (meshUUID != ((mesh) ? mesh->GetUUID() : emptyMesh))
+                {
+                    renderable->SetMesh(gResourceManager().Load<Mesh>(meshUUID).GetInternalPtr());
+                    renderable->ClearAllMaterials();
+                }
+
+                hasChanged = true;
+            }
+        }
+        ImGui::Separator();
 
         // instancing
         {
@@ -491,6 +544,7 @@ namespace te
                 renderable->SetInstancing(instancing);
             }
         }
+        ImGui::Separator();
 
         // can be merged
         {
@@ -501,16 +555,18 @@ namespace te
                 renderable->SetCanBeMerged(canBeMerged);
             }
         }
+        ImGui::Separator();
 
-        // cast shadow
+        // cast shadows
         {
             bool castShadow = properties.CastShadow;
-            if (ImGuiExt::RenderOptionBool(castShadow, "##renderable_properties_cast_shadow_option", "Cast shadow"))
+            if (ImGuiExt::RenderOptionBool(castShadow, "##renderable_properties_cast_shadow_option", "Cast shadows"))
             {
                 hasChanged = true;
                 renderable->SetCastShadow(castShadow);
             }
         }
+        ImGui::Separator();
 
         // use for dynamic env mapping
         {
@@ -521,6 +577,7 @@ namespace te
                 renderable->SetUseForDynamicEnvMapping(useForDynamicEnvMapping);
             }
         }
+        ImGui::Separator();
 
         // cull distance factor
         {
@@ -539,18 +596,46 @@ namespace te
     {
         bool hasChanged = false;
         SPtr<Mesh> mesh = renderable->GetMesh();
+        ImGuiExt::ComboOptions<UUID> materialsOptions;
+        UUID emptyMaterial = UUID(50, 0, 0, 0);
+        UUID loadMaterial = UUID::EMPTY;
         const MeshProperties& meshProperties = mesh->GetProperties();
-        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 120.0f;
+        EditorResManager::ResourcesContainer& container = EditorResManager::Instance().Get<Material>();
 
         for (UINT32 i = 0; i < meshProperties.GetNumSubMeshes(); i++)
         {
+            SPtr<Material> material = renderable->GetMaterial(i);
+            UUID materialUUID = (material) ? material->GetUUID() : emptyMaterial;
             const SubMesh& subMesh = meshProperties.GetSubMesh(i);
-            String title = "SubMesh " + subMesh.MaterialName;
+            String title = subMesh.MaterialName;
 
-            if (ImGui::CollapsingHeader(title.c_str()))
+            // current material to use
             {
+                for (auto& resource : container.Res)
+                    materialsOptions.AddOption(resource.second->GetUUID(), resource.second->GetName());
 
-            }
+                materialsOptions.AddOption(emptyMaterial, "No material");
+                materialsOptions.AddOption(UUID::EMPTY, ICON_FA_FOLDER_OPEN " Load");
+
+                if (ImGuiExt::RenderOptionCombo<UUID>(&materialUUID, "##submesh_material_option", title.c_str(), materialsOptions, width))
+                {
+                    if (materialUUID == loadMaterial)
+                    {
+                        // TODO
+                    }
+                    else if (materialUUID == emptyMaterial)
+                    {
+                        renderable->SetMaterial(i, nullptr);
+                    }
+                    else
+                    {
+                        renderable->SetMaterial(gResourceManager().Load<Material>(materialUUID).GetInternalPtr());
+                    }
+
+                    hasChanged = true;
+                }
+            }  
         }
 
         return hasChanged;
@@ -567,6 +652,44 @@ namespace te
         bool hasChanged = false;
         float brigtness = skybox->GetBrightness();
         const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
+
+        ImGuiExt::ComboOptions<UUID> texturesOptions;
+        UUID emptyTexture = UUID(50, 0, 0, 0);
+        UUID loadTexture = UUID::EMPTY;
+        UUID textureUUID = (skybox->GetTexture()) ? skybox->GetTexture()->GetUUID() : emptyTexture;
+        EditorResManager::ResourcesContainer& container = EditorResManager::Instance().Get<Texture>();
+
+        // current texture to use
+        {
+            for (auto& resource : container.Res)
+            {
+                SPtr<Texture> texture = std::static_pointer_cast<Texture>(resource.second.GetInternalPtr());
+                if(texture->GetProperties().GetTextureType() == TextureType::TEX_TYPE_CUBE_MAP)
+                    texturesOptions.AddOption(resource.second->GetUUID(), resource.second->GetName());
+            }
+
+            texturesOptions.AddOption(emptyTexture, "No texture");
+            texturesOptions.AddOption(UUID::EMPTY, ICON_FA_FOLDER_OPEN " Load");
+
+            if (ImGuiExt::RenderOptionCombo<UUID>(&textureUUID, "##skybox_texture_option", "Texture", texturesOptions, width))
+            {
+                if (textureUUID == loadTexture)
+                {
+                    // TODO
+                }
+                else if (textureUUID == emptyTexture)
+                {
+                    skybox->SetTexture(nullptr);
+                }
+                else
+                {
+                    skybox->SetTexture(gResourceManager().Load<Texture>(textureUUID).GetInternalPtr());
+                }
+
+                hasChanged = true;
+            }
+        }
+        ImGui::Separator();
 
         if (ImGuiExt::RenderOptionFloat(brigtness, "##skybox_option", "Brightness", 0.0f, 3.0f, width))
         {

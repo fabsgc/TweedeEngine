@@ -196,6 +196,9 @@ namespace te
         /** @copydoc CoreObject::Initialize */
         void Initialize() override;
 
+        /**  @copydoc Resource::GetResourceType */
+        static UINT32 GetResourceType() { return TID_Texture; }
+
         /**
          * Locks the buffer for reading or writing.
          *

@@ -1,6 +1,5 @@
 #include "TeWidgetToolBar.h"
 
-#include "../TeIconsFontAwesome5.h"
 #include "../TeEditor.h"
 #include "Math/TeMath.h"
 #include "ImGui/imgui.h"

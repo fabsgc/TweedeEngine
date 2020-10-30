@@ -71,6 +71,9 @@ namespace te
          */
         void SetMaterial(const String& name, const SPtr<Material>& material);
 
+        /** Remove all materials set on every submesh */
+        void ClearAllMaterials();
+
         /** @copydoc SetMaterials() */
         const Vector<SPtr<Material>>& GetMaterials() { return _materials; }
 

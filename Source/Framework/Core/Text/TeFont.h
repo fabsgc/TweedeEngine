@@ -43,6 +43,9 @@ namespace te
     public:
         virtual ~Font() = default;
 
+        /**  @copydoc Resource::GetResourceType */
+        static UINT32 GetResourceType() { return TID_Font; }
+
         /**
          * Initializes the font with specified per-size font data.
          * @note	Internal method. Factory methods will call this automatically for you.

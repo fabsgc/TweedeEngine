@@ -96,12 +96,12 @@ float4 ComputeVelocityBuffer(float4 position, float4 prevPosition, float alpha)
 
     if(alpha >= 1.0)
     {
-        float fixDelta = FrameDelta / gFrameDelta; 
+        //float fixDelta = FrameDelta / gFrameDelta; 
         float2 a = float2(position.xy);
         float2 b = float2(prevPosition.xy);
 
         velocity = (b - a);
-        velocity *= fixDelta;
+        //velocity *= fixDelta;
 
         if(velocity.x < -0.99) velocity.x = -0.99;
         if(velocity.y < -0.99) velocity.y = -0.99;

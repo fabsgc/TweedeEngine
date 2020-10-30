@@ -83,7 +83,12 @@ namespace te
 
     void SceneObject::Clone(const SPtr<SceneObject>& so)
     {
-        this->_name = so->GetName() + " (Copy)";
+        Transform tfrm = so->GetTransform();
+        Transform localTfrm = so->GetLocalTransform();
+        this->_name = so->GetName() + " copy";
+        this->_mobility = so->GetMobility();
+        this->SetTransform(tfrm);
+        this->SetLocalTransform(localTfrm);
 
         for (auto& childSO : so->GetChildren())
         {

@@ -3,8 +3,6 @@
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
 
-#include "TeIconsFontAwesome5.h"
-
 #include "Widget/TeWidgetMenuBar.h"
 #include "Widget/TeWidgetToolBar.h"
 #include "Widget/TeWidgetProject.h"
@@ -14,7 +12,7 @@
 #include "Widget/TeWidgetViewport.h"
 #include "Widget/TeWidgetResources.h"
 #include "Widget/TeWidgetScript.h"
-#include "Widget/TeWidgetGame.h"
+#include "Widget/TeWidgetMaterials.h"
 
 #include "Gui/TeGuiAPI.h"
 #include "TeCoreApplication.h"
@@ -26,6 +24,7 @@
 #include "Scene/TeSceneManager.h"
 #include "Resources/TeResourceManager.h"
 #include "Resources/TeBuiltinResources.h"
+#include "TeEditorResManager.h"
 
 // TODO Temp for debug purpose
 #include "Importer/TeImporter.h"
@@ -56,6 +55,8 @@ namespace te
 
     void Editor::OnStartUp()
     {
+        EditorResManager::StartUp();
+
         InitializeInput();
         InitializeScene();
         InitializeUICamera();
@@ -66,7 +67,9 @@ namespace te
     }
 
     void Editor::OnShutDown()
-    { }
+    { 
+        EditorResManager::ShutDown();
+    }
 
     void Editor::Update()
     {
@@ -195,11 +198,11 @@ namespace te
         _widgets.emplace_back(te_shared_ptr_new<WidgetMenuBar>()); _settings.WMenuBar = _widgets.back();
         _widgets.emplace_back(te_shared_ptr_new<WidgetToolBar>()); _settings.WToolbar = _widgets.back();
         _widgets.emplace_back(te_shared_ptr_new<WidgetProject>()); _settings.WProject = _widgets.back();
-        _widgets.emplace_back(te_shared_ptr_new<WidgetProperties>());
-        _widgets.emplace_back(te_shared_ptr_new<WidgetRenderOptions>());
+        _widgets.emplace_back(te_shared_ptr_new<WidgetProperties>()); _settings.WProperties = _widgets.back();
+        _widgets.emplace_back(te_shared_ptr_new<WidgetRenderOptions>()); _settings.WRenderOptions = _widgets.back();
         _widgets.emplace_back(te_shared_ptr_new<WidgetConsole>()); _settings.WConsole = _widgets.back();
         _widgets.emplace_back(te_shared_ptr_new<WidgetScript>()); _settings.WScript = _widgets.back();
-        _widgets.emplace_back(te_shared_ptr_new<WidgetGame>()); _settings.WGame = _widgets.back();
+        _widgets.emplace_back(te_shared_ptr_new<WidgetMaterials>()); _settings.WMaterial = _widgets.back();
         _widgets.emplace_back(te_shared_ptr_new<WidgetViewport>()); _settings.WViewport = _widgets.back();
         _widgets.emplace_back(te_shared_ptr_new<WidgetResources>()); _settings.WResources = _widgets.back();
 
@@ -370,7 +373,7 @@ namespace te
                 ImGui::DockBuilderDockWindow(RESOURCES_TITLE, dockBottomId);
                 ImGui::DockBuilderDockWindow(VIEWPORT_TITLE, dockMainId);
                 ImGui::DockBuilderDockWindow(SCRIPT_TITLE, dockMainId);
-                ImGui::DockBuilderDockWindow(GAME_TITLE, dockMainId);
+                ImGui::DockBuilderDockWindow(MATERIALS_TITLE, dockRightBottomId);
                 ImGui::DockBuilderDockWindow(PROPERTIES_TITLE, dockLeftBottomId);
                 ImGui::DockBuilderFinish(dockMainId);
             }
@@ -382,7 +385,12 @@ namespace te
     void Editor::EndGui()
     {
         if (_editorBegun)
+        {
+            //bool open = true;
+            //ImGui::ShowDemoWindow(&open);
+        
             ImGui::End();
+        }
     }
 
     Widget* Editor::GetWidget(Widget::WidgetType type)
@@ -400,25 +408,30 @@ namespace te
     {
         switch (type)
         {
-        case WindowType::Viewport:
-            _settings.WViewport->PutFocus();
+        case WindowType::Project:
+            _settings.WProject->PutFocus();
             break;
-
-        case WindowType::Script:
-            _settings.WScript->PutFocus();
+        case WindowType::RenderOptions:
+            _settings.WRenderOptions->PutFocus();
             break;
-
-        case WindowType::Game:
-            _settings.WGame->PutFocus();
-            break;
-
-        case WindowType::Resources:
-            _settings.WResources->PutFocus();
-            break;
-
         case WindowType::Console:
             _settings.WConsole->PutFocus();
             break;
+        case WindowType::Resources:
+            _settings.WResources->PutFocus();
+            break;
+        case WindowType::Viewport:
+            _settings.WViewport->PutFocus();
+            break;
+        case WindowType::Script:
+            _settings.WScript->PutFocus();
+            break;
+        case WindowType::Materials:
+            _settings.WMaterials->PutFocus();
+            break;
+        case WindowType::Properties:
+            _settings.WProperties->PutFocus();
+            break;        
         }
     }
 
@@ -443,10 +456,17 @@ namespace te
         // ######################################################
 
         // ######################################################
-        _loadedMeshMonkey = gResourceManager().Load<Mesh>("Data/Meshes/Monkey/monkey-hd.dae", meshImportOptions);
-        _loadedMeshPlane = gResourceManager().Load<Mesh>("Data/Meshes/PLane/plane.dae", meshImportOptions);
-        _loadedTextureMonkey = gResourceManager().Load<Texture>("Data/Textures/Monkey/diffuse.png", textureImportOptions);
-        _loadedCubemapTexture = gResourceManager().Load<Texture>("Data/Textures/Skybox/sky_medium.jpeg", textureCubeMapImportOptions);
+        _loadedMeshMonkey = EditorResManager::Instance().Load<Mesh>("Data/Meshes/Monkey/monkey-hd.dae", meshImportOptions);
+        _loadedMeshPlane = EditorResManager::Instance().Load<Mesh>("Data/Meshes/Plane/plane.dae", meshImportOptions);
+        _loadedTextureMonkey = EditorResManager::Instance().Load<Texture>("Data/Textures/Monkey/diffuse.png", textureImportOptions);
+        _loadedCubemapTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/sky_medium.jpeg", textureCubeMapImportOptions);
+        // ###################################################### 
+
+        // ###################################################### 
+        _loadedMeshMonkey->SetName("Monkey Mesh");
+        _loadedMeshPlane->SetName("Plane Mesh");
+        _loadedTextureMonkey->SetName("Monkey Diffuse");
+        _loadedCubemapTexture->SetName("Skybox Diffuse");
         // ###################################################### 
 
         // ######################################################
@@ -467,6 +487,8 @@ namespace te
         _materialMonkey->SetTexture("EnvironmentMap", _loadedCubemapTexture);
         _materialMonkey->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
         _materialMonkey->SetProperties(properties);
+
+        EditorResManager::Instance().Add<Material>(_materialMonkey);
         // ######################################################
 
         // ######################################################

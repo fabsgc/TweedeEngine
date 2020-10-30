@@ -27,11 +27,11 @@ namespace te
 
     struct MaterialProperties
     {
-        Color Ambient = Color(1.0f, 1.0f, 1.0f, 0.5f);
+        Color Ambient = Color(0.75f, 0.75f, 0.75f, 0.5f);
         Color Diffuse = Color(1.0f, 1.0f, 1.0f, 1.0f);
         Color Emissive = Color(0.0f, 0.0f, 0.0f, 1.0f);
         Color Specular = Color(1.0f, 1.0f, 1.0f, 0.5f);
-        float SpecularPower = 32.0f;
+        float SpecularPower = 64.0f;
         float Transparency = 1.0f;
         float IndexOfRefraction = 1.0f;
         float Refraction = 0.0f;
@@ -64,6 +64,9 @@ namespace te
 
         /** @copydoc CoreObject::Initialize */
         void Initialize() override;
+
+        /**  @copydoc Resource::GetResourceType */
+        static UINT32 GetResourceType() { return TID_Material; }
 
         /**
          * Sets a shader that will be used by the material. Material will be initialized using all compatible techniques

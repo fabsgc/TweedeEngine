@@ -5,8 +5,8 @@
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
 #include "TeCoreApplication.h"
-#include "../TeImGuiExt.h"
-#include "../TeIconsFontAwesome5.h"
+#include "../ImGuiExt/TeImGuiExt.h"
+#include "../ImGuiExt/TeIconsFontAwesome5.h"
 
 #define CONSOLE_TITLE ICON_FA_TERMINAL " Console"
 #define MENUBAR_TITLE "MenuBar"
@@ -17,7 +17,7 @@
 #define TOOLBAR_TITLE "ToolBar"
 #define VIEWPORT_TITLE ICON_FA_IMAGE " Viewport"
 #define SCRIPT_TITLE ICON_FA_SCROLL " Script"
-#define GAME_TITLE ICON_FA_GAMEPAD " Game"
+#define MATERIALS_TITLE ICON_FA_PALETTE " Materials"
 
 namespace te
 {

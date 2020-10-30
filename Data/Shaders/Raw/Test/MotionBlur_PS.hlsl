@@ -123,7 +123,7 @@ float4 main( PS_INPUT IN ) : SV_Target0
     // ##### OBJECT MOTION BLUR
     float2 objectBlurDir = TextureSampling(BilinearSampler, VelocityMap, VelocityMapMS, currentUV, gMSAACount).xy;
 
-    if(abs(objectBlurDir.x) > 0.05 || abs(objectBlurDir.y) > 0.05)
+    if(abs(objectBlurDir.x) >= 0.51 || abs(objectBlurDir.y) >= 0.51)
     {
         objectBlurDir -= 0.5;
         objectBlurDir *= 2.0;

@@ -72,13 +72,13 @@ namespace te
          */
         virtual void Clone(const HComponent& c) 
         {
-            _name = c->GetName() + " (Copy)";
+            _name = c->GetName() + " copy";
         }
 
         /** @copydoc Component::Clone */
         virtual void Clone(const SPtr<Component>& c)
         {
-            _name = c->GetName() + " (Copy)";
+            _name = c->GetName() + " copy";
         }
 
     public:

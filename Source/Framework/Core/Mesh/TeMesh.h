@@ -111,6 +111,9 @@ namespace te
         /** @copydoc CoreObject::Initialize */
         void Initialize() override;
 
+        /**  @copydoc Resource::GetResourceType */
+        static UINT32 GetResourceType() { return TID_Mesh; }
+
         /** Get vertex data used for rendering. */
         SPtr<VertexData> GetVertexData() const;
 

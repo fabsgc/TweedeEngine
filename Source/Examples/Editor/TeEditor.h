@@ -13,7 +13,14 @@ namespace te
     public:
         enum class WindowType
         {
-            Script, Viewport, Resources, Console, Game
+            Project,
+            RenderOptions,
+            Console,
+            Resources,
+            Viewport,
+            Script,
+            Materials,
+            Properties
         };
 
         struct SelectionData
@@ -74,14 +81,18 @@ namespace te
     protected:
         struct EditorSettings
         {
-            SPtr<Widget> WMenuBar   = nullptr;
-            SPtr<Widget> WToolbar   = nullptr;
-            SPtr<Widget> WProject   = nullptr;
-            SPtr<Widget> WViewport  = nullptr;
-            SPtr<Widget> WScript    = nullptr;
-            SPtr<Widget> WResources = nullptr;
-            SPtr<Widget> WConsole   = nullptr;
-            SPtr<Widget> WGame      = nullptr;
+            SPtr<Widget> WMenuBar       = nullptr;
+            SPtr<Widget> WToolbar       = nullptr;
+            SPtr<Widget> WProject       = nullptr;
+            SPtr<Widget> WRenderOptions = nullptr;
+            SPtr<Widget> WConsole       = nullptr;
+            SPtr<Widget> WResources     = nullptr;
+            SPtr<Widget> WViewport      = nullptr;
+            SPtr<Widget> WScript        = nullptr;
+            SPtr<Widget> WMaterials     = nullptr;
+            SPtr<Widget> WProperties    = nullptr;
+
+            SPtr<Widget> WMaterial  = nullptr;
             const char* EditorName  = "Editor";
             bool Show = true;
         };

@@ -221,14 +221,11 @@ namespace te
         /** @copydoc CoreObject::Initialize */
         void Initialize() override;
 
+        /**  @copydoc Resource::GetResourceType */
+        static UINT32 GetResourceType()  { return TID_Shader; }
+
         /** Returns the unique shader ID. */
         UINT32 GetId() const { return _id; }
-
-        /** Returns the shader name. */
-        const String& GetName() const { return _name; }
-
-        /** Set shader name */
-        void SetName(const String& name) { _name = name; }
 
         /**
          * Returns currently active queue sort type.

@@ -5,11 +5,11 @@
 
 namespace te
 {
-    class WidgetGame : public Widget
+    class WidgetMaterials : public Widget
     {
     public:
-        WidgetGame();
-        ~WidgetGame();
+        WidgetMaterials();
+        ~WidgetMaterials();
 
         virtual void Initialize() override;
         virtual void Update() override;

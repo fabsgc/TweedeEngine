@@ -97,49 +97,6 @@ namespace te
         return false;
     };
 
-    bool ImGuiExt::RenderOptionCombo(int* value, const char* id, const char* text,
-        ComboOptions& options, float width, bool disable)
-    {
-        if (width != 0.0f && width < 75.0f) 
-            width = 75.0f;
-
-        if (disable)
-        {
-            ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
-            ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
-        }
-
-        bool hasChanged = false;
-        ImGui::PushID(id);
-        if (width > 0.0f) ImGui::PushItemWidth(width);
-        if (ImGui::BeginCombo(text, options[*value].Label.c_str()))
-        {
-            for(const auto& option : options.Options)
-            {
-                const bool isSelected = (*value == option.Key);
-                if (ImGui::Selectable(option.Label.c_str(), isSelected))
-                {
-                    *value = option.Key;
-                    hasChanged = true;
-                }
-
-                if (isSelected)
-                    ImGui::SetItemDefaultFocus();
-            }
-            ImGui::EndCombo();
-        }
-        if (width > 0.0f) ImGui::PushItemWidth(width);
-        ImGui::PopID();
-
-        if (disable)
-        {
-            ImGui::PopItemFlag();
-            ImGui::PopStyleVar();
-        }
-
-        return hasChanged;
-    };
-
     bool ImGuiExt::RenderVector3(Vector3& vector, const char* id, const char* text, float width, bool disable)
     {
         bool hasChanged = false;
@@ -276,7 +233,7 @@ namespace te
 
         // Render Output Type
         {
-            ImGuiExt::ComboOptions outputTypeOptions;
+            ImGuiExt::ComboOptions<int> outputTypeOptions;
             outputTypeOptions.AddOption((int)RenderOutputType::Final, "Post processed");
             outputTypeOptions.AddOption((int)RenderOutputType::Color, "Raw");
             outputTypeOptions.AddOption((int)RenderOutputType::Velocity, "Velocity map");
@@ -284,21 +241,21 @@ namespace te
             outputTypeOptions.AddOption((int)RenderOutputType::Depth, "Depth map");
             outputTypeOptions.AddOption((int)RenderOutputType::Normal, "Normal map");
 
-            if (ImGuiExt::RenderOptionCombo((int*)(&cameraSettings->OutputType), "##output_type_option", "Output type", outputTypeOptions, width))
+            if (ImGuiExt::RenderOptionCombo<int>((int*)(&cameraSettings->OutputType), "##output_type_option", "Output type", outputTypeOptions, width))
                 hasChanged = true;
         }
         ImGui::Separator();
 
         // Projection type
         {
-            ImGuiExt::ComboOptions projectionTypeOptions;
+            ImGuiExt::ComboOptions<int> projectionTypeOptions;
             projectionTypeOptions.AddOption((int)ProjectionType::PT_PERSPECTIVE, "Perspective");
             projectionTypeOptions.AddOption((int)ProjectionType::PT_ORTHOGRAPHIC, "Orthographic");
 
             int projectionType = camera->GetProjectionType();
             int oldProjectionType = projectionType;
 
-            if (ImGuiExt::RenderOptionCombo((int*)(&projectionType), "##projection_type_option", "Projection type", projectionTypeOptions, width))
+            if (ImGuiExt::RenderOptionCombo<int>((int*)(&projectionType), "##projection_type_option", "Projection type", projectionTypeOptions, width))
                 hasChanged = true;
 
             if (projectionType != oldProjectionType)
@@ -308,12 +265,12 @@ namespace te
 
         // Antialiasing
         {
-            ImGuiExt::ComboOptions antialiasingOptions;
+            ImGuiExt::ComboOptions<int> antialiasingOptions;
             antialiasingOptions.AddOption((int)AntiAliasingAlgorithm::FXAA, "FXAA");
             antialiasingOptions.AddOption((int)AntiAliasingAlgorithm::TAA, "TAA");
             antialiasingOptions.AddOption((int)AntiAliasingAlgorithm::TAA, "None");
 
-            if (ImGuiExt::RenderOptionCombo((int*)(&cameraSettings->AntialiasingAglorithm), "##aa_option", "Antialiasing", antialiasingOptions, width))
+            if (ImGuiExt::RenderOptionCombo<int>((int*)(&cameraSettings->AntialiasingAglorithm), "##aa_option", "Antialiasing", antialiasingOptions, width))
                 hasChanged = true;
 
             if (cameraSettings->AntialiasingAglorithm == AntiAliasingAlgorithm::TAA)
@@ -410,16 +367,22 @@ namespace te
         {
             if (ImGuiExt::RenderOptionBool(cameraSettings->EnableHDR, "##hdr_option", "Enable HDR"))
                 hasChanged = true;
+            ImGui::Separator();
             if (ImGuiExt::RenderOptionBool(cameraSettings->Tonemapping.Enabled, "##tonemapping_option", "Enable Tonemapping"))
                 hasChanged = true;
+            ImGui::Separator();
             if (ImGuiExt::RenderOptionFloat(cameraSettings->ExposureScale, "##exposure_option", "Exposure", 0.0f, 5.0f, width))
                 hasChanged = true;
+            ImGui::Separator();
             if (ImGuiExt::RenderOptionFloat(cameraSettings->Gamma, "##gamma_option", "Gamma", 0.0f, 5.0f, width))
                 hasChanged = true;
+            ImGui::Separator();
             if (ImGuiExt::RenderOptionFloat(cameraSettings->Contrast, "##contrast_option", "Contrast", 0.0f, 5.0f, width))
                 hasChanged = true;
+            ImGui::Separator();
             if (ImGuiExt::RenderOptionFloat(cameraSettings->Brightness, "##brightness_option", "Brightness", -2.0f, 2.0f, width))
                 hasChanged = true;
+            ImGui::Separator();
             if (ImGuiExt::RenderOptionFloat(cameraSettings->CullDistance, "##cull_distance_option", "Cull distance", 0.0f, 10000.0f, width))
                 hasChanged = true;
         }
@@ -432,14 +395,14 @@ namespace te
 
             if (cameraSettings->MotionBlur.Enabled)
             {
-                ImGuiExt::ComboOptions blurQualityOptions;
+                ImGuiExt::ComboOptions<int> blurQualityOptions;
                 blurQualityOptions.AddOption((int)MotionBlurQuality::Ultra, "Ultra");
                 blurQualityOptions.AddOption((int)MotionBlurQuality::High, "High");
                 blurQualityOptions.AddOption((int)MotionBlurQuality::Medium, "Medium");
                 blurQualityOptions.AddOption((int)MotionBlurQuality::Low, "Low");
                 blurQualityOptions.AddOption((int)MotionBlurQuality::VeryLow, "Very low");
 
-                if (ImGuiExt::RenderOptionCombo((int*)(&cameraSettings->MotionBlur.Quality), "##blur_quality_option", "Quality", blurQualityOptions, width))
+                if (ImGuiExt::RenderOptionCombo<int>((int*)(&cameraSettings->MotionBlur.Quality), "##blur_quality_option", "Quality", blurQualityOptions, width))
                     hasChanged = true;
             }
         }

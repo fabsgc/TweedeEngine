@@ -76,10 +76,10 @@ namespace te
         jsonDocument = nlohmann::json::parse(dataStr);
         ParserData parsedData = Parse(jsonDocument);
 #endif
-     
+
         SPtr<Shader> shader = Shader::_createPtr("shader", SHADER_DESC());
         shader->SetName(filePath);
-        //shader->SetId();
+        shader->SetPath(filePath);
 
         te_delete(data);
 

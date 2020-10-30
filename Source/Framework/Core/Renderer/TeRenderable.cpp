@@ -76,14 +76,13 @@ namespace te
 
     void Renderable::SetMesh(SPtr<Mesh> mesh)
     {
-#if TE_DEBUG_MODE
-        TE_ASSERT_ERROR(mesh != nullptr, "Mesh should not be null");
-#endif
-
         _mesh = mesh;
 
-        UINT32 numSubMeshes = mesh->GetProperties().GetNumSubMeshes();
-        _materials.resize(numSubMeshes);
+        if (_mesh)
+        {
+            UINT32 numSubMeshes = mesh->GetProperties().GetNumSubMeshes();
+            _materials.resize(numSubMeshes);
+        }        
 
         OnMeshChanged();
         _markCoreDirty(ActorDirtyFlag::GpuParams);
@@ -91,9 +90,8 @@ namespace te
 
     void Renderable::SetMaterial(UINT32 idx, const SPtr<Material>& material)
     {
-#if TE_DEBUG_MODE
-        TE_ASSERT_ERROR(material != nullptr, "Material should not be null");
-#endif
+        if (!_mesh)
+            return;
 
         if (idx >= (UINT32)_materials.size())
             return;
@@ -104,15 +102,14 @@ namespace te
 
     void Renderable::SetMaterials(const Vector<SPtr<Material>>& materials)
     {
+        if (!_mesh)
+            return;
+
         _numMaterials = (UINT32)_materials.size();
         UINT32 min = std::min(_numMaterials, (UINT32)materials.size());
 
         for (UINT32 i = 0; i < min; i++)
         {
-#if TE_DEBUG_MODE
-            TE_ASSERT_ERROR(materials[i] != nullptr, "Material should not be null");
-#endif
-
             _materials[i] = materials[i];
         }
 
@@ -124,9 +121,8 @@ namespace te
 
     void Renderable::SetMaterial(const SPtr<Material>& material)
     {
-#if TE_DEBUG_MODE
-        TE_ASSERT_ERROR(material != nullptr, "Material should not be null");
-#endif
+        if (!_mesh)
+            return;
 
         SetMaterial(0, material);
         _markCoreDirty(ActorDirtyFlag::GpuParams);
@@ -134,10 +130,6 @@ namespace te
 
     void Renderable::SetMaterial(const String& name, const SPtr<Material>& material)
     {
-#if TE_DEBUG_MODE
-        TE_ASSERT_ERROR(material != nullptr, "Material should not be null");
-#endif
-
         if (!_mesh)
             return;
 
@@ -158,6 +150,14 @@ namespace te
 
         if (assignedSubMeshed == 0)
             TE_DEBUG("No submesh currently use the material {" + name + "} in {" + _mesh->GetName() + "}");
+    }
+
+    void Renderable::ClearAllMaterials()
+    {
+        for (UINT32 i = 0; i < (UINT32)_materials.size(); i++)
+            _materials[i] = nullptr;
+
+        _markCoreDirty(ActorDirtyFlag::GpuParams);
     }
 
     SPtr<Material> Renderable::GetMaterial(UINT32 idx) const

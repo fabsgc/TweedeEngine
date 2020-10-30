@@ -5,15 +5,8 @@ namespace te
     Resource::Resource(UINT32 type)
         : Serializable(type)
         , _name("Resource")
+        , _path()
+        , _size(0)
+        , _UUID(UUID::EMPTY)
     { }
-
-    const String& Resource::GetName() const
-    {
-        return _name;
-    }
-
-    void Resource::SetName(const String& name)
-    {
-        _name = name;
-    }
 }
