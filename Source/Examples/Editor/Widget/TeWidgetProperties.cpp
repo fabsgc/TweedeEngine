@@ -390,7 +390,6 @@ namespace te
         bool hasChanged = false;
         int lightType = (int)light->GetType();
         bool castsShadows = light->GetCastsShadow();
-        Color color = light->GetColor();
         float attenuationRadius = light->GetAttenuationRadius();
         float linearAttenuation = light->GetLinearAttenuation();
         float quadraticAttenuation = light->GetQuadraticAttenuation();
