@@ -1,28 +1,27 @@
 #include "TeWidgetProperties.h"
 
-#include "Resources/TeResourceManager.h"
-#include "Scene/TeSceneManager.h"
-#include "Scene/TeSceneObject.h"
-#include "Components/TeCCamera.h"
-#include "Components/TeCCameraFlyer.h"
-#include "Components/TeCCameraUI.h"
-#include "Components/TeCLight.h"
-#include "Components/TeCRenderable.h"
-#include "Components/TeCSkybox.h"
-#include "Components/TeCScript.h"
-#include "RenderAPI/TeSubMesh.h"
-#include "Mesh/TeMesh.h"
-
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
-
 #include "../TeEditorResManager.h"
+#include "Resources/TeResourceManager.h"
+#include "Components/TeCRenderable.h"
+#include "Components/TeCCameraFlyer.h"
+#include "Components/TeCCameraUI.h"
+#include "Components/TeCCamera.h"
+#include "Scene/TeSceneManager.h"
+#include "Scene/TeSceneObject.h"
+#include "Components/TeCSkybox.h"
+#include "Components/TeCScript.h"
+#include "Components/TeCLight.h"
+#include "RenderAPI/TeSubMesh.h"
+#include "Mesh/TeMesh.h"
 
 namespace te
 {
     WidgetProperties::WidgetProperties()
         : Widget(WidgetType::Properties)
         , _selections(Editor::Instance().GetSelectionData())
+        , _fileDialog(Editor::Instance().GetFileDialog())
     { 
         _title = PROPERTIES_TITLE;
         _flags |= ImGuiWindowFlags_HorizontalScrollbar;
@@ -525,21 +524,26 @@ namespace te
             {
                 if (meshUUID == loadMesh)
                 {
-                    // TODO
+                    _loadMesh = true;
+                    _fileDialog.SetVisible(true);
+                    _fileDialog.SetMode(ImGuiFileDialog::OpenMode::Open);
                 }
                 else if (meshUUID == emptyMesh)
                 {
                     renderable->SetMesh(nullptr);
                     renderable->ClearAllMaterials();
+                    hasChanged = true;
                 }
                 else if (meshUUID != ((mesh) ? mesh->GetUUID() : emptyMesh))
                 {
                     renderable->SetMesh(gResourceManager().Load<Mesh>(meshUUID).GetInternalPtr());
                     renderable->ClearAllMaterials();
+                    hasChanged = true;
                 }
-
-                hasChanged = true;
             }
+
+            if (ShowLoadMesh())
+                hasChanged = true;
         }
         ImGui::Separator();
 
@@ -606,7 +610,6 @@ namespace te
         SPtr<Mesh> mesh = renderable->GetMesh();
         ImGuiExt::ComboOptions<UUID> materialsOptions;
         UUID emptyMaterial = UUID(50, 0, 0, 0);
-        UUID loadMaterial = UUID::EMPTY;
         const MeshProperties& meshProperties = mesh->GetProperties();
         const float width = ImGui::GetWindowContentRegionWidth() - 120.0f;
         EditorResManager::ResourcesContainer& container = EditorResManager::Instance().Get<Material>();
@@ -624,24 +627,19 @@ namespace te
                     materialsOptions.AddOption(resource.second->GetUUID(), resource.second->GetName());
 
                 materialsOptions.AddOption(emptyMaterial, "No material");
-                materialsOptions.AddOption(UUID::EMPTY, ICON_FA_FOLDER_OPEN " Load");
 
                 if (ImGuiExt::RenderOptionCombo<UUID>(&materialUUID, "##submesh_material_option", title.c_str(), materialsOptions, width))
                 {
-                    if (materialUUID == loadMaterial)
-                    {
-                        // TODO
-                    }
-                    else if (materialUUID == emptyMaterial)
+                    if (materialUUID == emptyMaterial)
                     {
                         renderable->SetMaterial(i, nullptr);
+                        hasChanged = true;
                     }
                     else
                     {
                         renderable->SetMaterial(gResourceManager().Load<Material>(materialUUID).GetInternalPtr());
+                        hasChanged = true;
                     }
-
-                    hasChanged = true;
                 }
             }  
         }
@@ -683,18 +681,20 @@ namespace te
             {
                 if (textureUUID == loadTexture)
                 {
-                    // TODO
+                    _loadSkybox = true;
+                    _fileDialog.SetVisible(true);
+                    _fileDialog.SetMode(ImGuiFileDialog::OpenMode::Open);
                 }
                 else if (textureUUID == emptyTexture)
                 {
                     skybox->SetTexture(nullptr);
+                    hasChanged = true;
                 }
                 else
                 {
                     skybox->SetTexture(gResourceManager().Load<Texture>(textureUUID).GetInternalPtr());
+                    hasChanged = true;
                 }
-
-                hasChanged = true;
             }
         }
         ImGui::Separator();
@@ -705,6 +705,37 @@ namespace te
             hasChanged = true;
         }
 
+        if (ShowLoadSkybox())
+            hasChanged = true;
+
         return hasChanged;
+    }
+
+    bool WidgetProperties::ShowLoadMesh()
+    {
+        if (_loadMesh)
+            ImGui::OpenPopup("LoadMesh");
+
+        if (_fileDialog.Open("LoadMesh"))
+        {
+            _loadMesh = false;
+            return true;
+        }
+
+        return false;
+    }
+
+    bool WidgetProperties::ShowLoadSkybox()
+    {
+        if (_loadSkybox)
+            ImGui::OpenPopup("LoadSkybox");
+
+        if (_fileDialog.Open("LoadSkybox"))
+        {
+            _loadSkybox = false;
+            return true;
+        }
+
+        return false;
     }
 }

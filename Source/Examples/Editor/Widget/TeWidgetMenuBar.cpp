@@ -8,6 +8,9 @@ namespace te
 {
     WidgetMenuBar::WidgetMenuBar()
         : Widget(WidgetType::MenuBar)
+        , _fileDialog(Editor::Instance().GetFileDialog())
+        , _open(false)
+        , _save(false)
     { 
         _title = MENUBAR_TITLE;
         _isWindow = false;
@@ -31,13 +34,21 @@ namespace te
         { }
 
         if (gVirtualInput().IsButtonDown(_openBtn))
-        { }
+        {
+            _open = true;
+            _fileDialog.SetVisible(true);
+            _fileDialog.SetMode(ImGuiFileDialog::OpenMode::Open);
+        }
 
         if (gVirtualInput().IsButtonDown(_saveBtn))
         { }
 
         if (gVirtualInput().IsButtonDown(_saveAsBtn))
-        { }
+        {
+            _save = true;
+            _fileDialog.SetVisible(true);
+            _fileDialog.SetMode(ImGuiFileDialog::OpenMode::Save);
+        }
 
         if(gVirtualInput().IsButtonDown(_quitBtn))
             gCoreApplication().OnStopRequested();
@@ -50,13 +61,21 @@ namespace te
                 { }
 
                 if (ImGui::MenuItem(ICON_FA_FOLDER_OPEN " " ICON_FA_GRIP_LINES_VERTICAL "  Open", "Ctrl+O"))
-                { }
+                {
+                    _open = true;
+                    _fileDialog.SetVisible(true);
+                    _fileDialog.SetMode(ImGuiFileDialog::OpenMode::Open);
+                }
 
                 if (ImGui::MenuItem(ICON_FA_SAVE "  " ICON_FA_GRIP_LINES_VERTICAL "  Save", "Ctrl+S"))
                 { }
 
-                if (ImGui::MenuItem(ICON_FA_SAVE "  " ICON_FA_GRIP_LINES_VERTICAL "  Save As", "Ctrl+Shift+S"))
-                { }
+                if (ImGui::MenuItem(ICON_FA_SAVE "  " ICON_FA_GRIP_LINES_VERTICAL "  Save As ..", "Ctrl+Shift+S"))
+                {
+                    _save = true;
+                    _fileDialog.SetVisible(true);
+                    _fileDialog.SetMode(ImGuiFileDialog::OpenMode::Save);
+                }
 
                 if (ImGui::MenuItem(ICON_FA_SIGN_OUT_ALT "  " ICON_FA_GRIP_LINES_VERTICAL "  Quit", "Ctrl+Q"))
                     gCoreApplication().OnStopRequested();
@@ -143,6 +162,8 @@ namespace te
         }
 
         ShowAboutWindow();
+        ShowOpen();
+        ShowSave();
     }
 
     void WidgetMenuBar::UpdateBackground()
@@ -185,5 +206,27 @@ namespace te
         ImGui::Separator();
 
         ImGui::End();
+    }
+
+    void WidgetMenuBar::ShowOpen()
+    {
+        if (_open)
+            ImGui::OpenPopup("OpenProject");
+
+        if (_fileDialog.Open("OpenProject"))
+        {
+            _open = false;
+        }
+    }
+
+    void WidgetMenuBar::ShowSave()
+    {
+        if (_save)
+            ImGui::OpenPopup("SaveProject");
+
+        if (_fileDialog.Open("SaveProject"))
+        {
+            _save = false;
+        }
     }
 }

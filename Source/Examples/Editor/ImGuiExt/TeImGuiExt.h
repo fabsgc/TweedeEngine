@@ -6,6 +6,7 @@
 #include "Scene/TeTransform.h"
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
+#include "../ImGuiExt/TeImGuiFileDialog.h"
 
 namespace te
 {
@@ -93,6 +94,7 @@ namespace te
             bool hasChanged = false;
             ImGui::PushID(id);
             if (width > 0.0f) ImGui::PushItemWidth(width);
+
             if (ImGui::BeginCombo(text, options[*value].Label.c_str()))
             {
                 for (const auto& option : options.Options)
@@ -120,5 +122,7 @@ namespace te
 
             return hasChanged;
         };
+
+        static bool LoadResource(UUID& uuid, ImGuiFileDialog& fileDialog, TypeID_Core resourceType = TID_Resource);
     };
 }

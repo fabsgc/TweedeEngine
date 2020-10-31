@@ -3,6 +3,7 @@
 #include "TeCorePrerequisites.h"
 #include "Input/TeVirtualInput.h"
 #include "TeWidget.h"
+#include "../ImGuiExt/TeImGuiFileDialog.h"
 
 namespace te
 {
@@ -16,7 +17,10 @@ namespace te
         virtual void Update() override;
         virtual void UpdateBackground() override;
 
+    protected:
         void ShowAboutWindow();
+        void ShowOpen();
+        void ShowSave();
 
     protected:
         struct WidgetMenubarSettings
@@ -26,6 +30,11 @@ namespace te
 
     protected:
         WidgetMenubarSettings _settings;
+        ImGuiFileDialog& _fileDialog;
+
+        bool _open = false;
+        bool _save = false;
+
         VirtualButton _newBtn;
         VirtualButton _openBtn;
         VirtualButton _saveBtn;

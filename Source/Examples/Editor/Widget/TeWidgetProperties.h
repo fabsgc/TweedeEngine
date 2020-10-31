@@ -18,7 +18,6 @@ namespace te
         virtual void UpdateBackground() override;
 
     protected:
-
         /** Shows element properties, returns true if something has been modified */
         bool ShowSceneObjectProperties();
 
@@ -73,7 +72,14 @@ namespace te
         /** Show information about a skybox */
         bool ShowSkybox(SPtr<Skybox> skybox);
 
+        bool ShowLoadMesh();
+        bool ShowLoadSkybox();
+
     protected:
         Editor::SelectionData& _selections;
+        ImGuiFileDialog& _fileDialog;
+
+        bool _loadMesh = false;
+        bool _loadSkybox = false;
     };
 }

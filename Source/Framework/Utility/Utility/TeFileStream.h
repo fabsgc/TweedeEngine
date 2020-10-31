@@ -15,6 +15,7 @@ namespace te
         };
 
     public:
+        FileStream();
         FileStream(const String& path, AccessMode mode = READ);
         ~FileStream();
 

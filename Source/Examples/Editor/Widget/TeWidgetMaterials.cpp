@@ -5,11 +5,9 @@
 
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
-#include "TeCoreApplication.h"
 #include "Gui/TeGuiAPI.h"
 #include "Material/TeMaterial.h"
 #include "Scene/TeSceneObject.h"
-#include "Scene/TeComponent.h"
 #include "Image/TeTexture.h"
 #include "Resources/TeBuiltinResources.h"
 #include "Resources/TeResourceManager.h"
@@ -46,7 +44,7 @@ namespace te
         EditorResManager::ResourcesContainer& textures = EditorResManager::Instance().Get<Texture>();
         const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
 
-        const auto& ShowTexture = [&](UUID& uuid, bool& useTexture, const char* id, const char* label, const char* textureName, ImGuiExt::ComboOptions<UUID>& options, float width)
+        const auto& ShowTexture = [&](UUID& uuid, bool& textureUsed, const char* id, const char* label, const char* textureName, ImGuiExt::ComboOptions<UUID>& options, float width)
         {
             bool hasChanged = false;
             uuid = empty;
@@ -64,15 +62,15 @@ namespace te
                 else if (uuid == empty)
                 {
                     _currentMaterial->RemoveTexture(textureName);
-                    useTexture = false;
+                    textureUsed = false;
+                    hasChanged = true;
                 }
                 else
                 {
                     _currentMaterial->SetTexture(textureName, gResourceManager().Load<Texture>(uuid).GetInternalPtr());
-                    useTexture = true;
+                    textureUsed = true;
+                    hasChanged = true;
                 }
-
-                hasChanged = true;
             }
 
             return hasChanged;

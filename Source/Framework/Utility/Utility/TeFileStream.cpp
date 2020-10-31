@@ -11,6 +11,11 @@ namespace te
         Open();
     }
 
+    FileStream::FileStream()
+        : _path("")
+        , _mode(AccessMode::READ)
+    { }
+
     FileStream::~FileStream()
     {
         Close();
@@ -26,9 +31,7 @@ namespace te
         std::ios::openmode mode = std::ios::binary;
 
         if ((_mode & READ) != 0)
-        {
             mode |= std::ios::in;
-        }
 
         if (((_mode & WRITE) != 0))
         {
@@ -96,13 +99,9 @@ namespace te
         _inStream->clear(); // Clear fail status in case eof was set
 
         if (((_mode & WRITE) != 0))
-        {
             _FStream->seekp(static_cast<std::ifstream::pos_type>(count), std::ios::cur);
-        }
         else
-        {
             _inStream->seekg(static_cast<std::ifstream::pos_type>(count), std::ios::cur);
-        }
     }
 
     void FileStream::Seek(size_t pos)
@@ -110,13 +109,9 @@ namespace te
         _inStream->clear(); // Clear fail status in case eof was set
 
         if (((_mode & WRITE) != 0))
-        {
             _FStream->seekp(static_cast<std::ifstream::pos_type>(pos), std::ios::beg);
-        }
         else
-        {
             _inStream->seekg(static_cast<std::streamoff>(pos), std::ios::beg);
-        }
     }
 
     size_t FileStream::Tell()
@@ -124,9 +119,7 @@ namespace te
         _inStream->clear(); // Clear fail status in case eof was set
 
         if (((_mode & WRITE) != 0))
-        {
             return (size_t)_FStream->tellp();
-        }
 
         return (size_t)_inStream->tellg();
     }
@@ -141,9 +134,7 @@ namespace te
         if (_inStream)
         {
             if (_FStreamRO)
-            {
                 _FStreamRO->close();
-            }
 
             if (_FStream)
             {
@@ -166,13 +157,9 @@ namespace te
     {
         String::size_type pos = _internalPath.rfind('.');
         if (pos != String::npos)
-        {
             _extension = _internalPath.substr(pos);
-        }
         else
-        {
             _extension = String();
-        }
     }
 
     void FileStream::CalculteSize()
@@ -182,9 +169,7 @@ namespace te
 #if TE_PLATFORM == TE_PLATFORM_WIN32 // Windows
             WIN32_FILE_ATTRIBUTE_DATA attrData;
             if (GetFileAttributesExW(ToWString(_internalPath).c_str(), GetFileExInfoStandard, &attrData) == FALSE)
-            {
                 TE_DEBUG("Can't get file size : " + _internalPath);
-            }
 
             LARGE_INTEGER li;
             li.LowPart = attrData.nFileSizeLow;

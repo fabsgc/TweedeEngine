@@ -3,6 +3,8 @@
 #include "TeCorePrerequisites.h"
 #include "Widget/TeWidget.h"
 #include "Utility/TeModule.h"
+#include "ImGuiExt/TeImGuiFileDialog.h"
+
 #include <vector>
 #include <memory>
 
@@ -78,6 +80,9 @@ namespace te
         /** Depending on selections done wherever in the editor we could want to give focus to a window */
         void PutFocus(WindowType type) const;
 
+        /** We can only have on instance of the file dialog */
+        ImGuiFileDialog& GetFileDialog() { return _fileDialog; }
+
     protected:
         struct EditorSettings
         {
@@ -114,6 +119,8 @@ namespace te
         std::vector<SPtr<Widget>> _widgets;
         EditorSettings _settings;
         bool _editorBegun;
+
+        ImGuiFileDialog _fileDialog;
 
         HSceneObject _viewportSO;
         HSceneObject _sceneSO;
