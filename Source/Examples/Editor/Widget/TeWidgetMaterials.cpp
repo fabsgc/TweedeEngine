@@ -343,12 +343,16 @@ namespace te
 
             if (texture.GetHandleData())
             {
+                // Load texture from file
                 texture->SetName(_fileBrowser.SelectedFileName);
                 EditorResManager::Instance().Add<Texture>(texture);
+
+                // Set texture and reset _loadTextureName and _loadTextureUsed
                 _currentMaterial->SetTexture(_loadTextureName, texture);
                 _loadTextureName.clear();
-                textureLoaded = true;
                 *_loadTextureUsed = true;
+
+                textureLoaded = true;
             }
 
             _loadTexture = false;
