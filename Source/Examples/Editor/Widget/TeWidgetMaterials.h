@@ -22,11 +22,12 @@ namespace te
     protected:
         SPtr<Material> _currentMaterial;
         UINT32 _materialCreationCounter;
-        ImGuiFileBrowser& _fileBrowser;
-
+        
         // Data used to set the correct texture while loading
         bool _loadTexture;
         String _loadTextureName;
         bool* _loadTextureUsed;
+
+        ImGuiFileBrowser& _fileBrowser;
     };
 }

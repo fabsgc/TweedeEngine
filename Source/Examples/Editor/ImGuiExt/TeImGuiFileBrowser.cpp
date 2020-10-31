@@ -55,7 +55,7 @@ namespace te
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         current_path = "./";
 #else
-        initCurrentPath();
+        InitCurrentPath();
 #endif
     }
 
@@ -145,7 +145,7 @@ namespace te
 #if TE_PLATFORM == TE_PLATFORM_WIN32
                     show_error |= !(LoadWindowsDrives());
 #else
-                    initCurrentPath();
+                    InitCurrentPath();
                     show_error |= !(readDIR(current_path));
 #endif
                 }
@@ -228,22 +228,22 @@ namespace te
         ImGui::BeginChild("##NavigationWindow", nw_size, true, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoScrollbar);
 
         ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.882f, 0.745f, 0.078f,1.0f));
-        for(int i = 0; i < current_dirlist.size(); i++)
+        for(int i = 0; i < (int)current_dirlist.size(); i++)
         {
             if( ImGui::Button(current_dirlist[i].c_str()) )
             {
                 //If last button clicked, nothing happens
-                if(i != current_dirlist.size() - 1)
+                if(i != (int)current_dirlist.size() - 1)
                     show_error |= !(OnNavigationButtonClick(i));
             }
 
             //Draw Arrow Buttons
-            if(i != current_dirlist.size() - 1)
+            if(i != (int)current_dirlist.size() - 1)
             {
                 ImGui::SameLine(0,0);
                 float next_label_width = ImGui::CalcTextSize(current_dirlist[i+1].c_str()).x;
 
-                if(i+1 < current_dirlist.size() - 1)
+                if(i+1 < (int)current_dirlist.size() - 1)
                     next_label_width += frame_height + ImGui::CalcTextSize(">>").x;
 
                 if(ImGui::GetCursorPosX() + next_label_width >= (nw_size.x - style.WindowPadding.x * 3.0))
@@ -260,9 +260,9 @@ namespace te
                         if(ImGui::ListBoxHeader("##NavBarDropBox", ImVec2(0, list_item_height* 5)))
                         {
                             ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.882f, 0.745f, 0.078f,1.0f));
-                            for(int j = i+1; j < current_dirlist.size(); j++)
+                            for(int j = i+1; j < (int)current_dirlist.size(); j++)
                             {
-                                if(ImGui::Selectable(current_dirlist[j].c_str(), false) && j != current_dirlist.size() - 1)
+                                if(ImGui::Selectable(current_dirlist[j].c_str(), false) && j != (int)current_dirlist.size() - 1)
                                 {
                                     show_error |= !(OnNavigationButtonClick(j));
                                     ImGui::CloseCurrentPopup();
@@ -346,7 +346,7 @@ namespace te
         //Output directories in yellow
         ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.882f, 0.745f, 0.078f,1.0f));
         int items = 0;
-        for (int i = 0; i < filtered_dirs.size(); i++)
+        for (int i = 0; i < (int)filtered_dirs.size(); i++)
         {
             if(!filtered_dirs[i]->is_hidden || show_hidden)
             {
@@ -373,7 +373,7 @@ namespace te
         ImGui::PopStyleColor(1);
 
         //Output files
-        for (int i = 0; i < filtered_files.size(); i++)
+        for (int i = 0; i < (int)filtered_files.size(); i++)
         {
             if(!filtered_files[i]->is_hidden || show_hidden)
             {
@@ -406,8 +406,6 @@ namespace te
     bool ImGuiFileBrowser::RenderInputTextAndExtRegion()
     {
         ImGuiStyle& style = ImGui::GetStyle();
-        ImGuiIO& io = ImGui::GetIO();
-
         ImVec2 pw_pos = ImGui::GetWindowPos();
         ImVec2 pw_content_sz = ImGui::GetWindowSize() - style.WindowPadding * 2.0;
         ImVec2 cursor_pos = ImGui::GetCursorPos();
@@ -447,7 +445,7 @@ namespace te
             if(dialog_mode == DialogMode::OPEN || dialog_mode == DialogMode::SAVE)
             {
                 inputcb_filter_files.clear();
-                for(int i = 0; i < subfiles.size(); i++)
+                for(int i = 0; i < (int)subfiles.size(); i++)
                 {
                     if(ImStristr(subfiles[i].name.c_str(), nullptr, input_fn, nullptr) != nullptr)
                         inputcb_filter_files.push_back(std::ref(subfiles[i].name));
@@ -458,7 +456,7 @@ namespace te
             else if(dialog_mode == DialogMode::SELECT)
             {
                 inputcb_filter_files.clear();
-                for(int i = 0; i < subdirs.size(); i++)
+                for(int i = 0; i < (int)subdirs.size(); i++)
                 {
                     if(ImStristr(subdirs[i].name.c_str(), nullptr, input_fn, nullptr) != nullptr)
                         inputcb_filter_files.push_back(std::ref(subdirs[i].name));
@@ -640,7 +638,7 @@ namespace te
         ImGui::PushItemWidth(ext_box_width);
         if(ImGui::BeginCombo("##FileTypes", valid_exts[selected_ext_idx].c_str()))
         {
-            for(int i = 0; i < valid_exts.size(); i++)
+            for(int i = 0; i < (int)valid_exts.size(); i++)
             {
                 if(ImGui::Selectable(valid_exts[i].c_str(), selected_ext_idx == i))
                 {
@@ -651,7 +649,7 @@ namespace te
                         size_t idx = name.find_last_of(".");
                         if(idx == String::npos)
                             idx = strlen(input_fn);
-                        for(int j = 0; j < valid_exts[selected_ext_idx].size(); j++)
+                        for(int j = 0; j < (int)valid_exts[selected_ext_idx].size(); j++)
                             input_fn[idx++] = valid_exts[selected_ext_idx][j];
                         input_fn[idx++] = '\0';
                     }
@@ -766,7 +764,7 @@ namespace te
 #if TE_PLATFORM == TE_PLATFORM_WIN32
             current_path = pathdir = "./";
 #else
-            initCurrentPath();
+            InitCurrentPath();
             pathdir = current_path;
 #endif
 
@@ -958,7 +956,7 @@ namespace te
 
             ImGui::TextWrapped("%s", text.c_str());
             ImGui::BeginChild("##SupportedExts", ImVec2(0, cw_height), true);
-            for(int i = 0; i < valid_exts.size(); i++)
+            for(int i = 0; i < (int)valid_exts.size(); i++)
                 ImGui::BulletText("%s", valid_exts[i].c_str());
             ImGui::EndChild();
 
@@ -1010,7 +1008,7 @@ namespace te
         {
             if(dialog_mode == DialogMode::SELECT)
             {
-                for(int i = 0; i < subdirs.size(); i++)
+                for(int i = 0; i < (int)subdirs.size(); i++)
                 {
                     if(subdirs[i].name == SelectedFileName)
                     {
@@ -1022,7 +1020,7 @@ namespace te
             }
             else
             {
-                for(int i = 0; i < subfiles.size(); i++)
+                for(int i = 0; i < (int)subfiles.size(); i++)
                 {
                     if(subfiles[i].name == SelectedFileName)
                     {
@@ -1131,7 +1129,7 @@ namespace te
 
     //Unix only
 #if TE_PLATFORM == TE_PLATFORM_LINUX
-    void ImGuiFileBrowser::initCurrentPath()
+    void ImGuiFileBrowser::InitCurrentPath()
     {
         bool path_max_def = false;
 
