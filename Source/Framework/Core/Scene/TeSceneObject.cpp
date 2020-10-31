@@ -811,7 +811,7 @@ namespace te
 
         if (searchInChildren)
         {
-            for (auto& childSO : _children)
+            for (auto& childSO : currentSO->GetChildren())
                 _getComponentsInternal(childSO, criteria, components, searchType, searchInChildren);
         }
     }

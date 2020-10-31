@@ -160,6 +160,22 @@ namespace te
         _markCoreDirty(ActorDirtyFlag::GpuParams);
     }
 
+    bool Renderable::IsUsingMaterial(const SPtr<Material>& material)
+    {
+        for (UINT32 i = 0; i < (UINT32)_materials.size(); i++)
+        {
+            if(_materials[i] == material)
+                return true;
+        }
+
+        return false;
+    }
+
+    void Renderable::UpdateMaterials()
+    {
+        _markCoreDirty(ActorDirtyFlag::GpuParams);
+    }
+
     SPtr<Material> Renderable::GetMaterial(UINT32 idx) const
     {
         if (idx >= (UINT32)_materials.size())

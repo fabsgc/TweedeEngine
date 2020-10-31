@@ -35,6 +35,13 @@ namespace te
         }
 
         template <class T>
+        ResourceHandle<T> Load(const UUID& uuid = UUID::EMPTY)
+        {
+            OnResourceLoaded(Get(uuid));
+            return static_resource_cast<T>(Get(uuid));
+        }
+
+        template <class T>
         ResourceHandle<T> Load(const String& filePath)
         {
             UUID uuid;

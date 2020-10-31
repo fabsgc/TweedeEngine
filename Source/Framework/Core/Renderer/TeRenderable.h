@@ -74,6 +74,12 @@ namespace te
         /** Remove all materials set on every submesh */
         void ClearAllMaterials();
 
+        /** We sometimes need to know if a material is currently used by a part of a renderable */
+        bool IsUsingMaterial(const SPtr<Material>& material);
+
+        /** If a material used by this renderable has been modified, we need to send the notification and refresh gpu params */
+        void UpdateMaterials();
+
         /** @copydoc SetMaterials() */
         const Vector<SPtr<Material>>& GetMaterials() { return _materials; }
 

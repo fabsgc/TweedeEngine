@@ -361,10 +361,10 @@ namespace te
 
                 ImGuiID dockLeftId = ImGui::DockBuilderSplitNode(dockMainId, ImGuiDir_Left, 0.20f, nullptr, &dockMainId);
                 ImGuiID dockRightId = ImGui::DockBuilderSplitNode(dockMainId, ImGuiDir_Right, 0.25f, nullptr, &dockMainId);
-                ImGuiID dockBottomId = ImGui::DockBuilderSplitNode(dockMainId, ImGuiDir_Down, 0.25f, nullptr, &dockMainId);
+                ImGuiID dockBottomId = ImGui::DockBuilderSplitNode(dockMainId, ImGuiDir_Down, 0.305f, nullptr, &dockMainId);
 
                 const ImGuiID dockLeftBottomId = ImGui::DockBuilderSplitNode(dockLeftId, ImGuiDir_Down, 0.6f, nullptr, &dockLeftId);
-                const ImGuiID dockRightBottomId = ImGui::DockBuilderSplitNode(dockRightId, ImGuiDir_Down, 0.4f, nullptr, &dockRightId);
+                const ImGuiID dockRightBottomId = ImGui::DockBuilderSplitNode(dockRightId, ImGuiDir_Down, 0.6f, nullptr, &dockRightId);
 
                 // Dock windows
                 ImGui::DockBuilderDockWindow(PROJECT_TITLE, dockLeftId);
@@ -487,8 +487,6 @@ namespace te
         _materialMonkey->SetTexture("EnvironmentMap", _loadedCubemapTexture);
         _materialMonkey->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
         _materialMonkey->SetProperties(properties);
-
-        EditorResManager::Instance().Add<Material>(_materialMonkey);
         // ######################################################
 
         // ######################################################
@@ -520,6 +518,10 @@ namespace te
         _renderablePlane->Initialize();
         _sceneRenderablePlaneSO->Move(Vector3(0.0, 0.1f, 0.0f));
         // ######################################################
+
+        EditorResManager::Instance().Add<Material>(_materialMonkey);
+        EditorResManager::Instance().Add<Shader>(gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque));
+        EditorResManager::Instance().Add<Shader>(gBuiltinResources().GetBuiltinShader(BuiltinShader::Transparent));
 #endif
     }
 }

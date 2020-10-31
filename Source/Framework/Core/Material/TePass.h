@@ -95,7 +95,7 @@ namespace te
 
     protected:
         PASS_DESC _data;
-		SPtr<GraphicsPipelineState> _graphicsPipelineState;
+        SPtr<GraphicsPipelineState> _graphicsPipelineState;
         SPtr<ComputePipelineState> _computePipelineState;
         SPtr<GpuParams> _gpuParams;
     };

@@ -234,7 +234,7 @@ namespace te
     }
     void BuiltinResources::InitStates()
     {
-        _blendTransparentStateDesc.AlphaToCoverageEnable = true;
+        _blendTransparentStateDesc.AlphaToCoverageEnable = false;
         _blendTransparentStateDesc.IndependantBlendEnable = true;
 
         _rasterizerStateDesc.polygonMode = PM_SOLID;
@@ -601,6 +601,15 @@ namespace te
 
     void BuiltinResources::InitShaderTransparent()
     {
+        _blendTransparentStateDesc.RenderTargetDesc[0].BlendEnable = true;
+        _blendTransparentStateDesc.RenderTargetDesc[0].SrcBlend = BlendFactor::BF_SOURCE_ALPHA;
+        _blendTransparentStateDesc.RenderTargetDesc[0].DstBlend = BlendFactor::BF_INV_SOURCE_ALPHA;
+        _blendTransparentStateDesc.RenderTargetDesc[0].BlendOp = BlendOperation::BO_ADD;
+        _blendTransparentStateDesc.RenderTargetDesc[0].SrcBlendAlpha = BlendFactor::BF_ZERO;
+        _blendTransparentStateDesc.RenderTargetDesc[0].DstBlendAlpha = BlendFactor::BF_ZERO;
+        _blendTransparentStateDesc.RenderTargetDesc[0].BlendOpAlpha = BlendOperation::BO_ADD;
+        _blendTransparentStateDesc.RenderTargetDesc[0].RenderTargetWriteMask = 0x0f;
+
         PASS_DESC passDesc;
         passDesc.BlendStateDesc = _blendTransparentStateDesc;
         passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
@@ -616,6 +625,7 @@ namespace te
 
         SHADER_DESC shaderDesc = _forwardShaderDesc;
         shaderDesc.Flags = (UINT32)ShaderFlag::Transparent;
+        shaderDesc.QueueType = QueueSortType::BackToFront;
         shaderDesc.Techniques.push_back(technique.GetInternalPtr());
         
         _shaderTransparent = Shader::Create("Forward_Transparent", shaderDesc);

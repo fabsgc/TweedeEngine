@@ -144,6 +144,23 @@ namespace te
         _markCoreDirty(MaterialDirtyFlags::ParamResource);
     }
 
+    SPtr<Texture> Material::GetTexture(const String& name)
+    {
+        if (_textures.find(name) == _textures.end())
+            return nullptr;
+
+        return _textures[name]->TextureElem;
+    }
+
+    void Material::RemoveTexture(const String& name)
+    {
+        auto it = _textures.find(name);
+        if (it != _textures.end())
+        {
+            _textures.erase(it);
+        }
+    }
+
     void Material::SetLoadStoreTexture(const String& name, const SPtr<Texture>& value, const TextureSurface& surface)
     {
 #if TE_DEBUG_MODE
@@ -181,6 +198,11 @@ namespace te
 #endif
         _samplerStates[name] = value;
         _markCoreDirty(MaterialDirtyFlags::ParamResource);
+    }
+
+    const SPtr<SamplerState>& Material::GetSamplerState(const String& name)
+    {
+        return _samplerStates[name];
     }
 
     UINT32 Material::GetDefaultTechnique() const

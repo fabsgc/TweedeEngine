@@ -387,7 +387,7 @@ namespace te
             return;
 
         SPtr<Texture> radiance = skybox ? skybox->GetTexture() : nullptr;
-        float brightness = skybox->GetBrightness();
+        float brightness = skybox ? skybox->GetBrightness() : 0.0f;
 
         if (radiance != nullptr)
         {

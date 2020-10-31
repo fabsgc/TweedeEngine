@@ -57,6 +57,12 @@ namespace te
         /** @copydoc Renderable::SetMaterials */
         void SetMaterials(const Vector<HMaterial>& materials);
 
+        /** @copydoc Renderable::IsUsingMaterial */
+        bool IsUsingMaterial(const SPtr<Material>& material) { return _internal->IsUsingMaterial(material); }
+
+        /** @copydoc Renderable::UpdateMaterials */
+        void UpdateMaterials() { _internal->UpdateMaterials(); }
+
         /** @copydoc Renderable::ClearAllMaterials */
         void ClearAllMaterials() { _internal->ClearAllMaterials(); }
 

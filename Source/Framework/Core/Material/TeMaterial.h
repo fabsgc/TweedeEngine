@@ -111,14 +111,23 @@ namespace te
         /** Assigns a texture to the shader parameter with the specified name. */
         void SetTexture(const String& name, const SPtr<Texture>& value, const TextureSurface& surface = GpuParams::COMPLETE);
 
+        /** Returns a pointer to the texture associated to "name". Returns nullptr if not exists */
+        SPtr<Texture> GetTexture(const String& name);
+
+        /** We can reset a texture on a material */
+        void Material::RemoveTexture(const String& name);
+
         /** Assigns a texture to the shader parameter with the specified name. */
         void SetLoadStoreTexture(const String& name, const SPtr<Texture>& value, const TextureSurface& surface = GpuParams::COMPLETE);
 
         /** Assigns a buffer to the shader parameter with the specified name. */
         void SetBuffer(const String& name, const SPtr<GpuBuffer>& value);
-         
+
         /** Assigns a sampler state to the shader parameter with the specified name. */
         void SetSamplerState(const String& name, const SPtr<SamplerState>& value);
+
+        /** Get sampler state */
+        const SPtr<SamplerState>& GetSamplerState(const String& name);
 
         /** @copydoc Material::SetTexture */
         void SetTexture(const String& name, const HTexture& value, const TextureSurface& surface = GpuParams::COMPLETE)

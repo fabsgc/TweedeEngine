@@ -4,6 +4,8 @@
 #include "Math/TeVector3.h"
 #include "Math/TeVector4.h"
 #include "Scene/TeTransform.h"
+#include "ImGui/imgui.h"
+#include "ImGui/imgui_internal.h"
 
 namespace te
 {

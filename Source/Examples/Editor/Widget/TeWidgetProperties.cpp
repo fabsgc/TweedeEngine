@@ -318,8 +318,7 @@ namespace te
             ImGui::Separator();
 
             ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
-            if (ImGui::InputText("UUID", inputUUID, IM_ARRAYSIZE(inputUUID)))
-            { }
+            ImGui::InputText("UUID", inputUUID, IM_ARRAYSIZE(inputUUID));
             ImGui::PopItemFlag();
             ImGui::PopItemWidth();
         }
@@ -389,7 +388,7 @@ namespace te
     {
         bool hasChanged = false;
         int lightType = (int)light->GetType();
-        bool castShadows = light->GetCastsShadow();
+        bool castsShadows = light->GetCastsShadow();
         Color color = light->GetColor();
         float attenuationRadius = light->GetAttenuationRadius();
         float linearAttenuation = light->GetLinearAttenuation();
@@ -402,11 +401,20 @@ namespace te
         // Color
         {
             Vector4 color = light->GetColor().GetAsVector4();
-
             if (ImGuiExt::RenderColorRGBA(color, "##light_color_option", "Color", width))
             {
                 hasChanged = true;
                 light->SetColor(Color(color));
+            }
+        }
+        ImGui::Separator();
+
+        // Cast shadows
+        {
+            if (ImGuiExt::RenderOptionBool(castsShadows, "##light_cast_shadows_option", "Cast shadows"))
+            {
+                hasChanged = true;
+                light->SetCastsShadow(castsShadows);
             }
         }
         ImGui::Separator();
@@ -582,7 +590,7 @@ namespace te
         // cull distance factor
         {
             float cullDistanceFactor = properties.CullDistanceFactor;
-            if (ImGuiExt::RenderOptionFloat(cullDistanceFactor, "##renderable_properties_dynamic_env_mapping_option", "Cull distance factor", 0.0f, 1.0f, width - 20.0f))
+            if (ImGuiExt::RenderOptionFloat(cullDistanceFactor, "##renderable_properties_dynamic_env_mapping_option", "Cull dist. factor", 0.0f, 1.0f, width - 20.0f))
             {
                 hasChanged = true;
                 renderable->SetCullDistanceFactor(cullDistanceFactor);

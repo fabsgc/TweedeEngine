@@ -22,23 +22,23 @@ namespace te
     enum class BuiltinShader
     {
         /** Shader used for opaque 3D geometry. */
-        Opaque,
+        Opaque = 0x0,
         /** Shader used for transparent 3D geometry. */
-        Transparent,
+        Transparent = 0x1,
         /** Shader used to blit a texture on a screen quad */
-        Blit,
+        Blit = 0x2,
         /** Shader used to render a skybox in a scene */
-        Skybox,
+        Skybox = 0x3,
         /** Shader used for FXAA post process */
-        FXAA,
+        FXAA = 0x4,
         /** Shader used for tone mapping post process */
-        ToneMapping,
+        ToneMapping = 0x5,
         /** Shader used for bloom post process */
-        Bloom,
+        Bloom = 0x6,
         /** Shader used for motion blur post process */
-        MotionBlur,
+        MotionBlur = 0x7,
         /** Shader used for motion blur post process */
-        GaussianBlur
+        GaussianBlur = 0x8
     };
 
     /** Types of builtin shaders that are always available. */
