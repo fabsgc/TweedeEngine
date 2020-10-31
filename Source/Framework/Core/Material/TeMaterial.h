@@ -115,7 +115,7 @@ namespace te
         SPtr<Texture> GetTexture(const String& name);
 
         /** We can reset a texture on a material */
-        void Material::RemoveTexture(const String& name);
+        void RemoveTexture(const String& name);
 
         /** Assigns a texture to the shader parameter with the specified name. */
         void SetLoadStoreTexture(const String& name, const SPtr<Texture>& value, const TextureSurface& surface = GpuParams::COMPLETE);
