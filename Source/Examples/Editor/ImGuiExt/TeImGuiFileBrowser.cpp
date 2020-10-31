@@ -146,7 +146,7 @@ namespace te
                     show_error |= !(LoadWindowsDrives());
 #else
                     InitCurrentPath();
-                    show_error |= !(readDIR(current_path));
+                    show_error |= !(ReadDIR(current_path));
 #endif
                 }
                 else
@@ -941,7 +941,6 @@ namespace te
 
     void ImGuiFileBrowser::ShowInvalidFileModal()
     {
-        ImGuiStyle& style = ImGui::GetStyle();
         String text = "Selected file either doesn't exist or is not supported. Please select a file with the following extensions...";
         ImVec2 button_size = GetButtonSize("OK");
 
@@ -1153,7 +1152,7 @@ namespace te
         {
             current_path = String(real_path);
             current_path += "/";
-            parsePathTabs(current_path);
+            ParsePathTabs(current_path);
         }
 
         if(path_max_def)
