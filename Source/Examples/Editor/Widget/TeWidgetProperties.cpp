@@ -15,13 +15,15 @@
 #include "Components/TeCLight.h"
 #include "RenderAPI/TeSubMesh.h"
 #include "Mesh/TeMesh.h"
+#include "Importer/TeMeshImportOptions.h"
+#include "Importer/TeTextureImportOptions.h"
 
 namespace te
 {
     WidgetProperties::WidgetProperties()
         : Widget(WidgetType::Properties)
         , _selections(Editor::Instance().GetSelectionData())
-        , _fileDialog(Editor::Instance().GetFileDialog())
+        , _fileBrowser(Editor::Instance().GetFileBrowser())
     { 
         _title = PROPERTIES_TITLE;
         _flags |= ImGuiWindowFlags_HorizontalScrollbar;
@@ -525,8 +527,6 @@ namespace te
                 if (meshUUID == loadMesh)
                 {
                     _loadMesh = true;
-                    _fileDialog.SetVisible(true);
-                    _fileDialog.SetMode(ImGuiFileDialog::OpenMode::Open);
                 }
                 else if (meshUUID == emptyMesh)
                 {
@@ -614,6 +614,11 @@ namespace te
         const float width = ImGui::GetWindowContentRegionWidth() - 120.0f;
         EditorResManager::ResourcesContainer& container = EditorResManager::Instance().Get<Material>();
 
+        for (auto& resource : container.Res)
+            materialsOptions.AddOption(resource.second->GetUUID(), resource.second->GetName());
+
+        materialsOptions.AddOption(emptyMaterial, "No material");
+
         for (UINT32 i = 0; i < meshProperties.GetNumSubMeshes(); i++)
         {
             SPtr<Material> material = renderable->GetMaterial(i);
@@ -623,11 +628,6 @@ namespace te
 
             // current material to use
             {
-                for (auto& resource : container.Res)
-                    materialsOptions.AddOption(resource.second->GetUUID(), resource.second->GetName());
-
-                materialsOptions.AddOption(emptyMaterial, "No material");
-
                 if (ImGuiExt::RenderOptionCombo<UUID>(&materialUUID, "##submesh_material_option", title.c_str(), materialsOptions, width))
                 {
                     if (materialUUID == emptyMaterial)
@@ -637,7 +637,7 @@ namespace te
                     }
                     else
                     {
-                        renderable->SetMaterial(gResourceManager().Load<Material>(materialUUID).GetInternalPtr());
+                        renderable->SetMaterial(i, gResourceManager().Load<Material>(materialUUID).GetInternalPtr());
                         hasChanged = true;
                     }
                 }
@@ -682,8 +682,6 @@ namespace te
                 if (textureUUID == loadTexture)
                 {
                     _loadSkybox = true;
-                    _fileDialog.SetVisible(true);
-                    _fileDialog.SetMode(ImGuiFileDialog::OpenMode::Open);
                 }
                 else if (textureUUID == emptyTexture)
                 {
@@ -713,29 +711,84 @@ namespace te
 
     bool WidgetProperties::ShowLoadMesh()
     {
-        if (_loadMesh)
-            ImGui::OpenPopup("LoadMesh");
+        bool meshLoaded = false;
 
-        if (_fileDialog.Open("LoadMesh"))
+        if (_loadMesh)
+            ImGui::OpenPopup("Load Mesh");
+
+        if (_fileBrowser.ShowFileDialog("Load Mesh", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), ".dae,.obj,.fbx"))
         {
-            _loadMesh = false;
-            return true;
+            auto meshImportOptions = MeshImportOptions::Create();
+            meshImportOptions->ImportNormals = true;
+            meshImportOptions->ImportTangents = true;
+            meshImportOptions->ImportSkin = true;
+            meshImportOptions->ImportAnimation = true;
+            meshImportOptions->CpuCached = false;
+
+            HMesh mesh = EditorResManager::Instance().Load<Mesh>(_fileBrowser.SelectedPath, meshImportOptions);
+
+            if (mesh.GetHandleData())
+            {
+                mesh->SetName(_fileBrowser.SelectedFileName);
+                EditorResManager::Instance().Add<Mesh>(mesh);
+                SPtr<CRenderable> renderable = std::static_pointer_cast<CRenderable>(_selections.ClickedComponent);
+                renderable->SetMesh(mesh.GetInternalPtr());
+
+                _loadMesh = false;
+                meshLoaded = true;
+            }
+            else
+            {
+                _loadMesh = false;
+            }
+        }
+        else
+        {
+            if (_fileBrowser.IsCancelled)
+                _loadMesh = false;
         }
 
-        return false;
+        return meshLoaded;
     }
 
     bool WidgetProperties::ShowLoadSkybox()
     {
-        if (_loadSkybox)
-            ImGui::OpenPopup("LoadSkybox");
+        bool textureLoaded = false;
 
-        if (_fileDialog.Open("LoadSkybox"))
+        if (_loadSkybox)
+            ImGui::OpenPopup("Load Skybox Texture");
+
+        if (_fileBrowser.ShowFileDialog("Load Skybox Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), ".jpg,.jpeg,.png"))
         {
-            _loadSkybox = false;
-            return true;
+            auto textureSkyboxImportOptions = TextureImportOptions::Create();
+            textureSkyboxImportOptions->CpuCached = false;
+            textureSkyboxImportOptions->CubemapType = CubemapSourceType::Faces;
+            textureSkyboxImportOptions->Format = PF_RGBA8;
+            textureSkyboxImportOptions->IsCubemap = true;
+
+            HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.SelectedPath, textureSkyboxImportOptions);
+
+            if (texture.GetHandleData())
+            {
+                texture->SetName(_fileBrowser.SelectedFileName);
+                EditorResManager::Instance().Add<Texture>(texture);
+                SPtr<CSkybox> skybox = std::static_pointer_cast<CSkybox>(_selections.ClickedComponent);
+                skybox->SetTexture(texture.GetInternalPtr());
+
+                _loadSkybox = false;
+                textureLoaded = true;
+            }
+            else
+            {
+                _loadSkybox = false;
+            }
+        }
+        else
+        {
+            if (_fileBrowser.IsCancelled)
+                _loadSkybox = false;
         }
 
-        return false;
+        return textureLoaded;
     }
 }

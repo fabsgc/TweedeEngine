@@ -12,6 +12,7 @@
 #include "Resources/TeBuiltinResources.h"
 #include "Resources/TeResourceManager.h"
 #include "Components/TeCRenderable.h"
+#include "Importer/TeTextureImportOptions.h"
 
 namespace te
 {
@@ -19,6 +20,9 @@ namespace te
         : Widget(WidgetType::Game)
         , _currentMaterial(nullptr)
         , _materialCreationCounter(1)
+        , _loadTexture(false)
+        , _loadTextureUsed(nullptr)
+        , _fileBrowser(Editor::Instance().GetFileBrowser())
     {
         _title = MATERIALS_TITLE;
         _flags |= ImGuiWindowFlags_HorizontalScrollbar;
@@ -57,7 +61,9 @@ namespace te
             {
                 if (uuid == load)
                 {
-                    // TODO
+                    _loadTexture = true;
+                    _loadTextureName = textureName;
+                    _loadTextureUsed = &textureUsed;
                 }
                 else if (uuid == empty)
                 {
@@ -252,6 +258,9 @@ namespace te
                     hasChanged = true;
                 if (ShowTexture(uuid, properties.UseEnvironmentMap, "##material_texture_environment_option", "Environment", "EnvironmentMap", texturesEnvMappingOptions, width))
                     hasChanged = true;
+
+                if (ShowLoadTexture())
+                    hasChanged = true;
             }
 
             if (ImGui::CollapsingHeader("Pipeline", ImGuiTreeNodeFlags_DefaultOpen))
@@ -316,4 +325,40 @@ namespace te
 
     void WidgetMaterials::UpdateBackground()
     { }
+
+    bool WidgetMaterials::ShowLoadTexture()
+    {
+        bool textureLoaded = false;
+
+        if (_loadTexture)
+            ImGui::OpenPopup("Load Material Texture");
+
+        if (_fileBrowser.ShowFileDialog("Load Material Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), ".jpg,.jpeg,.png"))
+        {
+            auto textureImportOptions = TextureImportOptions::Create();
+            textureImportOptions->CpuCached = false;
+            textureImportOptions->GenerateMips = true;
+
+            HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.SelectedPath, textureImportOptions);
+
+            if (texture.GetHandleData())
+            {
+                texture->SetName(_fileBrowser.SelectedFileName);
+                EditorResManager::Instance().Add<Texture>(texture);
+                _currentMaterial->SetTexture(_loadTextureName, texture);
+                _loadTextureName.clear();
+                textureLoaded = true;
+                *_loadTextureUsed = true;
+            }
+
+            _loadTexture = false;
+        }
+        else
+        {
+            if (_fileBrowser.IsCancelled)
+                _loadTexture = false;
+        }
+
+        return textureLoaded;
+    }
 }

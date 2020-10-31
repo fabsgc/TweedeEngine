@@ -8,7 +8,7 @@ namespace te
 {
     WidgetMenuBar::WidgetMenuBar()
         : Widget(WidgetType::MenuBar)
-        , _fileDialog(Editor::Instance().GetFileDialog())
+        , _fileBrowser(Editor::Instance().GetFileBrowser())
         , _open(false)
         , _save(false)
     { 
@@ -36,8 +36,6 @@ namespace te
         if (gVirtualInput().IsButtonDown(_openBtn))
         {
             _open = true;
-            _fileDialog.SetVisible(true);
-            _fileDialog.SetMode(ImGuiFileDialog::OpenMode::Open);
         }
 
         if (gVirtualInput().IsButtonDown(_saveBtn))
@@ -46,8 +44,6 @@ namespace te
         if (gVirtualInput().IsButtonDown(_saveAsBtn))
         {
             _save = true;
-            _fileDialog.SetVisible(true);
-            _fileDialog.SetMode(ImGuiFileDialog::OpenMode::Save);
         }
 
         if(gVirtualInput().IsButtonDown(_quitBtn))
@@ -63,8 +59,6 @@ namespace te
                 if (ImGui::MenuItem(ICON_FA_FOLDER_OPEN " " ICON_FA_GRIP_LINES_VERTICAL "  Open", "Ctrl+O"))
                 {
                     _open = true;
-                    _fileDialog.SetVisible(true);
-                    _fileDialog.SetMode(ImGuiFileDialog::OpenMode::Open);
                 }
 
                 if (ImGui::MenuItem(ICON_FA_SAVE "  " ICON_FA_GRIP_LINES_VERTICAL "  Save", "Ctrl+S"))
@@ -73,8 +67,6 @@ namespace te
                 if (ImGui::MenuItem(ICON_FA_SAVE "  " ICON_FA_GRIP_LINES_VERTICAL "  Save As ..", "Ctrl+Shift+S"))
                 {
                     _save = true;
-                    _fileDialog.SetVisible(true);
-                    _fileDialog.SetMode(ImGuiFileDialog::OpenMode::Save);
                 }
 
                 if (ImGui::MenuItem(ICON_FA_SIGN_OUT_ALT "  " ICON_FA_GRIP_LINES_VERTICAL "  Quit", "Ctrl+Q"))
@@ -211,22 +203,32 @@ namespace te
     void WidgetMenuBar::ShowOpen()
     {
         if (_open)
-            ImGui::OpenPopup("OpenProject");
+            ImGui::OpenPopup("Open Project");
 
-        if (_fileDialog.Open("OpenProject"))
+        if (_fileBrowser.ShowFileDialog("Open Project", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), ".scene"))
         {
             _open = false;
+        }
+        else
+        {
+            if (_fileBrowser.IsCancelled)
+                _open = false;
         }
     }
 
     void WidgetMenuBar::ShowSave()
     {
         if (_save)
-            ImGui::OpenPopup("SaveProject");
+            ImGui::OpenPopup("Save Project");
 
-        if (_fileDialog.Open("SaveProject"))
+        if (_fileBrowser.ShowFileDialog("Save Project", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), ".scene"))
         {
             _save = false;
+        }
+        else
+        {
+            if (_fileBrowser.IsCancelled)
+                _save = false;
         }
     }
 }

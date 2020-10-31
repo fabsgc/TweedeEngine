@@ -77,7 +77,7 @@ namespace te
 
     protected:
         Editor::SelectionData& _selections;
-        ImGuiFileDialog& _fileDialog;
+        ImGuiFileBrowser& _fileBrowser;
 
         bool _loadMesh = false;
         bool _loadSkybox = false;

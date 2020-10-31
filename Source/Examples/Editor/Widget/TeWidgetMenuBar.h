@@ -3,7 +3,7 @@
 #include "TeCorePrerequisites.h"
 #include "Input/TeVirtualInput.h"
 #include "TeWidget.h"
-#include "../ImGuiExt/TeImGuiFileDialog.h"
+#include "../ImGuiExt/TeImGuiFileBrowser.h"
 
 namespace te
 {
@@ -30,7 +30,7 @@ namespace te
 
     protected:
         WidgetMenubarSettings _settings;
-        ImGuiFileDialog& _fileDialog;
+        ImGuiFileBrowser& _fileBrowser;
 
         bool _open = false;
         bool _save = false;

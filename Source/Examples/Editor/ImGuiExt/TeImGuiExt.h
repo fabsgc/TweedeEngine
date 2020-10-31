@@ -6,7 +6,6 @@
 #include "Scene/TeTransform.h"
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
-#include "../ImGuiExt/TeImGuiFileDialog.h"
 
 namespace te
 {
@@ -122,7 +121,5 @@ namespace te
 
             return hasChanged;
         };
-
-        static bool LoadResource(UUID& uuid, ImGuiFileDialog& fileDialog, TypeID_Core resourceType = TID_Resource);
     };
 }

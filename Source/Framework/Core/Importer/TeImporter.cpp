@@ -38,9 +38,17 @@ namespace te
     {
         SPtr<Resource> importedResource = _import(inputFilePath, importOptions);
 
-        TE_DEBUG("Resource " + inputFilePath + " has been successfully loaded");
-
-        return gResourceManager()._createResourceHandle(importedResource, uuid);
+        if (importedResource)
+        {
+            TE_DEBUG("Resource " + inputFilePath + " has been successfully loaded");
+            return gResourceManager()._createResourceHandle(importedResource, uuid);
+        }
+        else
+        {
+            TE_DEBUG("Resource " + inputFilePath + " has not been loaded");
+        }
+        
+        return HResource();
     }
 
     bool Importer::SupportsFileType(const String& extension) const

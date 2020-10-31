@@ -3,7 +3,7 @@
 #include "TeCorePrerequisites.h"
 #include "Widget/TeWidget.h"
 #include "Utility/TeModule.h"
-#include "ImGuiExt/TeImGuiFileDialog.h"
+#include "ImGuiExt/TeImGuiFileBrowser.h"
 
 #include <vector>
 #include <memory>
@@ -81,7 +81,7 @@ namespace te
         void PutFocus(WindowType type) const;
 
         /** We can only have on instance of the file dialog */
-        ImGuiFileDialog& GetFileDialog() { return _fileDialog; }
+        ImGuiFileBrowser& GetFileBrowser() { return _fileBrowser; }
 
     protected:
         struct EditorSettings
@@ -120,7 +120,7 @@ namespace te
         EditorSettings _settings;
         bool _editorBegun;
 
-        ImGuiFileDialog _fileDialog;
+        ImGuiFileBrowser _fileBrowser;
 
         HSceneObject _viewportSO;
         HSceneObject _sceneSO;

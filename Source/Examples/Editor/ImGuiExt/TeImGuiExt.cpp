@@ -421,14 +421,4 @@ namespace te
 
         return hasChanged;
     }
-
-    bool ImGuiExt::LoadResource(UUID& uuid, ImGuiFileDialog& fileDialog, TypeID_Core resourceType)
-    {
-        if (fileDialog.Open())
-        {
-            return true;
-        }
-
-        return false;
-    }
 }

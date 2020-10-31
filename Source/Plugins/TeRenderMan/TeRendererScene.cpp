@@ -18,14 +18,14 @@ namespace te
         UINT32 numTechniques = material.GetNumTechniques();
 
         if (numTechniques == 0)
-            TE_ASSERT_ERROR(false, "A material must a leat have one technique");
+            TE_ASSERT_ERROR(false, "A material must a least have one technique");
 
         // Make sure the technique shaders are compiled
         const SPtr<Technique>& technique = material.GetTechnique(techniqueIdx);
 
         UINT32 numPasses = technique->GetNumPasses();
         if (numPasses == 0)
-            TE_ASSERT_ERROR(false, "A technique must a leat have one pass");
+            TE_ASSERT_ERROR(false, "A technique must a least have one pass");
 
         if (technique)
             technique->Compile();
@@ -398,7 +398,7 @@ namespace te
 
                 renElement->MaterialElem = renderable->GetMaterial(i);
                 if (renElement->MaterialElem == nullptr)
-                    renElement->MaterialElem = renderable->GetMaterial(0);
+                    renElement->MaterialElem = nullptr;
 
                 if (renElement->MaterialElem != nullptr && renElement->MaterialElem->GetShader() == nullptr)
                     renElement->MaterialElem = nullptr;

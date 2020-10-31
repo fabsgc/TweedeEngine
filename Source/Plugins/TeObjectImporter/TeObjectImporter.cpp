@@ -51,11 +51,17 @@ namespace te
         }
 
         SPtr<RendererMeshData> rendererMeshData = ImportMeshData(filePath, importOptions, desc.SubMeshes, desc.MeshSkeleton);
-        SPtr<Mesh> mesh = Mesh::_createPtr(rendererMeshData->GetData(), desc);
-        mesh->SetName(filePath);
-        mesh->SetPath(filePath);
+
+        if (rendererMeshData)
+        {
+            SPtr<Mesh> mesh = Mesh::_createPtr(rendererMeshData->GetData(), desc);
+            mesh->SetName(filePath);
+            mesh->SetPath(filePath);
+
+            return mesh;
+        }
         
-        return mesh;
+        return nullptr;
     }
 
     SPtr<RendererMeshData> ObjectImporter::ImportMeshData(const String& filePath, SPtr<const ImportOptions> importOptions, Vector<SubMesh>& subMeshes, SPtr<Skeleton>& skeleton)
@@ -83,7 +89,11 @@ namespace te
 
         aiScene* scene = const_cast<aiScene*>(importer.ReadFile(filePath.c_str(), assimpFlags));
 
-        TE_ASSERT_ERROR(scene != nullptr, "Failed to load object '" + filePath + "' : " + importer.GetErrorString());
+        if (!scene)
+        {
+            TE_DEBUG("Failed to load object '" + filePath + "' : " + importer.GetErrorString());
+            return nullptr;
+        }
 
         AssimpImportOptions assimpImportOptions;
         assimpImportOptions.ImportNormals      = meshImportOptions->ImportNormals;

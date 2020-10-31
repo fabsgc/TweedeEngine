@@ -51,8 +51,14 @@ namespace te
         ResourceHandle<T> Load(const String& filePath, const SPtr<const ImportOptions>& options)
         {
             HResource resource = gResourceManager().Load<T>(filePath, options);
-            _resources[T::GetResourceType()].Add(resource);
-            return static_resource_cast<T>(gResourceManager().Get(resource.GetUUID()));
+
+            if (resource.GetHandleData())
+            {
+                _resources[T::GetResourceType()].Add(resource);
+                return static_resource_cast<T>(gResourceManager().Get(resource.GetUUID()));
+            }
+
+            return static_resource_cast<T>(resource);
         }
 
         template <class T>

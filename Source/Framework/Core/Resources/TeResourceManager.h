@@ -63,19 +63,29 @@ namespace te
         ResourceHandle<T> Load(const String& filePath, const SPtr<const ImportOptions>& options)
         {
             UUID uuid;
+            ResourceHandle<T> resourceHandle;
             GetUUIDFromFile(filePath, uuid);
 
             if (uuid.Empty())
             {
-                ResourceHandle<T> resourceHandle = gImporter().Import<T>(filePath, options);
-                uuid = resourceHandle.GetHandleData()->uuid;
-                resourceHandle.GetInternalPtr()->_UUID = uuid;
-                RegisterResource(uuid, filePath);
-                _loadedResources[uuid] = static_resource_cast<Resource>(resourceHandle);
+                resourceHandle = gImporter().Import<T>(filePath, options);
+
+                if (resourceHandle.GetHandleData())
+                {
+                    uuid = resourceHandle.GetHandleData()->uuid;
+                    resourceHandle.GetInternalPtr()->_UUID = uuid;
+                    RegisterResource(uuid, filePath);
+                    _loadedResources[uuid] = static_resource_cast<Resource>(resourceHandle);
+                }
             }
 
-            OnResourceLoaded(Get(uuid));
-            return static_resource_cast<T>(Get(uuid));
+            if (resourceHandle.GetHandleData())
+            {
+                OnResourceLoaded(Get(uuid));
+                return static_resource_cast<T>(Get(uuid));
+            }
+
+            return resourceHandle;
         }
 
         void Update(HResource& handle, const SPtr<Resource>& resource);

@@ -13,13 +13,14 @@ set (TE_EDITOR_SRC_NOFILTER
 
 set (TE_IMGUI_EXT_INC_NOFILTER
     "ImGuiExt/TeImGuiExt.h"
-    "ImGuiExt/TeImGuiFileDialog.h"
+    "ImGuiExt/TeImGuiFileBrowser.h"
     "ImGuiExt/TeIconsFontAwesome5.h"
+    "ImGuiExt/dirent.h"
 )
 
 set (TE_IMGUI_EXT_SRC_NOFILTER
     "ImGuiExt/TeImGuiExt.cpp"
-    "ImGuiExt/TeImGuiFileDialog.cpp"
+    "ImGuiExt/TeImGuiFileBrowser.cpp"
 )
 
 

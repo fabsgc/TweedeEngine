@@ -348,8 +348,6 @@ namespace te
         // Begin dock space
         if (_editorBegun)
         {
-            //_fileDialog.UpdateState();
-
             // Dock space
             const auto windowId = ImGui::GetID(_settings.EditorName);
             if (!ImGui::DockBuilderGetNode(windowId))
