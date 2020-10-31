@@ -50,6 +50,7 @@ namespace te
         SelectedFileName = "";
         SelectedPath = "";
         input_fn[0] = '\0';
+        dialog_mode = DialogMode::OPEN;
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         current_path = "./";
@@ -404,7 +405,6 @@ namespace te
 
     bool ImGuiFileBrowser::RenderInputTextAndExtRegion()
     {
-        String label = (dialog_mode == DialogMode::SAVE) ? "Save As:" : "Open:";
         ImGuiStyle& style = ImGui::GetStyle();
         ImGuiIO& io = ImGui::GetIO();
 
@@ -848,7 +848,7 @@ namespace te
     void ImGuiFileBrowser::FilterFiles(int filter_mode)
     {
         filter_dirty = false;
-        if(filter_mode | FilterMode_Dirs)
+        if(filter_mode & FilterMode_Dirs)
         {
             filtered_dirs.clear();
             for (size_t i = 0; i < subdirs.size(); ++i)
@@ -857,7 +857,7 @@ namespace te
                     filtered_dirs.push_back(&subdirs[i]);
             }
         }
-        if(filter_mode | FilterMode_Files)
+        if(filter_mode & FilterMode_Files)
         {
             filtered_files.clear();
             for (size_t i = 0; i < subfiles.size(); ++i)
@@ -913,8 +913,6 @@ namespace te
         bool ret_val = false;
         if (ImGui::BeginPopupModal(repfile_modal_id.c_str(), nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize))
         {
-            float frame_height = ImGui::GetFrameHeightWithSpacing();
-
             String text = "A file with the following filename already exists. Are you sure you want to replace the existing file?";
             ImGui::TextWrapped("%s", text.c_str());
 
@@ -947,7 +945,6 @@ namespace te
     {
         ImGuiStyle& style = ImGui::GetStyle();
         String text = "Selected file either doesn't exist or is not supported. Please select a file with the following extensions...";
-        ImVec2 text_size = ImGui::CalcTextSize(text.c_str(), nullptr, true, 350 - style.WindowPadding.x * 2.0f);
         ImVec2 button_size = GetButtonSize("OK");
 
         float frame_height = ImGui::GetFrameHeightWithSpacing();
@@ -1068,7 +1065,6 @@ namespace te
     void ImGuiFileBrowser::ParsePathTabs(String path)
     {
         String path_element = "";
-        String root = "";
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         current_dirlist.push_back("Computer");

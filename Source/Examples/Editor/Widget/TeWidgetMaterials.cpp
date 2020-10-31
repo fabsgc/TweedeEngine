@@ -333,7 +333,7 @@ namespace te
         if (_loadTexture)
             ImGui::OpenPopup("Load Material Texture");
 
-        if (_fileBrowser.ShowFileDialog("Load Material Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), ".jpg,.jpeg,.png"))
+        if (_fileBrowser.ShowFileDialog("Load Material Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), ".jpeg,.jpg,.png"))
         {
             auto textureImportOptions = TextureImportOptions::Create();
             textureImportOptions->CpuCached = false;

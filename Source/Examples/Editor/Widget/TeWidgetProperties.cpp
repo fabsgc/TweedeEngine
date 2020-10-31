@@ -716,7 +716,7 @@ namespace te
         if (_loadMesh)
             ImGui::OpenPopup("Load Mesh");
 
-        if (_fileBrowser.ShowFileDialog("Load Mesh", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), ".dae,.obj,.fbx"))
+        if (_fileBrowser.ShowFileDialog("Load Mesh", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), ".obj,.dae,.fbx"))
         {
             auto meshImportOptions = MeshImportOptions::Create();
             meshImportOptions->ImportNormals = true;
@@ -758,7 +758,7 @@ namespace te
         if (_loadSkybox)
             ImGui::OpenPopup("Load Skybox Texture");
 
-        if (_fileBrowser.ShowFileDialog("Load Skybox Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), ".jpg,.jpeg,.png"))
+        if (_fileBrowser.ShowFileDialog("Load Skybox Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), ".jpeg,.jpg,.png"))
         {
             auto textureSkyboxImportOptions = TextureImportOptions::Create();
             textureSkyboxImportOptions->CpuCached = false;
