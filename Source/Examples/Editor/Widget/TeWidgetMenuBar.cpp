@@ -3,6 +3,11 @@
 #include "../TeEditor.h"
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
+#include "Importer/TeMeshImportOptions.h"
+#include "Importer/TeTextureImportOptions.h"
+#include "../TeEditorResManager.h"
+#include "Image/TeTexture.h"
+#include "Mesh/TeMesh.h"
 
 namespace te
 {
@@ -11,6 +16,7 @@ namespace te
         , _fileBrowser(Editor::Instance().GetFileBrowser())
         , _open(false)
         , _save(false)
+        , _load(false)
     { 
         _title = MENUBAR_TITLE;
         _isWindow = false;
@@ -26,6 +32,7 @@ namespace te
         _saveBtn = VirtualButton("Save");
         _saveAsBtn = VirtualButton("Save As");
         _quitBtn = VirtualButton("Quit");
+        _loadResource = VirtualButton("LoadResource");
     }
 
     void WidgetMenuBar::Update()
@@ -34,20 +41,19 @@ namespace te
         { }
 
         if (gVirtualInput().IsButtonDown(_openBtn))
-        {
             _open = true;
-        }
 
         if (gVirtualInput().IsButtonDown(_saveBtn))
-        { }
+            _save = true; // TODO open file browser if we save for the first time
 
         if (gVirtualInput().IsButtonDown(_saveAsBtn))
-        {
             _save = true;
-        }
 
         if(gVirtualInput().IsButtonDown(_quitBtn))
             gCoreApplication().OnStopRequested();
+
+        if (gVirtualInput().IsButtonDown(_loadResource))
+            _load = true;
 
         if (ImGui::BeginMainMenuBar())
         {
@@ -57,17 +63,13 @@ namespace te
                 { }
 
                 if (ImGui::MenuItem(ICON_FA_FOLDER_OPEN " " ICON_FA_GRIP_LINES_VERTICAL "  Open", "Ctrl+O"))
-                {
                     _open = true;
-                }
 
                 if (ImGui::MenuItem(ICON_FA_SAVE "  " ICON_FA_GRIP_LINES_VERTICAL "  Save", "Ctrl+S"))
-                { }
+                    _save = true;
 
                 if (ImGui::MenuItem(ICON_FA_SAVE "  " ICON_FA_GRIP_LINES_VERTICAL "  Save As ..", "Ctrl+Shift+S"))
-                {
                     _save = true;
-                }
 
                 if (ImGui::MenuItem(ICON_FA_SIGN_OUT_ALT "  " ICON_FA_GRIP_LINES_VERTICAL "  Quit", "Ctrl+Q"))
                     gCoreApplication().OnStopRequested();
@@ -77,8 +79,8 @@ namespace te
 
             if (ImGui::BeginMenu("Project"))
             {
-                if (ImGui::MenuItem(ICON_FA_FILE_DOWNLOAD "  " ICON_FA_GRIP_LINES_VERTICAL "  Load resource"))
-                { }
+                if (ImGui::MenuItem(ICON_FA_FILE_DOWNLOAD "  " ICON_FA_GRIP_LINES_VERTICAL "  Load resource", "Ctrl+R"))
+                    _load = true;
 
                 ImGui::EndMenu();
             }
@@ -156,6 +158,7 @@ namespace te
         ShowAboutWindow();
         ShowOpen();
         ShowSave();
+        ShowLoad();
     }
 
     void WidgetMenuBar::UpdateBackground()
@@ -229,6 +232,58 @@ namespace te
         {
             if (_fileBrowser.IsCancelled)
                 _save = false;
+        }
+    }
+
+    void WidgetMenuBar::ShowLoad()
+    {
+        if (_load)
+            ImGui::OpenPopup("Load Resource");
+
+        if (_fileBrowser.ShowFileDialog("Load Resource", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), ".jpeg,.jpg,.png,.obj,.dae,.fbx,.scene"))
+        {
+            if (_fileBrowser.ext == ".jpeg" || _fileBrowser.ext == ".jpg" || _fileBrowser.ext == ".png")
+            {
+                auto textureImportOptions = TextureImportOptions::Create();
+                textureImportOptions->CpuCached = false;
+                textureImportOptions->GenerateMips = true;
+
+                HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.SelectedPath, textureImportOptions);
+
+                if (texture.GetHandleData())
+                {
+                    texture->SetName(_fileBrowser.SelectedFileName);
+                    EditorResManager::Instance().Add<Texture>(texture);
+                }
+            }
+            else if (_fileBrowser.ext == ".obj" || _fileBrowser.ext == ".dae" || _fileBrowser.ext == ".fbx")
+            {
+                auto meshImportOptions = MeshImportOptions::Create();
+                meshImportOptions->ImportNormals = true;
+                meshImportOptions->ImportTangents = true;
+                meshImportOptions->ImportSkin = true;
+                meshImportOptions->ImportAnimation = true;
+                meshImportOptions->CpuCached = false;
+
+                HMesh mesh = EditorResManager::Instance().Load<Mesh>(_fileBrowser.SelectedPath, meshImportOptions);
+
+                if (mesh.GetHandleData())
+                {
+                    mesh->SetName(_fileBrowser.SelectedFileName);
+                    EditorResManager::Instance().Add<Mesh>(mesh);
+                }
+            }
+            else
+            {
+                // TODO scene
+            }
+
+            _load = false;
+        }
+        else
+        {
+            if (_fileBrowser.IsCancelled)
+                _load = false;
         }
     }
 }

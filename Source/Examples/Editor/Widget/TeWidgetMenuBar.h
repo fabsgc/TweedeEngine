@@ -21,6 +21,7 @@ namespace te
         void ShowAboutWindow();
         void ShowOpen();
         void ShowSave();
+        void ShowLoad();
 
     protected:
         struct WidgetMenubarSettings
@@ -34,11 +35,13 @@ namespace te
 
         bool _open = false;
         bool _save = false;
+        bool _load = false;
 
         VirtualButton _newBtn;
         VirtualButton _openBtn;
         VirtualButton _saveBtn;
         VirtualButton _saveAsBtn;
         VirtualButton _quitBtn;
+        VirtualButton _loadResource;
     };
 }

@@ -4,6 +4,7 @@
 #   define IMGUI_DEFINE_MATH_OPERATORS
 #endif
 #include "ImGui/imgui_internal.h"
+#include "../ImGuiExt/TeIconsFontAwesome5.h"
 
 #include <iostream>
 #include <functional>
@@ -227,7 +228,7 @@ namespace te
 
         ImGui::BeginChild("##NavigationWindow", nw_size, true, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoScrollbar);
 
-        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.882f, 0.745f, 0.078f,1.0f));
+        //ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.882f, 0.745f, 0.078f,1.0f));
         for(int i = 0; i < (int)current_dirlist.size(); i++)
         {
             if( ImGui::Button(current_dirlist[i].c_str()) )
@@ -259,7 +260,7 @@ namespace te
                         ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.125f, 0.125f, 0.125f, 1.0f));
                         if(ImGui::ListBoxHeader("##NavBarDropBox", ImVec2(0, list_item_height* 5)))
                         {
-                            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.882f, 0.745f, 0.078f,1.0f));
+                            //ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.882f, 0.745f, 0.078f,1.0f));
                             for(int j = i+1; j < (int)current_dirlist.size(); j++)
                             {
                                 if(ImGui::Selectable(current_dirlist[j].c_str(), false) && j != (int)current_dirlist.size() - 1)
@@ -268,7 +269,7 @@ namespace te
                                     ImGui::CloseCurrentPopup();
                                 }
                             }
-                            ImGui::PopStyleColor();
+                            //ImGui::PopStyleColor();
                             ImGui::ListBoxFooter();
                         }
                         ImGui::PopStyleColor();
@@ -287,7 +288,7 @@ namespace te
                 }
             }
         }
-        ImGui::PopStyleColor();
+        //ImGui::PopStyleColor();
         ImGui::EndChild();
 
         ImGui::SameLine();
@@ -344,14 +345,18 @@ namespace te
         ImGui::Columns(num_cols);
 
         //Output directories in yellow
-        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.882f, 0.745f, 0.078f,1.0f));
+        //ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.882f, 0.745f, 0.078f,1.0f));
         int items = 0;
         for (int i = 0; i < (int)filtered_dirs.size(); i++)
         {
             if(!filtered_dirs[i]->is_hidden || show_hidden)
             {
+                String label = filtered_dirs[i]->name;
+                if(label.size() > 2 || (label != ".." && label != "."))
+                    label = ICON_FA_FOLDER + String(" ") + label;
+
                 items++;
-                if(ImGui::Selectable(filtered_dirs[i]->name.c_str(), selected_idx == i && is_dir, ImGuiSelectableFlags_AllowDoubleClick))
+                if(ImGui::Selectable(label.c_str(), selected_idx == i && is_dir, ImGuiSelectableFlags_AllowDoubleClick))
                 {
                     selected_idx = i;
                     is_dir = true;
@@ -370,15 +375,17 @@ namespace te
                     ImGui::NextColumn();
             }
         }
-        ImGui::PopStyleColor(1);
+        //ImGui::PopStyleColor(1);
 
         //Output files
         for (int i = 0; i < (int)filtered_files.size(); i++)
         {
             if(!filtered_files[i]->is_hidden || show_hidden)
             {
+                String label = ICON_FA_FILE + String(" ") + filtered_files[i]->name;
+
                 items++;
-                if(ImGui::Selectable(filtered_files[i]->name.c_str(), selected_idx == i && !is_dir, ImGuiSelectableFlags_AllowDoubleClick))
+                if(ImGui::Selectable(label.c_str(), selected_idx == i && !is_dir, ImGuiSelectableFlags_AllowDoubleClick))
                 {
                     //int len = filtered_files[i]->name.length();
                     selected_idx = i;

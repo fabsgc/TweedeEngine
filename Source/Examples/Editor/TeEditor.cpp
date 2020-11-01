@@ -121,6 +121,7 @@ namespace te
         inputConfig->RegisterButton("Delete", TE_DELETE);
         inputConfig->RegisterButton("Copy", TE_C, ButtonModifier::Ctrl);
         inputConfig->RegisterButton("Paste", TE_V, ButtonModifier::Ctrl);
+        inputConfig->RegisterButton("LoadResource", TE_R, ButtonModifier::Ctrl);
 
         inputConfig->RegisterAxis(CCameraUI::HORIZONTAL_AXIS_BINDING, VIRTUAL_AXIS_DESC((UINT32)InputAxis::MouseX));
         inputConfig->RegisterAxis(CCameraUI::VERTICAL_AXIS_BINDING, VIRTUAL_AXIS_DESC((UINT32)InputAxis::MouseY));

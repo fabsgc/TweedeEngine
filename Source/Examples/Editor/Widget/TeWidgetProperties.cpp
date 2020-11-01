@@ -736,14 +736,10 @@ namespace te
                 EditorResManager::Instance().Add<Mesh>(mesh);
                 SPtr<CRenderable> renderable = std::static_pointer_cast<CRenderable>(_selections.ClickedComponent);
                 renderable->SetMesh(mesh.GetInternalPtr());
-
-                _loadMesh = false;
                 meshLoaded = true;
             }
-            else
-            {
-                _loadMesh = false;
-            }
+
+            _loadMesh = false;
         }
         else
         {
@@ -777,14 +773,10 @@ namespace te
                 EditorResManager::Instance().Add<Texture>(texture);
                 SPtr<CSkybox> skybox = std::static_pointer_cast<CSkybox>(_selections.ClickedComponent);
                 skybox->SetTexture(texture.GetInternalPtr());
-
-                _loadSkybox = false;
                 textureLoaded = true;
             }
-            else
-            {
-                _loadSkybox = false;
-            }
+
+            _loadSkybox = false;
         }
         else
         {
