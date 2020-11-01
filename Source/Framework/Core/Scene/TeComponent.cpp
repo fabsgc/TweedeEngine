@@ -5,6 +5,12 @@ namespace te
 { 
     UINT32 Component::ComponentType = TID_Component;
 
+    Event<void(const HComponent&)> Component::OnComponentCreated;
+    Event<void(const HComponent&)> Component::OnComponentInitialized;
+    Event<void(const HComponent&)> Component::OnComponentDestroyed;
+    Event<void(const HComponent&)> Component::OnComponentEnabled;
+    Event<void(const HComponent&)> Component::OnComponentDisabled;
+
     Component::Component(HSceneObject parent, UINT32 type)
         : Serializable(type)
         , _parent(std::move(parent))

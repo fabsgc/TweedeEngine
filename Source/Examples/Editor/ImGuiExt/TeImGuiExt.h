@@ -7,6 +7,8 @@
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
 
+#include "Components/TeCCamera.h"
+
 namespace te
 {
     class ImGuiExt
@@ -118,6 +120,38 @@ namespace te
                 ImGui::PopItemFlag();
                 ImGui::PopStyleVar();
             }
+
+            return hasChanged;
+        };
+
+        static bool RenderOptionComboComponent(HCamera* value, const char* id, const char* text, ComboOptions<HCamera>& options,
+            float width = 0.0f)
+        {
+            if (width != 0.0f && width < 75.0f)
+                width = 75.0f;
+
+            bool hasChanged = false;
+            ImGui::PushID(id);
+            if (width > 0.0f) ImGui::PushItemWidth(width);
+
+            if (ImGui::BeginCombo(text, options[*value].Key->GetName().c_str()))
+            {
+                for (const auto& option : options.Options)
+                {
+                    const bool isSelected = (*value == option.Key);
+                    if (ImGui::Selectable(option.Key->GetName().c_str(), isSelected))
+                    {
+                        *value = option.Key;
+                        hasChanged = true;
+                    }
+
+                    if (isSelected)
+                        ImGui::SetItemDefaultFocus();
+                }
+                ImGui::EndCombo();
+            }
+            if (width > 0.0f) ImGui::PushItemWidth(width);
+            ImGui::PopID();
 
             return hasChanged;
         };

@@ -35,11 +35,14 @@ namespace te
     void CSkybox::OnInitialized()
     {
         gSceneManager()._bindActor(_internal, GetSceneObject());
+        Component::OnInitialized();
     }
 
     void CSkybox::OnDestroyed()
     {
         gSceneManager()._unbindActor(_internal);
+        Component::OnDestroyed();
+        _internal->Destroy();
     }
 
     void CSkybox::Clone(const HComponent& c)

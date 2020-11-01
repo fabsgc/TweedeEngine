@@ -486,8 +486,8 @@ namespace te
         case TID_CCamera:
             {
                 HCamera camera = _selections.ClickedSceneObject->AddComponent<CCamera>();
-                camera.Get()->SetName("Camera");
-                camera.Get()->Initialize();
+                camera->SetName("Camera");
+                camera->Initialize();
                 _selections.ClickedComponent = camera.GetInternalPtr();
             }
             break;
@@ -495,8 +495,8 @@ namespace te
         case TID_CCameraFlyer:
             {
                 HCameraFlyer camera = _selections.ClickedSceneObject->AddComponent<CCameraFlyer>();
-                camera.Get()->SetName("Flying Camera");
-                camera.Get()->Initialize();
+                camera->SetName("Flying Camera");
+                camera->Initialize();
                 _selections.ClickedComponent = camera.GetInternalPtr();
             }
             break;
@@ -504,8 +504,8 @@ namespace te
         case TID_CCameraUI:
             {
                 HCameraUI camera = _selections.ClickedSceneObject->AddComponent<CCameraUI>();
-                camera.Get()->SetName("Orbital Camera");
-                camera.Get()->Initialize();
+                camera->SetName("Orbital Camera");
+                camera->Initialize();
                 _selections.ClickedComponent = camera.GetInternalPtr();
             }
             break;

@@ -16,10 +16,11 @@ namespace te
 
     WidgetViewport::WidgetViewport()
         : Widget(WidgetType::Viewport)
-        , _viewportCamera(gEditor().GetViewportCamera())
+        , _viewportCamera(gEditor().GetPreviewViewportCamera().GetNewHandleFromExisting())
         , _viewportCameraUI(gEditor().GetViewportCameraUI())
         , _lastRenderDataUpatedTime(0.0f)
         , _needResetViewport(true)
+        , _forceResetViewport(false)
     {
         _title = VIEWPORT_TITLE;
         _size = Vector2(640, 480);
@@ -35,7 +36,17 @@ namespace te
         gCoreApplication().GetWindow()->OnResized.Connect(std::bind(&WidgetViewport::Resize, this));
 
         _onBeginCallback = [this] {
-            if (ImGui::IsWindowFocused())
+            // If we are using a different camera, we disable event
+            if (_viewportCamera.GetInternalPtr() != gEditor().GetPreviewViewportCamera().GetInternalPtr())
+            {
+                _viewportCamera->GetViewport()->SetTarget(nullptr);
+                _viewportCamera = gEditor().GetPreviewViewportCamera().GetNewHandleFromExisting();
+                _viewportCamera->GetViewport()->SetTarget(_renderData.RenderTex);
+                _forceResetViewport = true;
+                NeedsRedraw();
+            }
+
+            if (ImGui::IsWindowFocused() && _viewportCamera.GetInternalPtr() == gEditor().GetViewportCamera().GetInternalPtr())
                 _viewportCameraUI->EnableInput(true);
             else
                 _viewportCameraUI->EnableInput(false);
@@ -56,6 +67,12 @@ namespace te
 
     void WidgetViewport::NeedsRedraw()
     {
+        if (_viewportCamera.IsDestroyed())
+        {
+            _viewportCamera = gEditor().GetPreviewViewportCamera().GetNewHandleFromExisting();
+            _viewportCamera->GetViewport()->SetTarget(_renderData.RenderTex);
+        }
+
         _needResetViewport = true;
         _viewportCamera->NotifyNeedsRedraw();
     }
@@ -87,6 +104,8 @@ namespace te
                 _viewportCamera->SetFlags(flags);
             }
         }
+
+        _forceResetViewport = false;
     }
 
     void WidgetViewport::UpdateBackground()
@@ -145,11 +164,14 @@ namespace te
     {
         float deltaElapsedTime = gTime().GetTime() - _lastRenderDataUpatedTime;
 
-        if ((UINT32)width == _renderData.Width && (UINT32)height == _renderData.Height)
-            return false;
+        if (!_forceResetViewport)
+        {
+            if ((UINT32)width == _renderData.Width && (UINT32)height == _renderData.Height)
+                return false;
 
-        if (deltaElapsedTime < MIN_TIME_BETWEEN_UPDATE && _lastRenderDataUpatedTime > 10.0f && _needResetViewport == false)
-            return false;
+            if (deltaElapsedTime < MIN_TIME_BETWEEN_UPDATE && _lastRenderDataUpatedTime > 10.0f && _needResetViewport == false)
+                return false;
+        }
 
         _renderData.Width = (UINT32)width;
         _renderData.Height = (UINT32)height;
@@ -190,6 +212,7 @@ namespace te
 
         _lastRenderDataUpatedTime = gTime().GetTime();
         _needResetViewport = false;
+        _forceResetViewport = false;
 
         _viewportCamera->NotifyNeedsRedraw();
 

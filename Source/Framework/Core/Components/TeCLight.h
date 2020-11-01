@@ -111,9 +111,6 @@ namespace te
         void _instantiate() override;
 
         /** @copydoc Component::OnInitialized */
-        void OnCreated() override;
-
-        /** @copydoc Component::OnInitialized */
         void OnInitialized() override;
 
         /** @copydoc Component::OnTransformChanged */

@@ -44,12 +44,10 @@ namespace te
             _linearAtt, _quadraticAtt, _castsShadows, _spotAngle);
     }
 
-    void CLight::OnCreated()
-    { }
-
     void CLight::OnInitialized()
     {
         gSceneManager()._bindActor(_internal, GetSceneObject());
+        Component::OnInitialized();
     }
 
     void CLight::OnTransformChanged(TransformChangedFlags flags)
@@ -60,6 +58,7 @@ namespace te
     void CLight::OnDestroyed()
     {
         gSceneManager()._unbindActor(_internal);
+        Component::OnDestroyed();
         _internal->Destroy();
     }
 

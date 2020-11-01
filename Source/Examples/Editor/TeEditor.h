@@ -113,6 +113,15 @@ namespace te
         /** Some settings widgets can modify */
         EditorSettings& GetSettings() { return _settings; }
 
+        /** Retrieves the current viewport camera. Can be the one created at editor initilization or one created by user in his scene */
+        HCamera& GetPreviewViewportCamera() { return _previewViewportCamera; }
+
+        /** Set the current preview viewport camera */
+        void SetPreviewViewportCamera(HCamera& camera) 
+        { 
+            _previewViewportCamera = camera.GetNewHandleFromExisting(); 
+        }
+
         /** Save current scene */
         void Save();
 
@@ -149,6 +158,8 @@ namespace te
         
         HSceneObject _uiCameraSO;
         HCamera _uiCamera;
+
+        HCamera _previewViewportCamera; // we can use an user created camera for viewport;
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         // TODO Temp for debug purpose

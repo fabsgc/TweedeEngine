@@ -52,11 +52,14 @@ namespace te
     }
 
     void CRenderable::OnCreated()
-    { }
+    { 
+        Component::OnCreated();
+    }
 
     void CRenderable::OnInitialized()
     {
         gSceneManager()._bindActor(_internal, GetSceneObject());
+        Component::OnInitialized();
     }
 
     void CRenderable::OnTransformChanged(TransformChangedFlags flags)
@@ -67,6 +70,7 @@ namespace te
     void CRenderable::OnDestroyed()
     {
         gSceneManager()._unbindActor(_internal);
+        Component::OnDestroyed();
         _internal->Destroy();
     }
 

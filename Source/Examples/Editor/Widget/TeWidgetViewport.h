@@ -44,11 +44,12 @@ namespace te
 
     protected:
         RenderWindowData _renderData;
-        HCamera& _viewportCamera;
+        HCamera _viewportCamera;
         HCameraUI& _viewportCameraUI;
 
         float _lastRenderDataUpatedTime;
         bool _needResetViewport;
+        bool _forceResetViewport;
 
         static const float MIN_TIME_BETWEEN_UPDATE;
     };

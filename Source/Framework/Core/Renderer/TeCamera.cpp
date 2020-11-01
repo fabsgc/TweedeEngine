@@ -47,6 +47,7 @@ namespace te
 
     void Camera::Destroy()
     {
+        gSceneManager()._unregisterCamera(std::static_pointer_cast<Camera>(GetThisPtr()));
         CoreObject::Destroy();
     }
 

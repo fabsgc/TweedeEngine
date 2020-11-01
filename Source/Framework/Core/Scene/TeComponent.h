@@ -3,6 +3,7 @@
 #include "TeCorePrerequisites.h"
 #include "Scene/TeGameObject.h"
 #include "Math/TeBounds.h"
+#include "Utility/TeEvent.h"
 
 namespace te
 {
@@ -116,27 +117,54 @@ namespace te
          */
         bool IsChildOf(const HSceneObject& sceneObject);
 
+        /** Call when a new component is created */
+        static Event<void(const HComponent&)> OnComponentCreated;
+
+        /** Call when a new component is initialized */
+        static Event<void(const HComponent&)> OnComponentInitialized;
+
+        /** Called when the component is destoyed */
+        static Event<void(const HComponent&)> OnComponentDestroyed;
+
+        /** Called when the component is enabled */
+        static Event<void(const HComponent&)> OnComponentEnabled;
+
+        /** Called when the component is disabled */
+        static Event<void(const HComponent&)> OnComponentDisabled;
+
     protected:
         Component(HSceneObject parent, UINT32 type);
         virtual ~Component() = default;
 
         /** Called once when the component has been created. Called regardless of the state the component is in. */
-        virtual void OnCreated() {}
+        virtual void OnCreated() 
+        {
+            OnComponentCreated(GetHandle());
+        }
 
         /**
          * Called once when the component first leaves the Stopped state. This includes component creation if requirements
          * for leaving Stopped state are met, in which case it is called after onCreated.
          */
-        virtual void OnInitialized() {}
+        virtual void OnInitialized() 
+        {
+            OnComponentInitialized(GetHandle());
+        }
 
         /**	Called once just before the component is destroyed. Called regardless of the state the component is in. */
-        virtual void OnDestroyed() {}
+        virtual void OnDestroyed() 
+        {
+            OnComponentDestroyed(GetHandle());
+        }
 
         /**
-         * Called every time a component leaves the Stopped state. This includes component creation if requirements
+         * Called every time a component switchs in Stopped state. This includes component creation if requirements
          * for leaving the Stopped state are met. When called during creation it is called after onInitialized.
          */
-        virtual void OnEnabled() {}
+        virtual void OnDisabled() 
+        {
+            OnComponentDisabled(GetHandle());
+        }
 
         /**
          * Called when the component's parent scene object has changed. Not called if the component is in Stopped state.

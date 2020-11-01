@@ -14,5 +14,14 @@ namespace te
         virtual void Initialize() override;
         virtual void Update() override;
         virtual void UpdateBackground() override;
+
+        void CameraCreated(const HComponent& component);
+        void CameraDestroyed(const HComponent& component);
+
+    protected:
+        ImGuiExt::ComboOptions<HCamera> _cameraList;
+        HCamera _currentCamera;
+        HEvent _cameraCreated;
+        HEvent _cameraDestroyed;
     };
 }

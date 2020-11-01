@@ -169,6 +169,7 @@ namespace te
         _viewportCamera->Initialize();
         _viewportCamera->SetMSAACount(gCoreApplication().GetWindow()->GetDesc().MultisampleCount);
         _viewportCamera->SetProjectionType(ProjectionType::PT_PERSPECTIVE);
+        _viewportCamera->SetName("Viewport camera");
 
         _viewportCameraSO->SetPosition(Vector3(3.5f, 2.5f, 4.0f));
         _viewportCameraSO->LookAt(Vector3(0.0f, 0.75f, 0.0f));
@@ -181,6 +182,8 @@ namespace te
         settings->Contrast = 2.0f;
         settings->Brightness = -0.1f;
         settings->MotionBlur.Enabled = false;
+
+        _previewViewportCamera = _viewportCamera.GetNewHandleFromExisting();
     }
 
     void Editor::InitializeGui()
@@ -204,8 +207,8 @@ namespace te
         _widgets.emplace_back(te_shared_ptr_new<WidgetConsole>()); _settings.WConsole = _widgets.back();
         _widgets.emplace_back(te_shared_ptr_new<WidgetScript>()); _settings.WScript = _widgets.back();
         _widgets.emplace_back(te_shared_ptr_new<WidgetMaterials>()); _settings.WMaterial = _widgets.back();
-        _widgets.emplace_back(te_shared_ptr_new<WidgetViewport>()); _settings.WViewport = _widgets.back();
         _widgets.emplace_back(te_shared_ptr_new<WidgetResources>()); _settings.WResources = _widgets.back();
+        _widgets.emplace_back(te_shared_ptr_new<WidgetViewport>()); _settings.WViewport = _widgets.back();
 
         for (auto widget : _widgets)
             widget->Initialize();

@@ -57,13 +57,12 @@ namespace te
         _internal = Camera::Create();
     }
 
-    void CCamera::OnCreated()
-    { }
-
     void CCamera::OnInitialized()
     {
         gSceneManager()._bindActor(_internal, SO());
         gSceneManager()._notifyMainCameraStateChanged(_internal);
+
+        Component::OnInitialized();
     }
 
     void CCamera::OnTransformChanged(TransformChangedFlags flags)
@@ -74,6 +73,7 @@ namespace te
     void CCamera::OnDestroyed()
     {
         gSceneManager()._unbindActor(_internal);
+        Component::OnDestroyed();
         _internal->Destroy();
     }
 

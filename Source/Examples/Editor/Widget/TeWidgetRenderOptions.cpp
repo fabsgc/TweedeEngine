@@ -5,20 +5,32 @@
 #include "Renderer/TeCamera.h"
 
 #include "Components/TeCCamera.h"
+#include "Scene/TeComponent.h"
 
 #include "../TeEditor.h"
+
+using namespace std::placeholders;
 
 namespace te
 {
     WidgetRenderOptions::WidgetRenderOptions()
         : Widget(WidgetType::RenderOptions)
+        , _currentCamera(gEditor().GetViewportCamera())
     {
         _title = RENDER_OPTIONS_TITLE;
         _flags |= ImGuiWindowFlags_HorizontalScrollbar;
+
+        _cameraList.AddOption(_currentCamera.GetNewHandleFromExisting(), _currentCamera->GetName());
+
+        _cameraCreated = Component::OnComponentCreated.Connect(std::bind(&WidgetRenderOptions::CameraCreated, this, _1));
+        _cameraDestroyed = Component::OnComponentDestroyed.Connect(std::bind(&WidgetRenderOptions::CameraDestroyed, this, _1));
     }
 
     WidgetRenderOptions::~WidgetRenderOptions()
-    { }
+    { 
+        _cameraCreated.Disconnect();
+        _cameraDestroyed.Disconnect();
+    }
 
     void WidgetRenderOptions::Initialize()
     { }
@@ -26,19 +38,24 @@ namespace te
     void WidgetRenderOptions::Update()
     {
         bool hasChanged = false;
-        HCamera& camera = gEditor().GetViewportCamera();
-        auto cameraSettings = camera->GetRenderSettings();
+        auto cameraSettings = _currentCamera->GetRenderSettings();
         const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
+
+        if (ImGuiExt::RenderOptionComboComponent(&_currentCamera, "##material_list_option", "", _cameraList, ImGui::GetWindowContentRegionWidth()))
+        {
+            gEditor().SetPreviewViewportCamera(_currentCamera);
+            gEditor().NeedsRedraw();
+        }
 
         if (ImGui::CollapsingHeader("Graphics", ImGuiTreeNodeFlags_DefaultOpen))
         {
-            if (ImGuiExt::RenderCameraGraphics(camera, cameraSettings, width))
+            if (ImGuiExt::RenderCameraGraphics(_currentCamera, cameraSettings, width))
                 hasChanged = true;
         }
 
         if (ImGui::CollapsingHeader("Post processing", ImGuiTreeNodeFlags_DefaultOpen))
         {
-            if (ImGuiExt::RenderCameraPostProcessing(camera, cameraSettings, width))
+            if (ImGuiExt::RenderCameraPostProcessing(_currentCamera, cameraSettings, width))
                 hasChanged = true;
         }
 
@@ -50,10 +67,41 @@ namespace te
         if (hasChanged)
         {
             gEditor().NeedsRedraw();
-            camera->SetRenderSettings(cameraSettings);
+            _currentCamera->SetRenderSettings(cameraSettings);
         }
     }
 
     void WidgetRenderOptions::UpdateBackground()
     { }
+
+    void WidgetRenderOptions::CameraCreated(const HComponent& component)
+    {
+        if (component->GetCoreType() != TID_CCamera)
+            return;
+
+        HCamera camera = static_object_cast<CCamera>(component);
+        _cameraList.AddOption(camera, camera->GetName());
+    }
+
+    void WidgetRenderOptions::CameraDestroyed(const HComponent& component)
+    {
+        if (component->GetCoreType() != TID_CCamera)
+            return;
+
+        for (auto it = _cameraList.Options.begin(); it != _cameraList.Options.end(); it++)
+        {
+            if (component == _currentCamera)
+            {
+                _currentCamera = _cameraList.Options[0].Key.GetNewHandleFromExisting();
+                gEditor().SetPreviewViewportCamera(_currentCamera);
+                gEditor().NeedsRedraw();
+            }
+
+            if (it->Key == component)
+            {
+                _cameraList.Options.erase(it);
+                break;
+            }
+        }
+    }
 }

@@ -32,12 +32,6 @@ namespace te
         Component::Initialize();
     }
 
-    void CScript::OnInitialized()
-    { }
-
-    void CScript::OnDestroyed()
-    { }
-
     void CScript::Clone(const HComponent& c)
     {
         Clone(static_object_cast<CScript>(c));
