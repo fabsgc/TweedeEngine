@@ -50,12 +50,15 @@ namespace te
 
         const auto& ShowTexture = [&](UUID& uuid, bool& textureUsed, const char* id, const char* label, const char* textureName, ImGuiExt::ComboOptions<UUID>& options, float width)
         {
+            SPtr<Texture> texture = nullptr;
             bool hasChanged = false;
             uuid = empty;
 
-            SPtr<Texture> texture = _currentMaterial->GetTexture(textureName);
-            if (texture)
-                uuid = texture->GetUUID();
+            if (textureUsed)
+            {
+                texture = _currentMaterial->GetTexture(textureName);
+                if (texture) uuid = texture->GetUUID();
+            }
 
             if (ImGuiExt::RenderOptionCombo<UUID>(&uuid, id, label, options, width))
             {

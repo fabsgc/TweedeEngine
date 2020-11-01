@@ -131,25 +131,26 @@ namespace te
 #if TE_DEBUG_MODE
         TE_ASSERT_ERROR(value != nullptr, "Texture should not be null");
 #endif
-
-        if (_textures.find(name) == _textures.end())
+        auto it = _textures.find(name);
+        if (it == _textures.end())
         {
             _textures[name] = te_shared_ptr_new<TextureData>(value, surface);
             return;
         }
 
-        _textures[name]->TextureElem = value;
-        _textures[name]->TextureSurfaceElem = surface;
+        it->second->TextureElem = value;
+        it->second->TextureSurfaceElem = surface;
 
         _markCoreDirty(MaterialDirtyFlags::ParamResource);
     }
 
     SPtr<Texture> Material::GetTexture(const String& name)
     {
-        if (_textures.find(name) == _textures.end())
+        auto it = _textures.find(name);
+        if (it == _textures.end())
             return nullptr;
 
-        return _textures[name]->TextureElem;
+        return it->second->TextureElem;
     }
 
     void Material::RemoveTexture(const String& name)
@@ -166,15 +167,15 @@ namespace te
 #if TE_DEBUG_MODE
         TE_ASSERT_ERROR(value != nullptr, "Load store texture should not be null");
 #endif
-
-        if (_loadStoreTextures.find(name) == _loadStoreTextures.end())
+        auto it = _loadStoreTextures.find(name);
+        if (it == _loadStoreTextures.end())
         {
-            _loadStoreTextures[name] = te_shared_ptr_new<TextureData>(value, surface);
+            it->second = te_shared_ptr_new<TextureData>(value, surface);
             return;
         }
 
-        _loadStoreTextures[name]->TextureElem = value;
-        _loadStoreTextures[name]->TextureSurfaceElem = surface;
+        it->second->TextureElem = value;
+        it->second->TextureSurfaceElem = surface;
 
         _markCoreDirty(MaterialDirtyFlags::ParamResource);
     }

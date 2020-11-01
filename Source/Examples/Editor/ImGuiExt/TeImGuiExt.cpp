@@ -232,13 +232,16 @@ namespace te
 
         // Render Output Type
         {
-            ImGuiExt::ComboOptions<int> outputTypeOptions;
-            outputTypeOptions.AddOption((int)RenderOutputType::Final, "Post processed");
-            outputTypeOptions.AddOption((int)RenderOutputType::Color, "Raw");
-            outputTypeOptions.AddOption((int)RenderOutputType::Velocity, "Velocity map");
-            outputTypeOptions.AddOption((int)RenderOutputType::Emissive, "Emissive map");
-            outputTypeOptions.AddOption((int)RenderOutputType::Depth, "Depth map");
-            outputTypeOptions.AddOption((int)RenderOutputType::Normal, "Normal map");
+            static ImGuiExt::ComboOptions<int> outputTypeOptions;
+            if (outputTypeOptions.Options.size() == 0)
+            {
+                outputTypeOptions.AddOption((int)RenderOutputType::Final, "Post processed");
+                outputTypeOptions.AddOption((int)RenderOutputType::Color, "Raw");
+                outputTypeOptions.AddOption((int)RenderOutputType::Velocity, "Velocity map");
+                outputTypeOptions.AddOption((int)RenderOutputType::Emissive, "Emissive map");
+                outputTypeOptions.AddOption((int)RenderOutputType::Depth, "Depth map");
+                outputTypeOptions.AddOption((int)RenderOutputType::Normal, "Normal map");
+            }
 
             if (ImGuiExt::RenderOptionCombo<int>((int*)(&cameraSettings->OutputType), "##output_type_option", "Output type", outputTypeOptions, width))
                 hasChanged = true;
@@ -247,9 +250,12 @@ namespace te
 
         // Projection type
         {
-            ImGuiExt::ComboOptions<int> projectionTypeOptions;
-            projectionTypeOptions.AddOption((int)ProjectionType::PT_PERSPECTIVE, "Perspective");
-            projectionTypeOptions.AddOption((int)ProjectionType::PT_ORTHOGRAPHIC, "Orthographic");
+            static ImGuiExt::ComboOptions<int> projectionTypeOptions;
+            if (projectionTypeOptions.Options.size() == 0)
+            {
+                projectionTypeOptions.AddOption((int)ProjectionType::PT_PERSPECTIVE, "Perspective");
+                projectionTypeOptions.AddOption((int)ProjectionType::PT_ORTHOGRAPHIC, "Orthographic");
+            }
 
             int projectionType = camera->GetProjectionType();
             int oldProjectionType = projectionType;
@@ -264,10 +270,13 @@ namespace te
 
         // Antialiasing
         {
-            ImGuiExt::ComboOptions<int> antialiasingOptions;
-            antialiasingOptions.AddOption((int)AntiAliasingAlgorithm::FXAA, "FXAA");
-            antialiasingOptions.AddOption((int)AntiAliasingAlgorithm::TAA, "TAA");
-            antialiasingOptions.AddOption((int)AntiAliasingAlgorithm::TAA, "None");
+            static ImGuiExt::ComboOptions<int> antialiasingOptions;
+            if (antialiasingOptions.Options.size() == 0)
+            {
+                antialiasingOptions.AddOption((int)AntiAliasingAlgorithm::FXAA, "FXAA");
+                antialiasingOptions.AddOption((int)AntiAliasingAlgorithm::TAA, "TAA");
+                antialiasingOptions.AddOption((int)AntiAliasingAlgorithm::TAA, "None");
+            }
 
             if (ImGuiExt::RenderOptionCombo<int>((int*)(&cameraSettings->AntialiasingAglorithm), "##aa_option", "Antialiasing", antialiasingOptions, width))
                 hasChanged = true;
@@ -394,12 +403,15 @@ namespace te
 
             if (cameraSettings->MotionBlur.Enabled)
             {
-                ImGuiExt::ComboOptions<int> blurQualityOptions;
-                blurQualityOptions.AddOption((int)MotionBlurQuality::Ultra, "Ultra");
-                blurQualityOptions.AddOption((int)MotionBlurQuality::High, "High");
-                blurQualityOptions.AddOption((int)MotionBlurQuality::Medium, "Medium");
-                blurQualityOptions.AddOption((int)MotionBlurQuality::Low, "Low");
-                blurQualityOptions.AddOption((int)MotionBlurQuality::VeryLow, "Very low");
+                static ImGuiExt::ComboOptions<int> blurQualityOptions;
+                if (blurQualityOptions.Options.size() == 0)
+                {
+                    blurQualityOptions.AddOption((int)MotionBlurQuality::Ultra, "Ultra");
+                    blurQualityOptions.AddOption((int)MotionBlurQuality::High, "High");
+                    blurQualityOptions.AddOption((int)MotionBlurQuality::Medium, "Medium");
+                    blurQualityOptions.AddOption((int)MotionBlurQuality::Low, "Low");
+                    blurQualityOptions.AddOption((int)MotionBlurQuality::VeryLow, "Very low");
+                }
 
                 if (ImGuiExt::RenderOptionCombo<int>((int*)(&cameraSettings->MotionBlur.Quality), "##blur_quality_option", "Quality", blurQualityOptions, width))
                     hasChanged = true;

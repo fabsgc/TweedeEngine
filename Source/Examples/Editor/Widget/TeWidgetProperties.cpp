@@ -279,10 +279,14 @@ namespace te
 
         if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
         {
-            ImGuiExt::ComboOptions<int> mobilityOptions;
-            mobilityOptions.AddOption((int)ObjectMobility::Movable, "Movable");
-            mobilityOptions.AddOption((int)ObjectMobility::Immovable, "Immovable");
-            mobilityOptions.AddOption((int)ObjectMobility::Static, "Static");
+            static ImGuiExt::ComboOptions<int> mobilityOptions;
+
+            if (mobilityOptions.Options.size() == 0)
+            {
+                mobilityOptions.AddOption((int)ObjectMobility::Movable, "Movable");
+                mobilityOptions.AddOption((int)ObjectMobility::Immovable, "Immovable");
+                mobilityOptions.AddOption((int)ObjectMobility::Static, "Static");
+            }
 
             if (ImGuiExt::RenderOptionCombo<int>((int*)(&mobility), "##transform_mobility_option", "Mobility", mobilityOptions, widgetWidth, disableTransform))
                 hasChanged = true;
