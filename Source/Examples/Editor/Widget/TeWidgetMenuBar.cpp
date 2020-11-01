@@ -9,14 +9,13 @@
 #include "Image/TeTexture.h"
 #include "Mesh/TeMesh.h"
 
+#include <regex>
+
 namespace te
 {
     WidgetMenuBar::WidgetMenuBar()
         : Widget(WidgetType::MenuBar)
-        , _fileBrowser(Editor::Instance().GetFileBrowser())
-        , _open(false)
-        , _save(false)
-        , _load(false)
+        , _fileBrowser(gEditor().GetFileBrowser())
     { 
         _title = MENUBAR_TITLE;
         _isWindow = false;
@@ -38,22 +37,22 @@ namespace te
     void WidgetMenuBar::Update()
     {
         if (gVirtualInput().IsButtonDown(_newBtn))
-        { }
+            gEditor().GetSettings().State = Editor::EditorState::Modified;
 
         if (gVirtualInput().IsButtonDown(_openBtn))
-            _open = true;
+            _settings.Open = true;
 
         if (gVirtualInput().IsButtonDown(_saveBtn))
-            _save = true; // TODO open file browser if we save for the first time
-
+            Save();
+            
         if (gVirtualInput().IsButtonDown(_saveAsBtn))
-            _save = true;
+            _settings.Save = true;
 
-        if(gVirtualInput().IsButtonDown(_quitBtn))
-            gCoreApplication().OnStopRequested();
+        if (gVirtualInput().IsButtonDown(_quitBtn))
+            Quit();
 
         if (gVirtualInput().IsButtonDown(_loadResource))
-            _load = true;
+            _settings.Load = true;
 
         if (ImGui::BeginMainMenuBar())
         {
@@ -62,14 +61,12 @@ namespace te
                 if (ImGui::MenuItem(ICON_FA_FILE_ALT "   " ICON_FA_GRIP_LINES_VERTICAL "  New", "Ctrl+N"))
                 { }
 
-                if (ImGui::MenuItem(ICON_FA_FOLDER_OPEN " " ICON_FA_GRIP_LINES_VERTICAL "  Open", "Ctrl+O"))
-                    _open = true;
+                ImGui::MenuItem(ICON_FA_FOLDER_OPEN " " ICON_FA_GRIP_LINES_VERTICAL "  Open", "Ctrl+O", &_settings.Open);
 
                 if (ImGui::MenuItem(ICON_FA_SAVE "  " ICON_FA_GRIP_LINES_VERTICAL "  Save", "Ctrl+S"))
-                    _save = true;
+                    Save();
 
-                if (ImGui::MenuItem(ICON_FA_SAVE "  " ICON_FA_GRIP_LINES_VERTICAL "  Save As ..", "Ctrl+Shift+S"))
-                    _save = true;
+                ImGui::MenuItem(ICON_FA_SAVE "  " ICON_FA_GRIP_LINES_VERTICAL "  Save As ..", "Ctrl+Shift+S", _settings.Save);
 
                 if (ImGui::MenuItem(ICON_FA_SIGN_OUT_ALT "  " ICON_FA_GRIP_LINES_VERTICAL "  Quit", "Ctrl+Q"))
                     gCoreApplication().OnStopRequested();
@@ -79,9 +76,7 @@ namespace te
 
             if (ImGui::BeginMenu("Project"))
             {
-                if (ImGui::MenuItem(ICON_FA_FILE_DOWNLOAD "  " ICON_FA_GRIP_LINES_VERTICAL "  Load resource", "Ctrl+R"))
-                    _load = true;
-
+                ImGui::MenuItem(ICON_FA_FILE_DOWNLOAD "  " ICON_FA_GRIP_LINES_VERTICAL "  Load resource", "Ctrl+R", &_settings.Load);
                 ImGui::EndMenu();
             }
 
@@ -89,56 +84,56 @@ namespace te
             {
                 if (ImGui::MenuItem(ICON_FA_BONG "  " ICON_FA_GRIP_LINES_VERTICAL "  Project"))
                 {
-                    Widget* widget = static_cast<Widget*>(Editor::Instance().GetWidget(WidgetType::Project));
+                    Widget* widget = static_cast<Widget*>(gEditor().GetWidget(WidgetType::Project));
                     if(widget)
                         widget->SetVisible(!widget->GetVisible());
                 }
 
                 if (ImGui::MenuItem(ICON_FA_TOOLS "  " ICON_FA_GRIP_LINES_VERTICAL "  Properties"))
                 {
-                    Widget* widget = static_cast<Widget*>(Editor::Instance().GetWidget(WidgetType::Properties));
+                    Widget* widget = static_cast<Widget*>(gEditor().GetWidget(WidgetType::Properties));
                     if (widget)
                         widget->SetVisible(!widget->GetVisible());
                 }
 
                 if (ImGui::MenuItem(ICON_FA_IMAGE "  " ICON_FA_GRIP_LINES_VERTICAL "  Viewport"))
                 {
-                    Widget* widget = static_cast<Widget*>(Editor::Instance().GetWidget(WidgetType::Viewport));
+                    Widget* widget = static_cast<Widget*>(gEditor().GetWidget(WidgetType::Viewport));
                     if (widget)
                         widget->SetVisible(!widget->GetVisible());
                 }
 
                 if (ImGui::MenuItem(ICON_FA_TERMINAL " " ICON_FA_GRIP_LINES_VERTICAL "  Console"))
                 { 
-                    Widget* widget = static_cast<Widget*>(Editor::Instance().GetWidget(WidgetType::Console));
+                    Widget* widget = static_cast<Widget*>(gEditor().GetWidget(WidgetType::Console));
                     if (widget)
                         widget->SetVisible(!widget->GetVisible());
                 }
 
                 if (ImGui::MenuItem(ICON_FA_COG "  " ICON_FA_GRIP_LINES_VERTICAL "  Render options"))
                 { 
-                    Widget* widget = static_cast<Widget*>(Editor::Instance().GetWidget(WidgetType::RenderOptions));
+                    Widget* widget = static_cast<Widget*>(gEditor().GetWidget(WidgetType::RenderOptions));
                     if (widget)
                         widget->SetVisible(!widget->GetVisible());
                 }
 
                 if (ImGui::MenuItem(ICON_FA_SUITCASE "  " ICON_FA_GRIP_LINES_VERTICAL "  Resources"))
                 { 
-                    Widget* widget = static_cast<Widget*>(Editor::Instance().GetWidget(WidgetType::Resources));
+                    Widget* widget = static_cast<Widget*>(gEditor().GetWidget(WidgetType::Resources));
                     if (widget)
                         widget->SetVisible(!widget->GetVisible());
                 }
 
                 if (ImGui::MenuItem(ICON_FA_SCROLL " " ICON_FA_GRIP_LINES_VERTICAL "  Script"))
                 { 
-                    Widget* widget = static_cast<Widget*>(Editor::Instance().GetWidget(WidgetType::Script));
+                    Widget* widget = static_cast<Widget*>(gEditor().GetWidget(WidgetType::Script));
                     if (widget)
                         widget->SetVisible(!widget->GetVisible());
                 }
 
                 if (ImGui::MenuItem(ICON_FA_GAMEPAD " " ICON_FA_GRIP_LINES_VERTICAL "  Game"))
                 {
-                    Widget* widget = static_cast<Widget*>(Editor::Instance().GetWidget(WidgetType::Game));
+                    Widget* widget = static_cast<Widget*>(gEditor().GetWidget(WidgetType::Game));
                     if (widget)
                         widget->SetVisible(!widget->GetVisible());
                 }
@@ -148,7 +143,7 @@ namespace te
 
             if (ImGui::BeginMenu("Help"))
             {
-                ImGui::MenuItem(ICON_FA_INFO_CIRCLE "  " ICON_FA_GRIP_LINES_VERTICAL "  About", nullptr, &_settings.ShowAboutWindow);
+                ImGui::MenuItem(ICON_FA_INFO_CIRCLE "  " ICON_FA_GRIP_LINES_VERTICAL "  About", nullptr, &_settings.AboutWindow);
                 ImGui::EndMenu();
             }
 
@@ -166,11 +161,11 @@ namespace te
 
     void WidgetMenuBar::ShowAboutWindow()
     {
-        if (!_settings.ShowAboutWindow)
+        if (!_settings.AboutWindow)
             return;
 
         ImGui::SetNextWindowFocus();
-        ImGui::Begin("About", &_settings.ShowAboutWindow, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking);
+        ImGui::Begin("About", &_settings.AboutWindow, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking);
 
         ImGui::Text("Tweede Framework Redux");
         ImGui::Text("Author: Fabien Beaujean");
@@ -205,71 +200,87 @@ namespace te
 
     void WidgetMenuBar::ShowOpen()
     {
-        if (_open)
+        if (_settings.Open)
             ImGui::OpenPopup("Open Project");
 
-        if (_fileBrowser.ShowFileDialog("Open Project", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), ".scene"))
+        if (_fileBrowser.ShowFileDialog("Open Project", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), true, ".scene"))
         {
-            _open = false;
+            gEditor().GetSettings().FilePath = _fileBrowser.Data.SelectedPath;
+            gEditor().Open();
+            _settings.Open = false;
         }
         else
         {
-            if (_fileBrowser.IsCancelled)
-                _open = false;
+            if (_fileBrowser.Data.IsCancelled)
+                _settings.Open = false;
         }
     }
 
     void WidgetMenuBar::ShowSave()
     {
-        if (_save)
+        if (_settings.Save)
             ImGui::OpenPopup("Save Project");
 
-        if (_fileBrowser.ShowFileDialog("Save Project", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), ".scene"))
+        if (_fileBrowser.ShowFileDialog("Save Project", ImGuiFileBrowser::DialogMode::SAVE, ImVec2(800, 450), false, ".scene"))
         {
-            _save = false;
+            if (!std::regex_match(_fileBrowser.Data.SelectedPath, std::regex("^(.*)\\.(scene)$")))
+                gEditor().GetSettings().FilePath = _fileBrowser.Data.SelectedPath + ".scene";
+            else
+                gEditor().GetSettings().FilePath = _fileBrowser.Data.SelectedPath;
+            
+            gEditor().Save();
+            _settings.Save = false;
         }
         else
         {
-            if (_fileBrowser.IsCancelled)
-                _save = false;
+            if (_fileBrowser.Data.IsCancelled)
+                _settings.Save = false;
         }
     }
 
     void WidgetMenuBar::ShowLoad()
     {
-        if (_load)
+        if (_settings.Load)
             ImGui::OpenPopup("Load Resource");
 
-        if (_fileBrowser.ShowFileDialog("Load Resource", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), ".jpeg,.jpg,.png,.obj,.dae,.fbx,.scene"))
+        if (_fileBrowser.ShowFileDialog("Load Resource", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), true, ".jpeg,.jpg,.png,.obj,.dae,.fbx,.scene"))
         {
-            if (_fileBrowser.ext == ".jpeg" || _fileBrowser.ext == ".jpg" || _fileBrowser.ext == ".png")
+            if (_fileBrowser.Data.Ext == ".jpeg" || _fileBrowser.Data.Ext == ".jpg" || _fileBrowser.Data.Ext == ".png")
             {
                 auto textureImportOptions = TextureImportOptions::Create();
-                textureImportOptions->CpuCached = false;
-                textureImportOptions->GenerateMips = true;
+                if (_fileBrowser.Data.TexParam.TexType == TextureType::TEX_TYPE_CUBE_MAP)
+                {
+                    textureImportOptions->CpuCached = false;
+                    textureImportOptions->CubemapType = CubemapSourceType::Faces;
+                    textureImportOptions->Format = PF_RGBA8;
+                    textureImportOptions->IsCubemap = true;
+                }
+                else
+                {
+                    textureImportOptions->CpuCached = false;
+                    textureImportOptions->GenerateMips = true;
+                }
 
-                HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.SelectedPath, textureImportOptions);
-
+                HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.Data.SelectedPath, textureImportOptions);
                 if (texture.GetHandleData())
                 {
-                    texture->SetName(_fileBrowser.SelectedFileName);
+                    texture->SetName(_fileBrowser.Data.SelectedFileName);
                     EditorResManager::Instance().Add<Texture>(texture);
                 }
             }
-            else if (_fileBrowser.ext == ".obj" || _fileBrowser.ext == ".dae" || _fileBrowser.ext == ".fbx")
+            else if (_fileBrowser.Data.Ext == ".obj" || _fileBrowser.Data.Ext == ".dae" || _fileBrowser.Data.Ext == ".fbx")
             {
                 auto meshImportOptions = MeshImportOptions::Create();
-                meshImportOptions->ImportNormals = true;
-                meshImportOptions->ImportTangents = true;
-                meshImportOptions->ImportSkin = true;
-                meshImportOptions->ImportAnimation = true;
+                meshImportOptions->ImportNormals = _fileBrowser.Data.MeshParam.ImportNormals;
+                meshImportOptions->ImportTangents = _fileBrowser.Data.MeshParam.ImportTangents;
+                meshImportOptions->ImportSkin = _fileBrowser.Data.MeshParam.ImportSkin;
+                meshImportOptions->ImportAnimation = _fileBrowser.Data.MeshParam.ImportAnimation;
                 meshImportOptions->CpuCached = false;
 
-                HMesh mesh = EditorResManager::Instance().Load<Mesh>(_fileBrowser.SelectedPath, meshImportOptions);
-
+                HMesh mesh = EditorResManager::Instance().Load<Mesh>(_fileBrowser.Data.SelectedPath, meshImportOptions);
                 if (mesh.GetHandleData())
                 {
-                    mesh->SetName(_fileBrowser.SelectedFileName);
+                    mesh->SetName(_fileBrowser.Data.SelectedFileName);
                     EditorResManager::Instance().Add<Mesh>(mesh);
                 }
             }
@@ -278,12 +289,33 @@ namespace te
                 // TODO scene
             }
 
-            _load = false;
+            _settings.Load = false;
         }
         else
         {
-            if (_fileBrowser.IsCancelled)
-                _load = false;
+            if (_fileBrowser.Data.IsCancelled)
+                _settings.Load = false;
+        }
+    }
+
+    void WidgetMenuBar::Quit()
+    {
+        if (gEditor().GetSettings().State == Editor::EditorState::Modified)
+        {
+            // TODO quit
+        }
+
+        gCoreApplication().OnStopRequested();
+    }
+
+    void WidgetMenuBar::Save()
+    {
+        if (gEditor().GetSettings().State == Editor::EditorState::Modified)
+        {
+            if (gEditor().GetSettings().FilePath.empty())
+                _settings.Save = true;
+            else
+                gEditor().Save();
         }
     }
 }

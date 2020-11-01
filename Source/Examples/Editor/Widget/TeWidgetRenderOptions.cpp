@@ -26,7 +26,7 @@ namespace te
     void WidgetRenderOptions::Update()
     {
         bool hasChanged = false;
-        HCamera& camera = Editor::Instance().GetViewportCamera();
+        HCamera& camera = gEditor().GetViewportCamera();
         auto cameraSettings = camera->GetRenderSettings();
         const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
 
@@ -49,7 +49,7 @@ namespace te
 
         if (hasChanged)
         {
-            Editor::Instance().NeedsRedraw();
+            gEditor().NeedsRedraw();
             camera->SetRenderSettings(cameraSettings);
         }
     }

@@ -389,7 +389,6 @@ namespace te
         {
             //bool open = true;
             //ImGui::ShowDemoWindow(&open);
-        
             ImGui::End();
         }
     }
@@ -434,6 +433,18 @@ namespace te
             _settings.WProperties->PutFocus();
             break;        
         }
+    }
+
+    void Editor::Save()
+    {
+        _settings.State = EditorState::Saved;
+        // TODO
+    }
+
+    void Editor::Open()
+    {
+        _settings.State = EditorState::Saved;
+        // TODO
     }
 
     void Editor::LoadScene()
@@ -483,7 +494,7 @@ namespace te
         properties.IndexOfRefraction = 1.5f;
 
         _materialMonkey = Material::Create(_shader);
-        _materialMonkey->SetName("Material");
+        _materialMonkey->SetName("Monkey Material");
         _materialMonkey->SetTexture("DiffuseMap", _loadedTextureMonkey);
         _materialMonkey->SetTexture("EnvironmentMap", _loadedCubemapTexture);
         _materialMonkey->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
@@ -508,14 +519,14 @@ namespace te
         _renderableMonkey = _sceneRenderableMonkeySO->AddComponent<CRenderable>();
         _renderableMonkey->SetMesh(_loadedMeshMonkey);
         _renderableMonkey->SetMaterial(_materialMonkey);
-        _renderableMonkey->SetName("Mesh Monkey");
+        _renderableMonkey->SetName("Monkey Renderable");
         _renderableMonkey->Initialize();
 
         _sceneRenderablePlaneSO = SceneObject::Create("Plane");
         _sceneRenderablePlaneSO->SetParent(_sceneSO);
         _renderablePlane = _sceneRenderablePlaneSO->AddComponent<CRenderable>();
         _renderablePlane->SetMesh(_loadedMeshPlane);
-        _renderablePlane->SetName("Mesh Plane");
+        _renderablePlane->SetName("Plane Renderable");
         _renderablePlane->Initialize();
         _sceneRenderablePlaneSO->Move(Vector3(0.0, 0.1f, 0.0f));
         // ######################################################
@@ -524,5 +535,10 @@ namespace te
         EditorResManager::Instance().Add<Shader>(gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque));
         EditorResManager::Instance().Add<Shader>(gBuiltinResources().GetBuiltinShader(BuiltinShader::Transparent));
 #endif
+    }
+
+    Editor& gEditor()
+    {
+        return Editor::Instance();
     }
 }

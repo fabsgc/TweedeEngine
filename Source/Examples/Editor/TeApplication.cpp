@@ -17,7 +17,7 @@ namespace te
 
     void Application::PreUpdate()
     { 
-        Editor::Instance().Update();
+        gEditor().Update();
     }
 
     void Application::PostUpdate()

@@ -16,7 +16,7 @@ namespace te
 {
     WidgetProject::WidgetProject()
         : Widget(WidgetType::Project)
-        , _selections(Editor::Instance().GetSelectionData())
+        , _selections(gEditor().GetSelectionData())
         , _expandToSelection(false)
         , _expandedToSelection(false)
     { 
@@ -36,7 +36,7 @@ namespace te
 
     void WidgetProject::Update()
     { 
-        HSceneObject& sceneSO = Editor::Instance().GetSceneRoot();
+        HSceneObject& sceneSO = gEditor().GetSceneRoot();
         ShowTree(sceneSO);
     }
 
@@ -274,11 +274,11 @@ namespace te
             case TID_CRenderable:
             case TID_CLight:
             case TID_CSkybox:
-                Editor::Instance().PutFocus(Editor::WindowType::Viewport);
+                gEditor().PutFocus(Editor::WindowType::Viewport);
                 break;
 
             case TID_CScript:
-                Editor::Instance().PutFocus(Editor::WindowType::Script);
+                gEditor().PutFocus(Editor::WindowType::Script);
                 break;
             }
         }
@@ -372,7 +372,7 @@ namespace te
             }
         }
 
-        if ((_selections.ClickedSceneObject && _selections.ClickedSceneObject != Editor::Instance().GetSceneRoot().GetInternalPtr())
+        if ((_selections.ClickedSceneObject && _selections.ClickedSceneObject != gEditor().GetSceneRoot().GetInternalPtr())
             || _selections.ClickedComponent)
         {
             if (ImGui::MenuItem(ICON_FA_COPY " Copy"))
@@ -390,7 +390,7 @@ namespace te
                 Paste();
         }
 
-        if ((_selections.ClickedSceneObject && _selections.ClickedSceneObject != Editor::Instance().GetSceneRoot().GetInternalPtr())
+        if ((_selections.ClickedSceneObject && _selections.ClickedSceneObject != gEditor().GetSceneRoot().GetInternalPtr())
             || _selections.ClickedComponent)
         {
             if (ImGui::MenuItem(ICON_FA_TRASH " Delete"))
@@ -407,11 +407,12 @@ namespace te
         if (_selections.ClickedSceneObject)
             sceneObject->SetParent(_selections.ClickedSceneObject->GetHandle());
         else
-            sceneObject->SetParent(Editor::Instance().GetSceneRoot());
+            sceneObject->SetParent(gEditor().GetSceneRoot());
 
         _expandToSelection = true;
         _selections.ClickedSceneObject = sceneObject.GetInternalPtr();
-        Editor::Instance().NeedsRedraw();
+        gEditor().NeedsRedraw();
+        gEditor().GetSettings().State = Editor::EditorState::Modified;
         HandleSelectionWindowSwitch();
     }
 
@@ -435,7 +436,8 @@ namespace te
 
         _expandToSelection = true;
         _selections.ClickedComponent = renderable.GetInternalPtr();
-        Editor::Instance().NeedsRedraw();
+        gEditor().NeedsRedraw();
+        gEditor().GetSettings().State = Editor::EditorState::Modified;
         HandleSelectionWindowSwitch();
     }
 
@@ -469,7 +471,8 @@ namespace te
 
         _expandToSelection = true;
         _selections.ClickedComponent = light.GetInternalPtr();
-        Editor::Instance().NeedsRedraw();
+        gEditor().NeedsRedraw();
+        gEditor().GetSettings().State = Editor::EditorState::Modified;
         HandleSelectionWindowSwitch();
     }
 
@@ -512,7 +515,8 @@ namespace te
         }
 
         _expandToSelection = true;
-        Editor::Instance().NeedsRedraw();
+        gEditor().NeedsRedraw();
+        gEditor().GetSettings().State = Editor::EditorState::Modified;
         HandleSelectionWindowSwitch();
     }
 
@@ -523,7 +527,8 @@ namespace te
 
         // TODO
 
-        Editor::Instance().NeedsRedraw();
+        gEditor().NeedsRedraw();
+        gEditor().GetSettings().State = Editor::EditorState::Modified;
         HandleSelectionWindowSwitch();
     }
 
@@ -538,7 +543,8 @@ namespace te
 
         _expandToSelection = true;
         _selections.ClickedComponent = script.GetInternalPtr();
-        Editor::Instance().NeedsRedraw();
+        gEditor().NeedsRedraw();
+        gEditor().GetSettings().State = Editor::EditorState::Modified;
         HandleSelectionWindowSwitch();
     }
 
@@ -556,7 +562,8 @@ namespace te
 
         _expandToSelection = true;
         _selections.ClickedComponent = skybox.GetInternalPtr();
-        Editor::Instance().NeedsRedraw();
+        gEditor().NeedsRedraw();
+        gEditor().GetSettings().State = Editor::EditorState::Modified;
         HandleSelectionWindowSwitch();
     }
 
@@ -566,7 +573,7 @@ namespace te
             return;
 
         SPtr<SceneObject> clickedSceneObject = _selections.ClickedSceneObject ? 
-            _selections.ClickedSceneObject : Editor::Instance().GetSceneRoot().GetInternalPtr();
+            _selections.ClickedSceneObject : gEditor().GetSceneRoot().GetInternalPtr();
 
         if (_selections.CopiedComponent)
         {
@@ -651,7 +658,7 @@ namespace te
         }
         else if (_selections.CopiedSceneObject)
         {
-            if (_selections.CopiedSceneObject == Editor::Instance().GetSceneRoot().GetInternalPtr())
+            if (_selections.CopiedSceneObject == gEditor().GetSceneRoot().GetInternalPtr())
                 return;
 
             HSceneObject sceneObject = SceneObject::Create("SceneObject");
@@ -660,12 +667,11 @@ namespace te
 
             _selections.ClickedSceneObject = sceneObject.GetInternalPtr();
             _selections.CopiedSceneObject = sceneObject.GetInternalPtr();
-
-            
         }
 
         _expandToSelection = true;
-        Editor::Instance().NeedsRedraw();
+        gEditor().NeedsRedraw();
+        gEditor().GetSettings().State = Editor::EditorState::Modified;
         HandleSelectionWindowSwitch();
     }
 
@@ -687,7 +693,7 @@ namespace te
         }
         else if (_selections.ClickedSceneObject)
         {
-            if (_selections.ClickedSceneObject == Editor::Instance().GetSceneRoot().GetInternalPtr())
+            if (_selections.ClickedSceneObject == gEditor().GetSceneRoot().GetInternalPtr())
                 return;
 
             _selections.CopiedComponent = nullptr;
@@ -703,7 +709,8 @@ namespace te
             _selections.ClickedSceneObject = nullptr;
         }
 
-        Editor::Instance().NeedsRedraw();
+        gEditor().NeedsRedraw();
+        gEditor().GetSettings().State = Editor::EditorState::Modified;
     }
 
     String WidgetProject::GetComponentIcon(const HComponent& component)

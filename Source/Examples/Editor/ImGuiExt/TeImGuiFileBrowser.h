@@ -49,22 +49,53 @@ namespace te
              * the size, a DialogMode enum value defining in which mode the dialog should operate and optionally the extensions that are valid for opening.
              * Note that the select directory mode doesn't need any extensions.
              */
-            bool ShowFileDialog(const String& label, const DialogMode mode, const ImVec2& sz_xy = ImVec2(0,0), const String& valid_types = "*.*");
+            bool ShowFileDialog(const String& label, const DialogMode mode, const ImVec2& sz_xy = ImVec2(0,0), bool parameters_step = false, const String& valid_types = "*.*");
+
+            /** If we want to load a mesh, here are stored the list of parameters to apply on it during loading */
+            struct MeshParameters
+            {
+                bool ImportNormals = true;
+                bool ImportTangents = true;
+                bool ImportSkin = true;
+                bool ImportAnimation = true;
+            };
+
+            /** If we want to load a texture, here are stored the list of parameters to apply on it during loading */
+            struct TextureParameters
+            {
+                TextureType TexType = TextureType::TEX_TYPE_2D;
+            };
+
+            /** If we want to load a scene, here are stored the list of parameters to apply on it during loading */
+            struct SceneParameters
+            { };
 
             /* Store the opened/saved file name or dir name (incase of selectDirectoryDialog) and the absolute path to the selection
              * Should only be accessed when above functions return true else may contain garbage.
              */
-            String SelectedFileName;
-            String SelectedPath;
-            String ext;    // Store the saved file extension
-            bool   IsCancelled;
+            struct ProcessedData
+            {
+                String SelectedFileName;
+                String SelectedPath;
+                String Ext;
+                bool   IsCancelled;
 
+                MeshParameters    MeshParam;
+                TextureParameters TexParam;
+                SceneParameters   SceneParam;
+
+            };
+
+            ProcessedData Data;
+            
         private:
             struct Info
             {
-                Info(String name, bool is_hidden) : name(name), is_hidden(is_hidden)
-                {
-                }
+                Info(String name, bool is_hidden) 
+                    : name(name)
+                    , is_hidden(is_hidden)
+                { }
+
                 String name;
                 bool is_hidden;
             };
@@ -88,6 +119,7 @@ namespace te
             void ShowErrorModal();
             void ShowInvalidFileModal();
             bool ShowReplaceFileModal();
+            bool ShowParametersFileModal();
             void ShowHelpMarker(String desc);
             void ParsePathTabs(String str);
             void FilterFiles(int filter_mode);
@@ -125,14 +157,14 @@ namespace te
             DialogMode dialog_mode;
             int filter_mode, col_items_limit, selected_idx, selected_ext_idx;
             float col_width, ext_box_width;
-            bool show_hidden, show_inputbar_combobox, is_dir, is_appearing, filter_dirty, validate_file;
+            bool show_hidden, show_inputbar_combobox, is_dir, is_appearing, filter_dirty, validate_file, parameters_step_done;
             char input_fn[256];
 
             Vector<String> valid_exts;
             Vector<String> current_dirlist;
             Vector<Info> subdirs;
             Vector<Info> subfiles;
-            String current_path, error_msg, error_title, invfile_modal_id, repfile_modal_id;
+            String current_path, error_msg, error_title, invfile_modal_id, repfile_modal_id, parameters_file_modal_id;
 
             ImGuiTextFilter filter;
             String valid_types;

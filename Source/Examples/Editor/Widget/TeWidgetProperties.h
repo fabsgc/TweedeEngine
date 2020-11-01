@@ -72,7 +72,10 @@ namespace te
         /** Show information about a skybox */
         bool ShowSkybox(SPtr<Skybox> skybox);
 
+        /** Show FileBrowser in order to load a new mesh */
         bool ShowLoadMesh();
+
+        /** Show FileBrowser in order to load a new cubemap texture */
         bool ShowLoadSkybox();
 
     protected:

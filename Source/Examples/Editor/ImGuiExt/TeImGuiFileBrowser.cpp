@@ -5,6 +5,8 @@
 #endif
 #include "ImGui/imgui_internal.h"
 #include "../ImGuiExt/TeIconsFontAwesome5.h"
+#include "../ImGuiExt/TeImGuiExt.h"
+#include "Image/TeTexture.h"
 
 #include <iostream>
 #include <functional>
@@ -37,7 +39,8 @@ namespace te
         is_dir = false;
         filter_dirty = true;
         is_appearing = true;
-        IsCancelled = false;
+        Data.IsCancelled = false;
+        parameters_step_done = false;
 
         col_items_limit = 12;
         selected_idx = -1;
@@ -48,8 +51,9 @@ namespace te
 
         invfile_modal_id = "Invalid File!";
         repfile_modal_id = "Replace File?";
-        SelectedFileName = "";
-        SelectedPath = "";
+        parameters_file_modal_id = "Resource Parameters";
+        Data.SelectedFileName = "";
+        Data.SelectedPath = "";
         input_fn[0] = '\0';
         dialog_mode = DialogMode::OPEN;
 
@@ -93,6 +97,7 @@ namespace te
         is_dir = false;
         filter_dirty = true;
         is_appearing = true;
+        parameters_step_done = false;
 
         //Clear pointer references to subdirs and subfiles
         filtered_dirs.clear();
@@ -106,7 +111,7 @@ namespace te
         ImGui::CloseCurrentPopup();
     }
 
-    bool ImGuiFileBrowser::ShowFileDialog(const String& label, const DialogMode mode, const ImVec2& sz_xy, const String& valid_types)
+    bool ImGuiFileBrowser::ShowFileDialog(const String& label, const DialogMode mode, const ImVec2& sz_xy, bool parameters_step, const String& valid_types)
     {
         dialog_mode = mode;
         ImGuiIO& io = ImGui::GetIO();
@@ -125,13 +130,13 @@ namespace te
         if (ImGui::BeginPopupModal(label.c_str(), nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse))
         {
             bool show_error = false;
-            IsCancelled = false;
+            Data.IsCancelled = false;
 
             // If this is the initial run, read current directory and load data once.
             if(is_appearing)
             {
-                SelectedFileName.clear();
-                SelectedPath.clear();
+                Data.SelectedFileName.clear();
+                Data.SelectedPath.clear();
                 if(mode != DialogMode::SELECT)
                 {
                     this->valid_types = valid_types;
@@ -168,17 +173,17 @@ namespace te
                 if(!check && dialog_mode == DialogMode::OPEN)
                 {
                     ImGui::OpenPopup(invfile_modal_id.c_str());
-                    SelectedFileName.clear();
-                    SelectedPath.clear();
+                    Data.SelectedFileName.clear();
+                    Data.SelectedPath.clear();
                 }
-
                 else if(!check && dialog_mode == DialogMode::SAVE)
+                {
                     ImGui::OpenPopup(repfile_modal_id.c_str());
-
+                }
                 else if(!check && dialog_mode == DialogMode::SELECT)
                 {
-                    SelectedFileName.clear();
-                    SelectedPath.clear();
+                    Data.SelectedFileName.clear();
+                    Data.SelectedPath.clear();
                     show_error = true;
                     error_title = "Invalid Directory!";
                     error_msg = "Invalid Directory Selected. Please make sure the directory exists.";
@@ -187,18 +192,30 @@ namespace te
                 //If selected file passes through validation check, set path to the file and close file dialog
                 if(check)
                 {
-                    SelectedPath = current_path + SelectedFileName;
+                    if(dialog_mode != DialogMode::SELECT && parameters_step && !parameters_step_done)
+                    {
+                        ImGui::OpenPopup(parameters_file_modal_id.c_str());
+                    }
+                    else
+                    {
+                        Data.SelectedPath = current_path + Data.SelectedFileName;
 
-                    //Add a trailing "/" to emphasize its a directory not a file. If you want just the dir name it's accessible through "SelectedFileName"
-                    if(dialog_mode == DialogMode::SELECT)
-                        SelectedPath += "/";
-                    CloseDialog();
+                        //Add a trailing "/" to emphasize its a directory not a file. If you want just the dir name it's accessible through "SelectedFileName"
+                        if(dialog_mode == DialogMode::SELECT)
+                            Data.SelectedPath += "/";
+
+                        CloseDialog();
+                    }
                 }
             }
 
             // We don't need to check as the modals will only be shown if OpenPopup is called
             ShowInvalidFileModal();
+
             if(ShowReplaceFileModal())
+                CloseDialog();
+
+            if (ShowParametersFileModal())
                 CloseDialog();
 
             //Show Error Modal if there was an error opening any directory
@@ -207,7 +224,7 @@ namespace te
             ShowErrorModal();
 
             ImGui::EndPopup();
-            return (!SelectedFileName.empty() && !SelectedPath.empty());
+            return (!Data.SelectedFileName.empty() && !Data.SelectedPath.empty());
         }
         else
             return false;
@@ -245,7 +262,7 @@ namespace te
                 float next_label_width = ImGui::CalcTextSize(current_dirlist[i+1].c_str()).x;
 
                 if(i+1 < (int)current_dirlist.size() - 1)
-                    next_label_width += frame_height + ImGui::CalcTextSize(">>").x;
+                    next_label_width += frame_height + ImGui::CalcTextSize(ICON_FA_CHEVRON_CIRCLE_RIGHT).x;
 
                 if(ImGui::GetCursorPosX() + next_label_width >= (nw_size.x - style.WindowPadding.x * 3.0))
                 {
@@ -253,7 +270,7 @@ namespace te
                     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f,1.0f));
 
                     //Render a drop down of navigation items on button press
-                    if(ImGui::Button(">>"))
+                    if(ImGui::Button(ICON_FA_CHEVRON_CIRCLE_RIGHT))
                         ImGui::OpenPopup("##NavBarDropboxPopup");
                     if(ImGui::BeginPopup("##NavBarDropboxPopup"))
                     {
@@ -396,7 +413,7 @@ namespace te
 
                     if(ImGui::IsMouseDoubleClicked(0))
                     {
-                        SelectedFileName = filtered_files[i]->name;
+                        Data.SelectedFileName = filtered_files[i]->name;
                         validate_file = true;
                     }
                 }
@@ -435,7 +452,7 @@ namespace te
         {
             if(strlen(input_fn) > 0)
             {
-                SelectedFileName = String(input_fn);
+                Data.SelectedFileName = String(input_fn);
                 validate_file = true;
             }
         }
@@ -532,7 +549,7 @@ namespace te
             }
             else if (ImGui::Button("Save") && strlen(input_fn) > 0)
             {
-                SelectedFileName = String(input_fn);
+                Data.SelectedFileName = String(input_fn);
                 validate_file = true;
             }
         }
@@ -546,7 +563,7 @@ namespace te
                     show_error |= !(OnDirClick(selected_idx));
                 else if(strlen(input_fn) > 0)
                 {
-                    SelectedFileName = String(input_fn);
+                    Data.SelectedFileName = String(input_fn);
                     validate_file = true;
                 }
             }
@@ -560,7 +577,7 @@ namespace te
                 {
                     if(strlen(input_fn) > 0)
                     {
-                        SelectedFileName = String(input_fn);
+                        Data.SelectedFileName = String(input_fn);
                         validate_file = true;
                     }
                 }
@@ -571,7 +588,7 @@ namespace te
         ImGui::SameLine();
         if (ImGui::Button("Cancel"))
         {
-            IsCancelled = true;
+            Data.IsCancelled = true;
             CloseDialog();
         }
 
@@ -640,6 +657,66 @@ namespace te
         return show_error;
     }
 
+    bool ImGuiFileBrowser::ShowParametersFileModal()
+    {
+        ImVec2 window_size(400, 0);
+        ImGui::SetNextWindowSize(window_size);
+        const char* selectedExt = Data.Ext.c_str();
+        bool ret_val = false;
+
+        if (ImGui::BeginPopupModal(parameters_file_modal_id.c_str(), nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize))
+        {
+            if (dialog_mode == DialogMode::OPEN)
+            {
+                if (strcmp(selectedExt, ".obj") == 0 || strcmp(selectedExt, ".dae") == 0 || strcmp(selectedExt, ".fbx") == 0)
+                {
+                    ImGuiExt::RenderOptionBool(Data.MeshParam.ImportNormals, "##file_dialog_parameters_mesh_normals", "Import normals");
+                    ImGuiExt::RenderOptionBool(Data.MeshParam.ImportTangents, "##file_dialog_parameters_mesh_tangents", "Import tangents");
+                    ImGuiExt::RenderOptionBool(Data.MeshParam.ImportAnimation, "##file_dialog_parameters_mesh_animation", "Import animation");
+                    ImGuiExt::RenderOptionBool(Data.MeshParam.ImportSkin, "##file_dialog_parameters_mesh_skin", "Import skin");
+                }
+                else if (strcmp(selectedExt, ".jpg") == 0 || strcmp(selectedExt, ".jpeg") == 0 || strcmp(selectedExt, ".png") == 0)
+                {
+                    static ImGuiExt::ComboOptions<TextureType> textureTypeOptions;
+                    if (textureTypeOptions.Options.size() == 0)
+                    {
+                        textureTypeOptions.AddOption(TextureType::TEX_TYPE_2D, "Texture 2D");
+                        textureTypeOptions.AddOption(TextureType::TEX_TYPE_CUBE_MAP, "Cubemap");
+                    }
+
+                    ImGuiExt::RenderOptionCombo<TextureType>(&Data.TexParam.TexType, "##file_dialog_parameters_texture_type", "Texture type", textureTypeOptions, 300);
+                }
+                else if (strcmp(selectedExt, ".scene") == 0)
+                {
+                    // TODO
+                }
+            }
+            else if (dialog_mode == DialogMode::SAVE && strcmp(selectedExt, ".scene") == 0)
+            { /** TODO */ }
+
+            if (ImGui::Button("Next", GetButtonSize("Next")))
+            {
+                Data.SelectedPath = current_path + Data.SelectedFileName;
+                ImGui::CloseCurrentPopup();
+                parameters_step_done = true;
+                ret_val = true;
+            }
+
+            ImGui::SameLine();
+            if (ImGui::Button("Cancel", GetButtonSize("Cancel")))
+            {
+                Data.SelectedFileName.clear();
+                Data.SelectedPath.clear();
+                ImGui::CloseCurrentPopup();
+                ret_val = false;
+            }
+
+            ImGui::EndPopup();
+        }
+        
+        return ret_val;
+    }
+
     void ImGuiFileBrowser::RenderExtBox()
     {
         ImGui::PushItemWidth(ext_box_width);
@@ -665,7 +742,7 @@ namespace te
             }
             ImGui::EndCombo();
         }
-        ext = valid_exts[selected_ext_idx];
+        Data.Ext = valid_exts[selected_ext_idx];
         ImGui::PopItemWidth();
     }
 
@@ -928,7 +1005,7 @@ namespace te
 
             if (ImGui::Button("Yes", GetButtonSize("Yes")))
             {
-                SelectedPath = current_path + SelectedFileName;
+                Data.SelectedPath = current_path + Data.SelectedFileName;
                 ImGui::CloseCurrentPopup();
                 ret_val = true;
             }
@@ -936,8 +1013,8 @@ namespace te
             ImGui::SameLine();
             if (ImGui::Button("No", GetButtonSize("No")))
             {
-                SelectedFileName.clear();
-                SelectedPath.clear();
+                Data.SelectedFileName.clear();
+                Data.SelectedPath.clear();
                 ImGui::CloseCurrentPopup();
                 ret_val = false;
             }
@@ -1004,9 +1081,9 @@ namespace te
         if(selected_idx >= 0)
         {
             if(dialog_mode == DialogMode::SELECT)
-                match = (filtered_dirs[selected_idx]->name == SelectedFileName);
+                match = (filtered_dirs[selected_idx]->name == Data.SelectedFileName);
             else
-                match = (filtered_files[selected_idx]->name == SelectedFileName);
+                match = (filtered_files[selected_idx]->name == Data.SelectedFileName);
         }
 
         //If the input filename doesn't match we need to explicitly find the input filename..
@@ -1016,7 +1093,7 @@ namespace te
             {
                 for(int i = 0; i < (int)subdirs.size(); i++)
                 {
-                    if(subdirs[i].name == SelectedFileName)
+                    if(subdirs[i].name == Data.SelectedFileName)
                     {
                         match = true;
                         break;
@@ -1028,7 +1105,7 @@ namespace te
             {
                 for(int i = 0; i < (int)subfiles.size(); i++)
                 {
-                    if(subfiles[i].name == SelectedFileName)
+                    if(subfiles[i].name == Data.SelectedFileName)
                     {
                         match = true;
                         break;
@@ -1055,8 +1132,8 @@ namespace te
                 if(ext == "*.*")
                     return true;
             }
-            size_t idx = SelectedFileName.find_last_of('.');
-            String file_ext = idx == String::npos ? "" : SelectedFileName.substr(idx, SelectedFileName.length() - idx);
+            size_t idx = Data.SelectedFileName.find_last_of('.');
+            String file_ext = idx == String::npos ? "" : Data.SelectedFileName.substr(idx, Data.SelectedFileName.length() - idx);
             return (std::find(valid_exts.begin(), valid_exts.end(), file_ext) != valid_exts.end());
         }
     }

@@ -22,7 +22,7 @@ namespace te
         , _materialCreationCounter(1)
         , _loadTexture(false)
         , _loadTextureUsed(nullptr)
-        , _fileBrowser(Editor::Instance().GetFileBrowser())
+        , _fileBrowser(gEditor().GetFileBrowser())
     {
         _title = MATERIALS_TITLE;
         _flags |= ImGuiWindowFlags_HorizontalScrollbar;
@@ -216,7 +216,6 @@ namespace te
                     if (ImGuiExt::RenderOptionFloat(properties.AlphaThreshold, "##material_properties_alpha_threshold_option", "Alpha threshold", 0.0f, 1.0f, width))
                         hasChanged = true;
                 }
-                ImGui::Separator();
             }
 
             if (ImGui::CollapsingHeader("Textures", ImGuiTreeNodeFlags_DefaultOpen))
@@ -311,7 +310,7 @@ namespace te
             if (hasChanged)
             {
                 // We must update gpu params on all renderables who are using this material
-                Vector<HComponent> components = Editor::Instance().GetSceneRoot()->GetComponents(TypeID_Core::TID_CRenderable, true);
+                Vector<HComponent> components = gEditor().GetSceneRoot()->GetComponents(TypeID_Core::TID_CRenderable, true);
                 _currentMaterial->SetProperties(properties);
 
                 for (auto& component : components)
@@ -321,7 +320,8 @@ namespace te
                         renderable->UpdateMaterials();
                 }
 
-                Editor::Instance().NeedsRedraw();
+                gEditor().NeedsRedraw();
+                gEditor().GetSettings().State = Editor::EditorState::Modified;
             }
         }
     }
@@ -336,19 +336,27 @@ namespace te
         if (_loadTexture)
             ImGui::OpenPopup("Load Material Texture");
 
-        if (_fileBrowser.ShowFileDialog("Load Material Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), ".jpeg,.jpg,.png"))
+        if (_fileBrowser.ShowFileDialog("Load Material Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), false, ".jpeg,.jpg,.png"))
         {
             auto textureImportOptions = TextureImportOptions::Create();
-            textureImportOptions->CpuCached = false;
-            textureImportOptions->GenerateMips = true;
-
-            HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.SelectedPath, textureImportOptions);
-
+            if (_loadTextureName == "EnvironmentMap")
+            {
+                textureImportOptions->CpuCached = false;
+                textureImportOptions->CubemapType = CubemapSourceType::Faces;
+                textureImportOptions->Format = PF_RGBA8;
+                textureImportOptions->IsCubemap = true;
+            }
+            else
+            {
+                textureImportOptions->CpuCached = false;
+                textureImportOptions->GenerateMips = true;
+            }
+            
+            HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.Data.SelectedPath, textureImportOptions);
             if (texture.GetHandleData())
             {
                 // Load texture from file
-                texture->SetName(_fileBrowser.SelectedFileName);
-                EditorResManager::Instance().Add<Texture>(texture);
+                texture->SetName(_fileBrowser.Data.SelectedFileName);
 
                 // Set texture and reset _loadTextureName and _loadTextureUsed
                 _currentMaterial->SetTexture(_loadTextureName, texture);
@@ -362,7 +370,7 @@ namespace te
         }
         else
         {
-            if (_fileBrowser.IsCancelled)
+            if (_fileBrowser.Data.IsCancelled)
                 _loadTexture = false;
         }
 

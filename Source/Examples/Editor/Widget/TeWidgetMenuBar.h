@@ -22,20 +22,21 @@ namespace te
         void ShowOpen();
         void ShowSave();
         void ShowLoad();
+        void Quit();
+        void Save();
 
     protected:
         struct WidgetMenubarSettings
         {
-            bool ShowAboutWindow = false;
+            bool AboutWindow = false;
+            bool Open = false;
+            bool Save = false;
+            bool Load = false;
         };
 
     protected:
         WidgetMenubarSettings _settings;
         ImGuiFileBrowser& _fileBrowser;
-
-        bool _open = false;
-        bool _save = false;
-        bool _load = false;
 
         VirtualButton _newBtn;
         VirtualButton _openBtn;

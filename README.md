@@ -17,6 +17,7 @@ The Tweede Engine Framework Redux is my third attempt to develop a cross-platfor
 
 ## Previews
 
-![Sponza](Documentation/sample-sponza.png)
-![Monkeys](Documentation/sample-monkeys.png)
+![Editor](Documentation/sample-editor.png.png)
 ![Monkeys](Documentation/sample-sponza-night.png)
+![Monkeys](Documentation/sample-monkeys.png)
+![Sponza](Documentation/sample-sponza.png)

@@ -16,8 +16,8 @@ namespace te
 
     WidgetViewport::WidgetViewport()
         : Widget(WidgetType::Viewport)
-        , _viewportCamera(Editor::Instance().GetViewportCamera())
-        , _viewportCameraUI(Editor::Instance().GetViewportCameraUI())
+        , _viewportCamera(gEditor().GetViewportCamera())
+        , _viewportCameraUI(gEditor().GetViewportCameraUI())
         , _lastRenderDataUpatedTime(0.0f)
         , _needResetViewport(true)
     {

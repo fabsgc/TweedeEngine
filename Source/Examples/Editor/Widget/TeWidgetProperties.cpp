@@ -22,8 +22,8 @@ namespace te
 {
     WidgetProperties::WidgetProperties()
         : Widget(WidgetType::Properties)
-        , _selections(Editor::Instance().GetSelectionData())
-        , _fileBrowser(Editor::Instance().GetFileBrowser())
+        , _selections(gEditor().GetSelectionData())
+        , _fileBrowser(gEditor().GetFileBrowser())
     { 
         _title = PROPERTIES_TITLE;
         _flags |= ImGuiWindowFlags_HorizontalScrollbar;
@@ -107,7 +107,10 @@ namespace te
         }
 
         if (hasChanged)
-            Editor::Instance().NeedsRedraw();
+        {
+            gEditor().NeedsRedraw();
+            gEditor().GetSettings().State = Editor::EditorState::Modified;
+        }
     }
 
     void WidgetProperties::UpdateBackground()
@@ -352,10 +355,7 @@ namespace te
         }
 
         if (hasChanged)
-        {
-            Editor::Instance().NeedsRedraw();
             camera->SetRenderSettings(cameraSettings);
-        }
 
         return hasChanged;
     }
@@ -425,10 +425,13 @@ namespace te
 
         // Light Type
         {
-            ImGuiExt::ComboOptions<int> lightTypeOptions;
-            lightTypeOptions.AddOption((int)LightType::Directional, "Directional");
-            lightTypeOptions.AddOption((int)LightType::Radial, "Radial");
-            lightTypeOptions.AddOption((int)LightType::Spot, "Spot");
+            static ImGuiExt::ComboOptions<int> lightTypeOptions;
+            if (lightTypeOptions.Options.size() == 0)
+            {
+                lightTypeOptions.AddOption((int)LightType::Directional, "Directional");
+                lightTypeOptions.AddOption((int)LightType::Radial, "Radial");
+                lightTypeOptions.AddOption((int)LightType::Spot, "Spot");
+            }
 
             if (ImGuiExt::RenderOptionCombo<int>((int*)(&lightType), "##light_type_option", "Type", lightTypeOptions, width, true))
             {
@@ -719,20 +722,19 @@ namespace te
         if (_loadMesh)
             ImGui::OpenPopup("Load Mesh");
 
-        if (_fileBrowser.ShowFileDialog("Load Mesh", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), ".obj,.dae,.fbx"))
+        if (_fileBrowser.ShowFileDialog("Load Mesh", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), true, ".obj,.dae,.fbx"))
         {
             auto meshImportOptions = MeshImportOptions::Create();
-            meshImportOptions->ImportNormals = true;
-            meshImportOptions->ImportTangents = true;
-            meshImportOptions->ImportSkin = true;
-            meshImportOptions->ImportAnimation = true;
+            meshImportOptions->ImportNormals = _fileBrowser.Data.MeshParam.ImportNormals;
+            meshImportOptions->ImportTangents = _fileBrowser.Data.MeshParam.ImportTangents;
+            meshImportOptions->ImportSkin = _fileBrowser.Data.MeshParam.ImportSkin;
+            meshImportOptions->ImportAnimation = _fileBrowser.Data.MeshParam.ImportAnimation;
             meshImportOptions->CpuCached = false;
 
-            HMesh mesh = EditorResManager::Instance().Load<Mesh>(_fileBrowser.SelectedPath, meshImportOptions);
-
+            HMesh mesh = EditorResManager::Instance().Load<Mesh>(_fileBrowser.Data.SelectedPath, meshImportOptions);
             if (mesh.GetHandleData())
             {
-                mesh->SetName(_fileBrowser.SelectedFileName);
+                mesh->SetName(_fileBrowser.Data.SelectedFileName);
                 EditorResManager::Instance().Add<Mesh>(mesh);
                 SPtr<CRenderable> renderable = std::static_pointer_cast<CRenderable>(_selections.ClickedComponent);
                 renderable->SetMesh(mesh.GetInternalPtr());
@@ -743,7 +745,7 @@ namespace te
         }
         else
         {
-            if (_fileBrowser.IsCancelled)
+            if (_fileBrowser.Data.IsCancelled)
                 _loadMesh = false;
         }
 
@@ -757,7 +759,7 @@ namespace te
         if (_loadSkybox)
             ImGui::OpenPopup("Load Skybox Texture");
 
-        if (_fileBrowser.ShowFileDialog("Load Skybox Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), ".jpeg,.jpg,.png"))
+        if (_fileBrowser.ShowFileDialog("Load Skybox Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), false, ".jpeg,.jpg,.png"))
         {
             auto textureSkyboxImportOptions = TextureImportOptions::Create();
             textureSkyboxImportOptions->CpuCached = false;
@@ -765,11 +767,10 @@ namespace te
             textureSkyboxImportOptions->Format = PF_RGBA8;
             textureSkyboxImportOptions->IsCubemap = true;
 
-            HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.SelectedPath, textureSkyboxImportOptions);
-
+            HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.Data.SelectedPath, textureSkyboxImportOptions);
             if (texture.GetHandleData())
             {
-                texture->SetName(_fileBrowser.SelectedFileName);
+                texture->SetName(_fileBrowser.Data.SelectedFileName);
                 EditorResManager::Instance().Add<Texture>(texture);
                 SPtr<CSkybox> skybox = std::static_pointer_cast<CSkybox>(_selections.ClickedComponent);
                 skybox->SetTexture(texture.GetInternalPtr());
@@ -780,7 +781,7 @@ namespace te
         }
         else
         {
-            if (_fileBrowser.IsCancelled)
+            if (_fileBrowser.Data.IsCancelled)
                 _loadSkybox = false;
         }
 

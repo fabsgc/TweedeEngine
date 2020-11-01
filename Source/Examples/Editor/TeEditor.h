@@ -13,6 +13,11 @@ namespace te
     class Editor : public Module<Editor>
     {
     public:
+        enum class EditorState
+        {
+            Modified, Saved
+        };
+
         enum class WindowType
         {
             Project,
@@ -44,6 +49,28 @@ namespace te
                 CopiedComponent = nullptr;
             }
         };
+
+        struct EditorSettings
+        {
+            SPtr<Widget> WMenuBar = nullptr;
+            SPtr<Widget> WToolbar = nullptr;
+            SPtr<Widget> WProject = nullptr;
+            SPtr<Widget> WRenderOptions = nullptr;
+            SPtr<Widget> WConsole = nullptr;
+            SPtr<Widget> WResources = nullptr;
+            SPtr<Widget> WViewport = nullptr;
+            SPtr<Widget> WScript = nullptr;
+            SPtr<Widget> WMaterials = nullptr;
+            SPtr<Widget> WProperties = nullptr;
+
+            SPtr<Widget> WMaterial = nullptr;
+            const char* EditorName = "Editor";
+            bool Show = true;
+
+            EditorState State = EditorState::Modified;
+            String FilePath;
+        };
+
     public:
         TE_MODULE_STATIC_HEADER_MEMBER(Editor)
 
@@ -83,24 +110,14 @@ namespace te
         /** We can only have on instance of the file dialog */
         ImGuiFileBrowser& GetFileBrowser() { return _fileBrowser; }
 
-    protected:
-        struct EditorSettings
-        {
-            SPtr<Widget> WMenuBar       = nullptr;
-            SPtr<Widget> WToolbar       = nullptr;
-            SPtr<Widget> WProject       = nullptr;
-            SPtr<Widget> WRenderOptions = nullptr;
-            SPtr<Widget> WConsole       = nullptr;
-            SPtr<Widget> WResources     = nullptr;
-            SPtr<Widget> WViewport      = nullptr;
-            SPtr<Widget> WScript        = nullptr;
-            SPtr<Widget> WMaterials     = nullptr;
-            SPtr<Widget> WProperties    = nullptr;
+        /** Some settings widgets can modify */
+        EditorSettings& GetSettings() { return _settings; }
 
-            SPtr<Widget> WMaterial  = nullptr;
-            const char* EditorName  = "Editor";
-            bool Show = true;
-        };
+        /** Save current scene */
+        void Save();
+
+        /** Open current scene */
+        void Open();
 
     protected:
         void InitializeInput();
@@ -116,23 +133,22 @@ namespace te
         void LoadScene();
 
     protected:
-        std::vector<SPtr<Widget>> _widgets;
-        EditorSettings _settings;
         bool _editorBegun;
 
+        std::vector<SPtr<Widget>> _widgets;
+
         ImGuiFileBrowser _fileBrowser;
+        SelectionData _selections;
+        EditorSettings _settings;
 
         HSceneObject _viewportSO;
         HSceneObject _sceneSO;
-
         HCamera _viewportCamera;
         HCameraUI _viewportCameraUI;
         HSceneObject _viewportCameraSO;
         
-        HCamera _uiCamera;
         HSceneObject _uiCameraSO;
-
-        SelectionData _selections;
+        HCamera _uiCamera;
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         // TODO Temp for debug purpose
@@ -154,4 +170,7 @@ namespace te
         HRenderable _renderablePlane;
 #endif
     };
+
+    /**	Provides easy access to Editor. */
+    Editor& gEditor();
 }

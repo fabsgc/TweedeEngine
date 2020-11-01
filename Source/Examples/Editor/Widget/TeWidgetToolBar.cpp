@@ -44,7 +44,7 @@ namespace te
             ImGui::PopStyleVar();
         };
 
-        //WidgetRenderOptions* widget = static_cast<WidgetRenderOptions*>(Editor::Instance().GetWidget(WidgetType::RenderOptions));
+        //WidgetRenderOptions* widget = static_cast<WidgetRenderOptions*>(gEditor().GetWidget(WidgetType::RenderOptions));
         //_widgets[Widget::IconType::ComponentOptions] = te_shared_ptr<WidgetRenderOptions>(widget);
     }
 
