@@ -433,4 +433,38 @@ namespace te
 
         return hasChanged;
     }
+
+    bool ImGuiExt::RenderOptionComboComponent(HCamera* value, const char* id, const char* text, ComboOptions<HCamera>& options,
+        float width)
+    {
+        if (width != 0.0f && width < 75.0f)
+            width = 75.0f;
+
+        bool hasChanged = false;
+        ImGui::PushID(id);
+        if (width > 0.0f) ImGui::PushItemWidth(width);
+
+        if (ImGui::BeginCombo(text, options[*value].Key->GetName().c_str()))
+        {
+            for (const auto& option : options.Options)
+            {
+                const bool isSelected = (*value == option.Key);
+                ImGui::PushID(option.Key->GetUUID().ToString().c_str());
+                if (ImGui::Selectable(option.Key->GetName().c_str(), isSelected))
+                {
+                    *value = option.Key;
+                    hasChanged = true;
+                }
+                ImGui::PopID();
+
+                if (isSelected)
+                    ImGui::SetItemDefaultFocus();
+            }
+            ImGui::EndCombo();
+        }
+        if (width > 0.0f) ImGui::PushItemWidth(width);
+        ImGui::PopID();
+
+        return hasChanged;
+    };
 }

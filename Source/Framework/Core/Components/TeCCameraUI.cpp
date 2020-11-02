@@ -27,7 +27,7 @@ namespace te
     const float CCameraUI::ROTATIONAL_SPEED = 8.0f;
     const float CCameraUI::TOP_SCROLL_SPEED = 12.0f;
     const float CCameraUI::MAX_RIGHT_ANGLE = 89.0f;
-    const float CCameraUI::MAX_ZOOM_SPEED = 500.0f;
+    const float CCameraUI::MAX_ZOOM_SPEED = 250.0f;
     const float CCameraUI::MAX_ZOOM = 5000.0f;
     const float CCameraUI::MIN_ZOOM = 0.5f;
     const float CCameraUI::MAX_ROTATION = 15.0f;
@@ -114,14 +114,20 @@ namespace te
         }
 
         auto scrolling = [&](const float& amount, const float& sensitivity) {
+            // We are too close and want to move forward again
             if (_distanceToTarget < 0.5f && amount > 0.0f)
                 return;
 
+            // We are to far and want to move backward again
             if (_distanceToTarget > MAX_ZOOM && amount < 0.0f)
                 return;
 
-            float coefficient = (_distanceToTarget < MAX_ZOOM_SPEED) ? fabs(_distanceToTarget) : MAX_ZOOM_SPEED;
+            float coefficient = (_distanceToTarget < MAX_ZOOM_SPEED) ? fabs(_distanceToTarget) / 5.0f : MAX_ZOOM_SPEED;
             float scrollAmount = amount * coefficient * sensitivity * frameDelta;
+
+            // We try to move with an amount greater that the target distance
+            if (amount > 0.0f && scrollAmount > fabs(_distanceToTarget))
+                scrollAmount = _distanceToTarget - 1.0f;
 
             if (!isOrtographic)
             {

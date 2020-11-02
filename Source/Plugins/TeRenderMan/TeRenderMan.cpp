@@ -114,6 +114,10 @@ namespace te
             UINT32 numCameras = (UINT32)cameras.size();
             for (UINT32 i = 0; i < numCameras; i++)
             {
+                //If we have a camera without any render target, don't process it at all
+                if (!cameras[i]->GetViewport()->GetTarget())
+                    continue;
+
                 UINT32 viewIdx = sceneInfo.CameraToView.at(cameras[i]);
                 RendererView* viewInfo = sceneInfo.Views[viewIdx];
                 views.push_back(viewInfo);

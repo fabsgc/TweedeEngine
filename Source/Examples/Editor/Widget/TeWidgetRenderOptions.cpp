@@ -15,7 +15,7 @@ namespace te
 {
     WidgetRenderOptions::WidgetRenderOptions()
         : Widget(WidgetType::RenderOptions)
-        , _currentCamera(gEditor().GetViewportCamera())
+        , _currentCamera(gEditor().GetViewportCamera().GetNewHandleFromExisting())
     {
         _title = RENDER_OPTIONS_TITLE;
         _flags |= ImGuiWindowFlags_HorizontalScrollbar;
@@ -44,7 +44,8 @@ namespace te
         if (ImGuiExt::RenderOptionComboComponent(&_currentCamera, "##material_list_option", "", _cameraList, ImGui::GetWindowContentRegionWidth()))
         {
             gEditor().SetPreviewViewportCamera(_currentCamera);
-            gEditor().NeedsRedraw();
+            cameraSettings = _currentCamera->GetRenderSettings();
+            hasChanged = true;
         }
 
         if (ImGui::CollapsingHeader("Graphics", ImGuiTreeNodeFlags_DefaultOpen))

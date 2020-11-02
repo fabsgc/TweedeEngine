@@ -124,6 +124,9 @@ namespace te
         /** @copydoc Camera::NotifyNeedsRedraw() */
         void NotifyNeedsRedraw() { _internal->NotifyNeedsRedraw(); }
 
+        /** @copydoc Camera::NotifyNeedsRedraw() */
+        void NotifyUpdateEverything() { _internal->NotifyUpdateEverything(); }
+
         /** @copydoc Camera::worldToScreenPoint */
         Vector2I WorldToScreenPoint(const Vector3& worldPoint) const { UpdateView(); return _internal->WorldToScreenPoint(worldPoint); }
 

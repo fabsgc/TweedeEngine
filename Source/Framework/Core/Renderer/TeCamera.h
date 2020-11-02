@@ -206,6 +206,15 @@ namespace te
         }
 
         /**
+         * Notifies a on-demand camera that it should re-draw its contents on the next frame. Ignored for a camera
+         * that isn't on-demand.
+         */
+        void NotifyUpdateEverything() 
+        {
+            _markCoreDirty();
+        }
+
+        /**
          * Determines a priority that determines in which orders the cameras are rendered. This only applies to cameras rendering
          * to the same render target. Higher value means the camera will be rendered sooner.
          */

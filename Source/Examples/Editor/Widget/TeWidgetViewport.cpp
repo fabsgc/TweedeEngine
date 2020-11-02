@@ -14,6 +14,8 @@ namespace te
 {
     const float WidgetViewport::MIN_TIME_BETWEEN_UPDATE = 1.0f;
 
+    void UpdateCameraFlag(HCamera& camera);
+
     WidgetViewport::WidgetViewport()
         : Widget(WidgetType::Viewport)
         , _viewportCamera(gEditor().GetPreviewViewportCamera().GetNewHandleFromExisting())
@@ -36,16 +38,6 @@ namespace te
         gCoreApplication().GetWindow()->OnResized.Connect(std::bind(&WidgetViewport::Resize, this));
 
         _onBeginCallback = [this] {
-            // If we are using a different camera, we disable event
-            if (_viewportCamera.GetInternalPtr() != gEditor().GetPreviewViewportCamera().GetInternalPtr())
-            {
-                _viewportCamera->GetViewport()->SetTarget(nullptr);
-                _viewportCamera = gEditor().GetPreviewViewportCamera().GetNewHandleFromExisting();
-                _viewportCamera->GetViewport()->SetTarget(_renderData.RenderTex);
-                _forceResetViewport = true;
-                NeedsRedraw();
-            }
-
             if (ImGui::IsWindowFocused() && _viewportCamera.GetInternalPtr() == gEditor().GetViewportCamera().GetInternalPtr())
                 _viewportCameraUI->EnableInput(true);
             else
@@ -73,8 +65,22 @@ namespace te
             _viewportCamera->GetViewport()->SetTarget(_renderData.RenderTex);
         }
 
-        _needResetViewport = true;
+        if (_viewportCamera.GetInternalPtr() != gEditor().GetPreviewViewportCamera().GetInternalPtr())
+        {
+            // only one camera can write to render target at a time
+            _viewportCamera->GetViewport()->SetTarget(nullptr);
+            _viewportCamera = gEditor().GetPreviewViewportCamera().GetNewHandleFromExisting();
+            _viewportCamera->GetViewport()->SetTarget(_renderData.RenderTex);
+
+            _viewportCamera->SetAspectRatio((float)_renderData.Width / (float)_renderData.Height);
+
+            // Update all renderer data for the current camera
+            UpdateCameraFlag(_viewportCamera);
+        }
+
+        _viewportCamera->NotifyUpdateEverything();
         _viewportCamera->NotifyNeedsRedraw();
+        _needResetViewport = true;
     }
 
     void WidgetViewport::Update()
@@ -87,25 +93,7 @@ namespace te
         else
             _viewportCameraUI->EnableZooming(false);
 
-        UINT32 flags = _viewportCamera->GetFlags();
-        if (!gCoreApplication().GetState().IsFlagSet(ApplicationState::Game)) //We are in editor mode
-        {
-            if (!(flags & (UINT32)CameraFlag::OnDemand))
-            {
-                flags |= (UINT32)CameraFlag::OnDemand;
-                _viewportCamera->SetFlags(flags);
-            }
-        }
-        else
-        {
-            if (flags & (UINT32)CameraFlag::OnDemand)
-            {
-                flags &= ~(UINT32)CameraFlag::OnDemand;
-                _viewportCamera->SetFlags(flags);
-            }
-        }
-
-        _forceResetViewport = false;
+        UpdateCameraFlag(_viewportCamera);
     }
 
     void WidgetViewport::UpdateBackground()
@@ -217,5 +205,26 @@ namespace te
         _viewportCamera->NotifyNeedsRedraw();
 
         return true;
+    }
+
+    void UpdateCameraFlag(HCamera& camera)
+    {
+        UINT32 flags = camera->GetFlags();
+        if (!gCoreApplication().GetState().IsFlagSet(ApplicationState::Game)) //We are in editor mode
+        {
+            if (!(flags & (UINT32)CameraFlag::OnDemand))
+            {
+                flags |= (UINT32)CameraFlag::OnDemand;
+                camera->SetFlags(flags);
+            }
+        }
+        else
+        {
+            if (flags & (UINT32)CameraFlag::OnDemand)
+            {
+                flags &= ~(UINT32)CameraFlag::OnDemand;
+                camera->SetFlags(flags);
+            }
+        }
     }
 }
