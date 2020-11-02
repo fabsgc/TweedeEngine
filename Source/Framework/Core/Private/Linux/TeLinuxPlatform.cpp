@@ -859,8 +859,10 @@ namespace te
                         if (!renderWindow->GetProperties().HasFocus)
                         {
                             renderWindow->NotifyWindowEvent(WindowEventType::FocusReceived);
+#if TE_DEBUG_MODE == 0
                             gCoreApplication().Pause(false);
                             gTime().Start();
+#endif
                         }
                     }
                 }
@@ -880,8 +882,10 @@ namespace te
                         if (renderWindow->GetProperties().HasFocus)
                         {
                             renderWindow->NotifyWindowEvent(WindowEventType::FocusLost);
+#if TE_DEBUG_MODE == 0
                             gCoreApplication().Pause(true);
                             gTime().Stop();
+#endif
                         }
                     }
                 }
@@ -920,17 +924,41 @@ namespace te
                             if (foundVert && foundHorz)
                             {
                                 if(event.xproperty.state == PropertyNewValue)
+                                {
                                     renderWindow->NotifyWindowEvent(WindowEventType::Maximized);
+#if TE_DEBUG_MODE == 0
+                                    gCoreApplication().Pause(false);
+                                    gTime().Start();
+#endif
+                                }
                                 else
+                                {
                                     renderWindow->NotifyWindowEvent(WindowEventType::Restored);
+#if TE_DEBUG_MODE == 0
+                                    gCoreApplication().Pause(false);
+                                    gTime().Start();
+#endif
+                                }
                             }
 
                             if(atoms[i] == _data->AtomWmStateHidden)
                             {
                                 if(event.xproperty.state == PropertyNewValue)
+                                {
                                     renderWindow->NotifyWindowEvent(WindowEventType::Minimized);
+#if TE_DEBUG_MODE == 0
+                                    gCoreApplication().Pause(true);
+                                    gTime().Stop();
+#endif
+                                }
                                 else
+                                {
                                     renderWindow->NotifyWindowEvent(WindowEventType::Restored);
+#if TE_DEBUG_MODE == 0
+                                    gCoreApplication().Pause(false);
+                                    gTime().Start();
+#endif
+                                }
                             }
                         }
 

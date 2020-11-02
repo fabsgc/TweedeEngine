@@ -14,6 +14,10 @@
 
 namespace te
 {
+    const String WidgetProject::DELETE_BINDING = "Delete";
+    const String WidgetProject::COPY_BINDING = "Copy";
+    const String WidgetProject::PASTE_BINDING = "Paste";
+
     WidgetProject::WidgetProject()
         : Widget(WidgetType::Project)
         , _selections(gEditor().GetSelectionData())
@@ -29,9 +33,9 @@ namespace te
 
     void WidgetProject::Initialize()
     { 
-        _deleteBtn = VirtualButton("Delete");
-        _copyBtn = VirtualButton("Copy");
-        _pasteBtn = VirtualButton("Paste");
+        _deleteBtn = VirtualButton(DELETE_BINDING);
+        _copyBtn = VirtualButton(COPY_BINDING);
+        _pasteBtn = VirtualButton(PASTE_BINDING);
     }
 
     void WidgetProject::Update()

@@ -41,6 +41,8 @@ namespace te
         _cameras.clear();
 
         _components.clear();
+
+        _mainRTResizedConn.Disconnect();
     }
 
     void SceneManager::ClearScene()

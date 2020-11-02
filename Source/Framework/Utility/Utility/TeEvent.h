@@ -87,16 +87,12 @@ namespace te
             connection->Deactivate();
             connection->HandleLinks--;
 
-            if (connection->HandleLinks == 0) 
-            {
-                free(connection);
-            }
-
-            //If we delete the last event, pointed value by _connections does not exist anymore
-            if (_connections == connection) 
-            {
+            //If we are deleting the last event, pointed value by _connections does not exist anymore
+            if (_connections == connection)
                 _connections = nullptr;
-            }
+
+            if (connection->HandleLinks == 0) 
+                free(connection);       
         }
 
         /** Disconnects all connections in the event. */
@@ -238,8 +234,7 @@ namespace te
 
         InternalEvent()
             : _internalData(te_shared_ptr_new<InternalData>())
-        {
-        }
+        { }
 
         ~InternalEvent()
         {
@@ -336,7 +331,10 @@ namespace te
         /** Clear all callbacks from the event. */
         void Clear()
         {
-            _internalData->Clear();
+            if(_internalData)
+                _internalData->Clear();
+
+            _internalData = nullptr;
         }
 
         /**

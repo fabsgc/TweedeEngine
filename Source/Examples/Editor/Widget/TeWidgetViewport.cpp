@@ -5,24 +5,24 @@
 #include "TeCoreApplication.h"
 #include "Components/TeCCamera.h"
 #include "Components/TeCCameraUI.h"
-#include "Utility/TeEvent.h"
 #include "Gui/TeGuiAPI.h"
 #include "Utility/TeTime.h"
-#include "../TeEditor.h"
+#include "Scene/TeSceneObject.h"
 
 namespace te
 {
     const float WidgetViewport::MIN_TIME_BETWEEN_UPDATE = 1.0f;
+    const String WidgetViewport::RETARGET_BINDING = "ReTarget";
 
     void UpdateCameraFlag(HCamera& camera);
 
     WidgetViewport::WidgetViewport()
         : Widget(WidgetType::Viewport)
+        , _selections(gEditor().GetSelectionData())
         , _viewportCamera(gEditor().GetPreviewViewportCamera().GetNewHandleFromExisting())
         , _viewportCameraUI(gEditor().GetViewportCameraUI())
         , _lastRenderDataUpatedTime(0.0f)
         , _needResetViewport(true)
-        , _forceResetViewport(false)
     {
         _title = VIEWPORT_TITLE;
         _size = Vector2(640, 480);
@@ -31,17 +31,39 @@ namespace te
     }
 
     WidgetViewport::~WidgetViewport()
-    { }
+    { 
+        _resizeEvent.Disconnect();
+    }
 
     void WidgetViewport::Initialize()
     {
-        gCoreApplication().GetWindow()->OnResized.Connect(std::bind(&WidgetViewport::Resize, this));
+        _resizeEvent = gCoreApplication().GetWindow()->OnResized.Connect(std::bind(&WidgetViewport::Resize, this));
+        _reTargetBtn = VirtualButton(RETARGET_BINDING);
 
         _onBeginCallback = [this] {
+            // CCamerUI component is active only when original viewport camera is active
             if (ImGui::IsWindowFocused() && _viewportCamera.GetInternalPtr() == gEditor().GetViewportCamera().GetInternalPtr())
+            {
                 _viewportCameraUI->EnableInput(true);
+
+                if (gVirtualInput().IsButtonDown(_reTargetBtn))
+                {
+                    if (_selections.ClickedComponent)
+                    {
+                        _viewportCameraUI->SetTarget(_selections.ClickedComponent->GetSceneObject()->GetTransform().GetPosition());
+                        NeedsRedraw();
+                    }
+                    else if (_selections.ClickedSceneObject)
+                    {
+                        _viewportCameraUI->SetTarget(_selections.ClickedSceneObject->GetTransform().GetPosition());
+                        NeedsRedraw();
+                    }
+                }
+            }
             else
+            {
                 _viewportCameraUI->EnableInput(false);
+            }
         };
 
         bool renderTextureUpdated = CheckRenderTexture((float)_renderData.Width, (float)_renderData.Height);
@@ -72,6 +94,7 @@ namespace te
             _viewportCamera = gEditor().GetPreviewViewportCamera().GetNewHandleFromExisting();
             _viewportCamera->GetViewport()->SetTarget(_renderData.RenderTex);
 
+            // When we change camera, maybe the new one has not a correct aspect ratio
             _viewportCamera->SetAspectRatio((float)_renderData.Width / (float)_renderData.Height);
 
             // Update all renderer data for the current camera
@@ -152,14 +175,11 @@ namespace te
     {
         float deltaElapsedTime = gTime().GetTime() - _lastRenderDataUpatedTime;
 
-        if (!_forceResetViewport)
-        {
-            if ((UINT32)width == _renderData.Width && (UINT32)height == _renderData.Height)
-                return false;
+        if ((UINT32)width == _renderData.Width && (UINT32)height == _renderData.Height)
+            return false;
 
-            if (deltaElapsedTime < MIN_TIME_BETWEEN_UPDATE && _lastRenderDataUpatedTime > 10.0f && _needResetViewport == false)
-                return false;
-        }
+        if (deltaElapsedTime < MIN_TIME_BETWEEN_UPDATE && _lastRenderDataUpatedTime > 10.0f && _needResetViewport == false)
+            return false;
 
         _renderData.Width = (UINT32)width;
         _renderData.Height = (UINT32)height;
@@ -200,7 +220,6 @@ namespace te
 
         _lastRenderDataUpatedTime = gTime().GetTime();
         _needResetViewport = false;
-        _forceResetViewport = false;
 
         _viewportCamera->NotifyNeedsRedraw();
 

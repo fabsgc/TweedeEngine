@@ -425,11 +425,29 @@ namespace te
                 win->NotifyWindowEvent(WindowEventType::Resized);
 
                 if (wParam == SIZE_MAXIMIZED)
+                {
                     win->NotifyWindowEvent(WindowEventType::Maximized);
+#if TE_DEBUG_MODE == 0
+                    gCoreApplication().Pause(false);
+                    gTime().Start();
+#endif
+                }
                 else if (wParam == SIZE_MINIMIZED)
+                {
                     win->NotifyWindowEvent(WindowEventType::Minimized);
+#if TE_DEBUG_MODE == 0
+                    gCoreApplication().Pause(true);
+                    gTime().Stop();
+#endif
+                }
                 else if (wParam == SIZE_RESTORED)
+                {
                     win->NotifyWindowEvent(WindowEventType::Restored);
+#if TE_DEBUG_MODE == 0
+                    gCoreApplication().Pause(false);
+                    gTime().Start();
+#endif
+                }
 
                 return 0;
             }

@@ -42,7 +42,6 @@ namespace te
         static const String ROTATE_BINDING;
         static const String MOVE_BINDING;
         static const String ZOOM_BINDING;
-
         static const String HORIZONTAL_AXIS_BINDING;
         static const String VERTICAL_AXIS_BINDING;
         static const String SCROLL_AXIS_BINDING;
@@ -76,6 +75,7 @@ namespace te
         VirtualButton _rotateBtn;
         VirtualButton _moveBtn;
         VirtualButton _zoomBtn;
+        
 
         VirtualAxis _horizontalAxis;
         VirtualAxis _verticalAxis;

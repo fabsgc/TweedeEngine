@@ -109,23 +109,26 @@ namespace te
     {
         auto inputConfig = gVirtualInput().GetConfiguration();
 
+        inputConfig->RegisterButton(WidgetMenuBar::NEW_BINDING, TE_N, ButtonModifier::Ctrl);
+        inputConfig->RegisterButton(WidgetMenuBar::OPEN_BINDING, TE_O, ButtonModifier::Ctrl);
+        inputConfig->RegisterButton(WidgetMenuBar::SAVE_BINDING, TE_S, ButtonModifier::Ctrl);
+        inputConfig->RegisterButton(WidgetMenuBar::SAVE_AS_BINDING, TE_S, ButtonModifier::ShiftCtrl);
+        inputConfig->RegisterButton(WidgetMenuBar::QUIT_BINDING, TE_A, ButtonModifier::Ctrl);
+        inputConfig->RegisterButton(WidgetMenuBar::LOAD_RESOURCE_BINDING, TE_R, ButtonModifier::Ctrl);
+
+        inputConfig->RegisterButton(WidgetProject::DELETE_BINDING, TE_DELETE);
+        inputConfig->RegisterButton(WidgetProject::COPY_BINDING, TE_C, ButtonModifier::Ctrl);
+        inputConfig->RegisterButton(WidgetProject::PASTE_BINDING, TE_V, ButtonModifier::Ctrl);
+        
         inputConfig->RegisterButton(CCameraUI::ROTATE_BINDING, TE_MOUSE_RIGHT);
         inputConfig->RegisterButton(CCameraUI::MOVE_BINDING, TE_LSHIFT);
         inputConfig->RegisterButton(CCameraUI::ZOOM_BINDING, TE_LCONTROL);
 
-        inputConfig->RegisterButton("New", TE_N, ButtonModifier::Ctrl);
-        inputConfig->RegisterButton("Open", TE_O, ButtonModifier::Ctrl);
-        inputConfig->RegisterButton("Save", TE_S, ButtonModifier::Ctrl);
-        inputConfig->RegisterButton("Save As", TE_S, ButtonModifier::ShiftCtrl);
-        inputConfig->RegisterButton("Quit", TE_A, ButtonModifier::Ctrl);
-        inputConfig->RegisterButton("Delete", TE_DELETE);
-        inputConfig->RegisterButton("Copy", TE_C, ButtonModifier::Ctrl);
-        inputConfig->RegisterButton("Paste", TE_V, ButtonModifier::Ctrl);
-        inputConfig->RegisterButton("LoadResource", TE_R, ButtonModifier::Ctrl);
-
         inputConfig->RegisterAxis(CCameraUI::HORIZONTAL_AXIS_BINDING, VIRTUAL_AXIS_DESC((UINT32)InputAxis::MouseX));
         inputConfig->RegisterAxis(CCameraUI::VERTICAL_AXIS_BINDING, VIRTUAL_AXIS_DESC((UINT32)InputAxis::MouseY));
         inputConfig->RegisterAxis(CCameraUI::SCROLL_AXIS_BINDING, VIRTUAL_AXIS_DESC((UINT32)InputAxis::MouseZ));
+
+        inputConfig->RegisterButton(WidgetViewport::RETARGET_BINDING, TE_DECIMAL);
     }
 
     void Editor::InitializeScene()

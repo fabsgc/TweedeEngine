@@ -10,6 +10,14 @@ namespace te
     class WidgetMenuBar : public Widget
     {
     public:
+        static const String NEW_BINDING;
+        static const String OPEN_BINDING;
+        static const String SAVE_BINDING;
+        static const String SAVE_AS_BINDING;
+        static const String QUIT_BINDING;
+        static const String LOAD_RESOURCE_BINDING;
+
+    public:
         WidgetMenuBar();
         ~WidgetMenuBar();
 

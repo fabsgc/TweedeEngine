@@ -28,7 +28,7 @@ namespace te
     const float CCameraUI::TOP_SCROLL_SPEED = 12.0f;
     const float CCameraUI::MAX_RIGHT_ANGLE = 89.0f;
     const float CCameraUI::MAX_ZOOM_SPEED = 250.0f;
-    const float CCameraUI::MAX_ZOOM = 5000.0f;
+    const float CCameraUI::MAX_ZOOM = 50000.0f;
     const float CCameraUI::MIN_ZOOM = 0.5f;
     const float CCameraUI::MAX_ROTATION = 15.0f;
 
@@ -122,7 +122,7 @@ namespace te
             if (_distanceToTarget > MAX_ZOOM && amount < 0.0f)
                 return;
 
-            float coefficient = (_distanceToTarget < MAX_ZOOM_SPEED) ? fabs(_distanceToTarget) / 4.0f : MAX_ZOOM_SPEED;
+            float coefficient = (_distanceToTarget < MAX_ZOOM_SPEED) ? fabs(_distanceToTarget) / 2.0f : MAX_ZOOM_SPEED;
             float scrollAmount = amount * coefficient * sensitivity * frameDelta;
 
             // We try to move with an amount greater that the target distance

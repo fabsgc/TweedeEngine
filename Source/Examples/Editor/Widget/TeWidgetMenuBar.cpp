@@ -13,6 +13,13 @@
 
 namespace te
 {
+    const String WidgetMenuBar::NEW_BINDING = "New";
+    const String WidgetMenuBar::OPEN_BINDING = "Open";
+    const String WidgetMenuBar::SAVE_BINDING = "Save";
+    const String WidgetMenuBar::SAVE_AS_BINDING = "Save As";
+    const String WidgetMenuBar::QUIT_BINDING = "Quit";
+    const String WidgetMenuBar::LOAD_RESOURCE_BINDING = "Load Resource";
+
     WidgetMenuBar::WidgetMenuBar()
         : Widget(WidgetType::MenuBar)
         , _fileBrowser(gEditor().GetFileBrowser())
@@ -26,12 +33,12 @@ namespace te
 
     void WidgetMenuBar::Initialize()
     { 
-        _newBtn = VirtualButton("New");
-        _openBtn = VirtualButton("Open");
-        _saveBtn = VirtualButton("Save");
-        _saveAsBtn = VirtualButton("Save As");
-        _quitBtn = VirtualButton("Quit");
-        _loadResource = VirtualButton("LoadResource");
+        _newBtn = VirtualButton(NEW_BINDING);
+        _openBtn = VirtualButton(OPEN_BINDING);
+        _saveBtn = VirtualButton(SAVE_BINDING);
+        _saveAsBtn = VirtualButton(SAVE_AS_BINDING);
+        _quitBtn = VirtualButton(QUIT_BINDING);
+        _loadResource = VirtualButton(LOAD_RESOURCE_BINDING);
     }
 
     void WidgetMenuBar::Update()
