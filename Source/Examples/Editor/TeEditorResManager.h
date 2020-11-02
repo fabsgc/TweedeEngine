@@ -32,6 +32,13 @@ namespace te
                 Res[resource.GetUUID()] = resource;
             }
 
+            void Remove(HResource& resource)
+            {
+                auto it = Res.find(resource.GetUUID());
+                if (it != Res.end())
+                    Res.erase(it);
+            }
+
             std::unordered_map<UUID, HResource> Res;
         };
 
@@ -66,6 +73,13 @@ namespace te
         {
             HResource resource = handle.GetNewHandleFromExisting();
             _resources[T::GetResourceType()].Add(resource);
+        }
+
+        template <class T>
+        void Remove(ResourceHandle<T>& handle)
+        {
+            HResource resource = handle.GetNewHandleFromExisting();
+            _resources[T::GetResourceType()].Remove(resource);
         }
 
         template <class T>

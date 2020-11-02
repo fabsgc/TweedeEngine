@@ -39,9 +39,7 @@ namespace te
 
         _mainCameras.clear();
         _cameras.clear();
-
         _components.clear();
-
         _mainRTResizedConn.Disconnect();
     }
 

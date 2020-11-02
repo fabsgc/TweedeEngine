@@ -13,6 +13,8 @@
 #include "Resources/TeResourceManager.h"
 #include "Components/TeCRenderable.h"
 #include "Importer/TeTextureImportOptions.h"
+#include "Scene/TeSceneManager.h"
+#include "Renderer/TeRenderable.h"
 
 namespace te
 {
@@ -96,6 +98,7 @@ namespace te
                 EditorResManager::Instance().Add(material);
                 _currentMaterial = material.GetInternalPtr();
                 _materialCreationCounter++;
+                materialUUID = _currentMaterial->GetUUID();
             }
             ImGui::PopID();
         }
@@ -112,10 +115,21 @@ namespace te
                 materialsOptions.AddOption(resource.second->GetUUID(), resource.second->GetName());
             }
 
-            if (ImGuiExt::RenderOptionCombo<UUID>(&materialUUID, "##material_list_option", "", materialsOptions, ImGui::GetWindowContentRegionWidth()))
+            if (_currentMaterial)
             {
-                if (materialUUID != _currentMaterial->GetUUID())
-                    _currentMaterial = gResourceManager().Load<Material>(materialUUID).GetInternalPtr();
+                if (ImGuiExt::RenderOptionCombo<UUID>(&materialUUID, "##material_list_option", "", materialsOptions, ImGui::GetWindowContentRegionWidth() - 30))
+                {
+                    if (materialUUID != _currentMaterial->GetUUID())
+                        _currentMaterial = gResourceManager().Load<Material>(materialUUID).GetInternalPtr();
+                }
+
+                // You can delete a material
+                // Be careful this feature also reset all renderables which are using this material
+                ImGui::SameLine();
+                if (ImGui::Button(ICON_FA_TIMES_CIRCLE, ImVec2(25.0f, 25.0f)))
+                {
+                    DeleteMaterial(_currentMaterial, materialUUID);
+                }
             }
         }
 
@@ -234,10 +248,10 @@ namespace te
                         texturesEnvMappingOptions.AddOption(resource.second->GetUUID(), resource.second->GetName());
                 }
 
-                texturesOptions.AddOption(empty, "No texture");
+                texturesOptions.AddOption(empty, ICON_FA_TIMES_CIRCLE " No texture");
                 texturesOptions.AddOption(load, ICON_FA_FOLDER_OPEN " Load");
 
-                texturesEnvMappingOptions.AddOption(empty, "No texture");
+                texturesEnvMappingOptions.AddOption(empty, ICON_FA_TIMES_CIRCLE " No texture");
                 texturesEnvMappingOptions.AddOption(load, ICON_FA_FOLDER_OPEN " Load");
 
                 if (ShowTexture(uuid, properties.UseDiffuseMap, "##material_texture_diffuse_option", "Diffuse", "DiffuseMap", texturesOptions, width))
@@ -375,5 +389,23 @@ namespace te
         }
 
         return textureLoaded;
+    }
+
+    void WidgetMaterials::DeleteMaterial(SPtr<Material>& material, const UUID& uuid)
+    {
+        HMaterial handle = static_resource_cast<Material>(
+            gResourceManager()._createResourceHandle(material, uuid));
+
+        Vector<HComponent> renderables = gSceneManager().GetRootNode()->GetComponents<CRenderable>(true);
+
+        for (auto& component : renderables)
+        {
+            HRenderable renderable = static_object_cast<CRenderable>(component);
+            renderable->RemoveMaterial(material);
+        }
+
+        EditorResManager::Instance().Remove<Material>(handle);
+        material = nullptr;
+        gEditor().NeedsRedraw();
     }
 }

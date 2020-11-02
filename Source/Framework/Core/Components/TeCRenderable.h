@@ -48,6 +48,9 @@ namespace te
         /** @copydoc Renderable::SetMaterial */
         void SetMaterial(const String& name, SPtr<Material> material) { _internal->SetMaterial(name, material); }
 
+        /** @copydoc Renderable::RemoveMaterial */
+        void RemoveMaterial(const SPtr<Material>& material) { _internal->RemoveMaterial(material); }
+
         /** @copydoc Renderable::GetMaterial */
         SPtr<Material> GetMaterial(UINT32 idx) const { return _internal->GetMaterial(idx); }
 

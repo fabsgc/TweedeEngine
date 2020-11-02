@@ -41,6 +41,9 @@ namespace te
         /** Factor used to convert unit system */
         float ScaleFactor = 0.01f;
 
+        /** Determines if we need to set material properties for this mesh during import */
+        bool ImportMaterials = true;
+
         /** Creates a new import options object that allows you to customize how are Meshs imported. */
         static SPtr<MeshImportOptions> Create();
     };

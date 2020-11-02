@@ -167,8 +167,10 @@ namespace te
         HMesh _loadedMeshPlane;
         HTexture _loadedTextureMonkey;
         HTexture _loadedCubemapTexture;
+        HTexture _loadedPlaneTexture;
 
-        HMaterial _materialMonkey;
+        HMaterial _monkeyMaterial;
+        HMaterial _planeMaterial;
 
         HSceneObject _sceneRenderableMonkeySO;
         HSceneObject _sceneRenderablePlaneSO;

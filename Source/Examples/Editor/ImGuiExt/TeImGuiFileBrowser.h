@@ -58,6 +58,7 @@ namespace te
                 bool ImportTangents = true;
                 bool ImportSkin = true;
                 bool ImportAnimation = true;
+                bool ImportMaterials = true;
             };
 
             /** If we want to load a texture, here are stored the list of parameters to apply on it during loading */

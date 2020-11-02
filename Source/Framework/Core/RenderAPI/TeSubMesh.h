@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
+#include "Material/TeMaterial.h"
 
 namespace te
 {
@@ -17,6 +18,9 @@ namespace te
             , Name(name)
         { }
 
+        ~SubMesh()
+        { }
+
         UINT32 IndexOffset = 0;
         UINT32 IndexCount = 0;
         DrawOperationType DrawOp = DOT_TRIANGLE_LIST;
@@ -25,5 +29,10 @@ namespace te
         String MaterialName = "";
         /** It's easier to have a name for identification in editor */
         String Name = "";
+
+        /** During mesh import, it's possible to get information about the default material applied on this submesh */
+        MaterialProperties MatProperties;
+        /** We can store here the "default" material applied to this submesh, useful when loading a mesh */
+        HMaterial Mat;
     };
 }

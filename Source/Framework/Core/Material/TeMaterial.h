@@ -2,7 +2,6 @@
 
 #include "TeCorePrerequisites.h"
 #include "Resources/TeResource.h"
-#include "Mesh/TeMesh.h"
 #include "TeTechnique.h"
 #include "TePass.h"
 #include "RenderAPI/TeGpuPipelineState.h"

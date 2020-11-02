@@ -282,6 +282,7 @@ namespace te
                 meshImportOptions->ImportTangents = _fileBrowser.Data.MeshParam.ImportTangents;
                 meshImportOptions->ImportSkin = _fileBrowser.Data.MeshParam.ImportSkin;
                 meshImportOptions->ImportAnimation = _fileBrowser.Data.MeshParam.ImportAnimation;
+                meshImportOptions->ImportMaterials = _fileBrowser.Data.MeshParam.ImportMaterials;
                 meshImportOptions->CpuCached = false;
 
                 HMesh mesh = EditorResManager::Instance().Load<Mesh>(_fileBrowser.Data.SelectedPath, meshImportOptions);

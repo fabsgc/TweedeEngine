@@ -477,6 +477,7 @@ namespace te
         _loadedMeshMonkey = EditorResManager::Instance().Load<Mesh>("Data/Meshes/Monkey/monkey-hd.dae", meshImportOptions);
         _loadedMeshPlane = EditorResManager::Instance().Load<Mesh>("Data/Meshes/Plane/plane.dae", meshImportOptions);
         _loadedTextureMonkey = EditorResManager::Instance().Load<Texture>("Data/Textures/Monkey/diffuse.png", textureImportOptions);
+        _loadedPlaneTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Sponza/Floor/floor_COLOR_s.jpeg", textureImportOptions);
         _loadedCubemapTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/sky_medium.jpeg", textureCubeMapImportOptions);
         // ###################################################### 
 
@@ -499,12 +500,22 @@ namespace te
         properties.Refraction = 0.1f;
         properties.IndexOfRefraction = 1.5f;
 
-        _materialMonkey = Material::Create(_shader);
-        _materialMonkey->SetName("Monkey Material");
-        _materialMonkey->SetTexture("DiffuseMap", _loadedTextureMonkey);
-        _materialMonkey->SetTexture("EnvironmentMap", _loadedCubemapTexture);
-        _materialMonkey->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
-        _materialMonkey->SetProperties(properties);
+        _monkeyMaterial = Material::Create(_shader);
+        _monkeyMaterial->SetName("Monkey Material");
+        _monkeyMaterial->SetTexture("DiffuseMap", _loadedTextureMonkey);
+        _monkeyMaterial->SetTexture("EnvironmentMap", _loadedCubemapTexture);
+        _monkeyMaterial->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
+        _monkeyMaterial->SetProperties(properties);
+
+        properties.Reflection = 0.1f;
+        properties.Refraction = 0.1f;
+
+        _planeMaterial = Material::Create(_shader);
+        _planeMaterial->SetName("Plane Material");
+        _planeMaterial->SetTexture("DiffuseMap", _loadedPlaneTexture);
+        _planeMaterial->SetTexture("EnvironmentMap", _loadedCubemapTexture);
+        _planeMaterial->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
+        _planeMaterial->SetProperties(properties);
         // ######################################################
 
         // ######################################################
@@ -524,7 +535,7 @@ namespace te
         _sceneRenderableMonkeySO->SetParent(_sceneSO);
         _renderableMonkey = _sceneRenderableMonkeySO->AddComponent<CRenderable>();
         _renderableMonkey->SetMesh(_loadedMeshMonkey);
-        _renderableMonkey->SetMaterial(_materialMonkey);
+        _renderableMonkey->SetMaterial(_monkeyMaterial);
         _renderableMonkey->SetName("Monkey Renderable");
         _renderableMonkey->Initialize();
 
@@ -532,12 +543,14 @@ namespace te
         _sceneRenderablePlaneSO->SetParent(_sceneSO);
         _renderablePlane = _sceneRenderablePlaneSO->AddComponent<CRenderable>();
         _renderablePlane->SetMesh(_loadedMeshPlane);
+        _renderablePlane->SetMaterial(_planeMaterial);
         _renderablePlane->SetName("Plane Renderable");
         _renderablePlane->Initialize();
         _sceneRenderablePlaneSO->Move(Vector3(0.0, 0.1f, 0.0f));
         // ######################################################
 
-        EditorResManager::Instance().Add<Material>(_materialMonkey);
+        EditorResManager::Instance().Add<Material>(_monkeyMaterial);
+        EditorResManager::Instance().Add<Material>(_planeMaterial);
         EditorResManager::Instance().Add<Shader>(gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque));
         EditorResManager::Instance().Add<Shader>(gBuiltinResources().GetBuiltinShader(BuiltinShader::Transparent));
 #endif

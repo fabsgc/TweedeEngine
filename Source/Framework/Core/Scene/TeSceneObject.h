@@ -426,6 +426,20 @@ namespace te
          */
         Vector<HComponent> GetComponents(UINT32 type, bool searchInChildren = false) const;
 
+        /** @copydoc SceneObject::GetComponent */
+        template<class T>
+        GameObjectHandle<Component> GetComponent(bool searchInChildren = false) const
+        {
+            return GetComponent(T::GetComponentType(), searchInChildren);
+        }
+
+        /** @copydoc SceneObject::GetComponents */
+        template<class T>
+        Vector<GameObjectHandle<Component>> GetComponents(bool searchInChildren = false) const
+        {
+            return GetComponents(T::GetComponentType(), searchInChildren);
+        }
+
         /**
          * Searches for a component with the specified name accross all direct children and returns the first one it finds.
          *

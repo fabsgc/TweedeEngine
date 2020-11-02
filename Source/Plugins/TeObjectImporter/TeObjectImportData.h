@@ -22,6 +22,7 @@ namespace te
         bool ImportColors = true;
         bool ImportSkin = false;
         bool ImportAnimation = true;
+        bool ImportMaterials = true;
         bool ImportBlendShapes = true;
         bool ScaleSystemUnit = false;
         float ScaleFactor = 0.01f;

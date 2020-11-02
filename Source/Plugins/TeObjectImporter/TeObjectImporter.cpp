@@ -100,6 +100,7 @@ namespace te
         assimpImportOptions.ImportTangents     = meshImportOptions->ImportTangents;
         assimpImportOptions.ImportSkin         = meshImportOptions->ImportSkin;
         assimpImportOptions.ImportAnimation    = meshImportOptions->ImportAnimation;
+        assimpImportOptions.ImportMaterials    = meshImportOptions->ImportMaterials;
         assimpImportOptions.ScaleSystemUnit    = meshImportOptions->ScaleSystemUnit;
         assimpImportOptions.ScaleFactor        = meshImportOptions->ScaleFactor;
 

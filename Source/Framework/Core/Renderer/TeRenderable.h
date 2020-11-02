@@ -71,6 +71,9 @@ namespace te
          */
         void SetMaterial(const String& name, const SPtr<Material>& material);
 
+        /** Remove all the instances of this material used on submesh for this renderable */
+        void RemoveMaterial(const SPtr<Material>& material);
+
         /** Remove all materials set on every submesh */
         void ClearAllMaterials();
 

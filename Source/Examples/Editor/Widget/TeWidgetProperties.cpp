@@ -525,7 +525,7 @@ namespace te
             for (auto& resource : container.Res)
                 meshesOptions.AddOption(resource.second->GetUUID(), resource.second->GetName());
 
-            meshesOptions.AddOption(emptyMesh, "No mesh");
+            meshesOptions.AddOption(emptyMesh, ICON_FA_TIMES_CIRCLE " No mesh");
             meshesOptions.AddOption(UUID::EMPTY, ICON_FA_FOLDER_OPEN " Load");
 
             if (ImGuiExt::RenderOptionCombo<UUID>(&meshUUID, "##meshes_option", "Mesh", meshesOptions, width))
@@ -623,7 +623,7 @@ namespace te
         for (auto& resource : container.Res)
             materialsOptions.AddOption(resource.second->GetUUID(), resource.second->GetName());
 
-        materialsOptions.AddOption(emptyMaterial, "No material");
+        materialsOptions.AddOption(emptyMaterial, ICON_FA_TIMES_CIRCLE " No material");
 
         for (UINT32 i = 0; i < meshProperties.GetNumSubMeshes(); i++)
         {
@@ -680,7 +680,7 @@ namespace te
                     texturesOptions.AddOption(resource.second->GetUUID(), resource.second->GetName());
             }
 
-            texturesOptions.AddOption(emptyTexture, "No texture");
+            texturesOptions.AddOption(emptyTexture, ICON_FA_TIMES_CIRCLE " No texture");
             texturesOptions.AddOption(UUID::EMPTY, ICON_FA_FOLDER_OPEN " Load");
 
             if (ImGuiExt::RenderOptionCombo<UUID>(&textureUUID, "##skybox_texture_option", "Texture", texturesOptions, width))
@@ -729,6 +729,7 @@ namespace te
             meshImportOptions->ImportTangents = _fileBrowser.Data.MeshParam.ImportTangents;
             meshImportOptions->ImportSkin = _fileBrowser.Data.MeshParam.ImportSkin;
             meshImportOptions->ImportAnimation = _fileBrowser.Data.MeshParam.ImportAnimation;
+            meshImportOptions->ImportMaterials = _fileBrowser.Data.MeshParam.ImportMaterials;
             meshImportOptions->CpuCached = false;
 
             HMesh mesh = EditorResManager::Instance().Load<Mesh>(_fileBrowser.Data.SelectedPath, meshImportOptions);

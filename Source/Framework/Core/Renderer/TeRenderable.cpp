@@ -100,6 +100,22 @@ namespace te
         _markCoreDirty(ActorDirtyFlag::GpuParams);
     }
 
+    /** Remove all the instances of this material used on submesh for this renderable */
+    void Renderable::RemoveMaterial(const SPtr<Material>& material)
+    {
+        if (!_mesh)
+            return;
+
+        for(auto& element : _materials)
+        {
+            if (element == material)
+            {
+                element = nullptr;
+                _markCoreDirty(ActorDirtyFlag::GpuParams);
+            }
+        }
+    }
+
     void Renderable::SetMaterials(const Vector<SPtr<Material>>& materials)
     {
         if (!_mesh)
