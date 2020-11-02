@@ -293,7 +293,7 @@ PS_OUTPUT main( PS_INPUT IN )
     if(gUseNormalMap == 1)
         normal = DoNormalMapping(TBN, NormalMap, AnisotropicSampler, IN.Texture);
     if(gUseBumpMap == 1)
-        normal = DoBumpMapping(TBN, BumpMap, AnisotropicSampler, IN.Texture, 1.0f);
+        normal = DoBumpMapping(TBN, BumpMap, AnisotropicSampler, IN.Texture, gBumpScale);
     if(gUseDiffuseMap == 1)
         albedo = DiffuseMap.Sample(AnisotropicSampler, IN.Texture).rgb;
     if(gUseSpecularMap == 1)

@@ -235,10 +235,10 @@ namespace te
                 }
 
                 texturesOptions.AddOption(empty, "No texture");
-                texturesOptions.AddOption(load, "Load");
+                texturesOptions.AddOption(load, ICON_FA_FOLDER_OPEN " Load");
 
                 texturesEnvMappingOptions.AddOption(empty, "No texture");
-                texturesEnvMappingOptions.AddOption(load, "Load");
+                texturesEnvMappingOptions.AddOption(load, ICON_FA_FOLDER_OPEN " Load");
 
                 if (ShowTexture(uuid, properties.UseDiffuseMap, "##material_texture_diffuse_option", "Diffuse", "DiffuseMap", texturesOptions, width))
                     hasChanged = true;

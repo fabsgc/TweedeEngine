@@ -122,7 +122,7 @@ namespace te
             if (_distanceToTarget > MAX_ZOOM && amount < 0.0f)
                 return;
 
-            float coefficient = (_distanceToTarget < MAX_ZOOM_SPEED) ? fabs(_distanceToTarget) / 5.0f : MAX_ZOOM_SPEED;
+            float coefficient = (_distanceToTarget < MAX_ZOOM_SPEED) ? fabs(_distanceToTarget) / 4.0f : MAX_ZOOM_SPEED;
             float scrollAmount = amount * coefficient * sensitivity * frameDelta;
 
             // We try to move with an amount greater that the target distance

@@ -41,7 +41,7 @@ namespace te
         auto cameraSettings = _currentCamera->GetRenderSettings();
         const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
 
-        if (ImGuiExt::RenderOptionComboComponent(&_currentCamera, "##material_list_option", "", _cameraList, ImGui::GetWindowContentRegionWidth()))
+        if (ImGuiExt::RenderOptionComboComponent(&_currentCamera, "##renderoptions_switch_camera_option", "", _cameraList, ImGui::GetWindowContentRegionWidth()))
         {
             gEditor().SetPreviewViewportCamera(_currentCamera);
             cameraSettings = _currentCamera->GetRenderSettings();
