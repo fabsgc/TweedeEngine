@@ -473,7 +473,7 @@ namespace te
 
         // intensity
         {
-            if (ImGuiExt::RenderOptionFloat(intensity, "##light_intensity_option", "Intensity", 0.0f, 5.0f, width))
+            if (ImGuiExt::RenderOptionFloat(intensity, "##light_intensity_option", "Intensity", 0.0f, 16.0f, width))
             {
                 hasChanged = true;
                 light->SetIntensity(intensity);

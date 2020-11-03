@@ -97,6 +97,7 @@ namespace te
         HShader _shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque);
 
         MaterialProperties properties;
+        properties.Ambient = Color(0.05f, 0.05f, 0.05f, 0.4f);
         properties.UseDiffuseMap = true;
 
         _materialCube = Material::Create(_shader);
@@ -166,6 +167,7 @@ namespace te
         settings->Gamma = 1.0f;
         settings->Contrast = 1.60f;
         settings->Brightness = -0.05f;
+        settings->SceneLightColor = Color(0.4f,0.4f,0.4f,1.0f);
         // ######################################################
 
         // ######################################################

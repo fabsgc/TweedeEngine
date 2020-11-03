@@ -340,6 +340,15 @@ namespace te
                 camera->_getCamera()->MarkCoreDirty();
             }
         }
+        {
+            Vector4 color = camera->GetRenderSettings()->SceneLightColor.GetAsVector4();
+
+            if (ImGuiExt::RenderColorRGBA(color, "##scene_light_color_option", "Scene light color", width))
+            {
+                hasChanged = true;
+                camera->GetRenderSettings()->SceneLightColor = Color(color);
+            }
+        }
         ImGui::Separator();
 
         // near and far cleaping plane

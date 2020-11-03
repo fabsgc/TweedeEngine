@@ -185,6 +185,7 @@ namespace te
         settings->Contrast = 2.0f;
         settings->Brightness = -0.1f;
         settings->MotionBlur.Enabled = false;
+        settings->SceneLightColor = Color(0.4f, 0.4f, 0.4f, 1.0f);
 
         _previewViewportCamera = _viewportCamera.GetNewHandleFromExisting();
     }
@@ -477,7 +478,11 @@ namespace te
         _loadedMeshMonkey = EditorResManager::Instance().Load<Mesh>("Data/Meshes/Monkey/monkey-hd.dae", meshImportOptions);
         _loadedMeshPlane = EditorResManager::Instance().Load<Mesh>("Data/Meshes/Plane/plane.dae", meshImportOptions);
         _loadedTextureMonkey = EditorResManager::Instance().Load<Texture>("Data/Textures/Monkey/diffuse.png", textureImportOptions);
+#if TE_DEBUG_MODE == 0
+        _loadedPlaneTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Sponza/Floor/floor_COLOR.jpeg", textureImportOptions);
+#else
         _loadedPlaneTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Sponza/Floor/floor_COLOR_s.jpeg", textureImportOptions);
+#endif
         _loadedCubemapTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/sky_medium.jpeg", textureCubeMapImportOptions);
         // ###################################################### 
 

@@ -45,17 +45,29 @@ namespace te
         ResourceHandle<T> Load(const String& filePath)
         {
             UUID uuid;
+            ResourceHandle<T> resourceHandle;
             GetUUIDFromFile(filePath, uuid);
 
             if(uuid.Empty())
             {
                 ResourceHandle<T> resourceHandle = gImporter().Import<T>(filePath);
-                uuid = resourceHandle.GetHandleData()->uuid;
-                RegisterResource(uuid, filePath);
-                _loadedResources[uuid] = static_resource_cast<Resource>(resourceHandle);
+
+                if (resourceHandle.GetHandleData())
+                {
+                    uuid = resourceHandle.GetHandleData()->uuid;
+                    resourceHandle.GetInternalPtr()->_UUID = uuid;
+                    RegisterResource(uuid, filePath);
+                    _loadedResources[uuid] = static_resource_cast<Resource>(resourceHandle);
+
+                    OnResourceLoaded(Get(uuid));
+                    return static_resource_cast<T>(Get(uuid));
+                }
+                else
+                {
+                    return resourceHandle;
+                }
             }
 
-            OnResourceLoaded(Get(uuid));
             return static_resource_cast<T>(Get(uuid));
         }
 
@@ -76,16 +88,17 @@ namespace te
                     resourceHandle.GetInternalPtr()->_UUID = uuid;
                     RegisterResource(uuid, filePath);
                     _loadedResources[uuid] = static_resource_cast<Resource>(resourceHandle);
+
+                    OnResourceLoaded(Get(uuid));
+                    return static_resource_cast<T>(Get(uuid));
+                }
+                else
+                {
+                    return resourceHandle;
                 }
             }
 
-            if (resourceHandle.GetHandleData())
-            {
-                OnResourceLoaded(Get(uuid));
-                return static_resource_cast<T>(Get(uuid));
-            }
-
-            return resourceHandle;
+            return static_resource_cast<T>(Get(uuid));
         }
 
         void Update(HResource& handle, const SPtr<Resource>& resource);

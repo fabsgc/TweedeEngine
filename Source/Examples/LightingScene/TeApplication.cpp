@@ -103,7 +103,7 @@ namespace te
             material.MaterialProp.UseNormalMap = true;
             material.MaterialProp.UseSpecularMap = true;
             material.MaterialProp.SpecularPower = 16.0f;
-            material.MaterialProp.Ambient = Color(0.05f, 0.05f, 0.05f, 1.0f);
+            material.MaterialProp.Ambient = Color(0.05f, 0.05f, 0.05f, 0.15f);
 
             material.DiffuseTexture = gResourceManager().Load<Texture>(material.DiffusePath, textureImportOptions);
             material.NormalTexture = gResourceManager().Load<Texture>(material.NormalPath, textureImportOptions);

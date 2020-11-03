@@ -117,7 +117,7 @@ namespace te
 
             if (_currentMaterial)
             {
-                if (ImGuiExt::RenderOptionCombo<UUID>(&materialUUID, "##material_list_option", "", materialsOptions, ImGui::GetWindowContentRegionWidth() - 30))
+                if (ImGuiExt::RenderOptionCombo<UUID>(&materialUUID, "##material_list_option", "", materialsOptions, ImGui::GetWindowContentRegionWidth() - 32))
                 {
                     if (materialUUID != _currentMaterial->GetUUID())
                         _currentMaterial = gResourceManager().Load<Material>(materialUUID).GetInternalPtr();
@@ -126,7 +126,7 @@ namespace te
                 // You can delete a material
                 // Be careful this feature also reset all renderables which are using this material
                 ImGui::SameLine();
-                if (ImGui::Button(ICON_FA_TIMES_CIRCLE, ImVec2(25.0f, 25.0f)))
+                if (ImGui::Button(ICON_FA_TIMES_CIRCLE, ImVec2(25.0f, 26.0f)))
                 {
                     DeleteMaterial(_currentMaterial, materialUUID);
                 }
@@ -187,12 +187,23 @@ namespace te
                 }
                 ImGui::Separator();
                 {
+                    Vector4 color = properties.Emissive.GetAsVector4();
+                    if (ImGuiExt::RenderColorRGBA(color, "##material_properties_emissive_option", "Emissive", width))
+                    {
+                        hasChanged = true;
+                        properties.Emissive = Color(color);
+                    }
+                }
+                ImGui::Separator();
+                {
                     if (ImGuiExt::RenderOptionBool(properties.UseDynamicEnvironmentMap, "##material_properties_dynamic_env_mapping_option", "Use dynamic env mapping"))
                         hasChanged = true;
                 }
                 ImGui::Separator();
                 {
-                    if (ImGuiExt::RenderOptionFloat(properties.SpecularPower, "##material_properties_specular_p_option", "Spec power", 0.0f, 256.0f, width))
+                    if (ImGuiExt::RenderOptionFloat(properties.SpecularPower, "##material_properties_specular_p_option", "Spec. power", 0.0f, 512.0f, width))
+                        hasChanged = true;
+                    if (ImGuiExt::RenderOptionFloat(properties.SpecularStrength, "##material_properties_specular_s_option", "Spec. strength", 0.0f, 128.0f, width))
                         hasChanged = true;
                 }
                 ImGui::Separator();

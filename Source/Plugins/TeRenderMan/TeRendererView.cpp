@@ -227,7 +227,6 @@ namespace te
                 (*visibility)[i] = false;
         }
 
-        // Special case for directional lights, they're always visible if lighting enabled
         if (lightType == LightType::Directional)
         {
             if (visibility && _renderSettings->EnableLighting)
@@ -257,7 +256,8 @@ namespace te
         if (!ShouldDraw3D())
             return;
 
-        CalculateVisibility(*bounds, *perViewVisibility);
+        if (_renderSettings->EnableLighting)
+            CalculateVisibility(*bounds, *perViewVisibility);
 
         if (visibility != nullptr)
         {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
+#include "Image/TeColor.h"
 
 namespace te
 {
@@ -356,5 +357,11 @@ namespace te
          * distance and apply their own factor to it to determine whether they should be visible.
          */
         float CullDistance = 5000.0f;
+
+        /** 
+         * It's possible to define a scene color which will be used on every object rendered with this camera
+         * It's useful to control globally brightness of a scene without using to much lights
+         */
+        Color SceneLightColor = Color(0.1f, 0.1f, 0.1f, 1.0f);
     };
 }

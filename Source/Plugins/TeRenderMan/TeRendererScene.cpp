@@ -470,6 +470,11 @@ namespace te
         gPerFrameParamDef.gFrameDelta.Set(_info.PerFrameParamBuffer, delta);
     }
 
+    void RendererScene::SetParaCameraParams(const Color& sceneLightColor)
+    {
+        gPerFrameParamDef.gSceneLightColor.Set(_info.PerFrameParamBuffer, sceneLightColor.GetAsVector4());
+    }
+
     void RendererScene::PrepareRenderable(UINT32 idx, const FrameInfo& frameInfo)
     {
         RendererRenderable* rendererRenderable = _info.Renderables[idx];

@@ -32,6 +32,7 @@ cbuffer PerMaterialBuffer : register(b1)
     uint   gUseOcclusionMap;
     uint   gUseEnvironmentMap;
     float  gSpecularPower;
+    float  gSpecularStrength;
     float  gTransparency;
     float  gIndexOfRefraction;
     float  gRefraction;
@@ -62,7 +63,7 @@ float4 main( PS_INPUT IN ) : SV_Target
 
     // specular
     float3 refVector = normalize(reflect(lightDirection, normal));
-    float3 specFactor = pow(max(dot(IN.ViewDirection, refVector), 0.0), gSpecularPower);
+    float3 specFactor = pow(max(dot(IN.ViewDirection, refVector), 0.0), gSpecularPower) * gSpecularStrength;
     specular = (specFactor * specular.rgb);  
 
     outColor.rgb = ambient + diffuse + specular + emissive;

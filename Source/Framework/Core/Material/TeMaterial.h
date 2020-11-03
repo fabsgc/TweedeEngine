@@ -31,6 +31,7 @@ namespace te
         Color Emissive = Color(0.0f, 0.0f, 0.0f, 1.0f);
         Color Specular = Color(1.0f, 1.0f, 1.0f, 0.5f);
         float SpecularPower = 64.0f;
+        float SpecularStrength = 1.0f;
         float Transparency = 1.0f;
         float IndexOfRefraction = 1.0f;
         float Refraction = 0.0f;

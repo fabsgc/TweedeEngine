@@ -448,7 +448,6 @@ namespace te
         auto materialFunction = [&](SponzaMaterialData& material)
         {
             material.MaterialProp.SpecularPower = 16.0f;
-            material.MaterialProp.Ambient = Color(0.05f, 0.05f, 0.05f, 1.0f);
             material.MaterialProp.AlphaThreshold = material.AlphaTreshold;
             material.MaterialProp.Transparency = material.Opacity;
             material.MaterialProp.Reflection = material.ReflectionValue;
@@ -569,7 +568,6 @@ namespace te
         MaterialProperties properties;
 
         properties.Emissive = Color(1.0f, 0.9f, 0.7f, 1.0f);
-        properties.Ambient = Color(0.05f, 0.05f, 0.05f, 1.0f);
         _lightMaterial = Material::Create(_shaderOpaque);
         _lightMaterial->SetProperties(properties);
 

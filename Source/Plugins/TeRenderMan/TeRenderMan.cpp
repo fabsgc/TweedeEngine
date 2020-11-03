@@ -139,6 +139,9 @@ namespace te
             {
                 _mainViewGroup->GenerateInstanced(sceneInfo, _options->InstancingMode);
                 _mainViewGroup->GenerateRenderQueue(sceneInfo, *view, _options->InstancingMode);
+
+                _scene->SetParaCameraParams(view->GetSceneCamera()->GetRenderSettings()->SceneLightColor);
+
                 if (RenderSingleView(*_mainViewGroup, *view, frameInfo))
                     anythingDrawn = true;
             }

@@ -32,6 +32,7 @@ cbuffer PerMaterialBuffer : register(b1)
     uint   gUseOcclusionMap;
     uint   gUseEnvironmentMap;
     float  gSpecularPower;
+    float  gSpecularStrength;
     float  gTransparency;
     float  gIndexOfRefraction;
     float  gRefraction;
@@ -51,6 +52,7 @@ cbuffer PerFrameBuffer : register(b3)
 {
     float gTime;
     float gFrameDelta;
+    float4 gSceneLightColor;
 }
 
 SamplerState AnisotropicSampler : register(s0);
@@ -81,8 +83,8 @@ float4 ComputeEmissiveBuffer(float4 color, float4 emissive)
     }
     else
     {
-        float brightness = dot(color.rgb, float3(0.2816, 0.7152, 0.0722));
-        if(brightness > 0.999)
+        float brightness = dot(color.rgb, float3(0.2126, 0.7152, 0.0722));
+        if(brightness > 1.0)
             return float4(color.rgb, 1.0);
         else
             return float4(0.0, 0.0, 0.0, 1.0);
@@ -96,12 +98,10 @@ float4 ComputeVelocityBuffer(float4 position, float4 prevPosition, float alpha)
 
     if(alpha >= 1.0)
     {
-        //float fixDelta = FrameDelta / gFrameDelta; 
         float2 a = float2(position.xy);
         float2 b = float2(prevPosition.xy);
 
         velocity = (b - a);
-        //velocity *= fixDelta;
 
         if(velocity.x < -0.99) velocity.x = -0.99;
         if(velocity.y < -0.99) velocity.y = -0.99;
@@ -153,7 +153,7 @@ float3 DoSpecular( LightData light, float3 V, float3 L, float3 N )
     float3 H = normalize( L + V );
     float NdotH = max( 0, dot( N, H ) );
 
-    return light.Color * pow( RdotV, gSpecularPower ) * light.Intensity;
+    return light.Color * pow( RdotV, gSpecularPower ) * light.Intensity * gSpecularStrength;
 }
 
 // V : view vector
@@ -272,11 +272,11 @@ PS_OUTPUT main( PS_INPUT IN )
     OUT.Scene  = float4(1.0f, 1.0f, 1.0f, 1.0f);
     float3x3 TBN = float3x3(IN.Tangent.xyz, IN.BiTangent.xyz, IN.Normal.xyz);
 
-    float3 albedo      = gDiffuse.rgb * gDiffuse.a;
-    float3 ambient     = gAmbient.rgb * gAmbient.a;
-    float3 diffuse     = gDiffuse.rgb * gDiffuse.a;
-    float3 emissive    = gEmissive.rgb * gEmissive.a;
-    float3 specular    = gSpecular.rgb * gSpecular.a;
+    float3 albedo      = gDiffuse.rgb;
+    float3 ambient     = gAmbient.rgb;
+    float3 diffuse     = gDiffuse.rgb;
+    float3 emissive    = gEmissive.rgb;
+    float3 specular    = gSpecular.rgb;
     float3 environment = (float3)0;
     float3 normal      = IN.Normal;
     float  alpha       = gTransparency;
@@ -295,7 +295,10 @@ PS_OUTPUT main( PS_INPUT IN )
     if(gUseBumpMap == 1)
         normal = DoBumpMapping(TBN, BumpMap, AnisotropicSampler, IN.Texture, gBumpScale);
     if(gUseDiffuseMap == 1)
+    {
         albedo = DiffuseMap.Sample(AnisotropicSampler, IN.Texture).rgb;
+        ambient = DiffuseMap.Sample(AnisotropicSampler, IN.Texture).rgb;
+    }
     if(gUseSpecularMap == 1)
         specular.rgb = SpecularMap.Sample(AnisotropicSampler, IN.Texture).xyz;
     if(gUseEmissiveMap == 1)
@@ -320,14 +323,14 @@ PS_OUTPUT main( PS_INPUT IN )
     diffuse = diffuse * lit.Diffuse.rgb;
     specular = specular * lit.Specular.rgb;
 
-    OUT.Scene.rgb = (ambient + emissive + diffuse + specular) * (albedo + environment);
+    OUT.Scene.rgb = (gSceneLightColor.rgb * ambient + emissive + diffuse + specular) * (albedo + environment);
     OUT.Scene.a = alpha;
 
     float3 NDCPos = (IN.CurrPosition / IN.CurrPosition.w).xyz;
     float3 PrevNDCPos = (IN.PrevPosition / IN.PrevPosition.w).xyz;
 
     OUT.Normal = ComputeNormalBuffer(float4(normal, 0.0f));
-    OUT.Emissive = ComputeEmissiveBuffer(OUT.Scene, float4(emissive, 0.0));
+    OUT.Emissive = ComputeEmissiveBuffer(OUT.Scene, float4(emissive, 1.0));
     OUT.Velocity = ComputeVelocityBuffer(float4(NDCPos, 0.0), float4(PrevNDCPos, 0.0), alpha);
 
     return OUT;

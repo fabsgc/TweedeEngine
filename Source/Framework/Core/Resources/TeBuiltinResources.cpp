@@ -295,6 +295,7 @@ namespace te
 
             SHADER_DATA_PARAM_DESC gTime("gTime", "gTime", GPDT_FLOAT1);
             SHADER_DATA_PARAM_DESC gFrameDeltaDesc("gFrameDelta", "gFrameDelta", GPDT_FLOAT1);
+            SHADER_DATA_PARAM_DESC gSceneLightColorDesc("gSceneLightColor", "gSceneLightColor", GPDT_FLOAT4); 
 
             SHADER_DATA_PARAM_DESC gMatWorldViewProj("gMatWorldViewProj", "gMatWorldViewProj", GPDT_MATRIX_4X4);
 
@@ -316,6 +317,7 @@ namespace te
             SHADER_DATA_PARAM_DESC gUseOcclusionMap("gUseOcclusionMap", "gUseOcclusionMap", GPDT_INT1);
             SHADER_DATA_PARAM_DESC gUseEnvironmentMap("gUseEnvironmentMap", "gUseEnvironmentMap", GPDT_INT1);
             SHADER_DATA_PARAM_DESC gSpecularPower("gSpecularPower", "gSpecularPower", GPDT_FLOAT1);
+            SHADER_DATA_PARAM_DESC gSpecularStrength("gSpecularStrength", "gSpecularStrength", GPDT_FLOAT1);
             SHADER_DATA_PARAM_DESC gTransparency("gTransparency", "gTransparency", GPDT_FLOAT1);
             SHADER_DATA_PARAM_DESC gIndexOfRefraction("gIndexOfRefraction", "gIndexOfRefraction", GPDT_FLOAT1);
             SHADER_DATA_PARAM_DESC gRefraction("gRefraction", "gRefraction", GPDT_FLOAT1);
@@ -375,6 +377,7 @@ namespace te
             _forwardShaderDesc.AddParameter(gUseOcclusionMap);
             _forwardShaderDesc.AddParameter(gUseEnvironmentMap);
             _forwardShaderDesc.AddParameter(gSpecularPower);
+            _forwardShaderDesc.AddParameter(gSpecularStrength);
             _forwardShaderDesc.AddParameter(gTransparency);
             _forwardShaderDesc.AddParameter(gIndexOfRefraction);
             _forwardShaderDesc.AddParameter(gRefraction);
@@ -385,6 +388,7 @@ namespace te
 
             _forwardShaderDesc.AddParameter(gTime);
             _forwardShaderDesc.AddParameter(gFrameDeltaDesc);
+            _forwardShaderDesc.AddParameter(gSceneLightColorDesc);
 
             _forwardShaderDesc.AddParameter(gMatWorldViewProj);
 

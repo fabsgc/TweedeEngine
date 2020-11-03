@@ -32,6 +32,7 @@ cbuffer PerMaterialBuffer : register(b1)
     uint   gUseOcclusionMap;
     uint   gUseEnvironmentMap;
     float  gSpecularPower;
+    float  gSpecularStrength;
     float  gTransparency;
     float  gIndexOfRefraction;
     float  gRefraction;
@@ -59,6 +60,8 @@ cbuffer PerObjectBuffer : register(b3)
 cbuffer PerFrameBuffer : register(b4)
 {
     float gTime;
+    float gFrameDelta;
+    float4 gSceneLightColor;
 }
 
 cbuffer PerCallBuffer : register(b5)
