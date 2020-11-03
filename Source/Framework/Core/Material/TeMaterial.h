@@ -53,6 +53,20 @@ namespace te
         bool UseDynamicEnvironmentMap = false;
     };
 
+    struct MaterialTextures
+    {
+        String DiffuseMap;
+        String EmissiveMap;
+        String NormalMap;
+        String SpecularMap;
+        String BumpMap;
+        String ParallaxMap;
+        String TransparencyMap;
+        String ReflectionMap;
+        String OcclusionMap;
+        String EnvironmentMap;
+    };
+
     /**
      * Material that controls how objects are rendered. It is represented by a shader and parameters used to set up that
      * shader. It provides a simple interface for manipulating the parameters.

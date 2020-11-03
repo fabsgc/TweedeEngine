@@ -7,6 +7,7 @@
 #include "Math/TeVector2.h"
 #include "Math/TeMatrix4.h"
 #include "Scene/TeTransform.h"
+#include "Material/TeMaterial.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -91,6 +92,8 @@ namespace te
     {
         UINT32 Index;
         String Name;
+        MaterialProperties MatProperties;
+        MaterialTextures   MatTextures;
     };
 
     struct AssimpImportScene

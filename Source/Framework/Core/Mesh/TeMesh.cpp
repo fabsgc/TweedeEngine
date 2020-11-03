@@ -26,12 +26,10 @@ namespace te
         _subMeshes = subMeshes;
     }
 
-    const SubMesh& MeshProperties::GetSubMesh(UINT32 subMeshIdx) const
+    SubMesh& MeshProperties::GetSubMesh(UINT32 subMeshIdx)
     {
         if (subMeshIdx >= _subMeshes.size())
-        {
-            TE_ASSERT_ERROR(false, "Invalid sub-mesh index ("+ ToString(subMeshIdx) + "). Number of sub-meshes available: " + ToString((int)_subMeshes.size()));
-        }
+            TE_ASSERT_ERROR(false, "Invalid sub-mesh index (" + ToString(subMeshIdx) + "). Number of sub-meshes available: " + ToString((int)_subMeshes.size()));
 
         return _subMeshes[subMeshIdx];
     }

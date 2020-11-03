@@ -153,19 +153,66 @@ namespace te
         if (scene->HasMaterials())
         {
             AssimpImportMaterial material;
-            aiMaterial* mat = nullptr;
+            aiMaterial* aiMat = nullptr;
+            aiString matName;
 
             for (unsigned int i = 0; i < scene->mNumMaterials; i++)
             {
-                mat = scene->mMaterials[i];
-                if (!mat)
-                    continue;
+                aiMat = scene->mMaterials[i];
+                if (!aiMat) continue;
 
-                aiString name;
-                mat->Get(AI_MATKEY_NAME, name);
+                aiMat->Get(AI_MATKEY_NAME, matName);
 
                 material.Index = i;
-                material.Name = name.C_Str();
+                material.Name = matName.C_Str();
+
+                if (options.ImportMaterials)
+                {
+                    auto BindTexture = [this](aiMaterial* aiMat, aiTextureType textureType, String& path, bool& use)
+                    {
+                        aiString aiPath;
+                        int textureIndex = 0;
+                        if (aiMat->GetTexture(textureType, textureIndex, &aiPath) == AI_SUCCESS)
+                        {
+                            path = aiPath.C_Str();
+                            use = true;
+                        }
+                    };
+
+                    BindTexture(aiMat, aiTextureType_DIFFUSE, material.MatTextures.DiffuseMap, material.MatProperties.UseDiffuseMap);
+                    BindTexture(aiMat, aiTextureType_EMISSIVE, material.MatTextures.EmissiveMap, material.MatProperties.UseEmissiveMap);
+                    BindTexture(aiMat, aiTextureType_NORMALS, material.MatTextures.NormalMap, material.MatProperties.UseNormalMap);
+                    BindTexture(aiMat, aiTextureType_SPECULAR, material.MatTextures.SpecularMap, material.MatProperties.UseSpecularMap);
+                    BindTexture(aiMat, aiTextureType_REFLECTION, material.MatTextures.ReflectionMap, material.MatProperties.UseReflectionMap);
+                    BindTexture(aiMat, aiTextureType_OPACITY, material.MatTextures.TransparencyMap, material.MatProperties.UseTransparencyMap);
+                    BindTexture(aiMat, aiTextureType_DISPLACEMENT, material.MatTextures.NormalMap, material.MatProperties.UseNormalMap);
+                    BindTexture(aiMat, aiTextureType_DISPLACEMENT, material.MatTextures.BumpMap, material.MatProperties.UseBumpMap);
+
+                    // TODO parallax, occlusion and environment map can't be set here
+
+                    aiColor3D ambientColor;
+                    aiMat->Get(AI_MATKEY_COLOR_AMBIENT, ambientColor);
+                    material.MatProperties.Ambient = ConvertToNativeType(ambientColor);
+
+                    aiColor3D diffuseColor;
+                    aiMat->Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColor);
+                    material.MatProperties.Diffuse = ConvertToNativeType(diffuseColor);
+
+                    aiColor3D specularColor;
+                    aiMat->Get(AI_MATKEY_COLOR_SPECULAR, specularColor);
+                    material.MatProperties.Ambient = ConvertToNativeType(ambientColor);
+
+                    aiColor3D emissiveColor;
+                    aiMat->Get(AI_MATKEY_COLOR_EMISSIVE, emissiveColor);
+                    material.MatProperties.Emissive = ConvertToNativeType(emissiveColor);
+
+                    aiMat->Get(AI_MATKEY_SHININESS, material.MatProperties.SpecularPower);
+                    aiMat->Get(AI_MATKEY_SHININESS_STRENGTH, material.MatProperties.SpecularStrength);
+                    aiMat->Get(AI_MATKEY_OPACITY, material.MatProperties.Transparency);
+                    aiMat->Get(AI_MATKEY_REFRACTI, material.MatProperties.IndexOfRefraction);
+                    aiMat->Get(AI_MATKEY_BUMPSCALING, material.MatProperties.BumpScale);
+                    aiMat->Get(AI_MATKEY_REFLECTIVITY, material.MatProperties.Reflection);
+                }
 
                 outputScene.Materials.push_back(material);
             }
@@ -340,7 +387,15 @@ namespace te
                     continue;
 
                 UINT32 indexCount = (UINT32)indicesPerMaterial[key].size();
-                subMeshes.push_back(SubMesh(currentIndex, indexCount, DOT_TRIANGLE_LIST, scene.Materials[key].Name, "SubMesh " + ToString(key)));
+                SubMesh subMesh(currentIndex, indexCount, DOT_TRIANGLE_LIST, scene.Materials[key].Name, "SubMesh " + ToString(key));
+                
+                if (options.ImportMaterials)
+                {
+                    subMesh.MatProperties = scene.Materials[key].MatProperties;
+                    subMesh.MatTextures = scene.Materials[key].MatTextures;
+                }
+
+                subMeshes.push_back(subMesh);
                 currentIndex += indexCount;
             }
 
@@ -557,5 +612,10 @@ namespace te
     Vector2 ObjectImporter::ConvertToNativeType(const aiVector2D& vector)
     {
         return Vector2((float)vector.x, (float)vector.y);
+    }
+
+    Color ObjectImporter::ConvertToNativeType(const aiColor3D& color)
+    {
+        return Color((float)color.r, (float)color.g, (float)color.b, 1.0f);
     }
 }

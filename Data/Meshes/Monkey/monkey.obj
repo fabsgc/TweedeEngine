@@ -1,6 +1,6 @@
-# Blender v2.80 (sub 75) OBJ File: 'monkey.blend'
+# Blender v2.81 (sub 16) OBJ File: 'monkey.blend'
 # www.blender.org
-mtllib monkey.mtl
+mtllib monkey_000001.mtl
 o Suzanne
 v 0.439019 1.165180 0.528315
 v -0.439019 1.165180 0.528315

@@ -380,7 +380,7 @@ namespace te
         SPtr<Mesh> mesh = renderable->GetMesh();
         if (mesh != nullptr)
         {
-            const MeshProperties& meshProps = mesh->GetProperties();
+            MeshProperties& meshProps = mesh->GetProperties();
             SPtr<VertexDeclaration> vertexDecl = mesh->GetVertexData()->vertexDeclaration;
 
             for (UINT32 i = 0; i < meshProps.GetNumSubMeshes(); i++)

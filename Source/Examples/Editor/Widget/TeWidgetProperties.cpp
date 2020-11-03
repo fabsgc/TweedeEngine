@@ -17,6 +17,7 @@
 #include "Mesh/TeMesh.h"
 #include "Importer/TeMeshImportOptions.h"
 #include "Importer/TeTextureImportOptions.h"
+#include "Resources/TeBuiltinResources.h"
 
 namespace te
 {
@@ -545,6 +546,14 @@ namespace te
                     renderable->SetMesh(gResourceManager().Load<Mesh>(meshUUID).GetInternalPtr());
                     renderable->ClearAllMaterials();
                     hasChanged = true;
+
+                    // We check if a material exists on each subMesh. In this case, we apply the material on the renderable
+                    for (UINT i = 0; i < renderable->GetMesh()->GetProperties().GetNumSubMeshes(); i++)
+                    {
+                        SubMesh& subMesh = renderable->GetMesh()->GetProperties().GetSubMesh(i);
+                        if (subMesh.Mat.GetHandleData())
+                            renderable->SetMaterial(i, subMesh.Mat.GetInternalPtr());
+                    }
                 }
             }
 
@@ -616,7 +625,7 @@ namespace te
         SPtr<Mesh> mesh = renderable->GetMesh();
         ImGuiExt::ComboOptions<UUID> materialsOptions;
         UUID emptyMaterial = UUID(50, 0, 0, 0);
-        const MeshProperties& meshProperties = mesh->GetProperties();
+        MeshProperties& meshProperties = mesh->GetProperties();
         const float width = ImGui::GetWindowContentRegionWidth() - 120.0f;
         EditorResManager::ResourcesContainer& container = EditorResManager::Instance().Get<Material>();
 
@@ -629,7 +638,7 @@ namespace te
         {
             SPtr<Material> material = renderable->GetMaterial(i);
             UUID materialUUID = (material) ? material->GetUUID() : emptyMaterial;
-            const SubMesh& subMesh = meshProperties.GetSubMesh(i);
+            SubMesh& subMesh = meshProperties.GetSubMesh(i);
             String title = subMesh.MaterialName;
 
             // current material to use
@@ -738,8 +747,62 @@ namespace te
                 mesh->SetName(_fileBrowser.Data.SelectedFileName);
                 EditorResManager::Instance().Add<Mesh>(mesh);
                 SPtr<CRenderable> renderable = std::static_pointer_cast<CRenderable>(_selections.ClickedComponent);
+
+                // We will try to set the material attach to this mesh (in fact one material per submesh), and create it before if not exist
                 renderable->SetMesh(mesh.GetInternalPtr());
                 meshLoaded = true;
+
+                if (meshImportOptions->ImportMaterials)
+                {
+                    for (UINT i = 0; i < mesh->GetProperties().GetNumSubMeshes(); i++)
+                    {
+                        SubMesh& subMesh = mesh->GetProperties().GetSubMesh(i);
+                        MaterialProperties matProperties = subMesh.MatProperties;
+                        MaterialTextures matTextures = subMesh.MatTextures;
+
+                        if (subMesh.Mat.GetHandleData())
+                        {
+                            renderable->SetMaterial(i, subMesh.Mat.GetInternalPtr());
+                        }
+                        else
+                        {
+                            HMaterial material = Material::Create(gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque));
+                            material->SetName(subMesh.MaterialName);
+                            material->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
+                            material->SetProperties(subMesh.MatProperties);
+
+                            const auto& BindTexture = [this](bool isSet, const String& textureName, const String& texturePath, HMaterial& material)
+                            {
+                                auto textureImportOptions = TextureImportOptions::Create();
+                                textureImportOptions->CpuCached = false;
+                                textureImportOptions->GenerateMips = true;
+
+                                if (isSet)
+                                {
+                                    HTexture texture = EditorResManager::Instance().Load<Texture>(texturePath, textureImportOptions);
+
+                                    if (texture.GetHandleData())
+                                    {
+                                        material->SetTexture(textureName, texture);
+                                        EditorResManager::Instance().Add<Texture>(texture);
+                                    }
+                                }
+                            };
+
+                            BindTexture(matProperties.UseDiffuseMap, "DiffuseMap", matTextures.DiffuseMap, material);
+                            BindTexture(matProperties.UseEmissiveMap, "EmissiveMap", matTextures.EmissiveMap, material);
+                            BindTexture(matProperties.UseNormalMap, "NormalMap", matTextures.NormalMap, material);
+                            BindTexture(matProperties.UseSpecularMap, "SpecularMap", matTextures.SpecularMap, material);
+                            BindTexture(matProperties.UseBumpMap, "BumpMap", matTextures.BumpMap, material);
+                            BindTexture(matProperties.UseTransparencyMap, "TransparencyMap", matTextures.TransparencyMap, material);
+                            BindTexture(matProperties.UseReflectionMap, "ReflectionMap", matTextures.ReflectionMap, material);
+
+                            renderable->SetMaterial(i, material);
+                            subMesh.Mat = material.GetNewHandleFromExisting();
+                            EditorResManager::Instance().Add<Material>(material);
+                        }                        
+                    }
+                }
             }
 
             _loadMesh = false;

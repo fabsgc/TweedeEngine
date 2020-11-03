@@ -79,6 +79,9 @@ namespace te
         /** Convert an assimp vector2 into engine vector2 */
         Vector2 ConvertToNativeType(const aiVector2D& vector);
 
+        /** Convert an assimp color3D into engine color */
+        Color ConvertToNativeType(const aiColor3D& vector);
+
     private:
         Vector<String> _extensions;
     };

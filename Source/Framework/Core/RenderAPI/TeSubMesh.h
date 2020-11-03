@@ -32,6 +32,10 @@ namespace te
 
         /** During mesh import, it's possible to get information about the default material applied on this submesh */
         MaterialProperties MatProperties;
+
+        /** During mesh import, it's possible to get information about the default material applied on this submesh */
+        MaterialTextures MatTextures;
+
         /** We can store here the "default" material applied to this submesh, useful when loading a mesh */
         HMaterial Mat;
     };

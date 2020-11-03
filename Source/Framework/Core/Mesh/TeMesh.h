@@ -80,7 +80,7 @@ namespace te
          * Retrieves a sub-mesh containing data used for rendering a certain portion of this mesh. If no sub-meshes are
          * specified manually a special sub-mesh containing all indices is returned.
          */
-        const SubMesh& GetSubMesh(UINT32 subMeshIdx = 0) const;
+        SubMesh& GetSubMesh(UINT32 subMeshIdx = 0);
 
         /** Retrieves a total number of sub-meshes in this mesh. */
         UINT32 GetNumSubMeshes() const;
@@ -165,7 +165,7 @@ namespace te
         virtual void _notifyUsedOnGPU() { }
 
         /** Returns properties that contain information about the mesh. */
-        const MeshProperties& GetProperties() const { return _properties; }
+        MeshProperties& GetProperties() { return _properties; }
     
         /**
          * Creates a new empty mesh.

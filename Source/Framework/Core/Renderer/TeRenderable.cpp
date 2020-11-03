@@ -82,7 +82,7 @@ namespace te
         {
             UINT32 numSubMeshes = mesh->GetProperties().GetNumSubMeshes();
             _materials.resize(numSubMeshes);
-        }        
+        }
 
         OnMeshChanged();
         _markCoreDirty(ActorDirtyFlag::GpuParams);
