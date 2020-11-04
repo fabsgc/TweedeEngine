@@ -40,6 +40,18 @@ namespace te
         Component::OnInitialized();
     }
 
+    void CSkybox::OnEnabled()
+    {
+        _internal->SetActive(true);
+        Component::OnEnabled();
+    }
+
+    void CSkybox::OnDisabled()
+    {
+        _internal->SetActive(false);
+        Component::OnDisabled();
+    }
+
     void CSkybox::OnDestroyed()
     {
         gSceneManager()._unbindActor(_internal);

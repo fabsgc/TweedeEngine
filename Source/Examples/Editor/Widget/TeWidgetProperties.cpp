@@ -127,6 +127,13 @@ namespace te
         if (ShowGameObjectInformation(gameObject))
             hasChanged = true;
 
+        bool active = _selections.ClickedSceneObject->GetActive(true);
+        if (ImGuiExt::RenderOptionBool(active, "##scene_object_information_active_option", "Active"))
+        {
+            hasChanged = true;
+            _selections.ClickedSceneObject->SetActive(active);
+        }
+
         if (ShowTransform(transform, mobility))
         {
             _selections.ClickedSceneObject->SetLocalTransform(transform);

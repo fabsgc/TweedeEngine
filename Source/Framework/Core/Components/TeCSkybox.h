@@ -63,6 +63,12 @@ namespace te
         /** @copydoc Component::OnInitialized */
         void OnInitialized() override;
 
+        /** @copydoc Component::OnEnabled */
+        void OnEnabled() override;
+
+        /** @copydoc Component::OnEnabled */
+        void OnDisabled() override;
+
         /** @copydoc Component::OnTransformChanged */
         void OnTransformChanged(TransformChangedFlags flags) override { }
 

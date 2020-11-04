@@ -64,6 +64,18 @@ namespace te
         Component::OnInitialized();
     }
 
+    void CRenderable::OnEnabled()
+    {
+        _internal->SetActive(true);
+        Component::OnEnabled();
+    }
+
+    void CRenderable::OnDisabled()
+    {
+        _internal->SetActive(false);
+        Component::OnDisabled();
+    }
+
     void CRenderable::OnTransformChanged(TransformChangedFlags flags)
     {
         _internal->_updateState(*SO());

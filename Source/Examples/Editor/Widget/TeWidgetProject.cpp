@@ -111,7 +111,8 @@ namespace te
         }
 
         // Title
-        String nodeTitle = ICON_FA_GLOBE_EUROPE + String(" ") + sceneObject->GetName();
+        String active = (sceneObject->GetActive()) ? ICON_FA_EYE : ICON_FA_EYE_SLASH;
+        String nodeTitle = active + String("  ") + ICON_FA_GLOBE_EUROPE + String(" ") + sceneObject->GetName();
 
         if (_selections.ClickedSceneObject == sceneObject.GetInternalPtr())
             nodeTitle += String("  ") + ICON_FA_CARET_RIGHT;
@@ -719,40 +720,40 @@ namespace te
 
     String WidgetProject::GetComponentIcon(const HComponent& component)
     {
-        String title;
+        String title = (component->SO()->GetActive()) ? ICON_FA_EYE : ICON_FA_EYE_SLASH;
         UINT32 type = component->GetCoreType();
 
         switch (type)
         {
         case TID_Component:
-            title = ICON_FA_SHAPES + String(" ");
+            title +=  String("  ") + ICON_FA_SHAPES;
             break;
         case TID_CCamera:
-            title = ICON_FA_CAMERA + String(" ");
+            title += String("  ") + ICON_FA_CAMERA;
             break;
         case TID_CRenderable:
-            title = ICON_FA_OBJECT_GROUP + String(" ");
+            title += String("  ") + ICON_FA_OBJECT_GROUP;
             break;
         case TID_CLight:
-            title = ICON_FA_LIGHTBULB + String(" ");
+            title += String("  ") + ICON_FA_LIGHTBULB;
             break;
         case TID_CSkybox:
-            title = ICON_FA_GLOBE + String(" ");
+            title += String("  ") + ICON_FA_GLOBE ;
             break;
         case TID_CCameraFlyer:
-            title = ICON_FA_CAMERA + String(" ");
+            title += String("  ") + ICON_FA_CAMERA;
             break;
         case TID_CCameraUI:
-            title = ICON_FA_CAMERA + String(" ");
+            title += String("  ") + ICON_FA_CAMERA;
             break;
         case TID_CScript:
-            title = ICON_FA_SCROLL + String(" ");
+            title += String("  ") + ICON_FA_SCROLL;
             break;
         default:
             break;
         }
 
-        title += component->GetName();
+        title = title + String("  ") + component->GetName();
         return title;
     }
 }

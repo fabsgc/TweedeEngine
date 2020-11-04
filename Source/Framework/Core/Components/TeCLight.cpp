@@ -52,6 +52,18 @@ namespace te
         Component::OnInitialized();
     }
 
+    void CLight::OnEnabled()
+    {
+        _internal->SetActive(true);
+        Component::OnEnabled();
+    }
+
+    void CLight::OnDisabled()
+    {
+        _internal->SetActive(false);
+        Component::OnDisabled();
+    }
+
     void CLight::OnTransformChanged(TransformChangedFlags flags)
     {
         _internal->_updateState(*SO());

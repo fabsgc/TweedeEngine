@@ -37,7 +37,7 @@ namespace te
 
         if ((dirtyFlag & updateEverythingFlag) != 0)
         {
-            if (_oldActive != _active)
+            if (_oldActive != GetActive())
             {
                 if (_active)
                     gRenderer()->NotifyRenderableAdded(this);
