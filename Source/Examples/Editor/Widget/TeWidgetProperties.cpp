@@ -555,7 +555,7 @@ namespace te
                     hasChanged = true;
 
                     // We check if a material exists on each subMesh. In this case, we apply the material on the renderable
-                    for (UINT i = 0; i < renderable->GetMesh()->GetProperties().GetNumSubMeshes(); i++)
+                    for (UINT32 i = 0; i < renderable->GetMesh()->GetProperties().GetNumSubMeshes(); i++)
                     {
                         SubMesh& subMesh = renderable->GetMesh()->GetProperties().GetSubMesh(i);
                         if (subMesh.Mat.GetHandleData())
