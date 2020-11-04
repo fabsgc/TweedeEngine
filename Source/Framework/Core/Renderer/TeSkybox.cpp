@@ -15,7 +15,8 @@ namespace te
 
     Skybox::~Skybox()
     {
-        gRenderer()->NotifySkyboxRemoved(this);
+        if (_active)
+            gRenderer()->NotifySkyboxRemoved(this);
     }
 
     void Skybox::Initialize()
@@ -60,7 +61,21 @@ namespace te
 
     void Skybox::FrameSync()
     {
-        gRenderer()->NotifySkyboxRemoved(this);
-        gRenderer()->NotifySkyboxAdded(this);
+        UINT32 dirtyFlag = GetCoreDirtyFlags();
+
+        if (_oldActive != _active)
+        {
+            if (_active)
+                gRenderer()->NotifySkyboxAdded(this);
+            else
+                gRenderer()->NotifySkyboxRemoved(this);
+        }
+        else if (dirtyFlag & (UINT32)SkyboxDirtyFlag::Texture != 0)
+        {
+            gRenderer()->NotifySkyboxRemoved(this);
+            gRenderer()->NotifySkyboxAdded(this);
+        }
+
+        _oldActive = _active;
     }
 }

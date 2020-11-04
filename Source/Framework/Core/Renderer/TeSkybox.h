@@ -11,7 +11,7 @@ namespace te
     enum class SkyboxDirtyFlag
     {
         // First few bits reserved by ActorDiryFlag
-        Texture = 1 << 4
+        Texture = 1 << 5
     };
 
     class TE_CORE_EXPORT Skybox : public CoreObject, public SceneActor

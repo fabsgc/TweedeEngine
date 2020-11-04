@@ -754,7 +754,7 @@ namespace te
 
                 if (meshImportOptions->ImportMaterials)
                 {
-                    for (UINT i = 0; i < mesh->GetProperties().GetNumSubMeshes(); i++)
+                    for (UINT32 i = 0; i < mesh->GetProperties().GetNumSubMeshes(); i++)
                     {
                         SubMesh& subMesh = mesh->GetProperties().GetSubMesh(i);
                         MaterialProperties matProperties = subMesh.MatProperties;

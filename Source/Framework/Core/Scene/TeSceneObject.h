@@ -317,6 +317,20 @@ namespace te
         const SPtr<SceneInstance>& GetScene() const;
 
         /**
+         * Enables or disables this object. Disabled objects also implicitly disable all their child objects. No components
+         * on the disabled object are updated.
+         */
+        void SetActive(bool active);
+
+        /**
+         * Returns whether or not an object is active.
+         *
+         * @param[in]	self	If true, the method will only check if this particular object was activated or deactivated
+         *						directly via setActive. If false we we also check if any of the objects parents are inactive.
+         */
+        bool GetActive(bool self = false) const;
+
+        /**
          * Sets the mobility of a scene object. This is used primarily as a performance hint to engine systems. Objects
          * with more restricted mobility will result in higher performance. Some mobility constraints will be enforced by
          * the engine itself, while for others the caller must be sure not to break the promise he made when mobility was
@@ -353,6 +367,9 @@ namespace te
          * @param[in]	object	Child to remove.
          */
         void RemoveChild(const HSceneObject& object);
+
+        /** Changes the object active in hierarchy state, and triggers necessary events. */
+        void SetActiveHierarchy(bool active, bool triggerEvents = true);
 
     public: // ***** COMPONENT ******
         /** Constructs a new component of the specified type and adds it to the internal component list. */
@@ -586,6 +603,8 @@ namespace te
         HSceneObject _parent;
         Vector<HSceneObject> _children;
         ObjectMobility _mobility = ObjectMobility::Movable;
+        bool _activeSelf = true;
+        bool _activeHierarchy = true;
 
         Vector<HComponent> _components;
     };

@@ -8,12 +8,14 @@ namespace te
         : Component(HSceneObject(), (UINT32)TID_CSkybox)
     {
         SetName("Skybox");
+        SetFlag(Component::AlwaysRun, true);
     }
 
     CSkybox::CSkybox(const HSceneObject& parent)
         : Component(parent, (UINT32)TID_CSkybox)
     {
         SetName("Skybox");
+        SetFlag(Component::AlwaysRun, true);
     }
 
     CSkybox::~CSkybox()

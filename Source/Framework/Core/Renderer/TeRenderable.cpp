@@ -10,7 +10,8 @@ namespace te
 
     Renderable::~Renderable()
     {
-        gRenderer()->NotifyRenderableRemoved(this);
+        if(_active)
+            gRenderer()->NotifyRenderableRemoved(this);
     }
 
     void Renderable::Initialize()
@@ -31,29 +32,45 @@ namespace te
 
     void Renderable::FrameSync()
     {
-        // TE_PRINT("# SYNC RENDERABLE");
-
         UINT32 dirtyFlag = GetCoreDirtyFlags();
-        UINT32 updateEverythingFlag = (UINT32)ActorDirtyFlag::Everything;
+        UINT32 updateEverythingFlag = (UINT32)ActorDirtyFlag::Everything | (UINT32)ActorDirtyFlag::Active;
 
         if ((dirtyFlag & updateEverythingFlag) != 0)
         {
-            gRenderer()->NotifyRenderableRemoved(this);
-            gRenderer()->NotifyRenderableAdded(this);
+            if (_oldActive != _active)
+            {
+                if (_active)
+                    gRenderer()->NotifyRenderableAdded(this);
+                else
+                    gRenderer()->NotifyRenderableRemoved(this);
+            }
+            else
+            {
+                gRenderer()->NotifyRenderableRemoved(this);
+                gRenderer()->NotifyRenderableAdded(this);
+            }
         }
         else if ((dirtyFlag & (UINT32)ActorDirtyFlag::Mobility) != 0)
         {
-            gRenderer()->NotifyRenderableRemoved(this);
-            gRenderer()->NotifyRenderableAdded(this);
+            // TODO I'm not sure for that, we might check if SceneActor is active
+            if (_active)
+            {
+                gRenderer()->NotifyRenderableRemoved(this);
+                gRenderer()->NotifyRenderableAdded(this);
+            }
         }
         else if ((dirtyFlag & (UINT32)ActorDirtyFlag::Transform) != 0)
         {
-            gRenderer()->NotifyRenderableUpdated(this);
+            if (_active)
+                gRenderer()->NotifyRenderableUpdated(this);
         }
         else if ((dirtyFlag & (UINT32)ActorDirtyFlag::GpuParams) != 0)
         {
-            gRenderer()->NotifyRenderableUpdated(this);
+            if (_active)
+                gRenderer()->NotifyRenderableUpdated(this);
         }
+
+        _oldActive = _active;
     }
 
     void Renderable::SetMobility(ObjectMobility mobility)

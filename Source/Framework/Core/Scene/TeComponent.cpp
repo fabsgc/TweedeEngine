@@ -4,6 +4,7 @@
 namespace te
 { 
     UINT32 Component::ComponentType = TID_Component;
+    const UINT32 Component::AlwaysRun = 1;
 
     Event<void(const HComponent&)> Component::OnComponentCreated;
     Event<void(const HComponent&)> Component::OnComponentInitialized;

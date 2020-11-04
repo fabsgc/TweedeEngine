@@ -40,7 +40,8 @@ namespace te
 
     Light::~Light()
     {
-        gRenderer()->NotifyLightRemoved(this);
+        if (_active)
+            gRenderer()->NotifyLightRemoved(this);
     }
 
     void Light::Initialize()
@@ -58,31 +59,51 @@ namespace te
 
     void Light::FrameSync()
     {
-        // TE_PRINT("# SYNC LIGHT");
-
         LightType oldType = _type;
         UINT32 dirtyFlag = GetCoreDirtyFlags();
-        UINT32 updateEverythingFlag = (UINT32)ActorDirtyFlag::Everything;
+        UINT32 updateEverythingFlag = (UINT32)ActorDirtyFlag::Everything | (UINT32)ActorDirtyFlag::Active;
 
         UpdateBounds();
 
         if ((dirtyFlag & updateEverythingFlag) != 0)
         {
-            LightType newType = _type;
-            _type = oldType;
-            gRenderer()->NotifyLightRemoved(this);
-            _type = newType;
-            gRenderer()->NotifyLightAdded(this);
+            if (_oldActive != _active)
+            {
+                if (_active)
+                    gRenderer()->NotifyLightAdded(this);
+                else
+                {
+                    LightType newType = _type;
+                    _type = oldType;
+                    gRenderer()->NotifyLightRemoved(this);
+                    _type = newType;
+                }
+            }
+            else
+            {
+                LightType newType = _type;
+                _type = oldType;
+                gRenderer()->NotifyLightRemoved(this);
+                _type = newType;
+                gRenderer()->NotifyLightAdded(this);
+            }
         }
         else if ((dirtyFlag & (UINT32)ActorDirtyFlag::Mobility) != 0)
         {
-            gRenderer()->NotifyLightRemoved(this);
-            gRenderer()->NotifyLightAdded(this);
+            // TODO I'm not sure for that, we might check if SceneActor is active
+            if (_active)
+            {
+                gRenderer()->NotifyLightRemoved(this);
+                gRenderer()->NotifyLightAdded(this);
+            }
         }
         else if ((dirtyFlag & (UINT32)ActorDirtyFlag::Transform) != 0)
         {
-            gRenderer()->NotifyLightUpdated(this);
+            if (_active)
+                gRenderer()->NotifyLightUpdated(this);
         }
+
+        _oldActive = _active;
     }
 
     void Light::SetMobility(ObjectMobility mobility)

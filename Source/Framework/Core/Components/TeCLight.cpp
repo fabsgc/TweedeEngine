@@ -7,6 +7,7 @@ namespace te
         : Component(HSceneObject(), (UINT32)TID_CLight)
     {
         SetName("Light");
+        SetFlag(Component::AlwaysRun, true);
     }
 
     CLight::CLight(const HSceneObject& parent, LightType type, Color color,
@@ -19,6 +20,7 @@ namespace te
         , _spotAngle(spotAngle)
     {
         SetName("Light");
+        SetFlag(Component::AlwaysRun, true);
     }
 
     CLight::~CLight()

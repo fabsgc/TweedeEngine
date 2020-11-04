@@ -193,10 +193,31 @@ namespace te
         _components.push_back(component);
     }
 
-    void SceneManager::_notifyComponentDestroyed(const HComponent& component)
+    void SceneManager::_notifyComponentActivated(const HComponent& component, bool triggerEvent)
     {
+        const bool alwaysRun = component->HasFlag(Component::AlwaysRun);
+        if (alwaysRun && triggerEvent)
+            component->OnEnabled();
+    }
+
+    void SceneManager::_notifyComponentDeactivated(const HComponent& component, bool triggerEvent)
+    {
+        const bool alwaysRun = component->HasFlag(Component::AlwaysRun);
+        if (alwaysRun && triggerEvent)
+            component->OnDisabled();
+    }
+
+    void SceneManager::_notifyComponentDestroyed(const HComponent& component, bool immediate)
+    {
+        const bool alwaysRun = component->HasFlag(Component::AlwaysRun);
+        const bool isEnabled = component->SO()->GetActive() && (alwaysRun);
+
+        if (isEnabled)
+            component->OnDisabled();
+
         component->OnDestroyed();
 
+        // TODO immediate not used here as every destruction is automatically immediate
         auto co = std::find(_components.begin(), _components.end(), component);
         if (co != _components.end())
         {

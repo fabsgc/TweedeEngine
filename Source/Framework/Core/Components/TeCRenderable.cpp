@@ -7,12 +7,14 @@ namespace te
         : Component(HSceneObject(), (UINT32)TID_CRenderable)
     {
         SetName("Renderable");
+        SetFlag(Component::AlwaysRun, true);
     }
 
     CRenderable::CRenderable(const HSceneObject& parent)
         : Component(parent, (UINT32)TID_CRenderable)
     {
         SetName("Renderable");
+        SetFlag(Component::AlwaysRun, true);
     }
 
     CRenderable::~CRenderable()

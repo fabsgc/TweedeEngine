@@ -118,8 +118,20 @@ namespace te
         /** Notifies the manager that a new component has just been created. The manager triggers necessary callbacks. */
         void _notifyComponentCreated(const HComponent& component);
 
+        /**
+         * Notifies the manager that a scene object the component belongs to was activated. The manager triggers necessary
+         * callbacks.
+         */
+        void _notifyComponentActivated(const HComponent& component, bool triggerEvent);
+
+        /**
+         * Notifies the manager that a scene object the component belongs to was deactivated. The manager triggers necessary
+         * callbacks.
+         */
+        void _notifyComponentDeactivated(const HComponent& component, bool triggerEvent);
+
         /** Notifies the manager that a component is about to be destroyed. The manager triggers necessary callbacks. */
-        void _notifyComponentDestroyed(const HComponent& component);
+        void _notifyComponentDestroyed(const HComponent& component, bool immediate);
 
     protected:
         friend class SceneObject;

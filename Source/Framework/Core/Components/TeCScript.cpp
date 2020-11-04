@@ -8,12 +8,14 @@ namespace te
         : Component(HSceneObject(), (UINT32)TID_CScript)
     {
         SetName("Script");
+        SetFlag(Component::AlwaysRun, true);
     }
 
     CScript::CScript(const HSceneObject& parent)
         : Component(parent, (UINT32)TID_CScript)
     {
         SetName("Script");
+        SetFlag(Component::AlwaysRun, true);
     }
 
     CScript::~CScript()

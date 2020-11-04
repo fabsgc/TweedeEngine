@@ -27,10 +27,10 @@ namespace te
         UINT32 gpuParamsBindFlags = 0;
 
         // First of all, we need to construct light buffer, using all visible lights
-        Vector3I lightCounts;
+        /*Vector3I lightCounts;
         const LightData* lights[STANDARD_FORWARD_MAX_NUM_LIGHTS];
         viewGroup.GetVisibleLightData().GatherLights(lights, lightCounts);
-        PerLightsBuffer::UpdatePerLights(lights, lightCounts.x + lightCounts.y + lightCounts.z);
+        PerLightsBuffer::UpdatePerLights(lights, lightCounts.x + lightCounts.y + lightCounts.z);*/
 
         for(auto& entry : elements)
         {
@@ -319,11 +319,13 @@ namespace te
             RenderTargetTex = RenderTexture::Create(gbufferDesc);
         }
 
+        Vector3I lightCounts;
+        const LightData* lights[STANDARD_FORWARD_MAX_NUM_LIGHTS];
         const VisibilityInfo& visibility = inputs.View.GetVisibilityInfo();
         const auto numRenderables = (UINT32)inputs.Scene.Renderables.size();
         for (UINT32 i = 0; i < numRenderables; i++)
         {
-            if (!visibility.Renderables[i].Visible &&
+            /*if (!visibility.Renderables[i].Visible &&
                 (inputs.Options.CullingFlags & (UINT32)RenderManCulling::Frustum ||
                     inputs.Options.CullingFlags & (UINT32)RenderManCulling::Occlusion))
             {
@@ -337,23 +339,32 @@ namespace te
                 continue;
             }
 
-            RendererRenderable* rendererRenderable = inputs.Scene.Renderables[i];
-            rendererRenderable->UpdatePerCallBuffer(viewProps.ViewProjTransform);
+            RendererRenderable* rendererRenderable = inputs.Scene.Renderables[i]; Does not work
+            rendererRenderable->UpdatePerCallBuffer(viewProps.ViewProjTransform);*/
+
+            // Compute list of lights that influence renderables
+            for (auto& element : inputs.Scene.Renderables[i]->Elements)
+            {
+                const Bounds& bounds = inputs.Scene.RenderableCullInfos[i].Boundaries;
+                inputs.ViewGroup.GetVisibleLightData().GatherInfluencingLights(bounds, lights, lightCounts);
+            }
         }
 
+        PerLightsBuffer::UpdatePerLights(lights, lightCounts.x + lightCounts.y + lightCounts.z);
+
         RenderAPI& rapi = RenderAPI::Instance();
+        UINT32 clearBuffers = FBT_COLOR | FBT_DEPTH | FBT_STENCIL;
+        UINT32 readOnlyDepth = FBT_DEPTH;
 
         rapi.SetRenderTarget(RenderTargetTex);
-        //rapi.SetRenderTarget(inputs.View.GetProperties().Target.Target);
-
-        UINT32 clearBuffers = FBT_COLOR | FBT_DEPTH | FBT_STENCIL;
         rapi.ClearViewport(clearBuffers, Color::Black);
-        //rapi.ClearViewport(clearBuffers, inputs.View.GetPropertie s().Target.ClearColor);
 
         // Render all visible opaque elements
         RenderQueue* opaqueElements = inputs.View.GetOpaqueQueue().get();
         RenderQueue* transparentElements = inputs.View.GetTransparentQueue().get();
+
         RenderQueueElements(opaqueElements->GetSortedElements(), inputs.View, inputs.Scene, inputs.ViewGroup);
+        rapi.SetRenderTarget(RenderTargetTex, readOnlyDepth);
         RenderQueueElements(transparentElements->GetSortedElements(), inputs.View, inputs.Scene, inputs.ViewGroup);
 
         // Make sure that any compute shaders are able to read g-buffer by unbinding it
@@ -362,13 +373,13 @@ namespace te
 
     void RCNodeForwardPass::Clear()
     { 
-        SceneTex = nullptr;
+        SceneTex    = nullptr;
         SpecularTex = nullptr;
-        AlbedoTex = nullptr;
-        NormalTex = nullptr;
+        AlbedoTex   = nullptr;
+        NormalTex   = nullptr;
         EmissiveTex = nullptr;
         VelocityTex = nullptr;
-        DepthTex = nullptr;
+        DepthTex    = nullptr;
     }
 
     Vector<String> RCNodeForwardPass::GetDependencies(const RendererView& view)

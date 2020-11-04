@@ -227,7 +227,7 @@ namespace te
                 HComponent component = _components.back();
                 component->_setIsDestroyed();
 
-                gSceneManager()._notifyComponentDestroyed(component);
+                gSceneManager()._notifyComponentDestroyed(component, immediate);
 
                 component->DestroyInternal(component, true);
                 _components.erase(_components.end() - 1);
@@ -482,7 +482,7 @@ namespace te
         {
             (*iter)->_setIsDestroyed();
 
-            gSceneManager()._notifyComponentDestroyed(*iter);
+            gSceneManager()._notifyComponentDestroyed(*iter, immediate);
 
             (*iter)->DestroyInternal(*iter, immediate);
             _components.erase(iter);
@@ -527,7 +527,7 @@ namespace te
             {
                 if (entry->SupportsNotify(flags))
                 {
-                    entry->OnTransformChanged(componentFlags);
+                    entry->OnTransformChanged(componentFlags); 
                 }
             }
         }
@@ -616,6 +616,49 @@ namespace te
 
         for (auto& child : _children)
             child->SetScene(scene);
+    }
+
+    void SceneObject::SetActive(bool active)
+    {
+        _activeSelf = active;
+        SetActiveHierarchy(active);
+    }
+
+    void SceneObject::SetActiveHierarchy(bool active, bool triggerEvents)
+    {
+        bool activeHierarchy = active && _activeSelf;
+
+        if (_activeHierarchy != activeHierarchy)
+        {
+            _activeHierarchy = activeHierarchy;
+
+            if (triggerEvents)
+            {
+                if (activeHierarchy)
+                {
+                    for (auto& component : _components)
+                        gSceneManager()._notifyComponentActivated(component, triggerEvents);
+                }
+                else
+                {
+                    for (auto& component : _components)
+                        gSceneManager()._notifyComponentDeactivated(component, triggerEvents);
+                }
+            }
+        }
+
+        for (auto child : _children)
+        {
+            child->SetActiveHierarchy(_activeHierarchy, triggerEvents);
+        }
+    }
+
+    bool SceneObject::GetActive(bool self) const
+    {
+        if (self)
+            return _activeSelf;
+        else
+            return _activeHierarchy;
     }
 
     void SceneObject::SetMobility(ObjectMobility mobility)

@@ -9,11 +9,13 @@ namespace te
 {
     typedef UINT32 ComponentFlags;
 
+    
+
     /**
      * Components represent primary logic elements in the scene. They are attached to scene objects.
      *
-     * You should implement some or all of update/fixedUpdate/onCreated/onInitialized/onEnabled/onDisabled/
-     * onTransformChanged/onDestroyed methods to implement the relevant component logic. Avoid putting logic in constructors
+     * You should implement some or all of Update/OnCreated/OnInitialized/OnEnabled/OnDisabled/
+     * OnTransformChanged/onDestroyed methods to implement the relevant component logic. Avoid putting logic in constructors
      * or destructors.
      **/
     class TE_CORE_EXPORT Component : public GameObject, public Serializable
@@ -167,10 +169,18 @@ namespace te
         }
 
         /**
+         * Called every time a component leaves the Stopped state. This includes component creation if requirements
+         * for leaving the Stopped state are met. When called during creation it is called after onInitialized.
+         */
+        virtual void OnEnabled() 
+        { }
+
+        /**
          * Called when the component's parent scene object has changed. Not called if the component is in Stopped state.
          * Also only called if necessary notify flags are set via _setNotifyFlags().
          */
-        virtual void OnTransformChanged(TransformChangedFlags flags) { }
+        virtual void OnTransformChanged(TransformChangedFlags flags) 
+        { }
 
         /** Checks whether the component wants to received the specified transform changed message. */
         bool SupportsNotify(TransformChangedFlags flags) const { return ( _notifyFlags & flags) != 0; }
@@ -205,10 +215,10 @@ namespace te
         ComponentFlags _flags;
         UINT32 _sceneManagerId = 0;
 
-    protected:
         HSceneObject _parent;
 
     public:
         static UINT32 ComponentType;
+        static const UINT32 AlwaysRun;
     };
 }

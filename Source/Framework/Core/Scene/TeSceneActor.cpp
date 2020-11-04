@@ -18,6 +18,12 @@ namespace te
         _markCoreDirty(ActorDirtyFlag::Mobility);
     }
 
+    void SceneActor::SetActive(bool active)
+    {
+        _active = active;
+        _markCoreDirty(ActorDirtyFlag::Active);
+    }
+
     void SceneActor::_updateState(const SceneObject& so, bool force)
     {
         UINT32 curHash = so.GetTransformHash();
@@ -26,6 +32,9 @@ namespace te
             SetTransform(so.GetTransform());
             _hash = curHash;
         }
+
+        if (so.GetActive() != _active || force)
+            SetActive(so.GetActive());
 
         if (so.GetMobility() != _mobility || force)
             SetMobility(so.GetMobility());

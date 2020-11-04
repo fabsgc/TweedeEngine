@@ -10,7 +10,8 @@ namespace te
     {
         Transform = 1 << 0,
         Mobility = 1 << 1,
-        Everything = 1 << 2,
+        Active = 1 << 2,
+        Everything = 1 << 3,
         GpuParams = 1 << 4
     };
 
@@ -33,6 +34,15 @@ namespace te
 
         /** @copydoc SetTransform */
         const Transform& GetTransform() const { return _transform; }
+
+        /**
+         * Determines if the actor is currently active. Deactivated actors act as if they have been destroyed, without
+         * actually being destroyed.
+         */
+        virtual void SetActive(bool active);
+
+        /** @copydoc setActive */
+        bool GetActive() const { return _active; }
 
         /**
          * Determines the mobility of the actor. This is used primarily as a performance hint to engine systems. Objects
@@ -66,6 +76,10 @@ namespace te
 
         Transform _transform;
         ObjectMobility _mobility = ObjectMobility::Movable;
+        bool _active = true;
         UINT32 _hash = 0;
+
+        // This attribute must be updated at the end FrameSync with _active value per each inherited class of SceneActor
+        bool _oldActive = true; 
     };
 }
