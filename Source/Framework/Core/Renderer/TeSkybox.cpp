@@ -15,8 +15,7 @@ namespace te
 
     Skybox::~Skybox()
     {
-        if (_active)
-            gRenderer()->NotifySkyboxRemoved(this);
+        gRenderer()->NotifySkyboxRemoved(this);
     }
 
     void Skybox::Initialize()
@@ -70,7 +69,7 @@ namespace te
             else
                 gRenderer()->NotifySkyboxRemoved(this);
         }
-        else if (dirtyFlag & (UINT32)SkyboxDirtyFlag::Texture != 0)
+        else if ((dirtyFlag & ((UINT32)SkyboxDirtyFlag::Texture)) != 0)
         {
             gRenderer()->NotifySkyboxRemoved(this);
             gRenderer()->NotifySkyboxAdded(this);

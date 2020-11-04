@@ -40,8 +40,7 @@ namespace te
 
     Light::~Light()
     {
-        if (_active)
-            gRenderer()->NotifyLightRemoved(this);
+        gRenderer()->NotifyLightRemoved(this);
     }
 
     void Light::Initialize()

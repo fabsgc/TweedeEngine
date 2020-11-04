@@ -34,9 +34,15 @@ namespace te
         }
 
         if (so.GetActive() != _active || force)
+        {
             SetActive(so.GetActive());
+            _markCoreDirty(ActorDirtyFlag::Active);
+        }
 
         if (so.GetMobility() != _mobility || force)
+        {
             SetMobility(so.GetMobility());
+            _markCoreDirty(ActorDirtyFlag::Mobility);
+        }
     }
 }

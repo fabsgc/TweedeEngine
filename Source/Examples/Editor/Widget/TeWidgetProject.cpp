@@ -375,6 +375,9 @@ namespace te
                     ImGui::EndMenu();
                 }
             }
+        
+            if (ImGui::MenuItem(ICON_FA_GLOBE_EUROPE " Add SceneObject"))
+                CreateSceneObject();
         }
 
         if ((_selections.ClickedSceneObject && _selections.ClickedSceneObject != gEditor().GetSceneRoot().GetInternalPtr())
