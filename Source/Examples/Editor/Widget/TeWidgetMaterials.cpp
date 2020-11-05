@@ -15,6 +15,7 @@
 #include "Importer/TeTextureImportOptions.h"
 #include "Scene/TeSceneManager.h"
 #include "Renderer/TeRenderable.h"
+#include "String/TeUnicode.h"
 
 namespace te
 {
@@ -381,7 +382,7 @@ namespace te
             if (texture.GetHandleData())
             {
                 // Load texture from file
-                texture->SetName(_fileBrowser.Data.SelectedFileName);
+                texture->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
 
                 // Set texture and reset _loadTextureName and _loadTextureUsed
                 _currentMaterial->SetTexture(_loadTextureName, texture);

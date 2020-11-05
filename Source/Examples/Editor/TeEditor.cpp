@@ -475,26 +475,26 @@ namespace te
         // ######################################################
 
         // ######################################################
-        //_loadedMeshMonkey = EditorResManager::Instance().Load<Mesh>("Data/Meshes/Monkey/monkey-hd.dae", meshImportOptions);
-        _loadedMeshPlane = EditorResManager::Instance().Load<Mesh>("Data/Meshes/Plane/plane.dae", meshImportOptions);
+        //_loadedMeshMonkey = EditorResManager::Instance().Load<Mesh>("Data/Meshes/Monkey/monkey-hd.obj", meshImportOptions);
+        //_loadedMeshPlane = EditorResManager::Instance().Load<Mesh>("Data/Meshes/Plane/plane.obj", meshImportOptions);
         //_loadedTextureMonkey = EditorResManager::Instance().Load<Texture>("Data/Textures/Monkey/diffuse.png", textureImportOptions);
 #if TE_DEBUG_MODE == 0
-        _loadedPlaneTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Sponza/Floor/floor_COLOR.jpeg", textureImportOptions);
+        //_loadedPlaneTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Sponza/Floor/floor_COLOR.jpeg", textureImportOptions);
 #else
-        _loadedPlaneTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Sponza/Floor/floor_COLOR_s.jpeg", textureImportOptions);
+        //_loadedPlaneTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Sponza/Floor/floor_COLOR_s.jpeg", textureImportOptions);
 #endif
         _loadedCubemapTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/sky_medium.jpeg", textureCubeMapImportOptions);
         // ###################################################### 
 
         // ###################################################### 
         //_loadedMeshMonkey->SetName("Monkey Mesh");
-        _loadedMeshPlane->SetName("Plane Mesh");
+        //_loadedMeshPlane->SetName("Plane Mesh");
         //_loadedTextureMonkey->SetName("Monkey Diffuse");
         _loadedCubemapTexture->SetName("Skybox Diffuse");
         // ###################################################### 
 
         // ######################################################
-        HShader _shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque);
+        /*HShader _shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque);
 
         MaterialProperties properties;
         properties.UseDiffuseMap = true;
@@ -505,12 +505,12 @@ namespace te
         properties.Refraction = 0.1f;
         properties.IndexOfRefraction = 1.5f;
 
-        /*_monkeyMaterial = Material::Create(_shader);
+        _monkeyMaterial = Material::Create(_shader);
         _monkeyMaterial->SetName("Monkey Material");
         _monkeyMaterial->SetTexture("DiffuseMap", _loadedTextureMonkey);
         _monkeyMaterial->SetTexture("EnvironmentMap", _loadedCubemapTexture);
         _monkeyMaterial->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
-        _monkeyMaterial->SetProperties(properties);*/
+        _monkeyMaterial->SetProperties(properties);
 
         properties.Reflection = 0.1f;
         properties.Refraction = 0.1f;
@@ -520,7 +520,7 @@ namespace te
         _planeMaterial->SetTexture("DiffuseMap", _loadedPlaneTexture);
         _planeMaterial->SetTexture("EnvironmentMap", _loadedCubemapTexture);
         _planeMaterial->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
-        _planeMaterial->SetProperties(properties);
+        _planeMaterial->SetProperties(properties);*/
         // ######################################################
 
         // ######################################################
@@ -542,7 +542,7 @@ namespace te
         _renderableMonkey->SetMesh(_loadedMeshMonkey);
         _renderableMonkey->SetMaterial(_monkeyMaterial);
         _renderableMonkey->SetName("Monkey Renderable");
-        _renderableMonkey->Initialize();*/
+        _renderableMonkey->Initialize();
 
         _sceneRenderablePlaneSO = SceneObject::Create("Plane");
         _sceneRenderablePlaneSO->SetParent(_sceneSO);
@@ -551,11 +551,11 @@ namespace te
         _renderablePlane->SetMaterial(_planeMaterial);
         _renderablePlane->SetName("Plane Renderable");
         _renderablePlane->Initialize();
-        _sceneRenderablePlaneSO->Move(Vector3(0.0, 0.1f, 0.0f));
+        _sceneRenderablePlaneSO->Move(Vector3(0.0, 0.1f, 0.0f));*/
         // ######################################################
 
         //EditorResManager::Instance().Add<Material>(_monkeyMaterial);
-        EditorResManager::Instance().Add<Material>(_planeMaterial);
+        //EditorResManager::Instance().Add<Material>(_planeMaterial);
         EditorResManager::Instance().Add<Shader>(gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque));
         EditorResManager::Instance().Add<Shader>(gBuiltinResources().GetBuiltinShader(BuiltinShader::Transparent));
 #endif

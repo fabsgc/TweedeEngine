@@ -15,7 +15,8 @@ namespace te
 
     Skybox::~Skybox()
     {
-        gRenderer()->NotifySkyboxRemoved(this);
+        if(_active)
+            gRenderer()->NotifySkyboxRemoved(this);
     }
 
     void Skybox::Initialize()

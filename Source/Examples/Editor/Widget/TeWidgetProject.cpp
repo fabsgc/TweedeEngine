@@ -181,6 +181,9 @@ namespace te
 
             String componentIcon = GetComponentIcon(component);
 
+            if (_selections.ClickedComponent == component.GetInternalPtr())
+                componentIcon += String("  ") + ICON_FA_CARET_RIGHT;
+
             if (ImGui::TreeNodeEx(reinterpret_cast<void*>(static_cast<intptr_t>(componentId)), componentFlags, componentIcon.c_str()))
             {
                 // Manually detect some useful states
@@ -375,9 +378,6 @@ namespace te
                     ImGui::EndMenu();
                 }
             }
-        
-            if (ImGui::MenuItem(ICON_FA_GLOBE_EUROPE " Add SceneObject"))
-                CreateSceneObject();
         }
 
         if ((_selections.ClickedSceneObject && _selections.ClickedSceneObject != gEditor().GetSceneRoot().GetInternalPtr())

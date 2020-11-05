@@ -741,7 +741,7 @@ namespace te
             // We will separate renderables based on <Material*> and <Renderable*>
             for (auto& renderable : sceneInfo.RenderablesInstanced)
             {
-                if (!_visibility.Renderables[renderable->RenderablePtr->GetRendererId()].Visible &&
+                if (!_visibility.Renderables[renderable->RenderablePtr->GetRendererId() - 1].Visible &&
                     (_options->CullingFlags & (UINT32)RenderManCulling::Frustum ||
                         _options->CullingFlags & (UINT32)RenderManCulling::Occlusion))
                 {

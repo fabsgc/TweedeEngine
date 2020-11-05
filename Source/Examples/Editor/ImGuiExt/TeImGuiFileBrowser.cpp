@@ -7,6 +7,7 @@
 #include "../ImGuiExt/TeIconsFontAwesome5.h"
 #include "../ImGuiExt/TeImGuiExt.h"
 #include "Image/TeTexture.h"
+#include "String/TeUnicode.h"
 
 #include <iostream>
 #include <functional>
@@ -368,8 +369,9 @@ namespace te
         {
             if(!filtered_dirs[i]->is_hidden || show_hidden)
             {
-                String label = filtered_dirs[i]->name;
-                if(label.size() > 2 || (label != ".." && label != "."))
+                String label = UTF8::FromANSI(filtered_dirs[i]->name);
+
+                if (label.size() > 2 || (label != ".." && label != "."))
                     label = ICON_FA_FOLDER + String(" ") + label;
 
                 items++;
@@ -399,7 +401,7 @@ namespace te
         {
             if(!filtered_files[i]->is_hidden || show_hidden)
             {
-                String label = ICON_FA_FILE + String(" ") + filtered_files[i]->name;
+                String label = ICON_FA_FILE + String(" ") + UTF8::FromANSI(filtered_files[i]->name);
 
                 items++;
                 if(ImGui::Selectable(label.c_str(), selected_idx == i && !is_dir, ImGuiSelectableFlags_AllowDoubleClick))

@@ -1,11 +1,12 @@
 #include "TeWidgetMenuBar.h"
 
+#include "../TeEditorResManager.h"
 #include "../TeEditor.h"
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
 #include "Importer/TeMeshImportOptions.h"
 #include "Importer/TeTextureImportOptions.h"
-#include "../TeEditorResManager.h"
+#include "String/TeUnicode.h"
 #include "Image/TeTexture.h"
 #include "Mesh/TeMesh.h"
 
@@ -271,7 +272,7 @@ namespace te
                 HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.Data.SelectedPath, textureImportOptions);
                 if (texture.GetHandleData())
                 {
-                    texture->SetName(_fileBrowser.Data.SelectedFileName);
+                    texture->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
                     EditorResManager::Instance().Add<Texture>(texture);
                 }
             }
@@ -288,7 +289,7 @@ namespace te
                 HMesh mesh = EditorResManager::Instance().Load<Mesh>(_fileBrowser.Data.SelectedPath, meshImportOptions);
                 if (mesh.GetHandleData())
                 {
-                    mesh->SetName(_fileBrowser.Data.SelectedFileName);
+                    mesh->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
                     EditorResManager::Instance().Add<Mesh>(mesh);
                 }
             }

@@ -151,13 +151,9 @@ namespace te
                     faceData[0]->GetDepth(), faceData[0]->GetFormat());
 
                 if (textureImportOptions->MaxMip == 0)
-                {
                     numMips = maxPossibleMip;
-                }
                 else
-                {
                     numMips = std::min(maxPossibleMip, textureImportOptions->MaxMip);
-                }
             }
             else
             {
@@ -219,7 +215,7 @@ namespace te
 
         if (file.Fail())
         {
-            TE_ASSERT_ERROR(false, "Cannot open file: " + filePath);
+            TE_DEBUG("Cannot open file: " + filePath);
             return nullptr;
         }
 
@@ -227,7 +223,8 @@ namespace te
 
         if (size > std::numeric_limits<UINT32>::max())
         {
-            TE_ASSERT_ERROR(false, "File size larger than supported!");
+            TE_DEBUG("File size larger than supported!");
+            return nullptr;
         }
 
         UINT32 magicLen = std::min((UINT32)size, 32u);
@@ -239,7 +236,8 @@ namespace te
         auto findFormat = _extensionToFID.find(fileExtension);
         if (findFormat == _extensionToFID.end())
         {
-            TE_ASSERT_ERROR(false, "Type of the file provided is not supported by this importer. File type: " + fileExtension);
+            TE_DEBUG("Type of the file provided is not supported by this importer. File type: " + fileExtension);
+            return nullptr;
         }
 
         imageFormat = (FREE_IMAGE_FORMAT)findFormat->second;
@@ -255,7 +253,7 @@ namespace te
         FIBITMAP* fiBitmap = FreeImage_LoadFromMemory((FREE_IMAGE_FORMAT)imageFormat, fiMem);
         if (!fiBitmap)
         {
-            TE_ASSERT_ERROR(false, "Error decoding image");
+            TE_DEBUG("Error decoding image");
         }
 
         UINT32 width = FreeImage_GetWidth(fiBitmap);
@@ -277,8 +275,7 @@ namespace te
         case FIT_INT32:
         case FIT_DOUBLE:
         default:
-            TE_ASSERT_ERROR(false, "Unknown or unsupported image format");
-
+            TE_DEBUG("Unknown or unsupported image format");
             break;
         case FIT_BITMAP:
             // Standard image type
@@ -317,12 +314,12 @@ namespace te
                 // cannot be 16-bit greyscale since that's FIT_UINT16
                 if (FreeImage_GetGreenMask(fiBitmap) == FI16_565_GREEN_MASK)
                 {
-                    assert(false && "Format not supported by the engine.");
+                    TE_DEBUG("Format not supported by the engine.");
                     return nullptr;
                 }
                 else
                 {
-                    assert(false && "Format not supported by the engine.");
+                    TE_DEBUG("Format not supported by the engine.");
                     return nullptr;
                     // FreeImage doesn't support 4444 format so must be 1555
                 }
@@ -352,7 +349,7 @@ namespace te
         case FIT_UINT16:
         case FIT_INT16:
             // 16-bit greyscale
-            assert(false && "No INT pixel formats supported currently.");
+            TE_DEBUG("No INT pixel formats supported currently.");
             return nullptr;
             break;
         case FIT_FLOAT:

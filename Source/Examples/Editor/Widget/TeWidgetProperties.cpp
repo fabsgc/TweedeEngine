@@ -18,6 +18,7 @@
 #include "Importer/TeMeshImportOptions.h"
 #include "Importer/TeTextureImportOptions.h"
 #include "Resources/TeBuiltinResources.h"
+#include "String/TeUnicode.h"
 
 namespace te
 {
@@ -751,7 +752,7 @@ namespace te
             HMesh mesh = EditorResManager::Instance().Load<Mesh>(_fileBrowser.Data.SelectedPath, meshImportOptions);
             if (mesh.GetHandleData())
             {
-                mesh->SetName(_fileBrowser.Data.SelectedFileName);
+                mesh->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
                 EditorResManager::Instance().Add<Mesh>(mesh);
                 SPtr<CRenderable> renderable = std::static_pointer_cast<CRenderable>(_selections.ClickedComponent);
 
@@ -841,7 +842,7 @@ namespace te
             HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.Data.SelectedPath, textureSkyboxImportOptions);
             if (texture.GetHandleData())
             {
-                texture->SetName(_fileBrowser.Data.SelectedFileName);
+                texture->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
                 EditorResManager::Instance().Add<Texture>(texture);
                 SPtr<CSkybox> skybox = std::static_pointer_cast<CSkybox>(_selections.ClickedComponent);
                 skybox->SetTexture(texture.GetInternalPtr());

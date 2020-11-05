@@ -70,8 +70,8 @@ namespace te
         textureCubeMapImportOptions->Format = PF_RGBA8;
         textureCubeMapImportOptions->IsCubemap = true;
 
-        _loadedMeshCube = gResourceManager().Load<Mesh>("Data/Meshes/Cube/cube.dae", meshImportOptions);
-        _loadedMeshMill = gResourceManager().Load<Mesh>("Data/Meshes/Mill/mill.dae", meshImportOptions);
+        _loadedMeshCube = gResourceManager().Load<Mesh>("Data/Meshes/Cube/cube.obj", meshImportOptions);
+        _loadedMeshMill = gResourceManager().Load<Mesh>("Data/Meshes/Mill/mill.obj", meshImportOptions);
         _loadedTextureCube = gResourceManager().Load<Texture>("Data/Textures/Cube/diffuse.png", textureImportOptions);
 
         TE_PRINT((_loadedMeshCube.GetHandleData())->data);
