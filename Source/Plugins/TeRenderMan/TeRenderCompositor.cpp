@@ -220,7 +220,9 @@ namespace te
         _isValid = false;
     }
 
-    void RCNodeForwardPass::Render(const RenderCompositorNodeInputs& inputs)
+    // ############# GPU INITIALIZATION
+
+    void RCNodeGpuInitializationPass::Render(const RenderCompositorNodeInputs& inputs)
     { 
         // Allocate necessary textures & targets
         GpuResourcePool& resPool = gGpuResourcePool();
@@ -243,7 +245,7 @@ namespace te
             numSamples, true));
         EmissiveTex = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA8, width, height, TU_RENDERTARGET,
             numSamples, true));
-        if(needsVelocity)
+        if (needsVelocity)
         {
             VelocityTex = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA8, width, height, TU_RENDERTARGET,
                 numSamples, false));
@@ -261,7 +263,7 @@ namespace te
             //rebuildRT |= RenderTargetTex->GetColorTexture(targetIdx++) != AlbedoTex->Tex;
             rebuildRT |= RenderTargetTex->GetColorTexture(targetIdx++) != NormalTex->Tex;
             rebuildRT |= RenderTargetTex->GetColorTexture(targetIdx++) != EmissiveTex->Tex;
-            if(needsVelocity)
+            if (needsVelocity)
                 rebuildRT |= RenderTargetTex->GetColorTexture(targetIdx++) != VelocityTex->Tex;
             rebuildRT |= RenderTargetTex->GetDepthStencilTexture() != DepthTex->Tex;
         }
@@ -302,7 +304,7 @@ namespace te
             gbufferDesc.ColorSurfaces[targetIdx].NumFaces = 1;
             gbufferDesc.ColorSurfaces[targetIdx].MipLevel = 0;
             targetIdx++;
-            
+
             if (needsVelocity)
             {
                 gbufferDesc.ColorSurfaces[targetIdx].Tex = VelocityTex->Tex;
@@ -351,40 +353,50 @@ namespace te
         }
 
         PerLightsBuffer::UpdatePerLights(lights, lightCounts.x + lightCounts.y + lightCounts.z);
+    }
+
+    void RCNodeGpuInitializationPass::Clear()
+    {
+        SceneTex = nullptr;
+        SpecularTex = nullptr;
+        AlbedoTex = nullptr;
+        NormalTex = nullptr;
+        EmissiveTex = nullptr;
+        VelocityTex = nullptr;
+        DepthTex = nullptr;
+    }
+
+    Vector<String> RCNodeGpuInitializationPass::GetDependencies(const RendererView& view)
+    {
+        return { };
+    }
+
+    // ############# FORWARD PASS
+
+    void RCNodeForwardPass::Render(const RenderCompositorNodeInputs& inputs)
+    { 
+        RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
 
         RenderAPI& rapi = RenderAPI::Instance();
         UINT32 clearBuffers = FBT_COLOR | FBT_DEPTH | FBT_STENCIL;
-        UINT32 readOnlyDepth = FBT_DEPTH;
 
-        rapi.SetRenderTarget(RenderTargetTex);
+        rapi.SetRenderTarget(gpuInitializationPassNode->RenderTargetTex);
         rapi.ClearViewport(clearBuffers, Color::Black);
 
         // Render all visible opaque elements
-        RenderQueue* opaqueElements = inputs.View.GetOpaqueQueue().get();
-        RenderQueue* transparentElements = inputs.View.GetTransparentQueue().get();
-
+        RenderQueue* opaqueElements = inputs.View.GetOpaqueQueue().get();       
         RenderQueueElements(opaqueElements->GetSortedElements(), inputs.View, inputs.Scene, inputs.ViewGroup);
-        rapi.SetRenderTarget(RenderTargetTex, readOnlyDepth);
-        RenderQueueElements(transparentElements->GetSortedElements(), inputs.View, inputs.Scene, inputs.ViewGroup);
 
         // Make sure that any compute shaders are able to read g-buffer by unbinding it
         rapi.SetRenderTarget(nullptr);
     }
 
     void RCNodeForwardPass::Clear()
-    { 
-        SceneTex    = nullptr;
-        SpecularTex = nullptr;
-        AlbedoTex   = nullptr;
-        NormalTex   = nullptr;
-        EmissiveTex = nullptr;
-        VelocityTex = nullptr;
-        DepthTex    = nullptr;
-    }
+    { }
 
     Vector<String> RCNodeForwardPass::GetDependencies(const RendererView& view)
     {
-        return { };
+        return { RCNodeGpuInitializationPass::GetNodeId() };
     }
 
     // ############# SKYBOX
@@ -412,17 +424,20 @@ namespace te
             material->Bind(inputs.View.GetPerViewBuffer(), nullptr, clearColor, brightness);
         }
 
-        RCNodeForwardPass* forwardPassNode = static_cast<RCNodeForwardPass*>(inputs.InputNodes[0]);
+        RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
         int readOnlyFlags = FBT_DEPTH | FBT_STENCIL;
 
         RenderAPI& rapi = RenderAPI::Instance();
-        rapi.SetRenderTarget(forwardPassNode->RenderTargetTex, readOnlyFlags);
+        rapi.SetRenderTarget(gpuInitializationPassNode->RenderTargetTex, readOnlyFlags);
 
         Rect2 area(0.0f, 0.0f, 1.0f, 1.0f);
         rapi.SetViewport(area);
 
         SPtr<Mesh> mesh = gRendererUtility().GetSkyBoxMesh();
         gRendererUtility().Draw(mesh, mesh->GetProperties().GetSubMesh(0));
+
+        // Make sure that any compute shaders are able to read g-buffer by unbinding it
+        rapi.SetRenderTarget(nullptr);
     }
 
     void RCNodeSkybox::Clear()
@@ -430,7 +445,43 @@ namespace te
 
     Vector<String> RCNodeSkybox::GetDependencies(const RendererView& view)
     {
-        return { RCNodeForwardPass::GetNodeId() };
+        return {
+            RCNodeGpuInitializationPass::GetNodeId(),
+            RCNodeForwardPass::GetNodeId() 
+        };
+    }
+
+    // ############# FORWARD TRANSPARENT PASS
+
+    void RCNodeForwardTransparentPass::Render(const RenderCompositorNodeInputs& inputs)
+    {
+        RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
+        int readOnlyFlags = FBT_DEPTH;
+
+        RenderAPI& rapi = RenderAPI::Instance();
+        rapi.SetRenderTarget(gpuInitializationPassNode->RenderTargetTex, readOnlyFlags);
+
+        Rect2 area(0.0f, 0.0f, 1.0f, 1.0f);
+        rapi.SetViewport(area);
+
+        RenderQueue* transparentElements = inputs.View.GetTransparentQueue().get();
+        rapi.SetRenderTarget(gpuInitializationPassNode->RenderTargetTex, readOnlyFlags);
+        RenderQueueElements(transparentElements->GetSortedElements(), inputs.View, inputs.Scene, inputs.ViewGroup);
+
+        // Make sure that any compute shaders are able to read g-buffer by unbinding it
+        rapi.SetRenderTarget(nullptr);
+    }
+
+    void RCNodeForwardTransparentPass::Clear()
+    { }
+
+    Vector<String> RCNodeForwardTransparentPass::GetDependencies(const RendererView& view)
+    {
+        return {
+            RCNodeGpuInitializationPass::GetNodeId(),
+            RCNodeForwardPass::GetNodeId(),
+            RCNodeSkybox::GetNodeId() 
+        };
     }
 
     // ############# POST PROCESS
@@ -480,7 +531,8 @@ namespace te
     {
         return {
             RCNodeForwardPass::GetNodeId(),
-            RCNodeSkybox::GetNodeId()
+            RCNodeSkybox::GetNodeId(),
+            RCNodeForwardTransparentPass::GetNodeId()
         };
     }
 
@@ -492,7 +544,7 @@ namespace te
         if (!settings.Tonemapping.Enabled || !settings.EnableHDR)
             return;
 
-        RCNodeForwardPass* forwardPassNode = static_cast<RCNodeForwardPass*>(inputs.InputNodes[0]);
+        RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
         RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[1]);
 
         SPtr<RenderTexture> ppOutput;
@@ -509,8 +561,8 @@ namespace te
         }
         else
         {
-            auto& texProps = forwardPassNode->SceneTex->Tex->GetProperties();
-            toneMapping->Execute(forwardPassNode->SceneTex->Tex, ppOutput, texProps.GetNumSamples(), 
+            auto& texProps = gpuInitializationPassNode->SceneTex->Tex->GetProperties();
+            toneMapping->Execute(gpuInitializationPassNode->SceneTex->Tex, ppOutput, texProps.GetNumSamples(),
                 settings.Gamma, settings.ExposureScale, settings.Contrast, settings.Brightness);
         }
     }
@@ -521,7 +573,7 @@ namespace te
     Vector<String> RCNodeTonemapping::GetDependencies(const RendererView& view)
     {
         Vector<String> deps = {
-            RCNodeForwardPass::GetNodeId(),
+            RCNodeGpuInitializationPass::GetNodeId(),
             RCNodePostProcess::GetNodeId(),
             RCNodeMotionBlur::GetNodeId()
         };
@@ -540,13 +592,13 @@ namespace te
         if (!settings.Enabled)
             return;
 
-        RCNodeForwardPass* forwardPassNode = static_cast<RCNodeForwardPass*>(inputs.InputNodes[0]);
+        RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
         RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[1]);
 
         SPtr<RenderTexture> ppOutput;
         SPtr<Texture> ppLastFrame;
-        SPtr<Texture> depth = forwardPassNode->DepthTex->Tex;
-        SPtr<Texture> velocity = forwardPassNode->VelocityTex->Tex;
+        SPtr<Texture> depth = gpuInitializationPassNode->DepthTex->Tex;
+        SPtr<Texture> velocity = gpuInitializationPassNode->VelocityTex->Tex;
         postProcessNode->GetAndSwitch(inputs.View, ppOutput, ppLastFrame);
 
         MotionBlurMat* motionBlur = MotionBlurMat::Get();
@@ -559,8 +611,8 @@ namespace te
         }
         else
         {
-            auto& texProps = forwardPassNode->SceneTex->Tex->GetProperties();
-            motionBlur->Execute(forwardPassNode->SceneTex->Tex, ppOutput, depth, velocity, inputs.View.GetPerViewBuffer(),
+            auto& texProps = gpuInitializationPassNode->SceneTex->Tex->GetProperties();
+            motionBlur->Execute(gpuInitializationPassNode->SceneTex->Tex, ppOutput, depth, velocity, inputs.View.GetPerViewBuffer(),
                 settings, texProps.GetNumSamples());
         }
     }
@@ -571,7 +623,7 @@ namespace te
     Vector<String> RCNodeMotionBlur::GetDependencies(const RendererView& view)
     {
         return { 
-            RCNodeForwardPass::GetNodeId(),
+            RCNodeGpuInitializationPass::GetNodeId(),
             RCNodePostProcess::GetNodeId()
         };
     }
@@ -588,9 +640,10 @@ namespace te
     {
         return
         {
-            RCNodeTonemapping::GetNodeId(),
-            RCNodeForwardPass::GetNodeId(),
-            RCNodePostProcess::GetNodeId()
+            RCNodeGpuInitializationPass::GetNodeId(),
+            RCNodePostProcess::GetNodeId(),
+            RCNodeTonemapping::GetNodeId()
+            
         };
     }
 
@@ -602,8 +655,8 @@ namespace te
         if (settings.AntialiasingAglorithm != AntiAliasingAlgorithm::FXAA)
             return;
 
-        RCNodeForwardPass* forwardPassNode = static_cast<RCNodeForwardPass*>(inputs.InputNodes[2]);
-        RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[3]);
+        RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
+        RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[1]);
 
         SPtr<RenderTexture> ppOutput;
         SPtr<Texture> ppLastFrame;
@@ -614,7 +667,7 @@ namespace te
         if(ppLastFrame)
             fxaa->Execute(ppLastFrame, ppOutput);
         else
-            fxaa->Execute(forwardPassNode->SceneTex->Tex, ppOutput);
+            fxaa->Execute(gpuInitializationPassNode->SceneTex->Tex, ppOutput);
     }
 
     void RCNodeFXAA::Clear()
@@ -624,10 +677,10 @@ namespace te
     {
         return
         {
-            RCNodeBloom::GetNodeId(),
+            RCNodeGpuInitializationPass::GetNodeId(),
+            RCNodePostProcess::GetNodeId(),
             RCNodeGaussianDOF::GetNodeId(),
-            RCNodeForwardPass::GetNodeId(),
-            RCNodePostProcess::GetNodeId()
+            RCNodeBloom::GetNodeId()
         };
     }
 
@@ -675,6 +728,7 @@ namespace te
     {
         return
         {
+            RCNodeGpuInitializationPass::GetNodeId(),
             RCNodePostProcess::GetNodeId()
         };
     }
@@ -688,13 +742,13 @@ namespace te
         if (!settings.Bloom.Enabled)
             return;
 
-        RCNodeForwardPass* forwardPassNode = static_cast<RCNodeForwardPass*>(inputs.InputNodes[0]);
+        RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
         RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[1]);
 
         // ### First, we get emissive texture from forward pass, use it as input for our GaussianBlur material
         // ### and create a new tex representing the blured result
         GaussianBlurMat* gaussianBlur = GaussianBlurMat::Get();
-        SPtr<PooledRenderTexture> emissiveTex = forwardPassNode->EmissiveTex;
+        SPtr<PooledRenderTexture> emissiveTex = gpuInitializationPassNode->EmissiveTex;
 
         const TextureProperties& inputProps = emissiveTex->Tex->GetProperties();
         SPtr<PooledRenderTexture> blurOutput = gGpuResourcePool().Get(
@@ -724,8 +778,8 @@ namespace te
         }
         else
         {
-            auto& texProps = forwardPassNode->SceneTex->Tex->GetProperties();
-            bloom->Execute(forwardPassNode->SceneTex->Tex, ppOutput, blurOutput->Tex,
+            auto& texProps = gpuInitializationPassNode->SceneTex->Tex->GetProperties();
+            bloom->Execute(gpuInitializationPassNode->SceneTex->Tex, ppOutput, blurOutput->Tex,
                 settings.Bloom.Intensity, texProps.GetNumSamples());
         }
     }
@@ -739,7 +793,7 @@ namespace te
     {
         return
         {
-            RCNodeForwardPass::GetNodeId(),
+            RCNodeGpuInitializationPass::GetNodeId(),
             RCNodePostProcess::GetNodeId()
         };
     }
@@ -750,8 +804,8 @@ namespace te
     {
         const RendererViewProperties& viewProps = inputs.View.GetProperties();
 
-        RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[1]);
-        RCNodeForwardPass* forwardPassNode = static_cast<RCNodeForwardPass*>(inputs.InputNodes[0]);
+        RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[4]);
+        RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
 
         SPtr<Texture> input;
         if (viewProps.RunPostProcessing && viewProps.Target.NumSamples == 1)
@@ -762,22 +816,22 @@ namespace te
                 input = postProcessNode->GetLastOutput();
                 break;
             case RenderOutputType::Color:
-                input = forwardPassNode->SceneTex->Tex;
+                input = gpuInitializationPassNode->SceneTex->Tex;
                 break;
             case RenderOutputType::Normal:
-                input = forwardPassNode->NormalTex->Tex;
+                input = gpuInitializationPassNode->NormalTex->Tex;
                 break;
             case RenderOutputType::Depth:
-                input = forwardPassNode->DepthTex->Tex;
+                input = gpuInitializationPassNode->DepthTex->Tex;
                 break;
             case RenderOutputType::Velocity:
                 if(inputs.View.RequiresVelocityWrites())
-                    input = forwardPassNode->VelocityTex->Tex;
+                    input = gpuInitializationPassNode->VelocityTex->Tex;
                 else
-                    input = forwardPassNode->SceneTex->Tex;
+                    input = gpuInitializationPassNode->SceneTex->Tex;
                 break;
             case RenderOutputType::Emissive:
-                input = forwardPassNode->EmissiveTex->Tex;
+                input = gpuInitializationPassNode->EmissiveTex->Tex;
                 break;
             default:
                 input = postProcessNode->GetLastOutput();
@@ -786,7 +840,7 @@ namespace te
         }
         else
         {
-            input = forwardPassNode->SceneTex->Tex;
+            input = gpuInitializationPassNode->SceneTex->Tex;
         }
 
         SPtr<RenderTarget> target = viewProps.Target.Target;
@@ -797,7 +851,7 @@ namespace te
 
         // If no post process is active, the only available texture is orwardPassNode->SceneTex->Tex;
         if(!input)
-            input = forwardPassNode->SceneTex->Tex;
+            input = gpuInitializationPassNode->SceneTex->Tex;
 
         gRendererUtility().Blit(input, Rect2I::EMPTY, viewProps.FlipView, false);
 
@@ -817,15 +871,21 @@ namespace te
         Vector<String> deps;
         if (viewProps.RunPostProcessing && viewProps.Target.NumSamples == 1)
         {
+            deps.push_back(RCNodeGpuInitializationPass::GetNodeId());
             deps.push_back(RCNodeForwardPass::GetNodeId());
+            deps.push_back(RCNodeSkybox::GetNodeId());
+            deps.push_back(RCNodeForwardTransparentPass::GetNodeId());
             deps.push_back(RCNodePostProcess::GetNodeId());
             deps.push_back(RCNodeFXAA::GetNodeId());
             deps.push_back(RCNodeTemporalAA::GetNodeId());
         }
         else
         {
+            deps.push_back(RCNodeGpuInitializationPass::GetNodeId());
             deps.push_back(RCNodeForwardPass::GetNodeId());
             deps.push_back(RCNodeSkybox::GetNodeId());
+            deps.push_back(RCNodeForwardTransparentPass::GetNodeId());
+            deps.push_back(RCNodePostProcess::GetNodeId());
         }
 
         return deps;

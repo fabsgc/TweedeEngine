@@ -98,17 +98,22 @@ namespace te
 
             if (ImGui::BeginCombo(text, options[*value].Label.c_str()))
             {
+                UINT32 line = 0;
                 for (const auto& option : options.Options)
                 {
+                    ImGui::PushID(line);
                     const bool isSelected = (*value == option.Key);
                     if (ImGui::Selectable(option.Label.c_str(), isSelected))
                     {
                         *value = option.Key;
                         hasChanged = true;
                     }
+                    ImGui::PopID();
 
                     if (isSelected)
                         ImGui::SetItemDefaultFocus();
+
+                    line++;
                 }
                 ImGui::EndCombo();
             }
