@@ -87,8 +87,7 @@ namespace te
         Transform localTfrm = so->GetLocalTransform();
         this->_name = so->GetName() + " copy";
         this->_mobility = so->GetMobility();
-        this->SetTransform(tfrm);
-        this->SetLocalTransform(localTfrm);
+        this->SetLocalTransform(tfrm);
 
         for (auto& childSO : so->GetChildren())
         {
@@ -250,15 +249,6 @@ namespace te
     }
 
     void SceneObject::SetLocalTransform(Transform& tfrm)
-    { 
-        if (_mobility == ObjectMobility::Movable)
-        {
-            _localTfrm = tfrm;
-            NotifyTransformChanged(TCF_Transform);
-        }
-    }
-
-    void SceneObject::SetTransform(Transform& tfrm)
     { 
         if (_mobility == ObjectMobility::Movable)
         {

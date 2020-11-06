@@ -89,25 +89,25 @@ namespace te
     void BuiltinResources::InitGpuPrograms()
     {
         {
-            FileStream shaderFile(SHADERS_FOLDER + String("Raw/Test/Forward_VS.hlsl"));
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/Forward_VS.hlsl"));
             _vertexShaderForwardDesc.Type = GPT_VERTEX_PROGRAM;
             _vertexShaderForwardDesc.EntryPoint = "main";
             _vertexShaderForwardDesc.Language = "hlsl";
-            _vertexShaderForwardDesc.IncludePath = SHADERS_FOLDER + String("Raw/Test/");
+            _vertexShaderForwardDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
             _vertexShaderForwardDesc.Source = shaderFile.GetAsString();
         }
 
         {
-            FileStream shaderFile(SHADERS_FOLDER + String("Raw/Test/Forward_PS.hlsl"));
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/Forward_PS.hlsl"));
             _pixelShaderForwardDesc.Type = GPT_PIXEL_PROGRAM;
             _pixelShaderForwardDesc.EntryPoint = "main";
             _pixelShaderForwardDesc.Language = "hlsl";
-            _pixelShaderForwardDesc.IncludePath = SHADERS_FOLDER + String("Raw/Test/");
+            _pixelShaderForwardDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
             _pixelShaderForwardDesc.Source = shaderFile.GetAsString();
         }
 
         {
-            FileStream shaderFile(SHADERS_FOLDER + String("Raw/Test/Blit_VS.hlsl"));
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/Blit_VS.hlsl"));
             _vertexShaderBlitDesc.Type = GPT_VERTEX_PROGRAM;
             _vertexShaderBlitDesc.EntryPoint = "main";
             _vertexShaderBlitDesc.Language = "hlsl";
@@ -116,7 +116,7 @@ namespace te
         }
 
         {
-            FileStream shaderFile(SHADERS_FOLDER + String("Raw/Test/Blit_PS.hlsl"));
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/Blit_PS.hlsl"));
             _pixelShaderBlitDesc.Type = GPT_PIXEL_PROGRAM;
             _pixelShaderBlitDesc.EntryPoint = "main";
             _pixelShaderBlitDesc.Language = "hlsl";
@@ -125,7 +125,7 @@ namespace te
         }
 
         {
-            FileStream shaderFile(SHADERS_FOLDER + String("Raw/Test/Skybox_VS.hlsl"));
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/Skybox_VS.hlsl"));
             _vertexShaderSkyboxDesc.Type = GPT_VERTEX_PROGRAM;
             _vertexShaderSkyboxDesc.EntryPoint = "main";
             _vertexShaderSkyboxDesc.Language = "hlsl";
@@ -134,7 +134,7 @@ namespace te
         }
 
         {
-            FileStream shaderFile(SHADERS_FOLDER + String("Raw/Test/Skybox_PS.hlsl"));
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/Skybox_PS.hlsl"));
             _pixelShaderSkyboxDesc.Type = GPT_PIXEL_PROGRAM;
             _pixelShaderSkyboxDesc.EntryPoint = "main";
             _pixelShaderSkyboxDesc.Language = "hlsl";
@@ -143,92 +143,92 @@ namespace te
         }
 
         {
-            FileStream shaderFile(SHADERS_FOLDER + String("Raw/Test/FXAA_VS.hlsl"));
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/FXAA_VS.hlsl"));
             _vertexShaderFXAADesc.Type = GPT_VERTEX_PROGRAM;
             _vertexShaderFXAADesc.EntryPoint = "main";
             _vertexShaderFXAADesc.Language = "hlsl";
-            _vertexShaderFXAADesc.IncludePath = SHADERS_FOLDER + String("Raw/Test/");
+            _vertexShaderFXAADesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
             _vertexShaderFXAADesc.Source = shaderFile.GetAsString();
         }
 
         {
-            FileStream shaderFile(SHADERS_FOLDER + String("Raw/Test/FXAA_PS.hlsl"));
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/FXAA_PS.hlsl"));
             _pixelShaderFXAADesc.Type = GPT_PIXEL_PROGRAM;
             _pixelShaderFXAADesc.EntryPoint = "main";
             _pixelShaderFXAADesc.Language = "hlsl";
-            _pixelShaderFXAADesc.IncludePath = SHADERS_FOLDER + String("Raw/Test/");
+            _pixelShaderFXAADesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
             _pixelShaderFXAADesc.Source = shaderFile.GetAsString();
         }
 
         {
-            FileStream shaderFile(SHADERS_FOLDER + String("Raw/Test/ToneMapping_VS.hlsl"));
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/ToneMapping_VS.hlsl"));
             _vertexShaderToneMappingDesc.Type = GPT_VERTEX_PROGRAM;
             _vertexShaderToneMappingDesc.EntryPoint = "main";
             _vertexShaderToneMappingDesc.Language = "hlsl";
-            _vertexShaderToneMappingDesc.IncludePath = SHADERS_FOLDER + String("Raw/Test/");
+            _vertexShaderToneMappingDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
             _vertexShaderToneMappingDesc.Source = shaderFile.GetAsString();
         }
 
         {
-            FileStream shaderFile(SHADERS_FOLDER + String("Raw/Test/ToneMapping_PS.hlsl"));
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/ToneMapping_PS.hlsl"));
             _pixelShaderToneMappingDesc.Type = GPT_PIXEL_PROGRAM;
             _pixelShaderToneMappingDesc.EntryPoint = "main";
             _pixelShaderToneMappingDesc.Language = "hlsl";
-            _pixelShaderToneMappingDesc.IncludePath = SHADERS_FOLDER + String("Raw/Test/");
+            _pixelShaderToneMappingDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
             _pixelShaderToneMappingDesc.Source = shaderFile.GetAsString();
         }
 
         {
-            FileStream shaderFile(SHADERS_FOLDER + String("Raw/Test/Bloom_VS.hlsl"));
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/Bloom_VS.hlsl"));
             _vertexShaderBloomDesc.Type = GPT_VERTEX_PROGRAM;
             _vertexShaderBloomDesc.EntryPoint = "main";
             _vertexShaderBloomDesc.Language = "hlsl";
-            _vertexShaderBloomDesc.IncludePath = SHADERS_FOLDER + String("Raw/Test/");
+            _vertexShaderBloomDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
             _vertexShaderBloomDesc.Source = shaderFile.GetAsString();
         }
 
         {
-            FileStream shaderFile(SHADERS_FOLDER + String("Raw/Test/Bloom_PS.hlsl"));
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/Bloom_PS.hlsl"));
             _pixelShaderBloomDesc.Type = GPT_PIXEL_PROGRAM;
             _pixelShaderBloomDesc.EntryPoint = "main";
             _pixelShaderBloomDesc.Language = "hlsl";
-            _pixelShaderBloomDesc.IncludePath = SHADERS_FOLDER + String("Raw/Test/");
+            _pixelShaderBloomDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
             _pixelShaderBloomDesc.Source = shaderFile.GetAsString();
         }
 
         {
-            FileStream shaderFile(SHADERS_FOLDER + String("Raw/Test/MotionBlur_VS.hlsl"));
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/MotionBlur_VS.hlsl"));
             _vertexShaderMotionBlurDesc.Type = GPT_VERTEX_PROGRAM;
             _vertexShaderMotionBlurDesc.EntryPoint = "main";
             _vertexShaderMotionBlurDesc.Language = "hlsl";
-            _vertexShaderMotionBlurDesc.IncludePath = SHADERS_FOLDER + String("Raw/Test/");
+            _vertexShaderMotionBlurDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
             _vertexShaderMotionBlurDesc.Source = shaderFile.GetAsString();
         }
 
         {
-            FileStream shaderFile(SHADERS_FOLDER + String("Raw/Test/MotionBlur_PS.hlsl"));
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/MotionBlur_PS.hlsl"));
             _pixelShaderMotionBlurDesc.Type = GPT_PIXEL_PROGRAM;
             _pixelShaderMotionBlurDesc.EntryPoint = "main";
             _pixelShaderMotionBlurDesc.Language = "hlsl";
-            _pixelShaderMotionBlurDesc.IncludePath = SHADERS_FOLDER + String("Raw/Test/");
+            _pixelShaderMotionBlurDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
             _pixelShaderMotionBlurDesc.Source = shaderFile.GetAsString();
         }
 
         {
-            FileStream shaderFile(SHADERS_FOLDER + String("Raw/Test/GaussianBlur_VS.hlsl"));
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/GaussianBlur_VS.hlsl"));
             _vertexShaderGaussianBlurDesc.Type = GPT_VERTEX_PROGRAM;
             _vertexShaderGaussianBlurDesc.EntryPoint = "main";
             _vertexShaderGaussianBlurDesc.Language = "hlsl";
-            _vertexShaderGaussianBlurDesc.IncludePath = SHADERS_FOLDER + String("Raw/Test/");
+            _vertexShaderGaussianBlurDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
             _vertexShaderGaussianBlurDesc.Source = shaderFile.GetAsString();
         }
 
         {
-            FileStream shaderFile(SHADERS_FOLDER + String("Raw/Test/GaussianBlur_PS.hlsl"));
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/GaussianBlur_PS.hlsl"));
             _pixelShaderGaussianBlurDesc.Type = GPT_PIXEL_PROGRAM;
             _pixelShaderGaussianBlurDesc.EntryPoint = "main";
             _pixelShaderGaussianBlurDesc.Language = "hlsl";
-            _pixelShaderGaussianBlurDesc.IncludePath = SHADERS_FOLDER + String("Raw/Test/");
+            _pixelShaderGaussianBlurDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
             _pixelShaderGaussianBlurDesc.Source = shaderFile.GetAsString();
         }
     }
