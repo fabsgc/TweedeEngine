@@ -15,6 +15,7 @@ namespace te
 
     void ResourceManager::Release(ResourceHandleBase& resource)
     {
+        UnregisterResource(resource.GetUUID());
         Destroy(resource);
     }
 
@@ -23,6 +24,7 @@ namespace te
         UnorderedMap<UUID, LoadedResourceData> loadedResourcesCopy = _loadedResources;
         for (auto& loadedResourcePair : loadedResourcesCopy)
         {
+            UnregisterResource(loadedResourcePair.second.resource.GetUUID());
             Destroy(loadedResourcePair.second.resource);
         }
     }
@@ -187,6 +189,28 @@ namespace te
         _loadingResourceMutex.unlock();
     }
 
+    void ResourceManager::UnregisterResource(const UUID& uuid)
+    {
+        _loadingResourceMutex.lock();
+
+        auto iterUUID = _UUIDToFile.find(uuid);
+        if (iterUUID != _UUIDToFile.end())
+        {
+            _UUIDToFile.erase(iterUUID);
+        }
+
+        for(auto& iterFile = _fileToUUID.begin(); iterFile != _fileToUUID.end(); iterFile++)
+        {
+            if(iterFile->second == uuid)
+            {
+                _fileToUUID.erase(iterFile);
+                break;
+            }
+        }
+
+        _loadingResourceMutex.unlock();
+    }
+
     HResource ResourceManager::_createResourceHandle(const SPtr<Resource>& obj)
     {
         UUID uuid = UUIDGenerator::GenerateRandom();
@@ -196,7 +220,7 @@ namespace te
 
     HResource ResourceManager::_createResourceHandle(const SPtr<Resource>& obj, const UUID& UUID)
     {
-        //_loadingResourceMutex.lock();
+        
 
         if (UUID.Empty())
         {
@@ -207,11 +231,13 @@ namespace te
 
         if (_loadedResources.find(UUID) == _loadedResources.end())
         {
+            _loadingResourceMutex.lock();
             _loadedResources[UUID] = static_resource_cast<Resource>(hr);
+            _loadingResourceMutex.unlock();
             OnResourceLoaded(Get(UUID));
         }
 
-        //_loadingResourceMutex.unlock();
+        
 
         return static_resource_cast<Resource>(Get(UUID));
     }

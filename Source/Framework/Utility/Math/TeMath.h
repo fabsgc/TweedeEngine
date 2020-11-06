@@ -146,7 +146,7 @@ namespace te
          */
         static int FloorToInt(float val)
         {
-            assert(val >= std::numeric_limits<int32_t>::min() && val <= std::numeric_limits<int32_t>::max());
+            //assert(val >= std::numeric_limits<int32_t>::min() && val <= std::numeric_limits<int32_t>::max()); very slow check
 
             // Negative values need offset in order to truncate towards negative infinity (cast truncates towards zero) 
             return val >= 0.0f ? (int32_t)val : (int32_t)(val - BIGGEST_FLOAT_SMALLER_THAN_ONE);

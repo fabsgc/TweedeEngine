@@ -429,7 +429,7 @@ namespace te
      * @param[in]	faceSize	Size of a single face, in pixels. Both width & height must match.
      * @param[in]	vertical	True if the faces are laid out vertically, false if horizontally.
      */
-    void readCubemapList(const SPtr<PixelData>& source, std::array<SPtr<PixelData>, 6>& output, UINT32 faceSize, bool vertical)
+    void ReadCubemapList(const SPtr<PixelData>& source, std::array<SPtr<PixelData>, 6>& output, UINT32 faceSize, bool vertical)
     {
         Vector2I faceStart;
         for(UINT32 i = 0; i < 6; i++)
@@ -465,7 +465,7 @@ namespace te
      * @param[in]	faceSize	Size of a single face, in pixels. Both width & height must match.
      * @param[in]	vertical	True if the faces are laid out vertically, false if horizontally.
      */
-    void readCubemapCross(const SPtr<PixelData>& source, std::array<SPtr<PixelData>, 6>& output, UINT32 faceSize,
+    void ReadCubemapCross(const SPtr<PixelData>& source, std::array<SPtr<PixelData>, 6>& output, UINT32 faceSize,
         bool vertical)
     {
         const static UINT32 vertFaceIndices[] = { 5, 3, 1, 7, 4, 10 };
@@ -495,7 +495,7 @@ namespace te
     }
 
     /** Method that maps a direction to a point on a plane in range [0, 1] using spherical mapping. */
-    Vector2 mapCubemapDirToSpherical(const Vector3& dir)
+    Vector2 MapCubemapDirToSpherical(const Vector3& dir)
     {
         // Using the OpenGL spherical mapping formula
         Vector3 nrmDir = Vector3::Normalize(dir);
@@ -513,7 +513,7 @@ namespace te
      * Method that maps a direction to a point on a plane in range [0, 1] using cylindrical mapping. This mapping is also
      * know as longitude-latitude mapping, Blinn/Newell mapping or equirectangular cylindrical mapping.
      */
-    Vector2 mapCubemapDirToCylindrical(const Vector3& dir)
+    Vector2 MapCubemapDirToCylindrical(const Vector3& dir)
     {
         Vector3 nrmDir = Vector3::Normalize(dir);
 
@@ -524,7 +524,7 @@ namespace te
     }
 
     /** Resizes the provided cubemap faces and outputs a new set of resized faces. */
-    void downsampleCubemap(const std::array<SPtr<PixelData>, 6>& input, std::array<SPtr<PixelData>, 6>& output, UINT32 size)
+    void DownsampleCubemap(const std::array<SPtr<PixelData>, 6>& input, std::array<SPtr<PixelData>, 6>& output, UINT32 size)
     {
         for(UINT32 i = 0; i < 6; i++)
         {
@@ -541,7 +541,7 @@ namespace te
      * @param[in]	faceSize	Width/height of each individual face, in pixels.
      * @param[in]	remap		Function to use for remapping the cubemap direction to UV.
      */
-    void readCubemapUVRemap(const SPtr<PixelData>& source, std::array<SPtr<PixelData>, 6>& output, UINT32 faceSize,
+    void ReadCubemapUVRemap(const SPtr<PixelData>& source, std::array<SPtr<PixelData>, 6>& output, UINT32 faceSize,
         const std::function<Vector2(Vector3)>& remap)
     {
         struct RemapInfo
@@ -677,9 +677,9 @@ namespace te
         case CubemapSourceType::Faces:
         {
             if (cross)
-                readCubemapCross(source, output, faceSize.x, vertical);
+                ReadCubemapCross(source, output, faceSize.x, vertical);
             else
-                readCubemapList(source, output, faceSize.x, vertical);
+                ReadCubemapList(source, output, faceSize.x, vertical);
         }
         break;
         case CubemapSourceType::Cylindrical:
@@ -687,10 +687,10 @@ namespace te
             UINT32 superSampledFaceSize = faceSize.x * cubemapSupersampling;
 
             std::array<SPtr<PixelData>, 6> superSampledOutput;
-            readCubemapUVRemap(source, superSampledOutput, superSampledFaceSize, &mapCubemapDirToCylindrical);
+            ReadCubemapUVRemap(source, superSampledOutput, superSampledFaceSize, &MapCubemapDirToCylindrical);
 
             if (faceSize.x != (INT32)superSampledFaceSize)
-                downsampleCubemap(superSampledOutput, output, faceSize.x);
+                DownsampleCubemap(superSampledOutput, output, faceSize.x);
             else
                 output = superSampledOutput;
         }
@@ -700,10 +700,10 @@ namespace te
             UINT32 superSampledFaceSize = faceSize.x * cubemapSupersampling;
 
             std::array<SPtr<PixelData>, 6> superSampledOutput;
-            readCubemapUVRemap(source, superSampledOutput, superSampledFaceSize, &mapCubemapDirToSpherical);
+            ReadCubemapUVRemap(source, superSampledOutput, superSampledFaceSize, &MapCubemapDirToSpherical);
 
             if (faceSize.x != (INT32)superSampledFaceSize)
-                downsampleCubemap(superSampledOutput, output, faceSize.x);
+                DownsampleCubemap(superSampledOutput, output, faceSize.x);
             else
                 output = superSampledOutput;
         }

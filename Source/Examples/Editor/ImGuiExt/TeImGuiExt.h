@@ -76,8 +76,14 @@ namespace te
         static bool RenderColorRGBA(Vector4& color, const char* id, const char* text, float width = 0.0f,
             bool disable = false);
 
-        static bool RenderCameraGraphics(HCamera& camera, SPtr<RenderSettings> cameraSettings, float width = 0.0f);
-        static bool RenderCameraPostProcessing(HCamera& camera, SPtr<RenderSettings> cameraSettings, float width = 0.0f);
+        static bool RenderCameraGraphics(HCamera& camera, SPtr<RenderSettings> cameraSettings, 
+            float width = 0.0f);
+
+        static bool RenderCameraPostProcessing(HCamera& camera, SPtr<RenderSettings> cameraSettings, 
+            float width = 0.0f);
+
+        static bool RenderOptionComboComponent(HCamera* value, const char* id, const char* text, ComboOptions<HCamera>& options,
+            float width = 0.0f);
 
         template<typename T>
         static bool RenderOptionCombo(T* value, const char* id, const char* text, ComboOptions<T>& options,
@@ -129,7 +135,6 @@ namespace te
             return hasChanged;
         };
 
-        static bool RenderOptionComboComponent(HCamera* value, const char* id, const char* text, ComboOptions<HCamera>& options,
-            float width = 0.0f);
+        
     };
 }

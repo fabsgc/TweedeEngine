@@ -11,7 +11,7 @@ namespace te
 {
     TE_MODULE_STATIC_MEMBER(Application)
 
-    void Application::PostStartUp()
+        void Application::PostStartUp()
     {
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         // ######################################################

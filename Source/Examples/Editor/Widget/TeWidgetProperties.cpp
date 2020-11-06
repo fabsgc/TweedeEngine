@@ -762,53 +762,13 @@ namespace te
 
                 if (meshImportOptions->ImportMaterials)
                 {
+                    gEditor().ImportMeshMaterials(mesh);
+
                     for (UINT32 i = 0; i < mesh->GetProperties().GetNumSubMeshes(); i++)
                     {
                         SubMesh& subMesh = mesh->GetProperties().GetSubMesh(i);
-                        MaterialProperties matProperties = subMesh.MatProperties;
-                        MaterialTextures matTextures = subMesh.MatTextures;
-
                         if (subMesh.Mat.GetHandleData())
-                        {
                             renderable->SetMaterial(i, subMesh.Mat.GetInternalPtr());
-                        }
-                        else
-                        {
-                            HMaterial material = Material::Create(gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque));
-                            material->SetName(subMesh.MaterialName);
-                            material->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
-                            material->SetProperties(subMesh.MatProperties);
-
-                            const auto& BindTexture = [this](bool isSet, const String& textureName, const String& texturePath, HMaterial& material)
-                            {
-                                auto textureImportOptions = TextureImportOptions::Create();
-                                textureImportOptions->CpuCached = false;
-                                textureImportOptions->GenerateMips = true;
-
-                                if (isSet)
-                                {
-                                    HTexture texture = EditorResManager::Instance().Load<Texture>(texturePath, textureImportOptions);
-
-                                    if (texture.GetHandleData())
-                                    {
-                                        material->SetTexture(textureName, texture);
-                                        EditorResManager::Instance().Add<Texture>(texture);
-                                    }
-                                }
-                            };
-
-                            BindTexture(matProperties.UseDiffuseMap, "DiffuseMap", matTextures.DiffuseMap, material);
-                            BindTexture(matProperties.UseEmissiveMap, "EmissiveMap", matTextures.EmissiveMap, material);
-                            BindTexture(matProperties.UseNormalMap, "NormalMap", matTextures.NormalMap, material);
-                            BindTexture(matProperties.UseSpecularMap, "SpecularMap", matTextures.SpecularMap, material);
-                            BindTexture(matProperties.UseBumpMap, "BumpMap", matTextures.BumpMap, material);
-                            BindTexture(matProperties.UseTransparencyMap, "TransparencyMap", matTextures.TransparencyMap, material);
-                            BindTexture(matProperties.UseReflectionMap, "ReflectionMap", matTextures.ReflectionMap, material);
-
-                            renderable->SetMaterial(i, material);
-                            subMesh.Mat = material.GetNewHandleFromExisting();
-                            EditorResManager::Instance().Add<Material>(material);
-                        }                        
                     }
                 }
             }
@@ -836,8 +796,12 @@ namespace te
             auto textureSkyboxImportOptions = TextureImportOptions::Create();
             textureSkyboxImportOptions->CpuCached = false;
             textureSkyboxImportOptions->CubemapType = CubemapSourceType::Faces;
-            textureSkyboxImportOptions->Format = PF_RGBA8;
             textureSkyboxImportOptions->IsCubemap = true;
+#if TE_ENDIAN == TE_ENDIAN_BIG
+            textureSkyboxImportOptions->Format = PF_RGBA8;
+#else
+            textureSkyboxImportOptions->Format = PF_RGBA8;
+#endif     
 
             HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.Data.SelectedPath, textureSkyboxImportOptions);
             if (texture.GetHandleData())

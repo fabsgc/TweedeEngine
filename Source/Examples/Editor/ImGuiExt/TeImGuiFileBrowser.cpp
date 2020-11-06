@@ -662,9 +662,11 @@ namespace te
     bool ImGuiFileBrowser::ShowParametersFileModal()
     {
         ImVec2 window_size(400, 0);
-        ImGui::SetNextWindowSize(window_size);
         const char* selectedExt = Data.Ext.c_str();
         bool ret_val = false;
+
+        ImGui::SetNextWindowSize(window_size);
+        ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f,0.5f));
 
         if (ImGui::BeginPopupModal(parameters_file_modal_id.c_str(), nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize))
         {
@@ -688,6 +690,32 @@ namespace te
                     }
 
                     ImGuiExt::RenderOptionCombo<TextureType>(&Data.TexParam.TexType, "##file_dialog_parameters_texture_type", "Texture type", textureTypeOptions, 300);
+
+                    if(Data.TexParam.TexType == TextureType::TEX_TYPE_2D)
+                    {
+                        ImGuiExt::RenderOptionBool(Data.TexParam.GenerateMips, "##file_dialog_parameters_texture_generate_mips", "Generate MipMaps");
+
+                        if(Data.TexParam.GenerateMips)
+                        {
+                            static ImGuiExt::ComboOptions<UINT32> maxMipsOptions;
+                            if (maxMipsOptions.Options.size() == 0)
+                            {
+                                maxMipsOptions.AddOption(0, "Maximum");
+                                maxMipsOptions.AddOption(1, "1");
+                                maxMipsOptions.AddOption(2, "2");
+                                maxMipsOptions.AddOption(3, "3");
+                                maxMipsOptions.AddOption(4, "4");
+                                maxMipsOptions.AddOption(5, "5");
+                                maxMipsOptions.AddOption(6, "6");
+                                maxMipsOptions.AddOption(7, "7");
+                                maxMipsOptions.AddOption(8, "8");
+                                maxMipsOptions.AddOption(9, "9");
+                                maxMipsOptions.AddOption(10, "10");
+                            }
+
+                            ImGuiExt::RenderOptionCombo<UINT32>(&Data.TexParam.MaxMips, "##file_dialog_parameters_texture_max_mips", "Max mip level", maxMipsOptions, 300);
+                        }
+                    }
                 }
                 else if (strcmp(selectedExt, ".scene") == 0)
                 {

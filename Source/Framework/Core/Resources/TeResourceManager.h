@@ -146,6 +146,7 @@ namespace te
         bool GetUUIDFromFile(const String& filePath, UUID& uuid);
         bool GetFileFromUUID(const UUID& uuid, String& filePath);
         void RegisterResource(const UUID& uuid, const String& filePath);
+        void UnregisterResource(const UUID& uuid);
 
     private:
         UnorderedMap<UUID, LoadedResourceData> _loadedResources;

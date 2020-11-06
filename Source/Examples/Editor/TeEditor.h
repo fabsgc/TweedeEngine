@@ -117,10 +117,9 @@ namespace te
         HCamera& GetPreviewViewportCamera() { return _previewViewportCamera; }
 
         /** Set the current preview viewport camera */
-        void SetPreviewViewportCamera(HCamera& camera) 
-        { 
-            _previewViewportCamera = camera.GetNewHandleFromExisting(); 
-        }
+        void SetPreviewViewportCamera(HCamera& camera) { _previewViewportCamera = camera.GetNewHandleFromExisting(); }
+
+        void ImportMeshMaterials(HMesh& mesh);
 
         /** Save current scene */
         void Save();

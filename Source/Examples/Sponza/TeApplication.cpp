@@ -73,7 +73,7 @@ namespace te
         _loadedSkyboxTexture = gResourceManager().Load<Texture>("Data/Textures/Skybox/sky_night_2_large.jpeg", textureCubeMapImportOptions);
 
         _materials =
-          {
+        {
             {
                 "arch",
                 "Data/Textures/Sponza/arch/arch_COLOR.jpeg",
@@ -515,7 +515,7 @@ namespace te
                 material.MaterialProp.UseEnvironmentMap = true;
             }
 
-            if(material.Opacity < 1.0f)
+            if (material.Opacity < 1.0f)
                 material.MaterialElement = Material::Create(_shaderTransparent);
             else
                 material.MaterialElement = Material::Create(_shaderOpaque);
@@ -697,7 +697,7 @@ namespace te
     { }
 
     void Application::PreUpdate()
-    { 
+    {
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         _sceneMonkeySO->Rotate(Vector3(0.0f, 1.0f, 0.0f), Radian(2.0f * gTime().GetFrameDelta()));
 

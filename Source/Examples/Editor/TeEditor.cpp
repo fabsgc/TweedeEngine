@@ -24,7 +24,9 @@
 #include "Scene/TeSceneManager.h"
 #include "Resources/TeResourceManager.h"
 #include "Resources/TeBuiltinResources.h"
+#include "Components/TeCRenderable.h"
 #include "TeEditorResManager.h"
+#include "Mesh/TeMesh.h"
 
 // TODO Temp for debug purpose
 #include "Importer/TeImporter.h"
@@ -34,7 +36,6 @@
 #include "Material/TeShader.h"
 #include "Components/TeCLight.h"
 #include "Components/TeCSkybox.h"
-#include "Components/TeCRenderable.h"
 
 #ifndef GImGui
 ImGuiContext* GImGui = NULL;
@@ -442,6 +443,59 @@ namespace te
         }
     }
 
+    void Editor::ImportMeshMaterials(HMesh& mesh)
+    {
+        for (UINT32 i = 0; i < mesh->GetProperties().GetNumSubMeshes(); i++)
+        {
+            SubMesh& subMesh = mesh->GetProperties().GetSubMesh(i);
+            MaterialProperties matProperties = subMesh.MatProperties;
+            MaterialTextures matTextures = subMesh.MatTextures;
+
+            if (!subMesh.Mat.GetHandleData())
+            {
+                HMaterial material = Material::Create(gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque));
+                material->SetName(subMesh.MaterialName);
+                material->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
+                material->SetProperties(subMesh.MatProperties);
+
+                const auto& BindTexture = [this](bool isSet, const String& textureName, const String& texturePath, HMaterial& material)
+                {
+                    auto textureImportOptions = TextureImportOptions::Create();
+                    textureImportOptions->CpuCached = false;
+                    textureImportOptions->GenerateMips = (textureName != "EmissiveMap") ? true : false;
+                    textureImportOptions->MaxMip = 6;
+#if TE_ENDIAN == TE_ENDIAN_BIG
+                    textureImportOptions->Format = PF_RGBA8;
+#else
+                    textureImportOptions->Format = PF_BGRA8;
+#endif
+
+                    if (isSet)
+                    {
+                        HTexture texture = EditorResManager::Instance().Load<Texture>(texturePath, textureImportOptions);
+
+                        if (texture.GetHandleData())
+                        {
+                            material->SetTexture(textureName, texture);
+                            EditorResManager::Instance().Add<Texture>(texture);
+                        }
+                    }
+                };
+
+                BindTexture(matProperties.UseDiffuseMap, "DiffuseMap", matTextures.DiffuseMap, material);
+                BindTexture(matProperties.UseEmissiveMap, "EmissiveMap", matTextures.EmissiveMap, material);
+                BindTexture(matProperties.UseNormalMap, "NormalMap", matTextures.NormalMap, material);
+                BindTexture(matProperties.UseSpecularMap, "SpecularMap", matTextures.SpecularMap, material);
+                BindTexture(matProperties.UseBumpMap, "BumpMap", matTextures.BumpMap, material);
+                BindTexture(matProperties.UseTransparencyMap, "TransparencyMap", matTextures.TransparencyMap, material);
+                BindTexture(matProperties.UseReflectionMap, "ReflectionMap", matTextures.ReflectionMap, material);
+
+                subMesh.Mat = material.GetNewHandleFromExisting();
+                EditorResManager::Instance().Add<Material>(material);
+            }
+        }
+    }
+
     void Editor::Save()
     {
         _settings.State = EditorState::Saved;
@@ -456,6 +510,12 @@ namespace te
 
     void Editor::LoadScene()
     {
+#if TE_ENDIAN == TE_ENDIAN_BIG
+        PixelFormat pixelFormat = PF_RGBA8;
+#else
+        PixelFormat pixelFormat = PF_BGRA8;
+#endif
+
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         // ######################################################
         auto meshImportOptions = MeshImportOptions::Create();
@@ -466,12 +526,15 @@ namespace te
         auto textureImportOptions = TextureImportOptions::Create();
         textureImportOptions->CpuCached = false;
         textureImportOptions->GenerateMips = true;
+        textureImportOptions->MaxMip = 4;
+        textureImportOptions->Format = pixelFormat;
 
         auto textureCubeMapImportOptions = TextureImportOptions::Create();
         textureCubeMapImportOptions->CpuCached = false;
         textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
-        textureCubeMapImportOptions->Format = PF_RGBA8;
         textureCubeMapImportOptions->IsCubemap = true;
+        textureCubeMapImportOptions->Format = pixelFormat;
+        
         // ######################################################
 
         // ######################################################
@@ -483,7 +546,7 @@ namespace te
 #else
         //_loadedPlaneTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Sponza/Floor/floor_COLOR_s.jpeg", textureImportOptions);
 #endif
-        _loadedCubemapTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/sky_medium.jpeg", textureCubeMapImportOptions);
+        _loadedCubemapTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/sky_medium.png", textureCubeMapImportOptions);
         // ###################################################### 
 
         // ###################################################### 
