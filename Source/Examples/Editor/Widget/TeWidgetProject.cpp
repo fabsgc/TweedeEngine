@@ -236,6 +236,8 @@ namespace te
         const auto leftClick = ImGui::IsMouseClicked(0);
         const auto rightClick = ImGui::IsMouseClicked(1);
 
+        TE_PRINT(isWindowHovered);
+
         // Since we are handling clicking manually, we must ensure we are inside the window
         if (!isWindowHovered)
             return;
@@ -249,7 +251,7 @@ namespace te
             SetSelectedComponent(_selections.HoveredComponent);
 
         // Right click on item - Select and show context menu
-        if (ImGui::IsMouseClicked(1))
+        if (rightClick)
         {
             if (_selections.HoveredSceneObject)
                 SetSelectedSceneObject(_selections.HoveredSceneObject);
@@ -327,7 +329,7 @@ namespace te
         {
             if (root->GetUUID() != payload->Uuid)
             {
-                HSceneObject& currentSO = root->GetSceneObject(payload->Uuid, true);
+                HSceneObject currentSO = root->GetSceneObject(payload->Uuid, true);
 
                 if (!currentSO.Empty())
                 {
@@ -348,17 +350,27 @@ namespace te
 
         if (auto payload = ReceiveDragPayload(DragPayloadType::Component))
         {
-            HComponent& currentCO = root->GetComponent(payload->Uuid, true);
+            HComponent currentCO = root->GetComponent(payload->Uuid, true);
 
             if (!currentCO.Empty())
             {
+                bool oldParentActive = currentCO->GetSceneObject()->GetActive();
+                bool newParentActive = sceneObject->GetActive();
+
                 currentCO->GetSceneObject()->RemoveComponent(currentCO);
                 currentCO->SetSceneObject(sceneObject);
                 sceneObject->AddExistingComponent(currentCO);
-                sceneObject->SetActiveHierarchy(sceneObject->GetParent()->GetActive());
 
                 _selections.ClickedSceneObject = sceneObject.GetInternalPtr();
                 _selections.ClickedComponent = currentCO.GetInternalPtr();
+
+                if (oldParentActive != newParentActive)
+                {
+                    if(newParentActive == false)
+                        gSceneManager()._notifyComponentDeactivated(currentCO, true);
+                    else
+                        gSceneManager()._notifyComponentActivated(currentCO, true);
+                }
 
                 _expandToSelection = true;
                 _expandDragToSelection = true;
