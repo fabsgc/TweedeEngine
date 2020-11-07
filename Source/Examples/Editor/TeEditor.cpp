@@ -29,6 +29,7 @@
 #include "Mesh/TeMesh.h"
 #include "Math/TeVector2I.h"
 #include "Image/TeColor.h"
+#include "TeEditorUtils.h"
 
 // TODO Temp for debug purpose
 #include "Importer/TeImporter.h"
@@ -114,24 +115,25 @@ namespace te
         MakeGpuPickingDirty();
     }
 
-    void Editor::NeedsGpuPicking()
+    void Editor::NeedsGpuPicking(UINT32 x, UINT32 y)
     {
         if (!_settings.WViewport)
             return;
 
         if (_gpuPickingDirty)
         {
-            WidgetViewport::RenderWindowData viewportData = 
+            EditorUtils::RenderWindowData viewportData = 
                 static_cast<WidgetViewport*>(&*_settings.WViewport)->GetRenderWindowData();
             GpuPicking::RenderParam pickingData(viewportData.Width, viewportData.Height);
 
             _gpuPicking.ComputePicking(_previewViewportCamera, pickingData, _sceneSO);
-            Color color = _gpuPicking.GetColorAt(Vector2I());
 
-            // TODO
+            _gpuPickingDirty = false;
         }
 
-        _gpuPickingDirty = false;
+        Color color = _gpuPicking.GetColorAt(x, y);
+
+        // TODO decode color and find component
     }
 
     void Editor::MakeGpuPickingDirty()
@@ -474,59 +476,6 @@ namespace te
         case WindowType::Properties:
             _settings.WProperties->PutFocus();
             break;        
-        }
-    }
-
-    void Editor::ImportMeshMaterials(HMesh& mesh)
-    {
-        for (UINT32 i = 0; i < mesh->GetProperties().GetNumSubMeshes(); i++)
-        {
-            SubMesh& subMesh = mesh->GetProperties().GetSubMesh(i);
-            MaterialProperties matProperties = subMesh.MatProperties;
-            MaterialTextures matTextures = subMesh.MatTextures;
-
-            if (!subMesh.Mat.GetHandleData())
-            {
-                HMaterial material = Material::Create(gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque));
-                material->SetName(subMesh.MaterialName);
-                material->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
-                material->SetProperties(subMesh.MatProperties);
-
-                const auto& BindTexture = [this](bool isSet, const String& textureName, const String& texturePath, HMaterial& material)
-                {
-                    auto textureImportOptions = TextureImportOptions::Create();
-                    textureImportOptions->CpuCached = false;
-                    textureImportOptions->GenerateMips = (textureName != "EmissiveMap") ? true : false;
-                    textureImportOptions->MaxMip = 6;
-#if TE_ENDIAN == TE_ENDIAN_BIG
-                    textureImportOptions->Format = PF_RGBA8;
-#else
-                    textureImportOptions->Format = PF_BGRA8;
-#endif
-
-                    if (isSet)
-                    {
-                        HTexture texture = EditorResManager::Instance().Load<Texture>(texturePath, textureImportOptions);
-
-                        if (texture.GetHandleData())
-                        {
-                            material->SetTexture(textureName, texture);
-                            EditorResManager::Instance().Add<Texture>(texture);
-                        }
-                    }
-                };
-
-                BindTexture(matProperties.UseDiffuseMap, "DiffuseMap", matTextures.DiffuseMap, material);
-                BindTexture(matProperties.UseEmissiveMap, "EmissiveMap", matTextures.EmissiveMap, material);
-                BindTexture(matProperties.UseNormalMap, "NormalMap", matTextures.NormalMap, material);
-                BindTexture(matProperties.UseSpecularMap, "SpecularMap", matTextures.SpecularMap, material);
-                BindTexture(matProperties.UseBumpMap, "BumpMap", matTextures.BumpMap, material);
-                BindTexture(matProperties.UseTransparencyMap, "TransparencyMap", matTextures.TransparencyMap, material);
-                BindTexture(matProperties.UseReflectionMap, "ReflectionMap", matTextures.ReflectionMap, material);
-
-                subMesh.Mat = material.GetNewHandleFromExisting();
-                EditorResManager::Instance().Add<Material>(material);
-            }
         }
     }
 

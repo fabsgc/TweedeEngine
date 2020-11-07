@@ -3,6 +3,7 @@
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
 #include "../TeEditorResManager.h"
+#include "../TeEditorUtils.h"
 #include "Resources/TeResourceManager.h"
 #include "Components/TeCRenderable.h"
 #include "Components/TeCCameraFlyer.h"
@@ -762,7 +763,7 @@ namespace te
 
                 if (meshImportOptions->ImportMaterials)
                 {
-                    gEditor().ImportMeshMaterials(mesh);
+                    EditorUtils::ImportMeshMaterials(mesh);
 
                     for (UINT32 i = 0; i < mesh->GetProperties().GetNumSubMeshes(); i++)
                     {

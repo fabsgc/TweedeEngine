@@ -301,7 +301,7 @@ namespace te
                     EditorResManager::Instance().Add<Mesh>(mesh);
 
                     if(_fileBrowser.Data.MeshParam.ImportMaterials)
-                        gEditor().ImportMeshMaterials(mesh);
+                        EditorUtils::ImportMeshMaterials(mesh);
                 }
             }
             else

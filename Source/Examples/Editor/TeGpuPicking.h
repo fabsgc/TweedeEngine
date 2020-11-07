@@ -12,6 +12,7 @@
 #include "Image/TeColor.h"
 #include "RenderAPI/TeRenderTexture.h"
 #include "Renderer/TeParamBlocks.h"
+#include "TeEditorUtils.h"
 
 namespace te
 {
@@ -19,14 +20,10 @@ namespace te
         TE_PARAM_BLOCK_ENTRY(Matrix4, gMatViewProj)
     TE_PARAM_BLOCK_END
 
-    
-
     TE_PARAM_BLOCK_BEGIN(PerObjectParamDef)
         TE_PARAM_BLOCK_ENTRY(Matrix4, gMatWorld)
         TE_PARAM_BLOCK_ENTRY(Vector4, gColor)
     TE_PARAM_BLOCK_END
-
-    
 
     class GpuPicking
     {
@@ -42,22 +39,9 @@ namespace te
             UINT32 Height;
         };
 
-        struct RenderWindowData
-        {
-            TEXTURE_DESC TargetColorDesc;
-            TEXTURE_DESC TargetDepthDesc;
-            RENDER_TEXTURE_DESC RenderTexDesc;
-            HTexture ColorTex;
-            HTexture DepthStencilTex;
-            SPtr<RenderTexture> RenderTex;
-            TextureSurface ColorTexSurface;
-            UINT32 Width = 0;
-            UINT32 Height = 0;
-        };
-
     public:
-        GpuPicking();
-        ~GpuPicking();
+        GpuPicking() = default;
+        ~GpuPicking() = default;
 
         /** Init context, shader */
         void Initialize();
@@ -83,11 +67,11 @@ namespace te
 
     private:
         /** It's can be necessary to update render texture to match viewport dimensions */
-        bool CheckRenderTexture(const float& width, const float& height);
+        bool CheckRenderTexture(UINT32 width, UINT32 height);
 
     private:
         HShader _shader;
-        RenderWindowData _renderData;
+        EditorUtils::RenderWindowData _renderData;
 
         PerCameraParamDef _perCameraParamDef;
         PerObjectParamDef _perObjectParamDef;

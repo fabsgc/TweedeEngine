@@ -6,6 +6,7 @@
 #include "Image/TeTexture.h"
 #include "Utility/TeEvent.h"
 #include "../TeEditor.h"
+#include "../TeEditorUtils.h"
 #include "TeWidget.h"
 
 namespace te
@@ -15,19 +16,6 @@ namespace te
     public:
         static const String RETARGET_BINDING;
         static const String PICKING_BINDING;
-
-        struct RenderWindowData
-        {
-            TEXTURE_DESC TargetColorDesc;
-            TEXTURE_DESC TargetDepthDesc;
-            RENDER_TEXTURE_DESC RenderTexDesc;
-            HTexture ColorTex;
-            HTexture DepthStencilTex;
-            SPtr<RenderTexture> RenderTex;
-            TextureSurface ColorTexSurface;
-            UINT32 Width = 640;
-            UINT32 Height = 480;
-        };
 
     public:
         WidgetViewport();
@@ -41,7 +29,7 @@ namespace te
         void NeedsRedraw();
         void SetVisible(bool isVisible);
 
-        const RenderWindowData& GetRenderWindowData() const { return _renderData; }
+        const EditorUtils::RenderWindowData& GetRenderWindowData() const { return _renderData; }
 
     protected:
         /** Return true if texture has been updated */
@@ -57,7 +45,7 @@ namespace te
         HEvent _resizeEvent;
         Editor::SelectionData& _selections;
 
-        RenderWindowData _renderData;
+        EditorUtils::RenderWindowData _renderData;
         HCamera _viewportCamera;
         HCameraUI& _viewportCameraUI;
 

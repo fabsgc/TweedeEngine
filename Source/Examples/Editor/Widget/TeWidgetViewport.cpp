@@ -1,5 +1,6 @@
 #include "TeWidgetViewport.h"
 
+#include "Scene/TeSceneObject.h"
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
 #include "TeCoreApplication.h"
@@ -7,7 +8,6 @@
 #include "Components/TeCCameraUI.h"
 #include "Gui/TeGuiAPI.h"
 #include "Utility/TeTime.h"
-#include "Scene/TeSceneObject.h"
 
 namespace te
 {
@@ -66,10 +66,6 @@ namespace te
             {
                 _viewportCameraUI->EnableInput(false);
             }
-
-            // Handle viewport gpu picking
-            if (ImGui::IsWindowHovered() && gVirtualInput().IsButtonDown(_pickingBtn))
-                gEditor().NeedsGpuPicking();
         };
 
         bool renderTextureUpdated = CheckRenderTexture((float)_renderData.Width, (float)_renderData.Height);
@@ -123,6 +119,16 @@ namespace te
             _viewportCameraUI->EnableZooming(true);
         else
             _viewportCameraUI->EnableZooming(false);
+
+        // Handle viewport gpu picking
+        if (ImGui::IsWindowHovered() && gVirtualInput().IsButtonDown(_pickingBtn))
+        {
+            ImVec2 mousePos = ImGui::GetMousePos();
+            ImVec2 windowPos = ImGui::GetWindowPos();
+            ImVec2 viewportPos(mousePos.x - windowPos.x, mousePos.y - windowPos.y - 26);
+
+            gEditor().NeedsGpuPicking((UINT32)viewportPos.x, (UINT32)viewportPos.y);
+        }
 
         UpdateCameraFlag(_viewportCamera);
     }
@@ -194,39 +200,7 @@ namespace te
         _renderData.Width = (UINT32)width;
         _renderData.Height = (UINT32)height;
 
-        if (_renderData.RenderTex)
-            _renderData.RenderTex = nullptr;
-        if (_renderData.ColorTex.GetHandleData())
-            _renderData.ColorTex.Release();
-        if (_renderData.DepthStencilTex.GetHandleData())
-            _renderData.DepthStencilTex.Release();
-
-        _renderData.TargetColorDesc.Type = TEX_TYPE_2D;
-        _renderData.TargetColorDesc.Width = _renderData.Width;
-        _renderData.TargetColorDesc.Height = _renderData.Height;
-        _renderData.TargetColorDesc.Format = PF_RGBA16F;
-        _renderData.TargetColorDesc.NumSamples = gCoreApplication().GetWindow()->GetDesc().MultisampleCount;
-        _renderData.TargetColorDesc.Usage = TU_RENDERTARGET;
-
-        _renderData.TargetDepthDesc.Type = TEX_TYPE_2D;
-        _renderData.TargetDepthDesc.Width = _renderData.Width;
-        _renderData.TargetDepthDesc.Height = _renderData.Height;
-        _renderData.TargetDepthDesc.Format = PF_RGBA8;
-        _renderData.TargetDepthDesc.NumSamples = gCoreApplication().GetWindow()->GetDesc().MultisampleCount;
-        _renderData.TargetDepthDesc.Usage = TU_DEPTHSTENCIL;
-
-        _renderData.ColorTex = Texture::Create(_renderData.TargetColorDesc);
-        _renderData.DepthStencilTex = Texture::Create(_renderData.TargetDepthDesc);
-
-        _renderData.RenderTexDesc.ColorSurfaces[0].Tex = _renderData.ColorTex.GetInternalPtr();
-        _renderData.RenderTexDesc.ColorSurfaces[0].Face = 0;
-        _renderData.RenderTexDesc.ColorSurfaces[0].MipLevel = 0;
-
-        _renderData.RenderTexDesc.DepthStencilSurface.Tex = _renderData.DepthStencilTex.GetInternalPtr();
-        _renderData.RenderTexDesc.DepthStencilSurface.Face = 0;
-        _renderData.RenderTexDesc.DepthStencilSurface.MipLevel = 0;
-
-        _renderData.RenderTex = RenderTexture::Create(_renderData.RenderTexDesc);
+        EditorUtils::GenerateViewportRenderTexture(_renderData);
 
         _lastRenderDataUpatedTime = gTime().GetTime();
         _needResetViewport = false;

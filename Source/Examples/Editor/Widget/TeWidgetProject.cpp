@@ -60,7 +60,7 @@ namespace te
             ImGui::ScrollToBringRectIntoView(_window, _selectedSceneObjectRect);
 
             // If we had a drag event manage during previous showtree, we want to keep expandToSelection 
-            // value to expand selection to the new dragged positio object
+            // value to expand selection to the new dragged position object
             if (!_expandDragToSelection)
                 _expandToSelection = false;
 

@@ -91,7 +91,7 @@ namespace te
         void NeedsRedraw();
 
         /** In order to handle selection in 3D viewport, we need to call gpuPicking system in order to generate an update to date render texture */
-        void NeedsGpuPicking();
+        void NeedsGpuPicking(UINT32 x, UINT32 y);
 
         /** If we need a redraw or if 3D viewport size change, we need to call this method to force picking render */
         void MakeGpuPickingDirty();
@@ -125,9 +125,6 @@ namespace te
 
         /** Set the current preview viewport camera */
         void SetPreviewViewportCamera(HCamera& camera) { _previewViewportCamera = camera.GetNewHandleFromExisting(); }
-
-        /** When we load a mesh using GUI, we can generate materials to apply on its submeshes */
-        void ImportMeshMaterials(HMesh& mesh);
 
         /** Save current scene */
         void Save();
