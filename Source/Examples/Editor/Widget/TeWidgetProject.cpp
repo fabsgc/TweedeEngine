@@ -24,6 +24,7 @@ namespace te
         , _expandToSelection(false)
         , _expandDragToSelection(false)
         , _expandedToSelection(false)
+        , _handleSelectionWindowSwitch(false)
     { 
         _title = PROJECT_TITLE;
         _flags |= ImGuiWindowFlags_HorizontalScrollbar;
@@ -127,31 +128,33 @@ namespace te
         if (components.size() == 0 && children.size() == 0)
             nodeTitle = "          " + nodeTitle;
 
-        const bool isNodeOpened = ImGui::TreeNodeEx(
-            reinterpret_cast<void*>(static_cast<intptr_t>(sceneObjectId)), nodeFlags, nodeTitle.c_str());
-
-        // Keep a copy of the selected item's rect so that we can scroll to bring it into view
-        if ((nodeFlags & ImGuiTreeNodeFlags_Selected) && _expandToSelection)
-            _selectedSceneObjectRect = _window->DC.LastItemRect;
-
         ImGui::PushID((int)sceneObjectId);
-        // Manually detect some useful states
-        if (ImGui::IsItemHovered(ImGuiHoveredFlags_RectOnly))
-            _selections.HoveredSceneObject = sceneObject.GetInternalPtr();
-
-        // Handle drag and drop
-        HandleDragAndDrop(sceneObject);
-
-        // Recursively show all child nodes
-        if (isNodeOpened)
         {
-            if (components.size() > 0)
-                ShowComponentsTree(sceneObject);
+            const bool isNodeOpened = ImGui::TreeNodeEx(
+                reinterpret_cast<void*>(static_cast<intptr_t>(sceneObjectId)), nodeFlags, nodeTitle.c_str());
 
-            for (auto& child : children)
-                ShowSceneObjectTree(child);
+            // Keep a copy of the selected item's rect so that we can scroll to bring it into view
+            if ((nodeFlags & ImGuiTreeNodeFlags_Selected) && _expandToSelection)
+                _selectedSceneObjectRect = _window->DC.LastItemRect;
 
-            ImGui::TreePop();
+            // Manually detect some useful states
+            if (ImGui::IsItemHovered(ImGuiHoveredFlags_RectOnly))
+                _selections.HoveredSceneObject = sceneObject.GetInternalPtr();
+
+            // Handle drag and drop
+            HandleDragAndDrop(sceneObject);
+
+            // Recursively show all child nodes
+            if (isNodeOpened)
+            {
+                if (components.size() > 0)
+                    ShowComponentsTree(sceneObject);
+
+                for (auto& child : children)
+                    ShowSceneObjectTree(child);
+
+                ImGui::TreePop();
+            }
         }
         ImGui::PopID();
     }
@@ -168,7 +171,8 @@ namespace te
                 ImGuiTreeNodeFlags_AllowItemOverlap |
                 ImGuiTreeNodeFlags_SpanAvailWidth |
                 ImGuiTreeNodeFlags_Framed |
-                ImGuiTreeNodeFlags_Bullet;
+                ImGuiTreeNodeFlags_Bullet |
+                ImGuiTreeNodeFlags_Leaf;
 
             // Flag - Is selected?
             if (_selections.ClickedComponent)
@@ -181,37 +185,36 @@ namespace te
                     // start expanding (this can happen if an object is selected in the viewport)
                     if (!_selections.ClickedComponent->IsChildOf(sceneObject) && _selections.ClickedComponent->IsDescendantOf(sceneObject))
                     {
-                        ImGui::SetNextItemOpen(true);
+                        //ImGui::SetNextItemOpen(true);
                         _expandedToSelection = true;
                     }
                 }
             }
-
-            if (_selections.ClickedComponent == component.GetInternalPtr())
-                componentFlags |= ImGuiTreeNodeFlags_Selected;
 
             String componentIcon = GetComponentIcon(component);
             if (_selections.ClickedComponent == component.GetInternalPtr())
                 componentIcon += String("  ") + ICON_FA_CARET_RIGHT;
 
             ImGui::PushID((int)componentId);
-            const bool isNodeOpened = ImGui::TreeNodeEx(
-                reinterpret_cast<void*>(static_cast<intptr_t>(componentId)), componentFlags, componentIcon.c_str());
-            
-            // Handle drag and drop
-            HandleDragAndDrop(component);
-
-            if(isNodeOpened)
             {
-                // Manually detect some useful states
-                if (ImGui::IsItemHovered(ImGuiHoveredFlags_RectOnly))
-                    _selections.HoveredComponent = component.GetInternalPtr();
+                const bool isNodeOpened = ImGui::TreeNodeEx(
+                    reinterpret_cast<void*>(static_cast<intptr_t>(componentId)), componentFlags, componentIcon.c_str());
 
                 // Keep a copy of the selected item's rect so that we can scroll to bring it into view
                 if ((componentFlags & ImGuiTreeNodeFlags_Selected) && _expandToSelection)
                     _selectedSceneObjectRect = _window->DC.LastItemRect;
 
-                ImGui::TreePop();
+                // Manually detect some useful states
+                if (ImGui::IsItemHovered(ImGuiHoveredFlags_RectOnly))
+                {
+                    _selections.HoveredComponent = component.GetInternalPtr();
+                }
+
+                // Handle drag and drop
+                HandleDragAndDrop(component);
+
+                if(isNodeOpened)
+                    ImGui::TreePop();
             }
             ImGui::PopID();
         }
@@ -227,6 +230,7 @@ namespace te
     {
         HandleClicking();
         HandleKeyShortcuts();
+        HandleSelectionWindowSwitch();
         Popups();
     }
 
@@ -235,8 +239,6 @@ namespace te
         const auto isWindowHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup | ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
         const auto leftClick = ImGui::IsMouseClicked(0);
         const auto rightClick = ImGui::IsMouseClicked(1);
-
-        TE_PRINT(isWindowHovered);
 
         // Since we are handling clicking manually, we must ensure we are inside the window
         if (!isWindowHovered)
@@ -292,7 +294,8 @@ namespace te
 
     void WidgetProject::HandleSelectionWindowSwitch()
     {
-        if (_selections.ClickedComponent)
+        auto& io = ImGui::GetIO();
+        if (_selections.ClickedComponent && _handleSelectionWindowSwitch && !io.MouseDown[ImGuiMouseButton_Left])
         {
             switch (_selections.ClickedComponent->GetCoreType())
             {
@@ -309,6 +312,8 @@ namespace te
                 gEditor().PutFocus(Editor::WindowType::Script);
                 break;
             }
+
+            _handleSelectionWindowSwitch = false;
         }
     }
 
@@ -418,15 +423,15 @@ namespace te
         _selections.ClickedSceneObject = sceneObject;
         _selections.ClickedComponent = nullptr;
         _expandToSelection = true;
-        HandleSelectionWindowSwitch();
+        _handleSelectionWindowSwitch = true;
     }
 
     void WidgetProject::SetSelectedComponent(SPtr<Component> component)
     {
         _selections.ClickedComponent = component;
-        _selections.ClickedSceneObject = component->GetSceneObject().GetInternalPtr();
+        _selections.ClickedSceneObject = nullptr;
         _expandToSelection = true;
-        HandleSelectionWindowSwitch();
+        _handleSelectionWindowSwitch = true;
     }
 
     void WidgetProject::Popups()
@@ -539,10 +544,11 @@ namespace te
             sceneObject->SetParent(gEditor().GetSceneRoot());
 
         _expandToSelection = true;
+        _handleSelectionWindowSwitch = true;
+
         _selections.ClickedSceneObject = sceneObject.GetInternalPtr();
         gEditor().NeedsRedraw();
         gEditor().GetSettings().State = Editor::EditorState::Modified;
-        HandleSelectionWindowSwitch();
     }
 
     void WidgetProject::CreateRenderable(RenderableType type)
@@ -564,10 +570,11 @@ namespace te
         }
 
         _expandToSelection = true;
+        _handleSelectionWindowSwitch = true;
+
         _selections.ClickedComponent = renderable.GetInternalPtr();
         gEditor().NeedsRedraw();
         gEditor().GetSettings().State = Editor::EditorState::Modified;
-        HandleSelectionWindowSwitch();
     }
 
     void WidgetProject::CreateLight(LightType type)
@@ -599,10 +606,11 @@ namespace te
         }
 
         _expandToSelection = true;
+        _handleSelectionWindowSwitch = true;
+
         _selections.ClickedComponent = light.GetInternalPtr();
         gEditor().NeedsRedraw();
         gEditor().GetSettings().State = Editor::EditorState::Modified;
-        HandleSelectionWindowSwitch();
     }
 
     void WidgetProject::CreateCamera(TypeID_Core type)
@@ -644,9 +652,10 @@ namespace te
         }
 
         _expandToSelection = true;
+        _handleSelectionWindowSwitch = true;
+
         gEditor().NeedsRedraw();
         gEditor().GetSettings().State = Editor::EditorState::Modified;
-        HandleSelectionWindowSwitch();
     }
 
     void WidgetProject::CreateAudio()
@@ -656,9 +665,10 @@ namespace te
 
         // TODO
 
+        _handleSelectionWindowSwitch = true;
+
         gEditor().NeedsRedraw();
         gEditor().GetSettings().State = Editor::EditorState::Modified;
-        HandleSelectionWindowSwitch();
     }
 
     void WidgetProject::CreateScript()
@@ -671,10 +681,10 @@ namespace te
         script.Get()->Initialize();
 
         _expandToSelection = true;
+        _handleSelectionWindowSwitch = true;
         _selections.ClickedComponent = script.GetInternalPtr();
         gEditor().NeedsRedraw();
         gEditor().GetSettings().State = Editor::EditorState::Modified;
-        HandleSelectionWindowSwitch();
     }
 
     void WidgetProject::CreateSkybox()
@@ -690,10 +700,10 @@ namespace te
         skybox.Get()->Initialize();
 
         _expandToSelection = true;
+        _handleSelectionWindowSwitch = true;
         _selections.ClickedComponent = skybox.GetInternalPtr();
         gEditor().NeedsRedraw();
         gEditor().GetSettings().State = Editor::EditorState::Modified;
-        HandleSelectionWindowSwitch();
     }
 
     void WidgetProject::Paste()
@@ -799,9 +809,10 @@ namespace te
         }
 
         _expandToSelection = true;
+        _handleSelectionWindowSwitch = true;
+
         gEditor().NeedsRedraw();
         gEditor().GetSettings().State = Editor::EditorState::Modified;
-        HandleSelectionWindowSwitch();
     }
 
     void WidgetProject::Delete()
@@ -844,7 +855,7 @@ namespace te
 
     String WidgetProject::GetComponentIcon(const HComponent& component)
     {
-        String title = (component->SO()->GetActive()) ? ICON_FA_EYE : ICON_FA_EYE_SLASH;
+        String title = ((component->SO()->GetActive()) ? ICON_FA_EYE : ICON_FA_EYE_SLASH);
         UINT32 type = component->GetCoreType();
 
         switch (type)

@@ -85,6 +85,7 @@ namespace te
         bool _expandToSelection;
         bool _expandDragToSelection;
         bool _expandedToSelection;
+        bool _handleSelectionWindowSwitch;
         ImRect _selectedSceneObjectRect;
 
         VirtualButton _deleteBtn;
