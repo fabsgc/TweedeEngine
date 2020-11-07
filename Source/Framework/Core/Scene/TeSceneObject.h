@@ -319,6 +319,9 @@ namespace te
          */
         void SetActive(bool active);
 
+        /** Changes the object active in hierarchy state, and triggers necessary events. */
+        void SetActiveHierarchy(bool active, bool triggerEvents = true);
+
         /**
          * Returns whether or not an object is active.
          *
@@ -364,9 +367,6 @@ namespace te
          * @param[in]	object	Child to remove.
          */
         void RemoveChild(const HSceneObject& object);
-
-        /** Changes the object active in hierarchy state, and triggers necessary events. */
-        void SetActiveHierarchy(bool active, bool triggerEvents = true);
 
     public: // ***** COMPONENT ******
         /** Constructs a new component of the specified type and adds it to the internal component list. */
@@ -416,6 +416,12 @@ namespace te
 
             return gameObject;
         }
+
+        /** Remove a component from a scene object using its handle */
+        void RemoveComponent(const HComponent& component);
+
+        /** Add already existing component to this scene object */
+        void AddExistingComponent(const HComponent& component);
 
     public: // ***** COMPONENT AND SCENEOBJECT SEARCH ******
 

@@ -19,6 +19,11 @@ namespace te
         SetName("Component");
     }
 
+    void Component::SetSceneObject(HSceneObject& sceneObject)
+    {
+        _parent = sceneObject.GetNewHandleFromExisting();
+    }
+
     bool Component::TypeEquals(const Component& other)
     {
         return GetCoreType() == other.GetCoreType();

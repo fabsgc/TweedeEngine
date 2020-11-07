@@ -687,7 +687,9 @@ namespace te
                 SetScene(parent->_parentScene);
             }
             else
+            {
                 SetScene(nullptr);
+            }
 
             _parent = parent;
 
@@ -802,10 +804,14 @@ namespace te
                 break;
         }
 
-        if (!component.GetInternalPtr() && searchInChildren)
+        if (component.Empty() && searchInChildren)
         {
-            for (auto& childSO : _children)
+            for (auto& childSO : currentSO->GetChildren())
+            {
                 component = _getComponentInternal(childSO, criteria, searchType, searchInChildren);
+                if (!component.Empty())
+                    break;
+            }
         }
 
         return component;
@@ -902,10 +908,14 @@ namespace te
                 break;
         }
 
-        if (!sceneObject.GetInternalPtr() && searchInChildren)
+        if (sceneObject.Empty() && searchInChildren)
         {
-            for (auto& childSO : _children)
+            for (auto& childSO : currentSO->GetChildren())
+            {
                 sceneObject = _getSceneObjectInternal(childSO, criteria, searchType, searchInChildren);
+                if (!sceneObject.Empty())
+                    break;
+            }
         }
 
         return sceneObject;
@@ -936,7 +946,7 @@ namespace te
 
         if (searchInChildren)
         {
-            for (auto& childSO : _children)
+            for (auto& childSO : currentSO->GetChildren())
                 _getSceneObjectsInternal(childSO, criteria, sceneObjects, searchType, searchInChildren);
         }
     }
@@ -989,5 +999,33 @@ namespace te
         newComponent->_parent = _thisHandle;
 
         AddAndInitializeComponent(newComponent);
+    }
+
+    void SceneObject::RemoveComponent(const HComponent& component)
+    {
+        for (auto iter = _components.begin(); iter != _components.end(); iter++)
+        {
+            if ((*iter)->GetUUID() == component->GetUUID())
+            {
+                _components.erase(iter);
+                break;
+            }
+        }
+    }
+
+    void SceneObject::AddExistingComponent(const HComponent& component)
+    {
+        bool alreadyPresent = false;
+        for (auto iter = _components.begin(); iter != _components.end(); iter++)
+        {
+            if ((*iter)->GetUUID() == component->GetUUID())
+            {
+                alreadyPresent = true;
+                break;
+            }
+        }
+
+        if (!alreadyPresent)
+            _components.push_back(component.GetNewHandleFromExisting());
     }
 }

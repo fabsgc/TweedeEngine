@@ -22,6 +22,7 @@ namespace te
         : Widget(WidgetType::Project)
         , _selections(gEditor().GetSelectionData())
         , _expandToSelection(false)
+        , _expandDragToSelection(false)
         , _expandedToSelection(false)
     { 
         _title = PROJECT_TITLE;
@@ -47,7 +48,7 @@ namespace te
     void WidgetProject::UpdateBackground()
     { }
 
-    void WidgetProject::ShowTree(const HSceneObject& sceneObject)
+    void WidgetProject::ShowTree(HSceneObject& sceneObject)
     {
         OnTreeBegin();
         ShowSceneObjectTree(sceneObject, true);
@@ -57,13 +58,19 @@ namespace te
         if (_expandToSelection && !_expandedToSelection)
         {
             ImGui::ScrollToBringRectIntoView(_window, _selectedSceneObjectRect);
-            _expandToSelection = false;
+
+            // If we had a drag event manage during previous showtree, we want to keep expandToSelection 
+            // value to expand selection to the new dragged positio object
+            if (!_expandDragToSelection)
+                _expandToSelection = false;
+
+            _expandDragToSelection = false;
         }
 
         OnTreeEnd();
     }
 
-    void WidgetProject::ShowSceneObjectTree(const HSceneObject& sceneObject, bool expand)
+    void WidgetProject::ShowSceneObjectTree(HSceneObject& sceneObject, bool expand)
     {
         UINT64 sceneObjectId = sceneObject->GetInstanceId();
         auto children = sceneObject->GetChildren();
@@ -127,9 +134,13 @@ namespace te
         if ((nodeFlags & ImGuiTreeNodeFlags_Selected) && _expandToSelection)
             _selectedSceneObjectRect = _window->DC.LastItemRect;
 
+        ImGui::PushID((int)sceneObjectId);
         // Manually detect some useful states
         if (ImGui::IsItemHovered(ImGuiHoveredFlags_RectOnly))
             _selections.HoveredSceneObject = sceneObject.GetInternalPtr();
+
+        // Handle drag and drop
+        HandleDragAndDrop(sceneObject);
 
         // Recursively show all child nodes
         if (isNodeOpened)
@@ -140,12 +151,12 @@ namespace te
             for (auto& child : children)
                 ShowSceneObjectTree(child);
 
-            // Pop if isNodeOpen
             ImGui::TreePop();
         }
+        ImGui::PopID();
     }
 
-    void WidgetProject::ShowComponentsTree(const HSceneObject& sceneObject)
+    void WidgetProject::ShowComponentsTree(HSceneObject& sceneObject)
     {
         auto components = sceneObject->GetComponents();
         _expandedToSelection = false;
@@ -156,8 +167,8 @@ namespace te
             ImGuiTreeNodeFlags componentFlags =
                 ImGuiTreeNodeFlags_AllowItemOverlap |
                 ImGuiTreeNodeFlags_SpanAvailWidth |
-                ImGuiTreeNodeFlags_Leaf |
-                ImGuiTreeNodeFlags_FramePadding;
+                ImGuiTreeNodeFlags_Framed |
+                ImGuiTreeNodeFlags_Bullet;
 
             // Flag - Is selected?
             if (_selections.ClickedComponent)
@@ -180,11 +191,17 @@ namespace te
                 componentFlags |= ImGuiTreeNodeFlags_Selected;
 
             String componentIcon = GetComponentIcon(component);
-
             if (_selections.ClickedComponent == component.GetInternalPtr())
                 componentIcon += String("  ") + ICON_FA_CARET_RIGHT;
 
-            if (ImGui::TreeNodeEx(reinterpret_cast<void*>(static_cast<intptr_t>(componentId)), componentFlags, componentIcon.c_str()))
+            ImGui::PushID((int)componentId);
+            const bool isNodeOpened = ImGui::TreeNodeEx(
+                reinterpret_cast<void*>(static_cast<intptr_t>(componentId)), componentFlags, componentIcon.c_str());
+            
+            // Handle drag and drop
+            HandleDragAndDrop(component);
+
+            if(isNodeOpened)
             {
                 // Manually detect some useful states
                 if (ImGui::IsItemHovered(ImGuiHoveredFlags_RectOnly))
@@ -196,6 +213,7 @@ namespace te
 
                 ImGui::TreePop();
             }
+            ImGui::PopID();
         }
     }
 
@@ -290,6 +308,97 @@ namespace te
                 break;
             }
         }
+    }
+
+    void WidgetProject::HandleDragAndDrop(HSceneObject& sceneObject)
+    {
+        HSceneObject& root = gEditor().GetSceneRoot();
+
+        if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
+        {
+            _dragPayload.Type = DragPayloadType::SceneObject;
+            _dragPayload.Uuid = sceneObject->GetUUID();
+            CreateDragPayload(_dragPayload);
+            ImGui::Text(sceneObject->GetName().c_str());
+            ImGui::EndDragDropSource();
+        }
+
+        if (auto payload = ReceiveDragPayload(DragPayloadType::SceneObject))
+        {
+            if (root->GetUUID() != payload->Uuid)
+            {
+                HSceneObject& currentSO = root->GetSceneObject(payload->Uuid, true);
+
+                if (!currentSO.Empty())
+                {
+                    currentSO->SetParent(sceneObject, false);
+                    currentSO->SetActiveHierarchy(sceneObject->GetActive());
+
+                    _selections.ClickedSceneObject = currentSO.GetInternalPtr();
+                    _selections.ClickedComponent = nullptr;
+
+                    _expandToSelection = true;
+                    _expandDragToSelection = true;
+
+                    gEditor().NeedsRedraw();
+                    gEditor().GetSettings().State = Editor::EditorState::Modified;
+                }
+            }
+        }
+
+        if (auto payload = ReceiveDragPayload(DragPayloadType::Component))
+        {
+            HComponent& currentCO = root->GetComponent(payload->Uuid, true);
+
+            if (!currentCO.Empty())
+            {
+                currentCO->GetSceneObject()->RemoveComponent(currentCO);
+                currentCO->SetSceneObject(sceneObject);
+                sceneObject->AddExistingComponent(currentCO);
+                sceneObject->SetActiveHierarchy(sceneObject->GetParent()->GetActive());
+
+                _selections.ClickedSceneObject = sceneObject.GetInternalPtr();
+                _selections.ClickedComponent = currentCO.GetInternalPtr();
+
+                _expandToSelection = true;
+                _expandDragToSelection = true;
+
+                gEditor().NeedsRedraw();
+                gEditor().GetSettings().State = Editor::EditorState::Modified;
+            }
+        }
+    }
+
+    void WidgetProject::HandleDragAndDrop(HComponent& component)
+    {
+        if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
+        {
+            _dragPayload.Type = DragPayloadType::Component;
+            _dragPayload.Uuid = component->GetUUID();
+            CreateDragPayload(_dragPayload);
+            ImGui::Text(component->GetName().c_str());
+            ImGui::EndDragDropSource();
+        }
+    }
+
+    void WidgetProject::CreateDragPayload(const DragDropPayload& payload)
+    {
+        ImGui::SetDragDropPayload(reinterpret_cast<const char*>(&payload.Type), reinterpret_cast<const void*>(&payload), sizeof(payload), ImGuiCond_Once);
+    }
+
+    WidgetProject::DragDropPayload* WidgetProject::ReceiveDragPayload(DragPayloadType type)
+    {
+        DragDropPayload* payload = nullptr;
+
+        if (ImGui::BeginDragDropTarget())
+        {
+            if (const auto payload_imgui = ImGui::AcceptDragDropPayload(reinterpret_cast<const char*>(&type)))
+                payload = static_cast<DragDropPayload*>(payload_imgui->Data);
+
+            ImGui::EndDragDropTarget();
+        }
+
+        return payload;
     }
 
     void WidgetProject::SetSelectedSceneObject(SPtr<SceneObject> sceneObject)

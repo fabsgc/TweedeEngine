@@ -101,6 +101,9 @@ namespace te
         /** Returns internal handle data. */
         const SPtr<GameObjectHandleData>& _getHandleData() const { return _data; }
 
+        /** Returns true if handled data is empty */
+        const bool Empty() const { return _data->Ptr == nullptr; }
+
         /** Resolves a handle to a proper GameObject in case it was created uninitialized. */
         void _resolve(const GameObjectHandleBase& object) { _data->Ptr = object._data->Ptr; }
 

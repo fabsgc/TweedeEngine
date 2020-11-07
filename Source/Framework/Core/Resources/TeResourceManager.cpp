@@ -199,7 +199,7 @@ namespace te
             _UUIDToFile.erase(iterUUID);
         }
 
-        for(auto& iterFile = _fileToUUID.begin(); iterFile != _fileToUUID.end(); iterFile++)
+        for(auto iterFile = _fileToUUID.begin(); iterFile != _fileToUUID.end(); iterFile++)
         {
             if(iterFile->second == uuid)
             {

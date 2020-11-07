@@ -26,6 +26,9 @@ namespace te
             return TID_Component;
         }
 
+        /** Sometimes, you could have to change parent of a component */
+        void SetSceneObject(HSceneObject& sceneObject);
+
         /**	Returns the SceneObject this Component is assigned to. */
         const HSceneObject& GetSceneObject() const { return _parent; }
 

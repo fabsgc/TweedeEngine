@@ -29,10 +29,37 @@ namespace te
             Empty, Cube, Sphere, Cylinder, Cone
         };
 
+        enum class DragPayloadType
+        {
+            Component, SceneObject
+        };
+
+        struct DragDropPayload
+        {
+            DragDropPayload()
+                : Type(DragPayloadType::SceneObject)
+                , Uuid(UUID())
+            { }
+
+            DragDropPayload(DragPayloadType type, UUID uuid)
+                : Type(type)
+                , Uuid(uuid)
+            { }
+
+            DragPayloadType Type;
+            UUID Uuid;
+        };
+    
     protected:
-        void ShowTree(const HSceneObject& sceneObject);
-        void ShowSceneObjectTree(const HSceneObject& sceneObject, bool expand = false);
-        void ShowComponentsTree(const HSceneObject& sceneObject);
+        void CreateDragPayload(const DragDropPayload& payload);
+        DragDropPayload* ReceiveDragPayload(DragPayloadType type);
+        void HandleDragAndDrop(HSceneObject& sceneObject);
+        void HandleDragAndDrop(HComponent& component);
+
+    protected:
+        void ShowTree(HSceneObject& sceneObject);
+        void ShowSceneObjectTree(HSceneObject& sceneObject, bool expand = false);
+        void ShowComponentsTree(HSceneObject& sceneObject);
         void OnTreeBegin();
         void OnTreeEnd();
         void HandleClicking();
@@ -56,11 +83,14 @@ namespace te
     protected:
         Editor::SelectionData& _selections;
         bool _expandToSelection;
+        bool _expandDragToSelection;
         bool _expandedToSelection;
         ImRect _selectedSceneObjectRect;
 
         VirtualButton _deleteBtn;
         VirtualButton _copyBtn;
         VirtualButton _pasteBtn;
+
+        DragDropPayload _dragPayload;
     };
 }
