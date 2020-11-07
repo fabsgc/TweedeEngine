@@ -27,6 +27,8 @@
 #include "Components/TeCRenderable.h"
 #include "TeEditorResManager.h"
 #include "Mesh/TeMesh.h"
+#include "Math/TeVector2I.h"
+#include "Image/TeColor.h"
 
 // TODO Temp for debug purpose
 #include "Importer/TeImporter.h"
@@ -47,6 +49,7 @@ namespace te
 
     Editor::Editor()
         : _editorBegun(false)
+        , _gpuPickingDirty(false)
     { }
 
     Editor::~Editor()
@@ -62,6 +65,8 @@ namespace te
         InitializeScene();
         InitializeUICamera();
         InitializeViewportCamera();
+
+        _gpuPicking.Initialize();
         
         if (GuiAPI::Instance().IsGuiInitialized())
             InitializeGui();
@@ -102,8 +107,36 @@ namespace te
 
     void Editor::NeedsRedraw()
     {
-        if (_settings.WViewport)
-            static_cast<WidgetViewport*>(&*_settings.WViewport)->NeedsRedraw();
+        if (!_settings.WViewport)
+            return;
+
+        static_cast<WidgetViewport*>(&*_settings.WViewport)->NeedsRedraw();
+        MakeGpuPickingDirty();
+    }
+
+    void Editor::NeedsGpuPicking()
+    {
+        if (!_settings.WViewport)
+            return;
+
+        if (_gpuPickingDirty)
+        {
+            WidgetViewport::RenderWindowData viewportData = 
+                static_cast<WidgetViewport*>(&*_settings.WViewport)->GetRenderWindowData();
+            GpuPicking::RenderParam pickingData(viewportData.Width, viewportData.Height);
+
+            _gpuPicking.ComputePicking(_previewViewportCamera, pickingData, _sceneSO);
+            Color color = _gpuPicking.GetColorAt(Vector2I());
+
+            // TODO
+        }
+
+        _gpuPickingDirty = false;
+    }
+
+    void Editor::MakeGpuPickingDirty()
+    {
+        _gpuPickingDirty = true;
     }
 
     void Editor::InitializeInput()
@@ -130,6 +163,7 @@ namespace te
         inputConfig->RegisterAxis(CCameraUI::SCROLL_AXIS_BINDING, VIRTUAL_AXIS_DESC((UINT32)InputAxis::MouseZ));
 
         inputConfig->RegisterButton(WidgetViewport::RETARGET_BINDING, TE_DECIMAL);
+        inputConfig->RegisterButton(WidgetViewport::PICKING_BINDING, TE_MOUSE_LEFT);
     }
 
     void Editor::InitializeScene()

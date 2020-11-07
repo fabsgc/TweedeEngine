@@ -33,6 +33,7 @@ namespace te
         InitShaderBloom();
         InitShaderMotionBlur();
         InitShaderGaussianBlur();
+        InitShaderGpuPicking();
         InitDefaultMaterial();
 #endif
     }
@@ -42,31 +43,45 @@ namespace te
 
     HShader BuiltinResources::GetBuiltinShader(BuiltinShader type)
     {
+        HShader shader;
+
         switch(type)
         {
         case BuiltinShader::Opaque:
-            return _shaderOpaque;
+            shader = _shaderOpaque;
+            break;
         case BuiltinShader::Transparent:
-            return _shaderTransparent;
+            shader = _shaderTransparent;
+            break;
         case BuiltinShader::Blit:
-            return _shaderBlit;
+            shader = _shaderBlit;
+            break;
         case BuiltinShader::Skybox:
-            return _shaderSkybox;
+            shader = _shaderSkybox;
+            break;
         case BuiltinShader::FXAA:
-            return _shaderFXAA;
+            shader = _shaderFXAA;
+            break;
         case BuiltinShader::ToneMapping:
-            return _shaderToneMapping;
+            shader = _shaderToneMapping;
+            break;
         case BuiltinShader::Bloom:
-            return _shaderBloom;
+            shader = _shaderBloom;
+            break;
         case BuiltinShader::MotionBlur:
-            return _shaderMotionBlur;
+            shader = _shaderMotionBlur;
+            break;
         case BuiltinShader::GaussianBlur:
-            return _shaderGaussianBlur;
+            shader = _shaderGaussianBlur;
+            break;
+        case BuiltinShader::GpuPicking:
+            shader = _shaderGpuPicking;
+            break;
         default:
             break;
         }
 
-        return HShader();
+        return shader.GetNewHandleFromExisting();
     }
 
     SPtr<SamplerState> BuiltinResources::GetBuiltinSampler(BuiltinSampler type)
@@ -230,6 +245,24 @@ namespace te
             _pixelShaderGaussianBlurDesc.Language = "hlsl";
             _pixelShaderGaussianBlurDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
             _pixelShaderGaussianBlurDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/GpuPicking_VS.hlsl"));
+            _vertexShaderGpuPickingDesc.Type = GPT_VERTEX_PROGRAM;
+            _vertexShaderGpuPickingDesc.EntryPoint = "main";
+            _vertexShaderGpuPickingDesc.Language = "hlsl";
+            _vertexShaderGpuPickingDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
+            _vertexShaderGpuPickingDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/GpuPicking_PS.hlsl"));
+            _pixelShaderGpuPickingDesc.Type = GPT_PIXEL_PROGRAM;
+            _pixelShaderGpuPickingDesc.EntryPoint = "main";
+            _pixelShaderGpuPickingDesc.Language = "hlsl";
+            _pixelShaderGpuPickingDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
+            _pixelShaderGpuPickingDesc.Source = shaderFile.GetAsString();
         }
     }
     void BuiltinResources::InitStates()
@@ -575,6 +608,18 @@ namespace te
             _gaussianBlurShaderDesc.AddParameter(gMSAACountDesc);
             _gaussianBlurShaderDesc.AddParameter(gHorizontalDesc);
         }
+
+        {
+            SHADER_DATA_PARAM_DESC gMatViewProjDesc("gMatViewProj", "gMatViewProj", GPDT_MATRIX_4X4);
+            
+            SHADER_DATA_PARAM_DESC gMatWorldDesc("gMatWorld", "gMatWorld", GPDT_MATRIX_4X4);
+            SHADER_DATA_PARAM_DESC gColorDesc("gColor", "gColor", GPDT_FLOAT4);
+
+            _gpuPickingShaderDesc.AddParameter(gMatViewProjDesc);
+
+            _gpuPickingShaderDesc.AddParameter(gMatWorldDesc);
+            _gpuPickingShaderDesc.AddParameter(gColorDesc);
+        }
     }
 
     void BuiltinResources::InitSamplers()
@@ -600,7 +645,7 @@ namespace te
         SHADER_DESC shaderDesc = _forwardShaderDesc;
         shaderDesc.Techniques.push_back(technique.GetInternalPtr());
 
-        _shaderOpaque = Shader::Create("Forward_Opaque", shaderDesc);
+        _shaderOpaque = Shader::Create("ForwardOpaque", shaderDesc);
     }
 
     void BuiltinResources::InitShaderTransparent()
@@ -632,7 +677,7 @@ namespace te
         shaderDesc.QueueType = QueueSortType::BackToFront;
         shaderDesc.Techniques.push_back(technique.GetInternalPtr());
         
-        _shaderTransparent = Shader::Create("Forward_Transparent", shaderDesc);
+        _shaderTransparent = Shader::Create("ForwardTransparent", shaderDesc);
     }
 
     void BuiltinResources::InitShaderBlit()
@@ -804,6 +849,25 @@ namespace te
         shaderDesc.Techniques.push_back(technique.GetInternalPtr());
 
         _shaderGaussianBlur = Shader::Create("GaussianBlur", shaderDesc);
+    }
+
+    void BuiltinResources::InitShaderGpuPicking()
+    {
+        PASS_DESC passDesc;
+        passDesc.BlendStateDesc = _blendOpaqueStateDesc;
+        passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
+        passDesc.RasterizerStateDesc = _rasterizerStateDesc;
+        passDesc.VertexProgramDesc = _vertexShaderGpuPickingDesc;
+        passDesc.PixelProgramDesc = _pixelShaderGpuPickingDesc;
+
+        HPass pass = Pass::Create(passDesc);
+        HTechnique technique = Technique::Create("hlsl", { pass.GetInternalPtr() });
+        technique->Compile();
+
+        SHADER_DESC shaderDesc = _gpuPickingShaderDesc;
+        shaderDesc.Techniques.push_back(technique.GetInternalPtr());
+
+        _shaderGpuPicking = Shader::Create("GpuPicking", shaderDesc);
     }
 
     void BuiltinResources::InitDefaultMaterial()

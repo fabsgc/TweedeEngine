@@ -4,6 +4,7 @@
 #include "Widget/TeWidget.h"
 #include "Utility/TeModule.h"
 #include "ImGuiExt/TeImGuiFileBrowser.h"
+#include "TeGpuPicking.h"
 
 #include <vector>
 #include <memory>
@@ -89,6 +90,12 @@ namespace te
         /** Called to inform the editor that some element has been modified and viewport must be updated */
         void NeedsRedraw();
 
+        /** In order to handle selection in 3D viewport, we need to call gpuPicking system in order to generate an update to date render texture */
+        void NeedsGpuPicking();
+
+        /** If we need a redraw or if 3D viewport size change, we need to call this method to force picking render */
+        void MakeGpuPickingDirty();
+
         /** Get viewport camera handle */
         HCamera& GetViewportCamera() { return _viewportCamera; }
 
@@ -119,6 +126,7 @@ namespace te
         /** Set the current preview viewport camera */
         void SetPreviewViewportCamera(HCamera& camera) { _previewViewportCamera = camera.GetNewHandleFromExisting(); }
 
+        /** When we load a mesh using GUI, we can generate materials to apply on its submeshes */
         void ImportMeshMaterials(HMesh& mesh);
 
         /** Save current scene */
@@ -149,16 +157,27 @@ namespace te
         SelectionData _selections;
         EditorSettings _settings;
 
+        // viewport scene object is a hidden node to store stuff like cameras not visible
         HSceneObject _viewportSO;
+        // root node for the user
         HSceneObject _sceneSO;
+        
+        // Camera used to render GUI
+        HCamera _uiCamera;
+        HSceneObject _uiCameraSO;
+
+        // Default camera for 3D viewport
         HCamera _viewportCamera;
         HCameraUI _viewportCameraUI;
         HSceneObject _viewportCameraSO;
-        
-        HSceneObject _uiCameraSO;
-        HCamera _uiCamera;
 
-        HCamera _previewViewportCamera; // we can use an user created camera for viewport;
+        // we can use an user created camera for viewport;
+        HCamera _previewViewportCamera;
+
+        // I decided to use GPU Picking for 3D viewport selection handle
+        GpuPicking _gpuPicking;
+        // After NeedRedraws() or 3D viewport resize, we need to put this to true in order to force picking render
+        bool _gpuPickingDirty;
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         // TODO Temp for debug purpose

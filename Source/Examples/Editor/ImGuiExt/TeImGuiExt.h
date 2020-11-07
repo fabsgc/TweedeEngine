@@ -134,7 +134,5 @@ namespace te
 
             return hasChanged;
         };
-
-        
     };
 }

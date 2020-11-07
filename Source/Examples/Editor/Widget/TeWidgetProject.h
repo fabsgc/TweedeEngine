@@ -1,8 +1,8 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
-#include "TeWidget.h"
 #include "../TeEditor.h"
+#include "TeWidget.h"
 #include "Renderer/TeLight.h"
 #include "Input/TeVirtualInput.h"
 

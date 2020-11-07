@@ -37,8 +37,10 @@ namespace te
         Bloom = 0x6,
         /** Shader used for motion blur post process */
         MotionBlur = 0x7,
-        /** Shader used for motion blur post process */
-        GaussianBlur = 0x8
+        /** Shader used for gaussian blur post process */
+        GaussianBlur = 0x8,
+        /** Shader used for gpu picking */
+        GpuPicking = 0x9
     };
 
     /** Types of builtin shaders that are always available. */
@@ -123,6 +125,7 @@ namespace te
         void InitShaderBloom();
         void InitShaderMotionBlur();
         void InitShaderGaussianBlur();
+        void InitShaderGpuPicking();
 
         void InitDefaultMaterial();
 
@@ -136,6 +139,7 @@ namespace te
         HShader _shaderBloom;
         HShader _shaderMotionBlur;
         HShader _shaderGaussianBlur;
+        HShader _shaderGpuPicking;
 
         SPtr<SamplerState> _anisotropicSamplerState = nullptr;
         SPtr<SamplerState> _bilinearSamplerState = nullptr;
@@ -149,6 +153,7 @@ namespace te
         SHADER_DESC _bloomShaderDesc;
         SHADER_DESC _motionBlurShaderDesc;
         SHADER_DESC _gaussianBlurShaderDesc;
+        SHADER_DESC _gpuPickingShaderDesc;
 
         GPU_PROGRAM_DESC _vertexShaderForwardDesc;
         GPU_PROGRAM_DESC _pixelShaderForwardDesc;
@@ -173,6 +178,9 @@ namespace te
 
         GPU_PROGRAM_DESC _vertexShaderGaussianBlurDesc;
         GPU_PROGRAM_DESC _pixelShaderGaussianBlurDesc;
+
+        GPU_PROGRAM_DESC _vertexShaderGpuPickingDesc;
+        GPU_PROGRAM_DESC _pixelShaderGpuPickingDesc;
 
         BLEND_STATE_DESC _blendOpaqueStateDesc;
         BLEND_STATE_DESC _blendTransparentStateDesc;

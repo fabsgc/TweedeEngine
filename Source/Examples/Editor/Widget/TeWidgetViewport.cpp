@@ -13,6 +13,7 @@ namespace te
 {
     const float WidgetViewport::MIN_TIME_BETWEEN_UPDATE = 1.0f;
     const String WidgetViewport::RETARGET_BINDING = "ReTarget";
+    const String WidgetViewport::PICKING_BINDING = "Picking";
 
     void UpdateCameraFlag(HCamera& camera);
 
@@ -39,6 +40,7 @@ namespace te
     {
         _resizeEvent = gCoreApplication().GetWindow()->OnResized.Connect(std::bind(&WidgetViewport::Resize, this));
         _reTargetBtn = VirtualButton(RETARGET_BINDING);
+        _pickingBtn  = VirtualButton(PICKING_BINDING);
 
         _onBeginCallback = [this] {
             // CCamerUI component is active only when original viewport camera is active
@@ -64,6 +66,10 @@ namespace te
             {
                 _viewportCameraUI->EnableInput(false);
             }
+
+            // Handle viewport gpu picking
+            if (ImGui::IsWindowHovered() && gVirtualInput().IsButtonDown(_pickingBtn))
+                gEditor().NeedsGpuPicking();
         };
 
         bool renderTextureUpdated = CheckRenderTexture((float)_renderData.Width, (float)_renderData.Height);
@@ -77,6 +83,8 @@ namespace te
     {
         if (_isVisible && GuiAPI::Instance().IsGuiInitialized())
             _needResetViewport = true;
+
+        gEditor().MakeGpuPickingDirty();
     }
 
     void WidgetViewport::NeedsRedraw()
@@ -151,6 +159,8 @@ namespace te
         {
             _viewportCamera->GetViewport()->SetTarget(_renderData.RenderTex);
             _viewportCamera->SetAspectRatio(width / height);
+
+            gEditor().MakeGpuPickingDirty();
         }
 
         SPtr<TextureView> textureView = _renderData.RenderTex->GetColorTexture(0)->RequestView(

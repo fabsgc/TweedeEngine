@@ -14,6 +14,7 @@ namespace te
     {
     public:
         static const String RETARGET_BINDING;
+        static const String PICKING_BINDING;
 
         struct RenderWindowData
         {
@@ -40,6 +41,8 @@ namespace te
         void NeedsRedraw();
         void SetVisible(bool isVisible);
 
+        const RenderWindowData& GetRenderWindowData() const { return _renderData; }
+
     protected:
         /** Return true if texture has been updated */
         bool CheckRenderTexture(const float& width, const float& height);
@@ -49,7 +52,7 @@ namespace te
 
     protected:
         static const float MIN_TIME_BETWEEN_UPDATE;
-
+        
     protected:
         HEvent _resizeEvent;
         Editor::SelectionData& _selections;
@@ -62,5 +65,6 @@ namespace te
         bool _needResetViewport;
 
         VirtualButton _reTargetBtn;
+        VirtualButton _pickingBtn;
     };
 }

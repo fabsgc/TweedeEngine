@@ -1,5 +1,4 @@
 #include "TeWidgetProject.h"
-#include "../TeEditor.h"
 
 #include "Resources/TeResourceManager.h"
 #include "Scene/TeSceneManager.h"
@@ -15,8 +14,8 @@
 namespace te
 {
     const String WidgetProject::DELETE_BINDING = "Delete";
-    const String WidgetProject::COPY_BINDING = "Copy";
-    const String WidgetProject::PASTE_BINDING = "Paste";
+    const String WidgetProject::COPY_BINDING   = "Copy";
+    const String WidgetProject::PASTE_BINDING  = "Paste";
 
     WidgetProject::WidgetProject()
         : Widget(WidgetType::Project)
@@ -400,7 +399,8 @@ namespace te
 
     void WidgetProject::CreateDragPayload(const DragDropPayload& payload)
     {
-        ImGui::SetDragDropPayload(reinterpret_cast<const char*>(&payload.Type), reinterpret_cast<const void*>(&payload), sizeof(payload), ImGuiCond_Once);
+        ImGui::SetDragDropPayload(reinterpret_cast<const char*>(&payload.Type), 
+            reinterpret_cast<const void*>(&payload), sizeof(payload), ImGuiCond_Once);
     }
 
     WidgetProject::DragDropPayload* WidgetProject::ReceiveDragPayload(DragPayloadType type)
@@ -460,10 +460,8 @@ namespace te
                     {
                         if (ImGui::MenuItem(ICON_FA_LIGHTBULB " Directional light"))
                             CreateLight(LightType::Directional);
-
                         if (ImGui::MenuItem(ICON_FA_LIGHTBULB " Point light"))
                             CreateLight(LightType::Radial);
-
                         if (ImGui::MenuItem(ICON_FA_LIGHTBULB " Spot light"))
                             CreateLight(LightType::Spot);
 
@@ -474,10 +472,8 @@ namespace te
                     {
                         if (ImGui::MenuItem(ICON_FA_CAMERA " Rendering camera"))
                             CreateCamera(TypeID_Core::TID_CCamera);
-
                         if (ImGui::MenuItem(ICON_FA_CAMERA " Flying camera"))
                             CreateCamera(TypeID_Core::TID_CCameraFlyer);
-
                         if (ImGui::MenuItem(ICON_FA_CAMERA" Orbital camera"))
                             CreateCamera(TypeID_Core::TID_CCameraUI);
 
@@ -488,7 +484,6 @@ namespace te
                     {
                         if (ImGui::MenuItem(ICON_FA_MICROPHONE " Audio source"))
                             CreateAudio();
-
                         if (ImGui::MenuItem(ICON_FA_HEADPHONES " Audio listener"))
                             CreateAudio();
 
@@ -497,7 +492,6 @@ namespace te
 
                     if (ImGui::MenuItem(ICON_FA_GLOBE " Skybox"))
                         CreateSkybox();
-
                     if (ImGui::MenuItem(ICON_FA_SCROLL " Script"))
                         CreateScript();
 
