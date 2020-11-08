@@ -62,6 +62,11 @@ namespace te
                     }
                 }
             }
+            else if (ImGui::IsWindowHovered() && ImGui::GetIO().MouseDown[ImGuiMouseButton_Right] 
+                && _viewportCamera.GetInternalPtr() == gEditor().GetViewportCamera().GetInternalPtr())
+            {
+                _viewportCameraUI->EnableInput(true);
+            }
             else
             {
                 _viewportCameraUI->EnableInput(false);

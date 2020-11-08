@@ -212,6 +212,19 @@ namespace te
     void CCameraUI::EnableInput(bool enable)
     {
         _inputEnabled = enable;
+
+        if (_lastHideCursorState)
+        {
+            UINT32 width = gCoreApplication().GetWindow()->GetProperties().Width;
+            UINT32 height = gCoreApplication().GetWindow()->GetProperties().Height;
+            UINT32 left = gCoreApplication().GetWindow()->GetProperties().Left;
+            UINT32 top = gCoreApplication().GetWindow()->GetProperties().Top;
+
+            Platform::ShowCursor();
+            Platform::SetCursorPosition(Vector2I(width / 2 + left, height / 2 + top));
+
+            _lastHideCursorState = false;
+        }   
     }
 
     void CCameraUI::EnableZooming(bool enable)
