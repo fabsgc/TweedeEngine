@@ -3,6 +3,7 @@ set (TE_EDITOR_INC_NOFILTER
     "TeApplication.h"
     "TeEditorResManager.h"
     "TeGpuPicking.h"
+    "TeGpuPickingMat.h"
     "TeEditorUtils.h"
 )
 
@@ -12,6 +13,7 @@ set (TE_EDITOR_SRC_NOFILTER
     "TeApplication.cpp"
     "TeEditorResManager.cpp"
     "TeGpuPicking.cpp"
+    "TeGpuPickingMat.cpp"
     "TeEditorUtils.cpp"
 )
 

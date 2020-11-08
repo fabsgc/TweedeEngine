@@ -126,7 +126,9 @@ namespace te
 
                 _graphicsPipeline = pass->GetGraphicsPipelineState();
                 if (_graphicsPipeline != nullptr)
+                {
                     _params = GpuParams::Create(_graphicsPipeline);
+                }
                 else
                 {
                     _computePipeline = pass->GetComputePipelineState();
@@ -177,6 +179,9 @@ namespace te
                 }
 
                 _stencilRef = pass->GetStencilRefValue();
+
+                //We do not support variations, so we only use first technique of the shader
+                break; 
             }
         }
 

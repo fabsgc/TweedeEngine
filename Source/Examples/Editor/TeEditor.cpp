@@ -50,7 +50,7 @@ namespace te
 
     Editor::Editor()
         : _editorBegun(false)
-        , _gpuPickingDirty(false)
+        , _gpuPickingDirty(true)
     { }
 
     Editor::~Editor()
@@ -127,18 +127,20 @@ namespace te
             GpuPicking::RenderParam pickingData(viewportData.Width, viewportData.Height);
 
             _gpuPicking.ComputePicking(_previewViewportCamera, pickingData, _sceneSO);
-
             _gpuPickingDirty = false;
-
-            TE_PRINT("PICKING UPDATE");
         }
 
-        Color color = _gpuPicking.GetColorAt(x, y);
         SPtr<GameObject> gameObject = _gpuPicking.GetGameObjectAt(x, y);
+        if (gameObject)
+        {
+            SPtr<Component> component = std::static_pointer_cast<Component>(gameObject);
 
-        TE_PRINT("PICKING DO");
+            _selections.ClickedComponent = component;
+            _selections.ClickedSceneObject = component->GetSceneObject().GetInternalPtr();
 
-        // TODO decode color and find component
+            if (_settings.WProject)
+                std::static_pointer_cast<WidgetProject>(_settings.WProject)->ForceExpandToSelection();
+        }
     }
 
     void Editor::MakeGpuPickingDirty()

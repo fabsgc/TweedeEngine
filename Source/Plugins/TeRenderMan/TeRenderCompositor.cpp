@@ -26,12 +26,6 @@ namespace te
         SPtr<Material> lastMaterial = nullptr;
         UINT32 gpuParamsBindFlags = 0;
 
-        // First of all, we need to construct light buffer, using all visible lights
-        /*Vector3I lightCounts;
-        const LightData* lights[STANDARD_FORWARD_MAX_NUM_LIGHTS];
-        viewGroup.GetVisibleLightData().GatherLights(lights, lightCounts);
-        PerLightsBuffer::UpdatePerLights(lights, lightCounts.x + lightCounts.y + lightCounts.z);*/
-
         for(auto& entry : elements)
         {
             if(entry.ApplyPass)

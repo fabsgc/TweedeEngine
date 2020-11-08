@@ -13,20 +13,12 @@
 #include "RenderAPI/TeRenderTexture.h"
 #include "Renderer/TeParamBlocks.h"
 #include "TeEditorUtils.h"
+#include "TeGpuPickingMat.h"
 
 #include <unordered_map>
 
 namespace te
 {
-    TE_PARAM_BLOCK_BEGIN(PerCameraParamDef)
-        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatViewProj)
-    TE_PARAM_BLOCK_END
-
-    TE_PARAM_BLOCK_BEGIN(PerObjectParamDef)
-        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatWorld)
-        TE_PARAM_BLOCK_ENTRY(Vector4, gColor)
-    TE_PARAM_BLOCK_END
-
     class GpuPicking
     {
     public:
@@ -99,14 +91,8 @@ namespace te
         void DrawCamera(const HCamera& camera);
 
     private:
-        HShader _shader;
+        GpuPickingMat* _material;
         EditorUtils::RenderWindowData _renderData;
-
-        PerCameraParamDef _perCameraParamDef;
-        PerObjectParamDef _perObjectParamDef;
-        SPtr<GpuParamBlockBuffer> _perCameraParamBuffer;
-        SPtr<GpuParamBlockBuffer> _perObjectParamBuffer;
-
         std::unordered_map<RGBA, SPtr<GameObject>> _colorToGameObject;
     };
 }

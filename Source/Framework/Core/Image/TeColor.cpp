@@ -60,10 +60,10 @@ namespace te
         static std::mt19937 generator(seed);
         std::uniform_real_distribution<float> distribution(min, max);
 
-        float r = distribution(generator);
-        float g = distribution(generator);
-        float b = distribution(generator);
-        float a = (alpha) ? distribution(generator) : 1.0f;
+        float r = Math::Round(distribution(generator) * 1e+6f) / 1e+6f;
+        float g = Math::Round(distribution(generator) * 1e+6f) / 1e+6f;
+        float b = Math::Round(distribution(generator) * 1e+6f) / 1e+6f;
+        float a = (alpha) ? Math::Round(distribution(generator) * 1e+6f) / 1e+6f : 1.0f;
 
         return Color(r, g, b, a);
     }

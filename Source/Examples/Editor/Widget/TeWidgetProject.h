@@ -23,6 +23,8 @@ namespace te
         virtual void Update() override;
         virtual void UpdateBackground() override;
 
+        void ForceExpandToSelection() { _expandToSelection = true; }
+
     protected:
         enum class RenderableType
         {

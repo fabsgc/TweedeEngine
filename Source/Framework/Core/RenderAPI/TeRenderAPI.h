@@ -74,11 +74,10 @@ namespace te
          *
          * WARNING : Be careful when you set different way of binding buffers. All buffers you want to bind must be consecutives in memory
          * 
-         * @param[in]	gpuParams			GpuPArams containing all elements to bind
-         * @param[in]	gpuParamsBindFlags			Specify with kind of params you want to bind
-         * @param[in]	gpuParamsBlockBindFlags		In case you only want to bind constant buffer, you can specify how there are selected
+         * @param[in]	gpuParams					GpuPArams containing all elements to bind
+         * @param[in]	gpuParamsBindFlags			Specify which kind of params you want to bind
+         * @param[in]	gpuParamsBlockBindFlags		In case you only want to bind constant buffers, you can specify how there are selected
          * @param[in]	paramBlocksToBind			All constants buffers you want to bind by name. Be careful, buffers must to be consecutive in memory
-         * 
          */
         virtual void SetGpuParams(const SPtr<GpuParams>& gpuParams, UINT32 gpuParamsBindFlags = (UINT32)GPU_BIND_ALL,
             UINT32 gpuParamsBlockBindFlags = (UINT32)GPU_BIND_PARAM_BLOCK_ALL, const Vector<String>& paramBlocksToBind = {}) = 0;

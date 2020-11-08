@@ -2,41 +2,34 @@
 
 #include "TeEditor.h"
 #include "RenderAPI/TeRenderAPI.h"
-#include "Resources/TeBuiltinResources.h"
-#include "Renderer/TeRenderable.h"
 #include "Components/TeCRenderable.h"
 #include "Components/TeCLight.h"
 #include "Components/TeCCamera.h"
 #include "Scene/TeTransform.h"
+#include "Renderer/TeRendererUtility.h"
 
 namespace te
 {
     void GpuPicking::Initialize()
-    { 
-        _shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::GpuPicking);
-        _perCameraParamBuffer = _perCameraParamDef.CreateBuffer();
-        _perObjectParamBuffer = _perObjectParamDef.CreateBuffer();
+    {
+        _material = GpuPickingMat::Get();
     }
 
     void GpuPicking::ComputePicking(const HCamera& camera, const RenderParam& param, const HSceneObject& root)
     { 
         RenderAPI& rapi = RenderAPI::Instance();
         UINT32 clearBuffers = FBT_COLOR | FBT_DEPTH | FBT_STENCIL;
-        const Matrix4& projectionMatrix = camera->GetProjectionMatrixRS();
-        const Matrix4& viewMatrix = camera->GetViewMatrix();
         
         // Check if texture is up to date
         CheckRenderTexture(param.Width, param.Height);
 
-        // Update per camera gpu buffer
-        Matrix4 viewProjMatrix = projectionMatrix * viewMatrix;
-        _perCameraParamDef.gMatViewProj.Set(_perCameraParamBuffer, viewProjMatrix.Transpose());
+        // Bind camera param buffer
+        _material->BindCamera(camera);
 
-        // Configurer output
+        // Configure output
         rapi.SetRenderTarget(_renderData.RenderTex);
-        rapi.ClearViewport(clearBuffers, Color::Blue);
+        rapi.ClearViewport(clearBuffers, Color::Black);
 
-        // TODO draw
         Draw(camera, root);
 
         rapi.SetRenderTarget(nullptr);
@@ -53,11 +46,32 @@ namespace te
 
     SPtr<GameObject> GpuPicking::GetGameObjectAt(UINT32 x, UINT32 y)
     {
-        Color color = GetColorAt(x, y);
-        auto iter = _colorToGameObject.find(color.GetAsRGBA());
+        Color pickedColor = GetColorAt(x, y);
+        RGBA pickedColorRGBA = pickedColor.GetAsRGBA();
 
-        if (iter != _colorToGameObject.end())
-            return iter->second;
+        const auto& iterFind = _colorToGameObject.find(pickedColorRGBA);
+        if (iterFind != _colorToGameObject.end())
+            return iterFind->second;
+
+        // Due to float precision, sometimes, an object can't be found
+        // If picked color is different from black, we try to find the closest color in objects
+        // If the distance between the picked color and this object color is small enough we
+        // can consider that this object is the current picked object
+        Vector4 pickedColorV4 = pickedColor.GetAsVector4();
+        Vector3 pickedColorV3 = Vector3(pickedColorV4.x, pickedColorV4.y, pickedColorV4.z);
+        Vector3 blackColorV3;
+
+        if (fabs(blackColorV3.SquaredDistance(pickedColorV3)) > 1e-3)
+        {
+            for (auto& iterObject : _colorToGameObject)
+            {
+                Vector4 objColorObjV4 = iterObject.second->GetColor().GetAsVector4();
+                Vector3 objColorObjV3 = Vector3(objColorObjV4.x, objColorObjV4.y, objColorObjV4.z);
+
+                if(fabs(objColorObjV3.SquaredDistance(pickedColorV3)) < 1e-3)
+                    return iterObject.second;
+            }
+        }
 
         return nullptr;
     }
@@ -127,7 +141,7 @@ namespace te
             if (_colorToGameObject.find(rgbaColor) == _colorToGameObject.end())
                 _colorToGameObject[rgbaColor] = component.GetInternalPtr();
 
-            TE_PRINT(ToString(color.r) + "/" + ToString(color.b) + "/" + ToString(color.b))
+            TE_PRINT(ToString(color.r) + "/" + ToString(color.g) + "/" + ToString(color.b));
 
             switch (type)
             {
@@ -136,8 +150,27 @@ namespace te
                     HRenderable renderable = static_object_cast<CRenderable>(component);
                     if (DoFrustumCulling(camera, renderable))
                         DrawRenderable(renderable);
-                } 
+                }
                 break;
+
+                case TypeID_Core::TID_CLight:
+                {
+                    HLight light = static_object_cast<CLight>(component);
+                    if (DoFrustumCulling(camera, light))
+                        DrawLight(light);
+                }
+                break;
+
+                case TypeID_Core::TID_CCamera:
+                {
+                    HCamera renderableCamera = static_object_cast<CCamera>(component);
+                    if (DoFrustumCulling(camera, renderableCamera))
+                        DrawCamera(renderableCamera);
+                }
+                break;
+
+                default:
+                    break;
             }
         }
 
@@ -148,21 +181,37 @@ namespace te
     }
 
     void GpuPicking::DrawRenderable(const HRenderable& renderable)
-    { 
-        // Update per object gpu buffer
-        _perObjectParamDef.gMatWorld.Set(_perObjectParamBuffer, renderable->GetMatrix().Transpose());
-        _perObjectParamDef.gColor.Set(_perObjectParamBuffer, renderable->GetColor().GetAsVector4());
+    {
+        SPtr<Mesh> mesh = renderable->GetMesh();
+
+        if (mesh)
+        {
+            _material->BindRenderable(renderable);
+            _material->Bind();
+
+            MeshProperties properties = mesh->GetProperties();
+            UINT32 numMeshes = properties.GetNumSubMeshes();
+
+            for (UINT32 i = 0; i < numMeshes; i++)
+            {
+                gRendererUtility().Draw(mesh, properties.GetSubMesh(i), 1);
+            }
+        }        
+    }
+
+    void GpuPicking::DrawLight(const HLight& light)
+    {
+        _material->BindLight(light);
+        _material->Bind();
 
         // Render
     }
 
-    void GpuPicking::DrawLight(const HLight& light)
-    { 
-        // TODO
-    }
-
     void GpuPicking::DrawCamera(const HCamera& camera)
-    { 
-        // TODO
+    {
+        _material->BindRenderableCamera(camera);
+        _material->Bind();
+
+        // Render
     }
 }
