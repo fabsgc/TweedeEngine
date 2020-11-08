@@ -141,6 +141,11 @@ namespace te
             if (_settings.WProject)
                 std::static_pointer_cast<WidgetProject>(_settings.WProject)->ForceExpandToSelection();
         }
+        else
+        {
+            _selections.ClickedComponent = nullptr;
+            _selections.ClickedSceneObject = nullptr;
+        }
     }
 
     void Editor::MakeGpuPickingDirty()
