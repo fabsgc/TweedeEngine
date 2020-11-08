@@ -54,5 +54,8 @@ namespace te
 
         VirtualButton _reTargetBtn;
         VirtualButton _pickingBtn;
+
+        // We keep old camera transform in order to know if view has changed
+        Transform _prevCameraTfrm;
     };
 }

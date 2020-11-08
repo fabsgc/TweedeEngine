@@ -129,9 +129,14 @@ namespace te
             _gpuPicking.ComputePicking(_previewViewportCamera, pickingData, _sceneSO);
 
             _gpuPickingDirty = false;
+
+            TE_PRINT("PICKING UPDATE");
         }
 
         Color color = _gpuPicking.GetColorAt(x, y);
+        SPtr<GameObject> gameObject = _gpuPicking.GetGameObjectAt(x, y);
+
+        TE_PRINT("PICKING DO");
 
         // TODO decode color and find component
     }

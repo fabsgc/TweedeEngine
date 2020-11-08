@@ -145,6 +145,12 @@ namespace te
          */
         void Pitch(const Radian& angle);
 
+        /** Transform comparator, all component must be equal */
+        bool operator==(const Transform& rhs) const;
+
+        /** Transform comparator, all component must be equal */
+        bool operator!=(const Transform& rhs) const;
+
     private:
         static Transform IDENTITY;
 

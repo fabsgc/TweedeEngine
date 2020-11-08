@@ -168,4 +168,16 @@ namespace te
         currentRotation.LookRotation(forwardDir);
         SetRotation(currentRotation);
     }
+
+    bool Transform::operator==(const Transform& rhs) const
+    {
+        return (_position == rhs._position &&
+            _rotation == rhs._rotation &&
+            _scale == rhs._scale);
+    }
+
+    bool Transform::operator!=(const Transform& rhs) const
+    {
+        return !(*this == rhs);
+    }
 }

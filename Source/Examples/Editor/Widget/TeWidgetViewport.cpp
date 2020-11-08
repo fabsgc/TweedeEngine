@@ -53,12 +53,12 @@ namespace te
                     if (_selections.ClickedComponent)
                     {
                         _viewportCameraUI->SetTarget(_selections.ClickedComponent->GetSceneObject()->GetTransform().GetPosition());
-                        NeedsRedraw();
+                        gEditor().NeedsRedraw();
                     }
                     else if (_selections.ClickedSceneObject)
                     {
                         _viewportCameraUI->SetTarget(_selections.ClickedSceneObject->GetTransform().GetPosition());
-                        NeedsRedraw();
+                        gEditor().NeedsRedraw();
                     }
                 }
             }
@@ -120,6 +120,14 @@ namespace te
         else
             _viewportCameraUI->EnableZooming(false);
 
+        // Check if view has changed and request necessary updates
+        const Transform& tfrm = _viewportCamera->GetTransform();
+        if (tfrm != _prevCameraTfrm)
+        {
+            gEditor().MakeGpuPickingDirty();
+            _prevCameraTfrm = tfrm;
+        }
+
         // Handle viewport gpu picking
         if (ImGui::IsWindowHovered() && gVirtualInput().IsButtonDown(_pickingBtn))
         {
@@ -129,7 +137,7 @@ namespace te
 
             gEditor().NeedsGpuPicking((UINT32)viewportPos.x, (UINT32)viewportPos.y);
         }
-
+        
         UpdateCameraFlag(_viewportCamera);
     }
 
@@ -153,7 +161,7 @@ namespace te
     void WidgetViewport::SetVisible(bool isVisible)
     {
         Widget::SetVisible(isVisible);
-        NeedsRedraw();
+        gEditor().NeedsRedraw();
     }
 
     void WidgetViewport::ResetViewport()

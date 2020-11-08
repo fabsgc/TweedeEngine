@@ -127,56 +127,58 @@ namespace te
         /** @copydoc Camera::NotifyNeedsRedraw() */
         void NotifyUpdateEverything() { _internal->NotifyUpdateEverything(); }
 
-        /** @copydoc Camera::worldToScreenPoint */
+        /** @copydoc Camera::WorldToScreenPoint */
         Vector2I WorldToScreenPoint(const Vector3& worldPoint) const { UpdateView(); return _internal->WorldToScreenPoint(worldPoint); }
 
-        /** @copydoc Camera::worldToNdcPoint */
-
+        /** @copydoc Camera::WorldToNdcPoint */
         Vector2 WorldToNdcPoint(const Vector3& worldPoint) const { UpdateView(); return _internal->WorldToNdcPoint(worldPoint); }
 
-        /** @copydoc Camera::worldToViewPoint */
+        /** @copydoc Camera::WorldToViewPoint */
         Vector3 WorldToViewPoint(const Vector3& worldPoint) const { UpdateView(); return _internal->WorldToViewPoint(worldPoint); }
 
-        /** @copydoc Camera::screenToWorldPoint */
+        /** @copydoc Camera::ScreenToWorldPoint */
         Vector3 ScreenToWorldPoint(const Vector2I& screenPoint, float depth = 0.5f) const { UpdateView(); return _internal->ScreenToWorldPoint(screenPoint, depth); }
 
-        /** @copydoc Camera::screenToViewPoint */
+        /** @copydoc Camera::ScreenToViewPoint */
         Vector3 ScreenToViewPoint(const Vector2I& screenPoint, float depth = 0.5f) const { return _internal->ScreenToViewPoint(screenPoint, depth); }
 
-        /** @copydoc Camera::screenToNdcPoint */
+        /** @copydoc Camera::ScreenToNdcPoint */
         Vector2 ScreenToNdcPoint(const Vector2I& screenPoint) const { return _internal->ScreenToNdcPoint(screenPoint); }
 
-        /** @copydoc Camera::viewToWorldPoint */
+        /** @copydoc Camera::ViewToWorldPoint */
         Vector3 ViewToWorldPoint(const Vector3& viewPoint) const { UpdateView(); return _internal->ViewToWorldPoint(viewPoint); }
 
-        /** @copydoc Camera::viewToScreenPoint */
+        /** @copydoc Camera::ViewToScreenPoint */
         Vector2I ViewToScreenPoint(const Vector3& viewPoint) const { return _internal->ViewToScreenPoint(viewPoint); }
 
-        /** @copydoc Camera::viewToNdcPoint */
+        /** @copydoc Camera::ViewToNdcPoint */
         Vector2 ViewToNdcPoint(const Vector3& viewPoint) const { return _internal->ViewToNdcPoint(viewPoint); }
 
-        /** @copydoc Camera::ndcToWorldPoint */
+        /** @copydoc Camera::NdcToWorldPoint */
         Vector3 NdcToWorldPoint(const Vector2& ndcPoint, float depth = 0.5f) const { UpdateView(); return _internal->NdcToWorldPoint(ndcPoint, depth); }
 
-        /** @copydoc Camera::ndcToViewPoint */
+        /** @copydoc Camera::NdcToViewPoint */
         Vector3 NdcToViewPoint(const Vector2& ndcPoint, float depth = 0.5f) const { return _internal->NdcToViewPoint(ndcPoint, depth); }
 
-        /** @copydoc Camera::ndcToScreenPoint */
+        /** @copydoc Camera::NdcToScreenPoint */
         Vector2I NdcToScreenPoint(const Vector2& ndcPoint) const { return _internal->NdcToScreenPoint(ndcPoint); }
 
         /** @copydoc Camera::screenPointToRay */
         Ray ScreenPointToRay(const Vector2I& screenPoint) const { UpdateView(); return _internal->ScreenPointToRay(screenPoint); }
 
-        /** @copydoc Camera::projectPoint */
+        /** @copydoc Camera::ProjectPoint */
         Vector3 ProjectPoint(const Vector3& point) const { return _internal->ProjectPoint(point); }
 
-        /** @copydoc Camera::unprojectPoint */
+        /** @copydoc Camera::UnprojectPoint */
         Vector3 UnprojectPoint(const Vector3& point) const { return _internal->UnprojectPoint(point); }
+
+        /** @copydoc Camera::GetTransform */
+        const Transform& GetTransform() { return _internal->GetTransform(); }
 
         /** @copydoc Camera::SetMain */
         void SetMain(bool main);
 
-        /** @copydoc Camera::isMain */
+        /** @copydoc Camera::IsMain */
         bool IsMain() const { return _internal->IsMain(); }
 
         /** Returns the internal camera that is used for majority of operations by this component. */

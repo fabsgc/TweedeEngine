@@ -5,6 +5,7 @@
 #include "Math/TeMatrix3.h"
 #include "TeCoreApplication.h"
 #include "String/TeString.h"
+#include "Image/TeColor.h"
 
 #include "Components/TeCCamera.h"
 #include "Components/TeCCameraFlyer.h"
@@ -192,7 +193,9 @@ namespace te
     {
         SPtr<SceneObject> sceneObjectPtr = SPtr<SceneObject>(new (te_allocate<SceneObject>()) SceneObject(name, flags),
             &te_delete<SceneObject>);
+
         sceneObjectPtr->_UUID = UUIDGenerator::GenerateRandom();
+        sceneObjectPtr->_color = Color::GenerateRandom(0.1f, 1.0f);
 
         HSceneObject sceneObject = static_object_cast<SceneObject>(
             GameObjectManager::Instance().RegisterObject(sceneObjectPtr));
@@ -985,9 +988,10 @@ namespace te
         if (component->_UUID.Empty())
             component->_UUID = UUIDGenerator::GenerateRandom();
 
-        _components.push_back(component);
-
+        component->_color = Color::GenerateRandom(0.1f, 1.0f);
         component->_instantiate();
+
+        _components.push_back(component);
 
         gSceneManager()._notifyComponentCreated(component);
     }

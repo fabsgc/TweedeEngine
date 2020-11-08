@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
+#include "Image/TeColor.h"
 
 namespace te
 {
@@ -31,6 +32,9 @@ namespace te
 
         /**	Gets the name of the object. */
         const String& GetName() const { return _name; }
+
+        /** Color identifier which persist only during object lifetime */
+        const Color& GetColor() const { return _color; }
 
         /**	Sets the name of the object. */
         void SetName(const String& name) { _name = name; }
@@ -79,6 +83,7 @@ namespace te
     protected:
         String _name;
         UUID _UUID;
+        Color _color;
 
     private:
         GameObjectInstanceDataPtr _instanceData;

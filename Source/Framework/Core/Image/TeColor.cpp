@@ -49,6 +49,25 @@ namespace te
         return output;
     }
 
+    Color Color::GenerateRandom(float min, float max, bool alpha)
+    {
+        static std::random_device rd;
+        static std::mt19937::result_type seed = rd() ^ (
+            (std::mt19937::result_type) std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count() +
+            (std::mt19937::result_type) std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count() 
+        );
+
+        static std::mt19937 generator(seed);
+        std::uniform_real_distribution<float> distribution(min, max);
+
+        float r = distribution(generator);
+        float g = distribution(generator);
+        float b = distribution(generator);
+        float a = (alpha) ? distribution(generator) : 1.0f;
+
+        return Color(r, g, b, a);
+    }
+
     bool Color::operator==(const Color& rhs) const
     {
         return (r == rhs.r &&

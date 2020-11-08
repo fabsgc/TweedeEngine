@@ -189,6 +189,9 @@ namespace te
         /** Creates a color value from a 32-bit value that encodes a RGBA color. */
         static Color FromRGBA(RGBA val);
 
+        /** Generate a random color with each channel value between given min and max */
+        static Color GenerateRandom(float min = 0.0f, float max = 1.0f, bool alpha = false);
+
         float r, g, b, a;
     };
 }
