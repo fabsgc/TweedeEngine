@@ -70,7 +70,8 @@ namespace te
         TID_Mesh          = 1015,
         TID_Font          = 1016,
         TID_NativeScript  = 1017,
-        TID_Resource      = 1018
+        TID_Resource      = 1018,
+        TID_Skeleton      = 1019
     };
 }
 

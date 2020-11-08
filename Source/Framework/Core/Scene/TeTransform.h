@@ -151,9 +151,10 @@ namespace te
         /** Transform comparator, all component must be equal */
         bool operator!=(const Transform& rhs) const;
 
-    private:
+    public:
         static Transform IDENTITY;
 
+    private:
         Vector3 _position = Vector3::ZERO;
         Quaternion _rotation = Quaternion::IDENTITY;
         Vector3 _scale = Vector3::ONE;
