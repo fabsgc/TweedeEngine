@@ -54,7 +54,7 @@ namespace te
     SPtr<GameObject> GpuPicking::GetGameObjectAt(UINT32 x, UINT32 y)
     {
         Color color = GetColorAt(x, y);
-        auto& iter = _colorToGameObject.find(color.GetAsRGBA());
+        auto iter = _colorToGameObject.find(color.GetAsRGBA());
 
         if (iter != _colorToGameObject.end())
             return iter->second;
@@ -121,7 +121,6 @@ namespace te
         for (const auto& component : sceneObject->GetComponents())
         {
             UINT32 type = component->GetCoreType();
-            UINT64 instanceId = component->GetInstanceId();
             Color color = component->GetColor();
             RGBA rgbaColor = color.GetAsRGBA();
 
