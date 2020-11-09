@@ -12,13 +12,14 @@
 #include "Image/TeColor.h"
 #include "RenderAPI/TeRenderTexture.h"
 #include "Renderer/TeParamBlocks.h"
-#include "TeEditorUtils.h"
-#include "TeGpuPickingMat.h"
+#include "../TeEditorUtils.h"
 
 #include <unordered_map>
 
 namespace te
 {
+    class GpuPickingMat;
+
     class GpuPicking
     {
     public:

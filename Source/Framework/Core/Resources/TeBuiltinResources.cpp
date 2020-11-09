@@ -34,6 +34,7 @@ namespace te
         InitShaderMotionBlur();
         InitShaderGaussianBlur();
         InitShaderGpuPicking();
+        InitShaderHud();
         InitDefaultMaterial();
 #endif
     }
@@ -76,6 +77,9 @@ namespace te
             break;
         case BuiltinShader::GpuPicking:
             shader = _shaderGpuPicking;
+            break;
+        case BuiltinShader::Hud:
+            shader = _shaderHud;
             break;
         default:
             break;
@@ -263,6 +267,33 @@ namespace te
             _pixelShaderGpuPickingDesc.Language = "hlsl";
             _pixelShaderGpuPickingDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
             _pixelShaderGpuPickingDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/Hud_VS.hlsl"));
+            _vertexShaderHudDesc.Type = GPT_VERTEX_PROGRAM;
+            _vertexShaderHudDesc.EntryPoint = "main";
+            _vertexShaderHudDesc.Language = "hlsl";
+            _vertexShaderHudDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
+            _vertexShaderHudDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/Hud_GS.hlsl"));
+            _geometryShaderHudDesc.Type = GPT_GEOMETRY_PROGRAM;
+            _geometryShaderHudDesc.EntryPoint = "main";
+            _geometryShaderHudDesc.Language = "hlsl";
+            _geometryShaderHudDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
+            _geometryShaderHudDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/Hud_PS.hlsl"));
+            _pixelShaderHudDesc.Type = GPT_PIXEL_PROGRAM;
+            _pixelShaderHudDesc.EntryPoint = "main";
+            _pixelShaderHudDesc.Language = "hlsl";
+            _pixelShaderHudDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
+            _pixelShaderHudDesc.Source = shaderFile.GetAsString();
         }
     }
     void BuiltinResources::InitStates()
@@ -620,6 +651,20 @@ namespace te
             _gpuPickingShaderDesc.AddParameter(gMatWorldDesc);
             _gpuPickingShaderDesc.AddParameter(gColorDesc);
         }
+
+        {
+            SHADER_DATA_PARAM_DESC gMatViewProjDesc("gMatViewProj", "gMatViewProj", GPDT_MATRIX_4X4);
+            SHADER_DATA_PARAM_DESC gMatViewOriginDesc("gViewOrigin", "gViewOrigin", GPDT_FLOAT3);
+
+            SHADER_DATA_PARAM_DESC gMatWorldNoScaleDesc("gMatWorldNoScale", "gMatWorldNoScale", GPDT_MATRIX_4X4);
+            SHADER_DATA_PARAM_DESC gColorDesc("gColor", "gColor", GPDT_FLOAT4);
+
+            _hudShaderDesc.AddParameter(gMatViewProjDesc);
+            _hudShaderDesc.AddParameter(gMatViewOriginDesc);
+
+            _hudShaderDesc.AddParameter(gMatWorldNoScaleDesc);
+            _hudShaderDesc.AddParameter(gColorDesc);
+        }
     }
 
     void BuiltinResources::InitSamplers()
@@ -868,6 +913,26 @@ namespace te
         shaderDesc.Techniques.push_back(technique.GetInternalPtr());
 
         _shaderGpuPicking = Shader::Create("GpuPicking", shaderDesc);
+    }
+
+    void BuiltinResources::InitShaderHud()
+    {
+        PASS_DESC passDesc;
+        passDesc.BlendStateDesc = _blendOpaqueStateDesc;
+        passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
+        passDesc.RasterizerStateDesc = _rasterizerStateDesc;
+        passDesc.VertexProgramDesc = _vertexShaderHudDesc;
+        passDesc.GeometryProgramDesc = _geometryShaderHudDesc;
+        passDesc.PixelProgramDesc = _pixelShaderHudDesc;
+
+        HPass pass = Pass::Create(passDesc);
+        HTechnique technique = Technique::Create("hlsl", { pass.GetInternalPtr() });
+        technique->Compile();
+
+        SHADER_DESC shaderDesc = _hudShaderDesc;
+        shaderDesc.Techniques.push_back(technique.GetInternalPtr());
+
+        _shaderHud = Shader::Create("Hud", shaderDesc);
     }
 
     void BuiltinResources::InitDefaultMaterial()

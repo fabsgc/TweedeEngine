@@ -4,7 +4,7 @@
 #include "Widget/TeWidget.h"
 #include "Utility/TeModule.h"
 #include "ImGuiExt/TeImGuiFileBrowser.h"
-#include "TeGpuPicking.h"
+#include "Picking/TeGpuPicking.h"
 
 #include <vector>
 #include <memory>

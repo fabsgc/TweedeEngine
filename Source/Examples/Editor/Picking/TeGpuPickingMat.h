@@ -15,7 +15,7 @@ namespace te
         TE_PARAM_BLOCK_ENTRY(Vector4, gColor)
     TE_PARAM_BLOCK_END
 
-    /** Shader that performs Fast Approximate anti-aliasing. */
+    /** Shader that performs GPU picking. */
     class GpuPickingMat : public RendererMaterial<GpuPickingMat>
     {
         RMAT_DEF(BuiltinShader::GpuPicking);

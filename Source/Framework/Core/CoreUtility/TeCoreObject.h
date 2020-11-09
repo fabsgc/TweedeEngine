@@ -23,9 +23,7 @@ namespace te
         static void _delete(CoreObject* obj)
         {
             if (!obj->IsDestroyed())
-            {
                 obj->Destroy();
-            }
 
             te_delete<T>((T*)obj);
         }

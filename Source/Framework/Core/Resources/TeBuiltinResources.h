@@ -40,7 +40,9 @@ namespace te
         /** Shader used for gaussian blur post process */
         GaussianBlur = 0x8,
         /** Shader used for gpu picking */
-        GpuPicking = 0x9
+        GpuPicking = 0x9,
+        /** Shader used for hud billboards */
+        Hud = 0xA,
     };
 
     /** Types of builtin shaders that are always available. */
@@ -126,6 +128,7 @@ namespace te
         void InitShaderMotionBlur();
         void InitShaderGaussianBlur();
         void InitShaderGpuPicking();
+        void InitShaderHud();
 
         void InitDefaultMaterial();
 
@@ -140,6 +143,7 @@ namespace te
         HShader _shaderMotionBlur;
         HShader _shaderGaussianBlur;
         HShader _shaderGpuPicking;
+        HShader _shaderHud;
 
         SPtr<SamplerState> _anisotropicSamplerState = nullptr;
         SPtr<SamplerState> _bilinearSamplerState = nullptr;
@@ -154,6 +158,7 @@ namespace te
         SHADER_DESC _motionBlurShaderDesc;
         SHADER_DESC _gaussianBlurShaderDesc;
         SHADER_DESC _gpuPickingShaderDesc;
+        SHADER_DESC _hudShaderDesc;
 
         GPU_PROGRAM_DESC _vertexShaderForwardDesc;
         GPU_PROGRAM_DESC _pixelShaderForwardDesc;
@@ -181,6 +186,10 @@ namespace te
 
         GPU_PROGRAM_DESC _vertexShaderGpuPickingDesc;
         GPU_PROGRAM_DESC _pixelShaderGpuPickingDesc;
+
+        GPU_PROGRAM_DESC _vertexShaderHudDesc;
+        GPU_PROGRAM_DESC _geometryShaderHudDesc;
+        GPU_PROGRAM_DESC _pixelShaderHudDesc;
 
         BLEND_STATE_DESC _blendOpaqueStateDesc;
         BLEND_STATE_DESC _blendTransparentStateDesc;

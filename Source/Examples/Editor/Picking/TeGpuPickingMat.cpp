@@ -15,7 +15,6 @@ namespace te
         _params->SetParamBlockBuffer("PerObjectBuffer", _perObjectParamBuffer);
     }
 
-    /** Set gpu params for camera */
     void GpuPickingMat::BindCamera(const HCamera& camera)
     {
         const Matrix4& projectionMatrix = camera->GetProjectionMatrixRS();
@@ -25,7 +24,6 @@ namespace te
         _perCameraParamDef.gMatViewProj.Set(_perCameraParamBuffer, viewProjMatrix.Transpose());
     }
 
-    /** Set gpu params for each renderable */
     void GpuPickingMat::BindRenderable(const HRenderable& renderable)
     {
         _perObjectParamDef.gMatWorld.Set(_perObjectParamBuffer, renderable->GetMatrix().Transpose());

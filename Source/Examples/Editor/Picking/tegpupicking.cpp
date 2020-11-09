@@ -1,6 +1,6 @@
 #include "TeGpuPicking.h"
 
-#include "TeEditor.h"
+#include "../TeEditor.h"
 #include "RenderAPI/TeRenderAPI.h"
 #include "Components/TeCRenderable.h"
 #include "Components/TeCLight.h"
@@ -8,6 +8,7 @@
 #include "Scene/TeTransform.h"
 #include "Renderer/TeRendererUtility.h"
 #include "Utility/TeTime.h"
+#include "TeGpuPickingMat.h"
 
 namespace te
 {
@@ -203,9 +204,7 @@ namespace te
         }
 
         for (const auto& childSO : sceneObject->GetChildren())
-        {
             Draw(camera, childSO);
-        }
     }
 
     void GpuPicking::DrawRenderable(const HRenderable& renderable)
@@ -221,20 +220,18 @@ namespace te
             UINT32 numMeshes = properties.GetNumSubMeshes();
 
             for (UINT32 i = 0; i < numMeshes; i++)
-            {
                 gRendererUtility().Draw(mesh, properties.GetSubMesh(i), 1);
-            }
         }        
     }
 
     void GpuPicking::DrawLights(const Vector<HLight>& light)
     {
-        // Render
+        // TODO
     }
 
     void GpuPicking::DrawCameras(const Vector<HCamera>& camera)
     {
-        // Render
+        // TODO
     }
 
     void GpuPicking::CleanGameObjectsList()

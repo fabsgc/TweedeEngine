@@ -39,8 +39,17 @@ namespace te
     void WidgetViewport::Initialize()
     {
         _resizeEvent = gCoreApplication().GetWindow()->OnResized.Connect(std::bind(&WidgetViewport::Resize, this));
+
         _reTargetBtn = VirtualButton(RETARGET_BINDING);
         _pickingBtn  = VirtualButton(PICKING_BINDING);
+
+        _hud.Initialize();
+
+        bool renderTextureUpdated = CheckRenderTexture((float)_renderData.Width, (float)_renderData.Height);
+        if (renderTextureUpdated)
+            _viewportCamera->SetAspectRatio((float)_renderData.Width / (float)_renderData.Height);
+
+        _viewportCamera->GetViewport()->SetTarget(_renderData.RenderTex);
 
         _onBeginCallback = [this] {
             // CCamerUI component is active only when original viewport camera is active
@@ -72,12 +81,6 @@ namespace te
                 _viewportCameraUI->EnableInput(false);
             }
         };
-
-        bool renderTextureUpdated = CheckRenderTexture((float)_renderData.Width, (float)_renderData.Height);
-        if (renderTextureUpdated)
-            _viewportCamera->SetAspectRatio((float)_renderData.Width / (float)_renderData.Height);
-
-        _viewportCamera->GetViewport()->SetTarget(_renderData.RenderTex);
     }
 
     void WidgetViewport::Resize()
@@ -120,6 +123,9 @@ namespace te
 
     void WidgetViewport::Update()
     {
+        if (gCoreApplication().GetState().IsFlagSet(ApplicationState::Game))
+            gEditor().MakeGpuPickingDirty();
+
         if (_isVisible && GuiAPI::Instance().IsGuiInitialized())
             ResetViewport();
 

@@ -225,13 +225,9 @@ namespace te
             bytecode->ParamDesc = te_shared_ptr_new<GpuParamDesc>();
 
             if (desc.Type == GPT_VERTEX_PROGRAM || desc.Type == GPT_PIXEL_PROGRAM)
-            {
                 parser.Parse(microcode, desc.Type, *bytecode->ParamDesc, &bytecode->VertexInput);
-            }
             else
-            {
                 parser.Parse(microcode, desc.Type, *bytecode->ParamDesc, nullptr);
-            }
         }
 
         if (include)
