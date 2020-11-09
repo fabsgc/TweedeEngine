@@ -32,6 +32,22 @@ namespace te
             UINT32 Width;
             UINT32 Height;
         };
+        
+        struct GameObjectInfo
+        {
+            GameObjectInfo()
+                : Object()
+                , LastUse(0.0f)
+            { }
+
+            GameObjectInfo(WPtr<GameObject> object)
+                : Object(object)
+                , LastUse(0.0f)
+            { }
+
+            WPtr<GameObject> Object;
+            float LastUse = 0.0f;
+        };
 
     public:
         GpuPicking() = default;
@@ -81,18 +97,24 @@ namespace te
         /** Recursive method to draw components under a sceneObject */
         void Draw(const HCamera& camera, const HSceneObject& sceneObject);
 
+        /** @copydoc GpuPicking::Draw */
+        void DrawInternal(const HCamera& camera, const HSceneObject& sceneObject, Vector<HLight>& lights, Vector<HCamera>& cameras);
+
         /** Specific way to draw a renderable */
         void DrawRenderable(const HRenderable& renderable);
 
         /** Specific way to draw a light */
-        void DrawLight(const HLight& light);
+        void DrawLights(const Vector<HLight>& light);
 
         /** Specific way to draw a camera */
-        void DrawCamera(const HCamera& camera);
+        void DrawCameras(const Vector<HCamera>& light);
+
+        /** After picking texture is rendered, we clean _colorToGameObject to remove unused objects */
+        void CleanGameObjectsList();
 
     private:
         GpuPickingMat* _material;
         EditorUtils::RenderWindowData _renderData;
-        std::unordered_map<RGBA, SPtr<GameObject>> _colorToGameObject;
+        std::unordered_map<RGBA, GameObjectInfo> _colorToGameObject;
     };
 }

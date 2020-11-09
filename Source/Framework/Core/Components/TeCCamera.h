@@ -181,6 +181,12 @@ namespace te
         /** @copydoc Camera::IsMain */
         bool IsMain() const { return _internal->IsMain(); }
 
+        /** @copydoc SceneActor::SetActive */
+        virtual void SetActive(bool active) { _internal->SetActive(active); }
+
+        /** @copydoc SceneActor::GetActive */
+        bool GetActive() const { return _internal->GetActive(); }
+
         /** Returns the internal camera that is used for majority of operations by this component. */
         SPtr<Camera> _getCamera() const { UpdateView(); return _internal; }
 

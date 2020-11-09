@@ -80,6 +80,12 @@ namespace te
         /** @copydoc Light::GetBounds */
         Sphere GetBounds() const;
 
+        /** @copydoc SceneActor::SetActive */
+        virtual void SetActive(bool active) { _internal->SetActive(active); }
+
+        /** @copydoc SceneActor::GetActive */
+        bool GetActive() const { return _internal->GetActive(); }
+
         /** Returns the light that this component wraps. */
         SPtr<Light> _getLight() const { return _internal; }
 

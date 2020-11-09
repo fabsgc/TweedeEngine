@@ -34,7 +34,7 @@ namespace te
         void SetMaterial(UINT32 idx, HMaterial material) { _internal->SetMaterial(idx, material.GetInternalPtr()); }
 
         /** @copydoc Renderable::SetMaterial */
-        void SetMaterial(HMaterial material) { _internal->SetMaterial(material.GetInternalPtr()); }
+        void SetMaterial(HMaterial material, bool all = false) { _internal->SetMaterial(material.GetInternalPtr(), all); }
 
         /** @copydoc Renderable::SetMaterial */
         void SetMaterial(const String& name, HMaterial material) { _internal->SetMaterial(name, material.GetInternalPtr()); }
@@ -43,7 +43,7 @@ namespace te
         void SetMaterial(UINT32 idx, SPtr<Material> material) { _internal->SetMaterial(idx, material); }
 
         /** @copydoc Renderable::SetMaterial */
-        void SetMaterial(SPtr<Material> material) { _internal->SetMaterial(material); }
+        void SetMaterial(SPtr<Material> material, bool all = false) { _internal->SetMaterial(material, all); }
 
         /** @copydoc Renderable::SetMaterial */
         void SetMaterial(const String& name, SPtr<Material> material) { _internal->SetMaterial(name, material); }
@@ -110,6 +110,12 @@ namespace te
 
         /** Returns the internal renderable that is used for majority of operations by this component. */
         SPtr<Renderable> _getInternal() const { return _internal; }
+
+        /** @copydoc SceneActor::SetActive */
+        virtual void SetActive(bool active) { _internal->SetActive(active); }
+
+        /** @copydoc SceneActor::GetActive */
+        bool GetActive() const { return _internal->GetActive(); }
 
         /** @copydoc Component::Clone */
         void Clone(const HComponent& c) override;

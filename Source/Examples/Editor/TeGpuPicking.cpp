@@ -7,6 +7,7 @@
 #include "Components/TeCCamera.h"
 #include "Scene/TeTransform.h"
 #include "Renderer/TeRendererUtility.h"
+#include "Utility/TeTime.h"
 
 namespace te
 {
@@ -33,6 +34,8 @@ namespace te
         Draw(camera, root);
 
         rapi.SetRenderTarget(nullptr);
+
+        CleanGameObjectsList();
     }
 
     Color GpuPicking::GetColorAt(UINT32 x, UINT32 y)
@@ -51,7 +54,7 @@ namespace te
 
         const auto& iterFind = _colorToGameObject.find(pickedColorRGBA);
         if (iterFind != _colorToGameObject.end())
-            return iterFind->second;
+            return iterFind->second.Object.lock();
 
         // Due to float precision, sometimes, an object can't be found
         // If picked color is different from black, we try to find the closest color in objects
@@ -65,11 +68,20 @@ namespace te
         {
             for (auto& iterObject : _colorToGameObject)
             {
-                Vector4 objColorObjV4 = iterObject.second->GetColor().GetAsVector4();
-                Vector3 objColorObjV3 = Vector3(objColorObjV4.x, objColorObjV4.y, objColorObjV4.z);
+                SPtr<GameObject> object = iterObject.second.Object.lock();
 
-                if(fabs(objColorObjV3.SquaredDistance(pickedColorV3)) < 1e-3)
-                    return iterObject.second;
+                // GameObject could have been deleted
+                if (object)
+                {
+                    Vector4 objColorObjV4 = object->GetColor().GetAsVector4();
+                    Vector3 objColorObjV3 = Vector3(objColorObjV4.x, objColorObjV4.y, objColorObjV4.z);
+
+                    if (fabs(objColorObjV3.SquaredDistance(pickedColorV3)) < 1e-3)
+                    {
+                        SPtr<GameObject> object = iterObject.second.Object.lock();
+                        return object;
+                    }
+                }
             }
         }
 
@@ -132,6 +144,22 @@ namespace te
 
     void GpuPicking::Draw(const HCamera& camera, const HSceneObject& sceneObject)
     { 
+        Vector<HCamera> cameras;
+        Vector<HLight> lights;
+
+        DrawInternal(camera, sceneObject, lights, cameras);
+
+        if (lights.size() > 0)
+            DrawLights(lights);
+
+        if (cameras.size() > 0)
+            DrawCameras(cameras);        
+    }
+
+    void GpuPicking::DrawInternal(const HCamera& camera, const HSceneObject& sceneObject, Vector<HLight>& lights, Vector<HCamera>& cameras)
+    {
+        float now = gTime().GetTime();
+
         for (const auto& component : sceneObject->GetComponents())
         {
             UINT32 type = component->GetCoreType();
@@ -139,16 +167,16 @@ namespace te
             RGBA rgbaColor = color.GetAsRGBA();
 
             if (_colorToGameObject.find(rgbaColor) == _colorToGameObject.end())
-                _colorToGameObject[rgbaColor] = component.GetInternalPtr();
+                _colorToGameObject[rgbaColor] = GameObjectInfo(component.GetInternalPtr());
 
-            TE_PRINT(ToString(color.r) + "/" + ToString(color.g) + "/" + ToString(color.b));
+            _colorToGameObject[rgbaColor].LastUse = now;
 
             switch (type)
             {
-                case TypeID_Core::TID_CRenderable: 
+                case TypeID_Core::TID_CRenderable:
                 {
                     HRenderable renderable = static_object_cast<CRenderable>(component);
-                    if (DoFrustumCulling(camera, renderable))
+                    if (renderable->GetActive() && DoFrustumCulling(camera, renderable))
                         DrawRenderable(renderable);
                 }
                 break;
@@ -156,16 +184,16 @@ namespace te
                 case TypeID_Core::TID_CLight:
                 {
                     HLight light = static_object_cast<CLight>(component);
-                    if (DoFrustumCulling(camera, light))
-                        DrawLight(light);
+                    if (light->GetActive() && DoFrustumCulling(camera, light))
+                        lights.push_back(light);
                 }
                 break;
 
                 case TypeID_Core::TID_CCamera:
                 {
                     HCamera renderableCamera = static_object_cast<CCamera>(component);
-                    if (DoFrustumCulling(camera, renderableCamera))
-                        DrawCamera(renderableCamera);
+                    if (renderableCamera->GetActive() && DoFrustumCulling(camera, renderableCamera))
+                        cameras.push_back(renderableCamera);
                 }
                 break;
 
@@ -199,19 +227,25 @@ namespace te
         }        
     }
 
-    void GpuPicking::DrawLight(const HLight& light)
+    void GpuPicking::DrawLights(const Vector<HLight>& light)
     {
-        _material->BindLight(light);
-        _material->Bind();
-
         // Render
     }
 
-    void GpuPicking::DrawCamera(const HCamera& camera)
+    void GpuPicking::DrawCameras(const Vector<HCamera>& camera)
     {
-        _material->BindRenderableCamera(camera);
-        _material->Bind();
-
         // Render
+    }
+
+    void GpuPicking::CleanGameObjectsList()
+    {
+        float now = gTime().GetTime();
+        for (auto it = _colorToGameObject.cbegin(); it != _colorToGameObject.cend(); )
+        {
+            if (it->second.LastUse < now - 10.0f)
+                it = _colorToGameObject.erase(it);
+            else
+                ++it;
+        }
     }
 }

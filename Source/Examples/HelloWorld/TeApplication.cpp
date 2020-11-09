@@ -127,7 +127,7 @@ namespace te
         _sceneRenderableSO = SceneObject::Create("Cube");
         _renderableCube = _sceneRenderableSO->AddComponent<CRenderable>();
         _renderableCube->SetMesh(_loadedMeshCube);
-        _renderableCube->SetMaterial(_materialCube);
+        _renderableCube->SetMaterial(_materialCube, true);
         _renderableCube->Initialize();
 
         _sceneSkyboxSO = SceneObject::Create("Skybox");
@@ -151,7 +151,7 @@ namespace te
                 HSceneObject sceneRenderable = SceneObject::Create("Monkey_" + ToString(i) + "_" + ToString(j));
                 HRenderable renderableCube = sceneRenderable->AddComponent<CRenderable>();
                 renderableCube->SetMesh(_loadedMeshMonkey);
-                renderableCube->SetMaterial("Material-material", _materialMonkey);
+                renderableCube->SetMaterial(_materialMonkey);
                 renderableCube->SetInstancing(true);
                 renderableCube->Initialize();
 

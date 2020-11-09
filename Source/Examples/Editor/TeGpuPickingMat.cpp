@@ -31,12 +31,4 @@ namespace te
         _perObjectParamDef.gMatWorld.Set(_perObjectParamBuffer, renderable->GetMatrix().Transpose());
         _perObjectParamDef.gColor.Set(_perObjectParamBuffer, renderable->GetColor().GetAsVector4());
     }
-
-    /** Set gpu params for each renderable */
-    void GpuPickingMat::BindLight(const HLight& light)
-    { }
-
-    /** Set gpu params for each rendered camera */
-    void GpuPickingMat::BindRenderableCamera(const HCamera& camera)
-    { }
 }

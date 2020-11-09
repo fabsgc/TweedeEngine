@@ -9,8 +9,6 @@ namespace te
 {
     typedef UINT32 ComponentFlags;
 
-    
-
     /**
      * Components represent primary logic elements in the scene. They are attached to scene objects.
      *

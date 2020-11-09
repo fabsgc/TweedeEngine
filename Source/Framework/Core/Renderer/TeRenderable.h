@@ -56,12 +56,12 @@ namespace te
         void SetMaterial(UINT32 idx, const SPtr<Material>& material);
 
         /**
-         * Sets the primary material to use for rendering. Any sub-mesh that doesn't have an explicit material set will use
-         * this material.
+         * Sets the primary material to use for rendering. If all is set to true, any sub-mesh that doesn't have 
+         * an explicit material set will use this material.
          *
          * @note	This is equivalent to calling setMaterial(0, material).
          */
-        void SetMaterial(const SPtr<Material>& material);
+        void SetMaterial(const SPtr<Material>& material, bool all = false);
 
         /**
          * Sets a material, given its name in parameter. It's useful when you export a model and you want to set quickly

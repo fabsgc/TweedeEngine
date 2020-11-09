@@ -29,12 +29,6 @@ namespace te
         /** Set gpu params for each renderable */
         void BindRenderable(const HRenderable& renderable);
 
-        /** Set gpu params for each renderable */
-        void BindLight(const HLight& light);
-
-        /** Set gpu params for each rendered camera */
-        void BindRenderableCamera(const HCamera& camera);
-
     private:
         PerCameraParamDef _perCameraParamDef;
         PerObjectParamDef _perObjectParamDef;

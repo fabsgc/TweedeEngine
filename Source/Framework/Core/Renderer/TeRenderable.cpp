@@ -152,12 +152,23 @@ namespace te
         _markCoreDirty(ActorDirtyFlag::GpuParams);
     }
 
-    void Renderable::SetMaterial(const SPtr<Material>& material)
+    void Renderable::SetMaterial(const SPtr<Material>& material, bool all)
     {
         if (!_mesh)
             return;
 
-        SetMaterial(0, material);
+        if (!all)
+        {
+            SetMaterial(0, material);
+        }
+        else
+        {
+            for (UINT32 i = 0; i < _materials.size(); i++)
+            {
+                SetMaterial(i, material);
+            }
+        }
+        
         _markCoreDirty(ActorDirtyFlag::GpuParams);
     }
 

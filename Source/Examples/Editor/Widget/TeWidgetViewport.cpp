@@ -90,12 +90,14 @@ namespace te
 
     void WidgetViewport::NeedsRedraw()
     {
+        // If current camera has been destroyed, we fall back to the default camera
         if (_viewportCamera.IsDestroyed())
         {
             _viewportCamera = gEditor().GetPreviewViewportCamera().GetNewHandleFromExisting();
             _viewportCamera->GetViewport()->SetTarget(_renderData.RenderTex);
         }
 
+        // If current camera has been switched, we switch camera, set render target and update flags
         if (_viewportCamera.GetInternalPtr() != gEditor().GetPreviewViewportCamera().GetInternalPtr())
         {
             // only one camera can write to render target at a time
@@ -110,6 +112,7 @@ namespace te
             UpdateCameraFlag(_viewportCamera);
         }
 
+        // Notify camera has been updated
         _viewportCamera->NotifyUpdateEverything();
         _viewportCamera->NotifyNeedsRedraw();
         _needResetViewport = true;
@@ -125,7 +128,7 @@ namespace te
         else
             _viewportCameraUI->EnableZooming(false);
 
-        // Check if view has changed and request necessary updates
+        // Check if view has changed and requests necessary update
         const Transform& tfrm = _viewportCamera->GetTransform();
         if (tfrm != _prevCameraTfrm)
         {
