@@ -36,5 +36,8 @@ namespace te
 
         /** @copydoc CoreApplication::PreUpdate */
         void PostUpdate() override;
+
+        /** @copydoc CoreApplication::PostRender */
+        void PostRender() override;
     };
 }

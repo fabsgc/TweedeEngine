@@ -43,8 +43,6 @@ namespace te
         _reTargetBtn = VirtualButton(RETARGET_BINDING);
         _pickingBtn  = VirtualButton(PICKING_BINDING);
 
-        _hud.Initialize();
-
         bool renderTextureUpdated = CheckRenderTexture((float)_renderData.Width, (float)_renderData.Height);
         if (renderTextureUpdated)
             _viewportCamera->SetAspectRatio((float)_renderData.Width / (float)_renderData.Height);
@@ -89,6 +87,7 @@ namespace te
             _needResetViewport = true;
 
         gEditor().MakeGpuPickingDirty();
+        gEditor().MakeHudDirty();
     }
 
     void WidgetViewport::NeedsRedraw()
@@ -118,13 +117,17 @@ namespace te
         // Notify camera has been updated
         _viewportCamera->NotifyUpdateEverything();
         _viewportCamera->NotifyNeedsRedraw();
+
         _needResetViewport = true;
     }
 
     void WidgetViewport::Update()
     {
         if (gCoreApplication().GetState().IsFlagSet(ApplicationState::Game))
+        {
             gEditor().MakeGpuPickingDirty();
+            gEditor().MakeHudDirty();
+        }
 
         if (_isVisible && GuiAPI::Instance().IsGuiInitialized())
             ResetViewport();
@@ -139,6 +142,7 @@ namespace te
         if (tfrm != _prevCameraTfrm)
         {
             gEditor().MakeGpuPickingDirty();
+            gEditor().MakeHudDirty();
             _prevCameraTfrm = tfrm;
         }
 
@@ -189,6 +193,7 @@ namespace te
             _viewportCamera->SetAspectRatio(width / height);
 
             gEditor().MakeGpuPickingDirty();
+            gEditor().MakeHudDirty();
         }
 
         SPtr<TextureView> textureView = _renderData.RenderTex->GetColorTexture(0)->RequestView(

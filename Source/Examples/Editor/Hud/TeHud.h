@@ -16,7 +16,7 @@ namespace te
         void Initialize();
 
         /** Take a list of component (lights, cameras and render billboard on top of previous render) */
-        void Render();
+        void Render(const HCamera& camera, const HSceneObject& root);
 
     private:
         HudMat* _material;

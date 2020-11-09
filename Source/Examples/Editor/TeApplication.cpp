@@ -22,4 +22,9 @@ namespace te
 
     void Application::PostUpdate()
     { }
+
+    void Application::PostRender()
+    {
+        gEditor().PostRender();
+    }
 }

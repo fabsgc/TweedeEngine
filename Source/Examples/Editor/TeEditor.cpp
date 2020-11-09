@@ -51,6 +51,7 @@ namespace te
     Editor::Editor()
         : _editorBegun(false)
         , _gpuPickingDirty(true)
+        , _hudDirty(true)
     { }
 
     Editor::~Editor()
@@ -68,6 +69,7 @@ namespace te
         InitializeViewportCamera();
 
         _gpuPicking.Initialize();
+        _hud.Initialize();
         
         if (GuiAPI::Instance().IsGuiInitialized())
             InitializeGui();
@@ -106,6 +108,14 @@ namespace te
         }
     }
 
+    void Editor::PostRender()
+    {
+        if (_hudDirty)
+            _hud.Render (_previewViewportCamera, _sceneSO);
+
+        _hudDirty = false;
+    }
+
     void Editor::NeedsRedraw()
     {
         if (!_settings.WViewport)
@@ -113,6 +123,7 @@ namespace te
 
         static_cast<WidgetViewport*>(&*_settings.WViewport)->NeedsRedraw();
         MakeGpuPickingDirty();
+        MakeHudDirty();
     }
 
     void Editor::NeedsGpuPicking(UINT32 x, UINT32 y)
@@ -151,6 +162,11 @@ namespace te
     void Editor::MakeGpuPickingDirty()
     {
         _gpuPickingDirty = true;
+    }
+
+    void Editor::MakeHudDirty()
+    {
+        _hudDirty = true;
     }
 
     void Editor::InitializeInput()

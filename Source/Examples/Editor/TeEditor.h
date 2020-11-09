@@ -5,6 +5,7 @@
 #include "Utility/TeModule.h"
 #include "ImGuiExt/TeImGuiFileBrowser.h"
 #include "Picking/TeGpuPicking.h"
+#include "Hud/TeHud.h"
 
 #include <vector>
 #include <memory>
@@ -87,6 +88,9 @@ namespace te
         /** Called every frame. */
         void Update();
 
+        /** Called after render */
+        void PostRender();
+
         /** Called to inform the editor that some element has been modified and viewport must be updated */
         void NeedsRedraw();
 
@@ -95,6 +99,9 @@ namespace te
 
         /** If we need a redraw or if 3D viewport size change, we need to call this method to force picking render */
         void MakeGpuPickingDirty();
+
+        /** If something has changed, we need to redraw hud elements such as cameras and lights on top of render */
+        void MakeHudDirty();
 
         /** Get viewport camera handle */
         HCamera& GetViewportCamera() { return _viewportCamera; }
@@ -175,6 +182,9 @@ namespace te
         GpuPicking _gpuPicking;
         // After NeedRedraws() or 3D viewport resize, we need to put this to true in order to force picking render
         bool _gpuPickingDirty;
+        // If something has changed, we need to redraw hud elements such as cameras and lights on top of render 
+        bool _hudDirty;
+        Hud _hud;
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         // TODO Temp for debug purpose

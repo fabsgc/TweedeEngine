@@ -136,6 +136,9 @@ namespace te
         /**	Called for each iteration of the main loop. Called after all game objects and plugins are updated. */
         virtual void PostUpdate() { }
 
+        /**	Called for each iteration of the main loop. Called after renderer is called. */
+        virtual void PostRender() { }
+
         /** Called after core initialization */
         virtual void PostStartUp() { }
 

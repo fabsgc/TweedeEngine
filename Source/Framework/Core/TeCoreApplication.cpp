@@ -158,6 +158,8 @@ namespace te
 
             RendererManager::Instance().GetRenderer()->Update();
             RendererManager::Instance().GetRenderer()->RenderAll();
+
+            PostRender();
         }
     }
 

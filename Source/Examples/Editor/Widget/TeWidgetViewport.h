@@ -8,7 +8,6 @@
 #include "../TeEditor.h"
 #include "../TeEditorUtils.h"
 #include "TeWidget.h"
-#include "../Hud/TeHud.h"
 
 namespace te
 {
@@ -60,8 +59,5 @@ namespace te
 
         // We keep old camera transform in order to know if view has changed
         Transform _prevCameraTfrm;
-
-        // We want to display lights and cameras on top of engine render
-        Hud _hud;
     };
 }
