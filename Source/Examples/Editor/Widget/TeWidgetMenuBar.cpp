@@ -2,6 +2,7 @@
 
 #include "../TeEditorResManager.h"
 #include "../TeEditor.h"
+#include "../TeEditorUtils.h"
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
 #include "Importer/TeMeshImportOptions.h"

@@ -4,14 +4,16 @@
 #include "Widget/TeWidget.h"
 #include "Utility/TeModule.h"
 #include "ImGuiExt/TeImGuiFileBrowser.h"
-#include "Picking/TeGpuPicking.h"
-#include "Hud/TeHud.h"
 
 #include <vector>
 #include <memory>
 
 namespace te
 {
+    class GpuPicking;
+    class Selection;
+    class Hud;
+
     class Editor : public Module<Editor>
     {
     public:
@@ -103,6 +105,9 @@ namespace te
         /** If something has changed, we need to redraw hud elements such as cameras and lights on top of render */
         void MakeHudDirty();
 
+        /** If we need a redraw or if 3D viewport size change, we need to call this method to force selected elements render */
+        void MakeGpuSelectionDirty();
+
         /** Get viewport camera handle */
         HCamera& GetViewportCamera() { return _viewportCamera; }
 
@@ -179,12 +184,17 @@ namespace te
         HCamera _previewViewportCamera;
 
         // I decided to use GPU Picking for 3D viewport selection handle
-        GpuPicking _gpuPicking;
         // After NeedRedraws() or 3D viewport resize, we need to put this to true in order to force picking render
+        UPtr<GpuPicking> _gpuPicking;
         bool _gpuPickingDirty;
-        // If something has changed, we need to redraw hud elements such as cameras and lights on top of render 
+
+        // If something has changed, we need to redraw hud elements such as cameras and lights on top of render
+        UPtr<Hud> _hud;
         bool _hudDirty;
-        Hud _hud;
+
+        // Current selected renderables, cameras and lights will be higglighted
+        UPtr<Selection> _gpuSelection;
+        bool _gpuSelectionDirty;
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         // TODO Temp for debug purpose

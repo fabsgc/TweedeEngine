@@ -363,7 +363,7 @@ namespace te
     template<class Type, class... Args>
     UPtr<Type> te_unique_ptr_new(Args &&... args)
     {
-        Type* rawPtr = (Type*)te_allocate<Type>(std::forward<Args>(args)...);
+        Type* rawPtr = te_new<Type>(std::forward<Args>(args)...);
         return te_unique_ptr<Type>(rawPtr);
     }
 }

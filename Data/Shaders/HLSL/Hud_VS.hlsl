@@ -1,9 +1,10 @@
 #include "Include/HudBase.hlsli"
 
-cbuffer PerCameraBuffer : register(b0)
+cbuffer PerFrameBuffer : register(b0)
 {
     matrix gMatViewProj;
     float3 gViewOrigin;
+    uint   gRenderType;
 }
 
 cbuffer PerInstanceBuffer : register(b1)

@@ -642,11 +642,13 @@ namespace te
 
         {
             SHADER_DATA_PARAM_DESC gMatViewProjDesc("gMatViewProj", "gMatViewProj", GPDT_MATRIX_4X4);
+            SHADER_DATA_PARAM_DESC gRenderTypeDesc("gRenderType", "gRenderType", GPDT_INT1);
             
             SHADER_DATA_PARAM_DESC gMatWorldDesc("gMatWorld", "gMatWorld", GPDT_MATRIX_4X4);
             SHADER_DATA_PARAM_DESC gColorDesc("gColor", "gColor", GPDT_FLOAT4);
 
             _gpuPickingShaderDesc.AddParameter(gMatViewProjDesc);
+            _gpuPickingShaderDesc.AddParameter(gRenderTypeDesc);
 
             _gpuPickingShaderDesc.AddParameter(gMatWorldDesc);
             _gpuPickingShaderDesc.AddParameter(gColorDesc);
@@ -655,20 +657,22 @@ namespace te
         {
             SHADER_DATA_PARAM_DESC gMatViewProjDesc("gMatViewProj", "gMatViewProj", GPDT_MATRIX_4X4);
             SHADER_DATA_PARAM_DESC gMatViewOriginDesc("gViewOrigin", "gViewOrigin", GPDT_FLOAT3);
+            SHADER_DATA_PARAM_DESC gRenderTypeDesc("gRenderType", "gRenderType", GPDT_INT1);
 
             SHADER_DATA_PARAM_DESC gInstanceData("gInstanceData", "gInstanceData", GPDT_STRUCT);
             gInstanceData.ElementSize = sizeof(PerInstanceData);
 
             SHADER_OBJECT_PARAM_DESC anisotropicSamplerDesc("AnisotropicSampler", "AnisotropicSampler", GPOT_SAMPLER2D);
-            SHADER_OBJECT_PARAM_DESC MaskTextureDesc("MaskTexture", "MaskTexture", GPOT_TEXTURE2D);
+            SHADER_OBJECT_PARAM_DESC maskTextureDesc("MaskTexture", "MaskTexture", GPOT_TEXTURE2D);
 
             _hudShaderDesc.AddParameter(gMatViewProjDesc);
             _hudShaderDesc.AddParameter(gMatViewOriginDesc);
+            _hudShaderDesc.AddParameter(gRenderTypeDesc);
 
             _hudShaderDesc.AddParameter(gInstanceData);
 
             _hudShaderDesc.AddParameter(anisotropicSamplerDesc);
-            _hudShaderDesc.AddParameter(MaskTextureDesc);
+            _hudShaderDesc.AddParameter(maskTextureDesc);
         }
     }
 
@@ -903,18 +907,31 @@ namespace te
 
     void BuiltinResources::InitShaderGpuPicking()
     {
+        _blendTransparentStateDesc.RenderTargetDesc[0].BlendEnable = true;
+        _blendTransparentStateDesc.RenderTargetDesc[0].SrcBlend = BlendFactor::BF_SOURCE_ALPHA;
+        _blendTransparentStateDesc.RenderTargetDesc[0].DstBlend = BlendFactor::BF_INV_SOURCE_ALPHA;
+        _blendTransparentStateDesc.RenderTargetDesc[0].BlendOp = BlendOperation::BO_ADD;
+        _blendTransparentStateDesc.RenderTargetDesc[0].SrcBlendAlpha = BlendFactor::BF_ZERO;
+        _blendTransparentStateDesc.RenderTargetDesc[0].DstBlendAlpha = BlendFactor::BF_ONE;
+        _blendTransparentStateDesc.RenderTargetDesc[0].BlendOpAlpha = BlendOperation::BO_ADD;
+        _blendTransparentStateDesc.RenderTargetDesc[0].RenderTargetWriteMask = 0x0f;
+
         PASS_DESC passDesc;
-        passDesc.BlendStateDesc = _blendOpaqueStateDesc;
+        passDesc.BlendStateDesc = _blendTransparentStateDesc;
         passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
         passDesc.RasterizerStateDesc = _rasterizerStateDesc;
         passDesc.VertexProgramDesc = _vertexShaderGpuPickingDesc;
         passDesc.PixelProgramDesc = _pixelShaderGpuPickingDesc;
 
+        passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_CLOCKWISE;
+        
         HPass pass = Pass::Create(passDesc);
         HTechnique technique = Technique::Create("hlsl", { pass.GetInternalPtr() });
         technique->Compile();
 
         SHADER_DESC shaderDesc = _gpuPickingShaderDesc;
+        shaderDesc.Flags = (UINT32)ShaderFlag::Transparent;
+        shaderDesc.QueueType = QueueSortType::BackToFront;
         shaderDesc.Techniques.push_back(technique.GetInternalPtr());
 
         _shaderGpuPicking = Shader::Create("GpuPicking", shaderDesc);

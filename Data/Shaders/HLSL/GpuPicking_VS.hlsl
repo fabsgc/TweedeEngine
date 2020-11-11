@@ -1,6 +1,7 @@
-cbuffer PerCameraBuffer : register(b0)
+cbuffer PerFrameBuffer : register(b0)
 {
     matrix gMatViewProj;
+    uint   gRenderType;
 }
 
 cbuffer PerObjectBuffer : register(b1)

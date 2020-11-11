@@ -175,29 +175,32 @@ namespace te
                 float horzValue = gVirtualInput().GetAxisValue(_horizontalAxis);
                 float vertValue  = gVirtualInput().GetAxisValue(_verticalAxis);
 
-                float rotationRight = Math::Clamp(vertValue * ROTATIONAL_SPEED, -MAX_ROTATION, MAX_ROTATION);
-                float rotationY = Math::Clamp(horzValue * ROTATIONAL_SPEED, -MAX_ROTATION, MAX_ROTATION);
-
-                _localRotation.y += rotationY;
-
-                if (fabs(_localRotation.x + rotationRight) > MAX_RIGHT_ANGLE)
+                if (fabs(horzValue) > 0.0f || fabs(vertValue) > 0.0f)
                 {
-                    if (rotationRight > 0.0f)
-                        rotationRight = MAX_RIGHT_ANGLE - _localRotation.x;
+                    float rotationRight = Math::Clamp(vertValue * ROTATIONAL_SPEED, -MAX_ROTATION, MAX_ROTATION);
+                    float rotationY = Math::Clamp(horzValue * ROTATIONAL_SPEED, -MAX_ROTATION, MAX_ROTATION);
+
+                    _localRotation.y += rotationY;
+
+                    if (fabs(_localRotation.x + rotationRight) > MAX_RIGHT_ANGLE)
+                    {
+                        if (rotationRight > 0.0f)
+                            rotationRight = MAX_RIGHT_ANGLE - _localRotation.x;
+                        else
+                            rotationRight = -MAX_RIGHT_ANGLE - _localRotation.x;
+
+                        _localRotation.x += rotationRight;
+                    }
                     else
-                        rotationRight = -MAX_RIGHT_ANGLE - _localRotation.x;
+                        _localRotation.x += rotationRight;
 
-                    _localRotation.x += rotationRight;
-                }
-                else
-                    _localRotation.x += rotationRight;
+                    if (rotationY != 0.0f)
+                        SO()->RotateAround(_target, Vector3::UNIT_Y, Radian::FromDegrees(rotationY));
+                    if (rotationRight != 0.0f)
+                        SO()->RotateAround(_target, tfrm.GetRight(), Radian::FromDegrees(rotationRight));
 
-                if(rotationY != 0.0f)
-                    SO()->RotateAround(_target, Vector3::UNIT_Y, Radian::FromDegrees(rotationY));
-                if(rotationRight != 0.0f)
-                    SO()->RotateAround(_target, tfrm.GetRight(), Radian::FromDegrees(rotationRight));
-
-                needsRedraw = true;
+                    needsRedraw = true;
+                }                
             }
         }
         else if(_zoomingEnabled)

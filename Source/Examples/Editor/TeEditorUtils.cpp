@@ -4,8 +4,6 @@
 #include "Importer/TeTextureImportOptions.h"
 #include "TeEditorResManager.h"
 #include "TeCoreApplication.h"
-#include "Components/TeCCamera.h"
-#include "Components/TeCLight.h"
 
 namespace te
 {
@@ -95,8 +93,34 @@ namespace te
         renderData.RenderTex = RenderTexture::Create(renderData.RenderTexDesc);
     }
 
-    /** Do a frustum culling on a light. Returns true if visible */
-    bool EditorUtils::DoFrustumCulling(const HCamera& camera, const HLight& light)
+    bool EditorUtils::DoFrustumCulling(const HCamera& camera, const SPtr<CRenderable> renderable)
+    {
+        ConvexVolume worldFrustum = camera->GetWorldFrustum();
+        const Vector3& worldCameraPosition = camera->GetTransform().GetPosition();
+        float baseCullDistance = camera->GetRenderSettings()->CullDistance;
+
+        Bounds boundaries = renderable->GetBounds();
+        const Sphere& boundingSphere = boundaries.GetSphere();
+        const Vector3& worldRenderablePosition = boundingSphere.GetCenter();
+
+        float distanceToCameraSq = worldCameraPosition.SquaredDistance(worldRenderablePosition);
+        float correctedCullDistance = renderable->GetCullDistanceFactor() * baseCullDistance;
+        float maxDistanceToCamera = correctedCullDistance + boundingSphere.GetRadius();
+
+        if (distanceToCameraSq > maxDistanceToCamera* maxDistanceToCamera)
+            return false;
+
+        if (worldFrustum.Intersects(boundingSphere))
+        {
+            const AABox& boundingBox = boundaries.GetBox();
+            if (worldFrustum.Intersects(boundingBox))
+                return true;
+        }
+
+        return false;
+    }
+
+    bool EditorUtils::DoFrustumCulling(const HCamera& camera, const SPtr<CLight> light)
     {
         static float cullDistanceFactor = 1.0f;
         Sphere boundingSphere = light->GetBounds();
@@ -105,8 +129,7 @@ namespace te
         return DoFrustumCulling(camera, boundingSphere, cullDistanceFactor);
     }
 
-    /** Do a frustum culling on a scene camera. Returns true if visible */
-    bool EditorUtils::DoFrustumCulling(const HCamera& camera, const HCamera& sceneCamera)
+    bool EditorUtils::DoFrustumCulling(const HCamera& camera, const SPtr<CCamera> sceneCamera)
     {
         static float cullDistanceFactor = 1.0f;
 

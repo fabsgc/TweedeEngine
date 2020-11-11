@@ -5,6 +5,10 @@
 #define HUD_DIRECTIONAL_LIGHT 2.0
 #define HUD_SPOT_LIGHT 3.0
 
+#define HUD_RENDER_TYPE_DRAW 0
+#define HUD_RENDER_TYPE_SELECTION 1
+#define HUD_RENDER_TYPE_PICKING 2
+
 struct PerInstanceData
 {
     matrix MatWorldNoScale;

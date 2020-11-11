@@ -1,5 +1,12 @@
 #include "Include/HudBase.hlsli"
 
+cbuffer PerFrameBuffer : register(b0)
+{
+    matrix gMatViewProj;
+    float3 gViewOrigin;
+    uint   gRenderType;
+}
+
 SamplerState AnisotropicSampler : register(s0);
 Texture2D MaskTexture : register(t0);
 

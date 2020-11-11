@@ -87,6 +87,7 @@ namespace te
             _needResetViewport = true;
 
         gEditor().MakeGpuPickingDirty();
+        gEditor().MakeGpuSelectionDirty();
         gEditor().MakeHudDirty();
     }
 
@@ -126,6 +127,7 @@ namespace te
         if (gCoreApplication().GetState().IsFlagSet(ApplicationState::Game))
         {
             gEditor().MakeGpuPickingDirty();
+            gEditor().MakeGpuSelectionDirty();
             gEditor().MakeHudDirty();
         }
 
@@ -140,6 +142,7 @@ namespace te
         if (_viewportCameraUI->HasChanged())
         {
             gEditor().MakeGpuPickingDirty();
+            gEditor().MakeGpuSelectionDirty();
             gEditor().MakeHudDirty();
         }
 
@@ -152,7 +155,7 @@ namespace te
 
             gEditor().NeedsGpuPicking((UINT32)viewportPos.x, (UINT32)viewportPos.y);
         }
-        
+
         UpdateCameraFlag(_viewportCamera);
     }
 
@@ -190,9 +193,6 @@ namespace te
         {
             _viewportCamera->GetViewport()->SetTarget(_renderData.RenderTex);
             _viewportCamera->SetAspectRatio(width / height);
-
-            gEditor().MakeGpuPickingDirty();
-            gEditor().MakeHudDirty();
         }
 
         SPtr<TextureView> textureView = _renderData.RenderTex->GetColorTexture(0)->RequestView(
@@ -231,7 +231,7 @@ namespace te
         _lastRenderDataUpatedTime = gTime().GetTime();
         _needResetViewport = false;
 
-        _viewportCamera->NotifyNeedsRedraw();
+        gEditor().NeedsRedraw();
 
         return true;
     }

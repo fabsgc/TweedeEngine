@@ -25,24 +25,20 @@ set (TE_EDITOR_SRC_IMGUI_EXT
     "ImGuiExt/TeImGuiFileBrowser.cpp"
 )
 
-set (TE_EDITOR_INC_PICKING
-    "Picking/TeGpuPicking.h"
-    "Picking/TeGpuPickingMat.h"
+set (TE_EDITOR_INC_SELECTION
+    "Selection/TeSelection.h"
+    "Selection/TeGpuPicking.h"
+    "Selection/TeGpuPickingMat.h"
+    "Selection/TeHudPickingMat.h"
+    "Selection/TeHud.h"
 )
 
-set (TE_EDITOR_SRC_PICKING
-    "Picking/TeGpuPicking.cpp"
-    "Picking/TeGpuPickingMat.cpp"
-)
-
-set (TE_EDITOR_INC_HUD
-    "Hud/TeHud.h"
-    "Hud/TeHudMat.h"
-)
-
-set (TE_EDITOR_SRC_HUD
-    "Hud/TeHud.cpp"
-    "Hud/TeHudMat.cpp"
+set (TE_EDITOR_SRC_SELECTION
+    "Selection/TeSelection.cpp"
+    "Selection/TeGpuPicking.cpp"
+    "Selection/TeGpuPickingMat.cpp"
+    "Selection/TeHudPickingMat.cpp"
+    "Selection/TeHud.cpp"
 )
 
 set (TE_EDITOR_INC_WIDGET
@@ -76,8 +72,7 @@ set (TE_EDITOR_SRC_WIDGET
 source_group ("" FILES ${TE_EDITOR_SRC_NOFILTER} ${TE_EDITOR_INC_NOFILTER})
 source_group ("Widget" FILES ${TE_EDITOR_INC_WIDGET} ${TE_EDITOR_SRC_WIDGET})
 source_group ("ImGuiExt" FILES ${TE_EDITOR_INC_IMGUI_EXT} ${TE_EDITOR_SRC_IMGUI_EXT})
-source_group ("Picking" FILES ${TE_EDITOR_INC_PICKING} ${TE_EDITOR_SRC_PICKING})
-source_group ("Hud" FILES ${TE_EDITOR_INC_HUD} ${TE_EDITOR_SRC_HUD})
+source_group ("Selection" FILES ${TE_EDITOR_INC_SELECTION} ${TE_EDITOR_SRC_SELECTION})
 
 set (TE_EDITOR_SRC
     ${TE_EDITOR_INC_NOFILTER}
@@ -86,8 +81,6 @@ set (TE_EDITOR_SRC
     ${TE_EDITOR_SRC_WIDGET}
     ${TE_EDITOR_INC_IMGUI_EXT}
     ${TE_EDITOR_SRC_IMGUI_EXT}
-    ${TE_EDITOR_INC_PICKING}
-    ${TE_EDITOR_SRC_PICKING}
-    ${TE_EDITOR_INC_HUD}
-    ${TE_EDITOR_SRC_HUD}
+    ${TE_EDITOR_INC_SELECTION}
+    ${TE_EDITOR_SRC_SELECTION}
 )

@@ -143,8 +143,6 @@ namespace te
 #if defined(TE_DEBUG_MODE)
         compileFlags &= D3DCOMPILE_DEBUG;
         compileFlags &= D3DCOMPILE_SKIP_OPTIMIZATION;
-        compileFlags &= D3DCOMPILE_OPTIMIZATION_LEVEL0;
-        compileFlags &= D3DCOMPILE_SKIP_VALIDATION;
 #endif
 
         compileFlags |= D3DCOMPILE_PACK_MATRIX_ROW_MAJOR;

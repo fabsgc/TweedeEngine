@@ -853,6 +853,8 @@ namespace te
         {
             GuiAPI::Instance().EndFrame();
         }
+
+        //TE_PRINT("RENDER");
     }
 
     void RCNodeFinalResolve::Clear()

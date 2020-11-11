@@ -31,6 +31,10 @@
 #include "Image/TeColor.h"
 #include "TeEditorUtils.h"
 
+#include "Selection/TeGpuPicking.h"
+#include "Selection/TeSelection.h"
+#include "Selection/TeHud.h"
+
 // TODO Temp for debug purpose
 #include "Importer/TeImporter.h"
 #include "Importer/TeMeshImportOptions.h"
@@ -51,6 +55,7 @@ namespace te
     Editor::Editor()
         : _editorBegun(false)
         , _gpuPickingDirty(true)
+        , _gpuSelectionDirty(true)
         , _hudDirty(true)
     { }
 
@@ -68,9 +73,14 @@ namespace te
         InitializeUICamera();
         InitializeViewportCamera();
 
-        _gpuPicking.Initialize();
-        _hud.Initialize();
-        
+        _gpuPicking = te_unique_ptr_new<GpuPicking>();
+        _gpuSelection = te_unique_ptr_new<Selection>();
+        _hud = te_unique_ptr_new<Hud>();
+
+        _gpuPicking->Initialize();
+        _gpuSelection->Initialize();
+        _hud->Initialize();
+
         if (GuiAPI::Instance().IsGuiInitialized())
             InitializeGui();
     }
@@ -110,10 +120,22 @@ namespace te
 
     void Editor::PostRender()
     {
-        if (_hudDirty && _previewViewportCamera == _viewportCamera) // only for default camera
-            _hud.Render(_previewViewportCamera, _sceneSO);
+        if (_gpuSelectionDirty && _previewViewportCamera == _viewportCamera) // only for default camera
+        {
+            EditorUtils::RenderWindowData viewportData =
+                static_cast<WidgetViewport*>(&*_settings.WViewport)->GetRenderWindowData();
+            _gpuSelection->Render(_previewViewportCamera, viewportData);
 
+            //TE_PRINT("SELECTION");
+        }
+
+        if (_hudDirty && _previewViewportCamera == _viewportCamera) // only for default camera
+            _hud->Render(_previewViewportCamera, _sceneSO);
+
+        _gpuSelectionDirty = false;
         _hudDirty = false;
+
+        //TE_PRINT("############## END");
     }
 
     void Editor::NeedsRedraw()
@@ -123,6 +145,7 @@ namespace te
 
         static_cast<WidgetViewport*>(&*_settings.WViewport)->NeedsRedraw();
         MakeGpuPickingDirty();
+        MakeGpuSelectionDirty();
         MakeHudDirty();
     }
 
@@ -137,11 +160,11 @@ namespace te
                 static_cast<WidgetViewport*>(&*_settings.WViewport)->GetRenderWindowData();
             GpuPicking::RenderParam pickingData(viewportData.Width, viewportData.Height);
 
-            _gpuPicking.ComputePicking(_previewViewportCamera, pickingData, _sceneSO);
+            _gpuPicking->ComputePicking(_previewViewportCamera, pickingData, _sceneSO);
             _gpuPickingDirty = false;
         }
 
-        SPtr<GameObject> gameObject = _gpuPicking.GetGameObjectAt(x, y);
+        SPtr<GameObject> gameObject = _gpuPicking->GetGameObjectAt(x, y);
         if (gameObject)
         {
             SPtr<Component> component = std::static_pointer_cast<Component>(gameObject);
@@ -157,6 +180,8 @@ namespace te
             _selections.ClickedComponent = nullptr;
             _selections.ClickedSceneObject = nullptr;
         }
+
+        NeedsRedraw();
     }
 
     void Editor::MakeGpuPickingDirty()
@@ -167,6 +192,11 @@ namespace te
     void Editor::MakeHudDirty()
     {
         _hudDirty = true;
+    }
+
+    void Editor::MakeGpuSelectionDirty()
+    {
+        _gpuSelectionDirty = true;
     }
 
     void Editor::InitializeInput()
@@ -539,22 +569,22 @@ namespace te
         // ######################################################
 
         // ######################################################
-        //_loadedMeshMonkey = EditorResManager::Instance().Load<Mesh>("Data/Meshes/Monkey/monkey-hd.obj", meshImportOptions);
-        _loadedMeshPlane = EditorResManager::Instance().Load<Mesh>("Data/Meshes/Plane/plane.obj", meshImportOptions);
-        //_loadedTextureMonkey = EditorResManager::Instance().Load<Texture>("Data/Textures/Monkey/diffuse.png", textureImportOptions);
+        _loadedMeshMonkey = EditorResManager::Instance().Load<Mesh>("Data/Meshes/Monkey/monkey-hd.obj", meshImportOptions);
+        //_loadedMeshPlane = EditorResManager::Instance().Load<Mesh>("Data/Meshes/Plane/plane.obj", meshImportOptions);
+        _loadedTextureMonkey = EditorResManager::Instance().Load<Texture>("Data/Textures/Monkey/diffuse.png", textureImportOptions);
         //_loadedPlaneTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Sponza/Floor/floor_COLOR.jpeg", textureImportOptions);
         _loadedCubemapTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/sky_medium.png", textureCubeMapImportOptions);
         // ###################################################### 
 
         // ###################################################### 
-        //_loadedMeshMonkey->SetName("Monkey Mesh");
-        _loadedMeshPlane->SetName("Plane Mesh");
+        _loadedMeshMonkey->SetName("Monkey Mesh");
+        //_loadedMeshPlane->SetName("Plane Mesh");
         //_loadedTextureMonkey->SetName("Monkey Diffuse");
         _loadedCubemapTexture->SetName("Skybox Diffuse");
         // ###################################################### 
 
         // ######################################################
-        /*HShader _shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque);
+        HShader _shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque);
 
         MaterialProperties properties;
         properties.UseDiffuseMap = true;
@@ -572,7 +602,7 @@ namespace te
         _monkeyMaterial->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
         _monkeyMaterial->SetProperties(properties);
 
-        properties.Reflection = 0.1f;
+        /*properties.Reflection = 0.1f;
         properties.Refraction = 0.1f;
 
         _planeMaterial = Material::Create(_shader);
@@ -597,25 +627,25 @@ namespace te
         _sceneLightSO->Rotate(Vector3(0.0f, 1.0f, 1.0f), -Radian(Math::HALF_PI));
         _sceneLightSO->Move(Vector3(0.0f, 5.0f, 10.0f));
 
-        /*_sceneRenderableMonkeySO = SceneObject::Create("Monkey");
+        _sceneRenderableMonkeySO = SceneObject::Create("Monkey");
         _sceneRenderableMonkeySO->SetParent(_sceneSO);
         _renderableMonkey = _sceneRenderableMonkeySO->AddComponent<CRenderable>();
         _renderableMonkey->SetMesh(_loadedMeshMonkey);
         _renderableMonkey->SetMaterial(_monkeyMaterial);
         _renderableMonkey->SetName("Monkey Renderable");
-        _renderableMonkey->Initialize();*/
+        _renderableMonkey->Initialize();
 
-        _sceneRenderablePlaneSO = SceneObject::Create("Plane");
+        /*_sceneRenderablePlaneSO = SceneObject::Create("Plane");
         _sceneRenderablePlaneSO->SetParent(_sceneSO);
         _renderablePlane = _sceneRenderablePlaneSO->AddComponent<CRenderable>();
         _renderablePlane->SetMesh(_loadedMeshPlane);
-        //_renderablePlane->SetMaterial(_planeMaterial);
+        _renderablePlane->SetMaterial(_planeMaterial);
         _renderablePlane->SetName("Plane Renderable");
         _renderablePlane->Initialize();
-        _sceneRenderablePlaneSO->Move(Vector3(0.0, 0.1f, 0.0f));
+        _sceneRenderablePlaneSO->Move(Vector3(0.0, 0.1f, 0.0f));*/
         // ######################################################
 
-        //EditorResManager::Instance().Add<Material>(_monkeyMaterial);
+        EditorResManager::Instance().Add<Material>(_monkeyMaterial);
         //EditorResManager::Instance().Add<Material>(_planeMaterial);
         EditorResManager::Instance().Add<Shader>(gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque));
         EditorResManager::Instance().Add<Shader>(gBuiltinResources().GetBuiltinShader(BuiltinShader::Transparent));

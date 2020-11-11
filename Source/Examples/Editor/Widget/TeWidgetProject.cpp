@@ -268,6 +268,8 @@ namespace te
         {
             _selections.ClickedSceneObject = nullptr;
             _selections.ClickedComponent = nullptr;
+
+            gEditor().NeedsRedraw();
         }
     }
 
@@ -279,9 +281,15 @@ namespace te
         if (gVirtualInput().IsButtonDown(_copyBtn))
         {
             if (_selections.ClickedComponent)
+            {
                 _selections.CopiedComponent = _selections.ClickedComponent;
+                gEditor().NeedsRedraw();
+            }
             else
+            {
                 _selections.CopiedSceneObject = _selections.ClickedSceneObject;
+                gEditor().NeedsRedraw();
+            }
         }
 
         if (gVirtualInput().IsButtonDown(_pasteBtn))
@@ -424,6 +432,8 @@ namespace te
         _selections.ClickedComponent = nullptr;
         _expandToSelection = true;
         _handleSelectionWindowSwitch = true;
+
+        gEditor().NeedsRedraw();
     }
 
     void WidgetProject::SetSelectedComponent(SPtr<Component> component)
@@ -432,6 +442,8 @@ namespace te
         _selections.ClickedSceneObject = nullptr;
         _expandToSelection = true;
         _handleSelectionWindowSwitch = true;
+
+        gEditor().NeedsRedraw();
     }
 
     void WidgetProject::Popups()
