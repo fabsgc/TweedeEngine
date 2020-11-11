@@ -89,12 +89,6 @@ namespace te
         /** Do a frustum culling on a renderable. Returns true if visible */
         bool DoFrustumCulling(const HCamera& camera, const HRenderable& renderable);
 
-        /** Do a frustum culling on a light. Returns true if visible */
-        bool DoFrustumCulling(const HCamera& camera, const HLight& light);
-
-        /** Do a frustum culling on a scene camera. Returns true if visible */
-        bool DoFrustumCulling(const HCamera& camera, const HCamera& sceneCamera);
-
         /** Recursive method to draw components under a sceneObject */
         void Draw(const HCamera& camera, const HSceneObject& sceneObject);
 

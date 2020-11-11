@@ -92,4 +92,16 @@ namespace te
 
         renderData.RenderTex = RenderTexture::Create(renderData.RenderTexDesc);
     }
+
+    /** Do a frustum culling on a light. Returns true if visible */
+    bool EditorUtils::DoFrustumCulling(const HCamera& camera, const HLight& light)
+    {
+        return true;
+    }
+
+    /** Do a frustum culling on a scene camera. Returns true if visible */
+    bool EditorUtils::DoFrustumCulling(const HCamera& camera, const HCamera& sceneCamera)
+    {
+        return true;
+    }
 }

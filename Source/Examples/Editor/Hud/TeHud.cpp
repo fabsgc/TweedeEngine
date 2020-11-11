@@ -8,6 +8,7 @@
 #include "Renderer/TeLight.h"
 #include "Components/TeCLight.h"
 #include "RenderAPI/TeVertexDataDesc.h"
+#include "../TeEditorUtils.h"
 
 namespace te
 { 
@@ -96,7 +97,7 @@ namespace te
                 case TypeID_Core::TID_CCamera: 
                 {
                     HCamera cameraElement = static_object_cast<CCamera>(component);
-                    if (cameraElement->GetActive())
+                    if (cameraElement->GetActive() && EditorUtils::DoFrustumCulling(camera, cameraElement))
                     {
                         const Transform& tfrm = cameraElement->GetTransform();
                         element.WorldNoScale = Matrix4::TRS(tfrm.GetPosition(), tfrm.GetRotation(), Vector3::ONE);
@@ -111,7 +112,7 @@ namespace te
                 case TypeID_Core::TID_CLight:
                 {
                     HLight lightElement = static_object_cast<CLight>(component);
-                    if (lightElement->GetActive())
+                    if (lightElement->GetActive() && EditorUtils::DoFrustumCulling(camera, lightElement))
                     {
                         const Transform& tfrm = lightElement->GetTransform();
                         element.WorldNoScale = Matrix4::TRS(tfrm.GetPosition(), tfrm.GetRotation(), Vector3::ONE);

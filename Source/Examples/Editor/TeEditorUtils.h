@@ -30,5 +30,10 @@ namespace te
         /** Generate a render texture using data given in parameters */
         static void GenerateViewportRenderTexture(RenderWindowData& renderData);
 
+        /** Do a frustum culling on a light. Returns true if visible */
+        static bool DoFrustumCulling(const HCamera& camera, const HLight& light);
+
+        /** Do a frustum culling on a scene camera. Returns true if visible */
+        static bool DoFrustumCulling(const HCamera& camera, const HCamera& sceneCamera);
     };
 }

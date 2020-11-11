@@ -129,20 +129,6 @@ namespace te
         return false;
     }
 
-    bool GpuPicking::DoFrustumCulling(const HCamera& camera, const HLight& light)
-    {
-        // TODO
-
-        return false;
-    }
-
-    bool GpuPicking::DoFrustumCulling(const HCamera& camera, const HCamera& sceneCamera)
-    { 
-        // TODO
-
-        return false;
-    }
-
     void GpuPicking::Draw(const HCamera& camera, const HSceneObject& sceneObject)
     { 
         Vector<HCamera> cameras;
@@ -185,7 +171,7 @@ namespace te
                 case TypeID_Core::TID_CLight:
                 {
                     HLight light = static_object_cast<CLight>(component);
-                    if (light->GetActive() && DoFrustumCulling(camera, light))
+                    if (light->GetActive() && EditorUtils::DoFrustumCulling(camera, light))
                         lights.push_back(light);
                 }
                 break;
@@ -193,7 +179,7 @@ namespace te
                 case TypeID_Core::TID_CCamera:
                 {
                     HCamera renderableCamera = static_object_cast<CCamera>(component);
-                    if (renderableCamera->GetActive() && DoFrustumCulling(camera, renderableCamera))
+                    if (renderableCamera->GetActive() && EditorUtils::DoFrustumCulling(camera, renderableCamera))
                         cameras.push_back(renderableCamera);
                 }
                 break;
@@ -229,7 +215,7 @@ namespace te
         // TODO
     }
 
-    void GpuPicking::DrawCameras(const Vector<HCamera>& camera)
+    void GpuPicking::DrawCameras(const Vector<HCamera>& light)
     {
         // TODO
     }

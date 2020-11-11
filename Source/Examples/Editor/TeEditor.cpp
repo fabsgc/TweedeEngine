@@ -110,7 +110,7 @@ namespace te
 
     void Editor::PostRender()
     {
-        if (_hudDirty)
+        if (_hudDirty && _previewViewportCamera == _viewportCamera) // only for default camera
             _hud.Render(_previewViewportCamera, _sceneSO);
 
         _hudDirty = false;
@@ -458,11 +458,7 @@ namespace te
     void Editor::EndGui()
     {
         if (_editorBegun)
-        {
-            //bool open = true;
-            //ImGui::ShowDemoWindow(&open);
             ImGui::End();
-        }
     }
 
     Widget* Editor::GetWidget(Widget::WidgetType type)
@@ -546,11 +542,7 @@ namespace te
         //_loadedMeshMonkey = EditorResManager::Instance().Load<Mesh>("Data/Meshes/Monkey/monkey-hd.obj", meshImportOptions);
         _loadedMeshPlane = EditorResManager::Instance().Load<Mesh>("Data/Meshes/Plane/plane.obj", meshImportOptions);
         //_loadedTextureMonkey = EditorResManager::Instance().Load<Texture>("Data/Textures/Monkey/diffuse.png", textureImportOptions);
-#if TE_DEBUG_MODE == 0
         //_loadedPlaneTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Sponza/Floor/floor_COLOR.jpeg", textureImportOptions);
-#else
-        //_loadedPlaneTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Sponza/Floor/floor_COLOR_s.jpeg", textureImportOptions);
-#endif
         _loadedCubemapTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/sky_medium.png", textureCubeMapImportOptions);
         // ###################################################### 
 
