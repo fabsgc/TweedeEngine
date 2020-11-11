@@ -11,7 +11,7 @@
 
 namespace te
 {
-    const float WidgetViewport::MIN_TIME_BETWEEN_UPDATE = 1.0f;
+    const float WidgetViewport::MIN_TIME_BETWEEN_UPDATE = 0.5f;
     const String WidgetViewport::RETARGET_BINDING = "ReTarget";
     const String WidgetViewport::PICKING_BINDING = "Picking";
 
@@ -137,13 +137,10 @@ namespace te
         else
             _viewportCameraUI->EnableZooming(false);
 
-        // Check if view has changed and requests necessary update
-        const Transform& tfrm = _viewportCamera->GetTransform();
-        if (tfrm != _prevCameraTfrm)
+        if (_viewportCameraUI->HasChanged())
         {
             gEditor().MakeGpuPickingDirty();
             gEditor().MakeHudDirty();
-            _prevCameraTfrm = tfrm;
         }
 
         // Handle viewport gpu picking
@@ -187,6 +184,8 @@ namespace te
         float width = static_cast<float>(ImGui::GetWindowContentRegionMax().x - ImGui::GetWindowContentRegionMin().x);
         float height = static_cast<float>(ImGui::GetWindowContentRegionMax().y - ImGui::GetWindowContentRegionMin().y);
 
+        // Viewport update is done after displaying render in widget viewport because if renderTexture needs to
+        // be destroyed and built again, it won't display the render but a grey or black image
         if (CheckRenderTexture(width, height))
         {
             _viewportCamera->GetViewport()->SetTarget(_renderData.RenderTex);

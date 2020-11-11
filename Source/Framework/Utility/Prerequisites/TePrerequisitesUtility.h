@@ -71,6 +71,18 @@
 #   endif
 #endif
 
+namespace te
+{
+    static bool IsBigEndian()
+    {
+#if TE_ENDIAN == TE_ENDIAN_BIG
+        return true;
+#else
+        return false;
+#endif
+    }
+}
+
 #include "Error/TeDebug.h"
 #include "Error/TeError.h"
 #include "Error/TeConsole.h"

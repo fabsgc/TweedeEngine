@@ -237,6 +237,9 @@ namespace te
     class Font;
 
     class Skeleton;
+    struct BONE_DESC;
+    struct LocalSkeletonPose;
+    struct SkeletonBoneInfo;
 
     class GuiAPI;
     class GuiAPIFactory;

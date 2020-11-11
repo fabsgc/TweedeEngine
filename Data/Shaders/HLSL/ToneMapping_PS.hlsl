@@ -23,9 +23,9 @@ float4 main( PS_INPUT IN ) : SV_Target0
     float4 mapped = float4(1.0, 1.0, 1.0, 1.0) - exp(-color * gExposure);
     // Gamma correction 
     float power = float(1.0 / gGamma);
-    mapped.x = pow(mapped.x, power);
-    mapped.y = pow(mapped.y, power);
-    mapped.z = pow(mapped.z, power);
+    mapped.x = pow(abs(mapped.x), power);
+    mapped.y = pow(abs(mapped.y), power);
+    mapped.z = pow(abs(mapped.z), power);
     mapped.w = 1.0;
 
     mapped.rgb = mapped.rgb * gContrast;

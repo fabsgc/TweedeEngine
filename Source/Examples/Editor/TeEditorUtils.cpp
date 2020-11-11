@@ -28,11 +28,7 @@ namespace te
                     textureImportOptions->CpuCached = false;
                     textureImportOptions->GenerateMips = (textureName != "EmissiveMap") ? true : false;
                     textureImportOptions->MaxMip = 6;
-#if TE_ENDIAN == TE_ENDIAN_BIG
-                    textureImportOptions->Format = PF_RGBA8;
-#else
-                    textureImportOptions->Format = PF_BGRA8;
-#endif
+                    textureImportOptions->Format = IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
 
                     if (isSet)
                     {

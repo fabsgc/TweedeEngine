@@ -255,26 +255,20 @@ namespace te
         {
             if (_fileBrowser.Data.Ext == ".jpeg" || _fileBrowser.Data.Ext == ".jpg" || _fileBrowser.Data.Ext == ".png")
             {
-#if TE_ENDIAN == TE_ENDIAN_BIG
-                PixelFormat pixelFormat = PF_RGBA8;
-#else
-                PixelFormat pixelFormat = PF_BGRA8;
-#endif     
-
                 auto textureImportOptions = TextureImportOptions::Create();
                 if (_fileBrowser.Data.TexParam.TexType == TextureType::TEX_TYPE_CUBE_MAP)
                 {
                     textureImportOptions->CpuCached = false;
                     textureImportOptions->CubemapType = CubemapSourceType::Faces;
                     textureImportOptions->IsCubemap = true;
-                    textureImportOptions->Format = pixelFormat;
+                    textureImportOptions->Format = IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
                 }
                 else
                 {
                     textureImportOptions->CpuCached = false;
                     textureImportOptions->GenerateMips = _fileBrowser.Data.TexParam.GenerateMips;
                     textureImportOptions->MaxMip = _fileBrowser.Data.TexParam.MaxMips;
-                    textureImportOptions->Format = pixelFormat;
+                    textureImportOptions->Format = IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
                 }
 
                 HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.Data.SelectedPath, textureImportOptions);

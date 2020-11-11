@@ -656,14 +656,19 @@ namespace te
             SHADER_DATA_PARAM_DESC gMatViewProjDesc("gMatViewProj", "gMatViewProj", GPDT_MATRIX_4X4);
             SHADER_DATA_PARAM_DESC gMatViewOriginDesc("gViewOrigin", "gViewOrigin", GPDT_FLOAT3);
 
-            SHADER_DATA_PARAM_DESC gMatWorldNoScaleDesc("gMatWorldNoScale", "gMatWorldNoScale", GPDT_MATRIX_4X4);
-            SHADER_DATA_PARAM_DESC gColorDesc("gColor", "gColor", GPDT_FLOAT4);
+            SHADER_DATA_PARAM_DESC gInstanceData("gInstanceData", "gInstanceData", GPDT_STRUCT);
+            gInstanceData.ElementSize = sizeof(PerInstanceData);
+
+            SHADER_OBJECT_PARAM_DESC anisotropicSamplerDesc("AnisotropicSampler", "AnisotropicSampler", GPOT_SAMPLER2D);
+            SHADER_OBJECT_PARAM_DESC MaskTextureDesc("MaskTexture", "MaskTexture", GPOT_TEXTURE2D);
 
             _hudShaderDesc.AddParameter(gMatViewProjDesc);
             _hudShaderDesc.AddParameter(gMatViewOriginDesc);
 
-            _hudShaderDesc.AddParameter(gMatWorldNoScaleDesc);
-            _hudShaderDesc.AddParameter(gColorDesc);
+            _hudShaderDesc.AddParameter(gInstanceData);
+
+            _hudShaderDesc.AddParameter(anisotropicSamplerDesc);
+            _hudShaderDesc.AddParameter(MaskTextureDesc);
         }
     }
 
@@ -924,6 +929,8 @@ namespace te
         passDesc.VertexProgramDesc = _vertexShaderHudDesc;
         passDesc.GeometryProgramDesc = _geometryShaderHudDesc;
         passDesc.PixelProgramDesc = _pixelShaderHudDesc;
+
+        passDesc.RasterizerStateDesc.cullMode = CULL_NONE;
 
         HPass pass = Pass::Create(passDesc);
         HTechnique technique = Technique::Create("hlsl", { pass.GetInternalPtr() });

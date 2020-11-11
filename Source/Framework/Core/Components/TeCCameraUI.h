@@ -29,6 +29,9 @@ namespace te
         /** Returns current target vector (for editor) */
         const Vector3& GetTarget() const { return _target; }
 
+        /** If linked camera has been modified during frame, return true */
+        bool HasChanged() const { return _hasChanged; }
+
         /** Returns Component type */
         static UINT32 GetComponentType() { return TID_CCameraUI; }
 
@@ -62,7 +65,8 @@ namespace te
         void InitLocalRotation();
 
     protected:
-        bool _cameraInitialized; // on first update, we get CCamera component from parent sceneObject
+        bool _cameraInitialized; // On first update, we get CCamera component from parent sceneObject
+        bool _hasChanged; // If it has notified camera to draw, set to true
         Vector3 _target;
         Vector3 _localRotation;
         float _distanceToTarget;

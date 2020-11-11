@@ -521,7 +521,8 @@ namespace te
             numConstBuffers = (UINT32)_gpuResourcesContainer.constBuffers.size();
             numSamplers = (UINT32)_gpuResourcesContainer.samplers.size();
 
-            if (numSRVs > 0) context->PSSetShaderResources(0, numSRVs, _gpuResourcesContainer.srvs.data());
+            if (numSRVs > 0) 
+                context->PSSetShaderResources(0, numSRVs, _gpuResourcesContainer.srvs.data());
 
             if (numUAVs > 0)
             {

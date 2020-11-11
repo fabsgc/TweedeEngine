@@ -111,7 +111,7 @@ namespace te
     void Editor::PostRender()
     {
         if (_hudDirty)
-            _hud.Render (_previewViewportCamera, _sceneSO);
+            _hud.Render(_previewViewportCamera, _sceneSO);
 
         _hudDirty = false;
     }
@@ -521,12 +521,6 @@ namespace te
 
     void Editor::LoadScene()
     {
-#if TE_ENDIAN == TE_ENDIAN_BIG
-        PixelFormat pixelFormat = PF_RGBA8;
-#else
-        PixelFormat pixelFormat = PF_BGRA8;
-#endif
-
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         // ######################################################
         auto meshImportOptions = MeshImportOptions::Create();
@@ -538,13 +532,13 @@ namespace te
         textureImportOptions->CpuCached = false;
         textureImportOptions->GenerateMips = true;
         textureImportOptions->MaxMip = 4;
-        textureImportOptions->Format = pixelFormat;
+        textureImportOptions->Format = IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
 
         auto textureCubeMapImportOptions = TextureImportOptions::Create();
         textureCubeMapImportOptions->CpuCached = false;
         textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
         textureCubeMapImportOptions->IsCubemap = true;
-        textureCubeMapImportOptions->Format = pixelFormat;
+        textureCubeMapImportOptions->Format = IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
         
         // ######################################################
 
@@ -609,6 +603,7 @@ namespace te
         _light = _sceneLightSO->AddComponent<CLight>();
         _light->Initialize();
         _sceneLightSO->Rotate(Vector3(0.0f, 1.0f, 1.0f), -Radian(Math::HALF_PI));
+        _sceneLightSO->Move(Vector3(0.0f, 5.0f, 10.0f));
 
         /*_sceneRenderableMonkeySO = SceneObject::Create("Monkey");
         _sceneRenderableMonkeySO->SetParent(_sceneSO);

@@ -60,6 +60,8 @@ namespace te
     class TE_CORE_EXPORT BuiltinResources : public Module<BuiltinResources>
     {
     public:
+        TE_MODULE_STATIC_HEADER_MEMBER(BuiltinResources)
+
         BuiltinResources();
         ~BuiltinResources();
 
@@ -68,8 +70,6 @@ namespace te
 
         /** @copydoc Module::OnShutDown */
         void OnShutDown() override;
-
-        TE_MODULE_STATIC_HEADER_MEMBER(BuiltinResources)
 
         /**	Returns one of the builtin shader types. */
         HShader GetBuiltinShader(BuiltinShader type);
@@ -94,6 +94,14 @@ namespace te
             Matrix4 gMatInvWorldNoScale;
             Matrix4 gMatPrevWorld;
             UINT32  gLayer;
+        };
+
+        struct PerHudInstanceData
+        {
+            Matrix4 MatWorldNoScale;
+            Vector4 Color;
+            float   Type;
+            Vector3 Padding;
         };
 
         struct LightData

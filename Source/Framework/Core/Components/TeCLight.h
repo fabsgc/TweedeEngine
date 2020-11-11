@@ -80,6 +80,9 @@ namespace te
         /** @copydoc Light::GetBounds */
         Sphere GetBounds() const;
 
+        /** @copydoc Light::GetTransform */
+        const Transform& GetTransform() { return _internal->GetTransform(); }
+
         /** @copydoc SceneActor::SetActive */
         virtual void SetActive(bool active) { _internal->SetActive(active); }
 

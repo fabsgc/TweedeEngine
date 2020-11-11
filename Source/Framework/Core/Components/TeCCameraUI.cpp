@@ -41,6 +41,7 @@ namespace te
         , _inputEnabled(false)
         , _zoomingEnabled(false)
         , _lastHideCursorState(false)
+        , _hasChanged(false)
     {
         SetName("CCameraUI");
         SetFlag(Component::AlwaysRun, true);
@@ -68,6 +69,8 @@ namespace te
 
     void CCameraUI::Update()
     {
+        _hasChanged = false;
+
         if (!_cameraInitialized)
         {
             if(_parent->HasComponent(TID_CCamera))
@@ -205,8 +208,11 @@ namespace te
                 scrolling(scrollAmount, SCROLL_SPEED);
         }
 
-        if(needsRedraw)
+        if (needsRedraw)
+        {
+            _hasChanged = true;
             _camera->NotifyNeedsRedraw();
+        }
     }
 
     void CCameraUI::EnableInput(bool enable)
