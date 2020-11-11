@@ -4,6 +4,8 @@
 #include "Importer/TeTextureImportOptions.h"
 #include "TeEditorResManager.h"
 #include "TeCoreApplication.h"
+#include "Components/TeCCamera.h"
+#include "Components/TeCLight.h"
 
 namespace te
 {
@@ -96,12 +98,43 @@ namespace te
     /** Do a frustum culling on a light. Returns true if visible */
     bool EditorUtils::DoFrustumCulling(const HCamera& camera, const HLight& light)
     {
-        return true;
+        static float cullDistanceFactor = 1.0f;
+        Sphere boundingSphere = light->GetBounds();
+        boundingSphere.SetRadius(1.0f);
+
+        return DoFrustumCulling(camera, boundingSphere, cullDistanceFactor);
     }
 
     /** Do a frustum culling on a scene camera. Returns true if visible */
     bool EditorUtils::DoFrustumCulling(const HCamera& camera, const HCamera& sceneCamera)
     {
-        return true;
+        static float cullDistanceFactor = 1.0f;
+
+        Sphere boundingSphere;
+        boundingSphere.SetCenter(sceneCamera->GetTransform().GetPosition());
+        boundingSphere.SetRadius(1.0f);
+
+        return DoFrustumCulling(camera, boundingSphere, cullDistanceFactor);
+    }
+
+    bool EditorUtils::DoFrustumCulling(const HCamera& camera, const Sphere& boundingSphere, const float& cullDistanceFactor)
+    {
+        ConvexVolume worldFrustum = camera->GetWorldFrustum();
+        const Vector3& worldCameraPosition = camera->GetTransform().GetPosition();
+        float baseCullDistance = camera->GetRenderSettings()->CullDistance;
+
+        const Vector3& worldRenderablePosition = boundingSphere.GetCenter();
+
+        float distanceToCameraSq = worldCameraPosition.SquaredDistance(worldRenderablePosition);
+        float correctedCullDistance = cullDistanceFactor * baseCullDistance;
+        float maxDistanceToCamera = correctedCullDistance + boundingSphere.GetRadius();
+
+        if (distanceToCameraSq > maxDistanceToCamera* maxDistanceToCamera)
+            return false;
+
+        if (worldFrustum.Intersects(boundingSphere))
+            return true;
+
+        return false;
     }
 }

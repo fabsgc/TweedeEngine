@@ -20,7 +20,7 @@ namespace te
         void Render(const HCamera& camera, const HSceneObject& root);
 
         /** Generate a list of all hud elements to draw by iterating through the scene graph */
-        void GetHudMatElements(const HCamera& camera, const HSceneObject& sceneObject, Vector<HudMat::Element>& matElements);
+        void GetHudElements(const HCamera& camera, const HSceneObject& sceneObject, Vector<EditorUtils::PerHudInstanceData>& matElements);
 
     private:
         struct VertexBufferLayout

@@ -1,6 +1,7 @@
 #include "TeHud.h"
 
 #include "../TeEditor.h"
+#include "../TeEditorUtils.h"
 #include "RenderAPI/TeRenderAPI.h"
 #include "RenderAPI/TeRenderTarget.h"
 #include "Scene/TeSceneObject.h"
@@ -8,7 +9,6 @@
 #include "Renderer/TeLight.h"
 #include "Components/TeCLight.h"
 #include "RenderAPI/TeVertexDataDesc.h"
-#include "../TeEditorUtils.h"
 
 namespace te
 { 
@@ -45,10 +45,10 @@ namespace te
         if (settings->OutputType != RenderOutputType::Final)
             return;
 
-        Vector<HudMat::Element> matElements;
-        GetHudMatElements(camera, root, matElements);
+        Vector<EditorUtils::PerHudInstanceData> instancedElements;
+        GetHudElements(camera, root, instancedElements);
 
-        if (matElements.size() > 0)
+        if (instancedElements.size() > 0)
         {
             rapi.SetRenderTarget(camera->GetViewport()->GetTarget());
             rapi.ClearViewport(clearBuffers, Color::Black);
@@ -59,11 +59,11 @@ namespace te
             rapi.SetVertexBuffers(0, &_pointVB, 1);
             rapi.SetDrawOperation(DOT_POINT_LIST);
 
-            UINT64 elementToDraw = static_cast<UINT64>(matElements.size());
+            UINT64 elementToDraw = static_cast<UINT64>(instancedElements.size());
 
-            auto iterBegin = matElements.begin();
+            auto iterBegin = instancedElements.begin();
             auto iterRangeStart = iterBegin;
-            auto iterRangeEnd = iterBegin + ((elementToDraw >= STANDARD_MAX_INSTANCED_BLOCK) ? STANDARD_MAX_INSTANCED_BLOCK : elementToDraw);
+            auto iterRangeEnd = iterBegin + ((elementToDraw >= MAX_HUD_INSTANCED_BLOCK) ? MAX_HUD_INSTANCED_BLOCK : elementToDraw);
 
             do
             {
@@ -76,7 +76,7 @@ namespace te
                 elementToDraw = elementToDraw - elementsDrawn;
 
                 iterRangeStart = iterRangeEnd;
-                iterRangeEnd = iterRangeStart + ((elementToDraw >= STANDARD_MAX_INSTANCED_BLOCK) ? STANDARD_MAX_INSTANCED_BLOCK : elementToDraw);
+                iterRangeEnd = iterRangeStart + ((elementToDraw >= MAX_HUD_INSTANCED_BLOCK) ? MAX_HUD_INSTANCED_BLOCK : elementToDraw);
             } 
             while (elementToDraw > 0);
 
@@ -84,9 +84,9 @@ namespace te
         } 
     }
 
-    void Hud::GetHudMatElements(const HCamera& camera, const HSceneObject& sceneObject, Vector<HudMat::Element>& matElements)
+    void Hud::GetHudElements(const HCamera& camera, const HSceneObject& sceneObject, Vector<EditorUtils::PerHudInstanceData>& matElements)
     {
-        HudMat::Element element;
+        EditorUtils::PerHudInstanceData element;
 
         for (const auto& component : sceneObject->GetComponents())
         {
@@ -100,9 +100,9 @@ namespace te
                     if (cameraElement->GetActive() && EditorUtils::DoFrustumCulling(camera, cameraElement))
                     {
                         const Transform& tfrm = cameraElement->GetTransform();
-                        element.WorldNoScale = Matrix4::TRS(tfrm.GetPosition(), tfrm.GetRotation(), Vector3::ONE);
-                        element.ElemType = HudMat::Type::Camera;
-                        element.ElemColor = Color::Black;
+                        element.MatWorldNoScale = Matrix4::TRS(tfrm.GetPosition(), tfrm.GetRotation(), Vector3::ONE).Transpose();
+                        element.Type = static_cast<float>(HudMat::Type::Camera);
+                        element.Color = Color::Black.GetAsVector4();
 
                         matElements.push_back(element);
                     }
@@ -115,19 +115,19 @@ namespace te
                     if (lightElement->GetActive() && EditorUtils::DoFrustumCulling(camera, lightElement))
                     {
                         const Transform& tfrm = lightElement->GetTransform();
-                        element.WorldNoScale = Matrix4::TRS(tfrm.GetPosition(), tfrm.GetRotation(), Vector3::ONE);
-                        element.ElemColor = lightElement->GetColor();
+                        element.MatWorldNoScale = Matrix4::TRS(tfrm.GetPosition(), tfrm.GetRotation(), Vector3::ONE).Transpose();
+                        element.Color = lightElement->GetColor().GetAsVector4();
 
                         switch (lightElement->GetType())
                         {
                         case LightType::Directional:
-                            element.ElemType = HudMat::Type::DirectionalLight;
+                            element.Type = static_cast<float>(HudMat::Type::DirectionalLight);
                             break;
                         case LightType::Radial:
-                            element.ElemType = HudMat::Type::RadialLight;
+                            element.Type = static_cast<float>(HudMat::Type::RadialLight);
                             break;
                         case LightType::Spot:
-                            element.ElemType = HudMat::Type::SpotLight;
+                            element.Type = static_cast<float>(HudMat::Type::SpotLight);
                             break;
                         }
 
@@ -139,6 +139,6 @@ namespace te
         }
 
         for (const auto& childSO : sceneObject->GetChildren())
-            GetHudMatElements(camera, childSO, matElements);
+            GetHudElements(camera, childSO, matElements);
     }
 }

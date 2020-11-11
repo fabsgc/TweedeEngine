@@ -14,8 +14,9 @@ cbuffer PerInstanceBuffer : register(b1)
 [maxvertexcount(4)]
 void main(point GS_INPUT IN[1], inout TriangleStream<GS_OUTPUT> OutputStream)
 {
+    GS_OUTPUT OUT;
     float3 vert[4];
-
+    float2 texCoord[4];
     uint id = (uint)IN[0].Position.w;
 
     vert[0] = IN[0].Position.xyz + float3(-0.5, -0.5, 0.0); // Get bottom left vertex
@@ -25,13 +26,11 @@ void main(point GS_INPUT IN[1], inout TriangleStream<GS_OUTPUT> OutputStream)
 
     if(gInstanceData[id].Type == HUD_CAMERA || gInstanceData[id].Type == HUD_SPOT_LIGHT)
     {
-        vert[0] = IN[0].Position.xyz + float3(0.0, -0.5, 0.5); // Get bottom left vertex
-        vert[1] = IN[0].Position.xyz + float3(0.0, -0.5, -0.5);  // Get bottom right vertex
-        vert[2] = IN[0].Position.xyz + float3(0.0, 0.5, 0.5);  // Get top left vertex
-        vert[3] = IN[0].Position.xyz + float3(0.0, 0.5, -0.5);   // Get top right vertex
+        vert[0] = IN[0].Position.xyz + float3(0.0, -0.5, 0.5);  // Get bottom left vertex
+        vert[1] = IN[0].Position.xyz + float3(0.0, -0.5, -0.5); // Get bottom right vertex
+        vert[2] = IN[0].Position.xyz + float3(0.0, 0.5, 0.5);   // Get top left vertex
+        vert[3] = IN[0].Position.xyz + float3(0.0, 0.5, -0.5);  // Get top right vertex
     }
-
-    float2 texCoord[4];
 
     if(gInstanceData[id].Type == HUD_CAMERA)
     {
@@ -62,8 +61,6 @@ void main(point GS_INPUT IN[1], inout TriangleStream<GS_OUTPUT> OutputStream)
         texCoord[3] = float2(1.0, 0.5);
     }
 
-    GS_OUTPUT OUT;
-
     [unroll(4)]
     for(int i = 0; i < 4; i++)
     {
@@ -76,6 +73,4 @@ void main(point GS_INPUT IN[1], inout TriangleStream<GS_OUTPUT> OutputStream)
 
         OutputStream.Append(OUT);
     }
-
-    OutputStream.RestartStrip();
 }

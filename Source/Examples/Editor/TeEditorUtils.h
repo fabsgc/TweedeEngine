@@ -10,6 +10,15 @@ namespace te
     class EditorUtils
     {
     public:
+
+        struct PerHudInstanceData
+        {
+            Matrix4 MatWorldNoScale;
+            Vector4 Color;
+            float   Type;
+            Vector3 Padding;
+        };
+
         struct RenderWindowData
         {
             TEXTURE_DESC TargetColorDesc;
@@ -35,5 +44,8 @@ namespace te
 
         /** Do a frustum culling on a scene camera. Returns true if visible */
         static bool DoFrustumCulling(const HCamera& camera, const HCamera& sceneCamera);
+
+        /** Do a more generic frustum culling */
+        static bool DoFrustumCulling(const HCamera& camera, const Sphere& boundingSphere, const float& cullDistanceFactor);
     };
 }

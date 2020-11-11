@@ -4,18 +4,11 @@
 #include "Renderer/TeRendererMaterial.h"
 #include "Renderer/TeParamBlocks.h"
 #include "RenderAPI/TeVertexBuffer.h"
+#include "../TeEditorUtils.h"
 
 namespace te
 {
-    const UINT32 STANDARD_MAX_INSTANCED_BLOCK = 32;
-
-    struct PerHudInstanceData
-    {
-        Matrix4 MatWorldNoScale;
-        Vector4 Color;
-        float   Type;
-        Vector3 Padding;
-    };
+    const UINT32 MAX_HUD_INSTANCED_BLOCK = 32;
 
     TE_PARAM_BLOCK_BEGIN(PerHudCameraParamDef)
         TE_PARAM_BLOCK_ENTRY(Matrix4, gMatViewProj)
@@ -23,7 +16,7 @@ namespace te
     TE_PARAM_BLOCK_END
 
     TE_PARAM_BLOCK_BEGIN(PerHudInstanceParamDef)
-        TE_PARAM_BLOCK_ENTRY_ARRAY(PerHudInstanceData, gInstances, STANDARD_MAX_INSTANCED_BLOCK)
+        TE_PARAM_BLOCK_ENTRY_ARRAY(EditorUtils::PerHudInstanceData, gInstances, MAX_HUD_INSTANCED_BLOCK)
     TE_PARAM_BLOCK_END
 
     /** Shader that performs Hud billboards rendering. */
@@ -39,14 +32,7 @@ namespace te
             SpotLight = 3
         };
 
-        struct Element
-        {
-            Matrix4 WorldNoScale;
-            Type ElemType;
-            Color ElemColor;
-        };
-
-        using ElementIter = Vector<Element>::iterator;
+        using InstanceIter = Vector<EditorUtils::PerHudInstanceData>::iterator;
 
     public:
         HudMat();
@@ -55,7 +41,7 @@ namespace te
         void BindCamera(const HCamera& camera);
 
         /** A subset of all Hud elements we want to draw. We can't render more than 32 hud in a raw */
-        void BindHud(const ElementIter& begin, const ElementIter& end);
+        void BindHud(const InstanceIter& begin, const InstanceIter& end);
 
     private:
         HTexture _hudMask;

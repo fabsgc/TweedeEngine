@@ -36,19 +36,12 @@ namespace te
         _perCameraParamDef.gViewOrigin.Set(_perCameraParamBuffer, camera->GetTransform().GetPosition());
     }
 
-    void HudMat::BindHud(const ElementIter& begin, const ElementIter& end)
+    void HudMat::BindHud(const InstanceIter& begin, const InstanceIter& end)
     {
-        auto iter = begin;
-        UINT32 i = 0;
-        
+        UINT32 i = 0;   
         for (auto iter = begin; iter != end; iter++, i++)
         {
-            PerHudInstanceData data;
-            data.MatWorldNoScale = (*iter).WorldNoScale.Transpose();
-            data.Type = (float)(*iter).ElemType;
-            data.Color = (*iter).ElemColor.GetAsVector4();
-
-            _perInstanceParamDef.gInstances.Set(_perInstanceParamBuffer, data, (UINT32)i);
+            _perInstanceParamDef.gInstances.Set(_perInstanceParamBuffer, *iter, (UINT32)i);
         }   
     }
 }
