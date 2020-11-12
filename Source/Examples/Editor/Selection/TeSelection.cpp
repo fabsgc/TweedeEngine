@@ -70,6 +70,9 @@ namespace te
                         cameras.push_back(renderableCamera);
                 }
                 break;
+
+                default:
+                break;
             }
         }
 
@@ -85,7 +88,43 @@ namespace te
 
     void Selection::DrawInternal(const HCamera& camera, const SPtr<SceneObject>& sceneObject, Vector<SPtr<CLight>>& lights, Vector<SPtr<CCamera>>& cameras)
     {
+        for (const auto& component : sceneObject->GetComponents())
+        {
+            TypeID_Core type = (TypeID_Core)component->GetCoreType();
 
+            switch (type)
+            {
+                case TID_CRenderable:
+                {
+                    HRenderable renderable = static_object_cast<CRenderable>(component);
+                    if (renderable->GetActive() && EditorUtils::DoFrustumCulling(camera, renderable))
+                        DrawRenderable(renderable.GetInternalPtr());
+                }
+                break;
+
+                case TypeID_Core::TID_CLight:
+                {
+                    HLight light = static_object_cast<CLight>(component);
+                    if (light->GetActive() && EditorUtils::DoFrustumCulling(camera, light))
+                        lights.push_back(light.GetInternalPtr());
+                }
+                break;
+
+                case TypeID_Core::TID_CCamera:
+                {
+                    HCamera renderableCamera = static_object_cast<CCamera>(component);
+                    if (renderableCamera->GetActive() && EditorUtils::DoFrustumCulling(camera, renderableCamera))
+                        cameras.push_back(renderableCamera.GetInternalPtr());
+                }
+                break;
+
+                default:
+                break;
+            }
+        }
+
+        for (const auto& childSO : sceneObject->GetChildren())
+            DrawInternal(camera, childSO.GetInternalPtr(), lights, cameras);
     }
 
     void Selection::DrawRenderable(const SPtr<CRenderable>& renderable)

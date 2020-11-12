@@ -120,6 +120,9 @@ namespace te
          */
         bool IsChildOf(const HSceneObject& sceneObject);
 
+        /*Notify that internal data (if exists) must be updated */
+        virtual void MarkDirty() { }
+
         /** Call when a new component is created */
         static Event<void(const HComponent&)> OnComponentCreated;
 

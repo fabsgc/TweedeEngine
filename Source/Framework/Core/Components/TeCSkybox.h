@@ -48,6 +48,9 @@ namespace te
         /** @copydoc Component::Clone */
         void Clone(const HSkybox& c);
 
+        /* @copydoc Component::MarkDirty */
+        virtual void MarkDirty() { _internal->_markCoreDirty(); }
+
     protected:
         mutable SPtr<Skybox> _internal;
 

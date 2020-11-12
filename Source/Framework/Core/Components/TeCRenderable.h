@@ -123,6 +123,12 @@ namespace te
         /** @copydoc Component::Clone */
         void Clone(const HRenderable& c);
 
+        /* @copydoc Component::MarkDirty */
+        virtual void MarkDirty() { 
+            _internal->SetTransform(_internal->GetTransform());
+            _internal->_markCoreDirty(); 
+        }
+
     protected:
         mutable SPtr<Renderable> _internal;
 

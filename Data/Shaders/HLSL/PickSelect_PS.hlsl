@@ -22,7 +22,7 @@ float4 main( PS_INPUT IN ) : SV_Target
     float4 output = (float4)0;
 
     if(gRenderType == RENDER_TYPE_SELECTION)
-        output = float4(0.2, 0.2, 0.4, 0.1);
+        output = float4(0.25, 0.2, 0.5, 1.0);
     else
         output = IN.Color;
 

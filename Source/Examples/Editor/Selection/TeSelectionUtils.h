@@ -1,5 +1,6 @@
 #pragma once
 
+#include "TeCorePrerequisites.h"
 #include "Renderer/TeParamBlocks.h"
 #include "../TeEditorUtils.h"
 

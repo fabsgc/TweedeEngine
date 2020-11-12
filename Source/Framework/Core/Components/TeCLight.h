@@ -100,6 +100,9 @@ namespace te
         /** @copydoc Component::Clone */
         void Clone(const HLight& c);
 
+        /* @copydoc Component::MarkDirty */
+        virtual void MarkDirty() { _internal->_markCoreDirty(); }
+
     protected:
         mutable SPtr<Light> _internal;
 

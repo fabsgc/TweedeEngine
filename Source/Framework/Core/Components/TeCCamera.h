@@ -196,6 +196,9 @@ namespace te
         /** @copydoc Component::Clone */
         void Clone(const HCamera& c);
 
+        /* @copydoc Component::MarkDirty */
+        virtual void MarkDirty() { _internal->_markCoreDirty(); }
+
     protected:
         /** Checks if the world transform of the camera changed, and if needed updates the view matrix. */
         void UpdateView() const;

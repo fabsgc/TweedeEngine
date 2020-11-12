@@ -354,6 +354,9 @@ namespace te
                     _expandToSelection = true;
                     _expandDragToSelection = true;
 
+                    // ugly but best way to update all children
+                    sceneObject->Move(Vector3::ZERO);
+
                     gEditor().NeedsRedraw();
                     gEditor().GetSettings().State = Editor::EditorState::Modified;
                 }
@@ -386,6 +389,9 @@ namespace te
 
                 _expandToSelection = true;
                 _expandDragToSelection = true;
+
+                // ugly but best way to update all children
+                sceneObject->Move(Vector3::ZERO);
 
                 gEditor().NeedsRedraw();
                 gEditor().GetSettings().State = Editor::EditorState::Modified;
