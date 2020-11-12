@@ -30,7 +30,7 @@ namespace te
         const Vector3& GetTarget() const { return _target; }
 
         /** If linked camera has been modified during frame, return true */
-        bool HasChanged() const { return _hasChanged; }
+        bool NeedsRedraw() const { return _needsRedraw; }
 
         /** Returns Component type */
         static UINT32 GetComponentType() { return TID_CCameraUI; }
@@ -66,7 +66,7 @@ namespace te
 
     protected:
         bool _cameraInitialized; // On first update, we get CCamera component from parent sceneObject
-        bool _hasChanged; // If it has notified camera to draw, set to true
+        bool _needsRedraw; // If something has been modified, we need to set that to true
         Vector3 _target;
         Vector3 _localRotation;
         float _distanceToTarget;

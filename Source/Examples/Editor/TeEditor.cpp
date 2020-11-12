@@ -31,7 +31,7 @@
 #include "Image/TeColor.h"
 #include "TeEditorUtils.h"
 
-#include "Selection/TeGpuPicking.h"
+#include "Selection/TePicking.h"
 #include "Selection/TeSelection.h"
 #include "Selection/TeHud.h"
 
@@ -54,8 +54,8 @@ namespace te
 
     Editor::Editor()
         : _editorBegun(false)
-        , _gpuPickingDirty(true)
-        , _gpuSelectionDirty(true)
+        , _pickingDirty(true)
+        , _selectionDirty(true)
         , _hudDirty(true)
     { }
 
@@ -73,12 +73,12 @@ namespace te
         InitializeUICamera();
         InitializeViewportCamera();
 
-        _gpuPicking = te_unique_ptr_new<GpuPicking>();
-        _gpuSelection = te_unique_ptr_new<Selection>();
+        _picking = te_unique_ptr_new<Picking>();
+        _selection = te_unique_ptr_new<Selection>();
         _hud = te_unique_ptr_new<Hud>();
 
-        _gpuPicking->Initialize();
-        _gpuSelection->Initialize();
+        _picking->Initialize();
+        _selection->Initialize();
         _hud->Initialize();
 
         if (GuiAPI::Instance().IsGuiInitialized())
@@ -120,22 +120,18 @@ namespace te
 
     void Editor::PostRender()
     {
-        if (_gpuSelectionDirty && _previewViewportCamera == _viewportCamera) // only for default camera
+        if (_selectionDirty && _previewViewportCamera == _viewportCamera) // only for default camera
         {
             EditorUtils::RenderWindowData viewportData =
                 static_cast<WidgetViewport*>(&*_settings.WViewport)->GetRenderWindowData();
-            _gpuSelection->Render(_previewViewportCamera, viewportData);
-
-            //TE_PRINT("SELECTION");
+            _selection->Render(_previewViewportCamera, viewportData);
         }
 
         if (_hudDirty && _previewViewportCamera == _viewportCamera) // only for default camera
             _hud->Render(_previewViewportCamera, _sceneSO);
 
-        _gpuSelectionDirty = false;
+        _selectionDirty = false;
         _hudDirty = false;
-
-        //TE_PRINT("############## END");
     }
 
     void Editor::NeedsRedraw()
@@ -144,27 +140,27 @@ namespace te
             return;
 
         static_cast<WidgetViewport*>(&*_settings.WViewport)->NeedsRedraw();
-        MakeGpuPickingDirty();
-        MakeGpuSelectionDirty();
+        MakePickingDirty();
+        MakeSelectionDirty();
         MakeHudDirty();
     }
 
-    void Editor::NeedsGpuPicking(UINT32 x, UINT32 y)
+    void Editor::NeedsPicking(UINT32 x, UINT32 y)
     {
         if (!_settings.WViewport)
             return;
 
-        if (_gpuPickingDirty)
+        if (_pickingDirty)
         {
             EditorUtils::RenderWindowData viewportData = 
                 static_cast<WidgetViewport*>(&*_settings.WViewport)->GetRenderWindowData();
-            GpuPicking::RenderParam pickingData(viewportData.Width, viewportData.Height);
+            Picking::RenderParam pickingData(viewportData.Width, viewportData.Height);
 
-            _gpuPicking->ComputePicking(_previewViewportCamera, pickingData, _sceneSO);
-            _gpuPickingDirty = false;
+            _picking->ComputePicking(_previewViewportCamera, pickingData, _sceneSO);
+            _pickingDirty = false;
         }
 
-        SPtr<GameObject> gameObject = _gpuPicking->GetGameObjectAt(x, y);
+        SPtr<GameObject> gameObject = _picking->GetGameObjectAt(x, y);
         if (gameObject)
         {
             SPtr<Component> component = std::static_pointer_cast<Component>(gameObject);
@@ -184,9 +180,9 @@ namespace te
         NeedsRedraw();
     }
 
-    void Editor::MakeGpuPickingDirty()
+    void Editor::MakePickingDirty()
     {
-        _gpuPickingDirty = true;
+        _pickingDirty = true;
     }
 
     void Editor::MakeHudDirty()
@@ -194,9 +190,9 @@ namespace te
         _hudDirty = true;
     }
 
-    void Editor::MakeGpuSelectionDirty()
+    void Editor::MakeSelectionDirty()
     {
-        _gpuSelectionDirty = true;
+        _selectionDirty = true;
     }
 
     void Editor::InitializeInput()

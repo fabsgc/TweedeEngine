@@ -1,6 +1,7 @@
 cbuffer PerFrameBuffer : register(b0)
 {
     matrix gMatViewProj;
+    float3 gViewOrigin;
     uint   gRenderType;
 }
 

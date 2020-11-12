@@ -39,10 +39,14 @@ namespace te
         MotionBlur = 0x7,
         /** Shader used for gaussian blur post process */
         GaussianBlur = 0x8,
-        /** Shader used for gpu picking */
-        GpuPicking = 0x9,
-        /** Shader used for hud billboards */
-        Hud = 0xA,
+        /** Shader used for picking */
+        Picking = 0x9,
+        /** Shader used for hud picking */
+        HudPicking = 0xA,
+        /** Shader used for selection */
+        Selection = 0xB,
+        /** Shader used for hud draw and selection */
+        HudSelection = 0xC,
     };
 
     /** Types of builtin shaders that are always available. */
@@ -135,8 +139,10 @@ namespace te
         void InitShaderBloom();
         void InitShaderMotionBlur();
         void InitShaderGaussianBlur();
-        void InitShaderGpuPicking();
-        void InitShaderHud();
+        void InitShaderPicking();
+        void InitShaderSelection();
+        void InitShaderHudPicking();
+        void InitShaderHudSelection();
 
         void InitDefaultMaterial();
 
@@ -150,8 +156,10 @@ namespace te
         HShader _shaderBloom;
         HShader _shaderMotionBlur;
         HShader _shaderGaussianBlur;
-        HShader _shaderGpuPicking;
-        HShader _shaderHud;
+        HShader _shaderPicking;
+        HShader _shaderHudPicking;
+        HShader _shaderSelection;
+        HShader _shaderHudSelection;
 
         SPtr<SamplerState> _anisotropicSamplerState = nullptr;
         SPtr<SamplerState> _bilinearSamplerState = nullptr;
@@ -165,8 +173,8 @@ namespace te
         SHADER_DESC _bloomShaderDesc;
         SHADER_DESC _motionBlurShaderDesc;
         SHADER_DESC _gaussianBlurShaderDesc;
-        SHADER_DESC _gpuPickingShaderDesc;
-        SHADER_DESC _hudShaderDesc;
+        SHADER_DESC _pickSelectShaderDesc;
+        SHADER_DESC _hudPickSelectShaderDesc;
 
         GPU_PROGRAM_DESC _vertexShaderForwardDesc;
         GPU_PROGRAM_DESC _pixelShaderForwardDesc;
@@ -192,12 +200,12 @@ namespace te
         GPU_PROGRAM_DESC _vertexShaderGaussianBlurDesc;
         GPU_PROGRAM_DESC _pixelShaderGaussianBlurDesc;
 
-        GPU_PROGRAM_DESC _vertexShaderGpuPickingDesc;
-        GPU_PROGRAM_DESC _pixelShaderGpuPickingDesc;
+        GPU_PROGRAM_DESC _vertexShaderPickSelectDesc;
+        GPU_PROGRAM_DESC _pixelShaderPickSelectDesc;
 
-        GPU_PROGRAM_DESC _vertexShaderHudDesc;
-        GPU_PROGRAM_DESC _geometryShaderHudDesc;
-        GPU_PROGRAM_DESC _pixelShaderHudDesc;
+        GPU_PROGRAM_DESC _vertexShaderHudPickSelectDesc;
+        GPU_PROGRAM_DESC _geometryShaderHudPickSelectDesc;
+        GPU_PROGRAM_DESC _pixelShaderHudPickSelectDesc;
 
         BLEND_STATE_DESC _blendOpaqueStateDesc;
         BLEND_STATE_DESC _blendTransparentStateDesc;

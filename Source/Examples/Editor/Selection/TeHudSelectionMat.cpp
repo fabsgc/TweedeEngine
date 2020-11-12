@@ -1,30 +1,19 @@
-#include "TeHudPickingMat.h"
+#include "TeHudSelectionMat.h"
 
-#include "Image/TeTexture.h"
 #include "Components/TeCCamera.h"
-#include "Resources/TeResourceManager.h"
-#include "Importer/TeTextureImportOptions.h"
 
 namespace te
 {
-    HudPickingMat::HudPickingMat()
+    HudSelectionMat::HudSelectionMat()
     {
         _perFrameParamBuffer = _perFrameParamDef.CreateBuffer();
         _perInstanceParamBuffer = _perInstanceParamDef.CreateBuffer();
 
         _params->SetParamBlockBuffer("PerFrameBuffer", _perFrameParamBuffer);
         _params->SetParamBlockBuffer("PerInstanceBuffer", _perInstanceParamBuffer);
-        _params->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
-
-        auto textureImportOptions = TextureImportOptions::Create();
-        textureImportOptions->CpuCached = false;
-        textureImportOptions->Format = IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
-
-        _hudMask = gResourceManager().Load<Texture>("Data/Textures/Hud/Hud.png", textureImportOptions);
-        _params->SetTexture("MaskTexture", _hudMask.GetInternalPtr());
     }
 
-    void HudPickingMat::BindCamera(const HCamera& camera, SelectionRenderType renderType)
+    void HudSelectionMat::BindCamera(const HCamera& camera, SelectionRenderType renderType)
     {
         const Matrix4& projectionMatrix = camera->GetProjectionMatrixRS();
         const Matrix4& viewMatrix = camera->GetViewMatrix();
@@ -35,7 +24,7 @@ namespace te
         _perFrameParamDef.gRenderType.Set(_perFrameParamBuffer, (UINT32)renderType);
     }
 
-    void HudPickingMat::BindHud(const InstanceIter& begin, const InstanceIter& end)
+    void HudSelectionMat::BindHud(const InstanceIter& begin, const InstanceIter& end)
     {
         UINT32 i = 0;
         for (auto iter = begin; iter != end; iter++, i++)

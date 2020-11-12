@@ -53,7 +53,7 @@ namespace te
             rapi.SetRenderTarget(camera->GetViewport()->GetTarget());
             rapi.ClearViewport(clearBuffers, Color::Black);
 
-            _material->BindCamera(camera, HudPickingMat::RenderType::Draw);
+            _material->BindCamera(camera, SelectionRenderType::Draw);
 
             rapi.SetVertexDeclaration(_pointVDecl);
             rapi.SetVertexBuffers(0, &_pointVB, 1);
@@ -101,7 +101,7 @@ namespace te
                     {
                         const Transform& tfrm = cameraElement->GetTransform();
                         element.MatWorldNoScale = Matrix4::TRS(tfrm.GetPosition(), tfrm.GetRotation(), Vector3::ONE).Transpose();
-                        element.Type = static_cast<float>(HudPickingMat::Type::Camera);
+                        element.Type = static_cast<float>(HudType::Camera);
                         element.Color = Color::Black.GetAsVector4();
 
                         matElements.push_back(element);
@@ -121,13 +121,13 @@ namespace te
                         switch (lightElement->GetType())
                         {
                         case LightType::Directional:
-                            element.Type = static_cast<float>(HudPickingMat::Type::DirectionalLight);
+                            element.Type = static_cast<float>(HudType::DirectionalLight);
                             break;
                         case LightType::Radial:
-                            element.Type = static_cast<float>(HudPickingMat::Type::RadialLight);
+                            element.Type = static_cast<float>(HudType::RadialLight);
                             break;
                         case LightType::Spot:
-                            element.Type = static_cast<float>(HudPickingMat::Type::SpotLight);
+                            element.Type = static_cast<float>(HudType::SpotLight);
                             break;
                         }
 

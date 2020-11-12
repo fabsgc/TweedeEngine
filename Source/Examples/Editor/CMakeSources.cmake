@@ -26,17 +26,23 @@ set (TE_EDITOR_SRC_IMGUI_EXT
 )
 
 set (TE_EDITOR_INC_SELECTION
+    "Selection/TeSelectionUtils.h"
     "Selection/TeSelection.h"
-    "Selection/TeGpuPicking.h"
-    "Selection/TeGpuPickingMat.h"
+    "Selection/TeSelectionMat.h"
+    "Selection/TeHudSelectionMat.h"
+    "Selection/TePicking.h"
+    "Selection/TePickingMat.h"
     "Selection/TeHudPickingMat.h"
     "Selection/TeHud.h"
+    
 )
 
 set (TE_EDITOR_SRC_SELECTION
     "Selection/TeSelection.cpp"
-    "Selection/TeGpuPicking.cpp"
-    "Selection/TeGpuPickingMat.cpp"
+    "Selection/TeSelectionMat.cpp"
+    "Selection/TeHudSelectionMat.cpp"
+    "Selection/TePicking.cpp"
+    "Selection/TePickingMat.cpp"
     "Selection/TeHudPickingMat.cpp"
     "Selection/TeHud.cpp"
 )

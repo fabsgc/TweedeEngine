@@ -8,8 +8,8 @@
 
 namespace te
 {
-    class GpuPickingMat;
-    class HudPickingMat;
+    class SelectionMat;
+    class HudSelectionMat;
 
     class Selection
     {
@@ -27,7 +27,7 @@ namespace te
         /** Recursive method to draw components under a sceneObject */
         void Draw(const HCamera& camera, const EditorUtils::RenderWindowData& viewportData);
 
-        /** @copydoc GpuPicking::Draw */
+        /** @copydoc Picking::Draw */
         void DrawInternal(const HCamera& camera, const SPtr<SceneObject>& sceneObject, Vector<SPtr<CLight>>& lights, Vector<SPtr<CCamera>>& cameras);
 
         /** Specific way to draw a renderable */
@@ -41,7 +41,7 @@ namespace te
 
     private:
         Editor::SelectionData& _selections;
-        GpuPickingMat* _material;
-        HudPickingMat* _hudMaterial;
+        SelectionMat* _material;
+        HudSelectionMat* _hudMaterial;
     };
 }

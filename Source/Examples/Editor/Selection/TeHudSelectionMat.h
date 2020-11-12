@@ -6,16 +6,16 @@
 
 namespace te
 {
-    /** Shader that performs Hud billboards draw and picking. */
-    class HudPickingMat : public RendererMaterial<HudPickingMat>
+    /** Shader that performs Hud billboards selection. */
+    class HudSelectionMat : public RendererMaterial<HudSelectionMat>
     {
-        RMAT_DEF(BuiltinShader::HudPicking);
+        RMAT_DEF(BuiltinShader::HudSelection);
 
     public:
         using InstanceIter = Vector<EditorUtils::PerHudInstanceData>::iterator;
 
     public:
-        HudPickingMat();
+        HudSelectionMat();
 
         /** Set gpu params for camera */
         void BindCamera(const HCamera& camera, SelectionRenderType renderType);

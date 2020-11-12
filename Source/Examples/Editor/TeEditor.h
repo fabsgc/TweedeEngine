@@ -10,7 +10,7 @@
 
 namespace te
 {
-    class GpuPicking;
+    class Picking;
     class Selection;
     class Hud;
 
@@ -96,17 +96,17 @@ namespace te
         /** Called to inform the editor that some element has been modified and viewport must be updated */
         void NeedsRedraw();
 
-        /** In order to handle selection in 3D viewport, we need to call gpuPicking system in order to generate an update to date render texture */
-        void NeedsGpuPicking(UINT32 x, UINT32 y);
+        /** In order to handle selection in 3D viewport, we need to call picking system in order to generate an update to date render texture */
+        void NeedsPicking(UINT32 x, UINT32 y);
 
         /** If we need a redraw or if 3D viewport size change, we need to call this method to force picking render */
-        void MakeGpuPickingDirty();
+        void MakePickingDirty();
 
         /** If something has changed, we need to redraw hud elements such as cameras and lights on top of render */
         void MakeHudDirty();
 
         /** If we need a redraw or if 3D viewport size change, we need to call this method to force selected elements render */
-        void MakeGpuSelectionDirty();
+        void MakeSelectionDirty();
 
         /** Get viewport camera handle */
         HCamera& GetViewportCamera() { return _viewportCamera; }
@@ -185,16 +185,16 @@ namespace te
 
         // I decided to use GPU Picking for 3D viewport selection handle
         // After NeedRedraws() or 3D viewport resize, we need to put this to true in order to force picking render
-        UPtr<GpuPicking> _gpuPicking;
-        bool _gpuPickingDirty;
+        UPtr<Picking> _picking;
+        bool _pickingDirty;
+
+        // Current selected renderables, cameras and lights will be higglighted
+        UPtr<Selection> _selection;
+        bool _selectionDirty;
 
         // If something has changed, we need to redraw hud elements such as cameras and lights on top of render
         UPtr<Hud> _hud;
         bool _hudDirty;
-
-        // Current selected renderables, cameras and lights will be higglighted
-        UPtr<Selection> _gpuSelection;
-        bool _gpuSelectionDirty;
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         // TODO Temp for debug purpose

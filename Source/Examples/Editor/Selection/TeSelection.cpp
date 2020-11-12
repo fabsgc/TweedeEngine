@@ -1,7 +1,7 @@
 #include "TeSelection.h"
 
-#include "TeGpuPickingMat.h"
-#include "TeHudPickingMat.h"
+#include "TeSelectionMat.h"
+#include "TeHudSelectionMat.h"
 #include "Components/TeCCamera.h"
 #include "Components/TeCLight.h"
 #include "Components/TeCRenderable.h"
@@ -15,8 +15,8 @@ namespace te
 
     void Selection::Initialize()
     {
-        _material = GpuPickingMat::Get();
-        _hudMaterial = HudPickingMat::Get();
+        _material = SelectionMat::Get();
+        _hudMaterial = HudSelectionMat::Get();
     }
 
     void Selection::Render(const HCamera& camera, const EditorUtils::RenderWindowData& viewportData)
@@ -35,7 +35,7 @@ namespace te
         Vector<SPtr<CCamera>> cameras;
         Vector<SPtr<CLight>> lights;
 
-        _material->BindCamera(camera, GpuPickingMat::RenderType::Selection);
+        _material->BindCamera(camera);
 
         if (!_selections.ClickedComponent && _selections.ClickedSceneObject) // A SceneObject has been selected, we need to highlight all sub elements
         {
@@ -74,7 +74,7 @@ namespace te
         }
 
         // Bind camera param buffer
-        _hudMaterial->BindCamera(camera, HudPickingMat::RenderType::Selection);
+        _hudMaterial->BindCamera(camera, SelectionRenderType::Selection);
 
         if (lights.size() > 0)
             DrawLights(lights);

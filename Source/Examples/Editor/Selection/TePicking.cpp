@@ -1,4 +1,4 @@
-#include "TeGpuPicking.h"
+#include "TePicking.h"
 
 #include "../TeEditor.h"
 #include "RenderAPI/TeRenderAPI.h"
@@ -8,18 +8,18 @@
 #include "Scene/TeTransform.h"
 #include "Renderer/TeRendererUtility.h"
 #include "Utility/TeTime.h"
-#include "TeGpuPickingMat.h"
+#include "TePickingMat.h"
 #include "TeHudPickingMat.h"
 
 namespace te
 {
-    void GpuPicking::Initialize()
+    void Picking::Initialize()
     {
-        _material = GpuPickingMat::Get();
+        _material = PickingMat::Get();
         _hudMaterial = HudPickingMat::Get();
     }
 
-    void GpuPicking::ComputePicking(const HCamera& camera, const RenderParam& param, const HSceneObject& root)
+    void Picking::ComputePicking(const HCamera& camera, const RenderParam& param, const HSceneObject& root)
     { 
         RenderAPI& rapi = RenderAPI::Instance();
         UINT32 clearBuffers = FBT_COLOR | FBT_DEPTH | FBT_STENCIL;
@@ -28,7 +28,7 @@ namespace te
         CheckRenderTexture(param.Width, param.Height);
 
         // Bind camera param buffer
-        _material->BindCamera(camera, GpuPickingMat::RenderType::Picking);
+        _material->BindCamera(camera);
 
         // Configure output
         rapi.SetRenderTarget(_renderData.RenderTex);
@@ -41,7 +41,7 @@ namespace te
         CleanGameObjectsList();
     }
 
-    Color GpuPicking::GetColorAt(UINT32 x, UINT32 y)
+    Color Picking::GetColorAt(UINT32 x, UINT32 y)
     { 
         SPtr<Texture> pickingTexture = _renderData.RenderTex->GetColorTexture(0);
         SPtr<PixelData> pixelData = pickingTexture->GetProperties().AllocBuffer(0, 0);
@@ -50,7 +50,7 @@ namespace te
         return pixelData->GetColorAt(x, y);
     }
 
-    SPtr<GameObject> GpuPicking::GetGameObjectAt(UINT32 x, UINT32 y)
+    SPtr<GameObject> Picking::GetGameObjectAt(UINT32 x, UINT32 y)
     {
         Color pickedColor = GetColorAt(x, y);
         RGBA pickedColorRGBA = pickedColor.GetAsRGBA();
@@ -91,7 +91,7 @@ namespace te
         return nullptr;
     }
 
-    bool GpuPicking::CheckRenderTexture(UINT32 width, UINT32 height)
+    bool Picking::CheckRenderTexture(UINT32 width, UINT32 height)
     {
         if (width == _renderData.Width && height == _renderData.Height)
             return false;
@@ -104,7 +104,7 @@ namespace te
         return true;
     }
 
-    void GpuPicking::Draw(const HCamera& camera, const HSceneObject& sceneObject)
+    void Picking::Draw(const HCamera& camera, const HSceneObject& sceneObject)
     { 
         Vector<HCamera> cameras;
         Vector<HLight> lights;
@@ -118,7 +118,7 @@ namespace te
             DrawCameras(cameras);
     }
 
-    void GpuPicking::DrawInternal(const HCamera& camera, const HSceneObject& sceneObject, Vector<HLight>& lights, Vector<HCamera>& cameras)
+    void Picking::DrawInternal(const HCamera& camera, const HSceneObject& sceneObject, Vector<HLight>& lights, Vector<HCamera>& cameras)
     {
         float now = gTime().GetTime();
 
@@ -168,7 +168,7 @@ namespace te
             Draw(camera, childSO);
     }
 
-    void GpuPicking::DrawRenderable(const HRenderable& renderable)
+    void Picking::DrawRenderable(const HRenderable& renderable)
     {
         SPtr<Mesh> mesh = renderable->GetMesh();
 
@@ -185,17 +185,17 @@ namespace te
         }
     }
 
-    void GpuPicking::DrawLights(const Vector<HLight>& light)
+    void Picking::DrawLights(const Vector<HLight>& light)
     {
         // TODO
     }
 
-    void GpuPicking::DrawCameras(const Vector<HCamera>& light)
+    void Picking::DrawCameras(const Vector<HCamera>& light)
     {
         // TODO
     }
 
-    void GpuPicking::CleanGameObjectsList()
+    void Picking::CleanGameObjectsList()
     {
         float now = gTime().GetTime();
         for (auto it = _colorToGameObject.cbegin(); it != _colorToGameObject.cend(); )

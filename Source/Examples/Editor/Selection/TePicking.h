@@ -18,10 +18,10 @@
 
 namespace te
 {
-    class GpuPickingMat;
+    class PickingMat;
     class HudPickingMat;
 
-    class GpuPicking
+    class Picking
     {
     public:
         struct RenderParam
@@ -52,8 +52,8 @@ namespace te
         };
 
     public:
-        GpuPicking() = default;
-        ~GpuPicking() = default;
+        Picking() = default;
+        ~Picking() = default;
 
         /** Init context, shader */
         void Initialize();
@@ -90,7 +90,7 @@ namespace te
         /** Recursive method to draw components under a sceneObject */
         void Draw(const HCamera& camera, const HSceneObject& sceneObject);
 
-        /** @copydoc GpuPicking::Draw */
+        /** @copydoc Picking::Draw */
         void DrawInternal(const HCamera& camera, const HSceneObject& sceneObject, Vector<HLight>& lights, Vector<HCamera>& cameras);
 
         /** Specific way to draw a renderable */
@@ -106,7 +106,7 @@ namespace te
         void CleanGameObjectsList();
 
     private:
-        GpuPickingMat* _material;
+        PickingMat* _material;
         HudPickingMat* _hudMaterial;
         EditorUtils::RenderWindowData _renderData;
         std::unordered_map<RGBA, GameObjectInfo> _colorToGameObject;

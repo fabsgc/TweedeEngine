@@ -84,11 +84,7 @@ namespace te
     void WidgetViewport::Resize()
     {
         if (_isVisible && GuiAPI::Instance().IsGuiInitialized())
-            _needResetViewport = true;
-
-        gEditor().MakeGpuPickingDirty();
-        gEditor().MakeGpuSelectionDirty();
-        gEditor().MakeHudDirty();
+            gEditor().NeedsRedraw();
     }
 
     void WidgetViewport::NeedsRedraw()
@@ -125,11 +121,10 @@ namespace te
     void WidgetViewport::Update()
     {
         if (gCoreApplication().GetState().IsFlagSet(ApplicationState::Game))
-        {
-            gEditor().MakeGpuPickingDirty();
-            gEditor().MakeGpuSelectionDirty();
-            gEditor().MakeHudDirty();
-        }
+            gEditor().NeedsRedraw();
+
+        if (_viewportCameraUI->NeedsRedraw())
+            gEditor().NeedsRedraw();
 
         if (_isVisible && GuiAPI::Instance().IsGuiInitialized())
             ResetViewport();
@@ -139,13 +134,6 @@ namespace te
         else
             _viewportCameraUI->EnableZooming(false);
 
-        if (_viewportCameraUI->HasChanged())
-        {
-            gEditor().MakeGpuPickingDirty();
-            gEditor().MakeGpuSelectionDirty();
-            gEditor().MakeHudDirty();
-        }
-
         // Handle viewport gpu picking
         if (ImGui::IsWindowHovered() && gVirtualInput().IsButtonDown(_pickingBtn))
         {
@@ -153,7 +141,7 @@ namespace te
             ImVec2 windowPos = ImGui::GetWindowPos();
             ImVec2 viewportPos(mousePos.x - windowPos.x, mousePos.y - windowPos.y - 26);
 
-            gEditor().NeedsGpuPicking((UINT32)viewportPos.x, (UINT32)viewportPos.y);
+            gEditor().NeedsPicking((UINT32)viewportPos.x, (UINT32)viewportPos.y);
         }
 
         UpdateCameraFlag(_viewportCamera);
