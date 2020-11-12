@@ -133,4 +133,13 @@ namespace te
             return String();
         }
     }
+
+    bool Util::IsBigEndian()
+    {
+#if TE_ENDIAN == TE_ENDIAN_BIG
+        return true;
+#else
+        return false;
+#endif
+    }
 }

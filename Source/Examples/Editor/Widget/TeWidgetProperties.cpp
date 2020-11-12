@@ -801,7 +801,7 @@ namespace te
             textureSkyboxImportOptions->CpuCached = false;
             textureSkyboxImportOptions->CubemapType = CubemapSourceType::Faces;
             textureSkyboxImportOptions->IsCubemap = true;
-            textureSkyboxImportOptions->Format = IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
+            textureSkyboxImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
 
             HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.Data.SelectedPath, textureSkyboxImportOptions);
             if (texture.GetHandleData())

@@ -275,7 +275,7 @@ namespace te
             {
                 antialiasingOptions.AddOption((int)AntiAliasingAlgorithm::FXAA, "FXAA");
                 antialiasingOptions.AddOption((int)AntiAliasingAlgorithm::TAA, "TAA");
-                antialiasingOptions.AddOption((int)AntiAliasingAlgorithm::TAA, "None");
+                antialiasingOptions.AddOption((int)AntiAliasingAlgorithm::None, "None");
             }
 
             if (ImGuiExt::RenderOptionCombo<int>((int*)(&cameraSettings->AntialiasingAglorithm), "##aa_option", "Antialiasing", antialiasingOptions, width))

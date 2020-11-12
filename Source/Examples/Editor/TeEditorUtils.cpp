@@ -27,8 +27,8 @@ namespace te
                     auto textureImportOptions = TextureImportOptions::Create();
                     textureImportOptions->CpuCached = false;
                     textureImportOptions->GenerateMips = (textureName != "EmissiveMap") ? true : false;
-                    textureImportOptions->MaxMip = 6;
-                    textureImportOptions->Format = IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
+                    textureImportOptions->MaxMip = 8;
+                    textureImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
 
                     if (isSet)
                     {

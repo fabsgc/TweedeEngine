@@ -44,10 +44,6 @@ namespace te
         RenderAPI& rapi = RenderAPI::Instance();
         UINT32 clearBuffers = FBT_DEPTH;
 
-        const SPtr<RenderSettings>& settings = camera->GetRenderSettings();
-        if (settings->OutputType != RenderOutputType::Final)
-            return;
-
         Vector<SelectionUtils::PerHudInstanceData> instancedElements;
         GetHudElements(camera, root, instancedElements);
 

@@ -543,7 +543,6 @@ namespace te
 
     void Editor::LoadScene()
     {
-        PixelFormat format = IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         // ######################################################
         auto meshImportOptions = MeshImportOptions::Create();
@@ -554,14 +553,14 @@ namespace te
         auto textureImportOptions = TextureImportOptions::Create();
         textureImportOptions->CpuCached = false;
         textureImportOptions->GenerateMips = true;
-        textureImportOptions->MaxMip = 4;
-        textureImportOptions->Format = format;
+        textureImportOptions->MaxMip = 8;
+        textureImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
 
         auto textureCubeMapImportOptions = TextureImportOptions::Create();
         textureCubeMapImportOptions->CpuCached = false;
         textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
         textureCubeMapImportOptions->IsCubemap = true;
-        textureCubeMapImportOptions->Format = format;
+        textureCubeMapImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
         
         // ######################################################
 

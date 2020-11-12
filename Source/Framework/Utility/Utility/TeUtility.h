@@ -117,6 +117,8 @@ namespace te
 
             return ret;
         }
+
+        static bool IsBigEndian();
     };
 
     /** Sets contents of a struct to zero. */
