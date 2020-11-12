@@ -997,7 +997,7 @@ namespace te
         _blendTransparentStateDesc.RenderTargetDesc[0].BlendEnable = true;
         _blendTransparentStateDesc.RenderTargetDesc[0].SrcBlend = BlendFactor::BF_SOURCE_ALPHA;
         _blendTransparentStateDesc.RenderTargetDesc[0].DstBlend = BlendFactor::BF_INV_SOURCE_ALPHA;
-        _blendTransparentStateDesc.RenderTargetDesc[0].BlendOp = BlendOperation::BO_MAX;
+        _blendTransparentStateDesc.RenderTargetDesc[0].BlendOp = BlendOperation::BO_ADD;
         _blendTransparentStateDesc.RenderTargetDesc[0].SrcBlendAlpha = BlendFactor::BF_ZERO;
         _blendTransparentStateDesc.RenderTargetDesc[0].DstBlendAlpha = BlendFactor::BF_ONE;
         _blendTransparentStateDesc.RenderTargetDesc[0].BlendOpAlpha = BlendOperation::BO_ADD;
@@ -1011,7 +1011,7 @@ namespace te
         passDesc.GeometryProgramDesc = _geometryShaderHudPickSelectDesc;
         passDesc.PixelProgramDesc = _pixelShaderHudPickSelectDesc;
 
-        passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_CLOCKWISE;
+        passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
 
         HPass pass = Pass::Create(passDesc);
         HTechnique technique = Technique::Create("hlsl", { pass.GetInternalPtr() });

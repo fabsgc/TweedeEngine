@@ -16,24 +16,27 @@ namespace te
     {
         _material = HudPickingMat::Get();
 
-        SPtr<VertexDataDesc> pointVDesc = te_shared_ptr_new<VertexDataDesc>();
-        pointVDesc->AddVertElem(VET_FLOAT3, VES_POSITION);
+        {
+            SPtr<VertexDataDesc> pointVDesc = te_shared_ptr_new<VertexDataDesc>();
+            pointVDesc->AddVertElem(VET_FLOAT3, VES_POSITION);
 
-        _pointVDecl = VertexDeclaration::Create(pointVDesc);
+            _pointVDecl = VertexDeclaration::Create(pointVDesc);
 
-        VERTEX_BUFFER_DESC vbDesc;
-        vbDesc.VertexSize = _pointVDecl->GetProperties().GetVertexSize(0);
-        vbDesc.NumVerts = 1;
-        vbDesc.Usage = GBU_DYNAMIC;
+            VERTEX_BUFFER_DESC vbDesc;
+            vbDesc.VertexSize = _pointVDecl->GetProperties().GetVertexSize(0);
+            vbDesc.NumVerts = 1;
+            vbDesc.Usage = GBU_DYNAMIC;
 
-        _pointVB = VertexBuffer::Create(vbDesc);
+            _pointVB = VertexBuffer::Create(vbDesc);
 
-        _pointData = (VertexBufferLayout *)_pointVB->Lock(0, sizeof(VertexBufferLayout), GBL_WRITE_ONLY_NO_OVERWRITE);
+            _pointData = (SelectionUtils::VertexBufferLayout *)_pointVB->Lock(
+                0, sizeof(SelectionUtils::VertexBufferLayout), GBL_WRITE_ONLY_NO_OVERWRITE);
 
-        if (_pointData)
-            _pointData[0].Position = Vector3(0.0f, 0.0f, 0.0f);
+            if (_pointData)
+                _pointData[0].Position = Vector3(0.0f, 0.0f, 0.0f);
 
-        _pointVB->Unlock();
+            _pointVB->Unlock();
+        }
     }
 
     void Hud::Render(const HCamera& camera, const HSceneObject& root)
@@ -45,7 +48,7 @@ namespace te
         if (settings->OutputType != RenderOutputType::Final)
             return;
 
-        Vector<EditorUtils::PerHudInstanceData> instancedElements;
+        Vector<SelectionUtils::PerHudInstanceData> instancedElements;
         GetHudElements(camera, root, instancedElements);
 
         if (instancedElements.size() > 0)
@@ -53,7 +56,7 @@ namespace te
             rapi.SetRenderTarget(camera->GetViewport()->GetTarget());
             rapi.ClearViewport(clearBuffers, Color::Black);
 
-            _material->BindCamera(camera, SelectionRenderType::Draw);
+            _material->BindCamera(camera, SelectionUtils::RenderType::Draw);
 
             rapi.SetVertexDeclaration(_pointVDecl);
             rapi.SetVertexBuffers(0, &_pointVB, 1);
@@ -84,9 +87,9 @@ namespace te
         } 
     }
 
-    void Hud::GetHudElements(const HCamera& camera, const HSceneObject& sceneObject, Vector<EditorUtils::PerHudInstanceData>& matElements)
+    void Hud::GetHudElements(const HCamera& camera, const HSceneObject& sceneObject, Vector<SelectionUtils::PerHudInstanceData>& matElements)
     {
-        EditorUtils::PerHudInstanceData element;
+        SelectionUtils::PerHudInstanceData element;
 
         for (const auto& component : sceneObject->GetComponents())
         {
@@ -101,7 +104,7 @@ namespace te
                     {
                         const Transform& tfrm = cameraElement->GetTransform();
                         element.MatWorldNoScale = Matrix4::TRS(tfrm.GetPosition(), tfrm.GetRotation(), Vector3::ONE).Transpose();
-                        element.Type = static_cast<float>(HudType::Camera);
+                        element.Type = static_cast<float>(SelectionUtils::HudType::Camera);
                         element.Color = Color::Black.GetAsVector4();
 
                         matElements.push_back(element);
@@ -121,13 +124,13 @@ namespace te
                         switch (lightElement->GetType())
                         {
                         case LightType::Directional:
-                            element.Type = static_cast<float>(HudType::DirectionalLight);
+                            element.Type = static_cast<float>(SelectionUtils::HudType::DirectionalLight);
                             break;
                         case LightType::Radial:
-                            element.Type = static_cast<float>(HudType::RadialLight);
+                            element.Type = static_cast<float>(SelectionUtils::HudType::RadialLight);
                             break;
                         case LightType::Spot:
-                            element.Type = static_cast<float>(HudType::SpotLight);
+                            element.Type = static_cast<float>(SelectionUtils::HudType::SpotLight);
                             break;
                         }
 

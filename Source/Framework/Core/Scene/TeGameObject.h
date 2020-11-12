@@ -34,7 +34,7 @@ namespace te
         const String& GetName() const { return _name; }
 
         /** Color identifier which persist only during object lifetime */
-        const Color& GetColor() const { return _color; }
+        const Color& GetGameObjectColor() const { return _gameObjectcolor; }
 
         /**	Sets the name of the object. */
         void SetName(const String& name) { _name = name; }
@@ -83,7 +83,7 @@ namespace te
     protected:
         String _name;
         UUID _UUID;
-        Color _color;
+        Color _gameObjectcolor;
 
     private:
         GameObjectInstanceDataPtr _instanceData;

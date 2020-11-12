@@ -21,12 +21,12 @@ namespace te
 
         Matrix4 viewProjMatrix = projectionMatrix * viewMatrix;
         _perFrameParamDef.gMatViewProj.Set(_perFrameParamBuffer, viewProjMatrix.Transpose());
-        _perFrameParamDef.gRenderType.Set(_perFrameParamBuffer, (UINT32)SelectionRenderType::Selection);
+        _perFrameParamDef.gRenderType.Set(_perFrameParamBuffer, (UINT32)SelectionUtils::RenderType::Selection);
     }
 
     void SelectionMat::BindRenderable(const HRenderable& renderable)
     {
         _perObjectParamDef.gMatWorld.Set(_perObjectParamBuffer, renderable->GetMatrix().Transpose());
-        _perObjectParamDef.gColor.Set(_perObjectParamBuffer, renderable->GetColor().GetAsVector4());
+        _perObjectParamDef.gColor.Set(_perObjectParamBuffer, renderable->GetGameObjectColor().GetAsVector4());
     }
 }

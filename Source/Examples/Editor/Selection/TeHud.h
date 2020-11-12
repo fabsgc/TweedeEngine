@@ -6,6 +6,7 @@
 #include "RenderAPI/TeVertexDeclaration.h"
 #include "Math/TeVector3.h"
 #include "../TeEditorUtils.h"
+#include "TeSelectionUtils.h"
 
 namespace te
 {
@@ -24,13 +25,7 @@ namespace te
         void Render(const HCamera& camera, const HSceneObject& root);
 
         /** Generate a list of all hud elements to draw by iterating through the scene graph */
-        void GetHudElements(const HCamera& camera, const HSceneObject& sceneObject, Vector<EditorUtils::PerHudInstanceData>& matElements);
-
-    private:
-        struct VertexBufferLayout
-        {
-            Vector3 Position;
-        };
+        void GetHudElements(const HCamera& camera, const HSceneObject& sceneObject, Vector<SelectionUtils::PerHudInstanceData>& matElements);
 
     private:
         HudPickingMat* _material;
@@ -38,6 +33,6 @@ namespace te
         SPtr<VertexBuffer> _pointVB;
         SPtr<VertexDataDesc> _pointVDesc;
         SPtr<VertexDeclaration> _pointVDecl;
-        VertexBufferLayout* _pointData = nullptr;
+        SelectionUtils::VertexBufferLayout* _pointData = nullptr;
     };
 }

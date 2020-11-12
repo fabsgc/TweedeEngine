@@ -13,6 +13,10 @@
 #include "RenderAPI/TeRenderTexture.h"
 #include "Renderer/TeParamBlocks.h"
 #include "../TeEditorUtils.h"
+#include "TeSelectionUtils.h"
+#include "RenderAPI/TeVertexBuffer.h"
+#include "RenderAPI/TeVertexDataDesc.h"
+#include "RenderAPI/TeVertexDeclaration.h"
 
 #include <unordered_map>
 
@@ -91,16 +95,10 @@ namespace te
         void Draw(const HCamera& camera, const HSceneObject& sceneObject);
 
         /** @copydoc Picking::Draw */
-        void DrawInternal(const HCamera& camera, const HSceneObject& sceneObject, Vector<HLight>& lights, Vector<HCamera>& cameras);
+        void DrawInternal(const HCamera& camera, const HSceneObject& sceneObject, Vector<SelectionUtils::PerHudInstanceData>& matElements);
 
         /** Specific way to draw a renderable */
         void DrawRenderable(const HRenderable& renderable);
-
-        /** Specific way to draw a light */
-        void DrawLights(const Vector<HLight>& light);
-
-        /** Specific way to draw a camera */
-        void DrawCameras(const Vector<HCamera>& light);
 
         /** After picking texture is rendered, we clean _colorToGameObject to remove unused objects */
         void CleanGameObjectsList();
@@ -110,5 +108,10 @@ namespace te
         HudPickingMat* _hudMaterial;
         EditorUtils::RenderWindowData _renderData;
         std::unordered_map<RGBA, GameObjectInfo> _colorToGameObject;
+
+        SPtr<VertexBuffer> _pointVB;
+        SPtr<VertexDataDesc> _pointVDesc;
+        SPtr<VertexDeclaration> _pointVDecl;
+        SelectionUtils::VertexBufferLayout* _pointData = nullptr;
     };
 }

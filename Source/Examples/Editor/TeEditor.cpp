@@ -120,15 +120,15 @@ namespace te
 
     void Editor::PostRender()
     {
+        if (_hudDirty && _previewViewportCamera == _viewportCamera) // only for default camera
+            _hud->Render(_previewViewportCamera, _sceneSO);
+
         if (_selectionDirty && _previewViewportCamera == _viewportCamera) // only for default camera
         {
             EditorUtils::RenderWindowData viewportData =
                 static_cast<WidgetViewport*>(&*_settings.WViewport)->GetRenderWindowData();
             _selection->Render(_previewViewportCamera, viewportData);
         }
-
-        if (_hudDirty && _previewViewportCamera == _viewportCamera) // only for default camera
-            _hud->Render(_previewViewportCamera, _sceneSO);
 
         _selectionDirty = false;
         _hudDirty = false;
@@ -543,7 +543,7 @@ namespace te
 
     void Editor::LoadScene()
     {
-        PixelFormat format = IsBigEndian() ?  ? PF_RGBA8 : PF_BGRA8;
+        PixelFormat format = IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         // ######################################################
         auto meshImportOptions = MeshImportOptions::Create();

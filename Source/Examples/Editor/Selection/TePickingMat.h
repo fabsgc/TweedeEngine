@@ -21,8 +21,8 @@ namespace te
         void BindRenderable(const HRenderable& renderable);
 
     private:
-        PerPickSelectFrameParamDef _perFrameParamDef;
-        PerPickSelectObjectParamDef _perObjectParamDef;
+        SelectionUtils::PerPickSelectFrameParamDef _perFrameParamDef;
+        SelectionUtils::PerPickSelectObjectParamDef _perObjectParamDef;
 
         SPtr<GpuParamBlockBuffer> _perFrameParamBuffer;
         SPtr<GpuParamBlockBuffer> _perObjectParamBuffer;

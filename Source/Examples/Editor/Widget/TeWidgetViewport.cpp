@@ -84,7 +84,12 @@ namespace te
     void WidgetViewport::Resize()
     {
         if (_isVisible && GuiAPI::Instance().IsGuiInitialized())
-            gEditor().NeedsRedraw();
+        {
+            _viewportCamera->NotifyNeedsRedraw();
+            gEditor().MakePickingDirty();
+            gEditor().MakeSelectionDirty();
+            gEditor().MakeHudDirty();
+        }
     }
 
     void WidgetViewport::NeedsRedraw()

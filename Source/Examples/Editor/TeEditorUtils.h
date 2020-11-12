@@ -13,15 +13,6 @@ namespace te
     class EditorUtils
     {
     public:
-
-        struct PerHudInstanceData
-        {
-            Matrix4 MatWorldNoScale;
-            Vector4 Color;
-            float   Type;
-            Vector3 Padding;
-        };
-
         struct RenderWindowData
         {
             TEXTURE_DESC TargetColorDesc;
