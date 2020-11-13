@@ -17,7 +17,18 @@ namespace te
         _animations.erase(animId);
     }
 
-    AnimationManager& gAnimation()
+    void AnimationManager::SetPaused(bool paused)
+    {
+        _paused = paused;
+    }
+
+    void AnimationManager::SetUpdateRate(UINT32 fps)
+    {
+        if (fps == 0) fps = 1;
+        _updateRate = 1.0f / fps;
+    }
+
+    AnimationManager& gAnimationManager()
     {
         return AnimationManager::Instance();
     }

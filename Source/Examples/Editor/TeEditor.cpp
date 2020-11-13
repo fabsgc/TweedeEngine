@@ -718,6 +718,12 @@ namespace te
         _loadedCubemapTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/sky_medium.png", textureCubeMapImportOptions);
         // ######################################################
 
+        meshImportOptions->ImportSkin = true;
+        meshImportOptions->ImportBlendShapes = true;
+        meshImportOptions->ImportAnimation = true;
+
+        auto resources = gResourceManager().LoadAll("Data/Meshes/Knight/Knight.dae", meshImportOptions);
+
         // ###################################################### 
         _loadedMeshMonkey->SetName("Monkey Mesh");
         //_loadedMeshPlane->SetName("Plane Mesh");

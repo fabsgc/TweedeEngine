@@ -5,6 +5,7 @@
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
 #include "TeWidgetRenderOptions.h"
+#include "Animation/TeAnimationManager.h"
 
 namespace te
 {
@@ -61,9 +62,20 @@ namespace te
             ImGui::PopStyleColor();
         };
 
+        // Play
         ShowButton(ICON_FA_PLAY, ICON_FA_STOP,
-            [this]() { return !gCoreApplication().GetState().IsFlagSet(ApplicationState::Game); },
-            [this]() { gCoreApplication().GetState().ToggleFlag(ApplicationState::Game); }
+            [this]() {
+                // TODO AUDIO
+                // TODO PHYSIC
+                gAnimationManager().SetPaused(false);
+                return !gCoreApplication().GetState().IsFlagSet(ApplicationState::Game); 
+            },
+            [this]() {
+                // TODO AUDIO
+                // TODO PHYSIC
+                gAnimationManager().SetPaused(true);
+                gCoreApplication().GetState().ToggleFlag(ApplicationState::Game); 
+            }
         );
 
         ShowButton(ICON_FA_ARROWS_ALT, ICON_FA_ARROWS_ALT,

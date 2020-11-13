@@ -14,6 +14,17 @@ namespace te
     public:
         AnimationManager();
 
+        /** Pauses or resumes the animation evaluation. */
+        void SetPaused(bool paused);
+
+        /**
+         * Determines how often to evaluate animations. If rendering is not running at adequate framerate the animation
+         * could end up being evaluated less times than specified here.
+         *
+         * @param[in]	fps		Number of frames per second to evaluate the animation. Default is 60.
+         */
+        void SetUpdateRate(UINT32 fps);
+
     private:
         friend class Animation;
 
@@ -28,8 +39,15 @@ namespace te
     private:
         UINT64 _nextId = 1;
         UnorderedMap<UINT64, Animation*> _animations;
+
+        float _updateRate = 1.0f / 60.0f;
+        float _animationTime = 0.0f;
+        float _lastAnimationUpdateTime = 0.0f;
+        float _nextAnimationUpdateTime = 0.0f;
+        float _lastAnimationDeltaTime = 0.0f;
+        bool  _paused = false;
     };
 
     /** Provides easier access to AnimationManager. */
-    TE_CORE_EXPORT AnimationManager& gAnimation();
+    TE_CORE_EXPORT AnimationManager& gAnimationManager();
 }
