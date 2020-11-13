@@ -77,7 +77,10 @@ namespace te
         TID_TextureImportOptions   = 1022,
         TID_MeshImportOptions      = 1023,
         TID_ShaderImportOptions    = 1024,
-        TID_AudioClipImportOptions = 1025
+        TID_AudioClipImportOptions = 1025,
+        TID_CBone                  = 1026,
+        TID_CAnimation             = 1027,
+        TID_Animation              = 1028,
     };
 }
 
@@ -233,6 +236,8 @@ namespace te
     class CLight;
     class CSkybox;
     class CScript;
+    class CBone;
+    class CAnimation;
 
     class BuiltinResources;
 
@@ -249,11 +254,27 @@ namespace te
     class SkeletonMask;
     class SkeletonMaskBuilder;
 
+    struct AnimationClipState;
+    class Animation;
+
     class GuiAPI;
     class GuiAPIFactory;
 
     class Script;
     class NativeScript;
+
+    class Importer;
+    class BaseImporter;
+    struct SubResourceRaw;
+    struct SubResourceUUID;
+    struct SubResource;
+    struct MultiResource;
+    class ImportOptions;
+    class MeshImportOptions;
+    class ShaderImportOptions;
+    class TextureImportOptions;
+    class FontImportOptions;
+    class AudioClipImportOptions;
 }
 
 #include "Utility/TeNonCopyable.h"
@@ -287,4 +308,6 @@ namespace te
     typedef GameObjectHandle<CLight> HLight;
     typedef GameObjectHandle<CSkybox> HSkybox;
     typedef GameObjectHandle<CScript> HScript;
+    typedef GameObjectHandle<CBone> HBone;
+    typedef GameObjectHandle<CAnimation> HAnimation;
 }

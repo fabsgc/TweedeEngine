@@ -11,7 +11,7 @@ namespace te
         ~Serializable() = default;
 
         UINT32 GetCoreType() const { return _coreType; }
-    
+
     protected:
         UINT32 _coreType;
     };

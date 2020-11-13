@@ -760,6 +760,7 @@ namespace te
             title += String("  ") + ICON_FA_SCROLL;
             break;
         default:
+            title += String("  ") + ICON_FA_QUESTION_CIRCLE;
             break;
         }
 

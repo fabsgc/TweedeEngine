@@ -279,6 +279,8 @@ set (TE_CORE_INC_COMPONENTS
     "Core/Components/TeCCameraFlyer.h"
     "Core/Components/TeCCameraUI.h"
     "Core/Components/TeCScript.h"
+    "Core/Components/TeCBone.h"
+    "Core/Components/TeCAnimation.h"
 )
 set (TE_CORE_SRC_COMPONENTS
     "Core/Components/TeCCamera.cpp"
@@ -288,6 +290,8 @@ set (TE_CORE_SRC_COMPONENTS
     "Core/Components/TeCCameraFlyer.cpp"
     "Core/Components/TeCCameraUI.cpp"
     "Core/Components/TeCScript.cpp"
+    "Core/Components/TeCBone.cpp"
+    "Core/Components/TeCAnimation.cpp"
 )
 
 set (TE_CORE_INC_RESOURCE
@@ -330,11 +334,13 @@ set (TE_CORE_INC_ANIMATION
     "Core/Animation/TeAnimation.h"
     "Core/Animation/TeSkeleton.h"
     "Core/Animation/TeSkeletonMask.h"
+    "Core/Animation/TeAnimationManager.h"
 )
 set (TE_CORE_SRC_ANIMATION
     "Core/Animation/TeAnimation.cpp"
     "Core/Animation/TeSkeleton.cpp"
     "Core/Animation/TeSkeletonMask.cpp"
+    "Core/Animation/TeAnimationManager.cpp"
 )
 
 set (TE_CORE_INC_GUI

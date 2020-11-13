@@ -55,6 +55,67 @@ namespace te
         resource.ClearHandleData();
     }
 
+    SPtr<MultiResource> ResourceManager::LoadAll(const String& filePath, const SPtr<const ImportOptions>& options)
+    {
+        UUID uuid;
+        SPtr<MultiResource> resources;
+        GetUUIDFromFile(filePath, uuid);
+
+        if (uuid.Empty())
+        {
+            Vector<SubResourceUUID> subResourcesUUID;
+            resources = gImporter().ImportAll(filePath, options);
+
+            if (resources->Entries.size() > 0)
+            {
+                for (auto& entry : resources->Entries)
+                {
+                    UUID resourceUuid = entry.Res.GetUUID();
+                    entry.Res.GetInternalPtr()->_UUID = resourceUuid;
+
+                    if (entry.Name == "primary")
+                    {
+                        uuid = resourceUuid;
+                        RegisterResource(resourceUuid, filePath);
+                        _loadedResources[resourceUuid] = entry.Res;
+                    }
+                    else
+                    {
+                        _loadedResources[resourceUuid] = entry.Res;
+                        subResourcesUUID.push_back({ entry.Name, resourceUuid });
+                    }
+                }
+
+                _resourcesChunks[uuid] = subResourcesUUID;
+            }
+        }
+        else
+        {
+            if (_resourcesChunks.find(uuid) != _resourcesChunks.end())
+            {
+                resources = te_shared_ptr_new<MultiResource>();
+                Vector<SubResourceUUID> subResourcesUuid = _resourcesChunks[uuid];
+
+                resources->Entries.push_back({ "primary", Get(uuid) });
+
+                for (auto& subRes : subResourcesUuid)
+                {
+                    HResource res = Get(subRes.Uuid);
+                    if (res.GetHandleData())
+                        resources->Entries.push_back({ subRes.Name, res });
+                }
+            }
+            else
+            {
+                HResource res = Get(uuid);
+                if (res.GetHandleData())
+                    resources->Entries.push_back({ "primary", res });
+            }
+        }
+
+        return resources;
+    }
+
     void ResourceManager::Update(HResource& handle, const SPtr<Resource>& resource)
     {
         const UUID& uuid = handle.GetUUID();

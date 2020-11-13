@@ -718,8 +718,6 @@ namespace te
         _loadedCubemapTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/sky_medium.png", textureCubeMapImportOptions);
         // ######################################################
 
-        gResourceManager().LoadAll("Data/Meshes/Plane/plane.obj", meshImportOptions);
-
         // ###################################################### 
         _loadedMeshMonkey->SetName("Monkey Mesh");
         //_loadedMeshPlane->SetName("Plane Mesh");
