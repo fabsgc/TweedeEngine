@@ -252,7 +252,7 @@ namespace te
         if (_settings.Load)
             ImGui::OpenPopup("Load Resource");
 
-        if (_fileBrowser.ShowFileDialog("Load Resource", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), true, ".jpeg,.jpg,.png,.obj,.dae,.fbx,.scene"))
+        if (_fileBrowser.ShowFileDialog("Load Resource", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), true, ".png,.jpeg,.jpg,.obj,.dae,.fbx,.scene"))
         {
             if (_fileBrowser.Data.Ext == ".jpeg" || _fileBrowser.Data.Ext == ".jpg" || _fileBrowser.Data.Ext == ".png")
             {

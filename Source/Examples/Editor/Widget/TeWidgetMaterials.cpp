@@ -362,7 +362,7 @@ namespace te
         if (_loadTexture)
             ImGui::OpenPopup("Load Material Texture");
 
-        if (_fileBrowser.ShowFileDialog("Load Material Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), true, ".jpeg,.jpg,.png"))
+        if (_fileBrowser.ShowFileDialog("Load Material Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), true, ".png,.jpeg,.jpg"))
         {
             auto textureImportOptions = TextureImportOptions::Create();
             if (_fileBrowser.Data.TexParam.TexType == TextureType::TEX_TYPE_CUBE_MAP)

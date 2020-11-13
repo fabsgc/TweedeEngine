@@ -123,9 +123,16 @@ namespace te
         for(size_t meshIdx = 0; meshIdx < meshCount; meshIdx++)
         {
             const Vector<SubMesh> curSubMeshes = allSubMeshes[meshIdx];
-            for(auto& subMesh : curSubMeshes)
+
+            for (size_t subMeshIdx = 0; subMeshIdx < curSubMeshes.size(); subMeshIdx++)
             {
-                subMeshes.push_back(SubMesh(subMesh.IndexOffset, subMesh.IndexCount, subMesh.DrawOp, subMesh.MaterialName));
+                SubMesh subMesh(curSubMeshes[subMeshIdx].IndexOffset, curSubMeshes[subMeshIdx].IndexCount,
+                    curSubMeshes[subMeshIdx].DrawOp, curSubMeshes[subMeshIdx].MaterialName);
+
+                subMesh.MatProperties = curSubMeshes[subMeshIdx].MatProperties;
+                subMesh.MatTextures = curSubMeshes[subMeshIdx].MatTextures;
+
+                subMeshes.push_back(subMesh);
             }
         }
 

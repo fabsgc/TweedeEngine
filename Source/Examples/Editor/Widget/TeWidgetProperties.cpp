@@ -652,10 +652,11 @@ namespace te
             UUID materialUUID = (material) ? material->GetUUID() : emptyMaterial;
             SubMesh& subMesh = meshProperties.GetSubMesh(i);
             String title = subMesh.MaterialName;
+            String id = "##" + subMesh.MaterialName + ToString(i);
 
             // current material to use
             {
-                if (ImGuiExt::RenderOptionCombo<UUID>(&materialUUID, "##submesh_material_option", title.c_str(), materialsOptions, width))
+                if (ImGuiExt::RenderOptionCombo<UUID>(&materialUUID, id.c_str(), title.c_str(), materialsOptions, width))
                 {
                     if (materialUUID == emptyMaterial)
                     {
@@ -795,7 +796,7 @@ namespace te
         if (_loadSkybox)
             ImGui::OpenPopup("Load Skybox Texture");
 
-        if (_fileBrowser.ShowFileDialog("Load Skybox Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), false, ".jpeg,.jpg,.png"))
+        if (_fileBrowser.ShowFileDialog("Load Skybox Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), false, ".png,.jpeg,.jpg"))
         {
             auto textureSkyboxImportOptions = TextureImportOptions::Create();
             textureSkyboxImportOptions->CpuCached = false;

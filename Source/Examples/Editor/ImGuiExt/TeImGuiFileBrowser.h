@@ -66,7 +66,7 @@ namespace te
             {
                 TextureType TexType = TextureType::TEX_TYPE_2D;
                 bool GenerateMips = true;
-                UINT32 MaxMips = 4;
+                UINT32 MaxMips = 0;
             };
 
             /** If we want to load a scene, here are stored the list of parameters to apply on it during loading */

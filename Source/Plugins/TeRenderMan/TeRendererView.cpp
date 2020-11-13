@@ -573,8 +573,6 @@ namespace te
 
     void RendererView::_notifyNeedsRedraw()
     {
-        //TE_PRINT("NEED REDRAW");
-
         _redrawThisFrame = true;
 
         // If doing async animation there is a one frame delay
