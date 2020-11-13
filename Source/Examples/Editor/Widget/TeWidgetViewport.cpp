@@ -42,6 +42,9 @@ namespace te
 
         _reTargetBtn = VirtualButton(RETARGET_BINDING);
         _pickingBtn  = VirtualButton(PICKING_BINDING);
+        _deleteBtn = VirtualButton(EditorUtils::DELETE_BINDING);
+        _copyBtn = VirtualButton(EditorUtils::COPY_BINDING);
+        _pasteBtn = VirtualButton(EditorUtils::PASTE_BINDING);
 
         bool renderTextureUpdated = CheckRenderTexture((float)_renderData.Width, (float)_renderData.Height);
         if (renderTextureUpdated)
@@ -150,6 +153,7 @@ namespace te
         }
 
         UpdateCameraFlag(_viewportCamera);
+        HandleKeyShortcuts();
     }
 
     void WidgetViewport::UpdateBackground()
@@ -227,6 +231,32 @@ namespace te
         gEditor().NeedsRedraw();
 
         return true;
+    }
+
+    void WidgetViewport::HandleKeyShortcuts()
+    {
+        if (!ImGui::IsWindowHovered() || !ImGui::IsWindowFocused() || _viewportCamera.GetInternalPtr() != gEditor().GetViewportCamera().GetInternalPtr())
+            return;
+
+        if (gVirtualInput().IsButtonDown(_copyBtn))
+        {
+            if (_selections.ClickedComponent)
+            {
+                _selections.CopiedComponent = _selections.ClickedComponent;
+                gEditor().NeedsRedraw();
+            }
+            else
+            {
+                _selections.CopiedSceneObject = _selections.ClickedSceneObject;
+                gEditor().NeedsRedraw();
+            }
+        }
+
+        if (gVirtualInput().IsButtonDown(_pasteBtn))
+            gEditor().Paste();
+
+        if (gVirtualInput().IsButtonDown(_deleteBtn))
+            gEditor().Delete();
     }
 
     void UpdateCameraFlag(HCamera& camera)

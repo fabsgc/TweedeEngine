@@ -7,6 +7,10 @@
 
 namespace te
 {
+    const String EditorUtils::DELETE_BINDING = "Delete";
+    const String EditorUtils::COPY_BINDING = "Copy";
+    const String EditorUtils::PASTE_BINDING = "Paste";
+
     void EditorUtils::ImportMeshMaterials(HMesh& mesh)
     {
         for (UINT32 i = 0; i < mesh->GetProperties().GetNumSubMeshes(); i++)

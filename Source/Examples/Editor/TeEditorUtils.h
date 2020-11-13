@@ -13,6 +13,10 @@ namespace te
     class EditorUtils
     {
     public:
+        static const String DELETE_BINDING;
+        static const String COPY_BINDING;
+        static const String PASTE_BINDING;
+
         struct RenderWindowData
         {
             TEXTURE_DESC TargetColorDesc;

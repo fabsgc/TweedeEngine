@@ -153,17 +153,17 @@ namespace te
         ObjectMobility mobility = camera->_getCamera()->GetMobility();
         Transform transform = camera->GetSceneObject()->GetTransform();
 
-        if (ImGui::CollapsingHeader("Rendering Camera", ImGuiTreeNodeFlags_DefaultOpen))
-        {
-            if (ShowCamera(camera))
-                hasChanged = true;
-        }
-
         if (ShowTransform(transform, mobility))
         {
             camera->_getCamera()->SetMobility(mobility);
             camera->GetSceneObject()->SetLocalTransform(transform);
             hasChanged = true;
+        }
+
+        if (ImGui::CollapsingHeader("Rendering Camera", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            if (ShowCamera(camera))
+                hasChanged = true;
         }
 
         return hasChanged;
@@ -204,17 +204,17 @@ namespace te
         ObjectMobility mobility = light->_getLight()->GetMobility();
         Transform transform = light->GetSceneObject()->GetTransform();
 
-        if (ImGui::CollapsingHeader("Light", ImGuiTreeNodeFlags_DefaultOpen))
-        {
-            if (ShowLight(light->_getLight()))
-                hasChanged = true;
-        }
-
         if (ShowTransform(transform, mobility))
         {
             light->_getLight()->SetMobility(mobility);
             light->GetSceneObject()->SetLocalTransform(transform);
             hasChanged = true;
+        }
+
+        if (ImGui::CollapsingHeader("Light", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            if (ShowLight(light->_getLight()))
+                hasChanged = true;
         }
 
         return hasChanged;
@@ -226,6 +226,13 @@ namespace te
         SPtr<CRenderable> renderable = std::static_pointer_cast<CRenderable>(_selections.ClickedComponent);
         ObjectMobility mobility = renderable->_getInternal()->GetMobility();
         Transform transform = renderable->GetSceneObject()->GetTransform();
+
+        if (ShowTransform(transform, mobility))
+        {
+            renderable->_getInternal()->SetMobility(mobility);
+            renderable->GetSceneObject()->SetLocalTransform(transform);
+            hasChanged = true;
+        }
 
         if (ImGui::CollapsingHeader("Properties", ImGuiTreeNodeFlags_DefaultOpen))
         {
@@ -242,13 +249,6 @@ namespace te
             }
         }
         
-        if (ShowTransform(transform, mobility))
-        {
-            renderable->_getInternal()->SetMobility(mobility);
-            renderable->GetSceneObject()->SetLocalTransform(transform);
-            hasChanged = true;
-        }
-
         return hasChanged;
     }
 

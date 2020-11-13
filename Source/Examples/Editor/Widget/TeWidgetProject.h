@@ -11,11 +11,6 @@ namespace te
     class WidgetProject : public Widget
     {
     public:
-        static const String DELETE_BINDING;
-        static const String COPY_BINDING;
-        static const String PASTE_BINDING;
-
-    public:
         WidgetProject();
         ~WidgetProject();
 

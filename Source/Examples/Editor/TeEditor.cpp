@@ -21,6 +21,8 @@
 #include "Scene/TeSceneObject.h"
 #include "Components/TeCCamera.h"
 #include "Components/TeCCameraUI.h"
+#include "Components/TeCCameraFlyer.h"
+#include "Components/TeCScript.h"
 #include "Scene/TeSceneManager.h"
 #include "Resources/TeResourceManager.h"
 #include "Resources/TeBuiltinResources.h"
@@ -206,9 +208,9 @@ namespace te
         inputConfig->RegisterButton(WidgetMenuBar::QUIT_BINDING, TE_A, ButtonModifier::Ctrl);
         inputConfig->RegisterButton(WidgetMenuBar::LOAD_RESOURCE_BINDING, TE_R, ButtonModifier::Ctrl);
 
-        inputConfig->RegisterButton(WidgetProject::DELETE_BINDING, TE_DELETE);
-        inputConfig->RegisterButton(WidgetProject::COPY_BINDING, TE_C, ButtonModifier::Ctrl);
-        inputConfig->RegisterButton(WidgetProject::PASTE_BINDING, TE_V, ButtonModifier::Ctrl);
+        inputConfig->RegisterButton(EditorUtils::DELETE_BINDING, TE_DELETE);
+        inputConfig->RegisterButton(EditorUtils::COPY_BINDING, TE_C, ButtonModifier::Ctrl);
+        inputConfig->RegisterButton(EditorUtils::PASTE_BINDING, TE_V, ButtonModifier::Ctrl);
         
         inputConfig->RegisterButton(CCameraUI::ROTATE_BINDING, TE_MOUSE_RIGHT);
         inputConfig->RegisterButton(CCameraUI::MOVE_BINDING, TE_LSHIFT);
@@ -539,6 +541,150 @@ namespace te
     {
         _settings.State = EditorState::Saved;
         // TODO
+    }
+
+    void Editor::Paste()
+    {
+        if (!_selections.CopiedSceneObject && !_selections.CopiedComponent)
+            return;
+
+        SPtr<SceneObject> clickedSceneObject = _selections.ClickedSceneObject ?
+            _selections.ClickedSceneObject : GetSceneRoot().GetInternalPtr();
+
+        if (_selections.CopiedComponent)
+        {
+            switch (_selections.CopiedComponent->GetCoreType())
+            {
+            case TID_CCamera:
+            {
+                HCamera component = clickedSceneObject->AddComponent<CCamera>();
+                component->Clone(_selections.CopiedComponent->GetHandle());
+                component->Initialize();
+                _selections.ClickedComponent = component.GetInternalPtr();
+                _selections.CopiedComponent = component.GetInternalPtr();
+            }
+            break;
+
+            case TID_CCameraFlyer:
+            {
+                HCameraFlyer component = clickedSceneObject->AddComponent<CCameraFlyer>();
+                component->Clone(_selections.CopiedComponent->GetHandle());
+                component->Initialize();
+                _selections.ClickedComponent = component.GetInternalPtr();
+                _selections.CopiedComponent = component.GetInternalPtr();
+            }
+            break;
+
+            case TID_CCameraUI:
+            {
+                HCameraUI component = clickedSceneObject->AddComponent<CCameraUI>();
+                component->Clone(_selections.CopiedComponent->GetHandle());
+                component->Initialize();
+                _selections.ClickedComponent = component.GetInternalPtr();
+                _selections.CopiedComponent = component.GetInternalPtr();
+            }
+            break;
+
+            case TID_CLight:
+            {
+                HLight component = clickedSceneObject->AddComponent<CLight>();
+                component->Clone(_selections.CopiedComponent->GetHandle());
+                component->Initialize();
+                _selections.ClickedComponent = component.GetInternalPtr();
+                _selections.CopiedComponent = component.GetInternalPtr();
+            }
+            break;
+
+            case TID_CRenderable:
+            {
+                HRenderable component = clickedSceneObject->AddComponent<CRenderable>();
+                component->Clone(_selections.CopiedComponent->GetHandle());
+                component->Initialize();
+                _selections.ClickedComponent = component.GetInternalPtr();
+                _selections.CopiedComponent = component.GetInternalPtr();
+            }
+            break;
+
+            case TID_CScript:
+            {
+                HScript component = clickedSceneObject->AddComponent<CScript>();
+                component->Clone(_selections.CopiedComponent->GetHandle());
+                component->Initialize();
+                _selections.ClickedComponent = component.GetInternalPtr();
+                _selections.CopiedComponent = component.GetInternalPtr();
+            }
+            break;
+
+            case TID_CSkybox:
+            {
+                if (SceneManager::Instance().FindComponents<CSkybox>().size() > 0)
+                    break;
+
+                HSkybox component = clickedSceneObject->AddComponent<CSkybox>();
+                component->Clone(_selections.CopiedComponent->GetHandle());
+                component->Initialize();
+                _selections.ClickedComponent = component.GetInternalPtr();
+                _selections.CopiedComponent = component.GetInternalPtr();
+            }
+            break;
+
+            default:
+                break;
+            }
+        }
+        else if (_selections.CopiedSceneObject)
+        {
+            if (_selections.CopiedSceneObject == GetSceneRoot().GetInternalPtr())
+                return;
+
+            HSceneObject sceneObject = SceneObject::Create("SceneObject");
+            sceneObject->Clone(_selections.CopiedSceneObject);
+            sceneObject->SetParent(clickedSceneObject->GetHandle());
+
+            _selections.ClickedSceneObject = sceneObject.GetInternalPtr();
+            _selections.CopiedSceneObject = sceneObject.GetInternalPtr();
+        }
+
+        NeedsRedraw();
+        GetSettings().State = Editor::EditorState::Modified;
+    }
+
+    void Editor::Delete()
+    {
+        if (!_selections.ClickedSceneObject && !_selections.ClickedComponent)
+            return;
+
+        if (_selections.ClickedComponent)
+        {
+            if (_selections.CopiedComponent == _selections.ClickedComponent)
+                _selections.CopiedComponent = nullptr;
+
+            if (_selections.HoveredComponent == _selections.ClickedComponent)
+                _selections.HoveredComponent = nullptr;
+
+            _selections.ClickedComponent->GetSceneObject()->DestroyComponent(_selections.ClickedComponent.get(), true);
+            _selections.ClickedComponent = nullptr;
+        }
+        else if (_selections.ClickedSceneObject)
+        {
+            if (_selections.ClickedSceneObject == GetSceneRoot().GetInternalPtr())
+                return;
+
+            _selections.CopiedComponent = nullptr;
+            _selections.HoveredComponent = nullptr;
+
+            if (_selections.CopiedSceneObject == _selections.ClickedSceneObject)
+                _selections.CopiedSceneObject = nullptr;
+
+            if (_selections.HoveredSceneObject == _selections.ClickedSceneObject)
+                _selections.HoveredSceneObject = nullptr;
+
+            _selections.ClickedSceneObject->Destroy(true);
+            _selections.ClickedSceneObject = nullptr;
+        }
+
+        NeedsRedraw();
+        GetSettings().State = Editor::EditorState::Modified;
     }
 
     void Editor::LoadScene()

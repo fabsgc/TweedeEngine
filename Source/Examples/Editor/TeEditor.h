@@ -144,6 +144,12 @@ namespace te
         /** Open current scene */
         void Open();
 
+        /** Paste current selection */
+        void Paste();
+
+        /** Delete current selection */
+        void Delete();
+
     protected:
         void InitializeInput();
         void InitializeScene();

@@ -38,6 +38,9 @@ namespace te
         /** Compute render target if necessary then display render texture inside the current editor viewport */
         void ResetViewport();
 
+        /** Handle for actions when hovering viewport */
+        void HandleKeyShortcuts();
+
     protected:
         static const float MIN_TIME_BETWEEN_UPDATE;
         
@@ -54,10 +57,13 @@ namespace te
         float _lastRenderDataUpatedTime;
         bool _needResetViewport;
 
-        VirtualButton _reTargetBtn;
-        VirtualButton _pickingBtn;
-
         // We keep old camera transform in order to know if view has changed
         Transform _prevCameraTfrm;
+
+        VirtualButton _reTargetBtn;
+        VirtualButton _pickingBtn;
+        VirtualButton _deleteBtn;
+        VirtualButton _copyBtn;
+        VirtualButton _pasteBtn;
     };
 }
