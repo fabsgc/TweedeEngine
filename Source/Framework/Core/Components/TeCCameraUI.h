@@ -79,7 +79,6 @@ namespace te
         VirtualButton _rotateBtn;
         VirtualButton _moveBtn;
         VirtualButton _zoomBtn;
-        
 
         VirtualAxis _horizontalAxis;
         VirtualAxis _verticalAxis;

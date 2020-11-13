@@ -209,8 +209,8 @@ namespace te
 
     void SceneManager::_notifyComponentDestroyed(const HComponent& component, bool immediate)
     {
-        const bool alwaysRun = component->HasFlag(Component::AlwaysRun);
-        const bool isEnabled = component->SO()->GetActive() && (alwaysRun);
+        //const bool alwaysRun = component->HasFlag(Component::AlwaysRun);
+        //const bool isEnabled = component->SO()->GetActive() && (alwaysRun);
 
         component->OnDestroyed();
 

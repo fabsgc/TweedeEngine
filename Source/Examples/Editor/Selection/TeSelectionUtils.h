@@ -2,9 +2,10 @@
 
 #include "TeCorePrerequisites.h"
 #include "Renderer/TeParamBlocks.h"
+#include "Math/TeVector3.h"
 #include "../TeEditorUtils.h"
 
-const UINT32 MAX_HUD_INSTANCED_BLOCK = 32;
+#define MAX_HUD_INSTANCED_BLOCK 32
 
 namespace te
 {

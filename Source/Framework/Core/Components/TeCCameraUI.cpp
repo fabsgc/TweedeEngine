@@ -35,13 +35,13 @@ namespace te
     CCameraUI::CCameraUI(const HSceneObject& parent)
         : Component(parent, TID_CCameraUI)
         , _cameraInitialized(false)
+        , _needsRedraw(false)
         , _target(Vector3::ZERO)
         , _localRotation(Vector3::ZERO)
         , _distanceToTarget(0.0f)
         , _inputEnabled(false)
         , _zoomingEnabled(false)
         , _lastHideCursorState(false)
-        , _needsRedraw(false)
     {
         SetName("CCameraUI");
         SetFlag(Component::AlwaysRun, true);
