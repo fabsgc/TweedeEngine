@@ -116,7 +116,7 @@ namespace te
         return (UINT32)-1;
     }
 
-    Transform Skeleton::CalcBoneTransform(UINT32 idx) const
+    Transform Skeleton::ComputeBoneTransform(UINT32 idx) const
     {
         if (idx >= _numBones)
             return Transform::IDENTITY;

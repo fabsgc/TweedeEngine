@@ -25,6 +25,9 @@ namespace te
         /** @copydoc BaseImporter::Import */
         SPtr<Resource> Import(const String& filePath, const SPtr<const ImportOptions> importOptions) override;
 
+        /** @copydoc BaseImporter::ImportAll */
+        Vector<SubResourceRaw> ImportAll(const String& filePath, SPtr<const ImportOptions> importOptions) override;
+
         /** @copydoc BaseImporter::CreateImportOptions */
         SPtr<ImportOptions> CreateImportOptions() const override;
 
@@ -47,6 +50,9 @@ namespace te
 
         /**	Imports skinning information and bones for the specified mesh. */
         void ImportSkin(AssimpImportScene& scene, AssimpImportMesh& mesh, const AssimpImportOptions& options);
+
+        /**	Imports blend shapes for all the meshes that are part of the scene. */
+        void ImportBlendShapes(AssimpImportScene& scene, const AssimpImportOptions& options);
 
         /**	Imports all bone and blend shape animations from the FBX. */
         void ImportAnimations(aiScene* scene, AssimpImportOptions& importOptions, AssimpImportScene& importScene);

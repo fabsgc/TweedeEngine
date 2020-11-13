@@ -57,6 +57,7 @@ namespace te
                 bool ImportNormals = true;
                 bool ImportTangents = true;
                 bool ImportSkin = true;
+                bool ImportBlendShapes = true;
                 bool ImportAnimation = true;
                 bool ImportMaterials = true;
             };

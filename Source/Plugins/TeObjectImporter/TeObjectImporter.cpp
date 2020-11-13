@@ -64,6 +64,21 @@ namespace te
         return nullptr;
     }
 
+    Vector<SubResourceRaw> ObjectImporter::ImportAll(const String& filePath, SPtr<const ImportOptions> importOptions)
+    {
+        SPtr<Mesh> mesh = std::static_pointer_cast<Mesh>(Import(filePath, importOptions));
+
+        Vector<SubResourceRaw> output;
+        if (mesh != nullptr)
+        {
+            output.push_back({ u8"primary", mesh });
+
+            // TODO
+        }
+
+        return output;
+    }
+
     SPtr<RendererMeshData> ObjectImporter::ImportMeshData(const String& filePath, SPtr<const ImportOptions> importOptions, Vector<SubMesh>& subMeshes, SPtr<Skeleton>& skeleton)
     {
         Assimp::Importer importer;
@@ -99,6 +114,7 @@ namespace te
         assimpImportOptions.ImportNormals      = meshImportOptions->ImportNormals;
         assimpImportOptions.ImportTangents     = meshImportOptions->ImportTangents;
         assimpImportOptions.ImportSkin         = meshImportOptions->ImportSkin;
+        assimpImportOptions.ImportBlendShapes  = meshImportOptions->ImportBlendShapes;
         assimpImportOptions.ImportAnimation    = meshImportOptions->ImportAnimation;
         assimpImportOptions.ImportMaterials    = meshImportOptions->ImportMaterials;
         assimpImportOptions.ScaleSystemUnit    = meshImportOptions->ScaleSystemUnit;
@@ -108,6 +124,9 @@ namespace te
 
         if (assimpImportOptions.ImportSkin)
             ImportSkin(importedScene, assimpImportOptions);
+
+        if (assimpImportOptions.ImportBlendShapes)
+            ImportBlendShapes(importedScene, assimpImportOptions);
 
         if (assimpImportOptions.ImportAnimation)
             ImportAnimations(scene, assimpImportOptions, importedScene);
@@ -348,6 +367,12 @@ namespace te
     {
         Vector<AssimpBoneInfluence>& influences = mesh.BoneInfluences;
         influences.resize(mesh.Positions.size());
+    }
+
+    /**	Imports blend shapes information and bones for all meshes. */
+    void ObjectImporter::ImportBlendShapes(AssimpImportScene& scene, const AssimpImportOptions& options)
+    {
+        // TODO
     }
 
     void ObjectImporter::ImportAnimations(aiScene* scene, AssimpImportOptions& importOptions, AssimpImportScene& importScene)

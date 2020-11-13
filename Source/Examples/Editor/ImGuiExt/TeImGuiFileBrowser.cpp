@@ -678,6 +678,7 @@ namespace te
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportTangents, "##file_dialog_parameters_mesh_tangents", "Import tangents");
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportAnimation, "##file_dialog_parameters_mesh_animation", "Import animation");
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportSkin, "##file_dialog_parameters_mesh_skin", "Import skin");
+                    ImGuiExt::RenderOptionBool(Data.MeshParam.ImportBlendShapes, "##file_dialog_parameters_mesh_blend_shapes", "Import blend shapes");
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportMaterials, "##file_dialog_parameters_mesh_material", "Import materials");
                 }
                 else if (strcmp(selectedExt, ".jpg") == 0 || strcmp(selectedExt, ".jpeg") == 0 || strcmp(selectedExt, ".png") == 0)

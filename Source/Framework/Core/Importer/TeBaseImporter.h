@@ -7,6 +7,16 @@
 namespace te
 {
     /**
+     * Contains a resource that was imported from a file that contains multiple resources (for example an animation from an
+     * FBX file).
+     */
+    struct SubResourceRaw
+    {
+        String Name; /**< Unique name of the sub-resource. */
+        SPtr<Resource> Res; /**< Contents of the sub-resource. */
+    };
+
+    /**
      * Abstract class that needs to be specialized for converting a certain asset type into an engine usable resource
      * (for example a .png file into an engine usable texture).
      * 			
@@ -34,6 +44,17 @@ namespace te
          * @return						null if it fails, otherwise the loaded object.
          */
         virtual SPtr<Resource> Import(const String& filePath, const SPtr<const ImportOptions> importOptions) = 0;
+
+        /**
+         * Imports the given file. This method returns all imported resources, which is relevant for files that can contain
+         * multiple resources (for example an FBX which may contain both a mesh and animations).
+         *
+         * @param[in]	filePath		Pathname of the file, with file extension.
+         * @param[in]	importOptions	Options that can control how are the resources imported.
+         * @return						Empty array if it fails, otherwise the loaded objects. First element is always the
+         *								primary resource.
+         */
+        virtual Vector<SubResourceRaw> ImportAll(const String& filePath, SPtr<const ImportOptions> importOptions);
 
         /**
          * Creates import options specific for this importer. Import options are provided when calling import() in order

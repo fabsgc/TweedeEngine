@@ -27,6 +27,9 @@ namespace te
         bool ImportBlendShapes = true;
         bool ScaleSystemUnit = false;
         float ScaleFactor = 0.01f;
+        float AnimSampleRate = 1.0f / 60.0f;
+        bool AnimResample = false;
+        bool ReduceKeyframes = true;
     };
 
     struct AssimpImportNode

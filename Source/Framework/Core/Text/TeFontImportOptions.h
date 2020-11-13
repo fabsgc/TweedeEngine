@@ -31,7 +31,7 @@ namespace te
     class TE_CORE_EXPORT FontImportOptions : public ImportOptions
     {
     public:
-        FontImportOptions() = default;
+        FontImportOptions();
 
         /**	Determines font sizes that are to be imported. Sizes are in points. */
         Vector<UINT32> FontSizes = { 10 };

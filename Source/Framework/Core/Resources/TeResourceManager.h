@@ -30,49 +30,17 @@ namespace te
         template <class T>
         ResourceHandle<T> Load(UUID& uuid = UUID::EMPTY)
         {
-            OnResourceLoaded(Get(uuid));
             return static_resource_cast<T>(Get(uuid));
         }
 
         template <class T>
         ResourceHandle<T> Load(const UUID& uuid = UUID::EMPTY)
         {
-            OnResourceLoaded(Get(uuid));
             return static_resource_cast<T>(Get(uuid));
         }
 
         template <class T>
-        ResourceHandle<T> Load(const String& filePath)
-        {
-            UUID uuid;
-            ResourceHandle<T> resourceHandle;
-            GetUUIDFromFile(filePath, uuid);
-
-            if(uuid.Empty())
-            {
-                ResourceHandle<T> resourceHandle = gImporter().Import<T>(filePath);
-
-                if (resourceHandle.GetHandleData())
-                {
-                    uuid = resourceHandle.GetHandleData()->uuid;
-                    resourceHandle.GetInternalPtr()->_UUID = uuid;
-                    RegisterResource(uuid, filePath);
-                    _loadedResources[uuid] = static_resource_cast<Resource>(resourceHandle);
-
-                    OnResourceLoaded(Get(uuid));
-                    return static_resource_cast<T>(Get(uuid));
-                }
-                else
-                {
-                    return resourceHandle;
-                }
-            }
-
-            return static_resource_cast<T>(Get(uuid));
-        }
-
-        template <class T>
-        ResourceHandle<T> Load(const String& filePath, const SPtr<const ImportOptions>& options)
+        ResourceHandle<T> Load(const String& filePath, const SPtr<const ImportOptions>& options = nullptr)
         {
             UUID uuid;
             ResourceHandle<T> resourceHandle;
@@ -89,7 +57,6 @@ namespace te
                     RegisterResource(uuid, filePath);
                     _loadedResources[uuid] = static_resource_cast<Resource>(resourceHandle);
 
-                    OnResourceLoaded(Get(uuid));
                     return static_resource_cast<T>(Get(uuid));
                 }
                 else
@@ -99,6 +66,69 @@ namespace te
             }
 
             return static_resource_cast<T>(Get(uuid));
+        }
+
+        /**
+         * By using this importer, because non primary resources are noy linked to a file, we need to 
+         * find associated subResources and return a MultiResource instance
+        */
+        SPtr<MultiResource> LoadAll(const String& filePath, const SPtr<const ImportOptions>& options = nullptr)
+        {
+            UUID uuid;
+            SPtr<MultiResource> resources;
+            GetUUIDFromFile(filePath, uuid);
+
+            if (uuid.Empty())
+            {
+                Vector<SubResourceUUID> subResourcesUUID;
+                resources = gImporter().ImportAll(filePath, options);
+
+                if (resources->Entries.size() > 0)
+                {
+                    for (auto& entry : resources->Entries)
+                    {
+                        UUID resourceUuid = entry.Res.GetUUID();
+                        entry.Res.GetInternalPtr()->_UUID = resourceUuid;
+
+                        if (entry.Name == "primary")
+                        {
+                            uuid = resourceUuid;
+                            RegisterResource(resourceUuid, filePath);
+                            _loadedResources[resourceUuid] = entry.Res;
+                        }
+                        else
+                        {
+                            _loadedResources[resourceUuid] = entry.Res;
+                            subResourcesUUID.push_back({ entry.Name, resourceUuid });
+                        }
+                    }
+
+                    _resourcesChunks[uuid] = subResourcesUUID;
+                }
+            }
+            else
+            {
+                if (_resourcesChunks.find(uuid) != _resourcesChunks.end())
+                {
+                    resources = te_shared_ptr_new<MultiResource>();
+                    Vector<SubResourceUUID> subResourcesUuid = _resourcesChunks[uuid];
+
+                    for (auto& subRes : subResourcesUuid)
+                    {
+                        HResource res = Get(subRes.Uuid);
+                        if(res.GetHandleData())
+                            resources->Entries.push_back({ subRes.Name, res });
+                    }
+                }
+                else
+                {
+                    HResource res = Get(uuid);
+                    if (res.GetHandleData())
+                        resources->Entries.push_back({ "primary", res });
+                }
+            }
+
+            return resources;
         }
 
         void Update(HResource& handle, const SPtr<Resource>& resource);
@@ -152,6 +182,10 @@ namespace te
         UnorderedMap<UUID, LoadedResourceData> _loadedResources;
         UnorderedMap<UUID, String> _UUIDToFile;
         UnorderedMap<String, UUID> _fileToUUID;
+
+        // In case we use LoadAll, we need to keep a link between primary 
+        // resource (which is linked to a file) and all subresources
+        UnorderedMap<UUID, Vector<SubResourceUUID>> _resourcesChunks;
 
         RecursiveMutex _loadingResourceMutex;
         RecursiveMutex _loadingUuidMutex;

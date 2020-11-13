@@ -7,6 +7,39 @@
 
 namespace te
 {
+    /**
+     * Contains a resource that was imported from a file that contains multiple resources (for example an animation from an
+     * FBX file).
+     */
+    struct SubResource
+    {
+        String Name; /**< Unique name of the sub-resource. */
+        HResource Res; /**< Contents of the sub-resource. */
+    };
+
+    struct SubResourceUUID
+    {
+        String Name; /**< Unique name of the sub-resource. */
+        UUID Uuid; /**< UUID of the loaded sub resource. */
+    };
+
+    /** Contains a group of resources imported from a single source file. */
+    struct MultiResource
+    {
+        MultiResource() = default;
+
+        MultiResource(const Vector<SubResource> & entries)
+            : Entries(entries)
+        { }
+
+        bool Empty()
+        {
+            return Entries.size() == 0;
+        }
+
+        Vector<SubResource> Entries;
+    };
+
     /** Module responsible for importing various asset types and converting them to types usable by the engine. */
     class TE_CORE_EXPORT Importer : public Module<Importer>
     {
@@ -36,8 +69,27 @@ namespace te
             return static_resource_cast<T>(Import(inputFilePath, importOptions, uuid));
         }
 
-        /** Alternative to import() which doesn't create a resource handle, but instead returns a raw resource pointer. */
+        /** Alternative to Import() which doesn't create a resource handle, but instead returns a raw resource pointer. */
         SPtr<Resource> _import(const String& inputFilePath, SPtr<const ImportOptions> importOptions = nullptr);
+
+        /**
+         * Imports a resource at the specified location, and returns the loaded data. This method returns all imported
+         * resources, which is relevant for files that can contain multiple resources (for example an FBX which may contain
+         * both a mesh and animations).
+         *
+         * @param[in]	inputFilePath	Pathname of the input file.
+         * @param[in]	importOptions	(optional) Options for controlling the import. Caller must ensure import options
+         *								actually match the type of the importer used for the file type.
+         * @return						A list of all imported resources. The primary resource is always the first returned
+         *								resource.
+         *
+         * @see		createImportOptions
+         * @note	Thread safe.
+         */
+        SPtr<MultiResource> ImportAll(const String& inputFilePath, SPtr<const ImportOptions> importOptions = nullptr);
+
+        /** Alternative to importAll() which doesn't create resource handles, but instead returns raw resource pointers. */
+        Vector<SubResourceRaw> _importAll(const String& inputFilePath, SPtr<const ImportOptions> importOptions = nullptr);
 
         /**
          * Checks if we can import a file with the specified extension.

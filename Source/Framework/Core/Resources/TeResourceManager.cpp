@@ -6,7 +6,8 @@ namespace te
     TE_MODULE_STATIC_MEMBER(ResourceManager)
 
     ResourceManager::ResourceManager()
-    {}
+    {
+    }
 
     ResourceManager::~ResourceManager()
     {
@@ -84,7 +85,7 @@ namespace te
         else
         {
             // This should never happen but in case it does fail silently in release mode
-            TE_ASSERT_ERROR(false, "Resource not found : " + uuid.ToString());
+            TE_DEBUG("Resource not found : " + uuid.ToString());
         }
 
         return resource;
@@ -193,6 +194,15 @@ namespace te
     {
         _loadingResourceMutex.lock();
 
+        auto iterChunkUUID = _resourcesChunks.find(uuid);
+        if (iterChunkUUID != _resourcesChunks.end())
+        {
+            for (auto& subResource : _resourcesChunks[uuid])
+                Release(subResource.Uuid);
+
+            _resourcesChunks.erase(iterChunkUUID);
+        }
+
         auto iterUUID = _UUIDToFile.find(uuid);
         if (iterUUID != _UUIDToFile.end())
         {
@@ -220,8 +230,6 @@ namespace te
 
     HResource ResourceManager::_createResourceHandle(const SPtr<Resource>& obj, const UUID& UUID)
     {
-        
-
         if (UUID.Empty())
         {
             return _createResourceHandle(obj);
@@ -236,8 +244,6 @@ namespace te
             _loadingResourceMutex.unlock();
             OnResourceLoaded(Get(UUID));
         }
-
-        
 
         return static_resource_cast<Resource>(Get(UUID));
     }

@@ -73,7 +73,9 @@ namespace te
         const Matrix4& GetInvBindPose(UINT32 idx) const { return _invBindPoses[idx]; }
 
         /** Calculates the bind-pose transform of the bone at the specified index. */
-        Transform CalcBoneTransform(UINT32 idx) const;
+        Transform ComputeBoneTransform(UINT32 idx) const;
+
+        // TODO
 
         /**
          * Creates a new Skeleton.

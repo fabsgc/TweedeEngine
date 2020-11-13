@@ -716,7 +716,9 @@ namespace te
         _loadedTextureMonkey = EditorResManager::Instance().Load<Texture>("Data/Textures/Monkey/diffuse.png", textureImportOptions);
         //_loadedPlaneTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Sponza/Floor/floor_COLOR.jpeg", textureImportOptions);
         _loadedCubemapTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/sky_medium.png", textureCubeMapImportOptions);
-        // ###################################################### 
+        // ######################################################
+
+        gResourceManager().LoadAll("Data/Meshes/Plane/plane.obj", meshImportOptions);
 
         // ###################################################### 
         _loadedMeshMonkey->SetName("Monkey Mesh");

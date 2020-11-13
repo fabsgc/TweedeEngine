@@ -10,7 +10,7 @@ namespace te
     class TE_CORE_EXPORT TextureImportOptions : public ImportOptions
     {
     public:
-        TextureImportOptions() = default;
+        TextureImportOptions();
 
         /** Pixel format to import as. */
 #if TE_ENDIAN == TE_ENDIAN_BIG

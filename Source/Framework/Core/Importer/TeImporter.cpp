@@ -13,9 +13,7 @@ namespace te
         for (auto i = _assetImporters.begin(); i != _assetImporters.end(); ++i)
         {
             if ((*i) != nullptr)
-            {
                 te_delete(*i);
-            }
         }
 
         _assetImporters.clear();
@@ -24,13 +22,10 @@ namespace te
     SPtr<Resource> Importer::_import(const String& inputFilePath, SPtr<const ImportOptions> importOptions)
     {
         BaseImporter* importer = PrepareForImport(inputFilePath, importOptions);
-        if (importer == nullptr)
-        {
+        if (!importer)
             return nullptr;
-        }
 
         SPtr<Resource> output = importer->Import(inputFilePath, importOptions);
-
         return output;
     }
 
@@ -51,14 +46,43 @@ namespace te
         return HResource();
     }
 
+    Vector<SubResourceRaw> Importer::_importAll(const String& inputFilePath, SPtr<const ImportOptions> importOptions)
+    {
+        BaseImporter* importer = PrepareForImport(inputFilePath, importOptions);
+        if (!importer)
+            return Vector<SubResourceRaw>();
+
+        Vector<SubResourceRaw> output = importer->ImportAll(inputFilePath, importOptions);
+        return output;
+    }
+
+    SPtr<MultiResource> Importer::ImportAll(const String& inputFilePath, SPtr<const ImportOptions> importOptions)
+    {
+        Vector<SubResource> output;
+
+        Vector<SubResourceRaw> importedResource = _importAll(inputFilePath, importOptions);
+        for (auto& entry : importedResource)
+        {
+            if (entry.Res)
+            {
+                HResource handle = gResourceManager()._createResourceHandle(entry.Res);
+                output.push_back({ entry.Name, handle });
+            }
+            else
+            {
+                TE_DEBUG("Resource " + inputFilePath + "::" + entry.Name + " has not been loaded");
+            }
+        }
+
+        return te_shared_ptr_new<MultiResource>(output);
+    }
+
     bool Importer::SupportsFileType(const String& extension) const
     {
         for (auto iter = _assetImporters.begin(); iter != _assetImporters.end(); ++iter)
         {
             if (*iter != nullptr && (*iter)->IsExtensionSupported(extension))
-            {
                 return true;
-            }
         }
 
         return false;
@@ -92,9 +116,7 @@ namespace te
         for (auto iter = _assetImporters.begin(); iter != _assetImporters.end(); ++iter)
         {
             if (*iter != nullptr && (*iter)->IsExtensionSupported(ext))
-            {
                 return *iter;
-            }
         }
 
         return nullptr;
@@ -113,6 +135,11 @@ namespace te
         else
         {
             SPtr<const ImportOptions> defaultImportOptions = importer->GetDefaultImportOptions();
+            if (importOptions->GetCoreType() != defaultImportOptions->GetCoreType())
+            {
+                TE_ASSERT_ERROR(false, "Provided import options is not of valid type. Expected: " + 
+                    ToString(defaultImportOptions->GetCoreType()) + ". Got: " + ToString(importOptions->GetCoreType()));
+            }
         }
 
         return importer;

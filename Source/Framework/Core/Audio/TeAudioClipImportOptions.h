@@ -9,7 +9,7 @@ namespace te
     class TE_CORE_EXPORT AudioClipImportOptions : public ImportOptions
     {
     public:
-        AudioClipImportOptions() = default;
+        AudioClipImportOptions();
 
         /** Creates a new import options object that allows you to customize how are audio clips imported. */
         static SPtr<AudioClipImportOptions> Create();

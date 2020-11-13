@@ -9,7 +9,7 @@ namespace te
     class TE_CORE_EXPORT MeshImportOptions : public ImportOptions
     {
     public:
-        MeshImportOptions() = default;
+        MeshImportOptions();
 
         /** Determines whether the texture data is also stored in CPU memory. */
         bool CpuCached = false;
@@ -22,6 +22,9 @@ namespace te
 
         /** Determines should mesh skin data like bone weights, indices and bind poses be imported if available. */
         bool ImportSkin = false;
+
+        /**	Determines should mesh blend shapes be imported if available. */
+        bool ImportBlendShapes = false;
 
         /**	Determines should animation clips be imported if available. */
         bool ImportAnimation = false;
