@@ -15,28 +15,7 @@ namespace te
     void Hud::Initialize()
     {
         _material = HudPickingMat::Get();
-
-        {
-            SPtr<VertexDataDesc> pointVDesc = te_shared_ptr_new<VertexDataDesc>();
-            pointVDesc->AddVertElem(VET_FLOAT3, VES_POSITION);
-
-            _pointVDecl = VertexDeclaration::Create(pointVDesc);
-
-            VERTEX_BUFFER_DESC vbDesc;
-            vbDesc.VertexSize = _pointVDecl->GetProperties().GetVertexSize(0);
-            vbDesc.NumVerts = 1;
-            vbDesc.Usage = GBU_DYNAMIC;
-
-            _pointVB = VertexBuffer::Create(vbDesc);
-
-            _pointData = (SelectionUtils::VertexBufferLayout *)_pointVB->Lock(
-                0, sizeof(SelectionUtils::VertexBufferLayout), GBL_WRITE_ONLY_NO_OVERWRITE);
-
-            if (_pointData)
-                _pointData[0].Position = Vector3(0.0f, 0.0f, 0.0f);
-
-            _pointVB->Unlock();
-        }
+        SelectionUtils::CreateHudInstanceBuffer(_instanceBuffer);
     }
 
     void Hud::Render(const HCamera& camera, const HSceneObject& root)
@@ -54,8 +33,8 @@ namespace te
 
             _material->BindCamera(camera, SelectionUtils::RenderType::Draw);
 
-            rapi.SetVertexDeclaration(_pointVDecl);
-            rapi.SetVertexBuffers(0, &_pointVB, 1);
+            rapi.SetVertexDeclaration(_instanceBuffer.PointVDecl);
+            rapi.SetVertexBuffers(0, &_instanceBuffer.PointVB, 1);
             rapi.SetDrawOperation(DOT_POINT_LIST);
 
             UINT64 elementToDraw = static_cast<UINT64>(instancedElements.size());
@@ -83,7 +62,7 @@ namespace te
         } 
     }
 
-    void Hud::GetHudElements(const HCamera& camera, const HSceneObject& sceneObject, Vector<SelectionUtils::PerHudInstanceData>& matElements)
+    void Hud::GetHudElements(const HCamera& camera, const HSceneObject& sceneObject, Vector<SelectionUtils::PerHudInstanceData>& instancedElements)
     {
         SelectionUtils::PerHudInstanceData element;
 
@@ -103,41 +82,19 @@ namespace te
                         element.Type = static_cast<float>(SelectionUtils::HudType::Camera);
                         element.Color = Color::Black.GetAsVector4();
 
-                        matElements.push_back(element);
+                        instancedElements.push_back(element);
                     }
                 }
                 break;
 
-                case TypeID_Core::TID_CLight:
-                {
-                    HLight lightElement = static_object_cast<CLight>(component);
-                    if (lightElement->GetActive() && EditorUtils::DoFrustumCulling(camera, lightElement))
-                    {
-                        const Transform& tfrm = lightElement->GetTransform();
-                        element.MatWorldNoScale = Matrix4::TRS(tfrm.GetPosition(), tfrm.GetRotation(), Vector3::ONE).Transpose();
-                        element.Color = lightElement->GetColor().GetAsVector4();
-
-                        switch (lightElement->GetType())
-                        {
-                        case LightType::Directional:
-                            element.Type = static_cast<float>(SelectionUtils::HudType::DirectionalLight);
-                            break;
-                        case LightType::Radial:
-                            element.Type = static_cast<float>(SelectionUtils::HudType::RadialLight);
-                            break;
-                        case LightType::Spot:
-                            element.Type = static_cast<float>(SelectionUtils::HudType::SpotLight);
-                            break;
-                        }
-
-                        matElements.push_back(element);
-                    }
-                }
+                default:
                 break;
             }
+
+            SelectionUtils::FillPerInstanceHud(instancedElements, camera, component, SelectionUtils::RenderType::Draw);
         }
 
         for (const auto& childSO : sceneObject->GetChildren())
-            GetHudElements(camera, childSO, matElements);
+            GetHudElements(camera, childSO, instancedElements);
     }
 }

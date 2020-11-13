@@ -104,7 +104,7 @@ namespace te
         std::cmatch results;
         if (std::regex_search(message, results, regex))
         {
-            std::string result = results[1].str();
+            String result = results[1].str();
             return strtol(result.c_str(), nullptr, 10) - 1;
         }
 

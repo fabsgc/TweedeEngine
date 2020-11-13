@@ -95,7 +95,7 @@ namespace te
         void Draw(const HCamera& camera, const HSceneObject& sceneObject);
 
         /** @copydoc Picking::Draw */
-        void DrawInternal(const HCamera& camera, const HSceneObject& sceneObject, Vector<SelectionUtils::PerHudInstanceData>& matElements);
+        void DrawInternal(const HCamera& camera, const HSceneObject& sceneObject, Vector<SelectionUtils::PerHudInstanceData>& instancedElements);
 
         /** Specific way to draw a renderable */
         void DrawRenderable(const HRenderable& renderable);
@@ -108,10 +108,6 @@ namespace te
         HudPickingMat* _hudMaterial;
         EditorUtils::RenderWindowData _renderData;
         std::unordered_map<RGBA, GameObjectInfo> _colorToGameObject;
-
-        SPtr<VertexBuffer> _pointVB;
-        SPtr<VertexDataDesc> _pointVDesc;
-        SPtr<VertexDeclaration> _pointVDecl;
-        SelectionUtils::VertexBufferLayout* _pointData = nullptr;
+        SelectionUtils::HudInstanceBuffer _instanceBuffer;
     };
 }

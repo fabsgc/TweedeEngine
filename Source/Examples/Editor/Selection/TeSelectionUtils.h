@@ -4,6 +4,9 @@
 #include "Renderer/TeParamBlocks.h"
 #include "Math/TeVector3.h"
 #include "../TeEditorUtils.h"
+#include "RenderAPI/TeVertexBuffer.h"
+#include "RenderAPI/TeVertexDataDesc.h"
+#include "RenderAPI/TeVertexDeclaration.h"
 
 #define MAX_HUD_INSTANCED_BLOCK 32
 
@@ -11,14 +14,6 @@ namespace te
 {
     namespace SelectionUtils
     {
-        struct PerHudInstanceData
-        {
-            Matrix4 MatWorldNoScale;
-            Vector4 Color;
-            float   Type;
-            Vector3 Padding;
-        };
-
         enum class RenderType
         {
             Draw = 0x0,
@@ -34,10 +29,30 @@ namespace te
             SpotLight = 0x3
         };
 
+        struct PerHudInstanceData
+        {
+            Matrix4 MatWorldNoScale;
+            Vector4 Color;
+            float   Type;
+            Vector3 Padding;
+        };
+
         struct VertexBufferLayout
         {
             Vector3 Position;
         };
+
+        struct HudInstanceBuffer
+        {
+            SPtr<VertexBuffer> PointVB;
+            SPtr<VertexDataDesc> PointVDesc;
+            SPtr<VertexDeclaration> PointVDecl;
+            VertexBufferLayout* PointData = nullptr;
+        };
+
+        void CreateHudInstanceBuffer(HudInstanceBuffer& buffer);
+
+        void FillPerInstanceHud(Vector<PerHudInstanceData>& instancedElements, const HCamera& camera, const HComponent& component, RenderType renderType);
 
         TE_PARAM_BLOCK_BEGIN(PerPickSelectFrameParamDef)
             TE_PARAM_BLOCK_ENTRY(Matrix4, gMatViewProj)

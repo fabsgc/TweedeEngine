@@ -34,10 +34,10 @@ set (TE_EDITOR_INC_SELECTION
     "Selection/TePickingMat.h"
     "Selection/TeHudPickingMat.h"
     "Selection/TeHud.h"
-    
 )
 
 set (TE_EDITOR_SRC_SELECTION
+    "Selection/TeSelectionUtils.cpp"
     "Selection/TeSelection.cpp"
     "Selection/TeSelectionMat.cpp"
     "Selection/TeHudSelectionMat.cpp"

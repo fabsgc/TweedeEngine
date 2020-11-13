@@ -18,27 +18,7 @@ namespace te
         _material = SelectionMat::Get();
         _hudMaterial = HudSelectionMat::Get();
 
-        {
-            SPtr<VertexDataDesc> pointVDesc = te_shared_ptr_new<VertexDataDesc>();
-            pointVDesc->AddVertElem(VET_FLOAT3, VES_POSITION);
-
-            _pointVDecl = VertexDeclaration::Create(pointVDesc);
-
-            VERTEX_BUFFER_DESC vbDesc;
-            vbDesc.VertexSize = _pointVDecl->GetProperties().GetVertexSize(0);
-            vbDesc.NumVerts = 1;
-            vbDesc.Usage = GBU_DYNAMIC;
-
-            _pointVB = VertexBuffer::Create(vbDesc);
-
-            _pointData = (SelectionUtils::VertexBufferLayout *)_pointVB->Lock(
-                0, sizeof(SelectionUtils::VertexBufferLayout), GBL_WRITE_ONLY_NO_OVERWRITE);
-
-            if (_pointData)
-                _pointData[0].Position = Vector3(0.0f, 0.0f, 0.0f);
-
-            _pointVB->Unlock();
-        }
+        SelectionUtils::CreateHudInstanceBuffer(_instanceBuffer);
     }
 
     void Selection::Render(const HCamera& camera, const EditorUtils::RenderWindowData& viewportData)
@@ -77,53 +57,12 @@ namespace te
                 }
                 break;
 
-                case TypeID_Core::TID_CLight:
-                {
-                    SPtr<CLight> light = std::static_pointer_cast<CLight>(_selections.ClickedComponent);
-                    if (light->GetActive() && EditorUtils::DoFrustumCulling(camera, light))
-                    {
-                        SelectionUtils::PerHudInstanceData element;
-                        const Transform& tfrm = light->GetTransform();
-                        element.MatWorldNoScale = Matrix4::TRS(tfrm.GetPosition(), tfrm.GetRotation(), Vector3::ONE).Transpose();
-                        element.Color = light->GetColor().GetAsVector4();
-
-                        switch (light->GetType())
-                        {
-                        case LightType::Directional:
-                            element.Type = static_cast<float>(SelectionUtils::HudType::DirectionalLight);
-                            break;
-                        case LightType::Radial:
-                            element.Type = static_cast<float>(SelectionUtils::HudType::RadialLight);
-                            break;
-                        case LightType::Spot:
-                            element.Type = static_cast<float>(SelectionUtils::HudType::SpotLight);
-                            break;
-                        }
-
-                        instancedElements.push_back(element);
-                    }
-                }
-                break;
-
-                case TypeID_Core::TID_CCamera:
-                {
-                    SPtr<CCamera> cameraElement = std::static_pointer_cast<CCamera>(_selections.ClickedComponent);
-                    if (cameraElement->GetActive() && EditorUtils::DoFrustumCulling(camera, cameraElement))
-                    {
-                        SelectionUtils::PerHudInstanceData element;
-                        const Transform& tfrm = cameraElement->GetTransform();
-                        element.MatWorldNoScale = Matrix4::TRS(tfrm.GetPosition(), tfrm.GetRotation(), Vector3::ONE).Transpose();
-                        element.Type = static_cast<float>(SelectionUtils::HudType::Camera);
-                        element.Color = Color::Black.GetAsVector4();
-
-                        instancedElements.push_back(element);
-                    }
-                }
-                break;
-
                 default:
                 break;
             }
+
+            SelectionUtils::FillPerInstanceHud(instancedElements, camera, 
+                _selections.ClickedComponent->GetHandle(), SelectionUtils::RenderType::Selection);
         }
 
         if (instancedElements.size() > 0)
@@ -133,8 +72,8 @@ namespace te
             UINT32 clearBuffers = FBT_DEPTH;
             rapi.ClearViewport(clearBuffers, Color::Black);
 
-            rapi.SetVertexDeclaration(_pointVDecl);
-            rapi.SetVertexBuffers(0, &_pointVB, 1);
+            rapi.SetVertexDeclaration(_instanceBuffer.PointVDecl);
+            rapi.SetVertexBuffers(0, &_instanceBuffer.PointVB, 1);
             rapi.SetDrawOperation(DOT_POINT_LIST);
 
             UINT64 elementToDraw = static_cast<UINT64>(instancedElements.size());
@@ -160,7 +99,7 @@ namespace te
         }
     }
 
-    void Selection::DrawInternal(const HCamera& camera, const SPtr<SceneObject>& sceneObject, Vector<SelectionUtils::PerHudInstanceData>& matElements)
+    void Selection::DrawInternal(const HCamera& camera, const SPtr<SceneObject>& sceneObject, Vector<SelectionUtils::PerHudInstanceData>& instancedElements)
     {
         for (const auto& component : sceneObject->GetComponents())
         {
@@ -176,57 +115,15 @@ namespace te
                 }
                 break;
 
-                case TypeID_Core::TID_CLight:
-                {
-                    HLight light = static_object_cast<CLight>(component);
-                    if (light->GetActive() && EditorUtils::DoFrustumCulling(camera, light))
-                    {
-                        SelectionUtils::PerHudInstanceData element;
-                        const Transform& tfrm = light->GetTransform();
-                        element.MatWorldNoScale = Matrix4::TRS(tfrm.GetPosition(), tfrm.GetRotation(), Vector3::ONE).Transpose();
-                        element.Color = light->GetColor().GetAsVector4();
-
-                        switch (light->GetType())
-                        {
-                        case LightType::Directional:
-                            element.Type = static_cast<float>(SelectionUtils::HudType::DirectionalLight);
-                            break;
-                        case LightType::Radial:
-                            element.Type = static_cast<float>(SelectionUtils::HudType::RadialLight);
-                            break;
-                        case LightType::Spot:
-                            element.Type = static_cast<float>(SelectionUtils::HudType::SpotLight);
-                            break;
-                        }
-
-                        matElements.push_back(element);
-                    }
-                }
-                break;
-
-                case TypeID_Core::TID_CCamera:
-                {
-                    HCamera cameraElement = static_object_cast<CCamera>(component);
-                    if (cameraElement->GetActive() && EditorUtils::DoFrustumCulling(camera, cameraElement))
-                    {
-                        SelectionUtils::PerHudInstanceData element;
-                        const Transform& tfrm = cameraElement->GetTransform();
-                        element.MatWorldNoScale = Matrix4::TRS(tfrm.GetPosition(), tfrm.GetRotation(), Vector3::ONE).Transpose();
-                        element.Type = static_cast<float>(SelectionUtils::HudType::Camera);
-                        element.Color = Color::Black.GetAsVector4();
-
-                        matElements.push_back(element);
-                    }
-                }
-                break;
-
                 default:
                 break;
             }
+
+            SelectionUtils::FillPerInstanceHud(instancedElements, camera, component, SelectionUtils::RenderType::Selection);
         }
 
         for (const auto& childSO : sceneObject->GetChildren())
-            DrawInternal(camera, childSO.GetInternalPtr(), matElements);
+            DrawInternal(camera, childSO.GetInternalPtr(), instancedElements);
     }
 
     void Selection::DrawRenderable(const SPtr<CRenderable>& renderable)

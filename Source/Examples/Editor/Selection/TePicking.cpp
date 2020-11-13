@@ -18,27 +18,7 @@ namespace te
         _material = PickingMat::Get();
         _hudMaterial = HudPickingMat::Get();
 
-        {
-            SPtr<VertexDataDesc> pointVDesc = te_shared_ptr_new<VertexDataDesc>();
-            pointVDesc->AddVertElem(VET_FLOAT3, VES_POSITION);
-
-            _pointVDecl = VertexDeclaration::Create(pointVDesc);
-
-            VERTEX_BUFFER_DESC vbDesc;
-            vbDesc.VertexSize = _pointVDecl->GetProperties().GetVertexSize(0);
-            vbDesc.NumVerts = 1;
-            vbDesc.Usage = GBU_DYNAMIC;
-
-            _pointVB = VertexBuffer::Create(vbDesc);
-
-            _pointData = (SelectionUtils::VertexBufferLayout *)_pointVB->Lock(
-                0, sizeof(SelectionUtils::VertexBufferLayout), GBL_WRITE_ONLY_NO_OVERWRITE);
-
-            if (_pointData)
-                _pointData[0].Position = Vector3(0.0f, 0.0f, 0.0f);
-
-            _pointVB->Unlock();
-        }
+        SelectionUtils::CreateHudInstanceBuffer(_instanceBuffer);
     }
 
     void Picking::ComputePicking(const HCamera& camera, const RenderParam& param, const HSceneObject& root)
@@ -137,8 +117,8 @@ namespace te
             _hudMaterial->BindCamera(camera, SelectionUtils::RenderType::Picking);
 
             RenderAPI& rapi = RenderAPI::Instance();
-            rapi.SetVertexDeclaration(_pointVDecl);
-            rapi.SetVertexBuffers(0, &_pointVB, 1);
+            rapi.SetVertexDeclaration(_instanceBuffer.PointVDecl);
+            rapi.SetVertexBuffers(0, &_instanceBuffer.PointVB, 1);
             rapi.SetDrawOperation(DOT_POINT_LIST);
 
             UINT64 elementToDraw = static_cast<UINT64>(instancedElements.size());
@@ -164,7 +144,7 @@ namespace te
         }
     }
 
-    void Picking::DrawInternal(const HCamera& camera, const HSceneObject& sceneObject, Vector<SelectionUtils::PerHudInstanceData>& matElements)
+    void Picking::DrawInternal(const HCamera& camera, const HSceneObject& sceneObject, Vector<SelectionUtils::PerHudInstanceData>& instancedElements)
     {
         float now = gTime().GetTime();
 
@@ -189,57 +169,15 @@ namespace te
                 }
                 break;
 
-                case TypeID_Core::TID_CLight:
-                {
-                    HLight light = static_object_cast<CLight>(component);
-                    if (light->GetActive() && EditorUtils::DoFrustumCulling(camera, light))
-                    {
-                        SelectionUtils::PerHudInstanceData element;
-                        const Transform& tfrm = light->GetTransform();
-                        element.MatWorldNoScale = Matrix4::TRS(tfrm.GetPosition(), tfrm.GetRotation(), Vector3::ONE).Transpose();
-                        element.Color = light->GetGameObjectColor().GetAsVector4();
-
-                        switch (light->GetType())
-                        {
-                        case LightType::Directional:
-                            element.Type = static_cast<float>(SelectionUtils::HudType::DirectionalLight);
-                            break;
-                        case LightType::Radial:
-                            element.Type = static_cast<float>(SelectionUtils::HudType::RadialLight);
-                            break;
-                        case LightType::Spot:
-                            element.Type = static_cast<float>(SelectionUtils::HudType::SpotLight);
-                            break;
-                        }
-
-                        matElements.push_back(element);
-                    }
-                }
-                break;
-
-                case TypeID_Core::TID_CCamera:
-                {
-                    HCamera cameraElement = static_object_cast<CCamera>(component);
-                    if (cameraElement->GetActive() && EditorUtils::DoFrustumCulling(camera, cameraElement))
-                    {
-                        SelectionUtils::PerHudInstanceData element;
-                        const Transform& tfrm = cameraElement->GetTransform();
-                        element.MatWorldNoScale = Matrix4::TRS(tfrm.GetPosition(), tfrm.GetRotation(), Vector3::ONE).Transpose();
-                        element.Type = static_cast<float>(SelectionUtils::HudType::Camera);
-                        element.Color = cameraElement->GetGameObjectColor().GetAsVector4();
-
-                        matElements.push_back(element);
-                    }
-                }
-                break;
-
                 default:
                 break;
             }
+
+            SelectionUtils::FillPerInstanceHud(instancedElements, camera, component, SelectionUtils::RenderType::Picking);
         }
 
         for (const auto& childSO : sceneObject->GetChildren())
-            Draw(camera, childSO);
+            DrawInternal(camera, childSO, instancedElements);
     }
 
     void Picking::DrawRenderable(const HRenderable& renderable)

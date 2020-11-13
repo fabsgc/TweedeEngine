@@ -25,14 +25,10 @@ namespace te
         void Render(const HCamera& camera, const HSceneObject& root);
 
         /** Generate a list of all hud elements to draw by iterating through the scene graph */
-        void GetHudElements(const HCamera& camera, const HSceneObject& sceneObject, Vector<SelectionUtils::PerHudInstanceData>& matElements);
+        void GetHudElements(const HCamera& camera, const HSceneObject& sceneObject, Vector<SelectionUtils::PerHudInstanceData>& instancedElements);
 
     private:
         HudPickingMat* _material;
-
-        SPtr<VertexBuffer> _pointVB;
-        SPtr<VertexDataDesc> _pointVDesc;
-        SPtr<VertexDeclaration> _pointVDecl;
-        SelectionUtils::VertexBufferLayout* _pointData = nullptr;
+        SelectionUtils::HudInstanceBuffer _instanceBuffer;
     };
 }
