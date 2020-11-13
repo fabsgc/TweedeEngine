@@ -45,6 +45,25 @@ namespace te
         Vector<AssimpImportNode*> Children;
     };
 
+    /**	Contains geometry from one blend shape frame. */
+    struct AssimpBlendShapeFrame
+    {
+        Vector<Vector3> Positions;
+        Vector<Vector3> Normals;
+        Vector<Vector3> Tangents;
+        Vector<Vector3> Bitangents;
+
+        float Weight;
+        String Name;
+    };
+
+    /**	Contains all geometry for a single blend shape. */
+    struct AssimpBlendShape
+    {
+        String Name;
+        Vector<AssimpBlendShapeFrame> Frames;
+    };
+
     /**	Contains data about a single bone in a skinned mesh. */
     struct AssimpBone
     {
@@ -67,6 +86,40 @@ namespace te
 
         float Weights[OBJECT_IMPORT_MAX_BONE_INFLUENCES];
         INT32 Indices[OBJECT_IMPORT_MAX_BONE_INFLUENCES];
+    };
+
+    /**	Animation curves required to animate a single bone. */
+    struct AssimpBoneAnimation
+    {
+        AssimpImportNode* Node;
+
+        // TODO
+    };
+
+    /**	Animation curve required to animate a blend shape. */
+    struct AssimpBlendShapeAnimation
+    {
+        String BlendShape;
+
+        // TODO
+    };
+
+    /** All information required for creating an animation clip. */
+    struct AssimpAnimationClipData
+    {
+        // TODO
+    };
+
+    /** Animation clip containing a set of bone or blend shape animations. */
+    struct AssimpAnimationClip
+    {
+        String Name;
+        float Start;
+        float End;
+        UINT32 SampleRate;
+
+        Vector<AssimpBoneAnimation> boneAnimations;
+        Vector<AssimpBlendShapeAnimation> blendShapeAnimations;
     };
     
     struct AssimpImportMesh
@@ -111,7 +164,7 @@ namespace te
 
         UnorderedMap<aiNode*, AssimpImportNode*> NodeMap;
         UnorderedMap<aiMesh*, UINT32> MeshMap;
-    };
 
-    
+        Vector<AssimpAnimationClip> clips;
+    };    
 }

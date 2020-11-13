@@ -375,6 +375,11 @@ namespace te
         // TODO
     }
 
+    void ObjectImporter::ImportBlendShapeFrame(AssimpImportScene& scene, const AssimpImportMesh& mesh, const AssimpImportOptions& options, AssimpBlendShapeFrame& outFrame)
+    {
+        // TODO
+    }
+
     void ObjectImporter::ImportAnimations(aiScene* scene, AssimpImportOptions& importOptions, AssimpImportScene& importScene)
     {
         // TODO

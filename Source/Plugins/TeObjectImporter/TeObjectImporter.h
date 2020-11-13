@@ -54,6 +54,12 @@ namespace te
         /**	Imports blend shapes for all the meshes that are part of the scene. */
         void ImportBlendShapes(AssimpImportScene& scene, const AssimpImportOptions& options);
 
+        /**
+         * Parses a single blend shape frame. Converts it from FBX SDK format into a shape data object containing
+         * position and tangent frame.
+         */
+        void ImportBlendShapeFrame(AssimpImportScene& scene, const AssimpImportMesh& mesh, const AssimpImportOptions& options, AssimpBlendShapeFrame& outFrame);
+
         /**	Imports all bone and blend shape animations from the FBX. */
         void ImportAnimations(aiScene* scene, AssimpImportOptions& importOptions, AssimpImportScene& importScene);
 
