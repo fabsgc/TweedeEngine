@@ -91,7 +91,8 @@ namespace te
             aiProcess_GenUVCoords |
             aiProcess_GenSmoothNormals |
             aiProcess_JoinIdenticalVertices |
-            aiProcess_SortByPType;
+            aiProcess_SortByPType |
+            aiProcess_RemoveRedundantMaterials;
 
         if (meshImportOptions->FplitUV)
             assimpFlags |= aiProcess_FlipUVs;
@@ -101,6 +102,9 @@ namespace te
 
         if (meshImportOptions->LeftHanded)
             assimpFlags |= aiProcess_MakeLeftHanded;
+
+        if (meshImportOptions->ImportAnimation)
+            assimpFlags |= aiProcess_LimitBoneWeights | aiProcess_Debone;
 
         aiScene* scene = const_cast<aiScene*>(importer.ReadFile(filePath.c_str(), assimpFlags));
 
@@ -358,15 +362,96 @@ namespace te
             if (assimpMesh->mNumBones == 0)
                 continue;
 
-            ImportSkin(scene, *mesh, options);
+            ImportSkin(scene, assimpMesh, *mesh, options);
         }
     }
 
     /**	Imports skinning information and bones for the specified mesh. */
-    void ObjectImporter::ImportSkin(AssimpImportScene& scene, AssimpImportMesh& mesh, const AssimpImportOptions& options)
+    void ObjectImporter::ImportSkin(AssimpImportScene& scene, aiMesh* assimpMesh, AssimpImportMesh& mesh, const AssimpImportOptions& options)
     {
         Vector<AssimpBoneInfluence>& influences = mesh.BoneInfluences;
         influences.resize(mesh.Positions.size());
+
+        UINT32 boneCount = (UINT32)assimpMesh->mNumBones;
+        for (UINT32 i = 0; i < boneCount; i++)
+        {
+            String boneName = assimpMesh->mBones[i]->mName.data;
+            auto iterNode = scene.NodeNameMap.find(boneName);
+
+            if (iterNode == scene.NodeNameMap.end())
+                continue;
+
+            mesh.Bones.push_back(AssimpBone());
+
+            AssimpBone& bone = mesh.Bones.back();
+            bone.Node = iterNode->second;
+
+            if (mesh.ReferencedBy.size() > 1)
+            {
+                // Note: If this becomes a relevant issue (unlikely), then I will have to duplicate skeleton bones for
+                // each such mesh, since they will all require their own bind poses. Animation curves will also need to be
+                // handled specially (likely by allowing them to be applied to multiple bones at once). The other option is
+                // not to bake the node transform into mesh vertices and handle it on a Scene Object level.
+                TE_DEBUG("Skinned mesh has multiple different instances. This is not supported.");
+            }
+
+            AssimpImportNode* parentNode = mesh.ReferencedBy[0];
+
+            bone.LocalTransform = bone.Node->LocalTransform;
+            bone.BindPose = ConvertToNativeType(assimpMesh->mBones[i]->mOffsetMatrix);
+
+            // Undo the transform we baked into the mesh
+            bone.BindPose = bone.BindPose * (parentNode->WorldTransform).InverseAffine();
+
+            INT32 numVertices = (INT32)influences.size();
+
+            for (UINT32 j = 0; j < assimpMesh->mBones[i]->mNumWeights; j++)
+            {
+                INT32 vertexIndex = assimpMesh->mBones[i]->mWeights[j].mVertexId;
+                float weight = assimpMesh->mBones[i]->mWeights[j].mWeight;
+
+                for (INT32 k = 0; k < OBJECT_IMPORT_MAX_BONE_INFLUENCES; k++)
+                {
+                    if (vertexIndex < 0 || vertexIndex >= numVertices)
+                        continue;
+
+                    if (weight >= influences[vertexIndex].Weights[k])
+                    {
+                        for (INT32 l = OBJECT_IMPORT_MAX_BONE_INFLUENCES - 2; l >= k; l--)
+                        {
+                            influences[vertexIndex].Weights[l + 1] = influences[vertexIndex].Weights[l];
+                            influences[vertexIndex].Indices[l + 1] = influences[vertexIndex].Indices[l];
+                        }
+
+                        influences[vertexIndex].Weights[k] = weight;
+                        influences[vertexIndex].Indices[k] = i;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (mesh.Bones.empty())
+            mesh.BoneInfluences.clear();
+
+        UINT32 numBones = (UINT32)mesh.Bones.size();
+        if (numBones > 256)
+        {
+            TE_DEBUG("A maximum of 256 bones per skeleton are supported. Imported skeleton has " + ToString(numBones) + " bones.");
+        }
+
+        // Normalize weights
+        UINT32 numInfluences = (UINT32)mesh.BoneInfluences.size();
+        for (UINT32 i = 0; i < numInfluences; i++)
+        {
+            float sum = 0.0f;
+            for (UINT32 j = 0; j < OBJECT_IMPORT_MAX_BONE_INFLUENCES; j++)
+                sum += influences[i].Weights[j];
+
+            float invSum = 1.0f / sum;
+            for (UINT32 j = 0; j < OBJECT_IMPORT_MAX_BONE_INFLUENCES; j++)
+                influences[i].Weights[j] *= invSum;
+        }
     }
 
     /**	Imports blend shapes information and bones for all meshes. */
@@ -605,6 +690,7 @@ namespace te
         }
 
         scene.NodeMap.insert(std::make_pair(assimpNode, node));
+        scene.NodeNameMap.insert(std::make_pair(String(assimpNode->mName.C_Str()), node));
 
         return node;
     }

@@ -68,7 +68,7 @@ namespace te
     struct AssimpBone
     {
         AssimpImportNode* Node;
-        Transform LocalTransform;
+        Matrix4 LocalTransform;
         Matrix4 BindPose = Matrix4::IDENTITY;
     };
 
@@ -85,7 +85,7 @@ namespace te
         }
 
         float Weights[OBJECT_IMPORT_MAX_BONE_INFLUENCES];
-        INT32 Indices[OBJECT_IMPORT_MAX_BONE_INFLUENCES];
+        INT32 Indices[OBJECT_IMPORT_MAX_BONE_INFLUENCES]; // Vertices Index
     };
 
     /**	Animation curves required to animate a single bone. */
@@ -163,6 +163,7 @@ namespace te
         AssimpImportNode* RootNode = nullptr;
 
         UnorderedMap<aiNode*, AssimpImportNode*> NodeMap;
+        UnorderedMap<String, AssimpImportNode*> NodeNameMap;
         UnorderedMap<aiMesh*, UINT32> MeshMap;
 
         Vector<AssimpAnimationClip> clips;

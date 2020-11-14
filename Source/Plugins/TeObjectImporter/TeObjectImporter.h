@@ -49,7 +49,7 @@ namespace te
         void ImportSkin(AssimpImportScene& scene, const AssimpImportOptions& options);
 
         /**	Imports skinning information and bones for the specified mesh. */
-        void ImportSkin(AssimpImportScene& scene, AssimpImportMesh& mesh, const AssimpImportOptions& options);
+        void ImportSkin(AssimpImportScene& scene, aiMesh* assimpMesh, AssimpImportMesh& mesh, const AssimpImportOptions& options);
 
         /**	Imports blend shapes for all the meshes that are part of the scene. */
         void ImportBlendShapes(AssimpImportScene& scene, const AssimpImportOptions& options);
