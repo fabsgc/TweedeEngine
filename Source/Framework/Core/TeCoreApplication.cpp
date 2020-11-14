@@ -19,7 +19,7 @@
 #include "CoreUtility/TeCoreObjectManager.h"
 #include "Renderer/TeRendererMaterialManager.h"
 #include "Audio/TeAudioManager.h"
-#include "Animation/TeAnimationManager.H"
+#include "Animation/TeAnimationManager.h"
 
 #include "Input/TeInput.h"
 #include "Input/TeVirtualInput.h"
