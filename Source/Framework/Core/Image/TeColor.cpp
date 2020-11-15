@@ -2,6 +2,8 @@
 #include "Math/TeMath.h"
 #include "Math/TeVector4.h"
 
+#include <time.h>
+
 namespace te
 {
     const Color Color::ZERO = Color(0.0f, 0.0f, 0.0f, 0.0f);
@@ -51,6 +53,7 @@ namespace te
 
     Color Color::GenerateRandom(float min, float max, bool alpha)
     {
+#if TE_PLATFORM == TE_PLATFORM_WIN32
         static std::random_device rd;
         static std::mt19937::result_type seed = rd() ^ (
             (std::mt19937::result_type) std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count() +
@@ -64,6 +67,15 @@ namespace te
         float g = Math::Round(distribution(generator) * 1e+6f) / 1e+6f;
         float b = Math::Round(distribution(generator) * 1e+6f) / 1e+6f;
         float a = (alpha) ? Math::Round(distribution(generator) * 1e+6f) / 1e+6f : 1.0f;
+#else
+        srand (time(NULL));
+
+        float r = (float)(rand() % 1000000) / 1e+6f;
+        float g = (float)(rand() % 1000000) / 1e+6f;
+        float b = (float)(rand() % 1000000) / 1e+6f;
+        float a = (alpha) ? (float)(rand() % 1000000) / 1e+6f : 1.0f;
+
+#endif
 
         return Color(r, g, b, a);
     }
