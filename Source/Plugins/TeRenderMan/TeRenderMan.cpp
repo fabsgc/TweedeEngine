@@ -82,7 +82,7 @@ namespace te
         return name;
     }
 
-    void RenderMan::RenderAll()
+    void RenderMan::RenderAll(PerFrameData perFrameData)
     {
         CoreObjectManager::Instance().FrameSync();
 
@@ -99,7 +99,7 @@ namespace te
         //sceneInfo.RenderableReady.resize(sceneInfo.Renderables.size(), false); TODO
         //sceneInfo.RenderableReady.assign(sceneInfo.Renderables.size(), false); TODO
 
-        FrameInfo frameInfo(timings);
+        FrameInfo frameInfo(timings, perFrameData);
 
         // Update per-frame data for all renderable objects
         for (UINT32 i = 0; i < sceneInfo.Renderables.size(); i++)

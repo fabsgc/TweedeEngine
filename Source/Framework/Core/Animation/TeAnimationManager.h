@@ -2,9 +2,38 @@
 
 #include "TeCorePrerequisites.h"
 #include "Utility/TeModule.h"
+#include "Math/TeConvexVolume.h"
 
 namespace te
 {
+    struct AnimationProxy;
+
+    /** Contains skeleton poses for all animations evaluated on a single frame. */
+    struct EvaluatedAnimationData
+    {
+        /** Contains meta-data about a calculated skeleton pose. Actual data maps to the @p transforms buffer. */
+        struct PoseInfo
+        {
+            UINT64 AnimId;
+            UINT32 StartIdx;
+            UINT32 NumBones;
+        };
+
+        /** Contains meta-data about where calculated animation data is stored. */
+        struct AnimInfo
+        {
+            PoseInfo PoseInfo;
+        };
+
+        /**
+         * Maps animation ID to a animation information structure, which points to relevant skeletal or morph shape data.
+         */
+        UnorderedMap<UINT64, AnimInfo> Infos;
+
+        /** Global joint transforms for all skeletons in the scene. */
+        Vector<Matrix4> Transforms;
+    };
+
     /**
      * Keeps track of all active animations, queues animation thread tasks and synchronizes data between simulation, core
      * and animation threads.
@@ -16,6 +45,18 @@ namespace te
 
         /** Pauses or resumes the animation evaluation. */
         void SetPaused(bool paused);
+
+        /**
+         * Evaluates animations for all animated objects, and returns the evaluated skeleton bone poses and morph shape
+         * meshes that can be passed along to the renderer.
+         *
+         * @return						Evaluated animation data for this frame (if @p async is false), or the previous
+         *								frame (if @p async is true). Note that the system re-uses the returned buffers,
+         *								and the returned buffer should stop being used after every second call to update().
+         *								This is enough to have one buffer be processed by the core thread, one queued
+         *								for future rendering and one that's being written to.
+         */
+        const EvaluatedAnimationData* Update();
 
         /**
          * Determines how often to evaluate animations. If rendering is not running at adequate framerate the animation
@@ -36,6 +77,15 @@ namespace te
         /** Unregisters an animation with the specified ID. Must be called before an Animation is destroyed. */
         void UnregisterAnimation(UINT64 id);
 
+        /**
+         * Evaluates animation for a single object and writes the result in the currently active write buffer.
+         *
+         * @param[in]	anim		Proxy representing the animation to evaluate.
+         * @param[in]	boneIdx		Index in the output buffer in which to write evaluated bone information. This will be
+         *							automatically advanced by the number of written bone transforms.
+         */
+        void EvaluateAnimation(AnimationProxy* anim, UINT32& boneIdx);
+
     private:
         UINT64 _nextId = 1;
         UnorderedMap<UINT64, Animation*> _animations;
@@ -46,6 +96,10 @@ namespace te
         float _nextAnimationUpdateTime = 0.0f;
         float _lastAnimationDeltaTime = 0.0f;
         bool  _paused = false;
+
+        // Animation thread
+        Vector<SPtr<AnimationProxy>> _proxies;
+        Vector<ConvexVolume> _cullFrustums;
     };
 
     /** Provides easier access to AnimationManager. */

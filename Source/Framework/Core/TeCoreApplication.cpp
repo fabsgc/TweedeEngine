@@ -157,10 +157,13 @@ namespace te
 
             PostUpdate();
 
+            PerFrameData perFrameData;
+            perFrameData.Animation = AnimationManager::Instance().Update();
+
             DisplayFrameRate();
 
             RendererManager::Instance().GetRenderer()->Update();
-            RendererManager::Instance().GetRenderer()->RenderAll();
+            RendererManager::Instance().GetRenderer()->RenderAll(perFrameData);
 
             PostRender();
         }
