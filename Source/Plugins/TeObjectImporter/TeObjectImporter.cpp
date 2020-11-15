@@ -139,6 +139,12 @@ namespace te
 
         skeleton = CreateSkeleton(importedScene, subMeshes.size() > 1);
 
+        // Import animation clips
+        if (!importedScene.Clips.empty())
+        {
+            const Vector<AnimationSplitInfo>& splits = meshImportOptions->AnimationSplits;
+        }
+
         return rendererMeshData;
     }
 
@@ -352,7 +358,6 @@ namespace te
         importMesh->MaterialIndex = mesh->mMaterialIndex;
     }
 
-    /**	Imports skinning information and bones for all meshes. */
     void ObjectImporter::ImportSkin(AssimpImportScene& scene, const AssimpImportOptions& options)
     {
         for (auto& mesh : scene.Meshes)
@@ -366,7 +371,6 @@ namespace te
         }
     }
 
-    /**	Imports skinning information and bones for the specified mesh. */
     void ObjectImporter::ImportSkin(AssimpImportScene& scene, aiMesh* assimpMesh, AssimpImportMesh& mesh, const AssimpImportOptions& options)
     {
         Vector<AssimpBoneInfluence>& influences = mesh.BoneInfluences;
@@ -454,7 +458,6 @@ namespace te
         }
     }
 
-    /**	Imports blend shapes information and bones for all meshes. */
     void ObjectImporter::ImportBlendShapes(AssimpImportScene& scene, const AssimpImportOptions& options)
     {
         // TODO
@@ -473,39 +476,205 @@ namespace te
             importScene.Clips.push_back(AssimpAnimationClip());
 
             AssimpAnimationClip& clip = importScene.Clips.back();
-            clip.Name = assimAnimation->mName.C_Str();
-
+            clip.Name = (assimAnimation->mName.length > 0) ? assimAnimation->mName.C_Str() : "Animation " + ToString(i);
             clip.Start = 0.0f;
             clip.End = (float)assimAnimation->mDuration;
-            clip.SampleRate = assimAnimation->mTicksPerSecond != 0.0 ? (UINT32)assimAnimation->mTicksPerSecond : 25;
+            clip.SampleRate = assimAnimation->mTicksPerSecond != 0.0 ? (float)assimAnimation->mTicksPerSecond : 25.0f;
 
             for (UINT32 j = 0; j < static_cast<UINT32>(assimAnimation->mNumChannels); j++)
             {
+                aiNodeAnim* assimpChannel = assimAnimation->mChannels[j];
+                Vector<TKeyframe<Vector3>> positions;
+                Vector<TKeyframe<Quaternion>> rotations;
+                Vector<TKeyframe<Vector3>> scalings;
+
                 clip.BoneAnimations.push_back(AssimpBoneAnimation());
                 AssimpBoneAnimation& boneAnim = clip.BoneAnimations.back();
-                aiNodeAnim* assimpChannel = assimAnimation->mChannels[j];
-
                 boneAnim.Node = importScene.NodeNameMap[assimpChannel->mNodeName.C_Str()];
 
                 // Position keys
-                for (uint32_t k = 0; k < static_cast<uint32_t>(assimpChannel->mNumPositionKeys); k++)
+                if (assimpChannel->mNumPositionKeys > 0)
                 {
+                    for (UINT32 k = 0; k < static_cast<UINT32>(assimpChannel->mNumPositionKeys); k++)
+                    {
+                        positions.push_back(TKeyframe<Vector3>());
+                        TKeyframe<Vector3>& keyFrame = positions.back();
 
+                        keyFrame.TimeInSpline = (float)assimpChannel->mPositionKeys[k].mTime;
+                        keyFrame.Value = ConvertToNativeType(assimpChannel->mPositionKeys[k].mValue);
+                    }
+                }
+                else
+                {
+                    positions.push_back(TKeyframe<Vector3>());
+                    TKeyframe<Vector3>& keyFrame = positions.back();
+
+                    keyFrame.TimeInSpline = 0.0f;
+                    keyFrame.Value = Vector3();
                 }
 
                 // Rotation keys
-                for (uint32_t k = 0; k < static_cast<uint32_t>(assimpChannel->mNumRotationKeys); k++)
+                if (assimpChannel->mNumRotationKeys > 0)
                 {
+                    for (UINT32 k = 0; k < static_cast<UINT32>(assimpChannel->mNumRotationKeys); k++)
+                    {
+                        rotations.push_back(TKeyframe<Quaternion>());
+                        TKeyframe<Quaternion>& keyFrame = rotations.back();
 
+                        keyFrame.TimeInSpline = (float)assimpChannel->mRotationKeys[k].mTime;
+                        keyFrame.Value = ConvertToNativeType(assimpChannel->mRotationKeys[k].mValue);
+                    }
+                }
+
+                else
+                {
+                    rotations.push_back(TKeyframe<Quaternion>());
+                    TKeyframe<Quaternion>& keyFrame = rotations.back();
+
+                    keyFrame.TimeInSpline = 0.0f;
+                    keyFrame.Value = Quaternion();
                 }
 
                 // Scaling keys
-                for (uint32_t k = 0; k < static_cast<uint32_t>(assimpChannel->mNumScalingKeys); k++)
+                if (assimpChannel->mNumScalingKeys > 0)
                 {
+                    for (UINT32 k = 0; k < static_cast<UINT32>(assimpChannel->mNumScalingKeys); k++)
+                    {
+                        scalings.push_back(TKeyframe<Vector3>());
+                        TKeyframe<Vector3>& keyFrame = scalings.back();
 
+                        keyFrame.TimeInSpline = (float)assimpChannel->mScalingKeys[k].mTime;
+                        keyFrame.Value = ConvertToNativeType(assimpChannel->mScalingKeys[k].mValue);
+                    }
                 }
+                else
+                {
+                    scalings.push_back(TKeyframe<Vector3>());
+                    TKeyframe<Vector3>& keyFrame = scalings.back();
+
+                    keyFrame.TimeInSpline = 0.0f;
+                    keyFrame.Value = Vector3();
+                }
+
+                boneAnim.Translation = TAnimationCurve<Vector3>(positions);
+                boneAnim.Rotation = TAnimationCurve<Quaternion>(rotations);
+                boneAnim.Scale = TAnimationCurve<Vector3>(scalings);
             }
         }
+    }
+
+    SPtr<Skeleton> ObjectImporter::CreateSkeleton(const AssimpImportScene& scene, bool sharedRoot)
+    {
+        Vector<BONE_DESC> allBones;
+        UnorderedMap<AssimpImportNode*, UINT32> boneMap;
+
+        Vector3 position;
+        Quaternion rotation;
+        Vector3 scale;
+
+        for (auto& mesh : scene.Meshes)
+        {
+            // Create bones
+            for (auto& assimpBone : mesh->Bones)
+            {
+                UINT32 boneIdx = (UINT32)allBones.size();
+
+                auto iterFind = boneMap.find(assimpBone.Node);
+                if (iterFind != boneMap.end())
+                    continue; // Duplicate
+
+                boneMap[assimpBone.Node] = boneIdx;
+
+                allBones.push_back(BONE_DESC());
+                BONE_DESC& bone = allBones.back();
+
+                assimpBone.LocalTransform.Decomposition(position, rotation, scale); // TODO don't like that, slow
+                bone.Name = assimpBone.Node->Name;
+                bone.LocalTfrm = Transform(position, rotation, scale);
+                bone.InvBindPose = assimpBone.BindPose;
+            }
+        }
+
+        // Generate skeleton
+        if (allBones.size() > 0)
+        {
+            // Find bone parents
+            UINT32 numProcessedBones = 0;
+
+            // Generate common root bone for all meshes
+            UINT32 rootBoneIdx = (UINT32)-1;
+            if (sharedRoot)
+            {
+                rootBoneIdx = (UINT32)allBones.size();
+
+                allBones.push_back(BONE_DESC());
+                BONE_DESC& bone = allBones.back();
+
+                bone.Name = "MultiMeshRoot";
+                bone.LocalTfrm = Transform();
+                bone.InvBindPose = Matrix4::IDENTITY;
+                bone.Parent = (UINT32)-1;
+
+                numProcessedBones++;
+            }
+
+            Stack<std::pair<AssimpImportNode*, UINT32>> todo;
+            todo.push({ scene.RootNode, rootBoneIdx });
+
+            while (!todo.empty())
+            {
+                auto entry = todo.top();
+                todo.pop();
+
+                AssimpImportNode* node = entry.first;
+                UINT32 parentBoneIdx = entry.second;
+
+                auto boneIter = boneMap.find(node);
+                if (boneIter != boneMap.end())
+                {
+                    UINT32 boneIdx = boneIter->second;
+                    allBones[boneIdx].Parent = parentBoneIdx;
+
+                    parentBoneIdx = boneIdx;
+                    numProcessedBones++;
+                }
+                else
+                {
+                    // Node is not a bone, but it still needs to be part of the hierarchy. It wont be animated, nor will
+                    // it directly influence any vertices, but its transform must be applied to any child bones.
+                    UINT32 boneIdx = (UINT32)allBones.size();
+
+                    allBones.push_back(BONE_DESC());
+                    BONE_DESC& bone = allBones.back();
+                    node->LocalTransform.Decomposition(position, rotation, scale); // TODO don't like that, slow
+
+                    bone.Name = node->Name;
+                    bone.LocalTfrm = Transform(position, rotation, scale);
+                    bone.InvBindPose = Matrix4::IDENTITY;
+                    bone.Parent = parentBoneIdx;
+
+                    parentBoneIdx = boneIdx;
+                    numProcessedBones++;
+                }
+
+                for (auto& child : node->Children)
+                    todo.push({ child, parentBoneIdx });
+            }
+
+            UINT32 numAllBones = (UINT32)allBones.size();
+            if (numProcessedBones == numAllBones)
+                return Skeleton::Create(allBones.data(), numAllBones);
+
+            TE_DEBUG("Not all bones were found in the node hierarchy. Skeleton invalid.");
+        }
+
+        return nullptr;
+    }
+
+    void ConvertAnimations(const Vector<AssimpAnimationClip>& clips, const Vector<AnimationSplitInfo>& splits,
+        const SPtr<Skeleton>& skeleton, bool importRootMotion, Vector<AssimpAnimationClipData>& output)
+    {
+        // TODO
     }
 
     SPtr<RendererMeshData> ObjectImporter::GenerateMeshData(AssimpImportScene& scene, AssimpImportOptions& options, Vector<SubMesh>& outputSubMeshes)
@@ -734,114 +903,6 @@ namespace te
         return node;
     }
 
-    SPtr<Skeleton> ObjectImporter::CreateSkeleton(const AssimpImportScene& scene, bool sharedRoot)
-    {
-        Vector<BONE_DESC> allBones;
-        UnorderedMap<AssimpImportNode*, UINT32> boneMap;
-
-        Vector3 position;
-        Quaternion rotation;
-        Vector3 scale;
-
-        for (auto& mesh : scene.Meshes)
-        {
-            // Create bones
-            for (auto& assimpBone : mesh->Bones)
-            {
-                UINT32 boneIdx = (UINT32)allBones.size();
-
-                auto iterFind = boneMap.find(assimpBone.Node);
-                if (iterFind != boneMap.end())
-                    continue; // Duplicate
-
-                boneMap[assimpBone.Node] = boneIdx;
-
-                allBones.push_back(BONE_DESC());
-                BONE_DESC& bone = allBones.back();
-
-                assimpBone.LocalTransform.Decomposition(position, rotation, scale); // TODO don't like that, slow
-                bone.Name = assimpBone.Node->Name;
-                bone.LocalTfrm = Transform(position, rotation, scale);
-                bone.InvBindPose = assimpBone.BindPose;
-            }
-        }
-
-        // Generate skeleton
-        if (allBones.size() > 0)
-        {
-            // Find bone parents
-            UINT32 numProcessedBones = 0;
-
-            // Generate common root bone for all meshes
-            UINT32 rootBoneIdx = (UINT32)-1;
-            if (sharedRoot)
-            {
-                rootBoneIdx = (UINT32)allBones.size();
-
-                allBones.push_back(BONE_DESC());
-                BONE_DESC& bone = allBones.back();
-
-                bone.Name = "MultiMeshRoot";
-                bone.LocalTfrm = Transform();
-                bone.InvBindPose = Matrix4::IDENTITY;
-                bone.Parent = (UINT32)-1;
-
-                numProcessedBones++;
-            }
-
-            Stack<std::pair<AssimpImportNode*, UINT32>> todo;
-            todo.push({ scene.RootNode, rootBoneIdx });
-
-            while (!todo.empty())
-            {
-                auto entry = todo.top();
-                todo.pop();
-
-                AssimpImportNode* node = entry.first;
-                UINT32 parentBoneIdx = entry.second;
-
-                auto boneIter = boneMap.find(node);
-                if (boneIter != boneMap.end())
-                {
-                    UINT32 boneIdx = boneIter->second;
-                    allBones[boneIdx].Parent = parentBoneIdx;
-
-                    parentBoneIdx = boneIdx;
-                    numProcessedBones++;
-                }
-                else
-                {
-                    // Node is not a bone, but it still needs to be part of the hierarchy. It wont be animated, nor will
-                    // it directly influence any vertices, but its transform must be applied to any child bones.
-                    UINT32 boneIdx = (UINT32)allBones.size();
-
-                    allBones.push_back(BONE_DESC());
-                    BONE_DESC& bone = allBones.back();
-                    node->LocalTransform.Decomposition(position, rotation, scale); // TODO don't like that, slow
-
-                    bone.Name = node->Name;
-                    bone.LocalTfrm = Transform(position, rotation, scale);
-                    bone.InvBindPose = Matrix4::IDENTITY;
-                    bone.Parent = parentBoneIdx;
-
-                    parentBoneIdx = boneIdx;
-                    numProcessedBones++;
-                }
-
-                for (auto& child : node->Children)
-                    todo.push({ child, parentBoneIdx });
-            }
-
-            UINT32 numAllBones = (UINT32)allBones.size();
-            if (numProcessedBones == numAllBones)
-                return Skeleton::Create(allBones.data(), numAllBones);
-
-            TE_DEBUG("Not all bones were found in the node hierarchy. Skeleton invalid.");
-        }
-
-        return nullptr;
-    }
-
     Matrix4 ObjectImporter::ConvertToNativeType(const aiMatrix4x4& matrix)
     {
         return Matrix4(
@@ -875,5 +936,10 @@ namespace te
     Color ObjectImporter::ConvertToNativeType(const aiColor3D& color)
     {
         return Color((float)color.r, (float)color.g, (float)color.b, 1.0f);
+    }
+
+    Quaternion ObjectImporter::ConvertToNativeType(const aiQuaternion& quaternion)
+    {
+        return Quaternion((float)quaternion.x, (float)quaternion.y, (float)quaternion.z, (float)quaternion.w);
     }
 }

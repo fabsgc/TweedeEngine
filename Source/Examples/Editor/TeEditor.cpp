@@ -707,22 +707,25 @@ namespace te
         textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
         textureCubeMapImportOptions->IsCubemap = true;
         textureCubeMapImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
+
+        auto meshImportOptionsAnim = MeshImportOptions::Create();
+        meshImportOptionsAnim->ImportNormals = true;
+        meshImportOptionsAnim->ImportTangents = true;
+        meshImportOptionsAnim->CpuCached = false;
+        meshImportOptionsAnim->ImportSkin = true;
+        meshImportOptionsAnim->ImportBlendShapes = true;
+        meshImportOptionsAnim->ImportAnimation = true;
         
         // ######################################################
 
         // ######################################################
+        auto resources = gResourceManager().LoadAll("Data/Meshes/Knight/Knight.dae", meshImportOptionsAnim);
         _loadedMeshMonkey = EditorResManager::Instance().Load<Mesh>("Data/Meshes/Monkey/monkey-hd.obj", meshImportOptions);
         //_loadedMeshPlane = EditorResManager::Instance().Load<Mesh>("Data/Meshes/Plane/plane.obj", meshImportOptions);
         _loadedTextureMonkey = EditorResManager::Instance().Load<Texture>("Data/Textures/Monkey/diffuse.png", textureImportOptions);
         //_loadedPlaneTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Sponza/Floor/floor_COLOR.jpeg", textureImportOptions);
         _loadedCubemapTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/sky_medium.png", textureCubeMapImportOptions);
         // ######################################################
-
-        meshImportOptions->ImportSkin = true;
-        meshImportOptions->ImportBlendShapes = true;
-        meshImportOptions->ImportAnimation = true;
-
-        auto resources = gResourceManager().LoadAll("Data/Meshes/Knight/Knight.dae", meshImportOptions);
 
         // ###################################################### 
         _loadedMeshMonkey->SetName("Monkey Mesh");

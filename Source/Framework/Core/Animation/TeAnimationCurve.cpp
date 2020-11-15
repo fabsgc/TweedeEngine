@@ -31,4 +31,9 @@ namespace te
         _start = 0.0f;
         _length = _end;
     }
+
+    template class TAnimationCurve<Vector3>;
+    template class TAnimationCurve<Vector2>;
+    template class TAnimationCurve<Quaternion>;
+    template class TAnimationCurve<float>;
 }

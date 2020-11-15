@@ -53,34 +53,37 @@ namespace te
 {
     enum TypeID_Core
     {
-        TID_Component              = 1001,
-        TID_CCamera                = 1002,
-        TID_CRenderable            = 1003,
-        TID_CLight                 = 1004,
-        TID_CSkybox                = 1005,
-        TID_CCameraFlyer           = 1006,
-        TID_CScript                = 1007,
-        TID_CCameraUI              = 1008,
-        TID_SceneObject            = 1008,
-        TID_Texture                = 1010,
-        TID_Material               = 1011,
-        TID_Pass                   = 1012,
-        TID_Shader                 = 1013,
-        TID_Technique              = 1014,
-        TID_Mesh                   = 1015,
-        TID_Font                   = 1016,
-        TID_NativeScript           = 1017,
-        TID_Resource               = 1018,
-        TID_Skeleton               = 1019,
-        TID_ImportOptions          = 1020,
-        TID_FontImportOptions      = 1021,
-        TID_TextureImportOptions   = 1022,
-        TID_MeshImportOptions      = 1023,
-        TID_ShaderImportOptions    = 1024,
-        TID_AudioClipImportOptions = 1025,
-        TID_CBone                  = 1026,
-        TID_CAnimation             = 1027,
-        TID_Animation              = 1028,
+        TID_Component               = 1001,
+        TID_CCamera                 = 1002,
+        TID_CRenderable             = 1003,
+        TID_CLight                  = 1004,
+        TID_CSkybox                 = 1005,
+        TID_CCameraFlyer            = 1006,
+        TID_CScript                 = 1007,
+        TID_CCameraUI               = 1008,
+        TID_SceneObject             = 1008,
+        TID_Texture                 = 1010,
+        TID_Material                = 1011,
+        TID_Pass                    = 1012,
+        TID_Shader                  = 1013,
+        TID_Technique               = 1014,
+        TID_Mesh                    = 1015,
+        TID_Font                    = 1016,
+        TID_NativeScript            = 1017,
+        TID_Resource                = 1018,
+        TID_Skeleton                = 1019,
+        TID_ImportOptions           = 1020,
+        TID_FontImportOptions       = 1021,
+        TID_TextureImportOptions    = 1022,
+        TID_MeshImportOptions       = 1023,
+        TID_ShaderImportOptions     = 1024,
+        TID_AudioClipImportOptions  = 1025,
+        TID_CBone                   = 1026,
+        TID_CAnimation              = 1027,
+        TID_Animation               = 1028,
+        TID_AnimationClip           = 1029,
+        TID_AnimationSplitInfo      = 1030,
+        TID_ImportedAnimationEvents = 1031
     };
 }
 
@@ -247,17 +250,10 @@ namespace te
 
     class Font;
 
-    class Skeleton;
-    struct BONE_DESC;
-    struct LocalSkeletonPose;
-    struct SkeletonBoneInfo;
-    class SkeletonMask;
-    class SkeletonMaskBuilder;
-
-    struct AnimationClipState;
     class Animation;
-
+    class AnimationClip;    
     template <class T> class TAnimationCurve;
+    class Skeleton;
 
     class GuiAPI;
     class GuiAPIFactory;

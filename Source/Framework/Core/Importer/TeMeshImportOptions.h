@@ -2,9 +2,43 @@
 
 #include "TeCorePrerequisites.h"
 #include "Importer/TeImportOptions.h"
+#include "Serialization/TeSerializable.h"
+#include "Animation/TeAnimationClip.h"
 
 namespace te
 {
+    /** Information about how to split an AnimationClip into multiple separate clips. */
+    struct TE_CORE_EXPORT AnimationSplitInfo : Serializable
+    {
+        AnimationSplitInfo()
+            : Serializable(TID_AnimationSplitInfo)
+        { }
+
+        AnimationSplitInfo(const String & name, UINT32 startFrame, UINT32 endFrame, bool isAdditive = false)
+            : Serializable(TID_AnimationSplitInfo)
+            , Name(name)
+            , StartFrame(startFrame)
+            , EndFrame(endFrame)
+            , IsAdditive(isAdditive)
+        { }
+
+        String Name;
+        UINT32 StartFrame = 0;
+        UINT32 EndFrame = 0;
+        bool IsAdditive = false;
+    };
+
+    /** A set of animation events that will be added to an animation clip during animation import. */
+    struct TE_CORE_EXPORT ImportedAnimationEvents : Serializable
+    {
+        ImportedAnimationEvents()
+            : Serializable(TID_ImportedAnimationEvents)
+        { }
+
+        String Name;
+        Vector<AnimationEvent> Events;
+    };
+
     /** Contains import options you may use to control how is a Mesh imported. */
     class TE_CORE_EXPORT MeshImportOptions : public ImportOptions
     {
@@ -46,6 +80,15 @@ namespace te
 
         /** Determines if we need to set material properties for this mesh during import */
         bool ImportMaterials = true;
+
+        /**
+         * Animation split infos that determine how will the source animation clip be split. If no splits are present the
+         * data will be imported as one clip, but if splits are present the data will be split according to the split infos.
+         * Split infos only affect the primary animation clip, other clips will not be split.
+         */
+        Vector<AnimationSplitInfo> AnimationSplits;
+
+        Vector<ImportedAnimationEvents> AnimationEvents;
 
         /** Creates a new import options object that allows you to customize how are Meshs imported. */
         static SPtr<MeshImportOptions> Create();

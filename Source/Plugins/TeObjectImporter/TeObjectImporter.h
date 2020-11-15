@@ -12,6 +12,7 @@
 namespace te
 {
     class Skeleton;
+    struct AnimationSplitInfo;
 
     class ObjectImporter : public BaseImporter
     {
@@ -51,23 +52,8 @@ namespace te
         /**	Imports skinning information and bones for the specified mesh. */
         void ImportSkin(AssimpImportScene& scene, aiMesh* assimpMesh, AssimpImportMesh& mesh, const AssimpImportOptions& options);
 
-        /**	Imports blend shapes for all the meshes that are part of the scene. */
-        void ImportBlendShapes(AssimpImportScene& scene, const AssimpImportOptions& options);
-
-        /**
-         * Parses a single blend shape frame. Converts it from FBX SDK format into a shape data object containing
-         * position and tangent frame.
-         */
-        void ImportBlendShapeFrame(AssimpImportScene& scene, const AssimpImportMesh& mesh, const AssimpImportOptions& options, AssimpBlendShapeFrame& outFrame);
-
         /**	Imports all bone and blend shape animations from the FBX. */
         void ImportAnimations(aiScene* scene, AssimpImportOptions& importOptions, AssimpImportScene& importScene);
-
-        /** Converts the mesh data from the imported assimp scene into mesh data that can be used for initializing a mesh. */
-        SPtr<RendererMeshData> GenerateMeshData(AssimpImportScene& scene, AssimpImportOptions& options, Vector<SubMesh>& subMeshes);
-
-        /**	Creates an internal representation of an assimp node from an aiNode object. */
-        AssimpImportNode* CreateImportNode(const AssimpImportOptions& options, AssimpImportScene& scene, aiNode* assimpNode, AssimpImportNode* parent);
 
         /**
          * Parses the scene and outputs a skeleton for the imported meshes using the imported raw data.
@@ -78,6 +64,25 @@ namespace te
          * @return					Skeleton containing a set of bones, or null if meshes don't contain a skeleton.
          */
         SPtr<Skeleton> CreateSkeleton(const AssimpImportScene& scene, bool sharedRoot);
+
+        /**	Imports blend shapes for all the meshes that are part of the scene. */
+        void ImportBlendShapes(AssimpImportScene& scene, const AssimpImportOptions& options);
+
+        /**
+         * Parses a single blend shape frame. Converts it from FBX SDK format into a shape data object containing
+         * position and tangent frame.
+         */
+        void ImportBlendShapeFrame(AssimpImportScene& scene, const AssimpImportMesh& mesh, const AssimpImportOptions& options, AssimpBlendShapeFrame& outFrame);
+
+        /** Converts FBX animation clips into engine-ready animation curve format. */
+        void ConvertAnimations(const Vector<AssimpAnimationClip>& clips, const Vector<AnimationSplitInfo>& splits,
+            const SPtr<Skeleton>& skeleton, bool importRootMotion, Vector<AssimpAnimationClipData>& output);
+
+        /** Converts the mesh data from the imported assimp scene into mesh data that can be used for initializing a mesh. */
+        SPtr<RendererMeshData> GenerateMeshData(AssimpImportScene& scene, AssimpImportOptions& options, Vector<SubMesh>& subMeshes);
+
+        /**	Creates an internal representation of an assimp node from an aiNode object. */
+        AssimpImportNode* CreateImportNode(const AssimpImportOptions& options, AssimpImportScene& scene, aiNode* assimpNode, AssimpImportNode* parent);
 
         /** Convert an assimp matrix into engine matrix */
         Matrix4 ConvertToNativeType(const aiMatrix4x4& matrix);
@@ -93,6 +98,9 @@ namespace te
 
         /** Convert an assimp color3D into engine color */
         Color ConvertToNativeType(const aiColor3D& vector);
+
+        /** Convert an assimp quaternion into engine quaternion */
+        Quaternion ConvertToNativeType(const aiQuaternion& quaternion);
 
     private:
         Vector<String> _extensions;

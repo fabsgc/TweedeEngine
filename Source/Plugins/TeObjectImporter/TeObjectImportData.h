@@ -69,7 +69,7 @@ namespace te
     struct AssimpBone
     {
         AssimpImportNode* Node;
-        Matrix4 LocalTransform;
+        Matrix4 LocalTransform = Matrix4::IDENTITY;
         Matrix4 BindPose = Matrix4::IDENTITY;
     };
 
@@ -119,7 +119,7 @@ namespace te
         String Name;
         float Start;
         float End;
-        UINT32 SampleRate;
+        float SampleRate;
 
         Vector<AssimpBoneAnimation> BoneAnimations;
         Vector<AssimpBlendShapeAnimation> BlendShapeAnimations;

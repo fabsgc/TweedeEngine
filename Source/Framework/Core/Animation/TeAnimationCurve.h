@@ -46,6 +46,7 @@ namespace te
     template struct TKeyframe<Vector3>;
     template struct TKeyframe<Vector2>;
     template struct TKeyframe<Quaternion>;
+    template struct TKeyframe<float>;
 
     /**
      * Animation spline represented by a set of keyframes, each representing an endpoint of a cubic hermite curve. The
@@ -72,10 +73,6 @@ namespace te
         float _length = 0.0f;
     };
 
-    template class TAnimationCurve<Vector3>;
-    template class TAnimationCurve<Vector2>;
-    template class TAnimationCurve<Quaternion>;
-
     /** An animation curve and its name. */
     template <class T>
     struct TNamedAnimationCurve
@@ -89,7 +86,7 @@ namespace te
          * @param[in]	curve	Curve containing the animation data.
          */
         TNamedAnimationCurve(const String& name, const TAnimationCurve<T> curve)
-            : name(name)
+            : Name(name)
             , Curve(curve)
         { }
 
@@ -101,7 +98,7 @@ namespace te
          * @param[in]	curve	Curve containing the animation data.
          */
         TNamedAnimationCurve(const String& name, AnimationCurveFlags flags, const TAnimationCurve<T> curve)
-            : name(name)
+            : Name(name)
             , Curve(curve)
         { }
 

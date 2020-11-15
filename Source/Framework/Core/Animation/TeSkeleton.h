@@ -14,10 +14,10 @@ namespace te
     struct BONE_DESC
     {
         String Name; /**< Unique name of the bone. */
-        UINT32 Parent; /**< Index of the parent bone, if any. -1 if root bone. */
+        UINT32 Parent = 0; /**< Index of the parent bone, if any. -1 if root bone. */
 
         Transform LocalTfrm; /**< Local transform of the bone, relative to other bones in the hierarchy. */
-        Matrix4 InvBindPose; /**< Inverse bind pose which transforms vertices from their bind pose into local space. */
+        Matrix4 InvBindPose = Matrix4(); /**< Inverse bind pose which transforms vertices from their bind pose into local space. */
     };
 
     /**
