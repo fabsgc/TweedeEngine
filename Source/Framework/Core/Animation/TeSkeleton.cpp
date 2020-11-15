@@ -36,7 +36,7 @@ namespace te
         Scales = (Vector3*)buffer;
     }
 
-    LocalSkeletonPose::LocalSkeletonPose(LocalSkeletonPose&& other)
+    LocalSkeletonPose::LocalSkeletonPose(LocalSkeletonPose&& other) noexcept
         : Positions{ std::exchange(other.Positions, nullptr) }
         , Rotations{ std::exchange(other.Rotations, nullptr) }
         , Scales{ std::exchange(other.Scales, nullptr) }
@@ -50,7 +50,7 @@ namespace te
             te_free(Positions);
     }
 
-    LocalSkeletonPose& LocalSkeletonPose::operator=(LocalSkeletonPose&& other)
+    LocalSkeletonPose& LocalSkeletonPose::operator=(LocalSkeletonPose&& other) noexcept
     {
         if (this != &other)
         {

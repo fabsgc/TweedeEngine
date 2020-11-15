@@ -31,11 +31,11 @@ namespace te
         LocalSkeletonPose(UINT32 numBones, bool individualOverride = false);
         LocalSkeletonPose(UINT32 numPos, UINT32 numRot, UINT32 numScale);
         LocalSkeletonPose(const LocalSkeletonPose& other) = delete;
-        LocalSkeletonPose(LocalSkeletonPose&& other);
+        LocalSkeletonPose(LocalSkeletonPose&& other)  noexcept;
         ~LocalSkeletonPose();
 
         LocalSkeletonPose& operator=(const LocalSkeletonPose& other) = delete;
-        LocalSkeletonPose& operator=(LocalSkeletonPose&& other);
+        LocalSkeletonPose& operator=(LocalSkeletonPose&& other) noexcept;
 
         Vector3* Positions = nullptr; /**< Local bone positions at specific animation time. */
         Quaternion* Rotations = nullptr; /**< Local bone rotations at specific animation time. */

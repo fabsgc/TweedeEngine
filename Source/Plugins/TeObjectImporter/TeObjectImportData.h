@@ -8,6 +8,7 @@
 #include "Math/TeMatrix4.h"
 #include "Scene/TeTransform.h"
 #include "Material/TeMaterial.h"
+#include "Animation/TeAnimationCurve.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -85,7 +86,7 @@ namespace te
         }
 
         float Weights[OBJECT_IMPORT_MAX_BONE_INFLUENCES];
-        INT32 Indices[OBJECT_IMPORT_MAX_BONE_INFLUENCES]; // Vertices Index
+        INT32 Indices[OBJECT_IMPORT_MAX_BONE_INFLUENCES]; // Bone Index
     };
 
     /**	Animation curves required to animate a single bone. */
@@ -93,7 +94,9 @@ namespace te
     {
         AssimpImportNode* Node;
 
-        // TODO
+        TAnimationCurve<Vector3> Translation;
+        TAnimationCurve<Quaternion> Rotation;
+        TAnimationCurve<Vector3> Scale;
     };
 
     /**	Animation curve required to animate a blend shape. */
@@ -118,8 +121,8 @@ namespace te
         float End;
         UINT32 SampleRate;
 
-        Vector<AssimpBoneAnimation> boneAnimations;
-        Vector<AssimpBlendShapeAnimation> blendShapeAnimations;
+        Vector<AssimpBoneAnimation> BoneAnimations;
+        Vector<AssimpBlendShapeAnimation> BlendShapeAnimations;
     };
     
     struct AssimpImportMesh
@@ -166,6 +169,6 @@ namespace te
         UnorderedMap<String, AssimpImportNode*> NodeNameMap;
         UnorderedMap<aiMesh*, UINT32> MeshMap;
 
-        Vector<AssimpAnimationClip> clips;
+        Vector<AssimpAnimationClip> Clips;
     };    
 }

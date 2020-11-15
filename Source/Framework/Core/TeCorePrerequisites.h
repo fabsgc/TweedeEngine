@@ -257,6 +257,8 @@ namespace te
     struct AnimationClipState;
     class Animation;
 
+    template <class T> class TAnimationCurve;
+
     class GuiAPI;
     class GuiAPIFactory;
 

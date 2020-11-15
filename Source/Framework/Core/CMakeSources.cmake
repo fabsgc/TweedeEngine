@@ -335,12 +335,14 @@ set (TE_CORE_INC_ANIMATION
     "Core/Animation/TeSkeleton.h"
     "Core/Animation/TeSkeletonMask.h"
     "Core/Animation/TeAnimationManager.h"
+    "Core/Animation/TeAnimationCurve.h"
 )
 set (TE_CORE_SRC_ANIMATION
     "Core/Animation/TeAnimation.cpp"
     "Core/Animation/TeSkeleton.cpp"
     "Core/Animation/TeSkeletonMask.cpp"
     "Core/Animation/TeAnimationManager.cpp"
+    "Core/Animation/TeAnimationCurve.cpp"
 )
 
 set (TE_CORE_INC_GUI
