@@ -4,6 +4,7 @@
 #include "Mesh/TeMeshData.h"
 #include "Image/TeColor.h"
 #include "Animation/TeSkeleton.h"
+#include "Animation/TeAnimationUtility.h"
 
 namespace te
 {
@@ -36,21 +37,10 @@ namespace te
         MeshImportOptions* meshImportOptions = const_cast<MeshImportOptions*>
             (static_cast<const MeshImportOptions*>(importOptions.get()));
 
-        desc.Usage = MU_STATIC;
-        if (meshImportOptions->CpuCached)
-        {
-            desc.Usage |= MU_CPUCACHED;
-        }
+        SetMeshImportOptions(filePath, *meshImportOptions);
 
-        String extension = Util::GetFileExtension(filePath);
-        std::transform(extension.begin(), extension.end(), extension.begin(), tolower);
-        if (extension == ".fbx")
-        {
-            meshImportOptions->ScaleSystemUnit = true;
-            meshImportOptions->ScaleFactor = 0.01f;
-        }
-
-        SPtr<RendererMeshData> rendererMeshData = ImportMeshData(filePath, importOptions, desc.SubMeshes, desc.MeshSkeleton);
+        Vector<AssimpAnimationClipData> dummy;
+        SPtr<RendererMeshData> rendererMeshData = ImportMeshData(filePath, importOptions, desc.SubMeshes, dummy, desc.MeshSkeleton);
 
         if (rendererMeshData)
         {
@@ -66,20 +56,51 @@ namespace te
 
     Vector<SubResourceRaw> ObjectImporter::ImportAll(const String& filePath, SPtr<const ImportOptions> importOptions)
     {
-        SPtr<Mesh> mesh = std::static_pointer_cast<Mesh>(Import(filePath, importOptions));
+        MESH_DESC desc;
+        MeshImportOptions* meshImportOptions = const_cast<MeshImportOptions*>
+            (static_cast<const MeshImportOptions*>(importOptions.get()));
+
+        SetMeshImportOptions(filePath, *meshImportOptions);
+
+        Vector<AssimpAnimationClipData> animationClips;
+        SPtr<RendererMeshData> rendererMeshData = ImportMeshData(filePath, importOptions, desc.SubMeshes, animationClips, desc.MeshSkeleton);
 
         Vector<SubResourceRaw> output;
-        if (mesh != nullptr)
+        if (rendererMeshData)
         {
-            output.push_back({ u8"primary", mesh });
+            SPtr<Mesh> mesh = Mesh::_createPtr(rendererMeshData->GetData(), desc);
+            mesh->SetName(filePath);
+            mesh->SetPath(filePath);
 
-            // TODO
+            if (mesh != nullptr)
+            {
+                output.push_back({ u8"primary", mesh });
+
+                Vector<ImportedAnimationEvents> events = meshImportOptions->AnimationEvents;
+                for (auto& entry : animationClips)
+                {
+                    SPtr<AnimationClip> clip = AnimationClip::_createPtr(entry.Curves, entry.SampleRate, entry.RootMotion);
+                    clip->SetName(entry.Name);
+
+                    for (auto& eventsEntry : events)
+                    {
+                        if (entry.Name == eventsEntry.Name)
+                        {
+                            clip->SetEvents(eventsEntry.Events);
+                            break;
+                        }
+                    }
+
+                    output.push_back({ entry.Name, clip });
+                }
+            }
         }
 
         return output;
     }
 
-    SPtr<RendererMeshData> ObjectImporter::ImportMeshData(const String& filePath, SPtr<const ImportOptions> importOptions, Vector<SubMesh>& subMeshes, SPtr<Skeleton>& skeleton)
+    SPtr<RendererMeshData> ObjectImporter::ImportMeshData(const String& filePath, SPtr<const ImportOptions> importOptions, Vector<SubMesh>& subMeshes, 
+        Vector<AssimpAnimationClipData>& animation, SPtr<Skeleton>& skeleton)
     {
         Assimp::Importer importer;
         AssimpImportScene importedScene;
@@ -129,9 +150,6 @@ namespace te
         if (assimpImportOptions.ImportSkin)
             ImportSkin(importedScene, assimpImportOptions);
 
-        if (assimpImportOptions.ImportBlendShapes)
-            ImportBlendShapes(importedScene, assimpImportOptions);
-
         if (assimpImportOptions.ImportAnimation)
             ImportAnimations(scene, assimpImportOptions, importedScene);
 
@@ -143,6 +161,7 @@ namespace te
         if (!importedScene.Clips.empty())
         {
             const Vector<AnimationSplitInfo>& splits = meshImportOptions->AnimationSplits;
+            ConvertAnimations(importedScene.Clips, splits, skeleton, meshImportOptions->ImportRootMotion, animation);
         }
 
         return rendererMeshData;
@@ -458,16 +477,6 @@ namespace te
         }
     }
 
-    void ObjectImporter::ImportBlendShapes(AssimpImportScene& scene, const AssimpImportOptions& options)
-    {
-        // TODO
-    }
-
-    void ObjectImporter::ImportBlendShapeFrame(AssimpImportScene& scene, const AssimpImportMesh& mesh, const AssimpImportOptions& options, AssimpBlendShapeFrame& outFrame)
-    {
-        // TODO
-    }
-
     void ObjectImporter::ImportAnimations(aiScene* scene, AssimpImportOptions& importOptions, AssimpImportScene& importScene)
     {
         for (UINT32 i = 0; i < scene->mNumAnimations; i++)
@@ -671,10 +680,92 @@ namespace te
         return nullptr;
     }
 
-    void ConvertAnimations(const Vector<AssimpAnimationClip>& clips, const Vector<AnimationSplitInfo>& splits,
+    void ObjectImporter::ConvertAnimations(const Vector<AssimpAnimationClip>& clips, const Vector<AnimationSplitInfo>& splits,
         const SPtr<Skeleton>& skeleton, bool importRootMotion, Vector<AssimpAnimationClipData>& output)
     {
-        // TODO
+        UnorderedSet<String> names;
+
+        String rootBoneName;
+        if (skeleton == nullptr)
+        {
+            importRootMotion = false;
+        }
+        else
+        {
+            UINT32 rootBoneIdx = skeleton->GetRootBoneIndex();
+            if (rootBoneIdx == (UINT32)-1)
+                importRootMotion = false;
+            else
+                rootBoneName = skeleton->GetBoneInfo(rootBoneIdx).Name;
+        }
+
+        for (auto& clip : clips)
+        {
+            SPtr<AnimationCurves> curves = te_shared_ptr_new<AnimationCurves>();
+            SPtr<RootMotion> rootMotion;
+
+            // Find offset so animations start at time 0
+            float animStart = std::numeric_limits<float>::infinity();
+
+            for (auto& bone : clip.BoneAnimations)
+            {
+                if (bone.Translation.GetNumKeyFrames() > 0)
+                    animStart = std::min(bone.Translation.GetKeyFrame(0).TimeInSpline, animStart);
+
+                if (bone.Rotation.GetNumKeyFrames() > 0)
+                    animStart = std::min(bone.Rotation.GetKeyFrame(0).TimeInSpline, animStart);
+
+                if (bone.Scale.GetNumKeyFrames() > 0)
+                    animStart = std::min(bone.Scale.GetKeyFrame(0).TimeInSpline, animStart);
+            }
+
+            if (animStart != 0.0f && animStart != std::numeric_limits<float>::infinity())
+            {
+                for (auto& bone : clip.BoneAnimations)
+                {
+                    TAnimationCurve<Vector3> translation = AnimationUtility::OffsetCurve(bone.Translation, -animStart);
+                    TAnimationCurve<Quaternion> rotation = AnimationUtility::OffsetCurve(bone.Rotation, -animStart);
+                    TAnimationCurve<Vector3> scale = AnimationUtility::OffsetCurve(bone.Scale, -animStart);
+
+                    if (importRootMotion && bone.Node->Name == rootBoneName)
+                    {
+                        rootMotion = te_shared_ptr_new<RootMotion>(translation, rotation);
+                    }
+                    else
+                    {
+                        curves->Position.push_back({ bone.Node->Name, (UINT32)AnimationCurveFlag::ImportedCurve, translation });
+                        curves->Rotation.push_back({ bone.Node->Name, (UINT32)AnimationCurveFlag::ImportedCurve, rotation });
+                        curves->Scale.push_back({ bone.Node->Name, (UINT32)AnimationCurveFlag::ImportedCurve, scale });
+                    }
+                }
+            }
+            else
+            {
+                for (auto& bone : clip.BoneAnimations)
+                {
+                    if (importRootMotion && bone.Node->Name == rootBoneName)
+                        rootMotion = te_shared_ptr_new<RootMotion>(bone.Translation, bone.Rotation);
+                    else
+                    {
+                        curves->Position.push_back({ bone.Node->Name, (UINT32)AnimationCurveFlag::ImportedCurve, bone.Translation });
+                        curves->Rotation.push_back({ bone.Node->Name, (UINT32)AnimationCurveFlag::ImportedCurve, bone.Rotation });
+                        curves->Scale.push_back({ bone.Node->Name, (UINT32)AnimationCurveFlag::ImportedCurve, bone.Scale });
+                    }
+                }
+            }
+
+            // Search for a unique name
+            String name = clip.Name;
+            UINT32 attemptIdx = 0;
+            while (names.find(name) != names.end())
+            {
+                name = clip.Name + "_" + ToString(attemptIdx);
+                attemptIdx++;
+            }
+
+            names.insert(name);
+            output.push_back(AssimpAnimationClipData(name, clip.SampleRate, curves, rootMotion));
+        }
     }
 
     SPtr<RendererMeshData> ObjectImporter::GenerateMeshData(AssimpImportScene& scene, AssimpImportOptions& options, Vector<SubMesh>& outputSubMeshes)
@@ -941,5 +1032,16 @@ namespace te
     Quaternion ObjectImporter::ConvertToNativeType(const aiQuaternion& quaternion)
     {
         return Quaternion((float)quaternion.x, (float)quaternion.y, (float)quaternion.z, (float)quaternion.w);
+    }
+
+    void ObjectImporter::SetMeshImportOptions(const String& filePath, MeshImportOptions& meshImportOptions)
+    {
+        String extension = Util::GetFileExtension(filePath);
+        std::transform(extension.begin(), extension.end(), extension.begin(), tolower);
+        if (extension == ".fbx")
+        {
+            meshImportOptions.ScaleSystemUnit = true;
+            meshImportOptions.ScaleFactor = 0.01f;
+        }
     }
 }

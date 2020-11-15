@@ -34,7 +34,8 @@ namespace te
 
     private:
         /** Reads the object file and outputs mesh data from the read file. Sub-mesh information will be output in @p subMeshes. */
-        SPtr<RendererMeshData> ImportMeshData(const String& filePath, SPtr<const ImportOptions> importOptions, Vector<SubMesh>& subMeshes, SPtr<Skeleton>& skeleton);
+        SPtr<RendererMeshData> ImportMeshData(const String& filePath, SPtr<const ImportOptions> importOptions, Vector<SubMesh>& subMeshes, 
+            Vector<AssimpAnimationClipData>& animation, SPtr<Skeleton>& skeleton);
 
         /**
          * Parses an FBX scene. Find all meshes in the scene and returns mesh data object containing all vertices, indexes
@@ -65,15 +66,6 @@ namespace te
          */
         SPtr<Skeleton> CreateSkeleton(const AssimpImportScene& scene, bool sharedRoot);
 
-        /**	Imports blend shapes for all the meshes that are part of the scene. */
-        void ImportBlendShapes(AssimpImportScene& scene, const AssimpImportOptions& options);
-
-        /**
-         * Parses a single blend shape frame. Converts it from FBX SDK format into a shape data object containing
-         * position and tangent frame.
-         */
-        void ImportBlendShapeFrame(AssimpImportScene& scene, const AssimpImportMesh& mesh, const AssimpImportOptions& options, AssimpBlendShapeFrame& outFrame);
-
         /** Converts FBX animation clips into engine-ready animation curve format. */
         void ConvertAnimations(const Vector<AssimpAnimationClip>& clips, const Vector<AnimationSplitInfo>& splits,
             const SPtr<Skeleton>& skeleton, bool importRootMotion, Vector<AssimpAnimationClipData>& output);
@@ -101,6 +93,8 @@ namespace te
 
         /** Convert an assimp quaternion into engine quaternion */
         Quaternion ConvertToNativeType(const aiQuaternion& quaternion);
+
+        void SetMeshImportOptions(const String& filePath, MeshImportOptions& meshImportOptions);
 
     private:
         Vector<String> _extensions;

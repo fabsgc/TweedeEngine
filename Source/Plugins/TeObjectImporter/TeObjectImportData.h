@@ -9,6 +9,7 @@
 #include "Scene/TeTransform.h"
 #include "Material/TeMaterial.h"
 #include "Animation/TeAnimationCurve.h"
+#include "Animation/TeAnimationClip.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -33,6 +34,7 @@ namespace te
         bool ReduceKeyframes = true;
     };
 
+    /**	Represents a single node in the assimp hierarchy. */
     struct AssimpImportNode
     {
         AssimpImportNode() = default;
@@ -44,25 +46,6 @@ namespace te
         aiNode* Node = nullptr;
 
         Vector<AssimpImportNode*> Children;
-    };
-
-    /**	Contains geometry from one blend shape frame. */
-    struct AssimpBlendShapeFrame
-    {
-        Vector<Vector3> Positions;
-        Vector<Vector3> Normals;
-        Vector<Vector3> Tangents;
-        Vector<Vector3> Bitangents;
-
-        float Weight;
-        String Name;
-    };
-
-    /**	Contains all geometry for a single blend shape. */
-    struct AssimpBlendShape
-    {
-        String Name;
-        Vector<AssimpBlendShapeFrame> Frames;
     };
 
     /**	Contains data about a single bone in a skinned mesh. */
@@ -99,18 +82,21 @@ namespace te
         TAnimationCurve<Vector3> Scale;
     };
 
-    /**	Animation curve required to animate a blend shape. */
-    struct AssimpBlendShapeAnimation
-    {
-        String BlendShape;
-
-        // TODO
-    };
-
     /** All information required for creating an animation clip. */
     struct AssimpAnimationClipData
     {
-        // TODO
+        AssimpAnimationClipData(const String& name, float sampleRate, const SPtr<AnimationCurves>& curves,
+            const SPtr<RootMotion>& rootMotion)
+            : Name(name)
+            , SampleRate(sampleRate)
+            , Curves(curves)
+            , RootMotion(rootMotion)
+        { }
+
+        String Name;
+        float SampleRate;
+        SPtr<AnimationCurves> Curves;
+        SPtr<RootMotion> RootMotion;
     };
 
     /** Animation clip containing a set of bone or blend shape animations. */
@@ -122,9 +108,9 @@ namespace te
         float SampleRate;
 
         Vector<AssimpBoneAnimation> BoneAnimations;
-        Vector<AssimpBlendShapeAnimation> BlendShapeAnimations;
     };
     
+    /**	Imported mesh data. */
     struct AssimpImportMesh
     {
         aiMesh* AssimpMesh;
@@ -155,6 +141,7 @@ namespace te
         MaterialTextures   MatTextures;
     };
 
+    /**	Scene information used and modified during FBX import. */
     struct AssimpImportScene
     {
         AssimpImportScene() = default;

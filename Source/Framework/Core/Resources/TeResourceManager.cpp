@@ -32,7 +32,7 @@ namespace te
 
     void ResourceManager::Destroy(ResourceHandleBase& resource)
     {
-        if (resource._handleData == nullptr)
+        if (resource._handleData == nullptr || resource._handleData->data == nullptr)
         {
             return;
         }
@@ -258,8 +258,8 @@ namespace te
         auto iterChunkUUID = _resourcesChunks.find(uuid);
         if (iterChunkUUID != _resourcesChunks.end())
         {
-            for (auto& subResource : _resourcesChunks[uuid])
-                Release(subResource.Uuid);
+            //for (auto& subResource : _resourcesChunks[uuid])
+                //Release(subResource.Uuid);
 
             _resourcesChunks.erase(iterChunkUUID);
         }

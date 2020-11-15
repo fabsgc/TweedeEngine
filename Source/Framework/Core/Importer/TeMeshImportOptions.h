@@ -14,18 +14,16 @@ namespace te
             : Serializable(TID_AnimationSplitInfo)
         { }
 
-        AnimationSplitInfo(const String & name, UINT32 startFrame, UINT32 endFrame, bool isAdditive = false)
+        AnimationSplitInfo(const String & name, UINT32 startFrame, UINT32 endFrame)
             : Serializable(TID_AnimationSplitInfo)
             , Name(name)
             , StartFrame(startFrame)
             , EndFrame(endFrame)
-            , IsAdditive(isAdditive)
         { }
 
         String Name;
         UINT32 StartFrame = 0;
         UINT32 EndFrame = 0;
-        bool IsAdditive = false;
     };
 
     /** A set of animation events that will be added to an animation clip during animation import. */
@@ -80,6 +78,14 @@ namespace te
 
         /** Determines if we need to set material properties for this mesh during import */
         bool ImportMaterials = true;
+
+        /**
+         * Enables or disables import of root motion curves. When enabled, any animation curves in imported animations
+         * affecting the root bone will be available through a set of separate curves in AnimationClip, and they won't be
+         * evaluated through normal animation process. Instead it is expected that the user evaluates the curves manually
+         * and applies them as required.
+         */
+        bool ImportRootMotion = false;
 
         /**
          * Animation split infos that determine how will the source animation clip be split. If no splits are present the

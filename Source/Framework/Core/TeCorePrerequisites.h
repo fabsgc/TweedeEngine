@@ -290,6 +290,7 @@ namespace te
     typedef ResourceHandle<Shader> HShader;
     typedef ResourceHandle<Mesh> HMesh;
     typedef ResourceHandle<Font> HFont;
+    typedef ResourceHandle<AnimationClip> HAnimationClip;
 }
 
 #include "Scene/TeGameObjectHandle.h"

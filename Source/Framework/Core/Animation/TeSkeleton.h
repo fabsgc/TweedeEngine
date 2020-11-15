@@ -7,9 +7,22 @@
 #include "Math/TeVector3.h"
 #include "Scene/TeTransform.h"
 #include "Serialization/TeSerializable.h"
+#include "Animation/TeSkeletonMask.h"
+#include "Animation/TeAnimationClip.h"
 
 namespace te
 {
+    /**
+     * Contains indices for position/rotation/scale animation curves. Used for quick mapping of bones in a skeleton to
+     * relevant animation curves.
+     */
+    struct AnimationCurveMapping
+    {
+        UINT32 Position;
+        UINT32 Rotation;
+        UINT32 Scale;
+    };
+
     /** Information about a single bone used for constructing a skeleton. */
     struct BONE_DESC
     {
@@ -18,6 +31,29 @@ namespace te
 
         Transform LocalTfrm; /**< Local transform of the bone, relative to other bones in the hierarchy. */
         Matrix4 InvBindPose = Matrix4(); /**< Inverse bind pose which transforms vertices from their bind pose into local space. */
+    };
+
+    /** Contains information about a single playing animation clip. */
+    struct AnimationState
+    {
+        SPtr<AnimationCurves> Curves; /**< All curves in the animation clip. */
+        float Length; /**< Total length of the animation clip in seconds (same as the length of the longest animation curve). */
+        AnimationCurveMapping* BoneToCurveMapping; /**< Mapping of bone indices to curve indices for quick lookup .*/
+        AnimationCurveMapping* SoToCurveMapping; /**< Mapping of scene object indices to curve indices for quick lookup. */
+
+        float Time; /**< Time to evaluate the curve at. */
+        float Weight; /**< Determines how much of an influence will this clip have in regard to others in the same layer. */
+        bool Loop; /**< Determines should the animation loop (wrap) once ending or beginning frames are passed. */
+        bool Disabled; /**< If true the clip state will not be evaluated. */
+    };
+
+    /** Contains animation states for a single animation layer. */
+    struct AnimationStateLayer
+    {
+        AnimationState* States; /**< Array of animation states in the layer. */
+        UINT32 NumStates; /**< Number of states in @p states. */
+
+        UINT8 Index; /**< Unique index of the animation layer. */
     };
 
     /**
@@ -75,7 +111,39 @@ namespace te
         /** Calculates the bind-pose transform of the bone at the specified index. */
         Transform ComputeBoneTransform(UINT32 idx) const;
 
-        // TODO
+        /**
+         * Outputs a skeleton pose containing required transforms for transforming the skeleton to the values specified by
+         * the provided animation clip evaluated at the specified time.
+         *
+         * @param[out]	pose		Output pose containing the requested transforms. Must be pre-allocated with enough space
+         *							to hold all the bone matrices of this skeleton.
+         * @param[in]	mask		Mask that filters which skeleton bones are enabled or disabled.
+         * @param[out]	localPose	Output pose containing the local transforms. Must be pre-allocated with enough space
+         *							to hold all the bone data of this skeleton.
+         * @param[in]	clip		Clip to evaluate.
+         * @param[in]	time		Time to evaluate the clip with.
+         * @param[in]	loop		Determines should the time be looped (wrapped) if it goes past the clip start/end.
+         *
+         * @note	It is more efficient to use the other getPose overload as sequential calls can benefit from animation
+         *			evaluator cache.
+         */
+        void GetPose(Matrix4* pose, LocalSkeletonPose& localPose, const SkeletonMask& mask, const AnimationClip& clip,
+            float time, bool loop = true);
+
+        /**
+         * Outputs a skeleton pose containing required transforms for transforming the skeleton to the values specified by
+         * the provided set of animation curves.
+         *
+         * @param[out]	pose		Output pose containing the requested transforms. Must be pre-allocated with enough space
+         *							to hold all the bone matrices of this skeleton.
+         * @param[in]	mask		Mask that filters which skeleton bones are enabled or disabled.
+         * @param[out]	localPose	Output pose containing the local transforms. Must be pre-allocated with enough space
+         *							to hold all the bone data of this skeleton.
+         * @param[in]	layers		One or multiple layers, containing one or multiple animation states to evaluate.
+         * @param[in]	numLayers	Number of layers in the @p layers array.
+         */
+        void GetPose(Matrix4* pose, LocalSkeletonPose& localPose, const SkeletonMask& mask,
+            const AnimationStateLayer* layers, UINT32 numLayers);
 
         /**
          * Creates a new Skeleton.

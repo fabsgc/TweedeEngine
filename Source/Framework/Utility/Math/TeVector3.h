@@ -415,7 +415,7 @@ namespace std
     template<> class numeric_limits<te::Vector3>
     {
     public:
-        constexpr static te::Vector3 Infinity()
+        constexpr static te::Vector3 infinity()
         {
             return te::Vector3(
                 std::numeric_limits<float>::infinity(),

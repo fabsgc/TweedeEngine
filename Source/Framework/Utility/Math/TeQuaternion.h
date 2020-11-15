@@ -385,7 +385,7 @@ namespace std
     template<> class numeric_limits<te::Quaternion>
     {
     public:
-        constexpr static te::Quaternion Infinity()
+        constexpr static te::Quaternion infinity()
         {
             return te::Quaternion(
                 std::numeric_limits<float>::infinity(),

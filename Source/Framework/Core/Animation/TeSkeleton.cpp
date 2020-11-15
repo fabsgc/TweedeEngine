@@ -1,5 +1,7 @@
 #include "TeSkeleton.h"
 
+#include "Animation/TeAnimationClip.h"
+
 namespace te
 { 
     LocalSkeletonPose::LocalSkeletonPose(UINT32 numBones, bool individualOverride)
@@ -97,6 +99,55 @@ namespace te
 
         if (_bonesInfo != nullptr)
             te_deleteN(_bonesInfo, _numBones);
+    }
+
+    void Skeleton::GetPose(Matrix4* pose, LocalSkeletonPose& localPose, const SkeletonMask& mask,
+        const AnimationClip& clip, float time, bool loop)
+    {
+        Vector<AnimationCurveMapping> boneToCurveMapping(_numBones);
+
+        AnimationState state;
+        state.Curves = clip.GetCurves();
+        state.Length = clip.GetLength();
+        state.BoneToCurveMapping = boneToCurveMapping.data();
+        state.Loop = loop;
+        state.Weight = 1.0f;
+        state.Time = time;
+        state.Disabled = false;
+
+        AnimationStateLayer layer;
+        layer.Index = 0;
+        layer.States = &state;
+        layer.NumStates = 1;
+
+        clip.GetBoneMapping(*this, state.BoneToCurveMapping);
+
+        GetPose(pose, localPose, mask, &layer, 1);
+    }
+
+    void Skeleton::GetPose(Matrix4* pose, LocalSkeletonPose& localPose, const SkeletonMask& mask,
+        const AnimationStateLayer* layers, UINT32 numLayers)
+    {
+        assert(localPose.NumBones == _numBones);
+
+        for (UINT32 i = 0; i < _numBones; i++)
+        {
+            localPose.Positions[i] = Vector3::ZERO;
+            localPose.Rotations[i] = Quaternion::ZERO;
+            localPose.Scales[i] = Vector3::ONE;
+        }
+
+        bool* hasAnimCurve = te_newN<bool>(_numBones);
+        te_zero_out(hasAnimCurve, _numBones);
+
+        for (UINT32 i = 0; i < numLayers; i++)
+        {
+            const AnimationStateLayer& layer = layers[i];
+
+            // TODO animation
+        }
+
+        te_deleteN<bool>(hasAnimCurve, _numBones);
     }
 
     SPtr<Skeleton> Skeleton::Create(BONE_DESC* bones, UINT32 numBones)
