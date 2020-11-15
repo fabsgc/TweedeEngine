@@ -90,13 +90,13 @@ namespace te
             : Name(name)
             , SampleRate(sampleRate)
             , Curves(curves)
-            , RootMotion(rootMotion)
+            , RootMot(rootMotion)
         { }
 
         String Name;
         float SampleRate;
         SPtr<AnimationCurves> Curves;
-        SPtr<RootMotion> RootMotion;
+        SPtr<RootMotion> RootMot;
     };
 
     /** Animation clip containing a set of bone or blend shape animations. */

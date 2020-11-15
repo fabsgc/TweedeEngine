@@ -79,7 +79,7 @@ namespace te
                 Vector<ImportedAnimationEvents> events = meshImportOptions->AnimationEvents;
                 for (auto& entry : animationClips)
                 {
-                    SPtr<AnimationClip> clip = AnimationClip::_createPtr(entry.Curves, entry.SampleRate, entry.RootMotion);
+                    SPtr<AnimationClip> clip = AnimationClip::_createPtr(entry.Curves, entry.SampleRate, entry.RootMot);
                     clip->SetName(entry.Name);
 
                     for (auto& eventsEntry : events)
