@@ -22,7 +22,7 @@ namespace te
         /** Contains meta-data about where calculated animation data is stored. */
         struct AnimInfo
         {
-            PoseInfo PoseInfo;
+            PoseInfo PoseInfos;
         };
 
         /**
