@@ -518,7 +518,7 @@ namespace te
 
         for (auto& element : rendererRenderable->Elements)
         {
-            // TODO animation
+            // TODO animation : buffers
         }
 
         // Update animation when animation system will be done

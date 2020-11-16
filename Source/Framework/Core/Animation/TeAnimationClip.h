@@ -148,7 +148,7 @@ namespace te
         void SetCurves(const AnimationCurves& curves);
 
         /** @copydoc SetEvents() */
-            const Vector<AnimationEvent>& getEvents() const { return _events; }
+        const Vector<AnimationEvent>& GetEvents() const { return _events; }
 
         /** A set of all events to be triggered as the animation is playing. */
         void SetEvents(const Vector<AnimationEvent>& events) { _events = events; }

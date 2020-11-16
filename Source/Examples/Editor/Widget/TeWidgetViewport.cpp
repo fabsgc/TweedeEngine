@@ -120,7 +120,9 @@ namespace te
         }
 
         // Notify camera has been updated
-        _viewportCamera->NotifyUpdateEverything();
+        if (!gCoreApplication().GetState().IsFlagSet(ApplicationState::Game))
+            _viewportCamera->NotifyUpdateEverything(); // updating everything is very heavy
+
         _viewportCamera->NotifyNeedsRedraw();
 
         _needResetViewport = true;
