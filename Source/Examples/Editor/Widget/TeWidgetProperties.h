@@ -42,6 +42,9 @@ namespace te
         /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
         bool ShowCSkyboxProperties();
 
+        /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
+        bool ShowCAnimationProperties();
+
         /**  Show transform and mobility options */
         bool ShowTransform(Transform& transform, ObjectMobility& mobility, bool disableTransform = false);
 
@@ -68,6 +71,9 @@ namespace te
 
         /** Show information about a script */
         bool ShowScript(SPtr<CScript> script);
+
+        /** Show information about an animation */
+        bool ShowAnimation(SPtr<CAnimation> animation);
 
         /** Show information about a skybox */
         bool ShowSkybox(SPtr<Skybox> skybox);

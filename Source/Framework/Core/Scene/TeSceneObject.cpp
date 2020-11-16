@@ -194,7 +194,7 @@ namespace te
             &te_delete<SceneObject>);
 
         sceneObjectPtr->_UUID = UUIDGenerator::GenerateRandom();
-        sceneObjectPtr->_gameObjectcolor = Color::GenerateRandom(0.1f, 1.0f);
+        sceneObjectPtr->_gameObjectColor = Color::GenerateRandom(0.1f, 1.0f);
 
         HSceneObject sceneObject = static_object_cast<SceneObject>(
             GameObjectManager::Instance().RegisterObject(sceneObjectPtr));
@@ -987,7 +987,7 @@ namespace te
         if (component->_UUID.Empty())
             component->_UUID = UUIDGenerator::GenerateRandom();
 
-        component->_gameObjectcolor = Color::GenerateRandom(0.1f, 1.0f);
+        component->_gameObjectColor = Color::GenerateRandom(0.1f, 1.0f);
         component->_instantiate();
 
         _components.push_back(component);

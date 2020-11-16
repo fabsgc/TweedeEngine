@@ -14,6 +14,7 @@
 #include "Components/TeCSkybox.h"
 #include "Components/TeCScript.h"
 #include "Components/TeCLight.h"
+#include "Components/TeCAnimation.h"
 #include "RenderAPI/TeSubMesh.h"
 #include "Mesh/TeMesh.h"
 #include "Importer/TeMeshImportOptions.h"
@@ -95,6 +96,13 @@ namespace te
             case TID_CScript:
             {
                 if (ShowCScriptProperties())
+                    hasChanged = true;
+            }
+            break;
+
+            case TID_CAnimation:
+            {
+                if (ShowCAnimationProperties())
                     hasChanged = true;
             }
             break;
@@ -260,6 +268,20 @@ namespace te
         if (ImGui::CollapsingHeader("Script", ImGuiTreeNodeFlags_DefaultOpen))
         {
             if (ShowScript(script))
+                hasChanged = true;
+        }
+
+        return hasChanged;
+    }
+
+    bool WidgetProperties::ShowCAnimationProperties()
+    {
+        bool hasChanged = false;
+        SPtr<CAnimation> animation = std::static_pointer_cast<CAnimation>(_selections.ClickedComponent);
+
+        if (ImGui::CollapsingHeader("Animation", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            if (ShowAnimation(animation))
                 hasChanged = true;
         }
 
@@ -676,6 +698,12 @@ namespace te
     }
 
     bool WidgetProperties::ShowScript(SPtr<CScript> script)
+    {
+        bool hasChanged = false;
+        return hasChanged;
+    }
+
+    bool WidgetProperties::ShowAnimation(SPtr<CAnimation> animation)
     {
         bool hasChanged = false;
         return hasChanged;

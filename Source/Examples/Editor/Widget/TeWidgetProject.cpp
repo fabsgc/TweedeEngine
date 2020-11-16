@@ -3,6 +3,7 @@
 #include "Resources/TeResourceManager.h"
 #include "Scene/TeSceneManager.h"
 #include "Scene/TeSceneObject.h"
+#include "Animation/TeAnimation.h"
 #include "Components/TeCCamera.h"
 #include "Components/TeCCameraFlyer.h"
 #include "Components/TeCCameraUI.h"
@@ -675,7 +676,9 @@ namespace te
         if (!_selections.ClickedSceneObject || _selections.ClickedComponent)
             return;
 
-        // TODO
+        HAnimation animation = _selections.ClickedSceneObject->AddComponent<CAnimation>();
+        animation->SetName("Animation");
+        animation->Initialize();
 
         _handleSelectionWindowSwitch = true;
 

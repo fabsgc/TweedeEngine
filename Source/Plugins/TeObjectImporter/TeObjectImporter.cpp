@@ -125,7 +125,7 @@ namespace te
             assimpFlags |= aiProcess_MakeLeftHanded;
 
         if (meshImportOptions->ImportAnimation)
-            assimpFlags |= aiProcess_LimitBoneWeights | aiProcess_Debone;
+            assimpFlags |= aiProcess_LimitBoneWeights;
 
         aiScene* scene = const_cast<aiScene*>(importer.ReadFile(filePath.c_str(), assimpFlags));
 
