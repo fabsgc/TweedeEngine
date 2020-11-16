@@ -23,7 +23,7 @@ namespace te
     protected:
         enum class RenderableType
         {
-            Empty, Cube, Sphere, Cylinder, Cone
+            Empty
         };
 
         enum class DragPayloadType
@@ -71,6 +71,7 @@ namespace te
         void CreateLight(LightType type);
         void CreateCamera(TypeID_Core type);
         void CreateAudio();
+        void CreateAnimation();
         void CreateScript();
         void CreateSkybox();
         void Paste();

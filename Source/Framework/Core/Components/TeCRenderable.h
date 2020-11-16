@@ -129,8 +129,15 @@ namespace te
             _internal->_markCoreDirty(); 
         }
 
+        /** Registers an Animation component that will be used for animating the renderable's mesh. */
+        void _registerAnimation(const HAnimation& animation);
+
+        /** Removes the Animation component, making the renderable rendered as a static object. */
+        void _unregisterAnimation();
+
     protected:
         mutable SPtr<Renderable> _internal;
+        HAnimation _animation;
 
     protected:
         friend class SceneObject;

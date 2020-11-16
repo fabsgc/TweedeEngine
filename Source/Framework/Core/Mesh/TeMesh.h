@@ -139,6 +139,9 @@ namespace te
          */
         virtual UINT32 GetIndexOffset() const { return 0; }
 
+        /** Returns a skeleton that can be used for animating the mesh. */
+        SPtr<Skeleton> GetSkeleton() const { return _skeleton; }
+
         /**
          * Allocates a buffer that exactly matches the size of this mesh. This is a helper function, primarily meant for
          * creating buffers when reading from, or writing to a mesh.
@@ -309,5 +312,7 @@ namespace te
         int _usage;
         IndexType _indexType;
         GpuDeviceFlags _deviceMask;
+
+        SPtr<Skeleton> _skeleton;
     };
 }

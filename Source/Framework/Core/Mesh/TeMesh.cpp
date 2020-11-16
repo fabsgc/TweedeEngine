@@ -63,6 +63,7 @@ namespace te
         , _usage(desc.Usage)
         , _indexType(desc.IndType)
         , _deviceMask(deviceMask)
+        , _skeleton(desc.MeshSkeleton)
     { }
 
     Mesh::Mesh(const SPtr<MeshData>& initialMeshData, const MESH_DESC& desc, GpuDeviceFlags deviceMask)
@@ -76,6 +77,7 @@ namespace te
         , _usage(desc.Usage)
         , _indexType(initialMeshData->GetIndexType())
         , _deviceMask(deviceMask)
+        , _skeleton(desc.MeshSkeleton)
     { }
 
     Mesh::~Mesh()

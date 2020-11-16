@@ -1,5 +1,7 @@
 #include "TeAnimation.h"
 
+#include "Scene/TeSceneObject.h"
+
 namespace te
 {
     AnimationClipInfo::AnimationClipInfo(const HAnimationClip& clip)
@@ -17,7 +19,139 @@ namespace te
 
     void AnimationProxy::Clear()
     {
+        if (_layers == nullptr)
+            return;
+
+        for (UINT32 i = 0; i < _numLayers; i++)
+        {
+            AnimationStateLayer& layer = _layers[i];
+            for (UINT32 j = 0; j < layer.NumStates; j++)
+            {
+                AnimationState& state = layer.States[j];
+
+                if (_skeleton != nullptr)
+                {
+                    UINT32 numBones = _skeleton->GetNumBones();
+                    for (UINT32 k = 0; k < numBones; k++)
+                        state.BoneToCurveMapping[k].~AnimationCurveMapping();
+                }
+
+                if (state.SoToCurveMapping != nullptr)
+                {
+                    for (UINT32 k = 0; k < _numSceneObjects; k++)
+                        state.SoToCurveMapping[k].~AnimationCurveMapping();
+                }
+
+                state.~AnimationState();
+            }
+
+            layer.~AnimationStateLayer();
+        }
+
+        // All of the memory is part of the same buffer, so we only need to free the first element
+        te_free(_layers);
+        _layers = nullptr;
+        _genericCurveOutputs = nullptr;
+        _sceneObjectInfos = nullptr;
+        _sceneObjectTransforms = nullptr;
+
+        _numLayers = 0;
+        _numGenericCurves = 0;
+    }
+
+    void AnimationProxy::Rebuild(const SPtr<Skeleton>& skeleton, const SkeletonMask& mask,
+        Vector<AnimationClipInfo>& clipInfos, const Vector<AnimatedSceneObject>& sceneObjects)
+    {
+        _skeleton = skeleton;
+        _skeletonMask = mask;
+
+        if (skeleton != nullptr)
+            _skeletonPose = LocalSkeletonPose(skeleton->GetNumBones());
+
+        _numSceneObjects = (UINT32)sceneObjects.size();
+        if (_numSceneObjects > 0)
+            _sceneObjectPose = LocalSkeletonPose(_numSceneObjects, true);
+        else
+            _sceneObjectPose = LocalSkeletonPose();
+
+        Rebuild(clipInfos, sceneObjects);
+    }
+
+    void AnimationProxy::Rebuild(Vector<AnimationClipInfo>& clipInfos, const Vector<AnimatedSceneObject>& sceneObjects)
+    {
+        Clear();
+
         // TODO animation
+    }
+
+    void AnimationProxy::UpdateClipInfos(const Vector<AnimationClipInfo>& clipInfos)
+    {
+        for (auto& clipInfo : clipInfos)
+        {
+            AnimationState& state = _layers[clipInfo.LayerIdx].States[clipInfo.StateIdx];
+
+            state.Loop = clipInfo.State.WrapMode == AnimWrapMode::Loop;
+            state.Weight = clipInfo.State.Weight;
+
+            // Wrap time if looping
+            if (state.Loop && state.Length > 0.0f)
+                state.Time = Math::Repeat(clipInfo.State.Time, state.Length);
+            else
+                state.Time = clipInfo.State.Time;
+
+            state.Disabled = (clipInfo.PlaybackType == AnimPlaybackType::None);
+        }
+    }
+
+    void AnimationProxy::UpdateTransforms(const Vector<AnimatedSceneObject>& sceneObjects)
+    {
+        Matrix4 invRootTransform(TeIdentity);
+        for (UINT32 i = 0; i < _numSceneObjects; i++)
+        {
+            if (sceneObjects[i].CurveName.empty())
+            {
+                HSceneObject so = sceneObjects[i].So;
+                if (!so.IsDestroyed(true))
+                    invRootTransform = so->GetWorldMatrix().InverseAffine();
+
+                break;
+            }
+        }
+
+        UINT32 boneIdx = 0;
+        for (UINT32 i = 0; i < _numSceneObjects; i++)
+        {
+            HSceneObject so = sceneObjects[i].So;
+            if (so.IsDestroyed(true))
+            {
+                _sceneObjectInfos[i].Hash = 0;
+                continue;
+            }
+
+            _sceneObjectInfos[i].Hash = so->GetTransformHash();
+
+            if (_sceneObjectInfos[i].BoneIdx == -1)
+                continue;
+
+            _sceneObjectTransforms[boneIdx] = sceneObjects[i].So->GetWorldMatrix() * invRootTransform;
+            boneIdx++;
+        }
+    }
+
+    void AnimationProxy::UpdateTime(const Vector<AnimationClipInfo>& clipInfos)
+    {
+        for (auto& clipInfo : clipInfos)
+        {
+            AnimationState& state = _layers[clipInfo.LayerIdx].States[clipInfo.StateIdx];
+
+            // Wrap time if looping
+            if (state.Loop && state.Length > 0.0f)
+                state.Time = Math::Repeat(clipInfo.State.Time, state.Length);
+            else
+                state.Time = clipInfo.State.Time;
+
+            state.Disabled = (clipInfo.PlaybackType == AnimPlaybackType::None);
+        }
     }
 
     Animation::Animation()
@@ -60,7 +194,6 @@ namespace te
 
         for (auto& clipInfo : _clipInfos)
         {
-            // Special case: Ignore non-moving ones
             if (!clipInfo.State.Stopped)
                 clipInfo.State.Speed = speed;
         }

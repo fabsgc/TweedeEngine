@@ -10,6 +10,7 @@
 #include "Components/TeCRenderable.h"
 #include "Components/TeCSkybox.h"
 #include "Components/TeCScript.h"
+#include "Components/TeCAnimation.h"
 #include "../TeEditorUtils.h"
 
 namespace te
@@ -505,6 +506,8 @@ namespace te
                         ImGui::EndMenu();
                     }
 
+                    if (ImGui::MenuItem(ICON_FA_STEP_FORWARD " Animation"))
+                        CreateAnimation();
                     if (ImGui::MenuItem(ICON_FA_GLOBE " Skybox"))
                         CreateSkybox();
                     if (ImGui::MenuItem(ICON_FA_SCROLL " Script"))
@@ -696,6 +699,22 @@ namespace te
         gEditor().GetSettings().State = Editor::EditorState::Modified;
     }
 
+    void WidgetProject::CreateAnimation()
+    {
+        if (!_selections.ClickedSceneObject || _selections.ClickedComponent)
+            return;
+
+        HAnimation animation = _selections.ClickedSceneObject->AddComponent<CAnimation>();
+        animation.Get()->SetName("Animation");
+        animation.Get()->Initialize();
+
+        _expandToSelection = true;
+        _handleSelectionWindowSwitch = true;
+        _selections.ClickedComponent = animation.GetInternalPtr();
+        gEditor().NeedsRedraw();
+        gEditor().GetSettings().State = Editor::EditorState::Modified;
+    }
+
     void WidgetProject::CreateSkybox()
     { 
         if (!_selections.ClickedSceneObject || _selections.ClickedComponent)
@@ -758,6 +777,9 @@ namespace te
             break;
         case TID_CScript:
             title += String("  ") + ICON_FA_SCROLL;
+            break;
+        case TID_CAnimation:
+            title += String("  ") + ICON_FA_STEP_FORWARD;
             break;
         default:
             title += String("  ") + ICON_FA_QUESTION_CIRCLE;

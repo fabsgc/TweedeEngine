@@ -67,13 +67,12 @@ namespace te
             [this]() {
                 // TODO AUDIO
                 // TODO PHYSIC
-                gAnimationManager().SetPaused(false);
                 return !gCoreApplication().GetState().IsFlagSet(ApplicationState::Game); 
             },
             [this]() {
                 // TODO AUDIO
                 // TODO PHYSIC
-                gAnimationManager().SetPaused(true);
+                gAnimationManager().TogglePaused();
                 gCoreApplication().GetState().ToggleFlag(ApplicationState::Game); 
             }
         );

@@ -1,5 +1,6 @@
 #include "Components/TeCRenderable.h"
 #include "Scene/TeSceneManager.h"
+#include "Components/TeCAnimation.h"
 
 namespace te
 {
@@ -48,6 +49,34 @@ namespace te
         return true;
     }
 
+    void CRenderable::_registerAnimation(const HAnimation& animation)
+    {
+        _animation = animation;
+
+        if (_internal != nullptr)
+        {
+            _internal->SetAnimation(animation->_getInternal());
+
+            // Need to update transform because animated renderables handle local transforms through bones, so it
+            // shouldn't be included in the renderable's transform.
+            _internal->_updateState(*SO(), true);
+        }
+    }
+
+    void CRenderable::_unregisterAnimation()
+    {
+        _animation = nullptr;
+
+        if (_internal != nullptr)
+        {
+            _internal->SetAnimation(nullptr);
+
+            // Need to update transform because animated renderables handle local transforms through bones, so it
+            // shouldn't be included in the renderable's transform.
+            _internal->_updateState(*SO(), true);
+        }
+    }
+
     void CRenderable::_instantiate()
     {
         _internal = Renderable::Create();
@@ -62,6 +91,13 @@ namespace te
     {
         gSceneManager()._bindActor(_internal, GetSceneObject());
         Component::OnInitialized();
+
+        _animation = static_object_cast<CAnimation>(SO()->GetComponent<CAnimation>());
+        if (_animation != nullptr)
+        {
+            _registerAnimation(_animation);
+            _animation->_registerRenderable(static_object_cast<CRenderable>(_thisHandle));
+        }
     }
 
     void CRenderable::OnEnabled()
@@ -83,6 +119,9 @@ namespace te
 
     void CRenderable::OnDestroyed()
     {
+        if (_animation != nullptr)
+            _animation->_unregisterRenderable();
+
         gSceneManager()._unbindActor(_internal);
         Component::OnDestroyed();
         _internal->Destroy();

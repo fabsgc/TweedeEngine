@@ -1,11 +1,39 @@
 #include "TeRenderable.h"
 #include "TeRenderer.h"
 #include "Scene/TeSceneObject.h"
+#include "Animation/TeAnimation.h"
+#include "Animation/TeAnimationManager.h"
+#include "RenderAPI/TeGpuBuffer.h"
 
 namespace te
 {
+    SPtr<GpuBuffer> CreateBoneMatrixBuffer(UINT32 numBones)
+    {
+        GPU_BUFFER_DESC desc;
+        desc.ElementCount = numBones * 3;
+        desc.ElementSize = 0;
+        desc.Type = GBT_STANDARD;
+        desc.Format = BF_32X4F;
+        desc.Usage = GBU_DYNAMIC;
+
+        SPtr<GpuBuffer> buffer = GpuBuffer::Create(desc);
+        UINT8* dest = (UINT8*)buffer->Lock(0, numBones * 3 * sizeof(Vector4), GBL_WRITE_ONLY_DISCARD);
+
+        // Initialize bone transforms to identity, so the object renders properly even if no animation is animating it
+        for (UINT32 i = 0; i < numBones; i++)
+        {
+            memcpy(dest, &Matrix4::IDENTITY, 12 * sizeof(float)); // Assuming row-major format
+            dest += 12 * sizeof(float);
+        }
+
+        buffer->Unlock();
+
+        return buffer;
+    }
+
     Renderable::Renderable()
         : _rendererId(0)
+        , _animationId((UINT64)-1)
     { }
 
     Renderable::~Renderable()
@@ -22,7 +50,34 @@ namespace te
 
     void Renderable::OnMeshChanged()
     {
+        RefreshAnimation();
         _markCoreDirty();
+    }
+
+    void Renderable::RefreshAnimation()
+    {
+        if (_animation == nullptr)
+        {
+            _animType = RenderableAnimType::None;
+            return;
+        }
+
+        if (_mesh)
+        {
+            SPtr<Skeleton> skeleton = _mesh->GetSkeleton();
+
+            if (skeleton != nullptr)
+                _animType = RenderableAnimType::Skinned;
+            else
+                _animType = RenderableAnimType::None;
+
+            _animation->SetSkeleton(_mesh->GetSkeleton());
+        }
+        else
+        {
+            _animType = RenderableAnimType::None;
+            _animation->SetSkeleton(nullptr);
+        }
     }
 
     void Renderable::_markCoreDirty(ActorDirtyFlag flag) 
@@ -254,6 +309,14 @@ namespace te
         _markCoreDirty();
     }
 
+    void Renderable::SetAnimation(const SPtr<Animation>& animation)
+    {
+        _animation = animation;
+        RefreshAnimation();
+
+        _markCoreDirty();
+    }
+
     Bounds Renderable::GetBounds() const
     {
         SPtr<Mesh> mesh = GetMesh();
@@ -281,12 +344,100 @@ namespace te
         UINT32 curHash = so.GetTransformHash();
         if (curHash != _hash || force)
         {
-            SetTransform(so.GetTransform());
+            // If skinned animation, don't include own transform since that will be handled by root bone animation
+            bool ignoreOwnTransform;
+            if (_animType == RenderableAnimType::Skinned)
+                ignoreOwnTransform = _animation->GetAnimatesRoot();
+            else
+                ignoreOwnTransform = false;
+
+            if (ignoreOwnTransform)
+            {
+                // Note: Technically we're checking child's hash but using parent's transform. Ideally we check the parent's
+                // hash to reduce the number of required updates.
+                HSceneObject parentSO = so.GetParent();
+                if (parentSO != nullptr)
+                    SetTransform(parentSO->GetTransform());
+                else
+                    SetTransform(Transform());
+            }
+            else
+            {
+                SetTransform(so.GetTransform());
+            }
+
             _hash = curHash;
         }
 
         // Hash now matches so transform won't be applied twice, so we can just call base class version
         SceneActor::_updateState(so, force);
+    }
+
+    void Renderable::CreateAnimationBuffers()
+    {
+        if (_animType == RenderableAnimType::Skinned)
+        {
+            SPtr<Skeleton> skeleton = _mesh->GetSkeleton();
+            UINT32 numBones = skeleton != nullptr ? skeleton->GetNumBones() : 0;
+
+            if (numBones > 0)
+            {
+                _boneMatrixBuffer = CreateBoneMatrixBuffer(numBones);
+
+                // TODO animation prevMatrix for TAA and Motion Blur
+                _bonePrevMatrixBuffer = nullptr;
+            }
+            else
+            {
+                _boneMatrixBuffer = nullptr;
+                _bonePrevMatrixBuffer = nullptr;
+            }
+        }
+        else
+        {
+            _boneMatrixBuffer = nullptr;
+            _bonePrevMatrixBuffer = nullptr;
+        }
+    }
+
+    void Renderable::UpdateAnimationBuffers(const EvaluatedAnimationData& animData)
+    {
+        if (_animationId == (UINT64)-1)
+            return;
+
+        const EvaluatedAnimationData::AnimInfo* animInfo = nullptr;
+
+        auto iterFind = animData.Infos.find(_animationId);
+        if (iterFind != animData.Infos.end())
+            animInfo = &iterFind->second;
+
+        if (animInfo == nullptr)
+            return;
+
+        if (_animType == RenderableAnimType::Skinned)
+        {
+            const EvaluatedAnimationData::PoseInfo& poseInfo = animInfo->PoseInfos;
+
+            // TODO animation prevMatrix for TAA and Motion Blur
+
+            // Note: If multiple elements are using the same animation (not possible atm), this buffer should be shared by
+            // all such elements
+            UINT8* dest = (UINT8*)_boneMatrixBuffer->Lock(0, poseInfo.NumBones * 3 * sizeof(Vector4), GBL_WRITE_ONLY_DISCARD);
+            for (UINT32 j = 0; j < poseInfo.NumBones; j++)
+            {
+                const Matrix4& transform = animData.Transforms[poseInfo.StartIdx + j];
+                memcpy(dest, &transform, 12 * sizeof(float)); // Assuming row-major format
+
+                dest += 12 * sizeof(float);
+            }
+
+            _boneMatrixBuffer->Unlock();
+        }
+    }
+
+    void Renderable::UpdatePrevFrameAnimationBuffers()
+    {
+        // TODO animation prevMatrix for TAA and Motion Blur
     }
 
     SPtr<Renderable> Renderable::Create()

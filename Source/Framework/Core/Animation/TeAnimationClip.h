@@ -138,6 +138,9 @@ namespace te
         /** @copydoc SetCurves() */
         SPtr<AnimationCurves> GetCurves() const { return _curves; }
 
+        /**  @copydoc Resource::GetResourceType */
+        static UINT32 GetResourceType() { return TID_AnimationClip; }
+
         /**
          * A set of all curves stored in the animation. Returned value will not be updated if the animation clip curves are
          * added or removed, as it is a copy of clip's internal values.

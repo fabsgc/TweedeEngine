@@ -28,6 +28,11 @@ namespace te
         _paused = paused;
     }
 
+    void AnimationManager::TogglePaused()
+    {
+        _paused = !_paused;
+    }
+
     void AnimationManager::SetUpdateRate(UINT32 fps)
     {
         if (fps == 0) fps = 1;
@@ -36,9 +41,73 @@ namespace te
 
     const EvaluatedAnimationData* AnimationManager::Update()
     {
-        const EvaluatedAnimationData* output = nullptr;
-        return output;
-        // TODO animation
+        if (_paused)
+            return &_animData;
+
+        _animationTime += gTime().GetFrameDelta();
+        if (_animationTime < _nextAnimationUpdateTime)
+            return &_animData;
+
+        _nextAnimationUpdateTime = Math::Floor(_animationTime / _updateRate) * _updateRate + _updateRate;
+
+        float timeDelta = _animationTime - _lastAnimationUpdateTime;
+        _lastAnimationUpdateTime = _animationTime;
+        _lastAnimationDeltaTime  = timeDelta;
+
+        // Update animation proxies from the latest data
+        _proxies.clear();
+        for (auto& anim : _animations)
+        {
+            anim.second->UpdateAnimProxy(timeDelta);
+            _proxies.push_back(anim.second->_animProxy);
+        }
+
+        // Build frustums for culling
+        _cullFrustums.clear();
+
+        auto& allCameras = gSceneManager().GetAllCameras();
+        for (auto& entry : allCameras)
+        {
+            // Note: This should also check on-demand cameras as there's no point in updating them if they wont render this frame
+            if (entry.second->GetRenderSettings()->OverlayOnly)
+                continue;
+
+            if (!entry.second->GetActive())
+                continue;
+
+            _cullFrustums.push_back(entry.second->GetWorldFrustum());
+        }
+
+        // Prepare the write buffer
+        UINT32 totalNumBones = 0;
+        for (auto& anim : _proxies)
+        {
+            if (anim->_skeleton != nullptr)
+                totalNumBones += anim->_skeleton->GetNumBones();
+        }
+
+        // Prepare the write buffer
+        _animData.Transforms.resize(totalNumBones);
+        _animData.Infos.clear();
+
+        UINT32 curBoneIdx = 0;
+        for (auto& anim : _proxies)
+        {
+            UINT32 boneIdx = curBoneIdx;
+            EvaluateAnimation(anim.get(), boneIdx);
+
+            if (anim->_skeleton != nullptr)
+                curBoneIdx += anim->_skeleton->GetNumBones();
+        }
+
+        // Trigger events and update attachments (for the data we just evaluated)
+        for (auto& anim : _animations)
+        {
+            anim.second->UpdateFromProxy();
+            anim.second->TriggerEvents(timeDelta);
+        }
+
+        return &_animData;
     }
 
     void AnimationManager::EvaluateAnimation(AnimationProxy* anim, UINT32& curBoneIdx)

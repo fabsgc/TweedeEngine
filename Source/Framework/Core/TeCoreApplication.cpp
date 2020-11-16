@@ -107,13 +107,13 @@ namespace te
 
         BuiltinResources::ShutDown();
         RendererMaterialManager::ShutDown();
-        AnimationManager::ShutDown();
         AudioManager::ShutDown();
         Importer::ShutDown();
         VirtualInput::ShutDown();
         Input::ShutDown();
         ParamBlockManager::ShutDown();
         SceneManager::ShutDown();
+        AnimationManager::ShutDown();
         GameObjectManager::ShutDown();
         RendererManager::ShutDown();
         GpuProgramManager::ShutDown();

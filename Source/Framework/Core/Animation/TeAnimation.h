@@ -139,12 +139,86 @@ namespace te
 
         AnimationProxy& operator=(const AnimationProxy&) = delete;
 
+        /**
+         * Rebuilds the internal proxy data according to the newly assigned skeleton and clips. This should be called
+         * whenever the animation skeleton changes.
+         *
+         * @param[in]		skeleton		New skeleton to assign to the proxy.
+         * @param[in]		mask			Mask that filters which skeleton bones are enabled or disabled.
+         * @param[in, out]	clipInfos		Potentially new clip infos that will be used for rebuilding the proxy. Once the
+         *									method completes clip info layout and state indices will be populated for
+         *									further use in the update*() methods.
+         * @param[in]		sceneObjects	A list of scene objects that are influenced by specific animation curves.
+         *
+         * @note	Should be called from the sim thread when the caller is sure the animation thread is not using it.
+         */
+        void Rebuild(const SPtr<Skeleton>& skeleton, const SkeletonMask& mask, Vector<AnimationClipInfo>& clipInfos,
+            const Vector<AnimatedSceneObject>& sceneObjects);
+
+        /**
+         * Rebuilds the internal proxy data according to the newly clips. This should be called whenever clips are added
+         * or removed, or clip layout indices change.
+         *
+         * @param[in, out]	clipInfos		New clip infos that will be used for rebuilding the proxy. Once the method
+         *									completes clip info layout and state indices will be populated for further use
+         *									in the update*() methods.
+         * @param[in]		sceneObjects	A list of scene objects that are influenced by specific animation curves.
+         *
+         * @note	Should be called from the sim thread when the caller is sure the animation thread is not using it.
+         */
+        void Rebuild(Vector<AnimationClipInfo>& clipInfos, const Vector<AnimatedSceneObject>& sceneObjects);
+
+        /**
+         * Updates the proxy data with new information about the clips. Caller must guarantee that clip layout didn't
+         * change since the last call to rebuild().
+         *
+         * @note	Should be called from the sim thread when the caller is sure the animation thread is not using it.
+         */
+        void UpdateClipInfos(const Vector<AnimationClipInfo>& clipInfos);
+
+        /**
+         * Updates the proxy data with new scene object transforms. Caller must guarantee that clip layout didn't
+         * change since the last call to rebuild().
+         *
+         * @note	Should be called from the sim thread when the caller is sure the animation thread is not using it.
+         */
+        void UpdateTransforms(const Vector<AnimatedSceneObject>& sceneObjects);
+
+        /**
+         * Updates the proxy data with new clip times. Caller must guarantee that clip layout didn't change since the last
+         * call to rebuild().
+         *
+         * @note	Should be called from the sim thread when the caller is sure the animation thread is not using it.
+         */
+        void UpdateTime(const Vector<AnimationClipInfo>& clipInfos);
+
         /** Destroys all dynamically allocated objects. */
         void Clear();
 
         UINT64 Id;
 
-        // TODO
+        // Skeletal animation
+        AnimationStateLayer* _layers = nullptr;
+        UINT32 _numLayers = 0;
+        SPtr<Skeleton> _skeleton;
+        SkeletonMask _skeletonMask;
+        UINT32 _numSceneObjects = 0;
+        AnimatedSceneObjectInfo* _sceneObjectInfos = nullptr;
+        Matrix4* _sceneObjectTransforms = nullptr;
+
+        // Culling
+        AABox _boundingBox;
+        bool _cullEnabled = true;
+
+        // Single frame sample
+        AnimSampleStep _sampleStep = AnimSampleStep::None;
+
+        // Evaluation results
+        LocalSkeletonPose _skeletonPose;
+        LocalSkeletonPose _sceneObjectPose;
+        UINT32 _numGenericCurves = 0;
+        float* _genericCurveOutputs = nullptr;
+        bool _wasCulled = false;
     };
 
     /**
@@ -372,7 +446,7 @@ namespace te
         bool _genericCurveValuesValid = false;
         AnimSampleStep _sampleStep = AnimSampleStep::None;
 
-        // Animation thread only
+        // TODO delete AnimationProxy (useless in single thread context)
         SPtr<AnimationProxy> _animProxy;
     };
 }

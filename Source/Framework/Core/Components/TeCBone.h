@@ -18,6 +18,21 @@ namespace te
         /** @copydoc Component::Initialize */
         void Initialize() override;
 
+        /** Determines the name of the bone the component is referencing. */
+        void SetBoneName(const String& name);
+
+        /** @copydoc SetBoneName */
+        const String& GetBoneName() const { return _boneName; }
+
+         /**
+          * Changes the parent animation of this component.
+          *
+          * @param[in]	animation	New animation parent, can be null.
+          * @param[in]	isInternal	If true the bone will just be changed internally, but parent animation will not be
+          *							notified.
+          */
+        void _setParent(const HAnimation& animation, bool isInternal = false);
+
         /** @copydoc Component::Clone */
         void Clone(const HComponent& c) override;
 
@@ -29,6 +44,9 @@ namespace te
 
     protected:
         friend class SceneObject;
+
+        /** Attempts to find the parent Animation component and registers itself with it. */
+        void UpdateParentAnimation();
 
         /** @copydoc Component::_instantiate */
         void _instantiate() override;
@@ -46,7 +64,7 @@ namespace te
         void OnDisabled() override;
 
         /** @copydoc Component::OnTransformChanged */
-        void OnTransformChanged(TransformChangedFlags flags) override { }
+        void OnTransformChanged(TransformChangedFlags flags);
 
         /** @copydoc Component::OnDestroyed */
         void OnDestroyed() override;

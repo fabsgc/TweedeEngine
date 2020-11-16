@@ -206,15 +206,18 @@ namespace te
         // TODO Temp for debug purpose
         HMesh _loadedMeshMonkey;
         HMesh _loadedMeshPlane;
+        HMesh _loadedMeshKnight;
         HTexture _loadedTextureMonkey;
         HTexture _loadedCubemapTexture;
         HTexture _loadedPlaneTexture;
 
         HMaterial _monkeyMaterial;
         HMaterial _planeMaterial;
+        HMaterial _knightMaterial;
 
         HSceneObject _sceneRenderableMonkeySO;
         HSceneObject _sceneRenderablePlaneSO;
+        HSceneObject _sceneRenderableKnightSO;
         HSceneObject _sceneLightSO;
         HSceneObject _sceneSkyboxSO;
 
@@ -222,6 +225,10 @@ namespace te
         HSkybox _skybox;
         HRenderable _renderableMonkey;
         HRenderable _renderablePlane;
+        HRenderable _renderableKnight;
+
+        HAnimation _animationKnight;
+        HAnimationClip _animationClipKnight;
 #endif
     };
 

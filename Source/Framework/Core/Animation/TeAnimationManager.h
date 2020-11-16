@@ -46,6 +46,9 @@ namespace te
         /** Pauses or resumes the animation evaluation. */
         void SetPaused(bool paused);
 
+        /** Pauses or resumes the animation evaluation. */
+        void TogglePaused();
+
         /**
          * Evaluates animations for all animated objects, and returns the evaluated skeleton bone poses and morph shape
          * meshes that can be passed along to the renderer.
@@ -95,11 +98,11 @@ namespace te
         float _lastAnimationUpdateTime = 0.0f;
         float _nextAnimationUpdateTime = 0.0f;
         float _lastAnimationDeltaTime = 0.0f;
-        bool  _paused = false;
+        bool  _paused = true;
 
-        // Animation thread
         Vector<SPtr<AnimationProxy>> _proxies;
         Vector<ConvexVolume> _cullFrustums;
+        EvaluatedAnimationData _animData;
     };
 
     /** Provides easier access to AnimationManager. */

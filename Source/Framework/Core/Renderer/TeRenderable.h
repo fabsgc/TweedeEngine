@@ -9,6 +9,8 @@
 
 namespace te
 {
+    struct EvaluatedAnimationData;
+
     struct RenderableProperties
     {
         RenderableProperties()
@@ -19,6 +21,14 @@ namespace te
         bool CastShadow = true;
         bool UseForDynamicEnvMapping  = false;
         float CullDistanceFactor = 1.0f;
+    };
+
+    /** Type of animation that can be applied to a renderable object. */
+    enum class RenderableAnimType
+    {
+        None,
+        Skinned,
+        Count // Keep at end
     };
 
     /** Illuminates a portion of the scene covered by the Renderable. */
@@ -157,6 +167,39 @@ namespace te
         /**	Gets world bounds of the mesh rendered by this object. */
         Bounds GetBounds() const;
 
+        /** Determines the animation that will be used for animating the attached mesh. */
+        void SetAnimation(const SPtr<Animation>& animation);
+
+        /** @copydoc setAnimation */
+        const SPtr<Animation>& GetAnimation() const { return _animation; }
+
+        /** Checks is the renderable animated or static. */
+        bool IsAnimated() const { return _animation != nullptr; }
+
+        /** Returns the type of animation influencing this renderable, if any. */
+        RenderableAnimType getAnimType() const { return _animType; }
+
+        /** Returns the identifier of the animation, if this object is animated using skeleton or blend shape animation. */
+        UINT64 GetAnimationId() const { return _animationId; }
+
+        /**
+         * Updates internal animation buffers from the contents of the provided animation data object. Does nothing if
+         * renderable is not affected by animation.
+         */
+        void UpdateAnimationBuffers(const EvaluatedAnimationData& animData);
+
+        /**
+         * Records information about previous frame's animation buffer data. Should be called once per frame, before the
+         * call to UpdateAnimationBuffers().
+         */
+        void UpdatePrevFrameAnimationBuffers();
+
+        /** Returns the GPU buffer containing element's bone matrices, if it has any. */
+        const SPtr<GpuBuffer>& GetBoneMatrixBuffer() const { return _boneMatrixBuffer; }
+
+        /** Returns the GPU buffer containing element's bone matrices for the previous frame, if it has any. */
+        const SPtr<GpuBuffer>& GetBonePrevMatrixBuffer() const { return _bonePrevMatrixBuffer; }
+
         /**	Sets an ID that can be used for uniquely identifying this object by the renderer. */
         void SetRendererId(UINT32 id) { _rendererId = id; }
 
@@ -166,6 +209,9 @@ namespace te
         /** Triggered whenever the renderable's mesh changes. */
         void OnMeshChanged();
 
+        /** Updates animation properties depending on the current mesh. */
+        void RefreshAnimation();
+
          /** @copydoc SceneActor::_updateState */
         void _updateState(const SceneObject& so, bool force = false) override;
 
@@ -174,6 +220,9 @@ namespace te
 
         /**	Creates a new renderable instance without initializing it. */
         static SPtr<Renderable> CreateEmpty();
+
+        /** Creates any buffers required for renderable animation. Should be called whenever animation properties change. */
+        void CreateAnimationBuffers();
 
     protected:
         friend class CRenderable;
@@ -187,5 +236,12 @@ namespace te
         Matrix4 _tfrmMatrixNoScale = TeIdentity;
 
         RenderableProperties _properties;
+
+        // Animation
+        RenderableAnimType _animType = RenderableAnimType::None;
+        SPtr<Animation> _animation;
+        UINT64 _animationId;
+        SPtr<GpuBuffer> _boneMatrixBuffer;
+        SPtr<GpuBuffer> _bonePrevMatrixBuffer;
     };
 }
