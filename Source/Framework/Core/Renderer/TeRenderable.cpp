@@ -92,6 +92,8 @@ namespace te
 
         if ((dirtyFlag & updateEverythingFlag) != 0)
         {
+            CreateAnimationBuffers();
+
             if (_oldActive != GetActive())
             {
                 if (_active)
@@ -312,8 +314,11 @@ namespace te
     void Renderable::SetAnimation(const SPtr<Animation>& animation)
     {
         _animation = animation;
-        RefreshAnimation();
 
+        if(_animation)
+            _animationId = animation->GetAnimId();
+
+        RefreshAnimation();
         _markCoreDirty();
     }
 

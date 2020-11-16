@@ -111,6 +111,7 @@ namespace te
 
     void RendererRenderable::UpdatePerObjectBuffer()
     {
+        // TODO animation : take animation into account
         PerObjectBuffer::UpdatePerObject(PerObjectParamBuffer, WorldTfrm, PrevWorldTfrm, RenderablePtr);
     }
 

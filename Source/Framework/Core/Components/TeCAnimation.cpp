@@ -197,6 +197,11 @@ namespace te
 
         _animatedRenderable = static_object_cast<CRenderable>(SO()->GetComponent<CRenderable>());
 
+        if (_animatedRenderable)
+        {
+            _internal->SetBounds(_animatedRenderable->GetBounds().GetBox());
+        }
+
         if (!previewMode)
         {
             _internal->OnEventTriggered.Connect(std::bind(&CAnimation::EventTriggered, this, _1, _2));

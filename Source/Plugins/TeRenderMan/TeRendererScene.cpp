@@ -1,4 +1,5 @@
 #include "TeRendererScene.h"
+
 #include "Renderer/TeCamera.h"
 #include "TeCoreApplication.h"
 #include "Material/TeMaterial.h"
@@ -6,6 +7,7 @@
 #include "TeRenderManOptions.h"
 #include "TeRendererRenderable.h"
 #include "Utility/TeTime.h"
+#include "TeRenderMan.h"
 
 namespace te
 {
@@ -395,6 +397,10 @@ namespace te
                 renElement->Type = (UINT32)RenderElementType::Renderable;
                 renElement->MeshElem = mesh;
                 renElement->SubMeshElem = meshProps.GetSubMesh(i);
+                renElement->BoneMatrixBuffer = renderable->GetBoneMatrixBuffer();
+                renElement->BonePrevMatrixBuffer = renderable->GetBonePrevMatrixBuffer();
+                renElement->AnimType = renderable->GetAnimType();
+                renElement->AnimationId = renderable->GetAnimationId();
 
                 renElement->MaterialElem = renderable->GetMaterial(i);
                 if (renElement->MaterialElem == nullptr)
@@ -437,9 +443,17 @@ namespace te
 
                 for (auto& gpuParams : element.GpuParamsElem)
                 {
+                    // TODO animation : BoneMatrices buffers
+
                     gpuParams->SetParamBlockBuffer("PerObjectBuffer", rendererRenderable->PerObjectParamBuffer);
                     gpuParams->SetParamBlockBuffer("PerCallBuffer", rendererRenderable->PerCallParamBuffer);
                     gpuParams->SetParamBlockBuffer("PerMaterialBuffer", element.PerMaterialParamBuffer);
+
+                    if (gpuParams->HasBuffer(GPT_VERTEX_PROGRAM, "BoneMatrices"))
+                        gpuParams->SetBuffer(GPT_VERTEX_PROGRAM, "BoneMatrices", element.BoneMatrixBuffer);
+
+                    if (gpuParams->HasBuffer(GPT_VERTEX_PROGRAM, "PrevBoneMatrices"))
+                        gpuParams->SetBuffer(GPT_VERTEX_PROGRAM, "PrevBoneMatrices", element.BonePrevMatrixBuffer);
                 }
             }
         }
@@ -494,6 +508,19 @@ namespace te
 
     void RendererScene::PrepareVisibleRenderable(UINT32 idx, const FrameInfo& frameInfo)
     {
+        if (_info.Renderables[idx])
+            return;
+
+        RendererRenderable* rendererRenderable = _info.Renderables[idx];
+        
+        if(frameInfo.PerFrameDatas.Animation != nullptr)
+            rendererRenderable->RenderablePtr->UpdateAnimationBuffers(*frameInfo.PerFrameDatas.Animation);
+
+        for (auto& element : rendererRenderable->Elements)
+        {
+            // TODO animation
+        }
+
         // Update animation when animation system will be done
         //_info.Renderables[idx]->PerObjectParamBuffer->FlushToGPU();
     }

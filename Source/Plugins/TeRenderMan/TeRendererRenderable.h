@@ -60,6 +60,11 @@ namespace te
 
         /** @copydoc RenderElement::Draw */
         void Draw() const override;
+
+        UINT64 AnimationId;
+        RenderableAnimType AnimType;
+        SPtr<GpuBuffer> BoneMatrixBuffer;
+        SPtr<GpuBuffer> BonePrevMatrixBuffer;
     };
 
     /** Contains information about a Renderable, used by the Renderer. */

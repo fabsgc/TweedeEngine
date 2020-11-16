@@ -177,7 +177,7 @@ namespace te
         bool IsAnimated() const { return _animation != nullptr; }
 
         /** Returns the type of animation influencing this renderable, if any. */
-        RenderableAnimType getAnimType() const { return _animType; }
+        RenderableAnimType GetAnimType() const { return _animType; }
 
         /** Returns the identifier of the animation, if this object is animated using skeleton or blend shape animation. */
         UINT64 GetAnimationId() const { return _animationId; }
