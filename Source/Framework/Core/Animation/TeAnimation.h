@@ -80,10 +80,6 @@ namespace te
         float FadeTime = 0.0f;
         float FadeLength = 0.0f;
 
-        /**
-         * Version of the animation curves used by the AnimationProxy. Used to detecting the internal animation curves
-         * changed.
-         */
         UINT32 LayerIdx = (UINT32)-1; /**< Layer index this clip belongs to in AnimationProxy structure. */
         UINT32 StateIdx = (UINT32)-1; /**< State index this clip belongs to in AnimationProxy structure. */
     };
@@ -130,7 +126,7 @@ namespace te
         UINT32 Hash; /**< Hash value of the scene object's transform. */
     };
 
-    /** Represents a copy of the Animation data for use specifically on the animation thread. */
+    /** Represents a copy of the Animation data for use specifically during animation update. */
     struct AnimationProxy
     {
         AnimationProxy(UINT64 id);

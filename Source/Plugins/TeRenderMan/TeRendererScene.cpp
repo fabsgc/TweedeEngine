@@ -508,7 +508,7 @@ namespace te
 
     void RendererScene::PrepareVisibleRenderable(UINT32 idx, const FrameInfo& frameInfo)
     {
-        if (_info.Renderables[idx])
+        if (_info.RenderableReady[idx])
             return;
 
         RendererRenderable* rendererRenderable = _info.Renderables[idx];
@@ -518,11 +518,13 @@ namespace te
 
         for (auto& element : rendererRenderable->Elements)
         {
-            // TODO animation : buffers
+            // TODO animation : Bone buffers
         }
 
         // Update animation when animation system will be done
         //_info.Renderables[idx]->PerObjectParamBuffer->FlushToGPU();
+
+        _info.RenderableReady[idx] = true;
     }
 
     RENDERER_VIEW_DESC RendererScene::CreateViewDesc(Camera* camera) const

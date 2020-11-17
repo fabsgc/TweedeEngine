@@ -96,8 +96,8 @@ namespace te
         // Update global per-frame hardware buffers
         _scene->SetParamFrameParams(timings.Time, timings.TimeDelta);
 
-        //sceneInfo.RenderableReady.resize(sceneInfo.Renderables.size(), false); TODO
-        //sceneInfo.RenderableReady.assign(sceneInfo.Renderables.size(), false); TODO
+        sceneInfo.RenderableReady.resize(sceneInfo.Renderables.size(), false);
+        sceneInfo.RenderableReady.assign(sceneInfo.Renderables.size(), false);
 
         FrameInfo frameInfo(timings, perFrameData);
 

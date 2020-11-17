@@ -118,7 +118,6 @@ namespace te
     TAnimationCurve<T>::TAnimationCurve(const Vector<KeyFrame>& keyframes)
         : _keyframes(keyframes)
     { 
-#if TE_DEBUG_MODE
         // Ensure keyframes are sorted
         if(!keyframes.empty())
         {
@@ -129,7 +128,6 @@ namespace te
                 time = keyframes[i].TimeInSpline;
             }
         }
-#endif
 
         if (!keyframes.empty())
             _end = keyframes.back().TimeInSpline;
@@ -182,7 +180,7 @@ namespace te
         if (leftKeyIdx == rightKeyIdx)
             return leftKey;
 
-        return EvaluateKey(leftKey, rightKey, time);
+        return impl::EvaluateKey(leftKey, rightKey, time);
     }
 
     template <class T>

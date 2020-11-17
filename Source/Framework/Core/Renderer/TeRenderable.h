@@ -21,6 +21,7 @@ namespace te
         bool CastShadow = true;
         bool UseForDynamicEnvMapping  = false;
         float CullDistanceFactor = 1.0f;
+        bool WriteVelocity = true;
     };
 
     /** Type of animation that can be applied to a renderable object. */
@@ -115,6 +116,16 @@ namespace te
          * Renderable layer must match camera layer in order for the camera to render the component.
          */
         void SetLayer(UINT64 layer);
+
+        /**
+         * If enabled this renderable will write per-pixel velocity information when rendered. This is required for effects
+         * such as temporal anti-aliasing and motion blur, but comes with a minor performance overhead. If you are not using
+         * those effects you can disable this for a performance gain.
+         */
+        void SetWriteVelocity(bool enable);
+
+        /** @copydoc setWriteVelocity */
+        bool GetWriteVelocity() const { return _properties.WriteVelocity; }
 
         /** Determines if this object can be instanced */
         void SetInstancing(bool instancing) { _properties.Instancing = instancing; _markCoreDirty(); }

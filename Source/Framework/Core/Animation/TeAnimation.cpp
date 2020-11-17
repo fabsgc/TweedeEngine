@@ -603,9 +603,51 @@ namespace te
     AnimationClipInfo* Animation::AddClip(const HAnimationClip& clip, UINT32 layer, bool stopExisting)
     {
         AnimationClipInfo* output = nullptr;
-        return output;
+        bool hasExisting = false;
 
-        // TODO animation
+        // Search for existing
+        for (auto& clipInfo : _clipInfos)
+        {
+            if (clipInfo.State.Layer == layer)
+            {
+                if (clipInfo.Clip == clip)
+                    output = &clipInfo;
+                else if (stopExisting)
+                    hasExisting = true;
+            }
+        }
+
+        // Doesn't exist or found extra animations, rebuild
+        if (output == nullptr || hasExisting)
+        {
+            Vector<AnimationClipInfo> newClips;
+            for (auto& clipInfo : _clipInfos)
+            {
+                if (!stopExisting || clipInfo.State.Layer != layer || clipInfo.Clip == clip)
+                    newClips.push_back(clipInfo);
+            }
+
+            if (output == nullptr && clip.GetHandleData() != nullptr)
+                newClips.push_back(AnimationClipInfo());
+
+            _clipInfos.resize(newClips.size());
+            for (UINT32 i = 0; i < (UINT32)newClips.size(); i++)
+                _clipInfos[i] = newClips[i];
+
+            _dirty |= (UINT32)AnimDirtyStateFlag::Layout;
+        }
+
+        // If new clip was added, get its address
+        if (output == nullptr && clip.GetHandleData() != nullptr)
+        {
+            AnimationClipInfo& newInfo = _clipInfos.back();
+            newInfo.Clip = clip;
+            newInfo.State.Layer = layer;
+
+            output = &newInfo;
+        }
+
+        return output;
     }
 
     bool Animation::GetAnimatesRoot() const

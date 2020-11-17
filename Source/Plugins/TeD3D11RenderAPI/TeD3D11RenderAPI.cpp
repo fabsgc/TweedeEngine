@@ -379,8 +379,8 @@ namespace te
 
                     if (!isLoadStore)
                     {
-                        while (slot >= (UINT32)_gpuResourcesContainer.uavs.size())
-                            _gpuResourcesContainer.uavs.push_back(nullptr);
+                        while (slot >= (UINT32)_gpuResourcesContainer.srvs.size())
+                            _gpuResourcesContainer.srvs.push_back(nullptr);
 
                         if (buffer != nullptr)
                         {

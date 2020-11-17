@@ -135,11 +135,11 @@ namespace te
     public:
         virtual ~AnimationClip() = default;
 
-        /** @copydoc SetCurves() */
-        SPtr<AnimationCurves> GetCurves() const { return _curves; }
-
         /**  @copydoc Resource::GetResourceType */
         static UINT32 GetResourceType() { return TID_AnimationClip; }
+
+        /** @copydoc SetCurves() */
+        SPtr<AnimationCurves> GetCurves() const { return _curves; }
 
         /**
          * A set of all curves stored in the animation. Returned value will not be updated if the animation clip curves are
@@ -187,7 +187,7 @@ namespace te
         /** Returns the length of the animation clip, in seconds. */
         float GetLength() const { return _length; }
 
-        /** @copydoc setSampleRate() */
+        /** @copydoc SetSampleRate() */
         float GetSampleRate() const { return _sampleRate; }
 
         /**

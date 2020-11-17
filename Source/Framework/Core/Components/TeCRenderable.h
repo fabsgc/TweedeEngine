@@ -78,6 +78,12 @@ namespace te
         /** @copydoc Renderable::GetCullDistanceFactor */
         float GetCullDistanceFactor() const { return _internal->GetCullDistanceFactor(); }
 
+        /** @copydoc Renderable::SetWriteVelocity */
+        void SetWriteVelocity(bool enable) { _internal->SetWriteVelocity(enable); }
+
+        /** @copydoc Renderable::GetWriteVelocity */
+        bool GetWriteVelocity() const { return _internal->GetWriteVelocity(); }
+
         /** @copydoc Renderable::SetUseForDynamicEnvMapping */
         void SetUseForDynamicEnvMapping(bool use) { _internal->SetUseForDynamicEnvMapping(use); }
 

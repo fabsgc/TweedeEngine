@@ -45,6 +45,10 @@ namespace te
 
         // FrameBuffer data
         SPtr<GpuParamBlockBuffer> PerFrameParamBuffer;
+
+        // Buffers for various transient data that gets rebuilt every frame
+        //// Rebuilt every frame
+        mutable Vector<bool> RenderableReady;
     };
 
     /** Contains information about the scene (e.g. renderables, lights, cameras) required by the renderer. */

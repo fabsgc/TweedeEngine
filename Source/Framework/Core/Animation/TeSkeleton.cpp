@@ -143,10 +143,128 @@ namespace te
         for (UINT32 i = 0; i < numLayers; i++)
         {
             const AnimationStateLayer& layer = layers[i];
+            float invLayerWeight = 1.0f;
 
-            // TODO animation
+            for (UINT32 j = 0; j < layer.NumStates; j++)
+            {
+                const AnimationState& state = layer.States[j];
+                if (state.Disabled)
+                    continue;
+
+                float normWeight = state.Weight * invLayerWeight;
+
+                if (Math::ApproxEquals(normWeight, 0.0f))
+                    continue;
+
+                for (UINT32 k = 0; k < _numBones; k++)
+                {
+                    if (!mask.IsEnabled(k))
+                        continue;
+
+                    const AnimationCurveMapping& mapping = state.BoneToCurveMapping[k];
+                    UINT32 curveIdx = mapping.Position;
+                    if (curveIdx != (UINT32)-1)
+                    {
+                        const TAnimationCurve<Vector3>& curve = state.Curves->Position[curveIdx].Curve;
+                        localPose.Positions[k] += curve.Evaluate(state.Time, false) * normWeight;
+
+                        localPose.HasOverride[k] = false;
+                        hasAnimCurve[k] = true;
+                    }
+
+                    curveIdx = mapping.Scale;
+                    if (curveIdx != (UINT32)-1)
+                    {
+                        const TAnimationCurve<Vector3>& curve = state.Curves->Scale[curveIdx].Curve;
+                        localPose.Scales[k] *= curve.Evaluate(state.Time, false) * normWeight;
+
+                        localPose.HasOverride[k] = false;
+                        hasAnimCurve[k] = true;
+                    }
+
+                    curveIdx = mapping.Rotation;
+                    if (curveIdx != (UINT32)-1)
+                    {
+                        const TAnimationCurve<Quaternion>& curve = state.Curves->Rotation[curveIdx].Curve;
+                        Quaternion value = curve.Evaluate(state.Time, false) * normWeight;
+
+                        if (value.Dot(localPose.Rotations[k]) < 0.0f)
+                            value = -value;
+
+                        localPose.Rotations[k] += value;
+                        localPose.HasOverride[k] = false;
+                        hasAnimCurve[k] = true;
+                    }
+                }
+            }
         }
 
+        // Apply default local tranform to non-animated bones (so that any potential child bones are transformed properly)
+        for (UINT32 i = 0; i < _numBones; i++)
+        {
+            if (hasAnimCurve[i])
+                continue;
+
+            localPose.Positions[i] = _boneTransforms[i].GetPosition();
+            localPose.Rotations[i] = _boneTransforms[i].GetRotation();
+            localPose.Scales[i] = _boneTransforms[i].GetScale();
+        }
+
+        // Calculate local pose matrices
+        UINT32 isGlobalBytes = sizeof(bool) * _numBones;
+        bool* isGlobal = (bool*)te_allocate(isGlobalBytes);
+        memset(isGlobal, 0, isGlobalBytes);
+
+        for (UINT32 i = 0; i < _numBones; i++)
+        {
+            bool isAssigned = localPose.Rotations[i].w != 0.0f;
+            if (!isAssigned)
+            {
+                localPose.Rotations[i] = Quaternion::IDENTITY;
+            }
+            else
+            {
+                localPose.Rotations[i].Normalize();
+            }
+
+            if (localPose.HasOverride[i])
+            {
+                isGlobal[i] = true;
+                continue;
+            }
+
+            pose[i] = Matrix4::TRS(localPose.Positions[i], localPose.Rotations[i], localPose.Scales[i]);
+        }
+
+        // Calculate global poses
+        // Note: For a possible performance improvement consider sorting bones in such order so that parents (and overrides)
+        // always come before children, we no isGlobal check is needed.
+        std::function<void(UINT32)> calcGlobal = [&](UINT32 boneIdx)
+        {
+            UINT32 parentBoneIdx = _bonesInfo[boneIdx].Parent;
+            if (parentBoneIdx == (UINT32)-1)
+            {
+                isGlobal[boneIdx] = true;
+                return;
+            }
+
+            if (!isGlobal[parentBoneIdx])
+                calcGlobal(parentBoneIdx);
+
+            pose[boneIdx] = pose[parentBoneIdx] * pose[boneIdx];
+            isGlobal[boneIdx] = true;
+        };
+
+        for (UINT32 i = 0; i < _numBones; i++)
+        {
+            if (!isGlobal[i])
+                calcGlobal(i);
+        }
+
+        for (UINT32 i = 0; i < _numBones; i++)
+            pose[i] = pose[i] * _invBindPoses[i];
+
+        te_delete(isGlobal);
         te_deleteN<bool>(hasAnimCurve, _numBones);
     }
 

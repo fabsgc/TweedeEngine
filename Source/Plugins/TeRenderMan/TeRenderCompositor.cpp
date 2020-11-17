@@ -60,7 +60,7 @@ namespace te
             else
             {
                 entry.RenderElem->MaterialElem->SetGpuParam(entry.RenderElem->GpuParamsElem[entry.PassIdx]);
-                gpuParamsBindFlags = GPU_BIND_PARAM_BLOCK;
+                gpuParamsBindFlags = GPU_BIND_PARAM_BLOCK | GPU_BIND_BUFFER;
             }
 
             bool isInstanced = (entry.RenderElem->InstanceCount > 0) ? true : false;

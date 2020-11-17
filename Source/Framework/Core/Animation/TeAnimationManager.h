@@ -53,11 +53,7 @@ namespace te
          * Evaluates animations for all animated objects, and returns the evaluated skeleton bone poses and morph shape
          * meshes that can be passed along to the renderer.
          *
-         * @return						Evaluated animation data for this frame (if @p async is false), or the previous
-         *								frame (if @p async is true). Note that the system re-uses the returned buffers,
-         *								and the returned buffer should stop being used after every second call to update().
-         *								This is enough to have one buffer be processed by the core thread, one queued
-         *								for future rendering and one that's being written to.
+         * @return	Evaluated animation data for this frame. 
          */
         const EvaluatedAnimationData* Update();
 

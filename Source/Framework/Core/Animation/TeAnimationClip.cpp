@@ -188,7 +188,9 @@ namespace te
                     indices[typeIdx] = i;
                 }
                 else
+                {
                     _nameMapping[entry.Name][typeIdx] = i;
+                }
             }
         };
 

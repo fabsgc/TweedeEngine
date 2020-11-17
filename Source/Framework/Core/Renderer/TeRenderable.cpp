@@ -299,6 +299,15 @@ namespace te
         _markCoreDirty();
     }
 
+    void Renderable::SetWriteVelocity(bool enable)
+    {
+        if (_properties.WriteVelocity == enable)
+            return;
+
+        _properties.WriteVelocity = enable;
+        _markCoreDirty();
+    }
+
     void Renderable::SetCullDistanceFactor(float factor)
     {
         _properties.CullDistanceFactor = factor;
@@ -389,8 +398,10 @@ namespace te
             {
                 _boneMatrixBuffer = CreateBoneMatrixBuffer(numBones);
 
-                // TODO animation prevMatrix for TAA and Motion Blur
-                _bonePrevMatrixBuffer = nullptr;
+                if (_properties.WriteVelocity)
+                    _bonePrevMatrixBuffer = CreateBoneMatrixBuffer(numBones);
+                else
+                    _bonePrevMatrixBuffer = nullptr;
             }
             else
             {
@@ -423,7 +434,8 @@ namespace te
         {
             const EvaluatedAnimationData::PoseInfo& poseInfo = animInfo->PoseInfos;
 
-            // TODO animation prevMatrix for TAA and Motion Blur
+            if (_properties.WriteVelocity)
+                std::swap(_boneMatrixBuffer, _bonePrevMatrixBuffer);
 
             // Note: If multiple elements are using the same animation (not possible atm), this buffer should be shared by
             // all such elements
@@ -442,7 +454,8 @@ namespace te
 
     void Renderable::UpdatePrevFrameAnimationBuffers()
     {
-        // TODO animation prevMatrix for TAA and Motion Blur
+        if (_animType == RenderableAnimType::Skinned)
+            std::swap(_boneMatrixBuffer, _bonePrevMatrixBuffer);
     }
 
     SPtr<Renderable> Renderable::Create()

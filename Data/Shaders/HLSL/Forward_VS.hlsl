@@ -65,13 +65,17 @@ cbuffer PerCallBuffer : register(b5)
     matrix gMatWorldViewProj;
 }
 
+Buffer<float4> BoneMatrices;
+Buffer<float4> PrevBoneMatrices;
+
 VS_OUTPUT main( VS_INPUT IN )
 {
     VS_OUTPUT OUT = (VS_OUTPUT)0;
 
     if(IN.Instanceid == 0)
     {
-        OUT.Position.xyz = IN.Position;
+        OUT.Position.xyz = BoneMatrices[0].xyz;
+        OUT.Position.xyz += IN.Position;
         OUT.Position.w = 1.0f;
         OUT.Position = mul(OUT.Position, gMatWorld);
         OUT.Position = mul(OUT.Position, gMatViewProj);

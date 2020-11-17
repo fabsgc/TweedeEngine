@@ -43,11 +43,11 @@ namespace te
     template struct TKeyframe<float>;
 
     /**
-     * Animation spline represented by a set of keyframes, each representing an endpoint of a cubic hermite curve. The
-     * spline can be evaluated at any time, and uses caching to speed up multiple sequential evaluations.
+     * Animation spline represented by a set of keyframes, each representing an endpoint of a linear curve. The
+     * spline can be evaluated at any time.
      */
     template <class T>
-    class TE_CORE_EXPORT TAnimationCurve // Note: Curves are expected to be immutable for threading purposes
+    class TE_CORE_EXPORT TAnimationCurve
     {
     public:
         typedef TKeyframe<T> KeyFrame;
@@ -61,8 +61,7 @@ namespace te
         TAnimationCurve(const Vector<KeyFrame>& keyframes);
 
         /**
-         * Evaluate the animation curve at the specified time. If evaluating multiple values in a sequential order consider
-         * using the cached version of evaluate() for better performance.
+         * Evaluate the animation curve at the specified time.
          *
          * @param[in]	time	%Time to evaluate the curve at.
          * @param[in]	loop	If true the curve will loop when it goes past the end or beggining. Otherwise the curve

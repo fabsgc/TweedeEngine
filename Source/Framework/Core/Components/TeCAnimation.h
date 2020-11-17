@@ -223,7 +223,8 @@ namespace te
         AnimWrapMode _wrapMode = AnimWrapMode::Loop;
         float _speed = 1.0f;
         bool _enableCull = true;
-        bool _previewMode = true; // TODO animation will need to be changed
+        // TODO animation will need to be changed
+        bool _previewMode = false;
 
         Vector<SceneObjectMappingInfo> _mappingInfos;
     };
