@@ -10,6 +10,20 @@
 
 namespace te
 {
+    /** Contains per-vertex bone weights and indexes used for skinning, for up to four bones. */
+    struct BoneWeight
+    {
+        int Index0;
+        int Index1;
+        int Index2;
+        int Index3;
+
+        float Weight0;
+        float Weight1;
+        float Weight2;
+        float Weight3;
+    };
+
     /** Contains mesh vertex and index data used for initializing, updating and reading mesh data from Mesh. */
     class TE_CORE_EXPORT MeshData : public GpuResourceData
     {
@@ -142,7 +156,7 @@ namespace te
         /**	Returns the size of the internal buffer in bytes. */
         UINT32 GetInternalBufferSize() const override;
 
-    private:
+    public:
         /**	Returns an offset in bytes to the start of the index buffer from the start of the internal buffer. */
         UINT32 GetIndexBufferOffset() const;
 

@@ -184,6 +184,25 @@ namespace te
         void SetUV1(Vector2* buffer, UINT32 size);
 
         /**
+         * Reads the bone weights and indices into the provided output buffer. Data will be copied and potentially
+         * uncompressed to fit the output format as needed.
+         *
+         * @param[in]	buffer	Pre-allocated buffer to output the bone weight data to.
+         * @param[in]	size	Size of the pre-allocated buffer. Must be big enough to fit all contents (numVertices *
+         *						sizeof(BoneWeight)).
+         */
+        void GetBoneWeights(BoneWeight* buffer, UINT32 size);
+
+        /**
+         * Writes the bone weights and indices from the provided output buffer. Data will be copied and potentially
+         * compressed to fit the internal mesh data format as needed.
+         *
+         * @param[in]	buffer	Pre-allocated buffer to read the bone weight data from.
+         * @param[in]	size	Size of the input buffer. Must be (numVertices * sizeof(BoneWeight)).
+         */
+        void SetBoneWeights(BoneWeight* buffer, UINT32 size);
+
+        /**
          * Reads the indices into the provided output buffer. Data will be copied and potentially uncompressed to fit the
          * output format as needed.
          *

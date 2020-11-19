@@ -773,6 +773,24 @@ namespace te
         Vector<SPtr<MeshData>> allMeshData;
         Vector<Vector<SubMesh>> allSubMeshes;
         UINT32 currentIndex = 0;
+        UINT32 boneIndexOffset = 0;
+
+        // Generate unique indices for all the bones. This is mirrored in createSkeleton().
+        UnorderedMap<AssimpImportNode*, UINT32> boneMap;
+        for (auto& mesh : scene.Meshes)
+        {
+            // Create bones
+            for (auto& assimpBone : mesh->Bones)
+            {
+                UINT32 boneIdx = (UINT32)boneMap.size();
+
+                auto iterFind = boneMap.find(assimpBone.Node);
+                if (iterFind != boneMap.end())
+                    continue; // Duplicate
+
+                boneMap[assimpBone.Node] = boneIdx;
+            }
+        }
 
         for (auto& mesh : scene.Meshes)
         {
@@ -817,6 +835,7 @@ namespace te
             size_t numVertices = mesh->Positions.size();
             bool hasColors = mesh->Colors.size() == numVertices;
             bool hasNormals = mesh->Normals.size() == numVertices;
+            bool hasBoneInfluences = mesh->BoneInfluences.size() == numVertices;
             bool hasTangents = false;
 
             if (hasColors)
@@ -835,14 +854,17 @@ namespace te
                 }
             }
 
+            if (hasBoneInfluences)
+                vertexLayout |= (UINT32)VertexLayout::BoneWeights;
+
             for (UINT32 i = 0; i < OBJECT_IMPORT_MAX_UV_LAYERS; i++)
             {
                 if (mesh->Textures[i].size() == numVertices)
                 {
                     if (i == 0)
                         vertexLayout |= (UINT32)VertexLayout::UV0;
-                    else if (i == 1)
-                        vertexLayout |= (UINT32)VertexLayout::UV1;
+                    /*else if (i == 1)
+                        vertexLayout |= (UINT32)VertexLayout::UV1;*/
                 }
             }
 
@@ -945,8 +967,8 @@ namespace te
 
                         if (writeUVIDx == 0)
                             meshData->SetUV0(transformedUV, size);
-                        else if (writeUVIDx == 1)
-                            meshData->SetUV1(transformedUV, size);
+                        /*else if (writeUVIDx == 1)
+                            meshData->SetUV1(transformedUV, size);*/
 
                         te_delete(transformedUV);
 
@@ -954,9 +976,48 @@ namespace te
                     }
                 }
 
+                // Copy bone influences & remap bone indices
+                if (hasBoneInfluences)
+                {
+                    UINT32 bufferSize = sizeof(BoneWeight) * (UINT32)numVertices;
+                    BoneWeight* weights = (BoneWeight*)te_allocate(bufferSize * sizeof(BoneWeight));
+                    for (UINT32 i = 0; i < (UINT32)numVertices; i++)
+                    {
+                        int* indices[] = { &weights[i].Index0, &weights[i].Index1, &weights[i].Index2, &weights[i].Index3 };
+                        float* amounts[] = { &weights[i].Weight0, &weights[i].Weight1, &weights[i].Weight2, &weights[i].Weight3 };
+
+                        for (UINT32 j = 0; j < 4; j++)
+                        {
+                            int boneIdx = mesh->BoneInfluences[i].Indices[j];
+                            if (boneIdx != -1)
+                            {
+                                AssimpImportNode* boneNode = mesh->Bones[boneIdx].Node;
+
+                                auto iterFind = boneMap.find(boneNode);
+                                if (iterFind != boneMap.end())
+                                    *indices[j] = iterFind->second;
+                                else
+                                    *indices[j] = -1;
+                            }
+                            else
+                            {
+                                *indices[j] = boneIdx;
+                            }
+
+                            *amounts[j] = mesh->BoneInfluences[i].Weights[j];
+                        }
+                    }
+
+                    meshData->SetBoneWeights(weights, bufferSize);
+                    te_deallocate(weights);
+                }
+
                 allMeshData.push_back(meshData->GetData());
                 allSubMeshes.push_back(subMeshes);
             }
+
+            UINT32 numBones = (UINT32)mesh->Bones.size();
+            boneIndexOffset += numBones;
         }
 
         if (allMeshData.size() > 1)

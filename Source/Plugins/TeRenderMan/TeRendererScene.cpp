@@ -512,7 +512,7 @@ namespace te
             return;
 
         RendererRenderable* rendererRenderable = _info.Renderables[idx];
-        
+
         if(frameInfo.PerFrameDatas.Animation != nullptr)
             rendererRenderable->RenderablePtr->UpdateAnimationBuffers(*frameInfo.PerFrameDatas.Animation);
 

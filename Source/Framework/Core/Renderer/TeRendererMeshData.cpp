@@ -216,6 +216,85 @@ namespace te
         _meshData->SetVertexData(VES_TEXCOORD, buffer, size, 1);
     }
 
+    void RendererMeshData::GetBoneWeights(BoneWeight* buffer, UINT32 size)
+    {
+        SPtr<VertexDataDesc> vertexDesc = _meshData->GetVertexDesc();
+
+        if (!vertexDesc->HasElement(VES_BLEND_WEIGHTS) ||
+            !vertexDesc->HasElement(VES_BLEND_INDICES))
+            return;
+
+        UINT32 numElements = _meshData->GetNumVertices();
+        assert(numElements * sizeof(BoneWeight) == size);
+
+        UINT8* weightPtr = _meshData->GetElementData(VES_BLEND_WEIGHTS);
+        UINT8* indexPtr = _meshData->GetElementData(VES_BLEND_INDICES);
+
+        UINT32 stride = vertexDesc->GetVertexStride(0);
+
+        BoneWeight* weightDst = buffer;
+        for (UINT32 i = 0; i < numElements; i++)
+        {
+            float* indices = (float*)indexPtr;
+            float* weights = (float*)weightPtr;
+
+            weightDst->Index0 = (int)indices[0];
+            weightDst->Index1 = (int)indices[1];
+            weightDst->Index2 = (int)indices[2];
+            weightDst->Index3 = (int)indices[3];
+
+            weightDst->Weight0 = weights[0];
+            weightDst->Weight1 = weights[1];
+            weightDst->Weight2 = weights[2];
+            weightDst->Weight3 = weights[3];
+
+            weightDst++;
+            indexPtr += stride;
+            weightPtr += stride;
+        }
+    }
+
+    void RendererMeshData::SetBoneWeights(BoneWeight* buffer, UINT32 size)
+    {
+        SPtr<VertexDataDesc> vertexDesc = _meshData->GetVertexDesc();
+
+        if (!vertexDesc->HasElement(VES_BLEND_WEIGHTS) ||
+            !vertexDesc->HasElement(VES_BLEND_INDICES))
+            return;
+
+        UINT32 numElements = _meshData->GetNumVertices();
+        assert(numElements * sizeof(BoneWeight) == size);
+
+        UINT8* weightPtr = _meshData->GetElementData(VES_BLEND_WEIGHTS);
+        UINT8* indexPtr = _meshData->GetElementData(VES_BLEND_INDICES);
+
+        UINT8* weightPtrTmp = weightPtr;
+        UINT8* indexPtrTmp = indexPtr;
+
+        UINT32 stride = vertexDesc->GetVertexStride(0);
+
+        BoneWeight* weightSrc = buffer;
+        for (UINT32 i = 0; i < numElements; i++)
+        {
+            float* indices = (float*)indexPtr;
+            float* weights = (float*)weightPtr;
+
+            indices[0] = (float)weightSrc->Index0;
+            indices[1] = (float)weightSrc->Index1;
+            indices[2] = (float)weightSrc->Index2;
+            indices[3] = (float)weightSrc->Index3;
+
+            weights[0] = weightSrc->Weight0;
+            weights[1] = weightSrc->Weight1;
+            weights[2] = weightSrc->Weight2;
+            weights[3] = weightSrc->Weight3;
+
+            weightSrc++;
+            indexPtr += stride;
+            weightPtr += stride;
+        }
+    }
+
     void RendererMeshData::GetIndices(UINT32* buffer, UINT32 size)
     {
         UINT32 indexSize = _meshData->GetIndexElementSize();
@@ -302,11 +381,17 @@ namespace te
         if ((intType & (INT32)VertexLayout::UV0) != 0)
             vertexDesc->AddVertElem(VET_FLOAT2, VES_TEXCOORD, 0);
 
-        if ((intType & (INT32)VertexLayout::UV1) != 0)
-            vertexDesc->AddVertElem(VET_FLOAT2, VES_TEXCOORD, 1);
+        //if ((intType & (INT32)VertexLayout::UV1) != 0)
+        //    vertexDesc->AddVertElem(VET_FLOAT2, VES_TEXCOORD, 1);
 
         if ((intType & (INT32)VertexLayout::Color) != 0)
-            vertexDesc->AddVertElem(VET_COLOR, VES_COLOR);
+            vertexDesc->AddVertElem(VET_FLOAT4, VES_COLOR);
+
+        if ((intType & (INT32)VertexLayout::BoneWeights) != 0)
+        {
+            vertexDesc->AddVertElem(VET_FLOAT4, VES_BLEND_WEIGHTS);
+            vertexDesc->AddVertElem(VET_FLOAT4, VES_BLEND_INDICES);
+        }
 
         return vertexDesc;
     }
