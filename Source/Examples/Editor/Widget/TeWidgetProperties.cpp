@@ -794,7 +794,10 @@ namespace te
         bool hasChanged = false;
         char inputName[128];
         UINT32 numClip = animation->GetNumClips();
-        const float widgetWidth = ImGui::GetWindowContentRegionWidth() - 100.0f;       
+        const float widgetWidth = ImGui::GetWindowContentRegionWidth() - 100.0f;
+
+        // TODO add clip (select)
+        // TODO remove clip
 
         for (UINT32 i = 0; i < numClip; i++)
         {
