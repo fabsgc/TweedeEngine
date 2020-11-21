@@ -40,7 +40,6 @@ struct VS_INPUT
     float4 BlendIndices : BLENDINDICES;
     float2 Texture : TEXCOORD0;
     float4 Color : COLOR0;
-    uint   Instanceid : SV_InstanceID;
 };
 
 struct VS_OUTPUT

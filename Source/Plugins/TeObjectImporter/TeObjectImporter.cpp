@@ -421,10 +421,10 @@ namespace te
             AssimpImportNode* parentNode = mesh.ReferencedBy[0];
 
             bone.LocalTransform = bone.Node->LocalTransform; // TODO Matrix4 or Transform ?
-            bone.BindPose = ConvertToNativeType(assimpMesh->mBones[i]->mOffsetMatrix);
+            bone.InvBindPose = ConvertToNativeType(assimpMesh->mBones[i]->mOffsetMatrix);
 
             // Undo the transform we baked into the mesh
-            bone.BindPose = bone.BindPose * (parentNode->WorldTransform).InverseAffine();
+            bone.InvBindPose = bone.InvBindPose * (parentNode->WorldTransform).InverseAffine();
 
             INT32 numVertices = (INT32)influences.size();
 
@@ -534,7 +534,6 @@ namespace te
                         keyFrame.Value = ConvertToNativeType(assimpChannel->mRotationKeys[k].mValue);
                     }
                 }
-
                 else
                 {
                     rotations.push_back(TKeyframe<Quaternion>());
@@ -600,7 +599,7 @@ namespace te
                 assimpBone.LocalTransform.Decomposition(position, rotation, scale); // TODO don't like that, slow
                 bone.Name = assimpBone.Node->Name;
                 bone.LocalTfrm = Transform(position, rotation, scale);
-                bone.InvBindPose = assimpBone.BindPose;
+                bone.InvBindPose = assimpBone.InvBindPose;
             }
         }
 
@@ -831,6 +830,12 @@ namespace te
             }
 
             UINT32 vertexLayout = (UINT32)VertexLayout::Position;
+            vertexLayout |= (UINT32)VertexLayout::Normal;
+            vertexLayout |= (UINT32)VertexLayout::Tangent;
+            vertexLayout |= (UINT32)VertexLayout::BiTangent;
+            vertexLayout |= (UINT32)VertexLayout::UV0;
+            vertexLayout |= (UINT32)VertexLayout::BoneWeights;
+            vertexLayout |= (UINT32)VertexLayout::Color;
 
             size_t numVertices = mesh->Positions.size();
             bool hasColors = mesh->Colors.size() == numVertices;
@@ -838,33 +843,12 @@ namespace te
             bool hasBoneInfluences = mesh->BoneInfluences.size() == numVertices;
             bool hasTangents = false;
 
-            if (hasColors)
-                vertexLayout |= (UINT32)VertexLayout::Color;
-
             if (hasNormals)
             {
-                vertexLayout |= (UINT32)VertexLayout::Normal;
-
                 if (mesh->Tangents.size() == numVertices &&
                     mesh->Bitangents.size() == numVertices)
                 {
-                    vertexLayout |= (UINT32)VertexLayout::Tangent;
-                    vertexLayout |= (UINT32)VertexLayout::BiTangent;
                     hasTangents = true;
-                }
-            }
-
-            if (hasBoneInfluences)
-                vertexLayout |= (UINT32)VertexLayout::BoneWeights;
-
-            for (UINT32 i = 0; i < OBJECT_IMPORT_MAX_UV_LAYERS; i++)
-            {
-                if (mesh->Textures[i].size() == numVertices)
-                {
-                    if (i == 0)
-                        vertexLayout |= (UINT32)VertexLayout::UV0;
-                    /*else if (i == 1)
-                        vertexLayout |= (UINT32)VertexLayout::UV1;*/
                 }
             }
 
@@ -1092,7 +1076,7 @@ namespace te
 
     Quaternion ObjectImporter::ConvertToNativeType(const aiQuaternion& quaternion)
     {
-        return Quaternion((float)quaternion.x, (float)quaternion.y, (float)quaternion.z, (float)quaternion.w);
+        return Quaternion((float)quaternion.w, (float)quaternion.x, (float)quaternion.y, (float)quaternion.z);
     }
 
     void ObjectImporter::SetMeshImportOptions(const String& filePath, MeshImportOptions& meshImportOptions)

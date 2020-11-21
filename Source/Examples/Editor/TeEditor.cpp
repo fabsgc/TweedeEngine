@@ -722,6 +722,7 @@ namespace te
 
         // ######################################################
         auto knightResources = gResourceManager().LoadAll("Data/Meshes/Knight/Knight.dae", meshAnimImportOptions);
+        //auto knightResources = gResourceManager().LoadAll("Data/Meshes/Steve/steve-only-rotation.dae", meshAnimImportOptions);
 
         _loadedMeshKnight = static_resource_cast<Mesh>(knightResources->Entries[0].Res);
         _animationClipKnight = static_resource_cast<AnimationClip>(knightResources->Entries[1].Res);

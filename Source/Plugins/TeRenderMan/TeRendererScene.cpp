@@ -516,14 +516,6 @@ namespace te
         if(frameInfo.PerFrameDatas.Animation != nullptr)
             rendererRenderable->RenderablePtr->UpdateAnimationBuffers(*frameInfo.PerFrameDatas.Animation);
 
-        for (auto& element : rendererRenderable->Elements)
-        {
-            // TODO animation : Bone buffers
-        }
-
-        // Update animation when animation system will be done
-        //_info.Renderables[idx]->PerObjectParamBuffer->FlushToGPU();
-
         _info.RenderableReady[idx] = true;
     }
 

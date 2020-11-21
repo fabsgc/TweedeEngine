@@ -53,7 +53,7 @@ namespace te
     {
         AssimpImportNode* Node;
         Matrix4 LocalTransform = Matrix4::IDENTITY;
-        Matrix4 BindPose = Matrix4::IDENTITY;
+        Matrix4 InvBindPose = Matrix4::IDENTITY;
     };
 
     /** Contains a set of bone weights and indices for a single vertex, used in a skinned mesh. */

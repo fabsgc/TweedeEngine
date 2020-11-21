@@ -10,20 +10,20 @@ namespace te
     SPtr<GpuBuffer> CreateBoneMatrixBuffer(UINT32 numBones)
     {
         GPU_BUFFER_DESC desc;
-        desc.ElementCount = numBones * 3;
+        desc.ElementCount = numBones * 4;
         desc.ElementSize = 0;
         desc.Type = GBT_STANDARD;
         desc.Format = BF_32X4F;
         desc.Usage = GBU_DYNAMIC;
 
         SPtr<GpuBuffer> buffer = GpuBuffer::Create(desc);
-        UINT8* dest = (UINT8*)buffer->Lock(0, numBones * 3 * sizeof(Vector4), GBL_WRITE_ONLY_DISCARD);
+        UINT8* dest = (UINT8*)buffer->Lock(0, numBones * 4 * sizeof(Vector4), GBL_WRITE_ONLY_DISCARD);
 
         // Initialize bone transforms to identity, so the object renders properly even if no animation is animating it
         for (UINT32 i = 0; i < numBones; i++)
         {
-            memcpy(dest, &Matrix4::IDENTITY, 12 * sizeof(float)); // Assuming row-major format
-            dest += 12 * sizeof(float);
+            memcpy(dest, &Matrix4::IDENTITY, 16 * sizeof(float)); // Assuming row-major format
+            dest += 16 * sizeof(float);
         }
 
         buffer->Unlock();
@@ -439,13 +439,13 @@ namespace te
 
             // Note: If multiple elements are using the same animation (not possible atm), this buffer should be shared by
             // all such elements
-            UINT8* dest = (UINT8*)_boneMatrixBuffer->Lock(0, poseInfo.NumBones * 3 * sizeof(Vector4), GBL_WRITE_ONLY_DISCARD);
+            UINT8* dest = (UINT8*)_boneMatrixBuffer->Lock(0, poseInfo.NumBones * 4 * sizeof(Vector4), GBL_WRITE_ONLY_DISCARD);
             for (UINT32 j = 0; j < poseInfo.NumBones; j++)
             {
                 const Matrix4& transform = animData.Transforms[poseInfo.StartIdx + j];
-                memcpy(dest, &transform, 12 * sizeof(float)); // Assuming row-major format
+                memcpy(dest, &transform, 16 * sizeof(float)); // Assuming row-major format
 
-                dest += 12 * sizeof(float);
+                dest += 16 * sizeof(float);
             }
 
             _boneMatrixBuffer->Unlock();
