@@ -443,8 +443,6 @@ namespace te
 
                 for (auto& gpuParams : element.GpuParamsElem)
                 {
-                    // TODO animation : BoneMatrices buffers
-
                     gpuParams->SetParamBlockBuffer("PerObjectBuffer", rendererRenderable->PerObjectParamBuffer);
                     gpuParams->SetParamBlockBuffer("PerCallBuffer", rendererRenderable->PerCallParamBuffer);
                     gpuParams->SetParamBlockBuffer("PerMaterialBuffer", element.PerMaterialParamBuffer);

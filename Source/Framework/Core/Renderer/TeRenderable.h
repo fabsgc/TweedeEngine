@@ -20,8 +20,8 @@ namespace te
         bool CanBeMerged = false;
         bool CastShadow = true;
         bool UseForDynamicEnvMapping  = false;
-        float CullDistanceFactor = 1.0f;
         bool WriteVelocity = true;
+        float CullDistanceFactor = 1.0f;
     };
 
     /** Type of animation that can be applied to a renderable object. */

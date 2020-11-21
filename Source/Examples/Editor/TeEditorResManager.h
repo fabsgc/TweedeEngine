@@ -54,6 +54,9 @@ namespace te
         /** @copydoc Module::OnShutDown */
         void OnShutDown() override;
 
+        /** copydoc ResourceManager::LoadAll */
+        SPtr<MultiResource> LoadAll(const String& filePath, const SPtr<const ImportOptions>& options = nullptr);
+
         template <class T>
         ResourceHandle<T> Load(const String& filePath, const SPtr<const ImportOptions>& options)
         {

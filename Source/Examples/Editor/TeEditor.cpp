@@ -176,8 +176,13 @@ namespace te
         }
         else
         {
-            _selections.ClickedComponent = nullptr;
-            _selections.ClickedSceneObject = nullptr;
+            if (_selections.ClickedComponent->GetCoreType() == TID_CRenderable ||
+                _selections.ClickedComponent->GetCoreType() == TID_CCamera ||
+                _selections.ClickedComponent->GetCoreType() == TID_CLight)
+            {
+                _selections.ClickedComponent = nullptr;
+                _selections.ClickedSceneObject = nullptr;
+            }
         }
 
         NeedsRedraw();
@@ -721,7 +726,7 @@ namespace te
         // ######################################################
 
         // ######################################################
-        auto knightResources = gResourceManager().LoadAll("Data/Meshes/Knight/Knight.dae", meshAnimImportOptions);
+        auto knightResources = EditorResManager::Instance().LoadAll("Data/Meshes/Knight/Knight.dae", meshAnimImportOptions);
         //auto knightResources = gResourceManager().LoadAll("Data/Meshes/Steve/steve-only-rotation.dae", meshAnimImportOptions);
 
         _loadedMeshKnight = static_resource_cast<Mesh>(knightResources->Entries[0].Res);
@@ -832,9 +837,7 @@ namespace te
 
         //EditorResManager::Instance().Add<Material>(_monkeyMaterial);
         //EditorResManager::Instance().Add<Material>(_planeMaterial);
-        EditorResManager::Instance().Add<Mesh>(_loadedMeshKnight);
         EditorResManager::Instance().Add<Material>(_knightMaterial);
-        EditorResManager::Instance().Add<AnimationClip>(_animationClipKnight);
         EditorResManager::Instance().Add<Shader>(gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque));
         EditorResManager::Instance().Add<Shader>(gBuiltinResources().GetBuiltinShader(BuiltinShader::Transparent));
 #endif

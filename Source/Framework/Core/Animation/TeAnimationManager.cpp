@@ -75,6 +75,15 @@ namespace te
             if (!entry.second->GetActive())
                 continue;
 
+            UINT32 cameraFlags = entry.second->GetFlags();
+            if ((cameraFlags & (UINT32)CameraFlag::OnDemand))
+            {
+                // if camera is on demand, we check if user has asked for redraw
+                UINT32 cameraDirtyFlag = entry.second->GetCoreDirtyFlags();
+                if (!(cameraDirtyFlag & (INT32)CameraDirtyFlag::Redraw))
+                    continue;
+            }
+
             _cullFrustums.push_back(entry.second->GetWorldFrustum());
         }
 
@@ -118,7 +127,7 @@ namespace te
             bool isVisible = false;
             for (auto& frustum : _cullFrustums)
             {
-                if (frustum.Intersects(anim->_boundingBox))
+                if (frustum.Intersects(anim->_bounds))
                 {
                     isVisible = true;
                     break;

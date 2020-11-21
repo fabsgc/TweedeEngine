@@ -58,8 +58,6 @@ namespace te
 
     void Camera::FrameSync()
     {
-        //TE_PRINT("# SYNC CAMERA");
-
         UINT32 dirtyFlag = GetCoreDirtyFlags();
 
         if ((dirtyFlag & ~(INT32)CameraDirtyFlag::Redraw) != 0)

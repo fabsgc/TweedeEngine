@@ -52,6 +52,7 @@ cbuffer PerObjectBuffer : register(b3)
     matrix gMatPrevWorld;
     uint   gLayer;
     uint   gHasAnimation;
+    uint   gWriteVelocity;
 }
 
 cbuffer PerFrameBuffer : register(b4)

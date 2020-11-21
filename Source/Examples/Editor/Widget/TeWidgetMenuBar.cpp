@@ -290,14 +290,28 @@ namespace te
                 meshImportOptions->ImportMaterials = _fileBrowser.Data.MeshParam.ImportMaterials;
                 meshImportOptions->CpuCached = false;
 
-                HMesh mesh = EditorResManager::Instance().Load<Mesh>(_fileBrowser.Data.SelectedPath, meshImportOptions);
-                if (mesh.GetHandleData())
+                SPtr<MultiResource> resources = EditorResManager::Instance().LoadAll(_fileBrowser.Data.SelectedPath, meshImportOptions);
+                if (!resources->Empty())
                 {
-                    mesh->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
-                    EditorResManager::Instance().Add<Mesh>(mesh);
+                    for (auto& subRes : resources->Entries)
+                    {
+                        if (subRes.Name == "primary")
+                        {
+                            HMesh mesh = static_resource_cast<Mesh>(subRes.Res);
+                            if (mesh.GetHandleData())
+                            {
+                                mesh->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
+                                EditorResManager::Instance().Add<Mesh>(mesh);
 
-                    if(_fileBrowser.Data.MeshParam.ImportMaterials)
-                        EditorUtils::ImportMeshMaterials(mesh);
+                                if (_fileBrowser.Data.MeshParam.ImportMaterials)
+                                    EditorUtils::ImportMeshMaterials(mesh);
+                            }
+                        }
+                        else
+                        {
+                            subRes.Res->SetPath(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
+                        }
+                    }
                 }
             }
             else

@@ -99,6 +99,7 @@ namespace te
             Matrix4 gMatPrevWorld;
             UINT32  gLayer;
             UINT32  gHasAnimation;
+            UINT32  gWriteVelocity;
         };
 
         struct PerHudInstanceData

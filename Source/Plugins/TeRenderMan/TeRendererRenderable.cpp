@@ -23,6 +23,7 @@ namespace te
         gPerObjectParamDef.gMatPrevWorld.Set(buffer, prevTfrm);
         gPerObjectParamDef.gLayer.Set(buffer, (INT32)layer);
         gPerObjectParamDef.gHasAnimation.Set(buffer, (UINT32)renderable->IsAnimated() ? 1 : 0);
+        gPerObjectParamDef.gWriteVelocity.Set(buffer, (UINT32)renderable->GetWriteVelocity() ? 1 : 0);
     }
 
     void PerObjectBuffer::UpdatePerInstance(SPtr<GpuParamBlockBuffer>& perObjectBuffer, 
@@ -112,7 +113,6 @@ namespace te
 
     void RendererRenderable::UpdatePerObjectBuffer()
     {
-        // TODO animation : take animation into account
         PerObjectBuffer::UpdatePerObject(PerObjectParamBuffer, WorldTfrm, PrevWorldTfrm, RenderablePtr);
     }
 

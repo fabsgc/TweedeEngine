@@ -203,7 +203,7 @@ namespace te
         Matrix4* _sceneObjectTransforms = nullptr;
 
         // Culling
-        AABox _boundingBox;
+        AABox _bounds;
         bool _cullEnabled = true;
 
         // Single frame sample
@@ -251,7 +251,7 @@ namespace te
         /** Determines bounds that will be used for animation culling, if enabled. Bounds must be in world space. */
         void SetBounds(const AABox& bounds);
 
-        /** @copydoc setBounds */
+        /** @copydoc SetBounds */
         const AABox& GetBounds() const { return _bounds; }
 
         /**
@@ -260,7 +260,7 @@ namespace te
          */
         void SetCulling(bool cull);
 
-        /** @copydoc setCulling */
+        /** @copydoc SetCulling */
         bool GetCulling() const { return _cull; }
 
         /**
@@ -442,7 +442,7 @@ namespace te
         bool _genericCurveValuesValid = false;
         AnimSampleStep _sampleStep = AnimSampleStep::None;
 
-        // TODO delete AnimationProxy (useless in single thread context)
+        // (useless in single thread context)
         SPtr<AnimationProxy> _animProxy;
     };
 }

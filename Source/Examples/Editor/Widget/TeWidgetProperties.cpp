@@ -285,6 +285,12 @@ namespace te
                 hasChanged = true;
         }
 
+        if (animation->GetNumClips() > 0)
+        {
+            if (ShowAnimationClips(animation))
+                hasChanged = true;
+        }
+
         return hasChanged;
     }
 
@@ -596,6 +602,17 @@ namespace te
         }
         ImGui::Separator();
 
+        // velocity
+        {
+            bool writeVelocity = properties.WriteVelocity;
+            if (ImGuiExt::RenderOptionBool(writeVelocity, "##renderable_properties_velocity_option", "Write velocity"))
+            {
+                hasChanged = true;
+                renderable->SetWriteVelocity(writeVelocity);
+            }
+        }
+        ImGui::Separator();
+
         // instancing
         {
             bool instancing = properties.Instancing;
@@ -706,6 +723,101 @@ namespace te
     bool WidgetProperties::ShowAnimation(SPtr<CAnimation> animation)
     {
         bool hasChanged = false;
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
+
+        // cull
+        {
+            bool cull = animation->GetEnableCull();
+            if (ImGuiExt::RenderOptionBool(cull, "##animation_cull_option", "Culling"))
+            {
+                hasChanged = true;
+                animation->SetEnableCull(cull);
+            }
+        }
+        ImGui::Separator();
+
+        // speed
+        {
+            float speed = animation->GetSpeed();
+            if (ImGuiExt::RenderOptionFloat(speed, "##animation_speed_option", "Speed", 0.1f, 10.0f, width))
+            {
+                hasChanged = true;
+                animation->SetSpeed(speed);
+            }
+        }
+        ImGui::Separator();
+
+        // wrap mode
+        {
+            static ImGuiExt::ComboOptions<AnimWrapMode> wrapModeOptions;
+            if (wrapModeOptions.Options.size() == 0)
+            {
+                wrapModeOptions.AddOption(AnimWrapMode::Loop, "Loop");
+                wrapModeOptions.AddOption(AnimWrapMode::Clamp, "Clamp");
+            }
+
+            AnimWrapMode wrapMode = animation->GetWrapMode();
+            if (ImGuiExt::RenderOptionCombo<AnimWrapMode>(&wrapMode, "##animation_wrap_mode_option", "Wrap mode", wrapModeOptions, width))
+            {
+                hasChanged = true;
+                animation->SetWrapMode(wrapMode);
+            }
+        }
+        ImGui::Separator();
+
+        // bounds
+        {
+            AABox bounds = animation->GetBounds();
+            Vector3 minBound = bounds.GetMin();
+            Vector3 maxBound = bounds.GetMax();
+
+            if (ImGuiExt::RenderVector3(minBound, "##animation_min_bound_option", " Min bound", 40.0f))
+            {
+                bounds.SetMin(minBound);
+                animation->SetBounds(bounds);
+                hasChanged = true;
+            }
+
+            if (ImGuiExt::RenderVector3(maxBound, "##animation_max_bound_option", " Max bound", 40.0f))
+            {
+                bounds.SetMax(maxBound);
+                animation->SetBounds(bounds);
+                hasChanged = true;
+            }
+        }
+
+        return hasChanged;
+    }
+
+    bool WidgetProperties::ShowAnimationClips(SPtr<CAnimation> animation)
+    {
+        bool hasChanged = false;
+        char inputName[128];
+        UINT32 numClip = animation->GetNumClips();
+        const float widgetWidth = ImGui::GetWindowContentRegionWidth() - 100.0f;       
+
+        for (UINT32 i = 0; i < numClip; i++)
+        {
+            HAnimationClip clip = animation->GetClip(i);
+            String name = clip->GetName();
+            
+            ImGui::PushID((int)clip->GetInternalID());
+            if (ImGui::CollapsingHeader(name.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
+            {
+                memset(&inputName, 0, 128);
+                strcpy(inputName, name.c_str());
+   
+                ImGui::PushItemWidth(widgetWidth);
+                if (ImGui::InputText("Name", inputName, IM_ARRAYSIZE(inputName)))
+                {
+                    clip->SetName(inputName);
+                    hasChanged = true;
+                }
+                ImGui::PopItemWidth();
+            }
+            ImGui::PopID();
+        }
+
         return hasChanged;
     }
 
@@ -783,31 +895,45 @@ namespace te
             meshImportOptions->ImportMaterials = _fileBrowser.Data.MeshParam.ImportMaterials;
             meshImportOptions->CpuCached = false;
 
-            HMesh mesh = EditorResManager::Instance().Load<Mesh>(_fileBrowser.Data.SelectedPath, meshImportOptions);
-            if (mesh.GetHandleData())
+            SPtr<MultiResource> resources = EditorResManager::Instance().LoadAll(_fileBrowser.Data.SelectedPath, meshImportOptions);
+            if (!resources->Empty())
             {
-                mesh->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
-                EditorResManager::Instance().Add<Mesh>(mesh);
-                SPtr<CRenderable> renderable = std::static_pointer_cast<CRenderable>(_selections.ClickedComponent);
-
-                // We will try to set the material attach to this mesh (in fact one material per submesh), and create it before if not exist
-                renderable->SetMesh(mesh.GetInternalPtr());
-                meshLoaded = true;
-
-                if (meshImportOptions->ImportMaterials)
+                for (auto& subRes : resources->Entries)
                 {
-                    EditorUtils::ImportMeshMaterials(mesh);
-
-                    for (UINT32 i = 0; i < mesh->GetProperties().GetNumSubMeshes(); i++)
+                    if (subRes.Name == "primary")
                     {
-                        SubMesh& subMesh = mesh->GetProperties().GetSubMesh(i);
-                        if (subMesh.Mat.GetHandleData())
-                            renderable->SetMaterial(i, subMesh.Mat.GetInternalPtr());
+                        HMesh mesh = static_resource_cast<Mesh>(subRes.Res);
+                        if (mesh.GetHandleData())
+                        {
+                            mesh->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
+                            EditorResManager::Instance().Add<Mesh>(mesh);
+                            SPtr<CRenderable> renderable = std::static_pointer_cast<CRenderable>(_selections.ClickedComponent);
+
+                            // We will try to set the material attach to this mesh (in fact one material per submesh), and create it before if not exist
+                            renderable->SetMesh(mesh.GetInternalPtr());
+                            meshLoaded = true;
+
+                            if (meshImportOptions->ImportMaterials)
+                            {
+                                EditorUtils::ImportMeshMaterials(mesh);
+
+                                for (UINT32 i = 0; i < mesh->GetProperties().GetNumSubMeshes(); i++)
+                                {
+                                    SubMesh& subMesh = mesh->GetProperties().GetSubMesh(i);
+                                    if (subMesh.Mat.GetHandleData())
+                                        renderable->SetMaterial(i, subMesh.Mat.GetInternalPtr());
+                                }
+                            }
+                        }
+
+                        _loadMesh = false;
+                    }
+                    else
+                    {
+                        subRes.Res->SetPath(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
                     }
                 }
             }
-
-            _loadMesh = false;
         }
         else
         {

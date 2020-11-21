@@ -69,7 +69,7 @@ namespace te
         }
 
         /**
-         * By using this importer, because non primary resources are noy linked to a file, we need to 
+         * By using this importer, because non primary resources are not linked to a file, we need to 
          * find associated subResources and return a MultiResource instance
         */
         SPtr<MultiResource> LoadAll(const String& filePath, const SPtr<const ImportOptions>& options = nullptr);

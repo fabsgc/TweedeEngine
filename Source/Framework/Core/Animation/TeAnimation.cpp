@@ -1061,6 +1061,7 @@ namespace te
         if (_dirty |= (UINT32)AnimDirtyStateFlag::Culling)
         {
             _animProxy->_cullEnabled = _cull;
+            _animProxy->_bounds = _bounds;
             _dirty &= ~(UINT32)AnimDirtyStateFlag::Culling;
         }
 

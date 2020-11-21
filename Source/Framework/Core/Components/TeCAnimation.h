@@ -59,6 +59,12 @@ namespace te
         /** @copydoc SetSpeed */
         float GetSpeed() const { return _speed; }
 
+        /** @copydoc Animation::SetBounds */
+        void SetBounds(const AABox& bounds) { _internal->SetBounds(bounds); }
+
+        /** @copydoc Animation::GetBounds */
+        const AABox& GetBounds() const { return _internal->GetBounds(); }
+
         /** @copydoc Animation::Play */
         void Play(const HAnimationClip& clip);
 
@@ -180,7 +186,10 @@ namespace te
     protected:
         using Component::DestroyInternal;
 
-        /** Creates the internal representation of the Animation and restores the values saved by the Component. */
+        /** 
+        * Creates the internal representation of the Animation and restores the values saved by the Component. 
+        * Node : clips must be added manually because this method can't do it properly
+        */
         void RestoreInternal(bool previewMode);
 
         /** Destroys the internal Animation representation. */

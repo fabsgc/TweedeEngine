@@ -10,6 +10,23 @@ namespace te
     EditorResManager::~EditorResManager()
     { }
 
+    SPtr<MultiResource> EditorResManager::LoadAll(const String& filePath, const SPtr<const ImportOptions>& options)
+    {
+        SPtr<MultiResource> resources = gResourceManager().LoadAll(filePath, options);
+        Vector<SubResource> output;
+
+        for(auto& subRes : resources->Entries)
+        {
+            if (subRes.Res.GetHandleData())
+            {
+                _resources[subRes.Res->GetCoreType()].Add(subRes.Res);
+                output.push_back(subRes);
+            }
+        }
+
+        return te_shared_ptr_new<MultiResource>(output);
+    }
+
     void EditorResManager::OnStartUp()
     { }
 

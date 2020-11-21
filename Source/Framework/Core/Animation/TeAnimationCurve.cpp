@@ -72,7 +72,6 @@ namespace te
             output.TimeInSpline = time;
             output.Value = Math::Lerp(t, lhs.Value, rhs.Value);
 
-            // TODO animation : not sure if it works
             return output;
         }
 
@@ -103,7 +102,6 @@ namespace te
                 t = (time - lhs.TimeInSpline) / length;
             }
 
-            // TODO animation : not sure if it works
             return Math::Lerp(t, lhs.Value, rhs.Value);
         }
 

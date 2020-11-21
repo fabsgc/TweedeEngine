@@ -82,7 +82,7 @@ namespace te
     {
         for (UINT32 i = 0; i < numBones; i++)
         {
-            _boneTransforms[i] = bones[i].LocalTfrm;
+           _boneTransforms[i] = bones[i].LocalTfrm;
             _invBindPoses[i] = bones[i].InvBindPose;
             _bonesInfo[i].Name = bones[i].Name;
             _bonesInfo[i].Parent = bones[i].Parent;
@@ -199,15 +199,18 @@ namespace te
             }
         }
 
-        // Apply default local tranform to non-animated bones (so that any potential child bones are transformed properly)
-        for (UINT32 i = 0; i < _numBones; i++)
+        if (numLayers > 0)
         {
-            if (hasAnimCurve[i])
-                continue;
+            // Apply default local tranform to non-animated bones (so that any potential child bones are transformed properly)
+            for (UINT32 i = 0; i < _numBones; i++)
+            {
+                if (hasAnimCurve[i])
+                    continue;
 
-            localPose.Positions[i] = _boneTransforms[i].GetPosition();
-            localPose.Rotations[i] = _boneTransforms[i].GetRotation();
-            localPose.Scales[i] = _boneTransforms[i].GetScale();
+                localPose.Positions[i] = _boneTransforms[i].GetPosition();
+                localPose.Rotations[i] = _boneTransforms[i].GetRotation();
+                localPose.Scales[i] = _boneTransforms[i].GetScale();
+            }
         }
 
         // Calculate local pose matrices

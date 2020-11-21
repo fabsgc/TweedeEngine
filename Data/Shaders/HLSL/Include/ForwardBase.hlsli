@@ -14,6 +14,7 @@ struct PerInstanceData
     matrix gMatPrevWorld;
     uint   gLayer;
     uint   gHasAnimation;
+    uint   gWriteVelocity;
 };
 
 struct LightData

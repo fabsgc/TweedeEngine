@@ -412,6 +412,7 @@ namespace te
                 data.gMatPrevWorld = gPerObjectParamDef.gMatPrevWorld.Get(buffer);
                 data.gLayer = gPerObjectParamDef.gLayer.Get(buffer);
                 data.gHasAnimation = gPerObjectParamDef.gHasAnimation.Get(buffer);
+                data.gWriteVelocity = gPerObjectParamDef.gWriteVelocity.Get(buffer);
 
                 _instanceDataPool[currInstBlock][subElemIdx - lowerBlockBound] = data;
                 instancedObjectCounter++;

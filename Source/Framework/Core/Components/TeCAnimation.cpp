@@ -158,21 +158,11 @@ namespace te
 
     void CAnimation::OnEnabled()
     {
-        if (_previewMode)
-        {
-            DestroyInternal();
-            _previewMode = false;
-        }
-
-        // TODO animation scene manager is running ?
-
-        RestoreInternal(false);
         Component::OnEnabled();
     }
 
     void CAnimation::OnDisabled()
     {
-        DestroyInternal();
         Component::OnDisabled();
     }
 
