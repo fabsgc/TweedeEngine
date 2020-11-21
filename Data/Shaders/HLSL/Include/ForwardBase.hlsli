@@ -38,7 +38,7 @@ struct VS_INPUT
     float4 Tangent : TANGENT;
     float4 BiTangent : BINORMAL;
     float4 BlendWeights : BLENDWEIGHT;
-    float4 BlendIndices : BLENDINDICES;
+    uint4  BlendIndices : BLENDINDICES;
     float2 Texture : TEXCOORD0;
     float4 Color : COLOR0;
 };

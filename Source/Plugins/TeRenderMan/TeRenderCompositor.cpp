@@ -321,23 +321,6 @@ namespace te
         const auto numRenderables = (UINT32)inputs.Scene.Renderables.size();
         for (UINT32 i = 0; i < numRenderables; i++)
         {
-            /*if (!visibility.Renderables[i].Visible &&
-                (inputs.Options.CullingFlags & (UINT32)RenderManCulling::Frustum ||
-                    inputs.Options.CullingFlags & (UINT32)RenderManCulling::Occlusion))
-            {
-                continue;
-            }
-
-            if (visibility.Renderables[i].Instanced &&
-                (inputs.Options.InstancingMode == RenderManInstancing::Automatic||
-                    inputs.Options.InstancingMode  == RenderManInstancing::Manual))
-            {
-                continue;
-            }
-
-            RendererRenderable* rendererRenderable = inputs.Scene.Renderables[i]; Does not work
-            rendererRenderable->UpdatePerCallBuffer(viewProps.ViewProjTransform);*/
-
             // Compute list of lights that influence renderables
             for (auto& element : inputs.Scene.Renderables[i]->Elements)
             {
@@ -679,6 +662,7 @@ namespace te
     }
 
     // ############# TAA
+
     void RCNodeTemporalAA::Render(const RenderCompositorNodeInputs& inputs)
     {
         const RenderSettings& settings = inputs.View.GetRenderSettings();
@@ -853,8 +837,6 @@ namespace te
         {
             GuiAPI::Instance().EndFrame();
         }
-
-        //TE_PRINT("RENDER");
     }
 
     void RCNodeFinalResolve::Clear()

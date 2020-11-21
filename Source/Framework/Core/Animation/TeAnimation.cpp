@@ -547,17 +547,200 @@ namespace te
 
     void Animation::Blend1D(const Blend1DInfo& info, float t)
     {
-        // TODO animation
+        if (info.Clips.size() == 0)
+            return;
+
+        // Find valid range
+        float startPos = 0.0f;
+        float endPos = 0.0f;
+
+        for (UINT32 i = 0; i < (UINT32)info.Clips.size(); i++)
+        {
+            startPos = std::min(startPos, info.Clips[i].Position);
+            endPos = std::min(endPos, info.Clips[i].Position);
+        }
+
+        float length = endPos - startPos;
+        if (Math::ApproxEquals(length, 0.0f) || info.Clips.size() < 2)
+        {
+            Play(info.Clips[0].Clip);
+            return;
+        }
+
+        // Clamp or loop time
+        bool loop = _defaultWrapMode == AnimWrapMode::Loop;
+        if (t < startPos)
+        {
+            if (loop)
+                t = t - std::floor(t / length) * length;
+            else // Clamping
+                t = startPos;
+        }
+
+        if (t > endPos)
+        {
+            if (loop)
+                t = t - std::floor(t / length) * length;
+            else // Clamping
+                t = endPos;
+        }
+
+        // Find keys to blend between
+        UINT32 leftKey = 0;
+        UINT32 rightKey = 0;
+
+        INT32 start = 0;
+        INT32 searchLength = (INT32)info.Clips.size();
+
+        while (searchLength > 0)
+        {
+            INT32 half = searchLength >> 1;
+            INT32 mid = start + half;
+
+            if (t < info.Clips[mid].Position)
+            {
+                searchLength = half;
+            }
+            else
+            {
+                start = mid + 1;
+                searchLength -= (half + 1);
+            }
+        }
+
+        leftKey = std::max(0, start - 1);
+        rightKey = std::min(start, (INT32)info.Clips.size() - 1);
+
+        float interpLength = info.Clips[rightKey].Position - info.Clips[leftKey].Position;
+        t = (t - info.Clips[leftKey].Position) / interpLength;
+
+        // Add clips and set weights
+        for (UINT32 i = 0; i < (UINT32)info.Clips.size(); i++)
+        {
+            AnimationClipInfo* clipInfo = AddClip(info.Clips[i].Clip, (UINT32)-1, i == 0);
+            if (clipInfo != nullptr)
+            {
+                clipInfo->State.Time = 0.0f;
+                clipInfo->State.Stopped = true;
+                clipInfo->State.Speed = 0.0f;
+                clipInfo->State.WrapMode = AnimWrapMode::Clamp;
+
+                if (i == leftKey)
+                    clipInfo->State.Weight = 1.0f - t;
+                else if (i == rightKey)
+                    clipInfo->State.Weight = t;
+                else
+                    clipInfo->State.Weight = 0.0f;
+
+                clipInfo->PlaybackType = AnimPlaybackType::Normal;
+            }
+        }
+
+        _sampleStep = AnimSampleStep::None;
+        _dirty |= (UINT32)AnimDirtyStateFlag::Value;
     }
 
     void Animation::Blend2D(const Blend2DInfo& info, const Vector2& t)
     {
-        // TODO animation
+        AnimationClipInfo* topLeftClipInfo = AddClip(info.TopLeftClip, (UINT32)-1, true);
+        if (topLeftClipInfo != nullptr)
+        {
+            topLeftClipInfo->State.Time = 0.0f;
+            topLeftClipInfo->State.Stopped = true;
+            topLeftClipInfo->State.Speed = 0.0f;
+            topLeftClipInfo->State.Weight = (1.0f - t.x) * (1.0f - t.y);
+            topLeftClipInfo->State.WrapMode = AnimWrapMode::Clamp;
+
+            topLeftClipInfo->PlaybackType = AnimPlaybackType::Normal;
+        }
+
+        AnimationClipInfo* topRightClipInfo = AddClip(info.TopRightClip, (UINT32)-1, false);
+        if (topRightClipInfo != nullptr)
+        {
+            topRightClipInfo->State.Time = 0.0f;
+            topRightClipInfo->State.Stopped = true;
+            topRightClipInfo->State.Speed = 0.0f;
+            topRightClipInfo->State.Weight = t.x * (1.0f - t.y);
+            topRightClipInfo->State.WrapMode = AnimWrapMode::Clamp;
+
+            topRightClipInfo->PlaybackType = AnimPlaybackType::Normal;
+        }
+
+        AnimationClipInfo* botLeftClipInfo = AddClip(info.BotLeftClip, (UINT32)-1, false);
+        if (botLeftClipInfo != nullptr)
+        {
+            botLeftClipInfo->State.Time = 0.0f;
+            botLeftClipInfo->State.Stopped = true;
+            botLeftClipInfo->State.Speed = 0.0f;
+            botLeftClipInfo->State.Weight = (1.0f - t.x) * t.y;
+            botLeftClipInfo->State.WrapMode = AnimWrapMode::Clamp;
+
+            botLeftClipInfo->PlaybackType = AnimPlaybackType::Normal;
+        }
+
+        AnimationClipInfo* botRightClipInfo = AddClip(info.BotRightClip, (UINT32)-1, false);
+        if (botRightClipInfo != nullptr)
+        {
+            botRightClipInfo->State.Time = 0.0f;
+            botRightClipInfo->State.Stopped = true;
+            botRightClipInfo->State.Speed = 0.0f;
+            botRightClipInfo->State.Weight = t.x * t.y;
+            botRightClipInfo->State.WrapMode = AnimWrapMode::Clamp;
+
+            botRightClipInfo->PlaybackType = AnimPlaybackType::Normal;
+        }
+
+        _sampleStep = AnimSampleStep::None;
+        _dirty |= (UINT32)AnimDirtyStateFlag::Value;
     }
 
     void Animation::CrossFade(const HAnimationClip& clip, float fadeLength)
     {
-        // TODO animation
+        bool isFading = fadeLength > 0.0f;
+        if (!isFading)
+        {
+            Play(clip);
+            return;
+        }
+
+        AnimationClipInfo* clipInfo = AddClip(clip, (UINT32)-1, false);
+        if (clipInfo != nullptr)
+        {
+            clipInfo->State.Time = 0.0f;
+            clipInfo->State.Speed = _defaultSpeed;
+            clipInfo->State.Weight = 1.0f;
+            clipInfo->State.WrapMode = _defaultWrapMode;
+            clipInfo->PlaybackType = AnimPlaybackType::Normal;
+
+            // Set up fade lengths
+            clipInfo->FadeDirection = 1.0f;
+            clipInfo->FadeTime = 0.0f;
+            clipInfo->FadeLength = fadeLength;
+
+            for (auto& entry : _clipInfos)
+            {
+                if (entry.State.Layer == (UINT32)-1 && entry.Clip != clip)
+                {
+                    // If other clips are already cross-fading, we need to persist their current weight before starting
+                    // a new crossfade. We do that by adjusting the fade times.
+                    if (clipInfo->FadeDirection != 0 && clipInfo->FadeTime < clipInfo->FadeLength)
+                    {
+                        float t = clipInfo->FadeTime / clipInfo->FadeLength;
+                        if (clipInfo->FadeDirection < 0.0f)
+                            t = (1.0f - t);
+
+                        clipInfo->State.Weight *= t;
+                    }
+
+                    clipInfo->FadeDirection = -1.0f;
+                    clipInfo->FadeTime = 0.0f;
+                    clipInfo->FadeLength = fadeLength;
+                }
+            }
+        }
+
+        _sampleStep = AnimSampleStep::None;
+        _dirty |= (UINT32)AnimDirtyStateFlag::Value;
     }
 
     void Animation::Sample(const HAnimationClip& clip, float time)

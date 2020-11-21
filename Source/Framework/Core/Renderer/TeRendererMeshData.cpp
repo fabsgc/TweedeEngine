@@ -235,13 +235,13 @@ namespace te
         BoneWeight* weightDst = buffer;
         for (UINT32 i = 0; i < numElements; i++)
         {
-            float* indices = (float*)indexPtr;
+            UINT8* indices = (UINT8*)indexPtr;
             float* weights = (float*)weightPtr;
 
-            weightDst->Index0 = (int)indices[0];
-            weightDst->Index1 = (int)indices[1];
-            weightDst->Index2 = (int)indices[2];
-            weightDst->Index3 = (int)indices[3];
+            weightDst->Index0 = indices[0];
+            weightDst->Index1 = indices[1];
+            weightDst->Index2 = indices[2];
+            weightDst->Index3 = indices[3];
 
             weightDst->Weight0 = weights[0];
             weightDst->Weight1 = weights[1];
@@ -276,13 +276,13 @@ namespace te
         BoneWeight* weightSrc = buffer;
         for (UINT32 i = 0; i < numElements; i++)
         {
-            float* indices = (float*)indexPtr;
+            UINT8* indices = (UINT8*)indexPtr;
             float* weights = (float*)weightPtr;
 
-            indices[0] = (float)weightSrc->Index0;
-            indices[1] = (float)weightSrc->Index1;
-            indices[2] = (float)weightSrc->Index2;
-            indices[3] = (float)weightSrc->Index3;
+            indices[0] = weightSrc->Index0;
+            indices[1] = weightSrc->Index1;
+            indices[2] = weightSrc->Index2;
+            indices[3] = weightSrc->Index3;
 
             weights[0] = weightSrc->Weight0;
             weights[1] = weightSrc->Weight1;
@@ -390,7 +390,7 @@ namespace te
         if ((intType & (INT32)VertexLayout::BoneWeights) != 0)
         {
             vertexDesc->AddVertElem(VET_FLOAT4, VES_BLEND_WEIGHTS);
-            vertexDesc->AddVertElem(VET_FLOAT4, VES_BLEND_INDICES);
+            vertexDesc->AddVertElem(VET_UBYTE4, VES_BLEND_INDICES);
         }
 
         return vertexDesc;

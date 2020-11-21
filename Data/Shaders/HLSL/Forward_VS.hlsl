@@ -89,34 +89,34 @@ float4x4 GetPrevBoneMatrix(uint idx)
     return float4x4(row0, row1, row2, row3);
 }
 
-float4x4 GetBlendMatrix(float4 blendWeights, float4 blendIndices)
+float4x4 GetBlendMatrix(float4 blendWeights, uint4 blendIndices)
 {
     float4x4 result = (float4x4)0; 
 
     if(blendIndices.x >= 0)
-        result += blendWeights.x * GetBoneMatrix((uint)blendIndices.x);
+        result += blendWeights.x * GetBoneMatrix(blendIndices.x);
     if(blendIndices.y >= 0)
-        result += blendWeights.y * GetBoneMatrix((uint)blendIndices.y);
+        result += blendWeights.y * GetBoneMatrix(blendIndices.y);
     if(blendIndices.z >= 0)
-        result += blendWeights.z * GetBoneMatrix((uint)blendIndices.z);
+        result += blendWeights.z * GetBoneMatrix(blendIndices.z);
     if(blendIndices.w >= 0)
-        result += blendWeights.w * GetBoneMatrix((uint)blendIndices.w);
+        result += blendWeights.w * GetBoneMatrix(blendIndices.w);
 
     return result;
 }
 
-float4x4 GetPrevBlendMatrix(float4 blendWeights, float4 blendIndices)
+float4x4 GetPrevBlendMatrix(float4 blendWeights, uint4 blendIndices)
 {
     float4x4 result = (float4x4)0; 
 
     if(blendIndices.x >= 0)
-        result += blendWeights.x * GetPrevBoneMatrix((uint)blendIndices.x);
+        result += blendWeights.x * GetPrevBoneMatrix(blendIndices.x);
     if(blendIndices.y >= 0)
-        result += blendWeights.y * GetPrevBoneMatrix((uint)blendIndices.y);
+        result += blendWeights.y * GetPrevBoneMatrix(blendIndices.y);
     if(blendIndices.z >= 0)
-        result += blendWeights.z * GetPrevBoneMatrix((uint)blendIndices.z);
+        result += blendWeights.z * GetPrevBoneMatrix(blendIndices.z);
     if(blendIndices.w >= 0)
-        result += blendWeights.w * GetPrevBoneMatrix((uint)blendIndices.w);
+        result += blendWeights.w * GetPrevBoneMatrix(blendIndices.w);
 
     return result;
 }
