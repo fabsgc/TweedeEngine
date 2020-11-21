@@ -176,7 +176,8 @@ namespace te
         }
         else
         {
-            if (_selections.ClickedComponent->GetCoreType() == TID_CRenderable ||
+            if (!_selections.ClickedComponent ||
+                _selections.ClickedComponent->GetCoreType() == TID_CRenderable ||
                 _selections.ClickedComponent->GetCoreType() == TID_CCamera ||
                 _selections.ClickedComponent->GetCoreType() == TID_CLight)
             {
