@@ -66,8 +66,8 @@ void main(point GS_INPUT IN[1], inout TriangleStream<GS_OUTPUT> OutputStream)
     for(int i = 0; i < 4; i++)
     {
         OUT.Position = float4(vert[i], 1.0);
-        OUT.Position = mul(OUT.Position, gInstanceData[id].MatWorldNoScale);
-        OUT.Position = mul(OUT.Position, gMatViewProj);
+        OUT.Position = mul(gInstanceData[id].MatWorldNoScale, OUT.Position);
+        OUT.Position = mul(gMatViewProj, OUT.Position);
 
         OUT.Color = gInstanceData[id].Color;
         OUT.Texture = texCoord[i];

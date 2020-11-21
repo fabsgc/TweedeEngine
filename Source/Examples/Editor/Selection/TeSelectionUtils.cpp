@@ -40,7 +40,7 @@ namespace te
                 {
                     PerHudInstanceData element;
                     const Transform& tfrm = light->GetTransform();
-                    element.MatWorldNoScale = Matrix4::TRS(tfrm.GetPosition(), tfrm.GetRotation(), Vector3::ONE).Transpose();
+                    element.MatWorldNoScale = Matrix4::TRS(tfrm.GetPosition(), tfrm.GetRotation(), Vector3::ONE);
 
                     if(renderType == RenderType::Selection || renderType == RenderType::Draw)
                         element.Color = light->GetColor().GetAsVector4();
@@ -74,7 +74,7 @@ namespace te
                 {
                     PerHudInstanceData element;
                     const Transform& tfrm = cameraElement->GetTransform();
-                    element.MatWorldNoScale = Matrix4::TRS(tfrm.GetPosition(), tfrm.GetRotation(), Vector3::ONE).Transpose();
+                    element.MatWorldNoScale = Matrix4::TRS(tfrm.GetPosition(), tfrm.GetRotation(), Vector3::ONE);
                     element.Type = static_cast<float>(HudType::Camera);
                     element.Color = Color::Black.GetAsVector4();
 

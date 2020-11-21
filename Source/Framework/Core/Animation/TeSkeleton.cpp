@@ -219,13 +219,9 @@ namespace te
         {
             bool isAssigned = localPose.Rotations[i].w != 0.0f;
             if (!isAssigned)
-            {
                 localPose.Rotations[i] = Quaternion::IDENTITY;
-            }
             else
-            {
                 localPose.Rotations[i].Normalize();
-            }
 
             if (localPose.HasOverride[i])
             {

@@ -28,8 +28,8 @@ VS_OUTPUT main( VS_INPUT IN )
 
     OUT.Position.xyz = IN.Position;
     OUT.Position.w = 1.0f;
-    OUT.Position = mul(OUT.Position, gMatWorld);
-    OUT.Position = mul(OUT.Position, gMatViewProj);
+    OUT.Position = mul(gMatWorld, OUT.Position);
+    OUT.Position = mul(gMatViewProj, OUT.Position);
 
     OUT.Color = gColor;
 

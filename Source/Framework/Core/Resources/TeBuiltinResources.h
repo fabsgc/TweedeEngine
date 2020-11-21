@@ -98,6 +98,7 @@ namespace te
             Matrix4 gMatInvWorldNoScale;
             Matrix4 gMatPrevWorld;
             UINT32  gLayer;
+            UINT32  gHasAnimation;
         };
 
         struct PerHudInstanceData

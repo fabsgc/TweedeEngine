@@ -20,13 +20,13 @@ namespace te
         const Matrix4& viewMatrix = camera->GetViewMatrix();
 
         Matrix4 viewProjMatrix = projectionMatrix * viewMatrix;
-        _perFrameParamDef.gMatViewProj.Set(_perFrameParamBuffer, viewProjMatrix.Transpose());
+        _perFrameParamDef.gMatViewProj.Set(_perFrameParamBuffer, viewProjMatrix);
         _perFrameParamDef.gRenderType.Set(_perFrameParamBuffer, (UINT32)SelectionUtils::RenderType::Picking);
     }
 
     void PickingMat::BindRenderable(const HRenderable& renderable)
     {
-        _perObjectParamDef.gMatWorld.Set(_perObjectParamBuffer, renderable->GetMatrix().Transpose());
+        _perObjectParamDef.gMatWorld.Set(_perObjectParamBuffer, renderable->GetMatrix());
         _perObjectParamDef.gColor.Set(_perObjectParamBuffer, renderable->GetGameObjectColor().GetAsVector4());
     }
 }

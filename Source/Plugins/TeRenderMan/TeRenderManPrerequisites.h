@@ -23,6 +23,7 @@ namespace te
         Matrix4 gMatInvWorldNoScale;
         Matrix4 gMatPrevWorld;
         UINT32  gLayer;
+        UINT32  gHasAnimation;
     };
 
     struct MaterialData
@@ -96,6 +97,7 @@ namespace te
         TE_PARAM_BLOCK_ENTRY(Matrix4, gMatInvWorldNoScale)
         TE_PARAM_BLOCK_ENTRY(Matrix4, gMatPrevWorld)
         TE_PARAM_BLOCK_ENTRY(INT32, gLayer)
+        TE_PARAM_BLOCK_ENTRY(INT32, gHasAnimation)
     TE_PARAM_BLOCK_END
 
     extern PerObjectParamDef gPerObjectParamDef;

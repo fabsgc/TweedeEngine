@@ -13,6 +13,7 @@ struct PerInstanceData
     matrix gMatInvWorldNoScale;
     matrix gMatPrevWorld;
     uint   gLayer;
+    uint   gHasAnimation;
 };
 
 struct LightData

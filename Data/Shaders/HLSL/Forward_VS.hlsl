@@ -51,6 +51,7 @@ cbuffer PerObjectBuffer : register(b3)
     matrix gMatInvWorldNoScale;
     matrix gMatPrevWorld;
     uint   gLayer;
+    uint   gHasAnimation;
 }
 
 cbuffer PerFrameBuffer : register(b4)
@@ -94,22 +95,28 @@ float4x4 GetBlendMatrix(float4 blendWeights, float4 blendIndices)
 
     if(blendIndices.x >= 0)
         result += blendWeights.x * GetBoneMatrix((uint)blendIndices.x);
-    /*if(blendIndices.y >= 0)
+    if(blendIndices.y >= 0)
         result += blendWeights.y * GetBoneMatrix((uint)blendIndices.y);
     if(blendIndices.z >= 0)
         result += blendWeights.z * GetBoneMatrix((uint)blendIndices.z);
     if(blendIndices.w >= 0)
-        result += blendWeights.w * GetBoneMatrix((uint)blendIndices.w);*/
+        result += blendWeights.w * GetBoneMatrix((uint)blendIndices.w);
 
     return result;
 }
 
 float4x4 GetPrevBlendMatrix(float4 blendWeights, float4 blendIndices)
 {
-    float4x4 result = blendWeights.x * GetPrevBoneMatrix((uint)blendIndices.x);
-    result += blendWeights.y * GetPrevBoneMatrix((uint)blendIndices.y);
-    result += blendWeights.z * GetPrevBoneMatrix((uint)blendIndices.z);
-    result += blendWeights.w * GetPrevBoneMatrix((uint)blendIndices.w);
+    float4x4 result = (float4x4)0; 
+
+    if(blendIndices.x >= 0)
+        result += blendWeights.x * GetPrevBoneMatrix((uint)blendIndices.x);
+    if(blendIndices.y >= 0)
+        result += blendWeights.y * GetPrevBoneMatrix((uint)blendIndices.y);
+    if(blendIndices.z >= 0)
+        result += blendWeights.z * GetPrevBoneMatrix((uint)blendIndices.z);
+    if(blendIndices.w >= 0)
+        result += blendWeights.w * GetPrevBoneMatrix((uint)blendIndices.w);
 
     return result;
 }
@@ -118,66 +125,79 @@ VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
 {
     VS_OUTPUT OUT = (VS_OUTPUT)0;
 
+    float4x4 blendMatrix = (float4x4)0;
+    float4x4 prevBlendMatrix = (float4x4)0;
+
+    if(gHasAnimation)
+    {
+        blendMatrix = GetBlendMatrix(IN.BlendWeights, IN.BlendIndices);
+        prevBlendMatrix = GetPrevBlendMatrix(IN.BlendWeights, IN.BlendIndices);
+    }
+
     if(instanceid == 0)
     {
-        float4x4 blendMatrix = GetBlendMatrix(IN.BlendWeights, IN.BlendIndices);
+        OUT.Position = float4(IN.Position, 1.0f);
+        if(gHasAnimation)
+            OUT.Position = mul(blendMatrix, OUT.Position);
+        OUT.Position = mul(gMatWorld, OUT.Position);
+        OUT.Position = mul(gMatViewProj, OUT.Position);
 
-        OUT.Position = float4(IN.Position.xyz, 1.0f);
-        OUT.Position = mul(OUT.Position, transpose(blendMatrix));
-        OUT.Position = mul(OUT.Position, gMatWorld);
-        OUT.Position = mul(OUT.Position, gMatViewProj);
+        OUT.CurrPosition = float4(IN.Position, 1.0f);
+        if(gHasAnimation)
+            OUT.CurrPosition = mul(blendMatrix, OUT.CurrPosition);
+        OUT.CurrPosition = mul(gMatWorld, OUT.CurrPosition);
+        OUT.CurrPosition = mul(gMatViewProj, OUT.CurrPosition);
 
-        OUT.CurrPosition.xyz = IN.Position;
-        OUT.CurrPosition.w = 1.0f;
-        OUT.CurrPosition = mul(OUT.CurrPosition, gMatWorld);
-        OUT.CurrPosition = mul(OUT.CurrPosition, gMatViewProj);
+        OUT.PrevPosition = float4(IN.Position, 1.0f);
+        if(gHasAnimation)
+            OUT.PrevPosition = mul(prevBlendMatrix, OUT.PrevPosition);
+        OUT.PrevPosition = mul(gMatPrevWorld, OUT.PrevPosition);
+        OUT.PrevPosition = mul(gMatPrevViewProj, OUT.PrevPosition);
 
-        OUT.PrevPosition.xyz = IN.Position;
-        OUT.PrevPosition.w = 1.0f;
-        OUT.PrevPosition = mul(OUT.PrevPosition, gMatPrevWorld);
-        OUT.PrevPosition = mul(OUT.PrevPosition, gMatViewProj);
-
-        OUT.Normal = normalize(mul(float4(IN.Normal, 0.0f), gMatWorld)).xyz;
-        OUT.Tangent = normalize(mul(float4(IN.Tangent.xyz, 0.0f), gMatWorld)).xyz;
-        OUT.BiTangent = normalize(mul(float4(IN.BiTangent.xyz, 0.0f), gMatWorld)).xyz;
+        OUT.Normal = normalize(mul(gMatWorld, float4(IN.Normal, 0.0f))).xyz;
+        OUT.Tangent = normalize(mul(gMatWorld, float4(IN.Tangent.xyz, 0.0f))).xyz;
+        OUT.BiTangent = normalize(mul(gMatWorld, float4(IN.BiTangent.xyz, 0.0f))).xyz;
         OUT.Texture = FlipUV(IN.Texture);
 
-        OUT.WorldPosition.xyz = IN.Position;
-        OUT.WorldPosition.w = 1.0f;
-        OUT.WorldPosition = mul(OUT.WorldPosition, gMatWorld);
+        OUT.WorldPosition = float4(IN.Position, 1.0f);
+        if(gHasAnimation)
+            OUT.WorldPosition = mul(blendMatrix, OUT.WorldPosition);
+        OUT.WorldPosition = mul(gMatWorld, OUT.WorldPosition);
 
         OUT.ViewDirection = normalize(OUT.WorldPosition.xyz - gViewOrigin);
-
-        OUT.WorldViewDistance = mul(OUT.WorldPosition, gMatView);
+        OUT.WorldViewDistance = mul(gMatView, OUT.WorldPosition);
     }
     else
     {
-        OUT.Position.xyz = IN.Position;
-        OUT.Position.w = 1.0f;
-        OUT.Position = mul(OUT.Position, gInstanceData[instanceid].gMatWorld);
-        OUT.Position = mul(OUT.Position, gMatViewProj);
+        OUT.Position = float4(IN.Position, 1.0f);
+        if(gHasAnimation)
+            OUT.Position = mul(blendMatrix, OUT.Position);
+        OUT.Position = mul(gInstanceData[instanceid].gMatWorld, OUT.Position);
+        OUT.Position = mul(gMatViewProj, OUT.Position);
 
-        OUT.CurrPosition.xyz = IN.Position;
-        OUT.CurrPosition.w = 1.0f;
-        OUT.CurrPosition = mul(OUT.CurrPosition, gInstanceData[instanceid].gMatWorld);
-        OUT.CurrPosition = mul(OUT.CurrPosition, gMatViewProj);
+        OUT.CurrPosition = float4(IN.Position, 1.0f);
+        if(gHasAnimation)
+            OUT.CurrPosition = mul(blendMatrix, OUT.CurrPosition);
+        OUT.CurrPosition = mul(gInstanceData[instanceid].gMatWorld, OUT.CurrPosition);
+        OUT.CurrPosition = mul(gMatViewProj, OUT.CurrPosition);
 
-        OUT.PrevPosition.xyz = IN.Position;
-        OUT.PrevPosition.w = 1.0f;
-        OUT.PrevPosition = mul(OUT.PrevPosition, gInstanceData[instanceid].gMatPrevWorld);
-        OUT.PrevPosition = mul(OUT.PrevPosition, gMatViewProj);
+        OUT.PrevPosition = float4(IN.Position, 1.0f);
+        if(gHasAnimation)
+            OUT.PrevPosition = mul(prevBlendMatrix, OUT.PrevPosition);
+        OUT.PrevPosition = mul(gInstanceData[instanceid].gMatPrevWorld, OUT.PrevPosition);
+        OUT.PrevPosition = mul(gMatViewProj, OUT.PrevPosition);
 
-        OUT.Normal = normalize(mul(float4(IN.Normal, 0.0f), gInstanceData[instanceid].gMatWorld)).xyz;
-        OUT.Tangent = normalize(mul(float4(IN.Tangent.xyz, 0.0f), gInstanceData[instanceid].gMatWorld)).xyz;
-        OUT.BiTangent = normalize(mul(float4(IN.BiTangent.xyz, 0.0f), gInstanceData[instanceid].gMatWorld)).xyz;
+        OUT.Normal = normalize(mul(gInstanceData[instanceid].gMatWorld, float4(IN.Normal, 0.0f))).xyz;
+        OUT.Tangent = normalize(mul(gInstanceData[instanceid].gMatWorld, float4(IN.Tangent.xyz, 0.0f))).xyz;
+        OUT.BiTangent = normalize(mul(gInstanceData[instanceid].gMatWorld, float4(IN.BiTangent.xyz, 0.0f))).xyz;
         OUT.Texture = FlipUV(IN.Texture);
 
-        OUT.WorldPosition.xyz = IN.Position;
-        OUT.WorldPosition.w = 1.0f;
-        OUT.WorldPosition = mul(OUT.WorldPosition, gInstanceData[instanceid].gMatWorld);
+        OUT.WorldPosition = float4(IN.Position, 1.0f);
+        if(gHasAnimation)
+            OUT.WorldPosition = mul(blendMatrix, OUT.WorldPosition);
+        OUT.WorldPosition = mul(gInstanceData[instanceid].gMatWorld, OUT.WorldPosition);
 
         OUT.ViewDirection = normalize(OUT.WorldPosition.xyz - gViewOrigin);
-
         OUT.WorldViewDistance = mul(OUT.WorldPosition, gMatView);
     }
 

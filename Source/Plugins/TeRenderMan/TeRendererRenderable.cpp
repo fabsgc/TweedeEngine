@@ -16,12 +16,13 @@ namespace te
         const Matrix4 tfrmNoScale = renderable->GetMatrixNoScale();
         const UINT32 layer = Bitwise::mostSignificantBit(renderable->GetLayer());
 
-        gPerObjectParamDef.gMatWorld.Set(buffer, tfrm.Transpose());
-        gPerObjectParamDef.gMatInvWorld.Set(buffer, tfrm.InverseAffine().Transpose());
-        gPerObjectParamDef.gMatWorldNoScale.Set(buffer, tfrmNoScale.Transpose());
-        gPerObjectParamDef.gMatInvWorldNoScale.Set(buffer, tfrmNoScale.InverseAffine().Transpose());
-        gPerObjectParamDef.gMatPrevWorld.Set(buffer, prevTfrm.Transpose());
+        gPerObjectParamDef.gMatWorld.Set(buffer, tfrm);
+        gPerObjectParamDef.gMatInvWorld.Set(buffer, tfrm.InverseAffine());
+        gPerObjectParamDef.gMatWorldNoScale.Set(buffer, tfrmNoScale);
+        gPerObjectParamDef.gMatInvWorldNoScale.Set(buffer, tfrmNoScale.InverseAffine());
+        gPerObjectParamDef.gMatPrevWorld.Set(buffer, prevTfrm);
         gPerObjectParamDef.gLayer.Set(buffer, (INT32)layer);
+        gPerObjectParamDef.gHasAnimation.Set(buffer, (UINT32)renderable->IsAnimated() ? 1 : 0);
     }
 
     void PerObjectBuffer::UpdatePerInstance(SPtr<GpuParamBlockBuffer>& perObjectBuffer, 
@@ -124,7 +125,7 @@ namespace te
     {
         // TODO is instance, it does not work
         // const Matrix4 worldViewProjMatrix = viewProj * RenderablePtr->GetMatrixNoScale();
-        // gPerCallParamDef.gMatWorldViewProj.Set(PerCallParamBuffer, worldViewProjMatrix.Transpose());
+        // gPerCallParamDef.gMatWorldViewProj.Set(PerCallParamBuffer, worldViewProjMatrix);
 
         //if (flush)
         //    PerCallParamBuffer->FlushToGPU();

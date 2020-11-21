@@ -364,6 +364,7 @@ namespace te
             SHADER_DATA_PARAM_DESC gMatInvWorldNoScaleDesc("gMatInvWorldNoScale", "gMatInvWorldNoScale", GPDT_MATRIX_4X4);
             SHADER_DATA_PARAM_DESC gMatPrevWorldDesc("gMatPrevWorld", "gMatPrevWorld", GPDT_MATRIX_4X4);
             SHADER_DATA_PARAM_DESC gLayerDesc("gLayer", "gLayer", GPDT_INT1);
+            SHADER_DATA_PARAM_DESC gHasAnimationDesc("gHasAnimation", "gHasAnimation", GPDT_INT1);
 
             SHADER_DATA_PARAM_DESC gTime("gTime", "gTime", GPDT_FLOAT1);
             SHADER_DATA_PARAM_DESC gFrameDeltaDesc("gFrameDelta", "gFrameDelta", GPDT_FLOAT1);
@@ -433,6 +434,7 @@ namespace te
             _forwardShaderDesc.AddParameter(gMatInvWorldNoScaleDesc);
             _forwardShaderDesc.AddParameter(gMatPrevWorldDesc);
             _forwardShaderDesc.AddParameter(gLayerDesc);
+            _forwardShaderDesc.AddParameter(gHasAnimationDesc);
             
             _forwardShaderDesc.AddParameter(gAmbient);
             _forwardShaderDesc.AddParameter(gDiffuse);

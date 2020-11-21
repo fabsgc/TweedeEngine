@@ -78,7 +78,7 @@ namespace te
                     if (cameraElement->GetActive() && EditorUtils::DoFrustumCulling(camera, cameraElement))
                     {
                         const Transform& tfrm = cameraElement->GetTransform();
-                        element.MatWorldNoScale = Matrix4::TRS(tfrm.GetPosition(), tfrm.GetRotation(), Vector3::ONE).Transpose();
+                        element.MatWorldNoScale = Matrix4::TRS(tfrm.GetPosition(), tfrm.GetRotation(), Vector3::ONE);
                         element.Type = static_cast<float>(SelectionUtils::HudType::Camera);
                         element.Color = Color::Black.GetAsVector4();
 

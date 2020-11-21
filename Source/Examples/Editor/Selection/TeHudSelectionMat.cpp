@@ -19,7 +19,7 @@ namespace te
         const Matrix4& viewMatrix = camera->GetViewMatrix();
 
         Matrix4 viewProjMatrix = projectionMatrix * viewMatrix;
-        _perFrameParamDef.gMatViewProj.Set(_perFrameParamBuffer, viewProjMatrix.Transpose());
+        _perFrameParamDef.gMatViewProj.Set(_perFrameParamBuffer, viewProjMatrix);
         _perFrameParamDef.gViewOrigin.Set(_perFrameParamBuffer, camera->GetTransform().GetPosition());
         _perFrameParamDef.gRenderType.Set(_perFrameParamBuffer, (UINT32)renderType);
     }

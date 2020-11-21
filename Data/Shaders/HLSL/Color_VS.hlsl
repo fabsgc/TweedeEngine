@@ -55,6 +55,7 @@ cbuffer PerObjectBuffer : register(b3)
     matrix gMatInvWorldNoScale;
     matrix gMatPrevWorld;
     uint   gLayer;
+    uint   gHasAnimation;
 }
 
 cbuffer PerFrameBuffer : register(b4)
@@ -77,15 +78,15 @@ VS_OUTPUT main( VS_INPUT IN )
     {
         OUT.Position.xyz = IN.Position;
         OUT.Position.w = 1.0f;
-        OUT.Position = mul(OUT.Position, gMatWorld);
-        OUT.Position = mul(OUT.Position, gMatViewProj);
+        OUT.Position = mul(gMatWorld, OUT.Position);
+        OUT.Position = mul(gMatViewProj, OUT.Position);
 
         OUT.Color = IN.Color;
-        OUT.Normal = normalize(mul(float4(IN.Normal, 0.0f), gMatWorld)).xyz;
+        OUT.Normal = normalize(mul(gMatWorld, float4(IN.Normal, 0.0f))).xyz;
 
         OUT.WorldPosition.xyz = IN.Position;
         OUT.WorldPosition.w = 1.0f;
-        OUT.WorldPosition = mul(OUT.WorldPosition, gMatWorld);
+        OUT.WorldPosition = mul(gMatWorld, OUT.WorldPosition);
 
         OUT.ViewDirection = normalize(OUT.WorldPosition.xyz - gViewOrigin);
     }
@@ -93,15 +94,15 @@ VS_OUTPUT main( VS_INPUT IN )
     {
         OUT.Position.xyz = IN.Position;
         OUT.Position.w = 1.0f;
-        OUT.Position = mul(OUT.Position, gInstanceData[IN.Instanceid].gMatWorld);
-        OUT.Position = mul(OUT.Position, gMatViewProj);
+        OUT.Position = mul(gInstanceData[IN.Instanceid].gMatWorld, OUT.Position);
+        OUT.Position = mul(gMatViewProj, OUT.Position);
 
         OUT.Color = IN.Color;
-        OUT.Normal = normalize(mul(float4(IN.Normal, 0.0f), gInstanceData[IN.Instanceid].gMatWorld)).xyz;
+        OUT.Normal = normalize(mul(gInstanceData[IN.Instanceid].gMatWorld, float4(IN.Normal, 0.0f))).xyz;
 
         OUT.WorldPosition.xyz = IN.Position;
         OUT.WorldPosition.w = 1.0f;
-        OUT.WorldPosition = mul(OUT.WorldPosition, gInstanceData[IN.Instanceid].gMatWorld);
+        OUT.WorldPosition = mul(gInstanceData[IN.Instanceid].gMatWorld, OUT.WorldPosition);
 
         OUT.ViewDirection = normalize(OUT.WorldPosition.xyz - gViewOrigin);
     }

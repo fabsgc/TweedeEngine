@@ -108,7 +108,7 @@ float4 main( PS_INPUT IN ) : SV_Target0
 
     // ##### CAMERA MOTION BLUR
     float4 currentNDC = float4(ndcPos, 1, 1);
-    float4 prevClip = mul(currentNDC, gNDCToPrevNDC);
+    float4 prevClip = mul(gNDCToPrevNDC, currentNDC);
     float2 prevNdcPos = prevClip.xy / prevClip.w;
     float2 prevUV = NDCToUV(prevNdcPos);
 

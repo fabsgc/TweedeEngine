@@ -29,7 +29,7 @@ VS_OUTPUT main( VS_INPUT IN )
 {
     VS_OUTPUT OUT = (VS_OUTPUT)0;
 
-    float4 pos = mul(float4(IN.Position.xyz + gViewOrigin, 1), gMatViewProj);
+    float4 pos = mul(gMatViewProj, float4(IN.Position.xyz + gViewOrigin, 1));
 
     // Set Z = W so that final depth is 1.0f and it renders behind everything else
     OUT.Position = pos.xyww;

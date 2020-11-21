@@ -59,7 +59,6 @@ namespace te
         , _camera(desc.SceneCamera)
     {
         _paramBuffer = gPerCameraParamDef.CreateBuffer();
-        //_properties.ViewProjTransform = desc.ProjTransform * desc.ViewTransform;
         _properties.PrevViewProjTransform = _properties.ViewProjTransform;
 
         _forwardOpaqueQueue = te_shared_ptr_new<RenderQueue>(desc.ReductionMode);
@@ -161,7 +160,7 @@ namespace te
         Matrix4 invViewProj = viewProj.Inverse();
         Matrix4 NDCToPrevNDC = _properties.PrevViewProjTransform * invViewProj;
 
-        gPerCameraParamDef.gNDCToPrevNDC.Set(_paramBuffer, NDCToPrevNDC.Transpose());
+        gPerCameraParamDef.gNDCToPrevNDC.Set(_paramBuffer, NDCToPrevNDC);
 
         _frameTimings = frameInfo.Timings;
 
@@ -412,6 +411,7 @@ namespace te
                 data.gMatInvWorldNoScale = gPerObjectParamDef.gMatInvWorldNoScale.Get(buffer);
                 data.gMatPrevWorld = gPerObjectParamDef.gMatPrevWorld.Get(buffer);
                 data.gLayer = gPerObjectParamDef.gLayer.Get(buffer);
+                data.gHasAnimation = gPerObjectParamDef.gHasAnimation.Get(buffer);
 
                 _instanceDataPool[currInstBlock][subElemIdx - lowerBlockBound] = data;
                 instancedObjectCounter++;
@@ -494,12 +494,12 @@ namespace te
         Matrix4 invViewProj = invView * invProj;
         Matrix4 NDCToPrevNDC = _properties.PrevViewProjTransform * invViewProj;
 
-        gPerCameraParamDef.gMatProj.Set(_paramBuffer, _properties.ProjTransform.Transpose());
-        gPerCameraParamDef.gMatView.Set(_paramBuffer, _properties.ViewTransform.Transpose());
-        gPerCameraParamDef.gMatViewProj.Set(_paramBuffer, viewProj.Transpose());
-        gPerCameraParamDef.gMatPrevViewProj.Set(_paramBuffer, _properties.PrevViewProjTransform.Transpose());
+        gPerCameraParamDef.gMatProj.Set(_paramBuffer, _properties.ProjTransform);
+        gPerCameraParamDef.gMatView.Set(_paramBuffer, _properties.ViewTransform);
+        gPerCameraParamDef.gMatViewProj.Set(_paramBuffer, viewProj);
+        gPerCameraParamDef.gMatPrevViewProj.Set(_paramBuffer, _properties.PrevViewProjTransform);
 
-        gPerCameraParamDef.gNDCToPrevNDC.Set(_paramBuffer, NDCToPrevNDC.Transpose());
+        gPerCameraParamDef.gNDCToPrevNDC.Set(_paramBuffer, NDCToPrevNDC);
         gPerCameraParamDef.gViewDir.Set(_paramBuffer, _properties.ViewDirection);
         gPerCameraParamDef.gViewOrigin.Set(_paramBuffer, _properties.ViewOrigin);
 
