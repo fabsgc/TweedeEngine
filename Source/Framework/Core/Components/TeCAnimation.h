@@ -25,6 +25,9 @@ namespace te
         CAnimation(const HSceneObject& parent);
         virtual ~CAnimation() = default;
 
+        /** Return Component type */
+        static UINT32 GetComponentType() { return TID_CAnimation; }
+
         /** @copydoc Component::Initialize */
         void Initialize() override;
 
@@ -235,7 +238,7 @@ namespace te
         AnimWrapMode _wrapMode = AnimWrapMode::Loop;
         float _speed = 1.0f;
         bool _enableCull = true;
-        bool _previewMode = false;
+        bool _previewMode = false; // TODO in my impl, this will always be false
 
         Vector<SceneObjectMappingInfo> _mappingInfos;
     };
