@@ -368,6 +368,7 @@ namespace te
 
             if (!currentCO.Empty())
             {
+                HSceneObject oldSceneObject = currentCO->GetSceneObject();
                 bool oldParentActive = currentCO->GetSceneObject()->GetActive();
                 bool newParentActive = sceneObject->GetActive();
 
@@ -388,6 +389,22 @@ namespace te
 
                 _expandToSelection = true;
                 _expandDragToSelection = true;
+
+                // if we've moved an animation call RestoreInternal()
+                if (currentCO->GetCoreType() == TID_CAnimation)
+                    static_object_cast<CAnimation>(currentCO)->Initialize();
+
+                // if we've moved a renderable call RestoreInternal on both new and old sceneObject if there is an animation
+                if (currentCO->GetCoreType() == TID_CRenderable)
+                {
+                    HAnimation animOldSO = static_object_cast<CAnimation>(oldSceneObject->GetComponent(TID_CAnimation));
+                    if (!animOldSO.Empty())
+                        animOldSO->Initialize();
+
+                    HAnimation animNewSO = static_object_cast<CAnimation>(sceneObject->GetComponent(TID_CAnimation));
+                    if (!animNewSO.Empty())
+                        animNewSO->Initialize();
+                }
 
                 // ugly but best way to update all children
                 sceneObject->Move(Vector3::ZERO);
