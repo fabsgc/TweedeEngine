@@ -58,6 +58,9 @@ namespace te
         _proxies.clear();
         for (auto& anim : _animations)
         {
+            if (anim.second->GetNumClips() == 0)
+                continue;
+
             anim.second->UpdateAnimProxy(timeDelta);
             _proxies.push_back(anim.second->_animProxy);
         }

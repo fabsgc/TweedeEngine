@@ -187,6 +187,17 @@ namespace te
         }
     }
 
+    void SceneManager::SetComponentState(ComponentState state)
+    {
+        if (_componentState == state)
+            return;
+
+        // Make sure to change the state before calling any callbacks, so callbacks can query the state
+        _componentState = state;
+
+        // TODO
+    }
+
     void SceneManager::_notifyComponentCreated(const HComponent& component)
     {
         component->OnCreated();

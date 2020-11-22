@@ -560,6 +560,10 @@ namespace te
 
         if (_selections.CopiedComponent)
         {
+            UINT32 type = _selections.CopiedComponent->GetComponentType();
+            if (!clickedSceneObject->GetComponent(type).Empty())
+                return;
+
             switch (_selections.CopiedComponent->GetCoreType())
             {
             case TID_CCamera:
@@ -824,7 +828,7 @@ namespace te
         _animationKnight = _sceneRenderableKnightSO->AddComponent<CAnimation>();
         _animationKnight->SetName("Knight animation");
         _animationKnight->Initialize();
-        _animationKnight->Play(_animationClipKnight);
+        _animationKnight->SetDefaultClip(_animationClipKnight);
 
         /*_sceneRenderablePlaneSO = SceneObject::Create("Plane");
         _sceneRenderablePlaneSO->SetParent(_sceneSO);

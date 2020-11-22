@@ -569,6 +569,9 @@ namespace te
         if (!_selections.ClickedSceneObject || _selections.ClickedComponent)
             return;
 
+        if (!_selections.ClickedSceneObject->GetComponent<CRenderable>().Empty())
+            return;
+
         HRenderable renderable = _selections.ClickedSceneObject->AddComponent<CRenderable>();
 
         switch (type)
@@ -593,6 +596,9 @@ namespace te
     void WidgetProject::CreateLight(LightType type)
     { 
         if (!_selections.ClickedSceneObject || _selections.ClickedComponent)
+            return;
+
+        if (!_selections.ClickedSceneObject->GetComponent<CLight>().Empty())
             return;
 
         HLight light = _selections.ClickedSceneObject->AddComponent<CLight>(type);
@@ -633,8 +639,11 @@ namespace te
 
         switch (type)
         {
-        case TID_CCamera:
+            case TID_CCamera:
             {
+                if (!_selections.ClickedSceneObject->GetComponent<CCamera>().Empty())
+                    return;
+
                 HCamera camera = _selections.ClickedSceneObject->AddComponent<CCamera>();
                 camera->SetName("Camera");
                 camera->Initialize();
@@ -642,8 +651,11 @@ namespace te
             }
             break;
 
-        case TID_CCameraFlyer:
+            case TID_CCameraFlyer:
             {
+                if (!_selections.ClickedSceneObject->GetComponent<CCameraFlyer>().Empty())
+                    return;
+
                 HCameraFlyer camera = _selections.ClickedSceneObject->AddComponent<CCameraFlyer>();
                 camera->SetName("Flying Camera");
                 camera->Initialize();
@@ -651,8 +663,11 @@ namespace te
             }
             break;
 
-        case TID_CCameraUI:
+            case TID_CCameraUI:
             {
+                if (!_selections.ClickedSceneObject->GetComponent<CCameraUI>().Empty())
+                    return;
+
                 HCameraUI camera = _selections.ClickedSceneObject->AddComponent<CCameraUI>();
                 camera->SetName("Orbital Camera");
                 camera->Initialize();
@@ -660,7 +675,7 @@ namespace te
             }
             break;
 
-        default:
+            default:
             break;
         }
 
@@ -675,12 +690,8 @@ namespace te
     { 
         if (!_selections.ClickedSceneObject || _selections.ClickedComponent)
             return;
-
-        HAnimation animation = _selections.ClickedSceneObject->AddComponent<CAnimation>();
-        animation->SetName("Animation");
-        animation->Initialize();
-
-        _handleSelectionWindowSwitch = true;
+        
+        // TODO
 
         gEditor().NeedsRedraw();
         gEditor().GetSettings().State = Editor::EditorState::Modified;
@@ -689,6 +700,9 @@ namespace te
     void WidgetProject::CreateScript()
     {
         if (!_selections.ClickedSceneObject || _selections.ClickedComponent)
+            return;
+
+        if (!_selections.ClickedSceneObject->GetComponent<CScript>().Empty())
             return;
 
         HScript script = _selections.ClickedSceneObject->AddComponent<CScript>();
@@ -705,6 +719,9 @@ namespace te
     void WidgetProject::CreateAnimation()
     {
         if (!_selections.ClickedSceneObject || _selections.ClickedComponent)
+            return;
+
+        if (!_selections.ClickedSceneObject->GetComponent<CAnimation>().Empty())
             return;
 
         HAnimation animation = _selections.ClickedSceneObject->AddComponent<CAnimation>();

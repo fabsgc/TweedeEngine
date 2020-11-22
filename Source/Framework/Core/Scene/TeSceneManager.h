@@ -6,6 +6,12 @@
 
 namespace te
 {
+    /** Possible states components can be in. Controls which component callbacks are triggered. */
+    enum class ComponentState
+    {
+        Running, /**< All components callbacks are being triggered normally. */
+    };
+
     /** Information about a scene actor and the scene object it has been bound to. */
     struct BoundActorData
     {
@@ -57,6 +63,15 @@ namespace te
          * @param[in]	forceAll	If true, then even the persistent objects will be unloaded.
          */
         void ClearScene();
+
+        /**
+         * Changes the component state that globally determines which component callbacks are activated. Only affects
+         * components that don't have the ComponentFlag::AlwaysRun flag set.
+         */
+        void SetComponentState(ComponentState state);
+
+        /** Checks are the components currently in the Running state. */
+        bool IsRunning() const { return _componentState == ComponentState::Running; }
 
         /**
          * Returns a list of all components of the specified type currently in the scene.
@@ -166,6 +181,8 @@ namespace te
 
         SPtr<RenderTarget> _mainRenderTarget;
         HEvent _mainRTResizedConn;
+
+        ComponentState _componentState = ComponentState::Running;
     };
 
     template<class T>

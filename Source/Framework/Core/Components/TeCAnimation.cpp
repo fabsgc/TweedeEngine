@@ -5,6 +5,7 @@
 #include "Components/TeCRenderable.h"
 #include "Renderer/TeRenderable.h"
 #include "Components/TeCBone.h"
+#include "TeCoreApplication.h"
 
 using namespace std::placeholders;
 
@@ -141,13 +142,11 @@ namespace te
     }
 
     void CAnimation::_instantiate()
-    { 
-        // TODO animation scene manager is running ?
-        RestoreInternal(false);
-    }
+    { }
 
     void CAnimation::Initialize()
     {
+        RestoreInternal(false);
         Component::Initialize();
     }
 
@@ -158,11 +157,19 @@ namespace te
 
     void CAnimation::OnEnabled()
     {
+        if (_previewMode)
+        {
+            DestroyInternal();
+            _previewMode = false;
+        }
+
+        RestoreInternal(false);
         Component::OnEnabled();
     }
 
     void CAnimation::OnDisabled()
     {
+        DestroyInternal();
         Component::OnDisabled();
     }
 
@@ -233,10 +240,9 @@ namespace te
         _internal = nullptr;
     }
 
-    bool CAnimation::_togglePreviewMode(bool enabled)
+    /*bool CAnimation::_togglePreviewMode(bool enabled)
     {
-        // TODO animation scene manager is running ?
-        bool isRunning = true;
+        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Game);
 
         if (enabled)
         {
@@ -247,8 +253,7 @@ namespace te
             if (!_previewMode)
             {
                 // Make sure not to re-enable preview mode if already enabled because it rebuilds the internal Animation
-                // component, changing its ID. If animation evaluation is async then the new ID will not have any animation
-                // attached for one frame. This can look weird when sampling the animation for preview purposes
+                // component, changing its ID. This can look weird when sampling the animation for preview purposes
                 // (e.g. scrubbing in editor), in which case animation will reset to T pose for a single frame before
                 // settling on the chosen frame.
                 RestoreInternal(true);
@@ -265,6 +270,64 @@ namespace te
             _previewMode = false;
             return false;
         }
+    }*/
+
+    void CAnimation::Update()
+    {
+        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Game);
+        if (!isRunning && !_previewMode)
+        {
+            // Make sure attached CBone components match the position of the skeleton bones even when the component is not
+            // otherwise running.
+
+            HRenderable animatedRenderable = static_object_cast<CRenderable>(SO()->GetComponent<CRenderable>());
+            if (animatedRenderable)
+            {
+                SPtr<Mesh> mesh = animatedRenderable->GetMesh();
+                if (mesh)
+                {
+                    const SPtr<Skeleton>& skeleton = mesh->GetSkeleton();
+                    if (skeleton)
+                    {
+                        for (auto& entry : _mappingInfos)
+                        {
+                            // We allow a null bone for the root bone mapping, should be non-null for everything else
+                            if (!entry.IsMappedToBone || entry.Bone == nullptr)
+                                continue;
+
+                            const UINT32 numBones = skeleton->GetNumBones();
+                            for (UINT32 j = 0; j < numBones; j++)
+                            {
+                                if (skeleton->GetBoneInfo(j).Name == entry.Bone->GetBoneName())
+                                {
+                                    Matrix4 bindPose = skeleton->GetInvBindPose(j).InverseAffine();
+                                    bindPose = SO()->GetTransform().GetMatrix() * bindPose;
+
+                                    Vector3 position, scale;
+                                    Quaternion rotation;
+                                    bindPose.Decomposition(position, rotation, scale);
+
+                                    entry.So->SetWorldPosition(position);
+                                    entry.So->SetWorldRotation(rotation);
+                                    entry.So->SetWorldScale(scale);
+
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (_internal == nullptr || !isRunning)
+            return;
+
+        HAnimationClip newPrimaryClip = _internal->GetClip(0);
+        if (newPrimaryClip != _primaryPlayingClip)
+            _refreshClipMappings();
+
+        // TODO animation : script
     }
 
     bool CAnimation::_getGenericCurveValue(UINT32 curveIdx, float& value)

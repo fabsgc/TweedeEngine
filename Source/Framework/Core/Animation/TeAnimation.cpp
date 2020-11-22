@@ -1279,7 +1279,6 @@ namespace te
         if (_genericCurveValuesValid)
         {
             _genericCurveOutputs.resize(_animProxy->_numGenericCurves);
-
             memcpy(_genericCurveOutputs.data(), _animProxy->_genericCurveOutputs, _animProxy->_numGenericCurves * sizeof(float));
         }
     }

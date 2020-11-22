@@ -101,6 +101,9 @@ namespace te
         /** Checks whether the animation will be evaluated when it is out of view. */
         bool GetEnableCull() const { return _enableCull; }
 
+        /** Get current preview mode */
+        //bool GetPreviewMode() const { return _previewMode; }
+
         /** @copydoc Animation::getNumClips */
         UINT32 GetNumClips() const;
 
@@ -151,10 +154,10 @@ namespace te
          * explicitly disabled. Returns true if the preview mode was enabled (which could fail if the component is
          * currently running).
          */
-        bool _togglePreviewMode(bool enabled);
+        //bool _togglePreviewMode(bool enabled);
 
         /** @copydoc Component::Update */
-        void Update() override { }
+        void Update();
 
         /** Returns the Animation implementation wrapped by this component. */
         SPtr<Animation> _getInternal() const { return _internal; }
@@ -232,7 +235,6 @@ namespace te
         AnimWrapMode _wrapMode = AnimWrapMode::Loop;
         float _speed = 1.0f;
         bool _enableCull = true;
-        // TODO animation will need to be changed
         bool _previewMode = false;
 
         Vector<SceneObjectMappingInfo> _mappingInfos;

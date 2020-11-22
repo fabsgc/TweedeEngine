@@ -83,7 +83,9 @@ namespace te
     }
 
     void CRenderable::OnCreated()
-    { 
+    {
+        // We check if there is an animation on the parent SceneObject
+
         Component::OnCreated();
     }
 

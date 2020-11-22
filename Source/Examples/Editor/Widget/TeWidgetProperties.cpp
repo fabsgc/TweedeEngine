@@ -725,6 +725,20 @@ namespace te
         bool hasChanged = false;
         const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
 
+        // preview mode
+        /*{
+            bool previewMode = animation->GetPreviewMode();
+            bool oldPreviewMode = previewMode;
+            if (ImGuiExt::RenderOptionBool(previewMode, "##animation_preview_mode_option", "Preview"))
+            {
+                if (previewMode != oldPreviewMode)
+                {
+                    hasChanged = true;
+                    animation->_togglePreviewMode(true);
+                }
+            }
+        }*/
+
         // cull
         {
             bool cull = animation->GetEnableCull();
