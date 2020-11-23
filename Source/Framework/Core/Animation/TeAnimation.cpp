@@ -868,6 +868,11 @@ namespace te
         return false;
     }
 
+    void Animation::ForceDirtyState(AnimDirtyStateFlag state)
+    {
+        _dirty |= (UINT32)state;
+    }
+
     bool Animation::IsPlaying() const
     {
         for (auto& clipInfo : _clipInfos)

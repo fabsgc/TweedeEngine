@@ -107,14 +107,17 @@ namespace te
         /** Get current preview mode */
         //bool GetPreviewMode() const { return _previewMode; }
 
-        /** @copydoc Animation::getNumClips */
+        /** @copydoc Animation::GetNumClips */
         UINT32 GetNumClips() const;
 
-        /** @copydoc Animation::getClip */
+        /** @copydoc Animation::GetClip */
         HAnimationClip GetClip(UINT32 idx) const;
 
         /** Triggered whenever an animation event is reached. */
         Event<void(const HAnimationClip&, const String&)> OnEventTriggered;
+
+        /** @copydoc Animation::ForceDirtyState */
+        void ForceDirtyState(AnimDirtyStateFlag state) { _internal->ForceDirtyState(state); }
 
         /**
          * Registers a new bone component, creating a new transform mapping from the bone name to the scene object the

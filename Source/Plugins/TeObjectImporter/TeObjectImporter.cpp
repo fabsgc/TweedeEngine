@@ -596,7 +596,7 @@ namespace te
                 allBones.push_back(BONE_DESC());
                 BONE_DESC& bone = allBones.back();
 
-                assimpBone.LocalTransform.Decomposition(position, rotation, scale); // TODO don't like that, slow
+                assimpBone.LocalTransform.Decomposition(position, rotation, scale);
                 bone.Name = assimpBone.Node->Name;
                 bone.LocalTfrm = Transform(position, rotation, scale);
                 bone.InvBindPose = assimpBone.InvBindPose;
@@ -654,7 +654,7 @@ namespace te
 
                     allBones.push_back(BONE_DESC());
                     BONE_DESC& bone = allBones.back();
-                    node->LocalTransform.Decomposition(position, rotation, scale); // TODO don't like that, slow
+                    node->LocalTransform.Decomposition(position, rotation, scale);
 
                     bone.Name = node->Name;
                     bone.LocalTfrm = Transform(position, rotation, scale);

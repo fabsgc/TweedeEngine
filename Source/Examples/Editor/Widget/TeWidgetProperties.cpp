@@ -15,6 +15,7 @@
 #include "Components/TeCScript.h"
 #include "Components/TeCLight.h"
 #include "Components/TeCAnimation.h"
+#include "Components/TeCBone.h"
 #include "RenderAPI/TeSubMesh.h"
 #include "Mesh/TeMesh.h"
 #include "Importer/TeMeshImportOptions.h"
@@ -103,6 +104,13 @@ namespace te
             case TID_CAnimation:
             {
                 if (ShowCAnimationProperties())
+                    hasChanged = true;
+            }
+            break;
+
+            case TID_CBone:
+            {
+                if (ShowCBoneProperties())
                     hasChanged = true;
             }
             break;
@@ -289,6 +297,77 @@ namespace te
         {
             if (ShowAnimationClips(animation))
                 hasChanged = true;
+        }
+
+        return hasChanged;
+    }
+
+    bool WidgetProperties::ShowCBoneProperties()
+    {
+        bool hasChanged = false;
+        SPtr<CBone> bone = std::static_pointer_cast<CBone>(_selections.ClickedComponent);
+        ObjectMobility mobility = bone->GetSceneObject()->GetMobility();
+        Transform transform = bone->GetSceneObject()->GetTransform();
+        const float width = ImGui::GetWindowContentRegionWidth() - 120.0f;
+
+        if (ShowTransform(transform, mobility))
+        {
+            bone->GetSceneObject()->SetMobility(mobility);
+            bone->GetSceneObject()->SetLocalTransform(transform);
+            hasChanged = true;
+        }
+
+        if (ImGui::CollapsingHeader("Bone", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            HSceneObject currentSO = bone->GetSceneObject();
+            HRenderable renderable;
+            HAnimation animation;
+
+            while (!currentSO.Empty())
+            {
+                renderable = static_object_cast<CRenderable>(currentSO->GetComponent<CRenderable>());
+                animation = static_object_cast<CAnimation>(currentSO->GetComponent<CAnimation>());
+
+                if (!renderable.Empty() && !animation.Empty()) // If there is an animation and a renderable in the hierarchy
+                    break;
+
+                if (currentSO == gEditor().GetSceneRoot())
+                    break;
+
+                currentSO = currentSO->GetParent();           
+            }
+
+            if (!renderable.Empty() && !animation.Empty())
+            {
+                if (renderable->GetMesh() && renderable->GetMesh()->GetSkeleton()) // if the renderable has a skeleton
+                {
+                    ImGuiExt::ComboOptions<UINT32> bonesOptions;
+                    SPtr<Skeleton> skeleton = renderable->GetMesh()->GetSkeleton();
+                    UINT32 rootBoneIndex = skeleton->GetRootBoneIndex();
+                    UINT32 boneIndex = -1;
+
+                    bonesOptions.AddOption(-1, "None");
+
+                    for (UINT32 i = 0; i < skeleton->GetNumBones(); i++)
+                    {
+                        SkeletonBoneInfo boneInfo = skeleton->GetBoneInfo(i);
+                        bonesOptions.AddOption(i, boneInfo.Name);
+
+                        if (boneInfo.Name == bone->GetBoneName())
+                            boneIndex = i;
+                    }
+
+                    if (ImGuiExt::RenderOptionCombo<UINT32>(&boneIndex, "##bone_name_option", "Mimicked bone", bonesOptions, width))
+                    {
+                        if (boneIndex != -1)
+                            bone->SetBoneName(skeleton->GetBoneInfo(boneIndex).Name);
+                        else
+                            bone->SetBoneName("");
+
+                        hasChanged = true;
+                    }
+                }
+            }
         }
 
         return hasChanged;

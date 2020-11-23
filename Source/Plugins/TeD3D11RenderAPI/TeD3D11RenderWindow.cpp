@@ -21,17 +21,14 @@ namespace te
         , _device(device)
         , _DXGIFactory(DXGIFactory)
         , _multisampleType()
-    {
-    }
+    { }
 
     D3D11RenderWindow::~D3D11RenderWindow()
     {
         RenderWindowProperties& props = _properties;
 
         if (props.IsFullScreen)
-        {
             _swapChain->SetFullscreenState(false, nullptr);
-        }
 
         SAFE_RELEASE(_swapChain);
 
@@ -108,13 +105,9 @@ namespace te
         if (_properties.IsFullScreen)
         {
             if (outputInfo != nullptr)
-            {
                 _swapChain->SetFullscreenState(true, outputInfo->GetDXGIOutput());
-            }
             else
-            {
                 _swapChain->SetFullscreenState(true, nullptr);
-            }
         }
 
         CreateSizeDependedD3DResources();
@@ -249,13 +242,9 @@ namespace te
         if (_swapChain)
         {
             if (state)
-            {
                 _swapChain->SetFullscreenState(_properties.IsFullScreen, nullptr);
-            }
             else
-            {
                 _swapChain->SetFullscreenState(FALSE, nullptr);
-            }
         }
     }
 
@@ -279,9 +268,7 @@ namespace te
         const D3D11VideoModeInfo& videoModeInfo = static_cast<const D3D11VideoModeInfo&>(RenderAPI::Instance().GetVideoModeInfo());
         UINT32 numOutputs = videoModeInfo.GetNumOutputs();
         if (numOutputs == 0)
-        {
             return;
-        }
 
         UINT32 actualMonitorIdx = std::min(monitorIdx, numOutputs - 1);
         const D3D11VideoOutputInfo& outputInfo = static_cast<const D3D11VideoOutputInfo&>(videoModeInfo.GetOutputInfo(actualMonitorIdx));
@@ -317,9 +304,7 @@ namespace te
         const D3D11VideoModeInfo& videoModeInfo = static_cast<const D3D11VideoModeInfo&>(RenderAPI::Instance().GetVideoModeInfo());
         UINT32 numOutputs = videoModeInfo.GetNumOutputs();
         if (numOutputs == 0)
-        {
             return;
-        }
 
         UINT32 actualMonitorIdx = std::min(mode.GetOutputIdx(), numOutputs - 1);
         const D3D11VideoOutputInfo& outputInfo = static_cast<const D3D11VideoOutputInfo&>(videoModeInfo.GetOutputInfo(actualMonitorIdx));
@@ -410,9 +395,7 @@ namespace te
 
         HRESULT hr = _swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&_backBuffer);
         if (FAILED(hr))
-        {
             TE_ASSERT_ERROR(false, "Unable to Get Back Buffer for swap chain");
-        }
 
         assert(_backBuffer && !_renderTargetView);
 
@@ -470,9 +453,7 @@ namespace te
         HRESULT hr = _swapChain->ResizeBuffers(_swapChainDesc.BufferCount, width, height, _swapChainDesc.BufferDesc.Format, Flags);
 
         if (hr != S_OK)
-        {
             TE_ASSERT_ERROR(false, "Call to ResizeBuffers failed.");
-        }
 
         _swapChain->GetDesc(&_swapChainDesc);
         _properties.Width = _swapChainDesc.BufferDesc.Width;
@@ -539,9 +520,7 @@ namespace te
         SAFE_RELEASE(pDXGIDevice);
 
         if (FAILED(hr))
-        {
             TE_ASSERT_ERROR(false, "Unable to create swap chain. Error code: " + ToString(hr));
-        }
     }
 
     IDXGIDevice* D3D11RenderWindow::QueryDxgiDevice()
@@ -552,9 +531,7 @@ namespace te
         HRESULT hr = _device.GetD3D11Device()->QueryInterface(__uuidof(IDXGIDevice), (void**)&pDXGIDevice);
 
         if (FAILED(hr))
-        {
             TE_ASSERT_ERROR(false, "Unable to query a DXGIDevice.");
-        }
 
         return pDXGIDevice;
     }
@@ -566,9 +543,7 @@ namespace te
             HRESULT hr = _swapChain->Present(GetProperties().VSync ? 1 : 0, 0);
 
             if (FAILED(hr))
-            {
                 TE_ASSERT_ERROR(false, "Error Presenting surfaces");
-            }
         }
     }
 

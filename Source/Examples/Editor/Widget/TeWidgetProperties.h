@@ -45,6 +45,9 @@ namespace te
         /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
         bool ShowCAnimationProperties();
 
+        /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
+        bool ShowCBoneProperties();
+
         /**  Show transform and mobility options */
         bool ShowTransform(Transform& transform, ObjectMobility& mobility, bool disableTransform = false);
 

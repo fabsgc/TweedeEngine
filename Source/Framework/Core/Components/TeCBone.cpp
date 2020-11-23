@@ -21,6 +21,9 @@ namespace te
 
     void CBone::SetBoneName(const String& name)
     {
+        if (_parent == nullptr)
+            UpdateParentAnimation();
+
         if (_boneName == name)
             return;
 
@@ -43,6 +46,7 @@ namespace te
 
     void CBone::OnInitialized()
     {
+        UpdateParentAnimation();
         Component::OnInitialized();
     }
 
@@ -105,16 +109,19 @@ namespace te
 
     void CBone::_setParent(const HAnimation& animation, bool isInternal)
     {
-        if (animation == _parent)
-            return;
-
         if (!isInternal)
         {
-            if (_parent != nullptr)
+            if (!_parent.Empty())
+            {
                 _parent->_removeBone(static_object_cast<CBone>(GetHandle()));
+                _parent->ForceDirtyState(AnimDirtyStateFlag::Layout);
+            }
 
-            if (animation != nullptr)
+            if (!animation.Empty())
+            {
                 animation->_addBone(static_object_cast<CBone>(GetHandle()));
+                animation->ForceDirtyState(AnimDirtyStateFlag::Layout);
+            }
         }
 
         _parent = animation;
@@ -126,5 +133,7 @@ namespace te
     }
 
     void CBone::Clone(const HBone& c)
-    { }
+    { 
+        _boneName = c->_boneName;
+    }
 }

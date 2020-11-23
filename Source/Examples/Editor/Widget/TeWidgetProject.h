@@ -72,6 +72,7 @@ namespace te
         void CreateCamera(TypeID_Core type);
         void CreateAudio();
         void CreateAnimation();
+        void CreateBone();
         void CreateScript();
         void CreateSkybox();
         void Paste();

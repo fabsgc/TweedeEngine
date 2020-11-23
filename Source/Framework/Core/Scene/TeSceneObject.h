@@ -286,7 +286,7 @@ namespace te
          * Gets the parent of this object.
          * @return	Parent object, or nullptr if this SceneObject is at root level.
          */
-        HSceneObject GetParent() const { return _parent; }
+        HSceneObject GetParent() const { return (!_parent.Empty()) ? _parent.GetNewHandleFromExisting() : HSceneObject(); }
 
         /**
          * Gets a child of this item.

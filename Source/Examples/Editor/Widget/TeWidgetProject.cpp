@@ -12,6 +12,7 @@
 #include "Components/TeCSkybox.h"
 #include "Components/TeCScript.h"
 #include "Components/TeCAnimation.h"
+#include "Components/TeCBone.h"
 #include "../TeEditorUtils.h"
 
 namespace te
@@ -406,6 +407,12 @@ namespace te
                         animNewSO->Initialize();
                 }
 
+                // if we've moved a bone, we need to trigger potential old and new animations to update their states
+                if (currentCO->GetCoreType() == TID_CBone)
+                {
+                    currentCO->Initialize();
+                }
+
                 // ugly but best way to update all children
                 sceneObject->Move(Vector3::ZERO);
 
@@ -530,6 +537,8 @@ namespace te
                         CreateSkybox();
                     if (ImGui::MenuItem(ICON_FA_SCROLL " Script"))
                         CreateScript();
+                    if (ImGui::MenuItem(ICON_FA_BONE " Bone"))
+                        CreateBone();
 
                     ImGui::EndMenu();
                 }
@@ -752,6 +761,22 @@ namespace te
         gEditor().GetSettings().State = Editor::EditorState::Modified;
     }
 
+    void WidgetProject::CreateBone()
+    {
+        if (!_selections.ClickedSceneObject || _selections.ClickedComponent)
+            return;
+
+        HBone bone = _selections.ClickedSceneObject->AddComponent<CBone>();
+        bone.Get()->SetName("Bone");
+        bone.Get()->Initialize();
+
+        _expandToSelection = true;
+        _handleSelectionWindowSwitch = true;
+        _selections.ClickedComponent = bone.GetInternalPtr();
+        gEditor().NeedsRedraw();
+        gEditor().GetSettings().State = Editor::EditorState::Modified;
+    }
+
     void WidgetProject::CreateSkybox()
     { 
         if (!_selections.ClickedSceneObject || _selections.ClickedComponent)
@@ -817,6 +842,9 @@ namespace te
             break;
         case TID_CAnimation:
             title += String("  ") + ICON_FA_STEP_FORWARD;
+            break;
+        case TID_CBone:
+            title += String("  ") + ICON_FA_BONE;
             break;
         default:
             title += String("  ") + ICON_FA_QUESTION_CIRCLE;

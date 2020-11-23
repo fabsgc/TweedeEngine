@@ -392,6 +392,9 @@ namespace te
         /** Checks if any currently set animation clips perform animation of the root bone. */
         bool GetAnimatesRoot() const;
 
+        /** Force dirty state to be taken into accound */
+        void ForceDirtyState(AnimDirtyStateFlag state);
+
     private:
         friend class AnimationManager;
 
