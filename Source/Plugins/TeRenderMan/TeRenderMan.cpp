@@ -82,7 +82,7 @@ namespace te
         return name;
     }
 
-    void RenderMan::RenderAll(PerFrameData perFrameData)
+    void RenderMan::RenderAll(PerFrameData& perFrameData)
     {
         CoreObjectManager::Instance().FrameSync();
 

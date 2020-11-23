@@ -63,6 +63,7 @@ namespace te
         TE_PARAM_BLOCK_BEGIN(PerPickSelectObjectParamDef)
             TE_PARAM_BLOCK_ENTRY(Matrix4, gMatWorld)
             TE_PARAM_BLOCK_ENTRY(Vector4, gColor)
+            TE_PARAM_BLOCK_ENTRY(UINT32, gHasAnimation)
         TE_PARAM_BLOCK_END
 
         TE_PARAM_BLOCK_BEGIN(PerHudInstanceParamDef)

@@ -84,6 +84,8 @@ namespace te
         _gui = GuiManager::Instance().Initialize(_startUpDesc.Gui);
         _window->InitializeGui();
 
+        _perFrameData = te_shared_ptr_new<PerFrameData>();
+
         Importer::StartUp();
         AudioManager::StartUp(_startUpDesc.Audio);
         AnimationManager::StartUp();
@@ -157,13 +159,12 @@ namespace te
 
             PostUpdate();
 
-            PerFrameData perFrameData;
-            perFrameData.Animation = AnimationManager::Instance().Update();
+            _perFrameData->Animation = AnimationManager::Instance().Update();
 
             DisplayFrameRate();
 
             RendererManager::Instance().GetRenderer()->Update();
-            RendererManager::Instance().GetRenderer()->RenderAll(perFrameData);
+            RendererManager::Instance().GetRenderer()->RenderAll(*_perFrameData);
 
             PostRender();
         }

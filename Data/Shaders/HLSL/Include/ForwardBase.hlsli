@@ -56,6 +56,7 @@ struct VS_OUTPUT
     float2 Texture : TEXCOORD0;
     float3 ViewDirection : POSITION3;
     float4 WorldViewDistance : TEXCOORD1;
+    float4 Color : COLOR0;
 };
 
 struct PS_INPUT
@@ -70,6 +71,7 @@ struct PS_INPUT
     float2 Texture : TEXCOORD0;
     float3 ViewDirection: POSITION3;
     float4 WorldViewDistance : TEXCOORD1;
+    float4 Color : COLOR0;
 };
 
 struct PS_OUTPUT

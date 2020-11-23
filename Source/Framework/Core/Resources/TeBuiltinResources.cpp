@@ -659,6 +659,7 @@ namespace te
             
             SHADER_DATA_PARAM_DESC gMatWorldDesc("gMatWorld", "gMatWorld", GPDT_MATRIX_4X4);
             SHADER_DATA_PARAM_DESC gColorDesc("gColor", "gColor", GPDT_FLOAT4);
+            SHADER_DATA_PARAM_DESC gHasAnimationDesc("gHasAnimation", "gHasAnimation", GPDT_INT1);
 
             _pickSelectShaderDesc.AddParameter(gMatViewProjDesc);
             _hudPickSelectShaderDesc.AddParameter(gMatViewOriginDesc);
@@ -666,6 +667,7 @@ namespace te
 
             _pickSelectShaderDesc.AddParameter(gMatWorldDesc);
             _pickSelectShaderDesc.AddParameter(gColorDesc);
+            _pickSelectShaderDesc.AddParameter(gHasAnimationDesc);
         }
 
         {

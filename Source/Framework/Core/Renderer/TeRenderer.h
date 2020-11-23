@@ -48,7 +48,7 @@ namespace te
         virtual const String& GetName() const = 0;
 
         /** Called in order to render all currently active cameras. */
-        virtual void RenderAll(PerFrameData perFrameData) = 0;
+        virtual void RenderAll(PerFrameData& perFrameData) = 0;
 
         /**	Sets options used for controlling the rendering. */
         virtual void SetOptions(const SPtr<RendererOptions>& options) { }

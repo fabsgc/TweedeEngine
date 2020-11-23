@@ -13,13 +13,13 @@ namespace te
     /** Contains information global to an entire frame. */
     struct FrameInfo
     {
-        FrameInfo(const FrameTimings& timings, PerFrameData perFrameDatas)
+        FrameInfo(const FrameTimings& timings, PerFrameData& perFrameDatas)
             : Timings(timings)
             , PerFrameDatas(perFrameDatas)
         { }
 
         FrameTimings Timings;
-        PerFrameData PerFrameDatas;
+        PerFrameData& PerFrameDatas;
     };
 
     class RenderMan: public Renderer
@@ -41,7 +41,7 @@ namespace te
         const String& GetName() const override;
 
         /** @copydoc Renderer::RenderAll */
-        void RenderAll(PerFrameData perFrameData) override;
+        void RenderAll(PerFrameData& perFrameData) override;
 
         /**	Sets options used for controlling the rendering. */
         void SetOptions(const SPtr<RendererOptions>& options) override;

@@ -6,6 +6,8 @@
 
 namespace te
 {
+    struct PerFrameData;
+
     /**	Structure containing parameters for starting the application. */
     struct START_UP_DESC
     {
@@ -110,6 +112,9 @@ namespace te
         /**	Returns startup desc. */
         const START_UP_DESC& GetStartUpDesc() const { return _startUpDesc; }
 
+        /** Returns data computed at each frame */
+        const SPtr<PerFrameData> GetPerFrameData() const { return _perFrameData; }
+
         /**
          * Loads a plugin.
          *
@@ -168,6 +173,8 @@ namespace te
         volatile bool _pause;
 
         ApplicationState _state;
+
+        SPtr<PerFrameData> _perFrameData;
     };
 
     /**	Provides easy access to CoreApplication. */

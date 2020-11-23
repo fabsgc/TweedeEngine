@@ -1,4 +1,5 @@
 #include "Include/ForwardBase.hlsli"
+#include "Include/Skinning.hlsli"
 
 cbuffer PerCameraBuffer : register(b0)
 {
@@ -75,37 +76,50 @@ VS_OUTPUT main( VS_INPUT IN )
 {
     VS_OUTPUT OUT = (VS_OUTPUT)0;
 
+    float4x4 blendMatrix = (float4x4)0;
+    float4x4 prevBlendMatrix = (float4x4)0;
+
+    if(gHasAnimation)
+    {
+        blendMatrix = GetBlendMatrix(IN.BlendWeights, IN.BlendIndices);
+        prevBlendMatrix = GetPrevBlendMatrix(IN.BlendWeights, IN.BlendIndices);
+    }
+
     if(IN.Instanceid == 0)
     {
-        OUT.Position.xyz = IN.Position;
-        OUT.Position.w = 1.0f;
+        OUT.Position = float4(IN.Position, 1.0f);
+        if(gHasAnimation)
+            OUT.Position = mul(blendMatrix, OUT.Position);
         OUT.Position = mul(gMatWorld, OUT.Position);
         OUT.Position = mul(gMatViewProj, OUT.Position);
 
-        OUT.Color = IN.Color;
         OUT.Normal = normalize(mul(gMatWorld, float4(IN.Normal, 0.0f))).xyz;
 
-        OUT.WorldPosition.xyz = IN.Position;
-        OUT.WorldPosition.w = 1.0f;
+        OUT.WorldPosition = float4(IN.Position, 1.0f);
+        if(gHasAnimation)
+            OUT.WorldPosition = mul(blendMatrix, OUT.WorldPosition);
         OUT.WorldPosition = mul(gMatWorld, OUT.WorldPosition);
 
         OUT.ViewDirection = normalize(OUT.WorldPosition.xyz - gViewOrigin);
+        OUT.Color = IN.Color;
     }
     else
     {
-        OUT.Position.xyz = IN.Position;
-        OUT.Position.w = 1.0f;
+        OUT.Position = float4(IN.Position, 1.0f);
+        if(gHasAnimation)
+            OUT.Position = mul(blendMatrix, OUT.Position);
         OUT.Position = mul(gInstanceData[IN.Instanceid].gMatWorld, OUT.Position);
         OUT.Position = mul(gMatViewProj, OUT.Position);
 
-        OUT.Color = IN.Color;
         OUT.Normal = normalize(mul(gInstanceData[IN.Instanceid].gMatWorld, float4(IN.Normal, 0.0f))).xyz;
 
-        OUT.WorldPosition.xyz = IN.Position;
-        OUT.WorldPosition.w = 1.0f;
+        OUT.WorldPosition = float4(IN.Position, 1.0f);
+        if(gHasAnimation)
+            OUT.WorldPosition = mul(blendMatrix, OUT.WorldPosition);
         OUT.WorldPosition = mul(gInstanceData[IN.Instanceid].gMatWorld, OUT.WorldPosition);
 
         OUT.ViewDirection = normalize(OUT.WorldPosition.xyz - gViewOrigin);
+        OUT.Color = IN.Color;
     }
 
     return OUT;

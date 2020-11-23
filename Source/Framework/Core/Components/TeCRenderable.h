@@ -123,6 +123,9 @@ namespace te
         /** @copydoc SceneActor::GetActive */
         bool GetActive() const { return _internal->GetActive(); }
 
+        /** @copydoc Renderable::IsAnimated */
+        bool IsAnimated() const { return _internal->IsAnimated(); }
+
         /** @copydoc Component::Clone */
         void Clone(const HComponent& c) override;
 
