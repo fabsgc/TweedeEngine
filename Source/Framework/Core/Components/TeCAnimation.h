@@ -71,6 +71,9 @@ namespace te
         /** @copydoc Animation::Play */
         void Play(const HAnimationClip& clip);
 
+        /** @copydoc Animation::BlendAdditive */
+        void BlendAdditive(const HAnimationClip& clip, float weight, float fadeLength = 0.0f, UINT32 layer = 0);
+
         /** @copydoc Animation::Blend1D */
         void Blend1D(const Blend1DInfo& info, float t);
 

@@ -79,7 +79,7 @@ namespace te
                 Vector<ImportedAnimationEvents> events = meshImportOptions->AnimationEvents;
                 for (auto& entry : animationClips)
                 {
-                    SPtr<AnimationClip> clip = AnimationClip::_createPtr(entry.Curves, entry.SampleRate, entry.RootMot);
+                    SPtr<AnimationClip> clip = AnimationClip::_createPtr(entry.Curves, entry.SampleRate, entry.IsAdditive, entry.RootMot);
                     clip->SetName(entry.Name);
 
                     for (auto& eventsEntry : events)
@@ -395,6 +395,7 @@ namespace te
         Vector<AssimpBoneInfluence>& influences = mesh.BoneInfluences;
         influences.resize(mesh.Positions.size());
 
+        UnorderedSet<AssimpImportNode*> existingBones;
         UINT32 boneCount = (UINT32)assimpMesh->mNumBones;
         for (UINT32 i = 0; i < boneCount; i++)
         {
@@ -425,6 +426,15 @@ namespace te
 
             // Undo the transform we baked into the mesh
             bone.InvBindPose = bone.InvBindPose * (parentNode->WorldTransform).InverseAffine();
+
+            bool isDuplicate = !existingBones.insert(iterNode->second).second;
+            bool isAdditive = false;
+
+            // We avoid importing weights twice for duplicate bones and we don't
+            // support additive link mode.
+            bool importWeights = !isDuplicate && !isAdditive;
+            if (!importWeights)
+                continue;
 
             INT32 numVertices = (INT32)influences.size();
 
@@ -698,6 +708,7 @@ namespace te
                 rootBoneName = skeleton->GetBoneInfo(rootBoneIdx).Name;
         }
 
+        bool isFirstClip = true;
         for (auto& clip : clips)
         {
             SPtr<AnimationCurves> curves = te_shared_ptr_new<AnimationCurves>();
@@ -753,17 +764,98 @@ namespace te
                 }
             }
 
-            // Search for a unique name
-            String name = clip.Name;
-            UINT32 attemptIdx = 0;
-            while (names.find(name) != names.end())
+            // See if any splits are required. We only split the first clip as it is assumed if FBX has multiple clips the
+            // user has the ability to split them externally.
+            if (isFirstClip && !splits.empty())
             {
-                name = clip.Name + "_" + ToString(attemptIdx);
-                attemptIdx++;
+                float secondsPerFrame = 1.0f / clip.SampleRate;
+
+                for (auto& split : splits)
+                {
+                    SPtr<AnimationCurves> splitClipCurve = te_shared_ptr_new<AnimationCurves>();
+                    SPtr<RootMotion> splitRootMotion;
+
+                    auto splitCurves = [&](auto& inCurves, auto& outCurves)
+                    {
+                        UINT32 numCurves = (UINT32)inCurves.size();
+                        outCurves.resize(numCurves);
+
+                        for (UINT32 i = 0; i < numCurves; i++)
+                        {
+                            auto& animCurve = inCurves[i].Curve;
+                            outCurves[i].Name = inCurves[i].Name;
+
+                            UINT32 numFrames = animCurve.GetNumKeyFrames();
+                            if (numFrames == 0)
+                                continue;
+
+                            float startTime = split.StartFrame * secondsPerFrame;
+                            float endTime = split.EndFrame * secondsPerFrame;
+
+                            outCurves[i].Curve = inCurves[i].Curve.Split(startTime, endTime);
+
+                            if (split.IsAdditive)
+                                outCurves[i].Curve.MakeAdditive();
+                        }
+                    };
+
+                    splitCurves(curves->Position, splitClipCurve->Position);
+                    splitCurves(curves->Rotation, splitClipCurve->Rotation);
+                    splitCurves(curves->Scale, splitClipCurve->Scale);
+                    splitCurves(curves->Generic, splitClipCurve->Generic);
+
+                    if (rootMotion != nullptr)
+                    {
+                        auto splitCurve = [&](auto& inCurve, auto& outCurve)
+                        {
+                            UINT32 numFrames = inCurve.GetNumKeyFrames();
+                            if (numFrames > 0)
+                            {
+                                float startTime = split.StartFrame * secondsPerFrame;
+                                float endTime = split.EndFrame * secondsPerFrame;
+
+                                outCurve = inCurve.Split(startTime, endTime);
+
+                                if (split.IsAdditive)
+                                    outCurve.MakeAdditive();
+                            }
+                        };
+
+                        splitRootMotion = te_shared_ptr_new<RootMotion>();
+                        splitCurve(rootMotion->Position, splitRootMotion->Position);
+                        splitCurve(rootMotion->Rotation, splitRootMotion->Rotation);
+                    }
+
+                    // Search for a unique name
+                    String name = split.Name;
+                    UINT32 attemptIdx = 0;
+                    while (names.find(name) != names.end())
+                    {
+                        name = clip.Name + "_" + ToString(attemptIdx);
+                        attemptIdx++;
+                    }
+
+                    names.insert(name);
+                    output.push_back(AssimpAnimationClipData(name, split.IsAdditive, clip.SampleRate, splitClipCurve,
+                        splitRootMotion));
+                }
+            }
+            else
+            {
+                // Search for a unique name
+                String name = clip.Name;
+                UINT32 attemptIdx = 0;
+                while (names.find(name) != names.end())
+                {
+                    name = clip.Name + "_" + ToString(attemptIdx);
+                    attemptIdx++;
+                }
+
+                names.insert(name);
+                output.push_back(AssimpAnimationClipData(name, false, clip.SampleRate, curves, rootMotion));
             }
 
-            names.insert(name);
-            output.push_back(AssimpAnimationClipData(name, clip.SampleRate, curves, rootMotion));
+            isFirstClip = false;
         }
     }
 

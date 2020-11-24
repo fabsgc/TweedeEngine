@@ -80,6 +80,22 @@ namespace te
          */
         KeyFrame EvaluateKey(float time, bool loop = true) const;
 
+        /**
+         * Splits a piece of the animation curve into a separate animation curve.
+         *
+         * @param[in]	start	Beginning time of the split curve.
+         * @param[in]	end		End time of the split curve.
+         * @return				New curve with data corresponding to the provided split times.
+         */
+        TAnimationCurve<T> Split(float start, float end);
+
+        /**
+         * Converts a normal curve into an additive curve. It is assumed the first keyframe in the curve is the reference
+         * key from which to generate the additive curve. Such curves can then be added on top of a curve containing
+         * reference keys.
+         */
+        void MakeAdditive();
+
         /** Returns the time of the first and last keyframe in the curve. */
         std::pair<float, float> GetTimeRange() const;
 

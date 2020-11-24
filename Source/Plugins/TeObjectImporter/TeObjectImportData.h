@@ -85,15 +85,17 @@ namespace te
     /** All information required for creating an animation clip. */
     struct AssimpAnimationClipData
     {
-        AssimpAnimationClipData(const String& name, float sampleRate, const SPtr<AnimationCurves>& curves,
-            const SPtr<RootMotion>& rootMotion)
+        AssimpAnimationClipData(const String& name, bool isAdditive, float sampleRate, 
+            const SPtr<AnimationCurves>& curves, const SPtr<RootMotion>& rootMotion)
             : Name(name)
+            , IsAdditive(isAdditive)
             , SampleRate(sampleRate)
             , Curves(curves)
             , RootMot(rootMotion)
         { }
 
         String Name;
+        bool IsAdditive;
         float SampleRate;
         SPtr<AnimationCurves> Curves;
         SPtr<RootMotion> RootMot;

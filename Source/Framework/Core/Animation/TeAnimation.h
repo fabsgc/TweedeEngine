@@ -271,6 +271,21 @@ namespace te
         void Play(const HAnimationClip& clip);
 
         /**
+         * Plays the specified animation clip on top of the animation currently playing in the main layer. Multiple
+         * such clips can be playing at once, as long as you ensure each is given its own layer. Each animation can
+         * also have a weight that determines how much it influences the main animation.
+         *
+         * @param[in]	clip		Clip to additively blend. Must contain additive animation curves.
+         * @param[in]	weight		Determines how much of an effect will the blended animation have on the final output.
+         *							In range [0, 1].
+         * @param[in]	fadeLength	Applies the blend over a specified time period, increasing the weight as the time
+         *							passes. Set to zero to blend immediately. In seconds.
+         * @param[in]	layer		Layer to play the clip in. Multiple additive clips can be playing at once in separate
+         *							layers and each layer has its own weight.
+         */
+        void BlendAdditive(const HAnimationClip& clip, float weight, float fadeLength = 0.0f, UINT32 layer = 0);
+
+        /**
          * Blend multiple animation clips between each other using linear interpolation. Unlike normal animations these
          * animations are not advanced with the progress of time, and is instead expected the user manually changes the
          * @p t parameter.

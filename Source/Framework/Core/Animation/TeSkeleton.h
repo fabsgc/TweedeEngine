@@ -54,6 +54,13 @@ namespace te
         UINT32 NumStates; /**< Number of states in @p states. */
 
         UINT8 Index; /**< Unique index of the animation layer. */
+
+        /**
+         * If true animations from this layer will be added on top of other layers using the per-state weights. If false
+         * the weights will be normalized, animations will be blended with each other according to the normalized weights
+         * and then added on top of other layers.
+         */
+        bool Additive;
     };
 
     /**

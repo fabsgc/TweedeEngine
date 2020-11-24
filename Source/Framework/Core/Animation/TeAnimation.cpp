@@ -545,6 +545,11 @@ namespace te
         _dirty |= (UINT32)AnimDirtyStateFlag::Value;
     }
 
+    void Animation::BlendAdditive(const HAnimationClip& clip, float weight, float fadeLength, UINT32 layer)
+    {
+
+    }
+
     void Animation::Blend1D(const Blend1DInfo& info, float t)
     {
         if (info.Clips.size() == 0)

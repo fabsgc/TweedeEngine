@@ -59,6 +59,12 @@ namespace te
             _internal->Play(clip);
     }
 
+    void CAnimation::BlendAdditive(const HAnimationClip& clip, float weight, float fadeLength, UINT32 layer)
+    {
+        if (_internal != nullptr && !_previewMode)
+            _internal->BlendAdditive(clip, weight, fadeLength, layer);
+    }
+
     void CAnimation::Blend1D(const Blend1DInfo& info, float t)
     {
         if (_internal != nullptr && !_previewMode)

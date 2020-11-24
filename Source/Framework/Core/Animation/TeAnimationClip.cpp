@@ -79,15 +79,19 @@ namespace te
 
     AnimationClip::AnimationClip()
         : Resource(TID_AnimationClip)
+        , _curves(te_shared_ptr_new<AnimationCurves>())
+        , _rootMotion(te_shared_ptr_new<RootMotion>())
+        , _isAdditive(false)
         , _length(0.0f)
         , _sampleRate(0.0f)
     { }
 
-    AnimationClip::AnimationClip(const SPtr<AnimationCurves>& curves, float sampleRate,
-        const SPtr<RootMotion>& rootMotion)
+    AnimationClip::AnimationClip(const SPtr<AnimationCurves>& curves, bool isAdditive, 
+        float sampleRate, const SPtr<RootMotion>& rootMotion)
         : Resource(TID_AnimationClip)
         , _curves(curves)
         , _rootMotion(rootMotion)
+        , _isAdditive(isAdditive)
         , _length(0.0f)
         , _sampleRate(sampleRate)
     { 
@@ -101,17 +105,17 @@ namespace te
         CalculateLength();
     }
 
-    HAnimationClip AnimationClip::Create()
+    HAnimationClip AnimationClip::Create(bool isAdditive)
     {
         return static_resource_cast<AnimationClip>(gResourceManager()._createResourceHandle(
             _createPtr(te_shared_ptr_new<AnimationCurves>())));
     }
 
-    HAnimationClip AnimationClip::Create(const SPtr<AnimationCurves>& curves, float sampleRate,
+    HAnimationClip AnimationClip::Create(const SPtr<AnimationCurves>& curves, bool isAdditive, float sampleRate,
         const SPtr<RootMotion>& rootMotion)
     {
         return static_resource_cast<AnimationClip>(gResourceManager()._createResourceHandle(
-            _createPtr(curves, sampleRate, rootMotion)));
+            _createPtr(curves, isAdditive, sampleRate, rootMotion)));
     }
 
     SPtr<AnimationClip> AnimationClip::CreateEmpty()
@@ -124,10 +128,10 @@ namespace te
         return newClip;
     }
 
-    SPtr<AnimationClip> AnimationClip::_createPtr(const SPtr<AnimationCurves>& curves, float sampleRate,
+    SPtr<AnimationClip> AnimationClip::_createPtr(const SPtr<AnimationCurves>& curves, bool isAdditive, float sampleRate,
         const SPtr<RootMotion>& rootMotion)
     {
-        AnimationClip* rawPtr = new (te_allocate<AnimationClip>()) AnimationClip(curves, sampleRate, rootMotion);
+        AnimationClip* rawPtr = new (te_allocate<AnimationClip>()) AnimationClip(curves, isAdditive, sampleRate, rootMotion);
 
         SPtr<AnimationClip> newClip = te_core_ptr<AnimationClip>(rawPtr);
         newClip->SetThisPtr(newClip);

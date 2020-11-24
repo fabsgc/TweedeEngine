@@ -10,6 +10,32 @@ namespace te
 {
     namespace impl
     {
+        /** Calculates the difference between two values. */
+        float GetDiff(float lhs, float rhs)
+        {
+            return lhs - rhs;
+        }
+
+        Vector3 GetDiff(const Vector3& lhs, const Vector3& rhs)
+        {
+            return lhs - rhs;
+        }
+
+        Vector2 GetDiff(const Vector2& lhs, const Vector2& rhs)
+        {
+            return lhs - rhs;
+        }
+
+        Quaternion GetDiff(const Quaternion& lhs, const Quaternion& rhs)
+        {
+            return rhs.Inverse() * lhs;
+        }
+
+        INT32 GetDiff(INT32 lhs, INT32 rhs)
+        {
+            return lhs - rhs;
+        }
+
         template <class T>
         T GetZero() { return 0.0f; }
 
@@ -179,6 +205,114 @@ namespace te
             return leftKey;
 
         return impl::EvaluateKey(leftKey, rightKey, time);
+    }
+
+    template <class T>
+    TAnimationCurve<T> TAnimationCurve<T>::Split(float start, float end)
+    {
+        Vector<TKeyframe<T>> keyFrames;
+
+        start = Math::Clamp(start, _start, _end);
+        end = Math::Clamp(end, _start, _end);
+
+        UINT32 startKeyIdx = FindKey(start);
+        UINT32 endKeyIdx = FindKey(end);
+
+        keyFrames.reserve(endKeyIdx - startKeyIdx + 2);
+
+        const KeyFrame& startKey = _keyframes[startKeyIdx];
+
+        if (!Math::ApproxEquals(startKey.TimeInSpline, start))
+        {
+            if (start > startKey.TimeInSpline)
+            {
+                if (_keyframes.size() > (startKeyIdx + 1))
+                    keyFrames.push_back(EvaluateKey(startKey, _keyframes[startKeyIdx + 1], start));
+                else
+                {
+                    TKeyframe<T> keyCopy = startKey;
+                    keyCopy.TimeInSpline = start;
+
+                    keyFrames.push_back(keyCopy);
+                }
+
+                startKeyIdx++;
+            }
+            else
+            {
+
+                if (startKeyIdx > 0)
+                    keyFrames.push_back(EvaluateKey(_keyframes[startKeyIdx - 1], startKey, start));
+                else
+                {
+                    TKeyframe<T> keyCopy = startKey;
+                    keyCopy.TimeInSpline = start;
+
+                    keyFrames.push_back(keyCopy);
+                }
+            }
+        }
+        else
+        {
+            keyFrames.push_back(startKey);
+            startKeyIdx++;
+        }
+
+        if (!Math::ApproxEquals(end - start, 0.0f))
+        {
+            const KeyFrame& endKey = _keyframes[endKeyIdx];
+            if (!Math::ApproxEquals(endKey.TimeInSpline, end))
+            {
+                if (end > endKey.TimeInSpline)
+                {
+                    if (_keyframes.size() > (endKeyIdx + 1))
+                        keyFrames.push_back(EvaluateKey(endKey, _keyframes[endKeyIdx + 1], end));
+                    else
+                    {
+                        TKeyframe<T> keyCopy = endKey;
+                        keyCopy.TimeInSpline = end;
+
+                        keyFrames.push_back(keyCopy);
+                    }
+                }
+                else
+                {
+                    if (endKeyIdx > 0)
+                    {
+                        keyFrames.push_back(EvaluateKey(_keyframes[endKeyIdx - 1], endKey, end));
+                        endKeyIdx--;
+                    }
+                    else
+                    {
+                        TKeyframe<T> keyCopy = endKey;
+                        keyCopy.TimeInSpline = end;
+
+                        keyFrames.push_back(keyCopy);
+                    }
+                }
+            }
+
+            if (startKeyIdx < (UINT32)_keyframes.size() && endKeyIdx > startKeyIdx)
+                keyFrames.insert(keyFrames.begin() + 1, _keyframes.begin() + startKeyIdx, _keyframes.begin() + endKeyIdx + 1);
+        }
+
+        for (auto& entry : keyFrames)
+            entry.TimeInSpline -= start;
+
+        return TAnimationCurve<T>(keyFrames);
+    }
+
+    template <class T>
+    void TAnimationCurve<T>::MakeAdditive()
+    {
+        if (_keyframes.size() < 2)
+            return;
+
+        const KeyFrame& refKey = _keyframes[0];
+        const auto numKeys = (UINT32)_keyframes.size();
+
+        for (UINT32 i = 1; i < numKeys; i++)
+            _keyframes[i].Value = impl::GetDiff(_keyframes[i].Value, refKey.Value);
     }
 
     template <class T>

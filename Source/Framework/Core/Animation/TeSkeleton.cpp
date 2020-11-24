@@ -117,6 +117,7 @@ namespace te
 
         AnimationStateLayer layer;
         layer.Index = 0;
+        layer.Additive = false;
         layer.States = &state;
         layer.NumStates = 1;
 
@@ -143,7 +144,19 @@ namespace te
         for (UINT32 i = 0; i < numLayers; i++)
         {
             const AnimationStateLayer& layer = layers[i];
-            float invLayerWeight = 1.0f;
+            float invLayerWeight;
+            if (layer.Additive)
+            {
+                float weightSum = 0.0f;
+                for (UINT32 j = 0; j < layer.NumStates; j++)
+                    weightSum += layer.States[j].Weight;
+
+                invLayerWeight = 1.0f / weightSum;
+            }
+            else
+            {
+                invLayerWeight = 1.0f;
+            }
 
             for (UINT32 j = 0; j < layer.NumStates; j++)
             {
@@ -182,18 +195,40 @@ namespace te
                         hasAnimCurve[k] = true;
                     }
 
-                    curveIdx = mapping.Rotation;
-                    if (curveIdx != (UINT32)-1)
+                    if (layer.Additive)
                     {
-                        const TAnimationCurve<Quaternion>& curve = state.Curves->Rotation[curveIdx].Curve;
-                        Quaternion value = curve.Evaluate(state.Time, false) * normWeight;
+                        curveIdx = mapping.Rotation;
+                        if (curveIdx != (UINT32)-1)
+                        {
+                            bool isAssigned = localPose.Rotations[k].w != 0.0f;
+                            if (!isAssigned)
+                                localPose.Rotations[k] = Quaternion::IDENTITY;
 
-                        if (value.Dot(localPose.Rotations[k]) < 0.0f)
-                            value = -value;
+                            const TAnimationCurve<Quaternion>& curve = state.Curves->Rotation[curveIdx].Curve;
 
-                        localPose.Rotations[k] += value;
-                        localPose.HasOverride[k] = false;
-                        hasAnimCurve[k] = true;
+                            Quaternion value = curve.Evaluate(state.Time, false);
+                            value = Quaternion::Lerp(normWeight, Quaternion::IDENTITY, value);
+
+                            localPose.Rotations[k] *= value;
+                            localPose.HasOverride[k] = false;
+                            hasAnimCurve[k] = true;
+                        }
+                    }
+                    else
+                    {
+                        curveIdx = mapping.Rotation;
+                        if (curveIdx != (UINT32)-1)
+                        {
+                            const TAnimationCurve<Quaternion>& curve = state.Curves->Rotation[curveIdx].Curve;
+                            Quaternion value = curve.Evaluate(state.Time, false) * normWeight;
+
+                            if (value.Dot(localPose.Rotations[k]) < 0.0f)
+                                value = -value;
+
+                            localPose.Rotations[k] += value;
+                            localPose.HasOverride[k] = false;
+                            hasAnimCurve[k] = true;
+                        }
                     }
                 }
             }

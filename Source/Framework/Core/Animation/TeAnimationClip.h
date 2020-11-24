@@ -191,6 +191,12 @@ namespace te
         float GetSampleRate() const { return _sampleRate; }
 
         /**
+         * Checks are the curves contained within the clip additive. Additive clips are intended to be added on top of
+         * other clips.
+         */
+        bool IsAdditive() const { return _isAdditive; }
+
+        /**
          * Number of samples per second the animation clip curves were sampled at. This value is not used by the animation
          * clip or curves directly since unevenly spaced keyframes are supported. But it can be of value when determining
          * the original sample rate of an imported animation or similar.
@@ -208,28 +214,30 @@ namespace te
          * Creates an animation clip with no curves. After creation make sure to register some animation curves before
          * using it.
          */
-        static HAnimationClip Create();
+        static HAnimationClip Create(bool isAdditive = false);
 
         /**
          * Creates an animation clip with specified curves.
          *
          * @param[in]	curves		Curves to initialize the animation with.
+         * @param[in]	isAdditive	Determines does the clip contain additive curve data. This will change the behaviour
+		 *							how is the clip blended with other animations.
          * @param[in]	sampleRate	If animation uses evenly spaced keyframes, number of samples per second. Not relevant
          *							if keyframes are unevenly spaced.
          * @param[in]	rootMotion	Optional set of curves that can be used for animating the root bone. Not used by the
          *							animation system directly but is instead provided to the user for manual evaluation.
          */
-        static HAnimationClip Create(const SPtr<AnimationCurves>& curves, float sampleRate = 1.0f,
+        static HAnimationClip Create(const SPtr<AnimationCurves>& curves, bool isAdditive = false, float sampleRate = 1.0f,
             const SPtr<RootMotion>& rootMotion = nullptr);
 
     public:
         /** Creates a new AnimationClip without initializing it. Use create() for normal use. */
-        static SPtr<AnimationClip> _createPtr(const SPtr<AnimationCurves>& curves,
+        static SPtr<AnimationClip> _createPtr(const SPtr<AnimationCurves>& curves, bool isAdditive = false,
             float sampleRate = 1.0f, const SPtr<RootMotion>& rootMotion = nullptr);
 
     protected:
         AnimationClip();
-        AnimationClip(const SPtr<AnimationCurves>& curves, float sampleRate,
+        AnimationClip(const SPtr<AnimationCurves>& curves, bool isAdditive, float sampleRate,
             const SPtr<RootMotion>& rootMotion);
 
         /** @copydoc Resource::Initialize() */
@@ -262,6 +270,7 @@ namespace te
         UnorderedMap<String, std::array<UINT32, (int)CurveType::Count>> _nameMapping;
 
         Vector<AnimationEvent> _events;
+        bool _isAdditive;
         float _length;
         float _sampleRate;
     };

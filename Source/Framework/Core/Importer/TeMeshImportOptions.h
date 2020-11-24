@@ -14,16 +14,18 @@ namespace te
             : Serializable(TID_AnimationSplitInfo)
         { }
 
-        AnimationSplitInfo(const String & name, UINT32 startFrame, UINT32 endFrame)
+        AnimationSplitInfo(const String & name, UINT32 startFrame, UINT32 endFrame, bool isAdditive = false)
             : Serializable(TID_AnimationSplitInfo)
             , Name(name)
             , StartFrame(startFrame)
             , EndFrame(endFrame)
+            , IsAdditive(isAdditive)
         { }
 
         String Name;
         UINT32 StartFrame = 0;
         UINT32 EndFrame = 0;
+        bool IsAdditive = false;
     };
 
     /** A set of animation events that will be added to an animation clip during animation import. */
@@ -94,6 +96,7 @@ namespace te
          */
         Vector<AnimationSplitInfo> AnimationSplits;
 
+        /** Set of events that will be added to the animation clip, if animation import is enabled. */
         Vector<ImportedAnimationEvents> AnimationEvents;
 
         /** Creates a new import options object that allows you to customize how are Meshs imported. */
