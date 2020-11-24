@@ -327,7 +327,7 @@ namespace te
 
         /** Normalizes the provided quaternion. */
         template<bool SAFE = true>
-        static Quaternion Normalize(const Quaternion& q, float tolerance = 1e-04f)
+        static Quaternion Normalize(const Quaternion& q, const float& tolerance = 1e-04f)
         {
             float sqrdLen = Dot(q, q);
             if (!SAFE || sqrdLen > tolerance)
@@ -340,13 +340,13 @@ namespace te
          * Performs spherical interpolation between two quaternions. Spherical interpolation neatly interpolates between
          * two rotations without modifying the size of the vector it is applied to (unlike linear interpolation).
          */
-        static Quaternion Slerp(float t, const Quaternion& p, const Quaternion& q, bool shortestPath = true);
+        static Quaternion Slerp(const float& t, const Quaternion& p, const Quaternion& q, bool shortestPath = true);
 
         /**
          * Linearly interpolates between the two quaternions using @p t. t should be in [0, 1] range, where t = 0
          * corresponds to the left vector, while t = 1 corresponds to the right vector.
          */
-        static Quaternion Lerp(float t, const Quaternion& a, const Quaternion& b)
+        static Quaternion Lerp(const float& t, const Quaternion& a, const Quaternion& b)
         {
             float d = Dot(a, b);
             float flip = d >= 0.0f ? 1.0f : -1.0f;

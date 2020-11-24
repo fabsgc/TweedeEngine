@@ -83,6 +83,18 @@ namespace te
         }
 
         template<class T>
+        T Lerp(float t, const T& min, const T& max)
+        {
+            return Math::Lerp(t, min, max);
+        }
+
+        template<>
+        Quaternion Lerp(float t, const Quaternion& min, const Quaternion& max)
+        {
+            return Quaternion::Slerp(t, min, max);
+        }
+
+        template<class T>
         TKeyframe<T> EvaluateKey(const TKeyframe<T>& lhs, const TKeyframe<T>& rhs, float time)
         {
             float length = rhs.TimeInSpline - lhs.TimeInSpline;
@@ -96,7 +108,7 @@ namespace te
 
             TKeyframe<T> output;
             output.TimeInSpline = time;
-            output.Value = Math::Lerp(t, lhs.Value, rhs.Value);
+            output.Value = Lerp(t, lhs.Value, rhs.Value);
 
             return output;
         }
@@ -128,7 +140,7 @@ namespace te
                 t = (time - lhs.TimeInSpline) / length;
             }
 
-            return Math::Lerp(t, lhs.Value, rhs.Value);
+            return Lerp(t, lhs.Value, rhs.Value);
         }
 
         template<>

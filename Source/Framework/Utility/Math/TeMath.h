@@ -171,7 +171,7 @@ namespace te
 
         /** Clamp a value within an inclusive range. */
         template <typename T>
-        static T Clamp(T val, T minval, T maxval)
+        static T Clamp(const T& val, const T& minval, const T& maxval)
         {
             assert(minval <= maxval && "Invalid clamp range");
             return std::max(std::min(val, maxval), minval);
@@ -179,7 +179,7 @@ namespace te
 
         /** Clamp a value within an inclusive range [0..1]. */
         template <typename T>
-        static T Clamp01(T val)
+        static T Clamp01(const T& val)
         {
             return std::max(std::min(val, (T)1), (T)0);
         }
@@ -213,14 +213,14 @@ namespace te
         }
 
         /** Compare two floats, using tolerance for inaccuracies. */
-        static bool ApproxEquals(float a, float b,
+        static bool ApproxEquals(const float& a, const float& b,
             float tolerance = std::numeric_limits<float>::epsilon())
         {
             return fabs(b - a) <= tolerance;
         }
 
         /** Compare two doubles, using tolerance for inaccuracies. */
-        static bool ApproxEquals(double a, double b,
+        static bool ApproxEquals(const double& a, const double& b,
             double tolerance = std::numeric_limits<double>::epsilon())
         {
             return fabs(b - a) <= tolerance;
@@ -483,7 +483,7 @@ namespace te
          * to @p min value, while t = 1 corresponds to @p max value.
          */
         template <typename T>
-        static T Lerp(float t, T min, T max)
+        static T Lerp(const float& t, const T& min, const T& max)
         {
             return (1.0f - t) * min + t * max;
         }
@@ -492,9 +492,9 @@ namespace te
          * @p min, 1 if @p value is equal or greater than @p max, and value in range (0, 1) otherwise.
          */
         template <typename T>
-        static float InvLerp(T val, T min, T max)
+        static float InvLerp(const T& val, const T& min, const T& max)
         {
-            return clamp01((val - min) / std::max(max - min, 0.0001F));
+            return Clamp01((val - min) / std::max(max - min, 0.0001F));
         }
 
         /**

@@ -24,6 +24,8 @@ namespace te
     struct TKeyframe
     {
         T Value; /**< Value of the key. */
+        T InTangent; /**< Input tangent (going from the previous key to this one) of the key. */
+        T OutTangent; /**< Output tangent (going from this key to next one) of the key. */
         float TimeInSpline; /**< Position of the key along the animation spline. */
 
         bool operator== (const TKeyframe<T>& rhs) const

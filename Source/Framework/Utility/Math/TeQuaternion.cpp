@@ -317,7 +317,7 @@ namespace te
         *this = Quaternion(x, y, -forward);
     }
 
-    Quaternion Quaternion::Slerp(float t, const Quaternion& p, const Quaternion& q, bool shortestPath)
+    Quaternion Quaternion::Slerp(const float& t, const Quaternion& p, const Quaternion& q, bool shortestPath)
     {
         float cos = p.Dot(q);
         Quaternion quat;
