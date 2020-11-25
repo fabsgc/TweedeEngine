@@ -128,7 +128,6 @@ namespace te
     {
         static float cullDistanceFactor = 1.0f;
         Sphere boundingSphere = light->GetBounds();
-        boundingSphere.SetRadius(1.0f);
 
         return DoFrustumCulling(camera, boundingSphere, cullDistanceFactor);
     }
@@ -160,6 +159,9 @@ namespace te
             return false;
 
         if (worldFrustum.Intersects(boundingSphere))
+            return true;
+
+        if (worldFrustum.Contains(boundingSphere.GetCenter()))
             return true;
 
         return false;

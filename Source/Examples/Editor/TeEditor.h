@@ -210,6 +210,10 @@ namespace te
         HTexture _loadedTextureMonkey;
         HTexture _loadedCubemapTexture;
         HTexture _loadedPlaneTexture;
+        HTexture _loadedGroundDiffuseTexture;
+        HTexture _loadedGroundNormalTexture;
+        HTexture _loadedGroundHeightTexture;
+        HTexture _loadedGroundSpecularTexture;
 
         HMaterial _monkeyMaterial;
         HMaterial _planeMaterial;

@@ -93,7 +93,13 @@ VS_OUTPUT main( VS_INPUT IN )
         OUT.Position = mul(gMatWorld, OUT.Position);
         OUT.Position = mul(gMatViewProj, OUT.Position);
 
-        OUT.Normal = normalize(mul(gMatWorld, float4(IN.Normal, 0.0f))).xyz;
+        OUT.Normal = IN.Normal;
+        OUT.Tangent = IN.Tangent.xyz;
+        OUT.BiTangent = IN.BiTangent.xyz;
+
+        if(gHasAnimation)
+            OUT.Normal = mul(blendMatrix, float4(OUT.Normal, 0.0f)).xyz;
+        OUT.Normal = normalize(mul(gMatWorld, float4(OUT.Normal, 0.0f))).xyz;
 
         OUT.WorldPosition = float4(IN.Position, 1.0f);
         if(gHasAnimation)
@@ -111,7 +117,9 @@ VS_OUTPUT main( VS_INPUT IN )
         OUT.Position = mul(gInstanceData[IN.Instanceid].gMatWorld, OUT.Position);
         OUT.Position = mul(gMatViewProj, OUT.Position);
 
-        OUT.Normal = normalize(mul(gInstanceData[IN.Instanceid].gMatWorld, float4(IN.Normal, 0.0f))).xyz;
+        if(gHasAnimation)
+            OUT.Normal = mul(blendMatrix, float4(OUT.Normal, 0.0f)).xyz;
+        OUT.Normal = normalize(mul(gInstanceData[IN.Instanceid].gMatWorld, float4(OUT.Normal, 0.0f))).xyz;
 
         OUT.WorldPosition = float4(IN.Position, 1.0f);
         if(gHasAnimation)

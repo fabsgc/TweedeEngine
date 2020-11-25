@@ -147,10 +147,20 @@ VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
         OUT.PrevPosition = mul(gInstanceData[instanceid].gMatPrevWorld, OUT.PrevPosition);
         OUT.PrevPosition = mul(gMatViewProj, OUT.PrevPosition);
 
-        OUT.Normal = normalize(mul(gInstanceData[instanceid].gMatWorld, float4(IN.Normal, 0.0f))).xyz;
-        OUT.Tangent = normalize(mul(gInstanceData[instanceid].gMatWorld, float4(IN.Tangent.xyz, 0.0f))).xyz;
-        OUT.BiTangent = normalize(mul(gInstanceData[instanceid].gMatWorld, float4(IN.BiTangent.xyz, 0.0f))).xyz;
-        OUT.Texture = FlipUV(IN.Texture);
+        OUT.Normal = IN.Normal;
+        OUT.Tangent = IN.Tangent.xyz;
+        OUT.BiTangent = IN.BiTangent.xyz;
+
+        if(gHasAnimation)
+        {
+            OUT.Normal = mul(blendMatrix, float4(OUT.Normal, 0.0f)).xyz;
+            OUT.Tangent = mul(blendMatrix, float4(OUT.Tangent, 0.0f)).xyz;
+            OUT.BiTangent = mul(blendMatrix, float4(OUT.BiTangent, 0.0f)).xyz;
+        }
+
+        OUT.Normal = normalize(mul(gInstanceData[instanceid].gMatWorld, float4(OUT.Normal, 0.0f))).xyz;
+        OUT.Tangent = normalize(mul(gInstanceData[instanceid].gMatWorld, float4(OUT.Tangent, 0.0f))).xyz;
+        OUT.BiTangent = normalize(mul(gInstanceData[instanceid].gMatWorld, float4(OUT.BiTangent, 0.0f))).xyz;
 
         OUT.WorldPosition = float4(IN.Position, 1.0f);
         if(gHasAnimation)
