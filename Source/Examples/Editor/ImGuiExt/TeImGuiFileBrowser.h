@@ -59,6 +59,7 @@ namespace te
                 bool ImportSkin = true;
                 bool ImportBlendShapes = true;
                 bool ImportAnimation = true;
+                bool ReduceKeyFrames = true;
                 bool ImportMaterials = true;
             };
 

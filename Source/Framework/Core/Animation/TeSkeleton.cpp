@@ -80,6 +80,9 @@ namespace te
         , _invBindPoses(te_newN<Matrix4>(numBones))
         , _bonesInfo(te_newN<SkeletonBoneInfo>(numBones))
     {
+        bones[0].LocalTfrm.SetRotation(Quaternion::ZERO);
+        //bones[1].LocalTfrm.SetRotation(Quaternion::ZERO);
+
         for (UINT32 i = 0; i < numBones; i++)
         {
            _boneTransforms[i] = bones[i].LocalTfrm;

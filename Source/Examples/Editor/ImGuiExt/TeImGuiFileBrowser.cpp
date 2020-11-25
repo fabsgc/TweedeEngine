@@ -676,10 +676,18 @@ namespace te
                 {
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportNormals, "##file_dialog_parameters_mesh_normals", "Import normals");
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportTangents, "##file_dialog_parameters_mesh_tangents", "Import tangents");
-                    ImGuiExt::RenderOptionBool(Data.MeshParam.ImportAnimation, "##file_dialog_parameters_mesh_animation", "Import animation");
-                    ImGuiExt::RenderOptionBool(Data.MeshParam.ImportSkin, "##file_dialog_parameters_mesh_skin", "Import skin");
-                    ImGuiExt::RenderOptionBool(Data.MeshParam.ImportBlendShapes, "##file_dialog_parameters_mesh_blend_shapes", "Import blend shapes");
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportMaterials, "##file_dialog_parameters_mesh_material", "Import materials");
+                    ImGuiExt::RenderOptionBool(Data.MeshParam.ImportSkin, "##file_dialog_parameters_mesh_skin", "Import skin");
+                    ImGuiExt::RenderOptionBool(Data.MeshParam.ImportAnimation, "##file_dialog_parameters_mesh_animation", "Import animation");
+                    //ImGuiExt::RenderOptionBool(Data.MeshParam.ImportBlendShapes, "##file_dialog_parameters_mesh_blend_shapes", "Import blend shapes");
+
+                    if (Data.MeshParam.ImportAnimation)
+                    {
+                        ImGui::Indent(30.0f);
+                        ImGuiExt::RenderOptionBool(Data.MeshParam.ReduceKeyFrames, "##file_dialog_parameters_mesh_animation_reduce", "Reduce Key Frames");
+                        ImGui::Unindent(30.0f);
+                    }
+                    
                 }
                 else if (strcmp(selectedExt, ".jpg") == 0 || strcmp(selectedExt, ".jpeg") == 0 || strcmp(selectedExt, ".png") == 0)
                 {

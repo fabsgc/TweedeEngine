@@ -63,6 +63,12 @@ namespace te
         /**	Determines should animation clips be imported if available. */
         bool ImportAnimation = false;
 
+        /**
+         * Enables or disables keyframe reduction. Keyframe reduction will reduce the number of key-frames in an animation
+         * clip by removing identical keyframes, and therefore reducing the size of the clip.
+         */
+        bool ReduceKeyFrames = true;
+
         /** Determine if we need to flip UV mapping when importing object */
         bool FplitUV = false;
 

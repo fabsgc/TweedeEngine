@@ -70,6 +70,13 @@ namespace te
         void ConvertAnimations(const Vector<AssimpAnimationClip>& clips, const Vector<AnimationSplitInfo>& splits,
             const SPtr<Skeleton>& skeleton, bool importRootMotion, Vector<AssimpAnimationClipData>& output);
 
+        /**
+         * Removes identical sequential keyframes for the provided set of curves. The keyframe must be identical over all
+         * the curves in order for it to be removed.
+         */
+        template<class T>
+        TAnimationCurve<T> ReduceKeyframes(TAnimationCurve<T>& curve);
+
         /** Converts the mesh data from the imported assimp scene into mesh data that can be used for initializing a mesh. */
         SPtr<RendererMeshData> GenerateMeshData(AssimpImportScene& scene, AssimpImportOptions& options, Vector<SubMesh>& subMeshes);
 

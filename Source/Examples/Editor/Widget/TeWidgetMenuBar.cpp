@@ -287,6 +287,7 @@ namespace te
                 meshImportOptions->ImportSkin = _fileBrowser.Data.MeshParam.ImportSkin;
                 meshImportOptions->ImportBlendShapes = _fileBrowser.Data.MeshParam.ImportBlendShapes;
                 meshImportOptions->ImportAnimation = _fileBrowser.Data.MeshParam.ImportAnimation;
+                meshImportOptions->ReduceKeyFrames = _fileBrowser.Data.MeshParam.ReduceKeyFrames;
                 meshImportOptions->ImportMaterials = _fileBrowser.Data.MeshParam.ImportMaterials;
                 meshImportOptions->CpuCached = false;
 

@@ -144,6 +144,7 @@ namespace te
         assimpImportOptions.ImportMaterials    = meshImportOptions->ImportMaterials;
         assimpImportOptions.ScaleSystemUnit    = meshImportOptions->ScaleSystemUnit;
         assimpImportOptions.ScaleFactor        = meshImportOptions->ScaleFactor;
+        assimpImportOptions.ReduceKeyframes    = meshImportOptions->ReduceKeyFrames;
 
         ParseScene(scene, assimpImportOptions, importedScene);
 
@@ -496,9 +497,9 @@ namespace te
 
             AssimpAnimationClip& clip = importScene.Clips.back();
             clip.Name = (assimAnimation->mName.length > 0) ? assimAnimation->mName.C_Str() : "Animation " + ToString(i);
-            clip.Start = 0.0f;
-            clip.End = (float)assimAnimation->mDuration;
             clip.SampleRate = assimAnimation->mTicksPerSecond != 0.0 ? (float)assimAnimation->mTicksPerSecond : 25.0f;
+            clip.Start = 0.0f;
+            clip.End = (float)assimAnimation->mDuration / clip.SampleRate;
 
             for (UINT32 j = 0; j < static_cast<UINT32>(assimAnimation->mNumChannels); j++)
             {
@@ -519,7 +520,7 @@ namespace te
                         positions.push_back(TKeyframe<Vector3>());
                         TKeyframe<Vector3>& keyFrame = positions.back();
 
-                        keyFrame.TimeInSpline = (float)assimpChannel->mPositionKeys[k].mTime;
+                        keyFrame.TimeInSpline = (float)assimpChannel->mPositionKeys[k].mTime / clip.SampleRate;
                         keyFrame.Value = ConvertToNativeType(assimpChannel->mPositionKeys[k].mValue);
                     }
                 }
@@ -540,8 +541,16 @@ namespace te
                         rotations.push_back(TKeyframe<Quaternion>());
                         TKeyframe<Quaternion>& keyFrame = rotations.back();
 
-                        keyFrame.TimeInSpline = (float)assimpChannel->mRotationKeys[k].mTime;
+                        keyFrame.TimeInSpline = (float)assimpChannel->mRotationKeys[k].mTime / clip.SampleRate;
                         keyFrame.Value = ConvertToNativeType(assimpChannel->mRotationKeys[k].mValue);
+
+                        
+
+                        /*Radian x, y, z;
+                        keyFrame.Value.ToEulerAngles(x, y, z);
+                        
+                        Quaternion corrected(z, x, y);
+                        keyFrame.Value = corrected;*/
                     }
                 }
                 else
@@ -561,7 +570,7 @@ namespace te
                         scalings.push_back(TKeyframe<Vector3>());
                         TKeyframe<Vector3>& keyFrame = scalings.back();
 
-                        keyFrame.TimeInSpline = (float)assimpChannel->mScalingKeys[k].mTime;
+                        keyFrame.TimeInSpline = (float)assimpChannel->mScalingKeys[k].mTime / clip.SampleRate;
                         keyFrame.Value = ConvertToNativeType(assimpChannel->mScalingKeys[k].mValue);
                     }
                 }
@@ -577,6 +586,13 @@ namespace te
                 boneAnim.Translation = TAnimationCurve<Vector3>(positions);
                 boneAnim.Rotation = TAnimationCurve<Quaternion>(rotations);
                 boneAnim.Scale = TAnimationCurve<Vector3>(scalings);
+
+                if (importOptions.ReduceKeyframes)
+                {
+                    boneAnim.Translation = ReduceKeyframes(boneAnim.Translation);
+                    boneAnim.Rotation = ReduceKeyframes(boneAnim.Rotation);
+                    boneAnim.Scale = ReduceKeyframes(boneAnim.Scale);
+                }
             }
         }
     }
@@ -857,6 +873,45 @@ namespace te
 
             isFirstClip = false;
         }
+    }
+
+    template<class T>
+    TAnimationCurve<T> ObjectImporter::ReduceKeyframes(TAnimationCurve<T>& curve)
+    {
+        UINT32 keyCount = curve.GetNumKeyFrames();
+
+        Vector<TKeyframe<T>> newKeyframes;
+
+        bool lastWasEqual = false;
+        for (UINT32 i = 0; i < keyCount; i++)
+        {
+            bool isEqual = true;
+
+            const TKeyframe<T>& curKey = curve.GetKeyFrame(i);
+            if (i > 0)
+            {
+                TKeyframe<T>& prevKey = newKeyframes.back();
+                isEqual = Math::ApproxEquals(prevKey.Value, curKey.Value);
+            }
+            else
+            {
+                isEqual = false;
+            }
+
+            // More than two keys in a row are equal, remove previous key by replacing it with this one
+            if (lastWasEqual && isEqual)
+            {
+                TKeyframe<T>& prevKey = newKeyframes.back();
+                prevKey.TimeInSpline = curKey.TimeInSpline;
+
+                continue;
+            }
+
+            newKeyframes.push_back(curKey);
+            lastWasEqual = isEqual;
+        }
+
+        return TAnimationCurve<T>(newKeyframes);
     }
 
     SPtr<RendererMeshData> ObjectImporter::GenerateMeshData(AssimpImportScene& scene, AssimpImportOptions& options, Vector<SubMesh>& outputSubMeshes)
