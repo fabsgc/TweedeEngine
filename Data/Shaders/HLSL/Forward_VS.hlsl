@@ -75,14 +75,14 @@ VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
     float4x4 blendMatrix = (float4x4)0;
     float4x4 prevBlendMatrix = (float4x4)0;
 
-    if(gHasAnimation)
-    {
-        blendMatrix = GetBlendMatrix(IN.BlendWeights, IN.BlendIndices);
-        prevBlendMatrix = GetPrevBlendMatrix(IN.BlendWeights, IN.BlendIndices);
-    }
-
     if(instanceid == 0)
     {
+        if(gHasAnimation)
+        {
+            blendMatrix = GetBlendMatrix(IN.BlendWeights, IN.BlendIndices);
+            prevBlendMatrix = GetPrevBlendMatrix(IN.BlendWeights, IN.BlendIndices);
+        }
+
         OUT.Position = float4(IN.Position, 1.0f);
         if(gHasAnimation)
             OUT.Position = mul(blendMatrix, OUT.Position);
@@ -129,6 +129,12 @@ VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
     }
     else
     {
+        if(gInstanceData[instanceid].gHasAnimation)
+        {
+            blendMatrix = GetBlendMatrix(IN.BlendWeights, IN.BlendIndices);
+            prevBlendMatrix = GetPrevBlendMatrix(IN.BlendWeights, IN.BlendIndices);
+        }
+
         OUT.Position = float4(IN.Position, 1.0f);
         if(gHasAnimation)
             OUT.Position = mul(blendMatrix, OUT.Position);
@@ -162,13 +168,15 @@ VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
         OUT.Tangent = normalize(mul(gInstanceData[instanceid].gMatWorld, float4(OUT.Tangent, 0.0f))).xyz;
         OUT.BiTangent = normalize(mul(gInstanceData[instanceid].gMatWorld, float4(OUT.BiTangent, 0.0f))).xyz;
 
+        OUT.Texture = FlipUV(IN.Texture);
+
         OUT.WorldPosition = float4(IN.Position, 1.0f);
         if(gHasAnimation)
             OUT.WorldPosition = mul(blendMatrix, OUT.WorldPosition);
         OUT.WorldPosition = mul(gInstanceData[instanceid].gMatWorld, OUT.WorldPosition);
 
         OUT.ViewDirection = normalize(OUT.WorldPosition.xyz - gViewOrigin);
-        OUT.WorldViewDistance = mul(OUT.WorldPosition, gMatView);
+        OUT.WorldViewDistance = mul(gMatView, OUT.WorldPosition);
         OUT.Color = IN.Color;
     }
 

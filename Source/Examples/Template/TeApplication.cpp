@@ -23,6 +23,12 @@ namespace te
         _sceneCamera->Initialize();
         // ######################################################
 
+        auto settings = _sceneCamera->GetRenderSettings();
+        settings->MotionBlur.Enabled = false;
+        settings->Bloom.Enabled = false;
+        settings->EnableSkybox = false;
+        settings->AntialiasingAglorithm = AntiAliasingAlgorithm::None;
+
         // ######################################################
         gSceneManager().SetMainRenderTarget(gCoreApplication().GetWindow());
         // ######################################################

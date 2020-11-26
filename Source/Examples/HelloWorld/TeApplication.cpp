@@ -168,6 +168,7 @@ namespace te
         settings->Contrast = 1.60f;
         settings->Brightness = -0.05f;
         settings->SceneLightColor = Color(0.4f,0.4f,0.4f,1.0f);
+        settings->MotionBlur.Quality = MotionBlurQuality::High;
         // ######################################################
 
         // ######################################################
@@ -201,8 +202,6 @@ namespace te
     void Application::PreUpdate()
     {
 #if TE_PLATFORM == TE_PLATFORM_WIN32
-        //_sceneRenderableSO->Rotate(Vector3(0.0f, 1.0f, 0.0f), Radian(1.5f * gTime().GetFrameDelta()));
-
         for (auto& so : _sceneRenderablesMonkeySO)
         {
             so->Rotate(Vector3(0.0f, 1.0f, 0.0f), Radian(2.5f * gTime().GetFrameDelta()));
