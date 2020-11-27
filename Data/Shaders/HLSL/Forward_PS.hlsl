@@ -94,10 +94,13 @@ float4 ComputeEmissiveBuffer(float4 color, float4 emissive)
 float4 ComputeVelocityBuffer(float4 position, float4 prevPosition, float alpha)
 {
     float2 velocity = (float2)0;
-    float4 output = (float4)0;
+    float4 output = float4(0.0, 0.0, 0.0, 1.0);
 
     if(alpha >= 1.0)
     {
+        if(all(position == prevPosition))
+            return output;
+
         float2 a = float2(position.xy);
         float2 b = float2(prevPosition.xy);
 
@@ -111,11 +114,9 @@ float4 ComputeVelocityBuffer(float4 position, float4 prevPosition, float alpha)
 
         velocity /= 2.0;
         velocity += 0.5;
-    }
 
-    output.xy = velocity.xy;
-    output.z = 0.0;
-    output.w = 1.0;
+        output.xy = velocity.xy;
+    }
 
     return output;
 }
