@@ -86,8 +86,7 @@ namespace te
                 "Data/Textures/Sponza/arch/arch_OCC.jpeg",
                 "",
                 true,
-                1.0f,
-                0.5f
+                1.0f
             },
             {
                 "background",
@@ -101,12 +100,11 @@ namespace te
                 "",
                 "",
                 true,
-                1.0f,
-                0.5f
+                1.0f
             },
             {
                 "bricks",
-                "Data/Textures/Sponza/bricks/bricks_COLOR.jpeg",
+                "Data/Textures/Sponza/bricks/bricks_COLOR.png",
                 "",
                 "Data/Textures/Sponza/bricks/bricks_NRM_3.jpeg",
                 "Data/Textures/Sponza/bricks/bricks_SPEC.jpeg",
@@ -116,8 +114,7 @@ namespace te
                 "Data/Textures/Sponza/bricks/bricks_OCC.jpeg",
                 "",
                 true,
-                1.0f,
-                0.5f
+                1.0f
             },
             {
                 "ceiling",
@@ -131,8 +128,7 @@ namespace te
                 "",
                 "",
                 true,
-                1.0f,
-                0.5f
+                1.0f
             },
             {
                 "chain",
@@ -161,8 +157,7 @@ namespace te
                 "Data/Textures/Sponza/column_a/column_a_OCC.jpeg",
                 "",
                 true,
-                1.0f,
-                0.5f
+                1.0f
             },
             {
                 "column_b",
@@ -176,8 +171,7 @@ namespace te
                 "Data/Textures/Sponza/column_b/column_b_OCC.jpeg",
                 "",
                 true,
-                1.0f,
-                0.5f
+                1.0f
             },
             {
                 "column_c",
@@ -191,8 +185,7 @@ namespace te
                 "Data/Textures/Sponza/column_c/column_c_OCC.jpeg",
                 "",
                 true,
-                1.0f,
-                0.5f
+                1.0f
             },
             {
                 "details",
@@ -206,8 +199,7 @@ namespace te
                 "",
                 "",
                 true,
-                1.0f,
-                0.5f
+                1.0f
             },
             {
                 "fabric_a",
@@ -221,8 +213,7 @@ namespace te
                 "",
                 "",
                 true,
-                1.0f,
-                0.5f
+                1.0f
             },
             {
                 "fabric_c",
@@ -236,8 +227,7 @@ namespace te
                 "",
                 "",
                 true,
-                1.0f,
-                0.5f
+                1.0f
             },
             {
                 "fabric_d",
@@ -251,8 +241,7 @@ namespace te
                 "",
                 "",
                 true,
-                1.0f,
-                0.5f
+                1.0f
             },
             {
                 "fabric_e",
@@ -266,8 +255,7 @@ namespace te
                 "",
                 "",
                 true,
-                1.0f,
-                0.5f
+                1.0f
             },
             {
                 "fabric_f",
@@ -281,8 +269,7 @@ namespace te
                 "",
                 "",
                 true,
-                1.0f,
-                0.5f
+                1.0f
             },
             {
                 "fabric_g",
@@ -296,8 +283,7 @@ namespace te
                 "",
                 "",
                 true,
-                1.0f,
-                0.5f
+                1.0f
             },
             {
                 "flagpole",
@@ -311,12 +297,11 @@ namespace te
                 "",
                 "",
                 true,
-                1.0f,
-                0.5f
+                1.0f
             },
             {
                 "floor",
-                "Data/Textures/Sponza/floor/floor_COLOR.jpeg",
+                "Data/Textures/Sponza/floor/floor_COLOR.png",
                 "",
                 "Data/Textures/Sponza/floor/floor_NRM_2.jpeg",
                 "Data/Textures/Sponza/floor/floor_SPEC.jpeg",
@@ -326,8 +311,7 @@ namespace te
                 "Data/Textures/Sponza/floor/floor_OCC.jpeg",
                 "",
                 true,
-                1.0f,
-                0.5f
+                1.0f
             },
             {
                 "leaf",
@@ -346,7 +330,7 @@ namespace te
             },
             {
                 "lion",
-                "Data/Textures/Sponza/lion/lion_COLOR.jpeg",
+                "Data/Textures/Sponza/lion/lion_COLOR.png",
                 "",
                 "Data/Textures/Sponza/lion/lion_NRM.jpeg",
                 "Data/Textures/Sponza/lion/lion_SPEC.jpeg",
@@ -356,8 +340,7 @@ namespace te
                 "",
                 "",
                 true,
-                1.0f,
-                0.5f
+                1.0f
             },
             {
                 "roof",
@@ -371,8 +354,7 @@ namespace te
                 "",
                 "",
                 true,
-                1.0f,
-                0.5f
+                1.0f
             },
             {
                 "vase",
@@ -386,8 +368,7 @@ namespace te
                 "",
                 "",
                 true,
-                1.0f,
-                0.5f
+                1.0f
             },
             {
                 "vase_hanging",
@@ -401,8 +382,7 @@ namespace te
                 "",
                 "",
                 true,
-                1.0f,
-                0.5f
+                1.0f
             },
             {
                 "vase_plant",
@@ -431,8 +411,21 @@ namespace te
                 "",
                 "",
                 true,
-                1.0f,
-                0.5f
+                1.0f
+            },
+            {
+                "grid",
+                "Data/Textures/Sponza/vase_round/vase_round_COLOR.jpeg",
+                "",
+                "Data/Textures/Sponza/vase_round/vase_round_NRM.jpeg",
+                "Data/Textures/Sponza/vase_round/vase_round_SPEC.jpeg",
+                "",
+                "",
+                "",
+                "",
+                "",
+                true,
+                1.0f
             }
         };
 
@@ -497,11 +490,11 @@ namespace te
                 material.MaterialProp.UseTransparencyMap = true;
             }
 
-            if (material.Occlusion != "")
+            /*if (material.Occlusion != "")
             {
                 material.OcclusionTexture = gResourceManager().Load<Texture>(material.Occlusion, textureImportOptions);
                 material.MaterialProp.UseOcclusionMap = true;
-            }
+            }*/
 
             if (material.Reflection != "")
             {
@@ -509,19 +502,17 @@ namespace te
                 material.MaterialProp.UseReflectionMap = true;
             }
 
-            if (material.Environment)
+            /*if (material.Environment)
             {
                 material.EnvironmentTexture = _loadedSkyboxTexture;
                 material.MaterialProp.UseEnvironmentMap = true;
-            }
+            }*/
 
-            if (material.Opacity < 1.0f)
+            if (material.Opacity < 1.0f || material.AlphaTreshold < 1.0f)
                 material.MaterialElement = Material::Create(_shaderTransparent);
             else
                 material.MaterialElement = Material::Create(_shaderOpaque);
 
-            //float g = 0.9f;
-            //material.MaterialElement->SetParam<float>("gTransparency", g);
             material.MaterialElement->SetName(material.Name);
             material.MaterialElement->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
 
@@ -532,9 +523,9 @@ namespace te
             if (material.Parallax != "") material.MaterialElement->SetTexture("ParallaxMap", material.ParallaxTexture, surface);
             if (material.Bump != "") material.MaterialElement->SetTexture("BumpMap", material.BumpTexture, surface);
             if (material.Transparency != "") material.MaterialElement->SetTexture("TransparencyMap", material.TransparencyTexture, surface);
-            if (material.Occlusion != "") material.MaterialElement->SetTexture("OcclusionMap", material.OcclusionTexture, surface);
             if (material.Reflection != "") material.MaterialElement->SetTexture("ReflectionMap", material.ReflectionTexture, surface);
-            if (material.Environment) material.MaterialElement->SetTexture("EnvironmentMap", material.EnvironmentTexture);
+            //if (material.Occlusion != "") material.MaterialElement->SetTexture("OcclusionMap", material.OcclusionTexture, surface);
+            //if (material.Environment) material.MaterialElement->SetTexture("EnvironmentMap", material.EnvironmentTexture);
 
             material.MaterialElement->SetProperties(material.MaterialProp);
         };

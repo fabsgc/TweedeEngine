@@ -150,8 +150,8 @@ float3 DoSpecular( LightData light, float3 V, float3 L, float3 N )
     float RdotV = max( 0, dot( R, V ) );
 
     // Blinn-Phong lighting
-    float3 H = normalize( L + V );
-    float NdotH = max( 0, dot( N, H ) );
+    // float3 H = normalize( L + V );
+    // float NdotH = max( 0, dot( N, H ) );
 
     return light.Color * pow( RdotV, gSpecularPower ) * light.Intensity * gSpecularStrength;
 }
@@ -166,11 +166,13 @@ LightingResult DoPointLight( LightData light, float3 V, float3 P, float3 N )
     float3 L = ( light.Position - P );
     float distance = length(L);
     L = L / distance;
- 
+
     float attenuation = DoAttenuation( light, distance );
- 
-    result.Diffuse = DoDiffuse( light, L, N ) * attenuation;
-    result.Specular = DoSpecular( light, V, L, N ) * attenuation;
+    if(attenuation > 0.01f)
+    {
+        result.Diffuse = DoDiffuse( light, L, N ) * attenuation;
+        result.Specular = DoSpecular( light, V, L, N ) * attenuation;
+    }
 
     return result;
 }
@@ -209,12 +211,17 @@ LightingResult DoSpotLight( LightData light, float3 V, float3 P, float3 N )
     float3 L = ( light.Position - P );
     float distance = length(L);
     L = L / distance;
- 
+
     float attenuation = DoAttenuation( light, distance );
-    float spotIntensity = DoSpotCone( light, L );
- 
-    result.Diffuse = DoDiffuse( light, L, N ) * attenuation * spotIntensity;
-    result.Specular = DoSpecular( light, V, L, N ) * attenuation * spotIntensity;
+    if(attenuation > 0.01f)
+    {
+        float spotIntensity = DoSpotCone( light, L );
+        if(spotIntensity > 0.01f)
+        {
+            result.Diffuse = DoDiffuse( light, L, N ) * attenuation * spotIntensity;
+            result.Specular = DoSpecular( light, V, L, N ) * attenuation * spotIntensity;
+        }
+    }
 
     return result;
 }
@@ -265,6 +272,7 @@ float3 DoRefraction(float3 P, float3 N)
     return EnvironmentMap.SampleLevel(AnisotropicSampler, R, 0).xyz * gRefraction;
 }
 
+[earlydepthstencil]
 PS_OUTPUT main( PS_INPUT IN )
 {
     PS_OUTPUT OUT;
@@ -284,54 +292,63 @@ PS_OUTPUT main( PS_INPUT IN )
 
     if(gUseTransparencyMap == 1)
         alpha = TransparencyMap.Sample( AnisotropicSampler, IN.Texture ).r;
-    if(alpha <= gAlphaThreshold)
-        discard;
-    if(gUseParallaxMap == 1)
-        { /* TODO */ }
-    if(gUseReflectionMap == 1)
-        { /* TODO */ }
-    if(gUseNormalMap == 1)
-        normal = DoNormalMapping(TBN, NormalMap, AnisotropicSampler, IN.Texture);
-    if(gUseBumpMap == 1)
-        normal = DoBumpMapping(TBN, BumpMap, AnisotropicSampler, IN.Texture, gBumpScale);
-    if(gUseDiffuseMap == 1)
+
+    if(alpha < gAlphaThreshold)
     {
-        albedo = DiffuseMap.Sample(AnisotropicSampler, IN.Texture).rgb;
-        ambient = DiffuseMap.Sample(AnisotropicSampler, IN.Texture).rgb;
+        OUT.Scene = (float4)0;
+        OUT.Normal = (float4)0;
+        OUT.Emissive = (float4)0;
+        OUT.Velocity = (float4)0;
     }
-    if(gUseSpecularMap == 1)
-        specular.rgb = SpecularMap.Sample(AnisotropicSampler, IN.Texture).xyz;
-    if(gUseEmissiveMap == 1)
-        emissive = emissive * EmissiveMap.Sample( AnisotropicSampler, IN.Texture ).rgb;
-    if(gUseOcclusionMap == 1)
-        albedo = albedo * OcclusionMap.Sample(AnisotropicSampler, IN.Texture).rgb;
-
-    LightingResult lit = ComputeLighting(IN.WorldPosition.xyz, normalize(normal));
-
-    if(gUseEnvironmentMap == 1)
+    else
     {
-        if(gIndexOfRefraction != 0.0)
-            environment = DoRefraction(IN.WorldPosition.xyz, normal);
-        if(gReflection != 0.0)
-            environment = environment + DoReflection(IN.WorldPosition.xyz, normal);
+        if(gUseParallaxMap == 1)
+        { /* TODO */ }
+        if(gUseReflectionMap == 1)
+            { /* TODO */ }
+        if(gUseNormalMap == 1)
+            normal = DoNormalMapping(TBN, NormalMap, AnisotropicSampler, IN.Texture);
+        if(gUseBumpMap == 1)
+            normal = DoBumpMapping(TBN, BumpMap, AnisotropicSampler, IN.Texture, gBumpScale);
+        if(gUseDiffuseMap == 1)
+        {
+            albedo = DiffuseMap.Sample(AnisotropicSampler, IN.Texture).rgb;
+            ambient = albedo;
+        }
+        if(gUseSpecularMap == 1)
+            specular.rgb = SpecularMap.Sample(AnisotropicSampler, IN.Texture).xyz;
+        if(gUseEmissiveMap == 1)
+            emissive = emissive * EmissiveMap.Sample( AnisotropicSampler, IN.Texture ).rgb;
+        if(gUseOcclusionMap == 1)
+            albedo = albedo * OcclusionMap.Sample(AnisotropicSampler, IN.Texture).rgb;
 
-        float reflectAndRefract = gReflection + gRefraction;
-        if(reflectAndRefract > 1.0) reflectAndRefract = 1.0;
-        albedo = albedo * (1.0 - reflectAndRefract);
+        LightingResult lit = ComputeLighting(IN.WorldPosition.xyz, normalize(normal));
+
+        if(gUseEnvironmentMap == 1)
+        {
+            if(gIndexOfRefraction != 0.0)
+                environment = DoRefraction(IN.WorldPosition.xyz, normal);
+            if(gReflection != 0.0)
+                environment = environment + DoReflection(IN.WorldPosition.xyz, normal);
+
+            float reflectAndRefract = gReflection + gRefraction;
+            if(reflectAndRefract > 1.0) reflectAndRefract = 1.0;
+            albedo = albedo * (1.0 - reflectAndRefract);
+        }
+
+        diffuse = diffuse * lit.Diffuse.rgb;
+        specular = specular * lit.Specular.rgb;
+
+        OUT.Scene.rgb = (gSceneLightColor.rgb * ambient + emissive + diffuse + specular) * (albedo + environment);
+        OUT.Scene.a = alpha;
+
+        float3 NDCPos = (IN.CurrPosition / IN.CurrPosition.w).xyz;
+        float3 PrevNDCPos = (IN.PrevPosition / IN.PrevPosition.w).xyz;
+
+        OUT.Normal = ComputeNormalBuffer(float4(normal, 0.0f));
+        OUT.Emissive = ComputeEmissiveBuffer(OUT.Scene, float4(emissive, 1.0));
+        OUT.Velocity = ComputeVelocityBuffer(float4(NDCPos, 0.0), float4(PrevNDCPos, 0.0), alpha);
     }
-
-    diffuse = diffuse * lit.Diffuse.rgb;
-    specular = specular * lit.Specular.rgb;
-
-    OUT.Scene.rgb = (gSceneLightColor.rgb * ambient + emissive + diffuse + specular) * (albedo + environment);
-    OUT.Scene.a = alpha;
-
-    float3 NDCPos = (IN.CurrPosition / IN.CurrPosition.w).xyz;
-    float3 PrevNDCPos = (IN.PrevPosition / IN.PrevPosition.w).xyz;
-
-    OUT.Normal = ComputeNormalBuffer(float4(normal, 0.0f));
-    OUT.Emissive = ComputeEmissiveBuffer(OUT.Scene, float4(emissive, 1.0));
-    OUT.Velocity = ComputeVelocityBuffer(float4(NDCPos, 0.0), float4(PrevNDCPos, 0.0), alpha);
 
     return OUT;
 }

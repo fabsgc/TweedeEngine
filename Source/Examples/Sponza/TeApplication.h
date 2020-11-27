@@ -51,9 +51,9 @@ namespace te
             String Transparency;
             String Occlusion;
             String Reflection;
-            bool Environment = true;
+            bool Environment = false;
             float Opacity = 1.0f;
-            float AlphaTreshold = 0.1f;
+            float AlphaTreshold = 1.0f;
             float ReflectionValue = 0.0f;
             float RefractionValue = 0.0f;
             float IndexOfRefractionValue = 0.0f;
