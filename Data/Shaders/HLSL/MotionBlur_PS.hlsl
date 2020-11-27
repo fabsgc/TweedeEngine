@@ -114,16 +114,14 @@ float4 main( PS_INPUT IN ) : SV_Target0
     float2 prevUV = NDCToUV(prevNdcPos);
 
     float2 cameraBlurDir = (prevUV - currentUV) * fixDelta;
-    if(abs(length(cameraBlurDir)) > 0.01f)
-    {
-        blurPass += 2;
-        while(abs(length(cameraBlurDir)) > 0.01)
-        {
-            cameraBlurDir /= 2.0;
-        }
 
-        output = ComputeMotionBlur(output, currentUV, cameraBlurDir);
+    blurPass += 2;
+    while(abs(length(cameraBlurDir)) > 0.01)
+    {
+        cameraBlurDir /= 2.0;
     }
+
+    output = ComputeMotionBlur(output, currentUV, cameraBlurDir);
 
     // ##### OBJECT MOTION BLUR
     float2 objectBlurDir = TextureSampling(BilinearSampler, VelocityMap, VelocityMapMS, currentUV, gMSAACount).xy;

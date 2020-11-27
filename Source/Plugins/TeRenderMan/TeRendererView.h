@@ -12,6 +12,8 @@
 #include "Renderer/TeRenderQueue.h"
 #include "TeRenderCompositor.h"
 #include "TeRendererLight.h"
+#include "Utility/TePoolAllocator.h"
+#include "TeRendererRenderable.h"
 
 namespace te
 {
@@ -341,7 +343,7 @@ namespace te
         SPtr<RenderQueue> _forwardOpaqueQueue;
         SPtr<RenderQueue> _forwardTransparentQueue;
 
-        Vector<SPtr<RenderableElement>> _instancedElements; //Elements are updated every frame
+        Vector<RenderableElement*> _instancedElements; //Elements are updated every frame
 
         static PerInstanceData _instanceDataPool[STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER][STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE];
         static Vector<InstancedBuffer> _instancedBuffersPool;
@@ -414,4 +416,6 @@ namespace te
 
         VisibleLightData _visibleLightData;
     };
+
+    IMPLEMENT_GLOBAL_POOL(RenderableElement, STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE)
 }

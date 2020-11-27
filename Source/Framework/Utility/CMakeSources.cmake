@@ -112,6 +112,7 @@ set(TE_UTILITY_INC_UTILITY
     "Utility/Utility/TeBitwise.h"
     "Utility/Utility/TeFileStream.h"
     "Utility/Utility/TeDataBlob.h"
+    "Utility/Utility/TePoolAllocator.h"
 )
 set(TE_UTILITY_SRC_UTILITY
     "Utility/Utility/TeDynLib.cpp"

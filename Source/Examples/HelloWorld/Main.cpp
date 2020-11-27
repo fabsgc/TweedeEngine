@@ -32,7 +32,7 @@ int main()
     desc.WindowDesc.Fullscreen = false;
     desc.WindowDesc.MultisampleCount = 1;
     desc.WindowDesc.Title = "Hello World";
-    desc.WindowDesc.Vsync = true;
+    desc.WindowDesc.Vsync = false;
 
     te::Application::StartUp(desc);
     te::Application::Instance().RunMainLoop();

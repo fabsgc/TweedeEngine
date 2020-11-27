@@ -168,7 +168,10 @@ namespace te
         settings->Contrast = 1.60f;
         settings->Brightness = -0.05f;
         settings->SceneLightColor = Color(0.4f,0.4f,0.4f,1.0f);
+        settings->Bloom.Enabled = false;
+        settings->MotionBlur.Enabled = false;
         settings->MotionBlur.Quality = MotionBlurQuality::High;
+        
         // ######################################################
 
         // ######################################################

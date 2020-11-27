@@ -173,7 +173,7 @@ namespace te
          * Returns the transform matrix that is applied to the object when its being rendered. This transform matrix does
          * not include scale values.
          */
-        Matrix4 GetMatrixNoScale() const { return _tfrmMatrixNoScale; }
+        const Matrix4& GetMatrixNoScale() const { return _tfrmMatrixNoScale; }
 
         /**	Gets world bounds of the mesh rendered by this object. */
         Bounds GetBounds() const;

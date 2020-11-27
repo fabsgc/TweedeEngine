@@ -239,6 +239,9 @@ namespace te
         /** Get capabilities for specified device */
         const RenderAPICapabilities& GetCapabilities(UINT32 deviceIdx = 0) const;
 
+        /** @copydoc GetCapabilities */
+        RenderAPICapabilities* GetCapabilitiesPtr(UINT32 deviceIdx = 0) const;
+
         /** Contains a default matrix into a matrix suitable for use by this specific render system. */
         virtual void ConvertProjectionMatrix(const Matrix4& matrix, Matrix4& dest) = 0;
 
@@ -269,5 +272,10 @@ namespace te
     inline const RenderAPICapabilities& gCaps(UINT32 deviceIdx = 0)
     {
         return RenderAPI::Instance().GetCapabilities(deviceIdx);
+    }
+
+    inline RenderAPICapabilities* gCapsPtr(UINT32 deviceIdx = 0)
+    {
+        return RenderAPI::Instance().GetCapabilitiesPtr(deviceIdx);
     }
 }

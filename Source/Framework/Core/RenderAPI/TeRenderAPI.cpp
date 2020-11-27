@@ -34,4 +34,15 @@ namespace te
 
         return _capabilities[deviceIdx];
     }
+
+    RenderAPICapabilities* RenderAPI::GetCapabilitiesPtr(UINT32 deviceIdx) const
+    {
+        if (deviceIdx >= _numDevices)
+        {
+            TE_DEBUG("Invalid device index provided: {" + ToString(deviceIdx) + "}. Valid range is: [0, {" + ToString(_numDevices) + "}).");
+            return &_capabilities[0];
+        }
+
+        return &_capabilities[deviceIdx];
+    }
 }

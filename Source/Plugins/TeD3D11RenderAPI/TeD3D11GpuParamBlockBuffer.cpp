@@ -14,9 +14,7 @@ namespace te
     D3D11GpuParamBlockBuffer::~D3D11GpuParamBlockBuffer()
     {
         if (_buffer != nullptr)
-        {
-            te_delete(static_cast<D3D11HardwareBuffer*>(_buffer));
-        }
+            te_pool_delete(static_cast<D3D11HardwareBuffer*>(_buffer));
     }
 
     void D3D11GpuParamBlockBuffer::Initialize()
@@ -24,7 +22,7 @@ namespace te
         D3D11RenderAPI* d3d11rs = static_cast<D3D11RenderAPI*>(RenderAPI::InstancePtr());
         D3D11Device& device = d3d11rs->GetPrimaryDevice();
 
-        _buffer = te_new<D3D11HardwareBuffer>(D3D11HardwareBuffer::BT_CONSTANT, _usage, 1, _size, device);
+        _buffer = te_pool_new<D3D11HardwareBuffer>(D3D11HardwareBuffer::BT_CONSTANT, _usage, 1, _size, device);
         GpuParamBlockBuffer::Initialize();
     }
 

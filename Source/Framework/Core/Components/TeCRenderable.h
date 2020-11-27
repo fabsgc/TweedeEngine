@@ -112,7 +112,7 @@ namespace te
         Matrix4 GetMatrix() const { return _internal->GetMatrix(); }
 
         /**	@copydoc Renderable::GetMatrixNoScale */
-        Matrix4 GetMatrixNoScale() const { return _internal->GetMatrixNoScale(); }
+        const Matrix4& GetMatrixNoScale() const { return _internal->GetMatrixNoScale(); }
 
         /** Returns the internal renderable that is used for majority of operations by this component. */
         SPtr<Renderable> _getInternal() const { return _internal; }

@@ -318,7 +318,7 @@ namespace te
         Vector2 ndcPoint;
         ndcPoint.x = (float)(((screenPoint.x - viewport.x) / (float)viewport.width) * 2.0f - 1.0f);
 
-        const Conventions& rapiConventions = gCaps().Convention;
+        static const Conventions& rapiConventions = gCaps().Convention;
         if (rapiConventions.NDC_YAxis == Conventions::Axis::Down)
         {
             ndcPoint.y = (float)(((screenPoint.y - viewport.y) / (float)viewport.height) * 2.0f - 1.0f);
@@ -366,7 +366,7 @@ namespace te
         Vector2I screenPoint;
         screenPoint.x = Math::RoundToInt(viewport.x + ((ndcPoint.x + 1.0f) * 0.5f) * viewport.width);
 
-        const Conventions& rapiConventions = gCaps().Convention;
+        static const Conventions& rapiConventions = gCaps().Convention;
         if (rapiConventions.NDC_YAxis == Conventions::Axis::Down)
         {
             screenPoint.y = Math::RoundToInt(viewport.y + (ndcPoint.y + 1.0f) * 0.5f * viewport.height);

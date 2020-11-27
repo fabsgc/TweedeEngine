@@ -186,7 +186,7 @@ namespace te
 
     bool ResourceManager::GetUUIDFromFile(const String& filePath, UUID& uuid)
     {
-        ::RecursiveLock lock(_loadingUuidMutex);
+        RecursiveLock lock(_loadingUuidMutex);
 
         auto iterFind = _fileToUUID.find(filePath);
 
@@ -204,7 +204,7 @@ namespace te
 
     bool ResourceManager::GetFileFromUUID(const UUID& uuid, String& filePath)
     {
-        ::RecursiveLock lock(_loadingUuidMutex);
+        RecursiveLock lock(_loadingUuidMutex);
 
         auto iterFind = _UUIDToFile.find(uuid);
 

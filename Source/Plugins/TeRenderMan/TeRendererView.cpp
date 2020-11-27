@@ -4,7 +4,6 @@
 #include "Renderer/TeRenderSettings.h"
 #include "TeRendererScene.h"
 #include "TeRenderMan.h"
-#include "TeRendererRenderable.h"
 #include "Material/TeMaterial.h"
 #include "Material/TeShader.h"
 
@@ -401,18 +400,20 @@ namespace te
             for (auto subElemIdx = lowerBlockBound; subElemIdx < upperBlockBound; subElemIdx++)
             {
                 UINT32 elemId = instancedBuffer.Idx[subElemIdx];
-
+                const Renderable* renderable = sceneInfo.Renderables[elemId]->RenderablePtr;
+                const Matrix4& tfrmNoScale = renderable->GetMatrixNoScale();
+                
                 //Once all this stuff is done, we need to write into perinstance buffer
                 GpuParamBlockBuffer* buffer = sceneInfo.Renderables[elemId]->PerObjectParamBuffer.get();
 
-                data.gMatWorld = gPerObjectParamDef.gMatWorld.Get(buffer);
-                data.gMatInvWorld = gPerObjectParamDef.gMatInvWorld.Get(buffer);
-                data.gMatWorldNoScale = gPerObjectParamDef.gMatWorldNoScale.Get(buffer);
-                data.gMatInvWorldNoScale = gPerObjectParamDef.gMatInvWorldNoScale.Get(buffer);
-                data.gMatPrevWorld = gPerObjectParamDef.gMatPrevWorld.Get(buffer);
-                data.gLayer = gPerObjectParamDef.gLayer.Get(buffer);
-                data.gHasAnimation = gPerObjectParamDef.gHasAnimation.Get(buffer);
-                data.gWriteVelocity = gPerObjectParamDef.gWriteVelocity.Get(buffer);
+                data.gMatWorld = sceneInfo.Renderables[elemId]->WorldTfrm;
+                data.gMatInvWorld = sceneInfo.Renderables[elemId]->WorldTfrm.InverseAffine();
+                data.gMatWorldNoScale = tfrmNoScale;
+                data.gMatInvWorldNoScale = tfrmNoScale.InverseAffine();
+                data.gMatPrevWorld = sceneInfo.Renderables[elemId]->PrevWorldTfrm;
+                data.gLayer = (UINT32)renderable->GetLayer();
+                data.gHasAnimation = (renderable->IsAnimated()) ? 1 : 0;
+                data.gWriteVelocity = (renderable->GetWriteVelocity()) ? 1 : 0;
 
                 _instanceDataPool[currInstBlock][subElemIdx - lowerBlockBound] = data;
                 instancedObjectCounter++;
@@ -427,7 +428,7 @@ namespace te
             // We create all instanced render element using first RendererRenderable data
             for (auto& renderElem : sceneInfo.Renderables[idx]->Elements)
             {
-                SPtr<RenderableElement> elem = te_shared_ptr_new<RenderableElement>(); // TODO, need a pool of object
+                RenderableElement* elem = te_pool_new<RenderableElement>();
                 elem->MeshElem = renderElem.MeshElem;
                 elem->SubMeshElem = renderElem.SubMeshElem;
                 elem->MaterialElem = renderElem.MaterialElem;
@@ -443,9 +444,9 @@ namespace te
 
                 // Note: I could keep renderables in multiple separate arrays, so I don't need to do the check here
                 if (shaderFlags & (UINT32)ShaderFlag::Transparent)
-                    _forwardTransparentQueue->Add(elem.get(), distanceToCamera, techniqueIdx);
+                    _forwardTransparentQueue->Add(elem, distanceToCamera, techniqueIdx);
                 else
-                    _forwardOpaqueQueue->Add(elem.get(), distanceToCamera, techniqueIdx);
+                    _forwardOpaqueQueue->Add(elem, distanceToCamera, techniqueIdx);
 
                 for (auto& gpuParams : renderElem.GpuParamsElem)
                     gpuParams->SetParamBlockBuffer("PerInstanceBuffer", gPerInstanceParamBuffer[currInstBlock]);
@@ -517,7 +518,7 @@ namespace te
 
     Vector4 RendererView::GetNDCToUV() const
     {
-        const RenderAPICapabilities& caps = gCaps();
+        static const RenderAPICapabilities& caps = gCaps();
         const Rect2I& viewRect = _properties.Target.ViewRect;
 
         float halfWidth = viewRect.width * 0.5f;
@@ -761,7 +762,11 @@ namespace te
             const UINT32 maxInstElement = STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE * STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER;
             UINT32 totalInstElem = 0;
 
+            for (auto& element : view._instancedElements)
+                te_pool_delete<RenderableElement>(static_cast<RenderableElement*>(element));
+
             view._instancedElements.clear();
+
             for (auto& instancedBuffer : RendererView::_instancedBuffersPool)
             {
                 totalInstElem += ((UINT32)instancedBuffer.Idx.size() / STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE + 1) * STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE;

@@ -20,6 +20,12 @@ namespace te
     {
         if (gPerLightsParamBuffer)
             gPerLightsParamBuffer = nullptr;
+
+        for (UINT32 i = 0; i < STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER; i++)
+        {
+            if (gPerInstanceParamBuffer[i])
+                gPerInstanceParamBuffer[i] = nullptr;
+        }
     }
 
     void RenderMan::Initialize()

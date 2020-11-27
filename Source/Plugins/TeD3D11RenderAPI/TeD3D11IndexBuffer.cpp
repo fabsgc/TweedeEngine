@@ -5,7 +5,7 @@ namespace te
 {
     static void DeleteBuffer(HardwareBuffer* buffer)
     {
-        te_delete(static_cast<D3D11HardwareBuffer*>(buffer));
+        te_pool_delete(static_cast<D3D11HardwareBuffer*>(buffer));
     }
 
     D3D11IndexBuffer::D3D11IndexBuffer(D3D11Device& device, const INDEX_BUFFER_DESC& desc, GpuDeviceFlags deviceMask)
@@ -17,7 +17,7 @@ namespace te
 
     void D3D11IndexBuffer::Initialize()
     {
-        _buffer = te_new<D3D11HardwareBuffer>(D3D11HardwareBuffer::BT_INDEX, _usage, 1, _size, _device);
+        _buffer = te_pool_new<D3D11HardwareBuffer>(D3D11HardwareBuffer::BT_INDEX, _usage, 1, _size, _device);
         _bufferDeleter = &DeleteBuffer;
 
         IndexBuffer::Initialize();

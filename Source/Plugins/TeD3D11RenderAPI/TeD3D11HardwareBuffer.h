@@ -2,6 +2,7 @@
 
 #include "TeD3D11RenderAPIPrerequisites.h"
 #include "RenderAPI/TeHardwareBuffer.h"
+#include "Utility/TePoolAllocator.h"
 
 namespace te
 {
@@ -67,4 +68,6 @@ namespace te
         D3D11Device& _device;
         D3D11_BUFFER_DESC _desc;
     };
+
+    IMPLEMENT_GLOBAL_POOL(D3D11HardwareBuffer, 32)
 }

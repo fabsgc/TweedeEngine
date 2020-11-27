@@ -8,7 +8,7 @@ namespace te
 {
     static void DeleteBuffer(HardwareBuffer* buffer)
     {
-        te_delete(static_cast<D3D11HardwareBuffer*>(buffer));
+        te_pool_delete(static_cast<D3D11HardwareBuffer*>(buffer));
     }
 
     D3D11GpuBuffer::D3D11GpuBuffer(const GPU_BUFFER_DESC& desc, GpuDeviceFlags deviceMask)
@@ -52,7 +52,7 @@ namespace te
                 TE_ASSERT_ERROR(false, "Unsupported buffer type " + ToString(props.GetType()));
             }
 
-            _buffer = te_new<D3D11HardwareBuffer>(bufferType, props.GetUsage(), props.GetElementCount(),
+            _buffer = te_pool_new<D3D11HardwareBuffer>(bufferType, props.GetUsage(), props.GetElementCount(),
                 props.GetElementSize(), rapi->GetPrimaryDevice(), false, false);
         }
 

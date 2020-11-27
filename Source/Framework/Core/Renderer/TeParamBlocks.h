@@ -13,9 +13,12 @@ namespace te
     class ParamBlockParam
     {
     public:
-        ParamBlockParam() = default;
+        ParamBlockParam()
+        { }
+
         ParamBlockParam(const GpuParamDataDesc& paramDesc)
-            :_paramDesc(paramDesc)
+            : _paramDesc(paramDesc)
+            , _caps(gCapsPtr())
         { }
 
         /**
@@ -35,7 +38,7 @@ namespace te
             UINT32 elementSizeBytes = _paramDesc.ElementSize * sizeof(UINT32);
             UINT32 sizeBytes = std::min(elementSizeBytes, (UINT32)sizeof(T)); // Truncate if it doesn't fit within parameter size
 
-            const bool transposeMatrices = gCaps().Convention.matrixOrder == Conventions::MatrixOrder::ColumnMajor;
+            const bool transposeMatrices = _caps->Convention.matrixOrder == Conventions::MatrixOrder::ColumnMajor;
             if (TransposePolicy<T>::TransposeEnabled(transposeMatrices))
             {
                 auto transposed = TransposePolicy<T>::Transpose(value);
@@ -92,6 +95,7 @@ namespace te
 
     protected:
         GpuParamDataDesc _paramDesc;
+        RenderAPICapabilities* _caps = nullptr;
     };
 
     /** Base class for all parameter blocks. */

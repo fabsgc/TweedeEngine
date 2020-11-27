@@ -13,7 +13,7 @@ namespace te
     void PerObjectBuffer::UpdatePerObject(SPtr<GpuParamBlockBuffer>& buffer, const Matrix4& tfrm,
         const Matrix4& prevTfrm, Renderable* renderable)
     {
-        const Matrix4 tfrmNoScale = renderable->GetMatrixNoScale();
+        const Matrix4& tfrmNoScale = renderable->GetMatrixNoScale();
         const UINT32 layer = Bitwise::mostSignificantBit(renderable->GetLayer());
 
         gPerObjectParamDef.gMatWorld.Set(buffer, tfrm);
