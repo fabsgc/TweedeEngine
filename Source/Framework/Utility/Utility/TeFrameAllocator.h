@@ -67,7 +67,7 @@ namespace te
         template<class T, class... Args>
         T* Construct(Args &&...args)
         {
-            return new ((T*)allocate(sizeof(T))) T(std::forward<Args>(args)...);
+            return new ((T*)Allocate(sizeof(T))) T(std::forward<Args>(args)...);
         }
 
         /**
@@ -144,11 +144,11 @@ namespace te
      * Version of FrameAlloc that allows blocks size to be provided through the template argument instead of the
      * constructor. */
     template<int BlockSize>
-    class TFrameAlloc : public FrameAlloc
+    class TFrameAllocator : public FrameAllocator
     {
     public:
-        TFrameAlloc()
-            : FrameAlloc(BlockSize)
+        TFrameAllocator()
+            : FrameAllocator(BlockSize)
         { }
     };
 
@@ -250,7 +250,7 @@ namespace te
     TE_UTILITY_EXPORT void te_frame_free(void* data);
 
     /**
-     * Frees memory previously allocated with bs_frame_alloc_aligned().
+     * Frees memory previously allocated with te_frame_alloc_aligned().
      *
      * @note	Must be called on the same thread the memory was allocated on.
      */
@@ -261,9 +261,9 @@ namespace te
      * construct the object.
      */
     template<class T>
-    T* bs_frame_alloc()
+    T* te_frame_allocate()
     {
-        return (T*)bs_frame_alloc(sizeof(T));
+        return (T*)te_frame_allocate(sizeof(T));
     }
 
     /**
@@ -283,7 +283,7 @@ namespace te
     template<class T>
     T* te_frame_new(UINT32 count = 0)
     {
-        T* data = te_frame_alloc<T>(count);
+        T* data = te_frame_allocate<T>(count);
 
         for (unsigned int i = 0; i < count; i++)
             new ((void*)&data[i]) T;
@@ -297,7 +297,7 @@ namespace te
     template<class T, class... Args>
     T* te_frame_new(Args &&...args, UINT32 count = 0)
     {
-        T* data = te_frame_alloc<T>(count);
+        T* data = te_frame_allocate<T>(count);
 
         for (unsigned int i = 0; i < count; i++)
             new ((void*)&data[i]) T(std::forward<Args>(args)...);
