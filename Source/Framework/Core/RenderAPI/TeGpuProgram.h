@@ -22,7 +22,7 @@ namespace te
 
         /**
          * Optional intermediate version of the GPU program. Can significantly speed up GPU program compilation/creation
-         * when supported by the render backend. Call ct::GpuProgram::compileBytecode to generate it.
+         * when supported by the render backend. Call GpuProgram::CompileBytecode to generate it.
          */
         SPtr<GpuProgramBytecode> Bytecode;
     };

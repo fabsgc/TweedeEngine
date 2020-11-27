@@ -276,19 +276,7 @@ float3 DoRefraction(float3 P, float3 N)
 PS_OUTPUT main( PS_INPUT IN )
 {
     PS_OUTPUT OUT;
-
-    OUT.Scene  = float4(1.0f, 1.0f, 1.0f, 1.0f);
-    float3x3 TBN = float3x3(IN.Tangent.xyz, IN.BiTangent.xyz, IN.Normal.xyz);
-
-    float3 albedo      = gDiffuse.rgb;
-    float3 ambient     = gAmbient.rgb;
-    float3 diffuse     = gDiffuse.rgb;
-    float3 emissive    = gEmissive.rgb;
-    float3 specular    = gSpecular.rgb;
-    float3 environment = (float3)0;
-    float3 normal      = IN.Normal;
-    float  alpha       = gTransparency;
-    float2 texCoords   = IN.Texture;
+    float alpha = gTransparency;
 
     if(gUseTransparencyMap == 1)
         alpha = TransparencyMap.Sample( AnisotropicSampler, IN.Texture ).r;
@@ -302,6 +290,19 @@ PS_OUTPUT main( PS_INPUT IN )
     }
     else
     {
+        OUT.Scene  = float4(1.0f, 1.0f, 1.0f, 1.0f);
+
+        float3 albedo      = gDiffuse.rgb;
+        float3 ambient     = gAmbient.rgb;
+        float3 diffuse     = gDiffuse.rgb;
+        float3 emissive    = gEmissive.rgb;
+        float3 specular    = gSpecular.rgb;
+        float3 environment = (float3)0;
+        float3 normal      = IN.Normal;
+        float2 texCoords   = IN.Texture;
+
+        float3x3 TBN = float3x3(IN.Tangent.xyz, IN.BiTangent.xyz, IN.Normal.xyz);
+
         if(gUseParallaxMap == 1)
         { /* TODO */ }
         if(gUseReflectionMap == 1)

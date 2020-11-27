@@ -14,6 +14,7 @@
 #include "Renderer/TeGaussianBlurMat.h"
 #include "TeRendererLight.h"
 #include "Gui/TeGuiAPI.h"
+#include "Utility/TeFrameAllocator.h"
 
 namespace te
 {
@@ -176,30 +177,34 @@ namespace te
         if (!_isValid)
             return;
 
-        Vector<const NodeInfo*> activeNodes;
-
-        UINT32 idx = 0;
-        for (auto& entry : _nodeInfos)
+        te_frame_mark();
         {
-            inputs.InputNodes = entry.Inputs;
-            entry.Node->Render(inputs);
-        
-            activeNodes.push_back(&entry);
+            FrameVector<const NodeInfo*> activeNodes;
 
-            for (UINT32 i = 0; i < (UINT32)activeNodes.size(); ++i)
+            UINT32 idx = 0;
+            for (auto& entry : _nodeInfos)
             {
-                if (activeNodes[i] == nullptr)
-                    continue;
+                inputs.InputNodes = entry.Inputs;
+                entry.Node->Render(inputs);
 
-                if (activeNodes[i]->LastUseIdx <= idx)
+                activeNodes.push_back(&entry);
+
+                for (UINT32 i = 0; i < (UINT32)activeNodes.size(); ++i)
                 {
-                    activeNodes[i]->Node->Clear();
-                    activeNodes[i] = nullptr;
-                }
-            }
+                    if (activeNodes[i] == nullptr)
+                        continue;
 
-            idx++;
+                    if (activeNodes[i]->LastUseIdx <= idx)
+                    {
+                        activeNodes[i]->Node->Clear();
+                        activeNodes[i] = nullptr;
+                    }
+                }
+
+                idx++;
+            }
         }
+        te_frame_clear();
 
         if (!_nodeInfos.empty())
             _nodeInfos.back().Node->Clear();

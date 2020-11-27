@@ -144,9 +144,9 @@ namespace te
 
         _sceneRenderableSO->Move(Vector3(-50.0f, 0.0f, -55.0f));
 
-        for (INT16 i = -32; i < 32; i++)
+        for (INT16 i = -15; i < 16; i++)
         {
-            for (INT16 j = -64; j < 64; j++)
+            for (INT16 j = -1; j < 16; j++)
             {
                 HSceneObject sceneRenderable = SceneObject::Create("Monkey_" + ToString(i) + "_" + ToString(j));
                 HRenderable renderableCube = sceneRenderable->AddComponent<CRenderable>();
@@ -156,7 +156,6 @@ namespace te
                 renderableCube->Initialize();
 
                 sceneRenderable->Move(Vector3((float)i * 3.0f, 0.0f, -(float)j * 3.0f));
-                //sceneRenderable->SetMobility(ObjectMobility::Immovable);
 
                 _sceneRenderablesMonkeySO.push_back(sceneRenderable);
             }
@@ -171,7 +170,6 @@ namespace te
         settings->Bloom.Enabled = false;
         settings->MotionBlur.Enabled = false;
         settings->MotionBlur.Quality = MotionBlurQuality::High;
-        
         // ######################################################
 
         // ######################################################

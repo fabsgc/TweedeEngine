@@ -102,6 +102,48 @@ namespace te
     *  ############# MEMORY ALLOCATOR BASE ###############################
     *  ################################################################ */
 
+#if TE_PLATFORM == TE_PLATFORM_WIN32
+    inline void* PlatformAlignedAllocate16(size_t size)
+    {
+        return _aligned_malloc(size, 16);
+    }
+
+    inline void PlatformAlignedFree16(void* ptr)
+    {
+        _aligned_free(ptr);
+    }
+
+    inline void* PlatformAlignedAllocate(size_t size, size_t alignment)
+    {
+        return _aligned_malloc(size, alignment);
+    }
+
+    inline void PlatformAlignedFree(void* ptr)
+    {
+        _aligned_free(ptr);
+    }
+#elif TE_PLATFORM == TE_PLATFORM_LINUX
+    inline void* PlatformAlignedAllocate16(size_t size)
+    {
+        return ::memalign(16, size);
+    }
+
+    inline void PlatformAlignedFree16(void* ptr)
+    {
+        ::free(ptr);
+    }
+
+    inline void* PlatformAlignedAllocate(size_t size, size_t alignment)
+    {
+        return ::memalign(alignment, size);
+    }
+
+    inline void PlatformAlignedFree(void* ptr)
+    {
+        ::free(ptr);
+    }
+#endif
+
     /**
     * Memory allocator providing a generic implementation. Specialize for specific categories as needed.
     */
@@ -116,6 +158,33 @@ namespace te
         static void Deallocate(void* ptr)
         {
             ::free(ptr);
+        }
+
+        /**
+         * Allocates @p bytes and aligns them to the specified boundary (in bytes). If the aligment is less or equal to
+         * 16 it is more efficient to use the allocateAligned16() alternative of this method. Alignment must be power of two.
+         */
+        static void* AllocateAligned(size_t bytes, size_t alignment)
+        {
+            return PlatformAlignedAllocate(bytes, alignment);
+        }
+
+        /** Allocates @p bytes and aligns them to a 16 byte boundary. */
+        static void* AllocateAligned16(size_t bytes)
+        {
+            return PlatformAlignedAllocate16(bytes);
+        }
+
+        /** Frees memory allocated with allocateAligned() */
+        static void FreeAligned(void* ptr)
+        {
+            PlatformAlignedFree(ptr);
+        }
+
+        /** Frees memory allocated with allocateAligned16() */
+        static void FreeAligned16(void* ptr)
+        {
+            PlatformAlignedFree16(ptr);
         }
     };
 
@@ -134,6 +203,33 @@ namespace te
     inline T* te_allocate(uint32_t count)
     {
         return (T*)MemoryAllocator::Allocate(count);
+    }
+
+    /**
+     * Allocates the specified number of bytes aligned to the provided boundary. Boundary is in bytes and must be a power
+     * of two.
+     */
+    inline void* te_allocate_aligned(size_t count, size_t align)
+    {
+        return MemoryAllocator::AllocateAligned(count, align);
+    }
+
+    /** Allocates the specified number of bytes aligned to a 16 bytes boundary. */
+    inline void* te_allocate_aligned16(size_t count)
+    {
+        return MemoryAllocator::AllocateAligned16(count);
+    }
+
+    /** Frees memory previously allocated with bs_alloc_aligned(). */
+    inline void te_free_aligned(void* ptr)
+    {
+        MemoryAllocator::FreeAligned(ptr);
+    }
+
+    /** Frees memory previously allocated with bs_alloc_aligned16(). */
+    inline void te_free_aligned16(void* ptr)
+    {
+        MemoryAllocator::FreeAligned16(ptr);
     }
 
     /**
@@ -235,6 +331,57 @@ namespace te
         {
             return static_cast<std::size_t>(t);
         }
+    };
+
+    /** Allocator for the standard library that internally uses bsf memory allocator. */
+    template <class T, class Allocator>
+    class StdAllocator
+    {
+    public:
+        using value_type = T;
+        using pointer = value_type*;
+        using const_pointer = const value_type*;
+        using reference = value_type&;
+        using const_reference = const value_type&;
+        using size_type = std::size_t;
+        using difference_type = std::ptrdiff_t;
+
+        constexpr StdAllocator() = default;
+        constexpr StdAllocator(StdAllocator&&) = default;
+        constexpr StdAllocator(const StdAllocator&) = default;
+        template<class U, class Alloc2> constexpr StdAllocator(const StdAllocator<U, Alloc2>&) { };
+        template<class U, class Alloc2> constexpr bool operator==(const StdAllocator<U, Alloc2>&) const noexcept { return true; }
+        template<class U, class Alloc2> constexpr bool operator!=(const StdAllocator<U, Alloc2>&) const noexcept { return false; }
+
+        template<class U> class rebind { public: using other = StdAllocator<U, Allocator>; };
+
+        /** Allocate but don't initialize number elements of type T. */
+        static T* allocate(const size_t num)
+        {
+            if (num == 0)
+                return nullptr;
+
+            if (num > max_size())
+                return nullptr; // Error
+
+            void* const pv = te_allocate<Allocator>((uint32_t)(num * sizeof(T)));
+            if (!pv)
+                return nullptr; // Error
+
+            return static_cast<T*>(pv);
+        }
+
+        /** Deallocate storage p of deleted elements. */
+        static void deallocate(pointer p, size_type)
+        {
+            te_free(p);
+        }
+
+        static constexpr size_t max_size() { return std::numeric_limits<size_type>::max() / sizeof(T); }
+        static constexpr void destroy(pointer p) { p->~T(); }
+
+        template<class... Args>
+        static void construct(pointer p, Args&&... args) { new(p) T(std::forward<Args>(args)...); }
     };
 
     /* ###################################################################

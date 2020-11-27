@@ -113,6 +113,7 @@ set(TE_UTILITY_INC_UTILITY
     "Utility/Utility/TeFileStream.h"
     "Utility/Utility/TeDataBlob.h"
     "Utility/Utility/TePoolAllocator.h"
+    "Utility/Utility/TeFrameAllocator.h"
 )
 set(TE_UTILITY_SRC_UTILITY
     "Utility/Utility/TeDynLib.cpp"
@@ -122,6 +123,7 @@ set(TE_UTILITY_SRC_UTILITY
     "Utility/Utility/TeUtility.cpp"
     "Utility/Utility/TeUUID.cpp"
     "Utility/Utility/TeFileStream.cpp"
+    "Utility/Utility/TeFrameAllocator.cpp"
 )
 
 set(TE_UTILITY_INC_THREADING

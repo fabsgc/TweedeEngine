@@ -28,6 +28,7 @@ namespace te
             D3D11GpuGeometryProgram* d3d11GeometryProgram = nullptr;
             D3D11GpuDomainProgram* d3d11DomainProgram = nullptr;
             D3D11GpuHullProgram* d3d11HullProgram = nullptr;
+            D3D11GpuComputeProgram* d3d11ComputeProgram = nullptr;
 
             DrawOperationType drawOperationType = DOT_TRIANGLE_LIST;
 
@@ -154,7 +155,7 @@ namespace te
 
     private:
         SPtr<LastFrameGraphicPipeline> _lastFrameGraphicPipeline;
-        GpuResourcesContainer _gpuResourcesContainer;
+        GpuResourcesContainer _gpuResContainer;
 
     private:
         IDXGIFactory1* _DXGIFactory = nullptr;
