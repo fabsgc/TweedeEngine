@@ -180,19 +180,13 @@ namespace te
             d3d11HullProgram = static_cast<D3D11GpuHullProgram*>(pipelineState->GetHullProgram().get());
 
             if (d3d11BlendState == nullptr)
-            {
                 d3d11BlendState = static_cast<D3D11BlendState*>(BlendState::GetDefault().get());
-            }
 
             if (d3d11RasterizerState == nullptr)
-            {
                 d3d11RasterizerState = static_cast<D3D11RasterizerState*>(RasterizerState::GetDefault().get());
-            }
 
             if (_activeDepthStencilState == nullptr)
-            {
                 _activeDepthStencilState = std::static_pointer_cast<D3D11DepthStencilState>(DepthStencilState::GetDefault());
-            }
         }
         else
         {
@@ -267,6 +261,7 @@ namespace te
         _lastFrameGraphicPipeline->d3d11GeometryProgram = d3d11GeometryProgram;
         _lastFrameGraphicPipeline->d3d11DomainProgram = d3d11DomainProgram;
         _lastFrameGraphicPipeline->d3d11HullProgram = d3d11HullProgram;
+        _lastFrameGraphicPipeline->d3d11ComputeProgram = nullptr;
     }
 
     void D3D11RenderAPI::SetComputePipeline(const SPtr<ComputePipelineState>& pipelineState)
@@ -288,6 +283,11 @@ namespace te
         if (!_lastFrameGraphicPipeline)
             _lastFrameGraphicPipeline = te_shared_ptr_new<LastFrameGraphicPipeline>();
 
+        _lastFrameGraphicPipeline->d3d11VertexProgram = nullptr;
+        _lastFrameGraphicPipeline->d3d11PixelProgram = nullptr;
+        _lastFrameGraphicPipeline->d3d11GeometryProgram = nullptr;
+        _lastFrameGraphicPipeline->d3d11DomainProgram = nullptr;
+        _lastFrameGraphicPipeline->d3d11HullProgram = nullptr;
         _lastFrameGraphicPipeline->d3d11ComputeProgram = d3d11ComputeProgram;
     }
 
