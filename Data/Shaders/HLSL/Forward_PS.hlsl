@@ -3,7 +3,9 @@
 cbuffer PerCameraBuffer : register(b0)
 {
     float3 gViewDir;
+    float  gPadding1;
     float3 gViewOrigin;
+    float  gPadding2;
     matrix gMatViewProj;
     matrix gMatView;
     matrix gMatProj;
@@ -273,6 +275,13 @@ float3 DoRefraction(float3 P, float3 N)
     return EnvironmentMap.SampleLevel(AnisotropicSampler, R, 0).xyz * gRefraction;
 }
 
+float2 ParallaxMapping(float2 texCoords, float3 viewDir)
+{ 
+    float height =  ParallaxMap.Sample(AnisotropicSampler, texCoords).r;    
+    float2 p = viewDir.xy / viewDir.z * (height * gBumpScale);
+    return texCoords - p;
+}
+
 [earlydepthstencil]
 PS_OUTPUT main( PS_INPUT IN )
 {
@@ -304,25 +313,29 @@ PS_OUTPUT main( PS_INPUT IN )
 
         float3x3 TBN = float3x3(IN.Tangent.xyz, IN.BiTangent.xyz, IN.Normal.xyz);
 
+        float3 TangentViewPos = mul(TBN, gViewOrigin);
+        float3 TangentFragPos = mul(TBN, IN.WorldPosition.xyz);
+        float3 viewDir = normalize(TangentViewPos - TangentFragPos);
+
         if(gUseParallaxMap == 1)
-        { /* TODO */ }
+            texCoords = ParallaxMapping(texCoords, viewDir);
         if(gUseReflectionMap == 1)
             { /* TODO */ }
         if(gUseNormalMap == 1)
-            normal = DoNormalMapping(TBN, NormalMap, AnisotropicSampler, IN.Texture);
-        if(gUseBumpMap == 1)
-            normal = DoBumpMapping(TBN, BumpMap, AnisotropicSampler, IN.Texture, gBumpScale);
+            normal = DoNormalMapping(TBN, NormalMap, AnisotropicSampler, texCoords);
+        /*if(gUseBumpMap == 1)
+            normal = DoBumpMapping(TBN, BumpMap, AnisotropicSampler, texCoords, gBumpScale);*/
         if(gUseDiffuseMap == 1)
         {
-            albedo = DiffuseMap.Sample(AnisotropicSampler, IN.Texture).rgb;
+            albedo = DiffuseMap.Sample(AnisotropicSampler, texCoords).rgb;
             ambient = albedo;
         }
         if(gUseSpecularMap == 1)
-            specular.rgb = SpecularMap.Sample(AnisotropicSampler, IN.Texture).xyz;
+            specular.rgb = SpecularMap.Sample(AnisotropicSampler, texCoords).xyz;
         if(gUseEmissiveMap == 1)
-            emissive = emissive * EmissiveMap.Sample( AnisotropicSampler, IN.Texture ).rgb;
+            emissive = emissive * EmissiveMap.Sample(AnisotropicSampler, texCoords).rgb;
         if(gUseOcclusionMap == 1)
-            albedo = albedo * OcclusionMap.Sample(AnisotropicSampler, IN.Texture).rgb;
+            albedo = albedo * OcclusionMap.Sample(AnisotropicSampler, texCoords).rgb;
 
         LightingResult lit = ComputeLighting(IN.WorldPosition.xyz, normalize(normal));
 

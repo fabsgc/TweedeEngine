@@ -746,7 +746,7 @@ namespace te
 
         //_loadedGroundDiffuseTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/diffuse.png", textureImportOptions);
         _loadedGroundNormalTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/normal.png", textureImportOptions);
-        _loadedGroundHeightTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/height.png", textureImportOptions);
+        _loadedGroundHeightTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/parallax.png", textureImportOptions);
         //_loadedGroundSpecularTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/specular.png", textureImportOptions);
         // ######################################################
 
