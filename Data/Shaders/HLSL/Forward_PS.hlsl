@@ -42,18 +42,21 @@ cbuffer PerMaterialBuffer : register(b1)
     float  gAbsorbance;
     float  gBumpScale;
     float  gAlphaThreshold;
+    float  gPadding3;
 };
 
 cbuffer PerLightsBuffer : register(b2)
 {
     LightData gLights[MAX_LIGHTS];
     uint gLightsNumber;
+    float3 gPadding4;
 }
 
 cbuffer PerFrameBuffer : register(b3)
 {
     float gTime;
     float gFrameDelta;
+    float2 gPadding5;
     float4 gSceneLightColor;
 }
 

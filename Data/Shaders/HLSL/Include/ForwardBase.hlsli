@@ -15,6 +15,7 @@ struct PerInstanceData
     uint   gLayer;
     uint   gHasAnimation;
     uint   gWriteVelocity;
+    float  gPadding1;
 };
 
 struct LightData
@@ -29,7 +30,7 @@ struct LightData
     float  BoundsRadius;
     float  LinearAttenuation;
     float  QuadraticAttenuation;
-    float2 padding;
+    float2 Padding1;
 };
 
 struct VS_INPUT

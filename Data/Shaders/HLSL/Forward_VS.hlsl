@@ -4,7 +4,9 @@
 cbuffer PerCameraBuffer : register(b0)
 {
     float3 gViewDir;
+    float  gPadding1;
     float3 gViewOrigin;
+    float  gPadding2;
     matrix gMatViewProj;
     matrix gMatView;
     matrix gMatProj;
@@ -37,6 +39,7 @@ cbuffer PerMaterialBuffer : register(b1)
     float  gAbsorbance;
     float  gBumpScale;
     float  gAlphaThreshold;
+    float  gPadding3;
 };
 
 cbuffer PerInstanceBuffer : register(b2)
@@ -54,6 +57,7 @@ cbuffer PerObjectBuffer : register(b3)
     uint   gLayer;
     uint   gHasAnimation;
     uint   gWriteVelocity;
+    float  gPadding4;
 }
 
 cbuffer PerFrameBuffer : register(b4)
