@@ -98,24 +98,24 @@ float4 ComputeVelocityBuffer(float4 position, float4 prevPosition, float alpha)
 
     if(alpha >= 1.0)
     {
-        if(all(position == prevPosition))
-            return output;
+        if(all(position =! prevPosition))
+        {
+            float2 a = float2(position.xy);
+            float2 b = float2(prevPosition.xy);
 
-        float2 a = float2(position.xy);
-        float2 b = float2(prevPosition.xy);
+            velocity = (b - a);
 
-        velocity = (b - a);
+            if(velocity.x < -0.99) velocity.x = -0.99;
+            if(velocity.y < -0.99) velocity.y = -0.99;
 
-        if(velocity.x < -0.99) velocity.x = -0.99;
-        if(velocity.y < -0.99) velocity.y = -0.99;
+            if(velocity.x > 0.99) velocity.x = 0.99;
+            if(velocity.y > 0.99) velocity.y = 0.99;
 
-        if(velocity.x > 0.99) velocity.x = 0.99;
-        if(velocity.y > 0.99) velocity.y = 0.99;
+            velocity /= 2.0;
+            velocity += 0.5;
 
-        velocity /= 2.0;
-        velocity += 0.5;
-
-        output.xy = velocity.xy;
+            output.xy = velocity.xy;
+        }
     }
 
     return output;
@@ -162,7 +162,7 @@ float3 DoSpecular( LightData light, float3 V, float3 L, float3 N )
 // N : surface normal
 LightingResult DoPointLight( LightData light, float3 V, float3 P, float3 N )
 {
-    LightingResult result;
+    LightingResult result = (LightingResult)0;
 
     float3 L = ( light.Position - P );
     float distance = length(L);
@@ -183,7 +183,7 @@ LightingResult DoPointLight( LightData light, float3 V, float3 P, float3 N )
 // N : surface normal
 LightingResult DoDirectionalLight( LightData light, float3 V, float3 P, float3 N )
 {
-    LightingResult result;
+    LightingResult result = (LightingResult)0; 
 
     float3 L = -light.Direction.xyz;
  
@@ -207,7 +207,7 @@ float DoSpotCone( LightData light, float3 L )
 // N : surface normal
 LightingResult DoSpotLight( LightData light, float3 V, float3 P, float3 N )
 {
-    LightingResult result;
+    LightingResult result = (LightingResult)0;
 
     float3 L = ( light.Position - P );
     float distance = length(L);
@@ -276,7 +276,7 @@ float3 DoRefraction(float3 P, float3 N)
 [earlydepthstencil]
 PS_OUTPUT main( PS_INPUT IN )
 {
-    PS_OUTPUT OUT;
+    PS_OUTPUT OUT = (PS_OUTPUT)0;
     float alpha = gTransparency;
 
     if(gUseTransparencyMap == 1)
