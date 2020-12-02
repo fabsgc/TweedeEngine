@@ -744,10 +744,10 @@ namespace te
         //_loadedPlaneTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Sponza/Floor/floor_COLOR.jpeg", textureImportOptions);
         _loadedCubemapTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/sky_medium.png", textureCubeMapImportOptions);
 
-        //_loadedGroundDiffuseTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/diffuse.png", textureImportOptions);
+        _loadedGroundDiffuseTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/diffuse.png", textureImportOptions);
         _loadedGroundNormalTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/normal.png", textureImportOptions);
         _loadedGroundHeightTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/parallax.png", textureImportOptions);
-        //_loadedGroundSpecularTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/specular.png", textureImportOptions);
+        _loadedGroundSpecularTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/specular.png", textureImportOptions);
         // ######################################################
 
         // ######################################################
@@ -757,10 +757,10 @@ namespace te
         //_loadedTextureMonkey->SetName("Monkey Diffuse");
         _loadedCubemapTexture->SetName("Skybox Diffuse");
 
-        //_loadedGroundDiffuseTexture->SetName("Cobble Diffuse");
+        _loadedGroundDiffuseTexture->SetName("Cobble Diffuse");
         _loadedGroundNormalTexture->SetName("Cobble Normal");
         _loadedGroundHeightTexture->SetName("Cobble Height");
-        //_loadedGroundSpecularTexture->SetName("Ground Specular");
+        _loadedGroundSpecularTexture->SetName("Ground Specular");
         // ###################################################### 
 
         // ######################################################
@@ -782,9 +782,9 @@ namespace te
         _monkeyMaterial->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
         _monkeyMaterial->SetProperties(properties);*/
 
-        properties.UseDiffuseMap = false;
+        properties.UseDiffuseMap = true;
         properties.UseNormalMap = true;
-        properties.UseSpecularMap = false;
+        properties.UseSpecularMap = true;
         properties.UseBumpMap = false;
         properties.UseParallaxMap = true;
         properties.SpecularStrength = 1.0f;
@@ -793,9 +793,9 @@ namespace te
 
         _planeMaterial = Material::Create(_shader);
         _planeMaterial->SetName("Plane Material");
-        //_planeMaterial->SetTexture("DiffuseMap", _loadedGroundDiffuseTexture);
+        _planeMaterial->SetTexture("DiffuseMap", _loadedGroundDiffuseTexture);
         _planeMaterial->SetTexture("NormalMap", _loadedGroundNormalTexture);
-        //_planeMaterial->SetTexture("SpecularMap", _loadedGroundSpecularTexture);
+        _planeMaterial->SetTexture("SpecularMap", _loadedGroundSpecularTexture);
         //_planeMaterial->SetTexture("BumpMap", _loadedGroundHeightTexture);
         _planeMaterial->SetTexture("ParallaxMap", _loadedGroundHeightTexture);
         _planeMaterial->SetTexture("EnvironmentMap", _loadedCubemapTexture);

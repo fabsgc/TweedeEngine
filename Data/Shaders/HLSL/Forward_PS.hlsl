@@ -42,7 +42,6 @@ cbuffer PerMaterialBuffer : register(b1)
     float  gAbsorbance;
     float  gBumpScale;
     float  gAlphaThreshold;
-    float  gPadding3;
 };
 
 cbuffer PerLightsBuffer : register(b2)
@@ -278,11 +277,68 @@ float3 DoRefraction(float3 P, float3 N)
     return EnvironmentMap.SampleLevel(AnisotropicSampler, R, 0).xyz * gRefraction;
 }
 
-float2 ParallaxMapping(float2 texCoords, float3 viewDir)
-{ 
-    float height =  ParallaxMap.Sample(AnisotropicSampler, texCoords).r;    
-    float2 p = viewDir.xy / viewDir.z * (height * gBumpScale);
-    return texCoords - p;
+float2 DoParallaxMapping(float2 texCoords, float2 parallaxOffsetTS, int nNumSteps, float bumpScale)
+{
+    float2 dx = ddx( texCoords );
+    float2 dy = ddy( texCoords );
+
+    float fCurrHeight = 0.0;
+    float fStepSize   = 1.0 / (float) nNumSteps;
+    float fPrevHeight = 1.0;
+    float fNextHeight = 0.0;
+
+    int    nStepIndex = 0;
+    bool   bCondition = true;
+
+    float2 vTexOffsetPerStep = fStepSize * parallaxOffsetTS * bumpScale;
+    float2 vTexCurrentOffset = texCoords;
+    float  fCurrentBound     = 1.0;
+    float  fParallaxAmount   = 0.0;
+
+    float2 pt1 = 0;
+    float2 pt2 = 0;
+
+    float2 texOffset2 = 0;
+
+    while ( nStepIndex < nNumSteps ) 
+    {
+        vTexCurrentOffset -= vTexOffsetPerStep;
+
+        // Sample height map which in this case is stored in the alpha channel of the normal map:
+        fCurrHeight = ParallaxMap.SampleGrad( AnisotropicSampler, vTexCurrentOffset, dx, dy ).r;
+
+        fCurrentBound -= fStepSize;
+
+        if ( fCurrHeight > fCurrentBound ) 
+        {
+            pt1 = float2( fCurrentBound, fCurrHeight );
+            pt2 = float2( fCurrentBound + fStepSize, fPrevHeight );
+
+            texOffset2 = vTexCurrentOffset - vTexOffsetPerStep;
+
+            nStepIndex = nNumSteps + 1;
+        }
+        else
+        {
+            nStepIndex++;
+            fPrevHeight = fCurrHeight;
+        }
+    }
+
+    float fDelta2 = pt2.x - pt2.y;
+    float fDelta1 = pt1.x - pt1.y;
+    float fDenominator = fDelta2 - fDelta1;
+
+    // SM 3.0 and above requires a check for divide by zero since that operation will generate an 'Inf' number instead of 0
+    [flatten]if ( fDenominator == 0.0f ) 
+        fParallaxAmount = 0.0f;
+    else
+        fParallaxAmount = ( pt1.x * fDelta2 - pt2.x * fDelta1 ) / fDenominator;
+
+    float2 vParallaxOffset = parallaxOffsetTS  * bumpScale * ( 1.0 - fParallaxAmount );
+
+    // The computed texture offset for the displaced point on the pseudo-extruded surface:
+    return texCoords - vParallaxOffset;
 }
 
 [earlydepthstencil]
@@ -316,18 +372,23 @@ PS_OUTPUT main( PS_INPUT IN )
 
         float3x3 TBN = float3x3(IN.Tangent.xyz, IN.BiTangent.xyz, IN.Normal.xyz);
 
-        float3 TangentViewPos = mul(TBN, gViewOrigin);
-        float3 TangentFragPos = mul(TBN, IN.WorldPosition.xyz);
-        float3 viewDir = normalize(TangentViewPos - TangentFragPos);
-
         if(gUseParallaxMap == 1)
-            texCoords = ParallaxMapping(texCoords, viewDir);
+        {
+            // Utilize dynamic flow control to change the number of samples per ray 
+            // depending on the viewing angle for the surface. Oblique angles require 
+            // smaller step sizes to achieve more accurate precision for computing displacement.
+            // We express the sampling rate as a linear function of the angle between 
+            // the geometric normal and the view direction ray:
+            int parallaxSteps = (int)lerp( 64, 8, dot( IN.ViewDirWS, IN.Normal ) );
+
+            texCoords = DoParallaxMapping(texCoords, IN.ParallaxOffsetTS, parallaxSteps, gBumpScale);
+        }
         if(gUseReflectionMap == 1)
             { /* TODO */ }
         if(gUseNormalMap == 1)
             normal = DoNormalMapping(TBN, NormalMap, AnisotropicSampler, texCoords);
-        /*if(gUseBumpMap == 1)
-            normal = DoBumpMapping(TBN, BumpMap, AnisotropicSampler, texCoords, gBumpScale);*/
+        if(gUseBumpMap == 1)
+            normal = DoBumpMapping(TBN, BumpMap, AnisotropicSampler, texCoords, gBumpScale);
         if(gUseDiffuseMap == 1)
         {
             albedo = DiffuseMap.Sample(AnisotropicSampler, texCoords).rgb;
@@ -340,14 +401,14 @@ PS_OUTPUT main( PS_INPUT IN )
         if(gUseOcclusionMap == 1)
             albedo = albedo * OcclusionMap.Sample(AnisotropicSampler, texCoords).rgb;
 
-        LightingResult lit = ComputeLighting(IN.WorldPosition.xyz, normalize(normal));
+        LightingResult lit = ComputeLighting(IN.PositionWS.xyz, normalize(normal));
 
         if(gUseEnvironmentMap == 1)
         {
             if(gIndexOfRefraction != 0.0)
-                environment = DoRefraction(IN.WorldPosition.xyz, normal);
+                environment = DoRefraction(IN.PositionWS.xyz, normal);
             if(gReflection != 0.0)
-                environment = environment + DoReflection(IN.WorldPosition.xyz, normal);
+                environment = environment + DoReflection(IN.PositionWS.xyz, normal);
 
             float reflectAndRefract = gReflection + gRefraction;
             if(reflectAndRefract > 1.0) reflectAndRefract = 1.0;

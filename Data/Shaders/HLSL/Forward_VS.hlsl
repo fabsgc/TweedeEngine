@@ -72,12 +72,15 @@ cbuffer PerCallBuffer : register(b5)
     matrix gMatWorldViewProj;
 }
 
-VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
+//VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
+VS_OUTPUT main( VS_INPUT IN )
 {
     VS_OUTPUT OUT = (VS_OUTPUT)0;
 
     float4x4 blendMatrix = (float4x4)0;
     float4x4 prevBlendMatrix = (float4x4)0;
+
+    uint instanceid = 0;
 
     if(instanceid == 0)
     {
@@ -122,14 +125,10 @@ VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
 
         OUT.Texture = FlipUV(IN.Texture);
 
-        OUT.WorldPosition = float4(IN.Position, 1.0f);
+        OUT.PositionWS = float4(IN.Position, 1.0f);
         if(gHasAnimation)
-            OUT.WorldPosition = mul(blendMatrix, OUT.WorldPosition);
-        OUT.WorldPosition = mul(gMatWorld, OUT.WorldPosition);
-
-        OUT.ViewDirection = normalize(OUT.WorldPosition.xyz - gViewOrigin);
-        OUT.WorldViewDistance = mul(gMatView, OUT.WorldPosition);
-        OUT.Color = IN.Color;
+            OUT.PositionWS = mul(blendMatrix, OUT.PositionWS);
+        OUT.PositionWS = mul(gMatWorld, OUT.PositionWS);
     }
     else
     {
@@ -174,15 +173,26 @@ VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
 
         OUT.Texture = FlipUV(IN.Texture);
 
-        OUT.WorldPosition = float4(IN.Position, 1.0f);
+        OUT.PositionWS = float4(IN.Position, 1.0f);
         if(gHasAnimation)
-            OUT.WorldPosition = mul(blendMatrix, OUT.WorldPosition);
-        OUT.WorldPosition = mul(gInstanceData[instanceid].gMatWorld, OUT.WorldPosition);
-
-        OUT.ViewDirection = normalize(OUT.WorldPosition.xyz - gViewOrigin);
-        OUT.WorldViewDistance = mul(gMatView, OUT.WorldPosition);
-        OUT.Color = IN.Color;
+            OUT.PositionWS = mul(blendMatrix, OUT.PositionWS);
+        OUT.PositionWS = mul(gInstanceData[instanceid].gMatWorld, OUT.PositionWS);
     }
+
+    float3x3 TBN = float3x3(OUT.Tangent, OUT.BiTangent, OUT.Normal);
+    OUT.ViewDirWS = normalize(OUT.PositionWS.xyz - gViewOrigin);
+    OUT.ViewDirTS = mul(TBN, OUT.ViewDirWS);
+    OUT.Color = IN.Color;
+
+    // Compute initial parallax displacement direction:
+    float2 ParallaxDirection = normalize(  (OUT.ViewDirTS.xy) );
+
+    // The length of this vector determines the furthest amount of displacement:
+    float ViewDirLength = length( (OUT.ViewDirTS) );
+    float ParallaxLength = sqrt( ViewDirLength * ViewDirLength - (OUT.ViewDirTS.z) * (OUT.ViewDirTS.z) ) / (OUT.ViewDirTS.z);
+
+    // Compute the actual reverse parallax displacement vector:
+    OUT.ParallaxOffsetTS = ParallaxDirection * ParallaxLength;
 
     return OUT;
 }

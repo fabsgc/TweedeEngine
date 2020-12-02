@@ -63,7 +63,7 @@ float4 main( PS_INPUT IN ) : SV_Target
 
     // specular
     float3 refVector = normalize(reflect(lightDirection, normal));
-    float3 specFactor = pow(max(dot(IN.ViewDirection, refVector), 0.0), gSpecularPower) * gSpecularStrength;
+    float3 specFactor = pow(max(dot(IN.ViewDirWS, refVector), 0.0), gSpecularPower) * gSpecularStrength;
     specular = (specFactor * specular.rgb);  
 
     outColor.rgb = ambient + diffuse + specular + emissive;

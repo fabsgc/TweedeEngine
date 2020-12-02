@@ -98,15 +98,22 @@ VS_OUTPUT main( VS_INPUT IN )
         OUT.BiTangent = IN.BiTangent.xyz;
 
         if(gHasAnimation)
+        {
             OUT.Normal = mul(blendMatrix, float4(OUT.Normal, 0.0f)).xyz;
+            OUT.Tangent = mul(blendMatrix, float4(OUT.Tangent, 0.0f)).xyz;
+            OUT.BiTangent = mul(blendMatrix, float4(OUT.BiTangent, 0.0f)).xyz;
+        }
+
         OUT.Normal = normalize(mul(gMatWorld, float4(OUT.Normal, 0.0f))).xyz;
+        OUT.Tangent = normalize(mul(gMatWorld, float4(OUT.Tangent, 0.0f))).xyz;
+        OUT.BiTangent = normalize(mul(gMatWorld, float4(OUT.BiTangent, 0.0f))).xyz;
 
-        OUT.WorldPosition = float4(IN.Position, 1.0f);
+        OUT.PositionWS = float4(IN.Position, 1.0f);
         if(gHasAnimation)
-            OUT.WorldPosition = mul(blendMatrix, OUT.WorldPosition);
-        OUT.WorldPosition = mul(gMatWorld, OUT.WorldPosition);
+            OUT.PositionWS = mul(blendMatrix, OUT.PositionWS);
+        OUT.PositionWS = mul(gMatWorld, OUT.PositionWS);
 
-        OUT.ViewDirection = normalize(OUT.WorldPosition.xyz - gViewOrigin);
+        OUT.ViewDirectionWS = normalize(OUT.PositionWS.xyz - gViewOrigin);
         OUT.Color = IN.Color;
     }
     else
@@ -117,16 +124,27 @@ VS_OUTPUT main( VS_INPUT IN )
         OUT.Position = mul(gInstanceData[IN.Instanceid].gMatWorld, OUT.Position);
         OUT.Position = mul(gMatViewProj, OUT.Position);
 
+        OUT.Normal = IN.Normal;
+        OUT.Tangent = IN.Tangent.xyz;
+        OUT.BiTangent = IN.BiTangent.xyz;
+
         if(gHasAnimation)
+        {
             OUT.Normal = mul(blendMatrix, float4(OUT.Normal, 0.0f)).xyz;
-        OUT.Normal = normalize(mul(gInstanceData[IN.Instanceid].gMatWorld, float4(OUT.Normal, 0.0f))).xyz;
+            OUT.Tangent = mul(blendMatrix, float4(OUT.Tangent, 0.0f)).xyz;
+            OUT.BiTangent = mul(blendMatrix, float4(OUT.BiTangent, 0.0f)).xyz;
+        }
 
-        OUT.WorldPosition = float4(IN.Position, 1.0f);
+        OUT.Normal = normalize(mul(gInstanceData[instanceid].gMatWorld, float4(OUT.Normal, 0.0f))).xyz;
+        OUT.Tangent = normalize(mul(gInstanceData[instanceid].gMatWorld, float4(OUT.Tangent, 0.0f))).xyz;
+        OUT.BiTangent = normalize(mul(gInstanceData[instanceid].gMatWorld, float4(OUT.BiTangent, 0.0f))).xyz;
+
+        OUT.PositionWS = float4(IN.Position, 1.0f);
         if(gHasAnimation)
-            OUT.WorldPosition = mul(blendMatrix, OUT.WorldPosition);
-        OUT.WorldPosition = mul(gInstanceData[IN.Instanceid].gMatWorld, OUT.WorldPosition);
+            OUT.PositionWS = mul(blendMatrix, OUT.PositionWS);
+        OUT.PositionWS = mul(gInstanceData[IN.Instanceid].gMatWorld, OUT.PositionWS);
 
-        OUT.ViewDirection = normalize(OUT.WorldPosition.xyz - gViewOrigin);
+        OUT.ViewDirectionWS = normalize(OUT.PositionWS.xyz - gViewOrigin);
         OUT.Color = IN.Color;
     }
 

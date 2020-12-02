@@ -37,7 +37,7 @@ namespace te
         float Refraction = 0.0f;
         float Reflection = 0.0f;
         float Absorbance = 0.0f;
-        float BumpScale = 1.0f;
+        float BumpScale = 0.05f;
         float AlphaThreshold = 0.0f;
 
         bool UseDiffuseMap = false;

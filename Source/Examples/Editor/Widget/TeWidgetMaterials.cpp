@@ -234,7 +234,7 @@ namespace te
                 }
                 ImGui::Separator();
                 {
-                    if (ImGuiExt::RenderOptionFloat(properties.BumpScale, "##material_properties_bump_scale_option", "Bump scale", 0.0f, 10.0f, width))
+                    if (ImGuiExt::RenderOptionFloat(properties.BumpScale, "##material_properties_bump_scale_option", "Bump scale", 0.0f, 5.0f, width))
                         hasChanged = true;
                 }
                 ImGui::Separator();
