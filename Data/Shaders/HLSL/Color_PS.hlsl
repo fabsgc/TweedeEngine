@@ -3,16 +3,16 @@
 cbuffer PerCameraBuffer : register(b0)
 {
     float3 gViewDir;
+    float  gPadding1;
     float3 gViewOrigin;
+    float  gPadding2;
     matrix gMatViewProj;
     matrix gMatView;
     matrix gMatProj;
     matrix gMatPrevViewProj;
     matrix gNDCToPrevNDC;
-    // xy - (Viewport size in pixels / 2) / Target size in pixels
-    // zw - (Viewport offset in pixels + (Viewport size in pixels / 2) + Optional pixel center offset) / Target size in pixels
-    float4 	 gClipToUVScaleOffset;
-    float4 	 gUVToClipScaleOffset;	
+    float4 gClipToUVScaleOffset;
+    float4 gUVToClipScaleOffset;
 }
 
 cbuffer PerMaterialBuffer : register(b1)
@@ -21,6 +21,8 @@ cbuffer PerMaterialBuffer : register(b1)
     float4 gDiffuse;
     float4 gEmissive;
     float4 gSpecular;
+    float2 gTextureRepeat;
+    float2 gTextureOffset;
     uint   gUseDiffuseMap;
     uint   gUseEmissiveMap;
     uint   gUseNormalMap;
@@ -37,9 +39,10 @@ cbuffer PerMaterialBuffer : register(b1)
     float  gIndexOfRefraction;
     float  gRefraction;
     float  gReflection;
-    float  gAbsorbance;
     float  gBumpScale;
+    float  gParallaxScale;
     float  gAlphaThreshold;
+    float  gPadding3;
 };
 
 static const float4 LightColor = float4(1.0f, 0.9f, 0.8f, 0.6f);

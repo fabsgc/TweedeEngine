@@ -67,6 +67,9 @@ namespace te
         static bool RenderOptionBool(bool& value, const char* id, const char* text, 
             bool disable = false);
 
+        static bool RenderVector2(Vector2& vector, const char* id, const char* text, float width = 0.0f,
+            bool disable = false);
+
         static bool RenderVector3(Vector3& vector, const char* id, const char* text, float width = 0.0f, 
             bool disable = false);
 

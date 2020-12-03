@@ -4,51 +4,24 @@
 cbuffer PerCameraBuffer : register(b0)
 {
     float3 gViewDir;
+    float  gPadding1;
     float3 gViewOrigin;
+    float  gPadding2;
     matrix gMatViewProj;
     matrix gMatView;
     matrix gMatProj;
     matrix gMatPrevViewProj;
     matrix gNDCToPrevNDC;
-    // xy - (Viewport size in pixels / 2) / Target size in pixels
-    // zw - (Viewport offset in pixels + (Viewport size in pixels / 2) + Optional pixel center offset) / Target size in pixels
-    float4 	 gClipToUVScaleOffset;
-    float4 	 gUVToClipScaleOffset;	
+    float4 gClipToUVScaleOffset;
+    float4 gUVToClipScaleOffset;
 }
 
-cbuffer PerMaterialBuffer : register(b1)
-{
-    float4 gAmbient;
-    float4 gDiffuse;
-    float4 gEmissive;
-    float4 gSpecular;
-    uint   gUseDiffuseMap;
-    uint   gUseEmissiveMap;
-    uint   gUseNormalMap;
-    uint   gUseSpecularMap;
-    uint   gUseBumpMap;
-    uint   gUseParallaxMap;
-    uint   gUseTransparencyMap;
-    uint   gUseReflectionMap;
-    uint   gUseOcclusionMap;
-    uint   gUseEnvironmentMap;
-    float  gSpecularPower;
-    float  gSpecularStrength;
-    float  gTransparency;
-    float  gIndexOfRefraction;
-    float  gRefraction;
-    float  gReflection;
-    float  gAbsorbance;
-    float  gBumpScale;
-    float  gAlphaThreshold;
-};
-
-cbuffer PerInstanceBuffer : register(b2)
+cbuffer PerInstanceBuffer : register(b1)
 {
     PerInstanceData gInstanceData[STANDARD_FORWARD_MAX_INSTANCED_BLOCK];
 }
 
-cbuffer PerObjectBuffer : register(b3)
+cbuffer PerObjectBuffer : register(b2)
 {
     matrix gMatWorld;
     matrix gMatInvWorld;
@@ -58,18 +31,15 @@ cbuffer PerObjectBuffer : register(b3)
     uint   gLayer;
     uint   gHasAnimation;
     uint   gWriteVelocity;
+    float  gPadding3;
 }
 
-cbuffer PerFrameBuffer : register(b4)
+cbuffer PerFrameBuffer : register(b3)
 {
-    float gTime;
-    float gFrameDelta;
+    float  gTime;
+    float  gFrameDelta;
+    float2 gPadding4;
     float4 gSceneLightColor;
-}
-
-cbuffer PerCallBuffer : register(b5)
-{
-    matrix gMatWorldViewProj;
 }
 
 VS_OUTPUT main( VS_INPUT IN )

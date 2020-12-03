@@ -378,8 +378,10 @@ namespace te
 
             SHADER_DATA_PARAM_DESC gAmbient("gAmbient", "gAmbient", GPDT_FLOAT4);
             SHADER_DATA_PARAM_DESC gDiffuse("gDiffuse", "gDiffuse", GPDT_FLOAT4);
-            SHADER_DATA_PARAM_DESC gSpecular("gSpecular", "gSpecular", GPDT_FLOAT4);
             SHADER_DATA_PARAM_DESC gEmissive("gEmissive", "gEmissive", GPDT_FLOAT4);
+            SHADER_DATA_PARAM_DESC gSpecular("gSpecular", "gSpecular", GPDT_FLOAT4);
+            SHADER_DATA_PARAM_DESC gTextureRepeat("gTextureRepeat", "gTextureRepeat", GPDT_FLOAT2);
+            SHADER_DATA_PARAM_DESC gTextureOffset("gTextureOffset", "gTextureOffset", GPDT_FLOAT2);
             SHADER_DATA_PARAM_DESC gUseDiffuseMap("gUseDiffuseMap", "gUseDiffuseMap", GPDT_INT1);
             SHADER_DATA_PARAM_DESC gUseEmissiveMap("gUseEmissiveMap", "gUseEmissiveMap", GPDT_INT1);
             SHADER_DATA_PARAM_DESC gUseNormalMap("gUseNormalMap", "gUseNormalMap", GPDT_INT1);
@@ -396,8 +398,8 @@ namespace te
             SHADER_DATA_PARAM_DESC gIndexOfRefraction("gIndexOfRefraction", "gIndexOfRefraction", GPDT_FLOAT1);
             SHADER_DATA_PARAM_DESC gRefraction("gRefraction", "gRefraction", GPDT_FLOAT1);
             SHADER_DATA_PARAM_DESC gReflection("gReflection", "gReflection", GPDT_FLOAT1);
-            SHADER_DATA_PARAM_DESC gAbsorbance("gAbsorbance", "gAbsorbance", GPDT_FLOAT1);
             SHADER_DATA_PARAM_DESC gBumpScale("gBumScale", "gBumScale", GPDT_FLOAT1);
+            SHADER_DATA_PARAM_DESC gParallaxScale("gParallaxScale", "gParallaxScale", GPDT_FLOAT1);
             SHADER_DATA_PARAM_DESC gAlphaThreshold("gAlphaThreshold", "gAlphaThreshold", GPDT_FLOAT1);
 
             SHADER_OBJECT_PARAM_DESC anisotropicSamplerDesc("AnisotropicSampler", "AnisotropicSampler", GPOT_SAMPLER2D);
@@ -442,6 +444,8 @@ namespace te
             _forwardShaderDesc.AddParameter(gDiffuse);
             _forwardShaderDesc.AddParameter(gEmissive);
             _forwardShaderDesc.AddParameter(gSpecular);
+            _forwardShaderDesc.AddParameter(gTextureRepeat);
+            _forwardShaderDesc.AddParameter(gTextureOffset);
             _forwardShaderDesc.AddParameter(gUseDiffuseMap);
             _forwardShaderDesc.AddParameter(gUseEmissiveMap);
             _forwardShaderDesc.AddParameter(gUseNormalMap);
@@ -458,8 +462,8 @@ namespace te
             _forwardShaderDesc.AddParameter(gIndexOfRefraction);
             _forwardShaderDesc.AddParameter(gRefraction);
             _forwardShaderDesc.AddParameter(gReflection);
-            _forwardShaderDesc.AddParameter(gAbsorbance);
             _forwardShaderDesc.AddParameter(gBumpScale);
+            _forwardShaderDesc.AddParameter(gParallaxScale);
             _forwardShaderDesc.AddParameter(gAlphaThreshold);
 
             _forwardShaderDesc.AddParameter(gTime);

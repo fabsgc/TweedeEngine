@@ -97,6 +97,58 @@ namespace te
         return false;
     };
 
+    bool ImGuiExt::RenderVector2(Vector2& vector, const char* id, const char* text, float width, bool disable)
+    {
+        bool hasChanged = false;
+        auto& ctx = *ImGui::GetCurrentContext();
+
+        float buttonsWidth = ImGui::CalcItemWidth() - width;
+        float lineHeight = ctx.Font->FontSize + ctx.Style.FramePadding.y * 2.0f;
+        ImVec2 buttonSize = { 20.0f, lineHeight };
+
+        buttonsWidth = (buttonsWidth < 120.0f) ? 120.0f : buttonsWidth;
+
+        if (fabs(vector.x) == 0.0f) vector.x = 0.0f;
+        if (fabs(vector.y) == 0.0f) vector.y = 0.0f;
+
+        if (disable)
+        {
+            ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
+            ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
+        }
+
+        ImGui::PushID(text);
+            ImGui::PushMultiItemsWidths(2, buttonsWidth);
+            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0.0f, 5.0f });
+                if (ImGui::Button("X", buttonSize)) {}
+
+                ImGui::SameLine();
+                if (ImGui::DragFloat("###X", &vector.x, 0.1f, 0.0f, 0.0f, "%.2f"))
+                    hasChanged = true;
+                ImGui::PopItemWidth();
+                ImGui::SameLine();
+
+                if (ImGui::Button("Y", buttonSize)) {}
+
+                ImGui::SameLine();
+                if (ImGui::DragFloat("###Y", &vector.y, 0.1f, 0.0f, 0.0f, "%.2f"))
+                    hasChanged = true;
+                ImGui::PopItemWidth();
+                ImGui::SameLine();
+
+                ImGui::Text(text);
+            ImGui::PopStyleVar();
+        ImGui::PopID();
+
+        if (disable)
+        {
+            ImGui::PopItemFlag();
+            ImGui::PopStyleVar();
+        }
+
+        return hasChanged;
+    };
+
     bool ImGuiExt::RenderVector3(Vector3& vector, const char* id, const char* text, float width, bool disable)
     {
         bool hasChanged = false;

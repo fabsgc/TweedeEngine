@@ -33,39 +33,42 @@ namespace te
         Vector4 gDiffuse;
         Vector4 gEmissive;
         Vector4 gSpecular;
-        UINT32 gUseDiffuseMap;
-        UINT32 gUseEmissiveMap;
-        UINT32 gUseNormalMap;
-        UINT32 gUseSpecularMap;
-        UINT32 gUseBumpMap;
-        UINT32 gUseParallaxMap;
-        UINT32 gUseTransparencyMap;
-        UINT32 gUseReflectionMap;
-        UINT32 gUseOcclusionMap;
-        UINT32 gUseEnvironmentMap;
-        float gSpecularPower;
-        float gSpecularStrength;
-        float gTransparency;
-        float gIndexOfRefraction;
-        float gRefraction;
-        float gReflection;
-        float gAbsorbance;
-        float gBumpScale;
-        float gAlphaThreshold;
+        Vector2 gTextureRepeat;
+        Vector2 gTextureOffset;
+        UINT32  gUseDiffuseMap;
+        UINT32  gUseEmissiveMap;
+        UINT32  gUseNormalMap;
+        UINT32  gUseSpecularMap;
+        UINT32  gUseBumpMap;
+        UINT32  gUseParallaxMap;
+        UINT32  gUseTransparencyMap;
+        UINT32  gUseReflectionMap;
+        UINT32  gUseOcclusionMap;
+        UINT32  gUseEnvironmentMap;
+        float   gSpecularPower;
+        float   gSpecularStrength;
+        float   gTransparency;
+        float   gIndexOfRefraction;
+        float   gRefraction;
+        float   gReflection;
+        float   gBumpScale;
+        float   gParallaxScale;
+        float   gAlphaThreshold;
+        float   gPadding3;
     };
 
     struct LightData
     {
         Vector3 Color;
-        float Type;
+        float   Type;
         Vector3 Position;
-        float Intensity;
+        float   Intensity;
         Vector3 Direction;
-        float AttenuationRadius;
+        float   AttenuationRadius;
         Vector3 SpotAngles;
-        float BoundsRadius;
-        float LinearAttenuation;
-        float QuadraticAttenuation;
+        float   BoundsRadius;
+        float   LinearAttenuation;
+        float   QuadraticAttenuation;
         Vector2 Padding;
     };
 
@@ -109,6 +112,8 @@ namespace te
         TE_PARAM_BLOCK_ENTRY(Vector4, gDiffuse)
         TE_PARAM_BLOCK_ENTRY(Vector4, gEmissive)
         TE_PARAM_BLOCK_ENTRY(Vector4, gSpecular)
+        TE_PARAM_BLOCK_ENTRY(Vector2, gTextureRepeat)
+        TE_PARAM_BLOCK_ENTRY(Vector2, gTextureOffset)
         TE_PARAM_BLOCK_ENTRY(INT32, gUseDiffuseMap)
         TE_PARAM_BLOCK_ENTRY(INT32, gUseEmissiveMap)
         TE_PARAM_BLOCK_ENTRY(INT32, gUseNormalMap)
@@ -125,18 +130,12 @@ namespace te
         TE_PARAM_BLOCK_ENTRY(float, gIndexOfRefraction)
         TE_PARAM_BLOCK_ENTRY(float, gRefraction)
         TE_PARAM_BLOCK_ENTRY(float, gReflection)
-        TE_PARAM_BLOCK_ENTRY(float, gAbsorbance)
         TE_PARAM_BLOCK_ENTRY(float, gBumpScale)
+        TE_PARAM_BLOCK_ENTRY(float, gParallaxScale)
         TE_PARAM_BLOCK_ENTRY(float, gAlphaThreshold)
     TE_PARAM_BLOCK_END
 
     extern PerMaterialParamDef gPerMaterialParamDef;
-
-    TE_PARAM_BLOCK_BEGIN(PerCallParamDef)
-        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatWorldViewProj)
-    TE_PARAM_BLOCK_END
-
-    extern PerCallParamDef gPerCallParamDef;
 
     TE_PARAM_BLOCK_BEGIN(PerInstanceParamDef)
         TE_PARAM_BLOCK_ENTRY_ARRAY(PerInstanceData, gInstances, STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE)

@@ -742,11 +742,11 @@ namespace te
         _loadedMeshPlane = EditorResManager::Instance().Load<Mesh>("Data/Meshes/Plane/plane.obj", meshImportOptions);
         //_loadedTextureMonkey = EditorResManager::Instance().Load<Texture>("Data/Textures/Monkey/diffuse.png", textureImportOptions);
         //_loadedPlaneTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Sponza/Floor/floor_COLOR.jpeg", textureImportOptions);
-        _loadedCubemapTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/sky_medium.png", textureCubeMapImportOptions);
+        _loadedSkyboxTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/sky_medium.png", textureCubeMapImportOptions);
 
         _loadedGroundDiffuseTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/diffuse.png", textureImportOptions);
         _loadedGroundNormalTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/normal.png", textureImportOptions);
-        _loadedGroundHeightTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/parallax.png", textureImportOptions);
+        _loadedGroundParallaxTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/parallax.png", textureImportOptions);
         _loadedGroundSpecularTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/specular.png", textureImportOptions);
         // ######################################################
 
@@ -755,11 +755,11 @@ namespace te
         //_loadedMeshMonkey->SetName("Monkey Mesh");
         _loadedMeshPlane->SetName("Plane Mesh");
         //_loadedTextureMonkey->SetName("Monkey Diffuse");
-        _loadedCubemapTexture->SetName("Skybox Diffuse");
+        _loadedSkyboxTexture->SetName("Skybox Diffuse");
 
         _loadedGroundDiffuseTexture->SetName("Cobble Diffuse");
         _loadedGroundNormalTexture->SetName("Cobble Normal");
-        _loadedGroundHeightTexture->SetName("Cobble Height");
+        _loadedGroundParallaxTexture->SetName("Cobble Parallax");
         _loadedGroundSpecularTexture->SetName("Ground Specular");
         // ###################################################### 
 
@@ -778,7 +778,7 @@ namespace te
         /*_monkeyMaterial = Material::Create(_shader);
         _monkeyMaterial->SetName("Monkey Material");
         _monkeyMaterial->SetTexture("DiffuseMap", _loadedTextureMonkey);
-        _monkeyMaterial->SetTexture("EnvironmentMap", _loadedCubemapTexture);
+        _monkeyMaterial->SetTexture("EnvironmentMap", _loadedSkyboxTexture);
         _monkeyMaterial->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
         _monkeyMaterial->SetProperties(properties);*/
 
@@ -796,9 +796,8 @@ namespace te
         _planeMaterial->SetTexture("DiffuseMap", _loadedGroundDiffuseTexture);
         _planeMaterial->SetTexture("NormalMap", _loadedGroundNormalTexture);
         _planeMaterial->SetTexture("SpecularMap", _loadedGroundSpecularTexture);
-        //_planeMaterial->SetTexture("BumpMap", _loadedGroundHeightTexture);
-        _planeMaterial->SetTexture("ParallaxMap", _loadedGroundHeightTexture);
-        _planeMaterial->SetTexture("EnvironmentMap", _loadedCubemapTexture);
+        _planeMaterial->SetTexture("ParallaxMap", _loadedGroundParallaxTexture);
+        _planeMaterial->SetTexture("EnvironmentMap", _loadedSkyboxTexture);
         _planeMaterial->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
         _planeMaterial->SetProperties(properties);
 
@@ -807,7 +806,7 @@ namespace te
 
         _knightMaterial = Material::Create(_shader);
         _knightMaterial->SetName("Knight Material");
-        _knightMaterial->SetTexture("EnvironmentMap", _loadedCubemapTexture);
+        _knightMaterial->SetTexture("EnvironmentMap", _loadedSkyboxTexture);
         _knightMaterial->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
         _knightMaterial->SetProperties(properties);*/
 
@@ -817,7 +816,7 @@ namespace te
         _sceneSkyboxSO = SceneObject::Create("Skybox");
         _sceneSkyboxSO->SetParent(_sceneSO);
         _skybox = _sceneSkyboxSO->AddComponent<CSkybox>();
-        _skybox->SetTexture(_loadedCubemapTexture);
+        _skybox->SetTexture(_loadedSkyboxTexture);
         _skybox->Initialize();
 
         _sceneLightSO = SceneObject::Create("Light");

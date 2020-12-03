@@ -208,11 +208,11 @@ namespace te
         HMesh _loadedMeshPlane;
         HMesh _loadedMeshKnight;
         HTexture _loadedTextureMonkey;
-        HTexture _loadedCubemapTexture;
+        HTexture _loadedSkyboxTexture;
         HTexture _loadedPlaneTexture;
         HTexture _loadedGroundDiffuseTexture;
         HTexture _loadedGroundNormalTexture;
-        HTexture _loadedGroundHeightTexture;
+        HTexture _loadedGroundParallaxTexture;
         HTexture _loadedGroundSpecularTexture;
 
         HMaterial _monkeyMaterial;

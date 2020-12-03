@@ -86,14 +86,6 @@ namespace te
          */
         void UpdatePerInstanceBuffer(PerInstanceData* instanceData, UINT32 instanceCounter, UINT32 blockId);
 
-        /**
-         * Updates the per-call GPU buffer according to the provided parameters.
-         *
-         * @param[in]	viewProj	Combined view-projection matrix of the current camera.
-         * @param[in]	flush		True if the buffer contents should be immediately flushed to the GPU.
-         */
-        void UpdatePerCallBuffer(const Matrix4& viewProj, bool flush = true);
-
         Matrix4 WorldTfrm = Matrix4::IDENTITY;
         Matrix4 PrevWorldTfrm = Matrix4::IDENTITY;
         PrevFrameDirtyState PreviousFrameDirtyState = PrevFrameDirtyState::Clean;
@@ -102,6 +94,5 @@ namespace te
         Vector<RenderableElement> Elements;
 
         SPtr<GpuParamBlockBuffer> PerObjectParamBuffer;
-        SPtr<GpuParamBlockBuffer> PerCallParamBuffer;
     };
 }

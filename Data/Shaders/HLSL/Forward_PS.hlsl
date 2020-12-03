@@ -11,10 +11,8 @@ cbuffer PerCameraBuffer : register(b0)
     matrix gMatProj;
     matrix gMatPrevViewProj;
     matrix gNDCToPrevNDC;
-    // xy - (Viewport size in pixels / 2) / Target size in pixels
-    // zw - (Viewport offset in pixels + (Viewport size in pixels / 2) + Optional pixel center offset) / Target size in pixels
-    float4  gClipToUVScaleOffset;
-    float4  gUVToClipScaleOffset;	
+    float4 gClipToUVScaleOffset;
+    float4 gUVToClipScaleOffset;
 }
 
 cbuffer PerMaterialBuffer : register(b1)
@@ -23,6 +21,8 @@ cbuffer PerMaterialBuffer : register(b1)
     float4 gDiffuse;
     float4 gEmissive;
     float4 gSpecular;
+    float2 gTextureRepeat;
+    float2 gTextureOffset;
     uint   gUseDiffuseMap;
     uint   gUseEmissiveMap;
     uint   gUseNormalMap;
@@ -39,9 +39,10 @@ cbuffer PerMaterialBuffer : register(b1)
     float  gIndexOfRefraction;
     float  gRefraction;
     float  gReflection;
-    float  gAbsorbance;
     float  gBumpScale;
+    float  gParallaxScale;
     float  gAlphaThreshold;
+    float  gPadding3;
 };
 
 cbuffer PerLightsBuffer : register(b2)
@@ -337,7 +338,6 @@ float2 DoParallaxMapping(float2 texCoords, float2 parallaxOffsetTS, int nNumStep
 
     float2 vParallaxOffset = parallaxOffsetTS  * bumpScale * ( 1.0 - fParallaxAmount );
 
-    // The computed texture offset for the displaced point on the pseudo-extruded surface:
     return texCoords - vParallaxOffset;
 }
 
@@ -368,7 +368,7 @@ PS_OUTPUT main( PS_INPUT IN )
         float3 specular    = gSpecular.rgb;
         float3 environment = (float3)0;
         float3 normal      = IN.Normal;
-        float2 texCoords   = IN.Texture;
+        float2 texCoords   = (IN.Texture * gTextureRepeat) + gTextureOffset;
 
         float3x3 TBN = float3x3(IN.Tangent.xyz, IN.BiTangent.xyz, IN.Normal.xyz);
 
@@ -381,7 +381,7 @@ PS_OUTPUT main( PS_INPUT IN )
             // the geometric normal and the view direction ray:
             int parallaxSteps = (int)lerp( 64, 8, dot( IN.ViewDirWS, IN.Normal ) );
 
-            texCoords = DoParallaxMapping(texCoords, IN.ParallaxOffsetTS, parallaxSteps, gBumpScale);
+            texCoords = DoParallaxMapping(texCoords, IN.ParallaxOffsetTS, parallaxSteps, gParallaxScale);
         }
         if(gUseReflectionMap == 1)
             { /* TODO */ }

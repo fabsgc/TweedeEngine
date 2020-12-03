@@ -202,6 +202,13 @@ namespace te
                 }
                 ImGui::Separator();
                 {
+                    if (ImGuiExt::RenderVector2(properties.TextureRepeat, "##material_properties_texture_repeat_option", " Texture Repeat", width))
+                        hasChanged = true;
+                    if (ImGuiExt::RenderVector2(properties.TextureOffset, "##material_properties_texture_repeat_option", " Texture Offset", width))
+                        hasChanged = true;
+                }
+                ImGui::Separator();
+                {
                     if (ImGuiExt::RenderOptionFloat(properties.SpecularPower, "##material_properties_specular_p_option", "Spec. power", 0.0f, 512.0f, width))
                         hasChanged = true;
                     if (ImGuiExt::RenderOptionFloat(properties.SpecularStrength, "##material_properties_specular_s_option", "Spec. strength", 0.0f, 128.0f, width))
@@ -229,12 +236,12 @@ namespace te
                 }
                 ImGui::Separator();
                 {
-                    if (ImGuiExt::RenderOptionFloat(properties.Absorbance, "##material_properties_absorbance_option", "Absorbance", 0.0f, 1.0f, width))
+                    if (ImGuiExt::RenderOptionFloat(properties.BumpScale, "##material_properties_bump_scale_option", "Bump scale", -10.0f, 10.0f, width))
                         hasChanged = true;
                 }
                 ImGui::Separator();
                 {
-                    if (ImGuiExt::RenderOptionFloat(properties.BumpScale, "##material_properties_bump_scale_option", "Bump scale", 0.0f, 5.0f, width))
+                    if (ImGuiExt::RenderOptionFloat(properties.ParallaxScale, "##material_properties_parallax_scale_option", "Parallax scale", 0.0f, 1.0f, width))
                         hasChanged = true;
                 }
                 ImGui::Separator();

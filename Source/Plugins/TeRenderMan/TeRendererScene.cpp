@@ -444,7 +444,6 @@ namespace te
                 for (auto& gpuParams : element.GpuParamsElem)
                 {
                     gpuParams->SetParamBlockBuffer("PerObjectBuffer", rendererRenderable->PerObjectParamBuffer);
-                    gpuParams->SetParamBlockBuffer("PerCallBuffer", rendererRenderable->PerCallParamBuffer);
                     gpuParams->SetParamBlockBuffer("PerMaterialBuffer", element.PerMaterialParamBuffer);
 
                     if (gpuParams->HasBuffer(GPT_VERTEX_PROGRAM, "BoneMatrices"))

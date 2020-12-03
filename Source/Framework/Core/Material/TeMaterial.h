@@ -30,14 +30,16 @@ namespace te
         Color Diffuse = Color(1.0f, 1.0f, 1.0f, 1.0f);
         Color Emissive = Color(0.0f, 0.0f, 0.0f, 1.0f);
         Color Specular = Color(1.0f, 1.0f, 1.0f, 0.5f);
+        Vector2 TextureRepeat = Vector2(1.0f, 1.0f);
+        Vector2 TextureOffset = Vector2(0.0f, 0.0f);
         float SpecularPower = 64.0f;
         float SpecularStrength = 1.0f;
         float Transparency = 1.0f;
         float IndexOfRefraction = 1.0f;
         float Refraction = 0.0f;
         float Reflection = 0.0f;
-        float Absorbance = 0.0f;
-        float BumpScale = 0.05f;
+        float BumpScale = 1.0f;
+        float ParallaxScale = 0.05f;
         float AlphaThreshold = 0.0f;
 
         bool UseDiffuseMap = false;

@@ -8,7 +8,6 @@ namespace te
     PerInstanceParamDef gPerInstanceParamDef;
     PerMaterialParamDef gPerMaterialParamDef;
     PerObjectParamDef gPerObjectParamDef;
-    PerCallParamDef gPerCallParamDef;
 
     void PerObjectBuffer::UpdatePerObject(SPtr<GpuParamBlockBuffer>& buffer, const Matrix4& tfrm,
         const Matrix4& prevTfrm, Renderable* renderable)
@@ -41,6 +40,8 @@ namespace te
         gPerMaterialParamDef.gDiffuse.Set(perMaterialBuffer, data.gDiffuse);
         gPerMaterialParamDef.gEmissive.Set(perMaterialBuffer, data.gEmissive);
         gPerMaterialParamDef.gSpecular.Set(perMaterialBuffer, data.gSpecular);
+        gPerMaterialParamDef.gTextureRepeat.Set(perMaterialBuffer, data.gTextureRepeat);
+        gPerMaterialParamDef.gTextureOffset.Set(perMaterialBuffer, data.gTextureOffset);
         gPerMaterialParamDef.gUseDiffuseMap.Set(perMaterialBuffer, data.gUseDiffuseMap);
         gPerMaterialParamDef.gUseEmissiveMap.Set(perMaterialBuffer, data.gUseEmissiveMap);
         gPerMaterialParamDef.gUseNormalMap.Set(perMaterialBuffer, data.gUseNormalMap);
@@ -57,8 +58,8 @@ namespace te
         gPerMaterialParamDef.gIndexOfRefraction.Set(perMaterialBuffer, data.gIndexOfRefraction);
         gPerMaterialParamDef.gRefraction.Set(perMaterialBuffer, data.gRefraction);
         gPerMaterialParamDef.gReflection.Set(perMaterialBuffer, data.gReflection);
-        gPerMaterialParamDef.gAbsorbance.Set(perMaterialBuffer, data.gAbsorbance);
         gPerMaterialParamDef.gBumpScale.Set(perMaterialBuffer, data.gBumpScale);
+        gPerMaterialParamDef.gParallaxScale.Set(perMaterialBuffer, data.gParallaxScale);
         gPerMaterialParamDef.gAlphaThreshold.Set(perMaterialBuffer, data.gAlphaThreshold);
     }
 
@@ -69,6 +70,8 @@ namespace te
         data.gDiffuse = properties.Diffuse.GetAsVector4();
         data.gEmissive = properties.Emissive.GetAsVector4();
         data.gSpecular = properties.Specular.GetAsVector4();
+        data.gTextureRepeat = properties.TextureRepeat;
+        data.gTextureOffset = properties.TextureOffset;
         data.gUseDiffuseMap = (UINT32)properties.UseDiffuseMap ? 1 : 0;
         data.gUseEmissiveMap = (UINT32)properties.UseEmissiveMap ? 1 : 0;
         data.gUseNormalMap = (UINT32)properties.UseNormalMap ? 1 : 0;
@@ -85,8 +88,8 @@ namespace te
         data.gIndexOfRefraction = properties.IndexOfRefraction;
         data.gRefraction = properties.Refraction;
         data.gReflection = properties.Reflection;
-        data.gAbsorbance = properties.Absorbance;
         data.gBumpScale = properties.BumpScale;
+        data.gParallaxScale = properties.ParallaxScale;
         data.gAlphaThreshold = properties.AlphaThreshold;
         return data;
     }
@@ -105,7 +108,6 @@ namespace te
     RendererRenderable::RendererRenderable()
     {
         PerObjectParamBuffer = gPerObjectParamDef.CreateBuffer();
-        PerCallParamBuffer = gPerCallParamDef.CreateBuffer();
     }
 
     RendererRenderable::~RendererRenderable()
@@ -119,15 +121,5 @@ namespace te
     void RendererRenderable::UpdatePerInstanceBuffer(PerInstanceData* instanceData, UINT32 instanceCounter, UINT32 blockId)
     {
         PerObjectBuffer::UpdatePerInstance(PerObjectParamBuffer, gPerInstanceParamBuffer[blockId], instanceData, instanceCounter);
-    }
-
-    void RendererRenderable::UpdatePerCallBuffer(const Matrix4& viewProj, bool flush)
-    {
-        // TODO is instance, it does not work
-        // const Matrix4 worldViewProjMatrix = viewProj * RenderablePtr->GetMatrixNoScale();
-        // gPerCallParamDef.gMatWorldViewProj.Set(PerCallParamBuffer, worldViewProjMatrix);
-
-        //if (flush)
-        //    PerCallParamBuffer->FlushToGPU();
     }
 }

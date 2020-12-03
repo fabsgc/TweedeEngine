@@ -12,42 +12,16 @@ cbuffer PerCameraBuffer : register(b0)
     matrix gMatProj;
     matrix gMatPrevViewProj;
     matrix gNDCToPrevNDC;
+    float4 gClipToUVScaleOffset;
+    float4 gUVToClipScaleOffset;
 }
 
-cbuffer PerMaterialBuffer : register(b1)
-{
-    float4 gAmbient;
-    float4 gDiffuse;
-    float4 gEmissive;
-    float4 gSpecular;
-    uint   gUseDiffuseMap;
-    uint   gUseEmissiveMap;
-    uint   gUseNormalMap;
-    uint   gUseSpecularMap;
-    uint   gUseBumpMap;
-    uint   gUseParallaxMap;
-    uint   gUseTransparencyMap;
-    uint   gUseReflectionMap;
-    uint   gUseOcclusionMap;
-    uint   gUseEnvironmentMap;
-    float  gSpecularPower;
-    float  gSpecularStrength;
-    float  gTransparency;
-    float  gIndexOfRefraction;
-    float  gRefraction;
-    float  gReflection;
-    float  gAbsorbance;
-    float  gBumpScale;
-    float  gAlphaThreshold;
-    float  gPadding3;
-};
-
-cbuffer PerInstanceBuffer : register(b2)
+cbuffer PerInstanceBuffer : register(b1)
 {
     PerInstanceData gInstanceData[STANDARD_FORWARD_MAX_INSTANCED_BLOCK];
 }
 
-cbuffer PerObjectBuffer : register(b3)
+cbuffer PerObjectBuffer : register(b2)
 {
     matrix gMatWorld;
     matrix gMatInvWorld;
@@ -57,30 +31,26 @@ cbuffer PerObjectBuffer : register(b3)
     uint   gLayer;
     uint   gHasAnimation;
     uint   gWriteVelocity;
-    float  gPadding4;
+    float  gPadding3;
 }
 
-cbuffer PerFrameBuffer : register(b4)
+cbuffer PerFrameBuffer : register(b3)
 {
-    float gTime;
-    float gFrameDelta;
+    float  gTime;
+    float  gFrameDelta;
+    float2 gPadding4;
     float4 gSceneLightColor;
 }
 
-cbuffer PerCallBuffer : register(b5)
-{
-    matrix gMatWorldViewProj;
-}
-
-//VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
-VS_OUTPUT main( VS_INPUT IN )
+VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
+//VS_OUTPUT main( VS_INPUT IN )
 {
     VS_OUTPUT OUT = (VS_OUTPUT)0;
 
     float4x4 blendMatrix = (float4x4)0;
     float4x4 prevBlendMatrix = (float4x4)0;
 
-    uint instanceid = 0;
+    //uint instanceid = 0;
 
     if(instanceid == 0)
     {
