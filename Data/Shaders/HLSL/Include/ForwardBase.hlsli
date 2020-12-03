@@ -15,7 +15,9 @@ struct PerInstanceData
     uint   gLayer;
     uint   gHasAnimation;
     uint   gWriteVelocity;
-    float  gPadding1;
+    uint   gCastShadow;
+    uint   gCastLight;
+    float3 gPadding1;
 };
 
 struct LightData

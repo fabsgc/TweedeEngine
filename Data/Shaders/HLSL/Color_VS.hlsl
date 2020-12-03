@@ -31,7 +31,9 @@ cbuffer PerObjectBuffer : register(b2)
     uint   gLayer;
     uint   gHasAnimation;
     uint   gWriteVelocity;
-    float  gPadding3;
+    uint   gCastShadow;
+    uint   gCastLight;
+    float3 gPadding3;
 }
 
 cbuffer PerFrameBuffer : register(b3)

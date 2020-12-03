@@ -725,6 +725,17 @@ namespace te
         }
         ImGui::Separator();
 
+        // cast lights
+        {
+            bool castLight = properties.CastLight;
+            if (ImGuiExt::RenderOptionBool(castLight, "##renderable_properties_cast_light_option", "Cast lights"))
+            {
+                hasChanged = true;
+                renderable->SetCastLight(castLight);
+            }
+        }
+        ImGui::Separator();
+
         // use for dynamic env mapping
         {
             bool useForDynamicEnvMapping = properties.UseForDynamicEnvMapping;

@@ -31,7 +31,9 @@ cbuffer PerObjectBuffer : register(b2)
     uint   gLayer;
     uint   gHasAnimation;
     uint   gWriteVelocity;
-    float  gPadding3;
+    uint   gCastShadow;
+    uint   gCastLight;
+    float3 gPadding3;
 }
 
 cbuffer PerFrameBuffer : register(b3)
@@ -42,15 +44,15 @@ cbuffer PerFrameBuffer : register(b3)
     float4 gSceneLightColor;
 }
 
-VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
-//VS_OUTPUT main( VS_INPUT IN )
+//VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
+VS_OUTPUT main( VS_INPUT IN )
 {
     VS_OUTPUT OUT = (VS_OUTPUT)0;
 
     float4x4 blendMatrix = (float4x4)0;
     float4x4 prevBlendMatrix = (float4x4)0;
 
-    //uint instanceid = 0;
+    uint instanceid = 0;
 
     if(instanceid == 0)
     {
@@ -101,6 +103,8 @@ VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
         OUT.PositionWS = mul(gMatWorld, OUT.PositionWS);
 
         OUT.Other.x = (gWriteVelocity == 1) ? 1.0 : 0.0;
+        OUT.Other.y = (gCastShadow == 1) ? 1.0 : 0.0;
+        OUT.Other.z = (gCastLight == 1) ? 1.0 : 0.0;
     }
     else
     {
@@ -151,6 +155,8 @@ VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
         OUT.PositionWS = mul(gInstanceData[instanceid].gMatWorld, OUT.PositionWS);
 
         OUT.Other.x = (gInstanceData[instanceid].gWriteVelocity == 1) ? 1.0 : 0.0;
+        OUT.Other.y = (gInstanceData[instanceid].gCastShadow == 1) ? 1.0 : 0.0;
+        OUT.Other.z = (gInstanceData[instanceid].gCastLight == 1) ? 1.0 : 0.0;
     }
 
     float3x3 TBN = float3x3(OUT.Tangent, OUT.BiTangent, OUT.Normal);

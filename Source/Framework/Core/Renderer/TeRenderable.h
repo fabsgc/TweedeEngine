@@ -19,6 +19,7 @@ namespace te
         bool Instancing  = false;
         bool CanBeMerged = false;
         bool CastShadow = true;
+        bool CastLight = true;
         bool UseForDynamicEnvMapping  = false;
         bool WriteVelocity = true;
         float CullDistanceFactor = 1.0f;
@@ -144,6 +145,12 @@ namespace te
 
         /** @copydoc SetCastShadow() */
         bool GetCastShadow() const { return _properties.CastShadow; }
+
+        /** Determines if this object cast light */
+        void SetCastLight(bool castLight) { _properties.CastLight = castLight; _markCoreDirty(); }
+
+        /** @copydoc SetCastLight() */
+        bool GetCastLight() const { return _properties.CastLight; }
 
         /** Set whole properties in a row */
         void SetPorperties(RenderableProperties& properties) { _properties = properties; _markCoreDirty(); }

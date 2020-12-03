@@ -326,6 +326,9 @@ namespace te
         const auto numRenderables = (UINT32)inputs.Scene.Renderables.size();
         for (UINT32 i = 0; i < numRenderables; i++)
         {
+            if (!inputs.Scene.Renderables[i]->RenderablePtr->GetCastLight())
+                continue;
+
             // Compute list of lights that influence renderables
             for (auto& element : inputs.Scene.Renderables[i]->Elements)
             {
