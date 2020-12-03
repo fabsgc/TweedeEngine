@@ -744,10 +744,10 @@ namespace te
         //_loadedPlaneTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Sponza/Floor/floor_COLOR.jpeg", textureImportOptions);
         _loadedSkyboxTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/sky_medium.png", textureCubeMapImportOptions);
 
-        _loadedGroundDiffuseTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/diffuse.png", textureImportOptions);
-        _loadedGroundNormalTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/normal.png", textureImportOptions);
-        _loadedGroundParallaxTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/parallax.png", textureImportOptions);
-        _loadedGroundSpecularTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/specular.png", textureImportOptions);
+        _loadedGroundDiffuseTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Leather/diffuse.png", textureImportOptions);
+        _loadedGroundNormalTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Leather/normal.png", textureImportOptions);
+        _loadedGroundParallaxTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Leather/parallax.png", textureImportOptions);
+        _loadedGroundSpecularTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Leather/specular.png", textureImportOptions);
         // ######################################################
 
         // ######################################################
