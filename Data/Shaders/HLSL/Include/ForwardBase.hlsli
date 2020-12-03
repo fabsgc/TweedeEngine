@@ -58,6 +58,7 @@ struct VS_OUTPUT
     float3 ViewDirWS         : TEXCOORD1;
     float3 ViewDirTS         : TEXCOORD2;
     float2 ParallaxOffsetTS  : TEXCOORD3;
+    float4 Other             : TEXCOORD4;
     float4 Color             : COLOR0;
 };
 
@@ -74,6 +75,7 @@ struct PS_INPUT
     float3 ViewDirWS         : TEXCOORD1;
     float3 ViewDirTS         : TEXCOORD2;
     float2 ParallaxOffsetTS  : TEXCOORD3;
+    float4 Other             : TEXCOORD4;
     float4 Color             : COLOR0;
 };
 

@@ -99,6 +99,8 @@ VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
         if(gHasAnimation)
             OUT.PositionWS = mul(blendMatrix, OUT.PositionWS);
         OUT.PositionWS = mul(gMatWorld, OUT.PositionWS);
+
+        OUT.Other.x = (gWriteVelocity == 1) ? 1.0 : 0.0;
     }
     else
     {
@@ -147,6 +149,8 @@ VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
         if(gHasAnimation)
             OUT.PositionWS = mul(blendMatrix, OUT.PositionWS);
         OUT.PositionWS = mul(gInstanceData[instanceid].gMatWorld, OUT.PositionWS);
+
+        OUT.Other.x = (gInstanceData[instanceid].gWriteVelocity == 1) ? 1.0 : 0.0;
     }
 
     float3x3 TBN = float3x3(OUT.Tangent, OUT.BiTangent, OUT.Normal);

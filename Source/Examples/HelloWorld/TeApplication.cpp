@@ -153,6 +153,7 @@ namespace te
                 renderableCube->SetMesh(_loadedMeshMonkey);
                 renderableCube->SetMaterial(_materialMonkey);
                 renderableCube->SetInstancing(true);
+                renderableCube->SetWriteVelocity(true);
                 renderableCube->Initialize();
 
                 sceneRenderable->Move(Vector3((float)i * 3.0f, 0.0f, -(float)j * 3.0f));

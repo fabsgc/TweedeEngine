@@ -426,7 +426,11 @@ PS_OUTPUT main( PS_INPUT IN )
 
         OUT.Normal = ComputeNormalBuffer(float4(normal, 0.0f));
         OUT.Emissive = ComputeEmissiveBuffer(OUT.Scene, float4(emissive, 1.0));
-        OUT.Velocity = ComputeVelocityBuffer(float4(NDCPos, 0.0), float4(PrevNDCPos, 0.0), alpha);
+
+        if(IN.Other.x == 1.0)
+            OUT.Velocity = ComputeVelocityBuffer(float4(NDCPos, 0.0), float4(PrevNDCPos, 0.0), alpha);
+        else
+            OUT.Velocity = float4(0.0, 0.0, 0.0, 1.0);
     }
 
     return OUT;
