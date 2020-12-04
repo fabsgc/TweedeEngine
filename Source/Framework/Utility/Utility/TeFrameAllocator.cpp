@@ -291,12 +291,12 @@ namespace te
         return *_GlobalFrameAllocator;
     }
 
-    TE_UTILITY_EXPORT UINT8* te_frame_alloc(UINT32 numBytes)
+    TE_UTILITY_EXPORT UINT8* te_frame_allocate(UINT32 numBytes)
     {
         return gFrameAllocator().Allocate(numBytes);
     }
 
-    TE_UTILITY_EXPORT UINT8* te_frame_alloc_aligned(UINT32 count, UINT32 align)
+    TE_UTILITY_EXPORT UINT8* te_frame_allocate_aligned(UINT32 count, UINT32 align)
     {
         return gFrameAllocator().AllocateAligned(count, align);
     }

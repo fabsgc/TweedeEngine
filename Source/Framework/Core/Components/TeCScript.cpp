@@ -34,6 +34,35 @@ namespace te
         Component::Initialize();
     }
 
+    void CScript::OnInitialized()
+    {
+        _internal->OnStartup();
+        Component::OnInitialized();
+    }
+
+    void CScript::OnEnabled()
+    {
+        _internal->OnEnabled();
+        Component::OnEnabled();
+    }
+
+    void CScript::OnDisabled()
+    {
+        _internal->OnDisabled();
+        Component::OnDisabled();
+    }
+
+    void CScript::OnDestroyed()
+    {
+        _internal->OnShutdown();
+        Component::OnDestroyed();
+    }
+
+    void CScript::Update()
+    {
+        _internal->Update();
+    }
+
     void CScript::Clone(const HComponent& c)
     {
         Clone(static_object_cast<CScript>(c));
@@ -42,7 +71,6 @@ namespace te
     void CScript::Clone(const HScript& c)
     {
         Component::Clone(c.GetInternalPtr());
-        SPtr<Script> script = c->_getInternal();
 
         // TODO : Native script copy
     }

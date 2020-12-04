@@ -20,6 +20,7 @@
 #include "Renderer/TeRendererMaterialManager.h"
 #include "Audio/TeAudioManager.h"
 #include "Animation/TeAnimationManager.h"
+#include "Scripting/TeScriptManager.h"
 
 #include "Input/TeInput.h"
 #include "Input/TeVirtualInput.h"
@@ -62,6 +63,7 @@ namespace te
         RendererManager::StartUp();
         ResourceManager::StartUp();
         SceneManager::StartUp();
+        ScriptManager::StartUp();
 
         LoadPlugin(_startUpDesc.Renderer, &_rendererPlugin);
         LoadPlugin(_startUpDesc.RenderAPI, &_renderAPIPlugin);
@@ -114,6 +116,7 @@ namespace te
         VirtualInput::ShutDown();
         Input::ShutDown();
         ParamBlockManager::ShutDown();
+        ScriptManager::ShutDown();
         SceneManager::ShutDown();
         AnimationManager::ShutDown();
         GameObjectManager::ShutDown();
@@ -148,8 +151,10 @@ namespace te
                 continue;
             }
 
+            gScriptManager().PreUpdate();
             PreUpdate();
 
+            gScriptManager().Update();
             gSceneManager()._update();
 
             for (auto& pluginUpdateFunc : _pluginUpdateFunctions)
@@ -157,6 +162,7 @@ namespace te
                 pluginUpdateFunc.second();
             }
 
+            gScriptManager().PostUpdate();
             PostUpdate();
 
             _perFrameData->Animation = AnimationManager::Instance().Update();
@@ -166,6 +172,7 @@ namespace te
             RendererManager::Instance().GetRenderer()->Update();
             RendererManager::Instance().GetRenderer()->RenderAll(*_perFrameData);
 
+            gScriptManager().PostRender();
             PostRender();
         }
     }

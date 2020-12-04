@@ -240,7 +240,7 @@ namespace te
      * Allocates the specified number of bytes aligned to the provided boundary, using the global frame allocator. Boundary
      * is in bytes and must be a power of two.
      */
-    TE_UTILITY_EXPORT UINT8* te_frame_alloc_aligned(UINT32 count, UINT32 align);
+    TE_UTILITY_EXPORT UINT8* te_frame_allocate_aligned(UINT32 count, UINT32 align);
 
     /**
      * Deallocates memory allocated with the global frame allocator.

@@ -260,6 +260,7 @@ namespace te
 
     class Script;
     class NativeScript;
+    class SceneManager;
 
     class Importer;
     class BaseImporter;

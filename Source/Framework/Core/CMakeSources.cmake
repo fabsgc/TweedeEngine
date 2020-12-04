@@ -360,10 +360,12 @@ set (TE_CORE_SRC_GUI
 set (TE_CORE_INC_SCRIPTING
     "Core/Scripting/TeScript.h"
     "Core/Scripting/TeNativeScript.h"
+    "Core/Scripting/TeScriptManager.h"
 )
 set (TE_CORE_SRC_SCRIPTING
     "Core/Scripting/TeScript.cpp"
     "Core/Scripting/TeNativeScript.cpp"
+    "Core/Scripting/TeScriptManager.cpp"
 )
 
 if (WIN32)

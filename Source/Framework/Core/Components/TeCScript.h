@@ -43,10 +43,22 @@ namespace te
 
         /** @copydoc Component::_instantiate */
         void _instantiate() override;
+
+        /** @copydoc Component::OnInitialized */
+        void OnInitialized() override;
+
+        /** @copydoc Component::OnEnabled */
+        void OnEnabled() override;
+
+        /** @copydoc Component::OnEnabled */
+        void OnDisabled() override;
+
+        /** @copydoc Component::OnDestroyed */
+        void OnDestroyed() override;
     
     public:
-        /** @copydoc Component::update */
-        void Update() override { }
+        /** @copydoc Component::Update */
+        void Update() override;
 
     protected:
         CScript();

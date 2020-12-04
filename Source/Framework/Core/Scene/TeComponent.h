@@ -177,7 +177,9 @@ namespace te
          * for leaving the Stopped state are met. When called during creation it is called after onInitialized.
          */
         virtual void OnEnabled() 
-        { }
+        { 
+            OnComponentEnabled(GetHandle());
+        }
 
         /**
          * Called when the component's parent scene object has changed. Not called if the component is in Stopped state.

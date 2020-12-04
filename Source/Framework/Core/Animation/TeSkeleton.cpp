@@ -1,6 +1,7 @@
 #include "TeSkeleton.h"
 
 #include "Animation/TeAnimationClip.h"
+#include "Utility/TeFrameAllocator.h"
 
 namespace te
 { 
@@ -107,26 +108,30 @@ namespace te
     void Skeleton::GetPose(Matrix4* pose, LocalSkeletonPose& localPose, const SkeletonMask& mask,
         const AnimationClip& clip, float time, bool loop)
     {
-        Vector<AnimationCurveMapping> boneToCurveMapping(_numBones);
+        te_frame_mark();
+        {
+            FrameVector<AnimationCurveMapping> boneToCurveMapping(_numBones);
 
-        AnimationState state;
-        state.Curves = clip.GetCurves();
-        state.Length = clip.GetLength();
-        state.BoneToCurveMapping = boneToCurveMapping.data();
-        state.Loop = loop;
-        state.Weight = 1.0f;
-        state.Time = time;
-        state.Disabled = false;
+            AnimationState state;
+            state.Curves = clip.GetCurves();
+            state.Length = clip.GetLength();
+            state.BoneToCurveMapping = boneToCurveMapping.data();
+            state.Loop = loop;
+            state.Weight = 1.0f;
+            state.Time = time;
+            state.Disabled = false;
 
-        AnimationStateLayer layer;
-        layer.Index = 0;
-        layer.Additive = false;
-        layer.States = &state;
-        layer.NumStates = 1;
+            AnimationStateLayer layer;
+            layer.Index = 0;
+            layer.Additive = false;
+            layer.States = &state;
+            layer.NumStates = 1;
 
-        clip.GetBoneMapping(*this, state.BoneToCurveMapping);
+            clip.GetBoneMapping(*this, state.BoneToCurveMapping);
 
-        GetPose(pose, localPose, mask, &layer, 1);
+            GetPose(pose, localPose, mask, &layer, 1);
+        }
+        te_frame_clear();
     }
 
     void Skeleton::GetPose(Matrix4* pose, LocalSkeletonPose& localPose, const SkeletonMask& mask,
