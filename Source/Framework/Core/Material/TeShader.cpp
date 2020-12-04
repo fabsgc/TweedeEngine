@@ -59,7 +59,7 @@ namespace te
         AddParameterInternal(std::move(paramDesc), defaultValueIdx);
     }
 
-    void SHADER_DESC::AddParameter(SHADER_OBJECT_PARAM_DESC paramDesc, const SPtr < Texture>& defaultValue)
+    void SHADER_DESC::AddParameter(SHADER_OBJECT_PARAM_DESC paramDesc, const SPtr <Texture>& defaultValue)
     {
         UINT32 defaultValueIdx = (UINT32)-1;
         if (Shader::IsTexture(paramDesc.Type) && defaultValue != nullptr)

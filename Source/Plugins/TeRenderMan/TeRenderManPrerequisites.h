@@ -25,8 +25,6 @@ namespace te
         UINT32  gLayer;
         UINT32  gHasAnimation;
         UINT32  gWriteVelocity;
-        UINT32  gCastShadow;
-        UINT32  gCastLight;
     };
 
     struct MaterialData
@@ -105,8 +103,6 @@ namespace te
         TE_PARAM_BLOCK_ENTRY(INT32, gLayer)
         TE_PARAM_BLOCK_ENTRY(INT32, gHasAnimation)
         TE_PARAM_BLOCK_ENTRY(INT32, gWriteVelocity)
-        TE_PARAM_BLOCK_ENTRY(INT32, gCastShadow)
-        TE_PARAM_BLOCK_ENTRY(INT32, gCastLight)
     TE_PARAM_BLOCK_END
 
     extern PerObjectParamDef gPerObjectParamDef;

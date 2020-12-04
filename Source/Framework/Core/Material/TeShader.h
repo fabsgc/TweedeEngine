@@ -43,7 +43,7 @@ namespace te
     /**
      * Describes a single data (int, Vector2, etc.) shader parameter.
      *
-     * @see	Shader::addParameter().
+     * @see	Shader::AddParameter().
      */
     struct SHADER_DATA_PARAM_DESC : SHADER_PARAM_COMMON
     {

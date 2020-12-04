@@ -5,6 +5,9 @@
 #define POINT_LIGHT 1.0
 #define SPOT_LIGHT 2.0
 
+#define PARALLAX_MIN_SAMPLE 8
+#define PARALLAX_MAX_SAMPLE 64
+
 struct PerInstanceData
 {
     matrix gMatWorld;
@@ -15,9 +18,7 @@ struct PerInstanceData
     uint   gLayer;
     uint   gHasAnimation;
     uint   gWriteVelocity;
-    uint   gCastShadow;
-    uint   gCastLight;
-    float3 gPadding1;
+    float  gPadding1;
 };
 
 struct LightData

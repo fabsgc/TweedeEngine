@@ -799,6 +799,7 @@ namespace te
         _planeMaterial->SetTexture("ParallaxMap", _loadedGroundParallaxTexture);
         _planeMaterial->SetTexture("EnvironmentMap", _loadedSkyboxTexture);
         _planeMaterial->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
+        _planeMaterial->SetParam<Vector3>("helllo", Vector3());
         _planeMaterial->SetProperties(properties);
 
         /*properties.UseDiffuseMap = false;

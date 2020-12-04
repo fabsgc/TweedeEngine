@@ -412,20 +412,6 @@ namespace te
                 "",
                 true,
                 1.0f
-            },
-            {
-                "grid",
-                "Data/Textures/Sponza/vase_round/vase_round_COLOR.jpeg",
-                "",
-                "Data/Textures/Sponza/vase_round/vase_round_NRM.jpeg",
-                "Data/Textures/Sponza/vase_round/vase_round_SPEC.jpeg",
-                "",
-                "",
-                "",
-                "",
-                "",
-                true,
-                1.0f
             }
         };
 

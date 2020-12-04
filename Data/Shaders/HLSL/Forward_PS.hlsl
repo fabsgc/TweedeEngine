@@ -174,7 +174,7 @@ LightingResult DoPointLight( LightData light, float3 V, float3 P, float3 N )
     L = L / distance;
 
     float attenuation = DoAttenuation( light, distance );
-    if(attenuation > 0.01f)
+    if(attenuation > 0.00001f)
     {
         result.Diffuse = DoDiffuse( light, L, N ) * attenuation;
         result.Specular = DoSpecular( light, V, L, N ) * attenuation;
@@ -219,10 +219,10 @@ LightingResult DoSpotLight( LightData light, float3 V, float3 P, float3 N )
     L = L / distance;
 
     float attenuation = DoAttenuation( light, distance );
-    if(attenuation > 0.01f)
+    if(attenuation > 0.00001f)
     {
         float spotIntensity = DoSpotCone( light, L );
-        if(spotIntensity > 0.01f)
+        if(spotIntensity > 0.001f)
         {
             result.Diffuse = DoDiffuse( light, L, N ) * attenuation * spotIntensity;
             result.Specular = DoSpecular( light, V, L, N ) * attenuation * spotIntensity;
@@ -380,7 +380,7 @@ PS_OUTPUT main( PS_INPUT IN )
             // smaller step sizes to achieve more accurate precision for computing displacement.
             // We express the sampling rate as a linear function of the angle between 
             // the geometric normal and the view direction ray:
-            int parallaxSteps = (int)lerp( 64, 8, dot( IN.ViewDirWS, IN.Normal ) );
+            int parallaxSteps = (int)lerp( PARALLAX_MAX_SAMPLE, PARALLAX_MIN_SAMPLE, dot( IN.ViewDirWS, IN.Normal ) );
 
             texCoords = DoParallaxMapping(texCoords, IN.ParallaxOffsetTS, parallaxSteps, gParallaxScale);
         }

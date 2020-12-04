@@ -122,7 +122,7 @@ namespace te
         size_t meshCount = meshes.size();
         for(size_t meshIdx = 0; meshIdx < meshCount; meshIdx++)
         {
-            const Vector<SubMesh> curSubMeshes = allSubMeshes[meshIdx];
+            Vector<SubMesh> curSubMeshes = allSubMeshes[meshIdx];
 
             for (size_t subMeshIdx = 0; subMeshIdx < curSubMeshes.size(); subMeshIdx++)
             {
