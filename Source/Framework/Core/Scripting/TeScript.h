@@ -15,16 +15,16 @@ namespace te
     class TE_CORE_EXPORT Script : public CoreObject, public NonCopyable
     {
     public:
-        ~Script() = default;
+        ~Script();
 
-        /** Creates a new script. */
-        static SPtr<Script> Create(const SPtr<NativeScript>& nativeScript);
+        /** Creates a new script with script name in parameter. */
+        static SPtr<Script> Create(const String& name);
 
         /**	Creates a new script instance without initializing it. */
         static SPtr<Script> CreateEmpty();
 
         /** A script can handle a native script object */
-        void SetNativeScript(const SPtr<NativeScript>& nativeScript);
+        void SetNativeScript(const String& name);
 
         /** Returns native script handled */
         const SPtr<NativeScript>& GetNativeScript() const { return _nativeScript; }

@@ -21,7 +21,7 @@ namespace te
         void Initialize() override;
 
         /** @copydoc Script::SetNativeScript */
-        void SetNativeScript(const SPtr<NativeScript>& nativeScript) { _internal->SetNativeScript(nativeScript); }
+        void SetNativeScript(const String& name) { _internal->SetNativeScript(name); }
 
         /** @copydoc Script::GetNtiveScript */
         const SPtr<NativeScript>&  GetNativeScript() { return _internal->GetNativeScript(); }

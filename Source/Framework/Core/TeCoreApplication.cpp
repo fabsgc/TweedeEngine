@@ -293,9 +293,7 @@ namespace te
         UnloadPluginFunc unloadPluginFunc = (UnloadPluginFunc)library->GetSymbol("UnloadPlugin");
 
         if (unloadPluginFunc != nullptr)
-        {
             unloadPluginFunc();
-        }
 
         _pluginUpdateFunctions.erase(library);
         gDynLibManager().Unload(library);

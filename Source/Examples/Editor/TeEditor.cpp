@@ -730,37 +730,37 @@ namespace te
         // ######################################################
 
         // ######################################################
-        //auto knightResources = EditorResManager::Instance().LoadAll("Data/Meshes/Knight/Knight.dae", meshAnimImportOptions);
+        auto knightResources = EditorResManager::Instance().LoadAll("Data/Meshes/Knight/Knight.dae", meshAnimImportOptions);
         //auto knightResources = EditorResManager::Instance().LoadAll("Data/Meshes/Steve/cube-rotate.FBX", meshAnimImportOptions);
 
-        //_loadedMeshKnight = static_resource_cast<Mesh>(knightResources->Entries[0].Res);
-        //_animationClipKnight = static_resource_cast<AnimationClip>(knightResources->Entries[1].Res);
+        _loadedMeshKnight = static_resource_cast<Mesh>(knightResources->Entries[0].Res);
+        _animationClipKnight = static_resource_cast<AnimationClip>(knightResources->Entries[1].Res);
         // ######################################################
 
         // ######################################################
         //_loadedMeshMonkey = EditorResManager::Instance().Load<Mesh>("Data/Meshes/Monkey/monkey-hd.obj", meshImportOptions);
-        _loadedMeshPlane = EditorResManager::Instance().Load<Mesh>("Data/Meshes/Plane/plane.obj", meshImportOptions);
+        //_loadedMeshPlane = EditorResManager::Instance().Load<Mesh>("Data/Meshes/Plane/plane.obj", meshImportOptions);
         //_loadedTextureMonkey = EditorResManager::Instance().Load<Texture>("Data/Textures/Monkey/diffuse.png", textureImportOptions);
         //_loadedPlaneTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Sponza/Floor/floor_COLOR.jpeg", textureImportOptions);
         _loadedSkyboxTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/sky_medium.png", textureCubeMapImportOptions);
 
-        _loadedGroundDiffuseTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Leather/diffuse.png", textureImportOptions);
-        _loadedGroundNormalTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Leather/normal.png", textureImportOptions);
-        _loadedGroundParallaxTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Leather/parallax.png", textureImportOptions);
-        _loadedGroundSpecularTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Leather/specular.png", textureImportOptions);
+        //_loadedGroundDiffuseTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Leather/diffuse.png", textureImportOptions);
+        //_loadedGroundNormalTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Leather/normal.png", textureImportOptions);
+        //_loadedGroundParallaxTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Leather/parallax.png", textureImportOptions);
+        //_loadedGroundSpecularTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Leather/specular.png", textureImportOptions);
         // ######################################################
 
         // ######################################################
-        //_loadedMeshKnight->SetName("Knight Mesh");
+        _loadedMeshKnight->SetName("Knight Mesh");
         //_loadedMeshMonkey->SetName("Monkey Mesh");
-        _loadedMeshPlane->SetName("Plane Mesh");
+        //_loadedMeshPlane->SetName("Plane Mesh");
         //_loadedTextureMonkey->SetName("Monkey Diffuse");
         _loadedSkyboxTexture->SetName("Skybox Diffuse");
 
-        _loadedGroundDiffuseTexture->SetName("Cobble Diffuse");
-        _loadedGroundNormalTexture->SetName("Cobble Normal");
-        _loadedGroundParallaxTexture->SetName("Cobble Parallax");
-        _loadedGroundSpecularTexture->SetName("Ground Specular");
+        //_loadedGroundDiffuseTexture->SetName("Cobble Diffuse");
+        //_loadedGroundNormalTexture->SetName("Cobble Normal");
+        //_loadedGroundParallaxTexture->SetName("Cobble Parallax");
+        //_loadedGroundSpecularTexture->SetName("Ground Specular");
         // ###################################################### 
 
         // ######################################################
@@ -782,7 +782,7 @@ namespace te
         _monkeyMaterial->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
         _monkeyMaterial->SetProperties(properties);*/
 
-        properties.UseDiffuseMap = true;
+        /*properties.UseDiffuseMap = true;
         properties.UseNormalMap = true;
         properties.UseSpecularMap = true;
         properties.UseBumpMap = false;
@@ -800,16 +800,16 @@ namespace te
         _planeMaterial->SetTexture("EnvironmentMap", _loadedSkyboxTexture);
         _planeMaterial->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
         _planeMaterial->SetParam<Vector3>("helllo", Vector3());
-        _planeMaterial->SetProperties(properties);
+        _planeMaterial->SetProperties(properties);*/
 
-        /*properties.UseDiffuseMap = false;
+        properties.UseDiffuseMap = false;
         properties.Diffuse = Color(0.8f, 0.2f, 0.3f);
 
         _knightMaterial = Material::Create(_shader);
         _knightMaterial->SetName("Knight Material");
         _knightMaterial->SetTexture("EnvironmentMap", _loadedSkyboxTexture);
         _knightMaterial->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
-        _knightMaterial->SetProperties(properties);*/
+        _knightMaterial->SetProperties(properties);
 
         // ######################################################
 
@@ -822,10 +822,10 @@ namespace te
 
         _sceneLightSO = SceneObject::Create("Light");
         _sceneLightSO->SetParent(_sceneSO);
-        _light = _sceneLightSO->AddComponent<CLight>(LightType::Radial);
+        _light = _sceneLightSO->AddComponent<CLight>(LightType::Directional);
         _light->Initialize();
         _sceneLightSO->Rotate(Vector3(0.0f, 1.0f, 1.0f), -Radian(Math::HALF_PI));
-        _sceneLightSO->Move(Vector3(0.0f, 2.0f, 0.0f));
+        _sceneLightSO->Move(Vector3(4.0f, 4.0f, 5.0f));
 
         /*_sceneRenderableMonkeySO = SceneObject::Create("Monkey");
         _sceneRenderableMonkeySO->SetParent(_sceneSO);
@@ -835,7 +835,7 @@ namespace te
         _renderableMonkey->SetName("Monkey Renderable");
         _renderableMonkey->Initialize();*/
 
-       /* _sceneRenderableKnightSO = SceneObject::Create("Knight");
+        _sceneRenderableKnightSO = SceneObject::Create("Knight");
         _sceneRenderableKnightSO->SetParent(_sceneSO);
 
         _renderableKnight = _sceneRenderableKnightSO->AddComponent<CRenderable>();
@@ -847,21 +847,21 @@ namespace te
         _animationKnight = _sceneRenderableKnightSO->AddComponent<CAnimation>();
         _animationKnight->SetName("Knight animation");
         _animationKnight->Initialize();
-        _animationKnight->SetDefaultClip(_animationClipKnight);*/
+        _animationKnight->SetDefaultClip(_animationClipKnight);
 
-        _sceneRenderablePlaneSO = SceneObject::Create("Plane");
+        /*_sceneRenderablePlaneSO = SceneObject::Create("Plane");
         _sceneRenderablePlaneSO->SetParent(_sceneSO);
         _renderablePlane = _sceneRenderablePlaneSO->AddComponent<CRenderable>();
         _renderablePlane->SetMesh(_loadedMeshPlane);
         _renderablePlane->SetMaterial(_planeMaterial);
         _renderablePlane->SetName("Plane Renderable");
         _renderablePlane->Initialize();
-        _sceneRenderablePlaneSO->Move(Vector3(0.0, 0.1f, 0.0f));
+        _sceneRenderablePlaneSO->Move(Vector3(0.0, 0.1f, 0.0f));*/
         // ######################################################
 
         //EditorResManager::Instance().Add<Material>(_monkeyMaterial);
-        EditorResManager::Instance().Add<Material>(_planeMaterial);
-        //EditorResManager::Instance().Add<Material>(_knightMaterial);
+        //EditorResManager::Instance().Add<Material>(_planeMaterial);
+        EditorResManager::Instance().Add<Material>(_knightMaterial);
         EditorResManager::Instance().Add<Shader>(gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque));
         EditorResManager::Instance().Add<Shader>(gBuiltinResources().GetBuiltinShader(BuiltinShader::Transparent));
 #endif

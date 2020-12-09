@@ -26,7 +26,7 @@ namespace te
 
     void CScript::_instantiate()
     {
-        _internal = Script::Create(nullptr);
+        _internal = Script::CreateEmpty();
     }
 
     void CScript::Initialize()

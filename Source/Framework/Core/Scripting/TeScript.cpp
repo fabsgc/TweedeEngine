@@ -1,14 +1,28 @@
 #include "TeScript.h"
+
+#include "TeScriptManager.h"
 #include "TeNativeScript.h"
 
 namespace te
 {
     Script::Script()
-    { }
+        : _nativeScript(nullptr)
+        , _state(ScriptState::Enabled)
+    { 
+        gScriptManager().RegisterScript(this);
+    }
 
     Script::Script(const SPtr<NativeScript>& nativeScript)
         : _nativeScript(nativeScript)
-    { }
+        , _state(ScriptState::Enabled)
+    { 
+        gScriptManager().RegisterScript(this);
+    }
+
+    Script::~Script()
+    {
+        gScriptManager().UnregisterScript(this);
+    }
 
     SPtr<Script> Script::CreateEmpty()
     {
@@ -19,11 +33,11 @@ namespace te
         return scriptPtr;
     }
 
-    SPtr<Script> Script::Create(const SPtr<NativeScript>& nativeScript)
+    SPtr<Script> Script::Create(const String& name)
     {
         SPtr<Script> scriptPtr = CreateEmpty();
         scriptPtr->Initialize();
-        scriptPtr->SetNativeScript(nativeScript);
+        scriptPtr->SetNativeScript(name);
 
         return scriptPtr;
     }
@@ -36,10 +50,10 @@ namespace te
     void Script::FrameSync()
     { }
 
-    void Script::SetNativeScript(const SPtr<NativeScript>& nativeScript)
+    void Script::SetNativeScript(const String& name)
     {
         OnShutdown();
-        _nativeScript = nativeScript;
+        //_nativeScript = std::make_shared<NativeScript>(gScriptManager().CreateNativeScript(name));
         OnStartup();
     }
 
@@ -53,6 +67,8 @@ namespace te
     {
         if (_nativeScript)
             _nativeScript->OnShutdown();
+
+        gScriptManager().RegisterScript(this);
     }
 
     void Script::OnDisabled()
