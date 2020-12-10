@@ -114,6 +114,7 @@ set(TE_UTILITY_INC_UTILITY
     "Utility/Utility/TeDataBlob.h"
     "Utility/Utility/TePoolAllocator.h"
     "Utility/Utility/TeFrameAllocator.h"
+    "Utility/Utility/TeFileSystem.h"
 )
 set(TE_UTILITY_SRC_UTILITY
     "Utility/Utility/TeDynLib.cpp"
@@ -124,6 +125,7 @@ set(TE_UTILITY_SRC_UTILITY
     "Utility/Utility/TeUUID.cpp"
     "Utility/Utility/TeFileStream.cpp"
     "Utility/Utility/TeFrameAllocator.cpp"
+    "Utility/Utility/TeFileSystem.cpp"
 )
 
 set(TE_UTILITY_INC_THREADING
@@ -136,12 +138,14 @@ set(TE_UTILITY_INC_WIN32
 )
 set(TE_UTILITY_SRC_WIN32
     "Utility/Private/Win32/TeWin32PlatformUtility.cpp"
+    "Utility/Private/Win32/TeWin32FileSystem.cpp"
 )
 
 set(TE_UTILITY_INC_LINUX
 )
 set(TE_UTILITY_SRC_LINUX
     "Utility/Private/Linux/TeLinuxPlatformUtility.cpp"
+    "Utility/Private/Linux/TeLinuxFileSystem.cpp"
 )
 
 if(WIN32)

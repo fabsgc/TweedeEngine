@@ -2,10 +2,14 @@
 
 #include "Utility/TeDynLibManager.h"
 #include "Utility/TeDynLib.h"
+#include "Utility/TeFileSystem.h"
 #include "TeScript.h"
+#include "TeNativeScript.h"
 
 namespace te
 {
+    const String ScriptManager::LIBRARIES_PATH = "Data/Script/";
+
     void ScriptManager::OnShutDown()
     {
 #if TE_DEBUG_MODE
@@ -78,14 +82,19 @@ namespace te
         return script;
     }
 
-    void ScriptManager::LoadScriptLibrary(const String& name, DynLib** library)
+    DynLib* ScriptManager::LoadScriptLibrary(const String& name)
     {
-        DynLib* loadedLibrary = gDynLibManager().Load(name);
-        if (library != nullptr)
+        if (!LibraryExists(name))
         {
-            *library = loadedLibrary;
-            _scriptLibraries[name] = loadedLibrary;
+            if (!CompileLibrary(name))
+                return nullptr;
         }
+
+        DynLib* library = gDynLibManager().Load(name);
+        if (library != nullptr)
+            _scriptLibraries[name] = library;
+
+        return library;
     }
 
     void ScriptManager::UnloadScriptLibrary(const String& name)
@@ -105,7 +114,7 @@ namespace te
 
         if (iter == _scriptLibraries.end())
         {
-            LoadScriptLibrary(name, &library);
+            library = LoadScriptLibrary(name);
         }
         else
         {
@@ -122,6 +131,17 @@ namespace te
             it->second->Unload();
             it = _scriptLibraries.erase(it);
         }
+    }
+
+    bool ScriptManager::CompileLibrary(const String& name)
+    {
+        return false;
+    }
+
+    bool ScriptManager::LibraryExists(const String& name)
+    {
+        String path = name + "." + DynLib::EXTENSION;
+        return FileSystem::Exists(path);
     }
 
     ScriptManager& gScriptManager()

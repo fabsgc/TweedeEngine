@@ -19,7 +19,7 @@ namespace te
 /** Causes the current thread to sleep for the provided amount of milliseconds. */
 #define TE_THREAD_SLEEP(ms) std::this_thread::sleep_for(std::chrono::milliseconds(ms));
 
-/** Wrapper for the C++ std::mutex. */
+    /** Wrapper for the C++ std::mutex. */
     using Mutex = std::mutex;
 
     /** Wrapper for the C++ std::recursive_mutex. */

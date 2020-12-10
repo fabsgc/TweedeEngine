@@ -53,7 +53,15 @@ namespace te
     void Script::SetNativeScript(const String& name)
     {
         OnShutdown();
-        //_nativeScript = std::make_shared<NativeScript>(gScriptManager().CreateNativeScript(name));
+
+        if(!name.empty())
+        {
+            NativeScript* nativeScript = gScriptManager().CreateNativeScript(name);
+
+            if(nativeScript)
+                _nativeScript = te_shared_ptr<NativeScript>(nativeScript);
+        }
+
         OnStartup();
     }
 
@@ -68,7 +76,7 @@ namespace te
         if (_nativeScript)
             _nativeScript->OnShutdown();
 
-        gScriptManager().RegisterScript(this);
+        gScriptManager().UnregisterScript(this);
     }
 
     void Script::OnDisabled()

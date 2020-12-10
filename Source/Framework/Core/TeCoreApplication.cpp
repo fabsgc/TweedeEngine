@@ -62,8 +62,8 @@ namespace te
         GameObjectManager::StartUp();
         RendererManager::StartUp();
         ResourceManager::StartUp();
-        SceneManager::StartUp();
         ScriptManager::StartUp();
+        SceneManager::StartUp();
 
         LoadPlugin(_startUpDesc.Renderer, &_rendererPlugin);
         LoadPlugin(_startUpDesc.RenderAPI, &_renderAPIPlugin);
@@ -116,8 +116,8 @@ namespace te
         VirtualInput::ShutDown();
         Input::ShutDown();
         ParamBlockManager::ShutDown();
-        ScriptManager::ShutDown();
         SceneManager::ShutDown();
+        ScriptManager::ShutDown();
         AnimationManager::ShutDown();
         GameObjectManager::ShutDown();
         RendererManager::ShutDown();

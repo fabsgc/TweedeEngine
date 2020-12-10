@@ -6,6 +6,7 @@
 #include "Image/TePixelUtil.h"
 #include "Utility/TeBitwise.h"
 #include "Utility/TeFileStream.h"
+#include "Utility/TeFileSystem.h"
 #include "FreeImage.h"
 
 namespace te
@@ -210,43 +211,48 @@ namespace te
 
     SPtr<PixelData> FreeImgImporter::ImportRawImage(const String& filePath)
     {
-        FileStream file(filePath);
+        uint8_t* data = nullptr;
+        size_t size = 0;
         FREE_IMAGE_FORMAT imageFormat;
 
-        if (file.Fail())
         {
-            TE_DEBUG("Cannot open file: " + filePath);
-            return nullptr;
+            Lock lock = FileScheduler::GetLock(filePath);
+            FileStream file(filePath);
+
+            if (file.Fail())
+            {
+                TE_DEBUG("Cannot open file: " + filePath);
+                return nullptr;
+            }
+
+            size = file.Size();
+            if (size > std::numeric_limits<UINT32>::max())
+            {
+                TE_DEBUG("File size larger than supported!");
+                return nullptr;
+            }
+
+            UINT32 magicLen = std::min((UINT32)size, 32u);
+            UINT8 magicBuf[32];
+            file.Read(static_cast<char*>((void*)magicBuf), static_cast<std::streamsize>(magicLen));
+            file.Seek(0);
+
+            String fileExtension = MagicNumToExtension(magicBuf, magicLen);
+            auto findFormat = _extensionToFID.find(fileExtension);
+            if (findFormat == _extensionToFID.end())
+            {
+                TE_DEBUG("Type of the file provided is not supported by this importer. File type: " + fileExtension);
+                return nullptr;
+            }
+
+            imageFormat = (FREE_IMAGE_FORMAT)findFormat->second;
+
+            data = static_cast<uint8_t*>(te_allocate(static_cast<UINT32>(size)));
+            memset(data, 0, size);
+            file.Read(static_cast<char*>((void*)data), static_cast<std::streamsize>(size));
+
+            file.Close();
         }
-
-        size_t size = file.Size();
-
-        if (size > std::numeric_limits<UINT32>::max())
-        {
-            TE_DEBUG("File size larger than supported!");
-            return nullptr;
-        }
-
-        UINT32 magicLen = std::min((UINT32)size, 32u);
-        UINT8 magicBuf[32];
-        file.Read(static_cast<char*>((void*)magicBuf), static_cast<std::streamsize>(magicLen));
-        file.Seek(0);
-
-        String fileExtension = MagicNumToExtension(magicBuf, magicLen);
-        auto findFormat = _extensionToFID.find(fileExtension);
-        if (findFormat == _extensionToFID.end())
-        {
-            TE_DEBUG("Type of the file provided is not supported by this importer. File type: " + fileExtension);
-            return nullptr;
-        }
-
-        imageFormat = (FREE_IMAGE_FORMAT)findFormat->second;
-        
-        uint8_t* data = static_cast<uint8_t*>(te_allocate(static_cast<UINT32>(size)));
-        memset(data, 0, size);
-        file.Read(static_cast<char*>((void*)data), static_cast<std::streamsize>(size));
-
-        file.Close();
 
         FIMEMORY* fiMem = FreeImage_OpenMemory(data, static_cast<DWORD>(size));
 

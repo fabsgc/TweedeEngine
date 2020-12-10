@@ -5,6 +5,7 @@
 #include "Image/TeColor.h"
 #include "Animation/TeSkeleton.h"
 #include "Animation/TeAnimationUtility.h"
+#include "Utility/TeFileSystem.h"
 
 namespace te
 {
@@ -102,6 +103,7 @@ namespace te
     SPtr<RendererMeshData> ObjectImporter::ImportMeshData(const String& filePath, SPtr<const ImportOptions> importOptions, Vector<SubMesh>& subMeshes, 
         Vector<AssimpAnimationClipData>& animation, SPtr<Skeleton>& skeleton)
     {
+        aiScene* scene = nullptr;
         Assimp::Importer importer;
         AssimpImportScene importedScene;
         const MeshImportOptions* meshImportOptions = static_cast<const MeshImportOptions*>(importOptions.get());
@@ -127,7 +129,10 @@ namespace te
         if (meshImportOptions->ImportAnimation)
             assimpFlags |= aiProcess_LimitBoneWeights;
 
-        aiScene* scene = const_cast<aiScene*>(importer.ReadFile(filePath.c_str(), assimpFlags));
+        {
+            Lock lock = FileScheduler::GetLock(filePath);
+            scene = const_cast<aiScene*>(importer.ReadFile(filePath.c_str(), assimpFlags));
+        }
 
         if (!scene)
         {

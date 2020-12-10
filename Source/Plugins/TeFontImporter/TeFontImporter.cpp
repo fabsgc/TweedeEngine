@@ -3,6 +3,7 @@
 #include "Image/TePixelData.h"
 #include "Image/TeTexture.h"
 #include "Utility/TeFileStream.h"
+#include "Utility/TeFileSystem.h"
 
 #include <ft2build.h>
 #include <freetype/freetype.h>
@@ -42,7 +43,10 @@ namespace te
             TE_ASSERT_ERROR(false, "Error occurred during FreeType library initialization.");
 
         FT_Face face;
-        error = FT_New_Face(library, filePath.c_str(), 0, &face);
+        {
+            Lock lock = FileScheduler::GetLock(filePath);
+            error = FT_New_Face(library, filePath.c_str(), 0, &face);
+        }
 
         if (error == FT_Err_Unknown_File_Format)
         {

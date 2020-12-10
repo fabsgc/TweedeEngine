@@ -859,6 +859,12 @@ namespace te
         _sceneRenderablePlaneSO->Move(Vector3(0.0, 0.1f, 0.0f));*/
         // ######################################################
 
+        _sceneScriptSO = SceneObject::Create("Script");
+        _sceneScriptSO->SetParent(_sceneSO);
+        _script = _sceneScriptSO->AddComponent<CScript>();
+        _script->SetNativeScript("Default");
+        _script->Initialize();
+
         //EditorResManager::Instance().Add<Material>(_monkeyMaterial);
         //EditorResManager::Instance().Add<Material>(_planeMaterial);
         EditorResManager::Instance().Add<Material>(_knightMaterial);

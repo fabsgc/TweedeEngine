@@ -224,6 +224,7 @@ namespace te
         HSceneObject _sceneRenderableKnightSO;
         HSceneObject _sceneLightSO;
         HSceneObject _sceneSkyboxSO;
+        HSceneObject _sceneScriptSO;
 
         HLight _light;
         HSkybox _skybox;
@@ -233,6 +234,8 @@ namespace te
 
         HAnimation _animationKnight;
         HAnimationClip _animationClipKnight;
+
+        HScript _script;
 #endif
     };
 
