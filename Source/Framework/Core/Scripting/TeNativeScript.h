@@ -12,46 +12,62 @@ namespace te
     {
     public:
         NativeScript();
-        ~NativeScript();
+        virtual ~NativeScript() = 0;
 
         /** 
          * Called when a new script using this native script is created
          */
-        virtual void OnStartup() = 0;
+        virtual void OnStartup() { }
 
         /**
          * Called when a script using this native script is destroyed (before)
          */
-        virtual void OnShutdown() = 0;
+        virtual void OnShutdown() { }
 
         /**
          * Called when a script using this native script is disabled
          */
-        virtual void OnDisabled() = 0;
+        virtual void OnDisabled() { }
 
         /**
          * Called when a script using this native script is enabled
          */
-        virtual void OnEnabled() = 0;
+        virtual void OnEnabled() { }
 
         /**
          * Called before scene update
          */
-        virtual void PreUpdate() = 0;
+        virtual void PreUpdate() { }
 
         /**
          * Called during scene update (sceneObject arbitrary order)
          */
-        virtual void Update() = 0;
+        virtual void Update() { }
 
         /**
          * Called after scene update
          */
-        virtual void PostUpdate() = 0;
+        virtual void PostUpdate() { }
 
         /**
          * Called after engine render
          */
-        virtual void PostRender() = 0;
+        virtual void PostRender() { }
+
+    public:
+        /** 
+         * We want to internally keep the name of the lib used for this native script
+         */
+        void SetLibraryName(const String& name) { _libraryName = name; }
+
+        /** 
+         * Returns library name used for this script
+         */
+        String GetLibraryName() { return _libraryName; }
+
+    private:
+
+        /** For file wathing, we need to know which dll is used behind each native script*/
+        String _libraryName;
     };
 }

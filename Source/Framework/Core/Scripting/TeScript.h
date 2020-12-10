@@ -27,7 +27,7 @@ namespace te
         void SetNativeScript(const String& name);
 
         /** Returns native script handled */
-        const SPtr<NativeScript>& GetNativeScript() const { return _nativeScript; }
+        const SPtr<NativeScript>& GetNativeScript() { return _nativeScript; }
 
         /** Called when creating a new script */
         void OnStartup();

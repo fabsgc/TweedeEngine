@@ -61,6 +61,10 @@ namespace te
             if(nativeScript)
                 _nativeScript = te_shared_ptr<NativeScript>(nativeScript);
         }
+        else
+        {
+            _nativeScript = nullptr;
+        }
 
         OnStartup();
     }
