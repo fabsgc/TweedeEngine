@@ -27,7 +27,7 @@ namespace te
         void SetNativeScript(const String& name);
 
         /** Returns native script handled */
-        const SPtr<NativeScript>& GetNativeScript() { return _nativeScript; }
+        const NativeScript* GetNativeScript() { return _nativeScript; }
 
         /** Called when creating a new script */
         void OnStartup();
@@ -57,7 +57,6 @@ namespace te
         friend class CScript;
 
         Script();
-        Script(const SPtr<NativeScript>& nativeScript);
 
         /** @copydoc CoreObject::FrameSync */
         void FrameSync() override;
@@ -66,7 +65,7 @@ namespace te
         void Initialize() override;
 
     protected:
-        SPtr<NativeScript> _nativeScript;
+        NativeScript* _nativeScript;
         ScriptState _state;
     };
 }

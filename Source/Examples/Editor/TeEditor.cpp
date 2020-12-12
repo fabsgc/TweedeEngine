@@ -824,8 +824,8 @@ namespace te
         _sceneLightSO->SetParent(_sceneSO);
         _light = _sceneLightSO->AddComponent<CLight>(LightType::Directional);
         _light->Initialize();
-        _sceneLightSO->Rotate(Vector3(0.0f, 1.0f, 1.0f), -Radian(Math::HALF_PI));
-        _sceneLightSO->Move(Vector3(4.0f, 4.0f, 5.0f));
+        _sceneLightSO->Rotate(Vector3(1.0f, 0.0f, 0.0f), -Radian(Math::HALF_PI / 2.0f));
+        _sceneLightSO->Move(Vector3(0.0f, 4.0f, 4.0f));
 
         /*_sceneRenderableMonkeySO = SceneObject::Create("Monkey");
         _sceneRenderableMonkeySO->SetParent(_sceneSO);
@@ -862,7 +862,7 @@ namespace te
         _sceneScriptSO = SceneObject::Create("Script");
         _sceneScriptSO->SetParent(_sceneSO);
         _script = _sceneScriptSO->AddComponent<CScript>();
-        _script->SetNativeScript("Default");
+        _script->SetNativeScript("DefaultScript");
         _script->Initialize();
 
         //EditorResManager::Instance().Add<Material>(_monkeyMaterial);

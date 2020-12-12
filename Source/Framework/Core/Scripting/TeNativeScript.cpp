@@ -7,5 +7,7 @@ namespace te
     { }
 
     NativeScript::~NativeScript()
-    { }
+    {
+        TE_PRINT("Native script desuctror");
+    }
 }

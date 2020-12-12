@@ -154,6 +154,7 @@ set (TE_CORE_SRC_PLATFORM_WIN32
     "Core/Private/Win32/TeWin32Keyboard.cpp"
     "Core/Private/Win32/TeWin32Mouse.cpp"
     "Core/Private/Win32/TeWin32Platform.cpp"
+    "Core/Private/Win32/TeWin32ScriptManager.cpp"
 )
 
 set (TE_CORE_INC_PLATFORM_LINUX
@@ -168,6 +169,7 @@ set (TE_CORE_SRC_PLATFORM_LINUX
     "Core/Private/Linux/TeLinuxKeyboard.cpp"
     "Core/Private/Linux/TeLinuxMouse.cpp"
     "Core/Private/Linux/TeLinuxPlatform.cpp"
+    "Core/Private/Linux/TeLinuxScriptManager.cpp"
 )
 
 set(TE_CORE_INC_NOFILTER

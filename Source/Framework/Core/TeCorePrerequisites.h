@@ -251,7 +251,7 @@ namespace te
     class Font;
 
     class Animation;
-    class AnimationClip;    
+    class AnimationClip;
     template <class T> class TAnimationCurve;
     class Skeleton;
 

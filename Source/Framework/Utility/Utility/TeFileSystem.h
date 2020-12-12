@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Prerequisites/TePrerequisitesUtility.h"
-#include "Threading\TeThreading.h"
+#include "Threading/TeThreading.h"
 
 namespace te
 {

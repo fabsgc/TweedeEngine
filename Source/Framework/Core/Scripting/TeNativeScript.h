@@ -3,6 +3,17 @@
 #include "TeCorePrerequisites.h"
 #include "Serialization/TeSerializable.h"
 
+// DLL export for plugins
+#if TE_PLATFORM == TE_PLATFORM_WIN32 // Windows
+#   if TE_COMPILER == TE_COMPILER_MSVC
+#       define TE_SCRIPT_EXPORT __declspec(dllexport)
+#   else
+#       define TE_SCRIPT_EXPORT __attribute__ ((dllexport))
+#   endif
+#else // Linux/Mac settings
+#   define TE_SCRIPT_EXPORT __attribute__ ((visibility ("default")))
+#endif
+
 namespace te
 {
     /**
@@ -63,10 +74,9 @@ namespace te
         /** 
          * Returns library name used for this script
          */
-        String GetLibraryName() { return _libraryName; }
+        const String GetLibraryName() const { return _libraryName; }
 
     private:
-
         /** For file wathing, we need to know which dll is used behind each native script*/
         String _libraryName;
     };

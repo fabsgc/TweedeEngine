@@ -32,14 +32,14 @@ endfunction()
 
 function (install_tef_target targetName)
     strip_symbols (${targetName} symbolsFile)
-    
+
     install(
         TARGETS ${targetName}
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib
-    )       
-    
+    )
+
     if (MSVC)
         install(
             FILES $<TARGET_PDB_FILE:${targetName}> 

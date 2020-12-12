@@ -12,15 +12,9 @@ namespace te
         gScriptManager().RegisterScript(this);
     }
 
-    Script::Script(const SPtr<NativeScript>& nativeScript)
-        : _nativeScript(nativeScript)
-        , _state(ScriptState::Enabled)
-    { 
-        gScriptManager().RegisterScript(this);
-    }
-
     Script::~Script()
     {
+        SetNativeScript(String());
         gScriptManager().UnregisterScript(this);
     }
 
@@ -59,10 +53,12 @@ namespace te
             NativeScript* nativeScript = gScriptManager().CreateNativeScript(name);
 
             if(nativeScript)
-                _nativeScript = te_shared_ptr<NativeScript>(nativeScript);
+                _nativeScript = nativeScript;
         }
-        else
+        else if (_nativeScript)
         {
+            String oldScriptName = _nativeScript->GetLibraryName();
+            gScriptManager().DeleteNativeScript(oldScriptName, _nativeScript);
             _nativeScript = nullptr;
         }
 

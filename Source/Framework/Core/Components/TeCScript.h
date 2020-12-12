@@ -24,7 +24,7 @@ namespace te
         void SetNativeScript(const String& name) { _internal->SetNativeScript(name); }
 
         /** @copydoc Script::GetNtiveScript */
-        const SPtr<NativeScript>&  GetNativeScript() { return _internal->GetNativeScript(); }
+        const NativeScript* GetNativeScript() { return _internal->GetNativeScript(); }
 
         /** Returns the internal renderable that is used for majority of operations by this component. */
         SPtr<Script> _getInternal() const { return _internal; }

@@ -8,7 +8,7 @@
 
 namespace te
 {
-    const String ScriptManager::LIBRARIES_PATH = "Data/Script/";
+    const String ScriptManager::LIBRARIES_PATH = "Data/Scripts/";
 
     void ScriptManager::OnShutDown()
     {
@@ -85,6 +85,18 @@ namespace te
         return script;
     }
 
+    void ScriptManager::DeleteNativeScript(const String& name, NativeScript* script)
+    {
+        typedef void (*UnloadScriptFunc)(NativeScript*);
+        DynLib* library = GetScriptLibrary(name);
+
+        if (library)
+        {
+            UnloadScriptFunc unloadScriptFunc = (UnloadScriptFunc)library->GetSymbol("UnloadScript");
+            unloadScriptFunc(script);
+        }
+    }
+
     DynLib* ScriptManager::LoadScriptLibrary(const String& name)
     {
         if (!LibraryExists(name))
@@ -107,9 +119,9 @@ namespace te
         {
             for (auto& script : _scripts)
             {
-                auto& nativeScript = script->GetNativeScript();
+                auto nativeScript = script->GetNativeScript();
                 if (nativeScript && name == nativeScript->GetLibraryName())
-                    script->SetNativeScript(String()); // If we unload a library, we want to reset all scripts using this native script
+                    script->SetNativeScript(String()); // If we unload a library, we want to reset all scripts using it
             }
 
             iter->second->Unload();
@@ -141,11 +153,12 @@ namespace te
             it->second->Unload();
             it = _scriptLibraries.erase(it);
         }
-    }
 
-    bool ScriptManager::CompileLibrary(const String& name)
-    {
-        return false;
+        for (auto& script : _scripts)
+        {
+            auto nativeScript = script->GetNativeScript();
+            script->SetNativeScript(String()); // If we unload a library, we want to reset all scripts using it
+        }
     }
 
     bool ScriptManager::LibraryExists(const String& name)

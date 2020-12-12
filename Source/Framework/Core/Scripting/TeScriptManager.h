@@ -25,6 +25,9 @@ namespace te
         /** When a script need a new instance of the given native script */
         NativeScript* CreateNativeScript(const String& name);
 
+        /** Memory management for NativeScript, is manual, each script has an exported function for deleting a NativeScript */
+        void DeleteNativeScript(const String& name, NativeScript* script);
+
         /** Unloads all script libraries loaded in the engine */
         void UnloadAll();
 
