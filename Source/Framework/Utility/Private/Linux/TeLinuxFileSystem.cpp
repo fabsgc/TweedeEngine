@@ -60,20 +60,18 @@ namespace te
         return false;
     }
 
-    bool FileSystem::Exists(const Path& path)
+    bool FileSystem::Exists(const String& path)
     {
-        return unix_pathExists(path.toString());
+        return unix_pathExists(path);
     }
 
-    bool FileSystem::IsFile(const Path& path)
+    bool FileSystem::IsFile(const String& path)
     {
-        String pathStr = path.toString();
-        return unix_pathExists(pathStr) && unix_isFile(pathStr);
+        return unix_pathExists(path) && unix_isFile(path);
     }
 
-    bool FileSystem::IsDirectory(const Path& path)
+    bool FileSystem::IsDirectory(const String& path)
     {
-        String pathStr = path.toString();
-        return unix_pathExists(pathStr) && unix_isDirectory(pathStr);
+        return unix_pathExists(path) && unix_isDirectory(path);
     }
 }

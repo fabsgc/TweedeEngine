@@ -52,13 +52,16 @@ namespace te
         {
             NativeScript* nativeScript = gScriptManager().CreateNativeScript(name);
 
-            if(nativeScript)
+            if (nativeScript)
+            {
                 _nativeScript = nativeScript;
+                _nativeScriptName = name;
+            }
         }
         else if (_nativeScript)
         {
-            String oldScriptName = _nativeScript->GetLibraryName();
-            gScriptManager().DeleteNativeScript(oldScriptName, _nativeScript);
+            gScriptManager().DeleteNativeScript(_nativeScriptName, _nativeScript);
+            _nativeScriptName = "";
             _nativeScript = nullptr;
         }
 

@@ -66,6 +66,7 @@ namespace te
 
     private:
         UnorderedMap<String, DynLib*> _scriptLibraries;
+        UnorderedMap<NativeScript*, String> _nativeScriptNames;
         Vector<Script*> _scripts;
     };
 

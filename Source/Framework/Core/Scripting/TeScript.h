@@ -27,7 +27,10 @@ namespace te
         void SetNativeScript(const String& name);
 
         /** Returns native script handled */
-        const NativeScript* GetNativeScript() { return _nativeScript; }
+        NativeScript* GetNativeScript() { return _nativeScript; }
+
+        /** Returns script library name used for this script */
+        const String GetNativeScriptName() const { return _nativeScriptName; }
 
         /** Called when creating a new script */
         void OnStartup();
@@ -66,6 +69,7 @@ namespace te
 
     protected:
         NativeScript* _nativeScript;
+        String _nativeScriptName;
         ScriptState _state;
     };
 }

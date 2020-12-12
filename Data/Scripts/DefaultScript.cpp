@@ -6,15 +6,21 @@ class DefaultScript : public NativeScript
 {
 public:
     ~DefaultScript()
-    { }
+    { 
+        TE_PRINT("DefaultSCRIPT");
+    }
 
     virtual void Update() override
-    { }
+    {
+        TE_PRINT("Hello");
+    }
+
+    String hello = "Hello";
 };
 
 extern "C" TE_SCRIPT_EXPORT NativeScript* LoadScript()
 {
-    return new DefaultScript();
+    return te_new<DefaultScript>();
 }
 
 extern "C" TE_SCRIPT_EXPORT void UnloadScript(NativeScript* script)
@@ -24,12 +30,12 @@ extern "C" TE_SCRIPT_EXPORT void UnloadScript(NativeScript* script)
     if(script)
     {
         s = static_cast<DefaultScript*>(script);
-        delete s;
+        te_delete(s);
     }
 }
 
 // Command for compiling
-// cl.exe /LD /IC:\Users\FBN6\Documents\Code\TweedeFrameworkRedux\Source\Framework\Core /IC:\Users\FBN6\Documents\Code\TweedeFrameworkRedux\Source\Framework\Utility /Zi /nologo /W3 /WX- /diagnostics:classic /MP /O2 /Ob2 /Oi /GL /D WIN32 /D _WINDOWS /D NDEBUG /D_WINDLL /D _MBCS /Gm- /MD /GS- /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /std:c++17 "Data/Scripts/DefaultScript.cpp" /Gd /TP /wd4577 /wd4530 /bigobj /link /OPT:REF ..\..\..\lib\x64\Debug\tef.lib /DEBUG /PDB:"DefaultScript.pdb" /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /MACHINE:X64  /machine:x64
+// cl.exe /LD /IC:\Users\FBN6\Documents\Code\TweedeFrameworkRedux\Source\Framework\Core /IC:\Users\FBN6\Documents\Code\TweedeFrameworkRedux\Source\Framework\Utility /Zi /nologo /W3 /WX- /diagnostics:classic /MP /O2 /Ob2 /Oi /GL /D WIN32 /D _WINDOWS /D NDEBUG /D_WINDLL /D _MBCS /Gm- /MD /GS- /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /std:c++17 "C:\Users\FBN6\Documents\Code\TweedeFrameworkRedux\Data\Scripts\DefaultScript.cpp" /Gd /TP /wd4577 /wd4530 /bigobj /link /OPT:REF ..\..\..\lib\x64\Debug\tef.lib /DEBUG /PDB:"DefaultScript.pdb" /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /MACHINE:X64  /machine:x64
 
 // For Debug
-// cl.exe /LD /IC:\Users\FBN6\Documents\Code\TweedeFrameworkRedux\Source\Framework\Core /IC:\Users\FBN6\Documents\Code\TweedeFrameworkRedux\Source\Framework\Utility /Zi /nologo /W3 /WX- /diagnostics:classic /MP /Od /D WIN32 /D _WINDOWS /D NDEBUG /D_WINDLL /D _MBCS /Gm- /MD /GS- /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /std:c++17 "Data/Scripts/DefaultScript.cpp" /Gd /TP /wd4577 /wd4530 /bigobj /link /OPT:REF ..\..\..\lib\x64\Debug\tef.lib /DEBUG /PDB:"DefaultScript.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /MACHINE:X64  /machine:x64
+// cl.exe /LD /IC:\Users\FBN6\Documents\Code\TweedeFrameworkRedux\Source\Framework\Core /IC:\Users\FBN6\Documents\Code\TweedeFrameworkRedux\Source\Framework\Utility /Zi /nologo /W3 /WX- /diagnostics:classic /MP /Od /D WIN32 /D _WINDOWS /D NDEBUG /D_WINDLL /D _MBCS /Gm- /MD /GS- /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /std:c++17 "C:\Users\FBN6\Documents\Code\TweedeFrameworkRedux\Data\Scripts\DefaultScript.cpp" /Gd /TP /wd4577 /wd4530 /bigobj /link /OPT:REF ..\..\..\lib\x64\Debug\tef.lib /DEBUG /PDB:"DefaultScript.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /MACHINE:X64  /machine:x64

@@ -64,20 +64,5 @@ namespace te
          * Called after engine render
          */
         virtual void PostRender() { }
-
-    public:
-        /** 
-         * We want to internally keep the name of the lib used for this native script
-         */
-        void SetLibraryName(const String& name) { _libraryName = name; }
-
-        /** 
-         * Returns library name used for this script
-         */
-        const String GetLibraryName() const { return _libraryName; }
-
-    private:
-        /** For file wathing, we need to know which dll is used behind each native script*/
-        String _libraryName;
     };
 }

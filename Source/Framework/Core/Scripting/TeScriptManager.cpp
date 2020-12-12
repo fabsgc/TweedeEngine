@@ -79,7 +79,9 @@ namespace te
             script = (NativeScript *)loadScriptFunc();
 
             if (script)
-                script->SetLibraryName(name);
+            {
+                _nativeScriptNames[script] = name;
+            }
         }
 
         return script;
@@ -94,6 +96,10 @@ namespace te
         {
             UnloadScriptFunc unloadScriptFunc = (UnloadScriptFunc)library->GetSymbol("UnloadScript");
             unloadScriptFunc(script);
+
+            auto& iter = _nativeScriptNames.find(script);
+            if (iter != _nativeScriptNames.end())
+                _nativeScriptNames.erase(iter);
         }
     }
 
@@ -120,8 +126,16 @@ namespace te
             for (auto& script : _scripts)
             {
                 auto nativeScript = script->GetNativeScript();
-                if (nativeScript && name == nativeScript->GetLibraryName())
+
+                auto& iter = _nativeScriptNames.find(nativeScript);
+                if (iter != _nativeScriptNames.end())
+                    _nativeScriptNames.erase(iter);
+
+                if (nativeScript && name == iter->second)
+                {
                     script->SetNativeScript(String()); // If we unload a library, we want to reset all scripts using it
+                    _nativeScriptNames.erase(iter);
+                }
             }
 
             iter->second->Unload();
