@@ -97,7 +97,7 @@ namespace te
             UnloadScriptFunc unloadScriptFunc = (UnloadScriptFunc)library->GetSymbol("UnloadScript");
             unloadScriptFunc(script);
 
-            auto& iter = _nativeScriptNames.find(script);
+            auto iter = _nativeScriptNames.find(script);
             if (iter != _nativeScriptNames.end())
                 _nativeScriptNames.erase(iter);
         }
@@ -111,11 +111,16 @@ namespace te
                 return nullptr;
         }
 
-        DynLib* library = gDynLibManager().Load(name);
-        if (library != nullptr)
-            _scriptLibraries[name] = library;
+        if (LibraryExists(name))
+        {
+            DynLib* library = gDynLibManager().Load(name);
+            if (library != nullptr)
+                _scriptLibraries[name] = library;
 
-        return library;
+            return library;
+        }
+        
+        return nullptr;
     }
 
     void ScriptManager::UnloadScriptLibrary(const String& name)
@@ -126,14 +131,13 @@ namespace te
             for (auto& script : _scripts)
             {
                 auto nativeScript = script->GetNativeScript();
-
-                auto& iter = _nativeScriptNames.find(nativeScript);
+                auto iter = _nativeScriptNames.find(nativeScript);
                 if (iter != _nativeScriptNames.end())
                     _nativeScriptNames.erase(iter);
 
                 if (nativeScript && name == iter->second)
                 {
-                    script->SetNativeScript(String()); // If we unload a library, we want to reset all scripts using it
+                    script->SetNativeScript(String());
                     _nativeScriptNames.erase(iter);
                 }
             }
@@ -149,13 +153,9 @@ namespace te
         auto iter = _scriptLibraries.find(name);
 
         if (iter == _scriptLibraries.end())
-        {
             library = LoadScriptLibrary(name);
-        }
         else
-        {
             library = _scriptLibraries[name];
-        }
 
         return library;
     }
@@ -171,7 +171,7 @@ namespace te
         for (auto& script : _scripts)
         {
             auto nativeScript = script->GetNativeScript();
-            script->SetNativeScript(String()); // If we unload a library, we want to reset all scripts using it
+            script->SetNativeScript(String());
         }
     }
 
