@@ -102,7 +102,7 @@ namespace te
             }
 
             // Then, remove source file (hopefully succeeds)
-            if (std::remove(oldPathStr.c_str()) == -1)
+            if (std::remove(oldPath.c_str()) == -1)
             {
                 TE_DEBUG(String(__FUNCTION__) + ": renaming " + oldPath + " to " + newPath + ": " + strerror(errno));
             }
@@ -168,7 +168,7 @@ namespace te
         closedir(dp);
     }
 
-    std::time_t FileSystem::GetLastModifiedTime(const Path& path)
+    std::time_t FileSystem::GetLastModifiedTime(const String& path)
     {
         struct stat st_buf;
         stat(path.c_str(), &st_buf);
