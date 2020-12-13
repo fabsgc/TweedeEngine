@@ -129,6 +129,7 @@ set (TE_CORE_SRC_SCENE
 
 set(TE_CORE_INC_PLATFORM
     "Core/Platform/TePlatform.h"
+    "Core/Platform/TeFolderMonitor.h"
 )
 set(TE_CORE_SRC_PLATFORM 
 )
@@ -155,6 +156,7 @@ set (TE_CORE_SRC_PLATFORM_WIN32
     "Core/Private/Win32/TeWin32Mouse.cpp"
     "Core/Private/Win32/TeWin32Platform.cpp"
     "Core/Private/Win32/TeWin32ScriptManager.cpp"
+    "Core/Private/Win32/TeWin32FolderMonitor.cpp"
 )
 
 set (TE_CORE_INC_PLATFORM_LINUX
@@ -170,6 +172,7 @@ set (TE_CORE_SRC_PLATFORM_LINUX
     "Core/Private/Linux/TeLinuxMouse.cpp"
     "Core/Private/Linux/TeLinuxPlatform.cpp"
     "Core/Private/Linux/TeLinuxScriptManager.cpp"
+    "Core/Private/Linux/TeLinuxFolderMonitor.cpp"
 )
 
 set(TE_CORE_INC_NOFILTER
