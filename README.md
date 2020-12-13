@@ -9,7 +9,6 @@ The Tweede Engine Framework Redux is my third attempt to develop a cross-platfor
 ## Get started
 * [Compiling](Documentation/Compiling.md) - Learn how to compile the framework from the source code. 
 * [Dependencies](Documentation/Dependencies.md) - Check if you have every dependency needed by the engine
-* [Shaders](Documentation/Shaders.md) - Shader files format
 
 ## Features
 
@@ -18,6 +17,8 @@ The Tweede Engine Framework Redux is my third attempt to develop a cross-platfor
 ## Previews
 
 ![Editor](Documentation/sample-editor-inn.png)
+![Editor](Documentation/sample-animation.png)
+![Editor](Documentation/sample-parallax-occlusion-mapping.png)
 ![Editor](Documentation/sample-editor.png)
 ![Monkeys](Documentation/sample-sponza-night.png)
 ![Monkeys](Documentation/sample-monkeys.png)
