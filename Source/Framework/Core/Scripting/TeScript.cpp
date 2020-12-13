@@ -2,6 +2,7 @@
 
 #include "TeScriptManager.h"
 #include "TeNativeScript.h"
+#include "Scene/TeSceneManager.h"
 
 namespace te
 {
@@ -14,7 +15,7 @@ namespace te
 
     Script::~Script()
     {
-        SetNativeScript(String());
+        SetNativeScript(String(), HSceneObject());
         gScriptManager().UnregisterScript(this);
     }
 
@@ -27,11 +28,11 @@ namespace te
         return scriptPtr;
     }
 
-    SPtr<Script> Script::Create(const String& name)
+    SPtr<Script> Script::Create(const String& name, const HSceneObject& sceneObject)
     {
         SPtr<Script> scriptPtr = CreateEmpty();
         scriptPtr->Initialize();
-        scriptPtr->SetNativeScript(name);
+        scriptPtr->SetNativeScript(name, sceneObject);
 
         return scriptPtr;
     }
@@ -44,7 +45,7 @@ namespace te
     void Script::FrameSync()
     { }
 
-    void Script::SetNativeScript(const String& name)
+    void Script::SetNativeScript(const String& name, const HSceneObject& sceneObject)
     {
         OnShutdown();
 
@@ -55,13 +56,13 @@ namespace te
             if (nativeScript)
             {
                 _nativeScript = nativeScript;
-                _nativeScriptName = name;
+                _nativeScript->SetLibraryName(name);
+                _nativeScript->SetParentSceneObject(sceneObject);
             }
         }
         else if (_nativeScript)
         {
-            gScriptManager().DeleteNativeScript(_nativeScriptName, _nativeScript);
-            _nativeScriptName = "";
+            gScriptManager().DeleteNativeScript(_nativeScript);
             _nativeScript = nullptr;
         }
 

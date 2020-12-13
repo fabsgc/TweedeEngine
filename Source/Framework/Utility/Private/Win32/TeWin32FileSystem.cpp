@@ -131,6 +131,30 @@ namespace te
         return !win32_isDirectory(path) && !win32_isDevice(path);
     }
 
+    WString win32_getCurrentDirectory()
+    {
+        DWORD len = GetCurrentDirectoryW(0, NULL);
+        if (len > 0)
+        {
+            wchar_t* buffer = (wchar_t*)te_allocate(len * sizeof(wchar_t));
+
+            DWORD n = GetCurrentDirectoryW(len, buffer);
+            if (n > 0 && n <= len)
+            {
+                WString result(buffer);
+                if (result[result.size() - 1] != L'\\')
+                    result.append(L"\\");
+
+                te_free(buffer);
+                return result;
+            }
+
+            te_free(buffer);
+        }
+
+        return WString();
+    }
+
     bool FileSystem::Exists(const String& fullPath)
     {
         return win32_pathExists(UTF8::ToWide(fullPath));
@@ -148,5 +172,55 @@ namespace te
         WString pathStr = UTF8::ToWide(fullPath);
 
         return win32_pathExists(pathStr) && win32_isDirectory(pathStr);
+    }
+
+    void FileSystem::GetChildren(const String& dirPath, Vector<String>& files, Vector<String>& directories)
+    {
+        WString findPath = UTF8::ToWide(dirPath);
+
+        if (win32_isFile(findPath))
+            return;
+
+        if(IsFile(dirPath)) // Assuming the file is a folder, just improperly formatted in Path
+            findPath.append(L"\\*");
+        else
+            findPath.append(L"*");
+
+        WIN32_FIND_DATAW findData;
+        HANDLE fileHandle = FindFirstFileW(findPath.c_str(), &findData);
+        if(fileHandle == INVALID_HANDLE_VALUE)
+        {
+            win32_handleError(GetLastError(), findPath);
+            return;
+        }
+
+        WString tempName;
+        do
+        {
+            tempName = findData.cFileName;
+
+            if (tempName != L"." && tempName != L"..")
+            {
+                String fullPath = dirPath;
+                if ((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0)
+                    directories.push_back(fullPath.append(UTF8::FromWide(tempName) + u8"/"));
+                else
+                    files.push_back(fullPath.append(UTF8::FromWide(tempName)));
+            }
+
+            if(FindNextFileW(fileHandle, &findData) == FALSE)
+            {
+                if (GetLastError() != ERROR_NO_MORE_FILES)
+                    win32_handleError(GetLastError(), findPath);
+
+                break;
+            }
+        } while (true);
+    }
+
+    String FileSystem::GetWorkingDirectoryPath()
+    {
+        const String utf8dir = UTF8::FromWide(win32_getCurrentDirectory());
+        return utf8dir;
     }
 }

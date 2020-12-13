@@ -4,6 +4,7 @@
 #include "Scene/TeSceneActor.h"
 #include "CoreUtility/TeCoreObject.h"
 #include "TeNativeScript.h"
+#include "Scene/TeSceneObject.h"
 
 namespace te
 {
@@ -18,19 +19,19 @@ namespace te
         ~Script();
 
         /** Creates a new script with script name in parameter. */
-        static SPtr<Script> Create(const String& name);
+        static SPtr<Script> Create(const String& name, const HSceneObject& sceneObject);
 
         /**	Creates a new script instance without initializing it. */
         static SPtr<Script> CreateEmpty();
 
         /** A script can handle a native script object */
-        void SetNativeScript(const String& name);
+        void SetNativeScript(const String& name, const HSceneObject& sceneObject);
 
         /** Returns native script handled */
         NativeScript* GetNativeScript() { return _nativeScript; }
 
         /** Returns script library name used for this script */
-        const String GetNativeScriptName() const { return _nativeScriptName; }
+        const String GetNativeScriptName() const { return (_nativeScript) ? _nativeScript->GetLibraryName() : String(); }
 
         /** Called when creating a new script */
         void OnStartup();
@@ -69,7 +70,6 @@ namespace te
 
     protected:
         NativeScript* _nativeScript;
-        String _nativeScriptName;
         ScriptState _state;
     };
 }

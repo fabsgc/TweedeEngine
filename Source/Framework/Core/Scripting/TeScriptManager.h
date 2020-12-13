@@ -26,7 +26,7 @@ namespace te
         NativeScript* CreateNativeScript(const String& name);
 
         /** Memory management for NativeScript, is manual, each script has an exported function for deleting a NativeScript */
-        void DeleteNativeScript(const String& name, NativeScript* script);
+        void DeleteNativeScript(NativeScript* script);
 
         /** Unloads all script libraries loaded in the engine */
         void UnloadAll();
@@ -66,7 +66,6 @@ namespace te
 
     private:
         UnorderedMap<String, DynLib*> _scriptLibraries;
-        UnorderedMap<NativeScript*, String> _nativeScriptNames;
         Vector<Script*> _scripts;
     };
 

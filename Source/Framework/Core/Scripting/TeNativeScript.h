@@ -2,6 +2,7 @@
 
 #include "TeCorePrerequisites.h"
 #include "Serialization/TeSerializable.h"
+#include "Scene/TeSceneObject.h"
 
 // DLL export for plugins
 #if TE_PLATFORM == TE_PLATFORM_WIN32 // Windows
@@ -64,5 +65,26 @@ namespace te
          * Called after engine render
          */
         virtual void PostRender() { }
+
+    public:
+        /**
+         * We want to internally keep the name of the lib used for this native script
+         */
+        void SetLibraryName(const String& name) { _libraryName = name; }
+
+        /**
+         * Returns library name used for this script
+         */
+        const String GetLibraryName() const { return _libraryName; }
+
+        /**
+         * Because a script lives inside the scene graph we want to store an handle to its parent SceneObject
+         */
+        void SetParentSceneObject(const HSceneObject& sceneObject) { _parentSO = sceneObject.GetNewHandleFromExisting(); }
+
+    private:
+        /** For file wathing, we need to know which dll is used behind each native script */
+        String _libraryName;
+        HSceneObject _parentSO;
     };
 }

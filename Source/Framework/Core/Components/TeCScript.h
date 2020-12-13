@@ -3,6 +3,7 @@
 #include "TeCorePrerequisites.h"
 #include "Scripting/TeScript.h"
 #include "Scene/TeComponent.h"
+#include "Scene/TeSceneObject.h"
 
 namespace te
 {
@@ -21,10 +22,13 @@ namespace te
         void Initialize() override;
 
         /** @copydoc Script::SetNativeScript */
-        void SetNativeScript(const String& name) { _internal->SetNativeScript(name); }
+        void SetNativeScript(const String& name) { _internal->SetNativeScript(name, SO()); }
 
-        /** @copydoc Script::GetNtiveScript */
+        /** @copydoc Script::GetNativeScript */
         const NativeScript* GetNativeScript() { return _internal->GetNativeScript(); }
+
+        /** @copydoc Script::GetNativeScriptName */
+        const String GetNativeScriptName() const { return _internal->GetNativeScriptName(); }
 
         /** Returns the internal renderable that is used for majority of operations by this component. */
         SPtr<Script> _getInternal() const { return _internal; }

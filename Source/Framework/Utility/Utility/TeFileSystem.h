@@ -39,6 +39,8 @@ namespace te
          */
         static void GetChildren(const String& dirPath, Vector<String>& files, Vector<String>& directories);
 
+        /** Returns the path to the currently working directory. */
+        static String GetWorkingDirectoryPath();
     };
 
     /**

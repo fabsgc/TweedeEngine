@@ -26,7 +26,7 @@ namespace te
 
     void CScript::_instantiate()
     {
-        _internal = Script::Create(String());
+        _internal = Script::Create(String(), SO());
     }
 
     void CScript::Initialize()
@@ -71,7 +71,6 @@ namespace te
     void CScript::Clone(const HScript& c)
     {
         Component::Clone(c.GetInternalPtr());
-
-        // TODO : Native script copy
+        _internal = Script::Create(c->GetNativeScriptName(), SO());
     }
 }

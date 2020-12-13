@@ -77,29 +77,20 @@ namespace te
         {
             LoadScriptFunc loadScriptFunc = (LoadScriptFunc)library->GetSymbol("LoadScript");
             script = (NativeScript *)loadScriptFunc();
-
-            if (script)
-            {
-                _nativeScriptNames[script] = name;
-            }
         }
 
         return script;
     }
 
-    void ScriptManager::DeleteNativeScript(const String& name, NativeScript* script)
+    void ScriptManager::DeleteNativeScript(NativeScript* script)
     {
         typedef void (*UnloadScriptFunc)(NativeScript*);
-        DynLib* library = GetScriptLibrary(name);
+        DynLib* library = GetScriptLibrary(script->GetLibraryName());
 
         if (library)
         {
             UnloadScriptFunc unloadScriptFunc = (UnloadScriptFunc)library->GetSymbol("UnloadScript");
             unloadScriptFunc(script);
-
-            auto iter = _nativeScriptNames.find(script);
-            if (iter != _nativeScriptNames.end())
-                _nativeScriptNames.erase(iter);
         }
     }
 
@@ -131,15 +122,8 @@ namespace te
             for (auto& script : _scripts)
             {
                 auto nativeScript = script->GetNativeScript();
-                auto iter = _nativeScriptNames.find(nativeScript);
-                if (iter != _nativeScriptNames.end())
-                    _nativeScriptNames.erase(iter);
-
-                if (nativeScript && name == iter->second)
-                {
-                    script->SetNativeScript(String());
-                    _nativeScriptNames.erase(iter);
-                }
+                if (nativeScript && name == nativeScript->GetLibraryName())
+                    script->SetNativeScript(String(), HSceneObject());
             }
 
             iter->second->Unload();
@@ -162,16 +146,16 @@ namespace te
 
     void ScriptManager::UnloadAll()
     {
+        for (auto& script : _scripts)
+        {
+            auto nativeScript = script->GetNativeScript();
+            script->SetNativeScript(String(), HSceneObject());
+        }
+
         for (auto it = _scriptLibraries.begin(); it != _scriptLibraries.end();)
         {
             it->second->Unload();
             it = _scriptLibraries.erase(it);
-        }
-
-        for (auto& script : _scripts)
-        {
-            auto nativeScript = script->GetNativeScript();
-            script->SetNativeScript(String());
         }
     }
 

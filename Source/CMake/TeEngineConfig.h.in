@@ -12,10 +12,14 @@
 #define TE_GUI_API_MODULE_OPENGL "TeGLGuiAPI"
 
 /** Path to the framework root when files haven't been packaged yet (e.g. running from debugger). */
-static constexpr const char* RAW_APP_ROOT = "@APP_ROOT_DIR@/"; 
+static constexpr const char* RAW_APP_ROOT = "@APP_ROOT_DIR@/";
 
 /** Secondary search path to use when looking for built-in assets (after the RAW_APP_ROOT). */
-static constexpr const char* SECONDARY_APP_ROOT = "@SECONDARY_APP_ROOT_DIR@/"; 
+static constexpr const char* SECONDARY_APP_ROOT = "@SECONDARY_APP_ROOT_DIR@/";
+
+static constexpr const char* CXX_COMPILER_PATH = "@CXX_COMPILER_PATH@";
+
+static constexpr const char* MSVC_VCVARS = "@MSVC_VCVARS@";
 
 /** Path to the binaries when files haven't been packaged yet (e.g. running from debugger). */
 #if TE_CONFIG == TE_CONFIG_DEBUG

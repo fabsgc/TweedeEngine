@@ -4,6 +4,18 @@ project (TweedeEngineFrameworkRedux)
 
 set (TE_SOURCE_DIR ${PROJECT_SOURCE_DIR}/Source)
 set (APP_ROOT_DIR ${PROJECT_SOURCE_DIR})
+set (CXX_COMPILER_PATH ${CMAKE_CXX_COMPILER})
+
+if (MSVC)
+    get_filename_component(MY_COMPILER_DIR
+        ${CMAKE_CXX_COMPILER} DIRECTORY)
+    find_file(MY_VCVARSALL_BAT vcvarsall.bat
+        "${MY_COMPILER_DIR}/.." "${MY_COMPILER_DIR}/../..")
+
+        message (STATUS ${MY_VCVARSALL_BAT})
+
+    set (MSVC_VCVARS ${MY_VCVARSALL_BAT})
+endif ()
 
 if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     if (LINUX)

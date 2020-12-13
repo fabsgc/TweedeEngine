@@ -71,12 +71,15 @@ namespace te
         bool retVal = true;
         STARTUPINFO si;
         PROCESS_INFORMATION pi;
+        static String cxxCompilerPath = ReplaceAll(CXX_COMPILER_PATH, "/", "\\");
+        static String msvcVars = ReplaceAll(MSVC_VCVARS, "/", "\\");
 
         ZeroMemory(&si, sizeof(si));
         si.cb = sizeof(si);
         ZeroMemory(&pi, sizeof(pi));
 
-        String command = "cmd /c vcvars64.bat && cl.exe ";
+        String directory = FileSystem::GetWorkingDirectoryPath();
+        String command = "\"" + msvcVars + "\" x64 && \"" + cxxCompilerPath + "\" ";
 
 #if TE_DEBUG_MODE
         command = command + CompileDebug(name);
@@ -89,9 +92,9 @@ namespace te
             NULL,                                // Process handle not inheritable
             NULL,                                // Thread handle not inheritable
             FALSE,                               // Set handle inheritance to FALSE
-            0,                                   // No creation flags
+            CREATE_NO_WINDOW,                    // No creation flags
             NULL,                                // Use parent's environment block
-            NULL,                                // Use parent's starting directory 
+            directory.c_str(),                   // Use parent's starting directory 
             &si,                                 // Pointer to STARTUPINFO structure
             &pi)                                 // Pointer to PROCESS_INFORMATION structure
             )
