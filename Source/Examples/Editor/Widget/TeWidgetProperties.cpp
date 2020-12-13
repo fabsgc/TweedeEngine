@@ -831,7 +831,7 @@ namespace te
 
             String currentScript = script->GetNativeScriptName();
             String previousScript = script->GetNativeScriptName();
-            if (ImGuiExt::RenderOptionCombo<String>(&currentScript, "##scripts_option", "Script", scriptsOptions, width))
+            if (ImGuiExt::RenderOptionCombo<String>(&currentScript, "##scripts_options", "Script", scriptsOptions, width))
             {
                 if (currentScript != previousScript)
                 {

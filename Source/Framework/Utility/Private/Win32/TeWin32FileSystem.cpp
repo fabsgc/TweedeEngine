@@ -131,6 +131,31 @@ namespace te
         return !win32_isDirectory(path) && !win32_isDevice(path);
     }
 
+    UINT64 win32_getFileSize(const WString& path)
+    {
+        WIN32_FILE_ATTRIBUTE_DATA attrData;
+        if (GetFileAttributesExW(path.c_str(), GetFileExInfoStandard, &attrData) == FALSE)
+            win32_handleError(GetLastError(), path);
+
+        LARGE_INTEGER li;
+        li.LowPart = attrData.nFileSizeLow;
+        li.HighPart = attrData.nFileSizeHigh;
+        return (UINT64)li.QuadPart;
+    }
+
+    std::time_t win32_getLastModifiedTime(const WString& path)
+    {
+        WIN32_FILE_ATTRIBUTE_DATA fad;
+        if (GetFileAttributesExW(path.c_str(), GetFileExInfoStandard, &fad) == 0)
+            win32_handleError(GetLastError(), path);
+
+        ULARGE_INTEGER ull;
+        ull.LowPart = fad.ftLastWriteTime.dwLowDateTime;
+        ull.HighPart = fad.ftLastWriteTime.dwHighDateTime;
+
+        return (std::time_t) ((ull.QuadPart / 10000000ULL) - 11644473600ULL);
+    }
+
     WString win32_getCurrentDirectory()
     {
         DWORD len = GetCurrentDirectoryW(0, NULL);
@@ -155,6 +180,44 @@ namespace te
         return WString();
     }
 
+    void FileSystem::RemoveInternal(const String& path)
+    {
+        WString pathStr = UTF8::ToWide(path);
+        if (win32_isDirectory(pathStr))
+        {
+            if (RemoveDirectoryW(pathStr.c_str()) == 0)
+                win32_handleError(GetLastError(), pathStr);
+        }
+        else
+        {
+            if (DeleteFileW(pathStr.c_str()) == 0)
+                win32_handleError(GetLastError(), pathStr);
+        }
+    }
+
+    void FileSystem::CopyInternal(const String& from, const String& to)
+    {
+        WString fromStr = UTF8::ToWide(from);
+        WString toStr = UTF8::ToWide(to);
+
+        if (CopyFileW(fromStr.c_str(), toStr.c_str(), FALSE) == FALSE)
+            win32_handleError(GetLastError(), fromStr);
+    }
+
+    void FileSystem::MoveInternal(const String& oldPath, const String& newPath)
+    {
+        WString oldPathStr = UTF8::ToWide(oldPath);
+        WString newPathStr = UTF8::ToWide(newPath);
+
+        if (MoveFileW(oldPathStr.c_str(), newPathStr.c_str()) == 0)
+            win32_handleError(GetLastError(), oldPathStr);
+    }
+
+    UINT64 FileSystem::GetFileSize(const String& fullPath)
+    {
+        return win32_getFileSize(UTF8::ToWide(fullPath));
+    }
+
     bool FileSystem::Exists(const String& fullPath)
     {
         return win32_pathExists(UTF8::ToWide(fullPath));
@@ -163,14 +226,12 @@ namespace te
     bool FileSystem::IsFile(const String& fullPath)
     {
         WString pathStr = UTF8::ToWide(fullPath);
-
         return win32_pathExists(pathStr) && win32_isFile(pathStr);
     }
 
     bool FileSystem::IsDirectory(const String& fullPath)
     {
         WString pathStr = UTF8::ToWide(fullPath);
-
         return win32_pathExists(pathStr) && win32_isDirectory(pathStr);
     }
 
@@ -217,6 +278,11 @@ namespace te
                 break;
             }
         } while (true);
+    }
+
+    std::time_t FileSystem::GetLastModifiedTime(const String& fullPath)
+    {
+        return win32_getLastModifiedTime(UTF8::ToWide(fullPath));
     }
 
     String FileSystem::GetWorkingDirectoryPath()

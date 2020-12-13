@@ -10,6 +10,42 @@ namespace te
     {
     public:
         /**
+         * Returns the size of a file in bytes.
+         *
+         * @param[in]	fullPath	Full path to a file.
+         */
+        static UINT64 GetFileSize(const String& fullPath);
+
+        /**
+         * Deletes a file or a folder at the specified path.
+         *
+         * @param[in]	fullPath   	Full path to a file or a folder..
+         * @param[in]	recursively	(optional) If true, folders will have their contents deleted as well. Otherwise an
+         *							exception will be thrown for non-empty folders.
+         */
+        static void Remove(const String& fullPath, bool recursively = true);
+
+        /**
+         * Moves a file or a folder from one to another path. This can also be used as a rename operation.
+         *
+         * @param[in]	oldPath			 	Full path to the old file/folder.
+         * @param[in]	newPath			 	Full path to the new file/folder.
+         * @param[in]	overwriteExisting	(optional) If true, any existing file/folder at the new location will be
+         *									overwritten, otherwise an exception will be thrown if a file/folder already exists.
+         */
+        static void Move(const String& oldPath, const String& newPath, bool overwriteExisting = true);
+
+        /**
+         * Makes a copy of a file or a folder in the specified path.
+         *
+         * @param[in]	oldPath			 	Full path to the old file/folder.
+         * @param[in]	newPath			 	Full path to the new file/folder.
+         * @param[in]	overwriteExisting	(optional) If true, any existing file/folder at the new location will be
+         *									overwritten, otherwise an exception will be thrown if a file/folder already exists.
+         */
+        static void Copy(const String& oldPath, const String& newPath, bool overwriteExisting = true);
+
+        /**
          * Returns true if a file or a folder exists at the specified path.
          *
          * @param[in]	fullPath	Full path to a file or folder.
@@ -40,8 +76,23 @@ namespace te
          */
         static void GetChildren(const String& dirPath, Vector<String>& files, Vector<String>& directories, bool onlyFileName = false);
 
+        /**
+         * Returns the last modified time of a file or a folder at the specified path.
+         *
+         * @param[in]	fullPath	Full path to a file or a folder.
+         */
+        static std::time_t GetLastModifiedTime(const String& fullPath);
+
         /** Returns the path to the currently working directory. */
         static String GetWorkingDirectoryPath();
+
+    private:
+        /** Copy a single file. Internal function used by copy(). */
+        static void CopyInternal(const String& oldPath, const String& newPath);
+        /** Remove a single file. Internal function used by Remove(). */
+        static void RemoveInternal(const String& path);
+        /** Move a single file. Internal function used by Move(). */
+        static void MoveInternal(const String& oldPath, const String& newPath);
     };
 
     /**
