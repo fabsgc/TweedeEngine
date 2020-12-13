@@ -22,11 +22,7 @@ public:
     { }
 
     virtual void Update() override
-    {
-        SceneObject* sceneObject = gSceneManager().GetRootNode().Get();
-    }
-
-    String hello = "HELLO";
+    { }
 };
 
 extern "C" TE_SCRIPT_EXPORT NativeScript* LoadScript()

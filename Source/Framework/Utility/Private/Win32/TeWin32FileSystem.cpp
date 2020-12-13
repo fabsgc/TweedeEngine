@@ -174,7 +174,7 @@ namespace te
         return win32_pathExists(pathStr) && win32_isDirectory(pathStr);
     }
 
-    void FileSystem::GetChildren(const String& dirPath, Vector<String>& files, Vector<String>& directories)
+    void FileSystem::GetChildren(const String& dirPath, Vector<String>& files, Vector<String>& directories, bool onlyFileName)
     {
         WString findPath = UTF8::ToWide(dirPath);
 
@@ -201,7 +201,8 @@ namespace te
 
             if (tempName != L"." && tempName != L"..")
             {
-                String fullPath = dirPath;
+                String fullPath;
+                if (!onlyFileName) fullPath = dirPath;
                 if ((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0)
                     directories.push_back(fullPath.append(UTF8::FromWide(tempName) + u8"/"));
                 else

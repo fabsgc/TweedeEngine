@@ -383,6 +383,16 @@ namespace te
         return MatchInternal<wchar_t>(str, pattern, caseSensitive);
     }
 
+    bool RegexMatch(const String& str, const String& pattern, bool caseSensitive)
+    {
+        return RegexMatchInternal<char>(str, pattern, caseSensitive);
+    }
+
+    bool RegexMatch(const WString& str, const WString& pattern, bool caseSensitive)
+    {
+        return RegexMatchInternal<wchar_t>(str, pattern, caseSensitive);
+    }
+
     const String ReplaceAll(const String& source, const String& replaceWhat, const String& replaceWithWhat)
     {
         return ReplaceAllInternal<char>(source, replaceWhat, replaceWithWhat);

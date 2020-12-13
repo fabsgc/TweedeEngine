@@ -34,10 +34,11 @@ namespace te
          * Returns all files or folders located in the specified folder.
          *
          * @param[in]	dirPath			Full path to the folder to retrieve children files/folders from.
-         * @param[out]	files	   		Full paths to all files located directly in specified folder.
-         * @param[out]	directories		Full paths to all folders located directly in specified folder.
+         * @param[out]	files	   		Pull paths to all files located directly in specified folder.
+         * @param[out]	directories		Paths to all folders located directly in specified folder.
+         * @param[in]	onlyFileName	If true, files and directories will return full paths, otherwise, only filenames
          */
-        static void GetChildren(const String& dirPath, Vector<String>& files, Vector<String>& directories);
+        static void GetChildren(const String& dirPath, Vector<String>& files, Vector<String>& directories, bool onlyFileName = false);
 
         /** Returns the path to the currently working directory. */
         static String GetWorkingDirectoryPath();

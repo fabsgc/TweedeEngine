@@ -76,7 +76,11 @@ namespace te
         if (library)
         {
             LoadScriptFunc loadScriptFunc = (LoadScriptFunc)library->GetSymbol("LoadScript");
-            script = (NativeScript *)loadScriptFunc();
+
+            if (loadScriptFunc)
+                script = (NativeScript*)loadScriptFunc();
+            else
+                TE_DEBUG("Script \"" + name + "\" has been built but LoadScript() function was not found");
         }
 
         return script;

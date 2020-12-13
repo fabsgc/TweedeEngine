@@ -80,11 +80,13 @@ namespace te
 
         String directory = FileSystem::GetWorkingDirectoryPath();
         String command = "\"" + msvcVars + "\" x64 && \"" + cxxCompilerPath + "\" ";
+        UINT32 flags = 0;
 
 #if TE_DEBUG_MODE
         command = command + CompileDebug(name);
 #else
         command = command + CompileRelease(name);
+        flags |= CREATE_NO_WINDOW;
 #endif
 
         if (CreateProcess(NULL,                  // No module name (use command line)
@@ -92,7 +94,7 @@ namespace te
             NULL,                                // Process handle not inheritable
             NULL,                                // Thread handle not inheritable
             FALSE,                               // Set handle inheritance to FALSE
-            CREATE_NO_WINDOW,                    // No creation flags
+            flags,                               // No creation flags
             NULL,                                // Use parent's environment block
             directory.c_str(),                   // Use parent's starting directory 
             &si,                                 // Pointer to STARTUPINFO structure

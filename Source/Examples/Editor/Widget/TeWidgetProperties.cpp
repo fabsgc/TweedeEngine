@@ -9,19 +9,21 @@
 #include "Components/TeCCameraFlyer.h"
 #include "Components/TeCCameraUI.h"
 #include "Components/TeCCamera.h"
-#include "Scene/TeSceneManager.h"
-#include "Scene/TeSceneObject.h"
 #include "Components/TeCSkybox.h"
 #include "Components/TeCScript.h"
 #include "Components/TeCLight.h"
 #include "Components/TeCAnimation.h"
 #include "Components/TeCBone.h"
+#include "Scene/TeSceneManager.h"
+#include "Scene/TeSceneObject.h"
 #include "RenderAPI/TeSubMesh.h"
 #include "Mesh/TeMesh.h"
 #include "Importer/TeMeshImportOptions.h"
 #include "Importer/TeTextureImportOptions.h"
 #include "Resources/TeBuiltinResources.h"
 #include "String/TeUnicode.h"
+#include "Utility/TeFileSystem.h"
+#include "Scripting/TeScriptManager.h"
 
 namespace te
 {
@@ -807,6 +809,38 @@ namespace te
     bool WidgetProperties::ShowScript(SPtr<CScript> script)
     {
         bool hasChanged = false;
+        Vector<String> files;
+        Vector<String> directories;
+        ImGuiExt::ComboOptions<String> scriptsOptions;
+        const float width = ImGui::GetWindowContentRegionWidth() - 50.0f;
+
+        FileSystem::GetChildren(RAW_APP_ROOT + ScriptManager::LIBRARIES_PATH, files, directories, true);
+
+        // current script to use
+        {
+            for (auto& file : files)
+            {
+                if (RegexMatch(file, "^(.*)(\\.cpp)$"))
+                {
+                    String fileName = ReplaceAll(file, ".cpp", "");
+                    scriptsOptions.AddOption(fileName, fileName);
+                }
+            }
+
+            scriptsOptions.AddOption(String(), ICON_FA_TIMES_CIRCLE " No script");
+
+            String currentScript = script->GetNativeScriptName();
+            String previousScript = script->GetNativeScriptName();
+            if (ImGuiExt::RenderOptionCombo<String>(&currentScript, "##scripts_option", "Script", scriptsOptions, width))
+            {
+                if (currentScript != previousScript)
+                {
+                    script->SetNativeScript(currentScript);
+                    hasChanged = true;
+                }
+            }
+        }
+
         return hasChanged;
     }
 
@@ -899,9 +933,6 @@ namespace te
         char inputName[128];
         UINT32 numClip = animation->GetNumClips();
         const float widgetWidth = ImGui::GetWindowContentRegionWidth() - 100.0f;
-
-        // TODO add clip (select)
-        // TODO remove clip
 
         for (UINT32 i = 0; i < numClip; i++)
         {

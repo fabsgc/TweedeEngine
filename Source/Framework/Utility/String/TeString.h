@@ -4,6 +4,7 @@
 #include "Prerequisites/TeTypes.h"
 #include <string>
 #include <sstream>
+#include <regex>
 
 namespace te
 {
@@ -261,6 +262,18 @@ namespace te
     TE_UTILITY_EXPORT  bool Match(const WString& str, const WString& pattern, bool caseSensitive = true);
 
     /**
+     * Returns true if the string matches the provided regex pattern.
+     *
+     * @param[in]	str			 	The string to test.
+     * @param[in]	pattern		 	Patterns to look for.
+     * @param[in]	caseSensitive	(optional) Should the match be case sensitive or not.
+     */
+    TE_UTILITY_EXPORT  bool RegexMatch(const String& str, const String& pattern, bool caseSensitive = true);
+
+    /** @copydoc RegexMatch(const String&, const String&, bool) */
+    TE_UTILITY_EXPORT  bool RegexMatch(const WString& str, const WString& pattern, bool caseSensitive = true);
+
+    /**
     * Replace all instances of a substring with a another substring.
     *
     * @param[in]	source		   	String to search.
@@ -302,6 +315,17 @@ namespace te
             ToLowerCase(endOfThis);
 
         return (endOfThis == pattern);
+    }
+
+    template <class T>
+    static bool RegexMatchInternal(const BasicString<T>& str, const BasicString<T>& pattern, bool caseSensitive)
+    {
+        BasicString<T> tmpStr = str;
+        std::basic_regex<T> tmpPattern(pattern);
+        if (!caseSensitive)
+            ToLowerCase(tmpStr);
+
+        return std::regex_match(tmpStr, tmpPattern);
     }
 
     template <class T>
