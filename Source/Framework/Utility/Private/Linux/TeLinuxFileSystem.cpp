@@ -75,7 +75,7 @@ namespace te
         return unix_pathExists(path) && unix_isDirectory(path);
     }
 
-    void FileSystem::getChildren(const String& dirPath, Vector<String>& files, Vector<String>& directories)
+    void FileSystem::GetChildren(const String& dirPath, Vector<String>& files, Vector<String>& directories)
     {
         const String pathStr = dirPath;
 
