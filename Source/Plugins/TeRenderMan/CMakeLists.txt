@@ -5,7 +5,7 @@ include(CMakeSources.cmake)
 add_library (TeRenderMan SHARED ${TE_RENDERMAN_SRC})
 
 # Defines
-target_compile_definitions (TeRenderMan PRIVATE -DTE_RNDMAN_EXPORTS)
+target_compile_definitions (TeRenderMan PRIVATE -DTE_RNDMAN_EXPORTS -DTE_ENGINE_BUILD)
 
 # Includes
 target_include_directories (TeRenderMan PRIVATE "./")

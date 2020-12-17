@@ -5,7 +5,7 @@ include (CMakeSources.cmake)
 add_library (TeD3D11ImGuiAPI SHARED ${TE_D3D11IMGUIAPI_SRC})
 
 # Defines
-target_compile_definitions (TeD3D11ImGuiAPI PRIVATE -DTE_D3D11_EXPORTS)
+target_compile_definitions (TeD3D11ImGuiAPI PRIVATE -DTE_D3D11_EXPORTS -DTE_ENGINE_BUILD)
 
 if (WIN32)
     if (${CMAKE_SYSTEM_VERSION} EQUAL 6.1) # Windows 7

@@ -23,7 +23,7 @@ namespace te
         if (stat(path.c_str(), &st_buf) == 0)
             return true;
         else
-            if (errno == ENOENT)    // No such file or directory
+            if (errno == ENOENT) // No such file or directory
                 return false;
             else
             {
@@ -60,55 +60,6 @@ namespace te
         return false;
     }
 
-    void FileSystem::RemoveInternal(const String& path)
-    {
-        if (unix_isDirectory(path))
-        {
-            if (rmdir(path.c_str()))
-                HANDLE_PATH_ERROR(path, errno);
-        }
-        else
-        {
-            if (unlink(path.c_str()))
-                HANDLE_PATH_ERROR(path, errno);
-        }
-    }
-
-    void FileSystem::CopyInternal(const String& source, const String& destination)
-    {
-        std::ifstream sourceStream(source.c_str(), std::ios::binary);
-        std::ofstream destinationStream(destination.c_str(), std::ios::binary);
-
-        destinationStream << sourceStream.rdbuf();
-        sourceStream.close();
-        destinationStream.close();
-    }
-
-    void FileSystem::MoveInternal(const String& oldPath, const String& newPath)
-    {
-        if (std::rename(oldPath.c_str(), newPath.c_str()) == -1)
-        {
-            // Cross-filesystem copy is likely needed (for example, /tmp to Banshee install dir while copying assets)
-            std::ifstream src(oldPath.c_str(), std::ios::binary);
-            std::ofstream dst(newPath.c_str(), std::ios::binary);
-            dst << src.rdbuf(); // First, copy
-
-            // Error handling
-            src.close();
-            if (!src)
-            {
-                TE_DEBUG(String(__FUNCTION__) + ": renaming " + oldPath + " to " + newPath + ": " + strerror(errno));
-                return; // Do not remove source if we failed!
-            }
-
-            // Then, remove source file (hopefully succeeds)
-            if (std::remove(oldPath.c_str()) == -1)
-            {
-                TE_DEBUG(String(__FUNCTION__) + ": renaming " + oldPath + " to " + newPath + ": " + strerror(errno));
-            }
-        }
-    }
-
     UINT64 FileSystem::GetFileSize(const String& path)
     {
         struct stat st_buf;
@@ -122,21 +73,6 @@ namespace te
             HANDLE_PATH_ERROR(path, errno);
             return (UINT64)-1;
         }
-    }
-
-    bool FileSystem::Exists(const String& path)
-    {
-        return unix_pathExists(path);
-    }
-
-    bool FileSystem::IsFile(const String& path)
-    {
-        return unix_pathExists(path) && unix_isFile(path);
-    }
-
-    bool FileSystem::IsDirectory(const String& path)
-    {
-        return unix_pathExists(path) && unix_isDirectory(path);
     }
 
     void FileSystem::GetChildren(const String& dirPath, Vector<String>& files, Vector<String>& directories, bool onlyFileName)

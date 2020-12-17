@@ -5,7 +5,7 @@ include(CMakeSources.cmake)
 add_library (TeObjectImporter SHARED ${TE_OBJECTIMPORTER_SRC})
 
 # Defines
-target_compile_definitions (TeObjectImporter PRIVATE -DTE_OBJECT_EXPORTS)
+target_compile_definitions (TeObjectImporter PRIVATE -DTE_OBJECT_EXPORTS -DTE_ENGINE_BUILD)
 
 if (WIN32)
     if (${CMAKE_SYSTEM_VERSION} EQUAL 6.1) # Windows 7

@@ -5,7 +5,7 @@ include(CMakeSources.cmake)
 add_library (TeFreeImgImporter SHARED ${TE_FREEIMGIMPORTER_SRC})
 
 # Defines
-target_compile_definitions (TeFreeImgImporter PRIVATE -DTE_FREEIMG_EXPORTS)
+target_compile_definitions (TeFreeImgImporter PRIVATE -DTE_FREEIMG_EXPORTS -DTE_ENGINE_BUILD)
 
 if (WIN32)
     if (${CMAKE_SYSTEM_VERSION} EQUAL 6.1) # Windows 7

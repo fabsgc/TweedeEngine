@@ -12,18 +12,18 @@ namespace te
         /**
          * Returns the size of a file in bytes.
          *
-         * @param[in]	fullPath	Full path to a file.
+         * @param[in]	fullPath	Path to a file.
          */
-        static UINT64 GetFileSize(const String& fullPath);
+        static UINT64 GetFileSize(const String& path);
 
         /**
          * Deletes a file or a folder at the specified path.
          *
-         * @param[in]	fullPath   	Full path to a file or a folder..
+         * @param[in]	fullPath   	Path to a file or a folder..
          * @param[in]	recursively	(optional) If true, folders will have their contents deleted as well. Otherwise an
          *							exception will be thrown for non-empty folders.
          */
-        static void Remove(const String& fullPath, bool recursively = true);
+        static bool Remove(const String& path, bool recursively = true);
 
         /**
          * Moves a file or a folder from one to another path. This can also be used as a rename operation.
@@ -33,7 +33,7 @@ namespace te
          * @param[in]	overwriteExisting	(optional) If true, any existing file/folder at the new location will be
          *									overwritten, otherwise an exception will be thrown if a file/folder already exists.
          */
-        static void Move(const String& oldPath, const String& newPath, bool overwriteExisting = true);
+        static bool Move(const String& oldPath, const String& newPath, bool overwriteExisting = true);
 
         /**
          * Makes a copy of a file or a folder in the specified path.
@@ -42,29 +42,37 @@ namespace te
          * @param[in]	newPath			 	Full path to the new file/folder.
          * @param[in]	overwriteExisting	(optional) If true, any existing file/folder at the new location will be
          *									overwritten, otherwise an exception will be thrown if a file/folder already exists.
+         * @param[in]	recursively	(optional) If true, folders will have their contents copied as well.
          */
-        static void Copy(const String& oldPath, const String& newPath, bool overwriteExisting = true);
+        static bool Copy(const String& oldPath, const String& newPath, bool overwriteExisting = true, bool recursively = true);
+
+        /**
+         * Creates a folder at the specified path.
+         *
+         * @param[in]	path	Path to a folder to create.
+         */
+        static bool CreateDir(const String& path);
 
         /**
          * Returns true if a file or a folder exists at the specified path.
          *
-         * @param[in]	fullPath	Full path to a file or folder.
+         * @param[in]	path	Path to a file or folder.
          */
-        static bool Exists(const String& fullPath);
+        static bool Exists(const String& Path);
 
         /**
          * Returns true if a file exists at the specified path.
          *
-         * @param[in]	fullPath	Full path to a file or folder.
+         * @param[in]	path	Path to a file or folder.
          */
-        static bool IsFile(const String& fullPath);
+        static bool IsFile(const String& Path);
 
         /**
          * Returns true if a folder exists at the specified path.
          *
-         * @param[in]	fullPath	Full path to a file or folder.
+         * @param[in]	path	Path to a file or folder.
          */
-        static bool IsDirectory(const String& fullPath);
+        static bool IsDirectory(const String& Path);
 
         /**
          * Returns all files or folders located in the specified folder.
@@ -79,9 +87,9 @@ namespace te
         /**
          * Returns the last modified time of a file or a folder at the specified path.
          *
-         * @param[in]	fullPath	Full path to a file or a folder.
+         * @param[in]	path	Path to a file or a folder.
          */
-        static std::time_t GetLastModifiedTime(const String& fullPath);
+        static std::time_t GetLastModifiedTime(const String& path);
 
         /** Returns the path to the currently working directory. */
         static String GetWorkingDirectoryPath();

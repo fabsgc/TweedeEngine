@@ -9,8 +9,12 @@ namespace te
     String CompileDebug(const String& name)
     {
         String output;
-        static String rawAppRoot = ReplaceAll(RAW_APP_ROOT, "/", "\\");
         static String librariesPath = ReplaceAll(ScriptManager::LIBRARIES_PATH, "/", "\\");
+#ifdef TE_ENGINE_BUILD
+        static String rawAppRoot = ReplaceAll(RAW_APP_ROOT, "/", "\\");
+#else
+        static String rawAppRoot = "";
+#endif
 
         output += "/LD ";
         output += "/I" + rawAppRoot + "Source\\Framework\\Core  ";
@@ -39,8 +43,12 @@ namespace te
     String CompileRelease(const String& name)
     {
         String output;
-        static String rawAppRoot = ReplaceAll(RAW_APP_ROOT, "/", "\\");
         static String librariesPath = ReplaceAll(ScriptManager::LIBRARIES_PATH, "/", "\\");
+#ifdef TE_ENGINE_BUILD
+        static String rawAppRoot = ReplaceAll(RAW_APP_ROOT, "/", "\\");
+#else
+        static String rawAppRoot = "";
+#endif
 
         output += "/LD ";
         output += "/I" + rawAppRoot + "Source\\Framework\\Core  ";

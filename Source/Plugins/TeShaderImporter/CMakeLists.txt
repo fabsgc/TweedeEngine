@@ -5,7 +5,7 @@ include(CMakeSources.cmake)
 add_library (TeShaderImporter SHARED ${TE_SHADERIMPORTER_SRC})
 
 # Defines
-target_compile_definitions (TeShaderImporter PRIVATE -DTE_SHADER_EXPORTS)
+target_compile_definitions (TeShaderImporter PRIVATE -DTE_SHADER_EXPORTS -DTE_ENGINE_BUILD)
 
 if (WIN32)
     if (${CMAKE_SYSTEM_VERSION} EQUAL 6.1) # Windows 7

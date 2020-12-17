@@ -13,7 +13,7 @@ endif()
 add_library (TeOpenAudio SHARED ${TE_OPENAUDIO_SRC})
 
 # Defines
-target_compile_definitions (TeOpenAudio PRIVATE -DTE_OBJECT_EXPORTS)
+target_compile_definitions (TeOpenAudio PRIVATE -DTE_OBJECT_EXPORTS -DTE_ENGINE_BUILD)
 
 if (WIN32)
     if (${CMAKE_SYSTEM_VERSION} EQUAL 6.1) # Windows 7

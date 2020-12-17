@@ -14,11 +14,10 @@
 /** Path to the framework root when files haven't been packaged yet (e.g. running from debugger). */
 static constexpr const char* RAW_APP_ROOT = "@APP_ROOT_DIR@/";
 
-/** Secondary search path to use when looking for built-in assets (after the RAW_APP_ROOT). */
-static constexpr const char* SECONDARY_APP_ROOT = "@SECONDARY_APP_ROOT_DIR@/";
-
+/** When compiling Framework, we need to know where is C++ compiler */
 static constexpr const char* CXX_COMPILER_PATH = "@CXX_COMPILER_PATH@";
 
+/** When compiling Framework, we need to know where is vcvarsall.bat (on Windows) */
 static constexpr const char* MSVC_VCVARS = "@MSVC_VCVARS@";
 
 /** Path to the binaries when files haven't been packaged yet (e.g. running from debugger). */

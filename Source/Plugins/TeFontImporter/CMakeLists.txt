@@ -8,7 +8,7 @@ add_library(TeFontImporter SHARED ${TE_FONTIMPORTER_SRC})
 target_include_directories(TeFontImporter PRIVATE "./")
 
 # Defines
-target_compile_definitions(TeFontImporter PRIVATE -DTE_FONT_EXPORTS -DUSE_FREETYPE2_STATIC)
+target_compile_definitions(TeFontImporter PRIVATE -DTE_FONT_EXPORTS -DTE_ENGINE_BUILD -DUSE_FREETYPE2_STATIC)
 
 # Libraries
 ## External lib: FreeType

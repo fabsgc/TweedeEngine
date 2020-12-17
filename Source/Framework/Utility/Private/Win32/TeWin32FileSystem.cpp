@@ -180,59 +180,9 @@ namespace te
         return WString();
     }
 
-    void FileSystem::RemoveInternal(const String& path)
-    {
-        WString pathStr = UTF8::ToWide(path);
-        if (win32_isDirectory(pathStr))
-        {
-            if (RemoveDirectoryW(pathStr.c_str()) == 0)
-                win32_handleError(GetLastError(), pathStr);
-        }
-        else
-        {
-            if (DeleteFileW(pathStr.c_str()) == 0)
-                win32_handleError(GetLastError(), pathStr);
-        }
-    }
-
-    void FileSystem::CopyInternal(const String& from, const String& to)
-    {
-        WString fromStr = UTF8::ToWide(from);
-        WString toStr = UTF8::ToWide(to);
-
-        if (CopyFileW(fromStr.c_str(), toStr.c_str(), FALSE) == FALSE)
-            win32_handleError(GetLastError(), fromStr);
-    }
-
-    void FileSystem::MoveInternal(const String& oldPath, const String& newPath)
-    {
-        WString oldPathStr = UTF8::ToWide(oldPath);
-        WString newPathStr = UTF8::ToWide(newPath);
-
-        if (MoveFileW(oldPathStr.c_str(), newPathStr.c_str()) == 0)
-            win32_handleError(GetLastError(), oldPathStr);
-    }
-
     UINT64 FileSystem::GetFileSize(const String& fullPath)
     {
         return win32_getFileSize(UTF8::ToWide(fullPath));
-    }
-
-    bool FileSystem::Exists(const String& fullPath)
-    {
-        return win32_pathExists(UTF8::ToWide(fullPath));
-    }
-
-    bool FileSystem::IsFile(const String& fullPath)
-    {
-        WString pathStr = UTF8::ToWide(fullPath);
-        return win32_pathExists(pathStr) && win32_isFile(pathStr);
-    }
-
-    bool FileSystem::IsDirectory(const String& fullPath)
-    {
-        WString pathStr = UTF8::ToWide(fullPath);
-        return win32_pathExists(pathStr) && win32_isDirectory(pathStr);
     }
 
     void FileSystem::GetChildren(const String& dirPath, Vector<String>& files, Vector<String>& directories, bool onlyFileName)

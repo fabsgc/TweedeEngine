@@ -11,7 +11,7 @@ endif()
 add_library (TeGLImGuiAPI SHARED ${TE_GLIMGUIAPI_SRC})
 
 # Defines
-target_compile_definitions (TeGLImGuiAPI PRIVATE -DTE_GL_EXPORTS -DGLEW_STATIC)
+target_compile_definitions (TeGLImGuiAPI PRIVATE -DTE_GL_EXPORTS -DTE_ENGINE_BUILD -DGLEW_STATIC)
 
 if (WIN32)
     if (${CMAKE_SYSTEM_VERSION} EQUAL 6.1) # Windows 7

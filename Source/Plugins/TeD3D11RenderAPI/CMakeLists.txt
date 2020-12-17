@@ -5,7 +5,7 @@ include (CMakeSources.cmake)
 add_library (TeD3D11RenderAPI SHARED ${TE_D3D11RENDERAPI_SRC})
 
 # Defines
-target_compile_definitions (TeD3D11RenderAPI PRIVATE -DTE_D3D11_EXPORTS)
+target_compile_definitions (TeD3D11RenderAPI PRIVATE -DTE_D3D11_EXPORTS -DTE_ENGINE_BUILD)
 
 if (WIN32)
     if (${CMAKE_SYSTEM_VERSION} EQUAL 6.1) # Windows 7
