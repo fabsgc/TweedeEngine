@@ -10,6 +10,11 @@ namespace te
 {
     const String ScriptManager::LIBRARIES_PATH = "Data/Scripts/";
 
+    void ScriptManager::OnStartUp()
+    {
+         
+    }
+
     void ScriptManager::OnShutDown()
     {
 #if TE_DEBUG_MODE

@@ -29,14 +29,14 @@ namespace te
         ~FolderMonitor();
 
         /**
-             * Starts monitoring a folder at the specified path.
-             *
-             * @param[in]	folderPath		Absolute path to the folder you want to monitor.
-             * @param[in]	subdirectories	If true, provided folder and all of its subdirectories will be monitored for
-             *								changes. Otherwise only the provided folder will be monitored.
-             * @param[in]	changeFilter	A set of flags you may OR together. Different notification events will trigger
-             *								depending on which flags you set.
-             */
+         * Starts monitoring a folder at the specified path.
+         *
+         * @param[in]	folderPath		Absolute path to the folder you want to monitor.
+         * @param[in]	subdirectories	If true, provided folder and all of its subdirectories will be monitored for
+         *								changes. Otherwise only the provided folder will be monitored.
+         * @param[in]	changeFilter	A set of flags you may OR together. Different notification events will trigger
+         *								depending on which flags you set.
+         */
         void StartMonitor(const String& folderPath, bool subdirectories, UINT32 changeFilter);
 
         /** Stops monitoring the folder at the specified path. */
@@ -63,7 +63,6 @@ namespace te
          /** Returns private data, for use by internal helper classes and methods. */
         Pimpl* GetPrivateData() const { return m; }
 
-        /** @} */
     private:
         /**	Worker method that monitors the IO ports for any modification notifications. */
         void WorkerThreadMain();

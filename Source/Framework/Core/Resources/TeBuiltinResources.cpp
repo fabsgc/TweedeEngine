@@ -712,7 +712,7 @@ namespace te
         passDesc.VertexProgramDesc = _vertexShaderForwardDesc;
         passDesc.PixelProgramDesc = _pixelShaderForwardDesc;
 
-        passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_CLOCKWISE;
+        passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
 
         HPass pass = Pass::Create(passDesc);
         HTechnique technique = Technique::Create("hlsl", { pass.GetInternalPtr() });

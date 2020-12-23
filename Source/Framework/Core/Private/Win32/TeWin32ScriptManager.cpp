@@ -11,18 +11,20 @@ namespace te
         String output;
         static String librariesPath = ReplaceAll(ScriptManager::LIBRARIES_PATH, "/", "\\");
 #ifdef TE_ENGINE_BUILD
-        static String rawAppRoot = ReplaceAll(RAW_APP_ROOT, "/", "\\");
+        static String appRoot = ReplaceAll(RAW_APP_ROOT, "/", "\\");
+        static String includePath = appRoot + "Source\\Framework\\";
 #else
         static String rawAppRoot = "";
+        static String includePath = appRoot + "Include\\";
 #endif
 
         output += "/LD ";
-        output += "/I" + rawAppRoot + "Source\\Framework\\Core  ";
-        output += "/I" + rawAppRoot + "Source\\Framework\\Utility  ";
+        output += "/I" + includePath + "Core ";
+        output += "/I" + includePath + "Utility ";
         output += "/ZI /nologo /W3 /WX- /diagnostics:classic /MP /Od /Ob0 /D WIN32 /D _WINDOWS ";
         output += "/D DEBUG /D _WINDLL /D _MBCS /Gm- /RTC1 /MDd /GS- /fp:precise /Zc:wchar_t ";
         output += "/Zc:forScope /Zc:inline /GR- /std:c++17 ";
-        output += rawAppRoot + librariesPath + name + ".cpp ";
+        output += appRoot + librariesPath + name + ".cpp ";
         output += "/Gd /TP /wd4577 /wd4530 /bigobj /link ";
         output += "/OUT:" + name + ".dll ";
         output += "/OPT:NOREF /OPT:NOICF ";
@@ -45,18 +47,19 @@ namespace te
         String output;
         static String librariesPath = ReplaceAll(ScriptManager::LIBRARIES_PATH, "/", "\\");
 #ifdef TE_ENGINE_BUILD
-        static String rawAppRoot = ReplaceAll(RAW_APP_ROOT, "/", "\\");
+        static String appRoot = ReplaceAll(RAW_APP_ROOT, "/", "\\");
+        static String includePath = appRoot + "Source\\Framework\\";
 #else
-        static String rawAppRoot = "";
+        static String appRoot = "";
 #endif
 
         output += "/LD ";
-        output += "/I" + rawAppRoot + "Source\\Framework\\Core  ";
-        output += "/I" + rawAppRoot + "Source\\Framework\\Utility  ";
+        output += "/I" + includePath + "Core ";
+        output += "/I" + includePath + "Utility ";
         output += "/Zi /nologo /W3 /WX- /diagnostics:classic /MP /Od /D WIN32 /D _WINDOWS ";
         output += "/D NDEBUG /D_WINDLL /D _MBCS /Gm- /MD /GS- /Gy /fp:precise /Zc:wchar_t ";
         output += "/Zc:forScope /Zc:inline /GR /std:c++17 ";
-        output += rawAppRoot + librariesPath + name + ".cpp ";
+        output += appRoot + librariesPath + name + ".cpp ";
         output += "/Gd /TP /wd4577 /wd4530 /bigobj /link ";
         output += "/OUT:" + name + ".dll ";
         output += "/OPT:REF ";

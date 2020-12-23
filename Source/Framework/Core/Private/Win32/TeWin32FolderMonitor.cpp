@@ -605,7 +605,7 @@ namespace te
                 mActions.push_back(FileAction::createModified(fullPath));
                 break;
             case FILE_ACTION_RENAMED_OLD_NAME:
-                watchInfo.CachedOldFileName = fullPath;
+                watchInfo.CachedOldFileName = fullPath;  
                 break;
             case FILE_ACTION_RENAMED_NEW_NAME:
                 mActions.push_back(FileAction::createRenamed(watchInfo.CachedOldFileName, fullPath));

@@ -14,6 +14,7 @@ namespace te
         ScriptManager() = default;
         ~ScriptManager() = default;
 
+        void OnStartUp() override;
         void OnShutDown() override;
 
         /** When a Script (so a CScript) is created, we need to register this script inside the manager */
