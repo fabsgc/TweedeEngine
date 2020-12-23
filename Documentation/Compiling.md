@@ -26,7 +26,7 @@
   - `cmake --build . --config Release --target install`
   - Alternatively you can run the install target in your chosen build tool
     - Note that files install to the default install folder, unless you have overriden it as specified above
-   
+
 ## Customizing the build
 
 Additional variables allow you to pick between the render API (DirectX, OpenGL). Run *CMake* to see all options. Note that non-default *CMake* options might require additional dependencies to be installed, see [here](#otherDeps).
@@ -38,7 +38,7 @@ Modify *CMAKE_BUILD_TYPE* to pick what kind of a build you want. Note that this 
  - *RelWithDebInfo* - Builds an optimized version with debug symbols and various debug checks enabled.
  - *MinSizeRel* - Builds an optimized version attempting to keep the resultant binary as small as possible. Debug checks are disabled.
  - *Release* - Builds an optimized version with no debug checks.
- 
+
 You can choose to use a different *CMake* generator than those specified above, as long as the platform/compiler is supported:  
   - Supported platforms:
     - Windows 7, 8, 10
@@ -46,7 +46,7 @@ You can choose to use a different *CMake* generator than those specified above, 
   - Supported compilers:
     - MSVC++ 15.0 (Visual Studio 2017) (or newer)
     - GCC 7.0 (or newer)
-  
+
 ### <a name="dependencies"></a>Third party dependencies
 The Tweede Framework relies on a variety of third party dependencies. A set of pre-compiled dependencies are provided for every supported platform/compiler and these will be fetched automatically by the build process. If required, the dependencies can also be compiled manually by following [this guide](dependencies.md). This can be required if the pre-compiled dependencies don't work with your platform (e.g. unsupported Linux distro) or if you wish to update to a newer dependency version. Note that prebuilt dependencies only come as 64-bit.
 
@@ -79,3 +79,4 @@ The following dependencies will need to be installed manually. Which ones are re
   - **Assimp**
   - **Free Image**
   - **NVIDIA Texture Tools**
+  - **Dear ImGui**
