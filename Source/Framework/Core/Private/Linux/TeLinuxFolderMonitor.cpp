@@ -108,45 +108,85 @@ namespace te
     struct FileAction
     {
         // TODO
+
+        static void Destroy(FileAction* action)
+        {
+            te_free(action);
+        }
+
+        String::value_type* OldName;
+        String::value_type* NewName;
+        FileActionType Type;
+
+        UINT64 LastSize;
+        bool CheckForWriteStarted;
     };
 
-
-
-
-
-
-
-
     struct FolderMonitor::Pimpl
-    { };
- 
+    {
+        Vector<FolderWatchInfo*> Monitors;
+
+        Vector<FileAction*> FileActions;
+        Vector<FileAction*> ActiveFileActions;
+
+        int InHandle;
+        bool Started;
+        Mutex MainMutex;
+        Thread* WorkerThread;
+    };
+
     FolderMonitor::FolderMonitor()
     {
         m = te_new<Pimpl>();
+        m->WorkerThread = nullptr;
+        m->InHandle = 0;
+        m->Started = false;
     }
 
     FolderMonitor::~FolderMonitor()
     {
         StopMonitorAll();
 
+        // No need for mutex since we know worker thread is shut down by now
+        for(auto& action : m->FileActions)
+            FileAction::Destroy(action);
+
         te_delete(m);
     }
 
     void FolderMonitor::StartMonitor(const String& folderPath, bool subdirectories, UINT32 changeFilter)
-    { }
+    { 
+        if(!FileSystem::IsDirectory(folderPath))
+        {
+            TE_DEBUG("Provided path \"" + folderPath + "\" is not a directory");
+            return;
+        }
+
+        // TODO
+    }
 
     void FolderMonitor::StopMonitor(const String& folderPath)
-    { }
+    {
+        // TODO
+    }
 
     void FolderMonitor::StopMonitorAll()
-    { }
+    {
+        // TODO
+    }
 
     void FolderMonitor::WorkerThreadMain()
-    { }
+    {
+        // TODO
+    }
 
     void FolderMonitor::HandleNotifications(FileNotifyInfo& notifyInfo, FolderWatchInfo& watchInfo)
-    { }
+    {
+        // TODO
+    }
 
     void FolderMonitor::Update()
-    { }
+    {
+        // TODO
+    }
 }
