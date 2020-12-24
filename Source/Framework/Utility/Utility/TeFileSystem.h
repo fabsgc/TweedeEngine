@@ -85,6 +85,21 @@ namespace te
         static void GetChildren(const String& dirPath, Vector<String>& files, Vector<String>& directories, bool onlyFileName = false);
 
         /**
+         * Iterates over all files and directories in the specified folder and calls the provided callback when a
+         * file/folder is iterated over.
+         *
+         * @param[in]	dirPath			Directory over which to iterate
+         * @param[in]	fileCallback	Callback to call whenever a file is found. If callback returns false iteration stops. Can be null.
+         * @param[in]	dirCallback		Callback to call whenever a directory is found. If callback returns false iteration stops. Can be null.
+         * @param[in]	recursive		If false then only the direct children of the provided folder will be iterated over,
+         *								and if true then child directories will be recursively visited as well.
+         * @return						True if iteration finished iterating over all files/folders, or false if it was
+         *								interrupted by a callback returning false.
+         */
+        static bool Iterate(const String& dirPath, std::function<bool(const String&)> fileCallback,
+            std::function<bool(const String&)> dirCallback = nullptr, bool recursive = true);
+
+        /**
          * Returns the last modified time of a file or a folder at the specified path.
          *
          * @param[in]	path	Path to a file or a folder.

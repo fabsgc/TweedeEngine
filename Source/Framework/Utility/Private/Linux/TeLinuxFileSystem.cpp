@@ -104,6 +104,66 @@ namespace te
         closedir(dp);
     }
 
+    bool FileSystem::Iterate(const String& dirPath, std::function<bool(const String&)> fileCallback,
+        std::function<bool(const String&)> dirCallback, bool recursive)
+    {
+        if (unix_isFile(dirPath))
+            return false;
+
+        DIR* dirHandle = opendir(dirPath.c_str());
+        if (dirHandle == nullptr)
+        {
+            HANDLE_PATH_ERROR(dirPath, errno);
+            return false;
+        }
+
+        dirent* entry;
+        while((entry = readdir(dirHandle)))
+        {
+            String filename(entry->d_name);
+            if (filename == "." || filename == "..")
+                continue;
+
+            String fullPath = dirPath;
+            if (unix_isDirectory(dirPath + "/" + filename))
+            {
+                String childDir = fullPath.append(filename + "/");
+                if (dirCallback != nullptr)
+                {
+                    if (!dirCallback(childDir))
+                    {
+                        closedir(dirHandle);
+                        return false;
+                    }
+                }
+
+                if (recursive)
+                {
+                    if (!Iterate(childDir, fileCallback, dirCallback, recursive))
+                    {
+                        closedir(dirHandle);
+                        return false;
+                    }
+                }
+            }
+            else
+            {
+                String filePath = fullPath.append(filename);
+                if (fileCallback != nullptr)
+                {
+                    if (!fileCallback(filePath))
+                    {
+                        closedir(dirHandle);
+                        return false;
+                    }
+                }
+            }
+        }
+        closedir(dirHandle);
+
+        return true;
+    }
+
     std::time_t FileSystem::GetLastModifiedTime(const String& path)
     {
         struct stat st_buf;
