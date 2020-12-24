@@ -1,5 +1,8 @@
 #include "Scripting/TeNativeScript.h"
 
+#include "Scene/TeSceneObject.h"
+#include "Scene/TeSceneManager.h"
+
 using namespace te;
 
 class ExampleScript : public NativeScript

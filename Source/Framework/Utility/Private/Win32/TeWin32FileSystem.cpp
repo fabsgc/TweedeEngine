@@ -230,6 +230,82 @@ namespace te
         } while (true);
     }
 
+    bool FileSystem::Iterate(const String& dirPath, std::function<bool(const String&)> fileCallback, std::function<bool(const String&)> dirCallback, bool recursive)
+    {
+        WString findPath = UTF8::ToWide(dirPath);
+
+        if (win32_isFile(findPath))
+            return false;
+
+        if (IsFile(dirPath)) // Assuming the file is a folder, just improperly formatted in Path
+            findPath.append(L"\\*");
+        else
+            findPath.append(L"*");
+
+        WIN32_FIND_DATAW findData;
+        HANDLE fileHandle = FindFirstFileW(findPath.c_str(), &findData);
+        if (fileHandle == INVALID_HANDLE_VALUE)
+        {
+            win32_handleError(GetLastError(), findPath);
+            return false;
+        }
+
+        WString tempName;
+        do
+        {
+            tempName = findData.cFileName;
+
+            if (tempName != L"." && tempName != L"..")
+            {
+                String fullPath = dirPath;
+                if ((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0)
+                {
+                    String childDir = fullPath.append(UTF8::FromWide(tempName) + u8"/");
+                    if (dirCallback != nullptr)
+                    {
+                        if (!dirCallback(childDir))
+                        {
+                            FindClose(fileHandle);
+                            return false;
+                        }
+                    }
+
+                    if (recursive)
+                    {
+                        if (!Iterate(childDir, fileCallback, dirCallback, recursive))
+                        {
+                            FindClose(fileHandle);
+                            return false;
+                        }
+                    }
+                }
+                else
+                {
+                    String filePath = fullPath.append(UTF8::FromWide(tempName));
+                    if (fileCallback != nullptr)
+                    {
+                        if (!fileCallback(filePath))
+                        {
+                            FindClose(fileHandle);
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            if (FindNextFileW(fileHandle, &findData) == FALSE)
+            {
+                if (GetLastError() != ERROR_NO_MORE_FILES)
+                    win32_handleError(GetLastError(), findPath);
+
+                break;
+            }
+        } while (true);
+
+        FindClose(fileHandle);
+        return true;
+    }
+
     std::time_t FileSystem::GetLastModifiedTime(const String& fullPath)
     {
         return win32_getLastModifiedTime(UTF8::ToWide(fullPath));

@@ -40,7 +40,7 @@ namespace te
         bool MonitorSubdirectories;
         DWORD MonitorFlags;
         DWORD ReadError;
-
+          
         WString CachedOldFileName; // Used during rename notifications as they are handled in two steps
 
         Mutex StatusMutex;
