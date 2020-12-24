@@ -93,14 +93,6 @@ namespace te
 
         /** Returns the path to the currently working directory. */
         static String GetWorkingDirectoryPath();
-
-    private:
-        /** Copy a single file. Internal function used by copy(). */
-        static void CopyInternal(const String& oldPath, const String& newPath);
-        /** Remove a single file. Internal function used by Remove(). */
-        static void RemoveInternal(const String& path);
-        /** Move a single file. Internal function used by Move(). */
-        static void MoveInternal(const String& oldPath, const String& newPath);
     };
 
     /**

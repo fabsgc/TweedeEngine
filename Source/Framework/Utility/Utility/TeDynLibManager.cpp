@@ -59,6 +59,7 @@ namespace te
         const auto& iterFind = _loadedLibrairies.find(lib->GetName());
         if (iterFind != _loadedLibrairies.end())
         {
+            iterFind->get()->Unload();
             _loadedLibrairies.erase(iterFind);
         }
         else

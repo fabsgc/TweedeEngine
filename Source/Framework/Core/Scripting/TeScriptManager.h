@@ -2,10 +2,17 @@
 
 #include "TeCorePrerequisites.h"
 #include "Utility/TeModule.h"
+#include "Platform/TeFolderMonitor.h"
 
 namespace te
 {
     class NativeScript;
+
+    struct UnloadedScript
+    {
+        Script* ScriptToReload;
+        HSceneObject PreviousSceneObject;
+    };
 
     /**	Handles initialization of a scripting system. */
     class TE_CORE_EXPORT ScriptManager : public Module<ScriptManager>
@@ -45,12 +52,28 @@ namespace te
         /** Update any script which has been modified */
         void Update();
 
+    private: // #### EVENTS FOR SCRIPTS FOLRDER WATCHING
+        /**	Triggered when the native folder monitor detects a file has been modified. */
+        void OnMonitorFileModified(const String& path);
+
+        /**	Triggered when the native folder monitor detects a file has been added. */
+        void OnMonitorFileAdded(const String& path);
+
+        /**	Triggered when the native folder monitor detects a file has been removed. */
+        void OnMonitorFileRemoved(const String& path);
+
+        /**	Triggered when the native folder monitor detects a file has been renamed. */
+        void OnMonitorFileRenamed(const String& from, const String& to);
+
     private:
         /** Try to load a new script lib (.dll, .so) */
         DynLib* LoadScriptLibrary(const String& name);
 
-        /** Try to unload a new script lib (.dll, .so) */
-        void UnloadScriptLibrary(const String& name);
+        /** 
+         * Try to unload a new script lib (.dll, .so), 
+         * if second argument is not null, it's filled with pointer to script which were using this nativeScript 
+         */
+        void UnloadScriptLibrary(const String& name, Vector<UnloadedScript>* unloadedScripts = nullptr);
 
         /** Returns (and loads if not loaded yet) the given dynamic library */
         DynLib* GetScriptLibrary(const String& name);
@@ -68,6 +91,8 @@ namespace te
     private:
         UnorderedMap<String, DynLib*> _scriptLibraries;
         Vector<Script*> _scripts;
+        FolderMonitor _folderMonitor;
+
     };
 
     /** Provides easy access to the ScriptManager. */

@@ -21,17 +21,6 @@ namespace te
         return ReplaceAll(path, "/", "\\");
     }
 
-    class WorkerFunc
-    {
-    public:
-        WorkerFunc(FolderMonitor* owner);
-
-        void operator()();
-
-    private:
-        FolderMonitor* _owner;
-    };
-
     struct FolderMonitor::FolderWatchInfo
     {
         FolderWatchInfo(const String& folderToMonitor, HANDLE dirHandle, bool monitorSubdirectories, DWORD monitorFlags);
@@ -210,7 +199,7 @@ namespace te
 
     struct FileAction
     {
-        static FileAction* createAdded(const WString& fileName)
+        static FileAction* CreateAdded(const WString& fileName)
         {
             String utf8filename = UTF8::FromWide(fileName);
             UINT8* bytes = (UINT8*)te_allocate((UINT32)(sizeof(FileAction) + (utf8filename.size() + 1) * sizeof(String::value_type)));
@@ -230,7 +219,7 @@ namespace te
             return action;
         }
 
-        static FileAction* createRemoved(const WString& fileName)
+        static FileAction* CreateRemoved(const WString& fileName)
         {
             String utf8filename = UTF8::FromWide(fileName);
             UINT8* bytes = (UINT8*)te_allocate((UINT32)(sizeof(FileAction) + (utf8filename.size() + 1) * sizeof(String::value_type)));
@@ -250,7 +239,7 @@ namespace te
             return action;
         }
 
-        static FileAction* createModified(const WString& fileName)
+        static FileAction* CreateModified(const WString& fileName)
         {
             String utf8filename = UTF8::FromWide(fileName);
             UINT8* bytes = (UINT8*)te_allocate((UINT32)(sizeof(FileAction) + (utf8filename.size() + 1) * sizeof(String::value_type)));
@@ -270,7 +259,7 @@ namespace te
             return action;
         }
 
-        static FileAction* createRenamed(const WString& oldFilename, const WString& newFileName)
+        static FileAction* CreateRenamed(const WString& oldFilename, const WString& newFileName)
         {
             String utf8Oldfilename = UTF8::FromWide(oldFilename);
             String utf8Newfilename = UTF8::FromWide(newFileName);
@@ -285,7 +274,7 @@ namespace te
             bytes += (utf8Oldfilename.size() + 1) * sizeof(String::value_type);
 
             action->NewName = (String::value_type*)bytes;
-            action->Type = FileActionType::Modified;
+            action->Type = FileActionType::Renamed;
 
             memcpy(action->OldName, utf8Oldfilename.data(), utf8Oldfilename.size() * sizeof(String::value_type));
             action->OldName[utf8Oldfilename.size()] = L'\0';
@@ -589,26 +578,22 @@ namespace te
         {
             WString fullPath = notifyInfo.GetFileNameWithPath(watchInfo.FolderToMonitor);
 
-            // Ignore notifications about hidden files
-            if ((GetFileAttributesW(fullPath.c_str()) & FILE_ATTRIBUTE_HIDDEN) != 0)
-                continue;
-
             switch (notifyInfo.GetAction())
             {
             case FILE_ACTION_ADDED:
-                mActions.push_back(FileAction::createAdded(fullPath));
+                mActions.push_back(FileAction::CreateAdded(fullPath));
                 break;
             case FILE_ACTION_REMOVED:
-                mActions.push_back(FileAction::createRemoved(fullPath));
+                mActions.push_back(FileAction::CreateRemoved(fullPath));
                 break;
             case FILE_ACTION_MODIFIED:
-                mActions.push_back(FileAction::createModified(fullPath));
+                mActions.push_back(FileAction::CreateModified(fullPath));
                 break;
             case FILE_ACTION_RENAMED_OLD_NAME:
                 watchInfo.CachedOldFileName = fullPath;  
                 break;
             case FILE_ACTION_RENAMED_NEW_NAME:
-                mActions.push_back(FileAction::createRenamed(watchInfo.CachedOldFileName, fullPath));
+                mActions.push_back(FileAction::CreateRenamed(watchInfo.CachedOldFileName, fullPath));
                 break;
             }
 

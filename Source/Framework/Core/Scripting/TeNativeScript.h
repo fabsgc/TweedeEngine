@@ -82,6 +82,11 @@ namespace te
          */
         void SetParentSceneObject(const HSceneObject& sceneObject) { _parentSO = sceneObject.GetNewHandleFromExisting(); }
 
+        /**
+         * @copydoc SetParentSceneObject
+         */
+        const HSceneObject& GetParentSceneObject() const { return _parentSO; }
+
     private:
         /** For file wathing, we need to know which dll is used behind each native script */
         String _libraryName;

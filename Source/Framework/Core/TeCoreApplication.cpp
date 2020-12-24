@@ -111,8 +111,8 @@ namespace te
 
         BuiltinResources::ShutDown();
         RendererMaterialManager::ShutDown();
-        AudioManager::ShutDown();
         Importer::ShutDown();
+        AudioManager::ShutDown();
         VirtualInput::ShutDown();
         Input::ShutDown();
         ParamBlockManager::ShutDown();

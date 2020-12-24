@@ -6,13 +6,32 @@
 #include "TeScript.h"
 #include "TeNativeScript.h"
 
+#include <filesystem>
+
+using namespace std::placeholders;
+
 namespace te
 {
     const String ScriptManager::LIBRARIES_PATH = "Data/Scripts/";
 
     void ScriptManager::OnStartUp()
     {
-         
+#ifdef TE_ENGINE_BUILD
+        static String appRoot = RAW_APP_ROOT;
+#else
+        static String rawAppRoot = "";
+#endif
+
+        UINT32 folderChanges = 0;
+        folderChanges |= (UINT32)FolderChangeFlag::FileName;
+        folderChanges |= (UINT32)FolderChangeFlag::FileWrite;
+
+        _folderMonitor.StartMonitor(appRoot + LIBRARIES_PATH, false, folderChanges);
+
+        _folderMonitor.OnAdded.Connect(std::bind(&ScriptManager::OnMonitorFileAdded, this, _1));
+        _folderMonitor.OnRemoved.Connect(std::bind(&ScriptManager::OnMonitorFileRemoved, this, _1));
+        _folderMonitor.OnModified.Connect(std::bind(&ScriptManager::OnMonitorFileModified, this, _1));
+        _folderMonitor.OnRenamed.Connect(std::bind(&ScriptManager::OnMonitorFileRenamed, this, _1, _2));
     }
 
     void ScriptManager::OnShutDown()
@@ -22,12 +41,13 @@ namespace te
             TE_ASSERT_ERROR(false, "Not all scripts have been unregistered from Script Manager");
 #endif
 
+        _folderMonitor.StopMonitorAll();
         _scripts.clear();
         UnloadAll();
     }
 
     void ScriptManager::PreUpdate()
-    { 
+    {
         for (auto& script : _scripts)
         {
             script->PreUpdate();
@@ -43,7 +63,7 @@ namespace te
     }
 
     void ScriptManager::PostRender()
-    { 
+    {
         for (auto& script : _scripts)
         {
             script->PostRender();
@@ -51,7 +71,9 @@ namespace te
     }
 
     void ScriptManager::Update()
-    { 
+    {
+        _folderMonitor.Update();
+
         for (auto& script : _scripts)
         {
             script->Update();
@@ -119,23 +141,34 @@ namespace te
 
             return library;
         }
-        
+
         return nullptr;
     }
 
-    void ScriptManager::UnloadScriptLibrary(const String& name)
+    void ScriptManager::UnloadScriptLibrary(const String& name, Vector<UnloadedScript>* unloadedScripts)
     {
         auto iter = _scriptLibraries.find(name);
         if (iter != _scriptLibraries.end())
         {
+            // Remove instances of script which will be unloaded
             for (auto& script : _scripts)
             {
                 auto nativeScript = script->GetNativeScript();
+
+                if (nativeScript && unloadedScripts)
+                {
+                    UnloadedScript unloadedScript;
+                    unloadedScript.ScriptToReload = script;
+                    unloadedScript.PreviousSceneObject = nativeScript->GetParentSceneObject();
+
+                    (*unloadedScripts).push_back(unloadedScript);
+                }
+
                 if (nativeScript && name == nativeScript->GetLibraryName())
                     script->SetNativeScript(String(), HSceneObject());
             }
 
-            iter->second->Unload();
+            gDynLibManager().Unload(iter->second);
             _scriptLibraries.erase(iter);
         }
     }
@@ -157,7 +190,6 @@ namespace te
     {
         for (auto& script : _scripts)
         {
-            auto nativeScript = script->GetNativeScript();
             script->SetNativeScript(String(), HSceneObject());
         }
 
@@ -172,6 +204,83 @@ namespace te
     {
         String path = name + "." + DynLib::EXTENSION;
         return FileSystem::Exists(path);
+    }
+
+    void ScriptManager::OnMonitorFileModified(const String& path)
+    {
+        std::filesystem::path filePath(path);
+        if (filePath.has_filename())
+        {
+            String fileName = filePath.filename().string();
+            String fileExtension = filePath.extension().string();
+
+            if (fileExtension == ".cpp")
+            {
+                fileName = ReplaceAll(fileName, fileExtension, "");
+                Vector<UnloadedScript> unloadedScripts;
+                UnloadScriptLibrary(fileName, &unloadedScripts);
+                if (CompileLibrary(fileName))
+                {
+                    for (auto& unloadedScript : unloadedScripts)
+                    {
+                        unloadedScript.ScriptToReload->SetNativeScript(fileName, unloadedScript.PreviousSceneObject);
+                    }
+                }
+            }
+        }
+    }
+
+    void ScriptManager::OnMonitorFileAdded(const String& path)
+    {
+        // NOTHING
+    }
+
+    void ScriptManager::OnMonitorFileRemoved(const String& path)
+    {
+        std::filesystem::path filePath(path);
+        if (filePath.has_filename())
+        {
+            String fileName = filePath.filename().string();
+            String fileExtension = filePath.extension().string();
+
+            if (fileExtension == ".cpp")
+            {
+                fileName = ReplaceAll(fileName, fileExtension, "");
+                UnloadScriptLibrary(fileName);
+            }
+        }
+    }
+
+    void ScriptManager::OnMonitorFileRenamed(const String& from, const String& to) 
+    {
+        std::filesystem::path oldFilePath(from);
+        std::filesystem::path newFilePath(to);
+        if (oldFilePath.has_filename() && newFilePath.has_filename())
+        {
+            String oldFileName = oldFilePath.filename().string();
+            String newFileName = newFilePath.filename().string();
+            String oldFileExtension = oldFilePath.extension().string();
+            String newFileExtension = newFilePath.extension().string();
+
+            if (oldFileExtension == ".cpp")
+            {
+                oldFileName = ReplaceAll(oldFileName, oldFileExtension, "");
+
+                Vector<UnloadedScript> unloadedScripts;
+                UnloadScriptLibrary(oldFileName, &unloadedScripts);
+                if (unloadedScripts.size() > 0 && CompileLibrary(newFileName))
+                {
+                    if (newFileExtension == ".cpp")
+                    {
+                        newFileName = ReplaceAll(newFileName, newFileExtension, "");
+                        for (auto& unloadedScript : unloadedScripts)
+                        {
+                            unloadedScript.ScriptToReload->SetNativeScript(newFileName, unloadedScript.PreviousSceneObject);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     ScriptManager& gScriptManager()

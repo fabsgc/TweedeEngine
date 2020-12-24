@@ -79,8 +79,6 @@ namespace te
     {
         if (_nativeScript)
             _nativeScript->OnShutdown();
-
-        gScriptManager().UnregisterScript(this);
     }
 
     void Script::OnDisabled()

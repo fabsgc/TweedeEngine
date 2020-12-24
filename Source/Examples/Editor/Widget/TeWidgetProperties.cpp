@@ -345,7 +345,6 @@ namespace te
                 {
                     ImGuiExt::ComboOptions<UINT32> bonesOptions;
                     SPtr<Skeleton> skeleton = renderable->GetMesh()->GetSkeleton();
-                    UINT32 rootBoneIndex = skeleton->GetRootBoneIndex();
                     UINT32 boneIndex = -1;
 
                     bonesOptions.AddOption(-1, "None");
