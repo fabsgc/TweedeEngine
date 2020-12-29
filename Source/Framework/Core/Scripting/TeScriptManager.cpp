@@ -255,6 +255,7 @@ namespace te
     {
         std::filesystem::path oldFilePath(from);
         std::filesystem::path newFilePath(to);
+
         if (oldFilePath.has_filename() && newFilePath.has_filename())
         {
             String oldFileName = oldFilePath.filename().string();
