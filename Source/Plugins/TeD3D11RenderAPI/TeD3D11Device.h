@@ -19,7 +19,7 @@ namespace te
     {
     public:
         /** Constructs the object with a previously created DX11 device. */
-        D3D11Device(ID3D11Device* device);
+        D3D11Device(ID3D11Device* device, bool useDebugLayer);
         ~D3D11Device();
 
         /** Shuts down the device any releases any internal resources. */

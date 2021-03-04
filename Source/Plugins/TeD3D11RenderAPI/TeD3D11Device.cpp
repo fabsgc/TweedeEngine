@@ -2,7 +2,7 @@
 
 namespace te
 {
-    D3D11Device::D3D11Device(ID3D11Device* device)
+    D3D11Device::D3D11Device(ID3D11Device* device, bool useDebugLayer)
         : _D3D11Device(device)
         , _D3D11FeatureOptions()
     {
@@ -13,15 +13,16 @@ namespace te
             device->GetImmediateContext(&_immediateContext);
 
 #if TE_DEBUG_MODE
-            // This interface is not available unless we created the device with debug layer
-            HRESULT hr = _D3D11Device->QueryInterface(__uuidof(ID3D11InfoQueue), (LPVOID*)&_infoQueue);
-
-            if (FAILED(hr))
+            if (useDebugLayer)
             {
-                TE_ASSERT_ERROR(false, "Unable to query D3D11InfoQueue");
-            }
+                // This interface is not available unless we created the device with debug layer
+                HRESULT hr = _D3D11Device->QueryInterface(__uuidof(ID3D11InfoQueue), (LPVOID*)&_infoQueue);
 
-            SetExceptionsErrorLevel(D3D11ERR_ERROR);
+                if (FAILED(hr))
+                    TE_ASSERT_ERROR(false, "Unable to query D3D11InfoQueue");
+
+                SetExceptionsErrorLevel(D3D11ERR_ERROR);
+            }
 #endif
 
             // If feature level is 11, create class linkage

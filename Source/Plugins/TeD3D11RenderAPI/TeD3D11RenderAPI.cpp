@@ -65,13 +65,24 @@ namespace te
         const UINT32 numRequestedLevels = sizeof(requestedLevels) / sizeof(requestedLevels[0]);
 
         UINT32 deviceFlags = 0;
+        bool debugLayerAvailable = false;
 #if TE_DEBUG_MODE
+        debugLayerAvailable = true;
         deviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
 
         ID3D11Device* device;
         hr = D3D11CreateDevice(selectedAdapter, D3D_DRIVER_TYPE_UNKNOWN, nullptr, deviceFlags,
             requestedLevels, numRequestedLevels, D3D11_SDK_VERSION, &device, &_featureLevel, nullptr);
+
+        // Maybe Graphics tools are not available
+        if (FAILED(hr))
+        {
+            deviceFlags = 0;
+            debugLayerAvailable = false;
+            hr = D3D11CreateDevice(selectedAdapter, D3D_DRIVER_TYPE_UNKNOWN, nullptr, deviceFlags,
+                &requestedLevels[1], numRequestedLevels - 1, D3D11_SDK_VERSION, &device, &_featureLevel, nullptr);
+        }
 
         // This will fail on Win 7 due to lack of 11.1, so re-try again without it
         if (hr == E_INVALIDARG)
@@ -85,7 +96,7 @@ namespace te
             TE_ASSERT_ERROR(false, "Failed to create Direct3D11 object. D3D11CreateDeviceN returned this error code: " + ToString(hr));
         }
 
-        _device = te_new<D3D11Device>(device);
+        _device = te_new<D3D11Device>(device, debugLayerAvailable);
 
         // Create the texture manager for use by others
         TextureManager::StartUp<D3D11TextureManager>();
