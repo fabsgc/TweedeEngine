@@ -262,7 +262,7 @@ namespace te
         else
         {
             // Return an invalid result to flag the error
-            return ZERO;
+            return Quaternion(TE_ZERO());
         }
     }
 

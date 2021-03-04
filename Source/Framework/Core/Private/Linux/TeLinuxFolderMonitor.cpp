@@ -156,7 +156,7 @@ namespace te
             action->NewName = (String::value_type*)bytes;
             action->Type = FileActionType::Modified;
 
-            memcpy(action->newName, fileName.data(), fileName.size() * sizeof(String::value_type));
+            memcpy(action->NewName, fileName.data(), fileName.size() * sizeof(String::value_type));
             action->NewName[fileName.size()] = L'\0';
             action->LastSize = 0;
             action->CheckForWriteStarted = false;
@@ -248,7 +248,7 @@ namespace te
             // Identical monitor exists
             if(monitor->FolderToMonitor == folderPath)
             {
-                BS_LOG(Warning, Platform, "Folder is already monitored, cannot monitor it again.");
+                TE_DEBUG("Folder is already monitored, cannot monitor it again.");
                 return;
             }
 
@@ -289,7 +289,7 @@ namespace te
         auto findIter = std::find_if(m->Monitors.begin(), m->Monitors.end(),
             [&](const FolderWatchInfo* x) { return x->FolderToMonitor == folderPath; });
 
-        if(findIter != m->monitors.end())
+        if(findIter != m->Monitors.end())
         {
             // Special case if this is the last monitor
             if(m->Monitors.size() == 1)
@@ -353,7 +353,7 @@ namespace te
         bool shouldRun;
         INT32 watchHandle;
         {
-            Lock(m->mainMutex);
+            Lock(m->MainMutex);
             watchHandle = m->InHandle;
             shouldRun = m->Started;
         }
@@ -381,14 +381,14 @@ namespace te
                 if(event->len > 0)
                 {
                     {
-                        Lock lock(m->mainMutex);
+                        Lock lock(m->MainMutex);
 
                         String path;
                         FolderWatchInfo* monitor = nullptr;
-                        for (auto& entry : m->monitors)
+                        for (auto& entry : m->Monitors)
                         {
                             entry->GetPath(event->wd);
-                            if (!path.Empty())
+                            if (!path.empty())
                             {
                                 path += "/";
                                 path += String(event->name);
@@ -427,7 +427,7 @@ namespace te
                             else
                             {
                                 if (monitor->Filter & (UINT32)FolderChangeFlag::FileName)
-                                    m->FileActions.push_back(FileAction::createAdded(path));
+                                    m->FileActions.push_back(FileAction::CreateAdded(path));
                             }
                         }
 
@@ -487,20 +487,20 @@ namespace te
                     OnAdded(action->NewName);
                 break;
             case FileActionType::Removed:
-                if (!onRemoved.Empty())
+                if (!OnRemoved.Empty())
                     OnRemoved(action->NewName);
                 break;
             case FileActionType::Modified:
-                if (!onModified.Empty())
+                if (!OnModified.Empty())
                     OnModified(action->NewName);
                 break;
             case FileActionType::Renamed:
-                if (!onRenamed.Empty())
+                if (!OnRenamed.Empty())
                     OnRenamed(action->OldName, action->NewName);
                 break;
             }
 
-            FileAction::destroy(action);
+            FileAction::Destroy(action);
         }
 
         m->ActiveFileActions.clear();
