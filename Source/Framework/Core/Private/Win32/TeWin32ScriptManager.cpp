@@ -13,7 +13,7 @@ namespace te
         static String appRoot = ReplaceAll(RAW_APP_ROOT, "/", "\\");
         static String includePath = appRoot + "Source\\Framework\\";
 #else
-        static String rawAppRoot = "";
+        static String appRoot = "";
         static String includePath = appRoot + "Include\\";
 #endif
 
@@ -41,7 +41,7 @@ namespace te
         return output;
     }
 
-    String CompileRelease(const String& name)
+    String CompileRelease(const ScriptIdentifier& identifier)
     {
         String output;
         static String librariesPath = ReplaceAll(ScriptManager::LIBRARIES_PATH, "/", "\\");
@@ -50,6 +50,7 @@ namespace te
         static String includePath = appRoot + "Source\\Framework\\";
 #else
         static String appRoot = "";
+        static String includePath = appRoot + "Include\\";
 #endif
 
         output += "/LD ";
@@ -58,9 +59,9 @@ namespace te
         output += "/Zi /nologo /W3 /WX- /diagnostics:classic /MP /Od /D WIN32 /D _WINDOWS ";
         output += "/D NDEBUG /D_WINDLL /D _MBCS /Gm- /MD /GS- /Gy /fp:precise /Zc:wchar_t ";
         output += "/Zc:forScope /Zc:inline /GR /std:c++17 ";
-        output += appRoot + librariesPath + name + ".cpp ";
+        output += identifier.AbsolutePath + identifier.Name + ".cpp ";
         output += "/Gd /TP /wd4577 /wd4530 /bigobj /link ";
-        output += "/OUT:" + name + ".dll ";
+        output += "/OUT:" + identifier.Name + ".dll ";
         output += "/OPT:REF ";
 #if  TE_CONFIG == TE_CONFIG_RELWITHDEBINFO
         output += "..\\..\\..\\lib\\x64\\RelWithDebInfo\\tef.lib ";
@@ -70,7 +71,7 @@ namespace te
         output += "..\\..\\..\\lib\\x64\\Release\\tef.lib ";
 #endif
         output += "/DEBUG ";
-        output += "/PDB:" + name + ".pdb" + " ";
+        output += "/PDB:" + identifier.Name + ".pdb" + " ";
         output += "/TLBID:1 /DYNAMICBASE /NXCOMPAT /MACHINE:X64 /DEBUG /machine:x64";
 
         return output;
@@ -95,7 +96,7 @@ namespace te
 #if TE_DEBUG_MODE
         command = command + CompileDebug(identifier);
 #else
-        command = command + CompileRelease(name);
+        command = command + CompileRelease(identifier);
         //flags |= CREATE_NO_WINDOW;
 #endif
 

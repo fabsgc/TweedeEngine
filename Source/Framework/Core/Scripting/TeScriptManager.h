@@ -26,7 +26,7 @@ namespace te
             return Name < rhs.Name;
         }
 
-        ScriptIdentifier::ScriptIdentifier(const String& name, const String& path = "")
+        ScriptIdentifier(const String& name, const String& path = "")
             : Name(name)
             , AbsolutePath(path)
         {
@@ -50,7 +50,8 @@ namespace te
                 static String librariesPath = ReplaceAll("Data/Scripts/", "/", "\\");
                 AbsolutePath = appRoot + librariesPath;
 #else
-                AbsolutePath = RAW_APP_ROOT + ScriptManager::LIBRARIES_PATH;
+                static String librariesPath = "Data/Scripts/";
+                AbsolutePath = RAW_APP_ROOT + librariesPath;
 #endif
             }
         }
