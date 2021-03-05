@@ -820,13 +820,16 @@ namespace te
         {
             for (auto& file : files)
             {
-                if (RegexMatch(file, "^(.*)(\\.cpp)$"))
+                if(file.length() > 4)
                 {
-                    String fileName = ReplaceAll(file, ".cpp", "");
-                    ScriptIdentifier ident(fileName);
+                    if(file.substr(file.length() - 4, 4) == ".cpp")
+                    {
+                        String fileName = file.substr(0, file.length() - 4);
+                        ScriptIdentifier ident(fileName);
 
-                    scriptsOptions.AddOption(ident, fileName);
-                    identifiers.push_back(ident.Name);
+                        scriptsOptions.AddOption(ident, fileName);
+                        identifiers.push_back(ident.Name);
+                    }
                 }
             }
 

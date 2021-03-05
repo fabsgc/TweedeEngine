@@ -13,6 +13,7 @@ namespace te
     /** Descriptor structure used for initialization of a GpuProgram. */
     struct TE_CORE_EXPORT GPU_PROGRAM_DESC
     {
+        String FileName; /**< FileName used to know if shader is already built or not */
         String Source; /**< Source code to compile the program from. */
         String EntryPoint; /**< Name of the entry point function, for example "main". */
         String Language; /**< Language the source is written in, for example "hlsl" or "glsl". */
@@ -132,6 +133,7 @@ namespace te
         String _entryPoint;
         String _source;
         String _includePath;
+        String _fileName;
         bool _needsAdjacencyInfo;
 
         SPtr<GpuParamDesc> _parametersDesc;

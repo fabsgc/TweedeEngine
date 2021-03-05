@@ -4,6 +4,8 @@
 #include "RenderAPI/TeGpuProgramManager.h"
 #include "TeD3D11HLSLInclude.h"
 
+#include <filesystem>
+
 namespace te
 {
 
@@ -22,5 +24,9 @@ namespace te
 
         /** @copydoc GpuProgramFactory::CompileBytecode(const GPU_PROGRAM_DESC&) */
         SPtr<GpuProgramBytecode> CompileBytecode(const GPU_PROGRAM_DESC & desc) override;
+
+    private:
+        /** If shader is already compiled, we open it instead compile it */
+        ID3DBlob* OpenMicroCode(const std::filesystem::path& path);
     };
 }

@@ -161,7 +161,7 @@ namespace te
             Keywords _keywords;
             Identifiers _identifiers;
             Identifiers _preprocIdentifiers;
-            std::string _commentStart, mCommentEnd, mSingleLineComment;
+            std::string _commentStart, _commentEnd, _singleLineComment;
             char _preprocChar;
             bool _autoIndentation;
 

@@ -24,7 +24,7 @@ namespace te
         InitShaderDesc();
 #if TE_PLATFORM == TE_PLATFORM_WIN32 //TODO to remove when OpenGL will be done
         InitSamplers();
-        InitShaderOpaque();
+        /*InitShaderOpaque();
         InitShaderTransparent();
         InitShaderBlit();
         InitShaderSkybox();
@@ -36,7 +36,7 @@ namespace te
         InitShaderPicking();
         InitShaderSelection();
         InitShaderHudPicking();
-        InitShaderHudSelection();
+        InitShaderHudSelection();*/
         InitDefaultMaterial();
 #endif
     }
@@ -51,42 +51,68 @@ namespace te
         switch(type)
         {
         case BuiltinShader::Opaque:
+            if(_shaderOpaque.GetHandleData() == nullptr)
+                InitShaderOpaque();
             shader = _shaderOpaque;
             break;
         case BuiltinShader::Transparent:
+            if(_shaderTransparent.GetHandleData() == nullptr)
+                InitShaderTransparent();
             shader = _shaderTransparent;
             break;
         case BuiltinShader::Blit:
+            if(_shaderBlit.GetHandleData() == nullptr)
+                InitShaderBlit();
             shader = _shaderBlit;
             break;
         case BuiltinShader::Skybox:
+            if(_shaderSkybox.GetHandleData() == nullptr)
+                InitShaderSkybox();
             shader = _shaderSkybox;
             break;
         case BuiltinShader::FXAA:
+            if(_shaderFXAA.GetHandleData() == nullptr)
+                InitShaderFXAA();
             shader = _shaderFXAA;
             break;
         case BuiltinShader::ToneMapping:
+            if(_shaderToneMapping.GetHandleData() == nullptr)
+                InitShaderToneMapping();
             shader = _shaderToneMapping;
             break;
         case BuiltinShader::Bloom:
+            if(_shaderBloom.GetHandleData() == nullptr)
+                InitShaderBloom();
             shader = _shaderBloom;
             break;
         case BuiltinShader::MotionBlur:
+            if(_shaderMotionBlur.GetHandleData() == nullptr)
+                InitShaderMotionBlur();
             shader = _shaderMotionBlur;
             break;
         case BuiltinShader::GaussianBlur:
+            if(_shaderGaussianBlur.GetHandleData() == nullptr)
+                InitShaderGaussianBlur();
             shader = _shaderGaussianBlur;
             break;
         case BuiltinShader::Picking:
+            if(_shaderPicking.GetHandleData() == nullptr)
+                InitShaderPicking();
             shader = _shaderPicking;
             break;
         case BuiltinShader::HudPicking:
+            if(_shaderHudPicking.GetHandleData() == nullptr)
+                InitShaderHudPicking();
             shader = _shaderHudPicking;
             break;
         case BuiltinShader::Selection:
+            if(_shaderSelection.GetHandleData() == nullptr)
+                InitShaderSelection();
             shader = _shaderSelection;
             break;
         case BuiltinShader::HudSelection:
+            if(_shaderHudSelection.GetHandleData() == nullptr)
+                InitShaderHudSelection();
             shader = _shaderHudSelection;
             break;
         default:
@@ -118,6 +144,7 @@ namespace te
         {
             FileStream shaderFile(SHADERS_FOLDER + String("HLSL/Forward_VS.hlsl"));
             _vertexShaderForwardDesc.Type = GPT_VERTEX_PROGRAM;
+            _vertexShaderForwardDesc.FileName = "Forward_VS";
             _vertexShaderForwardDesc.EntryPoint = "main";
             _vertexShaderForwardDesc.Language = "hlsl";
             _vertexShaderForwardDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
@@ -127,6 +154,7 @@ namespace te
         {
             FileStream shaderFile(SHADERS_FOLDER + String("HLSL/Forward_PS.hlsl"));
             _pixelShaderForwardDesc.Type = GPT_PIXEL_PROGRAM;
+            _pixelShaderForwardDesc.FileName = "Forward_PS";
             _pixelShaderForwardDesc.EntryPoint = "main";
             _pixelShaderForwardDesc.Language = "hlsl";
             _pixelShaderForwardDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
@@ -136,6 +164,7 @@ namespace te
         {
             FileStream shaderFile(SHADERS_FOLDER + String("HLSL/Blit_VS.hlsl"));
             _vertexShaderBlitDesc.Type = GPT_VERTEX_PROGRAM;
+            _vertexShaderBlitDesc.FileName = "Blit_VS";
             _vertexShaderBlitDesc.EntryPoint = "main";
             _vertexShaderBlitDesc.Language = "hlsl";
             _vertexShaderBlitDesc.IncludePath = "";
@@ -145,6 +174,7 @@ namespace te
         {
             FileStream shaderFile(SHADERS_FOLDER + String("HLSL/Blit_PS.hlsl"));
             _pixelShaderBlitDesc.Type = GPT_PIXEL_PROGRAM;
+            _pixelShaderBlitDesc.FileName = "Blit_PS";
             _pixelShaderBlitDesc.EntryPoint = "main";
             _pixelShaderBlitDesc.Language = "hlsl";
             _pixelShaderBlitDesc.IncludePath = "";
@@ -154,6 +184,7 @@ namespace te
         {
             FileStream shaderFile(SHADERS_FOLDER + String("HLSL/Skybox_VS.hlsl"));
             _vertexShaderSkyboxDesc.Type = GPT_VERTEX_PROGRAM;
+            _vertexShaderSkyboxDesc.FileName = "Skybox_VS";
             _vertexShaderSkyboxDesc.EntryPoint = "main";
             _vertexShaderSkyboxDesc.Language = "hlsl";
             _vertexShaderSkyboxDesc.IncludePath = "";
@@ -163,6 +194,7 @@ namespace te
         {
             FileStream shaderFile(SHADERS_FOLDER + String("HLSL/Skybox_PS.hlsl"));
             _pixelShaderSkyboxDesc.Type = GPT_PIXEL_PROGRAM;
+            _pixelShaderSkyboxDesc.FileName = "Skybox_PS";
             _pixelShaderSkyboxDesc.EntryPoint = "main";
             _pixelShaderSkyboxDesc.Language = "hlsl";
             _pixelShaderSkyboxDesc.IncludePath = "";
@@ -172,6 +204,7 @@ namespace te
         {
             FileStream shaderFile(SHADERS_FOLDER + String("HLSL/FXAA_VS.hlsl"));
             _vertexShaderFXAADesc.Type = GPT_VERTEX_PROGRAM;
+            _vertexShaderFXAADesc.FileName = "FXAA_VS";
             _vertexShaderFXAADesc.EntryPoint = "main";
             _vertexShaderFXAADesc.Language = "hlsl";
             _vertexShaderFXAADesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
@@ -181,6 +214,7 @@ namespace te
         {
             FileStream shaderFile(SHADERS_FOLDER + String("HLSL/FXAA_PS.hlsl"));
             _pixelShaderFXAADesc.Type = GPT_PIXEL_PROGRAM;
+            _pixelShaderFXAADesc.FileName = "FXAA_PS";
             _pixelShaderFXAADesc.EntryPoint = "main";
             _pixelShaderFXAADesc.Language = "hlsl";
             _pixelShaderFXAADesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
@@ -190,6 +224,7 @@ namespace te
         {
             FileStream shaderFile(SHADERS_FOLDER + String("HLSL/ToneMapping_VS.hlsl"));
             _vertexShaderToneMappingDesc.Type = GPT_VERTEX_PROGRAM;
+            _vertexShaderToneMappingDesc.FileName = "ToneMapping_VS";
             _vertexShaderToneMappingDesc.EntryPoint = "main";
             _vertexShaderToneMappingDesc.Language = "hlsl";
             _vertexShaderToneMappingDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
@@ -199,6 +234,7 @@ namespace te
         {
             FileStream shaderFile(SHADERS_FOLDER + String("HLSL/ToneMapping_PS.hlsl"));
             _pixelShaderToneMappingDesc.Type = GPT_PIXEL_PROGRAM;
+            _pixelShaderToneMappingDesc.FileName = "ToneMapping_PS";
             _pixelShaderToneMappingDesc.EntryPoint = "main";
             _pixelShaderToneMappingDesc.Language = "hlsl";
             _pixelShaderToneMappingDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
@@ -208,6 +244,7 @@ namespace te
         {
             FileStream shaderFile(SHADERS_FOLDER + String("HLSL/Bloom_VS.hlsl"));
             _vertexShaderBloomDesc.Type = GPT_VERTEX_PROGRAM;
+            _vertexShaderBloomDesc.FileName = "Bloom_VS";
             _vertexShaderBloomDesc.EntryPoint = "main";
             _vertexShaderBloomDesc.Language = "hlsl";
             _vertexShaderBloomDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
@@ -217,6 +254,7 @@ namespace te
         {
             FileStream shaderFile(SHADERS_FOLDER + String("HLSL/Bloom_PS.hlsl"));
             _pixelShaderBloomDesc.Type = GPT_PIXEL_PROGRAM;
+            _pixelShaderBloomDesc.FileName = "Bloom_PS";
             _pixelShaderBloomDesc.EntryPoint = "main";
             _pixelShaderBloomDesc.Language = "hlsl";
             _pixelShaderBloomDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
@@ -226,6 +264,7 @@ namespace te
         {
             FileStream shaderFile(SHADERS_FOLDER + String("HLSL/MotionBlur_VS.hlsl"));
             _vertexShaderMotionBlurDesc.Type = GPT_VERTEX_PROGRAM;
+            _vertexShaderMotionBlurDesc.FileName = "MotionBlur_VS";
             _vertexShaderMotionBlurDesc.EntryPoint = "main";
             _vertexShaderMotionBlurDesc.Language = "hlsl";
             _vertexShaderMotionBlurDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
@@ -235,6 +274,7 @@ namespace te
         {
             FileStream shaderFile(SHADERS_FOLDER + String("HLSL/MotionBlur_PS.hlsl"));
             _pixelShaderMotionBlurDesc.Type = GPT_PIXEL_PROGRAM;
+            _pixelShaderMotionBlurDesc.FileName = "MotionBlur_PS";
             _pixelShaderMotionBlurDesc.EntryPoint = "main";
             _pixelShaderMotionBlurDesc.Language = "hlsl";
             _pixelShaderMotionBlurDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
@@ -244,6 +284,7 @@ namespace te
         {
             FileStream shaderFile(SHADERS_FOLDER + String("HLSL/GaussianBlur_VS.hlsl"));
             _vertexShaderGaussianBlurDesc.Type = GPT_VERTEX_PROGRAM;
+            _vertexShaderGaussianBlurDesc.FileName = "GaussianBlur_VS";
             _vertexShaderGaussianBlurDesc.EntryPoint = "main";
             _vertexShaderGaussianBlurDesc.Language = "hlsl";
             _vertexShaderGaussianBlurDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
@@ -253,6 +294,7 @@ namespace te
         {
             FileStream shaderFile(SHADERS_FOLDER + String("HLSL/GaussianBlur_PS.hlsl"));
             _pixelShaderGaussianBlurDesc.Type = GPT_PIXEL_PROGRAM;
+            _pixelShaderGaussianBlurDesc.FileName = "GaussianBlur_PS";
             _pixelShaderGaussianBlurDesc.EntryPoint = "main";
             _pixelShaderGaussianBlurDesc.Language = "hlsl";
             _pixelShaderGaussianBlurDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
@@ -262,6 +304,7 @@ namespace te
         {
             FileStream shaderFile(SHADERS_FOLDER + String("HLSL/PickSelect_VS.hlsl"));
             _vertexShaderPickSelectDesc.Type = GPT_VERTEX_PROGRAM;
+            _vertexShaderPickSelectDesc.FileName = "PickSelect_VS";
             _vertexShaderPickSelectDesc.EntryPoint = "main";
             _vertexShaderPickSelectDesc.Language = "hlsl";
             _vertexShaderPickSelectDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
@@ -271,6 +314,7 @@ namespace te
         {
             FileStream shaderFile(SHADERS_FOLDER + String("HLSL/PickSelect_PS.hlsl"));
             _pixelShaderPickSelectDesc.Type = GPT_PIXEL_PROGRAM;
+            _pixelShaderPickSelectDesc.FileName = "PickSelect_PS";
             _pixelShaderPickSelectDesc.EntryPoint = "main";
             _pixelShaderPickSelectDesc.Language = "hlsl";
             _pixelShaderPickSelectDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
@@ -280,6 +324,7 @@ namespace te
         {
             FileStream shaderFile(SHADERS_FOLDER + String("HLSL/HudPickSelect_VS.hlsl"));
             _vertexShaderHudPickSelectDesc.Type = GPT_VERTEX_PROGRAM;
+            _vertexShaderHudPickSelectDesc.FileName = "HudPickSelect_VS";
             _vertexShaderHudPickSelectDesc.EntryPoint = "main";
             _vertexShaderHudPickSelectDesc.Language = "hlsl";
             _vertexShaderHudPickSelectDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
@@ -289,6 +334,7 @@ namespace te
         {
             FileStream shaderFile(SHADERS_FOLDER + String("HLSL/HudPickSelect_GS.hlsl"));
             _geometryShaderHudPickSelectDesc.Type = GPT_GEOMETRY_PROGRAM;
+            _geometryShaderHudPickSelectDesc.FileName = "HudPickSelect_GS";
             _geometryShaderHudPickSelectDesc.EntryPoint = "main";
             _geometryShaderHudPickSelectDesc.Language = "hlsl";
             _geometryShaderHudPickSelectDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
@@ -298,6 +344,7 @@ namespace te
         {
             FileStream shaderFile(SHADERS_FOLDER + String("HLSL/HudPickSelect_PS.hlsl"));
             _pixelShaderHudPickSelectDesc.Type = GPT_PIXEL_PROGRAM;
+            _pixelShaderHudPickSelectDesc.FileName = "HudPickSelect_PS";
             _pixelShaderHudPickSelectDesc.EntryPoint = "main";
             _pixelShaderHudPickSelectDesc.Language = "hlsl";
             _pixelShaderHudPickSelectDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
@@ -1041,7 +1088,7 @@ namespace te
     void BuiltinResources::InitDefaultMaterial()
     {
         MaterialProperties properties;
-        _defaultMaterial = Material::Create(_shaderOpaque);
+        _defaultMaterial = Material::Create(GetBuiltinShader(BuiltinShader::Opaque));
         _defaultMaterial->SetProperties(properties);
     }
 

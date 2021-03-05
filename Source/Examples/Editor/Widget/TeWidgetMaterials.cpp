@@ -307,7 +307,7 @@ namespace te
                     shaderTypeOptions.AddOption(BuiltinShader::Transparent, "Forward transparent");
                     BuiltinShader shaderType = BuiltinShader::Opaque;
 
-                    if (_currentMaterial->GetShader() == gBuiltinResources().GetBuiltinShader(BuiltinShader::Transparent).GetInternalPtr())
+                    if (_currentMaterial->GetShader() != gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque).GetInternalPtr())
                         shaderType = BuiltinShader::Transparent;
 
                     if (ImGuiExt::RenderOptionCombo<BuiltinShader>(&shaderType, "##material_shader_type_option", "Shader", shaderTypeOptions, width))
