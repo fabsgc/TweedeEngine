@@ -8,6 +8,8 @@
 
 namespace te
 {
+    struct ScriptIdentifier;
+
     enum class ScriptState
     {
         Enabled, Disabled
@@ -25,13 +27,19 @@ namespace te
         static SPtr<Script> CreateEmpty();
 
         /** A script can handle a native script object */
-        void SetNativeScript(const String& name, const HSceneObject& sceneObject);
+        void SetNativeScript(const String& name, const HSceneObject& sceneObject, const String& path = "");
+
+        /** @copydoc Script::SetNativeScript */
+        void SetNativeScript(const ScriptIdentifier& identifier, const HSceneObject& sceneObject);
 
         /** Returns native script handled */
         NativeScript* GetNativeScript() { return _nativeScript; }
 
         /** Returns script library name used for this script */
         const String GetNativeScriptName() const { return (_nativeScript) ? _nativeScript->GetLibraryName() : String(); }
+
+        /** Returns script library path used for this script */
+        const String GetNativeScriptPath() const { return (_nativeScript) ? _nativeScript->GetLibraryPath() : String(); }
 
         /** Called when creating a new script */
         void OnStartup();

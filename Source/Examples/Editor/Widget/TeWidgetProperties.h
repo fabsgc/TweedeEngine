@@ -90,11 +90,15 @@ namespace te
         /** Show FileBrowser in order to load a new cubemap texture */
         bool ShowLoadSkybox();
 
+        /** Show FileBrowser in order to load a new script */
+        bool ShowLoadScript();
+
     protected:
         Editor::SelectionData& _selections;
         ImGuiFileBrowser& _fileBrowser;
 
         bool _loadMesh = false;
         bool _loadSkybox = false;
+        bool _loadScript = false;
     };
 }

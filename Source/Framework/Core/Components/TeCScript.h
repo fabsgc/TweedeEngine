@@ -7,6 +7,8 @@
 
 namespace te
 {
+    struct ScriptIdentifier;
+
     /**
      * @copydoc	Script
      *
@@ -22,13 +24,19 @@ namespace te
         void Initialize() override;
 
         /** @copydoc Script::SetNativeScript */
-        void SetNativeScript(const String& name) { _internal->SetNativeScript(name, SO()); }
+        void SetNativeScript(const String& name, const String& path = "") { _internal->SetNativeScript(name, SO(), path); }
+
+        /** @copydoc Script::SetNativeScript */
+        void SetNativeScript(const ScriptIdentifier& identifier) { _internal->SetNativeScript(identifier, SO()); }
 
         /** @copydoc Script::GetNativeScript */
         const NativeScript* GetNativeScript() { return _internal->GetNativeScript(); }
 
         /** @copydoc Script::GetNativeScriptName */
         const String GetNativeScriptName() const { return _internal->GetNativeScriptName(); }
+
+        /** @copydoc Script::GetNativeScriptPath */
+        const String GetNativeScriptPath() const { return _internal->GetNativeScriptPath(); }
 
         /** Returns the internal renderable that is used for majority of operations by this component. */
         SPtr<Script> _getInternal() const { return _internal; }

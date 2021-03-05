@@ -228,6 +228,8 @@ namespace te
                 break;
             }
         } while (true);
+
+        FindClose(fileHandle);
     }
 
     bool FileSystem::Iterate(const String& dirPath, std::function<bool(const String&)> fileCallback, std::function<bool(const String&)> dirCallback, bool recursive)

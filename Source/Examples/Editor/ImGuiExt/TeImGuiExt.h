@@ -6,7 +6,6 @@
 #include "Scene/TeTransform.h"
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
-
 #include "Components/TeCCamera.h"
 
 namespace te

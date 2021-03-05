@@ -94,11 +94,16 @@ namespace te
             _scripts.erase(iter);
     }
 
-    NativeScript* ScriptManager::CreateNativeScript(const String& name)
+    NativeScript* ScriptManager::CreateNativeScript(const String& name, const String& path)
+    {
+        return CreateNativeScript(ScriptIdentifier(name, path));
+    }
+
+    NativeScript* ScriptManager::CreateNativeScript(const ScriptIdentifier& identifier)
     {
         NativeScript* script = nullptr;
         typedef NativeScript* (*LoadScriptFunc)();
-        DynLib* library = GetScriptLibrary(name);
+        DynLib* library = GetScriptLibrary(identifier);
 
         if (library)
         {
@@ -107,7 +112,7 @@ namespace te
             if (loadScriptFunc)
                 script = (NativeScript*)loadScriptFunc();
             else
-                TE_DEBUG("Script \"" + name + "\" has been built but LoadScript() function was not found");
+                TE_DEBUG("Script \"" + identifier.Name + "\" has been built but LoadScript() function was not found");
         }
 
         return script;
@@ -125,19 +130,19 @@ namespace te
         }
     }
 
-    DynLib* ScriptManager::LoadScriptLibrary(const String& name)
+    DynLib* ScriptManager::LoadScriptLibrary(const ScriptIdentifier& identifier)
     {
-        if (!LibraryExists(name))
+        if (!LibraryExists(identifier.Name))
         {
-            if (!CompileLibrary(name))
+            if (!CompileLibrary(identifier))
                 return nullptr;
         }
 
-        if (LibraryExists(name))
+        if (LibraryExists(identifier.Name))
         {
-            DynLib* library = gDynLibManager().Load(name);
+            DynLib* library = gDynLibManager().Load(identifier.Name);
             if (library != nullptr)
-                _scriptLibraries[name] = library;
+                _scriptLibraries[identifier] = library;
 
             return library;
         }
@@ -145,9 +150,9 @@ namespace te
         return nullptr;
     }
 
-    void ScriptManager::UnloadScriptLibrary(const String& name, Vector<UnloadedScript>* unloadedScripts)
+    void ScriptManager::UnloadScriptLibrary(const ScriptIdentifier& identifier, Vector<UnloadedScript>* unloadedScripts)
     {
-        auto iter = _scriptLibraries.find(name);
+        auto iter = _scriptLibraries.find(identifier);
         if (iter != _scriptLibraries.end())
         {
             // Remove instances of script which will be unloaded
@@ -164,7 +169,7 @@ namespace te
                     (*unloadedScripts).push_back(unloadedScript);
                 }
 
-                if (nativeScript && name == nativeScript->GetLibraryName())
+                if (nativeScript && identifier.Name == nativeScript->GetLibraryName())
                     script->SetNativeScript(String(), HSceneObject());
             }
 
@@ -173,15 +178,15 @@ namespace te
         }
     }
 
-    DynLib* ScriptManager::GetScriptLibrary(const String& name)
+    DynLib* ScriptManager::GetScriptLibrary(const ScriptIdentifier& identifier)
     {
         DynLib* library = nullptr;
-        auto iter = _scriptLibraries.find(name);
+        auto iter = _scriptLibraries.find(identifier);
 
         if (iter == _scriptLibraries.end())
-            library = LoadScriptLibrary(name);
+            library = LoadScriptLibrary(identifier);
         else
-            library = _scriptLibraries[name];
+            library = _scriptLibraries[identifier];
 
         return library;
     }
@@ -223,7 +228,8 @@ namespace te
                 {
                     for (auto& unloadedScript : unloadedScripts)
                     {
-                        unloadedScript.ScriptToReload->SetNativeScript(fileName, unloadedScript.PreviousSceneObject);
+                        unloadedScript.ScriptToReload->SetNativeScript(
+                            fileName, unloadedScript.PreviousSceneObject, filePath.parent_path().generic_string());
                     }
                 }
             }
@@ -276,7 +282,8 @@ namespace te
                         newFileName = ReplaceAll(newFileName, newFileExtension, "");
                         for (auto& unloadedScript : unloadedScripts)
                         {
-                            unloadedScript.ScriptToReload->SetNativeScript(newFileName, unloadedScript.PreviousSceneObject);
+                            unloadedScript.ScriptToReload->SetNativeScript(
+                                newFileName, unloadedScript.PreviousSceneObject, newFilePath.parent_path().generic_string());
                         }
                     }
                 }

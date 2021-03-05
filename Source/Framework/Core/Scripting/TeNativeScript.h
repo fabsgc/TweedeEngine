@@ -73,9 +73,19 @@ namespace te
         void SetLibraryName(const String& name) { _libraryName = name; }
 
         /**
+         * We want to internally keep the name of the lib used for this native script
+         */
+        void SetLibraryPath(const String& path) { _libraryPath = path; }
+
+        /**
          * Returns library name used for this script
          */
         const String GetLibraryName() const { return _libraryName; }
+
+        /**
+         * Returns library path used for this script
+         */
+        const String GetLibraryPath() const { return _libraryPath; }
 
         /**
          * Because a script lives inside the scene graph we want to store an handle to its parent SceneObject
@@ -90,6 +100,7 @@ namespace te
     private:
         /** For file wathing, we need to know which dll is used behind each native script */
         String _libraryName;
+        String _libraryPath;
         HSceneObject _parentSO;
     };
 }

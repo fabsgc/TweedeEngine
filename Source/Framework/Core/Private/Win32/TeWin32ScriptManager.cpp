@@ -6,10 +6,9 @@
 
 namespace te
 {
-    String CompileDebug(const String& name)
+    String CompileDebug(const ScriptIdentifier& identifier)
     {
         String output;
-        static String librariesPath = ReplaceAll(ScriptManager::LIBRARIES_PATH, "/", "\\");
 #ifdef TE_ENGINE_BUILD
         static String appRoot = ReplaceAll(RAW_APP_ROOT, "/", "\\");
         static String includePath = appRoot + "Source\\Framework\\";
@@ -24,9 +23,9 @@ namespace te
         output += "/ZI /nologo /W3 /WX- /diagnostics:classic /MP /Od /Ob0 /D WIN32 /D _WINDOWS ";
         output += "/D DEBUG /D _WINDLL /D _MBCS /Gm- /RTC1 /MDd /GS- /fp:precise /Zc:wchar_t ";
         output += "/Zc:forScope /Zc:inline /GR- /std:c++17 ";
-        output += appRoot + librariesPath + name + ".cpp ";
+        output += identifier.AbsolutePath + identifier.Name + ".cpp ";
         output += "/Gd /TP /wd4577 /wd4530 /bigobj /link ";
-        output += "/OUT:" + name + ".dll ";
+        output += "/OUT:" + identifier.Name + ".dll ";
         output += "/OPT:NOREF /OPT:NOICF ";
 #if TE_CONFIG == TE_CONFIG_DEBUG
         output += "..\\..\\..\\lib\\x64\\Debug\\tef.lib ";
@@ -36,7 +35,7 @@ namespace te
         output += "..\\..\\..\\lib\\x64\\MinSizeRel\\tef.lib ";
 #endif
         output += "/DEBUG ";
-        output += "/PDB:" + name + ".pdb" + " ";
+        output += "/PDB:" + identifier.Name + ".pdb" + " ";
         output += "/TLBID:1 /DYNAMICBASE /NXCOMPAT /MACHINE:X64 /DEBUG /machine:x64";
 
         return output;
@@ -77,7 +76,7 @@ namespace te
         return output;
     }
 
-    bool ScriptManager::CompileLibrary(const String& name)
+    bool ScriptManager::CompileLibrary(const ScriptIdentifier& identifier)
     {
         bool retVal = true;
         STARTUPINFO si;
@@ -94,7 +93,7 @@ namespace te
         UINT32 flags = 0;
 
 #if TE_DEBUG_MODE
-        command = command + CompileDebug(name);
+        command = command + CompileDebug(identifier);
 #else
         command = command + CompileRelease(name);
         //flags |= CREATE_NO_WINDOW;
@@ -125,7 +124,7 @@ namespace te
         {
             DWORD errorCode = GetLastError();
 
-            TE_DEBUG("Failed to compile library \"" + name + "\", error : " + ToString(UINT32(errorCode)));
+            TE_DEBUG("Failed to compile library \"" + identifier.Name + "\", error : " + ToString(UINT32(errorCode)));
             retVal = false;
         }
 

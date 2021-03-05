@@ -4,6 +4,8 @@
 #include "Utility/TeModule.h"
 #include "Platform/TeFolderMonitor.h"
 
+#include <filesystem>
+
 namespace te
 {
     class NativeScript;
@@ -12,6 +14,51 @@ namespace te
     {
         Script* ScriptToReload;
         HSceneObject PreviousSceneObject;
+    };
+
+    struct ScriptIdentifier
+    {
+        String Name; // Each script name loaded must be unique
+        String AbsolutePath;
+
+        bool operator <(const ScriptIdentifier& rhs) const
+        {
+            return Name < rhs.Name;
+        }
+
+        ScriptIdentifier::ScriptIdentifier(const String& name, const String& path = "")
+            : Name(name)
+            , AbsolutePath(path)
+        {
+            if (!path.empty())
+            {
+                std::filesystem::path absoluteTempPath(AbsolutePath);
+                std::filesystem::path tempPath = std::filesystem::absolute(absoluteTempPath);
+                if (std::filesystem::is_directory(tempPath) == false)
+                    tempPath = tempPath.parent_path();
+
+#if TE_PLATFORM == TE_PLATFORM_WIN32
+                AbsolutePath = std::filesystem::absolute(tempPath).generic_string() + "\\";
+#else
+                AbsolutePath = std::filesystem::absolute(tempPath).generic_string() + "/";
+#endif
+            }
+            else
+            {
+#if TE_PLATFORM == TE_PLATFORM_WIN32
+                static String appRoot = ReplaceAll(RAW_APP_ROOT, "/", "\\");
+                static String librariesPath = ReplaceAll("Data/Scripts/", "/", "\\");
+                AbsolutePath = appRoot + librariesPath;
+#else
+                AbsolutePath = RAW_APP_ROOT + ScriptManager::LIBRARIES_PATH;
+#endif
+            }
+        }
+
+        friend bool operator==(const ScriptIdentifier& lhs, const ScriptIdentifier& rhs)
+        {
+            return lhs.Name == rhs.Name;
+        }
     };
 
     /**	Handles initialization of a scripting system. */
@@ -31,13 +78,19 @@ namespace te
         void UnregisterScript(Script* script);
 
         /** When a script need a new instance of the given native script */
-        NativeScript* CreateNativeScript(const String& name);
+        NativeScript* CreateNativeScript(const String& name, const String& path = "");
+
+        /** @copydoc ScriptManager::CreateNativeScript */
+        NativeScript* CreateNativeScript(const ScriptIdentifier& identifier);
 
         /** Memory management for NativeScript, is manual, each script has an exported function for deleting a NativeScript */
         void DeleteNativeScript(NativeScript* script);
 
         /** Unloads all script libraries loaded in the engine */
         void UnloadAll();
+
+        /** Returns all currently loaded script libraries */
+        const Map<ScriptIdentifier, DynLib*>& GetScriptLibraries() const { return _scriptLibraries; }
 
     public: // #### EVENTS FOR SCRIPTS
         /** Called once per frame before scene update. */
@@ -52,7 +105,7 @@ namespace te
         /** Update any script which has been modified */
         void Update();
 
-    private: // #### EVENTS FOR SCRIPTS FOLRDER WATCHING
+    public: // #### EVENTS FOR SCRIPTS FOLRDER WATCHING
         /**	Triggered when the native folder monitor detects a file has been modified. */
         void OnMonitorFileModified(const String& path);
 
@@ -67,19 +120,19 @@ namespace te
 
     private:
         /** Try to load a new script lib (.dll, .so) */
-        DynLib* LoadScriptLibrary(const String& name);
+        DynLib* LoadScriptLibrary(const ScriptIdentifier& identifier);
 
         /** 
          * Try to unload a new script lib (.dll, .so), 
          * if second argument is not null, it's filled with pointer to script which were using this nativeScript 
          */
-        void UnloadScriptLibrary(const String& name, Vector<UnloadedScript>* unloadedScripts = nullptr);
+        void UnloadScriptLibrary(const ScriptIdentifier& identifier, Vector<UnloadedScript>* unloadedScripts = nullptr);
 
         /** Returns (and loads if not loaded yet) the given dynamic library */
-        DynLib* GetScriptLibrary(const String& name);
+        DynLib* GetScriptLibrary(const ScriptIdentifier& identifier);
 
         /** Compiles a library using provided name. All libraries will be located in the same directory as dlls and binaries */
-        bool CompileLibrary(const String& name);
+        bool CompileLibrary(const ScriptIdentifier& identifier);
 
         /** Check if a library already exists. Usefull if we don't want to compile everything (time consuming) */
         bool LibraryExists(const String& name);
@@ -89,7 +142,7 @@ namespace te
         static const String LIBRARIES_PATH;
 
     private:
-        UnorderedMap<String, DynLib*> _scriptLibraries;
+        Map<ScriptIdentifier, DynLib*> _scriptLibraries;
         Vector<Script*> _scripts;
         FolderMonitor _folderMonitor;
 

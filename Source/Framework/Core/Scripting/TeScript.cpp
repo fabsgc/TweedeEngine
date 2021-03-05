@@ -45,18 +45,24 @@ namespace te
     void Script::FrameSync()
     { }
 
-    void Script::SetNativeScript(const String& name, const HSceneObject& sceneObject)
+    void Script::SetNativeScript(const String& name, const HSceneObject& sceneObject, const String& path)
+    {
+        SetNativeScript(ScriptIdentifier(name, path), sceneObject);
+    }
+
+    void Script::SetNativeScript(const ScriptIdentifier& identifier, const HSceneObject& sceneObject)
     {
         OnShutdown();
 
-        if(!name.empty())
+        if(!identifier.Name.empty())
         {
-            NativeScript* nativeScript = gScriptManager().CreateNativeScript(name);
+            NativeScript* nativeScript = gScriptManager().CreateNativeScript(identifier);
 
             if (nativeScript)
             {
                 _nativeScript = nativeScript;
-                _nativeScript->SetLibraryName(name);
+                _nativeScript->SetLibraryName(identifier.Name);
+                _nativeScript->SetLibraryPath(identifier.AbsolutePath);
                 _nativeScript->SetParentSceneObject(sceneObject);
             }
         }

@@ -4,6 +4,12 @@
 #if TE_PLATFORM == TE_PLATFORM_WIN32
 #include <windows.h>
 
+#if TE_DEBUG_MODE
+//#   define _CRTDBG_MAP_ALLOC
+//#   include <stdlib.h>
+//#   include <crtdbg.h>
+#endif
+
 int CALLBACK WinMain(
     _In_  HINSTANCE hInstance,
     _In_  HINSTANCE hPrevInstance,
@@ -37,6 +43,22 @@ int main()
     te::Application::StartUp(desc);
     te::Application::Instance().RunMainLoop();
     te::Application::ShutDown();
+
+#if TE_PLATFORM == TE_PLATFORM_WIN32 && TE_DEBUG_MODE
+    /*HANDLE hLogFile = CreateFile("MemoryLeaks.txt", GENERIC_WRITE, FILE_SHARE_WRITE,
+        NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+
+    //Turn on debugging for memory leaks. This is automatically turned off when the build is Release.
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+    _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE);
+    _CrtSetReportFile(_CRT_WARN, hLogFile);
+    _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_FILE);
+    _CrtSetReportFile(_CRT_ERROR, hLogFile);
+    _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
+    _CrtSetReportFile(_CRT_ASSERT, hLogFile);
+
+    _CrtDumpMemoryLeaks();*/
+#endif
 
     return 0;
 }
