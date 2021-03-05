@@ -49,7 +49,7 @@ namespace te
                 static String librariesPath = ReplaceAll(ScriptManager::LIBRARIES_PATH, "/", "\\");
                 String path = appRoot + librariesPath + name + ".cpp ";
 #else
-                String path = RAW_APP_ROOT + librariesPath + name + ".cpp ";
+                String path = RAW_APP_ROOT + LIBRARIES_PATH + name + ".cpp ";
 #endif
                 FileStream file(path);
                 _editorContent = file.GetAsString();
