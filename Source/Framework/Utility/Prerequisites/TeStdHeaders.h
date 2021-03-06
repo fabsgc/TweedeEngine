@@ -91,9 +91,9 @@ extern "C" {
 #if TE_PLATFORM == TE_PLATFORM_WIN32
 #   define TE_SLEEP(ms) Sleep(ms)
 #elif TE_PLATFORM == TE_PLATFORM_LINUX
-#   define TE_SLEEP(ms) usleep(ms)
+#   define TE_SLEEP(ms) nanosleep(ms * 1000)
 #else
-#   define TE_SLEEP(ms) usleep(ms)
+#   define TE_SLEEP(ms) nanosleep(ms * 1000)
 #endif
 
 namespace te

@@ -110,7 +110,7 @@ namespace te
             LoadScriptFunc loadScriptFunc = (LoadScriptFunc)library->GetSymbol("LoadScript");
 
             if (loadScriptFunc)
-                script = (NativeScript*)loadScriptFunc();
+                script = static_cast<NativeScript*>(loadScriptFunc());
             else
                 TE_DEBUG("Script \"" + identifier.Name + "\" has been built but LoadScript() function was not found");
         }

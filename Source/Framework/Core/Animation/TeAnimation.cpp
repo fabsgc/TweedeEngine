@@ -225,7 +225,7 @@ namespace te
             _genericCurveOutputs = (float*)data;
             data += genericCurveOutputSize;
 
-            _sceneObjectInfos = (AnimatedSceneObjectInfo*)data;
+            _sceneObjectInfos = reinterpret_cast<AnimatedSceneObjectInfo*>(data);
             data += sceneObjectIdsSize;
 
             _sceneObjectTransforms = (Matrix4*)data;
