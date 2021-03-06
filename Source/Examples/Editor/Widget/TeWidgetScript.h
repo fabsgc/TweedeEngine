@@ -5,6 +5,8 @@
 #include "TeWidget.h"
 #include "ImGui/imgui.h"
 
+#include <regex>
+
 namespace te
 {
     class WidgetScript : public Widget
@@ -125,9 +127,9 @@ namespace te
             String Declaration;
         };
 
-        typedef UnorderedMap<std::string, Identifier> Identifiers;
-        typedef UnorderedSet<std::string> Keywords;
-        typedef Map<int, std::string> ErrorMarkers;
+        typedef UnorderedMap<String, Identifier> Identifiers;
+        typedef UnorderedSet<String> Keywords;
+        typedef Map<int, String> ErrorMarkers;
         typedef UnorderedSet<int> Breakpoints;
         typedef std::array<ImU32, (unsigned)PaletteIndex::Max> Palette;
         typedef uint8_t Char;
@@ -153,7 +155,7 @@ namespace te
 
         struct LanguageDefinition
         {
-            typedef std::pair<std::string, PaletteIndex> TokenRegexString;
+            typedef std::pair<String, PaletteIndex> TokenRegexString;
             typedef std::vector<TokenRegexString> TokenRegexStrings;
             typedef bool(*TokenizeCallback)(const char* in_begin, const char* in_end, const char*& out_begin, const char*& out_end, PaletteIndex& paletteIndex);
             
@@ -161,7 +163,7 @@ namespace te
             Keywords _keywords;
             Identifiers _identifiers;
             Identifiers _preprocIdentifiers;
-            std::string _commentStart, _commentEnd, _singleLineComment;
+            String _commentStart, _commentEnd, _singleLineComment;
             char _preprocChar;
             bool _autoIndentation;
 
@@ -189,8 +191,114 @@ namespace te
         virtual void Update() override;
         virtual void UpdateBackground() override;
 
+        void SetLanguageDefinition(const LanguageDefinition& languageDef);
+        const LanguageDefinition& GetLanguageDefinition() const { return _languageDefinition; }
+
+        const Palette& GetPalette() const { return _paletteBase; }
+        void SetPalette(const Palette& aValue);
+
+        void SetErrorMarkers(const ErrorMarkers& aMarkers) { _errorMarkers = aMarkers; }
+        void SetBreakpoints(const Breakpoints& aMarkers) { _breakpoints = aMarkers; }
+
+        String GetSelectedText() const;
+        String GetCurrentLineText()const;
+
+        int GetTotalLines() const { return (int)_lines.size(); }
+        bool IsOverwrite() const { return _overwrite; }
+
+        bool IsTextChanged() const { return _textChanged; }
+        bool IsCursorPositionChanged() const { return _cursorPositionChanged; }
+
+        bool IsColorizerEnabled() const { return _colorizerEnabled; }
+        void SetColorizerEnable(bool value);
+
+        Coordinates GetCursorPosition() const { return GetActualCursorCoordinates(); }
+        void SetCursorPosition(const Coordinates& position);
+
+        inline void SetHandleMouseInputs(bool value) { _handleMouseInputs = value; }
+        inline bool IsHandleMouseInputsEnabled() const { return _handleKeyboardInputs; }
+
+        inline void SetHandleKeyboardInputs(bool value) { _handleKeyboardInputs = value; }
+        inline bool IsHandleKeyboardInputsEnabled() const { return _handleKeyboardInputs; }
+
+        inline void SetImGuiChildIgnored(bool value) { _ignoreImGuiChild = value; }
+        inline bool IsImGuiChildIgnored() const { return _ignoreImGuiChild; }
+
+        inline void SetShowWhitespaces(bool value) { _showWhitespaces = value; }
+        inline bool IsShowingWhitespaces() const { return _showWhitespaces; }
+
+        void SetTabSize(int value);
+        inline int GetTabSize() const { return _tabSize; }
+
+        void InsertText(const String& value);
+        void InsertText(const char* value);
+
+        void MoveUp(int amount = 1, bool select = false);
+        void MoveDown(int amount = 1, bool select = false);
+        void MoveLeft(int amount = 1, bool select = false, bool wordMode = false);
+        void MoveRight(int amount = 1, bool select = false, bool wordMode = false);
+        void MoveTop(bool select = false);
+        void MoveBottom(bool select = false);
+        void MoveHome(bool select = false);
+        void MoveEnd(bool select = false);
+
+        void SetSelectionStart(const Coordinates& position);
+        void SetSelectionEnd(const Coordinates& position);
+        void SetSelection(const Coordinates& start, const Coordinates& end, SelectionMode mode = SelectionMode::Normal);
+        void SelectWordUnderCursor();
+        void SelectAll();
+        bool HasSelection() const;
+
+        void Copy();
+        void Cut();
+        void Paste();
+        void Delete();
+
+        bool CanUndo() const;
+        bool CanRedo() const;
+        void Undo(int steps = 1);
+        void Redo(int steps = 1);
+
+        static const Palette& GetDarkPalette();
+        static const Palette& GetLightPalette();
+        static const Palette& GetRetroBluePalette();
+
+        void Render(const char* title, const ImVec2& size = ImVec2(), bool border = false);
+        void SetText(const String& text);
+        String GetText() const;
+
+    private:
+        typedef Vector<std::pair<std::regex, PaletteIndex>> RegexList;
+
+        struct EditorState
+        {
+            Coordinates SelectionStart;
+            Coordinates SelectionEnd;
+            Coordinates CursorPosition;
+        };
+
+        class UndoRecord
+        {
+        public:
+            UndoRecord() {}
+            ~UndoRecord() {}
+
+            // TODO
+        };
+
+        typedef std::vector<UndoRecord> UndoBuffer;
+
+        Coordinates GetActualCursorCoordinates() const;
+        Coordinates SanitizeCoordinates(const Coordinates& aValue) const;
+        int GetLineMaxColumn(int line) const;
+
+        // TODO
+
     private:
         void SaveAndCompile();
+        void HandleKeyboardInputs();
+        void HandleMouseInputs();
+        void Render();
 
     private:
         Editor::SelectionData& _selections;
@@ -199,5 +307,46 @@ namespace te
         String _editorContent;
         bool _needsUpdateContent;
         bool _needsSave;
+
+        float _lineSpacing;
+        Lines _lines;
+        EditorState _state;
+        UndoBuffer _undoBuffer;
+        int _undoIndex;
+
+        int _tabSize;
+        bool _overwrite;
+        bool _readOnly;
+        bool _withinRender;
+        bool _scrollToCursor;
+        bool _scrollToTop;
+        bool _textChanged;
+        bool _colorizerEnabled;
+        float _textStart;                   // position (in pixels) where a code line starts relative to the left of the TextEditor.
+        int  _leftMargin;
+        bool _cursorPositionChanged;
+        int _colorRangeMin;
+        int _colorRangeMax;
+        SelectionMode _selectionMode;
+        bool _handleKeyboardInputs;
+        bool _handleMouseInputs;
+        bool _ignoreImGuiChild;
+        bool _showWhitespaces;
+
+        Palette _paletteBase;
+        Palette _palette;
+        LanguageDefinition _languageDefinition;
+        RegexList _regexList;
+
+        bool _checkComments;
+        Breakpoints _breakpoints;
+        ErrorMarkers _errorMarkers;
+        ImVec2 _charAdvance;
+        Coordinates _interactiveStart;
+        Coordinates _interactiveEnd;
+        String _lineBuffer;
+        uint64_t _startTime;
+
+        float _lastClick;
     };
 }
