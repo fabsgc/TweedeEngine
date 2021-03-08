@@ -69,7 +69,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #############################################################################
 
-This license applies to files Source/Editor/Widget/TeWidgetScript.h and Source/Editor/Widget/TeWidgetScript.cpp
+This license applies to files Source/Examples/Editor/ImGuiExt/TeImGuiTextEditor.cpp and Source/Examples/Editor/ImGuiExt/TeWidgetScript.cpp
 
 Copyright(c) 2017 BalazsJako
 
