@@ -25,10 +25,7 @@ SOFTWARE.
 */
 
 #include "TeCorePrerequisites.h"
-
 #include "ImGui/imgui.h"
-#include <string>
-#include <vector>
 
 namespace te
 {

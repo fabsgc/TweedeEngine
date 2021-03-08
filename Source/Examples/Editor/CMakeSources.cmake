@@ -16,6 +16,7 @@ set (TE_EDITOR_SRC_NOFILTER
 set (TE_EDITOR_INC_IMGUI_EXT
     "ImGuiExt/TeImGuiExt.h"
     "ImGuiExt/TeImGuiFileBrowser.h"
+    "ImGuiExt/TeImGuiTextEditor.h"
     "ImGuiExt/TeIconsFontAwesome5.h"
     "ImGuiExt/dirent.h"
 )
@@ -23,6 +24,7 @@ set (TE_EDITOR_INC_IMGUI_EXT
 set (TE_EDITOR_SRC_IMGUI_EXT
     "ImGuiExt/TeImGuiExt.cpp"
     "ImGuiExt/TeImGuiFileBrowser.cpp"
+    "ImGuiExt/TeImGuiTextEditor.cpp"
 )
 
 set (TE_EDITOR_INC_SELECTION
