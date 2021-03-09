@@ -187,10 +187,12 @@ namespace te
             { }
 
             static const LanguageDefinition& CPlusPlus();
+            static const LanguageDefinition& HLSL();
+            static const LanguageDefinition& GLSL();
 
         public:
-            typedef std::pair<String, PaletteIndex> TokenRegexString;
-            typedef std::vector<TokenRegexString> TokenRegexStrings;
+            typedef Pair<String, PaletteIndex> TokenRegexString;
+            typedef Vector<TokenRegexString> TokenRegexStrings;
             typedef bool(*TokenizeCallback)(const char* in_begin, const char* in_end, const char*& out_begin, const char*& out_end, PaletteIndex& paletteIndex);
         
         public:
@@ -294,7 +296,7 @@ namespace te
         static const Palette& GetRetroBluePalette();
 
     private:
-        typedef Vector<std::pair<std::regex, PaletteIndex>> RegexList;
+        typedef Vector<Pair<std::regex, PaletteIndex>> RegexList;
 
         struct EditorState
         {
@@ -306,18 +308,16 @@ namespace te
         class UndoRecord
         {
         public:
-            UndoRecord() {}
-            ~UndoRecord() {}
+            UndoRecord() = default;
+            ~UndoRecord() = default;
 
             UndoRecord(
                 const String& added,
                 const ImGuiTextEditor::Coordinates addedStart,
                 const ImGuiTextEditor::Coordinates addedEnd,
-
                 const String& removed,
                 const ImGuiTextEditor::Coordinates removedStart,
                 const ImGuiTextEditor::Coordinates removedEnd,
-
                 ImGuiTextEditor::EditorState& before,
                 ImGuiTextEditor::EditorState& after);
 
@@ -337,7 +337,7 @@ namespace te
             EditorState _after;
         };
 
-        typedef std::vector<UndoRecord> UndoBuffer;
+        typedef Vector<UndoRecord> UndoBuffer;
 
         void ProcessInputs();
         void Colorize(int fromLine = 0, int vount = -1);
@@ -375,8 +375,6 @@ namespace te
         void HandleKeyboardInputs();
         void HandleMouseInputs();
         void Render();
-
-        // TODO
 
     private:
         float _lineSpacing;
