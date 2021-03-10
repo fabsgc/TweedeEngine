@@ -365,7 +365,7 @@ namespace te
         void RemoveLine(int start, int end);
         void RemoveLine(int index);
         Line& InsertLine(int index);
-        void EnterCharacter(ImWchar chararacter, bool shift);
+        void EnterCharacter(ImWchar character, bool shift);
         void Backspace();
         void DeleteSelection();
         String GetWordUnderCursor() const;
