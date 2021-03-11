@@ -52,6 +52,7 @@ namespace te
         virtual void Initialize() = 0;
         virtual void Update() = 0;
         virtual void UpdateBackground() = 0; // Sometimes we want to update while widget is not visible
+        virtual void PutFocus();
 
         template<typename T>
         void PushStyleVar(ImGuiStyleVar idx, T val) { ImGui::PushStyleVar(idx, val); _varPushes++; }
@@ -68,7 +69,7 @@ namespace te
         WidgetType GetType() const { return _type; }
         ImGuiWindow* GetWindow() const { return _window; }
         ImGuiViewport* GetViewport() const { return _viewport; }
-        void PutFocus() const;
+        
 
     protected:
         bool _isVisible;

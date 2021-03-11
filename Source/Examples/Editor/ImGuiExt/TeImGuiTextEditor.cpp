@@ -1096,13 +1096,13 @@ namespace te
     const ImGuiTextEditor::Palette& ImGuiTextEditor::GetLightPalette()
     {
         const static Palette p = { {
-                0xff7f7f7f,    // None
-                0xffff0c06,    // Keyword    
-                0xff008000,    // Number
-                0xff2020a0,    // String
+                0xff7f7f7f, // None
+                0xffff0c06, // Keyword    
+                0xff008000, // Number
+                0xff2020a0, // String
                 0xff304070, // Char literal
                 0xff000000, // Punctuation
-                0xff406060,    // Preprocessor
+                0xff406060, // Preprocessor
                 0xff404040, // Identifier
                 0xff606010, // Known identifier
                 0xffc040a0, // Preproc identifier
@@ -1124,13 +1124,13 @@ namespace te
     const ImGuiTextEditor::Palette& ImGuiTextEditor::GetRetroBluePalette()
     {
         const static Palette p = { {
-                0xff00ffff,    // None
-                0xffffff00,    // Keyword    
-                0xff00ff00,    // Number
-                0xff808000,    // String
+                0xff00ffff, // None
+                0xffffff00, // Keyword    
+                0xff00ff00, // Number
+                0xff808000, // String
                 0xff808000, // Char literal
                 0xffffffff, // Punctuation
-                0xff008000,    // Preprocessor
+                0xff008000, // Preprocessor
                 0xff00ffff, // Identifier
                 0xffffffff, // Known identifier
                 0xffff00ff, // Preproc identifier
@@ -1593,7 +1593,7 @@ namespace te
     {
         auto& line = _lines[from.Line];
         float distance = 0.0f;
-        float spaceSize = ImGui::GetFont()->CalcTextSizeA(ImGui::GetFontSize(), FLT_MAX, -1.0f, " ", nullptr, nullptr).x;
+        float spaceSize = ImGui::GetFont()->CalcTextSizeA(GetFontSize(), FLT_MAX, -1.0f, " ", nullptr, nullptr).x;
         int colIndex = GetCharacterIndex(from);
         for (size_t it = 0u; it < line.size() && it < colIndex; )
         {
@@ -1611,7 +1611,7 @@ namespace te
                     tempCString[i] = line[it].Character;
 
                 tempCString[i] = '\0';
-                distance += ImGui::GetFont()->CalcTextSizeA(ImGui::GetFontSize(), FLT_MAX, -1.0f, tempCString, nullptr, nullptr).x;
+                distance += ImGui::GetFont()->CalcTextSizeA(GetFontSize(), FLT_MAX, -1.0f, tempCString, nullptr, nullptr).x;
             }
         }
 
@@ -1864,7 +1864,7 @@ namespace te
 
                 if (line[columnIndex].Character == '\t')
                 {
-                    float spaceSize = ImGui::GetFont()->CalcTextSizeA(ImGui::GetFontSize(), FLT_MAX, -1.0f, " ").x;
+                    float spaceSize = ImGui::GetFont()->CalcTextSizeA(GetFontSize(), FLT_MAX, -1.0f, " ").x;
                     float oldX = columnX;
                     float newColumnX = (1.0f + std::floor((1.0f + columnX) / (float(_tabSize) * spaceSize))) * (float(_tabSize) * spaceSize);
                     columnWidth = newColumnX - oldX;
@@ -1882,7 +1882,7 @@ namespace te
                     while (i < 6 && d-- > 0)
                         buf[i++] = line[columnIndex++].Character;
                     buf[i] = '\0';
-                    columnWidth = ImGui::GetFont()->CalcTextSizeA(ImGui::GetFontSize(), FLT_MAX, -1.0f, buf).x;
+                    columnWidth = ImGui::GetFont()->CalcTextSizeA(GetFontSize(), FLT_MAX, -1.0f, buf).x;
                     if (_textStart + columnX + columnWidth * 0.5f > local.x)
                         break;
                     columnX += columnWidth;
@@ -2481,6 +2481,11 @@ namespace te
         return color;
     }
 
+    float ImGuiTextEditor::GetFontSize() const
+    {
+        return ImGui::GetFontSize();
+    }
+
     void ImGuiTextEditor::HandleKeyboardInputs()
     {
         ImGuiIO& io = ImGui::GetIO();
@@ -2640,7 +2645,7 @@ namespace te
     void ImGuiTextEditor::Render()
     {
         /* Compute mCharAdvance regarding to scaled font size (Ctrl + mouse wheel)*/
-        const float fontSize = ImGui::GetFont()->CalcTextSizeA(ImGui::GetFontSize(), FLT_MAX, -1.0f, "#", nullptr, nullptr).x;
+        const float fontSize = ImGui::GetFont()->CalcTextSizeA(GetFontSize(), FLT_MAX, -1.0f, "#", nullptr, nullptr).x;
         _charAdvance = ImVec2(fontSize, ImGui::GetTextLineHeightWithSpacing() * _lineSpacing);
 
         /* Update palette with the current alpha from style */
@@ -2674,11 +2679,11 @@ namespace te
         // Deduce mTextStart by evaluating mLines size (global lineMax) plus two spaces as text width
         char buf[16];
         snprintf(buf, 16, " %d ", globalLineMax);
-        _textStart = ImGui::GetFont()->CalcTextSizeA(ImGui::GetFontSize(), FLT_MAX, -1.0f, buf, nullptr, nullptr).x + _leftMargin;
+        _textStart = ImGui::GetFont()->CalcTextSizeA(GetFontSize(), FLT_MAX, -1.0f, buf, nullptr, nullptr).x + _leftMargin;
 
         if (!_lines.empty())
         {
-            float spaceSize = ImGui::GetFont()->CalcTextSizeA(ImGui::GetFontSize(), FLT_MAX, -1.0f, " ", nullptr, nullptr).x;
+            float spaceSize = ImGui::GetFont()->CalcTextSizeA(GetFontSize(), FLT_MAX, -1.0f, " ", nullptr, nullptr).x;
 
             while (lineNo <= lineMax)
             {
@@ -2744,7 +2749,7 @@ namespace te
                 // Draw line number (right aligned)
                 snprintf(buf, 16, "%d  ", lineNo + 1);
 
-                auto lineNoWidth = ImGui::GetFont()->CalcTextSizeA(ImGui::GetFontSize(), FLT_MAX, -1.0f, buf, nullptr, nullptr).x;
+                auto lineNoWidth = ImGui::GetFont()->CalcTextSizeA(GetFontSize(), FLT_MAX, -1.0f, buf, nullptr, nullptr).x;
                 drawList->AddText(ImVec2(lineStartScreenPos.x + _textStart - lineNoWidth, lineStartScreenPos.y), _palette[(int)PaletteIndex::LineNumber], buf);
 
                 if (_state.CursorPosition.Line == lineNo)
@@ -2783,7 +2788,7 @@ namespace te
                                     char buf2[2];
                                     buf2[0] = line[cindex].Character;
                                     buf2[1] = '\0';
-                                    width = ImGui::GetFont()->CalcTextSizeA(ImGui::GetFontSize(), FLT_MAX, -1.0f, buf2).x;
+                                    width = ImGui::GetFont()->CalcTextSizeA(GetFontSize(), FLT_MAX, -1.0f, buf2).x;
                                 }
                             }
                             ImVec2 cstart(textScreenPos.x + cx, lineStartScreenPos.y);
@@ -2808,7 +2813,7 @@ namespace te
                     {
                         const ImVec2 newOffset(textScreenPos.x + bufferOffset.x, textScreenPos.y + bufferOffset.y);
                         drawList->AddText(newOffset, prevColor, _lineBuffer.c_str());
-                        auto textSize = ImGui::GetFont()->CalcTextSizeA(ImGui::GetFontSize(), FLT_MAX, -1.0f, _lineBuffer.c_str(), nullptr, nullptr);
+                        auto textSize = ImGui::GetFont()->CalcTextSizeA(GetFontSize(), FLT_MAX, -1.0f, _lineBuffer.c_str(), nullptr, nullptr);
                         bufferOffset.x += textSize.x;
                         _lineBuffer.clear();
                     }
@@ -2822,7 +2827,7 @@ namespace te
 
                         if (_showWhitespaces)
                         {
-                            const auto s = ImGui::GetFontSize();
+                            const auto s = GetFontSize();
                             const auto x1 = textScreenPos.x + oldX + 1.0f;
                             const auto x2 = textScreenPos.x + bufferOffset.x - 1.0f;
                             const auto y = textScreenPos.y + bufferOffset.y + s * 0.5f;
@@ -2839,7 +2844,7 @@ namespace te
                     {
                         if (_showWhitespaces)
                         {
-                            const auto s = ImGui::GetFontSize();
+                            const auto s = GetFontSize();
                             const auto x = textScreenPos.x + bufferOffset.x + spaceSize * 0.5f;
                             const auto y = textScreenPos.y + bufferOffset.y + s * 0.5f;
                             drawList->AddCircleFilled(ImVec2(x, y), 1.5f, 0x80808080, 4);

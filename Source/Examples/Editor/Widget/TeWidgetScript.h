@@ -1,13 +1,14 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
-#include "../ImGuiExt/TeImGuiTextEditor.h"
 #include "../TeEditor.h"
 #include "TeWidget.h"
 #include "ImGui/imgui.h"
 
 namespace te
 {
+    class ImGuiTextEditor;
+
     class WidgetScript : public Widget
     {
     public:
@@ -17,12 +18,18 @@ namespace te
         virtual void Initialize() override;
         virtual void Update() override;
         virtual void UpdateBackground() override;
+        virtual void PutFocus() override;
 
-        void SaveAndCompile();
+    private:
+        void Save(bool force = false);
+        void Build();
+        void UpdateEditorContent();
+        void ShowEditor();
+        void ShowToolbar();
 
     private:
         Editor::SelectionData& _selections;
-        ImGuiTextEditor _editor;
+        SPtr<ImGuiTextEditor> _editor;
 
         String _currentScriptName;
         String _currentScriptPath;

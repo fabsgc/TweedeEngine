@@ -85,7 +85,7 @@ namespace te
         return true;
     }
 
-    void Widget::PutFocus() const
+    void Widget::PutFocus()
     {
         if(_window)
             ImGui::FocusWindow(_window);

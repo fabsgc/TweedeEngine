@@ -3,8 +3,11 @@
 #include "TeCorePrerequisites.h"
 #include "Utility/TeModule.h"
 #include "Platform/TeFolderMonitor.h"
+#include "Threading/TeThreading.h"
 
 #include <filesystem>
+#include <future>
+#include <chrono>
 
 namespace te
 {
@@ -93,6 +96,9 @@ namespace te
         /** Returns all currently loaded script libraries */
         const Map<ScriptIdentifier, DynLib*>& GetScriptLibraries() const { return _scriptLibraries; }
 
+        /** Returns all currently instanciated scripts */
+        const Vector<Script*>& GetScripts() const { return _scripts; }
+
     public: // #### EVENTS FOR SCRIPTS
         /** Called once per frame before scene update. */
         void PreUpdate();
@@ -146,7 +152,7 @@ namespace te
         Map<ScriptIdentifier, DynLib*> _scriptLibraries;
         Vector<Script*> _scripts;
         FolderMonitor _folderMonitor;
-
+        Vector<std::future<void>> _reloads;
     };
 
     /** Provides easy access to the ScriptManager. */

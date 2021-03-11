@@ -97,7 +97,7 @@ namespace te
         command = command + CompileDebug(identifier);
 #else
         command = command + CompileRelease(identifier);
-        //flags |= CREATE_NO_WINDOW;
+        flags |= CREATE_NO_WINDOW;
 #endif
 
         if (CreateProcess(NULL,                  // No module name (use command line)

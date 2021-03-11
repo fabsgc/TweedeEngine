@@ -371,6 +371,7 @@ namespace te
         String GetWordUnderCursor() const;
         String GetWordAt(const Coordinates& coords) const;
         ImU32 GetGlyphColor(const Glyph& glyph) const;
+        float GetFontSize() const;
 
         void HandleKeyboardInputs();
         void HandleMouseInputs();
