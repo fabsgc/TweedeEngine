@@ -17,6 +17,7 @@ The Tweede Engine Framework Redux is my third attempt to develop a cross-platfor
 ## Previews
 
 ![Editor](Documentation/sample-editor-inn.png)
+![Editor](Documentation/sample-script-editor.png)
 ![Editor](Documentation/sample-animation.png)
 ![Editor](Documentation/sample-parallax-occlusion-mapping.png)
 ![Editor](Documentation/sample-editor.png)
