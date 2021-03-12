@@ -103,6 +103,9 @@ namespace te
         /* @copydoc Component::MarkDirty */
         virtual void MarkDirty() { _internal->_markCoreDirty(); }
 
+        /** @copydoc Component::Update */
+        void Update() override { }
+
     protected:
         mutable SPtr<Light> _internal;
 
@@ -137,10 +140,6 @@ namespace te
         /** @copydoc Component::OnDestroyed */
         void OnDestroyed() override;
 
-    public:
-        /** @copydoc Component::Update */
-        void Update() override { }
-    
     protected:
         CLight();
     };

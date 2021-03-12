@@ -42,6 +42,7 @@
 #include "Importer/TeImporter.h"
 #include "Importer/TeMeshImportOptions.h"
 #include "Importer/TeTextureImportOptions.h"
+#include "Audio/TeAudioClipImportOptions.h"
 #include "Material/TeMaterial.h"
 #include "Material/TeShader.h"
 #include "Components/TeCLight.h"
@@ -726,6 +727,8 @@ namespace te
         textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
         textureCubeMapImportOptions->IsCubemap = true;
         textureCubeMapImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
+
+        auto audioClipImportOptions = AudioClipImportOptions::Create();
         
         // ######################################################
 
@@ -811,6 +814,10 @@ namespace te
         _knightMaterial->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
         _knightMaterial->SetProperties(properties);
 
+        // ######################################################
+
+        // ######################################################
+        _audioClip = gImporter().Import<AudioClip>("Data/Sounds/AirHorn.ogg", audioClipImportOptions);
         // ######################################################
 
         // ######################################################

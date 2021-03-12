@@ -236,6 +236,8 @@ namespace te
         HAnimationClip _animationClipKnight;
 
         HScript _script;
+
+        HAudioClip _audioClip;
 #endif
     };
 

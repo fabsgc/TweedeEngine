@@ -83,7 +83,12 @@ namespace te
         TID_Animation               = 1028,
         TID_AnimationClip           = 1029,
         TID_AnimationSplitInfo      = 1030,
-        TID_ImportedAnimationEvents = 1031
+        TID_ImportedAnimationEvents = 1031,
+        TID_AudioClip               = 1032,
+        TID_AudioListener           = 1033,
+        TID_AudioSource             = 1034,
+        TID_CAudioListener          = 1035,
+        TID_CAudioSource            = 1036
     };
 }
 
@@ -241,12 +246,15 @@ namespace te
     class CScript;
     class CBone;
     class CAnimation;
+    class CAudioSource;
+    class CAudioListener;
 
     class BuiltinResources;
 
     class Audio;
     struct AudioDevice;
     class AudioManager;
+    class AudioClip;
 
     class Font;
 
@@ -291,6 +299,7 @@ namespace te
     typedef ResourceHandle<Shader> HShader;
     typedef ResourceHandle<Mesh> HMesh;
     typedef ResourceHandle<Font> HFont;
+    typedef ResourceHandle<AudioClip> HAudioClip;
     typedef ResourceHandle<AnimationClip> HAnimationClip;
 }
 
@@ -310,4 +319,6 @@ namespace te
     typedef GameObjectHandle<CScript> HScript;
     typedef GameObjectHandle<CBone> HBone;
     typedef GameObjectHandle<CAnimation> HAnimation;
+    typedef GameObjectHandle<CAudioSource> HAudioSource;
+    typedef GameObjectHandle<CAudioListener> HAudioListener;
 }

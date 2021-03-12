@@ -86,9 +86,8 @@ namespace te
                 UpdateCPUBuffers(0, *_initData);
             }
         }
-        
+
         Resource::Initialize();
-        CoreObject::Initialize();
     }
 
     PixelData Texture::Lock(GpuLockOptions options, UINT32 mipLevel, UINT32 face, UINT32 deviceIdx, UINT32 queueIdx)

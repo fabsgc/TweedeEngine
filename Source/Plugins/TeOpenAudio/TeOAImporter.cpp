@@ -70,6 +70,9 @@ namespace te
 
             if (!reader->Open(file, info))
                 return nullptr;
+            
+            bytesPerSample = info.BitDepth / 8;
+            bufferSize = info.NumSamples * bytesPerSample;
 
             sampleStream = te_shared_ptr_new<MemoryDataStream>(bufferSize);
             reader->Read(sampleStream->data(), info.NumSamples);

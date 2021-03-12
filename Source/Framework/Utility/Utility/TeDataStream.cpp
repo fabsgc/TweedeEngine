@@ -293,6 +293,11 @@ namespace te
         return _inStream->eof();
     }
 
+    SPtr<DataStream> FileStream::Clone(bool copyData) const
+    {
+        return te_shared_ptr_new<FileStream>(_path, (AccessMode)GetAccessMode());
+    }
+
     void FileStream::Close()
     {
         if (_inStream)
@@ -352,7 +357,7 @@ namespace te
                 _size = 0;
             }
 #endif
-            //_inStream->ignore(std::numeric_limits<std::streamsize>::max());
+            //_inStream->ignore(std::numeric_limits<std::strea_size>::max());
             //_size = _inStream->gcount() + 1; //We add the terminal charactet \0
 
             //_inStream->clear(); 
@@ -375,6 +380,106 @@ namespace te
         _cursor = _data;
         _end = _cursor + capacity;
     }
+
+    MemoryDataStream::MemoryDataStream(void* memory, size_t size)
+		: DataStream(READ | WRITE), _ownsMemory(false)
+	{
+		_data = _cursor = static_cast<uint8_t*>(memory);
+		_size = size;
+		_end = _data + _size;
+	}
+
+	MemoryDataStream::MemoryDataStream(const MemoryDataStream& sourceStream)
+		: DataStream(READ | WRITE)
+	{
+		// Copy data from incoming stream
+		_size = sourceStream.Size();
+
+		_data = _cursor = static_cast<uint8_t*>(te_allocate((uint32_t)_size));
+		_end = _data + sourceStream.Read(_data, _size);
+
+		assert(_end >= _cursor);
+	}
+
+	MemoryDataStream::MemoryDataStream(const SPtr<DataStream>& sourceStream)
+		: DataStream(READ | WRITE)
+	{
+		// Copy data from incoming stream
+		_size = sourceStream->Size();
+
+		_data = _cursor = static_cast<uint8_t*>(te_allocate((uint32_t)_size));
+		_end = _data + sourceStream->Read(_data, _size);
+
+		assert(_end >= _cursor);
+	}
+
+	MemoryDataStream::MemoryDataStream(MemoryDataStream&& other) noexcept
+	{
+		*this = std::move(other);
+	}
+
+	MemoryDataStream::~MemoryDataStream()
+	{
+		Close();
+	}
+
+    MemoryDataStream& MemoryDataStream::operator= (const MemoryDataStream& other)
+	{
+		if (this == &other)
+			return *this;
+
+		this->_name = other._name;
+		this->_access = other._access;
+		
+		if (!other._ownsMemory)
+		{
+			this->_size = other._size;
+			this->_data = other._data;
+			this->_cursor = other._cursor;
+			this->_end = other._end;
+			this->_ownsMemory = false;
+		}
+		else
+		{
+			if (_data && _ownsMemory)
+				te_free(_data);
+
+			_size = 0;
+			_data = nullptr;
+			_cursor = nullptr;
+			_end = nullptr;
+
+			this->_ownsMemory = true;
+
+			Realloc(other._size);
+			_end = _data + _size;
+			_cursor = _data + (other._cursor - other._data);
+
+			if (_size > 0)
+				memcpy(_data, other._data, _size);
+		}
+
+		return *this;
+	}
+
+	MemoryDataStream& MemoryDataStream::operator= (MemoryDataStream&& other)
+	{
+		if (this == &other)
+			return *this;
+
+		if (_data && _ownsMemory)
+			te_free(_data);
+
+		this->_name = std::move(other._name);
+		this->_access = std::exchange(other._access, 0);
+		this->_cursor = std::exchange(other._cursor, nullptr);
+		this->_end = std::exchange(other._end, nullptr);
+		this->_data = std::exchange(other._data, nullptr);
+		this->_size = std::exchange(other._size, 0);
+		this->_ownsMemory = std::exchange(other._ownsMemory, false);
+
+		return *this;
+	}
 
     size_t MemoryDataStream::Read(void* buf, size_t count) const
     {
@@ -443,6 +548,14 @@ namespace te
     bool MemoryDataStream::Eof() const
     {
         return _cursor >= _end;
+    }
+
+    SPtr<DataStream> MemoryDataStream::Clone(bool copyData) const
+    {
+        if (!copyData)
+            return te_shared_ptr_new<MemoryDataStream>(_data, _size);
+
+        return te_shared_ptr_new<MemoryDataStream>(*this);
     }
 
     void MemoryDataStream::Close()

@@ -286,6 +286,8 @@ set (TE_CORE_INC_COMPONENTS
     "Core/Components/TeCScript.h"
     "Core/Components/TeCBone.h"
     "Core/Components/TeCAnimation.h"
+    "Core/Components/TeCAudioListener.h"
+    "Core/Components/TeCAudioSource.h"
 )
 set (TE_CORE_SRC_COMPONENTS
     "Core/Components/TeCCamera.cpp"
@@ -297,6 +299,8 @@ set (TE_CORE_SRC_COMPONENTS
     "Core/Components/TeCScript.cpp"
     "Core/Components/TeCBone.cpp"
     "Core/Components/TeCAnimation.cpp"
+    "Core/Components/TeCAudioListener.cpp"
+    "Core/Components/TeCAudioSource.cpp"
 )
 
 set (TE_CORE_INC_RESOURCE
@@ -318,11 +322,13 @@ set (TE_CORE_INC_AUDIO
     "Core/Audio/TeAudio.h"
     "Core/Audio/TeAudioClipImportOptions.h"
     "Core/Audio/TeAudioManager.h"
+    "Core/Audio/TeAudioClip.h"
 )
 set (TE_CORE_SRC_AUDIO
     "Core/Audio/TeAudio.cpp"
     "Core/Audio/TeAudioClipImportOptions.cpp"
     "Core/Audio/TeAudioManager.cpp"
+    "Core/Audio/TeAudioClip.cpp"
 )
 
 set (TE_CORE_INC_TEXT

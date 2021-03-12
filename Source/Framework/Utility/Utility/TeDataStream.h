@@ -153,6 +153,15 @@ namespace te
         /** Returns true if the stream has reached the end. */
         virtual bool Eof() const = 0;
 
+        /**
+         * Creates a copy of this stream.
+         *
+         * @param[in]	copyData	If true the internal stream data will be copied as well, otherwise it will just
+         *							reference the data from the original stream (in which case the caller must ensure the
+         *							original stream outlives the clone). This is not relevant for file streams.
+         */
+        virtual SPtr<DataStream> Clone(bool copyData = true) const = 0;
+
         /** Returns the total size of the data to be read from the stream, or 0 if this is indeterminate for this stream. */
         size_t Size() const { return _size; }
 
@@ -198,6 +207,9 @@ namespace te
 
         /** @copydoc DataStream::Close */
         virtual void Close() override;
+
+        /** @copydoc DataStream::clone */
+        SPtr<DataStream> Clone(bool copyData = true) const override;
 
         /** Returns true if open has failed */
         bool Fail();
@@ -245,6 +257,33 @@ namespace te
          */
         MemoryDataStream(size_t capacity);
 
+        /**
+         * Wrap an existing memory chunk in a stream.
+         *
+         * @param[in] 	memory		Memory to wrap the data stream around.
+         * @param[in]	size		Size of the memory chunk in bytes.
+         */
+        MemoryDataStream(void* memory, size_t size);
+
+        /**
+         * Create a stream which pre-buffers the contents of another stream. Data from the other buffer will be entirely
+         * read and stored in an internal buffer.
+         */
+        MemoryDataStream(const MemoryDataStream& other);
+        
+        /**
+         * Create a stream which pre-buffers the contents of another stream. Data from the other buffer will be entirely
+         * read and stored in an internal buffer.
+         */
+        MemoryDataStream(const SPtr<DataStream>& other);
+
+        /** Inherits the data from the provided stream, invalidating the source stream. */
+        MemoryDataStream(MemoryDataStream&& other) noexcept;
+        ~MemoryDataStream();
+
+        MemoryDataStream& operator= (const MemoryDataStream& other);
+        MemoryDataStream& operator= (MemoryDataStream&& other);
+
         /** @copydoc DataStream::isFile */
         virtual bool IsFile() const override { return false; }
 
@@ -269,13 +308,14 @@ namespace te
         /** @copydoc DataStream::Close */
         virtual void Close() override;
 
+        /** @copydoc DataStream::clone */
+        SPtr<DataStream> Clone(bool copyData = true) const override;
+
         /** Get a pointer to the start of the memory block this stream holds. */
         uint8_t* data() const { return _data; }
 
         /** Get a pointer to the current position in the memory block this stream holds. */
         uint8_t* cursor() const { return _cursor; }
-
-        
 
     protected:
         /** Reallocates the internal buffer making enough room for @p numBytes. */
