@@ -2,7 +2,7 @@
 #include "Material/TePass.h"
 #include "Material/TeMaterial.h"
 #include "Material/TeTechnique.h"
-#include "Utility/TeFileStream.h"
+#include "Utility/TeDataStream.h"
 
 namespace te
 {

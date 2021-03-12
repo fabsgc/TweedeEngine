@@ -3,7 +3,7 @@
 #include "RenderAPI/TeVertexDeclaration.h"
 #include "TeD3D11HLSLParamParser.h"
 #include "RenderAPI/TeGpuParamDesc.h"
-#include "Utility/TeFileStream.h"
+#include "Utility/TeDataStream.h"
 #include <regex>
 
 namespace te

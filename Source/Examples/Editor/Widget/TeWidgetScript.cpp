@@ -2,14 +2,11 @@
 
 #include "../TeEditor.h"
 #include "../ImGuiExt/TeImGuiTextEditor.h"
-#include "TeCoreApplication.h"
-#include "Gui/TeGuiAPI.h"
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
 #include "Components/TeCScript.h"
 #include "Scripting/TeScriptManager.h"
-#include "Scripting/TeNativeScript.h"
-#include "Utility/TeFileStream.h"
+#include "Utility/TeDataStream.h"
 
 namespace te
 {
@@ -17,7 +14,6 @@ namespace te
         : Widget(WidgetType::Script)
         , _selections(gEditor().GetSelectionData())
         , _editor(nullptr)
-        , _needsUpdateContent(false)
         , _needsSave(false)
     {
         _title = SCRIPT_TITLE;

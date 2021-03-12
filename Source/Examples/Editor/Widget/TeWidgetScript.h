@@ -3,7 +3,6 @@
 #include "TeCorePrerequisites.h"
 #include "../TeEditor.h"
 #include "TeWidget.h"
-#include "ImGui/imgui.h"
 
 namespace te
 {
@@ -30,11 +29,9 @@ namespace te
     private:
         Editor::SelectionData& _selections;
         SPtr<ImGuiTextEditor> _editor;
-
         String _currentScriptName;
         String _currentScriptPath;
         String _editorContent;
-        bool _needsUpdateContent;
         bool _needsSave;
     };
 }

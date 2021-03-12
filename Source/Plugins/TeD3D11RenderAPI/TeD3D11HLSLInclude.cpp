@@ -1,5 +1,5 @@
 #include "TeD3D11HLSLInclude.h"
-#include "Utility/TeFileStream.h"
+#include "Utility/TeDataStream.h"
 
 namespace te
 {

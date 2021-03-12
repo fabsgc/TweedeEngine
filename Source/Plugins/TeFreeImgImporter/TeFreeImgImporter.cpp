@@ -5,7 +5,7 @@
 #include "Image/TePixelData.h"
 #include "Image/TePixelUtil.h"
 #include "Utility/TeBitwise.h"
-#include "Utility/TeFileStream.h"
+#include "Utility/TeDataStream.h"
 #include "Utility/TeFileSystem.h"
 #include "FreeImage.h"
 

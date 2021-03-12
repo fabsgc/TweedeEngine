@@ -213,21 +213,6 @@ namespace te
 
     void ScriptManager::OnMonitorFileModified(const String& path)
     {
-        auto Reload = [&](std::filesystem::path filePath, String fileName, String fileExtension)
-        {
-            fileName = ReplaceAll(fileName, fileExtension, "");
-            Vector<UnloadedScript> unloadedScripts;
-            UnloadScriptLibrary(fileName, &unloadedScripts);
-            if (CompileLibrary(fileName))
-            {
-                for (auto& unloadedScript : unloadedScripts)
-                {
-                    unloadedScript.ScriptToReload->SetNativeScript(
-                        fileName, unloadedScript.PreviousSceneObject, filePath.parent_path().generic_string());
-                }
-            }
-        };
-
         std::filesystem::path filePath(path);
         if (filePath.has_filename())
         {
@@ -236,22 +221,17 @@ namespace te
 
             if (fileExtension == ".cpp")
             {
-                // Keep this only for fun
-                auto reloadFunction = std::bind(Reload, filePath, fileName, fileExtension);
-                _reloads.emplace_back(std::async(std::launch::async, reloadFunction));
-
-                bool allReloadsDone = true;
-                do
+                fileName = ReplaceAll(fileName, fileExtension, "");
+                Vector<UnloadedScript> unloadedScripts;
+                UnloadScriptLibrary(fileName, &unloadedScripts);
+                if (CompileLibrary(fileName))
                 {
-                    allReloadsDone = true;
-                    for (auto& reload : _reloads)
+                    for (auto& unloadedScript : unloadedScripts)
                     {
-                        auto status = reload.wait_for(std::chrono::microseconds(0));
-                        if (status != std::future_status::ready)
-                            allReloadsDone = false;
+                        unloadedScript.ScriptToReload->SetNativeScript(
+                            fileName, unloadedScript.PreviousSceneObject, filePath.parent_path().generic_string());
                     }
-                } while (allReloadsDone == false);
-                _reloads.clear();
+                }
             }
         }
     }

@@ -241,6 +241,13 @@ namespace te
         return (T*)MemoryAllocator::Allocate(sizeof(T));
     }
 
+    /** Allocates enough bytes to hold an array of @p count elements the specified type, but doesn't construct them. */
+    template<class T>
+    T* te_allocateN(size_t count)
+    {
+        return (T*)MemoryAllocator::Allocate(count * sizeof(T));
+    }
+
     /** Creates and constructs an array of @p count elements. */
     template<class T>
     T* te_newN(uint32_t count)
@@ -248,9 +255,7 @@ namespace te
         T* ptr = (T*)te_allocate<T>(sizeof(T) * count);
 
         for (size_t i = 0; i < count; ++i)
-        {
             new (&ptr[i]) T;
-        }
 
         return ptr;
     }

@@ -110,7 +110,7 @@ set(TE_UTILITY_INC_UTILITY
     "Utility/Utility/TeEvent.h"
     "Utility/Utility/TePlatformUtility.h"
     "Utility/Utility/TeBitwise.h"
-    "Utility/Utility/TeFileStream.h"
+    "Utility/Utility/TeDataStream.h"
     "Utility/Utility/TeDataBlob.h"
     "Utility/Utility/TePoolAllocator.h"
     "Utility/Utility/TeFrameAllocator.h"
@@ -123,7 +123,7 @@ set(TE_UTILITY_SRC_UTILITY
     "Utility/Utility/TeTimer.cpp"
     "Utility/Utility/TeUtility.cpp"
     "Utility/Utility/TeUUID.cpp"
-    "Utility/Utility/TeFileStream.cpp"
+    "Utility/Utility/TeDataStream.cpp"
     "Utility/Utility/TeFrameAllocator.cpp"
     "Utility/Utility/TeFileSystem.cpp"
 )

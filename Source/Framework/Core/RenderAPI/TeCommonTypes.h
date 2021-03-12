@@ -586,5 +586,14 @@ namespace te
 
         /** Number of faces to reference, if the texture has more than one. */
         UINT32 NumFaces;
-    };    
+    };
+
+    /** Meta-data describing a chunk of audio. */
+    struct AudioDataInfo
+    {
+        UINT32 NumSamples; /**< Total number of audio samples in the audio data (includes all channels). */
+        UINT32 SampleRate; /**< Number of audio samples per second, per channel. */
+        UINT32 NumChannels; /**< Number of channels. Each channel has its own set of samples. */
+        UINT32 BitDepth; /**< Number of bits per sample. */
+    };
 }

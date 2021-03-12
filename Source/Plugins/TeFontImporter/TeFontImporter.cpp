@@ -2,7 +2,6 @@
 #include "Text/TeFontImportOptions.h"
 #include "Image/TePixelData.h"
 #include "Image/TeTexture.h"
-#include "Utility/TeFileStream.h"
 #include "Utility/TeFileSystem.h"
 
 #include <ft2build.h>

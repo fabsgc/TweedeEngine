@@ -1,6 +1,6 @@
 #include "TeShaderImporter.h"
 #include "Importer/TeShaderImportOptions.h"
-#include "Utility/TeFileStream.h"
+#include "Utility/TeDataStream.h"
 #include "TeCoreApplication.h"
 
 #include <iostream>
