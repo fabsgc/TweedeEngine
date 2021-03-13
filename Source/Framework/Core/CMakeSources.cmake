@@ -325,6 +325,7 @@ set (TE_CORE_INC_AUDIO
     "Core/Audio/TeAudioClip.h"
     "Core/Audio/TeAudioListener.h"
     "Core/Audio/TeAudioSource.h"
+    "Core/Audio/TeAudioUtility.h"
 )
 set (TE_CORE_SRC_AUDIO
     "Core/Audio/TeAudio.cpp"
@@ -333,6 +334,7 @@ set (TE_CORE_SRC_AUDIO
     "Core/Audio/TeAudioClip.cpp"
     "Core/Audio/TeAudioListener.cpp"
     "Core/Audio/TeAudioSource.cpp"
+    "Core/Audio/TeAudioUtility.cpp"
 )
 
 set (TE_CORE_INC_TEXT

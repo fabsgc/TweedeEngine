@@ -126,7 +126,7 @@ namespace te
             float quadraticAtt = DefaultQuadraticAtt, bool castsShadows = DefaultCastShadow,
             Degree spotAngle = Degree(DefaultSpotAngle));
 
-        /** @copydoc CoreObject::_markCoreDirty */
+        /** @copydoc SceneActor::_markCoreDirty */
         void _markCoreDirty(ActorDirtyFlag flag = ActorDirtyFlag::Everything) override;
 
         /** @copydoc CoreObject::FrameSync */

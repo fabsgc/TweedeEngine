@@ -817,7 +817,7 @@ namespace te
         // ######################################################
 
         // ######################################################
-        _audioClip = gImporter().Import<AudioClip>("Data/Sounds/AirHorn.ogg", audioClipImportOptions);
+        _audioClip = EditorResManager::Instance().Load<AudioClip>("Data/Sounds/AirHorn.ogg", audioClipImportOptions);
         // ######################################################
 
         // ######################################################

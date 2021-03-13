@@ -31,8 +31,8 @@ namespace te
         /** @copydoc Component::Update */
         void Update() override { }
 
-    protected:
-        HAudioClip mAudioClip;
+        /** Returns the AudioListener implementation wrapped by this component. */
+        AudioListener* _getInternal() const { return _internal.get(); }
 
     protected:
         friend class SceneObject;
@@ -69,5 +69,9 @@ namespace te
 
     protected:
         CAudioListener();
+
+    protected:
+        SPtr<AudioListener> _internal;
+        HAudioClip _audioClip;
     };
 }

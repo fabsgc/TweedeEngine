@@ -14,10 +14,10 @@ namespace te
         virtual ~OAAudioClip();
 
     protected:
-        /** @copydoc Resource::initialize */
+        /** @copydoc Resource::Initialize */
         void Initialize() override;
 
-        /** @copydoc AudioClip::getSourceStream */
+        /** @copydoc AudioClip::GetSourceStream */
         SPtr<DataStream> GetSourceStream(UINT32& size) override;
 
     private:

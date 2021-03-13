@@ -52,13 +52,13 @@ namespace te
         Skybox();
         Skybox(const SPtr<Texture>& radiance);
 
-        /** @copydoc CoreObject::_markCoreDirty */
+        /** @copydoc SceneActor::_markCoreDirty */
         void _markCoreDirty(ActorDirtyFlag flag = ActorDirtyFlag::Everything) override;
 
         /** @copydoc CoreObject::FrameSync */
         void FrameSync() override;
 
-        /** @copydoc CoreObject::initialize */
+        /** @copydoc CoreObject::Initialize */
         void Initialize() override;
 
     protected:

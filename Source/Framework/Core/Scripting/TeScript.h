@@ -73,7 +73,7 @@ namespace te
         /** @copydoc CoreObject::FrameSync */
         void FrameSync() override;
 
-        /** @copydoc CoreObject::initialize */
+        /** @copydoc CoreObject::Initialize */
         void Initialize() override;
 
     protected:

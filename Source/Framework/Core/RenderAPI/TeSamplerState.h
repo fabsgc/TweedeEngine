@@ -130,7 +130,7 @@ namespace te
 
         SamplerState(const SAMPLER_STATE_DESC& desc);
 
-        /** @copydoc CoreObject::initialize */
+        /** @copydoc CoreObject::Initialize */
         void Initialize() override;
 
         /**	Creates any API-specific state objects. */

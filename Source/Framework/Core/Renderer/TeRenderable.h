@@ -46,7 +46,7 @@ namespace te
         /** @copydoc SceneActor::Destroy */
         void SetMobility(ObjectMobility mobility) override;
 
-        /** @copydoc CoreObject::_markCoreDirty */
+        /** @copydoc SceneActor::_markCoreDirty */
         void _markCoreDirty(ActorDirtyFlag flag = ActorDirtyFlag::Everything) override;
 
         /** @copydoc CoreObject::FrameSync */

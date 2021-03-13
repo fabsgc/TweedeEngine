@@ -13,40 +13,46 @@ namespace te
         OAAudio();
         virtual ~OAAudio();
 
-        /** @copydoc Audio::setVolume */
+        /** @copydoc Audio::SetVolume */
         void SetVolume(float volume) override;
 
-        /** @copydoc Audio::getVolume */
+        /** @copydoc Audio::GetVolume */
         float GetVolume() const override;
 
-        /** @copydoc Audio::setPaused */
+        /** @copydoc Audio::SetPaused */
         void SetPaused(bool paused) override;
 
-        /** @copydoc Audio::isPaused */
+        /** @copydoc Audio::IsPaused */
         bool IsPaused() const override { return _isPaused; }
 
-        /** @copydoc Audio::_update */
+        /** @copydoc Audio::Update */
         void Update() override;
 
-        /** @copydoc Audio::setActiveDevice */
+        /** @copydoc Audio::SetActiveDevice */
         void SetActiveDevice(const AudioDevice& device) override;
 
-        /** @copydoc Audio::getActiveDevice */
+        /** @copydoc Audio::GetActiveDevice */
         AudioDevice GetActiveDevice() const override { return _activeDevice; }
 
-        /** @copydoc Audio::getDefaultDevice */
+        /** @copydoc Audio::GetDefaultDevice */
         AudioDevice GetDefaultDevice() const override { return _defaultDevice; }
 
-        /** @copydoc Audio::getAllDevices */
+        /** @copydoc Audio::GetAllDevices */
         const Vector<AudioDevice>& GetAllDevices() const override { return _allDevices; };
 
         /** Checks is a specific OpenAL extension supported. */
         bool _isExtensionSupported(const String& extension) const;
 
     private:
-        /** @copydoc Audio::createClip */
+        /** @copydoc Audio::CreateClip */
         SPtr<AudioClip> CreateClip(const SPtr<DataStream>& samples, UINT32 streamSize, UINT32 numSamples,
             const AUDIO_CLIP_DESC& desc) override;
+
+        /** @copydoc Audio::CreateListener */
+        SPtr<AudioListener> CreateListener() override;
+
+        /** @copydoc Audio::CreateSource */
+        SPtr<AudioSource> CreateSource() override;
 
         /**
          * Delete all existing contexts and rebuild them according to the listener list. All audio sources will be rebuilt

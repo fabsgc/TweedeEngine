@@ -1,6 +1,8 @@
 #include "TeOAAudio.h"
 #include "TeOAAudioClip.h"
 #include "Math/TeMath.h"
+#include "TeOAAudioListener.h"
+#include "TeOAAudioSource.h"
 #include "AL/al.h"
 
 namespace te
@@ -157,5 +159,15 @@ namespace te
         const AUDIO_CLIP_DESC& desc)
     {
         return te_core_ptr_new<OAAudioClip>(samples, streamSize, numSamples, desc);
+    }
+
+    SPtr<AudioListener> OAAudio::CreateListener()
+    {
+        return te_shared_ptr_new<OAAudioListener>();
+    }
+
+    SPtr<AudioSource> OAAudio::CreateSource()
+    {
+        return te_shared_ptr_new<OAAudioSource>();
     }
 }

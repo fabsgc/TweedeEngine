@@ -5,6 +5,7 @@
 #include "Mesh/TeMesh.h"
 #include "Image/TeTexture.h"
 #include "Animation/TeAnimationClip.h"
+#include "Audio/TeAudioClip.h"
 
 namespace te
 {
@@ -26,6 +27,7 @@ namespace te
         EditorResManager::ResourcesContainer& textureContainer = EditorResManager::Instance().Get<Texture>();
         EditorResManager::ResourcesContainer& meshContainer = EditorResManager::Instance().Get<Mesh>();
         EditorResManager::ResourcesContainer& animationClipContainer = EditorResManager::Instance().Get<AnimationClip>();
+        EditorResManager::ResourcesContainer& audioClipContainer = EditorResManager::Instance().Get<AudioClip>();
 
         char inputPath[256];
         char inputUUID[64];
@@ -148,40 +150,44 @@ namespace te
             ImGui::PopID();
         };
 
+        auto ShowResourceType = [&](
+            EditorResManager::ResourcesContainer& container, 
+            const char* groupTitle, 
+            const char* headerTtitle,
+            const char* listTitle,
+            ImVec2 size)
         {
             ImGui::BeginGroup();
-            ImGui::BeginChild("Meshes", ImVec2(0.0f, 0.0f), false);
-            if (ImGui::CollapsingHeader("   Meshes", ImGuiTreeNodeFlags_Leaf))
+            ImGui::BeginChild(groupTitle, size, false);
+            if (ImGui::CollapsingHeader(headerTtitle, ImGuiTreeNodeFlags_Leaf))
             {
-                ImGui::BeginChild("MeshesList", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetWindowHeight() - 35.0f), true);
+                ImGui::BeginChild(listTitle, ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetWindowHeight() - 35.0f), true);
 
-                for (auto& resource : meshContainer.Res)
+                for (auto& resource : container.Res)
                     ShowDefaultResourceField(resource.second);
 
                 ImGui::EndChild();
             }
             ImGui::EndChild();
             ImGui::EndGroup();
-        }
+        };
+
+        ShowResourceType(meshContainer, "Meshes", "   Meshes", "MeshesList", ImVec2(0.0f, 0.0f));
         ImGui::SameLine();
 
         if (animationClipContainer.Res.size() > 0)
         {
-            ImGui::BeginGroup();
-            ImGui::BeginChild("AnimationClips", ImVec2(ImGui::GetWindowContentRegionWidth() / 2.0f, 0.0f), false);
-            if (ImGui::CollapsingHeader("   Animation Clips", ImGuiTreeNodeFlags_Leaf))
-            {
-                ImGui::BeginChild("AnimationClipsList", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetWindowHeight() - 35.0f), true);
-
-                for (auto& resource : animationClipContainer.Res)
-                    ShowDefaultResourceField(resource.second);
-
-                ImGui::EndChild();
-            }
-            ImGui::EndChild();
-            ImGui::EndGroup();
+            ShowResourceType(animationClipContainer, "AnimationClips", "   Animation Clips", "AnimationClipsList", 
+                ImVec2(ImGui::GetWindowContentRegionWidth() / 2.0f, 0.0f));
+            ImGui::SameLine();
         }
-        ImGui::SameLine();
+        
+        if (audioClipContainer.Res.size() > 0)
+        {
+            ShowResourceType(audioClipContainer, "AudioClips", "   Audio Clips", "AudioClipsList",
+                ImVec2(ImGui::GetWindowContentRegionWidth() / 2.0f, 0.0f));
+            ImGui::SameLine();
+        }
     }
 
     void WidgetResources::UpdateBackground()

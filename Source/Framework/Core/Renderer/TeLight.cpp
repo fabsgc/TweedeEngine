@@ -45,7 +45,7 @@ namespace te
     }
 
     void Light::Initialize()
-    { 
+    {
         UpdateBounds();
         gRenderer()->NotifyLightAdded(const_cast<Light*>(this));
 

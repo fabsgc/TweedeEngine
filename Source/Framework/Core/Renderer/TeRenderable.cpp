@@ -43,7 +43,7 @@ namespace te
     }
 
     void Renderable::Initialize()
-    { 
+    {
         gRenderer()->NotifyRenderableAdded(this);
         CoreObject::Initialize();
     }

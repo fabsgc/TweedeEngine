@@ -75,13 +75,18 @@ namespace te
         virtual SPtr<AudioClip> CreateClip(const SPtr<DataStream>& samples, UINT32 streamSize, UINT32 numSamples,
             const AUDIO_CLIP_DESC& desc) = 0;
 
-        // TODO
+        /** Creates a new AudioListener. */
+        virtual SPtr<AudioListener> CreateListener() = 0;
+
+        /** Creates a new AudioSource. */
+        virtual SPtr<AudioSource> CreateSource() = 0;
 
         /** Stops playback of all sources started with Audio::Play calls. */
         void StopManualSources();
 
     private:
-        // TODO
+        Vector<SPtr<AudioSource>> _manualSources;
+        Vector<SPtr<AudioSource>> _tempSources;
     };
 
     /** Provides easier access to Audio. */

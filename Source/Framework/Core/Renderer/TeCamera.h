@@ -436,7 +436,7 @@ namespace te
         /**	Notify camera that the frustum requires to be updated. */
         virtual void InvalidateFrustum() const;
 
-        /** @copydoc CoreObject::_markCoreDirty */
+        /** @copydoc SceneActor::_markCoreDirty */
         void _markCoreDirty(ActorDirtyFlag flag = ActorDirtyFlag::Everything) override;
 
         /** @copydoc CoreObject::FrameSync */

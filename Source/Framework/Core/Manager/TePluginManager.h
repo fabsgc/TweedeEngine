@@ -9,7 +9,6 @@ namespace te
     class TE_CORE_EXPORT PluginManager : public Module<PluginManager<PluginFactory>>
     {
     public:
-        TE_MODULE_STATIC_MEMBER(PluginManager)
 
         /**
          * Initializes the physics manager and a particular physics implementation.

@@ -2,6 +2,7 @@
 #include "Utility/TeDataStream.h"
 #include "Utility/TeFileSystem.h"
 #include "Audio/TeAudioClipImportOptions.h"
+#include "Audio/TeAudioUtility.h"
 #include "TeOggVorbisDecoder.h"
 
 namespace te
@@ -87,8 +88,7 @@ namespace te
             UINT32 monoBufferSize = numSamplesPerChannel * bytesPerSample;
             auto monoStream = te_shared_ptr_new<MemoryDataStream>(monoBufferSize);
 
-            // AudioUtility::ConvertToMono(sampleStream->Data(), monoStream->Data(), info.BitDepth, numSamplesPerChannel, info.NumChannels); 
-            // TODO
+            AudioUtility::ConvertToMono(sampleStream->Data(), monoStream->Data(), info.BitDepth, numSamplesPerChannel, info.NumChannels); 
 
             info.NumSamples = numSamplesPerChannel;
             info.NumChannels = 1;
@@ -103,8 +103,7 @@ namespace te
             UINT32 outBufferSize = info.NumSamples * (clipIO->BitDepth / 8);
             auto outStream = te_shared_ptr_new<MemoryDataStream>(outBufferSize);
 
-            // AudioUtility::convertBitDepth(sampleStream->Data(), info.BitDepth, outStream->Data(), clipIO->BitDepth, info.NumSamples);
-            // TODO
+            AudioUtility::ConvertBitDepth(sampleStream->Data(), info.BitDepth, outStream->Data(), clipIO->BitDepth, info.NumSamples);
 
             info.BitDepth = clipIO->BitDepth;
 

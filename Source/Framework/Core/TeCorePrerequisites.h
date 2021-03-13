@@ -255,6 +255,8 @@ namespace te
     struct AudioDevice;
     class AudioManager;
     class AudioClip;
+    class AudioListener;
+    class AudioSource;
 
     class Font;
 

@@ -3,6 +3,8 @@ set (TE_OPENAUDIO_INC_NOFILTER
     "TeOAImporter.h"
     "TeOAAudio.h"
     "TeOAAudioClip.h"
+    "TeOAAudioSource.h"
+    "TeOAAudioListener.h"
     "TeAudioDecoder.h"
     "TeOggVorbisDecoder.h"
 )
@@ -11,6 +13,8 @@ set (TE_OPENAUDIO_SRC_NOFILTER
     "TeOAImporter.cpp"
     "TeOAPlugin.cpp"
     "TeOAAudio.cpp"
+    "TeOAAudioSource.cpp"
+    "TeOAAudioListener.cpp"
     "TeOAAudioClip.cpp"
     "TeOggVorbisDecoder.cpp"
 )

@@ -149,7 +149,7 @@ namespace te
 
         DepthStencilState(const DEPTH_STENCIL_STATE_DESC& desc);
 
-        /** @copydoc CoreObject::initialize */
+        /** @copydoc CoreObject::Initialize */
         void Initialize() override;
 
         /** Creates any API-specific state objects. */
