@@ -208,7 +208,6 @@ set (TE_CORE_INC_MANAGER
 set (TE_CORE_SRC_MANAGER
     "Core/Manager/TeRenderAPIManager.cpp"
     "Core/Manager/TeRendererManager.cpp"
-    "Core/Manager/TePluginManager.cpp"
     "Core/Manager/TeGuiManager.cpp"
 )
 
