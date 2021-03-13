@@ -312,7 +312,7 @@ namespace te
         SPtr<DataStream> Clone(bool copyData = true) const override;
 
         /** Get a pointer to the start of the memory block this stream holds. */
-        uint8_t* data() const { return _data; }
+        uint8_t* Data() const { return _data; }
 
         /** Get a pointer to the current position in the memory block this stream holds. */
         uint8_t* cursor() const { return _cursor; }

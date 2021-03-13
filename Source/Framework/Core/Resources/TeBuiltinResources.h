@@ -64,10 +64,10 @@ namespace te
     class TE_CORE_EXPORT BuiltinResources : public Module<BuiltinResources>
     {
     public:
-        TE_MODULE_STATIC_HEADER_MEMBER(BuiltinResources)
-
         BuiltinResources();
         ~BuiltinResources();
+
+        TE_MODULE_STATIC_HEADER_MEMBER(BuiltinResources)
 
         /** @copydoc Module::OnStartUp */
         void OnStartUp() override;

@@ -21,6 +21,7 @@
 #include "Audio/TeAudioManager.h"
 #include "Animation/TeAnimationManager.h"
 #include "Scripting/TeScriptManager.h"
+#include "Audio/TeAudio.h"
 
 #include "Input/TeInput.h"
 #include "Input/TeVirtualInput.h"
@@ -112,7 +113,6 @@ namespace te
         BuiltinResources::ShutDown();
         RendererMaterialManager::ShutDown();
         Importer::ShutDown();
-        AudioManager::ShutDown();
         VirtualInput::ShutDown();
         Input::ShutDown();
         ParamBlockManager::ShutDown();
@@ -123,6 +123,7 @@ namespace te
         RendererManager::ShutDown();
         GpuProgramManager::ShutDown();
         ResourceManager::ShutDown();
+        AudioManager::ShutDown();
         GuiManager::ShutDown();
         RenderAPIManager::ShutDown();
         CoreObjectManager::ShutDown();
@@ -143,6 +144,7 @@ namespace te
             gInput().Update();
             gInput().TriggerCallbacks();
             gVirtualInput().Update();
+            gAudio().Update();
             _window->TriggerCallback();
 
             if(_pause)

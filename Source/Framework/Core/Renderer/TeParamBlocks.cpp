@@ -3,6 +3,8 @@
 
 namespace te
 {
+    TE_MODULE_STATIC_MEMBER(ParamBlockManager)
+
     ParamBlock::~ParamBlock()
     {
         ParamBlockManager::UnregisterBlock(this);

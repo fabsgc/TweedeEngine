@@ -4,6 +4,8 @@
 
 namespace te
 {
+    TE_MODULE_STATIC_MEMBER(SceneManager)
+
     enum ListType
     {
         NoList = 0,

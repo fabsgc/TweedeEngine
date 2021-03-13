@@ -18,6 +18,8 @@ namespace te
         RendererUtility();
         ~RendererUtility();
 
+        TE_MODULE_STATIC_HEADER_MEMBER(RendererUtility)
+
         /**
          * Activates the specified material pass for rendering. Any further draw calls will be executed using this pass.
          *

@@ -54,6 +54,8 @@ namespace te
         SceneManager();
         ~SceneManager();
 
+        TE_MODULE_STATIC_HEADER_MEMBER(SceneManager)
+
         /** Returns the object that represents the main scene. */
         const SPtr<SceneInstance>& GetMainScene() const { return _mainScene; }
 

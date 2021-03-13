@@ -12,6 +12,8 @@ namespace te
     class TE_CORE_EXPORT TextureManager : public Module<TextureManager>
     {
     public:
+        TE_MODULE_STATIC_HEADER_MEMBER(TextureManager)
+
         virtual ~TextureManager() = default;
 
         /** @copydoc Module::OnStartUp */

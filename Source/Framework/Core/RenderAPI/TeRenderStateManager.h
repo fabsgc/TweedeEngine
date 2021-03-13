@@ -17,6 +17,8 @@ namespace te
     public:
         RenderStateManager() = default;
 
+        TE_MODULE_STATIC_HEADER_MEMBER(RenderStateManager)
+
         /** Creates and initializes a new SamplerState. */
         SPtr<SamplerState> CreateSamplerState(const SAMPLER_STATE_DESC& desc) const;
 

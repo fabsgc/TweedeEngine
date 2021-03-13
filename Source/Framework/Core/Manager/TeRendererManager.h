@@ -13,6 +13,8 @@ namespace te
     public:
         ~RendererManager();
 
+        TE_MODULE_STATIC_HEADER_MEMBER(RendererManager)
+
         /** Initializes the renderer, making it ready to render. */
         SPtr<Renderer> Initialize(const String& pluginFilename);
 
@@ -22,7 +24,6 @@ namespace te
         /** Registers a new render API factory responsible for creating a specific render system type. */
         void RegisterFactory(SPtr<RendererFactory> factory);
 
-        TE_MODULE_STATIC_HEADER_MEMBER(RendererManager)
     private:
         Vector<SPtr<RendererFactory>> _availableFactories;
         SPtr<Renderer> _renderer;

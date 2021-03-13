@@ -41,6 +41,9 @@ namespace te
     class TE_CORE_EXPORT AnimationManager : public Module<AnimationManager>
     {
     public:
+        TE_MODULE_STATIC_HEADER_MEMBER(AnimationManager)
+
+        /** Constructor */
         AnimationManager();
 
         /** Pauses or resumes the animation evaluation. */

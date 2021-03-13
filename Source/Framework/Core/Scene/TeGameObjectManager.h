@@ -16,6 +16,8 @@ namespace te
         GameObjectManager() = default;
         ~GameObjectManager();
 
+        TE_MODULE_STATIC_HEADER_MEMBER(GameObjectManager)
+
         /**
          * Registers a new GameObject and returns the handle to the object.
          *

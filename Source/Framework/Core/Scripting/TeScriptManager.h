@@ -72,6 +72,8 @@ namespace te
         ScriptManager() = default;
         ~ScriptManager() = default;
 
+        TE_MODULE_STATIC_HEADER_MEMBER(ScriptManager)
+
         void OnStartUp() override;
         void OnShutDown() override;
 

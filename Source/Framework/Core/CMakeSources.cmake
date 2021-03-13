@@ -208,6 +208,7 @@ set (TE_CORE_INC_MANAGER
 set (TE_CORE_SRC_MANAGER
     "Core/Manager/TeRenderAPIManager.cpp"
     "Core/Manager/TeRendererManager.cpp"
+    "Core/Manager/TePluginManager.cpp"
     "Core/Manager/TeGuiManager.cpp"
 )
 
@@ -323,12 +324,16 @@ set (TE_CORE_INC_AUDIO
     "Core/Audio/TeAudioClipImportOptions.h"
     "Core/Audio/TeAudioManager.h"
     "Core/Audio/TeAudioClip.h"
+    "Core/Audio/TeAudioListener.h"
+    "Core/Audio/TeAudioSource.h"
 )
 set (TE_CORE_SRC_AUDIO
     "Core/Audio/TeAudio.cpp"
     "Core/Audio/TeAudioClipImportOptions.cpp"
     "Core/Audio/TeAudioManager.cpp"
     "Core/Audio/TeAudioClip.cpp"
+    "Core/Audio/TeAudioListener.cpp"
+    "Core/Audio/TeAudioSource.cpp"
 )
 
 set (TE_CORE_INC_TEXT

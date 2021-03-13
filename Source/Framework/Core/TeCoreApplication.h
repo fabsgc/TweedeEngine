@@ -67,10 +67,10 @@ namespace te
     class TE_CORE_EXPORT CoreApplication : public Module<CoreApplication>
     {
     public:
+        TE_MODULE_STATIC_HEADER_MEMBER(CoreApplication)
+
         CoreApplication(START_UP_DESC desc);
         virtual ~CoreApplication();
-
-        TE_MODULE_STATIC_HEADER_MEMBER(CoreApplication)
 
         /**
          * Executes the main loop. This will update your components and modules, queue objects for rendering and run

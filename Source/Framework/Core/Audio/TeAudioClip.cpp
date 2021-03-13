@@ -28,16 +28,14 @@ namespace te
 
 	SPtr<AudioClip> AudioClip::_createPtr(const SPtr<DataStream>& samples, UINT32 streamSize, UINT32 numSamples, const AUDIO_CLIP_DESC& desc)
 	{
-		//SPtr<AudioClip> newClip = gAudio().CreateClip(samples, streamSize, numSamples, desc);
-		SPtr<AudioClip> newClip = nullptr;
+		SPtr<AudioClip> newClip = gAudio().CreateClip(samples, streamSize, numSamples, desc);
 		return newClip;
 	}
 
 	SPtr<AudioClip> AudioClip::CreateEmpty()
 	{
 		AUDIO_CLIP_DESC desc;
-		//SPtr<AudioClip> newClip = gAudio().createClip(nullptr, 0, 0, desc);
-		SPtr<AudioClip> newClip = nullptr;
+		SPtr<AudioClip> newClip = gAudio().CreateClip(nullptr, 0, 0, desc);
 		return newClip;
 	}
 }

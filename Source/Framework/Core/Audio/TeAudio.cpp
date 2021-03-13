@@ -1,8 +1,47 @@
 #include "Audio/TeAudio.h"
+#include "Scene/TeTransform.h"
 
 namespace te
 {
     TE_MODULE_STATIC_MEMBER(Audio)
+
+    void Audio::Play(const HAudioClip& clip, const Vector3& position, float volume)
+    {
+        Transform transform;
+        transform.SetPosition(position);
+
+        /*SPtr<AudioSource> source = createSource();
+        source->setClip(clip);
+        source->setTransform(transform);
+        source->setVolume(volume);
+        source->play();
+
+        _manualSources.push_back(source);*/
+        // TODO
+    }
+
+    void Audio::StopManualSources()
+    {
+        /*for (auto& source : _manualSources)
+            source->Stop();
+
+        _manualSources.clear();*/
+        // TODO
+    }
+
+    void Audio::Update()
+    {
+        /*const UINT32 numSources = (UINT32)_manualSources.size();
+        for (UINT32 i = 0; i < numSources; i++)
+        {
+            if (_manualSources[i]->getState() != AudioSourceState::Stopped)
+                _manualSources.push_back(_manualSources[i]);
+        }
+
+        std::swap(_tempSources, _manualSources);
+        _manualSources.clear();*/
+        // TODO
+    }
 
     Audio& gAudio()
     {

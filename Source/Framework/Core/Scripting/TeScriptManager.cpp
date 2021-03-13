@@ -12,6 +12,8 @@ using namespace std::placeholders;
 
 namespace te
 {
+    TE_MODULE_STATIC_MEMBER(ScriptManager)
+
     const String ScriptManager::LIBRARIES_PATH = "Data/Scripts/";
 
     void ScriptManager::OnStartUp()

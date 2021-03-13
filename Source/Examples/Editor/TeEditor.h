@@ -76,10 +76,10 @@ namespace te
         };
 
     public:
-        TE_MODULE_STATIC_HEADER_MEMBER(Editor)
-
         Editor();
         ~Editor();
+
+        TE_MODULE_STATIC_HEADER_MEMBER(Editor)
 
         /** @copydoc Module::OnStartUp */
         void OnStartUp() override;

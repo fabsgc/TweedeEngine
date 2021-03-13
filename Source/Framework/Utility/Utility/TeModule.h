@@ -16,27 +16,27 @@
     class_name& class_name::Instance()                                                                                  \
     {                                                                                                                   \
         if (!IsStartedUp())                                                                                             \
-            TE_ASSERT_ERROR(false, "Trying to access a module but it hasn't been started up yet."); \
+            TE_ASSERT_ERROR(false, "Trying to access a module but it hasn't been started up yet.");                     \
         if (IsDestroyed())                                                                                              \
-            TE_ASSERT_ERROR(false, "Trying to access a destroyed module.");                         \
+            TE_ASSERT_ERROR(false, "Trying to access a destroyed module.");                                             \
         return *_instance();                                                                                            \
     }                                                                                                                   \
                                                                                                                         \
     class_name* class_name::InstancePtr()                                                                               \
     {                                                                                                                   \
         if (!IsStartedUp())                                                                                             \
-            TE_ASSERT_ERROR(false, "Trying to access a module but it hasn't been started up yet."); \
+            TE_ASSERT_ERROR(false, "Trying to access a module but it hasn't been started up yet.");                     \
         if (IsDestroyed())                                                                                              \
-            TE_ASSERT_ERROR(false, "Trying to access a destroyed module.");                         \
+            TE_ASSERT_ERROR(false, "Trying to access a destroyed module.");                                             \
         return _instance();                                                                                             \
     }                                                                                                                   \
                                                                                                                         \
     void class_name::ShutDown()                                                                                         \
     {                                                                                                                   \
         if (IsDestroyed())                                                                                              \
-            TE_ASSERT_ERROR(false, "Trying to shut down an already shut down module.");             \
+            TE_ASSERT_ERROR(false, "Trying to shut down an already shut down module.");                                 \
         if (!IsStartedUp())                                                                                             \
-            TE_ASSERT_ERROR(false, "Trying to shut down a module which was never started.");        \
+            TE_ASSERT_ERROR(false, "Trying to shut down a module which was never started.");                            \
         (_instance())->OnShutDown();                                                                                    \
         _instance()->~class_name();                                                                                     \
         ::free(_instance());                                                                                            \
@@ -67,7 +67,7 @@
     static void StartUp(Args&& ...args)                                                                                 \
     {                                                                                                                   \
         if (IsStartedUp())                                                                                              \
-            TE_ASSERT_ERROR(false, "Trying to start an already started module.");                   \
+            TE_ASSERT_ERROR(false, "Trying to start an already started module.");                                       \
         _instance() = new class_name(std::forward<Args>(args)...);                                                      \
         IsStartedUp() = true;                                                                                           \
         ((class_name*)_instance())->OnStartUp();                                                                        \
@@ -79,7 +79,7 @@
         static_assert(std::is_base_of<class_name, SubType>::value,                                                      \
             "Provided type is not derived from type the Module is initialized with.");                                  \
         if (IsStartedUp())                                                                                              \
-            TE_ASSERT_ERROR(false, "Trying to start an already started module.");                   \
+            TE_ASSERT_ERROR(false, "Trying to start an already started module.");                                       \
         _instance() = new SubType(std::forward<Args>(args)...);                                                         \
         IsStartedUp() = true;                                                                                           \
         ((class_name*)_instance())->OnStartUp();                                                                        \

@@ -9,6 +9,8 @@ namespace te
     class TE_CORE_EXPORT PluginManager : public Module<PluginManager<PluginFactory>>
     {
     public:
+        TE_MODULE_STATIC_HEADER_MEMBER(PluginManager)
+
         /**
          * Initializes the physics manager and a particular physics implementation.
          * @param[in]	pluginName	Name of the plugin containing a plugin implementation.

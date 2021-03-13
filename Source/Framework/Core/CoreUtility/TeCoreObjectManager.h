@@ -8,6 +8,8 @@ namespace te
     class TE_CORE_EXPORT CoreObjectManager : public Module<CoreObjectManager>
     {
     public:
+        TE_MODULE_STATIC_HEADER_MEMBER(CoreObjectManager)
+
         CoreObjectManager();
         ~CoreObjectManager();
 

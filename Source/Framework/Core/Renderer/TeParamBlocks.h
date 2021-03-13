@@ -114,6 +114,8 @@ namespace te
     public:
         ParamBlockManager();
 
+        TE_MODULE_STATIC_HEADER_MEMBER(ParamBlockManager)
+
         /** Registers a new param block, and initializes it when ready. */
         static void RegisterBlock(ParamBlock* paramBlock);
 

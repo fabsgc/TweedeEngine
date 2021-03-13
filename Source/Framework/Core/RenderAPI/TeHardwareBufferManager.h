@@ -16,6 +16,8 @@ namespace te
         HardwareBufferManager() = default;
         virtual ~HardwareBufferManager() = default;
 
+        TE_MODULE_STATIC_HEADER_MEMBER(HardwareBufferManager)
+
         /**
          * Creates a new vertex buffer used for holding number of vertices and other per-vertex data. Buffer can be bound
          * to the pipeline and its data can be passed to the active vertex GPU program.

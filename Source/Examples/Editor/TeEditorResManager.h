@@ -11,6 +11,8 @@ namespace te
     class EditorResManager : public Module<EditorResManager>
     {
     public:
+        TE_MODULE_STATIC_HEADER_MEMBER(EditorResManager)
+
         struct ResourcesContainer
         {
             ~ResourcesContainer()

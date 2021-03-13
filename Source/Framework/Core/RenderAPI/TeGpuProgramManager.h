@@ -38,6 +38,8 @@ namespace te
         GpuProgramManager();
         virtual ~GpuProgramManager();
 
+        TE_MODULE_STATIC_HEADER_MEMBER(GpuProgramManager)
+
         /**
          * Registers a new factory that is able to create GPU programs for a certain language. If any other factory for the
          * same language exists, it will overwrite it.
