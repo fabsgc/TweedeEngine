@@ -14,6 +14,8 @@
 #include "Components/TeCLight.h"
 #include "Components/TeCAnimation.h"
 #include "Components/TeCBone.h"
+#include "Components/TeCAudioListener.h"
+#include "Components/TeCAudioSource.h"
 #include "Scene/TeSceneManager.h"
 #include "Scene/TeSceneObject.h"
 #include "RenderAPI/TeSubMesh.h"
@@ -113,6 +115,20 @@ namespace te
             case TID_CBone:
             {
                 if (ShowCBoneProperties())
+                    hasChanged = true;
+            }
+            break;
+
+            case TID_CAudioListener:
+            {
+                if (ShowCAudioListenerProperties())
+                    hasChanged = true;
+            }
+            break;
+
+            case TID_CAudioSource:
+            {
+                if (ShowCAudioListenerProperties())
                     hasChanged = true;
             }
             break;
@@ -370,6 +386,24 @@ namespace te
                 }
             }
         }
+
+        return hasChanged;
+    }
+
+    bool WidgetProperties::ShowCAudioListenerProperties()
+    {
+        bool hasChanged = false;
+        SPtr<CAudioListener> bone = std::static_pointer_cast<CAudioListener>(_selections.ClickedComponent);
+        const float width = ImGui::GetWindowContentRegionWidth() - 120.0f;
+
+        return hasChanged;
+    }
+
+    bool WidgetProperties::ShowCAudioSourceProperties()
+    {
+        bool hasChanged = false;
+        SPtr<CAudioSource> bone = std::static_pointer_cast<CAudioSource>(_selections.ClickedComponent);
+        const float width = ImGui::GetWindowContentRegionWidth() - 120.0f;
 
         return hasChanged;
     }

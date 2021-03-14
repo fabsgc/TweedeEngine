@@ -11,5 +11,33 @@ namespace te
     public:
         OAAudioListener();
         virtual ~OAAudioListener();
+
+        /** @copydoc SceneActor::SetTransform */
+        void SetTransform(const Transform& transform) override;
+
+        /** @copydoc AudioListener::SetVelocity */
+        void SetVelocity(const Vector3& velocity) override;
+
+    private:
+        friend class OAAudio;
+
+        /** Re-applies stored properties to the listener. */
+        void Rebuild();
+
+        /** Returns forward and up direction as a single vector. */
+        inline std::array<float, 6> GetOrientation() const;
+
+        /** Updates internal position of the listener. */
+        inline void UpdatePosition();
+
+        /** Updates internal forward and up directions of the listener. */
+        inline void UpdateOrientation(const std::array<float, 6>& orientation);
+
+        /** Updates internal velocity of the listener. */
+        inline void UpdateVelocity();
+
+        /** Updates internal volume of the listener. */
+        inline void UpdateVolume(float volume);
+
     };
 }

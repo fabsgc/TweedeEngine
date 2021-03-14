@@ -3,6 +3,7 @@
 #include "TeOAPrerequisites.h"
 #include "Audio/TeAudio.h"
 #include <AL/alc.h>
+#include "TeOAAudioSource.h"
 
 namespace te
 {
@@ -43,7 +44,53 @@ namespace te
         /** Checks is a specific OpenAL extension supported. */
         bool _isExtensionSupported(const String& extension) const;
 
+        /** Registers a new AudioListener. Should be called on listener creation. */
+        void _registerListener(OAAudioListener* listener);
+
+        /** Unregisters an existing AudioListener. Should be called before listener destruction. */
+        void _unregisterListener(OAAudioListener* listener);
+
+        /** Registers a new AudioSource. Should be called on source creation. */
+        void _registerSource(OAAudioSource* source);
+
+        /** Unregisters an existing AudioSource. Should be called before source destruction. */
+        void _unregisterSource(OAAudioSource* source);
+
+        /** Returns a list of all OpenAL contexts. Each listener has its own context. */
+        const Vector<ALCcontext*>& _getContexts() const { return _contexts; }
+
+        /** Returns an OpenAL context assigned to the provided listener. */
+        ALCcontext* _getContext(const OAAudioListener* listener) const;
+
+        /**
+         * Returns optimal format for the provided number of channels and bit depth. It is assumed the user has checked if
+         * extensions providing these formats are actually available.
+         */
+        INT32 _getOpenALBufferFormat(UINT32 numChannels, UINT32 bitDepth);
+
+        /**
+         * Writes provided samples into the OpenAL buffer with the provided ID. If the provided format is not supported the
+         * samples will first be converted into a valid format.
+         */
+        void _writeToOpenALBuffer(UINT32 bufferId, UINT8* samples, const AudioDataInfo& info);
+
     private:
+        friend class OAAudioSource;
+
+        /** Type of a command that can be queued for a streaming audio source. */
+        enum class StreamingCommandType
+        {
+            Start,
+            Stop
+        };
+
+        /** Command queued for a streaming audio source. */
+        struct StreamingCommand
+        {
+            StreamingCommandType type;
+            OAAudioSource* source;
+        };
+
         /** @copydoc Audio::CreateClip */
         SPtr<AudioClip> CreateClip(const SPtr<DataStream>& samples, UINT32 streamSize, UINT32 numSamples,
             const AUDIO_CLIP_DESC& desc) override;
@@ -76,5 +123,19 @@ namespace te
         Vector<AudioDevice> _allDevices;
         AudioDevice _defaultDevice;
         AudioDevice _activeDevice;
+
+        Vector<OAAudioListener*> _listeners;
+        Vector<ALCcontext*> _contexts;
+        UnorderedSet<OAAudioSource*> _sources;
+
+        // Streaming thread
+        Vector<StreamingCommand> _streamingCommandQueue;
+        UnorderedSet<OAAudioSource*> _streamingSources;
+        UnorderedSet<OAAudioSource*> _destroyedSources;
+        // SPtr<Task> mStreamingTask; TODO
+        mutable Mutex _mutex;
     };
+
+    /** Provides easier access to OAAudio. */
+    OAAudio& gOAAudio();
 }

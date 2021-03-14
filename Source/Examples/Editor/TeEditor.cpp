@@ -729,7 +729,7 @@ namespace te
         textureCubeMapImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
 
         auto audioClipImportOptions = AudioClipImportOptions::Create();
-        
+
         // ######################################################
 
         // ######################################################

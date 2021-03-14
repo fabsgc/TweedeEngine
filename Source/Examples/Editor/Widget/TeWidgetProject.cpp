@@ -13,6 +13,8 @@
 #include "Components/TeCScript.h"
 #include "Components/TeCAnimation.h"
 #include "Components/TeCBone.h"
+#include "Components/TeCAudioSource.h"
+#include "Components/TeCAudioListener.h"
 #include "../TeEditorUtils.h"
 
 namespace te
@@ -312,6 +314,8 @@ namespace te
             case TID_CRenderable:
             case TID_CLight:
             case TID_CSkybox:
+            case TID_CAudioListener:
+            case TID_CAudioSource:
                 gEditor().PutFocus(Editor::WindowType::Viewport);
                 break;
 
@@ -409,9 +413,7 @@ namespace te
 
                 // if we've moved a bone, we need to trigger potential old and new animations to update their states
                 if (currentCO->GetCoreType() == TID_CBone)
-                {
                     currentCO->Initialize();
-                }
 
                 // ugly but best way to update all children
                 sceneObject->Move(Vector3::ZERO);
@@ -524,9 +526,9 @@ namespace te
                     if (ImGui::BeginMenu(ICON_FA_VOLUME_UP " Audio"))
                     {
                         if (ImGui::MenuItem(ICON_FA_MICROPHONE " Audio source"))
-                            CreateAudio();
+                            CreateAudioSource();
                         if (ImGui::MenuItem(ICON_FA_HEADPHONES " Audio listener"))
-                            CreateAudio();
+                            CreateAudioListener();
 
                         ImGui::EndMenu();
                     }
@@ -712,13 +714,34 @@ namespace te
         gEditor().GetSettings().State = Editor::EditorState::Modified;
     }
 
-    void WidgetProject::CreateAudio()
+    void WidgetProject::CreateAudioSource()
     { 
         if (!_selections.ClickedSceneObject || _selections.ClickedComponent)
             return;
-        
-        // TODO
 
+        HAudioSource audioSource = _selections.ClickedSceneObject->AddComponent<CAudioSource>();
+        audioSource.Get()->SetName("Audio source");
+        audioSource.Get()->Initialize();
+
+        _expandToSelection = true;
+        _handleSelectionWindowSwitch = true;
+        _selections.ClickedComponent = audioSource.GetInternalPtr();
+        gEditor().NeedsRedraw();
+        gEditor().GetSettings().State = Editor::EditorState::Modified;
+    }
+
+    void WidgetProject::CreateAudioListener()
+    { 
+        if (!_selections.ClickedSceneObject || _selections.ClickedComponent)
+            return;
+
+        HAudioListener audioListener = _selections.ClickedSceneObject->AddComponent<CAudioListener>();
+        audioListener.Get()->SetName("Audio listener");
+        audioListener.Get()->Initialize();
+
+        _expandToSelection = true;
+        _handleSelectionWindowSwitch = true;
+        _selections.ClickedComponent = audioListener.GetInternalPtr();
         gEditor().NeedsRedraw();
         gEditor().GetSettings().State = Editor::EditorState::Modified;
     }
@@ -845,6 +868,12 @@ namespace te
             break;
         case TID_CBone:
             title += String("  ") + ICON_FA_BONE;
+            break;
+        case TID_CAudioListener:
+            title += String("  ") + ICON_FA_HEADPHONES;
+            break;
+        case TID_CAudioSource:
+            title += String("  ") + ICON_FA_MICROPHONE;
             break;
         default:
             title += String("  ") + ICON_FA_QUESTION_CIRCLE;

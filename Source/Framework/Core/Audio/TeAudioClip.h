@@ -134,9 +134,6 @@ namespace te
         float _length = 0.0f;
         SPtr<DataStream> _streamData;
 
-        /************************************************************************/
-        /* 								SERIALIZATION                      		*/
-        /************************************************************************/
     public:
         /**
          * Creates an AudioClip with no samples. You must populate its data manually followed by a call to initialize().

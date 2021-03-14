@@ -11,7 +11,7 @@ namespace te
 	{
 		OggDecoderData() = default;
 
-		SPtr<FileStream> Stream;
+		SPtr<DataStream> Stream;
 		UINT32 Offset = 0;
 	};
 
@@ -23,7 +23,7 @@ namespace te
 		~OggVorbisDecoder();
 
 		/** @copydoc AudioDecoder::open */
-		bool Open(const SPtr<FileStream>& stream, AudioDataInfo& info, UINT32 offset = 0) override;
+		bool Open(const SPtr<DataStream>& stream, AudioDataInfo& info, UINT32 offset = 0) override;
 
 		/** @copydoc AudioDecoder::read */
 		UINT32 Read(UINT8* samples, UINT32 numSamples) override;
@@ -32,7 +32,7 @@ namespace te
 		void Seek(UINT32 offset) override;
 
 		/** @copydoc AudioDecoder::isValid */
-		bool IsValid(const SPtr<FileStream>& stream, UINT32 offset = 0) override;
+		bool IsValid(const SPtr<DataStream>& stream, UINT32 offset = 0) override;
 	private:
 		OggDecoderData _decoderData;
 		OggVorbis_File _oggVorbisFile;

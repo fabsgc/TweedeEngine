@@ -284,6 +284,10 @@ namespace te
     class TextureImportOptions;
     class FontImportOptions;
     class AudioClipImportOptions;
+
+    class DataStream;
+    class FileStream;
+    class MemoryDataStream;
 }
 
 #include "Utility/TeNonCopyable.h"

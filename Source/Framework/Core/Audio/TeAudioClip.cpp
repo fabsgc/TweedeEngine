@@ -29,6 +29,8 @@ namespace te
 	SPtr<AudioClip> AudioClip::_createPtr(const SPtr<DataStream>& samples, UINT32 streamSize, UINT32 numSamples, const AUDIO_CLIP_DESC& desc)
 	{
 		SPtr<AudioClip> newClip = gAudio().CreateClip(samples, streamSize, numSamples, desc);
+        newClip->SetThisPtr(newClip);
+        newClip->Initialize();
 		return newClip;
 	}
 
@@ -36,6 +38,7 @@ namespace te
 	{
 		AUDIO_CLIP_DESC desc;
 		SPtr<AudioClip> newClip = gAudio().CreateClip(nullptr, 0, 0, desc);
+        newClip->SetThisPtr(newClip);
 		return newClip;
 	}
 }

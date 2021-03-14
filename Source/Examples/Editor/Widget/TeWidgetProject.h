@@ -70,7 +70,8 @@ namespace te
         void CreateRenderable(RenderableType type);
         void CreateLight(LightType type);
         void CreateCamera(TypeID_Core type);
-        void CreateAudio();
+        void CreateAudioSource();
+        void CreateAudioListener();
         void CreateAnimation();
         void CreateBone();
         void CreateScript();

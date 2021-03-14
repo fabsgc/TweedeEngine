@@ -49,7 +49,7 @@ namespace te
             ov_clear(&_oggVorbisFile);
     }
 
-    bool OggVorbisDecoder::IsValid(const SPtr<FileStream>& stream, UINT32 offset)
+    bool OggVorbisDecoder::IsValid(const SPtr<DataStream>& stream, UINT32 offset)
 	{
         stream->Seek(offset);
         _decoderData.Stream = stream;
@@ -65,7 +65,7 @@ namespace te
         return false;
     }
 
-    bool OggVorbisDecoder::Open(const SPtr<FileStream>& stream, AudioDataInfo& info, UINT32 offset)
+    bool OggVorbisDecoder::Open(const SPtr<DataStream>& stream, AudioDataInfo& info, UINT32 offset)
 	{
         if (stream == nullptr)
             return false;

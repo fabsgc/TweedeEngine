@@ -46,7 +46,7 @@ namespace te
         /** Determines the device on which is the audio played back on. */
         virtual void SetActiveDevice(const AudioDevice& device) = 0;
 
-        /** @copydoc setActiveDevice() */
+        /** @copydoc SetActiveDevice() */
         virtual AudioDevice GetActiveDevice() const = 0;
 
         /** Returns the default audio device identifier. */

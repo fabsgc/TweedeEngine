@@ -20,8 +20,8 @@ namespace te
         /** @copydoc AudioSource::setClip */
         void SetClip(const HAudioClip& clip);
 
-        /** @copydoc AudioSource::getClip */
-        HAudioClip getClip() const { return _audioClip; }
+        /** @copydoc AudioSource::GetClip */
+        HAudioClip GetClip() const { return _audioClip; }
 
         static UINT32 GetComponentType() { return TID_CAudioSource; }
 

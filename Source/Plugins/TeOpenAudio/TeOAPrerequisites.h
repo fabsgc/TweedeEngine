@@ -2,4 +2,8 @@
 
 #include "TeCorePrerequisites.h"
 
-namespace te { }
+namespace te 
+{ 
+    class OAAudioListener;
+    class OAAudioSource;
+}
