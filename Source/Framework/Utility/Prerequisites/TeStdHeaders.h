@@ -338,7 +338,7 @@ namespace te
         }
     };
 
-    /** Allocator for the standard library that internally uses bsf memory allocator. */
+    /** Allocator for the standard library that internally uses framework memory allocator. */
     template <class T, class Allocator>
     class StdAllocator
     {

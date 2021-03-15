@@ -134,6 +134,8 @@ namespace te
 
     void CBone::Clone(const HBone& c)
     { 
+        Component::Clone(c.GetInternalPtr());
+
         _boneName = c->_boneName;
     }
 }

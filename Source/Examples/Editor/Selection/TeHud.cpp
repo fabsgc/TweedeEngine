@@ -12,6 +12,10 @@
 
 namespace te
 {
+    Hud::Hud()
+        : _material(nullptr)
+    { }
+
     void Hud::Initialize()
     {
         _material = HudPickingMat::Get();

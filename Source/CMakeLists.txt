@@ -21,7 +21,7 @@ set_property (CACHE RENDERER_MODULE PROPERTY STRINGS Renderer)
 
 ## Check dependencies built from source
 if (WIN32)
-    set(SOURCE_DEP_BUILD_DIR ${BSF_SOURCE_DIR}/../Dependencies/Build)
+    set(SOURCE_DEP_BUILD_DIR ${TE_SOURCE_DIR}/../Dependencies/Build)
     set(SOURCE_DEP_BUILD_VERSION_FILE ${SOURCE_DEP_BUILD_DIR}/.version)
 endif ()
 

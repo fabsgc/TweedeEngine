@@ -15,7 +15,7 @@ namespace te
     class Hud
     {
     public:
-        Hud() = default;
+        Hud();
         ~Hud() = default;
 
         /** Init context, shader */

@@ -7,6 +7,8 @@
 #include "Components/TeCCamera.h"
 #include "Components/TeCLight.h"
 #include "Components/TeCRenderable.h"
+#include "Components/TeCAudioListener.h"
+#include "Components/TeCAudioSource.h"
 
 namespace te
 {
@@ -46,6 +48,12 @@ namespace te
         /** Do a frustum culling on a scene camera. Returns true if visible */
         static bool DoFrustumCulling(const HCamera& camera, const SPtr<CCamera> sceneCamera);
 
+        /** Do a frustum culling on an audio listener. Returns true if visible */
+        static bool DoFrustumCulling(const HCamera& camera, const SPtr<CAudioListener> light);
+
+        /** Do a frustum culling on an audio source. Returns true if visible */
+        static bool DoFrustumCulling(const HCamera& camera, const SPtr<CAudioSource> light);
+
         /** Do a frustum culling on a renderable. Returns true if visible */
         static bool DoFrustumCulling(const HCamera& camera, const HRenderable& renderable)
         {
@@ -62,6 +70,18 @@ namespace te
         static bool DoFrustumCulling(const HCamera& camera, const HCamera& sceneCamera)
         {
             return DoFrustumCulling(camera, sceneCamera.GetInternalPtr());
+        }
+
+        /** Do a frustum culling on an audio listener. Returns true if visible */
+        static bool DoFrustumCulling(const HCamera& camera, const HAudioListener& audio)
+        {
+            return DoFrustumCulling(camera, audio.GetInternalPtr());
+        }
+
+        /** Do a frustum culling on an audio source. Returns true if visible */
+        static bool DoFrustumCulling(const HCamera& camera, const HAudioSource& audio)
+        {
+            return DoFrustumCulling(camera, audio.GetInternalPtr());
         }
 
         /** Do a more generic frustum culling */

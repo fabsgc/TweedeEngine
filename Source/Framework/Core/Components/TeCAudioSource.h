@@ -17,13 +17,10 @@ namespace te
         CAudioSource(const HSceneObject& parent);
         virtual ~CAudioSource() = default;
 
-        /** @copydoc AudioSource::setClip */
-        void SetClip(const HAudioClip& clip);
-
-        /** @copydoc AudioSource::GetClip */
-        HAudioClip GetClip() const { return _audioClip; }
-
         static UINT32 GetComponentType() { return TID_CAudioSource; }
+
+        /** @copydoc Component::Initialize */
+        void Initialize() override;
 
         /** @copydoc Component::Clone */
         void Clone(const HComponent& c) override;
@@ -32,16 +29,88 @@ namespace te
         void Clone(const HAudioSource& c);
 
         /* @copydoc Component::MarkDirty */
-        virtual void MarkDirty() { /* TODO */ }
+        virtual void MarkDirty() { _internal->MarkCoreDirty(); }
 
         /** @copydoc Component::Update */
         void Update() override;
+
+        /** @copydoc AudioSource::SetClip */
+        void SetClip(const HAudioClip& clip);
+
+        /** @copydoc AudioSource::GetClip */
+        HAudioClip GetClip() const { return _audioClip; }
+
+        /** @copydoc AudioSource::SetVolume */
+        void SetVolume(float volume);
+
+        /** @copydoc AudioSource::GetVolume */
+        float GetVolume() const { return _volume; }
+
+        /** @copydoc AudioSource::SetPitch */
+        void SetPitch(float pitch);
+
+        /** @copydoc AudioSource::GetPitch */
+        float GetPitch() const { return _pitch; }
+
+        /** @copydoc AudioSource::SetIsLooping */
+        void SetIsLooping(bool loop);
+
+        /** @copydoc AudioSource::GetIsLooping */
+        bool GetIsLooping() const { return _loop; }
+
+        /** @copydoc AudioSource::SetPriority */
+        void SetPriority(UINT32 priority);
+
+        /** @copydoc AudioSource::GetPriority */
+        UINT32 GetPriority() const { return _priority; }
+
+        /** @copydoc AudioSource::SetMinDistance */
+        void SetMinDistance(float distance);
+
+        /** @copydoc AudioSource::GetMinDistance */
+        float GetMinDistance() const { return _minDistance; }
+
+        /** @copydoc AudioSource::SetAttenuation */
+        void SetAttenuation(float attenuation);
+
+        /** @copydoc AudioSource::GetAttenuation */
+        float GetAttenuation() const { return _attenuation; }
+
+        /** @copydoc AudioSource::SetTime */
+        void SetTime(float time);
+
+        /** @copydoc AudioSource::GetTime */
+        float GetTime() const;
+
+        /** Sets whether playback should start as soon as the component is enabled. */
+        void SetPlayOnStart(bool enable) { _playOnStart = enable; }
+
+        /** Determines should playback start as soon as the component is enabled. */
+        bool GetPlayOnStart() const { return _playOnStart; }
+
+        /** @copydoc AudioSource::Play */
+        void Play();
+
+        /** @copydoc AudioSource::Pause */
+        void Pause();
+
+        /** @copydoc AudioSource::Stop */
+        void Stop();
+
+        /** @copydoc AudioSource::GetState */
+        AudioSourceState GetState() const;
+
+        /** Returns the AudioSource implementation wrapped by this component. */
+        AudioSource* _getInternal() const { return _internal.get(); }
+
+        /** @copydoc AudioSource::GetTransform */
+        const Transform& GetTransform() { return _internal->GetTransform(); }
 
     protected:
         friend class SceneObject;
 
         /** @copydoc Component::_instantiate */
-        void _instantiate() override;
+        void _instantiate() override {};
 
         /** @copydoc Component::OnInitialized */
         void OnInitialized() override;
@@ -57,9 +126,6 @@ namespace te
 
         /** @copydoc Component::OnDestroyed */
         void OnDestroyed() override;
-
-        /** Returns the AudioSource implementation wrapped by this component. */
-        AudioSource* _getInternal() const { return _internal.get(); }
 
     protected:
         using Component::DestroyInternal;
@@ -88,5 +154,12 @@ namespace te
         Vector3 _velocity = Vector3::ZERO;
 
         HAudioClip _audioClip;
+        float _volume = 1.0f;
+        float _pitch = 1.0f;
+        bool _loop = false;
+        UINT32 _priority = 0;
+        float _minDistance = 1.0f;
+        float _attenuation = 1.0f;
+        bool _playOnStart = true;
     };
 }

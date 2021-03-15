@@ -51,67 +51,67 @@ namespace te
         switch(type)
         {
         case BuiltinShader::Opaque:
-            if(_shaderOpaque.GetHandleData() == nullptr)
+            if(!_shaderOpaque.IsLoaded())
                 InitShaderOpaque();
             shader = _shaderOpaque;
             break;
         case BuiltinShader::Transparent:
-            if(_shaderTransparent.GetHandleData() == nullptr)
+            if(!_shaderTransparent.IsLoaded())
                 InitShaderTransparent();
             shader = _shaderTransparent;
             break;
         case BuiltinShader::Blit:
-            if(_shaderBlit.GetHandleData() == nullptr)
+            if(!_shaderBlit.IsLoaded())
                 InitShaderBlit();
             shader = _shaderBlit;
             break;
         case BuiltinShader::Skybox:
-            if(_shaderSkybox.GetHandleData() == nullptr)
+            if(!_shaderSkybox.IsLoaded())
                 InitShaderSkybox();
             shader = _shaderSkybox;
             break;
         case BuiltinShader::FXAA:
-            if(_shaderFXAA.GetHandleData() == nullptr)
+            if(!_shaderFXAA.IsLoaded())
                 InitShaderFXAA();
             shader = _shaderFXAA;
             break;
         case BuiltinShader::ToneMapping:
-            if(_shaderToneMapping.GetHandleData() == nullptr)
+            if(!_shaderToneMapping.IsLoaded())
                 InitShaderToneMapping();
             shader = _shaderToneMapping;
             break;
         case BuiltinShader::Bloom:
-            if(_shaderBloom.GetHandleData() == nullptr)
+            if(!_shaderBloom.IsLoaded())
                 InitShaderBloom();
             shader = _shaderBloom;
             break;
         case BuiltinShader::MotionBlur:
-            if(_shaderMotionBlur.GetHandleData() == nullptr)
+            if(!_shaderMotionBlur.IsLoaded())
                 InitShaderMotionBlur();
             shader = _shaderMotionBlur;
             break;
         case BuiltinShader::GaussianBlur:
-            if(_shaderGaussianBlur.GetHandleData() == nullptr)
+            if(!_shaderGaussianBlur.IsLoaded())
                 InitShaderGaussianBlur();
             shader = _shaderGaussianBlur;
             break;
         case BuiltinShader::Picking:
-            if(_shaderPicking.GetHandleData() == nullptr)
+            if(!_shaderPicking.IsLoaded())
                 InitShaderPicking();
             shader = _shaderPicking;
             break;
         case BuiltinShader::HudPicking:
-            if(_shaderHudPicking.GetHandleData() == nullptr)
+            if(!_shaderHudPicking.IsLoaded())
                 InitShaderHudPicking();
             shader = _shaderHudPicking;
             break;
         case BuiltinShader::Selection:
-            if(_shaderSelection.GetHandleData() == nullptr)
+            if(!_shaderSelection.IsLoaded())
                 InitShaderSelection();
             shader = _shaderSelection;
             break;
         case BuiltinShader::HudSelection:
-            if(_shaderHudSelection.GetHandleData() == nullptr)
+            if(!_shaderHudSelection.IsLoaded())
                 InitShaderHudSelection();
             shader = _shaderHudSelection;
             break;

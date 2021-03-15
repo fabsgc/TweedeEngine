@@ -50,7 +50,7 @@ namespace te
             {
                 resourceHandle = gImporter().Import<T>(filePath, options);
 
-                if (resourceHandle.GetHandleData())
+                if (resourceHandle.IsLoaded())
                 {
                     uuid = resourceHandle.GetHandleData()->uuid;
                     resourceHandle.GetInternalPtr()->_UUID = uuid;

@@ -5,6 +5,12 @@
 
 namespace te
 {
+    bool ResourceHandleBase::IsLoaded() const
+    {
+        bool isLoaded = (_handleData != nullptr && _handleData->data != nullptr);
+        return isLoaded;
+    }
+
     void ResourceHandleBase::Release()
     {
         gResourceManager().Release(*this);

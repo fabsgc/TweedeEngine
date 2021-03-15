@@ -418,12 +418,12 @@ namespace te
 
     SPtr<AudioListener> OAAudio::CreateListener()
     {
-        return te_shared_ptr_new<OAAudioListener>();
+        return te_core_ptr_new<OAAudioListener>();
     }
 
     SPtr<AudioSource> OAAudio::CreateSource()
     {
-        return te_shared_ptr_new<OAAudioSource>();
+        return te_core_ptr_new<OAAudioSource>();
     }
 
     OAAudio& gOAAudio()

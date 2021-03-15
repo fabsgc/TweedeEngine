@@ -23,10 +23,10 @@
 #include "Components/TeCCameraUI.h"
 #include "Components/TeCCameraFlyer.h"
 #include "Components/TeCScript.h"
+#include "Components/TeCRenderable.h"
 #include "Scene/TeSceneManager.h"
 #include "Resources/TeResourceManager.h"
 #include "Resources/TeBuiltinResources.h"
-#include "Components/TeCRenderable.h"
 #include "TeEditorResManager.h"
 #include "Mesh/TeMesh.h"
 #include "Math/TeVector2I.h"
@@ -47,6 +47,8 @@
 #include "Material/TeShader.h"
 #include "Components/TeCLight.h"
 #include "Components/TeCSkybox.h"
+#include "Components/TeCAudioSource.h"
+#include "Components/TeCAudioListener.h"
 
 #ifndef GImGui
 ImGuiContext* GImGui = NULL;
@@ -180,7 +182,9 @@ namespace te
             if (!_selections.ClickedComponent ||
                 _selections.ClickedComponent->GetCoreType() == TID_CRenderable ||
                 _selections.ClickedComponent->GetCoreType() == TID_CCamera ||
-                _selections.ClickedComponent->GetCoreType() == TID_CLight)
+                _selections.ClickedComponent->GetCoreType() == TID_CLight || 
+                _selections.ClickedComponent->GetCoreType() == TID_CAudioListener ||
+                _selections.ClickedComponent->GetCoreType() == TID_CAudioSource)
             {
                 _selections.ClickedComponent = nullptr;
                 _selections.ClickedSceneObject = nullptr;
@@ -734,7 +738,7 @@ namespace te
 
         // ######################################################
         auto knightResources = EditorResManager::Instance().LoadAll("Data/Meshes/Knight/Knight.dae", meshAnimImportOptions);
-        //auto knightResources = EditorResManager::Instance().LoadAll("Data/Meshes/Steve/cube-rotate.FBX", meshAnimImportOptions);
+        //auto knightResources = EditorResManager::Instance().LoadAll("Data/Meshes/Steve/cube-rotate.fbx", meshAnimImportOptions);
 
         _loadedMeshKnight = static_resource_cast<Mesh>(knightResources->Entries[0].Res);
         _animationClipKnight = static_resource_cast<AnimationClip>(knightResources->Entries[1].Res);
@@ -746,6 +750,7 @@ namespace te
         //_loadedTextureMonkey = EditorResManager::Instance().Load<Texture>("Data/Textures/Monkey/diffuse.png", textureImportOptions);
         //_loadedPlaneTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Sponza/Floor/floor_COLOR.jpeg", textureImportOptions);
         _loadedSkyboxTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/sky_medium.png", textureCubeMapImportOptions);
+        _loadedKnightDiffuseTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Knight/diffuse-small.png", textureImportOptions);
 
         //_loadedGroundDiffuseTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Leather/diffuse.png", textureImportOptions);
         //_loadedGroundNormalTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Leather/normal.png", textureImportOptions);
@@ -805,19 +810,15 @@ namespace te
         _planeMaterial->SetParam<Vector3>("helllo", Vector3());
         _planeMaterial->SetProperties(properties);*/
 
-        properties.UseDiffuseMap = false;
-        properties.Diffuse = Color(0.8f, 0.2f, 0.3f);
+        properties.UseDiffuseMap = true;
+        //properties.Diffuse = Color(0.35f, 0.3f, 0.4f);
 
         _knightMaterial = Material::Create(_shader);
         _knightMaterial->SetName("Knight Material");
+        _knightMaterial->SetTexture("DiffuseMap", _loadedKnightDiffuseTexture);
         _knightMaterial->SetTexture("EnvironmentMap", _loadedSkyboxTexture);
         _knightMaterial->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
         _knightMaterial->SetProperties(properties);
-
-        // ######################################################
-
-        // ######################################################
-        _audioClip = EditorResManager::Instance().Load<AudioClip>("Data/Sounds/AirHorn.ogg", audioClipImportOptions);
         // ######################################################
 
         // ######################################################
@@ -826,14 +827,18 @@ namespace te
         _skybox = _sceneSkyboxSO->AddComponent<CSkybox>();
         _skybox->SetTexture(_loadedSkyboxTexture);
         _skybox->Initialize();
+        // ######################################################
 
+        // ######################################################
         _sceneLightSO = SceneObject::Create("Light");
         _sceneLightSO->SetParent(_sceneSO);
         _light = _sceneLightSO->AddComponent<CLight>(LightType::Directional);
         _light->Initialize();
         _sceneLightSO->Rotate(Vector3(1.0f, 0.0f, 0.0f), -Radian(Math::HALF_PI / 2.0f));
         _sceneLightSO->Move(Vector3(0.0f, 4.0f, 4.0f));
+        // ######################################################
 
+        // ######################################################
         /*_sceneRenderableMonkeySO = SceneObject::Create("Monkey");
         _sceneRenderableMonkeySO->SetParent(_sceneSO);
         _renderableMonkey = _sceneRenderableMonkeySO->AddComponent<CRenderable>();
@@ -841,7 +846,9 @@ namespace te
         _renderableMonkey->SetMaterial(_monkeyMaterial);
         _renderableMonkey->SetName("Monkey Renderable");
         _renderableMonkey->Initialize();*/
+        // ######################################################
 
+        // ######################################################
         _sceneRenderableKnightSO = SceneObject::Create("Knight");
         _sceneRenderableKnightSO->SetParent(_sceneSO);
 
@@ -866,11 +873,30 @@ namespace te
         _sceneRenderablePlaneSO->Move(Vector3(0.0, 0.1f, 0.0f));*/
         // ######################################################
 
+        // ######################################################
         _sceneScriptSO = SceneObject::Create("Script");
         _sceneScriptSO->SetParent(_sceneSO);
         _script = _sceneScriptSO->AddComponent<CScript>();
         _script->SetNativeScript("DefaultScript");
         _script->Initialize();
+        // ######################################################
+
+        // ######################################################
+        audioClipImportOptions->Is3D = true;
+        _audioClip = EditorResManager::Instance().Load<AudioClip>("Data/Sounds/AirHorn.ogg", audioClipImportOptions);
+
+        _sceneAudioSO = SceneObject::Create("Audio");
+        _sceneAudioSO->SetParent(_sceneSO);
+        _sceneAudioSO->Move(Vector3(5.0f, 0.0f, 0.0f));
+
+        _audioListener = _sceneAudioSO->AddComponent<CAudioListener>();
+        _audioListener->Initialize();
+
+        _audioSource = _sceneAudioSO->AddComponent<CAudioSource>();
+        _audioSource->Initialize();
+        _audioSource->SetIsLooping(true);
+        _audioSource->SetClip(_audioClip);
+        // ######################################################
 
         //EditorResManager::Instance().Add<Material>(_monkeyMaterial);
         //EditorResManager::Instance().Add<Material>(_planeMaterial);

@@ -388,7 +388,7 @@ namespace te
             }
             
             HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.Data.SelectedPath, textureImportOptions);
-            if (texture.GetHandleData())
+            if (texture.IsLoaded())
             {
                 // Load texture from file
                 texture->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));

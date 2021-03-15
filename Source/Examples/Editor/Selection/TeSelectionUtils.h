@@ -26,7 +26,9 @@ namespace te
             Camera = 0x0,
             RadialLight = 0x1,
             DirectionalLight = 0x2,
-            SpotLight = 0x3
+            SpotLight = 0x3,
+            AudioListener = 0x4,
+            AudioSource = 0x5
         };
 
         struct PerHudInstanceData

@@ -1,5 +1,6 @@
 #include "Components/TeCAudioListener.h"
 #include "Scene/TeSceneManager.h"
+#include "Utility/TeTime.h"
 
 namespace te
 {
@@ -7,49 +8,65 @@ namespace te
         : Component(HSceneObject(), (UINT32)TID_CAudioListener)
     {
         SetName("AudioListener");
-        SetFlag(Component::AlwaysRun, true);
+        _notifyFlags = TCF_Transform;
     }
 
     CAudioListener::CAudioListener(const HSceneObject& parent)
         : Component(parent, (UINT32)TID_CAudioListener)
     {
         SetName("AudioListener");
-        SetFlag(Component::AlwaysRun, true);
+        _notifyFlags = TCF_Transform;
     }
 
-    void CAudioListener::_instantiate()
+    void CAudioListener::Initialize()
     {
-        // TODO
+        RestoreInternal();
+        Component::Initialize();
+    }
+
+    void CAudioListener::Update()
+    {
+        const Vector3 worldPos = SO()->GetTransform().GetPosition();
+
+        const float frameDelta = gTime().GetFrameDelta();
+        if (frameDelta > 0.0f)
+            _velocity = (worldPos - _lastPosition) / frameDelta;
+        else
+            _velocity = Vector3::ZERO;
+
+        _lastPosition = worldPos;
     }
 
     void CAudioListener::OnInitialized()
     {
-        // TODO
         Component::OnInitialized();
     }
 
     void CAudioListener::OnEnabled()
     {
-        // TODO
+        RestoreInternal();
         Component::OnEnabled();
     }
 
     void CAudioListener::OnDisabled()
     {
-        // TODO
+        DestroyInternal();
         Component::OnDisabled();
     }
 
     void CAudioListener::OnTransformChanged(TransformChangedFlags flags)
     {
-        // TODO
+        if (!SO()->GetActive())
+            return;
+
+        if ((flags & (TCF_Parent | TCF_Transform)) != 0)
+            UpdateTransform();
     }
 
     void CAudioListener::OnDestroyed()
     {
-        // gSceneManager()._unbindActor(_internal); TODO
+        DestroyInternal();
         Component::OnDestroyed();
-        // _internal->Destroy(); // TODO
     }
 
     void CAudioListener::Clone(const HComponent& c)
@@ -60,16 +77,29 @@ namespace te
     void CAudioListener::Clone(const HAudioListener& c)
     {
         Component::Clone(c.GetInternalPtr());
-        // TODO
+
+        _lastPosition = c->_lastPosition;
+        _velocity = c->_velocity;
     }
 
     void CAudioListener::RestoreInternal()
     {
-        // TODO
+        if (_internal == nullptr)
+            _internal = AudioListener::Create();
+
+        UpdateTransform();
     }
 
     void CAudioListener::DestroyInternal()
     {
-        // TODO
+        _internal = nullptr;
+    }
+
+    void CAudioListener::UpdateTransform()
+    {
+        const Transform& tfrm = SO()->GetTransform();
+
+        _internal->SetTransform(tfrm);
+        _internal->SetVelocity(_velocity);
     }
 }

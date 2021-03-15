@@ -15,6 +15,12 @@ namespace te
     class TE_CORE_EXPORT ResourceHandleBase
     {
     public:
+        /**
+         * Checks if the resource is loaded. Until resource is loaded this handle is invalid and you may not get the
+         * internal resource from it.
+         */
+        bool IsLoaded() const;
+
         /** Releases an internal reference to this resource held by the resources system, if there is one. */
         void Release();
 

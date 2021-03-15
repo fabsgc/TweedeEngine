@@ -17,7 +17,7 @@ namespace te
 
         for(auto& subRes : resources->Entries)
         {
-            if (subRes.Res.GetHandleData())
+            if (subRes.Res.IsLoaded())
             {
                 _resources[subRes.Res->GetCoreType()].Add(subRes.Res);
                 output.push_back(subRes);

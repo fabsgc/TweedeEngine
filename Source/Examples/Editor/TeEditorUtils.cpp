@@ -19,7 +19,7 @@ namespace te
             MaterialProperties matProperties = subMesh.MatProperties;
             MaterialTextures matTextures = subMesh.MatTextures;
 
-            if (!subMesh.Mat.GetHandleData())
+            if (!subMesh.Mat.IsLoaded())
             {
                 HMaterial material = Material::Create(gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque));
                 material->SetName(subMesh.MaterialName);
@@ -38,7 +38,7 @@ namespace te
                     {
                         HTexture texture = EditorResManager::Instance().Load<Texture>(texturePath, textureImportOptions);
 
-                        if (texture.GetHandleData())
+                        if (texture.IsLoaded())
                         {
                             material->SetTexture(textureName, texture);
                             EditorResManager::Instance().Add<Texture>(texture);
@@ -64,9 +64,9 @@ namespace te
     {
         if (renderData.RenderTex)
             renderData.RenderTex = nullptr;
-        if (renderData.ColorTex.GetHandleData())
+        if (renderData.ColorTex.IsLoaded())
             renderData.ColorTex.Release();
-        if (renderData.DepthStencilTex.GetHandleData())
+        if (renderData.DepthStencilTex.IsLoaded())
             renderData.DepthStencilTex.Release();
 
         renderData.TargetColorDesc.Type = TEX_TYPE_2D;
@@ -128,6 +128,28 @@ namespace te
     {
         static float cullDistanceFactor = 1.0f;
         Sphere boundingSphere = light->GetBounds();
+
+        return DoFrustumCulling(camera, boundingSphere, cullDistanceFactor);
+    }
+
+    bool EditorUtils::DoFrustumCulling(const HCamera& camera, const SPtr<CAudioListener> audio)
+    {
+        static float cullDistanceFactor = 1.0f;
+
+        Sphere boundingSphere;
+        boundingSphere.SetCenter(audio->GetTransform().GetPosition());
+        boundingSphere.SetRadius(1.0f);
+
+        return DoFrustumCulling(camera, boundingSphere, cullDistanceFactor);
+    }
+
+    bool EditorUtils::DoFrustumCulling(const HCamera& camera, const SPtr<CAudioSource> audio)
+    {
+        static float cullDistanceFactor = 1.0f;
+
+        Sphere boundingSphere;
+        boundingSphere.SetCenter(audio->GetTransform().GetPosition());
+        boundingSphere.SetRadius(1.0f);
 
         return DoFrustumCulling(camera, boundingSphere, cullDistanceFactor);
     }

@@ -104,7 +104,7 @@ namespace te
                     }
                 );
 
-                bool isLoaded = clipInfo.Clip.GetHandleData() != nullptr;
+                bool isLoaded = clipInfo.Clip.IsLoaded();
                 clipLoadState[clipIdx] = isLoaded;
 
                 if (iterFind == tempLayers.end())
@@ -827,7 +827,7 @@ namespace te
                         newClips.push_back(clipInfo);
                 }
 
-                if (output == nullptr && clip.GetHandleData() != nullptr)
+                if (output == nullptr && clip.IsLoaded())
                     newClips.push_back(AnimationClipInfo());
 
                 _clipInfos.resize(newClips.size());
@@ -840,7 +840,7 @@ namespace te
         }
 
         // If new clip was added, get its address
-        if (output == nullptr && clip.GetHandleData() != nullptr)
+        if (output == nullptr && clip.IsLoaded())
         {
             AnimationClipInfo& newInfo = _clipInfos.back();
             newInfo.Clip = clip;
@@ -864,7 +864,7 @@ namespace te
         String rootBoneName = _skeleton->GetBoneInfo(rootBoneIdx).Name;
         for (auto& entry : _clipInfos)
         {
-            if (entry.Clip.GetHandleData())
+            if (entry.Clip.IsLoaded())
             {
                 HAnimationClip clip = entry.Clip;
                 if (!clip->HasRootMotion())
@@ -896,7 +896,7 @@ namespace te
     {
         for (auto& clipInfo : _clipInfos)
         {
-            if (clipInfo.Clip.GetHandleData())
+            if (clipInfo.Clip.IsLoaded())
                 return true;
         }
 
@@ -905,7 +905,7 @@ namespace te
 
     bool Animation::GetState(const HAnimationClip& clip, AnimationClipState& state)
     {
-        if (!clip.GetHandleData())
+        if (!clip.IsLoaded())
             return false;
 
         for (auto& clipInfo : _clipInfos)
@@ -921,7 +921,7 @@ namespace te
 
                 // Internally we store unclamped time, so clamp/loop it
                 float clipLength = 0.0f;
-                if (clip.GetHandleData())
+                if (clip.IsLoaded())
                     clipLength = clip->GetLength();
 
                 bool loop = clipInfo.State.WrapMode == AnimWrapMode::Loop;
@@ -1060,7 +1060,7 @@ namespace te
             clipInfo.State.Time += scaledTimeDelta;
 
             HAnimationClip clip = clipInfo.Clip;
-            if (clip.GetHandleData())
+            if (clip.IsLoaded())
             {
                 // TODO animation : curve version
                 _dirty |= (UINT32)AnimDirtyStateFlag::Layout;
@@ -1291,7 +1291,7 @@ namespace te
                 if (clipInfo.StateIdx == 0 && clipInfo.LayerIdx == 0)
                 {
                     // TODO animation : curve version
-                    if (clipInfo.Clip.GetHandleData()) 
+                    if (clipInfo.Clip.IsLoaded()) 
                     {
                         UINT32 numGenericCurves = (UINT32)clipInfo.Clip->GetCurves()->Generic.size();
                         _genericCurveValuesValid = numGenericCurves == _animProxy->_numGenericCurves;

@@ -76,12 +76,51 @@ namespace te
                     const Transform& tfrm = cameraElement->GetTransform();
                     element.MatWorldNoScale = Matrix4::TRS(tfrm.GetPosition(), tfrm.GetRotation(), Vector3::ONE);
                     element.Type = static_cast<float>(HudType::Camera);
-                    element.Color = Color::Black.GetAsVector4();
 
                     if (renderType == RenderType::Selection || renderType == RenderType::Draw)
                         element.Color = Color::Black.GetAsVector4();
                     else if (renderType == RenderType::Picking)
                         element.Color = cameraElement->GetGameObjectColor().GetAsVector4();
+
+                    instancedElements.push_back(element);
+                }
+            }
+            break;
+
+            case TypeID_Core::TID_CAudioListener:
+            {
+                HAudioListener audio = static_object_cast<CAudioListener>(component);
+                if (EditorUtils::DoFrustumCulling(camera, audio))
+                {
+                    PerHudInstanceData element;
+                    const Transform& tfrm = audio->GetTransform();
+                    element.MatWorldNoScale = Matrix4::TRS(tfrm.GetPosition(), tfrm.GetRotation(), Vector3::ONE);
+                    element.Type = static_cast<float>(HudType::AudioListener);
+
+                    if (renderType == RenderType::Selection || renderType == RenderType::Draw)
+                        element.Color = Color::White.GetAsVector4();
+                    else if (renderType == RenderType::Picking)
+                        element.Color = audio->GetGameObjectColor().GetAsVector4();
+
+                    instancedElements.push_back(element);
+                }
+            }
+            break;
+
+            case TypeID_Core::TID_CAudioSource:
+            {
+                HAudioSource audio = static_object_cast<CAudioSource>(component);
+                if (EditorUtils::DoFrustumCulling(camera, audio))
+                {
+                    PerHudInstanceData element;
+                    const Transform& tfrm = audio->GetTransform();
+                    element.MatWorldNoScale = Matrix4::TRS(tfrm.GetPosition(), tfrm.GetRotation(), Vector3::ONE);
+                    element.Type = static_cast<float>(HudType::AudioSource);
+
+                    if (renderType == RenderType::Selection || renderType == RenderType::Draw)
+                        element.Color = Color::White.GetAsVector4();
+                    else if (renderType == RenderType::Picking)
+                        element.Color = audio->GetGameObjectColor().GetAsVector4();
 
                     instancedElements.push_back(element);
                 }

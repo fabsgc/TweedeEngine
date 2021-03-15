@@ -33,7 +33,7 @@ namespace te
     {
         _defaultClip = clip;
 
-        if (_internal != nullptr && _defaultClip.GetHandleData())
+        if (_internal != nullptr && _defaultClip.IsLoaded())
             _internal->Play(clip);
     }
 
@@ -216,11 +216,11 @@ namespace te
 
         if (!previewMode)
         {
-            if(_defaultClip.GetHandleData())
+            if(_defaultClip.IsLoaded())
                 _internal->Play(_defaultClip);
 
             _primaryPlayingClip = _internal->GetClip(0);
-            if (_primaryPlayingClip.GetHandleData())
+            if (_primaryPlayingClip.IsLoaded())
             {
                 // TODO animation script
             }
@@ -444,7 +444,7 @@ namespace te
                 UnmapSceneObject(entry.So);
         }
 
-        if (_primaryPlayingClip.GetHandleData())
+        if (_primaryPlayingClip.IsLoaded())
         {
             HSceneObject root = SO();
 
@@ -546,6 +546,8 @@ namespace te
 
     void CAnimation::Clone(const HAnimation& c)
     { 
+        Component::Clone(c.GetInternalPtr());
+
         _defaultClip = c->_defaultClip.GetNewHandleFromExisting();
         _primaryPlayingClip = c->_primaryPlayingClip.GetNewHandleFromExisting();
         _wrapMode = c->_wrapMode;

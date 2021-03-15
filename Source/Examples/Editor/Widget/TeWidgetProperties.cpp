@@ -705,7 +705,7 @@ namespace te
                     for (UINT32 i = 0; i < renderable->GetMesh()->GetProperties().GetNumSubMeshes(); i++)
                     {
                         SubMesh& subMesh = renderable->GetMesh()->GetProperties().GetSubMesh(i);
-                        if (subMesh.Mat.GetHandleData())
+                        if (subMesh.Mat.IsLoaded())
                             renderable->SetMaterial(i, subMesh.Mat.GetInternalPtr());
                     }
                 }
@@ -1101,7 +1101,7 @@ namespace te
                     if (subRes.Name == "primary")
                     {
                         HMesh mesh = static_resource_cast<Mesh>(subRes.Res);
-                        if (mesh.GetHandleData())
+                        if (mesh.IsLoaded())
                         {
                             mesh->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
                             EditorResManager::Instance().Add<Mesh>(mesh);
@@ -1118,7 +1118,7 @@ namespace te
                                 for (UINT32 i = 0; i < mesh->GetProperties().GetNumSubMeshes(); i++)
                                 {
                                     SubMesh& subMesh = mesh->GetProperties().GetSubMesh(i);
-                                    if (subMesh.Mat.GetHandleData())
+                                    if (subMesh.Mat.IsLoaded())
                                         renderable->SetMaterial(i, subMesh.Mat.GetInternalPtr());
                                 }
                             }
@@ -1158,7 +1158,7 @@ namespace te
             textureSkyboxImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
 
             HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.Data.SelectedPath, textureSkyboxImportOptions);
-            if (texture.GetHandleData())
+            if (texture.IsLoaded())
             {
                 texture->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
                 EditorResManager::Instance().Add<Texture>(texture);

@@ -101,14 +101,14 @@ namespace te
                 for (auto& subRes : subResourcesUuid)
                 {
                     HResource res = Get(subRes.Uuid);
-                    if (res.GetHandleData())
+                    if (res.IsLoaded())
                         resources->Entries.push_back({ subRes.Name, res });
                 }
             }
             else
             {
                 HResource res = Get(uuid);
-                if (res.GetHandleData())
+                if (res.IsLoaded())
                     resources->Entries.push_back({ "primary", res });
             }
         }

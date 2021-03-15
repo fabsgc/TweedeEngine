@@ -17,17 +17,52 @@ namespace te
 
     void OAAudioListener::SetTransform(const Transform& transform)
     {
-        // TODO
+        AudioListener::SetTransform(transform);
+
+        std::array<float, 6> orientation = GetOrientation();
+        auto& contexts = gOAAudio()._getContexts();
+
+        if (contexts.size() > 1) // If only one context is available it is guaranteed it is always active, so we can avoid setting it
+        {
+            auto context = gOAAudio()._getContext(this);
+            alcMakeContextCurrent(context);
+        }
+
+        UpdatePosition();
+        UpdateOrientation(orientation);
     }
 
     void OAAudioListener::SetVelocity(const Vector3& velocity)
     {
-        // TODO
+        AudioListener::SetVelocity(velocity);
+
+        auto& contexts = gOAAudio()._getContexts();
+        if (contexts.size() > 1)
+        {
+            auto context = gOAAudio()._getContext(this);
+            alcMakeContextCurrent(context);
+        }
+
+        UpdateVelocity();
     }
 
     void OAAudioListener::Rebuild()
     {
+        auto contexts = gOAAudio()._getContexts();
 
+        float globalVolume = gAudio().GetVolume();
+        std::array<float, 6> orientation = GetOrientation();
+
+        if (contexts.size() > 1)
+        {
+            auto context = gOAAudio()._getContext(this);
+            alcMakeContextCurrent(context);
+        }
+
+        UpdatePosition();
+        UpdateOrientation(orientation);
+        UpdateVelocity();
+        UpdateVolume(globalVolume);
     }
 
     std::array<float, 6> OAAudioListener::GetOrientation() const

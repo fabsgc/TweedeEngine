@@ -214,6 +214,7 @@ namespace te
         HTexture _loadedGroundNormalTexture;
         HTexture _loadedGroundParallaxTexture;
         HTexture _loadedGroundSpecularTexture;
+        HTexture _loadedKnightDiffuseTexture;
 
         HMaterial _monkeyMaterial;
         HMaterial _planeMaterial;
@@ -225,6 +226,7 @@ namespace te
         HSceneObject _sceneLightSO;
         HSceneObject _sceneSkyboxSO;
         HSceneObject _sceneScriptSO;
+        HSceneObject _sceneAudioSO;
 
         HLight _light;
         HSkybox _skybox;
@@ -238,6 +240,8 @@ namespace te
         HScript _script;
 
         HAudioClip _audioClip;
+        HAudioListener _audioListener;
+        HAudioSource _audioSource;
 #endif
     };
 

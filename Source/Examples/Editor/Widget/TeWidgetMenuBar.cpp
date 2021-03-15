@@ -273,7 +273,7 @@ namespace te
                 }
 
                 HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.Data.SelectedPath, textureImportOptions);
-                if (texture.GetHandleData())
+                if (texture.IsLoaded())
                 {
                     texture->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
                     EditorResManager::Instance().Add<Texture>(texture);
@@ -299,7 +299,7 @@ namespace te
                         if (subRes.Name == "primary")
                         {
                             HMesh mesh = static_resource_cast<Mesh>(subRes.Res);
-                            if (mesh.GetHandleData())
+                            if (mesh.IsLoaded())
                             {
                                 mesh->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
                                 EditorResManager::Instance().Add<Mesh>(mesh);

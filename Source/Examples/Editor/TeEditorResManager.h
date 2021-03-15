@@ -64,7 +64,7 @@ namespace te
         {
             HResource resource = gResourceManager().Load<T>(filePath, options);
 
-            if (resource.GetHandleData())
+            if (resource.IsLoaded())
             {
                 _resources[T::GetResourceType()].Add(resource);
                 return static_resource_cast<T>(gResourceManager().Get(resource.GetUUID()));

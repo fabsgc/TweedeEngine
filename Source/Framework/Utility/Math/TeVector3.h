@@ -17,7 +17,7 @@ namespace te
         Vector3() = default;
 
         constexpr Vector3(TE_ZERO)
-            :x(0.0f), y(0.0f), z(0.0f)
+            : x(0.0f), y(0.0f), z(0.0f)
         { }
 
         constexpr Vector3(float x, float y, float z)

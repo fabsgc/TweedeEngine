@@ -135,7 +135,6 @@ namespace te
 
         if (!microcode)
         {
-
             String hlslProfile;
             switch (desc.Type)
             {
@@ -236,13 +235,8 @@ namespace te
                 return bytecode;
             }
 
-            if (microcode != nullptr)
-            {
-                if (std::filesystem::exists(compiledShaderPath) == false)
-                {
-                    D3DWriteBlobToFile(microcode, compiledShaderPath.generic_wstring().c_str(), false);
-                }
-            }
+            if (microcode != nullptr && !std::filesystem::exists(compiledShaderPath))
+                D3DWriteBlobToFile(microcode, compiledShaderPath.generic_wstring().c_str(), false);
 
             if (include)
                 te_delete(include);

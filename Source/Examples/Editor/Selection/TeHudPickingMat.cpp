@@ -18,6 +18,7 @@ namespace te
 
         auto textureImportOptions = TextureImportOptions::Create();
         textureImportOptions->CpuCached = false;
+        textureImportOptions->MaxMip = 0;
         textureImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
 
         _hudMask = gResourceManager().Load<Texture>("Data/Textures/Hud/Hud.png", textureImportOptions);
@@ -39,8 +40,6 @@ namespace te
     {
         UINT32 i = 0;
         for (auto iter = begin; iter != end; iter++, i++)
-        {
             _perInstanceParamDef.gInstances.Set(_perInstanceParamBuffer, *iter, (UINT32)i);
-        }
     }
 }

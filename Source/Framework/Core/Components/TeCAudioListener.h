@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
+#include "Audio/TeAudioListener.h"
 #include "Scene/TeComponent.h"
 
 namespace te
@@ -19,6 +20,9 @@ namespace te
 
         static UINT32 GetComponentType() { return TID_CAudioListener; }
 
+        /** @copydoc Component::Initialize */
+        void Initialize() override;
+
         /** @copydoc Component::Clone */
         void Clone(const HComponent& c) override;
 
@@ -26,19 +30,22 @@ namespace te
         void Clone(const HAudioListener& c);
 
         /* @copydoc Component::MarkDirty */
-        virtual void MarkDirty() { /* TODO */ }
+        virtual void MarkDirty() { _internal->MarkCoreDirty(); }
 
         /** @copydoc Component::Update */
-        void Update() override { }
+        void Update() override;
 
         /** Returns the AudioListener implementation wrapped by this component. */
         AudioListener* _getInternal() const { return _internal.get(); }
+
+        /** @copydoc AudioListener::GetTransform */
+        const Transform& GetTransform() { return _internal->GetTransform(); }
 
     protected:
         friend class SceneObject;
 
         /** @copydoc Component::_instantiate */
-        void _instantiate() override;
+        void _instantiate() override {}
 
         /** @copydoc Component::OnInitialized */
         void OnInitialized() override;
@@ -67,11 +74,18 @@ namespace te
         /** Destroys the internal Animation representation. */
         void DestroyInternal();
 
+        /**
+         * Updates the transform of the internal AudioListener representation from the transform of the component's scene
+         * object.
+         */
+        void UpdateTransform();
+
     protected:
         CAudioListener();
 
     protected:
         SPtr<AudioListener> _internal;
-        HAudioClip _audioClip;
+        Vector3 _lastPosition = Vector3::ZERO;
+        Vector3 _velocity = Vector3::ZERO;
     };
 }

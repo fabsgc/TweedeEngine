@@ -18,6 +18,12 @@ namespace te
         _notifyFlags = TCF_Transform;
     }
 
+    void CAudioSource::Initialize()
+    {
+        RestoreInternal();
+        Component::Initialize();
+    }
+
     void CAudioSource::SetClip(const HAudioClip& clip)
     {
         if (_audioClip == clip)
@@ -29,8 +35,111 @@ namespace te
             _internal->SetClip(clip);
     }
 
-    void CAudioSource::_instantiate()
-    { }
+    void CAudioSource::SetVolume(float volume)
+    {
+        if (_volume == volume)
+            return;
+
+        _volume = volume;
+
+        if (_internal != nullptr)
+            _internal->SetVolume(volume);
+    }
+
+    void CAudioSource::SetPitch(float pitch)
+    {
+        if (_pitch == pitch)
+            return;
+
+        _pitch = pitch;
+
+        if (_internal != nullptr)
+            _internal->SetPitch(pitch);
+    }
+
+    void CAudioSource::SetIsLooping(bool loop)
+    {
+        if (_loop == loop)
+            return;
+
+        _loop = loop;
+
+        if (_internal != nullptr)
+            _internal->SetIsLooping(loop);
+    }
+
+    void CAudioSource::SetPriority(UINT32 priority)
+    {
+        if (_priority == priority)
+            return;
+
+        _priority = priority;
+
+        if (_internal != nullptr)
+            _internal->SetPriority(priority);
+    }
+
+    void CAudioSource::SetMinDistance(float distance)
+    {
+        if (_minDistance == distance)
+            return;
+
+        _minDistance = distance;
+
+        if (_internal != nullptr)
+            _internal->SetMinDistance(distance);
+    }
+
+    void CAudioSource::SetAttenuation(float attenuation)
+    {
+        if (_attenuation == attenuation)
+            return;
+
+        _attenuation = attenuation;
+
+        if (_internal != nullptr)
+            _internal->SetAttenuation(attenuation);
+    }
+
+    void CAudioSource::Play()
+    {
+        if (_internal != nullptr)
+            _internal->Play();
+    }
+
+    void CAudioSource::Pause()
+    {
+        if (_internal != nullptr)
+            _internal->Pause();
+    }
+
+    void CAudioSource::Stop()
+    {
+        if (_internal != nullptr)
+            _internal->Stop();
+    }
+
+    void CAudioSource::SetTime(float position)
+    {
+        if (_internal != nullptr)
+            _internal->SetTime(position);
+    }
+
+    float CAudioSource::GetTime() const
+    {
+        if (_internal != nullptr)
+            return _internal->GetTime();
+
+        return 0.0f;
+    }
+
+    AudioSourceState CAudioSource::GetState() const
+    {
+        if (_internal != nullptr)
+            return _internal->GetState();
+
+        return AudioSourceState::Stopped;
+    }
 
     void CAudioSource::OnInitialized()
     {
@@ -41,9 +150,8 @@ namespace te
     {
         RestoreInternal();
 
-        //if (_playOnStart)
-        //    Play();
-        // TODO
+        if (_playOnStart)
+            Play();
 
         Component::OnEnabled();
     }
@@ -65,8 +173,8 @@ namespace te
 
     void CAudioSource::OnDestroyed()
     {
-        Component::OnDestroyed();
         DestroyInternal();
+        Component::OnDestroyed();
     }
 
     void CAudioSource::Update()
@@ -90,7 +198,14 @@ namespace te
     void CAudioSource::Clone(const HAudioSource& c)
     {
         Component::Clone(c.GetInternalPtr());
-        // TODO
+        
+        _audioClip = c->_audioClip;
+        _volume = c->_volume;
+        _pitch = c->_pitch;
+        _loop = c->_loop;
+        _priority = c->_priority;
+        _minDistance = c->_minDistance;
+        _attenuation = c->_attenuation;
     }
 
     void CAudioSource::RestoreInternal()
@@ -98,22 +213,27 @@ namespace te
         if (_internal == nullptr)
             _internal = AudioSource::Create();
 
-        // Note: Merge into one call to avoid many virtual function calls
         _internal->SetClip(_audioClip);
-        // TODO
+        _internal->SetVolume(_volume);
+        _internal->SetPitch(_pitch);
+        _internal->SetIsLooping(_loop);
+        _internal->SetPriority(_priority);
+        _internal->SetMinDistance(_minDistance);
+        _internal->SetAttenuation(_attenuation);
 
         UpdateTransform();
     }
 
     void CAudioSource::DestroyInternal()
     {
-        // This should release the last reference and destroy the internal listener
         _internal = nullptr;
     }
 
     void CAudioSource::UpdateTransform()
     {
-        _internal->SetTransform(SO()->GetTransform());
+        const Transform& tfrm = SO()->GetTransform();
+
+        _internal->SetTransform(tfrm);
         _internal->SetVelocity(_velocity);
     }
 }
