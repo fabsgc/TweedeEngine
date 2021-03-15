@@ -626,9 +626,6 @@ namespace te
         if (!_selections.ClickedSceneObject || _selections.ClickedComponent)
             return;
 
-        if (!_selections.ClickedSceneObject->GetComponent<CLight>().Empty())
-            return;
-
         HLight light = _selections.ClickedSceneObject->AddComponent<CLight>(type);
 
         switch (type)
