@@ -15,7 +15,7 @@ namespace te
         , _entryPoint(desc.EntryPoint)
         , _source(desc.Source)
         , _includePath(desc.IncludePath)
-        , _fileName(desc.FileName)
+        , _filePath(desc.FilePath)
         , _needsAdjacencyInfo(desc.RequiresAdjacency)
         , _parametersDesc(te_shared_ptr_new<GpuParamDesc>())
         , _bytecode(desc.Bytecode)

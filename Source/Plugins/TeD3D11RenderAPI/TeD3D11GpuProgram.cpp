@@ -40,7 +40,7 @@ namespace te
             desc.Source = _source;
             desc.Language = "hlsl";
             desc.IncludePath = _includePath;
-            desc.FileName = _fileName;
+            desc.FilePath = _filePath;
 
             _bytecode = CompileBytecode(desc);
         }

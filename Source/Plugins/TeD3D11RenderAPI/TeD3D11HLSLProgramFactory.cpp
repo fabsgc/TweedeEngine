@@ -124,11 +124,23 @@ namespace te
         ID3DBlob* microcode = nullptr;
         ID3DBlob* messages = nullptr;
         D3D11HLSLInclude* include = nullptr;
+        bool openMicroCode = false;
 
         std::filesystem::path compiledShaderPath = std::filesystem::current_path();
-        compiledShaderPath.append("Shader_" + desc.FileName + ".blob");
+        compiledShaderPath.append("Shader_" + std::filesystem::path(desc.FilePath).filename().generic_string() + ".blob");
 
-        if (std::filesystem::exists(compiledShaderPath))
+        if (std::filesystem::exists(compiledShaderPath) && desc.FilePath != "")
+        {
+            /*auto sourcePathTime = std::filesystem::last_write_time(desc.FilePath);
+            auto compiledPathTime = std::filesystem::last_write_time(compiledShaderPath);
+
+            if (sourcePathTime <= compiledPathTime)
+                openMicroCode = true;*/
+
+            openMicroCode = true; // Builtin shader are update at each build, code above does not work well
+        }
+
+        if (openMicroCode)
         {
             microcode = OpenMicroCode(compiledShaderPath);
         }
@@ -235,7 +247,7 @@ namespace te
                 return bytecode;
             }
 
-            if (microcode != nullptr && !std::filesystem::exists(compiledShaderPath))
+            if (microcode != nullptr)
                 D3DWriteBlobToFile(microcode, compiledShaderPath.generic_wstring().c_str(), false);
 
             if (include)
