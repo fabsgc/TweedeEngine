@@ -17,8 +17,8 @@ matrix:
             - libxrandr-dev
             - libxi-dev
             - uuid-dev
-            - gcc-8
-            - g++-8
+            - gcc-9
+            - g++-9
             - libglfw3
             - libglfw3-dev
       env: 
