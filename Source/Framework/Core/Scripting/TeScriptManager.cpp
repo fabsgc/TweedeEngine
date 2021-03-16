@@ -213,6 +213,20 @@ namespace te
         return FileSystem::Exists(path);
     }
 
+    bool ScriptManager::CheckLastBuildOldEnough(const ScriptIdentifier& identifier)
+    {
+        if (_lastBuildTimes.find(identifier) == _lastBuildTimes.end())
+            return true;
+
+        UINT64 lastBuildTime = _lastBuildTimes[identifier];
+        UINT64 now = gTime().GetTimeMs();
+
+        if ((now - lastBuildTime) > 10000)
+            return true;
+
+        return false;
+    }
+
     void ScriptManager::OnMonitorFileModified(const String& path)
     {
         std::filesystem::path filePath(path);

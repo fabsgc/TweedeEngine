@@ -8,6 +8,7 @@ set(TE_UTILITY_INC_THIRDPARTY
     "Utility/ThirdParty/ImGui/imstb_rectpack.h"
     "Utility/ThirdParty/ImGui/imstb_textedit.h"
     "Utility/ThirdParty/ImGui/imstb_truetype.h"
+    "Utility/ThirdParty/ImGuizmo/ImGuizmo.h"
 )
 set(TE_UTILITY_SRC_THIRDPARTY
     "Utility/ThirdParty/Md5/md5.cpp"
@@ -16,6 +17,7 @@ set(TE_UTILITY_SRC_THIRDPARTY
     "Utility/ThirdParty/ImGui/imgui_demo.cpp"
     "Utility/ThirdParty/ImGui/imgui_draw.cpp"
     "Utility/ThirdParty/ImGui/imgui_widgets.cpp"
+    "Utility/ThirdParty/ImGuizmo/ImGuizmo.cpp"
 )
 
 set(TE_UTILITY_INC_MATH

@@ -2,12 +2,11 @@
 
 #include "TeCorePrerequisites.h"
 #include "Utility/TeModule.h"
+#include "Utility/TeTime.h"
 #include "Platform/TeFolderMonitor.h"
 #include "Threading/TeThreading.h"
 
 #include <filesystem>
-#include <future>
-#include <chrono>
 
 namespace te
 {
@@ -146,15 +145,18 @@ namespace te
         /** Check if a library already exists. Usefull if we don't want to compile everything (time consuming) */
         bool LibraryExists(const String& name);
 
+        /** On Win32, file monitoring triggers twice when file modified (so two build) */
+        bool CheckLastBuildOldEnough(const ScriptIdentifier& identifier);
+
     public:
         /** Path where the debug configuration managed assemblies are located at, relative to the working directory. */
         static const String LIBRARIES_PATH;
 
     private:
         Map<ScriptIdentifier, DynLib*> _scriptLibraries;
+        Map<ScriptIdentifier, UINT64> _lastBuildTimes;
         Vector<Script*> _scripts;
         FolderMonitor _folderMonitor;
-        Vector<std::future<void>> _reloads;
     };
 
     /** Provides easy access to the ScriptManager. */

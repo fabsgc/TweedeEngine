@@ -28,6 +28,10 @@
 // disable: C++ exception handler used, but unwind semantics are not enabled
 // We don't care about this as any exception is meant to crash the program.
 #   pragma warning(disable: 4530)
+
+// near and far macro create conflicts
+#   undef near
+#   undef far
 #endif
 
 // Windows Settings

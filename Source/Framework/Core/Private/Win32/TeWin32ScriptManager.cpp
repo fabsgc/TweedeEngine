@@ -79,6 +79,9 @@ namespace te
 
     bool ScriptManager::CompileLibrary(const ScriptIdentifier& identifier)
     {
+        if (!CheckLastBuildOldEnough(identifier))
+            return true;
+
         bool retVal = true;
         STARTUPINFO si;
         PROCESS_INFORMATION pi;
@@ -120,6 +123,8 @@ namespace te
             // Close process and thread handles. 
             CloseHandle(pi.hProcess);
             CloseHandle(pi.hThread);
+
+            _lastBuildTimes[identifier] = gTime().GetTimeMs();
         }
         else
         {

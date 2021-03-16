@@ -34,3 +34,5 @@ extern "C" TE_SCRIPT_EXPORT void UnloadScript(NativeScript* script)
 {
     if(script) te_delete(script);
 }
+
+
