@@ -319,7 +319,7 @@ namespace ImGuizmo
       };
 
       matrix_t(const matrix_t& other) { memcpy(&m16[0], &other.m16[0], sizeof(float) * 16); }
-      matrix_t() {}
+      matrix_t() = default;
 
       operator float* () { return m16; }
       operator const float* () const { return m16; }

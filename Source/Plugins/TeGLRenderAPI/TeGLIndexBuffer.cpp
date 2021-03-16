@@ -15,7 +15,7 @@ namespace te
 
     void GLIndexBuffer::Initialize()
     {
-        _buffer = te_new<GLHardwareBuffer>(_usage, 1, _size);
+        _buffer = te_new<GLHardwareBuffer>(GL_ELEMENT_ARRAY_BUFFER, _size, _usage);
         _bufferDeleter = &DeleteBuffer;
 
         IndexBuffer::Initialize();

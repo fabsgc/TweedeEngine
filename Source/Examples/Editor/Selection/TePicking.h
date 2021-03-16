@@ -56,7 +56,7 @@ namespace te
         };
 
     public:
-        Picking() = default;
+        Picking();
         ~Picking() = default;
 
         /** Init context, shader */

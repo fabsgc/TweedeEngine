@@ -2,6 +2,7 @@
 
 #include "TeGLRenderAPIPrerequisites.h"
 #include "RenderAPI/TeHardwareBuffer.h"
+#include "Utility/TePoolAllocator.h"
 
 namespace te
 {
@@ -9,8 +10,8 @@ namespace te
     class GLHardwareBuffer : public HardwareBuffer
     {
     public:
-        GLHardwareBuffer(GpuBufferUsage usage, UINT32 elementCount, UINT32 elementSize,
-            bool systemMemory = false, bool streamOut = false);
+        /** Creates and initializes the buffer object. */
+        GLHardwareBuffer(GLenum target, UINT32 size, GpuBufferUsage usage);
         ~GLHardwareBuffer();
 
         /** @copydoc HardwareBuffer::ReadData */
@@ -24,13 +25,20 @@ namespace te
         void CopyData(HardwareBuffer& srcBuffer, UINT32 srcOffset, UINT32 dstOffset,
             UINT32 length, bool discardWholeBuffer = false) override;
 
+        /**	Returns internal OpenGL buffer ID. */
+        GLuint getGLBufferId() const { return _bufferId; }
+
     protected:
         /** @copydoc HardwareBuffer::Map */
         void* Map(UINT32 offset, UINT32 length, GpuLockOptions options, UINT32 deviceIdx, UINT32 queueIdx) override;
 
         /** @copydoc HardwareBuffer::Unmap */
         void Unmap() override;
+
+    protected:
+        GLenum _target;
+        GLuint _bufferId = 0;
     };
 
-    // TODO
+    IMPLEMENT_GLOBAL_POOL(GLHardwareBuffer, 32)
 }

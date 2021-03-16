@@ -268,9 +268,6 @@ namespace te
         UINT8* weightPtr = _meshData->GetElementData(VES_BLEND_WEIGHTS);
         UINT8* indexPtr = _meshData->GetElementData(VES_BLEND_INDICES);
 
-        UINT8* weightPtrTmp = weightPtr;
-        UINT8* indexPtrTmp = indexPtr;
-
         UINT32 stride = vertexDesc->GetVertexStride(0);
 
         BoneWeight* weightSrc = buffer;

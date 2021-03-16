@@ -9,14 +9,13 @@ namespace te
 
     GLVertexBuffer::GLVertexBuffer(const VERTEX_BUFFER_DESC& desc, GpuDeviceFlags deviceMask)
         : VertexBuffer(desc, deviceMask)
-        , _streamOut(desc.StreamOut)
     {
         assert((deviceMask == GDF_DEFAULT || deviceMask == GDF_PRIMARY) && "Multiple GPUs not supported natively on DirectX 11.");
     }
 
     void GLVertexBuffer::Initialize()
     {
-        _buffer = te_new<GLHardwareBuffer>(_usage, 1, _size,false, _streamOut);
+        _buffer = te_new<GLHardwareBuffer>(GL_ARRAY_BUFFER, _size, _usage);
         _bufferDeleter = &DeleteBuffer;
 
         VertexBuffer::Initialize();

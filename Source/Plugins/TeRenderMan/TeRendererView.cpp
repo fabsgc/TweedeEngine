@@ -402,9 +402,9 @@ namespace te
                 UINT32 elemId = instancedBuffer.Idx[subElemIdx];
                 const Renderable* renderable = sceneInfo.Renderables[elemId]->RenderablePtr;
                 const Matrix4& tfrmNoScale = renderable->GetMatrixNoScale();
-                
+
                 //Once all this stuff is done, we need to write into perinstance buffer
-                GpuParamBlockBuffer* buffer = sceneInfo.Renderables[elemId]->PerObjectParamBuffer.get();
+                //GpuParamBlockBuffer* buffer = sceneInfo.Renderables[elemId]->PerObjectParamBuffer.get();
 
                 data.gMatWorld = sceneInfo.Renderables[elemId]->WorldTfrm;
                 data.gMatInvWorld = sceneInfo.Renderables[elemId]->WorldTfrm.InverseAffine();

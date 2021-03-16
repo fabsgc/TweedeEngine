@@ -32,6 +32,18 @@
 
 namespace te
 {
+    /** Translated an OpenGL error code enum to an error code string. */
+    const char* te_get_gl_error_string(GLenum errorCode);
+
+    /** Checks if there have been any OpenGL errors since the last call, and if so reports them. */
+    void te_check_gl_error(const char* function, const char* file, INT32 line);
+
+#if TE_DEBUG_MODE && (!TE_OPENGL_4_3 && !TE_OPENGLES_3_2)
+    #define TE_CHECK_GL_ERROR() te_check_gl_error(__PRETTY_FUNCTION__, __FILE__,__LINE__)
+#else
+    #define TE_CHECK_GL_ERROR()
+#endif
+
     class GLRenderAPI;
     class GLRenderStateManager;
     class GLBlendState;
@@ -46,9 +58,8 @@ namespace te
     class GLVertexBuffer;
     class GLIndexBuffer;
     class GLGpuBuffer;
-	class GLGpuParamBlockBuffer;
+    class GLGpuParamBlockBuffer;
     class GLInputLayoutManager;
-	class GLGLSLParamParser;
-	class GLGLSLProgramFactory;
-
+    class GLGLSLParamParser;
+    class GLGLSLProgramFactory;
 }

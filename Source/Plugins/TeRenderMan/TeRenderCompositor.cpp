@@ -322,7 +322,6 @@ namespace te
 
         Vector3I lightCounts;
         const LightData* lights[STANDARD_FORWARD_MAX_NUM_LIGHTS];
-        const VisibilityInfo& visibility = inputs.View.GetVisibilityInfo();
         const auto numRenderables = (UINT32)inputs.Scene.Renderables.size();
         for (UINT32 i = 0; i < numRenderables; i++)
         {

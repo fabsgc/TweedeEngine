@@ -15,6 +15,46 @@
 
 namespace te
 {
+    const char* te_get_gl_error_string(GLenum errorCode)
+    {
+        switch (errorCode)
+        {
+            case GL_INVALID_OPERATION: return "INVALID_OPERATION";
+            case GL_INVALID_ENUM: return "INVALID_ENUM";
+            case GL_INVALID_VALUE: return "INVALID_VALUE";
+            case GL_OUT_OF_MEMORY: return "OUT_OF_MEMORY";
+            case GL_INVALID_FRAMEBUFFER_OPERATION: return "INVALID_FRAMEBUFFER_OPERATION";
+        }
+
+        return nullptr;
+    }
+
+    void te_check_gl_error(const char* function, const char* file, INT32 line)
+    {
+        GLenum errorCode = glGetError();
+        if (errorCode != GL_NO_ERROR)
+        {
+            StringStream errorOutput;
+            errorOutput << "OpenGL error in " << function << " [" << file << ":" << ToString(line) << "]:\n";
+
+            while (errorCode != GL_NO_ERROR)
+            {
+                const char* errorString = te_get_gl_error_string(errorCode);
+                if (errorString)
+                    errorOutput << "\t - " << errorString;
+
+                errorCode = glGetError();
+            }
+
+            TE_DEBUG(errorOutput.str());
+        }
+    }
+
+#if BS_OPENGL_4_3 || BS_OPENGLES_3_2
+    void OpenGlErrorCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar
+                *message, GLvoid *userParam);
+#endif
+
     GLRenderAPI::GLRenderAPI()
     {
     }
@@ -209,4 +249,15 @@ namespace te
 
         return block;
     }
+
+#if TE_OPENGL_4_3 || TE_OPENGLES_3_2
+    void OpenGlErrorCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
+        const GLchar *message, GLvoid *userParam)
+    {
+        if (type != GL_DEBUG_TYPE_PERFORMANCE && type != GL_DEBUG_TYPE_OTHER)
+        {
+            TE_ASSERT_ERROR(true, "OpenGL error: " + String(message));
+        }
+    }
+#endif
 }

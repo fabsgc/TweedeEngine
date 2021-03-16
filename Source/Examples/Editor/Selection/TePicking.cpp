@@ -13,6 +13,11 @@
 
 namespace te
 {
+    Picking::Picking()
+        : _material(nullptr)
+        , _hudMaterial(nullptr)
+    { }
+
     void Picking::Initialize()
     {
         _material = PickingMat::Get();

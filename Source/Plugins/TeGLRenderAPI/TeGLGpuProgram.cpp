@@ -76,38 +76,40 @@ namespace te
     { }
 
     GLGpuVertexProgram::~GLGpuVertexProgram()
-    {
-    }
+    { }
 
     GLGpuPixelProgram::GLGpuPixelProgram(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask)
         : GLGpuProgram(desc, deviceMask)
     { }
 
     GLGpuPixelProgram::~GLGpuPixelProgram()
-    {
-    }
+    { }
 
     GLGpuGeometryProgram::GLGpuGeometryProgram(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask)
         : GLGpuProgram(desc, deviceMask)
     { }
 
     GLGpuGeometryProgram::~GLGpuGeometryProgram()
-    {
-    }
+    { }
 
     GLGpuDomainProgram::GLGpuDomainProgram(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask)
         : GLGpuProgram(desc, deviceMask)
     { }
 
     GLGpuDomainProgram::~GLGpuDomainProgram()
-    {
-    }
+    { }
 
     GLGpuHullProgram::GLGpuHullProgram(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask)
         : GLGpuProgram(desc, deviceMask)
     { }
 
     GLGpuHullProgram::~GLGpuHullProgram()
-    {
-    }
+    { }
+
+    GLGpuComputeProgram::GLGpuComputeProgram(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask)
+        : GLGpuProgram(desc, deviceMask)
+    { }
+
+    GLGpuComputeProgram::~GLGpuComputeProgram()
+    { }
 }

@@ -32,7 +32,10 @@ namespace te
         /** Contains data about a single instance of DX11 input layout object. */
         struct InputLayoutEntry
         {
-            InputLayoutEntry() {}
+            InputLayoutEntry()
+                : InputLayout(nullptr)
+                , LastUsedIdx(0)
+            { }
 
             ID3D11InputLayout* InputLayout;
             UINT32 LastUsedIdx;

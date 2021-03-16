@@ -87,6 +87,18 @@ namespace te
         GLGpuGeometryProgram(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask);
     };
 
+    /** Implementation of a OpenGL compute shader. */
+    class GLGpuComputeProgram : public GLGpuProgram
+    {
+    public:
+        ~GLGpuComputeProgram();
+
+    protected:
+        friend class GLGLSLProgramFactory;
+
+        GLGpuComputeProgram(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask);
+    };
+
     /** Identifier of the compiler used for compiling OpenGL GPU programs. */
     static constexpr const char* OPENGL_COMPILER_ID = "OpenGL";
 

@@ -15,8 +15,6 @@ namespace te
     protected:
         /** @copydoc VertexBuffer::Initialize */
         void Initialize() override;
-
-        bool _streamOut;
     };
 
     // TODO

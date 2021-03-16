@@ -6,7 +6,7 @@ namespace te
 {
     static void DeleteBuffer(HardwareBuffer* buffer)
     {
-        te_delete(static_cast<GLHardwareBuffer*>(buffer));
+        te_pool_delete(static_cast<GLHardwareBuffer*>(buffer));
     }
 
     GLGpuBuffer::GLGpuBuffer(const GPU_BUFFER_DESC& desc, GpuDeviceFlags deviceMask)
@@ -32,10 +32,24 @@ namespace te
         // Create a new buffer if not wrapping an external one
         if (!_buffer)
         {
-            // TODO
+            if (_properties.GetType() == GBT_STRUCTURED)
+            {
+//#if BS_OPENGL_4_2 || BS_OPENGLES_3_1
+                const auto& props = GetProperties();
+                UINT32 size = props.GetElementCount() * props.GetElementSize();
+                _buffer = te_pool_new<GLHardwareBuffer>(GL_SHADER_STORAGE_BUFFER, size, props.GetUsage());
+//#else
+                TE_DEBUG("SSBOs are not supported on the current OpenGL version.");
+//#endif
+            }
+            else
+            {
+                const auto& props = GetProperties();
+                UINT32 size = props.GetElementCount() * props.GetElementSize();
+                _buffer = te_pool_new<GLHardwareBuffer>(GL_TEXTURE_BUFFER, size, props.GetUsage());
+            }
         }
 
         // TODO
     }
 }
-

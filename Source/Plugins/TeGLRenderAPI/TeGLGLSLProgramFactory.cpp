@@ -33,6 +33,10 @@ namespace te
             gpuProgram = te_core_ptr<GLGpuGeometryProgram>(new (te_allocate<GLGpuGeometryProgram>())
                 GLGpuGeometryProgram(desc, deviceMask));
             break;
+        case GPT_COMPUTE_PROGRAM:
+            gpuProgram = te_core_ptr<GLGpuComputeProgram>(new (te_allocate<GLGpuComputeProgram>())
+                GLGpuComputeProgram(desc, deviceMask));
+            break;
         }
 
         if (gpuProgram != nullptr)
@@ -71,6 +75,10 @@ namespace te
         case GPT_GEOMETRY_PROGRAM:
             gpuProgram = te_shared_ptr<GLGpuGeometryProgram>(new (te_allocate<GLGpuGeometryProgram>())
                 GLGpuGeometryProgram(desc, deviceMask));
+            break;
+        case GPT_COMPUTE_PROGRAM:
+            gpuProgram = te_shared_ptr<GLGpuComputeProgram>(new (te_allocate<GLGpuComputeProgram>())
+                GLGpuComputeProgram(desc, deviceMask));
             break;
         }
 
