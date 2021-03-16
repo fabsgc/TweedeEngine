@@ -9,7 +9,7 @@ class DefaultScript : public NativeScript
 {
 public:
     DefaultScript()
-        : NativeScript()
+        : NativeScript()f
     { }
 
     ~DefaultScript()
@@ -34,5 +34,8 @@ extern "C" TE_SCRIPT_EXPORT void UnloadScript(NativeScript* script)
 {
     if(script) te_delete(script);
 }
+
+
+
 
 

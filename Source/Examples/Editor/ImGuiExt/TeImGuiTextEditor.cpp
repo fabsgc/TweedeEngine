@@ -502,12 +502,12 @@ namespace te
         , _colorRangeMax(0)
         , _selectionMode(SelectionMode::Normal)
         , _checkComments(true)
-        , _lastClick(-1.0f)
         , _handleKeyboardInputs(true)
         , _handleMouseInputs(true)
         , _ignoreImGuiChild(false)
         , _showWhitespaces(true)
         , _startTime(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count())
+        , _lastClick(-1.0f)
     {
         SetPalette(GetDarkPalette());
         SetLanguageDefinition(LanguageDefinition::CPlusPlus());
@@ -713,7 +713,7 @@ namespace te
     {
         auto oldPos = _state.CursorPosition;
 
-        if (_lines.empty() || oldPos.Line >= _lines.size())
+        if (_lines.empty() || (size_t)(oldPos.Line) >= _lines.size())
             return;
 
         auto cindex = GetCharacterIndex(_state.CursorPosition);
@@ -722,9 +722,9 @@ namespace te
             auto lindex = _state.CursorPosition.Line;
             auto& line = _lines[lindex];
 
-            if (cindex >= line.size())
+            if ((size_t)cindex >= line.size())
             {
-                if (_state.CursorPosition.Line < _lines.size() - 1)
+                if ((size_t)(_state.CursorPosition.Line) < _lines.size() - 1)
                 {
                     _state.CursorPosition.Line = std::max(0, std::min((int)_lines.size() - 1, _state.CursorPosition.Line + 1));
                     _state.CursorPosition.Column = 0;
@@ -881,7 +881,7 @@ namespace te
         case ImGuiTextEditor::SelectionMode::Line:
         {
             const auto lineNo = _state.SelectionEnd.Line;
-            const auto lineSize = (size_t)lineNo < _lines.size() ? _lines[lineNo].size() : 0;
+            //const auto lineSize = (size_t)lineNo < _lines.size() ? _lines[lineNo].size() : 0;
             _state.SelectionStart = Coordinates(_state.SelectionStart.Line, 0);
             _state.SelectionEnd = Coordinates(lineNo, GetLineMaxColumn(lineNo));
             break;
@@ -1464,7 +1464,7 @@ namespace te
             auto concatenate = false;        // '\' on the very end of the line
             auto currentLine = 0;
             auto currentIndex = 0;
-            while (currentLine < endLine || currentIndex < endIndex)
+            while ((size_t)currentLine < endLine || currentIndex < endIndex)
             {
                 auto& line = _lines[currentLine];
 
@@ -1488,7 +1488,7 @@ namespace te
                     if (currentIndex == (int)line.size() - 1 && line[line.size() - 1].Character == '\\')
                         concatenate = true;
 
-                    bool inComment = (commentStartLine < currentLine || (commentStartLine == currentLine && commentStartIndex <= currentIndex));
+                    bool inComment = (commentStartLine < (size_t)currentLine || (commentStartLine == (size_t)currentLine && commentStartIndex <= currentIndex));
 
                     if (withinString)
                     {
@@ -1542,7 +1542,7 @@ namespace te
                                 commentStartIndex = currentIndex;
                             }
 
-                            inComment = inComment = (commentStartLine < currentLine || (commentStartLine == currentLine && commentStartIndex <= currentIndex));
+                            inComment = inComment = (commentStartLine < (size_t)currentLine || (commentStartLine == (size_t)currentLine && commentStartIndex <= currentIndex));
 
                             line[currentIndex].MultiLineComment = inComment;
                             line[currentIndex].Comment = withinSingleLineComment;
@@ -1595,7 +1595,7 @@ namespace te
         float distance = 0.0f;
         float spaceSize = ImGui::GetFont()->CalcTextSizeA(GetFontSize(), FLT_MAX, -1.0f, " ", nullptr, nullptr).x;
         int colIndex = GetCharacterIndex(from);
-        for (size_t it = 0u; it < line.size() && it < colIndex; )
+        for (size_t it = 0u; it < line.size() && it < (size_t)colIndex; )
         {
             if (line[it].Character == '\t')
             {
@@ -1607,7 +1607,7 @@ namespace te
                 auto d = UTF8CharLength(line[it].Character);
                 char tempCString[7];
                 int i = 0;
-                for (; i < 6 && d-- > 0 && it < (int)line.size(); i++, it++)
+                for (; i < 6 && d-- > 0 && it < line.size(); i++, it++)
                     tempCString[i] = line[it].Character;
 
                 tempCString[i] = '\0';
@@ -1667,7 +1667,7 @@ namespace te
         auto iend = GetCharacterIndex(end);
         size_t s = 0;
 
-        for (size_t i = lstart; i < lend; i++)
+        for (size_t i = (size_t)lstart; i < (size_t)lend; i++)
             s += _lines[i].size();
 
         result.reserve(s + s / 8);
@@ -1980,7 +1980,7 @@ namespace te
 
         while (!isword || skip)
         {
-            if (at.Line >= _lines.size())
+            if (at.Line >= (int)_lines.size())
             {
                 auto l = std::max(0, (int)_lines.size() - 1);
                 return Coordinates(l, GetLineMaxColumn(l));
@@ -2013,7 +2013,7 @@ namespace te
 
     int ImGuiTextEditor::GetCharacterIndex(const Coordinates& coordinates) const
     {
-        if (coordinates.Line >= _lines.size())
+        if (coordinates.Line >= (int)_lines.size())
             return -1;
         auto& line = _lines[coordinates.Line];
         int c = 0;
@@ -2031,7 +2031,7 @@ namespace te
 
     int ImGuiTextEditor::GetCharacterColumn(int line, int index) const
     {
-        if (line >= _lines.size())
+        if (line >= (int)_lines.size())
             return 0;
         auto& currentLine = _lines[line];
         int col = 0;
@@ -2050,7 +2050,7 @@ namespace te
 
     int ImGuiTextEditor::GetLineCharacterCount(int line) const
     {
-        if (line >= _lines.size())
+        if (line >= (int)_lines.size())
             return 0;
         auto& currentLine = _lines[line];
         int c = 0;
@@ -2061,7 +2061,7 @@ namespace te
 
     int ImGuiTextEditor::GetLineMaxColumn(int line) const
     {
-        if (line >= _lines.size())
+        if (line >= (int)_lines.size())
             return 0;
         auto& currentLine = _lines[line];
         int col = 0;
@@ -2407,7 +2407,7 @@ namespace te
                 --u._removedStart.Column;
                 --_state.CursorPosition.Column;
 
-                while (cindex < line.size() && cend-- > cindex)
+                while ((size_t)cindex < line.size() && cend-- > cindex)
                 {
                     u._removed += line[cindex].Character;
                     line.erase(line.begin() + cindex);
@@ -2804,7 +2804,7 @@ namespace te
                 auto prevColor = line.empty() ? _palette[(int)PaletteIndex::Default] : GetGlyphColor(line[0]);
                 ImVec2 bufferOffset;
 
-                for (int i = 0; i < line.size();)
+                for (int i = 0; i < (int)line.size();)
                 {
                     auto& glyph = line[i];
                     auto color = GetGlyphColor(glyph);

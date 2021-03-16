@@ -1201,11 +1201,11 @@ namespace ImGuizmo
          {
             continue;
          }
-         ImVec2* circlePos = (ImVec2*) alloca(sizeof(ImVec2) * (circleMul * halfCircleSegmentCount + 1));
+         ImVec2* circlePos = (ImVec2*) alloca(sizeof(ImVec2) * (size_t)(circleMul * halfCircleSegmentCount + 1));
 
          float angleStart = atan2f(cameraToModelNormalized[(4 - axis) % 3], cameraToModelNormalized[(3 - axis) % 3]) + ZPI * 0.5f;
 
-         for (unsigned int i = 0; i < circleMul * halfCircleSegmentCount + 1; i++)
+         for (unsigned int i = 0; i < (unsigned int)(circleMul * halfCircleSegmentCount) + 1; i++)
          {
             float ng = angleStart + circleMul * ZPI * ((float)i / (float)halfCircleSegmentCount);
             vec_t axisPos = makeVect(cosf(ng), sinf(ng), 0.f);
