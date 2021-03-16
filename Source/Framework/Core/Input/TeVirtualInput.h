@@ -100,14 +100,9 @@ namespace te
         /**	Triggered when a virtual button is released. */
         Event<void(const VirtualButton&, UINT32 deviceIdx)> OnButtonUp;
 
-        /** @name Internal
-         *  @{
-         */
-
          /** Called once every frame. Triggers button callbacks. */
         void Update();
 
-        /** @} */
     private:
         friend class VirtualButton;
 

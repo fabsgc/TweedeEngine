@@ -415,6 +415,10 @@ namespace te
                 if (currentCO->GetCoreType() == TID_CBone)
                     currentCO->Initialize();
 
+                // if we've moved an audioListener or an audioSource, we need to trigger RestoreInternal()
+                if (currentCO->GetCoreType() == TID_CAudioListener || currentCO->GetCoreType() == TID_CAudioSource)
+                    currentCO->Initialize();
+
                 // ugly but best way to update all children
                 sceneObject->Move(Vector3::ZERO);
 

@@ -170,6 +170,37 @@ namespace te
                     if (state.second.State != ButtonState::On)
                         continue;
 
+                    if (state.second.State == ButtonState::On)
+                    {
+                        UINT32 identifier = state.second.Button.ButtonIdentifier;
+                        Vector<VirtualButton> btns;
+                        Vector<VIRTUAL_BUTTON_DESC> btnDesc;
+
+                        if (!gInput().IsButtonHeld(ButtonCode::TE_LCONTROL))
+                        {
+                            _inputConfiguration->GetButtons(ButtonCode::TE_LCONTROL, 0, btns, btnDesc);
+                            for (auto& btn : btns)
+                            {
+                                if(state.first == btn.ButtonIdentifier)
+                                    deviceData.CachedStates[btn.ButtonIdentifier].State = ButtonState::Off;
+                            } 
+                        }
+
+                        if (!gInput().IsButtonHeld(ButtonCode::TE_LMENU))
+                        {
+                            _inputConfiguration->GetButtons(ButtonCode::TE_LMENU, 0, btns, btnDesc);
+                            for (auto& btn : btns)
+                                deviceData.CachedStates[btn.ButtonIdentifier].State = ButtonState::Off;
+                        }
+
+                        if (!gInput().IsButtonHeld(ButtonCode::TE_DELETE))
+                        {
+                            _inputConfiguration->GetButtons(ButtonCode::TE_DELETE, 0, btns, btnDesc);
+                            for (auto& btn : btns)
+                                deviceData.CachedStates[btn.ButtonIdentifier].State = ButtonState::Off;
+                        }
+                    }
+
                     if (!state.second.AllowRepeat)
                         continue;
 

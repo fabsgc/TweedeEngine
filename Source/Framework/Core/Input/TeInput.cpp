@@ -188,6 +188,18 @@ namespace te
 
                 _devices[eventData.deviceIdx].KeyStates[eventData.buttonCode & 0x0000FFFF] = ButtonState::ToggledOn;
 
+                // Prevent Ctrl+Alt+Del event
+                if (_devices[eventData.deviceIdx].KeyStates[ButtonCode::TE_DELETE & 0x0000FFFF] == ButtonState::ToggledOn)
+                {
+                    if (_devices[eventData.deviceIdx].KeyStates[ButtonCode::TE_LMENU & 0x0000FFFF] == ButtonState::On &&
+                        _devices[eventData.deviceIdx].KeyStates[ButtonCode::TE_LCONTROL & 0x0000FFFF] == ButtonState::On)
+                    {
+                        _devices[eventData.deviceIdx].KeyStates[ButtonCode::TE_DELETE & 0x0000FFFF] = ButtonState::Off;
+                        _devices[eventData.deviceIdx].KeyStates[ButtonCode::TE_LMENU & 0x0000FFFF] = ButtonState::ToggledOff;
+                        _devices[eventData.deviceIdx].KeyStates[ButtonCode::TE_LCONTROL & 0x0000FFFF] = ButtonState::ToggledOff;
+                    }
+                }
+
                 //if (!GuiAPI::Instance().HasFocus(GuiAPI::FocusType::Keyboard))
                 OnButtonDown(_buttonDownEvents[1][event.Idx]);
             }

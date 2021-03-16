@@ -24,6 +24,12 @@
 #include "Components/TeCCameraFlyer.h"
 #include "Components/TeCScript.h"
 #include "Components/TeCRenderable.h"
+#include "Components/TeCLight.h"
+#include "Components/TeCSkybox.h"
+#include "Components/TeCAnimation.h"
+#include "Components/TeCBone.h"
+#include "Components/TeCAudioSource.h"
+#include "Components/TeCAudioListener.h"
 #include "Scene/TeSceneManager.h"
 #include "Resources/TeResourceManager.h"
 #include "Resources/TeBuiltinResources.h"
@@ -45,10 +51,7 @@
 #include "Audio/TeAudioClipImportOptions.h"
 #include "Material/TeMaterial.h"
 #include "Material/TeShader.h"
-#include "Components/TeCLight.h"
-#include "Components/TeCSkybox.h"
-#include "Components/TeCAudioSource.h"
-#include "Components/TeCAudioListener.h"
+
 
 #ifndef GImGui
 ImGuiContext* GImGui = NULL;
@@ -637,6 +640,46 @@ namespace te
                     break;
 
                 HSkybox component = clickedSceneObject->AddComponent<CSkybox>();
+                component->Clone(_selections.CopiedComponent->GetHandle());
+                component->Initialize();
+                _selections.ClickedComponent = component.GetInternalPtr();
+                _selections.CopiedComponent = component.GetInternalPtr();
+            }
+            break;
+
+            case TID_CAnimation:
+            {
+                HAnimation component = clickedSceneObject->AddComponent<CAnimation>();
+                component->Clone(_selections.CopiedComponent->GetHandle());
+                component->Initialize();
+                _selections.ClickedComponent = component.GetInternalPtr();
+                _selections.CopiedComponent = component.GetInternalPtr();
+            }
+            break;
+
+            case TID_CBone:
+            {
+                HBone component = clickedSceneObject->AddComponent<CBone>();
+                component->Clone(_selections.CopiedComponent->GetHandle());
+                component->Initialize();
+                _selections.ClickedComponent = component.GetInternalPtr();
+                _selections.CopiedComponent = component.GetInternalPtr();
+            }
+            break;
+
+            case TID_CAudioListener:
+            {
+                HAudioListener component = clickedSceneObject->AddComponent<CAudioListener>();
+                component->Clone(_selections.CopiedComponent->GetHandle());
+                component->Initialize();
+                _selections.ClickedComponent = component.GetInternalPtr();
+                _selections.CopiedComponent = component.GetInternalPtr();
+            }
+            break;
+
+            case TID_CAudioSource:
+            {
+                HAudioSource component = clickedSceneObject->AddComponent<CAudioSource>();
                 component->Clone(_selections.CopiedComponent->GetHandle());
                 component->Initialize();
                 _selections.ClickedComponent = component.GetInternalPtr();
