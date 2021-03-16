@@ -1,7 +1,8 @@
 language: cpp
 os: linux
+dist: bionic
 
-matrix:
+jobs:
   include:
     - os: linux
       addons:
@@ -63,7 +64,7 @@ script:
     fi
   - make
   - make install
-  
+
 after_success:
   - cd ..
   - today=`date +%Y.%m.%d`
