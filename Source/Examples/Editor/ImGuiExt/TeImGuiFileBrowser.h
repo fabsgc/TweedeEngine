@@ -68,6 +68,12 @@ namespace te
                 UINT32 MaxMips = 0;
             };
 
+            /** If we want to load a sound, here are stored the list of parameters to apply on it during loading */
+            struct AudioParameters
+            { 
+                bool Is3D = false;
+            };
+
             /** If we want to load a scene, here are stored the list of parameters to apply on it during loading */
             struct SceneParameters
             { };
@@ -85,6 +91,7 @@ namespace te
                 MeshParameters    MeshParam;
                 TextureParameters TexParam;
                 SceneParameters   SceneParam;
+                AudioParameters   AudioParam;
 
             };
 

@@ -726,6 +726,10 @@ namespace te
                         }
                     }
                 }
+                else if (strcmp(selectedExt, ".ogg") == 0 || strcmp(selectedExt, ".wav") == 0 || strcmp(selectedExt, ".flac") == 0)
+                {
+                    ImGuiExt::RenderOptionBool(Data.AudioParam.Is3D, "##file_dialog_parameters_audio_3d", "Is 3D Sound");
+                }
                 else if (strcmp(selectedExt, ".scene") == 0)
                 {
                     // TODO

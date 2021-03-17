@@ -7,6 +7,7 @@
 #include "ImGui/imgui_internal.h"
 #include "Importer/TeMeshImportOptions.h"
 #include "Importer/TeTextureImportOptions.h"
+#include "Audio/TeAudioClipImportOptions.h"
 #include "String/TeUnicode.h"
 #include "Image/TeTexture.h"
 #include "Mesh/TeMesh.h"
@@ -252,7 +253,7 @@ namespace te
         if (_settings.Load)
             ImGui::OpenPopup("Load Resource");
 
-        if (_fileBrowser.ShowFileDialog("Load Resource", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), true, ".png,.jpeg,.jpg,.obj,.dae,.fbx,.scene"))
+        if (_fileBrowser.ShowFileDialog("Load Resource", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), true, ".png,.jpeg,.jpg,.obj,.dae,.fbx,.scene,.ogg,.wav,.flac"))
         {
             if (_fileBrowser.Data.Ext == ".jpeg" || _fileBrowser.Data.Ext == ".jpg" || _fileBrowser.Data.Ext == ".png")
             {
@@ -313,6 +314,18 @@ namespace te
                             subRes.Res->SetPath(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
                         }
                     }
+                }
+            }
+            else if (_fileBrowser.Data.Ext == ".ogg" || _fileBrowser.Data.Ext == ".wav" || _fileBrowser.Data.Ext == ".flac")
+            {
+                auto audioImportOptions = AudioClipImportOptions::Create();
+                audioImportOptions->Is3D = _fileBrowser.Data.AudioParam.Is3D;
+
+                HAudioClip audio = EditorResManager::Instance().Load<AudioClip>(_fileBrowser.Data.SelectedPath, audioImportOptions);
+                if (audio.IsLoaded())
+                {
+                    audio->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
+                    EditorResManager::Instance().Add<AudioClip>(audio);
                 }
             }
             else
