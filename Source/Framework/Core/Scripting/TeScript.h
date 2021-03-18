@@ -68,6 +68,7 @@ namespace te
 
     protected:
         friend class CScript;
+        friend class ScriptManager;
 
         Script();
 

@@ -138,7 +138,7 @@ namespace te
 
         /** 
          * Try to unload a new script lib (.dll, .so), 
-         * if second argument is not null, it's filled with pointer to script which were using this nativeScript 
+         * if second argument is not null, it's filled with pointer to scripts which are using this nativeScript 
          */
         void UnloadScriptLibrary(const ScriptIdentifier& identifier, Vector<UnloadedScript>* unloadedScripts = nullptr);
 

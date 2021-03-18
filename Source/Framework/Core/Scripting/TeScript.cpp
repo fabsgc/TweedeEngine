@@ -55,8 +55,8 @@ namespace te
     void Script::SetNativeScript(const ScriptIdentifier& identifier, const HSceneObject& sceneObject)
     {
         auto SetScriptTask = [this, identifier, sceneObject]() {
-            Lock lock(this->_mutex);
-            
+            // Lock lock(this->_mutex);
+
             OnShutdown();
 
             if(!identifier.Name.empty())
@@ -85,8 +85,11 @@ namespace te
 
         if (identifier.Name != "")
         {
-            SPtr<Task> task = Task::Create("SetNativeScript", SetScriptTask, SetScriptCallback);
-            gTaskScheduler().AddTask(task);
+            SetScriptTask();
+            SetScriptCallback();
+
+            //SPtr<Task> task = Task::Create("SetNativeScript", SetScriptTask, SetScriptCallback);
+            //gTaskScheduler().AddTask(task); TODO rewrite ScriptManager
         }
         else
         {

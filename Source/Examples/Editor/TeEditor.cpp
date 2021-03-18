@@ -266,6 +266,8 @@ namespace te
         gSceneManager().SetMainRenderTarget(gCoreApplication().GetWindow());
         gCoreApplication().GetState().SetFlag(ApplicationState::Mode::Game, false);
         gCoreApplication().GetState().SetFlag(ApplicationState::Mode::Physics, false);
+        gCoreApplication().GetState().SetFlag(ApplicationState::Mode::Scripting, false);
+        gCoreApplication().GetState().SetFlag(ApplicationState::Mode::Animation, false);
     }
 
     void Editor::InitializeViewportCamera()

@@ -6,6 +6,7 @@
 #include "ImGui/imgui_internal.h"
 #include "TeWidgetRenderOptions.h"
 #include "Animation/TeAnimationManager.h"
+#include "Scripting/TeScriptManager.h"
 
 namespace te
 {
@@ -65,15 +66,16 @@ namespace te
         // Play
         ShowButton(ICON_FA_PLAY, ICON_FA_STOP,
             [this]() {
-                // TODO AUDIO
-                // TODO PHYSIC
                 return !gCoreApplication().GetState().IsFlagSet(ApplicationState::Game); 
             },
             [this]() {
-                // TODO AUDIO
-                // TODO PHYSIC
                 gAnimationManager().TogglePaused();
-                gCoreApplication().GetState().ToggleFlag(ApplicationState::Game); 
+                gScriptManager().TogglePaused();
+
+                gCoreApplication().GetState().ToggleFlag(ApplicationState::Mode::Game);
+                gCoreApplication().GetState().ToggleFlag(ApplicationState::Mode::Physics);
+                gCoreApplication().GetState().ToggleFlag(ApplicationState::Mode::Scripting);
+                gCoreApplication().GetState().ToggleFlag(ApplicationState::Mode::Animation);
             }
         );
 

@@ -18,7 +18,7 @@ namespace te
     const String ScriptManager::LIBRARIES_PATH = "Data/Scripts/";
 
     ScriptManager::ScriptManager()
-        : _paused(false)
+        : _paused(true)
     { }
 
     void ScriptManager::OnStartUp()
@@ -55,7 +55,7 @@ namespace te
 
     void ScriptManager::PreUpdate()
     {
-        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Game);
+        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Scripting);
         if (IsPaused() || !isRunning)
             return;
 
@@ -67,7 +67,7 @@ namespace te
 
     void ScriptManager::PostUpdate()
     {
-        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Game);
+        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Scripting);
         if (IsPaused() || !isRunning)
             return;
 
@@ -79,7 +79,7 @@ namespace te
 
     void ScriptManager::PostRender()
     {
-        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Game);
+        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Scripting);
         if (IsPaused() || !isRunning)
             return;
 
@@ -157,7 +157,7 @@ namespace te
             DynLib* library = gDynLibManager().Load(identifier.Name);
             if (library != nullptr)
             {
-                RecursiveLock lock(_mutex);
+                // RecursiveLock lock(_mutex);
                 _scriptLibraries[identifier] = library;
             }
 
@@ -169,7 +169,7 @@ namespace te
 
     void ScriptManager::UnloadScriptLibrary(const ScriptIdentifier& identifier, Vector<UnloadedScript>* unloadedScripts)
     {
-        RecursiveLock lock(_mutex);
+        // RecursiveLock lock(_mutex);
         auto iter = _scriptLibraries.find(identifier);
         if (iter != _scriptLibraries.end())
         {
@@ -189,7 +189,9 @@ namespace te
                         (*unloadedScripts).push_back(unloadedScript);
                     }
 
-                    script->SetNativeScript(String(), HSceneObject());
+                    script->OnShutdown();
+                    gScriptManager().DeleteNativeScript(script->_nativeScript);
+                    script->_nativeScript = nullptr;
                 }
             }
 
@@ -203,7 +205,7 @@ namespace te
         DynLib* library = nullptr;
 
         {
-            RecursiveLock lock(_mutex);
+            // RecursiveLock lock(_mutex);
             auto iter = _scriptLibraries.find(identifier);
 
             if (iter == _scriptLibraries.end())
@@ -217,12 +219,16 @@ namespace te
 
     void ScriptManager::UnloadAll()
     {
-        for (auto& script : _scripts)
         {
-            script->SetNativeScript(String(), HSceneObject());
+            // RecursiveLock lock(_mutex);
+            for (auto& script : _scripts)
+            {
+                script->OnShutdown();
+                gScriptManager().DeleteNativeScript(script->_nativeScript);
+                script->_nativeScript = nullptr;
+            }
         }
 
-        RecursiveLock lock(_mutex);
         for (auto it = _scriptLibraries.begin(); it != _scriptLibraries.end();)
         {
             it->second->Unload();
@@ -252,8 +258,6 @@ namespace te
 
     void ScriptManager::OnMonitorFileModified(const String& path)
     {
-        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Game);
-
         std::filesystem::path filePath(path);
         String fileName;
         String fileExtension;
@@ -278,6 +282,7 @@ namespace te
             {
                 if (this->CompileLibrary(fileName))
                 {
+                    // RecursiveLock lock(_mutex);
                     for (auto& unloadedScript : unloadedScripts)
                     {
                         unloadedScript.ScriptToReload->SetNativeScript(
@@ -295,7 +300,7 @@ namespace te
         FileModifiedCallback();
 
         //SPtr<Task> task = Task::Create("OnMonitorFileModified", FileModifiedTask, FileModifiedCallback);
-        //gTaskScheduler().AddTask(task);
+        //gTaskScheduler().AddTask(task); TODO rewrite ScriptManager
     }
 
     void ScriptManager::OnMonitorFileAdded(const String& path)
@@ -322,7 +327,7 @@ namespace te
     void ScriptManager::OnMonitorFileRenamed(const String& from, const String& to)
     {
         auto FileRenamedTask = [this, from, to]() {
-            RecursiveLock lock(this->_mutex);
+            // RecursiveLock lock(_mutex);
             std::filesystem::path oldFilePath(from);
             std::filesystem::path newFilePath(to);
 
@@ -362,7 +367,7 @@ namespace te
         FileRenamedTask();
 
         //SPtr<Task> task = Task::Create("OnMonitorFileRenamed", FileRenamedTask);
-        //gTaskScheduler().AddTask(task);
+        //gTaskScheduler().AddTask(task); TODO rewrite ScriptManager
     }
 
     void ScriptManager::SetPaused(bool paused)

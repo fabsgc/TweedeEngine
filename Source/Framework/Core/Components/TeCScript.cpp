@@ -62,7 +62,7 @@ namespace te
 
     void CScript::Update()
     {
-        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Game);
+        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Scripting);
         if (gScriptManager().IsPaused() || !isRunning)
             return;
 

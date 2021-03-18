@@ -40,7 +40,7 @@ namespace te
         /** Determines if audio reproduction is paused globally. */
         virtual void SetPaused(bool paused) = 0;
 
-        /** @copydoc setPaused() */
+        /** @copydoc SetPaused() */
         virtual bool IsPaused() const = 0;
 
         /** Determines the device on which is the audio played back on. */

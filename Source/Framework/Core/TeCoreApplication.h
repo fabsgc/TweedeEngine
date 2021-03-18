@@ -28,15 +28,18 @@ namespace te
     public:
         enum Mode : UINT32
         {
-            Physics = 1UL << 0, // Should the physics tick
-            Script = 1UL << 1,  // Should the scrips tick
-            Game = 1UL << 2,    // Is the engine running in game or editor mode?
+            Physics = 1UL << 0,     // Should the physics tick
+            Scripting = 1UL << 1,   // Should scripting tick
+            Animation = 1UL << 2,   // Should animation run
+            Game = 1UL << 3,        // Is the engine running in game or editor mode?
         };
 
         ApplicationState()
             : _flags(0)
         {
             _flags |= Mode::Physics;
+            _flags |= Mode::Scripting;
+            _flags |= Mode::Animation;
             _flags |= Mode::Game;
         }
 
