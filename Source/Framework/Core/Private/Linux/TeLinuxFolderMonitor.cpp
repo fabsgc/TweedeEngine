@@ -251,8 +251,6 @@ namespace te
                 TE_DEBUG("Folder is already monitored, cannot monitor it again.");
                 return;
             }
-
-            // TODO
         }
 
         // Initialize inotify if required

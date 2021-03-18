@@ -27,6 +27,9 @@ namespace te
         /** Returns forward and up direction as a single vector. */
         inline std::array<float, 6> GetOrientation() const;
 
+        /** Updates internal doppler effect for this listener */
+        inline void UpdateDopplerFactor();
+
         /** Updates internal position of the listener. */
         inline void UpdatePosition();
 

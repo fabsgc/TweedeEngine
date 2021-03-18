@@ -4,6 +4,7 @@
 #include "Audio/TeAudioClipImportOptions.h"
 #include "Audio/TeAudioUtility.h"
 #include "TeOggVorbisDecoder.h"
+#include "TeOggVorbisEncoder.h"
 
 namespace te
 {
@@ -117,8 +118,7 @@ namespace te
             // Note: If the original source was in Ogg Vorbis we could just copy it here, but instead we decode to PCM and
             // then re-encode which is redundant. If later we decide to copy be aware that the engine encodes Ogg in a
             // specific quality, and the the import source might have lower or higher bitrate/quality.
-            // sampleStream = OggVorbisEncoder::PCMToOggVorbis(sampleStream->Data(), info, bufferSize);
-            // TODO
+            sampleStream = OggVorbisEncoder::PCMToOggVorbis(sampleStream->Data(), info, bufferSize);
         }
 
         AUDIO_CLIP_DESC clipDesc;

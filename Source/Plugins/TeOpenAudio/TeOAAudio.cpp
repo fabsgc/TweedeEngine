@@ -102,7 +102,12 @@ namespace te
     {
         auto worker = [this]() { UpdateStreaming(); };
 
-        // TODO
+        // If previous task still hasn't completed, just skip streaming this frame, queuing more tasks won't help
+        if (_streamingTask != nullptr && !_streamingTask->IsComplete())
+            return;
+
+        _streamingTask = Task::Create("AudioStream", worker);
+        gTaskScheduler().AddTask(_streamingTask);
 
         Audio::Update();
     }
@@ -408,6 +413,22 @@ namespace te
 
             source->Stream();
         }
+    }
+
+    void OAAudio::StartStreaming(OAAudioSource* source)
+    {
+        Lock lock(_mutex);
+
+        _streamingCommandQueue.push_back({ StreamingCommandType::Start, source });
+        _destroyedSources.erase(source);
+    }
+
+    void OAAudio::StopStreaming(OAAudioSource* source)
+    {
+        Lock lock(_mutex);
+
+        _streamingCommandQueue.push_back({ StreamingCommandType::Stop, source });
+        _destroyedSources.insert(source);
     }
 
     SPtr<AudioClip> OAAudio::CreateClip(const SPtr<DataStream>& samples, UINT32 streamSize, UINT32 numSamples,

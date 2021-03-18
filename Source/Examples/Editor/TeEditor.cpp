@@ -931,17 +931,22 @@ namespace te
         audioClipImportOptions->Is3D = true;
         _audioClip = EditorResManager::Instance().Load<AudioClip>("Data/Sounds/AirHorn.ogg", audioClipImportOptions);
 
-        _sceneAudioSO = SceneObject::Create("Audio");
-        _sceneAudioSO->SetParent(_sceneSO);
-        _sceneAudioSO->Move(Vector3(5.0f, 0.0f, 0.0f));
+        _sceneAudioSourceSO = SceneObject::Create("Audio Source");
+        _sceneAudioSourceSO->SetParent(_sceneSO);
+        _sceneAudioSourceSO->Move(Vector3(5.0f, 0.0f, 0.0f));
 
-        _audioListener = _sceneAudioSO->AddComponent<CAudioListener>();
-        _audioListener->Initialize();
+        _sceneAudioListenerSO = SceneObject::Create("Audio Listener");
+        _sceneAudioListenerSO->SetParent(_sceneSO);
+        _sceneAudioListenerSO->Move(Vector3(7.0f, 0.0f, 0.0f));
 
-        _audioSource = _sceneAudioSO->AddComponent<CAudioSource>();
+        _audioSource = _sceneAudioSourceSO->AddComponent<CAudioSource>();
         _audioSource->Initialize();
         _audioSource->SetIsLooping(true);
         _audioSource->SetClip(_audioClip);
+        _audioSource->Play();
+
+        _audioListener = _sceneAudioListenerSO->AddComponent<CAudioListener>();
+        _audioListener->Initialize();
         // ######################################################
 
         //EditorResManager::Instance().Add<Material>(_monkeyMaterial);
@@ -949,12 +954,6 @@ namespace te
         EditorResManager::Instance().Add<Material>(_knightMaterial);
         EditorResManager::Instance().Add<Shader>(gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque));
         EditorResManager::Instance().Add<Shader>(gBuiltinResources().GetBuiltinShader(BuiltinShader::Transparent));
-
-        /*auto worker = [&]() { TE_PRINT("Hello"); };
-        auto callback = [&]() { TE_PRINT("GoodBye"); };
-        auto task = Task::Create("Hello", worker, callback);
-
-        gTaskScheduler().AddTask(task);*/
 #endif
     }
 

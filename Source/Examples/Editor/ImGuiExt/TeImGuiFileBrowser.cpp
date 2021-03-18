@@ -732,7 +732,7 @@ namespace te
                 }
                 else if (strcmp(selectedExt, ".scene") == 0)
                 {
-                    // TODO
+                    // TODO .scene file handling
                 }
             }
             else if (dialog_mode == DialogMode::SAVE && strcmp(selectedExt, ".scene") == 0)

@@ -23,7 +23,7 @@ public:
 
     virtual void Update() override
     {
-        TE_PRINT("DEFAULT");
+        // TE_PRINT("DEFAULT");
     }
 };
 

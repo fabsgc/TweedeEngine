@@ -682,7 +682,7 @@ namespace te
         SPtr<Texture> ppLastFrame;
         postProcessNode->GetAndSwitch(inputs.View, ppOutput, ppLastFrame);*/
 
-        // TODO
+        // TODO temporal AA
     }
 
     void RCNodeTemporalAA::Clear()

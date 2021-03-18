@@ -59,6 +59,7 @@ namespace te
             alcMakeContextCurrent(context);
         }
 
+        UpdateDopplerFactor();
         UpdatePosition();
         UpdateOrientation(orientation);
         UpdateVelocity();
@@ -79,6 +80,12 @@ namespace te
             up.y,
             up.z
         } };
+    }
+
+    void OAAudioListener::UpdateDopplerFactor()
+    {
+        alDopplerFactor(1.0);
+        alDopplerVelocity(343.0f);
     }
 
     void OAAudioListener::UpdatePosition()

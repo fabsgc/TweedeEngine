@@ -2,8 +2,9 @@
 
 #include "TeOAPrerequisites.h"
 #include "Audio/TeAudio.h"
-#include <AL/alc.h>
 #include "TeOAAudioSource.h"
+#include "Threading/TeTaskScheduler.h"
+#include <AL/alc.h>
 
 namespace te
 {
@@ -115,6 +116,12 @@ namespace te
         /** Streams new data to audio sources that require it. */
         void UpdateStreaming();
 
+        /** Starts data streaming for the provided source. */
+        void StartStreaming(OAAudioSource* source);
+
+        /** Stops data streaming for the provided source. */
+        void StopStreaming(OAAudioSource* source);
+
     private:
         float _volume = 1.0f;
         bool _isPaused = false;
@@ -132,7 +139,7 @@ namespace te
         Vector<StreamingCommand> _streamingCommandQueue;
         UnorderedSet<OAAudioSource*> _streamingSources;
         UnorderedSet<OAAudioSource*> _destroyedSources;
-        // SPtr<Task> mStreamingTask; TODO
+        SPtr<Task> _streamingTask;
         mutable Mutex _mutex;
     };
 

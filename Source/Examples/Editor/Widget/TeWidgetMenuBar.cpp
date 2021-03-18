@@ -330,7 +330,7 @@ namespace te
             }
             else
             {
-                // TODO scene
+                // TODO scene loading
             }
 
             _settings.Load = false;
@@ -346,7 +346,7 @@ namespace te
     {
         if (gEditor().GetSettings().State == Editor::EditorState::Modified)
         {
-            // TODO quit
+            // TODO quit app
         }
 
         gCoreApplication().OnStopRequested();

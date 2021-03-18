@@ -222,17 +222,73 @@ namespace te
 
     void OAAudioSource::Play()
     { 
-        // TODO
+        if (_globallyPaused)
+            return;
+
+        if (RequiresStreaming())
+        {
+            Lock lock(_mutex);
+
+            if (!_isStreaming)
+            {
+                StartStreaming();
+                StreamUnlocked(); // Stream first block on this thread to ensure something can play right away
+            }
+        }
+
+        auto& contexts = gOAAudio()._getContexts();
+        UINT32 numContexts = (UINT32)contexts.size();
+        for (UINT32 i = 0; i < numContexts; i++)
+        {
+            if (contexts.size() > 1)
+                alcMakeContextCurrent(contexts[i]);
+
+            alSourcePlay(_sourceIDs[i]);
+
+            // Non-3D clips need to play only on a single source
+            // Note: I'm still creating sourcs objects (and possibly queuing streaming buffers) for these non-playing
+            // sources. It would be possible to optimize them out at cost of more complexity. At this time it doesn't feel
+            // worth it.
+            if (!Is3D())
+                break;
+        }
     }
 
     void OAAudioSource::Pause()
-    { 
-        // TODO
+    {
+        auto& contexts = gOAAudio()._getContexts();
+        UINT32 numContexts = (UINT32)contexts.size();
+        for (UINT32 i = 0; i < numContexts; i++)
+        {
+            if (contexts.size() > 1)
+                alcMakeContextCurrent(contexts[i]);
+
+            alSourcePause(_sourceIDs[i]);
+        }
     }
 
     void OAAudioSource::Stop()
     { 
-        // TODO
+        auto& contexts = gOAAudio()._getContexts();
+        UINT32 numContexts = (UINT32)contexts.size();
+        for (UINT32 i = 0; i < numContexts; i++)
+        {
+            if (contexts.size() > 1)
+                alcMakeContextCurrent(contexts[i]);
+
+            alSourceStop(_sourceIDs[i]);
+            alSourcef(_sourceIDs[i], AL_SEC_OFFSET, 0.0f);
+        }
+
+        {
+            Lock lock(_mutex);
+
+            _streamProcessedPosition = 0;
+            _streamQueuedPosition = 0;
+
+            if (_isStreaming)
+                StopStreaming();
+        }
     }
 
     AudioSourceState OAAudioSource::GetState() const
@@ -352,22 +408,139 @@ namespace te
 
     void OAAudioSource::Stream()
     {
-        // TODO
+        Lock lock(_mutex);
+
+        StreamUnlocked();
     }
 
     void OAAudioSource::StreamUnlocked()
     {
-        // TODO
+        AudioDataInfo info;
+        info.BitDepth = _audioClip->GetBitDepth();
+        info.NumChannels = _audioClip->GetNumChannels();
+        info.SampleRate = _audioClip->GetFrequency();
+        info.NumSamples = 0;
+
+        UINT32 totalNumSamples = _audioClip->GetNumSamples();
+
+        // Note: It is safe to access contexts here only because it is guaranteed by the OAAudio manager that it will always
+        // stop all streaming before changing contexts. Otherwise a mutex lock would be needed for every context access.
+        auto& contexts = gOAAudio()._getContexts();
+        UINT32 numContexts = (UINT32)contexts.size();
+        for (UINT32 i = 0; i < numContexts; i++)
+        {
+            if (contexts.size() > 1)
+                alcMakeContextCurrent(contexts[i]);
+
+            INT32 numProcessedBuffers = 0;
+            alGetSourcei(_sourceIDs[i], AL_BUFFERS_PROCESSED, &numProcessedBuffers);
+
+            for (INT32 j = numProcessedBuffers; j > 0; j--)
+            {
+                UINT32 buffer;
+                alSourceUnqueueBuffers(_sourceIDs[i], 1, &buffer);
+
+                INT32 bufferIdx = -1;
+                for (UINT32 k = 0; k < _streamBufferCount; k++)
+                {
+                    if (buffer == _streamBuffers[k])
+                    {
+                        bufferIdx = k;
+                        break;
+                    }
+                }
+
+                // Possibly some buffer from previous playback remained unqueued, in which case ignore it
+                if (bufferIdx == -1)
+                    continue;
+
+                _busyBuffers[bufferIdx] &= ~(1 << bufferIdx);
+
+                // Check if all sources are done with this buffer
+                if (_busyBuffers[bufferIdx] != 0)
+                    break;
+
+                INT32 bufferSize;
+                INT32 bufferBits;
+
+                alGetBufferi(buffer, AL_SIZE, &bufferSize);
+                alGetBufferi(buffer, AL_BITS, &bufferBits);
+
+                if (bufferBits == 0)
+                {
+                    TE_DEBUG("Error decoding stream.");
+                    return;
+                }
+                else
+                {
+                    UINT32 bytesPerSample = bufferBits / 8;
+                    _streamProcessedPosition += bufferSize / bytesPerSample;
+                }
+
+                if (_streamProcessedPosition == totalNumSamples) // Reached the end
+                {
+                    _streamProcessedPosition = 0;
+
+                    if (!_loop) // Variable used on both threads and not thread safe, but it doesn't matter
+                    {
+                        StopStreaming();
+                        return;
+                    }
+                }
+            }
+        }
+
+        for (UINT32 i = 0; i < _streamBufferCount; i++)
+        {
+            if (_busyBuffers[i] != 0)
+                continue;
+
+            if (FillBuffer(_streamBuffers[i], info, totalNumSamples))
+            {
+                for (auto& source : _sourceIDs)
+                    alSourceQueueBuffers(source, 1, &_streamBuffers[i]);
+
+                _busyBuffers[i] |= 1 << i;
+            }
+            else
+                break;
+        }
     }
 
     void OAAudioSource::StartStreaming()
     {
-        // TODO
+        assert(!_isStreaming);
+
+        alGenBuffers(_streamBufferCount, _streamBuffers);
+        gOAAudio().StartStreaming(this);
+
+        memset(&_busyBuffers, 0, sizeof(_busyBuffers));
+        _isStreaming = true;
     }
 
     void OAAudioSource::StopStreaming()
     {
-        // TODO
+        assert(_isStreaming);
+
+        _isStreaming = false;
+        gOAAudio().StopStreaming(this);
+
+        auto& contexts = gOAAudio()._getContexts();
+        UINT32 numContexts = (UINT32)contexts.size();
+        for (UINT32 i = 0; i < numContexts; i++)
+        {
+            if (contexts.size() > 1)
+                alcMakeContextCurrent(contexts[i]);
+
+            INT32 numQueuedBuffers;
+            alGetSourcei(_sourceIDs[i], AL_BUFFERS_QUEUED, &numQueuedBuffers);
+
+            UINT32 buffer;
+            for (INT32 j = 0; j < numQueuedBuffers; j++)
+                alSourceUnqueueBuffers(_sourceIDs[i], 1, &buffer);
+        }
+
+        alDeleteBuffers(_streamBufferCount, _streamBuffers);
     }
 
     void OAAudioSource::SetGlobalPause(bool pause)
@@ -419,8 +592,35 @@ namespace te
 
     bool OAAudioSource::FillBuffer(UINT32 buffer, AudioDataInfo& info, UINT32 maxNumSamples)
     {
-        // TODO
-        return false;
+        UINT32 numRemainingSamples = maxNumSamples - _streamQueuedPosition;
+        if (numRemainingSamples == 0) // Reached the end
+        {
+            if (_loop)
+            {
+                _streamQueuedPosition = 0;
+                numRemainingSamples = maxNumSamples;
+            }
+            else // If not looping, don't queue any more buffers, we're done
+                return false;
+        }
+
+        // Read audio data
+        UINT32 numSamples = std::min(numRemainingSamples, info.SampleRate * info.NumChannels); // 1 second of data
+        UINT32 sampleBufferSize = numSamples * (info.BitDepth / 8);
+
+        UINT8* samples = (UINT8*)te_allocate(sampleBufferSize);
+
+        OAAudioClip* audioClip = static_cast<OAAudioClip*>(_audioClip.Get());
+
+        audioClip->GetSamples(samples, _streamQueuedPosition, numSamples);
+        _streamQueuedPosition += numSamples;
+
+        info.NumSamples = numSamples;
+        gOAAudio()._writeToOpenALBuffer(buffer, samples, info);
+
+        te_delete(samples);
+
+        return true;
     }
 
     void OAAudioSource::ApplyClip()
