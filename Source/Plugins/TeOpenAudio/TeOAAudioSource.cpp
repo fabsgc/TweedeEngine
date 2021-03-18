@@ -168,7 +168,7 @@ namespace te
             if (!needsStreaming)
                 clipTime = time;
             else
-            {               
+            {
                 _streamProcessedPosition = (UINT32)(time * _audioClip->GetFrequency() * _audioClip->GetNumChannels());
                 _streamQueuedPosition = _streamProcessedPosition;
                 clipTime = 0.0f;
@@ -221,8 +221,11 @@ namespace te
     }
 
     void OAAudioSource::Play()
-    { 
+    {
         if (_globallyPaused)
+            return;
+
+        if(GetState() == AudioSourceState::Playing)
             return;
 
         if (RequiresStreaming())
