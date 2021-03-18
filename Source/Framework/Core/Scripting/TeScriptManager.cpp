@@ -5,6 +5,7 @@
 #include "Utility/TeFileSystem.h"
 #include "TeScript.h"
 #include "TeNativeScript.h"
+#include "TeCoreApplication.h"
 
 #include <filesystem>
 
@@ -15,6 +16,10 @@ namespace te
     TE_MODULE_STATIC_MEMBER(ScriptManager)
 
     const String ScriptManager::LIBRARIES_PATH = "Data/Scripts/";
+
+    ScriptManager::ScriptManager()
+        : _paused(false)
+    { }
 
     void ScriptManager::OnStartUp()
     {
@@ -50,6 +55,10 @@ namespace te
 
     void ScriptManager::PreUpdate()
     {
+        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Game);
+        if (IsPaused() || !isRunning)
+            return;
+
         for (auto& script : _scripts)
         {
             script->PreUpdate();
@@ -57,7 +66,11 @@ namespace te
     }
 
     void ScriptManager::PostUpdate()
-    { 
+    {
+        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Game);
+        if (IsPaused() || !isRunning)
+            return;
+
         for (auto& script : _scripts)
         {
             script->PostUpdate();
@@ -66,6 +79,10 @@ namespace te
 
     void ScriptManager::PostRender()
     {
+        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Game);
+        if (IsPaused() || !isRunning)
+            return;
+
         for (auto& script : _scripts)
         {
             script->PostRender();
@@ -75,11 +92,6 @@ namespace te
     void ScriptManager::Update()
     {
         _folderMonitor.Update();
-
-        for (auto& script : _scripts)
-        {
-            script->Update();
-        }
     }
 
     void ScriptManager::RegisterScript(Script* script)
@@ -92,7 +104,7 @@ namespace te
     {
         auto iter = std::find(_scripts.begin(), _scripts.end(), script);
 
-        if(iter != _scripts.end())
+        if (iter != _scripts.end())
             _scripts.erase(iter);
     }
 
@@ -144,7 +156,10 @@ namespace te
         {
             DynLib* library = gDynLibManager().Load(identifier.Name);
             if (library != nullptr)
+            {
+                RecursiveLock lock(_mutex);
                 _scriptLibraries[identifier] = library;
+            }
 
             return library;
         }
@@ -154,6 +169,7 @@ namespace te
 
     void ScriptManager::UnloadScriptLibrary(const ScriptIdentifier& identifier, Vector<UnloadedScript>* unloadedScripts)
     {
+        RecursiveLock lock(_mutex);
         auto iter = _scriptLibraries.find(identifier);
         if (iter != _scriptLibraries.end())
         {
@@ -162,17 +178,19 @@ namespace te
             {
                 auto nativeScript = script->GetNativeScript();
 
-                if (nativeScript && unloadedScripts)
-                {
-                    UnloadedScript unloadedScript;
-                    unloadedScript.ScriptToReload = script;
-                    unloadedScript.PreviousSceneObject = nativeScript->GetParentSceneObject();
-
-                    (*unloadedScripts).push_back(unloadedScript);
-                }
-
                 if (nativeScript && identifier.Name == nativeScript->GetLibraryName())
+                {
+                    if (unloadedScripts)
+                    {
+                        UnloadedScript unloadedScript;
+                        unloadedScript.ScriptToReload = script;
+                        unloadedScript.PreviousSceneObject = nativeScript->GetParentSceneObject();
+
+                        (*unloadedScripts).push_back(unloadedScript);
+                    }
+
                     script->SetNativeScript(String(), HSceneObject());
+                }
             }
 
             gDynLibManager().Unload(iter->second);
@@ -183,12 +201,16 @@ namespace te
     DynLib* ScriptManager::GetScriptLibrary(const ScriptIdentifier& identifier)
     {
         DynLib* library = nullptr;
-        auto iter = _scriptLibraries.find(identifier);
 
-        if (iter == _scriptLibraries.end())
-            library = LoadScriptLibrary(identifier);
-        else
-            library = _scriptLibraries[identifier];
+        {
+            RecursiveLock lock(_mutex);
+            auto iter = _scriptLibraries.find(identifier);
+
+            if (iter == _scriptLibraries.end())
+                library = LoadScriptLibrary(identifier);
+            else
+                library = _scriptLibraries[identifier];
+        }
 
         return library;
     }
@@ -200,6 +222,7 @@ namespace te
             script->SetNativeScript(String(), HSceneObject());
         }
 
+        RecursiveLock lock(_mutex);
         for (auto it = _scriptLibraries.begin(); it != _scriptLibraries.end();)
         {
             it->second->Unload();
@@ -229,18 +252,31 @@ namespace te
 
     void ScriptManager::OnMonitorFileModified(const String& path)
     {
+        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Game);
+
         std::filesystem::path filePath(path);
+        String fileName;
+        String fileExtension;
+        Vector<UnloadedScript> unloadedScripts;
+
         if (filePath.has_filename())
         {
-            String fileName = filePath.filename().string();
-            String fileExtension = filePath.extension().string();
+            SetPaused(true);
+            fileName = filePath.filename().string();
+            fileExtension = filePath.extension().string();
 
-            if (fileExtension == ".cpp")
+            if(fileExtension == ".cpp")
             {
                 fileName = ReplaceAll(fileName, fileExtension, "");
-                Vector<UnloadedScript> unloadedScripts;
-                UnloadScriptLibrary(fileName, &unloadedScripts);
-                if (CompileLibrary(fileName))
+                this->UnloadScriptLibrary(fileName, &unloadedScripts);
+            }
+        }
+
+        auto FileModifiedTask = [this, filePath, fileName, fileExtension, unloadedScripts]() {
+
+            if (filePath.has_filename() && fileExtension == ".cpp")
+            {
+                if (this->CompileLibrary(fileName))
                 {
                     for (auto& unloadedScript : unloadedScripts)
                     {
@@ -249,7 +285,17 @@ namespace te
                     }
                 }
             }
-        }
+        };
+
+        auto FileModifiedCallback = [this]() {
+            SetPaused(false);
+        };
+
+        FileModifiedTask();
+        FileModifiedCallback();
+
+        //SPtr<Task> task = Task::Create("OnMonitorFileModified", FileModifiedTask, FileModifiedCallback);
+        //gTaskScheduler().AddTask(task);
     }
 
     void ScriptManager::OnMonitorFileAdded(const String& path)
@@ -273,38 +319,60 @@ namespace te
         }
     }
 
-    void ScriptManager::OnMonitorFileRenamed(const String& from, const String& to) 
+    void ScriptManager::OnMonitorFileRenamed(const String& from, const String& to)
     {
-        std::filesystem::path oldFilePath(from);
-        std::filesystem::path newFilePath(to);
+        auto FileRenamedTask = [this, from, to]() {
+            RecursiveLock lock(this->_mutex);
+            std::filesystem::path oldFilePath(from);
+            std::filesystem::path newFilePath(to);
 
-        if (oldFilePath.has_filename() && newFilePath.has_filename())
-        {
-            String oldFileName = oldFilePath.filename().string();
-            String newFileName = newFilePath.filename().string();
-            String oldFileExtension = oldFilePath.extension().string();
-            String newFileExtension = newFilePath.extension().string();
+            SetPaused(true);
 
-            if (oldFileExtension == ".cpp")
+            if (oldFilePath.has_filename() && newFilePath.has_filename())
             {
-                oldFileName = ReplaceAll(oldFileName, oldFileExtension, "");
+                String oldFileName = oldFilePath.filename().string();
+                String newFileName = newFilePath.filename().string();
+                String oldFileExtension = oldFilePath.extension().string();
+                String newFileExtension = newFilePath.extension().string();
 
-                Vector<UnloadedScript> unloadedScripts;
-                UnloadScriptLibrary(oldFileName, &unloadedScripts);
-                if (unloadedScripts.size() > 0 && CompileLibrary(newFileName))
+                if (oldFileExtension == ".cpp")
                 {
-                    if (newFileExtension == ".cpp")
+                    oldFileName = ReplaceAll(oldFileName, oldFileExtension, "");
+
+                    Vector<UnloadedScript> unloadedScripts;
+                    UnloadScriptLibrary(oldFileName, &unloadedScripts);
+                    if (unloadedScripts.size() > 0 && CompileLibrary(newFileName))
                     {
-                        newFileName = ReplaceAll(newFileName, newFileExtension, "");
-                        for (auto& unloadedScript : unloadedScripts)
+                        if (newFileExtension == ".cpp")
                         {
-                            unloadedScript.ScriptToReload->SetNativeScript(
-                                newFileName, unloadedScript.PreviousSceneObject, newFilePath.parent_path().generic_string());
+                            newFileName = ReplaceAll(newFileName, newFileExtension, "");
+                            for (auto& unloadedScript : unloadedScripts)
+                            {
+                                unloadedScript.ScriptToReload->SetNativeScript(
+                                    newFileName, unloadedScript.PreviousSceneObject, newFilePath.parent_path().generic_string());
+                            }
                         }
                     }
                 }
             }
-        }
+
+            SetPaused(false);
+        };
+
+        FileRenamedTask();
+
+        //SPtr<Task> task = Task::Create("OnMonitorFileRenamed", FileRenamedTask);
+        //gTaskScheduler().AddTask(task);
+    }
+
+    void ScriptManager::SetPaused(bool paused)
+    {
+        _paused = paused;
+    }
+
+    void ScriptManager::TogglePaused()
+    {
+        _paused = !_paused;
     }
 
     ScriptManager& gScriptManager()

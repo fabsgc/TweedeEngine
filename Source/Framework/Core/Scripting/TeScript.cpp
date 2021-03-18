@@ -4,6 +4,8 @@
 #include "TeNativeScript.h"
 #include "Scene/TeSceneManager.h"
 
+using namespace std::placeholders;
+
 namespace te
 {
     Script::Script()
@@ -52,27 +54,45 @@ namespace te
 
     void Script::SetNativeScript(const ScriptIdentifier& identifier, const HSceneObject& sceneObject)
     {
-        OnShutdown();
+        auto SetScriptTask = [this, identifier, sceneObject]() {
+            Lock lock(this->_mutex);
+            
+            OnShutdown();
 
-        if(!identifier.Name.empty())
-        {
-            NativeScript* nativeScript = gScriptManager().CreateNativeScript(identifier);
-
-            if (nativeScript)
+            if(!identifier.Name.empty())
             {
-                _nativeScript = nativeScript;
-                _nativeScript->SetLibraryName(identifier.Name);
-                _nativeScript->SetLibraryPath(identifier.AbsolutePath);
-                _nativeScript->SetParentSceneObject(sceneObject);
-            }
-        }
-        else if (_nativeScript)
-        {
-            gScriptManager().DeleteNativeScript(_nativeScript);
-            _nativeScript = nullptr;
-        }
+                NativeScript* nativeScript = gScriptManager().CreateNativeScript(identifier);
 
-        OnStartup();
+                if (nativeScript)
+                {
+                    this->_nativeScript = nativeScript;
+                    this->_nativeScript->SetLibraryName(identifier.Name);
+                    this->_nativeScript->SetLibraryPath(identifier.AbsolutePath);
+                    this->_nativeScript->SetParentSceneObject(sceneObject);
+                }
+            }
+            else if (this->_nativeScript)
+            {
+                gScriptManager().DeleteNativeScript(this->_nativeScript);
+                this->_nativeScript = nullptr;
+            }
+        };
+
+        auto SetScriptCallback = [this]() {
+            this->OnStartup();
+        };
+
+
+        if (identifier.Name != "")
+        {
+            SPtr<Task> task = Task::Create("SetNativeScript", SetScriptTask, SetScriptCallback);
+            gTaskScheduler().AddTask(task);
+        }
+        else
+        {
+            SetScriptTask();
+            SetScriptCallback();
+        }
     }
 
     void Script::OnStartup()

@@ -90,7 +90,13 @@ namespace te
         /**
          * Because a script lives inside the scene graph we want to store an handle to its parent SceneObject
          */
-        void SetParentSceneObject(const HSceneObject& sceneObject) { _parentSO = sceneObject.GetNewHandleFromExisting(); }
+        void SetParentSceneObject(const HSceneObject& sceneObject) 
+        { 
+            if (!sceneObject.Empty())
+                _parentSO = sceneObject.GetNewHandleFromExisting();
+            else
+                _parentSO = HSceneObject();
+        }
 
         /**
          * @copydoc SetParentSceneObject

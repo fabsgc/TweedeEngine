@@ -51,6 +51,7 @@
 #include "Audio/TeAudioClipImportOptions.h"
 #include "Material/TeMaterial.h"
 #include "Material/TeShader.h"
+#include "Threading/TeTaskScheduler.h"
 
 
 #ifndef GImGui
@@ -946,6 +947,12 @@ namespace te
         EditorResManager::Instance().Add<Material>(_knightMaterial);
         EditorResManager::Instance().Add<Shader>(gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque));
         EditorResManager::Instance().Add<Shader>(gBuiltinResources().GetBuiltinShader(BuiltinShader::Transparent));
+
+        /*auto worker = [&]() { TE_PRINT("Hello"); };
+        auto callback = [&]() { TE_PRINT("GoodBye"); };
+        auto task = Task::Create("Hello", worker, callback);
+
+        gTaskScheduler().AddTask(task);*/
 #endif
     }
 

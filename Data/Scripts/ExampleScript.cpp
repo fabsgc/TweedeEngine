@@ -22,7 +22,9 @@ public:
     { }
 
     virtual void Update() override
-    { }
+    {
+        TE_PRINT("EXAMPLE");
+    }
 };
 
 extern "C" TE_SCRIPT_EXPORT NativeScript* LoadScript()

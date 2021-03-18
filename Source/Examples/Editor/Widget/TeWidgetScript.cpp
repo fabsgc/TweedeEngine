@@ -29,6 +29,16 @@ namespace te
 
     void WidgetScript::Update()
     {
+        const auto& scripts = gScriptManager().GetScripts();
+        for (const auto& script : scripts)
+        {
+            String name = script->GetNativeScriptName();
+            if (name != "")
+            {
+                _existingScripts[name] = script->GetNativeScriptPath();
+            }
+        }
+
         ShowToolbar();
         ShowEditor();
 
@@ -40,9 +50,7 @@ namespace te
     }
 
     void WidgetScript::UpdateBackground()
-    {
-        Save();
-    }
+    { }
 
     void WidgetScript::PutFocus()
     {
@@ -62,7 +70,7 @@ namespace te
                 if (name != _currentScriptName) // Update current script name
                 {
                     _currentScriptName = name;
-                    _currentScriptPath = path;
+                    _existingScripts[name] = path;
 
                     UpdateEditorContent(); // If current script name different from previous, we need to load its content
                 }
@@ -74,12 +82,16 @@ namespace te
     {
         if (!_currentScriptName.empty() && (_needsSave || force))
         {
-            String path = _currentScriptPath + _currentScriptName + ".cpp";
+            String path = _existingScripts[_currentScriptName] + _currentScriptName + ".cpp";
             FileStream file(path, FileStream::AccessMode::WRITE);
-            file.Write((void*)(_editorContent.c_str()), _editorContent.size());
-            file.Close();
 
-            _needsSave = false;
+            if (!file.Fail())
+            {
+                file.Write((void*)(_editorContent.c_str()), _editorContent.size());
+                file.Close();
+
+                _needsSave = false;
+            }
         }
     }
 
@@ -93,7 +105,7 @@ namespace te
             }
             else
             {
-                String path = _currentScriptPath + _currentScriptName + ".cpp";
+                String path = _existingScripts[_currentScriptName] + _currentScriptName + ".cpp";
                 gScriptManager().OnMonitorFileModified(path);
             }
         }
@@ -103,11 +115,14 @@ namespace te
     {
         if (_currentScriptName != "")
         {
-            FileStream file(_currentScriptPath + _currentScriptName + ".cpp");
-            _editorContent = file.GetAsString();
-            _editor->SetText(_editorContent);
-            _needsSave = false;
-            file.Close();
+            FileStream file(_existingScripts[_currentScriptName] + _currentScriptName + ".cpp");
+            if (!file.Fail())
+            {
+                _editorContent = file.GetAsString();
+                _editor->SetText(_editorContent);
+                _needsSave = false;
+                file.Close();
+            }
         }
         else
         {
@@ -146,48 +161,24 @@ namespace te
 
         // Save current script
         ShowButton(ICON_FA_SAVE, (_currentScriptName != ""), [this]() {
-            Save(true);
+            Save();
         });
 
         ImGui::SameLine();
 
-        Vector<Script*> listedScripts;
-        ImGuiExt::ComboOptions<Script*> scriptsOptions;
+        ImGuiExt::ComboOptions<String> scriptsOptions;
         const auto& scripts = gScriptManager().GetScripts();
-        Script* curScript = nullptr;
 
-        for (const auto& script : scripts)
+        for (const auto& script : _existingScripts)
         {
-            if (script->GetNativeScriptName() == _currentScriptName)
-                curScript = script;
-
-            if (std::find(listedScripts.begin(), listedScripts.end(), script) == listedScripts.end())
-            {
-                listedScripts.push_back(script);
-                if(script != nullptr)
-                    scriptsOptions.AddOption(script, script->GetNativeScriptName());
-            }
+            scriptsOptions.AddOption(script.first, script.first);
         }
 
-        scriptsOptions.AddOption(nullptr, ICON_FA_TIMES_CIRCLE " No script");
+        scriptsOptions.AddOption("", ICON_FA_TIMES_CIRCLE " No script");
 
-        if (!curScript)
+        if (ImGuiExt::RenderOptionCombo<String>(&_currentScriptName, "##scripts_editor_options", "Current script", scriptsOptions, 200.0f))
         {
-            _currentScriptName = "";
-            _currentScriptPath = "";
-
             UpdateEditorContent();
-        }
-        
-        if (ImGuiExt::RenderOptionCombo<Script*>(&curScript, "##scripts_editor_options", "Current script", scriptsOptions, 200.0f))
-        {
-            if (curScript != nullptr)
-            {
-                _currentScriptName = curScript->GetNativeScriptName();
-                _currentScriptPath = curScript->GetNativeScriptPath();
-
-                UpdateEditorContent();
-            }
         }
 
         ImGui::EndChild();

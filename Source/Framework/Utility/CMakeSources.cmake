@@ -132,8 +132,10 @@ set(TE_UTILITY_SRC_UTILITY
 
 set(TE_UTILITY_INC_THREADING
     "Utility/Threading/TeThreading.h"
+    "Utility/Threading/TeTaskScheduler.h"
 )
 set(TE_UTILITY_SRC_THREADING
+    "Utility/Threading/TeTaskScheduler.cpp"
 )
 
 set(TE_UTILITY_INC_WIN32

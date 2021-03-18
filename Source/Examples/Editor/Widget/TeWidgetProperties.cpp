@@ -1194,7 +1194,7 @@ namespace te
                 SPtr<CScript> script = std::static_pointer_cast<CScript>(_selections.ClickedComponent);
                 script->SetNativeScript(fileName, _fileBrowser.Data.SelectedPath);
             }
-            
+
             _loadScript = false;
         }
         else

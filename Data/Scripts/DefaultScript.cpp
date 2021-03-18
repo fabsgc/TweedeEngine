@@ -9,7 +9,7 @@ class DefaultScript : public NativeScript
 {
 public:
     DefaultScript()
-        : NativeScript()f
+        : NativeScript()
     { }
 
     ~DefaultScript()
@@ -22,7 +22,9 @@ public:
     { }
 
     virtual void Update() override
-    { }
+    {
+        TE_PRINT("DEFAULT");
+    }
 };
 
 extern "C" TE_SCRIPT_EXPORT NativeScript* LoadScript()
@@ -34,8 +36,3 @@ extern "C" TE_SCRIPT_EXPORT void UnloadScript(NativeScript* script)
 {
     if(script) te_delete(script);
 }
-
-
-
-
-

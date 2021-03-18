@@ -4,6 +4,7 @@
 #include "Utility/TeTime.h"
 #include "Utility/TeDynLibManager.h"
 #include "Utility/TeDynLib.h"
+#include "Threading/TeTaskScheduler.h"
 
 #include "Manager/TePluginManager.h"
 #include "Manager/TeRenderAPIManager.h"
@@ -55,6 +56,7 @@ namespace te
         Platform::StartUp();
         Console::StartUp();
         Time::StartUp();
+        TaskScheduler::StartUp();
         DynLibManager::StartUp();
         CoreObjectManager::StartUp();
         RenderAPIManager::StartUp();
@@ -110,6 +112,7 @@ namespace te
         _window = nullptr;
         _renderer = nullptr;
 
+        TaskScheduler::ShutDown();
         BuiltinResources::ShutDown();
         RendererMaterialManager::ShutDown();
         Importer::ShutDown();

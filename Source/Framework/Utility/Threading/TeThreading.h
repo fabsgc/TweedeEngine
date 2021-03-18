@@ -10,7 +10,7 @@
 namespace te
 {
 
-    /** Returns the number of logical CPU cores. */
+/** Returns the number of logical CPU cores. */
 #define TE_THREAD_HARDWARE_CONCURRENCY std::thread::hardware_concurrency()
 
 /** Returns the ThreadId of the current thread. */

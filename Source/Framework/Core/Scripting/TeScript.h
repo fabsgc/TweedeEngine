@@ -5,6 +5,7 @@
 #include "CoreUtility/TeCoreObject.h"
 #include "TeNativeScript.h"
 #include "Scene/TeSceneObject.h"
+#include "Threading/TeTaskScheduler.h"
 
 namespace te
 {
@@ -79,5 +80,6 @@ namespace te
     protected:
         NativeScript* _nativeScript;
         ScriptState _state;
+        Mutex _mutex;
     };
 }

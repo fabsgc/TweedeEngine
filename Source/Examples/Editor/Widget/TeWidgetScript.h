@@ -8,6 +8,7 @@ namespace te
 {
     class ImGuiTextEditor;
 
+
     class WidgetScript : public Widget
     {
     public:
@@ -29,8 +30,8 @@ namespace te
     private:
         Editor::SelectionData& _selections;
         SPtr<ImGuiTextEditor> _editor;
+        Map<String, String> _existingScripts; //Name - Path
         String _currentScriptName;
-        String _currentScriptPath;
         String _editorContent;
         bool _needsSave;
     };

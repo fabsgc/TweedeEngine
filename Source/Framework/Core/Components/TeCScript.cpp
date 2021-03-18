@@ -1,6 +1,8 @@
 #include "Components/TeCScript.h"
 #include "Scene/TeSceneManager.h"
 #include "Scripting/TeScript.h"
+#include "Scripting/TeScriptManager.h"
+#include "TeCoreApplication.h"
 
 namespace te
 {
@@ -60,6 +62,10 @@ namespace te
 
     void CScript::Update()
     {
+        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Game);
+        if (gScriptManager().IsPaused() || !isRunning)
+            return;
+
         _internal->Update();
     }
 

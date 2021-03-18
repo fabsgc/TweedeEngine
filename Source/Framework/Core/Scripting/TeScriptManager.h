@@ -68,7 +68,7 @@ namespace te
     class TE_CORE_EXPORT ScriptManager : public Module<ScriptManager>
     {
     public:
-        ScriptManager() = default;
+        ScriptManager();
         ~ScriptManager() = default;
 
         TE_MODULE_STATIC_HEADER_MEMBER(ScriptManager)
@@ -99,6 +99,12 @@ namespace te
 
         /** Returns all currently instanciated scripts */
         const Vector<Script*>& GetScripts() const { return _scripts; }
+
+        void TogglePaused();
+
+        void SetPaused(bool paused);
+
+        bool IsPaused() const { return _paused; };
 
     public: // #### EVENTS FOR SCRIPTS
         /** Called once per frame before scene update. */
@@ -157,6 +163,8 @@ namespace te
         Map<ScriptIdentifier, UINT64> _lastBuildTimes;
         Vector<Script*> _scripts;
         FolderMonitor _folderMonitor;
+        RecursiveMutex _mutex;
+        bool _paused;
     };
 
     /** Provides easy access to the ScriptManager. */

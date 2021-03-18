@@ -11,7 +11,7 @@
 namespace te
 {
     DynLib::DynLib(const String& name)
-        : _name(std::move(name))
+        : _name(name)
     {
         Load();
     }
