@@ -126,8 +126,6 @@ namespace te
             if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DockingEnable)
                 EndGui();
         }
-
-        _audioSource->Play();
     }
 
     void Editor::PostRender()
@@ -945,7 +943,7 @@ namespace te
         _audioSource->Initialize();
         _audioSource->SetIsLooping(true);
         _audioSource->SetClip(_audioClip);
-        
+        _audioSource->Play();
 
         _audioListener = _sceneAudioListenerSO->AddComponent<CAudioListener>();
         _audioListener->Initialize();

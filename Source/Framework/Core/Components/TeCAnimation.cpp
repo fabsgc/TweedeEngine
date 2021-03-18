@@ -183,6 +183,9 @@ namespace te
     {
         if (!SO()->GetActive())
             return;
+
+        if ((flags & (TCF_Transform)) != 0)
+            _updateBounds();
     }
 
     void CAnimation::OnDestroyed()
@@ -342,6 +345,18 @@ namespace te
             return false;
 
         return _internal->GetGenericCurveValue(curveIdx, value);
+    }
+
+    void CAnimation::_updateBounds()
+    {
+        if (_internal != nullptr)
+        {
+            AABox bounds;
+            if (_animatedRenderable != nullptr)
+                bounds = _animatedRenderable->GetBounds().GetBox();
+
+            _internal->SetBounds(bounds);
+        }
     }
 
     void CAnimation::MapCurveToSceneObject(const String& curve, const HSceneObject& so)

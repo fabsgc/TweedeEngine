@@ -156,6 +156,9 @@ namespace te
         /** @copydoc Animation::GetGenericCurveValue */
         bool _getGenericCurveValue(UINT32 curveIdx, float& value);
 
+        /** Re-applies the bounds to the internal animation object, and the relevant renderable object if one exists. */
+        void _updateBounds();
+
         /**
          * Preview mode allows certain operations on the component to be allowed (like basic animation playback),
          * even when the component is not actively running. This is intended for use primarily by the animation editor.
