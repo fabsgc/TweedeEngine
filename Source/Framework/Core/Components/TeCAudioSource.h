@@ -106,6 +106,9 @@ namespace te
         /** @copydoc AudioSource::GetTransform */
         const Transform& GetTransform() { return _internal->GetTransform(); }
 
+        /** @copydoc SceneActor::GetActive */
+        bool GetActive() const { return _internal != nullptr; }
+
     protected:
         friend class SceneObject;
 

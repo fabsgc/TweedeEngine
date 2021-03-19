@@ -90,7 +90,7 @@ namespace te
             case TypeID_Core::TID_CAudioListener:
             {
                 HAudioListener audio = static_object_cast<CAudioListener>(component);
-                if (EditorUtils::DoFrustumCulling(camera, audio))
+                if (audio->GetActive() && EditorUtils::DoFrustumCulling(camera, audio))
                 {
                     PerHudInstanceData element;
                     const Transform& tfrm = audio->GetTransform();
@@ -110,7 +110,7 @@ namespace te
             case TypeID_Core::TID_CAudioSource:
             {
                 HAudioSource audio = static_object_cast<CAudioSource>(component);
-                if (EditorUtils::DoFrustumCulling(camera, audio))
+                if (audio->GetActive() && EditorUtils::DoFrustumCulling(camera, audio))
                 {
                     PerHudInstanceData element;
                     const Transform& tfrm = audio->GetTransform();
