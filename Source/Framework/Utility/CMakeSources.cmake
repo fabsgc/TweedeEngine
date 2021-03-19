@@ -139,6 +139,7 @@ set(TE_UTILITY_SRC_THREADING
 )
 
 set(TE_UTILITY_INC_WIN32
+    "Utility/Private/Win32/TeWin32PlatformUtility.h"
 )
 set(TE_UTILITY_SRC_WIN32
     "Utility/Private/Win32/TeWin32PlatformUtility.cpp"

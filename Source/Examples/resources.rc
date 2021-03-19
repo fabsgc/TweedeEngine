@@ -1,0 +1,6 @@
+#ifndef _resources_rc
+#define _resources_rc
+
+MAINICON ICON "../../DATA/Icons/frameworkIcon.ico"
+
+#endif // _resources_rc 

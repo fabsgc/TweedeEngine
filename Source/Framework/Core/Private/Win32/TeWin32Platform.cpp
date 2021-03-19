@@ -8,7 +8,10 @@
 #include "Utility/TePlatformUtility.h"
 #include "Utility/TeTime.h"
 #include "Image/TePixelData.h"
+#include "Image/TeColor.h"
 #include <shellapi.h>
+#include "Utility/TePlatformUtility.h"
+#include "Private/Win32/TeWin32PlatformUtility.h"
 
 #ifndef WM_DPICHANGED
 #   define WM_DPICHANGED 0x02E0 // From Windows SDK 8.1+ headers
@@ -210,7 +213,31 @@ namespace te
 
     void Platform::SetIcon(const PixelData& pixelData)
     {
-        // TODO
+        Vector<Color> pixels = pixelData.GetColors();
+        UINT32 width = pixelData.GetWidth();
+        UINT32 height = pixelData.GetHeight();
+
+        HBITMAP hBitmap = Win32PlatformUtility::CreateBitmap((Color*)pixels.data(), width, height, false);
+        HBITMAP hMonoBitmap = CreateBitmap(width, height, 1, 1, nullptr);
+
+        ICONINFO iconinfo = { 0 };
+        iconinfo.fIcon = TRUE;
+        iconinfo.xHotspot = 0;
+        iconinfo.yHotspot = 0;
+        iconinfo.hbmMask = hMonoBitmap;
+        iconinfo.hbmColor = hBitmap;
+
+        HICON icon = CreateIconIndirect(&iconinfo);
+
+        DeleteObject(hBitmap);
+        DeleteObject(hMonoBitmap);
+
+        // Make sure we notify the message loop to perform the actual cursor update
+        SPtr<RenderWindow> primaryWindow = gCoreApplication().GetWindow();
+        UINT64 hwnd;
+        primaryWindow->GetCustomAttribute("WINDOW", &hwnd);
+
+        PostMessage((HWND)hwnd, WM_SETICON, WPARAM(ICON_BIG), (LPARAM)icon);
     }
 
     void Platform::HideCursor()

@@ -84,11 +84,15 @@ namespace te
         /**	Returns one of the builtin sampler types. */
         SPtr<SamplerState> GetBuiltinSampler(BuiltinSampler type);
 
+        /** Returns default framework icon */
+        const PixelData& GetFrameworkIcon();
+
     public:
         static constexpr const char* MATERIALS_FOLDER = "Data/Materials/";
         static constexpr const char* MESHES_FOLDER = "Data/Meshes/";
         static constexpr const char* SHADERS_FOLDER = "Data/Shaders/";
         static constexpr const char* TEXTURES_FOLDER = "Data/Textures/";
+        static constexpr const char* ICONS_FOLDER = "Data/Icons/";
 
         struct PerInstanceData
         {
@@ -147,6 +151,8 @@ namespace te
         void InitShaderHudSelection();
 
         void InitDefaultMaterial();
+
+        void InitFrameworkIcon();
 
     private:
         HShader _shaderOpaque;
@@ -220,6 +226,8 @@ namespace te
         SAMPLER_STATE_DESC _trilinearSamplerStateDesc;
 
         HMaterial _defaultMaterial;
+
+        SPtr<PixelData> _frameworkIcon;
     };
 
     /**	Provides easy access to BuiltinResources. */

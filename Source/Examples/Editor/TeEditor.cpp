@@ -53,7 +53,6 @@
 #include "Material/TeShader.h"
 #include "Threading/TeTaskScheduler.h"
 
-
 #ifndef GImGui
 ImGuiContext* GImGui = NULL;
 #endif

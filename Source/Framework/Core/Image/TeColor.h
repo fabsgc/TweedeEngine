@@ -6,6 +6,9 @@
 namespace te
 {
     typedef UINT32 RGBA;
+    typedef UINT32 BGRA;
+    typedef UINT32 RBGA;
+    typedef UINT32 GBRA;
 
     /**
      * Color represented as 4 components, each being a floating point value ranging from 0 to 1. Color components are
@@ -49,6 +52,16 @@ namespace te
 
         /** Returns the color as a 32-bit value in RGBA order. */
         RGBA GetAsRGBA() const;
+
+        /** Returns the color as a 32-bit value in BGRA order. */
+        BGRA GetAsBGRA() const;
+
+        /** Returns the color as a 32-bit value in RBGA order. */
+        RBGA GetAsRBGA() const;
+
+        /** Returns the color as a 32-bit value in GBRA order. */
+        GBRA GetAsGBRA() const;
+
 
         /** Returns the color as a 4*32-bit float vector in RGBA order. */
         Vector4 GetAsVector4() const;

@@ -92,15 +92,18 @@ namespace te
         _perFrameData = te_shared_ptr_new<PerFrameData>();
 
         Importer::StartUp();
-        AudioManager::StartUp(_startUpDesc.Audio);
-        AnimationManager::StartUp();
-        BuiltinResources::StartUp();
-        RendererMaterialManager::StartUp();
 
         for (auto& importerName : _startUpDesc.Importers)
         {
             LoadPlugin(importerName);
         }
+
+        AudioManager::StartUp(_startUpDesc.Audio);
+        AnimationManager::StartUp();
+        BuiltinResources::StartUp();
+        RendererMaterialManager::StartUp();
+
+        Platform::SetIcon(gBuiltinResources().GetFrameworkIcon());
 
         PostStartUp();
     }

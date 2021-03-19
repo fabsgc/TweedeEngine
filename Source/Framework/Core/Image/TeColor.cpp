@@ -120,6 +120,87 @@ namespace te
         return val32;
     }
 
+    BGRA Color::GetAsBGRA() const
+    {
+        UINT8 val8;
+        UINT32 val32 = 0;
+
+        // Convert to 32bit pattern
+        // (ARGB = 8888)
+
+        // Alpha
+        val8 = static_cast<UINT8>(a * 255);
+        val32 = val8 << 24;
+
+        // Red
+        val8 = static_cast<UINT8>(r * 255);
+        val32 += val8 << 16;
+
+        // Green
+        val8 = static_cast<UINT8>(g * 255);
+        val32 += val8 << 8;
+
+        // Blue
+        val8 = static_cast<UINT8>(b * 255);
+        val32 += val8;
+
+        return val32;
+    }
+
+    RBGA Color::GetAsRBGA() const
+    {
+        UINT8 val8;
+        UINT32 val32 = 0;
+
+        // Convert to 32bit pattern
+        // (ABRG = 8888)
+
+        // Alpha
+        val8 = static_cast<UINT8>(a * 255);
+        val32 = val8 << 24;
+
+        // Blue
+        val8 = static_cast<UINT8>(g * 255);
+        val32 += val8 << 16;
+
+        // Green
+        val8 = static_cast<UINT8>(b * 255);
+        val32 += val8 << 8;
+
+        // Red
+        val8 = static_cast<UINT8>(r * 255);
+        val32 += val8;
+
+        return val32;
+    }
+
+    GBRA Color::GetAsGBRA() const
+    {
+        UINT8 val8;
+        UINT32 val32 = 0;
+
+        // Convert to 32bit pattern
+        // (ABRG = 8888)
+
+        // Alpha
+        val8 = static_cast<UINT8>(a * 255);
+        val32 = val8 << 24;
+
+        // Blue
+        val8 = static_cast<UINT8>(r * 255);
+        val32 += val8 << 16;
+
+        // Green
+        val8 = static_cast<UINT8>(b * 255);
+        val32 += val8 << 8;
+
+        // Red
+        val8 = static_cast<UINT8>(g * 255);
+        val32 += val8;
+
+        return val32;
+    }
+
     Vector4 Color::GetAsVector4() const
     {
         return Vector4(r, g, b, a);

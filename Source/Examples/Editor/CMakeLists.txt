@@ -5,6 +5,7 @@ if (WIN32)
     add_executable(
         Editor WIN32
         ${TE_EDITOR_SRC}
+        ../resources.rc
     )
     set_target_properties(Editor PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/x64/Debug")
 else ()

@@ -1,4 +1,5 @@
 #include "Resources/TeBuiltinResources.h"
+#include "Resources/TeResourceManager.h"
 #include "Material/TePass.h"
 #include "Material/TeMaterial.h"
 #include "Material/TeTechnique.h"
@@ -15,6 +16,7 @@ namespace te
     { 
         _anisotropicSamplerState = nullptr;
         _bilinearSamplerState = nullptr;
+        _frameworkIcon = nullptr;
     }
 
     void BuiltinResources::OnStartUp()
@@ -24,20 +26,8 @@ namespace te
         InitShaderDesc();
 #if TE_PLATFORM == TE_PLATFORM_WIN32 //TODO to remove when OpenGL will be done
         InitSamplers();
-        /*InitShaderOpaque();
-        InitShaderTransparent();
-        InitShaderBlit();
-        InitShaderSkybox();
-        InitShaderFXAA();
-        InitShaderToneMapping();
-        InitShaderBloom();
-        InitShaderMotionBlur();
-        InitShaderGaussianBlur();
-        InitShaderPicking();
-        InitShaderSelection();
-        InitShaderHudPicking();
-        InitShaderHudSelection();*/
         InitDefaultMaterial();
+        InitFrameworkIcon();
 #endif
     }
 
@@ -137,6 +127,11 @@ namespace te
         }
 
         return nullptr;
+    }
+
+    const PixelData& BuiltinResources::GetFrameworkIcon()
+    {
+        return *_frameworkIcon.get();
     }
 
     void BuiltinResources::InitGpuPrograms()
@@ -1090,6 +1085,14 @@ namespace te
         MaterialProperties properties;
         _defaultMaterial = Material::Create(GetBuiltinShader(BuiltinShader::Opaque));
         _defaultMaterial->SetProperties(properties);
+    }
+
+    void BuiltinResources::InitFrameworkIcon()
+    {
+        HTexture iconTex = gResourceManager().Load<Texture>(ICONS_FOLDER + String("frameworkIcon.png"));
+
+        _frameworkIcon = iconTex->GetProperties().AllocBuffer(0, 0);
+        iconTex->ReadData(*_frameworkIcon.get());
     }
 
     BuiltinResources& gBuiltinResources()

@@ -5,6 +5,7 @@ if (WIN32)
     add_executable(
         LightingScene WIN32
         ${TE_LIGHTINGSCENE_SRC}
+        ../resources.rc
     )
     set_target_properties(LightingScene PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/x64/Debug")
 else ()
