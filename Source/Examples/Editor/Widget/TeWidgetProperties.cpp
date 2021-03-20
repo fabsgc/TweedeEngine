@@ -26,6 +26,8 @@
 #include "String/TeUnicode.h"
 #include "Utility/TeFileSystem.h"
 #include "Scripting/TeScriptManager.h"
+#include "Audio/TeAudioClip.h"
+#include "Audio/TeAudioClipImportOptions.h"
 
 namespace te
 {
@@ -128,7 +130,7 @@ namespace te
 
             case TID_CAudioSource:
             {
-                if (ShowCAudioListenerProperties())
+                if (ShowCAudioSourceProperties())
                     hasChanged = true;
             }
             break;
@@ -393,8 +395,7 @@ namespace te
     bool WidgetProperties::ShowCAudioListenerProperties()
     {
         bool hasChanged = false;
-        SPtr<CAudioListener> bone = std::static_pointer_cast<CAudioListener>(_selections.ClickedComponent);
-        const float width = ImGui::GetWindowContentRegionWidth() - 120.0f;
+        SPtr<CAudioListener> audioListener = std::static_pointer_cast<CAudioListener>(_selections.ClickedComponent);
 
         return hasChanged;
     }
@@ -402,8 +403,48 @@ namespace te
     bool WidgetProperties::ShowCAudioSourceProperties()
     {
         bool hasChanged = false;
-        SPtr<CAudioSource> bone = std::static_pointer_cast<CAudioSource>(_selections.ClickedComponent);
+        SPtr<CAudioSource> audioSource = std::static_pointer_cast<CAudioSource>(_selections.ClickedComponent);
         const float width = ImGui::GetWindowContentRegionWidth() - 120.0f;
+        HAudioClip clip = audioSource->GetClip();
+
+        if (ImGui::CollapsingHeader("Audio Source", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            ImGuiExt::ComboOptions<UUID> audioClipsOptions;
+            UUID emptyAudioClip = UUID(50, 0, 0, 0);
+            UUID loadAudioClip = UUID::EMPTY;
+            UUID audioClipUUID = (clip.IsLoaded()) ? clip->GetUUID() : emptyAudioClip;
+            EditorResManager::ResourcesContainer& container = EditorResManager::Instance().Get<AudioClip>();
+
+            // current audio clip to use
+            {
+                for (auto& resource : container.Res)
+                    audioClipsOptions.AddOption(resource.second->GetUUID(), resource.second->GetName());
+
+                audioClipsOptions.AddOption(emptyAudioClip, ICON_FA_TIMES_CIRCLE " No clip");
+                audioClipsOptions.AddOption(loadAudioClip, ICON_FA_FOLDER_OPEN " Load");
+
+                if (ImGuiExt::RenderOptionCombo<UUID>(&audioClipUUID, "##audio_clip_option", "Audio Clip", audioClipsOptions, width))
+                {
+                    if (audioClipUUID == loadAudioClip)
+                    {
+                        _loadAudioClip = true;
+                    }
+                    else if (audioClipUUID == emptyAudioClip)
+                    {
+                        audioSource->SetClip(HAudioClip());
+                        hasChanged = true;
+                    }
+                    else if (audioClipUUID != ((clip.IsLoaded()) ? clip->GetUUID() : emptyAudioClip))
+                    {
+                        audioSource->SetClip(gResourceManager().Load<AudioClip>(audioClipUUID));
+                        hasChanged = true;
+                    }
+                }
+            }
+        }
+
+        if (ShowLoadAudioClip())
+            hasChanged = true;
 
         return hasChanged;
     }
@@ -1204,5 +1245,38 @@ namespace te
         }
 
         return scriptLoaded;
+    }
+
+    bool WidgetProperties::ShowLoadAudioClip()
+    {
+        bool audioScriptLoaded = false;
+
+        if (_loadAudioClip)
+            ImGui::OpenPopup("Load Audio Clip");
+
+        if (_fileBrowser.ShowFileDialog("Load Audio Clip", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), true, ".ogg,.flac,.wav"))
+        {
+            auto audioClipImportOptions = AudioClipImportOptions::Create();
+            audioClipImportOptions->Is3D = _fileBrowser.Data.AudioParam.Is3D;
+
+            HAudioClip audioClip = EditorResManager::Instance().Load<AudioClip>(_fileBrowser.Data.SelectedPath, audioClipImportOptions);
+            if (audioClip.IsLoaded())
+            {
+                audioClip->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
+                EditorResManager::Instance().Add<AudioClip>(audioClip);
+                SPtr<CAudioSource> audioSource = std::static_pointer_cast<CAudioSource>(_selections.ClickedComponent);
+                audioSource->SetClip(audioClip);
+                audioScriptLoaded = true;
+            }
+
+            _loadAudioClip = false;
+        }
+        else
+        {
+            if (_fileBrowser.Data.IsCancelled)
+                _loadAudioClip = false;
+        }
+        
+        return audioScriptLoaded;
     }
 }

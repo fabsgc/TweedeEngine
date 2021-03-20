@@ -13,7 +13,9 @@ namespace te
 
     enum class ScriptState
     {
-        Enabled, Disabled
+        Started = 0x01,
+        Enabled = 0x01,
+
     };
 
     class TE_CORE_EXPORT Script : public CoreObject, public NonCopyable
@@ -80,7 +82,7 @@ namespace te
 
     protected:
         NativeScript* _nativeScript;
-        ScriptState _state;
+        UINT32 _state;
         Mutex _mutex;
     };
 }

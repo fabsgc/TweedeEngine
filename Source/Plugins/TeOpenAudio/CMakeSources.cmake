@@ -8,6 +8,8 @@ set (TE_OPENAUDIO_INC_NOFILTER
     "TeAudioDecoder.h"
     "TeOggVorbisDecoder.h"
     "TeOggVorbisEncoder.h"
+    "TeFLACDecoder.h"
+    "TeWaveDecoder.h"
 )
 
 set (TE_OPENAUDIO_SRC_NOFILTER
@@ -19,6 +21,8 @@ set (TE_OPENAUDIO_SRC_NOFILTER
     "TeOAAudioClip.cpp"
     "TeOggVorbisDecoder.cpp"
     "TeOggVorbisEncoder.cpp"
+    "TeFLACDecoder.cpp"
+    "TeWaveDecoder.cpp"
 )
 
 source_group ("" FILES ${TE_OPENAUDIO_SRC_NOFILTER} ${TE_OPENAUDIO_INC_NOFILTER})

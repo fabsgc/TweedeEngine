@@ -10,7 +10,7 @@ namespace te
 {
     Script::Script()
         : _nativeScript(nullptr)
-        , _state(ScriptState::Enabled)
+        , _state(0)
     { 
         gScriptManager().RegisterScript(this);
     }
@@ -100,19 +100,29 @@ namespace te
 
     void Script::OnStartup()
     {
+        if (_state &= (UINT32)ScriptState::Started)
+            return;
+
+        _state |= (UINT32)ScriptState::Started;
+
         if (_nativeScript)
             _nativeScript->OnStartup();
     }
 
     void Script::OnShutdown()
     {
+        if (!(_state &= (UINT32)ScriptState::Started))
+            return;
+
+        _state &= ~(UINT32)ScriptState::Started;
+
         if (_nativeScript)
             _nativeScript->OnShutdown();
     }
 
     void Script::OnDisabled()
     {
-        _state = ScriptState::Disabled;
+        _state &= ~(UINT32)ScriptState::Enabled;
 
         if (_nativeScript)
             _nativeScript->OnDisabled();
@@ -120,7 +130,7 @@ namespace te
 
     void Script::OnEnabled()
     {
-        _state = ScriptState::Enabled;
+        _state |= (UINT32)ScriptState::Enabled;
 
         if (_nativeScript)
             _nativeScript->OnEnabled();

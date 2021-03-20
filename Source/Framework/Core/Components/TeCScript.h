@@ -41,6 +41,9 @@ namespace te
         /** Returns the internal renderable that is used for majority of operations by this component. */
         SPtr<Script> _getInternal() const { return _internal; }
 
+        /** Return Component type */
+        static UINT32 GetComponentType() { return TID_CScript; }
+
         /** @copydoc Component::Clone */
         void Clone(const HComponent& c) override;
 

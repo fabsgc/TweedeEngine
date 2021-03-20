@@ -7,6 +7,9 @@
 #include "TeWidgetRenderOptions.h"
 #include "Animation/TeAnimationManager.h"
 #include "Scripting/TeScriptManager.h"
+#include "Scripting/TeScript.h"
+#include "Scene/TeSceneManager.h"
+#include "Components/TeCScript.h"
 
 namespace te
 {
@@ -45,9 +48,6 @@ namespace te
         {
             ImGui::PopStyleVar();
         };
-
-        //WidgetRenderOptions* widget = static_cast<WidgetRenderOptions*>(gEditor().GetWidget(WidgetType::RenderOptions));
-        //_widgets[Widget::IconType::ComponentOptions] = te_shared_ptr<WidgetRenderOptions>(widget);
     }
 
     void WidgetToolBar::Update()
@@ -69,6 +69,21 @@ namespace te
                 return !gCoreApplication().GetState().IsFlagSet(ApplicationState::Game); 
             },
             [this]() {
+                Vector<HComponent> components = gEditor().GetSceneRoot()->GetComponents<CScript>(true);
+                for (auto& component : components)
+                {
+                    HScript handle = static_object_cast<CScript>(component);
+                    SPtr<Script> script = handle->_getInternal();
+
+                    if (script != nullptr)
+                    {
+                        if (gCoreApplication().GetState().IsFlagSet(ApplicationState::Game))
+                            script->OnShutdown();
+                        else
+                            script->OnStartup();
+                    }
+                }
+
                 gAnimationManager().TogglePaused();
                 gScriptManager().TogglePaused();
 

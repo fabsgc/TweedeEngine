@@ -5,6 +5,8 @@
 #include "Audio/TeAudioUtility.h"
 #include "TeOggVorbisDecoder.h"
 #include "TeOggVorbisEncoder.h"
+#include "TeWaveDecoder.h"
+#include "TeFLACDecoder.h"
 
 namespace te
 {
@@ -58,10 +60,10 @@ namespace te
             UPtr<AudioDecoder> reader;
             if (extension == u8".ogg")
                 reader = te_unique_ptr_new<OggVorbisDecoder>();
-            /*if (extension == u8".wav")
+            else if (extension == u8".wav")
                 reader = te_unique_ptr_new<WaveDecoder>();
             else if (extension == u8".flac")
-                reader = te_unique_ptr_new<FLACDecoder>();*/
+                reader = te_unique_ptr_new<FLACDecoder>();
 
             if (reader == nullptr)
                 return nullptr;

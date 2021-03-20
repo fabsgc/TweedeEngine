@@ -99,6 +99,9 @@ namespace te
         /** Show FileBrowser in order to load a new script */
         bool ShowLoadScript();
 
+        /** Show FileBrowser in order to load a new audio clip */
+        bool ShowLoadAudioClip();
+
     protected:
         Editor::SelectionData& _selections;
         ImGuiFileBrowser& _fileBrowser;
@@ -106,5 +109,6 @@ namespace te
         bool _loadMesh = false;
         bool _loadSkybox = false;
         bool _loadScript = false;
+        bool _loadAudioClip = false;
     };
 }
