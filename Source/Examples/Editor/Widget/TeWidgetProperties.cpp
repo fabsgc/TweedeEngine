@@ -404,7 +404,7 @@ namespace te
     {
         bool hasChanged = false;
         SPtr<CAudioSource> audioSource = std::static_pointer_cast<CAudioSource>(_selections.ClickedComponent);
-        const float width = ImGui::GetWindowContentRegionWidth() - 120.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
         HAudioClip clip = audioSource->GetClip();
 
         if (ImGui::CollapsingHeader("Audio Source", ImGuiTreeNodeFlags_DefaultOpen))
@@ -414,6 +414,27 @@ namespace te
             UUID loadAudioClip = UUID::EMPTY;
             UUID audioClipUUID = (clip.IsLoaded()) ? clip->GetUUID() : emptyAudioClip;
             EditorResManager::ResourcesContainer& container = EditorResManager::Instance().Get<AudioClip>();
+
+            // IsLooping
+            {
+                bool isLooping = audioSource->GetIsLooping();
+                if (ImGuiExt::RenderOptionBool(isLooping, "##audio_source_is_looping", "Is looping"))
+                {
+                    hasChanged = true;
+                    audioSource->SetIsLooping(isLooping);
+                }
+            }
+
+            // PlayOnStart
+            {
+                bool playOnStart = audioSource->GetPlayOnStart();
+                if (ImGuiExt::RenderOptionBool(playOnStart, "##audio_source_play_on_start", "Play on start"))
+                {
+                    hasChanged = true;
+                    audioSource->SetPlayOnStart(playOnStart);
+                }
+            }
+            ImGui::Separator();
 
             // current audio clip to use
             {
@@ -439,6 +460,47 @@ namespace te
                         audioSource->SetClip(gResourceManager().Load<AudioClip>(audioClipUUID));
                         hasChanged = true;
                     }
+                }
+            }
+            ImGui::Separator();
+
+            // Volume
+            {
+                float volume = audioSource->GetVolume();
+                if (ImGuiExt::RenderOptionFloat(volume, "##audio_source_volume", "Volume", 0.0f, 100.0f, width))
+                {
+                    hasChanged = true;
+                    audioSource->SetVolume(volume);
+                }
+            }
+
+            // Pitch
+            {
+                float pitch = audioSource->GetPitch();
+                if (ImGuiExt::RenderOptionFloat(pitch, "##audio_source_pitch", "Pitch", -100.0f, 100.0f, width))
+                {
+                    hasChanged = true;
+                    audioSource->SetPitch(pitch);
+                }
+            }
+
+            // MinDistance
+            {
+                float minDistance = audioSource->GetMinDistance();
+                if (ImGuiExt::RenderOptionFloat(minDistance, "##audio_source_min_distance", "Min distance", 0.0f, 100.0f, width))
+                {
+                    hasChanged = true;
+                    audioSource->SetMinDistance(minDistance);
+                }
+            }
+
+            // Attenuation
+            {
+                float attenuation = audioSource->GetAttenuation();
+                if (ImGuiExt::RenderOptionFloat(attenuation, "##audio_source_attenuation", "Attenuation", 0.0f, 100.0f, width))
+                {
+                    hasChanged = true;
+                    audioSource->SetAttenuation(attenuation);
                 }
             }
         }
