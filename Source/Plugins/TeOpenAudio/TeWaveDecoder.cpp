@@ -109,7 +109,7 @@ namespace te
 
                 if (bitDepth != 8 && bitDepth != 16 && bitDepth != 24 && bitDepth != 32)
                 {
-                    TE_DEBUG("Unsupported number of bits per sample: {0}", bitDepth);
+                    TE_DEBUG("Unsupported number of bits per sample: " + ToString(bitDepth));
                     return false;
                 }
 
