@@ -994,23 +994,25 @@ namespace te
 
     void BuiltinResources::InitShaderSelection()
     {
-        _blendTransparentStateDesc.RenderTargetDesc[0].BlendEnable = true;
+        /*_blendTransparentStateDesc.RenderTargetDesc[0].BlendEnable = true;
         _blendTransparentStateDesc.RenderTargetDesc[0].SrcBlend = BlendFactor::BF_SOURCE_ALPHA;
         _blendTransparentStateDesc.RenderTargetDesc[0].DstBlend = BlendFactor::BF_INV_SOURCE_ALPHA;
         _blendTransparentStateDesc.RenderTargetDesc[0].BlendOp = BlendOperation::BO_MAX;
         _blendTransparentStateDesc.RenderTargetDesc[0].SrcBlendAlpha = BlendFactor::BF_ZERO;
         _blendTransparentStateDesc.RenderTargetDesc[0].DstBlendAlpha = BlendFactor::BF_ONE;
         _blendTransparentStateDesc.RenderTargetDesc[0].BlendOpAlpha = BlendOperation::BO_ADD;
-        _blendTransparentStateDesc.RenderTargetDesc[0].RenderTargetWriteMask = 0x0f;
+        _blendTransparentStateDesc.RenderTargetDesc[0].RenderTargetWriteMask = 0x0f;*/
 
         PASS_DESC passDesc;
-        passDesc.BlendStateDesc = _blendTransparentStateDesc;
+        passDesc.BlendStateDesc = _blendOpaqueStateDesc;
         passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
         passDesc.RasterizerStateDesc = _rasterizerStateDesc;
         passDesc.VertexProgramDesc = _vertexShaderPickSelectDesc;
         passDesc.PixelProgramDesc = _pixelShaderPickSelectDesc;
 
         passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_CLOCKWISE;
+        passDesc.RasterizerStateDesc.polygonMode = PolygonMode::PM_WIREFRAME;
+        passDesc.RasterizerStateDesc.depthBias = 0.00001f;
 
         HPass pass = Pass::Create(passDesc);
         HTechnique technique = Technique::Create("hlsl", { pass.GetInternalPtr() });
@@ -1049,17 +1051,17 @@ namespace te
 
     void BuiltinResources::InitShaderHudSelection()
     {
-        _blendTransparentStateDesc.RenderTargetDesc[0].BlendEnable = true;
+        /*_blendTransparentStateDesc.RenderTargetDesc[0].BlendEnable = true;
         _blendTransparentStateDesc.RenderTargetDesc[0].SrcBlend = BlendFactor::BF_SOURCE_ALPHA;
         _blendTransparentStateDesc.RenderTargetDesc[0].DstBlend = BlendFactor::BF_INV_SOURCE_ALPHA;
         _blendTransparentStateDesc.RenderTargetDesc[0].BlendOp = BlendOperation::BO_ADD;
         _blendTransparentStateDesc.RenderTargetDesc[0].SrcBlendAlpha = BlendFactor::BF_ZERO;
         _blendTransparentStateDesc.RenderTargetDesc[0].DstBlendAlpha = BlendFactor::BF_ONE;
         _blendTransparentStateDesc.RenderTargetDesc[0].BlendOpAlpha = BlendOperation::BO_ADD;
-        _blendTransparentStateDesc.RenderTargetDesc[0].RenderTargetWriteMask = 0x0f;
+        _blendTransparentStateDesc.RenderTargetDesc[0].RenderTargetWriteMask = 0x0f;*/
 
         PASS_DESC passDesc;
-        passDesc.BlendStateDesc = _blendTransparentStateDesc;
+        passDesc.BlendStateDesc = _blendOpaqueStateDesc;
         passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
         passDesc.RasterizerStateDesc = _rasterizerStateDesc;
         passDesc.VertexProgramDesc = _vertexShaderHudPickSelectDesc;
@@ -1067,6 +1069,7 @@ namespace te
         passDesc.PixelProgramDesc = _pixelShaderHudPickSelectDesc;
 
         passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
+        passDesc.RasterizerStateDesc.polygonMode = PolygonMode::PM_WIREFRAME;
 
         HPass pass = Pass::Create(passDesc);
         HTechnique technique = Technique::Create("hlsl", { pass.GetInternalPtr() });

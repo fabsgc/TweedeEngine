@@ -17,6 +17,7 @@ cbuffer PerObjectBuffer : register(b1)
 struct VS_INPUT
 {
     float3 Position : POSITION;
+    float3 Normal : NORMAL;
     float4 BlendWeights : BLENDWEIGHT;
     uint4  BlendIndices : BLENDINDICES;
 };
@@ -24,6 +25,8 @@ struct VS_INPUT
 struct VS_OUTPUT
 {
     float4 Position : SV_POSITION;
+    float4 PositionWS : POSITION;
+    float3 Normal : NORMAL;
     float4 Color : COLOR0;
 };
 
@@ -37,10 +40,20 @@ VS_OUTPUT main( VS_INPUT IN )
         blendMatrix = GetBlendMatrix(IN.BlendWeights, IN.BlendIndices);
 
     OUT.Position = float4(IN.Position, 1.0f);
-        if(gHasAnimation)
-            OUT.Position = mul(blendMatrix, OUT.Position);
+    OUT.PositionWS = float4(IN.Position, 1.0f);
+    OUT.Normal = IN.Normal;
+
+    if(gHasAnimation)
+    {
+        OUT.Position = mul(blendMatrix, OUT.Position);
+        OUT.PositionWS = mul(blendMatrix, OUT.PositionWS);
+        OUT.Normal = mul(blendMatrix, float4(OUT.Normal, 0.0f)).xyz;
+    }
+
     OUT.Position = mul(gMatWorld, OUT.Position);
     OUT.Position = mul(gMatViewProj, OUT.Position);
+    OUT.PositionWS = mul(gMatWorld, OUT.PositionWS);
+    OUT.Normal = normalize(mul(gMatWorld, float4(OUT.Normal, 0.0f))).xyz;
 
     OUT.Color = gColor;
 

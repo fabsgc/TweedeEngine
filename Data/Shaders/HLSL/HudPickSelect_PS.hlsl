@@ -24,7 +24,7 @@ float4 main( PS_INPUT IN ) : SV_Target
     }
     else if(gRenderType == RENDER_TYPE_SELECTION)
     {
-        output = float4(0.25, 0.2, 0.5, 0.5);
+        output = float4(1.0, 0.5, 0.0, 1.0);
     }
     else if(gRenderType == RENDER_TYPE_PICKING)
     {
