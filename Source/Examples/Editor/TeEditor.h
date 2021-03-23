@@ -4,6 +4,7 @@
 #include "Widget/TeWidget.h"
 #include "Utility/TeModule.h"
 #include "ImGuiExt/TeImGuiFileBrowser.h"
+#include "ImGuizmo/ImGuizmo.h"
 
 #include <vector>
 #include <memory>
@@ -20,6 +21,11 @@ namespace te
         enum class EditorState
         {
             Modified, Saved
+        };
+
+        enum class ImGuizmoState
+        {
+            Active, Inactive
         };
 
         enum class WindowType
@@ -96,7 +102,7 @@ namespace te
         /** Called to inform the editor that some element has been modified and viewport must be updated */
         void NeedsRedraw();
 
-        /** In order to handle selection in 3D viewport, we need to call picking system in order to generate an update to date render texture */
+        /** In order to handle selection in 3D viewport, we need to call picking system in order to generate an update to render texture */
         void NeedsPicking(UINT32 x, UINT32 y);
 
         /** If we need a redraw or if 3D viewport size change, we need to call this method to force picking render */
@@ -137,6 +143,24 @@ namespace te
 
         /** Set the current preview viewport camera */
         void SetPreviewViewportCamera(HCamera& camera) { _previewViewportCamera = camera.GetNewHandleFromExisting(); }
+
+        /** Manage ImGuizmo */
+        void HandleImGuizmo();
+
+        /** Update rendering rect of the Guizmo */
+        void SetImGuizmoRect(const Vector2& position, const Vector2& size);
+
+        /** Update Guizmo state (active/inactive */
+        void SetImGuizmoState(ImGuizmoState state);
+
+        /** Update Guizmo operations */
+        void SetImGuizmoOperation(ImGuizmo::OPERATION operation);
+
+        /** Get Guizmo operation */
+        ImGuizmo::OPERATION GetImGuizmoOperation() const { return _guizmoOperation; }
+
+        /** Update Guizmo mode */
+        void SetImGuizmoMode(ImGuizmo::MODE mode);
 
         /** Save current scene */
         void Save();
@@ -201,6 +225,11 @@ namespace te
         // If something has changed, we need to redraw hud elements such as cameras and lights on top of render
         UPtr<Hud> _hud;
         bool _hudDirty;
+
+        // We only enable Guizmo if there is a viewport with the default camera enabled
+        ImGuizmoState _guizmoState;
+        ImGuizmo::OPERATION _guizmoOperation;
+        ImGuizmo::MODE _guizmoMode;
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         // TODO Temp for debug purpose

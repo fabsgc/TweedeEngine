@@ -144,6 +144,11 @@ namespace te
         else
             _viewportCameraUI->EnableZooming(false);
 
+        if (ImGui::IsItemVisible())
+            gEditor().SetImGuizmoState(Editor::ImGuizmoState::Active);
+        else
+            gEditor().SetImGuizmoState(Editor::ImGuizmoState::Inactive);
+
         // Handle viewport gpu picking
         if (ImGui::IsWindowHovered() && gVirtualInput().IsButtonDown(_pickingBtn))
         {
@@ -173,6 +178,8 @@ namespace te
                 _viewportCamera->SetFlags(flags);
             }
         }
+
+        gEditor().SetImGuizmoState(Editor::ImGuizmoState::Inactive);
     }
 
     void WidgetViewport::SetVisible(bool isVisible)
@@ -193,6 +200,12 @@ namespace te
             _viewportCamera->GetViewport()->SetTarget(_renderData.RenderTex);
             _viewportCamera->SetAspectRatio(width / height);
         }
+
+        ImVec2 position = ImGui::GetWindowContentRegionMin();
+        position.x += ImGui::GetWindowPos().x;
+        position.y += ImGui::GetWindowPos().y;
+
+        gEditor().SetImGuizmoRect(Vector2(position.x, position.y), Vector2(width, height));
 
         SPtr<TextureView> textureView = _renderData.RenderTex->GetColorTexture(0)->RequestView(
             _renderData.ColorTexSurface.MipLevel,

@@ -444,6 +444,11 @@ namespace te
          */
         void MakeProjectionOrtho(float left, float right, float top, float bottom, float near, float far);
 
+        /** Returns matrix as a float array (do not creates copy) */
+        void GetAsFloat(const float*& mat) const;
+
+        void GetAsFloat(float*& mat);
+
         /** Creates a 4x4 transformation matrix that performs translation. */
         static Matrix4 Translation(const Vector3& translation);
 

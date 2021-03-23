@@ -95,18 +95,18 @@ namespace te
         );
 
         ShowButton(ICON_FA_ARROWS_ALT, ICON_FA_ARROWS_ALT,
-            [this]() { return true; },
-            [this]() { return; }
+            [this]() { return !(gEditor().GetImGuizmoOperation() == ImGuizmo::OPERATION::TRANSLATE); },
+            [this]() { gEditor().SetImGuizmoOperation(ImGuizmo::OPERATION::TRANSLATE); }
         );
 
         ShowButton(ICON_FA_SYNC, ICON_FA_SYNC,
-            [this]() { return true; },
-            [this]() { return; }
+            [this]() { return !(gEditor().GetImGuizmoOperation() == ImGuizmo::OPERATION::ROTATE); },
+            [this]() { gEditor().SetImGuizmoOperation(ImGuizmo::OPERATION::ROTATE); }
         );
 
         ShowButton(ICON_FA_COMPRESS_ALT, ICON_FA_COMPRESS_ALT,
-            [this]() { return true; },
-            [this]() { return; }
+            [this]() { return !(gEditor().GetImGuizmoOperation() == ImGuizmo::OPERATION::SCALE); },
+            [this]() { gEditor().SetImGuizmoOperation(ImGuizmo::OPERATION::SCALE); }
         );
 
         for (auto& widgetPair : _widgets)

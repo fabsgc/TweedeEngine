@@ -66,6 +66,9 @@ namespace te
         , _pickingDirty(true)
         , _selectionDirty(true)
         , _hudDirty(true)
+        , _guizmoState(ImGuizmoState::Active)
+        , _guizmoOperation(ImGuizmo::OPERATION::TRANSLATE)
+        , _guizmoMode(ImGuizmo::MODE::WORLD)
     { }
 
     Editor::~Editor()
@@ -106,6 +109,8 @@ namespace te
             GuiAPI::Instance().BeginFrame();
             GuiAPI::Instance().Update();
 
+            ImGuizmo::BeginFrame();
+
             if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DockingEnable)
                 BeginGui();
 
@@ -121,6 +126,9 @@ namespace te
                     widget->UpdateBackground();
                 }
             }
+
+            if(_guizmoState == ImGuizmoState::Active)
+                HandleImGuizmo();
 
             if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DockingEnable)
                 EndGui();
@@ -159,38 +167,44 @@ namespace te
         if (!_settings.WViewport)
             return;
 
-        if (_pickingDirty)
+        if (!ImGuizmo::IsUsing())
         {
-            EditorUtils::RenderWindowData viewportData = 
-                static_cast<WidgetViewport*>(&*_settings.WViewport)->GetRenderWindowData();
-            Picking::RenderParam pickingData(viewportData.Width, viewportData.Height);
-
-            _picking->ComputePicking(_previewViewportCamera, pickingData, _sceneSO);
-            _pickingDirty = false;
-        }
-
-        SPtr<GameObject> gameObject = _picking->GetGameObjectAt(x, y);
-        if (gameObject)
-        {
-            SPtr<Component> component = std::static_pointer_cast<Component>(gameObject);
-
-            _selections.ClickedComponent = component;
-            _selections.ClickedSceneObject = component->GetSceneObject().GetInternalPtr();
-
-            if (_settings.WProject)
-                std::static_pointer_cast<WidgetProject>(_settings.WProject)->ForceExpandToSelection();
-        }
-        else
-        {
-            if (!_selections.ClickedComponent ||
-                _selections.ClickedComponent->GetCoreType() == TID_CRenderable ||
-                _selections.ClickedComponent->GetCoreType() == TID_CCamera ||
-                _selections.ClickedComponent->GetCoreType() == TID_CLight || 
-                _selections.ClickedComponent->GetCoreType() == TID_CAudioListener ||
-                _selections.ClickedComponent->GetCoreType() == TID_CAudioSource)
+            if (_pickingDirty)
             {
-                _selections.ClickedComponent = nullptr;
-                _selections.ClickedSceneObject = nullptr;
+                EditorUtils::RenderWindowData viewportData =
+                    static_cast<WidgetViewport*>(&*_settings.WViewport)->GetRenderWindowData();
+                Picking::RenderParam pickingData(viewportData.Width, viewportData.Height);
+
+                _picking->ComputePicking(_previewViewportCamera, pickingData, _sceneSO);
+                _pickingDirty = false;
+            }
+
+            SPtr<GameObject> gameObject = _picking->GetGameObjectAt(x, y);
+            if (gameObject)
+            {
+                SPtr<Component> component = std::static_pointer_cast<Component>(gameObject);
+
+                _selections.ClickedComponent = component;
+                _selections.ClickedSceneObject = component->GetSceneObject().GetInternalPtr();
+
+                if (_settings.WProject)
+                    std::static_pointer_cast<WidgetProject>(_settings.WProject)->ForceExpandToSelection();
+            }
+            else
+            {
+                if (!_selections.ClickedComponent ||
+                    _selections.ClickedComponent->GetCoreType() == TID_CRenderable ||
+                    _selections.ClickedComponent->GetCoreType() == TID_CCamera ||
+                    _selections.ClickedComponent->GetCoreType() == TID_CLight ||
+                    _selections.ClickedComponent->GetCoreType() == TID_CAudioListener ||
+                    _selections.ClickedComponent->GetCoreType() == TID_CAudioSource)
+                {
+                    if (!ImGuizmo::IsOver())
+                    {
+                        _selections.ClickedComponent = nullptr;
+                        _selections.ClickedSceneObject = nullptr;
+                    }
+                }
             }
         }
 
@@ -546,6 +560,164 @@ namespace te
             _settings.WProperties->PutFocus();
             break;        
         }
+    }
+
+    void GetComponentsFromTransform(const Transform& transform, float* matrixTranslation, float* matrixRotation, float* matrixScale)
+    {
+        Radian x, y, z;
+        transform.GetRotation().ToEulerAngles(x, y, z);
+        Vector3 position = transform.GetPosition();
+        Vector3 rotation(x.ValueDegrees(), y.ValueDegrees(), z.ValueDegrees());
+        Vector3 scale = transform.GetScale();
+
+        matrixTranslation[0] = position.x;
+        matrixTranslation[1] = position.y;
+        matrixTranslation[2] = position.z;
+
+        matrixRotation[0] = rotation.x;
+        matrixRotation[1] = rotation.y;
+        matrixRotation[2] = rotation.z;
+
+        matrixScale[0] = scale.x;
+        matrixScale[1] = scale.y;
+        matrixScale[2] = scale.z;
+    }
+
+    void Editor::HandleImGuizmo()
+    {
+        if ((_selections.ClickedComponent || _selections.ClickedSceneObject) && _guizmoState == ImGuizmoState::Active &&
+            _previewViewportCamera == _viewportCamera)
+        {
+            
+            Transform transform;
+            Transform deltaTransform;
+            const float* proj = nullptr;
+            const float* view = nullptr;
+            float matrixTranslation[3];
+            float matrixRotation[3];
+            float matrixScale[3];
+            float deltaMatrixTranslation[3];
+            float deltaMatrixRotation[3];
+            float deltaMatrixScale[3];
+            float worldMatrix[4][4];
+            float deltaWorldMatrix[4][4];
+
+            ImGuiIO& io = ImGui::GetIO();
+
+            // Retrieves View and Projection Matrix
+            const Matrix4& viewMatrix = _previewViewportCamera->GetViewMatrix().Transpose();
+            const Matrix4& projectionMatrix = _previewViewportCamera->GetProjectionMatrixRS().Transpose();
+            viewMatrix.GetAsFloat(view);
+            projectionMatrix.GetAsFloat(proj);
+
+            // Retrieves WorldMatrix
+            if(_selections.ClickedComponent)
+                transform = _selections.ClickedComponent->GetSceneObject()->GetLocalTransform();
+            else
+                transform = _selections.ClickedSceneObject->GetLocalTransform();
+
+            
+            GetComponentsFromTransform(transform, matrixTranslation, matrixRotation, matrixScale);
+            ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, &worldMatrix[0][0]);
+
+            // Retrieves delta matrix for guizmo position
+            if (_selections.ClickedComponent)
+                deltaTransform = _selections.ClickedComponent->GetSceneObject()->GetParent()->GetTransform();
+            else
+                deltaTransform = _selections.ClickedSceneObject->GetParent()->GetTransform();
+
+            GetComponentsFromTransform(deltaTransform, deltaMatrixTranslation, deltaMatrixRotation, deltaMatrixScale);
+            ImGuizmo::RecomposeMatrixFromComponents(deltaMatrixTranslation, deltaMatrixRotation, deltaMatrixScale, &deltaWorldMatrix[0][0]);
+
+            // Guizmo rendering
+            ImGuizmo::Manipulate(view, proj, _guizmoOperation, _guizmoMode, &worldMatrix[0][0], NULL, NULL);
+
+            // Transform update
+            if (ImGuizmo::IsUsing())
+            {
+                ImGuizmo::DecomposeMatrixToComponents(&worldMatrix[0][0], matrixTranslation, matrixRotation, matrixScale);
+
+                if (_selections.ClickedComponent)
+                {
+                    switch (_guizmoOperation)
+                    {
+                        case ImGuizmo::OPERATION::TRANSLATE:
+                            _selections.ClickedComponent->GetSceneObject()->SetPosition(Vector3(matrixTranslation[0], matrixTranslation[1], matrixTranslation[2]));
+                        break;
+
+                        case ImGuizmo::OPERATION::SCALE:
+                            _selections.ClickedComponent->GetSceneObject()->SetScale(Vector3(matrixScale[0], matrixScale[1], matrixScale[2]));
+                        break;
+
+                        case ImGuizmo::OPERATION::ROTATE:
+                        {
+                            Quaternion rotation;
+
+                            matrixRotation[0] = Math::Clamp(matrixRotation[0], -89.9f, 89.9f);
+                            matrixRotation[1] = Math::Clamp(matrixRotation[1], -89.9f, 89.9f);
+                            matrixRotation[2] = Math::Clamp(matrixRotation[2], -89.9f, 89.9f);
+
+                            TE_PRINT(matrixRotation[1]);
+
+                            rotation.FromEulerAngles(Radian(Degree(matrixRotation[0])), Radian(Degree(matrixRotation[1])), Radian(Degree(matrixRotation[2])));
+                            _selections.ClickedComponent->GetSceneObject()->SetRotation(rotation);
+                        }
+                        break;
+                    }
+                }
+                else
+                {
+                    switch (_guizmoOperation)
+                    {
+                    case ImGuizmo::OPERATION::TRANSLATE:
+                        _selections.ClickedSceneObject->SetPosition(Vector3(matrixTranslation[0], matrixTranslation[1], matrixTranslation[2]));
+                        break;
+
+                    case ImGuizmo::OPERATION::SCALE:
+                        _selections.ClickedSceneObject->SetScale(Vector3(matrixScale[0], matrixScale[1], matrixScale[2]));
+                        break;
+
+                    case ImGuizmo::OPERATION::ROTATE:
+                    {
+                        Quaternion rotation;
+                        rotation.FromEulerAngles(Radian(Degree(matrixRotation[0])), Radian(Degree(matrixRotation[1])), Radian(Degree(matrixRotation[2])));
+                        _selections.ClickedSceneObject->SetRotation(rotation);
+                    }
+                    break;
+                    }
+                }
+
+                NeedsRedraw();
+            }
+        }
+    }
+
+    void Editor::SetImGuizmoRect(const Vector2& position, const Vector2& size)
+    {
+        ImGuizmo::SetRect(position.x, position.y, size.x, size.y);
+    }
+
+    void Editor::SetImGuizmoState(ImGuizmoState state) 
+    { 
+        if (state == _guizmoState)
+            return;
+
+        _guizmoState = state;
+
+        if (_guizmoState == ImGuizmoState::Active)
+            ImGuizmo::Enable(true);
+        else
+            ImGuizmo::Enable(false);
+    }
+
+    void Editor::SetImGuizmoOperation(ImGuizmo::OPERATION operation)
+    {
+        _guizmoOperation = operation;
+    }
+
+    void Editor::SetImGuizmoMode(ImGuizmo::MODE mode)
+    {
+        _guizmoMode = mode;
     }
 
     void Editor::Save()

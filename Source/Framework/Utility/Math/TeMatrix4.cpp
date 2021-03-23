@@ -281,6 +281,16 @@ namespace te
         m[3][3] = 1.0f;
     }
 
+    void Matrix4::GetAsFloat(const float*& mat) const
+    {
+        mat = &(m[0][0]);
+    }
+
+    void Matrix4::GetAsFloat(float*& mat)
+    {
+        mat = &(m[0][0]);
+    }
+
     Matrix4 Matrix4::Translation(const Vector3& translation)
     {
         Matrix4 mat;
