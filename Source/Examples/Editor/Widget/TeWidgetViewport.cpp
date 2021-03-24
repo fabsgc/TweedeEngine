@@ -159,6 +159,9 @@ namespace te
             gEditor().NeedsPicking((UINT32)viewportPos.x, (UINT32)viewportPos.y);
         }
 
+        if (gEditor().GetImGuizmoState() == Editor::ImGuizmoState::Active)
+            gEditor().HandleImGuizmo();
+
         UpdateCameraFlag(_viewportCamera);
         HandleKeyShortcuts();
     }

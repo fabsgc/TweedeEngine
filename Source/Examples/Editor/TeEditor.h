@@ -156,11 +156,14 @@ namespace te
         /** Update Guizmo operations */
         void SetImGuizmoOperation(ImGuizmo::OPERATION operation);
 
-        /** Get Guizmo operation */
-        ImGuizmo::OPERATION GetImGuizmoOperation() const { return _guizmoOperation; }
-
         /** Update Guizmo mode */
         void SetImGuizmoMode(ImGuizmo::MODE mode);
+
+        /** Get Guizmo operation */
+        const ImGuizmo::OPERATION GetImGuizmoOperation() const { return _guizmoOperation; }
+
+        /** Get Guizmo state */
+        const ImGuizmoState GetImGuizmoState() const { return _guizmoState; }
 
         /** Save current scene */
         void Save();
