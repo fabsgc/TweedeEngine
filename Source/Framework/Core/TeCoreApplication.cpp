@@ -19,10 +19,13 @@
 #include "Scene/TeGameObjectManager.h"
 #include "CoreUtility/TeCoreObjectManager.h"
 #include "Renderer/TeRendererMaterialManager.h"
-#include "Audio/TeAudioManager.h"
 #include "Animation/TeAnimationManager.h"
 #include "Scripting/TeScriptManager.h"
+#include "Audio/TeAudioManager.h"
+#include "Physics/TePhysicsManager.h"
+
 #include "Audio/TeAudio.h"
+#include "Physics/TePhysics.h"
 
 #include "Input/TeInput.h"
 #include "Input/TeVirtualInput.h"
@@ -66,7 +69,6 @@ namespace te
         RendererManager::StartUp();
         ResourceManager::StartUp();
         ScriptManager::StartUp();
-        SceneManager::StartUp();
 
         LoadPlugin(_startUpDesc.Renderer, &_rendererPlugin);
         LoadPlugin(_startUpDesc.RenderAPI, &_renderAPIPlugin);
@@ -78,6 +80,9 @@ namespace te
         RenderAPI::Instance().SetDrawOperation(DOT_TRIANGLE_LIST);
 
         ParamBlockManager::StartUp();
+
+        PhysicsManager::StartUp(_startUpDesc.Physics);
+        SceneManager::StartUp();
 
         _renderer = RendererManager::Instance().Initialize(_startUpDesc.Renderer);
         _window = RenderAPI::Instance().CreateRenderWindow(_startUpDesc.WindowDesc);
@@ -129,6 +134,7 @@ namespace te
         RendererManager::ShutDown();
         GpuProgramManager::ShutDown();
         ResourceManager::ShutDown();
+        PhysicsManager::ShutDown();
         AudioManager::ShutDown();
         GuiManager::ShutDown();
         RenderAPIManager::ShutDown();
@@ -151,6 +157,7 @@ namespace te
             gInput().TriggerCallbacks();
             gVirtualInput().Update();
             gAudio().Update();
+            gPhysics().Update();
             _window->TriggerCallback();
 
             if(_pause)

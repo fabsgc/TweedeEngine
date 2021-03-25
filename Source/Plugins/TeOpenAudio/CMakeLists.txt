@@ -47,5 +47,5 @@ endif()
 
 # Install
 if(AUDIO_MODULE MATCHES "OpenAudio")
-	install_tef_target(TeOpenAudio)
+    install_tef_target(TeOpenAudio)
 endif()

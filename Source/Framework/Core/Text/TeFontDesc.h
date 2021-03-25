@@ -26,6 +26,6 @@ namespace te
          * Pairs that determine if certain character pairs should be closer or father together. for example "AV"
          * combination.
          */
-        Vector<KerningPair> kerningPairs;
+        Vector<KerningPair> KerningPairs;
     };
 }

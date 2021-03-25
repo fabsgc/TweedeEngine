@@ -6,6 +6,9 @@ set (TE_FRAMEWORK_VERSION_MINOR 1)
 set(AUDIO_MODULE "OpenAudio" CACHE STRING "Audio backend to use.")
 set_property(CACHE AUDIO_MODULE PROPERTY STRINGS OpenAudio)
 
+set(PHYSICS_MODULE "BulletPhysics" CACHE STRING "Physics backend to use.")
+set_property(CACHE PHYSICS_MODULE PROPERTY STRINGS "BulletPhysics")
+
 if (WIN32)
     set (RENDER_API_MODULE "DirectX 11" CACHE STRING "Render API to use.")
     set_property (CACHE RENDER_API_MODULE PROPERTY STRINGS "DirectX 11" "OpenGL")
@@ -36,8 +39,8 @@ else ()
 endif ()
 
 set(AUDIO_MODULE_LIB TeOpenAudio)
-
 set(RENDERER_MODULE_LIB TeRenderMan)
+set(PHYSICS_MODULE_LIB TeBulletPhysics)
 
 set(INCLUDE_ALL_IN_WORKFLOW true CACHE BOOL "If true, all libraries (even those not selected) will be included in the generated workflow (e.g. Visual Studio solution). This is useful when working on engine internals with a need for easy access to all parts of it. Only relevant for workflow generators like Visual Studio or XCode.")
 
@@ -78,6 +81,7 @@ add_subdirectory (Plugins/TeFreeImgImporter)
 add_subdirectory (Plugins/TeFontImporter)
 add_subdirectory (Plugins/TeShaderImporter)
 add_subdirectory (Plugins/TeOpenAudio)
+add_subdirectory (Plugins/TeBulletPhysics)
 
 add_subdirectory (Examples)
 

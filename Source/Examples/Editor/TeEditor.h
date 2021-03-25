@@ -160,13 +160,13 @@ namespace te
         void SetImGuizmoMode(ImGuizmo::MODE mode);
 
         /** Get Guizmo operation */
-        const ImGuizmo::OPERATION GetImGuizmoOperation() const { return _guizmoOperation; }
+        ImGuizmo::OPERATION GetImGuizmoOperation() const { return _guizmoOperation; }
 
         /** Get Guizmo state */
-        const ImGuizmoState GetImGuizmoState() const { return _guizmoState; }
+        ImGuizmoState GetImGuizmoState() const { return _guizmoState; }
 
         /** Get Guizmo mode */
-        const ImGuizmo::MODE GetImGuizmoMode() const { return _guizmoMode; }
+        ImGuizmo::MODE GetImGuizmoMode() const { return _guizmoMode; }
 
         /** Save current scene */
         void Save();

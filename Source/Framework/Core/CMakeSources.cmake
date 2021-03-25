@@ -385,6 +385,16 @@ set (TE_CORE_SRC_SCRIPTING
     "Core/Scripting/TeScriptManager.cpp"
 )
 
+set (TE_CORE_INC_PHYSICS
+    "Core/Physics/TePhysics.h"
+    "Core/Physics/TePhysicsManager.h"
+    "Core/Physics/TePhysicsCommon.h"
+)
+set (TE_CORE_SRC_PHYSICS
+    "Core/Physics/TePhysics.cpp"
+    "Core/Physics/TePhysicsManager.cpp"
+)
+
 if (WIN32)
     list(APPEND TE_CORE_INC_PLATFORM ${TE_CORE_INC_PLATFORM_WIN32})
     list(APPEND TE_CORE_SRC_PLATFORM ${TE_CORE_SRC_PLATFORM_WIN32})
@@ -415,6 +425,7 @@ source_group("Core\\Text" FILES ${TE_CORE_INC_TEXT} ${TE_CORE_SRC_TEXT})
 source_group("Core\\Animation" FILES ${TE_CORE_INC_ANIMATION} ${TE_CORE_SRC_ANIMATION})
 source_group("Core\\Gui" FILES ${TE_CORE_INC_GUI} ${TE_CORE_SRC_GUI})
 source_group("Core\\Scripting" FILES ${TE_CORE_INC_SCRIPTING} ${TE_CORE_SRC_SCRIPTING})
+source_group("Core\\Physics" FILES ${TE_CORE_INC_PHYSICS} ${TE_CORE_SRC_PHYSICS})
 source_group("Core" FILES ${TE_CORE_INC_NOFILTER} ${TE_CORE_SRC_NOFILTER})
 
 set(TE_CORE_SRC
@@ -458,4 +469,6 @@ set(TE_CORE_SRC
     ${TE_CORE_SRC_GUI}
     ${TE_CORE_INC_SCRIPTING}
     ${TE_CORE_SRC_SCRIPTING}
+    ${TE_CORE_INC_PHYSICS}
+    ${TE_CORE_SRC_PHYSICS}
 )

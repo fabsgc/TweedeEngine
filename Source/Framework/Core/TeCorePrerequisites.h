@@ -288,6 +288,10 @@ namespace te
     class DataStream;
     class FileStream;
     class MemoryDataStream;
+
+    class PhysicsManager;
+    class Physics;
+    class PhysicsScene;
 }
 
 #include "Utility/TeNonCopyable.h"

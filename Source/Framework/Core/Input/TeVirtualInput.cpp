@@ -172,7 +172,6 @@ namespace te
 
                     if (state.second.State == ButtonState::On)
                     {
-                        UINT32 identifier = state.second.Button.ButtonIdentifier;
                         Vector<VirtualButton> btns;
                         Vector<VIRTUAL_BUTTON_DESC> btnDesc;
 

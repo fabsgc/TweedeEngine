@@ -3,6 +3,7 @@
 #define TE_RENDERER_MODULE "@RENDERER_MODULE_LIB@"
 #define TE_RENDER_API_MODULE "@RENDER_API_MODULE_LIB@"
 #define TE_AUDIO_MODULE "@AUDIO_MODULE_LIB@"
+#define TE_PHYSICS_MODULE "@PHYSICS_MODULE_LIB@"
 #define TE_GUI_MODULE "@GUI_API_MODULE_LIB@"
 
 #define TE_RENDER_API_MODULE_D3D11 "TeD3D11RenderAPI"
@@ -10,6 +11,8 @@
 
 #define TE_GUI_API_MODULE_D3D11 "TeD3D11GuiAPI"
 #define TE_GUI_API_MODULE_OPENGL "TeGLGuiAPI"
+
+#define TE_VERSION 0.1
 
 /** Path to the framework root when files haven't been packaged yet (e.g. running from debugger). */
 static constexpr const char* RAW_APP_ROOT = "@APP_ROOT_DIR@/";

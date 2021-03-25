@@ -24,6 +24,7 @@ int main()
 
     desc.RenderAPI = TE_RENDER_API_MODULE;
     desc.Renderer = TE_RENDERER_MODULE;
+    desc.Physics = TE_PHYSICS_MODULE;
     desc.Audio = TE_AUDIO_MODULE;
     desc.Gui = TE_GUI_MODULE;
 

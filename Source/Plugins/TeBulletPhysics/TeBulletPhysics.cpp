@@ -1,0 +1,31 @@
+#include "TeBulletPhysics.h"
+#include "TeCoreApplication.h"
+
+namespace te
+{
+    BulletPhysics::BulletPhysics(const PHYSICS_INIT_DESC& input)
+        : Physics(input)
+        , _initDesc(input)
+        , _paused(false)
+    { }
+
+    BulletPhysics::~BulletPhysics()
+    { }
+
+    void BulletPhysics::SetPaused(bool paused)
+    {
+        _paused = paused;
+    }
+
+    bool BulletPhysics::IsPaused() const
+    {
+        return _paused;
+    }
+
+    void BulletPhysics::Update()
+    {
+        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Physics);
+        if (IsPaused() || !isRunning)
+            return;
+    }
+}
