@@ -10,6 +10,7 @@
 #include "Scripting/TeScript.h"
 #include "Scene/TeSceneManager.h"
 #include "Components/TeCScript.h"
+#include "ImGuizmo/ImGuizmo.h"
 
 namespace te
 {
@@ -94,21 +95,39 @@ namespace te
             }
         );
 
+        // Guizmo translation
         ShowButton(ICON_FA_ARROWS_ALT, ICON_FA_ARROWS_ALT,
             [this]() { return !(gEditor().GetImGuizmoOperation() == ImGuizmo::OPERATION::TRANSLATE); },
             [this]() { gEditor().SetImGuizmoOperation(ImGuizmo::OPERATION::TRANSLATE); }
         );
 
+        // Guizmo rotation
         ShowButton(ICON_FA_SYNC, ICON_FA_SYNC,
             [this]() { return !(gEditor().GetImGuizmoOperation() == ImGuizmo::OPERATION::ROTATE); },
             [this]() { gEditor().SetImGuizmoOperation(ImGuizmo::OPERATION::ROTATE); }
         );
 
+        // Guizmo scale
         ShowButton(ICON_FA_COMPRESS_ALT, ICON_FA_COMPRESS_ALT,
             [this]() { return !(gEditor().GetImGuizmoOperation() == ImGuizmo::OPERATION::SCALE); },
             [this]() { gEditor().SetImGuizmoOperation(ImGuizmo::OPERATION::SCALE); }
         );
 
+        // Guizmo mode
+        static ImGuiExt::ComboOptions<ImGuizmo::MODE> guizmoModeOptions;
+        if (guizmoModeOptions.Options.size() == 0)
+        {
+            guizmoModeOptions.AddOption(ImGuizmo::MODE::LOCAL, "Local");
+            guizmoModeOptions.AddOption(ImGuizmo::MODE::WORLD, "World");
+        }
+
+        ImGuizmo::MODE guizmoMode = gEditor().GetImGuizmoMode();
+
+        ImGui::SameLine();
+        if (ImGuiExt::RenderOptionCombo<ImGuizmo::MODE>((ImGuizmo::MODE*)(&guizmoMode), "##guizmo_mode_option", "", guizmoModeOptions, 75))
+            gEditor().SetImGuizmoMode(guizmoMode);
+
+        // Widget buttons
         for (auto& widgetPair : _widgets)
         {
             SPtr<Widget> widget = widgetPair.second;

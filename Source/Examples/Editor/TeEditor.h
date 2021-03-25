@@ -165,6 +165,9 @@ namespace te
         /** Get Guizmo state */
         const ImGuizmoState GetImGuizmoState() const { return _guizmoState; }
 
+        /** Get Guizmo mode */
+        const ImGuizmo::MODE GetImGuizmoMode() const { return _guizmoMode; }
+
         /** Save current scene */
         void Save();
 
