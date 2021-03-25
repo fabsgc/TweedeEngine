@@ -4,9 +4,11 @@
 #include "RenderAPI/TeRenderWindow.h"
 #include "Image/TePixelData.h"
 #include "Image/TePixelUtil.h"
+#include "Image/TeColor.h"
 #include "Math/TeRect2I.h"
 #include "Utility/TeTime.h"
 #include "TeCoreApplication.h"
+#include "String/TeUnicode.h"
 
 #include <X11/X.h>
 #include <X11/Xatom.h>
@@ -643,7 +645,7 @@ namespace te
 
                             OnCharInput((UINT32) keysym);
 
-                            U32String utfStr = UTF8::toUTF32(String(buffer));
+                            U32String utfStr = UTF8::ToUTF32(String(buffer));
                             if (utfStr.length() > 0)
                                 OnCharInput((UINT32) utfStr[0]);
                         }
@@ -1139,18 +1141,18 @@ namespace te
 
         // Convert to BGRA
         SPtr<PixelData> bgraData = PixelData::Create(data.GetWidth(), data.GetHeight(), 1, PF_BGRA8);
-        bgraData->setColors(colors);
+        bgraData->SetColors(colors);
 
-        XImage* image = XCreateImage(mData->XDisplay, CopyFromParent, depth, ZPixmap, 0,
+        XImage* image = XCreateImage(_data->XDisplay, CopyFromParent, depth, ZPixmap, 0,
                 (char*)bgraData->GetData(), data.GetWidth(), data.GetHeight(), 32, 0);
 
-        Pixmap pixmap = XCreatePixmap(mData->XDisplay, XDefaultRootWindow(mData->XDisplay),
+        Pixmap pixmap = XCreatePixmap(_data->XDisplay, XDefaultRootWindow(_data->XDisplay),
                 data.GetWidth(), data.GetHeight(), depth);
 
         XGCValues gcValues;
-        GC gc = XCreateGC(mData->XDisplay, pixmap, 0, &gcValues);
-        XPutImage(mData->XDisplay, pixmap, gc, image, 0, 0, 0, 0, data.GetWidth(), data.GetHeight());
-        XFreeGC(mData->XDisplay, gc);
+        GC gc = XCreateGC(_data->XDisplay, pixmap, 0, &gcValues);
+        XPutImage(_data->XDisplay, pixmap, gc, image, 0, 0, 0, 0, data.GetWidth(), data.GetHeight());
+        XFreeGC(_data->XDisplay, gc);
 
         // Make sure XDestroyImage doesn't free the data pointed to by 'data.bytes'
         image->data = nullptr;
