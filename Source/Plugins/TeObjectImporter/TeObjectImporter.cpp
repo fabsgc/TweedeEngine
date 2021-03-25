@@ -242,8 +242,6 @@ namespace te
                     BindTexture(aiMat, aiTextureType_DISPLACEMENT, material.MatTextures.NormalMap, material.MatProperties.UseNormalMap);
                     BindTexture(aiMat, aiTextureType_DISPLACEMENT, material.MatTextures.BumpMap, material.MatProperties.UseBumpMap);
 
-                    // TODO parallax, occlusion and environment map can't be set here
-
                     aiColor3D ambientColor;
                     aiMat->Get(AI_MATKEY_COLOR_AMBIENT, ambientColor);
                     material.MatProperties.Ambient = ConvertToNativeType(ambientColor);
@@ -427,7 +425,7 @@ namespace te
 
             AssimpImportNode* parentNode = mesh.ReferencedBy[0];
 
-            bone.LocalTransform = bone.Node->LocalTransform; // TODO Matrix4 or Transform ?
+            bone.LocalTransform = bone.Node->LocalTransform;
             bone.InvBindPose = ConvertToNativeType(assimpMesh->mBones[i]->mOffsetMatrix);
 
             // Undo the transform we baked into the mesh

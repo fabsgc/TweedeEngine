@@ -9,14 +9,28 @@ namespace te
 
     Win32RenderWindow::Win32RenderWindow(const RENDER_WINDOW_DESC& desc)
         : RenderWindow(desc)
+        , _window(nullptr)
+        , _deviceName(nullptr)
+        , _displayFrequency(0)
+        , _HDC(nullptr)
     { }
 
     Win32RenderWindow::~Win32RenderWindow()
     {
         if (_window != nullptr)
         {
+            ReleaseDC(_window->GetHWnd(), _HDC);
+
             _window->Destroy();
             te_delete(_window);
+        }
+
+        _HDC = nullptr;
+
+        if (_deviceName != nullptr)
+        {
+            te_free(_deviceName);
+            _deviceName = nullptr;
         }
     }
 
@@ -55,14 +69,54 @@ namespace te
         _properties.IsWindow = true;
 
         _properties.IsFullScreen = _desc.Fullscreen;
+        _displayFrequency = Math::RoundToInt(_desc.Mode._refreshRate);
 
         if (_properties.IsFullScreen)
         {
+            DEVMODE displayDeviceMode;
+
+            memset(&displayDeviceMode, 0, sizeof(displayDeviceMode));
+            displayDeviceMode.dmSize = sizeof(DEVMODE);
+            displayDeviceMode.dmBitsPerPel = 32;
+            displayDeviceMode.dmPelsWidth = _properties.Width;
+            displayDeviceMode.dmPelsHeight = _properties.Height;
+            displayDeviceMode.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
+
+            if (_displayFrequency)
+            {
+                displayDeviceMode.dmDisplayFrequency = _displayFrequency;
+                displayDeviceMode.dmFields |= DM_DISPLAYFREQUENCY;
+
+                if (ChangeDisplaySettingsEx(_deviceName, &displayDeviceMode, NULL, CDS_FULLSCREEN | CDS_TEST, NULL) != DISP_CHANGE_SUCCESSFUL)
+                {
+                    TE_ASSERT_ERROR(false, "ChangeDisplaySettings with user display frequency failed.");
+                }
+            }
+
+            if (ChangeDisplaySettingsEx(_deviceName, &displayDeviceMode, NULL, CDS_FULLSCREEN, NULL) != DISP_CHANGE_SUCCESSFUL)
+            {
+                TE_ASSERT_ERROR(false, "ChangeDisplaySettings failed.");
+            }
         }
 
-        RenderWindow::Initialize();
+        _HDC = GetDC(_window->GetHWnd());
 
-        // TODO
+        int testMultisample = _properties.MultisampleCount;
+        bool testHwGamma = _desc.Gamma;
+        bool formatOk = true;
+        if (!formatOk)
+        {
+            // TODO gamma support
+        }
+
+        // Record what gamma option we used in the end
+        // this will control enabling of sRGB state flags when used
+        _properties.HWGamma = testHwGamma;
+        _properties.MultisampleCount = testMultisample;
+
+        // TODO vsync
+
+        RenderWindow::Initialize();
     }
 
     void Win32RenderWindow::InitializeGui()

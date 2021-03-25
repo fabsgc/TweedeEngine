@@ -1,6 +1,7 @@
 #include "Private/Linux/TeLinuxWindow.h"
 #include "Private/Linux/TeLinuxPlatform.h"
 #include "Image/TePixelUtil.h"
+#include "Image/TeColor.h"
 
 #include <X11/Xatom.h>
 #include <X11/extensions/Xrandr.h>
@@ -247,7 +248,7 @@ namespace te
 
         Atom iconAtom = XInternAtom(display, "_NET_WM_ICON", False);
         Atom cardinalAtom = XInternAtom(display, "CARDINAL", False);
-        XChangeProperty(display, m->xWindow, iconAtom, cardinalAtom, 32, PropModeReplace,
+        XChangeProperty(display, _data->XWindow, iconAtom, cardinalAtom, 32, PropModeReplace,
                 (const unsigned char*) wmIconData.data(), wmIconData.size());
 
         XFlush(display);
@@ -267,13 +268,13 @@ namespace te
             hints.min_width = width;
             hints.max_width = width;
 
-            XSetNormalHints(LinuxPlatform::getXDisplay(), _data->XWindow, &hints);
+            XSetNormalHints(LinuxPlatform::GetXDisplay(), _data->XWindow, &hints);
         }
 
         _data->Width = width;
         _data->Height = height;
 
-        XResizeWindow(LinuxPlatform::getXDisplay(), _data->WWindow, width, height);
+        XResizeWindow(LinuxPlatform::GetXDisplay(), _data->XWindow, width, height);
     }
 
     void LinuxWindow::Hide()
@@ -289,47 +290,78 @@ namespace te
 
     void LinuxWindow::Maximize()
     {
-        // TODO
+        Maximize(true);
     }
 
     void LinuxWindow::Minimize()
     {
-        // TODO
+        Minimize(true);
     }
 
     void LinuxWindow::Restore()
     {
-        // TODO
+        if(IsMaximized())
+            Maximize(false);
+        else if(IsMinimized())
+            Minimize(false);
     }
 
     INT32 LinuxWindow::GetLeft() const
     {
-        return 0; // TODO
+        INT32 x, y;
+        ::Window child;
+        XTranslateCoordinates(LinuxPlatform::GetXDisplay(), _data->XWindow, DefaultRootWindow(LinuxPlatform::GetXDisplay()),
+                0, 0, &x, &y, &child);
+
+        return x;
     }
 
     INT32 LinuxWindow::GetTop() const
     {
-        return 0; // TODO
+        INT32 x, y;
+        ::Window child;
+        XTranslateCoordinates(LinuxPlatform::GetXDisplay(), _data->XWindow, DefaultRootWindow(LinuxPlatform::GetXDisplay()),
+                0, 0, &x, &y, &child);
+
+        return y;
     }
 
     UINT32 LinuxWindow::GetWidth() const
     {
-        return 0; // TODO
+        XWindowAttributes xwa;
+        XGetWindowAttributes(LinuxPlatform::GetXDisplay(), _data->XWindow, &xwa);
+
+        return (UINT32)xwa.width;
     }
 
     UINT32 LinuxWindow::GetHeight() const
     {
-        return 0; // TODO
+        XWindowAttributes xwa;
+        XGetWindowAttributes(LinuxPlatform::GetXDisplay(), _data->XWindow, &xwa);
+
+        return (UINT32)xwa.height;
     }
 
     Vector2I LinuxWindow::WindowToScreenPos(const Vector2I& windowPos) const
     {
-        return Vector2I(); // TODO
+        Vector2I screenPos;
+
+        ::Window child;
+        XTranslateCoordinates(LinuxPlatform::GetXDisplay(), _data->XWindow, DefaultRootWindow(LinuxPlatform::GetXDisplay()),
+                windowPos.x, windowPos.y, &screenPos.x, &screenPos.y, &child);
+
+        return screenPos;
     }
 
     Vector2I LinuxWindow::ScreenToWindowPos(const Vector2I& screenPos) const
     {
-        return Vector2I(); // TODO
+        Vector2I windowPos;
+
+        ::Window child;
+        XTranslateCoordinates(LinuxPlatform::GetXDisplay(), DefaultRootWindow(LinuxPlatform::GetXDisplay()), _data->XWindow,
+                screenPos.x, screenPos.y, &windowPos.x, &windowPos.y, &child);
+
+        return windowPos;
     }
 
     ::Window LinuxWindow::GetXWindow() const
@@ -345,5 +377,102 @@ namespace te
     RenderWindow* LinuxWindow::GetRenderWindow() const
     {
         return _data->RenderWindow;
+    }
+
+    bool LinuxWindow::IsMaximized() const
+    {
+        Atom wmState = XInternAtom(LinuxPlatform::GetXDisplay(), "_NET_WM_STATE", False);
+        Atom type;
+        INT32 format;
+        uint64_t length;
+        uint64_t remaining;
+        uint8_t* data = nullptr;
+
+        INT32 result = XGetWindowProperty(LinuxPlatform::GetXDisplay(), _data->XWindow, wmState,
+            0, 1024, False, XA_ATOM, &type, &format,
+            &length, &remaining, &data);
+
+        if (result == Success)
+        {
+            Atom* atoms = (Atom*)data;
+            Atom wmMaxHorz = XInternAtom(LinuxPlatform::GetXDisplay(), "_NET_WM_STATE_MAXIMIZED_HORZ", False);
+            Atom wmMaxVert = XInternAtom(LinuxPlatform::GetXDisplay(), "_NET_WM_STATE_MAXIMIZED_VERT", False);
+
+            bool foundHorz = false;
+            bool foundVert = false;
+            for (UINT32 i = 0; i < length; i++)
+            {
+                if (atoms[i] == wmMaxHorz)
+                    foundHorz = true;
+                if (atoms[i] == wmMaxVert)
+                    foundVert = true;
+
+                if (foundVert && foundHorz)
+                    return true;
+            }
+
+            XFree(atoms);
+        }
+
+        return false;
+    }
+
+    bool LinuxWindow::IsMinimized()
+    {
+        Atom wmState = XInternAtom(LinuxPlatform::GetXDisplay(), "WM_STATE", True);
+        Atom type;
+        INT32 format;
+        uint64_t length;
+        uint64_t remaining;
+        uint8_t* data = nullptr;
+
+        INT32 result = XGetWindowProperty(LinuxPlatform::GetXDisplay(), _data->XWindow, wmState,
+                0, 1024, False, AnyPropertyType, &type, &format,
+                &length, &remaining, &data);
+
+        if(result == Success)
+        {
+            long* state = (long*) data;
+            if(state[0] == WM_IconicState)
+                return true;
+        }
+
+        return false;
+    }
+
+    void LinuxWindow::Maximize(bool enable)
+    {
+        Atom wmState = XInternAtom(LinuxPlatform::GetXDisplay(), "_NET_WM_STATE", False);
+        Atom wmMaxHorz = XInternAtom(LinuxPlatform::GetXDisplay(), "_NET_WM_STATE_MAXIMIZED_HORZ", False);
+        Atom wmMaxVert = XInternAtom(LinuxPlatform::GetXDisplay(), "_NET_WM_STATE_MAXIMIZED_VERT", False);
+
+        XEvent xev;
+        memset(&xev, 0, sizeof(xev));
+        xev.type = ClientMessage;
+        xev.xclient.window = _data->XWindow;
+        xev.xclient.message_type = wmState;
+        xev.xclient.format = 32;
+        xev.xclient.data.l[0] = enable ? _NET_WM_STATE_ADD : _NET_WM_STATE_REMOVE;
+        xev.xclient.data.l[1] = wmMaxHorz;
+        xev.xclient.data.l[2] = wmMaxVert;
+
+        XSendEvent(LinuxPlatform::GetXDisplay(), DefaultRootWindow(LinuxPlatform::GetXDisplay()), False,
+                SubstructureRedirectMask | SubstructureNotifyMask, &xev);
+    }
+
+    void LinuxWindow::Minimize(bool enable)
+    {
+        XEvent xev;
+        Atom wmChange = XInternAtom(LinuxPlatform::GetXDisplay(), "WM_CHANGE_STATE", False);
+
+        memset(&xev, 0, sizeof(xev));
+        xev.type = ClientMessage;
+        xev.xclient.window = _data->XWindow;
+        xev.xclient.message_type = wmChange;
+        xev.xclient.format = 32;
+        xev.xclient.data.l[0] = enable ? WM_IconicState : WM_NormalState;
+
+        XSendEvent(LinuxPlatform::GetXDisplay(), DefaultRootWindow(LinuxPlatform::GetXDisplay()), False,
+                SubstructureRedirectMask | SubstructureNotifyMask, &xev);
     }
 }

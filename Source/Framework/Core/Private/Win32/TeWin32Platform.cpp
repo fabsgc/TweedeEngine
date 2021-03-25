@@ -28,6 +28,7 @@ namespace te
     struct Platform::Pimpl
     {
         NativeCursorData Cursor;
+        bool UsingCustomCursor = false;
         bool IsCursorHidden = false;
         bool IsTrackingMouse = false;
 
@@ -113,8 +114,7 @@ namespace te
     }
 
     Platform::~Platform()
-    {
-    }
+    { }
 
     Vector2I Platform::GetCursorPosition()
     {
@@ -208,7 +208,39 @@ namespace te
 
     void Platform::ChangeCursor(PixelData& pixelData, const Vector2I& hotSpot)
     {
-        // TODO
+        if (_data->UsingCustomCursor)
+        {
+            SetCursor(0);
+            DestroyIcon(_data->Cursor.cursor);
+        }
+
+        _data->UsingCustomCursor = true;
+
+        Vector<Color> pixels = pixelData.GetColors();
+        UINT32 width = pixelData.GetWidth();
+        UINT32 height = pixelData.GetHeight();
+
+        HBITMAP hBitmap = Win32PlatformUtility::CreateBitmap((Color*)pixels.data(), width, height, false);
+        HBITMAP hMonoBitmap = CreateBitmap(width, height, 1, 1, nullptr);
+
+        ICONINFO iconinfo = { 0 };
+        iconinfo.fIcon = FALSE;
+        iconinfo.xHotspot = (DWORD)hotSpot.x;
+        iconinfo.yHotspot = (DWORD)hotSpot.y;
+        iconinfo.hbmMask = hMonoBitmap;
+        iconinfo.hbmColor = hBitmap;
+
+        _data->Cursor.cursor = CreateIconIndirect(&iconinfo);
+
+        DeleteObject(hBitmap);
+        DeleteObject(hMonoBitmap);
+
+        // Make sure we notify the message loop to perform the actual cursor update
+        SPtr<RenderWindow> primaryWindow = gCoreApplication().GetWindow();
+        UINT64 hwnd;
+        primaryWindow->GetCustomAttribute("WINDOW", &hwnd);
+
+        PostMessage((HWND)hwnd, WM_SETCURSOR, WPARAM((HWND)hwnd), (LPARAM)MAKELONG(HTCLIENT, WM_MOUSEMOVE));
     }
 
     void Platform::SetIcon(const PixelData& pixelData)

@@ -643,10 +643,9 @@ namespace te
 
                             OnCharInput((UINT32) keysym);
 
-                            // TODO
-                            /*U32String utfStr = UTF8::toUTF32(String(buffer));
+                            U32String utfStr = UTF8::toUTF32(String(buffer));
                             if (utfStr.length() > 0)
-                                OnCharInput((UINT32) utfStr[0]);*/
+                                OnCharInput((UINT32) utfStr[0]);
                         }
                     }
 

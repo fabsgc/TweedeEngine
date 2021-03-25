@@ -61,6 +61,9 @@ namespace te
         void SetTitle(const String& title) override;
 
     protected:
-        Win32Window* _window = nullptr;
+        Win32Window* _window;
+        char* _deviceName;
+        int _displayFrequency;
+        HDC	_HDC;
     };
 }

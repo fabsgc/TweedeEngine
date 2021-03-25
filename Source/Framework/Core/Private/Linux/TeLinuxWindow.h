@@ -83,6 +83,25 @@ namespace te
         RenderWindow* GetRenderWindow() const;
 
     private:
+        /** Checks if the window is currently maximized. */
+        bool IsMaximized() const;
+
+        /** Checks if the window is currently minimized (iconified). */
+        bool IsMinimized();
+
+        /**
+         * Maximizes a window if @p enable is true. If false restores the window to size/position before maximization
+         * occurred.
+         */
+        void Maximize(bool enable);
+
+        /**
+         * Minimizes a window if @p enable is true. If false restores the window to size/position before minimization
+         * occurred.
+         */
+        void Minimize(bool enable);
+
+    private:
         struct Pimpl;
         Pimpl* _data;
     };
