@@ -8,8 +8,25 @@
 #include <X11/Xutil.h>
 #include <X11/Xlib.h>
 
+#define _NET_WM_STATE_REMOVE 0
+#define _NET_WM_STATE_ADD 1
+#define _NET_WM_STATE_TOGGLE 2
+
+#define _NET_WM_MOVERESIZE_MOVE 8
+#define _NET_WM_MOVERESIZE_CANCEL 11
+
+#define WM_NormalState 1
+#define WM_IconicState 3
+
 namespace te
 {
+    enum class WindowState
+    {
+        Minimized,
+        Maximized,
+        Normal
+    };
+    
     struct LinuxWindow::Pimpl
     {
         ::Window XWindow = 0;
