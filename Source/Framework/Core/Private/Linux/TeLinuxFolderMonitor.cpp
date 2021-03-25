@@ -466,7 +466,7 @@ namespace te
 
     void FolderMonitor::HandleNotifications(FileNotifyInfo& notifyInfo, FolderWatchInfo& watchInfo)
     {
-        // TODO
+        // Do nothing
     }
 
     void FolderMonitor::Update()

@@ -239,6 +239,7 @@ namespace te
                 transform.SetScale(scale);
                 hasChanged = true;
             }
+
         ImGui::PopID();
 
         return hasChanged;

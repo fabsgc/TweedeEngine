@@ -136,7 +136,8 @@ namespace te
 
             case TID_CLight:
             {
-                HLight component = this->AddComponent<CLight>();
+                HLight previousLight = static_object_cast<CLight>(co);
+                HLight component = this->AddComponent<CLight>(previousLight->GetType());
                 component->Clone(co->GetHandle());
                 component->Initialize();
                 component->SetName(co->GetName());

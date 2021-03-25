@@ -69,8 +69,7 @@ namespace te
     }
 
     void LinuxRenderWindow::InitializeGui()
-    { 
-        // TODO
+    {
         GuiAPIData data;
 
         SPtr<GuiAPI> guiAPI = GuiManager::Instance().GetGui();

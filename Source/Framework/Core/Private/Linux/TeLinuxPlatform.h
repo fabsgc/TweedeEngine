@@ -29,6 +29,9 @@ namespace te
         /** Notifies the system that a new window was created. */
         static void RegisterWindow(::Window xWindow, LinuxWindow* window);
 
+        /** Generates a X11 Pixmap from the provided pixel data. */
+        static Pixmap CreatePixmap(const PixelData& data, UINT32 depth);
+
     public:
         /**
          * Stores events captured on the core thread, waiting to be processed by the main thread.

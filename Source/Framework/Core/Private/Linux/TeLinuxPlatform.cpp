@@ -7,6 +7,7 @@
 #include "Math/TeRect2I.h"
 #include "Utility/TeTime.h"
 #include "TeCoreApplication.h"
+
 #include <X11/X.h>
 #include <X11/Xatom.h>
 #include <X11/Xcursor/Xcursor.h>
@@ -1124,5 +1125,38 @@ namespace te
         _data->CurrentCursor = XCreateFontCursor(_data->XDisplay, XC_arrow); 
 
         ApplyCurrentCursor(_data, xWindow);
+    }
+
+    Pixmap LinuxPlatform::CreatePixmap(const PixelData& data, UINT32 depth)
+    {
+        // Premultiply alpha
+        Vector<Color> colors = data.GetColors();
+        for(auto& color : colors)
+        {
+            color.r *= color.a;
+            color.g *= color.a;
+            color.b *= color.a;
+        }
+
+        // Convert to BGRA
+        SPtr<PixelData> bgraData = PixelData::Create(data.GetWidth(), data.GetHeight(), 1, PF_BGRA8);
+        bgraData->setColors(colors);
+
+        XImage* image = XCreateImage(mData->XDisplay, CopyFromParent, depth, ZPixmap, 0,
+                (char*)bgraData->GetData(), data.GetWidth(), data.GetHeight(), 32, 0);
+
+        Pixmap pixmap = XCreatePixmap(mData->XDisplay, XDefaultRootWindow(mData->XDisplay),
+                data.GetWidth(), data.GetHeight(), depth);
+
+        XGCValues gcValues;
+        GC gc = XCreateGC(mData->XDisplay, pixmap, 0, &gcValues);
+        XPutImage(mData->XDisplay, pixmap, gc, image, 0, 0, 0, 0, data.GetWidth(), data.GetHeight());
+        XFreeGC(mData->XDisplay, gc);
+
+        // Make sure XDestroyImage doesn't free the data pointed to by 'data.bytes'
+        image->data = nullptr;
+        XDestroyImage(image);
+
+        return pixmap;
     }
 }

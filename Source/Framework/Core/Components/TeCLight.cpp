@@ -1,5 +1,6 @@
 #include "Components/TeCLight.h"
 #include "Scene/TeSceneManager.h"
+#include "Renderer/TeRenderer.h"
 
 namespace te
 {

@@ -1,5 +1,6 @@
 #include "Private/Linux/TeLinuxWindow.h"
 #include "Private/Linux/TeLinuxPlatform.h"
+#include "Image/TePixelUtil.h"
 
 #include <X11/Xatom.h>
 #include <X11/extensions/Xrandr.h>
@@ -211,12 +212,68 @@ namespace te
 
     void LinuxWindow::SetIcon(const PixelData& data)
     {
-        // TODO
+        constexpr UINT32 WIDTH = 128;
+        constexpr UINT32 HEIGHT = 128;
+
+        PixelData resizedData(WIDTH, HEIGHT, 1, PF_RGBA8);
+        resizedData.AllocateInternalBuffer();
+
+        PixelUtil::Scale(data, resizedData);
+
+        ::Display* display = LinuxPlatform::GetXDisplay();
+
+        // Set icon the old way using IconPixmapHint.
+        Pixmap iconPixmap = LinuxPlatform::CreatePixmap(resizedData, (UINT32)XDefaultDepth(display,
+                XDefaultScreen(display)));
+
+        XWMHints* hints = XAllocWMHints();
+        hints->flags = IconPixmapHint;
+        hints->icon_pixmap = iconPixmap;
+
+        XSetWMHints(display, _data->XWindow, hints);
+
+        XFree(hints);
+        XFreePixmap(display, iconPixmap);
+
+        // Also try to set _NET_WM_ICON for modern window managers.
+        // Using long because the spec for XChangeProperty states that format size of 32 = long (this means for 64-bit it
+        // is padded in upper 4 bytes)
+        Vector<long> wmIconData(2 + WIDTH * HEIGHT, 0);
+        wmIconData[0] = WIDTH;
+        wmIconData[1] = HEIGHT;
+        for (UINT32 y = 0; y < HEIGHT; y++)
+            for (UINT32 x = 0; x < WIDTH; x++)
+                wmIconData[y * WIDTH + x + 2] = resizedData.GetColorAt(x, y).GetAsBGRA();
+
+        Atom iconAtom = XInternAtom(display, "_NET_WM_ICON", False);
+        Atom cardinalAtom = XInternAtom(display, "CARDINAL", False);
+        XChangeProperty(display, m->xWindow, iconAtom, cardinalAtom, 32, PropModeReplace,
+                (const unsigned char*) wmIconData.data(), wmIconData.size());
+
+        XFlush(display);
     }
 
     void LinuxWindow::Resize(UINT32 width, UINT32 height)
     {
-        // TODO
+        // If resize is disabled on WM level, we need to force it
+        if(_data->ResizeDisabled)
+        {
+            XSizeHints hints;
+            hints.flags = PMinSize | PMaxSize;
+
+            hints.min_height = height;
+            hints.max_height = height;
+
+            hints.min_width = width;
+            hints.max_width = width;
+
+            XSetNormalHints(LinuxPlatform::getXDisplay(), _data->XWindow, &hints);
+        }
+
+        _data->Width = width;
+        _data->Height = height;
+
+        XResizeWindow(LinuxPlatform::getXDisplay(), _data->WWindow, width, height);
     }
 
     void LinuxWindow::Hide()

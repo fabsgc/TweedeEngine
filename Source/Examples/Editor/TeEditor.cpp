@@ -179,13 +179,16 @@ namespace te
             SPtr<GameObject> gameObject = _picking->GetGameObjectAt(x, y);
             if (gameObject)
             {
-                SPtr<Component> component = std::static_pointer_cast<Component>(gameObject);
+                if (!ImGuizmo::IsOver())
+                {
+                    SPtr<Component> component = std::static_pointer_cast<Component>(gameObject);
 
-                _selections.ClickedComponent = component;
-                _selections.ClickedSceneObject = component->GetSceneObject().GetInternalPtr();
+                    _selections.ClickedComponent = component;
+                    _selections.ClickedSceneObject = component->GetSceneObject().GetInternalPtr();
 
-                if (_settings.WProject)
-                    std::static_pointer_cast<WidgetProject>(_settings.WProject)->ForceExpandToSelection();
+                    if (_settings.WProject)
+                        std::static_pointer_cast<WidgetProject>(_settings.WProject)->ForceExpandToSelection();
+                }
             }
             else
             {
@@ -678,13 +681,13 @@ namespace te
     void Editor::Save()
     {
         _settings.State = EditorState::Saved;
-        // TODO
+        // TODO Save
     }
 
     void Editor::Open()
     {
         _settings.State = EditorState::Saved;
-        // TODO
+        // TODO Open
     }
 
     void Editor::Paste()
@@ -735,7 +738,8 @@ namespace te
 
             case TID_CLight:
             {
-                HLight component = clickedSceneObject->AddComponent<CLight>();
+                SPtr<CLight> previousLight = std::static_pointer_cast<CLight>(_selections.CopiedComponent);
+                HLight component = clickedSceneObject->AddComponent<CLight>(previousLight->GetType());
                 component->Clone(_selections.CopiedComponent->GetHandle());
                 component->Initialize();
                 _selections.ClickedComponent = component.GetInternalPtr();

@@ -67,7 +67,6 @@ namespace te
 
     void Win32RenderWindow::InitializeGui()
     {
-        // TODO
         GuiAPIData data;
 
         SPtr<GuiAPI> guiAPI = GuiManager::Instance().GetGui();
