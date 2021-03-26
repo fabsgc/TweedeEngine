@@ -5,6 +5,27 @@
 
 namespace te
 {
+    /** Contains information about available GPUs on the system. */
+    struct GPUInfo
+    {
+        String Names[5];
+        UINT32 NumGPUs;
+    };
+
+    /** Contains information about the system hardware and operating system. */
+    struct SystemInfo
+    {
+        String CpuManufacturer;
+        String CpuModel;
+        UINT32 CpuClockSpeedMhz;
+        UINT32 CpuNumCores;
+        UINT32 MemoryAmountMb;
+        String OsName;
+        bool OsIs64Bit;
+
+        GPUInfo GpuInfo;
+    };
+
     class PlatformUtility
     {
     public:

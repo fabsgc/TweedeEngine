@@ -40,8 +40,6 @@ namespace te
         XVisualInfo* visualInfo = XGetVisualInfo(LinuxPlatform::GetXDisplay(),
                 VisualScreenMask | VisualDepthMask | VisualClassMask, &visualInfoTempl, &numVisuals);
 
-        //GLVisualConfig visualConfig = FindBestVisual(LinuxPlatform::GetXDisplay(), _desc.DepthBuffer, _desc.MultisampleCount, _desc.Gamma);
-
         GLVisualConfig visualConfig = _GLSupport.FindBestVisual(LinuxPlatform::GetXDisplay(), _desc.DepthBuffer,
                 _desc.MultisampleCount, _desc.Gamma);
 
@@ -65,8 +63,8 @@ namespace te
         _properties.Left = _window->GetLeft();
         _properties.IsFullScreen = _desc.Fullscreen;
 
-        _properties.HWGamma = visualConfig.caps.srgb;
-        _properties.MultisampleCount = visualConfig.caps.numSamples;
+        //_properties.HWGamma = visualConfig.caps.srgb;
+        //_properties.MultisampleCount = visualConfig.caps.numSamples;
 
         _properties.MultisampleCount = 4;
         _properties.IsWindow = true;

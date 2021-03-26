@@ -6,6 +6,7 @@
 #include "RenderAPI/TeGpuProgramManager.h"
 #include "TeGLHardwareBufferManager.h"
 #include "TeGLGLSLParamParser.h"
+#include "Utility/TePlatformUtility.h"
 #include "TeGLContext.h"
 #include "TeGLSupport.h"
 
@@ -116,7 +117,9 @@ namespace te
         _mainContext = context;
         _currentContext = _mainContext;
 
-        std::cout << context.get() << std::endl;
+        _numDevices = 1;
+        _capabilities = te_newN<RenderAPICapabilities>(_numDevices);
+        InitCapabilities(_capabilities[0]);  
 
         // Set primary context as active
         if (_currentContext)
@@ -163,7 +166,19 @@ namespace te
         glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
         TE_CHECK_GL_ERROR();
 
-        // TODO
+        GPUInfo gpuInfo;
+        gpuInfo.NumGPUs = 1;
+
+        const char* vendor = (const char*)glGetString(GL_VENDOR);
+        TE_CHECK_GL_ERROR();
+
+        const char* renderer = (const char*)glGetString(GL_RENDERER);
+        TE_CHECK_GL_ERROR();
+
+        if(vendor && renderer)
+            gpuInfo.Names[0] = String(vendor) + " " + String(renderer);
+        else
+            gpuInfo.Names[0] = "Unknown";
     }
 
     void GLRenderAPI::InitCapabilities(RenderAPICapabilities& caps) const
@@ -230,6 +245,12 @@ namespace te
         HardwareBufferManager::ShutDown();
 
         _GLInitialised = false;
+
+        if (_currentContext)
+            _currentContext->EndCurrent();
+
+        if (_mainContext && _mainContext != _currentContext)
+            _mainContext->EndCurrent();
 
         _currentContext = nullptr;
         _mainContext = nullptr;

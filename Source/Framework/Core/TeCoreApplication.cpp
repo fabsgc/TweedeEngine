@@ -107,7 +107,9 @@ namespace te
         BuiltinResources::StartUp();
         RendererMaterialManager::StartUp();
 
+#if TE_PLATFORM == TE_PLATFORM_WIN32
         Platform::SetIcon(gBuiltinResources().GetFrameworkIcon());
+#endif
 
         PostStartUp();
     }

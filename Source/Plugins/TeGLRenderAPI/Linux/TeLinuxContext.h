@@ -18,13 +18,13 @@ namespace te
         LinuxContext(::Display* x11display, XVisualInfo& visualInfo);
         virtual ~LinuxContext();
 
-        /** @copydoc GLContext::setCurrent */
+        /** @copydoc GLContext::SetCurrent */
         void SetCurrent(const RenderWindow& window) override;
 
-        /** @copydoc GLContext::endCurrent */
+        /** @copydoc GLContext::EndCurrent */
         void EndCurrent() override;
 
-        /** @copydoc GLContext::releaseContext  */
+        /** @copydoc GLContext::ReleaseContext  */
         void ReleaseContext() override;
 
     protected:
