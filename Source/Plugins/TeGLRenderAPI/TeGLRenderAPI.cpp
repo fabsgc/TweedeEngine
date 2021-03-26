@@ -116,6 +116,8 @@ namespace te
         _mainContext = context;
         _currentContext = _mainContext;
 
+        std::cout << context.get() << std::endl;
+
         // Set primary context as active
         if (_currentContext)
             _currentContext->SetCurrent(*window);

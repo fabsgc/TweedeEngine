@@ -7,22 +7,30 @@ namespace te
     struct GuiAPIData
     { };
 
-    LinuxRenderWindow::LinuxRenderWindow(const RENDER_WINDOW_DESC& desc)
+    LinuxRenderWindow::LinuxRenderWindow(const RENDER_WINDOW_DESC& desc, LinuxGLSupport& glsupport)
         : RenderWindow(desc)
         , _window(nullptr)
+        , _GLSupport(glsupport)
+        , _context(nullptr)
     { }
 
     LinuxRenderWindow::~LinuxRenderWindow()
     {
         if(_window != nullptr)
         {
+            LinuxPlatform::LockX();
+
             te_delete(_window);
             _window = nullptr;
+
+            LinuxPlatform::UnlockX();
         }
     }
 
     void LinuxRenderWindow::Initialize()
     {
+        LinuxPlatform::LockX();
+
         XVisualInfo visualInfoTempl = {};
         visualInfoTempl.screen = XDefaultScreen(LinuxPlatform::GetXDisplay());
         visualInfoTempl.depth = 24;
@@ -33,6 +41,9 @@ namespace te
                 VisualScreenMask | VisualDepthMask | VisualClassMask, &visualInfoTempl, &numVisuals);
 
         //GLVisualConfig visualConfig = FindBestVisual(LinuxPlatform::GetXDisplay(), _desc.DepthBuffer, _desc.MultisampleCount, _desc.Gamma);
+
+        GLVisualConfig visualConfig = _GLSupport.FindBestVisual(LinuxPlatform::GetXDisplay(), _desc.DepthBuffer,
+                _desc.MultisampleCount, _desc.Gamma);
 
         WINDOW_DESC windowDesc;
         windowDesc.X = _desc.Left;
@@ -54,18 +65,27 @@ namespace te
         _properties.Left = _window->GetLeft();
         _properties.IsFullScreen = _desc.Fullscreen;
 
+        _properties.HWGamma = visualConfig.caps.srgb;
+        _properties.MultisampleCount = visualConfig.caps.numSamples;
+
         _properties.MultisampleCount = 4;
         _properties.IsWindow = true;
 
         XWindowAttributes windowAttributes;
         XGetWindowAttributes(LinuxPlatform::GetXDisplay(), _window->GetXWindow(), &windowAttributes);
 
-        if(_desc.Fullscreen)
-        {
-            SetFullscreen(_desc.Mode);
-        }
+        XVisualInfo requestVI;
+        requestVI.screen = windowDesc.Screen;
+        requestVI.visualid = XVisualIDFromVisual(windowAttributes.visual);
 
-        // TODO
+        LinuxPlatform::UnlockX(); // Calls below have their own locking mechanisms
+
+        _context = _GLSupport.CreateContext(LinuxPlatform::GetXDisplay(), requestVI);
+
+        if(_desc.Fullscreen)
+            SetFullscreen(_desc.Mode);
+
+        RenderWindow::Initialize();
     }
 
     void LinuxRenderWindow::InitializeGui()
@@ -78,6 +98,12 @@ namespace te
 
     void LinuxRenderWindow::GetCustomAttribute(const String& name, void* pData) const
     {
+        if(name == "GLCONTEXT")
+        {
+            SPtr<GLContext>* contextPtr = static_cast<SPtr<GLContext>*>(pData);
+            *contextPtr = _context;
+            return;
+        }
         if(name == "LINUX_WINDOW")
         {
             LinuxWindow** window = (LinuxWindow**)pData;
@@ -164,47 +190,6 @@ namespace te
     void LinuxRenderWindow::WindowMovedOrResized()
     {
         // TODO
-    }
-
-    GLVisualConfig LinuxRenderWindow::FindBestVisual(::Display* display, bool depthStencil, UINT32 multisample, bool srgb)
-    {
-        GLVisualConfig output;
-
-        // TODO
-
-        /*INT32 VISUAL_ATTRIBS[] =
-        {
-            GLX_X_RENDERABLE, 		True,
-            GLX_DRAWABLE_TYPE, 		GLX_WINDOW_BIT,
-            GLX_RENDER_TYPE,		GLX_RGBA_BIT,
-            GLX_X_VISUAL_TYPE,		GLX_TRUE_COLOR,
-            GLX_RED_SIZE,			8,
-            GLX_GREEN_SIZE,			8,
-            GLX_BLUE_SIZE,			8,
-            GLX_ALPHA_SIZE,			8,
-            GLX_DOUBLEBUFFER,		True,
-            GLX_DEPTH_SIZE,			depthStencil ? 24 : 0,
-            GLX_STENCIL_SIZE,		depthStencil ? 8 : 0,
-            GLX_SAMPLE_BUFFERS,		multisample > 1 ? 1 : 0,
-            0
-        };
-
-        INT32 numConfigs;
-        GLXFBConfig* configs = glXChooseFBConfig(display, DefaultScreen(display), VISUAL_ATTRIBS, &numConfigs);
-        GLVisualCapabilities* caps = (GLVisualCapabilities*)te_allocate(sizeof(GLVisualCapabilities) * numConfigs);
-
-        XVisualInfo* visualInfo = glXGetVisualFromFBConfig(display, configs[0]);
-
-        output.VisualInfo = *visualInfo;
-        output.Caps = caps[0];
-
-        // If we have several configs found, we simply take the first one
-        XFree(configs);
-        XFree(visualInfo);
-
-        te_delete(caps);*/
-
-        return output;
     }
 
     void LinuxRenderWindow::SetTitle(const String& title)

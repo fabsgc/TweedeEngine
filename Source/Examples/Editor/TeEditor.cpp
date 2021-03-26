@@ -643,6 +643,9 @@ namespace te
                     _selections.ClickedComponent->GetSceneObject()->Rotate(rotation);
                 }
                 break;
+
+                default:
+                    break;
                 }
 
                 NeedsRedraw();

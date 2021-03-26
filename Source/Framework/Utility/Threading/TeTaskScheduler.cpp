@@ -46,8 +46,8 @@ namespace te
 
     TaskScheduler::TaskScheduler()
         : _shutdown(false)
-        , _threadCountSupport(TE_THREAD_HARDWARE_CONCURRENCY)
         , _threadCount(0)
+        , _threadCountSupport(TE_THREAD_HARDWARE_CONCURRENCY)
     {
         _threadCount = _threadCountSupport - 1; // exclude the main (this) thread
         

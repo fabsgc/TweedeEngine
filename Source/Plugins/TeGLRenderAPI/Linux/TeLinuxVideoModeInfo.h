@@ -13,7 +13,7 @@ namespace te
         LinuxVideoMode(UINT32 width, UINT32 height, float refreshRate, UINT32 outputIdx);
 
         /** Returns internal RandR video mode id. */
-        RRMode _getModeID() const { return mModeID; }
+        RRMode _getModeID() const { return _modeID; }
 
     private:
         LinuxVideoMode(UINT32 width, UINT32 height, float refreshRate, UINT32 outputIdx, RRMode modeID);

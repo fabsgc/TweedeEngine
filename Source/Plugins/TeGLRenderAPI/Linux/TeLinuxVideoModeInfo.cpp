@@ -63,7 +63,8 @@ namespace te
 
     LinuxVideoOutputInfo::LinuxVideoOutputInfo(::Display* x11Display, INT32 screen, XRROutputInfo* outputInfo,
         XRRCrtcInfo* crtcInfo, XRRScreenResources* screenRes, RROutput outputID, UINT32 outputIdx)
-            : mOutputID(outputID), _screen(screen)
+            : _outputID(outputID)
+            , _screen(screen)
     {
         RRMode currentMode = crtcInfo->mode;
 
@@ -71,7 +72,7 @@ namespace te
         Atom EDID = XInternAtom(x11Display, "EDID", False);
 
         INT32 numOutputProps;
-        Atom* outputProps = XRRListOutputProperties(x11Display, mOutputID, &numOutputProps);
+        Atom* outputProps = XRRListOutputProperties(x11Display, _outputID, &numOutputProps);
 
         for(INT32 k = 0; k < numOutputProps; k++)
         {
@@ -83,7 +84,7 @@ namespace te
             INT32 actualFormat;
             UINT8* data;
 
-            Status status = XRRGetOutputProperty(x11Display, mOutputID, outputProps[k], 0, 128, False,
+            Status status = XRRGetOutputProperty(x11Display, _outputID, outputProps[k], 0, 128, False,
                     False, AnyPropertyType, &actualType, &actualFormat, &numItems, &bytesAfter, &data);
             if(status == Success)
             {
@@ -153,7 +154,7 @@ namespace te
 
             LinuxVideoMode* videoMode = new (te_allocate<LinuxVideoMode>())
                     LinuxVideoMode(width, height, refreshRate, outputIdx, modeInfo.id);
-            mVideoModes.push_back(videoMode);
+            _videoModes.push_back(videoMode);
         }
 
         // Save current desktop mode
@@ -162,8 +163,8 @@ namespace te
             if(screenRes->modes[k].id == currentMode)
             {
                 _desktopVideoMode = new (te_allocate<LinuxVideoMode>())
-                        LinuxVideoMode(mVideoModes[k]->width, mVideoModes[k]->height,
-                        mVideoModes[k]->refreshRate, mVideoModes[k]->outputIdx, currentMode);
+                        LinuxVideoMode(_videoModes[k]->_width, _videoModes[k]->_height,
+                        _videoModes[k]->_refreshRate, _videoModes[k]->_outputIdx, currentMode);
                 break;
             }
         }
@@ -177,7 +178,5 @@ namespace te
     LinuxVideoMode::LinuxVideoMode(UINT32 width, UINT32 height, float refreshRate, UINT32 outputIdx, RRMode modeID)
         : VideoMode(width, height, refreshRate, outputIdx)
         , _modeID(modeID)
-    {
-        isCustom = false;
-    }
+    { }
 }

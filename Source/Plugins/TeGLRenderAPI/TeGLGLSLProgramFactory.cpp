@@ -37,6 +37,8 @@ namespace te
             gpuProgram = te_core_ptr<GLGpuComputeProgram>(new (te_allocate<GLGpuComputeProgram>())
                 GLGpuComputeProgram(desc, deviceMask));
             break;
+        case GPT_COUNT:
+            break;
         }
 
         if (gpuProgram != nullptr)
@@ -79,6 +81,8 @@ namespace te
         case GPT_COMPUTE_PROGRAM:
             gpuProgram = te_shared_ptr<GLGpuComputeProgram>(new (te_allocate<GLGpuComputeProgram>())
                 GLGpuComputeProgram(desc, deviceMask));
+            break;
+        case GPT_COUNT:
             break;
         }
 
