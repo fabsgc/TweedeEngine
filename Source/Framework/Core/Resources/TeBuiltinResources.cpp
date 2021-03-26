@@ -24,7 +24,7 @@ namespace te
         InitGpuPrograms();
         InitStates();
         InitShaderDesc();
-#if TE_PLATFORM == TE_PLATFORM_WIN32 //TODO to remove when OpenGL will be done
+#if TE_PLATFORM == TE_PLATFORM_WIN32 // TODO to remove when OpenGL will be done
         InitSamplers();
         InitDefaultMaterial();
         InitFrameworkIcon();

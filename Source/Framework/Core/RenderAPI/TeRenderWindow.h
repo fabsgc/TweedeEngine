@@ -157,6 +157,14 @@ namespace te
         virtual void Restore() {}
 
         /**
+         * Enables or disables vertical synchronization. When enabled the system will wait for monitor refresh before
+         * presenting the back buffer. This eliminates tearing but can result in increased input lag.
+         *
+         * @param enabled 		True to enable vsync, false to disable.
+         */
+        virtual void SetVSync(bool enabled) = 0;
+
+        /**
          * Switches the window to fullscreen mode. Child windows cannot go into fullscreen mode.
          *
          * @param[in]	width		Width of the window frame buffer in pixels.

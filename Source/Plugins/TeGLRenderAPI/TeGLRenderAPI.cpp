@@ -96,10 +96,6 @@ namespace te
         _GLInitialised = false;
     }
 
-    GLRenderAPI::~GLRenderAPI()
-    {
-    }
-
     SPtr<RenderWindow> GLRenderAPI::CreateRenderWindow(const RENDER_WINDOW_DESC& windowDesc)
     {
         SPtr<RenderWindow> window = nullptr;
@@ -126,6 +122,8 @@ namespace te
 
         // Setup GLSupport
         _GLSupport->InitializeExtensions();
+
+        window->SetVSync(windowDesc.Vsync);
 
         _GLInitialised = true;
 
@@ -192,6 +190,32 @@ namespace te
     void GLRenderAPI::InitFromCaps(RenderAPICapabilities* caps)
     {
         // TODO init opengl
+    }
+
+    void GLRenderAPI::SwitchContext(const SPtr<GLContext>& context, const RenderWindow& window)
+    {
+        // Unbind pipeline and rebind to new context later	
+        SetGraphicsPipeline(nullptr);
+
+        if (_currentContext)
+            _currentContext->EndCurrent();
+
+        _currentContext = context;
+        _currentContext->SetCurrent(window);
+
+        // Must reset depth/colour write mask to according with user desired, otherwise, clearFrameBuffer would be wrong
+        // because the value we recorded may be different from the real state stored in GL context.
+        /*glDepthMask(_depthWrite);
+        TE_CHECK_GL_ERROR();
+
+        for (UINT32 i = 0; i < TE_MAX_MULTIPLE_RENDER_TARGETS; i++)
+            glColorMask(_colorWrite[i][0], _colorWrite[i][1], _colorWrite[i][2], _colorWrite[i][3]);
+        TE_CHECK_GL_ERROR();
+
+        glStencilMask(_stencilWriteMask);
+        TE_CHECK_GL_ERROR();*/
+
+        // TODO switch context opengl
     }
 
     void GLRenderAPI::Destroy()
@@ -282,7 +306,20 @@ namespace te
 
     void GLRenderAPI::SwapBuffers(const SPtr<RenderTarget>& target)
     {
-        // TODO
+        // Switch context if different from current one
+        if (!target->GetProperties().IsWindow)
+            return;
+
+        RenderWindow* window = static_cast<RenderWindow*>(target.get());
+
+        SPtr<GLContext> newContext;
+        target->GetCustomAttribute("GLCONTEXT", &newContext);
+        if (newContext && _currentContext != newContext)
+            SwitchContext(newContext, *window);
+        else
+            _currentContext->SetCurrent(*window);
+
+        target->SwapBuffers();
     }
 
     void GLRenderAPI::SetRenderTarget(const SPtr<RenderTarget>& target, UINT32 readOnlyFlags)

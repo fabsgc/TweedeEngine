@@ -96,69 +96,74 @@ namespace te
 
     void LinuxRenderWindow::Move(INT32 left, INT32 top)
     {
-        //TODO
+        // TODO
     }
 
     void LinuxRenderWindow::Resize(UINT32 width, UINT32 height)
     {
-        //TODO
+        // TODO
     }
 
     void LinuxRenderWindow::SetHidden(bool hidden)
     {
-        //TODO
+        // TODO
     }
 
     void LinuxRenderWindow::SetActive(bool state)
     {
-        //TODO
+        // TODO
     }
 
     void LinuxRenderWindow::Minimize()
     {
-        //TODO
+        // TODO
     }
 
     void LinuxRenderWindow::Maximize()
     {
-        //TODO
+        // TODO
     }
 
     void LinuxRenderWindow::Restore()
     {
-        //TODO
+        // TODO
+    }
+
+    void LinuxRenderWindow::SetVSync(bool enabled)
+    {
+        // TODO
     }
 
     void LinuxRenderWindow::SetFullscreen(UINT32 width, UINT32 height, float refreshRate, UINT32 monitorIdx)
     {
-        //TODO
+        // TODO
     }
 
     void LinuxRenderWindow::SetFullscreen(const VideoMode& videoMode)
     {
-        //TODO
+        // TODO
     }
 
     void LinuxRenderWindow::SetWindowed(UINT32 width, UINT32 height)
     {
-        //TODO
+        // TODO
     }
 
     Vector2I LinuxRenderWindow::ScreenToWindowPos(const Vector2I& screenPos) const
     {
-        //TODO
+        // TODO
         return Vector2I();
     }
 
     Vector2I LinuxRenderWindow::WindowToScreenPos(const Vector2I& windowPos) const
     {
-        //TODO
+        // TODO
         return Vector2I();
     }
 
     void LinuxRenderWindow::WindowMovedOrResized()
     {
-        //TODO
+        // TODO
     }
 
     GLVisualConfig LinuxRenderWindow::FindBestVisual(::Display* display, bool depthStencil, UINT32 multisample, bool srgb)

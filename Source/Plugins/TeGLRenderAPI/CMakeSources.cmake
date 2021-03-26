@@ -66,10 +66,16 @@ set(TE_GLRENDERAPI_SRC_WIN32
 
 set(TE_GLRENDERAPI_INC_LINUX
     "Linux/TeLinuxRenderWindow.h"
+    "Linux/TTeLinuxContext.h"
+    "Linux/TeLinuxGLSupport.h"
+    "Linux/TeLinuxVideoModeInfo.h"
 )
 
 set(TE_GLRENDERAPI_SRC_LINUX
     "Linux/TeLinuxRenderWindow.cpp"
+    "Linux/TTeLinuxContext.cpp"
+    "Linux/TeLinuxGLSupport.cpp"
+    "Linux/TeLinuxVideoModeInfo.cpp"
     "glew.cpp"
 )
 

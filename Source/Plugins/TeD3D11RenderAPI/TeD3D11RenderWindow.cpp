@@ -263,6 +263,11 @@ namespace te
         _window->Restore();
     }
 
+    void D3D11RenderWindow::SetVSync(bool enabled)
+    {
+        _properties.VSync = enabled;
+    }
+
     void D3D11RenderWindow::SetFullscreen(UINT32 width, UINT32 height, float refreshRate, UINT32 monitorIdx)
     {
         const D3D11VideoModeInfo& videoModeInfo = static_cast<const D3D11VideoModeInfo&>(RenderAPI::Instance().GetVideoModeInfo());

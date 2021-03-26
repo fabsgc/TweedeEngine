@@ -36,40 +36,43 @@ namespace te
         void GetCustomAttribute(const String& name, void* pData) const override;
         void WindowMovedOrResized() override;
 
-        /** @copydoc RenderWindow::move */
+        /** @copydoc RenderWindow::Move */
         void Move(INT32 left, INT32 top) override;
 
-        /** @copydoc RenderWindow::resize */
+        /** @copydoc RenderWindow::Resize */
         void Resize(UINT32 width, UINT32 height) override;
 
-        /** @copydoc RenderWindow::setHidden */
+        /** @copydoc RenderWindow::SetHidden */
         void SetHidden(bool hidden) override;
 
-        /** @copydoc RenderWindow::setActive */
+        /** @copydoc RenderWindow::SetActive */
         void SetActive(bool state) override;
 
-        /** @copydoc RenderWindow::minimize */
+        /** @copydoc RenderWindow::Minimize */
         void Minimize() override;
 
-        /** @copydoc RenderWindow::maximize */
+        /** @copydoc RenderWindow::Maximize */
         void Maximize() override;
 
-        /** @copydoc RenderWindow::restore */
+        /** @copydoc RenderWindow::Restore */
         void Restore() override;
 
-        /** @copydoc RenderWindow::setFullscreen(UINT32, UINT32, float, UINT32) */
+        /** @copydoc RenderWindow::SetVSync */
+        void setVSync(bool enabled) override;
+
+        /** @copydoc RenderWindow::SetFullscreen(UINT32, UINT32, float, UINT32) */
         void SetFullscreen(UINT32 width, UINT32 height, float refreshRate = 60.0f, UINT32 monitorIdx = 0) override;
 
-        /** @copydoc RenderWindow::setFullscreen(const VideoMode&) */
+        /** @copydoc RenderWindow::SetFullscreen(const VideoMode&) */
         void SetFullscreen(const VideoMode& videoMode) override;
 
-        /** @copydoc RenderWindow::setWindowed */
+        /** @copydoc RenderWindow::SetWindowed */
         void SetWindowed(UINT32 width, UINT32 height) override;
 
-        /** @copydoc RenderWindow::screenToWindowPos */
+        /** @copydoc RenderWindow::ScreenToWindowPos */
         Vector2I ScreenToWindowPos(const Vector2I& screenPos) const override;
 
-        /** @copydoc RenderWindow::windowToScreenPos */
+        /** @copydoc RenderWindow::WindowToScreenPos */
         Vector2I WindowToScreenPos(const Vector2I& windowPos) const override;
 
         /** @copydoc RenderWindow::SetTitle */

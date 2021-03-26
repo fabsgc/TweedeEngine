@@ -150,7 +150,7 @@ namespace te
 
         _context = _GLSupport.CreateContext(_HDC, nullptr);
 
-        // TODO vsync
+        _GLSupport._notifyWindowCreated(this);
 
         RenderWindow::Initialize();
     }
@@ -233,6 +233,17 @@ namespace te
     void Win32RenderWindow::Restore()
     {
         _window->Restore();
+    }
+
+    void Win32RenderWindow::SetVSync(bool enabled)
+    {
+        if(enabled)
+            wglSwapIntervalEXT(1);
+        else
+            wglSwapIntervalEXT(0);
+        TE_CHECK_GL_ERROR();
+
+        _properties.VSync = enabled;
     }
 
     void Win32RenderWindow::SetFullscreen(UINT32 width, UINT32 height, float refreshRate, UINT32 monitorIdx)

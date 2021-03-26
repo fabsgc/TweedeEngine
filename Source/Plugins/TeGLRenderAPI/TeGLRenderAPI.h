@@ -10,7 +10,7 @@ namespace te
     {
     public:
         GLRenderAPI();
-        ~GLRenderAPI();
+        ~GLRenderAPI() = default;
 
         SPtr<RenderWindow> CreateRenderWindow(const RENDER_WINDOW_DESC& windowDesc) override;
         void Initialize() override;
@@ -79,6 +79,12 @@ namespace te
 
         /**	Finish initialization by setting up any systems dependant on render systemcapabilities. */
         void InitFromCaps(RenderAPICapabilities* caps);
+
+        /**
+         * Switch the currently used OpenGL context. You will need to re-bind any previously bound values manually
+         * (for example textures, gpu programs and such).
+         */
+        void SwitchContext(const SPtr<GLContext>& context, const RenderWindow& window);
 
         /************************************************************************/
         /* 				Internal use by OpenGL RenderSystem only                */

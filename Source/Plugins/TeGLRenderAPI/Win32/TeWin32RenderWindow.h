@@ -45,6 +45,9 @@ namespace te
         /** @copydoc RenderWindow::restore */
         void Restore() override;
 
+        /** @copydoc RenderWindow::SetVSync */
+        void SetVSync(bool enabled) override;
+
         /** @copydoc RenderWindow::setFullscreen(UINT32, UINT32, float, UINT32) */
         void SetFullscreen(UINT32 width, UINT32 height, float refreshRate = 60.0f, UINT32 monitorIdx = 0) override;
 
