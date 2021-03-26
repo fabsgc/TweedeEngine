@@ -19,6 +19,8 @@ set (TE_GLRENDERAPI_INC_NOFILTER
     "TeGLGpuParamBlockBuffer.h"
     "TeGLGpuBuffer.h"
     "TeGLGLSLParamParser.h"
+    "TeGLContext.cpp"
+    "TeGLSupport.cpp"
 )
 
 set (TE_GLRENDERAPI_SRC_NOFILTER
@@ -42,14 +44,23 @@ set (TE_GLRENDERAPI_SRC_NOFILTER
     "TeGLGpuParamBlockBuffer.cpp"
     "TeGLGpuBuffer.cpp"
     "TeGLGLSLParamParser.cpp"
+    "TeGLContext.h"
+    "TeGLSupport.h"
 )
 
 set(TE_GLRENDERAPI_INC_WIN32
     "Win32/TeWin32RenderWindow.h"
+    "Win32/TeWin32Context.h"
+    "Win32/TeWin32GLSupport.h"
+    "Win32/TeWin32Prerequisites.h"
+    "Win32/TeWin32VideoModeInfo.h"
 )
 
 set(TE_GLRENDERAPI_SRC_WIN32
     "Win32/TeWin32RenderWindow.cpp"
+    "Win32/TeWin32Context.cpp"
+    "Win32/TeWin32GLSupport.cpp"
+    "Win32/TeWin32VideoModeInfo.cpp"
     "glew.cpp"
 )
 
@@ -64,7 +75,6 @@ set(TE_GLRENDERAPI_SRC_LINUX
 
 source_group ("" FILES ${TE_GLRENDERAPI_SRC_NOFILTER} ${TE_GLRENDERAPI_INC_NOFILTER})
 source_group("Win32" FILES ${TE_GLRENDERAPI_INC_WIN32} ${TE_GLRENDERAPI_SRC_WIN32})
-source_group("Linux" FILES ${TE_GLRENDERAPI_INC_LINUX} ${TE_GLRENDERAPI_SRC_LINUX})
 
 set (TE_GLRENDERAPI_SRC
     ${TE_GLRENDERAPI_INC_NOFILTER}

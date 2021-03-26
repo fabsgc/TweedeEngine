@@ -86,7 +86,6 @@ namespace te
 
         _renderer = RendererManager::Instance().Initialize(_startUpDesc.Renderer);
         _window = RenderAPI::Instance().CreateRenderWindow(_startUpDesc.WindowDesc);
-        _window->Initialize();
 
         Input::StartUp();
         VirtualInput::StartUp();

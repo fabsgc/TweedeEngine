@@ -6,11 +6,41 @@
 #include "RenderAPI/TeGpuProgramManager.h"
 #include "TeGLHardwareBufferManager.h"
 #include "TeGLGLSLParamParser.h"
+#include "TeGLContext.h"
+#include "TeGLSupport.h"
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
 #   include "Win32/TeWin32RenderWindow.h"
 #elif TE_PLATFORM == TE_PLATFORM_LINUX
 #   include "Linux/TeLinuxRenderWindow.h"
+#endif
+
+#if TE_PLATFORM == TE_PLATFORM_WIN32
+
+#include "Win32/TeWin32GLSupport.h"
+#include "Win32/TeWin32VideoModeInfo.h"
+
+namespace te
+{
+    /**	Helper method that returns a platform specific GL support object. */
+    GLSupport* GetGLSupport()
+    {
+        return te_new<Win32GLSupport>();
+    }
+}
+
+#elif TE_PLATFORM == TE_PLATFORM_LINUX
+
+#include "Linux/TeLinuxGLSupport.h"
+
+namespace te
+{
+    /**	Helper method that returns a platform specific GL support object. */
+    GLSupport* GetGLSupport()
+    {
+        return te_new<LinuxGLSupport>();
+    }
+}
 #endif
 
 namespace te
@@ -50,13 +80,20 @@ namespace te
         }
     }
 
-#if BS_OPENGL_4_3 || BS_OPENGLES_3_2
+#if TE_OPENGL_4_3 || TE_OPENGLES_3_2
     void OpenGlErrorCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar
                 *message, GLvoid *userParam);
 #endif
 
     GLRenderAPI::GLRenderAPI()
     {
+        // Get our GLSupport
+        _GLSupport = te::GetGLSupport();
+
+        _currentContext = 0;
+        _mainContext = 0;
+
+        _GLInitialised = false;
     }
 
     GLRenderAPI::~GLRenderAPI()
@@ -65,15 +102,41 @@ namespace te
 
     SPtr<RenderWindow> GLRenderAPI::CreateRenderWindow(const RENDER_WINDOW_DESC& windowDesc)
     {
+        SPtr<RenderWindow> window = nullptr;
+
 #if TE_PLATFORM == TE_PLATFORM_WIN32
-        return te_core_ptr_new<Win32RenderWindow>(windowDesc);
+        window = te_core_ptr_new<Win32RenderWindow>(windowDesc, *(static_cast<Win32GLSupport*>(_GLSupport)));
 #elif TE_PLATFORM == TE_PLATFORM_LINUX
-        return te_core_ptr_new<LinuxRenderWindow>(windowDesc);
+        window = te_core_ptr_new<LinuxRenderWindow>(windowDesc, *(static_cast<LinuxGLSupport*>(_GLSupport)));
 #endif
+
+        window->Initialize();
+
+        // Get the context from the window and finish initialization
+        SPtr<GLContext> context;
+        window->GetCustomAttribute("GLCONTEXT", &context);
+
+        // Set main and current context
+        _mainContext = context;
+        _currentContext = _mainContext;
+
+        // Set primary context as active
+        if (_currentContext)
+            _currentContext->SetCurrent(*window);
+
+        // Setup GLSupport
+        _GLSupport->InitializeExtensions();
+
+        _GLInitialised = true;
+
+        return window;
     }
 
     void GLRenderAPI::Initialize()
     {
+        _GLSupport->Start();
+        _videoModeInfo = _GLSupport->GetVideoModeInfo();
+
         // Create the texture manager for use by others
         TextureManager::StartUp<GLTextureManager>();
 
@@ -90,19 +153,63 @@ namespace te
         _numDevices = 1;
         _capabilities = te_newN<RenderAPICapabilities>(_numDevices);
         InitCapabilities(_capabilities[0]);
+
+        InitFromCaps(_capabilities);
+
+        glFrontFace(GL_CW);
+        TE_CHECK_GL_ERROR();
+
+        // Ensure cubemaps are filtered across seams
+        glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+        TE_CHECK_GL_ERROR();
+
+        // TODO
     }
 
     void GLRenderAPI::InitCapabilities(RenderAPICapabilities& caps) const
     {
+        Vector<String> tokens = Split(_GLSupport->GetGLVersion(), '.');
+
+        // TODO init opengl
+
         caps.Convention.UV_YAxis = Conventions::Axis::Up;
         caps.Convention.matrixOrder = Conventions::MatrixOrder::ColumnMajor;
+        caps.MinDepth = -1.0f;
+        caps.MaxDepth = 1.0f;
+
+        GLint maxOutputVertices;
+
+#if TE_OPENGL_4_1 || TE_OPENGLES_3_2
+        glGetIntegerv(GL_MAX_GEOMETRY_OUTPUT_VERTICES, &maxOutputVertices);
+        TE_CHECK_GL_ERROR();
+#else
+        maxOutputVertices = 0;
+#endif
+
+        // TODO init opengl
+    }
+
+    void GLRenderAPI::InitFromCaps(RenderAPICapabilities* caps)
+    {
+        // TODO init opengl
     }
 
     void GLRenderAPI::Destroy()
     {
+        if (_GLSupport)
+            _GLSupport->Stop();
+
         TextureManager::ShutDown();
         RenderStateManager::ShutDown();
         HardwareBufferManager::ShutDown();
+
+        _GLInitialised = false;
+
+        _currentContext = nullptr;
+        _mainContext = nullptr;
+
+        if (_GLSupport)
+            te_delete(_GLSupport);
 
         RenderAPI::Destroy();
     }

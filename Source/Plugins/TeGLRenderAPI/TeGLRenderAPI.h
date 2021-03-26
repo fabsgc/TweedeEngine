@@ -77,7 +77,29 @@ namespace te
         /**	Creates render system capabilities that specify which features are or aren't supported. */
         void InitCapabilities(RenderAPICapabilities& caps) const;
 
+        /**	Finish initialization by setting up any systems dependant on render systemcapabilities. */
+        void InitFromCaps(RenderAPICapabilities* caps);
+
+        /************************************************************************/
+        /* 				Internal use by OpenGL RenderSystem only                */
+        /************************************************************************/
+
+        /**	Query has the main context been initialized. */
+        bool IsContextInitialized() const { return _GLInitialised; }
+
+        /**	Returns main context. Caller must ensure the context has been initialized. */
+        SPtr<GLContext> GetMainContext() const { return _mainContext; }
+
+        /**	Returns a support object you may use for creating */
+        GLSupport* GetGLSupport() const { return _GLSupport; }
+
     private:
         GLGLSLProgramFactory* _GLSLFactory = nullptr;
+
+        GLSupport* _GLSupport;
+        bool _GLInitialised;
+
+        SPtr<GLContext> _mainContext;
+        SPtr<GLContext> _currentContext;
     };
 }

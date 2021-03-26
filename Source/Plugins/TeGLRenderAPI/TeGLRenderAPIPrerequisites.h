@@ -2,13 +2,18 @@
 
 #include "Prerequisites/TePrerequisitesUtility.h"
 
+#if TE_THREAD_SUPPORT == 1
+#	define GLEW_MX
+#endif
+
 #define TE_OPENGL_4_1 1
 #define TE_OPENGL_4_2 1
 #define TE_OPENGL_4_3 1
 #define TE_OPENGL_4_4 1
 #define TE_OPENGL_4_5 1
-#define TE_OPENGL_4_6 0
+#define TE_OPENGL_4_6 1
 
+// 3.1 is the minimum supported version for OpenGL ES
 #define TE_OPENGLES_3_1 0
 #define TE_OPENGLES_3_2 0
 
@@ -30,6 +35,20 @@
 #   define GL_GLEXT_PROTOTYPES
 #endif
 
+#if TE_THREAD_SUPPORT == 1
+GLEWContext* glewGetContext();
+
+#	if TE_PLATFORM == TE_PLATFORM_WIN32
+WGLEWContext* wglewGetContext();
+#	endif
+
+#endif
+
+// Lots of generated code in here which triggers the new VC CRT security warnings
+#if !defined( _CRT_SECURE_NO_DEPRECATE )
+#define _CRT_SECURE_NO_DEPRECATE
+#endif
+
 namespace te
 {
     /** Translated an OpenGL error code enum to an error code string. */
@@ -44,6 +63,8 @@ namespace te
     #define TE_CHECK_GL_ERROR()
 #endif
 
+    class GLSupport;
+    class GLContext;
     class GLRenderAPI;
     class GLRenderStateManager;
     class GLBlendState;

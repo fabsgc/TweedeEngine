@@ -34,6 +34,7 @@ namespace te
     {
         SPtr<D3D11RenderWindow> window = te_core_ptr_new<D3D11RenderWindow>(windowDesc, *_device, _DXGIFactory);
         window->SetThisPtr(window);
+        window->Initialize();
 
         return window;
     }

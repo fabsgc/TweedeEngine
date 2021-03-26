@@ -32,9 +32,6 @@
 #include <malloc.h>
 #endif
 
-#undef near
-#undef far
-
 // includes patches for multiview from
 // https://github.com/CedricGuillemet/ImGuizmo/issues/15
 
@@ -1005,11 +1002,11 @@ namespace ImGuizmo
       gContext.mCameraUp = viewInverse.v.up;
 
       // projection reverse
-       vec_t near, far;
-       near.Transform(makeVect(0, 0, 1.f, 1.f), gContext.mProjectionMat);
-       far.Transform(makeVect(0, 0, 2.f, 1.f), gContext.mProjectionMat);
+       vec_t vnear, vfar;
+       vnear.Transform(makeVect(0, 0, 1.f, 1.f), gContext.mProjectionMat);
+       vfar.Transform(makeVect(0, 0, 2.f, 1.f), gContext.mProjectionMat);
 
-       gContext.mReversed = (near.z/near.w) > (far.z / far.w);
+       gContext.mReversed = (vnear.z/vnear.w) > (vfar.z / vfar.w);
 
       // compute scale from the size of camera right vector projected on screen at the matrix position
       vec_t pointRight = viewInverse.v.right;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "TeGLRenderAPIPrerequisites.h"
+#include "Win32/TeWin32Prerequisites.h"
 #include "RenderAPI/TeRenderWindow.h"
 #include "Private/Win32/TeWin32Window.h"
 #include "Math/TeVector2I.h"
@@ -10,7 +10,7 @@ namespace te
     class Win32RenderWindow : public RenderWindow
     {
     public:
-        Win32RenderWindow(const RENDER_WINDOW_DESC& desc);
+        Win32RenderWindow(const RENDER_WINDOW_DESC& desc, Win32GLSupport& glsupport);
         ~Win32RenderWindow();
 
         void Initialize() override;
@@ -20,6 +20,9 @@ namespace te
 
         /** Retrieves internal window handle. */
         HWND GetHWnd() const;
+
+        /**	Returns handle to device context associated with the window. */
+        HDC GetHDC() const { return _HDC; }
 
         /** @copydoc RenderWindow::move */
         void Move(INT32 left, INT32 top) override;
@@ -57,6 +60,9 @@ namespace te
         /** @copydoc RenderWindow::windowToScreenPos */
         Vector2I WindowToScreenPos(const Vector2I& windowPos) const override;
 
+        /** @copydoc RenderWindow::SwapBuffers */
+        void SwapBuffers() override;
+
         /** @copydoc RenderWindow::SetTitle */
         void SetTitle(const String& title) override;
 
@@ -64,6 +70,8 @@ namespace te
         Win32Window* _window;
         char* _deviceName;
         int _displayFrequency;
-        HDC	_HDC;
+        HDC _HDC;
+        Win32GLSupport& _GLSupport;
+        SPtr<Win32Context> _context;
     };
 }
