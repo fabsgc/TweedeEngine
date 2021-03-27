@@ -147,6 +147,9 @@ namespace te
         /** Notifies the active render target that a rendering command was queued that will potentially change its contents. */
         void NotifyRenderTargetModified();
 
+        /** Creates and populates a set of render system capabilities describing which functionality is available. */
+        void InitCapabilites(IDXGIAdapter* adapter, RenderAPICapabilities& caps) const;
+
         /** @copydoc RenderAPI::ConvertProjectionMatrix() */
         void ConvertProjectionMatrix(const Matrix4& matrix, Matrix4& dest) override;
 

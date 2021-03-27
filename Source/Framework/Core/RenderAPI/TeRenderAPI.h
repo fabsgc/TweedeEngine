@@ -4,53 +4,13 @@
 #include "Utility/TeModule.h"
 #include "RenderAPI/TeRenderTarget.h"
 #include "RenderAPI/TeRenderWindow.h"
+#include "RenderAPI/TeRenderAPICapabilities.h"
 #include "Image/TeColor.h"
 
 #define TE_MAX_BOUND_VERTEX_BUFFERS 16
 
 namespace te
 {
-    /** Conventions used for a specific render backend. */
-    struct TE_CORE_EXPORT Conventions
-    {
-        enum class Axis : UINT8
-        {
-            Up, Down
-        };
-
-        enum class MatrixOrder : UINT8
-        {
-            ColumnMajor, RowMajor
-        };
-
-        /** Determines the direction of the Y axis in UV (texture mapping) space. */
-        Axis UV_YAxis = Axis::Down;
-
-        /** Determines the direction of the Y axis in normalized device coordinate (NDC) space. */
-        Axis NDC_YAxis = Axis::Up;
-
-        /** Determines the order in which matrices are laid out in GPU programs. */
-        MatrixOrder matrixOrder = MatrixOrder::RowMajor;
-    };
-
-    struct RenderAPICapabilities
-    {
-        /** Horizontal texel offset used for mapping texels to pixels. */
-        float HorizontalTexelOffset = 0.0f;
-
-        /** Vertical texel offset used for mapping texels to pixels. */
-        float VerticalTexelOffset = 0.0f;
-
-        /** Minimum (closest) depth value used by this render backend */
-        float MinDepth = 0.0f;
-
-        /** Maximum (farthest) depth value used by this render backend. */
-        float MaxDepth = 1.0f;
-
-        /** Returns various conventions expected by the render backend. */
-        Conventions Convention;
-    };
-
     class TE_CORE_EXPORT RenderAPI : public Module<RenderAPI>
     {
     public:

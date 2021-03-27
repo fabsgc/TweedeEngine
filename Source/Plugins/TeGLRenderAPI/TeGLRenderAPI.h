@@ -3,6 +3,7 @@
 #include "TeGLRenderAPIPrerequisites.h"
 #include "RenderAPI/TeRenderAPI.h"
 #include "TeGLGLSLProgramFactory.h"
+#include "Math/TeRect2.h"
 
 namespace te
 {
@@ -100,10 +101,58 @@ namespace te
         GLSupport* GetGLSupport() const { return _GLSupport; }
 
     private:
-        GLGLSLProgramFactory* _GLSLFactory = nullptr;
+        /** Information about a currently bound texture. */
+        struct TextureInfo
+        {
+            GLenum type = GL_TEXTURE_2D;
+        };
+
+        static const UINT32 MAX_VB_COUNT = 32;
+
+        Rect2 _viewportNorm = Rect2(0.0f, 0.0f, 1.0f, 1.0f);
+        UINT32 _scissorTop = 0;
+        UINT32 _scissorBottom = 720;
+        UINT32 _scissorLeft = 0;
+        UINT32 _scissorRight = 1280;
+        UINT32 _viewportLeft = 0;
+        UINT32 _viewportTop = 0;
+        UINT32 _viewportWidth = 0;
+        UINT32 _viewportHeight = 0;
+        bool _scissorEnabled = false;
+        bool _scissorRectDirty = false;
+
+        UINT32 _stencilReadMask = 0xFFFFFFFF;
+        UINT32 _stencilWriteMask = 0xFFFFFFFF;
+        UINT32 _stencilRefValue = 0;
+        CompareFunction _stencilCompareFront = CMPF_ALWAYS_PASS;
+        CompareFunction _stencilCompareBack = CMPF_ALWAYS_PASS;
+
+        // Last min & mip filtering options, so we can combine them
+        FilterOptions _minFilter;
+        FilterOptions _mipFilter;
+
+        // Holds texture type settings for every stage
+        UINT32 _numTextureUnits = 0;
+        TextureInfo* _textureInfos = nullptr;
+        bool _depthWrite = true;
+        bool _colorWrite[TE_MAX_MULTIPLE_RENDER_TARGETS][4];
 
         GLSupport* _GLSupport;
         bool _GLInitialised;
+
+        GLGLSLProgramFactory* _GLSLFactory = nullptr;
+
+        SPtr<GLGpuProgram> _currentVertexProgram;
+        SPtr<GLGpuProgram> _currentFragmentProgram;
+        SPtr<GLGpuProgram> _currentGeometryProgram;
+        SPtr<GLGpuProgram> _currentHullProgram;
+        SPtr<GLGpuProgram> _currentDomainProgram;
+        SPtr<GLGpuProgram> _currentComputeProgram;
+
+        std::array<SPtr<VertexBuffer>, MAX_VB_COUNT> _boundVertexBuffers;
+        SPtr<VertexDeclaration> _boundVertexDeclaration;
+        SPtr<IndexBuffer> _boundIndexBuffer;
+        DrawOperationType _currentDrawOperation = DOT_TRIANGLE_LIST;
 
         SPtr<GLContext> _mainContext;
         SPtr<GLContext> _currentContext;

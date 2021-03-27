@@ -133,12 +133,12 @@ namespace te
         AnimationManager::ShutDown();
         GameObjectManager::ShutDown();
         RendererManager::ShutDown();
-        GpuProgramManager::ShutDown();
         ResourceManager::ShutDown();
         PhysicsManager::ShutDown();
         AudioManager::ShutDown();
         GuiManager::ShutDown();
         RenderAPIManager::ShutDown();
+        GpuProgramManager::ShutDown();
         CoreObjectManager::ShutDown();
         Platform::ShutDown();
         DynLibManager::ShutDown();

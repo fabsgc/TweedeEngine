@@ -118,6 +118,7 @@ namespace te
 
         _numDevices = 1;
         _capabilities = te_newN<RenderAPICapabilities>(_numDevices);
+        InitCapabilites(selectedAdapter, _capabilities[0]);
 
         RenderAPI::Initialize();
     }
@@ -983,11 +984,123 @@ namespace te
     void D3D11RenderAPI::NotifyRenderTargetModified()
     {
         if (_activeRenderTarget == nullptr || _activeRenderTargetModified)
-        {
             return;
-        }
 
         _activeRenderTargetModified = true;
+    }
+
+    void D3D11RenderAPI::InitCapabilites(IDXGIAdapter* adapter, RenderAPICapabilities& caps) const
+    {
+        // This must query for DirectX 10 interface as this is unsupported for DX11
+        LARGE_INTEGER driverVersionNum;
+        DriverVersion driverVersion;
+        if (SUCCEEDED(adapter->CheckInterfaceSupport(IID_ID3D10Device, &driverVersionNum)))
+        {
+            driverVersion.major = HIWORD(driverVersionNum.HighPart);
+            driverVersion.minor = LOWORD(driverVersionNum.HighPart);
+            driverVersion.release = HIWORD(driverVersionNum.LowPart);
+            driverVersion.build = LOWORD(driverVersionNum.LowPart);
+        }
+
+        caps.DriverVersion = driverVersion;
+        caps.DeviceName = _activeD3DDriver->GetDriverDescription();
+        caps.RenderAPIName = "TeD3D11RenderAPI";
+
+        caps.SetCapability(RSC_TEXTURE_COMPRESSION_BC);
+        caps.SetCapability(RSC_TEXTURE_VIEWS);
+        caps.SetCapability(RSC_BYTECODE_CACHING);
+        caps.SetCapability(RSC_RENDER_TARGET_LAYERS);
+
+        caps.AddShaderProfile("hlsl");
+
+        if (_featureLevel >= D3D_FEATURE_LEVEL_10_1)
+            caps.MaxBoundVertexBuffers = 32;
+        else
+            caps.MaxBoundVertexBuffers = 16;
+
+        if (_featureLevel >= D3D_FEATURE_LEVEL_10_0)
+        {
+            caps.SetCapability(RSC_GEOMETRY_PROGRAM);
+
+            caps.NumTextureUnitsPerStage[GPT_PIXEL_PROGRAM] = D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT;
+            caps.NumTextureUnitsPerStage[GPT_VERTEX_PROGRAM] = D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT;
+            caps.NumTextureUnitsPerStage[GPT_GEOMETRY_PROGRAM] = D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT;
+
+            caps.NumCombinedTextureUnits
+                = caps.NumTextureUnitsPerStage[GPT_PIXEL_PROGRAM]
+                + caps.NumTextureUnitsPerStage[GPT_VERTEX_PROGRAM]
+                + caps.NumTextureUnitsPerStage[GPT_GEOMETRY_PROGRAM];
+
+            caps.NumGpuParamBlockBuffersPerStage[GPT_PIXEL_PROGRAM] = D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT;
+            caps.NumGpuParamBlockBuffersPerStage[GPT_VERTEX_PROGRAM] = D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT;
+            caps.NumGpuParamBlockBuffersPerStage[GPT_GEOMETRY_PROGRAM] = D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT;
+
+            caps.NumCombinedParamBlockBuffers
+                = caps.NumGpuParamBlockBuffersPerStage[GPT_PIXEL_PROGRAM]
+                + caps.NumGpuParamBlockBuffersPerStage[GPT_VERTEX_PROGRAM]
+                + caps.NumGpuParamBlockBuffersPerStage[GPT_GEOMETRY_PROGRAM];
+        }
+
+        if (_featureLevel >= D3D_FEATURE_LEVEL_11_0)
+        {
+            caps.SetCapability(RSC_TESSELLATION_PROGRAM);
+            caps.SetCapability(RSC_COMPUTE_PROGRAM);
+            caps.SetCapability(RSC_LOAD_STORE);
+
+            caps.NumTextureUnitsPerStage[GPT_HULL_PROGRAM] = D3D11_COMMONSHADER_INPUT_RESOURCE_REGISTER_COUNT;
+            caps.NumTextureUnitsPerStage[GPT_DOMAIN_PROGRAM] = D3D11_COMMONSHADER_INPUT_RESOURCE_REGISTER_COUNT;
+            caps.NumTextureUnitsPerStage[GPT_COMPUTE_PROGRAM] = D3D11_COMMONSHADER_INPUT_RESOURCE_REGISTER_COUNT;
+
+            caps.NumCombinedTextureUnits
+                = caps.NumTextureUnitsPerStage[GPT_PIXEL_PROGRAM]
+                + caps.NumTextureUnitsPerStage[GPT_VERTEX_PROGRAM]
+                + caps.NumTextureUnitsPerStage[GPT_GEOMETRY_PROGRAM]
+                + caps.NumTextureUnitsPerStage[GPT_HULL_PROGRAM]
+                + caps.NumTextureUnitsPerStage[GPT_DOMAIN_PROGRAM]
+                + caps.NumTextureUnitsPerStage[GPT_COMPUTE_PROGRAM];
+
+            caps.NumGpuParamBlockBuffersPerStage[GPT_HULL_PROGRAM] = D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT;
+            caps.NumGpuParamBlockBuffersPerStage[GPT_DOMAIN_PROGRAM] = D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT;
+            caps.NumGpuParamBlockBuffersPerStage[GPT_COMPUTE_PROGRAM] = D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT;
+
+            caps.NumCombinedParamBlockBuffers
+                = caps.NumGpuParamBlockBuffersPerStage[GPT_PIXEL_PROGRAM]
+                + caps.NumGpuParamBlockBuffersPerStage[GPT_VERTEX_PROGRAM]
+                + caps.NumGpuParamBlockBuffersPerStage[GPT_GEOMETRY_PROGRAM]
+                + caps.NumGpuParamBlockBuffersPerStage[GPT_HULL_PROGRAM]
+                + caps.NumGpuParamBlockBuffersPerStage[GPT_DOMAIN_PROGRAM]
+                + caps.NumGpuParamBlockBuffersPerStage[GPT_COMPUTE_PROGRAM];
+
+            caps.NumLoadStoreTextureUnitsPerStage[GPT_PIXEL_PROGRAM] = D3D11_PS_CS_UAV_REGISTER_COUNT;
+            caps.NumLoadStoreTextureUnitsPerStage[GPT_COMPUTE_PROGRAM] = D3D11_PS_CS_UAV_REGISTER_COUNT;
+
+            caps.NumCombinedLoadStoreTextureUnits
+                = caps.NumLoadStoreTextureUnitsPerStage[GPT_PIXEL_PROGRAM]
+                + caps.NumLoadStoreTextureUnitsPerStage[GPT_COMPUTE_PROGRAM];
+        }
+
+        // Adapter details
+        const DXGI_ADAPTER_DESC& adapterID = _activeD3DDriver->GetAdapterIdentifier();
+
+        // Determine vendor
+        switch (adapterID.VendorId)
+        {
+        case 0x10DE:
+            caps.DeviceVendor = GPU_NVIDIA;
+            break;
+        case 0x1002:
+            caps.DeviceVendor = GPU_AMD;
+            break;
+        case 0x163C:
+        case 0x8086:
+            caps.DeviceVendor = GPU_INTEL;
+            break;
+        default:
+            caps.DeviceVendor = GPU_UNKNOWN;
+            break;
+        };
+
+        caps.NumMultiRenderTargets = D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT;
     }
 
     void D3D11RenderAPI::ConvertProjectionMatrix(const Matrix4& matrix, Matrix4& dest)

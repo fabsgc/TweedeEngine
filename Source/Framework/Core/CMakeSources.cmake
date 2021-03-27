@@ -29,6 +29,7 @@ set (TE_CORE_INC_RENDERAPI
     "Core/RenderAPI/TeGpuParam.h"
     "Core/RenderAPI/TeGpuParamBlockBuffer.h"
     "Core/RenderAPI/TeVertexData.h"
+    "Core/RenderAPI/TeRenderAPICapabilities.h"
 )
 set (TE_CORE_SRC_RENDERAPI
     "Core/RenderAPI/TeRenderAPI.cpp"
@@ -56,6 +57,7 @@ set (TE_CORE_SRC_RENDERAPI
     "Core/RenderAPI/TeGpuParam.cpp"
     "Core/RenderAPI/TeGpuParamBlockBuffer.cpp"
     "Core/RenderAPI/TeVertexData.cpp"
+    "Core/RenderAPI/TeRenderAPICapabilities.cpp"
 )
 
 set (TE_CORE_INC_RENDERER

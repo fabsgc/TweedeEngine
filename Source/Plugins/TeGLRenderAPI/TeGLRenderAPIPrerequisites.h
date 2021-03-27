@@ -83,4 +83,5 @@ namespace te
     class GLInputLayoutManager;
     class GLGLSLParamParser;
     class GLGLSLProgramFactory;
+    class GLGpuProgram;
 }

@@ -11,7 +11,7 @@ namespace te
     {
     public:
         NullProgram()
-            :GpuProgram(GPU_PROGRAM_DESC(), GDF_DEFAULT)
+            : GpuProgram(GPU_PROGRAM_DESC(), GDF_DEFAULT)
         { }
 
         ~NullProgram() = default;
@@ -21,7 +21,7 @@ namespace te
 
     SPtr<GpuProgram> NullProgramFactory::Create(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask)
     {
-        SPtr<NullProgram> ret = te_shared_ptr_new<NullProgram>();
+        SPtr<NullProgram> ret = te_core_ptr<NullProgram>(new (te_allocate<NullProgram>())NullProgram());
         ret->SetThisPtr(ret);
 
         return ret;
@@ -29,7 +29,7 @@ namespace te
 
     SPtr<GpuProgram> NullProgramFactory::Create(GpuProgramType type, GpuDeviceFlags deviceMask)
     {
-        SPtr<NullProgram> ret = te_shared_ptr_new<NullProgram>();
+        SPtr<NullProgram> ret = te_core_ptr<NullProgram>(new (te_allocate<NullProgram>())NullProgram());
         ret->SetThisPtr(ret);
 
         return ret;

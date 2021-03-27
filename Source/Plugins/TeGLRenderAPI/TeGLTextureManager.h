@@ -2,6 +2,7 @@
 
 #include "TeGLRenderAPIPrerequisites.h"
 #include "Image/TeTextureManager.h"
+#include "TeGLSupport.h"
 
 namespace te
 {
@@ -9,6 +10,8 @@ namespace te
     class GLTextureManager : public TextureManager
     {
     public:
+        GLTextureManager(GLSupport& support);
+
         /** @copydoc TextureManager::GetNativeFormat */
         PixelFormat GetNativeFormat(TextureType type, PixelFormat format, int usage, bool hwGamma) override;
 
@@ -18,7 +21,8 @@ namespace te
 
         /** @copydoc TextureManager::CreateRenderTextureInternal */
         SPtr<RenderTexture> CreateRenderTextureInternal(const RENDER_TEXTURE_DESC& desc, UINT32 deviceIdx = 0) override;
-    };
 
-    // TODO
+    protected:
+        GLSupport& _GLSupport;
+    };
 }

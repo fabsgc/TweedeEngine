@@ -1,12 +1,13 @@
 #include "TeGLRenderAPI.h"
 #include "Image/TeTextureManager.h"
-#include "TeGLTextureManager.h"
+#include "Utility/TePlatformUtility.h"
 #include "RenderAPI/TeRenderStateManager.h"
-#include "TeGLRenderStateManager.h"
 #include "RenderAPI/TeGpuProgramManager.h"
+#include "RenderAPI/TeRenderAPICapabilities.h"
+#include "TeGLRenderStateManager.h"
 #include "TeGLHardwareBufferManager.h"
 #include "TeGLGLSLParamParser.h"
-#include "Utility/TePlatformUtility.h"
+#include "TeGLTextureManager.h"
 #include "TeGLContext.h"
 #include "TeGLSupport.h"
 
@@ -117,10 +118,6 @@ namespace te
         _mainContext = context;
         _currentContext = _mainContext;
 
-        _numDevices = 1;
-        _capabilities = te_newN<RenderAPICapabilities>(_numDevices);
-        InitCapabilities(_capabilities[0]);  
-
         // Set primary context as active
         if (_currentContext)
             _currentContext->SetCurrent(*window);
@@ -141,17 +138,13 @@ namespace te
         _videoModeInfo = _GLSupport->GetVideoModeInfo();
 
         // Create the texture manager for use by others
-        TextureManager::StartUp<GLTextureManager>();
+        TextureManager::StartUp<GLTextureManager>(std::ref(*_GLSupport));
 
         // Create render state manager
         RenderStateManager::StartUp<GLRenderStateManager>();
 
         // Create hardware buffer manager
         HardwareBufferManager::StartUp<GLHardwareBufferManager>();
-
-        // Create & register GLSL factory
-        _GLSLFactory = te_new<GLGLSLProgramFactory>();
-        GpuProgramManager::Instance().AddFactory("glsl", _GLSLFactory);
 
         _numDevices = 1;
         _capabilities = te_newN<RenderAPICapabilities>(_numDevices);
@@ -185,7 +178,38 @@ namespace te
     {
         Vector<String> tokens = Split(_GLSupport->GetGLVersion(), '.');
 
-        // TODO init opengl
+        DriverVersion driverVersion;
+        if (!tokens.empty())
+        {
+            driverVersion.major = ParseINT32(tokens[0]);
+            if (tokens.size() > 1)
+                driverVersion.minor = ParseINT32(tokens[1]);
+            if (tokens.size() > 2)
+                driverVersion.release = ParseINT32(tokens[2]);
+        }
+        driverVersion.build = 0;
+
+        caps.DriverVersion = driverVersion;
+        caps.RenderAPIName = "TeGLRenderAPI";
+
+        const char* deviceName = (const char*)glGetString(GL_RENDERER);
+        if(deviceName)
+            caps.DeviceName = deviceName;
+
+        const char* vendorName = (const char*)glGetString(GL_VENDOR);
+        if (vendorName)
+        {
+            if (strstr(vendorName, "NVIDIA"))
+                caps.DeviceVendor = GPU_NVIDIA;
+            else if (strstr(vendorName, "ATI"))
+                caps.DeviceVendor = GPU_AMD;
+            else if (strstr(vendorName, "AMD"))
+                caps.DeviceVendor = GPU_AMD;
+            else if (strstr(vendorName, "Intel"))
+                caps.DeviceVendor = GPU_INTEL;
+            else
+                caps.DeviceVendor = GPU_UNKNOWN;
+        }
 
         caps.Convention.UV_YAxis = Conventions::Axis::Up;
         caps.Convention.matrixOrder = Conventions::MatrixOrder::ColumnMajor;
@@ -201,12 +225,178 @@ namespace te
         maxOutputVertices = 0;
 #endif
 
-        // TODO init opengl
+        caps.GeometryProgramNumOutputVertices = maxOutputVertices;
+
+        // Max number of fragment shader textures
+        GLint units;
+        glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &units);
+        TE_CHECK_GL_ERROR();
+
+        caps.NumTextureUnitsPerStage[GPT_PIXEL_PROGRAM] = static_cast<UINT16>(units);
+
+        // Max number of vertex shader textures
+        GLint vUnits;
+        glGetIntegerv(GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, &vUnits);
+        TE_CHECK_GL_ERROR();
+
+        caps.NumTextureUnitsPerStage[GPT_VERTEX_PROGRAM] = static_cast<UINT16>(vUnits);
+
+        GLint numUniformBlocks;
+        glGetIntegerv(GL_MAX_VERTEX_UNIFORM_BLOCKS, &numUniformBlocks);
+        TE_CHECK_GL_ERROR();
+
+        caps.NumGpuParamBlockBuffersPerStage[GPT_VERTEX_PROGRAM] = numUniformBlocks;
+
+        glGetIntegerv(GL_MAX_FRAGMENT_UNIFORM_BLOCKS, &numUniformBlocks);
+        TE_CHECK_GL_ERROR();
+
+        caps.NumGpuParamBlockBuffersPerStage[GPT_PIXEL_PROGRAM] = numUniformBlocks;
+
+        {
+            GLint geomUnits;
+
+#if TE_OPENGL_4_1 || TE_OPENGLES_3_2
+            glGetIntegerv(GL_MAX_GEOMETRY_TEXTURE_IMAGE_UNITS, &geomUnits);
+            TE_CHECK_GL_ERROR();
+#else
+            geomUnits = 0;
+#endif
+
+            caps.NumTextureUnitsPerStage[GPT_GEOMETRY_PROGRAM] = static_cast<UINT16>(geomUnits);
+
+#if TE_OPENGL_4_1 || TE_OPENGLES_3_2
+            glGetIntegerv(GL_MAX_GEOMETRY_UNIFORM_BLOCKS, &numUniformBlocks);
+            TE_CHECK_GL_ERROR();
+#else
+            numUniformBlocks = 0;
+#endif
+
+            caps.NumGpuParamBlockBuffersPerStage[GPT_GEOMETRY_PROGRAM] = numUniformBlocks;
+        }
+
+        if (_GLSupport->CheckExtension("GL_ARB_tessellation_shader"))
+        {
+#if TE_OPENGL_4_1 || TE_OPENGLES_3_2
+            caps.SetCapability(RSC_TESSELLATION_PROGRAM);
+#endif
+
+#if TE_OPENGL_4_1 || TE_OPENGLES_3_2
+            glGetIntegerv(GL_MAX_TESS_CONTROL_UNIFORM_BLOCKS, &numUniformBlocks);
+            TE_CHECK_GL_ERROR();
+#else
+            numUniformBlocks = 0;
+#endif
+
+            caps.NumGpuParamBlockBuffersPerStage[GPT_HULL_PROGRAM] = numUniformBlocks;
+
+#if TE_OPENGL_4_1 || TE_OPENGLES_3_2
+            glGetIntegerv(GL_MAX_TESS_EVALUATION_UNIFORM_BLOCKS, &numUniformBlocks);
+            TE_CHECK_GL_ERROR();
+#else
+            numUniformBlocks = 0;
+#endif
+
+            caps.NumGpuParamBlockBuffersPerStage[GPT_DOMAIN_PROGRAM] = numUniformBlocks;
+        }
+
+        if (_GLSupport->CheckExtension("GL_ARB_compute_shader"))
+        {
+#if TE_OPENGL_4_3 || TE_OPENGLES_3_1
+            caps.SetCapability(RSC_COMPUTE_PROGRAM);
+#endif
+
+            GLint computeUnits;
+
+#if TE_OPENGL_4_3 || TE_OPENGLES_3_1
+            glGetIntegerv(GL_MAX_COMPUTE_TEXTURE_IMAGE_UNITS, &computeUnits);
+            TE_CHECK_GL_ERROR();
+#else
+            computeUnits = 0;
+#endif
+
+            caps.NumTextureUnitsPerStage[GPT_COMPUTE_PROGRAM] = static_cast<UINT16>(computeUnits);
+
+#if TE_OPENGL_4_3 || TE_OPENGLES_3_1
+            glGetIntegerv(GL_MAX_COMPUTE_UNIFORM_BLOCKS, &numUniformBlocks);
+            TE_CHECK_GL_ERROR();
+#else
+            numUniformBlocks = 0;
+#endif
+
+            caps.NumGpuParamBlockBuffersPerStage[GPT_COMPUTE_PROGRAM] = numUniformBlocks;
+
+            // Max number of load-store textures
+            GLint lsfUnits;
+
+#if TE_OPENGL_4_2 || TE_OPENGLES_3_1
+            glGetIntegerv(GL_MAX_FRAGMENT_IMAGE_UNIFORMS, &lsfUnits);
+            TE_CHECK_GL_ERROR();
+#else
+            lsfUnits = 0;
+#endif
+
+            caps.NumLoadStoreTextureUnitsPerStage[GPT_PIXEL_PROGRAM] = static_cast<UINT16>(lsfUnits);
+
+            GLint lscUnits;
+
+#if TE_OPENGL_4_3 || TE_OPENGLES_3_1
+            glGetIntegerv(GL_MAX_COMPUTE_IMAGE_UNIFORMS, &lscUnits);
+            TE_CHECK_GL_ERROR();
+#else
+            lscUnits = 0;
+#endif
+
+            caps.NumLoadStoreTextureUnitsPerStage[GPT_COMPUTE_PROGRAM] = static_cast<UINT16>(lscUnits);
+
+            GLint combinedLoadStoreTextureUnits;
+
+#if TE_OPENGL_4_2 || TE_OPENGLES_3_1
+            glGetIntegerv(GL_MAX_IMAGE_UNITS, &combinedLoadStoreTextureUnits);
+            TE_CHECK_GL_ERROR();
+#else
+            combinedLoadStoreTextureUnits = 0;
+#endif
+
+            caps.NumCombinedLoadStoreTextureUnits = static_cast<UINT16>(combinedLoadStoreTextureUnits);
+        }
+
+        GLint combinedTexUnits;
+        glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &combinedTexUnits);
+        TE_CHECK_GL_ERROR();
+
+        caps.NumCombinedTextureUnits = static_cast<UINT16>(combinedTexUnits);
+
+        GLint combinedUniformBlockUnits;
+        glGetIntegerv(GL_MAX_COMBINED_UNIFORM_BLOCKS, &combinedUniformBlockUnits);
+        TE_CHECK_GL_ERROR();
+
+        caps.NumCombinedParamBlockBuffers = static_cast<UINT16>(combinedUniformBlockUnits);
+        caps.NumMultiRenderTargets = 8;
     }
 
     void GLRenderAPI::InitFromCaps(RenderAPICapabilities* caps)
     {
-        // TODO init opengl
+        if (caps->RenderAPIName != "TeGLRenderAPI")
+            TE_ASSERT_ERROR(false, "Trying to initialize GLRenderAPI from RenderSystemCapabilities that do not support OpenGL");
+
+#if TE_DEBUG_MODE && (TE_OPENGL_4_3 || TE_OPENGLES_3_2)
+        if (_GLSupport->CheckExtension("GL_ARB_debug_output"))
+        {
+            glDebugMessageCallback(&OpenGlErrorCallback, 0);
+            glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+        }
+#endif
+
+        // GPU Program Manager setup
+        _GLSLFactory = te_new<GLGLSLProgramFactory>();
+        if (caps->IsShaderProfileSupported("glsl")) // Check for most recent GLSL support
+            GpuProgramManager::Instance().AddFactory("glsl", _GLSLFactory);
+
+        if (caps->IsShaderProfileSupported("glsl4_1")) // Check for OpenGL 4.1 compatible version
+            GpuProgramManager::Instance().AddFactory("glsl4_1", _GLSLFactory);
+
+        _numTextureUnits = caps->NumCombinedTextureUnits;
+        _textureInfos = te_newN<TextureInfo>(_numTextureUnits);
     }
 
     void GLRenderAPI::SwitchContext(const SPtr<GLContext>& context, const RenderWindow& window)
@@ -222,7 +412,7 @@ namespace te
 
         // Must reset depth/colour write mask to according with user desired, otherwise, clearFrameBuffer would be wrong
         // because the value we recorded may be different from the real state stored in GL context.
-        /*glDepthMask(_depthWrite);
+        glDepthMask(_depthWrite);
         TE_CHECK_GL_ERROR();
 
         for (UINT32 i = 0; i < TE_MAX_MULTIPLE_RENDER_TARGETS; i++)
@@ -230,9 +420,7 @@ namespace te
         TE_CHECK_GL_ERROR();
 
         glStencilMask(_stencilWriteMask);
-        TE_CHECK_GL_ERROR();*/
-
-        // TODO switch context opengl
+        TE_CHECK_GL_ERROR();
     }
 
     void GLRenderAPI::Destroy()
@@ -240,9 +428,33 @@ namespace te
         if (_GLSupport)
             _GLSupport->Stop();
 
+        // Deleting the GLSL program factory
+        if (_GLSLFactory)
+        {
+            // Remove from manager safely
+            GpuProgramManager::Instance().RemoveFactory("glsl");
+            GpuProgramManager::Instance().RemoveFactory("glsl4_1");
+
+            te_delete(_GLSLFactory);
+            _GLSLFactory = nullptr;
+        }
+
         TextureManager::ShutDown();
         RenderStateManager::ShutDown();
         HardwareBufferManager::ShutDown();
+
+        for (UINT32 i = 0; i < MAX_VB_COUNT; i++)
+            _boundVertexBuffers[i] = nullptr;
+
+        _boundVertexDeclaration = nullptr;
+        _boundIndexBuffer = nullptr;
+
+        _currentVertexProgram = nullptr;
+        _currentFragmentProgram = nullptr;
+        _currentGeometryProgram = nullptr;
+        _currentHullProgram = nullptr;
+        _currentDomainProgram = nullptr;
+        _currentComputeProgram = nullptr;
 
         _GLInitialised = false;
 
@@ -257,6 +469,9 @@ namespace te
 
         if (_GLSupport)
             te_delete(_GLSupport);
+
+        if (_textureInfos != nullptr)
+            te_deleteN(_textureInfos, _numTextureUnits);
 
         RenderAPI::Destroy();
     }
@@ -284,7 +499,13 @@ namespace te
 
     void GLRenderAPI::SetScissorRect(UINT32 left, UINT32 top, UINT32 right, UINT32 bottom)
     {
-        // TODO
+        _scissorTop = top;
+        _scissorBottom = bottom;
+        _scissorLeft = left;
+        _scissorRight = right;
+
+        if (_scissorEnabled)
+            _scissorRectDirty = true;
     }
 
     void GLRenderAPI::SetStencilRef(UINT32 value)
