@@ -189,7 +189,7 @@ namespace te
         }
         driverVersion.build = 0;
 
-        caps.DriverVersion = driverVersion;
+        caps.Driver= driverVersion;
         caps.RenderAPIName = "TeGLRenderAPI";
 
         const char* deviceName = (const char*)glGetString(GL_RENDERER);

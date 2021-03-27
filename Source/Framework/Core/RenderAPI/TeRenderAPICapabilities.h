@@ -132,7 +132,7 @@ namespace te
         String RenderAPIName;
 
         /** Current version of the driver (render backend). */
-        DriverVersion DriverVersion;
+        DriverVersion Driver;
 
         /** The name of the device (GPU) as reported by the render system. */
         String DeviceName;

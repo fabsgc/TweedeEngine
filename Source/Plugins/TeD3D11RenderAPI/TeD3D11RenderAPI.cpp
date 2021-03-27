@@ -1002,7 +1002,7 @@ namespace te
             driverVersion.build = LOWORD(driverVersionNum.LowPart);
         }
 
-        caps.DriverVersion = driverVersion;
+        caps.Driver = driverVersion;
         caps.DeviceName = _activeD3DDriver->GetDriverDescription();
         caps.RenderAPIName = "TeD3D11RenderAPI";
 
