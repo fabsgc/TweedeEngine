@@ -75,19 +75,16 @@ namespace te
         LoadPlugin(_startUpDesc.Gui, &_guiPlugin);
 
         RenderAPIManager::Instance().Initialize(_startUpDesc.RenderAPI, _startUpDesc.WindowDesc);
-
         RenderAPI::Instance().Initialize();
         RenderAPI::Instance().SetDrawOperation(DOT_TRIANGLE_LIST);
-
-        PhysicsManager::StartUp(_startUpDesc.Physics);
-        SceneManager::StartUp();
-
         _window = RenderAPI::Instance().CreateRenderWindow(_startUpDesc.WindowDesc);
 
         ParamBlockManager::StartUp();
 
         _renderer = RendererManager::Instance().Initialize(_startUpDesc.Renderer);
-        
+
+        PhysicsManager::StartUp(_startUpDesc.Physics);
+        SceneManager::StartUp();        
         Input::StartUp();
         VirtualInput::StartUp();
 

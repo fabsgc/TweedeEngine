@@ -23,6 +23,7 @@ set (TE_GLRENDERAPI_INC_NOFILTER
     "TeGLSupport.cpp"
     "TeGLVertexArrayObjectManager.cpp"
     "TeGLPixelFormat.cpp"
+    "TeGLPixelBuffer.cpp"
 )
 
 set (TE_GLRENDERAPI_SRC_NOFILTER
@@ -50,6 +51,7 @@ set (TE_GLRENDERAPI_SRC_NOFILTER
     "TeGLSupport.h"
     "TeGLVertexArrayObjectManager.h"
     "TeGLPixelFormat.h"
+    "TeGLPixelBuffer.h"
 )
 
 set(TE_GLRENDERAPI_INC_WIN32

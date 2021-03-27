@@ -166,9 +166,6 @@ namespace te
         _GLSupport->Start();
         _videoModeInfo = _GLSupport->GetVideoModeInfo();
 
-        // Create the texture manager for use by others
-        TextureManager::StartUp<GLTextureManager>(std::ref(*_GLSupport));
-
         // Create render state manager
         RenderStateManager::StartUp<GLRenderStateManager>();
 
@@ -401,6 +398,9 @@ namespace te
 
         _numTextureUnits = caps->NumCombinedTextureUnits;
         _textureInfos = te_newN<TextureInfo>(_numTextureUnits);
+
+        // Create the texture manager for use by others
+        TextureManager::StartUp<GLTextureManager>(std::ref(*_GLSupport));
     }
 
     void GLRenderAPI::SwitchContext(const SPtr<GLContext>& context, const RenderWindow& window)

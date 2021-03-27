@@ -18,7 +18,7 @@ namespace te
 
     SPtr<Texture> GLTextureManager::CreateTextureInternal(const TEXTURE_DESC& desc, const SPtr<PixelData>& initialData)
     {
-        SPtr<GLTexture> texPtr = te_core_ptr<GLTexture>(new (te_allocate<GLTexture>()) GLTexture(desc, initialData));
+        SPtr<GLTexture> texPtr = te_core_ptr<GLTexture>(new (te_allocate<GLTexture>()) GLTexture(_GLSupport, desc, initialData));
         texPtr->SetThisPtr(texPtr);
 
         return texPtr;
