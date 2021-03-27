@@ -117,10 +117,6 @@ namespace te
 		{
 			LinuxPlatform::LockX();
 
-            std::cout << "Context destruction" << std::endl;
-            std::cout << _display << std::endl;
-            std::cout << _context << std::endl;
-
             glXDestroyContext(_display, _context);
             _context = 0;
 

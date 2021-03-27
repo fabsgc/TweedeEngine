@@ -106,8 +106,6 @@ MACRO (find_imported_includes FOLDER_NAME INCLUDE_FILES)
     find_path (${FOLDER_NAME}_INCLUDE_DIR NAMES ${INCLUDE_FILES} PATHS ${${FOLDER_NAME}_INCLUDE_SEARCH_DIRS} NO_DEFAULT_PATH)
     find_path (${FOLDER_NAME}_INCLUDE_DIR NAMES ${INCLUDE_FILES} PATHS ${${FOLDER_NAME}_INCLUDE_SEARCH_DIRS})
 
-    message(STATUS ${${FOLDER_NAME}_INCLUDE_SEARCH_DIRS})
-
     if (${FOLDER_NAME}_INCLUDE_DIR)
         set (${FOLDER_NAME}_FOUND TRUE)
     else ()
@@ -178,7 +176,7 @@ MACRO (end_find_package FOLDER_NAME MAIN_LIB_NAME)
         endif ()
     else ()
         set_target_properties (${FOLDER_NAME}::${MAIN_LIB_NAME} PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${${FOLDER_NAME}_INCLUDE_DIR}")
-        message (STATUS "...${FOLDER_NAME} OK.")
+        message (STATUS "...${FOLDER_NAME}::${MAIN_LIB_NAME} OK.")
     endif ()
 
     mark_as_advanced (${FOLDER_NAME}_INSTALL_DIR ${FOLDER_NAME}_INCLUDE_DIR)
