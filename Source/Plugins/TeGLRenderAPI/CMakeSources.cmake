@@ -21,6 +21,8 @@ set (TE_GLRENDERAPI_INC_NOFILTER
     "TeGLGLSLParamParser.h"
     "TeGLContext.cpp"
     "TeGLSupport.cpp"
+    "TeGLVertexArrayObjectManager.cpp"
+    "TeGLPixelFormat.cpp"
 )
 
 set (TE_GLRENDERAPI_SRC_NOFILTER
@@ -46,6 +48,8 @@ set (TE_GLRENDERAPI_SRC_NOFILTER
     "TeGLGLSLParamParser.cpp"
     "TeGLContext.h"
     "TeGLSupport.h"
+    "TeGLVertexArrayObjectManager.h"
+    "TeGLPixelFormat.h"
 )
 
 set(TE_GLRENDERAPI_INC_WIN32

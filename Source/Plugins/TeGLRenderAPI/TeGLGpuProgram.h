@@ -12,6 +12,12 @@ namespace te
         /** Returns compiled shader microcode. */
         const DataBlob& GetMicroCode() const { return _bytecode->Instructions; }
 
+        /** @copydoc GpuProgram::isSupported */
+        bool IsSupported() const override;
+
+        /**	Gets internal OpenGL handle to the program. */
+        GLuint GetGLHandle() const { return _GLHandle; }
+
         /** Returns unique GPU program ID. */
         UINT32 GetProgramId() const { return _programId; }
 
@@ -25,6 +31,14 @@ namespace te
         static UINT32 GlobalProgramId;
 
         UINT32 _programId = 0;
+        GLuint _GLHandle = 0;
+
+        static UINT32 sVertexShaderCount;
+        static UINT32 sPixelShaderCount;
+        static UINT32 sGeometryShaderCount;
+        static UINT32 sHullShaderCount;
+        static UINT32 sDomainShaderCount;
+        static UINT32 sComputeShaderCount;
     };
 
     /** Implementation of a OpenGL vertex shader. */

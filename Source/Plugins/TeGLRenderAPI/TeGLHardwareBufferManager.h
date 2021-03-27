@@ -11,6 +11,12 @@ namespace te
     public:
         GLHardwareBufferManager();
 
+        /**	Converts engine buffer usage flags into OpenGL specific flags. */
+        static GLenum GetGLUsage(GpuBufferUsage usage);
+
+        /**	Converts vertex element type into OpenGL specific type. */
+        static GLenum GetGLType(VertexElementType type);
+
     protected:
         /** @copydoc HardwareBufferManager::CreateVertexBufferInternal */
         SPtr<VertexBuffer> CreateVertexBufferInternal(const VERTEX_BUFFER_DESC& desc,

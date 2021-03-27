@@ -9,6 +9,13 @@ namespace te
 {
     UINT32 GLGpuProgram::GlobalProgramId = 0;
 
+    UINT32 GLGpuProgram::sVertexShaderCount = 0;
+    UINT32 GLGpuProgram::sPixelShaderCount = 0;
+    UINT32 GLGpuProgram::sGeometryShaderCount = 0;
+    UINT32 GLGpuProgram::sDomainShaderCount = 0;
+    UINT32 GLGpuProgram::sHullShaderCount = 0;
+    UINT32 GLGpuProgram::sComputeShaderCount = 0;
+
     GLGpuProgram::GLGpuProgram(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask)
         : GpuProgram(desc, deviceMask)
     {
@@ -69,6 +76,37 @@ namespace te
         _programId = GlobalProgramId++;
 
         GpuProgram::Initialize();
+    }
+
+    bool GLGpuProgram::IsSupported() const
+    {
+        RenderAPI* rapi = RenderAPI::InstancePtr();
+        const RenderAPICapabilities& caps = rapi->GetCapabilities(0);
+
+        switch (_type)
+        {
+        case GPT_GEOMETRY_PROGRAM:
+#if TE_OPENGL_4_1 || TE_OPENGLES_3_2
+            return caps.HasCapability(RSC_GEOMETRY_PROGRAM);
+#else
+            return false;
+#endif
+        case GPT_HULL_PROGRAM:
+        case GPT_DOMAIN_PROGRAM:
+#if TE_OPENGL_4_1 || TE_OPENGLES_3_2
+            return caps.HasCapability(RSC_TESSELLATION_PROGRAM);
+#else
+            return false;
+#endif
+        case GPT_COMPUTE_PROGRAM:
+#if TE_OPENGL_4_3 || TE_OPENGLES_3_1
+            return caps.HasCapability(RSC_COMPUTE_PROGRAM);
+#else
+            return false;
+#endif
+        default:
+            return true;
+        }
     }
 
     GLGpuVertexProgram::GLGpuVertexProgram(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask)

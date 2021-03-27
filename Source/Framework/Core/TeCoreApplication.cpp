@@ -79,14 +79,15 @@ namespace te
         RenderAPI::Instance().Initialize();
         RenderAPI::Instance().SetDrawOperation(DOT_TRIANGLE_LIST);
 
-        ParamBlockManager::StartUp();
-
         PhysicsManager::StartUp(_startUpDesc.Physics);
         SceneManager::StartUp();
 
-        _renderer = RendererManager::Instance().Initialize(_startUpDesc.Renderer);
         _window = RenderAPI::Instance().CreateRenderWindow(_startUpDesc.WindowDesc);
 
+        ParamBlockManager::StartUp();
+
+        _renderer = RendererManager::Instance().Initialize(_startUpDesc.Renderer);
+        
         Input::StartUp();
         VirtualInput::StartUp();
 

@@ -12,10 +12,11 @@ namespace te
     public:
         GLIndexBuffer(const INDEX_BUFFER_DESC& desc, GpuDeviceFlags deviceMask);
 
+        /**	Returns internal OpenGL index buffer handle. */
+		GLuint GetGLBufferId() const { return static_cast<GLHardwareBuffer*>(_buffer)->GetGLBufferId(); }
+
     protected:
         /** @copydoc IndexBuffer::Initialize */
         void Initialize() override;
     };
-
-    // TODO
 }

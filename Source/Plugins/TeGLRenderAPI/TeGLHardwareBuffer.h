@@ -26,7 +26,7 @@ namespace te
             UINT32 length, bool discardWholeBuffer = false) override;
 
         /**	Returns internal OpenGL buffer ID. */
-        GLuint getGLBufferId() const { return _bufferId; }
+        GLuint GetGLBufferId() const { return _bufferId; }
 
     protected:
         /** @copydoc HardwareBuffer::Map */
@@ -38,6 +38,8 @@ namespace te
     protected:
         GLenum _target;
         GLuint _bufferId = 0;
+
+        bool _zeroLocked = false;
     };
 
     IMPLEMENT_GLOBAL_POOL(GLHardwareBuffer, 32)

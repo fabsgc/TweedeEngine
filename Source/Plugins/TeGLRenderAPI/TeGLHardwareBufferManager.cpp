@@ -62,4 +62,60 @@ namespace te
 
         return bufferPtr;
     }
+
+    GLenum GLHardwareBufferManager::GetGLUsage(GpuBufferUsage usage)
+    {
+        if((usage & GBU_LOADSTORE) == GBU_LOADSTORE)
+        {
+            if ((usage & GBU_STATIC) != 0)
+                return GL_STATIC_READ;
+
+            return GL_DYNAMIC_READ;
+        }
+        else
+        {
+            if ((usage & GBU_STATIC) != 0)
+                return GL_STATIC_DRAW;
+
+            return GL_DYNAMIC_DRAW;
+        }
+    }
+
+    GLenum GLHardwareBufferManager::GetGLType(VertexElementType type)
+    {
+        switch(type)
+        {
+            case VET_FLOAT1:
+            case VET_FLOAT2:
+            case VET_FLOAT3:
+            case VET_FLOAT4:
+                return GL_FLOAT;
+            case VET_SHORT1:
+            case VET_SHORT2:
+            case VET_SHORT4:
+                return GL_SHORT;
+            case VET_USHORT1:
+            case VET_USHORT2:
+            case VET_USHORT4:
+                return GL_UNSIGNED_SHORT;
+            case VET_INT1:
+            case VET_INT2:
+            case VET_INT3:
+            case VET_INT4:
+                return GL_INT;
+            case VET_UINT1:
+            case VET_UINT2:
+            case VET_UINT3:
+            case VET_UINT4:
+                return GL_UNSIGNED_INT;
+            case VET_COLOR:
+            case VET_COLOR_ABGR:
+            case VET_COLOR_ARGB:
+            case VET_UBYTE4:
+            case VET_UBYTE4_NORM:
+                return GL_UNSIGNED_BYTE;
+            default:
+                return 0;
+        };
+    }
 }

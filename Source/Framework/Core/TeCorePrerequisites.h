@@ -163,6 +163,8 @@ namespace te
     struct GPU_BUFFER_DESC;
     class GpuBufferProperties;
     class GpuBuffer;
+    class VertexDeclaration;
+    class VertexBuffer;
 
     class Renderer;
     class RendererFactory;

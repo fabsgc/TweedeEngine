@@ -2,21 +2,16 @@
 //*********** Licensed under the MIT license. See LICENSE.md for full terms. This notice is not to be removed. ***********//
 #include "TeGLSupport.h"
 #include "TeGLTexture.h"
-
-#if TE_PLATFORM != TE_PLATFORM_OSX
 #include "GL/glew.h"
 
 GLenum glewContextInit(te::GLSupport* glSupport);
-#endif
 
 namespace te
 {
     void GLSupport::InitializeExtensions()
     {
-#if TE_PLATFORM != TE_PLATFORM_OSX
         glewContextInit(this);
         TE_CHECK_GL_ERROR();
-#endif
 
         // Set version string
         const GLubyte* pcVer = glGetString(GL_VERSION);

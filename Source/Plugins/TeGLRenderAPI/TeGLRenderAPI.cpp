@@ -4,6 +4,7 @@
 #include "RenderAPI/TeRenderStateManager.h"
 #include "RenderAPI/TeGpuProgramManager.h"
 #include "RenderAPI/TeRenderAPICapabilities.h"
+#include "TeGLVertexArrayObjectManager.h"
 #include "TeGLRenderStateManager.h"
 #include "TeGLHardwareBufferManager.h"
 #include "TeGLGLSLParamParser.h"
@@ -125,6 +126,34 @@ namespace te
         // Setup GLSupport
         _GLSupport->InitializeExtensions();
 
+        _numDevices = 1;
+        _capabilities = te_newN<RenderAPICapabilities>(_numDevices);
+        InitCapabilities(_capabilities[0]);
+
+        InitFromCaps(_capabilities);
+        GLVertexArrayObjectManager::StartUp();
+
+        glFrontFace(GL_CW);
+        TE_CHECK_GL_ERROR();
+
+        // Ensure cubemaps are filtered across seams
+        glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+        TE_CHECK_GL_ERROR();
+
+        GPUInfo gpuInfo;
+        gpuInfo.NumGPUs = 1;
+
+        const char* vendor = (const char*)glGetString(GL_VENDOR);
+        TE_CHECK_GL_ERROR();
+
+        const char* renderer = (const char*)glGetString(GL_RENDERER);
+        TE_CHECK_GL_ERROR();
+
+        if (vendor && renderer)
+            gpuInfo.Names[0] = String(vendor) + " " + String(renderer);
+        else
+            gpuInfo.Names[0] = "Unknown";
+
         window->SetVSync(windowDesc.Vsync);
 
         _GLInitialised = true;
@@ -146,32 +175,7 @@ namespace te
         // Create hardware buffer manager
         HardwareBufferManager::StartUp<GLHardwareBufferManager>();
 
-        _numDevices = 1;
-        _capabilities = te_newN<RenderAPICapabilities>(_numDevices);
-        InitCapabilities(_capabilities[0]);
-
-        InitFromCaps(_capabilities);
-
-        glFrontFace(GL_CW);
-        TE_CHECK_GL_ERROR();
-
-        // Ensure cubemaps are filtered across seams
-        glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
-        TE_CHECK_GL_ERROR();
-
-        GPUInfo gpuInfo;
-        gpuInfo.NumGPUs = 1;
-
-        const char* vendor = (const char*)glGetString(GL_VENDOR);
-        TE_CHECK_GL_ERROR();
-
-        const char* renderer = (const char*)glGetString(GL_RENDERER);
-        TE_CHECK_GL_ERROR();
-
-        if(vendor && renderer)
-            gpuInfo.Names[0] = String(vendor) + " " + String(renderer);
-        else
-            gpuInfo.Names[0] = "Unknown";
+        RenderAPI::Initialize();
     }
 
     void GLRenderAPI::InitCapabilities(RenderAPICapabilities& caps) const
@@ -442,6 +446,8 @@ namespace te
         TextureManager::ShutDown();
         RenderStateManager::ShutDown();
         HardwareBufferManager::ShutDown();
+        GLVertexArrayObjectManager::ShutDown();
+
 
         for (UINT32 i = 0; i < MAX_VB_COUNT; i++)
             _boundVertexBuffers[i] = nullptr;
