@@ -1,6 +1,6 @@
 # Source files and their filters
 include(CMakeSources.cmake)
-    
+
 # Target
 add_library (TeFreeImgImporter SHARED ${TE_FREEIMGIMPORTER_SRC})
 

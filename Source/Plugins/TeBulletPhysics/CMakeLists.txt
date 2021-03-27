@@ -26,6 +26,7 @@ endif ()
 target_include_directories (TeBulletPhysics PRIVATE "./")
 
 # Libraries
+target_link_libraries(TeBulletPhysics ${bullet_LIBRARIES})
 
 ## Local libs
 target_link_libraries (TeBulletPhysics tef)

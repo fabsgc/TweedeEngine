@@ -54,6 +54,7 @@ include (${CMAKE_MODULE_PATH}/Findassimp.cmake)
 include (${CMAKE_MODULE_PATH}/Findfreeimg.cmake)
 include (${CMAKE_MODULE_PATH}/Findnvtt.cmake)
 include (${CMAKE_MODULE_PATH}/Findfreetype.cmake)
+include (${CMAKE_MODULE_PATH}/Findbullet.cmake)
 
 # Sub-directories
 ## Framework
