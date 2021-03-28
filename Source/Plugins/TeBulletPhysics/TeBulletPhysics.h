@@ -6,6 +6,8 @@
 
 namespace te 
 {
+    class BulletScene;
+
     /** Bullet implementation of Physics. */
     class BulletPhysics : public Physics
     {
@@ -13,16 +15,27 @@ namespace te
         BulletPhysics(const PHYSICS_INIT_DESC& input);
         ~BulletPhysics();
 
+        /** @copydoc Physics::CreatePhysicsScene */
+        SPtr<PhysicsScene> CreatePhysicsScene() override;
+
+        /** @copydoc Physics::FixedUpdate */
+        void FixedUpdate(float step) override;
+
+        /** @copydoc Physics::Update */
+        void Update() override;
+
         /** @copydoc Physics::SetPaused */
         void SetPaused(bool paused) override;
 
         /** @copydoc Physics::SetPaused */
         bool IsPaused() const override;
 
-        /** @copydoc Physics::Update */
-        void Update() override;
+        /** Notifies the system that at physics scene is about to be destroyed. */
+        void NotifySceneDestroyed(BulletScene* scene);
 
     private:
+        friend class BulletScene;
+
         PHYSICS_INIT_DESC _initDesc;
         bool _paused;
 
@@ -30,11 +43,37 @@ namespace te
         btCollisionDispatcher* _collisionDispatcher = nullptr;
         btSequentialImpulseConstraintSolver* _constraintSolver = nullptr;
         btDefaultCollisionConfiguration* _collisionConfiguration = nullptr;
-        btDiscreteDynamicsWorld* _world = nullptr;
-        btSoftBodyWorldInfo* _worldInfo = nullptr;
+
+        Vector<PhysicsScene*> _scenes;
 
         UINT32 _maxSubSteps = 1;
         UINT32 _maxSolveIterations = 256;
         float _internalFps = 60.0f;
     };
+
+    /** Contains information about a single PhysX scene. */
+    class BulletScene : public PhysicsScene
+    {
+    public:
+        BulletScene(BulletPhysics* physics, const PHYSICS_INIT_DESC& desc);
+        ~BulletScene();
+
+        /** @copydoc PhysicsScene::CreateRigidBody */
+        SPtr<RigidBody> CreateRigidBody(const HSceneObject& linkedSO) override;
+
+        /** @copydoc PhysicsScene::CreateSoftBody */
+        SPtr<SoftBody> CreateSoftBody(const HSceneObject& linkedSO) override;
+
+    private:
+        friend class BulletPhysics;
+
+        PHYSICS_INIT_DESC _initDesc;
+
+        BulletPhysics* _physics = nullptr;
+
+        btDiscreteDynamicsWorld* _world = nullptr;
+        btSoftBodyWorldInfo* _worldInfo = nullptr;
+    };
+
+    BulletPhysics& gBulletPhysics();
 }

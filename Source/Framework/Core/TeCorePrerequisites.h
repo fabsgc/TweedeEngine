@@ -294,6 +294,8 @@ namespace te
     class PhysicsManager;
     class Physics;
     class PhysicsScene;
+    class RigidBody;
+    class SoftBody;
 }
 
 #include "Utility/TeNonCopyable.h"

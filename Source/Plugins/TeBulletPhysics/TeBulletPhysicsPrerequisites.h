@@ -6,6 +6,8 @@
 #include "Math/TeVector4.h"
 #include "Math/TeQuaternion.h"
 
+#define BT_USE_DOUBLE_PRECISION
+
 #pragma warning(push, 0) 
 #include "LinearMath/btQuaternion.h"
 
@@ -35,15 +37,18 @@
 namespace te
 {
     class BulletPhysics;
+    class BulletScene;
+    class BulletRigidBody;
+    class BulletSoftBody;
 
     inline Vector3 ToVector3(const btVector3& vector)
     {
-        return Vector3(vector.getX(), vector.getY(), vector.getZ());
+        return Vector3((float)vector.getX(), (float)vector.getY(), (float)vector.getZ());
     }
 
     inline Vector4 ToVector4(const btVector3& vector)
     {
-        return Vector4(vector.getX(), vector.getY(), vector.getZ(), 1.0f);
+        return Vector4((float)vector.getX(), (float)vector.getY(), (float)vector.getZ(), 1.0f);
     }
 
     inline btVector3 ToBtVector3(const Vector3& vector)
@@ -58,6 +63,6 @@ namespace te
 
     inline Quaternion ToQuaternion(const btQuaternion& quaternion)
     {
-        return Quaternion(quaternion.getX(), quaternion.getY(), quaternion.getZ(), quaternion.getW());
+        return Quaternion((float)quaternion.getX(), (float)quaternion.getY(), (float)quaternion.getZ(), (float)quaternion.getW());
     }
 }

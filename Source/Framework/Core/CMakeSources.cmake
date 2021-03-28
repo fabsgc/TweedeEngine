@@ -391,10 +391,14 @@ set (TE_CORE_INC_PHYSICS
     "Core/Physics/TePhysics.h"
     "Core/Physics/TePhysicsManager.h"
     "Core/Physics/TePhysicsCommon.h"
+    "Core/Physics/TeRigidBody.h"
+    "Core/Physics/TeSoftBody.h"
 )
 set (TE_CORE_SRC_PHYSICS
     "Core/Physics/TePhysics.cpp"
     "Core/Physics/TePhysicsManager.cpp"
+    "Core/Physics/TeRigidBody.cpp"
+    "Core/Physics/TeSoftBody.cpp"
 )
 
 if (WIN32)

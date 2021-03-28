@@ -6,6 +6,8 @@
 
 namespace te
 {
+    class PhysicsScene;
+
     /** Possible states components can be in. Controls which component callbacks are triggered. */
     enum class ComponentState
     {
@@ -29,7 +31,7 @@ namespace te
     class TE_CORE_EXPORT SceneInstance
     {
     public:
-        SceneInstance(const String& name, const HSceneObject& root);
+        SceneInstance(const String& name, const HSceneObject& root, const SPtr<PhysicsScene>& physicsScene);
 
         /** Name of the scene. */
         const String& GetName() const { return _name; }
@@ -37,11 +39,18 @@ namespace te
         /** Root object of the scene. */
         const HSceneObject& GetRoot() const { return _root; }
 
+        /**
+         * Physical representation of the scene, as assigned by the physics sub-system. Exact implementation depends on the
+         * physics plugin used.
+         */
+        const SPtr<PhysicsScene>& GetPhysicsScene() const { return _physicsScene; }
+
     private:
         friend class SceneManager;
 
         String _name;
         HSceneObject _root;
+        SPtr<PhysicsScene> _physicsScene;
     };
 
     /**

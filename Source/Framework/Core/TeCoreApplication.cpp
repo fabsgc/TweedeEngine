@@ -84,7 +84,7 @@ namespace te
         _renderer = RendererManager::Instance().Initialize(_startUpDesc.Renderer);
 
         PhysicsManager::StartUp(_startUpDesc.Physics);
-        SceneManager::StartUp();        
+        SceneManager::StartUp();
         Input::StartUp();
         VirtualInput::StartUp();
 

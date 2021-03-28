@@ -26,6 +26,17 @@ namespace te
         Physics(const PHYSICS_INIT_DESC& init);
         virtual ~Physics() = default;
 
+        /** Creates an object representing the physics scene. Must be manually released via destroyPhysicsScene(). */
+        virtual SPtr<PhysicsScene> CreatePhysicsScene() = 0;
+
+        /**
+         * Updates the physics simulation. In order to maintain stability of the physics calculations this method should
+         * be called at fixed intervals (e.g. 60 times a second).
+         *
+         * @param[in]	step	Time delta to advance the physics simulation by, in seconds.
+         */
+        virtual void FixedUpdate(float step) = 0;
+
         /** Performs any physics operations that arent tied to the fixed update interval. Should be called once per frame. */
         virtual void Update() { }
 
@@ -34,6 +45,12 @@ namespace te
 
         /** @copydoc SetPaused() */
         virtual bool IsPaused() const = 0;
+
+        /** Checks is the physics simulation update currently in progress. */
+        bool IsUpdateInProgress() const { return _updateInProgress; }
+
+    protected:
+        bool _updateInProgress = false;
     };
 
     /**
@@ -43,7 +60,11 @@ namespace te
     class TE_CORE_EXPORT PhysicsScene
     {
     public:
-        // TODO physics
+        /** @copydoc RigidBody::Create */
+        virtual SPtr<RigidBody> CreateRigidBody(const HSceneObject& linkedSO) = 0;
+
+        /** @copydoc RigidBody::Create */
+        virtual SPtr<SoftBody> CreateSoftBody(const HSceneObject& linkedSO) = 0;
 
     protected:
         PhysicsScene() = default;

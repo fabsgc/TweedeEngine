@@ -285,6 +285,17 @@ namespace te
         MemoryAllocator::Deallocate(ptr);
     }
 
+    /** Destructs and frees the specified object if not null. */
+    template<class T>
+    inline void te_safe_delete(T* ptr)
+    {
+        if (ptr)
+        {
+            (ptr)->~T();
+            MemoryAllocator::Deallocate(ptr);
+        }
+    }
+
     /** Callable struct that acts as a proxy for te_delete */
     template<class T>
     struct Deleter

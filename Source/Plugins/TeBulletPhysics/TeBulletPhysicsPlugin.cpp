@@ -4,7 +4,7 @@
 
 namespace te
 {
-    class TE_PLUGIN_EXPORT PhysXFactory : public PhysicsFactory
+    class TE_PLUGIN_EXPORT BulletPhysicsFactory : public PhysicsFactory
     {
     public:
         void StartUp() override
@@ -19,9 +19,9 @@ namespace te
         }
     };
 
-    extern "C" TE_PLUGIN_EXPORT PhysXFactory* LoadPlugin()
+    extern "C" TE_PLUGIN_EXPORT BulletPhysicsFactory* LoadPlugin()
     {
-        return te_new<PhysXFactory>();
+        return te_new<BulletPhysicsFactory>();
     }
 
     extern "C" TE_PLUGIN_EXPORT void UnloadPlugin(PhysicsFactory* instance)

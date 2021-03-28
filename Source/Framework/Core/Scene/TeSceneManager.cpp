@@ -1,6 +1,7 @@
 #include "TeSceneManager.h"
 #include "Renderer/TeCamera.h"
 #include "TeCoreApplication.h"
+#include "Physics/TePhysics.h"
 
 namespace te
 {
@@ -23,13 +24,15 @@ namespace te
         bool& val;
     };
 
-    SceneInstance::SceneInstance(const String& name, const HSceneObject& root)
+    SceneInstance::SceneInstance(const String& name, const HSceneObject& root, const SPtr<PhysicsScene>& physicsScene)
         : _name(name)
         , _root(root)
+        , _physicsScene(physicsScene)
     { }
 
     SceneManager::SceneManager()
-        : _mainScene(te_shared_ptr_new<SceneInstance>("Main", SceneObject::CreateInternal("SceneRoot")))
+        : _mainScene(te_shared_ptr_new<SceneInstance>(
+            "Main", SceneObject::CreateInternal("SceneRoot"), gPhysics().CreatePhysicsScene()))
     {
         _mainScene->_root->SetScene(_mainScene);
     }
