@@ -49,8 +49,6 @@
 #undef _ITERATOR_DEBUG_LEVEL
 #endif
 
-#undef FAR
-
 namespace te
 {
     enum TypeID_Core
