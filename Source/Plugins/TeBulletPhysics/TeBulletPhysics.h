@@ -24,6 +24,17 @@ namespace te
 
     private:
         PHYSICS_INIT_DESC _initDesc;
-        bool _paused = false;
+        bool _paused;
+
+        btBroadphaseInterface* _broadphase = nullptr;
+        btCollisionDispatcher* _collisionDispatcher = nullptr;
+        btSequentialImpulseConstraintSolver* _constraintSolver = nullptr;
+        btDefaultCollisionConfiguration* _collisionConfiguration = nullptr;
+        btDiscreteDynamicsWorld* _world = nullptr;
+        btSoftBodyWorldInfo* _worldInfo = nullptr;
+
+        UINT32 _maxSubSteps = 1;
+        UINT32 _maxSolveIterations = 256;
+        float _internalFps = 60.0f;
     };
 }

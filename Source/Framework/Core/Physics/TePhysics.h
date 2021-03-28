@@ -15,6 +15,8 @@ namespace te
         float TypicalLength = 1.0f; /**< Typical length of an object in the scene. */
         float TypicalSpeed = 9.81f; /**< Typical speed of an object in the scene. */
         Vector3 Gravity = Vector3(0.0f, -9.81f, 0.0f); /**< Initial gravity. */
+        float AirDensity = 1.2f;
+        bool SoftBody = false;
     };
 
     /** Provides global physics settings, factory methods for physics objects and scene queries. */
