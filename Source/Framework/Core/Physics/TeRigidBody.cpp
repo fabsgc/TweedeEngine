@@ -1,4 +1,4 @@
-#include "Physics/TeRigidbody.h"
+#include "Physics/TeRigidBody.h"
 #include "Physics/TePhysics.h"
 #include "Scene/TeSceneObject.h"
 #include "Scene/TeSceneManager.h"
