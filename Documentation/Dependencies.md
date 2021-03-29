@@ -14,18 +14,15 @@ Note that on Windows most dependencies do not have default install paths and sho
 - Static & shared libraries (.lib, .a, .so): 
   - Pick one of:
     - (TeSource)/Dependencies/(DepName)/lib
-    - (TeSource)/Dependencies/(DepName)/lib/(Platform)
-    - (TeSource)/Dependencies/(DepName)/lib/(Platform)/(Configuration)
     - (TeSource)/Dependencies/(DepName)/lib/(Configuration)
 - Dynamic libraries (.dll)
-  - Place in (TeSource)/bin/(Platform)/(Configuration)
+  - Place in (TeSource)/Dependencies/binairies/(Configuration)
 - Includes
   - Place in (TeSource)/Dependencies/(DepName)/include  
 
 Legend:
 - (TeSource) - root directory of the framework
 - (DepName) - name of the dependency (title of each dependency shown below)
-- (Platform) - x64 for 64-bit builds
 - (Configuration) - Debug, RelWithDebInfo, MinSizeRel, or Release 
 
 Each library is accompanied by a Find***.cmake CMake module that is responsible for finding the library. These modules are located under `Source/CMake/Modules`. They follow the rules described above, but if you are unsure where library outputs should be placed you can look at the source code for those modules to find their search paths.
@@ -70,7 +67,7 @@ Additionally, if the dependency structure still isn't clear, download one of the
 - **Linux only**
   - Make sure to get audio backend libraries before compiling: PulseAudio, OSS, ALSA and JACK
   - On Debian/Ubuntu run: `apt-get install libpulse libasound2-dev libjack-dev`
-- Compile as a dynamic library on Windows/Linux (default), static library on macOS
+- Compile as a dynamic library on Windows/Linux (default)
   - Use `LIBTYPE=STATIC` CMake flag to force it to compile as a static library
 
 **libogg**
@@ -85,7 +82,7 @@ Additionally, if the dependency structure still isn't clear, download one of the
 - libvorbis commit:8a8f8589e19c5016f6548d877a8fda231fce4f93
 - https://git.xiph.org/?p=vorbis.git
 - Required by OpenAudio
-- Compile as a dynamic library on Windows, static library on Linux/macOS (default)
+- Compile as a dynamic library on Windows, static library on Linux (default)
   - Requires libogg, as described in its readme file.
   - When compiling as static library on Linux, make sure to specify `-DCMAKE_POSITION_INDEPENDENT_CODE=ON` to CMake, otherwise it will fail to link
 
@@ -93,6 +90,12 @@ Additionally, if the dependency structure still isn't clear, download one of the
 - libflac commit: f7cd466c24fb5d1966943f3ea36a1f4a37858597
 - https://git.xiph.org/?p=flac.git
 - Required by OpenAudio
-- Compile as a dynamic library on Windows (default), static library on Linux/macOS
+- Compile as a dynamic library on Windows (default), static library on Linux
   - Provide `--disable-shared --enable-static` flags to `configure` to force it to compile as a static library
   - Requires libogg, as described in its readme file.
+
+**Bullet 3**
+- bullet3 commit : 93be7e644024e92df13b454a4a0b0fcd02b21b10
+- https://github.com/bulletphysics/bullet3
+- Required by BulletPhysics
+- Compile as a static library on both Windows and Linux

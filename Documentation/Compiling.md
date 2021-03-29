@@ -15,7 +15,6 @@
     - Where *$generator$* should be replaced with any of the supported generators. Some common ones:
     - `Visual Studio 16 2019` - Visual Studio 2019 (64-bit build)
     - `Visual Studio 15 2017 Win64` - Visual Studio 2017 (64-bit build)
-    - `Visual Studio 16 2019` - Visual Studio 2019
     - `Unix Makefiles`
     - `Ninja`
     - See all valid generators: [cmake-generators](https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html)
@@ -45,7 +44,7 @@ You can choose to use a different *CMake* generator than those specified above, 
     - Linux
   - Supported compilers:
     - MSVC++ 15.0 (Visual Studio 2017) (or newer)
-    - GCC 7.0 (or newer)
+    - GCC 8.0 (or newer)
 
 ### <a name="dependencies"></a>Third party dependencies
 The Tweede Framework relies on a variety of third party dependencies. A set of pre-compiled dependencies are provided for every supported platform/compiler and these will be fetched automatically by the build process. If required, the dependencies can also be compiled manually by following [this guide](dependencies.md). This can be required if the pre-compiled dependencies don't work with your platform (e.g. unsupported Linux distro) or if you wish to update to a newer dependency version. Note that prebuilt dependencies only come as 64-bit.
@@ -80,3 +79,4 @@ The following dependencies will need to be installed manually. Which ones are re
   - **Free Image**
   - **NVIDIA Texture Tools**
   - **Dear ImGui**
+  - **Bullet 3**

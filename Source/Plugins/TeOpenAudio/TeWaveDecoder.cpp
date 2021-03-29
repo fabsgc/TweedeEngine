@@ -3,7 +3,9 @@
 
 namespace te
 {
+#ifndef WAVE_FORMAT_PCM
 #define WAVE_FORMAT_PCM			0x0001
+#endif
 #define WAVE_FORMAT_EXTENDED	0xFFFE
 
     bool WaveDecoder::IsValid(const SPtr<DataStream>& stream, UINT32 offset)
