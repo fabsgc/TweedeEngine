@@ -10,7 +10,10 @@
 #include "Scripting/TeScript.h"
 #include "Scene/TeSceneManager.h"
 #include "Components/TeCScript.h"
+
+#pragma warning(push, 0) 
 #include "ImGuizmo/ImGuizmo.h"
+#pragma warning(pop)
 
 namespace te
 {
