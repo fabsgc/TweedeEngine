@@ -2,6 +2,11 @@
 #include "TeCoreApplication.h"
 #include "TeBulletRigidBody.h"
 #include "TeBulletSoftBody.h"
+#include "TeBulletConeTwistJoint.h"
+#include "TeBulletD6Joint.h"
+#include "TeBulletHingeJoint.h"
+#include "TeBulletSliderJoint.h"
+#include "TeBulletSphericalJoint.h"
 
 namespace te
 {
@@ -139,6 +144,31 @@ namespace te
     SPtr<SoftBody> BulletScene::CreateSoftBody(const HSceneObject& linkedSO)
     {
         return te_shared_ptr_new<BulletSoftBody>(_physics, this, linkedSO);
+    }
+
+    SPtr<ConeTwistJoint> BulletScene::CreateConeTwistJoint(const CONE_TWIST_JOINT_DESC& desc)
+    {
+        return te_shared_ptr_new<BulletConeTwistJoint>(_physics, desc);
+    }
+
+    SPtr<HingeJoint> BulletScene::CreateHingeJoint(const HINGE_JOINT_DESC& desc)
+    {
+        return te_shared_ptr_new<BulletHingeJoint>(_physics, desc);
+    }
+
+    SPtr<SphericalJoint> BulletScene::CreateSphericalJoint(const SPHERICAL_JOINT_DESC& desc)
+    {
+        return te_shared_ptr_new<BulletSphericalJoint>(_physics, desc);
+    }
+
+    SPtr<SliderJoint> BulletScene::CreateSliderJoint(const SLIDER_JOINT_DESC& desc)
+    {
+        return te_shared_ptr_new<BulletSliderJoint>(_physics, desc);
+    }
+
+    SPtr<D6Joint> BulletScene::CreateD6Joint(const D6_JOINT_DESC& desc)
+    {
+        return te_shared_ptr_new<BulletD6Joint>(_physics, desc);
     }
 
     BulletPhysics& gBulletPhysics()

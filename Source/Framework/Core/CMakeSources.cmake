@@ -290,6 +290,12 @@ set (TE_CORE_INC_COMPONENTS
     "Core/Components/TeCAnimation.h"
     "Core/Components/TeCAudioListener.h"
     "Core/Components/TeCAudioSource.h"
+    "Core/Components/TeCJoint.h"
+    "Core/Components/TeCHingeJoint.h"
+    "Core/Components/TeCSliderJoint.h"
+    "Core/Components/TeCSphericalJoint.h"
+    "Core/Components/TeCD6Joint.h"
+    "Core/Components/TeCConeTwistJoint.h"
 )
 set (TE_CORE_SRC_COMPONENTS
     "Core/Components/TeCCamera.cpp"
@@ -303,6 +309,12 @@ set (TE_CORE_SRC_COMPONENTS
     "Core/Components/TeCAnimation.cpp"
     "Core/Components/TeCAudioListener.cpp"
     "Core/Components/TeCAudioSource.cpp"
+    "Core/Components/TeCJoint.cpp"
+    "Core/Components/TeCHingeJoint.cpp"
+    "Core/Components/TeCSliderJoint.cpp"
+    "Core/Components/TeCSphericalJoint.cpp"
+    "Core/Components/TeCD6Joint.cpp"
+    "Core/Components/TeCConeTwistJoint.cpp"
 )
 
 set (TE_CORE_INC_RESOURCE
@@ -393,12 +405,24 @@ set (TE_CORE_INC_PHYSICS
     "Core/Physics/TePhysicsCommon.h"
     "Core/Physics/TeRigidBody.h"
     "Core/Physics/TeSoftBody.h"
+    "Core/Physics/TeJoint.h"
+    "Core/Physics/TeHingeJoint.h"
+    "Core/Physics/TeSliderJoint.h"
+    "Core/Physics/TeSphericalJoint.h"
+    "Core/Physics/TeD6Joint.h"
+    "Core/Physics/TeConeTwistJoint.h"
 )
 set (TE_CORE_SRC_PHYSICS
     "Core/Physics/TePhysics.cpp"
     "Core/Physics/TePhysicsManager.cpp"
     "Core/Physics/TeRigidBody.cpp"
     "Core/Physics/TeSoftBody.cpp"
+    "Core/Physics/TeJoint.cpp"
+    "Core/Physics/TeHingeJoint.cpp"
+    "Core/Physics/TeSliderJoint.cpp"
+    "Core/Physics/TeSphericalJoint.cpp"
+    "Core/Physics/TeD6Joint.cpp"
+    "Core/Physics/TeConeTwistJoint.cpp"
 )
 
 if (WIN32)

@@ -66,6 +66,41 @@ namespace te
         /** @copydoc RigidBody::Create */
         virtual SPtr<SoftBody> CreateSoftBody(const HSceneObject& linkedSO) = 0;
 
+        /**
+         * Creates a new cone twist joint.
+         *
+         * @param[in]	desc		Settings describing the joint.
+         */
+        virtual SPtr<ConeTwistJoint> CreateConeTwistJoint(const CONE_TWIST_JOINT_DESC& desc) = 0;
+
+        /**
+         * Creates a new hinge joint.
+         *
+         * @param[in]	desc		Settings describing the joint.
+         */
+        virtual SPtr<HingeJoint> CreateHingeJoint(const HINGE_JOINT_DESC& desc) = 0;
+
+        /**
+         * Creates a new spherical joint.
+         *
+         * @param[in]	desc		Settings describing the joint.
+         */
+        virtual SPtr<SphericalJoint> CreateSphericalJoint(const SPHERICAL_JOINT_DESC& desc) = 0;
+
+        /**
+         * Creates a new spherical joint.
+         *
+         * @param[in]	desc		Settings describing the joint.
+         */
+        virtual SPtr<SliderJoint> CreateSliderJoint(const SLIDER_JOINT_DESC& desc) = 0;
+
+        /**
+         * Creates a new D6 joint.
+         *
+         * @param[in]	desc		Settings describing the joint.
+         */
+        virtual SPtr<D6Joint> CreateD6Joint(const D6_JOINT_DESC& desc) = 0;
+
     protected:
         PhysicsScene() = default;
         virtual ~PhysicsScene() = default;

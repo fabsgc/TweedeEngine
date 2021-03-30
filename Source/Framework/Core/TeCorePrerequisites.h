@@ -88,7 +88,13 @@ namespace te
         TID_AudioListener           = 1033,
         TID_AudioSource             = 1034,
         TID_CAudioListener          = 1035,
-        TID_CAudioSource            = 1036
+        TID_CAudioSource            = 1036,
+        TID_CJoint                  = 1037,
+        TID_CHingeJoint             = 1038,
+        TID_CSliderJoint            = 1039,
+        TID_CSphericalJoint         = 1040,
+        TID_CD6Joint                = 1041,
+        TID_CConeTwistJoint         = 1042
     };
 }
 
@@ -250,6 +256,12 @@ namespace te
     class CAnimation;
     class CAudioSource;
     class CAudioListener;
+    class CJoint;
+    class CHingeJoint;
+    class CSliderJoint;
+    class CSphericalJoint;
+    class CD6Joint;
+    class CConeTwistJoint;
 
     class BuiltinResources;
 
@@ -291,11 +303,24 @@ namespace te
     class FileStream;
     class MemoryDataStream;
 
+    struct PHYSICS_INIT_DESC;
     class PhysicsManager;
     class Physics;
     class PhysicsScene;
     class RigidBody;
     class SoftBody;
+    class Joint;
+    class HingeJoint;
+    class SliderJoint;
+    class SphericalJoint;
+    class D6Joint;
+    class ConeTwistJoint;
+    struct JOINT_DESC;
+    struct HINGE_JOINT_DESC;
+    struct SLIDER_JOINT_DESC;
+    struct SPHERICAL_JOINT_DESC;
+    struct CONE_TWIST_JOINT_DESC;
+    struct D6_JOINT_DESC;
 }
 
 #include "Utility/TeNonCopyable.h"
@@ -335,4 +360,10 @@ namespace te
     typedef GameObjectHandle<CAnimation> HAnimation;
     typedef GameObjectHandle<CAudioSource> HAudioSource;
     typedef GameObjectHandle<CAudioListener> HAudioListener;
+    typedef GameObjectHandle<CJoint> HJoint;
+    typedef GameObjectHandle<CHingeJoint> HHingeJoint;
+    typedef GameObjectHandle<CSliderJoint> HSliderJoint;
+    typedef GameObjectHandle<CSphericalJoint> HSphericalJoint;
+    typedef GameObjectHandle<CD6Joint> HD6Joint;
+    typedef GameObjectHandle<CConeTwistJoint> HConeTwistJoint;
 }
