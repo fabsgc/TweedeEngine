@@ -4,9 +4,9 @@
 
 namespace te
 {
-    CJoint::CJoint()
+    CJoint::CJoint(JOINT_DESC& desc)
         : Component(HSceneObject(), (UINT32)TID_CJoint)
-        , _desc(JOINT_DESC())
+        , _desc(desc)
         , _internal(nullptr)
     {
         SetName("Joint");

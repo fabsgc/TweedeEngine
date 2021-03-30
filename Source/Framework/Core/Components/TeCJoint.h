@@ -61,7 +61,7 @@ namespace te
         virtual void DestroyInternal();
 
     protected:
-        CJoint();
+        CJoint(JOINT_DESC& desc);
 
     protected:
         SPtr<Joint> _internal;
