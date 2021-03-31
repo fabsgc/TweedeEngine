@@ -26,10 +26,14 @@ namespace te
     { }
 
     void CRigidBody::Clone(const HComponent& c)
-    { }
+    { 
+        Clone(static_object_cast<CRigidBody>(c));
+    }
 
     void CRigidBody::Clone(const HRigidBody& c)
-    { }
+    { 
+        Component::Clone(c.GetInternalPtr());
+    }
 
     void CRigidBody::OnInitialized()
     { }

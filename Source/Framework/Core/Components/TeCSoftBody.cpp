@@ -26,10 +26,14 @@ namespace te
     { }
 
     void CSoftBody::Clone(const HComponent& c)
-    { }
+    { 
+        Clone(static_object_cast<CSoftBody>(c));
+    }
 
     void CSoftBody::Clone(const HSoftBody& c)
-    { }
+    { 
+        Component::Clone(c.GetInternalPtr());
+    }
 
     void CSoftBody::OnInitialized()
     { }

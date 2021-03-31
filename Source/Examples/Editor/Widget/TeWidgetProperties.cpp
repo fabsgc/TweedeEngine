@@ -16,6 +16,8 @@
 #include "Components/TeCBone.h"
 #include "Components/TeCAudioListener.h"
 #include "Components/TeCAudioSource.h"
+#include "Components/TeCRigidBody.h"
+#include "Components/TeCSoftBody.h"
 #include "Scene/TeSceneManager.h"
 #include "Scene/TeSceneObject.h"
 #include "RenderAPI/TeSubMesh.h"
@@ -131,6 +133,20 @@ namespace te
             case TID_CAudioSource:
             {
                 if (ShowCAudioSourceProperties())
+                    hasChanged = true;
+            }
+            break;
+
+            case TID_CRigidBody:
+            {
+                if (ShowCRigidBodyProperties())
+                    hasChanged = true;
+            }
+            break;
+
+            case TID_CSoftBody:
+            {
+                if (ShowCSoftBodyProperties())
                     hasChanged = true;
             }
             break;
@@ -533,6 +549,22 @@ namespace te
         return hasChanged;
     }
 
+    bool WidgetProperties::ShowCRigidBodyProperties()
+    {
+        bool hasChanged = false;
+        SPtr<CRigidBody> rigidBody = std::static_pointer_cast<CRigidBody>(_selections.ClickedComponent);
+
+        return hasChanged;
+    }
+
+    bool WidgetProperties::ShowCSoftBodyProperties()
+    {
+        bool hasChanged = false;
+        SPtr<CSoftBody> softBody = std::static_pointer_cast<CSoftBody>(_selections.ClickedComponent);
+
+        return hasChanged;
+    }
+
     bool WidgetProperties::ShowTransform(Transform& transform, ObjectMobility& mobility, bool disableTransform)
     {
         bool hasChanged = false;
@@ -563,7 +595,7 @@ namespace te
 
     bool WidgetProperties::ShowGameObjectInformation(SPtr<GameObject>& gameObject)
     {
-        char inputName[128];
+        char inputName[256];
         char inputUUID[64];
         bool hasChanged = false;
         String name = gameObject->GetName();

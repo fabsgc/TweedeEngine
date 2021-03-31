@@ -15,6 +15,13 @@
 #include "Components/TeCBone.h"
 #include "Components/TeCAudioSource.h"
 #include "Components/TeCAudioListener.h"
+#include "Components/TeCRigidBody.h"
+#include "Components/TeCSoftBody.h"
+#include "Components/TeCConeTwistJoint.h"
+#include "Components/TeCD6Joint.h"
+#include "Components/TeCHingeJoint.h"
+#include "Components/TeCSliderJoint.h"
+#include "Components/TeCSphericalJoint.h"
 #include "../TeEditorUtils.h"
 
 namespace te
@@ -316,6 +323,13 @@ namespace te
             case TID_CSkybox:
             case TID_CAudioListener:
             case TID_CAudioSource:
+            case TID_CRigidBody:
+            case TID_CSoftBody:
+            case TID_CConeTwistJoint:
+            case TID_CD6Joint:
+            case TID_CHingeJoint:
+            case TID_CSliderJoint:
+            case TID_CSphericalJoint:
                 gEditor().PutFocus(Editor::WindowType::Viewport);
                 break;
 
@@ -533,6 +547,27 @@ namespace te
                             CreateAudioSource();
                         if (ImGui::MenuItem(ICON_FA_HEADPHONES " Audio listener"))
                             CreateAudioListener();
+
+                        ImGui::EndMenu();
+                    }
+
+                    if (ImGui::BeginMenu(ICON_FA_BOXES " Physics"))
+                    {
+                        if (ImGui::MenuItem(ICON_FA_BOXES " Rigid Body"))
+                            CreateRigidBody();
+                        if (ImGui::MenuItem(ICON_FA_BOXES " Soft Body"))
+                            CreateSoftBody();
+
+                        if (ImGui::MenuItem(ICON_FA_LINK " Cone Twist Joint"))
+                            CreateJoint(TID_CConeTwistJoint);
+                        if (ImGui::MenuItem(ICON_FA_LINK " D6 Joint"))
+                            CreateJoint(TID_CD6Joint);
+                        if (ImGui::MenuItem(ICON_FA_LINK " Hinge Joint"))
+                            CreateJoint(TID_CHingeJoint);
+                        if (ImGui::MenuItem(ICON_FA_LINK " Slider Joint"))
+                            CreateJoint(TID_CSliderJoint);
+                        if (ImGui::MenuItem(ICON_FA_LINK " Spherical Joint"))
+                            CreateJoint(TID_CSphericalJoint);
 
                         ImGui::EndMenu();
                     }
@@ -820,6 +855,101 @@ namespace te
         gEditor().GetSettings().State = Editor::EditorState::Modified;
     }
 
+    void WidgetProject::CreateRigidBody()
+    {
+        if (!_selections.ClickedSceneObject || _selections.ClickedComponent)
+            return;
+
+        HRigidBody rigidBody = _selections.ClickedSceneObject->AddComponent<CRigidBody>();
+        rigidBody.Get()->SetName("Rigid Body");
+        rigidBody.Get()->Initialize();
+
+        _expandToSelection = true;
+        _handleSelectionWindowSwitch = true;
+        _selections.ClickedComponent = rigidBody.GetInternalPtr();
+        gEditor().NeedsRedraw();
+        gEditor().GetSettings().State = Editor::EditorState::Modified;
+    }
+
+    void WidgetProject::CreateSoftBody()
+    {
+        if (!_selections.ClickedSceneObject || _selections.ClickedComponent)
+            return;
+
+        HSoftBody softBody = _selections.ClickedSceneObject->AddComponent<CSoftBody>();
+        softBody.Get()->SetName("Soft Body");
+        softBody.Get()->Initialize();
+
+        _expandToSelection = true;
+        _handleSelectionWindowSwitch = true;
+        _selections.ClickedComponent = softBody.GetInternalPtr();
+        gEditor().NeedsRedraw();
+        gEditor().GetSettings().State = Editor::EditorState::Modified;
+    }
+
+    void WidgetProject::CreateJoint(TypeID_Core type)
+    {
+        if (!_selections.ClickedSceneObject || _selections.ClickedComponent)
+            return;
+
+        switch (type)
+        {
+            case TID_CConeTwistJoint:
+            {
+                HConeTwistJoint joint = _selections.ClickedSceneObject->AddComponent<CConeTwistJoint>();
+                joint.Get()->SetName("Cone Twist Joint");
+                joint.Get()->Initialize();
+                _selections.ClickedComponent = joint.GetInternalPtr();
+            }
+            break;
+
+            case TID_CD6Joint:
+            {
+                HD6Joint joint = _selections.ClickedSceneObject->AddComponent<CD6Joint>();
+                joint.Get()->SetName("D6 Joint");
+                joint.Get()->Initialize();
+                _selections.ClickedComponent = joint.GetInternalPtr();
+            }
+            break;
+
+            case TID_CHingeJoint:
+            {
+                HHingeJoint joint = _selections.ClickedSceneObject->AddComponent<CHingeJoint>();
+                joint.Get()->SetName("Hinge Joint");
+                joint.Get()->Initialize();
+                _selections.ClickedComponent = joint.GetInternalPtr();
+            }
+            break;
+
+            case TID_CSliderJoint:
+            {
+                HSliderJoint joint = _selections.ClickedSceneObject->AddComponent<CSliderJoint>();
+                joint.Get()->SetName("Slider Joint");
+                joint.Get()->Initialize();
+                _selections.ClickedComponent = joint.GetInternalPtr();
+            }
+            break;
+
+            case TID_CSphericalJoint:
+            {
+                HSphericalJoint joint = _selections.ClickedSceneObject->AddComponent<CSphericalJoint>();
+                joint.Get()->SetName("Spherical Joint");
+                joint.Get()->Initialize();
+                _selections.ClickedComponent = joint.GetInternalPtr();
+            }
+            break;
+
+            default:
+            break;
+        }
+        
+        _expandToSelection = true;
+        _handleSelectionWindowSwitch = true;
+
+        gEditor().NeedsRedraw();
+        gEditor().GetSettings().State = Editor::EditorState::Modified;
+    }
+
     void WidgetProject::Paste()
     { 
         gEditor().Paste();
@@ -875,6 +1005,17 @@ namespace te
             break;
         case TID_CAudioSource:
             title += String("  ") + ICON_FA_MICROPHONE;
+            break;
+        case TID_CRigidBody:
+        case TID_CSoftBody:
+            title += String("  ") + ICON_FA_BOXES;
+            break;
+        case TID_CConeTwistJoint:
+        case TID_CD6Joint:
+        case TID_CHingeJoint:
+        case TID_CSliderJoint:
+        case TID_CSphericalJoint:
+            title += String("  ") + ICON_FA_LINK;
             break;
         default:
             title += String("  ") + ICON_FA_QUESTION_CIRCLE;

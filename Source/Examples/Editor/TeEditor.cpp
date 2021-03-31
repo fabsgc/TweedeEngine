@@ -30,6 +30,13 @@
 #include "Components/TeCBone.h"
 #include "Components/TeCAudioSource.h"
 #include "Components/TeCAudioListener.h"
+#include "Components/TeCRigidBody.h"
+#include "Components/TeCSoftBody.h"
+#include "Components/TeCConeTwistJoint.h"
+#include "Components/TeCD6Joint.h"
+#include "Components/TeCHingeJoint.h"
+#include "Components/TeCSliderJoint.h"
+#include "Components/TeCSphericalJoint.h"
 #include "Scene/TeSceneManager.h"
 #include "Resources/TeResourceManager.h"
 #include "Resources/TeBuiltinResources.h"
@@ -197,6 +204,8 @@ namespace te
                     _selections.ClickedComponent->GetCoreType() == TID_CCamera ||
                     _selections.ClickedComponent->GetCoreType() == TID_CLight ||
                     _selections.ClickedComponent->GetCoreType() == TID_CAudioListener ||
+                    _selections.ClickedComponent->GetCoreType() == TID_CRigidBody ||
+                    _selections.ClickedComponent->GetCoreType() == TID_CSoftBody ||
                     _selections.ClickedComponent->GetCoreType() == TID_CAudioSource)
                 {
                     if (!ImGuizmo::IsOver())
@@ -709,121 +718,191 @@ namespace te
 
             switch (_selections.CopiedComponent->GetCoreType())
             {
-            case TID_CCamera:
-            {
-                HCamera component = clickedSceneObject->AddComponent<CCamera>();
-                component->Clone(_selections.CopiedComponent->GetHandle());
-                component->Initialize();
-                _selections.ClickedComponent = component.GetInternalPtr();
-                _selections.CopiedComponent = component.GetInternalPtr();
-            }
-            break;
+                case TID_CCamera:
+                {
+                    HCamera component = clickedSceneObject->AddComponent<CCamera>();
+                    component->Clone(_selections.CopiedComponent->GetHandle());
+                    component->Initialize();
+                    _selections.ClickedComponent = component.GetInternalPtr();
+                    _selections.CopiedComponent = component.GetInternalPtr();
+                }
+                break;
 
-            case TID_CCameraFlyer:
-            {
-                HCameraFlyer component = clickedSceneObject->AddComponent<CCameraFlyer>();
-                component->Clone(_selections.CopiedComponent->GetHandle());
-                component->Initialize();
-                _selections.ClickedComponent = component.GetInternalPtr();
-                _selections.CopiedComponent = component.GetInternalPtr();
-            }
-            break;
+                case TID_CCameraFlyer:
+                {
+                    HCameraFlyer component = clickedSceneObject->AddComponent<CCameraFlyer>();
+                    component->Clone(_selections.CopiedComponent->GetHandle());
+                    component->Initialize();
+                    _selections.ClickedComponent = component.GetInternalPtr();
+                    _selections.CopiedComponent = component.GetInternalPtr();
+                }
+                break;
 
-            case TID_CCameraUI:
-            {
-                HCameraUI component = clickedSceneObject->AddComponent<CCameraUI>();
-                component->Clone(_selections.CopiedComponent->GetHandle());
-                component->Initialize();
-                _selections.ClickedComponent = component.GetInternalPtr();
-                _selections.CopiedComponent = component.GetInternalPtr();
-            }
-            break;
+                case TID_CCameraUI:
+                {
+                    HCameraUI component = clickedSceneObject->AddComponent<CCameraUI>();
+                    component->Clone(_selections.CopiedComponent->GetHandle());
+                    component->Initialize();
+                    _selections.ClickedComponent = component.GetInternalPtr();
+                    _selections.CopiedComponent = component.GetInternalPtr();
+                }
+                break;
 
-            case TID_CLight:
-            {
-                SPtr<CLight> previousLight = std::static_pointer_cast<CLight>(_selections.CopiedComponent);
-                HLight component = clickedSceneObject->AddComponent<CLight>(previousLight->GetType());
-                component->Clone(_selections.CopiedComponent->GetHandle());
-                component->Initialize();
-                _selections.ClickedComponent = component.GetInternalPtr();
-                _selections.CopiedComponent = component.GetInternalPtr();
-            }
-            break;
+                case TID_CLight:
+                {
+                    SPtr<CLight> previousLight = std::static_pointer_cast<CLight>(_selections.CopiedComponent);
+                    HLight component = clickedSceneObject->AddComponent<CLight>(previousLight->GetType());
+                    component->Clone(_selections.CopiedComponent->GetHandle());
+                    component->Initialize();
+                    _selections.ClickedComponent = component.GetInternalPtr();
+                    _selections.CopiedComponent = component.GetInternalPtr();
+                }
+                break;
 
-            case TID_CRenderable:
-            {
-                HRenderable component = clickedSceneObject->AddComponent<CRenderable>();
-                component->Clone(_selections.CopiedComponent->GetHandle());
-                component->Initialize();
-                _selections.ClickedComponent = component.GetInternalPtr();
-                _selections.CopiedComponent = component.GetInternalPtr();
-            }
-            break;
+                case TID_CRenderable:
+                {
+                    HRenderable component = clickedSceneObject->AddComponent<CRenderable>();
+                    component->Clone(_selections.CopiedComponent->GetHandle());
+                    component->Initialize();
+                    _selections.ClickedComponent = component.GetInternalPtr();
+                    _selections.CopiedComponent = component.GetInternalPtr();
+                }
+                break;
 
-            case TID_CScript:
-            {
-                HScript component = clickedSceneObject->AddComponent<CScript>();
-                component->Clone(_selections.CopiedComponent->GetHandle());
-                component->Initialize();
-                _selections.ClickedComponent = component.GetInternalPtr();
-                _selections.CopiedComponent = component.GetInternalPtr();
-            }
-            break;
+                case TID_CScript:
+                {
+                    HScript component = clickedSceneObject->AddComponent<CScript>();
+                    component->Clone(_selections.CopiedComponent->GetHandle());
+                    component->Initialize();
+                    _selections.ClickedComponent = component.GetInternalPtr();
+                    _selections.CopiedComponent = component.GetInternalPtr();
+                }
+                break;
 
-            case TID_CSkybox:
-            {
-                if (SceneManager::Instance().FindComponents<CSkybox>().size() > 0)
-                    break;
+                case TID_CSkybox:
+                {
+                    if (SceneManager::Instance().FindComponents<CSkybox>().size() > 0)
+                        break;
 
-                HSkybox component = clickedSceneObject->AddComponent<CSkybox>();
-                component->Clone(_selections.CopiedComponent->GetHandle());
-                component->Initialize();
-                _selections.ClickedComponent = component.GetInternalPtr();
-                _selections.CopiedComponent = component.GetInternalPtr();
-            }
-            break;
+                    HSkybox component = clickedSceneObject->AddComponent<CSkybox>();
+                    component->Clone(_selections.CopiedComponent->GetHandle());
+                    component->Initialize();
+                    _selections.ClickedComponent = component.GetInternalPtr();
+                    _selections.CopiedComponent = component.GetInternalPtr();
+                }
+                break;
 
-            case TID_CAnimation:
-            {
-                HAnimation component = clickedSceneObject->AddComponent<CAnimation>();
-                component->Clone(_selections.CopiedComponent->GetHandle());
-                component->Initialize();
-                _selections.ClickedComponent = component.GetInternalPtr();
-                _selections.CopiedComponent = component.GetInternalPtr();
-            }
-            break;
+                case TID_CAnimation:
+                {
+                    HAnimation component = clickedSceneObject->AddComponent<CAnimation>();
+                    component->Clone(_selections.CopiedComponent->GetHandle());
+                    component->Initialize();
+                    _selections.ClickedComponent = component.GetInternalPtr();
+                    _selections.CopiedComponent = component.GetInternalPtr();
+                }
+                break;
 
-            case TID_CBone:
-            {
-                HBone component = clickedSceneObject->AddComponent<CBone>();
-                component->Clone(_selections.CopiedComponent->GetHandle());
-                component->Initialize();
-                _selections.ClickedComponent = component.GetInternalPtr();
-                _selections.CopiedComponent = component.GetInternalPtr();
-            }
-            break;
+                case TID_CBone:
+                {
+                    HBone component = clickedSceneObject->AddComponent<CBone>();
+                    component->Clone(_selections.CopiedComponent->GetHandle());
+                    component->Initialize();
+                    _selections.ClickedComponent = component.GetInternalPtr();
+                    _selections.CopiedComponent = component.GetInternalPtr();
+                }
+                break;
 
-            case TID_CAudioListener:
-            {
-                HAudioListener component = clickedSceneObject->AddComponent<CAudioListener>();
-                component->Clone(_selections.CopiedComponent->GetHandle());
-                component->Initialize();
-                _selections.ClickedComponent = component.GetInternalPtr();
-                _selections.CopiedComponent = component.GetInternalPtr();
-            }
-            break;
+                case TID_CAudioListener:
+                {
+                    HAudioListener component = clickedSceneObject->AddComponent<CAudioListener>();
+                    component->Clone(_selections.CopiedComponent->GetHandle());
+                    component->Initialize();
+                    _selections.ClickedComponent = component.GetInternalPtr();
+                    _selections.CopiedComponent = component.GetInternalPtr();
+                }
+                break;
 
-            case TID_CAudioSource:
-            {
-                HAudioSource component = clickedSceneObject->AddComponent<CAudioSource>();
-                component->Clone(_selections.CopiedComponent->GetHandle());
-                component->Initialize();
-                _selections.ClickedComponent = component.GetInternalPtr();
-                _selections.CopiedComponent = component.GetInternalPtr();
-            }
-            break;
+                case TID_CAudioSource:
+                {
+                    HAudioSource component = clickedSceneObject->AddComponent<CAudioSource>();
+                    component->Clone(_selections.CopiedComponent->GetHandle());
+                    component->Initialize();
+                    _selections.ClickedComponent = component.GetInternalPtr();
+                    _selections.CopiedComponent = component.GetInternalPtr();
+                }
+                break;
 
-            default:
+                case TID_CRigidBody:
+                {
+                    HRigidBody component = clickedSceneObject->AddComponent<CRigidBody>();
+                    component->Clone(_selections.CopiedComponent->GetHandle());
+                    component->Initialize();
+                    _selections.ClickedComponent = component.GetInternalPtr();
+                    _selections.CopiedComponent = component.GetInternalPtr();
+                }
+                break;
+
+                case TID_CSoftBody:
+                {
+                    HSoftBody component = clickedSceneObject->AddComponent<CSoftBody>();
+                    component->Clone(_selections.CopiedComponent->GetHandle());
+                    component->Initialize();
+                    _selections.ClickedComponent = component.GetInternalPtr();
+                    _selections.CopiedComponent = component.GetInternalPtr();
+                }
+                break;
+
+                case TID_CConeTwistJoint:
+                {
+                    HConeTwistJoint component = clickedSceneObject->AddComponent<CConeTwistJoint>();
+                    component->Clone(static_object_cast<CConeTwistJoint>(_selections.CopiedComponent->GetHandle()));
+                    component->Initialize();
+                    _selections.ClickedComponent = component.GetInternalPtr();
+                    _selections.CopiedComponent = component.GetInternalPtr();
+                }
+                break;
+
+                case TID_CD6Joint:
+                {
+                    HD6Joint component = clickedSceneObject->AddComponent<CD6Joint>();
+                    component->Clone(static_object_cast<CD6Joint>(_selections.CopiedComponent->GetHandle()));
+                    component->Initialize();
+                    _selections.ClickedComponent = component.GetInternalPtr();
+                    _selections.CopiedComponent = component.GetInternalPtr();
+                }
+                break;
+
+                case TID_CHingeJoint:
+                {
+                    HHingeJoint component = clickedSceneObject->AddComponent<CHingeJoint>();
+                    component->Clone(static_object_cast<CHingeJoint>(_selections.CopiedComponent->GetHandle()));
+                    component->Initialize();
+                    _selections.ClickedComponent = component.GetInternalPtr();
+                    _selections.CopiedComponent = component.GetInternalPtr();
+                }
+                break;
+
+                case TID_CSliderJoint:
+                {
+                    HSliderJoint component = clickedSceneObject->AddComponent<CSliderJoint>();
+                    component->Clone(static_object_cast<CSliderJoint>(_selections.CopiedComponent->GetHandle()));
+                    component->Initialize();
+                    _selections.ClickedComponent = component.GetInternalPtr();
+                    _selections.CopiedComponent = component.GetInternalPtr();
+                }
+                break;
+
+                case TID_CSphericalJoint:
+                {
+                    HSphericalJoint component = clickedSceneObject->AddComponent<CSphericalJoint>();
+                    component->Clone(static_object_cast<CSphericalJoint>(_selections.CopiedComponent->GetHandle()));
+                    component->Initialize();
+                    _selections.ClickedComponent = component.GetInternalPtr();
+                    _selections.CopiedComponent = component.GetInternalPtr();
+                }
+                break;
+
+                default:
                 break;
             }
         }

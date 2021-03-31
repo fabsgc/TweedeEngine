@@ -54,6 +54,12 @@ namespace te
         /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
         bool ShowCAudioSourceProperties();
 
+        /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
+        bool ShowCRigidBodyProperties();
+
+        /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
+        bool ShowCSoftBodyProperties();
+
         /**  Show transform and mobility options */
         bool ShowTransform(Transform& transform, ObjectMobility& mobility, bool disableTransform = false);
 

@@ -31,7 +31,7 @@ namespace te
 
         char inputPath[256];
         char inputUUID[64];
-        char inputName[128];
+        char inputName[256];
 
         {
             ImGui::BeginGroup();

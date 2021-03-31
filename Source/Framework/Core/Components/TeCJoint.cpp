@@ -29,10 +29,14 @@ namespace te
     { }
 
     void CJoint::Clone(const HComponent& c)
-    { }
+    { 
+        Clone(static_object_cast<CJoint>(c));
+    }
 
     void CJoint::Clone(const HJoint& c)
-    { }
+    { 
+        Component::Clone(c.GetInternalPtr());
+    }
 
     void CJoint::OnInitialized()
     { }

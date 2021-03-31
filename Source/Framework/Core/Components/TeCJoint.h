@@ -21,7 +21,7 @@ namespace te
         static UINT32 GetComponentType() { return TID_CJoint; }
 
         /** @copydoc Component::Initialize */
-        void Initialize() override;
+        virtual void Initialize() override;
 
         /** @copydoc Component::Clone */
         void Clone(const HComponent& c) override;

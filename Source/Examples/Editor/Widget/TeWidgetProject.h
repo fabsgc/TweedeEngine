@@ -76,6 +76,9 @@ namespace te
         void CreateBone();
         void CreateScript();
         void CreateSkybox();
+        void CreateRigidBody();
+        void CreateSoftBody();
+        void CreateJoint(TypeID_Core type);
         void Paste();
         void Delete();
         String GetComponentIcon(const HComponent& component);
