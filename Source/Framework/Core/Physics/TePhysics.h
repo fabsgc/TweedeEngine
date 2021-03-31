@@ -26,6 +26,8 @@ namespace te
         Physics(const PHYSICS_INIT_DESC& init);
         virtual ~Physics() = default;
 
+        TE_MODULE_STATIC_HEADER_MEMBER(Physics)
+
         /** Creates an object representing the physics scene. Must be manually released via destroyPhysicsScene(). */
         virtual SPtr<PhysicsScene> CreatePhysicsScene() = 0;
 

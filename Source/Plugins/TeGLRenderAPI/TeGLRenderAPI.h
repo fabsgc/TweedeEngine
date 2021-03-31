@@ -13,6 +13,8 @@ namespace te
         GLRenderAPI();
         ~GLRenderAPI() = default;
 
+        TE_MODULE_STATIC_HEADER_MEMBER(GLRenderAPI)
+
         SPtr<RenderWindow> CreateRenderWindow(const RENDER_WINDOW_DESC& windowDesc) override;
         void Initialize() override;
         void Destroy() override;

@@ -94,7 +94,9 @@ namespace te
         TID_CSliderJoint            = 1039,
         TID_CSphericalJoint         = 1040,
         TID_CD6Joint                = 1041,
-        TID_CConeTwistJoint         = 1042
+        TID_CConeTwistJoint         = 1042,
+        TID_CRigidBody              = 1043,
+        TID_CSoftBody               = 1044
     };
 }
 
@@ -262,6 +264,8 @@ namespace te
     class CSphericalJoint;
     class CD6Joint;
     class CConeTwistJoint;
+    class CRigidBody;
+    class CSoftBody;
 
     class BuiltinResources;
 
@@ -366,4 +370,6 @@ namespace te
     typedef GameObjectHandle<CSphericalJoint> HSphericalJoint;
     typedef GameObjectHandle<CD6Joint> HD6Joint;
     typedef GameObjectHandle<CConeTwistJoint> HConeTwistJoint;
+    typedef GameObjectHandle<CRigidBody> HRigidBody;
+    typedef GameObjectHandle<CSoftBody> HSoftBody;
 }

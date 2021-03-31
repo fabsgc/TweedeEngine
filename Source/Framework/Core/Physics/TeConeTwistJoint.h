@@ -16,9 +16,17 @@ namespace te
     public:
         ConeTwistJoint(const CONE_TWIST_JOINT_DESC& desc) { }
         virtual ~ConeTwistJoint() = default;
+
+        /**
+         * Creates a new cone twist joint.
+         *
+         * @param[in]	scene		Scene to which to add the joint.
+         * @param[in]	desc		Settings describing the joint.
+         */
+        static SPtr<ConeTwistJoint> Create(PhysicsScene& scene, const CONE_TWIST_JOINT_DESC& desc);
     };
 
     /** Structure used for initializing a new ConeTwistJoint. */
-    struct CONE_TWIST_JOINT_DESC
+    struct CONE_TWIST_JOINT_DESC : JOINT_DESC
     { };
 }

@@ -296,6 +296,8 @@ set (TE_CORE_INC_COMPONENTS
     "Core/Components/TeCSphericalJoint.h"
     "Core/Components/TeCD6Joint.h"
     "Core/Components/TeCConeTwistJoint.h"
+    "Core/Components/TeCRigidBody.h"
+    "Core/Components/TeCSoftBody.h"
 )
 set (TE_CORE_SRC_COMPONENTS
     "Core/Components/TeCCamera.cpp"
@@ -315,6 +317,8 @@ set (TE_CORE_SRC_COMPONENTS
     "Core/Components/TeCSphericalJoint.cpp"
     "Core/Components/TeCD6Joint.cpp"
     "Core/Components/TeCConeTwistJoint.cpp"
+    "Core/Components/TeCRigidBody.cpp"
+    "Core/Components/TeCSoftBody.cpp"
 )
 
 set (TE_CORE_INC_RESOURCE

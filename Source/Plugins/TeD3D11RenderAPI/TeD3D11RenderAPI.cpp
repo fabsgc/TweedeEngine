@@ -22,6 +22,8 @@
 
 namespace te
 {
+    TE_MODULE_STATIC_MEMBER(D3D11RenderAPI)
+
     D3D11RenderAPI::D3D11RenderAPI()
         : _viewport()
         , _scissorRect(D3D11_RECT())

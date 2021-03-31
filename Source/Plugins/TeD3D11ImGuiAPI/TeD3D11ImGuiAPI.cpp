@@ -4,6 +4,8 @@
 
 namespace te
 {
+    TE_MODULE_STATIC_MEMBER(D3D11ImGuiAPI)
+
     struct ImGuiData
     {
         HWND HWnd;

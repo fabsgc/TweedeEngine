@@ -15,6 +15,8 @@ namespace te
         OAAudio();
         virtual ~OAAudio();
 
+        TE_MODULE_STATIC_HEADER_MEMBER(OAAudio)
+
         /** @copydoc Audio::SetVolume */
         void SetVolume(float volume) override;
 

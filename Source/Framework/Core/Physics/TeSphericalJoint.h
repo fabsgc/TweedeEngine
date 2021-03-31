@@ -17,9 +17,17 @@ namespace te
     public:
         SphericalJoint(const SPHERICAL_JOINT_DESC& desc) { }
         virtual ~SphericalJoint() = default;
+
+        /**
+         * Creates a new spherical joint.
+         *
+         * @param[in]	scene		Scene to which to add the joint.
+         * @param[in]	desc		Settings describing the joint.
+         */
+        static SPtr<SphericalJoint> Create(PhysicsScene& scene, const SPHERICAL_JOINT_DESC& desc);
     };
 
     /** Structure used for initializing a new SphericalJoint. */
-    struct SPHERICAL_JOINT_DESC
+    struct SPHERICAL_JOINT_DESC : JOINT_DESC
     { };
 }

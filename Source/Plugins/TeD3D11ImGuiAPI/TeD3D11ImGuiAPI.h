@@ -11,6 +11,8 @@ namespace te
         D3D11ImGuiAPI();
         ~D3D11ImGuiAPI();
 
+        TE_MODULE_STATIC_HEADER_MEMBER(D3D11ImGuiAPI)
+
         /** @copydoc GuiAPI::Initialize */
         void Initialize(void* data) override;
 

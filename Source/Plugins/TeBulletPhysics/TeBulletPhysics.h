@@ -15,6 +15,8 @@ namespace te
         BulletPhysics(const PHYSICS_INIT_DESC& input);
         ~BulletPhysics();
 
+        TE_MODULE_STATIC_HEADER_MEMBER(BulletPhysics)
+
         /** @copydoc Physics::CreatePhysicsScene */
         SPtr<PhysicsScene> CreatePhysicsScene() override;
 

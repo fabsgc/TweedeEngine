@@ -4,8 +4,8 @@
 
 namespace te
 {
-    CJoint::CJoint(JOINT_DESC& desc)
-        : Component(HSceneObject(), (UINT32)TID_CJoint)
+    CJoint::CJoint(JOINT_DESC& desc, UINT32 type)
+        : Component(HSceneObject(), type)
         , _desc(desc)
         , _internal(nullptr)
     {
@@ -13,8 +13,8 @@ namespace te
         SetFlag(Component::AlwaysRun, true);
     }
 
-    CJoint::CJoint(const HSceneObject& parent, JOINT_DESC desc)
-        : Component(parent, (UINT32)TID_CJoint)
+    CJoint::CJoint(const HSceneObject& parent, JOINT_DESC desc, UINT32 type)
+        : Component(parent, type)
         , _desc(desc)
         , _internal(nullptr)
     {

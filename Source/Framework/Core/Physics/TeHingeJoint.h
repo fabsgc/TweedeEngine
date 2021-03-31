@@ -16,9 +16,17 @@ namespace te
     public:
         HingeJoint(const HINGE_JOINT_DESC& desc) { }
         virtual ~HingeJoint() = default;
+
+        /**
+         * Creates a new hinge joint.
+         *
+         * @param[in]	scene		Scene to which to add the joint.
+         * @param[in]	desc		Settings describing the joint.
+         */
+        static SPtr<HingeJoint> Create(PhysicsScene& scene, const HINGE_JOINT_DESC& desc);
     };
 
     /** Structure used for initializing a new HingeJoint. */
-    struct HINGE_JOINT_DESC
+    struct HINGE_JOINT_DESC : JOINT_DESC
     { };
 }

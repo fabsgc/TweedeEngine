@@ -11,6 +11,8 @@ namespace te
         GLImGuiAPI();
         ~GLImGuiAPI();
 
+        TE_MODULE_STATIC_HEADER_MEMBER(GLImGuiAPI)
+
         /** @copydoc GuiAPI::Initialize */
         void Initialize(void* data) override;
 

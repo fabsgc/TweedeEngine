@@ -56,6 +56,8 @@ namespace te
         D3D11RenderAPI();
         ~D3D11RenderAPI();
 
+        TE_MODULE_STATIC_HEADER_MEMBER(D3D11RenderAPI)
+
         SPtr<RenderWindow> CreateRenderWindow(const RENDER_WINDOW_DESC& windowDesc) override;
         void Initialize() override;
 

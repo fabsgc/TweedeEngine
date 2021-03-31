@@ -18,9 +18,17 @@ namespace te
     public:
         D6Joint(const D6_JOINT_DESC& desc) { }
         virtual ~D6Joint() = default;
+
+        /**
+         * Creates a new d6 joint.
+         *
+         * @param[in]	scene		Scene to which to add the joint.
+         * @param[in]	desc		Settings describing the joint.
+         */
+        static SPtr<D6Joint> Create(PhysicsScene& scene, const D6_JOINT_DESC& desc);
     };
 
     /** Structure used for initializing a new D6Joint. */
-    struct D6_JOINT_DESC
+    struct D6_JOINT_DESC : JOINT_DESC
     { };
 }

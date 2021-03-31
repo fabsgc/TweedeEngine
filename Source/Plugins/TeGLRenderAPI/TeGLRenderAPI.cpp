@@ -88,6 +88,8 @@ namespace te
                 *message, GLvoid *userParam);
 #endif
 
+    TE_MODULE_STATIC_MEMBER(GLRenderAPI)
+
     GLRenderAPI::GLRenderAPI()
     {
         // Get our GLSupport

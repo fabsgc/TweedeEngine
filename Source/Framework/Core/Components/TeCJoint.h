@@ -14,7 +14,7 @@ namespace te
     class TE_CORE_EXPORT CJoint : public Component
     {
     public:
-        CJoint(const HSceneObject& parent, JOINT_DESC desc);
+        CJoint(const HSceneObject& parent, JOINT_DESC desc, UINT32 type);
         virtual ~CJoint();
 
         /** Return Component type */
@@ -61,7 +61,7 @@ namespace te
         virtual void DestroyInternal();
 
     protected:
-        CJoint(JOINT_DESC& desc);
+        CJoint(JOINT_DESC& desc, UINT32 type);
 
     protected:
         SPtr<Joint> _internal;

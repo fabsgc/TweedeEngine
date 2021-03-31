@@ -10,6 +10,8 @@
 
 namespace te
 {
+    TE_MODULE_STATIC_MEMBER(BulletPhysics)
+
     BulletPhysics::BulletPhysics(const PHYSICS_INIT_DESC& desc)
         : Physics(desc)
         , _initDesc(desc)
