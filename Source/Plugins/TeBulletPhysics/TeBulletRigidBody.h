@@ -13,5 +13,8 @@ namespace te
     public:
         BulletRigidBody(BulletPhysics* physics, BulletScene* scene, const HSceneObject& linkedSO);
         ~BulletRigidBody();
+
+    private:
+        btRigidBody* _rigidBody;
     };
 }

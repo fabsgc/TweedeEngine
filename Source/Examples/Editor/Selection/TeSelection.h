@@ -34,6 +34,12 @@ namespace te
         /** Specific way to draw a renderable */
         void DrawRenderable(const SPtr<CRenderable>& renderable);
 
+        /** Specific way to draw a rigid body */
+        void DrawRigidBody(const SPtr<CRigidBody>& rigidBody);
+
+        /** Specific way to draw a rigid body */
+        void DrawSoftBody(const SPtr<CSoftBody>& softBody);
+
     private:
         Editor::SelectionData& _selections;
         SelectionMat* _material;

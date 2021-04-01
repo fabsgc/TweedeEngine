@@ -5,6 +5,7 @@
 #include "Components/TeCCamera.h"
 #include "Components/TeCLight.h"
 #include "Components/TeCRenderable.h"
+#include "Components/TeCRigidBody.h"
 #include "Renderer/TeRendererUtility.h"
 
 namespace te
@@ -54,6 +55,22 @@ namespace te
                     SPtr<CRenderable> renderable = std::static_pointer_cast<CRenderable>(_selections.ClickedComponent);
                     if (renderable->GetActive() && EditorUtils::DoFrustumCulling(camera, renderable))
                         DrawRenderable(renderable);
+                }
+                break;
+
+                case TID_CRigidBody:
+                {
+                    SPtr<CRigidBody> rigidBody = std::static_pointer_cast<CRigidBody>(_selections.ClickedComponent);
+                    if (rigidBody && EditorUtils::DoFrustumCulling(camera, rigidBody))
+                        DrawRigidBody(rigidBody);
+                }
+                break;
+
+                case TID_CSoftBody:
+                {
+                    SPtr<CSoftBody> softBody = std::static_pointer_cast<CSoftBody>(_selections.ClickedComponent);
+                    if (softBody && EditorUtils::DoFrustumCulling(camera, softBody))
+                        DrawSoftBody(softBody);
                 }
                 break;
 
@@ -115,6 +132,22 @@ namespace te
                 }
                 break;
 
+                case TID_CRigidBody:
+                {
+                    HRigidBody rigidBody = static_object_cast<CRigidBody>(component);
+                    if (rigidBody && EditorUtils::DoFrustumCulling(camera, rigidBody))
+                        DrawRigidBody(rigidBody.GetInternalPtr());
+                }
+                break;
+
+                case TID_CSoftBody:
+                {
+                    HSoftBody softBody = static_object_cast<CSoftBody>(component);
+                    if (softBody && EditorUtils::DoFrustumCulling(camera, softBody))
+                        DrawSoftBody(softBody.GetInternalPtr());
+                }
+                break;
+
                 default:
                 break;
             }
@@ -141,5 +174,15 @@ namespace te
             for (UINT32 i = 0; i < numMeshes; i++)
                 gRendererUtility().Draw(mesh, properties.GetSubMesh(i), 1);
         }
+    }
+
+    void Selection::DrawRigidBody(const SPtr<CRigidBody>& rigidBody)
+    {
+        // TODO
+    }
+
+    void Selection::DrawSoftBody(const SPtr<CSoftBody>& softBody)
+    {
+        // TODO
     }
 }

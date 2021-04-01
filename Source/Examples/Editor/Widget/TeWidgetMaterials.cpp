@@ -40,7 +40,7 @@ namespace te
     void WidgetMaterials::Update()
     { 
         bool hasChanged = false;
-        char inputName[128];
+        char inputName[256];
         char inputUUID[64];
         UUID empty = UUID(50, 0, 0, 0);
         UUID load  = UUID::EMPTY;
@@ -142,6 +142,7 @@ namespace te
             String name = _currentMaterial->GetName();
             String uuid = _currentMaterial->GetUUID().ToString();
 
+            memset(&inputName, 0, 256);
             strcpy(inputName, name.c_str());
             strcpy(inputUUID, uuid.c_str());
 

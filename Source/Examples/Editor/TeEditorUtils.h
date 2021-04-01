@@ -9,6 +9,8 @@
 #include "Components/TeCRenderable.h"
 #include "Components/TeCAudioListener.h"
 #include "Components/TeCAudioSource.h"
+#include "Components/TeCRigidBody.h"
+#include "Components/TeCSoftBody.h"
 
 namespace te
 {
@@ -49,10 +51,16 @@ namespace te
         static bool DoFrustumCulling(const HCamera& camera, const SPtr<CCamera> sceneCamera);
 
         /** Do a frustum culling on an audio listener. Returns true if visible */
-        static bool DoFrustumCulling(const HCamera& camera, const SPtr<CAudioListener> light);
+        static bool DoFrustumCulling(const HCamera& camera, const SPtr<CAudioListener> audio);
 
         /** Do a frustum culling on an audio source. Returns true if visible */
-        static bool DoFrustumCulling(const HCamera& camera, const SPtr<CAudioSource> light);
+        static bool DoFrustumCulling(const HCamera& camera, const SPtr<CAudioSource> audio);
+
+        /** Do a frustum culling on an rigid body. Returns true if visible */
+        static bool DoFrustumCulling(const HCamera& camera, const SPtr<CRigidBody> rigidBody);
+
+        /** Do a frustum culling on an soft body. Returns true if visible */
+        static bool DoFrustumCulling(const HCamera& camera, const SPtr<CSoftBody> softBody);
 
         /** Do a frustum culling on a renderable. Returns true if visible */
         static bool DoFrustumCulling(const HCamera& camera, const HRenderable& renderable)
@@ -82,6 +90,18 @@ namespace te
         static bool DoFrustumCulling(const HCamera& camera, const HAudioSource& audio)
         {
             return DoFrustumCulling(camera, audio.GetInternalPtr());
+        }
+
+        /** Do a frustum culling on a rigid body. Returns true if visible */
+        static bool DoFrustumCulling(const HCamera& camera, const HRigidBody& rigidBody)
+        {
+            return DoFrustumCulling(camera, rigidBody.GetInternalPtr());
+        }
+
+        /** Do a frustum culling on a soft body. Returns true if visible */
+        static bool DoFrustumCulling(const HCamera& camera, const HSoftBody& softBody)
+        {
+            return DoFrustumCulling(camera, softBody.GetInternalPtr());
         }
 
         /** Do a more generic frustum culling */

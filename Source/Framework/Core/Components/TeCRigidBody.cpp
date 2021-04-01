@@ -33,6 +33,8 @@ namespace te
     void CRigidBody::Clone(const HRigidBody& c)
     { 
         Component::Clone(c.GetInternalPtr());
+
+        _internal = RigidBody::Create(SO());
     }
 
     void CRigidBody::OnInitialized()

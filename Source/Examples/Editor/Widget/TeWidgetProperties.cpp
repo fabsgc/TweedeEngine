@@ -1124,7 +1124,7 @@ namespace te
     bool WidgetProperties::ShowAnimationClips(SPtr<CAnimation> animation)
     {
         bool hasChanged = false;
-        char inputName[128];
+        char inputName[256];
         UINT32 numClip = animation->GetNumClips();
         const float widgetWidth = ImGui::GetWindowContentRegionWidth() - 100.0f;
 
@@ -1136,9 +1136,9 @@ namespace te
             ImGui::PushID((int)clip->GetInternalID());
             if (ImGui::CollapsingHeader(name.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
             {
-                memset(&inputName, 0, 128);
+                memset(&inputName, 0, 256);
                 strcpy(inputName, name.c_str());
-   
+
                 ImGui::PushItemWidth(widgetWidth);
                 if (ImGui::InputText("Name", inputName, IM_ARRAYSIZE(inputName)))
                 {

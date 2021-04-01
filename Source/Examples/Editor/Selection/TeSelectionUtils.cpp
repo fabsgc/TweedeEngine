@@ -33,101 +33,101 @@ namespace te
 
             switch (type)
             {
-            case TypeID_Core::TID_CLight:
-            {
-                HLight light = static_object_cast<CLight>(component);
-                if (light->GetActive() && EditorUtils::DoFrustumCulling(camera, light))
+                case TypeID_Core::TID_CLight:
                 {
-                    PerHudInstanceData element;
-                    const Transform& tfrm = light->GetTransform();
-                    element.MatWorldNoScale = Matrix4::TRS(tfrm.GetPosition(), tfrm.GetRotation(), Vector3::ONE);
-
-                    if(renderType == RenderType::Selection || renderType == RenderType::Draw)
-                        element.Color = light->GetColor().GetAsVector4();
-                    else if (renderType == RenderType::Picking)
-                        element.Color = light->GetGameObjectColor().GetAsVector4();
-
-                    switch (light->GetType())
+                    HLight light = static_object_cast<CLight>(component);
+                    if (light->GetActive() && EditorUtils::DoFrustumCulling(camera, light))
                     {
-                    case LightType::Directional:
-                        element.Type = static_cast<float>(HudType::DirectionalLight);
-                        break;
-                    case LightType::Radial:
-                        element.Type = static_cast<float>(HudType::RadialLight);
-                        break;
-                    case LightType::Spot:
-                        element.Type = static_cast<float>(HudType::SpotLight);
-                        break;
-                    default:
-                        break;
+                        PerHudInstanceData element;
+                        const Transform& tfrm = light->GetTransform();
+                        element.MatWorldNoScale = Matrix4::TRS(tfrm.GetPosition(), tfrm.GetRotation(), Vector3::ONE);
+
+                        if(renderType == RenderType::Selection || renderType == RenderType::Draw)
+                            element.Color = light->GetColor().GetAsVector4();
+                        else if (renderType == RenderType::Picking)
+                            element.Color = light->GetGameObjectColor().GetAsVector4();
+
+                        switch (light->GetType())
+                        {
+                        case LightType::Directional:
+                            element.Type = static_cast<float>(HudType::DirectionalLight);
+                            break;
+                        case LightType::Radial:
+                            element.Type = static_cast<float>(HudType::RadialLight);
+                            break;
+                        case LightType::Spot:
+                            element.Type = static_cast<float>(HudType::SpotLight);
+                            break;
+                        default:
+                            break;
+                        }
+
+                        instancedElements.push_back(element);
                     }
-
-                    instancedElements.push_back(element);
                 }
-            }
-            break;
+                break;
 
-            case TypeID_Core::TID_CCamera:
-            {
-                HCamera cameraElement = static_object_cast<CCamera>(component);
-                if (cameraElement->GetActive() && EditorUtils::DoFrustumCulling(camera, cameraElement))
+                case TypeID_Core::TID_CCamera:
                 {
-                    PerHudInstanceData element;
-                    const Transform& tfrm = cameraElement->GetTransform();
-                    element.MatWorldNoScale = Matrix4::TRS(tfrm.GetPosition(), tfrm.GetRotation(), Vector3::ONE);
-                    element.Type = static_cast<float>(HudType::Camera);
+                    HCamera cameraElement = static_object_cast<CCamera>(component);
+                    if (cameraElement->GetActive() && EditorUtils::DoFrustumCulling(camera, cameraElement))
+                    {
+                        PerHudInstanceData element;
+                        const Transform& tfrm = cameraElement->GetTransform();
+                        element.MatWorldNoScale = Matrix4::TRS(tfrm.GetPosition(), tfrm.GetRotation(), Vector3::ONE);
+                        element.Type = static_cast<float>(HudType::Camera);
 
-                    if (renderType == RenderType::Selection || renderType == RenderType::Draw)
-                        element.Color = Color::Black.GetAsVector4();
-                    else if (renderType == RenderType::Picking)
-                        element.Color = cameraElement->GetGameObjectColor().GetAsVector4();
+                        if (renderType == RenderType::Selection || renderType == RenderType::Draw)
+                            element.Color = Color::Black.GetAsVector4();
+                        else if (renderType == RenderType::Picking)
+                            element.Color = cameraElement->GetGameObjectColor().GetAsVector4();
 
-                    instancedElements.push_back(element);
+                        instancedElements.push_back(element);
+                    }
                 }
-            }
-            break;
+                break;
 
-            case TypeID_Core::TID_CAudioListener:
-            {
-                HAudioListener audio = static_object_cast<CAudioListener>(component);
-                if (audio->GetActive() && EditorUtils::DoFrustumCulling(camera, audio))
+                case TypeID_Core::TID_CAudioListener:
                 {
-                    PerHudInstanceData element;
-                    const Transform& tfrm = audio->GetTransform();
-                    element.MatWorldNoScale = Matrix4::TRS(tfrm.GetPosition(), tfrm.GetRotation(), Vector3::ONE);
-                    element.Type = static_cast<float>(HudType::AudioListener);
+                    HAudioListener audio = static_object_cast<CAudioListener>(component);
+                    if (audio->GetActive() && EditorUtils::DoFrustumCulling(camera, audio))
+                    {
+                        PerHudInstanceData element;
+                        const Transform& tfrm = audio->GetTransform();
+                        element.MatWorldNoScale = Matrix4::TRS(tfrm.GetPosition(), tfrm.GetRotation(), Vector3::ONE);
+                        element.Type = static_cast<float>(HudType::AudioListener);
 
-                    if (renderType == RenderType::Selection || renderType == RenderType::Draw)
-                        element.Color = Color::White.GetAsVector4();
-                    else if (renderType == RenderType::Picking)
-                        element.Color = audio->GetGameObjectColor().GetAsVector4();
+                        if (renderType == RenderType::Selection || renderType == RenderType::Draw)
+                            element.Color = Color::White.GetAsVector4();
+                        else if (renderType == RenderType::Picking)
+                            element.Color = audio->GetGameObjectColor().GetAsVector4();
 
-                    instancedElements.push_back(element);
+                        instancedElements.push_back(element);
+                    }
                 }
-            }
-            break;
+                break;
 
-            case TypeID_Core::TID_CAudioSource:
-            {
-                HAudioSource audio = static_object_cast<CAudioSource>(component);
-                if (audio->GetActive() && EditorUtils::DoFrustumCulling(camera, audio))
+                case TypeID_Core::TID_CAudioSource:
                 {
-                    PerHudInstanceData element;
-                    const Transform& tfrm = audio->GetTransform();
-                    element.MatWorldNoScale = Matrix4::TRS(tfrm.GetPosition(), tfrm.GetRotation(), Vector3::ONE);
-                    element.Type = static_cast<float>(HudType::AudioSource);
+                    HAudioSource audio = static_object_cast<CAudioSource>(component);
+                    if (audio->GetActive() && EditorUtils::DoFrustumCulling(camera, audio))
+                    {
+                        PerHudInstanceData element;
+                        const Transform& tfrm = audio->GetTransform();
+                        element.MatWorldNoScale = Matrix4::TRS(tfrm.GetPosition(), tfrm.GetRotation(), Vector3::ONE);
+                        element.Type = static_cast<float>(HudType::AudioSource);
 
-                    if (renderType == RenderType::Selection || renderType == RenderType::Draw)
-                        element.Color = Color::White.GetAsVector4();
-                    else if (renderType == RenderType::Picking)
-                        element.Color = audio->GetGameObjectColor().GetAsVector4();
+                        if (renderType == RenderType::Selection || renderType == RenderType::Draw)
+                            element.Color = Color::White.GetAsVector4();
+                        else if (renderType == RenderType::Picking)
+                            element.Color = audio->GetGameObjectColor().GetAsVector4();
 
-                    instancedElements.push_back(element);
+                        instancedElements.push_back(element);
+                    }
                 }
-            }
-            break;
+                break;
 
-            default:
+                default:
                 break;
             }
         }

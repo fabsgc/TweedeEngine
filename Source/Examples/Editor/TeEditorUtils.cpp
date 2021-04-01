@@ -154,6 +154,16 @@ namespace te
         return DoFrustumCulling(camera, boundingSphere, cullDistanceFactor);
     }
 
+    bool EditorUtils::DoFrustumCulling(const HCamera& camera, const SPtr<CRigidBody> rigidBody)
+    {
+        return false; // TODO
+    }
+
+    bool EditorUtils::DoFrustumCulling(const HCamera& camera, const SPtr<CSoftBody> softBody)
+    {
+        return false; // TODO
+    }
+
     bool EditorUtils::DoFrustumCulling(const HCamera& camera, const SPtr<CCamera> sceneCamera)
     {
         static float cullDistanceFactor = 1.0f;

@@ -7,6 +7,7 @@ namespace te
 {
     BulletRigidBody::BulletRigidBody(BulletPhysics* physics, BulletScene* scene, const HSceneObject& linkedSO)
         : RigidBody(linkedSO)
+        , _rigidBody(nullptr)
     {
 
     }
