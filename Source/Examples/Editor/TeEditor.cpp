@@ -37,6 +37,13 @@
 #include "Components/TeCHingeJoint.h"
 #include "Components/TeCSliderJoint.h"
 #include "Components/TeCSphericalJoint.h"
+#include "Components/TeCBoxCollider.h"
+#include "Components/TeCPlaneCollider.h"
+#include "Components/TeCSphereCollider.h"
+#include "Components/TeCCylinderCollider.h"
+#include "Components/TeCCapsuleCollider.h"
+#include "Components/TeCMeshCollider.h"
+#include "Components/TeCConeCollider.h"
 #include "Scene/TeSceneManager.h"
 #include "Resources/TeResourceManager.h"
 #include "Resources/TeBuiltinResources.h"
@@ -896,6 +903,76 @@ namespace te
                 {
                     HSphericalJoint component = clickedSceneObject->AddComponent<CSphericalJoint>();
                     component->Clone(static_object_cast<CSphericalJoint>(_selections.CopiedComponent->GetHandle()));
+                    component->Initialize();
+                    _selections.ClickedComponent = component.GetInternalPtr();
+                    _selections.CopiedComponent = component.GetInternalPtr();
+                }
+                break;
+
+                case TID_CBoxCollider:
+                {
+                    HBoxCollider component = clickedSceneObject->AddComponent<CBoxCollider>();
+                    component->Clone(static_object_cast<CBoxCollider>(_selections.CopiedComponent->GetHandle()));
+                    component->Initialize();
+                    _selections.ClickedComponent = component.GetInternalPtr();
+                    _selections.CopiedComponent = component.GetInternalPtr();
+                }
+                break;
+
+                case TID_CPlaneCollider:
+                {
+                    HPlaneCollider component = clickedSceneObject->AddComponent<CPlaneCollider>();
+                    component->Clone(static_object_cast<CPlaneCollider>(_selections.CopiedComponent->GetHandle()));
+                    component->Initialize();
+                    _selections.ClickedComponent = component.GetInternalPtr();
+                    _selections.CopiedComponent = component.GetInternalPtr();
+                }
+                break;
+
+                case TID_CSphereCollider:
+                {
+                    HSphereCollider component = clickedSceneObject->AddComponent<CSphereCollider>();
+                    component->Clone(static_object_cast<CSphereCollider>(_selections.CopiedComponent->GetHandle()));
+                    component->Initialize();
+                    _selections.ClickedComponent = component.GetInternalPtr();
+                    _selections.CopiedComponent = component.GetInternalPtr();
+                }
+                break;
+
+                case TID_CCylinderCollider:
+                {
+                    HCylinderCollider component = clickedSceneObject->AddComponent<CCylinderCollider>();
+                    component->Clone(static_object_cast<CCylinderCollider>(_selections.CopiedComponent->GetHandle()));
+                    component->Initialize();
+                    _selections.ClickedComponent = component.GetInternalPtr();
+                    _selections.CopiedComponent = component.GetInternalPtr();
+                }
+                break;
+
+                case TID_CCapsuleCollider:
+                {
+                    HCapsuleCollider component = clickedSceneObject->AddComponent<CCapsuleCollider>();
+                    component->Clone(static_object_cast<CCapsuleCollider>(_selections.CopiedComponent->GetHandle()));
+                    component->Initialize();
+                    _selections.ClickedComponent = component.GetInternalPtr();
+                    _selections.CopiedComponent = component.GetInternalPtr();
+                }
+                break;
+
+                case TID_CMeshCollider:
+                {
+                    HMeshCollider component = clickedSceneObject->AddComponent<CMeshCollider>();
+                    component->Clone(static_object_cast<CMeshCollider>(_selections.CopiedComponent->GetHandle()));
+                    component->Initialize();
+                    _selections.ClickedComponent = component.GetInternalPtr();
+                    _selections.CopiedComponent = component.GetInternalPtr();
+                }
+                break;
+
+                case TID_CConeCollider:
+                {
+                    HConeCollider component = clickedSceneObject->AddComponent<CConeCollider>();
+                    component->Clone(static_object_cast<CConeCollider>(_selections.CopiedComponent->GetHandle()));
                     component->Initialize();
                     _selections.ClickedComponent = component.GetInternalPtr();
                     _selections.CopiedComponent = component.GetInternalPtr();

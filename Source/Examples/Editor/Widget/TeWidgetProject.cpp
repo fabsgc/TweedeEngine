@@ -22,6 +22,13 @@
 #include "Components/TeCHingeJoint.h"
 #include "Components/TeCSliderJoint.h"
 #include "Components/TeCSphericalJoint.h"
+#include "Components/TeCBoxCollider.h"
+#include "Components/TeCPlaneCollider.h"
+#include "Components/TeCSphereCollider.h"
+#include "Components/TeCCylinderCollider.h"
+#include "Components/TeCCapsuleCollider.h"
+#include "Components/TeCMeshCollider.h"
+#include "Components/TeCConeCollider.h"
 #include "../TeEditorUtils.h"
 
 namespace te
@@ -330,6 +337,13 @@ namespace te
             case TID_CHingeJoint:
             case TID_CSliderJoint:
             case TID_CSphericalJoint:
+            case TID_CBoxCollider:
+            case TID_CPlaneCollider:
+            case TID_CSphereCollider:
+            case TID_CCylinderCollider:
+            case TID_CCapsuleCollider:
+            case TID_CMeshCollider:
+            case TID_CConeCollider:
                 gEditor().PutFocus(Editor::WindowType::Viewport);
                 break;
 
@@ -558,16 +572,41 @@ namespace te
                         if (ImGui::MenuItem(ICON_FA_BOXES " Soft Body"))
                             CreateSoftBody();
 
-                        if (ImGui::MenuItem(ICON_FA_LINK " Cone Twist Joint"))
-                            CreateJoint(TID_CConeTwistJoint);
-                        if (ImGui::MenuItem(ICON_FA_LINK " D6 Joint"))
-                            CreateJoint(TID_CD6Joint);
-                        if (ImGui::MenuItem(ICON_FA_LINK " Hinge Joint"))
-                            CreateJoint(TID_CHingeJoint);
-                        if (ImGui::MenuItem(ICON_FA_LINK " Slider Joint"))
-                            CreateJoint(TID_CSliderJoint);
-                        if (ImGui::MenuItem(ICON_FA_LINK " Spherical Joint"))
-                            CreateJoint(TID_CSphericalJoint);
+                        if (ImGui::BeginMenu(ICON_FA_LINK " Joint"))
+                        {
+                            if (ImGui::MenuItem(ICON_FA_LINK " Cone Twist Joint"))
+                                CreateJoint(TID_CConeTwistJoint);
+                            if (ImGui::MenuItem(ICON_FA_LINK " D6 Joint"))
+                                CreateJoint(TID_CD6Joint);
+                            if (ImGui::MenuItem(ICON_FA_LINK " Hinge Joint"))
+                                CreateJoint(TID_CHingeJoint);
+                            if (ImGui::MenuItem(ICON_FA_LINK " Slider Joint"))
+                                CreateJoint(TID_CSliderJoint);
+                            if (ImGui::MenuItem(ICON_FA_LINK " Spherical Joint"))
+                                CreateJoint(TID_CSphericalJoint);
+
+                            ImGui::EndMenu();
+                        }
+
+                        if (ImGui::BeginMenu(ICON_FA_CUBE " Collider"))
+                        {
+                            if (ImGui::MenuItem(ICON_FA_CUBE " Box Collider"))
+                                CreateCollider(TID_CBoxCollider);
+                            if (ImGui::MenuItem(ICON_FA_CUBE " Plane Collider"))
+                                CreateCollider(TID_CPlaneCollider);
+                            if (ImGui::MenuItem(ICON_FA_CUBE " Sphere Collider"))
+                                CreateCollider(TID_CSphereCollider);
+                            if (ImGui::MenuItem(ICON_FA_CUBE " Cylinder Collider"))
+                                CreateCollider(TID_CCylinderCollider);
+                            if (ImGui::MenuItem(ICON_FA_CUBE " Capsule Collider"))
+                                CreateCollider(TID_CCapsuleCollider);
+                            if (ImGui::MenuItem(ICON_FA_CUBE " Mesh Collider"))
+                                CreateCollider(TID_CMeshCollider);
+                            if (ImGui::MenuItem(ICON_FA_CUBE " Cone Collider"))
+                                CreateCollider(TID_CMeshCollider);
+
+                            ImGui::EndMenu();
+                        }
 
                         ImGui::EndMenu();
                     }
@@ -956,6 +995,84 @@ namespace te
         gEditor().GetSettings().State = Editor::EditorState::Modified;
     }
 
+    void WidgetProject::CreateCollider(TypeID_Core type)
+    {
+        if (!_selections.ClickedSceneObject || _selections.ClickedComponent)
+            return;
+
+        switch (type)
+        {
+            case TID_CBoxCollider:
+            {
+                HBoxCollider collider = _selections.ClickedSceneObject->AddComponent<CBoxCollider>();
+                collider.Get()->SetName("Box Collider");
+                collider.Get()->Initialize();
+                _selections.ClickedComponent = collider.GetInternalPtr();
+            }
+            break;
+
+            case TID_CPlaneCollider:
+            {
+                HPlaneCollider collider = _selections.ClickedSceneObject->AddComponent<CPlaneCollider>();
+                collider.Get()->SetName("Plane Collider");
+                collider.Get()->Initialize();
+                _selections.ClickedComponent = collider.GetInternalPtr();
+            }
+            break;
+
+            case TID_CSphereCollider:
+            {
+                HSphereCollider collider = _selections.ClickedSceneObject->AddComponent<CSphereCollider>();
+                collider.Get()->SetName("Sphere Collider");
+                collider.Get()->Initialize();
+                _selections.ClickedComponent = collider.GetInternalPtr();
+            }
+            break;
+
+            case TID_CCylinderCollider:
+            {
+                HCylinderCollider collider = _selections.ClickedSceneObject->AddComponent<CCylinderCollider>();
+                collider.Get()->SetName("Cylinder Collider");
+                collider.Get()->Initialize();
+                _selections.ClickedComponent = collider.GetInternalPtr();
+            }
+            break;
+
+            case TID_CCapsuleCollider:
+            {
+                HCapsuleCollider collider = _selections.ClickedSceneObject->AddComponent<CCapsuleCollider>();
+                collider.Get()->SetName("Capsule Collider");
+                collider.Get()->Initialize();
+                _selections.ClickedComponent = collider.GetInternalPtr();
+            }
+            break;
+
+            case TID_CMeshCollider:
+            {
+                HMeshCollider collider = _selections.ClickedSceneObject->AddComponent<CMeshCollider>();
+                collider.Get()->SetName("Mesh Collider");
+                collider.Get()->Initialize();
+                _selections.ClickedComponent = collider.GetInternalPtr();
+            }
+            break;
+
+            case TID_CConeCollider:
+            {
+                HConeCollider collider = _selections.ClickedSceneObject->AddComponent<CConeCollider>();
+                collider.Get()->SetName("Cone Collider");
+                collider.Get()->Initialize();
+                _selections.ClickedComponent = collider.GetInternalPtr();
+            }
+            break;
+        }
+
+        _expandToSelection = true;
+        _handleSelectionWindowSwitch = true;
+
+        gEditor().NeedsRedraw();
+        gEditor().GetSettings().State = Editor::EditorState::Modified;
+    }
+
     void WidgetProject::Paste()
     { 
         gEditor().Paste();
@@ -1022,6 +1139,15 @@ namespace te
         case TID_CSliderJoint:
         case TID_CSphericalJoint:
             title += String("  ") + ICON_FA_LINK;
+            break;
+        case TID_CBoxCollider:
+        case TID_CPlaneCollider:
+        case TID_CSphereCollider:
+        case TID_CCylinderCollider:
+        case TID_CCapsuleCollider:
+        case TID_CMeshCollider:
+        case TID_CConeCollider:
+            title += String("  ") + ICON_FA_CUBE;
             break;
         default:
             title += String("  ") + ICON_FA_QUESTION_CIRCLE;

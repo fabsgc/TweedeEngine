@@ -79,6 +79,7 @@ namespace te
         void CreateRigidBody();
         void CreateSoftBody();
         void CreateJoint(TypeID_Core type);
+        void CreateCollider(TypeID_Core type);
         void Paste();
         void Delete();
         String GetComponentIcon(const HComponent& component);
