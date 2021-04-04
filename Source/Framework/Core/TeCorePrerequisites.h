@@ -96,7 +96,15 @@ namespace te
         TID_CD6Joint                = 1041,
         TID_CConeTwistJoint         = 1042,
         TID_CRigidBody              = 1043,
-        TID_CSoftBody               = 1044
+        TID_CSoftBody               = 1044,
+        TID_CCollider               = 1045,
+        TID_CBoxCollider            = 1046,
+        TID_CPlaneCollider          = 1047,
+        TID_CSphereCollider         = 1048,
+        TID_CCylinderCollider       = 1049,
+        TID_CCapsuleCollider        = 1050,
+        TID_CMeshCollider           = 1051,
+        TID_CConeCollider           = 1052
     };
 }
 
@@ -266,6 +274,14 @@ namespace te
     class CConeTwistJoint;
     class CRigidBody;
     class CSoftBody;
+    class CCollider;
+    class CBoxCollider;
+    class CPlaneCollider;
+    class CSphereCollider;
+    class CCylinderCollider;
+    class CCapsuleCollider;
+    class CMeshCollider;
+    class CConeCollider;
 
     class BuiltinResources;
 
@@ -325,6 +341,14 @@ namespace te
     struct SPHERICAL_JOINT_DESC;
     struct CONE_TWIST_JOINT_DESC;
     struct D6_JOINT_DESC;
+    class Collider;
+    class BoxCollider;
+    class PlaneCollider;
+    class SphereCollider;
+    class CylinderCollier;
+    class CapsuleCollider;
+    class MeshCollider;
+    class ConeCollider;
 }
 
 #include "Utility/TeNonCopyable.h"
@@ -372,4 +396,11 @@ namespace te
     typedef GameObjectHandle<CConeTwistJoint> HConeTwistJoint;
     typedef GameObjectHandle<CRigidBody> HRigidBody;
     typedef GameObjectHandle<CSoftBody> HSoftBody;
+    typedef GameObjectHandle<CCollider> HCollider;
+    typedef GameObjectHandle<CBoxCollider> HBoxCollider;
+    typedef GameObjectHandle<CPlaneCollider> HPlaneCollider;
+    typedef GameObjectHandle<CSphereCollider> HSphereCollider;
+    typedef GameObjectHandle<CCapsuleCollider> HCapsuleCollider;
+    typedef GameObjectHandle<CMeshCollider> HMeshCollider;
+    typedef GameObjectHandle<CConeCollider> HConeCollider;
 }

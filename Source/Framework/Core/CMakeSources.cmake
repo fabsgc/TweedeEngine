@@ -298,6 +298,14 @@ set (TE_CORE_INC_COMPONENTS
     "Core/Components/TeCConeTwistJoint.h"
     "Core/Components/TeCRigidBody.h"
     "Core/Components/TeCSoftBody.h"
+    "Core/Components/TeCCollider.h"
+    "Core/Components/TeCBoxCollider.h"
+    "Core/Components/TeCPlaneCollider.h"
+    "Core/Components/TeCSphereCollider.h"
+    "Core/Components/TeCCylinderCollider.h"
+    "Core/Components/TeCCapsuleCollider.h"
+    "Core/Components/TeCMeshCollider.h"
+    "Core/Components/TeCConeCollider.h"
 )
 set (TE_CORE_SRC_COMPONENTS
     "Core/Components/TeCCamera.cpp"
@@ -319,6 +327,14 @@ set (TE_CORE_SRC_COMPONENTS
     "Core/Components/TeCConeTwistJoint.cpp"
     "Core/Components/TeCRigidBody.cpp"
     "Core/Components/TeCSoftBody.cpp"
+    "Core/Components/TeCCollider.cpp"
+    "Core/Components/TeCBoxCollider.cpp"
+    "Core/Components/TeCPlaneCollider.cpp"
+    "Core/Components/TeCSphereCollider.cpp"
+    "Core/Components/TeCCylinderCollider.cpp"
+    "Core/Components/TeCCapsuleCollider.cpp"
+    "Core/Components/TeCMeshCollider.cpp"
+    "Core/Components/TeCConeCollider.cpp"
 )
 
 set (TE_CORE_INC_RESOURCE
@@ -415,6 +431,14 @@ set (TE_CORE_INC_PHYSICS
     "Core/Physics/TeSphericalJoint.h"
     "Core/Physics/TeD6Joint.h"
     "Core/Physics/TeConeTwistJoint.h"
+    "Core/Physics/TeCollider.h"
+    "Core/Physics/TeBoxCollider.h"
+    "Core/Physics/TePlaneCollider.h"
+    "Core/Physics/TeSphereCollider.h"
+    "Core/Physics/TeCylinderCollider.h"
+    "Core/Physics/TeCapsuleCollider.h"
+    "Core/Physics/TeMeshCollider.h"
+    "Core/Physics/TeConeCollider.h"
 )
 set (TE_CORE_SRC_PHYSICS
     "Core/Physics/TePhysics.cpp"
@@ -427,6 +451,14 @@ set (TE_CORE_SRC_PHYSICS
     "Core/Physics/TeSphericalJoint.cpp"
     "Core/Physics/TeD6Joint.cpp"
     "Core/Physics/TeConeTwistJoint.cpp"
+    "Core/Physics/TeCollider.cpp"
+    "Core/Physics/TeBoxCollider.cpp"
+    "Core/Physics/TePlaneCollider.cpp"
+    "Core/Physics/TeSphereCollider.cpp"
+    "Core/Physics/TeCylinderCollider.cpp"
+    "Core/Physics/TeCapsuleCollider.cpp"
+    "Core/Physics/TeMeshCollider.cpp"
+    "Core/Physics/TeConeCollider.cpp"
 )
 
 if (WIN32)

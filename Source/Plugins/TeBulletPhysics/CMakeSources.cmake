@@ -8,6 +8,13 @@ set (TE_BULLETPHYSICS_INC_NOFILTER
     "TeBulletSphericalJoint.h"
     "TeBulletD6Joint.h"
     "TeBulletConeTwistJoint.h"
+    "TeBulletBoxCollider.h"
+    "TeBulletPlaneCollider.h"
+    "TeBulletSphereCollider.h"
+    "TeBulletCylinderCollider.h"
+    "TeBulletCapsuleCollider.h"
+    "TeBulletMeshCollider.h"
+    "TeBulletConeCollider.h"
 )
 
 set (TE_BULLETPHYSICS_SRC_NOFILTER
@@ -20,6 +27,13 @@ set (TE_BULLETPHYSICS_SRC_NOFILTER
     "TeBulletSphericalJoint.cpp"
     "TeBulletD6Joint.cpp"
     "TeBulletConeTwistJoint.cpp"
+    "TeBulletBoxCollider.cpp"
+    "TeBulletPlaneCollider.cpp"
+    "TeBulletSphereCollider.cpp"
+    "TeBulletCylinderCollider.cpp"
+    "TeBulletCapsuleCollider.cpp"
+    "TeBulletMeshCollider.cpp"
+    "TeBulletConeCollider.cpp"
 )
 
 source_group ("" FILES ${TE_BULLETPHYSICS_SRC_NOFILTER} ${TE_BULLETPHYSICS_INC_NOFILTER})
