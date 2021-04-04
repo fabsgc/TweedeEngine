@@ -345,7 +345,7 @@ namespace te
     class BoxCollider;
     class PlaneCollider;
     class SphereCollider;
-    class CylinderCollier;
+    class CylinderCollider;
     class CapsuleCollider;
     class MeshCollider;
     class ConeCollider;
@@ -400,6 +400,7 @@ namespace te
     typedef GameObjectHandle<CBoxCollider> HBoxCollider;
     typedef GameObjectHandle<CPlaneCollider> HPlaneCollider;
     typedef GameObjectHandle<CSphereCollider> HSphereCollider;
+    typedef GameObjectHandle<CCylinderCollider> HCylinderCollider;
     typedef GameObjectHandle<CCapsuleCollider> HCapsuleCollider;
     typedef GameObjectHandle<CMeshCollider> HMeshCollider;
     typedef GameObjectHandle<CConeCollider> HConeCollider;

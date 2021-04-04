@@ -17,6 +17,5 @@ namespace te
     public:
         Collider() = default;
         virtual ~Collider() = default;
-
     };
 }

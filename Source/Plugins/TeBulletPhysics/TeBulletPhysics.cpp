@@ -7,6 +7,13 @@
 #include "TeBulletHingeJoint.h"
 #include "TeBulletSliderJoint.h"
 #include "TeBulletSphericalJoint.h"
+#include "TeBulletBoxCollider.h"
+#include "TeBulletPlaneCollider.h"
+#include "TeBulletSphereCollider.h"
+#include "TeBulletCylinderCollider.h"
+#include "TeBulletCapsuleCollider.h"
+#include "TeBulletMeshCollider.h"
+#include "TeBulletConeCollider.h"
 
 namespace te
 {
@@ -171,6 +178,41 @@ namespace te
     SPtr<D6Joint> BulletScene::CreateD6Joint(const D6_JOINT_DESC& desc)
     {
         return te_shared_ptr_new<BulletD6Joint>(_physics, desc);
+    }
+
+    SPtr<BoxCollider> BulletScene::CreateBoxCollider()
+    {
+        return te_shared_ptr_new<BulletBoxCollider>(_physics);
+    }
+
+    SPtr<PlaneCollider> BulletScene::CreatePlaneCollider()
+    {
+        return te_shared_ptr_new<BulletPlaneCollider>(_physics);
+    }
+
+    SPtr<SphereCollider> BulletScene::CreateSphereCollider()
+    {
+        return te_shared_ptr_new<BulletSphereCollider>(_physics);
+    }
+
+    SPtr<CylinderCollider> BulletScene::CreateCylinderCollider()
+    {
+        return te_shared_ptr_new<BulletCylinderCollider>(_physics);
+    }
+
+    SPtr<CapsuleCollider> BulletScene::CreateCapsuleCollider()
+    {
+        return te_shared_ptr_new<BulletCapsuleCollider>(_physics);
+    }
+
+    SPtr<MeshCollider> BulletScene::CreateMeshCollider()
+    {
+        return te_shared_ptr_new<BulletMeshCollider>(_physics);
+    }
+
+    SPtr<ConeCollider> BulletScene::CreateConeCollider()
+    {
+        return te_shared_ptr_new<BulletConeCollider>(_physics);
     }
 
     BulletPhysics& gBulletPhysics()

@@ -81,6 +81,27 @@ namespace te
         /** @copydoc PhysicsScene::CreateSoftBody */
         SPtr<D6Joint> CreateD6Joint(const D6_JOINT_DESC& desc) override;
 
+        /** @copydoc PhysicsScene::CreateBoxCollider */
+        SPtr<BoxCollider> CreateBoxCollider();
+
+        /** @copydoc PhysicsScene::CreatePlaneCollider */
+        SPtr<PlaneCollider> CreatePlaneCollider();
+
+        /** @copydoc PhysicsScene::CreateSphereCollider */
+        SPtr<SphereCollider> CreateSphereCollider();
+
+        /** @copydoc PhysicsScene::CreateCylinderCollider */
+        SPtr<CylinderCollider> CreateCylinderCollider();
+
+        /** @copydoc PhysicsScene::CreateCapsuleCollider */
+        SPtr<CapsuleCollider> CreateCapsuleCollider();
+
+        /** @copydoc PhysicsScene::CreateMeshCollider */
+        SPtr<MeshCollider> CreateMeshCollider();
+
+        /** @copydoc PhysicsScene::CreateConeCollider */
+        SPtr<ConeCollider> CreateConeCollider();
+
     private:
         friend class BulletPhysics;
 

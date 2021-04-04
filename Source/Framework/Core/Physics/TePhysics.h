@@ -103,6 +103,41 @@ namespace te
          */
         virtual SPtr<D6Joint> CreateD6Joint(const D6_JOINT_DESC& desc) = 0;
 
+        /**
+         * Creates a new box collider.
+         */
+        virtual SPtr<BoxCollider> CreateBoxCollider() = 0;
+
+        /**
+         * Creates a new plane collider.
+         */
+        virtual SPtr<PlaneCollider> CreatePlaneCollider() = 0;
+
+        /**
+         * Creates a new sphere collider.
+         */
+        virtual SPtr<SphereCollider> CreateSphereCollider() = 0;
+
+        /**
+         * Creates a new cylinder collider.
+         */
+        virtual SPtr<CylinderCollider> CreateCylinderCollider() = 0;
+
+        /**
+         * Creates a new capsule collider.
+         */
+        virtual SPtr<CapsuleCollider> CreateCapsuleCollider() = 0;
+
+        /**
+         * Creates a new mesh collider.
+         */
+        virtual SPtr<MeshCollider> CreateMeshCollider() = 0;
+
+        /**
+         * Creates a new cone collider.
+         */
+        virtual SPtr<ConeCollider> CreateConeCollider() = 0;
+
     protected:
         PhysicsScene() = default;
         virtual ~PhysicsScene() = default;
