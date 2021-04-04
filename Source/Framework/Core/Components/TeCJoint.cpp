@@ -10,7 +10,7 @@ namespace te
         , _internal(nullptr)
     {
         SetName("Joint");
-        SetFlag(Component::AlwaysRun, true);
+        _notifyFlags = (TransformChangedFlags)(TCF_Parent | TCF_Transform);
     }
 
     CJoint::CJoint(const HSceneObject& parent, JOINT_DESC desc, UINT32 type)
@@ -19,7 +19,7 @@ namespace te
         , _internal(nullptr)
     {
         SetName("Joint");
-        SetFlag(Component::AlwaysRun, true);
+        _notifyFlags = (TransformChangedFlags)(TCF_Parent | TCF_Transform);
     }
 
     CJoint::~CJoint()
@@ -55,8 +55,7 @@ namespace te
 
     void CJoint::OnEnabled()
     { 
-        // TODO
-        RestoreInternal();
+        RestoreInternal(); // TODO
     }
 
     void CJoint::OnTransformChanged(TransformChangedFlags flags)
