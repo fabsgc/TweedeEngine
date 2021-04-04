@@ -2,6 +2,7 @@
 
 #include "TeCorePrerequisites.h"
 #include "Physics/TePhysicsCommon.h"
+#include "Math/TeVector3.h"
 
 namespace te
 {
@@ -17,5 +18,31 @@ namespace te
     public:
         Collider() = default;
         virtual ~Collider() = default;
+
+        /** Sets the scale of the collider geometry. */
+        virtual void SetScale(const Vector3& scale);
+
+        /** Retrieves the scale of the collider geometry. */
+        Vector3 GetScale() const;
+
+        /** @copydoc FCollider::SetIsTrigger */
+        void SetIsTrigger(bool value);
+
+        /** @copydoc FCollider::GetIsTrigger */
+        bool GetIsTrigger() const;
+
+        /** Determines the Rigidbody that controls this collider (if any). */
+        void SetRigidBody(RigidBody* value);
+
+        /** @copydoc Collider::setRigidbody() */
+        RigidBody* GetRigidbody() const { return _rigidBody; }
+
+        /** Returns the object containing common collider code. */
+        FCollider* GetInternal() const { return _internal; }
+
+    protected:
+        FCollider* _internal = nullptr;
+        RigidBody* _rigidBody = nullptr;
+        Vector3 _scale = Vector3::ONE;
     };
 }

@@ -349,6 +349,7 @@ namespace te
     class CapsuleCollider;
     class MeshCollider;
     class ConeCollider;
+    class FCollider;
 }
 
 #include "Utility/TeNonCopyable.h"
