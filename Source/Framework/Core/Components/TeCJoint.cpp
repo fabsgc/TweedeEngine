@@ -26,7 +26,10 @@ namespace te
     { }
 
     void CJoint::Initialize()
-    { }
+    { 
+        RestoreInternal();
+        Component::Initialize();
+    }
 
     void CJoint::Clone(const HComponent& c)
     { 

@@ -20,7 +20,7 @@ namespace te
     {
         const SPtr<SceneInstance>& scene = SO()->GetScene();
         SPtr<Collider> collider = ConeCollider::Create(*scene->GetPhysicsScene());
-        collider->SetOwner(PhysicsOwnerType::Component);
+        collider->SetOwner(PhysicsOwnerType::Component, this);
 
         return collider;
     }

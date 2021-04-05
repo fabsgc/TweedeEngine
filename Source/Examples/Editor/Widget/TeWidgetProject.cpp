@@ -447,6 +447,14 @@ namespace te
                 if (currentCO->GetCoreType() == TID_CAudioListener || currentCO->GetCoreType() == TID_CAudioSource)
                     currentCO->Initialize();
 
+                // if we've moved a rigidBody call OnEnabled()
+                if (currentCO->GetCoreType() == TID_CRigidBody)
+                    static_object_cast<CRigidBody>(currentCO)->Initialize();
+
+                // if we've moved a softBody call OnEnabled()
+                if (currentCO->GetCoreType() == TID_CSoftBody)
+                    static_object_cast<CSoftBody>(currentCO)->Initialize();
+
                 // ugly but best way to update all children
                 sceneObject->Move(Vector3::ZERO);
 

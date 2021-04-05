@@ -405,6 +405,28 @@ namespace te
             return false;
         }
 
+        /**
+         * Checks if the current object contains the specified component or components derived from the provided type.
+         *
+         * @tparam	typename T	Types of the component in a Vector.
+         * @return				True if component exists on the object.
+         *
+         * @note	Don't call this too often as it is relatively slow.
+         */
+        bool HasComponent(const Vector<UINT32>& types)
+        {
+            for (auto entry : _components)
+            {
+                for (auto type : types)
+                {
+                    if (entry->GetCoreType() == type)
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
         /**	Creates an empty component with the default constructor. Primarily used for RTTI purposes. */
         template <typename T>
         static SPtr<T> CreateEmptyComponent()

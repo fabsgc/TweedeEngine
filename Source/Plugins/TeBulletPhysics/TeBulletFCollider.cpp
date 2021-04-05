@@ -11,6 +11,21 @@ namespace te
     BulletFCollider::~BulletFCollider()
     { }
 
+    Vector3 BulletFCollider::GetPosition() const
+    {
+        return Vector3::ZERO; // TODO
+    }
+
+    Quaternion BulletFCollider::GetRotation() const
+    {
+        return Quaternion::IDENTITY; // TODO
+    }
+
+    void BulletFCollider::SetTransform(const Vector3& pos, const Quaternion& rotation)
+    {
+        // TODO
+    }
+
     void BulletFCollider::SetIsTrigger(bool value)
     {
         if(value)
@@ -39,5 +54,16 @@ namespace te
     bool BulletFCollider::GetIsStatic() const
     {
         return _isStatic;
+    }
+
+    CollisionReportMode BulletFCollider::GetCollisionReportMode() const
+    {
+        return _collisionReportMode;
+    }
+
+    void BulletFCollider::SetCollisionReportMode(CollisionReportMode mode)
+    {
+        _collisionReportMode = mode;
+        // UpdateFilter(); TODO
     }
 }

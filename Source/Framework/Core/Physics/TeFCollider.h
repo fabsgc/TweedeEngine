@@ -1,4 +1,6 @@
 #include "Physics/TePhysicsCommon.h"
+#include "Math/TeVector3.h"
+#include "Math/TeQuaternion.h"
 
 namespace te
 {
@@ -7,6 +9,15 @@ namespace te
     {
     public:
         virtual ~FCollider() = default;
+
+        /** Returns the position of the collider. */
+        virtual Vector3 GetPosition() const = 0;
+
+        /** Returns the rotation of the collider. */
+        virtual Quaternion GetRotation() const = 0;
+
+        /** Sets the position and rotation of the collider. */
+        virtual void SetTransform(const Vector3& pos, const Quaternion& rotation) = 0;
 
         /**
          * Enables/disables a collider as a trigger. A trigger will not be used for collisions (objects will pass
@@ -25,6 +36,12 @@ namespace te
 
         /** @copydoc GetIsStatic() */
         virtual bool GetIsStatic() const = 0;
+
+        /** Determines which (if any) collision events are reported. */
+        virtual void SetCollisionReportMode(CollisionReportMode mode) = 0;
+
+        /** @copydoc setCollisionReportMode() */
+        virtual CollisionReportMode GetCollisionReportMode() const = 0;
 
     };
 }

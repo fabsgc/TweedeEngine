@@ -3,6 +3,7 @@
 #include "TeCorePrerequisites.h"
 #include "Physics/TePhysicsCommon.h"
 #include "Math/TeVector3.h"
+#include "Utility/TeEvent.h"
 
 namespace te
 {
@@ -19,6 +20,15 @@ namespace te
         Collider() = default;
         virtual ~Collider() = default;
 
+        /** @copydoc FCollider::GetPosition */
+        Vector3 GetPosition() const;
+
+        /** @copydoc FCollider::GetRotation */
+        Quaternion GetRotation() const;
+
+        /** @copydoc FCollider::SetTransform */
+        void SetTransform(const Vector3& pos, const Quaternion& rot);
+
         /** Sets the scale of the collider geometry. */
         virtual void SetScale(const Vector3& scale);
 
@@ -30,6 +40,12 @@ namespace te
 
         /** @copydoc FCollider::GetIsTrigger */
         bool GetIsTrigger() const;
+
+        /** @copydoc FCollider::SetCollisionReportMode */
+        void SetCollisionReportMode(CollisionReportMode mode);
+
+        /** @copydoc FCollider::getCollisionReportMode */
+        CollisionReportMode GetCollisionReportMode() const;
 
         /** Determines the Rigidbody that controls this collider (if any). */
         void SetRigidBody(RigidBody* value);
@@ -44,13 +60,29 @@ namespace te
          * Sets the object that owns this physics object, if any. Used for high level systems so they can easily map their
          * high level physics objects from the low level ones returned by various queries and events.
          */
-        void SetOwner(PhysicsOwnerType type) { _owner.Type = type; }
+        void SetOwner(PhysicsOwnerType type, void* owner) { _owner.Type = type; _owner.OwnerData = owner; }
 
         /**
          * Gets the object that owns this physics object, if any. Used for high level systems so they can easily map their
          * high level physics objects from the low level ones returned by various queries and events.
          */
-        PhysicsOwnerType GetOwner() const { return _owner.Type; }
+        void* GetOwner(PhysicsOwnerType type) const { return _owner.Type == type ? _owner.OwnerData : nullptr; }
+
+        /**
+         * Triggered when some object starts interacting with the collider. Only triggered if proper collision report mode
+         * is turned on.
+         */
+        Event<void(const CollisionDataRaw&)> OnCollisionBegin;
+        /**
+         * Triggered for every frame that an object remains interacting with a collider. Only triggered if proper collision
+         * report mode is turned on.
+         */
+        Event<void(const CollisionDataRaw&)> OnCollisionStay;
+        /**
+         * Triggered when some object stops interacting with the collider. Only triggered if proper collision report mode
+         * is turned on.
+         */
+        Event<void(const CollisionDataRaw&)> OnCollisionEnd;
 
     protected:
         FCollider* _internal = nullptr;
