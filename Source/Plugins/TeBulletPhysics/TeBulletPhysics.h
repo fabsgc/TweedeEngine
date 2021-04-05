@@ -11,6 +11,38 @@ namespace te
     /** Bullet implementation of Physics. */
     class BulletPhysics : public Physics
     {
+        /** Type of contacts reported by PhysX simulation. */
+        enum class ContactEventType
+        {
+            ContactBegin,
+            ContactStay,
+            ContactEnd
+        };
+
+        /** Event reported when a physics object interacts with a collider. */
+        struct TriggerEvent
+        {
+            Collider* Trigger; /** Trigger that was interacted with. */
+            Collider* Other; /** Collider that was interacted with. */
+            ContactEventType Type; /** Exact type of the event. */
+        };
+
+        /** Event reported when two colliders interact. */
+        struct ContactEvent
+        {
+            Collider* ColliderA; /** First collider. */
+            Collider* ColliderB; /** Second collider. */
+            ContactEventType Type; /** Exact type of the event. */
+            // Note: Not too happy this is heap allocated, use static allocator?
+            Vector<ContactPoint> Points; /** Information about all contact points between the colliders. */
+        };
+
+        /** Event reported when a joint breaks. */
+        struct JointBreakEvent
+        {
+            Joint* JointElt; /** Broken joint. */
+        };
+
     public:
         BulletPhysics(const PHYSICS_INIT_DESC& input);
         ~BulletPhysics();

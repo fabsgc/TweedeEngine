@@ -455,7 +455,7 @@ namespace te
                 if (currentCO->GetCoreType() == TID_CSoftBody)
                     static_object_cast<CSoftBody>(currentCO)->Initialize();
 
-                // if we've moved a collider call ResotreInternal()
+                // if we've moved a collider call RestoreInternal()
                 if (currentCO->GetCoreType() == TID_CBoxCollider)
                     static_object_cast<CBoxCollider>(currentCO)->Initialize();
                 if (currentCO->GetCoreType() == TID_CPlaneCollider)

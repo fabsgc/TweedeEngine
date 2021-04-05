@@ -164,8 +164,6 @@ namespace te
         _parent = rigidbody;
         UpdateCollisionReportMode();
         UpdateTransform();
-
-        TE_PRINT("Collider has parent");
     }
 
     void CCollider::UpdateTransform()
