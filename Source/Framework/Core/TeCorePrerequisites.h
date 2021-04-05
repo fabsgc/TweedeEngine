@@ -350,6 +350,7 @@ namespace te
     class MeshCollider;
     class ConeCollider;
     class FCollider;
+    class FJoint;
 }
 
 #include "Utility/TeNonCopyable.h"

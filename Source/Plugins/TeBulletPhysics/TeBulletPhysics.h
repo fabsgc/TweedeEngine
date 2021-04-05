@@ -53,7 +53,7 @@ namespace te
         float _internalFps = 60.0f;
     };
 
-    /** Contains information about a single PhysX scene. */
+    /** Contains information about a single Bullet scene. */
     class BulletScene : public PhysicsScene
     {
     public:

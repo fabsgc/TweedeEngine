@@ -35,7 +35,20 @@ namespace te
          */
         static SPtr<RigidBody> Create(const HSceneObject& linkedSO);
 
+        /**
+         * Sets the object that owns this physics object, if any. Used for high level systems so they can easily map their
+         * high level physics objects from the low level ones returned by various queries and events.
+         */
+        void SetOwner(PhysicsOwnerType type) { _owner.Type = type; }
+
+        /**
+         * Gets the object that owns this physics object, if any. Used for high level systems so they can easily map their
+         * high level physics objects from the low level ones returned by various queries and events.
+        */
+        PhysicsOwnerType GetOwner() const { return _owner.Type; }
+
     protected:
         HSceneObject _linkedSO;
+        PhysicsObjectOwner _owner;
     };
 }

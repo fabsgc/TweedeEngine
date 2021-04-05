@@ -19,9 +19,10 @@ namespace te
     SPtr<Collider> CMeshCollider::CreateInternal()
     {
         const SPtr<SceneInstance>& scene = SO()->GetScene();
-        SPtr<Collider> joint = MeshCollider::Create(*scene->GetPhysicsScene());
+        SPtr<Collider> collider = MeshCollider::Create(*scene->GetPhysicsScene());
+        collider->SetOwner(PhysicsOwnerType::Component);
 
-        return joint;
+        return collider;
     }
 
     void CMeshCollider::Clone(const HMeshCollider& c)

@@ -1,12 +1,17 @@
 #include "TeBulletSliderJoint.h"
 #include "TeBulletPhysics.h"
+#include "TeBulletFJoint.h"
 
 namespace te
 {
-    BulletSliderJoint::BulletSliderJoint(BulletPhysics* physics, const SLIDER_JOINT_DESC& desc)
+    BulletSliderJoint::BulletSliderJoint(BulletPhysics* physics, BulletScene* scene, const SLIDER_JOINT_DESC& desc)
         : SliderJoint(desc)
-    { }
+    {
+        _internal = te_new<BulletFJoint>(physics, scene, desc);
+    }
 
     BulletSliderJoint::~BulletSliderJoint()
-    { }
+    {
+        te_delete(_internal);
+    }
 }

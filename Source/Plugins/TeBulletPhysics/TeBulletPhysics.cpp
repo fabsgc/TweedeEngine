@@ -157,62 +157,62 @@ namespace te
 
     SPtr<ConeTwistJoint> BulletScene::CreateConeTwistJoint(const CONE_TWIST_JOINT_DESC& desc)
     {
-        return te_shared_ptr_new<BulletConeTwistJoint>(_physics, desc);
+        return te_shared_ptr_new<BulletConeTwistJoint>(_physics, this, desc);
     }
 
     SPtr<HingeJoint> BulletScene::CreateHingeJoint(const HINGE_JOINT_DESC& desc)
     {
-        return te_shared_ptr_new<BulletHingeJoint>(_physics, desc);
+        return te_shared_ptr_new<BulletHingeJoint>(_physics, this, desc);
     }
 
     SPtr<SphericalJoint> BulletScene::CreateSphericalJoint(const SPHERICAL_JOINT_DESC& desc)
     {
-        return te_shared_ptr_new<BulletSphericalJoint>(_physics, desc);
+        return te_shared_ptr_new<BulletSphericalJoint>(_physics, this, desc);
     }
 
     SPtr<SliderJoint> BulletScene::CreateSliderJoint(const SLIDER_JOINT_DESC& desc)
     {
-        return te_shared_ptr_new<BulletSliderJoint>(_physics, desc);
+        return te_shared_ptr_new<BulletSliderJoint>(_physics, this, desc);
     }
 
     SPtr<D6Joint> BulletScene::CreateD6Joint(const D6_JOINT_DESC& desc)
     {
-        return te_shared_ptr_new<BulletD6Joint>(_physics, desc);
+        return te_shared_ptr_new<BulletD6Joint>(_physics, this, desc);
     }
 
     SPtr<BoxCollider> BulletScene::CreateBoxCollider()
     {
-        return te_shared_ptr_new<BulletBoxCollider>(_physics);
+        return te_shared_ptr_new<BulletBoxCollider>(_physics, this);
     }
 
     SPtr<PlaneCollider> BulletScene::CreatePlaneCollider()
     {
-        return te_shared_ptr_new<BulletPlaneCollider>(_physics);
+        return te_shared_ptr_new<BulletPlaneCollider>(_physics, this);
     }
 
     SPtr<SphereCollider> BulletScene::CreateSphereCollider()
     {
-        return te_shared_ptr_new<BulletSphereCollider>(_physics);
+        return te_shared_ptr_new<BulletSphereCollider>(_physics, this);
     }
 
     SPtr<CylinderCollider> BulletScene::CreateCylinderCollider()
     {
-        return te_shared_ptr_new<BulletCylinderCollider>(_physics);
+        return te_shared_ptr_new<BulletCylinderCollider>(_physics, this);
     }
 
     SPtr<CapsuleCollider> BulletScene::CreateCapsuleCollider()
     {
-        return te_shared_ptr_new<BulletCapsuleCollider>(_physics);
+        return te_shared_ptr_new<BulletCapsuleCollider>(_physics, this);
     }
 
     SPtr<MeshCollider> BulletScene::CreateMeshCollider()
     {
-        return te_shared_ptr_new<BulletMeshCollider>(_physics);
+        return te_shared_ptr_new<BulletMeshCollider>(_physics, this);
     }
 
     SPtr<ConeCollider> BulletScene::CreateConeCollider()
     {
-        return te_shared_ptr_new<BulletConeCollider>(_physics);
+        return te_shared_ptr_new<BulletConeCollider>(_physics, this);
     }
 
     BulletPhysics& gBulletPhysics()

@@ -19,9 +19,10 @@ namespace te
     SPtr<Collider> CPlaneCollider::CreateInternal()
     {
         const SPtr<SceneInstance>& scene = SO()->GetScene();
-        SPtr<Collider> joint = PlaneCollider::Create(*scene->GetPhysicsScene());
+        SPtr<Collider> collider = PlaneCollider::Create(*scene->GetPhysicsScene());
+        collider->SetOwner(PhysicsOwnerType::Component);
 
-        return joint;
+        return collider;
     }
 
     void CPlaneCollider::Clone(const HPlaneCollider& c)

@@ -19,9 +19,10 @@ namespace te
     SPtr<Collider> CBoxCollider::CreateInternal()
     {
         const SPtr<SceneInstance>& scene = SO()->GetScene();
-        SPtr<Collider> joint = BoxCollider::Create(*scene->GetPhysicsScene());
+        SPtr<Collider> collider = BoxCollider::Create(*scene->GetPhysicsScene());
+        collider->SetOwner(PhysicsOwnerType::Component);
 
-        return joint;
+        return collider;
     }
 
     void CBoxCollider::Clone(const HBoxCollider& c)

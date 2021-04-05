@@ -19,9 +19,10 @@ namespace te
     SPtr<Collider> CSphereCollider::CreateInternal()
     {
         const SPtr<SceneInstance>& scene = SO()->GetScene();
-        SPtr<Collider> joint = SphereCollider::Create(*scene->GetPhysicsScene());
+        SPtr<Collider> collider = SphereCollider::Create(*scene->GetPhysicsScene());
+        collider->SetOwner(PhysicsOwnerType::Component);
 
-        return joint;
+        return collider;
     }
 
     void CSphereCollider::Clone(const HSphereCollider& c)

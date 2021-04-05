@@ -15,6 +15,8 @@ set (TE_BULLETPHYSICS_INC_NOFILTER
     "TeBulletCapsuleCollider.h"
     "TeBulletMeshCollider.h"
     "TeBulletConeCollider.h"
+    "TeBulletFCollider.h"
+    "TeBulletFJoint.h"
 )
 
 set (TE_BULLETPHYSICS_SRC_NOFILTER
@@ -34,6 +36,8 @@ set (TE_BULLETPHYSICS_SRC_NOFILTER
     "TeBulletCapsuleCollider.cpp"
     "TeBulletMeshCollider.cpp"
     "TeBulletConeCollider.cpp"
+    "TeBulletFCollider.cpp"
+    "TeBulletFJoint.cpp"
 )
 
 source_group ("" FILES ${TE_BULLETPHYSICS_SRC_NOFILTER} ${TE_BULLETPHYSICS_INC_NOFILTER})

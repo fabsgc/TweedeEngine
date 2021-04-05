@@ -40,8 +40,21 @@ namespace te
         /** Returns the object containing common collider code. */
         FCollider* GetInternal() const { return _internal; }
 
+        /**
+         * Sets the object that owns this physics object, if any. Used for high level systems so they can easily map their
+         * high level physics objects from the low level ones returned by various queries and events.
+         */
+        void SetOwner(PhysicsOwnerType type) { _owner.Type = type; }
+
+        /**
+         * Gets the object that owns this physics object, if any. Used for high level systems so they can easily map their
+         * high level physics objects from the low level ones returned by various queries and events.
+         */
+        PhysicsOwnerType GetOwner() const { return _owner.Type; }
+
     protected:
         FCollider* _internal = nullptr;
+        PhysicsObjectOwner _owner;
         RigidBody* _rigidBody = nullptr;
         Vector3 _scale = Vector3::ONE;
     };

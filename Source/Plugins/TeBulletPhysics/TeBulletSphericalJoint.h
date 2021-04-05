@@ -9,7 +9,7 @@ namespace te
     class BulletSphericalJoint : public SphericalJoint
     {
     public:
-        BulletSphericalJoint(BulletPhysics* physics, const SPHERICAL_JOINT_DESC& desc);
+        BulletSphericalJoint(BulletPhysics* physics, BulletScene* scene, const SPHERICAL_JOINT_DESC& desc);
         ~BulletSphericalJoint();
     };
 }

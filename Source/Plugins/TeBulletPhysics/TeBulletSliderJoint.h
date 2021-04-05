@@ -9,7 +9,7 @@ namespace te
     class BulletSliderJoint : public SliderJoint
     {
     public:
-        BulletSliderJoint(BulletPhysics* physics, const SLIDER_JOINT_DESC& desc);
+        BulletSliderJoint(BulletPhysics* physics, BulletScene* scene, const SLIDER_JOINT_DESC& desc);
         ~BulletSliderJoint();
     };
 }

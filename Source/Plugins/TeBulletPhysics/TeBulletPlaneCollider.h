@@ -10,7 +10,7 @@ namespace te
     class BulletPlaneCollider : public PlaneCollider
     {
     public:
-        BulletPlaneCollider(BulletPhysics* physics);
+        BulletPlaneCollider(BulletPhysics* physics, BulletScene* scene);
         ~BulletPlaneCollider();
     };
 }

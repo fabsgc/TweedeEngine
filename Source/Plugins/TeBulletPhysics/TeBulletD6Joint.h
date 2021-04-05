@@ -9,7 +9,7 @@ namespace te
     class BulletD6Joint : public D6Joint
     {
     public:
-        BulletD6Joint(BulletPhysics* physics, const D6_JOINT_DESC& desc);
+        BulletD6Joint(BulletPhysics* physics, BulletScene* scene, const D6_JOINT_DESC& desc);
         ~BulletD6Joint();
     };
 }

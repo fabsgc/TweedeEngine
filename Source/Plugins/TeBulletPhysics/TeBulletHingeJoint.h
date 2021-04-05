@@ -9,7 +9,7 @@ namespace te
     class BulletHingeJoint : public HingeJoint
     {
     public:
-        BulletHingeJoint(BulletPhysics* physics, const HINGE_JOINT_DESC& desc);
+        BulletHingeJoint(BulletPhysics* physics, BulletScene* scene, const HINGE_JOINT_DESC& desc);
         ~BulletHingeJoint();
     };
 }

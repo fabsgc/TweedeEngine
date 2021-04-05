@@ -16,6 +16,22 @@ namespace te
     public:
         Joint() = default;
         virtual ~Joint() = default;
+
+        /**
+         * Sets the object that owns this physics object, if any. Used for high level systems so they can easily map their
+         * high level physics objects from the low level ones returned by various queries and events.
+         */
+        void SetOwner(PhysicsOwnerType type) { _owner.Type = type; }
+
+        /**
+         * Gets the object that owns this physics object, if any. Used for high level systems so they can easily map their
+         * high level physics objects from the low level ones returned by various queries and events.
+         */
+        PhysicsOwnerType GetOwner() const { return _owner.Type; }
+
+    protected:
+        PhysicsObjectOwner _owner;
+        FJoint* _internal = nullptr;
     };
 
     /** Structure used for initializing a new Joint. */

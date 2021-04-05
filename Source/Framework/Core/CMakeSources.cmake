@@ -440,6 +440,7 @@ set (TE_CORE_INC_PHYSICS
     "Core/Physics/TeMeshCollider.h"
     "Core/Physics/TeConeCollider.h"
     "Core/Physics/TeFCollider.h"
+    "Core/Physics/TeFJoint.h"
 )
 set (TE_CORE_SRC_PHYSICS
     "Core/Physics/TePhysics.cpp"
@@ -461,6 +462,7 @@ set (TE_CORE_SRC_PHYSICS
     "Core/Physics/TeMeshCollider.cpp"
     "Core/Physics/TeConeCollider.cpp"
     "Core/Physics/TeFCollider.cpp"
+    "Core/Physics/TeFJoint.cpp"
 )
 
 if (WIN32)

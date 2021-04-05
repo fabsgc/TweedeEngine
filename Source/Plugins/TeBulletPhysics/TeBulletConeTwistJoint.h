@@ -9,7 +9,7 @@ namespace te
     class BulletConeTwistJoint : public ConeTwistJoint
     {
     public:
-        BulletConeTwistJoint(BulletPhysics* physics, const CONE_TWIST_JOINT_DESC& desc);
+        BulletConeTwistJoint(BulletPhysics* physics, BulletScene* scene, const CONE_TWIST_JOINT_DESC& desc);
         ~BulletConeTwistJoint();
     };
 }
