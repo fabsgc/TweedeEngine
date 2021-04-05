@@ -3,6 +3,7 @@
 #include "TeCorePrerequisites.h"
 #include "Physics/TeRigidBody.h"
 #include "Scene/TeComponent.h"
+#include "Scene/TeSceneObject.h"
 
 #include "TeCBoxCollider.h"
 #include "TeCPlaneCollider.h"
@@ -11,6 +12,7 @@
 #include "TeCCapsuleCollider.h"
 #include "TeCMeshCollider.h"
 #include "TeCConeCollider.h"
+
 
 namespace te
 {

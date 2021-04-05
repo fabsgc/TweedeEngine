@@ -40,16 +40,16 @@ namespace te
 
     void BulletRigidBody::AddCollider(Collider* collider)
     {
-        // TODO
+        TE_PRINT("Add Collider");
     }
 
     void BulletRigidBody::RemoveCollider(Collider* collider)
     {
-        // TODO
+        TE_PRINT("Remove Collider");
     }
 
     void BulletRigidBody::RemoveColliders()
     {
-        // TODO
+        TE_PRINT("Remove all Colliders");
     }
 }
