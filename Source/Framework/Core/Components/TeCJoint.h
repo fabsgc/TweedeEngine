@@ -65,8 +65,6 @@ namespace te
 
     protected:
         SPtr<Joint> _internal;
-        
-    private:
         JOINT_DESC& _desc;
     };
 }

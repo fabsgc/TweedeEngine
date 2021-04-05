@@ -6,8 +6,8 @@ namespace te
 {
     CJoint::CJoint(JOINT_DESC& desc, UINT32 type)
         : Component(HSceneObject(), type)
-        , _desc(desc)
         , _internal(nullptr)
+        , _desc(desc)
     {
         SetName("Joint");
         _notifyFlags = (TransformChangedFlags)(TCF_Parent | TCF_Transform);
@@ -15,8 +15,8 @@ namespace te
 
     CJoint::CJoint(const HSceneObject& parent, JOINT_DESC desc, UINT32 type)
         : Component(parent, type)
-        , _desc(desc)
         , _internal(nullptr)
+        , _desc(desc)
     {
         SetName("Joint");
         _notifyFlags = (TransformChangedFlags)(TCF_Parent | TCF_Transform);

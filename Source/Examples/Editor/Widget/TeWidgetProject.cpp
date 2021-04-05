@@ -455,6 +455,22 @@ namespace te
                 if (currentCO->GetCoreType() == TID_CSoftBody)
                     static_object_cast<CSoftBody>(currentCO)->Initialize();
 
+                // if we've moved a collider call ResotreInternal()
+                if (currentCO->GetCoreType() == TID_CBoxCollider)
+                    static_object_cast<CBoxCollider>(currentCO)->Initialize();
+                if (currentCO->GetCoreType() == TID_CPlaneCollider)
+                    static_object_cast<CPlaneCollider>(currentCO)->Initialize();
+                if (currentCO->GetCoreType() == TID_CSphereCollider)
+                    static_object_cast<CSphereCollider>(currentCO)->Initialize();
+                if (currentCO->GetCoreType() == TID_CCylinderCollider)
+                    static_object_cast<CCylinderCollider>(currentCO)->Initialize();
+                if (currentCO->GetCoreType() == TID_CCapsuleCollider)
+                    static_object_cast<CCapsuleCollider>(currentCO)->Initialize();
+                if (currentCO->GetCoreType() == TID_CMeshCollider)
+                    static_object_cast<CMeshCollider>(currentCO)->Initialize();
+                if (currentCO->GetCoreType() == TID_CConeCollider)
+                    static_object_cast<CConeCollider>(currentCO)->Initialize();
+
                 // ugly but best way to update all children
                 sceneObject->Move(Vector3::ZERO);
 

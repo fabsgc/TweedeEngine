@@ -28,6 +28,7 @@ namespace te
 
     void CRigidBody::Initialize()
     { 
+        ClearColliders();
         OnEnabled();
         Component::Initialize();
     }
@@ -41,7 +42,7 @@ namespace te
     { 
         Component::Clone(c.GetInternalPtr());
 
-        _internal = RigidBody::Create(SO());
+        _collisionReportMode = c->_collisionReportMode;
     }
 
     void CRigidBody::Move(const Vector3& position)

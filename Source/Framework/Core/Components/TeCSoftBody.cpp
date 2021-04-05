@@ -23,7 +23,10 @@ namespace te
     { }
 
     void CSoftBody::Initialize()
-    { }
+    { 
+        OnEnabled();
+        Component::Initialize();
+    }
 
     void CSoftBody::Clone(const HComponent& c)
     { 

@@ -40,6 +40,12 @@ namespace te
     void CCollider::Clone(const HCollider& c)
     {
         Component::Clone(c.GetInternalPtr());
+
+        _collisionReportMode = c->_collisionReportMode;
+        _isTrigger = c->_isTrigger;
+        _mass = c->_mass;
+        _localPosition = c->_localPosition;
+        _localRotation = c->_localRotation;
     }
 
     void CCollider::SetIsTrigger(bool value)
