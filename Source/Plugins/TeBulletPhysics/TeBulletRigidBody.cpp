@@ -2,16 +2,21 @@
 #include "Scene/TeSceneObject.h"
 #include "Physics/TePhysics.h"
 #include "TeBulletPhysics.h"
+#include "TeBulletFBody.h"
 
 namespace te
 {
     BulletRigidBody::BulletRigidBody(BulletPhysics* physics, BulletScene* scene, const HSceneObject& linkedSO)
         : RigidBody(linkedSO)
         , _rigidBody(nullptr)
-    { }
+    { 
+        _internal = te_new<BulletFBody>(physics, scene);
+    }
 
-    BulletRigidBody::~BulletRigidBody() // TODO
-    { }
+    BulletRigidBody::~BulletRigidBody()
+    { 
+        te_delete(_internal);  // TODO
+    }
 
     void BulletRigidBody::Move(const Vector3& position)
     {

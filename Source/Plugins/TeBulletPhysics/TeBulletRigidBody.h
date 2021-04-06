@@ -14,28 +14,28 @@ namespace te
         BulletRigidBody(BulletPhysics* physics, BulletScene* scene, const HSceneObject& linkedSO);
         ~BulletRigidBody();
 
-        /** @copydoc RigidBody::Move */
+        /** @copydoc Body::Move */
         void Move(const Vector3& position) override;
 
-        /** @copydoc RigidBody::Rotate */
+        /** @copydoc Body::Rotate */
         void Rotate(const Quaternion& rotation) override;
 
-        /** @copydoc RigidBody::GetPosition */
+        /** @copydoc Body::GetPosition */
         Vector3 GetPosition() const override;
 
-        /** @copydoc RigidBody::GetRotation */
+        /** @copydoc Body::GetRotation */
         Quaternion GetRotation() const override;
 
-        /** @copydoc RigidBody::SetTransform */
+        /** @copydoc Body::SetTransform */
         void SetTransform(const Vector3& pos, const Quaternion& rot) override;
 
-        /** @copydoc RigidBody::AddCollider() */
+        /** @copydoc Body::AddCollider() */
         void AddCollider(Collider* collider) override;
 
-        /** @copydoc RigidBody::RemoveCollider() */
+        /** @copydoc Body::RemoveCollider() */
         void RemoveCollider(Collider* collider) override;
 
-        /** @copydoc RigidBody::RemoveColliders() */
+        /** @copydoc Body::RemoveColliders() */
         void RemoveColliders() override;
 
     private:

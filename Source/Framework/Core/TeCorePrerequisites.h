@@ -104,7 +104,8 @@ namespace te
         TID_CCylinderCollider       = 1049,
         TID_CCapsuleCollider        = 1050,
         TID_CMeshCollider           = 1051,
-        TID_CConeCollider           = 1052
+        TID_CConeCollider           = 1052,
+        TID_CBody                   = 1053,
     };
 }
 
@@ -272,6 +273,7 @@ namespace te
     class CSphericalJoint;
     class CD6Joint;
     class CConeTwistJoint;
+    class CBody;
     class CRigidBody;
     class CSoftBody;
     class CCollider;
@@ -327,6 +329,7 @@ namespace te
     class PhysicsManager;
     class Physics;
     class PhysicsScene;
+    class Body;
     class RigidBody;
     class SoftBody;
     class Joint;
@@ -351,6 +354,7 @@ namespace te
     class ConeCollider;
     class FCollider;
     class FJoint;
+    class FBody;
 }
 
 #include "Utility/TeNonCopyable.h"
@@ -396,6 +400,7 @@ namespace te
     typedef GameObjectHandle<CSphericalJoint> HSphericalJoint;
     typedef GameObjectHandle<CD6Joint> HD6Joint;
     typedef GameObjectHandle<CConeTwistJoint> HConeTwistJoint;
+    typedef GameObjectHandle<CBody> HBody;
     typedef GameObjectHandle<CRigidBody> HRigidBody;
     typedef GameObjectHandle<CSoftBody> HSoftBody;
     typedef GameObjectHandle<CCollider> HCollider;

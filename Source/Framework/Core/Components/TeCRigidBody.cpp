@@ -2,7 +2,6 @@
 #include "Scene/TeSceneObject.h"
 #include "Components/TeCJoint.h"
 #include "Components/TeCRigidBody.h"
-#include "Components/TeCCollider.h"
 #include "Physics/TePhysics.h"
 
 using namespace std::placeholders;
@@ -10,17 +9,15 @@ using namespace std::placeholders;
 namespace te
 {
     CRigidBody::CRigidBody()
-        : Component(HSceneObject(), (UINT32)TID_CRigidBody)
+        : CBody(HSceneObject(), (UINT32)TID_CRigidBody)
     {
         SetName("Rigidbody");
-        _notifyFlags = (TransformChangedFlags)(TCF_Parent | TCF_Transform);
     }
 
     CRigidBody::CRigidBody(const HSceneObject& parent)
-        : Component(parent, (UINT32)TID_CRigidBody)
+        : CBody(parent, (UINT32)TID_CRigidBody)
     {
         SetName("Rigidbody");
-        _notifyFlags = (TransformChangedFlags)(TCF_Parent | TCF_Transform);
     }
 
     CRigidBody::~CRigidBody()
@@ -30,7 +27,7 @@ namespace te
     { 
         ClearColliders();
         OnEnabled();
-        Component::Initialize();
+        CBody::Initialize();
     }
 
     void CRigidBody::Clone(const HComponent& c)
@@ -40,46 +37,7 @@ namespace te
 
     void CRigidBody::Clone(const HRigidBody& c)
     { 
-        Component::Clone(c.GetInternalPtr());
-
-        _collisionReportMode = c->_collisionReportMode;
-    }
-
-    void CRigidBody::Move(const Vector3& position)
-    {
-        if (_internal != nullptr)
-            _internal->Move(position);
-
-        _notifyFlags = (TransformChangedFlags)0;
-        SO()->SetWorldPosition(position);
-        _notifyFlags = (TransformChangedFlags)(TCF_Parent | TCF_Transform);
-    }
-
-    void CRigidBody::Rotate(const Quaternion& rotation)
-    {
-        if (_internal != nullptr)
-            _internal->Rotate(rotation);
-
-        _notifyFlags = (TransformChangedFlags)0;
-        SO()->SetWorldRotation(rotation);
-        _notifyFlags = (TransformChangedFlags)(TCF_Parent | TCF_Transform);
-    }
-
-    void CRigidBody::SetCollisionReportMode(CollisionReportMode mode)
-    {
-        if (_collisionReportMode == mode)
-            return;
-
-        _collisionReportMode = mode;
-
-        for (auto& entry : _children)
-            entry->UpdateCollisionReportMode();
-    }
-
-    void CRigidBody::UpdateMassDistribution()
-    {
-        if (_internal != nullptr)
-            return _internal->UpdateMassDistribution();
+        CBody::Clone(static_object_cast<CBody>(c));
     }
 
     void CRigidBody::OnInitialized()
@@ -97,13 +55,11 @@ namespace te
 
     void CRigidBody::OnEnabled()
     {
-        _internal = RigidBody::Create(SO());
-        _internal->SetOwner(PhysicsOwnerType::Component, this);
-
+        _internal = CreateInternal();
         UpdateColliders();
 
 #if TE_DEBUG_MODE
-        CheckForNestedRigibody();
+        CheckForNestedBody();
 #endif
 
         _internal->OnCollisionBegin.Connect(std::bind(&CRigidBody::TriggerOnCollisionBegin, this, _1));
@@ -129,7 +85,7 @@ namespace te
             // TODO
 
 #if TE_DEBUG_MODE
-            CheckForNestedRigibody();
+            CheckForNestedBody();
 #endif
         }
 
@@ -140,6 +96,14 @@ namespace te
         _internal->SetTransform(tfrm.GetPosition(), tfrm.GetRotation());
 
          // TODO
+    }
+
+    SPtr<Body> CRigidBody::CreateInternal()
+    {
+        SPtr<RigidBody> body = RigidBody::Create(SO());
+        body->SetOwner(PhysicsOwnerType::Component, this);
+
+        return body;
     }
 
     void CRigidBody::DestroyInternal()
@@ -153,28 +117,15 @@ namespace te
         }
     }
 
-    void CRigidBody::TriggerOnCollisionBegin(const CollisionDataRaw& data)
+    void CRigidBody::ClearColliders()
     {
-        CollisionData hit;
-        ProcessCollisionData(data, hit);
+        for (auto& collider : _children)
+            collider->SetRigidBody(HRigidBody(), true);
 
-        OnCollisionBegin(hit);
-    }
+        _children.clear();
 
-    void CRigidBody::TriggerOnCollisionStay(const CollisionDataRaw& data)
-    {
-        CollisionData hit;
-        ProcessCollisionData(data, hit);
-
-        OnCollisionStay(hit);
-    }
-
-    void CRigidBody::TriggerOnCollisionEnd(const CollisionDataRaw& data)
-    {
-        CollisionData hit;
-        ProcessCollisionData(data, hit);
-
-        OnCollisionEnd(hit);
+        if (_internal != nullptr)
+            _internal->RemoveColliders();
     }
 
     void CRigidBody::UpdateColliders()
@@ -214,23 +165,12 @@ namespace te
             {
                 HSceneObject child = currentSO->GetChild(i);
 
-                if (child->HasComponent(TID_CRigidBody))
+                if (child->HasComponent(TID_CRigidBody) || child->HasComponent(TID_CSoftBody))
                     continue;
 
                 todo.push(child);
             }
         }
-    }
-
-    void CRigidBody::ClearColliders()
-    {
-        for (auto& collider : _children)
-            collider->SetRigidBody(HRigidBody(), true);
-
-        _children.clear();
-
-        if (_internal != nullptr)
-            _internal->RemoveColliders();
     }
 
     void CRigidBody::AddCollider(const HCollider& collider)
@@ -256,7 +196,7 @@ namespace te
         }
     }
 
-    void CRigidBody::CheckForNestedRigibody()
+    void CRigidBody::CheckForNestedBody()
     {
         HSceneObject currentSO = SO()->GetParent();
 

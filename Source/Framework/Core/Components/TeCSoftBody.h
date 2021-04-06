@@ -2,7 +2,7 @@
 
 #include "TeCorePrerequisites.h"
 #include "Physics/TeSoftBody.h"
-#include "Scene/TeComponent.h"
+#include "Components/TeCBody.h"
 
 namespace te
 {
@@ -11,7 +11,7 @@ namespace te
      *
      * @note Wraps SoftBody as a Component.
      */
-    class TE_CORE_EXPORT CSoftBody : public Component
+    class TE_CORE_EXPORT CSoftBody : public CBody
     {
     public:
         CSoftBody(const HSceneObject& parent);
@@ -33,11 +33,11 @@ namespace te
         void Update() override { }
 
         /** Returns the SoftBody implementation wrapped by this component. */
-        SoftBody* GetInternal() const { return _internal.get(); }
+        SoftBody* GetInternal() const { return (SoftBody*)_internal.get(); }
 
     protected:
         friend class SceneObject;
-        using Component::DestroyInternal;
+        friend class CCollider;
 
         /** @copydoc Component::OnInitialized() */
         void OnInitialized() override;
@@ -54,14 +54,31 @@ namespace te
         /** @copydoc Component::OnTransformChanged() */
         void OnTransformChanged(TransformChangedFlags flags) override;
 
+        /** @copydoc CBody::CreateInternal */
+        SPtr<Body> CreateInternal() override;
+
         /** Destroys the internal SoftBody representation. */
-        virtual void DestroyInternal();
+        virtual void DestroyInternal() override;
+
+        /** Body::UpdateColliders */
+        virtual void UpdateColliders() override;
+
+        /** Body::ClearColliders */
+        virtual void ClearColliders() override;
+
+        /** Body::AddCollider */
+        virtual void AddCollider(const HCollider& collider) override;
+
+        /** Body::RemoveCollider */
+        virtual void RemoveCollider(const HCollider& collider) override;
+
+        /** Body::CheckForNestedBody */
+        virtual void CheckForNestedBody() override;
+
+        /** Body::ProcessCollisionData */
+        void ProcessCollisionData(const CollisionDataRaw& raw, CollisionData& output) override;
 
     protected:
         CSoftBody(); // Serialization only
-
-    protected:
-        SPtr<SoftBody> _internal;
-
     };
 }

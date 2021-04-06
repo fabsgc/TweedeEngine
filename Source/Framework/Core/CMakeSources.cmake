@@ -296,6 +296,7 @@ set (TE_CORE_INC_COMPONENTS
     "Core/Components/TeCSphericalJoint.h"
     "Core/Components/TeCD6Joint.h"
     "Core/Components/TeCConeTwistJoint.h"
+    "Core/Components/TeCBody.h"
     "Core/Components/TeCRigidBody.h"
     "Core/Components/TeCSoftBody.h"
     "Core/Components/TeCCollider.h"
@@ -325,6 +326,7 @@ set (TE_CORE_SRC_COMPONENTS
     "Core/Components/TeCSphericalJoint.cpp"
     "Core/Components/TeCD6Joint.cpp"
     "Core/Components/TeCConeTwistJoint.cpp"
+    "Core/Components/TeCBody.cpp"
     "Core/Components/TeCRigidBody.cpp"
     "Core/Components/TeCSoftBody.cpp"
     "Core/Components/TeCCollider.cpp"
@@ -423,6 +425,7 @@ set (TE_CORE_INC_PHYSICS
     "Core/Physics/TePhysics.h"
     "Core/Physics/TePhysicsManager.h"
     "Core/Physics/TePhysicsCommon.h"
+    "Core/Physics/TeBody.h"
     "Core/Physics/TeRigidBody.h"
     "Core/Physics/TeSoftBody.h"
     "Core/Physics/TeJoint.h"
@@ -441,10 +444,12 @@ set (TE_CORE_INC_PHYSICS
     "Core/Physics/TeConeCollider.h"
     "Core/Physics/TeFCollider.h"
     "Core/Physics/TeFJoint.h"
+    "Core/Physics/TeFBody.h"
 )
 set (TE_CORE_SRC_PHYSICS
     "Core/Physics/TePhysics.cpp"
     "Core/Physics/TePhysicsManager.cpp"
+    "Core/Physics/TeBody.cpp"
     "Core/Physics/TeRigidBody.cpp"
     "Core/Physics/TeSoftBody.cpp"
     "Core/Physics/TeJoint.cpp"
@@ -463,6 +468,7 @@ set (TE_CORE_SRC_PHYSICS
     "Core/Physics/TeConeCollider.cpp"
     "Core/Physics/TeFCollider.cpp"
     "Core/Physics/TeFJoint.cpp"
+    "Core/Physics/TeFBody.cpp"
 )
 
 if (WIN32)

@@ -60,7 +60,9 @@ namespace te
 
     protected:
         friend class SceneObject;
+        friend class CBody;
         friend class CRigidBody;
+        friend class CSoftBody;
         using Component::DestroyInternal;
 
         /** @copydoc Component::onInitialized() */

@@ -6,7 +6,7 @@
 namespace te
 { 
     SoftBody::SoftBody(const HSceneObject& linkedSO)
-        : _linkedSO(linkedSO)
+        : Body(linkedSO)
     { }
 
     SPtr<SoftBody> SoftBody::Create(const HSceneObject& linkedSO)

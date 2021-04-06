@@ -6,14 +6,8 @@
 namespace te
 {
     RigidBody::RigidBody(const HSceneObject& linkedSO)
-        : _linkedSO(linkedSO)
+        : Body(linkedSO)
     { }
-
-    void RigidBody::SetTransform(const Vector3& position, const Quaternion& rotation)
-    {
-        _linkedSO->SetWorldPosition(position);
-        _linkedSO->SetWorldRotation(rotation);
-    }
 
     SPtr<RigidBody> RigidBody::Create(const HSceneObject& linkedSO)
     {
