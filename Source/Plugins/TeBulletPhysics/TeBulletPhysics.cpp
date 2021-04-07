@@ -184,6 +184,7 @@ namespace te
     {
         te_safe_delete(_world);
         te_safe_delete(_worldInfo);
+        te_safe_delete(_debug);
 
         gBulletPhysics().NotifySceneDestroyed(this);
     }
