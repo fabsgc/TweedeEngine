@@ -3,6 +3,7 @@
 namespace te
 { 
     Body::Body(const HSceneObject& linkedSO)
-        : _linkedSO(linkedSO)
+        : _flags(BodyFlag::None)
+        , _linkedSO(linkedSO)
     { }
 }

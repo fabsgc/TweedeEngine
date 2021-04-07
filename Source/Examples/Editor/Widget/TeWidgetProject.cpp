@@ -923,8 +923,11 @@ namespace te
         if (!_selections.ClickedSceneObject || _selections.ClickedComponent)
             return;
 
-        if (SceneManager::Instance().FindComponents<CRigidBody>().size() > 0)
+        if (SceneManager::Instance().FindComponents<CRigidBody>().size() > 0 ||
+            SceneManager::Instance().FindComponents<CSoftBody>().size() > 0)
+        {
             return;
+        }
 
         HRigidBody rigidBody = _selections.ClickedSceneObject->AddComponent<CRigidBody>();
         rigidBody.Get()->SetName("Rigid Body");
@@ -942,8 +945,11 @@ namespace te
         if (!_selections.ClickedSceneObject || _selections.ClickedComponent)
             return;
 
-        if (SceneManager::Instance().FindComponents<CSoftBody>().size() > 0)
+        if (SceneManager::Instance().FindComponents<CRigidBody>().size() > 0 ||
+            SceneManager::Instance().FindComponents<CSoftBody>().size() > 0)
+        {
             return;
+        }
 
         HSoftBody softBody = _selections.ClickedSceneObject->AddComponent<CSoftBody>();
         softBody.Get()->SetName("Soft Body");

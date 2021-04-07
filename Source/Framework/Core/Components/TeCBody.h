@@ -47,6 +47,18 @@ namespace te
         /** @copydoc Body::Rotate */
         void Rotate(const Quaternion& rotation);
 
+        /** @copydoc Body::SetMass */
+        void SetMass(float mass);
+
+        /** @copydoc Body::GetMass */
+        float GetMass() const { return _mass; };
+
+        /** @copydoc Body::SetIsKinematic */
+        void SetIsKinematic(bool kinematic);
+
+        /** @copydoc Body::GetIsKinematic */
+        bool getIsKinematic() const { return _isKinematic; }
+
         /** Sets a value that determines which (if any) collision events are reported. */
         void SetCollisionReportMode(CollisionReportMode mode);
 
@@ -55,6 +67,12 @@ namespace te
 
         /** @copydoc Body::UpdateMassDistribution */
         void UpdateMassDistribution();
+
+        /** @copydoc Body::SetFlags */
+        void SetFlags(BodyFlag flags);
+
+        /** @copydoc Body::GetFlags */
+        BodyFlag GetFlags() const { return _flags; }
 
         /** @copydoc Body::OnCollisionBegin */
         Event<void(const CollisionData&)> OnCollisionBegin;
@@ -70,12 +88,6 @@ namespace te
         friend class CCollider;
         using Component::DestroyInternal;
 
-        /** Creates the internal representation of the Body for use by the component. */
-        virtual SPtr<Body> CreateInternal() = 0;
-
-        /** Destroys the internal joint representation. */
-        virtual void DestroyInternal();
-
         /** Triggered when the internal body begins touching another object. */
         void TriggerOnCollisionBegin(const CollisionDataRaw& data);
 
@@ -84,6 +96,12 @@ namespace te
 
         /** Triggered when the internal body ends touching another object. */
         void TriggerOnCollisionEnd(const CollisionDataRaw& data);
+
+        /** Destroys the internal joint representation. */
+        virtual void DestroyInternal();
+
+        /** Creates the internal representation of the Body for use by the component. */
+        virtual SPtr<Body> CreateInternal() = 0;
 
         /**
          * Searches child scene objects for Collider components and attaches them to the body. Make sure to call
@@ -114,10 +132,12 @@ namespace te
 
     protected:
         SPtr<Body> _internal;
-
         Vector<HCollider> _children;
         HJoint _parentJoint;
 
+        BodyFlag _flags = (BodyFlag)((UINT32)BodyFlag::AutoTensors | (UINT32)BodyFlag::AutoMass);
         CollisionReportMode _collisionReportMode = CollisionReportMode::None;
+        float _mass = 0.0f;
+        bool _isKinematic = false;
     };
 }

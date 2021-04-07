@@ -43,6 +43,26 @@ namespace te
         // TODO
     }
 
+    void BulletRigidBody::SetMass(float mass)
+    {
+        // TODO
+    }
+
+    float BulletRigidBody::GetMass() const
+    {
+        return 0.0f; // TODO
+    }
+
+    void BulletRigidBody::SetIsKinematic(bool kinematic)
+    {
+        // TODO
+    }
+
+    bool BulletRigidBody::GetIsKinematic() const
+    {
+        return false; // TODO
+    }
+
     void BulletRigidBody::AddCollider(Collider* collider)
     {
         TE_PRINT("Add Collider");
@@ -56,5 +76,10 @@ namespace te
     void BulletRigidBody::RemoveColliders()
     {
         TE_PRINT("Remove all Colliders");
+    }
+
+    void BulletRigidBody::SetFlags(BodyFlag flags)
+    {
+        // TODO
     }
 }

@@ -6,32 +6,46 @@
 
 namespace te
 {
+    /** Type of force or torque that can be applied to a rigidbody. */
+    enum class ForceMode
+    {
+        Force, /**< Value applied is a force. */
+            Impulse, /**< Value applied is an impulse (a direct change in its linear or angular momentum). */
+            Velocity, /**< Value applied is velocity. */
+            Acceleration /**< Value applied is accelearation. */
+    };
+
+    /** Type of force that can be applied to a rigidbody at an arbitrary point. */
+    enum class PointForceMode
+    {
+        Force, /**< Value applied is a force. */
+        Impulse, /**< Value applied is an impulse (a direct change in its linear or angular momentum). */
+    };
+
+    /** Flags that control options of a Rigidbody object. */
+    enum class BodyFlag
+    {
+        /** No options. */
+        None = 0x00,
+        /** Automatically calculate center of mass transform and inertia tensors from child shapes (colliders). */
+        AutoTensors = 0x01,
+        /** Calculate mass distribution from child shapes (colliders). Only relevant when auto-tensors is on. */
+        AutoMass = 0x02,
+        /**
+         * Enables continous collision detection. This can prevent fast moving bodies from tunneling through each other.
+         * This must also be enabled globally in Physics otherwise the flag will be ignored.
+         */
+        CCD = 0x04
+    };
+
     /**
-     * Base class for all Body types.
+     * Base class for all Body types such as RigidBody and SoftBody
      */
     class TE_CORE_EXPORT Body
     {
     public:
         Body(const HSceneObject& linkedSO);
         virtual ~Body() = default;
-
-        /** Registers a new collider as a child of this rigidbody. */
-        virtual void AddCollider(Collider* collider) = 0;
-
-        /** Removes a collider from the child list of this rigidbody. */
-        virtual void RemoveCollider(Collider* collider) = 0;
-
-        /** Removes all colliders from the child list of this rigidbody. */
-        virtual void RemoveColliders() = 0;
-
-        /**
-         * Recalculates rigidbody's mass, inertia tensors and center of mass depending on the currently set child colliders.
-         * This should be called whenever relevant child collider properties change (like mass or shape).
-         *
-         * If automatic tensor calculation is turned off then this will do nothing. If automatic mass calculation is turned
-         * off then this will use the mass set directly on the body using setMass().
-         */
-        virtual void UpdateMassDistribution() { }
 
         /**
          * Moves the rigidbody to a specific position. This method will ensure physically correct movement, meaning the body
@@ -52,10 +66,53 @@ namespace te
         virtual Quaternion GetRotation() const = 0;
 
         /**
+         * Recalculates rigidbody's mass, inertia tensors and center of mass depending on the currently set child colliders.
+         * This should be called whenever relevant child collider properties change (like mass or shape).
+         *
+         * If automatic tensor calculation is turned off then this will do nothing. If automatic mass calculation is turned
+         * off then this will use the mass set directly on the body using setMass().
+         */
+        virtual void UpdateMassDistribution() { }
+
+        /**
          * Applies new transform values retrieved from the most recent physics update (values resulting from physics
          * simulation).
          */
         virtual void SetTransform(const Vector3& position, const Quaternion& rotation) = 0;
+
+        /**
+         * Determines the mass of the object and all of its collider shapes. Only relevant if RigidBodyFlag::AutoMass or
+         * RigidBodyFlag::AutoTensors is turned off. Value of zero means the object is immovable (but can be rotated).
+         */
+        virtual void SetMass(float mass) = 0;
+
+        /** @copydoc setMass() */
+        virtual float GetMass() const = 0;
+
+        /**
+         * Determines if the body is kinematic. Kinematic body will not move in response to external forces (for example
+         * gravity, or another object pushing it), essentially behaving like collider. Unlike a collider though, you can
+         * still move the object and have other dynamic objects respond correctly (meaning it will push other objects).
+         */
+        virtual void SetIsKinematic(bool kinematic) = 0;
+
+        /** @copydoc setIsKinematic() */
+        virtual bool GetIsKinematic() const = 0;
+
+        /** Flags that control the behaviour of the rigidbody. */
+        virtual void SetFlags(BodyFlag flags) { _flags = flags; }
+
+        /** @copydoc SetFlags() */
+        virtual BodyFlag GetFlags() const { return _flags; }
+
+        /** Registers a new collider as a child of this rigidbody. */
+        virtual void AddCollider(Collider* collider) = 0;
+
+        /** Removes a collider from the child list of this rigidbody. */
+        virtual void RemoveCollider(Collider* collider) = 0;
+
+        /** Removes all colliders from the child list of this rigidbody. */
+        virtual void RemoveColliders() = 0;
 
         /** Triggered when one of the colliders owned by the rigidbody starts colliding with another object. */
         Event<void(const CollisionDataRaw&)> OnCollisionBegin;
@@ -79,6 +136,7 @@ namespace te
         void* GetOwner(PhysicsOwnerType type) const { return _owner.Type == type ? _owner.OwnerData : nullptr; }
 
     protected:
+        BodyFlag _flags;
         HSceneObject _linkedSO;
         PhysicsObjectOwner _owner;
         FBody* _internal = nullptr;

@@ -44,6 +44,7 @@
 #include "Components/TeCCapsuleCollider.h"
 #include "Components/TeCMeshCollider.h"
 #include "Components/TeCConeCollider.h"
+#include "Components/TeCAnimation.h"
 #include "Scene/TeSceneManager.h"
 #include "Resources/TeResourceManager.h"
 #include "Resources/TeBuiltinResources.h"
@@ -52,11 +53,13 @@
 #include "Math/TeVector2I.h"
 #include "Image/TeColor.h"
 #include "TeEditorUtils.h"
-#include "Components/TeCAnimation.h"
+#include "Physics/TePhysics.h"
 
 #include "Selection/TePicking.h"
 #include "Selection/TeSelection.h"
 #include "Selection/TeHud.h"
+
+#include "RenderAPI/TeRenderTarget.h"
 
 // TODO Temp for debug purpose
 #include "Importer/TeImporter.h"
@@ -80,6 +83,7 @@ namespace te
         , _pickingDirty(true)
         , _selectionDirty(true)
         , _hudDirty(true)
+        , _physicsDirty(true)
         , _guizmoState(ImGuizmoState::Active)
         , _guizmoOperation(ImGuizmo::OPERATION::TRANSLATE)
         , _guizmoMode(ImGuizmo::MODE::WORLD)
@@ -158,8 +162,14 @@ namespace te
             _selection->Render(_previewViewportCamera, viewportData);
         }
 
-        _selectionDirty = false;
+        if (_selectionDirty && _previewViewportCamera == _viewportCamera) // only for default camera
+        {
+            gPhysics().DrawDebug(_previewViewportCamera->GetViewport()->GetTarget());
+        }
+
         _hudDirty = false;
+        _selectionDirty = false;
+        _physicsDirty = false;
     }
 
     void Editor::NeedsRedraw()
@@ -171,6 +181,7 @@ namespace te
         MakePickingDirty();
         MakeSelectionDirty();
         MakeHudDirty();
+        MakePhysicsDirty();
     }
 
     void Editor::NeedsPicking(UINT32 x, UINT32 y)
@@ -240,6 +251,11 @@ namespace te
     void Editor::MakeSelectionDirty()
     {
         _selectionDirty = true;
+    }
+
+    void Editor::MakePhysicsDirty()
+    {
+        _physicsDirty = true;
     }
 
     void Editor::InitializeInput()

@@ -52,9 +52,6 @@ namespace te
         /** @copydoc Physics::CreatePhysicsScene */
         SPtr<PhysicsScene> CreatePhysicsScene() override;
 
-        /** @copydoc Physics::FixedUpdate */
-        void FixedUpdate(float step) override;
-
         /** @copydoc Physics::Update */
         void Update() override;
 
@@ -63,6 +60,9 @@ namespace te
 
         /** @copydoc Physics::SetPaused */
         bool IsPaused() const override;
+
+        /** @copydoc Physics::DrawDebug */
+        void DrawDebug(const SPtr<RenderTarget>& renderTarget) override;
 
         /** Notifies the system that at physics scene is about to be destroyed. */
         void NotifySceneDestroyed(BulletScene* scene);
@@ -78,7 +78,7 @@ namespace te
         btSequentialImpulseConstraintSolver* _constraintSolver = nullptr;
         btDefaultCollisionConfiguration* _collisionConfiguration = nullptr;
 
-        Vector<PhysicsScene*> _scenes;
+        Vector<BulletScene*> _scenes;
 
         UINT32 _maxSubSteps = 1;
         UINT32 _maxSolveIterations = 256;

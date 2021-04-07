@@ -445,6 +445,7 @@ set (TE_CORE_INC_PHYSICS
     "Core/Physics/TeFCollider.h"
     "Core/Physics/TeFJoint.h"
     "Core/Physics/TeFBody.h"
+    "Core/Physics/TePhysicsDebug.h"
 )
 set (TE_CORE_SRC_PHYSICS
     "Core/Physics/TePhysics.cpp"
@@ -469,6 +470,7 @@ set (TE_CORE_SRC_PHYSICS
     "Core/Physics/TeFCollider.cpp"
     "Core/Physics/TeFJoint.cpp"
     "Core/Physics/TeFBody.cpp"
+    "Core/Physics/TePhysicsDebug.cpp"
 )
 
 if (WIN32)

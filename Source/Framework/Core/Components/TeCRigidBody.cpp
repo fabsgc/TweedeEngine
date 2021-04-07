@@ -82,7 +82,8 @@ namespace te
             ClearColliders();
             UpdateColliders();
 
-            // TODO
+            if (((UINT32)_flags & (UINT32)BodyFlag::AutoTensors) != 0)
+                _internal->UpdateMassDistribution();
 
 #if TE_DEBUG_MODE
             CheckForNestedBody();

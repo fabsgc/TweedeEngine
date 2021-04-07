@@ -60,6 +60,30 @@ namespace te
         _notifyFlags = (TransformChangedFlags)(TCF_Parent | TCF_Transform);
     }
 
+    void CBody::SetMass(float mass)
+    {
+        _mass = mass;
+
+        if (_internal != nullptr)
+            _internal->SetMass(mass);
+    }
+
+    void CBody::SetIsKinematic(bool kinematic)
+    {
+        if (_isKinematic == kinematic)
+            return;
+
+        _isKinematic = kinematic;
+
+        if (_internal != nullptr)
+        {
+            _internal->SetIsKinematic(kinematic);
+
+            ClearColliders();
+            UpdateColliders();
+        }
+    }
+
     void CBody::SetCollisionReportMode(CollisionReportMode mode)
     {
         if (_collisionReportMode == mode)
@@ -69,6 +93,17 @@ namespace te
 
         for (auto& entry : _children)
             entry->UpdateCollisionReportMode();
+    }
+
+    void CBody::SetFlags(BodyFlag flags)
+    {
+        _flags = flags;
+
+        if (_internal != nullptr)
+        {
+            _internal->SetFlags(flags);
+            _internal->UpdateMassDistribution();
+        }
     }
 
     void CBody::UpdateMassDistribution()

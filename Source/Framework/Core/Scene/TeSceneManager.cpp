@@ -243,7 +243,7 @@ namespace te
         return component->GetCoreType() == id;
     }
 
-    void SceneManager::_update()
+    void SceneManager::Update()
     {
         for (auto& entry : _components)
             entry->Update();

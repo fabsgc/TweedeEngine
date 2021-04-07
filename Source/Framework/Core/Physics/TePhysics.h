@@ -2,6 +2,7 @@
 
 #include "TeCorePrerequisites.h"
 #include "Physics/TePhysicsCommon.h"
+#include "Physics/TePhysicsDebug.h"
 #include "Utility/TeModule.h"
 #include "Math/TeVector3.h"
 
@@ -31,14 +32,6 @@ namespace te
         /** Creates an object representing the physics scene. Must be manually released via destroyPhysicsScene(). */
         virtual SPtr<PhysicsScene> CreatePhysicsScene() = 0;
 
-        /**
-         * Updates the physics simulation. In order to maintain stability of the physics calculations this method should
-         * be called at fixed intervals (e.g. 60 times a second).
-         *
-         * @param[in]	step	Time delta to advance the physics simulation by, in seconds.
-         */
-        virtual void FixedUpdate(float step) = 0;
-
         /** Performs any physics operations that arent tied to the fixed update interval. Should be called once per frame. */
         virtual void Update() { }
 
@@ -47,6 +40,9 @@ namespace te
 
         /** @copydoc SetPaused() */
         virtual bool IsPaused() const = 0;
+
+        /** Allow user to see debug information about physical simulation */
+        virtual void DrawDebug(const SPtr<RenderTarget>& renderTarget) = 0;
 
         /** Checks is the physics simulation update currently in progress. */
         bool IsUpdateInProgress() const { return _updateInProgress; }
@@ -141,6 +137,9 @@ namespace te
     protected:
         PhysicsScene() = default;
         virtual ~PhysicsScene() = default;
+
+    protected:
+        PhysicsDebug* _debug = nullptr;
 
     };
 

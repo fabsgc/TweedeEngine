@@ -14,6 +14,10 @@
 #include "TeBulletCapsuleCollider.h"
 #include "TeBulletMeshCollider.h"
 #include "TeBulletConeCollider.h"
+#include "TeBulletDebug.h"
+#include "Utility/TeTime.h"
+#include "RenderAPI/TeRenderAPI.h"
+#include "RenderAPI/TeRenderTexture.h"
 
 namespace te
 {
@@ -77,28 +81,64 @@ namespace te
         _scenes.erase(iterFind);
     }
 
-    void BulletPhysics::FixedUpdate(float step)
+    void BulletPhysics::Update()
     {
+        for (auto& scene : _scenes)
+        {
+            if (scene->_world)
+            {
+                scene->_debug->Clear();
+                scene->_world->debugDrawWorld();
+            }
+        }
+
         bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Physics);
         if (IsPaused() || !isRunning)
             return;
 
         for (auto& scene : _scenes)
         {
+            if (!scene->_world)
+                continue;
 
+            // This equation must be met: timeStep < maxSubSteps * fixedTimeStep
+            float deltaTimeSec = gTime().GetFrameDelta();
+            float internalTimeStep = 1.0f / _internalFps;
+            UINT32 maxSubsteps = static_cast<UINT32>(deltaTimeSec * _internalFps) + 1;
+            if (_maxSubSteps < 0)
+            {
+                internalTimeStep = deltaTimeSec;
+                maxSubsteps = 1;
+            }
+            else if (_maxSubSteps > 0)
+            {
+                maxSubsteps = std::min<UINT32>(maxSubsteps, _maxSubSteps);
+            }
+
+            // Step the physics world. 
+            _updateInProgress = true;
+            scene->_world->stepSimulation(deltaTimeSec, maxSubsteps, internalTimeStep);
+            _updateInProgress = false;
         }
     }
 
-    void BulletPhysics::Update()
+    void BulletPhysics::DrawDebug(const SPtr<RenderTarget>& renderTarget)
     {
-        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Physics);
-        if (IsPaused() || !isRunning)
-            return;
+        RenderAPI& rapi = RenderAPI::Instance();
+        UINT32 clearBuffers = FBT_DEPTH;
+
+        rapi.SetRenderTarget(renderTarget);
+        rapi.ClearViewport(clearBuffers, Color::Black);
 
         for (auto& scene : _scenes)
         {
+            if (!scene->_world)
+                continue;
 
+            scene->_debug->Draw(renderTarget);
         }
+
+        rapi.SetRenderTarget(nullptr);
     }
 
     BulletScene::BulletScene(BulletPhysics* physics, const PHYSICS_INIT_DESC& desc)
@@ -135,6 +175,9 @@ namespace te
         _world->getDispatchInfo().m_useContinuous = true;
         _world->getSolverInfo().m_splitImpulse = false;
         _world->getSolverInfo().m_numIterations = _physics->_maxSolveIterations;
+
+        _debug = te_new<BulletDebug>();
+        _world->setDebugDrawer(static_cast<BulletDebug*>(_debug));
     }
 
     BulletScene::~BulletScene()

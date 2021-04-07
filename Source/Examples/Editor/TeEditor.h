@@ -114,8 +114,11 @@ namespace te
         /** If something has changed, we need to redraw hud elements such as cameras and lights on top of render */
         void MakeHudDirty();
 
-        /** If we need a redraw or if 3D viewport size change, we need to call this method to force selected elements render */
+        /** If we need a redraw or if 3D viewport size change, we need to call this method to force selected elements to render */
         void MakeSelectionDirty();
+
+        /** If we need a redraw or if 3D viewport size change, we need to call this method to force debug physics to render */
+        void MakePhysicsDirty();
 
         /** Get viewport camera handle */
         HCamera& GetViewportCamera() { return _viewportCamera; }
@@ -234,6 +237,9 @@ namespace te
         // If something has changed, we need to redraw hud elements such as cameras and lights on top of render
         UPtr<Hud> _hud;
         bool _hudDirty;
+
+        // If something has changed, we need to redraw physics debug
+        bool _physicsDirty;
 
         // We only enable Guizmo if there is a viewport with the default camera enabled
         ImGuizmoState _guizmoState;

@@ -136,7 +136,7 @@ namespace te
         void _notifyMainCameraStateChanged(const SPtr<Camera>& camera);
 
         /** Called every frame. Calls update methods on all scene objects and their components. */
-        void _update();
+        void Update();
 
         /** Updates dirty transforms on any core objects that may be tied with scene objects. */
         void _updateCoreObjectTransforms();

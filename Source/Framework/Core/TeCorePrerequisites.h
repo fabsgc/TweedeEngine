@@ -355,6 +355,7 @@ namespace te
     class FCollider;
     class FJoint;
     class FBody;
+    class PhysicsDebug;
 }
 
 #include "Utility/TeNonCopyable.h"

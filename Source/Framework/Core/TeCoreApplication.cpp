@@ -155,8 +155,6 @@ namespace te
             gInput().Update();
             gInput().TriggerCallbacks();
             gVirtualInput().Update();
-            gAudio().Update();
-            gPhysics().Update();
             _window->TriggerCallback();
 
             if(_pause)
@@ -169,7 +167,9 @@ namespace te
             PreUpdate();
 
             gScriptManager().Update();
-            gSceneManager()._update();
+            gSceneManager().Update();
+            gAudio().Update();
+            gPhysics().Update();
 
             for (auto& pluginUpdateFunc : _pluginUpdateFunctions)
             {
