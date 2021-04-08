@@ -29,12 +29,12 @@ namespace te
 
     Vector3 BulletSoftBody::GetPosition() const
     {
-        return Vector3::ZERO; // TODO
+        return _position;
     }
 
     Quaternion BulletSoftBody::GetRotation() const
     {
-        return Quaternion::IDENTITY; // TODO
+        return _rotation;
     }
 
     void BulletSoftBody::SetTransform(const Vector3& pos, const Quaternion& rot)
@@ -60,6 +60,91 @@ namespace te
     bool BulletSoftBody::GetIsKinematic() const
     {
         return false; // TODO
+    }
+
+    void BulletSoftBody::SetVelocity(const Vector3& velocity)
+    {
+        // TODO
+    }
+
+    const Vector3& BulletSoftBody::GetVelocity() const
+    {
+        return Vector3::ZERO;
+    }
+
+    void BulletSoftBody::SetAngularVelocity(const Vector3& velocity)
+    {
+        // TODO
+    }
+
+    const Vector3& BulletSoftBody::GetAngularVelocity() const
+    {
+        return Vector3::ZERO;
+    }
+
+    void BulletSoftBody::SetFriction(float friction)
+    {
+        // TODO
+    }
+
+    float BulletSoftBody::GetFriction() const
+    {
+        return 0.0f; // TODO
+    }
+
+    void BulletSoftBody::SetRollingFriction(float rollingFriction)
+    {
+        // TODO
+    }
+
+    float BulletSoftBody::GetRollingFriction() const
+    {
+        return 0.0f; // TODO
+    }
+
+    void BulletSoftBody::SetRestitution(float restitution)
+    {
+        // TODO
+    }
+
+    float BulletSoftBody::GetRestitution() const
+    {
+        return 0.0f; // TODO
+    }
+
+    void BulletSoftBody::SetUseGravity(bool gravity)
+    {
+        // TODO
+    }
+
+    bool BulletSoftBody::GetUseGravity() const
+    {
+        return false;
+    }
+
+    void BulletSoftBody::SetCenterOfMass(const Vector3& centerOfMass)
+    {
+        // TODO
+    }
+
+    const Vector3& BulletSoftBody::GetCenterOfMass() const
+    {
+        return _centerOfMass;
+    }
+
+    void BulletSoftBody::ApplyForce(const Vector3& force, ForceMode mode) const
+    {
+        // TODO
+    }
+
+    void BulletSoftBody::ApplyForceAtPoint(const Vector3& force, const Vector3& position, ForceMode mode) const
+    {
+        // TODO
+    }
+
+    void BulletSoftBody::ApplyTorque(const Vector3& torque, ForceMode mode) const
+    {
+        // TODO
     }
 
     void BulletSoftBody::AddCollider(Collider* collider)

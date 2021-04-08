@@ -196,8 +196,6 @@ namespace te
 
             if (_internal)
                 _internal->SetTransform(relativePos, relativeRot);
-
-            _parent->UpdateMassDistribution();
         }
         else
         {

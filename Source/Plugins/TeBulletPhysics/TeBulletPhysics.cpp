@@ -259,6 +259,22 @@ namespace te
         return te_shared_ptr_new<BulletConeCollider>(_physics, this);
     }
 
+    void BulletScene::AddRigidBody(btRigidBody* body)
+    {
+        if (!_world)
+            return;
+
+        _world->addRigidBody(body);
+    }
+
+    void BulletScene::RemoveRigidBody(btRigidBody* body)
+    {
+        if (!_world)
+            return;
+
+        _world->removeRigidBody(body);
+    }
+
     BulletPhysics& gBulletPhysics()
     {
         return static_cast<BulletPhysics&>(BulletPhysics::Instance());

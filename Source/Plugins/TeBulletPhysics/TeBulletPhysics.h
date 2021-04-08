@@ -134,6 +134,12 @@ namespace te
         /** @copydoc PhysicsScene::CreateConeCollider */
         SPtr<ConeCollider> CreateConeCollider();
 
+        /** Add RigidBody to current scene */
+        void AddRigidBody(btRigidBody* body);
+
+        /** Remove RigidBody from scene */
+        void RemoveRigidBody(btRigidBody* body);
+
     private:
         friend class BulletPhysics;
 

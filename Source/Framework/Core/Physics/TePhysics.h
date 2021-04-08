@@ -47,8 +47,12 @@ namespace te
         /** Checks is the physics simulation update currently in progress. */
         bool IsUpdateInProgress() const { return _updateInProgress; }
 
+        /** Returns configuration of the physic engine */
+        const PHYSICS_INIT_DESC& GetDesc() const { return _initDesc; }
+
     protected:
         bool _updateInProgress = false;
+        PHYSICS_INIT_DESC _initDesc;
     };
 
     /**

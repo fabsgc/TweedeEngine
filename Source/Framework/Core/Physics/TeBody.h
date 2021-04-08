@@ -10,9 +10,9 @@ namespace te
     enum class ForceMode
     {
         Force, /**< Value applied is a force. */
-            Impulse, /**< Value applied is an impulse (a direct change in its linear or angular momentum). */
-            Velocity, /**< Value applied is velocity. */
-            Acceleration /**< Value applied is accelearation. */
+        Impulse, /**< Value applied is an impulse (a direct change in its linear or angular momentum). */
+        Velocity, /**< Value applied is velocity. */
+        Acceleration /**< Value applied is accelearation. */
     };
 
     /** Type of force that can be applied to a rigidbody at an arbitrary point. */
@@ -89,6 +89,18 @@ namespace te
         /** @copydoc setMass() */
         virtual float GetMass() const = 0;
 
+        /** Determines the linear velocity of the body. */
+        virtual void SetVelocity(const Vector3& velocity) = 0;
+
+        /** @copydoc SetVelocity() */
+        virtual const Vector3& GetVelocity() const = 0;
+
+        /** Determines the angular velocity of the body. */
+        virtual void SetAngularVelocity(const Vector3& velocity) = 0;
+
+        /** @copydoc SetAngularVelocity() */
+        virtual const Vector3& GetAngularVelocity() const = 0;
+
         /**
          * Determines if the body is kinematic. Kinematic body will not move in response to external forces (for example
          * gravity, or another object pushing it), essentially behaving like collider. Unlike a collider though, you can
@@ -96,9 +108,65 @@ namespace te
          */
         virtual void SetIsKinematic(bool kinematic) = 0;
 
-        /** @copydoc setIsKinematic() */
+        /** @copydoc SetIsKinematic() */
         virtual bool GetIsKinematic() const = 0;
 
+        /** Determines the linear drag of the body. Higher drag values means the object resists linear movement more. */
+        virtual void SetFriction(float friction) = 0;
+
+        /** @copydoc SetFriction() */
+        virtual float GetFriction() const = 0;
+
+        /** Determines the angular drag of the body. Higher drag values means the object resists angular movement more. */
+        virtual void SetRollingFriction(float rollingFriction) = 0;
+
+        /** @copydoc GeRollingtFriction() */
+        virtual float GetRollingFriction() const = 0;
+
+        /** Determines the restitution of the body. */
+        virtual void SetRestitution(float restitution) = 0;
+
+        /** @copydoc GetRestitution() */
+        virtual float GetRestitution() const = 0;
+
+        /** Determines whether or not the rigidbody will have the global gravity force applied to it. */
+        virtual void SetUseGravity(bool gravity) = 0;
+
+        /** @copydoc SetUseGravity() */
+        virtual bool GetUseGravity() const = 0;
+
+        /** Sets the rigidbody's center of mass transform. Only relevant if RigibodyFlag::AutoTensors is turned off. */
+        virtual void SetCenterOfMass(const Vector3& centerOfMass) = 0;
+
+        /** Returns the position of the center of mass. */
+        virtual const Vector3& GetCenterOfMass() const = 0;
+
+        /**
+         * Applies a force to the center of the mass of the rigidbody. This will produce linear momentum.
+         *
+         * @param[in]	force		Force to apply.
+         * @param[in]	mode		Determines what is the type of @p force.
+         */
+        virtual void ApplyForce(const Vector3& force, ForceMode mode) const = 0;
+
+        /**
+         * Applies a force to a specific point on the rigidbody. This will in most cases produce both linear and angular
+         * momentum.
+         *
+         * @param[in]	force		Force to apply.
+         * @param[in]	position	World position to apply the force at.
+         * @param[in]	mode		Determines what is the type of @p force.
+         */
+        virtual void ApplyForceAtPoint(const Vector3& force, const Vector3& position, ForceMode mode) const = 0;
+
+        /**
+         * Applies a torque to the rigidbody. This will produce angular momentum.
+         *
+         * @param[in]	torque		Torque to apply.
+         * @param[in]	mode		Determines what is the type of @p torque.
+         */
+        virtual void ApplyTorque(const Vector3& torque, ForceMode mode) const = 0;
+        
         /** Flags that control the behaviour of the rigidbody. */
         virtual void SetFlags(BodyFlag flags) { _flags = flags; }
 

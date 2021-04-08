@@ -57,16 +57,13 @@ namespace te
         void SetIsKinematic(bool kinematic);
 
         /** @copydoc Body::GetIsKinematic */
-        bool getIsKinematic() const { return _isKinematic; }
+        bool GetIsKinematic() const { return _isKinematic; }
 
         /** Sets a value that determines which (if any) collision events are reported. */
         void SetCollisionReportMode(CollisionReportMode mode);
 
         /** Gets a value that determines which (if any) collision events are reported. */
         CollisionReportMode GetCollisionReportMode() const { return _collisionReportMode; }
-
-        /** @copydoc Body::UpdateMassDistribution */
-        void UpdateMassDistribution();
 
         /** @copydoc Body::SetFlags */
         void SetFlags(BodyFlag flags);
@@ -137,7 +134,15 @@ namespace te
 
         BodyFlag _flags = (BodyFlag)((UINT32)BodyFlag::AutoTensors | (UINT32)BodyFlag::AutoMass);
         CollisionReportMode _collisionReportMode = CollisionReportMode::None;
+
         float _mass = 0.0f;
+        float _friction = 0.0f;
+        float _friction_rolling = 0.0f;
+        float _restitution = 0.0f;
+        bool _useGravity = false;
         bool _isKinematic = false;
+
+        Vector3 _gravity = Vector3::ZERO;
+        Vector3 _centerOfMass = Vector3::ZERO;
     };
 }

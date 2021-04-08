@@ -102,14 +102,7 @@ namespace te
         if (_internal != nullptr)
         {
             _internal->SetFlags(flags);
-            _internal->UpdateMassDistribution();
         }
-    }
-
-    void CBody::UpdateMassDistribution()
-    {
-        if (_internal != nullptr)
-            return _internal->UpdateMassDistribution();
     }
 
     void CBody::DestroyInternal()
