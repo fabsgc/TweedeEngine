@@ -83,6 +83,7 @@ namespace te
         UINT32 _maxSubSteps = 1;
         UINT32 _maxSolveIterations = 256;
         float _internalFps = 60.0f;
+        float _deltaTimeSec = 1.0f;
     };
 
     /** Contains information about a single Bullet scene. */

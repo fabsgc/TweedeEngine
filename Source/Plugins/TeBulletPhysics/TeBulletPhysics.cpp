@@ -119,22 +119,28 @@ namespace te
             _updateInProgress = true;
             scene->_world->stepSimulation(deltaTimeSec, maxSubsteps, internalTimeStep);
 
-            for (int j = scene->_world->getNumCollisionObjects() - 1; j >= 0; j--)
+            _deltaTimeSec += deltaTimeSec;
+            if (_deltaTimeSec > 1.0f / _internalFps)
             {
-                btCollisionObject* obj = scene->_world->getCollisionObjectArray()[j];
-                btRigidBody* body = btRigidBody::upcast(obj);
-                btTransform trans;
-
-                if (body && body->getMotionState())
-                    body->getMotionState()->getWorldTransform(trans);
-                else
-                    trans = obj->getWorldTransform();
-
-                if (body)
+                for (int j = scene->_world->getNumCollisionObjects() - 1; j >= 0; j--)
                 {
-                    auto rigidBody = static_cast<BulletRigidBody*>(body->getUserPointer());
-                    rigidBody->_setTransform(ToVector3(trans.getOrigin()), ToQuaternion(trans.getRotation()));
+                    btCollisionObject* obj = scene->_world->getCollisionObjectArray()[j];
+                    btRigidBody* body = btRigidBody::upcast(obj);
+                    btTransform trans;
+
+                    if (body && body->getMotionState())
+                        body->getMotionState()->getWorldTransform(trans);
+                    else
+                        trans = obj->getWorldTransform();
+
+                    if (body)
+                    {
+                        auto rigidBody = static_cast<BulletRigidBody*>(body->getUserPointer());
+                        rigidBody->_setTransform(ToVector3(trans.getOrigin()), ToQuaternion(trans.getRotation()));
+                    }
                 }
+
+                _deltaTimeSec = 0.0f;
             }
 
             _updateInProgress = false;
