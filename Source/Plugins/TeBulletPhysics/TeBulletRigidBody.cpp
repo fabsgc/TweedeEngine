@@ -64,24 +64,32 @@ namespace te
         return _rotation;
     }
 
-    void BulletRigidBody::SetTransform(const Vector3& pos, const Quaternion& rot)
+    void BulletRigidBody::SetTransform(const Vector3& pos, const Quaternion& rot, bool activate)
     {
-        _position = pos;
-        _rotation = rot;
-
         if (!_rigidBody)
             return;
 
-        {
-            btTransform trans = _rigidBody->getWorldTransform();
-            trans.setOrigin(ToBtVector3(_position));
-            trans.setRotation(ToBtQuaternion(_rotation));
-            _rigidBody->setWorldTransform(trans);
-        }
+        _position = pos;
+        _rotation = rot;
+
+        btTransform trans = _rigidBody->getWorldTransform();
+        trans.setOrigin(ToBtVector3(_position));
+        trans.setRotation(ToBtQuaternion(_rotation));
+        _rigidBody->setWorldTransform(trans);
+        _rigidBody->updateInertiaTensor();
+
+        if (activate)
+            Activate();
     }
 
     void BulletRigidBody::SetMass(float mass)
     {
+        if (((UINT32)_flags & (UINT32)BodyFlag::AutoMass) != 0)
+        {
+            TE_DEBUG("Attempting to set Rigidbody mass, but it has automatic mass calculation turned on.");
+            return;
+        }
+
         mass = std::max(mass, 0.0f);
         if (mass != _mass)
         {
@@ -205,6 +213,12 @@ namespace te
 
     void BulletRigidBody::SetCenterOfMass(const Vector3& centerOfMass)
     {
+        if (((UINT32)_flags & (UINT32)BodyFlag::AutoTensors) != 0)
+        {
+            TE_DEBUG("Attempting to set Rigidbody center of mass, but it has automatic tensor calculation turned on.");
+            return;
+        }
+
         _centerOfMass = centerOfMass;
         SetTransform(GetPosition(), GetRotation());
     }
@@ -216,17 +230,41 @@ namespace te
 
     void BulletRigidBody::ApplyForce(const Vector3& force, ForceMode mode) const
     {
-        // TODO
+        if (!_rigidBody)
+            return;
+
+        Activate();
+
+        if (mode == ForceMode::Force)
+            _rigidBody->applyCentralForce(ToBtVector3(force));
+        else if (mode == ForceMode::Impulse)
+            _rigidBody->applyCentralImpulse(ToBtVector3(force));
     }
 
     void BulletRigidBody::ApplyForceAtPoint(const Vector3& force, const Vector3& position, ForceMode mode) const
     {
-        // TODO
+        if (!_rigidBody)
+            return;
+
+        Activate();
+
+        if (mode == ForceMode::Force)
+            _rigidBody->applyForce(ToBtVector3(force), ToBtVector3(position));
+        else if (mode == ForceMode::Impulse)
+            _rigidBody->applyImpulse(ToBtVector3(force), ToBtVector3(position));
     }
 
     void BulletRigidBody::ApplyTorque(const Vector3& torque, ForceMode mode) const
     {
-        // TODO
+        if (!_rigidBody)
+            return;
+
+        Activate();
+
+        if (mode == ForceMode::Force)
+            _rigidBody->applyTorque(ToBtVector3(torque));
+        else if (mode == ForceMode::Impulse)
+            _rigidBody->applyTorqueImpulse(ToBtVector3(torque));
     }
 
     void BulletRigidBody::AddCollider(Collider* collider)
@@ -242,6 +280,21 @@ namespace te
     void BulletRigidBody::RemoveColliders()
     {
         TE_PRINT("Remove all Colliders");
+    }
+
+    void BulletRigidBody::UpdateMassDistribution()
+    {
+        if (((UINT32)_flags & (UINT32)BodyFlag::AutoTensors) == 0)
+            return;
+
+        if (((UINT32)_flags & (UINT32)BodyFlag::AutoMass) == 0)
+        {
+            // TODO
+        }
+        else
+        {
+            // TODO
+        }
     }
 
     void BulletRigidBody::SetFlags(BodyFlag flags)

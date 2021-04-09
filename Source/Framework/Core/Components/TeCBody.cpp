@@ -20,9 +20,6 @@ namespace te
         _notifyFlags = (TransformChangedFlags)(TCF_Parent | TCF_Transform);
     }
 
-    CBody::~CBody()
-    { }
-
     void CBody::Initialize()
     {
         Component::Initialize();
@@ -37,6 +34,15 @@ namespace te
     {
         Component::Clone(c.GetInternalPtr());
 
+        _mass = c->_mass;
+        _friction = c->_friction;
+        _rollingFriction = c->_rollingFriction;
+        _restitution = c->_restitution;
+        _useGravity = c->_useGravity;
+        _isKinematic = c->_isKinematic;
+        _centerOfMass = c->_centerOfMass;
+        _velocity = c->_velocity;
+        _angularVelocity = c->_angularVelocity;
         _collisionReportMode = c->_collisionReportMode;
     }
 
@@ -84,6 +90,102 @@ namespace te
         }
     }
 
+    void CBody::SetVelocity(const Vector3& velocity)
+    {
+        if (_velocity == velocity)
+            return;
+
+        _velocity = velocity;
+
+        if (_internal != nullptr)
+            _internal->SetVelocity(velocity);
+    }
+
+    void CBody::SetAngularVelocity(const Vector3& velocity)
+    {
+        if (_angularVelocity == velocity)
+            return;
+
+        _angularVelocity = velocity;
+
+        if (_internal != nullptr)
+            _internal->SetAngularVelocity(velocity);
+    }
+
+    void CBody::SetFriction(float friction)
+    {
+        if (_friction == friction)
+            return;
+
+        _friction = friction;
+
+        if (_internal != nullptr)
+            _internal->SetFriction(friction);
+    }
+
+
+    void CBody::SetRollingFriction(float rollingFriction)
+    {
+        if (_rollingFriction == rollingFriction)
+            return;
+
+        _rollingFriction = rollingFriction;
+
+        if (_internal != nullptr)
+            _internal->SetRollingFriction(rollingFriction);
+    }
+
+    void CBody::SetRestitution(float restitution)
+    {
+        if (_restitution == restitution)
+            return;
+
+        _restitution = restitution;
+
+        if (_internal != nullptr)
+            _internal->SetRollingFriction(restitution);
+    }
+
+    void CBody::SetUseGravity(bool gravity)
+    {
+        if (_useGravity == gravity)
+            return;
+
+        _useGravity = gravity;
+
+        if (_internal != nullptr)
+            _internal->SetUseGravity(gravity);
+    }
+
+    void CBody::SetCenterOfMass(const Vector3& centerOfMass)
+    {
+        if (_centerOfMass == centerOfMass)
+            return;
+
+        _centerOfMass = centerOfMass;
+
+        if (_internal != nullptr)
+            _internal->SetCenterOfMass(centerOfMass);
+    }
+
+    void CBody::ApplyForce(const Vector3& force, ForceMode mode) const
+    {
+        if (_internal != nullptr)
+            _internal->ApplyForce(force, mode);
+    }
+
+    void CBody::ApplyForceAtPoint(const Vector3& force, const Vector3& position, ForceMode mode) const
+    {
+        if (_internal != nullptr)
+            _internal->ApplyForceAtPoint(force, position, mode);
+    }
+
+    void CBody::ApplyTorque(const Vector3& torque, ForceMode mode) const
+    {
+        if (_internal != nullptr)
+            _internal->ApplyTorque(torque, mode);
+    }
+
     void CBody::SetCollisionReportMode(CollisionReportMode mode)
     {
         if (_collisionReportMode == mode)
@@ -102,11 +204,9 @@ namespace te
         if (_internal != nullptr)
         {
             _internal->SetFlags(flags);
+            _internal->UpdateMassDistribution();
         }
     }
-
-    void CBody::DestroyInternal()
-    { }
 
     void CBody::TriggerOnCollisionBegin(const CollisionDataRaw& data)
     {

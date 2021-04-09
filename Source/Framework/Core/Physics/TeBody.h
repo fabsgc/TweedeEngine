@@ -78,7 +78,7 @@ namespace te
          * Applies new transform values retrieved from the most recent physics update (values resulting from physics
          * simulation).
          */
-        virtual void SetTransform(const Vector3& position, const Quaternion& rotation) = 0;
+        virtual void SetTransform(const Vector3& position, const Quaternion& rotation, bool activate = false) = 0;
 
         /**
          * Determines the mass of the object and all of its collider shapes. Only relevant if RigidBodyFlag::AutoMass or
@@ -166,6 +166,15 @@ namespace te
          * @param[in]	mode		Determines what is the type of @p torque.
          */
         virtual void ApplyTorque(const Vector3& torque, ForceMode mode) const = 0;
+
+        /**
+         * Recalculates rigidbody's mass, inertia tensors and center of mass depending on the currently set child colliders.
+         * This should be called whenever relevant child collider properties change (like mass or shape).
+         *
+         * If automatic tensor calculation is turned off then this will do nothing. If automatic mass calculation is turned
+         * off then this will use the mass set directly on the body using setMass().
+         */
+        virtual void updateMassDistribution() { }
         
         /** Flags that control the behaviour of the rigidbody. */
         virtual void SetFlags(BodyFlag flags) { _flags = flags; }

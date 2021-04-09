@@ -146,4 +146,9 @@ namespace te
     {
         // TODO
     }
+
+    void CSoftBody::UpdateMassDistribution()
+    {
+        // TODO
+    }
 }

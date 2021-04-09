@@ -81,6 +81,9 @@ namespace te
         /** Body::ProcessCollisionData */
         void ProcessCollisionData(const CollisionDataRaw& raw, CollisionData& output) override;
 
+        /** @copydoc Body::UpdateMassDistribution */
+        void UpdateMassDistribution() override;
+
         /** Find and add colliders from the same SceneObject */
         template<class T>
         void FindAndAddColliders(HSceneObject& currentSO)

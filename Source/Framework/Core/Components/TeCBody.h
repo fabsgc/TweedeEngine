@@ -24,7 +24,7 @@ namespace te
     {
     public:
         CBody(const HSceneObject& parent, UINT32 type);
-        virtual ~CBody();
+        virtual ~CBody() = default;
 
         /** Return Component type */
         static UINT32 GetComponentType() { return TID_CBody; }
@@ -58,6 +58,57 @@ namespace te
 
         /** @copydoc Body::GetIsKinematic */
         bool GetIsKinematic() const { return _isKinematic; }
+
+        /** @copydoc Body::SetVelocity */
+        void SetVelocity(const Vector3& velocity);
+
+        /** @copydoc Body::GetVelocity */
+        const Vector3& GetVelocity() const { return _velocity; }
+
+        /** @copydoc Body::SetAngularVelocity */
+        void SetAngularVelocity(const Vector3& velocity);
+
+        /** @copydoc Body::GetAngularVelocity */
+        const Vector3& GetAngularVelocity() const { return _angularVelocity; }
+
+        /** @copydoc Body::SetFriction */
+        void SetFriction(float friction);
+
+        /** @copydoc Body::GetFriction */
+        float GetFriction() const { return _friction; }
+
+        /** @copydoc Body::SetRollingFriction */
+        void SetRollingFriction(float rollingFriction);
+
+        /** @copydoc Body::GetRollingFriction */
+        float GetRollingFriction() const { return _rollingFriction; }
+
+        /** @copydoc Body::SetRestitution */
+        void SetRestitution(float restitution);
+
+        /** @copydoc Body::GetRestitution */
+        float GetRestitution() const { return _restitution; }
+
+        /** @copydoc Body::SetUseGravity */
+        void SetUseGravity(bool gravity);
+
+        /** @copydoc Body::GetUseGravity */
+        bool GetUseGravity() const { return _useGravity; }
+
+        /** @copydoc Body::SetCenterOfMass */
+        void SetCenterOfMass(const Vector3& centerOfMass);
+
+        /** @copydoc Body::GetCenterOfMass */
+        const Vector3& GetCenterOfMass() const { return _centerOfMass; }
+
+        /** @copydoc Body::ApplyForce */
+        void ApplyForce(const Vector3& force, ForceMode mode) const;
+
+        /** @copydoc Body::ApplyForceAtPoint */
+        void ApplyForceAtPoint(const Vector3& force, const Vector3& position, ForceMode mode) const;
+
+        /** @copydoc Body::ApplyTorque */
+        void ApplyTorque(const Vector3& torque, ForceMode mode) const;
 
         /** Sets a value that determines which (if any) collision events are reported. */
         void SetCollisionReportMode(CollisionReportMode mode);
@@ -95,7 +146,7 @@ namespace te
         void TriggerOnCollisionEnd(const CollisionDataRaw& data);
 
         /** Destroys the internal joint representation. */
-        virtual void DestroyInternal();
+        virtual void DestroyInternal() = 0;
 
         /** Creates the internal representation of the Body for use by the component. */
         virtual SPtr<Body> CreateInternal() = 0;
@@ -124,6 +175,9 @@ namespace te
         /** Appends Component referenes for the colliders to the collision data. */
         virtual void ProcessCollisionData(const CollisionDataRaw& raw, CollisionData& output) = 0;
 
+        /** @copydoc Body::UpdateMassDistribution */
+        virtual void UpdateMassDistribution() = 0;
+
     protected:
         CBody(UINT32 type);
 
@@ -132,17 +186,18 @@ namespace te
         Vector<HCollider> _children;
         HJoint _parentJoint;
 
-        BodyFlag _flags = (BodyFlag)((UINT32)BodyFlag::AutoTensors | (UINT32)BodyFlag::AutoMass);
-        CollisionReportMode _collisionReportMode = CollisionReportMode::None;
-
         float _mass = 0.0f;
         float _friction = 0.0f;
-        float _friction_rolling = 0.0f;
+        float _rollingFriction = 0.0f;
         float _restitution = 0.0f;
         bool _useGravity = false;
         bool _isKinematic = false;
 
-        Vector3 _gravity = Vector3::ZERO;
         Vector3 _centerOfMass = Vector3::ZERO;
+        Vector3 _velocity = Vector3::ZERO;
+        Vector3 _angularVelocity = Vector3::ZERO;
+
+        BodyFlag _flags = (BodyFlag)((UINT32)BodyFlag::AutoTensors | (UINT32)BodyFlag::AutoMass);
+        CollisionReportMode _collisionReportMode = CollisionReportMode::None;
     };
 }

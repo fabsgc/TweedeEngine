@@ -69,7 +69,27 @@ namespace te
         const Transform& tfrm = SO()->GetTransform();
         _internal->SetTransform(tfrm.GetPosition(), tfrm.GetRotation());
 
-        // TODO
+        _internal->SetFriction(_friction);
+        _internal->SetRollingFriction(_rollingFriction);
+        _internal->SetRestitution(_restitution);
+        _internal->SetVelocity(_velocity);
+        _internal->SetAngularVelocity(_angularVelocity);
+        _internal->SetUseGravity(_useGravity);
+        _internal->SetIsKinematic(_isKinematic);
+        _internal->SetFlags(_flags);
+
+        if (((UINT32)_flags & (UINT32)BodyFlag::AutoTensors) == 0)
+        {
+            _internal->SetCenterOfMass(_centerOfMass);
+            _internal->SetMass(_mass);
+        }
+        else
+        {
+            if (((UINT32)_flags & (UINT32)BodyFlag::AutoMass) == 0)
+                _internal->SetMass(_mass);
+
+            _internal->UpdateMassDistribution();
+        }
     }
 
     void CRigidBody::OnTransformChanged(TransformChangedFlags flags)
@@ -203,9 +223,9 @@ namespace te
 
         while (currentSO != nullptr)
         {
-            if (currentSO->HasComponent(TID_CRigidBody))
+            if (currentSO->HasComponent(TID_CRigidBody) || currentSO->HasComponent(TID_CSoftBody))
             {
-                TE_DEBUG("Nested Rigidbodies detected. This will result in inconsistent transformations. "
+                TE_DEBUG("Nested Rigidbodies or SoftBodies detected. This will result in inconsistent transformations. "
                     "To parent one Rigidbody to another move its colliders to the new parent, but remove the Rigidbody "
                     "component.");
                 return;
@@ -230,5 +250,11 @@ namespace te
             CCollider* other = (CCollider*)raw.Colliders[1]->GetOwner(PhysicsOwnerType::Component);
             output.Colliders[1] = static_object_cast<CCollider>(other->GetHandle());
         }
+    }
+
+    void CRigidBody::UpdateMassDistribution()
+    {
+        if (_internal != nullptr)
+            return _internal->UpdateMassDistribution();
     }
 }

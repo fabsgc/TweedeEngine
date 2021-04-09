@@ -37,7 +37,7 @@ namespace te
         return _rotation;
     }
 
-    void BulletSoftBody::SetTransform(const Vector3& pos, const Quaternion& rot)
+    void BulletSoftBody::SetTransform(const Vector3& pos, const Quaternion& rot, bool activate)
     {
         // TODO
     }
@@ -160,6 +160,11 @@ namespace te
     void BulletSoftBody::RemoveColliders()
     {
         TE_PRINT("Remove all Colliders");
+    }
+
+    void BulletSoftBody::UpdateMassDistribution()
+    {
+        // TODO
     }
 
     void BulletSoftBody::SetFlags(BodyFlag flags)
