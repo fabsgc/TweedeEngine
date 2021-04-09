@@ -118,6 +118,25 @@ namespace te
             // Step the physics world. 
             _updateInProgress = true;
             scene->_world->stepSimulation(deltaTimeSec, maxSubsteps, internalTimeStep);
+
+            for (int j = scene->_world->getNumCollisionObjects() - 1; j >= 0; j--)
+            {
+                btCollisionObject* obj = scene->_world->getCollisionObjectArray()[j];
+                btRigidBody* body = btRigidBody::upcast(obj);
+                btTransform trans;
+
+                if (body && body->getMotionState())
+                    body->getMotionState()->getWorldTransform(trans);
+                else
+                    trans = obj->getWorldTransform();
+
+                if (body)
+                {
+                    auto rigidBody = static_cast<BulletRigidBody*>(body->getUserPointer());
+                    rigidBody->_setTransform(ToVector3(trans.getOrigin()), ToQuaternion(trans.getRotation()));
+                }
+            }
+
             _updateInProgress = false;
         }
     }

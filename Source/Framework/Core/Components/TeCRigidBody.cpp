@@ -116,7 +116,8 @@ namespace te
         const Transform& tfrm = SO()->GetTransform();
         _internal->SetTransform(tfrm.GetPosition(), tfrm.GetRotation());
 
-         // TODO
+        if (_parentJoint != nullptr)
+            _parentJoint->NotifyBodyMoved(static_object_cast<CBody>(_thisHandle));
     }
 
     SPtr<Body> CRigidBody::CreateInternal()

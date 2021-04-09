@@ -34,6 +34,10 @@
 #include "BulletDynamics/ConstraintSolver/btPoint2PointConstraint.h"
 #pragma warning(pop)
 
+#if TE_DEBUG_MODE
+#define BT_DEBUG
+#endif
+
 namespace te
 {
     class BulletPhysics;

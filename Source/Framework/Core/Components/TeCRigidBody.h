@@ -41,6 +41,7 @@ namespace te
     protected:
         friend class SceneObject;
         friend class CCollider;
+        friend class CJoint;
 
         /** @copydoc Component::OnInitialized() */
         void OnInitialized() override;

@@ -12,6 +12,33 @@ namespace te
     static const float DEFAULT_RESTITUTION = 0.0f;
     static const float DEFAULT_DEACTIVATION_TIME = 2000;
 
+    class MotionState : public btMotionState
+    {
+    public:
+        MotionState(RigidBody* rigidBody) { _rigidBody = rigidBody; }
+
+        // Update from engine, ENGINE -> BULLET
+        void getWorldTransform(btTransform& worldTrans) const override
+        {
+            const Vector3 lastPos = _rigidBody->GetPosition();
+            const Quaternion lastRot = _rigidBody->GetRotation();
+
+            worldTrans.setOrigin(ToBtVector3(lastPos + lastRot * _rigidBody->GetCenterOfMass()));
+            worldTrans.setRotation(ToBtQuaternion(lastRot));
+        }
+
+        // Update from bullet, BULLET -> ENGINE
+        void setWorldTransform(const btTransform& worldTrans) override
+        {
+            const Quaternion newWorldRot = ToQuaternion(worldTrans.getRotation());
+            const Vector3 newWorldPos = ToVector3(worldTrans.getOrigin()) - newWorldRot * _rigidBody->GetCenterOfMass();
+
+            _rigidBody->SetTransform(newWorldPos, newWorldRot);
+        }
+    private:
+        RigidBody* _rigidBody;
+    };
+
     BulletRigidBody::BulletRigidBody(BulletPhysics* physics, BulletScene* scene, const HSceneObject& linkedSO)
         : RigidBody(linkedSO)
         , _rigidBody(nullptr)
@@ -72,10 +99,24 @@ namespace te
         _position = pos;
         _rotation = rot;
 
-        btTransform trans = _rigidBody->getWorldTransform();
-        trans.setOrigin(ToBtVector3(_position));
+        // Set position and rotation to world transform
+        const Vector3 oldPosition = GetPosition();
+        btTransform& trans = _rigidBody->getWorldTransform();
+        trans.setOrigin(ToBtVector3(pos + ToQuaternion(trans.getRotation()) * _centerOfMass));
         trans.setRotation(ToBtQuaternion(_rotation));
-        _rigidBody->setWorldTransform(trans);
+
+        if (_centerOfMass != Vector3::ZERO)
+            trans.setOrigin(ToBtVector3(oldPosition + rot * _centerOfMass));
+
+        // Set position and rotation to interpolated world transform
+        btTransform transInterpolated = _rigidBody->getInterpolationWorldTransform();
+        transInterpolated.setRotation(trans.getRotation());
+        transInterpolated.setOrigin(trans.getOrigin());
+
+        if (_centerOfMass != Vector3::ZERO)
+            transInterpolated.setOrigin(trans.getOrigin());
+
+        _rigidBody->setInterpolationWorldTransform(transInterpolated);
         _rigidBody->updateInertiaTensor();
 
         if (activate)
@@ -284,12 +325,15 @@ namespace te
 
     void BulletRigidBody::UpdateMassDistribution()
     {
+        if (_rigidBody == nullptr)
+            return;
+
         if (((UINT32)_flags & (UINT32)BodyFlag::AutoTensors) == 0)
             return;
 
         if (((UINT32)_flags & (UINT32)BodyFlag::AutoMass) == 0)
         {
-            // TODO
+            _rigidBody->updateInertiaTensor();
         }
         else
         {
@@ -307,13 +351,25 @@ namespace te
         if (_mass < 0.0f)
             _mass = 0.0f;
 
+        // Transfer inertia to new collision shape
+        btVector3 localIntertia = btVector3(0, 0, 0);
+        if (_rigidBody)
+        {
+            // TODO
+        }
+
         Release();
 
         {
-            btRigidBody::btRigidBodyConstructionInfo constructionInfo(_mass, nullptr, nullptr);
+            // Create a motion state (memory will be freed by the RigidBody)
+            const auto motionState = te_new<MotionState>(this);
+
+            btRigidBody::btRigidBodyConstructionInfo constructionInfo(_mass, motionState, nullptr, localIntertia);
             constructionInfo.m_friction = _friction;
             constructionInfo.m_rollingFriction = _frictionRolling;
             constructionInfo.m_restitution = _restitution;
+            constructionInfo.m_localInertia = localIntertia;
+            constructionInfo.m_motionState = motionState;
 
             _rigidBody = te_new<btRigidBody>(constructionInfo);
             _rigidBody->setUserPointer(this);
@@ -346,7 +402,9 @@ namespace te
 
         RemoveFromWorld();
 
+        te_delete(_rigidBody->getMotionState());
         te_delete(_rigidBody);
+
         _rigidBody = nullptr;
     }
 

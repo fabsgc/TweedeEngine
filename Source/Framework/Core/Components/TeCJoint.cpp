@@ -81,4 +81,16 @@ namespace te
 
     void CJoint::DestroyInternal()
     { }
+
+    void CJoint::NotifyBodyMoved(const HBody& body)
+    {
+        if (_internal == nullptr)
+            return;
+
+        // If physics update is in progress do nothing, as its the joint itself that's probably moving the body
+        if (gPhysics().IsUpdateInProgress())
+            return;
+        
+        // TODO
+    }
 }

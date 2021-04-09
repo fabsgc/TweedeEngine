@@ -207,6 +207,15 @@ namespace te
             return Quaternion(rhs * w, rhs * x, rhs * y, rhs * z);
         }
 
+        Vector3 operator*(const Vector3& rhs) const
+        {
+            const Vector3 qVec(x, y, z);
+            const Vector3 cross1(qVec.Cross(rhs));
+            const Vector3 cross2(qVec.Cross(cross1));
+
+            return rhs + 2.0f * (cross1 * w + cross2);
+        }
+
         Quaternion operator/ (float rhs) const
         {
             assert(rhs != 0.0);

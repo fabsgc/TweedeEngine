@@ -201,6 +201,12 @@ namespace te
         Event<void(const CollisionDataRaw&)> OnCollisionEnd;
 
         /**
+         * Applies new transform values retrieved from the most recent physics update (values resulting from physics
+         * simulation).
+         */
+        void _setTransform(const Vector3& position, const Quaternion& rotation);
+
+        /**
          * Sets the object that owns this physics object, if any. Used for high level systems so they can easily map their
          * high level physics objects from the low level ones returned by various queries and events.
          */

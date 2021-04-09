@@ -1,4 +1,5 @@
 #include "TeBody.h"
+#include "Scene/TeSceneObject.h"
 
 namespace te
 { 
@@ -6,4 +7,10 @@ namespace te
         : _flags(BodyFlag::None)
         , _linkedSO(linkedSO)
     { }
+
+    void Body::_setTransform(const Vector3& position, const Quaternion& rotation)
+    {
+        _linkedSO->SetWorldPosition(position);
+        _linkedSO->SetWorldRotation(rotation);
+    }
 }

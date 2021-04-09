@@ -34,6 +34,8 @@ namespace te
 
     protected:
         friend class SceneObject;
+        friend class CRigidBody;
+        friend class CSoftBody;
         using Component::DestroyInternal;
 
         /** @copydoc Component::onInitialized() */
@@ -59,6 +61,9 @@ namespace te
 
         /** Destroys the internal joint representation. */
         virtual void DestroyInternal();
+
+        /** Notifies the joint that one of the attached body moved and that its transform needs updating. */
+        void NotifyBodyMoved(const HBody& body);
 
     protected:
         CJoint(JOINT_DESC& desc, UINT32 type);
