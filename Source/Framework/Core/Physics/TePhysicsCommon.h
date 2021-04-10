@@ -39,7 +39,6 @@ namespace te
     {
         None, /** No parent, object is used directly. */
         Component, /** Object is used by a C++ Component. */
-        Script /** Object is used by the scripting system. */
     };
 
     /** Contains information about a parent for a physics object. */

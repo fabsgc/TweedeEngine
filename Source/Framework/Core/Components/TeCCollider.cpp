@@ -43,9 +43,9 @@ namespace te
 
         _collisionReportMode = c->_collisionReportMode;
         _isTrigger = c->_isTrigger;
+        _scale = c->_scale;
         _mass = c->_mass;
-        _localPosition = c->_localPosition;
-        _localRotation = c->_localRotation;
+        _center = c->_center;
     }
 
     void CCollider::SetIsTrigger(bool value)
@@ -58,9 +58,28 @@ namespace te
         if (_internal != nullptr)
         {
             _internal->SetIsTrigger(value);
-
             UpdateParentBody();
-            UpdateTransform();
+
+            // TODO
+        }
+    }
+
+    void CCollider::SetScale(const Vector3& scale)
+    {
+        if (_scale == scale)
+            return;
+
+        _scale = scale;
+
+        if (_internal != nullptr)
+        {
+            _internal->SetScale(scale);
+
+            if (_parent != nullptr)
+            {
+                _parent->RemoveCollider(static_object_cast<CCollider>(_thisHandle));
+                _parent->AddCollider(static_object_cast<CCollider>(_thisHandle));
+            }
         }
     }
 
@@ -74,6 +93,22 @@ namespace te
         if (_internal != nullptr)
         {
             _internal->SetMass(mass);
+
+            if (_parent != nullptr)
+                _parent->UpdateMassDistribution();
+        }
+    }
+
+    void CCollider::SetCenter(const Vector3& center)
+    {
+        if (_center == center)
+            return;
+
+        _center = center;
+
+        if (_internal != nullptr)
+        {
+            _internal->SetCenter(center);
 
             if (_parent != nullptr)
                 _parent->UpdateMassDistribution();
@@ -120,9 +155,6 @@ namespace te
         // relative transform to its parent
         if (gPhysics().IsUpdateInProgress())
             return;
-
-        if ((flags & (TCF_Parent | TCF_Transform)) != 0)
-            UpdateTransform();
     }
 
     void CCollider::RestoreInternal()
@@ -137,7 +169,6 @@ namespace te
         }
 
         UpdateParentBody();
-        UpdateTransform();
         UpdateCollisionReportMode();
     }
 
@@ -179,62 +210,10 @@ namespace te
 
         _parent = body;
         UpdateCollisionReportMode();
-        UpdateTransform();
-    }
-
-    void CCollider::UpdateTransform()
-    {
-        const Transform& tfrm = SO()->GetTransform();
-        Vector3 myScale = tfrm.GetScale();
-
-        if (_parent != nullptr)
-        {
-            const Transform& parentTfrm = _parent->SO()->GetTransform();
-            Vector3 parentPos = parentTfrm.GetPosition();
-            Quaternion parentRot = parentTfrm.GetRotation();
-
-            Vector3 myPos = tfrm.GetPosition();
-            Quaternion myRot = tfrm.GetRotation();
-
-            Vector3 scale = parentTfrm.GetScale();
-            Vector3 invScale = scale;
-            if (invScale.x != 0) invScale.x = 1.0f / invScale.x;
-            if (invScale.y != 0) invScale.y = 1.0f / invScale.y;
-            if (invScale.z != 0) invScale.z = 1.0f / invScale.z;
-
-            Quaternion invRotation = parentRot.Inverse();
-
-            Vector3 relativePos = invRotation.Rotate(myPos - parentPos) * invScale;
-            Quaternion relativeRot = invRotation * myRot;
-
-            relativePos = relativePos + relativeRot.Rotate(_localPosition * scale);
-            relativeRot = relativeRot * _localRotation;
-
-            if (_internal)
-                _internal->SetTransform(relativePos, relativeRot);
-        }
-        else
-        {
-            Quaternion myRot = tfrm.GetRotation();
-            Vector3 myPos = tfrm.GetPosition() + myRot.Rotate(_localPosition * myScale);
-            myRot = myRot * _localRotation;
-
-            if (_internal)
-                _internal->SetTransform(myPos, myRot);
-        }
-
-        if (_internal)
-            _internal->SetScale(myScale);
     }
 
     void CCollider::UpdateParentBody()
     { 
-        if (_isTrigger)
-        {
-            SetBody(HBody());
-            return;
-        }
-
         HSceneObject currentSO = SO();
         while (currentSO != nullptr)
         {

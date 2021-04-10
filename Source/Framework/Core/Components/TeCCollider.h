@@ -40,11 +40,23 @@ namespace te
         /** @copydoc Collider::GetIsTrigger */
         bool GetIsTrigger() const { return _isTrigger; }
 
+        /** @copydoc Collider::SetScale */
+        void SetScale(const Vector3& scale);
+
+        /** @copydoc Collider::GetScale */
+        const Vector3& GetScale() const { return _scale; }
+
         /** @copydoc Collider::SetMass */
         void SetMass(float mass);
 
         /** @copydoc Collider::GetMass */
         float GetMass() const { return _mass; }
+
+        /** @copydoc Collider::SetCenter */
+        void SetCenter(const Vector3& center);
+
+        /** @copydoc Collider::GetCenter */
+        const Vector3& GetCenter() const { return _center; }
 
         /** @copydoc Collider::GetBody */
         HBody GetBody() const { return _parent; }
@@ -142,9 +154,9 @@ namespace te
 
         CollisionReportMode _collisionReportMode = CollisionReportMode::None;
         bool _isTrigger = false;
+        Vector3 _scale = Vector3(1.0f, 1.0f, 1.0f);
         float _mass = 1.0f;
-        Vector3 _localPosition = Vector3::ZERO;
-        Quaternion _localRotation = Quaternion::IDENTITY;
+        Vector3 _center = Vector3::ZERO;
 
         HBody _parent;
     };

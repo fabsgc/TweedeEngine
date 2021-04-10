@@ -124,7 +124,7 @@ namespace te
             {
                 for (int j = scene->_world->getNumCollisionObjects() - 1; j >= 0; j--)
                 {
-                    btCollisionObject* obj = scene->_world->getCollisionObjectArray()[j];
+                    /*btCollisionObject* obj = scene->_world->getCollisionObjectArray()[j];
                     btRigidBody* body = btRigidBody::upcast(obj);
                     btTransform trans;
 
@@ -140,10 +140,10 @@ namespace te
                         Vector3 position = rigidBody->GetPosition();
                         Quaternion rotation = rigidBody->GetRotation();
 
-                        //rigidBody->_setTransform(position, rotation);
+                        rigidBody->_setTransform(position, rotation);
 
-                        //TE_PRINT(ToString(position.x) + "/" + ToString(position.y) + "/" + ToString(position.z));
-                    }
+                        TE_PRINT(ToString(position.x) + "/" + ToString(position.y) + "/" + ToString(position.z));
+                    }*/
                 }
 
                 _deltaTimeSec = 0.0f;

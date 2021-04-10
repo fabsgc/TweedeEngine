@@ -29,12 +29,6 @@ namespace te
         /** @copydoc BoxCollider::GetExtents */
         Vector3 GetExtents() const { return _extents; }
 
-        /** Determines the position of the box shape, relative to the component's scene object. */
-        void SetCenter(const Vector3& center);
-
-        /** @copydoc SetCenter() */
-        Vector3 GetCenter() const { return _localPosition; }
-
     protected:
         friend class SceneObject;
 

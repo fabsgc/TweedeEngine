@@ -5,31 +5,6 @@
 
 namespace te
 {
-    Vector3 Collider::GetPosition() const
-    {
-        return _internal->GetPosition();
-    }
-
-    Quaternion Collider::GetRotation() const
-    {
-        return _internal->GetRotation();
-    }
-
-    void Collider::SetTransform(const Vector3& pos, const Quaternion& rot)
-    {
-        _internal->SetTransform(pos, rot);
-    }
-
-    void Collider::SetScale(const Vector3& scale)
-    {
-        _scale = scale;
-    }
-
-    Vector3 Collider::GetScale() const
-    {
-        return _scale;
-    }
-
     void Collider::SetIsTrigger(bool value)
     {
         _internal->SetIsTrigger(value);
@@ -42,8 +17,17 @@ namespace te
 
     void Collider::SetBody(Body* value)
     {
-        _internal->SetIsStatic(value == nullptr);
         _body = value;
+    }
+
+    void Collider::SetScale(const Vector3& scale)
+    {
+        _internal->SetScale(scale);
+    }
+
+    Vector3 Collider::GetScale() const
+    {
+        return _internal->GetScale();
     }
 
     void Collider::SetMass(float mass)
@@ -54,6 +38,16 @@ namespace te
     float Collider::GetMass() const
     {
         return _internal->GetMass();
+    }
+
+    void Collider::SetCenter(const Vector3& center)
+    {
+        _internal->SetCenter(center);
+    }
+
+    const Vector3& Collider::GetCenter() const
+    {
+        return _internal->GetCenter();
     }
 
     void Collider::SetCollisionReportMode(CollisionReportMode mode)

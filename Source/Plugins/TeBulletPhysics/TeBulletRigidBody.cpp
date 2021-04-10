@@ -35,8 +35,6 @@ namespace te
             const Quaternion newWorldRot = ToQuaternion(worldTrans.getRotation());
             const Vector3 newWorldPos = ToVector3(worldTrans.getOrigin()) - newWorldRot * _rigidBody->GetCenterOfMass();
 
-            TE_PRINT(ToString(newWorldRot.x) + "/" + ToString(newWorldRot.y) + "/" + ToString(newWorldRot.z) + "/" + ToString(newWorldRot.w));
-
             _rigidBody->_setTransform(newWorldPos, newWorldRot);
 
             _rigidBody->_position = newWorldPos;
@@ -346,20 +344,7 @@ namespace te
         if (((UINT32)_flags & (UINT32)BodyFlag::AutoTensors) == 0)
             return;
 
-        if (((UINT32)_flags & (UINT32)BodyFlag::AutoMass) == 0)
-        {
-            _rigidBody->updateInertiaTensor();
-            AddToWorld();
-        }
-        else
-        {
-            if (_collider && _collider->GetShape())
-            {
-                _mass = _collider->GetMass();
-                AddToWorld();
-            }
-            
-        }
+        AddToWorld();
     }
 
     void BulletRigidBody::SetFlags(BodyFlag flags)
@@ -372,13 +357,26 @@ namespace te
         if (_mass < 0.0f)
             _mass = 0.0f;
 
-        // Transfer inertia to new collision shape
         btVector3 localIntertia = btVector3(0, 0, 0);
         btCollisionShape* shape = (_collider) ? _collider->GetShape() : nullptr;
-        if (shape && _rigidBody)
+
+        if (((UINT32)_flags & (UINT32)BodyFlag::AutoTensors))
         {
-            localIntertia = _rigidBody ? _rigidBody->getLocalInertia() : localIntertia;
-            _collider->GetShape()->calculateLocalInertia(_mass, localIntertia);
+            if (_collider)
+            {
+                _mass = _collider->GetMass();
+                _centerOfMass = _collider->GetCenter();
+            }
+
+            if (((UINT32)_flags & (UINT32)BodyFlag::AutoMass) == 0)
+            {
+                localIntertia = _rigidBody ? _rigidBody->getLocalInertia() : localIntertia;
+                _collider->GetShape()->calculateLocalInertia(_mass, localIntertia);
+            }  
+            else if (_rigidBody && shape)
+            {
+                _rigidBody->updateInertiaTensor();
+            }
         }
 
         Release();

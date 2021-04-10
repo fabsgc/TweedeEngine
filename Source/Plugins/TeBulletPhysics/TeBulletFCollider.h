@@ -13,26 +13,11 @@ namespace te
         explicit BulletFCollider(BulletPhysics* physics, BulletScene* scene, btCollisionShape* shape = nullptr);
         ~BulletFCollider();
 
-        /** @copydoc FCollider::GetPosition */
-        Vector3 GetPosition() const override;
-
-        /** @copydoc FCollider::GetRotation */
-        Quaternion GetRotation() const override;
-
-        /** @copydoc FCollider::SetTransform */
-        void SetTransform(const Vector3& pos, const Quaternion& rotation) override;
-
         /** @copydoc FCollider::SetIsTrigger */
         void SetIsTrigger(bool value) override;
 
         /** @copydoc FCollider::GetIsTrigger */
         bool GetIsTrigger() const override;
-
-        /** @copydoc FCollider::SetIsStatic */
-        void SetIsStatic(bool value) override;
-
-        /** @copydoc FCollider::GetIsStatic */
-        bool GetIsStatic() const override;
 
         /** @copydoc FCollider::SetCollisionReportMode */
         void SetCollisionReportMode(CollisionReportMode mode) override;

@@ -47,17 +47,6 @@ namespace te
         }
     }
 
-    void CBoxCollider::SetCenter(const Vector3& center)
-    {
-        if (_localPosition == center)
-            return;
-
-        _localPosition = center;
-
-        if (_internal != nullptr)
-            UpdateTransform();
-    }
-
     void CBoxCollider::Clone(const HBoxCollider& c)
     {
         CCollider::Clone(static_object_cast<CCollider>(c));

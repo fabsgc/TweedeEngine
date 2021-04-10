@@ -10,15 +10,6 @@ namespace te
     public:
         virtual ~FCollider() = default;
 
-        /** Returns the position of the collider. */
-        virtual Vector3 GetPosition() const = 0;
-
-        /** Returns the rotation of the collider. */
-        virtual Quaternion GetRotation() const = 0;
-
-        /** Sets the position and rotation of the collider. */
-        virtual void SetTransform(const Vector3& pos, const Quaternion& rotation) = 0;
-
         /**
          * Enables/disables a collider as a trigger. A trigger will not be used for collisions (objects will pass
          * through it), but collision events will still be reported.
@@ -29,13 +20,12 @@ namespace te
         virtual bool GetIsTrigger() const = 0;
 
         /**
-         * Determines whether the collider is a part of a rigidbody (non-static), or is on its own (static). You should
-         * change this whenever you are attaching or detaching a collider from a rigidbody.
+         * Determines the scale of the collider relative to its parent
          */
-        virtual void SetIsStatic(bool value) = 0;
+        virtual void SetScale(const Vector3& scale) { _scale = scale; }
 
-        /** @copydoc GetIsStatic() */
-        virtual bool GetIsStatic() const = 0;
+        /** @copydoc SetScale() */
+        virtual const Vector3& GetScale() const { return _scale; }
 
         /**
          * Determines the mass of the collider. Only relevant if the collider is part of a rigidbody. Ultimately this will
@@ -47,14 +37,23 @@ namespace te
         /** @copydoc SetMass() */
         virtual float GetMass() const { return _mass; }
 
+        /**
+         * Determines the center of the collider relative to its parent
+         */
+        virtual void SetCenter(const Vector3& center) { _center = center; }
+
+        /** @copydoc SetCenter() */
+        virtual const Vector3& GetCenter() const { return _center; }
+
         /** Determines which (if any) collision events are reported. */
         virtual void SetCollisionReportMode(CollisionReportMode mode) = 0;
 
-        /** @copydoc setCollisionReportMode() */
+        /** @copydoc SetCollisionReportMode() */
         virtual CollisionReportMode GetCollisionReportMode() const = 0;
 
     protected:
+        Vector3 _scale = Vector3(1.0f, 1.0f, 1.0f);
         float _mass = 1.0f;
-
+        Vector3 _center = Vector3::ZERO;
     };
 }

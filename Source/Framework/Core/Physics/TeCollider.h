@@ -11,29 +11,12 @@ namespace te
      * Collider represents physics geometry that can be in multiple states:
      *  - Default: Static geometry that physics objects can collide with.
      *  - Trigger: Static geometry that can't be collided with but will report touch events.
-     *  - Dynamic: Dynamic geometry that is a part of a Rigidbody. A set of colliders defines the shape of the parent
-     *		       rigidbody.
      */
     class TE_CORE_EXPORT Collider
     {
     public:
         Collider() = default;
         virtual ~Collider() = default;
-
-        /** @copydoc FCollider::GetPosition */
-        Vector3 GetPosition() const;
-
-        /** @copydoc FCollider::GetRotation */
-        Quaternion GetRotation() const;
-
-        /** @copydoc FCollider::SetTransform */
-        void SetTransform(const Vector3& pos, const Quaternion& rot);
-
-        /** Sets the scale of the collider geometry. */
-        virtual void SetScale(const Vector3& scale);
-
-        /** Retrieves the scale of the collider geometry. */
-        Vector3 GetScale() const;
 
         /** @copydoc FCollider::SetIsTrigger */
         void SetIsTrigger(bool value);
@@ -47,11 +30,23 @@ namespace te
         /** @copydoc Collider::SetBody() */
         Body* GetBody() const { return _body; }
 
-        /** @copydoc FCollider::setMass */
+        /** Sets the scale of the collider geometry. */
+        virtual void SetScale(const Vector3& scale);
+
+        /** Retrieves the scale of the collider geometry. */
+        Vector3 GetScale() const;
+
+        /** @copydoc FCollider::SetMass */
         void SetMass(float mass);
 
-        /** @copydoc FCollider::getMass */
+        /** @copydoc FCollider::GetMass */
         float GetMass() const;
+
+        /** @copydoc FCollider::SetCenter */
+        void SetCenter(const Vector3& center);
+
+        /** @copydoc FCollider::GetCenter */
+        const Vector3& GetCenter() const;
 
         /** @copydoc FCollider::SetCollisionReportMode */
         void SetCollisionReportMode(CollisionReportMode mode);
@@ -94,6 +89,5 @@ namespace te
         FCollider* _internal = nullptr;
         PhysicsObjectOwner _owner;
         Body* _body = nullptr;
-        Vector3 _scale = Vector3::ONE;
     };
 }

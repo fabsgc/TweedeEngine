@@ -1,6 +1,7 @@
 #include "TeBulletBoxCollider.h"
 #include "TeBulletPhysics.h"
 #include "TeBulletFCollider.h"
+#include "Physics/TeBody.h"
 
 namespace te
 {
@@ -44,8 +45,10 @@ namespace te
             _shape->setUserPointer(this);
         }
         else
+        {
             _shape->setImplicitShapeDimensions(ToBtVector3(_extents));
+        }
 
-        _shape->setLocalScaling(ToBtVector3(_scale));
+        _shape->setLocalScaling(ToBtVector3(_internal ? _internal->GetScale() : Vector3::ONE));
     }
 }

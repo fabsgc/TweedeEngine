@@ -11,15 +11,6 @@ namespace te
     {
         Force, /**< Value applied is a force. */
         Impulse, /**< Value applied is an impulse (a direct change in its linear or angular momentum). */
-        Velocity, /**< Value applied is velocity. */
-        Acceleration /**< Value applied is accelearation. */
-    };
-
-    /** Type of force that can be applied to a body at an arbitrary point. */
-    enum class PointForceMode
-    {
-        Force, /**< Value applied is a force. */
-        Impulse, /**< Value applied is an impulse (a direct change in its linear or angular momentum). */
     };
 
     /** Flags that control options of a body object. */

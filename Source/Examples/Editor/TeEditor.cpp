@@ -1220,6 +1220,8 @@ namespace te
         _boxColliderKnight = _sceneRenderableKnightSO->AddComponent<CBoxCollider>();
         _boxColliderKnight->Initialize();
 
+        _boxColliderKnight->SetScale(Vector3(3.0f, 3.0f, 3.0f));
+
         /*_sceneRenderablePlaneSO = SceneObject::Create("Plane");
         _sceneRenderablePlaneSO->SetParent(_sceneSO);
         _renderablePlane = _sceneRenderablePlaneSO->AddComponent<CRenderable>();
