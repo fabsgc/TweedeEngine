@@ -3,6 +3,7 @@
 #include "TeCorePrerequisites.h"
 #include "Physics/TeBoxCollider.h"
 #include "Components/TeCCollider.h"
+#include "Math/TeVector3.h"
 
 namespace te
 {
@@ -14,7 +15,7 @@ namespace te
     class TE_CORE_EXPORT CBoxCollider : public CCollider
     {
     public:
-        CBoxCollider(const HSceneObject& parent);
+        CBoxCollider(const HSceneObject& parent, const Vector3& extents = Vector3(0.5f, 0.5f, 0.5f));
 
         /** Return Component type */
         static UINT32 GetComponentType() { return TID_CBoxCollider; }
@@ -22,13 +23,31 @@ namespace te
         /** @copydoc Component::Clone */
         void Clone(const HBoxCollider& c);
 
+        /** @copydoc BoxCollider::SetExtents */
+        void SetExtents(const Vector3& extents);
+
+        /** @copydoc BoxCollider::GetExtents */
+        Vector3 GetExtents() const { return _extents; }
+
+        /** Determines the position of the box shape, relative to the component's scene object. */
+        void SetCenter(const Vector3& center);
+
+        /** @copydoc SetCenter() */
+        Vector3 GetCenter() const { return _localPosition; }
+
     protected:
         friend class SceneObject;
 
         /** @copydoc CJoint::CreateInternal */
         SPtr<Collider> CreateInternal() override;
 
+        /**	Returns the box collider that this component wraps. */
+        BoxCollider* _getInternal() const { return static_cast<BoxCollider*>(_internal.get()); }
+
     protected:
         CBoxCollider(); // Serialization only
+
+    protected:
+        Vector3 _extents = Vector3(0.5f, 0.5f, 0.5f);
     };
 }

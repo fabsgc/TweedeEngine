@@ -3,9 +3,10 @@
 
 namespace te
 {
-    BulletFCollider::BulletFCollider(BulletPhysics* physics, BulletScene* scene)
+    BulletFCollider::BulletFCollider(BulletPhysics* physics, BulletScene* scene, btCollisionShape* shape)
         : _physics(physics)
         , _scene(scene)
+        , _shape(shape)
     { }
 
     BulletFCollider::~BulletFCollider()

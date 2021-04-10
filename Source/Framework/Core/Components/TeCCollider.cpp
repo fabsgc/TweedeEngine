@@ -64,6 +64,22 @@ namespace te
         }
     }
 
+    void CCollider::SetMass(float mass)
+    {
+        if (_mass == mass)
+            return;
+
+        _mass = mass;
+
+        if (_internal != nullptr)
+        {
+            _internal->SetMass(mass);
+
+            if (_parent != nullptr)
+                _parent->UpdateMassDistribution();
+        }
+    }
+
     void CCollider::SetCollisionReportMode(CollisionReportMode mode)
     {
         _collisionReportMode = mode;

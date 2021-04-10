@@ -67,6 +67,6 @@ namespace te
 
     inline Quaternion ToQuaternion(const btQuaternion& quaternion)
     {
-        return Quaternion((float)quaternion.getX(), (float)quaternion.getY(), (float)quaternion.getZ(), (float)quaternion.getW());
+        return Quaternion((float)quaternion.getW(), (float)quaternion.getX(), (float)quaternion.getY(), (float)quaternion.getZ());
     }
 }

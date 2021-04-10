@@ -7,6 +7,9 @@
 
 namespace te
 {
+    class BulletFCollider;
+    class MotionState;
+
     /** Bullet implementation of a RigidBody. */
     class BulletRigidBody : public RigidBody
     {
@@ -93,10 +96,10 @@ namespace te
         void ApplyTorque(const Vector3& torque, ForceMode mode) const override;
 
         /** @copydoc Body::AddCollider() */
-        void AddCollider(const HCollider& collider) override;
+        void AddCollider(Collider*) override;
 
         /** @copydoc Body::RemoveCollider() */
-        void RemoveCollider(const HCollider& collider) override;
+        void RemoveCollider(Collider*) override;
 
         /** @copydoc Body::RemoveColliders() */
         void RemoveColliders() override;
@@ -127,15 +130,19 @@ namespace te
         bool IsActivated() const;
 
     private:
+        friend class MotionState;
+
         btRigidBody* _rigidBody;
         BulletPhysics* _physics;
         BulletScene* _scene;
 
-        float _mass = 0.0f;
+        BulletFCollider* _collider;
+
+        float _mass = 1.0f;
         float _friction = 0.0f;
         float _frictionRolling = 0.0f;
         float _restitution = 0.0f;
-        bool _useGravity = false;
+        bool _useGravity = true;
         bool _isKinematic = false;
         bool _inWorld = false;
 

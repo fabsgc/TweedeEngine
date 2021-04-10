@@ -1214,6 +1214,12 @@ namespace te
         _animationKnight->Initialize();
         _animationKnight->SetDefaultClip(_animationClipKnight);
 
+        _rigidBodyKnight = _sceneRenderableKnightSO->AddComponent<CRigidBody>();
+        _rigidBodyKnight->Initialize();
+
+        _boxColliderKnight = _sceneRenderableKnightSO->AddComponent<CBoxCollider>();
+        _boxColliderKnight->Initialize();
+
         /*_sceneRenderablePlaneSO = SceneObject::Create("Plane");
         _sceneRenderablePlaneSO->SetParent(_sceneSO);
         _renderablePlane = _sceneRenderablePlaneSO->AddComponent<CRenderable>();

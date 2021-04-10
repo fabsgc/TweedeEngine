@@ -44,7 +44,7 @@ namespace te
          */
         virtual void SetMass(float mass) { _mass = mass; }
 
-        /** @copydoc setMass() */
+        /** @copydoc SetMass() */
         virtual float GetMass() const { return _mass; }
 
         /** Determines which (if any) collision events are reported. */

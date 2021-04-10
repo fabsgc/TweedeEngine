@@ -183,10 +183,10 @@ namespace te
         virtual BodyFlag GetFlags() const { return _flags; }
 
         /** Registers a new collider as a child of this body. */
-        virtual void AddCollider(const HCollider& collider) = 0;
+        virtual void AddCollider(Collider*) = 0;
 
         /** Removes a collider from the child list of this body. */
-        virtual void RemoveCollider(const HCollider& collider) = 0;
+        virtual void RemoveCollider(Collider*) = 0;
 
         /** Removes all colliders from the child list of this body. */
         virtual void RemoveColliders() = 0;

@@ -287,6 +287,9 @@ namespace te
         HAudioClip _audioClip;
         HAudioListener _audioListener;
         HAudioSource _audioSource;
+
+        HRigidBody _rigidBodyKnight;
+        HBoxCollider _boxColliderKnight;
 #endif
     };
 

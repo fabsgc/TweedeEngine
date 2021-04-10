@@ -137,6 +137,7 @@ namespace te
     protected:
         friend class SceneObject;
         friend class CCollider;
+        friend class CBoxCollider;
         using Component::DestroyInternal;
 
         /** Triggered when the internal body begins touching another object. */
@@ -189,11 +190,11 @@ namespace te
         Vector<HCollider> _children;
         HJoint _parentJoint;
 
-        float _mass = 0.0f;
+        float _mass = 1.0f;
         float _friction = 0.0f;
         float _rollingFriction = 0.0f;
         float _restitution = 0.0f;
-        bool _useGravity = false;
+        bool _useGravity = true;
         bool _isKinematic = false;
 
         Vector3 _centerOfMass = Vector3::ZERO;

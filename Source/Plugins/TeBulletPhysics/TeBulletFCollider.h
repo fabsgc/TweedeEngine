@@ -10,7 +10,7 @@ namespace te
     class BulletFCollider : public FCollider
     {
     public:
-        explicit BulletFCollider(BulletPhysics* physics, BulletScene* scene);
+        explicit BulletFCollider(BulletPhysics* physics, BulletScene* scene, btCollisionShape* shape = nullptr);
         ~BulletFCollider();
 
         /** @copydoc FCollider::GetPosition */
@@ -40,12 +40,20 @@ namespace te
         /** @copydoc SetCollisionReportMode() */
         CollisionReportMode GetCollisionReportMode() const override;
 
+        /** Set current btCollisionShape */
+        void SetShape(btCollisionShape* shape) { _shape = shape; }
+
+        /** Return current btCollisionShape */
+        const auto& GetShape() const { return _shape; }
+
     protected:
         BulletPhysics* _physics;
         BulletScene* _scene;
 
         bool _isTrigger = false;
         bool _isStatic = true;
+
+        btCollisionShape* _shape;
 
         CollisionReportMode _collisionReportMode = CollisionReportMode::None;
     };

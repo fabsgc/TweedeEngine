@@ -65,6 +65,4 @@ namespace te
     {
         return _internal->GetCollisionReportMode();
     }
-
-    
 }

@@ -136,7 +136,13 @@ namespace te
                     if (body)
                     {
                         auto rigidBody = static_cast<BulletRigidBody*>(body->getUserPointer());
-                        rigidBody->_setTransform(ToVector3(trans.getOrigin()), ToQuaternion(trans.getRotation()));
+
+                        Vector3 position = rigidBody->GetPosition();
+                        Quaternion rotation = rigidBody->GetRotation();
+
+                        //rigidBody->_setTransform(position, rotation);
+
+                        //TE_PRINT(ToString(position.x) + "/" + ToString(position.y) + "/" + ToString(position.z));
                     }
                 }
 
@@ -249,9 +255,10 @@ namespace te
         return te_shared_ptr_new<BulletD6Joint>(_physics, this, desc);
     }
 
-    SPtr<BoxCollider> BulletScene::CreateBoxCollider()
+    SPtr<BoxCollider> BulletScene::CreateBoxCollider(const Vector3& extents, const Vector3& position,
+        const Quaternion& rotation)
     {
-        return te_shared_ptr_new<BulletBoxCollider>(_physics, this);
+        return te_shared_ptr_new<BulletBoxCollider>(_physics, this, position, rotation, extents);
     }
 
     SPtr<PlaneCollider> BulletScene::CreatePlaneCollider()

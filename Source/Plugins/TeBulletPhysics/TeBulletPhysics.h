@@ -115,7 +115,8 @@ namespace te
         SPtr<D6Joint> CreateD6Joint(const D6_JOINT_DESC& desc) override;
 
         /** @copydoc PhysicsScene::CreateBoxCollider */
-        SPtr<BoxCollider> CreateBoxCollider();
+        SPtr<BoxCollider> CreateBoxCollider(const Vector3& extents, const Vector3& position,
+            const Quaternion& rotation);
 
         /** @copydoc PhysicsScene::CreatePlaneCollider */
         SPtr<PlaneCollider> CreatePlaneCollider();

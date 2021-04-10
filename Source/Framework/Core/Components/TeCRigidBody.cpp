@@ -204,7 +204,7 @@ namespace te
             return;
 
         _children.push_back(collider);
-        _internal->AddCollider(collider);
+        _internal->AddCollider(collider->GetInternal());
     }
 
     void CRigidBody::RemoveCollider(const HCollider& collider)
@@ -216,7 +216,7 @@ namespace te
 
         if (iterFind != _children.end())
         {
-            _internal->RemoveCollider(collider);
+            _internal->RemoveCollider(collider->GetInternal());
             _children.erase(iterFind);
         }
     }

@@ -1,12 +1,14 @@
 #include "TeBulletRigidBody.h"
 #include "Scene/TeSceneObject.h"
 #include "Physics/TePhysics.h"
+#include "Physics/TeCollider.h"
 #include "TeBulletPhysics.h"
 #include "TeBulletFBody.h"
+#include "TeBulletFCollider.h"
 
 namespace te
 {
-    static const float DEFAULT_MASS = 0.0f;
+    static const float DEFAULT_MASS = 1.0f;
     static const float DEFAULT_FRICTION = 0.5f;
     static const float DEFAULT_FRICTION_ROLLING = 0.0f;
     static const float DEFAULT_RESTITUTION = 0.0f;
@@ -15,7 +17,7 @@ namespace te
     class MotionState : public btMotionState
     {
     public:
-        MotionState(RigidBody* rigidBody) { _rigidBody = rigidBody; }
+        MotionState(BulletRigidBody* rigidBody) { _rigidBody = rigidBody; }
 
         // Update from engine, ENGINE -> BULLET
         void getWorldTransform(btTransform& worldTrans) const override
@@ -33,10 +35,15 @@ namespace te
             const Quaternion newWorldRot = ToQuaternion(worldTrans.getRotation());
             const Vector3 newWorldPos = ToVector3(worldTrans.getOrigin()) - newWorldRot * _rigidBody->GetCenterOfMass();
 
-            _rigidBody->SetTransform(newWorldPos, newWorldRot);
+            TE_PRINT(ToString(newWorldRot.x) + "/" + ToString(newWorldRot.y) + "/" + ToString(newWorldRot.z) + "/" + ToString(newWorldRot.w));
+
+            _rigidBody->_setTransform(newWorldPos, newWorldRot);
+
+            _rigidBody->_position = newWorldPos;
+            _rigidBody->_rotation = newWorldRot;
         }
     private:
-        RigidBody* _rigidBody;
+        BulletRigidBody* _rigidBody;
     };
 
     BulletRigidBody::BulletRigidBody(BulletPhysics* physics, BulletScene* scene, const HSceneObject& linkedSO)
@@ -44,6 +51,7 @@ namespace te
         , _rigidBody(nullptr)
         , _physics(physics)
         , _scene(scene)
+        , _collider(nullptr)
     { 
         _internal = te_new<BulletFBody>(physics, scene);
 
@@ -308,12 +316,19 @@ namespace te
             _rigidBody->applyTorqueImpulse(ToBtVector3(torque));
     }
 
-    void BulletRigidBody::AddCollider(const HCollider& collider)
+    void BulletRigidBody::AddCollider(Collider* collider)
     {
+        _collider = static_cast<BulletFCollider*>(collider->GetInternal());
+
+        if (_collider->GetShape())
+            AddToWorld();
+        else
+            RemoveFromWorld();
+
         TE_PRINT("Add Collider");
     }
 
-    void BulletRigidBody::RemoveCollider(const HCollider& collider)
+    void BulletRigidBody::RemoveCollider(Collider* collider)
     {
         TE_PRINT("Remove Collider");
     }
@@ -334,10 +349,16 @@ namespace te
         if (((UINT32)_flags & (UINT32)BodyFlag::AutoMass) == 0)
         {
             _rigidBody->updateInertiaTensor();
+            AddToWorld();
         }
         else
         {
-            // TODO
+            if (_collider && _collider->GetShape())
+            {
+                _mass = _collider->GetMass();
+                AddToWorld();
+            }
+            
         }
     }
 
@@ -353,9 +374,11 @@ namespace te
 
         // Transfer inertia to new collision shape
         btVector3 localIntertia = btVector3(0, 0, 0);
-        if (_rigidBody)
+        btCollisionShape* shape = (_collider) ? _collider->GetShape() : nullptr;
+        if (shape && _rigidBody)
         {
-            // TODO
+            localIntertia = _rigidBody ? _rigidBody->getLocalInertia() : localIntertia;
+            _collider->GetShape()->calculateLocalInertia(_mass, localIntertia);
         }
 
         Release();
@@ -364,11 +387,12 @@ namespace te
             // Create a motion state (memory will be freed by the RigidBody)
             const auto motionState = te_new<MotionState>(this);
 
-            btRigidBody::btRigidBodyConstructionInfo constructionInfo(_mass, motionState, nullptr, localIntertia);
+            btRigidBody::btRigidBodyConstructionInfo constructionInfo(_mass, motionState, shape, localIntertia);
             constructionInfo.m_friction = _friction;
             constructionInfo.m_rollingFriction = _frictionRolling;
             constructionInfo.m_restitution = _restitution;
             constructionInfo.m_localInertia = localIntertia;
+            constructionInfo.m_collisionShape = shape;
             constructionInfo.m_motionState = motionState;
 
             _rigidBody = te_new<btRigidBody>(constructionInfo);

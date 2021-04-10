@@ -5,6 +5,7 @@
 #include "Physics/TePhysicsDebug.h"
 #include "Utility/TeModule.h"
 #include "Math/TeVector3.h"
+#include "Math/TeQuaternion.h"
 
 #include <cfloat>
 
@@ -106,7 +107,8 @@ namespace te
         /**
          * Creates a new box collider.
          */
-        virtual SPtr<BoxCollider> CreateBoxCollider() = 0;
+        virtual SPtr<BoxCollider> CreateBoxCollider(const Vector3& extents, const Vector3& position,
+            const Quaternion& rotation) = 0;
 
         /**
          * Creates a new plane collider.
