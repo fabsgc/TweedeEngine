@@ -33,7 +33,7 @@ namespace te
         void Update() override { }
 
         /** Returns the SoftBody implementation wrapped by this component. */
-        SoftBody* GetInternal() const { return (SoftBody*)_internal.get(); }
+        Body* GetInternal() const override { return (SoftBody*)_internal.get(); }
 
     protected:
         friend class SceneObject;

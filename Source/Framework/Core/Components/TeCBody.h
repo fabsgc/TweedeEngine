@@ -131,6 +131,9 @@ namespace te
         /** @copydoc Body::OnCollisionEnd */
         Event<void(const CollisionData&)> OnCollisionEnd;
 
+        /** Returns the body implementation wrapped by this component. */
+        virtual Body* GetInternal() const = 0;
+
     protected:
         friend class SceneObject;
         friend class CCollider;

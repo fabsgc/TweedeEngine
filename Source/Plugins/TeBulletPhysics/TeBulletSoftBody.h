@@ -93,10 +93,10 @@ namespace te
         void ApplyTorque(const Vector3& torque, ForceMode mode) const override;
 
         /** @copydoc Body::AddCollider() */
-        void AddCollider(Collider* collider) override;
+        void AddCollider(const HCollider& collider) override;
 
         /** @copydoc Body::RemoveCollider() */
-        void RemoveCollider(Collider* collider) override;
+        void RemoveCollider(const HCollider& collider) override;
 
         /** @copydoc Body::RemoveColliders() */
         void RemoveColliders() override;

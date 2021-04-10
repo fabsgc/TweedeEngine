@@ -59,7 +59,7 @@ namespace te
         {
             _internal->SetIsTrigger(value);
 
-            UpdateParentRigidbody();
+            UpdateParentBody();
             UpdateTransform();
         }
     }
@@ -98,7 +98,7 @@ namespace te
             return;
 
         if ((flags & TCF_Parent) != 0)
-            UpdateParentRigidbody();
+            UpdateParentBody();
 
         // Don't update the transform if it's due to Physics update since then we can guarantee it will remain at the same
         // relative transform to its parent
@@ -120,7 +120,7 @@ namespace te
             _internal->OnCollisionEnd.Connect(std::bind(&CCollider::TriggerOnCollisionEnd, this, _1));
         }
 
-        UpdateParentRigidbody();
+        UpdateParentBody();
         UpdateTransform();
         UpdateCollisionReportMode();
     }
@@ -140,9 +140,9 @@ namespace te
         }
     }
 
-    void CCollider::SetRigidBody(const HRigidBody& rigidbody, bool internal)
+    void CCollider::SetBody(const HBody& body, bool internal)
     { 
-        if (rigidbody == _parent)
+        if (body == _parent)
             return;
 
         if (_internal != nullptr && !internal)
@@ -150,18 +150,18 @@ namespace te
             if (_parent != nullptr)
                 _parent->RemoveCollider(static_object_cast<CCollider>(_thisHandle));
 
-            RigidBody* rigidBodyPtr = nullptr;
+            Body* bodyPtr = nullptr;
+            if (body != nullptr)
+            {
+                bodyPtr = body->GetInternal();
+                _internal->SetBody(bodyPtr);
 
-            if (rigidbody != nullptr)
-                rigidBodyPtr = rigidbody->GetInternal();
-
-            _internal->SetRigidBody(rigidBodyPtr);
-
-            if (rigidbody != nullptr)
-                rigidbody->AddCollider(static_object_cast<CCollider>(_thisHandle));
+                if (bodyPtr != nullptr)
+                    body->AddCollider(static_object_cast<CCollider>(_thisHandle));
+            }   
         }
 
-        _parent = rigidbody;
+        _parent = body;
         UpdateCollisionReportMode();
         UpdateTransform();
     }
@@ -211,24 +211,24 @@ namespace te
             _internal->SetScale(myScale);
     }
 
-    void CCollider::UpdateParentRigidbody()
+    void CCollider::UpdateParentBody()
     { 
         if (_isTrigger)
         {
-            SetRigidBody(HRigidBody());
+            SetBody(HBody());
             return;
         }
 
         HSceneObject currentSO = SO();
         while (currentSO != nullptr)
         {
-            HRigidBody parent = static_object_cast<CRigidBody>(currentSO->GetComponent<CRigidBody>());
+            HBody parent = static_object_cast<CBody>(currentSO->GetComponent<CRigidBody>());
             if (parent != nullptr)
             {
                 if (currentSO->GetActive() && IsValidParent(parent))
-                    SetRigidBody(parent);
+                    SetBody(parent);
                 else
-                    SetRigidBody(HRigidBody());
+                    SetBody(HBody());
 
                 return;
             }
@@ -237,7 +237,7 @@ namespace te
         }
 
         // Not found
-        SetRigidBody(HRigidBody());
+        SetBody(HBody());
     }
 
     void CCollider::UpdateCollisionReportMode()

@@ -147,12 +147,12 @@ namespace te
         // TODO
     }
 
-    void BulletSoftBody::AddCollider(Collider* collider)
+    void BulletSoftBody::AddCollider(const HCollider& collider)
     {
         TE_PRINT("Add Collider");
     }
 
-    void BulletSoftBody::RemoveCollider(Collider* collider)
+    void BulletSoftBody::RemoveCollider(const HCollider& collider)
     {
         TE_PRINT("Remove Collider");
     }

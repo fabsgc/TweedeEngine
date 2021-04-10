@@ -308,12 +308,12 @@ namespace te
             _rigidBody->applyTorqueImpulse(ToBtVector3(torque));
     }
 
-    void BulletRigidBody::AddCollider(Collider* collider)
+    void BulletRigidBody::AddCollider(const HCollider& collider)
     {
         TE_PRINT("Add Collider");
     }
 
-    void BulletRigidBody::RemoveCollider(Collider* collider)
+    void BulletRigidBody::RemoveCollider(const HCollider& collider)
     {
         TE_PRINT("Remove Collider");
     }

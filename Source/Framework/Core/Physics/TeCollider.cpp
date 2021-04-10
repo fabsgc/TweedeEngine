@@ -1,5 +1,6 @@
 #include "Physics/TeCollider.h"
 #include "Physics/TePhysics.h"
+#include "Physics/TeBody.h"
 #include "Physics/TeFCollider.h"
 
 namespace te
@@ -39,6 +40,22 @@ namespace te
         return _internal->GetIsTrigger();
     }
 
+    void Collider::SetBody(Body* value)
+    {
+        _internal->SetIsStatic(value == nullptr);
+        _body = value;
+    }
+
+    void Collider::SetMass(float mass)
+    {
+        _internal->SetMass(mass);
+    }
+
+    float Collider::GetMass() const
+    {
+        return _internal->GetMass();
+    }
+
     void Collider::SetCollisionReportMode(CollisionReportMode mode)
     {
         _internal->SetCollisionReportMode(mode);
@@ -49,9 +66,5 @@ namespace te
         return _internal->GetCollisionReportMode();
     }
 
-    void Collider::SetRigidBody(RigidBody* value)
-    {
-        _internal->SetIsStatic(value == nullptr);
-        _rigidBody = value;
-    }
+    
 }

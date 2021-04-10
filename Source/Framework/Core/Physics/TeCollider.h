@@ -41,17 +41,23 @@ namespace te
         /** @copydoc FCollider::GetIsTrigger */
         bool GetIsTrigger() const;
 
+        /** Determines the Rigidbody that controls this collider (if any). */
+        void SetBody(Body* value);
+
+        /** @copydoc Collider::SetBody() */
+        Body* GetBody() const { return _body; }
+
+        /** @copydoc FCollider::setMass */
+        void SetMass(float mass);
+
+        /** @copydoc FCollider::getMass */
+        float GetMass() const;
+
         /** @copydoc FCollider::SetCollisionReportMode */
         void SetCollisionReportMode(CollisionReportMode mode);
 
         /** @copydoc FCollider::getCollisionReportMode */
         CollisionReportMode GetCollisionReportMode() const;
-
-        /** Determines the Rigidbody that controls this collider (if any). */
-        void SetRigidBody(RigidBody* value);
-
-        /** @copydoc Collider::setRigidbody() */
-        RigidBody* GetRigidbody() const { return _rigidBody; }
 
         /** Returns the object containing common collider code. */
         FCollider* GetInternal() const { return _internal; }
@@ -87,7 +93,7 @@ namespace te
     protected:
         FCollider* _internal = nullptr;
         PhysicsObjectOwner _owner;
-        RigidBody* _rigidBody = nullptr;
+        Body* _body = nullptr;
         Vector3 _scale = Vector3::ONE;
     };
 }

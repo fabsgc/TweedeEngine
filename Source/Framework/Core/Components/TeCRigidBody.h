@@ -36,7 +36,7 @@ namespace te
         void Update() override { }
 
         /** Returns the Rigidbody implementation wrapped by this component. */
-        RigidBody* GetInternal() const { return (RigidBody*)(_internal.get()); }
+        Body* GetInternal() const override { return (RigidBody*)(_internal.get()); }
 
     protected:
         friend class SceneObject;
@@ -94,18 +94,21 @@ namespace te
             {
                 auto component = static_object_cast<CCollider>(entry);
 
-                if (!component->IsValidParent(static_object_cast<CRigidBody>(_thisHandle)))
+                if (!component->IsValidParent(static_object_cast<CBody>(_thisHandle)))
                     continue;
 
                 Collider* collider = component->GetInternal();
-                if (collider == nullptr)
-                    continue;
-
-                component->SetRigidBody(static_object_cast<CRigidBody>(_thisHandle), true);
-                _children.push_back(component);
-
-                collider->SetRigidBody((RigidBody*)_internal.get());
-                _internal->AddCollider(collider);
+                if (collider == nullptr) 
+                {
+                    // depending on component order in sceneGraph, collider might not be created when doing that
+                    // In this case, collider will trigger the SetBody and AddCollider himself
+                    component->RestoreInternal();
+                }
+                else
+                {
+                    component->SetBody(static_object_cast<CBody>(_thisHandle), true);
+                    AddCollider(component);
+                }
             }
         }
 

@@ -6,7 +6,7 @@
 
 namespace te
 {
-    /** Type of force or torque that can be applied to a rigidbody. */
+    /** Type of force or torque that can be applied to a body. */
     enum class ForceMode
     {
         Force, /**< Value applied is a force. */
@@ -15,14 +15,14 @@ namespace te
         Acceleration /**< Value applied is accelearation. */
     };
 
-    /** Type of force that can be applied to a rigidbody at an arbitrary point. */
+    /** Type of force that can be applied to a body at an arbitrary point. */
     enum class PointForceMode
     {
         Force, /**< Value applied is a force. */
         Impulse, /**< Value applied is an impulse (a direct change in its linear or angular momentum). */
     };
 
-    /** Flags that control options of a Rigidbody object. */
+    /** Flags that control options of a body object. */
     enum class BodyFlag
     {
         /** No options. */
@@ -48,25 +48,25 @@ namespace te
         virtual ~Body() = default;
 
         /**
-         * Moves the rigidbody to a specific position. This method will ensure physically correct movement, meaning the body
+         * Moves the body to a specific position. This method will ensure physically correct movement, meaning the body
          * will collide with other objects along the way.
          */
         virtual void Move(const Vector3& position) = 0;
 
         /**
-         * Rotates the rigidbody. This method will ensure physically correct rotation, meaning the body will collide with
+         * Rotates the body. This method will ensure physically correct rotation, meaning the body will collide with
          * other objects along the way.
          */
         virtual void Rotate(const Quaternion& rotation) = 0;
 
-        /** Returns the current position of the rigidbody. */
+        /** Returns the current position of the body. */
         virtual Vector3 GetPosition() const = 0;
 
-        /** Returns the current rotation of the rigidbody. */
+        /** Returns the current rotation of the body. */
         virtual Quaternion GetRotation() const = 0;
 
         /**
-         * Recalculates rigidbody's mass, inertia tensors and center of mass depending on the currently set child colliders.
+         * Recalculates body's mass, inertia tensors and center of mass depending on the currently set child colliders.
          * This should be called whenever relevant child collider properties change (like mass or shape).
          *
          * If automatic tensor calculation is turned off then this will do nothing. If automatic mass calculation is turned
@@ -81,8 +81,8 @@ namespace te
         virtual void SetTransform(const Vector3& position, const Quaternion& rotation, bool activate = false) = 0;
 
         /**
-         * Determines the mass of the object and all of its collider shapes. Only relevant if RigidBodyFlag::AutoMass or
-         * RigidBodyFlag::AutoTensors is turned off. Value of zero means the object is immovable (but can be rotated).
+         * Determines the mass of the object and all of its collider shapes. Only relevant if BodyFlag::AutoMass or
+         * BodyFlag::AutoTensors is turned off. Value of zero means the object is immovable (but can be rotated).
          */
         virtual void SetMass(float mass) = 0;
 
@@ -129,20 +129,20 @@ namespace te
         /** @copydoc GetRestitution() */
         virtual float GetRestitution() const = 0;
 
-        /** Determines whether or not the rigidbody will have the global gravity force applied to it. */
+        /** Determines whether or not the body will have the global gravity force applied to it. */
         virtual void SetUseGravity(bool gravity) = 0;
 
         /** @copydoc SetUseGravity() */
         virtual bool GetUseGravity() const = 0;
 
-        /** Sets the rigidbody's center of mass transform. Only relevant if RigibodyFlag::AutoTensors is turned off. */
+        /** Sets the body's center of mass transform. Only relevant if RigibodyFlag::AutoTensors is turned off. */
         virtual void SetCenterOfMass(const Vector3& centerOfMass) = 0;
 
         /** Returns the position of the center of mass. */
         virtual const Vector3& GetCenterOfMass() const = 0;
 
         /**
-         * Applies a force to the center of the mass of the rigidbody. This will produce linear momentum.
+         * Applies a force to the center of the mass of the body. This will produce linear momentum.
          *
          * @param[in]	force		Force to apply.
          * @param[in]	mode		Determines what is the type of @p force.
@@ -150,7 +150,7 @@ namespace te
         virtual void ApplyForce(const Vector3& force, ForceMode mode) const = 0;
 
         /**
-         * Applies a force to a specific point on the rigidbody. This will in most cases produce both linear and angular
+         * Applies a force to a specific point on the body. This will in most cases produce both linear and angular
          * momentum.
          *
          * @param[in]	force		Force to apply.
@@ -160,7 +160,7 @@ namespace te
         virtual void ApplyForceAtPoint(const Vector3& force, const Vector3& position, ForceMode mode) const = 0;
 
         /**
-         * Applies a torque to the rigidbody. This will produce angular momentum.
+         * Applies a torque to the body. This will produce angular momentum.
          *
          * @param[in]	torque		Torque to apply.
          * @param[in]	mode		Determines what is the type of @p torque.
@@ -168,7 +168,7 @@ namespace te
         virtual void ApplyTorque(const Vector3& torque, ForceMode mode) const = 0;
 
         /**
-         * Recalculates rigidbody's mass, inertia tensors and center of mass depending on the currently set child colliders.
+         * Recalculates body's mass, inertia tensors and center of mass depending on the currently set child colliders.
          * This should be called whenever relevant child collider properties change (like mass or shape).
          *
          * If automatic tensor calculation is turned off then this will do nothing. If automatic mass calculation is turned
@@ -176,28 +176,28 @@ namespace te
          */
         virtual void updateMassDistribution() { }
         
-        /** Flags that control the behaviour of the rigidbody. */
+        /** Flags that control the behaviour of the body. */
         virtual void SetFlags(BodyFlag flags) { _flags = flags; }
 
         /** @copydoc SetFlags() */
         virtual BodyFlag GetFlags() const { return _flags; }
 
-        /** Registers a new collider as a child of this rigidbody. */
-        virtual void AddCollider(Collider* collider) = 0;
+        /** Registers a new collider as a child of this body. */
+        virtual void AddCollider(const HCollider& collider) = 0;
 
-        /** Removes a collider from the child list of this rigidbody. */
-        virtual void RemoveCollider(Collider* collider) = 0;
+        /** Removes a collider from the child list of this body. */
+        virtual void RemoveCollider(const HCollider& collider) = 0;
 
-        /** Removes all colliders from the child list of this rigidbody. */
+        /** Removes all colliders from the child list of this body. */
         virtual void RemoveColliders() = 0;
 
-        /** Triggered when one of the colliders owned by the rigidbody starts colliding with another object. */
+        /** Triggered when one of the colliders owned by the body starts colliding with another object. */
         Event<void(const CollisionDataRaw&)> OnCollisionBegin;
 
         /** Triggered when a previously colliding collider stays in collision. Triggered once per frame. */
         Event<void(const CollisionDataRaw&)> OnCollisionStay;
 
-        /** Triggered when one of the colliders owned by the rigidbody stops colliding with another object. */
+        /** Triggered when one of the colliders owned by the body stops colliding with another object. */
         Event<void(const CollisionDataRaw&)> OnCollisionEnd;
 
         /**

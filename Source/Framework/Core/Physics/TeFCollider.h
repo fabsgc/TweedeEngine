@@ -37,11 +37,24 @@ namespace te
         /** @copydoc GetIsStatic() */
         virtual bool GetIsStatic() const = 0;
 
+        /**
+         * Determines the mass of the collider. Only relevant if the collider is part of a rigidbody. Ultimately this will
+         * determine the total mass, center of mass and inertia tensors of the parent rigidbody (if they're being calculated
+         * automatically).
+         */
+        virtual void SetMass(float mass) { _mass = mass; }
+
+        /** @copydoc setMass() */
+        virtual float GetMass() const { return _mass; }
+
         /** Determines which (if any) collision events are reported. */
         virtual void SetCollisionReportMode(CollisionReportMode mode) = 0;
 
         /** @copydoc setCollisionReportMode() */
         virtual CollisionReportMode GetCollisionReportMode() const = 0;
+
+    protected:
+        float _mass = 1.0f;
 
     };
 }

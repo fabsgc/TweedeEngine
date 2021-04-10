@@ -55,6 +55,9 @@ namespace te
 
     void CRigidBody::OnEnabled()
     {
+        if (_internal != nullptr)
+            return;
+
         _internal = CreateInternal();
         UpdateColliders();
 
@@ -142,7 +145,7 @@ namespace te
     void CRigidBody::ClearColliders()
     {
         for (auto& collider : _children)
-            collider->SetRigidBody(HRigidBody(), true);
+            collider->SetBody(HBody(), true);
 
         _children.clear();
 
@@ -201,7 +204,7 @@ namespace te
             return;
 
         _children.push_back(collider);
-        _internal->AddCollider(collider->GetInternal());
+        _internal->AddCollider(collider);
     }
 
     void CRigidBody::RemoveCollider(const HCollider& collider)
@@ -213,7 +216,7 @@ namespace te
 
         if (iterFind != _children.end())
         {
-            _internal->RemoveCollider(collider->GetInternal());
+            _internal->RemoveCollider(collider);
             _children.erase(iterFind);
         }
     }
