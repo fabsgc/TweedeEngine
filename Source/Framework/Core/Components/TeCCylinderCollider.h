@@ -28,6 +28,9 @@ namespace te
         /** @copydoc CJoint::CreateInternal */
         SPtr<Collider> CreateInternal() override;
 
+        /**	Returns the cylinder collider that this component wraps. */
+        CylinderCollider* _getInternal() const { return static_cast<CylinderCollider*>(_internal.get()); }
+
     protected:
         CCylinderCollider(); // Serialization only
     };

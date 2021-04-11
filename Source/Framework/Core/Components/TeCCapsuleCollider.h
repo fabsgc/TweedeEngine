@@ -28,6 +28,9 @@ namespace te
         /** @copydoc CJoint::CreateInternal */
         SPtr<Collider> CreateInternal() override;
 
+        /**	Returns the capsule collider that this component wraps. */
+        CapsuleCollider* _getInternal() const { return static_cast<CapsuleCollider*>(_internal.get()); }
+
     protected:
         CCapsuleCollider(); // Serialization only
     };

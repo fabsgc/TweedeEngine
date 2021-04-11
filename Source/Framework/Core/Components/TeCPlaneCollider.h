@@ -28,6 +28,9 @@ namespace te
         /** @copydoc CJoint::CreateInternal */
         SPtr<Collider> CreateInternal() override;
 
+        /**	Returns the plane collider that this component wraps. */
+        PlaneCollider* _getInternal() const { return static_cast<PlaneCollider*>(_internal.get()); }
+
     protected:
         CPlaneCollider(); // Serialization only
     };

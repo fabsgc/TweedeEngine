@@ -28,6 +28,9 @@ namespace te
         /** @copydoc CJoint::CreateInternal */
         SPtr<Collider> CreateInternal() override;
 
+        /**	Returns the mesh collider that this component wraps. */
+        MeshCollider* _getInternal() const { return static_cast<MeshCollider*>(_internal.get()); }
+
     protected:
         CMeshCollider(); // Serialization only
     };
