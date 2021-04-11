@@ -10,6 +10,8 @@ namespace te
     {
         UpdateShape();
         _internal = te_new<BulletFCollider>(physics, scene, _shape);
+        _internal->SetPosition(position);
+        _internal->SetRotation(rotation);
     }
 
     BulletSphereCollider::~BulletSphereCollider()

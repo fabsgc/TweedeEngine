@@ -1,7 +1,6 @@
 #include "TeBulletBoxCollider.h"
 #include "TeBulletPhysics.h"
 #include "TeBulletFCollider.h"
-#include "Physics/TeBody.h"
 
 namespace te
 {
@@ -11,6 +10,8 @@ namespace te
     {
         UpdateShape();
         _internal = te_new<BulletFCollider>(physics, scene, _shape);
+        _internal->SetPosition(position);
+        _internal->SetRotation(rotation);
     }
 
     BulletBoxCollider::~BulletBoxCollider()

@@ -14,13 +14,13 @@ namespace te
             const Quaternion& rotation, float radius);
         ~BulletSphereCollider();
 
-        /** @copydoc SphereCollider::SetScale */
+        /** @copydoc SphereCollider::SetScale() */
         void SetScale(const Vector3& scale) override;
 
-        /** @copydoc SphereCollider::SetRadius */
+        /** @copydoc SphereCollider::SetRadius() */
         void SetRadius(float radius) override;
 
-        /** @copydoc SphereCollider::GetRadius */
+        /** @copydoc SphereCollider::GetRadius() */
         float GetRadius() const override { return _radius; }
 
     private:

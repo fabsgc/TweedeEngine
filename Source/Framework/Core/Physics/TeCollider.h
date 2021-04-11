@@ -3,6 +3,7 @@
 #include "TeCorePrerequisites.h"
 #include "Physics/TePhysicsCommon.h"
 #include "Math/TeVector3.h"
+#include "Math/TeQuaternion.h"
 #include "Utility/TeEvent.h"
 
 namespace te

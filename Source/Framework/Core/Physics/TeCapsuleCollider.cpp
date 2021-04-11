@@ -3,8 +3,9 @@
 
 namespace te
 {
-    SPtr<CapsuleCollider> CapsuleCollider::Create(PhysicsScene& scene)
+    SPtr<CapsuleCollider> CapsuleCollider::Create(PhysicsScene& scene, float radius, float height,
+        const Vector3& position, const Quaternion& rotation)
     {
-        return scene.CreateCapsuleCollider();
+        return scene.CreateCapsuleCollider(radius, height, position, rotation);
     }
 }

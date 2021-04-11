@@ -261,9 +261,10 @@ namespace te
         return te_shared_ptr_new<BulletBoxCollider>(_physics, this, position, rotation, extents);
     }
 
-    SPtr<PlaneCollider> BulletScene::CreatePlaneCollider()
+    SPtr<PlaneCollider> BulletScene::CreatePlaneCollider(const Vector3& normal, const Vector3& position,
+        const Quaternion& rotation)
     {
-        return te_shared_ptr_new<BulletPlaneCollider>(_physics, this);
+        return te_shared_ptr_new<BulletPlaneCollider>(_physics, this, position, rotation, normal);
     }
 
     SPtr<SphereCollider> BulletScene::CreateSphereCollider(float radius, const Vector3& position, const Quaternion& rotation)
@@ -271,24 +272,27 @@ namespace te
         return te_shared_ptr_new<BulletSphereCollider>(_physics, this, position, rotation, radius);
     }
 
-    SPtr<CylinderCollider> BulletScene::CreateCylinderCollider()
+    SPtr<CylinderCollider> BulletScene::CreateCylinderCollider(const Vector3& extents, const Vector3& position,
+        const Quaternion& rotation)
     {
-        return te_shared_ptr_new<BulletCylinderCollider>(_physics, this);
+        return te_shared_ptr_new<BulletCylinderCollider>(_physics, this, position, rotation, extents);
     }
 
-    SPtr<CapsuleCollider> BulletScene::CreateCapsuleCollider()
+    SPtr<CapsuleCollider> BulletScene::CreateCapsuleCollider(float radius, float height, const Vector3& position,
+        const Quaternion& rotation)
     {
-        return te_shared_ptr_new<BulletCapsuleCollider>(_physics, this);
+        return te_shared_ptr_new<BulletCapsuleCollider>(_physics, this, position, rotation, radius, height);
     }
 
-    SPtr<MeshCollider> BulletScene::CreateMeshCollider()
+    SPtr<MeshCollider> BulletScene::CreateMeshCollider(const Vector3& position, const Quaternion& rotation)
     {
-        return te_shared_ptr_new<BulletMeshCollider>(_physics, this);
+        return te_shared_ptr_new<BulletMeshCollider>(_physics, this, position, rotation);
     }
 
-    SPtr<ConeCollider> BulletScene::CreateConeCollider()
+    SPtr<ConeCollider> BulletScene::CreateConeCollider(float radius, float height, const Vector3& position,
+        const Quaternion& rotation)
     {
-        return te_shared_ptr_new<BulletConeCollider>(_physics, this);
+        return te_shared_ptr_new<BulletConeCollider>(_physics, this, position, rotation, radius, height);
     }
 
     void BulletScene::AddRigidBody(btRigidBody* body)

@@ -2,8 +2,6 @@
 
 #include "TeCorePrerequisites.h"
 #include "Physics/TeCollider.h"
-#include "Math/TeVector3.h"
-#include "Math/TeQuaternion.h"
 
 namespace te
 {

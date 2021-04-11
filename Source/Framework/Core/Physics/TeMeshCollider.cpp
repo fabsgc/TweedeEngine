@@ -3,8 +3,8 @@
 
 namespace te
 {
-    SPtr<MeshCollider> MeshCollider::Create(PhysicsScene& scene)
+    SPtr<MeshCollider> MeshCollider::Create(PhysicsScene& scene, const Vector3& position, const Quaternion& rotation)
     {
-        return scene.CreateMeshCollider();
+        return scene.CreateMeshCollider(position, rotation);
     }
 }

@@ -3,8 +3,9 @@
 
 namespace te
 {
-    SPtr<CylinderCollider> CylinderCollider::Create(PhysicsScene& scene)
+    SPtr<CylinderCollider> CylinderCollider::Create(PhysicsScene& scene, const Vector3& extents,
+        const Vector3& position, const Quaternion& rotation)
     {
-        return scene.CreateCylinderCollider();
+        return scene.CreateCylinderCollider(extents, position, rotation);
     }
 }

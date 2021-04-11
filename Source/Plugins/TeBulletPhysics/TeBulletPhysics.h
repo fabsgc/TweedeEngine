@@ -119,23 +119,27 @@ namespace te
             const Quaternion& rotation) override;
 
         /** @copydoc PhysicsScene::CreatePlaneCollider */
-        SPtr<PlaneCollider> CreatePlaneCollider() override;
+        SPtr<PlaneCollider> CreatePlaneCollider(const Vector3& normal, const Vector3& position,
+            const Quaternion& rotation) override;
 
         /** @copydoc PhysicsScene::CreateSphereCollider */
         SPtr<SphereCollider> CreateSphereCollider(float radius, const Vector3& position, 
             const Quaternion& rotation) override;
 
         /** @copydoc PhysicsScene::CreateCylinderCollider */
-        SPtr<CylinderCollider> CreateCylinderCollider() override;
+        SPtr<CylinderCollider> CreateCylinderCollider(const Vector3& extents, const Vector3& position,
+            const Quaternion& rotation) override;
 
         /** @copydoc PhysicsScene::CreateCapsuleCollider */
-        SPtr<CapsuleCollider> CreateCapsuleCollider() override;
+        SPtr<CapsuleCollider> CreateCapsuleCollider(float radius, float height, const Vector3& position,
+            const Quaternion& rotation) override;
 
         /** @copydoc PhysicsScene::CreateMeshCollider */
-        SPtr<MeshCollider> CreateMeshCollider() override;
+        SPtr<MeshCollider> CreateMeshCollider(const Vector3& position, const Quaternion& rotation) override;
 
         /** @copydoc PhysicsScene::CreateConeCollider */
-        SPtr<ConeCollider> CreateConeCollider() override;
+        SPtr<ConeCollider> CreateConeCollider(float radius, float height, const Vector3& position,
+            const Quaternion& rotation) override;
 
         /** Add RigidBody to current scene */
         void AddRigidBody(btRigidBody* body);
