@@ -7,7 +7,7 @@ namespace te
     BulletMeshCollider::BulletMeshCollider(BulletPhysics* physics, BulletScene* scene, const Vector3& position, const Quaternion& rotation)
     {
         UpdateShape();
-        _internal = te_new<BulletFCollider>(physics, scene);
+        _internal = te_new<BulletFCollider>(physics, scene, _shape);
         _internal->SetPosition(position);
         _internal->SetRotation(rotation);
     }

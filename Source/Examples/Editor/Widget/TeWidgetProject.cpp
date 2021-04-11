@@ -923,8 +923,8 @@ namespace te
         if (!_selections.ClickedSceneObject || _selections.ClickedComponent)
             return;
 
-        if (SceneManager::Instance().FindComponents<CRigidBody>().size() > 0 ||
-            SceneManager::Instance().FindComponents<CSoftBody>().size() > 0)
+        if (!_selections.ClickedSceneObject->GetComponent<CRigidBody>().Empty() ||
+            !_selections.ClickedSceneObject->GetComponent<CSoftBody>().Empty())
         {
             return;
         }
@@ -945,8 +945,8 @@ namespace te
         if (!_selections.ClickedSceneObject || _selections.ClickedComponent)
             return;
 
-        if (SceneManager::Instance().FindComponents<CRigidBody>().size() > 0 ||
-            SceneManager::Instance().FindComponents<CSoftBody>().size() > 0)
+        if (!_selections.ClickedSceneObject->GetComponent<CRigidBody>().Empty() ||
+            !_selections.ClickedSceneObject->GetComponent<CSoftBody>().Empty())
         {
             return;
         }

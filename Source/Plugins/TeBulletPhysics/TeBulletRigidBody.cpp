@@ -382,7 +382,7 @@ namespace te
 
             UpdateKinematicFlag();
             UpdateGravityFlag();
-            //UpdateCCDFlag();
+            UpdateCCDFlag();
 
             _scene->AddRigidBody(_rigidBody);
 
@@ -479,7 +479,7 @@ namespace te
 
     void BulletRigidBody::UpdateCCDFlag() const
     {
-        /*if (((UINT32)_flags & (UINT32)BodyFlag::CCD))
+        if (((UINT32)_flags & (UINT32)BodyFlag::CCD))
         {
             _rigidBody->setCcdMotionThreshold(0.015f);
             _rigidBody->setCcdSweptSphereRadius(0.01f);
@@ -488,6 +488,6 @@ namespace te
         {
             _rigidBody->setCcdMotionThreshold(std::numeric_limits<float>::infinity());
             _rigidBody->setCcdSweptSphereRadius(0);
-        }*/
+        }
     }
 }

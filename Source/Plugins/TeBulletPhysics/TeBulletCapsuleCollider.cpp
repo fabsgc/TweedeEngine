@@ -10,7 +10,7 @@ namespace te
         , _height(height)
     {
         UpdateShape();
-        _internal = te_new<BulletFCollider>(physics, scene);
+        _internal = te_new<BulletFCollider>(physics, scene, _shape);
         _internal->SetPosition(position);
         _internal->SetRotation(rotation);
     }
