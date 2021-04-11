@@ -3,8 +3,9 @@
 
 namespace te
 {
-    SPtr<SphereCollider> SphereCollider::Create(PhysicsScene& scene)
+    SPtr<SphereCollider> SphereCollider::Create(PhysicsScene& scene, float radius, const Vector3& position,
+        const Quaternion& rotation)
     {
-        return scene.CreateSphereCollider();
+        return scene.CreateSphereCollider(radius, position, rotation);
     }
 }

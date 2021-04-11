@@ -138,6 +138,11 @@ namespace te
         friend class SceneObject;
         friend class CCollider;
         friend class CBoxCollider;
+        friend class CCapsuleCollider;
+        friend class CConeCollider;
+        friend class CCylinderCollider;
+        friend class CMeshCollider;
+        friend class CSphereCollider;
         using Component::DestroyInternal;
 
         /** Triggered when the internal body begins touching another object. */

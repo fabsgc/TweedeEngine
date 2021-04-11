@@ -25,7 +25,7 @@ namespace te
         /**
          * Creates a new box collider.
          *
-         * @param[in]	scene		Scene to which to add the joint.
+         * @param[in]	scene		Scene into which to add the collider to.
          * @param[in]	extents		Extents (half size) of the box.
 		 * @param[in]	position	Center of the box.
 		 * @param[in]	rotation	Rotation of the box.

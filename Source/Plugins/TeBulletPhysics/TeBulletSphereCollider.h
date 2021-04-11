@@ -10,7 +10,25 @@ namespace te
     class BulletSphereCollider : public SphereCollider
     {
     public:
-        BulletSphereCollider(BulletPhysics* physics, BulletScene* scene);
+        BulletSphereCollider(BulletPhysics* physics, BulletScene* scene, const Vector3& position,
+            const Quaternion& rotation, float radius);
         ~BulletSphereCollider();
+
+        /** @copydoc SphereCollider::SetScale */
+        void SetScale(const Vector3& scale) override;
+
+        /** @copydoc SphereCollider::SetRadius */
+        void SetRadius(float radius) override;
+
+        /** @copydoc SphereCollider::GetRadius */
+        float GetRadius() const override { return _radius; }
+
+    private:
+        /** Create shape using current parameters */
+        void UpdateShape();
+
+    private:
+        btSphereShape* _shape = nullptr;
+        float _radius;
     };
 }

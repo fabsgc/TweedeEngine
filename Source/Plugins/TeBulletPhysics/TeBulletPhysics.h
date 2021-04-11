@@ -116,25 +116,26 @@ namespace te
 
         /** @copydoc PhysicsScene::CreateBoxCollider */
         SPtr<BoxCollider> CreateBoxCollider(const Vector3& extents, const Vector3& position,
-            const Quaternion& rotation);
+            const Quaternion& rotation) override;
 
         /** @copydoc PhysicsScene::CreatePlaneCollider */
-        SPtr<PlaneCollider> CreatePlaneCollider();
+        SPtr<PlaneCollider> CreatePlaneCollider() override;
 
         /** @copydoc PhysicsScene::CreateSphereCollider */
-        SPtr<SphereCollider> CreateSphereCollider();
+        SPtr<SphereCollider> CreateSphereCollider(float radius, const Vector3& position, 
+            const Quaternion& rotation) override;
 
         /** @copydoc PhysicsScene::CreateCylinderCollider */
-        SPtr<CylinderCollider> CreateCylinderCollider();
+        SPtr<CylinderCollider> CreateCylinderCollider() override;
 
         /** @copydoc PhysicsScene::CreateCapsuleCollider */
-        SPtr<CapsuleCollider> CreateCapsuleCollider();
+        SPtr<CapsuleCollider> CreateCapsuleCollider() override;
 
         /** @copydoc PhysicsScene::CreateMeshCollider */
-        SPtr<MeshCollider> CreateMeshCollider();
+        SPtr<MeshCollider> CreateMeshCollider() override;
 
         /** @copydoc PhysicsScene::CreateConeCollider */
-        SPtr<ConeCollider> CreateConeCollider();
+        SPtr<ConeCollider> CreateConeCollider() override;
 
         /** Add RigidBody to current scene */
         void AddRigidBody(btRigidBody* body);

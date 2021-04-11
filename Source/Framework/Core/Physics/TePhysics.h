@@ -118,7 +118,8 @@ namespace te
         /**
          * Creates a new sphere collider.
          */
-        virtual SPtr<SphereCollider> CreateSphereCollider() = 0;
+        virtual SPtr<SphereCollider> CreateSphereCollider(float radius, const Vector3& position,
+            const Quaternion& rotation) = 0;
 
         /**
          * Creates a new cylinder collider.

@@ -17,7 +17,7 @@ namespace te
         /**
          * Creates a new mesh collider.
          *
-         * @param[in]	scene		Scene to which to add the joint.
+         * @param[in]	scene		Scene into which to add the collider to.
          */
         static SPtr<MeshCollider> Create(PhysicsScene& scene);
     };

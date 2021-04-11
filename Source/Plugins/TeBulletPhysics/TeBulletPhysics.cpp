@@ -266,9 +266,9 @@ namespace te
         return te_shared_ptr_new<BulletPlaneCollider>(_physics, this);
     }
 
-    SPtr<SphereCollider> BulletScene::CreateSphereCollider()
+    SPtr<SphereCollider> BulletScene::CreateSphereCollider(float radius, const Vector3& position, const Quaternion& rotation)
     {
-        return te_shared_ptr_new<BulletSphereCollider>(_physics, this);
+        return te_shared_ptr_new<BulletSphereCollider>(_physics, this, position, rotation, radius);
     }
 
     SPtr<CylinderCollider> BulletScene::CreateCylinderCollider()
