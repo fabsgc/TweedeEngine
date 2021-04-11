@@ -52,8 +52,8 @@ namespace te
         virtual CollisionReportMode GetCollisionReportMode() const = 0;
 
     protected:
-        Vector3 _scale = Vector3(1.0f, 1.0f, 1.0f);
         float _mass = 1.0f;
+        Vector3 _scale = Vector3::ONE;
         Vector3 _center = Vector3::ZERO;
     };
 }

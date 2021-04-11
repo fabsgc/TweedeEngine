@@ -36,49 +36,49 @@ namespace te
         void SetMass(float mass) override;
 
         /** @copydoc Body::GetMass */
-        float GetMass() const override;
+        float GetMass() const override { return _mass; }
 
         /** @copydoc Body::SetIsKinematic */
         void SetIsKinematic(bool kinematic) override;
 
         /** @copydoc Body::GetIsKinematic */
-        bool GetIsKinematic() const override;
+        bool GetIsKinematic() const override { return _isKinematic; }
 
         /** @copydoc Body::SetVelocity */
         void SetVelocity(const Vector3& velocity) override;
 
         /** @copydoc Body::GetVelocity */
-        const Vector3& GetVelocity() const override;
+        const Vector3& GetVelocity() const override { return _velocity; }
 
         /** @copydoc Body::SetAngularVelocity */
         void SetAngularVelocity(const Vector3& velocity) override;
 
         /** @copydoc Body::GetAngularVelocity */
-        const Vector3& GetAngularVelocity() const override;
+        const Vector3& GetAngularVelocity() const override { return _angularVelocity; }
 
         /** @copydoc Body::SetFriction */
         void SetFriction(float friction) override;
 
         /** @copydoc Body::GetFriction */
-        float GetFriction() const override;
+        float GetFriction() const override { return _friction;  }
 
         /** @copydoc Body::SetRollingFriction */
         void SetRollingFriction(float rollingFriction) override;
 
         /** @copydoc Body::GetRollingFriction */
-        float GetRollingFriction() const override;
+        float GetRollingFriction() const override { return _rollingFriction; }
 
         /** @copydoc Body::SetRestitution */
         void SetRestitution(float restitution) override;
 
         /** @copydoc Body::GetRestitution */
-        float GetRestitution() const override;
+        float GetRestitution() const override { return _restitution; }
 
         /** @copydoc Body::SetUseGravity */
         void SetUseGravity(bool gravity) override;
 
         /** @copydoc Body::GetUseGravity */
-        bool GetUseGravity() const override;
+        bool GetUseGravity() const override { return _useGravity; }
 
         /** @copydoc Body::SetCenterOfMass */
         void SetCenterOfMass(const Vector3& centerOfMass) override;
@@ -126,6 +126,9 @@ namespace te
         /** Update gravity bullet flag */
         void UpdateGravityFlag() const;
 
+        /** Enable or disable CCD for this body */
+        void UpdateCCDFlag() const;
+
         void Activate() const;
         bool IsActivated() const;
 
@@ -140,7 +143,7 @@ namespace te
 
         float _mass = 1.0f;
         float _friction = 0.0f;
-        float _frictionRolling = 0.0f;
+        float _rollingFriction = 0.0f;
         float _restitution = 0.0f;
         bool _useGravity = true;
         bool _isKinematic = false;

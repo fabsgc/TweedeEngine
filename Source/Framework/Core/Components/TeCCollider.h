@@ -151,13 +151,12 @@ namespace te
 
     protected:
         SPtr<Collider> _internal;
-
-        CollisionReportMode _collisionReportMode = CollisionReportMode::None;
-        bool _isTrigger = false;
-        Vector3 _scale = Vector3(1.0f, 1.0f, 1.0f);
-        float _mass = 1.0f;
-        Vector3 _center = Vector3::ZERO;
-
         HBody _parent;
+
+        float _mass = 1.0f;
+        bool _isTrigger = false;
+        Vector3 _scale = Vector3::ONE;
+        Vector3 _center = Vector3::ZERO;
+        CollisionReportMode _collisionReportMode = CollisionReportMode::None;
     };
 }

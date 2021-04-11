@@ -10,7 +10,7 @@ namespace te
 {
     static const float DEFAULT_MASS = 1.0f;
     static const float DEFAULT_FRICTION = 0.5f;
-    static const float DEFAULT_FRICTION_ROLLING = 0.0f;
+    static const float DEFAULT_ROLLING_FRICTION = 0.0f;
     static const float DEFAULT_RESTITUTION = 0.0f;
     static const float DEFAULT_DEACTIVATION_TIME = 2000;
 
@@ -56,7 +56,7 @@ namespace te
         _mass = DEFAULT_MASS;
         _restitution = DEFAULT_RESTITUTION;
         _friction = DEFAULT_FRICTION;
-        _frictionRolling = DEFAULT_FRICTION_ROLLING;
+        _rollingFriction = DEFAULT_ROLLING_FRICTION;
         _useGravity = true;
         _gravity = _physics->GetDesc().Gravity;
         _isKinematic = false;
@@ -84,7 +84,12 @@ namespace te
     Vector3 BulletRigidBody::GetPosition() const
     {
         if (_rigidBody)
-            return ToVector3(_rigidBody->getWorldTransform().getOrigin());
+        {
+            if (((UINT32)_flags & (UINT32)BodyFlag::CCD) != 0)
+                return ToVector3(_rigidBody->getInterpolationWorldTransform().getOrigin());
+            else
+                return ToVector3(_rigidBody->getWorldTransform().getOrigin());
+        }
 
         return _position;
     }
@@ -92,7 +97,12 @@ namespace te
     Quaternion BulletRigidBody::GetRotation() const
     {
         if (_rigidBody)
-            return ToQuaternion(_rigidBody->getWorldTransform().getRotation());
+        {
+            if (((UINT32)_flags & (UINT32)BodyFlag::CCD) != 0)
+                return ToQuaternion(_rigidBody->getInterpolationWorldTransform().getRotation());
+            else
+                return ToQuaternion(_rigidBody->getWorldTransform().getRotation());
+        }
 
         return _rotation;
     }
@@ -145,11 +155,6 @@ namespace te
         }
     }
 
-    float BulletRigidBody::GetMass() const
-    {
-        return _mass;
-    }
-
     void BulletRigidBody::SetIsKinematic(bool kinematic)
     {
         if (kinematic == _isKinematic)
@@ -157,11 +162,6 @@ namespace te
 
         _isKinematic = kinematic;
         AddToWorld();
-    }
-
-    bool BulletRigidBody::GetIsKinematic() const
-    {
-        return _isKinematic;
     }
 
     void BulletRigidBody::SetVelocity(const Vector3& velocity)
@@ -178,11 +178,6 @@ namespace te
         }
     }
 
-    const Vector3& BulletRigidBody::GetVelocity() const
-    {
-        return _velocity;
-    }
-
     void BulletRigidBody::SetAngularVelocity(const Vector3& velocity)
     {
         if (!_rigidBody)
@@ -197,11 +192,6 @@ namespace te
         }
     }
 
-    const Vector3& BulletRigidBody::GetAngularVelocity() const
-    {
-        return _angularVelocity;
-    }
-
     void BulletRigidBody::SetFriction(float friction)
     {
         if (!_rigidBody || _friction == friction)
@@ -211,23 +201,13 @@ namespace te
         _rigidBody->setFriction(friction);
     }
 
-    float BulletRigidBody::GetFriction() const
-    {
-        return _friction;
-    }
-
     void BulletRigidBody::SetRollingFriction(float rollingFriction)
     {
-        if (!_rigidBody || _frictionRolling == rollingFriction)
+        if (!_rigidBody || _rollingFriction == rollingFriction)
             return;
 
-        _frictionRolling = rollingFriction;
-        _rigidBody->setRollingFriction(_frictionRolling);
-    }
-
-    float BulletRigidBody::GetRollingFriction() const
-    {
-        return _frictionRolling;
+        _rollingFriction = rollingFriction;
+        _rigidBody->setRollingFriction(_rollingFriction);
     }
 
     void BulletRigidBody::SetRestitution(float restitution)
@@ -239,11 +219,6 @@ namespace te
         _rigidBody->setRestitution(restitution);
     }
 
-    float BulletRigidBody::GetRestitution() const
-    {
-        return _restitution;
-    }
-
     void BulletRigidBody::SetUseGravity(bool gravity)
     {
         if (gravity == _useGravity)
@@ -253,9 +228,14 @@ namespace te
         AddToWorld();
     }
 
-    bool BulletRigidBody::GetUseGravity() const
+    void BulletRigidBody::SetFlags(BodyFlag flags)
     {
-        return _useGravity;
+        if (_flags == flags)
+            return;
+
+        _flags = flags;
+
+        //AddToWorld();
     }
 
     void BulletRigidBody::SetCenterOfMass(const Vector3& centerOfMass)
@@ -272,7 +252,10 @@ namespace te
 
     const Vector3& BulletRigidBody::GetCenterOfMass() const
     {
-        return _centerOfMass;
+        if (_collider && ((UINT32)_flags & (UINT32)BodyFlag::AutoTensors))
+            return _collider->GetCenter();
+        else
+            return _centerOfMass;
     }
 
     void BulletRigidBody::ApplyForce(const Vector3& force, ForceMode mode) const
@@ -322,18 +305,22 @@ namespace te
             AddToWorld();
         else
             RemoveFromWorld();
-
-        TE_PRINT("Add Collider");
     }
 
     void BulletRigidBody::RemoveCollider(Collider* collider)
     {
-        TE_PRINT("Remove Collider");
+        _collider = nullptr;
+
+        if(_inWorld)
+            RemoveFromWorld();
     }
 
     void BulletRigidBody::RemoveColliders()
     {
-        TE_PRINT("Remove all Colliders");
+        _collider = nullptr;
+
+        if (_inWorld)
+            RemoveFromWorld();
     }
 
     void BulletRigidBody::UpdateMassDistribution()
@@ -345,11 +332,6 @@ namespace te
             return;
 
         AddToWorld();
-    }
-
-    void BulletRigidBody::SetFlags(BodyFlag flags)
-    {
-        _flags = flags;
     }
 
     void BulletRigidBody::AddToWorld()
@@ -387,7 +369,7 @@ namespace te
 
             btRigidBody::btRigidBodyConstructionInfo constructionInfo(_mass, motionState, shape, localIntertia);
             constructionInfo.m_friction = _friction;
-            constructionInfo.m_rollingFriction = _frictionRolling;
+            constructionInfo.m_rollingFriction = _rollingFriction;
             constructionInfo.m_restitution = _restitution;
             constructionInfo.m_localInertia = localIntertia;
             constructionInfo.m_collisionShape = shape;
@@ -400,6 +382,7 @@ namespace te
 
             UpdateKinematicFlag();
             UpdateGravityFlag();
+            //UpdateCCDFlag();
 
             _scene->AddRigidBody(_rigidBody);
 
@@ -492,5 +475,19 @@ namespace te
         {
             _rigidBody->setGravity(btVector3(0.0f, 0.0f, 0.0f));
         }
+    }
+
+    void BulletRigidBody::UpdateCCDFlag() const
+    {
+        /*if (((UINT32)_flags & (UINT32)BodyFlag::CCD))
+        {
+            _rigidBody->setCcdMotionThreshold(0.015f);
+            _rigidBody->setCcdSweptSphereRadius(0.01f);
+        }
+        else
+        {
+            _rigidBody->setCcdMotionThreshold(std::numeric_limits<float>::infinity());
+            _rigidBody->setCcdSweptSphereRadius(0);
+        }*/
     }
 }

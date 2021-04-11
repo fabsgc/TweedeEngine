@@ -47,19 +47,9 @@ namespace te
         // TODO
     }
 
-    float BulletSoftBody::GetMass() const
-    {
-        return 0.0f; // TODO
-    }
-
     void BulletSoftBody::SetIsKinematic(bool kinematic)
     {
         // TODO
-    }
-
-    bool BulletSoftBody::GetIsKinematic() const
-    {
-        return false; // TODO
     }
 
     void BulletSoftBody::SetVelocity(const Vector3& velocity)
@@ -67,19 +57,9 @@ namespace te
         // TODO
     }
 
-    const Vector3& BulletSoftBody::GetVelocity() const
-    {
-        return Vector3::ZERO;
-    }
-
     void BulletSoftBody::SetAngularVelocity(const Vector3& velocity)
     {
         // TODO
-    }
-
-    const Vector3& BulletSoftBody::GetAngularVelocity() const
-    {
-        return Vector3::ZERO;
     }
 
     void BulletSoftBody::SetFriction(float friction)
@@ -87,19 +67,9 @@ namespace te
         // TODO
     }
 
-    float BulletSoftBody::GetFriction() const
-    {
-        return 0.0f; // TODO
-    }
-
     void BulletSoftBody::SetRollingFriction(float rollingFriction)
     {
         // TODO
-    }
-
-    float BulletSoftBody::GetRollingFriction() const
-    {
-        return 0.0f; // TODO
     }
 
     void BulletSoftBody::SetRestitution(float restitution)
@@ -107,29 +77,14 @@ namespace te
         // TODO
     }
 
-    float BulletSoftBody::GetRestitution() const
-    {
-        return 0.0f; // TODO
-    }
-
     void BulletSoftBody::SetUseGravity(bool gravity)
     {
         // TODO
     }
 
-    bool BulletSoftBody::GetUseGravity() const
-    {
-        return false;
-    }
-
     void BulletSoftBody::SetCenterOfMass(const Vector3& centerOfMass)
     {
         // TODO
-    }
-
-    const Vector3& BulletSoftBody::GetCenterOfMass() const
-    {
-        return _centerOfMass;
     }
 
     void BulletSoftBody::ApplyForce(const Vector3& force, ForceMode mode) const

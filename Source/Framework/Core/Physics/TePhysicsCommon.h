@@ -54,9 +54,9 @@ namespace te
         None, /**< No collision events will be triggered. */
         Report, /**< Collision events will be triggered when object enters and/or leaves collision. */
         /**
-            * Collision events will be triggered when object enters and/or leaves collision, but also every frame the object
-            * remains in collision.
-            */
+         * Collision events will be triggered when object enters and/or leaves collision, but also every frame the object
+         * remains in collision.
+         */
         ReportPersistent,
     };
 }

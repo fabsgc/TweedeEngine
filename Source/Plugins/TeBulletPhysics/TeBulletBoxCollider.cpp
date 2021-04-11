@@ -10,7 +10,6 @@ namespace te
         : _extents(extents)
     {
         UpdateShape();
-
         _internal = te_new<BulletFCollider>(physics, scene, _shape);
     }
 
@@ -30,11 +29,6 @@ namespace te
     {
         _extents = extents;
         UpdateShape();
-    }
-
-    Vector3 BulletBoxCollider::GetExtents() const
-    {
-        return _extents;
     }
 
     void BulletBoxCollider::UpdateShape()

@@ -21,7 +21,7 @@ namespace te
         void SetExtents(const Vector3& extents) override;
 
         /** @copydoc BoxCollider::GetExtents */
-        Vector3 GetExtents() const override;
+        Vector3 GetExtents() const override { return _extents; }
 
     private:
         /** Create shape using current parameters */
