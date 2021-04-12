@@ -294,6 +294,9 @@ namespace te
             _colliders.erase(it);
         }
 
+        if (_rigidBody)
+            _rigidBody->updateInertiaTensor();
+
         if(_colliders.size() == 0 && _inWorld)
             RemoveFromWorld();
         else if(_colliders.size() > 0)

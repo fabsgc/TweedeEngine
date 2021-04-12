@@ -191,7 +191,12 @@ namespace te
             return;
 
         _children.push_back(collider);
-        _internal->AddCollider(collider->GetInternal());
+
+        auto iterFind = std::find(_children.begin(), _children.end(), collider);
+        if (iterFind != _children.end())
+        {
+            _internal->AddCollider(collider->GetInternal());
+        }
     }
 
     void CRigidBody::RemoveCollider(const HCollider& collider)
@@ -200,7 +205,6 @@ namespace te
             return;
 
         auto iterFind = std::find(_children.begin(), _children.end(), collider);
-
         if (iterFind != _children.end())
         {
             _internal->RemoveCollider(collider->GetInternal());

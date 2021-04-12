@@ -44,7 +44,10 @@ namespace te
             _getInternal()->SetRadius(clampedRadius);
 
             if (_parent != nullptr)
+            {
+                _parent->RemoveCollider(static_object_cast<CCollider>(GetHandle()));
                 _parent->AddCollider(static_object_cast<CCollider>(GetHandle()));
+            }
         }
     }
 
@@ -61,7 +64,10 @@ namespace te
             _getInternal()->SetHeight(clampedHeight);
 
             if (_parent != nullptr)
+            {
+                _parent->RemoveCollider(static_object_cast<CCollider>(GetHandle()));
                 _parent->AddCollider(static_object_cast<CCollider>(GetHandle()));
+            }
         }
     }
 }
