@@ -14,8 +14,12 @@ namespace te
         PlaneCollider() = default;
         ~PlaneCollider() = default;
 
-        /** Determines the normal of the plane geometry. */
+        /** Determines the normal of the plane geometry.  */
+        virtual void SetNormal(const Vector3& normal) = 0;
+
+        /** @copydoc SetNormal() */
         virtual const Vector3& GetNormal() const = 0;
+
 
         /**
          * Creates a new mesh collider.

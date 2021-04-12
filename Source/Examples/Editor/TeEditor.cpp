@@ -1097,7 +1097,7 @@ namespace te
 
         // ######################################################
         //_loadedMeshMonkey = EditorResManager::Instance().Load<Mesh>("Data/Meshes/Monkey/monkey-hd.obj", meshImportOptions);
-        //_loadedMeshPlane = EditorResManager::Instance().Load<Mesh>("Data/Meshes/Plane/plane.obj", meshImportOptions);
+        _loadedMeshPlane = EditorResManager::Instance().Load<Mesh>("Data/Meshes/Plane/plane.obj", meshImportOptions);
         //_loadedTextureMonkey = EditorResManager::Instance().Load<Texture>("Data/Textures/Monkey/diffuse.png", textureImportOptions);
         //_loadedPlaneTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Sponza/Floor/floor_COLOR.jpeg", textureImportOptions);
         _loadedSkyboxTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/sky_medium.png", textureCubeMapImportOptions);
@@ -1112,7 +1112,7 @@ namespace te
         // ######################################################
         _loadedMeshKnight->SetName("Knight Mesh");
         //_loadedMeshMonkey->SetName("Monkey Mesh");
-        //_loadedMeshPlane->SetName("Plane Mesh");
+        _loadedMeshPlane->SetName("Plane Mesh");
         //_loadedTextureMonkey->SetName("Monkey Diffuse");
         _loadedSkyboxTexture->SetName("Skybox Diffuse");
 
@@ -1148,18 +1148,25 @@ namespace te
         properties.UseParallaxMap = true;
         properties.SpecularStrength = 1.0f;
         properties.Reflection = 0.0f;
-        properties.Refraction = 0.0f;
+        properties.Refraction = 0.0f;*/
+
+        properties.UseDiffuseMap = false;
+        properties.UseNormalMap = false;
+        properties.UseSpecularMap = false;
+        properties.UseBumpMap = false;
+        properties.UseParallaxMap = false;
+        properties.SpecularStrength = 1.0f;
 
         _planeMaterial = Material::Create(_shader);
         _planeMaterial->SetName("Plane Material");
-        _planeMaterial->SetTexture("DiffuseMap", _loadedGroundDiffuseTexture);
+        /*_planeMaterial->SetTexture("DiffuseMap", _loadedGroundDiffuseTexture);
         _planeMaterial->SetTexture("NormalMap", _loadedGroundNormalTexture);
         _planeMaterial->SetTexture("SpecularMap", _loadedGroundSpecularTexture);
         _planeMaterial->SetTexture("ParallaxMap", _loadedGroundParallaxTexture);
-        _planeMaterial->SetTexture("EnvironmentMap", _loadedSkyboxTexture);
+        _planeMaterial->SetTexture("EnvironmentMap", _loadedSkyboxTexture);*/
         _planeMaterial->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
-        _planeMaterial->SetParam<Vector3>("helllo", Vector3());
-        _planeMaterial->SetProperties(properties);*/
+        //_planeMaterial->SetParam<Vector3>("helllo", Vector3());
+        _planeMaterial->SetProperties(properties);
 
         properties.UseDiffuseMap = true;
         //properties.Diffuse = Color(0.35f, 0.3f, 0.4f);
@@ -1216,20 +1223,24 @@ namespace te
 
         _rigidBodyKnight = _sceneRenderableKnightSO->AddComponent<CRigidBody>();
         _rigidBodyKnight->Initialize();
-
         _boxColliderKnight = _sceneRenderableKnightSO->AddComponent<CBoxCollider>();
         _boxColliderKnight->Initialize();
 
-        _boxColliderKnight->SetScale(Vector3(3.0f, 3.0f, 3.0f));
-
-        /*_sceneRenderablePlaneSO = SceneObject::Create("Plane");
+        _sceneRenderablePlaneSO = SceneObject::Create("Plane");
         _sceneRenderablePlaneSO->SetParent(_sceneSO);
         _renderablePlane = _sceneRenderablePlaneSO->AddComponent<CRenderable>();
         _renderablePlane->SetMesh(_loadedMeshPlane);
         _renderablePlane->SetMaterial(_planeMaterial);
         _renderablePlane->SetName("Plane Renderable");
         _renderablePlane->Initialize();
-        _sceneRenderablePlaneSO->Move(Vector3(0.0, 0.1f, 0.0f));*/
+        _sceneRenderablePlaneSO->Move(Vector3(0.0, -3.0f, 0.0f));
+
+        _rigidBodyPlane = _sceneRenderablePlaneSO->AddComponent<CRigidBody>();
+        _rigidBodyPlane->Initialize();
+        _rigidBodyPlane->SetIsKinematic(true);
+        _planeColliderKnight = _sceneRenderablePlaneSO->AddComponent<CPlaneCollider>();
+        _planeColliderKnight->Initialize();
+
         // ######################################################
 
         // ######################################################
@@ -1263,7 +1274,7 @@ namespace te
         // ######################################################
 
         //EditorResManager::Instance().Add<Material>(_monkeyMaterial);
-        //EditorResManager::Instance().Add<Material>(_planeMaterial);
+        EditorResManager::Instance().Add<Material>(_planeMaterial);
         EditorResManager::Instance().Add<Material>(_knightMaterial);
         EditorResManager::Instance().Add<Shader>(gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque));
         EditorResManager::Instance().Add<Shader>(gBuiltinResources().GetBuiltinShader(BuiltinShader::Transparent));

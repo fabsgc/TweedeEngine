@@ -142,6 +142,7 @@ namespace te
         friend class CConeCollider;
         friend class CCylinderCollider;
         friend class CMeshCollider;
+        friend class CPlaneCollider;
         friend class CSphereCollider;
         using Component::DestroyInternal;
 

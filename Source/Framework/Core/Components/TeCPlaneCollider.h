@@ -22,6 +22,12 @@ namespace te
         /** @copydoc Component::Clone */
         void Clone(const HPlaneCollider& c);
 
+        /** @copydoc PlaneCollider::SetNormal */
+        void SetNormal(const Vector3& normal);
+
+        /** @copydoc PlaneCollider::GetNormal */
+        const Vector3& GetNormal() const { return _normal; }
+
     protected:
         friend class SceneObject;
 
@@ -33,5 +39,8 @@ namespace te
 
     protected:
         CPlaneCollider(); // Serialization only
+
+    protected:
+        Vector3 _normal = Vector3(0.0f, 1.0f, 0.0f);
     };
 }

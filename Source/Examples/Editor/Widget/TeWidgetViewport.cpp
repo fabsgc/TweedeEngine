@@ -52,27 +52,36 @@ namespace te
 
         _viewportCamera->GetViewport()->SetTarget(_renderData.RenderTex);
 
-        _onBeginCallback = [this] {
+        auto OnRetarget = [this] {
+            if (gVirtualInput().IsButtonDown(_reTargetBtn))
+            {
+                if (_selections.ClickedComponent)
+                {
+                    _viewportCameraUI->SetTarget(_selections.ClickedComponent->GetSceneObject()->GetTransform().GetPosition());
+                    gEditor().NeedsRedraw();
+                }
+                else if (_selections.ClickedSceneObject)
+                {
+                    _viewportCameraUI->SetTarget(_selections.ClickedSceneObject->GetTransform().GetPosition());
+                    gEditor().NeedsRedraw();
+                }
+            }
+        };
+
+        _onBeginCallback = [this, OnRetarget] {
+            ImVec2 mousePos = ImGui::GetMousePos();
+            ImVec2 windowPos = ImGui::GetWindowPos();
+            ImVec2 viewportPos(mousePos.x - windowPos.x, mousePos.y - windowPos.y - 26);
+
+            _viewportCameraUI->EnableZooming(false);
+
             // CCamerUI component is active only when original viewport camera is active
             if (ImGui::IsWindowFocused() && _viewportCamera.GetInternalPtr() == gEditor().GetViewportCamera().GetInternalPtr())
             {
                 _viewportCameraUI->EnableInput(true);
-
-                if (gVirtualInput().IsButtonDown(_reTargetBtn))
-                {
-                    if (_selections.ClickedComponent)
-                    {
-                        _viewportCameraUI->SetTarget(_selections.ClickedComponent->GetSceneObject()->GetTransform().GetPosition());
-                        gEditor().NeedsRedraw();
-                    }
-                    else if (_selections.ClickedSceneObject)
-                    {
-                        _viewportCameraUI->SetTarget(_selections.ClickedSceneObject->GetTransform().GetPosition());
-                        gEditor().NeedsRedraw();
-                    }
-                }
+                OnRetarget();
             }
-            else if (ImGui::IsWindowHovered() && ImGui::GetIO().MouseDown[ImGuiMouseButton_Right] 
+            else if (ImGui::IsWindowHovered() && ImGui::GetIO().MouseDown[ImGuiMouseButton_Right]
                 && _viewportCamera.GetInternalPtr() == gEditor().GetViewportCamera().GetInternalPtr())
             {
                 _viewportCameraUI->EnableInput(true);
@@ -80,6 +89,14 @@ namespace te
             else
             {
                 _viewportCameraUI->EnableInput(false);
+            }
+            
+            // Handle zooming if mouse is hovering windows (even if windows not focused)
+            if (viewportPos.x > 0.0f && viewportPos.x < _renderData.Width && viewportPos.y > 0.0f && viewportPos.y < _renderData.Height)
+            {
+                _viewportCameraUI->EnableInput(true);
+                _viewportCameraUI->EnableZooming(true);
+                OnRetarget();
             }
         };
     }
@@ -138,11 +155,6 @@ namespace te
 
         if (_isVisible && GuiAPI::Instance().IsGuiInitialized())
             ResetViewport();
-
-        if (ImGui::IsItemHovered(ImGuiHoveredFlags_RectOnly))
-            _viewportCameraUI->EnableZooming(true);
-        else
-            _viewportCameraUI->EnableZooming(false);
 
         if (ImGui::IsItemVisible())
             gEditor().SetImGuizmoState(Editor::ImGuizmoState::Active);

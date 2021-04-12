@@ -1,4 +1,5 @@
 #include "Components/TeCPlaneCollider.h"
+#include "Components/TeCBody.h"
 #include "Scene/TeSceneObject.h"
 #include "Scene/TeSceneManager.h"
 
@@ -19,7 +20,9 @@ namespace te
     SPtr<Collider> CPlaneCollider::CreateInternal()
     {
         const SPtr<SceneInstance>& scene = SO()->GetScene();
-        SPtr<Collider> collider = PlaneCollider::Create(*scene->GetPhysicsScene());
+        const Transform& tfrm = SO()->GetTransform();
+
+        SPtr<Collider> collider = PlaneCollider::Create(*scene->GetPhysicsScene(), _normal, tfrm.GetPosition(), tfrm.GetRotation());
         collider->SetOwner(PhysicsOwnerType::Component, this);
 
         return collider;
@@ -28,5 +31,24 @@ namespace te
     void CPlaneCollider::Clone(const HPlaneCollider& c)
     {
         CCollider::Clone(static_object_cast<CCollider>(c));
+    }
+
+    void CPlaneCollider::SetNormal(const Vector3& normal)
+    {
+        Vector3 clampedNormal = normal;
+        clampedNormal.Normalize();
+
+        if (_normal == clampedNormal)
+            return;
+
+        _normal = clampedNormal;
+
+        if (_internal != nullptr)
+        {
+            _getInternal()->SetNormal(clampedNormal);
+
+            if (_parent != nullptr)
+                _parent->UpdateMassDistribution();
+        }
     }
 }

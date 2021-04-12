@@ -26,13 +26,19 @@ namespace te
         UpdateShape();
     }
 
+    void BulletPlaneCollider::SetNormal(const Vector3& normal)
+    {
+        _normal = normal;
+        UpdateShape();
+    }
+
     void BulletPlaneCollider::UpdateShape()
     {
-        if (!_shape)
-        {
-            _shape = te_new<btStaticPlaneShape>(ToBtVector3(_normal), 0.0f);
-            _shape->setUserPointer(this);
-        }
+        if (_shape)
+            te_delete(_shape);
+
+        _shape = te_new<btStaticPlaneShape>(ToBtVector3(_normal), 0.0f);
+        _shape->setUserPointer(this);
 
         _shape->setLocalScaling(ToBtVector3(_internal ? _internal->GetScale() : Vector3::ONE));
     }

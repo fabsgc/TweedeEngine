@@ -17,7 +17,10 @@ namespace te
         /** @copydoc PlaneCollider::SetScale() */
         void SetScale(const Vector3& scale) override;
 
-        /** @copydoc PlaneCollider::GetRadius() */
+        /** @copydoc PlaneCollider::SetNormal() */
+        void SetNormal(const Vector3& normal) override;
+
+        /** @copydoc PlaneCollider::GetNormal() */
         const Vector3& GetNormal() const override { return _normal; }
 
     private:

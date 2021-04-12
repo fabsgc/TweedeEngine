@@ -2,6 +2,7 @@
 #include "Components/TeCBody.h"
 #include "Scene/TeSceneObject.h"
 #include "Scene/TeSceneManager.h"
+
 namespace te
 {
     CSphereCollider::CSphereCollider()

@@ -486,8 +486,8 @@ namespace te
         }
         else
         {
-            _rigidBody->setCcdMotionThreshold(std::numeric_limits<float>::infinity());
-            _rigidBody->setCcdSweptSphereRadius(0);
+            //_rigidBody->setCcdMotionThreshold(std::numeric_limits<float>::infinity());
+            //_rigidBody->setCcdSweptSphereRadius(0);
         }
     }
 }

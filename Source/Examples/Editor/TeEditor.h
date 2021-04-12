@@ -290,6 +290,9 @@ namespace te
 
         HRigidBody _rigidBodyKnight;
         HBoxCollider _boxColliderKnight;
+
+        HRigidBody _rigidBodyPlane;
+        HPlaneCollider _planeColliderKnight;
 #endif
     };
 
