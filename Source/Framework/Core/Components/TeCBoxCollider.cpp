@@ -21,12 +21,16 @@ namespace te
     SPtr<Collider> CBoxCollider::CreateInternal()
     {
         const SPtr<SceneInstance>& scene = SO()->GetScene();
-        const Transform& tfrm = SO()->GetTransform();
 
-        SPtr<Collider> collider = BoxCollider::Create(*scene->GetPhysicsScene(), _extents, tfrm.GetPosition(), tfrm.GetRotation());
+        SPtr<Collider> collider = BoxCollider::Create(*scene->GetPhysicsScene(), _extents);
         collider->SetOwner(PhysicsOwnerType::Component, this);
 
         return collider;
+    }
+
+    void CBoxCollider::Clone(const HBoxCollider& c)
+    {
+        CCollider::Clone(static_object_cast<CCollider>(c));
     }
 
     void CBoxCollider::SetExtents(const Vector3& extents)
@@ -40,15 +44,10 @@ namespace te
 
         if (_internal != nullptr)
         {
-           _getInternal()->SetExtents(clampedExtents);
+            _getInternal()->SetExtents(clampedExtents);
 
             if (_parent != nullptr)
-                _parent->UpdateMassDistribution();
+                _parent->AddCollider(static_object_cast<CCollider>(GetHandle()));
         }
-    }
-
-    void CBoxCollider::Clone(const HBoxCollider& c)
-    {
-        CCollider::Clone(static_object_cast<CCollider>(c));
     }
 }

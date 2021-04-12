@@ -81,18 +81,8 @@ namespace te
         _internal->SetIsKinematic(_isKinematic);
         _internal->SetFlags(_flags);
 
-        if (((UINT32)_flags & (UINT32)BodyFlag::AutoTensors) == 0)
-        {
-            _internal->SetCenterOfMass(_centerOfMass);
-            _internal->SetMass(_mass);
-        }
-        else
-        {
-            if (((UINT32)_flags & (UINT32)BodyFlag::AutoMass) == 0)
-                _internal->SetMass(_mass);
-
-            _internal->UpdateMassDistribution();
-        }
+        _internal->SetCenterOfMass(_centerOfMass);
+        _internal->SetMass(_mass);
     }
 
     void CRigidBody::OnTransformChanged(TransformChangedFlags flags)
@@ -104,9 +94,6 @@ namespace te
         {
             ClearColliders();
             UpdateColliders();
-
-            if (((UINT32)_flags & (UINT32)BodyFlag::AutoTensors) != 0)
-                _internal->UpdateMassDistribution();
 
 #if TE_DEBUG_MODE
             CheckForNestedBody();
@@ -254,11 +241,5 @@ namespace te
             CCollider* other = (CCollider*)raw.Colliders[1]->GetOwner(PhysicsOwnerType::Component);
             output.Colliders[1] = static_object_cast<CCollider>(other->GetHandle());
         }
-    }
-
-    void CRigidBody::UpdateMassDistribution()
-    {
-        if (_internal != nullptr)
-            return _internal->UpdateMassDistribution();
     }
 }

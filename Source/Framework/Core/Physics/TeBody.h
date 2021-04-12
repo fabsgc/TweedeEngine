@@ -18,10 +18,6 @@ namespace te
     {
         /** No options. */
         None = 0x00,
-        /** Automatically calculate center of mass transform and inertia tensors from child shapes (colliders). */
-        AutoTensors = 0x01,
-        /** Calculate mass distribution from child shapes (colliders). Only relevant when auto-tensors is on. */
-        AutoMass = 0x02,
         /**
          * Enables continous collision detection. This can prevent fast moving bodies from tunneling through each other.
          * This must also be enabled globally in Physics otherwise the flag will be ignored.
@@ -38,32 +34,11 @@ namespace te
         Body(const HSceneObject& linkedSO);
         virtual ~Body() = default;
 
-        /**
-         * Moves the body to a specific position. This method will ensure physically correct movement, meaning the body
-         * will collide with other objects along the way.
-         */
-        virtual void Move(const Vector3& position) = 0;
-
-        /**
-         * Rotates the body. This method will ensure physically correct rotation, meaning the body will collide with
-         * other objects along the way.
-         */
-        virtual void Rotate(const Quaternion& rotation) = 0;
-
         /** Returns the current position of the body. */
         virtual Vector3 GetPosition() const = 0;
 
         /** Returns the current rotation of the body. */
         virtual Quaternion GetRotation() const = 0;
-
-        /**
-         * Recalculates body's mass, inertia tensors and center of mass depending on the currently set child colliders.
-         * This should be called whenever relevant child collider properties change (like mass or shape).
-         *
-         * If automatic tensor calculation is turned off then this will do nothing. If automatic mass calculation is turned
-         * off then this will use the mass set directly on the body using setMass().
-         */
-        virtual void UpdateMassDistribution() { }
 
         /**
          * Applies new transform values retrieved from the most recent physics update (values resulting from physics
@@ -157,15 +132,6 @@ namespace te
          * @param[in]	mode		Determines what is the type of @p torque.
          */
         virtual void ApplyTorque(const Vector3& torque, ForceMode mode) const = 0;
-
-        /**
-         * Recalculates body's mass, inertia tensors and center of mass depending on the currently set child colliders.
-         * This should be called whenever relevant child collider properties change (like mass or shape).
-         *
-         * If automatic tensor calculation is turned off then this will do nothing. If automatic mass calculation is turned
-         * off then this will use the mass set directly on the body using setMass().
-         */
-        virtual void updateMassDistribution() { }
         
         /** Flags that control the behaviour of the body. */
         virtual void SetFlags(BodyFlag flags) { _flags = flags; }

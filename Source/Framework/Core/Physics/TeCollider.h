@@ -37,17 +37,23 @@ namespace te
         /** Retrieves the scale of the collider geometry. */
         Vector3 GetScale() const;
 
-        /** @copydoc FCollider::SetMass */
-        void SetMass(float mass);
-
-        /** @copydoc FCollider::GetMass */
-        float GetMass() const;
-
         /** @copydoc FCollider::SetCenter */
         void SetCenter(const Vector3& center);
 
         /** @copydoc FCollider::GetCenter */
         const Vector3& GetCenter() const;
+
+        /** @copydoc FCollider::SetPosition */
+        void SetPosition(const Vector3& position);
+
+        /** @copydoc FCollider::GetPosition */
+        const Vector3& GetPosition() const;
+
+        /** @copydoc FCollider::SetPosition */
+        void SetRotation(const Quaternion& rotation);
+
+        /** @copydoc FCollider::GetPosition */
+        const Quaternion& GetRotation() const;
 
         /** @copydoc FCollider::SetCollisionReportMode */
         void SetCollisionReportMode(CollisionReportMode mode);

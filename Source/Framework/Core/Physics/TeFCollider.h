@@ -19,23 +19,11 @@ namespace te
         /** @copydoc GetIsTrigger() */
         virtual bool GetIsTrigger() const = 0;
 
-        /**
-         * Determines the scale of the collider relative to its parent
-         */
+        /** Determines the scale of the collider relative to its parent */
         virtual void SetScale(const Vector3& scale) { _scale = scale; }
 
         /** @copydoc SetScale() */
         virtual const Vector3& GetScale() const { return _scale; }
-
-        /**
-         * Determines the mass of the collider. Only relevant if the collider is part of a rigidbody. Ultimately this will
-         * determine the total mass, center of mass and inertia tensors of the parent rigidbody (if they're being calculated
-         * automatically).
-         */
-        virtual void SetMass(float mass) { _mass = mass; }
-
-        /** @copydoc SetMass() */
-        virtual float GetMass() const { return _mass; }
 
         /** * Determines the center of the collider relative to its parent */
         virtual void SetCenter(const Vector3& center) { _center = center; }

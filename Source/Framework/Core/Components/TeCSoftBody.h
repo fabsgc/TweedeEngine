@@ -78,9 +78,6 @@ namespace te
         /** Body::ProcessCollisionData */
         void ProcessCollisionData(const CollisionDataRaw& raw, CollisionData& output) override;
 
-        /** @copydoc Body::UpdateMassDistribution */
-        void UpdateMassDistribution() override;
-
     protected:
         CSoftBody(); // Serialization only
     };

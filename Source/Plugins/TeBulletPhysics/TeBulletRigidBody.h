@@ -17,12 +17,6 @@ namespace te
         BulletRigidBody(BulletPhysics* physics, BulletScene* scene, const HSceneObject& linkedSO);
         ~BulletRigidBody();
 
-        /** @copydoc Body::Move */
-        void Move(const Vector3& position) override;
-
-        /** @copydoc Body::Rotate */
-        void Rotate(const Quaternion& rotation) override;
-
         /** @copydoc Body::GetPosition */
         Vector3 GetPosition() const override;
 
@@ -104,9 +98,6 @@ namespace te
         /** @copydoc Body::RemoveColliders() */
         void RemoveColliders() override;
 
-        /** @copydoc Body::UpdateMassDistribution */
-        void UpdateMassDistribution() override;
-
         /** @copydoc Body::SetFlags */
         void SetFlags(BodyFlag flags) override;
 
@@ -139,7 +130,8 @@ namespace te
         BulletPhysics* _physics;
         BulletScene* _scene;
 
-        BulletFCollider* _collider;
+        btCompoundShape* _shape;
+        Vector<BulletFCollider*> _colliders;
 
         float _mass = 1.0f;
         float _friction = 0.0f;
@@ -156,6 +148,6 @@ namespace te
         Vector3 _angularVelocity = Vector3::ZERO;
         Quaternion _rotation = Quaternion::IDENTITY;
 
-        BodyFlag _flags = (BodyFlag)((UINT32)BodyFlag::AutoTensors | (UINT32)BodyFlag::AutoMass);
+        BodyFlag _flags = (BodyFlag)((UINT32)BodyFlag::None);
     };
 }

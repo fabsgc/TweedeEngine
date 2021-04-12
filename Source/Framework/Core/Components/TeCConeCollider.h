@@ -22,6 +22,18 @@ namespace te
         /** @copydoc Component::Clone */
         void Clone(const HConeCollider& c);
 
+        /** @copydoc CapsuleCollider::SetRadius() */
+        void SetRadius(float radius);
+
+        /** @copydoc CapsuleCollider::GetRadius() */
+        float GetRadius() const { return _radius; }
+
+        /** @copydoc CapsuleCollider::SetHeight() */
+        void SetHeight(float height);
+
+        /** @copydoc CapsuleCollider::GetHeight() */
+        float GetHeight() const { return _height; }
+
     protected:
         friend class SceneObject;
 
@@ -33,5 +45,9 @@ namespace te
 
     protected:
         CConeCollider(); // Serialization only
+
+    protected:
+        float _radius = 1.0f;
+        float _height = 1.0f;
     };
 }

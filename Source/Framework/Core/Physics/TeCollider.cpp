@@ -30,16 +30,6 @@ namespace te
         return _internal->GetScale();
     }
 
-    void Collider::SetMass(float mass)
-    {
-        _internal->SetMass(mass);
-    }
-
-    float Collider::GetMass() const
-    {
-        return _internal->GetMass();
-    }
-
     void Collider::SetCenter(const Vector3& center)
     {
         _internal->SetCenter(center);
@@ -48,6 +38,26 @@ namespace te
     const Vector3& Collider::GetCenter() const
     {
         return _internal->GetCenter();
+    }
+
+    void Collider::SetPosition(const Vector3& position)
+    {
+        _internal->SetPosition(position);
+    }
+
+    const Vector3& Collider::GetPosition() const
+    {
+        return _internal->GetPosition();
+    }
+
+    void Collider::SetRotation(const Quaternion& rotation)
+    {
+        _internal->SetRotation(rotation);
+    }
+
+    const Quaternion& Collider::GetRotation() const
+    {
+        return _internal->GetRotation();
     }
 
     void Collider::SetCollisionReportMode(CollisionReportMode mode)

@@ -41,12 +41,6 @@ namespace te
         /** @copydoc Component::Update */
         void Update() override { }
 
-        /** @copydoc Body::Move */
-        void Move(const Vector3& position);
-
-        /** @copydoc Body::Rotate */
-        void Rotate(const Quaternion& rotation);
-
         /** @copydoc Body::SetMass */
         void SetMass(float mass);
 
@@ -185,9 +179,6 @@ namespace te
         /** Appends Component referenes for the colliders to the collision data. */
         virtual void ProcessCollisionData(const CollisionDataRaw& raw, CollisionData& output) = 0;
 
-        /** @copydoc Body::UpdateMassDistribution */
-        virtual void UpdateMassDistribution() = 0;
-
     protected:
         CBody(UINT32 type);
 
@@ -207,7 +198,7 @@ namespace te
         Vector3 _velocity = Vector3::ZERO;
         Vector3 _angularVelocity = Vector3::ZERO;
 
-        BodyFlag _flags = (BodyFlag)((UINT32)BodyFlag::AutoTensors | (UINT32)BodyFlag::AutoMass);
+        BodyFlag _flags = (BodyFlag)((UINT32)BodyFlag::None);
         CollisionReportMode _collisionReportMode = CollisionReportMode::None;
     };
 }

@@ -21,9 +21,8 @@ namespace te
     SPtr<Collider> CSphereCollider::CreateInternal()
     {
         const SPtr<SceneInstance>& scene = SO()->GetScene();
-        const Transform& tfrm = SO()->GetTransform();
 
-        SPtr<Collider> collider = SphereCollider::Create(*scene->GetPhysicsScene(), _radius, tfrm.GetPosition(), tfrm.GetRotation());
+        SPtr<Collider> collider = SphereCollider::Create(*scene->GetPhysicsScene(), _radius);
         collider->SetOwner(PhysicsOwnerType::Component, this);
 
         return collider;
@@ -47,7 +46,7 @@ namespace te
             _getInternal()->SetRadius(clampedRadius);
 
             if (_parent != nullptr)
-                _parent->UpdateMassDistribution();
+                _parent->AddCollider(static_object_cast<CCollider>(GetHandle()));
         }
     }
 }

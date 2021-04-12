@@ -81,9 +81,6 @@ namespace te
             ClearColliders();
             UpdateColliders();
 
-            if (((UINT32)_flags & (UINT32)BodyFlag::AutoTensors) != 0)
-                _internal->UpdateMassDistribution();
-
 #if TE_DEBUG_MODE
             CheckForNestedBody();
 #endif
@@ -143,11 +140,6 @@ namespace te
     }
 
     void CSoftBody::ProcessCollisionData(const CollisionDataRaw& raw, CollisionData& output)
-    {
-        // TODO
-    }
-
-    void CSoftBody::UpdateMassDistribution()
     {
         // TODO
     }

@@ -7,22 +7,50 @@ namespace te
         : _physics(physics)
         , _scene(scene)
         , _shape(shape)
-    { }
+    { 
+        SetBtTransform();
+    }
 
     BulletFCollider::~BulletFCollider()
     { }
 
     void BulletFCollider::SetIsTrigger(bool value)
     {
-        if(value)
-            _isTrigger = true;
-        else
-            _isTrigger = false;
+        _isTrigger = value;
     }
 
     bool BulletFCollider::GetIsTrigger() const
     {
         return _isTrigger;
+    }
+
+    void BulletFCollider::SetCenter(const Vector3& center)
+    {
+        FCollider::SetCenter(center);
+        SetBtTransform();
+    }
+
+    void BulletFCollider::SetPosition(const Vector3& position)
+    {
+        FCollider::SetPosition(position);
+        SetBtTransform();
+    }
+
+    void BulletFCollider::SetRotation(const Quaternion& rotation)
+    {
+        FCollider::SetRotation(rotation);
+        SetBtTransform();
+    }
+
+    void BulletFCollider::SetBtTransform()
+    {
+        _tranform.setOrigin(ToBtVector3(_position + ToQuaternion(_tranform.getRotation()) * _center));
+        _tranform.setRotation(ToBtQuaternion(_rotation));
+    }
+
+    const btTransform& BulletFCollider::GetBtTransform()
+    {
+        return _tranform;
     }
 
     CollisionReportMode BulletFCollider::GetCollisionReportMode() const

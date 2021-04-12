@@ -20,9 +20,8 @@ namespace te
     SPtr<Collider> CPlaneCollider::CreateInternal()
     {
         const SPtr<SceneInstance>& scene = SO()->GetScene();
-        const Transform& tfrm = SO()->GetTransform();
 
-        SPtr<Collider> collider = PlaneCollider::Create(*scene->GetPhysicsScene(), _normal, tfrm.GetPosition(), tfrm.GetRotation());
+        SPtr<Collider> collider = PlaneCollider::Create(*scene->GetPhysicsScene(), _normal);
         collider->SetOwner(PhysicsOwnerType::Component, this);
 
         return collider;
@@ -48,7 +47,7 @@ namespace te
             _getInternal()->SetNormal(clampedNormal);
 
             if (_parent != nullptr)
-                _parent->UpdateMassDistribution();
+                _parent->AddCollider(static_object_cast<CCollider>(GetHandle()));
         }
     }
 }

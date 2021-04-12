@@ -19,6 +19,7 @@ namespace te
     SPtr<Collider> CMeshCollider::CreateInternal()
     {
         const SPtr<SceneInstance>& scene = SO()->GetScene();
+
         SPtr<Collider> collider = MeshCollider::Create(*scene->GetPhysicsScene());
         collider->SetOwner(PhysicsOwnerType::Component, this);
 

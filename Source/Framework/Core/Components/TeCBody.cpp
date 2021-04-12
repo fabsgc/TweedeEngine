@@ -46,26 +46,6 @@ namespace te
         _collisionReportMode = c->_collisionReportMode;
     }
 
-    void CBody::Move(const Vector3& position)
-    {
-        if (_internal != nullptr)
-            _internal->Move(position);
-
-        _notifyFlags = (TransformChangedFlags)0;
-        SO()->SetWorldPosition(position);
-        _notifyFlags = (TransformChangedFlags)(TCF_Parent | TCF_Transform);
-    }
-
-    void CBody::Rotate(const Quaternion& rotation)
-    {
-        if (_internal != nullptr)
-            _internal->Rotate(rotation);
-
-        _notifyFlags = (TransformChangedFlags)0;
-        SO()->SetWorldRotation(rotation);
-        _notifyFlags = (TransformChangedFlags)(TCF_Parent | TCF_Transform);
-    }
-
     void CBody::SetMass(float mass)
     {
         _mass = mass;
@@ -204,7 +184,6 @@ namespace te
         if (_internal != nullptr)
         {
             _internal->SetFlags(flags);
-            _internal->UpdateMassDistribution();
         }
     }
 

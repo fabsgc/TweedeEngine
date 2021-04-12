@@ -22,10 +22,10 @@ namespace te
         /** @copydoc Component::Clone */
         void Clone(const HSphereCollider& c);
 
-        /** @copydoc SphereCollider::SetRadius */
+        /** @copydoc SphereCollider::SetRadius() */
         void SetRadius(float radius);
 
-        /** @copydoc SphereCollider::GetRadius */
+        /** @copydoc SphereCollider::GetRadius() */
         float GetRadius() const { return _radius; }
 
     protected:

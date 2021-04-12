@@ -49,7 +49,7 @@ namespace te
         , _rigidBody(nullptr)
         , _physics(physics)
         , _scene(scene)
-        , _collider(nullptr)
+        , _shape(nullptr)
     { 
         _internal = te_new<BulletFBody>(physics, scene);
 
@@ -57,28 +57,17 @@ namespace te
         _restitution = DEFAULT_RESTITUTION;
         _friction = DEFAULT_FRICTION;
         _rollingFriction = DEFAULT_ROLLING_FRICTION;
-        _useGravity = true;
         _gravity = _physics->GetDesc().Gravity;
-        _isKinematic = false;
-        _inWorld = false;
 
         AddToWorld();
     }
 
     BulletRigidBody::~BulletRigidBody()
     {
+        _colliders.clear();
+
         Release();
         te_delete(_internal);
-    }
-
-    void BulletRigidBody::Move(const Vector3& position)
-    {
-        // TODO
-    }
-
-    void BulletRigidBody::Rotate(const Quaternion& rotation)
-    {
-        // TODO
     }
 
     Vector3 BulletRigidBody::GetPosition() const
@@ -141,12 +130,6 @@ namespace te
 
     void BulletRigidBody::SetMass(float mass)
     {
-        if (((UINT32)_flags & (UINT32)BodyFlag::AutoMass) != 0)
-        {
-            TE_DEBUG("Attempting to set Rigidbody mass, but it has automatic mass calculation turned on.");
-            return;
-        }
-
         mass = std::max(mass, 0.0f);
         if (mass != _mass)
         {
@@ -161,7 +144,7 @@ namespace te
             return;
 
         _isKinematic = kinematic;
-        AddToWorld();
+        UpdateKinematicFlag();
     }
 
     void BulletRigidBody::SetVelocity(const Vector3& velocity)
@@ -225,7 +208,7 @@ namespace te
             return;
 
         _useGravity = gravity;
-        AddToWorld();
+        UpdateGravityFlag();
     }
 
     void BulletRigidBody::SetFlags(BodyFlag flags)
@@ -234,28 +217,18 @@ namespace te
             return;
 
         _flags = flags;
-
-        //AddToWorld();
+        UpdateCCDFlag();
     }
 
     void BulletRigidBody::SetCenterOfMass(const Vector3& centerOfMass)
     {
-        if (((UINT32)_flags & (UINT32)BodyFlag::AutoTensors) != 0)
-        {
-            TE_DEBUG("Attempting to set Rigidbody center of mass, but it has automatic tensor calculation turned on.");
-            return;
-        }
-
         _centerOfMass = centerOfMass;
         SetTransform(GetPosition(), GetRotation());
     }
 
     const Vector3& BulletRigidBody::GetCenterOfMass() const
     {
-        if (_collider && ((UINT32)_flags & (UINT32)BodyFlag::AutoTensors))
-            return _collider->GetCenter();
-        else
-            return _centerOfMass;
+        return _centerOfMass;
     }
 
     void BulletRigidBody::ApplyForce(const Vector3& force, ForceMode mode) const
@@ -299,39 +272,45 @@ namespace te
 
     void BulletRigidBody::AddCollider(Collider* collider)
     {
-        _collider = static_cast<BulletFCollider*>(collider->GetInternal());
+        BulletFCollider* fCollider = static_cast<BulletFCollider*>(collider->GetInternal());
+        auto it = std::find(_colliders.begin(), _colliders.end(), fCollider);
+        if (it == _colliders.end())
+        {
+            BulletFCollider* fCollider = static_cast<BulletFCollider*>(collider->GetInternal());
+            _colliders.push_back(fCollider);
+        }        
 
-        if (_collider->GetShape())
-            AddToWorld();
-        else
-            RemoveFromWorld();
+        AddToWorld();
     }
 
     void BulletRigidBody::RemoveCollider(Collider* collider)
     {
-        _collider = nullptr;
+        BulletFCollider* fCollider = static_cast<BulletFCollider*>(collider->GetInternal());
+        auto it = std::find(_colliders.begin(), _colliders.end(), fCollider);
+        if (it != _colliders.end())
+        {
+            _shape->removeChildShape(fCollider->GetShape());
+            _shape->recalculateLocalAabb();
+            _colliders.erase(it);
+        }
 
-        if(_inWorld)
+        if(_colliders.size() == 0 && _inWorld)
             RemoveFromWorld();
+        else if(_colliders.size() > 0)
+            AddToWorld();
     }
 
     void BulletRigidBody::RemoveColliders()
     {
-        _collider = nullptr;
+        for (auto& collider : _colliders)
+        {
+            _shape->removeChildShape(collider->GetShape());
+        }
+
+        _colliders.clear();
 
         if (_inWorld)
             RemoveFromWorld();
-    }
-
-    void BulletRigidBody::UpdateMassDistribution()
-    {
-        if (_rigidBody == nullptr)
-            return;
-
-        if (((UINT32)_flags & (UINT32)BodyFlag::AutoTensors) == 0)
-            return;
-
-        AddToWorld();
     }
 
     void BulletRigidBody::AddToWorld()
@@ -340,39 +319,26 @@ namespace te
             _mass = 0.0f;
 
         btVector3 localIntertia = btVector3(0, 0, 0);
-        btCollisionShape* shape = (_collider) ? _collider->GetShape() : nullptr;
-
-        if (((UINT32)_flags & (UINT32)BodyFlag::AutoTensors))
-        {
-            if (_collider)
-            {
-                _mass = _collider->GetMass();
-                _centerOfMass = _collider->GetCenter();
-            }
-
-            if (((UINT32)_flags & (UINT32)BodyFlag::AutoMass) == 0)
-            {
-                localIntertia = _rigidBody ? _rigidBody->getLocalInertia() : localIntertia;
-                _collider->GetShape()->calculateLocalInertia(_mass, localIntertia);
-            }  
-            else if (_rigidBody && shape)
-            {
-                _rigidBody->updateInertiaTensor();
-            }
-        }
-
         Release();
+
+        {
+            _shape = te_new<btCompoundShape>();
+            for (auto& collider : _colliders)
+                _shape->addChildShape(collider->GetBtTransform(), collider->GetShape());
+
+            _shape->calculateLocalInertia(_mass, localIntertia);
+        }
 
         {
             // Create a motion state (memory will be freed by the RigidBody)
             const auto motionState = te_new<MotionState>(this);
 
-            btRigidBody::btRigidBodyConstructionInfo constructionInfo(_mass, motionState, shape, localIntertia);
+            btRigidBody::btRigidBodyConstructionInfo constructionInfo(_mass, motionState, _shape, localIntertia);
             constructionInfo.m_friction = _friction;
             constructionInfo.m_rollingFriction = _rollingFriction;
             constructionInfo.m_restitution = _restitution;
             constructionInfo.m_localInertia = localIntertia;
-            constructionInfo.m_collisionShape = shape;
+            constructionInfo.m_collisionShape = _shape;
             constructionInfo.m_motionState = motionState;
 
             _rigidBody = te_new<btRigidBody>(constructionInfo);
@@ -384,18 +350,20 @@ namespace te
             UpdateGravityFlag();
             UpdateCCDFlag();
 
-            _scene->AddRigidBody(_rigidBody);
-
-            _inWorld = true;
-
-            if (_mass > 0.0f)
+            if (_colliders.size() > 0)
             {
-                Activate();
-            }
-            else
-            {
-                SetVelocity(Vector3::ZERO);
-                SetAngularVelocity(Vector3::ZERO);
+                _scene->AddRigidBody(_rigidBody);
+                _inWorld = true;
+
+                if (_mass > 0.0f)
+                {
+                    Activate();
+                }
+                else
+                {
+                    SetVelocity(Vector3::ZERO);
+                    SetAngularVelocity(Vector3::ZERO);
+                }
             }
         }
     }
@@ -410,7 +378,10 @@ namespace te
         te_delete(_rigidBody->getMotionState());
         te_delete(_rigidBody);
 
+        te_delete(_shape);
+
         _rigidBody = nullptr;
+        _shape = nullptr;
     }
 
     void BulletRigidBody::RemoveFromWorld()
@@ -486,8 +457,8 @@ namespace te
         }
         else
         {
-            //_rigidBody->setCcdMotionThreshold(std::numeric_limits<float>::infinity());
-            //_rigidBody->setCcdSweptSphereRadius(0);
+            _rigidBody->setCcdMotionThreshold(std::numeric_limits<float>::infinity());
+            _rigidBody->setCcdSweptSphereRadius(0);
         }
     }
 }

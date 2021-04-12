@@ -34,11 +34,11 @@ namespace te
 
     void BulletPlaneCollider::UpdateShape()
     {
-        if (_shape)
-            te_delete(_shape);
-
-        _shape = te_new<btStaticPlaneShape>(ToBtVector3(_normal), 0.0f);
-        _shape->setUserPointer(this);
+        if (!_shape)
+        {
+            _shape = te_new<btStaticPlaneShape>(ToBtVector3(_normal), 0.0f);
+            _shape->setUserPointer(this);
+        }
 
         _shape->setLocalScaling(ToBtVector3(_internal ? _internal->GetScale() : Vector3::ONE));
     }

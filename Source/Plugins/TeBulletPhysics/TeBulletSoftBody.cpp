@@ -17,16 +17,6 @@ namespace te
         te_delete(_internal);  // TODO
     }
 
-    void BulletSoftBody::Move(const Vector3& position)
-    {
-        // TODO
-    }
-
-    void BulletSoftBody::Rotate(const Quaternion& rotation)
-    {
-        // TODO
-    }
-
     Vector3 BulletSoftBody::GetPosition() const
     {
         return _position;
@@ -115,11 +105,6 @@ namespace te
     void BulletSoftBody::RemoveColliders()
     {
         TE_PRINT("Remove all Colliders");
-    }
-
-    void BulletSoftBody::UpdateMassDistribution()
-    {
-        // TODO
     }
 
     void BulletSoftBody::SetFlags(BodyFlag flags)

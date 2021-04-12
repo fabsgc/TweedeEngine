@@ -44,8 +44,9 @@ namespace te
         _collisionReportMode = c->_collisionReportMode;
         _isTrigger = c->_isTrigger;
         _scale = c->_scale;
-        _mass = c->_mass;
         _center = c->_center;
+        _position = c->_position;
+        _rotation = c->_rotation;
     }
 
     void CCollider::SetIsTrigger(bool value)
@@ -58,9 +59,8 @@ namespace te
         if (_internal != nullptr)
         {
             _internal->SetIsTrigger(value);
-            UpdateParentBody();
 
-            // TODO
+            UpdateParentBody();
         }
     }
 
@@ -76,26 +76,7 @@ namespace te
             _internal->SetScale(scale);
 
             if (_parent != nullptr)
-            {
-                _parent->RemoveCollider(static_object_cast<CCollider>(_thisHandle));
                 _parent->AddCollider(static_object_cast<CCollider>(_thisHandle));
-            }
-        }
-    }
-
-    void CCollider::SetMass(float mass)
-    {
-        if (_mass == mass)
-            return;
-
-        _mass = mass;
-
-        if (_internal != nullptr)
-        {
-            _internal->SetMass(mass);
-
-            if (_parent != nullptr)
-                _parent->UpdateMassDistribution();
         }
     }
 
@@ -111,7 +92,39 @@ namespace te
             _internal->SetCenter(center);
 
             if (_parent != nullptr)
-                _parent->UpdateMassDistribution();
+                _parent->AddCollider(static_object_cast<CCollider>(_thisHandle));
+        }
+    }
+
+    void CCollider::SetPosition(const Vector3& position)
+    {
+        if (_position == position)
+            return;
+
+        _position = position;
+
+        if (_internal != nullptr)
+        {
+            _internal->SetPosition(position);
+
+            if (_parent != nullptr)
+                _parent->AddCollider(static_object_cast<CCollider>(_thisHandle));
+        }
+    }
+
+    void CCollider::SetRotation(const Quaternion& rotation)
+    {
+        if (_rotation == rotation)
+            return;
+
+        _rotation = rotation;
+
+        if (_internal != nullptr)
+        {
+            _internal->SetRotation(rotation);
+
+            if (_parent != nullptr)
+                _parent->AddCollider(static_object_cast<CCollider>(_thisHandle));
         }
     }
 

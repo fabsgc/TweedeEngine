@@ -22,6 +22,12 @@ namespace te
         /** @copydoc Component::Clone */
         void Clone(const HCylinderCollider& c);
 
+        /** @copydoc CylinderCollider::SetExtents() */
+        void SetExtents(const Vector3& extents);
+
+        /** @copydoc CylinderCollider::GetExtents() */
+        Vector3 GetExtents() const { return _extents; }
+
     protected:
         friend class SceneObject;
 
@@ -33,5 +39,8 @@ namespace te
 
     protected:
         CCylinderCollider(); // Serialization only
+
+    protected:
+        Vector3 _extents = Vector3(0.5f, 0.5f, 0.5f);
     };
 }

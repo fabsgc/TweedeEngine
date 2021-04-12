@@ -46,17 +46,23 @@ namespace te
         /** @copydoc Collider::GetScale */
         const Vector3& GetScale() const { return _scale; }
 
-        /** @copydoc Collider::SetMass */
-        void SetMass(float mass);
-
-        /** @copydoc Collider::GetMass */
-        float GetMass() const { return _mass; }
-
         /** @copydoc Collider::SetCenter */
         void SetCenter(const Vector3& center);
 
         /** @copydoc Collider::GetCenter */
         const Vector3& GetCenter() const { return _center; }
+
+        /** @copydoc Collider::SetPosition */
+        void SetPosition(const Vector3& position);
+
+        /** @copydoc Collider::GetPosition */
+        const Vector3& GetPosition() const { return _position; }
+
+        /** @copydoc Collider::SetRotation */
+        void SetRotation(const Quaternion& quaternion);
+
+        /** @copydoc Collider::GetPosition */
+        const Quaternion& GetRotation() const { return _rotation; }
 
         /** @copydoc Collider::GetBody */
         HBody GetBody() const { return _parent; }
@@ -125,11 +131,6 @@ namespace te
          */
         void SetBody(const HBody& rigidbody, bool internal = false);
 
-        /**
-         * Updates the transform of the internal Collider representation from the transform of the component's scene object.
-         */
-        void UpdateTransform();
-
         /** Applies the collision report mode to the internal collider depending on the current state. */
         void UpdateCollisionReportMode();
 
@@ -153,10 +154,11 @@ namespace te
         SPtr<Collider> _internal;
         HBody _parent;
 
-        float _mass = 1.0f;
         bool _isTrigger = false;
         Vector3 _scale = Vector3::ONE;
         Vector3 _center = Vector3::ZERO;
+        Vector3 _position = Vector3::ZERO;
+        Quaternion _rotation = Quaternion::IDENTITY;
         CollisionReportMode _collisionReportMode = CollisionReportMode::None;
     };
 }

@@ -19,6 +19,15 @@ namespace te
         /** @copydoc FCollider::GetIsTrigger */
         bool GetIsTrigger() const override;
 
+        /** @copydoc FCollider::SetCenter */
+        void SetCenter(const Vector3& center) override;
+
+        /** @copydoc FCollider::SetPosition */
+        void SetPosition(const Vector3& position) override;
+
+        /** @copydoc FCollider::SetRotation */
+        void SetRotation(const Quaternion& rotation) override;
+
         /** @copydoc FCollider::SetCollisionReportMode */
         void SetCollisionReportMode(CollisionReportMode mode) override;
 
@@ -31,6 +40,13 @@ namespace te
         /** Return current btCollisionShape */
         const auto& GetShape() const { return _shape; }
 
+        /** Using relative position and rotation of collider, build associated btTransform */
+        const btTransform& GetBtTransform();
+
+    protected:
+        /** @copydoc GetBtTransform() */
+        void SetBtTransform();
+
     protected:
         BulletPhysics* _physics;
         BulletScene* _scene;
@@ -39,6 +55,7 @@ namespace te
         bool _isStatic = true;
 
         btCollisionShape* _shape;
+        btTransform _tranform;
 
         CollisionReportMode _collisionReportMode = CollisionReportMode::None;
     };
