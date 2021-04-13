@@ -12,6 +12,6 @@ namespace te
 
     BulletConeTwistJoint::~BulletConeTwistJoint()
     {
-        te_delete(_internal);
+        te_delete((BulletFJoint*)_internal);
     }
 }

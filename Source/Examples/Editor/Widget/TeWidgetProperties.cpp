@@ -1,10 +1,22 @@
 #include "TeWidgetProperties.h"
 
-#include "ImGui/imgui.h"
-#include "ImGui/imgui_internal.h"
 #include "../TeEditorResManager.h"
 #include "../TeEditorUtils.h"
+#include "ImGui/imgui.h"
+#include "ImGui/imgui_internal.h"
 #include "Resources/TeResourceManager.h"
+#include "Resources/TeBuiltinResources.h"
+#include "String/TeUnicode.h"
+#include "Utility/TeFileSystem.h"
+#include "Scene/TeSceneManager.h"
+#include "Scene/TeSceneObject.h"
+#include "RenderAPI/TeSubMesh.h"
+#include "Mesh/TeMesh.h"
+#include "Importer/TeMeshImportOptions.h"
+#include "Importer/TeTextureImportOptions.h"
+#include "Scripting/TeScriptManager.h"
+#include "Audio/TeAudioClip.h"
+#include "Audio/TeAudioClipImportOptions.h"
 #include "Components/TeCRenderable.h"
 #include "Components/TeCCameraFlyer.h"
 #include "Components/TeCCameraUI.h"
@@ -18,18 +30,13 @@
 #include "Components/TeCAudioSource.h"
 #include "Components/TeCRigidBody.h"
 #include "Components/TeCSoftBody.h"
-#include "Scene/TeSceneManager.h"
-#include "Scene/TeSceneObject.h"
-#include "RenderAPI/TeSubMesh.h"
-#include "Mesh/TeMesh.h"
-#include "Importer/TeMeshImportOptions.h"
-#include "Importer/TeTextureImportOptions.h"
-#include "Resources/TeBuiltinResources.h"
-#include "String/TeUnicode.h"
-#include "Utility/TeFileSystem.h"
-#include "Scripting/TeScriptManager.h"
-#include "Audio/TeAudioClip.h"
-#include "Audio/TeAudioClipImportOptions.h"
+#include "Components/TeCBoxCollider.h"
+#include "Components/TeCCapsuleCollider.h"
+#include "Components/TeCConeCollider.h"
+#include "Components/TeCCylinderCollider.h"
+#include "Components/TeCMeshCollider.h"
+#include "Components/TeCPlaneCollider.h"
+#include "Components/TeCSphereCollider.h"
 
 namespace te
 {
@@ -554,6 +561,12 @@ namespace te
         bool hasChanged = false;
         SPtr<CRigidBody> rigidBody = std::static_pointer_cast<CRigidBody>(_selections.ClickedComponent);
 
+        if (ImGui::CollapsingHeader("Rigid Body", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            if (ShowBody(rigidBody))
+                hasChanged = true;
+        }
+
         return hasChanged;
     }
 
@@ -561,6 +574,68 @@ namespace te
     {
         bool hasChanged = false;
         SPtr<CSoftBody> softBody = std::static_pointer_cast<CSoftBody>(_selections.ClickedComponent);
+
+        if (ImGui::CollapsingHeader("Soft Body", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            if (ShowBody(softBody))
+                hasChanged = true;
+        }
+
+        return hasChanged;
+    }
+
+    bool WidgetProperties::ShowCBoxColliderProperties()
+    {
+        bool hasChanged = false;
+        SPtr<CBoxCollider> softBody = std::static_pointer_cast<CBoxCollider>(_selections.ClickedComponent);
+
+        return hasChanged;
+    }
+
+    bool WidgetProperties::ShowCCapsuleColliderProperties()
+    {
+        bool hasChanged = false;
+        SPtr<CCapsuleCollider> softBody = std::static_pointer_cast<CCapsuleCollider>(_selections.ClickedComponent);
+
+        return hasChanged;
+    }
+
+    bool WidgetProperties::ShowCConeColliderProperties()
+    {
+        bool hasChanged = false;
+        SPtr<CConeCollider> softBody = std::static_pointer_cast<CConeCollider>(_selections.ClickedComponent);
+
+        return hasChanged;
+    }
+
+    bool WidgetProperties::ShowCCylinderColliderProperties()
+    {
+        bool hasChanged = false;
+        SPtr<CCylinderCollider> softBody = std::static_pointer_cast<CCylinderCollider>(_selections.ClickedComponent);
+
+        return hasChanged;
+    }
+
+    bool WidgetProperties::ShowCMeshColliderProperties()
+    {
+        bool hasChanged = false;
+        SPtr<CMeshCollider> softBody = std::static_pointer_cast<CMeshCollider>(_selections.ClickedComponent);
+
+        return hasChanged;
+    }
+
+    bool WidgetProperties::ShowCPlaneColliderProperties()
+    {
+        bool hasChanged = false;
+        SPtr<CPlaneCollider> softBody = std::static_pointer_cast<CPlaneCollider>(_selections.ClickedComponent);
+
+        return hasChanged;
+    }
+
+    bool WidgetProperties::ShowCSphereColliderProperties()
+    {
+        bool hasChanged = false;
+        SPtr<CSphereCollider> softBody = std::static_pointer_cast<CSphereCollider>(_selections.ClickedComponent);
 
         return hasChanged;
     }
@@ -1205,6 +1280,140 @@ namespace te
 
         if (ShowLoadSkybox())
             hasChanged = true;
+
+        return hasChanged;
+    }
+
+    bool WidgetProperties::ShowBody(SPtr<CBody> body)
+    {
+        bool hasChanged = false;
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
+
+        // IsKinematic
+        {
+            bool isKinematic = body->GetIsKinematic();
+            if (ImGuiExt::RenderOptionBool(isKinematic, "##body_option_is_kinematic", "Is Kinematic"))
+            {
+                body->SetIsKinematic(isKinematic);
+                hasChanged = true;
+            }
+        }
+
+        // UseGravity
+        {
+            bool useGravity = body->GetUseGravity();
+            if (ImGuiExt::RenderOptionBool(useGravity, "##body_option_use_gravity", "Use Gravity"))
+            {
+                body->SetUseGravity(useGravity);
+                hasChanged = true;
+            }
+        }
+
+        // Continuous Collision Detection (CCD)
+        {
+            UINT32 flags = (UINT32)body->GetFlags();
+            bool ccd = flags & (UINT32)BodyFlag::CCD;
+            if (ImGuiExt::RenderOptionBool(ccd, "##body_option_ccd", "Cont. Collision Detect."))
+            {
+                if (ccd)
+                    flags |= (UINT32)BodyFlag::CCD;
+                else
+                    flags &= ~(UINT32)BodyFlag::CCD;
+
+                body->SetFlags((BodyFlag)flags);
+                hasChanged = true;
+            }
+        }
+
+        // Collision report mode
+        {
+            static ImGuiExt::ComboOptions<CollisionReportMode> collisionModeOptions;
+
+            if (collisionModeOptions.Options.size() == 0)
+            {
+                collisionModeOptions.AddOption(CollisionReportMode::None, "Never");
+                collisionModeOptions.AddOption(CollisionReportMode::Report, "Report");
+                collisionModeOptions.AddOption(CollisionReportMode::ReportPersistent, "Report continuous");
+            }
+
+            CollisionReportMode collisionMode = body->GetCollisionReportMode();
+            if (ImGuiExt::RenderOptionCombo<CollisionReportMode>(&collisionMode,
+                "##body_option_collision_mode", "Collision report", collisionModeOptions, width))
+            {
+                body->SetCollisionReportMode(collisionMode);
+                hasChanged = true;
+            }
+        }
+
+        // Mass
+        {
+            float mass = body->GetMass();
+            if (ImGuiExt::RenderOptionFloat(mass, "##body_option_mass", "Mass", 0.0f, 512.0f, width))
+            {
+                body->SetMass(mass);
+                hasChanged = true;
+            }
+        }
+
+        // Friction
+        {
+            float friction = body->GetFriction();
+            if (ImGuiExt::RenderOptionFloat(friction, "##body_option_friction", "Friction", 0.0f, 32.0f, width))
+            {
+                body->SetFriction(friction);
+                hasChanged = true;
+            }
+        }
+
+        // Rolling friction
+        {
+            float rollingFriction = body->GetRollingFriction();
+            if (ImGuiExt::RenderOptionFloat(rollingFriction, "##body_option_rolling_friction", "Rolling Friction", 0.0f, 32.0f, width))
+            {
+                body->SetRollingFriction(rollingFriction);
+                hasChanged = true;
+            }
+        }
+
+        // Restitution
+        {
+            float restitution = body->GetRestitution();
+            if (ImGuiExt::RenderOptionFloat(restitution, "##body_option_restitution", "Restitution", 0.0f, 16.0f, width))
+            {
+                body->SetRestitution(restitution);
+                hasChanged = true;
+            }
+        }
+
+        // Center of mass
+        {
+            Vector3 centerOfMass = body->GetCenterOfMass();
+            if (ImGuiExt::RenderVector3(centerOfMass, "##body_option_center_of_mass", " Center of Mass", 60.0f))
+            {
+                body->SetCenterOfMass(centerOfMass);
+                hasChanged = true;
+            }
+        }
+
+        // Velocity
+        {
+            Vector3 velocity = body->GetVelocity();
+            if (ImGuiExt::RenderVector3(velocity, "##body_option_velocity", " Velocity", 60.0f))
+            {
+                body->SetVelocity(velocity);
+                hasChanged = true;
+            }
+        }
+
+        // Angular velocity
+        {
+            Vector3 angularVelocity = body->GetAngularVelocity();
+            if (ImGuiExt::RenderVector3(angularVelocity, "##body_option_angular_velocity", " Angular Velocity", 60.0f))
+            {
+                body->SetAngularVelocity(angularVelocity);
+                hasChanged = true;
+            }
+        }
 
         return hasChanged;
     }

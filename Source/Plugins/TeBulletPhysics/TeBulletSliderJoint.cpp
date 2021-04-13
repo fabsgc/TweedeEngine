@@ -12,6 +12,6 @@ namespace te
 
     BulletSliderJoint::~BulletSliderJoint()
     {
-        te_delete(_internal);
+        te_delete((BulletFJoint*)_internal);
     }
 }

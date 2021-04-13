@@ -141,7 +141,6 @@ namespace te
             _viewportCamera->NotifyUpdateEverything(); // updating everything is very heavy
 
         _viewportCamera->NotifyNeedsRedraw();
-
         _needResetViewport = true;
     }
 
@@ -156,10 +155,10 @@ namespace te
         if (_isVisible && GuiAPI::Instance().IsGuiInitialized())
             ResetViewport();
 
-        if (ImGui::IsItemVisible())
-            gEditor().SetImGuizmoState(Editor::ImGuizmoState::Active);
-        else
+        if (!ImGui::IsItemVisible() || _viewportCamera->GetRenderSettings()->OverlayOnly)
             gEditor().SetImGuizmoState(Editor::ImGuizmoState::Inactive);
+        else
+            gEditor().SetImGuizmoState(Editor::ImGuizmoState::Active);
 
         // Handle viewport gpu picking
         if (ImGui::IsWindowHovered() && gVirtualInput().IsButtonDown(_pickingBtn))

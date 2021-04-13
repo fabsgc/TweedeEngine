@@ -4,6 +4,7 @@
 #include "RenderAPI/TeVertexBuffer.h"
 #include "RenderAPI/TeVertexDataDesc.h"
 #include "RenderAPI/TeVertexDeclaration.h"
+#include "Renderer/TeCamera.h"
 
 namespace te
 {
@@ -13,6 +14,15 @@ namespace te
 
         _material = BulletDebugMat::Get();
         CreateInstanceBuffer(_instanceBuffer);
+    }
+
+    BulletDebug::~BulletDebug()
+    {
+        if (_instanceBuffer.PointVB)
+        {
+            _instanceBuffer.PointVB->Destroy();
+            _instanceBuffer.PointVB = nullptr;
+        }
     }
 
     void BulletDebug::drawLine(const btVector3& from, const btVector3& to, const btVector3& fromColor, const btVector3& toColor)
@@ -34,9 +44,26 @@ namespace te
 
     void BulletDebug::Draw(const SPtr<Camera>& camera, const SPtr<RenderTarget>& renderTarget)
     {
+        RenderAPI& rapi = RenderAPI::Instance();
+        UINT32 clearBuffers = FBT_DEPTH;
+
+        Vector<PerBulletDebugInstanceData> instancedElements;
+
         for (auto& element : _debugElements)
         {
             // TODO
+        }
+
+        if (instancedElements.size() > 0)
+        {
+            rapi.SetRenderTarget(camera->GetViewport()->GetTarget());
+            rapi.ClearViewport(clearBuffers, Color::Black);
+
+            _material->BindCamera(camera);
+
+            rapi.SetVertexDeclaration(_instanceBuffer.PointVDecl);
+            rapi.SetVertexBuffers(0, &_instanceBuffer.PointVB, 1);
+            rapi.SetDrawOperation(DOT_POINT_LIST);
         }
     }
 

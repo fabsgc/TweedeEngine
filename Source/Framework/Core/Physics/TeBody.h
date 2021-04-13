@@ -179,7 +179,7 @@ namespace te
         void* GetOwner(PhysicsOwnerType type) const { return _owner.Type == type ? _owner.OwnerData : nullptr; }
 
     protected:
-        BodyFlag _flags;
+        BodyFlag _flags = (BodyFlag)((UINT32)BodyFlag::None);
         HSceneObject _linkedSO;
         PhysicsObjectOwner _owner;
         FBody* _internal = nullptr;

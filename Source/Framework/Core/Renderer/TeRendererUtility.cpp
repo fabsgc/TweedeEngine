@@ -59,7 +59,9 @@ namespace te
     }
 
     RendererUtility::~RendererUtility()
-    { }
+    { 
+        
+    }
 
     void RendererUtility::SetPass(const SPtr<Material>& material, UINT32 passIdx, UINT32 techniqueIdx)
     {

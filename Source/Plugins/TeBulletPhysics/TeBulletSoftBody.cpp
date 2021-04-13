@@ -14,7 +14,7 @@ namespace te
 
     BulletSoftBody::~BulletSoftBody()
     { 
-        te_delete(_internal);  // TODO
+        te_delete((BulletFBody*)_internal);
     }
 
     Vector3 BulletSoftBody::GetPosition() const

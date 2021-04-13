@@ -60,6 +60,27 @@ namespace te
         /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
         bool ShowCSoftBodyProperties();
 
+        /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
+        bool ShowCBoxColliderProperties();
+
+        /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
+        bool ShowCCapsuleColliderProperties();
+
+        /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
+        bool ShowCConeColliderProperties();
+
+        /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
+        bool ShowCCylinderColliderProperties();
+
+        /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
+        bool ShowCMeshColliderProperties();
+
+        /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
+        bool ShowCPlaneColliderProperties();
+
+        /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
+        bool ShowCSphereColliderProperties();
+
         /**  Show transform and mobility options */
         bool ShowTransform(Transform& transform, ObjectMobility& mobility, bool disableTransform = false);
 
@@ -95,6 +116,9 @@ namespace te
 
         /** Show information about a skybox */
         bool ShowSkybox(SPtr<Skybox> skybox);
+
+        /** Show information about a body */
+        bool ShowBody(SPtr<CBody> body);
 
         /** Show FileBrowser in order to load a new mesh */
         bool ShowLoadMesh();

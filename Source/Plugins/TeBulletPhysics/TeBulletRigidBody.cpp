@@ -67,7 +67,7 @@ namespace te
         _colliders.clear();
 
         Release();
-        te_delete(_internal);
+        te_delete((BulletFBody*)_internal);
     }
 
     Vector3 BulletRigidBody::GetPosition() const
@@ -335,7 +335,7 @@ namespace te
         if (_mass < 0.0f)
             _mass = 0.0f;
 
-        btVector3 localIntertia = btVector3(0, 0, 0);
+        btVector3 localInertia = btVector3(0, 0, 0);
         Release();
 
         // Add child shapes
@@ -343,16 +343,16 @@ namespace te
         for (auto& collider : _colliders)
             _shape->addChildShape(collider.first->GetBtTransform(), collider.first->GetShape());
 
-        _shape->calculateLocalInertia(_mass, localIntertia);
+        _shape->calculateLocalInertia(_mass, localInertia);
   
         // Create a motion state (memory will be freed by the RigidBody)
         const auto motionState = te_new<MotionState>(this);
 
-        btRigidBody::btRigidBodyConstructionInfo constructionInfo(_mass, motionState, _shape, localIntertia);
+        btRigidBody::btRigidBodyConstructionInfo constructionInfo(_mass, motionState, _shape, localInertia);
         constructionInfo.m_friction = _friction;
         constructionInfo.m_rollingFriction = _rollingFriction;
         constructionInfo.m_restitution = _restitution;
-        constructionInfo.m_localInertia = localIntertia;
+        constructionInfo.m_localInertia = localInertia;
         constructionInfo.m_collisionShape = _shape;
         constructionInfo.m_motionState = motionState;
 

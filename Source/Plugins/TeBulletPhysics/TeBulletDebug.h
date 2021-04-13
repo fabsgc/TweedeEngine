@@ -34,7 +34,7 @@ namespace te
 
     public:
         BulletDebug();
-        ~BulletDebug() = default;
+        ~BulletDebug();
 
         void drawLine(const btVector3& from, const btVector3& to, const btVector3& fromColor, const btVector3& toColor) override;
         void drawLine(const btVector3& from, const btVector3& to, const btVector3& color) override { drawLine(from, to, color, color); }

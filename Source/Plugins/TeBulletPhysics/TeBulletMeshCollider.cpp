@@ -14,7 +14,7 @@ namespace te
 
     BulletMeshCollider::~BulletMeshCollider()
     { 
-        te_delete(_internal);
+        te_delete((BulletFCollider*)_internal);
         te_delete(_shape);
     }
 

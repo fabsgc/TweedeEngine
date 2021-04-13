@@ -17,8 +17,8 @@ namespace te
 
     BulletCapsuleCollider::~BulletCapsuleCollider()
     { 
-        te_delete(_internal);
-        te_delete(_shape);
+        te_delete((BulletFCollider*)_internal);
+        te_delete((btCapsuleShape*)_shape);
     }
 
     void BulletCapsuleCollider::SetScale(const Vector3& scale)

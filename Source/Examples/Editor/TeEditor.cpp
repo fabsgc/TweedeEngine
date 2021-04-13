@@ -152,8 +152,13 @@ namespace te
 
     void Editor::PostRender()
     {
+        if (_previewViewportCamera->GetRenderSettings()->OverlayOnly)
+            return;
+
         if (_hudDirty && _previewViewportCamera == _viewportCamera) // only for default camera
+        {
             _hud->Render(_previewViewportCamera, _sceneSO);
+        }
 
         if (_selectionDirty && _previewViewportCamera == _viewportCamera) // only for default camera
         {
@@ -162,7 +167,7 @@ namespace te
             _selection->Render(_previewViewportCamera, viewportData);
         }
 
-        if (_selectionDirty && _previewViewportCamera == _viewportCamera) // only for default camera
+        if (_physicsDirty && _previewViewportCamera == _viewportCamera) // only for default camera
         {
             gPhysics().DrawDebug(_previewViewportCamera->_getCamera(), _previewViewportCamera->GetViewport()->GetTarget());
         }
@@ -186,7 +191,7 @@ namespace te
 
     void Editor::NeedsPicking(UINT32 x, UINT32 y)
     {
-        if (!_settings.WViewport)
+        if (!_settings.WViewport || _previewViewportCamera->GetRenderSettings()->OverlayOnly)
             return;
 
         if (!ImGuizmo::IsUsing())
