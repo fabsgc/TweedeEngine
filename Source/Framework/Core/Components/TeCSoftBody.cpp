@@ -129,6 +129,11 @@ namespace te
         // TODO
     }
 
+    void CSoftBody::SyncCollider(const HCollider& collider)
+    {
+        // TODO
+    }
+
     void CSoftBody::RemoveCollider(const HCollider& collider)
     {
         // TODO

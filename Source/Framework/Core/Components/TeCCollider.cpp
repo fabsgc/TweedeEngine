@@ -76,10 +76,7 @@ namespace te
             _internal->SetScale(scale);
 
             if (_parent != nullptr)
-            {
-                _parent->RemoveCollider(static_object_cast<CCollider>(GetHandle()));
-                _parent->AddCollider(static_object_cast<CCollider>(GetHandle()));
-            }
+                _parent->SyncCollider(static_object_cast<CCollider>(GetHandle()));
         }
     }
 
@@ -95,10 +92,7 @@ namespace te
             _internal->SetCenter(center);
 
             if (_parent != nullptr)
-            {
-                _parent->RemoveCollider(static_object_cast<CCollider>(GetHandle()));
-                _parent->AddCollider(static_object_cast<CCollider>(GetHandle()));
-            }
+                _parent->SyncCollider(static_object_cast<CCollider>(GetHandle()));
         }
     }
 

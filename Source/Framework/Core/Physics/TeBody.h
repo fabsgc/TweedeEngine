@@ -142,6 +142,9 @@ namespace te
         /** Registers a new collider as a child of this body. */
         virtual void AddCollider(Collider*) = 0;
 
+        /** Synchronize a collider with the Body he's attached to. */
+        virtual void SyncCollider(Collider*) = 0;
+
         /** Removes a collider from the child list of this body. */
         virtual void RemoveCollider(Collider*) = 0;
 

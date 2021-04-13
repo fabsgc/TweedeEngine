@@ -92,6 +92,9 @@ namespace te
         /** @copydoc Body::AddCollider() */
         void AddCollider(Collider*) override;
 
+        /** @copydoc Body::SyncCollider() */
+        void SyncCollider(Collider*) override;
+
         /** @copydoc Body::RemoveCollider() */
         void RemoveCollider(Collider*) override;
 
@@ -124,6 +127,16 @@ namespace te
         bool IsActivated() const;
 
     private:
+        struct ColliderData
+        {
+            UINT32 Index = 0;
+
+            ColliderData(UINT32 index = 0)
+                : Index(index)
+            { }
+        };
+
+    private:
         friend class MotionState;
 
         btRigidBody* _rigidBody;
@@ -131,7 +144,7 @@ namespace te
         BulletScene* _scene;
 
         btCompoundShape* _shape;
-        Vector<BulletFCollider*> _colliders;
+        Map<BulletFCollider*, ColliderData> _colliders;
 
         float _mass = 1.0f;
         float _friction = 0.0f;

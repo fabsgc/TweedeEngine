@@ -92,19 +92,24 @@ namespace te
         // TODO
     }
 
-    void BulletSoftBody::AddCollider(Collider*)
+    void BulletSoftBody::AddCollider(Collider* collider)
     {
-        TE_PRINT("Add Collider");
+        // TODO
     }
 
-    void BulletSoftBody::RemoveCollider(Collider*)
+    void BulletSoftBody::SyncCollider(Collider* collider)
     {
-        TE_PRINT("Remove Collider");
+        // TODO
+    }
+
+    void BulletSoftBody::RemoveCollider(Collider* collider)
+    {
+        // TODO
     }
 
     void BulletSoftBody::RemoveColliders()
     {
-        TE_PRINT("Remove all Colliders");
+        // TODO
     }
 
     void BulletSoftBody::SetFlags(BodyFlag flags)

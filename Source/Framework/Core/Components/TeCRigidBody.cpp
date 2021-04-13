@@ -199,6 +199,18 @@ namespace te
         }
     }
 
+    void CRigidBody::SyncCollider(const HCollider& collider)
+    {
+        if (_internal == nullptr)
+            return;
+
+        auto iterFind = std::find(_children.begin(), _children.end(), collider);
+        if (iterFind != _children.end())
+        {
+            _internal->SyncCollider(collider->GetInternal());
+        }
+    }
+
     void CRigidBody::RemoveCollider(const HCollider& collider)
     {
         if (_internal == nullptr)

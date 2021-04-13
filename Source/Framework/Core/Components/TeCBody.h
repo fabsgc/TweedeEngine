@@ -170,6 +170,9 @@ namespace te
          */
         virtual void AddCollider(const HCollider& collider) = 0;
 
+        /** ynchronize a collider with the Body he's attached to. */
+        virtual void SyncCollider(const HCollider& collider) = 0;
+
         /** Unregisters the collider from the body. */
         virtual void RemoveCollider(const HCollider& collider) = 0;
 

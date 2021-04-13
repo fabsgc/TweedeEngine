@@ -69,6 +69,9 @@ namespace te
         /** Body::AddCollider */
         virtual void AddCollider(const HCollider& collider) override;
 
+        /** Body::SyncCollider */
+        virtual void SyncCollider(const HCollider& collider) override;
+
         /** Body::RemoveCollider */
         virtual void RemoveCollider(const HCollider& collider) override;
 

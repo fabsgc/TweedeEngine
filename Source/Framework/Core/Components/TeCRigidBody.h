@@ -73,6 +73,9 @@ namespace te
         /** Body::AddCollider */
         void AddCollider(const HCollider& collider) override;
 
+        /** Body::SyncCollider */
+        void SyncCollider(const HCollider& collider) override;
+
         /** Body::RemoveCollider */
         void RemoveCollider(const HCollider& collider) override;
 

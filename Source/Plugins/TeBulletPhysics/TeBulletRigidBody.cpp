@@ -273,20 +273,34 @@ namespace te
     void BulletRigidBody::AddCollider(Collider* collider)
     {
         BulletFCollider* fCollider = static_cast<BulletFCollider*>(collider->GetInternal());
-        auto it = std::find(_colliders.begin(), _colliders.end(), fCollider);
+        auto it = _colliders.find(fCollider);
         if (it == _colliders.end())
         {
             BulletFCollider* fCollider = static_cast<BulletFCollider*>(collider->GetInternal());
-            _colliders.push_back(fCollider);
+
+            UINT32 index = (UINT32)_colliders.size();
+            _colliders[fCollider] = ColliderData(index);
         }        
 
         AddToWorld();
     }
 
+    void BulletRigidBody::SyncCollider(Collider* collider)
+    {
+        BulletFCollider* fCollider = static_cast<BulletFCollider*>(collider->GetInternal());
+        auto it = _colliders.find(fCollider);
+        if (it != _colliders.end())
+        {
+            const btTransform& trans = it->first->GetBtTransform();
+            _shape->updateChildTransform(it->second.Index, trans, true);
+            _rigidBody->updateInertiaTensor();
+        }
+    }
+
     void BulletRigidBody::RemoveCollider(Collider* collider)
     {
         BulletFCollider* fCollider = static_cast<BulletFCollider*>(collider->GetInternal());
-        auto it = std::find(_colliders.begin(), _colliders.end(), fCollider);
+        auto it = _colliders.find(fCollider);
         if (it != _colliders.end())
         {
             _shape->removeChildShape(fCollider->GetShape());
@@ -307,7 +321,7 @@ namespace te
     {
         for (auto& collider : _colliders)
         {
-            _shape->removeChildShape(collider->GetShape());
+            _shape->removeChildShape(collider.first->GetShape());
         }
 
         _colliders.clear();
@@ -324,49 +338,46 @@ namespace te
         btVector3 localIntertia = btVector3(0, 0, 0);
         Release();
 
+        // Add child shapes
+        _shape = te_new<btCompoundShape>();
+        for (auto& collider : _colliders)
+            _shape->addChildShape(collider.first->GetBtTransform(), collider.first->GetShape());
+
+        _shape->calculateLocalInertia(_mass, localIntertia);
+  
+        // Create a motion state (memory will be freed by the RigidBody)
+        const auto motionState = te_new<MotionState>(this);
+
+        btRigidBody::btRigidBodyConstructionInfo constructionInfo(_mass, motionState, _shape, localIntertia);
+        constructionInfo.m_friction = _friction;
+        constructionInfo.m_rollingFriction = _rollingFriction;
+        constructionInfo.m_restitution = _restitution;
+        constructionInfo.m_localInertia = localIntertia;
+        constructionInfo.m_collisionShape = _shape;
+        constructionInfo.m_motionState = motionState;
+
+        _rigidBody = te_new<btRigidBody>(constructionInfo);
+        _rigidBody->setUserPointer(this);
+
+        SetTransform(_position, _rotation);
+
+        UpdateKinematicFlag();
+        UpdateGravityFlag();
+        UpdateCCDFlag();
+
+        if (_colliders.size() > 0)
         {
-            _shape = te_new<btCompoundShape>();
-            for (auto& collider : _colliders)
-                _shape->addChildShape(collider->GetBtTransform(), collider->GetShape());
+            _scene->AddRigidBody(_rigidBody);
+            _inWorld = true;
 
-            _shape->calculateLocalInertia(_mass, localIntertia);
-        }
-
-        {
-            // Create a motion state (memory will be freed by the RigidBody)
-            const auto motionState = te_new<MotionState>(this);
-
-            btRigidBody::btRigidBodyConstructionInfo constructionInfo(_mass, motionState, _shape, localIntertia);
-            constructionInfo.m_friction = _friction;
-            constructionInfo.m_rollingFriction = _rollingFriction;
-            constructionInfo.m_restitution = _restitution;
-            constructionInfo.m_localInertia = localIntertia;
-            constructionInfo.m_collisionShape = _shape;
-            constructionInfo.m_motionState = motionState;
-
-            _rigidBody = te_new<btRigidBody>(constructionInfo);
-            _rigidBody->setUserPointer(this);
-
-            SetTransform(_position, _rotation);
-
-            UpdateKinematicFlag();
-            UpdateGravityFlag();
-            UpdateCCDFlag();
-
-            if (_colliders.size() > 0)
+            if (_mass > 0.0f)
             {
-                _scene->AddRigidBody(_rigidBody);
-                _inWorld = true;
-
-                if (_mass > 0.0f)
-                {
-                    Activate();
-                }
-                else
-                {
-                    SetVelocity(Vector3::ZERO);
-                    SetAngularVelocity(Vector3::ZERO);
-                }
+                Activate();
+            }
+            else
+            {
+                SetVelocity(Vector3::ZERO);
+                SetAngularVelocity(Vector3::ZERO);
             }
         }
     }

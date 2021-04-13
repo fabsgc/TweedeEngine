@@ -89,6 +89,9 @@ namespace te
         /** @copydoc Body::AddCollider() */
         void AddCollider(Collider*) override;
 
+        /** @copydoc Body::SyncCollider() */
+        void SyncCollider(Collider*) override;
+
         /** @copydoc Body::RemoveCollider() */
         void RemoveCollider(Collider*) override;
 
