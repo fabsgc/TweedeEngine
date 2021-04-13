@@ -62,7 +62,7 @@ namespace te
         bool IsPaused() const override;
 
         /** @copydoc Physics::DrawDebug */
-        void DrawDebug(const SPtr<RenderTarget>& renderTarget) override;
+        void DrawDebug(const SPtr<Camera>& camera, const SPtr<RenderTarget>& renderTarget) override;
 
         /** Notifies the system that at physics scene is about to be destroyed. */
         void NotifySceneDestroyed(BulletScene* scene);

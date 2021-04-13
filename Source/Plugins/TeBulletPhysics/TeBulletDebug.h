@@ -7,6 +7,8 @@
 
 namespace te 
 {
+    class BulletDebugMat;
+
     class BulletDebug : public PhysicsDebug, public btIDebugDraw
     {
         struct DebugElement
@@ -15,6 +17,19 @@ namespace te
             btVector3 To;
             btVector3 FromColor;
             btVector3 toColor;
+        };
+
+        struct VertexBufferLayout
+        {
+            Vector3 Position;
+        };
+
+        struct InstanceBuffer
+        {
+            SPtr<VertexBuffer> PointVB;
+            SPtr<VertexDataDesc> PointVDesc;
+            SPtr<VertexDeclaration> PointVDecl;
+            VertexBufferLayout* PointData = nullptr;
         };
 
     public:
@@ -29,11 +44,17 @@ namespace te
         void setDebugMode(const int debugMode) override { _debugMode = debugMode; }
         int getDebugMode() const override { return _debugMode; }
 
-        void Draw(const SPtr<RenderTarget>& renderTarget) override;
+        void Draw(const SPtr<Camera>& camera, const SPtr<RenderTarget>& renderTarget) override;
         void Clear() override;
+
+    private:
+        void CreateInstanceBuffer(InstanceBuffer& buffer);
 
     private:
         int _debugMode;
         Vector<DebugElement> _debugElements;
+
+        BulletDebugMat* _material;
+        InstanceBuffer _instanceBuffer;
     };
 }

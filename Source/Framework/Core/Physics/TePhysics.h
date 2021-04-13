@@ -44,7 +44,7 @@ namespace te
         virtual bool IsPaused() const = 0;
 
         /** Allow user to see debug information about physical simulation */
-        virtual void DrawDebug(const SPtr<RenderTarget>& renderTarget) = 0;
+        virtual void DrawDebug(const SPtr<Camera>& camera, const SPtr<RenderTarget>& renderTarget) = 0;
 
         /** Checks is the physics simulation update currently in progress. */
         bool IsUpdateInProgress() const { return _updateInProgress; }

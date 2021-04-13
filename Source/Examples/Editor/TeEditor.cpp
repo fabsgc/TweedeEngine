@@ -164,7 +164,7 @@ namespace te
 
         if (_selectionDirty && _previewViewportCamera == _viewportCamera) // only for default camera
         {
-            gPhysics().DrawDebug(_previewViewportCamera->GetViewport()->GetTarget());
+            gPhysics().DrawDebug(_previewViewportCamera->_getCamera(), _previewViewportCamera->GetViewport()->GetTarget());
         }
 
         _hudDirty = false;
@@ -204,13 +204,16 @@ namespace te
             SPtr<GameObject> gameObject = _picking->GetGameObjectAt(x, y);
             if (gameObject)
             {
-                SPtr<Component> component = std::static_pointer_cast<Component>(gameObject);
+                if (!ImGuizmo::IsOver() || !_selections.ClickedComponent)
+                {
+                    SPtr<Component> component = std::static_pointer_cast<Component>(gameObject);
 
-                _selections.ClickedComponent = component;
-                _selections.ClickedSceneObject = component->GetSceneObject().GetInternalPtr();
+                    _selections.ClickedComponent = component;
+                    _selections.ClickedSceneObject = component->GetSceneObject().GetInternalPtr();
 
-                if (_settings.WProject)
-                    std::static_pointer_cast<WidgetProject>(_settings.WProject)->ForceExpandToSelection();
+                    if (_settings.WProject)
+                        std::static_pointer_cast<WidgetProject>(_settings.WProject)->ForceExpandToSelection();
+                }
             }
             else
             {
@@ -221,6 +224,12 @@ namespace te
                     _selections.ClickedComponent->GetCoreType() == TID_CAudioListener ||
                     _selections.ClickedComponent->GetCoreType() == TID_CRigidBody ||
                     _selections.ClickedComponent->GetCoreType() == TID_CSoftBody ||
+                    _selections.ClickedComponent->GetCoreType() == TID_CBoxCollider ||
+                    _selections.ClickedComponent->GetCoreType() == TID_CCapsuleCollider ||
+                    _selections.ClickedComponent->GetCoreType() == TID_CConeCollider ||
+                    _selections.ClickedComponent->GetCoreType() == TID_CMeshCollider ||
+                    _selections.ClickedComponent->GetCoreType() == TID_CPlaneCollider ||
+                    _selections.ClickedComponent->GetCoreType() == TID_CSphereCollider ||
                     _selections.ClickedComponent->GetCoreType() == TID_CAudioSource)
                 {
                     if (!ImGuizmo::IsOver())

@@ -105,6 +105,11 @@ namespace te
                 InitShaderHudSelection();
             shader = _shaderHudSelection;
             break;
+        case BuiltinShader::BulletDebug:
+            if (!_shaderBulletDebug.IsLoaded())
+                InitShaderBulletDebug();
+            shader = _shaderBulletDebug;
+            break;
         default:
             break;
         }
@@ -344,6 +349,36 @@ namespace te
             _pixelShaderHudPickSelectDesc.Language = "hlsl";
             _pixelShaderHudPickSelectDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
             _pixelShaderHudPickSelectDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/BulletDebug_VS.hlsl"));
+            _vertexShaderBulletDebugDesc.Type = GPT_VERTEX_PROGRAM;
+            _vertexShaderBulletDebugDesc.FilePath = SHADERS_FOLDER + String("HLSL/BulletDebug_VS.hlsl");
+            _vertexShaderBulletDebugDesc.EntryPoint = "main";
+            _vertexShaderBulletDebugDesc.Language = "hlsl";
+            _vertexShaderBulletDebugDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
+            _vertexShaderBulletDebugDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/BulletDebug_GS.hlsl"));
+            _geometryShaderBulletDebugDesc.Type = GPT_GEOMETRY_PROGRAM;
+            _geometryShaderBulletDebugDesc.FilePath = SHADERS_FOLDER + String("HLSL/BulletDebug_GS.hlsl");
+            _geometryShaderBulletDebugDesc.EntryPoint = "main";
+            _geometryShaderBulletDebugDesc.Language = "hlsl";
+            _geometryShaderBulletDebugDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
+            _geometryShaderBulletDebugDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/BulletDebug_PS.hlsl"));
+            _pixelShaderBulletDebugDesc.Type = GPT_PIXEL_PROGRAM;
+            _pixelShaderBulletDebugDesc.FilePath = SHADERS_FOLDER + String("HLSL/BulletDebug_PS.hlsl");
+            _pixelShaderBulletDebugDesc.EntryPoint = "main";
+            _pixelShaderBulletDebugDesc.Language = "hlsl";
+            _pixelShaderBulletDebugDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
+            _pixelShaderBulletDebugDesc.Source = shaderFile.GetAsString();
         }
     }
     void BuiltinResources::InitStates()
@@ -722,7 +757,7 @@ namespace te
             SHADER_DATA_PARAM_DESC gRenderTypeDesc("gRenderType", "gRenderType", GPDT_INT1);
 
             SHADER_DATA_PARAM_DESC gInstanceData("gInstanceData", "gInstanceData", GPDT_STRUCT);
-            gInstanceData.ElementSize = sizeof(PerInstanceData);
+            gInstanceData.ElementSize = sizeof(PerHudInstanceData);
 
             SHADER_OBJECT_PARAM_DESC anisotropicSamplerDesc("AnisotropicSampler", "AnisotropicSampler", GPOT_SAMPLER2D);
             SHADER_OBJECT_PARAM_DESC maskTextureDesc("MaskTexture", "MaskTexture", GPOT_TEXTURE2D);
@@ -735,6 +770,19 @@ namespace te
 
             _hudPickSelectShaderDesc.AddParameter(anisotropicSamplerDesc);
             _hudPickSelectShaderDesc.AddParameter(maskTextureDesc);
+        }
+
+        {
+            SHADER_DATA_PARAM_DESC gMatViewProjDesc("gMatViewProj", "gMatViewProj", GPDT_MATRIX_4X4);
+            SHADER_DATA_PARAM_DESC gMatViewOriginDesc("gViewOrigin", "gViewOrigin", GPDT_FLOAT3);
+
+            SHADER_DATA_PARAM_DESC gInstanceData("gInstanceData", "gInstanceData", GPDT_STRUCT);
+            gInstanceData.ElementSize = sizeof(PerBulletDebugInstanceData);
+
+            _hudPickSelectShaderDesc.AddParameter(gMatViewProjDesc);
+            _hudPickSelectShaderDesc.AddParameter(gMatViewOriginDesc);
+
+            _hudPickSelectShaderDesc.AddParameter(gInstanceData);
         }
     }
 
@@ -1081,6 +1129,31 @@ namespace te
         shaderDesc.Techniques.push_back(technique.GetInternalPtr());
 
         _shaderHudSelection = Shader::Create("HudSelection", shaderDesc);
+    }
+
+    void BuiltinResources::InitShaderBulletDebug()
+    {
+        PASS_DESC passDesc;
+        passDesc.BlendStateDesc = _blendOpaqueStateDesc;
+        passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
+        passDesc.RasterizerStateDesc = _rasterizerStateDesc;
+        passDesc.VertexProgramDesc = _vertexShaderBulletDebugDesc;
+        passDesc.GeometryProgramDesc = _geometryShaderBulletDebugDesc;
+        passDesc.PixelProgramDesc = _pixelShaderBulletDebugDesc;
+
+        passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
+        passDesc.RasterizerStateDesc.polygonMode = PolygonMode::PM_WIREFRAME;
+
+        HPass pass = Pass::Create(passDesc);
+        HTechnique technique = Technique::Create("hlsl", { pass.GetInternalPtr() });
+        technique->Compile();
+
+        SHADER_DESC shaderDesc = _hudPickSelectShaderDesc;
+        shaderDesc.Flags = (UINT32)ShaderFlag::Transparent;
+        shaderDesc.QueueType = QueueSortType::BackToFront;
+        shaderDesc.Techniques.push_back(technique.GetInternalPtr());
+
+        _shaderBulletDebug = Shader::Create("BulletDebug", shaderDesc);
     }
 
     void BuiltinResources::InitDefaultMaterial()

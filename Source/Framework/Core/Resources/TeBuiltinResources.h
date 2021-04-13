@@ -47,6 +47,8 @@ namespace te
         Selection = 0xB,
         /** Shader used for hud draw and selection */
         HudSelection = 0xC,
+        /** Shared used for Bullet physic debug display */
+        BulletDebug = 0xD
     };
 
     /** Types of builtin shaders that are always available. */
@@ -114,6 +116,16 @@ namespace te
             Vector3 Padding;
         };
 
+        struct PerBulletDebugInstanceData
+        {
+            Matrix4 MatWorldNoScale;
+            Vector4 Color;
+            Vector3 From;
+            float   Padding1;
+            Vector3 To;
+            float   Padding2;
+        };
+
         struct LightData
         {
             Vector3 Color;
@@ -149,6 +161,7 @@ namespace te
         void InitShaderSelection();
         void InitShaderHudPicking();
         void InitShaderHudSelection();
+        void InitShaderBulletDebug();
 
         void InitDefaultMaterial();
 
@@ -168,6 +181,7 @@ namespace te
         HShader _shaderHudPicking;
         HShader _shaderSelection;
         HShader _shaderHudSelection;
+        HShader _shaderBulletDebug;
 
         SPtr<SamplerState> _anisotropicSamplerState = nullptr;
         SPtr<SamplerState> _bilinearSamplerState = nullptr;
@@ -183,6 +197,7 @@ namespace te
         SHADER_DESC _gaussianBlurShaderDesc;
         SHADER_DESC _pickSelectShaderDesc;
         SHADER_DESC _hudPickSelectShaderDesc;
+        SHADER_DESC _bulletDebugShaderDesc;
 
         GPU_PROGRAM_DESC _vertexShaderForwardDesc;
         GPU_PROGRAM_DESC _pixelShaderForwardDesc;
@@ -214,6 +229,10 @@ namespace te
         GPU_PROGRAM_DESC _vertexShaderHudPickSelectDesc;
         GPU_PROGRAM_DESC _geometryShaderHudPickSelectDesc;
         GPU_PROGRAM_DESC _pixelShaderHudPickSelectDesc;
+
+        GPU_PROGRAM_DESC _vertexShaderBulletDebugDesc;
+        GPU_PROGRAM_DESC _geometryShaderBulletDebugDesc;
+        GPU_PROGRAM_DESC _pixelShaderBulletDebugDesc;
 
         BLEND_STATE_DESC _blendOpaqueStateDesc;
         BLEND_STATE_DESC _blendTransparentStateDesc;

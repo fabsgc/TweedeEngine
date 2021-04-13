@@ -83,27 +83,23 @@ namespace te
 
         _renderer = RendererManager::Instance().Initialize(_startUpDesc.Renderer);
 
+        Importer::StartUp();
+        for (auto& importerName : _startUpDesc.Importers)
+            LoadPlugin(importerName);
+
+        BuiltinResources::StartUp();
         PhysicsManager::StartUp(_startUpDesc.Physics);
+        RendererMaterialManager::StartUp();
         SceneManager::StartUp();
         Input::StartUp();
         VirtualInput::StartUp();
 
         _gui = GuiManager::Instance().Initialize(_startUpDesc.Gui);
         _window->InitializeGui();
-
         _perFrameData = te_shared_ptr_new<PerFrameData>();
-
-        Importer::StartUp();
-
-        for (auto& importerName : _startUpDesc.Importers)
-        {
-            LoadPlugin(importerName);
-        }
 
         AudioManager::StartUp(_startUpDesc.Audio);
         AnimationManager::StartUp();
-        BuiltinResources::StartUp();
-        RendererMaterialManager::StartUp();
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         Platform::SetIcon(gBuiltinResources().GetFrameworkIcon());
@@ -120,8 +116,6 @@ namespace te
         _renderer = nullptr;
 
         TaskScheduler::ShutDown();
-        BuiltinResources::ShutDown();
-        RendererMaterialManager::ShutDown();
         Importer::ShutDown();
         VirtualInput::ShutDown();
         Input::ShutDown();
@@ -132,7 +126,9 @@ namespace te
         GameObjectManager::ShutDown();
         RendererManager::ShutDown();
         ResourceManager::ShutDown();
+        RendererMaterialManager::ShutDown();
         PhysicsManager::ShutDown();
+        BuiltinResources::ShutDown();
         AudioManager::ShutDown();
         GuiManager::ShutDown();
         RenderAPIManager::ShutDown();

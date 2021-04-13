@@ -153,7 +153,7 @@ namespace te
         }
     }
 
-    void BulletPhysics::DrawDebug(const SPtr<RenderTarget>& renderTarget)
+    void BulletPhysics::DrawDebug(const SPtr<Camera>& camera, const SPtr<RenderTarget>& renderTarget)
     {
         RenderAPI& rapi = RenderAPI::Instance();
         UINT32 clearBuffers = FBT_DEPTH;
@@ -166,7 +166,7 @@ namespace te
             if (!scene->_world)
                 continue;
 
-            scene->_debug->Draw(renderTarget);
+            scene->_debug->Draw(camera, renderTarget);
         }
 
         rapi.SetRenderTarget(nullptr);
