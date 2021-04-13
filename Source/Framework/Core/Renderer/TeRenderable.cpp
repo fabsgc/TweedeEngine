@@ -150,7 +150,12 @@ namespace te
 
     void Renderable::SetMesh(SPtr<Mesh> mesh)
     {
+        if(mesh == _mesh)
+            return;
+
         _mesh = mesh;
+        _boneMatrixBuffer = nullptr;
+        _bonePrevMatrixBuffer = nullptr;
 
         if (_mesh)
         {
@@ -396,12 +401,16 @@ namespace te
 
             if (numBones > 0)
             {
-                _boneMatrixBuffer = CreateBoneMatrixBuffer(numBones);
+                // If matrix buffer already exists, we don't want to destory it
+                if(!_boneMatrixBuffer) 
+                {
+                    _boneMatrixBuffer = CreateBoneMatrixBuffer(numBones);
 
-                if (_properties.WriteVelocity)
-                    _bonePrevMatrixBuffer = CreateBoneMatrixBuffer(numBones);
-                else
-                    _bonePrevMatrixBuffer = nullptr;
+                    if (_properties.WriteVelocity)
+                        _bonePrevMatrixBuffer = CreateBoneMatrixBuffer(numBones);
+                    else
+                        _bonePrevMatrixBuffer = nullptr;
+                }
             }
             else
             {

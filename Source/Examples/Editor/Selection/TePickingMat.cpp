@@ -28,5 +28,9 @@ namespace te
     {
         _perObjectParamDef.gMatWorld.Set(_perObjectParamBuffer, renderable->GetMatrix());
         _perObjectParamDef.gColor.Set(_perObjectParamBuffer, renderable->GetGameObjectColor().GetAsVector4());
+        _perObjectParamDef.gHasAnimation.Set(_perObjectParamBuffer, renderable->IsAnimated() ? 1 : 0);
+
+        if (_params->HasBuffer(GPT_VERTEX_PROGRAM, "BoneMatrices"))
+            _params->SetBuffer(GPT_VERTEX_PROGRAM, "BoneMatrices", renderable->_getInternal()->GetBoneMatrixBuffer());
     }
 }

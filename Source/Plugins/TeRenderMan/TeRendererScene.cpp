@@ -342,7 +342,7 @@ namespace te
         {
             if (renderableId > _info.Renderables.size())
                 return;
-            if (_info.Renderables[renderableId - 1]->RenderablePtr != renderable)
+            if (_info.Renderables[renderableId]->RenderablePtr != renderable)
                 return;
         }
 
