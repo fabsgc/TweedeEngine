@@ -979,11 +979,11 @@ namespace te
         passDesc.VertexProgramDesc = _vertexShaderPickSelectDesc;
         passDesc.PixelProgramDesc = _pixelShaderPickSelectDesc;
 
+        passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
+
         HPass pass = Pass::Create(passDesc);
         HTechnique technique = Technique::Create("hlsl", { pass.GetInternalPtr() });
         technique->Compile();
-
-        passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_CLOCKWISE;
 
         SHADER_DESC shaderDesc = _pickSelectShaderDesc;
         shaderDesc.QueueType = QueueSortType::BackToFront;

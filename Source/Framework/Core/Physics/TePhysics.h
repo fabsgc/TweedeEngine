@@ -14,10 +14,11 @@ namespace te
     /** Contains parameters used for initializing the physics system. */
     struct PHYSICS_INIT_DESC
     {
-        float TypicalLength = 1.0f; /**< Typical length of an object in the scene. */
-        float TypicalSpeed = 9.81f; /**< Typical speed of an object in the scene. */
         Vector3 Gravity = Vector3(0.0f, -9.81f, 0.0f); /**< Initial gravity. */
         float AirDensity = 1.2f;
+        float WaterDensity = 1.5f;
+        float WaterOffset = 0.0f;
+        Vector3 WaterNormal = Vector3(0.0f, 1.0f, 0.0f);
         bool SoftBody = false;
     };
 

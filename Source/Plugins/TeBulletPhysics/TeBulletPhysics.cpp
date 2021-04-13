@@ -190,9 +190,9 @@ namespace te
             _worldInfo->m_dispatcher = _physics->_collisionDispatcher;
             _worldInfo->m_broadphase = _physics->_broadphase;
             _worldInfo->air_density = (btScalar)_initDesc.AirDensity;
-            _worldInfo->water_density = 0;
-            _worldInfo->water_offset = 0;
-            _worldInfo->water_normal = btVector3(0, 0, 0);
+            _worldInfo->water_density = (btScalar)_initDesc.WaterDensity;
+            _worldInfo->water_offset = (btScalar)_initDesc.WaterOffset;
+            _worldInfo->water_normal = ToBtVector3(_initDesc.WaterNormal);
             _worldInfo->m_gravity = ToBtVector3(_initDesc.Gravity);
         }
         else

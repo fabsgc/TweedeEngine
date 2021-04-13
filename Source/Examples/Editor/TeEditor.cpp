@@ -204,16 +204,13 @@ namespace te
             SPtr<GameObject> gameObject = _picking->GetGameObjectAt(x, y);
             if (gameObject)
             {
-                if (!ImGuizmo::IsOver())
-                {
-                    SPtr<Component> component = std::static_pointer_cast<Component>(gameObject);
+                SPtr<Component> component = std::static_pointer_cast<Component>(gameObject);
 
-                    _selections.ClickedComponent = component;
-                    _selections.ClickedSceneObject = component->GetSceneObject().GetInternalPtr();
+                _selections.ClickedComponent = component;
+                _selections.ClickedSceneObject = component->GetSceneObject().GetInternalPtr();
 
-                    if (_settings.WProject)
-                        std::static_pointer_cast<WidgetProject>(_settings.WProject)->ForceExpandToSelection();
-                }
+                if (_settings.WProject)
+                    std::static_pointer_cast<WidgetProject>(_settings.WProject)->ForceExpandToSelection();
             }
             else
             {
