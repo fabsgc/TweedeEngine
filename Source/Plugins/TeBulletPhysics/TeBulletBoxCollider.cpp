@@ -8,10 +8,11 @@ namespace te
         const Quaternion& rotation, const Vector3& extents)
         : _extents(extents)
     {
-        UpdateShape();
-        _internal = te_new<BulletFCollider>(physics, scene, _shape);
+        _internal = te_new<BulletFCollider>(physics, scene);
         _internal->SetPosition(position);
         _internal->SetRotation(rotation);
+
+        UpdateShape();
     }
 
     BulletBoxCollider::~BulletBoxCollider()
@@ -34,16 +35,13 @@ namespace te
 
     void BulletBoxCollider::UpdateShape()
     {
-        if (!_shape)
-        {
-            _shape = te_new<btBoxShape>(ToBtVector3(_extents));
-            _shape->setUserPointer(this);
-        }
-        else
-        {
-            _shape->setImplicitShapeDimensions(ToBtVector3(_extents));
-        }
+        if (_shape)
+            te_delete(_shape);
 
+        _shape = te_new<btBoxShape>(ToBtVector3(_extents));
+        _shape->setUserPointer(this);
+
+        ((BulletFCollider*)_internal)->SetShape(_shape);
         _shape->setLocalScaling(ToBtVector3(_internal ? _internal->GetScale() : Vector3::ONE));
     }
 }

@@ -120,6 +120,9 @@ namespace te
         /** Show information about a body */
         bool ShowBody(SPtr<CBody> body);
 
+        /** Show information about a body */
+        bool ShowCollider(SPtr<CCollider> collider);
+
         /** Show FileBrowser in order to load a new mesh */
         bool ShowLoadMesh();
 

@@ -158,6 +158,55 @@ namespace te
             }
             break;
 
+            case TID_CBoxCollider:
+            {
+                if (ShowCBoxColliderProperties())
+                    hasChanged = true;
+            }
+            break;
+
+            case TID_CCapsuleCollider:
+            {
+                if (ShowCCapsuleColliderProperties())
+                    hasChanged = true;
+            }
+            break;
+
+            case TID_CConeCollider:
+            {
+                if (ShowCConeColliderProperties())
+                    hasChanged = true;
+            }
+            break;
+
+            case TID_CCylinderCollider:
+            {
+                if (ShowCCylinderColliderProperties())
+                    hasChanged = true;
+            }
+            break;
+
+            case TID_CMeshCollider:
+            {
+                if (ShowCMeshColliderProperties())
+                    hasChanged = true;
+            }
+            break;
+
+            case TID_CPlaneCollider:
+            {
+                if (ShowCPlaneColliderProperties())
+                    hasChanged = true;
+            }
+            break;
+
+            case TID_CSphereCollider:
+            {
+                if (ShowCSphereColliderProperties())
+                    hasChanged = true;
+            }
+            break;
+
             default:
                 break;
             }
@@ -587,7 +636,25 @@ namespace te
     bool WidgetProperties::ShowCBoxColliderProperties()
     {
         bool hasChanged = false;
-        SPtr<CBoxCollider> softBody = std::static_pointer_cast<CBoxCollider>(_selections.ClickedComponent);
+        SPtr<CBoxCollider> collider = std::static_pointer_cast<CBoxCollider>(_selections.ClickedComponent);
+
+        if (ImGui::CollapsingHeader("Box collider", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            // Extents
+            {
+                Vector3 extents = collider->GetExtents();
+                if (ImGuiExt::RenderVector3(extents, "##collider_option_extents", " Extents", 20.0f))
+                {
+                    collider->SetExtents(extents);
+                    hasChanged = true;
+                }
+            }
+
+            ImGui::Separator();
+
+            if (ShowCollider(collider))
+                hasChanged = true;
+        }
 
         return hasChanged;
     }
@@ -595,7 +662,35 @@ namespace te
     bool WidgetProperties::ShowCCapsuleColliderProperties()
     {
         bool hasChanged = false;
-        SPtr<CCapsuleCollider> softBody = std::static_pointer_cast<CCapsuleCollider>(_selections.ClickedComponent);
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
+        SPtr<CCapsuleCollider> collider = std::static_pointer_cast<CCapsuleCollider>(_selections.ClickedComponent);
+
+        if (ImGui::CollapsingHeader("Capsule collider", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            // Radius
+            {
+                float radius = collider->GetRadius();
+                if (ImGuiExt::RenderOptionFloat(radius, "##collider_option_radius", " Radius", width))
+                {
+                    collider->SetRadius(radius);
+                    hasChanged = true;
+                }
+            }
+
+            // Height
+            {
+                float height = collider->GetHeight();
+                if (ImGuiExt::RenderOptionFloat(height, "##collider_option_height", " Height", width))
+                {
+                    collider->SetHeight(height);
+                    hasChanged = true;
+                }
+            }
+            ImGui::Separator();
+
+            if (ShowCollider(collider))
+                hasChanged = true;
+        }
 
         return hasChanged;
     }
@@ -603,7 +698,35 @@ namespace te
     bool WidgetProperties::ShowCConeColliderProperties()
     {
         bool hasChanged = false;
-        SPtr<CConeCollider> softBody = std::static_pointer_cast<CConeCollider>(_selections.ClickedComponent);
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
+        SPtr<CConeCollider> collider = std::static_pointer_cast<CConeCollider>(_selections.ClickedComponent);
+
+        if (ImGui::CollapsingHeader("Cone collider", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            // Radius
+            {
+                float radius = collider->GetRadius();
+                if (ImGuiExt::RenderOptionFloat(radius, "##collider_option_radius", " Radius", width))
+                {
+                    collider->SetRadius(radius);
+                    hasChanged = true;
+                }
+            }
+
+            // Height
+            {
+                float height = collider->GetHeight();
+                if (ImGuiExt::RenderOptionFloat(height, "##collider_option_height", " Height", width))
+                {
+                    collider->SetHeight(height);
+                    hasChanged = true;
+                }
+            }
+            ImGui::Separator();
+
+            if (ShowCollider(collider))
+                hasChanged = true;
+        }
 
         return hasChanged;
     }
@@ -611,7 +734,25 @@ namespace te
     bool WidgetProperties::ShowCCylinderColliderProperties()
     {
         bool hasChanged = false;
-        SPtr<CCylinderCollider> softBody = std::static_pointer_cast<CCylinderCollider>(_selections.ClickedComponent);
+        SPtr<CCylinderCollider> collider = std::static_pointer_cast<CCylinderCollider>(_selections.ClickedComponent);
+
+        if (ImGui::CollapsingHeader("Cylinder collider", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            // Extents
+            {
+                Vector3 extents = collider->GetExtents();
+                if (ImGuiExt::RenderVector3(extents, "##collider_option_extents", " Extents", 20.0f))
+                {
+                    collider->SetExtents(extents);
+                    hasChanged = true;
+                }
+            }
+
+            ImGui::Separator();
+
+            if (ShowCollider(collider))
+                hasChanged = true;
+        }
 
         return hasChanged;
     }
@@ -619,7 +760,13 @@ namespace te
     bool WidgetProperties::ShowCMeshColliderProperties()
     {
         bool hasChanged = false;
-        SPtr<CMeshCollider> softBody = std::static_pointer_cast<CMeshCollider>(_selections.ClickedComponent);
+        SPtr<CMeshCollider> collider = std::static_pointer_cast<CMeshCollider>(_selections.ClickedComponent);
+
+        if (ImGui::CollapsingHeader("Mesh collider", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            if (ShowCollider(collider))
+                hasChanged = true;
+        }
 
         return hasChanged;
     }
@@ -627,7 +774,25 @@ namespace te
     bool WidgetProperties::ShowCPlaneColliderProperties()
     {
         bool hasChanged = false;
-        SPtr<CPlaneCollider> softBody = std::static_pointer_cast<CPlaneCollider>(_selections.ClickedComponent);
+        SPtr<CPlaneCollider> collider = std::static_pointer_cast<CPlaneCollider>(_selections.ClickedComponent);
+
+        if (ImGui::CollapsingHeader("Plane collider", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            // Normal
+            {
+                Vector3 normal = collider->GetNormal();
+                if (ImGuiExt::RenderVector3(normal, "##collider_option_normal", " Normal", 20.0f))
+                {
+                    collider->SetNormal(normal);
+                    hasChanged = true;
+                }
+            }
+
+            ImGui::Separator();
+
+            if (ShowCollider(collider))
+                hasChanged = true;
+        }
 
         return hasChanged;
     }
@@ -635,7 +800,24 @@ namespace te
     bool WidgetProperties::ShowCSphereColliderProperties()
     {
         bool hasChanged = false;
-        SPtr<CSphereCollider> softBody = std::static_pointer_cast<CSphereCollider>(_selections.ClickedComponent);
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
+        SPtr<CSphereCollider> collider = std::static_pointer_cast<CSphereCollider>(_selections.ClickedComponent);
+
+        if (ImGui::CollapsingHeader("Sphere collider", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            // Radius
+            {
+                float radius = collider->GetRadius();
+                if (ImGuiExt::RenderOptionFloat(radius, "##collider_option_radius", " Radius", width))
+                {
+                    collider->SetRadius(radius);
+                    hasChanged = true;
+                }
+            }
+
+            if (ShowCollider(collider))
+                hasChanged = true;
+        }
 
         return hasChanged;
     }
@@ -1344,6 +1526,7 @@ namespace te
                 hasChanged = true;
             }
         }
+        ImGui::Separator();
 
         // Mass
         {
@@ -1384,6 +1567,7 @@ namespace te
                 hasChanged = true;
             }
         }
+        ImGui::Separator();
 
         // Center of mass
         {
@@ -1411,6 +1595,94 @@ namespace te
             if (ImGuiExt::RenderVector3(angularVelocity, "##body_option_angular_velocity", " Angular Velocity", 60.0f))
             {
                 body->SetAngularVelocity(angularVelocity);
+                hasChanged = true;
+            }
+        }
+
+        return hasChanged;
+    }
+
+    bool WidgetProperties::ShowCollider(SPtr<CCollider> collider)
+    {
+        bool hasChanged = false;
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
+
+        // Is Trigger
+        {
+            bool isTrigger = collider->GetIsTrigger();
+            if (ImGuiExt::RenderOptionBool(isTrigger, "##collider_option_is_trigger", "Is trigger"))
+            {
+                collider->SetIsTrigger(isTrigger);
+                hasChanged = true;
+            }
+        }
+
+        // Collision report mode
+        {
+            static ImGuiExt::ComboOptions<CollisionReportMode> collisionModeOptions;
+
+            if (collider->GetBody().Empty())
+            {
+                if (collisionModeOptions.Options.size() == 0)
+                {
+                    collisionModeOptions.AddOption(CollisionReportMode::None, "Never");
+                    collisionModeOptions.AddOption(CollisionReportMode::Report, "Report");
+                    collisionModeOptions.AddOption(CollisionReportMode::ReportPersistent, "Report continuous");
+                }
+
+                CollisionReportMode collisionMode = collider->GetCollisionReportMode();
+                if (ImGuiExt::RenderOptionCombo<CollisionReportMode>(&collisionMode,
+                    "##collider_option_collision_mode", "Collision report", collisionModeOptions, width))
+                {
+                    collider->SetCollisionReportMode(collisionMode);
+                    hasChanged = true;
+                }
+            }
+        }
+        ImGui::Separator();
+
+        // Scale
+        {
+            Vector3 scale = collider->GetScale();
+            if (ImGuiExt::RenderVector3(scale, "##collider_option_scale", " Scale", 20.0f))
+            {
+                collider->SetScale(scale);
+                hasChanged = true;
+            }
+        }
+
+        // Center
+        {
+            Vector3 center = collider->GetCenter();
+            if (ImGuiExt::RenderVector3(center, "##collider_option_center", " Center", 20.0f))
+            {
+                collider->SetCenter(center);
+                hasChanged = true;
+            }
+        }
+        ImGui::Separator();
+
+        // Position
+        {
+            Vector3 position = collider->GetPosition();
+            if (ImGuiExt::RenderVector3(position, "##collider_option_position", " Position", 20.0f))
+            {
+                collider->SetPosition(position);
+                hasChanged = true;
+            }
+        }
+
+        // Rotation
+        {
+            Radian x, y, z;
+            collider->GetRotation().ToEulerAngles(x, y, z);
+            Vector3 rotation(x.ValueDegrees(), y.ValueDegrees(), z.ValueDegrees());
+
+            if (ImGuiExt::RenderVector3(rotation, "##collider_option_rotation", " Rotation", 20.0f))
+            {
+                Quaternion rot;
+                rot.FromEulerAngles(Radian(Degree(rotation.x)), Radian(Degree(rotation.y)), Radian(Degree(rotation.z)));
+                collider->SetRotation(rot);
                 hasChanged = true;
             }
         }

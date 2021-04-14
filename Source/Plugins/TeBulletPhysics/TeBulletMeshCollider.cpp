@@ -6,10 +6,11 @@ namespace te
 {
     BulletMeshCollider::BulletMeshCollider(BulletPhysics* physics, BulletScene* scene, const Vector3& position, const Quaternion& rotation)
     {
-        UpdateShape();
         _internal = te_new<BulletFCollider>(physics, scene, _shape);
         _internal->SetPosition(position);
         _internal->SetRotation(rotation);
+
+        UpdateShape();
     }
 
     BulletMeshCollider::~BulletMeshCollider()
@@ -26,12 +27,13 @@ namespace te
 
     void BulletMeshCollider::UpdateShape()
     {
-        if (!_shape)
-        {
-            _shape = te_new<btConvexHullShape>(); // TODO
-            _shape->setUserPointer(this);
-        }
+        if (_shape)
+            te_delete(_shape);
 
+        _shape = te_new<btConvexHullShape>(); // TODO
+        _shape->setUserPointer(this);
+
+        ((BulletFCollider*)_internal)->SetShape(_shape);
         _shape->setLocalScaling(ToBtVector3(_internal ? _internal->GetScale() : Vector3::ONE));
     }
 }

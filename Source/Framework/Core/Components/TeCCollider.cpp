@@ -59,7 +59,6 @@ namespace te
         if (_internal != nullptr)
         {
             _internal->SetIsTrigger(value);
-
             UpdateParentBody();
         }
     }
@@ -73,10 +72,13 @@ namespace te
 
         if (_internal != nullptr)
         {
+            if (_parent != nullptr)
+                _parent->RemoveCollider(static_object_cast<CCollider>(GetHandle()));
+
             _internal->SetScale(scale);
 
             if (_parent != nullptr)
-                _parent->SyncCollider(static_object_cast<CCollider>(GetHandle()));
+                _parent->AddCollider(static_object_cast<CCollider>(GetHandle()));
         }
     }
 
@@ -89,10 +91,13 @@ namespace te
 
         if (_internal != nullptr)
         {
+            if (_parent != nullptr)
+                _parent->RemoveCollider(static_object_cast<CCollider>(GetHandle()));
+
             _internal->SetCenter(center);
 
             if (_parent != nullptr)
-                _parent->SyncCollider(static_object_cast<CCollider>(GetHandle()));
+                _parent->AddCollider(static_object_cast<CCollider>(GetHandle()));
         }
     }
 

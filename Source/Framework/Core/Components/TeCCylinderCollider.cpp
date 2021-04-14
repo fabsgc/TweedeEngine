@@ -43,13 +43,13 @@ namespace te
 
         if (_internal != nullptr)
         {
+            if (_parent != nullptr)
+                _parent->RemoveCollider(static_object_cast<CCollider>(GetHandle()));
+
             _getInternal()->SetExtents(clampedExtents);
 
             if (_parent != nullptr)
-            {
-                _parent->RemoveCollider(static_object_cast<CCollider>(GetHandle()));
                 _parent->AddCollider(static_object_cast<CCollider>(GetHandle()));
-            }
         }
     }
 }

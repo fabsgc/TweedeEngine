@@ -41,13 +41,13 @@ namespace te
 
         if (_internal != nullptr)
         {
+            if (_parent != nullptr)
+                _parent->RemoveCollider(static_object_cast<CCollider>(GetHandle()));
+
             _getInternal()->SetRadius(clampedRadius);
 
             if (_parent != nullptr)
-            {
-                _parent->RemoveCollider(static_object_cast<CCollider>(GetHandle()));
                 _parent->AddCollider(static_object_cast<CCollider>(GetHandle()));
-            }
         }
     }
 
@@ -61,13 +61,13 @@ namespace te
 
         if (_internal != nullptr)
         {
+            if (_parent != nullptr)
+                _parent->RemoveCollider(static_object_cast<CCollider>(GetHandle()));
+
             _getInternal()->SetHeight(clampedHeight);
 
             if (_parent != nullptr)
-            {
-                _parent->RemoveCollider(static_object_cast<CCollider>(GetHandle()));
                 _parent->AddCollider(static_object_cast<CCollider>(GetHandle()));
-            }
         }
     }
 }

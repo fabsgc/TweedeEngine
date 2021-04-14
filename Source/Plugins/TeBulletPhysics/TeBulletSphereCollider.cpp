@@ -8,10 +8,11 @@ namespace te
         const Quaternion& rotation, float radius)
         : _radius(radius)
     {
-        UpdateShape();
-        _internal = te_new<BulletFCollider>(physics, scene, _shape);
+        _internal = te_new<BulletFCollider>(physics, scene);
         _internal->SetPosition(position);
         _internal->SetRotation(rotation);
+
+        UpdateShape();
     }
 
     BulletSphereCollider::~BulletSphereCollider()
@@ -34,16 +35,13 @@ namespace te
 
     void BulletSphereCollider::UpdateShape()
     {
-        if (!_shape)
-        {
-            _shape = te_new<btSphereShape>(_radius);
-            _shape->setUserPointer(this);
-        }
-        else
-        {
-            _shape->setImplicitShapeDimensions(btVector3(_radius, 0, 0));
-        }
+        if (_shape)
+            te_delete(_shape);
 
+        _shape = te_new<btSphereShape>(_radius);
+        _shape->setUserPointer(this);
+
+        ((BulletFCollider*)_internal)->SetShape(_shape);
         _shape->setLocalScaling(ToBtVector3(_internal ? _internal->GetScale() : Vector3::ONE));
     }
 }
