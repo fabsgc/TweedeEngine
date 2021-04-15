@@ -5,16 +5,6 @@
 
 namespace te
 {
-    void Collider::SetIsTrigger(bool value)
-    {
-        _internal->SetIsTrigger(value);
-    }
-
-    bool Collider::GetIsTrigger() const
-    {
-        return _internal->GetIsTrigger();
-    }
-
     void Collider::SetBody(Body* value)
     {
         _body = value;

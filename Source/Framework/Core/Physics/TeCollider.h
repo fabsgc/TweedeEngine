@@ -19,12 +19,6 @@ namespace te
         Collider() = default;
         virtual ~Collider() = default;
 
-        /** @copydoc FCollider::SetIsTrigger */
-        void SetIsTrigger(bool value);
-
-        /** @copydoc FCollider::GetIsTrigger */
-        bool GetIsTrigger() const;
-
         /** Determines the Rigidbody that controls this collider (if any). */
         void SetBody(Body* value);
 

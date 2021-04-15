@@ -14,6 +14,25 @@
 #include "Components/TeCRenderable.h"
 #include "Components/TeCSkybox.h"
 #include "Components/TeCScript.h"
+#include "Components/TeCAnimation.h"
+#include "Components/TeCBone.h"
+#include "Components/TeCAudioSource.h"
+#include "Components/TeCAudioListener.h"
+#include "Components/TeCRigidBody.h"
+#include "Components/TeCSoftBody.h"
+#include "Components/TeCConeTwistJoint.h"
+#include "Components/TeCD6Joint.h"
+#include "Components/TeCHingeJoint.h"
+#include "Components/TeCSliderJoint.h"
+#include "Components/TeCSphericalJoint.h"
+#include "Components/TeCBoxCollider.h"
+#include "Components/TeCPlaneCollider.h"
+#include "Components/TeCSphereCollider.h"
+#include "Components/TeCCylinderCollider.h"
+#include "Components/TeCCapsuleCollider.h"
+#include "Components/TeCMeshCollider.h"
+#include "Components/TeCConeCollider.h"
+#include "Components/TeCAnimation.h"
 
 namespace te
 {
@@ -171,6 +190,163 @@ namespace te
                 component->Clone(co->GetHandle());
                 component->Initialize();
                 component->SetName(co->GetName());
+            }
+            break;
+
+            case TID_CAnimation:
+            {
+                HAnimation component = this->AddComponent<CAnimation>();
+                component->Clone(co->GetHandle());
+                component->Initialize();
+                component->SetName(co->GetName());
+            }
+            break;
+
+            case TID_CBone:
+            {
+                HBone component = this->AddComponent<CBone>();
+                component->Clone(co->GetHandle());
+                component->Initialize();
+                component->SetName(co->GetName());
+            }
+            break;
+
+            case TID_CAudioListener:
+            {
+                HAudioListener component = this->AddComponent<CAudioListener>();
+                component->Clone(co->GetHandle());
+                component->Initialize();
+                component->SetName(co->GetName());
+            }
+            break;
+
+            case TID_CAudioSource:
+            {
+                HAudioSource component = this->AddComponent<CAudioSource>();
+                component->Clone(co->GetHandle());
+                component->Initialize();
+                component->SetName(co->GetName());
+            }
+            break;
+
+            case TID_CRigidBody:
+            {
+                HRigidBody component = this->AddComponent<CRigidBody>();
+                component->Clone(co->GetHandle());
+                component->Initialize();
+                component->SetName(co->GetName());
+            }
+            break;
+
+            case TID_CSoftBody:
+            {
+                HSoftBody component = this->AddComponent<CSoftBody>();
+                component->Clone(co->GetHandle());
+                component->Initialize();
+                component->SetName(co->GetName());
+            }
+            break;
+
+            case TID_CConeTwistJoint:
+            {
+                HConeTwistJoint component = this->AddComponent<CConeTwistJoint>();
+                component->Clone(static_object_cast<CConeTwistJoint>(co->GetHandle()));
+                component->Initialize();
+                component->SetName(co->GetName());
+            }
+            break;
+
+            case TID_CD6Joint:
+            {
+                HD6Joint component = this->AddComponent<CD6Joint>();
+                component->Clone(static_object_cast<CD6Joint>(co->GetHandle()));
+                component->Initialize();
+                component->SetName(co->GetName());
+            }
+            break;
+
+            case TID_CHingeJoint:
+            {
+                HHingeJoint component = this->AddComponent<CHingeJoint>();
+                component->Clone(static_object_cast<CHingeJoint>(co->GetHandle()));
+                component->Initialize();
+                component->SetName(co->GetName());
+            }
+            break;
+
+            case TID_CSliderJoint:
+            {
+                HSliderJoint component = this->AddComponent<CSliderJoint>();
+                component->Clone(static_object_cast<CSliderJoint>(co->GetHandle()));
+                component->Initialize();
+                component->SetName(co->GetName());
+            }
+            break;
+
+            case TID_CSphericalJoint:
+            {
+                HSphericalJoint component = this->AddComponent<CSphericalJoint>();
+                component->Clone(static_object_cast<CSphericalJoint>(co->GetHandle()));
+                component->Initialize();
+                component->SetName(co->GetName());
+            }
+            break;
+
+            case TID_CBoxCollider:
+            {
+                HBoxCollider component = this->AddComponent<CBoxCollider>();
+                component->Clone(static_object_cast<CBoxCollider>(co->GetHandle()));
+                component->Initialize();
+                component->SetName(co->GetName());
+            }
+            break;
+
+            case TID_CPlaneCollider:
+            {
+                HPlaneCollider component = this->AddComponent<CPlaneCollider>();
+                component->Clone(static_object_cast<CPlaneCollider>(co->GetHandle()));
+                component->Initialize();
+                component->SetName(co->GetName());
+            }
+            break;
+
+            case TID_CSphereCollider:
+            {
+                HSphereCollider component = this->AddComponent<CSphereCollider>();
+                component->Clone(static_object_cast<CSphereCollider>(co->GetHandle()));
+                component->Initialize();
+            }
+            break;
+
+            case TID_CCylinderCollider:
+            {
+                HCylinderCollider component = this->AddComponent<CCylinderCollider>();
+                component->Clone(static_object_cast<CCylinderCollider>(co->GetHandle()));
+                component->Initialize();
+            }
+            break;
+
+            case TID_CCapsuleCollider:
+            {
+                HCapsuleCollider component = this->AddComponent<CCapsuleCollider>();
+                component->Clone(static_object_cast<CCapsuleCollider>(co->GetHandle()));
+                component->Initialize();
+            }
+            break;
+
+            case TID_CMeshCollider:
+            {
+                HMeshCollider component = this->AddComponent<CMeshCollider>();
+                component->Clone(static_object_cast<CMeshCollider>(co->GetHandle()));
+                component->Initialize();
+            }
+            break;
+
+            case TID_CConeCollider:
+            {
+                HConeCollider component = this->AddComponent<CConeCollider>();
+                component->Clone(static_object_cast<CConeCollider>(co->GetHandle()));
+                component->Initialize();
             }
             break;
 

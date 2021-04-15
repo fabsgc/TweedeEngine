@@ -34,12 +34,6 @@ namespace te
         /** @copydoc Component::update */
         void Update() override { }
 
-        /** @copydoc Collider::GetIsTrigger */
-        void SetIsTrigger(bool value);
-
-        /** @copydoc Collider::GetIsTrigger */
-        bool GetIsTrigger() const { return _isTrigger; }
-
         /** @copydoc Collider::SetScale */
         void SetScale(const Vector3& scale);
 
@@ -154,7 +148,6 @@ namespace te
         SPtr<Collider> _internal;
         HBody _parent;
 
-        bool _isTrigger = false;
         Vector3 _scale = Vector3::ONE;
         Vector3 _center = Vector3::ZERO;
         Vector3 _position = Vector3::ZERO;

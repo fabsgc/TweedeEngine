@@ -40,6 +40,11 @@ namespace te
         CBody::Clone(static_object_cast<CBody>(c));
     }
 
+    void CRigidBody::Update()
+    {
+        CBody::Update();
+    }
+
     void CRigidBody::OnInitialized()
     { }
 
@@ -79,6 +84,7 @@ namespace te
         _internal->SetAngularVelocity(_angularVelocity);
         _internal->SetUseGravity(_useGravity);
         _internal->SetIsKinematic(_isKinematic);
+        _internal->SetIsDebug(_isDebug);
         _internal->SetFlags(_flags);
 
         _internal->SetCenterOfMass(_centerOfMass);

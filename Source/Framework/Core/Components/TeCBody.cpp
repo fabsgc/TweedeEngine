@@ -44,10 +44,42 @@ namespace te
         _velocity = c->_velocity;
         _angularVelocity = c->_angularVelocity;
         _collisionReportMode = c->_collisionReportMode;
+        _isDebug = c->_isDebug;
+    }
+
+    void CBody::Update()
+    {
+        if (_internal != nullptr)
+            _internal->Update();
+    }
+
+    void CBody::SetIsTrigger(bool trigger)
+    {
+        if (_isTrigger == trigger)
+            return;
+
+        _isTrigger = trigger;
+
+        if (_internal != nullptr)
+            _internal->SetIsTrigger(trigger);
+    }
+
+    void CBody::SetIsDebug(bool debug)
+    {
+        if (_isDebug == debug)
+            return;
+
+        _isDebug = debug;
+
+        if (_internal != nullptr)
+            _internal->SetIsDebug(debug);
     }
 
     void CBody::SetMass(float mass)
     {
+        if (_mass == mass)
+            return;
+
         _mass = mass;
 
         if (_internal != nullptr)

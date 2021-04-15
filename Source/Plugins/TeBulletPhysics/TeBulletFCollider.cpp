@@ -14,16 +14,6 @@ namespace te
     BulletFCollider::~BulletFCollider()
     { }
 
-    void BulletFCollider::SetIsTrigger(bool value)
-    {
-        _isTrigger = value;
-    }
-
-    bool BulletFCollider::GetIsTrigger() const
-    {
-        return _isTrigger;
-    }
-
     void BulletFCollider::SetCenter(const Vector3& center)
     {
         FCollider::SetCenter(center);

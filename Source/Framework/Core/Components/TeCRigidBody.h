@@ -23,17 +23,17 @@ namespace te
         /** Return Component type */
         static UINT32 GetComponentType() { return TID_CRigidBody; }
 
-        /** @copydoc Component::Initialize */
+        /** @copydoc Component::Initialize() */
         void Initialize() override;
 
-        /** @copydoc Component::Clone */
+        /** @copydoc Component::Clone() */
         void Clone(const HComponent& c) override;
 
-        /** @copydoc Component::Clone */
+        /** @copydoc Component::Clone() */
         void Clone(const HRigidBody& c);
 
-        /** @copydoc Component::update */
-        void Update() override { }
+        /** @copydoc Component::Update() */
+        void Update() override;
 
         /** Returns the Rigidbody implementation wrapped by this component. */
         Body* GetInternal() const override { return (RigidBody*)(_internal.get()); }

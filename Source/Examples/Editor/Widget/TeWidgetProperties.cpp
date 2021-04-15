@@ -670,7 +670,7 @@ namespace te
             // Radius
             {
                 float radius = collider->GetRadius();
-                if (ImGuiExt::RenderOptionFloat(radius, "##collider_option_radius", " Radius", width))
+                if (ImGuiExt::RenderOptionFloat(radius, "##collider_option_radius", " Radius", 0.0f, 512.0f, width))
                 {
                     collider->SetRadius(radius);
                     hasChanged = true;
@@ -680,7 +680,7 @@ namespace te
             // Height
             {
                 float height = collider->GetHeight();
-                if (ImGuiExt::RenderOptionFloat(height, "##collider_option_height", " Height", width))
+                if (ImGuiExt::RenderOptionFloat(height, "##collider_option_height", " Height", 0.0f, 512.0f, width))
                 {
                     collider->SetHeight(height);
                     hasChanged = true;
@@ -706,7 +706,7 @@ namespace te
             // Radius
             {
                 float radius = collider->GetRadius();
-                if (ImGuiExt::RenderOptionFloat(radius, "##collider_option_radius", " Radius", width))
+                if (ImGuiExt::RenderOptionFloat(radius, "##collider_option_radius", " Radius", 0.0f, 512.0f, width))
                 {
                     collider->SetRadius(radius);
                     hasChanged = true;
@@ -716,7 +716,7 @@ namespace te
             // Height
             {
                 float height = collider->GetHeight();
-                if (ImGuiExt::RenderOptionFloat(height, "##collider_option_height", " Height", width))
+                if (ImGuiExt::RenderOptionFloat(height, "##collider_option_height", " Height", 0.0f, 512.0f, width))
                 {
                     collider->SetHeight(height);
                     hasChanged = true;
@@ -808,7 +808,7 @@ namespace te
             // Radius
             {
                 float radius = collider->GetRadius();
-                if (ImGuiExt::RenderOptionFloat(radius, "##collider_option_radius", " Radius", width))
+                if (ImGuiExt::RenderOptionFloat(radius, "##collider_option_radius", " Radius", 0.0f, 512.0f, width))
                 {
                     collider->SetRadius(radius);
                     hasChanged = true;
@@ -1471,12 +1471,32 @@ namespace te
         bool hasChanged = false;
         const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
 
-        // IsKinematic
+        // Is Kinematic
         {
             bool isKinematic = body->GetIsKinematic();
             if (ImGuiExt::RenderOptionBool(isKinematic, "##body_option_is_kinematic", "Is Kinematic"))
             {
                 body->SetIsKinematic(isKinematic);
+                hasChanged = true;
+            }
+        }
+
+        // Is Trigger
+        {
+            bool isTrigger = body->GetIsTrigger();
+            if (ImGuiExt::RenderOptionBool(isTrigger, "##body_option_is_trigger", "Is trigger"))
+            {
+                body->SetIsTrigger(isTrigger);
+                hasChanged = true;
+            }
+        }
+
+        // Is Debug
+        {
+            bool isDebug = body->GetIsDebug();
+            if (ImGuiExt::RenderOptionBool(isDebug, "##body_option_is_debug", "Display Debug Info"))
+            {
+                body->SetIsDebug(isDebug);
                 hasChanged = true;
             }
         }
@@ -1606,16 +1626,6 @@ namespace te
     {
         bool hasChanged = false;
         const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
-
-        // Is Trigger
-        {
-            bool isTrigger = collider->GetIsTrigger();
-            if (ImGuiExt::RenderOptionBool(isTrigger, "##collider_option_is_trigger", "Is trigger"))
-            {
-                collider->SetIsTrigger(isTrigger);
-                hasChanged = true;
-            }
-        }
 
         // Collision report mode
         {

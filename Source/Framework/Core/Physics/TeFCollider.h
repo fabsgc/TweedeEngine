@@ -10,15 +10,6 @@ namespace te
     public:
         virtual ~FCollider() = default;
 
-        /**
-         * Enables/disables a collider as a trigger. A trigger will not be used for collisions (objects will pass
-         * through it), but collision events will still be reported.
-         */
-        virtual void SetIsTrigger(bool value) = 0;
-
-        /** @copydoc GetIsTrigger() */
-        virtual bool GetIsTrigger() const = 0;
-
         /** Determines the scale of the collider relative to its parent */
         virtual void SetScale(const Vector3& scale) { _scale = scale; }
 

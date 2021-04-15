@@ -13,12 +13,6 @@ namespace te
         explicit BulletFCollider(BulletPhysics* physics, BulletScene* scene, btCollisionShape* shape = nullptr);
         ~BulletFCollider();
 
-        /** @copydoc FCollider::SetIsTrigger */
-        void SetIsTrigger(bool value) override;
-
-        /** @copydoc FCollider::GetIsTrigger */
-        bool GetIsTrigger() const override;
-
         /** @copydoc FCollider::SetCenter */
         void SetCenter(const Vector3& center) override;
 
@@ -50,9 +44,6 @@ namespace te
     protected:
         BulletPhysics* _physics;
         BulletScene* _scene;
-
-        bool _isTrigger = false;
-        bool _isStatic = true;
 
         btCollisionShape* _shape;
         btTransform _tranform;

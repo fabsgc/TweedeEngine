@@ -49,6 +49,7 @@ namespace te
         , _rigidBody(nullptr)
         , _physics(physics)
         , _scene(scene)
+        , _isDirty(false)
         , _shape(nullptr)
     { 
         _internal = te_new<BulletFBody>(physics, scene);
@@ -68,6 +69,14 @@ namespace te
 
         Release();
         te_delete((BulletFBody*)_internal);
+    }
+
+    void BulletRigidBody::Update()
+    {
+        if (_isDirty && _inWorld)
+            AddToWorld();
+
+        _isDirty = false;
     }
 
     Vector3 BulletRigidBody::GetPosition() const
@@ -128,13 +137,31 @@ namespace te
             Activate();
     }
 
+    void BulletRigidBody::SetIsTrigger(bool trigger)
+    {
+        if (_isTrigger == trigger)
+            return;
+
+        _isTrigger = trigger;
+        _isDirty = true;
+    }
+
+    void BulletRigidBody::SetIsDebug(bool debug)
+    {
+        if (_isDebug == debug)
+            return;
+
+        _isDebug = debug;
+        _isDirty = true;
+    }
+
     void BulletRigidBody::SetMass(float mass)
     {
         mass = std::max(mass, 0.0f);
         if (mass != _mass)
         {
             _mass = mass;
-            AddToWorld();
+            _isDirty = true;
         }
     }
 
@@ -144,7 +171,7 @@ namespace te
             return;
 
         _isKinematic = kinematic;
-        UpdateKinematicFlag();
+        _isDirty = true;
     }
 
     void BulletRigidBody::SetVelocity(const Vector3& velocity)
@@ -156,9 +183,7 @@ namespace te
         _rigidBody->setLinearVelocity(ToBtVector3(_velocity));
 
         if (_velocity != Vector3::ZERO)
-        {
             Activate();
-        }
     }
 
     void BulletRigidBody::SetAngularVelocity(const Vector3& velocity)
@@ -170,9 +195,7 @@ namespace te
         _rigidBody->setAngularVelocity(ToBtVector3(_angularVelocity));
 
         if (_angularVelocity != Vector3::ZERO)
-        {
             Activate();
-        }
     }
 
     void BulletRigidBody::SetFriction(float friction)
@@ -280,7 +303,7 @@ namespace te
 
             UINT32 index = (UINT32)_colliders.size();
             _colliders[fCollider] = ColliderData(index);
-        }        
+        }
 
         AddToWorld();
     }
@@ -332,6 +355,8 @@ namespace te
 
     void BulletRigidBody::AddToWorld()
     {
+        TE_PRINT("Add to world");
+
         if (_mass < 0.0f)
             _mass = 0.0f;
 
@@ -405,6 +430,7 @@ namespace te
 
         if (_inWorld)
         {
+            _rigidBody->activate(false);
             _scene->RemoveRigidBody(_rigidBody);
             _inWorld = false;
         }
@@ -436,6 +462,16 @@ namespace te
         else
             flags &= ~btCollisionObject::CF_KINEMATIC_OBJECT;
 
+        if(_isTrigger)
+            flags |= btCollisionObject::CF_NO_CONTACT_RESPONSE;
+        else
+            flags &= ~btCollisionObject::CF_NO_CONTACT_RESPONSE;
+
+        if(_isDebug)
+            flags &= ~btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
+        else
+            flags |= btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
+
         _rigidBody->setCollisionFlags(flags);
         _rigidBody->forceActivationState(_isKinematic ? DISABLE_DEACTIVATION : ISLAND_SLEEPING);
         _rigidBody->setDeactivationTime(DEFAULT_DEACTIVATION_TIME);
@@ -453,13 +489,9 @@ namespace te
         _rigidBody->setFlags(flags);
 
         if (_useGravity)
-        {
             _rigidBody->setGravity(ToBtVector3(_gravity));
-        }
         else
-        {
             _rigidBody->setGravity(btVector3(0.0f, 0.0f, 0.0f));
-        }
     }
 
     void BulletRigidBody::UpdateCCDFlag() const

@@ -208,6 +208,7 @@ namespace te
         _world->getSolverInfo().m_numIterations = _physics->_maxSolveIterations;
 
         _debug = te_new<BulletDebug>();
+        ((BulletDebug*)_debug)->setDebugMode(_physics->_debugMode);
         _world->setDebugDrawer(static_cast<BulletDebug*>(_debug));
     }
 

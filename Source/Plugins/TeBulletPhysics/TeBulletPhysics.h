@@ -84,6 +84,8 @@ namespace te
         UINT32 _maxSolveIterations = 256;
         float _internalFps = 60.0f;
         float _deltaTimeSec = 1.0f;
+        
+        UINT32 _debugMode = btIDebugDraw::DBG_DrawWireframe | btIDebugDraw::DBG_DrawContactPoints | btIDebugDraw::DBG_DrawConstraints | btIDebugDraw::DBG_DrawConstraintLimits;
     };
 
     /** Contains information about a single Bullet scene. */

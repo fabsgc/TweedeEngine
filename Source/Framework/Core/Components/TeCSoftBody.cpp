@@ -39,6 +39,11 @@ namespace te
         CBody::Clone(static_object_cast<CBody>(c));
     }
 
+    void CSoftBody::Update()
+    {
+        CBody::Update();
+    }
+
     void CSoftBody::OnInitialized()
     { }
 

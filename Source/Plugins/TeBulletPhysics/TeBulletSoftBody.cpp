@@ -32,6 +32,16 @@ namespace te
         // TODO
     }
 
+    void BulletSoftBody::SetIsTrigger(bool value)
+    {
+        // TODO
+    }
+
+    void BulletSoftBody::SetIsDebug(bool debug)
+    {
+        // TODO
+    }
+
     void BulletSoftBody::SetMass(float mass)
     {
         // TODO

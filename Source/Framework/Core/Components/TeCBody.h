@@ -39,69 +39,81 @@ namespace te
         void Clone(const HBody& c);
 
         /** @copydoc Component::Update */
-        void Update() override { }
+        void Update() override;
 
-        /** @copydoc Body::SetMass */
+        /** @copydoc Body::SetIsTrigger() */
+        void SetIsTrigger(bool value);
+
+        /** @copydoc Body::GetIsTrigger() */
+        bool GetIsTrigger() const { return _isTrigger; }
+
+        /** @copydoc Body::SetIsDebug() */
+        void SetIsDebug(bool debug);
+
+        /** @copydoc Body::GetIsDebug() */
+        bool GetIsDebug() const { return _isDebug; }
+
+        /** @copydoc Body::SetMass() */
         void SetMass(float mass);
 
-        /** @copydoc Body::GetMass */
+        /** @copydoc Body::GetMass() */
         float GetMass() const { return _mass; };
 
-        /** @copydoc Body::SetIsKinematic */
+        /** @copydoc Body::SetIsKinematic() */
         void SetIsKinematic(bool kinematic);
 
-        /** @copydoc Body::GetIsKinematic */
+        /** @copydoc Body::GetIsKinematic() */
         bool GetIsKinematic() const { return _isKinematic; }
 
-        /** @copydoc Body::SetVelocity */
+        /** @copydoc Body::SetVelocity() */
         void SetVelocity(const Vector3& velocity);
 
-        /** @copydoc Body::GetVelocity */
+        /** @copydoc Body::GetVelocity() */
         const Vector3& GetVelocity() const { return _velocity; }
 
-        /** @copydoc Body::SetAngularVelocity */
+        /** @copydoc Body::SetAngularVelocity() */
         void SetAngularVelocity(const Vector3& velocity);
 
-        /** @copydoc Body::GetAngularVelocity */
+        /** @copydoc Body::GetAngularVelocity() */
         const Vector3& GetAngularVelocity() const { return _angularVelocity; }
 
-        /** @copydoc Body::SetFriction */
+        /** @copydoc Body::SetFriction() */
         void SetFriction(float friction);
 
-        /** @copydoc Body::GetFriction */
+        /** @copydoc Body::GetFriction() */
         float GetFriction() const { return _friction; }
 
-        /** @copydoc Body::SetRollingFriction */
+        /** @copydoc Body::SetRollingFriction() */
         void SetRollingFriction(float rollingFriction);
 
-        /** @copydoc Body::GetRollingFriction */
+        /** @copydoc Body::GetRollingFriction() */
         float GetRollingFriction() const { return _rollingFriction; }
 
-        /** @copydoc Body::SetRestitution */
+        /** @copydoc Body::SetRestitution() */
         void SetRestitution(float restitution);
 
-        /** @copydoc Body::GetRestitution */
+        /** @copydoc Body::GetRestitution() */
         float GetRestitution() const { return _restitution; }
 
-        /** @copydoc Body::SetUseGravity */
+        /** @copydoc Body::SetUseGravity() */
         void SetUseGravity(bool gravity);
 
-        /** @copydoc Body::GetUseGravity */
+        /** @copydoc Body::GetUseGravity() */
         bool GetUseGravity() const { return _useGravity; }
 
-        /** @copydoc Body::SetCenterOfMass */
+        /** @copydoc Body::SetCenterOfMass() */
         void SetCenterOfMass(const Vector3& centerOfMass);
 
-        /** @copydoc Body::GetCenterOfMass */
+        /** @copydoc Body::GetCenterOfMass() */
         const Vector3& GetCenterOfMass() const { return _centerOfMass; }
 
-        /** @copydoc Body::ApplyForce */
+        /** @copydoc Body::ApplyForce() */
         void ApplyForce(const Vector3& force, ForceMode mode) const;
 
-        /** @copydoc Body::ApplyForceAtPoint */
+        /** @copydoc Body::ApplyForceAtPoint() */
         void ApplyForceAtPoint(const Vector3& force, const Vector3& position, ForceMode mode) const;
 
-        /** @copydoc Body::ApplyTorque */
+        /** @copydoc Body::ApplyTorque() */
         void ApplyTorque(const Vector3& torque, ForceMode mode) const;
 
         /** Sets a value that determines which (if any) collision events are reported. */
@@ -110,19 +122,19 @@ namespace te
         /** Gets a value that determines which (if any) collision events are reported. */
         CollisionReportMode GetCollisionReportMode() const { return _collisionReportMode; }
 
-        /** @copydoc Body::SetFlags */
+        /** @copydoc Body::SetFlags() */
         void SetFlags(BodyFlag flags);
 
-        /** @copydoc Body::GetFlags */
+        /** @copydoc Body::GetFlags() */
         BodyFlag GetFlags() const { return _flags; }
 
-        /** @copydoc Body::OnCollisionBegin */
+        /** @copydoc Body::OnCollisionBegin() */
         Event<void(const CollisionData&)> OnCollisionBegin;
 
-        /** @copydoc Body::OnCollisionStay */
+        /** @copydoc Body::OnCollisionStay() */
         Event<void(const CollisionData&)> OnCollisionStay;
 
-        /** @copydoc Body::OnCollisionEnd */
+        /** @copydoc Body::OnCollisionEnd() */
         Event<void(const CollisionData&)> OnCollisionEnd;
 
         /** Returns the body implementation wrapped by this component. */
@@ -196,6 +208,8 @@ namespace te
         float _restitution = 0.0f;
         bool _useGravity = true;
         bool _isKinematic = false;
+        bool _isTrigger = false;
+        bool _isDebug = true;
 
         Vector3 _centerOfMass = Vector3::ZERO;
         Vector3 _velocity = Vector3::ZERO;

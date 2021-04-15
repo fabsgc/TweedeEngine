@@ -20,17 +20,17 @@ namespace te
         /** Return Component type */
         static UINT32 GetComponentType() { return TID_CSoftBody; }
 
-        /** @copydoc Component::Initialize */
+        /** @copydoc Component::Initialize() */
         void Initialize() override;
 
-        /** @copydoc Component::Clone */
+        /** @copydoc Component::Clone() */
         void Clone(const HComponent& c) override;
 
-        /** @copydoc Component::Clone */
+        /** @copydoc Component::Clone() */
         void Clone(const HSoftBody& c);
 
-        /** @copydoc Component::update */
-        void Update() override { }
+        /** @copydoc Component::Update() */
+        void Update() override;
 
         /** Returns the SoftBody implementation wrapped by this component. */
         Body* GetInternal() const override { return (SoftBody*)_internal.get(); }

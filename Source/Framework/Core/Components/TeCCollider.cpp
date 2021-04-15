@@ -42,25 +42,10 @@ namespace te
         Component::Clone(c.GetInternalPtr());
 
         _collisionReportMode = c->_collisionReportMode;
-        _isTrigger = c->_isTrigger;
         _scale = c->_scale;
         _center = c->_center;
         _position = c->_position;
         _rotation = c->_rotation;
-    }
-
-    void CCollider::SetIsTrigger(bool value)
-    {
-        if (_isTrigger == value)
-            return;
-
-        _isTrigger = value;
-
-        if (_internal != nullptr)
-        {
-            _internal->SetIsTrigger(value);
-            UpdateParentBody();
-        }
     }
 
     void CCollider::SetScale(const Vector3& scale)

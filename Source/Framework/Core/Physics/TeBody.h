@@ -34,6 +34,9 @@ namespace te
         Body(const HSceneObject& linkedSO);
         virtual ~Body() = default;
 
+        /** Allows to be able to update body state */
+        virtual void Update() = 0;
+
         /** Returns the current position of the body. */
         virtual Vector3 GetPosition() const = 0;
 
@@ -45,6 +48,21 @@ namespace te
          * simulation).
          */
         virtual void SetTransform(const Vector3& position, const Quaternion& rotation, bool activate = false) = 0;
+
+        /**
+         * Enables/disables a collider as a trigger. A trigger will not be used for collisions (objects will pass
+         * through it), but collision events will still be reported.
+         */
+        virtual void SetIsTrigger(bool trigger) = 0;
+
+        /** @copydoc GetIsTrigger() */
+        virtual bool GetIsTrigger() const = 0;
+
+        /** For debugging purpose only, specify if this body will be displayed if physic debug information are enabled */
+        virtual void SetIsDebug(bool debug) = 0;
+
+        /** @copydoc SetIsDebug() */
+        virtual bool GetIsDebug() const = 0;
 
         /**
          * Determines the mass of the object and all of its collider shapes. Only relevant if BodyFlag::AutoMass or
