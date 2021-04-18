@@ -95,55 +95,58 @@ namespace te
         BulletScene(BulletPhysics* physics, const PHYSICS_INIT_DESC& desc);
         ~BulletScene();
 
-        /** @copydoc PhysicsScene::CreateRigidBody */
+        /** PhysicsScene::TriggerCollisions() */
+        void TriggerCollisions() override;
+
+        /** @copydoc PhysicsScene::CreateRigidBody() */
         SPtr<RigidBody> CreateRigidBody(const HSceneObject& linkedSO) override;
 
-        /** @copydoc PhysicsScene::CreateSoftBody */
+        /** @copydoc PhysicsScene::CreateSoftBody() */
         SPtr<SoftBody> CreateSoftBody(const HSceneObject& linkedSO) override;
 
-        /** @copydoc PhysicsScene::CreateSoftBody */
+        /** @copydoc PhysicsScene::CreateSoftBody() */
         SPtr<ConeTwistJoint> CreateConeTwistJoint(const CONE_TWIST_JOINT_DESC& desc) override;
 
-        /** @copydoc PhysicsScene::CreateSoftBody */
+        /** @copydoc PhysicsScene::CreateSoftBody() */
         SPtr<HingeJoint> CreateHingeJoint(const HINGE_JOINT_DESC& desc) override;
 
-        /** @copydoc PhysicsScene::CreateSoftBody */
+        /** @copydoc PhysicsScene::CreateSoftBody() */
         SPtr<SphericalJoint> CreateSphericalJoint(const SPHERICAL_JOINT_DESC& desc) override;
 
-        /** @copydoc PhysicsScene::CreateSoftBody */
+        /** @copydoc PhysicsScene::CreateSoftBody() */
         SPtr<SliderJoint> CreateSliderJoint(const SLIDER_JOINT_DESC& desc) override;
 
-        /** @copydoc PhysicsScene::CreateSoftBody */
+        /** @copydoc PhysicsScene::CreateSoftBody() */
         SPtr<D6Joint> CreateD6Joint(const D6_JOINT_DESC& desc) override;
 
-        /** @copydoc PhysicsScene::CreateBoxCollider */
+        /** @copydoc PhysicsScene::CreateBoxCollider() */
         SPtr<BoxCollider> CreateBoxCollider(const Vector3& extents, const Vector3& position,
             const Quaternion& rotation) override;
 
-        /** @copydoc PhysicsScene::CreatePlaneCollider */
+        /** @copydoc PhysicsScene::CreatePlaneCollider() */
         SPtr<PlaneCollider> CreatePlaneCollider(const Vector3& normal, const Vector3& position,
             const Quaternion& rotation) override;
 
-        /** @copydoc PhysicsScene::CreateSphereCollider */
+        /** @copydoc PhysicsScene::CreateSphereCollider() */
         SPtr<SphereCollider> CreateSphereCollider(float radius, const Vector3& position, 
             const Quaternion& rotation) override;
 
-        /** @copydoc PhysicsScene::CreateCylinderCollider */
+        /** @copydoc PhysicsScene::CreateCylinderCollider() */
         SPtr<CylinderCollider> CreateCylinderCollider(const Vector3& extents, const Vector3& position,
             const Quaternion& rotation) override;
 
-        /** @copydoc PhysicsScene::CreateCapsuleCollider */
+        /** @copydoc PhysicsScene::CreateCapsuleCollider() */
         SPtr<CapsuleCollider> CreateCapsuleCollider(float radius, float height, const Vector3& position,
             const Quaternion& rotation) override;
 
-        /** @copydoc PhysicsScene::CreateMeshCollider */
+        /** @copydoc PhysicsScene::CreateMeshCollider() */
         SPtr<MeshCollider> CreateMeshCollider(const Vector3& position, const Quaternion& rotation) override;
 
-        /** @copydoc PhysicsScene::CreateConeCollider */
+        /** @copydoc PhysicsScene::CreateConeCollider() */
         SPtr<ConeCollider> CreateConeCollider(float radius, float height, const Vector3& position,
             const Quaternion& rotation) override;
 
-        /** @copydoc PhysicsScene::CreateHeightFieldCollider */
+        /** @copydoc PhysicsScene::CreateHeightFieldCollider() */
         SPtr<HeightFieldCollider> CreateHeightFieldCollider(const Vector3& position, const Quaternion& rotation) override;
 
         /** Add RigidBody to current scene */

@@ -37,9 +37,6 @@ namespace te
     void CConeCollider::SetRadius(float radius)
     {
         float clampedRadius = std::max(radius, 0.01f);
-        if (_radius == clampedRadius)
-            return;
-
         _radius = clampedRadius;
 
         if (_internal != nullptr)

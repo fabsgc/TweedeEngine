@@ -64,6 +64,10 @@ namespace te
     class TE_CORE_EXPORT PhysicsScene
     {
     public:
+
+        /** Manage collision detection inside a scene */
+        virtual void TriggerCollisions() = 0;
+
         /** @copydoc RigidBody::Create */
         virtual SPtr<RigidBody> CreateRigidBody(const HSceneObject& linkedSO) = 0;
 

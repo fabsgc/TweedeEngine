@@ -28,6 +28,12 @@ namespace te
         return collider;
     }
 
+    void CBoxCollider::RestoreInternal()
+    {
+        CCollider::RestoreInternal();
+        SetExtents(_extents);
+    }
+
     void CBoxCollider::Clone(const HBoxCollider& c)
     {
         CCollider::Clone(static_object_cast<CCollider>(c));
@@ -38,10 +44,6 @@ namespace te
     void CBoxCollider::SetExtents(const Vector3& extents)
     {
         Vector3 clampedExtents = Vector3::Max(extents, Vector3(0.01f, 0.01f, 0.01f));
-
-        if (_extents == clampedExtents)
-            return;
-
         _extents = clampedExtents;
 
         if (_internal != nullptr)

@@ -292,7 +292,7 @@ namespace te
         HBoxCollider _boxColliderKnight;
 
         HRigidBody _rigidBodyPlane;
-        HPlaneCollider _planeColliderKnight;
+        HBoxCollider _planeColliderKnight;
 #endif
     };
 

@@ -125,6 +125,8 @@ namespace te
             {
                 for (int j = scene->_world->getNumCollisionObjects() - 1; j >= 0; j--)
                 {
+                    scene->TriggerCollisions();
+
                     /*btCollisionObject* obj = scene->_world->getCollisionObjectArray()[j];
                     btRigidBody* body = btRigidBody::upcast(obj);
                     btTransform trans;
@@ -220,6 +222,26 @@ namespace te
         te_safe_delete((BulletDebug*)_debug);
 
         gBulletPhysics().NotifySceneDestroyed(this);
+    }
+
+    void BulletScene::TriggerCollisions()
+    {
+        if (_world)
+            _world->performDiscreteCollisionDetection();
+
+        int numManifolds = _world->getDispatcher()->getNumManifolds();
+        for (int i = 0; i < numManifolds; i++)
+        {
+            btPersistentManifold* contactManifold = _world->getDispatcher()->getManifoldByIndexInternal(i);
+            const btCollisionObject* obA = contactManifold->getBody0();
+            const btCollisionObject* obB = contactManifold->getBody1();
+
+            int numContacts = contactManifold->getNumContacts();
+            for (int j = 0; j < numContacts; j++)
+            {
+                // TODO
+            }
+        }
     }
 
     SPtr<RigidBody> BulletScene::CreateRigidBody(const HSceneObject& linkedSO)

@@ -38,10 +38,6 @@ namespace te
     {
         Vector3 clampedNormal = normal;
         clampedNormal.Normalize();
-
-        if (_normal == clampedNormal)
-            return;
-
         _normal = clampedNormal;
 
         if (_internal != nullptr)

@@ -50,9 +50,6 @@ namespace te
 
     void CCollider::SetScale(const Vector3& scale)
     {
-        if (_scale == scale)
-            return;
-
         _scale = scale;
 
         if (_internal != nullptr)
@@ -69,9 +66,6 @@ namespace te
 
     void CCollider::SetCenter(const Vector3& center)
     {
-        if (_center == center)
-            return;
-
         _center = center;
 
         if (_internal != nullptr)
@@ -88,9 +82,6 @@ namespace te
 
     void CCollider::SetPosition(const Vector3& position)
     {
-        if (_position == position)
-            return;
-
         _position = position;
 
         if (_internal != nullptr)
@@ -107,9 +98,6 @@ namespace te
 
     void CCollider::SetRotation(const Quaternion& rotation)
     {
-        if (_rotation == rotation)
-            return;
-
         _rotation = rotation;
 
         if (_internal != nullptr)
@@ -176,6 +164,11 @@ namespace te
             _internal->OnCollisionStay.Connect(std::bind(&CCollider::TriggerOnCollisionStay, this, _1));
             _internal->OnCollisionEnd.Connect(std::bind(&CCollider::TriggerOnCollisionEnd, this, _1));
         }
+
+        SetPosition(_position);
+        SetRotation(_rotation);
+        SetCenter(_center);
+        SetScale(_scale);
 
         UpdateParentBody();
         UpdateCollisionReportMode();

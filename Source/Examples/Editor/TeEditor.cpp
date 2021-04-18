@@ -1245,6 +1245,9 @@ namespace te
         _animationKnight->SetDefaultClip(_animationClipKnight);
 
         _rigidBodyKnight = _sceneRenderableKnightSO->AddComponent<CRigidBody>();
+        _rigidBodyKnight->SetFriction(1.0f);
+        _rigidBodyKnight->SetRollingFriction(1.0f);
+        _rigidBodyKnight->SetCollisionReportMode(CollisionReportMode::Report);
         _rigidBodyKnight->Initialize();
         _boxColliderKnight = _sceneRenderableKnightSO->AddComponent<CBoxCollider>();
         _boxColliderKnight->Initialize();
@@ -1261,9 +1264,14 @@ namespace te
         _sceneRenderablePlaneSO->Move(Vector3(0.0, -3.0f, 0.0f));
 
         _rigidBodyPlane = _sceneRenderablePlaneSO->AddComponent<CRigidBody>();
-        _rigidBodyPlane->Initialize();
+        _rigidBodyPlane->SetFriction(1.0f);
+        _rigidBodyPlane->SetRollingFriction(1.0f);
         _rigidBodyPlane->SetIsKinematic(true);
-        _planeColliderKnight = _sceneRenderablePlaneSO->AddComponent<CPlaneCollider>();
+        _rigidBodyPlane->SetCollisionReportMode(CollisionReportMode::Report);
+        _rigidBodyPlane->Initialize();
+        _planeColliderKnight = _sceneRenderablePlaneSO->AddComponent<CBoxCollider>();
+        _planeColliderKnight->SetExtents(Vector3(5.0f, 0.5f, 5.0f));
+        _planeColliderKnight->SetPosition(Vector3(0.0f, -0.5f, 0.0f));
         _planeColliderKnight->Initialize();
 
         // ######################################################

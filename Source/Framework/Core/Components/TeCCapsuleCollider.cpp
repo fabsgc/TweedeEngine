@@ -38,9 +38,6 @@ namespace te
     void CCapsuleCollider::SetRadius(float radius)
     {
         float clampedRadius = std::max(radius, 0.01f);
-        if (_radius == clampedRadius)
-            return;
-
         _radius = clampedRadius;
 
         if (_internal != nullptr)
@@ -58,9 +55,6 @@ namespace te
     void CCapsuleCollider::SetHeight(float height)
     {
         float clampedHeight = std::max(height, 0.01f);
-        if (_height == clampedHeight)
-            return;
-
         _height = clampedHeight;
 
         if (_internal != nullptr)
