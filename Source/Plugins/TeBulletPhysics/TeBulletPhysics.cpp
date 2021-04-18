@@ -14,6 +14,7 @@
 #include "TeBulletCapsuleCollider.h"
 #include "TeBulletMeshCollider.h"
 #include "TeBulletConeCollider.h"
+#include "TeBulletHeightFieldCollider.h"
 #include "TeBulletDebug.h"
 #include "Utility/TeTime.h"
 #include "RenderAPI/TeRenderAPI.h"
@@ -294,6 +295,11 @@ namespace te
         const Quaternion& rotation)
     {
         return te_shared_ptr_new<BulletConeCollider>(_physics, this, position, rotation, radius, height);
+    }
+
+    SPtr<HeightFieldCollider> BulletScene::CreateHeightFieldCollider(const Vector3& position, const Quaternion& rotation)
+    {
+        return te_shared_ptr_new<BulletHeightFieldCollider>(_physics, this, position, rotation);
     }
 
     void BulletScene::AddRigidBody(btRigidBody* body)

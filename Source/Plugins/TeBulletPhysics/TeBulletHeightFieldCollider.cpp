@@ -1,10 +1,10 @@
-#include "TeBulletMeshCollider.h"
+#include "TeBulletHeightFieldCollider.h"
 #include "TeBulletPhysics.h"
 #include "TeBulletFCollider.h"
 
 namespace te
 {
-    BulletMeshCollider::BulletMeshCollider(BulletPhysics* physics, BulletScene* scene, const Vector3& position, const Quaternion& rotation)
+    BulletHeightFieldCollider::BulletHeightFieldCollider(BulletPhysics* physics, BulletScene* scene, const Vector3& position, const Quaternion& rotation)
     {
         _internal = te_new<BulletFCollider>(physics, scene, _shape);
         _internal->SetPosition(position);
@@ -13,24 +13,24 @@ namespace te
         UpdateShape();
     }
 
-    BulletMeshCollider::~BulletMeshCollider()
+    BulletHeightFieldCollider::~BulletHeightFieldCollider()
     { 
         te_delete((BulletFCollider*)_internal);
         te_delete(_shape);
     }
 
-    void BulletMeshCollider::SetScale(const Vector3& scale)
+    void BulletHeightFieldCollider::SetScale(const Vector3& scale)
     {
-        MeshCollider::SetScale(scale);
+        HeightFieldCollider::SetScale(scale);
         UpdateShape();
     }
 
-    void BulletMeshCollider::UpdateShape()
+    void BulletHeightFieldCollider::UpdateShape()
     {
         if (_shape)
             te_delete(_shape);
 
-        /*_shape = te_new<btConvexHullShape>(); // TODO
+        /*_shape = te_new<btHeightfieldTerrainShape>(0, 0, data, 0.0f, 0.0f, 1, true); // TODO
         _shape->setUserPointer(this);
 
         ((BulletFCollider*)_internal)->SetShape(_shape);

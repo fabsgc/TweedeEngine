@@ -175,6 +175,14 @@ namespace te
         virtual SPtr<ConeCollider> CreateConeCollider(float radius, float height, const Vector3& position,
             const Quaternion& rotation) = 0;
 
+        /**
+         * Creates a new height map collider.
+         *
+         * @param[in]	position	Position of the collider relative to its parent
+         * @param[in]	rotation	Position of the collider relative to its parent
+         */
+        virtual SPtr<HeightFieldCollider> CreateHeightFieldCollider(const Vector3& position, const Quaternion& rotation) = 0;
+
     protected:
         PhysicsScene() = default;
         virtual ~PhysicsScene() = default;

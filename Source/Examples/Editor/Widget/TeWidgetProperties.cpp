@@ -37,6 +37,7 @@
 #include "Components/TeCMeshCollider.h"
 #include "Components/TeCPlaneCollider.h"
 #include "Components/TeCSphereCollider.h"
+#include "Components/TeCHeightFieldCollider.h"
 
 namespace te
 {
@@ -175,6 +176,13 @@ namespace te
             case TID_CConeCollider:
             {
                 if (ShowCConeColliderProperties())
+                    hasChanged = true;
+            }
+            break;
+
+            case TID_CHeightFieldCollider:
+            {
+                if (ShowCHeightFieldColliderProperties())
                     hasChanged = true;
             }
             break;
@@ -815,6 +823,21 @@ namespace te
                 }
             }
 
+            if (ShowCollider(collider))
+                hasChanged = true;
+        }
+
+        return hasChanged;
+    }
+
+    bool WidgetProperties::ShowCHeightFieldColliderProperties()
+    {
+        bool hasChanged = false;
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
+        SPtr<CHeightFieldCollider> collider = std::static_pointer_cast<CHeightFieldCollider>(_selections.ClickedComponent);
+
+        if (ImGui::CollapsingHeader("Terrain collider", ImGuiTreeNodeFlags_DefaultOpen))
+        {
             if (ShowCollider(collider))
                 hasChanged = true;
         }

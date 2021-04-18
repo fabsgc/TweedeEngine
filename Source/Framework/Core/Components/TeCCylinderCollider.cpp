@@ -30,6 +30,8 @@ namespace te
     void CCylinderCollider::Clone(const HCylinderCollider& c)
     {
         CCollider::Clone(static_object_cast<CCollider>(c));
+
+        _extents = c->_extents;
     }
 
     void CCylinderCollider::SetExtents(const Vector3& extents)

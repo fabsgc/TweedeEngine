@@ -81,6 +81,9 @@ namespace te
         /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
         bool ShowCSphereColliderProperties();
 
+        /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
+        bool ShowCHeightFieldColliderProperties();
+
         /**  Show transform and mobility options */
         bool ShowTransform(Transform& transform, ObjectMobility& mobility, bool disableTransform = false);
 

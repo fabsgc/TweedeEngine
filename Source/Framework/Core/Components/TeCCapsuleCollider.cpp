@@ -30,6 +30,9 @@ namespace te
     void CCapsuleCollider::Clone(const HCapsuleCollider& c)
     {
         CCollider::Clone(static_object_cast<CCollider>(c));
+
+        _radius = c->_radius;
+        _height = c->_height;
     }
 
     void CCapsuleCollider::SetRadius(float radius)

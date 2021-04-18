@@ -29,6 +29,7 @@
 #include "Components/TeCCapsuleCollider.h"
 #include "Components/TeCMeshCollider.h"
 #include "Components/TeCConeCollider.h"
+#include "Components/TeCHeightFieldCollider.h"
 #include "../TeEditorUtils.h"
 
 namespace te
@@ -628,6 +629,8 @@ namespace te
                                 CreateCollider(TID_CMeshCollider);
                             if (ImGui::MenuItem(ICON_FA_CUBE " Cone Collider"))
                                 CreateCollider(TID_CMeshCollider);
+                            if (ImGui::MenuItem(ICON_FA_CUBE " Terrain Collider"))
+                                CreateCollider(TID_CHeightFieldCollider);
 
                             ImGui::EndMenu();
                         }
@@ -1090,6 +1093,15 @@ namespace te
             {
                 HConeCollider collider = _selections.ClickedSceneObject->AddComponent<CConeCollider>();
                 collider.Get()->SetName("Cone Collider");
+                collider.Get()->Initialize();
+                _selections.ClickedComponent = collider.GetInternalPtr();
+            }
+            break;
+
+            case TID_CHeightFieldCollider:
+            {
+                HHeightFieldCollider collider = _selections.ClickedSceneObject->AddComponent<CHeightFieldCollider>();
+                collider.Get()->SetName("Terrain Collider");
                 collider.Get()->Initialize();
                 _selections.ClickedComponent = collider.GetInternalPtr();
             }

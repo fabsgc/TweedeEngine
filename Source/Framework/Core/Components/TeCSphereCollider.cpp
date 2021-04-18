@@ -31,6 +31,8 @@ namespace te
     void CSphereCollider::Clone(const HSphereCollider& c)
     {
         CCollider::Clone(static_object_cast<CCollider>(c));
+
+        _radius = c->_radius;
     }
 
     void CSphereCollider::SetRadius(float radius)

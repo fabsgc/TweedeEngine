@@ -29,6 +29,9 @@ namespace te
     void CConeCollider::Clone(const HConeCollider& c)
     {
         CCollider::Clone(static_object_cast<CCollider>(c));
+
+        _radius = c->_radius;
+        _height = c->_height;
     }
 
     void CConeCollider::SetRadius(float radius)

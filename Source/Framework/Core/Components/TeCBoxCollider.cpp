@@ -31,6 +31,8 @@ namespace te
     void CBoxCollider::Clone(const HBoxCollider& c)
     {
         CCollider::Clone(static_object_cast<CCollider>(c));
+
+        _extents = c->_extents;
     }
 
     void CBoxCollider::SetExtents(const Vector3& extents)

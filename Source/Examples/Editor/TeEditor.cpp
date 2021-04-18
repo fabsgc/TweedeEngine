@@ -44,6 +44,7 @@
 #include "Components/TeCCapsuleCollider.h"
 #include "Components/TeCMeshCollider.h"
 #include "Components/TeCConeCollider.h"
+#include "Components/TeCHeightFieldCollider.h"
 #include "Components/TeCAnimation.h"
 #include "Scene/TeSceneManager.h"
 #include "Resources/TeResourceManager.h"
@@ -235,6 +236,7 @@ namespace te
                     _selections.ClickedComponent->GetCoreType() == TID_CMeshCollider ||
                     _selections.ClickedComponent->GetCoreType() == TID_CPlaneCollider ||
                     _selections.ClickedComponent->GetCoreType() == TID_CSphereCollider ||
+                    _selections.ClickedComponent->GetCoreType() == TID_CHeightFieldCollider ||
                     _selections.ClickedComponent->GetCoreType() == TID_CAudioSource)
                 {
                     if (!ImGuizmo::IsOver())
@@ -1006,6 +1008,16 @@ namespace te
                 }
                 break;
 
+                case TID_CHeightFieldCollider:
+                {
+                    HHeightFieldCollider component = clickedSceneObject->AddComponent<CHeightFieldCollider>();
+                    component->Clone(static_object_cast<CHeightFieldCollider>(_selections.CopiedComponent->GetHandle()));
+                    component->Initialize();
+                    _selections.ClickedComponent = component.GetInternalPtr();
+                    _selections.CopiedComponent = component.GetInternalPtr();
+                }
+                break;
+
                 default:
                 break;
             }
@@ -1237,7 +1249,7 @@ namespace te
         _boxColliderKnight = _sceneRenderableKnightSO->AddComponent<CBoxCollider>();
         _boxColliderKnight->Initialize();
         _boxColliderKnight->SetCenter(Vector3(0.0f, 1.0f, 0.0f));
-        _boxColliderKnight->SetScale(Vector3(0.0f, 2.0f, 0.0f));
+        _boxColliderKnight->SetScale(Vector3(1.0f, 2.0f, 1.0f));
         
         _sceneRenderablePlaneSO = SceneObject::Create("Plane");
         _sceneRenderablePlaneSO->SetParent(_sceneSO);

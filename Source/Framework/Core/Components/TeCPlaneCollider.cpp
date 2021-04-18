@@ -30,6 +30,8 @@ namespace te
     void CPlaneCollider::Clone(const HPlaneCollider& c)
     {
         CCollider::Clone(static_object_cast<CCollider>(c));
+
+        _normal = c->_normal;
     }
 
     void CPlaneCollider::SetNormal(const Vector3& normal)

@@ -307,6 +307,7 @@ set (TE_CORE_INC_COMPONENTS
     "Core/Components/TeCCapsuleCollider.h"
     "Core/Components/TeCMeshCollider.h"
     "Core/Components/TeCConeCollider.h"
+    "Core/Components/TeCHeightFieldCollider.h"
 )
 set (TE_CORE_SRC_COMPONENTS
     "Core/Components/TeCCamera.cpp"
@@ -337,6 +338,7 @@ set (TE_CORE_SRC_COMPONENTS
     "Core/Components/TeCCapsuleCollider.cpp"
     "Core/Components/TeCMeshCollider.cpp"
     "Core/Components/TeCConeCollider.cpp"
+    "Core/Components/TeCHeightFieldCollider.cpp"
 )
 
 set (TE_CORE_INC_RESOURCE
@@ -442,6 +444,7 @@ set (TE_CORE_INC_PHYSICS
     "Core/Physics/TeCapsuleCollider.h"
     "Core/Physics/TeMeshCollider.h"
     "Core/Physics/TeConeCollider.h"
+    "Core/Physics/TeHeightFieldCollider.h"
     "Core/Physics/TeFCollider.h"
     "Core/Physics/TeFJoint.h"
     "Core/Physics/TeFBody.h"
@@ -467,6 +470,7 @@ set (TE_CORE_SRC_PHYSICS
     "Core/Physics/TeCapsuleCollider.cpp"
     "Core/Physics/TeMeshCollider.cpp"
     "Core/Physics/TeConeCollider.cpp"
+    "Core/Physics/TeHeightFieldCollider.cpp"
     "Core/Physics/TeFCollider.cpp"
     "Core/Physics/TeFJoint.cpp"
     "Core/Physics/TeFBody.cpp"

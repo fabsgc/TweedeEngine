@@ -326,7 +326,9 @@ namespace te
         auto it = _colliders.find(fCollider);
         if (it != _colliders.end())
         {
-            _shape->removeChildShape(fCollider->GetShape());
+            if(fCollider->GetShape())
+                _shape->removeChildShape(fCollider->GetShape());
+            
             _shape->recalculateLocalAabb();
             _colliders.erase(it);
         }
@@ -344,7 +346,8 @@ namespace te
     {
         for (auto& collider : _colliders)
         {
-            _shape->removeChildShape(collider.first->GetShape());
+            if(collider.first->GetShape())
+                _shape->removeChildShape(collider.first->GetShape());
         }
 
         _colliders.clear();
@@ -366,7 +369,10 @@ namespace te
         // Add child shapes
         _shape = te_new<btCompoundShape>();
         for (auto& collider : _colliders)
-            _shape->addChildShape(collider.first->GetBtTransform(), collider.first->GetShape());
+        {
+            if(collider.first->GetShape())
+                _shape->addChildShape(collider.first->GetBtTransform(), collider.first->GetShape());
+        }
 
         _shape->calculateLocalInertia(_mass, localInertia);
   

@@ -105,7 +105,8 @@ namespace te
         TID_CCapsuleCollider        = 1050,
         TID_CMeshCollider           = 1051,
         TID_CConeCollider           = 1052,
-        TID_CBody                   = 1053,
+        TID_CHeightFieldCollider    = 1053,
+        TID_CBody                   = 1054,
     };
 }
 
@@ -284,6 +285,7 @@ namespace te
     class CCapsuleCollider;
     class CMeshCollider;
     class CConeCollider;
+    class CHeightFieldCollider;
 
     class BuiltinResources;
 
@@ -352,6 +354,7 @@ namespace te
     class CapsuleCollider;
     class MeshCollider;
     class ConeCollider;
+    class HeightFieldCollider;
     class FCollider;
     class FJoint;
     class FBody;
@@ -412,4 +415,5 @@ namespace te
     typedef GameObjectHandle<CCapsuleCollider> HCapsuleCollider;
     typedef GameObjectHandle<CMeshCollider> HMeshCollider;
     typedef GameObjectHandle<CConeCollider> HConeCollider;
+    typedef GameObjectHandle<CHeightFieldCollider> HHeightFieldCollider;
 }

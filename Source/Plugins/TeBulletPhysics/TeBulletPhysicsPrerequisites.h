@@ -32,6 +32,7 @@
 #include "BulletDynamics/ConstraintSolver/btSliderConstraint.h"
 #include "BulletDynamics/ConstraintSolver/btConeTwistConstraint.h"
 #include "BulletDynamics/ConstraintSolver/btPoint2PointConstraint.h"
+#include "BulletCollision/CollisionShapes/btHeightfieldTerrainShape.h"
 #pragma warning(pop)
 
 #if TE_DEBUG_MODE

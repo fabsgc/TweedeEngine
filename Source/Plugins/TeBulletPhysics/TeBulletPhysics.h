@@ -143,6 +143,9 @@ namespace te
         SPtr<ConeCollider> CreateConeCollider(float radius, float height, const Vector3& position,
             const Quaternion& rotation) override;
 
+        /** @copydoc PhysicsScene::CreateHeightFieldCollider */
+        SPtr<HeightFieldCollider> CreateHeightFieldCollider(const Vector3& position, const Quaternion& rotation) override;
+
         /** Add RigidBody to current scene */
         void AddRigidBody(btRigidBody* body);
 
