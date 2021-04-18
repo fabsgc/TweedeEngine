@@ -27,6 +27,13 @@ namespace te
         return collider;
     }
 
+    void CPlaneCollider::RestoreInternal()
+    {
+        CCollider::RestoreInternal();
+
+        SetNormal(_normal);
+    }
+
     void CPlaneCollider::Clone(const HPlaneCollider& c)
     {
         CCollider::Clone(static_object_cast<CCollider>(c));

@@ -1584,7 +1584,7 @@ namespace te
         // Friction
         {
             float friction = body->GetFriction();
-            if (ImGuiExt::RenderOptionFloat(friction, "##body_option_friction", "Friction", 0.0f, 32.0f, width))
+            if (ImGuiExt::RenderOptionFloat(friction, "##body_option_friction", "Friction", 0.0f, 8.0f, width))
             {
                 body->SetFriction(friction);
                 hasChanged = true;
@@ -1594,7 +1594,7 @@ namespace te
         // Rolling friction
         {
             float rollingFriction = body->GetRollingFriction();
-            if (ImGuiExt::RenderOptionFloat(rollingFriction, "##body_option_rolling_friction", "Rolling Friction", 0.0f, 32.0f, width))
+            if (ImGuiExt::RenderOptionFloat(rollingFriction, "##body_option_rolling_friction", "Rolling Friction", 0.0f, 8.0f, width))
             {
                 body->SetRollingFriction(rollingFriction);
                 hasChanged = true;
@@ -1604,7 +1604,7 @@ namespace te
         // Restitution
         {
             float restitution = body->GetRestitution();
-            if (ImGuiExt::RenderOptionFloat(restitution, "##body_option_restitution", "Restitution", 0.0f, 16.0f, width))
+            if (ImGuiExt::RenderOptionFloat(restitution, "##body_option_restitution", "Restitution", 0.0f, 4.0f, width))
             {
                 body->SetRestitution(restitution);
                 hasChanged = true;

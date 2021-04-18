@@ -26,6 +26,11 @@ namespace te
         return collider;
     }
 
+    void CMeshCollider::RestoreInternal()
+    {
+        CCollider::RestoreInternal();
+    }
+
     void CMeshCollider::Clone(const HMeshCollider& c)
     {
         CCollider::Clone(static_object_cast<CCollider>(c));

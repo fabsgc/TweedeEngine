@@ -28,6 +28,13 @@ namespace te
         return collider;
     }
 
+    void CSphereCollider::RestoreInternal()
+    {
+        CCollider::RestoreInternal();
+
+        SetRadius(_radius);
+    }
+
     void CSphereCollider::Clone(const HSphereCollider& c)
     {
         CCollider::Clone(static_object_cast<CCollider>(c));

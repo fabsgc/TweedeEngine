@@ -27,6 +27,13 @@ namespace te
         return collider;
     }
 
+    void CCylinderCollider::RestoreInternal()
+    {
+        CCollider::RestoreInternal();
+
+        SetExtents(_extents);
+    }
+
     void CCylinderCollider::Clone(const HCylinderCollider& c)
     {
         CCollider::Clone(static_object_cast<CCollider>(c));

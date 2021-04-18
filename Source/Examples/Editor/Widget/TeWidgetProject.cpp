@@ -527,7 +527,7 @@ namespace te
     void WidgetProject::SetSelectedComponent(SPtr<Component> component)
     {
         _selections.ClickedComponent = component;
-        _selections.ClickedSceneObject = nullptr;
+        _selections.ClickedSceneObject = component->GetSceneObject().GetInternalPtr();
         _expandToSelection = true;
         _handleSelectionWindowSwitch = true;
 

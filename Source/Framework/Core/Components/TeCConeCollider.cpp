@@ -26,6 +26,14 @@ namespace te
         return collider;
     }
 
+    void CConeCollider::RestoreInternal()
+    {
+        CCollider::RestoreInternal();
+
+        SetRadius(_radius);
+        SetHeight(_height);
+    }
+
     void CConeCollider::Clone(const HConeCollider& c)
     {
         CCollider::Clone(static_object_cast<CCollider>(c));

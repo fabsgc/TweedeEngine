@@ -25,8 +25,11 @@ namespace te
     protected:
         friend class SceneObject;
 
-        /** @copydoc CJoint::CreateInternal */
+        /** @copydoc CCollider::CreateInternal */
         SPtr<Collider> CreateInternal() override;
+
+        /** @copydoc CCollider::RestoreInternal */
+        void RestoreInternal() override;
 
         /**	Returns the HeightField collider that this component wraps. */
         HeightFieldCollider* _getInternal() const { return static_cast<HeightFieldCollider*>(_internal.get()); }

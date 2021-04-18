@@ -35,6 +35,14 @@ namespace te
         _height = c->_height;
     }
 
+    void CCapsuleCollider::RestoreInternal()
+    {
+        CCollider::RestoreInternal();
+
+        SetRadius(_radius);
+        SetHeight(_height);
+    }
+
     void CCapsuleCollider::SetRadius(float radius)
     {
         float clampedRadius = std::max(radius, 0.01f);

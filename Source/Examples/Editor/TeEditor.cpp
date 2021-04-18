@@ -630,7 +630,29 @@ namespace te
 
     void Editor::HandleImGuizmo()
     {
-        if (_selections.ClickedComponent && _guizmoState == ImGuizmoState::Active && _previewViewportCamera == _viewportCamera)
+        bool somethingSelected = false;
+        static const Vector<UINT32> componentsWhichNeedGuizmo = {
+            TID_CRenderable,
+            TID_CRigidBody,
+            TID_CSoftBody,
+            TID_CLight,
+            TID_CCamera,
+            TID_CCameraFlyer,
+            TID_CAudioSource,
+            TID_CAudioListener
+        };
+
+        if (_selections.ClickedComponent)
+        {
+            somethingSelected = true;
+        }
+        else if(_selections.ClickedSceneObject)
+        {
+            if (_selections.ClickedSceneObject->HasComponent(componentsWhichNeedGuizmo))
+                somethingSelected = true;
+        }
+
+        if (somethingSelected && _guizmoState == ImGuizmoState::Active && _previewViewportCamera == _viewportCamera)
         {
             Transform transform;
             const float* proj = nullptr;
@@ -656,7 +678,7 @@ namespace te
             projectionMatrix.GetAsFloat(proj);
 
             // Retrieves WorldMatrix
-            transform = _selections.ClickedComponent->GetSceneObject()->GetTransform();
+            transform = _selections.ClickedSceneObject->GetTransform();
 
             GetComponentsFromTransform(transform, matrixTranslation, matrixRotation, matrixScale);
             ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, &worldMatrix[0][0]);
@@ -673,11 +695,11 @@ namespace te
                 {
                 case ImGuizmo::OPERATION::TRANSLATE:
                     ImGuizmo::DecomposeMatrixToComponents(&deltaWorldMatrix[0][0], matrixTranslation, matrixRotation, matrixScale);
-                    _selections.ClickedComponent->GetSceneObject()->Move(Vector3(matrixTranslation[0], matrixTranslation[1], matrixTranslation[2]));
+                    _selections.ClickedSceneObject->Move(Vector3(matrixTranslation[0], matrixTranslation[1], matrixTranslation[2]));
                     break;
 
                 case ImGuizmo::OPERATION::SCALE:
-                    _selections.ClickedComponent->GetSceneObject()->SetScale(Vector3(matrixScale[0], matrixScale[1], matrixScale[2]));
+                    _selections.ClickedSceneObject->SetScale(Vector3(matrixScale[0], matrixScale[1], matrixScale[2]));
                     break;
 
                 case ImGuizmo::OPERATION::ROTATE:
@@ -685,7 +707,7 @@ namespace te
                     Quaternion rotation;
                     ImGuizmo::DecomposeMatrixToComponents(&deltaWorldMatrix[0][0], matrixTranslation, matrixRotation, matrixScale);
                     rotation.FromEulerAngles(Radian(Degree(matrixRotation[0])), Radian(Degree(matrixRotation[1])), Radian(Degree(matrixRotation[2])));
-                    _selections.ClickedComponent->GetSceneObject()->Rotate(rotation);
+                    _selections.ClickedSceneObject->Rotate(rotation);
                 }
                 break;
 

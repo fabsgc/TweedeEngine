@@ -26,6 +26,11 @@ namespace te
         return collider;
     }
 
+    void CHeightFieldCollider::RestoreInternal()
+    {
+        CCollider::RestoreInternal();
+    }
+
     void CHeightFieldCollider::Clone(const HHeightFieldCollider& c)
     {
         CCollider::Clone(static_object_cast<CCollider>(c));

@@ -37,8 +37,11 @@ namespace te
     protected:
         friend class SceneObject;
 
-        /** @copydoc CJoint::CreateInternal */
+        /** @copydoc CCollider::CreateInternal */
         SPtr<Collider> CreateInternal() override;
+
+        /** @copydoc CCollider::RestoreInternal */
+        void RestoreInternal() override;
 
         /**	Returns the capsule collider that this component wraps. */
         CapsuleCollider* _getInternal() const { return static_cast<CapsuleCollider*>(_internal.get()); }
