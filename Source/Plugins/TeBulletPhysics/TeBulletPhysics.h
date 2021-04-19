@@ -68,6 +68,23 @@ namespace te
         void NotifySceneDestroyed(BulletScene* scene);
 
     private:
+        /** */
+        bool ContactAddedCallback(btManifoldPoint& cp, const btCollisionObjectWrapper* colObj0Wrap, int partId0, 
+            int index0, const btCollisionObjectWrapper* colObj1Wrap, int partId1, int index1);
+
+        /** */
+        bool ContactDestroyedCallback(void* userPersistentData);
+
+        /** */
+        bool ContactProcessedCallback(btManifoldPoint& cp, void* body0, void* body1);
+
+        /** */
+        void ContactStartedCallback(btPersistentManifold* const& manifold);
+
+        /** */
+        void ContactEndedCallback(btPersistentManifold* const& manifold);
+
+    private:
         friend class BulletScene;
 
         PHYSICS_INIT_DESC _initDesc;

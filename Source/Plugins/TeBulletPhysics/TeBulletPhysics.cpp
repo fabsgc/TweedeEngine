@@ -20,6 +20,8 @@
 #include "RenderAPI/TeRenderAPI.h"
 #include "RenderAPI/TeRenderTexture.h"
 
+using namespace std::placeholders;
+
 namespace te
 {
     TE_MODULE_STATIC_MEMBER(BulletPhysics)
@@ -123,32 +125,7 @@ namespace te
             _deltaTimeSec += deltaTimeSec;
             if (_deltaTimeSec > 1.0f / _internalFps)
             {
-                for (int j = scene->_world->getNumCollisionObjects() - 1; j >= 0; j--)
-                {
-                    scene->TriggerCollisions();
-
-                    /*btCollisionObject* obj = scene->_world->getCollisionObjectArray()[j];
-                    btRigidBody* body = btRigidBody::upcast(obj);
-                    btTransform trans;
-
-                    if (body && body->getMotionState())
-                        body->getMotionState()->getWorldTransform(trans);
-                    else
-                        trans = obj->getWorldTransform();
-
-                    if (body)
-                    {
-                        auto rigidBody = static_cast<BulletRigidBody*>(body->getUserPointer());
-
-                        Vector3 position = rigidBody->GetPosition();
-                        Quaternion rotation = rigidBody->GetRotation();
-
-                        rigidBody->_setTransform(position, rotation);
-
-                        TE_PRINT(ToString(position.x) + "/" + ToString(position.y) + "/" + ToString(position.z));
-                    }*/
-                }
-
+                scene->TriggerCollisions();
                 _deltaTimeSec = 0.0f;
             }
 
@@ -173,6 +150,32 @@ namespace te
         }
 
         rapi.SetRenderTarget(nullptr);
+    }
+
+    bool BulletPhysics::ContactAddedCallback(btManifoldPoint& cp, const btCollisionObjectWrapper* colObj0Wrap, int partId0,
+        int index0, const btCollisionObjectWrapper* colObj1Wrap, int partId1, int index1)
+    {
+        TE_PRINT("Added");
+    }
+
+    bool BulletPhysics::ContactDestroyedCallback(void* userPersistentData)
+    {
+        TE_PRINT("Destroyed");
+    }
+
+    bool BulletPhysics::ContactProcessedCallback(btManifoldPoint& cp, void* body0, void* body1)
+    {
+        TE_PRINT("Processed");
+    }
+
+    void BulletPhysics::ContactStartedCallback(btPersistentManifold* const& manifold)
+    {
+        TE_PRINT("Started");
+    }
+
+    void BulletPhysics::ContactEndedCallback(btPersistentManifold* const& manifold)
+    {
+        TE_PRINT("Ended");
     }
 
     BulletScene::BulletScene(BulletPhysics* physics, const PHYSICS_INIT_DESC& desc)
