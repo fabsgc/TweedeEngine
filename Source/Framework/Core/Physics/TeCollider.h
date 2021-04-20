@@ -49,12 +49,6 @@ namespace te
         /** @copydoc FCollider::GetPosition */
         const Quaternion& GetRotation() const;
 
-        /** @copydoc FCollider::SetCollisionReportMode */
-        void SetCollisionReportMode(CollisionReportMode mode);
-
-        /** @copydoc FCollider::getCollisionReportMode */
-        CollisionReportMode GetCollisionReportMode() const;
-
         /** Returns the object containing common collider code. */
         FCollider* GetInternal() const { return _internal; }
 
@@ -69,22 +63,6 @@ namespace te
          * high level physics objects from the low level ones returned by various queries and events.
          */
         void* GetOwner(PhysicsOwnerType type) const { return _owner.Type == type ? _owner.OwnerData : nullptr; }
-
-        /**
-         * Triggered when some object starts interacting with the collider. Only triggered if proper collision report mode
-         * is turned on.
-         */
-        Event<void(const CollisionDataRaw&)> OnCollisionBegin;
-        /**
-         * Triggered for every frame that an object remains interacting with a collider. Only triggered if proper collision
-         * report mode is turned on.
-         */
-        Event<void(const CollisionDataRaw&)> OnCollisionStay;
-        /**
-         * Triggered when some object stops interacting with the collider. Only triggered if proper collision report mode
-         * is turned on.
-         */
-        Event<void(const CollisionDataRaw&)> OnCollisionEnd;
 
     protected:
         FCollider* _internal = nullptr;

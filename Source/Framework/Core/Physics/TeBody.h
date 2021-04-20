@@ -50,7 +50,7 @@ namespace te
         virtual void SetTransform(const Vector3& position, const Quaternion& rotation, bool activate = false) = 0;
 
         /**
-         * Enables/disables a collider as a trigger. A trigger will not be used for collisions (objects will pass
+         * Enables/disables a body as a trigger. A trigger will not be used for collisions (objects will pass
          * through it), but collision events will still be reported.
          */
         virtual void SetIsTrigger(bool trigger) = 0;

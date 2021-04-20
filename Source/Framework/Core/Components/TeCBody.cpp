@@ -204,9 +204,6 @@ namespace te
             return;
 
         _collisionReportMode = mode;
-
-        for (auto& entry : _children)
-            entry->UpdateCollisionReportMode();
     }
 
     void CBody::SetFlags(BodyFlag flags)

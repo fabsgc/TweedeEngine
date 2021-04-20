@@ -3,6 +3,7 @@
 #include "TeBulletPhysicsPrerequisites.h"
 #include "Physics/TePhysics.h"
 #include "Physics/TePhysicsCommon.h"
+#include "Utility/TePoolAllocator.h"
 
 namespace te 
 {
@@ -11,6 +12,7 @@ namespace te
     /** Bullet implementation of Physics. */
     class BulletPhysics : public Physics
     {
+    public:
         /** Type of contacts reported by PhysX simulation. */
         enum class ContactEventType
         {
@@ -19,19 +21,11 @@ namespace te
             ContactEnd
         };
 
-        /** Event reported when a physics object interacts with a collider. */
-        struct TriggerEvent
-        {
-            Collider* Trigger; /** Trigger that was interacted with. */
-            Collider* Other; /** Collider that was interacted with. */
-            ContactEventType Type; /** Exact type of the event. */
-        };
-
         /** Event reported when two colliders interact. */
         struct ContactEvent
         {
-            Collider* ColliderA; /** First collider. */
-            Collider* ColliderB; /** Second collider. */
+            btCollisionObject* BodyA; /** First body. */
+            btCollisionObject* BodyB; /** Second body. */
             ContactEventType Type; /** Exact type of the event. */
             // Note: Not too happy this is heap allocated, use static allocator?
             Vector<ContactPoint> Points; /** Information about all contact points between the colliders. */
@@ -66,23 +60,6 @@ namespace te
 
         /** Notifies the system that at physics scene is about to be destroyed. */
         void NotifySceneDestroyed(BulletScene* scene);
-
-    private:
-        /** */
-        bool ContactAddedCallback(btManifoldPoint& cp, const btCollisionObjectWrapper* colObj0Wrap, int partId0, 
-            int index0, const btCollisionObjectWrapper* colObj1Wrap, int partId1, int index1);
-
-        /** */
-        bool ContactDestroyedCallback(void* userPersistentData);
-
-        /** */
-        bool ContactProcessedCallback(btManifoldPoint& cp, void* body0, void* body1);
-
-        /** */
-        void ContactStartedCallback(btPersistentManifold* const& manifold);
-
-        /** */
-        void ContactEndedCallback(btPersistentManifold* const& manifold);
 
     private:
         friend class BulletScene;
@@ -176,12 +153,15 @@ namespace te
         friend class BulletPhysics;
 
         PHYSICS_INIT_DESC _initDesc;
-
         BulletPhysics* _physics = nullptr;
 
         btDiscreteDynamicsWorld* _world = nullptr;
         btSoftBodyWorldInfo* _worldInfo = nullptr;
+
+        Vector<BulletPhysics::ContactEvent*> _contactEvents;
     };
 
     BulletPhysics& gBulletPhysics();
+
+    IMPLEMENT_GLOBAL_POOL(BulletPhysics::ContactEvent, 32)
 }

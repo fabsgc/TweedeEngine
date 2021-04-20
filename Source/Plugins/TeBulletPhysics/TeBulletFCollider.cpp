@@ -42,15 +42,4 @@ namespace te
     {
         return _tranform;
     }
-
-    CollisionReportMode BulletFCollider::GetCollisionReportMode() const
-    {
-        return _collisionReportMode;
-    }
-
-    void BulletFCollider::SetCollisionReportMode(CollisionReportMode mode)
-    {
-        _collisionReportMode = mode;
-        // UpdateFilter(); TODO
-    }
 }

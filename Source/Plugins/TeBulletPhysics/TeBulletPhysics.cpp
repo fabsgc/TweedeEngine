@@ -152,32 +152,6 @@ namespace te
         rapi.SetRenderTarget(nullptr);
     }
 
-    bool BulletPhysics::ContactAddedCallback(btManifoldPoint& cp, const btCollisionObjectWrapper* colObj0Wrap, int partId0,
-        int index0, const btCollisionObjectWrapper* colObj1Wrap, int partId1, int index1)
-    {
-        TE_PRINT("Added");
-    }
-
-    bool BulletPhysics::ContactDestroyedCallback(void* userPersistentData)
-    {
-        TE_PRINT("Destroyed");
-    }
-
-    bool BulletPhysics::ContactProcessedCallback(btManifoldPoint& cp, void* body0, void* body1)
-    {
-        TE_PRINT("Processed");
-    }
-
-    void BulletPhysics::ContactStartedCallback(btPersistentManifold* const& manifold)
-    {
-        TE_PRINT("Started");
-    }
-
-    void BulletPhysics::ContactEndedCallback(btPersistentManifold* const& manifold)
-    {
-        TE_PRINT("Ended");
-    }
-
     BulletScene::BulletScene(BulletPhysics* physics, const PHYSICS_INIT_DESC& desc)
         : PhysicsScene()
         , _initDesc(desc)
@@ -242,7 +216,7 @@ namespace te
             int numContacts = contactManifold->getNumContacts();
             for (int j = 0; j < numContacts; j++)
             {
-                // TODO
+                btManifoldPoint& pt = contactManifold->getContactPoint(j);
             }
         }
     }

@@ -18,7 +18,7 @@ namespace te
     /** Information about a collision between two physics objects. */
     struct CollisionDataRaw
     {
-        Collider* Colliders[2]; /**< Colliders involved in the collision. */
+        Body* Bodies[2]; /**< Bodies involved in the collision. */
 
         // Note: Not too happy this is heap allocated, use static allocator?
         Vector<ContactPoint> ContactPoints; /**< Information about all the contact points for the hit. */
@@ -27,8 +27,8 @@ namespace te
     /** Information about a collision between two physics objects. */
     struct CollisionData
     {
-        /** Components of the colliders that have collided. */
-        HCollider Colliders[2];
+        /** Components of the bodies that have collided. */
+        HBody Bodies[2];
 
         // Note: Not too happy this is heap allocated, use static allocator?
         Vector<ContactPoint> ContactPoints; /**< Information about all the contact points for the hit. */

@@ -22,12 +22,6 @@ namespace te
         /** @copydoc FCollider::SetRotation */
         void SetRotation(const Quaternion& rotation) override;
 
-        /** @copydoc FCollider::SetCollisionReportMode */
-        void SetCollisionReportMode(CollisionReportMode mode) override;
-
-        /** @copydoc SetCollisionReportMode() */
-        CollisionReportMode GetCollisionReportMode() const override;
-
         /** Set current btCollisionShape */
         void SetShape(btCollisionShape* shape) { _shape = shape; }
 
@@ -47,7 +41,5 @@ namespace te
 
         btCollisionShape* _shape;
         btTransform _tranform;
-
-        CollisionReportMode _collisionReportMode = CollisionReportMode::None;
     };
 }

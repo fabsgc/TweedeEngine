@@ -252,16 +252,16 @@ namespace te
     {
         output.ContactPoints = std::move(raw.ContactPoints);
 
-        if (raw.Colliders[0] != nullptr)
+        if (raw.Bodies[0] != nullptr)
         {
-            CCollider* other = (CCollider*)raw.Colliders[0]->GetOwner(PhysicsOwnerType::Component);
-            output.Colliders[0] = static_object_cast<CCollider>(other->GetHandle());
+            CBody* other = (CBody*)raw.Bodies[0]->GetOwner(PhysicsOwnerType::Component);
+            output.Bodies[0] = static_object_cast<CBody>(other->GetHandle());
         }
 
-        if (raw.Colliders[1] != nullptr)
+        if (raw.Bodies[1] != nullptr)
         {
-            CCollider* other = (CCollider*)raw.Colliders[1]->GetOwner(PhysicsOwnerType::Component);
-            output.Colliders[1] = static_object_cast<CCollider>(other->GetHandle());
+            CBody* other = (CBody*)raw.Bodies[1]->GetOwner(PhysicsOwnerType::Component);
+            output.Bodies[1] = static_object_cast<CBody>(other->GetHandle());
         }
     }
 }

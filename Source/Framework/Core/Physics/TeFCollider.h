@@ -34,12 +34,6 @@ namespace te
         /** @copydoc SetRotation() */
         virtual const Quaternion& GetRotation() const { return _rotation; }
 
-        /** Determines which (if any) collision events are reported. */
-        virtual void SetCollisionReportMode(CollisionReportMode mode) = 0;
-
-        /** @copydoc SetCollisionReportMode() */
-        virtual CollisionReportMode GetCollisionReportMode() const = 0;
-
     protected:
         float _mass = 1.0f;
         Vector3 _scale = Vector3::ONE;

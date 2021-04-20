@@ -41,7 +41,6 @@ namespace te
     {
         Component::Clone(c.GetInternalPtr());
 
-        _collisionReportMode = c->_collisionReportMode;
         _scale = c->_scale;
         _center = c->_center;
         _position = c->_position;
@@ -112,14 +111,6 @@ namespace te
         }
     }
 
-    void CCollider::SetCollisionReportMode(CollisionReportMode mode)
-    {
-        _collisionReportMode = mode;
-
-        if (_internal != nullptr)
-            UpdateCollisionReportMode();
-    }
-
     void CCollider::OnInitialized()
     { }
 
@@ -157,13 +148,7 @@ namespace te
     void CCollider::RestoreInternal()
     {
         if (_internal == nullptr)
-        {
             _internal = CreateInternal();
-
-            _internal->OnCollisionBegin.Connect(std::bind(&CCollider::TriggerOnCollisionBegin, this, _1));
-            _internal->OnCollisionStay.Connect(std::bind(&CCollider::TriggerOnCollisionStay, this, _1));
-            _internal->OnCollisionEnd.Connect(std::bind(&CCollider::TriggerOnCollisionEnd, this, _1));
-        }
 
         SetPosition(_position);
         SetRotation(_rotation);
@@ -171,7 +156,6 @@ namespace te
         SetScale(_scale);
 
         UpdateParentBody();
-        UpdateCollisionReportMode();
     }
 
     void CCollider::DestroyInternal()
@@ -211,7 +195,6 @@ namespace te
         }
 
         _parent = body;
-        UpdateCollisionReportMode();
     }
 
     void CCollider::UpdateParentBody()
@@ -235,61 +218,5 @@ namespace te
 
         // Not found
         SetBody(HBody());
-    }
-
-    void CCollider::UpdateCollisionReportMode()
-    { 
-        CollisionReportMode mode = _collisionReportMode;
-
-        if (_parent != nullptr)
-            mode = _parent->GetCollisionReportMode();
-
-        if (_internal != nullptr)
-            _internal->SetCollisionReportMode(mode);
-    }
-
-    void CCollider::TriggerOnCollisionBegin(const CollisionDataRaw& data)
-    { 
-        CollisionData hit;
-        hit.ContactPoints = data.ContactPoints;
-        hit.Colliders[0] = static_object_cast<CCollider>(_thisHandle);
-
-        if (data.Colliders[1] != nullptr)
-        {
-            CCollider* other = (CCollider*)data.Colliders[1]->GetOwner(PhysicsOwnerType::Component);
-            hit.Colliders[1] = static_object_cast<CCollider>(other->GetHandle());
-        }
-
-        OnCollisionBegin(hit);
-    }
-
-    void CCollider::TriggerOnCollisionStay(const CollisionDataRaw& data)
-    { 
-        CollisionData hit;
-        hit.ContactPoints = data.ContactPoints;
-        hit.Colliders[0] = static_object_cast<CCollider>(_thisHandle);
-
-        if (data.Colliders[1] != nullptr)
-        {
-            CCollider* other = (CCollider*)data.Colliders[1]->GetOwner(PhysicsOwnerType::Component);
-            hit.Colliders[1] = static_object_cast<CCollider>(other->GetHandle());
-        }
-
-        OnCollisionStay(hit);
-    }
-
-    void CCollider::TriggerOnCollisionEnd(const CollisionDataRaw& data)
-    { 
-        CollisionData hit;
-        hit.ContactPoints = data.ContactPoints;
-        hit.Colliders[0] = static_object_cast<CCollider>(_thisHandle);
-
-        if (data.Colliders[1] != nullptr)
-        {
-            CCollider* other = (CCollider*)data.Colliders[1]->GetOwner(PhysicsOwnerType::Component);
-            hit.Colliders[1] = static_object_cast<CCollider>(other->GetHandle());
-        }
-
-        OnCollisionEnd(hit);
     }
 }

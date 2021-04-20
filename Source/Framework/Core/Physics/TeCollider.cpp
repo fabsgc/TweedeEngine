@@ -49,14 +49,4 @@ namespace te
     {
         return _internal->GetRotation();
     }
-
-    void Collider::SetCollisionReportMode(CollisionReportMode mode)
-    {
-        _internal->SetCollisionReportMode(mode);
-    }
-
-    CollisionReportMode Collider::GetCollisionReportMode() const
-    {
-        return _internal->GetCollisionReportMode();
-    }
 }

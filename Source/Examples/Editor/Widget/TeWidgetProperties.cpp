@@ -1650,30 +1650,6 @@ namespace te
         bool hasChanged = false;
         const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
 
-        // Collision report mode
-        {
-            static ImGuiExt::ComboOptions<CollisionReportMode> collisionModeOptions;
-
-            if (collider->GetBody().Empty())
-            {
-                if (collisionModeOptions.Options.size() == 0)
-                {
-                    collisionModeOptions.AddOption(CollisionReportMode::None, "Never");
-                    collisionModeOptions.AddOption(CollisionReportMode::Report, "Report");
-                    collisionModeOptions.AddOption(CollisionReportMode::ReportPersistent, "Report continuous");
-                }
-
-                CollisionReportMode collisionMode = collider->GetCollisionReportMode();
-                if (ImGuiExt::RenderOptionCombo<CollisionReportMode>(&collisionMode,
-                    "##collider_option_collision_mode", "Collision report", collisionModeOptions, width))
-                {
-                    collider->SetCollisionReportMode(collisionMode);
-                    hasChanged = true;
-                }
-            }
-        }
-        ImGui::Separator();
-
         // Scale
         {
             Vector3 scale = collider->GetScale();
