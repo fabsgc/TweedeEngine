@@ -24,8 +24,8 @@ namespace te
         /** Event reported when two colliders interact. */
         struct ContactEvent
         {
-            btCollisionObject* BodyA; /** First body. */
-            btCollisionObject* BodyB; /** Second body. */
+            Body* BodyA; /** First body. */
+            Body* BodyB; /** Second body. */
             ContactEventType Type; /** Exact type of the event. */
             // Note: Not too happy this is heap allocated, use static allocator?
             Vector<ContactPoint> Points; /** Information about all contact points between the colliders. */

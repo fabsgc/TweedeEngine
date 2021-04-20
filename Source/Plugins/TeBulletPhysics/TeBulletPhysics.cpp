@@ -203,6 +203,9 @@ namespace te
 
     void BulletScene::TriggerCollisions()
     {
+        Body* bodyA = nullptr;
+        Body* bodyB = nullptr;
+
         if (_world)
             _world->performDiscreteCollisionDetection();
 
@@ -212,6 +215,9 @@ namespace te
             btPersistentManifold* contactManifold = _world->getDispatcher()->getManifoldByIndexInternal(i);
             const btCollisionObject* obA = contactManifold->getBody0();
             const btCollisionObject* obB = contactManifold->getBody1();
+
+            bodyA = (obA->getUserPointer()) ? static_cast<Body*>(obA->getUserPointer()) : nullptr;
+            bodyB = (obB->getUserPointer()) ? static_cast<Body*>(obB->getUserPointer()) : nullptr;
 
             int numContacts = contactManifold->getNumContacts();
             for (int j = 0; j < numContacts; j++)
