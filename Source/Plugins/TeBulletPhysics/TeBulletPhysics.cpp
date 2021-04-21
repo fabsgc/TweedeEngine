@@ -239,6 +239,8 @@ namespace te
             btPersistentManifold* contactManifold = _world->getDispatcher()->getManifoldByIndexInternal(i);
             const btCollisionObject* obA = contactManifold->getBody0();
             const btCollisionObject* obB = contactManifold->getBody1();
+            bodyA = nullptr;
+            bodyB = nullptr;
 
             auto stayContactEvent = _stayContactEvents->find(std::make_pair(obA, obB));
             if (stayContactEvent != _stayContactEvents->end())
@@ -250,10 +252,20 @@ namespace te
             }
             else
             {
+                bodyA = (obA->getUserPointer()) ? static_cast<Body*>(obA->getUserPointer()) : nullptr;
+                bodyB = (obB->getUserPointer()) ? static_cast<Body*>(obB->getUserPointer()) : nullptr;
+
+                if (!bodyA || !bodyB)
+                    continue;
+
+                if (bodyA->GetCollisionReportMode() == CollisionReportMode::None
+                    && bodyB->GetCollisionReportMode() == CollisionReportMode::None)
+                    continue;
+
                 bp::ContactEvent* beginEvent = te_pool_new<bp::ContactEvent>();
                 beginEvent->Type = bp::ContactEventType::ContactBegin;
-                beginEvent->BodyA = (obA->getUserPointer()) ? static_cast<Body*>(obA->getUserPointer()) : nullptr;
-                beginEvent->BodyB = (obB->getUserPointer()) ? static_cast<Body*>(obB->getUserPointer()) : nullptr;
+                beginEvent->BodyA = bodyA;
+                beginEvent->BodyB = bodyA;
 
                 _beginContactEvents->insert(Pair<ContactEventKey, bp::ContactEvent*>(
                     std::make_pair(obA, obB), beginEvent));
