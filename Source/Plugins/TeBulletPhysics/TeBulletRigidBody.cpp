@@ -363,8 +363,6 @@ namespace te
 
     void BulletRigidBody::AddToWorld()
     {
-        TE_PRINT("Add to world");
-
         if (_mass < 0.0f)
             _mass = 0.0f;
 
