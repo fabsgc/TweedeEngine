@@ -101,6 +101,12 @@ namespace te
         /** @copydoc Body::ApplyTorque() */
         void ApplyTorque(const Vector3& torque, ForceMode mode) const override;
 
+        /** @copydoc Body::SetCollisionReportMode() */
+        virtual void SetCollisionReportMode(CollisionReportMode mode) override;
+
+        /** @copydoc Body::GetCollisionReportMode() */
+        virtual CollisionReportMode GetCollisionReportMode() const { return _collisionReportMode; }
+
         /** @copydoc Body::AddCollider() */
         void AddCollider(Collider*) override;
 

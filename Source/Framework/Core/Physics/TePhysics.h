@@ -68,6 +68,9 @@ namespace te
         /** Manage collision detection inside a scene */
         virtual void TriggerCollisions() = 0;
 
+        /** Report collisions inside a scene */
+        virtual void ReportCollisions() = 0;
+
         /** @copydoc RigidBody::Create */
         virtual SPtr<RigidBody> CreateRigidBody(const HSceneObject& linkedSO) = 0;
 

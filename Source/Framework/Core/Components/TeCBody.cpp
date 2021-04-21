@@ -200,10 +200,10 @@ namespace te
 
     void CBody::SetCollisionReportMode(CollisionReportMode mode)
     {
-        if (_collisionReportMode == mode)
-            return;
-
         _collisionReportMode = mode;
+
+        if (_internal)
+            _internal->SetCollisionReportMode(mode);
     }
 
     void CBody::SetFlags(BodyFlag flags)
@@ -211,9 +211,7 @@ namespace te
         _flags = flags;
 
         if (_internal != nullptr)
-        {
             _internal->SetFlags(flags);
-        }
     }
 
     void CBody::TriggerOnCollisionBegin(const CollisionDataRaw& data)

@@ -293,6 +293,11 @@ namespace te
             _rigidBody->applyTorqueImpulse(ToBtVector3(torque));
     }
 
+    void BulletRigidBody::SetCollisionReportMode(CollisionReportMode mode)
+    {
+        _collisionReportMode = mode;
+    }
+
     void BulletRigidBody::AddCollider(Collider* collider)
     {
         BulletFCollider* fCollider = static_cast<BulletFCollider*>(collider->GetInternal());

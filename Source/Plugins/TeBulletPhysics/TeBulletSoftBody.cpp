@@ -102,6 +102,11 @@ namespace te
         // TODO
     }
 
+    void BulletSoftBody::SetCollisionReportMode(CollisionReportMode mode)
+    {
+        // TODO
+    }
+
     void BulletSoftBody::AddCollider(Collider* collider)
     {
         // TODO

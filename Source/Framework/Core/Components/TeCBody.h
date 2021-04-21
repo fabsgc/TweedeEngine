@@ -116,10 +116,10 @@ namespace te
         /** @copydoc Body::ApplyTorque() */
         void ApplyTorque(const Vector3& torque, ForceMode mode) const;
 
-        /** Sets a value that determines which (if any) collision events are reported. */
+        /** @copydoc Body::SetCollisionReportMode() */
         void SetCollisionReportMode(CollisionReportMode mode);
 
-        /** Gets a value that determines which (if any) collision events are reported. */
+        /** @copydoc Body::GetCollisionReportMode() */
         CollisionReportMode GetCollisionReportMode() const { return _collisionReportMode; }
 
         /** @copydoc Body::SetFlags() */

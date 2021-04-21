@@ -8,11 +8,11 @@ namespace te
     /** Information about a single contact point during physics collision. */
     struct ContactPoint
     {
-        Vector3 Position; /**< Contact point in world space. */
+        Vector3 PositionA; /**< Contact point in world space. */
+        Vector3 PositionB; /**< Contact point in world space. */
         Vector3 Normal; /**< Normal pointing from the second shape to the first shape. */
-        /** Impulse applied to the objects to keep them from penetrating. Divide by simulation step to get the force. */
-        float Impulse;
-        float Separation; /**< Determines how far are the objects. Negative value denotes penetration. */
+        float Impulse; /** Impulse applied to the objects to keep them from penetrating. Divide by simulation step to get the force. */
+        float Distance; /**< Determines how far are the objects. Negative value denotes penetration. */
     };
 
     /** Information about a collision between two physics objects. */

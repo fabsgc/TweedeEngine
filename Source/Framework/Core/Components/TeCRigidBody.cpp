@@ -86,6 +86,7 @@ namespace te
         _internal->SetIsKinematic(_isKinematic);
         _internal->SetIsDebug(_isDebug);
         _internal->SetFlags(_flags);
+        _internal->SetCollisionReportMode(_collisionReportMode);
 
         _internal->SetCenterOfMass(_centerOfMass);
         _internal->SetMass(_mass);

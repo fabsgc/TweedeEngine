@@ -121,15 +121,15 @@ namespace te
             // Step the physics world. 
             _updateInProgress = true;
             scene->_world->stepSimulation(deltaTimeSec, maxSubsteps, internalTimeStep);
+            _updateInProgress = false;
 
             _deltaTimeSec += deltaTimeSec;
             if (_deltaTimeSec > 1.0f / _internalFps)
             {
                 scene->TriggerCollisions();
+                scene->ReportCollisions();
                 _deltaTimeSec = 0.0f;
             }
-
-            _updateInProgress = false;
         }
     }
 
@@ -151,6 +151,8 @@ namespace te
 
         rapi.SetRenderTarget(nullptr);
     }
+
+    using bp = BulletPhysics;
 
     BulletScene::BulletScene(BulletPhysics* physics, const PHYSICS_INIT_DESC& desc)
         : PhysicsScene()
@@ -190,6 +192,10 @@ namespace te
         _debug = te_new<BulletDebug>();
         ((BulletDebug*)_debug)->setDebugMode(_physics->_debugMode);
         _world->setDebugDrawer(static_cast<BulletDebug*>(_debug));
+
+        _beginContactEvents = te_new<ContactEventsMap>();
+        _stayContactEvents = te_new<ContactEventsMap>();
+        _endContactEvents = te_new<ContactEventsMap>();
     }
 
     BulletScene::~BulletScene()
@@ -198,6 +204,23 @@ namespace te
         te_safe_delete(_worldInfo);
         te_safe_delete((BulletDebug*)_debug);
 
+        for (auto& evt : *_beginContactEvents)
+            te_pool_delete(evt.second);
+
+        for (auto& evt : *_stayContactEvents)
+            te_pool_delete(evt.second);
+
+        for (auto& evt : *_endContactEvents)
+            te_pool_delete(evt.second);
+
+        _beginContactEvents->clear();
+        _stayContactEvents->clear();
+        _endContactEvents->clear();
+
+        te_delete(_beginContactEvents);
+        te_delete(_stayContactEvents);
+        te_delete(_endContactEvents);
+
         gBulletPhysics().NotifySceneDestroyed(this);
     }
 
@@ -205,6 +228,7 @@ namespace te
     {
         Body* bodyA = nullptr;
         Body* bodyB = nullptr;
+        bp::ContactEvent* currContactEvent = nullptr;
 
         if (_world)
             _world->performDiscreteCollisionDetection();
@@ -216,15 +240,113 @@ namespace te
             const btCollisionObject* obA = contactManifold->getBody0();
             const btCollisionObject* obB = contactManifold->getBody1();
 
-            bodyA = (obA->getUserPointer()) ? static_cast<Body*>(obA->getUserPointer()) : nullptr;
-            bodyB = (obB->getUserPointer()) ? static_cast<Body*>(obB->getUserPointer()) : nullptr;
+            auto stayContactEvent = _stayContactEvents->find(std::make_pair(obA, obB));
+            if (stayContactEvent != _stayContactEvents->end())
+            {
+                stayContactEvent->second->Type = bp::ContactEventType::ContactStay;
+                stayContactEvent->second->Points.clear();
+
+                currContactEvent = stayContactEvent->second;
+            }
+            else
+            {
+                bp::ContactEvent* beginEvent = te_pool_new<bp::ContactEvent>();
+                beginEvent->Type = bp::ContactEventType::ContactBegin;
+                beginEvent->BodyA = (obA->getUserPointer()) ? static_cast<Body*>(obA->getUserPointer()) : nullptr;
+                beginEvent->BodyB = (obB->getUserPointer()) ? static_cast<Body*>(obB->getUserPointer()) : nullptr;
+
+                _beginContactEvents->insert(Pair<ContactEventKey, bp::ContactEvent*>(
+                    std::make_pair(obA, obB), beginEvent));
+
+                currContactEvent = beginEvent;
+            }
 
             int numContacts = contactManifold->getNumContacts();
             for (int j = 0; j < numContacts; j++)
             {
                 btManifoldPoint& pt = contactManifold->getContactPoint(j);
+
+                if (currContactEvent)
+                {
+                    ContactPoint point;
+
+                    point.PositionA = ToVector3(pt.getPositionWorldOnA());
+                    point.PositionB = ToVector3(pt.getPositionWorldOnB());
+                    point.Normal = ToVector3(pt.m_normalWorldOnB);
+                    point.Impulse = (float)pt.getAppliedImpulse();
+                    point.Distance = (float)pt.getDistance();
+
+                    currContactEvent->Points.push_back(point);
+                }
             }
         }
+
+        for (auto it = _stayContactEvents->begin(); it != _stayContactEvents->end(); )
+        {
+            if (it->second->Type == bp::ContactEventType::ContactBegin)
+            {
+                _endContactEvents->insert(Pair<ContactEventKey, bp::ContactEvent*>(
+                    std::make_pair(it->first.first, it->first.second), it->second));
+
+                it->second->Type = bp::ContactEventType::ContactEnd;
+                it = _stayContactEvents->erase(it);
+                continue;
+            }
+
+            it++;
+        }
+    }
+
+    void BulletScene::ReportCollisions()
+    {
+        CollisionDataRaw data;
+
+        auto NotifyContact = [&](Body* body, bp::ContactEvent* evt)
+        {
+            CollisionReportMode mode = body->GetCollisionReportMode();
+            if (mode == CollisionReportMode::None)
+                return;
+
+            data.Bodies[0] = evt->BodyA;
+            data.Bodies[1] = evt->BodyB;
+            data.ContactPoints = evt->Points;
+
+            switch (evt->Type)
+            {
+            case bp::ContactEventType::ContactBegin:
+                body->OnCollisionBegin(data);
+                break;
+            case bp::ContactEventType::ContactStay:
+                if(mode == CollisionReportMode::ReportPersistent)
+                    body->OnCollisionStay(data);
+                break;
+            case bp::ContactEventType::ContactEnd:
+                body->OnCollisionEnd(data);
+                break;
+            }
+        };
+
+        for (auto& evt : *_stayContactEvents)
+        {
+            NotifyContact(evt.second->BodyA, evt.second);
+            evt.second->Type = bp::ContactEventType::ContactBegin;
+        }
+
+        for (auto& evt : *_beginContactEvents)
+        {
+            NotifyContact(evt.second->BodyA, evt.second);
+            _stayContactEvents->insert(Pair<ContactEventKey, bp::ContactEvent*>(
+                std::make_pair(evt.first.first, evt.first.second), evt.second));
+        }
+
+        for (auto& evt : *_endContactEvents)
+        {
+            NotifyContact(evt.second->BodyA, evt.second);
+            te_pool_delete(evt.second);
+        }
+
+        _endContactEvents->clear();
+        _beginContactEvents->clear();
     }
 
     SPtr<RigidBody> BulletScene::CreateRigidBody(const HSceneObject& linkedSO)

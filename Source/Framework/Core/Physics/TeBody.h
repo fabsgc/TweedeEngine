@@ -150,6 +150,12 @@ namespace te
          * @param[in]	mode		Determines what is the type of @p torque.
          */
         virtual void ApplyTorque(const Vector3& torque, ForceMode mode) const = 0;
+
+        /** Sets a value that determines which (if any) collision events are reported. */
+        virtual void SetCollisionReportMode(CollisionReportMode mode) = 0;
+
+        /** Gets a value that determines which (if any) collision events are reported. */
+        virtual CollisionReportMode GetCollisionReportMode() const { return _collisionReportMode; }
         
         /** Flags that control the behaviour of the body. */
         virtual void SetFlags(BodyFlag flags) { _flags = flags; }
@@ -201,5 +207,6 @@ namespace te
         HSceneObject _linkedSO;
         PhysicsObjectOwner _owner;
         FBody* _internal = nullptr;
+        CollisionReportMode _collisionReportMode = CollisionReportMode::None;
     };
 }

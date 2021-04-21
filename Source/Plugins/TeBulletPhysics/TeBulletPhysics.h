@@ -24,9 +24,9 @@ namespace te
         /** Event reported when two colliders interact. */
         struct ContactEvent
         {
-            Body* BodyA; /** First body. */
-            Body* BodyB; /** Second body. */
-            ContactEventType Type; /** Exact type of the event. */
+            Body* BodyA = nullptr; /** First body. */
+            Body* BodyB = nullptr; /** Second body. */
+            ContactEventType Type = ContactEventType::ContactBegin; /** Exact type of the event. */
             // Note: Not too happy this is heap allocated, use static allocator?
             Vector<ContactPoint> Points; /** Information about all contact points between the colliders. */
         };
@@ -82,6 +82,18 @@ namespace te
         UINT32 _debugMode = btIDebugDraw::DBG_DrawWireframe | btIDebugDraw::DBG_DrawContactPoints | btIDebugDraw::DBG_DrawConstraints | btIDebugDraw::DBG_DrawConstraintLimits;
     };
 
+    typedef Pair<const btCollisionObject*, const btCollisionObject*> ContactEventKey;
+
+    struct ContactEventKeyHash
+    {
+        template <class T1, class T2>
+        std::size_t operator() (const Pair<T1, T2>& pair) const {
+            return std::hash<T1>()(pair.first) ^ std::hash<T2>()(pair.second);
+        }
+    };
+
+    typedef UnorderedMap<ContactEventKey, BulletPhysics::ContactEvent*, ContactEventKeyHash> ContactEventsMap;
+
     /** Contains information about a single Bullet scene. */
     class BulletScene : public PhysicsScene
     {
@@ -91,6 +103,9 @@ namespace te
 
         /** PhysicsScene::TriggerCollisions() */
         void TriggerCollisions() override;
+
+        /** PhysicsScene::TriggerCollisions() */
+        void ReportCollisions() override;
 
         /** @copydoc PhysicsScene::CreateRigidBody() */
         SPtr<RigidBody> CreateRigidBody(const HSceneObject& linkedSO) override;
@@ -158,7 +173,9 @@ namespace te
         btDiscreteDynamicsWorld* _world = nullptr;
         btSoftBodyWorldInfo* _worldInfo = nullptr;
 
-        Vector<BulletPhysics::ContactEvent*> _contactEvents;
+        ContactEventsMap* _beginContactEvents = nullptr;
+        ContactEventsMap* _stayContactEvents = nullptr;
+        ContactEventsMap* _endContactEvents = nullptr;
     };
 
     BulletPhysics& gBulletPhysics();
