@@ -6,10 +6,7 @@
 #include "Components/TeCScript.h"
 #include "Scripting/TeScriptManager.h"
 #include "Utility/TeDataStream.h"
-
-#pragma warning(push, 0) 
 #include "../ImGuiExt/TeImGuiTextEditor.h"
-#pragma warning(pop)
 
 namespace te
 {

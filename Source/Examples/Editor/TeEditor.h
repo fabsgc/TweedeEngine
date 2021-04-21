@@ -4,10 +4,7 @@
 #include "Widget/TeWidget.h"
 #include "Utility/TeModule.h"
 #include "ImGuiExt/TeImGuiFileBrowser.h"
-
-#pragma warning(push, 0) 
 #include "ImGuizmo/ImGuizmo.h"
-#pragma warning(pop)
 
 #include <vector>
 #include <memory>
