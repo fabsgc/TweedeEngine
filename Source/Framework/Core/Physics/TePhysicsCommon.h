@@ -59,4 +59,18 @@ namespace te
          */
         ReportPersistent,
     };
+
+    /** Hit information from a physics query. */
+    struct PhysicsQueryHit
+    {
+        Vector3 Point; /**< Position of the hit in world space. */
+        Vector3 Normal; /**< Normal to the surface that was hit. */
+        
+        /**
+         * Component of the body that was hit. This may be null if the hit collider has no owner component, in which
+         * case refer to #HitBodyRaw.
+         */
+        HBody HitBody;
+        Body* HitBodyRaw = nullptr; /**< Body that was hit. */
+    };
 }
