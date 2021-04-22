@@ -30,7 +30,7 @@ namespace te
         : Physics(desc)
         , _initDesc(desc)
         , _paused(false)
-    { 
+    {
         _broadphase = te_new<btDbvtBroadphase>();
         _constraintSolver = te_new<btSequentialImpulseConstraintSolver>();
 
@@ -49,7 +49,7 @@ namespace te
     }
 
     BulletPhysics::~BulletPhysics()
-    { 
+    {
         assert(_scenes.empty() && "All scenes must be freed before physics system shutdown");
 
         te_delete(_constraintSolver);
@@ -88,7 +88,7 @@ namespace te
     {
         for (auto& scene : _scenes)
         {
-            if (scene->_world)
+            if (scene->_world && scene->_debug)
             {
                 scene->_debug->Clear();
                 scene->_world->debugDrawWorld();
@@ -118,7 +118,7 @@ namespace te
                 maxSubsteps = std::min<INT32>(maxSubsteps, _maxSubSteps);
             }
 
-            // Step the physics world. 
+            // Step the physics world.
             _updateInProgress = true;
             scene->_world->stepSimulation(deltaTimeSec, maxSubsteps, internalTimeStep);
             _updateInProgress = false;
@@ -143,7 +143,7 @@ namespace te
 
         for (auto& scene : _scenes)
         {
-            if (!scene->_world)
+            if (!scene->_world || !scene->_debug)
                 continue;
 
             scene->_debug->Draw(camera, renderTarget);
@@ -164,7 +164,7 @@ namespace te
             _world = te_new<btSoftRigidDynamicsWorld>(_physics->_collisionDispatcher, _physics->_broadphase,
                 _physics->_constraintSolver, _physics->_collisionConfiguration);
 
-            // Setup         
+            // Setup
             _worldInfo = te_new<btSoftBodyWorldInfo>();
             _worldInfo->m_sparsesdf.Initialize();
 
@@ -189,9 +189,11 @@ namespace te
         _world->getSolverInfo().m_splitImpulse = false;
         _world->getSolverInfo().m_numIterations = _physics->_maxSolveIterations;
 
+#if TE_PLATFORM == TE_PLATFORM_WIN32
         _debug = te_new<BulletDebug>();
         ((BulletDebug*)_debug)->setDebugMode(_physics->_debugMode);
         _world->setDebugDrawer(static_cast<BulletDebug*>(_debug));
+#endif
 
         _beginContactEvents = te_new<ContactEventsMap>();
         _stayContactEvents = te_new<ContactEventsMap>();

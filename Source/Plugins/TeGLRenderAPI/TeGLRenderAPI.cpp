@@ -407,7 +407,7 @@ namespace te
 
     void GLRenderAPI::SwitchContext(const SPtr<GLContext>& context, const RenderWindow& window)
     {
-        // Unbind pipeline and rebind to new context later	
+        // Unbind pipeline and rebind to new context later
         SetGraphicsPipeline(nullptr);
 
         if (_currentContext)
@@ -472,8 +472,15 @@ namespace te
         if (_mainContext && _mainContext != _currentContext)
             _mainContext->EndCurrent();
 
-        _currentContext = nullptr;
-        _mainContext = nullptr;
+        if(_currentContext != _mainContext)
+        {
+            _currentContext = nullptr;
+            _mainContext = nullptr;
+        }
+        else
+        {
+            _currentContext = nullptr;
+        }
 
         if (_GLSupport)
             te_delete(_GLSupport);

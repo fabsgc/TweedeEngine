@@ -6,6 +6,7 @@
 /bin/
 /lib/
 /Build/
+/BuildCodeBlocks/
 /.vscode/
 
 *.DS_Store

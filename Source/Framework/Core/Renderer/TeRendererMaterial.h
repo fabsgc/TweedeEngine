@@ -19,8 +19,8 @@ namespace te
 
     struct RendererMaterialMetaData
     {
-        SPtr<Shader> ShaderElem;
-        RendererMaterialBase* Instance;
+        SPtr<Shader> ShaderElem = nullptr;
+        RendererMaterialBase* Instance = nullptr;
     };
 
     /**	Helper class to initialize all renderer materials as soon as the library is loaded. */
@@ -98,8 +98,10 @@ namespace te
                 rapi.SetGraphicsPipeline(_graphicsPipeline);
                 rapi.SetStencilRef(_stencilRef);
             }
-            else
+            else if(_computePipeline)
+            {
                 rapi.SetComputePipeline(_computePipeline);
+            }
 
             if (bindParams)
                 rapi.SetGpuParams(_params);
@@ -108,8 +110,11 @@ namespace te
         /** Binds the material parameters to the pipeline. */
         void BindParams() const
         {
-            RenderAPI& rapi = RenderAPI::Instance();
-            rapi.SetGpuParams(_params);
+            if(_params)
+            {
+                RenderAPI& rapi = RenderAPI::Instance();
+                rapi.SetGpuParams(_params);
+            }
         }
 
     protected:
@@ -117,6 +122,12 @@ namespace te
         {
             _initOnStart.Instantiate();
             _shader = _metaData.ShaderElem;
+
+            if(_shader == nullptr)
+            {
+                TE_DEBUG("Shader is NULL, can't create RendererMaterial");
+                return;
+            }
 
             const Vector<SPtr<Technique>>& techniques = _shader->GetTechniques();
             for (auto& entry : techniques)
@@ -181,7 +192,7 @@ namespace te
                 _stencilRef = pass->GetStencilRefValue();
 
                 //We do not support variations, so we only use first technique of the shader
-                break; 
+                break;
             }
         }
 

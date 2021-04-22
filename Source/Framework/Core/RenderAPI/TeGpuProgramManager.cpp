@@ -51,7 +51,7 @@ namespace te
 
     GpuProgramManager::~GpuProgramManager()
     {
-        te_delete((NullProgramFactory*)_nullFactory);
+        //te_delete((NullProgramFactory*)_nullFactory);
     }
 
     void GpuProgramManager::AddFactory(const String& language, GpuProgramFactory* factory)
