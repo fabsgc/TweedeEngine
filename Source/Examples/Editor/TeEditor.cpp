@@ -1107,7 +1107,7 @@ namespace te
         meshAnimImportOptions->ImportTangents = true;
         meshAnimImportOptions->CpuCached = false;
         meshAnimImportOptions->ImportSkin = true;
-        meshAnimImportOptions->ImportBlendShapes = true;
+        meshAnimImportOptions->ImportBlendShapes = false;
         meshAnimImportOptions->ImportAnimation = true;
         meshAnimImportOptions->ImportRootMotion = true;
 

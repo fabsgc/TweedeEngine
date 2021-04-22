@@ -115,7 +115,11 @@ namespace te
             aiProcess_GenSmoothNormals |
             aiProcess_JoinIdenticalVertices |
             aiProcess_SortByPType |
-            aiProcess_RemoveRedundantMaterials;
+            aiProcess_RemoveRedundantMaterials |
+            aiProcess_FindInvalidData |
+            aiProcess_OptimizeMeshes |
+            aiProcess_SplitLargeMeshes |
+            aiProcess_FixInfacingNormals;
 
         if (meshImportOptions->FplitUV)
             assimpFlags |= aiProcess_FlipUVs;

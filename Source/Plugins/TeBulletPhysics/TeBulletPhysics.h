@@ -74,7 +74,7 @@ namespace te
 
         Vector<BulletScene*> _scenes;
 
-        UINT32 _maxSubSteps = 1;
+        INT32 _maxSubSteps = 1;
         UINT32 _maxSolveIterations = 256;
         float _internalFps = 60.0f;
         float _deltaTimeSec = 1.0f;
