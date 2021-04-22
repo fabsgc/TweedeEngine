@@ -4,6 +4,7 @@
 #include "Image/TeTexture.h"
 #include "Utility/TeFileSystem.h"
 
+#include <filesystem>
 #include <ft2build.h>
 #include <freetype/freetype.h>
 #include FT_FREETYPE_H
@@ -89,7 +90,8 @@ namespace te
         FT_Done_FreeType(library);
 
         SPtr<Font> newFont = Font::_createPtr(dataPerSize);
-        newFont->SetName(filePath);
+        newFont->SetName(std::filesystem::path(filePath).filename().generic_string());
+        newFont->SetPath(filePath);
         return newFont;
     }
 }

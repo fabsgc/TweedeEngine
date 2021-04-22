@@ -54,7 +54,7 @@ namespace te
         void ImportSkin(AssimpImportScene& scene, aiMesh* assimpMesh, AssimpImportMesh& mesh, const AssimpImportOptions& options);
 
         /**	Imports all bone and blend shape animations from the FBX. */
-        void ImportAnimations(aiScene* scene, AssimpImportOptions& importOptions, AssimpImportScene& importScene);
+        void ImportAnimations(aiScene* scene, AssimpImportOptions& importOptions, AssimpImportScene& importScene, const String& filePath);
 
         /**
          * Parses the scene and outputs a skeleton for the imported meshes using the imported raw data.

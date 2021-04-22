@@ -12,7 +12,7 @@ namespace te
 
     SPtr<MultiResource> EditorResManager::LoadAll(const String& filePath, const SPtr<const ImportOptions>& options, bool force)
     {
-        SPtr<MultiResource> resources = gResourceManager().LoadAll(filePath, options);
+        SPtr<MultiResource> resources = gResourceManager().LoadAll(filePath, options, force);
         Vector<SubResource> output;
 
         for(auto& subRes : resources->Entries)

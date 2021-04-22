@@ -7,6 +7,8 @@
 #include "Animation/TeAnimationUtility.h"
 #include "Utility/TeFileSystem.h"
 
+#include <filesystem>
+
 namespace te
 {
     ObjectImporter::ObjectImporter()
@@ -48,7 +50,7 @@ namespace te
         if (rendererMeshData)
         {
             SPtr<Mesh> mesh = Mesh::_createPtr(rendererMeshData->GetData(), desc);
-            mesh->SetName(filePath);
+            mesh->SetName(std::filesystem::path(filePath).filename().generic_string());
             mesh->SetPath(filePath);
 
             return mesh;
@@ -120,7 +122,6 @@ namespace te
             aiProcess_RemoveRedundantMaterials |
             aiProcess_FindInvalidData |
             aiProcess_OptimizeMeshes |
-            aiProcess_SplitLargeMeshes |
             aiProcess_FixInfacingNormals;
 
         if (meshImportOptions->FplitUV)
@@ -163,7 +164,7 @@ namespace te
             ImportSkin(importedScene, assimpImportOptions);
 
         if (assimpImportOptions.ImportAnimation)
-            ImportAnimations(scene, assimpImportOptions, importedScene);
+            ImportAnimations(scene, assimpImportOptions, importedScene, filePath);
 
         SPtr<RendererMeshData> rendererMeshData = GenerateMeshData(importedScene, assimpImportOptions, subMeshes);
 
@@ -212,12 +213,12 @@ namespace te
 
         if (scene->HasMaterials())
         {
-            AssimpImportMaterial material;
             aiMaterial* aiMat = nullptr;
             aiString matName;
 
             for (unsigned int i = 0; i < scene->mNumMaterials; i++)
             {
+                AssimpImportMaterial material;
                 aiMat = scene->mMaterials[i];
                 if (!aiMat) continue;
 
@@ -270,6 +271,8 @@ namespace te
                     aiMat->Get(AI_MATKEY_REFRACTI, material.MatProperties.IndexOfRefraction);
                     aiMat->Get(AI_MATKEY_BUMPSCALING, material.MatProperties.BumpScale);
                     aiMat->Get(AI_MATKEY_REFLECTIVITY, material.MatProperties.Reflection);
+
+                    material.MatProperties.ParallaxScale = 0.0f;
                 }
 
                 outputScene.Materials.push_back(material);
@@ -497,15 +500,17 @@ namespace te
         }
     }
 
-    void ObjectImporter::ImportAnimations(aiScene* scene, AssimpImportOptions& importOptions, AssimpImportScene& importScene)
+    void ObjectImporter::ImportAnimations(aiScene* scene, AssimpImportOptions& importOptions, AssimpImportScene& importScene, const String& filePath)
     {
+        String fileName = std::filesystem::path(filePath).filename().generic_string();
+
         for (UINT32 i = 0; i < scene->mNumAnimations; i++)
         {
             aiAnimation* assimAnimation = scene->mAnimations[i];
             importScene.Clips.push_back(AssimpAnimationClip());
 
             AssimpAnimationClip& clip = importScene.Clips.back();
-            clip.Name = (assimAnimation->mName.length > 0) ? assimAnimation->mName.C_Str() : "Animation " + ToString(i);
+            clip.Name = (assimAnimation->mName.length > 0) ? assimAnimation->mName.C_Str() : "Animation -  " + fileName + " - " + ToString(i);
             clip.SampleRate = assimAnimation->mTicksPerSecond != 0.0 ? (float)assimAnimation->mTicksPerSecond : 25.0f;
             clip.Start = 0.0f;
             clip.End = (float)assimAnimation->mDuration / clip.SampleRate;

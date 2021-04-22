@@ -9,6 +9,8 @@
 #include "Utility/TeFileSystem.h"
 #include "FreeImage.h"
 
+#include <filesystem>
+
 namespace te
 {
     void FreeImageLoadErrorHandler(FREE_IMAGE_FORMAT fif, const char* message)
@@ -204,7 +206,7 @@ namespace te
             }
         }
 
-        texture->SetName(filePath);
+        texture->SetName(std::filesystem::path(filePath).filename().generic_string());
         texture->SetPath(filePath);
         return texture;
     }

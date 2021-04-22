@@ -4,6 +4,7 @@
 #include "TeCoreApplication.h"
 
 #include <iostream>
+#include <filesystem>
 
 namespace te
 {
@@ -78,7 +79,7 @@ namespace te
 #endif
 
         SPtr<Shader> shader = Shader::_createPtr("shader", SHADER_DESC());
-        shader->SetName(filePath);
+        shader->SetName(std::filesystem::path(filePath).filename().generic_string());
         shader->SetPath(filePath);
 
         te_delete(data);
