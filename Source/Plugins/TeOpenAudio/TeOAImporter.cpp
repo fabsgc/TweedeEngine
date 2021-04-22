@@ -8,6 +8,8 @@
 #include "TeWaveDecoder.h"
 #include "TeFLACDecoder.h"
 
+#include <filesystem>
+
 namespace te
 {
     OAImporter::OAImporter()
@@ -132,7 +134,7 @@ namespace te
         clipDesc.Is3D = clipIO->Is3D;
 
         SPtr<AudioClip> clip = AudioClip::_createPtr(sampleStream, bufferSize, info.NumSamples, clipDesc);
-        clip->SetName(filePath);
+        clip->SetName(std::filesystem::path(filePath).filename().generic_string());
         clip->SetPath(filePath);
 
         return clip;
