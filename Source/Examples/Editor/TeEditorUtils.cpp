@@ -13,13 +13,19 @@ namespace te
 
     void EditorUtils::ImportMeshMaterials(HMesh& mesh)
     {
+        Map<String, HMaterial> createdMaterials;
+
         for (UINT32 i = 0; i < mesh->GetProperties().GetNumSubMeshes(); i++)
         {
             SubMesh& subMesh = mesh->GetProperties().GetSubMesh(i);
             MaterialProperties matProperties = subMesh.MatProperties;
             MaterialTextures matTextures = subMesh.MatTextures;
 
-            if (!subMesh.Mat.IsLoaded())
+            if (createdMaterials.find(subMesh.MaterialName) != createdMaterials.end())
+            {
+                subMesh.Mat = createdMaterials[subMesh.MaterialName].GetNewHandleFromExisting();
+            }
+            else if (!subMesh.Mat.IsLoaded())
             {
                 HMaterial material = Material::Create(gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque));
                 material->SetName(subMesh.MaterialName);
@@ -55,6 +61,7 @@ namespace te
                 BindTexture(matProperties.UseReflectionMap, "ReflectionMap", matTextures.ReflectionMap, material);
 
                 subMesh.Mat = material.GetNewHandleFromExisting();
+                createdMaterials[subMesh.MaterialName] = material.GetNewHandleFromExisting();
                 EditorResManager::Instance().Add<Material>(material);
             }
         }
