@@ -10,14 +10,16 @@ namespace te
 
     RendererMaterialManager::RendererMaterialManager()
     {
+#if TE_PLATFORM == TE_PLATFORM_WIN32 // TODO to remove when OpenGL will be done
         BuiltinResources& br = BuiltinResources::Instance();
 
         // Note: Ideally I want to avoid loading all materials, and instead just load those that are used.
         Vector<RendererMaterialData>& materials = GetMaterials();
         Vector<SPtr<Shader>> shaders;
+
         for (auto& material : materials)
         {
-#if TE_PLATFORM == TE_PLATFORM_WIN32 // TODO to remove when OpenGL will be done
+
             if (material.ShaderPath.type() == typeid(BuiltinShader))
             {
                 HShader shader = br.GetBuiltinShader(std::any_cast<BuiltinShader>(material.ShaderPath));
@@ -29,10 +31,11 @@ namespace te
                 HShader shader = gResourceManager().Load<Shader>(
                     std::any_cast<String>(material.ShaderPath), shaderImportOptions);
             }
-#endif
+
         }
 
         InitMaterials(shaders);
+#endif
     }
 
     RendererMaterialManager::~RendererMaterialManager()

@@ -39,6 +39,10 @@
 #include "Components/TeCSphereCollider.h"
 #include "Components/TeCHeightFieldCollider.h"
 
+#if defined(__GNUC__)
+#pragma GCC diagnostic ignored "-Wsign-compare" 
+#endif
+
 namespace te
 {
     WidgetProperties::WidgetProperties()
@@ -1648,7 +1652,6 @@ namespace te
     bool WidgetProperties::ShowCollider(SPtr<CCollider> collider)
     {
         bool hasChanged = false;
-        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
 
         // Scale
         {

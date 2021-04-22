@@ -459,7 +459,7 @@ namespace te
 
         SPtr<RenderSettings> _renderSettings; /** Settings used to control rendering for this camera. */
 
-        UINT8 _MSAA = 1; /**< Number of samples to render the scene with. */
+        UINT32 _MSAA = 1; /**< Number of samples to render the scene with. */
 
         mutable Matrix4 _projMatrixRS = TeZero; /**< Cached render-system specific projection matrix. */
         mutable Matrix4 _projMatrix = TeZero; /**< Cached projection matrix that determines how are 3D points projected to a 2D viewport. */

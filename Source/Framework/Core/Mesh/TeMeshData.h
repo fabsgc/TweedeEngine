@@ -169,8 +169,6 @@ namespace te
     private:
         friend class Mesh;
 
-        UINT32 _dscBuilding;
-
         UINT32 _numVertices;
         UINT32 _numIndices;
         IndexType _indexType;

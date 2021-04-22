@@ -176,7 +176,6 @@ namespace te
             String current_path, error_msg, error_title, invfile_modal_id, repfile_modal_id, parameters_file_modal_id;
 
             ImGuiTextFilter filter;
-            String valid_types;
             Vector<const Info*> filtered_dirs; // Note: We don't need to call delete. It's just for storing filtered items from subdirs and subfiles so we don't use PassFilter every frame.
             Vector<const Info*> filtered_files;
             Vector<std::reference_wrapper<String>> inputcb_filter_files;

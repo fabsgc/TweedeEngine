@@ -140,11 +140,11 @@ namespace te
             properties = _currentMaterial->GetProperties();
 
             String name = _currentMaterial->GetName();
-            String uuid = _currentMaterial->GetUUID().ToString();
+            String uuidStr = _currentMaterial->GetUUID().ToString();
 
             memset(&inputName, 0, 256);
             strcpy(inputName, name.c_str());
-            strcpy(inputUUID, uuid.c_str());
+            strcpy(inputUUID, uuidStr.c_str());
 
             if (ImGui::CollapsingHeader("Identification", ImGuiTreeNodeFlags_DefaultOpen))
             {

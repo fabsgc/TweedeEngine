@@ -2,8 +2,6 @@
 
 #include "TeBulletPhysicsPrerequisites.h"
 #include "Physics/TePhysicsDebug.h"
-#include "LinearMath/btIDebugDraw.h"
-#include "LinearMath/btVector3.h"
 
 namespace te 
 {

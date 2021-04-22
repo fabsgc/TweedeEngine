@@ -664,7 +664,6 @@ namespace te
             float deltaWorldMatrix[4][4];
             float snap[3] = { 0.1f, 0.1f, 0.1f };
 
-            ImGuiIO& io = ImGui::GetIO();
             ImGuizmo::SetDrawlist();
 
             // Different snap for rotation
@@ -1328,11 +1327,14 @@ namespace te
         _audioListener->Initialize();
         // ######################################################
 
+        HShader opaqueShader = gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque);
+        HShader transparentShader = gBuiltinResources().GetBuiltinShader(BuiltinShader::Transparent);
+
         //EditorResManager::Instance().Add<Material>(_monkeyMaterial);
         EditorResManager::Instance().Add<Material>(_planeMaterial);
         EditorResManager::Instance().Add<Material>(_knightMaterial);
-        EditorResManager::Instance().Add<Shader>(gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque));
-        EditorResManager::Instance().Add<Shader>(gBuiltinResources().GetBuiltinShader(BuiltinShader::Transparent));
+        EditorResManager::Instance().Add<Shader>(opaqueShader);
+        EditorResManager::Instance().Add<Shader>(transparentShader);
 #endif
     }
 

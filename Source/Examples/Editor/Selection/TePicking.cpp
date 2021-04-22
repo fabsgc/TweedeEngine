@@ -72,7 +72,7 @@ namespace te
         // can consider that this object is the current picked object
         Vector4 pickedColorV4 = pickedColor.GetAsVector4();
         Vector3 pickedColorV3 = Vector3(pickedColorV4.x, pickedColorV4.y, pickedColorV4.z);
-        Vector3 blackColorV3;
+        Vector3 blackColorV3 = Vector3::ZERO;
 
         if (fabs(blackColorV3.SquaredDistance(pickedColorV3)) > 1e-3)
         {
@@ -87,10 +87,7 @@ namespace te
                     Vector3 objColorObjV3 = Vector3(objColorObjV4.x, objColorObjV4.y, objColorObjV4.z);
 
                     if (fabs(objColorObjV3.SquaredDistance(pickedColorV3)) < 1e-3)
-                    {
-                        SPtr<GameObject> object = iterObject.second.Object.lock();
                         return object;
-                    }
                 }
             }
         }

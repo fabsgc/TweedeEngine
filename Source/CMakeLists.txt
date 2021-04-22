@@ -56,6 +56,11 @@ include (${CMAKE_MODULE_PATH}/Findnvtt.cmake)
 include (${CMAKE_MODULE_PATH}/Findfreetype.cmake)
 include (${CMAKE_MODULE_PATH}/Findbullet.cmake)
 
+## Remove warning
+if(POLICY CMP0072)
+    cmake_policy(SET CMP0072 NEW)
+endif()
+
 # Sub-directories
 ## Framework
 add_subdirectory (Framework)

@@ -3,11 +3,15 @@
 #include "Math/TeMath.h"
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
-#include "Math/TeQuaternion.h"
 #include "Math/TeRadian.h"
-#include "Renderer/TeRenderSettings.h"
+#include "Math/TeQuaternion.h"
 #include "Renderer/TeCamera.h"
 #include "Components/TeCCamera.h"
+#include "Renderer/TeRenderSettings.h"
+
+#if defined(__GNUC__)
+#pragma GCC diagnostic ignored "-Wformat-security"  // warning: format string is not a string literal (potentially insecure)
+#endif
 
 namespace te
 {

@@ -24,26 +24,26 @@ namespace te
     /** Data shared between RENDERER_VIEW_DESC and RendererViewProperties */
     struct RendererViewData
     {
-        Matrix4 ViewTransform;
-        Matrix4 PrevViewProjTransform;
-        Matrix4 ProjTransform;
-        Vector3 ViewDirection;
-        Vector3 ViewOrigin;
-        bool FlipView;
-        float NearPlane;
-        float FarPlane;
-        ProjectionType ProjType;
+        Matrix4 ViewTransform = Matrix4::IDENTITY;
+        Matrix4 PrevViewProjTransform = Matrix4::IDENTITY;
+        Matrix4 ProjTransform = Matrix4::IDENTITY;
+        Vector3 ViewDirection = Vector3::ZERO;
+        Vector3 ViewOrigin = Vector3::ZERO;
+        bool FlipView = false;
+        float NearPlane = 0.0f;
+        float FarPlane = 0.0f;
+        ProjectionType ProjType = ProjectionType::PT_PERSPECTIVE;
 
         /**
          * Determines does this view output to the final render target. If false the view is usually used for some
          * sort of helper rendering.
          */
-        bool MainView;
+        bool MainView = false;
 
         /** If true the view will only be rendered when requested, otherwise it will be rendered every frame. */
-        bool OnDemand;
+        bool OnDemand = false;
 
-        UINT64 VisibleLayers;
+        UINT64 VisibleLayers = 0;
         ConvexVolume CullFrustum;
 
         /** When enabled, post-processing effects (like tonemapping) will be executed. */
@@ -57,14 +57,14 @@ namespace te
 
         Rect2I ViewRect;
         Rect2 NrmViewRect;
-        UINT32 TargetWidth;
-        UINT32 TargetHeight;
-        UINT32 NumSamples;
+        UINT32 TargetWidth = 0;
+        UINT32 TargetHeight = 0;
+        UINT32 NumSamples = 0;
 
-        UINT32 ClearFlags;
+        UINT32 ClearFlags = 0;
         Color ClearColor;
-        float ClearDepthValue;
-        UINT16 ClearStencilValue;
+        float ClearDepthValue = 0.0f;
+        UINT16 ClearStencilValue = 0;
     };
 
     /** Set of properties describing the output render target used by a renderer view. */

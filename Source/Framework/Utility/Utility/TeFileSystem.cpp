@@ -5,7 +5,7 @@ namespace te
 {
     bool FileSystem::Copy(const String& oldPath, const String& newPath, bool overwriteExisting, bool recursively)
     {
-        std::filesystem::copy_options options;
+        std::filesystem::copy_options options = std::filesystem::copy_options::none;
 
         if (std::filesystem::exists(newPath) && !overwriteExisting)
         {

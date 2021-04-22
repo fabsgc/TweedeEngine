@@ -8,9 +8,12 @@
 
 #define BT_USE_DOUBLE_PRECISION
 
-#pragma warning(push, 0) 
+#if TE_COMPILER == TE_COMPILER_MSVC
+#   pragma warning(push, 0)
+#endif
+#include "LinearMath/btIDebugDraw.h"
+#include "LinearMath/btVector3.h"
 #include "LinearMath/btQuaternion.h"
-
 #include "btBulletDynamicsCommon.h"
 #include "BulletCollision/BroadphaseCollision/btDbvtBroadphase.h"
 #include "BulletCollision/CollisionDispatch/btDefaultCollisionConfiguration.h"
@@ -35,7 +38,9 @@
 #include "BulletDynamics/ConstraintSolver/btPoint2PointConstraint.h"
 #include "BulletCollision/CollisionShapes/btHeightfieldTerrainShape.h"
 #include "BulletCollision/NarrowPhaseCollision/btPersistentManifold.h"
-#pragma warning(pop)
+#if TE_COMPILER == TE_COMPILER_MSVC
+#   pragma warning(pop)
+#endif
 
 #if TE_DEBUG_MODE
 #define BT_DEBUG

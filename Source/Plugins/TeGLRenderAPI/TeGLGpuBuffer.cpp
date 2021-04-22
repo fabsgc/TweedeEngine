@@ -34,7 +34,6 @@ namespace te
 
     void GLGpuBuffer::Initialize()
     {
-        const GpuBufferProperties& props = GetProperties();
         _bufferDeleter = &DeleteBuffer;
 
         // Create a new buffer if not wrapping an external one

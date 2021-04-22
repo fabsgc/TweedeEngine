@@ -107,7 +107,7 @@ namespace te
             // This equation must be met: timeStep < maxSubSteps * fixedTimeStep
             float deltaTimeSec = gTime().GetFrameDelta();
             float internalTimeStep = 1.0f / _internalFps;
-            UINT32 maxSubsteps = static_cast<UINT32>(deltaTimeSec * _internalFps) + 1;
+            INT32 maxSubsteps = static_cast<INT32>(deltaTimeSec * _internalFps) + 1;
             if (_maxSubSteps < 0)
             {
                 internalTimeStep = deltaTimeSec;
@@ -115,7 +115,7 @@ namespace te
             }
             else if (_maxSubSteps > 0)
             {
-                maxSubsteps = std::min<UINT32>(maxSubsteps, _maxSubSteps);
+                maxSubsteps = std::min<INT32>(maxSubsteps, _maxSubSteps);
             }
 
             // Step the physics world. 

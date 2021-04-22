@@ -179,16 +179,16 @@ namespace te
     private:
         friend class GpuResourcePool;
 
-        UINT32 Width;
-        UINT32 Height;
-        UINT32 Depth;
-        UINT32 NumSamples;
+        UINT32 Width = 0;
+        UINT32 Height = 0;
+        UINT32 Depth = 0;
+        UINT32 NumSamples = 0;
         PixelFormat Format;
         TextureUsage Flag;
         TextureType Type;
-        bool HwGamma;
-        UINT32 ArraySize;
-        UINT32 NumMipLevels;
+        bool HwGamma = false;
+        UINT32 ArraySize = 0;
+        UINT32 NumMipLevels = 0;
     };
 
     /** Structure used for describing a pooled storage buffer. */
@@ -223,8 +223,8 @@ namespace te
         GpuBufferType Type;
         GpuBufferFormat Format;
         GpuBufferUsage Usage;
-        UINT32 NumElements;
-        UINT32 ElementSize;
+        UINT32 NumElements = 0;
+        UINT32 ElementSize = 0;
     };
 
     /**	Provides easy access to the GpuResourcePool. */

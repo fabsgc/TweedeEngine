@@ -318,6 +318,8 @@ namespace ImGuizmo
       matrix_t(const matrix_t& other) { memcpy(&m16[0], &other.m16[0], sizeof(float) * 16); }
       matrix_t() = default;
 
+      matrix_t& operator=(const matrix_t& other) = default;
+
       operator float* () { return m16; }
       operator const float* () const { return m16; }
       void Translation(float _x, float _y, float _z) { this->Translation(makeVect(_x, _y, _z)); }
@@ -343,7 +345,7 @@ namespace ImGuizmo
       {
          matrix_t tmpMat;
          tmpMat = *this;
-         tmpMat.Multiply(mat);
+         Multiply(mat);
          *this = tmpMat;
          return *this;
       }

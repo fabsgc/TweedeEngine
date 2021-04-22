@@ -313,21 +313,22 @@ namespace te
                 Vector3 accum = curPosition;
                 Vector3 min = curPosition;
                 Vector3 max = curPosition;
+                UINT32 numVertices = GetNumVertices();
 
-                for (UINT32 i = 1; i < GetNumVertices(); i++)
+                for (UINT32 j = 1; j < numVertices; j++)
                 {
-                    curPosition = *(Vector3*)(data + stride * i);
+                    curPosition = *(Vector3*)(data + stride * j);
                     accum += curPosition;
                     min = Vector3::Min(min, curPosition);
                     max = Vector3::Max(max, curPosition);
                 }
 
-                Vector3 center = accum / (float)GetNumVertices();
+                Vector3 center = accum / (float)numVertices;
                 float radiusSqrd = 0.0f;
 
-                for (UINT32 i = 0; i < GetNumVertices(); i++)
+                for (UINT32 j = 0; j < numVertices; j++)
                 {
-                    curPosition = *(Vector3*)(data + stride * i);
+                    curPosition = *(Vector3*)(data + stride * j);
                     float dist = center.SquaredDistance(curPosition);
 
                     if (dist > radiusSqrd)

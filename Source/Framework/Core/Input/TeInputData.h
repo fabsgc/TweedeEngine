@@ -258,30 +258,30 @@ namespace te
     {
     public:
         ButtonEvent()
-            :_isUsed(false)
+            : _isUsed(false)
         { }
 
-        ButtonCode buttonCode; /**< Button code this event is referring to. */
-        UINT64 timestamp; /**< Timestamp in ticks when the event happened. */
-        UINT32 deviceIdx; /**< Index of the device that the event originated from. */
+        ButtonCode buttonCode = TE_UNASSIGNED; /**< Button code this event is referring to. */
+        UINT64 timestamp = 0; /**< Timestamp in ticks when the event happened. */
+        UINT32 deviceIdx = 0; /**< Index of the device that the event originated from. */
 
         /** Query is the pressed button a keyboard button. */
-        bool isKeyboard() const { return (buttonCode & 0xC0000000) == 0; }
+        bool IsKeyboard() const { return (buttonCode & 0xC0000000) == 0; }
 
         /** Query is the pressed button a mouse button. */
-        bool isMouse() const { return (buttonCode & 0x80000000) != 0; }
+        bool IsMouse() const { return (buttonCode & 0x80000000) != 0; }
 
         /** Query is the pressed button a gamepad button. */
-        bool isGamepad() const { return (buttonCode & 0x40000000) != 0; }
+        bool IsGamepad() const { return (buttonCode & 0x40000000) != 0; }
 
         /**
          * Check if the event has been marked as used. Internally this means nothing but caller might choose to ignore an
          * used event.
          */
-        bool isUsed() const { return _isUsed; }
+        bool IsUsed() const { return _isUsed; }
 
         /** Mark the event as used. Internally this means nothing but caller might choose to ignore an used event. */
-        void markAsUsed() const { _isUsed = true; }
+        void MarkAsUsed() const { _isUsed = true; }
     private:
         mutable bool _isUsed;
     };

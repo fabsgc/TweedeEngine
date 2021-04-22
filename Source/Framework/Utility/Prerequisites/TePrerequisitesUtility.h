@@ -29,6 +29,15 @@
 // We don't care about this as any exception is meant to crash the program.
 #   pragma warning(disable: 4530)
 
+// disable: unreferenced formal parameter
+#   pragma warning(disable: 4100)
+
+// disable: linking object has no debug info
+#   pragma warning(disable: 4099)
+
+// disable: the enum is unscoped
+#   pragma warning(disable: 26812)
+
 // near and far macro create conflicts
 #   undef near
 #   undef far

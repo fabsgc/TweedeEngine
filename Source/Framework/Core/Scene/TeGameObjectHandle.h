@@ -122,7 +122,7 @@ namespace te
             : _data(std::move(data))
         { }
 
-        GameObjectHandleBase(std::nullptr_t ptr)
+        GameObjectHandleBase(std::nullptr_t)
             : _data(te_shared_ptr_new<GameObjectHandleData>(nullptr))
         { }
 

@@ -173,9 +173,7 @@ namespace te
         UINT32 numViews = viewGroup.GetNumViews();
         for (UINT32 i = 0; i < numViews; i++)
         {
-            RendererView* view = viewGroup.GetView(i);
-
-            if (view->ShouldDraw3D())
+            if (viewGroup.GetView(i)->ShouldDraw3D())
             {
                 needs3DRender = true;
                 break;
@@ -201,22 +199,20 @@ namespace te
         bool anythingDrawn = false;
         for (UINT32 i = 0; i < numViews; i++)
         {
-            RendererView* view = viewGroup.GetView(i);
+            RendererView* currView = viewGroup.GetView(i);
 
-            if (!view->ShouldDraw())
-            {
+            if (!currView->ShouldDraw())
                 continue;
-            }
 
-            const RenderSettings& settings = view->GetRenderSettings();
+            const RenderSettings& settings = currView->GetRenderSettings();
             if (settings.OverlayOnly)
             {
-                if (RenderOverlay(*view, frameInfo))
+                if (RenderOverlay(*currView, frameInfo))
                     anythingDrawn = true;
             }
             else
             {
-                RenderSingleViewInternal(viewGroup, *view, frameInfo);
+                RenderSingleViewInternal(viewGroup, *currView, frameInfo);
                 anythingDrawn = true;
             }
         }

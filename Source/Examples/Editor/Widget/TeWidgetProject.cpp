@@ -32,6 +32,10 @@
 #include "Components/TeCHeightFieldCollider.h"
 #include "../TeEditorUtils.h"
 
+#if defined(__GNUC__)
+#pragma GCC diagnostic ignored "-Wformat-security"  // warning: format string is not a string literal (potentially insecure)
+#endif
+
 namespace te
 {
     WidgetProject::WidgetProject()
@@ -1105,6 +1109,9 @@ namespace te
                 collider.Get()->Initialize();
                 _selections.ClickedComponent = collider.GetInternalPtr();
             }
+            break;
+
+            default:
             break;
         }
 

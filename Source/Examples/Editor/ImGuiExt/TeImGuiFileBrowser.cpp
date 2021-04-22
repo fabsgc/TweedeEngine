@@ -84,7 +84,6 @@ namespace te
 
     void ImGuiFileBrowser::CloseDialog()
     {
-        valid_types = "";
         valid_exts.clear();
         selected_ext_idx = 0;
         selected_idx = -1;
@@ -140,7 +139,6 @@ namespace te
                 Data.SelectedPath.clear();
                 if(mode != DialogMode::SELECT)
                 {
-                    this->valid_types = valid_types;
                     SetValidExtTypes(valid_types);
                 }
 
@@ -938,11 +936,11 @@ namespace te
                 if(name != "..")
                 {
 #if TE_PLATFORM == TE_PLATFORM_WIN32
-                    String dir = pathdir + String(ent->d_name);
+                    String fullDir = pathdir + String(ent->d_name);
                     // IF system file skip it...
-                    if (FILE_ATTRIBUTE_SYSTEM & GetFileAttributesA(dir.c_str()))
+                    if (FILE_ATTRIBUTE_SYSTEM & GetFileAttributesA(fullDir.c_str()))
                         continue;
-                    if (FILE_ATTRIBUTE_HIDDEN & GetFileAttributesA(dir.c_str()))
+                    if (FILE_ATTRIBUTE_HIDDEN & GetFileAttributesA(fullDir.c_str()))
                         is_hidden = true;
 #else
                     if(name[0] == '.')
@@ -971,10 +969,10 @@ namespace te
         return true;
     }
 
-    void ImGuiFileBrowser::FilterFiles(int filter_mode)
+    void ImGuiFileBrowser::FilterFiles(int i_filter_mode)
     {
         filter_dirty = false;
-        if(filter_mode & FilterMode_Dirs)
+        if(i_filter_mode & FilterMode_Dirs)
         {
             filtered_dirs.clear();
             for (size_t i = 0; i < subdirs.size(); ++i)
@@ -983,7 +981,7 @@ namespace te
                     filtered_dirs.push_back(&subdirs[i]);
             }
         }
-        if(filter_mode & FilterMode_Files)
+        if(i_filter_mode & FilterMode_Files)
         {
             filtered_files.clear();
             for (size_t i = 0; i < subfiles.size(); ++i)

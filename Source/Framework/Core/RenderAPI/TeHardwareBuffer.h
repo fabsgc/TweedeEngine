@@ -126,12 +126,7 @@ namespace te
          */
         HardwareBuffer(UINT32 size, GpuBufferUsage usage, GpuDeviceFlags deviceMask)
             : _size(size), _usage(usage), _deviceMask(deviceMask)
-        {
-            // TE_PRINT("HARDWARE BUFFER CREATION");
-            static UINT32 _bufferCounter;
-
-            _bufferCounter++;
-        }
+        { }
 
         /** @copydoc Lock */
         virtual void* Map(UINT32 offset, UINT32 length, GpuLockOptions options, UINT32 deviceIdx,
@@ -146,8 +141,6 @@ namespace te
         UINT32 _size;
         GpuBufferUsage _usage;
         GpuDeviceFlags _deviceMask;
-
-        static UINT32 _bufferCounter;
 
         bool _isLocked = false;
     };

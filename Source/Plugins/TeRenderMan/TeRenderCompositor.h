@@ -72,9 +72,9 @@ namespace te
         /** Contains internal information about a single render node. */
         struct NodeInfo
         {
-            RenderCompositorNode* Node;
-            NodeType* Type;
-            UINT32 LastUseIdx;
+            RenderCompositorNode* Node = nullptr;
+            NodeType* Type = nullptr;
+            UINT32 LastUseIdx = 0;
             Vector<RenderCompositorNode*> Inputs;
         };
 

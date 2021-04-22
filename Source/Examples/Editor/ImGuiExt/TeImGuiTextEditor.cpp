@@ -2,6 +2,10 @@
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
 
+#if defined(__GNUC__)
+#pragma GCC diagnostic ignored "-Wsign-compare" 
+#endif
+
 namespace te
 {
     // https://en.wikipedia.org/wiki/UTF-8
@@ -501,11 +505,11 @@ namespace te
         , _colorRangeMin(0)
         , _colorRangeMax(0)
         , _selectionMode(SelectionMode::Normal)
-        , _checkComments(true)
         , _handleKeyboardInputs(true)
         , _handleMouseInputs(true)
         , _ignoreImGuiChild(false)
         , _showWhitespaces(true)
+        , _checkComments(true)
         , _startTime(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count())
         , _lastClick(-1.0f)
     {
@@ -1542,7 +1546,7 @@ namespace te
                                 commentStartIndex = currentIndex;
                             }
 
-                            inComment = inComment = (commentStartLine < (size_t)currentLine || (commentStartLine == (size_t)currentLine && commentStartIndex <= currentIndex));
+                            inComment = (commentStartLine < (size_t)currentLine || (commentStartLine == (size_t)currentLine && commentStartIndex <= currentIndex));
 
                             line[currentIndex].MultiLineComment = inComment;
                             line[currentIndex].Comment = withinSingleLineComment;

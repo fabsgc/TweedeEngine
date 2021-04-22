@@ -69,7 +69,7 @@ namespace te
 
     void Quaternion::FromAxes(const Vector3& xaxis, const Vector3& yaxis, const Vector3& zaxis)
     {
-        Matrix3 kRot;
+        Matrix3 kRot = Matrix3::ZERO;
 
         kRot[0][0] = xaxis.x;
         kRot[1][0] = xaxis.y;
@@ -308,13 +308,13 @@ namespace te
             return;
         }
 
-        Vector3 x = Vector3::Cross(forward, up);
-        Vector3 y = Vector3::Cross(x, forward);
+        Vector3 newX = Vector3::Cross(forward, up);
+        Vector3 newY = Vector3::Cross(newX, forward);
 
-        x.Normalize();
-        y.Normalize();
+        newX.Normalize();
+        newY.Normalize();
 
-        *this = Quaternion(x, y, -forward);
+        *this = Quaternion(newX, newY, -forward);
     }
 
     Quaternion Quaternion::Slerp(const float& t, const Quaternion& p, const Quaternion& q, bool shortestPath)

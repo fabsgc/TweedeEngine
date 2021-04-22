@@ -167,8 +167,6 @@ namespace te
         ImGui::SameLine();
 
         ImGuiExt::ComboOptions<String> scriptsOptions;
-        const auto& scripts = gScriptManager().GetScripts();
-
         for (const auto& script : _existingScripts)
         {
             scriptsOptions.AddOption(script.first, script.first);

@@ -304,8 +304,6 @@ namespace te
         auto it = _colliders.find(fCollider);
         if (it == _colliders.end())
         {
-            BulletFCollider* fCollider = static_cast<BulletFCollider*>(collider->GetInternal());
-
             UINT32 index = (UINT32)_colliders.size();
             _colliders[fCollider] = ColliderData(index);
         }

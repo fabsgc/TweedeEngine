@@ -320,8 +320,8 @@ namespace te
                         {
                             AnimationCurveMapping emptyMapping = { (UINT32)-1, (UINT32)-1, (UINT32)-1 };
 
-                            for (UINT32 i = 0; i < numBones; i++)
-                                state.BoneToCurveMapping[i] = emptyMapping;
+                            for (UINT32 k = 0; k < numBones; k++)
+                                state.BoneToCurveMapping[k] = emptyMapping;
                         }
                     }
                     else
