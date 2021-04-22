@@ -253,7 +253,7 @@ namespace te
         if (_settings.Load)
             ImGui::OpenPopup("Load Resource");
 
-        if (_fileBrowser.ShowFileDialog("Load Resource", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), true, ".png,.jpeg,.jpg,.obj,.dae,.fbx,.scene,.ogg,.wav,.flac"))
+        if (_fileBrowser.ShowFileDialog("Load Resource", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), true, ".png,.jpeg,.jpg,.obj,.dae,.fbx,.stl,.gltf,.scene,.ogg,.wav,.flac"))
         {
             if (_fileBrowser.Data.Ext == ".jpeg" || _fileBrowser.Data.Ext == ".jpg" || _fileBrowser.Data.Ext == ".png")
             {
@@ -273,14 +273,15 @@ namespace te
                     textureImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
                 }
 
-                HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.Data.SelectedPath, textureImportOptions);
+                HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.Data.SelectedPath, textureImportOptions, true);
                 if (texture.IsLoaded())
                 {
                     texture->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
                     EditorResManager::Instance().Add<Texture>(texture);
                 }
             }
-            else if (_fileBrowser.Data.Ext == ".obj" || _fileBrowser.Data.Ext == ".dae" || _fileBrowser.Data.Ext == ".fbx")
+            else if (_fileBrowser.Data.Ext == ".obj" || _fileBrowser.Data.Ext == ".dae" || _fileBrowser.Data.Ext == ".fbx" || 
+                     _fileBrowser.Data.Ext == ".stl" || _fileBrowser.Data.Ext == ".gltf")
             {
                 auto meshImportOptions = MeshImportOptions::Create();
                 meshImportOptions->ImportNormals = _fileBrowser.Data.MeshParam.ImportNormals;
@@ -292,7 +293,7 @@ namespace te
                 meshImportOptions->ImportMaterials = _fileBrowser.Data.MeshParam.ImportMaterials;
                 meshImportOptions->CpuCached = false;
 
-                SPtr<MultiResource> resources = EditorResManager::Instance().LoadAll(_fileBrowser.Data.SelectedPath, meshImportOptions);
+                SPtr<MultiResource> resources = EditorResManager::Instance().LoadAll(_fileBrowser.Data.SelectedPath, meshImportOptions, true);
                 if (!resources->Empty())
                 {
                     for (auto& subRes : resources->Entries)
@@ -321,7 +322,7 @@ namespace te
                 auto audioImportOptions = AudioClipImportOptions::Create();
                 audioImportOptions->Is3D = _fileBrowser.Data.AudioParam.Is3D;
 
-                HAudioClip audio = EditorResManager::Instance().Load<AudioClip>(_fileBrowser.Data.SelectedPath, audioImportOptions);
+                HAudioClip audio = EditorResManager::Instance().Load<AudioClip>(_fileBrowser.Data.SelectedPath, audioImportOptions, true);
                 if (audio.IsLoaded())
                 {
                     audio->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));

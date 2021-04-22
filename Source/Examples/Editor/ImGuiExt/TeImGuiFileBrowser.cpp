@@ -670,7 +670,8 @@ namespace te
         {
             if (dialog_mode == DialogMode::OPEN)
             {
-                if (strcmp(selectedExt, ".obj") == 0 || strcmp(selectedExt, ".dae") == 0 || strcmp(selectedExt, ".fbx") == 0)
+                if (strcmp(selectedExt, ".obj") == 0 || strcmp(selectedExt, ".dae") == 0 || strcmp(selectedExt, ".fbx") == 0 ||
+                    strcmp(selectedExt, ".stl") == 0 || strcmp(selectedExt, ".gltf") == 0)
                 {
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportNormals, "##file_dialog_parameters_mesh_normals", "Import normals");
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportTangents, "##file_dialog_parameters_mesh_tangents", "Import tangents");

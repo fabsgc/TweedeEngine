@@ -15,6 +15,8 @@ namespace te
         _extensions.push_back(u8"obj");
         _extensions.push_back(u8"dae");
         _extensions.push_back(u8"fbx");
+        _extensions.push_back(u8"stl");
+        _extensions.push_back(u8"gltf");
     }
 
     ObjectImporter::~ObjectImporter()

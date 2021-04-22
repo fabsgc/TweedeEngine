@@ -1709,7 +1709,7 @@ namespace te
         if (_loadMesh)
             ImGui::OpenPopup("Load Mesh");
 
-        if (_fileBrowser.ShowFileDialog("Load Mesh", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), true, ".obj,.dae,.fbx"))
+        if (_fileBrowser.ShowFileDialog("Load Mesh", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), true, ".obj,.dae,.fbx,.stl,.gltf"))
         {
             auto meshImportOptions = MeshImportOptions::Create();
             meshImportOptions->ImportNormals = _fileBrowser.Data.MeshParam.ImportNormals;

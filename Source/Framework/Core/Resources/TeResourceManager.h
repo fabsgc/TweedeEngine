@@ -40,13 +40,13 @@ namespace te
         }
 
         template <class T>
-        ResourceHandle<T> Load(const String& filePath, const SPtr<const ImportOptions>& options = nullptr)
+        ResourceHandle<T> Load(const String& filePath, const SPtr<const ImportOptions>& options = nullptr, bool force = false)
         {
             UUID uuid;
             ResourceHandle<T> resourceHandle;
             GetUUIDFromFile(filePath, uuid);
 
-            if (uuid.Empty())
+            if (uuid.Empty() || force)
             {
                 resourceHandle = gImporter().Import<T>(filePath, options);
 
@@ -72,7 +72,7 @@ namespace te
          * By using this importer, because non primary resources are not linked to a file, we need to 
          * find associated subResources and return a MultiResource instance
         */
-        SPtr<MultiResource> LoadAll(const String& filePath, const SPtr<const ImportOptions>& options = nullptr);
+        SPtr<MultiResource> LoadAll(const String& filePath, const SPtr<const ImportOptions>& options = nullptr, bool force = false);
 
         void Update(HResource& handle, const SPtr<Resource>& resource);
 
