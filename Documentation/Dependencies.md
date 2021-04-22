@@ -37,7 +37,7 @@ Additionally, if the dependency structure still isn't clear, download one of the
 - Required by TeFreeImgImporter
 
 **Assimp**
-- assimp 3.1.1
+- assimp 5.0.0
 - http://www.assimp.org/
 - Required by TeObjectImpoter
 
