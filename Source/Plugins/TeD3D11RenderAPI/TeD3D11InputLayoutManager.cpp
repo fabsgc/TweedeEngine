@@ -4,6 +4,8 @@
 #include "TeD3D11Device.h"
 #include "TeD3D11GpuProgram.h"
 #include "RenderAPI/TeHardwareBufferManager.h"
+#include "Profiling/TeProfilerGPU.h"
+
 namespace te
 {
     TE_MODULE_STATIC_MEMBER(D3D11InputLayoutManager)
@@ -41,6 +43,8 @@ namespace te
             te_delete(firstElem->second);
 
             mInputLayoutMap.erase(firstElem);
+
+            TE_INC_PROFILER_GPU(ResDestroyed);
         }
     }
 
@@ -169,6 +173,8 @@ namespace te
         pair.vertexProgramId = vertexProgram.GetProgramId();
 
         mInputLayoutMap[pair] = newEntry;
+
+        TE_INC_PROFILER_GPU(ResCreated);
     }
 
     void D3D11InputLayoutManager::RemoveLeastUsed()
@@ -198,6 +204,7 @@ namespace te
             te_delete(inputLayoutIter->second);
 
             mInputLayoutMap.erase(inputLayoutIter);
+            TE_INC_PROFILER_GPU(ResDestroyed);
 
             elemsRemoved++;
             if (elemsRemoved >= NUM_ELEMENTS_TO_PRUNE)

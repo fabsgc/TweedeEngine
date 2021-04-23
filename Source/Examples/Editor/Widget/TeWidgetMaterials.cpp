@@ -20,7 +20,7 @@
 namespace te
 {
     WidgetMaterials::WidgetMaterials()
-        : Widget(WidgetType::Game)
+        : Widget(WidgetType::Material)
         , _currentMaterial(nullptr)
         , _materialCreationCounter(1)
         , _loadTexture(false)

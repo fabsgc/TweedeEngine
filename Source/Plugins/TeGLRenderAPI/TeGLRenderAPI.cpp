@@ -653,6 +653,16 @@ namespace te
         return block;
     }
 
+    UINT64 GLRenderAPI::GetGPUMemory()
+    {
+        return 0;
+    }
+
+    UINT64 GLRenderAPI::GetUsedGPUMemory()
+    {
+        return 0;
+    }
+
 #if TE_OPENGL_4_3 || TE_OPENGLES_3_2
     void OpenGlErrorCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
         const GLchar *message, GLvoid *userParam)

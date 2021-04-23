@@ -4,6 +4,7 @@
 #include "TeD3D11Mappings.h"
 #include "TeD3D11TextureView.h"
 #include "Image/TePixelUtil.h"
+#include "Profiling/TeProfilerGPU.h"
 
 namespace te
 {
@@ -22,6 +23,8 @@ namespace te
         SAFE_RELEASE(_2DTex);
         SAFE_RELEASE(_3DTex);
         SAFE_RELEASE(_stagingBuffer);
+
+        TE_INC_PROFILER_GPU(ResDestroyed);
     }
 
     void D3D11Texture::Initialize()
@@ -42,6 +45,7 @@ namespace te
             TE_ASSERT_ERROR(false, "Unknown texture type");
         }
 
+        TE_INC_PROFILER_GPU(ResCreated);
         Texture::Initialize();
     }
 
@@ -56,6 +60,18 @@ namespace te
         {
             TE_ASSERT_ERROR(false, "Multisampled textures cannot be accessed from the CPU directly.");
         }
+
+#if TE_PROFILING_ENABLED
+        if (options == GBL_READ_ONLY || options == GBL_READ_WRITE)
+        {
+            TE_INC_PROFILER_GPU(ResRead);
+        }
+
+        if (options == GBL_READ_WRITE || options == GBL_WRITE_ONLY || options == GBL_WRITE_ONLY_DISCARD || options == GBL_WRITE_ONLY_NO_OVERWRITE)
+        {
+            TE_INC_PROFILER_GPU(ResWrite);
+        }
+#endif
 
         UINT32 mipWidth = std::max(1u, _properties.GetWidth() >> mipLevel);
         UINT32 mipHeight = std::max(1u, _properties.GetHeight() >> mipLevel);
@@ -247,6 +263,7 @@ namespace te
                 TE_ASSERT_ERROR(false, "D3D11 device cannot map texture\nError Description: " + errorDescription);
             }
 
+            TE_INC_PROFILER_GPU(ResWrite);
             _deviceMutex.unlock();
         }
         else

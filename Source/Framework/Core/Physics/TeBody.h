@@ -206,7 +206,6 @@ namespace te
         BodyFlag _flags = (BodyFlag)((UINT32)BodyFlag::None);
         HSceneObject _linkedSO;
         PhysicsObjectOwner _owner;
-        FBody* _internal = nullptr;
         CollisionReportMode _collisionReportMode = CollisionReportMode::None;
     };
 }

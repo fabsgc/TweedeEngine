@@ -2,20 +2,15 @@
 #include "Scene/TeSceneObject.h"
 #include "Physics/TePhysics.h"
 #include "TeBulletPhysics.h"
-#include "TeBulletFBody.h"
 
 namespace te
 {
     BulletSoftBody::BulletSoftBody(BulletPhysics* physics, BulletScene* scene, const HSceneObject& linkedSO)
         : SoftBody(linkedSO)
-    { 
-        _internal = te_new<BulletFBody>(physics, scene);
-    }
+    { }
 
     BulletSoftBody::~BulletSoftBody()
-    { 
-        te_delete((BulletFBody*)_internal);
-    }
+    { }
 
     Vector3 BulletSoftBody::GetPosition() const
     {

@@ -1,6 +1,7 @@
 #include "RenderAPI/TeGpuParamBlockBuffer.h"
 #include "RenderAPI/TeHardwareBuffer.h"
 #include "RenderAPI/TeHardwareBufferManager.h"
+#include "Profiling/TeProfilerGPU.h"
 
 namespace te
 {
@@ -21,14 +22,16 @@ namespace te
 
     GpuParamBlockBuffer::~GpuParamBlockBuffer()
     {
+        TE_INC_PROFILER_GPU(ResDestroyed);
+
         if (_cachedData != nullptr)
-        {
             te_free(_cachedData);
-        }
     }
 
     void GpuParamBlockBuffer::Initialize()
     {
+        TE_INC_PROFILER_GPU(ResCreated);
+
         CoreObject::Initialize();
     }
 
@@ -86,6 +89,7 @@ namespace te
     void GpuParamBlockBuffer::WriteToGPU(const UINT8* data, UINT32 queueIdx)
     {
         _buffer->WriteData(0, _size, data, BWT_DISCARD, queueIdx);
+        TE_INC_PROFILER_GPU(ResWrite);
     }
 
     SPtr<GpuParamBlockBuffer> GpuParamBlockBuffer::Create(UINT32 size, GpuBufferUsage usage, GpuDeviceFlags deviceMask)

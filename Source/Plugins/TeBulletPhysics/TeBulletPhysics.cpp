@@ -456,6 +456,20 @@ namespace te
         if (!_world)
             return;
 
+        for (auto it = _stayContactEvents->begin(); it != _stayContactEvents->end();)
+        {
+            const btCollisionObject* objA = it->first.first;
+            const btCollisionObject* objB = it->first.second;
+
+            if (objA == body || objB == body)
+            {
+                it = _stayContactEvents->erase(it);
+                continue;
+            }
+
+            it++;
+        }
+
         _world->removeRigidBody(body);
     }
 

@@ -5,6 +5,8 @@
 // Platform-specific stuff
 #include "Prerequisites/TePlatformDefines.h"
 
+#define TE_PROFILING_ENABLED 1
+
 #if TE_COMPILER == TE_COMPILER_MSVC
 // disable: "<type> needs to have dll-interface to be used by clients'
 // Happens on STL member variables which are not public therefore is ok

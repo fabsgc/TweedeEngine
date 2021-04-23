@@ -447,7 +447,6 @@ set (TE_CORE_INC_PHYSICS
     "Core/Physics/TeHeightFieldCollider.h"
     "Core/Physics/TeFCollider.h"
     "Core/Physics/TeFJoint.h"
-    "Core/Physics/TeFBody.h"
     "Core/Physics/TePhysicsDebug.h"
 )
 set (TE_CORE_SRC_PHYSICS
@@ -473,8 +472,14 @@ set (TE_CORE_SRC_PHYSICS
     "Core/Physics/TeHeightFieldCollider.cpp"
     "Core/Physics/TeFCollider.cpp"
     "Core/Physics/TeFJoint.cpp"
-    "Core/Physics/TeFBody.cpp"
     "Core/Physics/TePhysicsDebug.cpp"
+)
+
+set (TE_CORE_INC_PROFILING
+    "Core/Profiling/TeProfilerGPU.h"
+)
+set (TE_CORE_SRC_PROFILING
+    "Core/Profiling/TeProfilerGPU.cpp"
 )
 
 if (WIN32)
@@ -508,6 +513,7 @@ source_group("Core\\Animation" FILES ${TE_CORE_INC_ANIMATION} ${TE_CORE_SRC_ANIM
 source_group("Core\\Gui" FILES ${TE_CORE_INC_GUI} ${TE_CORE_SRC_GUI})
 source_group("Core\\Scripting" FILES ${TE_CORE_INC_SCRIPTING} ${TE_CORE_SRC_SCRIPTING})
 source_group("Core\\Physics" FILES ${TE_CORE_INC_PHYSICS} ${TE_CORE_SRC_PHYSICS})
+source_group("Core\\Profiling" FILES ${TE_CORE_INC_PROFILING} ${TE_CORE_SRC_PROFILING})
 source_group("Core" FILES ${TE_CORE_INC_NOFILTER} ${TE_CORE_SRC_NOFILTER})
 
 set(TE_CORE_SRC
@@ -553,4 +559,6 @@ set(TE_CORE_SRC
     ${TE_CORE_SRC_SCRIPTING}
     ${TE_CORE_INC_PHYSICS}
     ${TE_CORE_SRC_PHYSICS}
+    ${TE_CORE_INC_PROFILING}
+    ${TE_CORE_SRC_PROFILING}
 )

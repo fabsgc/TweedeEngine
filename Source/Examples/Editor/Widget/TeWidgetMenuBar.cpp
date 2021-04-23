@@ -120,6 +120,13 @@ namespace te
                         widget->SetVisible(!widget->GetVisible());
                 }
 
+                if (ImGui::MenuItem(ICON_FA_CHART_LINE "  " ICON_FA_GRIP_LINES_VERTICAL "  Profiler"))
+                {
+                    Widget* widget = static_cast<Widget*>(gEditor().GetWidget(WidgetType::Profiler));
+                    if (widget)
+                        widget->SetVisible(!widget->GetVisible());
+                }
+
                 if (ImGui::MenuItem(ICON_FA_COG "  " ICON_FA_GRIP_LINES_VERTICAL "  Render options"))
                 { 
                     Widget* widget = static_cast<Widget*>(gEditor().GetWidget(WidgetType::RenderOptions));
@@ -137,13 +144,6 @@ namespace te
                 if (ImGui::MenuItem(ICON_FA_SCROLL " " ICON_FA_GRIP_LINES_VERTICAL "  Script"))
                 { 
                     Widget* widget = static_cast<Widget*>(gEditor().GetWidget(WidgetType::Script));
-                    if (widget)
-                        widget->SetVisible(!widget->GetVisible());
-                }
-
-                if (ImGui::MenuItem(ICON_FA_GAMEPAD " " ICON_FA_GRIP_LINES_VERTICAL "  Game"))
-                {
-                    Widget* widget = static_cast<Widget*>(gEditor().GetWidget(WidgetType::Game));
                     if (widget)
                         widget->SetVisible(!widget->GetVisible());
                 }

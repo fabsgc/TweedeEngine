@@ -158,12 +158,21 @@ namespace te
         /** @copydoc RenderAPI::GenerateParamBlockDesc() */
         GpuParamBlockDesc GenerateParamBlockDesc(const String& name, Vector<GpuParamDataDesc>& params) override;
 
+        /** @copydoc RenderAPI::GetGPUMemory() */
+        UINT64 GetGPUMemory() override;
+
+        /** @copydoc RenderAPI::GetUsedGPUMemory() */
+        UINT64 GetUsedGPUMemory() override;
+
+    private:
+        static bool MemoryQuerySupport;
+
     private:
         SPtr<LastFrameGraphicPipeline> _lastFrameGraphicPipeline;
         GpuResourcesContainer _gpuResContainer;
 
-    private:
         IDXGIFactory1* _DXGIFactory = nullptr;
+        IDXGIAdapter* _selectedAdapter = nullptr;
         D3D11Device* _device = nullptr;
 
         D3D11DriverList* _driverList = nullptr;

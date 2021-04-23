@@ -19,10 +19,13 @@
 #include "TeD3D11SamplerState.h"
 #include "TeD3D11GpuParamBlockBuffer.h"
 #include "TeD3D11GpuBuffer.h"
+#include "Profiling/TeProfilerGPU.h"
 
 namespace te
 {
     TE_MODULE_STATIC_MEMBER(D3D11RenderAPI)
+
+    bool D3D11RenderAPI::MemoryQuerySupport = true;
 
     D3D11RenderAPI::D3D11RenderAPI()
         : _viewport()
@@ -54,7 +57,7 @@ namespace te
         _activeD3DDriver = _driverList->Item(0);
         _videoModeInfo = _activeD3DDriver->GetVideoModeInfo();
 
-        IDXGIAdapter* selectedAdapter = _activeD3DDriver->GetDeviceAdapter();
+        _selectedAdapter = _activeD3DDriver->GetDeviceAdapter();
 
         D3D_FEATURE_LEVEL requestedLevels[] = {
             D3D_FEATURE_LEVEL_11_1,
@@ -76,7 +79,7 @@ namespace te
 #endif
 
         ID3D11Device* device;
-        hr = D3D11CreateDevice(selectedAdapter, D3D_DRIVER_TYPE_UNKNOWN, nullptr, deviceFlags,
+        hr = D3D11CreateDevice(_selectedAdapter, D3D_DRIVER_TYPE_UNKNOWN, nullptr, deviceFlags,
             requestedLevels, numRequestedLevels, D3D11_SDK_VERSION, &device, &_featureLevel, nullptr);
 
         // Maybe Graphics tools are not available
@@ -84,14 +87,14 @@ namespace te
         {
             deviceFlags = 0;
             debugLayerAvailable = false;
-            hr = D3D11CreateDevice(selectedAdapter, D3D_DRIVER_TYPE_UNKNOWN, nullptr, deviceFlags,
+            hr = D3D11CreateDevice(_selectedAdapter, D3D_DRIVER_TYPE_UNKNOWN, nullptr, deviceFlags,
                 &requestedLevels[1], numRequestedLevels - 1, D3D11_SDK_VERSION, &device, &_featureLevel, nullptr);
         }
 
         // This will fail on Win 7 due to lack of 11.1, so re-try again without it
         if (hr == E_INVALIDARG)
         {
-            hr = D3D11CreateDevice(selectedAdapter, D3D_DRIVER_TYPE_UNKNOWN, nullptr, deviceFlags,
+            hr = D3D11CreateDevice(_selectedAdapter, D3D_DRIVER_TYPE_UNKNOWN, nullptr, deviceFlags,
                 &requestedLevels[1], numRequestedLevels - 1, D3D11_SDK_VERSION, &device, &_featureLevel, nullptr);
         }
 
@@ -120,7 +123,7 @@ namespace te
 
         _numDevices = 1;
         _capabilities = te_newN<RenderAPICapabilities>(_numDevices);
-        InitCapabilites(selectedAdapter, _capabilities[0]);
+        InitCapabilites(_selectedAdapter, _capabilities[0]);
 
         RenderAPI::Initialize();
     }
@@ -278,6 +281,8 @@ namespace te
         _lastFrameGraphicPipeline->d3d11DomainProgram = d3d11DomainProgram;
         _lastFrameGraphicPipeline->d3d11HullProgram = d3d11HullProgram;
         _lastFrameGraphicPipeline->d3d11ComputeProgram = nullptr;
+
+        TE_INC_PROFILER_GPU(NumPipelineStateChanges);
     }
 
     void D3D11RenderAPI::SetComputePipeline(const SPtr<ComputePipelineState>& pipelineState)
@@ -602,6 +607,8 @@ namespace te
             if (numConstBuffers > 0) context->CSSetConstantBuffers(slotConstBuffers, numConstBuffers, _gpuResContainer.constBuffers.data());
             if (numSamplers > 0) context->CSSetSamplers(0, numSamplers, _gpuResContainer.samplers.data());
         }
+
+        TE_INC_PROFILER_GPU(NumGpuParamBinds);
     }
 
     void D3D11RenderAPI::SetViewport(const Rect2& area)
@@ -663,6 +670,8 @@ namespace te
 
             _lastFrameGraphicPipeline->vertexBuffer = dx11buffers[0];
         }
+
+        TE_INC_PROFILER_GPU(NumVertexBufferBinds);
     }
 
     void D3D11RenderAPI::SetIndexBuffer(const SPtr<IndexBuffer>& buffer)
@@ -678,6 +687,8 @@ namespace te
             TE_ASSERT_ERROR(false, "Unsupported index format: " + ToString(indexBuffer->GetProperties().GetType()));
 
         _device->GetImmediateContext()->IASetIndexBuffer(indexBuffer->GetD3DIndexBuffer(), indexFormat, 0);
+
+        TE_INC_PROFILER_GPU(NumIndexBufferBinds);
     }
 
     void D3D11RenderAPI::SetVertexDeclaration(const SPtr<VertexDeclaration>& vertexDeclaration)
@@ -713,6 +724,10 @@ namespace te
             TE_DEBUG(_device->GetErrorDescription());
 #endif
 
+        TE_INC_PROFILER_GPU(NumDrawCalls);
+        TE_ADD_PROFILER_GPU(NumInstances,instanceCount > 1 ? instanceCount : 0);
+        TE_ADD_PROFILER_GPU(NumVertices, vertexCount);
+        TE_ADD_PROFILER_GPU(NumPrimitives, (VertexCountToPrimCount(_activeDrawOp, vertexCount)));
         NotifyRenderTargetModified();
     }
 
@@ -730,6 +745,10 @@ namespace te
                 TE_DEBUG(_device->GetErrorDescription());
 #endif
 
+        TE_INC_PROFILER_GPU(NumDrawCalls);
+        TE_ADD_PROFILER_GPU(NumInstances, instanceCount > 1 ? instanceCount : 0);
+        TE_ADD_PROFILER_GPU(NumVertices, vertexCount);
+        TE_ADD_PROFILER_GPU(NumPrimitives, (VertexCountToPrimCount(_activeDrawOp, vertexCount)));
         NotifyRenderTargetModified();
     }
 
@@ -741,11 +760,14 @@ namespace te
         if (_device->HasError())
             TE_DEBUG(_device->GetErrorDescription());
 #endif
+
+        TE_INC_PROFILER_GPU(NumComputeCalls);
     }
 
     void D3D11RenderAPI::SwapBuffers(const SPtr<RenderTarget>& target)
     {
         target->SwapBuffers();
+        TE_INC_PROFILER_GPU(NumPresents);
     }
 
     void D3D11RenderAPI::SetRenderTarget(const SPtr<RenderTarget>& target, UINT32 readOnlyFlags)
@@ -787,6 +809,7 @@ namespace te
             TE_ASSERT_ERROR(false, "Failed to setRenderTarget : " + errorDescription);
         }
 
+        TE_INC_PROFILER_GPU(NumRenderTargetChanges);
         te_deleteN(views, maxRenderTargets);
         ApplyViewport();
     }
@@ -841,22 +864,17 @@ namespace te
                 D3D11_CLEAR_FLAG clearFlag;
 
                 if ((buffers & FBT_DEPTH) != 0 && (buffers & FBT_STENCIL) != 0)
-                {
                     clearFlag = (D3D11_CLEAR_FLAG)(D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL);
-                }
                 else if ((buffers & FBT_STENCIL) != 0)
-                {
                     clearFlag = D3D11_CLEAR_STENCIL;
-                }
                 else
-                {
                     clearFlag = D3D11_CLEAR_DEPTH;
-                }
 
                 _device->GetImmediateContext()->ClearDepthStencilView(depthStencilView, clearFlag, depth, (UINT8)stencil);
             }
         }
 
+        TE_INC_PROFILER_GPU(NumClears);
         NotifyRenderTargetModified();
     }
 
@@ -879,10 +897,12 @@ namespace te
         {
             // D3D11RenderUtility::Instance().DrawClearQuad(buffers, color, depth, stencil); TODO
             ClearRenderTarget(buffers, color, depth, stencil, targetMask);
+            TE_INC_PROFILER_GPU(NumClears);
             NotifyRenderTargetModified();
         }
         else
         {
+            TE_INC_PROFILER_GPU(NumClears);
             ClearRenderTarget(buffers, color, depth, stencil, targetMask);
         }
     }
@@ -1197,5 +1217,44 @@ namespace te
             block.BlockSize += (4 - (block.BlockSize % 4));
 
         return block;
+    }
+
+    UINT64 D3D11RenderAPI::GetGPUMemory()
+    {
+        if (IDXGIAdapter3* adapter = static_cast<IDXGIAdapter3*>(_selectedAdapter))
+        {
+            DXGI_ADAPTER_DESC adapter_desc = {};
+            const auto result = adapter->GetDesc(&adapter_desc);
+            if (FAILED(result))
+            {
+                TE_DEBUG("Failed to get adapter description");
+                return 0;
+            }
+
+            return static_cast<UINT64>(adapter_desc.DedicatedVideoMemory / 1024 / 1024); // convert to MBs
+        }
+
+        return 0;
+    }
+
+    UINT64 D3D11RenderAPI::GetUsedGPUMemory()
+    {
+        if (!MemoryQuerySupport)
+            return 0;
+
+        if (IDXGIAdapter3* adapter = static_cast<IDXGIAdapter3*>(_selectedAdapter))
+        {
+            DXGI_QUERY_VIDEO_MEMORY_INFO info = {};
+            const HRESULT result = adapter->QueryVideoMemoryInfo(0, DXGI_MEMORY_SEGMENT_GROUP_LOCAL, &info);
+
+            if (SUCCEEDED(result))
+                return static_cast<uint32_t>(info.CurrentUsage / 1024 / 1024); // convert to MBs
+
+            // Some integrated or older dedicated GPUs might not support video memory queries, log the error once and don't query again.
+            TE_DEBUG("Failed to get adapter memory info");
+            MemoryQuerySupport = false;
+        }
+
+        return 0;
     }
 }

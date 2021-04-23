@@ -16,6 +16,8 @@
 #include <d3d11.h>
 #include <d3d11shader.h>
 #include <D3Dcompiler.h>
+#include <dxgi1_3.h>
+#include <dxgi1_4.h>
 
 namespace te
 {

@@ -7,7 +7,8 @@
 #include "Renderer/TeCamera.h"
 #include "TeRenderCompositor.h"
 #include "Utility/TeTime.h"
-#include "Gui/TeGuiAPI.h"
+#include "Gui/TeGuiAPI.h"*
+#include "Profiling/TeProfilerGPU.h"
 
 namespace te
 {
@@ -93,6 +94,8 @@ namespace te
 
     void RenderMan::RenderAll(PerFrameData& perFrameData)
     {
+        gProfilerGPU().BeginFrame();
+
         CoreObjectManager::Instance().FrameSync();
 
         const SceneInfo& sceneInfo = _scene->GetSceneInfo();
@@ -164,6 +167,8 @@ namespace te
         }
 
         GpuResourcePool::Instance().Update();
+
+        gProfilerGPU().EndFrame();
     }
 
     /** Renders all views in the provided view group. Returns true if anything has been draw to any of the views. */

@@ -65,6 +65,7 @@ namespace te
             SPtr<Widget> WMenuBar = nullptr;
             SPtr<Widget> WToolbar = nullptr;
             SPtr<Widget> WProject = nullptr;
+            SPtr<Widget> WProfiler = nullptr;
             SPtr<Widget> WRenderOptions = nullptr;
             SPtr<Widget> WConsole = nullptr;
             SPtr<Widget> WResources = nullptr;

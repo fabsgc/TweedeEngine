@@ -3,6 +3,7 @@
 #include "TeD3D11RenderAPI.h"
 #include "TeD3D11Device.h"
 #include "TeD3D11Mappings.h"
+#include "Profiling/TeProfilerGPU.h"
 
 namespace te
 {
@@ -30,6 +31,8 @@ namespace te
     {
         SAFE_RELEASE(_SRV);
         SAFE_RELEASE(_UAV);
+
+        TE_INC_PROFILER_GPU(ResDestroyed);
     }
 
     void GpuBufferView::Initialize(D3D11GpuBuffer* buffer, GPU_BUFFER_VIEW_DESC& desc)
@@ -47,6 +50,8 @@ namespace te
         {
             TE_ASSERT_ERROR(false, "Invalid usage flags for a GPU buffer view.");
         }
+
+        TE_INC_PROFILER_GPU(ResCreated);
     }
 
     ID3D11ShaderResourceView* GpuBufferView::CreateSRV(D3D11GpuBuffer* buffer, UINT32 firstElement, UINT32 elementWidth, UINT32 numElements)

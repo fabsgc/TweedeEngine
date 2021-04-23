@@ -1,6 +1,7 @@
 #include "TeIndexBuffer.h"
 #include "RenderAPI/TeHardwareBufferManager.h"
 #include "RenderAPI/TeRenderAPI.h"
+#include "Profiling/TeProfilerGPU.h"
 
 namespace te
 {
@@ -43,18 +44,31 @@ namespace te
     IndexBuffer::~IndexBuffer()
     {
         if (_buffer && !_sharedBuffer)
-        {
             _bufferDeleter(_buffer);
-        }
+
+        TE_INC_PROFILER_GPU(ResDestroyed);
     }
 
     void IndexBuffer::Initialize()
     {
+        TE_INC_PROFILER_GPU(ResCreated);
         CoreObject::Initialize();
     }
 
     void* IndexBuffer::Map(UINT32 offset, UINT32 length, GpuLockOptions options, UINT32 deviceIdx, UINT32 queueIdx)
     {
+#if TE_PROFILING_ENABLED
+        if (options == GBL_READ_ONLY || options == GBL_READ_WRITE)
+        {
+            TE_INC_PROFILER_GPU(ResRead);
+        }
+
+        if (options == GBL_READ_WRITE || options == GBL_WRITE_ONLY || options == GBL_WRITE_ONLY_DISCARD || options == GBL_WRITE_ONLY_NO_OVERWRITE)
+        {
+            TE_INC_PROFILER_GPU(ResWrite);
+        }
+#endif
+
         return _buffer->Lock(offset, length, options, deviceIdx, queueIdx);
     }
 
@@ -66,12 +80,14 @@ namespace te
     void IndexBuffer::ReadData(UINT32 offset, UINT32 length, void* dest, UINT32 deviceIdx, UINT32 queueIdx)
     {
         _buffer->ReadData(offset, length, dest, deviceIdx, queueIdx);
+        TE_INC_PROFILER_GPU(ResRead);
     }
 
     void IndexBuffer::WriteData(UINT32 offset, UINT32 length, const void* source, BufferWriteType writeFlags,
         UINT32 queueIdx)
     {
         _buffer->WriteData(offset, length, source, writeFlags, queueIdx);
+        TE_INC_PROFILER_GPU(ResWrite);
     }
 
     void IndexBuffer::CopyData(HardwareBuffer& srcBuffer, UINT32 srcOffset, UINT32 dstOffset, UINT32 length,

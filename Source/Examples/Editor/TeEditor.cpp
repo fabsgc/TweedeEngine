@@ -7,6 +7,7 @@
 #include "Widget/TeWidgetToolBar.h"
 #include "Widget/TeWidgetProject.h"
 #include "Widget/TeWidgetProperties.h"
+#include "Widget/TeWidgetProfiler.h"
 #include "Widget/TeWidgetRenderOptions.h"
 #include "Widget/TeWidgetConsole.h"
 #include "Widget/TeWidgetViewport.h"
@@ -376,6 +377,7 @@ namespace te
         _widgets.emplace_back(te_shared_ptr_new<WidgetToolBar>()); _settings.WToolbar = _widgets.back();
         _widgets.emplace_back(te_shared_ptr_new<WidgetProject>()); _settings.WProject = _widgets.back();
         _widgets.emplace_back(te_shared_ptr_new<WidgetProperties>()); _settings.WProperties = _widgets.back();
+        _widgets.emplace_back(te_shared_ptr_new<WidgetProfiler>()); _settings.WProfiler = _widgets.back();
         _widgets.emplace_back(te_shared_ptr_new<WidgetRenderOptions>()); _settings.WRenderOptions = _widgets.back();
         _widgets.emplace_back(te_shared_ptr_new<WidgetConsole>()); _settings.WConsole = _widgets.back();
         _widgets.emplace_back(te_shared_ptr_new<WidgetScript>()); _settings.WScript = _widgets.back();
@@ -545,6 +547,7 @@ namespace te
 
                 // Dock windows
                 ImGui::DockBuilderDockWindow(PROJECT_TITLE, dockLeftId);
+                ImGui::DockBuilderDockWindow(PROFILER_TITLE, dockRightId);
                 ImGui::DockBuilderDockWindow(RENDER_OPTIONS_TITLE, dockRightId);
                 ImGui::DockBuilderDockWindow(CONSOLE_TITLE, dockBottomId);
                 ImGui::DockBuilderDockWindow(RESOURCES_TITLE, dockBottomId);

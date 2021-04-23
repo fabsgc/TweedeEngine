@@ -33,6 +33,7 @@
 #include "RenderAPI/TeRenderAPI.h"
 #include "Importer/TeImporter.h"
 #include "Renderer/TeRenderer.h"
+#include "Profiling/TeProfilerGPU.h"
 
 #include "Gui/TeGuiAPI.h"
 
@@ -62,6 +63,7 @@ namespace te
         TaskScheduler::StartUp();
         DynLibManager::StartUp();
         CoreObjectManager::StartUp();
+        ProfilerGPU::StartUp();
         RenderAPIManager::StartUp();
         GuiManager::StartUp();
         GpuProgramManager::StartUp();

@@ -60,11 +60,6 @@ namespace te
                 hasChanged = true;
         }
 
-        if (ImGui::CollapsingHeader("Debug", ImGuiTreeNodeFlags_DefaultOpen))
-        {
-
-        }
-
         if (hasChanged)
         {
             gEditor().NeedsRedraw();

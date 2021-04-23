@@ -357,8 +357,9 @@ namespace te
     class HeightFieldCollider;
     class FCollider;
     class FJoint;
-    class FBody;
     class PhysicsDebug;
+
+    class GPUProfiler;
 }
 
 #include "Utility/TeNonCopyable.h"

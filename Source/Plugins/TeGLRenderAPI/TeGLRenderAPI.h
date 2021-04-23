@@ -71,23 +71,29 @@ namespace te
         /** @copydoc RenderAPI::ClearViewport */
         void ClearViewport(UINT32 buffers, const Color& color = Color::Black, float depth = 1.0f, UINT16 stencil = 0, UINT8 targetMask = 0xFF) override;
 
-        /** @copydoc RenderAPI::ConvertProjectionMatrix() */
-        void ConvertProjectionMatrix(const Matrix4& matrix, Matrix4& dest) override;
-
-        /** @copydoc RenderAPI::GenerateParamBlockDesc() */
-        GpuParamBlockDesc GenerateParamBlockDesc(const String& name, Vector<GpuParamDataDesc>& params) override;
-
         /**	Creates render system capabilities that specify which features are or aren't supported. */
         void InitCapabilities(RenderAPICapabilities& caps) const;
 
         /**	Finish initialization by setting up any systems dependant on render systemcapabilities. */
         void InitFromCaps(RenderAPICapabilities* caps);
 
+        /** @copydoc RenderAPI::ConvertProjectionMatrix() */
+        void ConvertProjectionMatrix(const Matrix4& matrix, Matrix4& dest) override;
+
+        /** @copydoc RenderAPI::GenerateParamBlockDesc() */
+        GpuParamBlockDesc GenerateParamBlockDesc(const String& name, Vector<GpuParamDataDesc>& params) override;
+
         /**
          * Switch the currently used OpenGL context. You will need to re-bind any previously bound values manually
          * (for example textures, gpu programs and such).
          */
         void SwitchContext(const SPtr<GLContext>& context, const RenderWindow& window);
+
+        /** @copydoc RenderAPI::GetGPUMemory() */
+        UINT64 GetGPUMemory() override;
+
+        /** @copydoc RenderAPI::GetUsedGPUMemory() */
+        UINT64 GetUsedGPUMemory() override;
 
         /************************************************************************/
         /* 				Internal use by OpenGL RenderSystem only                */

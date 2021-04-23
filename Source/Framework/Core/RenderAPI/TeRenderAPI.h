@@ -219,6 +219,15 @@ namespace te
          */
         virtual GpuParamBlockDesc GenerateParamBlockDesc(const String& name, Vector<GpuParamDataDesc>& params) = 0;
 
+        /** Returns available GPU memory in mega byte */
+        virtual UINT64 GetGPUMemory() = 0;
+
+        /** Returns used GPU memory in mega byte */
+        virtual UINT64 GetUsedGPUMemory() = 0;
+
+        /** Converts the number of vertices to number of primitives based on the specified draw operation. */
+        UINT32 VertexCountToPrimCount(DrawOperationType type, UINT32 elementCount);
+
     protected:
         SPtr<RenderTarget> _activeRenderTarget;
         bool _activeRenderTargetModified = false;

@@ -3,7 +3,6 @@
 #include "Physics/TePhysics.h"
 #include "Physics/TeCollider.h"
 #include "TeBulletPhysics.h"
-#include "TeBulletFBody.h"
 #include "TeBulletFCollider.h"
 
 namespace te
@@ -52,8 +51,6 @@ namespace te
         , _isDirty(false)
         , _shape(nullptr)
     { 
-        _internal = te_new<BulletFBody>(physics, scene);
-
         _mass = DEFAULT_MASS;
         _restitution = DEFAULT_RESTITUTION;
         _friction = DEFAULT_FRICTION;
@@ -66,9 +63,7 @@ namespace te
     BulletRigidBody::~BulletRigidBody()
     {
         _colliders.clear();
-
         Release();
-        te_delete((BulletFBody*)_internal);
     }
 
     void BulletRigidBody::Update()

@@ -18,7 +18,6 @@ set (TE_BULLETPHYSICS_INC_NOFILTER
     "TeBulletHeightFieldCollider.h"
     "TeBulletFCollider.h"
     "TeBulletFJoint.h"
-    "TeBulletFBody.h"
     "TeBulletDebug.h"
     "TeBulletDebugMat.h"
 )
@@ -43,7 +42,6 @@ set (TE_BULLETPHYSICS_SRC_NOFILTER
     "TeBulletHeightFieldCollider.cpp"
     "TeBulletFCollider.cpp"
     "TeBulletFJoint.cpp"
-    "TeBulletFBody.cpp"
     "TeBulletDebug.cpp"
     "TeBulletDebugMat.cpp"
 )

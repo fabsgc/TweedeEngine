@@ -18,6 +18,7 @@
 #define VIEWPORT_TITLE ICON_FA_IMAGE " Viewport"
 #define SCRIPT_TITLE ICON_FA_SCROLL " Script"
 #define MATERIALS_TITLE ICON_FA_PALETTE " Materials"
+#define PROFILER_TITLE ICON_FA_CHART_LINE " Profiler"
 
 namespace te
 {
@@ -41,7 +42,8 @@ namespace te
             Viewport,
             Resources,
             Script,
-            Game,
+            Material,
+            Profiler,
             None
         };
 
@@ -69,7 +71,6 @@ namespace te
         WidgetType GetType() const { return _type; }
         ImGuiWindow* GetWindow() const { return _window; }
         ImGuiViewport* GetViewport() const { return _viewport; }
-        
 
     protected:
         bool _isVisible;
