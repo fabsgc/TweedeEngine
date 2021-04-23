@@ -27,6 +27,10 @@ namespace te
         SPtr<Material> lastMaterial = nullptr;
         UINT32 gpuParamsBindFlags = 0;
 
+        static const Vector<String> PerLightBuffer = { "PerLightsBuffer" };
+        static const Vector<String> PerCameraBuffer = { "PerCameraBuffer" };
+        static const Vector<String> PerFrameBuffer = { "PerFrameBuffer" };
+
         for(auto& entry : elements)
         {
             if(entry.ApplyPass)
@@ -44,19 +48,19 @@ namespace te
                     ->SetParamBlockBuffer("PerLightsBuffer", gPerLightsParamBuffer);
 
                 rapi.SetGpuParams(entry.RenderElem->GpuParamsElem[entry.PassIdx],
-                    GPU_BIND_PARAM_BLOCK, GPU_BIND_PARAM_BLOCK_LISTED, { "PerLightsBuffer" });
+                    GPU_BIND_PARAM_BLOCK, GPU_BIND_PARAM_BLOCK_LISTED, PerLightBuffer);
 
                 entry.RenderElem->GpuParamsElem[entry.PassIdx]
                     ->SetParamBlockBuffer("PerCameraBuffer", view.GetPerViewBuffer());
                 
                 rapi.SetGpuParams(entry.RenderElem->GpuParamsElem[entry.PassIdx],
-                    GPU_BIND_PARAM_BLOCK, GPU_BIND_PARAM_BLOCK_LISTED, { "PerCameraBuffer" });
+                    GPU_BIND_PARAM_BLOCK, GPU_BIND_PARAM_BLOCK_LISTED, PerCameraBuffer);
 
                 entry.RenderElem->GpuParamsElem[entry.PassIdx]
                     ->SetParamBlockBuffer("PerFrameBuffer", scene.PerFrameParamBuffer);
 
                 rapi.SetGpuParams(entry.RenderElem->GpuParamsElem[entry.PassIdx],
-                    GPU_BIND_PARAM_BLOCK, GPU_BIND_PARAM_BLOCK_LISTED, { "PerFrameBuffer" });
+                    GPU_BIND_PARAM_BLOCK, GPU_BIND_PARAM_BLOCK_LISTED, PerFrameBuffer);
             }
             else
             {

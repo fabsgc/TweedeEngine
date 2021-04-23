@@ -41,6 +41,7 @@ namespace te
             UINT32 ShaderId;
             UINT32 TechniqueIdx;
             UINT32 PassIdx;
+            UINT32 MaterialId;
         };
 
     public:

@@ -121,6 +121,8 @@ namespace te
             aiProcess_SortByPType |
             aiProcess_RemoveRedundantMaterials |
             aiProcess_FindInvalidData |
+            aiProcess_OptimizeGraph |
+            aiProcess_SplitLargeMeshes |
             aiProcess_OptimizeMeshes |
             aiProcess_FixInfacingNormals;
 

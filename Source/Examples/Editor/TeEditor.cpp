@@ -677,7 +677,12 @@ namespace te
             projectionMatrix.GetAsFloat(proj);
 
             // Retrieves WorldMatrix
-            transform = _selections.ClickedSceneObject->GetTransform();
+            if (_selections.ClickedSceneObject)
+                transform = _selections.ClickedSceneObject->GetTransform();
+            else if (_selections.ClickedComponent)
+                transform = _selections.ClickedComponent->SO()->GetTransform();
+            else
+                return;
 
             GetComponentsFromTransform(transform, matrixTranslation, matrixRotation, matrixScale);
             ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, &worldMatrix[0][0]);

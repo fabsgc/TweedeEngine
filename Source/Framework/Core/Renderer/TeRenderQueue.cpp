@@ -25,6 +25,7 @@ namespace te
         QueueSortType sortType = shader->GetQueueSortType();
         UINT32 shaderId = shader->GetId();
         bool separablePasses = shader->GetAllowSeparablePasses();
+        UINT32 materialId = material->GetId();
 
         switch (sortType)
         {
@@ -56,6 +57,7 @@ namespace te
             sortableElem.TechniqueIdx = techniqueIdx;
             sortableElem.PassIdx = i;
             sortableElem.DistFromCamera = distFromCamera;
+            sortableElem.MaterialId = materialId;
 
             _elements.push_back(element);
         }
@@ -90,6 +92,7 @@ namespace te
         UINT32 prevShaderId = (UINT32)-1;
         UINT32 prevTechniqueIdx = (UINT32)-1;
         UINT32 prevPassIdx = (UINT32)-1;
+        UINT32 prevMaterialId = (UINT32)-1;
         for (UINT32 i = 0; i < (UINT32)_sortableElementIdx.size(); i++)
         {
             const UINT32 idx = _sortableElementIdx[i];
@@ -107,12 +110,13 @@ namespace te
                 sortedElem.TechniqueIdx = elem.TechniqueIdx;
                 sortedElem.PassIdx = elem.PassIdx;
 
-                if (prevShaderId != elem.ShaderId || prevTechniqueIdx != elem.TechniqueIdx || prevPassIdx != elem.PassIdx)
+                if (prevShaderId != elem.ShaderId || prevTechniqueIdx != elem.TechniqueIdx || prevPassIdx != elem.PassIdx || prevMaterialId != elem.MaterialId)
                 {
                     sortedElem.ApplyPass = true;
                     prevShaderId = elem.ShaderId;
                     prevTechniqueIdx = elem.TechniqueIdx;
                     prevPassIdx = elem.PassIdx;
+                    prevMaterialId = elem.MaterialId;
                 }
                 else
                     sortedElem.ApplyPass = false;
@@ -129,12 +133,13 @@ namespace te
                     sortedElem.TechniqueIdx = elem.TechniqueIdx;
                     sortedElem.PassIdx = j;
 
-                    if (prevShaderId != elem.ShaderId || prevTechniqueIdx != elem.TechniqueIdx || prevPassIdx != j)
+                    if (prevShaderId != elem.ShaderId || prevTechniqueIdx != elem.TechniqueIdx || prevPassIdx != j || prevMaterialId != elem.MaterialId)
                     {
                         sortedElem.ApplyPass = true;
                         prevShaderId = elem.ShaderId;
                         prevTechniqueIdx = elem.TechniqueIdx;
                         prevPassIdx = j;
+                        prevMaterialId = elem.MaterialId;
                     }
                     else
                         sortedElem.ApplyPass = false;
@@ -172,7 +177,8 @@ namespace te
         const SortableElement& a = lookup[aIdx];
         const SortableElement& b = lookup[bIdx];
 
-        UINT8 isHigher = ((a.Priority > b.Priority) << 5) |
+        UINT8 isHigher = ((a.Priority > b.Priority) << 6) |
+            ((a.MaterialId < b.MaterialId) << 5) |
             ((a.ShaderId < b.ShaderId) << 4) |
             ((a.TechniqueIdx < b.TechniqueIdx) << 3) |
             ((a.PassIdx < b.PassIdx) << 2) |
@@ -180,6 +186,7 @@ namespace te
             (a.SeqIdx < b.SeqIdx);
 
         UINT8 isLower = ((a.Priority < b.Priority) << 5) |
+            ((a.MaterialId > b.MaterialId) << 5) |
             ((a.ShaderId > b.ShaderId) << 4) |
             ((a.TechniqueIdx > b.TechniqueIdx) << 3) |
             ((a.PassIdx > b.PassIdx) << 2) |
@@ -194,15 +201,17 @@ namespace te
         const SortableElement& a = lookup[aIdx];
         const SortableElement& b = lookup[bIdx];
 
-        UINT8 isHigher = ((a.Priority > b.Priority) << 5) |
-            ((a.DistFromCamera < b.DistFromCamera) << 4) |
+        UINT8 isHigher = ((a.Priority > b.Priority) << 6) |
+            ((a.DistFromCamera < b.DistFromCamera) << 5) |
+            ((a.MaterialId < b.MaterialId) << 4) |
             ((a.ShaderId < b.ShaderId) << 3) |
             ((a.TechniqueIdx < b.TechniqueIdx) << 2) |
             ((a.PassIdx < b.PassIdx) << 1) |
             (a.SeqIdx < b.SeqIdx);
 
-        UINT8 isLower = ((a.Priority < b.Priority) << 5) |
-            ((a.DistFromCamera > b.DistFromCamera) << 4) |
+        UINT8 isLower = ((a.Priority < b.Priority) << 6) |
+            ((a.DistFromCamera > b.DistFromCamera) << 5) |
+            ((a.MaterialId > b.MaterialId) << 4) |
             ((a.ShaderId > b.ShaderId) << 3) |
             ((a.TechniqueIdx > b.TechniqueIdx) << 2) |
             ((a.PassIdx > b.PassIdx) << 1) |

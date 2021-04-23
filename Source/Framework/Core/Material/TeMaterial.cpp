@@ -5,8 +5,19 @@
 
 namespace te
 {
+    std::atomic<UINT32> Material::NextMaterialId;
+
     Material::Material()
         : Resource(TID_Material)
+        , _id(0)
+    { 
+        UINT32 id = Material::NextMaterialId.fetch_add(1, std::memory_order_relaxed);
+        assert(id < std::numeric_limits<UINT32>::max() && "Created too many materials, reached maximum id.");
+    }
+
+    Material::Material(UINT32 id)
+        : Resource(TID_Material)
+        , _id(id)
     { }
 
     Material::~Material()
@@ -18,26 +29,28 @@ namespace te
         }
     }
 
-    Material::Material(const HShader& shader)
-        : Material()
+    Material::Material(const HShader& shader, UINT32 id)
+        : Material(id)
     {
         SetShader(shader.GetInternalPtr());
     }
 
-    Material::Material(const SPtr<Shader>& shader)
-        : Material()
+    Material::Material(const SPtr<Shader>& shader, UINT32 id)
+        : Material(id)
     {
         SetShader(shader);
     }
 
-    Material::Material(const HShader& shader, const Vector<SPtr<Technique>>& techniques)
+    Material::Material(const HShader& shader, const Vector<SPtr<Technique>>& techniques, UINT32 id)
         : Resource(TID_Material)
+        , _id(id)
         , _shader(shader.GetInternalPtr())
         , _techniques(techniques)
     { }
 
-    Material::Material(const SPtr<Shader>& shader, const Vector<SPtr<Technique>>& techniques)
+    Material::Material(const SPtr<Shader>& shader, const Vector<SPtr<Technique>>& techniques, UINT32 id)
         : Resource(TID_Material)
+        , _id(id)
         , _shader(shader)
         , _techniques(techniques)
     { }
@@ -221,7 +234,10 @@ namespace te
 
     HMaterial Material::Create(const HShader& shader)
     {
-        SPtr<Material> materialPtr = te_core_ptr<Material>(new (te_allocate<Material>()) Material(shader));
+        UINT32 id = Material::NextMaterialId.fetch_add(1, std::memory_order_relaxed);
+        assert(id < std::numeric_limits<UINT32>::max() && "Created too many materials, reached maximum id.");
+
+        SPtr<Material> materialPtr = te_core_ptr<Material>(new (te_allocate<Material>()) Material(shader, id));
         materialPtr->SetThisPtr(materialPtr);
         materialPtr->Initialize();
 
@@ -230,7 +246,10 @@ namespace te
 
     HMaterial Material::Create(const SPtr<Shader>& shader)
     {
-        SPtr<Material> materialPtr = te_core_ptr<Material>(new (te_allocate<Material>()) Material(shader));
+        UINT32 id = Material::NextMaterialId.fetch_add(1, std::memory_order_relaxed);
+        assert(id < std::numeric_limits<UINT32>::max() && "Created too many materials, reached maximum id.");
+
+        SPtr<Material> materialPtr = te_core_ptr<Material>(new (te_allocate<Material>()) Material(shader, id));
         materialPtr->SetThisPtr(materialPtr);
         materialPtr->Initialize();
 

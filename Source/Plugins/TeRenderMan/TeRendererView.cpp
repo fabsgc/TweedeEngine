@@ -726,6 +726,9 @@ namespace te
             // We will separate renderables based on <Material*> and <Renderable*>
             for (UINT32 i = 0; i < numRenderables; i++)
             {
+                if (i > _visibility.Renderables.size())
+                    continue;
+
                 if (!_visibility.Renderables[sceneInfo.Renderables[i]->RenderablePtr->GetRendererId()].Visible &&
                     (_options->CullingFlags & (UINT32)RenderManCulling::Frustum ||
                         _options->CullingFlags & (UINT32)RenderManCulling::Occlusion))
@@ -743,6 +746,9 @@ namespace te
             // We will separate renderables based on <Material*> and <Renderable*>
             for (auto& renderable : sceneInfo.RenderablesInstanced)
             {
+                if (renderable->RenderablePtr->GetRendererId() > _visibility.Renderables.size() - 1)
+                    continue;
+
                 if (!_visibility.Renderables[renderable->RenderablePtr->GetRendererId()].Visible &&
                     (_options->CullingFlags & (UINT32)RenderManCulling::Frustum ||
                         _options->CullingFlags & (UINT32)RenderManCulling::Occlusion))
@@ -792,8 +798,11 @@ namespace te
                 {
                     for (auto& idx : instancedBuffer.Idx)
                     {
-                        view._visibility.Renderables[idx].Visible = false;
-                        view._visibility.Renderables[idx].Instanced = true;
+                        if (idx < view._visibility.Renderables.size()) // When onDemand, view are not fill with renderables
+                        {
+                            view._visibility.Renderables[idx].Visible = false;
+                            view._visibility.Renderables[idx].Instanced = true;
+                        }
                     }
 
                     view.QueueRenderInstancedElements(sceneInfo, instancedBuffer);

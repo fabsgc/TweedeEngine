@@ -84,6 +84,9 @@ namespace te
         /**  @copydoc Resource::GetResourceType */
         static UINT32 GetResourceType() { return TID_Material; }
 
+        /** Returns the unique shader ID. */
+        UINT32 GetId() const { return _id; }
+
         /**
          * Sets a shader that will be used by the material. Material will be initialized using all compatible techniques
          * from the shader. Shader must be set before doing any other operations with the material.
@@ -205,10 +208,11 @@ namespace te
 
     protected:
         Material();
-        Material(const HShader& shader);
-        Material(const SPtr<Shader>& shader);
-        Material(const HShader& shader, const Vector<SPtr<Technique>>& techniques);
-        Material(const SPtr<Shader>& shader, const Vector<SPtr<Technique>>& techniques);
+        Material(UINT32 id);
+        Material(const HShader& shader, UINT32 id);
+        Material(const SPtr<Shader>& shader, UINT32 id);
+        Material(const HShader& shader, const Vector<SPtr<Technique>>& techniques, UINT32 id);
+        Material(const SPtr<Shader>& shader, const Vector<SPtr<Technique>>& techniques, UINT32 id);
 
         /**
          * Initializes the material by using the compatible techniques from the currently set shader. Shader must contain
@@ -240,6 +244,7 @@ namespace te
         };
 
     protected:
+        UINT32 _id;
         SPtr<Shader> _shader;
         Vector<SPtr<Technique>> _techniques;
 
@@ -250,5 +255,7 @@ namespace te
         UnorderedMap<String, ParamData> _params;
 
         MaterialProperties _properties;
+
+        static std::atomic<UINT32> NextMaterialId;
     };
 }

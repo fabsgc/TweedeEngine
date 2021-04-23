@@ -483,10 +483,14 @@ namespace te
                 {
                     UINT32 currentSlot = 0;
                     slotConstBuffers = 32;
+                    Vector<String>::const_iterator findNameInList = paramBlocksToBind.end();
+                    bool onlyBindSelectedBlocks = paramBlocksToBind.size() > 0;
 
                     for (auto iter = paramDesc->ParamBlocks.begin(); iter != paramDesc->ParamBlocks.end(); ++iter)
                     {
-                        auto findNameInList = std::find(paramBlocksToBind.begin(), paramBlocksToBind.end(), iter->second.Name);
+                        if(onlyBindSelectedBlocks)
+                            findNameInList = std::find(paramBlocksToBind.begin(), paramBlocksToBind.end(), iter->second.Name);
+                        
                         if (gpuParamsBlockBindFlags & (UINT32)GPU_BIND_PARAM_BLOCK_ALL_EXCEPT && findNameInList == paramBlocksToBind.end())
                         {
                             PopulateParamBlocks(iter->second);

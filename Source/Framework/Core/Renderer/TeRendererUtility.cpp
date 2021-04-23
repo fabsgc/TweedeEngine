@@ -80,15 +80,18 @@ namespace te
 
     void RendererUtility::SetPassParams(const SPtr<GpuParams> gpuParams, UINT32 gpuParamsBindFlags, bool isInstanced)
     {
+        static const Vector<String> PerInstancedBuffer = { "PerCameraBuffer", "PerLightsBuffer", "PerFrameBuffer" };
+        static const Vector<String> PerNonInstancedBuffer = { "PerCameraBuffer", "PerLightsBuffer", "PerFrameBuffer", "PerInstanceBuffer"};
+
         if (gpuParams == nullptr)
             return;
 
         RenderAPI& rapi = RenderAPI::Instance();
 
         if(isInstanced)
-            rapi.SetGpuParams(gpuParams, gpuParamsBindFlags, GPU_BIND_PARAM_BLOCK_ALL_EXCEPT, { "PerCameraBuffer", "PerLightsBuffer", "PerFrameBuffer" });
+            rapi.SetGpuParams(gpuParams, gpuParamsBindFlags, GPU_BIND_PARAM_BLOCK_ALL_EXCEPT, PerInstancedBuffer);
         else
-            rapi.SetGpuParams(gpuParams, gpuParamsBindFlags, GPU_BIND_PARAM_BLOCK_ALL_EXCEPT, { "PerCameraBuffer", "PerLightsBuffer", "PerFrameBuffer", "PerInstanceBuffer"});
+            rapi.SetGpuParams(gpuParams, gpuParamsBindFlags, GPU_BIND_PARAM_BLOCK_ALL_EXCEPT, PerNonInstancedBuffer);
     }
 
     void RendererUtility::Draw(const SPtr<Mesh>& mesh, UINT32 numInstances)
