@@ -234,29 +234,32 @@ LightingResult DoSpotLight( LightData light, float3 V, float3 P, float3 N )
 
 // P : position vector in world space
 // N : normal
-LightingResult ComputeLighting( float3 P, float3 N )
+LightingResult ComputeLighting( float3 P, float3 N, uint castLight )
 {
     float3 V = normalize( gViewOrigin - P );
     LightingResult totalResult = { {0, 0, 0}, {0, 0, 0} };
 
-    [unroll]
-    for( uint i = 0; i < gLightsNumber; ++i )
+    //if(castLight == 1)
     {
-        LightingResult result = { {0, 0, 0}, {0, 0, 0} };
+        [unroll]
+        for( uint i = 0; i < gLightsNumber; ++i )
+        {
+            LightingResult result = { {0, 0, 0}, {0, 0, 0} };
 
-        if(gLights[i].Type == DIRECTIONAL_LIGHT)
-            result = DoDirectionalLight( gLights[i], V, P, N );
-        else if(gLights[i].Type == POINT_LIGHT)
-            result = DoPointLight( gLights[i], V, P, N );
-        else if(gLights[i].Type == SPOT_LIGHT)
-            result = DoSpotLight( gLights[i], V, P, N );
+            if(gLights[i].Type == DIRECTIONAL_LIGHT)
+                result = DoDirectionalLight( gLights[i], V, P, N );
+            else if(gLights[i].Type == POINT_LIGHT)
+                result = DoPointLight( gLights[i], V, P, N );
+            else if(gLights[i].Type == SPOT_LIGHT)
+                result = DoSpotLight( gLights[i], V, P, N );
 
-        totalResult.Diffuse += result.Diffuse;
-        totalResult.Specular += result.Specular;
+            totalResult.Diffuse += result.Diffuse;
+            totalResult.Specular += result.Specular;
+        }
+
+        totalResult.Diffuse = saturate(totalResult.Diffuse);
+        totalResult.Specular = saturate(totalResult.Specular);
     }
-
-    totalResult.Diffuse = saturate(totalResult.Diffuse);
-    totalResult.Specular = saturate(totalResult.Specular);
 
     return totalResult;
 }
@@ -347,6 +350,7 @@ PS_OUTPUT main( PS_INPUT IN )
     PS_OUTPUT OUT = (PS_OUTPUT)0;
     float alpha = gTransparency;
     uint writeVelocity = (uint)IN.Other.x;
+    uint castLight = (uint)IN.Other.y;
 
     if(gUseTransparencyMap == 1)
         alpha = TransparencyMap.Sample( AnisotropicSampler, IN.Texture ).r;
@@ -402,7 +406,7 @@ PS_OUTPUT main( PS_INPUT IN )
         if(gUseOcclusionMap == 1)
             albedo = albedo * OcclusionMap.Sample(AnisotropicSampler, texCoords).rgb;
 
-        LightingResult lit = ComputeLighting(IN.PositionWS.xyz, normalize(normal));
+        LightingResult lit = ComputeLighting(IN.PositionWS.xyz, normalize(normal), castLight);
 
         if(gUseEnvironmentMap == 1)
         {

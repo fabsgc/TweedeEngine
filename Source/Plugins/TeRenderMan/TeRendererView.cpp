@@ -414,6 +414,7 @@ namespace te
                 data.gLayer = (UINT32)renderable->GetLayer();
                 data.gHasAnimation = (renderable->IsAnimated()) ? 1 : 0;
                 data.gWriteVelocity = (renderable->GetWriteVelocity()) ? 1 : 0;
+                data.gCastLight = (renderable->GetCastLight()) ? 1 : 0;
 
                 _instanceDataPool[currInstBlock][subElemIdx - lowerBlockBound] = data;
                 instancedObjectCounter++;

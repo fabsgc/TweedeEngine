@@ -106,6 +106,7 @@ namespace te
             UINT32  gLayer;
             UINT32  gHasAnimation;
             UINT32  gWriteVelocity;
+            UINT32  gCastLight;
         };
 
         struct PerHudInstanceData
