@@ -234,12 +234,12 @@ LightingResult DoSpotLight( LightData light, float3 V, float3 P, float3 N )
 
 // P : position vector in world space
 // N : normal
-LightingResult ComputeLighting( float3 P, float3 N, uint castLight )
+LightingResult ComputeLighting( float3 P, float3 N, bool castLight )
 {
     float3 V = normalize( gViewOrigin - P );
     LightingResult totalResult = { {0, 0, 0}, {0, 0, 0} };
 
-    //if(castLight == 1)
+    if(castLight)
     {
         [unroll]
         for( uint i = 0; i < gLightsNumber; ++i )
@@ -349,8 +349,8 @@ PS_OUTPUT main( PS_INPUT IN )
 {
     PS_OUTPUT OUT = (PS_OUTPUT)0;
     float alpha = gTransparency;
-    uint writeVelocity = (uint)IN.Other.x;
-    uint castLight = (uint)IN.Other.y;
+    bool writeVelocity = (bool)IN.Other.x;
+    bool castLight = (bool)IN.Other.y;
 
     if(gUseTransparencyMap == 1)
         alpha = TransparencyMap.Sample( AnisotropicSampler, IN.Texture ).r;
@@ -432,7 +432,7 @@ PS_OUTPUT main( PS_INPUT IN )
         OUT.Normal = ComputeNormalBuffer(float4(normal, 0.0f));
         OUT.Emissive = ComputeEmissiveBuffer(OUT.Scene, float4(emissive, 1.0));
 
-        if(writeVelocity == 1)
+        if(writeVelocity)
             OUT.Velocity = ComputeVelocityBuffer(float4(NDCPos, 0.0), float4(PrevNDCPos, 0.0), alpha);
         else
             OUT.Velocity = float4(0.0, 0.0, 0.0, 1.0);
