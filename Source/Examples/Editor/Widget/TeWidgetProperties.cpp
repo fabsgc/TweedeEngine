@@ -1425,7 +1425,10 @@ namespace te
             if (ImGui::CollapsingHeader(name.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
             {
                 memset(&inputName, 0, 256);
-                strcpy(inputName, name.c_str());
+                if(name.length() < 256)
+                    strcpy(inputName, name.c_str());
+                else
+                    strcpy(inputName, name.substr(0,255).c_str());
 
                 ImGui::PushItemWidth(widgetWidth);
                 if (ImGui::InputText("Name", inputName, IM_ARRAYSIZE(inputName)))
@@ -1720,9 +1723,13 @@ namespace te
             meshImportOptions->ImportTangents = _fileBrowser.Data.MeshParam.ImportTangents;
             meshImportOptions->ImportSkin = _fileBrowser.Data.MeshParam.ImportSkin;
             meshImportOptions->ImportBlendShapes = _fileBrowser.Data.MeshParam.ImportBlendShapes;
-            meshImportOptions->ImportAnimation = _fileBrowser.Data.MeshParam.ImportAnimation;
+            meshImportOptions->ImportAnimations = _fileBrowser.Data.MeshParam.ImportAnimations;
             meshImportOptions->ReduceKeyFrames = _fileBrowser.Data.MeshParam.ReduceKeyFrames;
             meshImportOptions->ImportMaterials = _fileBrowser.Data.MeshParam.ImportMaterials;
+            meshImportOptions->ImportVertexColors = _fileBrowser.Data.MeshParam.ImportVertexColors;
+            meshImportOptions->ForceGenNormals = _fileBrowser.Data.MeshParam.ForceGenNormals;
+            meshImportOptions->GenSmoothNormals = _fileBrowser.Data.MeshParam.GenSmoothNormals;
+            meshImportOptions->ScaleSystemUnit = _fileBrowser.Data.MeshParam.ScaleSystemUnit;
             meshImportOptions->CpuCached = false;
 
             SPtr<MultiResource> resources = EditorResManager::Instance().LoadAll(_fileBrowser.Data.SelectedPath, meshImportOptions);

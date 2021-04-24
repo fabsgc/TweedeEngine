@@ -111,20 +111,25 @@ namespace te
         Assimp::Importer importer;
         AssimpImportScene importedScene;
         const MeshImportOptions* meshImportOptions = static_cast<const MeshImportOptions*>(importOptions.get());
+        int removeComponentFlags = aiComponent_CAMERAS | aiComponent_LIGHTS;
 
         unsigned int assimpFlags =
-            aiProcess_CalcTangentSpace |
+            aiProcess_FindInvalidData |
+            aiProcess_ValidateDataStructure |
+            aiProcess_OptimizeGraph |
+            aiProcess_OptimizeMeshes |
+            aiProcess_SplitLargeMeshes |
             aiProcess_Triangulate |
             aiProcess_GenUVCoords |
-            aiProcess_GenSmoothNormals |
-            aiProcess_JoinIdenticalVertices |
+            aiProcess_FixInfacingNormals |
+            aiProcess_CalcTangentSpace |
             aiProcess_SortByPType |
+            aiProcess_JoinIdenticalVertices |
             aiProcess_RemoveRedundantMaterials |
-            aiProcess_FindInvalidData |
-            aiProcess_OptimizeGraph |
-            aiProcess_SplitLargeMeshes |
-            aiProcess_OptimizeMeshes |
-            aiProcess_FixInfacingNormals;
+            aiProcess_RemoveComponent;
+
+        if (meshImportOptions->ScaleSystemUnit)
+            assimpFlags |= aiProcess_GlobalScale;
 
         if (meshImportOptions->FplitUV)
             assimpFlags |= aiProcess_FlipUVs;
@@ -135,11 +140,27 @@ namespace te
         if (meshImportOptions->LeftHanded)
             assimpFlags |= aiProcess_MakeLeftHanded;
 
-        if (meshImportOptions->ImportAnimation)
+        if (meshImportOptions->ImportAnimations)
             assimpFlags |= aiProcess_LimitBoneWeights;
+
+        if (meshImportOptions->ForceGenNormals)
+            assimpFlags |= aiProcess_ForceGenNormals;
+
+        if (meshImportOptions->GenSmoothNormals)
+            assimpFlags |= aiProcess_GenSmoothNormals;
+
+        if (!meshImportOptions->ImportAnimations)
+            removeComponentFlags |= aiComponent_ANIMATIONS | aiComponent_BONEWEIGHTS;
+
+        if (!meshImportOptions->ImportMaterials)
+            removeComponentFlags |= aiComponent_MATERIALS | aiComponent_TEXTURES;
+
+        if (!meshImportOptions->ImportVertexColors)
+            removeComponentFlags |= aiComponent_COLORS;
 
         {
             Lock lock = FileScheduler::GetLock(filePath);
+            importer.SetPropertyInteger(AI_CONFIG_PP_RVC_FLAGS, removeComponentFlags);
             scene = const_cast<aiScene*>(importer.ReadFile(filePath.c_str(), assimpFlags));
         }
 
@@ -154,10 +175,9 @@ namespace te
         assimpImportOptions.ImportTangents     = meshImportOptions->ImportTangents;
         assimpImportOptions.ImportSkin         = meshImportOptions->ImportSkin;
         assimpImportOptions.ImportBlendShapes  = meshImportOptions->ImportBlendShapes;
-        assimpImportOptions.ImportAnimation    = meshImportOptions->ImportAnimation;
+        assimpImportOptions.ImportAnimations    = meshImportOptions->ImportAnimations;
         assimpImportOptions.ImportMaterials    = meshImportOptions->ImportMaterials;
         assimpImportOptions.ScaleSystemUnit    = meshImportOptions->ScaleSystemUnit;
-        assimpImportOptions.ScaleFactor        = meshImportOptions->ScaleFactor;
         assimpImportOptions.ReduceKeyframes    = meshImportOptions->ReduceKeyFrames;
 
         ParseScene(scene, assimpImportOptions, importedScene);
@@ -165,7 +185,7 @@ namespace te
         if (assimpImportOptions.ImportSkin)
             ImportSkin(importedScene, assimpImportOptions);
 
-        if (assimpImportOptions.ImportAnimation)
+        if (assimpImportOptions.ImportAnimations)
             ImportAnimations(scene, assimpImportOptions, importedScene, filePath);
 
         SPtr<RendererMeshData> rendererMeshData = GenerateMeshData(importedScene, assimpImportOptions, subMeshes);
@@ -215,6 +235,7 @@ namespace te
 
         if (scene->HasMaterials())
         {
+            MaterialProperties matProperties;
             aiMaterial* aiMat = nullptr;
             aiString matName;
 
@@ -252,27 +273,38 @@ namespace te
                     BindTexture(aiMat, aiTextureType_DISPLACEMENT, material.MatTextures.BumpMap, material.MatProperties.UseBumpMap);
 
                     aiColor3D ambientColor;
-                    aiMat->Get(AI_MATKEY_COLOR_AMBIENT, ambientColor);
-                    material.MatProperties.Ambient = ConvertToNativeType(ambientColor);
+                    if(aiMat->Get(AI_MATKEY_COLOR_AMBIENT, ambientColor) == aiReturn_SUCCESS && ambientColor != aiColor3D(0.0f, 0.0f, 0.0f))
+                        material.MatProperties.Ambient = ConvertToNativeType(ambientColor);
 
                     aiColor3D diffuseColor;
-                    aiMat->Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColor);
-                    material.MatProperties.Diffuse = ConvertToNativeType(diffuseColor);
+                    if (aiMat->Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColor) == aiReturn_SUCCESS)
+                        material.MatProperties.Diffuse = ConvertToNativeType(diffuseColor);
 
                     aiColor3D specularColor;
-                    aiMat->Get(AI_MATKEY_COLOR_SPECULAR, specularColor);
-                    material.MatProperties.Ambient = ConvertToNativeType(ambientColor);
+                    if (aiMat->Get(AI_MATKEY_COLOR_SPECULAR, specularColor) == aiReturn_SUCCESS)
+                        material.MatProperties.Specular = ConvertToNativeType(specularColor);
 
                     aiColor3D emissiveColor;
-                    aiMat->Get(AI_MATKEY_COLOR_EMISSIVE, emissiveColor);
-                    material.MatProperties.Emissive = ConvertToNativeType(emissiveColor);
+                    if (aiMat->Get(AI_MATKEY_COLOR_EMISSIVE, emissiveColor) == aiReturn_SUCCESS)
+                        material.MatProperties.Emissive = ConvertToNativeType(emissiveColor);
 
-                    aiMat->Get(AI_MATKEY_SHININESS, material.MatProperties.SpecularPower);
-                    aiMat->Get(AI_MATKEY_SHININESS_STRENGTH, material.MatProperties.SpecularStrength);
-                    aiMat->Get(AI_MATKEY_OPACITY, material.MatProperties.Transparency);
-                    aiMat->Get(AI_MATKEY_REFRACTI, material.MatProperties.IndexOfRefraction);
-                    aiMat->Get(AI_MATKEY_BUMPSCALING, material.MatProperties.BumpScale);
-                    aiMat->Get(AI_MATKEY_REFLECTIVITY, material.MatProperties.Reflection);
+                    if (aiMat->Get(AI_MATKEY_SHININESS, matProperties.SpecularPower) == aiReturn_SUCCESS)
+                        material.MatProperties.SpecularPower = matProperties.SpecularPower;
+
+                    if (aiMat->Get(AI_MATKEY_SHININESS_STRENGTH, matProperties.SpecularStrength) == aiReturn_SUCCESS)
+                        material.MatProperties.SpecularStrength = matProperties.SpecularStrength;
+
+                    if (aiMat->Get(AI_MATKEY_OPACITY, matProperties.Transparency) == aiReturn_SUCCESS)
+                        material.MatProperties.Transparency = matProperties.Transparency;
+                    
+                    if (aiMat->Get(AI_MATKEY_REFRACTI, matProperties.IndexOfRefraction) == aiReturn_SUCCESS)
+                        material.MatProperties.IndexOfRefraction = matProperties.IndexOfRefraction;
+                                
+                    if (aiMat->Get(AI_MATKEY_BUMPSCALING, matProperties.BumpScale) == aiReturn_SUCCESS)
+                        material.MatProperties.BumpScale = matProperties.BumpScale;
+                                    
+                    if (aiMat->Get(AI_MATKEY_REFLECTIVITY, matProperties.Reflection) == aiReturn_SUCCESS)
+                        material.MatProperties.Reflection = matProperties.Reflection;
 
                     material.MatProperties.ParallaxScale = 0.0f;
                 }
@@ -329,9 +361,6 @@ namespace te
         for (UINT32 i = 0; i < vertexCount; i++)
         {
             importMesh->Positions[i] = ConvertToNativeType(mesh->mVertices[i]);
-
-            if (options.ScaleSystemUnit)
-                importMesh->Positions[i] *= options.ScaleFactor;
 
             if (mesh->HasVertexColors(i) && options.ImportColors)
                 importMesh->Colors[i] = ConvertToNativeType(*mesh->mColors[i]);
@@ -1249,7 +1278,6 @@ namespace te
         if (extension == ".fbx")
         {
             meshImportOptions.ScaleSystemUnit = true;
-            meshImportOptions.ScaleFactor = 0.01f;
         }
     }
 }

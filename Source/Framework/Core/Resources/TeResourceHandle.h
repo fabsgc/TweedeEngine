@@ -27,6 +27,9 @@ namespace te
         /** Returns the UUID of the resource the handle is referring to. */
         const te::UUID& GetUUID() const { return _handleData != nullptr ? _handleData->uuid : te::UUID::EMPTY; }
 
+        /** Change the UUID of the current handled resource. */
+        void SetUUID(const te::UUID& uuid) { if (!uuid.Empty() && _handleData != nullptr) { _handleData->uuid = uuid; } }
+
         /** Gets the handle data. For internal use only. */
         const SPtr<ResourceHandleData>& GetHandleData() const { return _handleData; }
 

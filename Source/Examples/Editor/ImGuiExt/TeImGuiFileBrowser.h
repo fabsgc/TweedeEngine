@@ -55,9 +55,13 @@ namespace te
                 bool ImportTangents = true;
                 bool ImportSkin = true;
                 bool ImportBlendShapes = true;
-                bool ImportAnimation = true;
+                bool ImportAnimations = true;
                 bool ReduceKeyFrames = true;
                 bool ImportMaterials = true;
+                bool ImportVertexColors = true;
+                bool ForceGenNormals = false;
+                bool GenSmoothNormals = false;
+                bool ScaleSystemUnit = false;
             };
 
             /** If we want to load a texture, here are stored the list of parameters to apply on it during loading */

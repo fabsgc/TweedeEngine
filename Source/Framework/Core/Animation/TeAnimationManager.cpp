@@ -35,6 +35,11 @@ namespace te
         _paused = !_paused;
     }
 
+    void AnimationManager::SetAnimDataDirty()
+    {
+        _animDataDirty = true;
+    }
+
     void AnimationManager::SetUpdateRate(UINT32 fps)
     {
         if (fps == 0) fps = 1;
@@ -47,7 +52,7 @@ namespace te
             return &_animData;
 
         _animationTime += gTime().GetFrameDelta();
-        if (_animationTime < _nextAnimationUpdateTime)
+        if (_animationTime < _nextAnimationUpdateTime && !_animDataDirty)
             return &_animData;
 
         _nextAnimationUpdateTime = Math::Floor(_animationTime / _updateRate) * _updateRate + _updateRate;
@@ -121,6 +126,7 @@ namespace te
             anim.second->TriggerEvents(timeDelta);
         }
 
+        _animDataDirty = false;
         return &_animData;
     }
 

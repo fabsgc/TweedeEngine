@@ -24,11 +24,12 @@ namespace te
         bool ImportTangents = true;
         bool ImportColors = true;
         bool ImportSkin = false;
-        bool ImportAnimation = true;
+        bool ImportAnimations = true;
         bool ImportMaterials = true;
         bool ImportBlendShapes = true;
         bool ScaleSystemUnit = false;
-        float ScaleFactor = 0.01f;
+        bool ForceGenNormals = false;
+        bool GenSmoothNormals = false;
         float AnimSampleRate = 1.0f / 60.0f;
         bool AnimResample = false;
         bool ReduceKeyframes = true;

@@ -129,7 +129,7 @@ namespace te
         _vertexData->vertexCount = _properties._numVertices;
         _vertexData->vertexDeclaration = VertexDeclaration::Create(_vertexDesc, _deviceMask);
 
-        for (UINT32 i = 0; i <= _vertexDesc->GetMaxStreamIdx(); i++)
+        for (UINT16 i = 0; i <= _vertexDesc->GetMaxStreamIdx(); i++)
         {
             if (!_vertexDesc->HasStream(i))
                 continue;

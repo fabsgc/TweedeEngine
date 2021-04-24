@@ -70,7 +70,7 @@ namespace te
             {
                 for (auto& entry : resources->Entries)
                 {
-                    UUID resourceUuid = entry.Res.GetUUID();
+                    const UUID& resourceUuid = entry.Res.GetUUID();
                     entry.Res.GetInternalPtr()->_UUID = resourceUuid;
 
                     if (entry.Name == "primary")

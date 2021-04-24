@@ -52,6 +52,9 @@ namespace te
         /** Pauses or resumes the animation evaluation. */
         void TogglePaused();
 
+        /** Ask to the manager to update _animData */
+        void SetAnimDataDirty();
+
         /**
          * Evaluates animations for all animated objects, and returns the evaluated skeleton bone poses and morph shape
          * meshes that can be passed along to the renderer.
@@ -101,6 +104,9 @@ namespace te
 
         Vector<SPtr<AnimationProxy>> _proxies;
         Vector<ConvexVolume> _cullFrustums;
+
+        // If we change a mesh (so a skeleton, animData info might be deprecated, we must update them)
+        bool _animDataDirty = true;
         EvaluatedAnimationData _animData;
     };
 

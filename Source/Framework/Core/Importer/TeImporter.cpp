@@ -65,6 +65,8 @@ namespace te
         {
             if (entry.Res)
             {
+                TE_DEBUG("Resource " + inputFilePath + " has been successfully loaded");
+
                 HResource handle = gResourceManager()._createResourceHandle(entry.Res);
                 output.push_back({ entry.Name, handle });
             }

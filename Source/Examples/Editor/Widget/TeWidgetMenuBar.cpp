@@ -288,9 +288,13 @@ namespace te
                 meshImportOptions->ImportTangents = _fileBrowser.Data.MeshParam.ImportTangents;
                 meshImportOptions->ImportSkin = _fileBrowser.Data.MeshParam.ImportSkin;
                 meshImportOptions->ImportBlendShapes = _fileBrowser.Data.MeshParam.ImportBlendShapes;
-                meshImportOptions->ImportAnimation = _fileBrowser.Data.MeshParam.ImportAnimation;
+                meshImportOptions->ImportAnimations = _fileBrowser.Data.MeshParam.ImportAnimations;
                 meshImportOptions->ReduceKeyFrames = _fileBrowser.Data.MeshParam.ReduceKeyFrames;
                 meshImportOptions->ImportMaterials = _fileBrowser.Data.MeshParam.ImportMaterials;
+                meshImportOptions->ImportVertexColors = _fileBrowser.Data.MeshParam.ImportVertexColors;
+                meshImportOptions->ForceGenNormals = _fileBrowser.Data.MeshParam.ForceGenNormals;
+                meshImportOptions->GenSmoothNormals = _fileBrowser.Data.MeshParam.GenSmoothNormals;
+                meshImportOptions->ScaleSystemUnit = _fileBrowser.Data.MeshParam.ScaleSystemUnit;
                 meshImportOptions->CpuCached = false;
 
                 SPtr<MultiResource> resources = EditorResManager::Instance().LoadAll(_fileBrowser.Data.SelectedPath, meshImportOptions, true);

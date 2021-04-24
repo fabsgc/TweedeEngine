@@ -67,7 +67,11 @@ namespace te
     }
 
     RendererView::~RendererView()
-    { 
+    {
+        for (auto& element : _instancedElements)
+            te_pool_delete<RenderableElement>(static_cast<RenderableElement*>(element));
+
+        _instancedElements.clear();
         _instancedBuffersPool.clear();
     }
 
@@ -136,7 +140,7 @@ namespace te
                 if (newTargetWidth != _properties.Target.TargetWidth ||
                     newTargetHeight != _properties.Target.TargetHeight)
                 {
-                   _properties.Target.ViewRect = viewport->GetPixelArea();
+                    _properties.Target.ViewRect = viewport->GetPixelArea();
                     _properties.Target.TargetWidth = newTargetWidth;
                     _properties.Target.TargetHeight = newTargetHeight;
 

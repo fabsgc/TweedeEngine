@@ -18,7 +18,6 @@ namespace te
         for (UINT32 i = 0; i < mesh->GetProperties().GetNumSubMeshes(); i++)
         {
             SubMesh& subMesh = mesh->GetProperties().GetSubMesh(i);
-            MaterialProperties matProperties = subMesh.MatProperties;
             MaterialTextures matTextures = subMesh.MatTextures;
 
             if (createdMaterials.find(subMesh.MaterialName) != createdMaterials.end())
@@ -30,9 +29,8 @@ namespace te
                 HMaterial material = Material::Create(gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque));
                 material->SetName(subMesh.MaterialName);
                 material->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
-                material->SetProperties(subMesh.MatProperties);
 
-                const auto& BindTexture = [&](bool isSet, const String& textureName, const String& texturePath, HMaterial& material)
+                const auto& BindTexture = [&](bool& isSet, const String& textureName, const String& texturePath, HMaterial& material)
                 {
                     auto textureImportOptions = TextureImportOptions::Create();
                     textureImportOptions->CpuCached = false;
@@ -49,16 +47,22 @@ namespace te
                             material->SetTexture(textureName, texture);
                             EditorResManager::Instance().Add<Texture>(texture);
                         }
+                        else
+                        {
+                            isSet = false;
+                        }
                     }
                 };
 
-                BindTexture(matProperties.UseDiffuseMap, "DiffuseMap", matTextures.DiffuseMap, material);
-                BindTexture(matProperties.UseEmissiveMap, "EmissiveMap", matTextures.EmissiveMap, material);
-                BindTexture(matProperties.UseNormalMap, "NormalMap", matTextures.NormalMap, material);
-                BindTexture(matProperties.UseSpecularMap, "SpecularMap", matTextures.SpecularMap, material);
-                BindTexture(matProperties.UseBumpMap, "BumpMap", matTextures.BumpMap, material);
-                BindTexture(matProperties.UseTransparencyMap, "TransparencyMap", matTextures.TransparencyMap, material);
-                BindTexture(matProperties.UseReflectionMap, "ReflectionMap", matTextures.ReflectionMap, material);
+                BindTexture(subMesh.MatProperties.UseDiffuseMap, "DiffuseMap", matTextures.DiffuseMap, material);
+                BindTexture(subMesh.MatProperties.UseEmissiveMap, "EmissiveMap", matTextures.EmissiveMap, material);
+                BindTexture(subMesh.MatProperties.UseNormalMap, "NormalMap", matTextures.NormalMap, material);
+                BindTexture(subMesh.MatProperties.UseSpecularMap, "SpecularMap", matTextures.SpecularMap, material);
+                BindTexture(subMesh.MatProperties.UseBumpMap, "BumpMap", matTextures.BumpMap, material);
+                BindTexture(subMesh.MatProperties.UseTransparencyMap, "TransparencyMap", matTextures.TransparencyMap, material);
+                BindTexture(subMesh.MatProperties.UseReflectionMap, "ReflectionMap", matTextures.ReflectionMap, material);
+
+                material->SetProperties(subMesh.MatProperties);
 
                 subMesh.Mat = material.GetNewHandleFromExisting();
                 createdMaterials[subMesh.MaterialName] = material.GetNewHandleFromExisting();

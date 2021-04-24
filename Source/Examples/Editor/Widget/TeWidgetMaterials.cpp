@@ -143,8 +143,12 @@ namespace te
             String uuidStr = _currentMaterial->GetUUID().ToString();
 
             memset(&inputName, 0, 256);
-            strcpy(inputName, name.c_str());
             strcpy(inputUUID, uuidStr.c_str());
+
+            if(name.length() < 256)
+                strcpy(inputName, name.c_str());
+            else
+                strcpy(inputName, name.substr(0,255).c_str());
 
             if (ImGui::CollapsingHeader("Identification", ImGuiTreeNodeFlags_DefaultOpen))
             {

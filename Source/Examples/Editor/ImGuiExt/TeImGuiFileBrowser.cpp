@@ -676,11 +676,15 @@ namespace te
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportNormals, "##file_dialog_parameters_mesh_normals", "Import normals");
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportTangents, "##file_dialog_parameters_mesh_tangents", "Import tangents");
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportMaterials, "##file_dialog_parameters_mesh_material", "Import materials");
+                    ImGuiExt::RenderOptionBool(Data.MeshParam.ImportVertexColors, "##file_dialog_parameters_mesh_vertex_colors", "Import vertex colors");
+                    ImGuiExt::RenderOptionBool(Data.MeshParam.ScaleSystemUnit, "##file_dialog_parameters_mesh_scale_system_unit", "Scale system unit");
+                    ImGuiExt::RenderOptionBool(Data.MeshParam.ForceGenNormals, "##file_dialog_parameters_mesh_force_gen_normals", "Force normals generation");
+                    ImGuiExt::RenderOptionBool(Data.MeshParam.GenSmoothNormals, "##file_dialog_parameters_mesh_force_gen_smooth_normal", "Generate smooth normals");
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportSkin, "##file_dialog_parameters_mesh_skin", "Import skin");
-                    ImGuiExt::RenderOptionBool(Data.MeshParam.ImportAnimation, "##file_dialog_parameters_mesh_animation", "Import animation");
-                    //ImGuiExt::RenderOptionBool(Data.MeshParam.ImportBlendShapes, "##file_dialog_parameters_mesh_blend_shapes", "Import blend shapes");
+                    ImGuiExt::RenderOptionBool(Data.MeshParam.ImportBlendShapes, "##file_dialog_parameters_mesh_blend_shapes", "Import blend shapes");
+                    ImGuiExt::RenderOptionBool(Data.MeshParam.ImportAnimations, "##file_dialog_parameters_mesh_animation", "Import animations");
 
-                    if (Data.MeshParam.ImportAnimation)
+                    if (Data.MeshParam.ImportAnimations)
                     {
                         ImGui::Indent(30.0f);
                         ImGuiExt::RenderOptionBool(Data.MeshParam.ReduceKeyFrames, "##file_dialog_parameters_mesh_animation_reduce", "Reduce Key Frames");

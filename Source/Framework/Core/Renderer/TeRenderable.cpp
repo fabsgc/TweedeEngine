@@ -124,6 +124,8 @@ namespace te
         }
         else if ((dirtyFlag & (UINT32)ActorDirtyFlag::GpuParams) != 0)
         {
+            CreateAnimationBuffers();
+
             if (_active)
                 gRenderer()->NotifyRenderableUpdated(this);
         }
@@ -451,6 +453,7 @@ namespace te
 
         if (_animType == RenderableAnimType::Skinned)
         {
+            AnimationManager::Instance().SetAnimDataDirty();
             const EvaluatedAnimationData::PoseInfo& poseInfo = animInfo->PoseInfos;
 
             if (_properties.WriteVelocity)

@@ -52,7 +52,7 @@ namespace te
 
                 if (resourceHandle.IsLoaded())
                 {
-                    uuid = resourceHandle.GetHandleData()->uuid;
+                    uuid = resourceHandle.GetUUID();
                     resourceHandle.GetInternalPtr()->_UUID = uuid;
                     RegisterResource(uuid, filePath);
                     _loadedResources[uuid] = static_resource_cast<Resource>(resourceHandle);

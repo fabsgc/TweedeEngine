@@ -61,7 +61,16 @@ namespace te
         bool ImportBlendShapes = false;
 
         /**	Determines should animation clips be imported if available. */
-        bool ImportAnimation = false;
+        bool ImportAnimations = false;
+
+        /** Determines should vertex colors be imported if available */
+        bool ImportVertexColors = false;
+
+        /** Determines should be re-generated during loading */
+        bool ForceGenNormals = false;
+
+        /** Determines should normals smoothed during loading */
+        bool GenSmoothNormals = false;
 
         /**
          * Enables or disables keyframe reduction. Keyframe reduction will reduce the number of key-frames in an animation
@@ -80,9 +89,6 @@ namespace te
 
         /** For FBX format, scale is in centimeters instead of meters, we must scale matrices using scale factor */
         bool ScaleSystemUnit = false;
-
-        /** Factor used to convert unit system */
-        float ScaleFactor = 0.01f;
 
         /** Determines if we need to set material properties for this mesh during import */
         bool ImportMaterials = true;

@@ -46,11 +46,19 @@ namespace te
                     {
                         memset(inputPath, '\0', 256 * sizeof(char));
                         memset(inputUUID, '\0', 64 * sizeof(char));
-                        memset(inputName, '\0', 128 * sizeof(char));
+                        memset(inputName, '\0', 256 * sizeof(char));
 
-                        strcpy(inputPath, resource.second->GetPath().c_str());
                         strcpy(inputUUID, resource.second->GetUUID().ToString().c_str());
-                        strcpy(inputName, resource.second->GetName().c_str());
+
+                        if(resource.second->GetName().length() < 256)
+                            strcpy(inputName, resource.second->GetName().c_str());
+                        else
+                            strcpy(inputName, resource.second->GetName().substr(0,255).c_str());
+
+                        if(resource.second->GetPath().length() < 256)
+                            strcpy(inputPath, resource.second->GetPath().c_str());
+                        else
+                            strcpy(inputPath, resource.second->GetPath().substr(0,255).c_str());
 
                         ImGui::BeginChild("TexturePreview", ImVec2(96.0f, 96.0f), true, ImGuiWindowFlags_NoScrollbar);
 

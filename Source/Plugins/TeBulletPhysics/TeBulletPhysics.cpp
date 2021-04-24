@@ -463,6 +463,7 @@ namespace te
 
             if (objA == body || objB == body)
             {
+                te_pool_delete(it->second);
                 it = _stayContactEvents->erase(it);
                 continue;
             }
