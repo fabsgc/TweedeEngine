@@ -433,10 +433,14 @@ namespace te
                 elem->MeshElem = renderElem.MeshElem;
                 elem->SubMeshElem = renderElem.SubMeshElem;
                 elem->MaterialElem = renderElem.MaterialElem;
+                elem->AnimationId = renderElem.AnimationId;
+                elem->AnimType = renderElem.AnimType;
                 elem->DefaultTechniqueIdx = renderElem.DefaultTechniqueIdx;
                 elem->Type = renderElem.Type;
                 elem->InstanceCount = (UINT32)(upperBlockBound - lowerBlockBound);
-                elem->GpuParamsElem = renderElem.GpuParamsElem;
+
+                elem->GpuParamsElem.resize(renderElem.GpuParamsElem.size());
+                std::copy(renderElem.GpuParamsElem.begin(), renderElem.GpuParamsElem.end(), elem->GpuParamsElem.data());
 
                 UINT32 shaderFlags = renderElem.MaterialElem->GetShader()->GetFlags();
                 UINT32 techniqueIdx = renderElem.DefaultTechniqueIdx;

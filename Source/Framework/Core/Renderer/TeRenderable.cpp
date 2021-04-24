@@ -34,6 +34,7 @@ namespace te
     Renderable::Renderable()
         : _rendererId(0)
         , _animationId((UINT64)-1)
+        , _boundsDirty(true)
     { }
 
     Renderable::~Renderable()
@@ -145,6 +146,8 @@ namespace te
         _tfrmMatrix = transform.GetMatrix();
         _tfrmMatrixNoScale = Matrix4::TRS(transform.GetPosition(), transform.GetRotation(), Vector3::ONE);
 
+        _boundsDirty = true;
+
         _markCoreDirty(ActorDirtyFlag::Transform);
     }
 
@@ -162,6 +165,8 @@ namespace te
             UINT32 numSubMeshes = mesh->GetProperties().GetNumSubMeshes();
             _materials.resize(numSubMeshes);
         }
+
+        _boundsDirty = true;
 
         OnMeshChanged();
         _markCoreDirty(ActorDirtyFlag::GpuParams);
@@ -336,9 +341,14 @@ namespace te
         _markCoreDirty();
     }
 
-    Bounds Renderable::GetBounds() const
+    Bounds Renderable::GetBounds()
     {
         SPtr<Mesh> mesh = GetMesh();
+
+        if(!_boundsDirty)
+            return _cachedBounds;
+
+        _boundsDirty = false;
 
         if (mesh == nullptr)
         {
@@ -347,14 +357,14 @@ namespace te
             AABox box(tfrm.GetPosition(), tfrm.GetPosition());
             Sphere sphere(tfrm.GetPosition(), 0.0f);
 
-            return Bounds(box, sphere);
+            _cachedBounds = Bounds(box, sphere);
+            return _cachedBounds;
         }
         else
         {
-            Bounds bounds = mesh->GetProperties().GetBounds();
-            bounds.TransformAffine(_tfrmMatrix);
-
-            return bounds;
+            _cachedBounds = mesh->GetProperties().GetBounds();
+            _cachedBounds.TransformAffine(_tfrmMatrix);
+            return _cachedBounds;
         }
     }
 

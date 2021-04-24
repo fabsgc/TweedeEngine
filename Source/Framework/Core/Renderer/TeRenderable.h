@@ -183,7 +183,7 @@ namespace te
         const Matrix4& GetMatrixNoScale() const { return _tfrmMatrixNoScale; }
 
         /**	Gets world bounds of the mesh rendered by this object. */
-        Bounds GetBounds() const;
+        Bounds GetBounds();
 
         /** Determines the animation that will be used for animating the attached mesh. */
         void SetAnimation(const SPtr<Animation>& animation);
@@ -261,5 +261,8 @@ namespace te
         UINT64 _animationId;
         SPtr<GpuBuffer> _boneMatrixBuffer;
         SPtr<GpuBuffer> _bonePrevMatrixBuffer;
+
+        Bounds _cachedBounds;
+        bool _boundsDirty; // bounds must updated if we change _mesh or _tfrmMatrix
     };
 }

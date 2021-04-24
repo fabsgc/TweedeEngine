@@ -16,7 +16,7 @@ namespace te
         SPtr<Mesh> MeshElem;
 
         /**	Portion of the mesh to render. */
-        SubMesh SubMeshElem;
+        SubMesh* SubMeshElem = nullptr;
 
         /**	Material to render the mesh with. */
         SPtr<Material> MaterialElem;

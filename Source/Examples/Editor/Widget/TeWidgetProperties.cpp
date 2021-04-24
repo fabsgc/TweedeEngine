@@ -886,7 +886,11 @@ namespace te
         String uuid = gameObject->GetUUID().ToString();
         const float widgetWidth = ImGui::GetWindowContentRegionWidth() - 100.0f;
 
-        strcpy(inputName, name.c_str());
+        if(name.length() < 256)
+            strcpy(inputName, name.c_str());
+        else
+            strcpy(inputName, name.substr(0,255).c_str());
+
         strcpy(inputUUID, uuid.c_str());
 
         if (ImGui::CollapsingHeader("Identification", ImGuiTreeNodeFlags_DefaultOpen))

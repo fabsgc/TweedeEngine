@@ -495,7 +495,7 @@ namespace te
                     {
                         if(onlyBindSelectedBlocks)
                             findNameInList = std::find(paramBlocksToBind.begin(), paramBlocksToBind.end(), iter->second.Name);
-                        
+
                         if (gpuParamsBlockBindFlags & (UINT32)GPU_BIND_PARAM_BLOCK_ALL_EXCEPT && findNameInList == paramBlocksToBind.end())
                         {
                             PopulateParamBlocks(iter->second);

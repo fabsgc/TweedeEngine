@@ -104,7 +104,7 @@ namespace te
 
     void RenderableElement::Draw() const
     {
-        gRendererUtility().Draw(MeshElem, SubMeshElem, InstanceCount);
+        gRendererUtility().Draw(MeshElem, *SubMeshElem, InstanceCount);
     }
 
     RendererRenderable::RendererRenderable()

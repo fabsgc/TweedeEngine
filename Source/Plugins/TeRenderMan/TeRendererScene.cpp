@@ -396,7 +396,7 @@ namespace te
 
                 renElement->Type = (UINT32)RenderElementType::Renderable;
                 renElement->MeshElem = mesh;
-                renElement->SubMeshElem = meshProps.GetSubMesh(i);
+                renElement->SubMeshElem = meshProps.GetSubMeshPtr(i);
                 renElement->BoneMatrixBuffer = renderable->GetBoneMatrixBuffer();
                 renElement->BonePrevMatrixBuffer = renderable->GetBonePrevMatrixBuffer();
                 renElement->AnimType = renderable->GetAnimType();

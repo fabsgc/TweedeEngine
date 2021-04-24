@@ -9,15 +9,6 @@ namespace te
     /** A set of options used for controlling the rendering of the RenderMan renderer. */
     struct RenderManOptions : public RendererOptions
     {
-        /** Type of filtering to use for all textures on scene elements. */
-        RenderManFiltering Filtering = RenderManFiltering::Anisotropic;
-
-        /**
-         * Maximum number of samples to be used when performing anisotropic filtering. Only relevant if #filtering is set to
-         * RenderManFiltering::Anisotropic.
-         */
-        UINT32 AnisotropyMax = 16;
-
         /**
          * Determines the maximum shadow map size, in pixels. The system might decide to use smaller resolution maps for
          * shadows far away, but will never increase the resolution past the provided value.
@@ -25,7 +16,7 @@ namespace te
         UINT32 ShadowMapSize = 2048;
 
         /**
-         * Determines which occlusion are currently used to cull object before rendering. Note that frustum culling can be
+         * Determines which occlusion are currently used to cull objects before rendering. Note that frustum culling can be
          * CPU time consuming if scene partitioning does not use an efficient algorithm
          */
         UINT32 CullingFlags = (UINT32)RenderManCulling::Frustum | (UINT32)RenderManCulling::Occlusion;
