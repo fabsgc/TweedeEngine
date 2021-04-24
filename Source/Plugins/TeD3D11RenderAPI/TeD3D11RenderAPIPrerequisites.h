@@ -17,7 +17,10 @@
 #include <d3d11shader.h>
 #include <D3Dcompiler.h>
 #include <dxgi1_3.h>
+
+#if defined(TE_WIN_SDK_10)
 #include <dxgi1_4.h>
+#endif
 
 namespace te
 {

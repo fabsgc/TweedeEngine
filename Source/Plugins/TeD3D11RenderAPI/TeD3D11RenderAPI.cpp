@@ -1221,7 +1221,7 @@ namespace te
 
     UINT64 D3D11RenderAPI::GetGPUMemory()
     {
-        if (IDXGIAdapter3* adapter = static_cast<IDXGIAdapter3*>(_selectedAdapter))
+        if (IDXGIAdapter* adapter = static_cast<IDXGIAdapter*>(_selectedAdapter))
         {
             DXGI_ADAPTER_DESC adapter_desc = {};
             const auto result = adapter->GetDesc(&adapter_desc);
@@ -1239,6 +1239,7 @@ namespace te
 
     UINT64 D3D11RenderAPI::GetUsedGPUMemory()
     {
+#if defined(TE_WIN_SDK_10)
         if (!MemoryQuerySupport)
             return 0;
 
@@ -1254,6 +1255,7 @@ namespace te
             TE_DEBUG("Failed to get adapter memory info");
             MemoryQuerySupport = false;
         }
+#endif
 
         return 0;
     }
