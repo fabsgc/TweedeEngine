@@ -29,10 +29,10 @@ namespace te
         {
             _frameBegan = false;
             _sample.Time = (gTime().GetTimePrecise() - _sample.Time);
-        }
 
-        _sample.GPUMemory = RenderAPI::Instance().GetGPUMemory();
-        _sample.UsedGPUMemory = RenderAPI::Instance().GetUsedGPUMemory();
+            _sample.GPUMemory = RenderAPI::Instance().GetGPUMemory();
+            _sample.UsedGPUMemory = RenderAPI::Instance().GetUsedGPUMemory();
+        }
     }
 
     void ProfilerGPU::Enable(bool enable)

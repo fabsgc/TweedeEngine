@@ -429,7 +429,7 @@ namespace te
             // We create all instanced render element using first RendererRenderable data
             for (auto& renderElem : sceneInfo.Renderables[idx]->Elements)
             {
-                RenderableElement* elem = te_pool_new<RenderableElement>();
+                RenderableElement* elem = te_pool_new<RenderableElement>(false);
                 elem->MeshElem = renderElem.MeshElem;
                 elem->SubMeshElem = renderElem.SubMeshElem;
                 elem->MaterialElem = renderElem.MaterialElem;
@@ -795,7 +795,7 @@ namespace te
                         hasTransparentElement = true;
                 }
 
-                if (instancedBuffer.Idx.size() > STANDARD_FORWARD_MIN_INSTANCED_BLOCK_SIZE && !hasTransparentElement)
+                if (instancedBuffer.Idx.size() >= STANDARD_FORWARD_MIN_INSTANCED_BLOCK_SIZE && !hasTransparentElement)
                 {
                     for (auto& idx : instancedBuffer.Idx)
                     {

@@ -56,7 +56,8 @@ namespace te
     class RenderableElement : public RenderElement
     {
     public:
-        RenderableElement();
+        /* In case we are doing instancing, materialBuffer is not needed, do not create it will save memory allocation */
+        RenderableElement(bool createPerMaterialBuffer = true);
 
         /** @copydoc RenderElement::Draw */
         void Draw() const override;

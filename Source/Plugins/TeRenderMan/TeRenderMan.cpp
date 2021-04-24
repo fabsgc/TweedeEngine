@@ -7,7 +7,7 @@
 #include "Renderer/TeCamera.h"
 #include "TeRenderCompositor.h"
 #include "Utility/TeTime.h"
-#include "Gui/TeGuiAPI.h"*
+#include "Gui/TeGuiAPI.h"
 #include "Profiling/TeProfilerGPU.h"
 
 namespace te

@@ -95,10 +95,11 @@ namespace te
         return data;
     }
 
-    RenderableElement::RenderableElement()
+    RenderableElement::RenderableElement(bool createPerMaterialBuffer)
         : RenderElement()
     {
-        PerMaterialParamBuffer = gPerMaterialParamDef.CreateBuffer();
+        if(createPerMaterialBuffer)
+            PerMaterialParamBuffer = gPerMaterialParamDef.CreateBuffer();
     }
 
     void RenderableElement::Draw() const

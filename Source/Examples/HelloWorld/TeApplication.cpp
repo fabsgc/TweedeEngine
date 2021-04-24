@@ -29,12 +29,16 @@
 
 #include "Utility/TeTime.h"
 
+#include "Profiling/TeProfilerGPU.h"
+
 namespace te
 {
     TE_MODULE_STATIC_MEMBER(Application)
 
     void Application::PostStartUp()
     {
+        gProfilerGPU().Enable(false);
+
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         // ######################################################
         auto inputConfig = gVirtualInput().GetConfiguration();
