@@ -222,6 +222,9 @@ namespace te
         /** Returns available GPU memory in mega byte */
         virtual UINT64 GetGPUMemory() = 0;
 
+        /** Returns available shared memory in mega byte */
+        virtual UINT64 GetSharedMemory() = 0;
+
         /** Returns used GPU memory in mega byte */
         virtual UINT64 GetUsedGPUMemory() = 0;
 

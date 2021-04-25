@@ -48,15 +48,16 @@ cbuffer PerMaterialBuffer : register(b1)
 cbuffer PerLightsBuffer : register(b2)
 {
     LightData gLights[MAX_LIGHTS];
-    uint gLightsNumber;
-    float3 gPadding4;
+    uint      gLightsNumber;
+    float3    gPadding4;
 }
 
 cbuffer PerFrameBuffer : register(b3)
 {
-    float gTime;
-    float gFrameDelta;
-    float2 gPadding5;
+    float  gTime;
+    float  gFrameDelta;
+    float  gEnvironmentBrightness;
+    float1 gPadding5;
     float4 gSceneLightColor;
 }
 
@@ -269,7 +270,7 @@ float3 DoReflection(float3 P, float3 N)
     float3 I = normalize(P - gViewOrigin);
     float3 R = reflect(I, normalize(N));
 
-    return EnvironmentMap.SampleLevel(AnisotropicSampler, R, 0).xyz * gReflection;
+    return EnvironmentMap.SampleLevel(AnisotropicSampler, R, 0).xyz * gReflection * gEnvironmentBrightness;
 }
 
 float3 DoRefraction(float3 P, float3 N)
@@ -278,7 +279,7 @@ float3 DoRefraction(float3 P, float3 N)
     float3 I = normalize(P - gViewOrigin);
     float3 R = refract(I, normalize(N), ratio);
 
-    return EnvironmentMap.SampleLevel(AnisotropicSampler, R, 0).xyz * gRefraction;
+    return EnvironmentMap.SampleLevel(AnisotropicSampler, R, 0).xyz * gRefraction * gEnvironmentBrightness;
 }
 
 float2 DoParallaxMapping(float2 texCoords, float2 parallaxOffsetTS, int nNumSteps, float bumpScale)

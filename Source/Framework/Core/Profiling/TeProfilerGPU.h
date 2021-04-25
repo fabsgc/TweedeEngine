@@ -42,7 +42,9 @@ namespace te
         UINT32 NumObjectsDestroyed = 0; /**< How many GPU objects were destroyed. */
 
         UINT64 GPUMemory = 0; /**< How many GPU memory is available in byte. */
+        UINT64 SharedMemory = 0; /**< How many shared memory is available in byte.  */
         UINT64 UsedGPUMemory = 0; /**< How many GPU memory is used in byte. */
+        
     };
 
     /**

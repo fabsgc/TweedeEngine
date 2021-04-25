@@ -119,8 +119,8 @@ namespace te
 
         struct PerBulletDebugInstanceData
         {
-            Matrix4 MatWorldNoScale;
-            Vector4 Color;
+            Vector4 FromColor;
+            Vector4 ToColor;
             Vector3 From;
             float   Padding1;
             Vector3 To;

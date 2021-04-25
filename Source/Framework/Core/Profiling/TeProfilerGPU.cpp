@@ -31,6 +31,7 @@ namespace te
             _sample.Time = (gTime().GetTimePrecise() - _sample.Time);
 
             _sample.GPUMemory = RenderAPI::Instance().GetGPUMemory();
+            _sample.SharedMemory = RenderAPI::Instance().GetSharedMemory();
             _sample.UsedGPUMemory = RenderAPI::Instance().GetUsedGPUMemory();
         }
     }
@@ -72,6 +73,7 @@ namespace te
         _sample.NumObjectsDestroyed = 0;
 
         _sample.GPUMemory = 0;
+        _sample.SharedMemory = 0;
         _sample.UsedGPUMemory = 0;
     }
 

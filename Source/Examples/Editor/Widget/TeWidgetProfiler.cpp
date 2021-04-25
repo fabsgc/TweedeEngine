@@ -186,11 +186,12 @@ namespace te
         if (ImGui::CollapsingHeader("GPU Memory", ImGuiTreeNodeFlags_DefaultOpen))
         {
             String GPUMemory = ToString(sample.GPUMemory) + " MB";
-            String UsedGPUMemory = ToString(sample.UsedGPUMemory) + " MB";
+            String usedGPUMemory = ToString(sample.UsedGPUMemory) + " MB";
+            String sharedMemory = ToString(sample.SharedMemory) + " MB";
 
             ImGui::PushID("GPU Memory ID");
             {
-                ImGui::BeginChild("GPU Memory Fields", ImVec2(ImGui::GetContentRegionAvail().x, 58.0f), true);
+                ImGui::BeginChild("GPU Memory Fields", ImVec2(ImGui::GetContentRegionAvail().x, 78.0f), true);
                 ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 5.0f, 5.0f });
 
                 ImGui::Columns(2);
@@ -204,9 +205,17 @@ namespace te
                 ImGui::Separator();
 
                 ImGui::SetColumnWidth(-1, ImGui::GetWindowContentRegionWidth() - 75.0f);
+                ImGui::Text("Shared Mem.");
+                ImGui::NextColumn();
+                ImGui::Text(sharedMemory.c_str());
+                ImGui::NextColumn();
+
+                ImGui::Separator();
+
+                ImGui::SetColumnWidth(-1, ImGui::GetWindowContentRegionWidth() - 75.0f);
                 ImGui::Text("Used GPU Mem.");
                 ImGui::NextColumn();
-                ImGui::Text(UsedGPUMemory.c_str());
+                ImGui::Text(usedGPUMemory.c_str());
                 ImGui::NextColumn();
 
                 ImGui::Columns(1);

@@ -92,6 +92,9 @@ namespace te
         /** @copydoc RenderAPI::GetGPUMemory() */
         UINT64 GetGPUMemory() override;
 
+        /** @copydoc RenderAPI::GetSharedMemory() */
+        UINT64 GetSharedMemory() override;
+
         /** @copydoc RenderAPI::GetUsedGPUMemory() */
         UINT64 GetUsedGPUMemory() override;
 

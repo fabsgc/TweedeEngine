@@ -1237,6 +1237,24 @@ namespace te
         return 0;
     }
 
+    UINT64 D3D11RenderAPI::GetSharedMemory()
+    {
+        if (IDXGIAdapter* adapter = static_cast<IDXGIAdapter*>(_selectedAdapter))
+        {
+            DXGI_ADAPTER_DESC adapter_desc = {};
+            const auto result = adapter->GetDesc(&adapter_desc);
+            if (FAILED(result))
+            {
+                TE_DEBUG("Failed to get adapter description");
+                return 0;
+            }
+
+            return static_cast<UINT64>(adapter_desc.SharedSystemMemory / 1024 / 1024); // convert to MBs
+        }
+
+        return 0;
+    }
+
     UINT64 D3D11RenderAPI::GetUsedGPUMemory()
     {
 #if defined(TE_WIN_SDK_10)

@@ -414,7 +414,6 @@ namespace te
                     renElement->MaterialElem = gBuiltinResources().GetDefaultMaterial().GetInternalPtr();
 
                 // Determine which technique to use
-                const SPtr<Shader>& shader = renElement->MaterialElem->GetShader();
                 renElement->DefaultTechniqueIdx = InitAndRetrieveBasePassTechnique(*renElement->MaterialElem);
 
                 // Generate or assigned renderer specific data for the material
@@ -481,9 +480,17 @@ namespace te
         gPerFrameParamDef.gFrameDelta.Set(_info.PerFrameParamBuffer, delta);
     }
 
-    void RendererScene::SetParaCameraParams(const Color& sceneLightColor)
+    void RendererScene::SetParamCameraParams(const Color& sceneLightColor)
     {
         gPerFrameParamDef.gSceneLightColor.Set(_info.PerFrameParamBuffer, sceneLightColor.GetAsVector4());
+    }
+
+    void RendererScene::SetParamSkyboxParams()
+    {
+        if(_info.SkyboxElem != nullptr)
+            gPerFrameParamDef.gEnvironementBrightness.Set(_info.PerFrameParamBuffer, _info.SkyboxElem->GetBrightness());
+        else
+            gPerFrameParamDef.gEnvironementBrightness.Set(_info.PerFrameParamBuffer, 1.0f);
     }
 
     void RendererScene::PrepareRenderable(UINT32 idx, const FrameInfo& frameInfo)

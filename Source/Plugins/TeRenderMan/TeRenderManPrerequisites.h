@@ -90,6 +90,7 @@ namespace te
     TE_PARAM_BLOCK_BEGIN(PerFrameParamDef)
         TE_PARAM_BLOCK_ENTRY(float, gTime)
         TE_PARAM_BLOCK_ENTRY(float, gFrameDelta)
+        TE_PARAM_BLOCK_ENTRY(float, gEnvironementBrightness)
         TE_PARAM_BLOCK_ENTRY(Vector4, gSceneLightColor)
     TE_PARAM_BLOCK_END
 

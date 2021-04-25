@@ -38,7 +38,8 @@ cbuffer PerFrameBuffer : register(b3)
 {
     float  gTime;
     float  gFrameDelta;
-    float2 gPadding4;
+    float  gEnvironmentBrightness;
+    float1 gPadding5;
     float4 gSceneLightColor;
 }
 

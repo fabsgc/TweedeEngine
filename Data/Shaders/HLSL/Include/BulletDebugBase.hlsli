@@ -2,12 +2,12 @@
 
 struct PerInstanceData
 {
-    matrix MatWorldNoScale;
-    float4 Color;
+    float4 FromColor;
+    float4 ToColor;
     float3 From;
-    float Padding1;
+    float  Padding1;
     float3 To;
-    float Padding2;
+    float  Padding2;
 };
 
 struct VS_INPUT

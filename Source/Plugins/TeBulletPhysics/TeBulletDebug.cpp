@@ -51,7 +51,14 @@ namespace te
 
         for (auto& element : _debugElements)
         {
-            // TODO
+            PerBulletDebugInstanceData instance;
+
+            instance.From = ToVector3(element.From);
+            instance.To = ToVector3(element.To);
+            instance.FromColor = ToVector4(element.FromColor);
+            instance.ToColor = ToVector4(element.ToColor);
+
+            instancedElements.push_back(instance);
         }
 
         if (instancedElements.size() > 0)

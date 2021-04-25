@@ -658,6 +658,11 @@ namespace te
         return 0;
     }
 
+    UINT64 GLRenderAPI::GetSharedMemory()
+    {
+        return 0;
+    }
+
     UINT64 GLRenderAPI::GetUsedGPUMemory()
     {
         return 0;

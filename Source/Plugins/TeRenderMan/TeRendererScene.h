@@ -110,7 +110,10 @@ namespace te
         void SetParamFrameParams(const float& time, const float& delta);
 
         /** Update data relative to current rendering camera */
-        void SetParaCameraParams(const Color& sceneLightColor);
+        void SetParamCameraParams(const Color& sceneLightColor);
+
+        /** Update data relative to skybox if exists */
+        void SetParamSkyboxParams();
 
         /**
          * Performs necessary per-frame updates to a renderable. This must be called once every frame for every renderable.

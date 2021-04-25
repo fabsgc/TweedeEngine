@@ -14,7 +14,7 @@ namespace te
             btVector3 From;
             btVector3 To;
             btVector3 FromColor;
-            btVector3 toColor;
+            btVector3 ToColor;
         };
 
         struct VertexBufferLayout
