@@ -27,7 +27,6 @@ namespace te
         bool ImportAnimations = true;
         bool ImportMaterials = true;
         bool ImportBlendShapes = true;
-        bool ScaleSystemUnit = false;
         bool ForceGenNormals = false;
         bool GenSmoothNormals = false;
         float AnimSampleRate = 1.0f / 60.0f;

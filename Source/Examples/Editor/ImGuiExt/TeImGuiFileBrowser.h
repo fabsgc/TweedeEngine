@@ -62,6 +62,7 @@ namespace te
                 bool ForceGenNormals = false;
                 bool GenSmoothNormals = false;
                 bool ScaleSystemUnit = false;
+                float ScaleFactor = 1.0f;
             };
 
             /** If we want to load a texture, here are stored the list of parameters to apply on it during loading */

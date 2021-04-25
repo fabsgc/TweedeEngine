@@ -295,6 +295,7 @@ namespace te
                 meshImportOptions->ForceGenNormals = _fileBrowser.Data.MeshParam.ForceGenNormals;
                 meshImportOptions->GenSmoothNormals = _fileBrowser.Data.MeshParam.GenSmoothNormals;
                 meshImportOptions->ScaleSystemUnit = _fileBrowser.Data.MeshParam.ScaleSystemUnit;
+                meshImportOptions->ScaleFactor = _fileBrowser.Data.MeshParam.ScaleFactor;
                 meshImportOptions->CpuCached = false;
 
                 SPtr<MultiResource> resources = EditorResManager::Instance().LoadAll(_fileBrowser.Data.SelectedPath, meshImportOptions, true);

@@ -90,6 +90,9 @@ namespace te
         /** For FBX format, scale is in centimeters instead of meters, we must scale matrices using scale factor */
         bool ScaleSystemUnit = false;
 
+        /** Uniformly scales the imported mesh by the specified value. */
+        float ScaleFactor = 1.0f;
+
         /** Determines if we need to set material properties for this mesh during import */
         bool ImportMaterials = true;
 

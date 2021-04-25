@@ -129,7 +129,10 @@ namespace te
             aiProcess_RemoveComponent;
 
         if (meshImportOptions->ScaleSystemUnit)
+        {
             assimpFlags |= aiProcess_GlobalScale;
+            importer.SetPropertyFloat(AI_CONFIG_GLOBAL_SCALE_FACTOR_KEY, meshImportOptions->ScaleFactor);
+        }
 
         if (meshImportOptions->FplitUV)
             assimpFlags |= aiProcess_FlipUVs;
@@ -158,9 +161,11 @@ namespace te
         if (!meshImportOptions->ImportVertexColors)
             removeComponentFlags |= aiComponent_COLORS;
 
+        importer.SetPropertyInteger(AI_CONFIG_PP_RVC_FLAGS, removeComponentFlags);
+
         {
             Lock lock = FileScheduler::GetLock(filePath);
-            importer.SetPropertyInteger(AI_CONFIG_PP_RVC_FLAGS, removeComponentFlags);
+            
             scene = const_cast<aiScene*>(importer.ReadFile(filePath.c_str(), assimpFlags));
         }
 
@@ -175,9 +180,8 @@ namespace te
         assimpImportOptions.ImportTangents     = meshImportOptions->ImportTangents;
         assimpImportOptions.ImportSkin         = meshImportOptions->ImportSkin;
         assimpImportOptions.ImportBlendShapes  = meshImportOptions->ImportBlendShapes;
-        assimpImportOptions.ImportAnimations    = meshImportOptions->ImportAnimations;
+        assimpImportOptions.ImportAnimations   = meshImportOptions->ImportAnimations;
         assimpImportOptions.ImportMaterials    = meshImportOptions->ImportMaterials;
-        assimpImportOptions.ScaleSystemUnit    = meshImportOptions->ScaleSystemUnit;
         assimpImportOptions.ReduceKeyframes    = meshImportOptions->ReduceKeyFrames;
 
         ParseScene(scene, assimpImportOptions, importedScene);
@@ -1275,9 +1279,5 @@ namespace te
     {
         String extension = Util::GetFileExtension(filePath);
         std::transform(extension.begin(), extension.end(), extension.begin(), tolower);
-        if (extension == ".fbx")
-        {
-            meshImportOptions.ScaleSystemUnit = true;
-        }
     }
 }
