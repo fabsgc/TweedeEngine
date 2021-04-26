@@ -333,11 +333,8 @@ namespace te
                 continue;
 
             // Compute list of lights that influence renderables
-            for (auto& element : inputs.Scene.Renderables[i]->Elements)
-            {
-                const Bounds& bounds = inputs.Scene.RenderableCullInfos[i].Boundaries;
-                inputs.ViewGroup.GetVisibleLightData().GatherInfluencingLights(bounds, lights, lightCounts);
-            }
+            const Bounds& bounds = inputs.Scene.RenderableCullInfos[i].Boundaries;
+            inputs.ViewGroup.GetVisibleLightData().GatherInfluencingLights(bounds, lights, lightCounts);
         }
 
         PerLightsBuffer::UpdatePerLights(lights, lightCounts.x + lightCounts.y + lightCounts.z);

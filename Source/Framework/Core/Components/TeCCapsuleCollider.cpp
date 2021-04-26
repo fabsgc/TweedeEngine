@@ -21,7 +21,7 @@ namespace te
     {
         const SPtr<SceneInstance>& scene = SO()->GetScene();
 
-        SPtr<Collider> collider = CapsuleCollider::Create(*scene->GetPhysicsScene());
+        SPtr<CapsuleCollider> collider = CapsuleCollider::Create(*scene->GetPhysicsScene());
         collider->SetOwner(PhysicsOwnerType::Component, this);
 
         return collider;

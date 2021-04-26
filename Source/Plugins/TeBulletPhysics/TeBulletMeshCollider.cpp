@@ -36,4 +36,16 @@ namespace te
         ((BulletFCollider*)_internal)->SetShape(_shape);
         _shape->setLocalScaling(ToBtVector3(_internal ? _internal->GetScale() : Vector3::ONE));*/
     }
+
+    void BulletMeshCollider::OnMeshChanged()
+    {
+        ApplyGeometry();
+    }
+
+    void BulletMeshCollider::ApplyGeometry()
+    {
+        // TODO
+
+        UpdateShape();
+    }
 }

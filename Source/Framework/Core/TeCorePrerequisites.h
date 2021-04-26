@@ -107,6 +107,8 @@ namespace te
         TID_CConeCollider           = 1052,
         TID_CHeightFieldCollider    = 1053,
         TID_CBody                   = 1054,
+        TID_PhysicsMesh             = 1055,
+        TID_FPhysicsMesh            = 1056,
     };
 }
 
@@ -358,6 +360,8 @@ namespace te
     class FCollider;
     class FJoint;
     class PhysicsDebug;
+    class PhysicsMesh;
+    class FPhysicsMesh;
 
     class GPUProfiler;
 }
@@ -379,6 +383,7 @@ namespace te
     typedef ResourceHandle<Font> HFont;
     typedef ResourceHandle<AudioClip> HAudioClip;
     typedef ResourceHandle<AnimationClip> HAnimationClip;
+    typedef ResourceHandle<PhysicsMesh> HPhysicsMesh;
 }
 
 #include "Scene/TeGameObjectHandle.h"

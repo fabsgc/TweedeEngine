@@ -407,6 +407,21 @@ namespace te
         Static = 0x2
     };
 
+    /** Valid types of a mesh used for physics. */
+    enum class PhysicsMeshType
+    {
+        /**
+         * A regular triangle mesh. Mesh can be of arbitrary size but cannot be used for triggers and non-kinematic
+         * objects. Incurrs a significantly larger performance impact than convex meshes.
+         */
+        Triangle,
+        /**
+         * Mesh representing a convex shape. Mesh will not have more than 256 vertices. Incurrs a significantly lower
+         * performance impact than triangle meshes.
+         */
+        Convex
+    };
+
     /** Determines the type of the source image for generating cubemaps. */
     enum class CubemapSourceType
     {

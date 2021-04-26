@@ -20,6 +20,12 @@ namespace te
         /** Create shape using current parameters */
         void UpdateShape();
 
+        /** @copydoc MeshCollider::OnMeshChanged */
+        void OnMeshChanged() override;
+
+        /** Applies mesh geometry using the set mesh and scale. */
+        void ApplyGeometry();
+
     private:
         btConvexHullShape* _shape = nullptr;
     };

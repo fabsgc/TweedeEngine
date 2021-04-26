@@ -448,6 +448,7 @@ set (TE_CORE_INC_PHYSICS
     "Core/Physics/TeFCollider.h"
     "Core/Physics/TeFJoint.h"
     "Core/Physics/TePhysicsDebug.h"
+    "Core/Physics/TePhysicsMesh.h"
 )
 set (TE_CORE_SRC_PHYSICS
     "Core/Physics/TePhysics.cpp"
@@ -473,6 +474,7 @@ set (TE_CORE_SRC_PHYSICS
     "Core/Physics/TeFCollider.cpp"
     "Core/Physics/TeFJoint.cpp"
     "Core/Physics/TePhysicsDebug.cpp"
+    "Core/Physics/TePhysicsMesh.cpp"
 )
 
 set (TE_CORE_INC_PROFILING

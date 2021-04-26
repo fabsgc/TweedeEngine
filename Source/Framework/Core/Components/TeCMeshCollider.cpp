@@ -1,4 +1,5 @@
 #include "Components/TeCMeshCollider.h"
+#include "Components/TeCBody.h"
 #include "Scene/TeSceneObject.h"
 #include "Scene/TeSceneManager.h"
 
@@ -20,7 +21,8 @@ namespace te
     {
         const SPtr<SceneInstance>& scene = SO()->GetScene();
 
-        SPtr<Collider> collider = MeshCollider::Create(*scene->GetPhysicsScene());
+        SPtr<MeshCollider> collider = MeshCollider::Create(*scene->GetPhysicsScene());
+        collider->SetMesh(_mesh);
         collider->SetOwner(PhysicsOwnerType::Component, this);
 
         return collider;
@@ -34,5 +36,28 @@ namespace te
     void CMeshCollider::Clone(const HMeshCollider& c)
     {
         CCollider::Clone(static_object_cast<CCollider>(c));
+
+        _mesh = c->_mesh;
+    }
+
+    void CMeshCollider::SetMesh(const HPhysicsMesh& mesh)
+    {
+        if (_mesh == mesh)
+            return;
+
+        _mesh = mesh;
+
+        if (_internal != nullptr)
+        {
+            _getInternal()->SetMesh(mesh);
+
+            if (_parent != nullptr)
+                _parent->RemoveCollider(static_object_cast<CCollider>(GetHandle()));
+
+            _getInternal()->SetMesh(mesh);
+
+            if (_parent != nullptr)
+                _parent->AddCollider(static_object_cast<CCollider>(GetHandle()));
+        }
     }
 }

@@ -19,16 +19,22 @@ namespace te
         /** Return Component type */
         static UINT32 GetComponentType() { return TID_CMeshCollider; }
 
+        /** @copydoc MeshCollider::SetMesh() */
+        void SetMesh(const HPhysicsMesh& mesh);
+
+        /** @copydoc MeshCollider::GetMesh() */
+        HPhysicsMesh GetMesh() const { return _mesh; }
+
         /** @copydoc Component::Clone */
         void Clone(const HMeshCollider& c);
 
     protected:
         friend class SceneObject;
 
-        /** @copydoc CCollider::CreateInternal */
+        /** @copydoc CCollider::CreateInternal() */
         SPtr<Collider> CreateInternal() override;
 
-        /** @copydoc CCollider::RestoreInternal */
+        /** @copydoc CCollider::RestoreInternal() */
         void RestoreInternal() override;
 
         /**	Returns the mesh collider that this component wraps. */
@@ -36,5 +42,8 @@ namespace te
 
     protected:
         CMeshCollider(); // Serialization only
+
+    protected:
+        HPhysicsMesh _mesh;
     };
 }

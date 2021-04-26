@@ -29,8 +29,15 @@ namespace te
             // Physic paused
             {
                 bool physicsPaused = !gPhysics().IsPaused();
-                if (ImGuiExt::RenderOptionBool(physicsPaused, "##settings_physics_enable", "Enable Physics"))
+                if (ImGuiExt::RenderOptionBool(physicsPaused, "##settings_physics_enable", "Enable Physic"))
                     gPhysics().SetPaused(!physicsPaused);
+            }
+
+            // Debug paused
+            {
+                bool physicsDebug = gPhysics().IsDebug();
+                if (ImGuiExt::RenderOptionBool(physicsDebug, "##settings_physics_enable", "Enable Physic Debug"))
+                    gPhysics().SetDebug(physicsDebug);
             }
             ImGui::Separator();
             

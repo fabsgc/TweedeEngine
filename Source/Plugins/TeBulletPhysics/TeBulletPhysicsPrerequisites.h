@@ -52,6 +52,14 @@ namespace te
     class BulletScene;
     class BulletRigidBody;
     class BulletSoftBody;
+    class BulletMesh;
+    class BulletFMesh;
+
+    /**	Type IDs used by the serizalition system for the Bullet library. */
+    enum TypeID_PhysX
+    {
+        TID_FBulletMesh = 100000,
+    };
 
     inline Vector3 ToVector3(const btVector3& vector)
     {

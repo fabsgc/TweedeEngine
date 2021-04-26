@@ -43,10 +43,13 @@ namespace te
 
         TE_MODULE_STATIC_HEADER_MEMBER(BulletPhysics)
 
-        /** @copydoc Physics::CreatePhysicsScene */
+        /** @copydoc Physics::CreateMesh() */
+        SPtr<PhysicsMesh> CreateMesh(const SPtr<MeshData>& meshData, PhysicsMeshType type) override;
+
+        /** @copydoc Physics::CreatePhysicsScene() */
         SPtr<PhysicsScene> CreatePhysicsScene() override;
 
-        /** @copydoc Physics::Update */
+        /** @copydoc Physics::Update() */
         void Update() override;
 
         /** @copydoc Physics::SetPaused() */
@@ -54,6 +57,12 @@ namespace te
 
         /** @copydoc Physics::SetPaused() */
         bool IsPaused() const override;
+
+        /** Enable or disable debug informations globally */
+        void SetDebug(bool debug) override;
+
+        /** @copydoc SetDebug() */
+        bool IsDebug() override;
 
         /** @copydoc Physics::DrawDebug() */
         void DrawDebug(const SPtr<Camera>& camera, const SPtr<RenderTarget>& renderTarget) override;
@@ -67,7 +76,8 @@ namespace te
     private:
         friend class BulletScene;
 
-        bool _paused;
+        bool _paused; // is simulation paused
+        bool _debug; // is debug enabled
 
         btBroadphaseInterface* _broadphase = nullptr;
         btCollisionDispatcher* _collisionDispatcher = nullptr;

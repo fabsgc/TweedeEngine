@@ -6,6 +6,8 @@
 #include "Animation/TeSkeleton.h"
 #include "Animation/TeAnimationUtility.h"
 #include "Utility/TeFileSystem.h"
+#include "Physics/TePhysicsMesh.h"
+#include "Physics/TePhysics.h"
 
 #include <filesystem>
 
@@ -74,12 +76,31 @@ namespace te
         if (rendererMeshData)
         {
             SPtr<Mesh> mesh = Mesh::_createPtr(rendererMeshData->GetData(), desc);
-            mesh->SetName(filePath);
+            mesh->SetName(std::filesystem::path(filePath).filename().generic_string());
             mesh->SetPath(filePath);
 
             if (mesh != nullptr)
             {
                 output.push_back({ u8"primary", mesh });
+
+                CollisionMeshType collisionMeshType = meshImportOptions->CollisionType;
+                if (collisionMeshType != CollisionMeshType::None)
+                {
+                    if (Physics::IsStarted())
+                    {
+                        PhysicsMeshType type = collisionMeshType == CollisionMeshType::Convex ?
+                            PhysicsMeshType::Convex : PhysicsMeshType::Triangle;
+
+                        SPtr<PhysicsMesh> physicsMesh = PhysicsMesh::_createPtr(rendererMeshData->GetData(), type);
+                        physicsMesh->SetName("Collision - " + mesh->GetName());
+
+                        output.push_back({ u8"collision", physicsMesh });
+                    }
+                    else
+                    {
+                        TE_DEBUG("Cannot generate a collision mesh as the physics module was not started.");
+                    }
+                }
 
                 Vector<ImportedAnimationEvents> events = meshImportOptions->AnimationEvents;
                 for (auto& entry : animationClips)

@@ -248,12 +248,12 @@ namespace te
         glGetIntegerv(GL_MAX_VERTEX_UNIFORM_BLOCKS, &numUniformBlocks);
         TE_CHECK_GL_ERROR();
 
-        caps.NumGpuParamBlockBuffersPerStage[GPT_VERTEX_PROGRAM] = numUniformBlocks;
+        caps.NumGpuParamBlockBuffersPerStage[GPT_VERTEX_PROGRAM] = (UINT16)numUniformBlocks;
 
         glGetIntegerv(GL_MAX_FRAGMENT_UNIFORM_BLOCKS, &numUniformBlocks);
         TE_CHECK_GL_ERROR();
 
-        caps.NumGpuParamBlockBuffersPerStage[GPT_PIXEL_PROGRAM] = numUniformBlocks;
+        caps.NumGpuParamBlockBuffersPerStage[GPT_PIXEL_PROGRAM] = (UINT16)numUniformBlocks;
 
         {
             GLint geomUnits;
@@ -274,7 +274,7 @@ namespace te
             numUniformBlocks = 0;
 #endif
 
-            caps.NumGpuParamBlockBuffersPerStage[GPT_GEOMETRY_PROGRAM] = numUniformBlocks;
+            caps.NumGpuParamBlockBuffersPerStage[GPT_GEOMETRY_PROGRAM] = (UINT16)numUniformBlocks;
         }
 
         if (_GLSupport->CheckExtension("GL_ARB_tessellation_shader"))
@@ -290,7 +290,7 @@ namespace te
             numUniformBlocks = 0;
 #endif
 
-            caps.NumGpuParamBlockBuffersPerStage[GPT_HULL_PROGRAM] = numUniformBlocks;
+            caps.NumGpuParamBlockBuffersPerStage[GPT_HULL_PROGRAM] = (UINT16)numUniformBlocks;
 
 #if TE_OPENGL_4_1 || TE_OPENGLES_3_2
             glGetIntegerv(GL_MAX_TESS_EVALUATION_UNIFORM_BLOCKS, &numUniformBlocks);
@@ -326,7 +326,7 @@ namespace te
             numUniformBlocks = 0;
 #endif
 
-            caps.NumGpuParamBlockBuffersPerStage[GPT_COMPUTE_PROGRAM] = numUniformBlocks;
+            caps.NumGpuParamBlockBuffersPerStage[GPT_COMPUTE_PROGRAM] = (UINT16)numUniformBlocks;
 
             // Max number of load-store textures
             GLint lsfUnits;

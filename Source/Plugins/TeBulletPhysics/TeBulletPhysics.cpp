@@ -16,6 +16,7 @@
 #include "TeBulletConeCollider.h"
 #include "TeBulletHeightFieldCollider.h"
 #include "TeBulletDebug.h"
+#include "TeBulletMesh.h"
 #include "Utility/TeTime.h"
 #include "RenderAPI/TeRenderAPI.h"
 #include "RenderAPI/TeRenderTexture.h"
@@ -29,6 +30,7 @@ namespace te
     BulletPhysics::BulletPhysics(const PHYSICS_INIT_DESC& desc)
         : Physics(desc)
         , _paused(false)
+        , _debug(true)
     {
         _broadphase = te_new<btDbvtBroadphase>();
         _constraintSolver = te_new<btSequentialImpulseConstraintSolver>();
@@ -67,6 +69,21 @@ namespace te
         return _paused;
     }
 
+    void BulletPhysics::SetDebug(bool debug)
+    {
+        _debug = debug;
+    }
+
+    bool BulletPhysics::IsDebug()
+    {
+        return _debug;
+    }
+
+    SPtr<PhysicsMesh> BulletPhysics::CreateMesh(const SPtr<MeshData>& meshData, PhysicsMeshType type)
+    {
+        return te_core_ptr_new<BulletMesh>(meshData, type);
+    }
+
     SPtr<PhysicsScene> BulletPhysics::CreatePhysicsScene()
     {
         SPtr<BulletScene> scene = te_shared_ptr_new<BulletScene>(this, _initDesc);
@@ -89,8 +106,10 @@ namespace te
         {
             if (scene->_world && scene->_debug)
             {
+                if(_debug)
+                    scene->_world->debugDrawWorld();
+
                 scene->_debug->Clear();
-                scene->_world->debugDrawWorld();
             }
         }
 

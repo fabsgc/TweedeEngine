@@ -3,11 +3,10 @@
 #include "TeCorePrerequisites.h"
 #include "Physics/TePhysicsCommon.h"
 #include "Physics/TePhysicsDebug.h"
+#include "Physics/TePhysicsMesh.h"
 #include "Utility/TeModule.h"
 #include "Math/TeVector3.h"
 #include "Math/TeQuaternion.h"
-
-#include <cfloat>
 
 namespace te
 {
@@ -31,6 +30,9 @@ namespace te
 
         TE_MODULE_STATIC_HEADER_MEMBER(Physics)
 
+        /** @copydoc PhysicsMesh::Create() */
+        virtual SPtr<PhysicsMesh> CreateMesh(const SPtr<MeshData>& meshData, PhysicsMeshType type) = 0;
+
         /** Creates an object representing the physics scene. Must be manually released via destroyPhysicsScene(). */
         virtual SPtr<PhysicsScene> CreatePhysicsScene() = 0;
 
@@ -42,6 +44,12 @@ namespace te
 
         /** @copydoc SetPaused() */
         virtual bool IsPaused() const = 0;
+
+        /** Enable or disable debug informations globally */
+        virtual void SetDebug(bool debug) = 0;
+
+        /** @copydoc SetDebug() */
+        virtual bool IsDebug() = 0;
 
         /** Allow user to see debug information about physical simulation */
         virtual void DrawDebug(const SPtr<Camera>& camera, const SPtr<RenderTarget>& renderTarget) = 0;
@@ -119,8 +127,8 @@ namespace te
          * Creates a new box collider.
          * 
          * @param[in]	extents		Extents (half size) of the box.
-		 * @param[in]	position	Position of the collider relative to its parent
-		 * @param[in]	rotation	Position of the collider relative to its parent
+         * @param[in]	position	Position of the collider relative to its parent
+         * @param[in]	rotation	Position of the collider relative to its parent
          */
         virtual SPtr<BoxCollider> CreateBoxCollider(const Vector3& extents, const Vector3& position,
             const Quaternion& rotation) = 0;
@@ -128,9 +136,9 @@ namespace te
         /**
          * Creates a new plane collider.
          * 
-		 * @param[in]	normal      Normal to the plane.
+         * @param[in]	normal      Normal to the plane.
          * @param[in]	position	Position of the collider relative to its parent
-		 * @param[in]	rotation	Position of the collider relative to its parent
+         * @param[in]	rotation	Position of the collider relative to its parent
          */
         virtual SPtr<PlaneCollider> CreatePlaneCollider(const Vector3& normal, const Vector3& position,
             const Quaternion& rotation) = 0;
@@ -139,8 +147,8 @@ namespace te
          * Creates a new sphere collider.
          * 
          * @param[in]	radius		Radius of the sphere geometry.
-		 * @param[in]	position	Position of the collider.
-		 * @param[in]	rotation	Rotation of the collider.
+         * @param[in]	position	Position of the collider.
+         * @param[in]	rotation	Rotation of the collider.
          */
         virtual SPtr<SphereCollider> CreateSphereCollider(float radius, const Vector3& position,
             const Quaternion& rotation) = 0;
@@ -149,8 +157,8 @@ namespace te
          * Creates a new cylinder collider.
          * 
          * @param[in]	extents		Extents (half size) of the cylinder.
-		 * @param[in]	position	Position of the collider relative to its parent
-		 * @param[in]	rotation	Position of the collider relative to its parent
+         * @param[in]	position	Position of the collider relative to its parent
+         * @param[in]	rotation	Position of the collider relative to its parent
          */
         virtual SPtr<CylinderCollider> CreateCylinderCollider(const Vector3& extents, const Vector3& position,
             const Quaternion& rotation) = 0;
@@ -160,8 +168,8 @@ namespace te
          * 
          * @param[in]	radius		Radius of the capsule
          * @param[in]	height		Height of the capsule
-		 * @param[in]	position	Position of the collider relative to its parent
-		 * @param[in]	rotation	Position of the collider relative to its parent
+         * @param[in]	position	Position of the collider relative to its parent
+         * @param[in]	rotation	Position of the collider relative to its parent
          */
         virtual SPtr<CapsuleCollider> CreateCapsuleCollider(float radius, float height, const Vector3& position,
             const Quaternion& rotation) = 0;
@@ -170,7 +178,7 @@ namespace te
          * Creates a new mesh collider.
          * 
          * @param[in]	position	Position of the collider relative to its parent
-		 * @param[in]	rotation	Position of the collider relative to its parent
+         * @param[in]	rotation	Position of the collider relative to its parent
          */
         virtual SPtr<MeshCollider> CreateMeshCollider(const Vector3& position, const Quaternion& rotation) = 0;
 
@@ -179,8 +187,8 @@ namespace te
          * 
          * @param[in]	radius		Radius of the cone
          * @param[in]	height		Height of the cone
-		 * @param[in]	position	Position of the collider relative to its parent
-		 * @param[in]	rotation	Position of the collider relative to its parent
+         * @param[in]	position	Position of the collider relative to its parent
+         * @param[in]	rotation	Position of the collider relative to its parent
          */
         virtual SPtr<ConeCollider> CreateConeCollider(float radius, float height, const Vector3& position,
             const Quaternion& rotation) = 0;
