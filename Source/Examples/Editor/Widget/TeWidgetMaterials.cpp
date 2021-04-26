@@ -221,7 +221,7 @@ namespace te
                 }
                 ImGui::Separator();
                 {
-                    if (ImGuiExt::RenderOptionFloat(properties.Transparency, "##material_properties_specular_p_option", "Transparency", 0.0f, 1.0f, width))
+                    if (ImGuiExt::RenderOptionFloat(properties.Transparency, "##material_properties_transparency_option", "Opacity", 0.0f, 1.0f, width))
                         hasChanged = true;
                 }
                 ImGui::Separator();
@@ -307,10 +307,15 @@ namespace te
             {
                 // Shader
                 {
-                    ImGuiExt::ComboOptions<BuiltinShader> shaderTypeOptions;
-                    shaderTypeOptions.AddOption(BuiltinShader::Opaque, "Forward opaque");
-                    shaderTypeOptions.AddOption(BuiltinShader::Transparent, "Forward transparent");
+                    static ImGuiExt::ComboOptions<BuiltinShader> shaderTypeOptions;
                     BuiltinShader shaderType = BuiltinShader::Opaque;
+
+                    if (shaderTypeOptions.Options.size() == 0)
+                    {
+                        shaderTypeOptions.AddOption(BuiltinShader::Opaque, "Forward opaque");
+                        shaderTypeOptions.AddOption(BuiltinShader::Transparent, "Forward transparent");
+                        shaderTypeOptions.AddOption(BuiltinShader::TransparentCullNone, "Forward transparent no Cull");
+                    }
 
                     if (_currentMaterial->GetShader() != gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque).GetInternalPtr())
                         shaderType = BuiltinShader::Transparent;
@@ -324,11 +329,15 @@ namespace te
 
                 // Sampler
                 {
-                    ImGuiExt::ComboOptions<BuiltinSampler> samplerTypeOptions;
-                    samplerTypeOptions.AddOption(BuiltinSampler::Anisotropic, "Anisotropic");
-                    samplerTypeOptions.AddOption(BuiltinSampler::Trilinear, "Trilinear");
-                    samplerTypeOptions.AddOption(BuiltinSampler::Bilinear, "Bilinear");
+                    static ImGuiExt::ComboOptions<BuiltinSampler> samplerTypeOptions;
                     BuiltinSampler samplerType;
+
+                    if (samplerTypeOptions.Options.size() == 0)
+                    {
+                        samplerTypeOptions.AddOption(BuiltinSampler::Anisotropic, "Anisotropic");
+                        samplerTypeOptions.AddOption(BuiltinSampler::Trilinear, "Trilinear");
+                        samplerTypeOptions.AddOption(BuiltinSampler::Bilinear, "Bilinear");
+                    }
 
                     if (_currentMaterial->GetSamplerState("AnisotropicSampler") == gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic))
                         samplerType = BuiltinSampler::Anisotropic;

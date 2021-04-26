@@ -367,14 +367,15 @@ PS_OUTPUT main( PS_INPUT IN )
     {
         OUT.Scene  = float4(1.0f, 1.0f, 1.0f, 1.0f);
 
-        float3 albedo      = gDiffuse.rgb;
-        float3 ambient     = gAmbient.rgb;
-        float3 diffuse     = gDiffuse.rgb;
-        float3 emissive    = gEmissive.rgb;
-        float3 specular    = gSpecular.rgb;
-        float3 environment = (float3)0;
-        float3 normal      = IN.Normal;
-        float2 texCoords   = (IN.Texture * gTextureRepeat) + gTextureOffset;
+        float3 albedo          = gDiffuse.rgb;
+        float3 ambient         = gAmbient.rgb;
+        float3 diffuse         = gDiffuse.rgb;
+        float3 emissive        = gEmissive.rgb;
+        float3 specular        = gSpecular.rgb;
+        float3 sceneLightColor = gSceneLightColor.rgb;
+        float3 environment     = (float3)0;
+        float3 normal          = IN.Normal;
+        float2 texCoords       = (IN.Texture * gTextureRepeat) + gTextureOffset;
 
         float3x3 TBN = float3x3(IN.Tangent.xyz, IN.BiTangent.xyz, IN.Normal.xyz);
 
@@ -397,18 +398,13 @@ PS_OUTPUT main( PS_INPUT IN )
             normal = DoBumpMapping(TBN, BumpMap, AnisotropicSampler, texCoords, gBumpScale);
         if(gUseDiffuseMap == 1)
         {
-            albedo = DiffuseMap.Sample(AnisotropicSampler, texCoords).rgb;
+            float4 diffuseColor = DiffuseMap.Sample(AnisotropicSampler, texCoords);
+            albedo = diffuseColor.rgb;
             ambient = albedo;
+
+            if(gUseTransparencyMap == 0)
+                alpha = diffuseColor.a;
         }
-        if(gUseSpecularMap == 1)
-            specular.rgb = SpecularMap.Sample(AnisotropicSampler, texCoords).xyz;
-        if(gUseEmissiveMap == 1)
-            emissive = emissive * EmissiveMap.Sample(AnisotropicSampler, texCoords).rgb;
-        if(gUseOcclusionMap == 1)
-            albedo = albedo * OcclusionMap.Sample(AnisotropicSampler, texCoords).rgb;
-
-        LightingResult lit = ComputeLighting(IN.PositionWS.xyz, normalize(normal), castLight);
-
         if(gUseEnvironmentMap == 1)
         {
             if(gIndexOfRefraction != 0.0)
@@ -420,11 +416,24 @@ PS_OUTPUT main( PS_INPUT IN )
             if(reflectAndRefract > 1.0) reflectAndRefract = 1.0;
             albedo = albedo * (1.0 - reflectAndRefract);
         }
+        if(gUseSpecularMap == 1)
+            specular.rgb = SpecularMap.Sample(AnisotropicSampler, texCoords).xyz;
+        if(gUseEmissiveMap == 1)
+            emissive = emissive * EmissiveMap.Sample(AnisotropicSampler, texCoords).rgb;
+
+        LightingResult lit = ComputeLighting(IN.PositionWS.xyz, normalize(normal), castLight);
+
+        if(gUseOcclusionMap == 1)
+        {
+            float3 occlusion = OcclusionMap.Sample(AnisotropicSampler, texCoords).rgb;
+            lit.Diffuse = lit.Diffuse * occlusion;
+            sceneLightColor = sceneLightColor * occlusion;
+        }
 
         diffuse = diffuse * lit.Diffuse.rgb;
         specular = specular * lit.Specular.rgb;
 
-        OUT.Scene.rgb = (gSceneLightColor.rgb * ambient + emissive + diffuse + specular) * (albedo + environment);
+        OUT.Scene.rgb = (sceneLightColor * ambient + emissive + diffuse + specular) * (albedo + environment);
         OUT.Scene.a = alpha;
 
         float3 NDCPos = (IN.CurrPosition / IN.CurrPosition.w).xyz;

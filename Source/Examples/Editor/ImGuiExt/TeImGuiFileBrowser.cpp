@@ -685,7 +685,7 @@ namespace te
                     if (Data.MeshParam.ScaleSystemUnit)
                     {
                         ImGui::Indent(30.0f);
-                        ImGuiExt::RenderOptionFloat(Data.MeshParam.ScaleFactor, "##file_dialog_parameters_mesh_scaleFactor", "Scale Factor", 0.001f, 1000.0f, 50.0f);
+                        ImGuiExt::RenderOptionFloat(Data.MeshParam.ScaleFactor, "##file_dialog_parameters_mesh_scaleFactor", "Scale Factor", 0.001f, 1000.0f, 100.0f);
                         ImGui::Unindent(30.0f);
                     }
 

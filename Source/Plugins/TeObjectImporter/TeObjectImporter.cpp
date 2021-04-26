@@ -183,6 +183,7 @@ namespace te
         assimpImportOptions.ImportAnimations   = meshImportOptions->ImportAnimations;
         assimpImportOptions.ImportMaterials    = meshImportOptions->ImportMaterials;
         assimpImportOptions.ReduceKeyframes    = meshImportOptions->ReduceKeyFrames;
+        assimpImportOptions.FilePath           = filePath;
 
         ParseScene(scene, assimpImportOptions, importedScene);
 
@@ -256,13 +257,28 @@ namespace te
 
                 if (options.ImportMaterials)
                 {
-                    auto BindTexture = [this](aiMaterial* aiMat, aiTextureType textureType, String& path, bool& use)
+                    auto BindTexture = [options](aiMaterial* aiMat, aiTextureType textureType, String& path, bool& use)
                     {
                         aiString aiPath;
                         int textureIndex = 0;
                         if (aiMat->GetTexture(textureType, textureIndex, &aiPath) == AI_SUCCESS)
                         {
                             path = aiPath.C_Str();
+                            std::filesystem::path texturePath(path);
+                            std::filesystem::path modelPath(options.FilePath);
+
+                            if (!texturePath.is_absolute() && modelPath.is_absolute())
+                            {
+                                modelPath = modelPath.parent_path();
+#if TE_PLATFORM == TE_PLATFORM_WIN32
+                                modelPath += "\\" + path;
+#else
+                                modelPath += "/" + path;
+#endif
+                                
+                                path = modelPath.generic_string();
+                            }
+
                             use = true;
                         }
                     };

@@ -25,30 +25,32 @@ namespace te
         Opaque = 0x0,
         /** Shader used for transparent 3D geometry. */
         Transparent = 0x1,
+        /** Shader used for transparent 3D geometry without backface culling. */
+        TransparentCullNone = 0x2,
         /** Shader used to blit a texture on a screen quad */
-        Blit = 0x2,
+        Blit = 0x3,
         /** Shader used to render a skybox in a scene */
-        Skybox = 0x3,
+        Skybox = 0x4,
         /** Shader used for FXAA post process */
-        FXAA = 0x4,
+        FXAA = 0x5,
         /** Shader used for tone mapping post process */
-        ToneMapping = 0x5,
+        ToneMapping = 0x6,
         /** Shader used for bloom post process */
-        Bloom = 0x6,
+        Bloom = 0x7,
         /** Shader used for motion blur post process */
-        MotionBlur = 0x7,
+        MotionBlur = 0x8,
         /** Shader used for gaussian blur post process */
-        GaussianBlur = 0x8,
+        GaussianBlur = 0x9,
         /** Shader used for picking */
-        Picking = 0x9,
+        Picking = 0xA,
         /** Shader used for hud picking */
-        HudPicking = 0xA,
+        HudPicking = 0xB,
         /** Shader used for selection */
-        Selection = 0xB,
+        Selection = 0xC,
         /** Shader used for hud draw and selection */
-        HudSelection = 0xC,
+        HudSelection = 0xD,
         /** Shared used for Bullet physic debug display */
-        BulletDebug = 0xD
+        BulletDebug = 0xE
     };
 
     /** Types of builtin shaders that are always available. */
@@ -150,7 +152,7 @@ namespace te
         void InitSamplers();
 
         void InitShaderOpaque();
-        void InitShaderTransparent();
+        void InitShaderTransparent(bool cull = true);
         void InitShaderBlit();
         void InitShaderSkybox();
         void InitShaderFXAA();
@@ -171,6 +173,7 @@ namespace te
     private:
         HShader _shaderOpaque;
         HShader _shaderTransparent;
+        HShader _shaderTransparentCullNone;
         HShader _shaderBlit;
         HShader _shaderSkybox;
         HShader _shaderFXAA;

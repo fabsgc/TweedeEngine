@@ -476,11 +476,11 @@ namespace te
                 material.MaterialProp.UseTransparencyMap = true;
             }
 
-            /*if (material.Occlusion != "")
+            if (material.Occlusion != "")
             {
                 material.OcclusionTexture = gResourceManager().Load<Texture>(material.Occlusion, textureImportOptions);
                 material.MaterialProp.UseOcclusionMap = true;
-            }*/
+            }
 
             if (material.Reflection != "")
             {
@@ -510,7 +510,7 @@ namespace te
             if (material.Bump != "") material.MaterialElement->SetTexture("BumpMap", material.BumpTexture, surface);
             if (material.Transparency != "") material.MaterialElement->SetTexture("TransparencyMap", material.TransparencyTexture, surface);
             if (material.Reflection != "") material.MaterialElement->SetTexture("ReflectionMap", material.ReflectionTexture, surface);
-            //if (material.Occlusion != "") material.MaterialElement->SetTexture("OcclusionMap", material.OcclusionTexture, surface);
+            if (material.Occlusion != "") material.MaterialElement->SetTexture("OcclusionMap", material.OcclusionTexture, surface);
             //if (material.Environment) material.MaterialElement->SetTexture("EnvironmentMap", material.EnvironmentTexture);
 
             material.MaterialElement->SetProperties(material.MaterialProp);

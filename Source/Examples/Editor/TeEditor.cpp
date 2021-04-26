@@ -1337,12 +1337,14 @@ namespace te
 
         HShader opaqueShader = gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque);
         HShader transparentShader = gBuiltinResources().GetBuiltinShader(BuiltinShader::Transparent);
+        HShader transparentShaderCullNone = gBuiltinResources().GetBuiltinShader(BuiltinShader::TransparentCullNone);
 
         //EditorResManager::Instance().Add<Material>(_monkeyMaterial);
         EditorResManager::Instance().Add<Material>(_planeMaterial);
         EditorResManager::Instance().Add<Material>(_knightMaterial);
         EditorResManager::Instance().Add<Shader>(opaqueShader);
         EditorResManager::Instance().Add<Shader>(transparentShader);
+        EditorResManager::Instance().Add<Shader>(transparentShaderCullNone);
 #endif
     }
 

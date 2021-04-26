@@ -32,6 +32,7 @@ namespace te
         float AnimSampleRate = 1.0f / 60.0f;
         bool AnimResample = false;
         bool ReduceKeyframes = true;
+        String FilePath;
     };
 
     /**	Represents a single node in the assimp hierarchy. */

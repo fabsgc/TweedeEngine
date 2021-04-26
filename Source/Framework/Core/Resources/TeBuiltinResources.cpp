@@ -50,6 +50,11 @@ namespace te
                 InitShaderTransparent();
             shader = _shaderTransparent;
             break;
+        case BuiltinShader::TransparentCullNone:
+            if(!_shaderTransparentCullNone.IsLoaded())
+                InitShaderTransparent(false);
+            shader = _shaderTransparentCullNone;
+            break;
         case BuiltinShader::Blit:
             if(!_shaderBlit.IsLoaded())
                 InitShaderBlit();
@@ -819,7 +824,7 @@ namespace te
         _shaderOpaque = Shader::Create("ForwardOpaque", shaderDesc);
     }
 
-    void BuiltinResources::InitShaderTransparent()
+    void BuiltinResources::InitShaderTransparent(bool cull)
     {
         _blendTransparentStateDesc.RenderTargetDesc[0].BlendEnable = true;
         _blendTransparentStateDesc.RenderTargetDesc[0].SrcBlend = BlendFactor::BF_SOURCE_ALPHA;
@@ -837,7 +842,10 @@ namespace te
         passDesc.VertexProgramDesc = _vertexShaderForwardDesc;
         passDesc.PixelProgramDesc = _pixelShaderForwardDesc;
 
-        passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_CLOCKWISE;
+        if(cull)
+            passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_CLOCKWISE;
+        else
+            passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
 
         HPass pass = Pass::Create(passDesc);
         HTechnique technique = Technique::Create("hlsl", { pass.GetInternalPtr() });
@@ -848,7 +856,10 @@ namespace te
         shaderDesc.QueueType = QueueSortType::BackToFront;
         shaderDesc.Techniques.push_back(technique.GetInternalPtr());
 
-        _shaderTransparent = Shader::Create("ForwardTransparent", shaderDesc);
+        if(cull)
+            _shaderTransparent = Shader::Create("ForwardTransparent", shaderDesc);
+        else
+            _shaderTransparentCullNone = Shader::Create("ForwardTransparentCullNone", shaderDesc);
     }
 
     void BuiltinResources::InitShaderBlit()
