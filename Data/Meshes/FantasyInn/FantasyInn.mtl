@@ -10,6 +10,6 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd Data\Textures\FantasyInn\diffuse.png
-map_Kn Data\Textures\FantasyInn\normal.png
-map_emissive Data\Textures\FantasyInn\emissive.png
+map_Kd ..\..\Textures\FantasyInn\diffuse.png
+map_Kn ..\..\Textures\FantasyInn\normal.png
+map_emissive ..\..\Textures\FantasyInn\emissive.png
