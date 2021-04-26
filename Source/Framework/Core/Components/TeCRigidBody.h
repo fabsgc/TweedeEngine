@@ -38,6 +38,12 @@ namespace te
         /** Returns the Rigidbody implementation wrapped by this component. */
         Body* GetInternal() const override { return (RigidBody*)(_internal.get()); }
 
+        /** @copydoc RigidBody::SetAngularFactor() */
+        void SetAngularFactor(const Vector3& angularFactor);
+
+        /** @copydoc RigidBody::GetAngularFactor() */
+        const Vector3& GetAngularFactor() const { return _angularFactor; }
+
     protected:
         friend class SceneObject;
         friend class CCollider;
@@ -114,5 +120,8 @@ namespace te
 
     protected:
         CRigidBody(); // Serialization only
+
+    protected:
+        Vector3 _angularFactor = Vector3::ONE;
     };
 }

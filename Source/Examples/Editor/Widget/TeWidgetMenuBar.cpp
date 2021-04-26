@@ -127,6 +127,13 @@ namespace te
                         widget->SetVisible(!widget->GetVisible());
                 }
 
+                if (ImGui::MenuItem(ICON_FA_CHART_LINE "  " ICON_FA_GRIP_LINES_VERTICAL "  Settings"))
+                {
+                    Widget* widget = static_cast<Widget*>(gEditor().GetWidget(WidgetType::Settings));
+                    if (widget)
+                        widget->SetVisible(!widget->GetVisible());
+                }
+
                 if (ImGui::MenuItem(ICON_FA_COG "  " ICON_FA_GRIP_LINES_VERTICAL "  Render options"))
                 { 
                     Widget* widget = static_cast<Widget*>(gEditor().GetWidget(WidgetType::RenderOptions));

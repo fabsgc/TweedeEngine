@@ -195,7 +195,7 @@ namespace te
 
     void BulletRigidBody::SetFriction(float friction)
     {
-        if (!_rigidBody || _friction == friction)
+        if (!_rigidBody)
             return;
 
         _friction = friction;
@@ -204,7 +204,7 @@ namespace te
 
     void BulletRigidBody::SetRollingFriction(float rollingFriction)
     {
-        if (!_rigidBody || _rollingFriction == rollingFriction)
+        if (!_rigidBody)
             return;
 
         _rollingFriction = rollingFriction;
@@ -213,7 +213,7 @@ namespace te
 
     void BulletRigidBody::SetRestitution(float restitution)
     {
-        if (!_rigidBody || _restitution == restitution)
+        if (!_rigidBody)
             return;
 
         _restitution = restitution;
@@ -291,6 +291,20 @@ namespace te
     void BulletRigidBody::SetCollisionReportMode(CollisionReportMode mode)
     {
         _collisionReportMode = mode;
+    }
+
+    void BulletRigidBody::SetAngularFactor(const Vector3& angularFactor)
+    {
+        if (!_rigidBody)
+            return;
+
+        _angularFactor = angularFactor;
+        _rigidBody->setAngularFactor(ToBtVector3(_angularFactor));
+    }
+
+    const Vector3& BulletRigidBody::GetAngularFactor() const
+    {
+        return _angularFactor;
     }
 
     void BulletRigidBody::AddCollider(Collider* collider)

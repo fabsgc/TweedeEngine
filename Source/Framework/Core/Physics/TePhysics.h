@@ -46,6 +46,9 @@ namespace te
         /** Allow user to see debug information about physical simulation */
         virtual void DrawDebug(const SPtr<Camera>& camera, const SPtr<RenderTarget>& renderTarget) = 0;
 
+        /** Determines gravity to apply to the scene */
+        virtual void SetGravity(const Vector3& gravity) = 0;
+
         /** Checks is the physics simulation update currently in progress. */
         bool IsUpdateInProgress() const { return _updateInProgress; }
 

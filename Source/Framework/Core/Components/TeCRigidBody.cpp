@@ -38,11 +38,24 @@ namespace te
     void CRigidBody::Clone(const HRigidBody& c)
     { 
         CBody::Clone(static_object_cast<CBody>(c));
+
+        _angularFactor = c->_angularFactor;
     }
 
     void CRigidBody::Update()
     {
         CBody::Update();
+    }
+
+    void CRigidBody::SetAngularFactor(const Vector3& angularFactor)
+    {
+        if (_angularFactor == angularFactor)
+            return;
+
+        _angularFactor = angularFactor;
+
+        if (_internal != nullptr)
+            std::static_pointer_cast<RigidBody>(_internal)->SetAngularFactor(_angularFactor);
     }
 
     void CRigidBody::OnInitialized()
@@ -87,9 +100,11 @@ namespace te
         _internal->SetIsDebug(_isDebug);
         _internal->SetFlags(_flags);
         _internal->SetCollisionReportMode(_collisionReportMode);
-
+        _internal->SetCollisionReportMode(_collisionReportMode);
         _internal->SetCenterOfMass(_centerOfMass);
         _internal->SetMass(_mass);
+
+        std::static_pointer_cast<RigidBody>(_internal)->SetAngularFactor(_angularFactor);
     }
 
     void CRigidBody::OnTransformChanged(TransformChangedFlags flags)

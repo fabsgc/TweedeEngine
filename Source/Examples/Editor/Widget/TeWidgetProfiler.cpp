@@ -1,6 +1,5 @@
 #include "TeWidgetProfiler.h"
 
-#include "Math/TeMath.h"
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
 

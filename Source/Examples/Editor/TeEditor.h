@@ -31,6 +31,8 @@ namespace te
         enum class WindowType
         {
             Project,
+            Profiler,
+            Settings,
             RenderOptions,
             Console,
             Resources,
@@ -66,6 +68,7 @@ namespace te
             SPtr<Widget> WToolbar = nullptr;
             SPtr<Widget> WProject = nullptr;
             SPtr<Widget> WProfiler = nullptr;
+            SPtr<Widget> WSettings = nullptr;
             SPtr<Widget> WRenderOptions = nullptr;
             SPtr<Widget> WConsole = nullptr;
             SPtr<Widget> WResources = nullptr;
@@ -73,8 +76,8 @@ namespace te
             SPtr<Widget> WScript = nullptr;
             SPtr<Widget> WMaterials = nullptr;
             SPtr<Widget> WProperties = nullptr;
-
             SPtr<Widget> WMaterial = nullptr;
+
             const char* EditorName = "Editor";
             bool Show = true;
 

@@ -62,6 +62,7 @@ set (TE_EDITOR_INC_WIDGET
     "Widget/TeWidgetScript.h"
     "Widget/TeWidgetMaterials.h"
     "Widget/TeWidgetProfiler.h"
+    "Widget/TeWidgetSettings.h"
 )
 
 set (TE_EDITOR_SRC_WIDGET
@@ -77,6 +78,7 @@ set (TE_EDITOR_SRC_WIDGET
     "Widget/TeWidgetScript.cpp"
     "Widget/TeWidgetMaterials.cpp"
     "Widget/TeWidgetProfiler.cpp"
+    "Widget/TeWidgetSettings.cpp"
 )
 
 source_group ("" FILES ${TE_EDITOR_SRC_NOFILTER} ${TE_EDITOR_INC_NOFILTER})

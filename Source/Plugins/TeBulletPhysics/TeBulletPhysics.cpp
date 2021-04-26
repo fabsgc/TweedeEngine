@@ -28,7 +28,6 @@ namespace te
 
     BulletPhysics::BulletPhysics(const PHYSICS_INIT_DESC& desc)
         : Physics(desc)
-        , _initDesc(desc)
         , _paused(false)
     {
         _broadphase = te_new<btDbvtBroadphase>();
@@ -150,6 +149,17 @@ namespace te
         }
 
         rapi.SetRenderTarget(nullptr);
+    }
+
+    void BulletPhysics::SetGravity(const Vector3& gravity)
+    {
+        _initDesc.Gravity = gravity;
+
+        for (auto& scene : _scenes)
+        {
+            if (scene->_world)
+                scene->_world->setGravity(ToBtVector3(gravity));
+        }
     }
 
     using bp = BulletPhysics;

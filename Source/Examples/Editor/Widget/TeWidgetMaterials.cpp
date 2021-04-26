@@ -214,9 +214,9 @@ namespace te
                 }
                 ImGui::Separator();
                 {
-                    if (ImGuiExt::RenderOptionFloat(properties.SpecularPower, "##material_properties_specular_p_option", "Spec. power", 0.0f, 512.0f, width))
+                    if (ImGuiExt::RenderOptionFloat(properties.SpecularPower, "##material_properties_specular_p_option", "Spec. power", 0.0f, 1024.0f, width))
                         hasChanged = true;
-                    if (ImGuiExt::RenderOptionFloat(properties.SpecularStrength, "##material_properties_specular_s_option", "Spec. strength", 0.0f, 128.0f, width))
+                    if (ImGuiExt::RenderOptionFloat(properties.SpecularStrength, "##material_properties_specular_s_option", "Spec. strength", 0.0f, 256.0f, width))
                         hasChanged = true;
                 }
                 ImGui::Separator();

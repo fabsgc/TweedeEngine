@@ -626,6 +626,18 @@ namespace te
         {
             if (ShowBody(rigidBody))
                 hasChanged = true;
+
+            ImGui::Separator();
+
+            // Angular Factor
+            {
+                Vector3 angularFactor = rigidBody->GetAngularFactor();
+                if (ImGuiExt::RenderVector3(angularFactor, "##rigid_body_option_angular_factor", " Angular Factor", 60.0f))
+                {
+                    rigidBody->SetAngularFactor(angularFactor);
+                    hasChanged = true;
+                }
+            }
         }
 
         return hasChanged;

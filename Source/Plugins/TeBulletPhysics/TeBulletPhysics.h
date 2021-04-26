@@ -49,14 +49,17 @@ namespace te
         /** @copydoc Physics::Update */
         void Update() override;
 
-        /** @copydoc Physics::SetPaused */
+        /** @copydoc Physics::SetPaused() */
         void SetPaused(bool paused) override;
 
-        /** @copydoc Physics::SetPaused */
+        /** @copydoc Physics::SetPaused() */
         bool IsPaused() const override;
 
-        /** @copydoc Physics::DrawDebug */
+        /** @copydoc Physics::DrawDebug() */
         void DrawDebug(const SPtr<Camera>& camera, const SPtr<RenderTarget>& renderTarget) override;
+
+        /** @copydoc Physics::SetGravity() */
+        virtual void SetGravity(const Vector3& gravity) override;
 
         /** Notifies the system that at physics scene is about to be destroyed. */
         void NotifySceneDestroyed(BulletScene* scene);
@@ -64,7 +67,6 @@ namespace te
     private:
         friend class BulletScene;
 
-        PHYSICS_INIT_DESC _initDesc;
         bool _paused;
 
         btBroadphaseInterface* _broadphase = nullptr;

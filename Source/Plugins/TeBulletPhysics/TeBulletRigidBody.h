@@ -105,10 +105,10 @@ namespace te
         void ApplyTorque(const Vector3& torque, ForceMode mode) const override;
 
         /** @copydoc Body::SetCollisionReportMode() */
-        virtual void SetCollisionReportMode(CollisionReportMode mode) override;
+        void SetCollisionReportMode(CollisionReportMode mode) override;
 
         /** @copydoc Body::GetCollisionReportMode() */
-        virtual CollisionReportMode GetCollisionReportMode() const { return _collisionReportMode; }
+        CollisionReportMode GetCollisionReportMode() const { return _collisionReportMode; }
 
         /** @copydoc Body::AddCollider() */
         void AddCollider(Collider*) override;
@@ -124,6 +124,12 @@ namespace te
 
         /** @copydoc Body::SetFlags() */
         void SetFlags(BodyFlag flags) override;
+
+        /** @copydoc RigidBody::SetAngularFactor() */
+        void SetAngularFactor(const Vector3& angularFactor) override;
+
+        /** @copydoc RigidBody::GetAngularFactor() */
+        const Vector3& GetAngularFactor() const override;
 
     private:
         /** Add RigidBody to world */
@@ -187,6 +193,7 @@ namespace te
         Vector3 _position = Vector3::ZERO;
         Vector3 _velocity = Vector3::ZERO;
         Vector3 _angularVelocity = Vector3::ZERO;
+        Vector3 _angularFactor = Vector3::ONE;
         Quaternion _rotation = Quaternion::IDENTITY;
 
         BodyFlag _flags = (BodyFlag)((UINT32)BodyFlag::None);
