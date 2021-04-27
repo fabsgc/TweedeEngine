@@ -249,23 +249,16 @@ namespace te
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         // TODO Temp for debug purpose
-        HMesh _loadedMeshMonkey;
         HMesh _loadedMeshPlane;
         HMesh _loadedMeshKnight;
-        HTexture _loadedTextureMonkey;
         HTexture _loadedSkyboxTexture;
+        HTexture _loadedSkyboxIrradianceTexture;
         HTexture _loadedPlaneTexture;
-        HTexture _loadedGroundDiffuseTexture;
-        HTexture _loadedGroundNormalTexture;
-        HTexture _loadedGroundParallaxTexture;
-        HTexture _loadedGroundSpecularTexture;
         HTexture _loadedKnightDiffuseTexture;
 
-        HMaterial _monkeyMaterial;
         HMaterial _planeMaterial;
         HMaterial _knightMaterial;
 
-        HSceneObject _sceneRenderableMonkeySO;
         HSceneObject _sceneRenderablePlaneSO;
         HSceneObject _sceneRenderableKnightSO;
         HSceneObject _sceneLightSO;
@@ -276,7 +269,6 @@ namespace te
 
         HLight _light;
         HSkybox _skybox;
-        HRenderable _renderableMonkey;
         HRenderable _renderablePlane;
         HRenderable _renderableKnight;
 

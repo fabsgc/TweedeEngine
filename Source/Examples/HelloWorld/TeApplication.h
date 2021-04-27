@@ -42,22 +42,18 @@ namespace te
         HCamera _sceneCamera;
         HCameraFlyer _sceneCameraFlyer;
 
-        HMesh _loadedMeshCube;
         HMesh _loadedMeshMonkey;
 
-        HTexture _loadedTextureCube;
         HTexture _loadedTextureMonkey;
         HTexture _loadedCubemapTexture;
+        HTexture _loadedCubemapIrradianceTexture;
 
-        HMaterial _materialCube;
         HMaterial _materialMonkey;
 
         HSceneObject _sceneCameraSO;
-        HSceneObject _sceneRenderableSO;
         HSceneObject _sceneLightSO;
         HSceneObject _sceneSkyboxSO;
 
-        HRenderable _renderableCube;
         HLight _light;
         HSkybox _skybox;
 

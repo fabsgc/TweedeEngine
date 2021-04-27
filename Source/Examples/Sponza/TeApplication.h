@@ -91,6 +91,7 @@ namespace te
         HMaterial _monkeyMaterial;
 
         HTexture _loadedSkyboxTexture;
+        HTexture _loadedSkyboxIrradianceTexture;
         HTexture _loadedTextureMonkey;
 
         HCamera _sceneCamera;

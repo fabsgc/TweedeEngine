@@ -53,6 +53,8 @@ namespace te
         gPerMaterialParamDef.gUseReflectionMap.Set(perMaterialBuffer, data.gUseReflectionMap);
         gPerMaterialParamDef.gUseOcclusionMap.Set(perMaterialBuffer, data.gUseOcclusionMap);
         gPerMaterialParamDef.gUseEnvironmentMap.Set(perMaterialBuffer, data.gUseEnvironmentMap);
+        gPerMaterialParamDef.gUseIrradianceMap.Set(perMaterialBuffer, data.gUseIrradianceMap);
+        gPerMaterialParamDef.gUseGlobalIllumination.Set(perMaterialBuffer, data.gUseGlobalIllumination);
         gPerMaterialParamDef.gSpecularPower.Set(perMaterialBuffer, data.gSpecularPower);
         gPerMaterialParamDef.gSpecularStrength.Set(perMaterialBuffer, data.gSpecularStrength);
         gPerMaterialParamDef.gTransparency.Set(perMaterialBuffer, data.gTransparency);
@@ -62,6 +64,7 @@ namespace te
         gPerMaterialParamDef.gBumpScale.Set(perMaterialBuffer, data.gBumpScale);
         gPerMaterialParamDef.gParallaxScale.Set(perMaterialBuffer, data.gParallaxScale);
         gPerMaterialParamDef.gAlphaThreshold.Set(perMaterialBuffer, data.gAlphaThreshold);
+        
     }
 
     MaterialData PerObjectBuffer::ConvertMaterialProperties(const MaterialProperties& properties)
@@ -83,6 +86,8 @@ namespace te
         data.gUseReflectionMap = (UINT32)properties.UseReflectionMap ? 1 : 0;
         data.gUseOcclusionMap = (UINT32)properties.UseOcclusionMap ? 1 : 0;
         data.gUseEnvironmentMap = (UINT32)properties.UseEnvironmentMap ? 1 : 0;
+        data.gUseIrradianceMap = (UINT32)properties.UseIrradianceMap ? 1 : 0;
+        data.gUseGlobalIllumination = (UINT32)properties.UseGlobalIllumination ? 1 : 0;
         data.gSpecularPower = properties.SpecularPower;
         data.gSpecularStrength = properties.SpecularStrength;
         data.gTransparency = properties.Transparency;
@@ -92,6 +97,7 @@ namespace te
         data.gBumpScale = properties.BumpScale;
         data.gParallaxScale = properties.ParallaxScale;
         data.gAlphaThreshold = properties.AlphaThreshold;
+
         return data;
     }
 

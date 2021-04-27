@@ -57,6 +57,7 @@ namespace te
 
         Vector<MaterialData> _materials;
         HTexture _skyboxTexture;
+        HTexture _skyboxIrradianceTexture;
 
         HMaterial _floorMaterial;
         HMaterial _wallMaterial;

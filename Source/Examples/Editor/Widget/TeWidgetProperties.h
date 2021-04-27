@@ -144,6 +144,7 @@ namespace te
 
         bool _loadMesh = false;
         bool _loadSkybox = false;
+        bool _loadSkyboxIrradiance = false;
         bool _loadScript = false;
         bool _loadAudioClip = false;
     };

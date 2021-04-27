@@ -488,9 +488,17 @@ namespace te
     void RendererScene::SetParamSkyboxParams()
     {
         if(_info.SkyboxElem != nullptr)
-            gPerFrameParamDef.gEnvironementBrightness.Set(_info.PerFrameParamBuffer, _info.SkyboxElem->GetBrightness());
+        {
+            gPerFrameParamDef.gSkyboxBrightness.Set(_info.PerFrameParamBuffer, _info.SkyboxElem->GetBrightness());
+            gPerFrameParamDef.gUseSkyboxMap.Set(_info.PerFrameParamBuffer, _info.SkyboxElem->GetTexture() ? 1 : 0);
+            gPerFrameParamDef.gUseSkyboxIrradianceMap.Set(_info.PerFrameParamBuffer, _info.SkyboxElem->GetIrradiance() ? 1 : 0);
+        }
         else
-            gPerFrameParamDef.gEnvironementBrightness.Set(_info.PerFrameParamBuffer, 1.0f);
+        {
+            gPerFrameParamDef.gSkyboxBrightness.Set(_info.PerFrameParamBuffer, 1.0f);
+            gPerFrameParamDef.gUseSkyboxMap.Set(_info.PerFrameParamBuffer, 0);
+            gPerFrameParamDef.gUseSkyboxIrradianceMap.Set(_info.PerFrameParamBuffer, 0);
+        }
     }
 
     void RendererScene::PrepareRenderable(UINT32 idx, const FrameInfo& frameInfo)

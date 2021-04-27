@@ -67,10 +67,11 @@ namespace te
         auto textureCubeMapImportOptions = TextureImportOptions::Create();
         textureCubeMapImportOptions->CpuCached = false;
         textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
-        textureCubeMapImportOptions->Format = PF_RGBA8;
+        textureCubeMapImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
         textureCubeMapImportOptions->IsCubemap = true;
 
-        _loadedSkyboxTexture = gResourceManager().Load<Texture>("Data/Textures/Skybox/sky_night_2_large.jpeg", textureCubeMapImportOptions);
+        _loadedSkyboxTexture = gResourceManager().Load<Texture>("Data/Textures/Skybox/skybox_night_very_big.png", textureCubeMapImportOptions);
+        _loadedSkyboxIrradianceTexture = gResourceManager().Load<Texture>("Data/Textures/Skybox/skybox_night_irradiance_medium.png", textureCubeMapImportOptions);
 
         _materials =
         {
@@ -419,6 +420,7 @@ namespace te
         textureImportOptions->CpuCached = false;
         textureImportOptions->GenerateMips = true;
         textureImportOptions->MaxMip = 10;
+        textureImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
 
         TextureSurface surface;
         surface.MipLevel = 0;
@@ -488,12 +490,6 @@ namespace te
                 material.MaterialProp.UseReflectionMap = true;
             }
 
-            /*if (material.Environment)
-            {
-                material.EnvironmentTexture = _loadedSkyboxTexture;
-                material.MaterialProp.UseEnvironmentMap = true;
-            }*/
-
             if (material.Opacity < 1.0f || material.AlphaTreshold < 1.0f)
                 material.MaterialElement = Material::Create(_shaderTransparent);
             else
@@ -511,7 +507,6 @@ namespace te
             if (material.Transparency != "") material.MaterialElement->SetTexture("TransparencyMap", material.TransparencyTexture, surface);
             if (material.Reflection != "") material.MaterialElement->SetTexture("ReflectionMap", material.ReflectionTexture, surface);
             if (material.Occlusion != "") material.MaterialElement->SetTexture("OcclusionMap", material.OcclusionTexture, surface);
-            //if (material.Environment) material.MaterialElement->SetTexture("EnvironmentMap", material.EnvironmentTexture);
 
             material.MaterialElement->SetProperties(material.MaterialProp);
         };
@@ -551,7 +546,6 @@ namespace te
         _loadedTextureMonkey = gResourceManager().Load<Texture>("Data/Textures/Monkey/diffuse.png", textureImportOptions);
         properties.Emissive = Color(0.0f, 0.0f, 0.0f, 1.0f);
         properties.UseDiffuseMap = true;
-        properties.UseEnvironmentMap = true;
         properties.SpecularPower = 128.0f;
         properties.Specular = Color(1.0f, 1.0f, 1.0f, 1.0);
         properties.Reflection = 0.4f;
@@ -597,6 +591,8 @@ namespace te
         _sceneSkyboxSO = SceneObject::Create("Skybox");
         _skybox = _sceneSkyboxSO->AddComponent<CSkybox>();
         _skybox->SetTexture(_loadedSkyboxTexture);
+        _skybox->SetIrradiance(_loadedSkyboxIrradianceTexture);
+        _skybox->SetBrightness(0.5f);
         _skybox->Initialize();
 
         _sceneSponzaSO = SceneObject::Create("Sponza");
@@ -612,7 +608,6 @@ namespace te
         _monkeyRenderable->SetMesh(_monkeyMesh);
         _monkeyRenderable->SetMaterial(_monkeyMaterial);
         _monkeyRenderable->Initialize();
-        //_sceneMonkeySO->SetPosition(Vector3(2.0f, -3.05f, -28.0f));
         _sceneMonkeySO->SetPosition(Vector3(2.0f, -3.05f, -12.0f));
 
         for (INT32 i = -1; i < 2; i++)
@@ -637,10 +632,10 @@ namespace te
         _sceneCameraSO->LookAt(Vector3(0.0f, 1.5f, -3.0f));
 
         auto settings = _sceneCamera->GetRenderSettings();
-        settings->ExposureScale = 1.2f;
+        settings->ExposureScale = 1.1f;
         settings->Gamma = 0.8f;
         settings->Contrast = 1.65f;
-        settings->Brightness = -0.05f;
+        settings->Brightness = -0.1f;
         settings->Bloom.Intensity = 0.75f;
         settings->MotionBlur.Quality = MotionBlurQuality::High;
 

@@ -26,32 +26,95 @@ namespace te
 
     struct MaterialProperties
     {
+        /** Basic parameters for controlling color of the material */
         Color Ambient = Color(0.75f, 0.75f, 0.75f, 0.5f);
         Color Diffuse = Color(1.0f, 1.0f, 1.0f, 1.0f);
         Color Emissive = Color(0.0f, 0.0f, 0.0f, 1.0f);
         Color Specular = Color(1.0f, 1.0f, 1.0f, 0.5f);
+
+        /** Offsetting and Repeating of any texture used for this material */
         Vector2 TextureRepeat = Vector2(1.0f, 1.0f);
         Vector2 TextureOffset = Vector2(0.0f, 0.0f);
+
+        /** Controls global specular properties */
         float SpecularPower = 64.0f;
         float SpecularStrength = 1.0f;
+
+        /** Controls global transparency */
         float Transparency = 1.0f;
+
+        /** 
+         * Controls Reflection and Refraction strenght. 
+         * If no EnvironmentMap is set, it will try to use skybox texture instead.
+         */
         float IndexOfRefraction = 1.0f;
         float Refraction = 0.0f;
         float Reflection = 0.0f;
+
+        /** Controls Bump map strenght */
         float BumpScale = 1.0f;
+
+        /** Controls Parallax map strength */
         float ParallaxScale = 0.05f;
+
+        /**
+         * If alpha value (from transparency, diffuse map or transparency map)
+         * is below a certain value, pixel will not be visible
+         */
         float AlphaThreshold = 0.0f;
 
+        /**
+         * Albedo color texture. If this texture has an alpha channel, 
+         * it will use it for transparency
+         */
         bool UseDiffuseMap = false;
+
+        /** Emissive color texture */
         bool UseEmissiveMap = false;
+
+        /** Normals texture */
         bool UseNormalMap = false;
+
+        /** Specular texture. Disable SpecularPower ans SpecularStrength  */
         bool UseSpecularMap = false;
+
+        /** Bump mapping texture */
         bool UseBumpMap = false;
+
+        /** Parallax mapping texture */
         bool UseParallaxMap = false;
+
+        /** Transparency map. Disable transparency by global parameter or diffuse map */
         bool UseTransparencyMap = false;
+
+        /** Reflection map (not implemented yet) */
         bool UseReflectionMap = false;
+
+        /** Occlusion map */
         bool UseOcclusionMap = false;
+
+        /**
+         * Specify is a CubeMap texture is used for environment mapping. 
+         * Useful for Reflection, Refraction and DynamicEnvironmentMapping
+         */
         bool UseEnvironmentMap = false;
+
+        /**
+         * Specify is a CubeMap texture is used for global illumination. Useful for Global illumination
+         */
+        bool UseIrradianceMap = false;
+
+        /**
+         * Does this material must be illuminated using Global Illumination
+         * Global Illumination will use by default Skybox irradiance texture if available in the scene
+         * or material IrradianceMap otherwise. If no texture can be found, this step will not be performed
+         */
+        bool UseGlobalIllumination = true;
+
+        /** 
+         * If this is set to true, engine will try to find an available LightProbe or generate a custom CubeMap 
+         * and assign this on "EnvironmentMap" texture. Disable EnvionmentMap texture
+         */
         bool UseDynamicEnvironmentMap = false;
     };
 
@@ -67,6 +130,7 @@ namespace te
         String ReflectionMap;
         String OcclusionMap;
         String EnvironmentMap;
+        String IrradianceMap;
     };
 
     /**

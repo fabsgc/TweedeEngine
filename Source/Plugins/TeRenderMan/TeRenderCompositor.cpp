@@ -41,6 +41,29 @@ namespace te
             // We also set camera buffer view here (because it will set PerCameraBuffer correctly for the current pass on this material only once)
             if (!lastMaterial || lastMaterial != entry.RenderElem->MaterialElem)
             {
+                // If Globall Illumination is enabled and if a Skybox with a texture exists,,
+                // We bind this texture for this material
+                if (entry.RenderElem->MaterialElem->GetProperties().UseGlobalIllumination && 
+                    !entry.RenderElem->MaterialElem->GetProperties().UseIrradianceMap)
+                {
+                    if (view.GetRenderSettings().EnableSkybox)
+                    {
+                        Skybox* skybox = scene.SkyboxElem;
+                        SPtr<Texture> skyboxMap = skybox ? skybox->GetIrradiance() : nullptr;
+                        entry.RenderElem->GpuParamsElem[entry.PassIdx]->SetTexture("IrradianceMap", skyboxMap);
+                    } 
+                }
+
+                if (!entry.RenderElem->MaterialElem->GetProperties().UseEnvironmentMap)
+                {
+                    if (view.GetRenderSettings().EnableSkybox)
+                    {
+                        Skybox* skybox = scene.SkyboxElem;
+                        SPtr<Texture> skyboxMap = skybox ? skybox->GetTexture() : nullptr;
+                        entry.RenderElem->GpuParamsElem[entry.PassIdx]->SetTexture("EnvironmentMap", skyboxMap);
+                    }
+                }
+
                 gpuParamsBindFlags = GPU_BIND_ALL;
                 lastMaterial = entry.RenderElem->MaterialElem;
 

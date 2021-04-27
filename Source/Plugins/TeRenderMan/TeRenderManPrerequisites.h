@@ -46,6 +46,8 @@ namespace te
         UINT32  gUseReflectionMap;
         UINT32  gUseOcclusionMap;
         UINT32  gUseEnvironmentMap;
+        UINT32  gUseIrradianceMap;
+        UINT32  gUseGlobalIllumination;
         float   gSpecularPower;
         float   gSpecularStrength;
         float   gTransparency;
@@ -55,7 +57,6 @@ namespace te
         float   gBumpScale;
         float   gParallaxScale;
         float   gAlphaThreshold;
-        float   gPadding3;
     };
 
     struct LightData
@@ -90,7 +91,9 @@ namespace te
     TE_PARAM_BLOCK_BEGIN(PerFrameParamDef)
         TE_PARAM_BLOCK_ENTRY(float, gTime)
         TE_PARAM_BLOCK_ENTRY(float, gFrameDelta)
-        TE_PARAM_BLOCK_ENTRY(float, gEnvironementBrightness)
+        TE_PARAM_BLOCK_ENTRY(INT32, gUseSkyboxMap)
+        TE_PARAM_BLOCK_ENTRY(INT32, gUseSkyboxIrradianceMap)
+        TE_PARAM_BLOCK_ENTRY(float, gSkyboxBrightness)
         TE_PARAM_BLOCK_ENTRY(Vector4, gSceneLightColor)
     TE_PARAM_BLOCK_END
 
@@ -127,6 +130,8 @@ namespace te
         TE_PARAM_BLOCK_ENTRY(INT32, gUseReflectionMap)
         TE_PARAM_BLOCK_ENTRY(INT32, gUseOcclusionMap)
         TE_PARAM_BLOCK_ENTRY(INT32, gUseEnvironmentMap)
+        TE_PARAM_BLOCK_ENTRY(INT32, gUseIrradianceMap)
+        TE_PARAM_BLOCK_ENTRY(INT32, gUseGlobalIllumination)
         TE_PARAM_BLOCK_ENTRY(float, gSpecularPower)
         TE_PARAM_BLOCK_ENTRY(float, gSpecularStrength)
         TE_PARAM_BLOCK_ENTRY(float, gTransparency)

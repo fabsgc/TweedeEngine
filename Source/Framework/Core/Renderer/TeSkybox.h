@@ -34,11 +34,23 @@ namespace te
          */
         SPtr<Texture> GetTexture() const { return _texture; }
 
-        /** @copydoc Skybox::GetTexture */
+        /**
+         * Determines an environment map to use for sampling skybox irradiance. Must be a cube-map texture, and should ideally
+         * contain HDR data.
+         */
+        SPtr<Texture> GetIrradiance() const { return _irradiance; }
+
+        /** @copydoc Skybox::GetTexture() */
         void SetTexture(const HTexture& texture);
 
-        /** @copydoc Skybox::GetTexture */
+        /** @copydoc Skybox::GetTexture() */
         void SetTexture(const SPtr<Texture>& texture);
+
+        /** @copydoc Skybox::GetIrradiance() */
+        void SetIrradiance(const HTexture& irradiance);
+
+        /** @copydoc Skybox::GetIrradiance() */
+        void SetIrradiance(const SPtr<Texture>& irradiance);
 
         /** Creates a new skybox. */
         static SPtr<Skybox> Create();
@@ -63,6 +75,11 @@ namespace te
 
     protected:
         float _brightness = 1.0f; /**< Multiplier to apply to evaluated skybox values before using them. */
+        
+        /** Texture used to display in 3D scene */
         SPtr<Texture> _texture;
+
+        /** Texture used to compute global illumination */
+        SPtr<Texture> _irradiance;
     };
 }

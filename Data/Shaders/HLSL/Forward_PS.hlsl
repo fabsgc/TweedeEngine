@@ -33,6 +33,8 @@ cbuffer PerMaterialBuffer : register(b1)
     uint   gUseReflectionMap;
     uint   gUseOcclusionMap;
     uint   gUseEnvironmentMap;
+    uint   gUseIrradianceMap;
+    uint   gUseGlobalIllumination;
     float  gSpecularPower;
     float  gSpecularStrength;
     float  gTransparency;
@@ -42,7 +44,7 @@ cbuffer PerMaterialBuffer : register(b1)
     float  gBumpScale;
     float  gParallaxScale;
     float  gAlphaThreshold;
-    float  gPadding3;
+    float3 gPadding3;
 };
 
 cbuffer PerLightsBuffer : register(b2)
@@ -56,12 +58,21 @@ cbuffer PerFrameBuffer : register(b3)
 {
     float  gTime;
     float  gFrameDelta;
-    float  gEnvironmentBrightness;
-    float1 gPadding5;
+    uint   gUseSkyboxMap;
+    uint   gUseSkyboxIrradianceMap;
+    float  gSkyboxBrightness;
+    float3 gPadding5;
     float4 gSceneLightColor;
 }
 
 SamplerState AnisotropicSampler : register(s0);
+
+SamplerState LinearTextureSampler
+{
+    Filter = MIN_MAG_MIP_LINEAR;
+    AddressU = Wrap;
+    AddressV = Wrap;
+};
 
 Texture2D DiffuseMap : register(t0);
 Texture2D EmissiveMap : register(t1);
@@ -73,8 +84,10 @@ Texture2D TransparencyMap : register(t6);
 Texture2D ReflectionMap : register(t7);
 Texture2D OcclusionMap : register(t8);
 TextureCube EnvironmentMap : register(t9);
+TextureCube IrradianceMap : register(t10);
 
-static const float FrameDelta = 1 / 60.0;
+static const float FrameDelta = 1.0f / 60.0f;
+static const float PI = 3.14159265359f;
 
 float4 ComputeNormalBuffer(float4 normal)
 {
@@ -237,11 +250,12 @@ LightingResult DoSpotLight( LightData light, float3 V, float3 P, float3 N )
 // N : normal
 LightingResult ComputeLighting( float3 P, float3 N, bool castLight )
 {
-    float3 V = normalize( gViewOrigin - P );
     LightingResult totalResult = { {0, 0, 0}, {0, 0, 0} };
 
     if(castLight)
     {
+        float3 V = normalize( gViewOrigin - P );
+
         [unroll]
         for( uint i = 0; i < gLightsNumber; ++i )
         {
@@ -267,19 +281,69 @@ LightingResult ComputeLighting( float3 P, float3 N, bool castLight )
 
 float3 DoReflection(float3 P, float3 N)
 {
-    float3 I = normalize(P - gViewOrigin);
-    float3 R = reflect(I, normalize(N));
+    float3 result = (float3)0;
 
-    return EnvironmentMap.SampleLevel(AnisotropicSampler, R, 0).xyz * gReflection * gEnvironmentBrightness;
+    if((gUseEnvironmentMap || gUseSkyboxMap) && gReflection > 0.0)
+    {
+        float3 I = normalize(P - gViewOrigin);
+        float3 R = reflect(I, normalize(N));
+
+        result = EnvironmentMap.Sample(LinearTextureSampler, R).xyz * gReflection * gSkyboxBrightness;
+    }
+
+    return result;
 }
 
 float3 DoRefraction(float3 P, float3 N)
 {
-    float ratio = 1.0 / gIndexOfRefraction;
-    float3 I = normalize(P - gViewOrigin);
-    float3 R = refract(I, normalize(N), ratio);
+    float3 result = (float3)0;
 
-    return EnvironmentMap.SampleLevel(AnisotropicSampler, R, 0).xyz * gRefraction * gEnvironmentBrightness;
+    if((gUseEnvironmentMap || gUseSkyboxMap) && gRefraction > 0.0f)
+    {
+        float ratio = 1.0 / gIndexOfRefraction;
+        float3 I = normalize(P - gViewOrigin);
+        float3 R = refract(I, normalize(N), ratio);
+
+        result = EnvironmentMap.Sample(LinearTextureSampler, R).xyz * gRefraction * gSkyboxBrightness;
+    }
+
+    return result;
+}
+
+float3 GlobalIlluminationSampleVec(float cosPhi, float sinPhi, float cosTheta, float sinTheta, float3 right, float3 up, float3 N)
+{
+    float3 result = (float3)0;
+
+    float3 tangentSample = float3(sinTheta * cosPhi, sinTheta * sinPhi, cosTheta);
+    float3 sampleVec = tangentSample.x * right + tangentSample.y * up + tangentSample.z * N;
+    result = IrradianceMap.Sample(LinearTextureSampler, sampleVec).rgb * cosTheta * sinTheta * gSkyboxBrightness;
+
+    return result;
+}
+
+float3 DoGlobalIllumination(float3 N)
+{
+    float3 result = (float3)0;
+
+    if(gUseIrradianceMap || gUseSkyboxIrradianceMap)
+    {
+        float3 up     = float3(0.0f, 1.0f, 0.0f);
+        float3 right  = normalize(cross(up, N));
+        up            = normalize(cross(N, right));
+
+        result += GlobalIlluminationSampleVec(1.0f, 0.0f, 1.0f, 0.0f, right, up, N);
+        result += GlobalIlluminationSampleVec(1.0f, 0.0f, 0.54f, 0.84f, right, up, N);
+        /*result += GlobalIlluminationSampleVec(0.54f, 0.84f, 1.0f, 0.0f, right, up, N);
+        result += GlobalIlluminationSampleVec(0.54f, 0.84f, 0.54f, 0.84f, right, up, N);
+        result += GlobalIlluminationSampleVec(-0.41f, 0.90f, 1.0f, 0.0f, right, up, N);
+        result += GlobalIlluminationSampleVec(-0.41f, 0.90f, 0.54f, 0.84f, right, up, N);
+        result += GlobalIlluminationSampleVec(-0.98f, 0.14f, 1.0f, 0.0f, right, up, N);
+        result += GlobalIlluminationSampleVec(-0.98f, 0.14f, 0.54f, 0.84f, right, up, N);*/
+
+        result = PI * result * (1.0 / 2.0) * 2.0f;
+    }
+
+    return result;
 }
 
 float2 DoParallaxMapping(float2 texCoords, float2 parallaxOffsetTS, int nNumSteps, float bumpScale)
@@ -373,6 +437,7 @@ PS_OUTPUT main( PS_INPUT IN )
         float3 emissive        = gEmissive.rgb;
         float3 specular        = gSpecular.rgb;
         float3 sceneLightColor = gSceneLightColor.rgb;
+        float3 globalIllum     = float3(1.0f, 1.0f, 1.0f);
         float3 environment     = (float3)0;
         float3 normal          = IN.Normal;
         float2 texCoords       = (IN.Texture * gTextureRepeat) + gTextureOffset;
@@ -387,15 +452,15 @@ PS_OUTPUT main( PS_INPUT IN )
             // We express the sampling rate as a linear function of the angle between 
             // the geometric normal and the view direction ray:
             int parallaxSteps = (int)lerp( PARALLAX_MAX_SAMPLE, PARALLAX_MIN_SAMPLE, dot( IN.ViewDirWS, IN.Normal ) );
-
             texCoords = DoParallaxMapping(texCoords, IN.ParallaxOffsetTS, parallaxSteps, gParallaxScale);
         }
-        if(gUseReflectionMap == 1)
-            { /* TODO */ }
+
         if(gUseNormalMap == 1)
             normal = DoNormalMapping(TBN, NormalMap, AnisotropicSampler, texCoords);
+
         if(gUseBumpMap == 1)
             normal = DoBumpMapping(TBN, BumpMap, AnisotropicSampler, texCoords, gBumpScale);
+
         if(gUseDiffuseMap == 1)
         {
             float4 diffuseColor = DiffuseMap.Sample(AnisotropicSampler, texCoords);
@@ -405,8 +470,12 @@ PS_OUTPUT main( PS_INPUT IN )
             if(gUseTransparencyMap == 0)
                 alpha = diffuseColor.a;
         }
-        if(gUseEnvironmentMap == 1)
+
+        if(gUseEnvironmentMap == 1 || gUseSkyboxMap == 1)
         {
+            if(gUseReflectionMap == 1)
+            { /* TODO */ }
+
             if(gIndexOfRefraction != 0.0)
                 environment = DoRefraction(IN.PositionWS.xyz, normal);
             if(gReflection != 0.0)
@@ -416,8 +485,10 @@ PS_OUTPUT main( PS_INPUT IN )
             if(reflectAndRefract > 1.0) reflectAndRefract = 1.0;
             albedo = albedo * (1.0 - reflectAndRefract);
         }
+
         if(gUseSpecularMap == 1)
             specular.rgb = SpecularMap.Sample(AnisotropicSampler, texCoords).xyz;
+
         if(gUseEmissiveMap == 1)
             emissive = emissive * EmissiveMap.Sample(AnisotropicSampler, texCoords).rgb;
 
@@ -430,10 +501,13 @@ PS_OUTPUT main( PS_INPUT IN )
             sceneLightColor = sceneLightColor * occlusion;
         }
 
+        if(gUseGlobalIllumination == 1 && (gUseIrradianceMap == 1 || gUseSkyboxIrradianceMap == 1))
+            globalIllum = DoGlobalIllumination(normal);
+
         diffuse = diffuse * lit.Diffuse.rgb;
         specular = specular * lit.Specular.rgb;
 
-        OUT.Scene.rgb = (sceneLightColor * ambient + emissive + diffuse + specular) * (albedo + environment);
+        OUT.Scene.rgb = (globalIllum * sceneLightColor * ambient + emissive + diffuse + specular) * (albedo + environment);
         OUT.Scene.a = alpha;
 
         float3 NDCPos = (IN.CurrPosition / IN.CurrPosition.w).xyz;

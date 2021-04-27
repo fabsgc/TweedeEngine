@@ -62,8 +62,8 @@ namespace te
         /** @copydoc RenderElement::Draw */
         void Draw() const override;
 
-        UINT64 AnimationId;
-        RenderableAnimType AnimType;
+        UINT64 AnimationId = 0;
+        RenderableAnimType AnimType = RenderableAnimType::None;
         SPtr<GpuBuffer> BoneMatrixBuffer;
         SPtr<GpuBuffer> BonePrevMatrixBuffer;
     };

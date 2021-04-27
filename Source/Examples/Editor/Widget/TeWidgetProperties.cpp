@@ -1466,20 +1466,21 @@ namespace te
         UUID emptyTexture = UUID(50, 0, 0, 0);
         UUID loadTexture = UUID::EMPTY;
         UUID textureUUID = (skybox->GetTexture()) ? skybox->GetTexture()->GetUUID() : emptyTexture;
+        UUID irradianceuUUID = (skybox->GetIrradiance()) ? skybox->GetIrradiance()->GetUUID() : emptyTexture;
         EditorResManager::ResourcesContainer& container = EditorResManager::Instance().Get<Texture>();
+
+        for (auto& resource : container.Res)
+        {
+            SPtr<Texture> texture = std::static_pointer_cast<Texture>(resource.second.GetInternalPtr());
+            if (texture->GetProperties().GetTextureType() == TextureType::TEX_TYPE_CUBE_MAP)
+                texturesOptions.AddOption(resource.second->GetUUID(), resource.second->GetName());
+        }
+
+        texturesOptions.AddOption(emptyTexture, ICON_FA_TIMES_CIRCLE " No texture");
+        texturesOptions.AddOption(UUID::EMPTY, ICON_FA_FOLDER_OPEN " Load");
 
         // current texture to use
         {
-            for (auto& resource : container.Res)
-            {
-                SPtr<Texture> texture = std::static_pointer_cast<Texture>(resource.second.GetInternalPtr());
-                if(texture->GetProperties().GetTextureType() == TextureType::TEX_TYPE_CUBE_MAP)
-                    texturesOptions.AddOption(resource.second->GetUUID(), resource.second->GetName());
-            }
-
-            texturesOptions.AddOption(emptyTexture, ICON_FA_TIMES_CIRCLE " No texture");
-            texturesOptions.AddOption(UUID::EMPTY, ICON_FA_FOLDER_OPEN " Load");
-
             if (ImGuiExt::RenderOptionCombo<UUID>(&textureUUID, "##skybox_texture_option", "Texture", texturesOptions, width))
             {
                 if (textureUUID == loadTexture)
@@ -1494,6 +1495,28 @@ namespace te
                 else
                 {
                     skybox->SetTexture(gResourceManager().Load<Texture>(textureUUID).GetInternalPtr());
+                    hasChanged = true;
+                }
+            }
+        }
+        ImGui::Separator();
+
+        // current irradiance texture to use
+        {
+            if (ImGuiExt::RenderOptionCombo<UUID>(&irradianceuUUID, "##skybox_texture_irradiance_option", "Irradiance", texturesOptions, width))
+            {
+                if (irradianceuUUID == loadTexture)
+                {
+                    _loadSkyboxIrradiance = true;
+                }
+                else if (irradianceuUUID == emptyTexture)
+                {
+                    skybox->SetIrradiance(nullptr);
+                    hasChanged = true;
+                }
+                else
+                {
+                    skybox->SetIrradiance(gResourceManager().Load<Texture>(irradianceuUUID).GetInternalPtr());
                     hasChanged = true;
                 }
             }
@@ -1799,7 +1822,7 @@ namespace te
     {
         bool textureLoaded = false;
 
-        if (_loadSkybox)
+        if (_loadSkybox || _loadSkyboxIrradiance)
             ImGui::OpenPopup("Load Skybox Texture");
 
         if (_fileBrowser.ShowFileDialog("Load Skybox Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), false, ".png,.jpeg,.jpg"))
@@ -1816,11 +1839,17 @@ namespace te
                 texture->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
                 EditorResManager::Instance().Add<Texture>(texture);
                 SPtr<CSkybox> skybox = std::static_pointer_cast<CSkybox>(_selections.ClickedComponent);
-                skybox->SetTexture(texture.GetInternalPtr());
+
+                if(_loadSkybox)
+                    skybox->SetTexture(texture.GetInternalPtr());
+                else
+                    skybox->SetIrradiance(texture.GetInternalPtr());
+
                 textureLoaded = true;
             }
 
             _loadSkybox = false;
+            _loadSkyboxIrradiance = false;
         }
         else
         {

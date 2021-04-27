@@ -38,8 +38,10 @@ cbuffer PerFrameBuffer : register(b3)
 {
     float  gTime;
     float  gFrameDelta;
-    float  gEnvironmentBrightness;
-    float1 gPadding5;
+    uint   gUseSkyboxMap;
+    uint   gUseSkyboxIrradianceMap;
+    float  gSkyboxBrightness;
+    float3 gPadding5;
     float4 gSceneLightColor;
 }
 

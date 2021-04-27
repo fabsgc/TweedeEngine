@@ -16,6 +16,7 @@ namespace te
     { 
         _anisotropicSamplerState = nullptr;
         _bilinearSamplerState = nullptr;
+        _trilinearSamplerState = nullptr;
         _frameworkIcon = nullptr;
     }
 
@@ -452,7 +453,9 @@ namespace te
 
             SHADER_DATA_PARAM_DESC gTime("gTime", "gTime", GPDT_FLOAT1);
             SHADER_DATA_PARAM_DESC gFrameDeltaDesc("gFrameDelta", "gFrameDelta", GPDT_FLOAT1);
-            SHADER_DATA_PARAM_DESC gEnvironmentBrightnessDesc("gEnvironmentBrightness", "gEnvironmentBrightness", GPDT_FLOAT1);
+            SHADER_DATA_PARAM_DESC gUseSkyboxMapDesc("gUseSkyboxMap", "gUseSkyboxMap", GPDT_INT1);
+            SHADER_DATA_PARAM_DESC gUseSkyboxIrradianceMapDesc("gUseSkyboxIrradianceMap", "gUseSkyboxIrradianceMap", GPDT_INT1);
+            SHADER_DATA_PARAM_DESC gSkyboxBrightnessDesc("gSkyboxBrightness", "gSkyboxBrightness", GPDT_FLOAT1);
             SHADER_DATA_PARAM_DESC gSceneLightColorDesc("gSceneLightColor", "gSceneLightColor", GPDT_FLOAT4);
 
             SHADER_DATA_PARAM_DESC gMatWorldViewProj("gMatWorldViewProj", "gMatWorldViewProj", GPDT_MATRIX_4X4);
@@ -476,6 +479,8 @@ namespace te
             SHADER_DATA_PARAM_DESC gUseReflectionMap("gUseReflectionMap", "gUseReflectionMap", GPDT_INT1);
             SHADER_DATA_PARAM_DESC gUseOcclusionMap("gUseOcclusionMap", "gUseOcclusionMap", GPDT_INT1);
             SHADER_DATA_PARAM_DESC gUseEnvironmentMap("gUseEnvironmentMap", "gUseEnvironmentMap", GPDT_INT1);
+            SHADER_DATA_PARAM_DESC gUseIrradianceMap("gUseIrradianceMap", "gUseIrradianceMap", GPDT_INT1);
+            SHADER_DATA_PARAM_DESC gUseGlobalIllumination("gUseGlobalIllumination", "gUseGlobalIllumination", GPDT_INT1);
             SHADER_DATA_PARAM_DESC gSpecularPower("gSpecularPower", "gSpecularPower", GPDT_FLOAT1);
             SHADER_DATA_PARAM_DESC gSpecularStrength("gSpecularStrength", "gSpecularStrength", GPDT_FLOAT1);
             SHADER_DATA_PARAM_DESC gTransparency("gTransparency", "gTransparency", GPDT_FLOAT1);
@@ -497,7 +502,8 @@ namespace te
             SHADER_OBJECT_PARAM_DESC transparencyMapDesc("TransparencyMap", "TransparencyMap", GPOT_TEXTURE2D);
             SHADER_OBJECT_PARAM_DESC reflectionMapDesc("ReflectionMap", "ReflectionMap", GPOT_TEXTURE2D);
             SHADER_OBJECT_PARAM_DESC occlusionMapDesc("OcclusionMap", "OcclusionMap", GPOT_TEXTURE2D);
-            SHADER_OBJECT_PARAM_DESC environmentMapDesc("EnvironmentMap", "EnvironmentMap", GPOT_TEXTURE2D);
+            SHADER_OBJECT_PARAM_DESC environmentMapDesc("EnvironmentMap", "EnvironmentMap", GPOT_TEXTURECUBE);
+            SHADER_OBJECT_PARAM_DESC irradianceMapDesc("IrradianceMap", "IrradianceMap", GPOT_TEXTURECUBE);
 
             SHADER_DATA_PARAM_DESC gLightsDesc("gLights", "gLights", GPDT_STRUCT);
             gLightsDesc.ElementSize = sizeof(LightData);
@@ -541,6 +547,8 @@ namespace te
             _forwardShaderDesc.AddParameter(gUseReflectionMap);
             _forwardShaderDesc.AddParameter(gUseOcclusionMap);
             _forwardShaderDesc.AddParameter(gUseEnvironmentMap);
+            _forwardShaderDesc.AddParameter(gUseIrradianceMap);
+            _forwardShaderDesc.AddParameter(gUseGlobalIllumination);
             _forwardShaderDesc.AddParameter(gSpecularPower);
             _forwardShaderDesc.AddParameter(gSpecularStrength);
             _forwardShaderDesc.AddParameter(gTransparency);
@@ -553,7 +561,9 @@ namespace te
 
             _forwardShaderDesc.AddParameter(gTime);
             _forwardShaderDesc.AddParameter(gFrameDeltaDesc);
-            _forwardShaderDesc.AddParameter(gEnvironmentBrightnessDesc);
+            _forwardShaderDesc.AddParameter(gUseSkyboxMapDesc);
+            _forwardShaderDesc.AddParameter(gUseSkyboxIrradianceMapDesc);
+            _forwardShaderDesc.AddParameter(gSkyboxBrightnessDesc);
             _forwardShaderDesc.AddParameter(gSceneLightColorDesc);
 
             _forwardShaderDesc.AddParameter(gMatWorldViewProj);
@@ -570,6 +580,7 @@ namespace te
             _forwardShaderDesc.AddParameter(reflectionMapDesc);
             _forwardShaderDesc.AddParameter(occlusionMapDesc);
             _forwardShaderDesc.AddParameter(environmentMapDesc);
+            _forwardShaderDesc.AddParameter(irradianceMapDesc);
 
             _forwardShaderDesc.AddParameter(gLightsDesc);
             _forwardShaderDesc.AddParameter(gLightsNumberDesc);

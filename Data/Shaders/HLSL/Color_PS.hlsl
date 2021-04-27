@@ -33,6 +33,8 @@ cbuffer PerMaterialBuffer : register(b1)
     uint   gUseReflectionMap;
     uint   gUseOcclusionMap;
     uint   gUseEnvironmentMap;
+    uint   gUseIrradianceMap;
+    uint   gUseGlobalIllumination;
     float  gSpecularPower;
     float  gSpecularStrength;
     float  gTransparency;
@@ -42,7 +44,7 @@ cbuffer PerMaterialBuffer : register(b1)
     float  gBumpScale;
     float  gParallaxScale;
     float  gAlphaThreshold;
-    float  gPadding3;
+    float3 gPadding3;
 };
 
 static const float4 LightColor = float4(1.0f, 0.9f, 0.8f, 0.6f);

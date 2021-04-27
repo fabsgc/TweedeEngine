@@ -63,11 +63,12 @@ namespace te
         auto textureImportOptions = TextureImportOptions::Create();
         textureImportOptions->CpuCached = false;
         textureImportOptions->GenerateMips = true;
+        textureImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
 
         auto textureCubeMapImportOptions = TextureImportOptions::Create();
         textureCubeMapImportOptions->CpuCached = false;
         textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
-        textureCubeMapImportOptions->Format = PF_RGBA8;
+        textureCubeMapImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
         textureCubeMapImportOptions->IsCubemap = true;
 
         _loadedMeshCube = gResourceManager().Load<Mesh>("Data/Meshes/Cube/cube.obj", meshImportOptions);

@@ -63,15 +63,17 @@ namespace te
         auto textureImportOptions = TextureImportOptions::Create();
         textureImportOptions->CpuCached = false;
         textureImportOptions->GenerateMips = true;
+        textureImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
 
         auto textureSkyboxImportOptions = TextureImportOptions::Create();
         textureSkyboxImportOptions->CpuCached = false;
         textureSkyboxImportOptions->CubemapType = CubemapSourceType::Faces;
-        textureSkyboxImportOptions->Format = PF_RGBA8;
+        textureSkyboxImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
         textureSkyboxImportOptions->IsCubemap = true;
 
         _mesh = gResourceManager().Load<Mesh>("Data/Meshes/LightingScene/lighting-scene.obj", meshImportOptions);
-        _skyboxTexture = gResourceManager().Load<Texture>("Data/Textures/LightingScene/skybox.jpeg", textureSkyboxImportOptions);
+        _skyboxTexture = gResourceManager().Load<Texture>("Data/Textures/Skybox/skybox_night_medium.png", textureSkyboxImportOptions);
+        _skyboxIrradianceTexture = gResourceManager().Load<Texture>("Data/Textures/Skybox/skybox_night_irradiance_small.png", textureSkyboxImportOptions);
 
         HShader _shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque);
 
@@ -179,6 +181,8 @@ namespace te
         _sceneSkyboxSO = SceneObject::Create("Skybox");
         _skybox = _sceneSkyboxSO->AddComponent<CSkybox>();
         _skybox->SetTexture(_skyboxTexture);
+        _skybox->SetIrradiance(_skyboxIrradianceTexture);
+        _skybox->SetBrightness(0.5f);
         _skybox->Initialize();
 
         _sceneCameraSO->SetPosition(Vector3(7.5f, 5.0f, 7.5f));
@@ -191,7 +195,7 @@ namespace te
         _sceneDirectionalLightSO->Rotate(Vector3(0.0f, 1.0f, 1.0f), -Radian(Math::HALF_PI));
 
         auto settings = _sceneCamera->GetRenderSettings();
-        settings->ExposureScale = 1.5f;
+        settings->ExposureScale = 1.0f;
         settings->Gamma = 1.0f;
         // ######################################################
 

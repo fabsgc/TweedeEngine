@@ -37,6 +37,18 @@ namespace te
         _markCoreDirty((ActorDirtyFlag)SkyboxDirtyFlag::Texture);
     }
 
+    void Skybox::SetIrradiance(const HTexture& irradiance)
+    {
+        _irradiance = irradiance.GetInternalPtr();
+        _markCoreDirty((ActorDirtyFlag)SkyboxDirtyFlag::Texture);
+    }
+
+    void Skybox::SetIrradiance(const SPtr<Texture>& irradiance)
+    {
+        _irradiance = irradiance;
+        _markCoreDirty((ActorDirtyFlag)SkyboxDirtyFlag::Texture);
+    }
+
     SPtr<Skybox> Skybox::CreateEmpty()
     {
         Skybox* skybox = new (te_allocate<Skybox>()) Skybox();

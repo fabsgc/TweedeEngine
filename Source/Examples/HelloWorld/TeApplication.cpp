@@ -68,27 +68,21 @@ namespace te
         auto textureImportOptions = TextureImportOptions::Create();
         textureImportOptions->CpuCached = false;
         textureImportOptions->GenerateMips = true;
+        textureImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
 
         auto textureCubeMapImportOptions = TextureImportOptions::Create();
         textureCubeMapImportOptions->CpuCached = false;
         textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
-        textureCubeMapImportOptions->Format = PF_RGBA8;
+        textureCubeMapImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
         textureCubeMapImportOptions->IsCubemap = true;
 
-        _loadedMeshCube = gResourceManager().Load<Mesh>("Data/Meshes/MultiCubeMaterial/multi-cube-material.obj", meshImportOptions);
         _loadedMeshMonkey = gResourceManager().Load<Mesh>("Data/Meshes/Monkey/monkey.obj", meshImportOptions);
-        _loadedTextureCube = gResourceManager().Load<Texture>("Data/Textures/Cube/diffuse.png", textureImportOptions);
         _loadedTextureMonkey = gResourceManager().Load<Texture>("Data/Textures/Monkey/diffuse.png", textureImportOptions);
-        _loadedCubemapTexture = gResourceManager().Load<Texture>("Data/Textures/Skybox/sky_countryside_medium.jpeg", textureCubeMapImportOptions);
-
-        TE_PRINT((_loadedMeshCube.GetHandleData())->data);
-        TE_PRINT((_loadedMeshCube.GetHandleData())->uuid.ToString());
+        _loadedCubemapTexture = gResourceManager().Load<Texture>("Data/Textures/Skybox/skybox_day_medium.png", textureCubeMapImportOptions);
+        _loadedCubemapIrradianceTexture = gResourceManager().Load<Texture>("Data/Textures/Skybox/skybox_day_irradiance_small.png", textureCubeMapImportOptions);
 
         TE_PRINT((_loadedMeshMonkey.GetHandleData())->data);
         TE_PRINT((_loadedMeshMonkey.GetHandleData())->uuid.ToString());
-
-        TE_PRINT((_loadedTextureCube.GetHandleData())->data);
-        TE_PRINT((_loadedTextureCube.GetHandleData())->uuid.ToString());
 
         TE_PRINT((_loadedTextureMonkey.GetHandleData())->data);
         TE_PRINT((_loadedTextureMonkey.GetHandleData())->uuid.ToString());
@@ -103,12 +97,6 @@ namespace te
         MaterialProperties properties;
         properties.Ambient = Color(0.05f, 0.05f, 0.05f, 0.4f);
         properties.UseDiffuseMap = true;
-
-        _materialCube = Material::Create(_shader);
-        _materialCube->SetName("Material");
-        _materialCube->SetTexture("DiffuseMap", _loadedTextureCube);
-        _materialCube->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
-        _materialCube->SetProperties(properties);
 
         _materialMonkey = Material::Create(_shader);
         _materialMonkey->SetName("Material");
@@ -128,15 +116,10 @@ namespace te
         _sceneCamera->SetMain(true);
         _sceneCamera->Initialize();
 
-        _sceneRenderableSO = SceneObject::Create("Cube");
-        _renderableCube = _sceneRenderableSO->AddComponent<CRenderable>();
-        _renderableCube->SetMesh(_loadedMeshCube);
-        _renderableCube->SetMaterial(_materialCube, true);
-        _renderableCube->Initialize();
-
         _sceneSkyboxSO = SceneObject::Create("Skybox");
         _skybox = _sceneSkyboxSO->AddComponent<CSkybox>();
         _skybox->SetTexture(_loadedCubemapTexture);
+        _skybox->SetIrradiance(_loadedCubemapIrradianceTexture);
         _skybox->Initialize();
 
         _sceneLightSO = SceneObject::Create("Light");
@@ -146,19 +129,17 @@ namespace te
         _sceneCameraSO->SetPosition(Vector3(0.0f, 5.0f, 7.5f));
         _sceneCameraSO->LookAt(Vector3(0.0f, 0.0f, -3.0f));
 
-        _sceneRenderableSO->Move(Vector3(-50.0f, 0.0f, -55.0f));
-
         for (INT16 i = -15; i < 16; i++)
         {
             for (INT16 j = -1; j < 16; j++)
             {
                 HSceneObject sceneRenderable = SceneObject::Create("Monkey_" + ToString(i) + "_" + ToString(j));
-                HRenderable renderableCube = sceneRenderable->AddComponent<CRenderable>();
-                renderableCube->SetMesh(_loadedMeshMonkey);
-                renderableCube->SetMaterial(_materialMonkey);
-                renderableCube->SetInstancing(true);
-                renderableCube->SetWriteVelocity(true);
-                renderableCube->Initialize();
+                HRenderable renderable = sceneRenderable->AddComponent<CRenderable>();
+                renderable->SetMesh(_loadedMeshMonkey);
+                renderable->SetMaterial(_materialMonkey);
+                renderable->SetInstancing(true);
+                renderable->SetWriteVelocity(true);
+                renderable->Initialize();
 
                 sceneRenderable->Move(Vector3((float)i * 3.0f, 0.0f, -(float)j * 3.0f));
 
@@ -171,7 +152,6 @@ namespace te
         settings->Gamma = 1.0f;
         settings->Contrast = 1.60f;
         settings->Brightness = -0.05f;
-        settings->SceneLightColor = Color(0.4f,0.4f,0.4f,1.0f);
         settings->Bloom.Enabled = false;
         settings->MotionBlur.Enabled = false;
         settings->MotionBlur.Quality = MotionBlurQuality::High;
@@ -183,21 +163,6 @@ namespace te
 
         // ######################################################
         gSceneManager().SetMainRenderTarget(gCoreApplication().GetWindow());
-        // ######################################################
-
-        // ######################################################
-        auto handleButtonDown = [&](const ButtonEvent& event)
-        {
-            if (event.buttonCode == TE_SPACE)
-            {
-                _materialCube->SetTexture("DiffuseMap", _loadedTextureMonkey);
-                _renderableCube->SetMaterial(_materialCube);
-                TE_PRINT("SPACE");
-            }
-        };
-
-        // Connect the callback to the event
-        gInput().OnButtonDown.Connect(handleButtonDown);
         // ######################################################
 #endif
     }

@@ -323,7 +323,7 @@ namespace te
         /** 
          * It's possible to generate at each frame a dynamic cubemap environment texture. For each material, if
          * UseDynamicEnvironmentMap is set, renderer will try to find a lighprobe for this object and material. 
-         * If not lightprobe has been found a cubemap will be generated and for each object using this material, this texture will
+         * If no lightprobe has been found a cubemap will be generated and for each object using this material, this texture will
          * be bound on texture slot "EnvironmentMap"
          * Only renderables with UseForDynamicEnvMapping set to true will be use for rendering
          */
@@ -350,7 +350,7 @@ namespace te
         /**
          * make image brighter
          */
-        float Brightness = -0.1f;
+        float Brightness = 0.1f;
 
         /**
          * The absolute base cull-distance for objects rendered through this camera in world units. Objects will use this
@@ -362,6 +362,12 @@ namespace te
          * It's possible to define a scene color which will be used on every object rendered with this camera
          * It's useful to control globally brightness of a scene without using to much lights
          */
-        Color SceneLightColor = Color(0.1f, 0.1f, 0.1f, 1.0f);
+        Color SceneLightColor = Color(1.0f, 1.0f, 1.0f, 1.0f);
+
+        /** 
+         * If Skybox is enabled for this camera and if a Skybox with a valid CubeMap is present in the scene, 
+         * we will use this Skybox to achieve Global Illumination of each object rendered
+         */
+        bool UseGlobalIllumination = true;
     };
 }

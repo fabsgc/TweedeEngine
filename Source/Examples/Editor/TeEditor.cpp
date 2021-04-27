@@ -351,12 +351,12 @@ namespace te
         _viewportCameraUI->SetTarget(Vector3(0.0f, 0.75f, 0.0f));
 
         auto settings = _viewportCamera->GetRenderSettings();
-        settings->ExposureScale = 0.85f;
+        settings->ExposureScale = 0.9f;
         settings->Gamma = 1.0f;
         settings->Contrast = 2.0f;
-        settings->Brightness = -0.1f;
+        settings->Brightness = 0.0f;
         settings->MotionBlur.Enabled = false;
-        settings->SceneLightColor = Color(0.4f, 0.4f, 0.4f, 1.0f);
+
 
         _previewViewportCamera = _viewportCamera.GetNewHandleFromExisting();
     }
@@ -1144,92 +1144,40 @@ namespace te
 
         // ######################################################
         auto knightResources = EditorResManager::Instance().LoadAll("Data/Meshes/Knight/Knight.dae", meshAnimImportOptions);
-        //auto knightResources = EditorResManager::Instance().LoadAll("Data/Meshes/Steve/cube-rotate.fbx", meshAnimImportOptions);
 
         _loadedMeshKnight = static_resource_cast<Mesh>(knightResources->Entries[0].Res);
         _animationClipKnight = static_resource_cast<AnimationClip>(knightResources->Entries[1].Res);
         // ######################################################
 
         // ######################################################
-        //_loadedMeshMonkey = EditorResManager::Instance().Load<Mesh>("Data/Meshes/Monkey/monkey-hd.obj", meshImportOptions);
         _loadedMeshPlane = EditorResManager::Instance().Load<Mesh>("Data/Meshes/Plane/plane.obj", meshImportOptions);
-        //_loadedTextureMonkey = EditorResManager::Instance().Load<Texture>("Data/Textures/Monkey/diffuse.png", textureImportOptions);
-        //_loadedPlaneTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Sponza/Floor/floor_COLOR.jpeg", textureImportOptions);
-        _loadedSkyboxTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/sky_medium.png", textureCubeMapImportOptions);
+        _loadedSkyboxTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_day_medium.png", textureCubeMapImportOptions);
+        _loadedSkyboxIrradianceTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_day_irradiance_small.png", textureCubeMapImportOptions);
         _loadedKnightDiffuseTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Knight/diffuse-small.png", textureImportOptions);
-
-        //_loadedGroundDiffuseTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Leather/diffuse.png", textureImportOptions);
-        //_loadedGroundNormalTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Leather/normal.png", textureImportOptions);
-        //_loadedGroundParallaxTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Leather/parallax.png", textureImportOptions);
-        //_loadedGroundSpecularTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Leather/specular.png", textureImportOptions);
         // ######################################################
 
         // ######################################################
         _loadedMeshKnight->SetName("Knight Mesh");
-        //_loadedMeshMonkey->SetName("Monkey Mesh");
         _loadedMeshPlane->SetName("Plane Mesh");
-        //_loadedTextureMonkey->SetName("Monkey Diffuse");
-        _loadedSkyboxTexture->SetName("Skybox Diffuse");
-
-        //_loadedGroundDiffuseTexture->SetName("Cobble Diffuse");
-        //_loadedGroundNormalTexture->SetName("Cobble Normal");
-        //_loadedGroundParallaxTexture->SetName("Cobble Parallax");
-        //_loadedGroundSpecularTexture->SetName("Ground Specular");
+        _loadedSkyboxTexture->SetName("Skybox Radiance");
+        _loadedSkyboxIrradianceTexture->SetName("Skybox Irradiance");
         // ###################################################### 
 
         // ######################################################
         HShader _shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque);
 
         MaterialProperties properties;
-        properties.UseDiffuseMap = true;
-        properties.UseEnvironmentMap = true;
-        properties.SpecularPower = 128.0f;
-        properties.Specular = Color(1.0f, 1.0f, 1.0f, 1.0);
-        properties.Reflection = 0.3f;
-        properties.Refraction = 0.1f;
-        properties.IndexOfRefraction = 1.5f;
-
-        /*_monkeyMaterial = Material::Create(_shader);
-        _monkeyMaterial->SetName("Monkey Material");
-        _monkeyMaterial->SetTexture("DiffuseMap", _loadedTextureMonkey);
-        _monkeyMaterial->SetTexture("EnvironmentMap", _loadedSkyboxTexture);
-        _monkeyMaterial->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
-        _monkeyMaterial->SetProperties(properties);*/
-
-        /*properties.UseDiffuseMap = true;
-        properties.UseNormalMap = true;
-        properties.UseSpecularMap = true;
-        properties.UseBumpMap = false;
-        properties.UseParallaxMap = true;
-        properties.SpecularStrength = 1.0f;
-        properties.Reflection = 0.0f;
-        properties.Refraction = 0.0f;*/
-
-        properties.UseDiffuseMap = false;
-        properties.UseNormalMap = false;
-        properties.UseSpecularMap = false;
-        properties.UseBumpMap = false;
-        properties.UseParallaxMap = false;
-        properties.SpecularStrength = 1.0f;
 
         _planeMaterial = Material::Create(_shader);
         _planeMaterial->SetName("Plane Material");
-        /*_planeMaterial->SetTexture("DiffuseMap", _loadedGroundDiffuseTexture);
-        _planeMaterial->SetTexture("NormalMap", _loadedGroundNormalTexture);
-        _planeMaterial->SetTexture("SpecularMap", _loadedGroundSpecularTexture);
-        _planeMaterial->SetTexture("ParallaxMap", _loadedGroundParallaxTexture);
-        _planeMaterial->SetTexture("EnvironmentMap", _loadedSkyboxTexture);*/
         _planeMaterial->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
-        //_planeMaterial->SetParam<Vector3>("helllo", Vector3());
         _planeMaterial->SetProperties(properties);
 
         properties.UseDiffuseMap = true;
-        //properties.Diffuse = Color(0.35f, 0.3f, 0.4f);
 
         _knightMaterial = Material::Create(_shader);
         _knightMaterial->SetName("Knight Material");
         _knightMaterial->SetTexture("DiffuseMap", _loadedKnightDiffuseTexture);
-        _knightMaterial->SetTexture("EnvironmentMap", _loadedSkyboxTexture);
         _knightMaterial->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
         _knightMaterial->SetProperties(properties);
         // ######################################################
@@ -1239,6 +1187,7 @@ namespace te
         _sceneSkyboxSO->SetParent(_sceneSO);
         _skybox = _sceneSkyboxSO->AddComponent<CSkybox>();
         _skybox->SetTexture(_loadedSkyboxTexture);
+        _skybox->SetIrradiance(_loadedSkyboxIrradianceTexture);
         _skybox->Initialize();
         // ######################################################
 
@@ -1249,16 +1198,6 @@ namespace te
         _light->Initialize();
         _sceneLightSO->Rotate(Vector3(1.0f, 0.0f, 0.0f), -Radian(Math::HALF_PI / 2.0f));
         _sceneLightSO->Move(Vector3(0.0f, 4.0f, 4.0f));
-        // ######################################################
-
-        // ######################################################
-        /*_sceneRenderableMonkeySO = SceneObject::Create("Monkey");
-        _sceneRenderableMonkeySO->SetParent(_sceneSO);
-        _renderableMonkey = _sceneRenderableMonkeySO->AddComponent<CRenderable>();
-        _renderableMonkey->SetMesh(_loadedMeshMonkey);
-        _renderableMonkey->SetMaterial(_monkeyMaterial);
-        _renderableMonkey->SetName("Monkey Renderable");
-        _renderableMonkey->Initialize();*/
         // ######################################################
 
         // ######################################################
@@ -1293,7 +1232,7 @@ namespace te
         _renderablePlane->SetMaterial(_planeMaterial);
         _renderablePlane->SetName("Plane Renderable");
         _renderablePlane->Initialize();
-        _sceneRenderablePlaneSO->Move(Vector3(0.0, -3.0f, 0.0f));
+        _sceneRenderablePlaneSO->Move(Vector3(0.0, -1.0f, 0.0f));
 
         _rigidBodyPlane = _sceneRenderablePlaneSO->AddComponent<CRigidBody>();
         _rigidBodyPlane->SetFriction(1.0f);
@@ -1342,7 +1281,6 @@ namespace te
         HShader transparentShader = gBuiltinResources().GetBuiltinShader(BuiltinShader::Transparent);
         HShader transparentShaderCullNone = gBuiltinResources().GetBuiltinShader(BuiltinShader::TransparentCullNone);
 
-        //EditorResManager::Instance().Add<Material>(_monkeyMaterial);
         EditorResManager::Instance().Add<Material>(_planeMaterial);
         EditorResManager::Instance().Add<Material>(_knightMaterial);
         EditorResManager::Instance().Add<Shader>(opaqueShader);

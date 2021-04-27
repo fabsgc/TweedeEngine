@@ -56,17 +56,11 @@ namespace te
         auto textureCubeMapImportOptions = TextureImportOptions::Create();
         textureCubeMapImportOptions->CpuCached = false;
         textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
-        textureCubeMapImportOptions->Format = PF_RGBA8;
+        textureCubeMapImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
         textureCubeMapImportOptions->IsCubemap = true;
 
-        _loadedCubemapTexture = gResourceManager().Load<Texture>("Data/Textures/Skybox/sky_countryside_large.jpeg", textureCubeMapImportOptions);
-
-        TE_PRINT((_loadedCubemapTexture.GetHandleData())->data);
-        TE_PRINT((_loadedCubemapTexture.GetHandleData())->uuid.ToString());
+        _loadedCubemapTexture = gResourceManager().Load<Texture>("Data/Textures/Skybox/skybox_day_big.png", textureCubeMapImportOptions);
         // ######################################################
-
-        /*auto fontImportOptions = FontImportOptions::Create();
-        HFont font = gResourceManager().Load<Font>("Data/Fonts/arial.ttf", fontImportOptions);*/
 
         // ######################################################
         _sceneCameraSO = SceneObject::Create("SceneCamera");
