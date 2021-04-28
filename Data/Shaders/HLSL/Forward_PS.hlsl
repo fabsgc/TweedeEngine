@@ -327,20 +327,22 @@ float3 DoGlobalIllumination(float3 N)
 
     if(gUseIrradianceMap || gUseSkyboxIrradianceMap)
     {
-        float3 up     = float3(0.0f, 1.0f, 0.0f);
+        /*float3 up     = float3(0.0f, 1.0f, 0.0f);
         float3 right  = normalize(cross(up, N));
         up            = normalize(cross(N, right));
 
-        result += GlobalIlluminationSampleVec(1.0f, 0.0f, 1.0f, 0.0f, right, up, N);
+        /*result += GlobalIlluminationSampleVec(1.0f, 0.0f, 1.0f, 0.0f, right, up, N);
         result += GlobalIlluminationSampleVec(1.0f, 0.0f, 0.54f, 0.84f, right, up, N);
-        /*result += GlobalIlluminationSampleVec(0.54f, 0.84f, 1.0f, 0.0f, right, up, N);
+        result += GlobalIlluminationSampleVec(0.54f, 0.84f, 1.0f, 0.0f, right, up, N);
         result += GlobalIlluminationSampleVec(0.54f, 0.84f, 0.54f, 0.84f, right, up, N);
         result += GlobalIlluminationSampleVec(-0.41f, 0.90f, 1.0f, 0.0f, right, up, N);
         result += GlobalIlluminationSampleVec(-0.41f, 0.90f, 0.54f, 0.84f, right, up, N);
         result += GlobalIlluminationSampleVec(-0.98f, 0.14f, 1.0f, 0.0f, right, up, N);
-        result += GlobalIlluminationSampleVec(-0.98f, 0.14f, 0.54f, 0.84f, right, up, N);*/
+        result += GlobalIlluminationSampleVec(-0.98f, 0.14f, 0.54f, 0.84f, right, up, N);
 
-        result = PI * result * (1.0 / 2.0) * 2.0f;
+        result = PI * result * (1.0 / 4.0) * 2.0f;*/
+
+        result = IrradianceMap.Sample(LinearTextureSampler, N).rgb * gSkyboxBrightness * 1.75f;
     }
 
     return result;
@@ -507,7 +509,8 @@ PS_OUTPUT main( PS_INPUT IN )
         diffuse = diffuse * lit.Diffuse.rgb;
         specular = specular * lit.Specular.rgb;
 
-        OUT.Scene.rgb = (globalIllum * sceneLightColor * ambient + emissive + diffuse + specular) * (albedo + environment);
+        OUT.Scene.rgb = (globalIllum * ambient + emissive + diffuse + specular) * (albedo + environment);
+        OUT.Scene.rgb = sceneLightColor * OUT.Scene.rgb;
         OUT.Scene.a = alpha;
 
         float3 NDCPos = (IN.CurrPosition / IN.CurrPosition.w).xyz;

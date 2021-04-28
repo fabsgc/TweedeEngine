@@ -113,7 +113,7 @@ namespace te
         void SetParamCameraParams(const Color& sceneLightColor);
 
         /** Update data relative to skybox if exists */
-        void SetParamSkyboxParams();
+        void SetParamSkyboxParams(bool enabled);
 
         /**
          * Performs necessary per-frame updates to a renderable. This must be called once every frame for every renderable.

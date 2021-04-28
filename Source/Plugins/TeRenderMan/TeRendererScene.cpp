@@ -485,9 +485,9 @@ namespace te
         gPerFrameParamDef.gSceneLightColor.Set(_info.PerFrameParamBuffer, sceneLightColor.GetAsVector4());
     }
 
-    void RendererScene::SetParamSkyboxParams()
+    void RendererScene::SetParamSkyboxParams(bool enabled)
     {
-        if(_info.SkyboxElem != nullptr)
+        if(_info.SkyboxElem != nullptr && enabled)
         {
             gPerFrameParamDef.gSkyboxBrightness.Set(_info.PerFrameParamBuffer, _info.SkyboxElem->GetBrightness());
             gPerFrameParamDef.gUseSkyboxMap.Set(_info.PerFrameParamBuffer, _info.SkyboxElem->GetTexture() ? 1 : 0);

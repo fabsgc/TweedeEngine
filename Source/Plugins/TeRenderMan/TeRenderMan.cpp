@@ -155,7 +155,7 @@ namespace te
                 _mainViewGroup->GenerateRenderQueue(sceneInfo, *view, _options->InstancingMode);
 
                 _scene->SetParamCameraParams(view->GetSceneCamera()->GetRenderSettings()->SceneLightColor);
-                _scene->SetParamSkyboxParams();
+                _scene->SetParamSkyboxParams(view->GetSceneCamera()->GetRenderSettings()->EnableSkybox);
 
                 if (RenderSingleView(*_mainViewGroup, *view, frameInfo))
                     anythingDrawn = true;
