@@ -478,11 +478,11 @@ namespace te
                 material.MaterialProp.UseTransparencyMap = true;
             }
 
-            if (material.Occlusion != "")
+            /*if (material.Occlusion != "")
             {
                 material.OcclusionTexture = gResourceManager().Load<Texture>(material.Occlusion, textureImportOptions);
                 material.MaterialProp.UseOcclusionMap = true;
-            }
+            }*/
 
             if (material.Reflection != "")
             {
@@ -506,7 +506,7 @@ namespace te
             if (material.Bump != "") material.MaterialElement->SetTexture("BumpMap", material.BumpTexture, surface);
             if (material.Transparency != "") material.MaterialElement->SetTexture("TransparencyMap", material.TransparencyTexture, surface);
             if (material.Reflection != "") material.MaterialElement->SetTexture("ReflectionMap", material.ReflectionTexture, surface);
-            if (material.Occlusion != "") material.MaterialElement->SetTexture("OcclusionMap", material.OcclusionTexture, surface);
+            //if (material.Occlusion != "") material.MaterialElement->SetTexture("OcclusionMap", material.OcclusionTexture, surface);
 
             material.MaterialElement->SetProperties(material.MaterialProp);
         };
@@ -634,8 +634,8 @@ namespace te
         auto settings = _sceneCamera->GetRenderSettings();
         settings->ExposureScale = 1.1f;
         settings->Gamma = 0.8f;
-        settings->Contrast = 1.65f;
-        settings->Brightness = -0.1f;
+        settings->Contrast = 1.45f;
+        settings->Brightness = -0.05f;
         settings->Bloom.Intensity = 0.75f;
         settings->MotionBlur.Quality = MotionBlurQuality::High;
 

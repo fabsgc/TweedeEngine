@@ -7,6 +7,7 @@
 #include "Components/TeCRenderable.h"
 #include "Components/TeCRigidBody.h"
 #include "Renderer/TeRendererUtility.h"
+#include "Renderer/TeRenderer.h"
 
 namespace te
 {

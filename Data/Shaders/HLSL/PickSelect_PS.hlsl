@@ -17,8 +17,6 @@ struct PS_INPUT
     float4 Color : COLOR0;
 };
 
-SamplerState AnisotropicSampler : register(s0);
-
 float4 main( PS_INPUT IN ) : SV_Target
 {
     float4 output = (float4)0;

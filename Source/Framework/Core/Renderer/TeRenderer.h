@@ -127,6 +127,18 @@ namespace te
          * @see RendererMeshData
          */
         virtual SPtr<RendererMeshData> _createMeshData(const SPtr<MeshData>& meshData);
+
+        /**
+         * Save last generated depth buffer until next call to depthBuffer
+         */
+        virtual void SetLastDepthBuffer(SPtr<Texture> depthBuffer) = 0;
+
+        /**
+         * Retrieve last generated depth buffer
+         * 
+         * @note be careful, this texture will only be valid until next call to renderer
+         */
+        virtual SPtr<Texture> GetLastDepthBuffer() const = 0;
     };
 
     /**	Provides easy access to Renderer. */

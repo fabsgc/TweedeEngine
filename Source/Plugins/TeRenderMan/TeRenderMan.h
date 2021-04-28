@@ -93,12 +93,21 @@ namespace te
         /** @copydoc Renderer::BatchRenderables */
         void BatchRenderables() override;
 
+        /** @copydoc Renderer::SetLastDepthBuffer */
+        void SetLastDepthBuffer(SPtr<Texture> depthBuffer);
+
+        /** @copydoc Renderer::GetLastDepthBuffer */
+        SPtr<Texture> GetLastDepthBuffer() const;
+
     private:
         SPtr<RendererScene> _scene;
         SPtr<RenderManOptions> _options;
 
         // Helpers to avoid memory allocations
         RendererViewGroup* _mainViewGroup = nullptr;
+
+        // Last frame saved results
+        SPtr<Texture> _depthBuffer = nullptr;
     };
 
     /** Provides easy access to the RenderBeast renderer. */

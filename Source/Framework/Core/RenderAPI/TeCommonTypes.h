@@ -20,6 +20,15 @@ namespace te
         BF_INV_SOURCE_ALPHA /**< Use the inverse of the newly generated alpha value. */
     };
 
+    enum ColorWrite
+    {
+        CO_ENABLE_RED = 1, /**< Enable writing to R component */
+        CO_ENABLE_GREEN = 2, /**< Enable writing to G component */
+        CO_ENABLE_BLUE = 4, /**< Enable writing to B component */
+        CO_ENABLE_ALPHA = 8, /**< Enable writing to alpha component */
+        CO_ENABLE_ALL = (((CO_ENABLE_RED | CO_ENABLE_GREEN) | CO_ENABLE_BLUE) | CO_ENABLE_ALPHA) /**< Enable writing to all components */
+    };
+
     /** Operations that determines how are blending factors combined. */
     enum BlendOperation
     {

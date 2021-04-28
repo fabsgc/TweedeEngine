@@ -249,7 +249,7 @@ namespace te
     // ############# GPU INITIALIZATION
 
     void RCNodeGpuInitializationPass::Render(const RenderCompositorNodeInputs& inputs)
-    { 
+    {
         // Allocate necessary textures & targets
         GpuResourcePool& resPool = gGpuResourcePool();
         const RendererViewProperties& viewProps = inputs.View.GetProperties();
@@ -263,10 +263,6 @@ namespace te
         // Note: Consider customizable formats. e.g. for testing if quality can be improved with higher precision normals.
         SceneTex = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA16F, width, height, TU_RENDERTARGET,
             numSamples, true));
-        //SpecularTex = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA8, width, height, TU_RENDERTARGET,
-        //    numSamples, true));
-        //AlbedoTex = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA8, width, height, TU_RENDERTARGET,
-        //    numSamples, true));
         NormalTex = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA8, width, height, TU_RENDERTARGET,
             numSamples, true));
         EmissiveTex = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA8, width, height, TU_RENDERTARGET,
@@ -285,8 +281,6 @@ namespace te
         {
             UINT32 targetIdx = 0;
             rebuildRT |= RenderTargetTex->GetColorTexture(targetIdx++) != SceneTex->Tex;
-            //rebuildRT |= RenderTargetTex->GetColorTexture(targetIdx++) != SpecularTex->Tex;
-            //rebuildRT |= RenderTargetTex->GetColorTexture(targetIdx++) != AlbedoTex->Tex;
             rebuildRT |= RenderTargetTex->GetColorTexture(targetIdx++) != NormalTex->Tex;
             rebuildRT |= RenderTargetTex->GetColorTexture(targetIdx++) != EmissiveTex->Tex;
             if (needsVelocity)
@@ -306,18 +300,6 @@ namespace te
             gbufferDesc.ColorSurfaces[targetIdx].NumFaces = 1;
             gbufferDesc.ColorSurfaces[targetIdx].MipLevel = 0;
             targetIdx++;
-
-            /*gbufferDesc.ColorSurfaces[targetIdx].Tex = SpecularTex->Tex;
-            gbufferDesc.ColorSurfaces[targetIdx].Face = 0;
-            gbufferDesc.ColorSurfaces[targetIdx].NumFaces = 1;
-            gbufferDesc.ColorSurfaces[targetIdx].MipLevel = 0;
-            targetIdx++;*/
-
-            /*gbufferDesc.ColorSurfaces[targetIdx].Tex = AlbedoTex->Tex;
-            gbufferDesc.ColorSurfaces[targetIdx].Face = 0;
-            gbufferDesc.ColorSurfaces[targetIdx].NumFaces = 1;
-            gbufferDesc.ColorSurfaces[targetIdx].MipLevel = 0;
-            targetIdx++;*/
 
             gbufferDesc.ColorSurfaces[targetIdx].Tex = NormalTex->Tex;
             gbufferDesc.ColorSurfaces[targetIdx].Face = 0;
@@ -865,9 +847,9 @@ namespace te
         gRendererUtility().Blit(input, Rect2I::EMPTY, viewProps.FlipView, false);
 
         if (inputs.View.GetSceneCamera()->IsMain() && GuiAPI::Instance().IsGuiInitialized())
-        {
             GuiAPI::Instance().EndFrame();
-        }
+
+        gRenderer()->SetLastDepthBuffer(gpuInitializationPassNode->DepthTex->Tex);
     }
 
     void RCNodeFinalResolve::Clear()

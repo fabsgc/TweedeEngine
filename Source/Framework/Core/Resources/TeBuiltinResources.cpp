@@ -763,7 +763,7 @@ namespace te
             SHADER_DATA_PARAM_DESC gHasAnimationDesc("gHasAnimation", "gHasAnimation", GPDT_INT1);
 
             _pickSelectShaderDesc.AddParameter(gMatViewProjDesc);
-            _hudPickSelectShaderDesc.AddParameter(gMatViewOriginDesc);
+            _pickSelectShaderDesc.AddParameter(gMatViewOriginDesc);
             _pickSelectShaderDesc.AddParameter(gRenderTypeDesc);
 
             _pickSelectShaderDesc.AddParameter(gMatWorldDesc);
@@ -799,10 +799,10 @@ namespace te
             SHADER_DATA_PARAM_DESC gInstanceData("gInstanceData", "gInstanceData", GPDT_STRUCT);
             gInstanceData.ElementSize = sizeof(PerBulletDebugInstanceData);
 
-            _hudPickSelectShaderDesc.AddParameter(gMatViewProjDesc);
-            _hudPickSelectShaderDesc.AddParameter(gMatViewOriginDesc);
+            _bulletDebugShaderDesc.AddParameter(gMatViewProjDesc);
+            _bulletDebugShaderDesc.AddParameter(gMatViewOriginDesc);
 
-            _hudPickSelectShaderDesc.AddParameter(gInstanceData);
+            _bulletDebugShaderDesc.AddParameter(gInstanceData);
         }
     }
 
@@ -841,10 +841,10 @@ namespace te
         _blendTransparentStateDesc.RenderTargetDesc[0].SrcBlend = BlendFactor::BF_SOURCE_ALPHA;
         _blendTransparentStateDesc.RenderTargetDesc[0].DstBlend = BlendFactor::BF_INV_SOURCE_ALPHA;
         _blendTransparentStateDesc.RenderTargetDesc[0].BlendOp = BlendOperation::BO_ADD;
-        _blendTransparentStateDesc.RenderTargetDesc[0].SrcBlendAlpha = BlendFactor::BF_ZERO;
-        _blendTransparentStateDesc.RenderTargetDesc[0].DstBlendAlpha = BlendFactor::BF_ONE;
+        _blendTransparentStateDesc.RenderTargetDesc[0].SrcBlendAlpha = BlendFactor::BF_ONE;
+        _blendTransparentStateDesc.RenderTargetDesc[0].DstBlendAlpha = BlendFactor::BF_ZERO;
         _blendTransparentStateDesc.RenderTargetDesc[0].BlendOpAlpha = BlendOperation::BO_ADD;
-        _blendTransparentStateDesc.RenderTargetDesc[0].RenderTargetWriteMask = 0x0f;
+        _blendTransparentStateDesc.RenderTargetDesc[0].RenderTargetWriteMask = CO_ENABLE_ALL;
 
         PASS_DESC passDesc;
         passDesc.BlendStateDesc = _blendTransparentStateDesc;
@@ -1068,15 +1068,6 @@ namespace te
 
     void BuiltinResources::InitShaderSelection()
     {
-        /*_blendTransparentStateDesc.RenderTargetDesc[0].BlendEnable = true;
-        _blendTransparentStateDesc.RenderTargetDesc[0].SrcBlend = BlendFactor::BF_SOURCE_ALPHA;
-        _blendTransparentStateDesc.RenderTargetDesc[0].DstBlend = BlendFactor::BF_INV_SOURCE_ALPHA;
-        _blendTransparentStateDesc.RenderTargetDesc[0].BlendOp = BlendOperation::BO_MAX;
-        _blendTransparentStateDesc.RenderTargetDesc[0].SrcBlendAlpha = BlendFactor::BF_ZERO;
-        _blendTransparentStateDesc.RenderTargetDesc[0].DstBlendAlpha = BlendFactor::BF_ONE;
-        _blendTransparentStateDesc.RenderTargetDesc[0].BlendOpAlpha = BlendOperation::BO_ADD;
-        _blendTransparentStateDesc.RenderTargetDesc[0].RenderTargetWriteMask = 0x0f;*/
-
         PASS_DESC passDesc;
         passDesc.BlendStateDesc = _blendOpaqueStateDesc;
         passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
@@ -1125,15 +1116,6 @@ namespace te
 
     void BuiltinResources::InitShaderHudSelection()
     {
-        /*_blendTransparentStateDesc.RenderTargetDesc[0].BlendEnable = true;
-        _blendTransparentStateDesc.RenderTargetDesc[0].SrcBlend = BlendFactor::BF_SOURCE_ALPHA;
-        _blendTransparentStateDesc.RenderTargetDesc[0].DstBlend = BlendFactor::BF_INV_SOURCE_ALPHA;
-        _blendTransparentStateDesc.RenderTargetDesc[0].BlendOp = BlendOperation::BO_ADD;
-        _blendTransparentStateDesc.RenderTargetDesc[0].SrcBlendAlpha = BlendFactor::BF_ZERO;
-        _blendTransparentStateDesc.RenderTargetDesc[0].DstBlendAlpha = BlendFactor::BF_ONE;
-        _blendTransparentStateDesc.RenderTargetDesc[0].BlendOpAlpha = BlendOperation::BO_ADD;
-        _blendTransparentStateDesc.RenderTargetDesc[0].RenderTargetWriteMask = 0x0f;*/
-
         PASS_DESC passDesc;
         passDesc.BlendStateDesc = _blendOpaqueStateDesc;
         passDesc.DepthStencilStateDesc = _depthStencilStateDesc;

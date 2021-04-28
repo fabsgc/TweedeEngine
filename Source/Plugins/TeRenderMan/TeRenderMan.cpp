@@ -96,6 +96,8 @@ namespace te
     {
         gProfilerGPU().BeginFrame();
 
+        _depthBuffer = nullptr;
+
         CoreObjectManager::Instance().FrameSync();
 
         const SceneInfo& sceneInfo = _scene->GetSceneInfo();
@@ -350,6 +352,17 @@ namespace te
     void RenderMan::BatchRenderables()
     {
         _scene->BatchRenderables();
+    }
+
+    void RenderMan::SetLastDepthBuffer(SPtr<Texture> depthBuffer)
+    {
+        if (depthBuffer)
+            _depthBuffer = depthBuffer;
+    }
+
+    SPtr<Texture> RenderMan::GetLastDepthBuffer() const
+    {
+        return _depthBuffer;
     }
 
     SPtr<RenderMan> gRenderMan()
