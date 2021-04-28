@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
+#include "Renderer/TeRenderSettings.h"
 #include "Renderer/TeRendererMeshData.h"
 
 namespace te
@@ -129,16 +130,16 @@ namespace te
         virtual SPtr<RendererMeshData> _createMeshData(const SPtr<MeshData>& meshData);
 
         /**
-         * Save last generated depth buffer until next call to depthBuffer
+         * Save last generated corresponding rendered texture until next call to depthBuffer
          */
-        virtual void SetLastDepthBuffer(SPtr<Texture> depthBuffer) = 0;
+        virtual void SetLastRenderTexture(RenderOutputType type, SPtr<Texture> depthBuffer) = 0;
 
         /**
-         * Retrieve last generated depth buffer
+         * Retrieve last generated corresponding rendered texture
          * 
          * @note be careful, this texture will only be valid until next call to renderer
          */
-        virtual SPtr<Texture> GetLastDepthBuffer() const = 0;
+        virtual SPtr<Texture> GetLastRenderTexture(RenderOutputType type) const = 0;
     };
 
     /**	Provides easy access to Renderer. */

@@ -17,7 +17,7 @@ namespace te
         virtual void UpdateBackground() override;
 
     protected:
-        bool ShowLoadTexture();
+        bool ShowLoadedTexture();
         void DeleteMaterial(SPtr<Material>& material, const UUID& uuid);
 
     protected:

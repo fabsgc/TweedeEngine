@@ -57,6 +57,7 @@ namespace te
             SPtr<Texture> texture = nullptr;
             bool hasChanged = false;
             uuid = empty;
+            UINT8 flags = (UINT8)ImGuiExt::ComboOptionFlag::ShowTexture;
 
             if (textureUsed)
             {
@@ -65,12 +66,21 @@ namespace te
             }
 
             if (disable)
+                flags |= (UINT8)ImGuiExt::ComboOptionFlag::Disable;
+
+            if (texture && texture->GetProperties().GetTextureType() != TextureType::TEX_TYPE_CUBE_MAP)
             {
-                ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
-                ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
+                ImGuiExt::RenderImage(texture, 3, Vector2(26.0f, 26.0f));
+                ImGui::SameLine();
+
+                ImVec2 cursor = ImGui::GetCursorPos();
+                cursor.x -= 5.0f;
+                ImGui::SetCursorPos(cursor);
+
+                width -= 26.0f;
             }
 
-            if (ImGuiExt::RenderOptionCombo<UUID>(&uuid, id, label, options, width))
+            if (ImGuiExt::RenderOptionCombo<UUID>(&uuid, id, label, options, width, flags))
             {
                 if (uuid == load)
                 {
@@ -90,12 +100,6 @@ namespace te
                     textureUsed = true;
                     hasChanged = true;
                 }
-            }
-
-            if (disable)
-            {
-                ImGui::PopItemFlag();
-                ImGui::PopStyleVar();
             }
 
             return hasChanged;
@@ -284,7 +288,8 @@ namespace te
                 {
                     SPtr<Texture> texture = std::static_pointer_cast<Texture>(resource.second.GetInternalPtr());
                     if (texture->GetProperties().GetTextureType() == TextureType::TEX_TYPE_2D)
-                        texturesOptions.AddOption(resource.second->GetUUID(), resource.second->GetName());
+                        texturesOptions.AddOption(resource.second->GetUUID(), resource.second->GetName(), 
+                            std::static_pointer_cast<Texture>(resource.second.GetInternalPtr()));
 
                     if (texture->GetProperties().GetTextureType() == TextureType::TEX_TYPE_CUBE_MAP)
                         texturesEnvMappingOptions.AddOption(resource.second->GetUUID(), resource.second->GetName());
@@ -319,7 +324,7 @@ namespace te
                 if (ShowTexture(uuid, properties.UseIrradianceMap, "##material_texture_irradiance_option", "Irradiance", "IrradianceMap", texturesEnvMappingOptions, width, properties.UseDynamicEnvironmentMap && properties.UseGlobalIllumination))
                     hasChanged = true;
 
-                if (ShowLoadTexture())
+                if (ShowLoadedTexture())
                     hasChanged = true;
             }
 
@@ -399,7 +404,7 @@ namespace te
     void WidgetMaterials::UpdateBackground()
     { }
 
-    bool WidgetMaterials::ShowLoadTexture()
+    bool WidgetMaterials::ShowLoadedTexture()
     {
         bool textureLoaded = false;
 

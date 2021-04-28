@@ -96,7 +96,7 @@ namespace te
     {
         gProfilerGPU().BeginFrame();
 
-        _depthBuffer = nullptr;
+        _renderTextures.Clear();
 
         CoreObjectManager::Instance().FrameSync();
 
@@ -354,15 +354,56 @@ namespace te
         _scene->BatchRenderables();
     }
 
-    void RenderMan::SetLastDepthBuffer(SPtr<Texture> depthBuffer)
+    void RenderMan::SetLastRenderTexture(RenderOutputType type, SPtr<Texture> depthBuffer)
     {
-        if (depthBuffer)
-            _depthBuffer = depthBuffer;
+        switch (type)
+        {
+        case RenderOutputType::Final:
+            _renderTextures.FinalTex;
+            break;
+        case RenderOutputType::Color:
+            _renderTextures.ColorTex;
+            break;
+        case RenderOutputType::Normal:
+            _renderTextures.NormalTex;
+            break;
+        case RenderOutputType::Depth:
+            _renderTextures.DepthTex;
+            break;
+        case RenderOutputType::Emissive:
+            _renderTextures.EmissiveTex;
+            break;
+        case RenderOutputType::Velocity:
+            _renderTextures.VelocityTex;
+            break;
+        }
     }
 
-    SPtr<Texture> RenderMan::GetLastDepthBuffer() const
+    SPtr<Texture> RenderMan::GetLastRenderTexture(RenderOutputType type) const
     {
-        return _depthBuffer;
+        switch (type)
+        {
+        case RenderOutputType::Final:
+            return _renderTextures.FinalTex;
+            break;
+        case RenderOutputType::Color:
+            return _renderTextures.ColorTex;
+            break;
+        case RenderOutputType::Normal:
+            return _renderTextures.NormalTex;
+            break;
+        case RenderOutputType::Depth:
+            return _renderTextures.DepthTex;
+            break;
+        case RenderOutputType::Emissive:
+            return _renderTextures.EmissiveTex;
+            break;
+        case RenderOutputType::Velocity:
+            return _renderTextures.VelocityTex;
+            break;
+        }
+
+        return nullptr;
     }
 
     SPtr<RenderMan> gRenderMan()

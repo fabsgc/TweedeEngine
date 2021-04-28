@@ -877,7 +877,8 @@ namespace te
                 mobilityOptions.AddOption((int)ObjectMobility::Static, "Static");
             }
 
-            if (ImGuiExt::RenderOptionCombo<int>((int*)(&mobility), "##transform_mobility_option", "Mobility", mobilityOptions, widgetWidth, disableTransform))
+            if (ImGuiExt::RenderOptionCombo<int>((int*)(&mobility), "##transform_mobility_option", "Mobility", mobilityOptions, widgetWidth, 
+                disableTransform ? (UINT8)ImGuiExt::ComboOptionFlag::Disable : 0))
                 hasChanged = true;
 
             ImGui::Separator();

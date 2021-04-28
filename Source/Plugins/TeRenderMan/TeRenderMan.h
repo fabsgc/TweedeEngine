@@ -22,6 +22,27 @@ namespace te
         PerFrameData& PerFrameDatas;
     };
 
+    /** Contains pointers to all generated render textures from last frame computation */
+    struct RenderTextures
+    {
+        SPtr<Texture> FinalTex    = nullptr;
+        SPtr<Texture> ColorTex    = nullptr;
+        SPtr<Texture> NormalTex   = nullptr;
+        SPtr<Texture> DepthTex    = nullptr;
+        SPtr<Texture> VelocityTex = nullptr;
+        SPtr<Texture> EmissiveTex = nullptr;
+
+        void Clear()
+        {
+            FinalTex = nullptr;
+            ColorTex = nullptr;
+            NormalTex = nullptr;
+            DepthTex = nullptr;
+            VelocityTex = nullptr;
+            EmissiveTex = nullptr;
+        }
+    };
+
     class RenderMan: public Renderer
     {
     public:
@@ -93,11 +114,11 @@ namespace te
         /** @copydoc Renderer::BatchRenderables */
         void BatchRenderables() override;
 
-        /** @copydoc Renderer::SetLastDepthBuffer */
-        void SetLastDepthBuffer(SPtr<Texture> depthBuffer);
+        /** @copydoc Renderer::SetLastRenderTexture */
+        void SetLastRenderTexture(RenderOutputType type, SPtr<Texture> depthBuffer) override;
 
-        /** @copydoc Renderer::GetLastDepthBuffer */
-        SPtr<Texture> GetLastDepthBuffer() const;
+        /** @copydoc Renderer::GetLastRenderTexture */
+        SPtr<Texture> GetLastRenderTexture(RenderOutputType type) const override;
 
     private:
         SPtr<RendererScene> _scene;
@@ -106,8 +127,9 @@ namespace te
         // Helpers to avoid memory allocations
         RendererViewGroup* _mainViewGroup = nullptr;
 
-        // Last frame saved results
-        SPtr<Texture> _depthBuffer = nullptr;
+        // Keep track of all previously generated render textures
+        // This structure is cleared when calling RenderAll()
+        RenderTextures _renderTextures;
     };
 
     /** Provides easy access to the RenderBeast renderer. */

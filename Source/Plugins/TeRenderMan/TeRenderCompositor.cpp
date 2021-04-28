@@ -348,8 +348,6 @@ namespace te
     void RCNodeGpuInitializationPass::Clear()
     {
         SceneTex = nullptr;
-        SpecularTex = nullptr;
-        AlbedoTex = nullptr;
         NormalTex = nullptr;
         EmissiveTex = nullptr;
         VelocityTex = nullptr;
@@ -849,7 +847,15 @@ namespace te
         if (inputs.View.GetSceneCamera()->IsMain() && GuiAPI::Instance().IsGuiInitialized())
             GuiAPI::Instance().EndFrame();
 
-        gRenderer()->SetLastDepthBuffer(gpuInitializationPassNode->DepthTex->Tex);
+        gRenderer()->SetLastRenderTexture(RenderOutputType::Final, postProcessNode->GetLastOutput());
+        gRenderer()->SetLastRenderTexture(RenderOutputType::Color, gpuInitializationPassNode->SceneTex->Tex);
+        gRenderer()->SetLastRenderTexture(RenderOutputType::Normal, gpuInitializationPassNode->NormalTex->Tex);
+        gRenderer()->SetLastRenderTexture(RenderOutputType::Depth, gpuInitializationPassNode->DepthTex->Tex);
+
+        if(gpuInitializationPassNode->EmissiveTex)
+            gRenderer()->SetLastRenderTexture(RenderOutputType::Emissive, gpuInitializationPassNode->EmissiveTex->Tex);
+        if(gpuInitializationPassNode->VelocityTex)
+            gRenderer()->SetLastRenderTexture(RenderOutputType::Velocity, gpuInitializationPassNode->VelocityTex->Tex);
     }
 
     void RCNodeFinalResolve::Clear()

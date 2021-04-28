@@ -3,6 +3,7 @@
 #include "TeCorePrerequisites.h"
 #include "Math/TeVector3.h"
 #include "Math/TeVector4.h"
+#include "Image/TeTexture.h"
 #include "Scene/TeTransform.h"
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
@@ -13,15 +14,23 @@ namespace te
     class ImGuiExt
     {
     public:
+        enum class ComboOptionFlag
+        {
+            ShowTexture = 0x1,
+            Disable     = 0x2
+        };
+
         template<typename T>
         struct ComboOption
         {
             T Key;
             String Label;
+            SPtr<Texture> Tex;
 
-            ComboOption(T key, const String& label)
+            ComboOption(T key, const String& label, const SPtr<Texture> texture)
                 : Key(key)
                 , Label(label)
+                , Tex(texture)
             { }
         };
 
@@ -33,9 +42,9 @@ namespace te
             ComboOptions()
             { }
 
-            void AddOption(T key, const String& label)
+            void AddOption(T key, const String& label, const SPtr<Texture> texture = nullptr)
             {
-                Options.push_back(ComboOption<T>(key, label));
+                Options.push_back(ComboOption<T>(key, label, texture));
             }
 
             void AddOption(const ComboOption<T>& option)
@@ -87,14 +96,17 @@ namespace te
         static bool RenderOptionComboComponent(HCamera* value, const char* id, const char* text, ComboOptions<HCamera>& options,
             float width = 0.0f);
 
+        static void RenderImage(SPtr<Texture> texture, UINT32 maxMip, const Vector2& size, 
+            const Vector2& offset = Vector2::ZERO);
+
         template<typename T>
         static bool RenderOptionCombo(T* value, const char* id, const char* text, ComboOptions<T>& options,
-            float width = 0.0f, bool disable = false)
+            float width = 0.0f, UINT8 flags = 0)
         {
             if (width != 0.0f && width < 75.0f)
                 width = 75.0f;
 
-            if (disable)
+            if (flags & (UINT8)ImGuiExt::ComboOptionFlag::Disable)
             {
                 ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
                 ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
@@ -111,11 +123,40 @@ namespace te
                 {
                     ImGui::PushID(line);
                     const bool isSelected = (*value == option.Key);
-                    if (ImGui::Selectable(option.Label.c_str(), isSelected))
+
+                    if (flags & (UINT8)ImGuiExt::ComboOptionFlag::ShowTexture && option.Tex &&
+                        option.Tex->GetProperties().GetTextureType() == TextureType::TEX_TYPE_2D)
                     {
-                        *value = option.Key;
-                        hasChanged = true;
+                        String hiddenLabel = "##" + option.Label;
+                        if (ImGui::Selectable(hiddenLabel.c_str(), isSelected, 0, ImVec2(0.0f, 54.0f)))
+                        {
+                            *value = option.Key;
+                            hasChanged = true;
+                        }
+                        ImGui::SameLine();
+
+                        RenderImage(option.Tex, 4, Vector2(50.0f, 50.0f), Vector2(-5.0f, 0.0f));
+                        ImGui::SameLine();
+
+                        ImVec2 cursor = ImGui::GetCursorPos();
+                        cursor.y += 21.0f;
+                        ImGui::SetCursorPos(cursor);
+
+                        ImGui::Text(option.Label.c_str());
+                        
+                        cursor = ImGui::GetCursorPos();
+                        cursor.y -= 21.0f;
+                        ImGui::SetCursorPos(cursor);
                     }
+                    else
+                    {
+                        if (ImGui::Selectable(option.Label.c_str(), isSelected))
+                        {
+                            *value = option.Key;
+                            hasChanged = true;
+                        }
+                    }
+
                     ImGui::PopID();
 
                     if (isSelected)
@@ -125,10 +166,10 @@ namespace te
                 }
                 ImGui::EndCombo();
             }
-            if (width > 0.0f) ImGui::PushItemWidth(width);
+            if (width > 0.0f) ImGui::PopItemWidth();
             ImGui::PopID();
 
-            if (disable)
+            if (flags & (UINT8)ImGuiExt::ComboOptionFlag::Disable)
             {
                 ImGui::PopItemFlag();
                 ImGui::PopStyleVar();

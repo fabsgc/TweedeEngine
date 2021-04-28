@@ -533,4 +533,35 @@ namespace te
 
         return hasChanged;
     };
+
+    void ImGuiExt::RenderImage(SPtr<Texture> texture, UINT32 maxMip, const Vector2& size, const Vector2& offset)
+    {
+        if (!texture || texture->GetProperties().GetTextureType() != TextureType::TEX_TYPE_2D)
+            return;
+
+        UINT32 mipMap = texture->GetProperties().GetNumMipmaps();
+        if (mipMap > maxMip) mipMap = maxMip;
+
+        SPtr<TextureView> textureView = texture->RequestView(
+            0, mipMap, 0, texture->GetProperties().GetNumFaces(),
+            GVU_DEFAULT
+        );
+
+        void* rawData = textureView->GetRawData();
+
+        ImVec2 cursor = ImGui::GetCursorPos();
+        cursor.x += offset.x;
+        cursor.y += offset.y;
+        ImGui::SetCursorPos(cursor);
+
+        ImGui::Image(
+            static_cast<ImTextureID>(rawData),
+            ImVec2(static_cast<float>(size.x), static_cast<float>(size.y)),
+            ImVec2(0, 0)
+        );
+
+        cursor.x -= offset.x;
+        cursor.x -= offset.y;
+        ImGui::SetCursorPos(cursor);
+    }
 }
