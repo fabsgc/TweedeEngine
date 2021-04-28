@@ -67,13 +67,6 @@ cbuffer PerFrameBuffer : register(b3)
 
 SamplerState AnisotropicSampler : register(s0);
 
-SamplerState LinearTextureSampler
-{
-    Filter = MIN_MAG_MIP_LINEAR;
-    AddressU = Wrap;
-    AddressV = Wrap;
-};
-
 Texture2D DiffuseMap : register(t0);
 Texture2D EmissiveMap : register(t1);
 Texture2D NormalMap : register(t2);
@@ -288,7 +281,7 @@ float3 DoReflection(float3 P, float3 N)
         float3 I = normalize(P - gViewOrigin);
         float3 R = reflect(I, normalize(N));
 
-        result = EnvironmentMap.Sample(LinearTextureSampler, R).xyz * gReflection * gSkyboxBrightness;
+        result = EnvironmentMap.Sample(AnisotropicSampler, R).xyz * gReflection * gSkyboxBrightness;
     }
 
     return result;
@@ -304,7 +297,7 @@ float3 DoRefraction(float3 P, float3 N)
         float3 I = normalize(P - gViewOrigin);
         float3 R = refract(I, normalize(N), ratio);
 
-        result = EnvironmentMap.Sample(LinearTextureSampler, R).xyz * gRefraction * gSkyboxBrightness;
+        result = EnvironmentMap.Sample(AnisotropicSampler, R).xyz * gRefraction * gSkyboxBrightness;
     }
 
     return result;
@@ -316,7 +309,7 @@ float3 GlobalIlluminationSampleVec(float cosPhi, float sinPhi, float cosTheta, f
 
     float3 tangentSample = float3(sinTheta * cosPhi, sinTheta * sinPhi, cosTheta);
     float3 sampleVec = tangentSample.x * right + tangentSample.y * up + tangentSample.z * N;
-    result = IrradianceMap.Sample(LinearTextureSampler, sampleVec).rgb * cosTheta * sinTheta * gSkyboxBrightness;
+    result = IrradianceMap.Sample(AnisotropicSampler, sampleVec).rgb * cosTheta * sinTheta * gSkyboxBrightness;
 
     return result;
 }
@@ -326,24 +319,7 @@ float3 DoGlobalIllumination(float3 N)
     float3 result = (float3)0;
 
     if(gUseIrradianceMap || gUseSkyboxIrradianceMap)
-    {
-        /*float3 up     = float3(0.0f, 1.0f, 0.0f);
-        float3 right  = normalize(cross(up, N));
-        up            = normalize(cross(N, right));
-
-        /*result += GlobalIlluminationSampleVec(1.0f, 0.0f, 1.0f, 0.0f, right, up, N);
-        result += GlobalIlluminationSampleVec(1.0f, 0.0f, 0.54f, 0.84f, right, up, N);
-        result += GlobalIlluminationSampleVec(0.54f, 0.84f, 1.0f, 0.0f, right, up, N);
-        result += GlobalIlluminationSampleVec(0.54f, 0.84f, 0.54f, 0.84f, right, up, N);
-        result += GlobalIlluminationSampleVec(-0.41f, 0.90f, 1.0f, 0.0f, right, up, N);
-        result += GlobalIlluminationSampleVec(-0.41f, 0.90f, 0.54f, 0.84f, right, up, N);
-        result += GlobalIlluminationSampleVec(-0.98f, 0.14f, 1.0f, 0.0f, right, up, N);
-        result += GlobalIlluminationSampleVec(-0.98f, 0.14f, 0.54f, 0.84f, right, up, N);
-
-        result = PI * result * (1.0 / 4.0) * 2.0f;*/
-
-        result = IrradianceMap.Sample(LinearTextureSampler, N).rgb * gSkyboxBrightness * 1.75f;
-    }
+        result = IrradianceMap.Sample(AnisotropicSampler, N).rgb * gSkyboxBrightness * 1.75f;
 
     return result;
 }
