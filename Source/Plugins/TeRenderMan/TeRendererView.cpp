@@ -344,9 +344,6 @@ namespace te
             if (!_visibility.Renderables[i].Visible)
                 continue;
 
-            //const AABox& boundingBox = sceneInfo.RenderableCullInfos[i].Boundaries.GetBox();
-            //const float distanceToCamera = (_properties.ViewOrigin - boundingBox.GetCenter()).Length();
-
             UINT32 j = 0;
             for (auto& renderElem : sceneInfo.Renderables[i]->Elements)
             {

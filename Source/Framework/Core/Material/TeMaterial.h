@@ -57,6 +57,12 @@ namespace te
         /** Controls Parallax map strength */
         float ParallaxScale = 0.05f;
 
+        /** 
+         * Controls number of samples used for parallax mapping
+         * Min : 16, Max 256
+         * */
+        UINT32 ParallaxSamples = 32;
+
         /**
          * If alpha value (from transparency, diffuse map or transparency map)
          * is below a certain value, pixel will not be visible

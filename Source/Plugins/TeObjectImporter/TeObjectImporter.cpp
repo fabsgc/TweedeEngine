@@ -147,7 +147,6 @@ namespace te
             aiProcess_SortByPType |
             aiProcess_JoinIdenticalVertices |
             aiProcess_RemoveRedundantMaterials |
-            aiProcess_GenBoundingBoxes |
             aiProcess_RemoveComponent;
 
         if (meshImportOptions->ScaleSystemUnit)

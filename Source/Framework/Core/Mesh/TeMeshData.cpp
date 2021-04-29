@@ -294,8 +294,9 @@ namespace te
 
     Bounds MeshData::CalculateBounds(UINT32 indexOffset, UINT32 indexCount) const
     {
-        Bounds bounds;
+        TE_ASSERT_ERROR((indexCount + indexOffset <= _numIndices), "Trying to access indice is out of indices buffer)");
 
+        Bounds bounds;
         SPtr<VertexDataDesc> vertexDesc = GetVertexDesc();
         for (UINT32 i = 0; i < vertexDesc->GetNumElements(); i++)
         {

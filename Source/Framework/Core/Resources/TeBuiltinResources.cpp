@@ -490,6 +490,7 @@ namespace te
             SHADER_DATA_PARAM_DESC gBumpScale("gBumScale", "gBumScale", GPDT_FLOAT1);
             SHADER_DATA_PARAM_DESC gParallaxScale("gParallaxScale", "gParallaxScale", GPDT_FLOAT1);
             SHADER_DATA_PARAM_DESC gAlphaThreshold("gAlphaThreshold", "gAlphaThreshold", GPDT_FLOAT1);
+            SHADER_DATA_PARAM_DESC gParallaxSamples("gParallaxSamples", "gParallaxSamples", GPDT_INT1);
 
             SHADER_OBJECT_PARAM_DESC anisotropicSamplerDesc("AnisotropicSampler", "AnisotropicSampler", GPOT_SAMPLER2D);
 
@@ -558,6 +559,7 @@ namespace te
             _forwardShaderDesc.AddParameter(gBumpScale);
             _forwardShaderDesc.AddParameter(gParallaxScale);
             _forwardShaderDesc.AddParameter(gAlphaThreshold);
+            _forwardShaderDesc.AddParameter(gParallaxSamples);
 
             _forwardShaderDesc.AddParameter(gTime);
             _forwardShaderDesc.AddParameter(gFrameDeltaDesc);

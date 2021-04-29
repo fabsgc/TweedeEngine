@@ -354,27 +354,27 @@ namespace te
         _scene->BatchRenderables();
     }
 
-    void RenderMan::SetLastRenderTexture(RenderOutputType type, SPtr<Texture> depthBuffer)
+    void RenderMan::SetLastRenderTexture(RenderOutputType type, SPtr<Texture> renderTexture)
     {
         switch (type)
         {
         case RenderOutputType::Final:
-            _renderTextures.FinalTex;
+            _renderTextures.FinalTex = renderTexture;
             break;
         case RenderOutputType::Color:
-            _renderTextures.ColorTex;
+            _renderTextures.ColorTex = renderTexture;
             break;
         case RenderOutputType::Normal:
-            _renderTextures.NormalTex;
+            _renderTextures.NormalTex = renderTexture;
             break;
         case RenderOutputType::Depth:
-            _renderTextures.DepthTex;
+            _renderTextures.DepthTex = renderTexture;
             break;
         case RenderOutputType::Emissive:
-            _renderTextures.EmissiveTex;
+            _renderTextures.EmissiveTex = renderTexture;
             break;
         case RenderOutputType::Velocity:
-            _renderTextures.VelocityTex;
+            _renderTextures.VelocityTex = renderTexture;
             break;
         }
     }

@@ -44,7 +44,8 @@ cbuffer PerMaterialBuffer : register(b1)
     float  gBumpScale;
     float  gParallaxScale;
     float  gAlphaThreshold;
-    float3 gPadding3;
+    uint   gParallaxSamples;
+    float2 gPadding3;
 };
 
 cbuffer PerLightsBuffer : register(b2)
@@ -424,12 +425,16 @@ PS_OUTPUT main( PS_INPUT IN )
 
         if(gUseParallaxMap == 1)
         {
+            uint parraxMaxSamples = gParallaxSamples;
+            if(parraxMaxSamples < 16) parraxMaxSamples = 16;
+            if(parraxMaxSamples > PARALLAX_MAX_SAMPLE) parraxMaxSamples = 256;
+
             // Utilize dynamic flow control to change the number of samples per ray 
             // depending on the viewing angle for the surface. Oblique angles require 
             // smaller step sizes to achieve more accurate precision for computing displacement.
             // We express the sampling rate as a linear function of the angle between 
             // the geometric normal and the view direction ray:
-            int parallaxSteps = (int)lerp( PARALLAX_MAX_SAMPLE, PARALLAX_MIN_SAMPLE, dot( IN.ViewDirWS, IN.Normal ) );
+            int parallaxSteps = (int)lerp( parraxMaxSamples, PARALLAX_MIN_SAMPLE, dot( IN.ViewDirWS, IN.Normal ) );
             texCoords = DoParallaxMapping(texCoords, IN.ParallaxOffsetTS, parallaxSteps, gParallaxScale);
         }
 

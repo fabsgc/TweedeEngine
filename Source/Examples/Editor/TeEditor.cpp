@@ -609,7 +609,10 @@ namespace te
             break;
         case WindowType::Properties:
             _settings.WProperties->PutFocus();
-            break;        
+            break;
+        case WindowType::Profiler:
+            _settings.WProfiler->PutFocus();
+            break;
         }
     }
 

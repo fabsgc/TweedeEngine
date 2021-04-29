@@ -6,7 +6,7 @@
 #define SPOT_LIGHT 2.0
 
 #define PARALLAX_MIN_SAMPLE 8
-#define PARALLAX_MAX_SAMPLE 64
+#define PARALLAX_MAX_SAMPLE 256
 
 struct PerInstanceData
 {

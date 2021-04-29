@@ -64,7 +64,7 @@ namespace te
         gPerMaterialParamDef.gBumpScale.Set(perMaterialBuffer, data.gBumpScale);
         gPerMaterialParamDef.gParallaxScale.Set(perMaterialBuffer, data.gParallaxScale);
         gPerMaterialParamDef.gAlphaThreshold.Set(perMaterialBuffer, data.gAlphaThreshold);
-        
+        gPerMaterialParamDef.gParallaxSamples.Set(perMaterialBuffer, data.gParallaxSamples);
     }
 
     MaterialData PerObjectBuffer::ConvertMaterialProperties(const MaterialProperties& properties)
@@ -97,6 +97,7 @@ namespace te
         data.gBumpScale = properties.BumpScale;
         data.gParallaxScale = properties.ParallaxScale;
         data.gAlphaThreshold = properties.AlphaThreshold;
+        data.gParallaxSamples = properties.ParallaxSamples;
 
         return data;
     }

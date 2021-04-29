@@ -273,6 +273,11 @@ namespace te
                 }
                 ImGui::Separator();
                 {
+                    if (ImGuiExt::RenderOptionInt((int&)properties.ParallaxSamples, "##material_properties_parallax_scale_option", "Parallax samples", 16, 256, width))
+                        hasChanged = true;
+                }
+                ImGui::Separator();
+                {
                     if (ImGuiExt::RenderOptionFloat(properties.AlphaThreshold, "##material_properties_alpha_threshold_option", "Alpha threshold", 0.0f, 1.0f, width))
                         hasChanged = true;
                 }

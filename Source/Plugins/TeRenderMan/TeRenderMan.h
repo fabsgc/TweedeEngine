@@ -115,7 +115,7 @@ namespace te
         void BatchRenderables() override;
 
         /** @copydoc Renderer::SetLastRenderTexture */
-        void SetLastRenderTexture(RenderOutputType type, SPtr<Texture> depthBuffer) override;
+        void SetLastRenderTexture(RenderOutputType type, SPtr<Texture> renderTexture) override;
 
         /** @copydoc Renderer::GetLastRenderTexture */
         SPtr<Texture> GetLastRenderTexture(RenderOutputType type) const override;

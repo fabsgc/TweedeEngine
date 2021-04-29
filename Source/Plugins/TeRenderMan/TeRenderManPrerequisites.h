@@ -57,6 +57,7 @@ namespace te
         float   gBumpScale;
         float   gParallaxScale;
         float   gAlphaThreshold;
+        UINT32  gParallaxSamples;
     };
 
     struct LightData
@@ -141,6 +142,7 @@ namespace te
         TE_PARAM_BLOCK_ENTRY(float, gBumpScale)
         TE_PARAM_BLOCK_ENTRY(float, gParallaxScale)
         TE_PARAM_BLOCK_ENTRY(float, gAlphaThreshold)
+        TE_PARAM_BLOCK_ENTRY(INT32, gParallaxSamples)
     TE_PARAM_BLOCK_END
 
     extern PerMaterialParamDef gPerMaterialParamDef;

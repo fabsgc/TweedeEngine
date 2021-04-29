@@ -44,7 +44,8 @@ cbuffer PerMaterialBuffer : register(b1)
     float  gBumpScale;
     float  gParallaxScale;
     float  gAlphaThreshold;
-    float3 gPadding3;
+    uint   gParallaxSamples;
+    float2 gPadding3;
 };
 
 static const float4 LightColor = float4(1.0f, 0.9f, 0.8f, 0.6f);
