@@ -147,6 +147,7 @@ namespace te
             aiProcess_SortByPType |
             aiProcess_JoinIdenticalVertices |
             aiProcess_RemoveRedundantMaterials |
+            aiProcess_GenBoundingBoxes |
             aiProcess_RemoveComponent;
 
         if (meshImportOptions->ScaleSystemUnit)
@@ -629,14 +630,6 @@ namespace te
 
                         keyFrame.TimeInSpline = (float)assimpChannel->mRotationKeys[k].mTime / clip.SampleRate;
                         keyFrame.Value = ConvertToNativeType(assimpChannel->mRotationKeys[k].mValue);
-
-                        
-
-                        /*Radian x, y, z;
-                        keyFrame.Value.ToEulerAngles(x, y, z);
-                        
-                        Quaternion corrected(z, x, y);
-                        keyFrame.Value = corrected;*/
                     }
                 }
                 else

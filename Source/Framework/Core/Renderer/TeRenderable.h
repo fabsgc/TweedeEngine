@@ -185,6 +185,9 @@ namespace te
         /**	Gets world bounds of the mesh rendered by this object. */
         Bounds GetBounds();
 
+        /** Get subMesh specific bounding box */
+        Bounds GetSubMeshBounds(UINT32 subMeshIdx = 0);
+
         /** Determines the animation that will be used for animating the attached mesh. */
         void SetAnimation(const SPtr<Animation>& animation);
 
@@ -264,5 +267,9 @@ namespace te
 
         Bounds _cachedBounds;
         bool _boundsDirty; // bounds must updated if we change _mesh or _tfrmMatrix
+
+        // For rendering sorting, it's better to use subMesh bounds instead of mesh bounds
+        Vector<Bounds> _subMeshesBounds;
+        bool _subMeshesBoundsDirty; 
     };
 }

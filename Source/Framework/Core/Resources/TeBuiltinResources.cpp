@@ -736,6 +736,7 @@ namespace te
         {
             SHADER_DATA_PARAM_DESC gSourceDimensionsDesc("gSourceDimensions", "gSourceDimensions", GPDT_FLOAT2);
             SHADER_DATA_PARAM_DESC gMSAACountDesc("gMSAACount", "gMSAACount", GPDT_INT1);
+            SHADER_DATA_PARAM_DESC gNumSamplesDesc("gNumSamples", "gNumSamples", GPDT_INT1);
             SHADER_DATA_PARAM_DESC gHorizontalDesc("gHorizontal", "gHorizontal", GPDT_INT1);
 
             SHADER_OBJECT_PARAM_DESC bilinearSamplerDesc("BilinearSampler", "BilinearSampler", GPOT_SAMPLER2D);
@@ -750,6 +751,7 @@ namespace te
 
             _gaussianBlurShaderDesc.AddParameter(gSourceDimensionsDesc);
             _gaussianBlurShaderDesc.AddParameter(gMSAACountDesc);
+            _gaussianBlurShaderDesc.AddParameter(gNumSamplesDesc);
             _gaussianBlurShaderDesc.AddParameter(gHorizontalDesc);
         }
 

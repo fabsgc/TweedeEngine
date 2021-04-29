@@ -2,6 +2,7 @@
 
 #include "TeCorePrerequisites.h"
 #include "Material/TeMaterial.h"
+#include "Math/TeBounds.h"
 
 namespace te
 {
@@ -38,5 +39,8 @@ namespace te
 
         /** We can store here the "default" material applied to this submesh, useful when loading a mesh */
         HMaterial Mat;
+
+        /** During mesh initialization, we also want to know bounds of a single subMesh below a mesh */
+        Bounds SubMeshBounds;
     };
 }

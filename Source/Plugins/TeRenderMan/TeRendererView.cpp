@@ -344,11 +344,15 @@ namespace te
             if (!_visibility.Renderables[i].Visible)
                 continue;
 
-            const AABox& boundingBox = sceneInfo.RenderableCullInfos[i].Boundaries.GetBox();
-            const float distanceToCamera = (_properties.ViewOrigin - boundingBox.GetCenter()).Length();
+            //const AABox& boundingBox = sceneInfo.RenderableCullInfos[i].Boundaries.GetBox();
+            //const float distanceToCamera = (_properties.ViewOrigin - boundingBox.GetCenter()).Length();
 
+            UINT32 j = 0;
             for (auto& renderElem : sceneInfo.Renderables[i]->Elements)
             {
+                Bounds subMeshBounds = sceneInfo.Renderables[i]->RenderablePtr->GetSubMeshBounds(j);
+                const float distanceToCamera = (_properties.ViewOrigin - subMeshBounds.GetSphere().GetCenter()).Length();
+
                 UINT32 shaderFlags = renderElem.MaterialElem->GetShader()->GetFlags();
                 UINT32 techniqueIdx = renderElem.DefaultTechniqueIdx;
 
@@ -359,6 +363,7 @@ namespace te
                     _forwardOpaqueQueue->Add(&renderElem, distanceToCamera, techniqueIdx);
 
                 CheckIfDynamicEnvMappingNeeded(renderElem);
+                j++;
             }
         }
 

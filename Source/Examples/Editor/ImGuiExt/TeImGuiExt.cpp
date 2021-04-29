@@ -494,6 +494,17 @@ namespace te
             {
                 if (ImGuiExt::RenderOptionFloat(cameraSettings->Bloom.Intensity, "##bloom_intensity_option", "Intensity", 0.0f, 5.0f, width))
                     hasChanged = true;
+
+                static ImGuiExt::ComboOptions<int> bloomQualityOptions;
+                if (bloomQualityOptions.Options.size() == 0)
+                {
+                    bloomQualityOptions.AddOption((int)BloomQuality::High, "High");
+                    bloomQualityOptions.AddOption((int)BloomQuality::Medium, "Medium");
+                    bloomQualityOptions.AddOption((int)BloomQuality::Low, "Low");
+                }
+
+                if (ImGuiExt::RenderOptionCombo<int>((int*)(&cameraSettings->Bloom.Quality), "##bloom_quality_option", "Quality", bloomQualityOptions, width))
+                    hasChanged = true;
             }
         }
 

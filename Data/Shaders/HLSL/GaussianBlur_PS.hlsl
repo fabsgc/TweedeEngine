@@ -5,6 +5,7 @@ cbuffer PerFrameBuffer : register(b0)
     float2 gSourceDimensions;
     uint gMSAACount;
     uint gHorizontal;
+    uint gNumSamples;
 }
 
 SamplerState BilinearSampler : register(s0);
@@ -32,7 +33,7 @@ float4 GaussianBlur(Texture2D source, Texture2DMS<float4> sourceMS,
 
     if(gHorizontal == 1)
     {
-        for(int i = 1; i < 7; ++i)
+        for(int i = 1; i < (int)gNumSamples; ++i)
         {
             result += TextureSampling(BilinearSampler, source, sourceMS, 
                 ClampUv(uv + float2(textureOffset.x * i, 0.0)), gMSAACount).rgb * weight[i];
@@ -42,7 +43,7 @@ float4 GaussianBlur(Texture2D source, Texture2DMS<float4> sourceMS,
     }
     else
     {
-        for(int i = 1; i < 7; ++i)
+        for(int i = 1; i < (int)gNumSamples; ++i)
         {
             result += TextureSampling(BilinearSampler, source, sourceMS, 
                 ClampUv(uv + float2(0.0, textureOffset.y * i)), gMSAACount).rgb * weight[i];

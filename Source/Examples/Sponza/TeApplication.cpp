@@ -636,7 +636,8 @@ namespace te
         settings->Gamma = 0.8f;
         settings->Contrast = 1.45f;
         settings->Brightness = -0.05f;
-        settings->Bloom.Intensity = 0.75f;
+        settings->Bloom.Intensity = 1.0f;
+        settings->Bloom.Quality = BloomQuality::Medium;
         settings->MotionBlur.Quality = MotionBlurQuality::High;
 
         _sceneDirectionalLightSO = SceneObject::Create("DirectionalLight");

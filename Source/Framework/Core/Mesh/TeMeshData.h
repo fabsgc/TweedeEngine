@@ -124,6 +124,9 @@ namespace te
         /**	Return the size (in bytes) of the entire buffer. */
         UINT32 GetSize() const { return GetInternalBufferSize(); }
 
+        /**	Calculates the bounds of all vertices corresponding to the range from indexOffset with indexCount elements */
+        Bounds CalculateBounds(UINT32 indexOffset, UINT32 indexCount) const;
+
         /**	Calculates the bounds of all vertices stored in the internal buffer. */
         Bounds CalculateBounds() const;
 

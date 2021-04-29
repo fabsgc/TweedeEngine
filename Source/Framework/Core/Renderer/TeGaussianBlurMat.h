@@ -14,6 +14,7 @@ namespace te
         TE_PARAM_BLOCK_ENTRY(Vector2, gSourceDimensions)
         TE_PARAM_BLOCK_ENTRY(UINT32, gMSAACount)
         TE_PARAM_BLOCK_ENTRY(UINT32, gHorizontal)
+        TE_PARAM_BLOCK_ENTRY(UINT32, gNumSamples)
     TE_PARAM_BLOCK_END
 
     extern GaussianBlurParamDef gGaussianBlurParamDef;
@@ -31,9 +32,10 @@ namespace te
          *
          * @param[in]	source		Input texture to blur.
          * @param[in]	destination	Output texture to which to write the blurred image to.
+         * @param[in]	numSamples	How many samples we can use. Default is 7 (Horizontally and Vertically).
          * @param[in]	MSAACount   Specify if input texture is multisampled
          */
-        void Execute(const SPtr<Texture>& source, const SPtr<RenderTexture>& destination, UINT32 MSAACount = 1);
+        void Execute(const SPtr<Texture>& source, const SPtr<RenderTexture>& destination, UINT32 numSamples = 7, UINT32 MSAACount = 1);
 
     private:
         void DoPass(bool horizontal, const SPtr<Texture>& source, const SPtr<RenderTexture>& destination, UINT32 MSAACount = 1);

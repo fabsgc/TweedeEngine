@@ -157,7 +157,22 @@ namespace te
 
     void Mesh::UpdateBounds(const MeshData& meshData)
     {
+        UINT32 numSubMeshes = _properties.GetNumSubMeshes();
         _properties._bounds = meshData.CalculateBounds();
+
+        if (numSubMeshes == 1)
+        {
+            SubMesh* subMesh = _properties.GetSubMeshPtr(0);
+            subMesh->SubMeshBounds = _properties._bounds;
+        }
+        else
+        {
+            for (UINT32 i = 0; i < numSubMeshes; i++)
+            {
+                SubMesh* subMesh = _properties.GetSubMeshPtr(i);
+                subMesh->SubMeshBounds = meshData.CalculateBounds(subMesh->IndexOffset, subMesh->IndexCount);
+            }
+        }
     }
 
     void Mesh::UpdateCPUBuffer(UINT32 subresourceIdx, const MeshData& meshData)

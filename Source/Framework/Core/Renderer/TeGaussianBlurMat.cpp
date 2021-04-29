@@ -13,7 +13,7 @@ namespace te
         _params->SetSamplerState("BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
     }
 
-    void GaussianBlurMat::Execute(const SPtr<Texture>& source, const SPtr<RenderTexture>& destination, UINT32 MSAACount)
+    void GaussianBlurMat::Execute(const SPtr<Texture>& source, const SPtr<RenderTexture>& destination, UINT32 numSamples, UINT32 MSAACount)
     {
         const TextureProperties& srcProps = source->GetProperties();
         const RenderTextureProperties& dstProps = static_cast<const RenderTextureProperties&>(destination->GetProperties());
@@ -23,6 +23,8 @@ namespace te
         SPtr<PooledRenderTexture> tempTexture = gGpuResourcePool().Get(tempTextureDesc);
 
         gGaussianBlurParamDef.gSourceDimensions.Set(_paramBuffer, Vector2((float)dstProps.Width, (float)dstProps.Height), 0);
+        gGaussianBlurParamDef.gMSAACount.Set(_paramBuffer, MSAACount, 0);
+        gGaussianBlurParamDef.gNumSamples.Set(_paramBuffer, numSamples, 0);
 
         // Horizontal pass
         DoPass(true, source, tempTexture->RenderTex, MSAACount);
@@ -35,7 +37,6 @@ namespace te
         if (MSAACount > 1) _params->SetTexture("SourceMapMS", source);
         else _params->SetTexture("SourceMap", source);
 
-        gGaussianBlurParamDef.gMSAACount.Set(_paramBuffer, MSAACount, 0);
         gGaussianBlurParamDef.gHorizontal.Set(_paramBuffer, horizontal ? 1 : 0, 0);
 
         RenderAPI& rapi = RenderAPI::Instance();

@@ -96,6 +96,26 @@ namespace te
         Ultra = 0x4
     };
 
+    /** Determines the number of samples to take during motion blur filtering. */
+    enum class TE_CORE_EXPORT BloomQuality
+    {
+        /** 
+         * Bloom texture 4 times smaller samples per pixel.
+         * Only 5 samples horizontally and vertically
+         */
+        Low = 0x0,
+        /** 
+         * Bloom texture 2 times smaller samples per pixel.
+         * Only 5 samples horizontally and vertically
+         */
+        Medium = 0x1,
+        /** 
+          * Bloom texture same size as RenderTarget
+          * Max sample amount horizontally and vertically
+         */
+        High = 0x2
+    };
+
     /** Type of output we want */
     enum class TE_CORE_EXPORT RenderOutputType
     {
@@ -145,6 +165,12 @@ namespace te
 
         /** Determines the intensity of the bloom effect. Ideally should be in [0, 4] range but higher values are allowed.*/
         float Intensity = 1.0f;
+
+        /**
+         * Determines the number of samples to take during bloom. Increasing this value will
+         * yield higher quality blur at the cost of the performance. Reduce also generated bloom texture size.
+         */
+        BloomQuality Quality = BloomQuality::Medium;
     };
 
     /** Various options that control shadow rendering for a specific view. */

@@ -292,6 +292,72 @@ namespace te
         return _vertexData->GetVertexStride() * _numVertices;
     }
 
+    Bounds MeshData::CalculateBounds(UINT32 indexOffset, UINT32 indexCount) const
+    {
+        Bounds bounds;
+
+        SPtr<VertexDataDesc> vertexDesc = GetVertexDesc();
+        for (UINT32 i = 0; i < vertexDesc->GetNumElements(); i++)
+        {
+            const VertexElement& curElement = vertexDesc->GetElement(i);
+
+            if (curElement.GetSemantic() != VES_POSITION || (curElement.GetType() != VET_FLOAT3 && curElement.GetType() != VET_FLOAT4))
+                continue;
+
+            UINT8* verticesData = GetElementData(curElement.GetSemantic(), curElement.GetSemanticIdx(), curElement.GetStreamIdx());
+            UINT8* indicesData = (_indexType == IT_32BIT) ? (UINT8*)GetIndices32() : (UINT8*)GetIndices16();
+            UINT32 verticesStride = vertexDesc->GetVertexStride(curElement.GetStreamIdx());
+            UINT32 indicesStride = (_indexType == IT_32BIT) ? sizeof(UINT32) : sizeof(UINT16);
+
+            if (GetNumVertices() > 0)
+            {
+                UINT32 verticesIndex = (_indexType == IT_32BIT) 
+                    ? *(UINT32*)(indicesData + indicesStride * indexOffset)
+                    : *(UINT16*)(indicesData + indicesStride * indexOffset);
+
+                Vector3 curPosition = *(Vector3*)(verticesData + verticesStride * verticesIndex);
+                Vector3 accum = curPosition;
+                Vector3 min = curPosition;
+                Vector3 max = curPosition;
+
+                for (UINT32 j = indexOffset + 1; j < indexCount; j++)
+                {
+                    verticesIndex = (_indexType == IT_32BIT)
+                        ? *(UINT32*)(indicesData + indicesStride * j)
+                        : *(UINT16*)(indicesData + indicesStride * j);
+
+                    curPosition = *(Vector3*)(verticesData + verticesStride * verticesIndex);
+                    accum += curPosition;
+                    min = Vector3::Min(min, curPosition);
+                    max = Vector3::Max(max, curPosition);
+                }
+
+                Vector3 center = accum / (float)indexCount;
+                float radiusSqrd = 0.0f;
+
+                for (UINT32 j = indexOffset + 1; j < indexCount; j++)
+                {
+                    verticesIndex = (_indexType == IT_32BIT)
+                        ? *(UINT32*)(indicesData + indicesStride * j)
+                        : *(UINT16*)(indicesData + indicesStride * j);
+
+                    curPosition = *(Vector3*)(verticesData + verticesStride * verticesIndex);
+                    float dist = center.SquaredDistance(curPosition);
+
+                    if (dist > radiusSqrd)
+                        radiusSqrd = dist;
+                }
+
+                float radius = Math::Sqrt(radiusSqrd);
+
+                bounds = Bounds(AABox(min, max), Sphere(center, radius));
+                break;
+            }
+        }
+
+        return bounds;
+    }
+
     Bounds MeshData::CalculateBounds() const
     {
         Bounds bounds;

@@ -35,6 +35,7 @@ namespace te
         : _rendererId(0)
         , _animationId((UINT64)-1)
         , _boundsDirty(true)
+        , _subMeshesBoundsDirty(true)
     { }
 
     Renderable::~Renderable()
@@ -149,6 +150,7 @@ namespace te
         _tfrmMatrixNoScale = Matrix4::TRS(transform.GetPosition(), transform.GetRotation(), Vector3::ONE);
 
         _boundsDirty = true;
+        _subMeshesBoundsDirty = true;
 
         _markCoreDirty(ActorDirtyFlag::Transform);
     }
@@ -166,9 +168,11 @@ namespace te
         {
             UINT32 numSubMeshes = mesh->GetProperties().GetNumSubMeshes();
             _materials.resize(numSubMeshes);
+            _subMeshesBounds.resize(numSubMeshes);
         }
 
         _boundsDirty = true;
+        _subMeshesBoundsDirty = true;
 
         OnMeshChanged();
         _markCoreDirty(ActorDirtyFlag::GpuParams);
@@ -368,6 +372,50 @@ namespace te
             _cachedBounds.TransformAffine(_tfrmMatrix);
             return _cachedBounds;
         }
+    }
+
+    Bounds Renderable::GetSubMeshBounds(UINT32 subMeshIdx)
+    {
+        SPtr<Mesh> mesh = GetMesh();
+
+        if (!mesh || subMeshIdx > mesh->GetProperties().GetNumSubMeshes() - 1)
+        {
+            const Transform& tfrm = GetTransform();
+
+            AABox box(tfrm.GetPosition(), tfrm.GetPosition());
+            Sphere sphere(tfrm.GetPosition(), 0.0f);
+
+            return Bounds(box, sphere);
+        }
+
+        if (!_subMeshesBoundsDirty)
+            return _subMeshesBounds.at(subMeshIdx);
+
+        Bounds returnBounds;
+
+        _subMeshesBoundsDirty = false;
+        _subMeshesBounds.clear();
+
+        for (UINT32 i = 0; i < mesh->GetProperties().GetNumSubMeshes(); i++)
+        {
+            SubMesh* subMesh = mesh->GetProperties().GetSubMeshPtr(i);
+            if (subMesh)
+            {
+                Bounds subMeshBounds = subMesh->SubMeshBounds;
+                subMeshBounds.TransformAffine(_tfrmMatrix);
+
+                _subMeshesBounds.push_back(subMeshBounds);
+
+                if (i == subMeshIdx)
+                    returnBounds = subMeshBounds;
+            }
+            else
+            {
+                _subMeshesBounds.push_back(returnBounds);
+            }
+        }
+
+        return returnBounds;
     }
 
     void Renderable::_updateState(const SceneObject& so, bool force)
