@@ -35,14 +35,14 @@ namespace te
             if (!path.empty())
             {
                 std::filesystem::path absoluteTempPath(AbsolutePath);
-                std::filesystem::path tempPath = std::filesystem::absolute(absoluteTempPath);
+                std::filesystem::path tempPath = std::filesystem::canonical(absoluteTempPath);
                 if (std::filesystem::is_directory(tempPath) == false)
                     tempPath = tempPath.parent_path();
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
-                AbsolutePath = std::filesystem::absolute(tempPath).generic_string() + "\\";
+                AbsolutePath = std::filesystem::canonical(tempPath).generic_string() + "\\";
 #else
-                AbsolutePath = std::filesystem::absolute(tempPath).generic_string() + "/";
+                AbsolutePath = std::filesystem::canonical(tempPath).generic_string() + "/";
 #endif
             }
             else

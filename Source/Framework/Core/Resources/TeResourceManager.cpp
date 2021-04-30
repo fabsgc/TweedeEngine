@@ -1,6 +1,8 @@
 #include "Resources/TeResourceManager.h"
 #include "Resources/TeResource.h"
 
+#include <filesystem>
+
 namespace te
 {
     TE_MODULE_STATIC_MEMBER(ResourceManager)
@@ -109,7 +111,10 @@ namespace te
             {
                 HResource res = Get(uuid);
                 if (res.IsLoaded())
+                {
+                    resources = te_shared_ptr_new<MultiResource>();
                     resources->Entries.push_back({ "primary", res });
+                }
             }
         }
 
@@ -186,9 +191,11 @@ namespace te
 
     bool ResourceManager::GetUUIDFromFile(const String& filePath, UUID& uuid)
     {
+        auto path = std::filesystem::canonical(filePath);
+        String absolutePath = path.generic_string();
         RecursiveLock lock(_loadingUuidMutex);
 
-        auto iterFind = _fileToUUID.find(filePath);
+        auto iterFind = _fileToUUID.find(absolutePath);
 
         if (iterFind != _fileToUUID.end())
         {
@@ -222,30 +229,33 @@ namespace te
 
     void ResourceManager::RegisterResource(const UUID& uuid, const String& filePath)
     {
+        auto path = std::filesystem::canonical(filePath);
+        String absolutePath = path.generic_string();
         _loadingResourceMutex.lock();
+        
 
         auto iterFind = _UUIDToFile.find(uuid);
 
         if (iterFind != _UUIDToFile.end())
         {
-            if (iterFind->second != filePath)
+            if (iterFind->second != absolutePath)
             {
                 _fileToUUID.erase(iterFind->second);
 
-                _UUIDToFile[uuid] = filePath;
-                _fileToUUID[filePath] = uuid;
+                _UUIDToFile[uuid] = absolutePath;
+                _fileToUUID[absolutePath] = uuid;
             }
         }
         else
         {
-            auto iterFind2 = _fileToUUID.find(filePath);
+            auto iterFind2 = _fileToUUID.find(absolutePath);
             if (iterFind2 != _fileToUUID.end())
             {
                 _UUIDToFile.erase(iterFind2->second);
             }
 
-            _UUIDToFile[uuid] = filePath;
-            _fileToUUID[filePath] = uuid;
+            _UUIDToFile[uuid] = absolutePath;
+            _fileToUUID[absolutePath] = uuid;
         }
 
         _loadingResourceMutex.unlock();

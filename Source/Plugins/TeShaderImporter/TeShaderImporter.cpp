@@ -78,9 +78,10 @@ namespace te
         ParserData parsedData = Parse(jsonDocument);
 #endif
 
+        auto path = std::filesystem::absolute(filePath);
         SPtr<Shader> shader = Shader::_createPtr("shader", SHADER_DESC());
-        shader->SetName(std::filesystem::path(filePath).filename().generic_string());
-        shader->SetPath(filePath);
+        shader->SetName(path.filename().generic_string());
+        shader->SetPath(path.generic_string());
 
         te_delete(data);
 

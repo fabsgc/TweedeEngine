@@ -422,10 +422,6 @@ namespace te
         textureImportOptions->MaxMip = 10;
         textureImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
 
-        TextureSurface surface;
-        surface.MipLevel = 0;
-        surface.NumMipLevels = 10;
-
         auto materialFunction = [&](SponzaMaterialData& material)
         {
             material.MaterialProp.SpecularPower = 16.0f;
@@ -498,15 +494,15 @@ namespace te
             material.MaterialElement->SetName(material.Name);
             material.MaterialElement->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
 
-            if (material.Diffuse != "") material.MaterialElement->SetTexture("DiffuseMap", material.DiffuseTexture, surface);
-            if (material.Emissive != "") material.MaterialElement->SetTexture("EmissiveMap", material.EmissiveTexture, surface);
-            if (material.Normal != "") material.MaterialElement->SetTexture("NormalMap", material.NormalTexture, surface);
-            if (material.Specular != "") material.MaterialElement->SetTexture("SpecularMap", material.SpecularTexture, surface);
-            if (material.Parallax != "") material.MaterialElement->SetTexture("ParallaxMap", material.ParallaxTexture, surface);
-            if (material.Bump != "") material.MaterialElement->SetTexture("BumpMap", material.BumpTexture, surface);
-            if (material.Transparency != "") material.MaterialElement->SetTexture("TransparencyMap", material.TransparencyTexture, surface);
-            if (material.Reflection != "") material.MaterialElement->SetTexture("ReflectionMap", material.ReflectionTexture, surface);
-            //if (material.Occlusion != "") material.MaterialElement->SetTexture("OcclusionMap", material.OcclusionTexture, surface);
+            if (material.Diffuse != "") material.MaterialElement->SetTexture("DiffuseMap", material.DiffuseTexture);
+            if (material.Emissive != "") material.MaterialElement->SetTexture("EmissiveMap", material.EmissiveTexture);
+            if (material.Normal != "") material.MaterialElement->SetTexture("NormalMap", material.NormalTexture);
+            if (material.Specular != "") material.MaterialElement->SetTexture("SpecularMap", material.SpecularTexture);
+            if (material.Parallax != "") material.MaterialElement->SetTexture("ParallaxMap", material.ParallaxTexture);
+            if (material.Bump != "") material.MaterialElement->SetTexture("BumpMap", material.BumpTexture);
+            if (material.Transparency != "") material.MaterialElement->SetTexture("TransparencyMap", material.TransparencyTexture);
+            if (material.Reflection != "") material.MaterialElement->SetTexture("ReflectionMap", material.ReflectionTexture);
+            //if (material.Occlusion != "") material.MaterialElement->SetTexture("OcclusionMap", material.OcclusionTexture);
 
             material.MaterialElement->SetProperties(material.MaterialProp);
         };
@@ -554,7 +550,7 @@ namespace te
         _monkeyMaterial = Material::Create(_shaderOpaque);
         _monkeyMaterial->SetProperties(properties);
         _monkeyMaterial->SetName("Material");
-        _monkeyMaterial->SetTexture("DiffuseMap", _loadedTextureMonkey, surface);
+        _monkeyMaterial->SetTexture("DiffuseMap", _loadedTextureMonkey);
         _monkeyMaterial->SetTexture("EnvironmentMap", _loadedSkyboxTexture);
         _monkeyMaterial->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
         _monkeyMaterial->SetProperties(properties);

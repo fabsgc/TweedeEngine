@@ -33,6 +33,10 @@ namespace te
         char inputUUID[64];
         char inputName[256];
 
+        String inputPathStr;
+        String inputNameStr;
+        String inputUUIDStr;
+
         {
             ImGui::BeginGroup();
             ImGui::BeginChild("Textures", ImVec2(ImGui::GetWindowContentRegionWidth() / 2.0f, 0.0f), false);
@@ -42,28 +46,27 @@ namespace te
 
                 for (auto& resource : textureContainer.Res)
                 {
+                    inputPathStr = resource.second->GetPath();
+                    inputNameStr = resource.second->GetName();
+                    inputUUIDStr = resource.second->GetUUID().ToString();
+
                     ImGui::PushID((int)resource.second->GetInternalID());
                     {
                         memset(inputPath, '\0', 256 * sizeof(char));
                         memset(inputUUID, '\0', 64 * sizeof(char));
                         memset(inputName, '\0', 256 * sizeof(char));
 
-                        strcpy(inputUUID, resource.second->GetUUID().ToString().c_str());
+                        strcpy(inputUUID, inputUUIDStr.c_str());
 
-                        if(resource.second->GetName().length() < 256)
-                            strcpy(inputName, resource.second->GetName().c_str());
-                        else
-                            strcpy(inputName, resource.second->GetName().substr(0,255).c_str());
+                        if(resource.second->GetName().length() < 256) strcpy(inputName, inputNameStr.c_str());
+                        else strcpy(inputName, inputNameStr.substr(0,255).c_str());
 
-                        if(resource.second->GetPath().length() < 256)
-                            strcpy(inputPath, resource.second->GetPath().c_str());
-                        else
-                            strcpy(inputPath, resource.second->GetPath().substr(0,255).c_str());
+                        if(resource.second->GetPath().length() < 256) strcpy(inputPath, inputPathStr.c_str());
+                        else strcpy(inputPath, inputPathStr.substr(0,255).c_str());
 
                         ImGui::BeginChild("TexturePreview", ImVec2(96.0f, 96.0f), true, ImGuiWindowFlags_NoScrollbar);
 
                         SPtr<Texture> texture = std::static_pointer_cast<Texture>(resource.second.GetInternalPtr());
-
                         if (texture->GetProperties().GetTextureType() == TextureType::TEX_TYPE_2D)
                         {
                             SPtr<TextureView> textureView = texture->RequestView(
@@ -95,15 +98,16 @@ namespace te
 
                         ImGui::BeginChild("TexturesFields", ImVec2(ImGui::GetContentRegionAvail().x, 96.0f), true);
                         ImGui::PushItemWidth(ImGui::GetWindowContentRegionWidth() - 50.0f);
-                        ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
-                        ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
 
                         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 10.0f, 1.0f });
                         ImGui::InputText("Path", inputPath, IM_ARRAYSIZE(inputPath));
-                        ImGui::InputText("UUID", inputUUID, IM_ARRAYSIZE(inputUUID));
-                        ImGui::PopStyleVar();
+                        if (ImGui::IsItemHovered())
+                            ImGui::SetTooltip(inputPathStr.c_str());
 
-                        ImGui::PopItemFlag();
+                        ImGui::InputText("UUID", inputUUID, IM_ARRAYSIZE(inputUUID));
+                        if (ImGui::IsItemHovered())
+                            ImGui::SetTooltip(inputUUIDStr.c_str());
+
                         ImGui::PopStyleVar();
 
                         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 10.0f, 1.0f });
@@ -125,6 +129,10 @@ namespace te
 
         auto ShowDefaultResourceField = [&](HResource& resource)
         {
+            String inputPathStr = resource->GetPath();
+            String inputNameStr = resource->GetName();
+            String inputUUIDStr = resource->GetUUID().ToString();
+
             ImGui::PushID((int)resource->GetInternalID());
             ImGui::BeginChild("MeshField", ImVec2(ImGui::GetContentRegionAvail().x, 96.0f), true);
             {
@@ -132,20 +140,19 @@ namespace te
                 memset(inputUUID, '\0', 64 * sizeof(char));
                 memset(inputName, '\0', 128 * sizeof(char));
 
-                strcpy(inputPath, resource->GetPath().c_str());
-                strcpy(inputUUID, resource->GetUUID().ToString().c_str());
-                strcpy(inputName, resource->GetName().c_str());
+                strcpy(inputPath, inputPathStr.c_str());
+                strcpy(inputUUID, inputUUIDStr.c_str());
+                strcpy(inputName, inputNameStr.c_str());
 
                 ImGui::PushItemWidth(ImGui::GetWindowContentRegionWidth() - 50.0f);
-                ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
-                ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
 
                 ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 10.0f, 1.0f });
                 ImGui::InputText("Path", inputPath, IM_ARRAYSIZE(inputPath));
+                if (ImGui::IsItemHovered())
+                    ImGui::SetTooltip(inputPathStr.c_str());
                 ImGui::InputText("UUID", inputUUID, IM_ARRAYSIZE(inputUUID));
-                ImGui::PopStyleVar();
-
-                ImGui::PopItemFlag();
+                if (ImGui::IsItemHovered())
+                    ImGui::SetTooltip(inputUUIDStr.c_str());
                 ImGui::PopStyleVar();
 
                 ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 10.0f, 1.0f });

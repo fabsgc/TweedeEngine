@@ -51,9 +51,10 @@ namespace te
 
         if (rendererMeshData)
         {
+            auto path = std::filesystem::absolute(filePath);
             SPtr<Mesh> mesh = Mesh::_createPtr(rendererMeshData->GetData(), desc);
-            mesh->SetName(std::filesystem::path(filePath).filename().generic_string());
-            mesh->SetPath(filePath);
+            mesh->SetName(path.filename().generic_string());
+            mesh->SetPath(path.generic_string());
 
             return mesh;
         }
@@ -75,9 +76,10 @@ namespace te
         Vector<SubResourceRaw> output;
         if (rendererMeshData)
         {
+            auto path = std::filesystem::absolute(filePath);
             SPtr<Mesh> mesh = Mesh::_createPtr(rendererMeshData->GetData(), desc);
-            mesh->SetName(std::filesystem::path(filePath).filename().generic_string());
-            mesh->SetPath(filePath);
+            mesh->SetName(path.filename().generic_string());
+            mesh->SetPath(path.generic_string());
 
             if (mesh != nullptr)
             {

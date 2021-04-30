@@ -5,6 +5,8 @@
 #include "TeEditorResManager.h"
 #include "TeCoreApplication.h"
 
+#include "Threading/TeTaskScheduler.h"
+
 namespace te
 {
     const String EditorUtils::DELETE_BINDING = "Delete";
@@ -14,11 +16,35 @@ namespace te
     void EditorUtils::ImportMeshMaterials(HMesh& mesh)
     {
         Map<String, HMaterial> createdMaterials;
+        List<SPtr<Task>> tasks;
+
+        const auto& BindTexture = [&](bool& isSet, const String& textureName, const String& texturePath, HMaterial& material)
+        {
+            if (isSet)
+            {
+                auto textureImportOptions = TextureImportOptions::Create();
+                textureImportOptions->CpuCached = false;
+                textureImportOptions->GenerateMips = (textureName != "EmissiveMap") ? true : false;
+                textureImportOptions->MaxMip = 0;
+                textureImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
+
+                HTexture texture = EditorResManager::Instance().Load<Texture>(texturePath, textureImportOptions);
+
+                if (texture.IsLoaded())
+                {
+                    material->SetTexture(textureName, texture);
+                    EditorResManager::Instance().Add<Texture>(texture);
+                }
+                else
+                {
+                    isSet = false;
+                }
+            }
+        };
 
         for (UINT32 i = 0; i < mesh->GetProperties().GetNumSubMeshes(); i++)
         {
             SubMesh& subMesh = mesh->GetProperties().GetSubMesh(i);
-            MaterialTextures matTextures = subMesh.MatTextures;
 
             if (createdMaterials.find(subMesh.MaterialName) != createdMaterials.end())
             {
@@ -29,46 +55,68 @@ namespace te
                 HMaterial material = Material::Create(gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque));
                 material->SetName(subMesh.MaterialName);
                 material->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
-
-                const auto& BindTexture = [&](bool& isSet, const String& textureName, const String& texturePath, HMaterial& material)
-                {
-                    auto textureImportOptions = TextureImportOptions::Create();
-                    textureImportOptions->CpuCached = false;
-                    textureImportOptions->GenerateMips = (textureName != "EmissiveMap") ? true : false;
-                    textureImportOptions->MaxMip = 8;
-                    textureImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
-
-                    if (isSet)
-                    {
-                        HTexture texture = EditorResManager::Instance().Load<Texture>(texturePath, textureImportOptions);
-
-                        if (texture.IsLoaded())
-                        {
-                            material->SetTexture(textureName, texture);
-                            EditorResManager::Instance().Add<Texture>(texture);
-                        }
-                        else
-                        {
-                            isSet = false;
-                        }
-                    }
-                };
-
-                BindTexture(subMesh.MatProperties.UseDiffuseMap, "DiffuseMap", matTextures.DiffuseMap, material);
-                BindTexture(subMesh.MatProperties.UseEmissiveMap, "EmissiveMap", matTextures.EmissiveMap, material);
-                BindTexture(subMesh.MatProperties.UseNormalMap, "NormalMap", matTextures.NormalMap, material);
-                BindTexture(subMesh.MatProperties.UseSpecularMap, "SpecularMap", matTextures.SpecularMap, material);
-                BindTexture(subMesh.MatProperties.UseBumpMap, "BumpMap", matTextures.BumpMap, material);
-                BindTexture(subMesh.MatProperties.UseTransparencyMap, "TransparencyMap", matTextures.TransparencyMap, material);
-                BindTexture(subMesh.MatProperties.UseReflectionMap, "ReflectionMap", matTextures.ReflectionMap, material);
-
                 material->SetProperties(subMesh.MatProperties);
 
                 subMesh.Mat = material.GetNewHandleFromExisting();
-                createdMaterials[subMesh.MaterialName] = material.GetNewHandleFromExisting();
                 EditorResManager::Instance().Add<Material>(material);
+                createdMaterials[subMesh.MaterialName] = material.GetNewHandleFromExisting();
+
+                if (subMesh.MatProperties.UseDiffuseMap)
+                {
+                    tasks.push_back(Task::Create(subMesh.MaterialName,
+                        [&]() { BindTexture(subMesh.MatProperties.UseDiffuseMap, "DiffuseMap", subMesh.MatTextures.DiffuseMap, createdMaterials[subMesh.MaterialName]); }));
+                }
+                if (subMesh.MatProperties.UseEmissiveMap)
+                {
+                    tasks.push_back(Task::Create(subMesh.MaterialName,
+                        [&]() { BindTexture(subMesh.MatProperties.UseEmissiveMap, "EmissiveMap", subMesh.MatTextures.EmissiveMap, createdMaterials[subMesh.MaterialName]); }));
+                }
+                if (subMesh.MatProperties.UseNormalMap)
+                {
+                    tasks.push_back(Task::Create(subMesh.MaterialName,
+                        [&]() { BindTexture(subMesh.MatProperties.UseNormalMap, "NormalMap", subMesh.MatTextures.NormalMap, createdMaterials[subMesh.MaterialName]); }));
+                }
+                if (subMesh.MatProperties.UseSpecularMap)
+                {
+                    tasks.push_back(Task::Create(subMesh.MaterialName,
+                        [&]() { BindTexture(subMesh.MatProperties.UseSpecularMap, "SpecularMap", subMesh.MatTextures.SpecularMap, createdMaterials[subMesh.MaterialName]); }));
+                }
+                if (subMesh.MatProperties.UseBumpMap)
+                {
+                    tasks.push_back(Task::Create(subMesh.MaterialName,
+                        [&]() { BindTexture(subMesh.MatProperties.UseBumpMap, "BumpMap", subMesh.MatTextures.BumpMap, createdMaterials[subMesh.MaterialName]); }));
+                }
+                if (subMesh.MatProperties.UseTransparencyMap)
+                {
+                    tasks.push_back(Task::Create(subMesh.MaterialName,
+                        [&]() { BindTexture(subMesh.MatProperties.UseTransparencyMap, "TransparencyMap", subMesh.MatTextures.TransparencyMap, createdMaterials[subMesh.MaterialName]); }));
+                }
+                if (subMesh.MatProperties.UseReflectionMap)
+                {
+                    tasks.push_back(Task::Create(subMesh.MaterialName,
+                        [&]() { BindTexture(subMesh.MatProperties.UseReflectionMap, "ReflectionMap", subMesh.MatTextures.ReflectionMap, createdMaterials[subMesh.MaterialName]); }));
+                }
             }
         }
+
+        for (auto& task : tasks)
+        {
+            gTaskScheduler().AddTask(task);
+        }
+
+        bool notAllLoaded = false;
+        do
+        {
+            notAllLoaded = false;
+            for (auto task : tasks)
+            {
+                if (!task->IsComplete())
+                    notAllLoaded = true;
+            }
+
+        } while (notAllLoaded);
+
+        TE_PRINT("done");
     }
 
     void EditorUtils::GenerateViewportRenderTexture(RenderWindowData& renderData)

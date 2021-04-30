@@ -338,6 +338,8 @@ namespace te
 
     void RendererView::QueueRenderElements(const SceneInfo& sceneInfo)
     {
+        const ConvexVolume& worldFrustum = _properties.CullFrustum;
+
         // Queue renderables
         for (UINT32 i = 0; i < (UINT32)sceneInfo.Renderables.size(); i++)
         {
@@ -347,8 +349,19 @@ namespace te
             UINT32 j = 0;
             for (auto& renderElem : sceneInfo.Renderables[i]->Elements)
             {
-                Bounds subMeshBounds = sceneInfo.Renderables[i]->RenderablePtr->GetSubMeshBounds(j);
-                const float distanceToCamera = (_properties.ViewOrigin - subMeshBounds.GetSphere().GetCenter()).Length();
+                Bounds bounds = sceneInfo.Renderables[i]->RenderablePtr->GetSubMeshBounds(j);
+                const float distanceToCamera = (_properties.ViewOrigin - bounds.GetSphere().GetCenter()).Length();
+                j++;
+
+                // Renderable are culled in a previous step. However, it could be a good idea
+                // to do a small distance filtering on subMeshes for renderable which have more
+                // than a certain amount of submeshes. This way, we could reduce draw calls
+                // and gpu bindings
+                if (renderElem.MeshElem->GetProperties().GetNumSubMeshes() > 4)
+                {
+                    if (!worldFrustum.Intersects(bounds.GetBox()))
+                        continue;
+                }
 
                 UINT32 shaderFlags = renderElem.MaterialElem->GetShader()->GetFlags();
                 UINT32 techniqueIdx = renderElem.DefaultTechniqueIdx;
@@ -360,7 +373,6 @@ namespace te
                     _forwardOpaqueQueue->Add(&renderElem, distanceToCamera, techniqueIdx);
 
                 CheckIfDynamicEnvMappingNeeded(renderElem);
-                j++;
             }
         }
 

@@ -294,9 +294,10 @@ namespace te
 
     Bounds MeshData::CalculateBounds(UINT32 indexOffset, UINT32 indexCount) const
     {
-        TE_ASSERT_ERROR((indexCount + indexOffset <= _numIndices), "Trying to access indice is out of indices buffer)");
+        TE_ASSERT_ERROR((indexCount + indexOffset <= _numIndices), "Trying to access an indice which is out of indices buffer");
 
         Bounds bounds;
+        Vector<UINT32> treatedVertices;
         SPtr<VertexDataDesc> vertexDesc = GetVertexDesc();
         for (UINT32 i = 0; i < vertexDesc->GetNumElements(); i++)
         {
@@ -307,42 +308,43 @@ namespace te
 
             UINT8* verticesData = GetElementData(curElement.GetSemantic(), curElement.GetSemanticIdx(), curElement.GetStreamIdx());
             UINT8* indicesData = (_indexType == IT_32BIT) ? (UINT8*)GetIndices32() : (UINT8*)GetIndices16();
-            UINT32 verticesStride = vertexDesc->GetVertexStride(curElement.GetStreamIdx());
-            UINT32 indicesStride = (_indexType == IT_32BIT) ? sizeof(UINT32) : sizeof(UINT16);
+            UINT32 vertexStride = vertexDesc->GetVertexStride(curElement.GetStreamIdx());
+            UINT32 indiexStride = (_indexType == IT_32BIT) ? sizeof(UINT32) : sizeof(UINT16);
 
             if (GetNumVertices() > 0)
             {
                 UINT32 verticesIndex = (_indexType == IT_32BIT) 
-                    ? *(UINT32*)(indicesData + indicesStride * indexOffset)
-                    : *(UINT16*)(indicesData + indicesStride * indexOffset);
+                    ? *(UINT32*)(indicesData + indiexStride * indexOffset)
+                    : *(UINT16*)(indicesData + indiexStride * indexOffset);
 
-                Vector3 curPosition = *(Vector3*)(verticesData + verticesStride * verticesIndex);
+                treatedVertices.push_back(verticesIndex);
+                Vector3 curPosition = *(Vector3*)(verticesData + vertexStride * verticesIndex);
                 Vector3 accum = curPosition;
                 Vector3 min = curPosition;
                 Vector3 max = curPosition;
 
-                for (UINT32 j = indexOffset + 1; j < indexCount; j++)
+                for (UINT32 j = indexOffset + 1; j < indexOffset + indexCount; j++)
                 {
                     verticesIndex = (_indexType == IT_32BIT)
-                        ? *(UINT32*)(indicesData + indicesStride * j)
-                        : *(UINT16*)(indicesData + indicesStride * j);
+                        ? *(UINT32*)(indicesData + indiexStride * j)
+                        : *(UINT16*)(indicesData + indiexStride * j);
 
-                    curPosition = *(Vector3*)(verticesData + verticesStride * verticesIndex);
+                    if (std::find(treatedVertices.begin(), treatedVertices.end(), verticesIndex) != treatedVertices.end())
+                        continue; // We do not process a vertice twice
+
+                    treatedVertices.push_back(verticesIndex);
+                    curPosition = *(Vector3*)(verticesData + vertexStride * verticesIndex);
                     accum += curPosition;
                     min = Vector3::Min(min, curPosition);
-                    max = Vector3::Max(max, curPosition);
+                    max = Vector3::Max(max, curPosition); 
                 }
 
                 Vector3 center = accum / (float)indexCount;
                 float radiusSqrd = 0.0f;
 
-                for (UINT32 j = indexOffset + 1; j < indexCount; j++)
+                for (auto& vertice : treatedVertices)
                 {
-                    verticesIndex = (_indexType == IT_32BIT)
-                        ? *(UINT32*)(indicesData + indicesStride * j)
-                        : *(UINT16*)(indicesData + indicesStride * j);
-
-                    curPosition = *(Vector3*)(verticesData + verticesStride * verticesIndex);
+                    curPosition = *(Vector3*)(verticesData + vertexStride * vertice);
                     float dist = center.SquaredDistance(curPosition);
 
                     if (dist > radiusSqrd)

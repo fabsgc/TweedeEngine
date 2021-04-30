@@ -429,13 +429,34 @@ PS_OUTPUT main( PS_INPUT IN )
             if(parraxMaxSamples < 16) parraxMaxSamples = 16;
             if(parraxMaxSamples > PARALLAX_MAX_SAMPLE) parraxMaxSamples = 256;
 
-            // Utilize dynamic flow control to change the number of samples per ray 
-            // depending on the viewing angle for the surface. Oblique angles require 
-            // smaller step sizes to achieve more accurate precision for computing displacement.
-            // We express the sampling rate as a linear function of the angle between 
-            // the geometric normal and the view direction ray:
-            int parallaxSteps = (int)lerp( parraxMaxSamples, PARALLAX_MIN_SAMPLE, dot( IN.ViewDirWS, IN.Normal ) );
-            texCoords = DoParallaxMapping(texCoords, IN.ParallaxOffsetTS, parallaxSteps, gParallaxScale);
+            // As Parallax Occlusion Mapping has a very big cost
+            // We adjust 
+            float3 fragToView = ( IN.PositionWS.xyz - gViewOrigin );
+            float distance = length(fragToView);
+
+            if(distance < 750.0f)
+            {
+                if(distance > 450)
+                    parraxMaxSamples /= 24;
+                else if(distance > 350)
+                    parraxMaxSamples /= 16;
+                else if(distance > 250)
+                    parraxMaxSamples /= 8;
+                else if(distance > 175)
+                    parraxMaxSamples /= 4;
+                else if(distance > 75)
+                    parraxMaxSamples /= 2;
+
+                if(parraxMaxSamples < 16) parraxMaxSamples = 16;
+
+                // Utilize dynamic flow control to change the number of samples per ray 
+                // depending on the viewing angle for the surface. Oblique angles require 
+                // smaller step sizes to achieve more accurate precision for computing displacement.
+                // We express the sampling rate as a linear function of the angle between 
+                // the geometric normal and the view direction ray:
+                int parallaxSteps = (int)lerp( parraxMaxSamples, PARALLAX_MIN_SAMPLE, dot( IN.ViewDirWS, IN.Normal ) );
+                texCoords = DoParallaxMapping(texCoords, IN.ParallaxOffsetTS, parallaxSteps, gParallaxScale);
+            }
         }
 
         if(gUseNormalMap == 1)

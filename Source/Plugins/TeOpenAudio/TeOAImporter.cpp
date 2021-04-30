@@ -133,9 +133,10 @@ namespace te
         clipDesc.ReadMode = clipIO->ReadMode;
         clipDesc.Is3D = clipIO->Is3D;
 
+        auto path = std::filesystem::absolute(filePath);
         SPtr<AudioClip> clip = AudioClip::_createPtr(sampleStream, bufferSize, info.NumSamples, clipDesc);
-        clip->SetName(std::filesystem::path(filePath).filename().generic_string());
-        clip->SetPath(filePath);
+        clip->SetName(path.filename().generic_string());
+        clip->SetPath(path.generic_string());
 
         return clip;
     }

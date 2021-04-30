@@ -206,8 +206,10 @@ namespace te
             }
         }
 
-        texture->SetName(std::filesystem::path(filePath).filename().generic_string());
-        texture->SetPath(filePath);
+        auto path = std::filesystem::absolute(filePath);
+        texture->SetName(path.filename().generic_string());
+        texture->SetPath(path.generic_string());
+
         return texture;
     }
 

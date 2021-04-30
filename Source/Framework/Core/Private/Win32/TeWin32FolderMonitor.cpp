@@ -343,7 +343,7 @@ namespace te
             return;
         }
 
-        WString extendedFolderPath = L"\\\\?\\" + UTF8::ToWide(BuildWindowsPath(std::filesystem::absolute(folderPath).string()));
+        WString extendedFolderPath = L"\\\\?\\" + UTF8::ToWide(BuildWindowsPath(std::filesystem::canonical(folderPath).string()));
         HANDLE dirHandle = CreateFileW(extendedFolderPath.c_str(), FILE_LIST_DIRECTORY,
             FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, nullptr, OPEN_EXISTING,
             FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED, nullptr);
