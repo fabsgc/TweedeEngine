@@ -454,11 +454,19 @@ namespace te
 
                 // if we've moved a rigidBody call OnEnabled()
                 if (currentCO->GetCoreType() == TID_CRigidBody)
-                    static_object_cast<CRigidBody>(currentCO)->Initialize();
+                {
+                    HRigidBody rigidBody = static_object_cast<CRigidBody>(currentCO);
+                    rigidBody->Initialize();
+                    rigidBody->SetLinkedSO(currentCO->SO());
+                }
 
                 // if we've moved a softBody call OnEnabled()
                 if (currentCO->GetCoreType() == TID_CSoftBody)
-                    static_object_cast<CSoftBody>(currentCO)->Initialize();
+                {
+                    HSoftBody softBody = static_object_cast<CSoftBody>(currentCO);
+                    softBody->Initialize();
+                    softBody->SetLinkedSO(currentCO->SO());
+                }
 
                 // if we've moved a collider call RestoreInternal()
                 if (currentCO->GetCoreType() == TID_CBoxCollider)

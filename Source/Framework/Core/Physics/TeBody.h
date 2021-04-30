@@ -190,6 +190,9 @@ namespace te
          */
         void _setTransform(const Vector3& position, const Quaternion& rotation);
 
+        /** In case this body is moved within the scene, we should need to update its _linkedSO */
+        void _setLinkedSO(const HSceneObject& SO);
+
         /**
          * Sets the object that owns this physics object, if any. Used for high level systems so they can easily map their
          * high level physics objects from the low level ones returned by various queries and events.

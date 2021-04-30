@@ -92,7 +92,7 @@ namespace te
 
             rapi.SetVertexDeclaration(_instanceBuffer.PointVDecl);
             rapi.SetVertexBuffers(0, &_instanceBuffer.PointVB, 1);
-            rapi.SetDrawOperation(DOT_POINT_LIST);
+            rapi.SetDrawOperation(DOT_TRIANGLE_LIST);
 
             UINT64 elementToDraw = static_cast<UINT64>(instancedElements.size());
 

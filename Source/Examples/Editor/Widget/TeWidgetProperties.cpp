@@ -983,7 +983,6 @@ namespace te
     bool WidgetProperties::ShowLight(SPtr<Light> light)
     {
         bool hasChanged = false;
-        int lightType = (int)light->GetType();
         bool castsShadows = light->GetCastsShadow();
         float attenuationRadius = light->GetAttenuationRadius();
         float linearAttenuation = light->GetLinearAttenuation();
@@ -1010,24 +1009,6 @@ namespace te
             {
                 hasChanged = true;
                 light->SetCastsShadow(castsShadows);
-            }
-        }
-        ImGui::Separator();
-
-        // Light Type
-        {
-            static ImGuiExt::ComboOptions<int> lightTypeOptions;
-            if (lightTypeOptions.Options.size() == 0)
-            {
-                lightTypeOptions.AddOption((int)LightType::Directional, "Directional");
-                lightTypeOptions.AddOption((int)LightType::Radial, "Radial");
-                lightTypeOptions.AddOption((int)LightType::Spot, "Spot");
-            }
-
-            if (ImGuiExt::RenderOptionCombo<int>((int*)(&lightType), "##light_type_option", "Type", lightTypeOptions, width, true))
-            {
-                light->SetType((LightType)lightType);
-                hasChanged = true;
             }
         }
         ImGui::Separator();

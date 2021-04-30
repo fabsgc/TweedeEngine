@@ -6,11 +6,15 @@
 #include "RenderAPI/TeVertexDeclaration.h"
 #include "Renderer/TeCamera.h"
 
+#define MAX_BULLET_DEBUG_INSTANCED_BLOCK 32
+
 namespace te
 {
     BulletDebug::BulletDebug()
     {
-        _debugMode = DBG_DrawWireframe | DBG_DrawContactPoints | DBG_DrawConstraints | DBG_DrawConstraintLimits;
+        _debugMode = DBG_DrawWireframe | DBG_DrawContactPoints | 
+            DBG_DrawConstraints | DBG_DrawConstraintLimits | DBG_DrawAabb |
+            DBG_DrawNormals;
 
         _material = BulletDebugMat::Get();
         CreateInstanceBuffer(_instanceBuffer);
@@ -63,14 +67,36 @@ namespace te
 
         if (instancedElements.size() > 0)
         {
+            _material->BindCamera(camera);
+
             rapi.SetRenderTarget(camera->GetViewport()->GetTarget());
             rapi.ClearViewport(clearBuffers, Color::Black);
-
-            _material->BindCamera(camera);
 
             rapi.SetVertexDeclaration(_instanceBuffer.PointVDecl);
             rapi.SetVertexBuffers(0, &_instanceBuffer.PointVB, 1);
             rapi.SetDrawOperation(DOT_POINT_LIST);
+
+            UINT64 elementToDraw = static_cast<UINT64>(instancedElements.size());
+
+            auto iterBegin = instancedElements.begin();
+            auto iterRangeStart = iterBegin;
+            auto iterRangeEnd = iterBegin + ((elementToDraw >= MAX_BULLET_DEBUG_INSTANCED_BLOCK) ? MAX_BULLET_DEBUG_INSTANCED_BLOCK : elementToDraw);
+
+            do
+            {
+                UINT64 elementsDrawn = static_cast<UINT32>(iterRangeEnd - iterRangeStart);
+
+                _material->BindDebugElements(iterRangeStart, iterRangeEnd);
+                _material->Bind();
+                rapi.Draw(0, 1, static_cast<UINT32>(elementsDrawn));
+
+                elementToDraw = elementToDraw - elementsDrawn;
+
+                iterRangeStart = iterRangeEnd;
+                iterRangeEnd = iterRangeStart + ((elementToDraw >= MAX_BULLET_DEBUG_INSTANCED_BLOCK) ? MAX_BULLET_DEBUG_INSTANCED_BLOCK : elementToDraw);
+            } while (elementToDraw > 0);
+
+            rapi.SetRenderTarget(nullptr);
         }
     }
 

@@ -128,6 +128,9 @@ namespace te
         /** @copydoc Body::GetFlags() */
         BodyFlag GetFlags() const { return _flags; }
 
+        /** @copy Body::SetLinkedSO() */
+        void SetLinkedSO(const HSceneObject& SO);
+
         /** @copydoc Body::OnCollisionBegin() */
         Event<void(const CollisionData&)> OnCollisionBegin;
 

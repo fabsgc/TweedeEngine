@@ -357,7 +357,6 @@ namespace te
         settings->Brightness = 0.0f;
         settings->MotionBlur.Enabled = false;
 
-
         _previewViewportCamera = _viewportCamera.GetNewHandleFromExisting();
     }
 
@@ -1130,8 +1129,8 @@ namespace te
         meshImportOptions->ImportTangents = true;
         meshImportOptions->CpuCached = false;
 
-        meshImportOptions->ScaleSystemUnit = true;
-        meshImportOptions->ScaleFactor = 0.01f;;
+        //meshImportOptions->ScaleSystemUnit = true;
+        //meshImportOptions->ScaleFactor = 0.01f;;
 
         auto textureImportOptions = TextureImportOptions::Create();
         textureImportOptions->CpuCached = false;
@@ -1149,10 +1148,10 @@ namespace te
         // ######################################################
 
         // ######################################################
-        //auto knightResources = EditorResManager::Instance().LoadAll("Data/Meshes/Knight/Knight.dae", meshAnimImportOptions);
+        auto knightResources = EditorResManager::Instance().LoadAll("Data/Meshes/Knight/Knight.dae", meshAnimImportOptions);
 
-        //_loadedMeshKnight = static_resource_cast<Mesh>(knightResources->Entries[0].Res);
-        //_animationClipKnight = static_resource_cast<AnimationClip>(knightResources->Entries[1].Res);
+        _loadedMeshKnight = static_resource_cast<Mesh>(knightResources->Entries[0].Res);
+        _animationClipKnight = static_resource_cast<AnimationClip>(knightResources->Entries[1].Res);
         // ######################################################
 
         // ######################################################
@@ -1160,11 +1159,11 @@ namespace te
         _loadedMeshPlane = EditorResManager::Instance().Load<Mesh>("Data/Meshes/Plane/plane.obj", meshImportOptions);
         _loadedSkyboxTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_day_medium.png", textureCubeMapImportOptions);
         _loadedSkyboxIrradianceTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_day_irradiance_small.png", textureCubeMapImportOptions);
-        //_loadedKnightDiffuseTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Knight/diffuse-small.png", textureImportOptions);
+        _loadedKnightDiffuseTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Knight/diffuse-small.png", textureImportOptions);
         // ######################################################
 
         // ######################################################
-        //_loadedMeshKnight->SetName("Knight Mesh");
+        _loadedMeshKnight->SetName("Knight Mesh");
         _loadedMeshPlane->SetName("Plane Mesh");
         _loadedSkyboxTexture->SetName("Skybox Radiance");
         _loadedSkyboxIrradianceTexture->SetName("Skybox Irradiance");
@@ -1182,11 +1181,11 @@ namespace te
 
         properties.UseDiffuseMap = true;
 
-        /*_knightMaterial = Material::Create(_shader);
+        _knightMaterial = Material::Create(_shader);
         _knightMaterial->SetName("Knight Material");
         _knightMaterial->SetTexture("DiffuseMap", _loadedKnightDiffuseTexture);
         _knightMaterial->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
-        _knightMaterial->SetProperties(properties);*/
+        _knightMaterial->SetProperties(properties);
         // ######################################################
 
         // ######################################################
@@ -1208,7 +1207,7 @@ namespace te
         // ######################################################
 
         // ######################################################
-        /*_sceneRenderableKnightSO = SceneObject::Create("Knight");
+        _sceneRenderableKnightSO = SceneObject::Create("Knight");
         _sceneRenderableKnightSO->SetParent(_sceneSO);
 
         _renderableKnight = _sceneRenderableKnightSO->AddComponent<CRenderable>();
@@ -1230,7 +1229,7 @@ namespace te
         _boxColliderKnight = _sceneRenderableKnightSO->AddComponent<CBoxCollider>();
         _boxColliderKnight->Initialize();
         _boxColliderKnight->SetCenter(Vector3(0.0f, 1.0f, 0.0f));
-        _boxColliderKnight->SetScale(Vector3(1.0f, 2.0f, 1.0f));*/
+        _boxColliderKnight->SetScale(Vector3(1.0f, 2.0f, 1.0f));
         
         _sceneRenderablePlaneSO = SceneObject::Create("Plane");
         _sceneRenderablePlaneSO->SetParent(_sceneSO);
@@ -1288,7 +1287,7 @@ namespace te
         HShader transparentShaderCullNone = gBuiltinResources().GetBuiltinShader(BuiltinShader::TransparentCullNone);
 
         EditorResManager::Instance().Add<Material>(_planeMaterial);
-        //EditorResManager::Instance().Add<Material>(_knightMaterial);
+        EditorResManager::Instance().Add<Material>(_knightMaterial);
         EditorResManager::Instance().Add<Shader>(opaqueShader);
         EditorResManager::Instance().Add<Shader>(transparentShader);
         EditorResManager::Instance().Add<Shader>(transparentShaderCullNone);

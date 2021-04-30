@@ -16,6 +16,7 @@ namespace te
     void EditorUtils::ImportMeshMaterials(HMesh& mesh)
     {
         Map<String, HMaterial> createdMaterials;
+        bool notAllLoaded = false;
         List<SPtr<Task>> tasks;
 
         const auto& BindTexture = [&](bool& isSet, const String& textureName, const String& texturePath, HMaterial& material)
@@ -104,7 +105,6 @@ namespace te
             gTaskScheduler().AddTask(task);
         }
 
-        bool notAllLoaded = false;
         do
         {
             notAllLoaded = false;
@@ -115,8 +115,6 @@ namespace te
             }
 
         } while (notAllLoaded);
-
-        TE_PRINT("done");
     }
 
     void EditorUtils::GenerateViewportRenderTexture(RenderWindowData& renderData)

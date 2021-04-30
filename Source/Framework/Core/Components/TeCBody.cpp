@@ -214,6 +214,12 @@ namespace te
             _internal->SetFlags(flags);
     }
 
+    void CBody::SetLinkedSO(const HSceneObject& SO)
+    {
+        if (_internal != nullptr)
+            _internal->_setLinkedSO(SO);
+    }
+
     void CBody::TriggerOnCollisionBegin(const CollisionDataRaw& data)
     {
         CollisionData hit;

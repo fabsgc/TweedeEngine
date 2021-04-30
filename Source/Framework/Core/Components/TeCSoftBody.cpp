@@ -59,6 +59,9 @@ namespace te
 
     void CSoftBody::OnEnabled()
     {
+        if (_internal != nullptr)
+            DestroyInternal();
+
         _internal = CreateInternal();
         UpdateColliders();
 

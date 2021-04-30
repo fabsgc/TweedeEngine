@@ -106,10 +106,10 @@ namespace te
         {
             if (scene->_world && scene->_debug)
             {
+                scene->_debug->Clear();
+
                 if(_debug)
                     scene->_world->debugDrawWorld();
-
-                scene->_debug->Clear();
             }
         }
 

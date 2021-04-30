@@ -13,4 +13,9 @@ namespace te
         _linkedSO->SetWorldPosition(position);
         _linkedSO->SetWorldRotation(rotation);
     }
+
+    void Body::_setLinkedSO(const HSceneObject& SO)
+    {
+        _linkedSO = SO;
+    }
 }

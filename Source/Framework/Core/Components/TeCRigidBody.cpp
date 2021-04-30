@@ -74,7 +74,7 @@ namespace te
     void CRigidBody::OnEnabled()
     {
         if (_internal != nullptr)
-            return;
+            DestroyInternal();
 
         _internal = CreateInternal();
         UpdateColliders();

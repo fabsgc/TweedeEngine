@@ -1088,7 +1088,6 @@ namespace te
         technique->Compile();
 
         SHADER_DESC shaderDesc = _pickSelectShaderDesc;
-        shaderDesc.Flags = (UINT32)ShaderFlag::Transparent;
         shaderDesc.QueueType = QueueSortType::BackToFront;
         shaderDesc.Techniques.push_back(technique.GetInternalPtr());
 
@@ -1136,7 +1135,6 @@ namespace te
         technique->Compile();
 
         SHADER_DESC shaderDesc = _hudPickSelectShaderDesc;
-        shaderDesc.Flags = (UINT32)ShaderFlag::Transparent;
         shaderDesc.QueueType = QueueSortType::BackToFront;
         shaderDesc.Techniques.push_back(technique.GetInternalPtr());
 
@@ -1154,14 +1152,13 @@ namespace te
         passDesc.PixelProgramDesc = _pixelShaderBulletDebugDesc;
 
         passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
-        passDesc.RasterizerStateDesc.polygonMode = PolygonMode::PM_WIREFRAME;
+        passDesc.RasterizerStateDesc.polygonMode = PolygonMode::PM_SOLID;
 
         HPass pass = Pass::Create(passDesc);
         HTechnique technique = Technique::Create("hlsl", { pass.GetInternalPtr() });
         technique->Compile();
 
         SHADER_DESC shaderDesc = _hudPickSelectShaderDesc;
-        shaderDesc.Flags = (UINT32)ShaderFlag::Transparent;
         shaderDesc.QueueType = QueueSortType::BackToFront;
         shaderDesc.Techniques.push_back(technique.GetInternalPtr());
 
