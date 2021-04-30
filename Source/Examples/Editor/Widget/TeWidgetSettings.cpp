@@ -2,7 +2,7 @@
 
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
-
+#include "../TeEditor.h"
 #include "Physics/TePhysics.h"
 
 namespace te
@@ -30,14 +30,20 @@ namespace te
             {
                 bool physicsPaused = !gPhysics().IsPaused();
                 if (ImGuiExt::RenderOptionBool(physicsPaused, "##settings_physics_enable", "Enable Physic"))
+                {
                     gPhysics().SetPaused(!physicsPaused);
+                    gEditor().NeedsRedraw();
+                }
             }
 
             // Debug paused
             {
                 bool physicsDebug = gPhysics().IsDebug();
                 if (ImGuiExt::RenderOptionBool(physicsDebug, "##settings_physics_enable", "Enable Physic Debug"))
+                {
                     gPhysics().SetDebug(physicsDebug);
+                    gEditor().NeedsRedraw();
+                }
             }
             ImGui::Separator();
             
@@ -45,7 +51,10 @@ namespace te
             {
                 Vector3 gravity = gPhysics().GetDesc().Gravity;
                 if (ImGuiExt::RenderVector3(gravity, "##settings_physics_gravity", " Gravity", width))
+                {
                     gPhysics().SetGravity(gravity);
+                    gEditor().NeedsRedraw();
+                }
             }
         }
     }
