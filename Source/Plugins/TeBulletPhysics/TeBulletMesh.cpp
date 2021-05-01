@@ -6,14 +6,14 @@
 
 namespace te
 {
-    BulletMesh::BulletMesh(const SPtr<MeshData>& meshData, PhysicsMeshType type)
-        : PhysicsMesh(meshData, type)
+    BulletMesh::BulletMesh(const SPtr<MeshData>& meshData)
+        : PhysicsMesh(meshData)
     { }
 
     void BulletMesh::Initialize()
     {
         if (_internal == nullptr) // Could be not-null if we're deserializing
-            _internal = te_shared_ptr_new<BulletFMesh>(_initMeshData, _type);
+            _internal = te_shared_ptr_new<BulletFMesh>(_initMeshData);
 
         PhysicsMesh::Initialize();
     }
@@ -25,11 +25,11 @@ namespace te
     }
 
     BulletFMesh::BulletFMesh()
-        : FPhysicsMesh(nullptr, PhysicsMeshType::Convex, TID_FBulletMesh)
+        : FPhysicsMesh(nullptr, TID_FBulletMesh)
     { }
 
-    BulletFMesh::BulletFMesh(const SPtr<MeshData>& meshData, PhysicsMeshType type)
-        : FPhysicsMesh(meshData, type, TID_FBulletMesh)
+    BulletFMesh::BulletFMesh(const SPtr<MeshData>& meshData)
+        : FPhysicsMesh(meshData, TID_FBulletMesh)
     {
         Initialize();
     }
@@ -57,7 +57,7 @@ namespace te
 
         if (_meshData != nullptr)
         {
-            if (_type == PhysicsMeshType::Convex)
+            // ConvexMesh
             {
                 _convexMesh = te_shared_ptr_new<BulletMesh::ConvexMesh>();
 
@@ -65,7 +65,8 @@ namespace te
                 _convexMesh->Stride = vertexDesc->GetVertexStride();
                 _convexMesh->Data = _meshData->GetElementData(VES_POSITION);
             }
-            else
+
+            // TriangleMesh
             {
                 // TODO TriangleMesh
             }

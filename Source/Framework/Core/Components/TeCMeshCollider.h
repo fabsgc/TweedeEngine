@@ -28,6 +28,10 @@ namespace te
         /** @copydoc Component::Clone */
         void Clone(const HMeshCollider& c);
 
+        void SetCollisionType(PhysicsMeshType type);
+
+        PhysicsMeshType GetCollisionType() const { return _collisionType; }
+
     protected:
         friend class SceneObject;
 
@@ -48,5 +52,7 @@ namespace te
 
     protected:
         HPhysicsMesh _physicMesh;
+
+        PhysicsMeshType _collisionType = PhysicsMeshType::Convex;
     };
 }

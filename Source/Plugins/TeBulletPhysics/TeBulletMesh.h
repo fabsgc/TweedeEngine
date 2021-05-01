@@ -22,7 +22,7 @@ namespace te
         };
 
     public:
-        BulletMesh(const SPtr<MeshData>& meshData, PhysicsMeshType type);
+        BulletMesh(const SPtr<MeshData>& meshData);
 
     private:
         /** @copydoc PhysicsMesh::Initialize() */
@@ -36,7 +36,7 @@ namespace te
     class BulletFMesh : public FPhysicsMesh
     {
     public:
-        BulletFMesh(const SPtr<MeshData>& meshData, PhysicsMeshType type);
+        BulletFMesh(const SPtr<MeshData>& meshData);
         ~BulletFMesh();
 
         /**  @copydoc Resource::GetResourceType */

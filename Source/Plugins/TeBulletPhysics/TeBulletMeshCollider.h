@@ -13,8 +13,11 @@ namespace te
         BulletMeshCollider(BulletPhysics* physics, BulletScene* scene, const Vector3& position, const Quaternion& rotation);
         ~BulletMeshCollider();
 
-        /** @copydoc SphereCollider::SetScale() */
+        /** @copydoc MeshCollider::SetScale() */
         void SetScale(const Vector3& scale) override;
+
+        /** @copydoc MeshCollider::SetType() */
+        void SetCollisionType(PhysicsMeshType type) override;
 
     private:
         /** Create shape using current parameters */

@@ -19,8 +19,19 @@ namespace te
          */
         void SetPhysicMesh(const HPhysicsMesh& physicMesh) { _physicMesh = physicMesh; OnMeshChanged(); }
 
-        /** @copydoc setMesh() */
+        /** @copydoc SetPhysicMesh() */
         HPhysicsMesh GetPhysicMesh() const { return _physicMesh; }
+
+        /**
+         * Type of MeshCollider created behind
+         *
+         * @param[in]	type		Type of the mesh. If convex the provided mesh geometry will be converted into a convex
+         *							mesh (that might not be the same as the provided mesh data).
+         */
+        virtual void SetCollisionType(PhysicsMeshType type) { _collisionType = type; }
+
+        /** @copydoc SetCollisionType */
+        PhysicsMeshType GetCollisionType() { return _collisionType; }
 
         /**
          * Creates a new mesh collider.
@@ -40,5 +51,7 @@ namespace te
 
     protected:
         HPhysicsMesh _physicMesh;
+
+        PhysicsMeshType _collisionType = PhysicsMeshType::Convex;
     };
 }

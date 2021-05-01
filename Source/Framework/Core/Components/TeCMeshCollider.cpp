@@ -43,6 +43,26 @@ namespace te
         CCollider::Clone(static_object_cast<CCollider>(c));
 
         _physicMesh = c->_physicMesh;
+        _collisionType = c->_collisionType;
+    }
+
+    void CMeshCollider::SetCollisionType(PhysicsMeshType type)
+    {
+        if (_collisionType == type)
+            return;
+
+        _collisionType = type;
+
+        if (_internal != nullptr)
+        {
+            if (_parent != nullptr)
+                _parent->RemoveCollider(static_object_cast<CCollider>(GetHandle()));
+
+            _getInternal()->SetCollisionType(type);
+
+            if (_parent != nullptr)
+                _parent->AddCollider(static_object_cast<CCollider>(GetHandle()));
+        }
     }
 
     void CMeshCollider::SetPhysicMesh(const HPhysicsMesh& physicMesh)

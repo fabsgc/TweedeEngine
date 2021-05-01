@@ -4,17 +4,11 @@
 
 namespace te
 {
-    PhysicsMesh::PhysicsMesh(const SPtr<MeshData>& meshData, PhysicsMeshType type)
+    PhysicsMesh::PhysicsMesh(const SPtr<MeshData>& meshData)
         : Resource(TID_Texture)
         , _initMeshData(meshData)
-        , _type(type)
     {
         // Derived class is responsible for initializing mInternal
-    }
-
-    PhysicsMeshType PhysicsMesh::GetType() const
-    {
-        return _internal->_type;
     }
 
     SPtr<MeshData> PhysicsMesh::GetMeshData() const
@@ -22,15 +16,15 @@ namespace te
         return _internal->GetMeshData();
     }
 
-    HPhysicsMesh PhysicsMesh::Create(const SPtr<MeshData>& meshData, PhysicsMeshType type)
+    HPhysicsMesh PhysicsMesh::Create(const SPtr<MeshData>& meshData)
     {
-        SPtr<PhysicsMesh> newMesh = _createPtr(meshData, type);
+        SPtr<PhysicsMesh> newMesh = _createPtr(meshData);
         return static_resource_cast<PhysicsMesh>(gResourceManager()._createResourceHandle(newMesh));
     }
 
-    SPtr<PhysicsMesh> PhysicsMesh::_createPtr(const SPtr<MeshData>& meshData, PhysicsMeshType type)
+    SPtr<PhysicsMesh> PhysicsMesh::_createPtr(const SPtr<MeshData>& meshData)
     {
-        SPtr<PhysicsMesh> newMesh = gPhysics().CreateMesh(meshData, type);
+        SPtr<PhysicsMesh> newMesh = gPhysics().CreateMesh(meshData);
         newMesh->SetThisPtr(newMesh);
         newMesh->Initialize();
 
@@ -43,9 +37,8 @@ namespace te
         Resource::Initialize();
     }
 
-    FPhysicsMesh::FPhysicsMesh(const SPtr<MeshData>& meshData, PhysicsMeshType type, UINT32 TID_type)
+    FPhysicsMesh::FPhysicsMesh(const SPtr<MeshData>& meshData, UINT32 TID_type)
         : Serializable(TID_type)
         , _meshData(meshData)
-        , _type(type)
     { }
 }

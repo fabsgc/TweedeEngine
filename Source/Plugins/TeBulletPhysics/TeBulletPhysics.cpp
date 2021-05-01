@@ -79,9 +79,9 @@ namespace te
         return _debug;
     }
 
-    SPtr<PhysicsMesh> BulletPhysics::CreateMesh(const SPtr<MeshData>& meshData, PhysicsMeshType type)
+    SPtr<PhysicsMesh> BulletPhysics::CreateMesh(const SPtr<MeshData>& meshData)
     {
-        return te_core_ptr_new<BulletMesh>(meshData, type);
+        return te_core_ptr_new<BulletMesh>(meshData);
     }
 
     SPtr<PhysicsScene> BulletPhysics::CreatePhysicsScene()

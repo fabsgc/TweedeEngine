@@ -31,7 +31,7 @@ namespace te
         TE_MODULE_STATIC_HEADER_MEMBER(Physics)
 
         /** @copydoc PhysicsMesh::Create() */
-        virtual SPtr<PhysicsMesh> CreateMesh(const SPtr<MeshData>& meshData, PhysicsMeshType type) = 0;
+        virtual SPtr<PhysicsMesh> CreateMesh(const SPtr<MeshData>& meshData) = 0;
 
         /** Creates an object representing the physics scene. Must be manually released via destroyPhysicsScene(). */
         virtual SPtr<PhysicsScene> CreatePhysicsScene() = 0;

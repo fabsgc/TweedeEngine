@@ -14,7 +14,7 @@ namespace te
     class TE_CORE_EXPORT  PhysicsMesh : public Resource
     {
     public:
-        PhysicsMesh(const SPtr<MeshData>& meshData, PhysicsMeshType type);
+        PhysicsMesh(const SPtr<MeshData>& meshData);
         virtual ~PhysicsMesh() = default;
 
         /** @copydoc CoreObject::Initialize */
@@ -23,9 +23,6 @@ namespace te
         /**  @copydoc Resource::GetResourceType */
         static UINT32 GetResourceType() { return TID_PhysicsMesh; }
 
-        /** Returns the type of the physics mesh. */
-        PhysicsMeshType GetType() const;
-
         /** Returns the mesh's indices and vertices. */
         SPtr<MeshData> GetMeshData() const;
 
@@ -33,17 +30,15 @@ namespace te
          * Creates a new physics mesh.
          *
          * @param[in]	meshData	Index and vertices of the mesh data.
-         * @param[in]	type		Type of the mesh. If convex the provided mesh geometry will be converted into a convex
-         *							mesh (that might not be the same as the provided mesh data).
          */
-        static HPhysicsMesh Create(const SPtr<MeshData>& meshData, PhysicsMeshType type = PhysicsMeshType::Convex);
+        static HPhysicsMesh Create(const SPtr<MeshData>& meshData);
 
         /**
          * @copydoc Create()
          *
          * For internal use. Requires manual initialization after creation.
          */
-        static SPtr<PhysicsMesh> _createPtr(const SPtr<MeshData>& meshData, PhysicsMeshType type);
+        static SPtr<PhysicsMesh> _createPtr(const SPtr<MeshData>& meshData);
 
         /** Returns the internal implementation of the physics mesh. */
         virtual FPhysicsMesh* _getInternal() { return _internal.get(); }
@@ -51,14 +46,13 @@ namespace te
     protected:
         SPtr<FPhysicsMesh> _internal;
         SPtr<MeshData> _initMeshData; // Transient, only used during initalization
-        PhysicsMeshType _type; // Transient, only used during initalization
     };
 
     /** Foundation that contains a specific implementation of a PhysicsMesh. */
     class TE_CORE_EXPORT FPhysicsMesh : public Serializable
     {
     public:
-        FPhysicsMesh(const SPtr<MeshData>& meshData, PhysicsMeshType type, UINT32 TID_type);
+        FPhysicsMesh(const SPtr<MeshData>& meshData, UINT32 TID_type);
         virtual ~FPhysicsMesh() = default;
 
         /**  @copydoc Resource::GetResourceType */
@@ -71,6 +65,5 @@ namespace te
         friend class PhysicsMesh;
 
         SPtr<MeshData> _meshData = nullptr;
-        PhysicsMeshType _type;
     };
 }

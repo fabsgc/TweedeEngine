@@ -673,14 +673,6 @@ namespace te
                 if (strcmp(selectedExt, ".obj") == 0 || strcmp(selectedExt, ".dae") == 0 || strcmp(selectedExt, ".fbx") == 0 ||
                     strcmp(selectedExt, ".stl") == 0 || strcmp(selectedExt, ".gltf") == 0)
                 {
-                    static ImGuiExt::ComboOptions<CollisionMeshType> collisionTypeOptions;
-                    if (collisionTypeOptions.Options.size() == 0)
-                    {
-                        collisionTypeOptions.AddOption(CollisionMeshType::None, "None");
-                        collisionTypeOptions.AddOption(CollisionMeshType::Triangle, "Triangle");
-                        collisionTypeOptions.AddOption(CollisionMeshType::Convex, "Convex");
-                    }
-
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportNormals, "##file_dialog_parameters_mesh_normals", "Import normals");
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportTangents, "##file_dialog_parameters_mesh_tangents", "Import tangents");
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportMaterials, "##file_dialog_parameters_mesh_material", "Import materials");
@@ -711,7 +703,7 @@ namespace te
                     }
                     ImGui::Separator();
 
-                    ImGuiExt::RenderOptionCombo<CollisionMeshType>(&Data.MeshParam.CollisionType, "##file_dialog_parameters_mesh_collision_type", "Collision type", collisionTypeOptions, 150.0f);
+                    ImGuiExt::RenderOptionBool(Data.MeshParam.CollisionShape, "##file_dialog_parameters_mesh_collision_shape", "Collision Shape");
                 }
                 else if (strcmp(selectedExt, ".jpg") == 0 || strcmp(selectedExt, ".jpeg") == 0 || strcmp(selectedExt, ".png") == 0)
                 {

@@ -85,15 +85,11 @@ namespace te
             {
                 output.push_back({ u8"primary", mesh });
 
-                CollisionMeshType collisionMeshType = meshImportOptions->CollisionType;
-                if (collisionMeshType != CollisionMeshType::None)
+                if (meshImportOptions->CollisionShape)
                 {
                     if (Physics::IsStarted())
                     {
-                        PhysicsMeshType type = collisionMeshType == CollisionMeshType::Convex ?
-                            PhysicsMeshType::Convex : PhysicsMeshType::Triangle;
-
-                        SPtr<PhysicsMesh> physicsMesh = PhysicsMesh::_createPtr(rendererMeshData->GetData(), type);
+                        SPtr<PhysicsMesh> physicsMesh = PhysicsMesh::_createPtr(rendererMeshData->GetData());
                         physicsMesh->SetName("Collision - " + mesh->GetName());
 
                         output.push_back({ u8"collision", physicsMesh });

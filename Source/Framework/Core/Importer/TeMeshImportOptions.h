@@ -7,14 +7,6 @@
 
 namespace te
 {
-    /** Controls what type of collision mesh should be imported during mesh import. */
-    enum class CollisionMeshType
-    {
-        None, /**< No collision mesh will be imported. */
-        Triangle, /**< Normal triangle mesh will be imported. */
-        Convex /**< A convex hull will be generated from the source mesh. */
-    };
-
     /** Information about how to split an AnimationClip into multiple separate clips. */
     struct TE_CORE_EXPORT AnimationSplitInfo : Serializable
     {
@@ -123,10 +115,10 @@ namespace te
         Vector<ImportedAnimationEvents> AnimationEvents;
 
         /**
-         * Determines what type (if any) of collision mesh should be imported. If enabled the collision mesh will be
+         * Determines if a collision mesh should be imported. If enabled the collision mesh will be
          * available as a sub-resource returned by the importer (along with the normal mesh).
          */
-        CollisionMeshType CollisionType = CollisionMeshType::None;
+        bool CollisionShape = true;
 
         /** Creates a new import options object that allows you to customize how are Meshs imported. */
         static SPtr<MeshImportOptions> Create();

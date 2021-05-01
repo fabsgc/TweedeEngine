@@ -44,7 +44,7 @@ namespace te
         TE_MODULE_STATIC_HEADER_MEMBER(BulletPhysics)
 
         /** @copydoc Physics::CreateMesh() */
-        SPtr<PhysicsMesh> CreateMesh(const SPtr<MeshData>& meshData, PhysicsMeshType type) override;
+        SPtr<PhysicsMesh> CreateMesh(const SPtr<MeshData>& meshData) override;
 
         /** @copydoc Physics::CreatePhysicsScene() */
         SPtr<PhysicsScene> CreatePhysicsScene() override;

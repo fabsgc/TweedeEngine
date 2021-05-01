@@ -26,6 +26,12 @@ namespace te
         UpdateShape();
     }
 
+    void BulletMeshCollider::SetCollisionType(PhysicsMeshType type)
+    {
+        MeshCollider::SetCollisionType(type);
+        UpdateShape();
+    }
+
     void BulletMeshCollider::UpdateShape()
     {
         if (!_physicMesh.IsLoaded())
@@ -41,7 +47,7 @@ namespace te
             return;
         }
 
-        if (_physicMesh->GetType() == PhysicsMeshType::Convex)
+        if(_collisionType == PhysicsMeshType::Convex)
         {
             const SPtr<BulletMesh::ConvexMesh> convexMesh = fMesh->GetConvexMesh();
 
@@ -53,13 +59,14 @@ namespace te
             
             _shape = te_new<btConvexHullShape>((btScalar*)convexMesh->Data, convexMesh->NumVertices, convexMesh->Stride);
             _shape->setUserPointer(this);
-            //_shape->optimizeConvexHull();
-            //_shape->initializePolyhedralFeatures();
+            _shape->optimizeConvexHull();
+            _shape->initializePolyhedralFeatures();
 
             ((BulletFCollider*)_internal)->SetShape(_shape);
             _shape->setLocalScaling(ToBtVector3(_internal ? _internal->GetScale() : Vector3::ONE));
         }
-        else
+
+        // TriangleMesh
         {
             const SPtr<BulletMesh::TriangleMesh> triangleMesh = fMesh->GetTriangleMesh();
 

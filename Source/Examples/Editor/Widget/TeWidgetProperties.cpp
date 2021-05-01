@@ -800,11 +800,7 @@ namespace te
 
                 // current physicMesh to use
                 for (auto& resource : container.Res)
-                {
-                    auto physicMeshRes = static_resource_cast<PhysicsMesh>(resource.second);
-                    String type = (physicMeshRes->GetType() == PhysicsMeshType::Triangle) ? "Triangle" : "Convex";
-                    meshesOptions.AddOption(resource.second->GetUUID(), resource.second->GetName() + " - " + type);
-                }
+                    meshesOptions.AddOption(resource.second->GetUUID(), resource.second->GetName());
 
                 meshesOptions.AddOption(emptyMesh, ICON_FA_TIMES_CIRCLE " No Physic Mesh");
 
@@ -823,6 +819,23 @@ namespace te
                 }
             }
             ImGui::Separator();
+
+            // CollisionType
+            {
+                static ImGuiExt::ComboOptions<PhysicsMeshType> collisionTypeOptions;
+                if (collisionTypeOptions.Options.size() == 0)
+                {
+                    collisionTypeOptions.AddOption(PhysicsMeshType::Triangle, "Triangle");
+                    collisionTypeOptions.AddOption(PhysicsMeshType::Convex, "Convex");
+                }
+
+                PhysicsMeshType type = collider->GetCollisionType();
+
+                if (ImGuiExt::RenderOptionCombo<PhysicsMeshType>(&type, "##collider_physic_mesh_type_option", "Collision Type", collisionTypeOptions, width))
+                {
+                    collider->SetCollisionType(type);
+                }
+            }
 
             if (ShowCollider(collider))
                 hasChanged = true;
@@ -1784,7 +1797,7 @@ namespace te
             meshImportOptions->GenSmoothNormals = _fileBrowser.Data.MeshParam.GenSmoothNormals;
             meshImportOptions->ScaleSystemUnit = _fileBrowser.Data.MeshParam.ScaleSystemUnit;
             meshImportOptions->ScaleFactor = _fileBrowser.Data.MeshParam.ScaleFactor;
-            meshImportOptions->CollisionType = _fileBrowser.Data.MeshParam.CollisionType;
+            meshImportOptions->CollisionShape = _fileBrowser.Data.MeshParam.CollisionShape;
             meshImportOptions->CpuCached = false;
 
             SPtr<MultiResource> resources = EditorResManager::Instance().LoadAll(_fileBrowser.Data.SelectedPath, meshImportOptions);
@@ -1819,6 +1832,14 @@ namespace te
                         }
 
                         _loadMesh = false;
+                    }
+                    else if (subRes.Name == "collision")
+                    {
+                        HPhysicsMesh physicsMesh = static_resource_cast<PhysicsMesh>(subRes.Res);
+                        if (physicsMesh.IsLoaded())
+                        {
+                            EditorResManager::Instance().Add<PhysicsMesh>(physicsMesh);
+                        }
                     }
                     else
                     {
