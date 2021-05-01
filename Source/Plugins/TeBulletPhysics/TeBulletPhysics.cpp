@@ -39,13 +39,14 @@ namespace te
         {
             _collisionConfiguration = te_new<btSoftBodyRigidBodyCollisionConfiguration>();
             _collisionDispatcher = te_new<btCollisionDispatcher>(_collisionConfiguration);
-            btGImpactCollisionAlgorithm::registerAlgorithm(_collisionDispatcher);
+            //btGImpactCollisionAlgorithm::registerAlgorithm(_collisionDispatcher);
         }
         else
         {
             _collisionConfiguration = te_new<btDefaultCollisionConfiguration>();
             _collisionDispatcher = te_new<btCollisionDispatcher>(_collisionConfiguration);
-            btGImpactCollisionAlgorithm::registerAlgorithm(_collisionDispatcher);
+            //btGImpactCollisionAlgorithm::registerAlgorithm(_collisionDispatcher);
+            //btGImpactCollisionAlgorithm::registerAlgorithm(_collisionDispatcher);
         }
     }
 

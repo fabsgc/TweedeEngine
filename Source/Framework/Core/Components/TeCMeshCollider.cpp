@@ -59,9 +59,7 @@ namespace te
                 _parent->RemoveCollider(static_object_cast<CCollider>(GetHandle()));
 
             _getInternal()->SetCollisionType(type);
-
-            if (_parent != nullptr)
-                _parent->AddCollider(static_object_cast<CCollider>(GetHandle()));
+            UpdateParentBody(); // Will do AddCollider
         }
     }
 
@@ -77,11 +75,8 @@ namespace te
             if (_parent != nullptr)
                 _parent->RemoveCollider(static_object_cast<CCollider>(GetHandle()));
 
-            UpdateParentBody();
             _getInternal()->SetMesh(mesh);
-
-            if (_parent != nullptr)
-                _parent->AddCollider(static_object_cast<CCollider>(GetHandle()));
+            UpdateParentBody(); // Will do AddCollider
         }
     }
 }

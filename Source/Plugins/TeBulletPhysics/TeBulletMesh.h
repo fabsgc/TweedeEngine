@@ -11,14 +11,20 @@ namespace te
     public:
         struct ConvexMesh
         {
-            UINT8* Data;
-            UINT32 NumVertices;
-            UINT32 Stride;
+            UINT8* Data = 0;
+            UINT32 NumVertices = 0;
+            UINT32 Stride = 0;
         };
 
         struct TriangleMesh
         {
-            // TODO
+            UINT8* Data = nullptr;
+            UINT8* Indices = nullptr;
+            UINT32 NumVertices = 0;
+            UINT32 NumIndices = 0;
+            UINT32 VerticeStride = 0;
+            UINT32 IndexStride = 0;
+            bool   Use32BitIndex = true;
         };
 
     public:

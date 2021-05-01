@@ -27,6 +27,6 @@ namespace te
         void OnMeshChanged() override;
 
     private:
-        btConvexHullShape* _shape = nullptr;
+        btCollisionShape* _shape = nullptr;
     };
 }

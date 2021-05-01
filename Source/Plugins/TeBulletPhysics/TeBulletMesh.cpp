@@ -68,7 +68,16 @@ namespace te
 
             // TriangleMesh
             {
-                // TODO TriangleMesh
+                _triangleMesh = te_shared_ptr_new<BulletMesh::TriangleMesh>();
+
+                _triangleMesh->NumVertices = _meshData->GetNumVertices();
+                _triangleMesh->NumIndices = _meshData->GetNumIndices();
+                _triangleMesh->VerticeStride = vertexDesc->GetVertexStride();
+                _triangleMesh->IndexStride = _meshData->GetIndexElementSize();
+                _triangleMesh->Use32BitIndex = (_meshData->GetIndexType() == IndexType::IT_32BIT);
+                _triangleMesh->Data = _meshData->GetElementData(VES_POSITION);
+                _triangleMesh->Indices = (_triangleMesh->Use32BitIndex) 
+                    ? (UINT8*)_meshData->GetIndices32() : (UINT8*)_meshData->GetIndices16();
             }
         }
     }

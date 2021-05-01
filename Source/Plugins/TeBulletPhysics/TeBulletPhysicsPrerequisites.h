@@ -39,6 +39,8 @@
 #include "BulletCollision/CollisionShapes/btHeightfieldTerrainShape.h"
 #include "BulletCollision/NarrowPhaseCollision/btPersistentManifold.h"
 #include "BulletCollision/Gimpact/btGImpactCollisionAlgorithm.h"
+#include "BulletCollision/CollisionShapes/btTriangleMeshShape.h"
+#include "BulletCollision/CollisionShapes/btTriangleIndexVertexArray.h"
 
 #if TE_COMPILER == TE_COMPILER_MSVC
 #   pragma warning(pop)

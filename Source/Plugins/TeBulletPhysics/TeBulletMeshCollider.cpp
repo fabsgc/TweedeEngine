@@ -61,16 +61,17 @@ namespace te
             }
             
             _shape = te_new<btConvexHullShape>();
+            btConvexHullShape* hullShape = (btConvexHullShape*)_shape;
 
             for (UINT32 i = 0; i < convexMesh->NumVertices; i++)
             {
                 Vector3 position = *(Vector3*)(convexMesh->Data + convexMesh->Stride * i);
-                _shape->addPoint(ToBtVector3(position));
+                hullShape->addPoint(ToBtVector3(position));
             }
 
-            _shape->setUserPointer(this);
-            _shape->optimizeConvexHull();
-            _shape->initializePolyhedralFeatures();
+            hullShape->setUserPointer(this);
+            hullShape->optimizeConvexHull();
+            hullShape->initializePolyhedralFeatures();
 
             ((BulletFCollider*)_internal)->SetShape(_shape);
             _shape->setLocalScaling(ToBtVector3(_internal ? _internal->GetScale() : Vector3::ONE));
@@ -84,6 +85,26 @@ namespace te
                 TE_DEBUG("PhysicsMesh does not have any TriangleMesh Data");
                 return;
             }
+
+            btTriangleIndexVertexArray* meshInterface = new btTriangleIndexVertexArray();
+            btIndexedMesh part;
+
+            part.m_vertexBase = (const unsigned char*)triangleMesh->Data;
+            part.m_vertexStride = triangleMesh->VerticeStride;
+            part.m_numVertices = triangleMesh->NumVertices;
+            part.m_triangleIndexBase = (const unsigned char*)triangleMesh->Indices;
+            part.m_triangleIndexStride = triangleMesh->IndexStride;
+            part.m_numTriangles = triangleMesh->NumIndices / 3;
+            part.m_vertexType = PHY_FLOAT;
+            part.m_indexType = triangleMesh->Use32BitIndex ? PHY_INTEGER : PHY_SHORT;
+
+            meshInterface->addIndexedMesh(part);
+
+            _shape = te_new<btBvhTriangleMeshShape>(meshInterface, true);
+            _shape->setUserPointer(this);
+
+            ((BulletFCollider*)_internal)->SetShape(_shape);
+            _shape->setLocalScaling(ToBtVector3(_internal ? _internal->GetScale() : Vector3::ONE));
         }
     }
 

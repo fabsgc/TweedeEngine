@@ -29,9 +29,7 @@ namespace te
     UINT16* MeshData::GetIndices16() const
     {
         if(_indexType != IT_16BIT)
-        {
             TE_ASSERT_ERROR(false, "Attempting to get 16bit index buffer, but internally allocated buffer is 32 bit.");
-        }
 
         UINT32 indexBufferOffset = GetIndexBufferOffset();
 
@@ -309,13 +307,13 @@ namespace te
             UINT8* verticesData = GetElementData(curElement.GetSemantic(), curElement.GetSemanticIdx(), curElement.GetStreamIdx());
             UINT8* indicesData = (_indexType == IT_32BIT) ? (UINT8*)GetIndices32() : (UINT8*)GetIndices16();
             UINT32 vertexStride = vertexDesc->GetVertexStride(curElement.GetStreamIdx());
-            UINT32 indiexStride = GetIndexElementSize();
+            UINT32 indexStride = GetIndexElementSize();
 
             if (GetNumVertices() > 0)
             {
                 UINT32 verticesIndex = (_indexType == IT_32BIT) 
-                    ? *(UINT32*)(indicesData + indiexStride * indexOffset)
-                    : *(UINT16*)(indicesData + indiexStride * indexOffset);
+                    ? *(UINT32*)(indicesData + indexStride * indexOffset)
+                    : *(UINT16*)(indicesData + indexStride * indexOffset);
 
                 treatedVertices.push_back(verticesIndex);
                 Vector3 curPosition = *(Vector3*)(verticesData + vertexStride * verticesIndex);
@@ -326,8 +324,8 @@ namespace te
                 for (UINT32 j = indexOffset + 1; j < indexOffset + indexCount; j++)
                 {
                     verticesIndex = (_indexType == IT_32BIT)
-                        ? *(UINT32*)(indicesData + indiexStride * j)
-                        : *(UINT16*)(indicesData + indiexStride * j);
+                        ? *(UINT32*)(indicesData + indexStride * j)
+                        : *(UINT16*)(indicesData + indexStride * j);
 
                     if (std::find(treatedVertices.begin(), treatedVertices.end(), verticesIndex) != treatedVertices.end())
                         continue; // We do not process a vertice twice
