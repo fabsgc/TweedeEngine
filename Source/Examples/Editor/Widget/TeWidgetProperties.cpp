@@ -787,18 +787,18 @@ namespace te
         bool hasChanged = false;
         const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
         SPtr<CMeshCollider> collider = std::static_pointer_cast<CMeshCollider>(_selections.ClickedComponent);
-        HPhysicsMesh physicMesh = collider->GetPhysicMesh();
+        HPhysicsMesh mesh = collider->GetMesh();
 
         if (ImGui::CollapsingHeader("Mesh collider", ImGuiTreeNodeFlags_DefaultOpen))
         {
-            // PhysicMesh
+            // PhysicsMesh
             {
                 ImGuiExt::ComboOptions<UUID> meshesOptions;
                 UUID emptyMesh = UUID(50, 0, 0, 0);
-                UUID meshUUID = (physicMesh.IsLoaded()) ? physicMesh->GetUUID() : emptyMesh;
+                UUID meshUUID = (mesh.IsLoaded()) ? mesh->GetUUID() : emptyMesh;
                 EditorResManager::ResourcesContainer& container = EditorResManager::Instance().Get<PhysicsMesh>();
 
-                // current physicMesh to use
+                // current PhysicsMesh to use
                 for (auto& resource : container.Res)
                     meshesOptions.AddOption(resource.second->GetUUID(), resource.second->GetName());
 
@@ -808,12 +808,12 @@ namespace te
                 {
                     if (meshUUID == emptyMesh)
                     {
-                        collider->SetPhysicMesh(HPhysicsMesh());
+                        collider->SetMesh(HPhysicsMesh());
                         hasChanged = true;
                     }
-                    else if (meshUUID != ((physicMesh.IsLoaded()) ? physicMesh->GetUUID() : emptyMesh))
+                    else if (meshUUID != ((mesh.IsLoaded()) ? mesh->GetUUID() : emptyMesh))
                     {
-                        collider->SetPhysicMesh(gResourceManager().Load<PhysicsMesh>(meshUUID));
+                        collider->SetMesh(gResourceManager().Load<PhysicsMesh>(meshUUID));
                         hasChanged = true;
                     }
                 }
@@ -1032,7 +1032,7 @@ namespace te
     bool WidgetProperties::ShowLight(SPtr<Light> light)
     {
         bool hasChanged = false;
-        bool castsShadows = light->GetCastsShadow();
+        bool castShadows = light->GetCastShadows();
         float attenuationRadius = light->GetAttenuationRadius();
         float linearAttenuation = light->GetLinearAttenuation();
         float quadraticAttenuation = light->GetQuadraticAttenuation();
@@ -1054,10 +1054,10 @@ namespace te
 
         // Cast shadows
         {
-            if (ImGuiExt::RenderOptionBool(castsShadows, "##light_cast_shadows_option", "Cast shadows"))
+            if (ImGuiExt::RenderOptionBool(castShadows, "##light_cast_shadows_option", "Cast shadows"))
             {
                 hasChanged = true;
-                light->SetCastsShadow(castsShadows);
+                light->SetCastShadows(castShadows);
             }
         }
         ImGui::Separator();
@@ -1217,22 +1217,33 @@ namespace te
 
         // cast shadows
         {
-            bool castShadow = properties.CastShadow;
-            if (ImGuiExt::RenderOptionBool(castShadow, "##renderable_properties_cast_shadow_option", "Cast shadows"))
+            bool castShadows = properties.CastShadows;
+            if (ImGuiExt::RenderOptionBool(castShadows, "##renderable_properties_cast_shadows_option", "Cast shadows"))
             {
                 hasChanged = true;
-                renderable->SetCastShadow(castShadow);
+                renderable->SetCastShadows(castShadows);
+            }
+        }
+        ImGui::Separator();
+
+        // receive shadows
+        {
+            bool receiveShadows = properties.ReceiveShadows;
+            if (ImGuiExt::RenderOptionBool(receiveShadows, "##renderable_properties_receive_shadows_option", "Receive shadows"))
+            {
+                hasChanged = true;
+                renderable->SetReceiveShadows(receiveShadows);
             }
         }
         ImGui::Separator();
 
         // cast lights
         {
-            bool castLight = properties.CastLight;
-            if (ImGuiExt::RenderOptionBool(castLight, "##renderable_properties_cast_light_option", "Cast lights"))
+            bool castLights = properties.CastLights;
+            if (ImGuiExt::RenderOptionBool(castLights, "##renderable_properties_cast_lights_option", "Cast lights"))
             {
                 hasChanged = true;
-                renderable->SetCastLight(castLight);
+                renderable->SetCastLight(castLights);
             }
         }
         ImGui::Separator();

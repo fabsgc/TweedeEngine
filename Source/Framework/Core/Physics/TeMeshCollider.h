@@ -17,10 +17,10 @@ namespace te
         /**
          * Sets a mesh that represents the collider geometry. This can be a generic triangle mesh, or and convex mesh.
          */
-        void SetPhysicMesh(const HPhysicsMesh& physicMesh) { _physicMesh = physicMesh; OnMeshChanged(); }
+        void SetMesh(const HPhysicsMesh& mesh) { _mesh = mesh; OnMeshChanged(); }
 
-        /** @copydoc SetPhysicMesh() */
-        HPhysicsMesh GetPhysicMesh() const { return _physicMesh; }
+        /** @copydoc SetMesh() */
+        HPhysicsMesh GetMesh() const { return _mesh; }
 
         /**
          * Type of MeshCollider created behind
@@ -50,7 +50,7 @@ namespace te
         virtual void OnMeshChanged() { }
 
     protected:
-        HPhysicsMesh _physicMesh;
+        HPhysicsMesh _mesh;
 
         PhysicsMeshType _collisionType = PhysicsMeshType::Convex;
     };

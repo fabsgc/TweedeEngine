@@ -31,7 +31,7 @@ cbuffer PerObjectBuffer : register(b2)
     uint   gLayer;
     uint   gHasAnimation;
     uint   gWriteVelocity;
-    uint   gCastLight;
+    uint   gCastLights;
 }
 
 cbuffer PerFrameBuffer : register(b3)
@@ -102,7 +102,7 @@ VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
         OUT.PositionWS = mul(gMatWorld, OUT.PositionWS);
 
         OUT.Other.x = (gWriteVelocity == 1) ? 1.0 : 0.0;
-        OUT.Other.y = (gCastLight == 1) ? 1.0 : 0.0;
+        OUT.Other.y = (gCastLights == 1) ? 1.0 : 0.0;
     }
     else
     {
@@ -153,7 +153,7 @@ VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
         OUT.PositionWS = mul(gInstanceData[instanceid].gMatWorld, OUT.PositionWS);
 
         OUT.Other.x = (gInstanceData[instanceid].gWriteVelocity == 1) ? 1.0 : 0.0;
-        OUT.Other.y = (gInstanceData[instanceid].gCastLight == 1) ? 1.0 : 0.0;
+        OUT.Other.y = (gInstanceData[instanceid].gCastLights == 1) ? 1.0 : 0.0;
     }
 
     float3x3 TBN = float3x3(OUT.Tangent, OUT.BiTangent, OUT.Normal);

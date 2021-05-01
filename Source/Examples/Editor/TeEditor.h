@@ -201,6 +201,8 @@ namespace te
         void LoadScene();
 
     protected:
+        static const Vector<UINT32> ComponentsWhichNeedGuizmo;
+
         bool _editorBegun;
 
         std::vector<SPtr<Widget>> _widgets;

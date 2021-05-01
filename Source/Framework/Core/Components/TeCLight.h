@@ -15,7 +15,7 @@ namespace te
     {
     public:
         CLight(const HSceneObject& parent, LightType type = LightType::Directional, Color color = Color::White,
-            float intensity = Light::DefaultIntensity, float range = Light::DefaultAttRadius, bool castsShadows = Light::DefaultCastShadow, 
+            float intensity = Light::DefaultIntensity, float range = Light::DefaultAttRadius, bool castShadows = Light::DefaultCastShadow, 
             Degree spotAngle = Degree(Light::DefaultSpotAngle));
 
         virtual ~CLight();
@@ -65,11 +65,11 @@ namespace te
         /** @copydoc Light::GetSpotAngle */
         Degree GetSpotAngle() const { return _internal->GetSpotAngle(); }
 
-        /** @copydoc Light::SetCastsShadow */
-        void SetCastsShadow(bool castsShadow) { _internal->SetCastsShadow(castsShadow); }
+        /** @copydoc Light::SetCastShadows */
+        void SetCastShadows(bool castShadows) { _internal->SetCastShadows(castShadows); }
 
-        /** @copydoc Light::GetCastsShadow */
-        bool GetCastsShadow() const { return _internal->GetCastsShadow(); }
+        /** @copydoc Light::GetCastShadows */
+        bool GetCastShadows() const { return _internal->GetCastShadows(); }
 
         /** @copydoc Light::SetShadowBias */
         void SetShadowBias(float bias) { _internal->SetShadowBias(bias); }
@@ -116,7 +116,7 @@ namespace te
         float _range = Light::DefaultAttRadius;
         float _linearAtt = Light::DefaultLinearAtt;
         float _quadraticAtt = Light::DefaultQuadraticAtt;
-        bool _castsShadows = Light::DefaultCastShadow;
+        bool _castShadows = Light::DefaultCastShadow;
         Degree _spotAngle = Degree(Light::DefaultSpotAngle);
 
     protected:

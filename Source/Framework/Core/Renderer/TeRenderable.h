@@ -18,8 +18,9 @@ namespace te
 
         bool Instancing  = false;
         bool CanBeMerged = false;
-        bool CastShadow = true;
-        bool CastLight = true;
+        bool CastShadows = true;
+        bool CastLights = true;
+        bool ReceiveShadows = true;
         bool UseForDynamicEnvMapping  = false;
         bool WriteVelocity = true;
         float CullDistanceFactor = 1.0f;
@@ -140,17 +141,23 @@ namespace te
         /** @copydoc SetInstancing() */
         bool GetCanBeMerged() const { return _properties.CanBeMerged; }
 
-        /** Determines if this object cast shadow */
-        void SetCastShadow(bool castShadow) { _properties.CastShadow = castShadow; _markCoreDirty(); }
+        /** Determines if this object can cast shadows */
+        void SetCastShadows(bool castShadows) { _properties.CastShadows = castShadows; _markCoreDirty(); }
 
-        /** @copydoc SetCastShadow() */
-        bool GetCastShadow() const { return _properties.CastShadow; }
+        /** @copydoc SetCastShadows() */
+        bool GetCastShadows() const { return _properties.CastShadows; }
 
-        /** Determines if this object cast light */
-        void SetCastLight(bool castLight) { _properties.CastLight = castLight; _markCoreDirty(); }
+        /** Determines if this object can receive shadows */
+        void SetReceiveShadows(bool receiveShadows) { _properties.ReceiveShadows = receiveShadows; _markCoreDirty(); }
 
-        /** @copydoc SetCastLight() */
-        bool GetCastLight() const { return _properties.CastLight; }
+        /** @copydoc SetCastShadows() */
+        bool GetReceiveShadows() const { return _properties.ReceiveShadows; }
+
+        /** Determines if this object can cast lights */
+        void SetCastLight(bool castLights) { _properties.CastLights = castLights; _markCoreDirty(); }
+
+        /** @copydoc SetCastLights() */
+        bool GetCastLights() const { return _properties.CastLights; }
 
         /** Set whole properties in a row */
         void SetPorperties(RenderableProperties& properties) { _properties = properties; _markCoreDirty(); }

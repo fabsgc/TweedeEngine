@@ -44,11 +44,11 @@ namespace te
         /** @copydoc getType() */
         void SetType(LightType type) { _type = type; _markCoreDirty(); UpdateBounds(); }
 
-        /**	Determines does this light cast shadows when rendered. */
-        void SetCastsShadow(bool castsShadow) { _castsShadows = castsShadow; _markCoreDirty(); }
+        /**	Determines does this light can cast shadows when rendered. */
+        void SetCastShadows(bool castShadows) { _castShadows = castShadows; _markCoreDirty(); }
 
-        /** @copydoc SetCastsShadow */
-        bool GetCastsShadow() const { return _castsShadows; }
+        /** @copydoc SetCastsShadows */
+        bool GetCastShadows() const { return _castShadows; }
 
         /**
          * Shadow bias determines offset at which the shadows are rendered from the shadow caster. Bias value of 0 means
@@ -117,13 +117,13 @@ namespace te
          *									luminance for directional lights with no area, and illuminance for directional
          *									lights with area (non-zero source radius).
          * @param[in]	attRadius			Radius at which light's influence fades out to zero.
-         * @param[in]	castsShadows		Determines whether the light casts shadows.
+         * @param[in]	castShadows			Determines whether the light cast shadows.
          * @param[in]	spotAngle			Total angle covered by a spot light.
          * @param[in]	spotFalloffAngle	Spot light angle at which falloff starts. Must be smaller than total angle.
          */
         static SPtr<Light> Create(LightType type = LightType::Directional, Color color = Color::White,
             float intensity = DefaultIntensity, float attRadius = DefaultAttRadius, float linearAtt = DefaultLinearAtt, 
-            float quadraticAtt = DefaultQuadraticAtt, bool castsShadows = DefaultCastShadow,
+            float quadraticAtt = DefaultQuadraticAtt, bool castShadows = DefaultCastShadow,
             Degree spotAngle = Degree(DefaultSpotAngle));
 
         /** @copydoc SceneActor::_markCoreDirty */
@@ -146,14 +146,14 @@ namespace te
 
         Light();
         Light(LightType type, Color color, float intensity, float attRadius, float linearAtt, 
-            float quadraticAtt, bool castsShadows, Degree spotAngle);
+            float quadraticAtt, bool castShadows, Degree spotAngle);
 
         /** Updates the internal bounds for the light. Call this whenever a property affecting the bounds changes. */
         void UpdateBounds();
 
     protected:
         LightType _type; /**< Type of light that determines how are the rest of the parameters interpreted. */
-        bool _castsShadows; /**< Determines whether the light casts shadows. */
+        bool _castShadows; /**< Determines whether the light can cast shadows. */
         Color _color; /**< Color of the light. */
         float _attRadius; /**< Radius at which light intensity falls off to zero. */
         float _linearAttenuation; /**< Radius at which light intensity falls off to zero. */

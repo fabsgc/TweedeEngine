@@ -114,7 +114,7 @@ namespace te
             int first = -1;
             for (UINT32 i = 0; i < (UINT32)entries.size(); ++i)
             {
-                if (entries[i]->_internal->GetCastsShadow())
+                if (entries[i]->_internal->GetCastShadows())
                 {
                     first = i;
                     break;
@@ -127,7 +127,7 @@ namespace te
             {
                 for (UINT32 i = first + 1; i < (UINT32)entries.size(); ++i)
                 {
-                    if (!entries[i]->_internal->GetCastsShadow())
+                    if (!entries[i]->_internal->GetCastShadows())
                     {
                         std::swap(entries[i], entries[first]);
                         ++numUnshadowed;

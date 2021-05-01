@@ -449,7 +449,7 @@ namespace te
             SHADER_DATA_PARAM_DESC gLayerDesc("gLayer", "gLayer", GPDT_INT1);
             SHADER_DATA_PARAM_DESC gHasAnimationDesc("gHasAnimation", "gHasAnimation", GPDT_INT1);
             SHADER_DATA_PARAM_DESC gWriteVelocityDesc("gWriteVelocity", "gWriteVelocity", GPDT_INT1);
-            SHADER_DATA_PARAM_DESC gCastLightDesc("gCastLight", "gCastLight", GPDT_INT1);
+            SHADER_DATA_PARAM_DESC gCastLightsDesc("gCastLights", "gCastLights", GPDT_INT1);
 
             SHADER_DATA_PARAM_DESC gTime("gTime", "gTime", GPDT_FLOAT1);
             SHADER_DATA_PARAM_DESC gFrameDeltaDesc("gFrameDelta", "gFrameDelta", GPDT_FLOAT1);
@@ -530,7 +530,7 @@ namespace te
             _forwardShaderDesc.AddParameter(gLayerDesc);
             _forwardShaderDesc.AddParameter(gHasAnimationDesc);
             _forwardShaderDesc.AddParameter(gWriteVelocityDesc);
-            _forwardShaderDesc.AddParameter(gCastLightDesc);
+            _forwardShaderDesc.AddParameter(gCastLightsDesc);
             
             _forwardShaderDesc.AddParameter(gAmbient);
             _forwardShaderDesc.AddParameter(gDiffuse);

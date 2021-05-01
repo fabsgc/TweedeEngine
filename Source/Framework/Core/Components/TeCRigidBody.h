@@ -104,7 +104,7 @@ namespace te
                     continue;
 
                 Collider* collider = component->GetInternal();
-                if (collider == nullptr) 
+                if (collider == nullptr)
                 {
                     // depending on component order in sceneGraph, collider might not be created when doing that
                     // In this case, collider will trigger the SetBody and AddCollider himself

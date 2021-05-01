@@ -12,12 +12,12 @@ namespace te
     }
 
     CLight::CLight(const HSceneObject& parent, LightType type, Color color,
-        float intensity, float range, bool castsShadows, Degree spotAngle)
+        float intensity, float range, bool castShadows, Degree spotAngle)
         : Component(parent, (UINT32)TID_CLight)
         , _type(type)
         , _color(color)
         , _intensity(intensity)
-        , _castsShadows(castsShadows)
+        , _castShadows(castShadows)
         , _spotAngle(spotAngle)
     {
         SetName("Light");
@@ -44,7 +44,7 @@ namespace te
     void CLight::_instantiate()
     {
         _internal = Light::Create(_type, _color, _intensity, _range, 
-            _linearAtt, _quadraticAtt, _castsShadows, _spotAngle);
+            _linearAtt, _quadraticAtt, _castShadows, _spotAngle);
     }
 
     void CLight::OnInitialized()
@@ -88,7 +88,7 @@ namespace te
         SPtr<Light> light = c->_getLight();
 
         _internal->_type = light->_type;
-        _internal->_castsShadows = light->_castsShadows;
+        _internal->_castShadows = light->_castShadows;
         _internal->_color = light->_color;
         _internal->_attRadius = light->_attRadius;
         _internal->_linearAttenuation = light->_linearAttenuation;
@@ -106,7 +106,7 @@ namespace te
         c->_range = _range;
         c->_linearAtt = _linearAtt;
         c->_quadraticAtt = _quadraticAtt;
-        c->_castsShadows = _castsShadows;
+        c->_castShadows = _castShadows;
         c->_spotAngle = _spotAngle;
 
         _internal->_markCoreDirty();

@@ -81,6 +81,17 @@ namespace te
 {
     TE_MODULE_STATIC_MEMBER(Editor)
 
+    const Vector<UINT32> Editor::ComponentsWhichNeedGuizmo = {
+        TID_CRenderable,
+        TID_CRigidBody,
+        TID_CSoftBody,
+        TID_CLight,
+        TID_CCamera,
+        TID_CCameraFlyer,
+        TID_CAudioSource,
+        TID_CAudioListener
+    };
+
     Editor::Editor()
         : _editorBegun(false)
         , _pickingDirty(true)
@@ -212,7 +223,7 @@ namespace te
             SPtr<GameObject> gameObject = _picking->GetGameObjectAt(x, y);
             if (gameObject)
             {
-                if (!ImGuizmo::IsOver() || !_selections.ClickedComponent)
+                if (!ImGuizmo::IsOver() || !_selections.ClickedComponent || (_selections.ClickedSceneObject && !_selections.ClickedSceneObject->HasComponent(ComponentsWhichNeedGuizmo)))
                 {
                     SPtr<Component> component = std::static_pointer_cast<Component>(gameObject);
 
@@ -639,16 +650,6 @@ namespace te
     void Editor::HandleImGuizmo()
     {
         bool somethingSelected = false;
-        static const Vector<UINT32> componentsWhichNeedGuizmo = {
-            TID_CRenderable,
-            TID_CRigidBody,
-            TID_CSoftBody,
-            TID_CLight,
-            TID_CCamera,
-            TID_CCameraFlyer,
-            TID_CAudioSource,
-            TID_CAudioListener
-        };
 
         if (_selections.ClickedComponent)
         {
@@ -656,7 +657,7 @@ namespace te
         }
         else if(_selections.ClickedSceneObject)
         {
-            if (_selections.ClickedSceneObject->HasComponent(componentsWhichNeedGuizmo))
+            if (_selections.ClickedSceneObject->HasComponent(ComponentsWhichNeedGuizmo))
                 somethingSelected = true;
         }
 
@@ -1151,7 +1152,7 @@ namespace te
         auto knightResources = EditorResManager::Instance().LoadAll("Data/Meshes/Knight/Knight.dae", meshAnimImportOptions);
 
         _loadedMeshKnight = static_resource_cast<Mesh>(knightResources->Entries[0].Res);
-        _animationClipKnight = static_resource_cast<AnimationClip>(knightResources->Entries[1].Res);
+        _animationClipKnight = static_resource_cast<AnimationClip>(knightResources->Entries[2].Res);
         // ######################################################
 
         // ######################################################
@@ -1247,8 +1248,8 @@ namespace te
         _rigidBodyPlane->SetCollisionReportMode(CollisionReportMode::ReportPersistent);
         _rigidBodyPlane->Initialize();
         _planeColliderKnight = _sceneRenderablePlaneSO->AddComponent<CBoxCollider>();
-        _planeColliderKnight->SetExtents(Vector3(5.0f, 0.5f, 5.0f));
-        _planeColliderKnight->SetPosition(Vector3(0.0f, -0.5f, 0.0f));
+        _planeColliderKnight->SetExtents(Vector3(5.0f, 0.2f, 5.0f));
+        _planeColliderKnight->SetPosition(Vector3(0.0f, -0.2f, 0.0f));
         _planeColliderKnight->Initialize();
         // ######################################################
 

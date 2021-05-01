@@ -20,10 +20,10 @@ namespace te
         static UINT32 GetComponentType() { return TID_CMeshCollider; }
 
         /** @copydoc MeshCollider::SetMesh() */
-        void SetPhysicMesh(const HPhysicsMesh& mesh);
+        void SetMesh(const HPhysicsMesh& mesh);
 
         /** @copydoc MeshCollider::GetMesh() */
-        HPhysicsMesh GetPhysicMesh() const { return _physicMesh; }
+        HPhysicsMesh GetMesh() const { return _mesh; }
 
         /** @copydoc Component::Clone */
         void Clone(const HMeshCollider& c);
@@ -51,7 +51,7 @@ namespace te
         CMeshCollider(); // Serialization only
 
     protected:
-        HPhysicsMesh _physicMesh;
+        HPhysicsMesh _mesh;
 
         PhysicsMeshType _collisionType = PhysicsMeshType::Convex;
     };

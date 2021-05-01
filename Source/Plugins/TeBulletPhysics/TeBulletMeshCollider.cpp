@@ -34,16 +34,19 @@ namespace te
 
     void BulletMeshCollider::UpdateShape()
     {
-        if (!_physicMesh.IsLoaded())
+        if (_shape)
+        {
+            te_delete(_shape);
+            _shape = nullptr;
+        }
+
+        if (!_mesh.IsLoaded())
             return;
 
-        if (_shape)
-            te_delete(_shape);
-
-        BulletFMesh* fMesh = static_cast<BulletFMesh*>(_physicMesh->_getInternal());
+        BulletFMesh* fMesh = static_cast<BulletFMesh*>(_mesh->_getInternal());
         if (!fMesh)
         {
-            TE_DEBUG("No data inside the PhysicMesh");
+            TE_DEBUG("No data inside the PhysicsMesh");
             return;
         }
 
@@ -53,11 +56,18 @@ namespace te
 
             if (!convexMesh)
             {
-                TE_DEBUG("PhysicMesh does not have any ConvexMesh Data");
+                TE_DEBUG("PhysicsMesh does not have any ConvexMesh Data");
                 return;
             }
             
-            _shape = te_new<btConvexHullShape>((btScalar*)convexMesh->Data, convexMesh->NumVertices, convexMesh->Stride);
+            _shape = te_new<btConvexHullShape>();
+
+            for (UINT32 i = 0; i < convexMesh->NumVertices; i++)
+            {
+                Vector3 position = *(Vector3*)(convexMesh->Data + convexMesh->Stride * i);
+                _shape->addPoint(ToBtVector3(position));
+            }
+
             _shape->setUserPointer(this);
             _shape->optimizeConvexHull();
             _shape->initializePolyhedralFeatures();
@@ -65,25 +75,19 @@ namespace te
             ((BulletFCollider*)_internal)->SetShape(_shape);
             _shape->setLocalScaling(ToBtVector3(_internal ? _internal->GetScale() : Vector3::ONE));
         }
-
-        // TriangleMesh
+        else
         {
             const SPtr<BulletMesh::TriangleMesh> triangleMesh = fMesh->GetTriangleMesh();
 
             if (!triangleMesh)
             {
-                TE_DEBUG("PhysicMesh does not have any TriangleMesh Data");
+                TE_DEBUG("PhysicsMesh does not have any TriangleMesh Data");
                 return;
             }
         }
     }
 
     void BulletMeshCollider::OnMeshChanged()
-    {
-        ApplyGeometry();
-    }
-
-    void BulletMeshCollider::ApplyGeometry()
     {
         UpdateShape();
     }

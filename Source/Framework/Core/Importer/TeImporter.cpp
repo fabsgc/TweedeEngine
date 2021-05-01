@@ -35,12 +35,12 @@ namespace te
 
         if (importedResource)
         {
-            TE_DEBUG("Resource " + inputFilePath + " has been successfully loaded");
+            TE_DEBUG("Resource  from " + inputFilePath + " has been successfully loaded");
             return gResourceManager()._createResourceHandle(importedResource, uuid);
         }
         else
         {
-            TE_DEBUG("Resource " + inputFilePath + " has not been loaded");
+            TE_DEBUG("Resource from " + inputFilePath + " has not been loaded");
         }
         
         return HResource();
