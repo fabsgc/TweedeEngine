@@ -677,7 +677,7 @@ namespace te
                     if (collisionTypeOptions.Options.size() == 0)
                     {
                         collisionTypeOptions.AddOption(CollisionMeshType::None, "None");
-                        collisionTypeOptions.AddOption(CollisionMeshType::Normal, "Normal");
+                        collisionTypeOptions.AddOption(CollisionMeshType::Triangle, "Triangle");
                         collisionTypeOptions.AddOption(CollisionMeshType::Convex, "Convex");
                     }
 

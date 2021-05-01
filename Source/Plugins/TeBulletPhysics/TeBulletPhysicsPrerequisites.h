@@ -38,6 +38,8 @@
 #include "BulletDynamics/ConstraintSolver/btPoint2PointConstraint.h"
 #include "BulletCollision/CollisionShapes/btHeightfieldTerrainShape.h"
 #include "BulletCollision/NarrowPhaseCollision/btPersistentManifold.h"
+#include "BulletCollision/Gimpact/btGImpactCollisionAlgorithm.h"
+
 #if TE_COMPILER == TE_COMPILER_MSVC
 #   pragma warning(pop)
 #endif

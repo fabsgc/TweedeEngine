@@ -309,7 +309,7 @@ namespace te
             UINT8* verticesData = GetElementData(curElement.GetSemantic(), curElement.GetSemanticIdx(), curElement.GetStreamIdx());
             UINT8* indicesData = (_indexType == IT_32BIT) ? (UINT8*)GetIndices32() : (UINT8*)GetIndices16();
             UINT32 vertexStride = vertexDesc->GetVertexStride(curElement.GetStreamIdx());
-            UINT32 indiexStride = (_indexType == IT_32BIT) ? sizeof(UINT32) : sizeof(UINT16);
+            UINT32 indiexStride = GetIndexElementSize();
 
             if (GetNumVertices() > 0)
             {

@@ -18,7 +18,7 @@ namespace te
     BulletCylinderCollider::~BulletCylinderCollider()
     { 
         te_delete((BulletFCollider*)_internal);
-        te_delete((btCylinderShape*)_shape);
+        te_safe_delete((btCylinderShape*)_shape);
     }
 
     void BulletCylinderCollider::SetScale(const Vector3& scale)

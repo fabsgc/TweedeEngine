@@ -64,12 +64,13 @@ namespace te
         /**  @copydoc Resource::GetResourceType */
         static UINT32 GetResourceType() { return TID_FPhysicsMesh; }
 
-        /** Returns the mesh's indices and vertices. */
-        virtual SPtr<MeshData> GetMeshData() const = 0;
+        /** Re@copydoc PhysicsMesh::PhysicsMesh */
+        SPtr<MeshData> GetMeshData() const { return _meshData;  }
 
     protected:
         friend class PhysicsMesh;
 
+        SPtr<MeshData> _meshData = nullptr;
         PhysicsMeshType _type;
     };
 }

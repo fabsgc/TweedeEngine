@@ -19,7 +19,7 @@ namespace te
     BulletCapsuleCollider::~BulletCapsuleCollider()
     { 
         te_delete((BulletFCollider*)_internal);
-        te_delete((btCapsuleShape*)_shape);
+        te_safe_delete((btCapsuleShape*)_shape);
     }
 
     void BulletCapsuleCollider::SetScale(const Vector3& scale)

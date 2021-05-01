@@ -22,7 +22,7 @@ namespace te
         const SPtr<SceneInstance>& scene = SO()->GetScene();
 
         SPtr<MeshCollider> collider = MeshCollider::Create(*scene->GetPhysicsScene());
-        collider->SetMesh(_mesh);
+        collider->SetPhysicMesh(_physicMesh);
         collider->SetOwner(PhysicsOwnerType::Component, this);
 
         return collider;
@@ -33,28 +33,31 @@ namespace te
         CCollider::RestoreInternal();
     }
 
+    bool CMeshCollider::IsValidParent(const HBody& parent) const
+    {
+        return _physicMesh.IsLoaded();
+    }
+
     void CMeshCollider::Clone(const HMeshCollider& c)
     {
         CCollider::Clone(static_object_cast<CCollider>(c));
 
-        _mesh = c->_mesh;
+        _physicMesh = c->_physicMesh;
     }
 
-    void CMeshCollider::SetMesh(const HPhysicsMesh& mesh)
+    void CMeshCollider::SetPhysicMesh(const HPhysicsMesh& physicMesh)
     {
-        if (_mesh == mesh)
+        if (_physicMesh == physicMesh)
             return;
 
-        _mesh = mesh;
+        _physicMesh = physicMesh;
 
         if (_internal != nullptr)
         {
-            _getInternal()->SetMesh(mesh);
-
             if (_parent != nullptr)
                 _parent->RemoveCollider(static_object_cast<CCollider>(GetHandle()));
 
-            _getInternal()->SetMesh(mesh);
+            _getInternal()->SetPhysicMesh(physicMesh);
 
             if (_parent != nullptr)
                 _parent->AddCollider(static_object_cast<CCollider>(GetHandle()));

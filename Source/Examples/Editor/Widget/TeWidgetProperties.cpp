@@ -38,6 +38,7 @@
 #include "Components/TeCPlaneCollider.h"
 #include "Components/TeCSphereCollider.h"
 #include "Components/TeCHeightFieldCollider.h"
+#include "Physics/TePhysicsMesh.h"
 
 #if defined(__GNUC__)
 #pragma GCC diagnostic ignored "-Wsign-compare" 
@@ -784,10 +785,45 @@ namespace te
     bool WidgetProperties::ShowCMeshColliderProperties()
     {
         bool hasChanged = false;
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
         SPtr<CMeshCollider> collider = std::static_pointer_cast<CMeshCollider>(_selections.ClickedComponent);
+        HPhysicsMesh physicMesh = collider->GetPhysicMesh();
 
         if (ImGui::CollapsingHeader("Mesh collider", ImGuiTreeNodeFlags_DefaultOpen))
         {
+            // PhysicMesh
+            {
+                ImGuiExt::ComboOptions<UUID> meshesOptions;
+                UUID emptyMesh = UUID(50, 0, 0, 0);
+                UUID meshUUID = (physicMesh.IsLoaded()) ? physicMesh->GetUUID() : emptyMesh;
+                EditorResManager::ResourcesContainer& container = EditorResManager::Instance().Get<PhysicsMesh>();
+
+                // current physicMesh to use
+                for (auto& resource : container.Res)
+                {
+                    auto physicMeshRes = static_resource_cast<PhysicsMesh>(resource.second);
+                    String type = (physicMeshRes->GetType() == PhysicsMeshType::Triangle) ? "Triangle" : "Convex";
+                    meshesOptions.AddOption(resource.second->GetUUID(), resource.second->GetName() + " - " + type);
+                }
+
+                meshesOptions.AddOption(emptyMesh, ICON_FA_TIMES_CIRCLE " No Physic Mesh");
+
+                if (ImGuiExt::RenderOptionCombo<UUID>(&meshUUID, "##collider_physic_mesh_option", "Physic Mesh", meshesOptions, width))
+                {
+                    if (meshUUID == emptyMesh)
+                    {
+                        collider->SetPhysicMesh(HPhysicsMesh());
+                        hasChanged = true;
+                    }
+                    else if (meshUUID != ((physicMesh.IsLoaded()) ? physicMesh->GetUUID() : emptyMesh))
+                    {
+                        collider->SetPhysicMesh(gResourceManager().Load<PhysicsMesh>(meshUUID));
+                        hasChanged = true;
+                    }
+                }
+            }
+            ImGui::Separator();
+
             if (ShowCollider(collider))
                 hasChanged = true;
         }

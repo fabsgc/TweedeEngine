@@ -9,6 +9,19 @@ namespace te
     class BulletMesh : public PhysicsMesh
     {
     public:
+        struct ConvexMesh
+        {
+            UINT8* Data;
+            UINT32 NumVertices;
+            UINT32 Stride;
+        };
+
+        struct TriangleMesh
+        {
+            // TODO
+        };
+
+    public:
         BulletMesh(const SPtr<MeshData>& meshData, PhysicsMeshType type);
 
     private:
@@ -19,18 +32,21 @@ namespace te
         void Destroy() override;
     };
 
-    /** PhysX implementation of the PhysicsMesh foundation, FPhysicsMesh. */
+    /** Bullet implementation of the PhysicsMesh foundation, FPhysicsMesh. */
     class BulletFMesh : public FPhysicsMesh
     {
     public:
         BulletFMesh(const SPtr<MeshData>& meshData, PhysicsMeshType type);
         ~BulletFMesh();
 
-        /** @copydoc PhysicsMesh::getMeshData */
-        SPtr<MeshData> GetMeshData() const override;
-
         /**  @copydoc Resource::GetResourceType */
         static UINT32 GetResourceType() { return TID_FBulletMesh; }
+
+        /** Returns convex mesh generated data */
+        SPtr<BulletMesh::ConvexMesh> GetConvexMesh() const { return _convexMesh; }
+
+        /** Returns triangle mesh generated data */
+        SPtr<BulletMesh::TriangleMesh> GetTriangleMesh() const { return _triangleMesh; }
 
     private:
         /** Creates the internal triangle/convex mesh */
@@ -38,5 +54,9 @@ namespace te
 
     public:
         BulletFMesh(); // Serialization only
+
+    private:
+        SPtr<BulletMesh::ConvexMesh> _convexMesh = nullptr;
+        SPtr<BulletMesh::TriangleMesh> _triangleMesh = nullptr;
     };
 }

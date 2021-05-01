@@ -11,6 +11,7 @@
 #include "String/TeUnicode.h"
 #include "Image/TeTexture.h"
 #include "Mesh/TeMesh.h"
+#include "Physics/TePhysicsMesh.h"
 
 #include <regex>
 
@@ -321,6 +322,14 @@ namespace te
 
                                 if (_fileBrowser.Data.MeshParam.ImportMaterials)
                                     EditorUtils::ImportMeshMaterials(mesh);
+                            }
+                        }
+                        else if (subRes.Name == "collision")
+                        {
+                            HPhysicsMesh physicsMesh = static_resource_cast<PhysicsMesh>(subRes.Res);
+                            if (physicsMesh.IsLoaded())
+                            {
+                                EditorResManager::Instance().Add<PhysicsMesh>(physicsMesh);
                             }
                         }
                         else

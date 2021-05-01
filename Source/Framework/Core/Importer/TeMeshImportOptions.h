@@ -11,7 +11,7 @@ namespace te
     enum class CollisionMeshType
     {
         None, /**< No collision mesh will be imported. */
-        Normal, /**< Normal triangle mesh will be imported. */
+        Triangle, /**< Normal triangle mesh will be imported. */
         Convex /**< A convex hull will be generated from the source mesh. */
     };
 

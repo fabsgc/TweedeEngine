@@ -31,27 +31,44 @@ namespace te
     BulletFMesh::BulletFMesh(const SPtr<MeshData>& meshData, PhysicsMeshType type)
         : FPhysicsMesh(meshData, type, TID_FBulletMesh)
     {
-        // Perform cooking if needed
-        if (meshData != nullptr)
-        {
-            // TODO
-        }
-
         Initialize();
     }
 
     BulletFMesh::~BulletFMesh()
     {
-        // TODO
+        _convexMesh = nullptr;
+        _triangleMesh = nullptr;
     }
 
     void BulletFMesh::Initialize()
     {
-        // TODO
-    }
+        if (!_meshData)
+        {
+            TE_DEBUG("Provided PhysicsMesh does not have any mesh data.");
+            return;
+        }
 
-    SPtr<MeshData> BulletFMesh::GetMeshData() const
-    {
-        return nullptr;
+        SPtr<VertexDataDesc> vertexDesc = _meshData->GetVertexDesc();
+        if (!vertexDesc->HasElement(VES_POSITION))
+        {
+            TE_DEBUG("Provided PhysicsMesh mesh data has no vertex positions.");
+            return;
+        }
+
+        if (_meshData != nullptr)
+        {
+            if (_type == PhysicsMeshType::Convex)
+            {
+                _convexMesh = te_shared_ptr_new<BulletMesh::ConvexMesh>();
+
+                _convexMesh->NumVertices = _meshData->GetNumVertices();
+                _convexMesh->Stride = vertexDesc->GetVertexStride();
+                _convexMesh->Data = _meshData->GetElementData(VES_POSITION);
+            }
+            else
+            {
+                // TODO TriangleMesh
+            }
+        }
     }
 }

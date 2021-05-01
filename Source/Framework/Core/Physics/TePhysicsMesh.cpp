@@ -45,6 +45,7 @@ namespace te
 
     FPhysicsMesh::FPhysicsMesh(const SPtr<MeshData>& meshData, PhysicsMeshType type, UINT32 TID_type)
         : Serializable(TID_type)
+        , _meshData(meshData)
         , _type(type)
     { }
 }

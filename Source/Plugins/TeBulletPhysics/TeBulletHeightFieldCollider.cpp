@@ -16,7 +16,7 @@ namespace te
     BulletHeightFieldCollider::~BulletHeightFieldCollider()
     { 
         te_delete((BulletFCollider*)_internal);
-        te_delete(_shape);
+        te_safe_delete(_shape);
     }
 
     void BulletHeightFieldCollider::SetScale(const Vector3& scale)

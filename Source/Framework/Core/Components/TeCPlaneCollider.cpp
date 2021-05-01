@@ -34,6 +34,12 @@ namespace te
         SetNormal(_normal);
     }
 
+    bool CPlaneCollider::IsValidParent(const HBody& parent) const
+    {
+        // Planes cannot be added to non-kinematic rigidbodies
+        return parent->GetIsKinematic();
+    }
+
     void CPlaneCollider::Clone(const HPlaneCollider& c)
     {
         CCollider::Clone(static_object_cast<CCollider>(c));

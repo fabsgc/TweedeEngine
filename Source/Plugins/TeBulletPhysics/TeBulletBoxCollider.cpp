@@ -18,7 +18,7 @@ namespace te
     BulletBoxCollider::~BulletBoxCollider()
     { 
         te_delete((BulletFCollider*)_internal);
-        te_delete((btBoxShape*)_shape);
+        te_safe_delete((btBoxShape*)_shape);
     }
 
     void BulletBoxCollider::SetScale(const Vector3& scale)

@@ -37,15 +37,15 @@ namespace te
 
         if (_initDesc.SoftBody)
         {
-            // Create
             _collisionConfiguration = te_new<btSoftBodyRigidBodyCollisionConfiguration>();
             _collisionDispatcher = te_new<btCollisionDispatcher>(_collisionConfiguration);
+            btGImpactCollisionAlgorithm::registerAlgorithm(_collisionDispatcher);
         }
         else
         {
-            // Create
             _collisionConfiguration = te_new<btDefaultCollisionConfiguration>();
             _collisionDispatcher = te_new<btCollisionDispatcher>(_collisionConfiguration);
+            btGImpactCollisionAlgorithm::registerAlgorithm(_collisionDispatcher);
         }
     }
 
