@@ -1,5 +1,6 @@
 #include "TeRendererUtility.h"
 #include "Renderer/TeBlitMat.h"
+#include "RenderAPI/TeGpuParams.h"
 #include "RenderAPI/TeVertexData.h"
 #include "RenderAPI/TeIndexBuffer.h"
 #include "RenderAPI/TeVertexBuffer.h"
