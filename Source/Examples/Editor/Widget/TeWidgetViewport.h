@@ -1,13 +1,15 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
-#include "RenderAPI/TeRenderTexture.h"
-#include "Input/TeVirtualInput.h"
-#include "Image/TeTexture.h"
-#include "Utility/TeEvent.h"
+
 #include "../TeEditor.h"
 #include "../TeEditorUtils.h"
 #include "TeWidget.h"
+#include "Image/TeTexture.h"
+#include "Utility/TeEvent.h"
+#include "Scene/TeTransform.h"
+#include "Input/TeVirtualInput.h"
+#include "RenderAPI/TeRenderTexture.h"
 
 namespace te
 {

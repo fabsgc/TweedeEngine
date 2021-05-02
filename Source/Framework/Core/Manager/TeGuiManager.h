@@ -2,8 +2,6 @@
 
 #include "TeCorePrerequisites.h"
 #include "Utility/TeModule.h"
-#include "Gui/TeGuiAPI.h"
-#include "Gui/TeGuiAPIFactory.h"
 
 namespace te
 {
@@ -33,6 +31,4 @@ namespace te
         bool _guiInitialized;
         SPtr<GuiAPI> _gui;
     };
-
-    /** @} */
 }

@@ -1,10 +1,9 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
-#include "Renderer/TeRendererMaterial.h"
 #include "Renderer/TeParamBlocks.h"
+#include "Renderer/TeRendererMaterial.h"
 #include "Renderer/TeRenderSettings.h"
-
 
 namespace te
 {

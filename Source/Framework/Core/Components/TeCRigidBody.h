@@ -4,7 +4,6 @@
 #include "Physics/TeRigidBody.h"
 #include "Scene/TeComponent.h"
 #include "Scene/TeSceneObject.h"
-
 #include "TeCBody.h"
 
 namespace te

@@ -2,8 +2,6 @@
 
 #include "TeCorePrerequisites.h"
 #include "Renderer/TeParamBlocks.h"
-#include "Math/TeVector3.h"
-#include "../TeEditorUtils.h"
 #include "RenderAPI/TeVertexBuffer.h"
 #include "RenderAPI/TeVertexDataDesc.h"
 #include "RenderAPI/TeVertexDeclaration.h"

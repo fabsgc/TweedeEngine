@@ -1,6 +1,5 @@
 #include "Components/TeCBody.h"
 #include "Scene/TeSceneObject.h"
-#include "Physics/TePhysics.h"
 
 namespace te
 {

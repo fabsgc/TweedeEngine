@@ -2,12 +2,9 @@
 
 #include "TeCorePrerequisites.h"
 #include "CoreUtility/TeCoreObject.h"
-#include "TeDepthStencilState.h"
-#include "TeRasterizerState.h"
-#include "TeBlendState.h"
-#include "TeCommonTypes.h"
 #include "TeGpuPipelineParamInfo.h"
 #include "Utility/TeNonCopyable.h"
+#include "TeCommonTypes.h"
 
 namespace te
 {

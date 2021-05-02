@@ -1,5 +1,4 @@
 #include "RenderAPI/TeTextureView.h"
-#include "Image/TeTexture.h"
 
 namespace te
 {

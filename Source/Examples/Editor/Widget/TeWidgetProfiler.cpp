@@ -1,8 +1,5 @@
 #include "TeWidgetProfiler.h"
 
-#include "ImGui/imgui.h"
-#include "ImGui/imgui_internal.h"
-
 #include "Profiling/TeProfilerGPU.h"
 
 namespace te

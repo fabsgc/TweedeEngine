@@ -2,9 +2,7 @@
 
 #include "TeCorePrerequisites.h"
 #include "Scene/TeComponent.h"
-#include "Physics/TeJoint.h"
 #include "Physics/TeBody.h"
-
 #include "TeCBoxCollider.h"
 #include "TeCPlaneCollider.h"
 #include "TeCSphereCollider.h"
@@ -16,7 +14,7 @@
 namespace te
 {
     /**
-     * @copydoc	Joint
+     * @copydoc	CBody
      *
      * @note Wraps Body as a Component.
      */
@@ -164,7 +162,7 @@ namespace te
         /** Triggered when the internal body ends touching another object. */
         void TriggerOnCollisionEnd(const CollisionDataRaw& data);
 
-        /** Destroys the internal joint representation. */
+        /** Destroys the internal body representation. */
         virtual void DestroyInternal() = 0;
 
         /** Creates the internal representation of the Body for use by the component. */

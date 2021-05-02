@@ -1,5 +1,6 @@
 #include "Resources/TeBuiltinResources.h"
 #include "Resources/TeResourceManager.h"
+#include "Image/TeTexture.h"
 #include "Material/TePass.h"
 #include "Material/TeMaterial.h"
 #include "Material/TeTechnique.h"

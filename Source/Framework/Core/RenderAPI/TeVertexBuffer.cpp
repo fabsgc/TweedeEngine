@@ -1,4 +1,5 @@
 #include "TeVertexBuffer.h"
+#include "RenderAPI/TeGpuParams.h"
 #include "RenderAPI/TeHardwareBufferManager.h"
 #include "Profiling/TeProfilerGPU.h"
 

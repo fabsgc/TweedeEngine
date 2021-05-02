@@ -1,9 +1,10 @@
 #include "TeCamera.h"
+
 #include "Renderer/TeViewport.h"
+#include "RenderAPI/TeRenderAPI.h"
 #include "Manager/TeRendererManager.h"
 #include "Scene/TeSceneManager.h"
 #include "Math/TeRect2I.h"
-#include "RenderAPI/TeRenderAPI.h"
 
 namespace te
 {

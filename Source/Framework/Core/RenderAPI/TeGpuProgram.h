@@ -4,7 +4,6 @@
 #include "CoreUtility/TeCoreObject.h"
 #include "Utility/TeDataBlob.h"
 #include "TeVertexDeclaration.h"
-#include "TeGpuParamDesc.h"
 
 namespace te
 {

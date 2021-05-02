@@ -1,5 +1,8 @@
 #include "RenderAPI/TeRenderStateManager.h"
+
+#include "RenderAPI/TeGpuPipelineParamInfo.h"
 #include "RenderAPI/TeDepthStencilState.h"
+#include "RenderAPI/TeGpuPipelineState.h"
 #include "RenderAPI/TeRasterizerState.h"
 #include "RenderAPI/TeSamplerState.h"
 #include "RenderAPI/TeBlendState.h"

@@ -1,13 +1,11 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
+#include "Math/TeVector2.h"
 #include "Math/TeVector3.h"
 #include "Math/TeVector4.h"
 #include "Image/TeTexture.h"
-#include "Scene/TeTransform.h"
 #include "ImGui/imgui.h"
-#include "ImGui/imgui_internal.h"
-#include "Components/TeCCamera.h"
 
 namespace te
 {

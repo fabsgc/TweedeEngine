@@ -2,8 +2,6 @@
 
 #include "../TeEditor.h"
 #include "Math/TeMath.h"
-#include "ImGui/imgui.h"
-#include "ImGui/imgui_internal.h"
 #include "TeWidgetRenderOptions.h"
 #include "Animation/TeAnimationManager.h"
 #include "Scripting/TeScriptManager.h"

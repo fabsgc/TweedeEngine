@@ -2,10 +2,11 @@
 
 #include "TeCorePrerequisites.h"
 #include "TeWidget.h"
-#include "../ImGuiExt/TeImGuiFileBrowser.h"
 
 namespace te
 {
+    class ImGuiFileBrowser;
+
     class WidgetMaterials : public Widget
     {
     public:

@@ -1,9 +1,9 @@
 #include "Input/TeInput.h"
 #include "Error/TeError.h"
-#include "Private/Win32/TeWin32Input.h"
 #include "Input/TeMouse.h"
-#include "Input/TeKeyboard.h"
 #include "Input/TeGamePad.h"
+#include "Input/TeKeyboard.h"
+#include "Private/Win32/TeWin32Input.h"
 
 namespace te
 {

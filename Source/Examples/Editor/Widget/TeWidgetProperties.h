@@ -3,7 +3,6 @@
 #include "TeCorePrerequisites.h"
 #include "TeWidget.h"
 #include "../TeEditor.h"
-#include "Scene/TeTransform.h"
 
 namespace te
 {

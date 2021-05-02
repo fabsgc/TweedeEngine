@@ -3,9 +3,7 @@
 #include "TeCorePrerequisites.h"
 #include "CoreUtility/TeCoreObject.h"
 #include "Scene/TeSceneActor.h"
-#include "Mesh/TeMesh.h"
-#include "Math/TeMatrix4.h"
-#include "Material/TeMaterial.h"
+#include "Math/TeBounds.h"
 
 namespace te
 {

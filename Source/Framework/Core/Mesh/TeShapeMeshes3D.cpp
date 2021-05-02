@@ -3,8 +3,9 @@
 #include "Mesh/TeMesh.h"
 #include "Math/TeVector2.h"
 #include "Math/TeQuaternion.h"
-#include "RenderAPI/TeVertexDataDesc.h"
 #include "Mesh/TeMeshUtility.h"
+#include "Mesh/TeMeshData.h"
+#include "RenderAPI/TeVertexDataDesc.h"
 
 namespace te
 {

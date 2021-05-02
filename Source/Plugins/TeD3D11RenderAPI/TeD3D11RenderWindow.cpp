@@ -5,6 +5,7 @@
 #include "Image/TeTexture.h"
 #include "TeD3D11TextureView.h"
 #include "Manager/TeGuiManager.h"
+#include "Gui/TeGuiAPI.h"
 
 namespace te
 {

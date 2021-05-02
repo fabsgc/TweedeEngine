@@ -8,6 +8,7 @@
 #include "Renderer/TeCamera.h"
 #include "Components/TeCCamera.h"
 #include "Renderer/TeRenderSettings.h"
+#include "Scene/TeTransform.h"
 
 #if defined(__GNUC__)
 #pragma GCC diagnostic ignored "-Wformat-security"  // warning: format string is not a string literal (potentially insecure)

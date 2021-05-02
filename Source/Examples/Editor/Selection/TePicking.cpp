@@ -1,15 +1,17 @@
 #include "TePicking.h"
 
 #include "../TeEditor.h"
+#include "Scene/TeTransform.h"
+#include "Scene/TeSceneObject.h"
 #include "RenderAPI/TeRenderAPI.h"
 #include "Components/TeCRenderable.h"
 #include "Components/TeCLight.h"
 #include "Components/TeCCamera.h"
-#include "Scene/TeTransform.h"
 #include "Renderer/TeRendererUtility.h"
-#include "Utility/TeTime.h"
 #include "TePickingMat.h"
 #include "TeHudPickingMat.h"
+#include "Utility/TeTime.h"
+#include "Mesh/TeMesh.h"
 
 namespace te
 {

@@ -1,6 +1,8 @@
 #include "Material/TeShader.h"
 #include "Resources/TeResourceManager.h"
+#include "RenderAPI/TeSamplerState.h"
 #include "RenderAPI/TeGpuParams.h"
+#include "Image/TeTexture.h"
 
 namespace te
 {

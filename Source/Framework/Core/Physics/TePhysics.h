@@ -2,11 +2,8 @@
 
 #include "TeCorePrerequisites.h"
 #include "Physics/TePhysicsCommon.h"
-#include "Physics/TePhysicsDebug.h"
-#include "Physics/TePhysicsMesh.h"
 #include "Utility/TeModule.h"
 #include "Math/TeVector3.h"
-#include "Math/TeQuaternion.h"
 
 namespace te
 {

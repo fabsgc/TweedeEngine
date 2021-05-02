@@ -6,6 +6,8 @@
 #include "Material/TeShader.h"
 #include "TeRenderManOptions.h"
 #include "TeRendererRenderable.h"
+#include "RenderAPI/TeVertexData.h"
+#include "RenderAPI/TeGpuPipelineState.h"
 #include "Utility/TeTime.h"
 #include "TeRenderMan.h"
 

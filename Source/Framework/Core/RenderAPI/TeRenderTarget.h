@@ -1,10 +1,9 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
-#include "RenderAPI/TeVideoMode.h"
-#include "Utility/TeEvent.h"
 #include "CoreUtility/TeCoreObject.h"
 #include "Utility/TeNonCopyable.h"
+#include "Utility/TeEvent.h"
 
 namespace te
 {

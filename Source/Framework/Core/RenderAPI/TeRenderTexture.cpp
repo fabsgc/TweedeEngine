@@ -1,8 +1,9 @@
 #include "RenderAPI/TeRenderTexture.h"
-#include "Image/TeTexture.h"
-#include "Image/TeTextureManager.h"
+
 #include "Resources/TeResourceManager.h"
+#include "Image/TeTextureManager.h"
 #include "Image/TePixelUtil.h"
+#include "Image/TeTexture.h"
 
 namespace te
 {

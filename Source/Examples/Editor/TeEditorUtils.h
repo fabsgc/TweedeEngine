@@ -1,16 +1,7 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
-#include "Image/TeTexture.h"
-#include "Mesh/TeMesh.h"
 #include "RenderAPI/TeRenderTexture.h"
-#include "Components/TeCCamera.h"
-#include "Components/TeCLight.h"
-#include "Components/TeCRenderable.h"
-#include "Components/TeCAudioListener.h"
-#include "Components/TeCAudioSource.h"
-#include "Components/TeCRigidBody.h"
-#include "Components/TeCSoftBody.h"
 
 namespace te
 {
@@ -63,46 +54,25 @@ namespace te
         static bool DoFrustumCulling(const HCamera& camera, const SPtr<CSoftBody> softBody);
 
         /** Do a frustum culling on a renderable. Returns true if visible */
-        static bool DoFrustumCulling(const HCamera& camera, const HRenderable& renderable)
-        {
-            return DoFrustumCulling(camera, renderable.GetInternalPtr());
-        }
+        static bool DoFrustumCulling(const HCamera& camera, const HRenderable& renderable);
 
         /** Do a frustum culling on a light. Returns true if visible */
-        static bool DoFrustumCulling(const HCamera& camera, const HLight& light)
-        {
-            return DoFrustumCulling(camera, light.GetInternalPtr());
-        }
+        static bool DoFrustumCulling(const HCamera& camera, const HLight& light);
 
         /** Do a frustum culling on a scene camera. Returns true if visible */
-        static bool DoFrustumCulling(const HCamera& camera, const HCamera& sceneCamera)
-        {
-            return DoFrustumCulling(camera, sceneCamera.GetInternalPtr());
-        }
+        static bool DoFrustumCulling(const HCamera& camera, const HCamera& sceneCamera);
 
         /** Do a frustum culling on an audio listener. Returns true if visible */
-        static bool DoFrustumCulling(const HCamera& camera, const HAudioListener& audio)
-        {
-            return DoFrustumCulling(camera, audio.GetInternalPtr());
-        }
+        static bool DoFrustumCulling(const HCamera& camera, const HAudioListener& audio);
 
         /** Do a frustum culling on an audio source. Returns true if visible */
-        static bool DoFrustumCulling(const HCamera& camera, const HAudioSource& audio)
-        {
-            return DoFrustumCulling(camera, audio.GetInternalPtr());
-        }
+        static bool DoFrustumCulling(const HCamera& camera, const HAudioSource& audio);
 
         /** Do a frustum culling on a rigid body. Returns true if visible */
-        static bool DoFrustumCulling(const HCamera& camera, const HRigidBody& rigidBody)
-        {
-            return DoFrustumCulling(camera, rigidBody.GetInternalPtr());
-        }
+        static bool DoFrustumCulling(const HCamera& camera, const HRigidBody& rigidBody);
 
         /** Do a frustum culling on a soft body. Returns true if visible */
-        static bool DoFrustumCulling(const HCamera& camera, const HSoftBody& softBody)
-        {
-            return DoFrustumCulling(camera, softBody.GetInternalPtr());
-        }
+        static bool DoFrustumCulling(const HCamera& camera, const HSoftBody& softBody);
 
         /** Do a more generic frustum culling */
         static bool DoFrustumCulling(const HCamera& camera, const Sphere& boundingSphere, const float& cullDistanceFactor);

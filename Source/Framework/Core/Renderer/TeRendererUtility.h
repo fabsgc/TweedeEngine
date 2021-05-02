@@ -3,8 +3,8 @@
 #include "TeCorePrerequisites.h"
 #include "Utility/TeModule.h"
 #include "Math/TeRect2.h"
-#include "Math/TeVector2I.h"
 #include "Math/TeRect2I.h"
+#include "Math/TeVector2I.h"
 #include "Renderer/TeRendererMaterial.h"
 
 namespace te

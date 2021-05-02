@@ -1,4 +1,5 @@
 #include "TeGpuProgramManager.h"
+#include "RenderAPI/TeGpuProgram.h"
 
 namespace te
 {

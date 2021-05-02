@@ -3,11 +3,9 @@
 #include "TeCorePrerequisites.h"
 #include "Widget/TeWidget.h"
 #include "Utility/TeModule.h"
-#include "ImGuiExt/TeImGuiFileBrowser.h"
 #include "ImGuizmo/ImGuizmo.h"
-
-#include <vector>
-#include <memory>
+#include "Components/TeCCamera.h"
+#include "ImGuiExt/TeImGuiFileBrowser.h"
 
 namespace te
 {

@@ -1,6 +1,6 @@
 #include "TeBlendState.h"
-#include "RenderAPI/TeRenderStateManager.h"
 #include "RenderAPI/TeRenderAPI.h"
+#include "RenderAPI/TeRenderStateManager.h"
 
 namespace te
 {

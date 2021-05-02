@@ -1,20 +1,17 @@
 #include "TeWidgetMaterials.h"
+
 #include "../TeEditor.h"
 #include "../TeEditorResManager.h"
 #include "../ImGuiExt/TeImGuiExt.h"
-
-#include "ImGui/imgui.h"
-#include "ImGui/imgui_internal.h"
-#include "Gui/TeGuiAPI.h"
+#include "../ImGuiExt/TeImGuiFileBrowser.h"
 #include "Material/TeMaterial.h"
-#include "Scene/TeSceneObject.h"
 #include "Image/TeTexture.h"
+#include "Components/TeCRenderable.h"
 #include "Resources/TeBuiltinResources.h"
 #include "Resources/TeResourceManager.h"
-#include "Components/TeCRenderable.h"
 #include "Importer/TeTextureImportOptions.h"
 #include "Scene/TeSceneManager.h"
-#include "Renderer/TeRenderable.h"
+#include "Scene/TeSceneObject.h"
 #include "String/TeUnicode.h"
 
 namespace te

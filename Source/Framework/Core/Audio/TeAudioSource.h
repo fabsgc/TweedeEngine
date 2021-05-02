@@ -40,19 +40,19 @@ namespace te
         virtual void SetVelocity(const Vector3& velocity);
 
         /** @copydoc SetVelocity() */
-        Vector3 getVelocity() const { return _velocity; }
+        Vector3 GetVelocity() const { return _velocity; }
 
         /** Volume of the audio played from this source, in [0, 1] range. */
         virtual void SetVolume(float volume);
 
         /** @copydoc SetVolume() */
-        float getVolume() const { return _volume; }
+        float GetVolume() const { return _volume; }
 
         /** Determines the pitch of the played audio. 1 is the default. */
         virtual void SetPitch(float pitch);
 
         /** @copydoc SetPitch() */
-        float getPitch() const { return _pitch; }
+        float GetPitch() const { return _pitch; }
 
         /** Determines whether the audio clip should loop when it finishes playing. */
         virtual void SetIsLooping(bool loop);

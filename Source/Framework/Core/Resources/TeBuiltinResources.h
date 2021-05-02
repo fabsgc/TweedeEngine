@@ -2,18 +2,14 @@
 
 #include "TeCorePrerequisites.h"
 #include "Utility/TeModule.h"
-
 #include "RenderAPI/TeBlendState.h"
 #include "RenderAPI/TeRasterizerState.h"
 #include "RenderAPI/TeDepthStencilState.h"
 #include "RenderAPI/TeSamplerState.h"
-
 #include "Math/TeMath.h"
 #include "Math/TeMatrix4.h"
 #include "Math/TeVector2.h"
-
 #include "RenderAPI/TeGpuProgram.h"
-
 #include "Material/TeShader.h"
 
 namespace te

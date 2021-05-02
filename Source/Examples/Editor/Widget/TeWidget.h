@@ -1,10 +1,10 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
+#include "TeCoreApplication.h"
 #include "Math/TeVector2.h"
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
-#include "TeCoreApplication.h"
 #include "../ImGuiExt/TeImGuiExt.h"
 #include "../ImGuiExt/TeIconsFontAwesome5.h"
 

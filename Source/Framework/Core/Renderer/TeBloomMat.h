@@ -1,8 +1,8 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
-#include "Renderer/TeRendererMaterial.h"
 #include "Renderer/TeParamBlocks.h"
+#include "Renderer/TeRendererMaterial.h"
 #include "Renderer/TeGaussianBlurMat.h"
 
 #define STANDARD_MAX_BLUR_SAMPLES 128

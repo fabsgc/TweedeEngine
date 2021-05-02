@@ -1,8 +1,6 @@
 #include "TeWidgetViewport.h"
 
 #include "Scene/TeSceneObject.h"
-#include "ImGui/imgui.h"
-#include "ImGui/imgui_internal.h"
 #include "TeCoreApplication.h"
 #include "Components/TeCCamera.h"
 #include "Components/TeCCameraUI.h"

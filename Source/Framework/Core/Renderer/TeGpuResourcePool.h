@@ -2,7 +2,6 @@
 
 #include "TeCorePrerequisites.h"
 #include "Utility/TeModule.h"
-#include "Image/TePixelUtil.h"
 #include "Image/TeTexture.h"
 
 namespace te

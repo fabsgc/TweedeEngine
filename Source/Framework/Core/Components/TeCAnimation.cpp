@@ -1,11 +1,10 @@
 #include "Components/TeCAnimation.h"
 
 #include "Scene/TeSceneObject.h"
-#include "Scene/TeSceneManager.h"
 #include "Components/TeCRenderable.h"
-#include "Renderer/TeRenderable.h"
 #include "Components/TeCBone.h"
 #include "TeCoreApplication.h"
+#include "Mesh/TeMesh.h"
 
 using namespace std::placeholders;
 
@@ -248,38 +247,6 @@ namespace te
         // This should release the last reference and destroy the internal listener
         _internal = nullptr;
     }
-
-    /*bool CAnimation::_togglePreviewMode(bool enabled)
-    {
-        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Game);
-
-        if (enabled)
-        {
-            // Cannot enable preview while running
-            if (isRunning)
-                return false;
-
-            if (!_previewMode)
-            {
-                // Make sure not to re-enable preview mode if already enabled because it rebuilds the internal Animation
-                // component, changing its ID. This can look weird when sampling the animation for preview purposes
-                // (e.g. scrubbing in editor), in which case animation will reset to T pose for a single frame before
-                // settling on the chosen frame.
-                RestoreInternal(true);
-                _previewMode = true;
-            }
-
-            return true;
-        }
-        else
-        {
-            if (!isRunning)
-                DestroyInternal();
-
-            _previewMode = false;
-            return false;
-        }
-    }*/
 
     void CAnimation::Update()
     {

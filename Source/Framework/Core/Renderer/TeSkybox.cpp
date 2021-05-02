@@ -1,6 +1,6 @@
 #include "TeSkybox.h"
-#include "Scene/TeSceneObject.h"
 #include "Image/TeTexture.h"
+#include "Scene/TeSceneObject.h"
 #include "Renderer/TeRenderer.h"
 
 namespace te

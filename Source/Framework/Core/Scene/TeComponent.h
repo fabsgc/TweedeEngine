@@ -2,7 +2,6 @@
 
 #include "TeCorePrerequisites.h"
 #include "Scene/TeGameObject.h"
-#include "Math/TeBounds.h"
 #include "Utility/TeEvent.h"
 
 namespace te

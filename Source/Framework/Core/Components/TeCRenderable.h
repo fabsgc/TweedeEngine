@@ -3,6 +3,7 @@
 #include "TeCorePrerequisites.h"
 #include "Renderer/TeRenderable.h"
 #include "Scene/TeComponent.h"
+#include "Mesh/TeMesh.h"
 
 namespace te
 {

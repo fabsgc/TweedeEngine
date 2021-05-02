@@ -1,5 +1,7 @@
 #include "TeRenderable.h"
+
 #include "TeRenderer.h"
+#include "Mesh/TeMesh.h"
 #include "Scene/TeSceneObject.h"
 #include "Animation/TeAnimation.h"
 #include "Animation/TeAnimationManager.h"

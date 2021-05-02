@@ -2,13 +2,9 @@
 
 #include "TeCorePrerequisites.h"
 #include "Resources/TeResource.h"
-#include "TeTechnique.h"
-#include "TePass.h"
-#include "RenderAPI/TeGpuPipelineState.h"
 #include "RenderAPI/TeGpuParams.h"
-#include "Image/TeTexture.h"
 #include "RenderAPI/TeGpuBuffer.h"
-#include "RenderAPI/TeSamplerState.h"
+#include "Math/TeVector2.h"
 #include "Image/TeColor.h"
 
 namespace te
@@ -167,10 +163,10 @@ namespace te
         SPtr<Shader> GetShader() const { return _shader; } 
 
         /** Returns the total number of techniques supported by this material. */
-        UINT32 GetNumTechniques() const { return (UINT32)_techniques.size(); }
+        UINT32 GetNumTechniques() const;
 
         /** Returns the technique at the specified index. */
-        const SPtr<Technique>& GetTechnique(UINT32 idx) const { return _techniques[idx]; }
+        const SPtr<Technique>& GetTechnique(UINT32 idx) const;
 
         /**
          * Finds the index of the default (primary) technique to use. This will be the first technique that matches the
@@ -219,16 +215,10 @@ namespace te
         const SPtr<SamplerState>& GetSamplerState(const String& name);
 
         /** @copydoc Material::SetTexture */
-        void SetTexture(const String& name, const HTexture& value, const TextureSurface& surface = GpuParams::COMPLETE)
-        {
-            SetTexture(name, value.GetInternalPtr(), surface);
-        }
+        void SetTexture(const String& name, const HTexture& value, const TextureSurface& surface = GpuParams::COMPLETE);
 
         /** @copydoc Material::SetLoadStoreTexture */
-        void SetLoadStoreTexture(const String& name, const HTexture& value, const TextureSurface& surface = GpuParams::COMPLETE)
-        {
-            SetLoadStoreTexture(name, value.GetInternalPtr(), surface);
-        }
+        void SetLoadStoreTexture(const String& name, const HTexture& value, const TextureSurface& surface = GpuParams::COMPLETE);
 
         /** Assigns a value to an arbitrary constant buffer parameter. */
         template <typename T>

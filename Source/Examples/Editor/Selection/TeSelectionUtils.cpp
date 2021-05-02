@@ -1,5 +1,11 @@
 #include "TeSelectionUtils.h"
 
+#include "../TeEditorUtils.h"
+#include "Components/TeCLight.h"
+#include "Components/TeCCamera.h"
+#include "Components/TeCAudioListener.h"
+#include "Components/TeCAudioSource.h"
+
 namespace te
 {
     namespace SelectionUtils

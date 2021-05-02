@@ -1,8 +1,6 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
-#include "Math/TeVector3.h"
-#include "RenderAPI/TeSubMesh.h"
 
 namespace te 
 {

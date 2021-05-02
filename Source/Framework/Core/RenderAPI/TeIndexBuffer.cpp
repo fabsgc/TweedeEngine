@@ -1,4 +1,5 @@
 #include "TeIndexBuffer.h"
+#include "RenderAPI/TeGpuParams.h"
 #include "RenderAPI/TeHardwareBufferManager.h"
 #include "RenderAPI/TeRenderAPI.h"
 #include "Profiling/TeProfilerGPU.h"

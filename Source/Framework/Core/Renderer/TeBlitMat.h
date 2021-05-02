@@ -1,8 +1,6 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
-#include "Math/TeRect2.h"
-#include "Math/TeVector2I.h"
 #include "Renderer/TeRendererMaterial.h"
 #include "Renderer/TeParamBlocks.h"
 

@@ -159,15 +159,6 @@ namespace te
         /** Re-applies the bounds to the internal animation object, and the relevant renderable object if one exists. */
         void _updateBounds();
 
-        /**
-         * Preview mode allows certain operations on the component to be allowed (like basic animation playback),
-         * even when the component is not actively running. This is intended for use primarily by the animation editor.
-         * Preview mode ends automatically when the component is enabled (i.e. starts running normally), or when
-         * explicitly disabled. Returns true if the preview mode was enabled (which could fail if the component is
-         * currently running).
-         */
-        //bool _togglePreviewMode(bool enabled);
-
         /** @copydoc Component::Update */
         void Update();
 

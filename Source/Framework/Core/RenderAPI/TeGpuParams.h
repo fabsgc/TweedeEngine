@@ -3,7 +3,6 @@
 #include "TeCorePrerequisites.h"
 #include "RenderAPI/TeGpuParam.h"
 #include "CoreUtility/TeCoreObject.h"
-#include "Math/TeMatrixNxM.h"
 #include "TeGpuPipelineParamInfo.h"
 #include "TeGpuBuffer.h"
 

@@ -6,10 +6,10 @@
 #include "Math/TeVector3.h"
 #include "Math/TeVector2.h"
 #include "Math/TeMatrix4.h"
-#include "Scene/TeTransform.h"
 #include "Material/TeMaterial.h"
 #include "Animation/TeAnimationCurve.h"
 #include "Animation/TeAnimationClip.h"
+#include "RenderAPI/TeSubMesh.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>

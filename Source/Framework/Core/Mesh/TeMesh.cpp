@@ -1,4 +1,9 @@
 #include "Mesh/TeMesh.h"
+#include "TeMeshData.h"
+#include "RenderAPI/TeVertexData.h"
+#include "RenderAPI/TeIndexBuffer.h"
+#include "RenderAPI/TeVertexBuffer.h"
+#include "RenderAPI/TeVertexDataDesc.h"
 #include "Resources/TeResourceManager.h"
 
 namespace te

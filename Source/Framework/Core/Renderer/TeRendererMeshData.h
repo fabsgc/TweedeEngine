@@ -1,7 +1,6 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
-#include "Mesh/TeMeshData.h"
 
 namespace te
 {

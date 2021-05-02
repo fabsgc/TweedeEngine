@@ -3,7 +3,6 @@
 #include "TeCorePrerequisites.h"
 #include "Math/TeMatrix4.h"
 #include "Math/TeVector3.h"
-#include "Math/TeQuaternion.h"
 #include "Scene/TeGameObjectManager.h"
 #include "Scene/TeGameObject.h"
 #include "Scene/TeComponent.h"

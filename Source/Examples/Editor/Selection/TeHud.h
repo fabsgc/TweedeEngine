@@ -1,11 +1,6 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
-#include "RenderAPI/TeVertexBuffer.h"
-#include "RenderAPI/TeVertexDataDesc.h"
-#include "RenderAPI/TeVertexDeclaration.h"
-#include "Math/TeVector3.h"
-#include "../TeEditorUtils.h"
 #include "TeSelectionUtils.h"
 
 namespace te

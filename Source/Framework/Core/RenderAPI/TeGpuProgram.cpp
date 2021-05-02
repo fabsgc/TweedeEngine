@@ -1,4 +1,5 @@
 #include "TeGpuProgram.h"
+#include "TeGpuParamDesc.h"
 #include "TeGpuProgramManager.h"
 
 namespace te

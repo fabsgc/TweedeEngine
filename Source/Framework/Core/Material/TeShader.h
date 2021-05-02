@@ -2,9 +2,6 @@
 
 #include "TeCorePrerequisites.h"
 #include "Resources/TeResource.h"
-#include "Material/TeTechnique.h"
-#include "Image/TeTexture.h"
-#include "RenderAPI/TeSamplerState.h"
 
 namespace te
 {

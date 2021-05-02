@@ -3,10 +3,11 @@
 #include "TeCorePrerequisites.h"
 #include "Input/TeVirtualInput.h"
 #include "TeWidget.h"
-#include "../ImGuiExt/TeImGuiFileBrowser.h"
 
 namespace te
 {
+    class ImGuiFileBrowser;
+
     class WidgetMenuBar : public Widget
     {
     public:

@@ -1,15 +1,10 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
-#include "Math/TeVector2.h"
-#include "Math/TeVector3.h"
-#include "Math/TeVector4.h"
 #include "Math/TeMatrix3.h"
 #include "Math/TeMatrix4.h"
-#include "Math/TeMatrixNxM.h"
 #include "Math/TeVector3I.h"
-#include "Math/TeVector4I.h"
-#include "Image/TeColor.h"
+#include "Math/TeMatrixNxM.h" 
 
 namespace te
 {

@@ -6,8 +6,8 @@
 #include "RenderAPI/TeRasterizerState.h"
 #include "RenderAPI/TeDepthStencilState.h"
 #include "RenderAPI/TeSamplerState.h"
-#include "Json/json.h"
 #include "Material/TeShader.h"
+#include "Json/json.h"
 
 namespace te
 {

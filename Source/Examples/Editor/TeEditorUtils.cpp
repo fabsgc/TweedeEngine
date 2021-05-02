@@ -1,11 +1,19 @@
 #include "TeEditorUtils.h"
 
+#include "TeCoreApplication.h"
+#include "RenderAPI/TeSubMesh.h"
+#include "Threading/TeTaskScheduler.h"
 #include "Resources/TeBuiltinResources.h"
 #include "Importer/TeTextureImportOptions.h"
+#include "Components/TeCCamera.h"
+#include "Components/TeCLight.h"
+#include "Components/TeCRenderable.h"
+#include "Components/TeCAudioListener.h"
+#include "Components/TeCAudioSource.h"
+#include "Components/TeCRigidBody.h"
+#include "Components/TeCSoftBody.h"
 #include "TeEditorResManager.h"
-#include "TeCoreApplication.h"
-
-#include "Threading/TeTaskScheduler.h"
+#include "Mesh/TeMesh.h"
 
 namespace te
 {
@@ -152,6 +160,41 @@ namespace te
         renderData.RenderTexDesc.DepthStencilSurface.MipLevel = 0;
 
         renderData.RenderTex = RenderTexture::Create(renderData.RenderTexDesc);
+    }
+
+    bool EditorUtils::DoFrustumCulling(const HCamera& camera, const HRenderable& renderable)
+    {
+        return DoFrustumCulling(camera, renderable.GetInternalPtr());
+    }
+
+    bool EditorUtils::DoFrustumCulling(const HCamera& camera, const HLight& light)
+    {
+        return DoFrustumCulling(camera, light.GetInternalPtr());
+    }
+
+    bool EditorUtils::DoFrustumCulling(const HCamera& camera, const HCamera& sceneCamera)
+    {
+        return DoFrustumCulling(camera, sceneCamera.GetInternalPtr());
+    }
+
+    bool EditorUtils::DoFrustumCulling(const HCamera& camera, const HAudioListener& audio)
+    {
+        return DoFrustumCulling(camera, audio.GetInternalPtr());
+    }
+
+    bool EditorUtils::DoFrustumCulling(const HCamera& camera, const HAudioSource& audio)
+    {
+        return DoFrustumCulling(camera, audio.GetInternalPtr());
+    }
+
+    bool EditorUtils::DoFrustumCulling(const HCamera& camera, const HRigidBody& rigidBody)
+    {
+        return DoFrustumCulling(camera, rigidBody.GetInternalPtr());
+    }
+
+    bool EditorUtils::DoFrustumCulling(const HCamera& camera, const HSoftBody& softBody)
+    {
+        return DoFrustumCulling(camera, softBody.GetInternalPtr());
     }
 
     bool EditorUtils::DoFrustumCulling(const HCamera& camera, const SPtr<CRenderable> renderable)

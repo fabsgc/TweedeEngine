@@ -28,6 +28,8 @@
 
 #include "Utility/TeTime.h"
 
+#include "Image/TeTexture.h"
+
 namespace te
 {
     TE_MODULE_STATIC_MEMBER(Application)

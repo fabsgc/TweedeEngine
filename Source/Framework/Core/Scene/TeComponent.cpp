@@ -1,5 +1,6 @@
 #include "Scene/TeComponent.h"
 #include "Scene/TeSceneObject.h"
+#include "Math/TeBounds.h"
 
 namespace te
 { 

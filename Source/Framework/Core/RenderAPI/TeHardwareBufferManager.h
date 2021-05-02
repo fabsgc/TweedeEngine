@@ -5,7 +5,6 @@
 #include "RenderAPI/TeVertexBuffer.h"
 #include "RenderAPI/TeIndexBuffer.h"
 #include "RenderAPI/TeVertexDeclaration.h"
-#include "RenderAPI/TeGpuParams.h"
 
 namespace te
 {
@@ -51,7 +50,7 @@ namespace te
             GpuDeviceFlags deviceMask = GDF_DEFAULT);
 
         /**
-         * @copydoc te::HardwareBufferManager::CreateGpuParamBlockBuffer
+         * @copydoc HardwareBufferManager::CreateGpuParamBlockBuffer
          * @param[in]	deviceMask		Mask that determines on which GPU devices should the object be created on.
          */
         SPtr<GpuParamBlockBuffer> CreateGpuParamBlockBuffer(UINT32 size,
@@ -97,15 +96,15 @@ namespace te
             Vector<VertexElement> elements;
         };
 
-        /** @copydoc createVertexBuffer */
+        /** @copydoc CreateVertexBuffer */
         virtual SPtr<VertexBuffer> CreateVertexBufferInternal(const VERTEX_BUFFER_DESC& desc,
             GpuDeviceFlags deviceMask = GDF_DEFAULT) = 0;
 
-        /** @copydoc createIndexBuffer */
+        /** @copydoc CreateIndexBuffer */
         virtual SPtr<IndexBuffer> CreateIndexBufferInternal(const INDEX_BUFFER_DESC& desc,
             GpuDeviceFlags deviceMask = GDF_DEFAULT) = 0;
 
-        /** @copydoc createVertexDeclaration(const Vector<VertexElement>&, GpuDeviceFlags) */
+        /** @copydoc CreateVertexDeclaration(const Vector<VertexElement>&, GpuDeviceFlags) */
         virtual SPtr<VertexDeclaration> createVertexDeclarationInternal(const Vector<VertexElement>& elements,
             GpuDeviceFlags deviceMask = GDF_DEFAULT);
 

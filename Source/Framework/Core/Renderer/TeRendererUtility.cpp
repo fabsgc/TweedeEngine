@@ -1,10 +1,15 @@
 #include "TeRendererUtility.h"
 #include "Renderer/TeBlitMat.h"
+#include "RenderAPI/TeVertexData.h"
+#include "RenderAPI/TeIndexBuffer.h"
+#include "RenderAPI/TeVertexBuffer.h"
 #include "RenderAPI/TeVertexDataDesc.h"
 #include "RenderAPI/TeRenderAPI.h"
 #include "Material/TeMaterial.h"
 #include "Material/TePass.h"
+#include "Image/TeTexture.h"
 #include "Mesh/TeMesh.h"
+#include "Mesh/TeMeshData.h"
 #include "Mesh/TeShapeMeshes3D.h"
 
 namespace te

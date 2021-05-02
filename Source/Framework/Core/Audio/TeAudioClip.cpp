@@ -1,5 +1,6 @@
 #include "Audio/TeAudioClip.h"
 #include "Audio/TeAudio.h"
+#include "Utility/TeDataStream.h"
 #include "Resources/TeResourceManager.h"
 
 namespace te

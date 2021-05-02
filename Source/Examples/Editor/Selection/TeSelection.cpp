@@ -6,8 +6,10 @@
 #include "Components/TeCLight.h"
 #include "Components/TeCRenderable.h"
 #include "Components/TeCRigidBody.h"
+#include "Components/TeCSoftBody.h"
 #include "Renderer/TeRendererUtility.h"
 #include "Renderer/TeRenderer.h"
+#include "Mesh/TeMesh.h"
 
 namespace te
 {

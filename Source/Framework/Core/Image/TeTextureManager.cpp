@@ -1,5 +1,6 @@
 #include "TeTextureManager.h"
 #include "Image/TeColor.h"
+#include "TePixelData.h"
 
 namespace te
 {

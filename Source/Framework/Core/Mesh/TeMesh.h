@@ -2,12 +2,9 @@
 
 #include "TeCorePrerequisites.h"
 #include "Resources/TeResource.h"
-#include "Math/TeBounds.h"
 #include "RenderAPI/TeCommonTypes.h"
-#include "RenderAPI/TeVertexDataDesc.h"
-#include "RenderAPI/TeVertexData.h"
 #include "RenderAPI/TeSubMesh.h"
-#include "TeMeshData.h"
+#include "Math/TeBounds.h"
 
 namespace te
 {

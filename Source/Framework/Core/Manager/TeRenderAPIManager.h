@@ -31,6 +31,4 @@ namespace te
         Vector<SPtr<RenderAPIFactory>> _availableFactories;
         bool _renderAPIInitialized;
     };
-
-    /** @} */
 }

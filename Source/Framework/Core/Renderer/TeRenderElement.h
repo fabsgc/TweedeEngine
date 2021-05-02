@@ -1,10 +1,6 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
-#include "RenderAPI/TeSubMesh.h"
-#include "Mesh/TeMesh.h"
-#include "Material/TeMaterial.h"
-#include "Renderer/TeRenderable.h"
 
 namespace te
 {

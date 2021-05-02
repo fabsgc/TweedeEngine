@@ -1,12 +1,7 @@
 #include "TeWidgetRenderOptions.h"
-#include "TeWidgetViewport.h"
 
 #include "Renderer/TeRenderSettings.h"
-#include "Renderer/TeCamera.h"
-
 #include "Components/TeCCamera.h"
-#include "Scene/TeComponent.h"
-
 #include "../TeEditor.h"
 
 using namespace std::placeholders;

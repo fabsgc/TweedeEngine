@@ -3,8 +3,6 @@
 #include "TeCorePrerequisites.h"
 #include "Utility/TeModule.h"
 #include "Resources/TeResourceManager.h"
-#include <vector>
-#include <unordered_map>
 
 namespace te
 {
@@ -94,6 +92,6 @@ namespace te
         }
 
     protected:
-        std::unordered_map<UINT32, ResourcesContainer> _resources;
+        UnorderedMap<UINT32, ResourcesContainer> _resources;
     };
 }

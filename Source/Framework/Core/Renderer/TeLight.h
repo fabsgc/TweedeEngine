@@ -106,7 +106,7 @@ namespace te
         Degree GetSpotAngle() const { return _spotAngle; }
 
         /**	Returns world space bounds that completely encompass the light's area of influence. */
-        Sphere GetBounds() const { return _bounds; }
+        const Sphere& GetBounds() const { return _bounds; }
 
         /**
          * Creates a new light with provided settings.

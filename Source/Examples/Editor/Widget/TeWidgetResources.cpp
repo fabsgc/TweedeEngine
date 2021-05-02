@@ -4,8 +4,8 @@
 #include "../TeEditorResManager.h"
 #include "Mesh/TeMesh.h"
 #include "Image/TeTexture.h"
-#include "Animation/TeAnimationClip.h"
 #include "Audio/TeAudioClip.h"
+#include "Animation/TeAnimationClip.h"
 
 namespace te
 {

@@ -1,5 +1,9 @@
 #include "TeMaterial.h"
 #include "TeShader.h"
+#include "TePass.h"
+#include "TeTechnique.h"
+#include "Image/TeTexture.h"
+#include "RenderAPI/TeSamplerState.h"
 #include "Resources/TeResourceHandle.h"
 #include "Resources/TeResourceManager.h"
 
@@ -113,6 +117,16 @@ namespace te
         InitializeTechniques();
     }
 
+    UINT32 Material::GetNumTechniques() const 
+    {
+        return (UINT32)_techniques.size();
+    }
+
+    const SPtr<Technique>& Material::GetTechnique(UINT32 idx) const 
+    {
+        return _techniques[idx];
+    }
+
     UINT32 Material::GetNumPasses(UINT32 techniqueIdx) const
     {
         if (_shader == nullptr)
@@ -217,6 +231,16 @@ namespace te
     const SPtr<SamplerState>& Material::GetSamplerState(const String& name)
     {
         return _samplerStates[name];
+    }
+
+    void Material::SetTexture(const String& name, const HTexture& value, const TextureSurface& surface)
+    {
+        SetTexture(name, value.GetInternalPtr(), surface);
+    }
+
+    void Material::SetLoadStoreTexture(const String& name, const HTexture& value, const TextureSurface& surface)
+    {
+        SetLoadStoreTexture(name, value.GetInternalPtr(), surface);
     }
 
     UINT32 Material::GetDefaultTechnique() const

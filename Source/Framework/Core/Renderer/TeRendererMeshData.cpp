@@ -1,5 +1,6 @@
 #include "Renderer/TeRendererMeshData.h"
 #include "RenderAPI/TeVertexDataDesc.h"
+#include "Mesh/TeMeshData.h"
 #include "Math/TeVector2.h"
 #include "Math/TeVector3.h"
 #include "Math/TeVector4.h"

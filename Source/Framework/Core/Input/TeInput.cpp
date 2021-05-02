@@ -2,7 +2,6 @@
 #include "Input/TeMouse.h"
 #include "Input/TeKeyboard.h"
 #include "Input/TeGamePad.h"
-#include "Platform/TePlatform.h"
 #include "TeCoreApplication.h"
 #include "Utility/TeTime.h"
 #include "Gui/TeGuiAPI.h"
@@ -10,7 +9,7 @@
 using namespace std::placeholders;
 
 namespace te
-{   
+{
     TE_MODULE_STATIC_MEMBER(Input)
 
     Input::DeviceData::DeviceData()

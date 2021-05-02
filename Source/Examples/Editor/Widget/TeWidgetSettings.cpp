@@ -1,7 +1,5 @@
 #include "TeWidgetSettings.h"
 
-#include "ImGui/imgui.h"
-#include "ImGui/imgui_internal.h"
 #include "../TeEditor.h"
 #include "Physics/TePhysics.h"
 

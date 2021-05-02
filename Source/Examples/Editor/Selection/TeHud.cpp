@@ -2,13 +2,12 @@
 
 #include "../TeEditor.h"
 #include "../TeEditorUtils.h"
+#include "TeHudPickingMat.h"
 #include "RenderAPI/TeRenderAPI.h"
 #include "RenderAPI/TeRenderTarget.h"
 #include "Scene/TeSceneObject.h"
-#include "Renderer/TeCamera.h"
-#include "Renderer/TeLight.h"
 #include "Components/TeCLight.h"
-#include "TeHudPickingMat.h"
+#include "Components/TeCCamera.h"
 
 namespace te
 {

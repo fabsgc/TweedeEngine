@@ -2,23 +2,13 @@
 
 #include "TeCorePrerequisites.h"
 
-#include "Renderer/TeCamera.h"
-#include "Scene/TeSceneObject.h"
-#include "Material/TeShader.h"
 #include "Math/TeVector2I.h"
 #include "Math/TeVector4.h"
 #include "Math/TeMatrix4.h"
 #include "Image/TeTexture.h"
 #include "Image/TeColor.h"
-#include "RenderAPI/TeRenderTexture.h"
-#include "Renderer/TeParamBlocks.h"
 #include "../TeEditorUtils.h"
 #include "TeSelectionUtils.h"
-#include "RenderAPI/TeVertexBuffer.h"
-#include "RenderAPI/TeVertexDataDesc.h"
-#include "RenderAPI/TeVertexDeclaration.h"
-
-#include <unordered_map>
 
 namespace te
 {
@@ -107,7 +97,7 @@ namespace te
         PickingMat* _material;
         HudPickingMat* _hudMaterial;
         EditorUtils::RenderWindowData _renderData;
-        std::unordered_map<RGBA, GameObjectInfo> _colorToGameObject;
+        UnorderedMap<RGBA, GameObjectInfo> _colorToGameObject;
         SelectionUtils::HudInstanceBuffer _instanceBuffer;
     };
 }

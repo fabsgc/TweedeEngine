@@ -2,7 +2,6 @@
 
 #include "TeCorePrerequisites.h"
 #include "Utility/TeModule.h"
-#include "RenderAPI/TeGpuProgram.h"
 
 namespace te
 {
@@ -55,10 +54,10 @@ namespace te
         /** Query if a GPU program language is supported (for example "hlsl", "glsl"). Thread safe. */
         bool IsLanguageSupported(const String& language);
 
-        /** @copydoc GpuProgram::create */
+        /** @copydoc GpuProgram::Create */
         SPtr<GpuProgram> Create(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask = GDF_DEFAULT);
 
-        /** @copydoc GpuProgram::compileBytecode */
+        /** @copydoc GpuProgram::CompileBytecode */
         SPtr<GpuProgramBytecode> CompileBytecode(const GPU_PROGRAM_DESC& desc);
 
     protected:

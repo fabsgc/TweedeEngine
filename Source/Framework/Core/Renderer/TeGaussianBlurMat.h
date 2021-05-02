@@ -1,10 +1,9 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
+#include "RenderAPI/TeRenderTexture.h"
 #include "Renderer/TeRendererMaterial.h"
 #include "Renderer/TeParamBlocks.h"
-#include "Math/TeVector4.h"
-#include "RenderAPI/TeRenderTexture.h"
 
 #define STANDARD_MAX_BLUR_SAMPLES 128
 

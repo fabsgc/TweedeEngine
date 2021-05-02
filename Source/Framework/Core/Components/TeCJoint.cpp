@@ -57,7 +57,7 @@ namespace te
     }
 
     void CJoint::OnEnabled()
-    { 
+    {
         RestoreInternal(); // TODO
     }
 

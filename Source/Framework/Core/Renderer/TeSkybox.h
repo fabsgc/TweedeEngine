@@ -1,7 +1,6 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
-#include "Image/TeTexture.h"
 #include "Scene/TeSceneActor.h"
 #include "CoreUtility/TeCoreObject.h"
 

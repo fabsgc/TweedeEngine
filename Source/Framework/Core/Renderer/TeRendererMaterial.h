@@ -1,10 +1,10 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
-#include "Material/TeMaterial.h"
 #include "Renderer/TeRendererMaterialManager.h"
 #include "Material/TeShader.h"
 #include "Material/TePass.h"
+#include "Material/TeTechnique.h"
 #include "RenderAPI/TeRenderAPI.h"
 
 namespace te

@@ -2,7 +2,6 @@
 
 #include "TeCorePrerequisites.h"
 #include "Resources/TeResourceManager.h"
-#include "Utility/TeDataStream.h"
 
 namespace te
 {

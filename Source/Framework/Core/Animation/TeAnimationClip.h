@@ -2,7 +2,6 @@
 
 #include "TeCorePrerequisites.h"
 #include "Resources/TeResource.h"
-#include "Math/TeVector3.h"
 #include "Math/TeQuaternion.h"
 #include "Animation/TeAnimationCurve.h"
 #include <array>

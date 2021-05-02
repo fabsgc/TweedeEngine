@@ -1,11 +1,9 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
+#include "TeSelectionUtils.h"
 #include "../TeEditor.h"
 #include "../TeEditorUtils.h"
-#include "TeSelectionUtils.h"
-#include "Image/TeTexture.h"
-#include "Scene/TeSceneObject.h"
 
 namespace te
 {

@@ -1,8 +1,6 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
-#include "Math/TeVector3.h"
-#include "Math/TeQuaternion.h"
 
 namespace te
 {

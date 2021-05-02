@@ -4,6 +4,7 @@
 #include "Renderer/TeParamBlocks.h"
 #include "Material/TeMaterial.h"
 #include "Math/TeMatrix4.h"
+#include "Math/TeVector2.h"
 
 #define STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE 128
 #define STANDARD_FORWARD_MIN_INSTANCED_BLOCK_SIZE 2

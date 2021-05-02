@@ -2,7 +2,6 @@
 
 #include "TeCorePrerequisites.h"
 #include "Input/TeInputData.h"
-#include "Image/TePixelData.h"
 
 namespace te
 {

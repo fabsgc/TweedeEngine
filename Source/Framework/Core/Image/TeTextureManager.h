@@ -2,7 +2,6 @@
 
 #include "TeCorePrerequisites.h"
 #include "Utility/TeModule.h"
-#include "TePixelData.h"
 #include "TeTexture.h"
 #include "RenderAPI/TeRenderTexture.h"
 

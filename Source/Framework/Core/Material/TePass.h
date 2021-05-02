@@ -5,26 +5,25 @@
 #include "RenderAPI/TeRasterizerState.h"
 #include "RenderAPI/TeDepthStencilState.h"
 #include "RenderAPI/TeGpuProgram.h"
-#include "RenderAPI/TeGpuPipelineState.h"
 #include "Resources/TeResource.h"
 
 namespace te
 {
     /** Descriptor structure used for initializing a shader pass. */
-	struct PASS_DESC
-	{
-		BLEND_STATE_DESC BlendStateDesc;
-		RASTERIZER_STATE_DESC RasterizerStateDesc;
-		DEPTH_STENCIL_STATE_DESC DepthStencilStateDesc;
-		UINT32 StencilRefValue;
+    struct PASS_DESC
+    {
+        BLEND_STATE_DESC BlendStateDesc;
+        RASTERIZER_STATE_DESC RasterizerStateDesc;
+        DEPTH_STENCIL_STATE_DESC DepthStencilStateDesc;
+        UINT32 StencilRefValue;
 
-		GPU_PROGRAM_DESC VertexProgramDesc;
-		GPU_PROGRAM_DESC PixelProgramDesc;
-		GPU_PROGRAM_DESC GeometryProgramDesc;
-		GPU_PROGRAM_DESC HullProgramDesc;
-		GPU_PROGRAM_DESC DomainProgramDesc;
+        GPU_PROGRAM_DESC VertexProgramDesc;
+        GPU_PROGRAM_DESC PixelProgramDesc;
+        GPU_PROGRAM_DESC GeometryProgramDesc;
+        GPU_PROGRAM_DESC HullProgramDesc;
+        GPU_PROGRAM_DESC DomainProgramDesc;
         GPU_PROGRAM_DESC ComputeProgramDesc;
-	};
+    };
 
     class TE_CORE_EXPORT Pass : public Resource
     {

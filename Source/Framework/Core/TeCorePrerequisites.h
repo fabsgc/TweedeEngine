@@ -120,6 +120,7 @@ namespace te
     class RenderAPI;
     class HardwareBuffer;
     class IndexBuffer;
+    class VertexData;
     class VertexBuffer;
     class VertexDeclaration;
     class RenderTarget;
@@ -183,6 +184,10 @@ namespace te
     class GpuBuffer;
     class VertexDeclaration;
     class VertexBuffer;
+    struct GpuParamDesc;
+    struct GpuParamDataDesc;
+    struct GpuParamBlockDesc;
+    struct GpuParamObjectDesc;
 
     class Renderer;
     class RendererFactory;
@@ -192,6 +197,7 @@ namespace te
     class Viewport;
     class Light;
     class Renderable;
+    struct RenderableProperties;
     struct RenderSettings;
     class RenderQueue;
     class RenderElement;
@@ -203,6 +209,7 @@ namespace te
     class BlitMat;
     class SkyboxMat;
     class FXAAMat;
+    class RendererMeshData;
 
     class SceneActor;
     class SceneManager;
@@ -212,6 +219,7 @@ namespace te
     template <typename T>
     class GameObjectHandle;
     class GameObjectManager;
+    class Transform;
 
     class CoreObject;
     class CoreObjectManager;
@@ -245,11 +253,13 @@ namespace te
     class GpuResourceData;
 
     class Texture;
+    class PixelData;
 
     struct MESH_DESC;
     class MeshProperties;
     class Mesh;
     class MeshData;
+    struct BoneWeight;
 
     class Shader;
     class Material;

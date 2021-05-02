@@ -2,16 +2,16 @@
 
 #include "../TeEditorResManager.h"
 #include "../TeEditorUtils.h"
-#include "ImGui/imgui.h"
-#include "ImGui/imgui_internal.h"
 #include "Resources/TeResourceManager.h"
 #include "Resources/TeBuiltinResources.h"
 #include "String/TeUnicode.h"
 #include "Utility/TeFileSystem.h"
 #include "Scene/TeSceneManager.h"
 #include "Scene/TeSceneObject.h"
-#include "RenderAPI/TeSubMesh.h"
+#include "Scene/TeTransform.h"
 #include "Mesh/TeMesh.h"
+#include "RenderAPI/TeSubMesh.h"
+#include "Physics/TePhysicsMesh.h"
 #include "Importer/TeMeshImportOptions.h"
 #include "Importer/TeTextureImportOptions.h"
 #include "Scripting/TeScriptManager.h"
@@ -38,7 +38,6 @@
 #include "Components/TeCPlaneCollider.h"
 #include "Components/TeCSphereCollider.h"
 #include "Components/TeCHeightFieldCollider.h"
-#include "Physics/TePhysicsMesh.h"
 
 #if defined(__GNUC__)
 #pragma GCC diagnostic ignored "-Wsign-compare" 

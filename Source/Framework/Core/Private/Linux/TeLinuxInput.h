@@ -1,7 +1,6 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
-#include "Input/TeInputData.h"
 
 namespace te
 {

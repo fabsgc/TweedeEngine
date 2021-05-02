@@ -2,10 +2,7 @@
 
 #include "TeCorePrerequisites.h"
 #include "Resources/TeGpuResourceData.h"
-#include "RenderAPI/TeVertexBuffer.h"
-#include "RenderAPI/TeIndexBuffer.h"
 #include "RenderAPI/TeVertexDeclaration.h"
-#include "RenderAPI/TeSubMesh.h"
 #include "Math/TeBounds.h"
 
 namespace te

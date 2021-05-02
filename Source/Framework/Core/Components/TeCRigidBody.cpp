@@ -1,7 +1,7 @@
 #include "Components/TeCRigidBody.h"
+
 #include "Scene/TeSceneObject.h"
 #include "Components/TeCJoint.h"
-#include "Components/TeCRigidBody.h"
 #include "Physics/TePhysics.h"
 
 using namespace std::placeholders;

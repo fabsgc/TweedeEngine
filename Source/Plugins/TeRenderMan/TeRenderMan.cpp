@@ -406,6 +406,16 @@ namespace te
         return nullptr;
     }
 
+    void RenderMan::SetLastLightMapTexture(Light* light, SPtr<Texture> depthBuffer)
+    {
+        // TODO
+    }
+
+    SPtr<Texture> RenderMan::GetLastLightMapTexture(SPtr<Light> light) const
+    {
+        return nullptr;
+    }
+
     SPtr<RenderMan> gRenderMan()
     {
         return std::static_pointer_cast<RenderMan>(RendererManager::Instance().GetRenderer());

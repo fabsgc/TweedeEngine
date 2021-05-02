@@ -1,12 +1,10 @@
 #include "TeWidgetScript.h"
 
 #include "../TeEditor.h"
-#include "ImGui/imgui.h"
-#include "ImGui/imgui_internal.h"
+#include "../ImGuiExt/TeImGuiTextEditor.h"
 #include "Components/TeCScript.h"
 #include "Scripting/TeScriptManager.h"
 #include "Utility/TeDataStream.h"
-#include "../ImGuiExt/TeImGuiTextEditor.h"
 
 namespace te
 {

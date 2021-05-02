@@ -4,8 +4,8 @@
 #include "Math/TeSphere.h"
 #include "Math/TeAABox.h"
 #include "RenderAPI/TeHardwareBufferManager.h"
-#include "RenderAPI/TeVertexDeclaration.h"
 #include "RenderAPI/TeVertexDataDesc.h"
+#include "RenderAPI/TeSubMesh.h"
 
 namespace te
 {

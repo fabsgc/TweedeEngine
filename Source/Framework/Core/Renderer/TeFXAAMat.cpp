@@ -1,4 +1,5 @@
 #include "TeFXAAMat.h"
+#include "Image/TeTexture.h"
 #include "TeRendererUtility.h"
 
 namespace te

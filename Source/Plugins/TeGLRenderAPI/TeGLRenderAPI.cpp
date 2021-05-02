@@ -4,6 +4,8 @@
 #include "RenderAPI/TeRenderStateManager.h"
 #include "RenderAPI/TeGpuProgramManager.h"
 #include "RenderAPI/TeRenderAPICapabilities.h"
+#include "RenderAPI/TeGpuParamDesc.h"
+#include "RenderAPI/TeGpuParams.h"
 #include "TeGLVertexArrayObjectManager.h"
 #include "TeGLRenderStateManager.h"
 #include "TeGLHardwareBufferManager.h"
