@@ -1,6 +1,7 @@
 #include "TeLinuxRenderWindow.h"
 #include "Private/Linux/TeLinuxPlatform.h"
 #include "Manager/TeGuiManager.h"
+#include "Gui/TeGuiAPI.h"
 
 namespace te
 {
