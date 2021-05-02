@@ -36,7 +36,6 @@ namespace te
     bool CMeshCollider::IsValidParent(const HBody& parent) const
     {
         return _mesh.IsLoaded();
-        // return true;
     }
 
     void CMeshCollider::Clone(const HMeshCollider& c)
@@ -62,7 +61,7 @@ namespace te
             _getInternal()->SetCollisionType(type);
 
             if (_parent.Empty() || !_mesh.IsLoaded())
-                UpdateParentBody(); // Will do AddCollider
+                UpdateParentBody();
             else
                 _parent->AddCollider(static_object_cast<CCollider>(GetHandle()));   
         }
@@ -83,7 +82,7 @@ namespace te
             _getInternal()->SetMesh(mesh);
 
             if (_parent.Empty() || !_mesh.IsLoaded())
-                UpdateParentBody(); // Will do AddCollider
+                UpdateParentBody();
             else
                 _parent->AddCollider(static_object_cast<CCollider>(GetHandle()));
         }

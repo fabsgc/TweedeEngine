@@ -223,7 +223,9 @@ namespace te
             SPtr<GameObject> gameObject = _picking->GetGameObjectAt(x, y);
             if (gameObject)
             {
-                if ((!ImGuizmo::IsOver() || !_selections.ClickedComponent) && (_selections.ClickedSceneObject && !_selections.ClickedSceneObject->HasComponent(ComponentsWhichNeedGuizmo)))
+                bool selectableSceneObject = (_selections.ClickedSceneObject && _selections.ClickedSceneObject->HasComponent(ComponentsWhichNeedGuizmo));
+
+                if (!ImGuizmo::IsOver() || !_selections.ClickedComponent || !selectableSceneObject)
                 {
                     SPtr<Component> component = std::static_pointer_cast<Component>(gameObject);
 
