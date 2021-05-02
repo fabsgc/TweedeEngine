@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
+#include "RenderAPI/TeGpuParams.h"
 #include "Renderer/TeRendererMaterialManager.h"
 #include "Material/TeShader.h"
 #include "Material/TePass.h"
