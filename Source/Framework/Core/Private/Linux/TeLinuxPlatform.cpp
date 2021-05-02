@@ -2,6 +2,7 @@
 #include "Private/Linux/TeLinuxPlatform.h"
 #include "Private/Linux/TeLinuxWindow.h"
 #include "RenderAPI/TeRenderWindow.h"
+#include "Input/TeInputData.h"
 #include "Image/TePixelData.h"
 #include "Image/TePixelUtil.h"
 #include "Image/TeColor.h"
