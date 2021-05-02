@@ -96,7 +96,7 @@ namespace te
             part.m_triangleIndexStride = triangleMesh->IndexStride;
             part.m_numTriangles = triangleMesh->NumIndices / 3;
             part.m_vertexType = PHY_FLOAT;
-            part.m_indexType = triangleMesh->Use32BitIndex ? PHY_INTEGER : PHY_SHORT;
+            //part.m_indexType = triangleMesh->Use32BitIndex ? PHY_INTEGER : PHY_SHORT;
 
             meshInterface->addIndexedMesh(part);
 

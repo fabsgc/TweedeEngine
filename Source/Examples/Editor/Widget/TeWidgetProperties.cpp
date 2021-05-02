@@ -834,6 +834,7 @@ namespace te
                 if (ImGuiExt::RenderOptionCombo<PhysicsMeshType>(&type, "##collider_physic_mesh_type_option", "Collision Type", collisionTypeOptions, width))
                 {
                     collider->SetCollisionType(type);
+                    hasChanged = true;
                 }
             }
 

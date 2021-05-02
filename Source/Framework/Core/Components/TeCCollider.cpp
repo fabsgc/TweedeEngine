@@ -175,8 +175,8 @@ namespace te
 
     void CCollider::SetBody(const HBody& body, bool internal)
     { 
-        if (body == _parent)
-            return;
+        //if (body == _parent)
+        //    return;
 
         if (_internal != nullptr && !internal)
         {

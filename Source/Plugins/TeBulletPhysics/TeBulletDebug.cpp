@@ -13,8 +13,7 @@ namespace te
     BulletDebug::BulletDebug()
     {
         _debugMode = DBG_DrawWireframe | DBG_DrawContactPoints | 
-            DBG_DrawConstraints | DBG_DrawConstraintLimits | DBG_DrawAabb |
-            DBG_DrawNormals;
+            DBG_DrawConstraints | DBG_DrawConstraintLimits | DBG_DrawAabb;
 
         _material = BulletDebugMat::Get();
         CreateInstanceBuffer(_instanceBuffer);

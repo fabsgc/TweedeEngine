@@ -28,7 +28,7 @@ namespace te
          * @param[in]	type		Type of the mesh. If convex the provided mesh geometry will be converted into a convex
          *							mesh (that might not be the same as the provided mesh data).
          */
-        virtual void SetCollisionType(PhysicsMeshType type) { _collisionType = type; }
+        virtual void SetCollisionType(PhysicsMeshType type) { _collisionType = type; OnMeshChanged(); }
 
         /** @copydoc SetCollisionType */
         PhysicsMeshType GetCollisionType() { return _collisionType; }
