@@ -6,6 +6,7 @@
 #include "Math/TeVector4.h"
 #include "Image/TeTexture.h"
 #include "ImGui/imgui.h"
+#include "ImGui/imgui_internal.h"
 
 namespace te
 {
