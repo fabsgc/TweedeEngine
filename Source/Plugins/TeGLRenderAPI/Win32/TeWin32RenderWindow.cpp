@@ -5,6 +5,7 @@
 #include "Win32/TeWin32GLSupport.h"
 #include "Win32/TeWin32Context.h"
 #include "Manager/TeGuiManager.h"
+#include "Gui/TeGuiAPI.h"
 
 GLenum GLEWAPIENTRY wglewContextInit(te::GLSupport* glSupport);
 
