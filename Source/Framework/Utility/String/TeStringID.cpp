@@ -11,12 +11,9 @@ namespace te
 
     UINT32 StringID::_nextId = 0;
     UINT32 StringID::_numChunks = 0;
-    Mutex StringID::_sync;
 
     StringID::InitStatics::InitStatics()
     {
-        Lock lock(_sync);
-
         memset(_stringHashTable, 0, sizeof(_stringHashTable));
         memset(_chunks, 0, sizeof(_chunks));
 
@@ -44,8 +41,6 @@ namespace te
 
             existingEntry = existingEntry->next;
         }
-
-        Lock lock(_sync);
 
         // Search for the value again in case other thread just added it
         existingEntry = _stringHashTable[hash];

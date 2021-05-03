@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Prerequisites/TePrerequisitesUtility.h"
-#include "Threading/TeThreading.h"
 
 namespace te
 {
@@ -12,8 +11,6 @@ namespace te
      * @note	
      * Essentially a unique ID is generated for each string and then the ID is used for comparisons as if you were using
      * an integer or an enum.
-     * @note
-     * Thread safe.
      */
     class TE_UTILITY_EXPORT StringID
     {
@@ -62,7 +59,7 @@ namespace te
         template<int N>
         StringID(const char name[N])
         {
-            construct((const char*)name);
+            Construct((const char*)name);
         }
 
         /**	Compare to string ids for equality. Uses fast integer comparison. */
@@ -123,7 +120,6 @@ namespace te
 
         static UINT32 _nextId;
         static UINT32 _numChunks;
-        static Mutex _sync;
     };
 }
 

@@ -69,6 +69,8 @@ namespace te
         _forwardOpaqueQueue = te_shared_ptr_new<RenderQueue>(desc.ReductionMode);
         _forwardTransparentQueue = te_shared_ptr_new<RenderQueue>(desc.ReductionMode);
 
+        _compositor = te_unique_ptr_new<RenderCompositor>();
+
         SetStateReductionMode(desc.ReductionMode);
     }
 
