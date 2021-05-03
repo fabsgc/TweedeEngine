@@ -1,6 +1,8 @@
 #include "TeGuiAPI.h"
 #include "Input/TeInput.h"
 
+#include <functional>
+
 using namespace std::placeholders;
 
 namespace te

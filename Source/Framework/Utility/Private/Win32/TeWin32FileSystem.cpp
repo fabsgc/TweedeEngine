@@ -1,6 +1,8 @@
 #include "Utility/TeFileSystem.h"
-#include <windows.h>
 #include "String/TeUnicode.h"
+
+#include <functional>
+#include <Windows.h>
 
 namespace te
 {

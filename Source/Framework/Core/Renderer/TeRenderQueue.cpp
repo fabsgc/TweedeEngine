@@ -3,6 +3,8 @@
 #include "Material/TeShader.h"
 #include "Renderer/TeRenderElement.h"
 
+#include <functional>
+
 using namespace std::placeholders;
 
 namespace te

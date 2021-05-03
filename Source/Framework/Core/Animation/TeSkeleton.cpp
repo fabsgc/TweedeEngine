@@ -3,6 +3,8 @@
 #include "Animation/TeAnimationClip.h"
 #include "Utility/TeFrameAllocator.h"
 
+#include <functional>
+
 namespace te
 { 
     LocalSkeletonPose::LocalSkeletonPose(UINT32 numBones, bool individualOverride)

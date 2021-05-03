@@ -3,6 +3,8 @@
 #include "TeCorePrerequisites.h"
 #include "vorbis/vorbisenc.h"
 
+#include <functional>
+
 namespace te
 {
     /** Used for encoding PCM to Ogg Vorbis audio data. */

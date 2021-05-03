@@ -6,6 +6,8 @@
 #include "Utility/TeTime.h"
 #include "Gui/TeGuiAPI.h"
 
+#include <functional>
+
 using namespace std::placeholders;
 
 namespace te

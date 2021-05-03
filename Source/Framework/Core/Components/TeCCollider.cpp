@@ -3,6 +3,8 @@
 #include "Physics/TePhysics.h"
 #include "Components/TeCRigidBody.h"
 
+#include <functional>
+
 using namespace std::placeholders;
 
 namespace te

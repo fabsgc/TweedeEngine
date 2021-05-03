@@ -4,6 +4,8 @@
 #include "Components/TeCJoint.h"
 #include "Physics/TePhysics.h"
 
+#include <functional>
+
 using namespace std::placeholders;
 
 namespace te

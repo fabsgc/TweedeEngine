@@ -3,6 +3,8 @@
 #include "Prerequisites/TePrerequisitesUtility.h"
 #include "Threading/TeThreading.h"
 
+#include <functional>
+
 namespace te
 {
     /** Utility class for dealing with files. */

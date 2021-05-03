@@ -29,7 +29,6 @@
 #include <list>
 #include <deque>
 #include <queue>
-#include <bitset>
 #include <array>
 #include <forward_list>
 #include <unordered_map>
@@ -37,15 +36,6 @@
 
 // STL algorithms & functions
 #include <algorithm>
-#include <functional>
-#include <limits>
-#include <random>
-
-// C++ Stream stuff
-#include <fstream>
-#include <iostream>
-#include <iomanip>
-#include <sstream>
 
 extern "C" {
 #   include <sys/types.h>

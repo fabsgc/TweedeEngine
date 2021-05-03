@@ -4,6 +4,8 @@
 #include "Threading/TeThreading.h"
 #include "Utility/TeModule.h"
 
+#include <functional>
+
 namespace te
 {
     class TE_UTILITY_EXPORT Task

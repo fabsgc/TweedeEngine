@@ -3,6 +3,8 @@
 #include "Prerequisites/TePrerequisitesUtility.h"
 #include "Threading/TeThreading.h"
 
+#include <functional>
+
 namespace te
 {
     /** Data common to all event. */
