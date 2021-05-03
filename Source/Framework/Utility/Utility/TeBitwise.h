@@ -148,7 +148,7 @@ namespace te
         }
 
         /** Finds the most-significant non-zero bit in the provided value and returns the index of that bit. */
-        static UINT32 mostSignificantBit(UINT64 val)
+        static UINT32 MostSignificantBit(UINT64 val)
         {
 #if TE_COMPILER == TE_COMPILER_MSVC
 #if TE_ARCH_TYPE == TE_ARCHITECTURE_x86_64

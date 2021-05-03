@@ -93,10 +93,12 @@ set(TE_UTILITY_SRC_ERROR
 
 set(TE_UTILITY_INC_STRING
     "Utility/String/TeString.h"
+    "Utility/String/TeStringID.h"
     "Utility/String/TeUnicode.h"
 )
 set(TE_UTILITY_SRC_STRING
     "Utility/String/TeString.cpp"
+    "Utility/String/TeStringID.cpp"
     "Utility/String/TeUnicode.cpp"
 )
 

@@ -2,7 +2,6 @@
 
 #include "Prerequisites/TePrerequisitesUtility.h"
 #include "Renderer/TeParamBlocks.h"
-#include "Material/TeMaterial.h"
 #include "Math/TeMatrix4.h"
 #include "Math/TeVector2.h"
 
@@ -226,12 +225,16 @@ namespace te
         UINT64 FrameIdx = 0;
     };
 
+    class RenderCompositor;
     struct RenderManOptions;
     class RenderMan;
     class RendererScene;
     class RendererView;
+    class RendererViewGroup;
     struct LightData;
     class RendererLight;
     class RenderableElement;
     struct RendererRenderable;
+    struct SceneInfo;
+    struct FrameInfo;
 }

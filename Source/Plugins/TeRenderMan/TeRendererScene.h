@@ -1,16 +1,7 @@
 #pragma once
 
 #include "TeRenderManPrerequisites.h"
-#include "Renderer/TeRenderer.h"
-#include "Renderer/TeSkybox.h"
-#include "Renderer/TeCamera.h"
-#include "Renderer/TeLight.h"
-#include "Renderer/TeRenderable.h"
-#include "Renderer/TeParamBlocks.h"
-#include "Renderer/TeRenderable.h"
 #include "TeRendererView.h"
-#include "TeRendererLight.h"
-#include "TeRendererRenderable.h"
 
 namespace te
 {

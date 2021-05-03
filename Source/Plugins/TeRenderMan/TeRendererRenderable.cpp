@@ -1,7 +1,7 @@
 #include "TeRendererRenderable.h"
-#include "Mesh/TeMesh.h"
-#include "Utility/TeBitwise.h"
 #include "Renderer/TeRendererUtility.h"
+#include "Utility/TeBitwise.h"
+#include "Mesh/TeMesh.h"
 
 namespace te
 { 
@@ -13,7 +13,7 @@ namespace te
         const Matrix4& prevTfrm, Renderable* renderable)
     {
         const Matrix4& tfrmNoScale = renderable->GetMatrixNoScale();
-        const UINT32 layer = Bitwise::mostSignificantBit(renderable->GetLayer());
+        const UINT32 layer = Bitwise::MostSignificantBit(renderable->GetLayer());
 
         gPerObjectParamDef.gMatWorld.Set(buffer, tfrm);
         gPerObjectParamDef.gMatInvWorld.Set(buffer, tfrm.InverseAffine());

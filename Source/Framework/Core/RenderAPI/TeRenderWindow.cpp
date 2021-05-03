@@ -14,6 +14,7 @@ namespace te
         IsFullScreen = desc.Fullscreen;
         IsHidden = desc.Hidden;
         RequiresTextureFlipping = false;
+        HWGamma = desc.Gamma;
     }
 
     RenderWindow::RenderWindow(const RENDER_WINDOW_DESC& desc)

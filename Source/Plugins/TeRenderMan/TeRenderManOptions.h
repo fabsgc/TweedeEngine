@@ -1,7 +1,6 @@
 #pragma once
 
 #include "TeRenderManPrerequisites.h"
-#include "Renderer/TeRenderer.h"
 #include "Renderer/TeRenderQueue.h"
 
 namespace te

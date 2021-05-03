@@ -2,7 +2,6 @@
 
 #include "TeRenderManPrerequisites.h"
 #include "Renderer/TeGpuResourcePool.h"
-#include "RenderAPI/TeRenderTexture.h"
 
 namespace te
 {
@@ -297,9 +296,6 @@ namespace te
 
         /** @copydoc RenderCompositorNode::Clear */
         void Clear() override;
-
-        SPtr<PooledRenderTexture> _tonemapLUT;
-        UINT64 _tonemapLastUpdateHash = -1;
     };
 
     /**

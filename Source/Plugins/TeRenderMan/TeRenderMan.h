@@ -2,9 +2,6 @@
 
 #include "TeRenderManPrerequisites.h"
 #include "Renderer/TeRenderer.h"
-#include "TeRenderManOptions.h"
-#include "TeRendererView.h"
-#include "TeRendererScene.h"
 
 namespace te
 {

@@ -2,9 +2,6 @@
 
 #include "TeRenderManPrerequisites.h"
 #include "Renderer/TeLight.h"
-#include "Renderer/TeRendererMaterial.h"
-#include "RenderAPI/TeGpuPipelineParamInfo.h"
-#include "Renderer/TeParamBlocks.h"
 
 namespace te
 {

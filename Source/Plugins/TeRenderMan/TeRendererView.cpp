@@ -1,11 +1,15 @@
 #include "TeRendererView.h"
+#include "TeRenderMan.h"
+#include "TeRendererScene.h"
+#include "TeRenderCompositor.h"
+#include "TeRenderManOptions.h"
+#include "TeRendererRenderable.h"
 #include "Renderer/TeCamera.h"
 #include "Renderer/TeRenderable.h"
 #include "Renderer/TeRenderSettings.h"
-#include "TeRendererScene.h"
-#include "TeRenderMan.h"
 #include "Material/TeMaterial.h"
 #include "Material/TeShader.h"
+#include "Mesh/TeMesh.h"
 
 namespace te
 {
@@ -51,6 +55,8 @@ namespace te
 
         _forwardOpaqueQueue = te_shared_ptr_new<RenderQueue>();
         _forwardTransparentQueue = te_shared_ptr_new<RenderQueue>();
+
+        _compositor = te_unique_ptr_new<RenderCompositor>();
     }
 
     RendererView::RendererView(const RENDERER_VIEW_DESC& desc)
@@ -94,7 +100,7 @@ namespace te
         if (settings != nullptr)
             *_renderSettings = *settings;
 
-        _compositor.Build(*this, RCNodeFinalResolve::GetNodeId());
+        _compositor->Build(*this, RCNodeFinalResolve::GetNodeId());
     }
 
     void RendererView::SetTransform(const Vector3& origin, const Vector3& direction, const Matrix4& view,
@@ -197,6 +203,11 @@ namespace te
             _redrawForSeconds -= _frameTimings.TimeDelta;
 
         _redrawThisFrame = false;
+    }
+
+    const RenderCompositor& RendererView::GetCompositor() const 
+    { 
+        return *(_compositor.get()); 
     }
 
     void RendererView::DetermineVisible(const Vector<RendererRenderable*>& renderables, const Vector<CullInfo>& cullInfos,

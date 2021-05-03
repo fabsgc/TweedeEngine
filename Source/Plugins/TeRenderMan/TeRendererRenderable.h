@@ -2,9 +2,7 @@
 
 #include "TeRenderManPrerequisites.h"
 #include "Renderer/TeRenderable.h"
-#include "Renderer/TeParamBlocks.h"
 #include "Renderer/TeRenderElement.h"
-#include "Mesh/TeMesh.h"
 
 namespace te
 {

@@ -1,10 +1,10 @@
 #include "TeRenderCompositor.h"
-#include "Renderer/TeCamera.h"
-#include "Mesh/TeMesh.h"
-#include "TeRendererView.h"
-#include "TeRenderManOptions.h"
-#include "TeRendererScene.h"
+
 #include "TeRenderMan.h"
+#include "TeRendererView.h"
+#include "TeRendererScene.h"
+#include "TeRenderManOptions.h"
+#include "Renderer/TeCamera.h"
 #include "Renderer/TeRendererUtility.h"
 #include "Renderer/TeSkyboxMat.h"
 #include "Renderer/TeFXAAMat.h"
@@ -12,9 +12,12 @@
 #include "Renderer/TeBloomMat.h"
 #include "Renderer/TeMotionBlurMat.h"
 #include "Renderer/TeGaussianBlurMat.h"
+#include "RenderAPI/TeRenderTexture.h"
+#include "Utility/TeFrameAllocator.h"
 #include "TeRendererLight.h"
 #include "Gui/TeGuiAPI.h"
-#include "Utility/TeFrameAllocator.h"
+#include "Mesh/TeMesh.h"
+#include "Renderer/TeSkybox.h"
 
 namespace te
 {

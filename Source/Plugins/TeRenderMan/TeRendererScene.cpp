@@ -1,15 +1,17 @@
 #include "TeRendererScene.h"
 
+#include "TeRenderMan.h"
+#include "TeRenderManOptions.h"
 #include "Renderer/TeCamera.h"
-#include "TeCoreApplication.h"
+#include "Renderer/TeSkybox.h"
 #include "Material/TeMaterial.h"
 #include "Material/TeShader.h"
-#include "TeRenderManOptions.h"
-#include "TeRendererRenderable.h"
+#include "Material/TeTechnique.h"
+#include "Material/TePass.h"
 #include "RenderAPI/TeVertexData.h"
 #include "RenderAPI/TeGpuPipelineState.h"
-#include "Utility/TeTime.h"
-#include "TeRenderMan.h"
+#include "Resources/TeBuiltinResources.h"
+#include "Mesh/TeMesh.h"
 
 namespace te
 {

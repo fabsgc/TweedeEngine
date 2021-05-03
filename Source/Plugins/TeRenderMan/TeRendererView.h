@@ -1,26 +1,18 @@
 #pragma once
 
 #include "TeRenderManPrerequisites.h"
+#include "TeRendererLight.h"
+#include "TeRendererRenderable.h"
 #include "Renderer/TeRenderer.h"
-#include "Renderer/TeRenderSettings.h"
-#include "Renderer/TeLight.h"
+#include "Renderer/TeRenderQueue.h"
 #include "Math/TeBounds.h"
 #include "Math/TeRect2I.h"
 #include "Math/TeRect2.h"
 #include "Math/TeConvexVolume.h"
-#include "Renderer/TeParamBlocks.h"
-#include "Renderer/TeRenderQueue.h"
-#include "TeRenderCompositor.h"
-#include "TeRendererLight.h"
 #include "Utility/TePoolAllocator.h"
-#include "TeRendererRenderable.h"
 
 namespace te
 {
-    struct SceneInfo;
-    struct FrameInfo;
-    class RendererLight;
-
     /** Data shared between RENDERER_VIEW_DESC and RendererViewProperties */
     struct RendererViewData
     {
@@ -193,7 +185,7 @@ namespace te
         const SPtr<RenderQueue>& GetTransparentQueue() const { return _forwardTransparentQueue; }
 
         /** Returns the compositor in charge of rendering for this view. */
-        const RenderCompositor& GetCompositor() const { return _compositor; }
+        const RenderCompositor& GetCompositor() const;
 
         /**
          * Populates view render queues by determining visible renderable objects.
@@ -260,7 +252,7 @@ namespace te
         void QueueRenderInstancedElements(const SceneInfo& sceneInfo, InstancedBuffer& instancedBuffers);
 
         /** Returns the visibility mask calculated with the last call to determineVisible(). */
-		const VisibilityInfo& GetVisibilityInfo() const { return _visibility; }
+        const VisibilityInfo& GetVisibilityInfo() const { return _visibility; }
 
         /** Updates the GPU buffer containing per-view information, with the latest internal data. */
         void UpdatePerViewBuffer();
@@ -322,7 +314,7 @@ namespace te
         mutable RendererViewContext _context;
         Camera* _camera;
 
-        RenderCompositor _compositor;
+        UPtr<RenderCompositor> _compositor;
         SPtr<RenderSettings> _renderSettings;
         SPtr<GpuParamBlockBuffer> _paramBuffer;
 

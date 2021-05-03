@@ -17,20 +17,17 @@
 #include <string>
 #include <cstdio>
 #include <new>
-#include <string>
 #include <cfloat>
 
 // STL containers
 #include <vector>
 #include <stack>
 #include <map>
-#include <string>
 #include <set>
 #include <list>
 #include <deque>
 #include <queue>
 #include <array>
-#include <forward_list>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -434,13 +431,6 @@ namespace te
      */
     template <typename T>
     using List = std::list<T>;
-
-    /**
-     * Container that supports constant time insertion and removal for elements with known locations, but without fast
-     * random access to elements. Internally implemented as a singly linked list that doesn't support reverse iteration.
-     */
-    template <typename T>
-    using ForwardList = std::forward_list<T>;
 
     /** First-in, last-out data structure. */
     template <typename T>
