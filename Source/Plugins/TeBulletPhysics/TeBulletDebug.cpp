@@ -1,5 +1,4 @@
 #include "TeBulletDebug.h"
-#include "TeBulletDebugMat.h"
 #include "RenderAPI/TeRenderTexture.h"
 #include "RenderAPI/TeVertexBuffer.h"
 #include "RenderAPI/TeVertexDataDesc.h"
@@ -50,16 +49,16 @@ namespace te
         RenderAPI& rapi = RenderAPI::Instance();
         UINT32 clearBuffers = FBT_DEPTH;
 
-        Vector<PerBulletDebugInstanceData> instancedElements;
+        Vector<PerBulletDebugInstanceData*> instancedElements;
 
         for (auto& element : _debugElements)
         {
-            PerBulletDebugInstanceData instance;
+            PerBulletDebugInstanceData* instance = te_pool_new<PerBulletDebugInstanceData>();
 
-            instance.From = ToVector3(element.From);
-            instance.To = ToVector3(element.To);
-            instance.FromColor = ToVector4(element.FromColor);
-            instance.ToColor = ToVector4(element.ToColor);
+            instance->From = ToVector3(element.From);
+            instance->To = ToVector3(element.To);
+            instance->FromColor = ToVector4(element.FromColor);
+            instance->ToColor = ToVector4(element.ToColor);
 
             instancedElements.push_back(instance);
         }
@@ -94,6 +93,9 @@ namespace te
                 iterRangeStart = iterRangeEnd;
                 iterRangeEnd = iterRangeStart + ((elementToDraw >= MAX_BULLET_DEBUG_INSTANCED_BLOCK) ? MAX_BULLET_DEBUG_INSTANCED_BLOCK : elementToDraw);
             } while (elementToDraw > 0);
+
+            for (auto& elt : instancedElements)
+                te_pool_delete(elt);
 
             rapi.SetRenderTarget(nullptr);
         }

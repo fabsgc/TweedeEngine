@@ -4,9 +4,9 @@
 cbuffer PerCameraBuffer : register(b0)
 {
     float3 gViewDir;
-    float  gPadding1;
+    uint   gViewportX;
     float3 gViewOrigin;
-    float  gPadding2;
+    uint   gViewportY;
     matrix gMatViewProj;
     matrix gMatView;
     matrix gMatProj;
@@ -44,14 +44,11 @@ cbuffer PerFrameBuffer : register(b3)
 }
 
 VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
-//VS_OUTPUT main( VS_INPUT IN )
 {
     VS_OUTPUT OUT = (VS_OUTPUT)0;
 
     float4x4 blendMatrix = (float4x4)0;
     float4x4 prevBlendMatrix = (float4x4)0;
-
-    //uint instanceid = 0;
 
     if(instanceid == 0)
     {

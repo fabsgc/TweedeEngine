@@ -541,6 +541,9 @@ namespace te
         gPerCameraParamDef.gViewDir.Set(_paramBuffer, _properties.ViewDirection);
         gPerCameraParamDef.gViewOrigin.Set(_paramBuffer, _properties.ViewOrigin);
 
+        gPerCameraParamDef.gViewportX.Set(_paramBuffer, static_cast<UINT32>(_camera->GetViewport()->GetArea().x));
+        gPerCameraParamDef.gViewportY.Set(_paramBuffer, static_cast<UINT32>(_camera->GetViewport()->GetArea().y));
+
         Vector4 ndcToUV = GetNDCToUV();
         gPerCameraParamDef.gClipToUVScaleOffset.Set(_paramBuffer, ndcToUV);
 

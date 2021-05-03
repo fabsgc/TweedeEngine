@@ -35,7 +35,7 @@ namespace te
         RMAT_DEF(BuiltinShader::BulletDebug);
 
     public:
-        using InstanceIter = Vector<PerBulletDebugInstanceData>::iterator;
+        using InstanceIter = Vector<PerBulletDebugInstanceData*>::iterator;
 
     public:
         BulletDebugMat();

@@ -433,7 +433,9 @@ namespace te
     {
         {
             SHADER_DATA_PARAM_DESC gViewDirDesc("gViewDir", "gViewDir", GPDT_FLOAT3);
+            SHADER_DATA_PARAM_DESC gViewportXDesc("gViewportX", "gViewportX", GPDT_INT1);
             SHADER_DATA_PARAM_DESC gViewOriginDesc("gViewOrigin", "gViewOrigin", GPDT_FLOAT3);
+            SHADER_DATA_PARAM_DESC gViewportYDesc("gViewportY", "gViewportY", GPDT_INT1);
             SHADER_DATA_PARAM_DESC gMatViewProjDesc("gMatViewProj", "gMatViewProj", GPDT_MATRIX_4X4);
             SHADER_DATA_PARAM_DESC gMatViewDesc("gMatView", "gMatView", GPDT_MATRIX_4X4);
             SHADER_DATA_PARAM_DESC gMatProjDesc("gMatProj", "gMatProj", GPDT_MATRIX_4X4);
@@ -512,7 +514,9 @@ namespace te
             SHADER_DATA_PARAM_DESC gLightsNumberDesc("gLightsNumber", "gLightsNumber", GPDT_INT1);
 
             _forwardShaderDesc.AddParameter(gViewDirDesc);
+            _forwardShaderDesc.AddParameter(gViewportXDesc);
             _forwardShaderDesc.AddParameter(gViewOriginDesc);
+            _forwardShaderDesc.AddParameter(gViewportYDesc);
             _forwardShaderDesc.AddParameter(gMatViewProjDesc);
             _forwardShaderDesc.AddParameter(gMatViewDesc);
             _forwardShaderDesc.AddParameter(gMatProjDesc);

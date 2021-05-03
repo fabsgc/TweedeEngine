@@ -49,6 +49,9 @@ namespace te
         /** Pauses or resumes the animation evaluation. */
         void SetPaused(bool paused);
 
+        /** Returns true if animation is paused /*/
+        bool IsPaused() const { return _paused; }
+
         /** Pauses or resumes the animation evaluation. */
         void TogglePaused();
 
@@ -100,7 +103,7 @@ namespace te
         float _lastAnimationUpdateTime = 0.0f;
         float _nextAnimationUpdateTime = 0.0f;
         float _lastAnimationDeltaTime = 0.0f;
-        bool  _paused = true;
+        bool  _paused = false;
 
         Vector<SPtr<AnimationProxy>> _proxies;
         Vector<ConvexVolume> _cullFrustums;

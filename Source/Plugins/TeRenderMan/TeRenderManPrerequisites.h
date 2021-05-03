@@ -77,7 +77,9 @@ namespace te
 
     TE_PARAM_BLOCK_BEGIN(PerCameraParamDef)
         TE_PARAM_BLOCK_ENTRY(Vector3, gViewDir)
+        TE_PARAM_BLOCK_ENTRY(UINT32,  gViewportX)
         TE_PARAM_BLOCK_ENTRY(Vector3, gViewOrigin)
+        TE_PARAM_BLOCK_ENTRY(UINT32,  gViewportY)
         TE_PARAM_BLOCK_ENTRY(Matrix4, gMatViewProj)
         TE_PARAM_BLOCK_ENTRY(Matrix4, gMatView)
         TE_PARAM_BLOCK_ENTRY(Matrix4, gMatProj)

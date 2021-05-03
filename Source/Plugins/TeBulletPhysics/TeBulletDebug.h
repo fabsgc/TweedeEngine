@@ -2,6 +2,8 @@
 
 #include "TeBulletPhysicsPrerequisites.h"
 #include "Physics/TePhysicsDebug.h"
+#include "Utility/TePoolAllocator.h"
+#include "TeBulletDebugMat.h"
 
 namespace te 
 {
@@ -55,4 +57,6 @@ namespace te
         BulletDebugMat* _material;
         InstanceBuffer _instanceBuffer;
     };
+
+    IMPLEMENT_GLOBAL_POOL(PerBulletDebugInstanceData, 32)
 }

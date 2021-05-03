@@ -6,6 +6,7 @@
 #include "Renderer/TeCamera.h"
 #include "Mesh/TeMeshData.h"
 #include "Mesh/TeMeshUtility.h"
+#include "TeCoreApplication.h"
 
 namespace te
 {
@@ -48,7 +49,8 @@ namespace te
 
     const EvaluatedAnimationData* AnimationManager::Update()
     {
-        if (_paused)
+        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Animation);
+        if (IsPaused() || !isRunning)
             return &_animData;
 
         _animationTime += gTime().GetFrameDelta();

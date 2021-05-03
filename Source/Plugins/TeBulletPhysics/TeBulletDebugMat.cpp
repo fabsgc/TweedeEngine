@@ -26,6 +26,6 @@ namespace te
     {
         UINT32 i = 0;
         for (auto iter = begin; iter != end; iter++, i++)
-            _perInstanceParamDef.gInstances.Set(_perInstanceParamBuffer, *iter, (UINT32)i);
+            _perInstanceParamDef.gInstances.Set(_perInstanceParamBuffer, **iter, (UINT32)i);
     }
 }

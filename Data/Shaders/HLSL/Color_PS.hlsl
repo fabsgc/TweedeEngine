@@ -3,9 +3,9 @@
 cbuffer PerCameraBuffer : register(b0)
 {
     float3 gViewDir;
-    float  gPadding1;
+    uint   gViewportX;
     float3 gViewOrigin;
-    float  gPadding2;
+    uint   gViewportY;
     matrix gMatViewProj;
     matrix gMatView;
     matrix gMatProj;

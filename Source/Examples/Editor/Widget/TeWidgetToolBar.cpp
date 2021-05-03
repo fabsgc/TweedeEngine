@@ -83,7 +83,6 @@ namespace te
                     }
                 }
 
-                gAnimationManager().TogglePaused();
                 gScriptManager().TogglePaused();
 
                 gCoreApplication().GetState().ToggleFlag(ApplicationState::Mode::Game);

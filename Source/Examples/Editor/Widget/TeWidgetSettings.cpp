@@ -2,6 +2,7 @@
 
 #include "../TeEditor.h"
 #include "Physics/TePhysics.h"
+#include "Animation/TeAnimationManager.h"
 
 namespace te
 {
@@ -26,10 +27,10 @@ namespace te
         {
             // Physic paused
             {
-                bool physicsPaused = !gPhysics().IsPaused();
-                if (ImGuiExt::RenderOptionBool(physicsPaused, "##settings_physics_enable", "Enable Physic"))
+                bool physicsStarted = !gPhysics().IsPaused();
+                if (ImGuiExt::RenderOptionBool(physicsStarted, "##settings_physics_enable", "Enable Physic"))
                 {
-                    gPhysics().SetPaused(!physicsPaused);
+                    gPhysics().SetPaused(!physicsStarted);
                     gEditor().NeedsRedraw();
                 }
             }
@@ -51,6 +52,19 @@ namespace te
                 if (ImGuiExt::RenderVector3(gravity, "##settings_physics_gravity", " Gravity", width))
                 {
                     gPhysics().SetGravity(gravity);
+                    gEditor().NeedsRedraw();
+                }
+            }
+        }
+
+        if (ImGui::CollapsingHeader("Animations", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            // Animations paused
+            {
+                bool animationsStarted = !gAnimationManager().IsPaused();
+                if (ImGuiExt::RenderOptionBool(animationsStarted, "##settings_animations_enable", "Enable Animations"))
+                {
+                    gAnimationManager().SetPaused(!animationsStarted);
                     gEditor().NeedsRedraw();
                 }
             }
