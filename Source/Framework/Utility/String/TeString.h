@@ -298,7 +298,7 @@ namespace te
 
         BasicString<T> startOfThis = str.substr(0, patternLen);
         if (lowerCase)
-            Util::ToLowerCase(startOfThis);
+            ToLowerCase(startOfThis);
 
         return (startOfThis == pattern);
     }
@@ -313,7 +313,7 @@ namespace te
 
         BasicString<T> endOfThis = str.substr(thisLen - patternLen, patternLen);
         if (lowerCase)
-            Util::ToLowerCase(endOfThis);
+            ToLowerCase(endOfThis);
 
         return (endOfThis == pattern);
     }
@@ -324,7 +324,7 @@ namespace te
         BasicString<T> tmpStr = str;
         std::basic_regex<T> tmpPattern(pattern);
         if (!caseSensitive)
-            Util::ToLowerCase(tmpStr);
+            ToLowerCase(tmpStr);
 
         return std::regex_match(tmpStr, tmpPattern);
     }
@@ -336,8 +336,8 @@ namespace te
         BasicString<T> tmpPattern = pattern;
         if (!caseSensitive)
         {
-            Util::ToLowerCase(tmpStr);
-            Util::ToLowerCase(tmpPattern);
+            ToLowerCase(tmpStr);
+            ToLowerCase(tmpPattern);
         }
 
         typename BasicString<T>::const_iterator strIt = tmpStr.begin();
