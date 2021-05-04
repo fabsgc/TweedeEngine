@@ -6,8 +6,8 @@ namespace te
 {
     UINT32 VertexDeclaration::NextFreeId = 0;
 
-    VertexElement::VertexElement(UINT16 source, UINT32 offset,
-        VertexElementType theType, VertexElementSemantic semantic, UINT16 index, UINT32 instanceStepRate)
+    VertexElement::VertexElement(UINT32 source, UINT32 offset,
+        VertexElementType theType, VertexElementSemantic semantic, UINT32 index, UINT32 instanceStepRate)
         : _source(source)
         , _offset(offset)
         , _type(theType)
@@ -77,7 +77,7 @@ namespace te
         return 0;
     }
 
-    unsigned short VertexElement::GetTypeCount(VertexElementType etype)
+    UINT32 VertexElement::GetTypeCount(VertexElementType etype)
     {
         switch (etype)
         {
@@ -200,12 +200,12 @@ namespace te
         return !(*this == rhs);
     }
 
-    const VertexElement* VertexDeclarationProperties::GetElement(UINT16 index) const
+    const VertexElement* VertexDeclarationProperties::GetElement(UINT32 index) const
     {
         assert(index < _elementList.size() && "Index out of bounds");
 
         auto iter = _elementList.begin();
-        for (UINT16 i = 0; i < index; ++i)
+        for (UINT32 i = 0; i < index; ++i)
         {
             ++iter;
         }
@@ -213,7 +213,7 @@ namespace te
         return &(*iter);
     }
 
-    const VertexElement* VertexDeclarationProperties::FindElementBySemantic(VertexElementSemantic sem, UINT16 index) const
+    const VertexElement* VertexDeclarationProperties::FindElementBySemantic(VertexElementSemantic sem, UINT32 index) const
     {
         for (auto& elem : _elementList)
         {
@@ -226,7 +226,7 @@ namespace te
         return nullptr;
     }
 
-    Vector<VertexElement> VertexDeclarationProperties::FindElementsBySource(UINT16 source) const
+    Vector<VertexElement> VertexDeclarationProperties::FindElementsBySource(UINT32 source) const
     {
         Vector<VertexElement> retList;
         for (auto& elem : _elementList)
@@ -240,7 +240,7 @@ namespace te
         return retList;
     }
 
-    UINT32 VertexDeclarationProperties::GetVertexSize(UINT16 source) const
+    UINT32 VertexDeclarationProperties::GetVertexSize(UINT32 source) const
     {
         UINT32 size = 0;
 

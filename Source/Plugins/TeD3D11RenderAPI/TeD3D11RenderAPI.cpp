@@ -125,6 +125,10 @@ namespace te
         _capabilities = te_newN<RenderAPICapabilities>(_numDevices);
         InitCapabilites(_selectedAdapter, _capabilities[0]);
 
+        // Create once ID3D11RenderTargetViews
+        UINT32 maxRenderTargets = D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT;
+        _activeViews = te_newN<ID3D11RenderTargetView*>(maxRenderTargets);
+
         RenderAPI::Initialize();
     }
 
@@ -158,6 +162,12 @@ namespace te
         {
             te_delete(_driverList);
             _driverList = nullptr;
+        }
+
+        if (_activeViews != nullptr)
+        {
+            UINT32 maxRenderTargets = D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT;
+            te_deleteN(_activeViews, maxRenderTargets);
         }
 
         _activeVertexDeclaration = nullptr;
@@ -776,14 +786,13 @@ namespace te
         _activeRenderTargetModified = false;
 
         UINT32 maxRenderTargets = D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT;
-        ID3D11RenderTargetView** views = te_newN<ID3D11RenderTargetView*>(maxRenderTargets);
-        memset(views, 0, sizeof(ID3D11RenderTargetView*) * maxRenderTargets);
+        memset(_activeViews, 0, sizeof(ID3D11RenderTargetView*) * maxRenderTargets);
 
         ID3D11DepthStencilView* depthStencilView = nullptr;
 
         if (target != nullptr)
         {
-            target->GetCustomAttribute("RTV", views);
+            target->GetCustomAttribute("RTV", _activeViews);
             
             if ((readOnlyFlags & FBT_DEPTH) == 0)
             {
@@ -802,7 +811,7 @@ namespace te
         }
 
         // Bind render targets
-        _device->GetImmediateContext()->OMSetRenderTargets(maxRenderTargets, views, depthStencilView);
+        _device->GetImmediateContext()->OMSetRenderTargets(maxRenderTargets, _activeViews, depthStencilView);
         if (_device->HasError())
         {
             String errorDescription = _device->GetErrorDescription();
@@ -810,7 +819,6 @@ namespace te
         }
 
         TE_INC_PROFILER_GPU(NumRenderTargetChanges);
-        te_deleteN(views, maxRenderTargets);
         ApplyViewport();
     }
 
@@ -826,13 +834,11 @@ namespace te
         {
             UINT32 maxRenderTargets = D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT;
 
-            ID3D11RenderTargetView** views = te_newN<ID3D11RenderTargetView*>(maxRenderTargets);
-            memset(views, 0, sizeof(ID3D11RenderTargetView*) * maxRenderTargets);
+            memset(_activeViews, 0, sizeof(ID3D11RenderTargetView*) * maxRenderTargets);
 
-            _activeRenderTarget->GetCustomAttribute("RTV", views);
-            if (!views[0])
+            _activeRenderTarget->GetCustomAttribute("RTV", _activeViews);
+            if (!_activeViews[0])
             {
-                te_deleteN(views, maxRenderTargets);
                 return;
             }
 
@@ -844,13 +850,9 @@ namespace te
 
             for (UINT32 i = 0; i < maxRenderTargets; i++)
             {
-                if (views[i] != nullptr && ((1 << i) & targetMask) != 0)
-                {
-                    _device->GetImmediateContext()->ClearRenderTargetView(views[i], clearColor);
-                }
+                if (_activeViews[i] != nullptr && ((1 << i) & targetMask) != 0)
+                    _device->GetImmediateContext()->ClearRenderTargetView(_activeViews[i], clearColor);
             }
-
-            te_deleteN(views, maxRenderTargets);
         }
 
         // Clear depth stencil

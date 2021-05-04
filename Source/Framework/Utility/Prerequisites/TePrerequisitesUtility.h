@@ -40,6 +40,9 @@
 // disable: the enum is unscoped
 #   pragma warning(disable: 26812)
 
+// disable: conditional expression is constant
+#   pragma warning(disable: 4127)
+
 // near and far macro create conflicts
 #   undef near
 #   undef far

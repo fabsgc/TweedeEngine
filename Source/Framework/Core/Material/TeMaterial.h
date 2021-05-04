@@ -243,7 +243,7 @@ namespace te
 
         void SetProperties(const MaterialProperties& properties) 
         { 
-            _properties = properties;  
+            _properties = properties;
             _markCoreDirty(MaterialDirtyFlags::Param);
         }
 

@@ -191,7 +191,8 @@ namespace te
 
     bool ResourceManager::GetUUIDFromFile(const String& filePath, UUID& uuid)
     {
-        auto path = std::filesystem::canonical(filePath);
+        std::error_code e;
+        auto path = std::filesystem::weakly_canonical(filePath, e);
         String absolutePath = path.generic_string();
         RecursiveLock lock(_loadingUuidMutex);
 
@@ -229,7 +230,8 @@ namespace te
 
     void ResourceManager::RegisterResource(const UUID& uuid, const String& filePath)
     {
-        auto path = std::filesystem::canonical(filePath);
+        std::error_code e;
+        auto path = std::filesystem::weakly_canonical(filePath, e);
         String absolutePath = path.generic_string();
         _loadingResourceMutex.lock();
         

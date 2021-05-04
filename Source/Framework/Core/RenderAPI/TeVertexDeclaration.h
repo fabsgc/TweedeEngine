@@ -55,14 +55,14 @@ namespace te
     {
     public:
         VertexElement() = default;
-        VertexElement(UINT16 source, UINT32 offset, VertexElementType theType,
-            VertexElementSemantic semantic, UINT16 index = 0, UINT32 instanceStepRate = 0);
+        VertexElement(UINT32 source, UINT32 offset, VertexElementType theType,
+            VertexElementSemantic semantic, UINT32 index = 0, UINT32 instanceStepRate = 0);
 
         bool operator== (const VertexElement & rhs) const;
         bool operator!= (const VertexElement & rhs) const;
 
         /** Returns index of the vertex buffer from which this element is stored. */
-        UINT16 GetStreamIdx() const { return _source; }
+        UINT32 GetStreamIdx() const { return _source; }
 
         /**
          * Returns an offset into the buffer where this vertex is stored. This value might be in bytes but doesn't have to
@@ -80,7 +80,7 @@ namespace te
          * Gets an index of this element. Only relevant when you have multiple elements with the same semantic,
          * for example uv0, uv1.
          */
-        UINT16 GetSemanticIdx() const { return _index; }
+        UINT32 GetSemanticIdx() const { return _index; }
 
         /** Returns the size of this element in bytes. */
         UINT32 GetSize() const;
@@ -98,7 +98,7 @@ namespace te
         static UINT32 GetTypeSize(VertexElementType etype);
 
         /** Returns the number of values in the provided base element type. For example float4 has four values. */
-        static UINT16 GetTypeCount(VertexElementType etype);
+        static UINT32 GetTypeCount(VertexElementType etype);
 
         /** Gets packed color vertex element type used by the active render system. */
         static VertexElementType GetBestColorVertexElementType();
@@ -106,11 +106,11 @@ namespace te
         /** Calculates a hash value for the provided vertex element. */
         static size_t GetHash(const VertexElement & element);
     protected:
-        UINT16 _source;
+        UINT32 _source;
         UINT32 _offset;
         VertexElementType _type;
         VertexElementSemantic _semantic;
-        UINT16 _index;
+        UINT32 _index;
         UINT32 _instanceStepRate;
     };
 
@@ -130,18 +130,18 @@ namespace te
         const Vector<VertexElement>& GetElements() const { return _elementList; }
 
         /** Returns a single vertex element at the specified index. */
-        const VertexElement* GetElement(UINT16 index) const;
+        const VertexElement* GetElement(UINT32 index) const;
 
         /**
          * Attempts to find an element by the given semantic and semantic index. If no element can be found null is returned.
          */
-        const VertexElement* FindElementBySemantic(VertexElementSemantic sem, UINT16 index = 0) const;
+        const VertexElement* FindElementBySemantic(VertexElementSemantic sem, UINT32 index = 0) const;
 
         /** Returns a list of all elements that use the provided source index. */
-        Vector<VertexElement> FindElementsBySource(UINT16 source) const;
+        Vector<VertexElement> FindElementsBySource(UINT32 source) const;
 
         /** Returns the total size of all vertex elements using the provided source index. */
-        UINT32 GetVertexSize(UINT16 source) const;
+        UINT32 GetVertexSize(UINT32 source) const;
 
     protected:
         friend class VertexDeclaration;

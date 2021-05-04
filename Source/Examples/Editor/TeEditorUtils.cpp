@@ -33,7 +33,7 @@ namespace te
             {
                 auto textureImportOptions = TextureImportOptions::Create();
                 textureImportOptions->CpuCached = false;
-                textureImportOptions->GenerateMips = (textureName != "EmissiveMap") ? true : false;
+                textureImportOptions->GenerateMips = true;
                 textureImportOptions->MaxMip = 0;
                 textureImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
 
@@ -123,6 +123,15 @@ namespace te
             }
 
         } while (notAllLoaded);
+
+        for (UINT32 i = 0; i < mesh->GetProperties().GetNumSubMeshes(); i++)
+        {
+            SubMesh& subMesh = mesh->GetProperties().GetSubMesh(i);
+            if (createdMaterials.find(subMesh.MaterialName) != createdMaterials.end())
+            {
+                createdMaterials[subMesh.MaterialName]->SetProperties(subMesh.MatProperties);
+            }
+        }
     }
 
     void EditorUtils::GenerateViewportRenderTexture(RenderWindowData& renderData)

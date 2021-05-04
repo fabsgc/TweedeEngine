@@ -277,10 +277,10 @@ namespace te
             UINT8* indices = (UINT8*)indexPtr;
             float* weights = (float*)weightPtr;
 
-            indices[0] = weightSrc->Index0;
-            indices[1] = weightSrc->Index1;
-            indices[2] = weightSrc->Index2;
-            indices[3] = weightSrc->Index3;
+            indices[0] = static_cast<UINT8>(weightSrc->Index0);
+            indices[1] = static_cast<UINT8>(weightSrc->Index1);
+            indices[2] = static_cast<UINT8>(weightSrc->Index2);
+            indices[3] = static_cast<UINT8>(weightSrc->Index3);
 
             weights[0] = weightSrc->Weight0;
             weights[1] = weightSrc->Weight1;
@@ -333,7 +333,7 @@ namespace te
 
             for (UINT32 i = 0; i < numIndices; i++)
             {
-                *dest = *src;
+                *dest = static_cast<UINT16>(*src);
 
                 src++;
                 dest++;

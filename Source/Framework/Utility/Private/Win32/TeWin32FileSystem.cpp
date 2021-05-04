@@ -100,7 +100,7 @@ namespace te
     bool win32_isDevice(const WString& path)
     {
         WString ucPath = path;
-        ToUpperCase(ucPath);
+        Util::ToUpperCase(ucPath);
 
         return
             ucPath.compare(0, 4, L"\\\\.\\") == 0 ||

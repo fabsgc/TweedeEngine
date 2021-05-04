@@ -112,7 +112,7 @@ namespace te
                     tempLayers.push_back(AnimationStateLayer());
                     AnimationStateLayer& newLayer = tempLayers.back();
 
-                    newLayer.Index = layer;
+                    newLayer.Index = static_cast<UINT8>(layer);
                 }
 
                 clipIdx++;

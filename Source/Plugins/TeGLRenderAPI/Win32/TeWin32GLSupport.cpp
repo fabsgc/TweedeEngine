@@ -255,7 +255,7 @@ namespace te
         pfd.nVersion = 1;
         pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
         pfd.iPixelType = PFD_TYPE_RGBA;
-        pfd.cColorBits = (colorDepth > 16)? 24 : colorDepth;
+        pfd.cColorBits = (colorDepth > 16)? 24 : static_cast<BYTE>(colorDepth);
         pfd.cAlphaBits = (colorDepth > 16)? 8 : 0;
 
         if (depthStencil)

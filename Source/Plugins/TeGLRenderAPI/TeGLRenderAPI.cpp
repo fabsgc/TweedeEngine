@@ -301,7 +301,7 @@ namespace te
             numUniformBlocks = 0;
 #endif
 
-            caps.NumGpuParamBlockBuffersPerStage[GPT_DOMAIN_PROGRAM] = numUniformBlocks;
+            caps.NumGpuParamBlockBuffersPerStage[GPT_DOMAIN_PROGRAM] = static_cast<UINT16>(numUniformBlocks);
         }
 
         if (_GLSupport->CheckExtension("GL_ARB_compute_shader"))

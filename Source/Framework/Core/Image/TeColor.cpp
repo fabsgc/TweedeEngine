@@ -5,6 +5,7 @@
 
 #include <time.h>
 #include <random>
+#include <chrono>
 
 namespace te
 {

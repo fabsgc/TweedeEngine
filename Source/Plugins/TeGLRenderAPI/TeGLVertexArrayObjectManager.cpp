@@ -74,7 +74,7 @@ namespace te
     const GLVertexArrayObject& GLVertexArrayObjectManager::GetVAO(const SPtr<GLGpuProgram>& vertexProgram,
         const SPtr<VertexDeclaration>& vertexDecl, const std::array<SPtr<VertexBuffer>, 32>& boundBuffers)
     {
-        UINT16 maxStreamIdx = 0;
+        UINT32 maxStreamIdx = 0;
         const Vector<VertexElement>& decl = vertexDecl->GetProperties().GetElements();
         for (auto& elem : decl)
             maxStreamIdx = std::max(maxStreamIdx, elem.GetStreamIdx());
@@ -91,7 +91,7 @@ namespace te
 
         for (auto& elem : decl)
         {
-            UINT16 streamIdx = elem.GetStreamIdx();
+            UINT32 streamIdx = elem.GetStreamIdx();
             if (streamIdx >= (UINT32)boundBuffers.size())
                 continue;
 
@@ -131,7 +131,7 @@ namespace te
 
         for (auto& elem : decl)
         {
-            UINT16 streamIdx = elem.GetStreamIdx();
+            UINT32 streamIdx = elem.GetStreamIdx();
             INT32 seqIdx = streamToSeqIdx[streamIdx];
 
             if (seqIdx == -1)
@@ -162,7 +162,7 @@ namespace te
 
             void* bufferData = VBO_BUFFER_OFFSET(elem.GetOffset());
 
-            UINT16 typeCount = VertexElement::GetTypeCount(elem.GetType());
+            UINT32 typeCount = VertexElement::GetTypeCount(elem.GetType());
             GLenum glType = GLHardwareBufferManager::GetGLType(elem.GetType());
             bool isInteger = glType == GL_SHORT || glType == GL_UNSIGNED_SHORT || glType == GL_INT
                 || glType == GL_UNSIGNED_INT || glType == GL_UNSIGNED_BYTE;

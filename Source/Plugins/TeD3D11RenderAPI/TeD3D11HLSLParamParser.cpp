@@ -10,12 +10,9 @@ namespace te
     {
         const char* commentString = nullptr;
         ID3DBlob* pIDisassembly = nullptr;
-        char* pDisassembly = nullptr;
 
         HRESULT hr = D3DDisassemble((UINT*)microcode->GetBufferPointer(),
             microcode->GetBufferSize(), D3D_DISASM_ENABLE_COLOR_CODE, commentString, &pIDisassembly);
-
-        const char* assemblyCode = static_cast<const char*>(pIDisassembly->GetBufferPointer());
 
         if (FAILED(hr))
         {

@@ -333,26 +333,6 @@ namespace te
         return tokens;
     }
 
-    void ToLowerCase(String& str)
-    {
-        std::transform(str.begin(), str.end(), str.begin(), tolower);
-    }
-
-    void ToLowerCase(WString& str)
-    {
-        std::transform(str.begin(), str.end(), str.begin(), tolower);
-    }
-
-    void ToUpperCase(String& str)
-    {
-        std::transform(str.begin(), str.end(), str.begin(), toupper);
-    }
-
-    void ToUpperCase(WString& str)
-    {
-        std::transform(str.begin(), str.end(), str.begin(), toupper);
-    }
-
     bool StartsWith(const String& str, const String& pattern, bool lowerCase)
     {
         return StartsWithInternal<char>(str, pattern, lowerCase);

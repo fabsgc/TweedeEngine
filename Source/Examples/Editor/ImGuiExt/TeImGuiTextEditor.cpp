@@ -1423,7 +1423,8 @@ namespace te
 
                         // todo : allmost all language definitions use lower case to specify keywords, so shouldn't this use ::tolower ?
                         if (!_languageDefinition._caseSensitive)
-                            std::transform(id.begin(), id.end(), id.begin(), ::toupper);
+                            std::transform(id.begin(), id.end(), id.begin(), 
+                                [](unsigned char c) -> unsigned char { return std::toupper(c); });
 
                         if (!line[first - bufferBegin].Preprocessor)
                         {

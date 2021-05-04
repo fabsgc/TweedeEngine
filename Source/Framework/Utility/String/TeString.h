@@ -210,18 +210,6 @@ namespace te
     */
     TE_UTILITY_EXPORT Vector<String> Split(const WString& s, char delimiter);
 
-    /** Converts all the characters in the string to lower case. Does not handle UTF8 encoded strings. */
-    TE_UTILITY_EXPORT void ToLowerCase(String& str);
-
-    /** Converts all the characters in the string to lower case. Does not handle UTF8 encoded strings. */
-    TE_UTILITY_EXPORT void ToLowerCase(WString& str);
-
-    /** Converts all the characters in the string to upper case. Does not handle UTF8 encoded strings. */
-    TE_UTILITY_EXPORT void ToUpperCase(String& str);
-
-    /** Converts all the characters in the string to upper case. Does not handle UTF8 encoded strings. */
-    TE_UTILITY_EXPORT void ToUpperCase(WString& str);
-
     /**
     * Returns whether the string begins with the pattern passed in.
     *
@@ -297,7 +285,7 @@ namespace te
 
         BasicString<T> startOfThis = str.substr(0, patternLen);
         if (lowerCase)
-            ToLowerCase(startOfThis);
+            Util::ToLowerCase(startOfThis);
 
         return (startOfThis == pattern);
     }
@@ -312,7 +300,7 @@ namespace te
 
         BasicString<T> endOfThis = str.substr(thisLen - patternLen, patternLen);
         if (lowerCase)
-            ToLowerCase(endOfThis);
+            Util::ToLowerCase(endOfThis);
 
         return (endOfThis == pattern);
     }
@@ -323,7 +311,7 @@ namespace te
         BasicString<T> tmpStr = str;
         std::basic_regex<T> tmpPattern(pattern);
         if (!caseSensitive)
-            ToLowerCase(tmpStr);
+            Util::ToLowerCase(tmpStr);
 
         return std::regex_match(tmpStr, tmpPattern);
     }
@@ -335,8 +323,8 @@ namespace te
         BasicString<T> tmpPattern = pattern;
         if (!caseSensitive)
         {
-            ToLowerCase(tmpStr);
-            ToLowerCase(tmpPattern);
+            Util::ToLowerCase(tmpStr);
+            Util::ToLowerCase(tmpPattern);
         }
 
         typename BasicString<T>::const_iterator strIt = tmpStr.begin();

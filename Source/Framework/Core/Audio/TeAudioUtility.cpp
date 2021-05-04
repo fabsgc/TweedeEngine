@@ -13,7 +13,7 @@ namespace te
                 ++input;
             }
 
-            *output = sum / numChannels;
+            *output = static_cast<UINT8>(sum / numChannels);
             ++output;
         }
     }
@@ -29,7 +29,7 @@ namespace te
                 ++input;
             }
 
-            *output = sum / numChannels;
+            *output = static_cast<UINT16>(sum / numChannels);
             ++output;
         }
     }

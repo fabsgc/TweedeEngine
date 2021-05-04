@@ -336,14 +336,15 @@ namespace te
     }
 
     void FolderMonitor::StartMonitor(const String& folderPath, bool subdirectories, UINT32 changeFilter)
-    { 
+    {
         if (!FileSystem::IsDirectory(folderPath))
         {
             TE_DEBUG("Provided path \"" + folderPath + "\" is not a directory");
             return;
         }
 
-        WString extendedFolderPath = L"\\\\?\\" + UTF8::ToWide(BuildWindowsPath(std::filesystem::canonical(folderPath).string()));
+        std::error_code e;
+        WString extendedFolderPath = L"\\\\?\\" + UTF8::ToWide(BuildWindowsPath(std::filesystem::weakly_canonical(folderPath, e).string()));
         HANDLE dirHandle = CreateFileW(extendedFolderPath.c_str(), FILE_LIST_DIRECTORY,
             FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, nullptr, OPEN_EXISTING,
             FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED, nullptr);

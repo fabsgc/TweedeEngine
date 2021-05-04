@@ -4,21 +4,6 @@
 #   define __STD_ALGORITHM
 #endif
 
-#include <cassert>
-#include <cstdio>
-#include <cstdlib>
-#include <ctime>
-#include <atomic>
-#include <cstring>
-#include <cstdarg>
-#include <cmath>
-#include <chrono>
-#include <memory>
-#include <string>
-#include <cstdio>
-#include <new>
-#include <cfloat>
-
 // STL containers
 #include <vector>
 #include <stack>
@@ -32,7 +17,7 @@
 #include <unordered_set>
 
 // STL algorithms & functions
-#include <algorithm>
+
 
 extern "C" {
 #   include <sys/types.h>

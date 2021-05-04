@@ -174,6 +174,8 @@ namespace te
         SPtr<LastFrameGraphicPipeline> _lastFrameGraphicPipeline;
         GpuResourcesContainer _gpuResContainer;
 
+        ID3D11RenderTargetView** _activeViews = nullptr;
+
         IDXGIFactory1* _DXGIFactory = nullptr;
         IDXGIAdapter* _selectedAdapter = nullptr;
         D3D11Device* _device = nullptr;

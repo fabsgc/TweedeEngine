@@ -72,9 +72,7 @@ namespace te
         for (auto& vertElem : _vertexElements)
         {
             if (vertElem.GetStreamIdx() == streamIdx)
-            {
                 return true;
-            }
         }
 
         return false;
@@ -89,9 +87,7 @@ namespace te
             });
 
         if (findIter != _vertexElements.end())
-        {
             return true;
-        }
 
         return false;
     }
@@ -101,9 +97,7 @@ namespace te
         for (auto& element : _vertexElements)
         {
             if (element.GetSemantic() == semantic && element.GetSemanticIdx() == semanticIdx && element.GetStreamIdx() == streamIdx)
-            {
                 return element.GetSize();
-            }
         }
 
         return -1;
@@ -115,14 +109,10 @@ namespace te
         for (auto& element : _vertexElements)
         {
             if (element.GetStreamIdx() != streamIdx)
-            {
                 continue;
-            }
 
             if (element.GetSemantic() == semantic && element.GetSemanticIdx() == semanticIdx)
-            {
                 break;
-            }
 
             vertexOffset += element.GetSize();
         }
@@ -136,9 +126,7 @@ namespace te
         for (auto& element : _vertexElements)
         {
             if (element.GetStreamIdx() == streamIdx)
-            {
                 vertexStride += element.GetSize();
-            }
         }
 
         return vertexStride;
@@ -161,9 +149,7 @@ namespace te
         for (auto& element : _vertexElements)
         {
             if (element.GetStreamIdx() == streamIdx)
-            {
                 break;
-            }
 
             streamOffset += element.GetSize();
         }
@@ -181,9 +167,7 @@ namespace te
         );
 
         if (findIter != _vertexElements.end())
-        {
             return &(*findIter);
-        }
 
         return nullptr;
     }
@@ -198,9 +182,7 @@ namespace te
         );
 
         if (findIter != _vertexElements.end())
-        {
             _vertexElements.erase(findIter);
-        }
     }
 
     SPtr<VertexDataDesc> VertexDataDesc::Create()

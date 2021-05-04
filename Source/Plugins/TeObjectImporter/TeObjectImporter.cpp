@@ -29,7 +29,8 @@ namespace te
     bool ObjectImporter::IsExtensionSupported(const String& ext) const
     {
         String lowerCaseExt = ext;
-        std::transform(lowerCaseExt.begin(), lowerCaseExt.end(), lowerCaseExt.begin(), tolower);
+        std::transform(lowerCaseExt.begin(), lowerCaseExt.end(), lowerCaseExt.begin(), 
+            [](unsigned char c) -> unsigned char { return static_cast<unsigned char>(std::tolower(c)); });
         return find(_extensions.begin(), _extensions.end(), lowerCaseExt) != _extensions.end();
     }
 
@@ -1305,6 +1306,7 @@ namespace te
     void ObjectImporter::SetMeshImportOptions(const String& filePath, MeshImportOptions& meshImportOptions)
     {
         String extension = Util::GetFileExtension(filePath);
-        std::transform(extension.begin(), extension.end(), extension.begin(), tolower);
+        std::transform(extension.begin(), extension.end(), extension.begin(), 
+            [](unsigned char c) -> unsigned char { return static_cast<unsigned char>(std::tolower(c)); });
     }
 }

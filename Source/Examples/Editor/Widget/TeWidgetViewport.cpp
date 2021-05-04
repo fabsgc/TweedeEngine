@@ -219,22 +219,26 @@ namespace te
 
         gEditor().SetImGuizmoRect(Vector2(position.x, position.y), Vector2(width, height));
 
-        SPtr<TextureView> textureView = _renderData.RenderTex->GetColorTexture(0)->RequestView(
-            _renderData.ColorTexSurface.MipLevel,
-            _renderData.ColorTexSurface.NumMipLevels,
-            _renderData.ColorTexSurface.Face,
-            _renderData.ColorTexSurface.NumFaces,
-            GVU_DEFAULT
-        );
+        SPtr<Texture> texture = _renderData.RenderTex->GetColorTexture(0);
+        if (texture)
+        {
+            SPtr<TextureView> textureView = texture->RequestView(
+                _renderData.ColorTexSurface.MipLevel,
+                _renderData.ColorTexSurface.NumMipLevels,
+                _renderData.ColorTexSurface.Face,
+                _renderData.ColorTexSurface.NumFaces,
+                GVU_DEFAULT
+            );
 
-        void* rawData = textureView->GetRawData();
+            void* rawData = textureView->GetRawData();
 
-        ImGui::Image(
-            static_cast<ImTextureID>(rawData),
-            ImVec2(static_cast<float>(width), static_cast<float>(height)),
-            ImVec2(0, 0),
-            ImVec2(1, 1)
-        );
+            ImGui::Image(
+                static_cast<ImTextureID>(rawData),
+                ImVec2(static_cast<float>(width), static_cast<float>(height)),
+                ImVec2(0, 0),
+                ImVec2(1, 1)
+            );
+        }
     }
 
     bool WidgetViewport::CheckRenderTexture(const float& width, const float& height)
