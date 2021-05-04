@@ -5,6 +5,7 @@
 #include "Utility/TeModule.h"
 
 #include <functional>
+#include <atomic>
 
 namespace te
 {

@@ -5,6 +5,8 @@
 #include "Scene/TeGameObject.h"
 #include "Utility/TeEvent.h"
 
+#include <atomic>
+
 namespace te
 {
     /**

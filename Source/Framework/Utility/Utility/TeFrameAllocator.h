@@ -1,11 +1,13 @@
 #pragma once
 
-#include <limits>
-#include <new>
-
 #include "Prerequisites/TePlatformDefines.h"
 #include "Prerequisites/TeTypes.h"
 #include "Prerequisites/TeStdHeaders.h"
+
+#include <atomic>
+#include <limits>
+#include <new>
+
 
 namespace te
 {

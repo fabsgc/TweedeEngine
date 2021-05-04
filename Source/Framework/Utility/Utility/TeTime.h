@@ -4,6 +4,8 @@
 #include "Utility/TeModule.h"
 #include "Utility/TeTimer.h"
 
+#include <atomic>
+
 namespace te
 {
     class TE_UTILITY_EXPORT Time : public Module<Time>

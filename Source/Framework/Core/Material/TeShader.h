@@ -3,6 +3,8 @@
 #include "TeCorePrerequisites.h"
 #include "Resources/TeResource.h"
 
+#include <atomic>
+
 namespace te
 {
     /** Shared memebers between SHADER_DATA_PARAM_DESC and SHADER_OBJECT_PARAM_DESC */

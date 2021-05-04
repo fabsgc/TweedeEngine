@@ -7,6 +7,8 @@
 #include "Math/TeVector2.h"
 #include "Image/TeColor.h"
 
+#include <atomic>
+
 namespace te
 {
     /** Flags that signal in what way did the Material change. */
