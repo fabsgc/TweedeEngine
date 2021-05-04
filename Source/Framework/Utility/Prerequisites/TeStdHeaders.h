@@ -4,6 +4,8 @@
 #   define __STD_ALGORITHM
 #endif
 
+#include <memory>
+
 // STL containers
 #include <vector>
 #include <stack>

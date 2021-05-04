@@ -100,7 +100,7 @@ namespace te
                 return element.GetSize();
         }
 
-        return -1;
+        return static_cast<UINT32>(-1);
     }
 
     UINT32 VertexDataDesc::GetElementOffsetFromStream(VertexElementSemantic semantic, UINT32 semanticIdx, UINT32 streamIdx) const

@@ -2,6 +2,7 @@
 
 #include "Prerequisites/TePlatformDefines.h"
 #include "Prerequisites/TeTypes.h"
+
 #include <string>
 #include <sstream>
 #include <regex>
@@ -209,6 +210,18 @@ namespace te
     * \brief Split string according to delimiter
     */
     TE_UTILITY_EXPORT Vector<String> Split(const WString& s, char delimiter);
+
+    /** Converts all the characters in the string to lower case. Does not handle UTF8 encoded strings. */
+    TE_UTILITY_EXPORT void ToLowerCase(String& str);
+
+    /** Converts all the characters in the string to lower case. Does not handle UTF8 encoded strings. */
+    TE_UTILITY_EXPORT void ToLowerCase(WString& str);
+
+    /** Converts all the characters in the string to upper case. Does not handle UTF8 encoded strings. */
+    TE_UTILITY_EXPORT void ToUpperCase(String& str);
+
+    /** Converts all the characters in the string to upper case. Does not handle UTF8 encoded strings. */
+    TE_UTILITY_EXPORT void ToUpperCase(WString& str);
 
     /**
     * Returns whether the string begins with the pattern passed in.

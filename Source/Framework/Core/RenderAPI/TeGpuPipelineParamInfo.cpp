@@ -198,13 +198,13 @@ namespace te
         if (set >= _numSets)
         {
             TE_DEBUG("Set index out of range: Valid range: [0, " + ToString(_numSets) + "). Requested: " + ToString(set));
-            return -1;
+            return static_cast<UINT32>(-1);
         }
 
         if (slot >= _setInfos[set].NumSlots)
         {
             TE_DEBUG("Slot index out of range: Valid range: [0, " + ToString(_setInfos[set].NumSlots) + "). Requested: " + ToString(set));
-            return -1;
+            return static_cast<UINT32>(-1);
         }
 
         ParamType slotType = _setInfos[set].SlotTypes[slot];
@@ -220,7 +220,7 @@ namespace te
             TE_DEBUG("Requested parameter is not of the valid type. Requested: " + ToString((UINT32)type) + 
                 ". Actual: " + ToString((UINT32)_setInfos[set].SlotTypes[slot]));
 
-            return -1;
+            return static_cast<UINT32>(-1);
         }
 
 #endif
