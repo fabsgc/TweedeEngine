@@ -4,6 +4,8 @@
 #include "CoreUtility/TeCoreObject.h"
 #include "Image/TeColor.h"
 
+#include <cfloat>
+
 namespace te
 {
     /**

@@ -8,6 +8,8 @@
 #include "../ImGuiExt/TeImGuiExt.h"
 #include "../ImGuiExt/TeIconsFontAwesome5.h"
 
+#include <cfloat>
+
 #define CONSOLE_TITLE ICON_FA_TERMINAL " Console"
 #define MENUBAR_TITLE "MenuBar"
 #define PROJECT_TITLE ICON_FA_BONG " Project"
