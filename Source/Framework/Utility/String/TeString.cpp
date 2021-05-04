@@ -1,6 +1,8 @@
 #include "Prerequisites/TePrerequisitesUtility.h"
 #include "String/TeString.h"
 
+#include <cctype>
+
 namespace te
 {
     WString ToWString(const String& source)

@@ -4,6 +4,7 @@
 #include "Image/TeTexture.h"
 #include "Utility/TeFileSystem.h"
 
+#include <cctype>
 #include <filesystem>
 #include <ft2build.h>
 #include <freetype/freetype.h>

@@ -9,6 +9,7 @@
 #include "Physics/TePhysicsMesh.h"
 #include "Physics/TePhysics.h"
 
+#include <cctype>
 #include <filesystem>
 
 namespace te

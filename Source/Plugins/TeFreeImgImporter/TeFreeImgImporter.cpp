@@ -9,6 +9,7 @@
 #include "Utility/TeFileSystem.h"
 #include "FreeImage.h"
 
+#include <cctype>
 #include <filesystem>
 
 namespace te

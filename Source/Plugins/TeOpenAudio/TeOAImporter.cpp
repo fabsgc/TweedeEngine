@@ -8,6 +8,7 @@
 #include "TeWaveDecoder.h"
 #include "TeFLACDecoder.h"
 
+#include <cctype>
 #include <filesystem>
 
 namespace te

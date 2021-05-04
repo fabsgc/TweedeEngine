@@ -2,6 +2,8 @@
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
 
+#include <cctype>
+
 #if defined(__GNUC__)
 #pragma GCC diagnostic ignored "-Wsign-compare" 
 #endif
