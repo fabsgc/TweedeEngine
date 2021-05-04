@@ -5,7 +5,7 @@
 namespace te
 {
     PhysicsMesh::PhysicsMesh(const SPtr<MeshData>& meshData)
-        : Resource(TID_Texture)
+        : Resource(TID_PhysicsMesh)
         , _initMeshData(meshData)
     {
         // Derived class is responsible for initializing mInternal

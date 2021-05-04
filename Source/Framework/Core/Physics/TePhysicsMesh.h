@@ -11,7 +11,7 @@ namespace te
      * Represents a physics mesh that can be used with a MeshCollider. Physics mesh can be a generic triangle mesh
      * or a convex mesh. Convex meshes are limited to a few hundred faces.
      */
-    class TE_CORE_EXPORT  PhysicsMesh : public Resource
+    class TE_CORE_EXPORT PhysicsMesh : public Resource
     {
     public:
         PhysicsMesh(const SPtr<MeshData>& meshData);
