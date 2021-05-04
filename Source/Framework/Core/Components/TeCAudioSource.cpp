@@ -102,6 +102,19 @@ namespace te
             _internal->SetAttenuation(attenuation);
     }
 
+    void CAudioSource::SetIsPlay3D(bool play3D)
+    {
+        if (_play3D == play3D)
+            return;
+
+        _play3D = play3D;
+
+        if (_internal != nullptr)
+            _internal->SetIsPlay3D(play3D);
+
+        UpdateTransform();
+    }
+
     void CAudioSource::Play()
     {
         if (_internal != nullptr)

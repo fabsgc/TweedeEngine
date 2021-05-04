@@ -89,7 +89,7 @@ namespace te
         // If 3D, convert to mono
         if (clipIO->Is3D && info.NumChannels > 1)
         {
-            UINT32 numSamplesPerChannel = info.NumSamples / info.NumChannels;
+            /*UINT32 numSamplesPerChannel = info.NumSamples / info.NumChannels;
 
             UINT32 monoBufferSize = numSamplesPerChannel * bytesPerSample;
             auto monoStream = te_shared_ptr_new<MemoryDataStream>(monoBufferSize);
@@ -100,7 +100,7 @@ namespace te
             info.NumChannels = 1;
 
             sampleStream = monoStream;
-            bufferSize = monoBufferSize;
+            bufferSize = monoBufferSize;*/
         }
 
         // Convert bit depth if needed

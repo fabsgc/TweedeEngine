@@ -76,7 +76,7 @@ namespace te
          */
         virtual void SetMinDistance(float distance);
 
-        /** @copydoc setMinDistance() */
+        /** @copydoc SetMinDistance() */
         float GetMinDistance() const { return _minDistance; }
 
         /**
@@ -84,8 +84,14 @@ namespace te
          */
         virtual void SetAttenuation(float attenuation);
 
-        /** @copydoc setAttenuation() */
+        /** @copydoc SetAttenuation() */
         float GetAttenuation() const { return _attenuation; }
+
+        /** Determines if this sound must be played as a 3D sound (sound must be playable as a 3D sound) */
+        virtual void SetIsPlay3D(bool play3D);
+
+        /** @copydoc::SetIsPlay3D */
+        bool GetIsPlay3D() const { return _play3D; }
 
         /** Starts playing the currently assigned audio clip. */
         virtual void Play() = 0;
@@ -126,5 +132,6 @@ namespace te
         INT32 _priority = 0;
         float _minDistance = 1.0f;
         float _attenuation = 1.0f;
+        bool _play3D = true;
     };
 }

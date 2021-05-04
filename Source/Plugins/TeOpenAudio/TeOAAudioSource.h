@@ -40,6 +40,9 @@ namespace te
         /** @copydoc AudioSource::SetAttenuation */
         void SetAttenuation(float attenuation) override;
 
+        /** @copydoc AudioSource::SetIsPlay3D */
+        void SetIsPlay3D(bool play3D) override;
+
         /** @copydoc AudioSource::SetTime */
         void SetTime(float time) override;
 

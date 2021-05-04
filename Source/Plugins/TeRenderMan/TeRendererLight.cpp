@@ -123,7 +123,7 @@ namespace te
                     ++numUnshadowed;
             }
 
-            if (first != -1)
+            if (first != static_cast<UINT32>(-1))
             {
                 for (UINT32 i = first + 1; i < (UINT32)entries.size(); ++i)
                 {

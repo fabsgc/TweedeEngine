@@ -337,6 +337,12 @@ namespace te
                 hasChanged = true;
         }
 
+        if (ImGui::CollapsingHeader("Shadow", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            if (ShowLightShadow(light->_getLight()))
+                hasChanged = true;
+        }
+
         return hasChanged;
     }
 
@@ -499,6 +505,34 @@ namespace te
             UUID audioClipUUID = (clip.IsLoaded()) ? clip->GetUUID() : emptyAudioClip;
             EditorResManager::ResourcesContainer& container = EditorResManager::Instance().Get<AudioClip>();
 
+            // Play/Stop
+            {
+                ImGui::PushID("##audio_source_play_stop");
+
+                if (audioSource->GetState() == AudioSourceState::Playing)
+                {
+                    if (ImGui::Button(ICON_FA_STOP " Stop", ImVec2(ImGui::GetWindowContentRegionWidth(), 25.0f)))
+                        audioSource->Stop();
+                }
+                else
+                {
+                    if (ImGui::Button(ICON_FA_PLAY " Play", ImVec2(ImGui::GetWindowContentRegionWidth(), 25.0f)))
+                        audioSource->Play();
+                }
+                ImGui::PopID();
+            }
+            ImGui::Separator();
+
+            // Play3D
+            {
+                bool isPlay3D = audioSource->GetIsPlay3D();
+                if (ImGuiExt::RenderOptionBool(isPlay3D, "##audio_source_is_play_3d", "Play 3D"))
+                {
+                    hasChanged = true;
+                    audioSource->SetIsPlay3D(isPlay3D);
+                }
+            }
+
             // IsLooping
             {
                 bool isLooping = audioSource->GetIsLooping();
@@ -551,7 +585,7 @@ namespace te
             // Volume
             {
                 float volume = audioSource->GetVolume();
-                if (ImGuiExt::RenderOptionFloat(volume, "##audio_source_volume", "Volume", 0.0f, 100.0f, width))
+                if (ImGuiExt::RenderOptionFloat(volume, "##audio_source_volume", "Volume", 0.0f, 1.0f, width))
                 {
                     hasChanged = true;
                     audioSource->SetVolume(volume);
@@ -561,7 +595,7 @@ namespace te
             // Pitch
             {
                 float pitch = audioSource->GetPitch();
-                if (ImGuiExt::RenderOptionFloat(pitch, "##audio_source_pitch", "Pitch", -100.0f, 100.0f, width))
+                if (ImGuiExt::RenderOptionFloat(pitch, "##audio_source_pitch", "Pitch", 0.0f, 8.0f, width))
                 {
                     hasChanged = true;
                     audioSource->SetPitch(pitch);
@@ -794,6 +828,7 @@ namespace te
             {
                 ImGuiExt::ComboOptions<UUID> meshesOptions;
                 UUID emptyMesh = UUID(50, 0, 0, 0);
+                UUID loadPhysicsMesh = UUID::EMPTY;
                 UUID meshUUID = (mesh.IsLoaded()) ? mesh->GetUUID() : emptyMesh;
                 EditorResManager::ResourcesContainer& container = EditorResManager::Instance().Get<PhysicsMesh>();
 
@@ -802,10 +837,15 @@ namespace te
                     meshesOptions.AddOption(resource.second->GetUUID(), resource.second->GetName());
 
                 meshesOptions.AddOption(emptyMesh, ICON_FA_TIMES_CIRCLE " No Physic Mesh");
+                meshesOptions.AddOption(UUID::EMPTY, ICON_FA_FOLDER_OPEN " Load");
 
                 if (ImGuiExt::RenderOptionCombo<UUID>(&meshUUID, "##collider_physic_mesh_option", "Physic Mesh", meshesOptions, width))
                 {
-                    if (meshUUID == emptyMesh)
+                    if (meshUUID == loadPhysicsMesh)
+                    {
+                        _loadPhysicsMesh = true;
+                    }
+                    else if (meshUUID == emptyMesh)
                     {
                         collider->SetMesh(HPhysicsMesh());
                         hasChanged = true;
@@ -836,6 +876,9 @@ namespace te
                     hasChanged = true;
                 }
             }
+
+            if (ShowLoadMesh())
+                hasChanged = true;
 
             if (ShowCollider(collider))
                 hasChanged = true;
@@ -1032,13 +1075,11 @@ namespace te
     bool WidgetProperties::ShowLight(SPtr<Light> light)
     {
         bool hasChanged = false;
-        bool castShadows = light->GetCastShadows();
         float attenuationRadius = light->GetAttenuationRadius();
         float linearAttenuation = light->GetLinearAttenuation();
         float quadraticAttenuation = light->GetQuadraticAttenuation();
         float intensity = light->GetIntensity();
         Degree spotAngle = light->GetSpotAngle();
-        float shadowBias = light->GetShadowBias();
         const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
 
         // Color
@@ -1048,16 +1089,6 @@ namespace te
             {
                 hasChanged = true;
                 light->SetColor(Color(color));
-            }
-        }
-        ImGui::Separator();
-
-        // Cast shadows
-        {
-            if (ImGuiExt::RenderOptionBool(castShadows, "##light_cast_shadows_option", "Cast shadows"))
-            {
-                hasChanged = true;
-                light->SetCastShadows(castShadows);
             }
         }
         ImGui::Separator();
@@ -1113,8 +1144,27 @@ namespace te
                     light->SetSpotAngle(Degree(angle));
                 }
             }
-            ImGui::Separator();
         }
+
+        return hasChanged;
+    }
+
+    bool WidgetProperties::ShowLightShadow(SPtr<Light> light)
+    {
+        bool hasChanged = false;
+        bool castShadows = light->GetCastShadows();
+        float shadowBias = light->GetShadowBias();
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
+
+        // Cast shadows
+        {
+            if (ImGuiExt::RenderOptionBool(castShadows, "##light_cast_shadows_option", "Cast shadows"))
+            {
+                hasChanged = true;
+                light->SetCastShadows(castShadows);
+            }
+        }
+        ImGui::Separator();
 
         // Shadow bias
         {
@@ -1790,7 +1840,7 @@ namespace te
     {
         bool meshLoaded = false;
 
-        if (_loadMesh)
+        if (_loadMesh || _loadPhysicsMesh)
             ImGui::OpenPopup("Load Mesh");
 
         if (_fileBrowser.ShowFileDialog("Load Mesh", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), true, ".obj,.dae,.fbx,.stl,.gltf"))
@@ -1823,26 +1873,31 @@ namespace te
                         {
                             mesh->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
                             EditorResManager::Instance().Add<Mesh>(mesh);
-                            SPtr<CRenderable> renderable = std::static_pointer_cast<CRenderable>(_selections.ClickedComponent);
 
-                            // We will try to set the material attach to this mesh (in fact one material per submesh), and create it before if not exist
-                            renderable->SetMesh(mesh.GetInternalPtr());
-                            meshLoaded = true;
-
-                            if (meshImportOptions->ImportMaterials)
+                            if (_selections.ClickedComponent->GetCoreType() == TID_CRenderable)
                             {
-                                EditorUtils::ImportMeshMaterials(mesh);
+                                SPtr<CRenderable> renderable = std::static_pointer_cast<CRenderable>(_selections.ClickedComponent);
 
-                                for (UINT32 i = 0; i < mesh->GetProperties().GetNumSubMeshes(); i++)
+                                // We will try to set the material attach to this mesh (in fact one material per submesh), and create it before if not exist
+                                renderable->SetMesh(mesh.GetInternalPtr());
+                                meshLoaded = true;
+
+                                if (meshImportOptions->ImportMaterials)
                                 {
-                                    SubMesh& subMesh = mesh->GetProperties().GetSubMesh(i);
-                                    if (subMesh.Mat.IsLoaded())
-                                        renderable->SetMaterial(i, subMesh.Mat.GetInternalPtr());
+                                    EditorUtils::ImportMeshMaterials(mesh);
+
+                                    for (UINT32 i = 0; i < mesh->GetProperties().GetNumSubMeshes(); i++)
+                                    {
+                                        SubMesh& subMesh = mesh->GetProperties().GetSubMesh(i);
+                                        if (subMesh.Mat.IsLoaded())
+                                            renderable->SetMaterial(i, subMesh.Mat.GetInternalPtr());
+                                    }
                                 }
                             }
                         }
 
                         _loadMesh = false;
+                        _loadPhysicsMesh = false;
                     }
                     else if (subRes.Name == "collision")
                     {
@@ -1850,6 +1905,14 @@ namespace te
                         if (physicsMesh.IsLoaded())
                         {
                             EditorResManager::Instance().Add<PhysicsMesh>(physicsMesh);
+
+                            if (_selections.ClickedComponent->GetCoreType() == TID_CMeshCollider)
+                            {
+                                SPtr<CMeshCollider> meshCollider = std::static_pointer_cast<CMeshCollider>(_selections.ClickedComponent);
+
+                                meshCollider->SetMesh(physicsMesh);
+                                meshLoaded = true;
+                            }
                         }
                     }
                     else
@@ -1862,7 +1925,10 @@ namespace te
         else
         {
             if (_fileBrowser.Data.IsCancelled)
+            {
                 _loadMesh = false;
+                _loadPhysicsMesh = false;
+            }
         }
 
         return meshLoaded;

@@ -12,8 +12,13 @@ namespace te
         WidgetProperties();
         ~WidgetProperties();
 
+        /** @copydoc Widget::Initialize */
         virtual void Initialize() override;
+
+        /** @copydoc Widget::Update */
         virtual void Update() override;
+
+        /** @copydoc Widget::UpdateBackground */
         virtual void UpdateBackground() override;
 
     protected:
@@ -101,6 +106,9 @@ namespace te
         /** Show information about a light */
         bool ShowLight(SPtr<Light> light);
 
+        /** Show information about light shadow casting */
+        bool ShowLightShadow(SPtr<Light> light);
+
         /** Show information about renderable properties */
         bool ShowRenderableProperties(SPtr<Renderable> renderable);
 
@@ -142,6 +150,7 @@ namespace te
         ImGuiFileBrowser& _fileBrowser;
 
         bool _loadMesh = false;
+        bool _loadPhysicsMesh = false;
         bool _loadSkybox = false;
         bool _loadSkyboxIrradiance = false;
         bool _loadScript = false;

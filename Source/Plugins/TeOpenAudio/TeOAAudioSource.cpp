@@ -30,7 +30,7 @@ namespace te
             if (contexts.size() > 1)
                 alcMakeContextCurrent(contexts[i]);
 
-            if (Is3D())
+            if (Is3D() && GetIsPlay3D())
             {
                 Vector3 position = transform.GetPosition();
                 alSource3f(_sourceIDs[i], AL_POSITION, position.x, position.y, position.z);
@@ -61,7 +61,7 @@ namespace te
             if (contexts.size() > 1)
                 alcMakeContextCurrent(contexts[i]);
 
-            if (Is3D())
+            if (Is3D() && GetIsPlay3D())
                 alSource3f(_sourceIDs[i], AL_VELOCITY, velocity.x, velocity.y, velocity.z);
             else
                 alSource3f(_sourceIDs[i], AL_VELOCITY, 0.0f, 0.0f, 0.0f);
@@ -150,6 +150,12 @@ namespace te
 
             alSourcef(_sourceIDs[i], AL_ROLLOFF_FACTOR, attenuation);
         }
+    }
+
+    void OAAudioSource::SetIsPlay3D(bool play3D)
+    {
+        AudioSource::SetIsPlay3D(play3D);
+        ApplyClip();
     }
 
     void OAAudioSource::SetTime(float time)
@@ -368,7 +374,7 @@ namespace te
             else
                 alSourcei(_sourceIDs[i], AL_LOOPING, _loop);
 
-            if (Is3D())
+            if (Is3D() && GetIsPlay3D())
             {
                 Vector3 position = _transform.GetPosition();
 
@@ -635,7 +641,7 @@ namespace te
             if (contexts.size() > 1)
                 alcMakeContextCurrent(contexts[i]);
 
-            alSourcei(_sourceIDs[i], AL_SOURCE_RELATIVE, !Is3D());
+            alSourcei(_sourceIDs[i], AL_SOURCE_RELATIVE, !(Is3D() && GetIsPlay3D()));
 
             if (!RequiresStreaming())
             {

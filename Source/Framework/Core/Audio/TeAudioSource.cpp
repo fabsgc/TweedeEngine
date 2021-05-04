@@ -47,6 +47,11 @@ namespace te
         _attenuation = attenuation;
     }
 
+    void AudioSource::SetIsPlay3D(bool play3D)
+    {
+        _play3D = play3D;
+    }
+
     SPtr<AudioSource> AudioSource::Create()
     {
         SPtr<AudioSource> source = gAudio().CreateSource();

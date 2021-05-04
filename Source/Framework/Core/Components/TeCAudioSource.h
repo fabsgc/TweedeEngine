@@ -76,6 +76,12 @@ namespace te
         /** @copydoc AudioSource::GetAttenuation */
         float GetAttenuation() const { return _attenuation; }
 
+        /** @copydoc AudioSource::GetIsPlay3D */
+        float GetIsPlay3D() const { return _play3D; }
+
+        /** @copydoc AudioSource::SetIsPlay3D */
+        void SetIsPlay3D(bool play3D);
+
         /** @copydoc AudioSource::SetTime */
         void SetTime(float time);
 
@@ -164,5 +170,6 @@ namespace te
         float _minDistance = 1.0f;
         float _attenuation = 1.0f;
         bool _playOnStart = true;
+        bool _play3D = true;
     };
 }
