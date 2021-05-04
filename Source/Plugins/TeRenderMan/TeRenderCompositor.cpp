@@ -132,7 +132,7 @@ namespace te
             if (iterFind2 == processedNodes.end())
             {
                 // Mark it as invalid for now
-                processedNodes[nodeId] = -1;
+                processedNodes[nodeId] = static_cast<UINT32>(-1);
             }
 
             // Register node dependencies
@@ -158,7 +158,7 @@ namespace te
                 NodeInfo& nodeInfo = _nodeInfos.back();
                 nodeInfo.Node = nodeType->Create();
                 nodeInfo.Type = nodeType;
-                nodeInfo.LastUseIdx = -1;
+                nodeInfo.LastUseIdx = static_cast<UINT32>(-1);
 
                 for (auto& depId : depIds)
                 {

@@ -160,7 +160,7 @@ namespace te
 
             UINT32* mappedBoneIndices = (UINT32*)te_frame_allocate(sizeof(UINT32) * _numSceneObjects);
             for (UINT32 i = 0; i < _numSceneObjects; i++)
-                mappedBoneIndices[i] = -1;
+                mappedBoneIndices[i] = static_cast<UINT32>(-1);
 
             UINT32 numBoneMappedSOs = 0;
             if (_skeleton != nullptr)

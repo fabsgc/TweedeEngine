@@ -111,7 +111,7 @@ namespace te
         auto partition = [](Vector<const RendererLight*>& entries)
         {
             UINT32 numUnshadowed = 0;
-            int first = -1;
+            UINT32 first = static_cast<UINT32>(-1);
             for (UINT32 i = 0; i < (UINT32)entries.size(); ++i)
             {
                 if (entries[i]->_internal->GetCastShadows())

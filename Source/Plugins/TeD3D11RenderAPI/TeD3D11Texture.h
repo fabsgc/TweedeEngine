@@ -133,7 +133,7 @@ namespace te
 
         ID3D11Resource* _stagingBuffer = nullptr;
         PixelData* _staticBuffer = nullptr;
-        UINT32 _lockedSubresourceIdx = -1;
+        UINT32 _lockedSubresourceIdx = static_cast<UINT32>(-1);
         bool _lockedForReading = false;
 
         static RecursiveMutex _deviceMutex;
