@@ -70,19 +70,11 @@ namespace te
             {
                 _triangleMesh = te_shared_ptr_new<BulletMesh::TriangleMesh>();
 
-                /*_triangleMesh->NumVertices = _meshData->GetNumVertices();
-                _triangleMesh->NumIndices = _meshData->GetNumIndices();
-                _triangleMesh->VerticeStride = vertexDesc->GetVertexStride();
-                _triangleMesh->IndexStride = _meshData->GetIndexElementSize();
-                _triangleMesh->Use32BitIndex = (_meshData->GetIndexType() == IndexType::IT_32BIT);
-                _triangleMesh->Data = _meshData->GetElementData(VES_POSITION);
-                _triangleMesh->Indices = (_triangleMesh->Use32BitIndex) 
-                    ? (UINT8*)_meshData->GetIndices32() : (UINT8*)_meshData->GetIndices16();*/
-
                 UINT32 numVertices = _meshData->GetNumVertices();
                 UINT32 numIndices = _meshData->GetNumIndices();
                 UINT32 vertexStride = vertexDesc->GetVertexStride();
                 UINT32 indexStride = _meshData->GetIndexElementSize();
+
                 UINT8* vertices = te_allocate<UINT8>(sizeof(Vector3) * numVertices);
                 UINT8* indices = te_allocate<UINT8>(sizeof(UINT32) * numIndices);
 
@@ -90,11 +82,12 @@ namespace te
                 UINT32* indexWriter = (UINT32*)indices;
 
                 UINT8* vertexReader = _meshData->GetElementData(VES_POSITION);
-                UINT8* indexReader = (_meshData->GetIndexType() == IndexType::IT_32BIT) ? (UINT8*)_meshData->GetIndices32() : (UINT8*)_meshData->GetIndices16();
+                UINT8* indexReader = (indexStride == sizeof(UINT32)) 
+                    ? (UINT8*)_meshData->GetIndices32() : (UINT8*)_meshData->GetIndices16();
 
                 for (UINT32 i = 0; i < numVertices; i++)
                 {
-                    Vector3* currVertex = (Vector3*)(vertexReader + vertexStride * i);
+                    Vector3* currVertex = (Vector3*)(vertexReader + (UINT8)vertexStride * i);
                     memcpy(vertexWriter, currVertex, sizeof(Vector3));
 
                     if(i < numVertices - 1)
@@ -103,7 +96,7 @@ namespace te
 
                 for (UINT32 i = 0; i < numIndices; i++)
                 {
-                    UINT32* currIndex = (UINT32*)(indexReader + indexStride * i);
+                    UINT32* currIndex = (UINT32*)(indexReader + (UINT8)indexStride * i);
                     memcpy(indexWriter, currIndex, sizeof(UINT32));
 
                     if (i < numIndices - 1)

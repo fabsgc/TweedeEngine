@@ -87,24 +87,14 @@ namespace te
             }
 
             btTriangleMesh* meshInterface = new btTriangleMesh();
-            /*btIndexedMesh part;
-
-            part.m_vertexBase = (const unsigned char*)triangleMesh->Vertices;
-            part.m_vertexStride = triangleMesh->VertexStride;
-            part.m_numVertices = triangleMesh->NumVertices;
-            part.m_triangleIndexBase = (const unsigned char*)triangleMesh->Indices;
-            part.m_triangleIndexStride = triangleMesh->IndexStride;
-            part.m_numTriangles = triangleMesh->NumIndices / 3;
-            part.m_vertexType = PHY_FLOAT;
-            part.m_indexType = triangleMesh->Use32BitIndex ? PHY_INTEGER : PHY_SHORT;
-            
-            meshInterface->addIndexedMesh(part, part.m_indexType);*/
+            Vector3* vertices = (Vector3*)triangleMesh->Vertices;
+            UINT32* indices = (UINT32*)(triangleMesh->Indices);
 
             for (UINT32 i = 0; i < triangleMesh->NumIndices / 3; i++)
             {
-                const btVector3& v0 = ToBtVector3(((Vector3*)triangleMesh->Vertices)[((UINT32*)(triangleMesh->Indices))[i * 3]]);
-                const btVector3& v1 = ToBtVector3(((Vector3*)triangleMesh->Vertices)[((UINT32*)(triangleMesh->Indices))[i * 3 + 1]]);
-                const btVector3& v2 = ToBtVector3(((Vector3*)triangleMesh->Vertices)[((UINT32*)(triangleMesh->Indices))[i * 3 + 2]]);
+                const btVector3& v0 = ToBtVector3(vertices[indices[i * 3]]);
+                const btVector3& v1 = ToBtVector3(vertices[indices[i * 3 + 1]]);
+                const btVector3& v2 = ToBtVector3(vertices[indices[i * 3 + 2]]);
                 meshInterface->addTriangle(v0, v1, v2);
             }
 
