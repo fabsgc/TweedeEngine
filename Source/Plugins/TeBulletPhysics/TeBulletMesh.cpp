@@ -36,6 +36,12 @@ namespace te
 
     BulletFMesh::~BulletFMesh()
     {
+        if (_triangleMesh)
+        {
+            te_delete(_triangleMesh->Vertices);
+            te_delete(_triangleMesh->Indices);
+        }
+
         _convexMesh = nullptr;
         _triangleMesh = nullptr;
     }
