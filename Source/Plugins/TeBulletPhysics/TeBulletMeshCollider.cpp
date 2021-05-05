@@ -65,7 +65,7 @@ namespace te
 
             for (UINT32 i = 0; i < convexMesh->NumVertices; i++)
             {
-                Vector3 position = *(Vector3*)(convexMesh->Data + convexMesh->Stride * i);
+                Vector3 position = *(Vector3*)(convexMesh->Vertices + convexMesh->Stride * i);
                 hullShape->addPoint(ToBtVector3(position));
             }
 
@@ -86,21 +86,29 @@ namespace te
                 return;
             }
 
-            btTriangleIndexVertexArray* meshInterface = new btTriangleIndexVertexArray();
-            btIndexedMesh part;
+            btTriangleMesh* meshInterface = new btTriangleMesh();
+            /*btIndexedMesh part;
 
-            part.m_vertexBase = (const unsigned char*)triangleMesh->Data;
-            part.m_vertexStride = triangleMesh->VerticeStride;
+            part.m_vertexBase = (const unsigned char*)triangleMesh->Vertices;
+            part.m_vertexStride = triangleMesh->VertexStride;
             part.m_numVertices = triangleMesh->NumVertices;
             part.m_triangleIndexBase = (const unsigned char*)triangleMesh->Indices;
             part.m_triangleIndexStride = triangleMesh->IndexStride;
             part.m_numTriangles = triangleMesh->NumIndices / 3;
             part.m_vertexType = PHY_FLOAT;
-            //part.m_indexType = triangleMesh->Use32BitIndex ? PHY_INTEGER : PHY_SHORT;
+            part.m_indexType = triangleMesh->Use32BitIndex ? PHY_INTEGER : PHY_SHORT;
+            
+            meshInterface->addIndexedMesh(part, part.m_indexType);*/
 
-            meshInterface->addIndexedMesh(part);
+            for (UINT32 i = 0; i < triangleMesh->NumIndices / 3; i++)
+            {
+                const btVector3& v0 = ToBtVector3(((Vector3*)triangleMesh->Vertices)[((UINT32*)(triangleMesh->Indices))[i * 3]]);
+                const btVector3& v1 = ToBtVector3(((Vector3*)triangleMesh->Vertices)[((UINT32*)(triangleMesh->Indices))[i * 3 + 1]]);
+                const btVector3& v2 = ToBtVector3(((Vector3*)triangleMesh->Vertices)[((UINT32*)(triangleMesh->Indices))[i * 3 + 2]]);
+                meshInterface->addTriangle(v0, v1, v2);
+            }
 
-            _shape = te_new<btBvhTriangleMeshShape>(meshInterface, true);
+            _shape = te_new<btBvhTriangleMeshShape>(meshInterface, true, true);
             _shape->setUserPointer(this);
 
             ((BulletFCollider*)_internal)->SetShape(_shape);

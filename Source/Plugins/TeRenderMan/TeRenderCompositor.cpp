@@ -748,9 +748,14 @@ namespace te
         if (settings.Bloom.Quality == BloomQuality::Medium)
         {
             blurTextureFactor = 2;
+            blurNumSamples = 7;
+        }
+        else if (settings.Bloom.Quality == BloomQuality::Medium)
+        {
+            blurTextureFactor = 3;
             blurNumSamples = 5;
         }
-        if (settings.Bloom.Quality == BloomQuality::Low)
+        else if (settings.Bloom.Quality == BloomQuality::Low)
         {
             blurTextureFactor = 4;
             blurNumSamples = 5;
