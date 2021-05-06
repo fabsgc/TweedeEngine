@@ -244,7 +244,6 @@ namespace te
 
         ImGui::BeginChild("##NavigationWindow", nw_size, true, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoScrollbar);
 
-        //ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.882f, 0.745f, 0.078f,1.0f));
         for(int i = 0; i < (int)current_dirlist.size(); i++)
         {
             if( ImGui::Button(current_dirlist[i].c_str()) )
@@ -276,7 +275,6 @@ namespace te
                         ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.125f, 0.125f, 0.125f, 1.0f));
                         if(ImGui::ListBoxHeader("##NavBarDropBox", ImVec2(0, list_item_height* 5)))
                         {
-                            //ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.882f, 0.745f, 0.078f,1.0f));
                             for(int j = i+1; j < (int)current_dirlist.size(); j++)
                             {
                                 if(ImGui::Selectable(current_dirlist[j].c_str(), false) && j != (int)current_dirlist.size() - 1)
@@ -285,7 +283,6 @@ namespace te
                                     ImGui::CloseCurrentPopup();
                                 }
                             }
-                            //ImGui::PopStyleColor();
                             ImGui::ListBoxFooter();
                         }
                         ImGui::PopStyleColor();
@@ -304,7 +301,6 @@ namespace te
                 }
             }
         }
-        //ImGui::PopStyleColor();
         ImGui::EndChild();
 
         ImGui::SameLine();
@@ -360,8 +356,6 @@ namespace te
         ImGui::BeginChild("##ScrollingRegion", ImVec2(0, window_height), true, ImGuiWindowFlags_HorizontalScrollbar);
         ImGui::Columns(num_cols);
 
-        //Output directories in yellow
-        //ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.882f, 0.745f, 0.078f,1.0f));
         int items = 0;
         for (int i = 0; i < (int)filtered_dirs.size(); i++)
         {
@@ -392,14 +386,30 @@ namespace te
                     ImGui::NextColumn();
             }
         }
-        //ImGui::PopStyleColor(1);
 
         //Output files
         for (int i = 0; i < (int)filtered_files.size(); i++)
         {
             if(!filtered_files[i]->is_hidden || show_hidden)
             {
-                String label = ICON_FA_FILE + String(" ") + UTF8::FromANSI(filtered_files[i]->name);
+                String label;
+
+                static const Vector<String> _texturesExtensions = { ".png", ".jpeg", ".jpg" };
+                static const Vector<String> _meshesExtensions = { ".obj", ".dae", ".fbx", ".stl", ".gltf" };
+                static const Vector<String> _soundsExtensions = { ".ogg", ".wav", ".flac" };
+
+                if (std::find(_texturesExtensions.begin(), _texturesExtensions.end(), filtered_files[i]->extension) != _texturesExtensions.end())
+                    label = ICON_FA_FILE_IMAGE + String(" ") + UTF8::FromANSI(filtered_files[i]->name);
+                else if (std::find(_meshesExtensions.begin(), _meshesExtensions.end(), filtered_files[i]->extension) != _meshesExtensions.end())
+                    label = ICON_FA_FILE_ARCHIVE + String(" ") + UTF8::FromANSI(filtered_files[i]->name);
+                else if (std::find(_soundsExtensions.begin(), _soundsExtensions.end(), filtered_files[i]->extension) != _soundsExtensions.end())
+                    label = ICON_FA_FILE_AUDIO + String(" ") + UTF8::FromANSI(filtered_files[i]->name);
+                else if (filtered_files[i]->extension == ".cpp")
+                    label = ICON_FA_FILE_CODE + String(" ") + UTF8::FromANSI(filtered_files[i]->name);
+                else if (filtered_files[i]->extension == ".scene")
+                    label = ICON_FA_FILE_SIGNATURE + String(" ") + UTF8::FromANSI(filtered_files[i]->name);
+                else
+                    label = ICON_FA_FILE + String(" ") + UTF8::FromANSI(filtered_files[i]->name);
 
                 items++;
                 if(ImGui::Selectable(label.c_str(), selected_idx == i && !is_dir, ImGuiSelectableFlags_AllowDoubleClick))
@@ -741,6 +751,8 @@ namespace te
                             ImGuiExt::RenderOptionCombo<UINT32>(&Data.TexParam.MaxMips, "##file_dialog_parameters_texture_max_mips", "Max mip level", maxMipsOptions, 300);
                         }
                     }
+
+                    ImGuiExt::RenderOptionBool(Data.TexParam.CpuCached, "##file_dialog_texture_cpu_cached", "CPU cached");
                 }
                 else if (strcmp(selectedExt, ".ogg") == 0 || strcmp(selectedExt, ".wav") == 0 || strcmp(selectedExt, ".flac") == 0)
                 {
@@ -969,9 +981,9 @@ namespace te
                 }
                 //Store directories and files in separate vectors
                 if(ent->d_type == DT_DIR)
-                    subdirs.push_back(Info(name, is_hidden));
+                    subdirs.push_back(Info(name, "", is_hidden));
                 else if(ent->d_type == DT_REG && dialog_mode != DialogMode::SELECT)
-                    subfiles.push_back(Info(name, is_hidden));
+                    subfiles.push_back(Info(name, "." + name.substr(name.find_last_of(".") + 1),  is_hidden));
             }
             closedir (dir);
             std::sort(subdirs.begin(), subdirs.end(), AlphaSortComparator);
@@ -1013,8 +1025,11 @@ namespace te
                 }
                 else
                 {
-                    if(filter.PassFilter(subfiles[i].name.c_str()) && (ImStristr(subfiles[i].name.c_str(), nullptr, valid_exts[selected_ext_idx].c_str(), nullptr)) != nullptr)
-                        filtered_files.push_back(&subfiles[i]);
+                    for (int j = 0; j < valid_exts.size(); j++)
+                    {
+                        if (filter.PassFilter(subfiles[i].name.c_str()) && (ImStristr(subfiles[i].name.c_str(), nullptr, valid_exts[j].c_str(), nullptr)) != nullptr)
+                            filtered_files.push_back(&subfiles[i]);
+                    }
                 }
             }
         }
@@ -1261,9 +1276,9 @@ namespace te
         {
             drv = temp;
             if(DRIVE_REMOVABLE == GetDriveTypeA(drv))
-                subdirs.push_back({"Removable Disk: " + String(1,drv[0]), false});
+                subdirs.push_back({"Removable Disk: " + String(1,drv[0]), "", false});
             else if(DRIVE_FIXED == GetDriveTypeA(drv))
-                subdirs.push_back({"Local Disk: " + String(1,drv[0]), false});
+                subdirs.push_back({"Local Disk: " + String(1,drv[0]), "", false});
             //Go to nullptr character
             while(*(++temp));
         }
