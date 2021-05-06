@@ -107,6 +107,7 @@ namespace te
             gEditor().MakePickingDirty();
             gEditor().MakeSelectionDirty();
             gEditor().MakeHudDirty();
+            gEditor().MakePhysicsDirty();
         }
     }
 
