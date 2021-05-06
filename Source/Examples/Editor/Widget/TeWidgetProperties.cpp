@@ -12,6 +12,7 @@
 #include "Mesh/TeMesh.h"
 #include "RenderAPI/TeSubMesh.h"
 #include "Physics/TePhysicsMesh.h"
+#include "Physics/TePhysicsHeightField.h"
 #include "Importer/TeMeshImportOptions.h"
 #include "Importer/TeTextureImportOptions.h"
 #include "Scripting/TeScriptManager.h"
@@ -876,6 +877,7 @@ namespace te
                     hasChanged = true;
                 }
             }
+            ImGui::Separator();
 
             if (ShowLoadMesh())
                 hasChanged = true;
@@ -941,11 +943,70 @@ namespace te
     bool WidgetProperties::ShowCHeightFieldColliderProperties()
     {
         bool hasChanged = false;
-        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
+        float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
         SPtr<CHeightFieldCollider> collider = std::static_pointer_cast<CHeightFieldCollider>(_selections.ClickedComponent);
+        HPhysicsHeightField heightField = collider->GetHeightField();
+        SPtr<Texture> texture = heightField.IsLoaded() ? heightField->GetTexture() : nullptr;
+        UINT8 flags = (UINT8)ImGuiExt::ComboOptionFlag::ShowTexture;
 
         if (ImGui::CollapsingHeader("Terrain collider", ImGuiTreeNodeFlags_DefaultOpen))
         {
+            // PhysicsHeightField
+            {
+                ImGuiExt::ComboOptions<UUID> heightFieldsOptions;
+                UUID emptyHeightField = UUID(50, 0, 0, 0);
+                UUID loadPhysicsMesh = UUID::EMPTY;
+                UUID heightFieldUUID = (texture) ? texture->GetUUID() : emptyHeightField;
+                EditorResManager::ResourcesContainer& container = EditorResManager::Instance().Get<Texture>();
+
+                // current texture to use as PhysicsHeightField
+                for (auto& resource : container.Res)
+                {
+                    HTexture tex = static_resource_cast<Texture>(resource.second);
+
+                    if (tex.IsLoaded() && tex->GetProperties().GetTextureType() != TextureType::TEX_TYPE_CUBE_MAP &&
+                        tex->GetProperties().GetWidth() == tex->GetProperties().GetHeight())
+                    {
+                        heightFieldsOptions.AddOption(resource.second->GetUUID(), resource.second->GetName(),
+                            std::static_pointer_cast<Texture>(resource.second.GetInternalPtr()));
+                    }
+                }
+
+                heightFieldsOptions.AddOption(emptyHeightField, ICON_FA_TIMES_CIRCLE " No HeightField");
+                heightFieldsOptions.AddOption(UUID::EMPTY, ICON_FA_FOLDER_OPEN " Load");
+
+                if (texture && texture->GetProperties().GetTextureType() != TextureType::TEX_TYPE_CUBE_MAP)
+                {
+                    ImGuiExt::RenderImage(texture, 3, Vector2(26.0f, 26.0f));
+                    ImGui::SameLine();
+
+                    ImVec2 cursor = ImGui::GetCursorPos();
+                    cursor.x -= 5.0f;
+                    ImGui::SetCursorPos(cursor);
+
+                    width -= 26.0f;
+                }
+
+                if (ImGuiExt::RenderOptionCombo<UUID>(&heightFieldUUID, "##collider_physic_height_field_option", "Height Field", heightFieldsOptions, width, flags))
+                {
+                    if (heightFieldUUID == loadPhysicsMesh)
+                    {
+                        // Load and create PhysicsHeightField associated to this texture 
+                    }
+                    else if (heightFieldUUID == emptyHeightField)
+                    {
+                        collider->SetHeightField(HPhysicsHeightField());
+                        hasChanged = true;
+                    }
+                    else if (heightFieldUUID != ((heightField.IsLoaded()) ? texture->GetUUID() : emptyHeightField))
+                    {
+                        // Find or create PhysicsHeightField associated to this texture 
+                        hasChanged = true;
+                    }
+                }
+            }
+            ImGui::Separator();
+
             if (ShowCollider(collider))
                 hasChanged = true;
         }

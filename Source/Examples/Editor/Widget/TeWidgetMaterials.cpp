@@ -290,11 +290,15 @@ namespace te
                 {
                     SPtr<Texture> texture = std::static_pointer_cast<Texture>(resource.second.GetInternalPtr());
                     if (texture->GetProperties().GetTextureType() == TextureType::TEX_TYPE_2D)
-                        texturesOptions.AddOption(resource.second->GetUUID(), resource.second->GetName(), 
+                    {
+                        texturesOptions.AddOption(resource.second->GetUUID(), resource.second->GetName(),
                             std::static_pointer_cast<Texture>(resource.second.GetInternalPtr()));
+                    }
 
                     if (texture->GetProperties().GetTextureType() == TextureType::TEX_TYPE_CUBE_MAP)
+                    {
                         texturesEnvMappingOptions.AddOption(resource.second->GetUUID(), resource.second->GetName());
+                    }
                 }
 
                 texturesOptions.AddOption(empty, ICON_FA_TIMES_CIRCLE " No texture");

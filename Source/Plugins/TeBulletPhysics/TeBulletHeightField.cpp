@@ -1,6 +1,7 @@
 #include "TeBulletHeightField.h"
-#include "Image/TeTexture.h"
 #include "TeBulletPhysics.h"
+#include "Image/TeTexture.h"
+#include "Image/TeColor.h"
 
 namespace te
 {
@@ -39,6 +40,22 @@ namespace te
 
     void BulletFHeightField::Initialize()
     {
+        const TextureProperties& properties = _texture->GetProperties();
+        SPtr<PixelData> pixelData = _texture->GetProperties().AllocBuffer(0, 0);
+        
+        if (properties.GetUsage() & TU_CPUCACHED)
+            _texture->ReadCachedData(*pixelData);
+        else
+            _texture->ReadData(*pixelData);
 
+        UINT32 width = std::min(pixelData->GetWidth(), pixelData->GetHeight());
+
+        for (UINT32 j = 0; j < width; j++)
+        {
+            for (UINT32 i = 0; i < width; i++)
+            {
+                Color color = pixelData->GetColorAt(i, j);
+            }
+        }
     }
 }
