@@ -27,9 +27,9 @@ namespace te
         bool notAllLoaded = false;
         List<SPtr<Task>> tasks;
 
-        const auto& BindTexture = [&](bool& isSet, const String& textureName, const String& texturePath, HMaterial& material)
+        const auto& BindTexture = [&](bool* isSet, const String& textureName, const String& texturePath, HMaterial& material)
         {
-            if (isSet)
+            if (*isSet)
             {
                 auto textureImportOptions = TextureImportOptions::Create();
                 textureImportOptions->CpuCached = false;
@@ -46,7 +46,7 @@ namespace te
                 }
                 else
                 {
-                    isSet = false;
+                    *isSet = false;
                 }
             }
         };
@@ -58,6 +58,14 @@ namespace te
             if (createdMaterials.find(subMesh.MaterialName) != createdMaterials.end())
             {
                 subMesh.Mat = createdMaterials[subMesh.MaterialName].GetNewHandleFromExisting();
+
+                subMesh.MatProperties.UseDiffuseMap = subMesh.Mat->GetTexture("DiffuseMap") != nullptr;
+                subMesh.MatProperties.UseEmissiveMap = subMesh.Mat->GetTexture("EmissiveMap") != nullptr;
+                subMesh.MatProperties.UseNormalMap = subMesh.Mat->GetTexture("NormalMap") != nullptr;
+                subMesh.MatProperties.UseSpecularMap = subMesh.Mat->GetTexture("SpecularMap") != nullptr;
+                subMesh.MatProperties.UseBumpMap = subMesh.Mat->GetTexture("BumpMap") != nullptr;
+                subMesh.MatProperties.UseTransparencyMap = subMesh.Mat->GetTexture("TransparencyMap") != nullptr;
+                subMesh.MatProperties.UseReflectionMap = subMesh.Mat->GetTexture("ReflectionMap") != nullptr;
             }
             else if (!subMesh.Mat.IsLoaded())
             {
@@ -73,37 +81,37 @@ namespace te
                 if (subMesh.MatProperties.UseDiffuseMap)
                 {
                     tasks.push_back(Task::Create(subMesh.MaterialName,
-                        [&]() { BindTexture(subMesh.MatProperties.UseDiffuseMap, "DiffuseMap", subMesh.MatTextures.DiffuseMap, createdMaterials[subMesh.MaterialName]); }));
+                        [&]() { BindTexture(&subMesh.MatProperties.UseDiffuseMap, "DiffuseMap", subMesh.MatTextures.DiffuseMap, createdMaterials[subMesh.MaterialName]); }));
                 }
                 if (subMesh.MatProperties.UseEmissiveMap)
                 {
                     tasks.push_back(Task::Create(subMesh.MaterialName,
-                        [&]() { BindTexture(subMesh.MatProperties.UseEmissiveMap, "EmissiveMap", subMesh.MatTextures.EmissiveMap, createdMaterials[subMesh.MaterialName]); }));
+                        [&]() { BindTexture(&subMesh.MatProperties.UseEmissiveMap, "EmissiveMap", subMesh.MatTextures.EmissiveMap, createdMaterials[subMesh.MaterialName]); }));
                 }
                 if (subMesh.MatProperties.UseNormalMap)
                 {
                     tasks.push_back(Task::Create(subMesh.MaterialName,
-                        [&]() { BindTexture(subMesh.MatProperties.UseNormalMap, "NormalMap", subMesh.MatTextures.NormalMap, createdMaterials[subMesh.MaterialName]); }));
+                        [&]() { BindTexture(&subMesh.MatProperties.UseNormalMap, "NormalMap", subMesh.MatTextures.NormalMap, createdMaterials[subMesh.MaterialName]); }));
                 }
                 if (subMesh.MatProperties.UseSpecularMap)
                 {
                     tasks.push_back(Task::Create(subMesh.MaterialName,
-                        [&]() { BindTexture(subMesh.MatProperties.UseSpecularMap, "SpecularMap", subMesh.MatTextures.SpecularMap, createdMaterials[subMesh.MaterialName]); }));
+                        [&]() { BindTexture(&subMesh.MatProperties.UseSpecularMap, "SpecularMap", subMesh.MatTextures.SpecularMap, createdMaterials[subMesh.MaterialName]); }));
                 }
                 if (subMesh.MatProperties.UseBumpMap)
                 {
                     tasks.push_back(Task::Create(subMesh.MaterialName,
-                        [&]() { BindTexture(subMesh.MatProperties.UseBumpMap, "BumpMap", subMesh.MatTextures.BumpMap, createdMaterials[subMesh.MaterialName]); }));
+                        [&]() { BindTexture(&subMesh.MatProperties.UseBumpMap, "BumpMap", subMesh.MatTextures.BumpMap, createdMaterials[subMesh.MaterialName]); }));
                 }
                 if (subMesh.MatProperties.UseTransparencyMap)
                 {
                     tasks.push_back(Task::Create(subMesh.MaterialName,
-                        [&]() { BindTexture(subMesh.MatProperties.UseTransparencyMap, "TransparencyMap", subMesh.MatTextures.TransparencyMap, createdMaterials[subMesh.MaterialName]); }));
+                        [&]() { BindTexture(&subMesh.MatProperties.UseTransparencyMap, "TransparencyMap", subMesh.MatTextures.TransparencyMap, createdMaterials[subMesh.MaterialName]); }));
                 }
                 if (subMesh.MatProperties.UseReflectionMap)
                 {
                     tasks.push_back(Task::Create(subMesh.MaterialName,
-                        [&]() { BindTexture(subMesh.MatProperties.UseReflectionMap, "ReflectionMap", subMesh.MatTextures.ReflectionMap, createdMaterials[subMesh.MaterialName]); }));
+                        [&]() { BindTexture(&subMesh.MatProperties.UseReflectionMap, "ReflectionMap", subMesh.MatTextures.ReflectionMap, createdMaterials[subMesh.MaterialName]); }));
                 }
             }
         }
@@ -121,16 +129,12 @@ namespace te
                 if (!task->IsComplete())
                     notAllLoaded = true;
             }
-
         } while (notAllLoaded);
 
         for (UINT32 i = 0; i < mesh->GetProperties().GetNumSubMeshes(); i++)
         {
             SubMesh& subMesh = mesh->GetProperties().GetSubMesh(i);
-            if (createdMaterials.find(subMesh.MaterialName) != createdMaterials.end())
-            {
-                createdMaterials[subMesh.MaterialName]->SetProperties(subMesh.MatProperties);
-            }
+            subMesh.Mat->SetProperties(subMesh.MatProperties);
         }
     }
 
