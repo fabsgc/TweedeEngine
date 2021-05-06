@@ -72,9 +72,7 @@ namespace te
     bool Widget::EndGui()
     {
         if (_begun)
-        {
             ImGui::End();
-        }
 
         // Pop style variables
         ImGui::PopStyleVar(_varPushes);

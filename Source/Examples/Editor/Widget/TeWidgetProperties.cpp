@@ -954,7 +954,7 @@ namespace te
         {
             // PhysicsHeightField
             {
-                ImGuiExt::ComboOptions<UUID> heightFieldsOptions;
+                ImGuiExt::ComboOptions<UUID> texturesOptions;
                 UUID emptyTexture = UUID(50, 0, 0, 0);
                 UUID loadTexture = UUID::EMPTY;
                 UUID textureUUID = (texture) ? texture->GetUUID() : emptyTexture;
@@ -968,13 +968,13 @@ namespace te
                     if (tex.IsLoaded() && tex->GetProperties().GetTextureType() != TextureType::TEX_TYPE_CUBE_MAP &&
                         tex->GetProperties().GetWidth() == tex->GetProperties().GetHeight())
                     {
-                        heightFieldsOptions.AddOption(resource.second->GetUUID(), resource.second->GetName(),
+                        texturesOptions.AddOption(resource.second->GetUUID(), resource.second->GetName(),
                             std::static_pointer_cast<Texture>(resource.second.GetInternalPtr()));
                     }
                 }
 
-                heightFieldsOptions.AddOption(emptyTexture, ICON_FA_TIMES_CIRCLE " No HeightField");
-                heightFieldsOptions.AddOption(UUID::EMPTY, ICON_FA_FOLDER_OPEN " Load");
+                texturesOptions.AddOption(emptyTexture, ICON_FA_TIMES_CIRCLE " No HeightField");
+                texturesOptions.AddOption(UUID::EMPTY, ICON_FA_FOLDER_OPEN " Load");
 
                 if (texture && texture->GetProperties().GetTextureType() != TextureType::TEX_TYPE_CUBE_MAP)
                 {
@@ -988,7 +988,7 @@ namespace te
                     width -= 26.0f;
                 }
 
-                if (ImGuiExt::RenderOptionCombo<UUID>(&textureUUID, "##collider_physic_height_field_option", "Height Field", heightFieldsOptions, width, flags))
+                if (ImGuiExt::RenderOptionCombo<UUID>(&textureUUID, "##collider_physic_height_field_option", "Height Field", texturesOptions, width, flags))
                 {
                     if (textureUUID == loadTexture)
                     {

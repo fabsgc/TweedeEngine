@@ -55,15 +55,22 @@ namespace te
         Widget(WidgetType type);
         ~Widget() = default;
 
+        /** Initialize Widget */
         virtual void Initialize() = 0;
+
+        /** Update Widget */
         virtual void Update() = 0;
-        virtual void UpdateBackground() = 0; // Sometimes we want to update while widget is not visible
+
+        /** Update Widget while in background */
+        virtual void UpdateBackground() = 0;
+
+        /** Give focus to the current widget */
         virtual void PutFocus();
 
-        template<typename T>
-        void PushStyleVar(ImGuiStyleVar idx, T val) { ImGui::PushStyleVar(idx, val); _varPushes++; }
-
+        /** Initialize ImGui for this Widget */
         bool BeginGui();
+
+        /** End ImGui for this Widget */
         bool EndGui();
 
         bool IsWindow() const { return _isWindow; }
@@ -98,6 +105,6 @@ namespace te
         ImGuiWindow* _window = nullptr;
         ImGuiViewport* _viewport = nullptr;
 
-        UINT8 _varPushes = 0;        
+        UINT8 _varPushes = 0;
     };
 }
