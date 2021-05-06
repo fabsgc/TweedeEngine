@@ -145,6 +145,12 @@ namespace te
         /** Show FileBrowser in order to load a new audio clip */
         bool ShowLoadAudioClip();
 
+        /** Show FileBrowser in order to load a new texture for a PhysicsHeightField */
+        bool ShowLoadHeightFieldTexture();
+
+        /** Try to find an already existing PhysicsHeightField using given texture, or create a new one */
+        HPhysicsHeightField GetOrCreatePhysicsHightFieldFromTex(SPtr<Texture> texture);
+
     protected:
         Editor::SelectionData& _selections;
         ImGuiFileBrowser& _fileBrowser;
@@ -155,5 +161,6 @@ namespace te
         bool _loadSkyboxIrradiance = false;
         bool _loadScript = false;
         bool _loadAudioClip = false;
+        bool _loadHeightFieldTexture = false;
     };
 }

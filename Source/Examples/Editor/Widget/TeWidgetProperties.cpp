@@ -39,6 +39,7 @@
 #include "Components/TeCPlaneCollider.h"
 #include "Components/TeCSphereCollider.h"
 #include "Components/TeCHeightFieldCollider.h"
+#include "Physics/TePhysics.h"
 
 #if defined(__GNUC__)
 #pragma GCC diagnostic ignored "-Wsign-compare" 
@@ -954,13 +955,13 @@ namespace te
             // PhysicsHeightField
             {
                 ImGuiExt::ComboOptions<UUID> heightFieldsOptions;
-                UUID emptyHeightField = UUID(50, 0, 0, 0);
-                UUID loadPhysicsMesh = UUID::EMPTY;
-                UUID heightFieldUUID = (texture) ? texture->GetUUID() : emptyHeightField;
-                EditorResManager::ResourcesContainer& container = EditorResManager::Instance().Get<Texture>();
+                UUID emptyTexture = UUID(50, 0, 0, 0);
+                UUID loadTexture = UUID::EMPTY;
+                UUID textureUUID = (texture) ? texture->GetUUID() : emptyTexture;
+                EditorResManager::ResourcesContainer& texContainer = EditorResManager::Instance().Get<Texture>();
 
                 // current texture to use as PhysicsHeightField
-                for (auto& resource : container.Res)
+                for (auto& resource : texContainer.Res)
                 {
                     HTexture tex = static_resource_cast<Texture>(resource.second);
 
@@ -972,7 +973,7 @@ namespace te
                     }
                 }
 
-                heightFieldsOptions.AddOption(emptyHeightField, ICON_FA_TIMES_CIRCLE " No HeightField");
+                heightFieldsOptions.AddOption(emptyTexture, ICON_FA_TIMES_CIRCLE " No HeightField");
                 heightFieldsOptions.AddOption(UUID::EMPTY, ICON_FA_FOLDER_OPEN " Load");
 
                 if (texture && texture->GetProperties().GetTextureType() != TextureType::TEX_TYPE_CUBE_MAP)
@@ -987,20 +988,22 @@ namespace te
                     width -= 26.0f;
                 }
 
-                if (ImGuiExt::RenderOptionCombo<UUID>(&heightFieldUUID, "##collider_physic_height_field_option", "Height Field", heightFieldsOptions, width, flags))
+                if (ImGuiExt::RenderOptionCombo<UUID>(&textureUUID, "##collider_physic_height_field_option", "Height Field", heightFieldsOptions, width, flags))
                 {
-                    if (heightFieldUUID == loadPhysicsMesh)
+                    if (textureUUID == loadTexture)
                     {
-                        // Load and create PhysicsHeightField associated to this texture 
+                        // Load and create (if not exists) PhysicsHeightField associated to this texture
+                        _loadHeightFieldTexture = true;
                     }
-                    else if (heightFieldUUID == emptyHeightField)
+                    else if (textureUUID == emptyTexture)
                     {
                         collider->SetHeightField(HPhysicsHeightField());
                         hasChanged = true;
                     }
-                    else if (heightFieldUUID != ((heightField.IsLoaded()) ? texture->GetUUID() : emptyHeightField))
+                    else if (textureUUID != ((heightField.IsLoaded()) ? texture->GetUUID() : emptyTexture))
                     {
-                        // Find or create PhysicsHeightField associated to this texture 
+                        // Find or create PhysicsHeightField associated to this texture
+                        collider->SetHeightField(GetOrCreatePhysicsHightFieldFromTex(gResourceManager().Load<Texture>(textureUUID).GetInternalPtr()));
                         hasChanged = true;
                     }
                 }
@@ -1008,6 +1011,9 @@ namespace te
             ImGui::Separator();
 
             if (ShowCollider(collider))
+                hasChanged = true;
+
+            if (ShowLoadHeightFieldTexture())
                 hasChanged = true;
         }
 
@@ -1496,20 +1502,6 @@ namespace te
         bool hasChanged = false;
         const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
 
-        // preview mode
-        /*{
-            bool previewMode = animation->GetPreviewMode();
-            bool oldPreviewMode = previewMode;
-            if (ImGuiExt::RenderOptionBool(previewMode, "##animation_preview_mode_option", "Preview"))
-            {
-                if (previewMode != oldPreviewMode)
-                {
-                    hasChanged = true;
-                    animation->_togglePreviewMode(true);
-                }
-            }
-        }*/
-
         // cull
         {
             bool cull = animation->GetEnableCull();
@@ -1904,7 +1896,7 @@ namespace te
         if (_loadMesh || _loadPhysicsMesh)
             ImGui::OpenPopup("Load Mesh");
 
-        if (_fileBrowser.ShowFileDialog("Load Mesh", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), true, ".obj,.dae,.fbx,.stl,.gltf"))
+        if (_fileBrowser.ShowFileDialog("Load Mesh", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, ".obj,.dae,.fbx,.stl,.gltf"))
         {
             auto meshImportOptions = MeshImportOptions::Create();
             meshImportOptions->ImportNormals = _fileBrowser.Data.MeshParam.ImportNormals;
@@ -1997,18 +1989,18 @@ namespace te
 
     bool WidgetProperties::ShowLoadSkybox()
     {
-        bool textureLoaded = false;
+        bool skyboxLoaded = false;
 
         if (_loadSkybox || _loadSkyboxIrradiance)
             ImGui::OpenPopup("Load Skybox Texture");
 
-        if (_fileBrowser.ShowFileDialog("Load Skybox Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), false, ".png,.jpeg,.jpg"))
+        if (_fileBrowser.ShowFileDialog("Load Skybox Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), false, ".png,.jpeg,.jpg"))
         {
             auto textureSkyboxImportOptions = TextureImportOptions::Create();
-            textureSkyboxImportOptions->CpuCached = false;
             textureSkyboxImportOptions->CubemapType = CubemapSourceType::Faces;
             textureSkyboxImportOptions->IsCubemap = true;
             textureSkyboxImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
+            textureSkyboxImportOptions->CpuCached = _fileBrowser.Data.TexParam.CpuCached;
 
             HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.Data.SelectedPath, textureSkyboxImportOptions);
             if (texture.IsLoaded())
@@ -2022,7 +2014,7 @@ namespace te
                 else
                     skybox->SetIrradiance(texture.GetInternalPtr());
 
-                textureLoaded = true;
+                skyboxLoaded = true;
             }
 
             _loadSkybox = false;
@@ -2034,7 +2026,7 @@ namespace te
                 _loadSkybox = false;
         }
 
-        return textureLoaded;
+        return skyboxLoaded;
     }
 
     bool WidgetProperties::ShowLoadScript()
@@ -2044,7 +2036,7 @@ namespace te
         if (_loadScript)
             ImGui::OpenPopup("Load Script");
 
-        if (_fileBrowser.ShowFileDialog("Load Script", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), false, ".cpp"))
+        if (_fileBrowser.ShowFileDialog("Load Script", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), false, ".cpp"))
         {
             if (_selections.ClickedComponent && _selections.ClickedComponent->GetCoreType() == TID_CScript)
             {
@@ -2072,7 +2064,7 @@ namespace te
         if (_loadAudioClip)
             ImGui::OpenPopup("Load Audio Clip");
 
-        if (_fileBrowser.ShowFileDialog("Load Audio Clip", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), true, ".ogg,.flac,.wav"))
+        if (_fileBrowser.ShowFileDialog("Load Audio Clip", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, ".ogg,.flac,.wav"))
         {
             auto audioClipImportOptions = AudioClipImportOptions::Create();
             audioClipImportOptions->Is3D = _fileBrowser.Data.AudioParam.Is3D;
@@ -2082,6 +2074,7 @@ namespace te
             {
                 audioClip->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
                 EditorResManager::Instance().Add<AudioClip>(audioClip);
+
                 SPtr<CAudioSource> audioSource = std::static_pointer_cast<CAudioSource>(_selections.ClickedComponent);
                 audioSource->SetClip(audioClip);
                 audioScriptLoaded = true;
@@ -2096,5 +2089,70 @@ namespace te
         }
         
         return audioScriptLoaded;
+    }
+
+    bool WidgetProperties::ShowLoadHeightFieldTexture()
+    {
+        bool heightFieldTextureLoaded = false;
+
+        if (_loadHeightFieldTexture)
+            ImGui::OpenPopup("Load Height Field Texture");
+
+        if (_fileBrowser.ShowFileDialog("Load Height Field Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, ".png,.jpeg,.jpg"))
+        {
+            auto textureImportOptions = TextureImportOptions::Create();
+            if (_fileBrowser.Data.TexParam.TexType != TextureType::TEX_TYPE_CUBE_MAP)
+            {
+                textureImportOptions->CpuCached = _fileBrowser.Data.TexParam.CpuCached;
+                textureImportOptions->GenerateMips = _fileBrowser.Data.TexParam.GenerateMips;
+                textureImportOptions->MaxMip = _fileBrowser.Data.TexParam.MaxMips;
+                textureImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
+
+                HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.Data.SelectedPath, textureImportOptions, true);
+                if (texture.IsLoaded())
+                {
+                    texture->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
+                    EditorResManager::Instance().Add<Texture>(texture);
+
+                    if (texture->GetProperties().GetTextureType() != TextureType::TEX_TYPE_CUBE_MAP &&
+                        texture->GetProperties().GetWidth() == texture->GetProperties().GetHeight())
+                    {
+                        SPtr<CHeightFieldCollider> heightFieldCollider = std::static_pointer_cast<CHeightFieldCollider>(_selections.ClickedComponent);
+                        heightFieldCollider->SetHeightField(GetOrCreatePhysicsHightFieldFromTex(texture.GetInternalPtr()));
+                    }
+                }
+            }
+
+            _loadHeightFieldTexture = false;
+        }
+        else
+        {
+            if (_fileBrowser.Data.IsCancelled)
+                _loadHeightFieldTexture = false;
+        }
+
+        return heightFieldTextureLoaded;
+    }
+
+    HPhysicsHeightField WidgetProperties::GetOrCreatePhysicsHightFieldFromTex(SPtr<Texture> texture)
+    {
+        if (!texture)
+            return HPhysicsHeightField();
+
+        EditorResManager::ResourcesContainer& HeightFieldContainer = EditorResManager::Instance().Get<PhysicsHeightField>();
+
+        for (auto& resource : HeightFieldContainer.Res)
+        {
+            HPhysicsHeightField heightField = static_resource_cast<PhysicsHeightField>(resource.second);
+            
+            if (heightField->GetTexture() == texture)
+                return heightField;
+        }
+
+        HPhysicsHeightField physicsHeightField = PhysicsHeightField::Create(texture);
+        if (physicsHeightField.IsLoaded())
+            EditorResManager::Instance().Add<PhysicsHeightField>(physicsHeightField);
+
+        return physicsHeightField;
     }
 }

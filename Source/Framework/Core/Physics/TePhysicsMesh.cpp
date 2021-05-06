@@ -18,17 +18,27 @@ namespace te
 
     HPhysicsMesh PhysicsMesh::Create(const SPtr<MeshData>& meshData)
     {
-        SPtr<PhysicsMesh> newMesh = _createPtr(meshData);
-        return static_resource_cast<PhysicsMesh>(gResourceManager()._createResourceHandle(newMesh));
+        if (meshData)
+        {
+            SPtr<PhysicsMesh> newMesh = _createPtr(meshData);
+            return static_resource_cast<PhysicsMesh>(gResourceManager()._createResourceHandle(newMesh));
+        }
+
+        return HPhysicsMesh();
     }
 
     SPtr<PhysicsMesh> PhysicsMesh::_createPtr(const SPtr<MeshData>& meshData)
     {
-        SPtr<PhysicsMesh> newMesh = gPhysics().CreateMesh(meshData);
-        newMesh->SetThisPtr(newMesh);
-        newMesh->Initialize();
+        if (meshData)
+        {
+            SPtr<PhysicsMesh> newMesh = gPhysics().CreateMesh(meshData);
+            newMesh->SetThisPtr(newMesh);
+            newMesh->Initialize();
 
-        return newMesh;
+            return newMesh;
+        }
+
+        return nullptr;
     }
 
     void PhysicsMesh::Initialize()

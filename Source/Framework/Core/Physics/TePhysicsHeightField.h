@@ -34,6 +34,11 @@ namespace te
 
         /**
          * @copydoc Create()
+         */
+        static HPhysicsHeightField Create(const HTexture& texture);
+
+        /**
+         * @copydoc Create()
          *
          * For internal use. Requires manual initialization after creation.
          */

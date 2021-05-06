@@ -1,6 +1,7 @@
 #include "Physics/TePhysicsHeightField.h"
 #include "Resources/TeResourceManager.h"
 #include "Physics/TePhysics.h"
+#include "Image/TeTexture.h"
 
 namespace te
 {
@@ -18,17 +19,38 @@ namespace te
 
     HPhysicsHeightField PhysicsHeightField::Create(const SPtr<Texture>& texture)
     {
-        SPtr<PhysicsHeightField> newMesh = _createPtr(texture);
-        return static_resource_cast<PhysicsHeightField>(gResourceManager()._createResourceHandle(newMesh));
+        if (texture)
+        {
+            SPtr<PhysicsHeightField> newHeightField = _createPtr(texture);
+            return static_resource_cast<PhysicsHeightField>(gResourceManager()._createResourceHandle(newHeightField));
+        }
+        
+        return HPhysicsHeightField();
+    }
+
+    HPhysicsHeightField PhysicsHeightField::Create(const HTexture& texture)
+    {
+        if (texture.IsLoaded())
+        {
+            SPtr<PhysicsHeightField> newHeightField = _createPtr(texture.GetInternalPtr());
+            return static_resource_cast<PhysicsHeightField>(gResourceManager()._createResourceHandle(newHeightField));
+        }
+
+        return HPhysicsHeightField();
     }
 
     SPtr<PhysicsHeightField> PhysicsHeightField::_createPtr(const SPtr<Texture>& texture)
     {
-        SPtr<PhysicsHeightField> newMesh = gPhysics().CreateHeightField(texture);
-        newMesh->SetThisPtr(newMesh);
-        newMesh->Initialize();
+        if (texture)
+        {
+            SPtr<PhysicsHeightField> newHeightField = gPhysics().CreateHeightField(texture);
+            newHeightField->SetThisPtr(newHeightField);
+            newHeightField->Initialize();
 
-        return newMesh;
+            return newHeightField;
+        }
+
+        return nullptr;
     }
 
     void PhysicsHeightField::Initialize()
