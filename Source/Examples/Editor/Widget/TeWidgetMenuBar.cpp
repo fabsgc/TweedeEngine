@@ -220,7 +220,7 @@ namespace te
         if (_settings.Open)
             ImGui::OpenPopup("Open Project");
 
-        if (_fileBrowser.ShowFileDialog("Open Project", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), true, ".scene"))
+        if (_fileBrowser.ShowFileDialog("Open Project", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, ".scene"))
         {
             gEditor().GetSettings().FilePath = _fileBrowser.Data.SelectedPath;
             gEditor().Open();
@@ -238,7 +238,7 @@ namespace te
         if (_settings.Save)
             ImGui::OpenPopup("Save Project");
 
-        if (_fileBrowser.ShowFileDialog("Save Project", ImGuiFileBrowser::DialogMode::SAVE, ImVec2(800, 450), false, ".scene"))
+        if (_fileBrowser.ShowFileDialog("Save Project", ImGuiFileBrowser::DialogMode::SAVE, ImVec2(900, 450), false, ".scene"))
         {
             if (!std::regex_match(_fileBrowser.Data.SelectedPath, std::regex("^(.*)\\.(scene)$")))
                 gEditor().GetSettings().FilePath = _fileBrowser.Data.SelectedPath + ".scene";
@@ -260,21 +260,21 @@ namespace te
         if (_settings.Load)
             ImGui::OpenPopup("Load Resource");
 
-        if (_fileBrowser.ShowFileDialog("Load Resource", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), true, ".png,.jpeg,.jpg,.obj,.dae,.fbx,.stl,.gltf,.scene,.ogg,.wav,.flac"))
+        if (_fileBrowser.ShowFileDialog("Load Resource", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, ".png,.jpeg,.jpg,.obj,.dae,.fbx,.stl,.gltf,.scene,.ogg,.wav,.flac"))
         {
             if (_fileBrowser.Data.Ext == ".jpeg" || _fileBrowser.Data.Ext == ".jpg" || _fileBrowser.Data.Ext == ".png")
             {
                 auto textureImportOptions = TextureImportOptions::Create();
                 if (_fileBrowser.Data.TexParam.TexType == TextureType::TEX_TYPE_CUBE_MAP)
                 {
-                    textureImportOptions->CpuCached = false;
+                    textureImportOptions->CpuCached = _fileBrowser.Data.TexParam.CpuCached;
                     textureImportOptions->CubemapType = CubemapSourceType::Faces;
                     textureImportOptions->IsCubemap = true;
                     textureImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
                 }
                 else
                 {
-                    textureImportOptions->CpuCached = false;
+                    textureImportOptions->CpuCached = _fileBrowser.Data.TexParam.CpuCached;
                     textureImportOptions->GenerateMips = _fileBrowser.Data.TexParam.GenerateMips;
                     textureImportOptions->MaxMip = _fileBrowser.Data.TexParam.MaxMips;
                     textureImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;

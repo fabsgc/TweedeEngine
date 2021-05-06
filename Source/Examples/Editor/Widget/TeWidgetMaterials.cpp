@@ -417,24 +417,24 @@ namespace te
         if (_loadTexture)
             ImGui::OpenPopup("Load Material Texture");
 
-        if (_fileBrowser.ShowFileDialog("Load Material Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(800, 450), true, ".png,.jpeg,.jpg"))
+        if (_fileBrowser.ShowFileDialog("Load Material Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, ".png,.jpeg,.jpg"))
         {
             auto textureImportOptions = TextureImportOptions::Create();
             if (_fileBrowser.Data.TexParam.TexType == TextureType::TEX_TYPE_CUBE_MAP)
             {
-                textureImportOptions->CpuCached = false;
+                textureImportOptions->CpuCached = _fileBrowser.Data.TexParam.CpuCached;
                 textureImportOptions->CubemapType = CubemapSourceType::Faces;
                 textureImportOptions->IsCubemap = true;
                 textureImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
             }
             else
             {
-                textureImportOptions->CpuCached = false;
+                textureImportOptions->CpuCached = _fileBrowser.Data.TexParam.CpuCached;
                 textureImportOptions->GenerateMips = _fileBrowser.Data.TexParam.GenerateMips;
                 textureImportOptions->MaxMip = _fileBrowser.Data.TexParam.MaxMips;
                 textureImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
             }
-            
+
             HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.Data.SelectedPath, textureImportOptions);
             if (texture.IsLoaded())
             {

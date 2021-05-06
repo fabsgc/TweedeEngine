@@ -92,9 +92,16 @@ namespace te
                     if (Physics::IsStarted())
                     {
                         SPtr<PhysicsMesh> physicsMesh = PhysicsMesh::_createPtr(rendererMeshData->GetData());
-                        physicsMesh->SetName("Collision - " + mesh->GetName());
 
-                        output.push_back({ u8"collision", physicsMesh });
+                        if (physicsMesh)
+                        {
+                            physicsMesh->SetName("Collision - " + mesh->GetName());
+                            output.push_back({ u8"collision", physicsMesh });
+                        }
+                        else
+                        {
+                            TE_DEBUG("Cannot generate a collision mesh.");
+                        }
                     }
                     else
                     {
