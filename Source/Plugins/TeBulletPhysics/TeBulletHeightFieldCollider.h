@@ -20,6 +20,9 @@ namespace te
         /** Create shape using current parameters */
         void UpdateShape();
 
+        /** @copydoc HeightFieldCollider::OnHeightFieldChanged */
+        void OnHeightFieldChanged() override;
+
     private:
         btHeightfieldTerrainShape* _shape = nullptr;
     };

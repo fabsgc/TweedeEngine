@@ -58,11 +58,14 @@ namespace te
     class BulletSoftBody;
     class BulletMesh;
     class BulletFMesh;
+    class BulletHeightField;
+    class BulletFHeightField;
 
-    /**	Type IDs used by the serizalition system for the Bullet library. */
+    /** Type IDs used by the serizalition system for the Bullet library. */
     enum TypeID_PhysX
     {
-        TID_FBulletMesh = 100000,
+        TID_FBulletMesh        = 100000,
+        TID_FBulletHeightField = 100001,
     };
 
     inline Vector3 ToVector3(const btVector3& vector)

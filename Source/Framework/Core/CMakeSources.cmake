@@ -449,6 +449,7 @@ set (TE_CORE_INC_PHYSICS
     "Core/Physics/TeFJoint.h"
     "Core/Physics/TePhysicsDebug.h"
     "Core/Physics/TePhysicsMesh.h"
+    "Core/Physics/TePhysicsHeightField.h"
 )
 set (TE_CORE_SRC_PHYSICS
     "Core/Physics/TePhysics.cpp"
@@ -475,6 +476,7 @@ set (TE_CORE_SRC_PHYSICS
     "Core/Physics/TeFJoint.cpp"
     "Core/Physics/TePhysicsDebug.cpp"
     "Core/Physics/TePhysicsMesh.cpp"
+    "Core/Physics/TePhysicsHeightField.cpp"
 )
 
 set (TE_CORE_INC_PROFILING

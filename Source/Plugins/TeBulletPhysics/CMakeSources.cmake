@@ -21,6 +21,7 @@ set (TE_BULLETPHYSICS_INC_NOFILTER
     "TeBulletDebug.h"
     "TeBulletDebugMat.h"
     "TeBulletMesh.h"
+    "TeBulletHeightField.h"
 )
 
 set (TE_BULLETPHYSICS_SRC_NOFILTER
@@ -46,6 +47,7 @@ set (TE_BULLETPHYSICS_SRC_NOFILTER
     "TeBulletDebug.cpp"
     "TeBulletDebugMat.cpp"
     "TeBulletMesh.cpp"
+    "TeBulletHeightField.cpp"
 )
 
 source_group ("" FILES ${TE_BULLETPHYSICS_SRC_NOFILTER} ${TE_BULLETPHYSICS_INC_NOFILTER})

@@ -10,6 +10,7 @@
 #include "TeCCapsuleCollider.h"
 #include "TeCMeshCollider.h"
 #include "TeCConeCollider.h"
+#include "TeCHeightFieldCollider.h"
 
 namespace te
 {
@@ -151,6 +152,7 @@ namespace te
         friend class CMeshCollider;
         friend class CPlaneCollider;
         friend class CSphereCollider;
+        friend class CHeightFieldCollider;
         using Component::DestroyInternal;
 
         /** Triggered when the internal body begins touching another object. */

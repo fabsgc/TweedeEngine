@@ -109,6 +109,8 @@ namespace te
         TID_CBody                   = 1054,
         TID_PhysicsMesh             = 1055,
         TID_FPhysicsMesh            = 1056,
+        TID_PhysicsHeightField      = 1057,
+        TID_FPhysicsHeightField     = 1058
     };
 }
 
@@ -372,6 +374,8 @@ namespace te
     class PhysicsDebug;
     class PhysicsMesh;
     class FPhysicsMesh;
+    class PhysicsHeightField;
+    class FPhysicsHeightField;
 
     class GPUProfiler;
 }
@@ -394,6 +398,7 @@ namespace te
     typedef ResourceHandle<AudioClip> HAudioClip;
     typedef ResourceHandle<AnimationClip> HAnimationClip;
     typedef ResourceHandle<PhysicsMesh> HPhysicsMesh;
+    typedef ResourceHandle<PhysicsHeightField> HPhysicsHeightField;
 }
 
 #include "Scene/TeGameObjectHandle.h"

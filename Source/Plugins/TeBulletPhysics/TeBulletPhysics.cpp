@@ -17,6 +17,7 @@
 #include "TeBulletHeightFieldCollider.h"
 #include "TeBulletDebug.h"
 #include "TeBulletMesh.h"
+#include "TeBulletHeightField.h"
 #include "Utility/TeTime.h"
 #include "RenderAPI/TeRenderAPI.h"
 #include "RenderAPI/TeRenderTexture.h"
@@ -45,7 +46,6 @@ namespace te
         {
             _collisionConfiguration = te_new<btDefaultCollisionConfiguration>();
             _collisionDispatcher = te_new<btCollisionDispatcher>(_collisionConfiguration);
-            //btGImpactCollisionAlgorithm::registerAlgorithm(_collisionDispatcher);
             //btGImpactCollisionAlgorithm::registerAlgorithm(_collisionDispatcher);
         }
     }
@@ -83,6 +83,11 @@ namespace te
     SPtr<PhysicsMesh> BulletPhysics::CreateMesh(const SPtr<MeshData>& meshData)
     {
         return te_core_ptr_new<BulletMesh>(meshData);
+    }
+
+    SPtr<PhysicsHeightField> BulletPhysics::CreateHeightField(const SPtr<Texture>& texture)
+    {
+        return te_core_ptr_new<BulletHeightField>(texture);
     }
 
     SPtr<PhysicsScene> BulletPhysics::CreatePhysicsScene()

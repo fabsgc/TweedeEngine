@@ -46,6 +46,9 @@ namespace te
         /** @copydoc Physics::CreateMesh() */
         SPtr<PhysicsMesh> CreateMesh(const SPtr<MeshData>& meshData) override;
 
+        /** @copydoc Physics::CreateMesh() */
+        SPtr<PhysicsHeightField> CreateHeightField(const SPtr<Texture>& texture) override;
+
         /** @copydoc Physics::CreatePhysicsScene() */
         SPtr<PhysicsScene> CreatePhysicsScene() override;
 

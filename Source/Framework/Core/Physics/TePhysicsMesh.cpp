@@ -8,7 +8,7 @@ namespace te
         : Resource(TID_PhysicsMesh)
         , _initMeshData(meshData)
     {
-        // Derived class is responsible for initializing mInternal
+        // Derived class is responsible for initializing _internal
     }
 
     SPtr<MeshData> PhysicsMesh::GetMeshData() const

@@ -42,7 +42,7 @@ namespace te
 
         /** Returns the internal implementation of the physics mesh. */
         virtual FPhysicsMesh* _getInternal() { return _internal.get(); }
-    
+
     protected:
         SPtr<FPhysicsMesh> _internal;
         SPtr<MeshData> _initMeshData; // Transient, only used during initalization
@@ -58,7 +58,7 @@ namespace te
         /**  @copydoc Resource::GetResourceType */
         static UINT32 GetResourceType() { return TID_FPhysicsMesh; }
 
-        /** Re@copydoc PhysicsMesh::PhysicsMesh */
+        /** @copydoc PhysicsMesh::GetMeshData */
         SPtr<MeshData> GetMeshData() const { return _meshData;  }
 
     protected:

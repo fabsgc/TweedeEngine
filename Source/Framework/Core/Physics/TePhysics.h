@@ -30,6 +30,9 @@ namespace te
         /** @copydoc PhysicsMesh::Create() */
         virtual SPtr<PhysicsMesh> CreateMesh(const SPtr<MeshData>& meshData) = 0;
 
+        /** @copydoc PhysicsHeightField::Create() */
+        virtual SPtr<PhysicsHeightField> CreateHeightField(const SPtr<Texture>& texture) = 0;
+
         /** Creates an object representing the physics scene. Must be manually released via destroyPhysicsScene(). */
         virtual SPtr<PhysicsScene> CreatePhysicsScene() = 0;
 

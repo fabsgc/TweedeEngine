@@ -19,6 +19,12 @@ namespace te
         /** Return Component type */
         static UINT32 GetComponentType() { return TID_CHeightFieldCollider; }
 
+        /** @copydoc HeightFieldCollider::SetHeightField() */
+        void SetHeightField(const HPhysicsHeightField& heightField);
+
+        /** @copydoc HeightFieldCollider::GetHeightField() */
+        HPhysicsHeightField GetHeightField() const { return _heightField; }
+
         /** @copydoc Component::Clone */
         void Clone(const HHeightFieldCollider& c);
 
@@ -36,5 +42,8 @@ namespace te
 
     protected:
         CHeightFieldCollider(); // Serialization only
+
+    protected:
+        HPhysicsHeightField _heightField;
     };
 }
