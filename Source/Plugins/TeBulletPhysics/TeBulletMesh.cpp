@@ -37,10 +37,7 @@ namespace te
     BulletFMesh::~BulletFMesh()
     {
         if (_triangleMesh)
-        {
             te_delete(_triangleMesh->Vertices);
-            te_delete(_triangleMesh->Indices);
-        }
 
         _convexMesh = nullptr;
         _triangleMesh = nullptr;
@@ -80,16 +77,12 @@ namespace te
                 UINT32 numIndices = _meshData->GetNumIndices();
                 UINT32 vertexStride = vertexDesc->GetVertexStride();
                 UINT32 indexStride = _meshData->GetIndexElementSize();
+                UINT8* indices = (indexStride == sizeof(UINT32))
+                    ? (UINT8*)_meshData->GetIndices32() : (UINT8*)_meshData->GetIndices16();
 
                 UINT8* vertices = te_allocate<UINT8>(sizeof(Vector3) * numVertices);
-                UINT8* indices = te_allocate<UINT8>(sizeof(UINT32) * numIndices);
-
-                Vector3* vertexWriter = (Vector3*)vertices;
-                UINT32* indexWriter = (UINT32*)indices;
-
                 UINT8* vertexReader = _meshData->GetElementData(VES_POSITION);
-                UINT8* indexReader = (indexStride == sizeof(UINT32)) 
-                    ? (UINT8*)_meshData->GetIndices32() : (UINT8*)_meshData->GetIndices16();
+                Vector3* vertexWriter = (Vector3*)vertices;
 
                 for (UINT32 i = 0; i < numVertices; i++)
                 {
@@ -100,22 +93,13 @@ namespace te
                         vertexWriter++;
                 }
 
-                for (UINT32 i = 0; i < numIndices; i++)
-                {
-                    UINT32* currIndex = (UINT32*)(indexReader + (UINT8)indexStride * i);
-                    memcpy(indexWriter, currIndex, sizeof(UINT32));
-
-                    if (i < numIndices - 1)
-                        indexWriter++;
-                }
-
                 _triangleMesh->NumVertices = numVertices;
                 _triangleMesh->NumIndices = numIndices;
                 _triangleMesh->VertexStride = sizeof(Vector3);
-                _triangleMesh->IndexStride = sizeof(UINT32);
-                _triangleMesh->Use32BitIndex = true;
+                _triangleMesh->IndexStride = indexStride;
                 _triangleMesh->Vertices = vertices;
                 _triangleMesh->Indices = indices;
+                _triangleMesh->Use32BitIndex = (indexStride == sizeof(UINT32)) ? true : false;
             }
         }
     }

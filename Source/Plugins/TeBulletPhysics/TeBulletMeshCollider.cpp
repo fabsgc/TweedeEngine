@@ -88,14 +88,25 @@ namespace te
 
             btTriangleMesh* meshInterface = new btTriangleMesh();
             Vector3* vertices = (Vector3*)triangleMesh->Vertices;
-            UINT32* indices = (UINT32*)(triangleMesh->Indices);
+            UINT32* indices32 = (UINT32*)(triangleMesh->Indices);
+            UINT16* indices16 = (UINT16*)(triangleMesh->Indices);
 
             for (UINT32 i = 0; i < triangleMesh->NumIndices / 3; i++)
             {
-                const btVector3& v0 = ToBtVector3(vertices[indices[i * 3]]);
-                const btVector3& v1 = ToBtVector3(vertices[indices[i * 3 + 1]]);
-                const btVector3& v2 = ToBtVector3(vertices[indices[i * 3 + 2]]);
-                meshInterface->addTriangle(v0, v1, v2);
+                if (triangleMesh->Use32BitIndex)
+                {
+                    const btVector3& v0 = ToBtVector3(vertices[indices32[i * 3]]);
+                    const btVector3& v1 = ToBtVector3(vertices[indices32[i * 3 + 1]]);
+                    const btVector3& v2 = ToBtVector3(vertices[indices32[i * 3 + 2]]);
+                    meshInterface->addTriangle(v0, v1, v2);
+                }
+                else
+                {
+                    const btVector3& v0 = ToBtVector3(vertices[indices16[i * 3]]);
+                    const btVector3& v1 = ToBtVector3(vertices[indices16[i * 3 + 1]]);
+                    const btVector3& v2 = ToBtVector3(vertices[indices16[i * 3 + 2]]);
+                    meshInterface->addTriangle(v0, v1, v2);
+                }
             }
 
             _shape = te_new<btBvhTriangleMeshShape>(meshInterface, true, true);

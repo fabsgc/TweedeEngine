@@ -1620,7 +1620,7 @@ namespace te
             while (!(width == 1 && height == 1 && depth == 1))
             {
                 if (width > 1)		width = width / 2;
-                if (height > 1)	height = height / 2;
+                if (height > 1)	    height = height / 2;
                 if (depth > 1)		depth = depth / 2;
 
                 count++;
@@ -2186,6 +2186,7 @@ namespace te
         io.setMipmapGeneration(false);
         io.setAlphaMode(toNVTTAlphaMode(options.alphaMode));
         io.setNormalMap(options.isNormalMap);
+        io.setRoundMode(nvtt::RoundMode::RoundMode_ToNearestPowerOfTwo);
 
         if (interimFormat == PF_RGBA32F)
             io.setFormat(nvtt::InputFormat_RGBA_32F);
@@ -2233,11 +2234,11 @@ namespace te
             return outputMipBuffers;
         }
 
-        if (!Bitwise::IsPow2(src.GetWidth()) || !Bitwise::IsPow2(src.GetHeight()))
+        /*if (!Bitwise::IsPow2(src.GetWidth()) || !Bitwise::IsPow2(src.GetHeight()))
         {
             TE_DEBUG("Mipmap generation failed. Texture width & height must be powers of 2.");
             return outputMipBuffers;
-        }
+        }*/
 
         PixelFormat interimFormat = IsFloatingPoint(src.GetFormat()) ? PF_RGBA32F : PF_BGRA8;
 
@@ -2260,6 +2261,24 @@ namespace te
         io.setNormalMap(options.isNormalMap);
         io.setNormalizeMipmaps(options.normalizeMipmaps);
         io.setWrapMode(toNVTTWrapMode(options.wrapMode));
+        /*io.setRoundMode(nvtt::RoundMode::RoundMode_ToPreviousPowerOfTwo);
+
+        UINT32 maxMipWidth = 1;
+        UINT32 maxMipHeight = 1;
+
+        do
+        {
+            maxMipWidth *= 2;
+        } while (maxMipWidth < src.GetWidth());
+
+        maxMipWidth /= 2;
+
+        do
+        {
+            maxMipHeight *= 2;
+        } while (maxMipHeight < src.GetHeight());
+
+        maxMipHeight /= 2;*/
 
         if (interimFormat == PF_RGBA32F)
             io.setFormat(nvtt::InputFormat_RGBA_32F);
@@ -2272,9 +2291,11 @@ namespace te
             io.setGamma(1.0f, 1.0f);
 
         io.setMipmapData(interimData.GetData(), src.GetWidth(), src.GetHeight());
+        io.setMipmapFilter(nvtt::MipmapFilter::MipmapFilter_Kaiser);
 
         nvtt::CompressionOptions co;
         co.setFormat(nvtt::Format_RGBA);
+        co.setQuality(nvtt::Quality_Highest);
 
         if (interimFormat == PF_RGBA32F)
         {
@@ -2294,6 +2315,14 @@ namespace te
         // too much at the moment.
         UINT32 curWidth = src.GetWidth();
         UINT32 curHeight = src.GetHeight();
+
+        /*if (curWidth != curHeight)
+        {
+            curWidth = maxMipWidth;
+            curHeight = maxMipHeight;
+            numMips = GetMaxMipmaps(curWidth, curHeight, 1, src.GetFormat());
+        }*/
+
         for (UINT32 i = 0; i < numMips; i++)
         {
             rgbaMipBuffers.push_back(te_shared_ptr_new<PixelData>(curWidth, curHeight, 1, interimFormat));

@@ -361,7 +361,7 @@ namespace te
         {
             if(!filtered_dirs[i]->is_hidden || show_hidden)
             {
-                String label = UTF8::FromANSI(filtered_dirs[i]->name);
+                String label = filtered_dirs[i]->name;
 
                 if (label.size() > 2 || (label != ".." && label != "."))
                     label = ICON_FA_FOLDER + String(" ") + label;
@@ -399,17 +399,17 @@ namespace te
                 static const Vector<String> _soundsExtensions = { ".ogg", ".wav", ".flac" };
 
                 if (std::find(_texturesExtensions.begin(), _texturesExtensions.end(), filtered_files[i]->extension) != _texturesExtensions.end())
-                    label = ICON_FA_FILE_IMAGE + String(" ") + UTF8::FromANSI(filtered_files[i]->name);
+                    label = ICON_FA_FILE_IMAGE + String(" ") + (filtered_files[i]->name);
                 else if (std::find(_meshesExtensions.begin(), _meshesExtensions.end(), filtered_files[i]->extension) != _meshesExtensions.end())
-                    label = ICON_FA_FILE_ARCHIVE + String(" ") + UTF8::FromANSI(filtered_files[i]->name);
+                    label = ICON_FA_FILE_ARCHIVE + String(" ") + (filtered_files[i]->name);
                 else if (std::find(_soundsExtensions.begin(), _soundsExtensions.end(), filtered_files[i]->extension) != _soundsExtensions.end())
-                    label = ICON_FA_FILE_AUDIO + String(" ") + UTF8::FromANSI(filtered_files[i]->name);
+                    label = ICON_FA_FILE_AUDIO + String(" ") + (filtered_files[i]->name);
                 else if (filtered_files[i]->extension == ".cpp")
-                    label = ICON_FA_FILE_CODE + String(" ") + UTF8::FromANSI(filtered_files[i]->name);
+                    label = ICON_FA_FILE_CODE + String(" ") + (filtered_files[i]->name);
                 else if (filtered_files[i]->extension == ".scene")
-                    label = ICON_FA_FILE_SIGNATURE + String(" ") + UTF8::FromANSI(filtered_files[i]->name);
+                    label = ICON_FA_FILE_SIGNATURE + String(" ") + (filtered_files[i]->name);
                 else
-                    label = ICON_FA_FILE + String(" ") + UTF8::FromANSI(filtered_files[i]->name);
+                    label = ICON_FA_FILE + String(" ") + (filtered_files[i]->name);
 
                 items++;
                 if(ImGui::Selectable(label.c_str(), selected_idx == i && !is_dir, ImGuiSelectableFlags_AllowDoubleClick))
@@ -670,7 +670,6 @@ namespace te
     bool ImGuiFileBrowser::ShowParametersFileModal()
     {
         ImVec2 window_size(400, 0);
-        const char* selectedExt = Data.Ext.c_str();
         bool ret_val = false;
 
         ImGui::SetNextWindowSize(window_size);
@@ -678,10 +677,11 @@ namespace te
 
         if (ImGui::BeginPopupModal(parameters_file_modal_id.c_str(), nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize))
         {
+            String ext = (Data.SelectedFileName.substr(Data.SelectedFileName.find_last_of(".") + 1));
+
             if (dialog_mode == DialogMode::OPEN)
             {
-                if (strcmp(selectedExt, ".obj") == 0 || strcmp(selectedExt, ".dae") == 0 || strcmp(selectedExt, ".fbx") == 0 ||
-                    strcmp(selectedExt, ".stl") == 0 || strcmp(selectedExt, ".gltf") == 0)
+                if (ext == "obj" || ext == "dae" || ext == "fbx" || ext == "stl" || ext == "gltf")
                 {
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportNormals, "##file_dialog_parameters_mesh_normals", "Import normals");
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportTangents, "##file_dialog_parameters_mesh_tangents", "Import tangents");
@@ -715,7 +715,7 @@ namespace te
 
                     ImGuiExt::RenderOptionBool(Data.MeshParam.CollisionShape, "##file_dialog_parameters_mesh_collision_shape", "Collision Shape");
                 }
-                else if (strcmp(selectedExt, ".jpg") == 0 || strcmp(selectedExt, ".jpeg") == 0 || strcmp(selectedExt, ".png") == 0)
+                else if (ext == "jpg" || ext == "jpeg" || ext == "png")
                 {
                     static ImGuiExt::ComboOptions<TextureType> textureTypeOptions;
                     if (textureTypeOptions.Options.size() == 0)
@@ -754,16 +754,16 @@ namespace te
 
                     ImGuiExt::RenderOptionBool(Data.TexParam.CpuCached, "##file_dialog_texture_cpu_cached", "CPU cached");
                 }
-                else if (strcmp(selectedExt, ".ogg") == 0 || strcmp(selectedExt, ".wav") == 0 || strcmp(selectedExt, ".flac") == 0)
+                else if (ext == "ogg" || ext == "wav" || ext == "flac")
                 {
                     ImGuiExt::RenderOptionBool(Data.AudioParam.Is3D, "##file_dialog_parameters_audio_3d", "Is 3D Sound");
                 }
-                else if (strcmp(selectedExt, ".scene") == 0)
+                else if (ext == "scene")
                 {
                     // TODO .scene file handling
                 }
             }
-            else if (dialog_mode == DialogMode::SAVE && strcmp(selectedExt, ".scene") == 0)
+            else if (dialog_mode == DialogMode::SAVE && ext == "scene")
             { /** TODO */ }
 
             ImGui::Separator();
@@ -1009,6 +1009,8 @@ namespace te
             filtered_dirs.clear();
             for (size_t i = 0; i < subdirs.size(); ++i)
             {
+                subdirs[i].name = UTF8::FromANSI(subdirs[i].name);
+
                 if(filter.PassFilter(subdirs[i].name.c_str()))
                     filtered_dirs.push_back(&subdirs[i]);
             }
@@ -1018,6 +1020,8 @@ namespace te
             filtered_files.clear();
             for (size_t i = 0; i < subfiles.size(); ++i)
             {
+                subfiles[i].name = UTF8::FromANSI(subfiles[i].name);
+
                 if(valid_exts[selected_ext_idx] == "*.*")
                 {
                     if(filter.PassFilter(subfiles[i].name.c_str()))

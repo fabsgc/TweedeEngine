@@ -295,7 +295,11 @@ namespace te
         TE_ASSERT_ERROR((indexCount + indexOffset <= _numIndices), "Trying to access an indice which is out of indices buffer");
 
         Bounds bounds;
-        Vector<UINT32> treatedVertices;
+        UINT32 numVertices = GetNumVertices();
+        bool *treatedVertices = te_allocateN<bool>(numVertices);
+
+        std::fill(treatedVertices, treatedVertices + numVertices, false);
+
         SPtr<VertexDataDesc> vertexDesc = GetVertexDesc();
         for (UINT32 i = 0; i < vertexDesc->GetNumElements(); i++)
         {
@@ -309,13 +313,13 @@ namespace te
             UINT32 vertexStride = vertexDesc->GetVertexStride(curElement.GetStreamIdx());
             UINT32 indexStride = GetIndexElementSize();
 
-            if (GetNumVertices() > 0)
+            if (numVertices > 0)
             {
                 UINT32 verticesIndex = (_indexType == IT_32BIT) 
                     ? *(UINT32*)(indicesData + indexStride * indexOffset)
                     : *(UINT16*)(indicesData + indexStride * indexOffset);
 
-                treatedVertices.push_back(verticesIndex);
+                treatedVertices[verticesIndex] = verticesIndex;
                 Vector3 curPosition = *(Vector3*)(verticesData + vertexStride * verticesIndex);
                 Vector3 accum = curPosition;
                 Vector3 min = curPosition;
@@ -327,10 +331,10 @@ namespace te
                         ? *(UINT32*)(indicesData + indexStride * j)
                         : *(UINT16*)(indicesData + indexStride * j);
 
-                    if (std::find(treatedVertices.begin(), treatedVertices.end(), verticesIndex) != treatedVertices.end())
+                    if (treatedVertices[verticesIndex])
                         continue; // We do not process a vertice twice
 
-                    treatedVertices.push_back(verticesIndex);
+                    treatedVertices[verticesIndex] = true;
                     curPosition = *(Vector3*)(verticesData + vertexStride * verticesIndex);
                     accum += curPosition;
                     min = Vector3::Min(min, curPosition);
@@ -340,9 +344,12 @@ namespace te
                 Vector3 center = accum / (float)indexCount;
                 float radiusSqrd = 0.0f;
 
-                for (auto& vertice : treatedVertices)
+                for (UINT32 j = 0; j < numVertices; j++)
                 {
-                    curPosition = *(Vector3*)(verticesData + vertexStride * vertice);
+                    if (!treatedVertices[j])
+                        continue;
+
+                    curPosition = *(Vector3*)(verticesData + vertexStride * j);
                     float dist = center.SquaredDistance(curPosition);
 
                     if (dist > radiusSqrd)
@@ -356,6 +363,7 @@ namespace te
             }
         }
 
+        te_delete(treatedVertices);
         return bounds;
     }
 

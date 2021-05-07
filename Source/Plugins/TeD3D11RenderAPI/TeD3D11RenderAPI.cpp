@@ -757,8 +757,8 @@ namespace te
 
         TE_INC_PROFILER_GPU(NumDrawCalls);
         TE_ADD_PROFILER_GPU(NumInstances, instanceCount > 1 ? instanceCount : 0);
-        TE_ADD_PROFILER_GPU(NumVertices, vertexCount);
-        TE_ADD_PROFILER_GPU(NumPrimitives, (VertexCountToPrimCount(_activeDrawOp, vertexCount)));
+        TE_ADD_PROFILER_GPU(NumVertices, indexCount);
+        TE_ADD_PROFILER_GPU(NumPrimitives, (VertexCountToPrimCount(_activeDrawOp, indexCount)));
         NotifyRenderTargetModified();
     }
 
@@ -922,7 +922,7 @@ namespace te
         bool foundValid = false;
 
         outputSampleDesc->Count = multisampleCount;
-        outputSampleDesc->Quality = D3D11_STANDARD_MULTISAMPLE_PATTERN;
+        outputSampleDesc->Quality = static_cast<UINT>(D3D11_STANDARD_MULTISAMPLE_PATTERN);
 
         while (!foundValid)
         {

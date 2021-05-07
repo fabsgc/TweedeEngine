@@ -179,6 +179,8 @@ namespace te
 
         if (meshImportOptions->GenSmoothNormals)
             assimpFlags |= aiProcess_GenSmoothNormals;
+        else if(meshImportOptions->ImportNormals)
+            assimpFlags |= aiProcess_GenNormals;
 
         if (!meshImportOptions->ImportAnimations)
             removeComponentFlags |= aiComponent_ANIMATIONS | aiComponent_BONEWEIGHTS;
