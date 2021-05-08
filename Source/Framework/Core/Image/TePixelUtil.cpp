@@ -1651,7 +1651,7 @@ namespace te
         UINT32 count = 0;
         if ((width > 0) && (height > 0))
         {
-            while (!(width == 1 && height == 1 && depth == 1))
+            while (!(width < 8 && height < 8 && depth == 1))
             {
                 if (width > 1)		width = width / 2;
                 if (height > 1)	    height = height / 2;
@@ -2289,7 +2289,6 @@ namespace te
         io.setWrapMode(ToNVTTWrapMode(options.WrapMode));
         io.setAlphaMode(ToNVTTAlphaMode(options.Alpha));
         io.setMipmapFilter(ToNVTTFilter(options.Filter));
-        io.setWrapMode(ToNVTTWrapMode(options.WrapMode));
         io.setMipmapData(interimData.GetData(), src.GetWidth(), src.GetHeight());
 
         if (interimFormat == PF_RGBA32F) io.setFormat(nvtt::InputFormat_RGBA_32F);

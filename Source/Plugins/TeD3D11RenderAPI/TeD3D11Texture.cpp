@@ -452,7 +452,8 @@ namespace te
         }
 
         // Determine total number of mipmaps including main one (d3d11 convention)
-        desc.MipLevels = (numMips == MIP_UNLIMITED || (1U << numMips) > width) ? 0 : numMips + 1;
+        //desc.MipLevels = (numMips == MIP_UNLIMITED || (1U << numMips) > width) ? 0 : numMips + 1;
+        desc.MipLevels = (numMips == MIP_UNLIMITED) ? 0 : numMips + 1;
 
         if (texType == TEX_TYPE_CUBE_MAP)
             desc.MiscFlags |= D3D11_RESOURCE_MISC_TEXTURECUBE;
