@@ -1254,7 +1254,7 @@ namespace te
         UINT8* bufferEnd;
     };
 
-    nvtt::Format toNVTTFormat(PixelFormat format)
+    nvtt::Format ToNVTTFormat(PixelFormat format)
     {
         switch (format)
         {
@@ -1279,7 +1279,7 @@ namespace te
         }
     }
 
-    nvtt::Quality toNVTTQuality(CompressionQuality quality)
+    nvtt::Quality ToNVTTQuality(CompressionQuality quality)
     {
         switch (quality)
         {
@@ -1297,7 +1297,7 @@ namespace te
         return nvtt::Quality_Normal;
     }
 
-    nvtt::AlphaMode toNVTTAlphaMode(AlphaMode alphaMode)
+    nvtt::AlphaMode ToNVTTAlphaMode(AlphaMode alphaMode)
     {
         switch (alphaMode)
         {
@@ -1313,7 +1313,7 @@ namespace te
         return nvtt::AlphaMode_None;
     }
 
-    nvtt::WrapMode toNVTTWrapMode(MipMapWrapMode wrapMode)
+    nvtt::WrapMode ToNVTTWrapMode(MipMapWrapMode wrapMode)
     {
         switch (wrapMode)
         {
@@ -1325,8 +1325,42 @@ namespace te
             return nvtt::WrapMode_Repeat;
         }
 
-        // Unknown alpha mode
+        // Unknown wrap mode
         return nvtt::WrapMode_Mirror;
+    }
+
+    nvtt::MipmapFilter ToNVTTFilter(MipMapFilter filter)
+    {
+        switch (filter)
+        {
+        case MipMapFilter::Box:
+            return nvtt::MipmapFilter::MipmapFilter_Box;
+        case MipMapFilter::Triangle:
+            return nvtt::MipmapFilter::MipmapFilter_Triangle;
+        case MipMapFilter::Kaiser:
+            return nvtt::MipmapFilter::MipmapFilter_Kaiser;
+        }
+
+        // Unknown filter mode
+        return nvtt::MipmapFilter::MipmapFilter_Kaiser;
+    }
+
+    nvtt::RoundMode ToNVTTRoundMode(MipMapRoundMode round)
+    {
+        switch (round)
+        {
+        case MipMapRoundMode::RoundNone:
+            return nvtt::RoundMode::RoundMode_None;
+        case MipMapRoundMode::ToPreviousPowerOfTwo:
+            return nvtt::RoundMode::RoundMode_ToPreviousPowerOfTwo;
+        case MipMapRoundMode::ToNextPowerOfTwo:
+            return nvtt::RoundMode::RoundMode_ToNextPowerOfTwo;
+        case MipMapRoundMode::ToNearestPowerOfTwo:
+            return nvtt::RoundMode::RoundMode_ToNearestPowerOfTwo;
+        }
+
+        // Unknown round mode
+        return nvtt::RoundMode::RoundMode_None;
     }
 
     UINT32 PixelUtil::GetBlockSize(PixelFormat format)
@@ -1612,7 +1646,7 @@ namespace te
         return des.componentCount;
     }
 
-    UINT32 PixelUtil::GetMaxMipmaps(UINT32 width, UINT32 height, UINT32 depth, PixelFormat format)
+    UINT32 PixelUtil::GetMaxMipmaps(UINT32 width, UINT32 height, UINT32 depth)
     {
         UINT32 count = 0;
         if ((width > 0) && (height > 0))
@@ -1993,7 +2027,7 @@ namespace te
             if (src.GetFormat() != dst.GetFormat())
             {
                 CompressionOptions co;
-                co.format = dst.GetFormat();
+                co.Format = dst.GetFormat();
                 Compress(src, dst, co);
 
                 return;
@@ -2157,7 +2191,7 @@ namespace te
 
     void PixelUtil::Compress(const PixelData& src, PixelData& dst, const CompressionOptions& options)
     {
-        if (!IsCompressed(options.format))
+        if (!IsCompressed(options.Format))
         {
             TE_DEBUG("Compression failed. Destination format is not a valid compressed format.");
             return;
@@ -2175,7 +2209,7 @@ namespace te
             return;
         }
 
-        PixelFormat interimFormat = options.format == PF_BC6H ? PF_RGBA32F : PF_BGRA8;
+        PixelFormat interimFormat = options.Format == PF_BC6H ? PF_RGBA32F : PF_BGRA8;
 
         PixelData interimData(src.GetWidth(), src.GetHeight(), 1, interimFormat);
         interimData.AllocateInternalBuffer();
@@ -2184,8 +2218,8 @@ namespace te
         nvtt::InputOptions io;
         io.setTextureLayout(nvtt::TextureType_2D, src.GetWidth(), src.GetHeight());
         io.setMipmapGeneration(false);
-        io.setAlphaMode(toNVTTAlphaMode(options.alphaMode));
-        io.setNormalMap(options.isNormalMap);
+        io.setAlphaMode(ToNVTTAlphaMode(options.Alpha));
+        io.setNormalMap(options.IsNormalMap);
         io.setRoundMode(nvtt::RoundMode::RoundMode_ToNearestPowerOfTwo);
 
         if (interimFormat == PF_RGBA32F)
@@ -2193,7 +2227,7 @@ namespace te
         else
             io.setFormat(nvtt::InputFormat_BGRA_8UB);
 
-        if (options.isSRGB)
+        if (options.IsSRGB)
             io.setGamma(2.2f, 2.2f);
         else
             io.setGamma(1.0f, 1.0f);
@@ -2201,8 +2235,8 @@ namespace te
         io.setMipmapData(interimData.GetData(), src.GetWidth(), src.GetHeight());
 
         nvtt::CompressionOptions co;
-        co.setFormat(toNVTTFormat(options.format));
-        co.setQuality(toNVTTQuality(options.quality));
+        co.setFormat(ToNVTTFormat(options.Format));
+        co.setQuality(ToNVTTQuality(options.Quality));
 
         NVTTCompressOutputHandler outputHandler(dst.GetData(), dst.GetConsecutiveSize());
 
@@ -2234,12 +2268,6 @@ namespace te
             return outputMipBuffers;
         }
 
-        /*if (!Bitwise::IsPow2(src.GetWidth()) || !Bitwise::IsPow2(src.GetHeight()))
-        {
-            TE_DEBUG("Mipmap generation failed. Texture width & height must be powers of 2.");
-            return outputMipBuffers;
-        }*/
-
         PixelFormat interimFormat = IsFloatingPoint(src.GetFormat()) ? PF_RGBA32F : PF_BGRA8;
 
         PixelData interimData(src.GetWidth(), src.GetHeight(), 1, interimFormat);
@@ -2247,55 +2275,32 @@ namespace te
         BulkPixelConversion(src, interimData);
 
         if (interimFormat != PF_RGBA32F)
-        {
             FlipComponentOrder(interimData);
-        }
 
-        UINT32 numMips = GetMaxMipmaps(src.GetWidth(), src.GetHeight(), 1, src.GetFormat());
+        UINT32 numMips = GetMaxMipmaps(src.GetWidth(), src.GetHeight(), 1);
         if (maxMip > 0)
             numMips = std::min(numMips, maxMip);
 
         nvtt::InputOptions io;
         io.setTextureLayout(nvtt::TextureType_2D, src.GetWidth(), src.GetHeight());
         io.setMipmapGeneration(true, numMips);
-        io.setNormalMap(options.isNormalMap);
-        io.setNormalizeMipmaps(options.normalizeMipmaps);
-        io.setWrapMode(toNVTTWrapMode(options.wrapMode));
-        /*io.setRoundMode(nvtt::RoundMode::RoundMode_ToPreviousPowerOfTwo);
-
-        UINT32 maxMipWidth = 1;
-        UINT32 maxMipHeight = 1;
-
-        do
-        {
-            maxMipWidth *= 2;
-        } while (maxMipWidth < src.GetWidth());
-
-        maxMipWidth /= 2;
-
-        do
-        {
-            maxMipHeight *= 2;
-        } while (maxMipHeight < src.GetHeight());
-
-        maxMipHeight /= 2;*/
-
-        if (interimFormat == PF_RGBA32F)
-            io.setFormat(nvtt::InputFormat_RGBA_32F);
-        else
-            io.setFormat(nvtt::InputFormat_BGRA_8UB);
-
-        if (options.isSRGB)
-            io.setGamma(2.2f, 2.2f);
-        else
-            io.setGamma(1.0f, 1.0f);
-
+        io.setNormalMap(options.IsNormalMap);
+        io.setNormalizeMipmaps(options.NormalizeMipmaps);
+        io.setWrapMode(ToNVTTWrapMode(options.WrapMode));
+        io.setAlphaMode(ToNVTTAlphaMode(options.Alpha));
+        io.setMipmapFilter(ToNVTTFilter(options.Filter));
+        io.setWrapMode(ToNVTTWrapMode(options.WrapMode));
         io.setMipmapData(interimData.GetData(), src.GetWidth(), src.GetHeight());
-        io.setMipmapFilter(nvtt::MipmapFilter::MipmapFilter_Kaiser);
+
+        if (interimFormat == PF_RGBA32F) io.setFormat(nvtt::InputFormat_RGBA_32F);
+        else io.setFormat(nvtt::InputFormat_BGRA_8UB);
+
+        if (options.IsSRGB) io.setGamma(2.2f, 2.2f);
+        else io.setGamma(1.0f, 1.0f);
 
         nvtt::CompressionOptions co;
         co.setFormat(nvtt::Format_RGBA);
-        co.setQuality(nvtt::Quality_Highest);
+        co.setQuality(ToNVTTQuality(options.Quality));
 
         if (interimFormat == PF_RGBA32F)
         {
@@ -2316,12 +2321,31 @@ namespace te
         UINT32 curWidth = src.GetWidth();
         UINT32 curHeight = src.GetHeight();
 
-        /*if (curWidth != curHeight)
+        if (options.RoundMode != MipMapRoundMode::RoundNone)
         {
-            curWidth = maxMipWidth;
-            curHeight = maxMipHeight;
-            numMips = GetMaxMipmaps(curWidth, curHeight, 1, src.GetFormat());
-        }*/
+            if (!Bitwise::IsPow2(curWidth) || !Bitwise::IsPow2(curHeight))
+            {
+                if (options.RoundMode == MipMapRoundMode::ToPreviousPowerOfTwo)
+                {
+                    curWidth = Math::ToPreviousPowerOf2(curWidth);
+                    curHeight = Math::ToPreviousPowerOf2(curHeight);
+                }
+
+                if (options.RoundMode == MipMapRoundMode::ToNextPowerOfTwo)
+                {
+                    curWidth = Math::ToNextPowerOf2(curWidth);
+                    curHeight = Math::ToNextPowerOf2(curHeight);
+                }
+            }
+
+            numMips = GetMaxMipmaps(curWidth, curHeight, 1);
+            if (maxMip > 0)
+                numMips = std::min(numMips, maxMip);
+
+            io.setRoundMode(ToNVTTRoundMode(options.RoundMode));
+        }
+
+        io.setMipmapGeneration(true, numMips);
 
         for (UINT32 i = 0; i < numMips; i++)
         {

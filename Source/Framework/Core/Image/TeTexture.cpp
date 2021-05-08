@@ -3,6 +3,7 @@
 #include "Resources/TeResourceManager.h"
 #include "Image/TeTextureManager.h"
 #include "Image/TePixelUtil.h"
+#include "Utility/TeBitwise.h"
 
 namespace te
 {

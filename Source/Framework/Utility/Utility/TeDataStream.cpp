@@ -471,7 +471,7 @@ namespace te
 			te_free(_data);
 
 		this->_name = std::move(other._name);
-		this->_access = std::exchange(other._access, 0);
+		this->_access = std::exchange(other._access, (UINT16)0);
 		this->_cursor = std::exchange(other._cursor, nullptr);
 		this->_end = std::exchange(other._end, nullptr);
 		this->_data = std::exchange(other._data, nullptr);

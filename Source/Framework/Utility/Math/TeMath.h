@@ -93,6 +93,41 @@ namespace te
         /** Returns the nearest integer equal or higher to the provided value. */
         static float Ceil(float val) { return (float)std::ceil(val); }
 
+        /** Determines if an integer if a power of 2 or not */
+        static bool IsPowerOfTo(int32_t val)
+        {
+            if (val == 0)
+                return true;
+
+            return (val & (val - 1)) == 0;
+        }
+
+        /** Returns the next power of 2 */
+        static int32_t ToNextPowerOf2(int32_t val)
+        {
+            if (val == 0)
+                return 0;
+
+            val |= (val >> 1);
+            val |= (val >> 2);
+            val |= (val >> 4);
+            val |= (val >> 8);
+            val |= (val >> 16);
+            val++;
+
+            return val;
+        }
+
+        /** Returns the previous power of 2 */
+        static int32_t ToPreviousPowerOf2(int32_t val)
+        {
+            if (val == 0)
+                return 0;
+
+            val = ToNextPowerOf2(val);
+            return val - (val >> 1);
+        }
+
         /**
          * Returns the nearest integer equal or higher to the provided value. If you are sure the input is positive use
          * ceilToPosInt() for a slightly faster operation.

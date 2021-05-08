@@ -262,7 +262,8 @@ namespace te
 
         if (_fileBrowser.ShowFileDialog("Load Resource", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, ".png,.jpeg,.jpg,.obj,.dae,.fbx,.stl,.gltf,.scene,.ogg,.wav,.flac"))
         {
-            if (_fileBrowser.Data.Ext == ".jpeg" || _fileBrowser.Data.Ext == ".jpg" || _fileBrowser.Data.Ext == ".png")
+            if (_fileBrowser.Data.SelectedFileExt == ".jpeg" || _fileBrowser.Data.SelectedFileExt == ".jpg" ||
+                _fileBrowser.Data.SelectedFileExt == ".png")
             {
                 auto textureImportOptions = TextureImportOptions::Create();
                 if (_fileBrowser.Data.TexParam.TexType == TextureType::TEX_TYPE_CUBE_MAP)
@@ -287,8 +288,9 @@ namespace te
                     EditorResManager::Instance().Add<Texture>(texture);
                 }
             }
-            else if (_fileBrowser.Data.Ext == ".obj" || _fileBrowser.Data.Ext == ".dae" || _fileBrowser.Data.Ext == ".fbx" || 
-                     _fileBrowser.Data.Ext == ".stl" || _fileBrowser.Data.Ext == ".gltf")
+            else if (_fileBrowser.Data.SelectedFileExt == ".obj" || _fileBrowser.Data.SelectedFileExt == ".dae" || 
+                     _fileBrowser.Data.SelectedFileExt == ".fbx" || _fileBrowser.Data.SelectedFileExt == ".stl" || 
+                     _fileBrowser.Data.SelectedFileExt == ".gltf")
             {
                 auto meshImportOptions = MeshImportOptions::Create();
                 meshImportOptions->ImportNormals = _fileBrowser.Data.MeshParam.ImportNormals;
@@ -338,7 +340,8 @@ namespace te
                     }
                 }
             }
-            else if (_fileBrowser.Data.Ext == ".ogg" || _fileBrowser.Data.Ext == ".wav" || _fileBrowser.Data.Ext == ".flac")
+            else if (_fileBrowser.Data.SelectedFileExt == ".ogg" || _fileBrowser.Data.SelectedFileExt == ".wav" || 
+                     _fileBrowser.Data.SelectedFileExt == ".flac")
             {
                 auto audioImportOptions = AudioClipImportOptions::Create();
                 audioImportOptions->Is3D = _fileBrowser.Data.AudioParam.Is3D;

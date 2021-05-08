@@ -21,19 +21,7 @@ namespace te
     { }
 
     RenderMan::~RenderMan()
-    {
-        if (gPerLightsParamBuffer)
-        {
-            gPerLightsParamBuffer->Destroy();
-            gPerLightsParamBuffer = nullptr;
-        }
-
-        for (UINT32 i = 0; i < STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER; i++)
-        {
-            if (gPerInstanceParamBuffer[i])
-                gPerInstanceParamBuffer[i] = nullptr;
-        }
-    }
+    { }
 
     void RenderMan::Initialize()
     {
@@ -75,7 +63,18 @@ namespace te
             gPerInstanceParamBuffer[i]->Destroy();
         }
 
-        Renderer::Destroy();
+        if (gPerLightsParamBuffer)
+        {
+            gPerLightsParamBuffer->Destroy();
+            gPerLightsParamBuffer = nullptr;
+        }
+
+        for (UINT32 i = 0; i < STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER; i++)
+        {
+            if (gPerInstanceParamBuffer[i])
+                gPerInstanceParamBuffer[i] = nullptr;
+        }
+
         _scene = nullptr;
 
         RenderCompositor::CleanUp();
@@ -84,6 +83,8 @@ namespace te
 
         GpuResourcePool::ShutDown();
         RendererUtility::ShutDown();
+
+        Renderer::Destroy();
     }
 
     void RenderMan::Update()

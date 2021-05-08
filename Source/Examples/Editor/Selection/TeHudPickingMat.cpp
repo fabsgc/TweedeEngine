@@ -18,7 +18,7 @@ namespace te
 
         auto textureImportOptions = TextureImportOptions::Create();
         textureImportOptions->CpuCached = false;
-        textureImportOptions->MaxMip = 0;
+        textureImportOptions->GenerateMips = false;
         textureImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
 
         _hudMask = gResourceManager().Load<Texture>("Data/Textures/Hud/Hud.png", textureImportOptions);

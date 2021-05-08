@@ -4,6 +4,7 @@
 #include "Resources/TeResource.h"
 #include "CoreUtility/TeCoreObject.h"
 #include "TePixelData.h"
+#include "TePixelUtil.h"
 #include "Math/TeVector3I.h"
 #include "RenderAPI/TeCommonTypes.h"
 #include "RenderAPI/TeTextureView.h"
@@ -260,7 +261,7 @@ namespace te
          * Reads data from the cached system memory texture buffer into the provided buffer.
          *
          * @param[out]	data		Pre-allocated buffer of proper size and format where data will be read to. You can use
-         *							TextureProperties::allocBuffer() to allocate a buffer of a correct format and size.
+         *							TextureProperties::AllocBuffer() to allocate a buffer of a correct format and size.
          * @param[in]	face		Texture face to read from.
          * @param[in]	mipLevel	Mipmap level to read from.
          *

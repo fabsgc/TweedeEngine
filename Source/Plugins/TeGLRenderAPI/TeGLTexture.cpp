@@ -45,7 +45,7 @@ namespace te
         }
 
         // Check requested number of mipmaps
-        UINT32 maxMips = PixelUtil::GetMaxMipmaps(width, height, depth, _properties.GetFormat());
+        UINT32 maxMips = PixelUtil::GetMaxMipmaps(width, height, depth);
         if (numMips > maxMips)
         {
             TE_DEBUG("Invalid number of mipmaps. Maximum allowed is: " + ToString(maxMips));

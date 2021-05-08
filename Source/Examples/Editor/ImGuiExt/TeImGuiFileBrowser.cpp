@@ -30,6 +30,10 @@
 
 namespace te
 {
+    const Vector<String> ImGuiFileBrowser::_texturesExtensions = { ".png", ".jpeg", ".jpg" };
+    const Vector<String> ImGuiFileBrowser::_meshesExtensions = { ".obj", ".dae", ".fbx", ".stl", ".gltf" };
+    const Vector<String> ImGuiFileBrowser::_soundsExtensions = { ".ogg", ".wav", ".flac" };
+
     ImGuiFileBrowser::ImGuiFileBrowser()
     {
         filter_mode = FilterMode_Files | FilterMode_Dirs;
@@ -54,6 +58,7 @@ namespace te
         repfile_modal_id = "Replace File?";
         parameters_file_modal_id = "Resource Parameters";
         Data.SelectedFileName = "";
+        Data.SelectedFileExt = "";
         Data.SelectedPath = "";
         input_fn[0] = '\0';
         dialog_mode = DialogMode::OPEN;
@@ -136,6 +141,7 @@ namespace te
             if(is_appearing)
             {
                 Data.SelectedFileName.clear();
+                Data.SelectedFileExt.clear();
                 Data.SelectedPath.clear();
                 if(mode != DialogMode::SELECT)
                 {
@@ -173,6 +179,7 @@ namespace te
                 {
                     ImGui::OpenPopup(invfile_modal_id.c_str());
                     Data.SelectedFileName.clear();
+                    Data.SelectedFileExt.clear();
                     Data.SelectedPath.clear();
                 }
                 else if(!check && dialog_mode == DialogMode::SAVE)
@@ -182,6 +189,7 @@ namespace te
                 else if(!check && dialog_mode == DialogMode::SELECT)
                 {
                     Data.SelectedFileName.clear();
+                    Data.SelectedFileExt.clear();
                     Data.SelectedPath.clear();
                     show_error = true;
                     error_title = "Invalid Directory!";
@@ -223,7 +231,7 @@ namespace te
             ShowErrorModal();
 
             ImGui::EndPopup();
-            return (!Data.SelectedFileName.empty() && !Data.SelectedPath.empty());
+            return (!Data.SelectedFileName.empty() && !Data.SelectedFileExt.empty() &&  !Data.SelectedPath.empty());
         }
         else
             return false;
@@ -394,10 +402,6 @@ namespace te
             {
                 String label;
 
-                static const Vector<String> _texturesExtensions = { ".png", ".jpeg", ".jpg" };
-                static const Vector<String> _meshesExtensions = { ".obj", ".dae", ".fbx", ".stl", ".gltf" };
-                static const Vector<String> _soundsExtensions = { ".ogg", ".wav", ".flac" };
-
                 if (std::find(_texturesExtensions.begin(), _texturesExtensions.end(), filtered_files[i]->extension) != _texturesExtensions.end())
                     label = ICON_FA_FILE_IMAGE + String(" ") + (filtered_files[i]->name);
                 else if (std::find(_meshesExtensions.begin(), _meshesExtensions.end(), filtered_files[i]->extension) != _meshesExtensions.end())
@@ -424,6 +428,7 @@ namespace te
                     if(ImGui::IsMouseDoubleClicked(0))
                     {
                         Data.SelectedFileName = filtered_files[i]->name;
+                        Data.SelectedFileExt  = filtered_files[i]->extension;
                         validate_file = true;
                     }
                 }
@@ -463,6 +468,7 @@ namespace te
             if(strlen(input_fn) > 0)
             {
                 Data.SelectedFileName = String(input_fn);
+                Data.SelectedFileExt = "." + Data.SelectedFileName.substr(Data.SelectedFileName.find_last_of(".") + 1);
                 validate_file = true;
             }
         }
@@ -560,6 +566,7 @@ namespace te
             else if (ImGui::Button("Save") && strlen(input_fn) > 0)
             {
                 Data.SelectedFileName = String(input_fn);
+                Data.SelectedFileExt = "." + Data.SelectedFileName.substr(Data.SelectedFileName.find_last_of(".") + 1);
                 validate_file = true;
             }
         }
@@ -574,6 +581,7 @@ namespace te
                 else if(strlen(input_fn) > 0)
                 {
                     Data.SelectedFileName = String(input_fn);
+                    Data.SelectedFileExt = "." + Data.SelectedFileName.substr(Data.SelectedFileName.find_last_of(".") + 1);
                     validate_file = true;
                 }
             }
@@ -588,6 +596,7 @@ namespace te
                     if(strlen(input_fn) > 0)
                     {
                         Data.SelectedFileName = String(input_fn);
+                        Data.SelectedFileExt = "." + Data.SelectedFileName.substr(Data.SelectedFileName.find_last_of(".") + 1);
                         validate_file = true;
                     }
                 }
@@ -677,11 +686,11 @@ namespace te
 
         if (ImGui::BeginPopupModal(parameters_file_modal_id.c_str(), nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize))
         {
-            String ext = (Data.SelectedFileName.substr(Data.SelectedFileName.find_last_of(".") + 1));
+            String ext = (Data.SelectedFileExt);
 
             if (dialog_mode == DialogMode::OPEN)
             {
-                if (ext == "obj" || ext == "dae" || ext == "fbx" || ext == "stl" || ext == "gltf")
+                if (ext == ".obj" || ext == ".dae" || ext == ".fbx" || ext == ".stl" || ext == ".gltf")
                 {
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportNormals, "##file_dialog_parameters_mesh_normals", "Import normals");
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportTangents, "##file_dialog_parameters_mesh_tangents", "Import tangents");
@@ -715,7 +724,7 @@ namespace te
 
                     ImGuiExt::RenderOptionBool(Data.MeshParam.CollisionShape, "##file_dialog_parameters_mesh_collision_shape", "Collision Shape");
                 }
-                else if (ext == "jpg" || ext == "jpeg" || ext == "png")
+                else if (ext == ".jpg" || ext == ".jpeg" || ext == ".png")
                 {
                     static ImGuiExt::ComboOptions<TextureType> textureTypeOptions;
                     if (textureTypeOptions.Options.size() == 0)
@@ -754,16 +763,16 @@ namespace te
 
                     ImGuiExt::RenderOptionBool(Data.TexParam.CpuCached, "##file_dialog_texture_cpu_cached", "CPU cached");
                 }
-                else if (ext == "ogg" || ext == "wav" || ext == "flac")
+                else if (ext == ".ogg" || ext == ".wav" || ext == ".flac")
                 {
                     ImGuiExt::RenderOptionBool(Data.AudioParam.Is3D, "##file_dialog_parameters_audio_3d", "Is 3D Sound");
                 }
-                else if (ext == "scene")
+                else if (ext == ".scene")
                 {
                     // TODO .scene file handling
                 }
             }
-            else if (dialog_mode == DialogMode::SAVE && ext == "scene")
+            else if (dialog_mode == DialogMode::SAVE && ext == ".scene")
             { /** TODO */ }
 
             ImGui::Separator();

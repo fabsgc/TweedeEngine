@@ -1030,27 +1030,27 @@ namespace te
             Vector<SubMesh> subMeshes;
             UINT32 numIndices = (UINT32)mesh->Indices.size();
 
-            Vector<Vector<UINT32>> indicesPerMaterial;
+            Vector<UINT32> indicesPerMaterial;
 
             // Trying to find all submeshes indices and offset
             for (UINT32 i = 0; i < (UINT32)scene.Materials.size(); i++)
             {
-                indicesPerMaterial.push_back(Vector<UINT32>());
+                indicesPerMaterial.push_back(0);
                 if (mesh->MaterialIndex == scene.Materials[i].Index)
                 {
                     for (UINT32 j = 0; j < (UINT32)mesh->Indices.size(); j++)
                     {
                         UINT32 materialIdx = (UINT32)scene.Materials[i].Index;
-                        indicesPerMaterial[materialIdx].push_back(mesh->Indices[j]);
+                        indicesPerMaterial[materialIdx]++;
                     }
                 }
             }
             for (UINT32 key = 0; key < (UINT32)indicesPerMaterial.size(); key++)
             {
-                if (indicesPerMaterial[key].size() == 0)
+                if (indicesPerMaterial[key] == 0)
                     continue;
 
-                UINT32 indexCount = (UINT32)indicesPerMaterial[key].size();
+                UINT32 indexCount = indicesPerMaterial[key];
                 SubMesh subMesh(currentIndex, indexCount, DOT_TRIANGLE_LIST, scene.Materials[key].Name, "SubMesh " + ToString(key));
                 
                 if (options.ImportMaterials)

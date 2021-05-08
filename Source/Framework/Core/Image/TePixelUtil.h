@@ -42,6 +42,15 @@ namespace te
         Kaiser
     };
 
+    /** Rounding mode to use when generating mip maps */
+    enum MipMapRoundMode
+    {
+        RoundNone,
+        ToPreviousPowerOfTwo,
+        ToNextPowerOfTwo,
+        ToNearestPowerOfTwo
+    };
+
     /** Determines on which axes to mirror an image. */
     enum MirrorMode
     {
@@ -54,21 +63,24 @@ namespace te
     /** Options used to control texture compression. */
     struct CompressionOptions
     {
-        PixelFormat format = PF_BC1; /*< Format to compress to. Must be a format containing compressed data. */
-        AlphaMode alphaMode = AlphaMode::None; /*< Controls how to (and if) to compress the alpha channel. */
-        bool isNormalMap = false; /*< Determines does the input data represent a normal map. */
-        bool isSRGB = false; /*< Determines has the input data been gamma corrected. */
-        CompressionQuality quality = CompressionQuality::Normal; /*< Compressed image quality. Better compression might take longer to execute but will generate better results. */
+        PixelFormat Format = PF_BC1; /*< Format to compress to. Must be a format containing compressed data. */
+        AlphaMode Alpha = AlphaMode::None; /*< Controls how to (and if) to compress the alpha channel. */
+        bool IsNormalMap = false; /*< Determines does the input data represent a normal map. */
+        bool IsSRGB = false; /*< Determines has the input data been gamma corrected. */
+        CompressionQuality Quality = CompressionQuality::Normal; /*< Compressed image quality. Better compression might take longer to execute but will generate better results. */
     };
 
     /** Options used to control texture mip map generation. */
     struct MipMapGenOptions
     {
-        MipMapFilter filter = MipMapFilter::Box; /*< Filter to use when downsamping input data. */
-        MipMapWrapMode wrapMode = MipMapWrapMode::Mirror; /*< Determines how to downsample pixels on borders. */
-        bool isNormalMap = false; /*< Determines does the input data represent a normal map. */
-        bool normalizeMipmaps = false; /*< Should the downsampled values be re-normalized. Only relevant for mip-maps representing normal maps. */
-        bool isSRGB = false; /*< Determines has the input data been gamma corrected. */
+        AlphaMode Alpha = AlphaMode::None; /*< Controls how to (and if) to compress the alpha channel. */
+        MipMapFilter Filter = MipMapFilter::Box; /*< Filter to use when downsamping input data. */
+        MipMapWrapMode WrapMode = MipMapWrapMode::Mirror; /*< Determines how to downsample pixels on borders. */
+        MipMapRoundMode RoundMode = MipMapRoundMode::RoundNone; /* < Determines how texture must be rounded if dimensions are not a power of */
+        CompressionQuality Quality = CompressionQuality::Normal; /*< Compressed image quality. Better compression might take longer to execute but will generate */
+        bool IsNormalMap = false; /*< Determines does the input data represent a normal map. */
+        bool NormalizeMipmaps = false; /*< Should the downsampled values be re-normalized. Only relevant for mip-maps representing normal maps. */
+        bool IsSRGB = false; /*< Determines has the input data been gamma corrected. */
     };
 
     /** Utility methods for converting and managing pixel data and formats. */
@@ -207,7 +219,7 @@ namespace te
          * Returns the maximum number of mip maps that can be generated until we reach the minimum size possible. This
          * does not count the base level.
          */
-        static UINT32 GetMaxMipmaps(UINT32 width, UINT32 height, UINT32 depth, PixelFormat format);
+        static UINT32 GetMaxMipmaps(UINT32 width, UINT32 height, UINT32 depth);
 
         /** Writes the color to the provided memory location. */
         static void PackColor(const Color& color, PixelFormat format, void* dest);

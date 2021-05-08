@@ -147,25 +147,6 @@ namespace te
             faceData.push_back(imgData);
         }
 
-        UINT32 numMips = 0;
-        if (textureImportOptions->GenerateMips)
-        {
-            if (Bitwise::IsPow2(faceData[0]->GetWidth()) && Bitwise::IsPow2(faceData[0]->GetHeight()))
-            {
-                UINT32 maxPossibleMip = PixelUtil::GetMaxMipmaps(faceData[0]->GetWidth(), faceData[0]->GetHeight(),
-                    faceData[0]->GetDepth(), faceData[0]->GetFormat());
-
-                if (textureImportOptions->MaxMip == 0)
-                    numMips = maxPossibleMip;
-                else
-                    numMips = std::min(maxPossibleMip, textureImportOptions->MaxMip);
-            }
-            else
-            {
-                TE_DEBUG("Width and height of your image must be a power of 2");
-            }
-        }
-
         int usage = TU_DEFAULT;
         if (textureImportOptions->CpuCached)
             usage |= TU_CPUCACHED;
@@ -176,10 +157,52 @@ namespace te
         texDesc.Type = texType;
         texDesc.Width = faceData[0]->GetWidth();
         texDesc.Height = faceData[0]->GetHeight();
-        texDesc.NumMips = numMips;
+        texDesc.NumMips = 0;
         texDesc.Format = textureImportOptions->Format;
         texDesc.Usage = usage;
         texDesc.HwGamma = sRGB;
+
+        MipMapGenOptions mipOptions;
+        mipOptions.IsSRGB = sRGB;
+        mipOptions.Alpha = AlphaMode::Transparency;
+        mipOptions.Filter = MipMapFilter::Kaiser;
+        mipOptions.Quality = CompressionQuality::Highest;
+        mipOptions.RoundMode = MipMapRoundMode::RoundNone;
+
+        if (textureImportOptions->GenerateMips)
+        {
+            if (!Bitwise::IsPow2(faceData[0]->GetWidth()) || !Bitwise::IsPow2(faceData[0]->GetHeight()))
+            {
+                UINT32 previousWidth = Math::ToPreviousPowerOf2(texDesc.Width);
+                UINT32 previousHeight = Math::ToPreviousPowerOf2(texDesc.Height);
+
+                UINT32 nextWidth = Math::ToNextPowerOf2(texDesc.Width);
+                UINT32 nextHeight = Math::ToNextPowerOf2(texDesc.Height);
+
+                UINT32 previousDist = texDesc.Width - previousWidth + texDesc.Height - previousHeight;
+                UINT32 nextDist = nextWidth - texDesc.Width + nextHeight - texDesc.Height;
+
+                if (previousDist < nextDist)
+                {
+                    texDesc.Width = previousWidth;
+                    texDesc.Height = previousHeight;
+                    mipOptions.RoundMode = MipMapRoundMode::ToPreviousPowerOfTwo;
+                }
+                else
+                {
+                    texDesc.Width = nextWidth;
+                    texDesc.Height = nextHeight;
+                    mipOptions.RoundMode = MipMapRoundMode::ToNextPowerOfTwo;
+                }
+            }
+
+            UINT32 maxPossibleMip = PixelUtil::GetMaxMipmaps(texDesc.Width, texDesc.Height, faceData[0]->GetDepth());
+
+            if (textureImportOptions->MaxMip == 0)
+                texDesc.NumMips = maxPossibleMip;
+            else
+                texDesc.NumMips = std::min(maxPossibleMip, textureImportOptions->MaxMip);
+        }
 
         SPtr<Texture> texture = Texture::_createPtr(texDesc);
 
@@ -187,17 +210,10 @@ namespace te
         for (UINT32 i = 0; i < numFaces; i++)
         {
             Vector<SPtr<PixelData>> mipLevels;
-            if (numMips > 0)
-            {
-                MipMapGenOptions mipOptions;
-                mipOptions.isSRGB = sRGB;
-
-                mipLevels = PixelUtil::GenMipmaps(*faceData[i], mipOptions, numMips);
-            }
+            if (texDesc.NumMips > 0)
+                mipLevels = PixelUtil::GenMipmaps(*faceData[i], mipOptions, texDesc.NumMips);
             else
-            {
                 mipLevels.push_back(faceData[i]);
-            }
 
             for (UINT32 mip = 0; mip < (UINT32)mipLevels.size(); ++mip)
             {

@@ -5,6 +5,7 @@
 #include "Material/TeMaterial.h"
 #include "Material/TeTechnique.h"
 #include "Utility/TeDataStream.h"
+#include "Importer/TeTextureImportOptions.h"
 
 namespace te
 {
@@ -1179,7 +1180,10 @@ namespace te
 
     void BuiltinResources::InitFrameworkIcon()
     {
-        HTexture iconTex = gResourceManager().Load<Texture>(ICONS_FOLDER + String("frameworkIcon.png"));
+        SPtr<TextureImportOptions> options = te_shared_ptr_new<TextureImportOptions>();
+        options->GenerateMips = false;
+
+        HTexture iconTex = gResourceManager().Load<Texture>(ICONS_FOLDER + String("frameworkIcon.png"), options);
 
         _frameworkIcon = iconTex->GetProperties().AllocBuffer(0, 0);
         iconTex->ReadData(*_frameworkIcon.get());
