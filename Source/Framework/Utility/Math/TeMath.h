@@ -235,7 +235,7 @@ namespace te
          * Wraps the value in range [0, length) and reverses the direction every @p length increment. This results in
          * @p val incrementing until @p length, then decrementing back to 0, and so on.
          */
-        static float pingPong(float val, float length)
+        static float PingPong(float val, float length)
         {
             val = Repeat(val, length * 2.0f);
             return length - fabs(val - length);

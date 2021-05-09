@@ -14,23 +14,20 @@ namespace te
 
     BulletHeightField::HeightFieldInfo::~HeightFieldInfo()
     {
-        if (HeightMap)
-        {
-            te_deallocate(HeightMap);
-            HeightMap = nullptr;
-        }
+        te_safe_delete(HeightMap);
+        HeightMap = nullptr;
     }
 
     float& BulletHeightField::HeightFieldInfo::GetHeightAt(UINT32 x, UINT32 y) const
     {
-        UINT32 Offset = y * sizeof(float) + x * sizeof(float);
-        return *(float*)(HeightMap + Offset);
+        UINT32 offset = y * Width + x;
+        return *((float*)HeightMap + offset);
     }
 
     void BulletHeightField::HeightFieldInfo::SetHeightAt(UINT32 x, UINT32 y, const float& value)
     {
-        UINT32 Offset = y * sizeof(float) + x * sizeof(float);
-        *(float*)(HeightMap + Offset) = value;
+        UINT32 offset = y * Width + x;
+        *((float*)HeightMap + offset) = value;
 
         if (value > MaxHeight)
             MaxHeight = value;

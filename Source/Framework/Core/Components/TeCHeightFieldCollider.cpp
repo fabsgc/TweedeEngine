@@ -37,7 +37,8 @@ namespace te
         CCollider::Clone(static_object_cast<CCollider>(c));
 
         _heightField = c->_heightField;
-        _heightScale = c->_heightScale;
+        _minHeight = c->_minHeight;
+        _maxHeight = c->_maxHeight;
     }
 
     void CHeightFieldCollider::SetHeightField(const HPhysicsHeightField& heightField)
@@ -61,19 +62,38 @@ namespace te
         }
     }
 
-    void CHeightFieldCollider::SetHeightScale(const float& heightScale)
+    void CHeightFieldCollider::SetMinHeight(const float& minHeight)
     {
-        if (_heightScale == heightScale)
+        if (_minHeight == minHeight || minHeight > _maxHeight)
             return;
 
-        _heightScale = heightScale;
+        _minHeight = minHeight;
 
         if (_internal != nullptr)
         {
             if (_parent != nullptr)
                 _parent->RemoveCollider(static_object_cast<CCollider>(GetHandle()));
 
-            _getInternal()->SetHeightScale(heightScale);
+            _getInternal()->SetMinHeight(minHeight);
+
+            if (_parent)
+                _parent->AddCollider(static_object_cast<CCollider>(GetHandle()));
+        }
+    }
+
+    void CHeightFieldCollider::SetMaxHeight(const float& maxHeight)
+    {
+        if (_maxHeight == maxHeight || maxHeight < _minHeight)
+            return;
+
+        _maxHeight = maxHeight;
+
+        if (_internal != nullptr)
+        {
+            if (_parent != nullptr)
+                _parent->RemoveCollider(static_object_cast<CCollider>(GetHandle()));
+
+            _getInternal()->SetMaxHeight(maxHeight);
 
             if (_parent)
                 _parent->AddCollider(static_object_cast<CCollider>(GetHandle()));

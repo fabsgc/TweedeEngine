@@ -18,6 +18,7 @@ namespace te
     { 
         te_delete((BulletFCollider*)_internal);
         te_safe_delete(_shape);
+        te_safe_delete(_scaledHeightMap);
     }
 
     void BulletHeightFieldCollider::SetScale(const Vector3& scale)
@@ -35,6 +36,12 @@ namespace te
             ((BulletFCollider*)_internal)->SetShape(_shape);
         }
 
+        if (_scaledHeightMap)
+        {
+            te_delete(_scaledHeightMap);
+            _scaledHeightMap = nullptr;
+        }
+
         if (!_heightField.IsLoaded())
             return;
 
@@ -47,8 +54,22 @@ namespace te
 
         auto heightFieldInfo = fHeightField->GetHeightFieldInfo();
 
+        UINT32 numElts = heightFieldInfo->Width * heightFieldInfo->Length;
+        UINT32 mapSize = sizeof(float) * numElts;
+        _scaledHeightMap = te_allocate<UINT8>(mapSize);
+
+        memcpy(_scaledHeightMap, heightFieldInfo->HeightMap, mapSize);
+
+        float oldRange = (1.0f - 0.0f);
+        float newRange = (_maxHeight - _minHeight);
+        
+        for (UINT32 i = 0; i < numElts; i++)
+        {
+            ((float*)_scaledHeightMap)[i] = ((((float*)heightFieldInfo->HeightMap)[i] * newRange) / oldRange) + _minHeight;
+        }
+
         _shape = te_new<btHeightfieldTerrainShape>(heightFieldInfo->Width, heightFieldInfo->Length, 
-            heightFieldInfo->HeightMap, _heightScale, heightFieldInfo->MinHeight, heightFieldInfo->MaxHeight, 1, true);
+            (float*)_scaledHeightMap, _minHeight, _maxHeight, 1, true);
         _shape->setUserPointer(this);
 
         ((BulletFCollider*)_internal)->SetShape(_shape);

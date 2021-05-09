@@ -25,5 +25,6 @@ namespace te
 
     private:
         btHeightfieldTerrainShape* _shape = nullptr;
+        UINT8* _scaledHeightMap = nullptr;
     };
 }

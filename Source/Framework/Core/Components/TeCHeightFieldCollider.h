@@ -25,11 +25,17 @@ namespace te
         /** @copydoc HeightFieldCollider::GetHeightField() */
         HPhysicsHeightField GetHeightField() const { return _heightField; }
 
-        /** @copydoc HeightFieldCollider::SetHeightScale() */
-        void SetHeightScale(const float& heightScale);
+        /** @copydoc HeightFieldCollider::SetMinHeight() */
+        void SetMinHeight(const float& minHeight);
 
-        /** @copydoc HeightFieldCollider::GetHeightScale() */
-        float GetHeightScale() const { return _heightScale; }
+        /** @copydoc HeightFieldCollider::GetMinHeight() */
+        float GetMinHeight() const { return _minHeight; }
+
+        /** @copydoc HeightFieldCollider::SetMaxHeight() */
+        void SetMaxHeight(const float& maxHeight);
+
+        /** @copydoc HeightFieldCollider::GetMaxHeight() */
+        float GetMaxHeight() const { return _maxHeight; }
 
         /** @copydoc Component::Clone */
         void Clone(const HHeightFieldCollider& c);
@@ -51,6 +57,7 @@ namespace te
 
     protected:
         HPhysicsHeightField _heightField;
-        float _heightScale = 0.02f;
+        float _minHeight = 0.0f;
+        float _maxHeight = 10.0f;
     };
 }

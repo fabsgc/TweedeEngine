@@ -952,13 +952,24 @@ namespace te
 
         if (ImGui::CollapsingHeader("Terrain collider", ImGuiTreeNodeFlags_DefaultOpen))
         {
-            // HeightScale
+            // Min Height
             {
-                float heightScale = collider->GetHeightScale();
-                if (ImGuiExt::RenderOptionFloat(heightScale, "##collider_physic_height_scale_option", "Height Scale", 0.0f, 2.0f, width))
+                float minHeight = collider->GetMinHeight();
+                if (ImGuiExt::RenderOptionFloat(minHeight, "##collider_physic_min_height_option", "Min Height", -256.0f, 256.0f, width))
                 {
                     hasChanged = true;
-                    collider->SetHeightScale(heightScale);
+                    collider->SetMinHeight(minHeight);
+                }
+            }
+            ImGui::Separator();
+
+            // Max Height
+            {
+                float maxHeight = collider->GetMaxHeight();
+                if (ImGuiExt::RenderOptionFloat(maxHeight, "##collider_physic_max_height_option", "Max Height", -256.0f, 256.0f, width))
+                {
+                    hasChanged = true;
+                    collider->SetMaxHeight(maxHeight);
                 }
             }
             ImGui::Separator();

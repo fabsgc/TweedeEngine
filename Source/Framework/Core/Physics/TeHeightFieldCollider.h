@@ -23,12 +23,20 @@ namespace te
         HPhysicsHeightField GetHeightField() const { return _heightField; }
 
         /**
-         * Specify the scale you want to apply to the terrain (texture value are between 0 and 1)
+         * Specify the minimum height of this terrain
          */
-        void SetHeightScale(const float& heightScale) { _heightScale = heightScale; OnHeightFieldChanged(); }
+        void SetMinHeight(const float& minHeight) { _minHeight = minHeight; OnHeightFieldChanged(); }
 
-        /** @copydoc SetHeightScale */
-        float GetHeightScale() { return _heightScale; }
+        /** @copydoc SetMinHeight */
+        float GetMinHeight() { return _minHeight; }
+
+        /**
+         * Specify the maximum height of this terrain
+         */
+        void SetMaxHeight(const float& maxHeight) { _maxHeight = maxHeight; OnHeightFieldChanged(); }
+
+        /** @copydoc SetMinHeight */
+        float GetMaxHeight() { return _maxHeight; }
 
         /**
          * Creates a new HeightField collider.
@@ -48,6 +56,7 @@ namespace te
 
     protected:
         HPhysicsHeightField _heightField;
-        float _heightScale = 0.02f;
+        float _minHeight = 0.0f;
+        float _maxHeight = 10.0f;
     };
 }
