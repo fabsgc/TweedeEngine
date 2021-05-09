@@ -62,11 +62,11 @@ namespace te
         /**  @copydoc Resource::GetResourceType */
         static UINT32 GetResourceType() { return TID_FPhysicsHeightField; }
 
-        /** @copydoc PhysicsMesh::GetTexture */
+        /** @copydoc PhysicsHeightField::GetTexture */
         SPtr<Texture> GetTexture() const { return _texture;  }
 
     protected:
-        friend class PhysicsMesh;
+        friend class PhysicsHeightField;
 
         SPtr<Texture> _texture = nullptr;
     };

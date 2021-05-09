@@ -372,7 +372,7 @@ namespace te
 
         /**
          * Returns information about lights visible from this group of views. Only valid after a call to
-         * determineVisibility().
+         * DetermineVisibility().
          */
         const VisibleLightData& GetVisibleLightData() const { return _visibleLightData; }
 

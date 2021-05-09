@@ -965,8 +965,7 @@ namespace te
                 {
                     HTexture tex = static_resource_cast<Texture>(resource.second);
 
-                    if (tex.IsLoaded() && tex->GetProperties().GetTextureType() != TextureType::TEX_TYPE_CUBE_MAP &&
-                        tex->GetProperties().GetWidth() == tex->GetProperties().GetHeight())
+                    if (tex.IsLoaded() && tex->GetProperties().GetTextureType() != TextureType::TEX_TYPE_CUBE_MAP)
                     {
                         texturesOptions.AddOption(resource.second->GetUUID(), resource.second->GetName(),
                             std::static_pointer_cast<Texture>(resource.second.GetInternalPtr()));
@@ -2114,8 +2113,7 @@ namespace te
                     texture->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
                     EditorResManager::Instance().Add<Texture>(texture);
 
-                    if (texture->GetProperties().GetTextureType() != TextureType::TEX_TYPE_CUBE_MAP &&
-                        texture->GetProperties().GetWidth() == texture->GetProperties().GetHeight())
+                    if (texture->GetProperties().GetTextureType() != TextureType::TEX_TYPE_CUBE_MAP)
                     {
                         SPtr<CHeightFieldCollider> heightFieldCollider = std::static_pointer_cast<CHeightFieldCollider>(_selections.ClickedComponent);
                         heightFieldCollider->SetHeightField(GetOrCreatePhysicsHightFieldFromTex(texture.GetInternalPtr()));

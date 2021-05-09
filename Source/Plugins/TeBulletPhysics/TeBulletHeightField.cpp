@@ -5,6 +5,40 @@
 
 namespace te
 {
+    BulletHeightField::HeightFieldInfo::HeightFieldInfo(UINT32 width, UINT32 length)
+        : Width(width)
+        , Length(length)
+    {
+        HeightMap = te_allocate<UINT8>(sizeof(float) * Width * Length);
+    }
+
+    BulletHeightField::HeightFieldInfo::~HeightFieldInfo()
+    {
+        if (HeightMap)
+        {
+            te_deallocate(HeightMap);
+            HeightMap = nullptr;
+        }
+    }
+
+    float& BulletHeightField::HeightFieldInfo::GetHeightAt(UINT32 x, UINT y) const
+    {
+        UINT32 Offset = y * sizeof(float) + x * sizeof(float);
+        return *(float*)(HeightMap + Offset);
+    }
+
+    void BulletHeightField::HeightFieldInfo::SetHeightAt(UINT32 x, UINT y, const float& value)
+    {
+        UINT32 Offset = y * sizeof(float) + x * sizeof(float);
+        *(float*)(HeightMap + Offset) = value;
+
+        if (value > MaxHeight)
+            MaxHeight = value;
+
+        if (value < MinHeight)
+            MinHeight = value;
+    }
+
     BulletHeightField::BulletHeightField(const SPtr<Texture>& texture)
         : PhysicsHeightField(texture)
     { }
@@ -35,26 +69,28 @@ namespace te
 
     BulletFHeightField::~BulletFHeightField()
     {
-
+        _heightFieldInfo = nullptr;
     }
 
     void BulletFHeightField::Initialize()
     {
+        _heightFieldInfo = te_shared_ptr_new<BulletHeightField::HeightFieldInfo>(_texture->GetProperties().GetWidth(), 
+            _texture->GetProperties().GetHeight());
+
         const TextureProperties& properties = _texture->GetProperties();
-        SPtr<PixelData> pixelData = _texture->GetProperties().AllocBuffer(0, 0);
-        
+        SPtr<PixelData> PixelData = _texture->GetProperties().AllocBuffer(0, 0);
+
         if (properties.GetUsage() & TU_CPUCACHED)
-            _texture->ReadCachedData(*pixelData);
+            _texture->ReadCachedData(*PixelData);
         else
-            _texture->ReadData(*pixelData);
+            _texture->ReadData(*PixelData);
 
-        UINT32 width = std::min(pixelData->GetWidth(), pixelData->GetHeight());
-
-        for (UINT32 j = 0; j < width; j++)
+        for (UINT32 j = 0; j < _heightFieldInfo->Length; j++)
         {
-            for (UINT32 i = 0; i < width; i++)
+            for (UINT32 i = 0; i < _heightFieldInfo->Width; i++)
             {
-                Color color = pixelData->GetColorAt(i, j);
+                Color color = PixelData->GetColorAt(i, j);
+                _heightFieldInfo->SetHeightAt(i, j, color.r);
             }
         }
     }

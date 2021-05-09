@@ -27,10 +27,6 @@ namespace te
         Vector<Sphere> RadialLightWorldBounds;
         Vector<Sphere> SpotLightWorldBounds;
 
-        // Buffers for various transient data that gets rebuilt every frame
-        //// Rebuilt every frame
-        //mutable Vector<bool> RenderableReady; TODO
-
         // Sky
         Skybox* SkyboxElem = nullptr;
 
