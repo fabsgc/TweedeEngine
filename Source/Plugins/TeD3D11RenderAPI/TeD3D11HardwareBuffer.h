@@ -69,5 +69,5 @@ namespace te
         D3D11_BUFFER_DESC _desc;
     };
 
-    IMPLEMENT_GLOBAL_POOL(D3D11HardwareBuffer, 32)
+    IMPLEMENT_GLOBAL_POOL(D3D11HardwareBuffer, 64)
 }

@@ -42,5 +42,5 @@ namespace te
         bool _zeroLocked = false;
     };
 
-    IMPLEMENT_GLOBAL_POOL(GLHardwareBuffer, 32)
+    IMPLEMENT_GLOBAL_POOL(GLHardwareBuffer, 64)
 }

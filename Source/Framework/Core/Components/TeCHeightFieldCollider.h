@@ -51,6 +51,6 @@ namespace te
 
     protected:
         HPhysicsHeightField _heightField;
-        float _heightScale = 1.0f;
+        float _heightScale = 0.02f;
     };
 }

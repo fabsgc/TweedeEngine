@@ -196,5 +196,5 @@ namespace te
 
     BulletPhysics& gBulletPhysics();
 
-    IMPLEMENT_GLOBAL_POOL(BulletPhysics::ContactEvent, 32)
+    IMPLEMENT_GLOBAL_POOL(BulletPhysics::ContactEvent, 64)
 }

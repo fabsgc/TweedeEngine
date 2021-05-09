@@ -955,7 +955,7 @@ namespace te
             // HeightScale
             {
                 float heightScale = collider->GetHeightScale();
-                if (ImGuiExt::RenderOptionFloat(heightScale, "##collider_physic_height_scale_option", "Height Scale", 0.0f, 500.0f, width))
+                if (ImGuiExt::RenderOptionFloat(heightScale, "##collider_physic_height_scale_option", "Height Scale", 0.0f, 2.0f, width))
                 {
                     hasChanged = true;
                     collider->SetHeightScale(heightScale);

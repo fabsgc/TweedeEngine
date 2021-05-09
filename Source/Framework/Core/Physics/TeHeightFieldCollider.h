@@ -17,7 +17,7 @@ namespace te
         /**
          * Sets a texture that represents the vertical position of the terrain
          */
-        void SetHeightField(const HPhysicsHeightField& heightField) { _heightField = _heightField; OnHeightFieldChanged(); }
+        void SetHeightField(const HPhysicsHeightField& heightField) { _heightField = heightField; OnHeightFieldChanged(); }
 
         /** @copydoc SetHeightField() */
         HPhysicsHeightField GetHeightField() const { return _heightField; }
@@ -48,6 +48,6 @@ namespace te
 
     protected:
         HPhysicsHeightField _heightField;
-        float _heightScale = 1.0f;
+        float _heightScale = 0.02f;
     };
 }

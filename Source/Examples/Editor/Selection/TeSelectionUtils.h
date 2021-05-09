@@ -6,7 +6,7 @@
 #include "RenderAPI/TeVertexDataDesc.h"
 #include "RenderAPI/TeVertexDeclaration.h"
 
-#define MAX_HUD_INSTANCED_BLOCK 32
+#define MAX_HUD_INSTANCED_BLOCK 256
 
 namespace te
 {

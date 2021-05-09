@@ -6,7 +6,7 @@
 #include "Math/TeVector3.h"
 #include "Math/TeMatrix4.h"
 
-#define MAX_BULLET_DEBUG_INSTANCED_BLOCK 32
+#define MAX_BULLET_DEBUG_INSTANCED_BLOCK 256
 
 namespace te
 {

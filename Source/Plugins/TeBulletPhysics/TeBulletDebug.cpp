@@ -5,8 +5,6 @@
 #include "RenderAPI/TeVertexDeclaration.h"
 #include "Renderer/TeCamera.h"
 
-#define MAX_BULLET_DEBUG_INSTANCED_BLOCK 32
-
 namespace te
 {
     BulletDebug::BulletDebug()

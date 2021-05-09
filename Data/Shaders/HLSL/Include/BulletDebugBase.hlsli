@@ -1,4 +1,4 @@
-#define STANDARD_MAX_INSTANCED_BLOCK 32
+#define STANDARD_MAX_INSTANCED_BLOCK 256
 
 struct PerInstanceData
 {

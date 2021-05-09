@@ -58,5 +58,5 @@ namespace te
         InstanceBuffer _instanceBuffer;
     };
 
-    IMPLEMENT_GLOBAL_POOL(PerBulletDebugInstanceData, 32)
+    IMPLEMENT_GLOBAL_POOL(PerBulletDebugInstanceData, MAX_BULLET_DEBUG_INSTANCED_BLOCK)
 }

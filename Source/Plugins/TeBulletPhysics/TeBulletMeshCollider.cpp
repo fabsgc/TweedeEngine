@@ -38,6 +38,7 @@ namespace te
         {
             te_delete(_shape);
             _shape = nullptr;
+            ((BulletFCollider*)_internal)->SetShape(_shape);
         }
 
         if (!_mesh.IsLoaded())
