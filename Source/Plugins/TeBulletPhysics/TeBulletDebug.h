@@ -52,7 +52,7 @@ namespace te
 
     private:
         int _debugMode;
-        Vector<DebugElement> _debugElements;
+        List<DebugElement> _debugElements;
 
         BulletDebugMat* _material;
         InstanceBuffer _instanceBuffer;

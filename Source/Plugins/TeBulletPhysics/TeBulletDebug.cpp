@@ -48,6 +48,7 @@ namespace te
         UINT32 clearBuffers = FBT_DEPTH;
 
         Vector<PerBulletDebugInstanceData*> instancedElements;
+        instancedElements.reserve(_debugElements.size());
 
         for (auto& element : _debugElements)
         {
