@@ -15,12 +15,20 @@ namespace te
         ~HeightFieldCollider() = default;
 
         /**
-         * Sets a mesh that represents the collider geometry. This can be a generic triangle mesh, or and convex mesh.
+         * Sets a texture that represents the vertical position of the terrain
          */
         void SetHeightField(const HPhysicsHeightField& heightField) { _heightField = _heightField; OnHeightFieldChanged(); }
 
         /** @copydoc SetHeightField() */
         HPhysicsHeightField GetHeightField() const { return _heightField; }
+
+        /**
+         * Specify the scale you want to apply to the terrain (texture value are between 0 and 1)
+         */
+        void SetHeightScale(const float& heightScale) { _heightScale = heightScale; OnHeightFieldChanged(); }
+
+        /** @copydoc SetHeightScale */
+        float GetHeightScale() { return _heightScale; }
 
         /**
          * Creates a new HeightField collider.
@@ -40,5 +48,6 @@ namespace te
 
     protected:
         HPhysicsHeightField _heightField;
+        float _heightScale = 1.0f;
     };
 }

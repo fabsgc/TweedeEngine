@@ -349,6 +349,7 @@ namespace te
             case TID_CCapsuleCollider:
             case TID_CMeshCollider:
             case TID_CConeCollider:
+            case TID_CHeightFieldCollider:
                 gEditor().PutFocus(Editor::WindowType::Viewport);
                 break;
 
@@ -483,6 +484,8 @@ namespace te
                     static_object_cast<CMeshCollider>(currentCO)->Initialize();
                 if (currentCO->GetCoreType() == TID_CConeCollider)
                     static_object_cast<CConeCollider>(currentCO)->Initialize();
+                if (currentCO->GetCoreType() == TID_CHeightFieldCollider)
+                    static_object_cast<CHeightFieldCollider>(currentCO)->Initialize();
 
                 // ugly but best way to update all children
                 sceneObject->Move(Vector3::ZERO);
@@ -1204,6 +1207,7 @@ namespace te
         case TID_CCapsuleCollider:
         case TID_CMeshCollider:
         case TID_CConeCollider:
+        case TID_CHeightFieldCollider:
             title += String("  ") + ICON_FA_CUBE;
             break;
         default:

@@ -25,6 +25,12 @@ namespace te
         /** @copydoc HeightFieldCollider::GetHeightField() */
         HPhysicsHeightField GetHeightField() const { return _heightField; }
 
+        /** @copydoc HeightFieldCollider::SetHeightScale() */
+        void SetHeightScale(const float& heightScale);
+
+        /** @copydoc HeightFieldCollider::GetHeightScale() */
+        float GetHeightScale() const { return _heightScale; }
+
         /** @copydoc Component::Clone */
         void Clone(const HHeightFieldCollider& c);
 
@@ -45,5 +51,6 @@ namespace te
 
     protected:
         HPhysicsHeightField _heightField;
+        float _heightScale = 1.0f;
     };
 }

@@ -22,8 +22,8 @@ namespace te
             HeightFieldInfo(UINT32 width, UINT32 length);
             ~HeightFieldInfo();
 
-            float& GetHeightAt(UINT32 x, UINT y) const;
-            void SetHeightAt(UINT32 x, UINT y, const float& value);
+            float& GetHeightAt(UINT32 x, UINT32 y) const;
+            void SetHeightAt(UINT32 x, UINT32 y, const float& value);
         };
 
     public:

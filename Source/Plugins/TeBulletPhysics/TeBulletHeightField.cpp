@@ -21,13 +21,13 @@ namespace te
         }
     }
 
-    float& BulletHeightField::HeightFieldInfo::GetHeightAt(UINT32 x, UINT y) const
+    float& BulletHeightField::HeightFieldInfo::GetHeightAt(UINT32 x, UINT32 y) const
     {
         UINT32 Offset = y * sizeof(float) + x * sizeof(float);
         return *(float*)(HeightMap + Offset);
     }
 
-    void BulletHeightField::HeightFieldInfo::SetHeightAt(UINT32 x, UINT y, const float& value)
+    void BulletHeightField::HeightFieldInfo::SetHeightAt(UINT32 x, UINT32 y, const float& value)
     {
         UINT32 Offset = y * sizeof(float) + x * sizeof(float);
         *(float*)(HeightMap + Offset) = value;

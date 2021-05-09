@@ -952,6 +952,17 @@ namespace te
 
         if (ImGui::CollapsingHeader("Terrain collider", ImGuiTreeNodeFlags_DefaultOpen))
         {
+            // HeightScale
+            {
+                float heightScale = collider->GetHeightScale();
+                if (ImGuiExt::RenderOptionFloat(heightScale, "##collider_physic_height_scale_option", "Height Scale", 0.0f, 500.0f, width))
+                {
+                    hasChanged = true;
+                    collider->SetHeightScale(heightScale);
+                }
+            }
+            ImGui::Separator();
+
             // PhysicsHeightField
             {
                 ImGuiExt::ComboOptions<UUID> texturesOptions;

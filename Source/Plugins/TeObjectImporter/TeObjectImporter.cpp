@@ -114,6 +114,7 @@ namespace te
                 {
                     SPtr<AnimationClip> clip = AnimationClip::_createPtr(entry.Curves, entry.SampleRate, entry.IsAdditive, entry.RootMot);
                     clip->SetName(entry.Name);
+                    clip->SetPath(path.generic_string());
 
                     for (auto& eventsEntry : events)
                     {

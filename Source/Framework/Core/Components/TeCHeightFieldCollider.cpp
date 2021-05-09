@@ -37,6 +37,7 @@ namespace te
         CCollider::Clone(static_object_cast<CCollider>(c));
 
         _heightField = c->_heightField;
+        _heightScale = c->_heightScale;
     }
 
     void CHeightFieldCollider::SetHeightField(const HPhysicsHeightField& heightField)
@@ -56,6 +57,25 @@ namespace te
             if (_parent.Empty() || !_heightField.IsLoaded())
                 UpdateParentBody();
             else
+                _parent->AddCollider(static_object_cast<CCollider>(GetHandle()));
+        }
+    }
+
+    void CHeightFieldCollider::SetHeightScale(const float& heightScale)
+    {
+        if (_heightScale == heightScale)
+            return;
+
+        _heightScale = heightScale;
+
+        if (_internal != nullptr)
+        {
+            if (_parent != nullptr)
+                _parent->RemoveCollider(static_object_cast<CCollider>(GetHandle()));
+
+            _getInternal()->SetHeightScale(heightScale);
+
+            if (_parent)
                 _parent->AddCollider(static_object_cast<CCollider>(GetHandle()));
         }
     }
