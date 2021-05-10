@@ -25,68 +25,83 @@ namespace te
         /** Shows element properties, returns true if something has been modified */
         bool ShowSceneObjectProperties();
 
-        /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
+        /** @copydoc WidgetProperties::ShowSceneObjectProperties */
         bool ShowCCameraProperties();
 
-        /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
+        /** @copydoc WidgetProperties::ShowSceneObjectProperties */
         bool ShowCCameraFlyerProperties();
 
-        /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
+        /** @copydoc WidgetProperties::ShowSceneObjectProperties */
         bool ShowCCameraUIProperties();
 
-        /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
+        /** @copydoc WidgetProperties::ShowSceneObjectProperties */
         bool ShowCLightProperties();
 
-        /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
+        /** @copydoc WidgetProperties::ShowSceneObjectProperties */
         bool ShowCRenderableProperties();
 
-        /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
+        /** @copydoc WidgetProperties::ShowSceneObjectProperties */
         bool ShowCScriptProperties();
 
-        /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
+        /** @copydoc WidgetProperties::ShowSceneObjectProperties */
         bool ShowCSkyboxProperties();
 
-        /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
+        /** @copydoc WidgetProperties::ShowSceneObjectProperties */
         bool ShowCAnimationProperties();
 
-        /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
+        /** @copydoc WidgetProperties::ShowSceneObjectProperties */
         bool ShowCBoneProperties();
 
-        /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
+        /** @copydoc WidgetProperties::ShowSceneObjectProperties */
         bool ShowCAudioListenerProperties();
 
-        /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
+        /** @copydoc WidgetProperties::ShowSceneObjectProperties */
         bool ShowCAudioSourceProperties();
 
-        /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
+        /** @copydoc WidgetProperties::ShowSceneObjectProperties */
         bool ShowCRigidBodyProperties();
 
-        /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
+        /** @copydoc WidgetProperties::ShowSceneObjectProperties */
         bool ShowCSoftBodyProperties();
 
-        /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
+        /** @copydoc WidgetProperties::ShowSceneObjectProperties */
         bool ShowCBoxColliderProperties();
 
-        /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
+        /** @copydoc WidgetProperties::ShowSceneObjectProperties */
         bool ShowCCapsuleColliderProperties();
 
-        /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
+        /** @copydoc WidgetProperties::ShowSceneObjectProperties */
         bool ShowCConeColliderProperties();
 
-        /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
+        /** @copydoc WidgetProperties::ShowSceneObjectProperties */
         bool ShowCCylinderColliderProperties();
 
-        /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
+        /** @copydoc WidgetProperties::ShowSceneObjectProperties */
         bool ShowCMeshColliderProperties();
 
-        /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
+        /** @copydoc WidgetProperties::ShowSceneObjectProperties */
         bool ShowCPlaneColliderProperties();
 
-        /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
+        /** @copydoc WidgetProperties::ShowSceneObjectProperties */
         bool ShowCSphereColliderProperties();
 
-        /**  @copydoc WidgetProperties::ShowSceneObjectProperties */
+        /** @copydoc WidgetProperties::ShowSceneObjectProperties */
         bool ShowCHeightFieldColliderProperties();
+
+        /** @copydoc WidgetProperties::ShowSceneObjectProperties */
+        bool ShowCConeTwistJointProperties();
+
+        /** @copydoc WidgetProperties::ShowSceneObjectProperties */
+        bool ShowCD6JointProperties();
+
+        /** @copydoc WidgetProperties::ShowSceneObjectProperties */
+        bool ShowCHingeJointProperties();
+
+        /** @copydoc WidgetProperties::ShowSceneObjectProperties */
+        bool ShowCSliderJointProperties();
+
+        /** @copydoc WidgetProperties::ShowSceneObjectProperties */
+        bool ShowCSphericalJointProperties();
 
         /**  Show transform and mobility options */
         bool ShowTransform(Transform& transform, ObjectMobility& mobility, bool disableTransform = false);

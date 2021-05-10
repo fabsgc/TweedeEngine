@@ -221,8 +221,43 @@ namespace te
             }
             break;
 
+            case TID_CConeTwistJoint:
+            {
+                if (ShowCConeTwistJointProperties())
+                    hasChanged = true;
+            }
+            break;
+
+            case TID_CD6Joint:
+            {
+                if (ShowCD6JointProperties())
+                    hasChanged = true;
+            }
+            break;
+
+            case TID_CHingeJoint:
+            {
+                if (ShowCHingeJointProperties())
+                    hasChanged = true;
+            }
+            break;
+
+            case TID_CSliderJoint:
+            {
+                if (ShowCSliderJointProperties())
+                    hasChanged = true;
+            }
+            break;
+
+            case TID_CSphericalJoint:
+            {
+                if (ShowCSphericalJointProperties())
+                    hasChanged = true;
+            }
+            break;
+
             default:
-                break;
+            break;
             }
         }
         else if (_selections.ClickedSceneObject)
@@ -698,7 +733,7 @@ namespace te
         bool hasChanged = false;
         SPtr<CBoxCollider> collider = std::static_pointer_cast<CBoxCollider>(_selections.ClickedComponent);
 
-        if (ImGui::CollapsingHeader("Box collider", ImGuiTreeNodeFlags_DefaultOpen))
+        if (ImGui::CollapsingHeader("Box Collider", ImGuiTreeNodeFlags_DefaultOpen))
         {
             // Extents
             {
@@ -725,7 +760,7 @@ namespace te
         const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
         SPtr<CCapsuleCollider> collider = std::static_pointer_cast<CCapsuleCollider>(_selections.ClickedComponent);
 
-        if (ImGui::CollapsingHeader("Capsule collider", ImGuiTreeNodeFlags_DefaultOpen))
+        if (ImGui::CollapsingHeader("Capsule Collider", ImGuiTreeNodeFlags_DefaultOpen))
         {
             // Radius
             {
@@ -761,7 +796,7 @@ namespace te
         const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
         SPtr<CConeCollider> collider = std::static_pointer_cast<CConeCollider>(_selections.ClickedComponent);
 
-        if (ImGui::CollapsingHeader("Cone collider", ImGuiTreeNodeFlags_DefaultOpen))
+        if (ImGui::CollapsingHeader("Cone Collider", ImGuiTreeNodeFlags_DefaultOpen))
         {
             // Radius
             {
@@ -796,7 +831,7 @@ namespace te
         bool hasChanged = false;
         SPtr<CCylinderCollider> collider = std::static_pointer_cast<CCylinderCollider>(_selections.ClickedComponent);
 
-        if (ImGui::CollapsingHeader("Cylinder collider", ImGuiTreeNodeFlags_DefaultOpen))
+        if (ImGui::CollapsingHeader("Cylinder Collider", ImGuiTreeNodeFlags_DefaultOpen))
         {
             // Extents
             {
@@ -824,7 +859,7 @@ namespace te
         SPtr<CMeshCollider> collider = std::static_pointer_cast<CMeshCollider>(_selections.ClickedComponent);
         HPhysicsMesh mesh = collider->GetMesh();
 
-        if (ImGui::CollapsingHeader("Mesh collider", ImGuiTreeNodeFlags_DefaultOpen))
+        if (ImGui::CollapsingHeader("Mesh Collider", ImGuiTreeNodeFlags_DefaultOpen))
         {
             // PhysicsMesh
             {
@@ -895,7 +930,7 @@ namespace te
         bool hasChanged = false;
         SPtr<CPlaneCollider> collider = std::static_pointer_cast<CPlaneCollider>(_selections.ClickedComponent);
 
-        if (ImGui::CollapsingHeader("Plane collider", ImGuiTreeNodeFlags_DefaultOpen))
+        if (ImGui::CollapsingHeader("Plane Collider", ImGuiTreeNodeFlags_DefaultOpen))
         {
             // Normal
             {
@@ -922,7 +957,7 @@ namespace te
         const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
         SPtr<CSphereCollider> collider = std::static_pointer_cast<CSphereCollider>(_selections.ClickedComponent);
 
-        if (ImGui::CollapsingHeader("Sphere collider", ImGuiTreeNodeFlags_DefaultOpen))
+        if (ImGui::CollapsingHeader("Sphere Collider", ImGuiTreeNodeFlags_DefaultOpen))
         {
             // Radius
             {
@@ -950,7 +985,7 @@ namespace te
         SPtr<Texture> texture = heightField.IsLoaded() ? heightField->GetTexture() : nullptr;
         UINT8 flags = (UINT8)ImGuiExt::ComboOptionFlag::ShowTexture;
 
-        if (ImGui::CollapsingHeader("Terrain collider", ImGuiTreeNodeFlags_DefaultOpen))
+        if (ImGui::CollapsingHeader("Terrain Collider", ImGuiTreeNodeFlags_DefaultOpen))
         {
             // Min Height
             {
@@ -1036,6 +1071,61 @@ namespace te
 
             if (ShowLoadHeightFieldTexture())
                 hasChanged = true;
+        }
+
+        return hasChanged;
+    }
+
+    bool WidgetProperties::ShowCConeTwistJointProperties()
+    {
+        bool hasChanged = false;
+
+        if (ImGui::CollapsingHeader("Twist Joint", ImGuiTreeNodeFlags_DefaultOpen))
+        { 
+        }
+
+        return hasChanged;
+    }
+
+    bool WidgetProperties::ShowCD6JointProperties()
+    {
+        bool hasChanged = false;
+
+        if (ImGui::CollapsingHeader("D6 Joint", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+        }
+
+        return hasChanged;
+    }
+
+    bool WidgetProperties::ShowCHingeJointProperties()
+    {
+        bool hasChanged = false;
+
+        if (ImGui::CollapsingHeader("Hinge Joint", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+        }
+
+        return hasChanged;
+    }
+
+    bool WidgetProperties::ShowCSliderJointProperties()
+    {
+        bool hasChanged = false;
+
+        if (ImGui::CollapsingHeader("Slider Joint", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+        }
+
+        return hasChanged;
+    }
+
+    bool WidgetProperties::ShowCSphericalJointProperties()
+    {
+        bool hasChanged = false;
+
+        if (ImGui::CollapsingHeader("Spherical Joint", ImGuiTreeNodeFlags_DefaultOpen))
+        {
         }
 
         return hasChanged;
