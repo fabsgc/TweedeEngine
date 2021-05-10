@@ -186,11 +186,11 @@ namespace te
         if (!meshImportOptions->ImportAnimations)
             removeComponentFlags |= aiComponent_ANIMATIONS | aiComponent_BONEWEIGHTS;
 
-        if (!meshImportOptions->ImportMaterials)
-            removeComponentFlags |= aiComponent_MATERIALS | aiComponent_TEXTURES;
+        //if (!meshImportOptions->ImportMaterials)
+        //    removeComponentFlags |= aiComponent_MATERIALS | aiComponent_TEXTURES;
 
-        if (!meshImportOptions->ImportVertexColors)
-            removeComponentFlags |= aiComponent_COLORS;
+        //if (!meshImportOptions->ImportVertexColors)
+        //    removeComponentFlags |= aiComponent_COLORS;
 
         importer.SetPropertyInteger(AI_CONFIG_PP_RVC_FLAGS, removeComponentFlags);
 
@@ -1053,7 +1053,7 @@ namespace te
 
                 UINT32 indexCount = indicesPerMaterial[key];
                 SubMesh subMesh(currentIndex, indexCount, DOT_TRIANGLE_LIST, scene.Materials[key].Name, "SubMesh " + ToString(key));
-                
+
                 if (options.ImportMaterials)
                 {
                     subMesh.MatProperties = scene.Materials[key].MatProperties;
