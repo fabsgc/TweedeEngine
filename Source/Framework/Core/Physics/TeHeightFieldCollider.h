@@ -17,7 +17,7 @@ namespace te
         /**
          * Sets a texture that represents the vertical position of the terrain
          */
-        void SetHeightField(const HPhysicsHeightField& heightField) { _heightField = heightField; OnHeightFieldChanged(); }
+        virtual void SetHeightField(const HPhysicsHeightField& heightField) { _heightField = heightField; }
 
         /** @copydoc SetHeightField() */
         HPhysicsHeightField GetHeightField() const { return _heightField; }
@@ -25,7 +25,7 @@ namespace te
         /**
          * Specify the minimum height of this terrain
          */
-        void SetMinHeight(const float& minHeight) { _minHeight = minHeight; OnHeightFieldChanged(); }
+        virtual void SetMinHeight(const float& minHeight) { _minHeight = minHeight; }
 
         /** @copydoc SetMinHeight */
         float GetMinHeight() { return _minHeight; }
@@ -33,7 +33,7 @@ namespace te
         /**
          * Specify the maximum height of this terrain
          */
-        void SetMaxHeight(const float& maxHeight) { _maxHeight = maxHeight; OnHeightFieldChanged(); }
+        virtual void SetMaxHeight(const float& maxHeight) { _maxHeight = maxHeight; }
 
         /** @copydoc SetMinHeight */
         float GetMaxHeight() { return _maxHeight; }

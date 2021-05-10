@@ -17,7 +17,7 @@ namespace te
         /**
          * Sets a mesh that represents the collider geometry. This can be a generic triangle mesh, or and convex mesh.
          */
-        void SetMesh(const HPhysicsMesh& mesh) { _mesh = mesh; OnMeshChanged(); }
+        virtual void SetMesh(const HPhysicsMesh& mesh) { _mesh = mesh; }
 
         /** @copydoc SetMesh() */
         HPhysicsMesh GetMesh() const { return _mesh; }

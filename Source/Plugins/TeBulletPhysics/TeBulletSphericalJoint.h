@@ -11,5 +11,8 @@ namespace te
     public:
         BulletSphericalJoint(BulletPhysics* physics, BulletScene* scene, const SPHERICAL_JOINT_DESC& desc);
         ~BulletSphericalJoint();
+
+    private:
+        btTypedConstraint* _joint;
     };
 }

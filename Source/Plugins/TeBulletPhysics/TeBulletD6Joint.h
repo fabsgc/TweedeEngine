@@ -11,5 +11,8 @@ namespace te
     public:
         BulletD6Joint(BulletPhysics* physics, BulletScene* scene, const D6_JOINT_DESC& desc);
         ~BulletD6Joint();
+
+    private:
+        btTypedConstraint* _joint;
     };
 }

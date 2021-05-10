@@ -11,5 +11,8 @@ namespace te
     public:
         BulletSliderJoint(BulletPhysics* physics, BulletScene* scene, const SLIDER_JOINT_DESC& desc);
         ~BulletSliderJoint();
+
+    private:
+        btTypedConstraint* _joint;
     };
 }

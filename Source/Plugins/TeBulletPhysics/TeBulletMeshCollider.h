@@ -16,6 +16,9 @@ namespace te
         /** @copydoc MeshCollider::SetScale() */
         void SetScale(const Vector3& scale) override;
 
+        /** @copydoc MeshCollider::SetMesh() */
+        void SetMesh(const HPhysicsMesh& mesh) override;
+
         /** @copydoc MeshCollider::SetType() */
         void SetCollisionType(PhysicsMeshType type) override;
 

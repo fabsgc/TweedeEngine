@@ -11,5 +11,8 @@ namespace te
     public:
         BulletConeTwistJoint(BulletPhysics* physics, BulletScene* scene, const CONE_TWIST_JOINT_DESC& desc);
         ~BulletConeTwistJoint();
+
+    private:
+        btTypedConstraint* _joint;
     };
 }

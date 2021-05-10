@@ -26,6 +26,12 @@ namespace te
         UpdateShape();
     }
 
+    void BulletMeshCollider::SetMesh(const HPhysicsMesh& mesh)
+    {
+        MeshCollider::SetMesh(mesh);
+        UpdateShape();
+    }
+
     void BulletMeshCollider::SetCollisionType(PhysicsMeshType type)
     {
         MeshCollider::SetCollisionType(type);

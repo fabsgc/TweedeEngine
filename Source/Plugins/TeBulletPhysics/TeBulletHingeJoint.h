@@ -11,5 +11,8 @@ namespace te
     public:
         BulletHingeJoint(BulletPhysics* physics, BulletScene* scene, const HINGE_JOINT_DESC& desc);
         ~BulletHingeJoint();
+
+    private:
+        btTypedConstraint* _joint;
     };
 }

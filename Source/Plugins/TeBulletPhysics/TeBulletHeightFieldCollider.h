@@ -13,8 +13,17 @@ namespace te
         BulletHeightFieldCollider(BulletPhysics* physics, BulletScene* scene, const Vector3& position, const Quaternion& rotation);
         ~BulletHeightFieldCollider();
 
-        /** @copydoc SphereCollider::SetScale() */
+        /** @copydoc HeightFieldCollider::SetScale() */
         void SetScale(const Vector3& scale) override;
+
+        /** @copydoc HeightFieldCollider::SetHeightField() */
+        void SetHeightField(const HPhysicsHeightField& heightField) override;
+
+        /** @copydoc HeightFieldCollider::SetMinHeight() */
+        void SetMinHeight(const float& minHeight) override;
+
+        /** @copydoc HeightFieldCollider::SetMinHeight() */
+        void SetMaxHeight(const float& minHeight) override;
 
     private:
         /** Create shape using current parameters */
