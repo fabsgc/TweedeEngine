@@ -20,7 +20,7 @@ namespace te
     {
         const SPtr<SceneInstance>& scene = SO()->GetScene();
         SPtr<Joint> joint = SphericalJoint::Create(*scene->GetPhysicsScene(), _desc);
-        joint->SetOwner(PhysicsOwnerType::Component);
+        joint->SetOwner(PhysicsOwnerType::Component, this);
 
         return joint;
     }
@@ -28,5 +28,7 @@ namespace te
     void CSphericalJoint::Clone(const HSphericalJoint& c)
     {
         CJoint::Clone(static_object_cast<CJoint>(c));
+
+        _desc = c->_desc;
     }
 }

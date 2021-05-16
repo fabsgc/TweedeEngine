@@ -142,6 +142,9 @@ namespace te
         /** Returns the body implementation wrapped by this component. */
         virtual Body* GetInternal() const = 0;
 
+        /** Sets that joint that this rigidbody is attached to. Allows the rigidbody to notify the joint when it moves. */
+        void SetJoint(const HJoint& joint) { _parentJoint = joint; }
+
     protected:
         friend class SceneObject;
         friend class CCollider;

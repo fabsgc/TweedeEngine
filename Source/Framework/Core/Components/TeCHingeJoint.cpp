@@ -20,7 +20,7 @@ namespace te
     {
         const SPtr<SceneInstance>& scene = SO()->GetScene();
         SPtr<Joint> joint = HingeJoint::Create(*scene->GetPhysicsScene(), _desc);
-        joint->SetOwner(PhysicsOwnerType::Component);
+        joint->SetOwner(PhysicsOwnerType::Component, this);
 
         return joint;
     }

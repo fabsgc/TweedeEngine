@@ -28,9 +28,13 @@ namespace te
         /** @copydoc CJoint::CreateInternal */
         SPtr<Joint> CreateInternal() override;
 
-        SPHERICAL_JOINT_DESC _desc;
+        /**	Returns the spherical joint that this component wraps. */
+        SphericalJoint* GetInternal() const { return static_cast<SphericalJoint*>(_internal.get()); }
 
     protected:
         CSphericalJoint(); // Serialization only
+
+    protected:
+        SPHERICAL_JOINT_DESC _desc;
     };
 }

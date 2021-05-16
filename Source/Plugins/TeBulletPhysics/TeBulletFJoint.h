@@ -12,10 +12,43 @@ namespace te
         BulletFJoint(BulletPhysics* physics, BulletScene* scene, const JOINT_DESC& desc);
         ~BulletFJoint();
 
+        /** @copydoc FJoint::GetBody */
+        Body* GetBody(JointBody body) const override;
+
+        /** @copydoc FJoint::SetBody */
+        void SetBody(JointBody body, Body* value) override;
+
+        /** @copydoc FJoint::GetPosition */
+        Vector3 GetPosition(JointBody body) const override;
+
+        /** @copydoc FJoint::GetRotation */
+        Quaternion GetRotation(JointBody body) const override;
+
+        /** @copydoc FJoint::SetTransform */
+        void SetTransform(JointBody body, const Vector3& position, const Quaternion& rotation) override;
+
+        /** @copydoc FJoint::GetBreakForce */
+        float GetBreakForce() const override;
+
+        /** @copydoc FJoint::SetBreakForce */
+        void SetBreakForce(float force) override;
+
+        /** @copydoc FJoint::GetBreakTorque */
+        float GetBreakTorque() const override;
+
+        /** @copydoc FJoint::SetBreakTorque */
+        void SetBreakTorque(float torque) override;
+
+        /** @copydoc FJoint::GetEnableCollision */
+        bool GetEnableCollision() const override;
+
+        /** @copydoc FJoint::SetEnableCollision */
+        void SetEnableCollision(bool value) override;
+
         /** Set current btTypedConstraint */
         void SetJoint(btTypedConstraint* joint) { _joint = joint; }
 
-        /** Return current btCollisionShape */
+        /** Return current btTypedConstraint */
         const auto& GetJoint() const { return _joint; }
 
     protected:
