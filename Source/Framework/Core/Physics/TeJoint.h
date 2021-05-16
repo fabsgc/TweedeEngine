@@ -7,6 +7,8 @@
 #include "Math/TeVector3.h"
 #include "Math/TeQuaternion.h"
 
+#include <cfloat>
+
 namespace te
 {
     struct JOINT_DESC;
