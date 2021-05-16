@@ -13,6 +13,16 @@ namespace te
         ~BulletSphericalJoint();
 
     private:
+        /** Build internal bullet representation of a joint */
+        void BuildJoint();
+
+        /** Update the internal representation of a joint */
+        void UpdateJoint();
+
+        /** Release the internal representation of a joint from the world */
+        void ReleaseJoint();
+
+    private:
         btTypedConstraint* _joint;
     };
 }

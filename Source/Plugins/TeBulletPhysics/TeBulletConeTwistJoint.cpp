@@ -6,6 +6,7 @@ namespace te
 { 
     BulletConeTwistJoint::BulletConeTwistJoint(BulletPhysics* physics, BulletScene* scene, const CONE_TWIST_JOINT_DESC& desc)
         : ConeTwistJoint(desc)
+        , _joint(nullptr)
     {
         _internal = te_new<BulletFJoint>(physics, scene, desc);
     }
