@@ -1,6 +1,5 @@
 #include "TeBulletConeTwistJoint.h"
 #include "TeBulletPhysics.h"
-#include "TeBulletFJoint.h"
 
 namespace te
 { 
@@ -9,12 +8,12 @@ namespace te
         , BulletJoint(physics, scene)
         , _joint(nullptr)
     {
-        _internal = te_new<BulletFJoint>(physics, scene, this, desc);
+
     }
 
     BulletConeTwistJoint::~BulletConeTwistJoint()
     {
-        te_delete((BulletFJoint*)_internal);
+
     }
 
     void BulletConeTwistJoint::BuildJoint()

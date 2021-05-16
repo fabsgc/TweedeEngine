@@ -370,7 +370,6 @@ namespace te
     class ConeCollider;
     class HeightFieldCollider;
     class FCollider;
-    class FJoint;
     class PhysicsDebug;
     class PhysicsMesh;
     class FPhysicsMesh;

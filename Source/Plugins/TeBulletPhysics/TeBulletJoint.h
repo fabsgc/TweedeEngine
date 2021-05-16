@@ -12,8 +12,6 @@ namespace te
         ~BulletJoint();
 
     protected:
-        friend class BulletFJoint;
-
         /** Build internal bullet representation of a joint */
         virtual void BuildJoint() = 0;
 

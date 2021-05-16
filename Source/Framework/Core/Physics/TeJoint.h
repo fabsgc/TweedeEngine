@@ -2,7 +2,6 @@
 
 #include "TeCorePrerequisites.h"
 #include "Physics/TePhysicsCommon.h"
-#include "Physics/TeFJoint.h"
 #include "Utility/TeEvent.h"
 #include "Math/TeVector3.h"
 #include "Math/TeQuaternion.h"
@@ -12,6 +11,20 @@
 namespace te
 {
     struct JOINT_DESC;
+
+    /** Specifies first or second body referenced by a Joint. */
+    enum class JointBody
+    {
+        Target, /**< Body the joint is influencing. */
+        Anchor /**< Body the joint is attached to (if any). */
+    };
+
+    struct BodyInfo
+    {
+        Body* BodyElt = nullptr;
+        Vector3 Position = Vector3::ZERO;
+        Quaternion Rotation = Quaternion::IDENTITY;
+    };
 
     /**
      * Base class for all Joint types. Joints constrain how two rigidbodies move relative to one another (for example a door
@@ -23,38 +36,44 @@ namespace te
         Joint() = default;
         virtual ~Joint() = default;
 
-        /** @copydoc FJoint::GetBody */
-        Body* GetBody(JointBody body) const;
+        /** @copydoc setBody() */
+        virtual Body* GetBody(JointBody body) const;
 
-        /** @copydoc FJoint::SetBody */
-        void SetBody(JointBody body, Body* value);
+        /** Determines a body managed by the joint. One of the bodies must be movable (non-kinematic). */
+        virtual void SetBody(JointBody body, Body* value);
 
-        /** @copydoc FJoint::GetPosition */
-        Vector3 GetPosition(JointBody body) const;
+        /** Returns the position relative to the body, at which the body is anchored to the joint. */
+        virtual Vector3 GetPosition(JointBody body) const;
 
-        /** @copydoc FJoint::GetRotation */
-        Quaternion GetRotation(JointBody body) const;
+        /** Returns the rotation relative to the body, at which the body is anchored to the joint. */
+        virtual Quaternion GetRotation(JointBody body) const;
 
-        /** @copydoc FJoint::SetTransform */
-        void SetTransform(JointBody body, const Vector3& position, const Quaternion& rotation);
+        /** Sets the position and rotation relative to the body, at which the body is anchored to the joint.  */
+        virtual void SetTransform(JointBody body, const Vector3& position, const Quaternion& rotation);
 
-        /** @copydoc FJoint::GetBreakForce */
-        float GetBreakForce() const;
+        /** @copydoc SetBreakForce() */
+        virtual float GetBreakForce() const;
 
-        /** @copydoc FJoint::SetBreakForce */
-        void SetBreakForce(float force);
+        /**
+         * Determines the maximum force the joint can apply before breaking. Broken joints no longer participate in physics
+         * simulation.
+         */
+        virtual void SetBreakForce(float force);
 
-        /** @copydoc FJoint::GetBreakTorque */
-        float GetBreakTorque() const;
+        /** @copydoc SetBreakTorque() */
+        virtual float GetBreakTorque() const;
 
-        /** @copydoc FJoint::SetBreakTorque */
-        void SetBreakTorque(float torque);
+        /**
+         * Determines the maximum torque the joint can apply before breaking. Broken joints no longer participate in physics
+         * simulation.
+         */
+        virtual void SetBreakTorque(float torque);
 
-        /** @copydoc FJoint::GetEnableCollision */
-        bool GetEnableCollision() const;
+        /** @copydoc SetEnableCollision() */
+        virtual bool GetEnableCollision() const;
 
-        /** @copydoc FJoint::SetEnableCollision */
-        void SetEnableCollision(bool value);
+        /** Determines whether collision between the two bodies managed by the joint are enabled. */
+        virtual void SetEnableCollision(bool value);
 
         /** Triggered when the joint's break force or torque is exceeded. */
         Event<void()> OnJointBreak;
@@ -73,19 +92,16 @@ namespace te
 
     protected:
         PhysicsObjectOwner _owner;
-        FJoint* _internal = nullptr;
+
+        BodyInfo _bodies[2];
+        float _breakForce = FLT_MAX;
+        float _breakTorque = FLT_MAX;
+        bool _enableCollision = false;
     };
 
     /** Structure used for initializing a new Joint. */
     struct JOINT_DESC
     { 
-        struct BodyInfo
-        {
-            Body* BodyElt = nullptr;
-            Vector3 Position = Vector3::ZERO;
-            Quaternion Rotation = Quaternion::IDENTITY;
-        };
-
         BodyInfo Bodies[2];
         float BreakForce = FLT_MAX;
         float BreakTorque = FLT_MAX;
