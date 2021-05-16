@@ -1,14 +1,15 @@
 #include "TeBulletFJoint.h"
 #include "TeBulletRigidBody.h"
+#include "TeBulletJoint.h"
 #include "Physics/TeJoint.h"
 
 namespace te
 {
-    BulletFJoint::BulletFJoint(BulletPhysics* physics, BulletScene* scene, const JOINT_DESC& desc)
+    BulletFJoint::BulletFJoint(BulletPhysics* physics, BulletScene* scene, BulletJoint* parent, const JOINT_DESC& desc)
         : FJoint(desc)
         , _physics(physics)
         , _scene(scene)
-        , _joint()
+        , _parent(parent)
     { }
 
     BulletFJoint::~BulletFJoint()
@@ -22,6 +23,8 @@ namespace te
     void BulletFJoint::SetBody(JointBody body, Body* value)
     {
         // TODO
+
+        _parent->BuildJoint();
     }
 
     Vector3 BulletFJoint::GetPosition(JointBody body) const
@@ -37,6 +40,8 @@ namespace te
     void BulletFJoint::SetTransform(JointBody body, const Vector3& position, const Quaternion& rotation)
     {
         // TODO
+
+        _parent->UpdateJoint();
     }
 
     float BulletFJoint::GetBreakForce() const
@@ -47,6 +52,8 @@ namespace te
     void BulletFJoint::SetBreakForce(float force)
     {
         // TODO
+
+        _parent->BuildJoint();
     }
 
     float BulletFJoint::GetBreakTorque() const
@@ -57,6 +64,8 @@ namespace te
     void BulletFJoint::SetBreakTorque(float torque)
     {
         // TODO
+
+        _parent->BuildJoint();
     }
 
     bool BulletFJoint::GetEnableCollision() const
@@ -67,5 +76,7 @@ namespace te
     void BulletFJoint::SetEnableCollision(bool value)
     {
         // TODO
+
+        _parent->BuildJoint();
     }
 }

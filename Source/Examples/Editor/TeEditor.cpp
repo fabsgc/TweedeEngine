@@ -1253,6 +1253,10 @@ namespace te
         _planeColliderKnight->SetExtents(Vector3(5.0f, 0.2f, 5.0f));
         _planeColliderKnight->SetPosition(Vector3(0.0f, -0.2f, 0.0f));
         _planeColliderKnight->Initialize();
+
+        _planeKnightSphericalJoint = _sceneRenderablePlaneSO->AddComponent<CSphericalJoint>();
+        _planeKnightSphericalJoint->SetBody(JointBody::Anchor, static_object_cast<CBody>(_rigidBodyPlane));
+        _planeKnightSphericalJoint->SetBody(JointBody::Target, static_object_cast<CBody>(_rigidBodyKnight));
         // ######################################################
 
         // ######################################################

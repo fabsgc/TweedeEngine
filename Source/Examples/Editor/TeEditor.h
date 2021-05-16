@@ -286,6 +286,7 @@ namespace te
 
         HRigidBody _rigidBodyPlane;
         HBoxCollider _planeColliderKnight;
+        HSphericalJoint _planeKnightSphericalJoint;
 #endif
     };
 

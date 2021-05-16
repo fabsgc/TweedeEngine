@@ -6,9 +6,10 @@ namespace te
 {
     BulletSphericalJoint::BulletSphericalJoint(BulletPhysics* physics, BulletScene* scene, const SPHERICAL_JOINT_DESC& desc)
         : SphericalJoint(desc)
+        , BulletJoint(physics, scene)
         , _joint(nullptr)
     {
-        _internal = te_new<BulletFJoint>(physics, scene, desc);
+        _internal = te_new<BulletFJoint>(physics, scene, this, desc);
     }
 
     BulletSphericalJoint::~BulletSphericalJoint()
@@ -18,7 +19,7 @@ namespace te
 
     void BulletSphericalJoint::BuildJoint()
     {
-
+        ReleaseJoint();
     }
 
     void BulletSphericalJoint::UpdateJoint()

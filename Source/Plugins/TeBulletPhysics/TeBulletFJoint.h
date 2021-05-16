@@ -9,7 +9,7 @@ namespace te
     class BulletFJoint : public FJoint
     {
     public:
-        BulletFJoint(BulletPhysics* physics, BulletScene* scene, const JOINT_DESC& desc);
+        BulletFJoint(BulletPhysics* physics, BulletScene* scene, BulletJoint* parent, const JOINT_DESC& desc);
         ~BulletFJoint();
 
         /** @copydoc FJoint::GetBody */
@@ -45,16 +45,12 @@ namespace te
         /** @copydoc FJoint::SetEnableCollision */
         void SetEnableCollision(bool value) override;
 
-        /** Set current btTypedConstraint */
-        void SetJoint(btTypedConstraint* joint) { _joint = joint; }
-
-        /** Return current btTypedConstraint */
-        const auto& GetJoint() const { return _joint; }
-
     protected:
+        friend class BulletJoint;
+
         BulletPhysics* _physics;
         BulletScene* _scene;
 
-        btTypedConstraint* _joint;
+        BulletJoint* _parent;
     };
 }

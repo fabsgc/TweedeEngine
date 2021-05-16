@@ -2,25 +2,26 @@
 
 #include "TeBulletPhysicsPrerequisites.h"
 #include "Physics/TeSphericalJoint.h"
+#include "TeBulletJoint.h"
 
 namespace te
 {
     /** Bullet implementation of a Spherical joint. */
-    class BulletSphericalJoint : public SphericalJoint
+    class BulletSphericalJoint : public SphericalJoint, public BulletJoint
     {
     public:
         BulletSphericalJoint(BulletPhysics* physics, BulletScene* scene, const SPHERICAL_JOINT_DESC& desc);
         ~BulletSphericalJoint();
 
     private:
-        /** Build internal bullet representation of a joint */
-        void BuildJoint();
+        /** @copydoc BulletJoint::BuildJoint */
+        void BuildJoint() override;
 
-        /** Update the internal representation of a joint */
-        void UpdateJoint();
+        /** @copydoc BulletJoint::UpdateJoint */
+        void UpdateJoint() override;
 
-        /** Release the internal representation of a joint from the world */
-        void ReleaseJoint();
+        /** @copydoc BulletJoint::ReleaseJoint */
+        void ReleaseJoint() override;
 
     private:
         btTypedConstraint* _joint;

@@ -174,6 +174,12 @@ namespace te
 
     void CJoint::OnDestroyed()
     {
+        if (_bodies[0] != nullptr)
+            _bodies[0]->SetJoint(HJoint());
+
+        if (_bodies[1] != nullptr)
+            _bodies[1]->SetJoint(HJoint());
+
         if (_internal != nullptr)
             DestroyInternal();
     }

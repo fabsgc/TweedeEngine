@@ -2,15 +2,26 @@
 
 #include "TeBulletPhysicsPrerequisites.h"
 #include "Physics/TeHingeJoint.h"
+#include "TeBulletJoint.h"
 
 namespace te
 {
     /** Bullet implementation of a Hinge joint. */
-    class BulletHingeJoint : public HingeJoint
+    class BulletHingeJoint : public HingeJoint, public BulletJoint
     {
     public:
         BulletHingeJoint(BulletPhysics* physics, BulletScene* scene, const HINGE_JOINT_DESC& desc);
         ~BulletHingeJoint();
+
+    private:
+        /** @copydoc BulletJoint::BuildJoint */
+        void BuildJoint() override;
+
+        /** @copydoc BulletJoint::UpdateJoint */
+        void UpdateJoint() override;
+
+        /** @copydoc BulletJoint::ReleaseJoint */
+        void ReleaseJoint() override;
 
     private:
         btTypedConstraint* _joint;

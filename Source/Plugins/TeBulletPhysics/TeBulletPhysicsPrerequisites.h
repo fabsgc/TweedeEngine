@@ -60,6 +60,7 @@ namespace te
     class BulletFMesh;
     class BulletHeightField;
     class BulletFHeightField;
+    class BulletJoint;
 
     /** Type IDs used by the serizalition system for the Bullet library. */
     enum TypeID_PhysX
