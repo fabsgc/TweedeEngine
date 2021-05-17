@@ -56,7 +56,7 @@ namespace te
         /** @copydoc RenderAPI::DrawIndexed */
         void DrawIndexed(UINT32 startIndex, UINT32 indexCount, UINT32 vertexOffset, UINT32 vertexCount, UINT32 instanceCount = 0) override;
 
-        /** @copydoc RenderAPI::DispatchCompute() */
+        /** @copydoc RenderAPI::DispatchCompute */
         void DispatchCompute(UINT32 numGroupsX, UINT32 numGroupsY = 1, UINT32 numGroupsZ = 1) override;
 
         /** @copydoc RenderAPI::SwapBuffers */
@@ -77,10 +77,10 @@ namespace te
         /**	Finish initialization by setting up any systems dependant on render systemcapabilities. */
         void InitFromCaps(RenderAPICapabilities* caps);
 
-        /** @copydoc RenderAPI::ConvertProjectionMatrix() */
+        /** @copydoc RenderAPI::ConvertProjectionMatrix */
         void ConvertProjectionMatrix(const Matrix4& matrix, Matrix4& dest) override;
 
-        /** @copydoc RenderAPI::GenerateParamBlockDesc() */
+        /** @copydoc RenderAPI::GenerateParamBlockDesc */
         GpuParamBlockDesc GenerateParamBlockDesc(const String& name, Vector<GpuParamDataDesc>& params) override;
 
         /**
@@ -89,13 +89,13 @@ namespace te
          */
         void SwitchContext(const SPtr<GLContext>& context, const RenderWindow& window);
 
-        /** @copydoc RenderAPI::GetGPUMemory() */
+        /** @copydoc RenderAPI::GetGPUMemory */
         UINT64 GetGPUMemory() override;
 
-        /** @copydoc RenderAPI::GetSharedMemory() */
+        /** @copydoc RenderAPI::GetSharedMemory */
         UINT64 GetSharedMemory() override;
 
-        /** @copydoc RenderAPI::GetUsedGPUMemory() */
+        /** @copydoc RenderAPI::GetUsedGPUMemory */
         UINT64 GetUsedGPUMemory() override;
 
         /************************************************************************/

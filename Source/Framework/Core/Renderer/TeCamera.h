@@ -59,7 +59,7 @@ namespace te
          */
         void SetMain(bool main) { _main = main; };
 
-        /** @copydoc SetMain() */
+        /** @copydoc SetMain */
         bool IsMain() const { return _main; }
 
         /** Creates a new camera that renders to the specified portion of the provided render target. */
@@ -76,7 +76,7 @@ namespace te
         /** Determines flags used for controlling the camera behaviour. */
         void SetFlags(UINT32 flag);
 
-        /** @copydoc SetFlags() */
+        /** @copydoc SetFlags */
         UINT32 GetFlags() const { return _cameraFlags; }
 
         /**
@@ -85,7 +85,7 @@ namespace te
          */
         virtual void SetHorzFOV(const Radian& fovy);
 
-        /** @copydoc SetHorzFOV() */
+        /** @copydoc SetHorzFOV */
         virtual const Radian& GetHorzFOV() const { return _horzFOV; }
 
         /**
@@ -94,7 +94,7 @@ namespace te
          */
         virtual void SetNearClipDistance(float nearDist);
 
-        /** @copydoc setNearClipDistance() */
+        /** @copydoc setNearClipDistance */
         virtual float GetNearClipDistance() const { return _nearDist; }
 
         /**
@@ -103,13 +103,13 @@ namespace te
          */
         virtual void SetFarClipDistance(float farDist);
 
-        /** @copydoc SetFarClipDistance() */
+        /** @copydoc SetFarClipDistance */
         virtual float GetFarClipDistance() const { return _farDist; }
 
         /**	Determines the current viewport aspect ratio (width / height). */
         virtual void SetAspectRatio(float ratio);
 
-        /** @copydoc SetAspectRatio() */
+        /** @copydoc SetAspectRatio */
         virtual float GetAspectRatio() const;
 
         /**
@@ -153,7 +153,7 @@ namespace te
         /** Determines the type of projection used by the camera. Projection type controls how is 3D geometry projected onto a 2D plane. */
         virtual void SetProjectionType(ProjectionType pt);
 
-        /** @copydoc SetProjectionType() */
+        /** @copydoc SetProjectionType */
         virtual ProjectionType GetProjectionType() const;
 
         /**
@@ -174,7 +174,7 @@ namespace te
          */
         virtual void SetOrthoWindowHeight(float h);
 
-        /** @copydoc setOrthoWindowHeight() */
+        /** @copydoc setOrthoWindowHeight */
         virtual float GetOrthoWindowHeight() const;
 
         /**
@@ -183,7 +183,7 @@ namespace te
          */
         virtual void SetOrthoWindowWidth(float w);
 
-        /** @copydoc setOrthoWindowWidth() */
+        /** @copydoc setOrthoWindowWidth */
         virtual float GetOrthoWindowWidth() const;
 
         /**
@@ -192,7 +192,7 @@ namespace te
          */
         void SetMSAACount(UINT32 count) { _MSAA = count; }
 
-        /** @copydoc SetMSAACount() */
+        /** @copydoc SetMSAACount */
         UINT32 GetMSAACount() const { return _MSAA; }
 
         /**
@@ -220,13 +220,13 @@ namespace te
          */
         void SetPriority(INT32 priority) { _priority = priority; _markCoreDirty();  }
 
-        /** @copydoc SetPriority() */
+        /** @copydoc SetPriority */
         INT32 GetPriority() const { return _priority; }
 
         /**	Determines layer bitfield that is used when determining which object should the camera render. */
         void SetLayers(UINT64 layers) { _layers = layers; _markCoreDirty(); }
 
-        /** @copydoc SetLayers() */
+        /** @copydoc SetLayers */
         UINT64 GetLayers() const { return _layers; }
 
         /**
@@ -394,7 +394,7 @@ namespace te
             _markCoreDirty((ActorDirtyFlag)CameraDirtyFlag::RenderSettings);
         }
 
-        /** @copydoc SetRenderSettings() */
+        /** @copydoc SetRenderSettings */
         const SPtr<RenderSettings>& GetRenderSettings() const { return _renderSettings; }
 
         /**	Returns a rectangle that defines the viewport position and size, in pixels. */

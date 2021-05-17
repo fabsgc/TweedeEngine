@@ -128,10 +128,10 @@ namespace te
                 id = T::GetNodeId();
             }
 
-            /** @copydoc NodeType::Create() */
+            /** @copydoc NodeType::Create */
             RenderCompositorNode* Create() const override { return te_new<T>(); }
 
-            /** @copydoc NodeType::GetDependencies() */
+            /** @copydoc NodeType::GetDependencies */
             Vector<String> GetDependencies(const RendererView& view) const override
             {
                 return T::GetDependencies(view);

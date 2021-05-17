@@ -22,7 +22,7 @@ namespace te
         /** Determines the Rigidbody that controls this collider (if any). */
         void SetBody(Body* value);
 
-        /** @copydoc Collider::SetBody() */
+        /** @copydoc Collider::SetBody */
         Body* GetBody() const { return _body; }
 
         /** Sets the scale of the collider geometry. */

@@ -3,8 +3,8 @@
 
 namespace te
 {
-    SPtr<HingeJoint> HingeJoint::Create(PhysicsScene& scene, const HINGE_JOINT_DESC& desc)
+    SPtr<HingeJoint> HingeJoint::Create(PhysicsScene& scene)
     {
-        return scene.CreateHingeJoint(desc);
+        return scene.CreateHingeJoint();
     }
 }

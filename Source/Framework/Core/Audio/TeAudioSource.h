@@ -30,7 +30,7 @@ namespace te
         /** Audio clip to play. */
         virtual void SetClip(const HAudioClip& clip);
 
-        /** @copydoc SetClip() */
+        /** @copydoc SetClip */
         HAudioClip GetClip() const { return _audioClip; }
 
         /**
@@ -39,25 +39,25 @@ namespace te
          */
         virtual void SetVelocity(const Vector3& velocity);
 
-        /** @copydoc SetVelocity() */
+        /** @copydoc SetVelocity */
         Vector3 GetVelocity() const { return _velocity; }
 
         /** Volume of the audio played from this source, in [0, 1] range. */
         virtual void SetVolume(float volume);
 
-        /** @copydoc SetVolume() */
+        /** @copydoc SetVolume */
         float GetVolume() const { return _volume; }
 
         /** Determines the pitch of the played audio. 1 is the default. */
         virtual void SetPitch(float pitch);
 
-        /** @copydoc SetPitch() */
+        /** @copydoc SetPitch */
         float GetPitch() const { return _pitch; }
 
         /** Determines whether the audio clip should loop when it finishes playing. */
         virtual void SetIsLooping(bool loop);
 
-        /** @copydoc SetIsLooping() */
+        /** @copydoc SetIsLooping */
         bool GetIsLooping() const { return _loop; }
 
         /**
@@ -67,7 +67,7 @@ namespace te
          */
         virtual void SetPriority(INT32 priority);
 
-        /** @copydoc SetPriority() */
+        /** @copydoc SetPriority */
         UINT32 GetPriority() const { return _priority; }
 
         /**
@@ -76,7 +76,7 @@ namespace te
          */
         virtual void SetMinDistance(float distance);
 
-        /** @copydoc SetMinDistance() */
+        /** @copydoc SetMinDistance */
         float GetMinDistance() const { return _minDistance; }
 
         /**
@@ -84,7 +84,7 @@ namespace te
          */
         virtual void SetAttenuation(float attenuation);
 
-        /** @copydoc SetAttenuation() */
+        /** @copydoc SetAttenuation */
         float GetAttenuation() const { return _attenuation; }
 
         /** Determines if this sound must be played as a 3D sound (sound must be playable as a 3D sound) */
@@ -108,7 +108,7 @@ namespace te
          */
         virtual void SetTime(float time) = 0;
 
-        /** @copydoc setTime() */
+        /** @copydoc setTime */
         virtual float GetTime() const = 0;
 
         /** Returns the current state of the audio playback (playing/paused/stopped). */

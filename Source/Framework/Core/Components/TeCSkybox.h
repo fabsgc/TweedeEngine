@@ -18,31 +18,31 @@ namespace te
         CSkybox(const HSceneObject& parent);
         virtual ~CSkybox();
 
-        /** @copydoc Component::Initialize() */
+        /** @copydoc Component::Initialize */
         void Initialize() override;
 
-        /** @copydoc Skybox::GetTexture() */
+        /** @copydoc Skybox::GetTexture */
         SPtr<Texture> GetTexture() const { return _internal->GetTexture(); }
 
-        /** @copydoc Skybox::SetTexture() */
+        /** @copydoc Skybox::SetTexture */
         void SetTexture(const HTexture& texture) { _internal->SetTexture(texture); }
 
-        /** @copydoc Skybox::SetTexture() */
+        /** @copydoc Skybox::SetTexture */
         void SetTexture(const SPtr<Texture>& texture) { _internal->SetTexture(texture); }
 
-        /** @copydoc Skybox::GetIrradiance() */
+        /** @copydoc Skybox::GetIrradiance */
         SPtr<Texture> GetIrradiance() const { return _internal->GetIrradiance(); }
 
-        /** @copydoc Skybox::SetIrradiance() */
+        /** @copydoc Skybox::SetIrradiance */
         void SetIrradiance(const HTexture& irradiance) { _internal->SetIrradiance(irradiance); }
 
-        /** @copydoc Skybox::SetIrradiance() */
+        /** @copydoc Skybox::SetIrradiance */
         void SetIrradiance(const SPtr<Texture>& irradiance) { _internal->SetIrradiance(irradiance); }
 
-        /** @copydoc Skybox::SetBrightness() */
+        /** @copydoc Skybox::SetBrightness */
         void SetBrightness(float brightness) { _internal->SetBrightness(brightness); }
 
-        /** @copydoc Skybox::GetBrightness() */
+        /** @copydoc Skybox::GetBrightness */
         float GetBrightness() const { return _internal->GetBrightness(); }
 
         /**	Returns the skybox that this component wraps. */
@@ -51,13 +51,13 @@ namespace te
         /** Return Component type */
         static UINT32 GetComponentType() { return TID_CSkybox; }
 
-        /** @copydoc Component::Clone() */
+        /** @copydoc Component::Clone */
         void Clone(const HComponent& c) override;
 
-        /** @copydoc Component::Clone() */
+        /** @copydoc Component::Clone */
         void Clone(const HSkybox& c);
 
-        /* @copydoc Component::MarkDirty() */
+        /* @copydoc Component::MarkDirty */
         virtual void MarkDirty() { _internal->_markCoreDirty(); }
 
     protected:
@@ -66,25 +66,25 @@ namespace te
     protected:
         friend class SceneObject;
 
-        /** @copydoc Component::_instantiate() */
+        /** @copydoc Component::_instantiate */
         void _instantiate() override;
 
-        /** @copydoc Component::OnInitialized() */
+        /** @copydoc Component::OnInitialized */
         void OnCreated() override { }
 
-        /** @copydoc Component::OnInitialized() */
+        /** @copydoc Component::OnInitialized */
         void OnInitialized() override;
 
-        /** @copydoc Component::OnEnabled() */
+        /** @copydoc Component::OnEnabled */
         void OnEnabled() override;
 
-        /** @copydoc Component::OnEnabled() */
+        /** @copydoc Component::OnEnabled */
         void OnDisabled() override;
 
-        /** @copydoc Component::OnTransformChanged() */
+        /** @copydoc Component::OnTransformChanged */
         void OnTransformChanged(TransformChangedFlags flags) override { }
 
-        /** @copydoc Component::OnDestroyed() */
+        /** @copydoc Component::OnDestroyed */
         void OnDestroyed() override;
     
     public:

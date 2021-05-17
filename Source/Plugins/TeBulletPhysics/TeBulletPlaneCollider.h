@@ -14,13 +14,13 @@ namespace te
             const Quaternion& rotation, const Vector3 normal);
         ~BulletPlaneCollider();
 
-        /** @copydoc PlaneCollider::SetScale() */
+        /** @copydoc PlaneCollider::SetScale */
         void SetScale(const Vector3& scale) override;
 
-        /** @copydoc PlaneCollider::SetNormal() */
+        /** @copydoc PlaneCollider::SetNormal */
         void SetNormal(const Vector3& normal) override;
 
-        /** @copydoc PlaneCollider::GetNormal() */
+        /** @copydoc PlaneCollider::GetNormal */
         const Vector3& GetNormal() const override { return _normal; }
 
     private:

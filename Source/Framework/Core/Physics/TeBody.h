@@ -55,13 +55,13 @@ namespace te
          */
         virtual void SetIsTrigger(bool trigger) = 0;
 
-        /** @copydoc GetIsTrigger() */
+        /** @copydoc GetIsTrigger */
         virtual bool GetIsTrigger() const = 0;
 
         /** For debugging purpose only, specify if this body will be displayed if physic debug information are enabled */
         virtual void SetIsDebug(bool debug) = 0;
 
-        /** @copydoc SetIsDebug() */
+        /** @copydoc SetIsDebug */
         virtual bool GetIsDebug() const = 0;
 
         /**
@@ -70,19 +70,19 @@ namespace te
          */
         virtual void SetMass(float mass) = 0;
 
-        /** @copydoc setMass() */
+        /** @copydoc setMass */
         virtual float GetMass() const = 0;
 
         /** Determines the linear velocity of the body. */
         virtual void SetVelocity(const Vector3& velocity) = 0;
 
-        /** @copydoc SetVelocity() */
+        /** @copydoc SetVelocity */
         virtual const Vector3& GetVelocity() const = 0;
 
         /** Determines the angular velocity of the body. */
         virtual void SetAngularVelocity(const Vector3& velocity) = 0;
 
-        /** @copydoc SetAngularVelocity() */
+        /** @copydoc SetAngularVelocity */
         virtual const Vector3& GetAngularVelocity() const = 0;
 
         /**
@@ -92,31 +92,31 @@ namespace te
          */
         virtual void SetIsKinematic(bool kinematic) = 0;
 
-        /** @copydoc SetIsKinematic() */
+        /** @copydoc SetIsKinematic */
         virtual bool GetIsKinematic() const = 0;
 
         /** Determines the linear drag of the body. Higher drag values means the object resists linear movement more. */
         virtual void SetFriction(float friction) = 0;
 
-        /** @copydoc SetFriction() */
+        /** @copydoc SetFriction */
         virtual float GetFriction() const = 0;
 
         /** Determines the angular drag of the body. Higher drag values means the object resists angular movement more. */
         virtual void SetRollingFriction(float rollingFriction) = 0;
 
-        /** @copydoc GeRollingtFriction() */
+        /** @copydoc GeRollingtFriction */
         virtual float GetRollingFriction() const = 0;
 
         /** Determines the restitution of the body. */
         virtual void SetRestitution(float restitution) = 0;
 
-        /** @copydoc GetRestitution() */
+        /** @copydoc GetRestitution */
         virtual float GetRestitution() const = 0;
 
         /** Determines whether or not the body will have the global gravity force applied to it. */
         virtual void SetUseGravity(bool gravity) = 0;
 
-        /** @copydoc SetUseGravity() */
+        /** @copydoc SetUseGravity */
         virtual bool GetUseGravity() const = 0;
 
         /** Sets the body's center of mass transform. Only relevant if RigibodyFlag::AutoTensors is turned off. */
@@ -160,20 +160,26 @@ namespace te
         /** Flags that control the behaviour of the body. */
         virtual void SetFlags(BodyFlag flags) { _flags = flags; }
 
-        /** @copydoc SetFlags() */
+        /** @copydoc SetFlags */
         virtual BodyFlag GetFlags() const { return _flags; }
 
         /** Registers a new collider as a child of this body. */
         virtual void AddCollider(Collider*) = 0;
-
-        /** Synchronize a collider with the Body he's attached to. */
-        virtual void SyncCollider(Collider*) = 0;
 
         /** Removes a collider from the child list of this body. */
         virtual void RemoveCollider(Collider*) = 0;
 
         /** Removes all colliders from the child list of this body. */
         virtual void RemoveColliders() = 0;
+
+        /** Register a new joint as a child of this body */
+        virtual void AddJoint(Joint* joint) = 0;
+
+        /** Removes a joint from the child list of this body. */
+        virtual void RemoveJoint(Joint* joint) = 0;
+
+        /** Removes all joints from the child list of this body. */
+        virtual void RemoveJoints() = 0;
 
         /** Triggered when one of the colliders owned by the body starts colliding with another object. */
         Event<void(const CollisionDataRaw&)> OnCollisionBegin;

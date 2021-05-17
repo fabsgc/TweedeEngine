@@ -46,7 +46,7 @@ namespace te
 
         GLTexture(GLSupport& support, const TEXTURE_DESC& desc, const SPtr<PixelData>& initialData);
 
-        /** @copydoc CoreObject::Initialize() */
+        /** @copydoc CoreObject::Initialize */
         void Initialize() override;
 
         /** @copydoc Texture::LockImpl */

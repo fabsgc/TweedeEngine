@@ -16,7 +16,7 @@ namespace te
         /** Determines the area that the viewport covers. Coordinates are in normalized [0, 1] range. */
         void SetArea(const Rect2& area);
 
-        /** @copydoc SetArea() */
+        /** @copydoc SetArea */
         Rect2 GetArea() const { return _normArea; }
 
         /**	Returns the area of the render target covered by the viewport, in pixels. */
@@ -28,25 +28,25 @@ namespace te
         /** Determines the color to clear the viewport to before rendering, if color clear is enabled. */
         void SetClearColorValue(const Color& color);
 
-        /** @copydoc setClearColorValue() */
+        /** @copydoc setClearColorValue */
         const Color& GetClearColorValue() const { return _clearColorValue; }
 
         /** Determines the value to clear the depth buffer to before rendering, if depth clear is enabled. */
         void SetClearDepthValue(float depth);
 
-        /** @copydoc setClearDepthValue() */
+        /** @copydoc setClearDepthValue */
         float GetClearDepthValue() const { return _clearDepthValue; }
 
         /** Determines the value to clear the stencil buffer to before rendering, if stencil clear is enabled. */
         void SetClearStencilValue(UINT16 value);
 
-        /** @copydoc setClearStencilValue() */
+        /** @copydoc setClearStencilValue */
         UINT16 GetClearStencilValue() const { return _clearStencilValue; }
 
         /** Determines which portions of the render target should be cleared before rendering to this viewport is performed. */
         void setClearFlags(UINT32 flags);
 
-        /** @copydoc SetClearFlags() */
+        /** @copydoc SetClearFlags */
         UINT32 GetClearFlags() const { return _clearFlags; }
 
     protected:
@@ -81,7 +81,7 @@ namespace te
         /** Determines the render target the viewport is associated with. */
         void SetTarget(const SPtr<RenderTarget>& target);
 
-        /** @copydoc setTarget() */
+        /** @copydoc setTarget */
         SPtr<RenderTarget> GetTarget() const { return _target; }
 
         /** @copydoc CoreObject::Initialize */

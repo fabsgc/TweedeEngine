@@ -14,7 +14,7 @@ namespace te
     class TE_CORE_EXPORT CJoint : public Component
     {
     public:
-        CJoint(const HSceneObject& parent, JOINT_DESC desc, UINT32 type);
+        CJoint(const HSceneObject& parent, UINT32 type);
         virtual ~CJoint();
 
         /** Return Component type */
@@ -78,19 +78,19 @@ namespace te
         friend class CBody;
         using Component::DestroyInternal;
 
-        /** @copydoc Component::onInitialized() */
+        /** @copydoc Component::onInitialized */
         void OnInitialized() override;
 
-        /** @copydoc Component::onDestroyed() */
+        /** @copydoc Component::onDestroyed */
         void OnDestroyed() override;
 
-        /** @copydoc Component::onDisabled() */
+        /** @copydoc Component::onDisabled */
         void OnDisabled() override;
 
-        /** @copydoc Component::onEnabled() */
+        /** @copydoc Component::onEnabled */
         void OnEnabled() override;
 
-        /** @copydoc Component::onTransformChanged() */
+        /** @copydoc Component::onTransformChanged */
         void OnTransformChanged(TransformChangedFlags flags) override;
 
         /** Creates the internal representation of the Joint for use by the component. */
@@ -118,7 +118,7 @@ namespace te
         void TriggerOnJointBroken();
 
     protected:
-        CJoint(JOINT_DESC& desc, UINT32 type);
+        CJoint(UINT32 type);
 
     protected:
         SPtr<Joint> _internal;
@@ -127,7 +127,8 @@ namespace te
         Vector3 _positions[2];
         Quaternion _rotations[2];
 
-    private:
-        JOINT_DESC& _desc;
+        float _breakForce = FLT_MAX;
+        float _breakTorque = FLT_MAX;
+        bool _enableCollision = false;
     };
 }

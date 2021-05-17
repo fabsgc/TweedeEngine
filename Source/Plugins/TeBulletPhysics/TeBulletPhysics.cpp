@@ -408,29 +408,29 @@ namespace te
         return te_shared_ptr_new<BulletSoftBody>(_physics, this, linkedSO);
     }
 
-    SPtr<ConeTwistJoint> BulletScene::CreateConeTwistJoint(const CONE_TWIST_JOINT_DESC& desc)
+    SPtr<ConeTwistJoint> BulletScene::CreateConeTwistJoint()
     {
-        return te_shared_ptr_new<BulletConeTwistJoint>(_physics, this, desc);
+        return te_shared_ptr_new<BulletConeTwistJoint>(_physics, this);
     }
 
-    SPtr<HingeJoint> BulletScene::CreateHingeJoint(const HINGE_JOINT_DESC& desc)
+    SPtr<HingeJoint> BulletScene::CreateHingeJoint()
     {
-        return te_shared_ptr_new<BulletHingeJoint>(_physics, this, desc);
+        return te_shared_ptr_new<BulletHingeJoint>(_physics, this);
     }
 
-    SPtr<SphericalJoint> BulletScene::CreateSphericalJoint(const SPHERICAL_JOINT_DESC& desc)
+    SPtr<SphericalJoint> BulletScene::CreateSphericalJoint()
     {
-        return te_shared_ptr_new<BulletSphericalJoint>(_physics, this, desc);
+        return te_shared_ptr_new<BulletSphericalJoint>(_physics, this);
     }
 
-    SPtr<SliderJoint> BulletScene::CreateSliderJoint(const SLIDER_JOINT_DESC& desc)
+    SPtr<SliderJoint> BulletScene::CreateSliderJoint()
     {
-        return te_shared_ptr_new<BulletSliderJoint>(_physics, this, desc);
+        return te_shared_ptr_new<BulletSliderJoint>(_physics, this);
     }
 
-    SPtr<D6Joint> BulletScene::CreateD6Joint(const D6_JOINT_DESC& desc)
+    SPtr<D6Joint> BulletScene::CreateD6Joint()
     {
-        return te_shared_ptr_new<BulletD6Joint>(_physics, this, desc);
+        return te_shared_ptr_new<BulletD6Joint>(_physics, this);
     }
 
     SPtr<BoxCollider> BulletScene::CreateBoxCollider(const Vector3& extents, const Vector3& position,

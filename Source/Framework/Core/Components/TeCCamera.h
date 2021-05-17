@@ -112,19 +112,19 @@ namespace te
         /** @copydoc Camera::GetMSAACount */
         UINT32 GetMSAACount() const { return _internal->GetMSAACount(); }
 
-        /** @copydoc Camera::SetRenderSettings() */
+        /** @copydoc Camera::SetRenderSettings */
         void SetRenderSettings(const SPtr<RenderSettings>& settings) { _internal->SetRenderSettings(settings); }
 
-        /** @copydoc Camera::SetRenderSettings() */
+        /** @copydoc Camera::SetRenderSettings */
         void SetRenderSettings(const RenderSettings& settings) { _internal->SetRenderSettings(settings); }
 
-        /** @copydoc Camera::GetRenderSettings() */
+        /** @copydoc Camera::GetRenderSettings */
         const SPtr<RenderSettings>& GetRenderSettings() const { return _internal->GetRenderSettings(); }
 
-        /** @copydoc Camera::NotifyNeedsRedraw() */
+        /** @copydoc Camera::NotifyNeedsRedraw */
         void NotifyNeedsRedraw() { _internal->NotifyNeedsRedraw(); }
 
-        /** @copydoc Camera::NotifyNeedsRedraw() */
+        /** @copydoc Camera::NotifyNeedsRedraw */
         void NotifyUpdateEverything() { _internal->NotifyUpdateEverything(); }
 
         /** @copydoc Camera::WorldToScreenPoint */

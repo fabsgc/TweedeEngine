@@ -22,10 +22,10 @@ namespace te
         /** @copydoc Component::Clone */
         void Clone(const HCylinderCollider& c);
 
-        /** @copydoc CylinderCollider::SetExtents() */
+        /** @copydoc CylinderCollider::SetExtents */
         void SetExtents(const Vector3& extents);
 
-        /** @copydoc CylinderCollider::GetExtents() */
+        /** @copydoc CylinderCollider::GetExtents */
         Vector3 GetExtents() const { return _extents; }
 
     protected:

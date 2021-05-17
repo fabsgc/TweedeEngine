@@ -30,10 +30,10 @@ namespace te
         BulletHeightField(const SPtr<Texture>& texture);
 
     private:
-        /** @copydoc PhysicsHeightField::Initialize() */
+        /** @copydoc PhysicsHeightField::Initialize */
         void Initialize() override;
 
-        /** @copydoc PhysicsHeightField::Destroy() */
+        /** @copydoc PhysicsHeightField::Destroy */
         void Destroy() override;
     };
 

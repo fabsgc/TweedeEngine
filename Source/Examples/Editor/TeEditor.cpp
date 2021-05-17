@@ -1257,6 +1257,7 @@ namespace te
         _planeKnightSphericalJoint = _sceneRenderablePlaneSO->AddComponent<CSphericalJoint>();
         _planeKnightSphericalJoint->SetBody(JointBody::Anchor, static_object_cast<CBody>(_rigidBodyPlane));
         _planeKnightSphericalJoint->SetBody(JointBody::Target, static_object_cast<CBody>(_rigidBodyKnight));
+        _planeKnightSphericalJoint->Initialize();
         // ######################################################
 
         // ######################################################

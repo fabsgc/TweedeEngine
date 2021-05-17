@@ -17,118 +17,124 @@ namespace te
         BulletRigidBody(BulletPhysics* physics, BulletScene* scene, const HSceneObject& linkedSO);
         ~BulletRigidBody();
 
-        /** @copydoc Body::Update() */
+        /** @copydoc Body::Update */
         void Update() override;
 
-        /** @copydoc Body::GetPosition() */
+        /** @copydoc Body::GetPosition */
         Vector3 GetPosition() const override;
 
-        /** @copydoc Body::GetRotation() */
+        /** @copydoc Body::GetRotation */
         Quaternion GetRotation() const override;
 
-        /** @copydoc Body::SetTransform() */
+        /** @copydoc Body::SetTransform */
         void SetTransform(const Vector3& pos, const Quaternion& rot, bool activate = false) override;
 
-        /** @copydoc Body::SetIsTrigger() */
+        /** @copydoc Body::SetIsTrigger */
         void SetIsTrigger(bool trigger) override;
 
-        /** @copydoc Body::GetIsTrigger() */
+        /** @copydoc Body::GetIsTrigger */
         bool GetIsTrigger() const  override { return _isTrigger; }
 
-        /** @copydoc Body::SetIsTrigger() */
+        /** @copydoc Body::SetIsTrigger */
         void SetIsDebug(bool debug) override;
 
-        /** @copydoc Body::GetIsTrigger() */
+        /** @copydoc Body::GetIsTrigger */
         bool GetIsDebug() const override { return _isDebug; }
 
-        /** @copydoc Body::SetMass() */
+        /** @copydoc Body::SetMass */
         void SetMass(float mass) override;
 
-        /** @copydoc Body::GetMass() */
+        /** @copydoc Body::GetMass */
         float GetMass() const override { return _mass; }
 
-        /** @copydoc Body::SetIsKinematic() */
+        /** @copydoc Body::SetIsKinematic */
         void SetIsKinematic(bool kinematic) override;
 
-        /** @copydoc Body::GetIsKinematic() */
+        /** @copydoc Body::GetIsKinematic */
         bool GetIsKinematic() const override { return _isKinematic; }
 
-        /** @copydoc Body::SetVelocity() */
+        /** @copydoc Body::SetVelocity */
         void SetVelocity(const Vector3& velocity) override;
 
-        /** @copydoc Body::GetVelocity() */
+        /** @copydoc Body::GetVelocity */
         const Vector3& GetVelocity() const override { return _velocity; }
 
-        /** @copydoc Body::SetAngularVelocity() */
+        /** @copydoc Body::SetAngularVelocity */
         void SetAngularVelocity(const Vector3& velocity) override;
 
-        /** @copydoc Body::GetAngularVelocity() */
+        /** @copydoc Body::GetAngularVelocity */
         const Vector3& GetAngularVelocity() const override { return _angularVelocity; }
 
-        /** @copydoc Body::SetFriction() */
+        /** @copydoc Body::SetFriction */
         void SetFriction(float friction) override;
 
-        /** @copydoc Body::GetFriction() */
+        /** @copydoc Body::GetFriction */
         float GetFriction() const override { return _friction; }
 
-        /** @copydoc Body::SetRollingFriction() */
+        /** @copydoc Body::SetRollingFriction */
         void SetRollingFriction(float rollingFriction) override;
 
-        /** @copydoc Body::GetRollingFriction() */
+        /** @copydoc Body::GetRollingFriction */
         float GetRollingFriction() const override { return _rollingFriction; }
 
-        /** @copydoc Body::SetRestitution() */
+        /** @copydoc Body::SetRestitution */
         void SetRestitution(float restitution) override;
 
-        /** @copydoc Body::GetRestitution() */
+        /** @copydoc Body::GetRestitution */
         float GetRestitution() const override { return _restitution; }
 
-        /** @copydoc Body::SetUseGravity() */
+        /** @copydoc Body::SetUseGravity */
         void SetUseGravity(bool gravity) override;
 
-        /** @copydoc Body::GetUseGravity() */
+        /** @copydoc Body::GetUseGravity */
         bool GetUseGravity() const override { return _useGravity; }
 
-        /** @copydoc Body::SetCenterOfMass() */
+        /** @copydoc Body::SetCenterOfMass */
         void SetCenterOfMass(const Vector3& centerOfMass) override;
 
-        /** @copydoc Body::GetCenterOfMass() */
+        /** @copydoc Body::GetCenterOfMass */
         const Vector3& GetCenterOfMass() const override;
 
-        /** @copydoc Body::ApplyForce() */
+        /** @copydoc Body::ApplyForce */
         void ApplyForce(const Vector3& force, ForceMode mode) const override;
 
-        /** @copydoc Body::ApplyForceAtPoint() */
+        /** @copydoc Body::ApplyForceAtPoint */
         void ApplyForceAtPoint(const Vector3& force, const Vector3& position, ForceMode mode) const override;
 
-        /** @copydoc Body::ApplyTorque() */
+        /** @copydoc Body::ApplyTorque */
         void ApplyTorque(const Vector3& torque, ForceMode mode) const override;
 
-        /** @copydoc Body::SetCollisionReportMode() */
+        /** @copydoc Body::SetCollisionReportMode */
         void SetCollisionReportMode(CollisionReportMode mode) override;
 
-        /** @copydoc Body::GetCollisionReportMode() */
+        /** @copydoc Body::GetCollisionReportMode */
         CollisionReportMode GetCollisionReportMode() const { return _collisionReportMode; }
 
-        /** @copydoc Body::AddCollider() */
+        /** @copydoc Body::AddCollider */
         void AddCollider(Collider*) override;
 
-        /** @copydoc Body::SyncCollider() */
-        void SyncCollider(Collider*) override;
-
-        /** @copydoc Body::RemoveCollider() */
+        /** @copydoc Body::RemoveCollider */
         void RemoveCollider(Collider*) override;
 
-        /** @copydoc Body::RemoveColliders() */
+        /** @copydoc Body::RemoveColliders */
         void RemoveColliders() override;
 
-        /** @copydoc Body::SetFlags() */
+        /** @copydoc Body::AddJoint */
+        void AddJoint(Joint* joint) override;
+
+        /** @copydoc Body::RemoveJoint */
+        void RemoveJoint(Joint* joint) override;
+
+        /** @copydoc Body::RemoveJoints */
+        void RemoveJoints() override;
+
+        /** @copydoc Body::SetFlags */
         void SetFlags(BodyFlag flags) override;
 
-        /** @copydoc RigidBody::SetAngularFactor() */
+        /** @copydoc RigidBody::SetAngularFactor */
         void SetAngularFactor(const Vector3& angularFactor) override;
 
-        /** @copydoc RigidBody::GetAngularFactor() */
+        /** @copydoc RigidBody::GetAngularFactor */
         const Vector3& GetAngularFactor() const override;
 
     private:
@@ -150,10 +156,10 @@ namespace te
         /** Enable or disable CCD for this body */
         void UpdateCCDFlag() const;
 
-        /** */
+        /** Activate btRigidBody */
         void Activate() const;
 
-        /** */
+        /** Check if btRigidBody is activated */
         bool IsActivated() const;
 
     private:
@@ -177,6 +183,7 @@ namespace te
 
         btCompoundShape* _shape;
         Map<BulletFCollider*, ColliderData> _colliders;
+        Vector<Joint*> _joints;
 
         float _mass = 1.0f;
         float _friction = 0.0f;

@@ -107,11 +107,6 @@ namespace te
         // TODO
     }
 
-    void BulletSoftBody::SyncCollider(Collider* collider)
-    {
-        // TODO
-    }
-
     void BulletSoftBody::RemoveCollider(Collider* collider)
     {
         // TODO
@@ -123,6 +118,21 @@ namespace te
     }
 
     void BulletSoftBody::SetFlags(BodyFlag flags)
+    {
+        // TODO
+    }
+
+    void BulletSoftBody::AddJoint(Joint* joint)
+    {
+        // TODO
+    }
+
+    void BulletSoftBody::RemoveJoint(Joint* joint)
+    {
+        // TODO
+    }
+
+    void BulletSoftBody::RemoveJoints()
     {
         // TODO
     }

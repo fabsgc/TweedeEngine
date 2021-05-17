@@ -19,7 +19,7 @@ namespace te
 
         D3D11DepthStencilState(const DEPTH_STENCIL_STATE_DESC& desc);
 
-        /** @copydoc DepthStencilState::CreateInternal() */
+        /** @copydoc DepthStencilState::CreateInternal */
         void CreateInternal() override;
 
         ID3D11DepthStencilState* _depthStencilState = nullptr;

@@ -14,19 +14,19 @@ namespace te
             const Quaternion& rotation, float radius, float height);
         ~BulletConeCollider();
 
-        /** @copydoc ConeCollider::SetScale() */
+        /** @copydoc ConeCollider::SetScale */
         void SetScale(const Vector3& scale) override;
 
-        /** @copydoc ConeCollider::SetRadius() */
+        /** @copydoc ConeCollider::SetRadius */
         void SetRadius(float radius) override;
 
-        /** @copydoc ConeCollider::GetRadius() */
+        /** @copydoc ConeCollider::GetRadius */
         float GetRadius() const override { return _radius; }
 
-        /** @copydoc ConeCollider::SetRadius() */
+        /** @copydoc ConeCollider::SetRadius */
         void SetHeight(float height) override;
 
-        /** @copydoc ConeCollider::GetRadius() */
+        /** @copydoc ConeCollider::GetRadius */
         float GetHeight() const override { return _height; }
 
     private:

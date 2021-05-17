@@ -5,8 +5,6 @@
 
 namespace te
 {
-    struct D6_JOINT_DESC;
-
     /**
      * Represents the most customizable type of joint. This joint type can be used to create all other built-in joint
      * types, and to design your own custom ones, but is less intuitive to use. Allows a specification of a linear
@@ -16,7 +14,7 @@ namespace te
     class TE_CORE_EXPORT D6Joint : public Joint
     {
     public:
-        D6Joint(const D6_JOINT_DESC& desc) { }
+        D6Joint() { }
         virtual ~D6Joint() = default;
 
         /**
@@ -25,10 +23,6 @@ namespace te
          * @param[in]	scene		Scene to which to add the joint.
          * @param[in]	desc		Settings describing the joint.
          */
-        static SPtr<D6Joint> Create(PhysicsScene& scene, const D6_JOINT_DESC& desc);
+        static SPtr<D6Joint> Create(PhysicsScene& scene);
     };
-
-    /** Structure used for initializing a new D6Joint. */
-    struct D6_JOINT_DESC : JOINT_DESC
-    { };
 }

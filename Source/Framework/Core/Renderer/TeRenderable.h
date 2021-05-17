@@ -57,7 +57,7 @@ namespace te
         /** Determines the mesh to render. All sub-meshes of the mesh will be rendered, and you may set individual materials for each sub-mesh. */
         void SetMesh(SPtr<Mesh> mesh);
 
-        /**	@copydoc SetMesh() */
+        /**	@copydoc SetMesh */
         SPtr<Mesh> GetMesh() const { return _mesh; }
 
         /**
@@ -94,7 +94,7 @@ namespace te
         /** If a material used by this renderable has been modified, we need to send the notification and refresh gpu params */
         void UpdateMaterials();
 
-        /** @copydoc SetMaterials() */
+        /** @copydoc SetMaterials */
         const Vector<SPtr<Material>>& GetMaterials() { return _materials; }
 
         const SPtr<Material>* GetMaterialsPtr() { return _materials.data(); }
@@ -130,52 +130,52 @@ namespace te
         /** Determines if this object can be instanced */
         void SetInstancing(bool instancing) { _properties.Instancing = instancing; _markCoreDirty(); }
 
-        /** @copydoc SetInstancing() */
+        /** @copydoc SetInstancing */
         bool GetInstancing() const { return  _properties.Instancing; }
 
         /** Determines if this object can be merged with another */
         void SetCanBeMerged(bool merged) { _properties.CanBeMerged = merged; _markCoreDirty(); }
 
-        /** @copydoc SetInstancing() */
+        /** @copydoc SetInstancing */
         bool GetCanBeMerged() const { return _properties.CanBeMerged; }
 
         /** Determines if this object can cast shadows */
         void SetCastShadows(bool castShadows) { _properties.CastShadows = castShadows; _markCoreDirty(); }
 
-        /** @copydoc SetCastShadows() */
+        /** @copydoc SetCastShadows */
         bool GetCastShadows() const { return _properties.CastShadows; }
 
         /** Determines if this object can receive shadows */
         void SetReceiveShadows(bool receiveShadows) { _properties.ReceiveShadows = receiveShadows; _markCoreDirty(); }
 
-        /** @copydoc SetCastShadows() */
+        /** @copydoc SetCastShadows */
         bool GetReceiveShadows() const { return _properties.ReceiveShadows; }
 
         /** Determines if this object can cast lights */
         void SetCastLight(bool castLights) { _properties.CastLights = castLights; _markCoreDirty(); }
 
-        /** @copydoc SetCastLights() */
+        /** @copydoc SetCastLights */
         bool GetCastLights() const { return _properties.CastLights; }
 
         /** Set whole properties in a row */
         void SetPorperties(RenderableProperties& properties) { _properties = properties; _markCoreDirty(); }
 
-        /** @copydoc SetPorperties() */
+        /** @copydoc SetPorperties */
         const RenderableProperties& GetProperties() { return _properties; }
 
-        /** @copydoc SetLayer() */
+        /** @copydoc SetLayer */
         UINT64 GetLayer() const { return _layer; }
 
         /** Factor to be applied to the cull distance set in the camera's render settings.  */
         void SetCullDistanceFactor(float factor);
 
-        /** @copydoc SetCullDistanceFactor() */
+        /** @copydoc SetCullDistanceFactor */
         float GetCullDistanceFactor() const { return _properties.CullDistanceFactor; }
 
         /** The object can be used for dynamic env mapping. */
         void SetUseForDynamicEnvMapping(bool use);
 
-        /** @copydoc SetUseForDynamicEnvMapping() */
+        /** @copydoc SetUseForDynamicEnvMapping */
         bool GetUseForDynamicEnvMapping() const { return _properties.UseForDynamicEnvMapping; }
 
         /**	Returns the transform matrix that is applied to the object when its being rendered. */

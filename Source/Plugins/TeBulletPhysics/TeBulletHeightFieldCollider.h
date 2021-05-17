@@ -13,16 +13,16 @@ namespace te
         BulletHeightFieldCollider(BulletPhysics* physics, BulletScene* scene, const Vector3& position, const Quaternion& rotation);
         ~BulletHeightFieldCollider();
 
-        /** @copydoc HeightFieldCollider::SetScale() */
+        /** @copydoc HeightFieldCollider::SetScale */
         void SetScale(const Vector3& scale) override;
 
-        /** @copydoc HeightFieldCollider::SetHeightField() */
+        /** @copydoc HeightFieldCollider::SetHeightField */
         void SetHeightField(const HPhysicsHeightField& heightField) override;
 
-        /** @copydoc HeightFieldCollider::SetMinHeight() */
+        /** @copydoc HeightFieldCollider::SetMinHeight */
         void SetMinHeight(const float& minHeight) override;
 
-        /** @copydoc HeightFieldCollider::SetMinHeight() */
+        /** @copydoc HeightFieldCollider::SetMinHeight */
         void SetMaxHeight(const float& minHeight) override;
 
     private:

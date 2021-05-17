@@ -32,7 +32,7 @@ namespace te
         const btTransform& GetBtTransform();
 
     protected:
-        /** @copydoc GetBtTransform() */
+        /** @copydoc GetBtTransform */
         void SetBtTransform();
 
     protected:

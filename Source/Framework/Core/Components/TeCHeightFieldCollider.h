@@ -19,22 +19,22 @@ namespace te
         /** Return Component type */
         static UINT32 GetComponentType() { return TID_CHeightFieldCollider; }
 
-        /** @copydoc HeightFieldCollider::SetHeightField() */
+        /** @copydoc HeightFieldCollider::SetHeightField */
         void SetHeightField(const HPhysicsHeightField& heightField);
 
-        /** @copydoc HeightFieldCollider::GetHeightField() */
+        /** @copydoc HeightFieldCollider::GetHeightField */
         HPhysicsHeightField GetHeightField() const { return _heightField; }
 
-        /** @copydoc HeightFieldCollider::SetMinHeight() */
+        /** @copydoc HeightFieldCollider::SetMinHeight */
         void SetMinHeight(const float& minHeight);
 
-        /** @copydoc HeightFieldCollider::GetMinHeight() */
+        /** @copydoc HeightFieldCollider::GetMinHeight */
         float GetMinHeight() const { return _minHeight; }
 
-        /** @copydoc HeightFieldCollider::SetMaxHeight() */
+        /** @copydoc HeightFieldCollider::SetMaxHeight */
         void SetMaxHeight(const float& maxHeight);
 
-        /** @copydoc HeightFieldCollider::GetMaxHeight() */
+        /** @copydoc HeightFieldCollider::GetMaxHeight */
         float GetMaxHeight() const { return _maxHeight; }
 
         /** @copydoc Component::Clone */

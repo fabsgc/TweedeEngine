@@ -19,7 +19,7 @@ namespace te
          */
         virtual void SetMesh(const HPhysicsMesh& mesh) { _mesh = mesh; }
 
-        /** @copydoc SetMesh() */
+        /** @copydoc SetMesh */
         HPhysicsMesh GetMesh() const { return _mesh; }
 
         /**

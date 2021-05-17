@@ -3,8 +3,8 @@
 
 namespace te
 { 
-    SPtr<SliderJoint> SliderJoint::Create(PhysicsScene& scene, const SLIDER_JOINT_DESC& desc)
+    SPtr<SliderJoint> SliderJoint::Create(PhysicsScene& scene)
     {
-        return scene.CreateSliderJoint(desc);
+        return scene.CreateSliderJoint();
     }
 }

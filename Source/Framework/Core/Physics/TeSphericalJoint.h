@@ -5,8 +5,6 @@
 
 namespace te
 {
-    struct SPHERICAL_JOINT_DESC;
-
     /**
      * A spherical joint removes all translational degrees of freedom but allows all rotational degrees of freedom.
      * Essentially this ensures that the anchor points of the two bodies are always coincident. Bodies are allowed to
@@ -15,7 +13,7 @@ namespace te
     class TE_CORE_EXPORT SphericalJoint : public Joint
     {
     public:
-        SphericalJoint(const SPHERICAL_JOINT_DESC& desc) { }
+        SphericalJoint() { }
         virtual ~SphericalJoint() = default;
 
         /**
@@ -24,10 +22,6 @@ namespace te
          * @param[in]	scene		Scene to which to add the joint.
          * @param[in]	desc		Settings describing the joint.
          */
-        static SPtr<SphericalJoint> Create(PhysicsScene& scene, const SPHERICAL_JOINT_DESC& desc);
+        static SPtr<SphericalJoint> Create(PhysicsScene& scene);
     };
-
-    /** Structure used for initializing a new SphericalJoint. */
-    struct SPHERICAL_JOINT_DESC : JOINT_DESC
-    { };
 }

@@ -3,10 +3,9 @@
 
 namespace te
 {
-    BulletSphericalJoint::BulletSphericalJoint(BulletPhysics* physics, BulletScene* scene, const SPHERICAL_JOINT_DESC& desc)
-        : SphericalJoint(desc)
+    BulletSphericalJoint::BulletSphericalJoint(BulletPhysics* physics, BulletScene* scene)
+        : SphericalJoint()
         , BulletJoint(physics, scene)
-        , _joint(nullptr)
     {
 
     }

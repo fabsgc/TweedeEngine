@@ -10,7 +10,7 @@ namespace te
     class BulletSliderJoint : public SliderJoint, public BulletJoint
     {
     public:
-        BulletSliderJoint(BulletPhysics* physics, BulletScene* scene, const SLIDER_JOINT_DESC& desc);
+        BulletSliderJoint(BulletPhysics* physics, BulletScene* scene);
         ~BulletSliderJoint();
 
     private:
@@ -22,8 +22,5 @@ namespace te
 
         /** @copydoc BulletJoint::ReleaseJoint */
         void ReleaseJoint() override;
-
-    private:
-        btTypedConstraint* _joint;
     };
 }

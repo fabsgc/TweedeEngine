@@ -39,16 +39,16 @@ namespace te
          */
         SPtr<Texture> GetIrradiance() const { return _irradiance; }
 
-        /** @copydoc Skybox::GetTexture() */
+        /** @copydoc Skybox::GetTexture */
         void SetTexture(const HTexture& texture);
 
-        /** @copydoc Skybox::GetTexture() */
+        /** @copydoc Skybox::GetTexture */
         void SetTexture(const SPtr<Texture>& texture);
 
-        /** @copydoc Skybox::GetIrradiance() */
+        /** @copydoc Skybox::GetIrradiance */
         void SetIrradiance(const HTexture& irradiance);
 
-        /** @copydoc Skybox::GetIrradiance() */
+        /** @copydoc Skybox::GetIrradiance */
         void SetIrradiance(const SPtr<Texture>& irradiance);
 
         /** Creates a new skybox. */

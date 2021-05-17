@@ -5,13 +5,13 @@
 namespace te
 {
     CHingeJoint::CHingeJoint()
-        : CJoint(_desc, (UINT32)TID_CHingeJoint)
+        : CJoint((UINT32)TID_CHingeJoint)
     {
         SetName("HingeJoint");
     }
 
     CHingeJoint::CHingeJoint(const HSceneObject& parent)
-        : CJoint(parent, _desc, (UINT32)TID_CHingeJoint)
+        : CJoint(parent, (UINT32)TID_CHingeJoint)
     {
         SetName("HingeJoint");
     }
@@ -19,7 +19,7 @@ namespace te
     SPtr<Joint> CHingeJoint::CreateInternal()
     {
         const SPtr<SceneInstance>& scene = SO()->GetScene();
-        SPtr<Joint> joint = HingeJoint::Create(*scene->GetPhysicsScene(), _desc);
+        SPtr<Joint> joint = HingeJoint::Create(*scene->GetPhysicsScene());
         joint->SetOwner(PhysicsOwnerType::Component, this);
 
         return joint;

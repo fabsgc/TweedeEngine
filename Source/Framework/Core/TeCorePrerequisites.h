@@ -354,12 +354,6 @@ namespace te
     class SphericalJoint;
     class D6Joint;
     class ConeTwistJoint;
-    struct JOINT_DESC;
-    struct HINGE_JOINT_DESC;
-    struct SLIDER_JOINT_DESC;
-    struct SPHERICAL_JOINT_DESC;
-    struct CONE_TWIST_JOINT_DESC;
-    struct D6_JOINT_DESC;
     class Collider;
     class BoxCollider;
     class PlaneCollider;

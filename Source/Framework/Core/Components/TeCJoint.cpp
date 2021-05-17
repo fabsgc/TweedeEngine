@@ -5,10 +5,9 @@
 
 namespace te
 {
-    CJoint::CJoint(JOINT_DESC& desc, UINT32 type)
+    CJoint::CJoint(UINT32 type)
         : Component(HSceneObject(), type)
         , _internal(nullptr)
-        , _desc(desc)
     {
         SetName("Joint");
         _notifyFlags = (TransformChangedFlags)(TCF_Parent | TCF_Transform);
@@ -20,10 +19,9 @@ namespace te
         _rotations[1] = Quaternion::IDENTITY;
     }
 
-    CJoint::CJoint(const HSceneObject& parent, JOINT_DESC desc, UINT32 type)
+    CJoint::CJoint(const HSceneObject& parent, UINT32 type)
         : Component(parent, type)
         , _internal(nullptr)
-        , _desc(desc)
     {
         SetName("Joint");
         _notifyFlags = (TransformChangedFlags)(TCF_Parent | TCF_Transform);
@@ -41,6 +39,7 @@ namespace te
     void CJoint::Initialize()
     { 
         RestoreInternal();
+        OnEnabled();
         Component::Initialize();
     }
 
@@ -53,7 +52,9 @@ namespace te
     { 
         Component::Clone(c.GetInternalPtr());
 
-        _desc = c->_desc;
+        _breakForce = c->_breakForce;
+        _breakTorque = c->_breakTorque;
+        _enableCollision = c->_enableCollision;
     }
 
     HBody CJoint::GetBody(JointBody body) const
@@ -67,12 +68,9 @@ namespace te
             return;
 
         if (_bodies[(int)body] != nullptr)
-            _bodies[(int)body]->SetJoint(HJoint());
+            _bodies[(int)body]->RemoveJoint(static_object_cast<CJoint>(_thisHandle));
 
         _bodies[(int)body] = value;
-
-        if (value != nullptr)
-            _bodies[(int)body]->SetJoint(static_object_cast<CJoint>(_thisHandle));
 
         // If joint already exists, destroy it if we removed all bodies, otherwise update its transform
         if (_internal != nullptr)
@@ -94,9 +92,12 @@ namespace te
             // Must be an active component and at least one of the bodies must be non-null
             if (SO()->GetActive() && (IsBodyValid(_bodies[0]) || IsBodyValid(_bodies[1])))
             {
-                RestoreInternal();
+                RestoreInternal(); 
             }
         }
+
+        if (value != nullptr)
+            _bodies[(int)body]->AddJoint(static_object_cast<CJoint>(_thisHandle));
     }
 
     Vector3 CJoint::GetPosition(JointBody body) const
@@ -123,15 +124,15 @@ namespace te
 
     float CJoint::GetBreakForce() const
     {
-        return _desc.BreakForce;
+        return _breakForce;
     }
 
     void CJoint::SetBreakForce(float force)
     {
-        if (_desc.BreakForce == force)
+        if (_breakForce == force)
             return;
 
-        _desc.BreakForce = force;
+        _breakForce = force;
 
         if (_internal != nullptr)
             _internal->SetBreakForce(force);
@@ -139,15 +140,15 @@ namespace te
 
     float CJoint::GetBreakTorque() const
     {
-        return _desc.BreakTorque;
+        return _breakTorque;
     }
 
     void CJoint::SetBreakTorque(float torque)
     {
-        if (_desc.BreakTorque == torque)
+        if (_breakTorque == torque)
             return;
 
-        _desc.BreakTorque = torque;
+        _breakTorque = torque;
 
         if (_internal != nullptr)
             _internal->SetBreakTorque(torque);
@@ -155,15 +156,15 @@ namespace te
 
     bool CJoint::GetEnableCollision() const
     {
-        return _desc.EnableCollision;
+        return _enableCollision;
     }
 
     void CJoint::SetEnableCollision(bool value)
     {
-        if (_desc.EnableCollision == value)
+        if (_enableCollision == value)
             return;
 
-        _desc.EnableCollision = value;
+        _enableCollision = value;
 
         if (_internal != nullptr)
             _internal->SetEnableCollision(value);
@@ -175,10 +176,10 @@ namespace te
     void CJoint::OnDestroyed()
     {
         if (_bodies[0] != nullptr)
-            _bodies[0]->SetJoint(HJoint());
+            _bodies[0]->RemoveJoint(static_object_cast<CJoint>(_thisHandle));
 
         if (_bodies[1] != nullptr)
-            _bodies[1]->SetJoint(HJoint());
+            _bodies[1]->RemoveJoint(static_object_cast<CJoint>(_thisHandle));
 
         if (_internal != nullptr)
             DestroyInternal();
@@ -194,6 +195,16 @@ namespace te
     {
         if (IsBodyValid(_bodies[0]) || IsBodyValid(_bodies[1]))
             RestoreInternal();
+
+        if (_bodies[(int)JointBody::Anchor] != nullptr)
+            _internal->SetBody(JointBody::Anchor, _bodies[(int)JointBody::Anchor]->GetInternal());
+
+        if (_bodies[(int)JointBody::Target] != nullptr)
+            _internal->SetBody(JointBody::Target, _bodies[(int)JointBody::Target]->GetInternal());
+
+        _internal->SetBreakForce(_breakForce);
+        _internal->SetBreakTorque(_breakTorque);
+        _internal->SetEnableCollision(_enableCollision);
     }
 
     void CJoint::OnTransformChanged(TransformChangedFlags flags)
@@ -216,18 +227,8 @@ namespace te
 
     void CJoint::RestoreInternal()
     { 
-        if (_bodies[0] != nullptr)
-            _desc.Bodies[0].BodyElt = _bodies[0]->GetInternal();
-        else
-            _desc.Bodies[0].BodyElt = nullptr;
-
-        if (_bodies[1] != nullptr)
-            _desc.Bodies[1].BodyElt = _bodies[1]->GetInternal();
-        else
-            _desc.Bodies[1].BodyElt = nullptr;
-
-        GetLocalTransform(JointBody::Target, _desc.Bodies[0].Position, _desc.Bodies[0].Rotation);
-        GetLocalTransform(JointBody::Anchor, _desc.Bodies[1].Position, _desc.Bodies[1].Rotation);
+        GetLocalTransform(JointBody::Target, _positions[0], _rotations[0]);
+        GetLocalTransform(JointBody::Anchor, _positions[1], _rotations[1]);
 
         _internal = CreateInternal();
         _internal->OnJointBreak.Connect(std::bind(&CJoint::TriggerOnJointBroken, this));

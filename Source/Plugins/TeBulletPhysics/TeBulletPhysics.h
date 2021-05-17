@@ -43,34 +43,34 @@ namespace te
 
         TE_MODULE_STATIC_HEADER_MEMBER(BulletPhysics)
 
-        /** @copydoc Physics::CreateMesh() */
+        /** @copydoc Physics::CreateMesh */
         SPtr<PhysicsMesh> CreateMesh(const SPtr<MeshData>& meshData) override;
 
-        /** @copydoc Physics::CreateMesh() */
+        /** @copydoc Physics::CreateMesh */
         SPtr<PhysicsHeightField> CreateHeightField(const SPtr<Texture>& texture) override;
 
-        /** @copydoc Physics::CreatePhysicsScene() */
+        /** @copydoc Physics::CreatePhysicsScene */
         SPtr<PhysicsScene> CreatePhysicsScene() override;
 
-        /** @copydoc Physics::Update() */
+        /** @copydoc Physics::Update */
         void Update() override;
 
-        /** @copydoc Physics::SetPaused() */
+        /** @copydoc Physics::SetPaused */
         void SetPaused(bool paused) override;
 
-        /** @copydoc Physics::SetPaused() */
+        /** @copydoc Physics::SetPaused */
         bool IsPaused() const override;
 
         /** Enable or disable debug informations globally */
         void SetDebug(bool debug) override;
 
-        /** @copydoc SetDebug() */
+        /** @copydoc SetDebug */
         bool IsDebug() override;
 
-        /** @copydoc Physics::DrawDebug() */
+        /** @copydoc Physics::DrawDebug */
         void DrawDebug(const SPtr<Camera>& camera, const SPtr<RenderTarget>& renderTarget) override;
 
-        /** @copydoc Physics::SetGravity() */
+        /** @copydoc Physics::SetGravity */
         virtual void SetGravity(const Vector3& gravity) override;
 
         /** Notifies the system that at physics scene is about to be destroyed. */
@@ -117,61 +117,61 @@ namespace te
         BulletScene(BulletPhysics* physics, const PHYSICS_INIT_DESC& desc);
         ~BulletScene();
 
-        /** PhysicsScene::TriggerCollisions() */
+        /** PhysicsScene::TriggerCollisions */
         void TriggerCollisions() override;
 
-        /** PhysicsScene::TriggerCollisions() */
+        /** PhysicsScene::TriggerCollisions */
         void ReportCollisions() override;
 
-        /** @copydoc PhysicsScene::CreateRigidBody() */
+        /** @copydoc PhysicsScene::CreateRigidBody */
         SPtr<RigidBody> CreateRigidBody(const HSceneObject& linkedSO) override;
 
-        /** @copydoc PhysicsScene::CreateSoftBody() */
+        /** @copydoc PhysicsScene::CreateSoftBody */
         SPtr<SoftBody> CreateSoftBody(const HSceneObject& linkedSO) override;
 
-        /** @copydoc PhysicsScene::CreateSoftBody() */
-        SPtr<ConeTwistJoint> CreateConeTwistJoint(const CONE_TWIST_JOINT_DESC& desc) override;
+        /** @copydoc PhysicsScene::CreateSoftBody */
+        SPtr<ConeTwistJoint> CreateConeTwistJoint() override;
 
-        /** @copydoc PhysicsScene::CreateSoftBody() */
-        SPtr<HingeJoint> CreateHingeJoint(const HINGE_JOINT_DESC& desc) override;
+        /** @copydoc PhysicsScene::CreateSoftBody */
+        SPtr<HingeJoint> CreateHingeJoint() override;
 
-        /** @copydoc PhysicsScene::CreateSoftBody() */
-        SPtr<SphericalJoint> CreateSphericalJoint(const SPHERICAL_JOINT_DESC& desc) override;
+        /** @copydoc PhysicsScene::CreateSoftBody */
+        SPtr<SphericalJoint> CreateSphericalJoint() override;
 
-        /** @copydoc PhysicsScene::CreateSoftBody() */
-        SPtr<SliderJoint> CreateSliderJoint(const SLIDER_JOINT_DESC& desc) override;
+        /** @copydoc PhysicsScene::CreateSoftBody */
+        SPtr<SliderJoint> CreateSliderJoint() override;
 
-        /** @copydoc PhysicsScene::CreateSoftBody() */
-        SPtr<D6Joint> CreateD6Joint(const D6_JOINT_DESC& desc) override;
+        /** @copydoc PhysicsScene::CreateSoftBody */
+        SPtr<D6Joint> CreateD6Joint() override;
 
-        /** @copydoc PhysicsScene::CreateBoxCollider() */
+        /** @copydoc PhysicsScene::CreateBoxCollider */
         SPtr<BoxCollider> CreateBoxCollider(const Vector3& extents, const Vector3& position,
             const Quaternion& rotation) override;
 
-        /** @copydoc PhysicsScene::CreatePlaneCollider() */
+        /** @copydoc PhysicsScene::CreatePlaneCollider */
         SPtr<PlaneCollider> CreatePlaneCollider(const Vector3& normal, const Vector3& position,
             const Quaternion& rotation) override;
 
-        /** @copydoc PhysicsScene::CreateSphereCollider() */
+        /** @copydoc PhysicsScene::CreateSphereCollider */
         SPtr<SphereCollider> CreateSphereCollider(float radius, const Vector3& position, 
             const Quaternion& rotation) override;
 
-        /** @copydoc PhysicsScene::CreateCylinderCollider() */
+        /** @copydoc PhysicsScene::CreateCylinderCollider */
         SPtr<CylinderCollider> CreateCylinderCollider(const Vector3& extents, const Vector3& position,
             const Quaternion& rotation) override;
 
-        /** @copydoc PhysicsScene::CreateCapsuleCollider() */
+        /** @copydoc PhysicsScene::CreateCapsuleCollider */
         SPtr<CapsuleCollider> CreateCapsuleCollider(float radius, float height, const Vector3& position,
             const Quaternion& rotation) override;
 
-        /** @copydoc PhysicsScene::CreateMeshCollider() */
+        /** @copydoc PhysicsScene::CreateMeshCollider */
         SPtr<MeshCollider> CreateMeshCollider(const Vector3& position, const Quaternion& rotation) override;
 
-        /** @copydoc PhysicsScene::CreateConeCollider() */
+        /** @copydoc PhysicsScene::CreateConeCollider */
         SPtr<ConeCollider> CreateConeCollider(float radius, float height, const Vector3& position,
             const Quaternion& rotation) override;
 
-        /** @copydoc PhysicsScene::CreateHeightFieldCollider() */
+        /** @copydoc PhysicsScene::CreateHeightFieldCollider */
         SPtr<HeightFieldCollider> CreateHeightFieldCollider(const Vector3& position, const Quaternion& rotation) override;
 
         /** Add RigidBody to current scene */

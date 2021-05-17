@@ -23,10 +23,10 @@ namespace te
         /** @copydoc Component::Clone */
         void Clone(const HBoxCollider& c);
 
-        /** @copydoc BoxCollider::SetExtents() */
+        /** @copydoc BoxCollider::SetExtents */
         void SetExtents(const Vector3& extents);
 
-        /** @copydoc BoxCollider::GetExtents() */
+        /** @copydoc BoxCollider::GetExtents */
         Vector3 GetExtents() const { return _extents; }
 
     protected:

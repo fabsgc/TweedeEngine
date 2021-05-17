@@ -21,8 +21,13 @@ namespace te
         /** Release the internal representation of a joint from the world */
         virtual void ReleaseJoint() = 0;
 
+        /** Returns associated btJoint */
+        btTypedConstraint* GetJoint() { return _joint; }
+
     protected:
         BulletPhysics* _physics;
         BulletScene* _scene;
+
+        btTypedConstraint* _joint;
     };
 }

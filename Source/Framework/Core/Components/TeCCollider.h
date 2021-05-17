@@ -71,19 +71,19 @@ namespace te
         friend class CSoftBody;
         using Component::DestroyInternal;
 
-        /** @copydoc Component::onInitialized() */
+        /** @copydoc Component::onInitialized */
         void OnInitialized() override;
 
-        /** @copydoc Component::onDestroyed() */
+        /** @copydoc Component::onDestroyed */
         void OnDestroyed() override;
 
-        /** @copydoc Component::onDisabled() */
+        /** @copydoc Component::onDisabled */
         void OnDisabled() override;
 
-        /** @copydoc Component::onEnabled() */
+        /** @copydoc Component::onEnabled */
         void OnEnabled() override;
 
-        /** @copydoc Component::onTransformChanged() */
+        /** @copydoc Component::onTransformChanged */
         void OnTransformChanged(TransformChangedFlags flags) override;
 
         /** Creates the internal representation of the Joint for use by the component. */

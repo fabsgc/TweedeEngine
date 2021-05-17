@@ -14,13 +14,13 @@ namespace te
             const Quaternion& rotation, const Vector3& extents);
         ~BulletBoxCollider();
 
-        /** @copydoc BoxCollider::SetScale() */
+        /** @copydoc BoxCollider::SetScale */
         void SetScale(const Vector3& scale) override;
 
-        /** @copydoc BoxCollider::SetExtents() */
+        /** @copydoc BoxCollider::SetExtents */
         void SetExtents(const Vector3& extents) override;
 
-        /** @copydoc BoxCollider::GetExtents() */
+        /** @copydoc BoxCollider::GetExtents */
         Vector3 GetExtents() const override { return _extents; }
 
     private:

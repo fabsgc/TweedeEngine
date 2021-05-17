@@ -13,25 +13,25 @@ namespace te
         /** Determines the scale of the collider relative to its parent */
         virtual void SetScale(const Vector3& scale) { _scale = scale; }
 
-        /** @copydoc SetScale() */
+        /** @copydoc SetScale */
         virtual const Vector3& GetScale() const { return _scale; }
 
         /** * Determines the center of the collider relative to its parent */
         virtual void SetCenter(const Vector3& center) { _center = center; }
 
-        /** @copydoc SetCenter() */
+        /** @copydoc SetCenter */
         virtual const Vector3& GetCenter() const { return _center; }
 
         /** * Determines the offset position of the collider relative to its parent */
         virtual void SetPosition(const Vector3& position) { _position = position; }
 
-        /** @copydoc SetPosition() */
+        /** @copydoc SetPosition */
         virtual const Vector3& GetPosition() const { return _position; }
 
         /** * Determines the offset rotation of the collider relative to its parent */
         virtual void SetRotation(const Quaternion& rotation) { _rotation = rotation; }
 
-        /** @copydoc SetRotation() */
+        /** @copydoc SetRotation */
         virtual const Quaternion& GetRotation() const { return _rotation; }
 
     protected:

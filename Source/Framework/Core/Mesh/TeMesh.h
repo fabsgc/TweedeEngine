@@ -79,7 +79,7 @@ namespace te
          */
         SubMesh& GetSubMesh(UINT32 subMeshIdx = 0);
 
-        /** @copydoc GetSubMesh() */
+        /** @copydoc GetSubMesh */
         SubMesh* GetSubMeshPtr(UINT32 subMeshIdx = 0);
 
         /** Retrieves a total number of sub-meshes in this mesh. */

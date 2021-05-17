@@ -28,8 +28,6 @@ namespace te
         /** @copydoc CJoint::CreateInternal */
         SPtr<Joint> CreateInternal() override;
 
-        HINGE_JOINT_DESC _desc;
-
     protected:
         CHingeJoint(); // Serialization only
     };

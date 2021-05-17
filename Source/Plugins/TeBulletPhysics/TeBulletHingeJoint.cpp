@@ -3,10 +3,9 @@
 
 namespace te
 {
-    BulletHingeJoint::BulletHingeJoint(BulletPhysics* physics, BulletScene* scene, const HINGE_JOINT_DESC& desc)
-        : HingeJoint(desc)
+    BulletHingeJoint::BulletHingeJoint(BulletPhysics* physics, BulletScene* scene)
+        : HingeJoint()
         , BulletJoint(physics, scene)
-        , _joint(nullptr)
     {
 
     }

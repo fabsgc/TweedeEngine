@@ -27,10 +27,10 @@ namespace te
 
         TE_MODULE_STATIC_HEADER_MEMBER(Physics)
 
-        /** @copydoc PhysicsMesh::Create() */
+        /** @copydoc PhysicsMesh::Create */
         virtual SPtr<PhysicsMesh> CreateMesh(const SPtr<MeshData>& meshData) = 0;
 
-        /** @copydoc PhysicsHeightField::Create() */
+        /** @copydoc PhysicsHeightField::Create */
         virtual SPtr<PhysicsHeightField> CreateHeightField(const SPtr<Texture>& texture) = 0;
 
         /** Creates an object representing the physics scene. Must be manually released via destroyPhysicsScene(). */
@@ -42,13 +42,13 @@ namespace te
         /** Determines if audio reproduction is paused globally. */
         virtual void SetPaused(bool paused) = 0;
 
-        /** @copydoc SetPaused() */
+        /** @copydoc SetPaused */
         virtual bool IsPaused() const = 0;
 
         /** Enable or disable debug informations globally */
         virtual void SetDebug(bool debug) = 0;
 
-        /** @copydoc SetDebug() */
+        /** @copydoc SetDebug */
         virtual bool IsDebug() = 0;
 
         /** Allow user to see debug information about physical simulation */
@@ -88,40 +88,20 @@ namespace te
         /** @copydoc RigidBody::Create */
         virtual SPtr<SoftBody> CreateSoftBody(const HSceneObject& linkedSO) = 0;
 
-        /**
-         * Creates a new cone twist joint.
-         *
-         * @param[in]	desc		Settings describing the joint.
-         */
-        virtual SPtr<ConeTwistJoint> CreateConeTwistJoint(const CONE_TWIST_JOINT_DESC& desc) = 0;
+        /** Creates a new cone twist joint. */
+        virtual SPtr<ConeTwistJoint> CreateConeTwistJoint() = 0;
 
-        /**
-         * Creates a new hinge joint.
-         *
-         * @param[in]	desc		Settings describing the joint.
-         */
-        virtual SPtr<HingeJoint> CreateHingeJoint(const HINGE_JOINT_DESC& desc) = 0;
+        /** Creates a new hinge joint. */
+        virtual SPtr<HingeJoint> CreateHingeJoint() = 0;
 
-        /**
-         * Creates a new spherical joint.
-         *
-         * @param[in]	desc		Settings describing the joint.
-         */
-        virtual SPtr<SphericalJoint> CreateSphericalJoint(const SPHERICAL_JOINT_DESC& desc) = 0;
+        /** Creates a new spherical joint. */
+        virtual SPtr<SphericalJoint> CreateSphericalJoint() = 0;
 
-        /**
-         * Creates a new spherical joint.
-         *
-         * @param[in]	desc		Settings describing the joint.
-         */
-        virtual SPtr<SliderJoint> CreateSliderJoint(const SLIDER_JOINT_DESC& desc) = 0;
+        /** Creates a new spherical joint.  */
+        virtual SPtr<SliderJoint> CreateSliderJoint() = 0;
 
-        /**
-         * Creates a new D6 joint.
-         *
-         * @param[in]	desc		Settings describing the joint.
-         */
-        virtual SPtr<D6Joint> CreateD6Joint(const D6_JOINT_DESC& desc) = 0;
+        /** Creates a new D6 joint. */
+        virtual SPtr<D6Joint> CreateD6Joint() = 0;
 
         /**
          * Creates a new box collider.
@@ -136,7 +116,7 @@ namespace te
         /**
          * Creates a new plane collider.
          * 
-         * @param[in]	normal      Normal to the plane.
+         * @param[in]	normal		Normal to the plane.
          * @param[in]	position	Position of the collider relative to its parent
          * @param[in]	rotation	Position of the collider relative to its parent
          */

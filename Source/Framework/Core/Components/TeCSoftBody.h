@@ -3,6 +3,7 @@
 #include "TeCorePrerequisites.h"
 #include "Physics/TeSoftBody.h"
 #include "Components/TeCBody.h"
+#include "Components/TeCJoint.h"
 
 namespace te
 {
@@ -20,16 +21,16 @@ namespace te
         /** Return Component type */
         static UINT32 GetComponentType() { return TID_CSoftBody; }
 
-        /** @copydoc Component::Initialize() */
+        /** @copydoc Component::Initialize */
         void Initialize() override;
 
-        /** @copydoc Component::Clone() */
+        /** @copydoc Component::Clone */
         void Clone(const HComponent& c) override;
 
-        /** @copydoc Component::Clone() */
+        /** @copydoc Component::Clone */
         void Clone(const HSoftBody& c);
 
-        /** @copydoc Component::Update() */
+        /** @copydoc Component::Update */
         void Update() override;
 
         /** Returns the SoftBody implementation wrapped by this component. */
@@ -39,19 +40,19 @@ namespace te
         friend class SceneObject;
         friend class CCollider;
 
-        /** @copydoc Component::OnInitialized() */
+        /** @copydoc Component::OnInitialized */
         void OnInitialized() override;
 
-        /** @copydoc Component::OnDestroyed() */
+        /** @copydoc Component::OnDestroyed */
         void OnDestroyed() override;
 
-        /** @copydoc Component::OnDisabled() */
+        /** @copydoc Component::OnDisabled */
         void OnDisabled() override;
 
-        /** @copydoc Component::OnEnabled() */
+        /** @copydoc Component::OnEnabled */
         void OnEnabled() override;
 
-        /** @copydoc Component::OnTransformChanged() */
+        /** @copydoc Component::OnTransformChanged */
         void OnTransformChanged(TransformChangedFlags flags) override;
 
         /** @copydoc CBody::CreateInternal */
@@ -69,9 +70,6 @@ namespace te
         /** Body::AddCollider */
         virtual void AddCollider(const HCollider& collider) override;
 
-        /** Body::SyncCollider */
-        virtual void SyncCollider(const HCollider& collider) override;
-
         /** Body::RemoveCollider */
         virtual void RemoveCollider(const HCollider& collider) override;
 
@@ -80,6 +78,18 @@ namespace te
 
         /** Body::ProcessCollisionData */
         void ProcessCollisionData(const CollisionDataRaw& raw, CollisionData& output) override;
+
+        /** @copydoc CBody::ClearJoints */
+        void ClearJoints() override;
+
+        /** @copydoc CBody::UpdateJoints */
+        void UpdateJoints() override;
+
+        /** @copydoc CBody::AddJoint */
+        void AddJoint(const HJoint& joint) override;
+
+        /** @copydoc CBody::RemoveJoint */
+        void RemoveJoint(const HJoint& joint) override;
 
     protected:
         CSoftBody(); // Serialization only

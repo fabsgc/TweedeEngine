@@ -10,7 +10,7 @@ namespace te
     class BulletHingeJoint : public HingeJoint, public BulletJoint
     {
     public:
-        BulletHingeJoint(BulletPhysics* physics, BulletScene* scene, const HINGE_JOINT_DESC& desc);
+        BulletHingeJoint(BulletPhysics* physics, BulletScene* scene);
         ~BulletHingeJoint();
 
     private:
@@ -22,8 +22,5 @@ namespace te
 
         /** @copydoc BulletJoint::ReleaseJoint */
         void ReleaseJoint() override;
-
-    private:
-        btTypedConstraint* _joint;
     };
 }

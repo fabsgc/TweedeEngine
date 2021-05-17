@@ -17,7 +17,7 @@ namespace te
         /** Determines the radius of the sphere geometry. */
         virtual void SetRadius(float radius) = 0;
 
-        /** @copydoc SetRadius() */
+        /** @copydoc SetRadius */
         virtual float GetRadius() const = 0;
 
         /**

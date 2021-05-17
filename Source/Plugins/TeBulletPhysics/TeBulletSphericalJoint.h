@@ -10,7 +10,7 @@ namespace te
     class BulletSphericalJoint : public SphericalJoint, public BulletJoint
     {
     public:
-        BulletSphericalJoint(BulletPhysics* physics, BulletScene* scene, const SPHERICAL_JOINT_DESC& desc);
+        BulletSphericalJoint(BulletPhysics* physics, BulletScene* scene);
         ~BulletSphericalJoint();
 
     private:
@@ -22,8 +22,5 @@ namespace te
 
         /** @copydoc BulletJoint::ReleaseJoint */
         void ReleaseJoint() override;
-
-    private:
-        btTypedConstraint* _joint;
     };
 }

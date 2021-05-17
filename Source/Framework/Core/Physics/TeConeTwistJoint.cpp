@@ -3,8 +3,8 @@
 
 namespace te
 {
-    SPtr<ConeTwistJoint> ConeTwistJoint::Create(PhysicsScene& scene, const CONE_TWIST_JOINT_DESC& desc)
+    SPtr<ConeTwistJoint> ConeTwistJoint::Create(PhysicsScene& scene)
     {
-        return scene.CreateConeTwistJoint(desc);
+        return scene.CreateConeTwistJoint();
     }
 }

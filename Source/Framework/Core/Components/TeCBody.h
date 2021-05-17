@@ -40,110 +40,107 @@ namespace te
         /** @copydoc Component::Update */
         void Update() override;
 
-        /** @copydoc Body::SetIsTrigger() */
+        /** @copydoc Body::SetIsTrigger */
         void SetIsTrigger(bool value);
 
-        /** @copydoc Body::GetIsTrigger() */
+        /** @copydoc Body::GetIsTrigger */
         bool GetIsTrigger() const { return _isTrigger; }
 
-        /** @copydoc Body::SetIsDebug() */
+        /** @copydoc Body::SetIsDebug */
         void SetIsDebug(bool debug);
 
-        /** @copydoc Body::GetIsDebug() */
+        /** @copydoc Body::GetIsDebug */
         bool GetIsDebug() const { return _isDebug; }
 
-        /** @copydoc Body::SetMass() */
+        /** @copydoc Body::SetMass */
         void SetMass(float mass);
 
-        /** @copydoc Body::GetMass() */
+        /** @copydoc Body::GetMass */
         float GetMass() const { return _mass; };
 
-        /** @copydoc Body::SetIsKinematic() */
+        /** @copydoc Body::SetIsKinematic */
         void SetIsKinematic(bool kinematic);
 
-        /** @copydoc Body::GetIsKinematic() */
+        /** @copydoc Body::GetIsKinematic */
         bool GetIsKinematic() const { return _isKinematic; }
 
-        /** @copydoc Body::SetVelocity() */
+        /** @copydoc Body::SetVelocity */
         void SetVelocity(const Vector3& velocity);
 
-        /** @copydoc Body::GetVelocity() */
+        /** @copydoc Body::GetVelocity */
         const Vector3& GetVelocity() const { return _velocity; }
 
-        /** @copydoc Body::SetAngularVelocity() */
+        /** @copydoc Body::SetAngularVelocity */
         void SetAngularVelocity(const Vector3& velocity);
 
-        /** @copydoc Body::GetAngularVelocity() */
+        /** @copydoc Body::GetAngularVelocity */
         const Vector3& GetAngularVelocity() const { return _angularVelocity; }
 
-        /** @copydoc Body::SetFriction() */
+        /** @copydoc Body::SetFriction */
         void SetFriction(float friction);
 
-        /** @copydoc Body::GetFriction() */
+        /** @copydoc Body::GetFriction */
         float GetFriction() const { return _friction; }
 
-        /** @copydoc Body::SetRollingFriction() */
+        /** @copydoc Body::SetRollingFriction */
         void SetRollingFriction(float rollingFriction);
 
-        /** @copydoc Body::GetRollingFriction() */
+        /** @copydoc Body::GetRollingFriction */
         float GetRollingFriction() const { return _rollingFriction; }
 
-        /** @copydoc Body::SetRestitution() */
+        /** @copydoc Body::SetRestitution */
         void SetRestitution(float restitution);
 
-        /** @copydoc Body::GetRestitution() */
+        /** @copydoc Body::GetRestitution */
         float GetRestitution() const { return _restitution; }
 
-        /** @copydoc Body::SetUseGravity() */
+        /** @copydoc Body::SetUseGravity */
         void SetUseGravity(bool gravity);
 
-        /** @copydoc Body::GetUseGravity() */
+        /** @copydoc Body::GetUseGravity */
         bool GetUseGravity() const { return _useGravity; }
 
-        /** @copydoc Body::SetCenterOfMass() */
+        /** @copydoc Body::SetCenterOfMass */
         void SetCenterOfMass(const Vector3& centerOfMass);
 
-        /** @copydoc Body::GetCenterOfMass() */
+        /** @copydoc Body::GetCenterOfMass */
         const Vector3& GetCenterOfMass() const { return _centerOfMass; }
 
-        /** @copydoc Body::ApplyForce() */
+        /** @copydoc Body::ApplyForce */
         void ApplyForce(const Vector3& force, ForceMode mode) const;
 
-        /** @copydoc Body::ApplyForceAtPoint() */
+        /** @copydoc Body::ApplyForceAtPoint */
         void ApplyForceAtPoint(const Vector3& force, const Vector3& position, ForceMode mode) const;
 
-        /** @copydoc Body::ApplyTorque() */
+        /** @copydoc Body::ApplyTorque */
         void ApplyTorque(const Vector3& torque, ForceMode mode) const;
 
-        /** @copydoc Body::SetCollisionReportMode() */
+        /** @copydoc Body::SetCollisionReportMode */
         void SetCollisionReportMode(CollisionReportMode mode);
 
-        /** @copydoc Body::GetCollisionReportMode() */
+        /** @copydoc Body::GetCollisionReportMode */
         CollisionReportMode GetCollisionReportMode() const { return _collisionReportMode; }
 
-        /** @copydoc Body::SetFlags() */
+        /** @copydoc Body::SetFlags */
         void SetFlags(BodyFlag flags);
 
-        /** @copydoc Body::GetFlags() */
+        /** @copydoc Body::GetFlags */
         BodyFlag GetFlags() const { return _flags; }
 
-        /** @copy Body::SetLinkedSO() */
+        /** @copy Body::SetLinkedSO */
         void SetLinkedSO(const HSceneObject& SO);
 
-        /** @copydoc Body::OnCollisionBegin() */
+        /** @copydoc Body::OnCollisionBegin */
         Event<void(const CollisionData&)> OnCollisionBegin;
 
-        /** @copydoc Body::OnCollisionStay() */
+        /** @copydoc Body::OnCollisionStay */
         Event<void(const CollisionData&)> OnCollisionStay;
 
-        /** @copydoc Body::OnCollisionEnd() */
+        /** @copydoc Body::OnCollisionEnd */
         Event<void(const CollisionData&)> OnCollisionEnd;
 
         /** Returns the body implementation wrapped by this component. */
         virtual Body* GetInternal() const = 0;
-
-        /** Sets that joint that this rigidbody is attached to. Allows the rigidbody to notify the joint when it moves. */
-        void SetJoint(const HJoint& joint) { _parentJoint = joint; }
 
     protected:
         friend class SceneObject;
@@ -156,6 +153,8 @@ namespace te
         friend class CPlaneCollider;
         friend class CSphereCollider;
         friend class CHeightFieldCollider;
+        friend class CJoint;
+
         using Component::DestroyInternal;
 
         /** Triggered when the internal body begins touching another object. */
@@ -175,7 +174,7 @@ namespace te
 
         /**
          * Searches child scene objects for Collider components and attaches them to the body. Make sure to call
-         * clearColliders() if you need to clear old colliders first.
+         * ClearColliders() if you need to clear old colliders first.
          */
         virtual void UpdateColliders() = 0;
 
@@ -188,9 +187,6 @@ namespace te
          */
         virtual void AddCollider(const HCollider& collider) = 0;
 
-        /** ynchronize a collider with the Body he's attached to. */
-        virtual void SyncCollider(const HCollider& collider) = 0;
-
         /** Unregisters the collider from the body. */
         virtual void RemoveCollider(const HCollider& collider) = 0;
 
@@ -200,13 +196,25 @@ namespace te
         /** Appends Component referenes for the colliders to the collision data. */
         virtual void ProcessCollisionData(const CollisionDataRaw& raw, CollisionData& output) = 0;
 
+        /** Unregisters all internal joints from the body. */
+        virtual void ClearJoints() = 0;
+
+        /** Update joints on internal using _joints vector */
+        virtual void UpdateJoints() = 0;
+
+        /** Sets a joint that this body is attached to. Allows the body to notify the joint when it moves. */
+        virtual void AddJoint(const HJoint& collider) = 0;
+
+        /** Remove a joint that this body is attached to. Allows the body to notify the joint when it moves. */
+        virtual void RemoveJoint(const HJoint& collider) = 0;
+
     protected:
         CBody(UINT32 type);
 
     protected:
         SPtr<Body> _internal;
-        Vector<HCollider> _children;
-        HJoint _parentJoint;
+        Vector<HJoint> _joints;
+        Vector<HCollider> _colliders;
 
         float _mass = 1.0f;
         float _friction = 0.0f;

@@ -10,8 +10,6 @@
 
 namespace te
 {
-    struct JOINT_DESC;
-
     /** Specifies first or second body referenced by a Joint. */
     enum class JointBody
     {
@@ -27,7 +25,7 @@ namespace te
     };
 
     /**
-     * Base class for all Joint types. Joints constrain how two rigidbodies move relative to one another (for example a door
+     * Base class for all Joint types. Joints constrain how two bodies move relative to one another (for example a door
      * hinge). One of the bodies in the joint must always be movable (non-kinematic).
      */
     class TE_CORE_EXPORT Joint
@@ -36,7 +34,7 @@ namespace te
         Joint() = default;
         virtual ~Joint() = default;
 
-        /** @copydoc setBody() */
+        /** @copydoc SetBody */
         virtual Body* GetBody(JointBody body) const;
 
         /** Determines a body managed by the joint. One of the bodies must be movable (non-kinematic). */
@@ -51,7 +49,7 @@ namespace te
         /** Sets the position and rotation relative to the body, at which the body is anchored to the joint.  */
         virtual void SetTransform(JointBody body, const Vector3& position, const Quaternion& rotation);
 
-        /** @copydoc SetBreakForce() */
+        /** @copydoc SetBreakForce */
         virtual float GetBreakForce() const;
 
         /**
@@ -60,7 +58,7 @@ namespace te
          */
         virtual void SetBreakForce(float force);
 
-        /** @copydoc SetBreakTorque() */
+        /** @copydoc SetBreakTorque */
         virtual float GetBreakTorque() const;
 
         /**
@@ -69,7 +67,7 @@ namespace te
          */
         virtual void SetBreakTorque(float torque);
 
-        /** @copydoc SetEnableCollision() */
+        /** @copydoc SetEnableCollision */
         virtual bool GetEnableCollision() const;
 
         /** Determines whether collision between the two bodies managed by the joint are enabled. */
@@ -97,14 +95,5 @@ namespace te
         float _breakForce = FLT_MAX;
         float _breakTorque = FLT_MAX;
         bool _enableCollision = false;
-    };
-
-    /** Structure used for initializing a new Joint. */
-    struct JOINT_DESC
-    { 
-        BodyInfo Bodies[2];
-        float BreakForce = FLT_MAX;
-        float BreakTorque = FLT_MAX;
-        bool EnableCollision = false;
     };
 }

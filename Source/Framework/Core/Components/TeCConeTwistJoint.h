@@ -28,8 +28,6 @@ namespace te
         /** @copydoc CJoint::CreateInternal */
         SPtr<Joint> CreateInternal() override;
 
-        CONE_TWIST_JOINT_DESC _desc;
-
     protected:
         CConeTwistJoint(); // Serialization only
     };

@@ -137,7 +137,7 @@ namespace te
         /**  @copydoc Resource::GetResourceType */
         static UINT32 GetResourceType() { return TID_AnimationClip; }
 
-        /** @copydoc SetCurves() */
+        /** @copydoc SetCurves */
         SPtr<AnimationCurves> GetCurves() const { return _curves; }
 
         /**
@@ -146,7 +146,7 @@ namespace te
          */
         void SetCurves(const AnimationCurves& curves);
 
-        /** @copydoc SetEvents() */
+        /** @copydoc SetEvents */
         const Vector<AnimationEvent>& GetEvents() const { return _events; }
 
         /** A set of all events to be triggered as the animation is playing. */
@@ -186,7 +186,7 @@ namespace te
         /** Returns the length of the animation clip, in seconds. */
         float GetLength() const { return _length; }
 
-        /** @copydoc SetSampleRate() */
+        /** @copydoc SetSampleRate */
         float GetSampleRate() const { return _sampleRate; }
 
         /**
@@ -239,7 +239,7 @@ namespace te
         AnimationClip(const SPtr<AnimationCurves>& curves, bool isAdditive, float sampleRate,
             const SPtr<RootMotion>& rootMotion);
 
-        /** @copydoc Resource::Initialize() */
+        /** @copydoc Resource::Initialize */
         void Initialize() override;
 
         /** Creates a name -> curve index mapping for quicker curve lookup by name. */

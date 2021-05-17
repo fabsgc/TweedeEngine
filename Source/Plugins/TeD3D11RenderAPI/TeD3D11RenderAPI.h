@@ -152,19 +152,19 @@ namespace te
         /** Creates and populates a set of render system capabilities describing which functionality is available. */
         void InitCapabilites(IDXGIAdapter* adapter, RenderAPICapabilities& caps) const;
 
-        /** @copydoc RenderAPI::ConvertProjectionMatrix() */
+        /** @copydoc RenderAPI::ConvertProjectionMatrix */
         void ConvertProjectionMatrix(const Matrix4& matrix, Matrix4& dest) override;
 
-        /** @copydoc RenderAPI::GenerateParamBlockDesc() */
+        /** @copydoc RenderAPI::GenerateParamBlockDesc */
         GpuParamBlockDesc GenerateParamBlockDesc(const String& name, Vector<GpuParamDataDesc>& params) override;
 
-        /** @copydoc RenderAPI::GetGPUMemory() */
+        /** @copydoc RenderAPI::GetGPUMemory */
         UINT64 GetGPUMemory() override;
 
-        /** @copydoc RenderAPI::GetSharedMemory() */
+        /** @copydoc RenderAPI::GetSharedMemory */
         UINT64 GetSharedMemory() override;
 
-        /** @copydoc RenderAPI::GetUsedGPUMemory() */
+        /** @copydoc RenderAPI::GetUsedGPUMemory */
         UINT64 GetUsedGPUMemory() override;
 
     private:

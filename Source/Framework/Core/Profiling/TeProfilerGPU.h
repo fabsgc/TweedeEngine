@@ -68,7 +68,7 @@ namespace te
         /** Enable profiler */
         void Enable(bool enable);
 
-        /* @copydoc ProfilerGPU::Enable() */
+        /* @copydoc ProfilerGPU::Enable */
         bool IsEnabled() { return _enabled; }
 
         /* Returns last metrics sample */

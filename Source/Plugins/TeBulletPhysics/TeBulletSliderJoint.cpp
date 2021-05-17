@@ -3,10 +3,9 @@
 
 namespace te
 {
-    BulletSliderJoint::BulletSliderJoint(BulletPhysics* physics, BulletScene* scene, const SLIDER_JOINT_DESC& desc)
-        : SliderJoint(desc)
+    BulletSliderJoint::BulletSliderJoint(BulletPhysics* physics, BulletScene* scene)
+        : SliderJoint()
         , BulletJoint(physics, scene)
-        , _joint(nullptr)
     {
 
     }

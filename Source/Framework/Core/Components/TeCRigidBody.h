@@ -4,7 +4,8 @@
 #include "Physics/TeRigidBody.h"
 #include "Scene/TeComponent.h"
 #include "Scene/TeSceneObject.h"
-#include "TeCBody.h"
+#include "Components/TeCBody.h"
+#include "Components/TeCJoint.h"
 
 namespace te
 {
@@ -22,25 +23,25 @@ namespace te
         /** Return Component type */
         static UINT32 GetComponentType() { return TID_CRigidBody; }
 
-        /** @copydoc Component::Initialize() */
+        /** @copydoc Component::Initialize */
         void Initialize() override;
 
-        /** @copydoc Component::Clone() */
+        /** @copydoc Component::Clone */
         void Clone(const HComponent& c) override;
 
-        /** @copydoc Component::Clone() */
+        /** @copydoc Component::Clone */
         void Clone(const HRigidBody& c);
 
-        /** @copydoc Component::Update() */
+        /** @copydoc Component::Update */
         void Update() override;
 
         /** Returns the Rigidbody implementation wrapped by this component. */
         Body* GetInternal() const override { return (RigidBody*)(_internal.get()); }
 
-        /** @copydoc RigidBody::SetAngularFactor() */
+        /** @copydoc RigidBody::SetAngularFactor */
         void SetAngularFactor(const Vector3& angularFactor);
 
-        /** @copydoc RigidBody::GetAngularFactor() */
+        /** @copydoc RigidBody::GetAngularFactor */
         const Vector3& GetAngularFactor() const { return _angularFactor; }
 
     protected:
@@ -48,19 +49,19 @@ namespace te
         friend class CCollider;
         friend class CJoint;
 
-        /** @copydoc Component::OnInitialized() */
+        /** @copydoc Component::OnInitialized */
         void OnInitialized() override;
 
-        /** @copydoc Component::OnDestroyed() */
+        /** @copydoc Component::OnDestroyed */
         void OnDestroyed() override;
 
-        /** @copydoc Component::OnDisabled() */
+        /** @copydoc Component::OnDisabled */
         void OnDisabled() override;
 
-        /** @copydoc Component::OnEnabled() */
+        /** @copydoc Component::OnEnabled */
         void OnEnabled() override;
 
-        /** @copydoc Component::OnTransformChanged() */
+        /** @copydoc Component::OnTransformChanged */
         void OnTransformChanged(TransformChangedFlags flags) override;
 
         /** @copydoc CBody::CreateInternal */
@@ -77,9 +78,6 @@ namespace te
 
         /** Body::AddCollider */
         void AddCollider(const HCollider& collider) override;
-
-        /** Body::SyncCollider */
-        void SyncCollider(const HCollider& collider) override;
 
         /** Body::RemoveCollider */
         void RemoveCollider(const HCollider& collider) override;
@@ -116,6 +114,18 @@ namespace te
                 }
             }
         }
+
+        /** @copydoc CBody::ClearJoints */
+        void ClearJoints() override;
+
+        /** @copydoc CBody::UpdateJoints */
+        void UpdateJoints() override;
+
+        /** @copydoc CBody::AddJoint */
+        void AddJoint(const HJoint& joint) override;
+
+        /** @copydoc CBody::RemoveJoint */
+        void RemoveJoint(const HJoint& joint) override;
 
     protected:
         CRigidBody(); // Serialization only

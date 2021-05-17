@@ -19,7 +19,7 @@ namespace te
          */
         virtual void SetHeightField(const HPhysicsHeightField& heightField) { _heightField = heightField; }
 
-        /** @copydoc SetHeightField() */
+        /** @copydoc SetHeightField */
         HPhysicsHeightField GetHeightField() const { return _heightField; }
 
         /**

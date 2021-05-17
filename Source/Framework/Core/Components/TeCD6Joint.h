@@ -28,8 +28,6 @@ namespace te
         /** @copydoc CJoint::CreateInternal */
         SPtr<Joint> CreateInternal() override;
 
-        D6_JOINT_DESC _desc;
-
     protected:
         CD6Joint(); // Serialization only
     };

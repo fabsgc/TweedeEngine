@@ -26,7 +26,7 @@ namespace te
     { }
 
     void CRigidBody::Initialize()
-    { 
+    {
         ClearColliders();
         OnEnabled();
         CBody::Initialize();
@@ -65,6 +65,7 @@ namespace te
 
     void CRigidBody::OnDestroyed()
     {
+        ClearJoints();
         DestroyInternal();
     }
 
@@ -80,6 +81,7 @@ namespace te
 
         _internal = CreateInternal();
         UpdateColliders();
+        UpdateJoints();
 
 #if TE_DEBUG_MODE
         CheckForNestedBody();
@@ -130,8 +132,10 @@ namespace te
         const Transform& tfrm = SO()->GetTransform();
         _internal->SetTransform(tfrm.GetPosition(), tfrm.GetRotation());
 
-        if (_parentJoint != nullptr)
-            _parentJoint->NotifyBodyMoved(static_object_cast<CBody>(_thisHandle));
+        for (auto& joint : _joints)
+        {
+            joint->NotifyBodyMoved(static_object_cast<CBody>(_thisHandle));
+        }
     }
 
     SPtr<Body> CRigidBody::CreateInternal()
@@ -155,10 +159,10 @@ namespace te
 
     void CRigidBody::ClearColliders()
     {
-        for (auto& collider : _children)
+        for (auto& collider : _colliders)
             collider->SetBody(HBody(), true);
 
-        _children.clear();
+        _colliders.clear();
 
         if (_internal != nullptr)
             _internal->RemoveColliders();
@@ -214,24 +218,12 @@ namespace te
         if (_internal == nullptr)
             return;
 
-        _children.push_back(collider);
+        _colliders.push_back(collider);
 
-        auto iterFind = std::find(_children.begin(), _children.end(), collider);
-        if (iterFind != _children.end())
+        auto iterFind = std::find(_colliders.begin(), _colliders.end(), collider);
+        if (iterFind != _colliders.end())
         {
             _internal->AddCollider(collider->GetInternal());
-        }
-    }
-
-    void CRigidBody::SyncCollider(const HCollider& collider)
-    {
-        if (_internal == nullptr)
-            return;
-
-        auto iterFind = std::find(_children.begin(), _children.end(), collider);
-        if (iterFind != _children.end())
-        {
-            _internal->SyncCollider(collider->GetInternal());
         }
     }
 
@@ -240,11 +232,68 @@ namespace te
         if (_internal == nullptr)
             return;
 
-        auto iterFind = std::find(_children.begin(), _children.end(), collider);
-        if (iterFind != _children.end())
+        auto iterFind = std::find(_colliders.begin(), _colliders.end(), collider);
+        if (iterFind != _colliders.end())
         {
             _internal->RemoveCollider(collider->GetInternal());
-            _children.erase(iterFind);
+            _colliders.erase(iterFind);
+        }
+    }
+
+    void CRigidBody::ClearJoints()
+    {
+        for (auto& joint : _joints)
+        {
+            HBody anchorBody = joint->GetBody(JointBody::Anchor);
+            HBody targetBody = joint->GetBody(JointBody::Target);
+
+            if (anchorBody == static_object_cast<CRigidBody>(_thisHandle))
+                joint->SetBody(JointBody::Anchor, HBody());
+
+            if (targetBody == static_object_cast<CRigidBody>(_thisHandle))
+                joint->SetBody(JointBody::Target, HBody());
+        }
+
+        if (_internal != nullptr)
+        {
+            _internal->RemoveJoints();
+        }
+    }
+
+    void CRigidBody::UpdateJoints()
+    {
+        _internal->RemoveJoints();
+
+        for (auto& joint : _joints)
+        {
+            _internal->AddJoint(joint->GetInternal());
+        }
+    }
+
+    void CRigidBody::AddJoint(const HJoint& joint)
+    {
+        if (_internal == nullptr)
+            return;
+
+        _joints.push_back(joint);
+
+        auto iterFind = std::find(_joints.begin(), _joints.end(), joint);
+        if (iterFind != _joints.end() && joint->GetInternal())
+        {
+            _internal->AddJoint(joint->GetInternal());
+        }
+    }
+
+    void CRigidBody::RemoveJoint(const HJoint& joint)
+    {
+        if (_internal == nullptr)
+            return;
+
+        auto iterFind = std::find(_joints.begin(), _joints.end(), joint);
+        if (iterFind != _joints.end())
+        {
+            _internal->RemoveJoint(joint->GetInternal());
+            _joints.erase(iterFind);
         }
     }
 

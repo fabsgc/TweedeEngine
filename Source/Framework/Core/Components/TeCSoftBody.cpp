@@ -103,8 +103,10 @@ namespace te
         const Transform& tfrm = SO()->GetTransform();
         _internal->SetTransform(tfrm.GetPosition(), tfrm.GetRotation());
 
-        if (_parentJoint != nullptr)
-            _parentJoint->NotifyBodyMoved(static_object_cast<CBody>(_thisHandle));
+        for (auto& joint : _joints)
+        {
+            joint->NotifyBodyMoved(static_object_cast<CBody>(_thisHandle));
+        }
     }
 
     SPtr<Body> CSoftBody::CreateInternal()
@@ -141,12 +143,27 @@ namespace te
         // TODO
     }
 
-    void CSoftBody::SyncCollider(const HCollider& collider)
+    void CSoftBody::RemoveCollider(const HCollider& collider)
     {
         // TODO
     }
 
-    void CSoftBody::RemoveCollider(const HCollider& collider)
+    void CSoftBody::ClearJoints()
+    {
+        // TODO
+    }
+
+    void CSoftBody::UpdateJoints()
+    {
+        // TODO
+    }
+
+    void CSoftBody::AddJoint(const HJoint& joint)
+    {
+        // TODO
+    }
+
+    void CSoftBody::RemoveJoint(const HJoint& joint)
     {
         // TODO
     }

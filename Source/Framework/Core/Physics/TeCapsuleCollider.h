@@ -17,13 +17,13 @@ namespace te
         /** Determine the radius of the capsule geometry */
         virtual void SetRadius(float radius) = 0;
 
-        /** @copydoc SetRadius() */
+        /** @copydoc SetRadius */
         virtual float GetRadius() const = 0;
 
         /** Determine the height of the capsule geometry */
         virtual void SetHeight(float height) = 0;
 
-        /** @copydoc SetHeight() */
+        /** @copydoc SetHeight */
         virtual float GetHeight() const = 0;
 
         /**

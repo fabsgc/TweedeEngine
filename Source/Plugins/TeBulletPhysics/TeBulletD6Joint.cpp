@@ -3,8 +3,8 @@
 
 namespace te
 {
-    BulletD6Joint::BulletD6Joint(BulletPhysics* physics, BulletScene* scene, const D6_JOINT_DESC& desc)
-        : D6Joint(desc)
+    BulletD6Joint::BulletD6Joint(BulletPhysics* physics, BulletScene* scene)
+        : D6Joint()
         , BulletJoint(physics, scene)
     {
 

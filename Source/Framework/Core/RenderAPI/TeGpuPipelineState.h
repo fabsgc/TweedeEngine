@@ -68,7 +68,7 @@ namespace te
         GraphicsPipelineState() = default;
         GraphicsPipelineState(const PIPELINE_STATE_DESC& desc, GpuDeviceFlags deviceMask);
 
-        /** @copydoc CoreObject::Initialize() */
+        /** @copydoc CoreObject::Initialize */
         void Initialize() override;
 
     protected:
@@ -103,7 +103,7 @@ namespace te
         ComputePipelineState();
         ComputePipelineState(const SPtr<GpuProgram>& program, GpuDeviceFlags deviceMask);
 
-        /** @copydoc CoreObject::Initialize() */
+        /** @copydoc CoreObject::Initialize */
         void Initialize() override;
 
     protected:

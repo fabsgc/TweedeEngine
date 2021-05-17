@@ -3,8 +3,8 @@
 
 namespace te
 { 
-    SPtr<SphericalJoint> SphericalJoint::Create(PhysicsScene& scene, const SPHERICAL_JOINT_DESC& desc)
+    SPtr<SphericalJoint> SphericalJoint::Create(PhysicsScene& scene)
     {
-        return scene.CreateSphericalJoint(desc);
+        return scene.CreateSphericalJoint();
     }
 }

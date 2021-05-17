@@ -33,8 +33,5 @@ namespace te
 
     protected:
         CSphericalJoint(); // Serialization only
-
-    protected:
-        SPHERICAL_JOINT_DESC _desc;
     };
 }

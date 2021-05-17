@@ -74,7 +74,7 @@ namespace te
         /** @copydoc Light::SetShadowBias */
         void SetShadowBias(float bias) { _internal->SetShadowBias(bias); }
 
-        /** @copydoc Light::SetShadowBias() */
+        /** @copydoc Light::SetShadowBias */
         float GetShadowBias() const { return _internal->GetShadowBias(); }
 
         /** @copydoc Light::GetBounds */

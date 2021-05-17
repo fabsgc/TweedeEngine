@@ -28,8 +28,6 @@ namespace te
         /** @copydoc CJoint::CreateInternal */
         SPtr<Joint> CreateInternal() override;
 
-        SLIDER_JOINT_DESC _desc;
-
     protected:
         CSliderJoint(); // Serialization only
     };

@@ -2,8 +2,10 @@
 #include "Scene/TeSceneObject.h"
 #include "Physics/TePhysics.h"
 #include "Physics/TeCollider.h"
+#include "Physics/TeJoint.h"
 #include "TeBulletPhysics.h"
 #include "TeBulletFCollider.h"
+#include "TeBulletJoint.h"
 
 namespace te
 {
@@ -320,18 +322,6 @@ namespace te
         AddToWorld();
     }
 
-    void BulletRigidBody::SyncCollider(Collider* collider)
-    {
-        BulletFCollider* fCollider = static_cast<BulletFCollider*>(collider->GetInternal());
-        auto it = _colliders.find(fCollider);
-        if (it != _colliders.end())
-        {
-            const btTransform& trans = it->first->GetBtTransform();
-            _shape->updateChildTransform(it->second.Index, trans, true);
-            _rigidBody->updateInertiaTensor();
-        }
-    }
-
     void BulletRigidBody::RemoveCollider(Collider* collider)
     {
         BulletFCollider* fCollider = static_cast<BulletFCollider*>(collider->GetInternal());
@@ -366,6 +356,30 @@ namespace te
 
         if (_inWorld)
             RemoveFromWorld();
+    }
+
+    void BulletRigidBody::AddJoint(Joint* joint)
+    {
+        auto it = std::find(_joints.begin(), _joints.end(), joint);
+        if (it == _joints.end())
+            _joints.push_back(joint);
+
+        AddToWorld();
+    }
+
+    void BulletRigidBody::RemoveJoint(Joint* joint)
+    {
+        auto it = std::find(_joints.begin(), _joints.end(), joint);
+        if (it != _joints.end())
+            _joints.erase(it);
+
+        AddToWorld();
+    }
+
+    void BulletRigidBody::RemoveJoints()
+    {
+        _joints.clear();
+        AddToWorld();
     }
 
     void BulletRigidBody::AddToWorld()

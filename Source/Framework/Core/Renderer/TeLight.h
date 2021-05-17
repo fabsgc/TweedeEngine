@@ -41,7 +41,7 @@ namespace te
         /**	Determines the type of the light. */
         LightType GetType() const { return _type; }
 
-        /** @copydoc getType() */
+        /** @copydoc getType */
         void SetType(LightType type) { _type = type; _markCoreDirty(); UpdateBounds(); }
 
         /**	Determines does this light can cast shadows when rendered. */
@@ -62,13 +62,13 @@ namespace te
          */
         void SetShadowBias(float bias) { _shadowBias = bias; _markCoreDirty(); }
 
-        /** @copydoc SetShadowBias() */
+        /** @copydoc SetShadowBias */
         float GetShadowBias() const { return _shadowBias; }
 
         /** Determines the color emitted by the light. */
         void SetColor(const Color& color) { _color = color; _markCoreDirty(); }
 
-        /** @copydoc SetColor() */
+        /** @copydoc SetColor */
         Color GetColor() const { return _color; }
 
         /** Range at which the light contribution fades out to zero. */
@@ -161,7 +161,7 @@ namespace te
         float _intensity; /**< Power of the light source. @see SetIntensity. */
         Degree _spotAngle; /**< Total angle covered by a spot light. */
         Sphere _bounds; /**< Sphere that bounds the light area of influence. */
-        float _shadowBias; /**< See SetShadowBias() */
+        float _shadowBias; /**< See SetShadowBias */
         UINT32 _rendererId;
     };
 }

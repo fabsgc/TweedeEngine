@@ -34,19 +34,19 @@ namespace te
         /** Determines global audio volume. In range [0, 1]. */
         virtual void SetVolume(float volume) = 0;
 
-        /** @copydoc setVolume() */
+        /** @copydoc SetVolume */
         virtual float GetVolume() const = 0;
 
         /** Determines if audio reproduction is paused globally. */
         virtual void SetPaused(bool paused) = 0;
 
-        /** @copydoc SetPaused() */
+        /** @copydoc SetPaused */
         virtual bool IsPaused() const = 0;
 
         /** Determines the device on which is the audio played back on. */
         virtual void SetActiveDevice(const AudioDevice& device) = 0;
 
-        /** @copydoc SetActiveDevice() */
+        /** @copydoc SetActiveDevice */
         virtual AudioDevice GetActiveDevice() const = 0;
 
         /** Returns the default audio device identifier. */

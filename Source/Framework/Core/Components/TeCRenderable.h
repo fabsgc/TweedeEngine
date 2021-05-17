@@ -97,10 +97,10 @@ namespace te
         /** @copydoc Renderable::GetLayer */
         UINT64 GetLayer() const { return _internal->GetLayer(); }
 
-        /** @copydoc SetInstancing() */
+        /** @copydoc SetInstancing */
         void SetInstancing(bool instancing) { _internal->SetInstancing(instancing); }
 
-        /** @copydoc SetInstancing() */
+        /** @copydoc SetInstancing */
         bool GetInstancing() const { return _internal->GetInstancing(); }
 
         /**	Gets world bounds of the mesh rendered by this object. */

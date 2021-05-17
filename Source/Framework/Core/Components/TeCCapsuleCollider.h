@@ -22,16 +22,16 @@ namespace te
         /** @copydoc Component::Clone */
         void Clone(const HCapsuleCollider& c);
 
-        /** @copydoc CapsuleCollider::SetRadius() */
+        /** @copydoc CapsuleCollider::SetRadius */
         void SetRadius(float radius);
 
-        /** @copydoc CapsuleCollider::GetRadius() */
+        /** @copydoc CapsuleCollider::GetRadius */
         float GetRadius() const { return _radius;  }
 
-        /** @copydoc CapsuleCollider::SetHeight() */
+        /** @copydoc CapsuleCollider::SetHeight */
         void SetHeight(float height);
 
-        /** @copydoc CapsuleCollider::GetHeight() */
+        /** @copydoc CapsuleCollider::GetHeight */
         float GetHeight() const { return _height;  }
 
     protected:

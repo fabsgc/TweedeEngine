@@ -14,13 +14,13 @@ namespace te
             const Quaternion& rotation, const Vector3& extents);
         ~BulletCylinderCollider();
 
-        /** @copydoc CylinderCollider::SetScale() */
+        /** @copydoc CylinderCollider::SetScale */
         void SetScale(const Vector3& scale) override;
 
-        /** @copydoc CylinderCollider::SetExtents() */
+        /** @copydoc CylinderCollider::SetExtents */
         void SetExtents(const Vector3& extents) override;
 
-        /** @copydoc CylinderCollider::GetExtents() */
+        /** @copydoc CylinderCollider::GetExtents */
         Vector3 GetExtents() const override { return _extents; }
 
     private:

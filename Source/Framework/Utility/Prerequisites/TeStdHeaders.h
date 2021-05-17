@@ -149,13 +149,13 @@ namespace te
             return PlatformAlignedAllocate16(bytes);
         }
 
-        /** Frees memory allocated with allocateAligned() */
+        /** Frees memory allocated with allocateAligned */
         static void FreeAligned(void* ptr)
         {
             PlatformAlignedFree(ptr);
         }
 
-        /** Frees memory allocated with allocateAligned16() */
+        /** Frees memory allocated with allocateAligned16 */
         static void FreeAligned16(void* ptr)
         {
             PlatformAlignedFree16(ptr);

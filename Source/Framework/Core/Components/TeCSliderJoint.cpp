@@ -5,13 +5,13 @@
 namespace te
 {
     CSliderJoint::CSliderJoint()
-        : CJoint(_desc, (UINT32)TID_CSliderJoint)
+        : CJoint((UINT32)TID_CSliderJoint)
     {
         SetName("SliderJoint");
     }
 
     CSliderJoint::CSliderJoint(const HSceneObject& parent)
-        : CJoint(parent, _desc, (UINT32)TID_CSliderJoint)
+        : CJoint(parent, (UINT32)TID_CSliderJoint)
     {
         SetName("SliderJoint");
     }
@@ -19,7 +19,7 @@ namespace te
     SPtr<Joint> CSliderJoint::CreateInternal()
     {
         const SPtr<SceneInstance>& scene = SO()->GetScene();
-        SPtr<Joint> joint = SliderJoint::Create(*scene->GetPhysicsScene(), _desc);
+        SPtr<Joint> joint = SliderJoint::Create(*scene->GetPhysicsScene());
         joint->SetOwner(PhysicsOwnerType::Component, this);
 
         return joint;

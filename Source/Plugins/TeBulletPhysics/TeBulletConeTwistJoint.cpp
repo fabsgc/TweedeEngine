@@ -3,10 +3,9 @@
 
 namespace te
 { 
-    BulletConeTwistJoint::BulletConeTwistJoint(BulletPhysics* physics, BulletScene* scene, const CONE_TWIST_JOINT_DESC& desc)
-        : ConeTwistJoint(desc)
+    BulletConeTwistJoint::BulletConeTwistJoint(BulletPhysics* physics, BulletScene* scene)
+        : ConeTwistJoint()
         , BulletJoint(physics, scene)
-        , _joint(nullptr)
     {
 
     }

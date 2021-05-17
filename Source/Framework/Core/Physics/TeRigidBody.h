@@ -39,7 +39,7 @@ namespace te
         /** Used to specify how rigid body react to rotation on each axis */
         virtual void SetAngularFactor(const Vector3& angularFactor) = 0;
 
-        /** @copydoc SetAngularFactor() */
+        /** @copydoc SetAngularFactor */
         virtual const Vector3& GetAngularFactor() const = 0;
     };
 }

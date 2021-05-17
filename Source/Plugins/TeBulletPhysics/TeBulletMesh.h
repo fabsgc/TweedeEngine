@@ -31,10 +31,10 @@ namespace te
         BulletMesh(const SPtr<MeshData>& meshData);
 
     private:
-        /** @copydoc PhysicsMesh::Initialize() */
+        /** @copydoc PhysicsMesh::Initialize */
         void Initialize() override;
 
-        /** @copydoc PhysicsMesh::Destroy() */
+        /** @copydoc PhysicsMesh::Destroy */
         void Destroy() override;
     };
 

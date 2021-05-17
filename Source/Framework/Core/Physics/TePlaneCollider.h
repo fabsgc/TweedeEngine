@@ -17,7 +17,7 @@ namespace te
         /** Determines the normal of the plane geometry.  */
         virtual void SetNormal(const Vector3& normal) = 0;
 
-        /** @copydoc SetNormal() */
+        /** @copydoc SetNormal */
         virtual const Vector3& GetNormal() const = 0;
 
         /**

@@ -16,7 +16,7 @@ namespace te
 
         GLDepthStencilState(const DEPTH_STENCIL_STATE_DESC& desc);
 
-        /** @copydoc DepthStencilState::CreateInternal() */
+        /** @copydoc DepthStencilState::CreateInternal */
         void CreateInternal() override;
     };
 }
