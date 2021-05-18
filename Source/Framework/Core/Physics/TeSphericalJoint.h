@@ -2,6 +2,7 @@
 
 #include "TeCorePrerequisites.h"
 #include "Physics/TeJoint.h"
+#include "Math/TeVector3.h"
 
 namespace te
 {
@@ -13,11 +14,17 @@ namespace te
     class TE_CORE_EXPORT SphericalJoint : public Joint
     {
     public:
-        SphericalJoint() { }
+        SphericalJoint() = default;
         virtual ~SphericalJoint() = default;
 
         /** @copydoc Joint::Update */
         virtual void Update() = 0;
+
+        /** Specify pivot to use for specified body */
+        virtual void SetPivot(JointBody body, const Vector3& pivot);
+
+        /** @copydoc SetPivot */
+        Vector3 GetPivot(JointBody body);
 
         /**
          * Creates a new spherical joint.
@@ -26,5 +33,8 @@ namespace te
          * @param[in]	desc		Settings describing the joint.
          */
         static SPtr<SphericalJoint> Create(PhysicsScene& scene);
+
+    protected:
+        Vector3 _pivots[2] = { Vector3::ZERO, Vector3::ZERO };
     };
 }

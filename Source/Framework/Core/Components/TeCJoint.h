@@ -78,20 +78,20 @@ namespace te
         friend class CBody;
         using Component::DestroyInternal;
 
-        /** @copydoc Component::onInitialized */
-        void OnInitialized() override;
+        /** @copydoc Component::OnInitialized */
+        virtual void OnInitialized() override;
 
-        /** @copydoc Component::onDestroyed */
-        void OnDestroyed() override;
+        /** @copydoc Component::OnDestroyed */
+        virtual void OnDestroyed() override;
 
-        /** @copydoc Component::onDisabled */
-        void OnDisabled() override;
+        /** @copydoc Component::OnDisabled */
+        virtual void OnDisabled() override;
 
-        /** @copydoc Component::onEnabled */
-        void OnEnabled() override;
+        /** @copydoc Component::OnEnabled */
+        virtual void OnEnabled() override;
 
-        /** @copydoc Component::onTransformChanged */
-        void OnTransformChanged(TransformChangedFlags flags) override;
+        /** @copydoc Component::OnTransformChanged */
+        virtual void OnTransformChanged(TransformChangedFlags flags) override;
 
         /** Creates the internal representation of the Joint for use by the component. */
         virtual SPtr<Joint> CreateInternal() = 0;

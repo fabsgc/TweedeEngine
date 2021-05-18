@@ -46,6 +46,12 @@ namespace te
         UpdateJoint();
     }
 
+    void BulletSphericalJoint::SetPivot(JointBody body, const Vector3& pivot)
+    {
+        SphericalJoint::SetPivot(body, pivot);
+        UpdateJoint();
+    }
+
     void BulletSphericalJoint::BuildJoint()
     {
         ReleaseJoint();
