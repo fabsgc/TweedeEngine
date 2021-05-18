@@ -68,7 +68,7 @@ namespace te
             return;
 
         if (_bodies[(int)body] != nullptr)
-            _bodies[(int)body]->RemoveJoint(static_object_cast<CJoint>(_thisHandle));
+            _bodies[(int)body]->RemoveJoint(body, static_object_cast<CJoint>(_thisHandle));
 
         _bodies[(int)body] = value;
 
@@ -97,7 +97,7 @@ namespace te
         }
 
         if (value != nullptr)
-            _bodies[(int)body]->AddJoint(static_object_cast<CJoint>(_thisHandle));
+            _bodies[(int)body]->AddJoint(body, static_object_cast<CJoint>(_thisHandle));
     }
 
     Vector3 CJoint::GetPosition(JointBody body) const
@@ -176,10 +176,10 @@ namespace te
     void CJoint::OnDestroyed()
     {
         if (_bodies[0] != nullptr)
-            _bodies[0]->RemoveJoint(static_object_cast<CJoint>(_thisHandle));
+            _bodies[0]->RemoveJoint(JointBody::Target, static_object_cast<CJoint>(_thisHandle));
 
         if (_bodies[1] != nullptr)
-            _bodies[1]->RemoveJoint(static_object_cast<CJoint>(_thisHandle));
+            _bodies[1]->RemoveJoint(JointBody::Anchor, static_object_cast<CJoint>(_thisHandle));
 
         if (_internal != nullptr)
             DestroyInternal();

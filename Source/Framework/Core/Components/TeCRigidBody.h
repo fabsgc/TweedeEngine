@@ -122,10 +122,10 @@ namespace te
         void UpdateJoints() override;
 
         /** @copydoc CBody::AddJoint */
-        void AddJoint(const HJoint& joint) override;
+        void AddJoint(JointBody jointBody, const HJoint& joint) override;
 
         /** @copydoc CBody::RemoveJoint */
-        void RemoveJoint(const HJoint& joint) override;
+        void RemoveJoint(JointBody jointBody, const HJoint& joint) override;
 
     protected:
         CRigidBody(); // Serialization only

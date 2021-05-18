@@ -266,6 +266,7 @@ namespace te
         HSceneObject _sceneScriptSO;
         HSceneObject _sceneAudioListenerSO;
         HSceneObject _sceneAudioSourceSO;
+        HSceneObject _sceneJointSO;
 
         HLight _light;
         HSkybox _skybox;

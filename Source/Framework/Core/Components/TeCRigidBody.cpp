@@ -65,7 +65,6 @@ namespace te
 
     void CRigidBody::OnDestroyed()
     {
-        ClearJoints();
         DestroyInternal();
     }
 
@@ -134,7 +133,7 @@ namespace te
 
         for (auto& joint : _joints)
         {
-            joint->NotifyBodyMoved(static_object_cast<CBody>(_thisHandle));
+            joint.JointElt->NotifyBodyMoved(static_object_cast<CBody>(_thisHandle));
         }
     }
 
@@ -148,6 +147,7 @@ namespace te
 
     void CRigidBody::DestroyInternal()
     { 
+        ClearJoints();
         ClearColliders();
 
         if (_internal)
@@ -242,16 +242,15 @@ namespace te
 
     void CRigidBody::ClearJoints()
     {
-        for (auto& joint : _joints)
+        _backupJoints = _joints;
+        _joints.clear();
+
+        for (auto& joint : _backupJoints)
         {
-            HBody anchorBody = joint->GetBody(JointBody::Anchor);
-            HBody targetBody = joint->GetBody(JointBody::Target);
+            HBody anchorBody = joint.JointElt->GetBody(JointBody::Anchor);
+            HBody targetBody = joint.JointElt->GetBody(JointBody::Target);
 
-            if (anchorBody == static_object_cast<CRigidBody>(_thisHandle))
-                joint->SetBody(JointBody::Anchor, HBody());
-
-            if (targetBody == static_object_cast<CRigidBody>(_thisHandle))
-                joint->SetBody(JointBody::Target, HBody());
+            joint.JointElt->SetBody(joint.JointBodyType, HBody());
         }
 
         if (_internal != nullptr)
@@ -264,18 +263,19 @@ namespace te
     {
         _internal->RemoveJoints();
 
-        for (auto& joint : _joints)
+        for (auto& joint : _backupJoints)
         {
-            _internal->AddJoint(joint->GetInternal());
+            joint.JointElt->SetBody(joint.JointBodyType, static_object_cast<CBody>(_thisHandle));
+            _internal->AddJoint(joint.JointElt->GetInternal());
         }
     }
 
-    void CRigidBody::AddJoint(const HJoint& joint)
+    void CRigidBody::AddJoint(JointBody jointBody, const HJoint& joint)
     {
         if (_internal == nullptr)
             return;
 
-        _joints.push_back(joint);
+        _joints.push_back(JointInfo(jointBody, joint));
 
         auto iterFind = std::find(_joints.begin(), _joints.end(), joint);
         if (iterFind != _joints.end() && joint->GetInternal())
@@ -284,7 +284,7 @@ namespace te
         }
     }
 
-    void CRigidBody::RemoveJoint(const HJoint& joint)
+    void CRigidBody::RemoveJoint(JointBody jointBody, const HJoint& joint)
     {
         if (_internal == nullptr)
             return;

@@ -127,8 +127,8 @@ namespace te
         Vector3 _positions[2];
         Quaternion _rotations[2];
 
-        float _breakForce = FLT_MAX;
-        float _breakTorque = FLT_MAX;
+        float _breakForce = 32768;
+        float _breakTorque = 32768;
         bool _enableCollision = false;
     };
 }

@@ -148,6 +148,9 @@ namespace te
         /** Show information about a body */
         bool ShowCollider(SPtr<CCollider> collider);
 
+        /** Show information about a joint */
+        bool ShowJoint(SPtr<CJoint> joint);
+
         /** Show FileBrowser in order to load a new mesh */
         bool ShowLoadMesh();
 

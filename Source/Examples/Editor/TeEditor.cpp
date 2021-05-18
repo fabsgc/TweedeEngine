@@ -1225,6 +1225,7 @@ namespace te
         _animationKnight->SetDefaultClip(_animationClipKnight);
 
         _rigidBodyKnight = _sceneRenderableKnightSO->AddComponent<CRigidBody>();
+        _rigidBodyKnight->SetName("Rigid Body Knight");
         _rigidBodyKnight->SetFriction(1.0f);
         _rigidBodyKnight->SetRollingFriction(1.0f);
         _rigidBodyKnight->SetCollisionReportMode(CollisionReportMode::ReportPersistent);
@@ -1244,6 +1245,7 @@ namespace te
         _sceneRenderablePlaneSO->Move(Vector3(0.0, -1.0f, 0.0f));
 
         _rigidBodyPlane = _sceneRenderablePlaneSO->AddComponent<CRigidBody>();
+        _rigidBodyPlane->SetName("Rigid Body Plane");
         _rigidBodyPlane->SetFriction(1.0f);
         _rigidBodyPlane->SetRollingFriction(1.0f);
         _rigidBodyPlane->SetIsKinematic(true);
@@ -1253,11 +1255,6 @@ namespace te
         _planeColliderKnight->SetExtents(Vector3(5.0f, 0.2f, 5.0f));
         _planeColliderKnight->SetPosition(Vector3(0.0f, -0.2f, 0.0f));
         _planeColliderKnight->Initialize();
-
-        _planeKnightSphericalJoint = _sceneRenderablePlaneSO->AddComponent<CSphericalJoint>();
-        _planeKnightSphericalJoint->SetBody(JointBody::Anchor, static_object_cast<CBody>(_rigidBodyPlane));
-        _planeKnightSphericalJoint->SetBody(JointBody::Target, static_object_cast<CBody>(_rigidBodyKnight));
-        _planeKnightSphericalJoint->Initialize();
         // ######################################################
 
         // ######################################################
@@ -1288,6 +1285,16 @@ namespace te
 
         _audioListener = _sceneAudioListenerSO->AddComponent<CAudioListener>();
         _audioListener->Initialize();
+        // ######################################################
+
+        // ######################################################
+        _sceneJointSO = SceneObject::Create("Joint");
+        _sceneJointSO->SetParent(_sceneSO);
+
+        _planeKnightSphericalJoint = _sceneJointSO->AddComponent<CSphericalJoint>();
+        _planeKnightSphericalJoint->SetBody(JointBody::Anchor, static_object_cast<CBody>(_rigidBodyPlane));
+        _planeKnightSphericalJoint->SetBody(JointBody::Target, static_object_cast<CBody>(_rigidBodyKnight));
+        _planeKnightSphericalJoint->Initialize();
         // ######################################################
 
         HShader opaqueShader = gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque);

@@ -922,6 +922,21 @@ namespace te
         return components;
     }
 
+    Vector<HComponent> SceneObject::GetComponents(Vector<UINT32> types, bool searchInChildren) const
+    {
+        Vector<HComponent> components;
+
+        for (auto& type : types)
+        {
+            if (type == TID_Component)
+                continue;
+
+            _getComponentsInternal(_thisHandle, type, components, ComponentSearchType::CoreType, searchInChildren);
+        }
+
+        return components;
+    }
+
     HComponent SceneObject::GetComponent(const String& name, bool searchInChildren) const
     {
         return _getComponentInternal(_thisHandle, name, ComponentSearchType::Name, searchInChildren);

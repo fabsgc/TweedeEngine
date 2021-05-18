@@ -2,6 +2,7 @@
 
 #include "TeCorePrerequisites.h"
 #include "Physics/TePhysicsCommon.h"
+#include "Physics/TeFJoint.h"
 #include "Utility/TeEvent.h"
 #include "Math/TeVector3.h"
 #include "Math/TeQuaternion.h"
@@ -10,13 +11,6 @@
 
 namespace te
 {
-    /** Specifies first or second body referenced by a Joint. */
-    enum class JointBody
-    {
-        Target, /**< Body the joint is influencing. */
-        Anchor /**< Body the joint is attached to (if any). */
-    };
-
     struct BodyInfo
     {
         Body* BodyElt = nullptr;
@@ -76,6 +70,9 @@ namespace te
         /** Triggered when the joint's break force or torque is exceeded. */
         Event<void()> OnJointBreak;
 
+        /** Returns the object containing common collider code. */
+        FJoint* GetInternal() const { return _internal; }
+
         /**
          * Sets the object that owns this physics object, if any. Used for high level systems so they can easily map their
          * high level physics objects from the low level ones returned by various queries and events.
@@ -90,10 +87,11 @@ namespace te
 
     protected:
         PhysicsObjectOwner _owner;
+        FJoint* _internal = nullptr;
 
         BodyInfo _bodies[2];
-        float _breakForce = FLT_MAX;
-        float _breakTorque = FLT_MAX;
+        float _breakForce = FLT_MAX / 2;
+        float _breakTorque = FLT_MAX / 2;
         bool _enableCollision = false;
     };
 }

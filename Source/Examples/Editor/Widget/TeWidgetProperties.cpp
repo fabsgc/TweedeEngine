@@ -39,6 +39,12 @@
 #include "Components/TeCPlaneCollider.h"
 #include "Components/TeCSphereCollider.h"
 #include "Components/TeCHeightFieldCollider.h"
+#include "Components/TeCJoint.h"
+#include "Components/TeCConeTwistJoint.h"
+#include "Components/TeCHingeJoint.h"
+#include "Components/TeCD6Joint.h"
+#include "Components/TeCSliderJoint.h"
+#include "Components/TeCSphericalJoint.h"
 #include "Physics/TePhysics.h"
 
 #if defined(__GNUC__)
@@ -1079,9 +1085,11 @@ namespace te
     bool WidgetProperties::ShowCConeTwistJointProperties()
     {
         bool hasChanged = false;
+        SPtr<CConeTwistJoint> joint = std::static_pointer_cast<CConeTwistJoint>(_selections.ClickedComponent);
 
         if (ImGui::CollapsingHeader("Twist Joint", ImGuiTreeNodeFlags_DefaultOpen))
-        { 
+        {
+            ShowJoint(joint);
         }
 
         return hasChanged;
@@ -1090,9 +1098,11 @@ namespace te
     bool WidgetProperties::ShowCD6JointProperties()
     {
         bool hasChanged = false;
+        SPtr<CD6Joint> joint = std::static_pointer_cast<CD6Joint>(_selections.ClickedComponent);
 
         if (ImGui::CollapsingHeader("D6 Joint", ImGuiTreeNodeFlags_DefaultOpen))
         {
+            ShowJoint(joint);
         }
 
         return hasChanged;
@@ -1101,9 +1111,11 @@ namespace te
     bool WidgetProperties::ShowCHingeJointProperties()
     {
         bool hasChanged = false;
+        SPtr<CHingeJoint> joint = std::static_pointer_cast<CHingeJoint>(_selections.ClickedComponent);
 
         if (ImGui::CollapsingHeader("Hinge Joint", ImGuiTreeNodeFlags_DefaultOpen))
         {
+            ShowJoint(joint);
         }
 
         return hasChanged;
@@ -1112,9 +1124,11 @@ namespace te
     bool WidgetProperties::ShowCSliderJointProperties()
     {
         bool hasChanged = false;
+        SPtr<CSliderJoint> joint = std::static_pointer_cast<CSliderJoint>(_selections.ClickedComponent);
 
         if (ImGui::CollapsingHeader("Slider Joint", ImGuiTreeNodeFlags_DefaultOpen))
         {
+            ShowJoint(joint);
         }
 
         return hasChanged;
@@ -1123,9 +1137,11 @@ namespace te
     bool WidgetProperties::ShowCSphericalJointProperties()
     {
         bool hasChanged = false;
+        SPtr<CSphericalJoint> joint = std::static_pointer_cast<CSphericalJoint>(_selections.ClickedComponent);
 
         if (ImGui::CollapsingHeader("Spherical Joint", ImGuiTreeNodeFlags_DefaultOpen))
         {
+            ShowJoint(joint);
         }
 
         return hasChanged;
@@ -1993,6 +2009,98 @@ namespace te
                 Quaternion rot;
                 rot.FromEulerAngles(Radian(Degree(rotation.x)), Radian(Degree(rotation.y)), Radian(Degree(rotation.z)));
                 collider->SetRotation(rot);
+                hasChanged = true;
+            }
+        }
+
+        return hasChanged;
+    }
+
+    bool WidgetProperties::ShowJoint(SPtr<CJoint> joint)
+    {
+        bool hasChanged = false;
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
+        static const Vector<UINT32> types = { (UINT32)TID_CRigidBody, (UINT32)TID_CSoftBody };
+
+        Vector<HComponent> bodies = gEditor().GetSceneRoot()->GetComponents(types, true);
+        ImGuiExt::ComboOptions<UUID> bodiesOptions;
+        UUID emptyBody = UUID(50, 0, 0, 0);
+
+        for (auto& body : bodies)
+        {
+            bodiesOptions.AddOption(body->GetUUID(), body->GetName());
+        }
+
+        bodiesOptions.AddOption(emptyBody, "No Body");
+
+        // Body Target
+        {
+            HBody body = joint->GetBody(JointBody::Target);
+            UUID bodyUUID = (body) ? body->GetUUID() : emptyBody;
+            if (ImGuiExt::RenderOptionCombo<UUID>(&bodyUUID,
+                "##joint_option_target_body", "Target Body", bodiesOptions, width))
+            {
+                if (bodyUUID == emptyBody)
+                {
+                    joint->SetBody(JointBody::Target, HBody());
+                }
+                else
+                {
+                    HComponent component = gEditor().GetSceneRoot()->GetComponent(bodyUUID, true);
+                    joint->SetBody(JointBody::Target, static_object_cast<CBody>(component));
+                }
+
+                hasChanged = true;
+            }
+        }
+
+        // Body Anchor
+        {
+            HBody body = joint->GetBody(JointBody::Anchor);
+            UUID bodyUUID = (body) ? body->GetUUID() : emptyBody;
+            if (ImGuiExt::RenderOptionCombo<UUID>(&bodyUUID,
+                "##joint_option_anchor_body", "Anchor Body", bodiesOptions, width))
+            {
+                if (bodyUUID == emptyBody)
+                {
+                    joint->SetBody(JointBody::Anchor, HBody());
+                }
+                else
+                {
+                    HComponent component = gEditor().GetSceneRoot()->GetComponent(bodyUUID, true);
+                    joint->SetBody(JointBody::Anchor, static_object_cast<CBody>(component));
+                }
+
+                hasChanged = true;
+            }
+        }
+
+        // Break Force
+        {
+            float breakForce = joint->GetBreakForce();
+            if (ImGuiExt::RenderOptionFloat(breakForce, "##joint_option_break_force", "Break Force", 0.0f, std::numeric_limits<float>::max() / 2, width))
+            {
+                joint->SetBreakForce(breakForce);
+                hasChanged = true;
+            }
+        }
+
+        // Break Torque
+        {
+            float breakTorque = joint->GetBreakTorque();
+            if (ImGuiExt::RenderOptionFloat(breakTorque, "##joint_option_break_torque", "Break Force", 0.0f, std::numeric_limits<float>::max() / 2, width))
+            {
+                joint->SetBreakTorque(breakTorque);
+                hasChanged = true;
+            }
+        }
+
+        // Enable Collision
+        {
+            bool enableCollision = joint->GetEnableCollision();
+            if (ImGuiExt::RenderOptionBool(enableCollision, "##joint_option_enable_collision", "Enable Collision"))
+            {
+                joint->SetEnableCollision(enableCollision);
                 hasChanged = true;
             }
         }

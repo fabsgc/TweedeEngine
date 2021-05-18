@@ -467,6 +467,15 @@ namespace te
          */
         Vector<HComponent> GetComponents(UINT32 type, bool searchInChildren = false) const;
 
+        /**
+         * Searches for components with the specified types accross all direct children and returns all that match.
+         *
+         * @param[in]	types				Vector of RTTI information for the types.
+         * @param[in]	searchInChildren	if true, will also search in children SceneObject
+         * @return		Vector of Components
+         */
+        Vector<HComponent> GetComponents(Vector<UINT32> types, bool searchInChildren = false) const;
+
         /** @copydoc SceneObject::GetComponent */
         template<class T>
         GameObjectHandle<Component> GetComponent(bool searchInChildren = false) const

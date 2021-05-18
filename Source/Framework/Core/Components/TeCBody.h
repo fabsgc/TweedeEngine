@@ -3,6 +3,7 @@
 #include "TeCorePrerequisites.h"
 #include "Scene/TeComponent.h"
 #include "Physics/TeBody.h"
+#include "Physics/TeJoint.h"
 #include "TeCBoxCollider.h"
 #include "TeCPlaneCollider.h"
 #include "TeCSphereCollider.h"
@@ -14,8 +15,25 @@
 
 namespace te
 {
+    /** Each body needs to keep track of all joints attached to him */
+    struct JointInfo
+    {
+        JointBody JointBodyType;
+        HJoint JointElt;
+
+        JointInfo(JointBody jointBody, const HJoint& joint)
+            : JointBodyType(jointBody)
+            , JointElt(joint)
+        { }
+
+        friend bool operator == (const JointInfo& lhs, const HJoint& rhs)
+        {
+            return lhs.JointElt == rhs;
+        }
+    };
+
     /**
-     * @copydoc	CBody
+     * @copydoc	Body
      *
      * @note Wraps Body as a Component.
      */
@@ -199,21 +217,22 @@ namespace te
         /** Unregisters all internal joints from the body. */
         virtual void ClearJoints() = 0;
 
-        /** Update joints on internal using _joints vector */
+        /** Use _joints vector to fill internal joints list */
         virtual void UpdateJoints() = 0;
 
         /** Sets a joint that this body is attached to. Allows the body to notify the joint when it moves. */
-        virtual void AddJoint(const HJoint& collider) = 0;
+        virtual void AddJoint(JointBody jointBody, const HJoint& joint) = 0;
 
-        /** Remove a joint that this body is attached to. Allows the body to notify the joint when it moves. */
-        virtual void RemoveJoint(const HJoint& collider) = 0;
+        /** Remove a joint that this body is attached to. */
+        virtual void RemoveJoint(JointBody jointBody, const HJoint& joint) = 0;
 
     protected:
         CBody(UINT32 type);
 
     protected:
         SPtr<Body> _internal;
-        Vector<HJoint> _joints;
+        Vector<JointInfo> _joints;
+        Vector<JointInfo> _backupJoints;
         Vector<HCollider> _colliders;
 
         float _mass = 1.0f;

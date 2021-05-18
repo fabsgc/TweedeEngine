@@ -1,5 +1,6 @@
 #include "TeBulletD6Joint.h"
 #include "TeBulletPhysics.h"
+#include "TeBulletFJoint.h"
 
 namespace te
 {
@@ -7,12 +8,12 @@ namespace te
         : D6Joint()
         , BulletJoint(physics, scene)
     {
-
+        _internal = te_new<BulletFJoint>(physics, scene, this);
     }
 
     BulletD6Joint::~BulletD6Joint()
     {
-
+        te_delete((BulletFJoint*)_internal);
     }
 
     void BulletD6Joint::BuildJoint()

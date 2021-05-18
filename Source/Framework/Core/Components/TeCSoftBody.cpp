@@ -105,7 +105,7 @@ namespace te
 
         for (auto& joint : _joints)
         {
-            joint->NotifyBodyMoved(static_object_cast<CBody>(_thisHandle));
+            joint.JointElt->NotifyBodyMoved(static_object_cast<CBody>(_thisHandle));
         }
     }
 
@@ -158,12 +158,12 @@ namespace te
         // TODO
     }
 
-    void CSoftBody::AddJoint(const HJoint& joint)
+    void CSoftBody::AddJoint(JointBody jointBody, const HJoint& joint)
     {
         // TODO
     }
 
-    void CSoftBody::RemoveJoint(const HJoint& joint)
+    void CSoftBody::RemoveJoint(JointBody jointBody, const HJoint& joint)
     {
         // TODO
     }
