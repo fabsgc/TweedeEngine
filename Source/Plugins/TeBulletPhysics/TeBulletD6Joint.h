@@ -13,6 +13,9 @@ namespace te
         BulletD6Joint(BulletPhysics* physics, BulletScene* scene);
         ~BulletD6Joint();
 
+        /** @copydoc Joint::Update */
+        void Update() override { }
+
     private:
         /** @copydoc BulletJoint::BuildJoint */
         void BuildJoint() override;

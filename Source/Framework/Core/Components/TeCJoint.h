@@ -30,7 +30,7 @@ namespace te
         void Clone(const HJoint& c);
 
         /** @copydoc Component::Update */
-        void Update() override { }
+        void Update() override;
 
         /** @copydoc Joint::getBody */
         HBody GetBody(JointBody body) const;

@@ -16,6 +16,9 @@ namespace te
         SphericalJoint() { }
         virtual ~SphericalJoint() = default;
 
+        /** @copydoc Joint::Update */
+        virtual void Update() = 0;
+
         /**
          * Creates a new spherical joint.
          *

@@ -57,6 +57,12 @@ namespace te
         _enableCollision = c->_enableCollision;
     }
 
+    void CJoint::Update()
+    {
+        if (_internal)
+            _internal->Update();
+    }
+
     HBody CJoint::GetBody(JointBody body) const
     {
         return _bodies[(int)body];

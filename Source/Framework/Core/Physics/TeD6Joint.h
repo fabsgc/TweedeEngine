@@ -15,7 +15,10 @@ namespace te
     {
     public:
         D6Joint() { }
-        virtual ~D6Joint() = default;
+        ~D6Joint() = default;
+
+        /** @copydoc Joint::Update */
+        virtual void Update() = 0;
 
         /**
          * Creates a new d6 joint.

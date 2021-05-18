@@ -13,6 +13,9 @@ namespace te
         BulletConeTwistJoint(BulletPhysics* physics, BulletScene* scene);
         ~BulletConeTwistJoint();
 
+        /** @copydoc Joint::Update */
+        void Update() override { }
+
     private:
         /** @copydoc BulletJoint::BuildJoint */
         void BuildJoint() override;

@@ -14,6 +14,9 @@ namespace te
         SliderJoint() { }
         virtual ~SliderJoint() = default;
 
+        /** @copydoc Joint::Update */
+        virtual void Update() = 0;
+
         /**
          * Creates a new slider joint.
          *

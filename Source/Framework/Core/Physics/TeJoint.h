@@ -28,6 +28,9 @@ namespace te
         Joint() = default;
         virtual ~Joint() = default;
 
+        /** Allows to be able to update joint state */
+        virtual void Update() = 0;
+
         /** @copydoc SetBody */
         virtual Body* GetBody(JointBody body) const;
 

@@ -16,6 +16,36 @@ namespace te
         te_delete((BulletFJoint*)_internal);
     }
 
+    void BulletSphericalJoint::SetBody(JointBody body, Body* value)
+    {
+        Joint::SetBody(body, value);
+        BuildJoint();
+    }
+
+    void BulletSphericalJoint::SetTransform(JointBody body, const Vector3& position, const Quaternion& rotation)
+    {
+        Joint::SetTransform(body, position, rotation);
+        UpdateJoint();
+    }
+
+    void BulletSphericalJoint::SetBreakForce(float force)
+    {
+        Joint::SetBreakForce(force);
+        UpdateJoint();
+    }
+
+    void BulletSphericalJoint::SetBreakTorque(float torque)
+    {
+        Joint::SetBreakTorque(torque);
+        UpdateJoint();
+    }
+
+    void BulletSphericalJoint::SetEnableCollision(bool value)
+    {
+        Joint::SetEnableCollision(value);
+        UpdateJoint();
+    }
+
     void BulletSphericalJoint::BuildJoint()
     {
         ReleaseJoint();

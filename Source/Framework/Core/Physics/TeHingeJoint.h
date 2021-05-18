@@ -15,6 +15,9 @@ namespace te
         HingeJoint() { }
         virtual ~HingeJoint() = default;
 
+        /** @copydoc Joint::Update */
+        virtual void Update() = 0;
+
         /**
          * Creates a new hinge joint.
          *
