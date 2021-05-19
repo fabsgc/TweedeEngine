@@ -6,13 +6,14 @@ namespace te
 {
     BulletPlaneCollider::BulletPlaneCollider(BulletPhysics* physics, BulletScene* scene, const Vector3& position,
         const Quaternion& rotation, const Vector3 normal)
-        : _normal(normal)
+        : BulletCollider(physics, scene)
+        ,_normal(normal)
     {
         _internal = te_new<BulletFCollider>(physics, scene);
         _internal->SetPosition(position);
         _internal->SetRotation(rotation);
 
-        UpdateShape();
+        UpdateCollider();
     }
 
     BulletPlaneCollider::~BulletPlaneCollider()
@@ -24,16 +25,16 @@ namespace te
     void BulletPlaneCollider::SetScale(const Vector3& scale)
     {
         PlaneCollider::SetScale(scale);
-        UpdateShape();
+        UpdateCollider();
     }
 
     void BulletPlaneCollider::SetNormal(const Vector3& normal)
     {
         _normal = normal;
-        UpdateShape();
+        UpdateCollider();
     }
 
-    void BulletPlaneCollider::UpdateShape()
+    void BulletPlaneCollider::UpdateCollider()
     {
         if (_shape)
             te_delete(_shape);

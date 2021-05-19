@@ -13,7 +13,7 @@ namespace te
 {
     struct BodyInfo
     {
-        Body* BodyElt = nullptr;
+        RigidBody* BodyElt = nullptr;
         Vector3 Position = Vector3::ZERO;
         Quaternion Rotation = Quaternion::IDENTITY;
     };
@@ -32,10 +32,10 @@ namespace te
         virtual void Update() = 0;
 
         /** @copydoc SetBody */
-        virtual Body* GetBody(JointBody body) const;
+        virtual RigidBody* GetBody(JointBody body) const;
 
         /** Determines a body managed by the joint. One of the bodies must be movable (non-kinematic). */
-        virtual void SetBody(JointBody body, Body* value);
+        virtual void SetBody(JointBody body, RigidBody* value);
 
         /** Returns the position relative to the body, at which the body is anchored to the joint. */
         virtual Vector3 GetPosition(JointBody body) const;
@@ -68,7 +68,7 @@ namespace te
         virtual bool GetEnableCollision() const;
 
         /** Determines whether collision between the two bodies managed by the joint are enabled. */
-        virtual void SetEnableCollision(bool value);
+        virtual void SetEnableCollision(bool collision);
 
         /** Triggered when the joint's break force or torque is exceeded. */
         Event<void()> OnJointBreak;

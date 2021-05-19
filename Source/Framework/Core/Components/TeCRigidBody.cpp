@@ -242,21 +242,16 @@ namespace te
 
     void CRigidBody::ClearJoints()
     {
+        // We keep track of _joints in case we are juste disabling the component
+        // We want to put back those _joints if component is enabled again (see UpdateJoints)
         _backupJoints = _joints;
         _joints.clear();
 
         for (auto& joint : _backupJoints)
-        {
-            HBody anchorBody = joint.JointElt->GetBody(JointBody::Anchor);
-            HBody targetBody = joint.JointElt->GetBody(JointBody::Target);
-
-            joint.JointElt->SetBody(joint.JointBodyType, HBody());
-        }
+            joint.JointElt->SetBody(joint.JointBodyType, HRigidBody());
 
         if (_internal != nullptr)
-        {
             _internal->RemoveJoints();
-        }
     }
 
     void CRigidBody::UpdateJoints()
@@ -265,7 +260,7 @@ namespace te
 
         for (auto& joint : _backupJoints)
         {
-            joint.JointElt->SetBody(joint.JointBodyType, static_object_cast<CBody>(_thisHandle));
+            joint.JointElt->SetBody(joint.JointBodyType, static_object_cast<CRigidBody>(_thisHandle));
             _internal->AddJoint(joint.JointElt->GetInternal());
         }
     }

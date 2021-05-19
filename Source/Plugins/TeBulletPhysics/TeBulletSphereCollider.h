@@ -2,12 +2,13 @@
 
 #include "TeBulletPhysicsPrerequisites.h"
 #include "Physics/TeSphereCollider.h"
+#include "TeBulletCollider.h"
 #include "TeBulletPhysics.h"
 
 namespace te
 {
     /** Bullet implementation of a SphereCollider. */
-    class BulletSphereCollider : public SphereCollider
+    class BulletSphereCollider : public SphereCollider, public BulletCollider
     {
     public:
         BulletSphereCollider(BulletPhysics* physics, BulletScene* scene, const Vector3& position,
@@ -24,8 +25,8 @@ namespace te
         float GetRadius() const override { return _radius; }
 
     private:
-        /** Create shape using current parameters */
-        void UpdateShape();
+        /** @copydoc BulletCollider::UpdateCollider */
+        void UpdateCollider() override;
 
     private:
         btSphereShape* _shape = nullptr;

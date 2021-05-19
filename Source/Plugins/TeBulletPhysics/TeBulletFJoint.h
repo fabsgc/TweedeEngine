@@ -12,6 +12,7 @@ namespace te
         BulletFJoint(BulletPhysics* physics, BulletScene* scene, BulletJoint* parent);
         ~BulletFJoint();
 
+        BulletJoint* GetJoint() const { return _parent; }
 
     protected:
         friend class BulletJoint;

@@ -2,12 +2,13 @@
 
 #include "TeBulletPhysicsPrerequisites.h"
 #include "Physics/TePlaneCollider.h"
+#include "TeBulletCollider.h"
 #include "TeBulletPhysics.h"
 
 namespace te
 {
     /** Bullet implementation of a PlaneCollider. */
-    class BulletPlaneCollider : public PlaneCollider
+    class BulletPlaneCollider : public PlaneCollider, public BulletCollider
     {
     public:
         BulletPlaneCollider(BulletPhysics* physics, BulletScene* scene, const Vector3& position,
@@ -24,8 +25,8 @@ namespace te
         const Vector3& GetNormal() const override { return _normal; }
 
     private:
-        /** Create shape using current parameters */
-        void UpdateShape();
+        /** @copydoc BulletCollider::UpdateCollider */
+        void UpdateCollider() override;
 
     private:
         btStaticPlaneShape* _shape = nullptr;

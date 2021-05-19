@@ -54,13 +54,17 @@ namespace te
 {
     class BulletPhysics;
     class BulletScene;
+    class BulletFBody;
     class BulletRigidBody;
     class BulletSoftBody;
     class BulletMesh;
     class BulletFMesh;
     class BulletHeightField;
     class BulletFHeightField;
+    class BulletFJoint;
     class BulletJoint;
+    class BulletFCollider;
+    class BulletCollider;
 
     /** Type IDs used by the serizalition system for the Bullet library. */
     enum TypeID_PhysX

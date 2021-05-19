@@ -33,10 +33,10 @@ namespace te
         void Update() override;
 
         /** @copydoc Joint::getBody */
-        HBody GetBody(JointBody body) const;
+        HRigidBody GetBody(JointBody body) const;
 
         /** @copydoc Joint::setBody */
-        void SetBody(JointBody body, const HBody& value);
+        void SetBody(JointBody body, const HRigidBody& value);
 
         /** @copydoc Joint::getPosition */
         Vector3 GetPosition(JointBody body) const;
@@ -109,7 +109,7 @@ namespace te
         void NotifyBodyMoved(const HBody& body);
 
         /** Checks can the provided rigidbody be used for initializing the joint. */
-        bool IsBodyValid(const HBody& body);
+        bool IsBodyValid(const HRigidBody& body);
 
         /** Updates the local transform for the specified body attached to the joint. */
         void UpdateTransform(JointBody body);
@@ -123,7 +123,7 @@ namespace te
     protected:
         SPtr<Joint> _internal;
 
-        HBody _bodies[2];
+        HRigidBody _bodies[2];
         Vector3 _positions[2];
         Quaternion _rotations[2];
 

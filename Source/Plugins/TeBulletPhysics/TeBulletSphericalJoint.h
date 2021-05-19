@@ -17,7 +17,7 @@ namespace te
         void Update() override { }
 
         /** @copydoc Joint::SetBody */
-        void SetBody(JointBody body, Body* value) override;
+        void SetBody(JointBody body, RigidBody* value) override;
 
         /** @copydoc Joint::SetTransform  */
         void SetTransform(JointBody body, const Vector3& position, const Quaternion& rotation) override;
@@ -29,10 +29,7 @@ namespace te
         void SetBreakTorque(float torque) override;
 
         /** @copydoc Joint::SetEnableCollision */
-        void SetEnableCollision(bool value) override;
-
-        /** @copydoc SphericalJoint::SetPivot */
-        void SetPivot(JointBody body, const Vector3& pivot) override;
+        void SetEnableCollision(bool collision) override;
 
     private:
         /** @copydoc BulletJoint::BuildJoint */

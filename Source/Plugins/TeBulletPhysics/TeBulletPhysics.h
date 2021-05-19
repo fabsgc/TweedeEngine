@@ -180,6 +180,12 @@ namespace te
         /** Remove RigidBody from scene */
         void RemoveRigidBody(btRigidBody* body);
 
+        /** Add Joint to the current scene */
+        void AddJoint(btTypedConstraint* joint, bool collisionWithLinkedBody = true) const;
+
+        /** Remove Joint from the current scene */
+        void RemoveJoint(btTypedConstraint* joint) const;
+
     private:
         friend class BulletPhysics;
 

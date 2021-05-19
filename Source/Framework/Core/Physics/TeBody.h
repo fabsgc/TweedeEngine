@@ -199,6 +199,9 @@ namespace te
         /** In case this body is moved within the scene, we should need to update its _linkedSO */
         void _setLinkedSO(const HSceneObject& SO);
 
+        /** Returns the object containing common collider code. */
+        FBody* GetInternal() const { return _internal; }
+
         /**
          * Sets the object that owns this physics object, if any. Used for high level systems so they can easily map their
          * high level physics objects from the low level ones returned by various queries and events.
@@ -212,6 +215,7 @@ namespace te
         void* GetOwner(PhysicsOwnerType type) const { return _owner.Type == type ? _owner.OwnerData : nullptr; }
 
     protected:
+        FBody* _internal = nullptr;
         BodyFlag _flags = (BodyFlag)((UINT32)BodyFlag::None);
         HSceneObject _linkedSO;
         PhysicsObjectOwner _owner;

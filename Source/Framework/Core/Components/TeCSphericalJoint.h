@@ -22,12 +22,6 @@ namespace te
         /** @copydoc Component::Clone */
         void Clone(const HSphericalJoint& c);
 
-        /** @copydoc SphericalJoint::SetPivot */
-        void SetPivot(JointBody body, const Vector3& pivot);
-
-        /** @copydoc SphericalJoint::GetPivot */
-        Vector3 GetPivot(JointBody body);
-
     protected:
         friend class SceneObject;
 
@@ -42,8 +36,5 @@ namespace te
 
     protected:
         CSphericalJoint(); // Serialization only
-
-    protected:
-        Vector3 _pivots[2] = { Vector3::ZERO, Vector3::ZERO };
     };
 }

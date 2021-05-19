@@ -2,12 +2,13 @@
 
 #include "TeBulletPhysicsPrerequisites.h"
 #include "Physics/TeBoxCollider.h"
+#include "TeBulletCollider.h"
 #include "TeBulletPhysics.h"
 
 namespace te
 {
     /** Bullet implementation of a BoxCollider. */
-    class BulletBoxCollider : public BoxCollider
+    class BulletBoxCollider : public BoxCollider, public BulletCollider
     {
     public:
         BulletBoxCollider(BulletPhysics* physics, BulletScene* scene, const Vector3& position,
@@ -24,8 +25,8 @@ namespace te
         Vector3 GetExtents() const override { return _extents; }
 
     private:
-        /** Create shape using current parameters */
-        void UpdateShape();
+        /** @copydoc BulletCollider::UpdateCollider */
+        void UpdateCollider() override;
 
     private:
         btBoxShape* _shape = nullptr;

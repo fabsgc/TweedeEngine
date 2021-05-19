@@ -6,12 +6,13 @@
 namespace te
 {
     BulletHeightFieldCollider::BulletHeightFieldCollider(BulletPhysics* physics, BulletScene* scene, const Vector3& position, const Quaternion& rotation)
+        : BulletCollider(physics, scene)
     {
         _internal = te_new<BulletFCollider>(physics, scene, _shape);
         _internal->SetPosition(position);
         _internal->SetRotation(rotation);
 
-        UpdateShape();
+        UpdateCollider();
     }
 
     BulletHeightFieldCollider::~BulletHeightFieldCollider()
@@ -24,28 +25,28 @@ namespace te
     void BulletHeightFieldCollider::SetScale(const Vector3& scale)
     {
         HeightFieldCollider::SetScale(scale);
-        UpdateShape();
+        UpdateCollider();
     }
 
     void BulletHeightFieldCollider::SetHeightField(const HPhysicsHeightField& heightField)
     {
         HeightFieldCollider::SetHeightField(heightField);
-        UpdateShape();
+        UpdateCollider();
     }
 
     void BulletHeightFieldCollider::SetMinHeight(const float& minHeight)
     {
         HeightFieldCollider::SetMinHeight(minHeight);
-        UpdateShape();
+        UpdateCollider();
     }
 
     void BulletHeightFieldCollider::SetMaxHeight(const float& maxHeight)
     {
         HeightFieldCollider::SetMaxHeight(maxHeight);
-        UpdateShape();
+        UpdateCollider();
     }
 
-    void BulletHeightFieldCollider::UpdateShape()
+    void BulletHeightFieldCollider::UpdateCollider()
     {
         if (_shape)
         {
@@ -96,6 +97,6 @@ namespace te
 
     void BulletHeightFieldCollider::OnHeightFieldChanged()
     {
-        UpdateShape();
+        UpdateCollider();
     }
 }

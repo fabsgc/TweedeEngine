@@ -2,12 +2,13 @@
 
 #include "TeBulletPhysicsPrerequisites.h"
 #include "Physics/TeConeCollider.h"
+#include "TeBulletCollider.h"
 #include "TeBulletPhysics.h"
 
 namespace te
 {
     /** Bullet implementation of a ConeCollider. */
-    class BulletConeCollider : public ConeCollider
+    class BulletConeCollider : public ConeCollider, public BulletCollider
     {
     public:
         BulletConeCollider(BulletPhysics* physics, BulletScene* scene, const Vector3& position,
@@ -30,8 +31,8 @@ namespace te
         float GetHeight() const override { return _height; }
 
     private:
-        /** Create shape using current parameters */
-        void UpdateShape();
+        /** @copydoc BulletCollider::UpdateCollider */
+        void UpdateCollider() override;
 
     private:
         btConeShape* _shape = nullptr;

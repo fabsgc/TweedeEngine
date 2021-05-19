@@ -509,6 +509,22 @@ namespace te
         _world->removeRigidBody(body);
     }
 
+    void BulletScene::AddJoint(btTypedConstraint* joint, bool collisionWithLinkedBody) const
+    {
+        if (!_world)
+            return;
+
+        _world->addConstraint(joint, !collisionWithLinkedBody);
+    }
+
+    void BulletScene::RemoveJoint(btTypedConstraint* joint) const
+    {
+        if (!_world)
+            return;
+
+        _world->removeConstraint(joint);
+    }
+
     BulletPhysics& gBulletPhysics()
     {
         return static_cast<BulletPhysics&>(BulletPhysics::Instance());

@@ -6,12 +6,13 @@
 namespace te
 {
     BulletMeshCollider::BulletMeshCollider(BulletPhysics* physics, BulletScene* scene, const Vector3& position, const Quaternion& rotation)
+        : BulletCollider(physics, scene)
     {
         _internal = te_new<BulletFCollider>(physics, scene, _shape);
         _internal->SetPosition(position);
         _internal->SetRotation(rotation);
 
-        UpdateShape();
+        UpdateCollider();
     }
 
     BulletMeshCollider::~BulletMeshCollider()
@@ -23,22 +24,22 @@ namespace te
     void BulletMeshCollider::SetScale(const Vector3& scale)
     {
         MeshCollider::SetScale(scale);
-        UpdateShape();
+        UpdateCollider();
     }
 
     void BulletMeshCollider::SetMesh(const HPhysicsMesh& mesh)
     {
         MeshCollider::SetMesh(mesh);
-        UpdateShape();
+        UpdateCollider();
     }
 
     void BulletMeshCollider::SetCollisionType(PhysicsMeshType type)
     {
         MeshCollider::SetCollisionType(type);
-        UpdateShape();
+        UpdateCollider();
     }
 
-    void BulletMeshCollider::UpdateShape()
+    void BulletMeshCollider::UpdateCollider()
     {
         if (_shape)
         {
@@ -126,6 +127,6 @@ namespace te
 
     void BulletMeshCollider::OnMeshChanged()
     {
-        UpdateShape();
+        UpdateCollider();
     }
 }

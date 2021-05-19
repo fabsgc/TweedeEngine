@@ -2,12 +2,13 @@
 
 #include "TeBulletPhysicsPrerequisites.h"
 #include "Physics/TeMeshCollider.h"
+#include "TeBulletCollider.h"
 #include "TeBulletPhysics.h"
 
 namespace te
 {
     /** Bullet implementation of a MeshCollider. */
-    class BulletMeshCollider : public MeshCollider
+    class BulletMeshCollider : public MeshCollider, public BulletCollider
     {
     public:
         BulletMeshCollider(BulletPhysics* physics, BulletScene* scene, const Vector3& position, const Quaternion& rotation);
@@ -23,8 +24,8 @@ namespace te
         void SetCollisionType(PhysicsMeshType type) override;
 
     private:
-        /** Create shape using current parameters */
-        void UpdateShape();
+        /** @copydoc BulletCollider::UpdateCollider */
+        void UpdateCollider() override;
 
         /** @copydoc MeshCollider::OnMeshChanged */
         void OnMeshChanged() override;

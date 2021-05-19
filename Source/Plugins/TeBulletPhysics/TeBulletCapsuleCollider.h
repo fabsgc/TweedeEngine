@@ -2,12 +2,13 @@
 
 #include "TeBulletPhysicsPrerequisites.h"
 #include "Physics/TeCapsuleCollider.h"
+#include "TeBulletCollider.h"
 #include "TeBulletPhysics.h"
 
 namespace te
 {
     /** Bullet implementation of a CapsuleCollider. */
-    class BulletCapsuleCollider : public CapsuleCollider
+    class BulletCapsuleCollider : public CapsuleCollider, public BulletCollider
     {
     public:
         BulletCapsuleCollider(BulletPhysics* physics, BulletScene* scene, const Vector3& position,
@@ -30,8 +31,8 @@ namespace te
         float GetHeight() const override { return _height; }
 
     private:
-        /** Create shape using current parameters */
-        void UpdateShape();
+        /** @copydoc BulletCollider::UpdateCollider */
+        void UpdateCollider() override;
 
     private:
         btCapsuleShape* _shape = nullptr;

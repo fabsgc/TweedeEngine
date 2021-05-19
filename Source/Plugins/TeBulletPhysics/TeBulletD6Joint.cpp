@@ -6,7 +6,7 @@ namespace te
 {
     BulletD6Joint::BulletD6Joint(BulletPhysics* physics, BulletScene* scene)
         : D6Joint()
-        , BulletJoint(physics, scene)
+        , BulletJoint(physics, scene, this)
     {
         _internal = te_new<BulletFJoint>(physics, scene, this);
     }

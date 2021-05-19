@@ -2020,9 +2020,8 @@ namespace te
     {
         bool hasChanged = false;
         const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
-        static const Vector<UINT32> types = { (UINT32)TID_CRigidBody, (UINT32)TID_CSoftBody };
 
-        Vector<HComponent> bodies = gEditor().GetSceneRoot()->GetComponents(types, true);
+        Vector<HComponent> bodies = gEditor().GetSceneRoot()->GetComponents((UINT32)TID_CRigidBody, true);
         ImGuiExt::ComboOptions<UUID> bodiesOptions;
         UUID emptyBody = UUID(50, 0, 0, 0);
 
@@ -2035,19 +2034,19 @@ namespace te
 
         // Body Target
         {
-            HBody body = joint->GetBody(JointBody::Target);
+            HRigidBody body = joint->GetBody(JointBody::Target);
             UUID bodyUUID = (body) ? body->GetUUID() : emptyBody;
             if (ImGuiExt::RenderOptionCombo<UUID>(&bodyUUID,
                 "##joint_option_target_body", "Target Body", bodiesOptions, width))
             {
                 if (bodyUUID == emptyBody)
                 {
-                    joint->SetBody(JointBody::Target, HBody());
+                    joint->SetBody(JointBody::Target, HRigidBody());
                 }
                 else
                 {
                     HComponent component = gEditor().GetSceneRoot()->GetComponent(bodyUUID, true);
-                    joint->SetBody(JointBody::Target, static_object_cast<CBody>(component));
+                    joint->SetBody(JointBody::Target, static_object_cast<CRigidBody>(component));
                 }
 
                 hasChanged = true;
@@ -2056,19 +2055,19 @@ namespace te
 
         // Body Anchor
         {
-            HBody body = joint->GetBody(JointBody::Anchor);
+            HRigidBody body = joint->GetBody(JointBody::Anchor);
             UUID bodyUUID = (body) ? body->GetUUID() : emptyBody;
             if (ImGuiExt::RenderOptionCombo<UUID>(&bodyUUID,
                 "##joint_option_anchor_body", "Anchor Body", bodiesOptions, width))
             {
                 if (bodyUUID == emptyBody)
                 {
-                    joint->SetBody(JointBody::Anchor, HBody());
+                    joint->SetBody(JointBody::Anchor, HRigidBody());
                 }
                 else
                 {
                     HComponent component = gEditor().GetSceneRoot()->GetComponent(bodyUUID, true);
-                    joint->SetBody(JointBody::Anchor, static_object_cast<CBody>(component));
+                    joint->SetBody(JointBody::Anchor, static_object_cast<CRigidBody>(component));
                 }
 
                 hasChanged = true;

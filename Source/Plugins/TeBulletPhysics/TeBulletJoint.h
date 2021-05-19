@@ -1,6 +1,8 @@
 #pragma once
 
 #include "TeBulletPhysicsPrerequisites.h"
+#include "TeBulletRigidBody.h"
+#include "Physics/TeJoint.h"
 
 namespace te
 {
@@ -8,7 +10,7 @@ namespace te
     class BulletJoint
     {
     public:
-        BulletJoint(BulletPhysics* physics, BulletScene* scene);
+        BulletJoint(BulletPhysics* physics, BulletScene* scene, Joint* joint);
         ~BulletJoint();
 
     protected:
@@ -22,12 +24,16 @@ namespace te
         virtual void ReleaseJoint() = 0;
 
         /** Returns associated btJoint */
-        btTypedConstraint* GetJoint() { return _joint; }
+        btTypedConstraint* GetJoint() { return _btJoint; }
 
     protected:
+        friend class BulletRigidBody;
+        friend class Joint;
+
         BulletPhysics* _physics;
         BulletScene* _scene;
 
-        btTypedConstraint* _joint;
+        btTypedConstraint* _btJoint;
+        Joint* _joint;
     };
 }

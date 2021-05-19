@@ -6,13 +6,14 @@ namespace te
 {
     BulletCylinderCollider::BulletCylinderCollider(BulletPhysics* physics, BulletScene* scene, const Vector3& position,
         const Quaternion& rotation, const Vector3& extents)
-        : _extents(extents)
+        : BulletCollider(physics, scene)
+        ,_extents(extents)
     {
         _internal = te_new<BulletFCollider>(physics, scene);
         _internal->SetPosition(position);
         _internal->SetRotation(rotation);
 
-        UpdateShape();
+        UpdateCollider();
     }
 
     BulletCylinderCollider::~BulletCylinderCollider()
@@ -24,16 +25,16 @@ namespace te
     void BulletCylinderCollider::SetScale(const Vector3& scale)
     {
         CylinderCollider::SetScale(scale);
-        UpdateShape();
+        UpdateCollider();
     }
 
     void BulletCylinderCollider::SetExtents(const Vector3& extents)
     {
         _extents = extents;
-        UpdateShape();
+        UpdateCollider();
     }
 
-    void BulletCylinderCollider::UpdateShape()
+    void BulletCylinderCollider::UpdateCollider()
     {
         if (_shape)
             te_delete(_shape);

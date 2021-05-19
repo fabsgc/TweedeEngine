@@ -125,6 +125,9 @@ namespace te
         /** @copydoc Body::RemoveJoint */
         void RemoveJoint(Joint* joint) override;
 
+        /** @copydoc Body::RemoveJoint */
+        void RemoveJoint(BulletJoint* joint);
+
         /** @copydoc Body::RemoveJoints */
         void RemoveJoints() override;
 
@@ -183,7 +186,7 @@ namespace te
 
         btCompoundShape* _shape;
         Map<BulletFCollider*, ColliderData> _colliders;
-        Vector<Joint*> _joints;
+        Vector<BulletJoint*> _joints;
 
         float _mass = 1.0f;
         float _friction = 0.0f;

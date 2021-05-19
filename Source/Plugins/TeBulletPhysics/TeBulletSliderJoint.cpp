@@ -6,7 +6,7 @@ namespace te
 {
     BulletSliderJoint::BulletSliderJoint(BulletPhysics* physics, BulletScene* scene)
         : SliderJoint()
-        , BulletJoint(physics, scene)
+        , BulletJoint(physics, scene, this)
     {
         _internal = te_new<BulletFJoint>(physics, scene, this);
     }

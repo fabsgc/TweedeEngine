@@ -1,7 +1,7 @@
 #include "Components/TeCJoint.h"
 #include "Scene/TeSceneObject.h"
 #include "Physics/TePhysics.h"
-#include "Components/TeCBody.h"
+#include "Components/TeCRigidBody.h"
 
 namespace te
 {
@@ -38,7 +38,6 @@ namespace te
 
     void CJoint::Initialize()
     { 
-        RestoreInternal();
         OnEnabled();
         Component::Initialize();
     }
@@ -63,12 +62,12 @@ namespace te
             _internal->Update();
     }
 
-    HBody CJoint::GetBody(JointBody body) const
+    HRigidBody CJoint::GetBody(JointBody body) const
     {
         return _bodies[(int)body];
     }
 
-    void CJoint::SetBody(JointBody body, const HBody& value)
+    void CJoint::SetBody(JointBody body, const HRigidBody& value)
     {
         if (_bodies[(int)body] == value)
             return;
@@ -85,9 +84,9 @@ namespace te
                 DestroyInternal();
             else
             {
-                Body* rigidbody = nullptr;
+                RigidBody* rigidbody = nullptr;
                 if (value != nullptr)
-                    rigidbody = value->GetInternal();
+                    rigidbody = static_cast<RigidBody*>(value->GetInternal());
 
                 _internal->SetBody(body, rigidbody);
                 UpdateTransform(body);
@@ -181,11 +180,11 @@ namespace te
 
     void CJoint::OnDestroyed()
     {
-        if (_bodies[0] != nullptr)
-            _bodies[0]->RemoveJoint(JointBody::Target, static_object_cast<CJoint>(_thisHandle));
+        if (_bodies[(int)JointBody::Target] != nullptr)
+            _bodies[(int)JointBody::Target]->RemoveJoint(JointBody::Target, static_object_cast<CJoint>(_thisHandle));
 
-        if (_bodies[1] != nullptr)
-            _bodies[1]->RemoveJoint(JointBody::Anchor, static_object_cast<CJoint>(_thisHandle));
+        if (_bodies[(int)JointBody::Anchor] != nullptr)
+            _bodies[(int)JointBody::Anchor]->RemoveJoint(JointBody::Anchor, static_object_cast<CJoint>(_thisHandle));
 
         if (_internal != nullptr)
             DestroyInternal();
@@ -203,10 +202,16 @@ namespace te
             RestoreInternal();
 
         if (_bodies[(int)JointBody::Anchor] != nullptr)
-            _internal->SetBody(JointBody::Anchor, _bodies[(int)JointBody::Anchor]->GetInternal());
+        {
+            _internal->SetBody(JointBody::Anchor, static_cast<RigidBody*>(_bodies[(int)JointBody::Anchor]->GetInternal()));
+            _bodies[(int)JointBody::Anchor]->AddJoint(JointBody::Anchor, static_object_cast<CJoint>(_thisHandle));
+        }
 
         if (_bodies[(int)JointBody::Target] != nullptr)
-            _internal->SetBody(JointBody::Target, _bodies[(int)JointBody::Target]->GetInternal());
+        {
+            _internal->SetBody(JointBody::Target, static_cast<RigidBody*>(_bodies[(int)JointBody::Target]->GetInternal()));
+            _bodies[(int)JointBody::Target]->AddJoint(JointBody::Target, static_object_cast<CJoint>(_thisHandle));
+        }
 
         _internal->SetBreakForce(_breakForce);
         _internal->SetBreakTorque(_breakTorque);
@@ -236,12 +241,21 @@ namespace te
         GetLocalTransform(JointBody::Target, _positions[0], _rotations[0]);
         GetLocalTransform(JointBody::Anchor, _positions[1], _rotations[1]);
 
+        if (_internal != nullptr)
+            DestroyInternal();
+
         _internal = CreateInternal();
         _internal->OnJointBreak.Connect(std::bind(&CJoint::TriggerOnJointBroken, this));
     }
 
     void CJoint::DestroyInternal()
-    { 
+    {
+        if (_bodies[(int)JointBody::Anchor] != nullptr)
+            _bodies[(int)JointBody::Anchor]->RemoveJoint(JointBody::Anchor, static_object_cast<CJoint>(_thisHandle));
+
+        if (_bodies[(int)JointBody::Target] != nullptr)
+            _bodies[(int)JointBody::Target]->RemoveJoint(JointBody::Target, static_object_cast<CJoint>(_thisHandle));
+
         // This should release the last reference and destroy the internal joint
         if (_internal)
         {
@@ -255,7 +269,7 @@ namespace te
         position = _positions[(UINT32)body];
         rotation = _rotations[(UINT32)body];
 
-        HBody rigidbody = _bodies[(UINT32)body];
+        HRigidBody rigidbody = _bodies[(UINT32)body];
         if (rigidbody == nullptr) // Get world space transform if no relative to any body
         {
             const Transform& tfrm = SO()->GetTransform();
@@ -287,7 +301,7 @@ namespace te
             assert(false); // Not allowed to happen
     }
 
-    bool CJoint::IsBodyValid(const HBody& body)
+    bool CJoint::IsBodyValid(const HRigidBody& body)
     {
         if (body == nullptr)
             return false;

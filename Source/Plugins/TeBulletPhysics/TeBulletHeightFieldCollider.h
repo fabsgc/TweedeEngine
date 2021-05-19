@@ -2,12 +2,13 @@
 
 #include "TeBulletPhysicsPrerequisites.h"
 #include "Physics/TeHeightFieldCollider.h"
+#include "TeBulletCollider.h"
 #include "TeBulletPhysics.h"
 
 namespace te
 {
     /** Bullet implementation of a HeightFieldCollider. */
-    class BulletHeightFieldCollider : public HeightFieldCollider
+    class BulletHeightFieldCollider : public HeightFieldCollider, public BulletCollider
     {
     public:
         BulletHeightFieldCollider(BulletPhysics* physics, BulletScene* scene, const Vector3& position, const Quaternion& rotation);
@@ -26,8 +27,8 @@ namespace te
         void SetMaxHeight(const float& minHeight) override;
 
     private:
-        /** Create shape using current parameters */
-        void UpdateShape();
+        /** @copydoc BulletCollider::UpdateCollider */
+        void UpdateCollider() override;
 
         /** @copydoc HeightFieldCollider::OnHeightFieldChanged */
         void OnHeightFieldChanged() override;

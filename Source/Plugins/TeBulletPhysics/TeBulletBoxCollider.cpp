@@ -6,17 +6,18 @@ namespace te
 {
     BulletBoxCollider::BulletBoxCollider(BulletPhysics* physics, BulletScene* scene, const Vector3& position,
         const Quaternion& rotation, const Vector3& extents)
-        : _extents(extents)
+        : BulletCollider(physics, scene)
+        , _extents(extents)
     {
         _internal = te_new<BulletFCollider>(physics, scene);
         _internal->SetPosition(position);
         _internal->SetRotation(rotation);
 
-        UpdateShape();
+        UpdateCollider();
     }
 
     BulletBoxCollider::~BulletBoxCollider()
-    { 
+    {
         te_delete((BulletFCollider*)_internal);
         te_safe_delete((btBoxShape*)_shape);
     }
@@ -24,16 +25,16 @@ namespace te
     void BulletBoxCollider::SetScale(const Vector3& scale)
     {
         BoxCollider::SetScale(scale);
-        UpdateShape();
+        UpdateCollider();
     }
 
     void BulletBoxCollider::SetExtents(const Vector3& extents)
     {
         _extents = extents;
-        UpdateShape();
+        UpdateCollider();
     }
 
-    void BulletBoxCollider::UpdateShape()
+    void BulletBoxCollider::UpdateCollider()
     {
         if (_shape)
             te_delete(_shape);

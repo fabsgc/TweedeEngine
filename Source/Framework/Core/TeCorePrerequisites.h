@@ -365,6 +365,7 @@ namespace te
     class HeightFieldCollider;
     class FCollider;
     class FJoint;
+    class FBody;
     class PhysicsDebug;
     class PhysicsMesh;
     class FPhysicsMesh;

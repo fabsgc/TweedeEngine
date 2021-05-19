@@ -5,6 +5,8 @@
 #include "Physics/TeJoint.h"
 #include "TeBulletPhysics.h"
 #include "TeBulletFCollider.h"
+#include "TeBulletFBody.h"
+#include "TeBulletFJoint.h"
 #include "TeBulletJoint.h"
 
 namespace te
@@ -59,12 +61,16 @@ namespace te
         _rollingFriction = DEFAULT_ROLLING_FRICTION;
         _gravity = _physics->GetDesc().Gravity;
 
+        _internal = te_new<BulletFBody>();
+
         AddToWorld();
     }
 
     BulletRigidBody::~BulletRigidBody()
     {
         _colliders.clear();
+
+        te_delete((BulletFBody*)_internal);
         Release();
     }
 
@@ -360,14 +366,31 @@ namespace te
 
     void BulletRigidBody::AddJoint(Joint* joint)
     {
-        auto it = std::find(_joints.begin(), _joints.end(), joint);
+        BulletFJoint* fJoint = ((BulletFJoint*)joint->GetInternal());
+        BulletJoint* bJoint = fJoint->GetJoint();
+
+        auto it = std::find(_joints.begin(), _joints.end(), bJoint);
         if (it == _joints.end())
-            _joints.push_back(joint);
+        {
+            _joints.push_back(bJoint);
+        }
 
         AddToWorld();
     }
 
     void BulletRigidBody::RemoveJoint(Joint* joint)
+    {
+        BulletFJoint* fJoint = ((BulletFJoint*)joint->GetInternal());
+        BulletJoint* bJoint = fJoint->GetJoint();
+
+        auto it = std::find(_joints.begin(), _joints.end(), bJoint);
+        if (it != _joints.end())
+            _joints.erase(it);
+
+        AddToWorld();
+    }
+
+    void BulletRigidBody::RemoveJoint(BulletJoint* joint)
     {
         auto it = std::find(_joints.begin(), _joints.end(), joint);
         if (it != _joints.end())
@@ -414,6 +437,8 @@ namespace te
         _rigidBody = te_new<btRigidBody>(constructionInfo);
         _rigidBody->setUserPointer(this);
 
+        ((BulletFBody*)_internal)->SetBody(_rigidBody);
+
         SetTransform(_position, _rotation);
 
         UpdateKinematicFlag();
@@ -435,6 +460,9 @@ namespace te
                 SetAngularVelocity(Vector3::ZERO);
             }
         }
+
+        for (auto joint : _joints)
+            joint->BuildJoint();
     }
 
     void BulletRigidBody::Release()
@@ -444,10 +472,15 @@ namespace te
 
         RemoveFromWorld();
 
+        for (auto joint : _joints)
+            joint->ReleaseJoint();
+
         te_delete(_rigidBody->getMotionState());
         te_delete(_rigidBody);
 
         te_delete(_shape);
+
+        ((BulletFBody*)_internal)->SetBody(nullptr);
 
         _rigidBody = nullptr;
         _shape = nullptr;

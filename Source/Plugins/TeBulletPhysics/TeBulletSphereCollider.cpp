@@ -6,13 +6,14 @@ namespace te
 {
     BulletSphereCollider::BulletSphereCollider(BulletPhysics* physics, BulletScene* scene, const Vector3& position,
         const Quaternion& rotation, float radius)
-        : _radius(radius)
+        : BulletCollider(physics, scene)
+        ,_radius(radius)
     {
         _internal = te_new<BulletFCollider>(physics, scene);
         _internal->SetPosition(position);
         _internal->SetRotation(rotation);
 
-        UpdateShape();
+        UpdateCollider();
     }
 
     BulletSphereCollider::~BulletSphereCollider()
@@ -24,16 +25,16 @@ namespace te
     void BulletSphereCollider::SetScale(const Vector3& scale)
     {
         SphereCollider::SetScale(scale);
-        UpdateShape();
+        UpdateCollider();
     }
 
     void BulletSphereCollider::SetRadius(float radius)
     {
         _radius = radius;
-        UpdateShape();
+        UpdateCollider();
     }
 
-    void BulletSphereCollider::UpdateShape()
+    void BulletSphereCollider::UpdateCollider()
     {
         if (_shape)
             te_delete(_shape);
