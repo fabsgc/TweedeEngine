@@ -3,6 +3,7 @@
 #include "TeFreeImgImporterPrerequisites.h"
 #include "Importer/TeBaseImporter.h"
 #include "Image/TePixelData.h"
+#include "FreeImage.h"
 
 namespace te
 {
@@ -22,8 +23,15 @@ namespace te
         SPtr<ImportOptions> CreateImportOptions() const override;
 
     private:
-        /** Converts a magic number into an extension name. */
-        String MagicNumToExtension(const UINT8* magic, UINT32 maxBytes) const;
+        /** 
+         * Converts a magic number into an extension name. 
+         * 
+         * @param[in]	filePath	Image file path
+         * @param[in]	magic		Binary data read from the file
+         * @param[int]	maxBytes	Binary data size
+         * @return					Extension as String in lowercase. Otherwise, empty String.
+         */
+        String MagicNumToExtension(const String& filePath, const UINT8* magic, UINT32 maxBytes) const;
 
         /** Imports an image from the provided data stream. */
         SPtr<PixelData> ImportRawImage(const String& filePath);

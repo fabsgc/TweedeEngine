@@ -347,15 +347,15 @@ namespace te
 
                     if (aiMat->Get(AI_MATKEY_OPACITY, matProperties.Transparency) == aiReturn_SUCCESS)
                         material.MatProperties.Transparency = matProperties.Transparency;
-                    
+
                     if (aiMat->Get(AI_MATKEY_REFRACTI, matProperties.IndexOfRefraction) == aiReturn_SUCCESS)
                         material.MatProperties.IndexOfRefraction = matProperties.IndexOfRefraction;
-                                
+
                     if (aiMat->Get(AI_MATKEY_BUMPSCALING, matProperties.BumpScale) == aiReturn_SUCCESS)
                         material.MatProperties.BumpScale = matProperties.BumpScale;
-                                    
-                    if (aiMat->Get(AI_MATKEY_REFLECTIVITY, matProperties.Reflection) == aiReturn_SUCCESS)
-                        material.MatProperties.Reflection = matProperties.Reflection;
+
+                    //if (aiMat->Get(AI_MATKEY_REFLECTIVITY, matProperties.Reflection) == aiReturn_SUCCESS)
+                    //    material.MatProperties.Reflection = matProperties.Reflection;
 
                     material.MatProperties.ParallaxScale = 0.0f;
                 }

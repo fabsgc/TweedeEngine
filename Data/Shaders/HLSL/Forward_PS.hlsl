@@ -412,16 +412,17 @@ PS_OUTPUT main( PS_INPUT IN )
     {
         OUT.Scene  = float4(1.0f, 1.0f, 1.0f, 1.0f);
 
-        float3 albedo          = gDiffuse.rgb;
-        float3 ambient         = gAmbient.rgb;
-        float3 diffuse         = gDiffuse.rgb;
-        float3 emissive        = gEmissive.rgb;
-        float3 specular        = gSpecular.rgb;
-        float3 sceneLightColor = gSceneLightColor.rgb;
-        float3 globalIllum     = float3(1.0f, 1.0f, 1.0f);
-        float3 environment     = (float3)0;
-        float3 normal          = IN.Normal;
-        float2 texCoords       = (IN.Texture * gTextureRepeat) + gTextureOffset;
+        float3 albedo            = gDiffuse.rgb;
+        float3 ambient           = gAmbient.rgb;
+        float3 diffuse           = gDiffuse.rgb;
+        float3 emissive          = gEmissive.rgb;
+        float3 specular          = gSpecular.rgb;
+        float3 sceneLightColor   = gSceneLightColor.rgb;
+        float3 globalIllum       = float3(1.0f, 1.0f, 1.0f);
+        float3 environment       = (float3)0;
+        float3 normal            = IN.Normal;
+        float2 texCoords         = (IN.Texture * gTextureRepeat) + gTextureOffset;
+        float  specularIntensity = 1.0f; // Computed from specular map
 
         float3x3 TBN = float3x3(IN.Tangent.xyz, IN.BiTangent.xyz, IN.Normal.xyz);
 
@@ -496,7 +497,7 @@ PS_OUTPUT main( PS_INPUT IN )
         }
 
         if(gUseSpecularMap == 1)
-            specular.rgb = SpecularMap.Sample(AnisotropicSampler, texCoords).xyz;
+            specularIntensity = SpecularMap.Sample(AnisotropicSampler, texCoords).y; // specularIntensity is store in green channel
 
         if(gUseEmissiveMap == 1)
             emissive = emissive * EmissiveMap.Sample(AnisotropicSampler, texCoords).rgb;
@@ -514,7 +515,7 @@ PS_OUTPUT main( PS_INPUT IN )
             globalIllum = DoGlobalIllumination(normal);
 
         diffuse = diffuse * lit.Diffuse.rgb;
-        specular = specular * lit.Specular.rgb;
+        specular = specularIntensity * specular * lit.Specular.rgb;
 
         OUT.Scene.rgb = (globalIllum * ambient + emissive + diffuse + specular) * (albedo + environment);
         OUT.Scene.rgb = sceneLightColor * OUT.Scene.rgb;

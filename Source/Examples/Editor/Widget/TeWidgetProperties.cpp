@@ -2212,7 +2212,7 @@ namespace te
         if (_loadSkybox || _loadSkyboxIrradiance)
             ImGui::OpenPopup("Load Skybox Texture");
 
-        if (_fileBrowser.ShowFileDialog("Load Skybox Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), false, ".png,.jpeg,.jpg"))
+        if (_fileBrowser.ShowFileDialog("Load Skybox Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), false, ".png,.jpeg,.jpg.dds"))
         {
             auto textureSkyboxImportOptions = TextureImportOptions::Create();
             textureSkyboxImportOptions->CubemapType = CubemapSourceType::Faces;
@@ -2316,7 +2316,7 @@ namespace te
         if (_loadHeightFieldTexture)
             ImGui::OpenPopup("Load Height Field Texture");
 
-        if (_fileBrowser.ShowFileDialog("Load Height Field Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, ".png,.jpeg,.jpg"))
+        if (_fileBrowser.ShowFileDialog("Load Height Field Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, ".png,.jpeg,.jpg.dds"))
         {
             auto textureImportOptions = TextureImportOptions::Create();
             if (_fileBrowser.Data.TexParam.TexType != TextureType::TEX_TYPE_CUBE_MAP)

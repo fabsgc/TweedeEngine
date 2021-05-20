@@ -233,9 +233,9 @@ namespace te
                 }
                 ImGui::Separator();
                 {
-                    if (ImGuiExt::RenderOptionFloat(properties.SpecularPower, "##material_properties_specular_p_option", "Spec. power", 0.0f, 1024.0f, width, properties.UseSpecularMap))
+                    if (ImGuiExt::RenderOptionFloat(properties.SpecularPower, "##material_properties_specular_p_option", "Spec. power", 0.0f, 1024.0f, width))
                         hasChanged = true;
-                    if (ImGuiExt::RenderOptionFloat(properties.SpecularStrength, "##material_properties_specular_s_option", "Spec. strength", 0.0f, 256.0f, width, properties.UseSpecularMap))
+                    if (ImGuiExt::RenderOptionFloat(properties.SpecularStrength, "##material_properties_specular_s_option", "Spec. strength", 0.0f, 256.0f, width))
                         hasChanged = true;
                 }
                 ImGui::Separator();
@@ -417,7 +417,7 @@ namespace te
         if (_loadTexture)
             ImGui::OpenPopup("Load Material Texture");
 
-        if (_fileBrowser.ShowFileDialog("Load Material Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, ".png,.jpeg,.jpg"))
+        if (_fileBrowser.ShowFileDialog("Load Material Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, ".png,.jpeg,.jpg,.dds"))
         {
             auto textureImportOptions = TextureImportOptions::Create();
             if (_fileBrowser.Data.TexParam.TexType == TextureType::TEX_TYPE_CUBE_MAP)
