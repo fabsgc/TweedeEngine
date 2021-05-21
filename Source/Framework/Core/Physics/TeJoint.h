@@ -70,6 +70,12 @@ namespace te
         /** Determines whether collision between the two bodies managed by the joint are enabled. */
         virtual void SetEnableCollision(bool collision);
 
+        /* By default, pivot for a constraint corresponds to position of body's scene object. You can offset this position */
+        virtual void SetOffsetPivot(JointBody body, const Vector3& offset);
+
+        /** @copydoc SetOffsetPivot */
+        const Vector3& GetOffsetPivot(JointBody body) const;
+
         /** Triggered when the joint's break force or torque is exceeded. */
         Event<void()> OnJointBreak;
 
@@ -96,5 +102,6 @@ namespace te
         float _breakForce = FLT_MAX / 2;
         float _breakTorque = FLT_MAX / 2;
         bool _enableCollision = false;
+        Vector3 _offsetPivots[2] = { Vector3::ZERO, Vector3::ZERO };
     };
 }

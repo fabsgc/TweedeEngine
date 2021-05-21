@@ -26,6 +26,9 @@ namespace te
         /** Returns associated btJoint */
         btTypedConstraint* GetJoint() { return _btJoint; }
 
+        /** Common method to retrieve btRigidBody from Joint::_bodies */
+        btRigidBody* GetBtRigidBody(BodyInfo* info);
+
     protected:
         friend class BulletRigidBody;
         friend class Joint;

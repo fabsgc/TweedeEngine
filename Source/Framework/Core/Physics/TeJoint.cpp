@@ -58,4 +58,14 @@ namespace te
     {
         _enableCollision = collision;
     }
+
+    void Joint::SetOffsetPivot(JointBody body, const Vector3& offset)
+    {
+        _offsetPivots[(int)body] = offset;
+    }
+
+    const Vector3& Joint::GetOffsetPivot(JointBody body) const
+    {
+        return _offsetPivots[(int)body];
+    }
 }

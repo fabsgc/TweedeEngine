@@ -30,22 +30,6 @@ namespace te
         CJoint::Clone(static_object_cast<CJoint>(c));
     }
 
-    void CSphericalJoint::SetOffsetPivot(JointBody body, const Vector3& offset)
-    {
-        if (_offsetPivots[(int)body] == offset)
-            return;
-
-        _offsetPivots[(int)body] = offset;
-
-        if (_internal != nullptr)
-            std::static_pointer_cast<SphericalJoint>(_internal)->SetOffsetPivot(body, offset);
-    }
-
-    const Vector3& CSphericalJoint::GetOffsetPivot(JointBody body) const
-    {
-        return _offsetPivots[(int)body];
-    }
-
     void CSphericalJoint::OnEnabled()
     {
         CJoint::OnEnabled();

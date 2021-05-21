@@ -13,21 +13,87 @@ namespace te
 
     BulletSliderJoint::~BulletSliderJoint()
     {
+        ReleaseJoint();
         te_delete((BulletFJoint*)_internal);
+    }
+
+    void BulletSliderJoint::SetBody(JointBody body, RigidBody* value)
+    {
+        Joint::SetBody(body, value);
+        BuildJoint();
+    }
+
+    void BulletSliderJoint::SetTransform(JointBody body, const Vector3& position, const Quaternion& rotation)
+    {
+        Joint::SetTransform(body, position, rotation);
+        UpdateJoint();
+    }
+
+    void BulletSliderJoint::SetBreakForce(float force)
+    {
+        Joint::SetBreakForce(force);
+    }
+
+    void BulletSliderJoint::SetBreakTorque(float torque)
+    {
+        Joint::SetBreakTorque(torque);
+    }
+
+    void BulletSliderJoint::SetEnableCollision(bool collision)
+    {
+        Joint::SetEnableCollision(collision);
+        BuildJoint();
+    }
+
+    void BulletSliderJoint::SetOffsetPivot(JointBody body, const Vector3& offset)
+    {
+        Joint::SetOffsetPivot(body, offset);
+        BuildJoint();
     }
 
     void BulletSliderJoint::BuildJoint()
     {
         ReleaseJoint();
+
+        RigidBody* bodyAnchor = _bodies[(int)JointBody::Anchor].BodyElt;
+        RigidBody* bodyTarget = _bodies[(int)JointBody::Target].BodyElt;
+
+        btRigidBody* btBodyAnchor = GetBtRigidBody(&_bodies[(int)JointBody::Anchor]);
+        btRigidBody* btBodyTarget = GetBtRigidBody(&_bodies[(int)JointBody::Target]);
+
+        if (btBodyAnchor)
+        {
+
+        }
     }
 
     void BulletSliderJoint::UpdateJoint()
     {
+        if (!_btJoint)
+        {
+            BuildJoint();
+            return;
+        }
 
+        RigidBody* bodyAnchor = _bodies[(int)JointBody::Anchor].BodyElt;
+        RigidBody* bodyTarget = _bodies[(int)JointBody::Target].BodyElt;
+
+        btRigidBody* btBodyTarget = GetBtRigidBody(&_bodies[(int)JointBody::Target]);
+
+        if (bodyAnchor)
+        {
+
+        }
     }
 
     void BulletSliderJoint::ReleaseJoint()
     {
+        if (!_btJoint)
+            return;
 
+        _scene->RemoveJoint(_btJoint);
+
+        te_delete((btSliderConstraint*)_btJoint);
+        _btJoint = nullptr;
     }
 }

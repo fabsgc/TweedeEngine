@@ -31,7 +31,7 @@ namespace te
         /** @copydoc Joint::SetEnableCollision */
         void SetEnableCollision(bool collision) override;
 
-        /** @copydoc Joint::SetEnableCollision */
+        /** @copydoc Joint::SetOffsetPivot */
         void SetOffsetPivot(JointBody body, const Vector3& offset) override;
 
     private:

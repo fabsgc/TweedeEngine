@@ -175,6 +175,22 @@ namespace te
             _internal->SetEnableCollision(value);
     }
 
+    void CJoint::SetOffsetPivot(JointBody body, const Vector3& offset)
+    {
+        if (_offsetPivots[(int)body] == offset)
+            return;
+
+        _offsetPivots[(int)body] = offset;
+
+        if (_internal != nullptr)
+            _internal->SetOffsetPivot(body, offset);
+    }
+
+    const Vector3& CJoint::GetOffsetPivot(JointBody body) const
+    {
+        return _offsetPivots[(int)body];
+    }
+
     void CJoint::OnInitialized()
     { }
 

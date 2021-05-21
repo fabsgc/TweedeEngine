@@ -49,7 +49,7 @@ namespace te
 
     void BulletSphericalJoint::SetOffsetPivot(JointBody body, const Vector3& offset)
     {
-        SphericalJoint::SetOffsetPivot(body, offset);
+        Joint::SetOffsetPivot(body, offset);
         BuildJoint();
     }
 
@@ -57,28 +57,11 @@ namespace te
     {
         ReleaseJoint();
 
-        BulletFBody* fBodyAnchor = nullptr;
-        BulletFBody* fBodyTarget = nullptr;
-
-        btRigidBody* btBodyAnchor = nullptr;
-        btRigidBody* btBodyTarget = nullptr;
-
         RigidBody* bodyAnchor = _bodies[(int)JointBody::Anchor].BodyElt;
         RigidBody* bodyTarget = _bodies[(int)JointBody::Target].BodyElt;
 
-        if (bodyAnchor)
-        {
-            fBodyAnchor = static_cast<BulletFBody*>(bodyAnchor->GetInternal());
-            if (fBodyAnchor)
-                btBodyAnchor = static_cast<btRigidBody*>(fBodyAnchor->GetBody());
-        }
-
-        if (bodyTarget)
-        {
-            fBodyTarget = static_cast<BulletFBody*>(bodyTarget->GetInternal());
-            if (fBodyTarget)
-                btBodyTarget = static_cast<btRigidBody*>(fBodyTarget->GetBody());
-        }
+        btRigidBody* btBodyAnchor = GetBtRigidBody(&_bodies[(int)JointBody::Anchor]);
+        btRigidBody* btBodyTarget = GetBtRigidBody(&_bodies[(int)JointBody::Target]);
 
         if (btBodyAnchor)
         {
@@ -120,18 +103,10 @@ namespace te
             return;
         }
 
-        BulletFBody* fBodyTarget = nullptr;
-        btRigidBody* btBodyTarget = nullptr;
-
         RigidBody* bodyAnchor = _bodies[(int)JointBody::Anchor].BodyElt;
         RigidBody* bodyTarget = _bodies[(int)JointBody::Target].BodyElt;
 
-        if (bodyTarget)
-        {
-            fBodyTarget = static_cast<BulletFBody*>(bodyTarget->GetInternal());
-            if (fBodyTarget)
-                btBodyTarget = static_cast<btRigidBody*>(fBodyTarget->GetBody());
-        }
+        btRigidBody* btBodyTarget = GetBtRigidBody(&_bodies[(int)JointBody::Target]);
 
         if (bodyAnchor)
         {

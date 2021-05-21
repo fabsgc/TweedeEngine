@@ -7,14 +7,4 @@ namespace te
     {
         return scene.CreateSphericalJoint();
     }
-
-    void SphericalJoint::SetOffsetPivot(JointBody body, const Vector3& offset)
-    {
-        _offsetPivots[(int)body] = offset;
-    }
-
-    const Vector3& SphericalJoint::GetOffsetPivot(JointBody body) const
-    {
-        return _offsetPivots[(int)body];
-    }
 }

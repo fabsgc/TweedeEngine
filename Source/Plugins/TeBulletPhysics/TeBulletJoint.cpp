@@ -1,4 +1,5 @@
 #include "TeBulletJoint.h"
+#include "TeBulletFBody.h"
 #include "Physics/TeRigidBody.h"
 
 namespace te
@@ -19,5 +20,20 @@ namespace te
             anchorBody->RemoveJoint(this);
         if(targetBody)
             targetBody->RemoveJoint(this);
+    }
+
+    btRigidBody* BulletJoint::GetBtRigidBody(BodyInfo* info)
+    {
+        RigidBody* body = info->BodyElt;
+        BulletFBody* fBody = nullptr;
+
+        if (body)
+        {
+            fBody = static_cast<BulletFBody*>(body->GetInternal());
+            if (fBody)
+                return static_cast<btRigidBody*>(fBody->GetBody());
+        }
+
+        return nullptr;
     }
 }

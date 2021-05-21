@@ -17,12 +17,6 @@ namespace te
         SphericalJoint() = default;
         virtual ~SphericalJoint() = default;
 
-        /* By default, pivot for a constraint corresponds to position of body's scene object. You can offset this position */
-        virtual void SetOffsetPivot(JointBody body, const Vector3& offset);
-
-        /** @copydoc SetOffsetPivot */
-        const Vector3& GetOffsetPivot(JointBody body) const;
-
         /** @copydoc Joint::Update */
         virtual void Update() = 0;
 
@@ -33,9 +27,5 @@ namespace te
          * @param[in]	desc		Settings describing the joint.
          */
         static SPtr<SphericalJoint> Create(PhysicsScene& scene);
-
-    protected:
-        Vector3 _offsetPivots[2] = { Vector3::ZERO, Vector3::ZERO };
-
     };
 }
