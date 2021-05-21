@@ -68,7 +68,7 @@ namespace te
             Vector3 anchorScaledPosition = _bodies[(int)JointBody::Anchor].Position + 
                 _offsetPivots[(int)JointBody::Anchor] - bodyAnchor->GetCenterOfMass();
 
-            Vector3 targetScalePosition = 
+            Vector3 targetScaledPosition = 
                 btBodyTarget ? 
                     _bodies[(int)JointBody::Target].Position + 
                     _offsetPivots[(int)JointBody::Target] - 
@@ -78,7 +78,7 @@ namespace te
             if (!btBodyTarget)
                 btBodyTarget = &btTypedConstraint::getFixedBody();
 
-            _btJoint = te_new<btPoint2PointConstraint>(*btBodyAnchor, *btBodyTarget, ToBtVector3(anchorScaledPosition), ToBtVector3(targetScalePosition));
+            _btJoint = te_new<btPoint2PointConstraint>(*btBodyAnchor, *btBodyTarget, ToBtVector3(anchorScaledPosition), ToBtVector3(targetScaledPosition));
 
             if (_btJoint)
             {
