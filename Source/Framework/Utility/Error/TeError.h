@@ -69,3 +69,10 @@
         }                                                                                               \
     }
 #endif
+
+#ifndef TE_EXCEPT_ERROR
+#define TE_EXCEPT_ERROR(condition, error)                                                               \
+    {                                                                                                   \
+                                                                                                        \
+    }
+#endif

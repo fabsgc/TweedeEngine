@@ -213,9 +213,12 @@ namespace te
             _bodies[(int)JointBody::Target]->AddJoint(JointBody::Target, static_object_cast<CJoint>(_thisHandle));
         }
 
-        _internal->SetBreakForce(_breakForce);
-        _internal->SetBreakTorque(_breakTorque);
-        _internal->SetEnableCollision(_enableCollision);
+        if (_internal)
+        {
+            _internal->SetBreakForce(_breakForce);
+            _internal->SetBreakTorque(_breakTorque);
+            _internal->SetEnableCollision(_enableCollision);
+        }
     }
 
     void CJoint::OnTransformChanged(TransformChangedFlags flags)

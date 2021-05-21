@@ -371,9 +371,7 @@ namespace te
 
         auto it = std::find(_joints.begin(), _joints.end(), bJoint);
         if (it == _joints.end())
-        {
             _joints.push_back(bJoint);
-        }
 
         AddToWorld();
     }
@@ -385,9 +383,14 @@ namespace te
 
         auto it = std::find(_joints.begin(), _joints.end(), bJoint);
         if (it != _joints.end())
+        {
+            bJoint->ReleaseJoint();
             _joints.erase(it);
+        }
 
         AddToWorld();
+
+        bJoint->BuildJoint();
     }
 
     void BulletRigidBody::RemoveJoint(BulletJoint* joint)
@@ -422,7 +425,7 @@ namespace te
         }
 
         _shape->calculateLocalInertia(_mass, localInertia);
-  
+
         // Create a motion state (memory will be freed by the RigidBody)
         const auto motionState = te_new<MotionState>(this);
 

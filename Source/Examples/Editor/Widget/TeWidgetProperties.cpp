@@ -1141,6 +1141,29 @@ namespace te
 
         if (ImGui::CollapsingHeader("Spherical Joint", ImGuiTreeNodeFlags_DefaultOpen))
         {
+            // Anchor Pivot Offset
+            {
+                Vector3 pivot = joint->GetOffsetPivot(JointBody::Anchor);
+                if (ImGuiExt::RenderVector3(pivot, "##joint_option_anchor_offset", " Anchor Pivot", 20.0f))
+                {
+                    joint->SetOffsetPivot(JointBody::Anchor, pivot);
+                    hasChanged = true;
+                }
+            }
+
+            // Anchor Pivot Offset
+            {
+                Vector3 pivot = joint->GetOffsetPivot(JointBody::Target);
+                if (ImGuiExt::RenderVector3(pivot, "##joint_option_target_offset", " Target Pivot", 20.0f))
+                {
+                    joint->SetOffsetPivot(JointBody::Target, pivot);
+                    hasChanged = true;
+                }
+            }
+        }
+
+        if (ImGui::CollapsingHeader("Common Joint", ImGuiTreeNodeFlags_DefaultOpen))
+        {
             ShowJoint(joint);
         }
 

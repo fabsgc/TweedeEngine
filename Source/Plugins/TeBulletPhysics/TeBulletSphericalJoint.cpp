@@ -47,6 +47,12 @@ namespace te
         BuildJoint();
     }
 
+    void BulletSphericalJoint::SetOffsetPivot(JointBody body, const Vector3& offset)
+    {
+        SphericalJoint::SetOffsetPivot(body, offset);
+        BuildJoint();
+    }
+
     void BulletSphericalJoint::BuildJoint()
     {
         ReleaseJoint();
@@ -76,8 +82,15 @@ namespace te
 
         if (btBodyAnchor)
         {
-            Vector3 anchorScaledPosition = _bodies[(int)JointBody::Anchor].Position - bodyAnchor->GetCenterOfMass();
-            Vector3 targetScalePosition = btBodyTarget ? _bodies[(int)JointBody::Target].Position - bodyTarget->GetCenterOfMass() : _bodies[(int)JointBody::Target].Position;
+            Vector3 anchorScaledPosition = _bodies[(int)JointBody::Anchor].Position + 
+                _offsetPivots[(int)JointBody::Anchor] - bodyAnchor->GetCenterOfMass();
+
+            Vector3 targetScalePosition = 
+                btBodyTarget ? 
+                    _bodies[(int)JointBody::Target].Position + 
+                    _offsetPivots[(int)JointBody::Target] - 
+                    bodyTarget->GetCenterOfMass() 
+                : _bodies[(int)JointBody::Target].Position + _bodies[(int)JointBody::Anchor].Position;
 
             if (!btBodyTarget)
                 btBodyTarget = &btTypedConstraint::getFixedBody();
@@ -122,8 +135,14 @@ namespace te
 
         if (bodyAnchor)
         {
-            Vector3 anchorScaledPosition = _bodies[(int)JointBody::Anchor].Position - bodyAnchor->GetCenterOfMass();
-            Vector3 targetScalePosition = btBodyTarget ? _bodies[(int)JointBody::Target].Position - bodyTarget->GetCenterOfMass() : _bodies[(int)JointBody::Target].Position;
+            Vector3 anchorScaledPosition = _bodies[(int)JointBody::Anchor].Position + 
+                _offsetPivots[(int)JointBody::Anchor] - bodyAnchor->GetCenterOfMass();
+
+            Vector3 targetScalePosition = btBodyTarget ? 
+                _bodies[(int)JointBody::Target].Position +
+                _offsetPivots[(int)JointBody::Anchor] -
+                bodyTarget->GetCenterOfMass() 
+            : _bodies[(int)JointBody::Target].Position;
 
             ((btPoint2PointConstraint*)_btJoint)->setPivotA(ToBtVector3(anchorScaledPosition));
             ((btPoint2PointConstraint*)_btJoint)->setPivotB(ToBtVector3(targetScalePosition));
