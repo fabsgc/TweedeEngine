@@ -96,6 +96,18 @@ namespace te
         /** @copydoc SetAngularOnly */
         const bool GetAngularOnly() const { return _angularOnly; }
 
+        /** Turns the motor on the X axis on and off */
+        virtual void SetMotorEnabled(bool motorEnabled);
+
+        /** @copydoc SetAngularOnly */
+        const bool GetMotorEnabled() const { return _motorEnabled; }
+
+        /** Turns the motor on the X axis on and off */
+        virtual void SetMaxMotorImpulse(float motorImpulse);
+
+        /** @copydoc SetAngularOnly */
+        const bool GetMaxMotorImpulse() const { return _motorImpulse; }
+
         /**
          * Creates a new cone twist joint.
          *
@@ -113,5 +125,7 @@ namespace te
         Degree _swingSpan2;
         Degree _twistSpan;
         bool _angularOnly = false;
+        bool _motorEnabled = false;
+        float _motorImpulse = 0.0f;
     };
 }

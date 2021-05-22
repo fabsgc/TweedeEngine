@@ -58,49 +58,61 @@ namespace te
 
     void BulletConeTwistJoint::SetDamping(float damping)
     {
-        BulletConeTwistJoint::SetDamping(damping);
+        ConeTwistJoint::SetDamping(damping);
         UpdateJoint();
     }
 
     void BulletConeTwistJoint::SetLimitSoftness(float softness)
     {
-        BulletConeTwistJoint::SetLimitSoftness(softness);
+        ConeTwistJoint::SetLimitSoftness(softness);
         UpdateJoint();
     }
 
     void BulletConeTwistJoint::SetLimitBias(float bias)
     {
-        BulletConeTwistJoint::SetLimitBias(bias);
+        ConeTwistJoint::SetLimitBias(bias);
         UpdateJoint();
     }
 
     void BulletConeTwistJoint::SetLimitRelaxation(float relaxation)
     {
-        BulletConeTwistJoint::SetLimitRelaxation(relaxation);
+        ConeTwistJoint::SetLimitRelaxation(relaxation);
         UpdateJoint();
     }
 
     void BulletConeTwistJoint::SetSwingSpan1(Degree deg)
     {
-        BulletConeTwistJoint::SetSwingSpan1(deg);
+        ConeTwistJoint::SetSwingSpan1(deg);
         UpdateJoint();
     }
 
     void BulletConeTwistJoint::SetSwingSpan2(Degree deg)
     {
-        BulletConeTwistJoint::SetSwingSpan2(deg);
+        ConeTwistJoint::SetSwingSpan2(deg);
         UpdateJoint();
     }
 
     void BulletConeTwistJoint::SetTwistSpan(Degree deg)
     {
-        BulletConeTwistJoint::SetTwistSpan(deg);
+        ConeTwistJoint::SetTwistSpan(deg);
         UpdateJoint();
     }
 
     void BulletConeTwistJoint::SetAngularOnly(bool angularOnly)
     {
-        BulletConeTwistJoint::SetAngularOnly(angularOnly);
+        ConeTwistJoint::SetAngularOnly(angularOnly);
+        UpdateJoint();
+    }
+
+    void BulletConeTwistJoint::SetMotorEnabled(bool motorEnabled)
+    {
+        ConeTwistJoint::SetMotorEnabled(motorEnabled);
+        UpdateJoint();
+    }
+
+    void BulletConeTwistJoint::SetMaxMotorImpulse(bool motorImpulse)
+    {
+        ConeTwistJoint::SetMaxMotorImpulse(motorImpulse);
         UpdateJoint();
     }
 
@@ -144,6 +156,9 @@ namespace te
                 btConeTwistJoint->setLimit(_swingSpan1.ValueDegrees(), _swingSpan2.ValueDegrees(), _twistSpan.ValueDegrees(), 
                     _limitSoftness, _limitBias, _limitRelaxation);
 
+                btConeTwistJoint->enableMotor(_motorEnabled);
+                if (_motorEnabled) btConeTwistJoint->setMaxMotorImpulse(_motorImpulse);
+
                 _btJoint = btConeTwistJoint;
                 _scene->AddJoint(_btJoint, _enableCollision);
             }
@@ -181,6 +196,9 @@ namespace te
             btConeTwistJoint->setAngularOnly(_angularOnly);
             btConeTwistJoint->setLimit(_swingSpan1.ValueDegrees(), _swingSpan2.ValueDegrees(), _twistSpan.ValueDegrees(),
                 _limitSoftness, _limitBias, _limitRelaxation);
+
+            btConeTwistJoint->enableMotor(_motorEnabled);
+            if (_motorEnabled) btConeTwistJoint->setMaxMotorImpulse(_motorImpulse);
         }
     }
 

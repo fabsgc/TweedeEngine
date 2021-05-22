@@ -126,9 +126,31 @@ namespace te
         if (_angularOnly == angularOnly)
             return;
 
-        _twistSpan = angularOnly;
+        _angularOnly = angularOnly;
 
         if (_internal != nullptr)
             std::static_pointer_cast<ConeTwistJoint>(_internal)->SetAngularOnly(angularOnly);
+    }
+
+    void CConeTwistJoint::SetMotorEnabled(bool motorEnabled)
+    {
+        if (_motorEnabled == motorEnabled)
+            return;
+
+        _motorEnabled = motorEnabled;
+
+        if (_internal != nullptr)
+            std::static_pointer_cast<ConeTwistJoint>(_internal)->SetMotorEnabled(motorEnabled);
+    }
+
+    void CConeTwistJoint::SetMaxMotorImpulse(float motorImpulse)
+    {
+        if (_motorImpulse == motorImpulse)
+            return;
+
+        _motorImpulse = motorImpulse;
+
+        if (_internal != nullptr)
+            std::static_pointer_cast<ConeTwistJoint>(_internal)->SetMaxMotorImpulse(motorImpulse);
     }
 }

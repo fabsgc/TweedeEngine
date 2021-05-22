@@ -1163,6 +1163,28 @@ namespace te
             }
             ImGui::Separator();
 
+            // Max Motor Impulse
+            {
+                float maxMotorImpulse = joint->GetMaxMotorImpulse();
+                if (ImGuiExt::RenderOptionFloat(maxMotorImpulse, "##joint_option_max_motor_impulse", "Motor Impulse", 0.0f, 32.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetMaxMotorImpulse(maxMotorImpulse);
+                }
+            }
+            ImGui::Separator();
+
+            // Motor Enabled
+            {
+                bool motorEnabled = joint->GetMotorEnabled();
+                if (ImGuiExt::RenderOptionBool(motorEnabled, "##joint_option_motor_enabled", "Motor Enabled"))
+                {
+                    hasChanged = true;
+                    joint->SetMotorEnabled(motorEnabled);
+                }
+            }
+            ImGui::Separator();
+
             // Angular Only
             {
                 bool angularOnly = joint->GetAngularOnly();
@@ -1172,6 +1194,8 @@ namespace te
                     joint->SetAngularOnly(angularOnly);
                 }
             }
+
+
         }
 
         if (ImGui::CollapsingHeader("Common", ImGuiTreeNodeFlags_DefaultOpen))

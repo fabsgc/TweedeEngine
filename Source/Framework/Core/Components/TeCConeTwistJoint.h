@@ -70,6 +70,18 @@ namespace te
         /** @copydoc ConeTwistJoint::GetAngularOnly */
         const bool GetAngularOnly() const { return _angularOnly; }
 
+        /** @copydoc ConeTwistJoint::SetMotorEnabled */
+        void SetMotorEnabled(bool motorEnabled);
+
+        /** @copydoc ConeTwistJoint::GetMotorEnabled */
+        const bool GetMotorEnabled() const { return _motorEnabled; }
+
+        /** @copydoc ConeTwistJoint::SetMaxMotorImpulse */
+        void SetMaxMotorImpulse(float motorImpulse);
+
+        /** @copydoc ConeTwistJoint::GetMaxMotorImpulse */
+        const bool GetMaxMotorImpulse() const { return _motorImpulse; }
+
     protected:
         friend class SceneObject;
 
@@ -88,5 +100,7 @@ namespace te
         Degree _swingSpan2;
         Degree _twistSpan;
         bool _angularOnly = false;
+        bool _motorEnabled = false;
+        float _motorImpulse = 0.0f;
     };
 }

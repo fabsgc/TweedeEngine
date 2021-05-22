@@ -51,6 +51,16 @@ namespace te
         _angularOnly = angularOnly;
     }
 
+    void ConeTwistJoint::SetMotorEnabled(bool motorEnabled)
+    {
+        _motorEnabled = motorEnabled;
+    }
+
+    void ConeTwistJoint::SetMaxMotorImpulse(float motorImpulse)
+    {
+        _motorImpulse = motorImpulse;
+    }
+
     SPtr<ConeTwistJoint> ConeTwistJoint::Create(PhysicsScene& scene)
     {
         return scene.CreateConeTwistJoint();

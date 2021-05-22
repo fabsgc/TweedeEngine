@@ -58,8 +58,14 @@ namespace te
         /** @copydoc ConeTwistJoint::SetTwistSpan */
         void SetTwistSpan(Degree deg);
 
-        /** Specify if this joint affect angular properties only */
+        /** @copydoc ConeTwistJoint::SetAngularOnly */
         void SetAngularOnly(bool angularOnly);
+
+        /** @copydoc ConeTwistJoint::MotorEnabled */
+        void SetMotorEnabled(bool motorEnabled);
+
+        /** @copydoc ConeTwistJoint::MotorEnabled */
+        void SetMaxMotorImpulse(bool motorImpulse);
 
     private:
         /** @copydoc BulletJoint::BuildJoint */
