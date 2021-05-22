@@ -1085,12 +1085,97 @@ namespace te
     bool WidgetProperties::ShowCConeTwistJointProperties()
     {
         bool hasChanged = false;
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
         SPtr<CConeTwistJoint> joint = std::static_pointer_cast<CConeTwistJoint>(_selections.ClickedComponent);
 
         if (ImGui::CollapsingHeader("Twist Joint", ImGuiTreeNodeFlags_DefaultOpen))
         {
-            ShowJoint(joint);
+            // Damping
+            {
+                float damping = joint->GetDamping();
+                if (ImGuiExt::RenderOptionFloat(damping, "##joint_option_damping", "Damping", 0.0f, 8.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetDamping(damping);
+                }
+            }
+            ImGui::Separator();
+
+            // Limit Softness
+            {
+                float limitSoftness = joint->GetLimitSoftness();
+                if (ImGuiExt::RenderOptionFloat(limitSoftness, "##joint_option_limit_softness", "Limit Softness", 0.0f, 1.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetLimitSoftness(limitSoftness);
+                }
+            }
+
+            // Limit Bias
+            {
+                float limitBias = joint->GetLimitBias();
+                if (ImGuiExt::RenderOptionFloat(limitBias, "##joint_option_limit_bias", "Limit Softness", 0.0f, 1.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetLimitBias(limitBias);
+                }
+            }
+
+            // Limit Relaxation
+            {
+                float limitRelaxation = joint->GetLimitRelaxation();
+                if (ImGuiExt::RenderOptionFloat(limitRelaxation, "##joint_option_limit_relaxation", "Limit Relaxation", 0.0f, 1.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetLimitRelaxation(limitRelaxation);
+                }
+            }
+            ImGui::Separator();
+
+            // Swing Span 1
+            {
+                float swingSpan = joint->GetSwingSpan1().ValueDegrees();
+                if (ImGuiExt::RenderOptionFloat(swingSpan, "##joint_option_swing_span_1", "Swing Span 1", 0.0f, 90.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetSwingSpan1(Degree(swingSpan));
+                }
+            }
+
+            // Swing Span 2
+            {
+                float swingSpan = joint->GetSwingSpan2().ValueDegrees();
+                if (ImGuiExt::RenderOptionFloat(swingSpan, "##joint_option_swing_span_2", "Swing Span 2", 0.0f, 90.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetSwingSpan2(Degree(swingSpan));
+                }
+            }
+
+            // Twist Span
+            {
+                float twistSpan = joint->GetTwistSpan().ValueDegrees();
+                if (ImGuiExt::RenderOptionFloat(twistSpan, "##joint_option_twist_span_2", "Twist Span", 0.0f, 360.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetTwistSpan(Degree(twistSpan));
+                }
+            }
+            ImGui::Separator();
+
+            // Angular Only
+            {
+                bool angularOnly = joint->GetAngularOnly();
+                if (ImGuiExt::RenderOptionBool(angularOnly, "##joint_option_angular_only", "Angular Only"))
+                {
+                    hasChanged = true;
+                    joint->SetAngularOnly(angularOnly);
+                }
+            }
         }
+
+        if (ImGui::CollapsingHeader("Common", ImGuiTreeNodeFlags_DefaultOpen))
+            hasChanged = ShowJoint(joint);
 
         return hasChanged;
     }
@@ -1102,8 +1187,11 @@ namespace te
 
         if (ImGui::CollapsingHeader("D6 Joint", ImGuiTreeNodeFlags_DefaultOpen))
         {
-            ShowJoint(joint);
+
         }
+
+        if (ImGui::CollapsingHeader("Common", ImGuiTreeNodeFlags_DefaultOpen))
+            hasChanged = ShowJoint(joint) ? true : hasChanged;
 
         return hasChanged;
     }
@@ -1115,8 +1203,11 @@ namespace te
 
         if (ImGui::CollapsingHeader("Hinge Joint", ImGuiTreeNodeFlags_DefaultOpen))
         {
-            ShowJoint(joint);
+
         }
+
+        if (ImGui::CollapsingHeader("Common", ImGuiTreeNodeFlags_DefaultOpen))
+            hasChanged = ShowJoint(joint) ? true : hasChanged;
 
         return hasChanged;
     }
@@ -1128,8 +1219,11 @@ namespace te
 
         if (ImGui::CollapsingHeader("Slider Joint", ImGuiTreeNodeFlags_DefaultOpen))
         {
-            ShowJoint(joint);
+
         }
+
+        if (ImGui::CollapsingHeader("Common", ImGuiTreeNodeFlags_DefaultOpen))
+            hasChanged = ShowJoint(joint) ? true : hasChanged;
 
         return hasChanged;
     }
@@ -1162,10 +1256,8 @@ namespace te
             }
         }
 
-        if (ImGui::CollapsingHeader("Common Joint", ImGuiTreeNodeFlags_DefaultOpen))
-        {
-            ShowJoint(joint);
-        }
+        if (ImGui::CollapsingHeader("Common", ImGuiTreeNodeFlags_DefaultOpen))
+            hasChanged = ShowJoint(joint) ? true : hasChanged;
 
         return hasChanged;
     }
@@ -1173,7 +1265,7 @@ namespace te
     bool WidgetProperties::ShowTransform(Transform& transform, ObjectMobility& mobility, bool disableTransform)
     {
         bool hasChanged = false;
-        const float widgetWidth = ImGui::GetWindowContentRegionWidth() - 100.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
 
         if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
         {
@@ -1186,7 +1278,7 @@ namespace te
                 mobilityOptions.AddOption((int)ObjectMobility::Static, "Static");
             }
 
-            if (ImGuiExt::RenderOptionCombo<int>((int*)(&mobility), "##transform_mobility_option", "Mobility", mobilityOptions, widgetWidth, 
+            if (ImGuiExt::RenderOptionCombo<int>((int*)(&mobility), "##transform_mobility_option", "Mobility", mobilityOptions, width,
                 disableTransform ? (UINT8)ImGuiExt::ComboOptionFlag::Disable : 0))
                 hasChanged = true;
 
@@ -1844,6 +1936,7 @@ namespace te
                 hasChanged = true;
             }
         }
+        ImGui::Separator();
 
         // Is Trigger
         {
@@ -1854,16 +1947,7 @@ namespace te
                 hasChanged = true;
             }
         }
-
-        // Is Debug
-        {
-            bool isDebug = body->GetIsDebug();
-            if (ImGuiExt::RenderOptionBool(isDebug, "##body_option_is_debug", "Display Debug Info"))
-            {
-                body->SetIsDebug(isDebug);
-                hasChanged = true;
-            }
-        }
+        ImGui::Separator();
 
         // UseGravity
         {
@@ -1874,6 +1958,18 @@ namespace te
                 hasChanged = true;
             }
         }
+        ImGui::Separator();
+
+        // Is Debug
+        {
+            bool isDebug = body->GetIsDebug();
+            if (ImGuiExt::RenderOptionBool(isDebug, "##body_option_is_debug", "Display Debug Info"))
+            {
+                body->SetIsDebug(isDebug);
+                hasChanged = true;
+            }
+        }
+        ImGui::Separator();
 
         // Continuous Collision Detection (CCD)
         {
@@ -1890,6 +1986,7 @@ namespace te
                 hasChanged = true;
             }
         }
+        ImGui::Separator();
 
         // Collision report mode
         {
@@ -1921,6 +2018,7 @@ namespace te
                 hasChanged = true;
             }
         }
+        ImGui::Separator();
 
         // Friction
         {
@@ -1941,6 +2039,7 @@ namespace te
                 hasChanged = true;
             }
         }
+        ImGui::Separator();
 
         // Restitution
         {
@@ -1962,6 +2061,7 @@ namespace te
                 hasChanged = true;
             }
         }
+        ImGui::Separator();
 
         // Velocity
         {
@@ -2096,6 +2196,7 @@ namespace te
                 hasChanged = true;
             }
         }
+        ImGui::Separator();
 
         // Break Force
         {
@@ -2110,12 +2211,13 @@ namespace te
         // Break Torque
         {
             float breakTorque = joint->GetBreakTorque();
-            if (ImGuiExt::RenderOptionFloat(breakTorque, "##joint_option_break_torque", "Break Force", 0.0f, std::numeric_limits<float>::max() / 2, width))
+            if (ImGuiExt::RenderOptionFloat(breakTorque, "##joint_option_break_torque", "Break Torque", 0.0f, std::numeric_limits<float>::max() / 2, width))
             {
                 joint->SetBreakTorque(breakTorque);
                 hasChanged = true;
             }
         }
+        ImGui::Separator();
 
         // Enable Collision
         {
@@ -2123,6 +2225,17 @@ namespace te
             if (ImGuiExt::RenderOptionBool(enableCollision, "##joint_option_enable_collision", "Enable Collision"))
             {
                 joint->SetEnableCollision(enableCollision);
+                hasChanged = true;
+            }
+        }
+        ImGui::Separator();
+
+        // Is Broken
+        {
+            bool isBroken = joint->GetIsBroken();
+            if (ImGuiExt::RenderOptionBool(isBroken, "##joint_option_is_broken", "Is Broken"))
+            {
+                joint->SetIsBroken(isBroken);
                 hasChanged = true;
             }
         }

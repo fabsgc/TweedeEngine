@@ -76,6 +76,12 @@ namespace te
         /** @copydoc SetOffsetPivot */
         const Vector3& GetOffsetPivot(JointBody body) const;
 
+        /** Returns true if applied forces exceed _breakForce or _breakTorque */
+        bool GetIsBroken();
+
+        /** Specify if joint is broken (true) or not (false). If true, this joint will not participate in physics simulation  */
+        virtual void SetIsBroken(bool isBroken);
+
         /** Triggered when the joint's break force or torque is exceeded. */
         Event<void()> OnJointBreak;
 
@@ -103,5 +109,6 @@ namespace te
         float _breakTorque = FLT_MAX / 2;
         bool _enableCollision = false;
         Vector3 _offsetPivots[2] = { Vector3::ZERO, Vector3::ZERO };
+        bool _isBroken = false; // Becomes true if forces applied exceed _breakForce and _breakTorque
     };
 }

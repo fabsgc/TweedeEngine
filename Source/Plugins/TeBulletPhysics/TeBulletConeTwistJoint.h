@@ -34,6 +34,33 @@ namespace te
         /** @copydoc Joint::SetOffsetPivot */
         void SetOffsetPivot(JointBody body, const Vector3& offset) override;
 
+        /** @copydoc Joint::IsBroken */
+        void SetIsBroken(bool isBroken);
+
+        /** @copydoc ConeTwistJoint::SetDamping */
+        void SetDamping(float damping);
+
+        /** @copydoc ConeTwistJoint::SetLimitSoftness */
+        void SetLimitSoftness(float softness);
+
+        /** @copydoc ConeTwistJoint::SetLimitBias */
+        void SetLimitBias(float bias);
+
+        /** @copydoc ConeTwistJoint::SetLimitRelaxation */
+        void SetLimitRelaxation(float relaxation);
+
+        /** @copydoc ConeTwistJoint::SetSwingSpan1 */
+        void SetSwingSpan1(Degree deg);
+
+        /** @copydoc ConeTwistJoint::SetSwingSpan2 */
+        void SetSwingSpan2(Degree deg);
+
+        /** @copydoc ConeTwistJoint::SetTwistSpan */
+        void SetTwistSpan(Degree deg);
+
+        /** Specify if this joint affect angular properties only */
+        void SetAngularOnly(bool angularOnly);
+
     private:
         /** @copydoc BulletJoint::BuildJoint */
         void BuildJoint() override;

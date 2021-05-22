@@ -29,6 +29,12 @@ namespace te
         /** Common method to retrieve btRigidBody from Joint::_bodies */
         btRigidBody* GetBtRigidBody(BodyInfo* info);
 
+        /** Common method to compute anchor scaled position */
+        Vector3 GetAnchorScaledPosisition(RigidBody* bodyAnchor, BodyInfo* info, Vector3* offsetPivot);
+
+        /** Common method to compute target scaled position */
+        Vector3 GetTargetScaledPosisition(btRigidBody* btRigidBody, RigidBody* bodyAnchor, BodyInfo* info, Vector3* offsetPivot);
+
     protected:
         friend class BulletRigidBody;
         friend class Joint;

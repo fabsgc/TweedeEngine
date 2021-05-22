@@ -34,6 +34,9 @@ namespace te
         /** @copydoc Joint::SetOffsetPivot */
         void SetOffsetPivot(JointBody body, const Vector3& offset) override;
 
+        /** @copydoc Joint::IsBroken */
+        void SetIsBroken(bool isBroken);
+
     private:
         /** @copydoc BulletJoint::BuildJoint */
         void BuildJoint() override;

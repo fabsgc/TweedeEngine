@@ -68,4 +68,14 @@ namespace te
     {
         return _offsetPivots[(int)body];
     }
+
+    bool Joint::GetIsBroken()
+    {
+        return _isBroken;
+    }
+
+    void Joint::SetIsBroken(bool isBroken)
+    {
+        _isBroken = isBroken;
+    }
 }

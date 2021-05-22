@@ -50,9 +50,66 @@ namespace te
         BuildJoint();
     }
 
+    void BulletConeTwistJoint::SetIsBroken(bool isBroken)
+    {
+        Joint::SetIsBroken(isBroken);
+        BuildJoint();
+    }
+
+    void BulletConeTwistJoint::SetDamping(float damping)
+    {
+        BulletConeTwistJoint::SetDamping(damping);
+        UpdateJoint();
+    }
+
+    void BulletConeTwistJoint::SetLimitSoftness(float softness)
+    {
+        BulletConeTwistJoint::SetLimitSoftness(softness);
+        UpdateJoint();
+    }
+
+    void BulletConeTwistJoint::SetLimitBias(float bias)
+    {
+        BulletConeTwistJoint::SetLimitBias(bias);
+        UpdateJoint();
+    }
+
+    void BulletConeTwistJoint::SetLimitRelaxation(float relaxation)
+    {
+        BulletConeTwistJoint::SetLimitRelaxation(relaxation);
+        UpdateJoint();
+    }
+
+    void BulletConeTwistJoint::SetSwingSpan1(Degree deg)
+    {
+        BulletConeTwistJoint::SetSwingSpan1(deg);
+        UpdateJoint();
+    }
+
+    void BulletConeTwistJoint::SetSwingSpan2(Degree deg)
+    {
+        BulletConeTwistJoint::SetSwingSpan2(deg);
+        UpdateJoint();
+    }
+
+    void BulletConeTwistJoint::SetTwistSpan(Degree deg)
+    {
+        BulletConeTwistJoint::SetTwistSpan(deg);
+        UpdateJoint();
+    }
+
+    void BulletConeTwistJoint::SetAngularOnly(bool angularOnly)
+    {
+        BulletConeTwistJoint::SetAngularOnly(angularOnly);
+        UpdateJoint();
+    }
+
     void BulletConeTwistJoint::BuildJoint()
     {
         ReleaseJoint();
+
+        if (_isBroken)
+            return;
 
         RigidBody* bodyAnchor = _bodies[(int)JointBody::Anchor].BodyElt;
         RigidBody* bodyTarget = _bodies[(int)JointBody::Target].BodyElt;
@@ -62,7 +119,34 @@ namespace te
 
         if (btBodyAnchor)
         {
+            Vector3 anchorScaledPosition = GetAnchorScaledPosisition(bodyAnchor, _bodies, _offsetPivots);
+            Vector3 targetScaledPosition = GetTargetScaledPosisition(btBodyTarget, bodyTarget, _bodies, _offsetPivots);
 
+            Quaternion anchorRotation = _bodies[(int)JointBody::Anchor].Rotation;
+            Quaternion targetRotation = _bodies[(int)JointBody::Target].Rotation;
+
+            btTransform anchorFrame(ToBtQuaternion(anchorRotation), ToBtVector3(anchorScaledPosition));
+            btTransform targetframe(ToBtQuaternion(targetRotation), ToBtVector3(targetScaledPosition));
+
+            if (!btBodyTarget)
+                btBodyTarget = &btTypedConstraint::getFixedBody();
+
+            btConeTwistConstraint* btConeTwistJoint = te_new<btConeTwistConstraint>(*btBodyAnchor, *btBodyTarget, anchorFrame, targetframe);
+
+            if (btConeTwistJoint)
+            {
+                btConeTwistJoint->setUserConstraintPtr(this);
+                btConeTwistJoint->enableFeedback(true);
+                btConeTwistJoint->setEnabled(true);
+
+                btConeTwistJoint->setDamping(_damping);
+                btConeTwistJoint->setAngularOnly(_angularOnly);
+                btConeTwistJoint->setLimit(_swingSpan1.ValueDegrees(), _swingSpan2.ValueDegrees(), _twistSpan.ValueDegrees(), 
+                    _limitSoftness, _limitBias, _limitRelaxation);
+
+                _btJoint = btConeTwistJoint;
+                _scene->AddJoint(_btJoint, _enableCollision);
+            }
         }
     }
 
@@ -81,7 +165,22 @@ namespace te
 
         if (bodyAnchor)
         {
+            Vector3 anchorScaledPosition = GetAnchorScaledPosisition(bodyAnchor, _bodies, _offsetPivots);
+            Vector3 targetScaledPosition = GetTargetScaledPosisition(btBodyTarget, bodyTarget, _bodies, _offsetPivots);
 
+            Quaternion anchorRotation = _bodies[(int)JointBody::Anchor].Rotation;
+            Quaternion targetRotation = _bodies[(int)JointBody::Target].Rotation;
+
+            btTransform anchorFrame(ToBtQuaternion(anchorRotation), ToBtVector3(anchorScaledPosition));
+            btTransform targetframe(ToBtQuaternion(targetRotation), ToBtVector3(targetScaledPosition));
+
+            btConeTwistConstraint* btConeTwistJoint = (btConeTwistConstraint*)_btJoint;
+
+            btConeTwistJoint->setFrames(anchorFrame, targetframe);
+            btConeTwistJoint->setDamping(_damping);
+            btConeTwistJoint->setAngularOnly(_angularOnly);
+            btConeTwistJoint->setLimit(_swingSpan1.ValueDegrees(), _swingSpan2.ValueDegrees(), _twistSpan.ValueDegrees(),
+                _limitSoftness, _limitBias, _limitRelaxation);
         }
     }
 

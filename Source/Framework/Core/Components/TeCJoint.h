@@ -65,11 +65,17 @@ namespace te
         /** @copydoc Joint::setEnableCollision */
         void SetEnableCollision(bool value);
 
-        /* @copydoc SphericalJoint::SetOffsetPivot */
+        /* @copydoc Joint::SetOffsetPivot */
         void SetOffsetPivot(JointBody body, const Vector3& offset);
 
-        /** @copydoc SphericalJoint::GetOffsetPivot */
+        /** @copydoc Joint::GetOffsetPivot */
         const Vector3& GetOffsetPivot(JointBody body) const;
+
+        /** @copydoc Joint::SetIsBroken  */
+        void SetIsBroken(bool isBroken);
+
+        /** @copydoc Joint::GetIsBroken  */
+        bool GetIsBroken();
 
         /** @copydoc Joint::OnJointBreak */
         Event<void()> OnJointBreak;
@@ -137,5 +143,6 @@ namespace te
         float _breakTorque = 32768;
         bool _enableCollision = false;
         Vector3 _offsetPivots[2] = { Vector3::ZERO, Vector3::ZERO };
+        bool _isBroken = false;
     };
 }

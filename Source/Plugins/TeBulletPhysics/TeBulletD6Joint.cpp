@@ -50,9 +50,18 @@ namespace te
         BuildJoint();
     }
 
+    void BulletD6Joint::SetIsBroken(bool isBroken)
+    {
+        Joint::SetIsBroken(isBroken);
+        BuildJoint();
+    }
+
     void BulletD6Joint::BuildJoint()
     {
         ReleaseJoint();
+
+        if (_isBroken)
+            return;
 
         RigidBody* bodyAnchor = _bodies[(int)JointBody::Anchor].BodyElt;
         RigidBody* bodyTarget = _bodies[(int)JointBody::Target].BodyElt;
@@ -62,7 +71,11 @@ namespace te
 
         if (btBodyAnchor)
         {
+            Vector3 anchorScaledPosition = GetAnchorScaledPosisition(bodyAnchor, _bodies, _offsetPivots);
+            Vector3 targetScaledPosition = GetTargetScaledPosisition(btBodyTarget, bodyTarget, _bodies, _offsetPivots);
 
+            if (!btBodyTarget)
+                btBodyTarget = &btTypedConstraint::getFixedBody();
         }
     }
 
@@ -81,7 +94,8 @@ namespace te
 
         if (bodyAnchor)
         {
-
+            Vector3 anchorScaledPosition = GetAnchorScaledPosisition(bodyAnchor, _bodies, _offsetPivots);
+            Vector3 targetScaledPosition = GetTargetScaledPosisition(btBodyTarget, bodyTarget, _bodies, _offsetPivots);
         }
     }
 

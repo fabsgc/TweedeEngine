@@ -36,4 +36,21 @@ namespace te
 
         return nullptr;
     }
+
+    Vector3 BulletJoint::GetAnchorScaledPosisition(RigidBody* bodyAnchor, BodyInfo* info, Vector3* offsetPivot)
+    {
+        return info->Position[(int)JointBody::Anchor] + offsetPivot[(int)JointBody::Anchor] - bodyAnchor->GetCenterOfMass();
+    }
+
+    Vector3 BulletJoint::GetTargetScaledPosisition(btRigidBody* btRigidBody, RigidBody* bodyTarget, BodyInfo* info, 
+        Vector3* offsetPivot)
+    {
+        if (btRigidBody)
+        {
+            return info[(int)JointBody::Target].Position + offsetPivot[(int)JointBody::Target] -
+                bodyTarget->GetCenterOfMass();
+        }
+
+        return info[(int)JointBody::Target].Position + offsetPivot[(int)JointBody::Target];
+    }
 }

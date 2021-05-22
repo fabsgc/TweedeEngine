@@ -191,6 +191,22 @@ namespace te
         return _offsetPivots[(int)body];
     }
 
+    void CJoint::SetIsBroken(bool isBroken)
+    {
+        if (_isBroken == isBroken)
+            return;
+
+        _isBroken = isBroken;
+
+        if (_internal != nullptr)
+            _internal->SetIsBroken(isBroken);
+    }
+
+    bool CJoint::GetIsBroken()
+    {
+        return _isBroken;
+    }
+
     void CJoint::OnInitialized()
     { }
 
@@ -342,6 +358,7 @@ namespace te
 
     void CJoint::TriggerOnJointBroken()
     {
+        _isBroken = true;
         OnJointBreak();
     }
 }
