@@ -260,10 +260,11 @@ namespace te
         if (_settings.Load)
             ImGui::OpenPopup("Load Resource");
 
-        if (_fileBrowser.ShowFileDialog("Load Resource", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, ".png,.jpeg,.jpg,.dds,.obj,.dae,.fbx,.stl,.gltf,.scene,.ogg,.wav,.flac"))
+        if (_fileBrowser.ShowFileDialog("Load Resource", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, ".png,.jpeg,.jpg,.dds,.tiff,.tga,.obj,.dae,.fbx,.stl,.gltf,.scene,.ogg,.wav,.flac"))
         {
             if (_fileBrowser.Data.SelectedFileExt == ".jpeg" || _fileBrowser.Data.SelectedFileExt == ".jpg" ||
-                _fileBrowser.Data.SelectedFileExt == ".png" || _fileBrowser.Data.SelectedFileExt == ".dds")
+                _fileBrowser.Data.SelectedFileExt == ".png" || _fileBrowser.Data.SelectedFileExt == ".dds" ||
+                _fileBrowser.Data.SelectedFileExt == ".tiff" || _fileBrowser.Data.SelectedFileExt == ".tga")
             {
                 auto textureImportOptions = TextureImportOptions::Create();
                 if (_fileBrowser.Data.TexParam.TexType == TextureType::TEX_TYPE_CUBE_MAP)

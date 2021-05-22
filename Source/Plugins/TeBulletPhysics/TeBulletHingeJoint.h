@@ -14,7 +14,7 @@ namespace te
         ~BulletHingeJoint();
 
         /** @copydoc Joint::Update */
-        void Update() override { }
+        void Update() override;
 
         /** @copydoc Joint::SetBody */
         void SetBody(JointBody body, RigidBody* value) override;

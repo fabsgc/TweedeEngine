@@ -16,6 +16,15 @@ namespace te
         te_delete((BulletFJoint*)_internal);
     }
 
+    void BulletD6Joint::Update()
+    {
+        if (IsJointBroken() && !_isBroken)
+        {
+            _isBroken = true;
+            OnJointBreak();
+        }
+    }
+
     void BulletD6Joint::SetBody(JointBody body, RigidBody* value)
     {
         Joint::SetBody(body, value);

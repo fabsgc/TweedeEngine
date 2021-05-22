@@ -252,6 +252,11 @@ namespace te
                     _selections.ClickedComponent->GetCoreType() == TID_CPlaneCollider ||
                     _selections.ClickedComponent->GetCoreType() == TID_CSphereCollider ||
                     _selections.ClickedComponent->GetCoreType() == TID_CHeightFieldCollider ||
+                    _selections.ClickedComponent->GetCoreType() == TID_CConeTwistJoint ||
+                    _selections.ClickedComponent->GetCoreType() == TID_CD6Joint ||
+                    _selections.ClickedComponent->GetCoreType() == TID_CHingeJoint ||
+                    _selections.ClickedComponent->GetCoreType() == TID_CSliderJoint ||
+                    _selections.ClickedComponent->GetCoreType() == TID_CSphericalJoint ||
                     _selections.ClickedComponent->GetCoreType() == TID_CAudioSource)
                 {
                     if (!ImGuizmo::IsOver())

@@ -19,6 +19,15 @@ namespace te
         te_delete((BulletFJoint*)_internal);
     }
 
+    void BulletSphericalJoint::Update()
+    {
+        if (IsJointBroken() && !_isBroken)
+        {
+            _isBroken = true;
+            OnJointBreak();
+        }
+    }
+
     void BulletSphericalJoint::SetBody(JointBody body, RigidBody* value)
     {
         Joint::SetBody(body, value);

@@ -35,6 +35,9 @@ namespace te
         /** Common method to compute target scaled position */
         Vector3 GetTargetScaledPosisition(btRigidBody* btRigidBody, RigidBody* bodyAnchor, BodyInfo* info, Vector3* offsetPivot);
 
+        /** Common method to check if a joint is broken */
+        bool IsJointBroken();
+
     protected:
         friend class BulletRigidBody;
         friend class Joint;

@@ -53,4 +53,9 @@ namespace te
 
         return info[(int)JointBody::Target].Position + offsetPivot[(int)JointBody::Target];
     }
+
+    bool BulletJoint::IsJointBroken()
+    {
+        return false;
+    }
 }

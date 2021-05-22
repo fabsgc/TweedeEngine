@@ -17,6 +17,15 @@ namespace te
         te_delete((BulletFJoint*)_internal);
     }
 
+    void BulletSliderJoint::Update()
+    {
+        if (IsJointBroken() && !_isBroken)
+        {
+            _isBroken = true;
+            OnJointBreak();
+        }
+    }
+
     void BulletSliderJoint::SetBody(JointBody body, RigidBody* value)
     {
         Joint::SetBody(body, value);

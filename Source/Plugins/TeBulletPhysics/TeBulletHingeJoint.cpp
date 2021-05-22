@@ -16,6 +16,15 @@ namespace te
         te_delete((BulletFJoint*)_internal);
     }
 
+    void BulletHingeJoint::Update()
+    {
+        if (IsJointBroken() && !_isBroken)
+        {
+            _isBroken = true;
+            OnJointBreak();
+        }
+    }
+
     void BulletHingeJoint::SetBody(JointBody body, RigidBody* value)
     {
         Joint::SetBody(body, value);
