@@ -21,7 +21,7 @@ namespace te
 
     void BulletSphericalJoint::Update()
     {
-        if (IsJointBroken() && !_isBroken)
+        if (!_isBroken && IsJointBroken())
         {
             _isBroken = true;
             OnJointBreak();
@@ -95,9 +95,12 @@ namespace te
 
             if (_btJoint)
             {
+                _btFeedBack = te_new<btJointFeedback>();
+
                 _btJoint->setUserConstraintPtr(this);
                 _btJoint->enableFeedback(true);
                 _btJoint->setEnabled(true);
+                _btJoint->setJointFeedback(_btFeedBack);
 
                 _scene->AddJoint(_btJoint, _enableCollision);
             }
@@ -139,6 +142,9 @@ namespace te
         _scene->RemoveJoint(_btJoint);
 
         te_delete((btPoint2PointConstraint*)_btJoint);
+        te_delete(_btFeedBack);
+
         _btJoint = nullptr;
+        _btFeedBack = nullptr;
     }
 }

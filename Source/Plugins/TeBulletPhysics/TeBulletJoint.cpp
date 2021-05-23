@@ -8,6 +8,7 @@ namespace te
         : _physics(physics)
         , _scene(scene)
         , _btJoint(nullptr)
+        , _btFeedBack(nullptr)
         , _joint(joint)
     { }
 
@@ -56,6 +57,24 @@ namespace te
 
     bool BulletJoint::IsJointBroken()
     {
+        if (!_btJoint)
+            return false;
+
+        btJointFeedback* feedBack = _btJoint->getJointFeedback();
+
+        if (!feedBack)
+            return false;
+
+        if (ToVector3(feedBack->m_appliedForceBodyA).Length() > _joint->GetBreakForce())
+            return true;
+        if (ToVector3(feedBack->m_appliedForceBodyB).Length() > _joint->GetBreakForce())
+            return true;
+
+        if (ToVector3(feedBack->m_appliedTorqueBodyA).Length() > _joint->GetBreakTorque())
+            return true;
+        if (ToVector3(feedBack->m_appliedTorqueBodyB).Length() > _joint->GetBreakTorque())
+            return true;
+
         return false;
     }
 }

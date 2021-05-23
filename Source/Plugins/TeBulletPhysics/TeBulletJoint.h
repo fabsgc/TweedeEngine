@@ -46,6 +46,7 @@ namespace te
         BulletScene* _scene;
 
         btTypedConstraint* _btJoint;
+        btJointFeedback* _btFeedBack;
         Joint* _joint;
     };
 }

@@ -18,7 +18,7 @@ namespace te
 
     void BulletD6Joint::Update()
     {
-        if (IsJointBroken() && !_isBroken)
+        if (!_isBroken && IsJointBroken())
         {
             _isBroken = true;
             OnJointBreak();

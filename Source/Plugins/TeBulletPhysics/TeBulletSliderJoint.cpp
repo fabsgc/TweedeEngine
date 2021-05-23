@@ -19,7 +19,7 @@ namespace te
 
     void BulletSliderJoint::Update()
     {
-        if (IsJointBroken() && !_isBroken)
+        if (!_isBroken && IsJointBroken())
         {
             _isBroken = true;
             OnJointBreak();

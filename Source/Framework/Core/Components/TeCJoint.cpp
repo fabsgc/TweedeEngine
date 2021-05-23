@@ -2,6 +2,7 @@
 #include "Scene/TeSceneObject.h"
 #include "Physics/TePhysics.h"
 #include "Components/TeCRigidBody.h"
+#include "../TeCoreApplication.h"
 
 namespace te
 {
@@ -58,6 +59,10 @@ namespace te
 
     void CJoint::Update()
     {
+        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Physics);
+        if (gPhysics().IsPaused() || !isRunning)
+            return;
+
         if (_internal)
             _internal->Update();
     }

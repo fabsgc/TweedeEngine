@@ -18,7 +18,7 @@ namespace te
 
     void BulletHingeJoint::Update()
     {
-        if (IsJointBroken() && !_isBroken)
+        if (!_isBroken && IsJointBroken())
         {
             _isBroken = true;
             OnJointBreak();

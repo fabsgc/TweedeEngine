@@ -18,7 +18,7 @@ namespace te
 
     void BulletConeTwistJoint::Update()
     {
-        if (IsJointBroken() && !_isBroken)
+        if (!_isBroken && IsJointBroken())
         {
             _isBroken = true;
             OnJointBreak();
@@ -156,9 +156,12 @@ namespace te
 
             if (btConeTwistJoint)
             {
+                _btFeedBack = te_new<btJointFeedback>();
+
                 btConeTwistJoint->setUserConstraintPtr(this);
                 btConeTwistJoint->enableFeedback(true);
                 btConeTwistJoint->setEnabled(true);
+                btConeTwistJoint->setJointFeedback(_btFeedBack);
 
                 btConeTwistJoint->setDamping(_damping);
                 btConeTwistJoint->setAngularOnly(_angularOnly);
@@ -219,6 +222,9 @@ namespace te
         _scene->RemoveJoint(_btJoint);
 
         te_delete((btConeTwistConstraint*)_btJoint);
+        te_delete(_btFeedBack);
+
         _btJoint = nullptr;
+        _btFeedBack = nullptr;
     }
 }
