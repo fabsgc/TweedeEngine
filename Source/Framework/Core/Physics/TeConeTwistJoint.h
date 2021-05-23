@@ -99,13 +99,13 @@ namespace te
         /** Turns the motor on the X axis on and off */
         virtual void SetMotorEnabled(bool motorEnabled);
 
-        /** @copydoc SetAngularOnly */
+        /** @copydoc SetMotorEnabled */
         const bool GetMotorEnabled() const { return _motorEnabled; }
 
         /** Turns the motor on the X axis on and off */
         virtual void SetMaxMotorImpulse(float motorImpulse);
 
-        /** @copydoc SetAngularOnly */
+        /** @copydoc SetMaxMotorImpulse */
         const bool GetMaxMotorImpulse() const { return _motorImpulse; }
 
         /**
