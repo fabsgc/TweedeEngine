@@ -89,7 +89,20 @@ namespace te
         TID_CCamera,
         TID_CCameraFlyer,
         TID_CAudioSource,
-        TID_CAudioListener
+        TID_CAudioListener,
+        TID_CBoxCollider,
+        TID_CCapsuleCollider,
+        TID_CConeCollider,
+        TID_CCylinderCollider,
+        TID_CHeightFieldCollider,
+        TID_CMeshCollider,
+        TID_CPlaneCollider,
+        TID_CSphereCollider,
+        TID_CConeTwistJoint,
+        TID_CD6Joint,
+        TID_CHingeJoint,
+        TID_CSliderJoint,
+        TID_CSphericalJoint
     };
 
     Editor::Editor()
