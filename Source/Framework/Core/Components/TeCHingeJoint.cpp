@@ -28,6 +28,34 @@ namespace te
     void CHingeJoint::Clone(const HHingeJoint& c)
     {
         CJoint::Clone(static_object_cast<CJoint>(c));
+
+        _limitSoftness = c->_limitSoftness;
+        _limitBias = c->_limitBias;
+        _limitRelaxation = c->_limitRelaxation;
+        _limitLow = c->_limitLow;
+        _limitHigh = c->_limitHigh;
+        _angularOnly = c->_angularOnly;
+        _motorEnabled = c->_motorEnabled;
+        _motorImpulse = c->_motorImpulse;
+        _motorVelocity = c->_motorVelocity;
+    }
+
+    void CHingeJoint::OnEnabled()
+    {
+        CJoint::OnEnabled();
+
+        if (_internal)
+        {
+            SetLimitSoftness(_limitSoftness);
+            SetLimitBias(_limitBias);
+            SetLimitRelaxation(_limitRelaxation);
+            SetLimitHigh(_limitHigh);
+            SetLimitLow(_limitLow);
+            SetAngularOnly(_angularOnly);
+            SetMotorEnabled(_motorEnabled);
+            SetMaxMotorImpulse(_motorImpulse);
+            SetMotorVelocity(_motorVelocity);
+        }
     }
 
     void CHingeJoint::SetLimitSoftness(float softness)

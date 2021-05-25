@@ -35,7 +35,34 @@ namespace te
         void SetOffsetPivot(JointBody body, const Vector3& offset) override;
 
         /** @copydoc Joint::IsBroken */
-        void SetIsBroken(bool isBroken);
+        void SetIsBroken(bool isBroken) override;
+
+        /** @copydoc HingeJoint::SetLimitSoftness */
+        void SetLimitSoftness(float softness) override;
+
+        /** @copydoc HingeJoint::SetLimitBias */
+        void SetLimitBias(float bias) override;
+
+        /** @copydoc HingeJoint::SetLimitRelaxation */
+        void SetLimitRelaxation(float relaxation) override;
+
+        /** @copydoc HingeJoint::SetLimitHigh */
+        void SetLimitHigh(Degree limitHigh) override;
+
+        /** @copydoc HingeJoint::SetLimitLow */
+        void SetLimitLow(Degree limitLow) override;
+
+        /** @copydoc HingeJoint::SetAngularOnly */
+        void SetAngularOnly(bool angularOnly) override;
+
+        /** @copydoc HingeJoint::SetMotorEnabled */
+        void SetMotorEnabled(bool motorEnabled) override;
+
+        /** @copydoc HingeJoint::SetMaxMotorImpulse */
+        void SetMaxMotorImpulse(float motorImpulse) override;
+
+        /** @copydoc HingeJoint::SetMotorVelocity */
+        void SetMotorVelocity(float motorVelocity) override;
 
     private:
         /** @copydoc BulletJoint::BuildJoint */

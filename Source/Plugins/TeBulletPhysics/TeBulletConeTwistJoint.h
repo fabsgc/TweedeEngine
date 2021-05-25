@@ -35,37 +35,37 @@ namespace te
         void SetOffsetPivot(JointBody body, const Vector3& offset) override;
 
         /** @copydoc Joint::IsBroken */
-        void SetIsBroken(bool isBroken);
+        void SetIsBroken(bool isBroken) override;
 
         /** @copydoc ConeTwistJoint::SetDamping */
-        void SetDamping(float damping);
+        void SetDamping(float damping) override;
 
         /** @copydoc ConeTwistJoint::SetLimitSoftness */
-        void SetLimitSoftness(float softness);
+        void SetLimitSoftness(float softness) override;
 
         /** @copydoc ConeTwistJoint::SetLimitBias */
-        void SetLimitBias(float bias);
+        void SetLimitBias(float bias) override;
 
         /** @copydoc ConeTwistJoint::SetLimitRelaxation */
-        void SetLimitRelaxation(float relaxation);
+        void SetLimitRelaxation(float relaxation) override;
 
         /** @copydoc ConeTwistJoint::SetSwingSpan1 */
-        void SetSwingSpan1(Degree deg);
+        void SetSwingSpan1(Degree deg) override;
 
         /** @copydoc ConeTwistJoint::SetSwingSpan2 */
-        void SetSwingSpan2(Degree deg);
+        void SetSwingSpan2(Degree deg) override;
 
         /** @copydoc ConeTwistJoint::SetTwistSpan */
-        void SetTwistSpan(Degree deg);
+        void SetTwistSpan(Degree deg) override;
 
         /** @copydoc ConeTwistJoint::SetAngularOnly */
-        void SetAngularOnly(bool angularOnly);
+        void SetAngularOnly(bool angularOnly) override;
 
         /** @copydoc ConeTwistJoint::MotorEnabled */
-        void SetMotorEnabled(bool motorEnabled);
+        void SetMotorEnabled(bool motorEnabled) override;
 
         /** @copydoc ConeTwistJoint::MotorEnabled */
-        void SetMaxMotorImpulse(bool motorImpulse);
+        void SetMaxMotorImpulse(float motorImpulse) override;
 
     private:
         /** @copydoc BulletJoint::BuildJoint */

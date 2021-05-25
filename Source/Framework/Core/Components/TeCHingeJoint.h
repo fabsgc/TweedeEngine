@@ -79,8 +79,14 @@ namespace te
     protected:
         friend class SceneObject;
 
+        /** @copydoc Component::OnEnabled */
+        void OnEnabled() override;
+
         /** @copydoc CJoint::CreateInternal */
         SPtr<Joint> CreateInternal() override;
+
+        /**	Returns the Hinge joint that this component wraps. */
+        HingeJoint* GetInternal() const { return static_cast<HingeJoint*>(_internal.get()); }
 
     protected:
         CHingeJoint(); // Serialization only

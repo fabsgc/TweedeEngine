@@ -25,8 +25,14 @@ namespace te
     protected:
         friend class SceneObject;
 
+        /** @copydoc Component::OnEnabled */
+        void OnEnabled() override;
+
         /** @copydoc CJoint::CreateInternal */
         SPtr<Joint> CreateInternal() override;
+
+        /**	Returns the 6Dof joint that this component wraps. */
+        D6Joint* GetInternal() const { return static_cast<D6Joint*>(_internal.get()); }
 
     protected:
         CD6Joint(); // Serialization only

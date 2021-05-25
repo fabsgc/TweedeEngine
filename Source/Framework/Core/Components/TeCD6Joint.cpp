@@ -29,4 +29,14 @@ namespace te
     {
         CJoint::Clone(static_object_cast<CJoint>(c));
     }
+
+    void CD6Joint::OnEnabled()
+    {
+        CJoint::OnEnabled();
+
+        if (_internal)
+        {
+
+        }
+    }
 }

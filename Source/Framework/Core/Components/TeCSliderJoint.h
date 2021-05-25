@@ -25,8 +25,14 @@ namespace te
     protected:
         friend class SceneObject;
 
+        /** @copydoc Component::OnEnabled */
+        void OnEnabled() override;
+
         /** @copydoc CJoint::CreateInternal */
         SPtr<Joint> CreateInternal() override;
+
+        /**	Returns the Slider joint that this component wraps. */
+        SliderJoint* GetInternal() const { return static_cast<SliderJoint*>(_internal.get()); }
 
     protected:
         CSliderJoint(); // Serialization only

@@ -85,8 +85,14 @@ namespace te
     protected:
         friend class SceneObject;
 
+        /** @copydoc Component::OnEnabled */
+        void OnEnabled() override;
+
         /** @copydoc CJoint::CreateInternal */
         SPtr<Joint> CreateInternal() override;
+
+        /**	Returns the Cone Twist joint that this component wraps. */
+        ConeTwistJoint* GetInternal() const { return static_cast<ConeTwistJoint*>(_internal.get()); }
 
     protected:
         CConeTwistJoint(); // Serialization only

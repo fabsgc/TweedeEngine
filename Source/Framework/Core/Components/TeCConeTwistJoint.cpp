@@ -42,6 +42,26 @@ namespace te
         _swingSpan2 = c->_swingSpan2;
         _twistSpan = c->_twistSpan;
         _angularOnly = c->_angularOnly;
+        _motorEnabled = c->_motorEnabled;
+        _motorImpulse = c->_motorImpulse;
+    }
+
+    void CConeTwistJoint::OnEnabled()
+    {
+        CJoint::OnEnabled();
+
+        if (_internal)
+        {
+            SetLimitSoftness(_limitSoftness);
+            SetLimitBias(_limitBias);
+            SetLimitRelaxation(_limitRelaxation);
+            SetSwingSpan1(_swingSpan1);
+            SetSwingSpan2(_swingSpan2);
+            SetTwistSpan(_twistSpan);
+            SetAngularOnly(_angularOnly);
+            SetMotorEnabled(_motorEnabled);
+            SetMaxMotorImpulse(_motorImpulse);
+        }
     }
 
     void CConeTwistJoint::SetDamping(float damping)
