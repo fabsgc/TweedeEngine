@@ -40,14 +40,14 @@ namespace te
         /** @copydoc ConeTwistJoint::SetDamping */
         void SetDamping(float damping) override;
 
-        /** @copydoc ConeTwistJoint::SetLimitSoftness */
-        void SetLimitSoftness(float softness) override;
+        /** @copydoc ConeTwistJoint::SetSoftnessLimit */
+        void SetSoftnessLimit(float softness) override;
 
-        /** @copydoc ConeTwistJoint::SetLimitBias */
-        void SetLimitBias(float bias) override;
+        /** @copydoc ConeTwistJoint::SetBiasLimit */
+        void SetBiasLimit(float bias) override;
 
-        /** @copydoc ConeTwistJoint::SetLimitRelaxation */
-        void SetLimitRelaxation(float relaxation) override;
+        /** @copydoc ConeTwistJoint::SetRelaxationLimit */
+        void SetRelaxationLimit(float relaxation) override;
 
         /** @copydoc ConeTwistJoint::SetSwingSpan1 */
         void SetSwingSpan1(Degree deg) override;

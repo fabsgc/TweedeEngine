@@ -35,9 +35,9 @@ namespace te
         CJoint::Clone(static_object_cast<CJoint>(c));
 
         _damping = c->_damping;
-        _limitSoftness = c->_limitSoftness;
-        _limitBias = c->_limitBias;
-        _limitRelaxation = c->_limitRelaxation;
+        _softnessLimit = c->_softnessLimit;
+        _biasLimit = c->_biasLimit;
+        _relaxationLimit = c->_relaxationLimit;
         _swingSpan1 = c->_swingSpan1;
         _swingSpan2 = c->_swingSpan2;
         _twistSpan = c->_twistSpan;
@@ -52,9 +52,9 @@ namespace te
 
         if (_internal)
         {
-            SetLimitSoftness(_limitSoftness);
-            SetLimitBias(_limitBias);
-            SetLimitRelaxation(_limitRelaxation);
+            SetSoftnessLimit(_softnessLimit);
+            SetBiasLimit(_biasLimit);
+            SetRelaxationLimit(_relaxationLimit);
             SetSwingSpan1(_swingSpan1);
             SetSwingSpan2(_swingSpan2);
             SetTwistSpan(_twistSpan);
@@ -75,37 +75,37 @@ namespace te
             std::static_pointer_cast<ConeTwistJoint>(_internal)->SetDamping(damping);
     }
 
-    void CConeTwistJoint::SetLimitSoftness(float softness)
+    void CConeTwistJoint::SetSoftnessLimit(float softness)
     {
-        if (_limitSoftness == softness)
+        if (_softnessLimit == softness)
             return;
 
-        _limitSoftness = Math::Clamp(softness, 0.0f, 1.0f);
+        _softnessLimit = Math::Clamp(softness, 0.0f, 1.0f);
 
         if (_internal != nullptr)
-            std::static_pointer_cast<ConeTwistJoint>(_internal)->SetLimitSoftness(softness);
+            std::static_pointer_cast<ConeTwistJoint>(_internal)->SetSoftnessLimit(softness);
     }
 
-    void CConeTwistJoint::SetLimitBias(float bias)
+    void CConeTwistJoint::SetBiasLimit(float bias)
     {
-        if (_limitBias == bias)
+        if (_biasLimit == bias)
             return;
 
-        _limitBias = Math::Clamp(bias, 0.0f, 1.0f);
+        _biasLimit = Math::Clamp(bias, 0.0f, 1.0f);
 
         if (_internal != nullptr)
-            std::static_pointer_cast<ConeTwistJoint>(_internal)->SetLimitBias(bias);
+            std::static_pointer_cast<ConeTwistJoint>(_internal)->SetBiasLimit(bias);
     }
 
-    void CConeTwistJoint::SetLimitRelaxation(float relaxation)
+    void CConeTwistJoint::SetRelaxationLimit(float relaxation)
     {
-        if (_limitRelaxation == relaxation)
+        if (_relaxationLimit == relaxation)
             return;
 
-        _limitRelaxation = Math::Clamp(relaxation, 0.0f, 1.0f);
+        _relaxationLimit = Math::Clamp(relaxation, 0.0f, 1.0f);
 
         if (_internal != nullptr)
-            std::static_pointer_cast<ConeTwistJoint>(_internal)->SetLimitRelaxation(relaxation);
+            std::static_pointer_cast<ConeTwistJoint>(_internal)->SetRelaxationLimit(relaxation);
     }
 
     void CConeTwistJoint::SetSwingSpan1(Degree deg)

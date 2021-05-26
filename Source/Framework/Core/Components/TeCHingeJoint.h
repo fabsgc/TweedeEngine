@@ -22,35 +22,35 @@ namespace te
         /** @copydoc Component::Clone */
         void Clone(const HHingeJoint& c);
 
-        /** @copydoc HingeJoint::SetLimitSoftness */
-        virtual void SetLimitSoftness(float softness);
+        /** @copydoc HingeJoint::SetSoftnessLimit */
+        virtual void SetSoftnessLimit(float softness);
 
-        /** @copydoc HingeJoint::GetLimitSoftness */
-        const float GetLimitSoftness() const { return _limitSoftness; }
+        /** @copydoc HingeJoint::GetSoftnessLimit */
+        const float GetSoftnessLimit() const { return _softnessLimit; }
 
-        /** @copydoc HingeJoint::SetLimitBias */
-        virtual void SetLimitBias(float bias);
+        /** @copydoc HingeJoint::SetBiasLimit */
+        virtual void SetBiasLimit(float bias);
 
-        /** @copydoc HingeJoint::GetLimitBias */
-        const float GetLimitBias() const { return _limitBias; }
+        /** @copydoc HingeJoint::GetBiasLimit */
+        const float GetBiasLimit() const { return _biasLimit; }
 
-        /** @copydoc HingeJoint::SetLimitRelaxation */
-        virtual void SetLimitRelaxation(float relaxation);
+        /** @copydoc HingeJoint::SetRelaxationLimit */
+        virtual void SetRelaxationLimit(float relaxation);
 
-        /** @copydoc HingeJoint::GetLimitRelaxation */
-        const float GetLimitRelaxation() const { return _limitRelaxation; }
+        /** @copydoc HingeJoint::GetRelaxationLimit */
+        const float GetRelaxationLimit() const { return _relaxationLimit; }
 
-        /** @copydoc HingeJoint::SetLimitHigh */
-        virtual void SetLimitHigh(Degree limitHigh);
+        /** @copydoc HingeJoint::SetHighLimit */
+        virtual void SetHighLimit(Degree highLimit);
 
         /** @copydoc HingeJoint::GetLimitHigh */
-        const Degree GetLimitHigh() const { return _limitHigh; }
+        const Degree GetLimitHigh() const { return _highLimit; }
 
-        /** @copydoc HingeJoint::SetLimitLow */
-        virtual void SetLimitLow(Degree limitLow);
+        /** @copydoc HingeJoint::SetLowLimit */
+        virtual void SetLowLimit(Degree lowLimit);
 
-        /** @copydoc HingeJoint::GetLimitLow */
-        const Degree GetLimitLow() const { return _limitLow; }
+        /** @copydoc HingeJoint::GetLowLimit */
+        const Degree GetLowLimit() const { return _lowLimit; }
 
         /** @copydoc HingeJoint::SetAngularOnly */
         virtual void SetAngularOnly(bool angularOnly);
@@ -92,11 +92,11 @@ namespace te
         CHingeJoint(); // Serialization only
 
     protected:
-        float _limitSoftness = 1.0f;
-        float _limitBias = 0.3f;
-        float _limitRelaxation = 1.0f;
-        Degree _limitHigh;
-        Degree _limitLow;
+        float _softnessLimit = 1.0f;
+        float _biasLimit = 0.3f;
+        float _relaxationLimit = 1.0f;
+        Degree _highLimit;
+        Degree _lowLimit;
         bool _angularOnly = false;
         bool _motorEnabled = false;
         float _motorImpulse = 0.0f;

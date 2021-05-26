@@ -4,8 +4,8 @@
 namespace te
 {
     HingeJoint::HingeJoint()
-        : _limitHigh(0.0f)
-        , _limitLow(0.0f)
+        : _highLimit(0.0f)
+        , _lowLimit(0.0f)
     { }
 
     SPtr<HingeJoint> HingeJoint::Create(PhysicsScene& scene)
@@ -13,29 +13,29 @@ namespace te
         return scene.CreateHingeJoint();
     }
 
-    void HingeJoint::SetLimitSoftness(float softness)
+    void HingeJoint::SetSoftnessLimit(float softness)
     {
-        _limitSoftness = Math::Clamp(softness, 0.0f, 1.0f);
+        _softnessLimit = Math::Clamp(softness, 0.0f, 1.0f);
     }
 
-    void HingeJoint::SetLimitBias(float bias)
+    void HingeJoint::SetBiasLimit(float bias)
     {
-        _limitBias = Math::Clamp(bias, 0.0f, 1.0f);
+        _biasLimit = Math::Clamp(bias, 0.0f, 1.0f);
     }
 
-    void HingeJoint::SetLimitRelaxation(float relaxation)
+    void HingeJoint::SetRelaxationLimit(float relaxation)
     {
-        _limitRelaxation = Math::Clamp(relaxation, 0.0f, 1.0f);
+        _relaxationLimit = Math::Clamp(relaxation, 0.0f, 1.0f);
     }
 
-    void HingeJoint::SetLimitHigh(Degree limitHigh)
+    void HingeJoint::SetHighLimit(Degree highLimit)
     {
-        _limitHigh = limitHigh;
+        _highLimit = highLimit;
     }
 
-    void HingeJoint::SetLimitLow(Degree limitLow)
+    void HingeJoint::SetLowLimit(Degree lowLimit)
     {
-        _limitLow = limitLow;
+        _lowLimit = lowLimit;
     }
 
     void HingeJoint::SetAngularOnly(bool angularOnly)

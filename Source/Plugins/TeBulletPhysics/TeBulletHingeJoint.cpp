@@ -65,33 +65,33 @@ namespace te
         BuildJoint();
     }
 
-    void BulletHingeJoint::SetLimitSoftness(float softness)
+    void BulletHingeJoint::SetSoftnessLimit(float softness)
     {
-        HingeJoint::SetLimitSoftness(softness);
+        HingeJoint::SetSoftnessLimit(softness);
         UpdateJoint();
     }
 
-    void BulletHingeJoint::SetLimitBias(float bias)
+    void BulletHingeJoint::SetBiasLimit(float bias)
     {
-        HingeJoint::SetLimitBias(bias);
+        HingeJoint::SetBiasLimit(bias);
         UpdateJoint();
     }
 
-    void BulletHingeJoint::SetLimitRelaxation(float relaxation)
+    void BulletHingeJoint::SetRelaxationLimit(float relaxation)
     {
-        HingeJoint::SetLimitRelaxation(relaxation);
+        HingeJoint::SetRelaxationLimit(relaxation);
         UpdateJoint();
     }
 
-    void BulletHingeJoint::SetLimitHigh(Degree limitHigh)
+    void BulletHingeJoint::SetHighLimit(Degree highLimit)
     {
-        HingeJoint::SetLimitHigh(limitHigh);
+        HingeJoint::SetHighLimit(highLimit);
         UpdateJoint();
     }
 
-    void BulletHingeJoint::SetLimitLow(Degree limitLow)
+    void BulletHingeJoint::SetLowLimit(Degree lowLimit)
     {
-        HingeJoint::SetLimitLow(limitLow);
+        HingeJoint::SetLowLimit(lowLimit);
         UpdateJoint();
     }
 
@@ -161,7 +161,7 @@ namespace te
                 btHingeJoint->setJointFeedback(_btFeedBack);
 
                 btHingeJoint->setAngularOnly(_angularOnly);
-                btHingeJoint->setLimit(_limitLow.ValueRadians(), _limitHigh.ValueRadians(), _limitSoftness, _limitBias, _limitRelaxation);
+                btHingeJoint->setLimit(_lowLimit.ValueRadians(), _highLimit.ValueRadians(), _softnessLimit, _biasLimit, _relaxationLimit);
                 btHingeJoint->enableMotor(_motorEnabled);
 
                 if (_motorEnabled)
@@ -204,7 +204,7 @@ namespace te
 
             btHingeJoint->setFrames(anchorFrame, targetframe);
             btHingeJoint->setAngularOnly(_angularOnly);
-            btHingeJoint->setLimit(_limitLow.ValueRadians(), _limitHigh.ValueRadians(), _limitSoftness, _limitBias, _limitRelaxation);
+            btHingeJoint->setLimit(_lowLimit.ValueRadians(), _highLimit.ValueRadians(), _softnessLimit, _biasLimit, _relaxationLimit);
             btHingeJoint->enableMotor(_motorEnabled);
 
             if (_motorEnabled)

@@ -29,11 +29,11 @@ namespace te
     {
         CJoint::Clone(static_object_cast<CJoint>(c));
 
-        _limitSoftness = c->_limitSoftness;
-        _limitBias = c->_limitBias;
-        _limitRelaxation = c->_limitRelaxation;
-        _limitLow = c->_limitLow;
-        _limitHigh = c->_limitHigh;
+        _softnessLimit = c->_softnessLimit;
+        _biasLimit = c->_biasLimit;
+        _relaxationLimit = c->_relaxationLimit;
+        _lowLimit = c->_lowLimit;
+        _highLimit = c->_highLimit;
         _angularOnly = c->_angularOnly;
         _motorEnabled = c->_motorEnabled;
         _motorImpulse = c->_motorImpulse;
@@ -46,11 +46,11 @@ namespace te
 
         if (_internal)
         {
-            SetLimitSoftness(_limitSoftness);
-            SetLimitBias(_limitBias);
-            SetLimitRelaxation(_limitRelaxation);
-            SetLimitHigh(_limitHigh);
-            SetLimitLow(_limitLow);
+            SetSoftnessLimit(_softnessLimit);
+            SetBiasLimit(_biasLimit);
+            SetRelaxationLimit(_relaxationLimit);
+            SetHighLimit(_highLimit);
+            SetLowLimit(_lowLimit);
             SetAngularOnly(_angularOnly);
             SetMotorEnabled(_motorEnabled);
             SetMaxMotorImpulse(_motorImpulse);
@@ -58,65 +58,65 @@ namespace te
         }
     }
 
-    void CHingeJoint::SetLimitSoftness(float softness)
+    void CHingeJoint::SetSoftnessLimit(float softness)
     {
-        if (_limitSoftness == softness)
+        if (_softnessLimit == softness)
             return;
 
-        _limitSoftness = Math::Clamp(softness, 0.0f, 1.0f);
+        _softnessLimit = Math::Clamp(softness, 0.0f, 1.0f);
 
         if (_internal != nullptr)
-            std::static_pointer_cast<HingeJoint>(_internal)->SetLimitSoftness(softness);
+            std::static_pointer_cast<HingeJoint>(_internal)->SetSoftnessLimit(softness);
     }
 
-    void CHingeJoint::SetLimitBias(float bias)
+    void CHingeJoint::SetBiasLimit(float bias)
     {
-        if (_limitBias == bias)
+        if (_biasLimit == bias)
             return;
 
-        _limitBias = Math::Clamp(bias, 0.0f, 1.0f);
+        _biasLimit = Math::Clamp(bias, 0.0f, 1.0f);
 
         if (_internal != nullptr)
-            std::static_pointer_cast<HingeJoint>(_internal)->SetLimitBias(bias);
+            std::static_pointer_cast<HingeJoint>(_internal)->SetBiasLimit(bias);
     }
 
-    void CHingeJoint::SetLimitRelaxation(float relaxation)
+    void CHingeJoint::SetRelaxationLimit(float relaxation)
     {
-        if (_limitRelaxation == relaxation)
+        if (_relaxationLimit == relaxation)
             return;
 
-        _limitRelaxation = Math::Clamp(relaxation, 0.0f, 1.0f);
+        _relaxationLimit = Math::Clamp(relaxation, 0.0f, 1.0f);
 
         if (_internal != nullptr)
-            std::static_pointer_cast<HingeJoint>(_internal)->SetLimitRelaxation(relaxation);
+            std::static_pointer_cast<HingeJoint>(_internal)->SetRelaxationLimit(relaxation);
     }
 
-    void CHingeJoint::SetLimitHigh(Degree limitHigh)
+    void CHingeJoint::SetHighLimit(Degree highLimit)
     {
-        if (_limitHigh == limitHigh)
+        if (_highLimit == highLimit)
             return;
 
-        _limitHigh = limitHigh;
+        _highLimit = highLimit;
 
-        if (_limitHigh < _limitLow)
-            _limitLow = _limitLow;
+        if (_highLimit < _lowLimit)
+            _lowLimit = _lowLimit;
 
         if (_internal != nullptr)
-            std::static_pointer_cast<HingeJoint>(_internal)->SetLimitHigh(_limitHigh);
+            std::static_pointer_cast<HingeJoint>(_internal)->SetHighLimit(_highLimit);
     }
 
-    void CHingeJoint::SetLimitLow(Degree limitLow)
+    void CHingeJoint::SetLowLimit(Degree lowLimit)
     {
-        if (_limitLow == limitLow)
+        if (_lowLimit == lowLimit)
             return;
 
-        _limitLow = limitLow;
+        _lowLimit = lowLimit;
 
-        if (_limitLow > _limitHigh)
-            _limitLow = _limitLow;
+        if (_lowLimit > _highLimit)
+            _lowLimit = _lowLimit;
 
         if (_internal != nullptr)
-            std::static_pointer_cast<HingeJoint>(_internal)->SetLimitLow(_limitLow);
+            std::static_pointer_cast<HingeJoint>(_internal)->SetLowLimit(_lowLimit);
     }
 
     void CHingeJoint::SetAngularOnly(bool angularOnly)

@@ -16,19 +16,19 @@ namespace te
         _damping = Math::Clamp(damping, 0.0f, FLT_MAX);
     }
 
-    void ConeTwistJoint::SetLimitSoftness(float softness)
+    void ConeTwistJoint::SetSoftnessLimit(float softness)
     {
-        _limitSoftness = Math::Clamp(softness, 0.0f, 1.0f);
+        _softnessLimit = Math::Clamp(softness, 0.0f, 1.0f);
     }
 
-    void ConeTwistJoint::SetLimitBias(float bias)
+    void ConeTwistJoint::SetBiasLimit(float bias)
     {
-        _limitBias = Math::Clamp(bias, 0.0f, 1.0f);
+        _biasLimit = Math::Clamp(bias, 0.0f, 1.0f);
     }
 
-    void ConeTwistJoint::SetLimitRelaxation(float relaxation)
+    void ConeTwistJoint::SetRelaxationLimit(float relaxation)
     {
-        _limitRelaxation = Math::Clamp(relaxation, 0.0f, 1.0f);
+        _relaxationLimit = Math::Clamp(relaxation, 0.0f, 1.0f);
     }
 
     void ConeTwistJoint::SetSwingSpan1(Degree deg)

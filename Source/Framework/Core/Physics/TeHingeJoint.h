@@ -23,40 +23,40 @@ namespace te
          * Beyond this softness %, the limit is gradually enforced until the "hard" (1.0) limit is reached.
          * From 0 to 1. Recommend ~0.8->1
          */
-        virtual void SetLimitSoftness(float softness);
+        virtual void SetSoftnessLimit(float softness);
 
-        /** @copydoc SetLimitSoftness */
-        const float GetLimitSoftness() const { return _limitSoftness; }
+        /** @copydoc SetSoftnessLimit */
+        const float GetSoftnessLimit() const { return _softnessLimit; }
 
         /**
          * Strength with which constraint resists zeroth order (angular, not angular velocity) limit violation.
          * From 0 to 1. Recommend 0.3 +/-0.3 or so.
         */
-        virtual void SetLimitBias(float bias);
+        virtual void SetBiasLimit(float bias);
 
-        /** @copydoc SetLimitBias */
-        const float GetLimitBias() const { return _limitBias; }
+        /** @copydoc SetBiasLimit */
+        const float GetBiasLimit() const { return _biasLimit; }
 
         /**
          * the lower the value, the less the constraint will fight velocities which violate the angular limits.
          * From 0 to 1. Recommend to stay near 1.
          */
-        virtual void SetLimitRelaxation(float relaxation);
+        virtual void SetRelaxationLimit(float relaxation);
 
-        /** @copydoc SetLimitRelaxation */
-        const float GetLimitRelaxation() const { return _limitRelaxation; }
+        /** @copydoc SetRelaxationLimit */
+        const float GetRelaxationLimit() const { return _relaxationLimit; }
 
         /** Angular Constraint Max Z */
-        virtual void SetLimitHigh(Degree limitHigh);
+        virtual void SetHighLimit(Degree highLimit);
 
-        /** @copydoc SetLimitHigh */
-        const Degree GetLimitHigh() const { return _limitHigh; }
+        /** @copydoc SetHighLimit */
+        const Degree GetLimitHigh() const { return _highLimit; }
 
         /** Angular Constraint Min Z */
-        virtual void SetLimitLow(Degree limitLow);
+        virtual void SetLowLimit(Degree lowLimit);
 
-        /** @copydoc SetLimitLow */
-        const Degree GetLimitLow() const { return _limitLow; }
+        /** @copydoc SetLowLimit */
+        const Degree GetLowLimit() const { return _lowLimit; }
 
         /** Specify if this joint affect angular properties only */
         virtual void SetAngularOnly(bool angularOnly);
@@ -91,11 +91,11 @@ namespace te
         static SPtr<HingeJoint> Create(PhysicsScene& scene);
 
     protected:
-        float _limitSoftness = 1.0f;
-        float _limitBias = 0.3f;
-        float _limitRelaxation = 1.0f;
-        Degree _limitHigh;
-        Degree _limitLow;
+        float _softnessLimit = 1.0f;
+        float _biasLimit = 0.3f;
+        float _relaxationLimit = 1.0f;
+        Degree _highLimit;
+        Degree _lowLimit;
         bool _angularOnly = false;
         bool _motorEnabled = false;
         float _motorImpulse = 0.0f;

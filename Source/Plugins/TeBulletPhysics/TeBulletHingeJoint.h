@@ -37,20 +37,20 @@ namespace te
         /** @copydoc Joint::IsBroken */
         void SetIsBroken(bool isBroken) override;
 
-        /** @copydoc HingeJoint::SetLimitSoftness */
-        void SetLimitSoftness(float softness) override;
+        /** @copydoc HingeJoint::SetSoftnessLimit */
+        void SetSoftnessLimit(float softness) override;
 
-        /** @copydoc HingeJoint::SetLimitBias */
-        void SetLimitBias(float bias) override;
+        /** @copydoc HingeJoint::SetBiasLimit */
+        void SetBiasLimit(float bias) override;
 
-        /** @copydoc HingeJoint::SetLimitRelaxation */
-        void SetLimitRelaxation(float relaxation) override;
+        /** @copydoc HingeJoint::SetRelaxationLimit */
+        void SetRelaxationLimit(float relaxation) override;
 
-        /** @copydoc HingeJoint::SetLimitHigh */
-        void SetLimitHigh(Degree limitHigh) override;
+        /** @copydoc HingeJoint::SetHighLimit */
+        void SetHighLimit(Degree highLimit) override;
 
-        /** @copydoc HingeJoint::SetLimitLow */
-        void SetLimitLow(Degree limitLow) override;
+        /** @copydoc HingeJoint::SetLowLimit */
+        void SetLowLimit(Degree lowLimit) override;
 
         /** @copydoc HingeJoint::SetAngularOnly */
         void SetAngularOnly(bool angularOnly) override;

@@ -28,23 +28,23 @@ namespace te
         /** @copydoc ConeTwistJoint::GetDamping */
         const float GetDamping() const { return _damping; }
 
-        /** @copydoc ConeTwistJoint::SetLimitSoftness */
-        void SetLimitSoftness(float softness);
+        /** @copydoc ConeTwistJoint::SetSoftnessLimit */
+        void SetSoftnessLimit(float softness);
 
-        /** @copydoc ConeTwistJoint::GetLimitSoftness */
-        const float GetLimitSoftness() const { return _limitSoftness; }
+        /** @copydoc ConeTwistJoint::GetSoftnessLimit */
+        const float GetSoftnessLimit() const { return _softnessLimit; }
 
-        /** @copydoc ConeTwistJoint::SetLimitBias */
-        void SetLimitBias(float bias);
+        /** @copydoc ConeTwistJoint::SetBiasLimit */
+        void SetBiasLimit(float bias);
 
-        /** @copydoc ConeTwistJoint::GetLimitBias */
-        const float GetLimitBias() const { return _limitBias; }
+        /** @copydoc ConeTwistJoint::GetBiasLimit */
+        const float GetBiasLimit() const { return _biasLimit; }
 
-        /** @copydoc ConeTwistJoint::SetLimitRelaxation */
-        void SetLimitRelaxation(float relaxation);
+        /** @copydoc ConeTwistJoint::SetRelaxationLimit */
+        void SetRelaxationLimit(float relaxation);
 
-        /** @copydoc ConeTwistJoint::GetLimitRelaxation */
-        const float GetLimitRelaxation() const { return _limitRelaxation; }
+        /** @copydoc ConeTwistJoint::GetRelaxationLimit */
+        const float GetRelaxationLimit() const { return _relaxationLimit; }
 
         /** @copydoc ConeTwistJoint::SetSwingSpan1 */
         void SetSwingSpan1(Degree deg);
@@ -99,9 +99,9 @@ namespace te
 
     protected:
         float _damping = 0.0f;
-        float _limitSoftness = 1.0f;
-        float _limitBias = 0.3f;
-        float _limitRelaxation = 1.0f;
+        float _softnessLimit = 1.0f;
+        float _biasLimit = 0.3f;
+        float _relaxationLimit = 1.0f;
         Degree _swingSpan1;
         Degree _swingSpan2;
         Degree _twistSpan;

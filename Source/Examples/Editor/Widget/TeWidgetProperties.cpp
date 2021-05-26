@@ -1103,31 +1103,31 @@ namespace te
 
             // Limit Softness
             {
-                float limitSoftness = joint->GetLimitSoftness();
-                if (ImGuiExt::RenderOptionFloat(limitSoftness, "##joint_option_limit_softness", "Limit Softness", 0.0f, 1.0f, width))
+                float softnessLimit = joint->GetSoftnessLimit();
+                if (ImGuiExt::RenderOptionFloat(softnessLimit, "##joint_option_limit_softness", "Limit Softness", 0.0f, 1.0f, width))
                 {
                     hasChanged = true;
-                    joint->SetLimitSoftness(limitSoftness);
+                    joint->SetSoftnessLimit(softnessLimit);
                 }
             }
 
             // Limit Bias
             {
-                float limitBias = joint->GetLimitBias();
-                if (ImGuiExt::RenderOptionFloat(limitBias, "##joint_option_limit_bias", "Limit Softness", 0.0f, 1.0f, width))
+                float biasLimit = joint->GetBiasLimit();
+                if (ImGuiExt::RenderOptionFloat(biasLimit, "##joint_option_limit_bias", "Limit Softness", 0.0f, 1.0f, width))
                 {
                     hasChanged = true;
-                    joint->SetLimitBias(limitBias);
+                    joint->SetBiasLimit(biasLimit);
                 }
             }
 
             // Limit Relaxation
             {
-                float limitRelaxation = joint->GetLimitRelaxation();
-                if (ImGuiExt::RenderOptionFloat(limitRelaxation, "##joint_option_limit_relaxation", "Limit Relaxation", 0.0f, 1.0f, width))
+                float relaxationLimit = joint->GetRelaxationLimit();
+                if (ImGuiExt::RenderOptionFloat(relaxationLimit, "##joint_option_limit_relaxation", "Limit Relaxation", 0.0f, 1.0f, width))
                 {
                     hasChanged = true;
-                    joint->SetLimitRelaxation(limitRelaxation);
+                    joint->SetRelaxationLimit(relaxationLimit);
                 }
             }
             ImGui::Separator();

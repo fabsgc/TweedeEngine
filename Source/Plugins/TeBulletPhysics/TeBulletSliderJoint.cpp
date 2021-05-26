@@ -86,6 +86,30 @@ namespace te
 
             if (!btBodyTarget)
                 btBodyTarget = &btTypedConstraint::getFixedBody();
+
+            Quaternion anchorRotation = _bodies[(int)JointBody::Anchor].Rotation;
+            Quaternion targetRotation = _bodies[(int)JointBody::Target].Rotation;
+
+            btTransform anchorFrame(ToBtQuaternion(anchorRotation), ToBtVector3(anchorScaledPosition));
+            btTransform targetframe(ToBtQuaternion(targetRotation), ToBtVector3(targetScaledPosition));
+
+            if (!btBodyTarget)
+                btBodyTarget = &btTypedConstraint::getFixedBody();
+
+            btSliderConstraint* btSliderJoint = te_new<btSliderConstraint>(*btBodyAnchor, *btBodyTarget, anchorFrame, targetframe, false);
+
+            if (btSliderJoint)
+            {
+                _btFeedBack = te_new<btJointFeedback>();
+
+                btSliderJoint->setUserConstraintPtr(this);
+                btSliderJoint->enableFeedback(true);
+                btSliderJoint->setEnabled(true);
+                btSliderJoint->setJointFeedback(_btFeedBack);
+
+                _btJoint = btSliderJoint;
+                _scene->AddJoint(_btJoint, _enableCollision);
+            }
         }
     }
 
@@ -106,6 +130,16 @@ namespace te
         {
             Vector3 anchorScaledPosition = GetAnchorScaledPosisition(bodyAnchor, _bodies, _offsetPivots);
             Vector3 targetScaledPosition = GetTargetScaledPosisition(btBodyTarget, bodyTarget, _bodies, _offsetPivots);
+
+            Quaternion anchorRotation = _bodies[(int)JointBody::Anchor].Rotation;
+            Quaternion targetRotation = _bodies[(int)JointBody::Target].Rotation;
+
+            btTransform anchorFrame(ToBtQuaternion(anchorRotation), ToBtVector3(anchorScaledPosition));
+            btTransform targetframe(ToBtQuaternion(targetRotation), ToBtVector3(targetScaledPosition));
+
+            btSliderConstraint* btSliderJoint = (btSliderConstraint*)_btJoint;
+
+            btSliderJoint->setFrames(anchorFrame, targetframe);
         }
     }
 
@@ -117,6 +151,9 @@ namespace te
         _scene->RemoveJoint(_btJoint);
 
         te_delete((btSliderConstraint*)_btJoint);
+        te_delete(_btFeedBack);
+
         _btJoint = nullptr;
+        _btFeedBack = nullptr;
     }
 }
