@@ -70,8 +70,6 @@ namespace te
 
     void BulletSphericalJoint::BuildJoint()
     {
-        TE_PRINT("BUILD JOINT");
-
         ReleaseJoint();
 
         if (_isBroken)
@@ -109,8 +107,6 @@ namespace te
 
     void BulletSphericalJoint::UpdateJoint()
     {
-        TE_PRINT("UPDATE JOINT");
-
         if (!_btJoint)
         {
             BuildJoint();
@@ -134,8 +130,6 @@ namespace te
 
     void BulletSphericalJoint::ReleaseJoint()
     {
-        TE_PRINT("RELEASE JOINT");
-
         if (!_btJoint)
             return;
 
