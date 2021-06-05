@@ -32,4 +32,49 @@ namespace te
     {
         _upperAngLimit = upperAngLimit;
     }
+
+    void SliderJoint::SetSoftnessDirLin(float softnessDirLin)
+    {
+        _softnessDirLin = softnessDirLin;
+    }
+
+    void SliderJoint::SetRestitutionDirLin(float restitutionDirLin)
+    {
+        _restitutionDirLin = restitutionDirLin;
+    }
+
+    void SliderJoint::SetDampingDirLin(float dampingDirLin)
+    {
+        _dampingDirLin = dampingDirLin;
+    }
+
+    void SliderJoint::SetSoftnessDirAng(float softnessDirAng)
+    {
+        _softnessDirAng = softnessDirAng;
+    }
+
+    void SliderJoint::SetRestitutionDirAng(float restitutionDirAng)
+    {
+        _restitutionDirAng = restitutionDirAng;
+    }
+
+    void SliderJoint::SetDampingDirAng(float dampingDirAng)
+    {
+        _dampingDirAng = dampingDirAng;
+    }
+
+    void SliderJoint::SetSoftnessLimLin(float softnessLimLin)
+    {
+        _softnessLimLin = softnessLimLin;
+    }
+
+    void SliderJoint::SetRestitutionLimLin(float restitutionLimLin)
+    {
+        _restitutionLimLin = restitutionLimLin;
+    }
+
+    void SliderJoint::SetDampingLimLin(float dampingLimLin)
+    {
+        _dampingLimLin = dampingLimLin;
+    }
 }

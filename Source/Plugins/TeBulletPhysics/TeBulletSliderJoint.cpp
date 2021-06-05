@@ -66,6 +66,84 @@ namespace te
         BuildJoint();
     }
 
+    void BulletSliderJoint::SetLowerLinLimit(float lowerLinLimit)
+    {
+        SliderJoint::SetLowerLinLimit(lowerLinLimit);
+        UpdateJoint();
+    }
+
+    void BulletSliderJoint::SetUpperLinLimit(float upperLinLimit)
+    {
+        SliderJoint::SetUpperLinLimit(upperLinLimit);
+        UpdateJoint();
+    }
+
+    void BulletSliderJoint::SetLowerAngLimit(Degree lowerAngLimit)
+    {
+        SliderJoint::SetLowerAngLimit(lowerAngLimit);
+        UpdateJoint();
+    }
+
+    void BulletSliderJoint::SetUpperAngLimit(Degree upperAngLimit)
+    {
+        SliderJoint::SetUpperAngLimit(upperAngLimit);
+        UpdateJoint();
+    }
+
+    void BulletSliderJoint::SetSoftnessDirLin(float softnessDirLin)
+    {
+        SliderJoint::SetSoftnessDirLin(softnessDirLin);
+        UpdateJoint();
+    }
+
+    void BulletSliderJoint::SetRestitutionDirLin(float restitutionDirLin)
+    {
+        SliderJoint::SetRestitutionDirLin(restitutionDirLin);
+        UpdateJoint();
+    }
+
+    void BulletSliderJoint::SetDampingDirLin(float dampingDirLin)
+    {
+        SliderJoint::SetDampingDirLin(dampingDirLin);
+        UpdateJoint();
+    }
+
+    void BulletSliderJoint::SetSoftnessDirAng(float softnessDirAng)
+    {
+        SliderJoint::SetSoftnessDirAng(softnessDirAng);
+        UpdateJoint();
+    }
+
+    void BulletSliderJoint::SetRestitutionDirAng(float restitutionDirAng)
+    {
+        SliderJoint::SetRestitutionDirAng(restitutionDirAng);
+        UpdateJoint();
+    }
+
+    void BulletSliderJoint::SetDampingDirAng(float dampingDirAng)
+    {
+        SliderJoint::SetDampingDirAng(dampingDirAng);
+        UpdateJoint();
+    }
+
+    void BulletSliderJoint::SetSoftnessLimLin(float softnessLimLin)
+    {
+        SliderJoint::SetSoftnessLimLin(softnessLimLin);
+        UpdateJoint();
+    }
+
+    void BulletSliderJoint::SetRestitutionLimLin(float restitutionLimLin)
+    {
+        SliderJoint::SetRestitutionLimLin(restitutionLimLin);
+        UpdateJoint();
+    }
+
+    void BulletSliderJoint::SetDampingLimLin(float dampingLimLin)
+    {
+        SliderJoint::SetDampingLimLin(dampingLimLin);
+        UpdateJoint();
+    }
+
     void BulletSliderJoint::BuildJoint()
     {
         ReleaseJoint();

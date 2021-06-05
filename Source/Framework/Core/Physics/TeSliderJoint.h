@@ -41,6 +41,60 @@ namespace te
         /** @copydoc SetUpperAngLimit */
         const Degree GetUpperAngLimit() const { return _upperAngLimit; }
 
+        /** */
+        virtual void SetSoftnessDirLin(float softnessDirLin);
+
+        /** @copydoc SetSoftnessDirLin */
+        virtual float GetSoftnessDirLin() const { return _softnessDirLin; }
+
+        /** */
+        virtual void SetRestitutionDirLin(float restitutionDirLin);
+
+        /** @copydoc SetRestitutionDirLin */
+        virtual float GetRestitutionDirLin() const { return _restitutionDirLin; }
+
+        /** */
+        virtual void SetDampingDirLin(float dampingDirLin);
+
+        /** @copydoc Set */
+        virtual float GetDampingDirLin() const { return _dampingDirLin; }
+
+        /** */
+        virtual void SetSoftnessDirAng(float softnessDirAng);
+
+        /** @copydoc SetSoftnessDirAng */
+        virtual float GetSoftnessDirAng() const { return _softnessDirAng; }
+
+        /** */
+        virtual void SetRestitutionDirAng(float restitutionDirAng);
+
+        /** @copydoc SetRestitutionDirAng */
+        virtual float GetRestitutionDirAng() const { return _restitutionDirAng; }
+
+        /** */
+        virtual void SetDampingDirAng(float dampingDirAng);
+
+        /** @copydoc SetDampingDirAng */
+        virtual float GetDampingDirAng() const { return _dampingDirAng; }
+
+        /** */
+        virtual void SetSoftnessLimLin(float softnessLimLin);
+
+        /** @copydoc Set */
+        virtual float GetSoftnessLimLin() const { return _softnessLimLin; }
+
+        /** */
+        virtual void SetRestitutionLimLin(float restitutionLimLin);
+
+        /** @copydoc SetRestitutionLimLin */
+        virtual float GetRestitutionLimLin() const { return _restitutionLimLin; }
+
+        /** */
+        virtual void SetDampingLimLin(float dampingLimLin);
+
+        /** @copydoc SetDampingLimLin */
+        virtual float GetDampingLimLin() const { return _dampingLimLin; }
+
         /**
          * Creates a new slider joint.
          *
@@ -53,5 +107,15 @@ namespace te
         float _upperLinLimit = -1.0f;
         Degree _lowerAngLimit;
         Degree _upperAngLimit;
+
+        float _softnessDirLin = 1.0f;
+        float _restitutionDirLin = 0.7f;
+        float _dampingDirLin = 0.0f;
+        float _softnessDirAng = 1.0f;
+        float _restitutionDirAng = 0.7f;
+        float _dampingDirAng = 0.0f;
+        float _softnessLimLin = 1.0f;
+        float _restitutionLimLin = 0.7f;
+        float _dampingLimLin = 1.0f;
     };
 }

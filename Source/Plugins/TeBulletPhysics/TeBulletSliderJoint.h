@@ -37,6 +37,45 @@ namespace te
         /** @copydoc Joint::IsBroken */
         void SetIsBroken(bool isBroken) override;
 
+        /** @copydoc SliderJoint::SetLowerLinLimit*/
+        void SetLowerLinLimit(float lowerLinLimit) override;
+
+        /** @copydoc SliderJoint::SetUpperLinLimit*/
+        void SetUpperLinLimit(float upperLinLimit) override;
+
+        /** @copydoc SliderJoint::SetLowerAngLimit*/
+        void SetLowerAngLimit(Degree lowerAngLimit) override;
+
+        /** @copydoc SliderJoint::SetUpperAngLimit*/
+        void SetUpperAngLimit(Degree upperAngLimit) override;
+
+        /** @copydoc SliderJoint::SetSoftnessDirLin*/
+        void SetSoftnessDirLin(float softnessDirLin) override;
+
+        /** @copydoc SliderJoint::SetRestitutionDirLin*/
+        void SetRestitutionDirLin(float restitutionDirLin) override;
+
+        /** @copydoc SliderJoint::SetDampingDirLin*/
+        void SetDampingDirLin(float dampingDirLin) override;
+
+        /** @copydoc SliderJoint::SetSoftnessDirAng*/
+        void SetSoftnessDirAng(float softnessDirAng) override;
+
+        /** @copydoc SliderJoint::SetRestitutionDirAng*/
+        void SetRestitutionDirAng(float restitutionDirAng) override;
+
+        /** @copydoc SliderJoint::SetDampingDirAng*/
+        void SetDampingDirAng(float dampingDirAng) override;
+
+        /** @copydoc SliderJoint::SetSoftnessLimLin*/
+        void SetSoftnessLimLin(float softnessLimLin) override;
+
+        /** @copydoc SliderJoint::SetRestitutionLimLin*/
+        void SetRestitutionLimLin(float restitutionLimLin) override;
+
+        /** @copydoc SliderJoint::SetDampingLimLin*/
+        void SetDampingLimLin(float dampingLimLin) override;
+
     private:
         /** @copydoc BulletJoint::BuildJoint */
         void BuildJoint() override;
