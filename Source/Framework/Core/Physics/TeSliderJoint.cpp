@@ -77,4 +77,79 @@ namespace te
     {
         _dampingLimLin = dampingLimLin;
     }
+
+    void SliderJoint::SetSoftnessLimAng(float softnessLimAng)
+    {
+        _softnessLimAng = softnessLimAng;
+    }
+
+    void SliderJoint::SetRestitutionLimAng(float restitutionLimAng)
+    {
+        _restitutionLimAng = restitutionLimAng;
+    }
+
+    void SliderJoint::SetDampingLimAng(float dampingLimAng)
+    {
+        _dampingLimAng = dampingLimAng;
+    }
+
+    void SliderJoint::SetSoftnessOrthoLin(float softnessOrthoLin)
+    {
+        _softnessOrthoLin = softnessOrthoLin;
+    }
+
+    void SliderJoint::SetRestitutionOrthoLin(float restitutionOrthoLin)
+    {
+        _restitutionOrthoLin = restitutionOrthoLin;
+    }
+
+    void SliderJoint::SetDampingOrthoLin(float dampingOrthoLin)
+    {
+        _dampingOrthoLin = dampingOrthoLin;
+    }
+
+    void SliderJoint::SetSoftnessOrthoAng(float softnessOrthoAng)
+    {
+        _softnessOrthoAng = softnessOrthoAng;
+    }
+
+    void SliderJoint::SetRestitutionOrthoAng(float restitutionOrthoAng)
+    {
+        _restitutionOrthoAng = restitutionOrthoAng;
+    }
+
+    void SliderJoint::SetDampingOrthoAng(float dampingOrthoAng)
+    {
+        _dampingOrthoAng = dampingOrthoAng;
+    }
+
+    void SliderJoint::SetPoweredLinMotor(bool poweredLinMotor)
+    {
+        _poweredLinMotor = poweredLinMotor;
+    }
+
+    void SliderJoint::SetTargetLinMotorVelocity(float targetLinMotorVelocity)
+    {
+        _targetLinMotorVelocity = targetLinMotorVelocity;
+    }
+
+    void SliderJoint::SetMaxLinMotorForce(float maxLinMotorForce)
+    {
+        _maxLinMotorForce = maxLinMotorForce;
+    }
+
+    void SliderJoint::SetPoweredAngMotor(bool poweredAngMotor)
+    {
+        _poweredAngMotor = poweredAngMotor;
+    }
+
+    void SliderJoint::SetTargetAngMotorVelocity(float targetAngMotorVelocity)
+    {
+        _targetAngMotorVelocity = targetAngMotorVelocity;
+    }
+
+    void SliderJoint::SetMaxAngMotorForce(float maxAngMotorForce)
+    {
+        _maxAngMotorForce = maxAngMotorForce;
+    }
 }

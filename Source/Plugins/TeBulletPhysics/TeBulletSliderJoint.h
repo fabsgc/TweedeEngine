@@ -76,6 +76,51 @@ namespace te
         /** @copydoc SliderJoint::SetDampingLimLin*/
         void SetDampingLimLin(float dampingLimLin) override;
 
+        /** @copydoc SliderJoint::SetSoftnessLimAng */
+        void SetSoftnessLimAng(float softnessLimAng) override;
+
+        /** @copydoc SliderJoint::SetRestitutionLimAng */
+        void SetRestitutionLimAng(float restitutionLimAng) override;
+
+        /** @copydoc SliderJoint::SetDampingLimAng */
+        void SetDampingLimAng(float dampingLimAng) override;
+
+        /** @copydoc SliderJoint::SetSoftnessOrthoLin */
+        void SetSoftnessOrthoLin(float softnessOrthoLin) override;
+
+        /** @copydoc SliderJoint::SetRestitutionOrthoLin */
+        void SetRestitutionOrthoLin(float restitutionOrthoLin) override;
+
+        /** @copydoc SliderJoint::SetDampingOrthoLin */
+        void SetDampingOrthoLin(float dampingOrthoLin) override;
+
+        /** @copydoc SliderJoint::SetSoftnessOrthoAng */
+        void SetSoftnessOrthoAng(float softnessOrthoAng) override;
+
+        /** @copydoc SliderJoint::SetRestitutionOrthoAng */
+        void SetRestitutionOrthoAng(float restitutionOrthoAng) override;
+
+        /** @copydoc SliderJoint::SetDampingOrthoAng */
+        void SetDampingOrthoAng(float dampingOrthoAng) override;
+
+        /** @copydoc SliderJoint::SetPoweredLinMotor */
+        void SetPoweredLinMotor(bool) override;
+
+        /** @copydoc SliderJoint::SetTargetLinMotorVelocity */
+        void SetTargetLinMotorVelocity(float targetLinMotorVelocity) override;
+
+        /** @copydoc SliderJoint::SetMaxLinMotorForce */
+        void SetMaxLinMotorForce(float maxLinMotorForce) override;
+
+        /** @copydoc SliderJoint::SetPoweredAngMotor */
+        void SetPoweredAngMotor(bool poweredAngMotor) override;
+
+        /** @copydoc SliderJoint::SetTargetAngMotorVelocity */
+        void SetTargetAngMotorVelocity(float targetAngMotorVelocity) override;
+
+        /** @copydoc SliderJoint::SetMaxAngMotorForce */
+        void SetMaxAngMotorForce(float maxAngMotorForce) override;
+
     private:
         /** @copydoc BulletJoint::BuildJoint */
         void BuildJoint() override;
