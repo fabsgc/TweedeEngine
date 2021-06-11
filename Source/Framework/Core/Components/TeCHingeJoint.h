@@ -23,55 +23,55 @@ namespace te
         void Clone(const HHingeJoint& c);
 
         /** @copydoc HingeJoint::SetSoftnessLimit */
-        virtual void SetSoftnessLimit(float softness);
+        void SetSoftnessLimit(float softness);
 
         /** @copydoc HingeJoint::GetSoftnessLimit */
         const float GetSoftnessLimit() const { return _softnessLimit; }
 
         /** @copydoc HingeJoint::SetBiasLimit */
-        virtual void SetBiasLimit(float bias);
+        void SetBiasLimit(float bias);
 
         /** @copydoc HingeJoint::GetBiasLimit */
         const float GetBiasLimit() const { return _biasLimit; }
 
         /** @copydoc HingeJoint::SetRelaxationLimit */
-        virtual void SetRelaxationLimit(float relaxation);
+        void SetRelaxationLimit(float relaxation);
 
         /** @copydoc HingeJoint::GetRelaxationLimit */
         const float GetRelaxationLimit() const { return _relaxationLimit; }
 
         /** @copydoc HingeJoint::SetHighLimit */
-        virtual void SetHighLimit(Degree highLimit);
+        void SetHighLimit(Degree highLimit);
 
         /** @copydoc HingeJoint::GetLimitHigh */
         const Degree GetLimitHigh() const { return _highLimit; }
 
         /** @copydoc HingeJoint::SetLowLimit */
-        virtual void SetLowLimit(Degree lowLimit);
+        void SetLowLimit(Degree lowLimit);
 
         /** @copydoc HingeJoint::GetLowLimit */
         const Degree GetLowLimit() const { return _lowLimit; }
 
         /** @copydoc HingeJoint::SetAngularOnly */
-        virtual void SetAngularOnly(bool angularOnly);
+        void SetAngularOnly(bool angularOnly);
 
         /** @copydoc HingeJoint::GetAngularOnly */
         const bool GetAngularOnly() const { return _angularOnly; }
 
         /** @copydoc HingeJoint::SetMotorEnabled */
-        virtual void SetMotorEnabled(bool motorEnabled);
+        void SetMotorEnabled(bool motorEnabled);
 
         /** @copydoc HingeJoint::GetMotorEnabled */
         const bool GetMotorEnabled() const { return _motorEnabled; }
 
         /** @copydoc HingeJoint::SetMaxMotorImpulse */
-        virtual void SetMaxMotorImpulse(float motorImpulse);
+        void SetMaxMotorImpulse(float motorImpulse);
 
         /** @copydoc HingeJoint::GetMaxMotorImpulse */
         const bool GetMaxMotorImpulse() const { return _motorImpulse; }
 
         /** @copydoc HingeJoint::SetMotorVelocity */
-        virtual void SetMotorVelocity(float motorVelocity);
+        void SetMotorVelocity(float motorVelocity);
 
         /** @copydoc HingeJoint::GetMotorVelocity */
         const bool GetMotorVelocity() const { return _motorVelocity; }

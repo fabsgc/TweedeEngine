@@ -66,7 +66,7 @@ namespace te
         _softnessLimit = Math::Clamp(softness, 0.0f, 1.0f);
 
         if (_internal != nullptr)
-            std::static_pointer_cast<HingeJoint>(_internal)->SetSoftnessLimit(softness);
+            std::static_pointer_cast<HingeJoint>(_internal)->SetSoftnessLimit(_softnessLimit);
     }
 
     void CHingeJoint::SetBiasLimit(float bias)
@@ -77,7 +77,7 @@ namespace te
         _biasLimit = Math::Clamp(bias, 0.0f, 1.0f);
 
         if (_internal != nullptr)
-            std::static_pointer_cast<HingeJoint>(_internal)->SetBiasLimit(bias);
+            std::static_pointer_cast<HingeJoint>(_internal)->SetBiasLimit(_biasLimit);
     }
 
     void CHingeJoint::SetRelaxationLimit(float relaxation)
@@ -88,7 +88,7 @@ namespace te
         _relaxationLimit = Math::Clamp(relaxation, 0.0f, 1.0f);
 
         if (_internal != nullptr)
-            std::static_pointer_cast<HingeJoint>(_internal)->SetRelaxationLimit(relaxation);
+            std::static_pointer_cast<HingeJoint>(_internal)->SetRelaxationLimit(_relaxationLimit);
     }
 
     void CHingeJoint::SetHighLimit(Degree highLimit)

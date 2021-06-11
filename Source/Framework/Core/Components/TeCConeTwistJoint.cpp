@@ -72,7 +72,7 @@ namespace te
         _damping = Math::Clamp(damping, 0.0f, FLT_MAX);
 
         if (_internal != nullptr)
-            std::static_pointer_cast<ConeTwistJoint>(_internal)->SetDamping(damping);
+            std::static_pointer_cast<ConeTwistJoint>(_internal)->SetDamping(_damping);
     }
 
     void CConeTwistJoint::SetSoftnessLimit(float softness)
@@ -83,7 +83,7 @@ namespace te
         _softnessLimit = Math::Clamp(softness, 0.0f, 1.0f);
 
         if (_internal != nullptr)
-            std::static_pointer_cast<ConeTwistJoint>(_internal)->SetSoftnessLimit(softness);
+            std::static_pointer_cast<ConeTwistJoint>(_internal)->SetSoftnessLimit(_softnessLimit);
     }
 
     void CConeTwistJoint::SetBiasLimit(float bias)
@@ -94,7 +94,7 @@ namespace te
         _biasLimit = Math::Clamp(bias, 0.0f, 1.0f);
 
         if (_internal != nullptr)
-            std::static_pointer_cast<ConeTwistJoint>(_internal)->SetBiasLimit(bias);
+            std::static_pointer_cast<ConeTwistJoint>(_internal)->SetBiasLimit(_biasLimit);
     }
 
     void CConeTwistJoint::SetRelaxationLimit(float relaxation)
@@ -105,7 +105,7 @@ namespace te
         _relaxationLimit = Math::Clamp(relaxation, 0.0f, 1.0f);
 
         if (_internal != nullptr)
-            std::static_pointer_cast<ConeTwistJoint>(_internal)->SetRelaxationLimit(relaxation);
+            std::static_pointer_cast<ConeTwistJoint>(_internal)->SetRelaxationLimit(_relaxationLimit);
     }
 
     void CConeTwistJoint::SetSwingSpan1(Degree deg)
@@ -116,7 +116,7 @@ namespace te
         _swingSpan1 = Math::Clamp(deg, Degree(0), Degree(90));
 
         if (_internal != nullptr)
-            std::static_pointer_cast<ConeTwistJoint>(_internal)->SetSwingSpan1(deg);
+            std::static_pointer_cast<ConeTwistJoint>(_internal)->SetSwingSpan1(_swingSpan1);
     }
 
     void CConeTwistJoint::SetSwingSpan2(Degree deg)
@@ -127,7 +127,7 @@ namespace te
         _swingSpan2 = Math::Clamp(deg, Degree(0), Degree(90));
 
         if (_internal != nullptr)
-            std::static_pointer_cast<ConeTwistJoint>(_internal)->SetSwingSpan2(deg);
+            std::static_pointer_cast<ConeTwistJoint>(_internal)->SetSwingSpan2(_swingSpan2);
     }
 
     void CConeTwistJoint::SetTwistSpan(Degree deg)
@@ -138,7 +138,7 @@ namespace te
         _twistSpan = Math::Clamp(deg, Degree(0), Degree(360));
 
         if (_internal != nullptr)
-            std::static_pointer_cast<ConeTwistJoint>(_internal)->SetTwistSpan(deg);
+            std::static_pointer_cast<ConeTwistJoint>(_internal)->SetTwistSpan(_twistSpan);
     }
 
     void CConeTwistJoint::SetAngularOnly(bool angularOnly)
