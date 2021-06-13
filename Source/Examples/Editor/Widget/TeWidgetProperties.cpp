@@ -1330,11 +1330,50 @@ namespace te
     bool WidgetProperties::ShowCSliderJointProperties()
     {
         bool hasChanged = false;
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
         SPtr<CSliderJoint> joint = std::static_pointer_cast<CSliderJoint>(_selections.ClickedComponent);
 
         if (ImGui::CollapsingHeader("Slider Joint", ImGuiTreeNodeFlags_DefaultOpen))
         {
+            // Lower Lin Limit
+            {
+                float lowerLinLimit = joint->GetLowerLinLimit();
+                if (ImGuiExt::RenderOptionFloat(lowerLinLimit, "##joint_option_lower_lin_limit", "Lower Lin. Limit", 0.0f, 1.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetLowerLinLimit(lowerLinLimit);
+                }
+            }
 
+            // Upper Lin Limit
+            {
+                float upperLinLimit = joint->GetUpperLinLimit();
+                if (ImGuiExt::RenderOptionFloat(upperLinLimit, "##joint_option_upper_lin_limit", "Upper Lin. Limit", 0.0f, 1.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetUpperLinLimit(upperLinLimit);
+                }
+            }
+
+            // Lower Ang Limit
+            {
+                float lowerAngLimit = joint->GetLowerAngLimit().ValueDegrees();
+                if (ImGuiExt::RenderOptionFloat(lowerAngLimit, "##joint_option_lower_ang_limit", "Lower Ang Limit", 0.0f, 360.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetLowerAngLimit(Degree(lowerAngLimit));
+                }
+            }
+
+            // Upper Ang Limit
+            {
+                float upperAngLimit = joint->GetUpperAngLimit().ValueDegrees();
+                if (ImGuiExt::RenderOptionFloat(upperAngLimit, "##joint_option_upper_ang_limit", "Upper Ang Limit", 0.0f, 360.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetUpperAngLimit(Degree(upperAngLimit));
+                }
+            }
         }
 
         if (ImGui::CollapsingHeader("Common", ImGuiTreeNodeFlags_DefaultOpen))
