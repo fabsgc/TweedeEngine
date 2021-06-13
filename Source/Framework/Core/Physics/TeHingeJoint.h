@@ -50,7 +50,7 @@ namespace te
         virtual void SetHighLimit(Degree highLimit);
 
         /** @copydoc SetHighLimit */
-        const Degree GetLimitHigh() const { return _highLimit; }
+        const Degree GetHighLimit() const { return _highLimit; }
 
         /** Angular Constraint Min Z */
         virtual void SetLowLimit(Degree lowLimit);

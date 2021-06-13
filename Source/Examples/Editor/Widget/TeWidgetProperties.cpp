@@ -1194,8 +1194,6 @@ namespace te
                     joint->SetAngularOnly(angularOnly);
                 }
             }
-
-
         }
 
         if (ImGui::CollapsingHeader("Common", ImGuiTreeNodeFlags_DefaultOpen))
@@ -1223,11 +1221,104 @@ namespace te
     bool WidgetProperties::ShowCHingeJointProperties()
     {
         bool hasChanged = false;
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
         SPtr<CHingeJoint> joint = std::static_pointer_cast<CHingeJoint>(_selections.ClickedComponent);
 
         if (ImGui::CollapsingHeader("Hinge Joint", ImGuiTreeNodeFlags_DefaultOpen))
         {
+            // Softness Limit
+            {
+                float softnessLimit = joint->GetSoftnessLimit();
+                if (ImGuiExt::RenderOptionFloat(softnessLimit, "##joint_option_limit_softness", "Limit Softness", 0.0f, 1.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetSoftnessLimit(softnessLimit);
+                }
+            }
 
+            // Bias Limit
+            {
+                float biasLimit = joint->GetBiasLimit();
+                if (ImGuiExt::RenderOptionFloat(biasLimit, "##joint_option_limit_bias", "Bias Limit", 0.0f, 1.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetBiasLimit(biasLimit);
+                }
+            }
+
+            // Relaxation Limit
+            {
+                float biasLimit = joint->GetRelaxationLimit();
+                if (ImGuiExt::RenderOptionFloat(biasLimit, "##joint_option_limit_relaxation", "Relaxation Limit", 0.0f, 1.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetRelaxationLimit(biasLimit);
+                }
+            }
+            ImGui::Separator();
+
+            // High Limit
+            {
+                float highLimit = joint->GetHighLimit().ValueDegrees();
+                if (ImGuiExt::RenderOptionFloat(highLimit, "##joint_option_high_limit", "High Limit", 0.0f, 360.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetHighLimit(Degree(highLimit));
+                }
+            }
+
+            // Low Limit
+            {
+                float lowLimit = joint->GetLowLimit().ValueDegrees();
+                if (ImGuiExt::RenderOptionFloat(lowLimit, "##joint_option_low_limit", "Low Limit", 0.0f, 360.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetLowLimit(Degree(lowLimit));
+                }
+            }
+            ImGui::Separator();
+
+            // Max Motor Impulse
+            {
+                float maxMotorImpulse = joint->GetMaxMotorImpulse();
+                if (ImGuiExt::RenderOptionFloat(maxMotorImpulse, "##joint_option_max_motor_impulse", "Motor Impulse", 0.0f, 32.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetMaxMotorImpulse(maxMotorImpulse);
+                }
+            }
+
+            // Motor Velocity
+            {
+                float motorVelocity = joint->GetMotorVelocity();
+                if (ImGuiExt::RenderOptionFloat(motorVelocity, "##joint_option_motor_velocity", "Motor Velocity", 0.0f, 32.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetMotorVelocity(motorVelocity);
+                }
+            }
+            ImGui::Separator();
+
+            // Motor Enabled
+            {
+                bool motorEnabled = joint->GetMotorEnabled();
+                if (ImGuiExt::RenderOptionBool(motorEnabled, "##joint_option_motor_enabled", "Motor Enabled"))
+                {
+                    hasChanged = true;
+                    joint->SetMotorEnabled(motorEnabled);
+                }
+            }
+            ImGui::Separator();
+
+            // Angular Only
+            {
+                bool angularOnly = joint->GetAngularOnly();
+                if (ImGuiExt::RenderOptionBool(angularOnly, "##joint_option_angular_only", "Angular Only"))
+                {
+                    hasChanged = true;
+                    joint->SetAngularOnly(angularOnly);
+                }
+            }
         }
 
         if (ImGui::CollapsingHeader("Common", ImGuiTreeNodeFlags_DefaultOpen))

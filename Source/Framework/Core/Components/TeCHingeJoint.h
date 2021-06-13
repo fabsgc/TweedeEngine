@@ -43,8 +43,8 @@ namespace te
         /** @copydoc HingeJoint::SetHighLimit */
         void SetHighLimit(Degree highLimit);
 
-        /** @copydoc HingeJoint::GetLimitHigh */
-        const Degree GetLimitHigh() const { return _highLimit; }
+        /** @copydoc HingeJoint::GetHighLimit */
+        const Degree GetHighLimit() const { return _highLimit; }
 
         /** @copydoc HingeJoint::SetLowLimit */
         void SetLowLimit(Degree lowLimit);
