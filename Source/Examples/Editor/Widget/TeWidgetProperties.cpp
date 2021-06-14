@@ -1330,7 +1330,7 @@ namespace te
     bool WidgetProperties::ShowCSliderJointProperties()
     {
         bool hasChanged = false;
-        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 165.0f;
         SPtr<CSliderJoint> joint = std::static_pointer_cast<CSliderJoint>(_selections.ClickedComponent);
 
         if (ImGui::CollapsingHeader("Slider Joint", ImGuiTreeNodeFlags_DefaultOpen))
@@ -1374,6 +1374,255 @@ namespace te
                     joint->SetUpperAngLimit(Degree(upperAngLimit));
                 }
             }
+            ImGui::Separator();
+
+            // Softness Dir Lin
+            {
+                float softnessDirLin = joint->GetSoftnessDirLin();
+                if (ImGuiExt::RenderOptionFloat(softnessDirLin, "##joint_option_softness_dir_lin", "Softness Dir. Lin.", 0.0f, 4.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetSoftnessDirLin(softnessDirLin);
+                }
+            }
+
+            // Restitution Dir Lin
+            {
+                float restitutionDirLin = joint->GetRestitutionDirLin();
+                if (ImGuiExt::RenderOptionFloat(restitutionDirLin, "##joint_option_restitution_dir_lin", "Restitution Dir. Lin.", 0.0f, 4.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetRestitutionDirLin(restitutionDirLin);
+                }
+            }
+
+            // Dampling Dir Lin
+            {
+                float dampingDirLin = joint->GetDampingDirLin();
+                if (ImGuiExt::RenderOptionFloat(dampingDirLin, "##joint_option_dampling_dir_lin", "Dampling Dir. Lin.", 0.0f, 4.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetDampingDirLin(dampingDirLin);
+                }
+            }
+            ImGui::Separator();
+
+            // Softness Dir Ang
+            {
+                float softnessDirAng = joint->GetSoftnessDirAng();
+                if (ImGuiExt::RenderOptionFloat(softnessDirAng, "##joint_option_softness_dir_ang", "Softness Dir. Ang.", 0.0f, 4.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetSoftnessDirAng(softnessDirAng);
+                }
+            }
+
+            // Restitution Dir Ang
+            {
+                float restitutionDirAng = joint->GetRestitutionDirAng();
+                if (ImGuiExt::RenderOptionFloat(restitutionDirAng, "##joint_option_resitution_dir_ang", "Resitution Dir. Ang.", 0.0f, 4.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetRestitutionDirAng(restitutionDirAng);
+                }
+            }
+
+            // Damping Dir Ang
+            {
+                float dampingDirAng = joint->GetDampingDirAng();
+                if (ImGuiExt::RenderOptionFloat(dampingDirAng, "##joint_option_damping_dir_ang", "Damping Dir. Ang.", 0.0f, 4.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetDampingDirAng(dampingDirAng);
+                }
+            }
+            ImGui::Separator();
+
+            // Softness Lim Lin
+            {
+                float softnessLimLin = joint->GetSoftnessLimLin();
+                if (ImGuiExt::RenderOptionFloat(softnessLimLin, "##joint_option_softness_lim_lin", "Softness Lim. Lin.", 0.0f, 4.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetSoftnessLimLin(softnessLimLin);
+                }
+            }
+
+            // Restitution Lim Lin
+            {
+                float restitutionLimLin = joint->GetRestitutionLimLin();
+                if (ImGuiExt::RenderOptionFloat(restitutionLimLin, "##joint_option_restitution_lim_lin", "Restitution Lim. Lin.", 0.0f, 4.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetRestitutionLimLin(restitutionLimLin);
+                }
+            }
+
+            // Damping Lim Lin
+            {
+                float dampingLimLin = joint->GetDampingLimLin();
+                if (ImGuiExt::RenderOptionFloat(dampingLimLin, "##joint_option_damping_lim_lin", "Damping Lim. Lin.", 0.0f, 4.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetDampingLimLin(dampingLimLin);
+                }
+            }
+            ImGui::Separator();
+
+            // Softness Lim Ang
+            {
+                float softnessLimAng = joint->GetSoftnessLimAng();
+                if (ImGuiExt::RenderOptionFloat(softnessLimAng, "##joint_option_softness_lim_ang", "Softness Lim. Ang.", 0.0f, 4.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetSoftnessLimAng(softnessLimAng);
+                }
+            }
+
+            // Restitution Lim Ang
+            {
+                float restitutionLimAng = joint->GetRestitutionLimAng();
+                if (ImGuiExt::RenderOptionFloat(restitutionLimAng, "##joint_option_restitution_lim_ang", "Restitution Lim. Ang.", 0.0f, 4.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetRestitutionLimAng(restitutionLimAng);
+                }
+            }
+
+            // Damping Lim Ang
+            {
+                float dampingLimAng = joint->GetDampingLimAng();
+                if (ImGuiExt::RenderOptionFloat(dampingLimAng, "##joint_option_damping_lim_ang", "Damping Lim. Ang.", 0.0f, 4.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetDampingLimAng(dampingLimAng);
+                }
+            }
+            ImGui::Separator();
+
+            // Softness Lim Ortho Lin
+            {
+                float softnessOrthoLin = joint->GetSoftnessOrthoLin();
+                if (ImGuiExt::RenderOptionFloat(softnessOrthoLin, "##joint_option_softness_lim_ortho_lin", "Softness Lim. Ortho Lin.", 0.0f, 4.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetSoftnessOrthoLin(softnessOrthoLin);
+                }
+            }
+
+            // Restitution Lim Ortho Lin
+            {
+                float restitutionOrthoLin = joint->GetRestitutionOrthoLin();
+                if (ImGuiExt::RenderOptionFloat(restitutionOrthoLin, "##joint_option_restitution_lim_ortho_lin", "Restitution Lim. Ortho Lin.", 0.0f, 4.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetRestitutionOrthoLin(restitutionOrthoLin);
+                }
+            }
+
+            // Damping Lim Ortho Lin
+            {
+                float dampingOrthoLin = joint->GetDampingOrthoLin();
+                if (ImGuiExt::RenderOptionFloat(dampingOrthoLin, "##joint_option_damping_lim_ortho_lin", "Damping Lim. Ortho Lin.", 0.0f, 4.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetDampingOrthoLin(dampingOrthoLin);
+                }
+            }
+            ImGui::Separator();
+
+            // Softness Lim Ortho Ang
+            {
+                float softnessOrthoAng = joint->GetSoftnessOrthoAng();
+                if (ImGuiExt::RenderOptionFloat(softnessOrthoAng, "##joint_option_softness_lim_ortho_ang", "Softness Lim. Ortho Ang.", 0.0f, 4.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetSoftnessOrthoAng(softnessOrthoAng);
+                }
+            }
+
+            // Restitution Lim Ortho Ang
+            {
+                float restitutionOrthoAng = joint->GetRestitutionOrthoAng();
+                if (ImGuiExt::RenderOptionFloat(restitutionOrthoAng, "##joint_option_restitution_lim_ortho_ang", "Restitution Lim. Ortho Ang.", 0.0f, 4.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetRestitutionOrthoAng(restitutionOrthoAng);
+                }
+            }
+
+            // Damping Lim Ortho Ang
+            {
+                float dampingOrthoAng = joint->GetDampingOrthoAng();
+                if (ImGuiExt::RenderOptionFloat(dampingOrthoAng, "##joint_option_damping_lim_ortho_ang", "Damping Lim. Ortho Ang.", 0.0f, 4.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetDampingOrthoAng(dampingOrthoAng);
+                }
+            }
+            ImGui::Separator();
+
+            // Target Lin Motor Velocity
+            {
+                float targetLinMotorVelocity = joint->GetTargetLinMotorVelocity();
+                if (ImGuiExt::RenderOptionFloat(targetLinMotorVelocity, "##joint_option_target_lin_motor_velocity", "Target Lin. Motor Vel.", 0.0f, 4.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetTargetLinMotorVelocity(targetLinMotorVelocity);
+                }
+            }
+
+            // Max Lin Motor Force
+            {
+                float maxLinMotorForce = joint->GetMaxLinMotorForce();
+                if (ImGuiExt::RenderOptionFloat(maxLinMotorForce, "##joint_option_target_max_lin_motor_force", "Max Lin. Motor Force", 0.0f, 4.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetMaxLinMotorForce(maxLinMotorForce);
+                }
+            }
+
+            // Target Ang Motor Velocity
+            {
+                float targetAngMotorVelocity = joint->GetTargetAngMotorVelocity();
+                if (ImGuiExt::RenderOptionFloat(targetAngMotorVelocity, "##joint_option_target_max_lin_motor_force", "Target Ang. Motor Vel.", 0.0f, 4.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetTargetAngMotorVelocity(targetAngMotorVelocity);
+                }
+            }
+
+            // Max Ang Motor Force
+            {
+                float maxAngMotorForce = joint->GetMaxAngMotorForce();
+                if (ImGuiExt::RenderOptionFloat(maxAngMotorForce, "##joint_option_target_max_ang_motor_force", "Max Ang. Motor Force", 0.0f, 4.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetMaxAngMotorForce(maxAngMotorForce);
+                }
+            }
+            ImGui::Separator();
+
+            // Power Lin Motor
+            {
+                bool poweredLinMotor = joint->GetPoweredLinMotor();
+                if (ImGuiExt::RenderOptionBool(poweredLinMotor, "##joint_option_powered_lin_motor", "Powered Lin. Motor"))
+                {
+                    hasChanged = true;
+                    joint->SetPoweredLinMotor(poweredLinMotor);
+                }
+            }
+
+            // Power Ang Motor
+            {
+                bool poweredAngMotor = joint->GetPoweredAngMotor();
+                if (ImGuiExt::RenderOptionBool(poweredAngMotor, "##joint_option_powered_ang_motor", "Powered Ang. Motor"))
+                {
+                    hasChanged = true;
+                    joint->SetPoweredAngMotor(poweredAngMotor);
+                }
+            }
+            ImGui::Separator();
         }
 
         if (ImGui::CollapsingHeader("Common", ImGuiTreeNodeFlags_DefaultOpen))
