@@ -157,8 +157,6 @@ namespace te
 
     void CSliderJoint::SetRestitutionDirLin(float restitutionDirLin)
     {
-        _restitutionDirLin = restitutionDirLin;
-
         if (_restitutionDirLin == restitutionDirLin)
             return;
 
@@ -170,8 +168,6 @@ namespace te
 
     void CSliderJoint::SetDampingDirLin(float dampingDirLin)
     {
-        _dampingDirLin = dampingDirLin;
-
         if (_dampingDirLin == dampingDirLin)
             return;
 
@@ -183,8 +179,6 @@ namespace te
 
     void CSliderJoint::SetSoftnessDirAng(float softnessDirAng)
     {
-        _softnessDirAng = softnessDirAng;
-
         if (_softnessDirAng == softnessDirAng)
             return;
 
@@ -196,8 +190,6 @@ namespace te
 
     void CSliderJoint::SetRestitutionDirAng(float restitutionDirAng)
     {
-        _restitutionDirAng = restitutionDirAng;
-
         if (_restitutionDirAng == restitutionDirAng)
             return;
 
@@ -209,8 +201,6 @@ namespace te
 
     void CSliderJoint::SetDampingDirAng(float dampingDirAng)
     {
-        _dampingDirAng = dampingDirAng;
-
         if (_dampingDirAng == dampingDirAng)
             return;
 
@@ -222,8 +212,6 @@ namespace te
 
     void CSliderJoint::SetSoftnessLimLin(float softnessLimLin)
     {
-        _softnessLimLin = softnessLimLin;
-
         if (_softnessLimLin == softnessLimLin)
             return;
 
@@ -235,8 +223,6 @@ namespace te
 
     void CSliderJoint::SetRestitutionLimLin(float restitutionLimLin)
     {
-        _restitutionLimLin = restitutionLimLin;
-
         if (_restitutionLimLin == restitutionLimLin)
             return;
 
@@ -248,8 +234,6 @@ namespace te
 
     void CSliderJoint::SetDampingLimLin(float dampingLimLin)
     {
-        _dampingLimLin = dampingLimLin;
-
         if (_dampingLimLin == dampingLimLin)
             return;
 
@@ -261,8 +245,6 @@ namespace te
 
     void CSliderJoint::SetSoftnessLimAng(float softnessLimAng)
     {
-        _softnessLimAng = softnessLimAng;
-
         if (_softnessLimAng == softnessLimAng)
             return;
 
@@ -274,8 +256,6 @@ namespace te
 
     void CSliderJoint::SetRestitutionLimAng(float restitutionLimAng)
     {
-        _restitutionLimAng = restitutionLimAng;
-
         if (_restitutionLimAng == restitutionLimAng)
             return;
 
@@ -287,8 +267,6 @@ namespace te
 
     void CSliderJoint::SetDampingLimAng(float dampingLimAng)
     {
-        _dampingLimAng = dampingLimAng;
-
         if (_dampingLimAng == dampingLimAng)
             return;
 
@@ -300,8 +278,6 @@ namespace te
 
     void CSliderJoint::SetSoftnessOrthoLin(float softnessOrthoLin)
     {
-        _softnessOrthoLin = softnessOrthoLin;
-
         if (_softnessOrthoLin == softnessOrthoLin)
             return;
 
@@ -313,8 +289,6 @@ namespace te
 
     void CSliderJoint::SetRestitutionOrthoLin(float restitutionOrthoLin)
     {
-        _restitutionOrthoLin = restitutionOrthoLin;
-
         if (_restitutionOrthoLin == restitutionOrthoLin)
             return;
 
@@ -326,8 +300,6 @@ namespace te
 
     void CSliderJoint::SetDampingOrthoLin(float dampingOrthoLin)
     {
-        _dampingOrthoLin = dampingOrthoLin;
-
         if (_dampingOrthoLin == dampingOrthoLin)
             return;
 
@@ -339,8 +311,6 @@ namespace te
 
     void CSliderJoint::SetSoftnessOrthoAng(float softnessOrthoAng)
     {
-        _softnessOrthoAng = softnessOrthoAng;
-
         if (_softnessOrthoAng == softnessOrthoAng)
             return;
 
@@ -352,8 +322,6 @@ namespace te
 
     void CSliderJoint::SetRestitutionOrthoAng(float restitutionOrthoAng)
     {
-        _restitutionOrthoAng = restitutionOrthoAng;
-
         if (_restitutionOrthoAng == restitutionOrthoAng)
             return;
 
@@ -365,8 +333,6 @@ namespace te
 
     void CSliderJoint::SetDampingOrthoAng(float dampingOrthoAng)
     {
-        _dampingOrthoAng = dampingOrthoAng;
-
         if (_dampingOrthoAng == dampingOrthoAng)
             return;
 
@@ -378,8 +344,6 @@ namespace te
 
     void CSliderJoint::SetPoweredLinMotor(bool poweredLinMotor)
     {
-        _poweredLinMotor = poweredLinMotor;
-
         if (_poweredLinMotor == poweredLinMotor)
             return;
 
@@ -391,8 +355,6 @@ namespace te
 
     void CSliderJoint::SetTargetLinMotorVelocity(float targetLinMotorVelocity)
     {
-        _targetLinMotorVelocity = targetLinMotorVelocity;
-
         if (_targetLinMotorVelocity == targetLinMotorVelocity)
             return;
 
@@ -404,8 +366,6 @@ namespace te
 
     void CSliderJoint::SetMaxLinMotorForce(float maxLinMotorForce)
     {
-        _maxLinMotorForce = maxLinMotorForce;
-
         if (_maxLinMotorForce == maxLinMotorForce)
             return;
 
@@ -417,8 +377,6 @@ namespace te
 
     void CSliderJoint::SetPoweredAngMotor(bool poweredAngMotor)
     {
-        _poweredAngMotor = poweredAngMotor;
-
         if (_poweredAngMotor == poweredAngMotor)
             return;
 
@@ -430,8 +388,6 @@ namespace te
 
     void CSliderJoint::SetTargetAngMotorVelocity(float targetAngMotorVelocity)
     {
-        _targetAngMotorVelocity = targetAngMotorVelocity;
-
         if (_targetAngMotorVelocity == targetAngMotorVelocity)
             return;
 
@@ -443,8 +399,6 @@ namespace te
 
     void CSliderJoint::SetMaxAngMotorForce(float maxAngMotorForce)
     {
-        _maxAngMotorForce = maxAngMotorForce;
-
         if (_maxAngMotorForce == maxAngMotorForce)
             return;
 

@@ -28,9 +28,6 @@ namespace te
     void CSphericalJoint::Clone(const HSphericalJoint& c)
     {
         CJoint::Clone(static_object_cast<CJoint>(c));
-
-        _offsetPivots[(int)JointBody::Anchor] = c->_offsetPivots[(int)JointBody::Anchor];
-        _offsetPivots[(int)JointBody::Target] = c->_offsetPivots[(int)JointBody::Target];
     }
 
     void CSphericalJoint::OnEnabled()
@@ -39,8 +36,7 @@ namespace te
 
         if (_internal)
         {
-            SetOffsetPivot(JointBody::Anchor, _offsetPivots[(int)JointBody::Anchor]);
-            SetOffsetPivot(JointBody::Target, _offsetPivots[(int)JointBody::Target]);
+           
         }
     }
 }

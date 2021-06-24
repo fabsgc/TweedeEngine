@@ -657,18 +657,20 @@ namespace te
             _components.erase(iter);
         }
         else
+        {
             TE_DEBUG("Trying to remove a component that doesn't exist on this SceneObject.");
+        }
     }
 
     void SceneObject::DestroyComponent(Component* component, bool immediate)
     {
         auto iterFind = std::find_if(_components.begin(), _components.end(),
-            [component](const HComponent& x)
-            {
+            [component](const HComponent& x) {
                 if (x.IsDestroyed())
                     return false;
 
-                return x._getHandleData()->Ptr->Object.get() == component; }
+                return x._getHandleData()->Ptr->Object.get() == component; 
+            }
         );
 
         if (iterFind != _components.end())

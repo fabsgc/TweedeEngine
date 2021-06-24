@@ -112,7 +112,6 @@ namespace te
          * Creates a new cone twist joint.
          *
          * @param[in]	scene		Scene to which to add the joint.
-         * @param[in]	desc		Settings describing the joint.
          */
         static SPtr<ConeTwistJoint> Create(PhysicsScene& scene);
 

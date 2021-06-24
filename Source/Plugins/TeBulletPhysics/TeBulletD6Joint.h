@@ -35,7 +35,37 @@ namespace te
         void SetOffsetPivot(JointBody body, const Vector3& offset) override;
 
         /** @copydoc Joint::IsBroken */
-        void SetIsBroken(bool isBroken);
+        void SetIsBroken(bool isBroken) override;
+
+        /** @copydoc SliderJoint::SetLowerLinLimit */
+        void SetLowerLinLimit(float lowerLinLimit) override;
+
+        /** @copydoc SliderJoint::SetUpperLinLimit */
+        void SetUpperLinLimit(float upperLinLimit) override;
+
+        /** @copydoc D6Joint::SetLowerAngLimit */
+        void SetLowerAngLimit(Degree lowerAngLimit) override;
+
+        /** @copydoc D6Joint::SetUpperAngLimit */
+        void SetUpperAngLimit(Degree upperAngLimit) override;
+
+        /** @copydoc D6Joint::SetLinearSpring */
+        void SetLinearSpring(bool linearSpring) override;
+
+        /** @copydoc D6Joint::SetAngularSpring */
+        void SetAngularSpring(bool angularSpring) override;
+
+        /** @copydoc D6Joint::SetLinearStiffness */
+        void SetLinearStiffness(float linearStiffness) override;
+
+        /** @copydoc D6Joint::SetAngularStiffness */
+        void SetAngularStiffness(float angularStiffness) override;
+
+        /** @copydoc D6Joint::SetLinearDamping */
+        void SetLinearDamping(float linearDamping) override;
+
+        /** @copydoc D6Joint::SetAngularDamping */
+        void SetAngularDamping(float angularDamping) override;
 
     private:
         /** @copydoc BulletJoint::BuildJoint */
@@ -46,5 +76,11 @@ namespace te
 
         /** @copydoc BulletJoint::ReleaseJoint */
         void ReleaseJoint() override;
+
+        /** @copydoc SliderJoint::SetLinearStiffness */
+        void SetStiffness();
+
+        /** @copydoc SliderJoint::SetLinearDamping */
+        void SetDamping();
     };
 }

@@ -129,19 +129,19 @@ namespace te
         /** @copydoc PhysicsScene::CreateSoftBody */
         SPtr<SoftBody> CreateSoftBody(const HSceneObject& linkedSO) override;
 
-        /** @copydoc PhysicsScene::CreateSoftBody */
+        /** @copydoc PhysicsScene::CreateConeTwistJoint */
         SPtr<ConeTwistJoint> CreateConeTwistJoint() override;
 
-        /** @copydoc PhysicsScene::CreateSoftBody */
+        /** @copydoc PhysicsScene::CreateHingeJoint */
         SPtr<HingeJoint> CreateHingeJoint() override;
 
-        /** @copydoc PhysicsScene::CreateSoftBody */
+        /** @copydoc PhysicsScene::CreateSphericalJoint */
         SPtr<SphericalJoint> CreateSphericalJoint() override;
 
-        /** @copydoc PhysicsScene::CreateSoftBody */
+        /** @copydoc PhysicsScene::CreateSliderJoint */
         SPtr<SliderJoint> CreateSliderJoint() override;
 
-        /** @copydoc PhysicsScene::CreateSoftBody */
+        /** @copydoc PhysicsScene::CreateD6Joint */
         SPtr<D6Joint> CreateD6Joint() override;
 
         /** @copydoc PhysicsScene::CreateBoxCollider */

@@ -1205,11 +1205,112 @@ namespace te
     bool WidgetProperties::ShowCD6JointProperties()
     {
         bool hasChanged = false;
+        const float width = ImGui::GetWindowContentRegionWidth() - 105.0f;
         SPtr<CD6Joint> joint = std::static_pointer_cast<CD6Joint>(_selections.ClickedComponent);
 
         if (ImGui::CollapsingHeader("D6 Joint", ImGuiTreeNodeFlags_DefaultOpen))
         {
+            // Lower Lin Limit
+            {
+                float lowerLinLimit = joint->GetLowerLinLimit();
+                if (ImGuiExt::RenderOptionFloat(lowerLinLimit, "##joint_option_lower_lin_limit", "Lower Lin. Limit", 0.0f, 1.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetLowerLinLimit(lowerLinLimit);
+                }
+            }
 
+            // Upper Lin Limit
+            {
+                float upperLinLimit = joint->GetUpperLinLimit();
+                if (ImGuiExt::RenderOptionFloat(upperLinLimit, "##joint_option_upper_lin_limit", "Upper Lin. Limit", 0.0f, 1.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetUpperLinLimit(upperLinLimit);
+                }
+            }
+
+            // Lower Ang. Limit
+            {
+                float lowerAngLimit = joint->GetLowerAngLimit().ValueDegrees();
+                if (ImGuiExt::RenderOptionFloat(lowerAngLimit, "##joint_option_lower_ang_limit", "Lower Ang. Limit", 0.0f, 90.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetLowerAngLimit(Degree(lowerAngLimit));
+                }
+            }
+
+            // Upper Ang. Limit
+            {
+                float upperAngLimit = joint->GetUpperAngLimit().ValueDegrees();
+                if (ImGuiExt::RenderOptionFloat(upperAngLimit, "##joint_option_upper_ang_limit", "Upper Ang. Limit", 0.0f, 90.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetUpperAngLimit(Degree(upperAngLimit));
+                }
+            }
+            ImGui::Separator();
+
+            // Linear Stiffness
+            {
+                float linearStiffness = joint->GetLinearStiffness();
+                if (ImGuiExt::RenderOptionFloat(linearStiffness, "##joint_option_linear_stiffness", "Lin. Stiffness", 0.0f, 1.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetLinearStiffness(linearStiffness);
+                }
+            }
+
+            // Angular Stiffness
+            {
+                float angularStiffness = joint->GetAngularStiffness();
+                if (ImGuiExt::RenderOptionFloat(angularStiffness, "##joint_option_angular_stiffness", "Ang. Stiffness", 0.0f, 1.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetAngularStiffness(angularStiffness);
+                }
+            }
+
+            // Linear Damping
+            {
+                float linearDamping = joint->GetLinearDamping();
+                if (ImGuiExt::RenderOptionFloat(linearDamping, "##joint_option_linear_damping", "Lin. Damping", 0.0f, 1.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetLinearDamping(linearDamping);
+                }
+            }
+
+            // Angular Damping
+            {
+                float angularDamping = joint->GetAngularDamping();
+                if (ImGuiExt::RenderOptionFloat(angularDamping, "##joint_option_angular_stiffness", "Ang. Damping", 0.0f, 1.0f, width))
+                {
+                    hasChanged = true;
+                    joint->SetAngularDamping(angularDamping);
+                }
+            }
+            ImGui::Separator();
+
+            // Linear Spring
+            {
+                bool linearSpring = joint->GetLinearSpring();
+                if (ImGuiExt::RenderOptionBool(linearSpring, "##joint_option_linear_spring", "Lin. Spring"))
+                {
+                    hasChanged = true;
+                    joint->SetLinearSpring(linearSpring);
+                }
+            }
+
+            // Angular Spring
+            {
+                bool angularSpring = joint->GetAngularSpring();
+                if (ImGuiExt::RenderOptionBool(angularSpring, "##joint_option_linear_spring", "Ang. Spring"))
+                {
+                    hasChanged = true;
+                    joint->SetAngularSpring(angularSpring);
+                }
+            }
         }
 
         if (ImGui::CollapsingHeader("Common", ImGuiTreeNodeFlags_DefaultOpen))
@@ -1355,20 +1456,20 @@ namespace te
                 }
             }
 
-            // Lower Ang Limit
+            // Lower Ang. Limit
             {
                 float lowerAngLimit = joint->GetLowerAngLimit().ValueDegrees();
-                if (ImGuiExt::RenderOptionFloat(lowerAngLimit, "##joint_option_lower_ang_limit", "Lower Ang Limit", 0.0f, 360.0f, width))
+                if (ImGuiExt::RenderOptionFloat(lowerAngLimit, "##joint_option_lower_ang_limit", "Lower Ang. Limit", 0.0f, 90.0f, width))
                 {
                     hasChanged = true;
                     joint->SetLowerAngLimit(Degree(lowerAngLimit));
                 }
             }
 
-            // Upper Ang Limit
+            // Upper Ang. Limit
             {
                 float upperAngLimit = joint->GetUpperAngLimit().ValueDegrees();
-                if (ImGuiExt::RenderOptionFloat(upperAngLimit, "##joint_option_upper_ang_limit", "Upper Ang Limit", 0.0f, 360.0f, width))
+                if (ImGuiExt::RenderOptionFloat(upperAngLimit, "##joint_option_upper_ang_limit", "Upper Ang. Limit", 0.0f, 90.0f, width))
                 {
                     hasChanged = true;
                     joint->SetUpperAngLimit(Degree(upperAngLimit));

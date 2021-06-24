@@ -24,7 +24,6 @@ namespace te
          * Creates a new spherical joint.
          *
          * @param[in]	scene		Scene to which to add the joint.
-         * @param[in]	desc		Settings describing the joint.
          */
         static SPtr<SphericalJoint> Create(PhysicsScene& scene);
     };

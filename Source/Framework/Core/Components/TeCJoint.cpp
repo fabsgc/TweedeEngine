@@ -55,6 +55,9 @@ namespace te
         _breakForce = c->_breakForce;
         _breakTorque = c->_breakTorque;
         _enableCollision = c->_enableCollision;
+
+        _offsetPivots[(int)JointBody::Anchor] = c->_offsetPivots[(int)JointBody::Anchor];
+        _offsetPivots[(int)JointBody::Target] = c->_offsetPivots[(int)JointBody::Target];
     }
 
     void CJoint::Update()
@@ -255,6 +258,9 @@ namespace te
             _internal->SetBreakForce(_breakForce);
             _internal->SetBreakTorque(_breakTorque);
             _internal->SetEnableCollision(_enableCollision);
+
+            SetOffsetPivot(JointBody::Anchor, _offsetPivots[(int)JointBody::Anchor]);
+            SetOffsetPivot(JointBody::Target, _offsetPivots[(int)JointBody::Target]);
         }
     }
 

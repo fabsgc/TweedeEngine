@@ -46,7 +46,7 @@ namespace te
         UUID materialUUID = (_currentMaterial) ? _currentMaterial->GetUUID() : empty;
         EditorResManager::ResourcesContainer& materials = EditorResManager::Instance().Get<Material>();
         EditorResManager::ResourcesContainer& textures = EditorResManager::Instance().Get<Texture>();
-        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 110.0f;
 
         const auto& ShowTexture = [&](UUID& uuid, bool& textureUsed, const char* id, const char* label, const char* textureName, 
             ImGuiExt::ComboOptions<UUID>& options, float width, bool disable = false)

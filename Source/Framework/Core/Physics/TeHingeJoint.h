@@ -86,7 +86,6 @@ namespace te
          * Creates a new hinge joint.
          *
          * @param[in]	scene		Scene to which to add the joint.
-         * @param[in]	desc		Settings describing the joint.
          */
         static SPtr<HingeJoint> Create(PhysicsScene& scene);
 
