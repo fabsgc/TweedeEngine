@@ -59,7 +59,7 @@ namespace te
     void BulletSphericalJoint::SetOffsetPivot(JointBody body, const Vector3& offset)
     {
         Joint::SetOffsetPivot(body, offset);
-        UpdateJoint();
+        BuildJoint();
     }
 
     void BulletSphericalJoint::SetIsBroken(bool isBroken)

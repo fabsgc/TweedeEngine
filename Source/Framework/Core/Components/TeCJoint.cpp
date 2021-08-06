@@ -206,6 +206,11 @@ namespace te
 
         _isBroken = isBroken;
 
+        if (!isBroken)
+            OnEnabled();
+        else
+            OnDisabled();
+
         if (_internal != nullptr)
             _internal->SetIsBroken(isBroken);
     }
@@ -371,5 +376,6 @@ namespace te
     {
         _isBroken = true;
         OnJointBreak();
+        DestroyInternal();
     }
 }

@@ -2,6 +2,7 @@
 
 #include "Scene/TeSceneManager.h"
 #include "Utility/TeTime.h"
+#include "../TeCoreApplication.h"
 
 namespace te
 {
@@ -164,7 +165,7 @@ namespace te
     {
         RestoreInternal();
 
-        if (_playOnStart)
+        if (_playOnStart && gCoreApplication().GetState().IsFlagSet(ApplicationState::Game))
             Play();
 
         Component::OnEnabled();
@@ -220,6 +221,7 @@ namespace te
         _priority = c->_priority;
         _minDistance = c->_minDistance;
         _attenuation = c->_attenuation;
+        _playOnStart = c->_playOnStart;
     }
 
     void CAudioSource::RestoreInternal()

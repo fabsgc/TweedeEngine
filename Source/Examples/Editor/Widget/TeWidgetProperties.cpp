@@ -2705,7 +2705,7 @@ namespace te
         // Break Force
         {
             float breakForce = joint->GetBreakForce();
-            if (ImGuiExt::RenderOptionFloat(breakForce, "##joint_option_break_force", "Break Force", 0.0f, std::numeric_limits<float>::max() / 2, width))
+            if (ImGuiExt::RenderOptionFloat(breakForce, "##joint_option_break_force", "Break Force", 0.0f, 65536.0f, width))
             {
                 joint->SetBreakForce(breakForce);
                 hasChanged = true;
@@ -2715,7 +2715,7 @@ namespace te
         // Break Torque
         {
             float breakTorque = joint->GetBreakTorque();
-            if (ImGuiExt::RenderOptionFloat(breakTorque, "##joint_option_break_torque", "Break Torque", 0.0f, std::numeric_limits<float>::max() / 2, width))
+            if (ImGuiExt::RenderOptionFloat(breakTorque, "##joint_option_break_torque", "Break Torque", 0.0f, 65536.0f, width))
             {
                 joint->SetBreakTorque(breakTorque);
                 hasChanged = true;

@@ -366,6 +366,11 @@ namespace te
 
     void BulletRigidBody::AddJoint(Joint* joint)
     {
+        // Depending on the order of components activations, sometimes we call AddJoint with a nullptr joint
+        // This is not an issue, it means that we try to create the rigid body before its attached joints
+        if (!joint)
+            return;
+
         BulletFJoint* fJoint = ((BulletFJoint*)joint->GetInternal());
         BulletJoint* bJoint = fJoint->GetJoint();
 
