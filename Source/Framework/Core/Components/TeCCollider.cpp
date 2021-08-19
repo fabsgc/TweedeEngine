@@ -1,5 +1,6 @@
 #include "Components/TeCCollider.h"
 #include "Scene/TeSceneObject.h"
+#include "Scene/TeSceneManager.h"
 #include "Physics/TePhysics.h"
 #include "Components/TeCRigidBody.h"
 
@@ -111,6 +112,42 @@ namespace te
                 _parent->AddCollider(static_object_cast<CCollider>(GetHandle()));
             }
         }
+    }
+
+    bool CCollider::RayCast(const Ray& ray, PhysicsQueryHit& hit, float maxDist) const
+    {
+        if (_internal == nullptr)
+            return false;
+
+        const SPtr<PhysicsScene>& physicsScene = GetSceneObject()->GetScene()->GetPhysicsScene();
+        return _internal->RayCast(physicsScene, ray, hit, maxDist);
+    }
+
+    bool CCollider::RayCast(const Vector3& origin, const Vector3& unitDir, PhysicsQueryHit& hit, float maxDist) const
+    {
+        if (_internal == nullptr)
+            return false;
+
+        const SPtr<PhysicsScene>& physicsScene = GetSceneObject()->GetScene()->GetPhysicsScene();
+        return _internal->RayCast(physicsScene, origin, unitDir, hit, maxDist);
+    }
+
+    bool CCollider::RayCast(const Ray& ray, Vector<PhysicsQueryHit>& hit, float maxDist) const
+    {
+        if (_internal == nullptr)
+            return false;
+
+        const SPtr<PhysicsScene>& physicsScene = GetSceneObject()->GetScene()->GetPhysicsScene();
+        return _internal->RayCast(physicsScene, ray, hit, maxDist);
+    }
+
+    bool CCollider::RayCast(const Vector3& origin, const Vector3& unitDir, Vector <PhysicsQueryHit>& hit, float maxDist) const
+    {
+        if (_internal == nullptr)
+            return false;
+
+        const SPtr<PhysicsScene>& physicsScene = GetSceneObject()->GetScene()->GetPhysicsScene();
+        return _internal->RayCast(physicsScene, origin, unitDir, hit, maxDist);
     }
 
     void CCollider::OnInitialized()

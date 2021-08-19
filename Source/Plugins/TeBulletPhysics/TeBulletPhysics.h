@@ -186,6 +186,14 @@ namespace te
         /** Remove Joint from the current scene */
         void RemoveJoint(btTypedConstraint* joint) const;
 
+        /** @copydoc Physics::RayCast */
+        bool RayCast(const Vector3& origin, const Vector3& unitDir, PhysicsQueryHit& hit,
+            float maxDist = FLT_MAX) const override;
+
+        /** @copydoc Physics::RayCast */
+        bool RayCast(const Vector3& origin, const Vector3& unitDir, Vector<PhysicsQueryHit>& hits,
+            float maxDist = FLT_MAX) const override;
+
     private:
         friend class BulletPhysics;
 

@@ -184,7 +184,7 @@ namespace te
         }
     }
 
-    FileStream::FileStream(const String& path, UINT16 accessMode)
+    FileStream::FileStream(const String& path, UINT8 accessMode)
         : DataStream(path, accessMode)
         , _path(path)
     {
@@ -193,7 +193,7 @@ namespace te
         Open();
     }
 
-    FileStream::FileStream(UINT16 accessMode)
+    FileStream::FileStream(UINT8 accessMode)
         : DataStream(accessMode)
         , _path("")
     { }
@@ -295,7 +295,7 @@ namespace te
 
     SPtr<DataStream> FileStream::Clone(bool copyData) const
     {
-        return te_shared_ptr_new<FileStream>(_path, (AccessMode)GetAccessMode());
+        return te_shared_ptr_new<FileStream>(_path, GetAccessMode());
     }
 
     void FileStream::Close()
@@ -462,7 +462,7 @@ namespace te
 		return *this;
 	}
 
-	MemoryDataStream& MemoryDataStream::operator= (MemoryDataStream&& other)
+	MemoryDataStream& MemoryDataStream::operator= (MemoryDataStream&& other) noexcept
 	{
 		if (this == &other)
 			return *this;
@@ -471,7 +471,7 @@ namespace te
 			te_free(_data);
 
 		this->_name = std::move(other._name);
-		this->_access = std::exchange(other._access, (UINT16)0);
+		this->_access = std::exchange(other._access, static_cast<UINT8>(0));
 		this->_cursor = std::exchange(other._cursor, nullptr);
 		this->_end = std::exchange(other._end, nullptr);
 		this->_data = std::exchange(other._data, nullptr);

@@ -36,7 +36,7 @@ namespace te
         /** Creates an object representing the physics scene. Must be manually released via destroyPhysicsScene(). */
         virtual SPtr<PhysicsScene> CreatePhysicsScene() = 0;
 
-        /** Performs any physics operations that arent tied to the fixed update interval. Should be called once per frame. */
+        /** Performs any physics operations. Should be called once per frame. */
         virtual void Update() { }
 
         /** Determines if audio reproduction is paused globally. */
@@ -45,7 +45,7 @@ namespace te
         /** @copydoc SetPaused */
         virtual bool IsPaused() const = 0;
 
-        /** Enable or disable debug informations globally */
+        /** Enable or disable debug information globally */
         virtual void SetDebug(bool debug) = 0;
 
         /** @copydoc SetDebug */
@@ -180,6 +180,30 @@ namespace te
          * @param[in]	rotation	Position of the collider relative to its parent
          */
         virtual SPtr<HeightFieldCollider> CreateHeightFieldCollider(const Vector3& position, const Quaternion& rotation) = 0;
+
+        /**
+         * Checks does the ray hit the provided collider.
+         *
+         * @param[in]	origin		Origin of the ray to check.
+         * @param[in]	unitDir		Unit direction of the ray to check.
+         * @param[out]	hit			Information about the hit. Valid only if the method returns true.
+         * @param[in]	maxDist		Maximum distance from the ray origin to search for hits.
+         * @return					True if the ray has hit the collider.
+         */
+        virtual bool RayCast(const Vector3& origin, const Vector3& unitDir, PhysicsQueryHit& hit,
+            float maxDist = FLT_MAX) const = 0;
+
+        /**
+         * Checks does the ray hit the provided collider.
+         *
+         * @param[in]	origin		Origin of the ray to check.
+         * @param[in]	unitDir		Unit direction of the ray to check.
+         * @param[out]	hits		Information about all the hits. Valid only if the method returns true.
+         * @param[in]	maxDist		Maximum distance from the ray origin to search for hits.
+         * @return					True if the ray has hit the collider.
+         */
+        virtual bool RayCast(const Vector3& origin, const Vector3& unitDir, Vector<PhysicsQueryHit>& hits,
+            float maxDist = FLT_MAX) const = 0;
 
     protected:
         PhysicsScene() = default;

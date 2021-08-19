@@ -26,20 +26,20 @@ namespace te
         };
 
         /** Creates an unnamed stream. */
-        DataStream(UINT16 accessMode = READ)
+        DataStream(UINT8 accessMode = static_cast<UINT8>(READ))
             : _access(accessMode)
         { }
 
         /** Creates a named stream. */
-        DataStream(const String& name, UINT16 accessMode = READ)
+        DataStream(const String& name, UINT8 accessMode = static_cast<UINT8>(READ))
             : _name(name)
-            , _access(accessMode) 
+            , _access(accessMode)
         { }
 
         virtual ~DataStream() = default;
 
         const String& GetName() const { return _name; }
-        UINT16 GetAccessMode() const { return _access; }
+        UINT8 GetAccessMode() const { return _access; }
 
         virtual bool IsReadable() const { return (_access & READ) != 0; }
         virtual bool IsWriteable() const { return (_access & WRITE) != 0; }
@@ -173,15 +173,14 @@ namespace te
 
         String _name;
         size_t _size = 0;
-        UINT16 _access;
-
+        UINT8 _access;
     };
 
     class TE_UTILITY_EXPORT FileStream : public DataStream
     {
     public:
-        FileStream(UINT16 mode = READ);
-        FileStream(const String& path, UINT16 mode = READ);
+        FileStream(UINT8 mode = static_cast<UINT8>(READ));
+        FileStream(const String& path, UINT8 mode = static_cast<UINT8>(READ));
         ~FileStream();
 
         /** @copydoc DataStream::IsFile */
@@ -282,7 +281,7 @@ namespace te
         ~MemoryDataStream();
 
         MemoryDataStream& operator= (const MemoryDataStream& other);
-        MemoryDataStream& operator= (MemoryDataStream&& other);
+        MemoryDataStream& operator= (MemoryDataStream&& other) noexcept;
 
         /** @copydoc DataStream::isFile */
         virtual bool IsFile() const override { return false; }

@@ -525,6 +525,36 @@ namespace te
         _world->removeConstraint(joint);
     }
 
+    bool BulletScene::RayCast(const Vector3& origin, const Vector3& unitDir, PhysicsQueryHit& hit,
+        float maxDist) const
+    {
+        Vector3 to = origin + unitDir * maxDist;
+        btVector3 btFrom = ToBtVector3(origin);
+        btVector3 btTo = ToBtVector3(to);
+
+        btCollisionWorld::ClosestRayResultCallback closestResults(btFrom, btTo);
+        closestResults.m_flags |= btTriangleRaycastCallback::kF_FilterBackfaces;
+
+        _world->rayTest(btFrom, btTo, closestResults);
+
+        return true;
+    }
+
+    bool BulletScene::RayCast(const Vector3& origin, const Vector3& unitDir, Vector<PhysicsQueryHit>& hits,
+        float maxDist) const
+    {
+        Vector3 to = origin + unitDir * maxDist;
+        btVector3 btFrom = ToBtVector3(origin);
+        btVector3 btTo = ToBtVector3(to);
+
+        btCollisionWorld::AllHitsRayResultCallback allResults(btFrom, btTo);
+        allResults.m_flags |= btTriangleRaycastCallback::kF_KeepUnflippedNormal;
+
+        _world->rayTest(btFrom, btTo, allResults);
+
+        return true;
+    }
+
     BulletPhysics& gBulletPhysics()
     {
         return static_cast<BulletPhysics&>(BulletPhysics::Instance());

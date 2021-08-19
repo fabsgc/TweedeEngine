@@ -41,6 +41,7 @@
 #include "BulletCollision/Gimpact/btGImpactCollisionAlgorithm.h"
 #include "BulletCollision/CollisionShapes/btTriangleMeshShape.h"
 #include "BulletCollision/CollisionShapes/btTriangleIndexVertexArray.h"
+#include "BulletCollision/NarrowPhaseCollision/btRaycastCallback.h"
 
 #if TE_COMPILER == TE_COMPILER_MSVC
 #   pragma warning(pop)

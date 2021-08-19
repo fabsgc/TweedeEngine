@@ -2,6 +2,7 @@
 #include "Physics/TePhysics.h"
 #include "Physics/TeBody.h"
 #include "Physics/TeFCollider.h"
+#include "Math/TeRay.h"
 
 namespace te
 {
@@ -48,5 +49,25 @@ namespace te
     const Quaternion& Collider::GetRotation() const
     {
         return _internal->GetRotation();
+    }
+
+    bool Collider::RayCast(const SPtr<PhysicsScene>& physicsScene, const Ray& ray, PhysicsQueryHit& hit, float maxDist) const
+    {
+        return physicsScene->RayCast(ray.GetOrigin(), ray.GetDirection(), hit, maxDist);
+    }
+
+    bool Collider::RayCast(const SPtr<PhysicsScene>& physicsScene, const Vector3& origin, const Vector3& unitDir, PhysicsQueryHit& hit, float maxDist) const
+    {
+        return physicsScene->RayCast(origin, unitDir, hit, maxDist);
+    }
+
+    bool Collider::RayCast(const SPtr<PhysicsScene>& physicsScene, const Ray& ray, Vector<PhysicsQueryHit>& hits, float maxDist) const
+    {
+        return physicsScene->RayCast(ray.GetOrigin(), ray.GetDirection(), hits, maxDist);
+    }
+
+    bool Collider::RayCast(const SPtr<PhysicsScene>& physicsScene, const Vector3& origin, const Vector3& unitDir, Vector<PhysicsQueryHit>& hits, float maxDist) const
+    {
+        return physicsScene->RayCast(origin, unitDir, hits, maxDist);
     }
 }

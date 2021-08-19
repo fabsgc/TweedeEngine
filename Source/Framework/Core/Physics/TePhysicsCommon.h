@@ -65,12 +65,13 @@ namespace te
     {
         Vector3 Point; /**< Position of the hit in world space. */
         Vector3 Normal; /**< Normal to the surface that was hit. */
+        float Distance = 0.0f; /**< Distance from the query origin to the hit position. */
         
         /**
-         * Component of the body that was hit. This may be null if the hit collider has no owner component, in which
-         * case refer to #HitBodyRaw.
+         * Component of the collider that was hit. This may be null if the hit collider has no owner component, in which
+         * case refer to #HitColliderRaw.
          */
-        HBody HitBody;
-        Body* HitBodyRaw = nullptr; /**< Body that was hit. */
+        HCollider HitCollider;
+        Collider* HitColliderRaw = nullptr; /**< Collider that was hit. */
     };
 }

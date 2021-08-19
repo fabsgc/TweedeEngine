@@ -58,6 +58,50 @@ namespace te
         /** @copydoc Collider::GetPosition */
         const Quaternion& GetRotation() const { return _rotation; }
 
+        /**
+         * Checks does the ray hit this collider.
+         *
+         * @param[in]	ray		        Ray to check.
+         * @param[out]	hit		        Information about the hit. Valid only if the method returns true.
+         * @param[in]	maxDist	        Maximum distance from the ray origin to search for hits.
+         * @return				        True if the ray has hit the collider.
+         */
+        bool RayCast(const Ray& ray, PhysicsQueryHit& hit, float maxDist = FLT_MAX) const;
+
+        /**
+         * Checks does the ray hit this collider.
+         *
+         * @param[in]	origin	        Origin of the ray to check.
+         * @param[in]	unitDir	        Unit direction of the ray to check.
+         * @param[out]	hit		        Information about the hit. Valid only if the method returns true.
+         * @param[in]	maxDist	        Maximum distance from the ray origin to search for hits.
+         * @return				        True if the ray has hit the collider.
+         */
+        bool RayCast(const Vector3& origin, const Vector3& unitDir, PhysicsQueryHit& hit,
+            float maxDist = FLT_MAX) const;
+
+        /**
+         * Checks does the ray hit this collider.
+         *
+         * @param[in]	ray		        Ray to check.
+         * @param[out]	hit		        Information about all the hits. Valid only if the method returns true.
+         * @param[in]	maxDist	        Maximum distance from the ray origin to search for hits.
+         * @return				        True if the ray has hit the collider.
+         */
+        bool RayCast(const Ray& ray, Vector<PhysicsQueryHit>& hit, float maxDist = FLT_MAX) const;
+
+        /**
+         * Checks does the ray hit this collider.
+         *
+         * @param[in]	origin	        Origin of the ray to check.
+         * @param[in]	unitDir	        Unit direction of the ray to check.
+         * @param[out]	hit		        Information about all the hits. Valid only if the method returns true.
+         * @param[in]	maxDist	        Maximum distance from the ray origin to search for hits.
+         * @return				        True if the ray has hit the collider.
+         */
+        bool RayCast(const Vector3& origin, const Vector3& unitDir, Vector <PhysicsQueryHit>& hit,
+            float maxDist = FLT_MAX) const;
+
         /** @copydoc Collider::GetBody */
         HBody GetBody() const { return _parent; }
 

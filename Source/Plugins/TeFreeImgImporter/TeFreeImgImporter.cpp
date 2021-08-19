@@ -346,6 +346,7 @@ namespace te
                 srcElemSize = 1;
                 break;
             case 16:
+                // TODO
                 // Determine 555 or 565 from green mask
                 // cannot be 16-bit greyscale since that's FIT_UINT16
                 if (FreeImage_GetGreenMask(fiBitmap) == FI16_565_GREEN_MASK)
@@ -359,7 +360,7 @@ namespace te
                     return nullptr;
                     // FreeImage doesn't support 4444 format so must be 1555
                 }
-                srcElemSize = 2;
+                // srcElemSize = 2; TODO
                 break;
             case 24:
                 // FreeImage differs per platform
