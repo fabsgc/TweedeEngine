@@ -26,7 +26,7 @@ namespace te
         };
 
     public:
-        /** When we load a mesh using GUI, we can generate materials to apply on its submeshes */
+        /** When we load a mesh using with GUI, we can generate materials to apply on its submeshes */
         static void ImportMeshMaterials(HMesh& mesh);
 
         /** Generate a render texture using data given in parameters */

@@ -488,6 +488,19 @@ set (TE_CORE_SRC_PROFILING
     "Core/Profiling/TeProfilerGPU.cpp"
 )
 
+set (TE_CORE_INC_PICKING
+    "Core/Picking/TePicking.h"
+    "Core/Picking/TePickingMat.h"
+    "Core/Picking/TeHudPickingMat.h"
+    "Core/Picking/TePickingUtils.h"
+)
+set (TE_CORE_SRC_PICKING
+    "Core/Picking/TePicking.cpp"
+    "Core/Picking/TePickingMat.cpp"
+    "Core/Picking/TeHudPickingMat.cpp"
+    "Core/Picking/TePickingUtils.cpp"
+)
+
 if (WIN32)
     list(APPEND TE_CORE_INC_PLATFORM ${TE_CORE_INC_PLATFORM_WIN32})
     list(APPEND TE_CORE_SRC_PLATFORM ${TE_CORE_SRC_PLATFORM_WIN32})
@@ -520,6 +533,7 @@ source_group("Core\\Gui" FILES ${TE_CORE_INC_GUI} ${TE_CORE_SRC_GUI})
 source_group("Core\\Scripting" FILES ${TE_CORE_INC_SCRIPTING} ${TE_CORE_SRC_SCRIPTING})
 source_group("Core\\Physics" FILES ${TE_CORE_INC_PHYSICS} ${TE_CORE_SRC_PHYSICS})
 source_group("Core\\Profiling" FILES ${TE_CORE_INC_PROFILING} ${TE_CORE_SRC_PROFILING})
+source_group("Core\\Picking" FILES ${TE_CORE_INC_PICKING} ${TE_CORE_SRC_PICKING})
 source_group("Core" FILES ${TE_CORE_INC_NOFILTER} ${TE_CORE_SRC_NOFILTER})
 
 set(TE_CORE_SRC
@@ -567,4 +581,6 @@ set(TE_CORE_SRC
     ${TE_CORE_SRC_PHYSICS}
     ${TE_CORE_INC_PROFILING}
     ${TE_CORE_SRC_PROFILING}
+    ${TE_CORE_INC_PICKING}
+    ${TE_CORE_SRC_PICKING}
 )

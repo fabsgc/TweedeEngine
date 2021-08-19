@@ -15,6 +15,9 @@ namespace te
     class PickingMat;
     class HudPickingMat;
 
+    /**
+     * Class that controls GPU Picking of GameObjects.
+     */
     class Picking
     {
     public:
