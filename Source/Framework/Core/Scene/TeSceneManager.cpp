@@ -30,6 +30,26 @@ namespace te
         , _physicsScene(physicsScene)
     { }
 
+    bool SceneInstance::RayCast(const Ray& ray, PhysicsQueryHit& hit, float maxDist) const
+    {
+        return RayCast(ray.GetOrigin(), ray.GetDirection(), hit, maxDist);
+    }
+
+    bool SceneInstance::RayCast(const Vector3& origin, const Vector3& unitDir, PhysicsQueryHit& hit, float maxDist) const
+    {
+        return _physicsScene->RayCast(origin, unitDir, hit, maxDist);
+    }
+
+    bool SceneInstance::RayCast(const Ray& ray, Vector<PhysicsQueryHit>& hits, float maxDist) const
+    {
+        return RayCast(ray.GetOrigin(), ray.GetDirection(), hits, maxDist);
+    }
+
+    bool SceneInstance::RayCast(const Vector3& origin, const Vector3& unitDir, Vector<PhysicsQueryHit>& hits, float maxDist) const
+    {
+        return _physicsScene->RayCast(origin, unitDir, hits, maxDist);
+    }
+
     SceneManager::SceneManager()
         : _mainScene(te_shared_ptr_new<SceneInstance>(
             "Main", SceneObject::CreateInternal("SceneRoot"), gPhysics().CreatePhysicsScene()))

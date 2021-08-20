@@ -73,5 +73,12 @@ namespace te
          */
         HCollider HitCollider;
         Collider* HitColliderRaw = nullptr; /**< Collider that was hit. */
+
+        /**
+         * Component of the body that was hit. This may be null if the hit body has no owner component, in which
+         * case refer to #HitBodyRaw.
+         */
+        HBody HitBody;
+        Body* HitBodyRaw = nullptr;
     };
 }

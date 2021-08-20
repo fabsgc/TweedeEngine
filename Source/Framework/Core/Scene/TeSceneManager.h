@@ -3,6 +3,7 @@
 #include "TeCorePrerequisites.h"
 #include "Utility/TeEvent.h"
 #include "TeSceneObject.h"
+#include "Physics/TePhysicsCommon.h"
 
 namespace te
 {
@@ -44,6 +45,50 @@ namespace te
          * physics plugin used.
          */
         const SPtr<PhysicsScene>& GetPhysicsScene() const { return _physicsScene; }
+
+        /**
+         * Checks does the ray hit a collider (first only).
+         *
+         * @param[in]	ray		        Ray to check.
+         * @param[out]	hit		        Information about the hit. Valid only if the method returns true.
+         * @param[in]	maxDist	        Maximum distance from the ray origin to search for hits.
+         * @return				        True if the ray has hit the collider.
+         */
+        bool RayCast(const Ray& ray, PhysicsQueryHit& hit, float maxDist = FLT_MAX) const;
+
+        /**
+         * Checks does the ray hit a collider (first only).
+         *
+         * @param[in]	origin	        Origin of the ray to check.
+         * @param[in]	unitDir	        Unit direction of the ray to check.
+         * @param[out]	hit		        Information about the hit. Valid only if the method returns true.
+         * @param[in]	maxDist	        Maximum distance from the ray origin to search for hits.
+         * @return				        True if the ray has hit the collider.
+         */
+        bool RayCast(const Vector3& origin, const Vector3& unitDir, PhysicsQueryHit& hit,
+            float maxDist = FLT_MAX) const;
+
+        /**
+         * Checks does the ray hit colliders.
+         *
+         * @param[in]	ray		        Ray to check.
+         * @param[out]	hit		        Information about all the hits. Valid only if the method returns true.
+         * @param[in]	maxDist	        Maximum distance from the ray origin to search for hits.
+         * @return				        True if the ray has hit the collider.
+         */
+        bool RayCast(const Ray& ray, Vector<PhysicsQueryHit>& hit, float maxDist = FLT_MAX) const;
+
+        /**
+         * Checks does the ray hit colliders.
+         *
+         * @param[in]	origin	        Origin of the ray to check.
+         * @param[in]	unitDir	        Unit direction of the ray to check.
+         * @param[out]	hit		        Information about all the hits. Valid only if the method returns true.
+         * @param[in]	maxDist	        Maximum distance from the ray origin to search for hits.
+         * @return				        True if the ray has hit the collider.
+         */
+        bool RayCast(const Vector3& origin, const Vector3& unitDir, Vector <PhysicsQueryHit>& hit,
+            float maxDist = FLT_MAX) const;
 
     private:
         friend class SceneManager;

@@ -21,6 +21,8 @@
 #include "Utility/TeTime.h"
 #include "RenderAPI/TeRenderAPI.h"
 #include "RenderAPI/TeRenderTexture.h"
+#include "Components/TeCCollider.h"
+#include "Components/TeCBody.h"
 
 using namespace std::placeholders;
 
@@ -537,7 +539,35 @@ namespace te
 
         _world->rayTest(btFrom, btTo, closestResults);
 
-        return true;
+        if (closestResults.hasHit())
+        {
+            hit.Normal = ToVector3(closestResults.m_hitNormalWorld);
+            hit.Point = ToVector3(closestResults.m_hitPointWorld);
+            hit.Distance = origin.Distance(hit.Point);
+            hit.HitBodyRaw = static_cast<Body*>(closestResults.m_collisionObject->getUserPointer());
+            hit.HitColliderRaw = static_cast<Collider*>(closestResults.m_collisionObject->getCollisionShape()->getUserPointer());
+
+            TE_ASSERT_ERROR((!!hit.HitBodyRaw), "RayCast : HitBodyRaw is null");
+            // TE_ASSERT_ERROR((!!hit.HitColliderRaw), "RayCast : HitColliderRaw is null");
+
+            if (hit.HitBodyRaw)
+            {
+                CBody* bodyComponent = (CBody*)hit.HitBodyRaw->GetOwner(PhysicsOwnerType::Component);
+                if (bodyComponent != nullptr)
+                    hit.HitBody = static_object_cast<CBody>(bodyComponent->GetHandle());
+            }
+            
+            if (hit.HitColliderRaw)
+            {
+                CCollider* colliderComponent = (CCollider*)hit.HitColliderRaw->GetOwner(PhysicsOwnerType::Component);
+                if (colliderComponent != nullptr)
+                    hit.HitCollider = static_object_cast<CCollider>(colliderComponent->GetHandle());
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
     bool BulletScene::RayCast(const Vector3& origin, const Vector3& unitDir, Vector<PhysicsQueryHit>& hits,
@@ -549,10 +579,42 @@ namespace te
 
         btCollisionWorld::AllHitsRayResultCallback allResults(btFrom, btTo);
         allResults.m_flags |= btTriangleRaycastCallback::kF_KeepUnflippedNormal;
+        allResults.m_flags |= btTriangleRaycastCallback::kF_UseSubSimplexConvexCastRaytest;
 
         _world->rayTest(btFrom, btTo, allResults);
 
-        return true;
+        for (int i = 0; i < allResults.m_hitFractions.size(); i++)
+        {
+            PhysicsQueryHit hit;
+
+            hit.Normal = ToVector3(allResults.m_hitNormalWorld[i]);
+            hit.Point = ToVector3(allResults.m_hitPointWorld[i]);
+            hit.Distance = origin.Distance(hit.Point);
+            hit.HitBodyRaw = static_cast<Body*>(allResults.m_collisionObjects[i]->getUserPointer());
+            hit.HitColliderRaw = static_cast<Collider*>(allResults.m_collisionObjects[i]->getCollisionShape()->getUserPointer());
+
+            TE_ASSERT_ERROR((!!hit.HitBodyRaw), "RayCast : HitBodyRaw is null");
+            // TE_ASSERT_ERROR((!!hit.HitColliderRaw), "RayCast : HitColliderRaw is null");
+
+            if (hit.HitBodyRaw)
+            {
+                CBody* bodyComponent = (CBody*)hit.HitBodyRaw->GetOwner(PhysicsOwnerType::Component);
+                if (bodyComponent != nullptr)
+                    hit.HitBody = static_object_cast<CBody>(bodyComponent->GetHandle());
+            }
+            
+            if (hit.HitColliderRaw)
+            {
+                CCollider* component = (CCollider*)hit.HitColliderRaw->GetOwner(PhysicsOwnerType::Component);
+                if (component != nullptr)
+                    hit.HitCollider = static_object_cast<CCollider>(component->GetHandle());
+            }
+            
+
+            hits.push_back(hit);
+        }
+
+        return hits.size() > 0;
     }
 
     BulletPhysics& gBulletPhysics()

@@ -175,6 +175,16 @@ namespace te
             if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DockingEnable)
                 EndGui();
         }
+
+        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Physics);
+        if (!gPhysics().IsPaused() && isRunning)
+        {
+            PhysicsQueryHit hit;
+            if (gSceneManager().GetMainScene()->RayCast(Vector3(0.0f, 10.0f, 0.0f), Vector3(0.0f, -1.0f, 0.0f), hit))
+            {
+                TE_DEBUG("Something hit");
+            }
+        }
     }
 
     void Editor::PostRender()
