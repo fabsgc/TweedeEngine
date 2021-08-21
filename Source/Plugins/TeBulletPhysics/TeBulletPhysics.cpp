@@ -552,14 +552,14 @@ namespace te
 
             if (hit.HitBodyRaw)
             {
-                CBody* bodyComponent = (CBody*)hit.HitBodyRaw->GetOwner(PhysicsOwnerType::Component);
+                CBody* bodyComponent = static_cast<CBody*>(hit.HitBodyRaw->GetOwner(PhysicsOwnerType::Component));
                 if (bodyComponent != nullptr)
                     hit.HitBody = static_object_cast<CBody>(bodyComponent->GetHandle());
             }
             
             if (hit.HitColliderRaw)
             {
-                CCollider* colliderComponent = (CCollider*)hit.HitColliderRaw->GetOwner(PhysicsOwnerType::Component);
+                CCollider* colliderComponent = static_cast<CCollider*>(hit.HitColliderRaw->GetOwner(PhysicsOwnerType::Component));
                 if (colliderComponent != nullptr)
                     hit.HitCollider = static_object_cast<CCollider>(colliderComponent->GetHandle());
             }
@@ -598,14 +598,14 @@ namespace te
 
             if (hit.HitBodyRaw)
             {
-                CBody* bodyComponent = (CBody*)hit.HitBodyRaw->GetOwner(PhysicsOwnerType::Component);
+                CBody* bodyComponent = static_cast<CBody*>(hit.HitBodyRaw->GetOwner(PhysicsOwnerType::Component));
                 if (bodyComponent != nullptr)
                     hit.HitBody = static_object_cast<CBody>(bodyComponent->GetHandle());
             }
             
             if (hit.HitColliderRaw)
             {
-                CCollider* component = (CCollider*)hit.HitColliderRaw->GetOwner(PhysicsOwnerType::Component);
+                CCollider* component = static_cast<CCollider*>(hit.HitColliderRaw->GetOwner(PhysicsOwnerType::Component));
                 if (component != nullptr)
                     hit.HitCollider = static_object_cast<CCollider>(component->GetHandle());
             }
