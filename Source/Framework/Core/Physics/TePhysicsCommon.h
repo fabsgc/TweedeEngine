@@ -68,11 +68,11 @@ namespace te
         float Distance = 0.0f; /**< Distance from the query origin to the hit position. */
         
         /**
-         * Component of the collider that was hit. This may be null if the hit collider has no owner component, in which
-         * case refer to #HitColliderRaw.
+         * Components of the colliders that was hit. This may be empty if the hit collider has no owner component, in which
+         * case refer to #HitCollidersRaw.
          */
-        HCollider HitCollider;
-        Collider* HitColliderRaw = nullptr; /**< Collider that was hit. */
+        Vector<HCollider> HitColliders;
+        Vector<Collider*> HitCollidersRaw; /**< Colliders that was hit. */
 
         /**
          * Component of the body that was hit. This may be null if the hit body has no owner component, in which

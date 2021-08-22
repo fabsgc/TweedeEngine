@@ -546,23 +546,30 @@ namespace te
             hit.Point = ToVector3(closestResults.m_hitPointWorld);
             hit.Distance = origin.Distance(hit.Point);
             hit.HitBodyRaw = static_cast<Body*>(closestResults.m_collisionObject->getUserPointer());
-            hit.HitColliderRaw = static_cast<Collider*>(closestResults.m_collisionObject->getCollisionShape()->getUserPointer());
+            
+            const btCompoundShape* collisionShape = static_cast<const btCompoundShape*>(closestResults.m_collisionObject->getCollisionShape());
+            int numChildShapes = collisionShape->getNumChildShapes();
+
+            for (int j = 0; j < numChildShapes; j++)
+            {
+                Collider* collider = static_cast<Collider*>(collisionShape->getChildShape(j)->getUserPointer());
+                hit.HitCollidersRaw.push_back(collider);
+
+                if (collider)
+                {
+                    CCollider* component = static_cast<CCollider*>(collider->GetOwner(PhysicsOwnerType::Component));
+                    if (component != nullptr)
+                        hit.HitColliders.push_back(static_object_cast<CCollider>(component->GetHandle()));
+                }
+            }
 
             TE_ASSERT_ERROR((!!hit.HitBodyRaw), "RayCast : HitBodyRaw is null");
-            // TE_ASSERT_ERROR((!!hit.HitColliderRaw), "RayCast : HitColliderRaw is null");
 
             if (hit.HitBodyRaw)
             {
                 CBody* bodyComponent = static_cast<CBody*>(hit.HitBodyRaw->GetOwner(PhysicsOwnerType::Component));
                 if (bodyComponent != nullptr)
                     hit.HitBody = static_object_cast<CBody>(bodyComponent->GetHandle());
-            }
-            
-            if (hit.HitColliderRaw)
-            {
-                CCollider* colliderComponent = static_cast<CCollider*>(hit.HitColliderRaw->GetOwner(PhysicsOwnerType::Component));
-                if (colliderComponent != nullptr)
-                    hit.HitCollider = static_object_cast<CCollider>(colliderComponent->GetHandle());
             }
 
             return true;
@@ -592,10 +599,24 @@ namespace te
             hit.Point = ToVector3(allResults.m_hitPointWorld[i]);
             hit.Distance = origin.Distance(hit.Point);
             hit.HitBodyRaw = static_cast<Body*>(allResults.m_collisionObjects[i]->getUserPointer());
-            hit.HitColliderRaw = static_cast<Collider*>(allResults.m_collisionObjects[i]->getCollisionShape()->getUserPointer());
+            
+            const btCompoundShape* collisionShape = static_cast<const btCompoundShape*>(allResults.m_collisionObjects[i]->getCollisionShape());
+            int numChildShapes = collisionShape->getNumChildShapes();
+
+            for (int j = 0; j < numChildShapes; j++)
+            {
+                Collider* collider = static_cast<Collider*>(collisionShape->getChildShape(j)->getUserPointer());
+                hit.HitCollidersRaw.push_back(collider);
+
+                if (collider)
+                {
+                    CCollider* component = static_cast<CCollider*>(collider->GetOwner(PhysicsOwnerType::Component));
+                    if (component != nullptr)
+                        hit.HitColliders.push_back(static_object_cast<CCollider>(component->GetHandle()));
+                }
+            }
 
             TE_ASSERT_ERROR((!!hit.HitBodyRaw), "RayCast : HitBodyRaw is null");
-            // TE_ASSERT_ERROR((!!hit.HitColliderRaw), "RayCast : HitColliderRaw is null");
 
             if (hit.HitBodyRaw)
             {
@@ -603,14 +624,6 @@ namespace te
                 if (bodyComponent != nullptr)
                     hit.HitBody = static_object_cast<CBody>(bodyComponent->GetHandle());
             }
-            
-            if (hit.HitColliderRaw)
-            {
-                CCollider* component = static_cast<CCollider*>(hit.HitColliderRaw->GetOwner(PhysicsOwnerType::Component));
-                if (component != nullptr)
-                    hit.HitCollider = static_object_cast<CCollider>(component->GetHandle());
-            }
-            
 
             hits.push_back(hit);
         }
