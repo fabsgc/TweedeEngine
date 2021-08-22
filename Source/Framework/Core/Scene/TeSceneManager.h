@@ -113,11 +113,7 @@ namespace te
         /** Returns the object that represents the main scene. */
         const SPtr<SceneInstance>& GetMainScene() const { return _mainScene; }
 
-        /**
-         * Destroys all scene objects in the scene.
-         *
-         * @param[in]	forceAll	If true, then even the persistent objects will be unloaded.
-         */
+        /** Destroys all scene objects in the scene. */
         void ClearScene();
 
         /**
