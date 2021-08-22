@@ -25,6 +25,7 @@ set (TE_BULLETPHYSICS_INC_NOFILTER
     "TeBulletDebugMat.h"
     "TeBulletMesh.h"
     "TeBulletHeightField.h"
+    "TeBulletRayCallback.h"
 )
 
 set (TE_BULLETPHYSICS_SRC_NOFILTER

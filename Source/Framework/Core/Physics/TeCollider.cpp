@@ -50,40 +50,4 @@ namespace te
     {
         return _internal->GetRotation();
     }
-
-    bool Collider::RayCast(const SPtr<PhysicsScene>& physicsScene, const Ray& ray, PhysicsQueryHit& hit, float maxDist) const
-    {
-        return RayCast(physicsScene, ray.GetOrigin(), ray.GetDirection(), hit, maxDist);
-    }
-
-    bool Collider::RayCast(const SPtr<PhysicsScene>& physicsScene, const Vector3& origin, const Vector3& unitDir, PhysicsQueryHit& hit, float maxDist) const
-    {
-        bool somethingHit = physicsScene->RayCast(origin, unitDir, hit, maxDist);
-
-        if (somethingHit && hit.HitColliderRaw == this)
-            return true;
-
-        return false;
-    }
-
-    bool Collider::RayCast(const SPtr<PhysicsScene>& physicsScene, const Ray& ray, Vector<PhysicsQueryHit>& hits, float maxDist) const
-    {
-        return RayCast(physicsScene, ray.GetOrigin(), ray.GetDirection(), hits, maxDist);
-    }
-
-    bool Collider::RayCast(const SPtr<PhysicsScene>& physicsScene, const Vector3& origin, const Vector3& unitDir, Vector<PhysicsQueryHit>& hits, float maxDist) const
-    {
-        bool somethingHit = physicsScene->RayCast(origin, unitDir, hits, maxDist);
-
-        if (somethingHit)
-        {
-            for (auto& hit : hits)
-            {
-                if (hit.HitColliderRaw == this)
-                    return true;
-            }
-        }
-
-        return false;
-    }
 }

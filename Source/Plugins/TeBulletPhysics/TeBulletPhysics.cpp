@@ -18,6 +18,7 @@
 #include "TeBulletDebug.h"
 #include "TeBulletMesh.h"
 #include "TeBulletHeightField.h"
+#include "TeBulletRayCallback.h"
 #include "Utility/TeTime.h"
 #include "RenderAPI/TeRenderAPI.h"
 #include "RenderAPI/TeRenderTexture.h"
@@ -534,7 +535,7 @@ namespace te
         btVector3 btFrom = ToBtVector3(origin);
         btVector3 btTo = ToBtVector3(to);
 
-        btCollisionWorld::ClosestRayResultCallback closestResults(btFrom, btTo);
+        BulletClosestRayResultCallback closestResults(btFrom, btTo);
         closestResults.m_flags |= btTriangleRaycastCallback::kF_FilterBackfaces;
 
         _world->rayTest(btFrom, btTo, closestResults);

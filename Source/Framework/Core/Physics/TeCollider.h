@@ -51,54 +51,6 @@ namespace te
         /** @copydoc FCollider::GetPosition */
         const Quaternion& GetRotation() const;
 
-        /**
-         * Checks does the ray hit this collider.
-         *
-         * @param[in]	physicsScene	PhysicsScene where you want to cast your ray
-         * @param[in]	ray		        Ray to check.
-         * @param[out]	hit		        Information about the hit. Valid only if the method returns true.
-         * @param[in]	maxDist	        Maximum distance from the ray origin to search for hits.
-         * @return				        True if the ray has hit the collider.
-         */
-        bool RayCast(const SPtr<PhysicsScene>& physicsScene, const Ray& ray, PhysicsQueryHit& hit, float maxDist = FLT_MAX) const;
-
-        /**
-         * Checks does the ray hit this collider.
-         *
-         * @param[in]	physicsScene	PhysicsScene where you want to cast your ray
-         * @param[in]	origin	        Origin of the ray to check.
-         * @param[in]	unitDir	        Unit direction of the ray to check.
-         * @param[out]	hit		        Information about the hit. Valid only if the method returns true.
-         * @param[in]	maxDist	        Maximum distance from the ray origin to search for hits.
-         * @return				        True if the ray has hit the collider.
-         */
-        bool RayCast(const SPtr<PhysicsScene>& physicsScene, const Vector3& origin, const Vector3& unitDir, PhysicsQueryHit& hit,
-            float maxDist = FLT_MAX) const;
-
-        /**
-         * Checks does the ray hit this collider.
-         *
-         * @param[in]	physicsScene	PhysicsScene where you want to cast your ray
-         * @param[in]	ray		        Ray to check.
-         * @param[out]	hit		        Information about all the hits. Valid only if the method returns true.
-         * @param[in]	maxDist	        Maximum distance from the ray origin to search for hits.
-         * @return				        True if the ray has hit the collider.
-         */
-        bool RayCast(const SPtr<PhysicsScene>& physicsScene, const Ray& ray, Vector<PhysicsQueryHit>& hit, float maxDist = FLT_MAX) const;
-
-        /**
-         * Checks does the ray hit this collider.
-         *
-         * @param[in]	physicsScene	PhysicsScene where you want to cast your ray
-         * @param[in]	origin	        Origin of the ray to check.
-         * @param[in]	unitDir	        Unit direction of the ray to check.
-         * @param[out]	hit		        Information about all the hits. Valid only if the method returns true.
-         * @param[in]	maxDist	        Maximum distance from the ray origin to search for hits.
-         * @return				        True if the ray has hit the collider.
-         */
-        bool RayCast(const SPtr<PhysicsScene>& physicsScene, const Vector3& origin, const Vector3& unitDir, Vector <PhysicsQueryHit>& hit,
-            float maxDist = FLT_MAX) const;
-
         /** Returns the object containing common collider code. */
         FCollider* GetInternal() const { return _internal; }
 

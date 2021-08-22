@@ -6,6 +6,9 @@
 
 namespace te
 {
+    class Ray;
+    class PhysicsScene;
+
     /** Type of force or torque that can be applied to a body. */
     enum class ForceMode
     {
@@ -180,6 +183,54 @@ namespace te
 
         /** Removes all joints from the child list of this body. */
         virtual void RemoveJoints() = 0;
+
+        /**
+         * Checks does the ray hit this body.
+         *
+         * @param[in]	physicsScene	PhysicsScene where you want to cast your ray
+         * @param[in]	ray		        Ray to check.
+         * @param[out]	hit		        Information about the hit. Valid only if the method returns true.
+         * @param[in]	maxDist	        Maximum distance from the ray origin to search for hits.
+         * @return				        True if the ray has hit the body.
+         */
+        bool RayCast(const SPtr<PhysicsScene>& physicsScene, const Ray& ray, PhysicsQueryHit& hit, float maxDist = FLT_MAX) const;
+
+        /**
+         * Checks does the ray hit this body.
+         *
+         * @param[in]	physicsScene	PhysicsScene where you want to cast your ray
+         * @param[in]	origin	        Origin of the ray to check.
+         * @param[in]	unitDir	        Unit direction of the ray to check.
+         * @param[out]	hit		        Information about the hit. Valid only if the method returns true.
+         * @param[in]	maxDist	        Maximum distance from the ray origin to search for hits.
+         * @return				        True if the ray has hit the body.
+         */
+        bool RayCast(const SPtr<PhysicsScene>& physicsScene, const Vector3& origin, const Vector3& unitDir, PhysicsQueryHit& hit,
+            float maxDist = FLT_MAX) const;
+
+        /**
+         * Checks does the ray hit this body.
+         *
+         * @param[in]	physicsScene	PhysicsScene where you want to cast your ray
+         * @param[in]	ray		        Ray to check.
+         * @param[out]	hit		        Information about all the hits. Valid only if the method returns true.
+         * @param[in]	maxDist	        Maximum distance from the ray origin to search for hits.
+         * @return				        True if the ray has hit the body.
+         */
+        bool RayCast(const SPtr<PhysicsScene>& physicsScene, const Ray& ray, Vector<PhysicsQueryHit>& hit, float maxDist = FLT_MAX) const;
+
+        /**
+         * Checks does the ray hit this body.
+         *
+         * @param[in]	physicsScene	PhysicsScene where you want to cast your ray
+         * @param[in]	origin	        Origin of the ray to check.
+         * @param[in]	unitDir	        Unit direction of the ray to check.
+         * @param[out]	hit		        Information about all the hits. Valid only if the method returns true.
+         * @param[in]	maxDist	        Maximum distance from the ray origin to search for hits.
+         * @return				        True if the ray has hit the body.
+         */
+        bool RayCast(const SPtr<PhysicsScene>& physicsScene, const Vector3& origin, const Vector3& unitDir, Vector<PhysicsQueryHit>& hit,
+            float maxDist = FLT_MAX) const;
 
         /** Triggered when one of the colliders owned by the body starts colliding with another object. */
         Event<void(const CollisionDataRaw&)> OnCollisionBegin;
