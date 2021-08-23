@@ -58,7 +58,7 @@ jobs:
     - name: Configure CMake
       run: |
         mkdir build && cd build
-        cmake -G "Unix Makefiles" -D CMAKE_C_COMPILER=gcc-9 -D CMAKE_CXX_COMPILER=g++-9 -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+        cmake -G "Unix Makefiles" .. -D CMAKE_C_COMPILER=gcc-9 -D CMAKE_CXX_COMPILER=g++-9 -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
     - name: Build
       run: |
