@@ -11,16 +11,6 @@ for:
   -
     matrix:
       only:
-        - image: Ubuntu
-    build_script:
-      - cmd: mkdir Build
-      - cmd: cd Build
-      - cmd: cmake --version
-      - cmd: cmake -G "Unix Makefiles" ..
-      - cmd: make
-  -
-    matrix:
-      only:
         - image: Visual Studio 2019
     build_script:
       - cmd: mkdir Build
