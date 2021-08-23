@@ -5,6 +5,8 @@
 #include "TeSceneObject.h"
 #include "Physics/TePhysicsCommon.h"
 
+#include <cfloat>
+
 namespace te
 {
     class PhysicsScene;
