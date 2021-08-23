@@ -6,6 +6,7 @@
 #include "Components/TeCCameraUI.h"
 #include "Gui/TeGuiAPI.h"
 #include "Utility/TeTime.h"
+#include "../TeEditorUtils.h"
 
 namespace te
 {
@@ -255,7 +256,7 @@ namespace te
         _renderData.Width = (UINT32)width;
         _renderData.Height = (UINT32)height;
 
-        EditorUtils::GenerateViewportRenderTexture(_renderData);
+        gRendererUtility().GenerateViewportRenderTexture(_renderData);
 
         _lastRenderDataUpatedTime = gTime().GetTime();
         _needResetViewport = false;

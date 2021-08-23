@@ -13,7 +13,7 @@ namespace te
         _params->SetParamBlockBuffer("PerInstanceBuffer", _perInstanceParamBuffer);
     }
 
-    void HudSelectionMat::BindCamera(const HCamera& camera, SelectionUtils::RenderType renderType)
+    void HudSelectionMat::BindCamera(const HCamera& camera, PickingUtils::RenderType renderType)
     {
         const Matrix4& projectionMatrix = camera->GetProjectionMatrixRS();
         const Matrix4& viewMatrix = camera->GetViewMatrix();

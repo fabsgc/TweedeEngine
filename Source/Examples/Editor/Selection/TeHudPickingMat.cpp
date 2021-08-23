@@ -25,7 +25,7 @@ namespace te
         _params->SetTexture("MaskTexture", _hudMask.GetInternalPtr());
     }
 
-    void HudPickingMat::BindCamera(const HCamera& camera, SelectionUtils::RenderType renderType)
+    void HudPickingMat::BindCamera(const HCamera& camera, PickingUtils::RenderType renderType)
     {
         const Matrix4& projectionMatrix = camera->GetProjectionMatrixRS();
         const Matrix4& viewMatrix = camera->GetViewMatrix();

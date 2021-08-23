@@ -28,25 +28,21 @@ set (TE_EDITOR_SRC_IMGUI_EXT
 )
 
 set (TE_EDITOR_INC_SELECTION
-    "Selection/TeSelectionUtils.h"
     "Selection/TeSelection.h"
     "Selection/TeSelectionMat.h"
     "Selection/TeHudSelectionMat.h"
-    "Selection/TePicking.h"
-    "Selection/TePickingMat.h"
     "Selection/TeHudPickingMat.h"
     "Selection/TeHud.h"
+    "Selection/TeEditorPicking.h"
 )
 
 set (TE_EDITOR_SRC_SELECTION
-    "Selection/TeSelectionUtils.cpp"
     "Selection/TeSelection.cpp"
     "Selection/TeSelectionMat.cpp"
     "Selection/TeHudSelectionMat.cpp"
-    "Selection/TePicking.cpp"
-    "Selection/TePickingMat.cpp"
     "Selection/TeHudPickingMat.cpp"
     "Selection/TeHud.cpp"
+    "Selection/TeEditorPicking.cpp"
 )
 
 set (TE_EDITOR_INC_WIDGET
@@ -63,6 +59,7 @@ set (TE_EDITOR_INC_WIDGET
     "Widget/TeWidgetMaterials.h"
     "Widget/TeWidgetProfiler.h"
     "Widget/TeWidgetSettings.h"
+    "Widget/TeMaterialsPreview.h"
 )
 
 set (TE_EDITOR_SRC_WIDGET
@@ -79,6 +76,7 @@ set (TE_EDITOR_SRC_WIDGET
     "Widget/TeWidgetMaterials.cpp"
     "Widget/TeWidgetProfiler.cpp"
     "Widget/TeWidgetSettings.cpp"
+    "Widget/TeMaterialsPreview.cpp"
 )
 
 source_group ("" FILES ${TE_EDITOR_SRC_NOFILTER} ${TE_EDITOR_INC_NOFILTER})

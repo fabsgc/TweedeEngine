@@ -58,11 +58,12 @@
 #include "TeEditorUtils.h"
 #include "Physics/TePhysics.h"
 
-#include "Selection/TePicking.h"
+#include "Selection/TeEditorPicking.h"
 #include "Selection/TeSelection.h"
 #include "Selection/TeHud.h"
 
 #include "RenderAPI/TeRenderTarget.h"
+#include "Renderer/TeRendererUtility.h"
 
 // TODO Temp for debug purpose
 #include "Importer/TeImporter.h"
@@ -130,7 +131,7 @@ namespace te
         InitializeUICamera();
         InitializeViewportCamera();
 
-        _picking = te_unique_ptr_new<Picking>();
+        _picking = te_unique_ptr_new<EditorPicking>();
         _selection = te_unique_ptr_new<Selection>();
         _hud = te_unique_ptr_new<Hud>();
 
@@ -199,7 +200,7 @@ namespace te
 
         if (_selectionDirty && _previewViewportCamera == _viewportCamera) // only for default camera
         {
-            EditorUtils::RenderWindowData viewportData =
+            RendererUtility::RenderWindowData viewportData =
                 static_cast<WidgetViewport*>(&*_settings.WViewport)->GetRenderWindowData();
             _selection->Render(_previewViewportCamera, viewportData);
         }
@@ -235,7 +236,7 @@ namespace te
         {
             if (_pickingDirty)
             {
-                EditorUtils::RenderWindowData viewportData =
+                RendererUtility::RenderWindowData viewportData =
                     static_cast<WidgetViewport*>(&*_settings.WViewport)->GetRenderWindowData();
                 Picking::RenderParam pickingData(viewportData.Width, viewportData.Height);
 

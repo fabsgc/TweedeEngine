@@ -491,13 +491,11 @@ set (TE_CORE_SRC_PROFILING
 set (TE_CORE_INC_PICKING
     "Core/Picking/TePicking.h"
     "Core/Picking/TePickingMat.h"
-    "Core/Picking/TeHudPickingMat.h"
     "Core/Picking/TePickingUtils.h"
 )
 set (TE_CORE_SRC_PICKING
     "Core/Picking/TePicking.cpp"
     "Core/Picking/TePickingMat.cpp"
-    "Core/Picking/TeHudPickingMat.cpp"
     "Core/Picking/TePickingUtils.cpp"
 )
 

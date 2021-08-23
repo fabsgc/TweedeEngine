@@ -60,7 +60,7 @@ namespace te
 
             return mesh;
         }
-        
+
         return nullptr;
     }
 

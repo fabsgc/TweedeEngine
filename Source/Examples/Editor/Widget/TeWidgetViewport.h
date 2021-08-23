@@ -3,13 +3,13 @@
 #include "TeCorePrerequisites.h"
 
 #include "../TeEditor.h"
-#include "../TeEditorUtils.h"
 #include "TeWidget.h"
 #include "Image/TeTexture.h"
 #include "Utility/TeEvent.h"
 #include "Scene/TeTransform.h"
 #include "Input/TeVirtualInput.h"
 #include "RenderAPI/TeRenderTexture.h"
+#include "Renderer/TeRendererUtility.h"
 
 namespace te
 {
@@ -31,7 +31,7 @@ namespace te
         void NeedsRedraw();
         void SetVisible(bool isVisible);
 
-        const EditorUtils::RenderWindowData& GetRenderWindowData() const { return _renderData; }
+        const RendererUtility::RenderWindowData& GetRenderWindowData() const { return _renderData; }
 
     protected:
         /** Return true if texture has been updated */
@@ -50,7 +50,7 @@ namespace te
         HEvent _resizeEvent;
         Editor::SelectionData& _selections;
 
-        EditorUtils::RenderWindowData _renderData;
+        RendererUtility::RenderWindowData _renderData;
         HCamera _viewportCamera;
         HCameraUI& _viewportCameraUI;
 

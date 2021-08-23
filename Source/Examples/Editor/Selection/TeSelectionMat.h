@@ -2,7 +2,7 @@
 
 #include "TeCorePrerequisites.h"
 #include "Renderer/TeRendererMaterial.h"
-#include "TeSelectionUtils.h"
+#include "Picking/TePickingUtils.h"
 
 namespace te
 {
@@ -21,8 +21,8 @@ namespace te
         void BindRenderable(const HRenderable& renderable);
 
     private:
-        SelectionUtils::PerPickSelectFrameParamDef _perFrameParamDef;
-        SelectionUtils::PerPickSelectObjectParamDef _perObjectParamDef;
+        PickingUtils::PerPickSelectFrameParamDef _perFrameParamDef;
+        PickingUtils::PerPickSelectObjectParamDef _perObjectParamDef;
 
         SPtr<GpuParamBlockBuffer> _perFrameParamBuffer;
         SPtr<GpuParamBlockBuffer> _perObjectParamBuffer;

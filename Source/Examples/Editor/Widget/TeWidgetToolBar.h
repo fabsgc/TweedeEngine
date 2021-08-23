@@ -16,7 +16,6 @@ namespace te
         virtual void UpdateBackground() override;
 
     protected:
-        UnorderedMap<Widget::IconType, SPtr<Widget>> _widgets;
         float _buttonSize = 30.0f;
     };
 }

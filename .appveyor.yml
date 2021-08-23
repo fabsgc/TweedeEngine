@@ -1,14 +1,26 @@
 image: Visual Studio 2019
+image: Ubuntu
 platform: x64
 configuration: Debug
-clone_folder: C:\Projects\TweedeFrameworkRedux
 
-build_script:
-  - cmd: mkdir Build
-  - cmd: cd Build
-  - cmd: cmake --version
-  - cmd: cmake -G "Visual Studio 16 2019" ..
-  - cmd: cmake --build ./ --config Debug
-  - cmd: cmake --build ./ --config Debug --target INSTALL
-  - cmd: cmake --build ./ --config Release
-  - cmd: cmake --build ./ --config Release --target INSTALL
+for:
+  -
+    matrix:
+      only:
+        - image: Visual Studio 2019
+    build_script:
+      - cmd: mkdir Build
+      - cmd: cd Build
+      - cmd: cmake --version
+      - cmd: cmake -G "Visual Studio 16 2019" ..
+      - cmd: cmake --build ./ --config Debug
+  -
+    matrix:
+      only:
+        - image: Ubuntu
+    build_script:
+      - cmd: mkdir Build
+      - cmd: cd Build
+      - cmd: cmake --version
+      - cmd: cmake -G "Unix Makefiles" ..
+      - cmd: cmake --build ./ --config Debug

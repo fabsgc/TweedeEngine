@@ -1,9 +1,10 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
-#include "TeSelectionUtils.h"
+
 #include "../TeEditor.h"
-#include "../TeEditorUtils.h"
+#include "Picking/TePickingUtils.h"
+#include "Renderer/TeRendererUtility.h"
 
 namespace te
 {
@@ -20,14 +21,14 @@ namespace te
         void Initialize();
 
         /** Render all selected elements (renderables, lights and cameras) */
-        void Render(const HCamera& camera, const EditorUtils::RenderWindowData& viewportData);
+        void Render(const HCamera& camera, const RendererUtility::RenderWindowData& viewportData);
 
     private:
         /** Recursive method to draw components under a sceneObject */
-        void Draw(const HCamera& camera, const EditorUtils::RenderWindowData& viewportData);
+        void Draw(const HCamera& camera, const RendererUtility::RenderWindowData& viewportData);
 
         /** @copydoc Picking::Draw */
-        void DrawInternal(const HCamera& camera, const SPtr<SceneObject>& sceneObject, Vector<SelectionUtils::PerHudInstanceData>& instancedElements);
+        void DrawInternal(const HCamera& camera, const SPtr<SceneObject>& sceneObject, Vector<PickingUtils::PerHudInstanceData>& instancedElements);
 
         /** Specific way to draw a renderable */
         void DrawRenderable(const SPtr<CRenderable>& renderable);
@@ -36,6 +37,6 @@ namespace te
         Editor::SelectionData& _selections;
         SelectionMat* _material;
         HudSelectionMat* _hudMaterial;
-        SelectionUtils::HudInstanceBuffer _instanceBuffer;
+        PickingUtils::HudInstanceBuffer _instanceBuffer;
     };
 }

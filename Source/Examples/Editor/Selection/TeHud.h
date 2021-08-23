@@ -1,7 +1,7 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
-#include "TeSelectionUtils.h"
+#include "Picking/TePickingUtils.h"
 
 namespace te
 {
@@ -20,10 +20,10 @@ namespace te
         void Render(const HCamera& camera, const HSceneObject& root);
 
         /** Generate a list of all hud elements to draw by iterating through the scene graph */
-        void GetHudElements(const HCamera& camera, const HSceneObject& sceneObject, Vector<SelectionUtils::PerHudInstanceData>& instancedElements);
+        void GetHudElements(const HCamera& camera, const HSceneObject& sceneObject, Vector<PickingUtils::PerHudInstanceData>& instancedElements);
 
     private:
         HudPickingMat* _material;
-        SelectionUtils::HudInstanceBuffer _instanceBuffer;
+        PickingUtils::HudInstanceBuffer _instanceBuffer;
     };
 }

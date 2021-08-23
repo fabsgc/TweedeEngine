@@ -1,4 +1,5 @@
 #include "TeRendererUtility.h"
+
 #include "Renderer/TeBlitMat.h"
 #include "RenderAPI/TeGpuParams.h"
 #include "RenderAPI/TeVertexData.h"
@@ -12,6 +13,14 @@
 #include "Mesh/TeMesh.h"
 #include "Mesh/TeMeshData.h"
 #include "Mesh/TeShapeMeshes3D.h"
+#include "Components/TeCCamera.h"
+#include "Components/TeCLight.h"
+#include "Components/TeCRenderable.h"
+#include "Components/TeCAudioListener.h"
+#include "Components/TeCAudioSource.h"
+#include "Components/TeCRigidBody.h"
+#include "Components/TeCSoftBody.h"
+#include "../TeCoreApplication.h"
 
 namespace te
 {
@@ -62,11 +71,6 @@ namespace te
 
             _skyBoxMesh = Mesh::_createPtr(meshData);
         }
-    }
-
-    RendererUtility::~RendererUtility()
-    { 
-        
     }
 
     void RendererUtility::SetPass(const SPtr<Material>& material, UINT32 passIdx, UINT32 techniqueIdx)
@@ -253,6 +257,160 @@ namespace te
 
         BlitMat* blitMat = BlitMat::Get();
         blitMat->Execute(texture, fArea, flipUV, texProps.GetNumSamples(), isDepth);
+    }
+
+    bool RendererUtility::DoFrustumCulling(const HCamera& camera, const HRenderable& renderable)
+    {
+        return DoFrustumCulling(camera, renderable.GetInternalPtr());
+    }
+
+    bool RendererUtility::DoFrustumCulling(const HCamera& camera, const HLight& light)
+    {
+        return DoFrustumCulling(camera, light.GetInternalPtr());
+    }
+
+    bool RendererUtility::DoFrustumCulling(const HCamera& camera, const HCamera& sceneCamera)
+    {
+        return DoFrustumCulling(camera, sceneCamera.GetInternalPtr());
+    }
+
+    bool RendererUtility::DoFrustumCulling(const HCamera& camera, const HAudioListener& audio)
+    {
+        return DoFrustumCulling(camera, audio.GetInternalPtr());
+    }
+
+    bool RendererUtility::DoFrustumCulling(const HCamera& camera, const HAudioSource& audio)
+    {
+        return DoFrustumCulling(camera, audio.GetInternalPtr());
+    }
+
+    bool RendererUtility::DoFrustumCulling(const HCamera& camera, const SPtr<CRenderable> renderable)
+    {
+        ConvexVolume worldFrustum = camera->GetWorldFrustum();
+        const Vector3& worldCameraPosition = camera->GetTransform().GetPosition();
+        float baseCullDistance = camera->GetRenderSettings()->CullDistance;
+
+        Bounds boundaries = renderable->GetBounds();
+        const Sphere& boundingSphere = boundaries.GetSphere();
+        const Vector3& worldRenderablePosition = boundingSphere.GetCenter();
+
+        float distanceToCameraSq = worldCameraPosition.SquaredDistance(worldRenderablePosition);
+        float correctedCullDistance = renderable->GetCullDistanceFactor() * baseCullDistance;
+        float maxDistanceToCamera = correctedCullDistance + boundingSphere.GetRadius();
+
+        if (distanceToCameraSq > maxDistanceToCamera* maxDistanceToCamera)
+            return false;
+
+        if (worldFrustum.Intersects(boundingSphere))
+        {
+            const AABox& boundingBox = boundaries.GetBox();
+            if (worldFrustum.Intersects(boundingBox))
+                return true;
+        }
+
+        return false;
+    }
+
+    bool RendererUtility::DoFrustumCulling(const HCamera& camera, const SPtr<CLight> light)
+    {
+        static float cullDistanceFactor = 1.0f;
+        Sphere boundingSphere = light->GetBounds();
+
+        return DoFrustumCulling(camera, boundingSphere, cullDistanceFactor);
+    }
+
+    bool RendererUtility::DoFrustumCulling(const HCamera& camera, const SPtr<CAudioListener> audio)
+    {
+        static float cullDistanceFactor = 1.0f;
+
+        Sphere boundingSphere;
+        boundingSphere.SetCenter(audio->GetTransform().GetPosition());
+        boundingSphere.SetRadius(1.0f);
+
+        return DoFrustumCulling(camera, boundingSphere, cullDistanceFactor);
+    }
+
+    bool RendererUtility::DoFrustumCulling(const HCamera& camera, const SPtr<CAudioSource> audio)
+    {
+        static float cullDistanceFactor = 1.0f;
+
+        Sphere boundingSphere;
+        boundingSphere.SetCenter(audio->GetTransform().GetPosition());
+        boundingSphere.SetRadius(1.0f);
+
+        return DoFrustumCulling(camera, boundingSphere, cullDistanceFactor);
+    }
+
+    bool RendererUtility::DoFrustumCulling(const HCamera& camera, const SPtr<CCamera> sceneCamera)
+    {
+        static float cullDistanceFactor = 1.0f;
+
+        Sphere boundingSphere;
+        boundingSphere.SetCenter(sceneCamera->GetTransform().GetPosition());
+        boundingSphere.SetRadius(1.0f);
+
+        return DoFrustumCulling(camera, boundingSphere, cullDistanceFactor);
+    }
+
+    bool RendererUtility::DoFrustumCulling(const HCamera& camera, const Sphere& boundingSphere, const float& cullDistanceFactor)
+    {
+        ConvexVolume worldFrustum = camera->GetWorldFrustum();
+        const Vector3& worldCameraPosition = camera->GetTransform().GetPosition();
+        float baseCullDistance = camera->GetRenderSettings()->CullDistance;
+
+        const Vector3& worldRenderablePosition = boundingSphere.GetCenter();
+
+        float distanceToCameraSq = worldCameraPosition.SquaredDistance(worldRenderablePosition);
+        float correctedCullDistance = cullDistanceFactor * baseCullDistance;
+        float maxDistanceToCamera = correctedCullDistance + boundingSphere.GetRadius();
+
+        if (distanceToCameraSq > maxDistanceToCamera* maxDistanceToCamera)
+            return false;
+
+        if (worldFrustum.Intersects(boundingSphere))
+            return true;
+
+        if (worldFrustum.Contains(boundingSphere.GetCenter()))
+            return true;
+
+        return false;
+    }
+
+    void RendererUtility::GenerateViewportRenderTexture(RenderWindowData& renderData)
+    {
+        if (renderData.RenderTex)
+            renderData.RenderTex = nullptr;
+        if (renderData.ColorTex.IsLoaded())
+            renderData.ColorTex.Release();
+        if (renderData.DepthStencilTex.IsLoaded())
+            renderData.DepthStencilTex.Release();
+
+        renderData.TargetColorDesc.Type = TEX_TYPE_2D;
+        renderData.TargetColorDesc.Width = renderData.Width;
+        renderData.TargetColorDesc.Height = renderData.Height;
+        renderData.TargetColorDesc.Format = PF_RGBA16F;
+        renderData.TargetColorDesc.NumSamples = gCoreApplication().GetWindow()->GetDesc().MultisampleCount;
+        renderData.TargetColorDesc.Usage = TU_RENDERTARGET;
+
+        renderData.TargetDepthDesc.Type = TEX_TYPE_2D;
+        renderData.TargetDepthDesc.Width = renderData.Width;
+        renderData.TargetDepthDesc.Height = renderData.Height;
+        renderData.TargetDepthDesc.Format = PF_RGBA8;
+        renderData.TargetDepthDesc.NumSamples = gCoreApplication().GetWindow()->GetDesc().MultisampleCount;
+        renderData.TargetDepthDesc.Usage = TU_DEPTHSTENCIL;
+
+        renderData.ColorTex = Texture::Create(renderData.TargetColorDesc);
+        renderData.DepthStencilTex = Texture::Create(renderData.TargetDepthDesc);
+
+        renderData.RenderTexDesc.ColorSurfaces[0].Tex = renderData.ColorTex.GetInternalPtr();
+        renderData.RenderTexDesc.ColorSurfaces[0].Face = 0;
+        renderData.RenderTexDesc.ColorSurfaces[0].MipLevel = 0;
+
+        renderData.RenderTexDesc.DepthStencilSurface.Tex = renderData.DepthStencilTex.GetInternalPtr();
+        renderData.RenderTexDesc.DepthStencilSurface.Face = 0;
+        renderData.RenderTexDesc.DepthStencilSurface.MipLevel = 0;
+
+        renderData.RenderTex = RenderTexture::Create(renderData.RenderTexDesc);
     }
 
     RendererUtility& gRendererUtility()

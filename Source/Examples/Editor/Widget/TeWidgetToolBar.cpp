@@ -123,17 +123,6 @@ namespace te
         ImGui::SameLine();
         if (ImGuiExt::RenderOptionCombo<ImGuizmo::MODE>((ImGuizmo::MODE*)(&guizmoMode), "##guizmo_mode_option", "", guizmoModeOptions, 75))
             gEditor().SetImGuizmoMode(guizmoMode);
-
-        // Widget buttons
-        for (auto& widgetPair : _widgets)
-        {
-            SPtr<Widget> widget = widgetPair.second;
-
-            ShowButton(widget->GetTitle().c_str(), widget->GetTitleActivated().c_str(), 
-                [this, &widget]() { return widget->GetVisible(); }, 
-                [this, &widget]() { widget->SetVisible(true); 
-            });
-        }
     }
 
     void WidgetToolBar::UpdateBackground()

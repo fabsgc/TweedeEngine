@@ -5,6 +5,7 @@
 #include "Math/TeRect2.h"
 #include "Math/TeRect2I.h"
 #include "Math/TeVector2I.h"
+#include "RenderAPI/TeRenderTexture.h"
 #include "Renderer/TeRendererMaterial.h"
 
 namespace te
@@ -15,8 +16,22 @@ namespace te
     class TE_CORE_EXPORT RendererUtility : public Module<RendererUtility>
     {
     public:
+        struct RenderWindowData
+        {
+            TEXTURE_DESC TargetColorDesc;
+            TEXTURE_DESC TargetDepthDesc;
+            RENDER_TEXTURE_DESC RenderTexDesc;
+            HTexture ColorTex;
+            HTexture DepthStencilTex;
+            SPtr<RenderTexture> RenderTex;
+            TextureSurface ColorTexSurface;
+            UINT32 Width = 640;
+            UINT32 Height = 480;
+        };
+
+    public:
         RendererUtility();
-        ~RendererUtility();
+        ~RendererUtility() = default;
 
         TE_MODULE_STATIC_HEADER_MEMBER(RendererUtility)
 
@@ -121,6 +136,48 @@ namespace te
 
         /** Returns a mesh that can be used for rendering a skybox. */
         SPtr<Mesh> GetSkyBoxMesh() const { return _skyBoxMesh; }
+
+        /** Do a frustum culling on a renderable. Returns true if visible */
+        bool DoFrustumCulling(const HCamera& camera, const SPtr<CRenderable> renderable);
+
+        /** Do a frustum culling on a light. Returns true if visible */
+        bool DoFrustumCulling(const HCamera& camera, const SPtr<CLight> light);
+
+        /** Do a frustum culling on a scene camera. Returns true if visible */
+        bool DoFrustumCulling(const HCamera& camera, const SPtr<CCamera> sceneCamera);
+
+        /** Do a frustum culling on an audio listener. Returns true if visible */
+        bool DoFrustumCulling(const HCamera& camera, const SPtr<CAudioListener> audio);
+
+        /** Do a frustum culling on an audio source. Returns true if visible */
+        bool DoFrustumCulling(const HCamera& camera, const SPtr<CAudioSource> audio);
+
+        /** Do a frustum culling on an rigid body. Returns true if visible */
+        bool DoFrustumCulling(const HCamera& camera, const SPtr<CRigidBody> rigidBody);
+
+        /** Do a frustum culling on an soft body. Returns true if visible */
+        bool DoFrustumCulling(const HCamera& camera, const SPtr<CSoftBody> softBody);
+
+        /** Do a frustum culling on a renderable. Returns true if visible */
+        bool DoFrustumCulling(const HCamera& camera, const HRenderable& renderable);
+
+        /** Do a frustum culling on a light. Returns true if visible */
+        bool DoFrustumCulling(const HCamera& camera, const HLight& light);
+
+        /** Do a frustum culling on a scene camera. Returns true if visible */
+        bool DoFrustumCulling(const HCamera& camera, const HCamera& sceneCamera);
+
+        /** Do a frustum culling on an audio listener. Returns true if visible */
+        bool DoFrustumCulling(const HCamera& camera, const HAudioListener& audio);
+
+        /** Do a frustum culling on an audio source. Returns true if visible */
+        bool DoFrustumCulling(const HCamera& camera, const HAudioSource& audio);
+
+        /** Do a more generic frustum culling */
+        bool DoFrustumCulling(const HCamera& camera, const Sphere& boundingSphere, const float& cullDistanceFactor);
+
+        /** Generate a render texture using data given in parameters */
+        void GenerateViewportRenderTexture(RenderWindowData& renderData);
 
     private:
         static constexpr UINT32 NUM_QUAD_VB_SLOTS = 1024;

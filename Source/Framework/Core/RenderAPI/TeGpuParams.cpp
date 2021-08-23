@@ -449,7 +449,7 @@ namespace te
             {
                 continue;
             }
-            
+
             SetParamBlockBuffer(iterFind->second.Set, iterFind->second.Slot, paramBlockBuffer);
         }
     }

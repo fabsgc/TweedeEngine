@@ -1,13 +1,12 @@
 #include "TeHud.h"
 
 #include "../TeEditor.h"
-#include "../TeEditorUtils.h"
 #include "TeHudPickingMat.h"
 #include "RenderAPI/TeRenderAPI.h"
 #include "RenderAPI/TeRenderTarget.h"
-#include "Scene/TeSceneObject.h"
-#include "Components/TeCLight.h"
+#include "Renderer/TeRendererUtility.h"
 #include "Components/TeCCamera.h"
+#include "Scene/TeSceneObject.h"
 
 namespace te
 {
@@ -18,7 +17,7 @@ namespace te
     void Hud::Initialize()
     {
         _material = HudPickingMat::Get();
-        SelectionUtils::CreateHudInstanceBuffer(_instanceBuffer);
+        PickingUtils::CreateHudInstanceBuffer(_instanceBuffer);
     }
 
     void Hud::Render(const HCamera& camera, const HSceneObject& root)
@@ -26,7 +25,7 @@ namespace te
         RenderAPI& rapi = RenderAPI::Instance();
         UINT32 clearBuffers = FBT_DEPTH;
 
-        Vector<SelectionUtils::PerHudInstanceData> instancedElements;
+        Vector<PickingUtils::PerHudInstanceData> instancedElements;
         GetHudElements(camera, root, instancedElements);
 
         if (instancedElements.size() > 0)
@@ -34,7 +33,7 @@ namespace te
             rapi.SetRenderTarget(camera->GetViewport()->GetTarget());
             rapi.ClearViewport(clearBuffers, Color::Black);
 
-            _material->BindCamera(camera, SelectionUtils::RenderType::Draw);
+            _material->BindCamera(camera, PickingUtils::RenderType::Draw);
 
             rapi.SetVertexDeclaration(_instanceBuffer.PointVDecl);
             rapi.SetVertexBuffers(0, &_instanceBuffer.PointVB, 1);
@@ -65,9 +64,9 @@ namespace te
         } 
     }
 
-    void Hud::GetHudElements(const HCamera& camera, const HSceneObject& sceneObject, Vector<SelectionUtils::PerHudInstanceData>& instancedElements)
+    void Hud::GetHudElements(const HCamera& camera, const HSceneObject& sceneObject, Vector<PickingUtils::PerHudInstanceData>& instancedElements)
     {
-        SelectionUtils::PerHudInstanceData element;
+        PickingUtils::PerHudInstanceData element;
 
         for (const auto& component : sceneObject->GetComponents())
         {
@@ -78,11 +77,11 @@ namespace te
                 case TypeID_Core::TID_CCamera: 
                 {
                     HCamera cameraElement = static_object_cast<CCamera>(component);
-                    if (cameraElement->GetActive() && EditorUtils::DoFrustumCulling(camera, cameraElement))
+                    if (cameraElement->GetActive() && gRendererUtility().DoFrustumCulling(camera, cameraElement))
                     {
                         const Transform& tfrm = cameraElement->GetTransform();
                         element.MatWorldNoScale = Matrix4::TRS(tfrm.GetPosition(), tfrm.GetRotation(), Vector3::ONE);
-                        element.Type = static_cast<float>(SelectionUtils::HudType::Camera);
+                        element.Type = static_cast<float>(PickingUtils::HudType::Camera);
                         element.Color = Color::Black.GetAsVector4();
 
                         instancedElements.push_back(element);
@@ -94,7 +93,7 @@ namespace te
                 break;
             }
 
-            SelectionUtils::FillPerInstanceHud(instancedElements, camera, component, SelectionUtils::RenderType::Draw);
+            PickingUtils::FillPerInstanceHud(instancedElements, camera, component, PickingUtils::RenderType::Draw);
         }
 
         for (const auto& childSO : sceneObject->GetChildren())

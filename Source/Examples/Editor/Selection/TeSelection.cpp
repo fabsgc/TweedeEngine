@@ -2,19 +2,20 @@
 
 #include "TeSelectionMat.h"
 #include "TeHudSelectionMat.h"
+#include "Picking/TePickingUtils.h"
 #include "Components/TeCCamera.h"
-#include "Components/TeCLight.h"
 #include "Components/TeCRenderable.h"
-#include "Components/TeCRigidBody.h"
-#include "Components/TeCSoftBody.h"
 #include "Renderer/TeRendererUtility.h"
 #include "Renderer/TeRenderer.h"
+#include "Scene/TeSceneObject.h"
 #include "Mesh/TeMesh.h"
 
 namespace te
 {
     Selection::Selection()
         : _selections(gEditor().GetSelectionData())
+        , _material(nullptr)
+        , _hudMaterial(nullptr)
     { }
 
     void Selection::Initialize()
@@ -22,10 +23,10 @@ namespace te
         _material = SelectionMat::Get();
         _hudMaterial = HudSelectionMat::Get();
 
-        SelectionUtils::CreateHudInstanceBuffer(_instanceBuffer);
+        PickingUtils::CreateHudInstanceBuffer(_instanceBuffer);
     }
 
-    void Selection::Render(const HCamera& camera, const EditorUtils::RenderWindowData& viewportData)
+    void Selection::Render(const HCamera& camera, const RendererUtility::RenderWindowData& viewportData)
     {
         RenderAPI& rapi = RenderAPI::Instance();
         UINT32 clearBuffers = FBT_DEPTH;
@@ -36,10 +37,10 @@ namespace te
         rapi.SetRenderTarget(nullptr);
     }
 
-    void Selection::Draw(const HCamera& camera, const EditorUtils::RenderWindowData& viewportData)
+    void Selection::Draw(const HCamera& camera, const RendererUtility::RenderWindowData& viewportData)
     {
         RenderAPI& rapi = RenderAPI::Instance();
-        Vector<SelectionUtils::PerHudInstanceData> instancedElements;
+        Vector<PickingUtils::PerHudInstanceData> instancedElements;
 
         _material->BindCamera(camera);
 
@@ -56,23 +57,22 @@ namespace te
                 case TID_CRenderable:
                 {
                     SPtr<CRenderable> renderable = std::static_pointer_cast<CRenderable>(_selections.ClickedComponent);
-                    if (renderable->GetActive() && EditorUtils::DoFrustumCulling(camera, renderable))
+                    if (renderable->GetActive() && gRendererUtility().DoFrustumCulling(camera, renderable))
                         DrawRenderable(renderable);
                 }
                 break;
 
                 default:
-                    TE_DEBUG("Selection : undefined TypeID_Core " + ToString((UINT32)type));
                 break;
             }
 
-            SelectionUtils::FillPerInstanceHud(instancedElements, camera, 
-                _selections.ClickedComponent->GetHandle(), SelectionUtils::RenderType::Selection);
+            PickingUtils::FillPerInstanceHud(instancedElements, camera, 
+                _selections.ClickedComponent->GetHandle(), PickingUtils::RenderType::Selection);
         }
 
         if (instancedElements.size() > 0)
         {
-            _hudMaterial->BindCamera(camera, SelectionUtils::RenderType::Selection);
+            _hudMaterial->BindCamera(camera, PickingUtils::RenderType::Selection);
 
             UINT32 clearBuffers = FBT_DEPTH;
             rapi.ClearViewport(clearBuffers, Color::Black);
@@ -104,7 +104,7 @@ namespace te
         }
     }
 
-    void Selection::DrawInternal(const HCamera& camera, const SPtr<SceneObject>& sceneObject, Vector<SelectionUtils::PerHudInstanceData>& instancedElements)
+    void Selection::DrawInternal(const HCamera& camera, const SPtr<SceneObject>& sceneObject, Vector<PickingUtils::PerHudInstanceData>& instancedElements)
     {
         for (const auto& component : sceneObject->GetComponents())
         {
@@ -115,17 +115,16 @@ namespace te
                 case TID_CRenderable:
                 {
                     HRenderable renderable = static_object_cast<CRenderable>(component);
-                    if (renderable->GetActive() && EditorUtils::DoFrustumCulling(camera, renderable))
+                    if (renderable->GetActive() && gRendererUtility().DoFrustumCulling(camera, renderable))
                         DrawRenderable(renderable.GetInternalPtr());
                 }
                 break;
 
                 default:
-                    TE_DEBUG("Selection : undefined TypeID_Core " + ToString((UINT32)type));
                 break;
             }
 
-            SelectionUtils::FillPerInstanceHud(instancedElements, camera, component, SelectionUtils::RenderType::Selection);
+            PickingUtils::FillPerInstanceHud(instancedElements, camera, component, PickingUtils::RenderType::Selection);
         }
 
         for (const auto& childSO : sceneObject->GetChildren())
