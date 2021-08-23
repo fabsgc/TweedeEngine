@@ -15,7 +15,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - uses: openrndr/setup-opengl@v1.1
 
     - name: Install mesa-common-dev
       run: sudo apt-get install mesa-common-dev
@@ -57,7 +56,11 @@ jobs:
       run: CC=gcc-9 CXX=g++-9
 
     - name: Configure CMake
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      run: |
+        mkdir build && cd build
+        cmake -G "Unix Makefiles" -D CMAKE_C_COMPILER=gcc-9 -D CMAKE_CXX_COMPILER=g++-9 -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
     - name: Build
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+      run: |
+        cd build
+        make
