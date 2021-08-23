@@ -28,6 +28,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - uses: openrndr/setup-opengl@v1.1
+    - run: xvfb-run glxinfo
 
     - name: Install mesa-common-dev
       run: sudo apt-get install libx11-dev
