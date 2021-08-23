@@ -93,7 +93,7 @@ namespace te
 
     protected:
         PickingMat* _material;
-        RendererUtility::RenderWindowData _renderData;
+        RendererUtility::RenderTextureData _renderData;
         UnorderedMap<RGBA, GameObjectInfo> _colorToGameObject;
         PickingUtils::HudInstanceBuffer _instanceBuffer;
     };

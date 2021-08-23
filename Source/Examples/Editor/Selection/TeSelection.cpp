@@ -26,7 +26,7 @@ namespace te
         PickingUtils::CreateHudInstanceBuffer(_instanceBuffer);
     }
 
-    void Selection::Render(const HCamera& camera, const RendererUtility::RenderWindowData& viewportData)
+    void Selection::Render(const HCamera& camera, const RendererUtility::RenderTextureData& viewportData)
     {
         RenderAPI& rapi = RenderAPI::Instance();
         UINT32 clearBuffers = FBT_DEPTH;
@@ -37,7 +37,7 @@ namespace te
         rapi.SetRenderTarget(nullptr);
     }
 
-    void Selection::Draw(const HCamera& camera, const RendererUtility::RenderWindowData& viewportData)
+    void Selection::Draw(const HCamera& camera, const RendererUtility::RenderTextureData& viewportData)
     {
         RenderAPI& rapi = RenderAPI::Instance();
         Vector<PickingUtils::PerHudInstanceData> instancedElements;

@@ -376,7 +376,7 @@ namespace te
         return false;
     }
 
-    void RendererUtility::GenerateViewportRenderTexture(RenderWindowData& renderData)
+    void RendererUtility::GenerateViewportRenderTexture(RenderTextureData& renderData)
     {
         if (renderData.RenderTex)
             renderData.RenderTex = nullptr;

@@ -21,11 +21,11 @@ namespace te
         void Initialize();
 
         /** Render all selected elements (renderables, lights and cameras) */
-        void Render(const HCamera& camera, const RendererUtility::RenderWindowData& viewportData);
+        void Render(const HCamera& camera, const RendererUtility::RenderTextureData& viewportData);
 
     private:
         /** Recursive method to draw components under a sceneObject */
-        void Draw(const HCamera& camera, const RendererUtility::RenderWindowData& viewportData);
+        void Draw(const HCamera& camera, const RendererUtility::RenderTextureData& viewportData);
 
         /** @copydoc Picking::Draw */
         void DrawInternal(const HCamera& camera, const SPtr<SceneObject>& sceneObject, Vector<PickingUtils::PerHudInstanceData>& instancedElements);

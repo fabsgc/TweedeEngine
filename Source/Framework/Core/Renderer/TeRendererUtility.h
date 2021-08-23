@@ -16,7 +16,7 @@ namespace te
     class TE_CORE_EXPORT RendererUtility : public Module<RendererUtility>
     {
     public:
-        struct RenderWindowData
+        struct RenderTextureData
         {
             TEXTURE_DESC TargetColorDesc;
             TEXTURE_DESC TargetDepthDesc;
@@ -41,8 +41,6 @@ namespace te
          * @param[in]	material		Material containing the pass.
          * @param[in]	passIdx			Index of the pass in the material.
          * @param[in]	techniqueIdx	Index of the technique the pass belongs to, if the material has multiple techniques.
-         *
-         * @note	Core thread.
          */
         void SetPass(const SPtr<Material>& material, UINT32 passIdx, UINT32 techniqueIdx);
 
@@ -51,8 +49,6 @@ namespace te
          *
          * @param[in]	material		Material containing the pass.
          * @param[in]	passIdx			Index of the pass in the material.
-         *
-         * @note	Core thread.
          */
         void SetComputePass(const SPtr<Material>& material, UINT32 passIdx = 0);
 
@@ -62,8 +58,6 @@ namespace te
          * @param[in]	params		        Object containing the parameters.
          * @param[in]	gpuParamsBindFlags	Specify which parameters are binded to GPU
          * @param[in]	isInstanced     	Check if current object is instanced or not (more param buffer to update)
-         *					
-         * @note	Core thread.
          */
         void SetPassParams(const SPtr<GpuParams> gpuParams, UINT32 gpuParamsBindFlags, bool isInstanced);
 
@@ -72,8 +66,6 @@ namespace te
          *
          * @param[in]	mesh			Mesh to draw.
          * @param[in]	numInstances	Number of times to draw the mesh using instanced rendering.
-         *
-         * @note	Core thread.
          */
         void Draw(const SPtr<Mesh>& mesh, UINT32 numInstances = 1);
 
@@ -83,8 +75,6 @@ namespace te
          * @param[in]	mesh			Mesh to draw.
          * @param[in]	subMesh			Portion of the mesh to draw.
          * @param[in]	numInstances	Number of times to draw the mesh using instanced rendering.
-         *
-         * @note	Core thread.
          */
         void Draw(const SPtr<Mesh>& mesh, const SubMesh& subMesh, UINT32 numInstances = 1);
 
@@ -177,7 +167,7 @@ namespace te
         bool DoFrustumCulling(const HCamera& camera, const Sphere& boundingSphere, const float& cullDistanceFactor);
 
         /** Generate a render texture using data given in parameters */
-        void GenerateViewportRenderTexture(RenderWindowData& renderData);
+        void GenerateViewportRenderTexture(RenderTextureData& renderData);
 
     private:
         static constexpr UINT32 NUM_QUAD_VB_SLOTS = 1024;

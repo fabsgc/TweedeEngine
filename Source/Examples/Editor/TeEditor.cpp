@@ -200,8 +200,8 @@ namespace te
 
         if (_selectionDirty && _previewViewportCamera == _viewportCamera) // only for default camera
         {
-            RendererUtility::RenderWindowData viewportData =
-                static_cast<WidgetViewport*>(&*_settings.WViewport)->GetRenderWindowData();
+            RendererUtility::RenderTextureData viewportData =
+                static_cast<WidgetViewport*>(&*_settings.WViewport)->GetRenderTextureData();
             _selection->Render(_previewViewportCamera, viewportData);
         }
 
@@ -236,8 +236,8 @@ namespace te
         {
             if (_pickingDirty)
             {
-                RendererUtility::RenderWindowData viewportData =
-                    static_cast<WidgetViewport*>(&*_settings.WViewport)->GetRenderWindowData();
+                RendererUtility::RenderTextureData viewportData =
+                    static_cast<WidgetViewport*>(&*_settings.WViewport)->GetRenderTextureData();
                 Picking::RenderParam pickingData(viewportData.Width, viewportData.Height);
 
                 _picking->ComputePicking(_previewViewportCamera, pickingData, _sceneSO);

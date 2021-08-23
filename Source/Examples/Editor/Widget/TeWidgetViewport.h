@@ -31,7 +31,7 @@ namespace te
         void NeedsRedraw();
         void SetVisible(bool isVisible);
 
-        const RendererUtility::RenderWindowData& GetRenderWindowData() const { return _renderData; }
+        const RendererUtility::RenderTextureData& GetRenderTextureData() const { return _renderData; }
 
     protected:
         /** Return true if texture has been updated */
@@ -50,7 +50,7 @@ namespace te
         HEvent _resizeEvent;
         Editor::SelectionData& _selections;
 
-        RendererUtility::RenderWindowData _renderData;
+        RendererUtility::RenderTextureData _renderData;
         HCamera _viewportCamera;
         HCameraUI& _viewportCameraUI;
 

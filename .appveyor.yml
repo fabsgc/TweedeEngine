@@ -1,20 +1,12 @@
 image: 
   - Visual Studio 2019
   - Ubuntu
-platform: x64
-configuration: Debug
+platform:
+  - x64
+configuration: 
+  - Debug
 
 for:
-  -
-    matrix:
-      only:
-        - image: Visual Studio 2019
-    build_script:
-      - cmd: mkdir Build
-      - cmd: cd Build
-      - cmd: cmake --version
-      - cmd: cmake -G "Visual Studio 16 2019" ..
-      - cmd: cmake --build ./ --config Debug
   -
     matrix:
       only:
@@ -24,4 +16,14 @@ for:
       - cmd: cd Build
       - cmd: cmake --version
       - cmd: cmake -G "Unix Makefiles" ..
+      - cmd: make
+  -
+    matrix:
+      only:
+        - image: Visual Studio 2019
+    build_script:
+      - cmd: mkdir Build
+      - cmd: cd Build
+      - cmd: cmake --version
+      - cmd: cmake -G "Visual Studio 16 2019" ..
       - cmd: cmake --build ./ --config Debug
