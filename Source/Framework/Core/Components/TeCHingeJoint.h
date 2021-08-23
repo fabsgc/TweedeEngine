@@ -26,19 +26,19 @@ namespace te
         void SetSoftnessLimit(float softness);
 
         /** @copydoc HingeJoint::GetSoftnessLimit */
-        const float GetSoftnessLimit() const { return _softnessLimit; }
+        float GetSoftnessLimit() const { return _softnessLimit; }
 
         /** @copydoc HingeJoint::SetBiasLimit */
         void SetBiasLimit(float bias);
 
         /** @copydoc HingeJoint::GetBiasLimit */
-        const float GetBiasLimit() const { return _biasLimit; }
+        float GetBiasLimit() const { return _biasLimit; }
 
         /** @copydoc HingeJoint::SetRelaxationLimit */
         void SetRelaxationLimit(float relaxation);
 
         /** @copydoc HingeJoint::GetRelaxationLimit */
-        const float GetRelaxationLimit() const { return _relaxationLimit; }
+        float GetRelaxationLimit() const { return _relaxationLimit; }
 
         /** @copydoc HingeJoint::SetHighLimit */
         void SetHighLimit(Degree highLimit);
@@ -56,25 +56,25 @@ namespace te
         void SetAngularOnly(bool angularOnly);
 
         /** @copydoc HingeJoint::GetAngularOnly */
-        const bool GetAngularOnly() const { return _angularOnly; }
+        bool GetAngularOnly() const { return _angularOnly; }
 
         /** @copydoc HingeJoint::SetMotorEnabled */
         void SetMotorEnabled(bool motorEnabled);
 
         /** @copydoc HingeJoint::GetMotorEnabled */
-        const bool GetMotorEnabled() const { return _motorEnabled; }
+        bool GetMotorEnabled() const { return _motorEnabled; }
 
         /** @copydoc HingeJoint::SetMaxMotorImpulse */
         void SetMaxMotorImpulse(float motorImpulse);
 
         /** @copydoc HingeJoint::GetMaxMotorImpulse */
-        const bool GetMaxMotorImpulse() const { return _motorImpulse; }
+        bool GetMaxMotorImpulse() const { return _motorImpulse; }
 
         /** @copydoc HingeJoint::SetMotorVelocity */
         void SetMotorVelocity(float motorVelocity);
 
         /** @copydoc HingeJoint::GetMotorVelocity */
-        const bool GetMotorVelocity() const { return _motorVelocity; }
+        bool GetMotorVelocity() const { return _motorVelocity; }
 
     protected:
         friend class SceneObject;

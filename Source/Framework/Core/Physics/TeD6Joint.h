@@ -24,13 +24,13 @@ namespace te
         virtual void SetLowerLinLimit(float lowerLinLimit);
 
         /** @copydoc SetLowerLinLimit */
-        const float GetLowerLinLimit() const { return _lowerLinLimit; }
+        float GetLowerLinLimit() const { return _lowerLinLimit; }
 
         /** */
         virtual void SetUpperLinLimit(float upperLinLimit);
 
         /** @copydoc SetUpperLinLimit */
-        const float GetUpperLinLimit() const { return _upperLinLimit; }
+        float GetUpperLinLimit() const { return _upperLinLimit; }
 
         /** */
         virtual void SetLowerAngLimit(Degree lowerAngLimit);
@@ -48,37 +48,37 @@ namespace te
         virtual void SetLinearSpring(bool linearSpring);
 
         /** @copydoc SetLinearSpring */
-        const bool GetLinearSpring() const { return _linearSpring; }
+        bool GetLinearSpring() const { return _linearSpring; }
 
         /** */
         virtual void SetAngularSpring(bool angularSpring);
 
         /** @copydoc SetLinearSpring */
-        const bool GetAngularSpring() const { return _angularSpring; }
+        bool GetAngularSpring() const { return _angularSpring; }
 
         /** */
         virtual void SetLinearStiffness(float linearStiffness);
 
         /** @copydoc SetLinearStiffness */
-        const float GetLinearStiffness() const { return _linearStiffness; }
+        float GetLinearStiffness() const { return _linearStiffness; }
 
         /** */
         virtual void SetAngularStiffness(float angularStiffness);
 
         /** @copydoc SetAngularStiffness */
-        const float GetAngularStiffness() const { return _angularStiffness; }
+        float GetAngularStiffness() const { return _angularStiffness; }
 
         /** */
         virtual void SetLinearDamping(float linearDamping);
 
         /** @copydoc SetLinearDamping */
-        const float GetLinearDamping() const { return _linearDamping; }
+        float GetLinearDamping() const { return _linearDamping; }
 
         /** */
         virtual void SetAngularDamping(float angularDamping);
 
         /** @copydoc SetAngularDamping */
-        const float GetAngularDamping() const { return _angularDamping; }
+        float GetAngularDamping() const { return _angularDamping; }
 
         /**
          * Creates a new d6 joint.

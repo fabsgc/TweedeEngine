@@ -4,6 +4,8 @@
 #include "Physics/TePhysicsCommon.h"
 #include "Utility/TeEvent.h"
 
+#include <cfloat>
+
 namespace te
 {
     class Ray;

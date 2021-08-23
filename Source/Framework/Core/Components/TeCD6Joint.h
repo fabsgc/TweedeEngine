@@ -26,13 +26,13 @@ namespace te
         void SetLowerLinLimit(float lowerLinLimit);
 
         /** @copydoc SetLowerLinLimit */
-        const float GetLowerLinLimit() const { return _lowerLinLimit; }
+        float GetLowerLinLimit() const { return _lowerLinLimit; }
 
         /** @copydoc D6Joint::SetUpperLinLimit */
         void SetUpperLinLimit(float upperLinLimit);
 
         /** @copydoc D6Joint::GetUpperLinLimit */
-        const float GetUpperLinLimit() const { return _upperLinLimit; }
+        float GetUpperLinLimit() const { return _upperLinLimit; }
 
         /** @copydoc D6Joint::SetLowerAngLimit */
         void SetLowerAngLimit(Degree lowerAngLimit);
@@ -50,37 +50,37 @@ namespace te
         void SetLinearSpring(bool linearSpring);
 
         /** @copydoc D6Joint::GetLinearSpring */
-        const bool GetLinearSpring() const { return _linearSpring; }
+        bool GetLinearSpring() const { return _linearSpring; }
 
         /** @copydoc D6Joint::SetAngularSpring */
         void SetAngularSpring(bool angularSpring);
 
         /** @copydoc D6Joint::GetLinearSpring */
-        const bool GetAngularSpring() const { return _angularSpring; }
+        bool GetAngularSpring() const { return _angularSpring; }
 
         /** @copydoc D6Joint::SetLinearStiffness */
         void SetLinearStiffness(float linearStiffness);
 
         /** @copydoc D6Joint::GetLinearStiffness */
-        const float GetLinearStiffness() const { return _linearStiffness; }
+        float GetLinearStiffness() const { return _linearStiffness; }
 
         /** @copydoc D6Joint::SetAngularStiffness */
         void SetAngularStiffness(float angularStiffness);
 
         /** @copydoc D6Joint::GetAngularStiffness */
-        const float GetAngularStiffness() const { return _angularStiffness; }
+        float GetAngularStiffness() const { return _angularStiffness; }
 
         /** @copydoc D6Joint::SetLinearDamping */
         void SetLinearDamping(float linearDamping);
 
         /** @copydoc D6Joint::GetLinearDamping */
-        const float GetLinearDamping() const { return _linearDamping; }
+        float GetLinearDamping() const { return _linearDamping; }
 
         /** @copydoc D6Joint::SetAngularDamping */
         void SetAngularDamping(float angularDamping);
 
         /** @copydoc D6Joint::GetAngularDamping */
-        const float GetAngularDamping() const { return _angularDamping; }
+        float GetAngularDamping() const { return _angularDamping; }
 
     protected:
         friend class SceneObject;

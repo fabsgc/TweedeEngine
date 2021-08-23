@@ -26,13 +26,13 @@ namespace te
         void SetLowerLinLimit(float lowerLinLimit);
 
         /** @copydoc GetLowerLinLimit */
-        const float GetLowerLinLimit() const { return _lowerLinLimit; }
+        float GetLowerLinLimit() const { return _lowerLinLimit; }
 
         /** @copydoc SetUpperLinLimit */
         void SetUpperLinLimit(float upperLinLimit);
 
         /** @copydoc GetUpperLinLimit */
-        const float GetUpperLinLimit() const { return _upperLinLimit; }
+        float GetUpperLinLimit() const { return _upperLinLimit; }
 
         /** @copydoc SetLowerAngLimit */
         void SetLowerAngLimit(Degree lowerAngLimit);
@@ -50,7 +50,7 @@ namespace te
         void SetSoftnessDirLin(float softnessDirLin);
 
         /** @copydoc GetSoftnessDirLin */
-        const float GetSoftnessDirLin() const { return _softnessDirLin; }
+        float GetSoftnessDirLin() const { return _softnessDirLin; }
 
         /** @copydoc SetRestitutionDirLin */
         virtual void SetRestitutionDirLin(float restitutionDirLin);
@@ -62,133 +62,133 @@ namespace te
         void SetDampingDirLin(float dampingDirLin);
 
         /** @copydoc GetDampingDirLin */
-        const float GetDampingDirLin() const { return _dampingDirLin; }
+        float GetDampingDirLin() const { return _dampingDirLin; }
 
         /** @copydoc SetSoftnessDirAng */
         void SetSoftnessDirAng(float softnessDirAng);
 
         /** @copydoc GetSoftnessDirAng */
-        const float GetSoftnessDirAng() const { return _softnessDirAng; }
+        float GetSoftnessDirAng() const { return _softnessDirAng; }
 
         /** @copydoc SetRestitutionDirAng */
         void SetRestitutionDirAng(float restitutionDirAng);
 
         /** @copydoc GetRestitutionDirAng */
-        const float GetRestitutionDirAng() const { return _restitutionDirAng; }
+        float GetRestitutionDirAng() const { return _restitutionDirAng; }
 
         /** @copydoc SetDampingDirAng */
         void SetDampingDirAng(float dampingDirAng);
 
         /** @copydoc GetDampingDirAng */
-        const float GetDampingDirAng() const { return _dampingDirAng; }
+        float GetDampingDirAng() const { return _dampingDirAng; }
 
         /** @copydoc SetSoftnessLimLin */
         void SetSoftnessLimLin(float softnessLimLin);
 
         /** @copydoc GetSoftnessLimLin */
-        const float GetSoftnessLimLin() const { return _softnessLimLin; }
+        float GetSoftnessLimLin() const { return _softnessLimLin; }
 
         /** @copydoc SetRestitutionLimLin */
         void SetRestitutionLimLin(float restitutionLimLin);
 
         /** @copydoc GetRestitutionLimLin */
-        const float GetRestitutionLimLin() const { return _restitutionLimLin; }
+        float GetRestitutionLimLin() const { return _restitutionLimLin; }
 
         /** @copydoc SetDampingLimLin */
         void SetDampingLimLin(float dampingLimLin);
 
         /** @copydoc GetDampingLimLin */
-        const float GetDampingLimLin() const { return _dampingLimLin; }
+        float GetDampingLimLin() const { return _dampingLimLin; }
 
         /** @copydoc SetSoftnessLimAng */
         void SetSoftnessLimAng(float softnessLimAng);
 
         /** @copydoc GetSoftnessLimAng */
-        const float GetSoftnessLimAng() const { return _softnessLimAng; }
+        float GetSoftnessLimAng() const { return _softnessLimAng; }
 
         /** @copydoc SetRestitutionLimAng */
         void SetRestitutionLimAng(float restitutionLimAng);
 
         /** @copydoc GetRestitutionLimAng */
-        const float GetRestitutionLimAng() const { return _restitutionLimAng; }
+        float GetRestitutionLimAng() const { return _restitutionLimAng; }
 
         /** @copydoc SetDampingLimAng */
         void SetDampingLimAng(float dampingLimAng);
 
         /** @copydoc GetDampingLimAng */
-        const float GetDampingLimAng() const { return _dampingLimAng; }
+        float GetDampingLimAng() const { return _dampingLimAng; }
 
         /** @copydoc SetSoftnessOrthoLin */
         void SetSoftnessOrthoLin(float softnessOrthoLin);
 
         /** @copydoc GetSoftnessOrthoLin */
-        const float GetSoftnessOrthoLin() const { return _softnessOrthoLin; }
+        float GetSoftnessOrthoLin() const { return _softnessOrthoLin; }
 
         /** @copydoc SetRestitutionOrthoLin */
         void SetRestitutionOrthoLin(float restitutionOrthoLin);
 
         /** @copydoc GetRestitutionOrthoLin */
-        const float GetRestitutionOrthoLin() const { return _restitutionOrthoLin; }
+        float GetRestitutionOrthoLin() const { return _restitutionOrthoLin; }
 
         /** @copydoc SetDampingOrthoLin */
         void SetDampingOrthoLin(float dampingOrthoLin);
 
         /** @copydoc GetDampingOrthoLin */
-        const float GetDampingOrthoLin() const { return _dampingOrthoLin; }
+        float GetDampingOrthoLin() const { return _dampingOrthoLin; }
 
         /** @copydoc SetSoftnessOrthoAng */
         void SetSoftnessOrthoAng(float softnessOrthoAng);
 
         /** @copydoc GetSoftnessOrthoAng */
-        const float GetSoftnessOrthoAng() const { return _softnessOrthoAng; }
+        float GetSoftnessOrthoAng() const { return _softnessOrthoAng; }
 
         /** @copydoc SetRestitutionOrthoAng */
         void SetRestitutionOrthoAng(float restitutionOrthoAng);
 
         /** @copydoc GetRestitutionOrthoAng */
-        const float GetRestitutionOrthoAng() const { return _restitutionOrthoAng; }
+        float GetRestitutionOrthoAng() const { return _restitutionOrthoAng; }
 
         /** @copydoc SetDampingOrthoAng */
         void SetDampingOrthoAng(float dampingOrthoAng);
 
         /** @copydoc GetDampingOrthoAng */
-        const float GetDampingOrthoAng() const { return _dampingOrthoAng; }
+        float GetDampingOrthoAng() const { return _dampingOrthoAng; }
 
         /** @copydoc SetPoweredLinMotor */
         void SetPoweredLinMotor(bool poweredLinMotor);
 
         /** @copydoc GetPoweredLinMotor */
-        const bool GetPoweredLinMotor() const { return _poweredLinMotor; }
+        bool GetPoweredLinMotor() const { return _poweredLinMotor; }
 
         /** @copydoc SetTargetLinMotorVelocity */
         void SetTargetLinMotorVelocity(float targetLinMotorVelocity);
 
         /** @copydoc GetTargetLinMotorVelocity */
-        const float GetTargetLinMotorVelocity() const { return _targetLinMotorVelocity; }
+        float GetTargetLinMotorVelocity() const { return _targetLinMotorVelocity; }
 
         /** @copydoc SetMaxLinMotorForce */
         void SetMaxLinMotorForce(float maxLinMotorForce);
 
         /** @copydoc GetMaxLinMotorForce */
-        const float GetMaxLinMotorForce() const { return _maxLinMotorForce; }
+        float GetMaxLinMotorForce() const { return _maxLinMotorForce; }
 
         /** @copydoc SetPoweredAngMotor */
         void SetPoweredAngMotor(bool poweredAngMotor);
 
         /** @copydoc GetPoweredAngMotor */
-        const bool GetPoweredAngMotor() const { return _poweredAngMotor; }
+        bool GetPoweredAngMotor() const { return _poweredAngMotor; }
 
         /** @copydoc SetTargetAngMotorVelocity */
         void SetTargetAngMotorVelocity(float targetAngMotorVelocity);
 
         /** @copydoc GetTargetAngMotorVelocity */
-        const float GetTargetAngMotorVelocity() const { return _targetAngMotorVelocity; }
+        float GetTargetAngMotorVelocity() const { return _targetAngMotorVelocity; }
 
         /** @copydoc SetMaxAngMotorForce */
         void SetMaxAngMotorForce(float maxAngMotorForce);
 
         /** @copydoc GetMaxAngMotorForce */
-        const float GetMaxAngMotorForce() const { return _maxAngMotorForce; }
+        float GetMaxAngMotorForce() const { return _maxAngMotorForce; }
 
     protected:
         friend class SceneObject;

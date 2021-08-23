@@ -22,7 +22,7 @@ namespace te
         virtual void SetDamping(float damping);
 
         /** @copydoc SetDamping */
-        const float GetDamping() const { return _damping; }
+        float GetDamping() const { return _damping; }
 
         /** 
          * Describes % of limits where movement is free.
@@ -32,7 +32,7 @@ namespace te
         virtual void SetSoftnessLimit(float softness);
 
         /** @copydoc SetSoftnessLimit */
-        const float GetSoftnessLimit() const { return _softnessLimit; }
+        float GetSoftnessLimit() const { return _softnessLimit; }
 
         /**
          * Strength with which constraint resists zeroth order (angular, not angular velocity) limit violation.
@@ -41,7 +41,7 @@ namespace te
         virtual void SetBiasLimit(float bias);
 
         /** @copydoc SetBiasLimit */
-        const float GetBiasLimit() const { return _biasLimit; }
+        float GetBiasLimit() const { return _biasLimit; }
 
         /** 
          * the lower the value, the less the constraint will fight velocities which violate the angular limits.
@@ -50,7 +50,7 @@ namespace te
         virtual void SetRelaxationLimit(float relaxation);
 
         /** @copydoc SetRelaxationLimit */
-        const float GetRelaxationLimit() const { return _relaxationLimit; }
+        float GetRelaxationLimit() const { return _relaxationLimit; }
 
         /**
          * Specify twist limit of the joint
@@ -94,19 +94,19 @@ namespace te
         virtual void SetAngularOnly(bool angularOnly);
 
         /** @copydoc SetAngularOnly */
-        const bool GetAngularOnly() const { return _angularOnly; }
+        bool GetAngularOnly() const { return _angularOnly; }
 
         /** Turns the motor on the X axis on and off */
         virtual void SetMotorEnabled(bool motorEnabled);
 
         /** @copydoc SetMotorEnabled */
-        const bool GetMotorEnabled() const { return _motorEnabled; }
+        bool GetMotorEnabled() const { return _motorEnabled; }
 
         /** Turns the motor on the X axis on and off */
         virtual void SetMaxMotorImpulse(float motorImpulse);
 
         /** @copydoc SetMaxMotorImpulse */
-        const bool GetMaxMotorImpulse() const { return _motorImpulse; }
+        bool GetMaxMotorImpulse() const { return _motorImpulse; }
 
         /**
          * Creates a new cone twist joint.
