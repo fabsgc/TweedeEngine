@@ -373,6 +373,9 @@ namespace te
     class FPhysicsHeightField;
 
     class GPUProfiler;
+
+    class Picking;
+    class PickingMat;
 }
 
 #include "Utility/TeNonCopyable.h"
