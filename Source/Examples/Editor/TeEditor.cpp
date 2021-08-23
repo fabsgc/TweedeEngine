@@ -654,6 +654,9 @@ namespace te
         case WindowType::Profiler:
             _settings.WProfiler->PutFocus();
             break;
+        case WindowType::Settings:
+            _settings.WSettings->PutFocus();
+            break;
         }
     }
 
