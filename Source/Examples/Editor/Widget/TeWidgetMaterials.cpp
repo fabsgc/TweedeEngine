@@ -4,6 +4,7 @@
 #include "../TeEditorResManager.h"
 #include "../ImGuiExt/TeImGuiExt.h"
 #include "../ImGuiExt/TeImGuiFileBrowser.h"
+#include "TeMaterialsPreview.h"
 #include "Material/TeMaterial.h"
 #include "Image/TeTexture.h"
 #include "Components/TeCRenderable.h"
@@ -32,7 +33,9 @@ namespace te
     { }
 
     void WidgetMaterials::Initialize()
-    { }
+    { 
+        _materialsPreview = te_unique_ptr_new<MaterialsPreview>();
+    }
 
     void WidgetMaterials::Update()
     { 

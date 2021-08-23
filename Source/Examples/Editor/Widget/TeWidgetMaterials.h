@@ -6,6 +6,7 @@
 namespace te
 {
     class ImGuiFileBrowser;
+    class MaterialsPreview;
 
     class WidgetMaterials : public Widget
     {
@@ -24,6 +25,8 @@ namespace te
     protected:
         SPtr<Material> _currentMaterial;
         UINT32 _materialCreationCounter;
+
+        UPtr<MaterialsPreview> _materialsPreview;
         
         // Data used to set the correct texture while loading
         bool _loadTexture;

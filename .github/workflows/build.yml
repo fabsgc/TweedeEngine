@@ -21,31 +21,32 @@ jobs:
 
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
-      
+
   linux:
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
-      
+    - uses: openrndr/setup-opengl@v1.1
+
     - name: Install mesa-common-dev
       run: sudo apt-get install libx11-dev
-    
+
     - name: Install mesa-common-dev
       run: sudo apt-get install libx11-dev
-    
+
     - name: Install libxcursor-dev 
       run: sudo apt-get install libxcursor-dev
 
     - name: Install libxrandr-dev
       run: sudo apt-get install libxrandr-dev
-      
+
     - name: Install libxi-dev
       run: sudo apt-get install libxi-dev
-      
+
     - name: Install uuid-dev
       run: sudo apt-get install uuid-dev
-      
+
     - name: Install libglfw3
       run: sudo apt-get install libglfw3
 
