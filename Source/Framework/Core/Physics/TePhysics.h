@@ -5,6 +5,8 @@
 #include "Utility/TeModule.h"
 #include "Math/TeVector3.h"
 
+#include <cfloat>
+
 namespace te
 {
     /** Contains parameters used for initializing the physics system. */
