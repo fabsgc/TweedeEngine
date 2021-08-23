@@ -11,7 +11,7 @@ env:
 
 jobs:
   Linux:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     steps:
     - uses: actions/checkout@v2
@@ -19,6 +19,9 @@ jobs:
 
     - name: Install libgl1
       run: sudo apt-get install libgl1
+
+    - name: Install mesa-common-dev
+      run: sudo apt-get install mesa-common-dev
 
     - name: Install libglu1-mesa-dev
       run: sudo apt-get install libglu1-mesa-dev
