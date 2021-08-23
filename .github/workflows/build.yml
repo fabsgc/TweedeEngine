@@ -27,9 +27,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    
-    - name: Install libgl1-mesa-dev
-      run: sudo apt-get install libgl1-mesa-dev
       
     - name: Install mesa-common-dev
       run: sudo apt-get install libx11-dev
