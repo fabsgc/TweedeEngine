@@ -12,8 +12,6 @@ env:
 jobs:
   Linux:
     runs-on: ubuntu-18.04
-    compiler: gcc
-    gcc: 9
 
     steps:
     - uses: actions/checkout@v2
