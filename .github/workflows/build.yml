@@ -21,9 +21,15 @@ jobs:
       run: sudo apt-get install libgl1
 
     - name: Install mesa-common-dev
-      run: sudo apt-get install libx11-dev
+      run: sudo apt-get install mesa-common-dev
 
-    - name: Install mesa-common-dev
+    - name: Install libglu1-mesa-dev
+      sudo apt-get install libglu1-mesa-dev
+
+    - name: Install libgl1-mesa-dev
+      sudo apt-get libgl1-mesa-dev
+
+    - name: Install libx11-dev
       run: sudo apt-get install libx11-dev
 
     - name: Install libxcursor-dev 
