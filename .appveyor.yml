@@ -1,6 +1,7 @@
-image: 
-  - Visual Studio 2019
+image:
   - Ubuntu
+  - Visual Studio 2019
+
 platform:
   - x64
 configuration: 
