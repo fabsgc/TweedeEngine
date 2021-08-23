@@ -28,7 +28,16 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
-    - name: Install libx11-dev 
+    - name: Install libgl1-mesa-dev
+      run: sudo apt-get install libgl1-mesa-dev
+      
+    - name: Install libglu1-mesa-dev
+      run: sudo apt-get install libglu1-mesa-dev
+      
+    - name: Install mesa-common-dev
+      run: sudo apt-get install libx11-dev
+    
+    - name: Install mesa-common-dev
       run: sudo apt-get install libx11-dev
     
     - name: Install libxcursor-dev 
@@ -42,6 +51,12 @@ jobs:
       
     - name: Install uuid-dev
       run: sudo apt-get install uuid-dev
+      
+    - name: Install libglfw3
+      run: sudo apt-get install libglfw3
+      
+    - name: Install libglfw3-dev
+      run: sudo apt-get install libglfw3-dev
 
     - name: Configure CMake
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
