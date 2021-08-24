@@ -46,7 +46,11 @@ namespace te
         /** Shader used for hud draw and selection */
         HudSelection = 0xD,
         /** Shared used for Bullet physic debug display */
-        BulletDebug = 0xE
+        BulletDebug = 0xE,
+        /** Shader used for material's preview for opaque objects */
+        PreviewOpaque = 0xF,
+        /** Shader used for material's preview for transparent objects */
+        PreviewTransparent = 0x10
     };
 
     /** Types of builtin shaders that are always available. */
@@ -161,6 +165,8 @@ namespace te
         void InitShaderHudPicking();
         void InitShaderHudSelection();
         void InitShaderBulletDebug();
+        void InitShaderPreviewOpaque();
+        void InitShaderPreviewTransparent();
 
         void InitDefaultMaterial();
 
@@ -182,6 +188,8 @@ namespace te
         HShader _shaderSelection;
         HShader _shaderHudSelection;
         HShader _shaderBulletDebug;
+        HShader _shaderPreviewOpaque;
+        HShader _shaderPreviewTransparent;
 
         SPtr<SamplerState> _anisotropicSamplerState = nullptr;
         SPtr<SamplerState> _bilinearSamplerState = nullptr;
@@ -198,6 +206,8 @@ namespace te
         SHADER_DESC _pickSelectShaderDesc;
         SHADER_DESC _hudPickSelectShaderDesc;
         SHADER_DESC _bulletDebugShaderDesc;
+        SHADER_DESC _previewOpaqueDesc;
+        SHADER_DESC _previewTransparentDesc;
 
         GPU_PROGRAM_DESC _vertexShaderForwardDesc;
         GPU_PROGRAM_DESC _pixelShaderForwardDesc;
@@ -233,6 +243,9 @@ namespace te
         GPU_PROGRAM_DESC _vertexShaderBulletDebugDesc;
         GPU_PROGRAM_DESC _geometryShaderBulletDebugDesc;
         GPU_PROGRAM_DESC _pixelShaderBulletDebugDesc;
+
+        GPU_PROGRAM_DESC _vertexShaderPreviewOpaqueDesc;
+        GPU_PROGRAM_DESC _pixelShaderPreviewTransparentDesc;
 
         BLEND_STATE_DESC _blendOpaqueStateDesc;
         BLEND_STATE_DESC _blendTransparentStateDesc;

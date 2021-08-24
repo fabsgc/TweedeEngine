@@ -118,7 +118,18 @@ namespace te
                 InitShaderBulletDebug();
             shader = _shaderBulletDebug;
             break;
+        case BuiltinShader::PreviewOpaque:
+            if (!_shaderOpaque.IsLoaded())
+                InitShaderOpaque(); // TODO
+            shader = _shaderOpaque;
+            break;
+        case BuiltinShader::PreviewTransparent:
+            if(!_shaderTransparent.IsLoaded())
+                InitShaderTransparent();
+            shader = _shaderTransparent; // TODO
+            break;
         default:
+            TE_ASSERT_ERROR(false, "Can't find \"" + ToString((UINT32)type) + "\" shader.")
             break;
         }
 
@@ -136,6 +147,7 @@ namespace te
         case BuiltinSampler::Trilinear:
             return _trilinearSamplerState;
         default:
+            TE_ASSERT_ERROR(false, "Can't find \"" + ToString((UINT32)type) + "\" sampler.")
             break;
         }
 
@@ -1169,6 +1181,16 @@ namespace te
         shaderDesc.Techniques.push_back(technique.GetInternalPtr());
 
         _shaderBulletDebug = Shader::Create("BulletDebug", shaderDesc);
+    }
+
+    void BuiltinResources::InitShaderPreviewOpaque()
+    {
+        // TODO
+    }
+
+    void BuiltinResources::InitShaderPreviewTransparent()
+    {
+        // TODO
     }
 
     void BuiltinResources::InitDefaultMaterial()

@@ -59,7 +59,6 @@ set (TE_EDITOR_INC_WIDGET
     "Widget/TeWidgetMaterials.h"
     "Widget/TeWidgetProfiler.h"
     "Widget/TeWidgetSettings.h"
-    "Widget/TeMaterialsPreview.h"
 )
 
 set (TE_EDITOR_SRC_WIDGET
@@ -76,13 +75,23 @@ set (TE_EDITOR_SRC_WIDGET
     "Widget/TeWidgetMaterials.cpp"
     "Widget/TeWidgetProfiler.cpp"
     "Widget/TeWidgetSettings.cpp"
-    "Widget/TeMaterialsPreview.cpp"
+)
+
+set (TE_EDITOR_INC_MATERIALS_PREVIEW
+    "MaterialsPreview/TeMaterialsPreview.h"
+    "MaterialsPreview/TeMaterialsPreviewMat.h"
+)
+
+set (TE_EDITOR_SRC_MATERIALS_PREVIEW
+    "MaterialsPreview/TeMaterialsPreview.cpp"
+    "MaterialsPreview/TeMaterialsPreviewMat.cpp"
 )
 
 source_group ("" FILES ${TE_EDITOR_SRC_NOFILTER} ${TE_EDITOR_INC_NOFILTER})
 source_group ("Widget" FILES ${TE_EDITOR_INC_WIDGET} ${TE_EDITOR_SRC_WIDGET})
 source_group ("ImGuiExt" FILES ${TE_EDITOR_INC_IMGUI_EXT} ${TE_EDITOR_SRC_IMGUI_EXT})
 source_group ("Selection" FILES ${TE_EDITOR_INC_SELECTION} ${TE_EDITOR_SRC_SELECTION})
+source_group ("MaterialsPreview" FILES ${TE_EDITOR_INC_MATERIALS_PREVIEW} ${TE_EDITOR_SRC_MATERIALS_PREVIEW})
 
 set (TE_EDITOR_SRC
     ${TE_EDITOR_INC_NOFILTER}
@@ -93,4 +102,6 @@ set (TE_EDITOR_SRC
     ${TE_EDITOR_SRC_IMGUI_EXT}
     ${TE_EDITOR_INC_SELECTION}
     ${TE_EDITOR_SRC_SELECTION}
+    ${TE_EDITOR_INC_MATERIALS_PREVIEW}
+    ${TE_EDITOR_SRC_MATERIALS_PREVIEW}
 )

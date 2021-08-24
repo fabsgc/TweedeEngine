@@ -19,7 +19,6 @@ namespace te
 
         for (auto& material : materials)
         {
-
             if (material.ShaderPath.type() == typeid(BuiltinShader))
             {
                 HShader shader = br.GetBuiltinShader(std::any_cast<BuiltinShader>(material.ShaderPath));
@@ -31,7 +30,6 @@ namespace te
                 HShader shader = gResourceManager().Load<Shader>(
                     std::any_cast<String>(material.ShaderPath), shaderImportOptions);
             }
-
         }
 
         InitMaterials(shaders);

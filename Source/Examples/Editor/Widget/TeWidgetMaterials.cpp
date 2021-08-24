@@ -4,16 +4,14 @@
 #include "../TeEditorResManager.h"
 #include "../ImGuiExt/TeImGuiExt.h"
 #include "../ImGuiExt/TeImGuiFileBrowser.h"
-#include "TeMaterialsPreview.h"
-#include "Material/TeMaterial.h"
-#include "Image/TeTexture.h"
-#include "Components/TeCRenderable.h"
-#include "Resources/TeBuiltinResources.h"
-#include "Resources/TeResourceManager.h"
-#include "Importer/TeTextureImportOptions.h"
-#include "Scene/TeSceneManager.h"
-#include "Scene/TeSceneObject.h"
+#include "../MaterialsPreview/TeMaterialsPreview.h"
 #include "String/TeUnicode.h"
+#include "Scene/TeSceneObject.h"
+#include "Scene/TeSceneManager.h"
+#include "Components/TeCRenderable.h"
+#include "Resources/TeResourceManager.h"
+#include "Resources/TeBuiltinResources.h"
+#include "Importer/TeTextureImportOptions.h"
 
 namespace te
 {
@@ -131,6 +129,7 @@ namespace te
                     materialUUID = _currentMaterial->GetUUID();
                 }
                 materialsOptions.AddOption(resource.second->GetUUID(), resource.second->GetName());
+                _materialsPreview->GetPreview(static_resource_cast<Material>(resource.second).GetInternalPtr());
             }
 
             if (_currentMaterial)
@@ -406,6 +405,8 @@ namespace te
 
                 gEditor().NeedsRedraw();
                 gEditor().GetSettings().State = Editor::EditorState::Modified;
+
+                _materialsPreview->MarkDirty(_currentMaterial);
             }
         }
     }
@@ -475,6 +476,8 @@ namespace te
             HRenderable renderable = static_object_cast<CRenderable>(component);
             renderable->RemoveMaterial(material);
         }
+
+        _materialsPreview->DeletePreview(material);
 
         EditorResManager::Instance().Remove<Material>(handle);
         material = nullptr;
