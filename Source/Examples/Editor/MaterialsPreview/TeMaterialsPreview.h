@@ -30,21 +30,21 @@ namespace te
          *
          * @param[in]	material		Weak Ref on a Material.
          */
-        const RendererUtility::RenderTextureData& GetPreview(WPtr<Material> material);
+        const RendererUtility::RenderTextureData& GetPreview(const WPtr<Material>& material);
 
         /**
          * Specifies that the given material preview need to be updated
          *
          * @param[in]	material		Weak Ref on a Material.
          */
-        void MarkDirty(WPtr<Material> material);
+        void MarkDirty(const WPtr<Material>& material);
 
         /**
          * Delete a material preview from the list
          *
          * @param[in]	material		Weak Ref on a Material.
          */
-        void DeletePreview(WPtr<Material> material);
+        void DeletePreview(const WPtr<Material>& material);
 
     private:
         /**

@@ -10,7 +10,7 @@ namespace te
         , _transparentMat(nullptr)
     { }
 
-    const RendererUtility::RenderTextureData& MaterialsPreview::GetPreview(WPtr<Material> material)
+    const RendererUtility::RenderTextureData& MaterialsPreview::GetPreview(const WPtr<Material>& material)
     {
         auto it = _previews.find(material);
         if (it != _previews.end())
@@ -31,7 +31,7 @@ namespace te
         }
     }
 
-    void MaterialsPreview::MarkDirty(WPtr<Material> material)
+    void MaterialsPreview::MarkDirty(const WPtr<Material>& material)
     {
         auto it = _previews.find(material);
         if (it != _previews.end())
@@ -40,7 +40,7 @@ namespace te
             _previews[material] = Preview();
     }
 
-    void MaterialsPreview::DeletePreview(WPtr<Material> material)
+    void MaterialsPreview::DeletePreview(const WPtr<Material>& material)
     { 
         auto it = _previews.find(material);
         if (it != _previews.end())
