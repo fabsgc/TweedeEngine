@@ -211,7 +211,7 @@ namespace te
          * @param[in]	queueIdx	Device queue to perform the read/write operations on. See @ref queuesDoc.
          * 			
          * @note	
-         * If you are just reading or writing one block of data use readData()/writeData() methods as they can be much faster
+         * If you are just reading or writing one block of data use ReadData()/WriteData() methods as they can be much faster
          * in certain situations.
          */
         PixelData Lock(GpuLockOptions options, UINT32 mipLevel = 0, UINT32 face = 0, UINT32 deviceIdx = 0, UINT32 queueIdx = 0);

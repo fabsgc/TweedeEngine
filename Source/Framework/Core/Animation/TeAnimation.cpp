@@ -1044,7 +1044,7 @@ namespace te
     {
         Animation* anim = new (te_allocate<Animation>()) Animation();
 
-        SPtr<Animation> animPtr = te_core_ptr(anim);
+        SPtr<Animation> animPtr = te_core_ptr<Animation>(anim);
         animPtr->SetThisPtr(animPtr);
         animPtr->Initialize();
 

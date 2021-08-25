@@ -14,7 +14,9 @@ namespace te
     SPtr<AudioListener> AudioListener::Create()
     {
         SPtr<AudioListener> listener = gAudio().CreateListener();
+        listener->SetThisPtr(listener);
         listener->Initialize();
+
         return listener;
     }
 

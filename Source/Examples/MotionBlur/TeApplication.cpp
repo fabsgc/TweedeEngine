@@ -96,7 +96,7 @@ namespace te
         _materialCube = Material::Create(_shader);
         _materialCube->SetName("MaterialCube");
         _materialCube->SetTexture("DiffuseMap", _loadedTextureCube);
-        _materialCube->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
+        _materialCube->SetSamplerState("TextureSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
         _materialCube->SetProperties(properties);
 
         properties.UseDiffuseMap = false;
@@ -104,7 +104,7 @@ namespace te
 
         _materialMill = Material::Create(_shader);
         _materialMill->SetName("MaterialMill");
-        _materialMill->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
+        _materialMill->SetSamplerState("TextureSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
         _materialMill->SetProperties(properties);
         // ######################################################
 

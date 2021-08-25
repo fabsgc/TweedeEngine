@@ -4,7 +4,6 @@
 
 #include "Renderer/TeRendererUtility.h"
 
-
 namespace te
 {
     class PreviewOpaqueMat;
@@ -55,9 +54,23 @@ namespace te
          */
         void DrawMaterial(const WPtr<Material>& material, Preview& preview);
 
+        /**
+         * Initialize the camera used to draw previews to their render textures
+         */
+        void InitializeCamera();
+
+        /**
+         * Initialize the sphere used to display the material preview
+         */
+        void InitializeRenderable();
+
     private:
         Map<WPtr<Material>, Preview, std::owner_less<WPtr<Material>>> _previews;
+
         PreviewOpaqueMat* _opaqueMat;
         PreviewTransparentMat* _transparentMat;
+
+        SPtr<Mesh> _mesh;
+        SPtr<Camera> _camera;
     };
 }

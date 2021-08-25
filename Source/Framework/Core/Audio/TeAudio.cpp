@@ -11,7 +11,7 @@ namespace te
         Transform transform;
         transform.SetPosition(position);
 
-        SPtr<AudioSource> source = CreateSource();
+        SPtr<AudioSource> source = AudioSource::Create();
         source->SetClip(clip);
         source->SetTransform(transform);
         source->SetVolume(volume);

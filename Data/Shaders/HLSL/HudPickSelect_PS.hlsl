@@ -7,7 +7,7 @@ cbuffer PerFrameBuffer : register(b0)
     uint   gRenderType;
 }
 
-SamplerState AnisotropicSampler : register(s0);
+SamplerState TextureSampler : register(s0);
 Texture2D MaskTexture : register(t0);
 
 float4 main( PS_INPUT IN ) : SV_Target
@@ -16,7 +16,7 @@ float4 main( PS_INPUT IN ) : SV_Target
 
     if(gRenderType == RENDER_TYPE_DRAW)
     {
-        float alpha = MaskTexture.Sample( AnisotropicSampler, IN.Texture ).r;
+        float alpha = MaskTexture.Sample( TextureSampler, IN.Texture ).r;
         if(alpha <= 0.5)
             discard;
 

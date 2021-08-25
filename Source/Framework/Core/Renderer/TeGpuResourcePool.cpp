@@ -125,11 +125,16 @@ namespace te
 
         // Note: Should also force pruning when over some memory limit (in which case I can probably increase the
         // age pruning limit higher)
-        Prune(3);
+        Prune(60);
     }
 
     void GpuResourcePool::Prune(UINT32 age)
     {
+        UINT32 pruneAge = _currentFrame - _lastPruneFrame;
+
+        if (pruneAge < age)
+            return;
+
         for (auto iter = _textures.begin(); iter != _textures.end();)
         {
             auto& entry = *iter;
@@ -165,6 +170,8 @@ namespace te
             else
                 ++iter;
         }
+
+        _lastPruneFrame = _currentFrame;
     }
 
     bool GpuResourcePool::Matches(const SPtr<Texture>& texture, const POOLED_RENDER_TEXTURE_DESC& desc)

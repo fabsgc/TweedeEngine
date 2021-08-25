@@ -72,7 +72,7 @@ namespace te
             {
                 HMaterial material = Material::Create(gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque));
                 material->SetName(subMesh.MaterialName);
-                material->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
+                material->SetSamplerState("TextureSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
                 material->SetProperties(subMesh.MatProperties);
 
                 subMesh.Mat = material.GetNewHandleFromExisting();

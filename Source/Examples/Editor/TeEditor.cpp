@@ -126,6 +126,11 @@ namespace te
     {
         EditorResManager::StartUp();
 
+        gCoreApplication().GetState().SetFlag(ApplicationState::Mode::Game, false);
+        gCoreApplication().GetState().SetFlag(ApplicationState::Mode::Physics, false);
+        gCoreApplication().GetState().SetFlag(ApplicationState::Mode::Scripting, false);
+        gCoreApplication().GetState().SetFlag(ApplicationState::Mode::Animation, false);
+
         InitializeInput();
         InitializeScene();
         InitializeUICamera();
@@ -177,7 +182,7 @@ namespace te
                 EndGui();
         }
 
-        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Physics);
+        /*bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Physics);
         if (!gPhysics().IsPaused() && isRunning)
         {
             PhysicsQueryHit hit;
@@ -185,7 +190,7 @@ namespace te
             {
                 TE_DEBUG("Something hit");
             }
-        }
+        }*/
     }
 
     void Editor::PostRender()
@@ -366,31 +371,28 @@ namespace te
         settings->OverlayOnly = true;
 
         gSceneManager().SetMainRenderTarget(gCoreApplication().GetWindow());
-        gCoreApplication().GetState().SetFlag(ApplicationState::Mode::Game, false);
-        gCoreApplication().GetState().SetFlag(ApplicationState::Mode::Physics, false);
-        gCoreApplication().GetState().SetFlag(ApplicationState::Mode::Scripting, false);
-        gCoreApplication().GetState().SetFlag(ApplicationState::Mode::Animation, false);
     }
 
     void Editor::InitializeViewportCamera()
     {
         _viewportSO = SceneObject::Create("UIViewport");
 
-        _viewportCameraSO = SceneObject::Create("UICamera");
+        _viewportCameraSO = SceneObject::Create("UIViewportCamera");
         _viewportCameraSO->SetParent(_viewportSO);
 
+        _viewportCameraSO->SetPosition(Vector3(3.5f, 2.5f, 4.0f));
+        _viewportCameraSO->LookAt(Vector3(0.0f, 0.75f, 0.0f));
+
         _viewportCamera = _viewportCameraSO->AddComponent<CCamera>();
-        _viewportCameraUI = _viewportCameraSO->AddComponent<CCameraUI>();
         _viewportCamera->GetViewport()->SetClearColorValue(Color(0.42f, 0.67f, 0.94f, 1.0f));
         _viewportCamera->Initialize();
         _viewportCamera->SetMSAACount(gCoreApplication().GetWindow()->GetDesc().MultisampleCount);
         _viewportCamera->SetProjectionType(ProjectionType::PT_PERSPECTIVE);
         _viewportCamera->SetName("Viewport camera");
 
-        _viewportCameraSO->SetPosition(Vector3(3.5f, 2.5f, 4.0f));
-        _viewportCameraSO->LookAt(Vector3(0.0f, 0.75f, 0.0f));
-
+        _viewportCameraUI = _viewportCameraSO->AddComponent<CCameraUI>();
         _viewportCameraUI->SetTarget(Vector3(0.0f, 0.75f, 0.0f));
+        _viewportCameraUI->SetName("Viewport camera UI");
 
         auto settings = _viewportCamera->GetRenderSettings();
         settings->ExposureScale = 0.9f;
@@ -1211,7 +1213,7 @@ namespace te
 
         _planeMaterial = Material::Create(_shader);
         _planeMaterial->SetName("Plane Material");
-        _planeMaterial->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
+        _planeMaterial->SetSamplerState("TextureSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
         _planeMaterial->SetProperties(properties);
 
         properties.UseDiffuseMap = true;
@@ -1219,7 +1221,7 @@ namespace te
         _knightMaterial = Material::Create(_shader);
         _knightMaterial->SetName("Knight Material");
         _knightMaterial->SetTexture("DiffuseMap", _loadedKnightDiffuseTexture);
-        _knightMaterial->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
+        _knightMaterial->SetSamplerState("TextureSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
         _knightMaterial->SetProperties(properties);
         // ######################################################
 

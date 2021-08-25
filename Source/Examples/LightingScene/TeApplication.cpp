@@ -116,7 +116,7 @@ namespace te
             material.MaterialElement->SetTexture("DiffuseMap", material.DiffuseTexture);
             material.MaterialElement->SetTexture("NormalMap", material.NormalTexture);
             material.MaterialElement->SetTexture("SpecularMap", material.SpecularTexture);
-            material.MaterialElement->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
+            material.MaterialElement->SetSamplerState("TextureSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
             material.MaterialElement->SetProperties(material.MaterialProp);
         };
 

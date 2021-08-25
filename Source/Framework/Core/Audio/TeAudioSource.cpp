@@ -55,7 +55,9 @@ namespace te
     SPtr<AudioSource> AudioSource::Create()
     {
         SPtr<AudioSource> source = gAudio().CreateSource();
+        source->SetThisPtr(source);
         source->Initialize();
+        
         return source;
     }
 

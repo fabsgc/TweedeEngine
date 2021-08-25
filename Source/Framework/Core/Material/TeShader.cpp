@@ -137,7 +137,7 @@ namespace te
         , _desc(desc)
         , _id(id)
     { 
-        _name = "shader";
+        _name = name;
     }
 
     Shader::~Shader()

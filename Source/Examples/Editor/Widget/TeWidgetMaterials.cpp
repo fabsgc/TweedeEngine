@@ -110,7 +110,7 @@ namespace te
             {
                 HMaterial material = Material::Create(gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque));
                 material->SetName("Material " + ToString(_materialCreationCounter));
-                material->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
+                material->SetSamplerState("TextureSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
                 EditorResManager::Instance().Add(material);
                 _currentMaterial = material.GetInternalPtr();
                 _materialCreationCounter++;
@@ -375,16 +375,16 @@ namespace te
                         samplerTypeOptions.AddOption(BuiltinSampler::Bilinear, "Bilinear");
                     }
 
-                    if (_currentMaterial->GetSamplerState("AnisotropicSampler") == gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic))
+                    if (_currentMaterial->GetSamplerState("TextureSampler") == gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic))
                         samplerType = BuiltinSampler::Anisotropic;
-                    else if (_currentMaterial->GetSamplerState("AnisotropicSampler") == gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Trilinear))
+                    else if (_currentMaterial->GetSamplerState("TextureSampler") == gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Trilinear))
                         samplerType = BuiltinSampler::Trilinear;
                     else
                         samplerType = BuiltinSampler::Bilinear;
 
                     if (ImGuiExt::RenderOptionCombo<BuiltinSampler>(&samplerType, "##material_sampler_type_option", "Sampler", samplerTypeOptions, width))
                     {
-                        _currentMaterial->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(samplerType));
+                        _currentMaterial->SetSamplerState("TextureSampler", gBuiltinResources().GetBuiltinSampler(samplerType));
                         hasChanged = true;
                     }
                 }

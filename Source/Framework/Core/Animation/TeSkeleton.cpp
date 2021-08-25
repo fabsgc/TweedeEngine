@@ -315,7 +315,10 @@ namespace te
     SPtr<Skeleton> Skeleton::Create(BONE_DESC* bones, UINT32 numBones)
     {
         Skeleton* rawPtr = new (te_allocate<Skeleton>()) Skeleton(bones, numBones);
-        return te_shared_ptr<Skeleton>(rawPtr);
+        SPtr<Skeleton> skeleton = te_core_ptr<Skeleton>(rawPtr);
+        skeleton->SetThisPtr(skeleton);
+
+        return skeleton;
     }
 
     UINT32 Skeleton::GetRootBoneIndex() const
@@ -350,7 +353,9 @@ namespace te
     {
         Skeleton* rawPtr = new (te_allocate<Skeleton>()) Skeleton();
 
-        SPtr<Skeleton> newSkeleton = te_shared_ptr<Skeleton>(rawPtr);
+        SPtr<Skeleton> newSkeleton = te_core_ptr<Skeleton>(rawPtr);
+        newSkeleton->SetThisPtr(newSkeleton);
+        newSkeleton->Initialize();
         return newSkeleton;
     }
 }

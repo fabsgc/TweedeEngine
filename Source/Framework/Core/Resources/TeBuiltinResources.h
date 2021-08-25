@@ -165,8 +165,6 @@ namespace te
         void InitShaderHudPicking();
         void InitShaderHudSelection();
         void InitShaderBulletDebug();
-        void InitShaderPreviewOpaque();
-        void InitShaderPreviewTransparent();
 
         void InitDefaultMaterial();
 
@@ -188,8 +186,6 @@ namespace te
         HShader _shaderSelection;
         HShader _shaderHudSelection;
         HShader _shaderBulletDebug;
-        HShader _shaderPreviewOpaque;
-        HShader _shaderPreviewTransparent;
 
         SPtr<SamplerState> _anisotropicSamplerState = nullptr;
         SPtr<SamplerState> _bilinearSamplerState = nullptr;
@@ -206,8 +202,6 @@ namespace te
         SHADER_DESC _pickSelectShaderDesc;
         SHADER_DESC _hudPickSelectShaderDesc;
         SHADER_DESC _bulletDebugShaderDesc;
-        SHADER_DESC _previewOpaqueDesc;
-        SHADER_DESC _previewTransparentDesc;
 
         GPU_PROGRAM_DESC _vertexShaderForwardDesc;
         GPU_PROGRAM_DESC _pixelShaderForwardDesc;

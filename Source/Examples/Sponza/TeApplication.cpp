@@ -492,7 +492,7 @@ namespace te
                 material.MaterialElement = Material::Create(_shaderOpaque);
 
             material.MaterialElement->SetName(material.Name);
-            material.MaterialElement->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
+            material.MaterialElement->SetSamplerState("TextureSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
 
             if (material.Diffuse != "") material.MaterialElement->SetTexture("DiffuseMap", material.DiffuseTexture);
             if (material.Emissive != "") material.MaterialElement->SetTexture("EmissiveMap", material.EmissiveTexture);
@@ -552,7 +552,7 @@ namespace te
         _monkeyMaterial->SetName("Material");
         _monkeyMaterial->SetTexture("DiffuseMap", _loadedTextureMonkey);
         _monkeyMaterial->SetTexture("EnvironmentMap", _loadedSkyboxTexture);
-        _monkeyMaterial->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
+        _monkeyMaterial->SetSamplerState("TextureSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
         _monkeyMaterial->SetProperties(properties);
 #endif
     }

@@ -120,13 +120,13 @@ namespace te
             break;
         case BuiltinShader::PreviewOpaque:
             if (!_shaderOpaque.IsLoaded())
-                InitShaderOpaque(); // TODO
+                InitShaderOpaque();
             shader = _shaderOpaque;
             break;
         case BuiltinShader::PreviewTransparent:
             if(!_shaderTransparent.IsLoaded())
                 InitShaderTransparent();
-            shader = _shaderTransparent; // TODO
+            shader = _shaderTransparent;
             break;
         default:
             TE_ASSERT_ERROR(false, "Can't find \"" + ToString((UINT32)type) + "\" shader.")
@@ -508,7 +508,7 @@ namespace te
             SHADER_DATA_PARAM_DESC gAlphaThreshold("gAlphaThreshold", "gAlphaThreshold", GPDT_FLOAT1);
             SHADER_DATA_PARAM_DESC gParallaxSamples("gParallaxSamples", "gParallaxSamples", GPDT_INT1);
 
-            SHADER_OBJECT_PARAM_DESC anisotropicSamplerDesc("AnisotropicSampler", "AnisotropicSampler", GPOT_SAMPLER2D);
+            SHADER_OBJECT_PARAM_DESC anisotropicSamplerDesc("TextureSampler", "TextureSampler", GPOT_SAMPLER2D);
 
             SHADER_OBJECT_PARAM_DESC diffuseMapDesc("DiffuseMap", "DiffuseMap", GPOT_TEXTURE2D);
             SHADER_OBJECT_PARAM_DESC emissiveMapDesc("EmissiveMap", "EmissiveMap", GPOT_TEXTURE2D);
@@ -801,7 +801,7 @@ namespace te
             SHADER_DATA_PARAM_DESC gInstanceData("gInstanceData", "gInstanceData", GPDT_STRUCT);
             gInstanceData.ElementSize = sizeof(PerHudInstanceData);
 
-            SHADER_OBJECT_PARAM_DESC anisotropicSamplerDesc("AnisotropicSampler", "AnisotropicSampler", GPOT_SAMPLER2D);
+            SHADER_OBJECT_PARAM_DESC anisotropicSamplerDesc("TextureSampler", "TextureSampler", GPOT_SAMPLER2D);
             SHADER_OBJECT_PARAM_DESC maskTextureDesc("MaskTexture", "MaskTexture", GPOT_TEXTURE2D);
 
             _hudPickSelectShaderDesc.AddParameter(gMatViewProjDesc);
@@ -1181,16 +1181,6 @@ namespace te
         shaderDesc.Techniques.push_back(technique.GetInternalPtr());
 
         _shaderBulletDebug = Shader::Create("BulletDebug", shaderDesc);
-    }
-
-    void BuiltinResources::InitShaderPreviewOpaque()
-    {
-        // TODO
-    }
-
-    void BuiltinResources::InitShaderPreviewTransparent()
-    {
-        // TODO
     }
 
     void BuiltinResources::InitDefaultMaterial()

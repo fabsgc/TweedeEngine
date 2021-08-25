@@ -101,7 +101,7 @@ namespace te
         _materialMonkey = Material::Create(_shader);
         _materialMonkey->SetName("Material");
         _materialMonkey->SetTexture("DiffuseMap", _loadedTextureMonkey);
-        _materialMonkey->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
+        _materialMonkey->SetSamplerState("TextureSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
         _materialMonkey->SetProperties(properties);
         // ######################################################
 

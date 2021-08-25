@@ -7,6 +7,7 @@
 #include "Math/TeVector3.h"
 #include "Scene/TeTransform.h"
 #include "Serialization/TeSerializable.h"
+#include "CoreUtility/TeCoreObject.h"
 #include "Animation/TeSkeletonMask.h"
 #include "Animation/TeAnimationClip.h"
 
@@ -98,7 +99,7 @@ namespace te
      * Contains information about bones required for skeletal animation. Allows caller to evaluate a set of animation
      * clips at a specific time and output the relevant skeleton pose.
      */
-    class TE_CORE_EXPORT Skeleton : public Serializable
+    class TE_CORE_EXPORT Skeleton : public CoreObject, public Serializable
     {
     public:
         ~Skeleton();
