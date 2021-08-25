@@ -205,7 +205,7 @@ namespace te
 
         if (_selectionDirty && _previewViewportCamera == _viewportCamera) // only for default camera
         {
-            RendererUtility::RenderTextureData viewportData =
+            RendererUtility::RenderTextureData& viewportData =
                 static_cast<WidgetViewport*>(&*_settings.WViewport)->GetRenderTextureData();
             _selection->Render(_previewViewportCamera, viewportData);
         }

@@ -121,20 +121,45 @@ namespace te
 
         // Materials list
         {
+            UINT8 flags = (UINT8)ImGuiExt::ComboOptionFlag::ShowTexture;
+            SPtr<Texture> currentTexture = nullptr;
+            float offsetListMaterials = 0.0f;
+
             for (auto& resource : materials.Res)
             {
                 if (!_currentMaterial)
                 {
                     _currentMaterial = gResourceManager().Load<Material>(resource.second->GetUUID()).GetInternalPtr();
+                    currentTexture = _materialsPreview->GetPreview(_currentMaterial).RenderTex->GetColorTexture(0);
                     materialUUID = _currentMaterial->GetUUID();
                 }
-                materialsOptions.AddOption(resource.second->GetUUID(), resource.second->GetName());
-                _materialsPreview->GetPreview(static_resource_cast<Material>(resource.second).GetInternalPtr());
+
+                SPtr<Texture> texture = _materialsPreview->GetPreview(
+                    static_resource_cast<Material>(resource.second).GetInternalPtr())
+                    .RenderTex->GetColorTexture(0);
+
+                _materialsPreview->GetPreview(
+                    static_resource_cast<Material>(resource.second).GetInternalPtr());
+
+                materialsOptions.AddOption(resource.second->GetUUID(), resource.second->GetName(), texture);
             }
 
             if (_currentMaterial)
             {
-                if (ImGuiExt::RenderOptionCombo<UUID>(&materialUUID, "##material_list_option", "", materialsOptions, ImGui::GetWindowContentRegionWidth() - 32))
+                if (currentTexture && currentTexture->GetProperties().GetTextureType() != TextureType::TEX_TYPE_CUBE_MAP)
+                {
+                    ImGuiExt::RenderImage(currentTexture, 0, Vector2(26.0f, 26.0f), Vector2(26.0f, 26.0f));
+                    ImGui::SameLine();
+
+                    ImVec2 cursor = ImGui::GetCursorPos();
+                    cursor.x -= 5.0f;
+                    ImGui::SetCursorPos(cursor);
+
+                    offsetListMaterials -= 26.0f;
+                }
+
+                if (ImGuiExt::RenderOptionCombo<UUID>(&materialUUID, "##material_list_option", "", 
+                    materialsOptions, ImGui::GetWindowContentRegionWidth() - 32 - offsetListMaterials, flags))
                 {
                     if (materialUUID != _currentMaterial->GetUUID())
                         _currentMaterial = gResourceManager().Load<Material>(materialUUID).GetInternalPtr();

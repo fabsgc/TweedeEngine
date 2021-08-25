@@ -19,6 +19,16 @@ namespace te
         gRendererUtility().GenerateViewportRenderTexture(*MatPreview);
     }
 
+    MaterialsPreview::Preview::~Preview()
+    {
+        if (MatPreview->RenderTex)
+            MatPreview->RenderTex = nullptr;
+        if (MatPreview->ColorTex.IsLoaded())
+            MatPreview->ColorTex.Release();
+        if (MatPreview->DepthStencilTex.IsLoaded())
+            MatPreview->DepthStencilTex.Release();
+    }
+
     MaterialsPreview::MaterialsPreview()
         : _opaqueMat(nullptr)
         , _transparentMat(nullptr)
@@ -37,17 +47,17 @@ namespace te
         auto it = _previews.find(material);
         if (it != _previews.end())
         {
-            if (it->second.IsDirty)
-                DrawMaterial(material, it->second);
+            if (it->second->IsDirty)
+                DrawMaterial(material, *it->second);
 
-            return *(it->second.MatPreview);
+            return *(it->second->MatPreview);
         }
         else
         {
-            _previews[material] = Preview();
-            DrawMaterial(material, _previews[material]);
+            _previews[material] = te_unique_ptr_new<Preview>();
+            DrawMaterial(material, *_previews[material]);
 
-            return *(_previews[material].MatPreview);
+            return *(_previews[material]->MatPreview);
         }
     }
 
@@ -55,7 +65,7 @@ namespace te
     {
         auto it = _previews.find(material);
         if (it != _previews.end())
-            it->second.IsDirty = true;
+            it->second->IsDirty = true;
     }
 
     void MaterialsPreview::DeletePreview(const WPtr<Material>& material)
@@ -69,19 +79,18 @@ namespace te
     { 
         RenderAPI& rapi = RenderAPI::Instance();
         UINT32 clearBuffers = FBT_DEPTH;
-
         PreviewMat* previewMat = nullptr;
         SPtr<Material> mat = material.lock();
-
-        if (mat->GetShader()->GetName() == "ForwardOpaque") previewMat = _opaqueMat;
-        else previewMat = _transparentMat;
 
         rapi.SetRenderTarget(preview.MatPreview->RenderTex);
         rapi.ClearViewport(clearBuffers, Color::Black);
 
+        if (mat->GetShader()->GetName() == "ForwardOpaque") previewMat = _opaqueMat;
+        else previewMat = _transparentMat;
+
         previewMat->BindFrame();
-        previewMat->BindObject();
         previewMat->BindLight();
+        previewMat->BindObject();
         previewMat->BindCamera(_camera);
         previewMat->BindMaterial(material);
 

@@ -31,7 +31,7 @@ namespace te
         void NeedsRedraw();
         void SetVisible(bool isVisible);
 
-        const RendererUtility::RenderTextureData& GetRenderTextureData() const { return _renderData; }
+        RendererUtility::RenderTextureData& GetRenderTextureData() { return _renderData; }
 
     protected:
         /** Return true if texture has been updated */

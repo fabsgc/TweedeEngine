@@ -31,7 +31,12 @@ namespace te
     }
 
     WidgetViewport::~WidgetViewport()
-    { 
+    {
+        if (_renderData.ColorTex.IsLoaded())
+            _renderData.ColorTex.Release();
+        if (_renderData.DepthStencilTex.IsLoaded())
+            _renderData.DepthStencilTex.Release();
+
         _resizeEvent.Disconnect();
     }
 

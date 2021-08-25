@@ -27,6 +27,11 @@ namespace te
             TextureSurface ColorTexSurface;
             UINT32 Width = 640;
             UINT32 Height = 480;
+
+            ~RenderTextureData()
+            {
+                TE_DEBUG("RenderTextureData destroyed");
+            }
         };
 
     public:

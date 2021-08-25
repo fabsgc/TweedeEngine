@@ -15,6 +15,7 @@ namespace te
         struct Preview
         {
             Preview();
+            ~Preview();
 
             SPtr<RendererUtility::RenderTextureData> MatPreview;
             bool IsDirty = true;
@@ -65,7 +66,7 @@ namespace te
         void InitializeRenderable();
 
     private:
-        Map<WPtr<Material>, Preview, std::owner_less<WPtr<Material>>> _previews;
+        Map<WPtr<Material>, UPtr<Preview>, std::owner_less<WPtr<Material>>> _previews;
 
         PreviewOpaqueMat* _opaqueMat;
         PreviewTransparentMat* _transparentMat;
