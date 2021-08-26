@@ -89,9 +89,9 @@ cbuffer PerFrameBuffer : register(b3)
     float  gFrameDelta;
     uint   gUseSkyboxMap;
     uint   gUseSkyboxIrradianceMap;
+    float4 gSceneLightColor;
     float  gSkyboxBrightness;
     float3 gPadding5;
-    float4 gSceneLightColor;
 }
 
 SamplerState TextureSampler : register(s0);

@@ -34,17 +34,6 @@ cbuffer PerObjectBuffer : register(b2)
     uint   gCastLights;
 }
 
-cbuffer PerFrameBuffer : register(b3)
-{
-    float  gTime;
-    float  gFrameDelta;
-    uint   gUseSkyboxMap;
-    uint   gUseSkyboxIrradianceMap;
-    float  gSkyboxBrightness;
-    float3 gPadding5;
-    float4 gSceneLightColor;
-}
-
 VS_OUTPUT main( VS_INPUT IN )
 {
     VS_OUTPUT OUT = (VS_OUTPUT)0;

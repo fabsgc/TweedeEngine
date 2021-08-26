@@ -55,8 +55,8 @@ namespace te
             TE_PARAM_BLOCK_ENTRY(float, gFrameDelta)
             TE_PARAM_BLOCK_ENTRY(INT32, gUseSkyboxMap)
             TE_PARAM_BLOCK_ENTRY(INT32, gUseSkyboxIrradianceMap)
-            TE_PARAM_BLOCK_ENTRY(float, gSkyboxBrightness)
             TE_PARAM_BLOCK_ENTRY(Vector4, gSceneLightColor)
+            TE_PARAM_BLOCK_ENTRY(float, gSkyboxBrightness)
         TE_PARAM_BLOCK_END
 
         TE_PARAM_BLOCK_BEGIN(PerObjectParamDef)
@@ -108,7 +108,7 @@ namespace te
         TE_PARAM_BLOCK_END
 
         TE_PARAM_BLOCK_BEGIN(PerInstanceParamDef)
-            TE_PARAM_BLOCK_ENTRY_ARRAY(PerInstanceData, gInstances, 1)
+            TE_PARAM_BLOCK_ENTRY_ARRAY(PerInstanceData, gInstances, 128)
         TE_PARAM_BLOCK_END
     }
     
@@ -131,6 +131,9 @@ namespace te
 
         /** Set material gpu buffer for the given material */
         void BindMaterial(const WPtr<Material>& material);
+
+        /** Set all the textures used by this material */
+        void BindTextures(const WPtr<Material>& material, SPtr<GpuParams> params);
 
     protected:
         MaterialsPreviewMat::PerCameraParamDef _perCameraParamDef;
@@ -155,6 +158,9 @@ namespace te
 
     public:
         PreviewOpaqueMat();
+
+        /** Set all the textures used by this material */
+        void BindTextures(const WPtr<Material>& material);
     };
 
     /** Shader that performs material's preview for transparent objects. */
@@ -164,5 +170,8 @@ namespace te
 
     public:
         PreviewTransparentMat();
+
+        /** Set all the textures used by this material */
+        void BindTextures(const WPtr<Material>& material);
     };
 }

@@ -185,22 +185,7 @@ namespace te
             if(name.length() < 256) strcpy(inputName, name.c_str());
             else strcpy(inputName, name.substr(0,255).c_str());
 
-            if (ImGui::CollapsingHeader("Preview", ImGuiTreeNodeFlags_DefaultOpen))
-            {
-                float previewZoneWidth = ImGui::GetWindowContentRegionWidth();
-                float previewWidth = (previewZoneWidth > 300.0f) ? 300.0f : previewZoneWidth;
-                float previewHeight = previewWidth * 0.6666667f;
-                float previewOffset = 0.0f;
-
-                if (previewZoneWidth > 300.0f)
-                    previewOffset = (previewZoneWidth - previewWidth) * 0.5f;
-
-                ImGui::BeginChild("TexturePreview", ImVec2(previewZoneWidth, previewHeight), true, ImGuiWindowFlags_NoScrollbar);
-                ImGuiExt::RenderImage(currentTexture, 0, Vector2(previewWidth - 16.0f, previewHeight - 16.0f), Vector2(previewOffset, 0.0f));
-                ImGui::EndChild();
-            }
-
-            if (ImGui::CollapsingHeader("Identification", ImGuiTreeNodeFlags_DefaultOpen))
+            if (ImGui::CollapsingHeader("Identification"))
             {
                 ImGui::PushItemWidth(width);
                 if (ImGui::InputText("Name", inputName, IM_ARRAYSIZE(inputName)))
@@ -211,6 +196,21 @@ namespace te
                 ImGui::InputText("UUID", inputUUID, IM_ARRAYSIZE(inputUUID));
                 ImGui::PopItemFlag();
                 ImGui::PopItemWidth();
+            }
+
+            if (ImGui::CollapsingHeader("Preview", ImGuiTreeNodeFlags_DefaultOpen))
+            {
+                float previewZoneWidth = ImGui::GetWindowContentRegionWidth();
+                float previewWidth = (previewZoneWidth > 256.0f) ? 256.0f : previewZoneWidth;
+                float previewHeight = previewWidth;
+                float previewOffset = 0.0f;
+
+                if (previewZoneWidth > 256.0f)
+                    previewOffset = (previewZoneWidth - previewWidth) * 0.5f;
+
+                ImGui::BeginChild("TexturePreview", ImVec2(previewZoneWidth, previewHeight), true, ImGuiWindowFlags_NoScrollbar);
+                ImGuiExt::RenderImage(currentTexture, 0, Vector2(previewWidth - 16.0f, previewHeight - 16.0f), Vector2(previewOffset, 0.0f));
+                ImGui::EndChild();
             }
 
             if (ImGui::CollapsingHeader("Properties", ImGuiTreeNodeFlags_DefaultOpen))

@@ -7,8 +7,6 @@ namespace te
     PerLightsParamDef gPerLightsParamDef;
     SPtr<GpuParamBlockBuffer> gPerLightsParamBuffer;
 
-    static const UINT32 LIGHT_DATA_BUFFER_INCREMENT = 16 * sizeof(LightData);
-
     void PerLightsBuffer::UpdatePerLights(const LightData* (&lights)[STANDARD_FORWARD_MAX_NUM_LIGHTS], UINT32 lightNumber)
     {
         if (!gPerLightsParamBuffer)

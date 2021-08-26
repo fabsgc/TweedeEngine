@@ -95,8 +95,8 @@ namespace te
         TE_PARAM_BLOCK_ENTRY(float, gFrameDelta)
         TE_PARAM_BLOCK_ENTRY(INT32, gUseSkyboxMap)
         TE_PARAM_BLOCK_ENTRY(INT32, gUseSkyboxIrradianceMap)
-        TE_PARAM_BLOCK_ENTRY(float, gSkyboxBrightness)
         TE_PARAM_BLOCK_ENTRY(Vector4, gSceneLightColor)
+        TE_PARAM_BLOCK_ENTRY(float, gSkyboxBrightness)
     TE_PARAM_BLOCK_END
 
     extern PerFrameParamDef gPerFrameParamDef;

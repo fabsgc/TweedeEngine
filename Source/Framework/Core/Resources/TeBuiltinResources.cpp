@@ -471,8 +471,8 @@ namespace te
             SHADER_DATA_PARAM_DESC gFrameDeltaDesc("gFrameDelta", "gFrameDelta", GPDT_FLOAT1);
             SHADER_DATA_PARAM_DESC gUseSkyboxMapDesc("gUseSkyboxMap", "gUseSkyboxMap", GPDT_INT1);
             SHADER_DATA_PARAM_DESC gUseSkyboxIrradianceMapDesc("gUseSkyboxIrradianceMap", "gUseSkyboxIrradianceMap", GPDT_INT1);
-            SHADER_DATA_PARAM_DESC gSkyboxBrightnessDesc("gSkyboxBrightness", "gSkyboxBrightness", GPDT_FLOAT1);
             SHADER_DATA_PARAM_DESC gSceneLightColorDesc("gSceneLightColor", "gSceneLightColor", GPDT_FLOAT4);
+            SHADER_DATA_PARAM_DESC gSkyboxBrightnessDesc("gSkyboxBrightness", "gSkyboxBrightness", GPDT_FLOAT1);
 
             SHADER_DATA_PARAM_DESC gMatWorldViewProj("gMatWorldViewProj", "gMatWorldViewProj", GPDT_MATRIX_4X4);
 
@@ -583,8 +583,8 @@ namespace te
             _forwardShaderDesc.AddParameter(gFrameDeltaDesc);
             _forwardShaderDesc.AddParameter(gUseSkyboxMapDesc);
             _forwardShaderDesc.AddParameter(gUseSkyboxIrradianceMapDesc);
-            _forwardShaderDesc.AddParameter(gSkyboxBrightnessDesc);
             _forwardShaderDesc.AddParameter(gSceneLightColorDesc);
+            _forwardShaderDesc.AddParameter(gSkyboxBrightnessDesc);
 
             _forwardShaderDesc.AddParameter(gMatWorldViewProj);
 

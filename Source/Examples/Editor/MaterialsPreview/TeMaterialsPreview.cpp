@@ -13,8 +13,8 @@ namespace te
     { 
         MatPreview = te_shared_ptr_new<RendererUtility::RenderTextureData>();
 
-        MatPreview->Width = 300;
-        MatPreview->Height = 200;
+        MatPreview->Width = 512;
+        MatPreview->Height = 512;
 
         gRendererUtility().GenerateViewportRenderTexture(*MatPreview);
     }
@@ -81,7 +81,7 @@ namespace te
         SPtr<Material> mat = material.lock();
 
         rapi.SetRenderTarget(preview.MatPreview->RenderTex);
-        rapi.ClearViewport(clearBuffers, Color::Black);
+        rapi.ClearViewport(clearBuffers, Color(0.42f, 0.67f, 0.74f, 1.0f));
 
         if (mat->GetShader()->GetName() == "ForwardOpaque") previewMat = _opaqueMat;
         else previewMat = _transparentMat;
@@ -91,11 +91,20 @@ namespace te
         previewMat->BindObject();
         previewMat->BindCamera(_camera);
         previewMat->BindMaterial(material);
+        
 
         if (_mesh)
         {
-            if (mat->GetShader()->GetName() == "ForwardOpaque") _opaqueMat->Bind();
-            else _transparentMat->Bind();
+            if (mat->GetShader()->GetName() == "ForwardOpaque")
+            {
+                _opaqueMat->BindTextures(material);
+                _opaqueMat->Bind();
+            }
+            else
+            {
+                _transparentMat->BindTextures(material);
+                _transparentMat->Bind();
+            }
 
             MeshProperties properties = _mesh->GetProperties();
             UINT32 numMeshes = properties.GetNumSubMeshes();
@@ -111,9 +120,14 @@ namespace te
     void MaterialsPreview::InitializeCamera()
     {
         _camera = Camera::Create();
-        _camera->GetViewport()->SetClearColorValue(Color(0.42f, 0.67f, 0.94f, 1.0f));
         _camera->SetProjectionType(ProjectionType::PT_PERSPECTIVE);
+        _camera->SetAspectRatio(1.0f);
         _camera->Initialize();
+
+        Transform tfrm = _camera->GetTransform();
+        tfrm.Move(Vector3(0.0f, 0.55f, 0.55f));
+        tfrm.LookAt(Vector3::ZERO);
+        _camera->SetTransform(tfrm);
     }
 
     void MaterialsPreview::InitializeRenderable()

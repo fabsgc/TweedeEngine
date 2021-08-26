@@ -8,12 +8,6 @@ cbuffer PerCameraBuffer : register(b0)
     matrix gMatPrevViewProj;
 }
 
-cbuffer PerFrameBuffer : register(b1)
-{
-    float4 gClearColor;
-    uint gUseTexture;
-}
-
 struct VS_INPUT
 {
     float3 Position : POSITION;

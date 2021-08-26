@@ -1,14 +1,4 @@
-cbuffer PerCameraBuffer : register(b0)
-{
-    float3 gViewDir;
-    float3 gViewOrigin;
-    matrix gMatViewProj;
-    matrix gMatView;
-    matrix gMatProj;
-    matrix gMatPrevViewProj;
-}
-
-cbuffer PerFrameBuffer : register(b1)
+cbuffer PerFrameBuffer : register(b0)
 {
     float4 gClearColor;
     float gBrightness;

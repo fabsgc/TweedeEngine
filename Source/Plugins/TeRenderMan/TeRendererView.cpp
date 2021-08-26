@@ -495,7 +495,7 @@ namespace te
         }
     }
 
-    Matrix4 invertProjectionMatrix(const Matrix4& mat)
+    Matrix4 InvertProjectionMatrix(const Matrix4& mat)
     {
         // Try to solve the most common case using high percision calculations, in order to reduce depth error
         if (mat[0][1] == 0.0f && mat[0][3] == 0.0f &&
@@ -527,7 +527,7 @@ namespace te
     void RendererView::UpdatePerViewBuffer()
     {
         Matrix4 viewProj = _properties.ProjTransform * _properties.ViewTransform;
-        Matrix4 invProj = invertProjectionMatrix(_properties.ProjTransform);
+        Matrix4 invProj = InvertProjectionMatrix(_properties.ProjTransform);
         Matrix4 invView = _properties.ViewTransform.InverseAffine();
         Matrix4 invViewProj = invView * invProj;
         Matrix4 NDCToPrevNDC = _properties.PrevViewProjTransform * invViewProj;

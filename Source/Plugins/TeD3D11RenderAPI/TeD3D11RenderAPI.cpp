@@ -349,7 +349,7 @@ namespace te
             }
         }
 
-        auto PopulateParamBlocks = [&](GpuParamBlockDesc& gpuParamBlockDesc)
+        auto PopulateParamBlocks = [&](GpuParamBlockDesc& gpuParamBlockDesc, bool sortBySlot = false)
         {
             UINT32 slot = gpuParamBlockDesc.Slot;
             SPtr<GpuParamBlockBuffer> buffer = gpuParams->GetParamBlockBuffer(gpuParamBlockDesc.Set, slot);
@@ -360,7 +360,11 @@ namespace te
             buffer->FlushToGPU();
             const D3D11GpuParamBlockBuffer* d3d11paramBlockBuffer =
                 static_cast<const D3D11GpuParamBlockBuffer*>(buffer.get());
-            _gpuResContainer.constBuffers.push_back(d3d11paramBlockBuffer->GetD3D11Buffer());
+
+            if(sortBySlot)
+                *(_gpuResContainer.constBuffers.begin() + slot) = d3d11paramBlockBuffer->GetD3D11Buffer();
+            else
+                _gpuResContainer.constBuffers.push_back(d3d11paramBlockBuffer->GetD3D11Buffer());
         };
 
         auto PopulateViews = [&](GpuProgramType type, UINT32& slotConstBuffers)
@@ -485,9 +489,13 @@ namespace te
                     UINT32 currentSlot = 0;
                     slotConstBuffers = 32;
 
+                    // If we send all constant buffers, we need to be sure that there are ordered by their slot
+                    // because paramDesc->ParamBlocks is a map ordered by name
+                    _gpuResContainer.constBuffers.resize(paramDesc->ParamBlocks.size());
+
                     for (auto iter = paramDesc->ParamBlocks.begin(); iter != paramDesc->ParamBlocks.end(); ++iter)
                     {
-                        PopulateParamBlocks(iter->second);
+                        PopulateParamBlocks(iter->second, true);
                         currentSlot = (UINT32)iter->second.Slot;
 
                         if (currentSlot < slotConstBuffers)
