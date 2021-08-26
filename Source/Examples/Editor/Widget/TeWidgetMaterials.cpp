@@ -40,10 +40,13 @@ namespace te
         bool hasChanged = false;
         char inputName[256];
         char inputUUID[64];
+        UUID load = UUID::EMPTY;
         UUID empty = UUID(50, 0, 0, 0);
-        UUID load  = UUID::EMPTY;
         MaterialProperties properties;
+        float offsetListMaterials = 0.0f;
+        SPtr<Texture> currentTexture = nullptr;
         ImGuiExt::ComboOptions<UUID> materialsOptions;
+        UINT8 flags = (UINT8)ImGuiExt::ComboOptionFlag::ShowTexture;
         UUID materialUUID = (_currentMaterial) ? _currentMaterial->GetUUID() : empty;
         EditorResManager::ResourcesContainer& materials = EditorResManager::Instance().Get<Material>();
         EditorResManager::ResourcesContainer& textures = EditorResManager::Instance().Get<Texture>();
@@ -121,16 +124,11 @@ namespace te
 
         // Materials list
         {
-            UINT8 flags = (UINT8)ImGuiExt::ComboOptionFlag::ShowTexture;
-            SPtr<Texture> currentTexture = nullptr;
-            float offsetListMaterials = 0.0f;
-
             for (auto& resource : materials.Res)
             {
                 if (!_currentMaterial)
                 {
                     _currentMaterial = gResourceManager().Load<Material>(resource.second->GetUUID()).GetInternalPtr();
-                    currentTexture = _materialsPreview->GetPreview(_currentMaterial).RenderTex->GetColorTexture(0);
                     materialUUID = _currentMaterial->GetUUID();
                 }
 
@@ -138,28 +136,26 @@ namespace te
                     static_resource_cast<Material>(resource.second).GetInternalPtr())
                     .RenderTex->GetColorTexture(0);
 
-                _materialsPreview->GetPreview(
-                    static_resource_cast<Material>(resource.second).GetInternalPtr());
-
                 materialsOptions.AddOption(resource.second->GetUUID(), resource.second->GetName(), texture);
             }
 
             if (_currentMaterial)
             {
-                if (currentTexture && currentTexture->GetProperties().GetTextureType() != TextureType::TEX_TYPE_CUBE_MAP)
+                currentTexture = _materialsPreview->GetPreview(_currentMaterial).RenderTex->GetColorTexture(0);
+                if (currentTexture && currentTexture->GetProperties().GetTextureType() == TextureType::TEX_TYPE_2D)
                 {
-                    ImGuiExt::RenderImage(currentTexture, 0, Vector2(26.0f, 26.0f), Vector2(26.0f, 26.0f));
+                    ImGuiExt::RenderImage(currentTexture, 0, Vector2(26.0f, 26.0f));
                     ImGui::SameLine();
 
                     ImVec2 cursor = ImGui::GetCursorPos();
                     cursor.x -= 5.0f;
                     ImGui::SetCursorPos(cursor);
 
-                    offsetListMaterials -= 26.0f;
+                    offsetListMaterials = 26.0f;
                 }
 
                 if (ImGuiExt::RenderOptionCombo<UUID>(&materialUUID, "##material_list_option", "", 
-                    materialsOptions, ImGui::GetWindowContentRegionWidth() - 32 - offsetListMaterials, flags))
+                    materialsOptions, ImGui::GetWindowContentRegionWidth() - 32.0f - offsetListMaterials, flags))
                 {
                     if (materialUUID != _currentMaterial->GetUUID())
                         _currentMaterial = gResourceManager().Load<Material>(materialUUID).GetInternalPtr();
@@ -186,10 +182,23 @@ namespace te
             memset(&inputName, 0, 256);
             strcpy(inputUUID, uuidStr.c_str());
 
-            if(name.length() < 256)
-                strcpy(inputName, name.c_str());
-            else
-                strcpy(inputName, name.substr(0,255).c_str());
+            if(name.length() < 256) strcpy(inputName, name.c_str());
+            else strcpy(inputName, name.substr(0,255).c_str());
+
+            if (ImGui::CollapsingHeader("Preview", ImGuiTreeNodeFlags_DefaultOpen))
+            {
+                float previewZoneWidth = ImGui::GetWindowContentRegionWidth();
+                float previewWidth = (previewZoneWidth > 300.0f) ? 300.0f : previewZoneWidth;
+                float previewHeight = previewWidth * 0.6666667f;
+                float previewOffset = 0.0f;
+
+                if (previewZoneWidth > 300.0f)
+                    previewOffset = (previewZoneWidth - previewWidth) * 0.5f;
+
+                ImGui::BeginChild("TexturePreview", ImVec2(previewZoneWidth, previewHeight), true, ImGuiWindowFlags_NoScrollbar);
+                ImGuiExt::RenderImage(currentTexture, 0, Vector2(previewWidth - 16.0f, previewHeight - 16.0f), Vector2(previewOffset, 0.0f));
+                ImGui::EndChild();
+            }
 
             if (ImGui::CollapsingHeader("Identification", ImGuiTreeNodeFlags_DefaultOpen))
             {

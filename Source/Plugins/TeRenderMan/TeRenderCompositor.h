@@ -101,6 +101,10 @@ namespace te
         Vector<NodeInfo> _nodeInfos;
         bool _isValid = false;
 
+        // We don't want to always create new node (as they don't change), 
+        // so we keep a list of each type of node already created
+        UnorderedMap<NodeType*, RenderCompositorNode*> _nodeBackup;
+
         /************************************************************************/
         /* 							NODE TYPES	                     			*/
         /************************************************************************/
@@ -377,8 +381,6 @@ namespace te
 
         /** @copydoc RenderCompositorNode::Clear */
         void Clear() override;
-
-        SPtr<PooledRenderTexture> _pooledOutput;
     };
 
     /** Renders the bloom effect. */
@@ -394,8 +396,6 @@ namespace te
 
         /** @copydoc RenderCompositorNode::Clear */
         void Clear() override;
-
-        SPtr<PooledRenderTexture> _pooledOutput;
     };
 
     /** Moves the contents of the scene color texture into the view's output target. */

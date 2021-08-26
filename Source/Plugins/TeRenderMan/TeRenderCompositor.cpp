@@ -103,12 +103,17 @@ namespace te
 
     RenderCompositor::~RenderCompositor()
     {
+        _nodeBackup.clear();
+
+        for (auto& entry : _nodeInfos)
+            te_delete(entry.Node);
+
         Clear();
     }
 
     void RenderCompositor::Build(const RendererView& view, const String& finalNode)
     {
-        Clear();
+       Clear();
 
         UnorderedMap<String, UINT32> processedNodes;
         _isValid = true;
@@ -156,9 +161,21 @@ namespace te
                 processedNodes[nodeId] = curIdx;
 
                 NodeInfo& nodeInfo = _nodeInfos.back();
-                nodeInfo.Node = nodeType->Create();
                 nodeInfo.Type = nodeType;
                 nodeInfo.LastUseIdx = static_cast<UINT32>(-1);
+
+                // If a node has already been created, we reuse the instance
+                // instead of creating a new one
+                auto iterFind3 = _nodeBackup.find(nodeType);
+                if (iterFind3 == _nodeBackup.end())
+                {
+                    nodeInfo.Node = nodeType->Create();
+                    _nodeBackup[nodeType] = nodeInfo.Node;
+                }
+                else
+                {
+                    nodeInfo.Node = iterFind3->second;
+                }
 
                 for (auto& depId : depIds)
                 {
@@ -242,9 +259,6 @@ namespace te
 
     void RenderCompositor::Clear()
     {
-        for (auto& entry : _nodeInfos)
-            te_delete(entry.Node);
-
         _nodeInfos.clear();
         _isValid = false;
     }
@@ -633,8 +647,7 @@ namespace te
         {
             RCNodeGpuInitializationPass::GetNodeId(),
             RCNodePostProcess::GetNodeId(),
-            RCNodeTonemapping::GetNodeId()
-            
+            RCNodeTonemapping::GetNodeId() 
         };
     }
 
@@ -712,9 +725,7 @@ namespace te
     { }
 
     void RCNodeSSAO::Clear()
-    { 
-        _pooledOutput = nullptr;
-    }
+    { }
 
     Vector<String> RCNodeSSAO::GetDependencies(const RendererView& view)
     {
@@ -796,9 +807,7 @@ namespace te
     }
 
     void RCNodeBloom::Clear()
-    {
-        _pooledOutput = nullptr;
-    }
+    { }
 
     Vector<String> RCNodeBloom::GetDependencies(const RendererView& view)
     {

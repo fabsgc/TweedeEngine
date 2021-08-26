@@ -249,7 +249,7 @@ namespace te
             fArea.height = (float)texProps.GetHeight();
         }
 
-        if (texProps.GetNumSamples() == 1) // RenderTarget without MSAA need Normalized device coordinates
+        if (texProps.GetNumSamples() == 1) // RenderTarget without MSAA needs Normalized device coordinates
         {
             fArea.width = 1.0f;
             fArea.height = 1.0f;

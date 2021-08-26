@@ -4,6 +4,7 @@
 #include "Renderer/TeCamera.h"
 #include "Resources/TeResourceManager.h"
 #include "Importer/TeTextureImportOptions.h"
+#include "Utility/TeTime.h"
 
 namespace te
 {
@@ -19,7 +20,15 @@ namespace te
 
     void PreviewMat::BindFrame()
     {
-        // TODO
+        float time = gTime().GetTime();
+        float delta = gTime().GetFrameDelta();
+
+        _perFrameParamDef.gTime.Set(_perFrameParamBuffer, time);
+        _perFrameParamDef.gFrameDelta.Set(_perFrameParamBuffer, delta);
+        _perFrameParamDef.gUseSkyboxMap.Set(_perFrameParamBuffer, 0);
+        _perFrameParamDef.gUseSkyboxIrradianceMap.Set(_perFrameParamBuffer, 0);
+        _perFrameParamDef.gSkyboxBrightness.Set(_perFrameParamBuffer, 0.3f);
+        _perFrameParamDef.gSceneLightColor.Set(_perFrameParamBuffer, Color::White.GetAsVector4());
     }
 
     void PreviewMat::BindLight()

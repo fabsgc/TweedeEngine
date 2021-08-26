@@ -134,7 +134,7 @@ namespace te
                         }
                         ImGui::SameLine();
 
-                        RenderImage(option.Tex, 4, Vector2(50.0f, 50.0f), Vector2(-5.0f, 0.0f));
+                        RenderImage(option.Tex, 4, Vector2(50.0f, 50.0f), Vector2(-5.0f, 2.0f));
                         ImGui::SameLine();
 
                         ImVec2 cursor = ImGui::GetCursorPos();
@@ -163,6 +163,11 @@ namespace te
 
                     line++;
                 }
+
+                ImVec2 cursor = ImGui::GetCursorPos();
+                cursor = ImGui::GetCursorPos();
+                cursor.y = 15.0f;
+
                 ImGui::EndCombo();
             }
             if (width > 0.0f) ImGui::PopItemWidth();

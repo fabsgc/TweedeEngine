@@ -21,8 +21,6 @@ namespace te
 
     MaterialsPreview::Preview::~Preview()
     {
-        if (MatPreview->RenderTex)
-            MatPreview->RenderTex = nullptr;
         if (MatPreview->ColorTex.IsLoaded())
             MatPreview->ColorTex.Release();
         if (MatPreview->DepthStencilTex.IsLoaded())
@@ -78,7 +76,7 @@ namespace te
     void MaterialsPreview::DrawMaterial(const WPtr<Material>& material, Preview& preview)
     { 
         RenderAPI& rapi = RenderAPI::Instance();
-        UINT32 clearBuffers = FBT_DEPTH;
+        UINT32 clearBuffers = FBT_COLOR | FBT_DEPTH | FBT_STENCIL;
         PreviewMat* previewMat = nullptr;
         SPtr<Material> mat = material.lock();
 
