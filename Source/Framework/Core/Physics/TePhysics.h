@@ -17,7 +17,7 @@ namespace te
         float WaterDensity = 1.5f;
         float WaterOffset = 0.0f;
         Vector3 WaterNormal = Vector3(0.0f, 1.0f, 0.0f);
-        bool SoftBody = false;
+        bool SoftBody = true;
     };
 
     /** Provides global physics settings, factory methods for physics objects and scene queries. */

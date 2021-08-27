@@ -25,6 +25,14 @@ namespace te
         virtual ~SoftBody() = default;
 
         /**
+         * Sets a mesh that represents the softbody geometry. This can be a generic triangle mesh, or and convex mesh.
+         */
+        virtual void SetMesh(const HPhysicsMesh& mesh) { _mesh = mesh; }
+
+        /** @copydoc SetMesh */
+        HPhysicsMesh GetMesh() const { return _mesh; }
+
+        /**
          * Creates a new softbody.
          *
          * @param[in]	linkedSO	Scene object that owns this softbody. All physics updates applied to this object
@@ -32,5 +40,8 @@ namespace te
          *							those updates).
          */
         static SPtr<SoftBody> Create(const HSceneObject& linkedSO);
+
+    protected:
+        HPhysicsMesh _mesh;
     };
 }
