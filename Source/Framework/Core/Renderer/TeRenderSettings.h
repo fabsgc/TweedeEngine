@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
+#include "Math/TeVector2.h"
 #include "Image/TeColor.h"
 
 namespace te
@@ -37,16 +38,56 @@ namespace te
         bool Enabled = false;
 
         /**
-         * Determines the amount of blur to apply to fully unfocused objects that are closer to camera than the in-focus
-         * zone. Set to zero to disable near-field blur. Only relevant for Gaussian depth of field.
+         * Distance from the camera at which the focal plane is located in. Objects at this distance will be fully in focus.
+         * In world units (meters).
          */
-        float NearBlurAmount = 0.02f;
+        float FocalDistance = 0.75f;
 
         /**
-         * Determines the amount of blur to apply to fully unfocused objects that are farther away from camera than the
-         * in-focus zone. Set to zero to disable far-field blur. Only relevant for Gaussian depth of field.
+         * Determines the size of the range within which objects transition from focused to fully unfocused, at the near
+         * plane. Only relevant for Gaussian and Bokeh depth of field. In world units (meters).
          */
-        float FarBlurAmount = 0.02f;
+        float NearTransitionRange = 0.25f;
+
+        /**
+         * Determines the size of the range within which objects transition from focused to fully unfocused, at the far
+         * plane. Only relevant for Gaussian and Bokeh depth of field. In world units (meters).
+         */
+        float FarTransitionRange = 0.25f;
+
+        /**
+         * Determines the maximum size of the blur kernel, in percent of view size. Larger values cost more performance.
+         * Only relevant when using Bokeh depth of field.
+         */
+        float MaxBokehSize = 0.025f;
+
+        /**
+         * Determines the maximum color difference between surrounding pixels allowed (as a sum of all channels) before
+         * higher fidelity sampling is triggered. Increasing this value can improve performance as less higher fidelity
+         * samples will be required, but may decrease quality of the effect. Only relevant when using Bokeh depth of
+         * field.
+         */
+        float AdaptiveColorThreshold = 1.0f;
+
+        /**
+         * Determines the minimum circle of confusion size before higher fidelity sampling is triggered. Small values
+         * trigger high fidelity sampling because they can otherwise produce aliasing, and they are small enough so they
+         * don't cost much. Increasing this value can improve performance as less higher fidelity samples will be required,
+         * but may decrease quality of the effect. Only relevant when using Bokeh depth of field.
+         */
+        float AdaptiveRadiusThreshold = 0.1f;
+
+        /** Camera aperture size in mm. Only relevant when using Bokeh depth of field. */
+        float ApertureSize = 50.0f;
+
+        /** Focal length of the camera's lens (e.g. 75mm). Only relevant when using Bokeh depth of field. */
+        float FocalLength = 50.0f;
+
+        /**
+         * Camera sensor width and height, in mm. Used for controlling the size of the circle of confusion. Only relevant
+         * when using Bokeh depth of field.
+         */
+        Vector2 SensorSize = Vector2(22.2f, 14.8f);
     };
 
     /** Determines which parts of the scene will trigger motion blur. */

@@ -73,7 +73,7 @@ namespace te
         textureCubeMapImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
         textureCubeMapImportOptions->IsCubemap = true;
 
-        _loadedMeshCube = gResourceManager().Load<Mesh>("Data/Meshes/Cube/cube.obj", meshImportOptions);
+        _loadedMeshCube = gResourceManager().Load<Mesh>("Data/Meshes/Primitives/cube.obj", meshImportOptions);
         _loadedMeshMill = gResourceManager().Load<Mesh>("Data/Meshes/Mill/mill.obj", meshImportOptions);
         _loadedTextureCube = gResourceManager().Load<Texture>("Data/Textures/Cube/diffuse.png", textureImportOptions);
 
@@ -120,6 +120,7 @@ namespace te
         _sceneCamera->Initialize();
 
         _sceneCubeSO = SceneObject::Create("Cube");
+        _sceneCubeSO->SetScale(Vector3(0.5f, 0.5f, 0.5f));
         _renderableCube = _sceneCubeSO->AddComponent<CRenderable>();
         _renderableCube->SetMesh(_loadedMeshCube);
         _renderableCube->SetMaterial(_materialCube);

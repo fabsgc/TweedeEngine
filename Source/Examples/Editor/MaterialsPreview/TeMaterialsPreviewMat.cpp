@@ -36,15 +36,15 @@ namespace te
     {
         static MaterialsPreviewMat::LightData lightData;
 
-        lightData.Position = Vector3(0.0f, 2.0f, 2.0f);
-        lightData.Direction = Vector3(0.5f, -0.5f, -0.5f);
+        lightData.Position = Vector3(0.0f, 3.0f, 3.0f);
+        lightData.Direction = Vector3(0.75f, -0.5f, -0.5f);
         lightData.Intensity = 0.4f;
         lightData.AttenuationRadius = 1.0f;
         lightData.LinearAttenuation = 0.08f;
         lightData.QuadraticAttenuation = 0.0f;
         lightData.BoundsRadius = 512.0f;
         lightData.Color = Vector3::ONE;
-        lightData.Type = 0.0f;
+        lightData.Type = 1.0f;
 
         _perLightsParamDef.gLights.Set(_perLightsParamBuffer, lightData, 0);
         _perLightsParamDef.gLightsNumber.Set(_perLightsParamBuffer, 1);
@@ -75,21 +75,18 @@ namespace te
         static const Matrix4 ProjTransform = camera->GetProjectionMatrixRS();
         static const Matrix4 ViewTransform = camera->GetViewMatrix();
         static const ProjectionType ProjType = camera->GetProjectionType();
-
         static const Matrix4 viewProj = ProjTransform * ViewTransform;
 
         _perCameraParamDef.gMatProj.Set(_perCameraParamBuffer, ProjTransform);
         _perCameraParamDef.gMatView.Set(_perCameraParamBuffer, ViewTransform);
         _perCameraParamDef.gMatViewProj.Set(_perCameraParamBuffer, viewProj);
         _perCameraParamDef.gMatPrevViewProj.Set(_perCameraParamBuffer, viewProj);
-
         _perCameraParamDef.gViewDir.Set(_perCameraParamBuffer, ViewDirection);
         _perCameraParamDef.gViewOrigin.Set(_perCameraParamBuffer, ViewOrigin);
-
         _perCameraParamDef.gViewportX.Set(_perCameraParamBuffer, static_cast<UINT32>(camera->GetViewport()->GetArea().x));
         _perCameraParamDef.gViewportY.Set(_perCameraParamBuffer, static_cast<UINT32>(camera->GetViewport()->GetArea().y));
 
-        // TODO Be careful not all parameters are set
+        // TODO Be careful not all parameters are set (because, most of them are useless)
     }
 
     void PreviewMat::BindMaterial(const WPtr<Material>& material)

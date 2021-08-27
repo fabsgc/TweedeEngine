@@ -106,6 +106,21 @@ namespace te
             return hasChanged;
         };
 
+        const auto& ShowPreviewButton = [this](const char* title, const std::function<bool()>& getVisibility)
+        {
+            float buttonWidth = ImGui::GetWindowContentRegionWidth() / 3.0f - 4.0f;
+
+            bool clicked = false;
+            ImGui::PushStyleColor(ImGuiCol_Button, getVisibility() ? ImGui::GetStyle().Colors[ImGuiCol_ButtonActive] : ImGui::GetStyle().Colors[ImGuiCol_Button]);
+
+            if (ImGui::Button(title, ImVec2(buttonWidth, 24.0f)))
+                clicked = true;
+
+            ImGui::PopStyleColor();
+
+            return clicked;
+        };
+
         // New material
         {
             ImGui::PushID("##material_new_option");
@@ -211,6 +226,36 @@ namespace te
                 ImGui::BeginChild("TexturePreview", ImVec2(previewZoneWidth, previewHeight), true, ImGuiWindowFlags_NoScrollbar);
                 ImGuiExt::RenderImage(currentTexture, 0, Vector2(previewWidth - 16.0f, previewHeight - 16.0f), Vector2(previewOffset, 0.0f));
                 ImGui::EndChild();
+
+                ImVec2 cursor = ImGui::GetCursorPos();
+                cursor.y -= 7.0f;
+                ImGui::SetCursorPos(cursor);
+
+                if (ShowPreviewButton(ICON_FA_CIRCLE, [this]() { 
+                    return _materialsPreview->GetMeshPreviewType() != MaterialsPreview::MeshPreviewType::Sphere; }))
+                {
+                    _materialsPreview->SetMeshPreviewType(MaterialsPreview::MeshPreviewType::Sphere);
+                }
+                ImGui::SameLine();
+
+                if (ShowPreviewButton(ICON_FA_CUBE, [this]() {
+                    return _materialsPreview->GetMeshPreviewType() != MaterialsPreview::MeshPreviewType::Box; }))
+                {
+                    _materialsPreview->SetMeshPreviewType(MaterialsPreview::MeshPreviewType::Box);
+                }
+                ImGui::SameLine();
+
+                if (ShowPreviewButton(ICON_FA_SQUARE, [this]() {
+                    return _materialsPreview->GetMeshPreviewType() != MaterialsPreview::MeshPreviewType::Plane; }))
+                {
+                    _materialsPreview->SetMeshPreviewType(MaterialsPreview::MeshPreviewType::Plane);
+                }
+
+                cursor.x += 5.0f;
+                ImGui::SetCursorPos(cursor);
+
+                cursor.y += 40.0f;
+                ImGui::SetCursorPos(cursor);
             }
 
             if (ImGui::CollapsingHeader("Properties", ImGuiTreeNodeFlags_DefaultOpen))

@@ -566,7 +566,7 @@ namespace te
         meshImportOptions->CpuCached = false;
 
         _sponzaMesh = gResourceManager().Load<Mesh>("Data/Meshes/Sponza/sponza.obj", meshImportOptions);
-        _lightMesh = gResourceManager().Load<Mesh>("Data/Meshes/Sphere/sphere.obj", meshImportOptions);
+        _lightMesh = gResourceManager().Load<Mesh>("Data/Meshes/Primitives/sphere-hd.obj", meshImportOptions);
         _monkeyMesh = gResourceManager().Load<Mesh>("Data/Meshes/Monkey/monkey-hd.obj", meshImportOptions);
 #endif
     }
@@ -617,6 +617,7 @@ namespace te
             light->SetQuadraticAttenuation(0.44f);
             light->SetColor(Color(1.0f, 0.95f, 0.85f));
             lightSO->SetPosition(Vector3(0.0f + i * 2.5f, -0.5f, i * 15.0f));
+            lightSO->SetScale(Vector3(0.5f, 0.5f, 0.5f));
 
             HRenderable mesh = lightSO->AddComponent<CRenderable>();
             mesh->SetMesh(_lightMesh);

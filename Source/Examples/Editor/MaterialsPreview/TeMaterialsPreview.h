@@ -11,6 +11,12 @@ namespace te
 
     class MaterialsPreview
     {
+    public:
+        enum class MeshPreviewType
+        {
+            Box, Plane, Sphere
+        };
+
     private:
         struct Preview
         {
@@ -46,6 +52,20 @@ namespace te
          */
         void DeletePreview(const WPtr<Material>& material);
 
+        /**
+         * It's possible to generate a preview using sphere, box or plane primitive 
+         *
+         * @param[in]	type		Type of primitive you want to use for preview
+         */
+        void SetMeshPreviewType(MeshPreviewType type);
+
+        /**
+         * It's possible to generate a preview using sphere, box or plane primitive
+         *
+         * @return					Type of primitive you want to use for preview
+         */
+        MeshPreviewType GetMeshPreviewType() const { return _meshPreviewType; };
+
     private:
         /**
          * Draws a preview of the given material only if this material preview is not alreay managed by the class
@@ -53,7 +73,7 @@ namespace te
          *
          * @param[in]	material		Weak Ref on a Material.
          */
-        void DrawMaterial(const WPtr<Material>& material, Preview& preview);
+        void DrawMaterial(const WPtr<Material>& material, Preview& preview) const;
 
         /**
          * Initialize the camera used to draw previews to their render textures
@@ -66,12 +86,20 @@ namespace te
         void InitializeRenderable();
 
     private:
+        static const UINT32 PreviewSize;
+        static const Color  BackgroundColor;
+
+    private:
         Map<WPtr<Material>, UPtr<Preview>, std::owner_less<WPtr<Material>>> _previews;
 
         PreviewOpaqueMat* _opaqueMat;
         PreviewTransparentMat* _transparentMat;
 
-        SPtr<Mesh> _mesh;
+        SPtr<Mesh> _box;
+        SPtr<Mesh> _plane;
+        SPtr<Mesh> _sphere;
         SPtr<Camera> _camera;
+
+        MeshPreviewType _meshPreviewType;
     };
 }

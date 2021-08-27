@@ -4,17 +4,20 @@
 #include "Renderer/TeCamera.h"
 #include "Material/TeMaterial.h"
 #include "TeMaterialsPreviewMat.h"
-#include "../TeEditorResManager.h"
+#include "Resources/TeResourceManager.h"
 #include "Importer/TeMeshImportOptions.h"
 
 namespace te
 {
+    const UINT32 MaterialsPreview::PreviewSize = 350;
+    const Color  MaterialsPreview::BackgroundColor = Color(0.3f, 0.36f, 0.48f, 1.0f);
+
     MaterialsPreview::Preview::Preview()
     { 
         MatPreview = te_shared_ptr_new<RendererUtility::RenderTextureData>();
 
-        MatPreview->Width = 512;
-        MatPreview->Height = 512;
+        MatPreview->Width = MaterialsPreview::PreviewSize;
+        MatPreview->Height = MaterialsPreview::PreviewSize;
 
         gRendererUtility().GenerateViewportRenderTexture(*MatPreview);
     }
@@ -30,8 +33,11 @@ namespace te
     MaterialsPreview::MaterialsPreview()
         : _opaqueMat(nullptr)
         , _transparentMat(nullptr)
-        , _mesh(nullptr)
+        , _box(nullptr)
+        , _plane(nullptr)
+        , _sphere(nullptr)
         , _camera(nullptr)
+        , _meshPreviewType(MeshPreviewType::Sphere)
     { 
         _opaqueMat = PreviewOpaqueMat::Get();
         _transparentMat = PreviewTransparentMat::Get();
@@ -73,27 +79,53 @@ namespace te
             _previews.erase(it);
     }
 
-    void MaterialsPreview::DrawMaterial(const WPtr<Material>& material, Preview& preview)
+    void MaterialsPreview::SetMeshPreviewType(MeshPreviewType type)
+    {
+        if (type != _meshPreviewType)
+        {
+            for (auto& preview : _previews)
+                preview.second->IsDirty = true;
+        }
+
+        _meshPreviewType = type;
+    }
+
+    void MaterialsPreview::DrawMaterial(const WPtr<Material>& material, Preview& preview) const
     { 
         RenderAPI& rapi = RenderAPI::Instance();
         UINT32 clearBuffers = FBT_COLOR | FBT_DEPTH | FBT_STENCIL;
         PreviewMat* previewMat = nullptr;
         SPtr<Material> mat = material.lock();
+        SPtr<Mesh> mesh = nullptr;
 
         rapi.SetRenderTarget(preview.MatPreview->RenderTex);
-        rapi.ClearViewport(clearBuffers, Color(0.42f, 0.67f, 0.74f, 1.0f));
+        rapi.ClearViewport(clearBuffers, MaterialsPreview::BackgroundColor);
 
-        if (mat->GetShader()->GetName() == "ForwardOpaque") previewMat = _opaqueMat;
-        else previewMat = _transparentMat;
+        if (mat->GetShader()->GetName() == "ForwardOpaque") 
+            previewMat = _opaqueMat;
+        else 
+            previewMat = _transparentMat;
 
         previewMat->BindFrame();
         previewMat->BindLight();
         previewMat->BindObject();
         previewMat->BindCamera(_camera);
         previewMat->BindMaterial(material);
-        
 
-        if (_mesh)
+        switch (_meshPreviewType)
+        {
+        case MeshPreviewType::Box:
+            mesh = _box;
+            break;
+        case MeshPreviewType::Plane:
+            mesh = _plane;
+            break;
+        case MeshPreviewType::Sphere:
+            mesh = _sphere;
+            break;
+        }
+        
+        if (mesh)
         {
             if (mat->GetShader()->GetName() == "ForwardOpaque")
             {
@@ -106,11 +138,11 @@ namespace te
                 _transparentMat->Bind();
             }
 
-            MeshProperties properties = _mesh->GetProperties();
+            MeshProperties properties = mesh->GetProperties();
             UINT32 numMeshes = properties.GetNumSubMeshes();
 
             for (UINT32 i = 0; i < numMeshes; i++)
-                gRendererUtility().Draw(_mesh, properties.GetSubMesh(i), 1);
+                gRendererUtility().Draw(mesh, properties.GetSubMesh(i), 1);
         }
 
         rapi.SetRenderTarget(nullptr);
@@ -125,7 +157,7 @@ namespace te
         _camera->Initialize();
 
         Transform tfrm = _camera->GetTransform();
-        tfrm.Move(Vector3(0.0f, 0.55f, 0.55f));
+        tfrm.Move(Vector3(1.0f, 1.54f, 1.54f));
         tfrm.LookAt(Vector3::ZERO);
         _camera->SetTransform(tfrm);
     }
@@ -137,6 +169,8 @@ namespace te
         meshImportOptions->ImportTangents = true;
         meshImportOptions->CpuCached = false;
 
-        _mesh = EditorResManager::Instance().Load<Mesh>("Data/Meshes/Sphere/sphere.obj", meshImportOptions).GetInternalPtr();
+        _box = ResourceManager::Instance().Load<Mesh>("Data/Meshes/Primitives/cube.obj", meshImportOptions).GetInternalPtr();
+        _plane = ResourceManager::Instance().Load<Mesh>("Data/Meshes/Primitives/plane.obj", meshImportOptions).GetInternalPtr();
+        _sphere = ResourceManager::Instance().Load<Mesh>("Data/Meshes/Primitives/sphere.obj", meshImportOptions).GetInternalPtr();
     }
 }

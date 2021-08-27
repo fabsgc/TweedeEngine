@@ -112,6 +112,7 @@ namespace te
         , _selectionDirty(true)
         , _hudDirty(true)
         , _physicsDirty(true)
+        , _animationDebug(true)
         , _guizmoState(ImGuizmoState::Active)
         , _guizmoOperation(ImGuizmo::OPERATION::TRANSLATE)
         , _guizmoMode(ImGuizmo::MODE::WORLD)
@@ -1193,7 +1194,7 @@ namespace te
 
         // ######################################################
         //_loadedMeshPlane = EditorResManager::Instance().Load<Mesh>("C:/Users/FBN6/Desktop/grandma/scene.gltf", meshImportOptions);
-        _loadedMeshPlane = EditorResManager::Instance().Load<Mesh>("Data/Meshes/Plane/plane.obj", meshImportOptions);
+        _loadedMeshPlane = EditorResManager::Instance().Load<Mesh>("Data/Meshes/Primitives/plane.obj", meshImportOptions);
         _loadedSkyboxTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_day_medium.png", textureCubeMapImportOptions);
         _loadedSkyboxIrradianceTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_day_irradiance_small.png", textureCubeMapImportOptions);
         _loadedKnightDiffuseTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Knight/diffuse-small.png", textureImportOptions);
@@ -1277,6 +1278,7 @@ namespace te
         _renderablePlane->SetName("Plane Renderable");
         _renderablePlane->Initialize();
         _sceneRenderablePlaneSO->Move(Vector3(0.0, -1.0f, 0.0f));
+        _sceneRenderablePlaneSO->SetScale(Vector3(0.5f, 0.5f, 0.5f));
 
         _rigidBodyPlane = _sceneRenderablePlaneSO->AddComponent<CRigidBody>();
         _rigidBodyPlane->SetName("Rigid Body Plane");

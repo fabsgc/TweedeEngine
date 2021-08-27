@@ -173,6 +173,12 @@ namespace te
         /** Get Guizmo mode */
         ImGuizmo::MODE GetImGuizmoMode() const { return _guizmoMode; }
 
+        /** Is animation debug enabled */
+        bool IsAnimationDebug() const { return _animationDebug; }
+
+        /** Enable or disable animation debug */
+        void SetAnimationDebug(bool debug) { _animationDebug = debug; }
+
         /** Save current scene */
         void Save();
 
@@ -241,6 +247,9 @@ namespace te
 
         // If something has changed, we need to redraw physics debug
         bool _physicsDirty;
+
+        // Debug animation
+        bool _animationDebug;
 
         // We only enable Guizmo if there is a viewport with the default camera enabled
         ImGuizmoState _guizmoState;

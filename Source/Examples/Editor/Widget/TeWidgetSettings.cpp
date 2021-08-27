@@ -68,6 +68,17 @@ namespace te
                     gEditor().NeedsRedraw();
                 }
             }
+
+            // Debug paused
+            {
+                bool animationDebug = gEditor().IsAnimationDebug();
+                if (ImGuiExt::RenderOptionBool(animationDebug, "##settings_physics_enable", "Enable Animations Debug"))
+                {
+                    gEditor().SetAnimationDebug(animationDebug);
+                    gEditor().NeedsRedraw();
+                }
+            }
+            ImGui::Separator();
         }
     }
 
