@@ -548,8 +548,6 @@ namespace te
                         SetCursor(LoadCursor(0, IDC_ARROW));
                         return 0;
                     }
-
-                    SetCursor(_data->Cursor.cursor);
                 }
                 return true;
             }

@@ -22,7 +22,10 @@
 #   ifndef NOMINMAX
         #define NOMINMAX
 #   endif
+
+#   pragma warning(push, 0)
 #   include "../ImGuiExt/dirent.h"
+#   pragma warning(pop)
 #   include <windows.h>
 #else
 #   include <dirent.h>

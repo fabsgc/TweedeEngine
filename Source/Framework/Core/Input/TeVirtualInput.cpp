@@ -38,7 +38,7 @@ namespace te
         if (deviceIdx >= (UINT32)_devices.size())
             return false;
 
-        const Map<UINT32, ButtonData>& cachedStates = _devices[deviceIdx].CachedStates;
+        const UnorderedMap<UINT32, ButtonData>& cachedStates = _devices[deviceIdx].CachedStates;
         auto iterFind = cachedStates.find(button.ButtonIdentifier);
 
         if (iterFind != cachedStates.end())
@@ -52,7 +52,7 @@ namespace te
         if (deviceIdx >= (UINT32)_devices.size())
             return false;
 
-        const Map<UINT32, ButtonData>& cachedStates = _devices[deviceIdx].CachedStates;
+        const UnorderedMap<UINT32, ButtonData>& cachedStates = _devices[deviceIdx].CachedStates;
         auto iterFind = cachedStates.find(button.ButtonIdentifier);
 
         if (iterFind != cachedStates.end())
@@ -66,7 +66,7 @@ namespace te
         if (deviceIdx >= (UINT32)_devices.size())
             return false;
 
-        const Map<UINT32, ButtonData>& cachedStates = _devices[deviceIdx].CachedStates;
+        const UnorderedMap<UINT32, ButtonData>& cachedStates = _devices[deviceIdx].CachedStates;
         auto iterFind = cachedStates.find(button.ButtonIdentifier);
 
         if (iterFind != cachedStates.end())
@@ -240,7 +240,7 @@ namespace te
             while (event.deviceIdx >= (UINT32)_devices.size())
                 _devices.push_back(DeviceData());
 
-            Map<UINT32, ButtonData>& cachedStates = _devices[event.deviceIdx].CachedStates;
+            UnorderedMap<UINT32, ButtonData>& cachedStates = _devices[event.deviceIdx].CachedStates;
 
             UINT32 numButtons = (UINT32)_tempButtons.size();
             for (UINT32 i = 0; i < numButtons; i++)
@@ -283,7 +283,7 @@ namespace te
             while (event.deviceIdx >= (UINT32)_devices.size())
                 _devices.push_back(DeviceData());
 
-            Map<UINT32, ButtonData>& cachedStates = _devices[event.deviceIdx].CachedStates;
+            UnorderedMap<UINT32, ButtonData>& cachedStates = _devices[event.deviceIdx].CachedStates;
 
             UINT32 numButtons = (UINT32)_tempButtons.size();
             for (UINT32 i = 0; i < numButtons; i++)

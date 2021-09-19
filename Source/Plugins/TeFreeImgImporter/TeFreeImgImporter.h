@@ -50,6 +50,6 @@ namespace te
 
     private:
         Vector<String> _extensions;
-        Map<String, int> _extensionToFID;
+        UnorderedMap<String, int> _extensionToFID;
     };
 }

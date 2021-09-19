@@ -31,7 +31,7 @@ namespace te
         Vector<HTexture> TexturePages;
 
         /** All characters in the font referenced by character ID. */
-        Map<UINT32, CharDesc> Characters;
+        UnorderedMap<UINT32, CharDesc> Characters;
     };
 
     /**
@@ -69,6 +69,6 @@ namespace te
         Font();
 
     private:
-        Map<UINT32, SPtr<FontBitmap>> _fontDataPerSize;
+        UnorderedMap<UINT32, SPtr<FontBitmap>> _fontDataPerSize;
     };
 }

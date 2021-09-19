@@ -8,6 +8,9 @@
 #include "Material/TeTechnique.h"
 #include "RenderAPI/TeRenderAPI.h"
 
+#pragma warning (push)
+#pragma warning (disable: 4702)
+
 namespace te
 {
     /** References the shader path in RendererMaterial implementation. */
@@ -208,3 +211,5 @@ namespace te
     template<class T>
     RendererMaterialMetaData RendererMaterial<T>::_metaData;
 }
+
+#pragma warning (pop)

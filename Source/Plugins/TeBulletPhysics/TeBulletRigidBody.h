@@ -185,7 +185,7 @@ namespace te
         bool _isDirty = true; // A state has been modified
 
         btCompoundShape* _shape;
-        Map<BulletFCollider*, ColliderData> _colliders;
+        UnorderedMap<BulletFCollider*, ColliderData> _colliders;
         Vector<BulletJoint*> _joints;
 
         float _mass = 1.0f;

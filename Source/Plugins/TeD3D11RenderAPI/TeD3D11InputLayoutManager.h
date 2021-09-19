@@ -71,7 +71,7 @@ namespace te
         static const int DECLARATION_BUFFER_SIZE = 1024;
         static const int NUM_ELEMENTS_TO_PRUNE = 64;
 
-        UnorderedMap<VertexDeclarationKey, InputLayoutEntry*, HashFunc, EqualFunc> mInputLayoutMap;
+        UnorderedMap<VertexDeclarationKey, InputLayoutEntry*, HashFunc, EqualFunc> _inputLayoutMap;
 
         bool _warningShown = false;
         UINT32 _lastUsedCounter = 0;

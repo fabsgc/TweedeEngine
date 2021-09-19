@@ -168,7 +168,7 @@ namespace te
         DynLib* _rendererPlugin;
         DynLib* _renderAPIPlugin;
         DynLib* _guiPlugin;
-        Map<DynLib*, UpdatePluginFunc> _pluginUpdateFunctions;
+        UnorderedMap<DynLib*, UpdatePluginFunc> _pluginUpdateFunctions;
 
         bool _isFrameRenderingFinished;
 

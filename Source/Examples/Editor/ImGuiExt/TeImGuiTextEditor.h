@@ -152,7 +152,7 @@ namespace te
 
         typedef UnorderedMap<String, Identifier> Identifiers;
         typedef UnorderedSet<String> Keywords;
-        typedef Map<int, String> ErrorMarkers;
+        typedef UnorderedMap<int, String> ErrorMarkers;
         typedef UnorderedSet<int> Breakpoints;
         typedef std::array<ImU32, (unsigned)PaletteIndex::Max> Palette;
         typedef uint8_t Char;

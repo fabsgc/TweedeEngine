@@ -35,14 +35,14 @@ namespace te
 
     D3D11InputLayoutManager::~D3D11InputLayoutManager()
     {
-        while (mInputLayoutMap.begin() != mInputLayoutMap.end())
+        while (_inputLayoutMap.begin() != _inputLayoutMap.end())
         {
-            auto firstElem = mInputLayoutMap.begin();
+            auto firstElem = _inputLayoutMap.begin();
 
             SAFE_RELEASE(firstElem->second->InputLayout);
             te_delete(firstElem->second);
 
-            mInputLayoutMap.erase(firstElem);
+            _inputLayoutMap.erase(firstElem);
 
             TE_INC_PROFILER_GPU(ResDestroyed);
         }
@@ -55,19 +55,19 @@ namespace te
         pair.vertxDeclId = vertexBufferDecl->GetId();
         pair.vertexProgramId = vertexProgram.GetProgramId();
 
-        auto iterFind = mInputLayoutMap.find(pair);
-        if (iterFind == mInputLayoutMap.end())
+        auto iterFind = _inputLayoutMap.find(pair);
+        if (iterFind == _inputLayoutMap.end())
         {
-            if (mInputLayoutMap.size() >= DECLARATION_BUFFER_SIZE)
+            if (_inputLayoutMap.size() >= DECLARATION_BUFFER_SIZE)
             {
                 RemoveLeastUsed(); // Prune so the buffer doesn't just infinitely grow
             }
 
             AddNewInputLayout(vertexShaderDecl, vertexBufferDecl, vertexProgram);
 
-            iterFind = mInputLayoutMap.find(pair);
+            iterFind = _inputLayoutMap.find(pair);
 
-            if (iterFind == mInputLayoutMap.end()) // We failed to create input layout
+            if (iterFind == _inputLayoutMap.end()) // We failed to create input layout
             {
                 return nullptr;
             }
@@ -172,7 +172,7 @@ namespace te
         pair.vertxDeclId = vertexBufferDecl->GetId();
         pair.vertexProgramId = vertexProgram.GetProgramId();
 
-        mInputLayoutMap[pair] = newEntry;
+        _inputLayoutMap[pair] = newEntry;
 
         TE_INC_PROFILER_GPU(ResCreated);
     }
@@ -190,7 +190,7 @@ namespace te
 
         Map<UINT32, VertexDeclarationKey> leastFrequentlyUsedMap;
 
-        for (auto iter = mInputLayoutMap.begin(); iter != mInputLayoutMap.end(); ++iter)
+        for (auto iter = _inputLayoutMap.begin(); iter != _inputLayoutMap.end(); ++iter)
         {
             leastFrequentlyUsedMap[iter->second->LastUsedIdx] = iter->first;
         }
@@ -198,12 +198,12 @@ namespace te
         UINT32 elemsRemoved = 0;
         for (auto iter = leastFrequentlyUsedMap.begin(); iter != leastFrequentlyUsedMap.end(); ++iter)
         {
-            auto inputLayoutIter = mInputLayoutMap.find(iter->second);
+            auto inputLayoutIter = _inputLayoutMap.find(iter->second);
 
             SAFE_RELEASE(inputLayoutIter->second->InputLayout);
             te_delete(inputLayoutIter->second);
 
-            mInputLayoutMap.erase(inputLayoutIter);
+            _inputLayoutMap.erase(inputLayoutIter);
             TE_INC_PROFILER_GPU(ResDestroyed);
 
             elemsRemoved++;

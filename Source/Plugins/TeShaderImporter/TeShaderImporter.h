@@ -54,7 +54,7 @@ namespace te
             ParserProgram HullProgram;
             ParserProgram DomainProgram;
 
-            Map<String, SamplerState> Samplers;
+            UnorderedMap<String, SamplerState> Samplers;
 
             String Name;
         };

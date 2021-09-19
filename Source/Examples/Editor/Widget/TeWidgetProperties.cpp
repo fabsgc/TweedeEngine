@@ -1906,35 +1906,38 @@ namespace te
         }
         ImGui::Separator();
 
-        // Attenuation radius
+        if (light->GetType() != LightType::Directional)
         {
-            if (ImGuiExt::RenderOptionFloat(attenuationRadius, "##light_attenuation_radius_option", "Att. Radius", 0.0f, 5.0f, width))
+            // Attenuation radius
             {
-                hasChanged = true;
-                light->SetAttenuationRadius(attenuationRadius);
+                if (ImGuiExt::RenderOptionFloat(attenuationRadius, "##light_attenuation_radius_option", "Att. Radius", 0.0f, 5.0f, width))
+                {
+                    hasChanged = true;
+                    light->SetAttenuationRadius(attenuationRadius);
+                }
             }
-        }
-        ImGui::Separator();
+            ImGui::Separator();
 
-        // Linear attenuation
-        {
-            if (ImGuiExt::RenderOptionFloat(linearAttenuation, "##light_linear_attenuation_option", "Linear att.", 0.0f, 1.0f, width))
+            // Linear attenuation
             {
-                hasChanged = true;
-                light->SetLinearAttenuation(linearAttenuation);
+                if (ImGuiExt::RenderOptionFloat(linearAttenuation, "##light_linear_attenuation_option", "Linear att.", 0.0f, 1.0f, width))
+                {
+                    hasChanged = true;
+                    light->SetLinearAttenuation(linearAttenuation);
+                }
             }
-        }
-        ImGui::Separator();
+            ImGui::Separator();
 
-        // quadratic attenuation
-        {
-            if (ImGuiExt::RenderOptionFloat(quadraticAttenuation, "##light_quadratic_attenuation_option", "Quadratic att.", 0.0f, 1.0f, width))
+            // quadratic attenuation
             {
-                hasChanged = true;
-                light->SetQuadraticAttenuation(quadraticAttenuation);
+                if (ImGuiExt::RenderOptionFloat(quadraticAttenuation, "##light_quadratic_attenuation_option", "Quadratic att.", 0.0f, 1.0f, width))
+                {
+                    hasChanged = true;
+                    light->SetQuadraticAttenuation(quadraticAttenuation);
+                }
             }
+            ImGui::Separator();
         }
-        ImGui::Separator();
 
         // intensity
         {

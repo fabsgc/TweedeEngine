@@ -30,7 +30,7 @@ namespace te
     private:
         Editor::SelectionData& _selections;
         SPtr<ImGuiTextEditor> _editor;
-        Map<String, String> _existingScripts; //Name - Path
+        UnorderedMap<String, String> _existingScripts; //Name - Path
         String _currentScriptName;
         String _editorContent;
         bool _needsSave;

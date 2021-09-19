@@ -15,10 +15,12 @@
 #       define NOMINMAX // required to stop windows.h messing up std::min
 #   endif
 #endif
+#   pragma warning(push, 0)
 #   include <windows.h>
 #   include <wingdi.h>
 #   include <GL/glew.h>
 #   include <GL/wglew.h>
+#   pragma warning(pop)
 #elif TE_PLATFORM == TE_PLATFORM_LINUX
 #   include <GL/glew.h>
 #   include <GL/glxew.h>

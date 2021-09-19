@@ -39,7 +39,7 @@ namespace te
                     Res.erase(it);
             }
 
-            std::unordered_map<UUID, HResource> Res;
+            UnorderedMap<UUID, HResource> Res;
         };
 
     public:

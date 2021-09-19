@@ -24,7 +24,7 @@ namespace te
 
     void EditorUtils::ImportMeshMaterials(HMesh& mesh)
     {
-        Map<String, HMaterial> createdMaterials;
+        UnorderedMap<String, HMaterial> createdMaterials;
         bool notAllLoaded = false;
         List<SPtr<Task>> tasks;
 

@@ -86,7 +86,7 @@ namespace te
         UINT32 ButtonIdentifier = 0;
     private:
         /** Returns a static map of all virtual button identifiers and their buttons. */
-        static Map<String, UINT32>& GetUniqueButtonIds();
+        static UnorderedMap<String, UINT32>& GetUniqueButtonIds();
 
         static UINT32 NextButtonId;
     };
@@ -115,7 +115,7 @@ namespace te
         }
 
     private:
-        static Map<String, UINT32> UniqueAxisIds;
+        static UnorderedMap<String, UINT32> UniqueAxisIds;
         static UINT32 NextAxisId;
     };
 

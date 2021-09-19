@@ -35,7 +35,7 @@ namespace te
         /** Contains button data for a specific input device. */
         struct DeviceData
         {
-            Map<UINT32, ButtonData> CachedStates;
+            UnorderedMap<UINT32, ButtonData> CachedStates;
         };
 
         /** Data container for a virtual button event. */

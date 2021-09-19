@@ -307,8 +307,6 @@ namespace te
         }
 
         return format && SetPixelFormat(hdc, format, &pfd);
-
-        return true;
     }
 
     SPtr<VideoModeInfo> Win32GLSupport::GetVideoModeInfo() const
@@ -331,7 +329,5 @@ namespace te
             NULL);
 
         return String(errDesc);
-
-        return "";
     }
 }

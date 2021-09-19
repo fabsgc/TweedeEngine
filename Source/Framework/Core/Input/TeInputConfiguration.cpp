@@ -5,7 +5,7 @@ namespace te
 {
     UINT32 VirtualButton::NextButtonId = 0;
 
-    Map<String, UINT32> VirtualAxis::UniqueAxisIds;
+    UnorderedMap<String, UINT32> VirtualAxis::UniqueAxisIds;
     UINT32 VirtualAxis::NextAxisId = 0;
 
     VIRTUAL_BUTTON_DESC::VIRTUAL_BUTTON_DESC(ButtonCode buttonCode, ButtonModifier modifiers, bool repeatable)
@@ -18,7 +18,7 @@ namespace te
 
     VirtualButton::VirtualButton(const String& name)
     {
-        Map<String, UINT32>& uniqueButtonIds = GetUniqueButtonIds();
+        UnorderedMap<String, UINT32>& uniqueButtonIds = GetUniqueButtonIds();
 
         auto findIter = uniqueButtonIds.find(name);
 
@@ -31,9 +31,9 @@ namespace te
         }
     }
 
-    Map<String, UINT32>& VirtualButton::GetUniqueButtonIds()
+    UnorderedMap<String, UINT32>& VirtualButton::GetUniqueButtonIds()
     {
-        static Map<String, UINT32> uniqueButtonIds;
+        static UnorderedMap<String, UINT32> uniqueButtonIds;
         return uniqueButtonIds;
     }
 

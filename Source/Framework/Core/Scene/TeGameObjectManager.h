@@ -81,7 +81,7 @@ namespace te
 
     private:
         std::atomic<UINT64> _nextAvailableID = { 1 }; // 0 is not a valid ID
-        Map<UINT64, GameObjectHandleBase> _objects;
-        Map<UINT64, GameObjectHandleBase> _queuedForDestroy;
+        UnorderedMap<UINT64, GameObjectHandleBase> _objects;
+        UnorderedMap<UINT64, GameObjectHandleBase> _queuedForDestroy;
     };
 }

@@ -14,7 +14,7 @@ namespace te
 
     struct UnloadedScript
     {
-        Script* ScriptToReload;
+        Script* ScriptToReload = nullptr;
         HSceneObject PreviousSceneObject;
     };
 
@@ -22,11 +22,6 @@ namespace te
     {
         String Name; // Each script name loaded must be unique
         String AbsolutePath;
-
-        bool operator <(const ScriptIdentifier& rhs) const
-        {
-            return Name < rhs.Name;
-        }
 
         ScriptIdentifier(const String& name, const String& path = "")
             : Name(name)
@@ -60,6 +55,11 @@ namespace te
             }
         }
 
+        bool operator <(const ScriptIdentifier& rhs) const
+        {
+            return Name < rhs.Name;
+        }
+
         friend bool operator==(const ScriptIdentifier& lhs, const ScriptIdentifier& rhs)
         {
             return lhs.Name == rhs.Name;
@@ -69,6 +69,20 @@ namespace te
     /**	Handles initialization of a scripting system. */
     class TE_CORE_EXPORT ScriptManager : public Module<ScriptManager>
     {
+    public:
+        /** Creates a hash from vertex declaration key. */
+        class HashFunc
+        {
+        public:
+            ::std::size_t operator()(const ScriptIdentifier& key) const;
+        };
+
+        /** Compares two vertex declaration keys. */
+        class EqualFunc
+        {
+        public:
+            bool operator()(const ScriptIdentifier& a, const ScriptIdentifier& b) const;
+        };
     public:
         ScriptManager();
         ~ScriptManager() = default;
@@ -97,7 +111,7 @@ namespace te
         void UnloadAll();
 
         /** Returns all currently loaded script libraries */
-        const Map<ScriptIdentifier, DynLib*>& GetScriptLibraries() const { return _scriptLibraries; }
+        const UnorderedMap<ScriptIdentifier, DynLib*, HashFunc, EqualFunc>& GetScriptLibraries() const { return _scriptLibraries; }
 
         /** Returns all currently instanciated scripts */
         const Vector<Script*>& GetScripts() const { return _scripts; }
@@ -161,8 +175,8 @@ namespace te
         static const String LIBRARIES_PATH;
 
     private:
-        Map<ScriptIdentifier, DynLib*> _scriptLibraries;
-        Map<ScriptIdentifier, UINT64> _lastBuildTimes;
+        UnorderedMap<ScriptIdentifier, DynLib*, HashFunc, EqualFunc> _scriptLibraries;
+        UnorderedMap<ScriptIdentifier, UINT64, HashFunc, EqualFunc> _lastBuildTimes;
         Vector<Script*> _scripts;
         FolderMonitor _folderMonitor;
         RecursiveMutex _mutex;

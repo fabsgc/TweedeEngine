@@ -17,6 +17,22 @@ namespace te
 
     const String ScriptManager::LIBRARIES_PATH = "Data/Scripts/";
 
+    size_t ScriptManager::HashFunc::operator() (const ScriptIdentifier& key) const
+    {
+        size_t hash = 0;
+        te_hash_combine(hash, key.Name);
+
+        return hash;
+    }
+
+    bool ScriptManager::EqualFunc::operator() (const ScriptIdentifier& a, const ScriptIdentifier& b) const
+    {
+        if (a.Name != b.Name)
+            return false;
+
+        return true;
+    }
+
     ScriptManager::ScriptManager()
         : _paused(true)
     { }
