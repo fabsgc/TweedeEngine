@@ -4,6 +4,7 @@
 #include "Physics/TeSoftBody.h"
 #include "Components/TeCBody.h"
 #include "Components/TeCJoint.h"
+#include "Physics/TePhysicsMesh.h"
 
 namespace te
 {
@@ -20,6 +21,12 @@ namespace te
 
         /** Return Component type */
         static UINT32 GetComponentType() { return TID_CSoftBody; }
+
+        /** @copydoc SoftBody::SetMesh */
+        void SetMesh(const HPhysicsMesh& mesh);
+
+        /** @copydoc SoftBody::GetMesh */
+        HPhysicsMesh GetMesh() const { return _mesh; }
 
         /** @copydoc Component::Initialize */
         void Initialize() override;
@@ -93,5 +100,8 @@ namespace te
 
     protected:
         CSoftBody(); // Serialization only
+
+    protected:
+        HPhysicsMesh _mesh;
     };
 }

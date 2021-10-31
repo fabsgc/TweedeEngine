@@ -42,6 +42,17 @@ namespace te
         CBody::Clone(static_object_cast<CBody>(c));
     }
 
+    void CSoftBody::SetMesh(const HPhysicsMesh& mesh)
+    {
+        if (_mesh == mesh)
+            return;
+
+        _mesh = mesh;
+
+        if (_internal != nullptr)
+            std::static_pointer_cast<SoftBody>(_internal)->SetMesh(mesh);
+    }
+
     void CSoftBody::Update()
     {
         CBody::Update();
@@ -67,6 +78,7 @@ namespace te
 
         _internal = CreateInternal();
         UpdateColliders();
+        UpdateJoints();
 
 #if TE_DEBUG_MODE
         CheckForNestedBody();
@@ -79,7 +91,7 @@ namespace te
         const Transform& tfrm = SO()->GetTransform();
         _internal->SetTransform(tfrm.GetPosition(), tfrm.GetRotation());
 
-        // TODO
+        std::static_pointer_cast<SoftBody>(_internal)->SetMesh(_mesh);
     }
 
     void CSoftBody::OnTransformChanged(TransformChangedFlags flags)
@@ -119,6 +131,7 @@ namespace te
 
     void CSoftBody::DestroyInternal()
     {
+        ClearJoints();
         ClearColliders();
 
         if (_internal)
@@ -129,8 +142,14 @@ namespace te
     }
 
     void CSoftBody::ClearColliders()
-    { 
-        // TODO
+    {
+        for (auto& collider : _colliders)
+            collider->SetBody(HBody(), true);
+
+        _colliders.clear();
+
+        if (_internal != nullptr)
+            _internal->RemoveColliders();
     }
 
     void CSoftBody::UpdateColliders()
@@ -150,7 +169,16 @@ namespace te
 
     void CSoftBody::ClearJoints()
     {
-        // TODO
+        // We keep track of _joints in case we are juste disabling the component
+        // We want to put back those _joints if component is enabled again (see UpdateJoints)
+        _backupJoints = _joints;
+        _joints.clear();
+
+        for (auto& joint : _backupJoints)
+            joint.JointElt->SetBody(joint.JointBodyType, HRigidBody());
+
+        if (_internal != nullptr)
+            _internal->RemoveJoints();
     }
 
     void CSoftBody::UpdateJoints()
@@ -170,11 +198,36 @@ namespace te
 
     void CSoftBody::CheckForNestedBody()
     {
-        // TODO
+        HSceneObject currentSO = SO()->GetParent();
+
+        while (currentSO != nullptr)
+        {
+            if (currentSO->HasComponent(TID_CRigidBody) || currentSO->HasComponent(TID_CSoftBody))
+            {
+                TE_DEBUG("Nested Rigidbodies or SoftBodies detected. This will result in inconsistent transformations. "
+                    "To parent one Rigidbody to another move its colliders to the new parent, but remove the Rigidbody "
+                    "component.");
+                return;
+            }
+
+            currentSO = currentSO->GetParent();
+        }
     }
 
     void CSoftBody::ProcessCollisionData(const CollisionDataRaw& raw, CollisionData& output)
     {
-        // TODO
+        output.ContactPoints = std::move(raw.ContactPoints);
+
+        if (raw.Bodies[0] != nullptr)
+        {
+            CBody* other = (CBody*)raw.Bodies[0]->GetOwner(PhysicsOwnerType::Component);
+            output.Bodies[0] = static_object_cast<CBody>(other->GetHandle());
+        }
+
+        if (raw.Bodies[1] != nullptr)
+        {
+            CBody* other = (CBody*)raw.Bodies[1]->GetOwner(PhysicsOwnerType::Component);
+            output.Bodies[1] = static_object_cast<CBody>(other->GetHandle());
+        }
     }
 }

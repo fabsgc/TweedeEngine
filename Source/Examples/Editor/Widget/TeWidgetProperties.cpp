@@ -723,12 +723,50 @@ namespace te
     bool WidgetProperties::ShowCSoftBodyProperties()
     {
         bool hasChanged = false;
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
         SPtr<CSoftBody> softBody = std::static_pointer_cast<CSoftBody>(_selections.ClickedComponent);
+        HPhysicsMesh mesh = softBody->GetMesh();
 
         if (ImGui::CollapsingHeader("Soft Body", ImGuiTreeNodeFlags_DefaultOpen))
         {
             if (ShowBody(softBody))
                 hasChanged = true;
+
+            ImGui::Separator();
+
+            // PhysicsMesh
+            {
+                ImGuiExt::ComboOptions<UUID> meshesOptions;
+                UUID emptyMesh = UUID(50, 0, 0, 0);
+                UUID loadPhysicsMesh = UUID::EMPTY;
+                UUID meshUUID = (mesh.IsLoaded()) ? mesh->GetUUID() : emptyMesh;
+                EditorResManager::ResourcesContainer& container = EditorResManager::Instance().Get<PhysicsMesh>();
+
+                // current PhysicsMesh to use
+                for (auto& resource : container.Res)
+                    meshesOptions.AddOption(resource.second->GetUUID(), resource.second->GetName());
+
+                meshesOptions.AddOption(emptyMesh, ICON_FA_TIMES_CIRCLE " No Physic Mesh");
+                meshesOptions.AddOption(UUID::EMPTY, ICON_FA_FOLDER_OPEN " Load");
+
+                if (ImGuiExt::RenderOptionCombo<UUID>(&meshUUID, "##soft_body_physic_mesh_option", "Physic Mesh", meshesOptions, width))
+                {
+                    if (meshUUID == loadPhysicsMesh)
+                    {
+                        _loadPhysicsMesh = true;
+                    }
+                    else if (meshUUID == emptyMesh)
+                    {
+                        softBody->SetMesh(HPhysicsMesh());
+                        hasChanged = true;
+                    }
+                    else if (meshUUID != ((mesh.IsLoaded()) ? mesh->GetUUID() : emptyMesh))
+                    {
+                        softBody->SetMesh(gResourceManager().Load<PhysicsMesh>(meshUUID));
+                        hasChanged = true;
+                    }
+                }
+            }
         }
 
         return hasChanged;
