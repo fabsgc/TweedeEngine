@@ -510,6 +510,37 @@ namespace te
         _world->removeRigidBody(body);
     }
 
+    void BulletScene::AddSoftBody(btSoftBody* body)
+    {
+        if (!_world || !_initDesc.SoftBody)
+            return;
+
+        (static_cast<btSoftRigidDynamicsWorld*>(_world))->addSoftBody(body);
+    }
+
+    void BulletScene::RemoveSoftBody(btSoftBody* body)
+    {
+        if (!_world || !_initDesc.SoftBody)
+            return;
+
+        for (auto it = _stayContactEvents->begin(); it != _stayContactEvents->end();)
+        {
+            const btCollisionObject* objA = it->first.first;
+            const btCollisionObject* objB = it->first.second;
+
+            if (objA == body || objB == body)
+            {
+                te_pool_delete(it->second);
+                it = _stayContactEvents->erase(it);
+                continue;
+            }
+
+            it++;
+        }
+
+        (static_cast<btSoftRigidDynamicsWorld*>(_world))->removeSoftBody(body);
+    }
+
     void BulletScene::AddJoint(btTypedConstraint* joint, bool collisionWithLinkedBody) const
     {
         if (!_world)

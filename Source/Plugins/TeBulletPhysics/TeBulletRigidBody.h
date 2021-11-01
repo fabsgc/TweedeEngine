@@ -166,6 +166,7 @@ namespace te
         bool IsActivated() const;
 
     private:
+        /** Currently this struct is not usefull */
         struct ColliderData
         {
             UINT32 Index = 0;

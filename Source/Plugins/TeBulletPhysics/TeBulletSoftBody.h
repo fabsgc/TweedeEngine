@@ -15,7 +15,7 @@ namespace te
         ~BulletSoftBody();
 
         /** @copydoc Body::Update */
-        void Update() override { }
+        void Update() override;
 
         /** @copydoc Body::GetPosition */
         Vector3 GetPosition() const override;
@@ -129,6 +129,37 @@ namespace te
         void SetFlags(BodyFlag flags) override;
 
     private:
+        /** Add RigidBody to world */
+        void AddToWorld();
+
+        /** Release Body from simulation */
+        void Release();
+
+        /** Remove RigidBody from world */
+        void RemoveFromWorld();
+
+        /** Update kinematic bullet flag */
+        void UpdateKinematicFlag() const;
+
+        /** Update gravity bullet flag */
+        void UpdateGravityFlag() const;
+
+        /** Enable or disable CCD for this body */
+        void UpdateCCDFlag() const;
+
+        /** Activate btRigidBody */
+        void Activate() const;
+
+        /** Check if btRigidBody is activated */
+        bool IsActivated() const;
+
+    private:
+        btSoftBody* _softBody;
+        BulletPhysics* _physics;
+        BulletScene* _scene;
+
+        bool _isDirty = true; // A state has been modified
+
         float _mass = 1.0f;
         float _friction = 0.0f;
         float _rollingFriction = 0.0f;
@@ -136,6 +167,8 @@ namespace te
         bool _useGravity = true;
         bool _isKinematic = false;
         bool _inWorld = false;
+        bool _isTrigger = false;
+        bool _isDebug = true;
 
         Vector3 _gravity = Vector3::ZERO;
         Vector3 _centerOfMass = Vector3::ZERO;

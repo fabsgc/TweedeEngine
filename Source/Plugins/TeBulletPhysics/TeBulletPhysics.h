@@ -180,6 +180,12 @@ namespace te
         /** Remove RigidBody from scene */
         void RemoveRigidBody(btRigidBody* body);
 
+        /** Add SoftBody to current scene */
+        void AddSoftBody(btSoftBody* body);
+
+        /** Remove SoftBody from scene */
+        void RemoveSoftBody(btSoftBody* body);
+
         /** Add Joint to the current scene */
         void AddJoint(btTypedConstraint* joint, bool collisionWithLinkedBody = true) const;
 

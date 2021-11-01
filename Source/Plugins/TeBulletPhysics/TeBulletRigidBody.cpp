@@ -54,7 +54,7 @@ namespace te
         , _scene(scene)
         , _isDirty(false)
         , _shape(nullptr)
-    { 
+    {
         _mass = DEFAULT_MASS;
         _restitution = DEFAULT_RESTITUTION;
         _friction = DEFAULT_FRICTION;
