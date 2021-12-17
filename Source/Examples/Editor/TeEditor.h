@@ -260,16 +260,20 @@ namespace te
         // TODO Temp for debug purpose
         HMesh _loadedMeshPlane;
         HMesh _loadedMeshKnight;
+        HMesh _loadedMeshSphere;
         HTexture _loadedSkyboxTexture;
         HTexture _loadedSkyboxIrradianceTexture;
         HTexture _loadedPlaneTexture;
         HTexture _loadedKnightDiffuseTexture;
+        HAudioClip _loadedAudioClip;
 
         HMaterial _planeMaterial;
         HMaterial _knightMaterial;
+        HMaterial _sphereMaterial;
 
         HSceneObject _sceneRenderablePlaneSO;
         HSceneObject _sceneRenderableKnightSO;
+        HSceneObject _sceneRenderableSphereSO;
         HSceneObject _sceneLightSO;
         HSceneObject _sceneSkyboxSO;
         HSceneObject _sceneScriptSO;
@@ -281,13 +285,13 @@ namespace te
         HSkybox _skybox;
         HRenderable _renderablePlane;
         HRenderable _renderableKnight;
+        HRenderable _renderableSphere;
 
         HAnimation _animationKnight;
         HAnimationClip _animationClipKnight;
 
         HScript _script;
 
-        HAudioClip _audioClip;
         HAudioListener _audioListener;
         HAudioSource _audioSource;
 
@@ -297,6 +301,9 @@ namespace te
         HRigidBody _rigidBodyPlane;
         HBoxCollider _planeColliderKnight;
         HSphericalJoint _planeKnightSphericalJoint;
+
+        HSoftBody _softBodySphere;
+        HPhysicsMesh _spherePhysicsMesh;
 #endif
     };
 

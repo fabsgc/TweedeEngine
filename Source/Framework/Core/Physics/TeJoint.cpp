@@ -2,13 +2,13 @@
 #include "Physics/TeRigidBody.h"
 
 namespace te
-{ 
-    RigidBody* Joint::GetBody(JointBody body) const
+{
+    Body* Joint::GetBody(JointBody body) const
     {
         return _bodies[(int)body].BodyElt;
     }
 
-    void Joint::SetBody(JointBody body, RigidBody* value)
+    void Joint::SetBody(JointBody body, Body* value)
     {
         _bodies[(int)body].BodyElt = value;
     }

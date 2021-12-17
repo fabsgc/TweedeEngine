@@ -729,11 +729,6 @@ namespace te
 
         if (ImGui::CollapsingHeader("Soft Body", ImGuiTreeNodeFlags_DefaultOpen))
         {
-            if (ShowBody(softBody))
-                hasChanged = true;
-
-            ImGui::Separator();
-
             // PhysicsMesh
             {
                 ImGuiExt::ComboOptions<UUID> meshesOptions;
@@ -767,6 +762,14 @@ namespace te
                     }
                 }
             }
+
+            ImGui::Separator();
+
+            if (ShowLoadMesh())
+                hasChanged = true;
+
+            if (ShowBody(softBody))
+                hasChanged = true;
         }
 
         return hasChanged;
@@ -1833,7 +1836,7 @@ namespace te
         return hasChanged;
     }
 
-    bool WidgetProperties::ShowGameObjectInformation(SPtr<GameObject>& gameObject)
+    bool WidgetProperties::ShowGameObjectInformation(const SPtr<GameObject>& gameObject)
     {
         char inputName[256];
         char inputUUID[64];
@@ -2495,6 +2498,7 @@ namespace te
         ImGui::Separator();
 
         // UseGravity
+        if(body->GetCoreType() == TID_CRigidBody)
         {
             bool useGravity = body->GetUseGravity();
             if (ImGuiExt::RenderOptionBool(useGravity, "##body_option_use_gravity", "Use Gravity"))
@@ -2502,8 +2506,9 @@ namespace te
                 body->SetUseGravity(useGravity);
                 hasChanged = true;
             }
+            ImGui::Separator();
         }
-        ImGui::Separator();
+        
 
         // Is Debug
         {
@@ -2597,7 +2602,20 @@ namespace te
         }
         ImGui::Separator();
 
+        // Scale
+        if (body->GetCoreType() == TID_CSoftBody)
+        {
+            Vector3 scale = std::static_pointer_cast<CSoftBody>(body)->GetScale();
+            if (ImGuiExt::RenderVector3(scale, "##soft_body_option_scale", " Scale", 60.0f))
+            {
+                std::static_pointer_cast<CSoftBody>(body)->SetScale(scale);
+                hasChanged = true;
+            }
+            ImGui::Separator();
+        }
+
         // Center of mass
+        if (body->GetCoreType() == TID_CRigidBody)
         {
             Vector3 centerOfMass = body->GetCenterOfMass();
             if (ImGuiExt::RenderVector3(centerOfMass, "##body_option_center_of_mass", " Center of Mass", 60.0f))
@@ -2605,8 +2623,8 @@ namespace te
                 body->SetCenterOfMass(centerOfMass);
                 hasChanged = true;
             }
+            ImGui::Separator();
         }
-        ImGui::Separator();
 
         // Velocity
         {
@@ -2702,7 +2720,7 @@ namespace te
 
         // Body Target
         {
-            HRigidBody body = joint->GetBody(JointBody::Target);
+            HBody body = joint->GetBody(JointBody::Target);
             UUID bodyUUID = (body) ? body->GetUUID() : emptyBody;
             if (ImGuiExt::RenderOptionCombo<UUID>(&bodyUUID,
                 "##joint_option_target_body", "Target Body", bodiesOptions, width))
@@ -2723,7 +2741,7 @@ namespace te
 
         // Body Anchor
         {
-            HRigidBody body = joint->GetBody(JointBody::Anchor);
+            HBody body = joint->GetBody(JointBody::Anchor);
             UUID bodyUUID = (body) ? body->GetUUID() : emptyBody;
             if (ImGuiExt::RenderOptionCombo<UUID>(&bodyUUID,
                 "##joint_option_anchor_body", "Anchor Body", bodiesOptions, width))
@@ -2810,7 +2828,7 @@ namespace te
             meshImportOptions->GenSmoothNormals = _fileBrowser.Data.MeshParam.GenSmoothNormals;
             meshImportOptions->ScaleSystemUnit = _fileBrowser.Data.MeshParam.ScaleSystemUnit;
             meshImportOptions->ScaleFactor = _fileBrowser.Data.MeshParam.ScaleFactor;
-            meshImportOptions->CollisionShape = _fileBrowser.Data.MeshParam.CollisionShape;
+            meshImportOptions->ImportCollisionShape = _fileBrowser.Data.MeshParam.ImportCollisionShape;
             meshImportOptions->CpuCached = false;
 
             SPtr<MultiResource> resources = EditorResManager::Instance().LoadAll(_fileBrowser.Data.SelectedPath, meshImportOptions);
@@ -2863,6 +2881,13 @@ namespace te
                                 SPtr<CMeshCollider> meshCollider = std::static_pointer_cast<CMeshCollider>(_selections.ClickedComponent);
 
                                 meshCollider->SetMesh(physicsMesh);
+                                meshLoaded = true;
+                            }
+                            else if (_selections.ClickedComponent->GetCoreType() == TID_CSoftBody)
+                            {
+                                SPtr<CSoftBody> softBody = std::static_pointer_cast<CSoftBody>(_selections.ClickedComponent);
+
+                                softBody->SetMesh(physicsMesh);
                                 meshLoaded = true;
                             }
                         }

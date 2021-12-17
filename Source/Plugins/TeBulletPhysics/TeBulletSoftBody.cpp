@@ -8,6 +8,7 @@
 #include "TeBulletFBody.h"
 #include "TeBulletFJoint.h"
 #include "TeBulletJoint.h"
+#include "TeBulletMesh.h"
 
 namespace te
 {
@@ -51,22 +52,86 @@ namespace te
 
     Vector3 BulletSoftBody::GetPosition() const
     {
+        if (_softBody)
+        {
+            if (((UINT32)_flags & (UINT32)BodyFlag::CCD) != 0)
+                return ToVector3(_softBody->getInterpolationWorldTransform().getOrigin());
+            else
+                return ToVector3(_softBody->getWorldTransform().getOrigin());
+        }
+
         return _position;
     }
 
     Quaternion BulletSoftBody::GetRotation() const
     {
+        if (_softBody)
+        {
+            if (((UINT32)_flags & (UINT32)BodyFlag::CCD) != 0)
+                return ToQuaternion(_softBody->getInterpolationWorldTransform().getRotation());
+            else
+                return ToQuaternion(_softBody->getWorldTransform().getRotation());
+        }
+
         return _rotation;
+    }
+
+    void BulletSoftBody::SetMesh(const HPhysicsMesh& mesh)
+    {
+        if (mesh == _mesh)
+            return;
+
+        SoftBody::SetMesh(mesh);
+        AddToWorld();
+    }
+
+    void BulletSoftBody::SetScale(const Vector3& scale)
+    {
+        if (scale == _scale)
+            return;
+
+        SoftBody::SetScale(scale);
+        AddToWorld();
     }
 
     void BulletSoftBody::SetTransform(const Vector3& pos, const Quaternion& rot, bool activate)
     {
-        // TODO
+        //if (!_softBody)
+        //    return;
+
+        _position = pos;
+        _rotation = rot;
+
+        if (_softBody)
+            _softBody->transformTo(btTransform(ToBtQuaternion(_rotation), ToBtVector3(_position)));
+
+        // Set position and rotation to world transform
+        /*const Vector3 oldPosition = GetPosition();
+        btTransform& trans = _softBody->getWorldTransform();
+        trans.setOrigin(ToBtVector3(pos + ToQuaternion(trans.getRotation()) * _centerOfMass));
+        trans.setRotation(ToBtQuaternion(_rotation));
+
+        if (_centerOfMass != Vector3::ZERO)
+            trans.setOrigin(ToBtVector3(oldPosition + rot * _centerOfMass));
+
+        // Set position and rotation to interpolated world transform
+        btTransform transInterpolated = _softBody->getInterpolationWorldTransform();
+        transInterpolated.setRotation(trans.getRotation());
+        transInterpolated.setOrigin(trans.getOrigin());
+
+        if (_centerOfMass != Vector3::ZERO)
+            transInterpolated.setOrigin(trans.getOrigin());
+
+        _softBody->setInterpolationWorldTransform(transInterpolated);*/
     }
 
-    void BulletSoftBody::SetIsTrigger(bool value)
+    void BulletSoftBody::SetIsTrigger(bool trigger)
     {
-        // TODO
+        if (_isTrigger == trigger)
+            return;
+
+        _isTrigger = trigger;
+        UpdateKinematicFlag();
     }
 
     void BulletSoftBody::SetIsDebug(bool debug)
@@ -75,7 +140,7 @@ namespace te
             return;
 
         _isDebug = debug;
-        _isDirty = true;
+        UpdateKinematicFlag();
     }
 
     void BulletSoftBody::SetMass(float mass)
@@ -84,7 +149,9 @@ namespace te
         if (mass != _mass)
         {
             _mass = mass;
-            _isDirty = true;
+
+            if(_softBody)
+                _softBody->setTotalMass(_mass);
         }
     }
 
@@ -94,7 +161,7 @@ namespace te
             return;
 
         _isKinematic = kinematic;
-        _isDirty = true;
+        UpdateKinematicFlag();
     }
 
     void BulletSoftBody::SetVelocity(const Vector3& velocity)
@@ -219,17 +286,89 @@ namespace te
 
     void BulletSoftBody::AddToWorld()
     {
-        // TODO
+        if (_mass < 0.0f)
+            _mass = 0.0f;
+
+        Release();
+
+        if (!_mesh.IsLoaded())
+            return;
+
+        BulletFMesh* fMesh = static_cast<BulletFMesh*>(_mesh->_getInternal());
+        if (!fMesh)
+        {
+            TE_DEBUG("No data inside the PhysicsMesh");
+            return;
+        }
+
+        const SPtr<BulletMesh::SoftBodyMesh> softBodyMesh = fMesh->GetSoftBodyMesh();
+
+        if (!softBodyMesh)
+        {
+            TE_DEBUG("PhysicsMesh does not have any SoftBodyMesh Data");
+            return;
+        }
+
+        _softBody = _scene->CreateSoftBody(softBodyMesh);
+        if (_softBody)
+        {
+            btSoftBody::Material* material = _softBody->appendMaterial();
+            material->m_flags -= btSoftBody::fMaterial::DebugDraw;
+            material->m_kLST = 0.5;
+            _softBody->generateBendingConstraints(2, material);
+            _softBody->m_cfg.piterations = 2;
+            _softBody->m_cfg.kDF = 0.5;
+            _softBody->randomizeConstraints();
+            _softBody->scale(ToBtVector3(_scale));
+            _softBody->setTotalMass(_mass, true);
+            _softBody->transformTo(btTransform(ToBtQuaternion(_rotation), ToBtVector3(_position)));
+            _softBody->generateClusters(1);
+
+            if (_mass > 0.0f)
+            {
+                Activate();
+            }
+            else
+            {
+                SetVelocity(Vector3::ZERO);
+                SetAngularVelocity(Vector3::ZERO);
+            }
+
+            _scene->AddSoftBody(_softBody);
+            _inWorld = true;
+        }
+
+        SetTransform(_position, _rotation);
+
+        UpdateKinematicFlag();
+        UpdateGravityFlag();
+        UpdateCCDFlag();
     }
 
     void BulletSoftBody::Release()
     {
-        // TODO
+        if (!_softBody)
+            return;
+
+        RemoveFromWorld();
+        delete _softBody;
+
+        ((BulletFBody*)_internal)->SetBody(nullptr);
+
+        _softBody = nullptr;
     }
 
     void BulletSoftBody::RemoveFromWorld()
     {
-        // TODO
+        if (!_softBody)
+            return;
+
+        if (_inWorld)
+        {
+            _softBody->activate(false);
+            _scene->RemoveSoftBody(_softBody);
+            _inWorld = false;
+        }
     }
 
     void BulletSoftBody::Activate() const
@@ -251,6 +390,9 @@ namespace te
 
     void BulletSoftBody::UpdateKinematicFlag() const
     {
+        if (!_softBody)
+            return;
+
         int flags = _softBody->getCollisionFlags();
 
         if (_isKinematic)
@@ -269,17 +411,23 @@ namespace te
             flags |= btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
 
         _softBody->setCollisionFlags(flags);
-        _softBody->forceActivationState(_isKinematic ? DISABLE_DEACTIVATION : ISLAND_SLEEPING);
+        _softBody->forceActivationState(DISABLE_DEACTIVATION);
         _softBody->setDeactivationTime(DEFAULT_DEACTIVATION_TIME);
     }
 
     void BulletSoftBody::UpdateGravityFlag() const
     {
+        if (!_softBody)
+            return;
+
         // TODO
     }
 
     void BulletSoftBody::UpdateCCDFlag() const
     {
+        if (!_softBody)
+            return;
+
         if (((UINT32)_flags & (UINT32)BodyFlag::CCD))
         {
             _softBody->setCcdMotionThreshold(0.015f);

@@ -725,7 +725,7 @@ namespace te
                     }
                     ImGui::Separator();
 
-                    ImGuiExt::RenderOptionBool(Data.MeshParam.CollisionShape, "##file_dialog_parameters_mesh_collision_shape", "Collision Shape");
+                    ImGuiExt::RenderOptionBool(Data.MeshParam.ImportCollisionShape, "##file_dialog_parameters_mesh_import_collision_shape", "Import Collision Shape");
                 }
                 else if (ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".dds" || ext == ".tiff" ||ext == ".tga")
                 {
@@ -1279,10 +1279,10 @@ namespace te
     bool ImGuiFileBrowser::LoadWindowsDrives()
     {
         DWORD len = GetLogicalDriveStringsA(0,nullptr);
-        char* drives = new char[len];
+        char* drives = te_allocate<char>(sizeof(char) * len);
         if(!GetLogicalDriveStringsA(len,drives))
         {
-            delete[] drives;
+            te_deallocate(drives);
             return false;
         }
 
@@ -1298,7 +1298,7 @@ namespace te
             //Go to nullptr character
             while(*(++temp));
         }
-        delete[] drives;
+        te_deallocate(drives);
         return true;
     }
 #endif
@@ -1317,7 +1317,9 @@ namespace te
 
         //If PATH_MAX is defined deal with memory using new/delete. Else fallback to malloc'ed memory from `realpath()`
         if(path_max_def)
-            buffer = new char[PATH_MAX];
+        {
+            buffer = te_allocate<char>(sizeof(char) * PATH_MAX);
+        }
 
         char* real_path = realpath("./", buffer);
         if (real_path == nullptr)
@@ -1333,7 +1335,7 @@ namespace te
         }
 
         if(path_max_def)
-            delete[] buffer;
+            te_allocate(buffer);
         else
             free(real_path);
     }

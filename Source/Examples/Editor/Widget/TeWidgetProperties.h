@@ -107,7 +107,7 @@ namespace te
         bool ShowTransform(Transform& transform, ObjectMobility& mobility, bool disableTransform = false);
 
         /**  Show information about a GameObject (both Component and SceneObject) */
-        bool ShowGameObjectInformation(SPtr<GameObject>& gameObject);
+        bool ShowGameObjectInformation(const SPtr<GameObject>& gameObject);
 
         /** Show information about a camera */
         bool ShowCamera(SPtr<CCamera> camera);

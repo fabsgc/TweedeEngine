@@ -64,7 +64,7 @@ namespace te
                 bool GenSmoothNormals = false;
                 bool ScaleSystemUnit = false;
                 float ScaleFactor = 1.0f;
-                bool CollisionShape = true;
+                bool ImportCollisionShape = true;
             };
 
             /** If we want to load a texture, here are stored the list of parameters to apply on it during loading */

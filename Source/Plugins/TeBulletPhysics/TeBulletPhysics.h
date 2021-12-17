@@ -4,6 +4,7 @@
 #include "Physics/TePhysics.h"
 #include "Physics/TePhysicsCommon.h"
 #include "Utility/TePoolAllocator.h"
+#include "TeBulletMesh.h"
 
 namespace te 
 {
@@ -199,6 +200,9 @@ namespace te
         /** @copydoc Physics::RayCast */
         bool RayCast(const Vector3& origin, const Vector3& unitDir, Vector<PhysicsQueryHit>& hits,
             float maxDist = FLT_MAX) const override;
+
+        /** Create a SoftBody from a PhysicsMesh */
+        btSoftBody* CreateSoftBody(const SPtr<BulletMesh::SoftBodyMesh>& mesh) const;
 
     private:
         friend class BulletPhysics;

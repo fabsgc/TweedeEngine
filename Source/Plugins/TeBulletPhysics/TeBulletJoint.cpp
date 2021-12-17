@@ -14,39 +14,39 @@ namespace te
 
     BulletJoint::~BulletJoint()
     {
-        BulletRigidBody* anchorBody = (BulletRigidBody*)_joint->GetBody(JointBody::Anchor);
-        BulletRigidBody* targetBody = (BulletRigidBody*)_joint->GetBody(JointBody::Target);
+        Body* anchorBody = _joint->GetBody(JointBody::Anchor);
+        Body* targetBody = _joint->GetBody(JointBody::Target);
 
         if(anchorBody)
-            anchorBody->RemoveJoint(this);
+            anchorBody->RemoveJoint((Joint*)this);
         if(targetBody)
-            targetBody->RemoveJoint(this);
+            targetBody->RemoveJoint((Joint*)this);
     }
 
-    btRigidBody* BulletJoint::GetBtRigidBody(BodyInfo* info)
+    btCollisionObject* BulletJoint::GetBtCollisionObject(BodyInfo* info)
     {
-        RigidBody* body = info->BodyElt;
+        Body* body = info->BodyElt;
         BulletFBody* fBody = nullptr;
 
         if (body)
         {
             fBody = static_cast<BulletFBody*>(body->GetInternal());
             if (fBody)
-                return static_cast<btRigidBody*>(fBody->GetBody());
+                return static_cast<btCollisionObject*>(fBody->GetBody());
         }
 
         return nullptr;
     }
 
-    Vector3 BulletJoint::GetAnchorScaledPosisition(RigidBody* bodyAnchor, BodyInfo* info, Vector3* offsetPivot)
+    Vector3 BulletJoint::GetAnchorScaledPosisition(Body* bodyAnchor, BodyInfo* info, Vector3* offsetPivot)
     {
         return info->Position[(int)JointBody::Anchor] + offsetPivot[(int)JointBody::Anchor] - bodyAnchor->GetCenterOfMass();
     }
 
-    Vector3 BulletJoint::GetTargetScaledPosisition(btRigidBody* btRigidBody, RigidBody* bodyTarget, BodyInfo* info, 
+    Vector3 BulletJoint::GetTargetScaledPosisition(btCollisionObject* btCollisionObject, Body* bodyTarget, BodyInfo* info, 
         Vector3* offsetPivot)
     {
-        if (btRigidBody)
+        if (btCollisionObject)
         {
             return info[(int)JointBody::Target].Position + offsetPivot[(int)JointBody::Target] -
                 bodyTarget->GetCenterOfMass();

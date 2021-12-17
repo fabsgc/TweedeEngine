@@ -32,11 +32,17 @@ namespace te
         /** @copydoc Component::Update */
         void Update() override;
 
-        /** @copydoc Joint::getBody */
-        HRigidBody GetBody(JointBody body) const;
+        /** @copydoc Joint::GetBody */
+        HBody GetBody(JointBody body) const;
 
-        /** @copydoc Joint::setBody */
+        /** @copydoc Joint::SetBody */
+        void SetBody(JointBody body, const HBody& value);
+
+        /** @copydoc Joint::SetBody */
         void SetBody(JointBody body, const HRigidBody& value);
+
+        /** @copydoc Joint::SetBody */
+        void SetBody(JointBody body, const HSoftBody& value);
 
         /** @copydoc Joint::getPosition */
         Vector3 GetPosition(JointBody body) const;
@@ -44,7 +50,7 @@ namespace te
         /** @copydoc Joint::getRotation */
         Quaternion GetRotation(JointBody body) const;
 
-        /** @copydoc Joint::setTransform */
+        /** @copydoc Joint::SetTransform */
         void SetTransform(JointBody body, const Vector3& position, const Quaternion& rotation);
 
         /** @copydoc Joint::getBreakForce */
@@ -120,8 +126,8 @@ namespace te
         /** Notifies the joint that one of the attached body moved and that its transform needs updating. */
         void NotifyBodyMoved(const HBody& body);
 
-        /** Checks can the provided rigidbody be used for initializing the joint. */
-        bool IsBodyValid(const HRigidBody& body);
+        /** Checks if the provided body can be used for initializing the joint. */
+        bool IsBodyValid(const HBody& body);
 
         /** Updates the local transform for the specified body attached to the joint. */
         void UpdateTransform(JointBody body);
@@ -135,7 +141,7 @@ namespace te
     protected:
         SPtr<Joint> _internal;
 
-        HRigidBody _bodies[2];
+        HBody _bodies[2];
         Vector3 _positions[2];
         Quaternion _rotations[2];
 

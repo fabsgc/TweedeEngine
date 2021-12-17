@@ -176,7 +176,7 @@ namespace te
          */
         Vector<VertexElement> GetMissingElements(const SPtr<VertexDeclaration>& shaderDecl);
 
-        /** @copydoc HardwareBufferManager::createVertexDeclaration */
+        /** @copydoc HardwareBufferManager::CreateVertexDeclaration */
         static SPtr<VertexDeclaration> Create(const SPtr<VertexDataDesc>& desc, GpuDeviceFlags deviceMask = GDF_DEFAULT);
 
     protected:

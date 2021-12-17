@@ -28,6 +28,12 @@ namespace te
         /** @copydoc SoftBody::GetMesh */
         HPhysicsMesh GetMesh() const { return _mesh; }
 
+        /** @copydoc SoftBody::GetMesh */
+        void SetScale(const Vector3& scale);
+
+        /** @copydoc SoftBody::SetScale */
+        const Vector3& GetScale() const { return _scale; }
+
         /** @copydoc Component::Initialize */
         void Initialize() override;
 
@@ -103,5 +109,6 @@ namespace te
 
     protected:
         HPhysicsMesh _mesh;
+        Vector3 _scale = Vector3::ONE;
     };
 }

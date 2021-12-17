@@ -39,6 +39,12 @@ namespace te
         if (_triangleMesh)
             te_delete(_triangleMesh->Vertices);
 
+        if (_softBodyMesh)
+        {
+            te_deallocate(_softBodyMesh->Vertices);
+            te_deallocate(_softBodyMesh->Indices);
+        }
+
         _convexMesh = nullptr;
         _triangleMesh = nullptr;
     }
@@ -69,9 +75,10 @@ namespace te
                 _convexMesh->Vertices = _meshData->GetElementData(VES_POSITION);
             }
 
-            // TriangleMesh
+            // TriangleMesh && SoftBodyMesh
             {
                 _triangleMesh = te_shared_ptr_new<BulletMesh::TriangleMesh>();
+                _softBodyMesh = te_shared_ptr_new<BulletMesh::SoftBodyMesh>();
 
                 UINT32 numVertices = _meshData->GetNumVertices();
                 UINT32 numIndices = _meshData->GetNumIndices();
@@ -79,6 +86,16 @@ namespace te
                 UINT32 indexStride = _meshData->GetIndexElementSize();
                 UINT8* indices = (indexStride == sizeof(UINT32))
                     ? (UINT8*)_meshData->GetIndices32() : (UINT8*)_meshData->GetIndices16();
+
+                _softBodyMesh->NumTriangles = numIndices / 3;
+                _softBodyMesh->Vertices = te_allocateN<btScalar>(numVertices * 3);
+                _softBodyMesh->Indices = te_allocateN<int>(numIndices);
+
+                _triangleMesh->NumVertices = numVertices;
+                _triangleMesh->NumIndices = numIndices;
+                _triangleMesh->VertexStride = sizeof(Vector3);
+                _triangleMesh->IndexStride = indexStride;
+                _triangleMesh->Use32BitIndex = (indexStride == sizeof(UINT32)) ? true : false;
 
                 UINT8* vertices = te_allocate<UINT8>(sizeof(Vector3) * numVertices);
                 UINT8* vertexReader = _meshData->GetElementData(VES_POSITION);
@@ -89,17 +106,24 @@ namespace te
                     Vector3* currVertex = (Vector3*)(vertexReader + (UINT8)vertexStride * i);
                     memcpy(vertexWriter, currVertex, sizeof(Vector3));
 
+                    _softBodyMesh->Vertices[i * 3] = btScalar(currVertex->x);
+                    _softBodyMesh->Vertices[i * 3 + 1] = btScalar(currVertex->y);
+                    _softBodyMesh->Vertices[i * 3 + 2] = btScalar(currVertex->z);
+
                     if(i < numVertices - 1)
                         vertexWriter++;
                 }
 
-                _triangleMesh->NumVertices = numVertices;
-                _triangleMesh->NumIndices = numIndices;
-                _triangleMesh->VertexStride = sizeof(Vector3);
-                _triangleMesh->IndexStride = indexStride;
+                for (UINT32 i = 0; i < numIndices; i++)
+                {
+                    if (_triangleMesh->Use32BitIndex)
+                        _softBodyMesh->Indices[i] = ((UINT32*)(indices))[i];
+                    else
+                        _softBodyMesh->Indices[i] = ((UINT16*)(indices))[i];
+                }
+   
                 _triangleMesh->Vertices = vertices;
                 _triangleMesh->Indices = indices;
-                _triangleMesh->Use32BitIndex = (indexStride == sizeof(UINT32)) ? true : false;
             }
         }
     }

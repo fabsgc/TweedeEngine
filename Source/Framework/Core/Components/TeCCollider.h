@@ -108,7 +108,7 @@ namespace te
          * @param[in] internal		If true the rigidbody will just be changed internally, but parent rigidbody will not be
          *							notified.
          */
-        void SetBody(const HBody& rigidbody, bool internal = false);
+        void SetBody(const HBody& body, bool internal = false);
 
         /** Searches the parent scene object hierarchy to find a parent Rigidbody component. */
         void UpdateParentBody();

@@ -6,6 +6,7 @@
 #include "Image/TeTexture.h"
 #include "Audio/TeAudioClip.h"
 #include "Animation/TeAnimationClip.h"
+#include "Physics/TePhysicsMesh.h"
 
 namespace te
 {
@@ -28,6 +29,7 @@ namespace te
         EditorResManager::ResourcesContainer& meshContainer = EditorResManager::Instance().Get<Mesh>();
         EditorResManager::ResourcesContainer& animationClipContainer = EditorResManager::Instance().Get<AnimationClip>();
         EditorResManager::ResourcesContainer& audioClipContainer = EditorResManager::Instance().Get<AudioClip>();
+        EditorResManager::ResourcesContainer& physicMeshContainer = EditorResManager::Instance().Get<PhysicsMesh>();
 
         char inputPath[256];
         char inputUUID[64];
@@ -196,10 +198,17 @@ namespace te
                 ImVec2(ImGui::GetWindowContentRegionWidth() / 2.0f, 0.0f));
             ImGui::SameLine();
         }
-        
+
         if (audioClipContainer.Res.size() > 0)
         {
             ShowResourceType(audioClipContainer, "AudioClips", "   Audio Clips", "AudioClipsList",
+                ImVec2(ImGui::GetWindowContentRegionWidth() / 2.0f, 0.0f));
+            ImGui::SameLine();
+        }
+
+        if (physicMeshContainer.Res.size() > 0)
+        {
+            ShowResourceType(physicMeshContainer, "PhysicsMeshes", "   Physic Meshes", "PhysicsMeshesList",
                 ImVec2(ImGui::GetWindowContentRegionWidth() / 2.0f, 0.0f));
             ImGui::SameLine();
         }

@@ -660,6 +660,14 @@ namespace te
         return hits.size() > 0;
     }
 
+    btSoftBody* BulletScene::CreateSoftBody(const SPtr<BulletMesh::SoftBodyMesh>& mesh) const
+    {
+        if (!_worldInfo)
+            return nullptr;
+
+        return btSoftBodyHelpers::CreateFromTriMesh(*_worldInfo, mesh->Vertices, mesh->Indices, mesh->NumTriangles);
+    }
+
     BulletPhysics& gBulletPhysics()
     {
         return static_cast<BulletPhysics&>(BulletPhysics::Instance());

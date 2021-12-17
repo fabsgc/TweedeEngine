@@ -23,11 +23,17 @@ namespace te
         /** @copydoc Body::GetRotation */
         Quaternion GetRotation() const override;
 
+        /** @copydoc SoftBody::SetMesh */
+        void SetMesh(const HPhysicsMesh& mesh) override;
+
+        /** @copydoc SoftBody::SetScale */
+        void SetScale(const Vector3& scale) override;
+
         /** @copydoc Body::SetTransform */
         void SetTransform(const Vector3& pos, const Quaternion& rot, bool activate = false) override;
 
         /** @copydoc Body::SetIsTrigger */
-        void SetIsTrigger(bool value) override;
+        void SetIsTrigger(bool trigger) override;
 
         /** @copydoc Body::GetIsTrigger */
         bool GetIsTrigger() const override { return false; };

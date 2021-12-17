@@ -33,6 +33,14 @@ namespace te
         HPhysicsMesh GetMesh() const { return _mesh; }
 
         /**
+         * We can scale the PhysicsMesh in order to match to the 3D mesh geometry
+         */
+        virtual void SetScale(const Vector3& scale) { _scale = scale; }
+
+        /** @copydoc SetScale */
+        const Vector3& GetScale() const { return _scale; }
+
+        /**
          * Creates a new softbody.
          *
          * @param[in]	linkedSO	Scene object that owns this softbody. All physics updates applied to this object
@@ -43,5 +51,6 @@ namespace te
 
     protected:
         HPhysicsMesh _mesh;
+        Vector3 _scale = Vector3::ONE;
     };
 }

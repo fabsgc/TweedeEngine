@@ -313,7 +313,7 @@ namespace te
                 meshImportOptions->GenSmoothNormals = _fileBrowser.Data.MeshParam.GenSmoothNormals;
                 meshImportOptions->ScaleSystemUnit = _fileBrowser.Data.MeshParam.ScaleSystemUnit;
                 meshImportOptions->ScaleFactor = _fileBrowser.Data.MeshParam.ScaleFactor;
-                meshImportOptions->CollisionShape = _fileBrowser.Data.MeshParam.CollisionShape;
+                meshImportOptions->ImportCollisionShape = _fileBrowser.Data.MeshParam.ImportCollisionShape;
                 meshImportOptions->CpuCached = false;
 
                 SPtr<MultiResource> resources = EditorResManager::Instance().LoadAll(_fileBrowser.Data.SelectedPath, meshImportOptions, true);

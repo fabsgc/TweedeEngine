@@ -26,20 +26,21 @@ namespace te
         /** Returns associated btJoint */
         btTypedConstraint* GetJoint() { return _btJoint; }
 
-        /** Common method to retrieve btRigidBody from Joint::_bodies */
-        btRigidBody* GetBtRigidBody(BodyInfo* info);
+        /** Common method to retrieve btCollisionObject from Joint::_bodies */
+        btCollisionObject* GetBtCollisionObject(BodyInfo* info);
 
         /** Common method to compute anchor scaled position */
-        Vector3 GetAnchorScaledPosisition(RigidBody* bodyAnchor, BodyInfo* info, Vector3* offsetPivot);
+        Vector3 GetAnchorScaledPosisition(Body* bodyAnchor, BodyInfo* info, Vector3* offsetPivot);
 
         /** Common method to compute target scaled position */
-        Vector3 GetTargetScaledPosisition(btRigidBody* btRigidBody, RigidBody* bodyAnchor, BodyInfo* info, Vector3* offsetPivot);
+        Vector3 GetTargetScaledPosisition(btCollisionObject* btCollisionObject, Body* bodyAnchor, BodyInfo* info, Vector3* offsetPivot);
 
         /** Common method to check if a joint is broken */
         bool IsJointBroken();
 
     protected:
         friend class BulletRigidBody;
+        friend class BulletSoftBody;
         friend class Joint;
 
         BulletPhysics* _physics;

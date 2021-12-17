@@ -543,7 +543,7 @@ namespace te
         return textureLoaded;
     }
 
-    void WidgetMaterials::DeleteMaterial(SPtr<Material>& material, const UUID& uuid)
+    void WidgetMaterials::DeleteMaterial(SPtr<Material> material, const UUID& uuid)
     {
         HMaterial handle = static_resource_cast<Material>(
             gResourceManager()._createResourceHandle(material, uuid));

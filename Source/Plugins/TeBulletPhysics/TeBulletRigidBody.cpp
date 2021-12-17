@@ -526,6 +526,9 @@ namespace te
 
     void BulletRigidBody::UpdateKinematicFlag() const
     {
+        if (!_rigidBody)
+            return;
+
         int flags = _rigidBody->getCollisionFlags();
 
         if (_isKinematic)
@@ -544,12 +547,15 @@ namespace te
             flags |= btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
 
         _rigidBody->setCollisionFlags(flags);
-        _rigidBody->forceActivationState(_isKinematic ? DISABLE_DEACTIVATION : ISLAND_SLEEPING);
+        _rigidBody->forceActivationState(DISABLE_DEACTIVATION);
         _rigidBody->setDeactivationTime(DEFAULT_DEACTIVATION_TIME);
     }
 
     void BulletRigidBody::UpdateGravityFlag() const
     {
+        if (!_rigidBody)
+            return;
+
         int flags = _rigidBody->getFlags();
 
         if (_useGravity)
@@ -567,6 +573,9 @@ namespace te
 
     void BulletRigidBody::UpdateCCDFlag() const
     {
+        if (!_rigidBody)
+            return;
+
         if (((UINT32)_flags & (UINT32)BodyFlag::CCD))
         {
             _rigidBody->setCcdMotionThreshold(0.015f);

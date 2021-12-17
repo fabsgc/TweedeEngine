@@ -105,7 +105,7 @@ namespace te
             GpuDeviceFlags deviceMask = GDF_DEFAULT) = 0;
 
         /** @copydoc CreateVertexDeclaration(const Vector<VertexElement>&, GpuDeviceFlags) */
-        virtual SPtr<VertexDeclaration> createVertexDeclarationInternal(const Vector<VertexElement>& elements,
+        virtual SPtr<VertexDeclaration> CreateVertexDeclarationInternal(const Vector<VertexElement>& elements,
             GpuDeviceFlags deviceMask = GDF_DEFAULT);
 
         /** @copydoc CreateGpuParamBlockBuffer */

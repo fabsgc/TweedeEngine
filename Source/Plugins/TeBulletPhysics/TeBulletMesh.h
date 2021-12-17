@@ -27,6 +27,13 @@ namespace te
             bool   Use32BitIndex = true;
         };
 
+        struct SoftBodyMesh
+        {
+            btScalar* Vertices = nullptr;
+            int* Indices = nullptr;
+            UINT32 NumTriangles = 0;
+        };
+
     public:
         BulletMesh(const SPtr<MeshData>& meshData);
 
@@ -54,6 +61,9 @@ namespace te
         /** Returns triangle mesh generated data */
         SPtr<BulletMesh::TriangleMesh> GetTriangleMesh() const { return _triangleMesh; }
 
+        /** Returns triangle mesh generated data */
+        SPtr<BulletMesh::SoftBodyMesh> GetSoftBodyMesh() const { return _softBodyMesh; }
+
     private:
         /** Creates the internal triangle/convex mesh */
         void Initialize();
@@ -64,5 +74,6 @@ namespace te
     private:
         SPtr<BulletMesh::ConvexMesh> _convexMesh = nullptr;
         SPtr<BulletMesh::TriangleMesh> _triangleMesh = nullptr;
+        SPtr<BulletMesh::SoftBodyMesh> _softBodyMesh = nullptr;
     };
 }

@@ -87,7 +87,7 @@ namespace te
             {
                 output.push_back({ u8"primary", mesh });
 
-                if (meshImportOptions->CollisionShape)
+                if (meshImportOptions->ImportCollisionShape)
                 {
                     if (Physics::IsStarted())
                     {

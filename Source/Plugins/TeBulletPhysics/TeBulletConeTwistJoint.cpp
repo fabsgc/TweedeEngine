@@ -25,7 +25,7 @@ namespace te
         }
     }
 
-    void BulletConeTwistJoint::SetBody(JointBody body, RigidBody* value)
+    void BulletConeTwistJoint::SetBody(JointBody body, Body* value)
     {
         Joint::SetBody(body, value);
         BuildJoint();
@@ -132,11 +132,11 @@ namespace te
         if (_isBroken)
             return;
 
-        RigidBody* bodyAnchor = _bodies[(int)JointBody::Anchor].BodyElt;
-        RigidBody* bodyTarget = _bodies[(int)JointBody::Target].BodyElt;
+        Body* bodyAnchor = _bodies[(int)JointBody::Anchor].BodyElt;
+        Body* bodyTarget = _bodies[(int)JointBody::Target].BodyElt;
 
-        btRigidBody* btBodyAnchor = GetBtRigidBody(&_bodies[(int)JointBody::Anchor]);
-        btRigidBody* btBodyTarget = GetBtRigidBody(&_bodies[(int)JointBody::Target]);
+        btRigidBody* btBodyAnchor = static_cast<btRigidBody*>(GetBtCollisionObject(&_bodies[(int)JointBody::Anchor]));
+        btRigidBody* btBodyTarget = static_cast<btRigidBody*>(GetBtCollisionObject(&_bodies[(int)JointBody::Target]));
 
         if (btBodyAnchor)
         {
@@ -184,10 +184,10 @@ namespace te
             return;
         }
 
-        RigidBody* bodyAnchor = _bodies[(int)JointBody::Anchor].BodyElt;
-        RigidBody* bodyTarget = _bodies[(int)JointBody::Target].BodyElt;
+        Body* bodyAnchor = _bodies[(int)JointBody::Anchor].BodyElt;
+        Body* bodyTarget = _bodies[(int)JointBody::Target].BodyElt;
 
-        btRigidBody* btBodyTarget = GetBtRigidBody(&_bodies[(int)JointBody::Target]);
+        btRigidBody* btBodyTarget = static_cast<btRigidBody*>(GetBtCollisionObject(&_bodies[(int)JointBody::Target]));
 
         if (bodyAnchor)
         {

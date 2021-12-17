@@ -118,7 +118,7 @@ namespace te
          * Determines if a collision mesh should be imported. If enabled the collision mesh will be
          * available as a sub-resource returned by the importer (along with the normal mesh).
          */
-        bool CollisionShape = true;
+        bool ImportCollisionShape = true;
 
         /** Creates a new import options object that allows you to customize how are Meshs imported. */
         static SPtr<MeshImportOptions> Create();

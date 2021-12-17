@@ -20,7 +20,7 @@ namespace te
 
     protected:
         bool ShowLoadedTexture();
-        void DeleteMaterial(SPtr<Material>& material, const UUID& uuid);
+        void DeleteMaterial(SPtr<Material> material, const UUID& uuid);
 
     protected:
         SPtr<Material> _currentMaterial;

@@ -126,7 +126,12 @@ namespace te
     public:
         static void* Allocate(size_t bytes)
         {
-            return ::malloc(bytes);
+            void* p = ::malloc(bytes);
+
+            if(p == 0) 
+                throw std::bad_alloc();
+
+            return p;
         }
 
         static void Deallocate(void* ptr)

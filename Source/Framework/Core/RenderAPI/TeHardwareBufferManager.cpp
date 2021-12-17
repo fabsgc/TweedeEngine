@@ -79,14 +79,14 @@ namespace te
             return iterFind->second;
         }
 
-        SPtr<VertexDeclaration> declPtr = createVertexDeclarationInternal(elements, deviceMask);
+        SPtr<VertexDeclaration> declPtr = CreateVertexDeclarationInternal(elements, deviceMask);
         declPtr->Initialize();
 
         _cachedDeclarations[key] = declPtr;
         return declPtr;
     }
 
-    SPtr<VertexDeclaration> HardwareBufferManager::createVertexDeclarationInternal(
+    SPtr<VertexDeclaration> HardwareBufferManager::CreateVertexDeclarationInternal(
         const Vector<VertexElement>& elements, GpuDeviceFlags deviceMask)
     {
         VertexDeclaration* decl = new (te_allocate<VertexDeclaration>()) VertexDeclaration(elements, deviceMask);
