@@ -1335,7 +1335,7 @@ namespace te
         }
 
         if(path_max_def)
-            te_allocate(buffer);
+            te_deallocate((void*)buffer);
         else
             free(real_path);
     }
