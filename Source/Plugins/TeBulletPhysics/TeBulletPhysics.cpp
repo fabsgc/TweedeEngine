@@ -212,6 +212,7 @@ namespace te
             _worldInfo->water_offset = (btScalar)_initDesc.WaterOffset;
             _worldInfo->water_normal = ToBtVector3(_initDesc.WaterNormal);
             _worldInfo->m_gravity = ToBtVector3(_initDesc.Gravity);
+            _worldInfo->m_maxDisplacement = 100000.0f;
         }
         else
         {

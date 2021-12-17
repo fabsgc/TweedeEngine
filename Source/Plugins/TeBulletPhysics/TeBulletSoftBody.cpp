@@ -105,6 +105,9 @@ namespace te
         if (_softBody)
             _softBody->transformTo(btTransform(ToBtQuaternion(_rotation), ToBtVector3(_position)));
 
+        if (activate)
+            Activate();
+
         // Set position and rotation to world transform
         /*const Vector3 oldPosition = GetPosition();
         btTransform& trans = _softBody->getWorldTransform();
