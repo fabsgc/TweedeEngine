@@ -48,9 +48,8 @@ namespace te
          * @param[in]	linkedSO	Scene object that owns this softbody. All physics updates applied to this object
          *							will be transfered to this scene object (the movement/rotation resulting from
          *							those updates).
-         * @param[in]   type        TypeID_Core for serialization
          */
-        SoftBody(const HSceneObject& linkedSO, UINT32 type);
+        SoftBody(const HSceneObject& linkedSO);
 
     protected:
         HPhysicsMesh _mesh;

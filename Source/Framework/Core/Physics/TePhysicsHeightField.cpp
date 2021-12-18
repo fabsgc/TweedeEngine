@@ -1,4 +1,5 @@
 #include "Physics/TePhysicsHeightField.h"
+#include "Physics/TeFPhysicsHeightField.h"
 #include "Resources/TeResourceManager.h"
 #include "Physics/TePhysics.h"
 #include "Image/TeTexture.h"
@@ -58,9 +59,4 @@ namespace te
         _initTexture = nullptr;
         Resource::Initialize();
     }
-
-    FPhysicsHeightField::FPhysicsHeightField(const SPtr<Texture>& texture, UINT32 TID_type)
-        : Serializable(TID_type)
-        , _texture(texture)
-    { }
 }

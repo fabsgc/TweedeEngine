@@ -5,8 +5,6 @@
 
 namespace te
 {
-    class FPhysicsMesh;
-
     /**
      * Represents a physics mesh that can be used with a MeshCollider. Physics mesh can be a generic triangle mesh
      * or a convex mesh. Convex meshes are limited to a few hundred faces.
@@ -21,7 +19,7 @@ namespace te
         void Initialize() override;
 
         /**  @copydoc Resource::GetResourceType */
-        static UINT32 GetResourceType() { return TID_PhysicsMesh; }
+        static UINT32 GetResourceType() { return TypeID_Core::TID_PhysicsMesh; }
 
         /** Returns the mesh's indices and vertices. */
         SPtr<MeshData> GetMeshData() const;
@@ -46,24 +44,5 @@ namespace te
     protected:
         SPtr<FPhysicsMesh> _internal;
         SPtr<MeshData> _initMeshData; // Transient, only used during initalization
-    };
-
-    /** Foundation that contains a specific implementation of a PhysicsMesh. */
-    class TE_CORE_EXPORT FPhysicsMesh : public Serializable
-    {
-    public:
-        FPhysicsMesh(const SPtr<MeshData>& meshData, UINT32 TID_type);
-        virtual ~FPhysicsMesh() = default;
-
-        /**  @copydoc Resource::GetResourceType */
-        static UINT32 GetResourceType() { return TID_FPhysicsMesh; }
-
-        /** @copydoc PhysicsMesh::GetMeshData */
-        SPtr<MeshData> GetMeshData() const { return _meshData;  }
-
-    protected:
-        friend class PhysicsMesh;
-
-        SPtr<MeshData> _meshData = nullptr;
     };
 }

@@ -740,20 +740,36 @@ namespace te
                 switch (_guizmoOperation)
                 {
                 case ImGuizmo::OPERATION::TRANSLATE:
+                {
                     ImGuizmo::DecomposeMatrixToComponents(&deltaWorldMatrix[0][0], matrixTranslation, matrixRotation, matrixScale);
-                    _selections.ClickedSceneObject->Move(Vector3(matrixTranslation[0], matrixTranslation[1], matrixTranslation[2]));
-                    break;
+                    Vector3 translation(matrixTranslation[0], matrixTranslation[1], matrixTranslation[2]);
+                    if(!Math::ApproxEquals(translation, Vector3::ZERO))
+                        _selections.ClickedSceneObject->Move(translation);
+                }
+                break;
 
                 case ImGuizmo::OPERATION::SCALE:
-                    _selections.ClickedSceneObject->SetScale(Vector3(matrixScale[0], matrixScale[1], matrixScale[2]));
-                    break;
+                {
+                    Vector3 translation(matrixTranslation[0], matrixTranslation[1], matrixTranslation[2]);
+                    if (!Math::ApproxEquals(translation, Vector3::ZERO))
+                        _selections.ClickedSceneObject->SetScale(Vector3(matrixScale[0], matrixScale[1], matrixScale[2]));
+                }
+                break;
 
                 case ImGuizmo::OPERATION::ROTATE:
                 {
                     Quaternion rotation;
                     ImGuizmo::DecomposeMatrixToComponents(&deltaWorldMatrix[0][0], matrixTranslation, matrixRotation, matrixScale);
-                    rotation.FromEulerAngles(Radian(Degree(matrixRotation[0])), Radian(Degree(matrixRotation[1])), Radian(Degree(matrixRotation[2])));
-                    _selections.ClickedSceneObject->Rotate(rotation);
+
+                    Radian x(Degree((float)matrixRotation[0]));
+                    Radian y(Degree((float)matrixRotation[1]));
+                    Radian z(Degree((float)matrixRotation[2]));
+
+                    if (!Math::ApproxEquals(matrixRotation[0], 0.0f) || !Math::ApproxEquals(matrixRotation[1], 0.0f) || !Math::ApproxEquals(matrixRotation[2], 0.0f))
+                    {
+                        rotation.FromEulerAngles(x, y, z);
+                        _selections.ClickedSceneObject->Rotate(rotation);
+                    }
                 }
                 break;
 

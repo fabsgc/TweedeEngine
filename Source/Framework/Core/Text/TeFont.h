@@ -44,7 +44,7 @@ namespace te
         virtual ~Font() = default;
 
         /**  @copydoc Resource::GetResourceType */
-        static UINT32 GetResourceType() { return TID_Font; }
+        static UINT32 GetResourceType() { return TypeID_Core::TID_Font; }
 
         /**
          * Initializes the font with specified per-size font data.

@@ -67,28 +67,6 @@ namespace te
     class BulletFCollider;
     class BulletCollider;
 
-    /** Type IDs used by the serizalition system for the Bullet library. */
-    enum TypeID_Bullet
-    {
-        TID_FBulletMesh                = 100000,
-        TID_FBulletHeightField         = 100001,
-        TID_BulletRigidBody            = 100002,
-        TID_BulletSoftBody             = 100003,
-        TID_BulletBoxCollider          = 100004,
-        TID_BulletCapsuleCollider      = 100005,
-        TID_BulletConeCollider         = 100006,
-        TID_BulletCylinderCollider     = 100007,
-        TID_BulletHeightFieldCollider  = 100008,
-        TID_BulletMeshCollider         = 100009,
-        TID_BulletPlaneCollider        = 100010,
-        TID_BulletSphereCollider       = 100011,
-        TID_BulletConeTwistJoint       = 100012,
-        TID_BulletD6Joint              = 100013,
-        TID_BulletHingeJoint           = 100014,
-        TID_BulletSliderJoint          = 100015,
-        TID_BulletSphericalJoint       = 100016
-    };
-
     inline Vector3 ToVector3(const btVector3& vector)
     {
         return Vector3((float)vector.getX(), (float)vector.getY(), (float)vector.getZ());

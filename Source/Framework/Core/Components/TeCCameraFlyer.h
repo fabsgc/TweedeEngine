@@ -18,7 +18,7 @@ namespace te
         void Update() override;
 
         /** Return Component type */
-        static UINT32 GetComponentType() { return TID_CCameraFlyer; }
+        static UINT32 GetComponentType() { return TypeID_Core::TID_CCameraFlyer; }
 
         /** @copydoc Component::Clone */
         void Clone(const HComponent& c) override;

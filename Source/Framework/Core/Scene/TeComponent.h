@@ -20,7 +20,7 @@ namespace te
     public:
         static UINT32 GetComponentType()
         {
-            return TID_Component;
+            return TypeID_Core::TID_Component;
         }
 
         /** Sometimes, you could have to change parent of a component */

@@ -17,7 +17,7 @@ namespace te
         CCapsuleCollider(const HSceneObject& parent);
 
         /** Return Component type */
-        static UINT32 GetComponentType() { return TID_CCapsuleCollider; }
+        static UINT32 GetComponentType() { return TypeID_Core::TID_CCapsuleCollider; }
 
         /** @copydoc Component::Clone */
         void Clone(const HCapsuleCollider& c);

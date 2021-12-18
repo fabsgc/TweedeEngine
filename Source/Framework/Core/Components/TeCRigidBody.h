@@ -21,7 +21,7 @@ namespace te
         ~CRigidBody();
 
         /** Return Component type */
-        static UINT32 GetComponentType() { return TID_CRigidBody; }
+        static UINT32 GetComponentType() { return TypeID_Core::TID_CRigidBody; }
 
         /** @copydoc Component::Initialize */
         void Initialize() override;

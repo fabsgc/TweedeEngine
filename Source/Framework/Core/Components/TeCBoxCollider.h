@@ -18,7 +18,7 @@ namespace te
         CBoxCollider(const HSceneObject& parent, const Vector3& extents = Vector3(0.5f, 0.5f, 0.5f));
 
         /** Return Component type */
-        static UINT32 GetComponentType() { return TID_CBoxCollider; }
+        static UINT32 GetComponentType() { return TypeID_Core::TID_CBoxCollider; }
 
         /** @copydoc Component::Clone */
         void Clone(const HBoxCollider& c);

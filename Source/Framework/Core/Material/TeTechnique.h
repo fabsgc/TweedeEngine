@@ -14,7 +14,7 @@ namespace te
         void Initialize() override;
 
         /**  @copydoc Resource::GetResourceType */
-        static UINT32 GetResourceType() { return TID_Technique; }
+        static UINT32 GetResourceType() { return TypeID_Core::TID_Technique; }
 
         /**	Checks if this technique is supported based on current render and other systems. */
         bool IsSupported() const;

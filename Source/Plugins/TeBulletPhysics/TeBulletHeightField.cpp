@@ -1,7 +1,5 @@
 #include "TeBulletHeightField.h"
-#include "TeBulletPhysics.h"
-#include "Image/TeTexture.h"
-#include "Image/TeColor.h"
+#include "TeBulletFHeightField.h"
 
 namespace te
 {
@@ -52,43 +50,5 @@ namespace te
     {
         _internal = nullptr;
         PhysicsHeightField::Destroy();
-    }
-
-    BulletFHeightField::BulletFHeightField()
-        : FPhysicsHeightField(nullptr, TypeID_Bullet::TID_FBulletHeightField)
-    { }
-
-    BulletFHeightField::BulletFHeightField(const SPtr<Texture>& texture)
-        : FPhysicsHeightField(texture, TypeID_Bullet::TID_FBulletHeightField)
-    {
-        Initialize();
-    }
-
-    BulletFHeightField::~BulletFHeightField()
-    {
-        _heightFieldInfo = nullptr;
-    }
-
-    void BulletFHeightField::Initialize()
-    {
-        _heightFieldInfo = te_shared_ptr_new<BulletHeightField::HeightFieldInfo>(_texture->GetProperties().GetWidth(), 
-            _texture->GetProperties().GetHeight());
-
-        const TextureProperties& properties = _texture->GetProperties();
-        SPtr<PixelData> PixelData = _texture->GetProperties().AllocBuffer(0, 0);
-
-        if (properties.GetUsage() & TU_CPUCACHED)
-            _texture->ReadCachedData(*PixelData);
-        else
-            _texture->ReadData(*PixelData);
-
-        for (UINT32 j = 0; j < _heightFieldInfo->Length; j++)
-        {
-            for (UINT32 i = 0; i < _heightFieldInfo->Width; i++)
-            {
-                Color color = PixelData->GetColorAt(i, j);
-                _heightFieldInfo->SetHeightAt(i, j, color.r);
-            }
-        }
     }
 }

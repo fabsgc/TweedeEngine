@@ -20,7 +20,7 @@ namespace te
         ~CSoftBody();
 
         /** Return Component type */
-        static UINT32 GetComponentType() { return TID_CSoftBody; }
+        static UINT32 GetComponentType() { return TypeID_Core::TID_CSoftBody; }
 
         /** @copydoc SoftBody::SetMesh */
         void SetMesh(const HPhysicsMesh& mesh);

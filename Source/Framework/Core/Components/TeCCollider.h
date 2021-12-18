@@ -20,7 +20,7 @@ namespace te
         virtual ~CCollider();
 
         /** Return Component type */
-        static UINT32 GetComponentType() { return TID_CCollider; }
+        static UINT32 GetComponentType() { return TypeID_Core::TID_CCollider; }
 
         /** @copydoc Component::Initialize */
         virtual void Initialize() override;

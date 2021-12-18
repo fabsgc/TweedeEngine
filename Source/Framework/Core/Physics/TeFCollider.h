@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Physics/TePhysicsCommon.h"
 #include "Math/TeVector3.h"
 #include "Math/TeQuaternion.h"
@@ -5,9 +7,10 @@
 namespace te
 {
     /** Provides common functionality used by all Collider types. */
-    class TE_CORE_EXPORT FCollider
+    class TE_CORE_EXPORT FCollider : public Serializable
     {
     public:
+        FCollider();
         virtual ~FCollider() = default;
 
         /** Determines the scale of the collider relative to its parent */

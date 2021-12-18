@@ -5,8 +5,6 @@
 
 namespace te
 {
-    class FPhysicsHeightField;
-
     /**
      * Represents a HeightField built from a square height field texture that can be used with a HeightFieldCollider.
      */
@@ -20,7 +18,7 @@ namespace te
         void Initialize() override;
 
         /**  @copydoc Resource::GetResourceType */
-        static UINT32 GetResourceType() { return TID_PhysicsHeightField; }
+        static UINT32 GetResourceType() { return TypeID_Core::TID_PhysicsHeightField; }
 
         /** Returns the original texture used for height field generation. */
         SPtr<Texture> GetTexture() const;
@@ -50,24 +48,5 @@ namespace te
     protected:
         SPtr<FPhysicsHeightField> _internal;
         SPtr<Texture> _initTexture; // Transient, only used during initalization
-    };
-
-    /** Foundation that contains a specific implementation of a PhysicsHeightField. */
-    class TE_CORE_EXPORT FPhysicsHeightField : public Serializable
-    {
-    public:
-        FPhysicsHeightField(const SPtr<Texture>& texture, UINT32 TID_type);
-        virtual ~FPhysicsHeightField() = default;
-
-        /**  @copydoc Resource::GetResourceType */
-        static UINT32 GetResourceType() { return TID_FPhysicsHeightField; }
-
-        /** @copydoc PhysicsHeightField::GetTexture */
-        SPtr<Texture> GetTexture() const { return _texture;  }
-
-    protected:
-        friend class PhysicsHeightField;
-
-        SPtr<Texture> _texture = nullptr;
     };
 }

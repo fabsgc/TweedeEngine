@@ -110,7 +110,12 @@ namespace te
         TID_PhysicsMesh             = 1055,
         TID_FPhysicsMesh            = 1056,
         TID_PhysicsHeightField      = 1057,
-        TID_FPhysicsHeightField     = 1058
+        TID_FPhysicsHeightField     = 1058,
+        TID_FBody                   = 1059,
+        TID_FJoint                  = 1060,
+        TID_FCollider               = 1061,
+        TID_RigidBody               = 1062,
+        TID_SoftBody                = 1063
     };
 }
 

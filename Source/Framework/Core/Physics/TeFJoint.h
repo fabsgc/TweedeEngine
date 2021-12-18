@@ -12,10 +12,10 @@ namespace te
     };
 
     /** Provides common functionality used by all Joint types. */
-    class TE_CORE_EXPORT FJoint
+    class TE_CORE_EXPORT FJoint : public Serializable
     {
     public:
-        FJoint() { }
+        FJoint();
         virtual ~FJoint() = default;
     };
 };

@@ -32,7 +32,7 @@ namespace te
         void _setUUID(const UUID& uuid) { _UUID = uuid; }
 
         /** Allow to dynamically retrieve resource type */
-        static UINT32 GetResourceType() { return TID_Resource; }
+        static UINT32 GetResourceType() { return TypeID_Core::TID_Resource; }
 
     protected:
         friend class ResourceManager;

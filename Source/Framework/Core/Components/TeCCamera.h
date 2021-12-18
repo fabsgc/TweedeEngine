@@ -20,7 +20,7 @@ namespace te
         void Initialize() override;
 
         /** Return Component type */
-        static UINT32 GetComponentType() { return TID_CCamera; }
+        static UINT32 GetComponentType() { return TypeID_Core::TID_CCamera; }
 
         /** @copydoc Camera::SetFlags */
         void SetFlags(UINT32 flags) { _internal->SetFlags(flags); }

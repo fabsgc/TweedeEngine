@@ -18,7 +18,6 @@ namespace te
     class TE_CORE_EXPORT Collider
     {
     public:
-        Collider() = default;
         virtual ~Collider() = default;
 
         /** Determines the Rigidbody that controls this collider (if any). */
@@ -65,6 +64,9 @@ namespace te
          * high level physics objects from the low level ones returned by various queries and events.
          */
         void* GetOwner(PhysicsOwnerType type) const { return _owner.Type == type ? _owner.OwnerData : nullptr; }
+
+    protected:
+        Collider() = default;
 
     protected:
         FCollider* _internal = nullptr;

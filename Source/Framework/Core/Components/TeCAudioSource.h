@@ -17,7 +17,7 @@ namespace te
         CAudioSource(const HSceneObject& parent);
         virtual ~CAudioSource() = default;
 
-        static UINT32 GetComponentType() { return TID_CAudioSource; }
+        static UINT32 GetComponentType() { return TypeID_Core::TID_CAudioSource; }
 
         /** @copydoc Component::Initialize */
         void Initialize() override;

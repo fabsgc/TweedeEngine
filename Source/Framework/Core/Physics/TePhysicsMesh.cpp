@@ -1,4 +1,5 @@
 #include "Physics/TePhysicsMesh.h"
+#include "Physics/TeFPhysicsMesh.h"
 #include "Resources/TeResourceManager.h"
 #include "Physics/TePhysics.h"
 
@@ -46,9 +47,4 @@ namespace te
         _initMeshData = nullptr;
         Resource::Initialize();
     }
-
-    FPhysicsMesh::FPhysicsMesh(const SPtr<MeshData>& meshData, UINT32 TID_type)
-        : Serializable(TID_type)
-        , _meshData(meshData)
-    { }
 }

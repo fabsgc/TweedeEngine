@@ -8,6 +8,7 @@
 #include "TeBulletFBody.h"
 #include "TeBulletFJoint.h"
 #include "TeBulletJoint.h"
+#include "TeBulletFMesh.h"
 #include "TeBulletMesh.h"
 
 namespace te
@@ -19,7 +20,7 @@ namespace te
     static const float DEFAULT_DEACTIVATION_TIME = 2000;
 
     BulletSoftBody::BulletSoftBody(BulletPhysics* physics, BulletScene* scene, const HSceneObject& linkedSO)
-        : SoftBody(linkedSO, (UINT32)TypeID_Bullet::TID_BulletSoftBody)
+        : SoftBody(linkedSO)
         , _softBody(nullptr)
         , _physics(physics)
         , _scene(scene)

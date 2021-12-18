@@ -2,6 +2,7 @@
 #include "TeBulletPhysics.h"
 #include "TeBulletFCollider.h"
 #include "TeBulletMesh.h"
+#include "TeBulletFMesh.h"
 
 namespace te
 {

@@ -44,7 +44,7 @@ namespace te
         virtual ~CBody() = default;
 
         /** Return Component type */
-        static UINT32 GetComponentType() { return TID_CBody; }
+        static UINT32 GetComponentType() { return TypeID_Core::TID_CBody; }
 
         /** @copydoc Component::Initialize */
         virtual void Initialize() override;

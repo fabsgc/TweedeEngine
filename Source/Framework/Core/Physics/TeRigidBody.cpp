@@ -5,8 +5,8 @@
 
 namespace te
 {
-    RigidBody::RigidBody(const HSceneObject& linkedSO, UINT32 type)
-        : Body(linkedSO, type)
+    RigidBody::RigidBody(const HSceneObject& linkedSO)
+        : Body(linkedSO, TypeID_Core::TID_RigidBody)
     { }
 
     SPtr<RigidBody> RigidBody::Create(const HSceneObject& linkedSO)

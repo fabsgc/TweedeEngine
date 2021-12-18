@@ -17,7 +17,7 @@ namespace te
         CSphereCollider(const HSceneObject& parent, float radius = 1.0f);
 
         /** Return Component type */
-        static UINT32 GetComponentType() { return TID_CSphereCollider; }
+        static UINT32 GetComponentType() { return TypeID_Core::TID_CSphereCollider; }
 
         /** @copydoc Component::Clone */
         void Clone(const HSphereCollider& c);

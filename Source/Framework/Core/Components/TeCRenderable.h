@@ -20,7 +20,7 @@ namespace te
         /** @copydoc Component::Initialize */
         void Initialize() override;
 
-        static UINT32 GetComponentType() { return TID_CRenderable; }
+        static UINT32 GetComponentType() { return TypeID_Core::TID_CRenderable; }
 
         /** @copydoc Renderable::SetMesh */
         void SetMesh(HMesh mesh) { _internal->SetMesh(mesh.GetInternalPtr()); }

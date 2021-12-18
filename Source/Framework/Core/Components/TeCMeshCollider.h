@@ -17,7 +17,7 @@ namespace te
         CMeshCollider(const HSceneObject& parent);
 
         /** Return Component type */
-        static UINT32 GetComponentType() { return TID_CMeshCollider; }
+        static UINT32 GetComponentType() { return TypeID_Core::TID_CMeshCollider; }
 
         /** @copydoc MeshCollider::SetMesh */
         void SetMesh(const HPhysicsMesh& mesh);

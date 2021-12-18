@@ -17,7 +17,7 @@ namespace te
         CPlaneCollider(const HSceneObject& parent);
 
         /** Return Component type */
-        static UINT32 GetComponentType() { return TID_CPlaneCollider; }
+        static UINT32 GetComponentType() { return TypeID_Core::TID_CPlaneCollider; }
 
         /** @copydoc Component::Clone */
         void Clone(const HPlaneCollider& c);

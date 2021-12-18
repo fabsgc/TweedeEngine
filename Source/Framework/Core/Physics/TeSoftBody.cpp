@@ -5,8 +5,8 @@
 
 namespace te
 { 
-    SoftBody::SoftBody(const HSceneObject& linkedSO, UINT32 type)
-        : Body(linkedSO, type)
+    SoftBody::SoftBody(const HSceneObject& linkedSO)
+        : Body(linkedSO, TypeID_Core::TID_SoftBody)
     { }
 
     SPtr<SoftBody> SoftBody::Create(const HSceneObject& linkedSO)

@@ -18,7 +18,7 @@ namespace te
         virtual ~CJoint();
 
         /** Return Component type */
-        static UINT32 GetComponentType() { return TID_CJoint; }
+        static UINT32 GetComponentType() { return TypeID_Core::TID_CJoint; }
 
         /** @copydoc Component::Initialize */
         virtual void Initialize() override;

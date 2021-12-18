@@ -17,7 +17,7 @@ namespace te
         CSliderJoint(const HSceneObject& parent);
 
         /** Return Component type */
-        static UINT32 GetComponentType() { return TID_CSliderJoint; }
+        static UINT32 GetComponentType() { return TypeID_Core::TID_CSliderJoint; }
 
         /** @copydoc Component::Clone */
         void Clone(const HSliderJoint& c);

@@ -92,7 +92,7 @@ namespace te
         /** Returns the light that this component wraps. */
         SPtr<Light> _getLight() const { return _internal; }
 
-        static UINT32 GetComponentType() { return TID_CLight; }
+        static UINT32 GetComponentType() { return TypeID_Core::TID_CLight; }
 
         /** @copydoc Component::Clone */
         void Clone(const HComponent& c) override;

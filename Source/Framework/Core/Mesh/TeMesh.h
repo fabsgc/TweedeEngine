@@ -112,7 +112,7 @@ namespace te
         void Initialize() override;
 
         /**  @copydoc Resource::GetResourceType */
-        static UINT32 GetResourceType() { return TID_Mesh; }
+        static UINT32 GetResourceType() { return TypeID_Core::TID_Mesh; }
 
         /** Get vertex data used for rendering. */
         SPtr<VertexData> GetVertexData() const;

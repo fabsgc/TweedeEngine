@@ -33,7 +33,7 @@ namespace te
         bool NeedsRedraw() const { return _needsRedraw; }
 
         /** Returns Component type */
-        static UINT32 GetComponentType() { return TID_CCameraUI; }
+        static UINT32 GetComponentType() { return TypeID_Core::TID_CCameraUI; }
 
         /** @copydoc Component::Clone */
         void Clone(const HComponent& c) override;

@@ -17,7 +17,7 @@ namespace te
         CHingeJoint(const HSceneObject& parent);
 
         /** Return Component type */
-        static UINT32 GetComponentType() { return TID_CHingeJoint; }
+        static UINT32 GetComponentType() { return TypeID_Core::TID_CHingeJoint; }
 
         /** @copydoc Component::Clone */
         void Clone(const HHingeJoint& c);

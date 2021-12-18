@@ -34,7 +34,7 @@ namespace te
         void Initialize() override;
 
         /**  @copydoc Resource::GetResourceType */
-        static UINT32 GetResourceType() { return TID_Pass; }
+        static UINT32 GetResourceType() { return TypeID_Core::TID_Pass; }
 
         /**	Returns true if this pass has some element of transparency. */
         bool HasBlending() const;

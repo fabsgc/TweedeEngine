@@ -17,7 +17,7 @@ namespace te
         CSphericalJoint(const HSceneObject& parent);
 
         /** Return Component type */
-        static UINT32 GetComponentType() { return TID_CSphericalJoint; }
+        static UINT32 GetComponentType() { return TypeID_Core::TID_CSphericalJoint; }
 
         /** @copydoc Component::Clone */
         void Clone(const HSphericalJoint& c);

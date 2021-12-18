@@ -17,7 +17,7 @@ namespace te
         CCylinderCollider(const HSceneObject& parent);
 
         /** Return Component type */
-        static UINT32 GetComponentType() { return TID_CCylinderCollider; }
+        static UINT32 GetComponentType() { return TypeID_Core::TID_CCylinderCollider; }
 
         /** @copydoc Component::Clone */
         void Clone(const HCylinderCollider& c);

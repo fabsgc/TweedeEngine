@@ -17,7 +17,7 @@ namespace te
         CD6Joint(const HSceneObject& parent);
 
         /** Return Component type */
-        static UINT32 GetComponentType() { return TID_CD6Joint; }
+        static UINT32 GetComponentType() { return TypeID_Core::TID_CD6Joint; }
 
         /** @copydoc Component::Clone */
         void Clone(const HD6Joint& c);

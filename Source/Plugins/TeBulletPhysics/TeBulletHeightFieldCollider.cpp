@@ -2,6 +2,7 @@
 #include "TeBulletPhysics.h"
 #include "TeBulletFCollider.h"
 #include "TeBulletHeightField.h"
+#include "TeBulletFHeightField.h"
 
 namespace te
 {

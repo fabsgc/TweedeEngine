@@ -17,7 +17,7 @@ namespace te
         CConeTwistJoint(const HSceneObject& parent);
 
         /** Return Component type */
-        static UINT32 GetComponentType() { return TID_CConeTwistJoint; }
+        static UINT32 GetComponentType() { return TypeID_Core::TID_CConeTwistJoint; }
 
         /** @copydoc Component::Clone */
         void Clone(const HConeTwistJoint& c);

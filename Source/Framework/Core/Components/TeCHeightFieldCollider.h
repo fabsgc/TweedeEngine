@@ -17,7 +17,7 @@ namespace te
         CHeightFieldCollider(const HSceneObject& parent);
 
         /** Return Component type */
-        static UINT32 GetComponentType() { return TID_CHeightFieldCollider; }
+        static UINT32 GetComponentType() { return TypeID_Core::TID_CHeightFieldCollider; }
 
         /** @copydoc HeightFieldCollider::SetHeightField */
         void SetHeightField(const HPhysicsHeightField& heightField);

@@ -41,8 +41,7 @@ namespace te
          * @param[in]	linkedSO	Scene object that owns this rigidbody. All physics updates applied to this object
          *							will be transfered to this scene object (the movement/rotation resulting from
          *							those updates).
-         * @param[in]   type        TypeID_Core for serialization
          */
-        RigidBody(const HSceneObject& linkedSO, UINT32 type);
+        RigidBody(const HSceneObject& linkedSO);
     };
 }

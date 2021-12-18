@@ -135,7 +135,7 @@ namespace te
         virtual ~AnimationClip() = default;
 
         /**  @copydoc Resource::GetResourceType */
-        static UINT32 GetResourceType() { return TID_AnimationClip; }
+        static UINT32 GetResourceType() { return TypeID_Core::TID_AnimationClip; }
 
         /** @copydoc SetCurves */
         SPtr<AnimationCurves> GetCurves() const { return _curves; }

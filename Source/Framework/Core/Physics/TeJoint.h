@@ -25,7 +25,6 @@ namespace te
     class TE_CORE_EXPORT Joint
     {
     public:
-        Joint() = default;
         virtual ~Joint() = default;
 
         /** Allows to be able to update joint state */
@@ -99,6 +98,9 @@ namespace te
          * high level physics objects from the low level ones returned by various queries and events.
          */
         void* GetOwner(PhysicsOwnerType type) const { return _owner.Type == type ? _owner.OwnerData : nullptr; }
+
+    protected:
+        Joint() = default;
 
     protected:
         PhysicsObjectOwner _owner;

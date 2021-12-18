@@ -49,7 +49,7 @@ namespace te
         SPtr<Skybox> _getSkybox() const { return _internal; }
 
         /** Return Component type */
-        static UINT32 GetComponentType() { return TID_CSkybox; }
+        static UINT32 GetComponentType() { return TypeID_Core::TID_CSkybox; }
 
         /** @copydoc Component::Clone */
         void Clone(const HComponent& c) override;
