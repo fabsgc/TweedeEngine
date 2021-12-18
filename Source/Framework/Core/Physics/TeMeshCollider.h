@@ -11,7 +11,7 @@ namespace te
     class TE_CORE_EXPORT MeshCollider : public Collider
     {
     public:
-        MeshCollider() = default;
+        MeshCollider();
         ~MeshCollider() = default;
 
         /**

@@ -11,7 +11,7 @@ namespace te
     class TE_CORE_EXPORT ConeCollider : public Collider
     {
     public:
-        ConeCollider() = default;
+        ConeCollider();
         ~ConeCollider() = default;
 
         /** Determine the radius of the cone geometry */

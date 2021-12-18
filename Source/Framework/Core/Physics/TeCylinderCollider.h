@@ -11,7 +11,7 @@ namespace te
     class TE_CORE_EXPORT CylinderCollider : public Collider
     {
     public:
-        CylinderCollider() = default;
+        CylinderCollider();
         ~CylinderCollider() = default;
 
         /** Determines the extents (half size) of the geometry of the cylinder. */

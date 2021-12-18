@@ -11,7 +11,7 @@ namespace te
     class TE_CORE_EXPORT BoxCollider : public Collider
     {
     public:
-        BoxCollider() = default;
+        BoxCollider();
         ~BoxCollider() = default;
 
         /** Determines the extents (half size) of the geometry of the box. */

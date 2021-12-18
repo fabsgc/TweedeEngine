@@ -3,8 +3,9 @@
 #include "TeCorePrerequisites.h"
 #include "Physics/TePhysicsCommon.h"
 #include "Math/TeVector3.h"
-#include "Utility/TeEvent.h"
 #include "Math/TeQuaternion.h"
+#include "Serialization/TeSerializable.h"
+#include "CoreUtility/TeCoreObject.h"
 
 namespace te
 {
@@ -15,7 +16,7 @@ namespace te
      *  - Static geometry that physics objects can collide with.
      *  - Static geometry that can't be collided with but will report touch events.
      */
-    class TE_CORE_EXPORT Collider
+    class TE_CORE_EXPORT Collider : public CoreObject, public Serializable
     {
     public:
         virtual ~Collider() = default;
@@ -66,7 +67,7 @@ namespace te
         void* GetOwner(PhysicsOwnerType type) const { return _owner.Type == type ? _owner.OwnerData : nullptr; }
 
     protected:
-        Collider() = default;
+        Collider(UINT32 type);
 
     protected:
         FCollider* _internal = nullptr;

@@ -6,6 +6,8 @@
 #include "Utility/TeEvent.h"
 #include "Math/TeVector3.h"
 #include "Math/TeQuaternion.h"
+#include "Serialization/TeSerializable.h"
+#include "CoreUtility/TeCoreObject.h"
 
 #include <cfloat>
 
@@ -22,7 +24,7 @@ namespace te
      * Base class for all Joint types. Joints constrain how two bodies move relative to one another (for example a door
      * hinge). One of the bodies in the joint must always be movable (non-kinematic).
      */
-    class TE_CORE_EXPORT Joint
+    class TE_CORE_EXPORT Joint : public CoreObject, public Serializable
     {
     public:
         virtual ~Joint() = default;
@@ -100,7 +102,7 @@ namespace te
         void* GetOwner(PhysicsOwnerType type) const { return _owner.Type == type ? _owner.OwnerData : nullptr; }
 
     protected:
-        Joint() = default;
+        Joint(UINT32 type);
 
     protected:
         PhysicsObjectOwner _owner;

@@ -6,6 +6,10 @@
 
 namespace te
 {
+    Collider::Collider(UINT32 type)
+        : Serializable(type)
+    { }
+
     void Collider::SetBody(Body* value)
     {
         _body = value;

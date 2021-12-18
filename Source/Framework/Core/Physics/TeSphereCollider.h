@@ -11,7 +11,7 @@ namespace te
     class TE_CORE_EXPORT SphereCollider : public Collider
     {
     public:
-        SphereCollider() = default;
+        SphereCollider();
         ~SphereCollider() = default;
 
         /** Determines the radius of the sphere geometry. */

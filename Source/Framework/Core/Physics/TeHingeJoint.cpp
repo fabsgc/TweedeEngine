@@ -4,7 +4,8 @@
 namespace te
 {
     HingeJoint::HingeJoint()
-        : _highLimit(0.0f)
+        : Joint(TypeID_Core::TID_HingeJoint)
+        , _highLimit(0.0f)
         , _lowLimit(0.0f)
     { }
 

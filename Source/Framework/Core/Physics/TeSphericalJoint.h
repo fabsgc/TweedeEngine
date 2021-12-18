@@ -14,7 +14,7 @@ namespace te
     class TE_CORE_EXPORT SphericalJoint : public Joint
     {
     public:
-        SphericalJoint() = default;
+        SphericalJoint();
         virtual ~SphericalJoint() = default;
 
         /** @copydoc Joint::Update */

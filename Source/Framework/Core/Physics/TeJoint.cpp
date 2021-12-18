@@ -3,6 +3,10 @@
 
 namespace te
 {
+    Joint::Joint(UINT32 type)
+        : Serializable(type)
+    { }
+
     RigidBody* Joint::GetBody(JointBody body) const
     {
         return _bodies[(int)body].BodyElt;

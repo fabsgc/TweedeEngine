@@ -11,7 +11,7 @@ namespace te
     class TE_CORE_EXPORT PlaneCollider : public Collider
     {
     public:
-        PlaneCollider() = default;
+        PlaneCollider();
         ~PlaneCollider() = default;
 
         /** Determines the normal of the plane geometry.  */

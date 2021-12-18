@@ -11,7 +11,7 @@ namespace te
     class TE_CORE_EXPORT CapsuleCollider : public Collider
     {
     public:
-        CapsuleCollider() = default;
+        CapsuleCollider();
         ~CapsuleCollider() = default;
 
         /** Determine the radius of the capsule geometry */

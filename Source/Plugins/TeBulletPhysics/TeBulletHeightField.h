@@ -3,8 +3,6 @@
 #include "TeBulletPhysicsPrerequisites.h"
 #include "Physics/TePhysicsHeightField.h"
 
-#include <cfloat>
-
 namespace te
 {
     /** Bullet implementation of a PhysicsHeightField. */

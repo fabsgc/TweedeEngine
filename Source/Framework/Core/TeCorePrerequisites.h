@@ -115,7 +115,20 @@ namespace te
         TID_FJoint                  = 1060,
         TID_FCollider               = 1061,
         TID_RigidBody               = 1062,
-        TID_SoftBody                = 1063
+        TID_SoftBody                = 1063,
+        TID_HingeJoint              = 1064,
+        TID_SliderJoint             = 1065,
+        TID_SphericalJoint          = 1066,
+        TID_D6Joint                 = 1067,
+        TID_ConeTwistJoint          = 1068,
+        TID_BoxCollider             = 1069,
+        TID_PlaneCollider           = 1070,
+        TID_SphereCollider          = 1071,
+        TID_CylinderCollider        = 1072,
+        TID_CapsuleCollider         = 1073,
+        TID_MeshCollider            = 1074,
+        TID_ConeCollider            = 1075,
+        TID_HeightFieldCollider     = 1076
     };
 }
 

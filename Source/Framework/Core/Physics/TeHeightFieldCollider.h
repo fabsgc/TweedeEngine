@@ -11,7 +11,7 @@ namespace te
     class TE_CORE_EXPORT HeightFieldCollider : public Collider
     {
     public:
-        HeightFieldCollider() = default;
+        HeightFieldCollider();
         ~HeightFieldCollider() = default;
 
         /**
