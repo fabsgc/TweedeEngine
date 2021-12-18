@@ -86,18 +86,6 @@ namespace te
         /** @copydoc Body::GetRestitution */
         float GetRestitution() const override { return _restitution; }
 
-        /** @copydoc Body::SetUseGravity */
-        void SetUseGravity(bool gravity) override;
-
-        /** @copydoc Body::GetUseGravity */
-        bool GetUseGravity() const override { return _useGravity; }
-
-        /** @copydoc Body::SetCenterOfMass */
-        void SetCenterOfMass(const Vector3& centerOfMass) override;
-
-        /** @copydoc Body::GetCenterOfMass */
-        const Vector3& GetCenterOfMass() const override { return _centerOfMass; }
-
         /** @copydoc Body::ApplyForce */
         void ApplyForce(const Vector3& force, ForceMode mode) const override;
 
@@ -146,9 +134,6 @@ namespace te
 
         /** Update kinematic bullet flag */
         void UpdateKinematicFlag() const;
-
-        /** Update gravity bullet flag */
-        void UpdateGravityFlag() const;
 
         /** Enable or disable CCD for this body */
         void UpdateCCDFlag() const;

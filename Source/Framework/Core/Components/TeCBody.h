@@ -112,18 +112,6 @@ namespace te
         /** @copydoc Body::GetRestitution */
         float GetRestitution() const { return _restitution; }
 
-        /** @copydoc Body::SetUseGravity */
-        void SetUseGravity(bool gravity);
-
-        /** @copydoc Body::GetUseGravity */
-        bool GetUseGravity() const { return _useGravity; }
-
-        /** @copydoc Body::SetCenterOfMass */
-        void SetCenterOfMass(const Vector3& centerOfMass);
-
-        /** @copydoc Body::GetCenterOfMass */
-        const Vector3& GetCenterOfMass() const { return _centerOfMass; }
-
         /** @copydoc Body::ApplyForce */
         void ApplyForce(const Vector3& force, ForceMode mode) const;
 
@@ -229,12 +217,10 @@ namespace te
         float _friction = 0.0f;
         float _rollingFriction = 0.0f;
         float _restitution = 0.0f;
-        bool _useGravity = true;
         bool _isKinematic = false;
         bool _isTrigger = false;
         bool _isDebug = true;
 
-        Vector3 _centerOfMass = Vector3::ZERO;
         Vector3 _velocity = Vector3::ZERO;
         Vector3 _angularVelocity = Vector3::ZERO;
 

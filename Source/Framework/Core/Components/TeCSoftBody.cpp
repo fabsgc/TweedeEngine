@@ -104,13 +104,11 @@ namespace te
         _internal->SetRestitution(_restitution);
         _internal->SetVelocity(_velocity);
         _internal->SetAngularVelocity(_angularVelocity);
-        _internal->SetUseGravity(_useGravity);
         _internal->SetIsKinematic(_isKinematic);
         _internal->SetIsDebug(_isDebug);
         _internal->SetFlags(_flags);
         _internal->SetCollisionReportMode(_collisionReportMode);
         _internal->SetCollisionReportMode(_collisionReportMode);
-        _internal->SetCenterOfMass(_centerOfMass);
         _internal->SetMass(_mass);
 
         std::static_pointer_cast<SoftBody>(_internal)->SetMesh(_mesh);

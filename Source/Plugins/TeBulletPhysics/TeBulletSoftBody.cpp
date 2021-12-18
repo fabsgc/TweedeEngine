@@ -219,11 +219,6 @@ namespace te
         _softBody->setRestitution(restitution);
     }
 
-    void BulletSoftBody::SetUseGravity(bool gravity)
-    {
-        // TODO
-    }
-
     void BulletSoftBody::SetFlags(BodyFlag flags)
     {
         if (_flags == flags)
@@ -231,11 +226,6 @@ namespace te
 
         _flags = flags;
         UpdateCCDFlag();
-    }
-
-    void BulletSoftBody::SetCenterOfMass(const Vector3& centerOfMass)
-    {
-        // TODO
     }
 
     void BulletSoftBody::ApplyForce(const Vector3& force, ForceMode mode) const
@@ -345,7 +335,6 @@ namespace te
         SetTransform(_position, _rotation);
 
         UpdateKinematicFlag();
-        UpdateGravityFlag();
         UpdateCCDFlag();
     }
 
@@ -417,14 +406,6 @@ namespace te
         _softBody->setCollisionFlags(flags);
         _softBody->forceActivationState(DISABLE_DEACTIVATION);
         _softBody->setDeactivationTime(DEFAULT_DEACTIVATION_TIME);
-    }
-
-    void BulletSoftBody::UpdateGravityFlag() const
-    {
-        if (!_softBody)
-            return;
-
-        // TODO
     }
 
     void BulletSoftBody::UpdateCCDFlag() const

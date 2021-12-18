@@ -44,6 +44,18 @@ namespace te
         /** @copydoc RigidBody::GetAngularFactor */
         const Vector3& GetAngularFactor() const { return _angularFactor; }
 
+        /** @copydoc RigidBody::SetUseGravity */
+        void SetUseGravity(bool gravity);
+
+        /** @copydoc RigidBody::GetUseGravity */
+        bool GetUseGravity() const { return _useGravity; }
+
+        /** @copydoc RigidBody::SetCenterOfMass */
+        void SetCenterOfMass(const Vector3& centerOfMass);
+
+        /** @copydoc RigidBody::GetCenterOfMass */
+        const Vector3& GetCenterOfMass() const { return _centerOfMass; }
+
     protected:
         friend class SceneObject;
         friend class CCollider;
@@ -139,6 +151,9 @@ namespace te
         CRigidBody(); // Serialization only
 
     protected:
+        bool _useGravity = true;
+
         Vector3 _angularFactor = Vector3::ONE;
+        Vector3 _centerOfMass = Vector3::ZERO;
     };
 }

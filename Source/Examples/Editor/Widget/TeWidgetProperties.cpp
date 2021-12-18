@@ -706,6 +706,28 @@ namespace te
 
             ImGui::Separator();
 
+            // UseGravity
+            {
+                bool useGravity = rigidBody->GetUseGravity();
+                if (ImGuiExt::RenderOptionBool(useGravity, "##body_option_use_gravity", "Use Gravity"))
+                {
+                    rigidBody->SetUseGravity(useGravity);
+                    hasChanged = true;
+                }
+            }
+            ImGui::Separator();
+
+            // Center of mass
+            {
+                Vector3 centerOfMass = rigidBody->GetCenterOfMass();
+                if (ImGuiExt::RenderVector3(centerOfMass, "##body_option_center_of_mass", " Center of Mass", 60.0f))
+                {
+                    rigidBody->SetCenterOfMass(centerOfMass);
+                    hasChanged = true;
+                }
+            }
+            ImGui::Separator();
+
             // Angular Factor
             {
                 Vector3 angularFactor = rigidBody->GetAngularFactor();
@@ -2496,20 +2518,7 @@ namespace te
             }
         }
         ImGui::Separator();
-
-        // UseGravity
-        if(body->GetCoreType() == TID_CRigidBody)
-        {
-            bool useGravity = body->GetUseGravity();
-            if (ImGuiExt::RenderOptionBool(useGravity, "##body_option_use_gravity", "Use Gravity"))
-            {
-                body->SetUseGravity(useGravity);
-                hasChanged = true;
-            }
-            ImGui::Separator();
-        }
         
-
         // Is Debug
         {
             bool isDebug = body->GetIsDebug();
@@ -2609,18 +2618,6 @@ namespace te
             if (ImGuiExt::RenderVector3(scale, "##soft_body_option_scale", " Scale", 60.0f))
             {
                 std::static_pointer_cast<CSoftBody>(body)->SetScale(scale);
-                hasChanged = true;
-            }
-            ImGui::Separator();
-        }
-
-        // Center of mass
-        if (body->GetCoreType() == TID_CRigidBody)
-        {
-            Vector3 centerOfMass = body->GetCenterOfMass();
-            if (ImGuiExt::RenderVector3(centerOfMass, "##body_option_center_of_mass", " Center of Mass", 60.0f))
-            {
-                body->SetCenterOfMass(centerOfMass);
                 hasChanged = true;
             }
             ImGui::Separator();

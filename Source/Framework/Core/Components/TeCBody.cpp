@@ -37,9 +37,7 @@ namespace te
         _friction = c->_friction;
         _rollingFriction = c->_rollingFriction;
         _restitution = c->_restitution;
-        _useGravity = c->_useGravity;
         _isKinematic = c->_isKinematic;
-        _centerOfMass = c->_centerOfMass;
         _velocity = c->_velocity;
         _angularVelocity = c->_angularVelocity;
         _collisionReportMode = c->_collisionReportMode;
@@ -155,28 +153,6 @@ namespace te
 
         if (_internal != nullptr)
             _internal->SetRollingFriction(restitution);
-    }
-
-    void CBody::SetUseGravity(bool gravity)
-    {
-        if (_useGravity == gravity)
-            return;
-
-        _useGravity = gravity;
-
-        if (_internal != nullptr)
-            _internal->SetUseGravity(gravity);
-    }
-
-    void CBody::SetCenterOfMass(const Vector3& centerOfMass)
-    {
-        if (_centerOfMass == centerOfMass)
-            return;
-
-        _centerOfMass = centerOfMass;
-
-        if (_internal != nullptr)
-            _internal->SetCenterOfMass(centerOfMass);
     }
 
     void CBody::ApplyForce(const Vector3& force, ForceMode mode) const

@@ -119,18 +119,6 @@ namespace te
         /** @copydoc GetRestitution */
         virtual float GetRestitution() const = 0;
 
-        /** Determines whether or not the body will have the global gravity force applied to it. */
-        virtual void SetUseGravity(bool gravity) = 0;
-
-        /** @copydoc SetUseGravity */
-        virtual bool GetUseGravity() const = 0;
-
-        /** Sets the body's center of mass transform. Only relevant if RigibodyFlag::AutoTensors is turned off. */
-        virtual void SetCenterOfMass(const Vector3& centerOfMass) = 0;
-
-        /** Returns the position of the center of mass. */
-        virtual const Vector3& GetCenterOfMass() const = 0;
-
         /**
          * Applies a force to the center of the mass of the body. This will produce linear momentum.
          *

@@ -42,6 +42,8 @@ namespace te
         CBody::Clone(static_object_cast<CBody>(c));
 
         _angularFactor = c->_angularFactor;
+        _useGravity = c->_useGravity;
+        _centerOfMass = c->_centerOfMass;
     }
 
     void CRigidBody::Update()
@@ -58,6 +60,28 @@ namespace te
 
         if (_internal != nullptr)
             std::static_pointer_cast<RigidBody>(_internal)->SetAngularFactor(_angularFactor);
+    }
+
+    void CRigidBody::SetUseGravity(bool gravity)
+    {
+        if (_useGravity == gravity)
+            return;
+
+        _useGravity = gravity;
+
+        if (_internal != nullptr)
+            std::static_pointer_cast<RigidBody>(_internal)->SetUseGravity(gravity);
+    }
+
+    void CRigidBody::SetCenterOfMass(const Vector3& centerOfMass)
+    {
+        if (_centerOfMass == centerOfMass)
+            return;
+
+        _centerOfMass = centerOfMass;
+
+        if (_internal != nullptr)
+            std::static_pointer_cast<RigidBody>(_internal)->SetCenterOfMass(centerOfMass);
     }
 
     void CRigidBody::OnInitialized()
@@ -98,16 +122,16 @@ namespace te
         _internal->SetRestitution(_restitution);
         _internal->SetVelocity(_velocity);
         _internal->SetAngularVelocity(_angularVelocity);
-        _internal->SetUseGravity(_useGravity);
         _internal->SetIsKinematic(_isKinematic);
         _internal->SetIsDebug(_isDebug);
         _internal->SetFlags(_flags);
         _internal->SetCollisionReportMode(_collisionReportMode);
         _internal->SetCollisionReportMode(_collisionReportMode);
-        _internal->SetCenterOfMass(_centerOfMass);
         _internal->SetMass(_mass);
 
         std::static_pointer_cast<RigidBody>(_internal)->SetAngularFactor(_angularFactor);
+        std::static_pointer_cast<RigidBody>(_internal)->SetUseGravity(_useGravity);
+        std::static_pointer_cast<RigidBody>(_internal)->SetCenterOfMass(_centerOfMass);
     }
 
     void CRigidBody::OnTransformChanged(TransformChangedFlags flags)
