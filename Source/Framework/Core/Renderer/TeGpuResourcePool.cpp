@@ -42,7 +42,7 @@ namespace te
         if (desc.Type != TEX_TYPE_3D)
             texDesc.NumArraySlices = desc.ArraySize;
 
-        newTexture->Tex = Texture::_createPtr(texDesc);
+        newTexture->Tex = Texture::CreatePtr(texDesc);
 
         if ((desc.Flag & (TU_RENDERTARGET | TU_DEPTHSTENCIL)) != 0)
         {

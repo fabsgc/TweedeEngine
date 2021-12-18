@@ -48,7 +48,7 @@ namespace te
     };
 
     BulletRigidBody::BulletRigidBody(BulletPhysics* physics, BulletScene* scene, const HSceneObject& linkedSO)
-        : RigidBody(linkedSO)
+        : RigidBody(linkedSO, TypeID_Bullet::TID_BulletRigidBody)
         , _rigidBody(nullptr)
         , _physics(physics)
         , _scene(scene)

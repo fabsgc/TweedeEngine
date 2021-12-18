@@ -28,7 +28,7 @@ namespace te
         }
     }
 
-    void BulletSphericalJoint::SetBody(JointBody body, Body* value)
+    void BulletSphericalJoint::SetBody(JointBody body, RigidBody* value)
     {
         Joint::SetBody(body, value);
         BuildJoint();
@@ -75,8 +75,8 @@ namespace te
         if (_isBroken)
             return;
 
-        Body* bodyAnchor = _bodies[(int)JointBody::Anchor].BodyElt;
-        Body* bodyTarget = _bodies[(int)JointBody::Target].BodyElt;
+        RigidBody* bodyAnchor = _bodies[(int)JointBody::Anchor].BodyElt;
+        RigidBody* bodyTarget = _bodies[(int)JointBody::Target].BodyElt;
 
         btRigidBody* btBodyAnchor = static_cast<btRigidBody*>(GetBtCollisionObject(&_bodies[(int)JointBody::Anchor]));
         btRigidBody* btBodyTarget = static_cast<btRigidBody*>(GetBtCollisionObject(&_bodies[(int)JointBody::Target]));
@@ -113,8 +113,8 @@ namespace te
             return;
         }
 
-        Body* bodyAnchor = _bodies[(int)JointBody::Anchor].BodyElt;
-        Body* bodyTarget = _bodies[(int)JointBody::Target].BodyElt;
+        RigidBody* bodyAnchor = _bodies[(int)JointBody::Anchor].BodyElt;
+        RigidBody* bodyTarget = _bodies[(int)JointBody::Target].BodyElt;
 
         btRigidBody* btBodyTarget = static_cast<btRigidBody*>(GetBtCollisionObject(&_bodies[(int)JointBody::Target]));
 

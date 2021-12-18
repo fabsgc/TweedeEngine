@@ -1,5 +1,5 @@
 #include "Components/TeCConeCollider.h"
-#include "Components/TeCBody.h"
+#include "Components/TeCRigidBody.h"
 #include "Scene/TeSceneObject.h"
 #include "Scene/TeSceneManager.h"
 

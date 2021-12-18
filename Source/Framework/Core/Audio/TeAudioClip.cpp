@@ -24,10 +24,10 @@ namespace te
 
     HAudioClip AudioClip::Create(const SPtr<DataStream>& samples, UINT32 streamSize, UINT32 numSamples, const AUDIO_CLIP_DESC& desc)
     {
-        return static_resource_cast<AudioClip>(gResourceManager()._createResourceHandle(_createPtr(samples, streamSize, numSamples, desc)));
+        return static_resource_cast<AudioClip>(gResourceManager()._createResourceHandle(CreatePtr(samples, streamSize, numSamples, desc)));
     }
 
-    SPtr<AudioClip> AudioClip::_createPtr(const SPtr<DataStream>& samples, UINT32 streamSize, UINT32 numSamples, const AUDIO_CLIP_DESC& desc)
+    SPtr<AudioClip> AudioClip::CreatePtr(const SPtr<DataStream>& samples, UINT32 streamSize, UINT32 numSamples, const AUDIO_CLIP_DESC& desc)
     {
         SPtr<AudioClip> newClip = gAudio().CreateClip(samples, streamSize, numSamples, desc);
         newClip->SetThisPtr(newClip);

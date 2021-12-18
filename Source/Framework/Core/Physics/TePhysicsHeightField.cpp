@@ -21,7 +21,7 @@ namespace te
     {
         if (texture)
         {
-            SPtr<PhysicsHeightField> newHeightField = _createPtr(texture);
+            SPtr<PhysicsHeightField> newHeightField = CreatePtr(texture);
             return static_resource_cast<PhysicsHeightField>(gResourceManager()._createResourceHandle(newHeightField));
         }
         
@@ -32,14 +32,14 @@ namespace te
     {
         if (texture.IsLoaded())
         {
-            SPtr<PhysicsHeightField> newHeightField = _createPtr(texture.GetInternalPtr());
+            SPtr<PhysicsHeightField> newHeightField = CreatePtr(texture.GetInternalPtr());
             return static_resource_cast<PhysicsHeightField>(gResourceManager()._createResourceHandle(newHeightField));
         }
 
         return HPhysicsHeightField();
     }
 
-    SPtr<PhysicsHeightField> PhysicsHeightField::_createPtr(const SPtr<Texture>& texture)
+    SPtr<PhysicsHeightField> PhysicsHeightField::CreatePtr(const SPtr<Texture>& texture)
     {
         if (texture)
         {

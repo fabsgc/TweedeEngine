@@ -19,7 +19,7 @@ namespace te
     static const float DEFAULT_DEACTIVATION_TIME = 2000;
 
     BulletSoftBody::BulletSoftBody(BulletPhysics* physics, BulletScene* scene, const HSceneObject& linkedSO)
-        : SoftBody(linkedSO)
+        : SoftBody(linkedSO, (UINT32)TypeID_Bullet::TID_BulletSoftBody)
         , _softBody(nullptr)
         , _physics(physics)
         , _scene(scene)
@@ -312,7 +312,7 @@ namespace te
             return;
         }
 
-        _softBody = _scene->CreateSoftBody(softBodyMesh);
+        _softBody = _scene->CreateBtSoftBody(softBodyMesh);
         if (_softBody)
         {
             btSoftBody::Material* material = _softBody->appendMaterial();

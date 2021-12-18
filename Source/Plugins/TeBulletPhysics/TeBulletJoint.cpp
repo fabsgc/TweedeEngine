@@ -14,8 +14,8 @@ namespace te
 
     BulletJoint::~BulletJoint()
     {
-        Body* anchorBody = _joint->GetBody(JointBody::Anchor);
-        Body* targetBody = _joint->GetBody(JointBody::Target);
+        RigidBody* anchorBody = _joint->GetBody(JointBody::Anchor);
+        RigidBody* targetBody = _joint->GetBody(JointBody::Target);
 
         if(anchorBody)
             anchorBody->RemoveJoint((Joint*)this);
@@ -25,7 +25,7 @@ namespace te
 
     btCollisionObject* BulletJoint::GetBtCollisionObject(BodyInfo* info)
     {
-        Body* body = info->BodyElt;
+        RigidBody* body = info->BodyElt;
         BulletFBody* fBody = nullptr;
 
         if (body)
@@ -38,12 +38,12 @@ namespace te
         return nullptr;
     }
 
-    Vector3 BulletJoint::GetAnchorScaledPosisition(Body* bodyAnchor, BodyInfo* info, Vector3* offsetPivot)
+    Vector3 BulletJoint::GetAnchorScaledPosisition(RigidBody* bodyAnchor, BodyInfo* info, Vector3* offsetPivot)
     {
         return info->Position[(int)JointBody::Anchor] + offsetPivot[(int)JointBody::Anchor] - bodyAnchor->GetCenterOfMass();
     }
 
-    Vector3 BulletJoint::GetTargetScaledPosisition(btCollisionObject* btCollisionObject, Body* bodyTarget, BodyInfo* info, 
+    Vector3 BulletJoint::GetTargetScaledPosisition(btCollisionObject* btCollisionObject, RigidBody* bodyTarget, BodyInfo* info, 
         Vector3* offsetPivot)
     {
         if (btCollisionObject)

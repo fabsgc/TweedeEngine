@@ -30,10 +30,10 @@ namespace te
         btCollisionObject* GetBtCollisionObject(BodyInfo* info);
 
         /** Common method to compute anchor scaled position */
-        Vector3 GetAnchorScaledPosisition(Body* bodyAnchor, BodyInfo* info, Vector3* offsetPivot);
+        Vector3 GetAnchorScaledPosisition(RigidBody* bodyAnchor, BodyInfo* info, Vector3* offsetPivot);
 
         /** Common method to compute target scaled position */
-        Vector3 GetTargetScaledPosisition(btCollisionObject* btCollisionObject, Body* bodyAnchor, BodyInfo* info, Vector3* offsetPivot);
+        Vector3 GetTargetScaledPosisition(btCollisionObject* btCollisionObject, RigidBody* bodyAnchor, BodyInfo* info, Vector3* offsetPivot);
 
         /** Common method to check if a joint is broken */
         bool IsJointBroken();

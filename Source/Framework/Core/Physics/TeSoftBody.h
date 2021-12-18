@@ -14,14 +14,6 @@ namespace te
     class TE_CORE_EXPORT SoftBody : public Body
     {
     public:
-        /**
-         * Constructs a new softbody.
-         *
-         * @param[in]	linkedSO	Scene object that owns this softbody. All physics updates applied to this object
-         *							will be transfered to this scene object (the movement/rotation resulting from
-         *							those updates).
-         */
-        SoftBody(const HSceneObject& linkedSO);
         virtual ~SoftBody() = default;
 
         /**
@@ -48,6 +40,17 @@ namespace te
          *							those updates).
          */
         static SPtr<SoftBody> Create(const HSceneObject& linkedSO);
+
+    protected:
+        /**
+         * Constructs a new softbody.
+         *
+         * @param[in]	linkedSO	Scene object that owns this softbody. All physics updates applied to this object
+         *							will be transfered to this scene object (the movement/rotation resulting from
+         *							those updates).
+         * @param[in]   type        TypeID_Core for serialization
+         */
+        SoftBody(const HSceneObject& linkedSO, UINT32 type);
 
     protected:
         HPhysicsMesh _mesh;

@@ -45,7 +45,7 @@ namespace te
         ~BulletFHeightField();
 
         /**  @copydoc Resource::GetResourceType */
-        static UINT32 GetResourceType() { return TID_FBulletHeightField; }
+        static UINT32 GetResourceType() { return TypeID_Bullet::TID_FBulletHeightField; }
 
         /** Returns height field data */
         SPtr<BulletHeightField::HeightFieldInfo> GetHeightFieldInfo() const { return _heightFieldInfo; }

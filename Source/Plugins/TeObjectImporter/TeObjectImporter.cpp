@@ -54,7 +54,7 @@ namespace te
         if (rendererMeshData)
         {
             auto path = std::filesystem::absolute(filePath);
-            SPtr<Mesh> mesh = Mesh::_createPtr(rendererMeshData->GetData(), desc);
+            SPtr<Mesh> mesh = Mesh::CreatePtr(rendererMeshData->GetData(), desc);
             mesh->SetName(path.filename().generic_string());
             mesh->SetPath(path.generic_string());
 
@@ -79,7 +79,7 @@ namespace te
         if (rendererMeshData)
         {
             auto path = std::filesystem::absolute(filePath);
-            SPtr<Mesh> mesh = Mesh::_createPtr(rendererMeshData->GetData(), desc);
+            SPtr<Mesh> mesh = Mesh::CreatePtr(rendererMeshData->GetData(), desc);
             mesh->SetName(path.filename().generic_string());
             mesh->SetPath(path.generic_string());
 
@@ -91,7 +91,7 @@ namespace te
                 {
                     if (Physics::IsStarted())
                     {
-                        SPtr<PhysicsMesh> physicsMesh = PhysicsMesh::_createPtr(rendererMeshData->GetData());
+                        SPtr<PhysicsMesh> physicsMesh = PhysicsMesh::CreatePtr(rendererMeshData->GetData());
 
                         if (physicsMesh)
                         {
@@ -112,7 +112,7 @@ namespace te
                 Vector<ImportedAnimationEvents> events = meshImportOptions->AnimationEvents;
                 for (auto& entry : animationClips)
                 {
-                    SPtr<AnimationClip> clip = AnimationClip::_createPtr(entry.Curves, entry.SampleRate, entry.IsAdditive, entry.RootMot);
+                    SPtr<AnimationClip> clip = AnimationClip::CreatePtr(entry.Curves, entry.SampleRate, entry.IsAdditive, entry.RootMot);
                     clip->SetName(entry.Name);
                     clip->SetPath(path.generic_string());
 

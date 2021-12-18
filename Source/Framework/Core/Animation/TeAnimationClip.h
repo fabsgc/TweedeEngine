@@ -229,9 +229,8 @@ namespace te
         static HAnimationClip Create(const SPtr<AnimationCurves>& curves, bool isAdditive = false, float sampleRate = 1.0f,
             const SPtr<RootMotion>& rootMotion = nullptr);
 
-    public:
-        /** Creates a new AnimationClip without initializing it. Use create() for normal use. */
-        static SPtr<AnimationClip> _createPtr(const SPtr<AnimationCurves>& curves, bool isAdditive = false,
+        /** Creates a new AnimationClip without initializing it. Use Create() for normal use. */
+        static SPtr<AnimationClip> CreatePtr(const SPtr<AnimationCurves>& curves, bool isAdditive = false,
             float sampleRate = 1.0f, const SPtr<RootMotion>& rootMotion = nullptr);
 
     protected:

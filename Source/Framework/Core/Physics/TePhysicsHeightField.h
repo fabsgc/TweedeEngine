@@ -42,7 +42,7 @@ namespace te
          *
          * For internal use. Requires manual initialization after creation.
          */
-        static SPtr<PhysicsHeightField> _createPtr(const SPtr<Texture>& texture);
+        static SPtr<PhysicsHeightField> CreatePtr(const SPtr<Texture>& texture);
 
         /** Returns the internal implementation of the physics height field. */
         virtual FPhysicsHeightField* _getInternal() { return _internal.get(); }

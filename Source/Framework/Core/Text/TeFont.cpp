@@ -30,11 +30,11 @@ namespace te
 
     HFont Font::Create(const Vector<SPtr<FontBitmap>>& fontData)
     {
-        SPtr<Font> newFont = _createPtr(fontData);
+        SPtr<Font> newFont = CreatePtr(fontData);
         return static_resource_cast<Font>(gResourceManager()._createResourceHandle(newFont));
     }
 
-    SPtr<Font> Font::_createPtr(const Vector<SPtr<FontBitmap>>& fontData)
+    SPtr<Font> Font::CreatePtr(const Vector<SPtr<FontBitmap>>& fontData)
     {
         SPtr<Font> newFont = te_core_ptr<Font>(new (te_allocate<Font>()) Font());
         newFont->SetThisPtr(newFont);
@@ -43,7 +43,7 @@ namespace te
         return newFont;
     }
 
-    SPtr<Font> Font::_createEmpty()
+    SPtr<Font> Font::CreateEmpty()
     {
         SPtr<Font> newFont = te_core_ptr<Font>(new (te_allocate<Font>()) Font());
         newFont->SetThisPtr(newFont);

@@ -402,12 +402,18 @@ namespace te
 
     SPtr<RigidBody> BulletScene::CreateRigidBody(const HSceneObject& linkedSO)
     {
-        return te_shared_ptr_new<BulletRigidBody>(_physics, this, linkedSO);
+        SPtr<RigidBody> body = te_core_ptr_new<BulletRigidBody>(_physics, this, linkedSO);
+        body->SetThisPtr(body);
+
+        return body;
     }
 
     SPtr<SoftBody> BulletScene::CreateSoftBody(const HSceneObject& linkedSO)
     {
-        return te_shared_ptr_new<BulletSoftBody>(_physics, this, linkedSO);
+        SPtr<SoftBody> body = te_core_ptr_new<BulletSoftBody>(_physics, this, linkedSO);
+        body->SetThisPtr(body);
+
+        return body;
     }
 
     SPtr<ConeTwistJoint> BulletScene::CreateConeTwistJoint()
@@ -661,7 +667,7 @@ namespace te
         return hits.size() > 0;
     }
 
-    btSoftBody* BulletScene::CreateSoftBody(const SPtr<BulletMesh::SoftBodyMesh>& mesh) const
+    btSoftBody* BulletScene::CreateBtSoftBody(const SPtr<BulletMesh::SoftBodyMesh>& mesh) const
     {
         if (!_worldInfo)
             return nullptr;

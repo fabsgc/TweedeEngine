@@ -38,7 +38,7 @@ namespace te
          *
          * For internal use. Requires manual initialization after creation.
          */
-        static SPtr<PhysicsMesh> _createPtr(const SPtr<MeshData>& meshData);
+        static SPtr<PhysicsMesh> CreatePtr(const SPtr<MeshData>& meshData);
 
         /** Returns the internal implementation of the physics mesh. */
         virtual FPhysicsMesh* _getInternal() { return _internal.get(); }

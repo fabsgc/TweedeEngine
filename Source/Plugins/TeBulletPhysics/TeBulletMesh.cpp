@@ -25,11 +25,11 @@ namespace te
     }
 
     BulletFMesh::BulletFMesh()
-        : FPhysicsMesh(nullptr, TID_FBulletMesh)
+        : FPhysicsMesh(nullptr, TypeID_Bullet::TID_FBulletMesh)
     { }
 
     BulletFMesh::BulletFMesh(const SPtr<MeshData>& meshData)
-        : FPhysicsMesh(meshData, TID_FBulletMesh)
+        : FPhysicsMesh(meshData, TypeID_Bullet::TID_FBulletMesh)
     {
         Initialize();
     }

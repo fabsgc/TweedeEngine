@@ -79,7 +79,7 @@ namespace te
 #endif
 
         auto path = std::filesystem::absolute(filePath);
-        SPtr<Shader> shader = Shader::_createPtr("shader", SHADER_DESC());
+        SPtr<Shader> shader = Shader::CreatePtr("shader", SHADER_DESC());
         shader->SetName(path.filename().generic_string());
         shader->SetPath(path.generic_string());
 

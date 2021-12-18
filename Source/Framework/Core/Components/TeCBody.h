@@ -162,16 +162,6 @@ namespace te
 
     protected:
         friend class SceneObject;
-        friend class CCollider;
-        friend class CBoxCollider;
-        friend class CCapsuleCollider;
-        friend class CConeCollider;
-        friend class CCylinderCollider;
-        friend class CMeshCollider;
-        friend class CPlaneCollider;
-        friend class CSphereCollider;
-        friend class CHeightFieldCollider;
-        friend class CJoint;
 
         using Component::DestroyInternal;
 

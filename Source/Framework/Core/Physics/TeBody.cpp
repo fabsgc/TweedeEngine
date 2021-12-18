@@ -5,8 +5,9 @@
 
 namespace te
 { 
-    Body::Body(const HSceneObject& linkedSO)
-        : _flags(BodyFlag::None)
+    Body::Body(const HSceneObject& linkedSO, UINT32 type)
+        : Serializable(type)
+        , _flags(BodyFlag::None)
         , _linkedSO(linkedSO)
     { }
 

@@ -1,5 +1,5 @@
 #include "Components/TeCPlaneCollider.h"
-#include "Components/TeCBody.h"
+#include "Components/TeCRigidBody.h"
 #include "Scene/TeSceneObject.h"
 #include "Scene/TeSceneManager.h"
 
@@ -34,7 +34,7 @@ namespace te
         SetNormal(_normal);
     }
 
-    bool CPlaneCollider::IsValidParent(const HBody& parent) const
+    bool CPlaneCollider::IsValidParent(const HRigidBody& parent) const
     {
         // Planes cannot be added to non-kinematic rigidbodies
         return parent->GetIsKinematic();

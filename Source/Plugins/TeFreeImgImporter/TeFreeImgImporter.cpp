@@ -211,7 +211,7 @@ namespace te
                 texDesc.NumMips = std::min(maxPossibleMip, textureImportOptions->MaxMip);
         }
 
-        SPtr<Texture> texture = Texture::_createPtr(texDesc);
+        SPtr<Texture> texture = Texture::CreatePtr(texDesc);
 
         UINT32 numFaces = (UINT32)faceData.size();
         for (UINT32 i = 0; i < numFaces; i++)

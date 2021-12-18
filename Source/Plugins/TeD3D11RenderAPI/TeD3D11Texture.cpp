@@ -163,7 +163,7 @@ namespace te
                 tempDesc.Format = _properties.GetFormat();
                 tempDesc.HwGamma = _properties.IsHardwareGammaEnabled();
 
-                SPtr<D3D11Texture> temporary = std::static_pointer_cast<D3D11Texture>(Texture::_createPtr(tempDesc));
+                SPtr<D3D11Texture> temporary = std::static_pointer_cast<D3D11Texture>(Texture::CreatePtr(tempDesc));
                 device.GetImmediateContext()->ResolveSubresource(temporary->GetDX11Resource(), 0, _tex, srcResIdx, _DXGIFormat);
 
                 TEXTURE_COPY_DESC tempCopyDesc;

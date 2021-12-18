@@ -225,21 +225,21 @@ namespace te
          *
          * @note    Internal method. Use create() for normal use.
          */
-        static SPtr<Mesh> _createPtr(const MESH_DESC& desc, GpuDeviceFlags deviceMask = GDF_DEFAULT);
+        static SPtr<Mesh> CreatePtr(const MESH_DESC& desc, GpuDeviceFlags deviceMask = GDF_DEFAULT);
 
         /**
          * @copydoc Create(const SPtr<MeshData>&, const MESH_DESC&)
          *
          * @note    Internal method. Use create() for normal use.
          */
-        static SPtr<Mesh> _createPtr(const SPtr<MeshData>& initialData, const MESH_DESC& desc, GpuDeviceFlags deviceMask = GDF_DEFAULT);
+        static SPtr<Mesh> CreatePtr(const SPtr<MeshData>& initialData, const MESH_DESC& desc, GpuDeviceFlags deviceMask = GDF_DEFAULT);
 
         /**
          * @copydoc Create(const SPtr<MeshData>&, int, DrawOperationType)
          *
          * @note    Internal method. Use create() for normal use.
          */
-        static SPtr<Mesh> _createPtr(const SPtr<MeshData>& initialData, int usage = MU_STATIC,
+        static SPtr<Mesh> CreatePtr(const SPtr<MeshData>& initialData, int usage = MU_STATIC,
             DrawOperationType drawOp = DOT_TRIANGLE_LIST, GpuDeviceFlags deviceMask = GDF_DEFAULT);
 
         /**

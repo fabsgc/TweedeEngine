@@ -3,12 +3,12 @@
 
 namespace te
 {
-    Body* Joint::GetBody(JointBody body) const
+    RigidBody* Joint::GetBody(JointBody body) const
     {
         return _bodies[(int)body].BodyElt;
     }
 
-    void Joint::SetBody(JointBody body, Body* value)
+    void Joint::SetBody(JointBody body, RigidBody* value)
     {
         _bodies[(int)body].BodyElt = value;
     }

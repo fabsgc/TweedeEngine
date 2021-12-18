@@ -309,7 +309,7 @@ namespace te
         return shader;
     }
 
-    SPtr<Shader> Shader::_createPtr(const String& name, const SHADER_DESC& desc)
+    SPtr<Shader> Shader::CreatePtr(const String& name, const SHADER_DESC& desc)
     {
         UINT32 id = Shader::NextShaderId.fetch_add(1, std::memory_order_relaxed);
         assert(id < std::numeric_limits<UINT32>::max() && "Created too many shaders, reached maximum id.");

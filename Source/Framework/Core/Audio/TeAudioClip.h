@@ -112,7 +112,7 @@ namespace te
     public: // ***** INTERNAL ******
 
         /** Creates a new AudioClip without initializing it. Use create() for normal use. */
-        static SPtr<AudioClip> _createPtr(const SPtr<DataStream>& samples, UINT32 streamSize, UINT32 numSamples,
+        static SPtr<AudioClip> CreatePtr(const SPtr<DataStream>& samples, UINT32 streamSize, UINT32 numSamples,
             const AUDIO_CLIP_DESC& desc);
 
         /** @} */

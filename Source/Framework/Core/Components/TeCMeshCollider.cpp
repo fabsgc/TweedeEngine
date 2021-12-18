@@ -1,5 +1,5 @@
 #include "Components/TeCMeshCollider.h"
-#include "Components/TeCBody.h"
+#include "Components/TeCRigidBody.h"
 #include "Scene/TeSceneObject.h"
 #include "Scene/TeSceneManager.h"
 
@@ -33,7 +33,7 @@ namespace te
         CCollider::RestoreInternal();
     }
 
-    bool CMeshCollider::IsValidParent(const HBody& parent) const
+    bool CMeshCollider::IsValidParent(const HRigidBody& parent) const
     {
         return _mesh.IsLoaded();
     }

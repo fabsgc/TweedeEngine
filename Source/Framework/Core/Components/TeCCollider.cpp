@@ -176,7 +176,7 @@ namespace te
         }
     }
 
-    void CCollider::SetBody(const HBody& body, bool internal)
+    void CCollider::SetBody(const HRigidBody& body, bool internal)
     { 
         //if (body == _parent)
         //    return;
@@ -205,13 +205,13 @@ namespace te
         HSceneObject currentSO = SO();
         while (currentSO != nullptr)
         {
-            HBody parent = static_object_cast<CBody>(currentSO->GetComponent<CRigidBody>());
+            HRigidBody parent = static_object_cast<CRigidBody>(currentSO->GetComponent<CRigidBody>());
             if (parent != nullptr)
             {
                 if (currentSO->GetActive() && IsValidParent(parent))
                     SetBody(parent);
                 else
-                    SetBody(HBody());
+                    SetBody(HRigidBody());
 
                 return;
             }
@@ -220,6 +220,6 @@ namespace te
         }
 
         // Not found
-        SetBody(HBody());
+        SetBody(HRigidBody());
     }
 }

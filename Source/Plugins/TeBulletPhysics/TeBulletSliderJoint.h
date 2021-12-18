@@ -17,7 +17,7 @@ namespace te
         void Update() override;
 
         /** @copydoc Joint::SetBody */
-        void SetBody(JointBody body, Body* value) override;
+        void SetBody(JointBody body, RigidBody* value) override;
 
         /** @copydoc Joint::SetTransform  */
         void SetTransform(JointBody body, const Vector3& position, const Quaternion& rotation) override;

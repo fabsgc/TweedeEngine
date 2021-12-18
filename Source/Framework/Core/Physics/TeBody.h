@@ -1,6 +1,8 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
+#include "Serialization/TeSerializable.h"
+#include "CoreUtility/TeCoreObject.h"
 #include "Physics/TePhysicsCommon.h"
 #include "Utility/TeEvent.h"
 
@@ -33,10 +35,9 @@ namespace te
     /**
      * Base class for all Body types such as RigidBody and SoftBody
      */
-    class TE_CORE_EXPORT Body
+    class TE_CORE_EXPORT Body : public CoreObject, public Serializable
     {
     public:
-        Body(const HSceneObject& linkedSO);
         virtual ~Body() = default;
 
         /** Allows to be able to update body state */
@@ -266,6 +267,9 @@ namespace te
          * high level physics objects from the low level ones returned by various queries and events.
          */
         void* GetOwner(PhysicsOwnerType type) const { return _owner.Type == type ? _owner.OwnerData : nullptr; }
+
+    protected:
+        Body(const HSceneObject& linkedSO, UINT32 type);
 
     protected:
         FBody* _internal = nullptr;

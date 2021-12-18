@@ -273,7 +273,7 @@ namespace te
          *
          * @note	Internal method. Use Create() for normal use.
          */
-        static SPtr<Shader> _createPtr(const String& name, const SHADER_DESC& desc);
+        static SPtr<Shader> CreatePtr(const String& name, const SHADER_DESC& desc);
 
     public:
         /**	Checks is the provided object type a sampler. */

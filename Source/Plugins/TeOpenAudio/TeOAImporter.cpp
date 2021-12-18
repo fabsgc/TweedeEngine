@@ -136,7 +136,7 @@ namespace te
         clipDesc.Is3D = clipIO->Is3D;
 
         auto path = std::filesystem::absolute(filePath);
-        SPtr<AudioClip> clip = AudioClip::_createPtr(sampleStream, bufferSize, info.NumSamples, clipDesc);
+        SPtr<AudioClip> clip = AudioClip::CreatePtr(sampleStream, bufferSize, info.NumSamples, clipDesc);
         clip->SetName(path.filename().generic_string());
         clip->SetPath(path.generic_string());
 

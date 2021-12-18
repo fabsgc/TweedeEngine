@@ -55,11 +55,11 @@ namespace te
     }
 
     BulletFHeightField::BulletFHeightField()
-        : FPhysicsHeightField(nullptr, TID_FBulletHeightField)
+        : FPhysicsHeightField(nullptr, TypeID_Bullet::TID_FBulletHeightField)
     { }
 
     BulletFHeightField::BulletFHeightField(const SPtr<Texture>& texture)
-        : FPhysicsHeightField(texture, TID_FBulletHeightField)
+        : FPhysicsHeightField(texture, TypeID_Bullet::TID_FBulletHeightField)
     {
         Initialize();
     }

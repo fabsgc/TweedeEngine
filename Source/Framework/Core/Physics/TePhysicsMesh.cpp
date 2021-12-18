@@ -20,14 +20,14 @@ namespace te
     {
         if (meshData)
         {
-            SPtr<PhysicsMesh> newMesh = _createPtr(meshData);
+            SPtr<PhysicsMesh> newMesh = CreatePtr(meshData);
             return static_resource_cast<PhysicsMesh>(gResourceManager()._createResourceHandle(newMesh));
         }
 
         return HPhysicsMesh();
     }
 
-    SPtr<PhysicsMesh> PhysicsMesh::_createPtr(const SPtr<MeshData>& meshData)
+    SPtr<PhysicsMesh> PhysicsMesh::CreatePtr(const SPtr<MeshData>& meshData)
     {
         if (meshData)
         {

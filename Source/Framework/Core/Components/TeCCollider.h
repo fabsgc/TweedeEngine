@@ -59,7 +59,7 @@ namespace te
         const Quaternion& GetRotation() const { return _rotation; }
 
         /** @copydoc Collider::GetBody */
-        HBody GetBody() const { return _parent; }
+        HRigidBody GetBody() const { return _parent; }
 
          /** Returns the Collider implementation wrapped by this component. */
         Collider* GetInternal() const { return _internal.get(); }
@@ -96,10 +96,10 @@ namespace te
         virtual void DestroyInternal();
 
         /**
-         * Checks is the provided rigidbody a valid parent for this collider.
+         * Checks is the provided rigidbody is a valid parent for this collider.
          *
          * @note This is required because certain colliders are limited in how they can be used. */
-        virtual bool IsValidParent(const HBody& parent) const { return true; }
+        virtual bool IsValidParent(const HRigidBody& parent) const { return true; }
 
         /**
          * Changes the rigidbody parent of the collider. Meant to be called from the Rigidbody itself.
@@ -108,7 +108,7 @@ namespace te
          * @param[in] internal		If true the rigidbody will just be changed internally, but parent rigidbody will not be
          *							notified.
          */
-        void SetBody(const HBody& body, bool internal = false);
+        void SetBody(const HRigidBody& body, bool internal = false);
 
         /** Searches the parent scene object hierarchy to find a parent Rigidbody component. */
         void UpdateParentBody();
@@ -119,7 +119,7 @@ namespace te
 
     protected:
         SPtr<Collider> _internal;
-        HBody _parent;
+        HRigidBody _parent;
 
         Vector3 _scale = Vector3::ONE;
         Vector3 _center = Vector3::ZERO;

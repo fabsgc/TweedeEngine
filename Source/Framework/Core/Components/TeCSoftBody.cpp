@@ -167,7 +167,7 @@ namespace te
     void CSoftBody::ClearColliders()
     {
         for (auto& collider : _colliders)
-            collider->SetBody(HBody(), true);
+            collider->SetBody(HRigidBody(), true);
 
         _colliders.clear();
 
@@ -198,7 +198,7 @@ namespace te
         _joints.clear();
 
         for (auto& joint : _backupJoints)
-            joint.JointElt->SetBody(joint.JointBodyType, HBody());
+            joint.JointElt->SetBody(joint.JointBodyType, HRigidBody());
 
         if (_internal != nullptr)
             _internal->RemoveJoints();

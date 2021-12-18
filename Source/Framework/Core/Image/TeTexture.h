@@ -191,7 +191,6 @@ namespace te
     class TE_CORE_EXPORT Texture : public Resource
     {
     public:
-        Texture();
         virtual ~Texture() = default;
 
         /** @copydoc CoreObject::Initialize */
@@ -305,10 +304,10 @@ namespace te
         static HTexture Create(const SPtr<PixelData>& pixelData, int usage = TU_DEFAULT, bool hwGammaCorrection = false);
 
         /** Same as create() excepts it creates a pointer to the texture instead of a texture handle. */
-        static SPtr<Texture> _createPtr(const TEXTURE_DESC& desc);
+        static SPtr<Texture> CreatePtr(const TEXTURE_DESC& desc);
 
         /** Same as create() excepts it creates a pointer to the texture instead of a texture handle. */
-        static SPtr<Texture> _createPtr(const SPtr<PixelData>& pixelData, int usage = TU_DEFAULT, bool hwGammaCorrection = false);
+        static SPtr<Texture> CreatePtr(const SPtr<PixelData>& pixelData, int usage = TU_DEFAULT, bool hwGammaCorrection = false);
 
         /**
          * Requests a texture view for the specified mip and array ranges. Returns an existing view of one for the specified
@@ -328,6 +327,7 @@ namespace te
     protected:
         friend class TextureManager;
 
+        Texture();
         Texture(const TEXTURE_DESC& desc);
         Texture(const TEXTURE_DESC& desc, const SPtr<PixelData>& pixelData);
 

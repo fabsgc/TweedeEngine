@@ -47,6 +47,14 @@ namespace te
     protected:
         friend class SceneObject;
         friend class CCollider;
+        friend class CBoxCollider;
+        friend class CCapsuleCollider;
+        friend class CConeCollider;
+        friend class CCylinderCollider;
+        friend class CMeshCollider;
+        friend class CPlaneCollider;
+        friend class CSphereCollider;
+        friend class CHeightFieldCollider;
         friend class CJoint;
 
         /** @copydoc Component::OnInitialized */
@@ -97,7 +105,7 @@ namespace te
             {
                 auto component = static_object_cast<CCollider>(entry);
 
-                if (!component->IsValidParent(static_object_cast<CBody>(_thisHandle)))
+                if (!component->IsValidParent(static_object_cast<CRigidBody>(_thisHandle)))
                     continue;
 
                 Collider* collider = component->GetInternal();
@@ -109,7 +117,7 @@ namespace te
                 }
                 else
                 {
-                    component->SetBody(static_object_cast<CBody>(_thisHandle), true);
+                    component->SetBody(static_object_cast<CRigidBody>(_thisHandle), true);
                     AddCollider(component);
                 }
             }

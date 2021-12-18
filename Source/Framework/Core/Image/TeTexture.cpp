@@ -328,24 +328,24 @@ namespace te
 
     HTexture Texture::Create(const TEXTURE_DESC& desc)
     {
-        SPtr<Texture> texturePtr = _createPtr(desc);
+        SPtr<Texture> texturePtr = CreatePtr(desc);
 
         return static_resource_cast<Texture>(gResourceManager()._createResourceHandle(texturePtr));
     }
 
     HTexture Texture::Create(const SPtr<PixelData>& pixelData, int usage, bool hwGammaCorrection)
     {
-        SPtr<Texture> texturePtr = _createPtr(pixelData, usage, hwGammaCorrection);
+        SPtr<Texture> texturePtr = CreatePtr(pixelData, usage, hwGammaCorrection);
 
         return static_resource_cast<Texture>(gResourceManager()._createResourceHandle(texturePtr));
     }
 
-    SPtr<Texture> Texture::_createPtr(const TEXTURE_DESC& desc)
+    SPtr<Texture> Texture::CreatePtr(const TEXTURE_DESC& desc)
     {
         return TextureManager::Instance().CreateTexture(desc);
     }
 
-    SPtr<Texture> Texture::_createPtr(const SPtr<PixelData>& pixelData, int usage, bool hwGammaCorrection)
+    SPtr<Texture> Texture::CreatePtr(const SPtr<PixelData>& pixelData, int usage, bool hwGammaCorrection)
     {
         TEXTURE_DESC desc;
         desc.Type = pixelData->GetDepth() > 1 ? TEX_TYPE_3D : TEX_TYPE_2D;

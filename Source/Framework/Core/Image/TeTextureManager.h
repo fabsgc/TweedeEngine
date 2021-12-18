@@ -21,7 +21,7 @@ namespace te
         /** @copydoc Module::OnShutDown */
         void OnShutDown() override;
 
-        /** @copydoc Texture::create(const TEXTURE_DESC&) */
+        /** @copydoc Texture::Create(const TEXTURE_DESC&) */
         SPtr<Texture> CreateTexture(const TEXTURE_DESC& desc);
 
         /**

@@ -245,19 +245,19 @@ namespace te
 
     HMesh Mesh::Create(const MESH_DESC& desc, GpuDeviceFlags deviceMask)
     {
-        SPtr<Mesh> meshPtr = _createPtr(desc);
+        SPtr<Mesh> meshPtr = CreatePtr(desc);
         return static_resource_cast<Mesh>(gResourceManager()._createResourceHandle(meshPtr));
     }
 
     HMesh Mesh::Create(const SPtr<MeshData>& initialMeshData, const MESH_DESC& desc, GpuDeviceFlags deviceMask)
     {
-        SPtr<Mesh> meshPtr = _createPtr(initialMeshData, desc);
+        SPtr<Mesh> meshPtr = CreatePtr(initialMeshData, desc);
         return static_resource_cast<Mesh>(gResourceManager()._createResourceHandle(meshPtr));
     }
 
     HMesh Mesh::Create(const SPtr<MeshData>& initialMeshData, int usage, DrawOperationType drawOp, GpuDeviceFlags deviceMask)
     {
-        SPtr<Mesh> meshPtr = _createPtr(initialMeshData, usage, drawOp);
+        SPtr<Mesh> meshPtr = CreatePtr(initialMeshData, usage, drawOp);
         return static_resource_cast<Mesh>(gResourceManager()._createResourceHandle(meshPtr));
     }
 
@@ -272,11 +272,11 @@ namespace te
         desc.SubMeshes.push_back(SubMesh(0, numIndices, drawOp));
         desc.IndType = indexType;
 
-        SPtr<Mesh> meshPtr = _createPtr(desc, deviceMask);
+        SPtr<Mesh> meshPtr = CreatePtr(desc, deviceMask);
         return static_resource_cast<Mesh>(gResourceManager()._createResourceHandle(meshPtr));
     }
 
-    SPtr<Mesh> Mesh::_createPtr(const MESH_DESC& desc, GpuDeviceFlags deviceMask)
+    SPtr<Mesh> Mesh::CreatePtr(const MESH_DESC& desc, GpuDeviceFlags deviceMask)
     {
         SPtr<Mesh> mesh = te_core_ptr<Mesh>(new (te_allocate<Mesh>()) Mesh(desc, deviceMask));
         mesh->SetThisPtr(mesh);
@@ -285,7 +285,7 @@ namespace te
         return mesh;
     }
 
-    SPtr<Mesh> Mesh::_createPtr(const SPtr<MeshData>& initialMeshData, const MESH_DESC& desc, GpuDeviceFlags deviceMask)
+    SPtr<Mesh> Mesh::CreatePtr(const SPtr<MeshData>& initialMeshData, const MESH_DESC& desc, GpuDeviceFlags deviceMask)
     {
         SPtr<Mesh> mesh = te_core_ptr<Mesh>(new (te_allocate<Mesh>()) Mesh(initialMeshData, desc, deviceMask));
         mesh->SetThisPtr(mesh);
@@ -294,7 +294,7 @@ namespace te
         return mesh;
     }
 
-    SPtr<Mesh> Mesh::_createPtr(const SPtr<MeshData>& initialMeshData, int usage, DrawOperationType drawOp, GpuDeviceFlags deviceMask)
+    SPtr<Mesh> Mesh::CreatePtr(const SPtr<MeshData>& initialMeshData, int usage, DrawOperationType drawOp, GpuDeviceFlags deviceMask)
     {
         MESH_DESC desc;
         desc.Usage = usage;

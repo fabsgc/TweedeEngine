@@ -201,8 +201,8 @@ namespace te
         bool RayCast(const Vector3& origin, const Vector3& unitDir, Vector<PhysicsQueryHit>& hits,
             float maxDist = FLT_MAX) const override;
 
-        /** Create a SoftBody from a PhysicsMesh */
-        btSoftBody* CreateSoftBody(const SPtr<BulletMesh::SoftBodyMesh>& mesh) const;
+        /** Create a btSoftBody from a PhysicsMesh */
+        btSoftBody* CreateBtSoftBody(const SPtr<BulletMesh::SoftBodyMesh>& mesh) const;
 
     private:
         friend class BulletPhysics;

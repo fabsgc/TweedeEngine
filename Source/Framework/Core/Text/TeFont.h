@@ -56,10 +56,10 @@ namespace te
         static HFont Create(const Vector<SPtr<FontBitmap>>& fontInitData);
 
         /** Creates a new font as a pointer instead of a resource handle. */
-        static SPtr<Font> _createPtr(const Vector<SPtr<FontBitmap>>& fontInitData);
+        static SPtr<Font> CreatePtr(const Vector<SPtr<FontBitmap>>& fontInitData);
 
         /** Creates a Font without initializing it. */
-        static SPtr<Font> _createEmpty();
+        static SPtr<Font> CreateEmpty();
 
         // TODO
 

@@ -11,7 +11,6 @@ namespace te
     class TE_CORE_EXPORT Resource : public CoreObject, public Serializable, public NonCopyable
     {
     public:
-        Resource(UINT32 type);
         virtual ~Resource() = default;
 
         /** Returns the name of the resource. */
@@ -38,6 +37,8 @@ namespace te
     protected:
         friend class ResourceManager;
         friend class ResourceHandleBase;
+
+        Resource(UINT32 type);
 
     protected:
         String _name;

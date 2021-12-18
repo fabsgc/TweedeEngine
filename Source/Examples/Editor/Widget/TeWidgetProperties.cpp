@@ -2720,7 +2720,7 @@ namespace te
 
         // Body Target
         {
-            HBody body = joint->GetBody(JointBody::Target);
+            HRigidBody body = joint->GetBody(JointBody::Target);
             UUID bodyUUID = (body) ? body->GetUUID() : emptyBody;
             if (ImGuiExt::RenderOptionCombo<UUID>(&bodyUUID,
                 "##joint_option_target_body", "Target Body", bodiesOptions, width))
@@ -2741,7 +2741,7 @@ namespace te
 
         // Body Anchor
         {
-            HBody body = joint->GetBody(JointBody::Anchor);
+            HRigidBody body = joint->GetBody(JointBody::Anchor);
             UUID bodyUUID = (body) ? body->GetUUID() : emptyBody;
             if (ImGuiExt::RenderOptionCombo<UUID>(&bodyUUID,
                 "##joint_option_anchor_body", "Anchor Body", bodiesOptions, width))

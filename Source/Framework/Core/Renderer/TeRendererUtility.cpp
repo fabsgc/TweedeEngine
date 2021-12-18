@@ -69,7 +69,7 @@ namespace te
             ShapeMeshes3D::SolidAABox(localBox, positionData, nullptr, nullptr, 0,
                 vertexDesc->GetVertexStride(), indexData, 0);
 
-            _skyBoxMesh = Mesh::_createPtr(meshData);
+            _skyBoxMesh = Mesh::CreatePtr(meshData);
         }
     }
 

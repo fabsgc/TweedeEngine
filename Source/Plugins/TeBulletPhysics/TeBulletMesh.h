@@ -53,7 +53,7 @@ namespace te
         ~BulletFMesh();
 
         /**  @copydoc Resource::GetResourceType */
-        static UINT32 GetResourceType() { return TID_FBulletMesh; }
+        static UINT32 GetResourceType() { return TypeID_Bullet::TID_FBulletMesh; }
 
         /** Returns convex mesh generated data */
         SPtr<BulletMesh::ConvexMesh> GetConvexMesh() const { return _convexMesh; }

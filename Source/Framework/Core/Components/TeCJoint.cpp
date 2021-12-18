@@ -70,12 +70,12 @@ namespace te
             _internal->Update();
     }
 
-    HBody CJoint::GetBody(JointBody body) const
+    HRigidBody CJoint::GetBody(JointBody body) const
     {
         return _bodies[(int)body];
     }
 
-    void CJoint::SetBody(JointBody body, const HBody& value)
+    void CJoint::SetBody(JointBody body, const HRigidBody& value)
     {
         if (value->GetComponentType() != (UINT32)TID_CRigidBody)
             return;
@@ -114,16 +114,6 @@ namespace te
 
         if (value != nullptr)
             _bodies[(int)body]->AddJoint(body, static_object_cast<CJoint>(_thisHandle));
-    }
-
-    void CJoint::SetBody(JointBody body, const HRigidBody& value)
-    {
-        SetBody(body, static_object_cast<CBody>(value));
-    }
-
-    void CJoint::SetBody(JointBody body, const HSoftBody& value)
-    {
-        return; // Can't add SoftBody as Joint
     }
 
     Vector3 CJoint::GetPosition(JointBody body) const
@@ -333,7 +323,7 @@ namespace te
         position = _positions[(UINT32)body];
         rotation = _rotations[(UINT32)body];
 
-        HBody rigidbody = _bodies[(UINT32)body];
+        HRigidBody rigidbody = _bodies[(UINT32)body];
         if (rigidbody == nullptr) // Get world space transform if no relative to any body
         {
             const Transform& tfrm = SO()->GetTransform();
@@ -365,7 +355,7 @@ namespace te
             assert(false); // Not allowed to happen
     }
 
-    bool CJoint::IsBodyValid(const HBody& body)
+    bool CJoint::IsBodyValid(const HRigidBody& body)
     {
         if (body == nullptr)
             return false;

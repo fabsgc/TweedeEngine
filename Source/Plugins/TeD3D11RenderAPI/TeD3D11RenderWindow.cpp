@@ -434,7 +434,7 @@ namespace te
             texDesc.Usage = TU_DEPTHSTENCIL;
             texDesc.NumSamples = GetProperties().MultisampleCount;
 
-            _depthStencilBuffer = Texture::_createPtr(texDesc);
+            _depthStencilBuffer = Texture::CreatePtr(texDesc);
             _depthStencilView = _depthStencilBuffer->RequestView(0, 1, 0, 1, GVU_DEPTHSTENCIL);
         }
         else

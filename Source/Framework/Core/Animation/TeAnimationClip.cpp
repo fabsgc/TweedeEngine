@@ -108,14 +108,14 @@ namespace te
     HAnimationClip AnimationClip::Create(bool isAdditive)
     {
         return static_resource_cast<AnimationClip>(gResourceManager()._createResourceHandle(
-            _createPtr(te_shared_ptr_new<AnimationCurves>())));
+            CreatePtr(te_shared_ptr_new<AnimationCurves>())));
     }
 
     HAnimationClip AnimationClip::Create(const SPtr<AnimationCurves>& curves, bool isAdditive, float sampleRate,
         const SPtr<RootMotion>& rootMotion)
     {
         return static_resource_cast<AnimationClip>(gResourceManager()._createResourceHandle(
-            _createPtr(curves, isAdditive, sampleRate, rootMotion)));
+            CreatePtr(curves, isAdditive, sampleRate, rootMotion)));
     }
 
     SPtr<AnimationClip> AnimationClip::CreateEmpty()
@@ -128,7 +128,7 @@ namespace te
         return newClip;
     }
 
-    SPtr<AnimationClip> AnimationClip::_createPtr(const SPtr<AnimationCurves>& curves, bool isAdditive, float sampleRate,
+    SPtr<AnimationClip> AnimationClip::CreatePtr(const SPtr<AnimationCurves>& curves, bool isAdditive, float sampleRate,
         const SPtr<RootMotion>& rootMotion)
     {
         AnimationClip* rawPtr = new (te_allocate<AnimationClip>()) AnimationClip(curves, isAdditive, sampleRate, rootMotion);

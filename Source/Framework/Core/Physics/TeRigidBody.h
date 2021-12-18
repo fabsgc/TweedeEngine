@@ -17,14 +17,6 @@ namespace te
     class TE_CORE_EXPORT RigidBody : public Body
     {
     public:
-        /**
-         * Constructs a new rigidbody.
-         *
-         * @param[in]	linkedSO	Scene object that owns this rigidbody. All physics updates applied to this object
-         *							will be transfered to this scene object (the movement/rotation resulting from
-         *							those updates).
-         */
-        RigidBody(const HSceneObject& linkedSO);
         virtual ~RigidBody() = default;
 
         /**
@@ -41,5 +33,16 @@ namespace te
 
         /** @copydoc SetAngularFactor */
         virtual const Vector3& GetAngularFactor() const = 0;
+
+    protected:
+        /**
+         * Constructs a new rigidbody.
+         *
+         * @param[in]	linkedSO	Scene object that owns this rigidbody. All physics updates applied to this object
+         *							will be transfered to this scene object (the movement/rotation resulting from
+         *							those updates).
+         * @param[in]   type        TypeID_Core for serialization
+         */
+        RigidBody(const HSceneObject& linkedSO, UINT32 type);
     };
 }

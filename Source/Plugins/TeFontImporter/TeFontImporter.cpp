@@ -92,7 +92,7 @@ namespace te
         FT_Done_FreeType(library);
 
         auto path = std::filesystem::absolute(filePath);
-        SPtr<Font> newFont = Font::_createPtr(dataPerSize);
+        SPtr<Font> newFont = Font::CreatePtr(dataPerSize);
         newFont->SetName(path.filename().generic_string());
         newFont->SetPath(path.generic_string());
 

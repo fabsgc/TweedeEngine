@@ -42,7 +42,7 @@ namespace te
         void RestoreInternal() override;
 
         /** @copydoc CCollider::IsValidParent */
-        bool IsValidParent(const HBody& parent) const override;
+        bool IsValidParent(const HRigidBody& parent) const override;
 
         /**	Returns the mesh collider that this component wraps. */
         MeshCollider* _getInternal() const { return static_cast<MeshCollider*>(_internal.get()); }

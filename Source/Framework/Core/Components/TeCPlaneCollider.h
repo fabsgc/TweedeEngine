@@ -38,7 +38,7 @@ namespace te
         void RestoreInternal() override;
 
         /** @copydoc CCollider::IsValidParent */
-        bool IsValidParent(const HBody& parent) const override;
+        bool IsValidParent(const HRigidBody& parent) const override;
 
         /**	Returns the plane collider that this component wraps. */
         PlaneCollider* _getInternal() const { return static_cast<PlaneCollider*>(_internal.get()); } 
