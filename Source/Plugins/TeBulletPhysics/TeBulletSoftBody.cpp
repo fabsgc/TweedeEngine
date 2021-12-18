@@ -248,36 +248,6 @@ namespace te
         _collisionReportMode = mode;
     }
 
-    void BulletSoftBody::AddCollider(Collider* collider)
-    {
-        // TODO
-    }
-
-    void BulletSoftBody::RemoveCollider(Collider* collider)
-    {
-        // TODO
-    }
-
-    void BulletSoftBody::RemoveColliders()
-    {
-        // TODO
-    }
-
-    void BulletSoftBody::AddJoint(Joint* joint)
-    {
-        // TODO
-    }
-
-    void BulletSoftBody::RemoveJoint(Joint* joint)
-    {
-        // TODO
-    }
-
-    void BulletSoftBody::RemoveJoints()
-    {
-        // TODO
-    }
-
     void BulletSoftBody::AddToWorld()
     {
         if (_mass < 0.0f)

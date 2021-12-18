@@ -74,35 +74,8 @@ namespace te
         /** Destroys the internal SoftBody representation. */
         virtual void DestroyInternal() override;
 
-        /** Body::UpdateColliders */
-        virtual void UpdateColliders() override;
-
-        /** Body::ClearColliders */
-        virtual void ClearColliders() override;
-
-        /** Body::AddCollider */
-        virtual void AddCollider(const HCollider& collider) override;
-
-        /** Body::RemoveCollider */
-        virtual void RemoveCollider(const HCollider& collider) override;
-
-        /** Body::CheckForNestedBody */
-        virtual void CheckForNestedBody() override;
-
         /** Body::ProcessCollisionData */
         void ProcessCollisionData(const CollisionDataRaw& raw, CollisionData& output) override;
-
-        /** @copydoc CBody::ClearJoints */
-        void ClearJoints() override;
-
-        /** @copydoc CBody::UpdateJoints */
-        void UpdateJoints() override;
-
-        /** @copydoc CBody::AddJoint */
-        void AddJoint(JointBody jointBody, const HJoint& joint) override;
-
-        /** @copydoc CBody::RemoveJoint */
-        void RemoveJoint(JointBody jointBody, const HJoint& joint) override;
 
     protected:
         CSoftBody(); // Serialization only

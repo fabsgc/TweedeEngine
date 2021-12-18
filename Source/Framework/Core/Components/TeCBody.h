@@ -3,35 +3,9 @@
 #include "TeCorePrerequisites.h"
 #include "Scene/TeComponent.h"
 #include "Physics/TeBody.h"
-#include "Physics/TeJoint.h"
-#include "TeCBoxCollider.h"
-#include "TeCPlaneCollider.h"
-#include "TeCSphereCollider.h"
-#include "TeCCylinderCollider.h"
-#include "TeCCapsuleCollider.h"
-#include "TeCMeshCollider.h"
-#include "TeCConeCollider.h"
-#include "TeCHeightFieldCollider.h"
 
 namespace te
 {
-    /** Each body needs to keep track of all joints attached to him */
-    struct JointInfo
-    {
-        JointBody JointBodyType;
-        HJoint JointElt;
-
-        JointInfo(JointBody jointBody, const HJoint& joint)
-            : JointBodyType(jointBody)
-            , JointElt(joint)
-        { }
-
-        friend bool operator == (const JointInfo& lhs, const HJoint& rhs)
-        {
-            return lhs.JointElt == rhs;
-        }
-    };
-
     /**
      * @copydoc	Body
      *
@@ -77,7 +51,7 @@ namespace te
         float GetMass() const { return _mass; };
 
         /** @copydoc Body::SetIsKinematic */
-        void SetIsKinematic(bool kinematic);
+        virtual void SetIsKinematic(bool kinematic);
 
         /** @copydoc Body::GetIsKinematic */
         bool GetIsKinematic() const { return _isKinematic; }
@@ -168,50 +142,14 @@ namespace te
         /** Creates the internal representation of the Body for use by the component. */
         virtual SPtr<Body> CreateInternal() = 0;
 
-        /**
-         * Searches child scene objects for Collider components and attaches them to the body. Make sure to call
-         * ClearColliders() if you need to clear old colliders first.
-         */
-        virtual void UpdateColliders() = 0;
-
-        /** Unregisters all child colliders from the body. */
-        virtual void ClearColliders() = 0;
-
-        /**
-         * Registers a new collider with the body. This collider will then be used to calculate body's geometry
-         * used for collisions, and optionally (depending on set flags) total mass, inertia tensors and center of mass.
-         */
-        virtual void AddCollider(const HCollider& collider) = 0;
-
-        /** Unregisters the collider from the body. */
-        virtual void RemoveCollider(const HCollider& collider) = 0;
-
-        /** Checks if the body is nested under another body, and throws out a warning if so. */
-        virtual void CheckForNestedBody() = 0;
-
         /** Appends Component referenes for the colliders to the collision data. */
         virtual void ProcessCollisionData(const CollisionDataRaw& raw, CollisionData& output) = 0;
-
-        /** Unregisters all internal joints from the body. */
-        virtual void ClearJoints() = 0;
-
-        /** Use _joints vector to fill internal joints list */
-        virtual void UpdateJoints() = 0;
-
-        /** Sets a joint that this body is attached to. Allows the body to notify the joint when it moves. */
-        virtual void AddJoint(JointBody jointBody, const HJoint& joint) = 0;
-
-        /** Remove a joint that this body is attached to. */
-        virtual void RemoveJoint(JointBody jointBody, const HJoint& joint) = 0;
 
     protected:
         CBody(UINT32 type);
 
     protected:
         SPtr<Body> _internal;
-        Vector<JointInfo> _joints;
-        Vector<JointInfo> _backupJoints;
-        Vector<HCollider> _colliders;
 
         float _mass = 1.0f;
         float _friction = 0.0f;

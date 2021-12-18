@@ -2,13 +2,39 @@
 
 #include "TeCorePrerequisites.h"
 #include "Physics/TeRigidBody.h"
+#include "Physics/TeJoint.h"
 #include "Scene/TeComponent.h"
 #include "Scene/TeSceneObject.h"
 #include "Components/TeCBody.h"
 #include "Components/TeCJoint.h"
+#include "TeCBoxCollider.h"
+#include "TeCPlaneCollider.h"
+#include "TeCSphereCollider.h"
+#include "TeCCylinderCollider.h"
+#include "TeCCapsuleCollider.h"
+#include "TeCMeshCollider.h"
+#include "TeCConeCollider.h"
+#include "TeCHeightFieldCollider.h"
 
 namespace te
 {
+    /** Each body needs to keep track of all joints attached to him */
+    struct JointInfo
+    {
+        JointBody JointBodyType;
+        HJoint JointElt;
+
+        JointInfo(JointBody jointBody, const HJoint& joint)
+            : JointBodyType(jointBody)
+            , JointElt(joint)
+        { }
+
+        friend bool operator == (const JointInfo& lhs, const HJoint& rhs)
+        {
+            return lhs.JointElt == rhs;
+        }
+    };
+
     /**
      * @copydoc	Rigidbody
      *
@@ -56,6 +82,9 @@ namespace te
         /** @copydoc RigidBody::GetCenterOfMass */
         const Vector3& GetCenterOfMass() const { return _centerOfMass; }
 
+        /** @copydoc Body::SetIsKinematic */
+        virtual void SetIsKinematic(bool kinematic) override;
+
     protected:
         friend class SceneObject;
         friend class CCollider;
@@ -90,23 +119,26 @@ namespace te
         /** Destroys the internal RigidBody representation. */
         void DestroyInternal() override;
 
-        /** Body::UpdateColliders */
-        void UpdateColliders() override;
+        /**
+         * Searches child scene objects for Collider components and attaches them to the body. Make sure to call
+         * ClearColliders() if you need to clear old colliders first.
+         */
+        void UpdateColliders();
 
-        /** Body::ClearColliders */
-        void ClearColliders() override;
+        /** Unregisters all child colliders from the body. */
+        void ClearColliders();
 
-        /** Body::AddCollider */
-        void AddCollider(const HCollider& collider) override;
+        /**
+         * Registers a new collider with the body. This collider will then be used to calculate body's geometry
+         * used for collisions, and optionally (depending on set flags) total mass, inertia tensors and center of mass.
+         */
+        void AddCollider(const HCollider& collider);
 
-        /** Body::RemoveCollider */
-        void RemoveCollider(const HCollider& collider) override;
+        /** Unregisters the collider from the body. */
+        void RemoveCollider(const HCollider& collider);
 
-        /** Body::CheckForNestedBody */
-        void CheckForNestedBody() override;
-
-        /** Body::ProcessCollisionData */
-        void ProcessCollisionData(const CollisionDataRaw& raw, CollisionData& output) override;
+        /** Checks if the body is nested under another body, and throws out a warning if so. */
+        void CheckForNestedBody();
 
         /** Find and add colliders from the same SceneObject */
         template<class T>
@@ -135,22 +167,31 @@ namespace te
             }
         }
 
-        /** @copydoc CBody::ClearJoints */
-        void ClearJoints() override;
+        /** Unregisters all internal joints from the body. */
+        void ClearJoints();
 
-        /** @copydoc CBody::UpdateJoints */
-        void UpdateJoints() override;
+        /** Use _joints vector to fill internal joints list */
+        void UpdateJoints();
 
-        /** @copydoc CBody::AddJoint */
-        void AddJoint(JointBody jointBody, const HJoint& joint) override;
+        /** Set a joint that this body is attached to. Allows the body to notify the joint when it moves. */
+        void AddJoint(JointBody jointBody, const HJoint& joint);
 
-        /** @copydoc CBody::RemoveJoint */
-        void RemoveJoint(JointBody jointBody, const HJoint& joint) override;
+        /** Removes a joint that this body is attached to. */
+        void RemoveJoint(JointBody jointBody, const HJoint& joint);
+
+        /** Body::ProcessCollisionData */
+        void ProcessCollisionData(const CollisionDataRaw& raw, CollisionData& output) override;
 
     protected:
         CRigidBody(); // Serialization only
 
     protected:
+        SPtr<RigidBody> _internalRigidBody;
+
+        Vector<JointInfo> _joints;
+        Vector<JointInfo> _backupJoints;
+        Vector<HCollider> _colliders;
+
         bool _useGravity = true;
 
         Vector3 _angularFactor = Vector3::ONE;

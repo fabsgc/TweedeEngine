@@ -91,12 +91,7 @@ namespace te
         _isKinematic = kinematic;
 
         if (_internal != nullptr)
-        {
             _internal->SetIsKinematic(kinematic);
-
-            ClearColliders();
-            UpdateColliders();
-        }
     }
 
     void CBody::SetVelocity(const Vector3& velocity)

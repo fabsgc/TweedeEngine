@@ -101,24 +101,6 @@ namespace te
         /** @copydoc Body::GetCollisionReportMode */
         virtual CollisionReportMode GetCollisionReportMode() const { return _collisionReportMode; }
 
-        /** @copydoc Body::AddCollider */
-        void AddCollider(Collider*) override;
-
-        /** @copydoc Body::RemoveCollider */
-        void RemoveCollider(Collider*) override;
-
-        /** @copydoc Body::RemoveColliders */
-        void RemoveColliders() override;
-
-        /** @copydoc Body::AddJoint */
-        void AddJoint(Joint* joint) override;
-
-        /** @copydoc Body::RemoveJoint */
-        void RemoveJoint(Joint* joint) override;
-
-        /** @copydoc Body::RemoveJoints */
-        void RemoveJoints() override;
-
         /** @copydoc Body::SetFlags */
         void SetFlags(BodyFlag flags) override;
 
@@ -155,14 +137,12 @@ namespace te
         float _friction = 0.0f;
         float _rollingFriction = 0.0f;
         float _restitution = 0.0f;
-        bool _useGravity = true;
         bool _isKinematic = false;
         bool _inWorld = false;
         bool _isTrigger = false;
         bool _isDebug = true;
 
         Vector3 _gravity = Vector3::ZERO;
-        Vector3 _centerOfMass = Vector3::ZERO;
         Vector3 _position = Vector3::ZERO;
         Vector3 _velocity = Vector3::ZERO;
         Vector3 _angularVelocity = Vector3::ZERO;

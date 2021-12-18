@@ -84,6 +84,22 @@ namespace te
             std::static_pointer_cast<RigidBody>(_internal)->SetCenterOfMass(centerOfMass);
     }
 
+    void CRigidBody::SetIsKinematic(bool kinematic)
+    {
+        if (_isKinematic == kinematic)
+            return;
+
+        _isKinematic = kinematic;
+
+        if (_internal != nullptr)
+        {
+            _internal->SetIsKinematic(kinematic);
+
+            ClearColliders();
+            UpdateColliders();
+        }
+    }
+
     void CRigidBody::OnInitialized()
     { }
 
@@ -110,28 +126,28 @@ namespace te
         CheckForNestedBody();
 #endif
 
-        _internal->OnCollisionBegin.Connect(std::bind(&CRigidBody::TriggerOnCollisionBegin, this, _1));
-        _internal->OnCollisionStay.Connect(std::bind(&CRigidBody::TriggerOnCollisionStay, this, _1));
-        _internal->OnCollisionEnd.Connect(std::bind(&CRigidBody::TriggerOnCollisionEnd, this, _1));
+        _internalRigidBody->OnCollisionBegin.Connect(std::bind(&CRigidBody::TriggerOnCollisionBegin, this, _1));
+        _internalRigidBody->OnCollisionStay.Connect(std::bind(&CRigidBody::TriggerOnCollisionStay, this, _1));
+        _internalRigidBody->OnCollisionEnd.Connect(std::bind(&CRigidBody::TriggerOnCollisionEnd, this, _1));
 
         const Transform& tfrm = SO()->GetTransform();
-        _internal->SetTransform(tfrm.GetPosition(), tfrm.GetRotation());
+        _internalRigidBody->SetTransform(tfrm.GetPosition(), tfrm.GetRotation());
 
-        _internal->SetFriction(_friction);
-        _internal->SetRollingFriction(_rollingFriction);
-        _internal->SetRestitution(_restitution);
-        _internal->SetVelocity(_velocity);
-        _internal->SetAngularVelocity(_angularVelocity);
-        _internal->SetIsKinematic(_isKinematic);
-        _internal->SetIsDebug(_isDebug);
-        _internal->SetFlags(_flags);
-        _internal->SetCollisionReportMode(_collisionReportMode);
-        _internal->SetCollisionReportMode(_collisionReportMode);
-        _internal->SetMass(_mass);
+        _internalRigidBody->SetFriction(_friction);
+        _internalRigidBody->SetRollingFriction(_rollingFriction);
+        _internalRigidBody->SetRestitution(_restitution);
+        _internalRigidBody->SetVelocity(_velocity);
+        _internalRigidBody->SetAngularVelocity(_angularVelocity);
+        _internalRigidBody->SetIsKinematic(_isKinematic);
+        _internalRigidBody->SetIsDebug(_isDebug);
+        _internalRigidBody->SetFlags(_flags);
+        _internalRigidBody->SetCollisionReportMode(_collisionReportMode);
+        _internalRigidBody->SetCollisionReportMode(_collisionReportMode);
+        _internalRigidBody->SetMass(_mass);
 
-        std::static_pointer_cast<RigidBody>(_internal)->SetAngularFactor(_angularFactor);
-        std::static_pointer_cast<RigidBody>(_internal)->SetUseGravity(_useGravity);
-        std::static_pointer_cast<RigidBody>(_internal)->SetCenterOfMass(_centerOfMass);
+        _internalRigidBody->SetAngularFactor(_angularFactor);
+        _internalRigidBody->SetUseGravity(_useGravity);
+        _internalRigidBody->SetCenterOfMass(_centerOfMass);
     }
 
     void CRigidBody::OnTransformChanged(TransformChangedFlags flags)
@@ -153,7 +169,7 @@ namespace te
             return;
 
         const Transform& tfrm = SO()->GetTransform();
-        _internal->SetTransform(tfrm.GetPosition(), tfrm.GetRotation());
+        _internalRigidBody->SetTransform(tfrm.GetPosition(), tfrm.GetRotation());
 
         for (auto& joint : _joints)
         {
@@ -163,10 +179,10 @@ namespace te
 
     SPtr<Body> CRigidBody::CreateInternal()
     {
-        SPtr<RigidBody> body = RigidBody::Create(SO());
-        body->SetOwner(PhysicsOwnerType::Component, this);
+        _internalRigidBody = RigidBody::Create(SO());
+        _internalRigidBody->SetOwner(PhysicsOwnerType::Component, this);
 
-        return body;
+        return _internalRigidBody;
     }
 
     void CRigidBody::DestroyInternal()
@@ -176,7 +192,7 @@ namespace te
 
         if (_internal)
         {
-            _internal->SetOwner(PhysicsOwnerType::None, nullptr);
+            _internalRigidBody->SetOwner(PhysicsOwnerType::None, nullptr);
             _internal = nullptr;
         }
     }
@@ -189,7 +205,7 @@ namespace te
         _colliders.clear();
 
         if (_internal != nullptr)
-            _internal->RemoveColliders();
+            std::static_pointer_cast<RigidBody>(_internal)->RemoveColliders();
     }
 
     void CRigidBody::UpdateColliders()
@@ -247,7 +263,7 @@ namespace te
         auto iterFind = std::find(_colliders.begin(), _colliders.end(), collider);
         if (iterFind != _colliders.end())
         {
-            _internal->AddCollider(collider->GetInternal());
+            std::static_pointer_cast<RigidBody>(_internal)->AddCollider(collider->GetInternal());
         }
     }
 
@@ -259,7 +275,7 @@ namespace te
         auto iterFind = std::find(_colliders.begin(), _colliders.end(), collider);
         if (iterFind != _colliders.end())
         {
-            _internal->RemoveCollider(collider->GetInternal());
+            std::static_pointer_cast<RigidBody>(_internal)->RemoveCollider(collider->GetInternal());
             _colliders.erase(iterFind);
         }
     }
@@ -275,17 +291,17 @@ namespace te
             joint.JointElt->SetBody(joint.JointBodyType, HRigidBody());
 
         if (_internal != nullptr)
-            _internal->RemoveJoints();
+            std::static_pointer_cast<RigidBody>(_internal)->RemoveJoints();
     }
 
     void CRigidBody::UpdateJoints()
     {
-        _internal->RemoveJoints();
+        std::static_pointer_cast<RigidBody>(_internal)->RemoveJoints();
 
         for (auto& joint : _backupJoints)
         {
             joint.JointElt->SetBody(joint.JointBodyType, static_object_cast<CRigidBody>(_thisHandle));
-            _internal->AddJoint(joint.JointElt->GetInternal());
+            std::static_pointer_cast<RigidBody>(_internal)->AddJoint(joint.JointElt->GetInternal());
         }
     }
 
@@ -299,7 +315,7 @@ namespace te
         auto iterFind = std::find(_joints.begin(), _joints.end(), joint);
         if (iterFind != _joints.end() && joint->GetInternal())
         {
-            _internal->AddJoint(joint->GetInternal());
+            std::static_pointer_cast<RigidBody>(_internal)->AddJoint(joint->GetInternal());
         }
     }
 
@@ -311,7 +327,7 @@ namespace te
         auto iterFind = std::find(_joints.begin(), _joints.end(), joint);
         if (iterFind != _joints.end())
         {
-            _internal->RemoveJoint(joint->GetInternal());
+            std::static_pointer_cast<RigidBody>(_internal)->RemoveJoint(joint->GetInternal());
             _joints.erase(iterFind);
         }
     }

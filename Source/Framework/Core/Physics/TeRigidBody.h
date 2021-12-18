@@ -46,6 +46,24 @@ namespace te
         /** Returns the position of the center of mass. */
         virtual const Vector3& GetCenterOfMass() const = 0;
 
+        /** Registers a new collider as a child of this body. */
+        virtual void AddCollider(Collider*) = 0;
+
+        /** Removes a collider from the child list of this body. */
+        virtual void RemoveCollider(Collider*) = 0;
+
+        /** Removes all colliders from the child list of this body. */
+        virtual void RemoveColliders() = 0;
+
+        /** Register a new joint as a child of this body */
+        virtual void AddJoint(Joint* joint) = 0;
+
+        /** Removes a joint from the child list of this body. */
+        virtual void RemoveJoint(Joint* joint) = 0;
+
+        /** Removes all joints from the child list of this body. */
+        virtual void RemoveJoints() = 0;
+
     protected:
         /**
          * Constructs a new rigidbody.
