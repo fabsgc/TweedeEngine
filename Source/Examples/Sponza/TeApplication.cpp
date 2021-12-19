@@ -561,9 +561,6 @@ namespace te
     {
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         auto meshImportOptions = MeshImportOptions::Create();
-        meshImportOptions->ImportNormals = true;
-        meshImportOptions->ImportTangents = true;
-        meshImportOptions->CpuCached = false;
 
         _sponzaMesh = gResourceManager().Load<Mesh>("Data/Meshes/Sponza/sponza.obj", meshImportOptions);
         _lightMesh = gResourceManager().Load<Mesh>("Data/Meshes/Primitives/sphere-hd.obj", meshImportOptions);

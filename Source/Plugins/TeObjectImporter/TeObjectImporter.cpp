@@ -43,13 +43,12 @@ namespace te
     SPtr<Resource> ObjectImporter::Import(const String& filePath, SPtr<const ImportOptions> importOptions)
     {
         MESH_DESC desc;
+
         MeshImportOptions* meshImportOptions = const_cast<MeshImportOptions*>
             (static_cast<const MeshImportOptions*>(importOptions.get()));
 
-        SetMeshImportOptions(filePath, *meshImportOptions);
-
         Vector<AssimpAnimationClipData> dummy;
-        SPtr<RendererMeshData> rendererMeshData = ImportMeshData(filePath, importOptions, desc.SubMeshes, dummy, desc.MeshSkeleton);
+        SPtr<RendererMeshData> rendererMeshData = ImportMeshData(filePath, meshImportOptions, desc.SubMeshes, dummy, desc.MeshSkeleton);
 
         if (rendererMeshData)
         {
@@ -70,10 +69,8 @@ namespace te
         MeshImportOptions* meshImportOptions = const_cast<MeshImportOptions*>
             (static_cast<const MeshImportOptions*>(importOptions.get()));
 
-        SetMeshImportOptions(filePath, *meshImportOptions);
-
         Vector<AssimpAnimationClipData> animationClips;
-        SPtr<RendererMeshData> rendererMeshData = ImportMeshData(filePath, importOptions, desc.SubMeshes, animationClips, desc.MeshSkeleton);
+        SPtr<RendererMeshData> rendererMeshData = ImportMeshData(filePath, meshImportOptions, desc.SubMeshes, animationClips, desc.MeshSkeleton);
 
         Vector<SubResourceRaw> output;
         if (rendererMeshData)
@@ -91,7 +88,31 @@ namespace te
                 {
                     if (Physics::IsStarted())
                     {
-                        SPtr<PhysicsMesh> physicsMesh = PhysicsMesh::CreatePtr(rendererMeshData->GetData());
+                        MESH_DESC collisionDesc;
+                        Vector<AssimpAnimationClipData> collisionAnimationClips;
+                        MeshImportOptions collisionMeshImportOption;
+                        collisionMeshImportOption.CpuCached = false;
+                        collisionMeshImportOption.ImportNormals = false;
+                        collisionMeshImportOption.ImportTangents = false;
+                        collisionMeshImportOption.ImportUVCoords = false;
+                        collisionMeshImportOption.ImportSkin = false;
+                        collisionMeshImportOption.ImportBlendShapes = false;
+                        collisionMeshImportOption.ImportAnimations = false;
+                        collisionMeshImportOption.ImportVertexColors = false;
+                        collisionMeshImportOption.ForceGenNormals = false;
+                        collisionMeshImportOption.GenSmoothNormals = false;
+                        collisionMeshImportOption.ReduceKeyFrames = false;
+                        collisionMeshImportOption.FplitUV = false;
+                        collisionMeshImportOption.LeftHanded = meshImportOptions->LeftHanded;
+                        collisionMeshImportOption.FlipWinding = meshImportOptions->FlipWinding;
+                        collisionMeshImportOption.ScaleSystemUnit = meshImportOptions->ScaleSystemUnit;
+                        collisionMeshImportOption.ScaleFactor = meshImportOptions->ScaleFactor;
+                        collisionMeshImportOption.ImportMaterials = false;
+                        collisionMeshImportOption.ImportRootMotion = false;
+                        collisionMeshImportOption.ImportCollisionShape = false;
+
+                        SPtr<RendererMeshData> collisionMeshData = ImportMeshData(filePath, &collisionMeshImportOption, collisionDesc.SubMeshes, collisionAnimationClips, collisionDesc.MeshSkeleton);
+                        SPtr<PhysicsMesh> physicsMesh = PhysicsMesh::CreatePtr(collisionMeshData->GetData());
 
                         if (physicsMesh)
                         {
@@ -134,13 +155,12 @@ namespace te
         return output;
     }
 
-    SPtr<RendererMeshData> ObjectImporter::ImportMeshData(const String& filePath, SPtr<const ImportOptions> importOptions, Vector<SubMesh>& subMeshes, 
+    SPtr<RendererMeshData> ObjectImporter::ImportMeshData(const String& filePath, MeshImportOptions* importOptions, Vector<SubMesh>& subMeshes, 
         Vector<AssimpAnimationClipData>& animation, SPtr<Skeleton>& skeleton)
     {
         aiScene* scene = nullptr;
         Assimp::Importer importer;
         AssimpImportScene importedScene;
-        const MeshImportOptions* meshImportOptions = static_cast<const MeshImportOptions*>(importOptions.get());
         int removeComponentFlags = aiComponent_CAMERAS | aiComponent_LIGHTS;
 
         unsigned int assimpFlags =
@@ -150,7 +170,6 @@ namespace te
             aiProcess_OptimizeMeshes |
             aiProcess_SplitLargeMeshes |
             aiProcess_Triangulate |
-            aiProcess_GenUVCoords |
             aiProcess_FixInfacingNormals |
             aiProcess_CalcTangentSpace |
             aiProcess_SortByPType |
@@ -158,46 +177,61 @@ namespace te
             aiProcess_RemoveRedundantMaterials |
             aiProcess_RemoveComponent;
 
-        if (meshImportOptions->ScaleSystemUnit)
+        if (importOptions->ScaleSystemUnit)
         {
             assimpFlags |= aiProcess_GlobalScale;
-            importer.SetPropertyFloat(AI_CONFIG_GLOBAL_SCALE_FACTOR_KEY, meshImportOptions->ScaleFactor);
+            importer.SetPropertyFloat(AI_CONFIG_GLOBAL_SCALE_FACTOR_KEY, importOptions->ScaleFactor);
         }
 
-        if (meshImportOptions->FplitUV)
+        if (importOptions->FplitUV)
             assimpFlags |= aiProcess_FlipUVs;
 
-        if (meshImportOptions->FlipWinding)
+        if (importOptions->FlipWinding)
             assimpFlags |= aiProcess_FlipWindingOrder;
 
-        if (meshImportOptions->LeftHanded)
+        if (importOptions->LeftHanded)
             assimpFlags |= aiProcess_MakeLeftHanded;
 
-        if (meshImportOptions->ImportAnimations)
+        if (importOptions->ImportAnimations)
             assimpFlags |= aiProcess_LimitBoneWeights;
 
-        if (meshImportOptions->ForceGenNormals)
-            assimpFlags |= aiProcess_ForceGenNormals;
+        if (importOptions->ImportNormals)
+        {
+            if (importOptions->ForceGenNormals)
+                assimpFlags |= aiProcess_ForceGenNormals;
 
-        if (meshImportOptions->GenSmoothNormals)
-            assimpFlags |= aiProcess_GenSmoothNormals;
-        else if(meshImportOptions->ImportNormals)
-            assimpFlags |= aiProcess_GenNormals;
+            if (importOptions->GenSmoothNormals)
+                assimpFlags |= aiProcess_GenSmoothNormals;
+            else
+                assimpFlags |= aiProcess_GenNormals;
+        }
+        else
+            removeComponentFlags |= aiComponent_NORMALS;
 
-        if (!meshImportOptions->ImportAnimations)
+        if (importOptions->ImportUVCoords)
+            assimpFlags |= aiProcess_GenUVCoords;
+        else
+            removeComponentFlags |= aiComponent_TEXCOORDS;
+
+        if (!importOptions->ImportTangents)
+            removeComponentFlags |= aiComponent_TANGENTS_AND_BITANGENTS;
+
+        if (!importOptions->ImportAnimations)
             removeComponentFlags |= aiComponent_ANIMATIONS | aiComponent_BONEWEIGHTS;
 
-        //if (!meshImportOptions->ImportMaterials)
-        //    removeComponentFlags |= aiComponent_MATERIALS | aiComponent_TEXTURES;
+        if (!importOptions->ImportMaterials)
+            removeComponentFlags |= aiComponent_MATERIALS | aiComponent_TEXTURES;
 
-        //if (!meshImportOptions->ImportVertexColors)
-        //    removeComponentFlags |= aiComponent_COLORS;
+        if (importOptions->FplitUV)
+            assimpFlags |= aiProcess_FlipUVs;
+
+        if (!importOptions->ImportVertexColors)
+            removeComponentFlags |= aiComponent_COLORS;
 
         importer.SetPropertyInteger(AI_CONFIG_PP_RVC_FLAGS, removeComponentFlags);
 
         {
             Lock lock = FileScheduler::GetLock(filePath);
-            
             scene = const_cast<aiScene*>(importer.ReadFile(filePath.c_str(), assimpFlags));
         }
 
@@ -208,13 +242,14 @@ namespace te
         }
 
         AssimpImportOptions assimpImportOptions;
-        assimpImportOptions.ImportNormals      = meshImportOptions->ImportNormals;
-        assimpImportOptions.ImportTangents     = meshImportOptions->ImportTangents;
-        assimpImportOptions.ImportSkin         = meshImportOptions->ImportSkin;
-        assimpImportOptions.ImportBlendShapes  = meshImportOptions->ImportBlendShapes;
-        assimpImportOptions.ImportAnimations   = meshImportOptions->ImportAnimations;
-        assimpImportOptions.ImportMaterials    = meshImportOptions->ImportMaterials;
-        assimpImportOptions.ReduceKeyframes    = meshImportOptions->ReduceKeyFrames;
+        assimpImportOptions.ImportNormals      = importOptions->ImportNormals;
+        assimpImportOptions.ImportTangents     = importOptions->ImportTangents;
+        assimpImportOptions.ImportUVCoords     = importOptions->ImportUVCoords;
+        assimpImportOptions.ImportSkin         = importOptions->ImportSkin;
+        assimpImportOptions.ImportBlendShapes  = importOptions->ImportBlendShapes;
+        assimpImportOptions.ImportAnimations   = importOptions->ImportAnimations;
+        assimpImportOptions.ImportMaterials    = importOptions->ImportMaterials;
+        assimpImportOptions.ReduceKeyframes    = importOptions->ReduceKeyFrames;
         assimpImportOptions.FilePath           = filePath;
 
         ParseScene(scene, assimpImportOptions, importedScene);
@@ -232,8 +267,8 @@ namespace te
         // Import animation clips
         if (!importedScene.Clips.empty())
         {
-            const Vector<AnimationSplitInfo>& splits = meshImportOptions->AnimationSplits;
-            ConvertAnimations(importedScene.Clips, splits, skeleton, meshImportOptions->ImportRootMotion, animation);
+            const Vector<AnimationSplitInfo>& splits = importOptions->AnimationSplits;
+            ConvertAnimations(importedScene.Clips, splits, skeleton, importOptions->ImportRootMotion, animation);
         }
 
         return rendererMeshData;
@@ -456,16 +491,19 @@ namespace te
         }
 
         // Import UVs
-        for (UINT32 i = 0; i < OBJECT_IMPORT_MAX_UV_LAYERS; i++)
+        if (options.ImportUVCoords)
         {
-            if (!mesh->HasTextureCoords(i))
-                break;
-
-            importMesh->Textures[i].resize(vertexCount);
-            for (UINT32 j = 0; j < vertexCount; j++)
+            for (UINT32 i = 0; i < OBJECT_IMPORT_MAX_UV_LAYERS; i++)
             {
-                Vector3 coord = ConvertToNativeType(mesh->mTextureCoords[i][j]);
-                importMesh->Textures[i][j] = Vector2(coord.x, coord.y);
+                if (!mesh->HasTextureCoords(i))
+                    break;
+
+                importMesh->Textures[i].resize(vertexCount);
+                for (UINT32 j = 0; j < vertexCount; j++)
+                {
+                    Vector3 coord = ConvertToNativeType(mesh->mTextureCoords[i][j]);
+                    importMesh->Textures[i][j] = Vector2(coord.x, coord.y);
+                }
             }
         }
 
@@ -1314,12 +1352,5 @@ namespace te
     Quaternion ObjectImporter::ConvertToNativeType(const aiQuaternion& quaternion)
     {
         return Quaternion((float)quaternion.w, (float)quaternion.x, (float)quaternion.y, (float)quaternion.z);
-    }
-
-    void ObjectImporter::SetMeshImportOptions(const String& filePath, MeshImportOptions& meshImportOptions)
-    {
-        String extension = Util::GetFileExtension(filePath);
-        std::transform(extension.begin(), extension.end(), extension.begin(), 
-            [](unsigned char c) -> unsigned char { return static_cast<unsigned char>(std::tolower(c)); });
     }
 }

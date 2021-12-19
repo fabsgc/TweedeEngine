@@ -56,9 +56,6 @@ namespace te
 
         // ######################################################
         auto meshImportOptions = MeshImportOptions::Create();
-        meshImportOptions->ImportNormals = true;
-        meshImportOptions->ImportTangents = true;
-        meshImportOptions->CpuCached = false;
 
         auto textureImportOptions = TextureImportOptions::Create();
         textureImportOptions->CpuCached = false;

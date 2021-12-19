@@ -303,6 +303,7 @@ namespace te
                 auto meshImportOptions = MeshImportOptions::Create();
                 meshImportOptions->ImportNormals = _fileBrowser.Data.MeshParam.ImportNormals;
                 meshImportOptions->ImportTangents = _fileBrowser.Data.MeshParam.ImportTangents;
+                meshImportOptions->ImportUVCoords = _fileBrowser.Data.MeshParam.ImportUVCoords;
                 meshImportOptions->ImportSkin = _fileBrowser.Data.MeshParam.ImportSkin;
                 meshImportOptions->ImportBlendShapes = _fileBrowser.Data.MeshParam.ImportBlendShapes;
                 meshImportOptions->ImportAnimations = _fileBrowser.Data.MeshParam.ImportAnimations;

@@ -165,9 +165,6 @@ namespace te
     void MaterialsPreview::InitializeRenderable()
     {
         auto meshImportOptions = MeshImportOptions::Create();
-        meshImportOptions->ImportNormals = true;
-        meshImportOptions->ImportTangents = true;
-        meshImportOptions->CpuCached = false;
 
         _box = ResourceManager::Instance().Load<Mesh>("Data/Meshes/Primitives/cube.obj", meshImportOptions).GetInternalPtr();
         _plane = ResourceManager::Instance().Load<Mesh>("Data/Meshes/Primitives/plane.obj", meshImportOptions).GetInternalPtr();

@@ -22,6 +22,7 @@ namespace te
     {
         bool ImportNormals = true;
         bool ImportTangents = true;
+        bool ImportUVCoords = true;
         bool ImportColors = true;
         bool ImportSkin = false;
         bool ImportAnimations = true;

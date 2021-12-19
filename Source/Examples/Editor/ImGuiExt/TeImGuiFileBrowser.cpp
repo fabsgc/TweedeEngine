@@ -697,6 +697,7 @@ namespace te
                 {
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportNormals, "##file_dialog_parameters_mesh_normals", "Import normals");
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportTangents, "##file_dialog_parameters_mesh_tangents", "Import tangents");
+                    ImGuiExt::RenderOptionBool(Data.MeshParam.ImportUVCoords, "##file_dialog_parameters_mesh_uvs", "Import UVs");
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportMaterials, "##file_dialog_parameters_mesh_material", "Import materials");
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportVertexColors, "##file_dialog_parameters_mesh_vertex_colors", "Import vertex colors");
                     ImGui::Separator();

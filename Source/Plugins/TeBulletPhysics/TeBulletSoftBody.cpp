@@ -284,9 +284,9 @@ namespace te
             _softBody->setRollingFriction((btScalar)_rollingFriction);
             _softBody->transformTo(btTransform(ToBtQuaternion(_rotation), ToBtVector3(_position)));
             
-            //_softBody->generateClusters(0);
-            //_softBody->m_cfg.collisions = btSoftBody::fCollision::CL_SS +
-            //                              btSoftBody::fCollision::CL_RS;
+            _softBody->generateClusters(16);
+            _softBody->m_cfg.collisions = btSoftBody::fCollision::CL_SS +
+                                          btSoftBody::fCollision::CL_RS;
 
             ((BulletFBody*)_internal)->SetBody(_softBody);
 

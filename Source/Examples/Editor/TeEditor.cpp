@@ -1167,18 +1167,12 @@ namespace te
         // IMPORT OPTIONS
         // ######################################################
         auto meshAnimImportOptions = MeshImportOptions::Create();
-        meshAnimImportOptions->ImportNormals = true;
-        meshAnimImportOptions->ImportTangents = true;
-        meshAnimImportOptions->CpuCached = false;
         meshAnimImportOptions->ImportSkin = true;
-        meshAnimImportOptions->ImportBlendShapes = false;
         meshAnimImportOptions->ImportAnimations = true;
         meshAnimImportOptions->ImportRootMotion = true;
 
         auto meshImportOptions = MeshImportOptions::Create();
-        meshImportOptions->ImportNormals = true;
-        meshImportOptions->ImportTangents = true;
-        meshImportOptions->CpuCached = false;
+        meshImportOptions->ImportCollisionShape = true;
 
         auto textureImportOptions = TextureImportOptions::Create();
         textureImportOptions->CpuCached = false;
@@ -1304,7 +1298,7 @@ namespace te
             _renderablePlane->SetMaterial(_cubeMaterial);
             _renderablePlane->SetName("Cube Renderable");
             _renderablePlane->Initialize();
-            _sceneRenderableCubeSO->Move(Vector3(0.0, 2.0f, 0.0f));
+            _sceneRenderableCubeSO->Move(Vector3(-2.0, 2.0f, 0.0f));
         }
 
         if (_loadedMeshPlane.IsLoaded() && _planeMaterial.IsLoaded())
@@ -1329,7 +1323,7 @@ namespace te
             _renderablePlane->SetMaterial(_sphereMaterial);
             _renderablePlane->SetName("Sphere Renderable");
             _renderablePlane->Initialize();
-            _sceneRenderableSphereSO->Move(Vector3(0.0, 5.0f, 0.0f));
+            _sceneRenderableSphereSO->Move(Vector3(1.0, 5.0f, 0.0f));
             _sceneRenderableSphereSO->SetScale(Vector3(0.5f, 0.5f, 0.5f));
         }
 
@@ -1357,8 +1351,7 @@ namespace te
         {
             _rigidBodyCube = _sceneRenderableCubeSO->AddComponent<CRigidBody>();
             _rigidBodyCube->SetName("Rigid Body Cube");
-            _rigidBodyCube->SetFriction(1.0f);
-            _rigidBodyCube->SetRollingFriction(1.0f);
+            _rigidBodyCube->SetRollingFriction(0.5f);
             _rigidBodyCube->SetCollisionReportMode(CollisionReportMode::ReportPersistent);
             _rigidBodyCube->Initialize();
             _boxColliderCube = _sceneRenderableCubeSO->AddComponent<CBoxCollider>();
@@ -1370,6 +1363,8 @@ namespace te
         {
             _rigidBodyPlane = _sceneRenderablePlaneSO->AddComponent<CRigidBody>();
             _rigidBodyPlane->SetName("Rigid Body Plane");
+            _rigidBodyPlane->SetFriction(1.0f);
+            _rigidBodyPlane->SetRollingFriction(1.0f);
             _rigidBodyPlane->SetIsKinematic(true);
             _rigidBodyPlane->SetCollisionReportMode(CollisionReportMode::ReportPersistent);
             _rigidBodyPlane->Initialize();

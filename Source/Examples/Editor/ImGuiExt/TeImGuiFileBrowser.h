@@ -54,6 +54,7 @@ namespace te
             {
                 bool ImportNormals = true;
                 bool ImportTangents = true;
+                bool ImportUVCoords = true;
                 bool ImportSkin = true;
                 bool ImportBlendShapes = true;
                 bool ImportAnimations = true;

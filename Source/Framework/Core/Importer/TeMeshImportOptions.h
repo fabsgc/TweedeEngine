@@ -54,6 +54,9 @@ namespace te
         /** Determines should mesh tangents and bitangents be imported if available. */
         bool ImportTangents = true;
 
+        /** Determines if we need to import or generate UVs for this mesh during import */
+        bool ImportUVCoords = true;
+
         /** Determines should mesh skin data like bone weights, indices and bind poses be imported if available. */
         bool ImportSkin = false;
 
@@ -118,7 +121,7 @@ namespace te
          * Determines if a collision mesh should be imported. If enabled the collision mesh will be
          * available as a sub-resource returned by the importer (along with the normal mesh).
          */
-        bool ImportCollisionShape = true;
+        bool ImportCollisionShape = false;
 
         /** Creates a new import options object that allows you to customize how are Meshs imported. */
         static SPtr<MeshImportOptions> Create();

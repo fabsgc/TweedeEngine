@@ -34,7 +34,7 @@ namespace te
 
     private:
         /** Reads the object file and outputs mesh data from the read file. Sub-mesh information will be output in @p subMeshes. */
-        SPtr<RendererMeshData> ImportMeshData(const String& filePath, SPtr<const ImportOptions> importOptions, Vector<SubMesh>& subMeshes, 
+        SPtr<RendererMeshData> ImportMeshData(const String& filePath, MeshImportOptions* importOptions, Vector<SubMesh>& subMeshes, 
             Vector<AssimpAnimationClipData>& animation, SPtr<Skeleton>& skeleton);
 
         /**
@@ -100,8 +100,6 @@ namespace te
 
         /** Convert an assimp quaternion into engine quaternion */
         Quaternion ConvertToNativeType(const aiQuaternion& quaternion);
-
-        void SetMeshImportOptions(const String& filePath, MeshImportOptions& meshImportOptions);
 
     private:
         Vector<String> _extensions;
