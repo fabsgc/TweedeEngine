@@ -96,6 +96,7 @@ namespace te
                         if (physicsMesh)
                         {
                             physicsMesh->SetName("Collision - " + mesh->GetName());
+                            physicsMesh->SetPath(path.generic_string());
                             output.push_back({ u8"collision", physicsMesh });
                         }
                         else
@@ -593,7 +594,7 @@ namespace te
 
             AssimpAnimationClip& clip = importScene.Clips.back();
             clip.Name = (assimAnimation->mName.length > 0) ? assimAnimation->mName.C_Str() : "Animation -  " + fileName + " - " + ToString(i);
-            clip.SampleRate = assimAnimation->mTicksPerSecond != 0.0 ? (float)assimAnimation->mTicksPerSecond : 25.0f;
+            clip.SampleRate = !Math::ApproxEquals(assimAnimation->mTicksPerSecond, 0.0) ? (float)assimAnimation->mTicksPerSecond : 25.0f;
             clip.Start = 0.0f;
             clip.End = (float)assimAnimation->mDuration / clip.SampleRate;
 
@@ -1069,6 +1070,7 @@ namespace te
             vertexLayout |= (UINT32)VertexLayout::Tangent;
             vertexLayout |= (UINT32)VertexLayout::BiTangent;
             vertexLayout |= (UINT32)VertexLayout::UV0;
+            // vertexLayout |= (UINT32)VertexLayout::UV1; Could be used for lightmap coordinates
             vertexLayout |= (UINT32)VertexLayout::BoneWeights;
             vertexLayout |= (UINT32)VertexLayout::Color;
 

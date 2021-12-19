@@ -17,6 +17,15 @@ namespace te
         virtual ~SoftBody() = default;
 
         /**
+         * Creates a new softbody.
+         *
+         * @param[in]	linkedSO	Scene object that owns this softbody. All physics updates applied to this object
+         *							will be transfered to this scene object (the movement/rotation resulting from
+         *							those updates).
+         */
+        static SPtr<SoftBody> Create(const HSceneObject& linkedSO);
+
+        /**
          * Sets a mesh that represents the softbody geometry. This can be a generic triangle mesh, or and convex mesh.
          */
         virtual void SetMesh(const HPhysicsMesh& mesh) { _mesh = mesh; }
@@ -31,15 +40,6 @@ namespace te
 
         /** @copydoc SetScale */
         const Vector3& GetScale() const { return _scale; }
-
-        /**
-         * Creates a new softbody.
-         *
-         * @param[in]	linkedSO	Scene object that owns this softbody. All physics updates applied to this object
-         *							will be transfered to this scene object (the movement/rotation resulting from
-         *							those updates).
-         */
-        static SPtr<SoftBody> Create(const HSceneObject& linkedSO);
 
     protected:
         /**

@@ -30,7 +30,7 @@ namespace te
         void SetScale(const Vector3& scale) override;
 
         /** @copydoc Body::SetTransform */
-        void SetTransform(const Vector3& pos, const Quaternion& rot, bool activate = false) override;
+        void SetTransform(const Vector3& pos, const Quaternion& rot);
 
         /** @copydoc Body::SetIsTrigger */
         void SetIsTrigger(bool trigger) override;
@@ -142,7 +142,6 @@ namespace te
         bool _isTrigger = false;
         bool _isDebug = true;
 
-        Vector3 _gravity = Vector3::ZERO;
         Vector3 _position = Vector3::ZERO;
         Vector3 _velocity = Vector3::ZERO;
         Vector3 _angularVelocity = Vector3::ZERO;

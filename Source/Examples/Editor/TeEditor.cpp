@@ -1367,8 +1367,8 @@ namespace te
             _softBodySphere->SetName("Soft Body Plane");
             _softBodySphere->SetFriction(1.0f);
             _softBodySphere->SetRollingFriction(1.0f);
-            _softBodySphere->SetIsKinematic(true);
             _softBodySphere->SetCollisionReportMode(CollisionReportMode::ReportPersistent);
+            _softBodySphere->SetIsTrigger(true);
             _softBodySphere->SetMesh(_spherePhysicsMesh);
             _softBodySphere->Initialize();
         }

@@ -43,11 +43,15 @@ namespace te
         {
             _collisionConfiguration = te_new<btSoftBodyRigidBodyCollisionConfiguration>();
             _collisionDispatcher = te_new<btCollisionDispatcher>(_collisionConfiguration);
+
+            btGImpactCollisionAlgorithm::registerAlgorithm(_collisionDispatcher);
         }
         else
         {
             _collisionConfiguration = te_new<btDefaultCollisionConfiguration>();
             _collisionDispatcher = te_new<btCollisionDispatcher>(_collisionConfiguration);
+
+            btGImpactCollisionAlgorithm::registerAlgorithm(_collisionDispatcher);
         }
     }
 
@@ -185,6 +189,53 @@ namespace te
         {
             if (scene->_world)
                 scene->_world->setGravity(ToBtVector3(gravity));
+
+            if (scene->_worldInfo)
+                scene->_worldInfo->m_gravity = ToBtVector3(gravity);
+        }
+    }
+
+    void BulletPhysics::SetAirDensity(const float& airDensity)
+    {
+        _initDesc.AirDensity = airDensity;
+
+        for (auto& scene : _scenes)
+        {
+            if (scene->_worldInfo)
+                scene->_worldInfo->air_density = (btScalar)airDensity;
+        }
+    }
+
+    void BulletPhysics::SetWaterDensity(const float& waterDensity)
+    {
+        _initDesc.WaterDensity = waterDensity;
+
+        for (auto& scene : _scenes)
+        {
+            if (scene->_worldInfo)
+                scene->_worldInfo->water_density = (btScalar)waterDensity;
+        }
+    }
+
+    void BulletPhysics::SetWaterNormal(const Vector3& waterNormal)
+    {
+        _initDesc.WaterNormal = waterNormal;
+
+        for (auto& scene : _scenes)
+        {
+            if (scene->_worldInfo)
+                scene->_worldInfo->water_normal = ToBtVector3(waterNormal);
+        }
+    }
+
+    void BulletPhysics::SetWaterOffset(const float& waterOffset)
+    {
+        _initDesc.WaterOffset = waterOffset;
+
+        for (auto& scene : _scenes)
+        {
+            if (scene->_worldInfo)
+                scene->_worldInfo->water_offset = (btScalar)waterOffset;
         }
     }
 
@@ -204,7 +255,6 @@ namespace te
             _worldInfo = te_new<btSoftBodyWorldInfo>();
             _worldInfo->m_sparsesdf.Initialize();
 
-            _world->getDispatchInfo().m_enableSPU = true;
             _worldInfo->m_dispatcher = _physics->_collisionDispatcher;
             _worldInfo->m_broadphase = _physics->_broadphase;
             _worldInfo->air_density = (btScalar)_initDesc.AirDensity;
@@ -212,16 +262,19 @@ namespace te
             _worldInfo->water_offset = (btScalar)_initDesc.WaterOffset;
             _worldInfo->water_normal = ToBtVector3(_initDesc.WaterNormal);
             _worldInfo->m_gravity = ToBtVector3(_initDesc.Gravity);
-            _worldInfo->m_maxDisplacement = 100000.0f;
+            _worldInfo->m_maxDisplacement = 1000.0f;
+            _worldInfo->m_sparsesdf.Initialize();
         }
         else
         {
             _world = te_new<btDiscreteDynamicsWorld>(_physics->_collisionDispatcher, _physics->_broadphase,
                 _physics->_constraintSolver, _physics->_collisionConfiguration);
         }
-
+         
         // Setup
+        _world->setWorldUserInfo(this);
         _world->setGravity(ToBtVector3(_initDesc.Gravity));
+        _world->getDispatchInfo().m_enableSPU = true;
         _world->getDispatchInfo().m_useContinuous = true;
         _world->getSolverInfo().m_splitImpulse = false;
         _world->getSolverInfo().m_numIterations = _physics->_maxSolveIterations;

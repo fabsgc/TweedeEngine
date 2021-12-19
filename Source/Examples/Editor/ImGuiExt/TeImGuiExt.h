@@ -102,7 +102,7 @@ namespace te
         static bool RenderOptionCombo(T* value, const char* id, const char* text, ComboOptions<T>& options,
             float width = 0.0f, UINT8 flags = 0)
         {
-            if (width != 0.0f && width < 75.0f)
+            if (!Math::ApproxEquals(width, 0.0f) && width < 75.0f)
                 width = 75.0f;
 
             if (flags & (UINT8)ImGuiExt::ComboOptionFlag::Disable)

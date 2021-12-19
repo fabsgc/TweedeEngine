@@ -21,7 +21,7 @@ namespace te
 
     void WidgetSettings::Update()
     {
-        const float width = ImGui::GetWindowContentRegionWidth() - 75.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 110.0f;
 
         if (ImGui::CollapsingHeader("Physics", ImGuiTreeNodeFlags_DefaultOpen))
         {
@@ -52,6 +52,48 @@ namespace te
                 if (ImGuiExt::RenderVector3(gravity, "##settings_physics_gravity", " Gravity", width))
                 {
                     gPhysics().SetGravity(gravity);
+                    gEditor().NeedsRedraw();
+                }
+            }
+            ImGui::Separator();
+
+            // Water Normal
+            {
+                Vector3 waterNormal = gPhysics().GetDesc().WaterNormal;
+                if (ImGuiExt::RenderVector3(waterNormal, "##settings_physics_water_normal", " Water Normal", width))
+                {
+                    gPhysics().SetWaterNormal(waterNormal);
+                    gEditor().NeedsRedraw();
+                }
+            }
+            ImGui::Separator();
+
+            // Air Density
+            {
+                float airDensity = gPhysics().GetDesc().AirDensity;
+                if (ImGuiExt::RenderOptionFloat(airDensity, "##settings_physics_air_density", " Air Density", 0.0f, 32.0f, width))
+                {
+                    gPhysics().SetAirDensity(airDensity);
+                    gEditor().NeedsRedraw();
+                }
+            }
+
+            // Water Density
+            {
+                float waterDensity = gPhysics().GetDesc().WaterDensity;
+                if (ImGuiExt::RenderOptionFloat(waterDensity, "##settings_physics_water_density", " Water Density", 0.0f, 32.0f, width))
+                {
+                    gPhysics().SetWaterDensity(waterDensity);
+                    gEditor().NeedsRedraw();
+                }
+            }
+
+            // Water Offset
+            {
+                float waterOffset = gPhysics().GetDesc().WaterOffset;
+                if (ImGuiExt::RenderOptionFloat(waterOffset, "##settings_physics_water_offset", " Water Offset", 0.0f, 32.0f, width))
+                {
+                    gPhysics().SetWaterOffset(waterOffset);
                     gEditor().NeedsRedraw();
                 }
             }

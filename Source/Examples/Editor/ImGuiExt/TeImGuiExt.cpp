@@ -515,7 +515,7 @@ namespace te
     bool ImGuiExt::RenderOptionComboComponent(HCamera* value, const char* id, const char* text, ComboOptions<HCamera>& options,
         float width)
     {
-        if (width != 0.0f && width < 75.0f)
+        if (!Math::ApproxEquals(width, 0.0f) && width < 75.0f)
             width = 75.0f;
 
         bool hasChanged = false;

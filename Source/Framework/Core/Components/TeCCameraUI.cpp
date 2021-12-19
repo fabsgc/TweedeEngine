@@ -197,9 +197,9 @@ namespace te
                     else
                         _localRotation.x += rotationRight;
 
-                    if (rotationY != 0.0f)
+                    if (!Math::ApproxEquals(rotationY, 0.0f))
                         SO()->RotateAround(_target, Vector3::UNIT_Y, Radian::FromDegrees(rotationY));
-                    if (rotationRight != 0.0f)
+                    if (!Math::ApproxEquals(rotationRight, 0.0f))
                         SO()->RotateAround(_target, tfrm.GetRight(), Radian::FromDegrees(rotationRight));
 
                     needsRedraw = true;

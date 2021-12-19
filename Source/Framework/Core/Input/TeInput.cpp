@@ -154,7 +154,7 @@ namespace te
             _mouseScroll = 0.0f;
         }
 
-        if (pointerPos != _lastPointerPosition || mouseScroll != 0.0f)
+        if ( pointerPos != _lastPointerPosition || !Math::ApproxEquals(mouseScroll, 0.0f))
         {
             PointerEvent event;
             event.alt = false;

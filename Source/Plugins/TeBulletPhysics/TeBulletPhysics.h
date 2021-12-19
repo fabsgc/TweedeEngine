@@ -74,6 +74,18 @@ namespace te
         /** @copydoc Physics::SetGravity */
         virtual void SetGravity(const Vector3& gravity) override;
 
+        /** @copydoc Physics::SetAirDensity */
+        virtual void SetAirDensity(const float& airDensity) override;
+
+        /** @copydoc Physics::SetWaterDensity */
+        virtual void SetWaterDensity(const float& waterDensity) override;
+
+        /** @copydoc Physics::SetWaterNormal */
+        virtual void SetWaterNormal(const Vector3& waterDensity) override;
+
+        /** @copydoc Physics::SetWaterOffset */
+        virtual void SetWaterOffset(const float& waterOffset) override;
+
         /** Notifies the system that at physics scene is about to be destroyed. */
         void NotifySceneDestroyed(BulletScene* scene);
 

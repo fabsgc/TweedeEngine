@@ -59,6 +59,18 @@ namespace te
         /** Determines gravity to apply to the scene */
         virtual void SetGravity(const Vector3& gravity) = 0;
 
+        /** Determines air density to apply to the scene */
+        virtual void SetAirDensity(const float& airDensity) = 0;
+
+        /** Determines water density to apply to the scene */
+        virtual void SetWaterDensity(const float& waterDensity) = 0;
+
+        /** Determines water normal to apply to the scene */
+        virtual void SetWaterNormal(const Vector3& waterDensity) = 0;
+
+        /** Determines water offset to apply to the scene */
+        virtual void SetWaterOffset(const float& waterOffset) = 0;
+
         /** Checks is the physics simulation update currently in progress. */
         bool IsUpdateInProgress() const { return _updateInProgress; }
 

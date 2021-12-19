@@ -143,7 +143,7 @@ namespace te
 
     void CSoftBody::ProcessCollisionData(const CollisionDataRaw& raw, CollisionData& output)
     {
-        output.ContactPoints = std::move(raw.ContactPoints);
+        output.ContactPoints = std::move(const_cast<CollisionDataRaw&>(raw).ContactPoints);
 
         if (raw.Bodies[0] != nullptr)
         {

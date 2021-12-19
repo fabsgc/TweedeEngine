@@ -27,7 +27,7 @@ namespace te
         Quaternion GetRotation() const override;
 
         /** @copydoc Body::SetTransform */
-        void SetTransform(const Vector3& pos, const Quaternion& rot, bool activate = false) override;
+        void SetTransform(const Vector3& pos, const Quaternion& rot) override;
 
         /** @copydoc Body::SetIsTrigger */
         void SetIsTrigger(bool trigger) override;

@@ -56,8 +56,8 @@ namespace te
         , _shape(nullptr)
     {
         _mass = DEFAULT_MASS;
-        _restitution = DEFAULT_RESTITUTION;
         _friction = DEFAULT_FRICTION;
+        _restitution = DEFAULT_RESTITUTION;
         _rollingFriction = DEFAULT_ROLLING_FRICTION;
         _gravity = _physics->GetDesc().Gravity;
 
@@ -108,7 +108,7 @@ namespace te
         return _rotation;
     }
 
-    void BulletRigidBody::SetTransform(const Vector3& pos, const Quaternion& rot, bool activate)
+    void BulletRigidBody::SetTransform(const Vector3& pos, const Quaternion& rot)
     {
         if (!_rigidBody)
             return;
@@ -135,9 +135,6 @@ namespace te
 
         _rigidBody->setInterpolationWorldTransform(transInterpolated);
         _rigidBody->updateInertiaTensor();
-
-        if (activate)
-            Activate();
     }
 
     void BulletRigidBody::SetIsTrigger(bool trigger)
@@ -447,26 +444,36 @@ namespace te
 
         ((BulletFBody*)_internal)->SetBody(_rigidBody);
 
-        SetTransform(_position, _rotation);
-
-        UpdateKinematicFlag();
-        UpdateGravityFlag();
-        UpdateCCDFlag();
-
         if (_colliders.size() > 0)
         {
-            _scene->AddRigidBody(_rigidBody);
-            _inWorld = true;
+            SetMass(_mass);
+            SetFriction(_friction);
+            SetRestitution(_restitution);
+            SetCenterOfMass(_centerOfMass);
+            SetAngularFactor(_angularFactor);
+            SetRollingFriction(_rollingFriction);
 
             if (_mass > 0.0f)
             {
                 Activate();
+                SetVelocity(_velocity);
+                SetAngularVelocity(_angularVelocity);
             }
             else
             {
                 SetVelocity(Vector3::ZERO);
                 SetAngularVelocity(Vector3::ZERO);
             }
+
+            UpdateKinematicFlag();
+            UpdateGravityFlag();
+            UpdateCCDFlag();
+
+            SetTransform(_position, _rotation);
+
+            _scene->AddRigidBody(_rigidBody);
+            _inWorld = true;
+
         }
 
         for (auto joint : _joints)

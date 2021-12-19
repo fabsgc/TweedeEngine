@@ -26,13 +26,12 @@ namespace te
         , _scene(scene)
         , _isDirty(false)
     {
-        _internal = te_new<BulletFBody>();
-
         _mass = DEFAULT_MASS;
-        _restitution = DEFAULT_RESTITUTION;
         _friction = DEFAULT_FRICTION;
+        _restitution = DEFAULT_RESTITUTION;
         _rollingFriction = DEFAULT_ROLLING_FRICTION;
-        _gravity = _physics->GetDesc().Gravity;
+
+        _internal = te_new<BulletFBody>();
 
         AddToWorld();
     }
@@ -95,19 +94,13 @@ namespace te
         AddToWorld();
     }
 
-    void BulletSoftBody::SetTransform(const Vector3& pos, const Quaternion& rot, bool activate)
+    void BulletSoftBody::SetTransform(const Vector3& pos, const Quaternion& rot)
     {
-        //if (!_softBody)
-        //    return;
-
         _position = pos;
         _rotation = rot;
 
         if (_softBody)
             _softBody->transformTo(btTransform(ToBtQuaternion(_rotation), ToBtVector3(_position)));
-
-        if (activate)
-            Activate();
 
         // Set position and rotation to world transform
         /*const Vector3 oldPosition = GetPosition();
@@ -278,19 +271,30 @@ namespace te
         {
             btSoftBody::Material* material = _softBody->appendMaterial();
             material->m_flags -= btSoftBody::fMaterial::DebugDraw;
-            material->m_kLST = 0.5;
+            material->m_kLST = 1.0;
             _softBody->generateBendingConstraints(2, material);
             _softBody->m_cfg.piterations = 2;
-            _softBody->m_cfg.kDF = 0.5;
+            _softBody->m_cfg.kDF = 1.0;
             _softBody->randomizeConstraints();
-            _softBody->scale(ToBtVector3(_scale));
-            _softBody->setTotalMass(_mass, true);
-            _softBody->transformTo(btTransform(ToBtQuaternion(_rotation), ToBtVector3(_position)));
-            _softBody->generateClusters(1);
+            //_softBody->generateClusters(0);
+            _softBody->setUserPointer(this);
+
+            //_softBody->m_cfg.collisions = btSoftBody::fCollision::CL_SS +
+            //                              btSoftBody::fCollision::CL_RS;
+
+            ((BulletFBody*)_internal)->SetBody(_softBody);
+
+            SetMass(_mass);
+            SetScale(_scale);
+            SetFriction(_friction);
+            SetRestitution(_restitution);
+            SetRollingFriction(_rollingFriction);
 
             if (_mass > 0.0f)
             {
                 Activate();
+                SetVelocity(_velocity);
+                SetAngularVelocity(_angularVelocity);
             }
             else
             {
@@ -298,14 +302,14 @@ namespace te
                 SetAngularVelocity(Vector3::ZERO);
             }
 
+            UpdateKinematicFlag();
+            UpdateCCDFlag();
+
+            SetTransform(_position, _rotation);
+
             _scene->AddSoftBody(_softBody);
             _inWorld = true;
         }
-
-        SetTransform(_position, _rotation);
-
-        UpdateKinematicFlag();
-        UpdateCCDFlag();
     }
 
     void BulletSoftBody::Release()

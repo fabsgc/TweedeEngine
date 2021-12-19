@@ -53,7 +53,7 @@ namespace te
          * Applies new transform values retrieved from the most recent physics update (values resulting from physics
          * simulation).
          */
-        virtual void SetTransform(const Vector3& position, const Quaternion& rotation, bool activate = false) = 0;
+        virtual void SetTransform(const Vector3& position, const Quaternion& rotation) = 0;
 
         /**
          * Enables/disables a body as a trigger. A trigger will not be used for collisions (objects will pass
@@ -242,10 +242,11 @@ namespace te
         Body(const HSceneObject& linkedSO, UINT32 type);
 
     protected:
-        FBody* _internal = nullptr;
-        BodyFlag _flags = (BodyFlag)((UINT32)BodyFlag::None);
         HSceneObject _linkedSO;
         PhysicsObjectOwner _owner;
+
+        FBody* _internal = nullptr;
+        BodyFlag _flags = (BodyFlag)((UINT32)BodyFlag::None);
         CollisionReportMode _collisionReportMode = CollisionReportMode::None;
     };
 }
