@@ -258,22 +258,27 @@ namespace te
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         // TODO Temp for debug purpose
+        HMesh _loadedMeshCube;
         HMesh _loadedMeshPlane;
-        HMesh _loadedMeshKnight;
         HMesh _loadedMeshSphere;
+        HMesh _loadedMeshKnight;
+
         HTexture _loadedSkyboxTexture;
         HTexture _loadedSkyboxIrradianceTexture;
         HTexture _loadedPlaneTexture;
         HTexture _loadedKnightDiffuseTexture;
+
         HAudioClip _loadedAudioClip;
 
         HMaterial _planeMaterial;
         HMaterial _knightMaterial;
         HMaterial _sphereMaterial;
+        HMaterial _cubeMaterial;
 
         HSceneObject _sceneRenderablePlaneSO;
         HSceneObject _sceneRenderableKnightSO;
         HSceneObject _sceneRenderableSphereSO;
+        HSceneObject _sceneRenderableCubeSO;
         HSceneObject _sceneLightSO;
         HSceneObject _sceneSkyboxSO;
         HSceneObject _sceneScriptSO;
@@ -286,6 +291,7 @@ namespace te
         HRenderable _renderablePlane;
         HRenderable _renderableKnight;
         HRenderable _renderableSphere;
+        HRenderable _renderableCube;
 
         HAnimation _animationKnight;
         HAnimationClip _animationClipKnight;
@@ -299,8 +305,11 @@ namespace te
         HBoxCollider _boxColliderKnight;
 
         HRigidBody _rigidBodyPlane;
-        HBoxCollider _planeColliderKnight;
+        HBoxCollider _boxColliderPlane;
         HSphericalJoint _planeKnightSphericalJoint;
+
+        HRigidBody _rigidBodyCube;
+        HBoxCollider _boxColliderCube;
 
         HSoftBody _softBodySphere;
         HPhysicsMesh _spherePhysicsMesh;

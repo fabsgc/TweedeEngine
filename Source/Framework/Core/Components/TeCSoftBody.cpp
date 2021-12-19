@@ -54,6 +54,9 @@ namespace te
 
     void CSoftBody::SetScale(const Vector3& scale)
     {
+        if (_scale == scale)
+            return;
+
         _scale = scale;
 
         if (_internal != nullptr)

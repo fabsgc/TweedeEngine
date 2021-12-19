@@ -29,8 +29,11 @@ namespace te
         /** @copydoc SoftBody::SetScale */
         void SetScale(const Vector3& scale) override;
 
+        /** @copydoc SoftBody::GetScale */
+        const Vector3& GetScale() const override { return _scale; }
+
         /** @copydoc Body::SetTransform */
-        void SetTransform(const Vector3& pos, const Quaternion& rot);
+        void SetTransform(const Vector3& position, const Quaternion& rotation);
 
         /** @copydoc Body::SetIsTrigger */
         void SetIsTrigger(bool trigger) override;
@@ -99,7 +102,7 @@ namespace te
         virtual void SetCollisionReportMode(CollisionReportMode mode) override;
 
         /** @copydoc Body::GetCollisionReportMode */
-        virtual CollisionReportMode GetCollisionReportMode() const { return _collisionReportMode; }
+        virtual CollisionReportMode GetCollisionReportMode() const override { return _collisionReportMode; }
 
         /** @copydoc Body::SetFlags */
         void SetFlags(BodyFlag flags) override;
@@ -133,7 +136,7 @@ namespace te
 
         bool _isDirty = true; // A state has been modified
 
-        float _mass = 1.0f;
+        float _mass = 0.0f;
         float _friction = 0.0f;
         float _rollingFriction = 0.0f;
         float _restitution = 0.0f;
@@ -142,6 +145,7 @@ namespace te
         bool _isTrigger = false;
         bool _isDebug = true;
 
+        Vector3 _scale = Vector3::ONE;
         Vector3 _position = Vector3::ZERO;
         Vector3 _velocity = Vector3::ZERO;
         Vector3 _angularVelocity = Vector3::ZERO;

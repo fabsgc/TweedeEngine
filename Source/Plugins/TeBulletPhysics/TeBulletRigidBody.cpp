@@ -13,8 +13,8 @@ namespace te
 {
     static const float DEFAULT_MASS = 1.0f;
     static const float DEFAULT_FRICTION = 0.5f;
-    static const float DEFAULT_ROLLING_FRICTION = 0.0f;
-    static const float DEFAULT_RESTITUTION = 0.0f;
+    static const float DEFAULT_ROLLING_FRICTION = 0.2f;
+    static const float DEFAULT_RESTITUTION = 0.1f;
     static const float DEFAULT_DEACTIVATION_TIME = 2000;
 
     class MotionState : public btMotionState
@@ -69,6 +69,7 @@ namespace te
     BulletRigidBody::~BulletRigidBody()
     {
         _colliders.clear();
+        _joints.clear();
 
         te_delete((BulletFBody*)_internal);
         Release();
@@ -108,33 +109,33 @@ namespace te
         return _rotation;
     }
 
-    void BulletRigidBody::SetTransform(const Vector3& pos, const Quaternion& rot)
+    void BulletRigidBody::SetTransform(const Vector3& position, const Quaternion& rotation)
     {
-        if (!_rigidBody)
-            return;
+        _position = position;
+        _rotation = rotation;
 
-        _position = pos;
-        _rotation = rot;
+        if (_rigidBody)
+        {
+            // Set position and rotation to world transform
+            const Vector3 oldPosition = GetPosition();
+            btTransform& trans = _rigidBody->getWorldTransform();
+            trans.setOrigin(ToBtVector3(_position + ToQuaternion(trans.getRotation()) * _centerOfMass));
+            trans.setRotation(ToBtQuaternion(_rotation));
 
-        // Set position and rotation to world transform
-        const Vector3 oldPosition = GetPosition();
-        btTransform& trans = _rigidBody->getWorldTransform();
-        trans.setOrigin(ToBtVector3(pos + ToQuaternion(trans.getRotation()) * _centerOfMass));
-        trans.setRotation(ToBtQuaternion(_rotation));
+            if (_centerOfMass != Vector3::ZERO)
+                trans.setOrigin(ToBtVector3(oldPosition + _rotation * _centerOfMass));
 
-        if (_centerOfMass != Vector3::ZERO)
-            trans.setOrigin(ToBtVector3(oldPosition + rot * _centerOfMass));
-
-        // Set position and rotation to interpolated world transform
-        btTransform transInterpolated = _rigidBody->getInterpolationWorldTransform();
-        transInterpolated.setRotation(trans.getRotation());
-        transInterpolated.setOrigin(trans.getOrigin());
-
-        if (_centerOfMass != Vector3::ZERO)
+            // Set position and rotation to interpolated world transform
+            btTransform transInterpolated = _rigidBody->getInterpolationWorldTransform();
+            transInterpolated.setRotation(trans.getRotation());
             transInterpolated.setOrigin(trans.getOrigin());
 
-        _rigidBody->setInterpolationWorldTransform(transInterpolated);
-        _rigidBody->updateInertiaTensor();
+            if (_centerOfMass != Vector3::ZERO)
+                transInterpolated.setOrigin(trans.getOrigin());
+
+            _rigidBody->setInterpolationWorldTransform(transInterpolated);
+            _rigidBody->updateInertiaTensor();
+        }
     }
 
     void BulletRigidBody::SetIsTrigger(bool trigger)
@@ -143,7 +144,7 @@ namespace te
             return;
 
         _isTrigger = trigger;
-        _isDirty = true;
+        UpdateKinematicFlag();
     }
 
     void BulletRigidBody::SetIsDebug(bool debug)
@@ -152,7 +153,7 @@ namespace te
             return;
 
         _isDebug = debug;
-        _isDirty = true;
+        UpdateKinematicFlag();
     }
 
     void BulletRigidBody::SetMass(float mass)
@@ -171,58 +172,72 @@ namespace te
             return;
 
         _isKinematic = kinematic;
-        _isDirty = true;
+        UpdateKinematicFlag();
     }
 
     void BulletRigidBody::SetVelocity(const Vector3& velocity)
     {
-        if (!_rigidBody)
+        if (_velocity == velocity)
             return;
 
         _velocity = velocity;
-        _rigidBody->setLinearVelocity(ToBtVector3(_velocity));
 
-        if (_velocity != Vector3::ZERO)
-            Activate();
+        if (_rigidBody)
+        {
+            _rigidBody->setLinearVelocity(ToBtVector3(_velocity));
+
+            if (_velocity != Vector3::ZERO)
+                Activate();
+        }
     }
 
     void BulletRigidBody::SetAngularVelocity(const Vector3& velocity)
     {
-        if (!_rigidBody)
+        if (_angularVelocity == velocity)
             return;
 
         _angularVelocity = velocity;
-        _rigidBody->setAngularVelocity(ToBtVector3(_angularVelocity));
 
-        if (_angularVelocity != Vector3::ZERO)
-            Activate();
+        if (_rigidBody)
+        {
+            _rigidBody->setAngularVelocity(ToBtVector3(_angularVelocity));
+
+            if (_angularVelocity != Vector3::ZERO)
+                Activate();
+        }
     }
 
     void BulletRigidBody::SetFriction(float friction)
     {
-        if (!_rigidBody)
+        if (_friction == friction)
             return;
 
         _friction = friction;
-        _rigidBody->setFriction(friction);
+
+        if (_rigidBody)
+            _rigidBody->setFriction(friction);
     }
 
     void BulletRigidBody::SetRollingFriction(float rollingFriction)
     {
-        if (!_rigidBody)
+        if (_rollingFriction == rollingFriction)
             return;
 
         _rollingFriction = rollingFriction;
-        _rigidBody->setRollingFriction(_rollingFriction);
+
+        if (_rigidBody)
+            _rigidBody->setRollingFriction(rollingFriction);
     }
 
     void BulletRigidBody::SetRestitution(float restitution)
     {
-        if (!_rigidBody)
+        if (_restitution == restitution)
             return;
 
         _restitution = restitution;
-        _rigidBody->setRestitution(restitution);
+
+        if (_rigidBody)
+            _rigidBody->setRestitution(restitution);
     }
 
     void BulletRigidBody::SetUseGravity(bool gravity)
@@ -245,13 +260,11 @@ namespace te
 
     void BulletRigidBody::SetCenterOfMass(const Vector3& centerOfMass)
     {
+        if (_centerOfMass == centerOfMass)
+            return;
+
         _centerOfMass = centerOfMass;
         SetTransform(GetPosition(), GetRotation());
-    }
-
-    const Vector3& BulletRigidBody::GetCenterOfMass() const
-    {
-        return _centerOfMass;
     }
 
     void BulletRigidBody::ApplyForce(const Vector3& force, ForceMode mode) const
@@ -300,11 +313,13 @@ namespace te
 
     void BulletRigidBody::SetAngularFactor(const Vector3& angularFactor)
     {
-        if (!_rigidBody)
+        if (_angularFactor == angularFactor)
             return;
 
         _angularFactor = angularFactor;
-        _rigidBody->setAngularFactor(ToBtVector3(_angularFactor));
+
+        if (!_rigidBody)
+            _rigidBody->setAngularFactor(ToBtVector3(_angularFactor));        
     }
 
     const Vector3& BulletRigidBody::GetAngularFactor() const
@@ -446,23 +461,21 @@ namespace te
 
         if (_colliders.size() > 0)
         {
-            SetMass(_mass);
-            SetFriction(_friction);
-            SetRestitution(_restitution);
-            SetCenterOfMass(_centerOfMass);
-            SetAngularFactor(_angularFactor);
-            SetRollingFriction(_rollingFriction);
+            _rigidBody->setFriction((btScalar)_friction);
+            _rigidBody->setRestitution((btScalar)_restitution);
+            _rigidBody->setAngularFactor(ToBtVector3(_angularFactor));
+            _rigidBody->setRollingFriction((btScalar)_rollingFriction);
 
             if (_mass > 0.0f)
             {
                 Activate();
-                SetVelocity(_velocity);
-                SetAngularVelocity(_angularVelocity);
+                _rigidBody->setLinearVelocity(ToBtVector3(_velocity));
+                _rigidBody->setAngularVelocity(ToBtVector3(_angularVelocity));
             }
             else
             {
-                SetVelocity(Vector3::ZERO);
-                SetAngularVelocity(Vector3::ZERO);
+                _rigidBody->setLinearVelocity(ToBtVector3(Vector3::ZERO));
+                _rigidBody->setAngularVelocity(ToBtVector3(Vector3::ZERO));
             }
 
             UpdateKinematicFlag();

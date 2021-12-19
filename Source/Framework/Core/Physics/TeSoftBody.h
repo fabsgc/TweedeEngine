@@ -36,10 +36,10 @@ namespace te
         /**
          * We can scale the PhysicsMesh in order to match to the 3D mesh geometry
          */
-        virtual void SetScale(const Vector3& scale) { _scale = scale; }
+        virtual void SetScale(const Vector3& scale) = 0;
 
         /** @copydoc SetScale */
-        const Vector3& GetScale() const { return _scale; }
+        virtual const Vector3& GetScale() const = 0;
 
     protected:
         /**
@@ -53,6 +53,5 @@ namespace te
 
     protected:
         HPhysicsMesh _mesh;
-        Vector3 _scale = Vector3::ONE;
     };
 }

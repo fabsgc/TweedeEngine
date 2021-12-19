@@ -27,7 +27,7 @@ namespace te
         Quaternion GetRotation() const override;
 
         /** @copydoc Body::SetTransform */
-        void SetTransform(const Vector3& pos, const Quaternion& rot) override;
+        void SetTransform(const Vector3& position, const Quaternion& rotation) override;
 
         /** @copydoc Body::SetIsTrigger */
         void SetIsTrigger(bool trigger) override;
@@ -93,7 +93,7 @@ namespace te
         void SetCenterOfMass(const Vector3& centerOfMass) override;
 
         /** @copydoc Body::GetCenterOfMass */
-        const Vector3& GetCenterOfMass() const override;
+        const Vector3& GetCenterOfMass() const override { return _centerOfMass; }
 
         /** @copydoc Body::ApplyForce */
         void ApplyForce(const Vector3& force, ForceMode mode) const override;
@@ -189,7 +189,7 @@ namespace te
         UnorderedMap<BulletFCollider*, ColliderData> _colliders;
         Vector<BulletJoint*> _joints;
 
-        float _mass = 1.0f;
+        float _mass = 0.0f;
         float _friction = 0.0f;
         float _rollingFriction = 0.0f;
         float _restitution = 0.0f;
