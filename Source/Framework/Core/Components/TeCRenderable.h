@@ -20,6 +20,10 @@ namespace te
         /** @copydoc Component::Initialize */
         void Initialize() override;
 
+        /** @copydoc Component::Update */
+        void Update() override { }
+
+        /** @copydoc Component::GetComponentType */
         static UINT32 GetComponentType() { return TypeID_Core::TID_CRenderable; }
 
         /** @copydoc Renderable::SetMesh */
@@ -139,19 +143,18 @@ namespace te
             _internal->_markCoreDirty(); 
         }
 
+    protected:
         /** Registers an Animation component that will be used for animating the renderable's mesh. */
-        void _registerAnimation(const HAnimation& animation);
+        void RegisterAnimation(const HAnimation& animation);
 
         /** Removes the Animation component, making the renderable rendered as a static object. */
-        void _unregisterAnimation();
-
-    protected:
-        mutable SPtr<Renderable> _internal;
-        HAnimation _animation;
+        void UnregisterAnimation();
 
     protected:
         friend class SceneObject;
+        friend class CAnimation;
 
+        CRenderable();
         CRenderable(const HSceneObject& parent);
 
         /** @copydoc Component::Instantiate */
@@ -175,11 +178,8 @@ namespace te
         /** @copydoc Component::OnDestroyed */
         void OnDestroyed() override;
 
-    public:
-        /** @copydoc Component::Update */
-        void Update() override { }
-
     protected:
-        CRenderable();
+        mutable SPtr<Renderable> _internal;
+        HAnimation _animation;
     };
 }

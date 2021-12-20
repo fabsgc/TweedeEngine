@@ -15,7 +15,7 @@ namespace te
     extern "C" TE_PLUGIN_EXPORT void* LoadPlugin()
     {
         ObjectImporter* importer = te_new<ObjectImporter>();
-        Importer::Instance()._registerAssetImporter(importer);
+        Importer::Instance().RegisterAssetImporter(importer);
         return nullptr;
     }
 }

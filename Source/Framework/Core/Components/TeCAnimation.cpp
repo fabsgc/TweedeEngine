@@ -234,13 +234,13 @@ namespace te
             UpdateSceneObjectMapping();
 
         if (_animatedRenderable != nullptr)
-            _animatedRenderable->_registerAnimation(static_object_cast<CAnimation>(_thisHandle));
+            _animatedRenderable->RegisterAnimation(static_object_cast<CAnimation>(_thisHandle));
     }
 
     void CAnimation::DestroyInternal()
     {
         if (_animatedRenderable != nullptr)
-            _animatedRenderable->_unregisterAnimation();
+            _animatedRenderable->UnregisterAnimation();
 
         _primaryPlayingClip = nullptr;
 
@@ -496,7 +496,7 @@ namespace te
             HBone bone = static_object_cast<CBone>(currentSO->GetComponent<CBone>());
             if (bone != nullptr)
             {
-                bone->_setParent(static_object_cast<CAnimation>(GetHandle()), true);
+                bone->SetParent(static_object_cast<CAnimation>(GetHandle()), true);
                 bones.push_back(bone);
             }
 

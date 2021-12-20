@@ -94,9 +94,9 @@ namespace te
             if (parent != nullptr)
             {
                 if (currentSO->GetActive())
-                    _setParent(parent);
+                    SetParent(parent);
                 else
-                    _setParent(HAnimation());
+                    SetParent(HAnimation());
 
                 return;
             }
@@ -104,10 +104,10 @@ namespace te
             currentSO = currentSO->GetParent();
         }
 
-        _setParent(HAnimation());
+        SetParent(HAnimation());
     }
 
-    void CBone::_setParent(const HAnimation& animation, bool isInternal)
+    void CBone::SetParent(const HAnimation& animation, bool isInternal)
     {
         if (!isInternal)
         {

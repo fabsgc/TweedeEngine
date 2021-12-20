@@ -15,7 +15,7 @@ namespace te
     extern "C" TE_PLUGIN_EXPORT void* LoadPlugin()
     {
         ShaderImporter* importer = te_new<ShaderImporter>();
-        Importer::Instance()._registerAssetImporter(importer);
+        Importer::Instance().RegisterAssetImporter(importer);
         return nullptr;
     }
 }

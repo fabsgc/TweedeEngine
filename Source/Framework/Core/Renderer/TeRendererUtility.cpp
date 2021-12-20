@@ -158,7 +158,7 @@ namespace te
                 vertexData->vertexCount, 0);
         }
 
-        // mesh->_notifyUsedOnGPU(); TODO
+        mesh->NotifyUsedOnGPU();
     }
 
     void RendererUtility::DrawScreenQuad(const Rect2& uv, const Vector2I& textureSize, UINT32 numInstances, bool flipUV)

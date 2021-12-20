@@ -297,7 +297,7 @@ namespace te
     HResource ResourceManager::_createResourceHandle(const SPtr<Resource>& obj)
     {
         UUID uuid = UUIDGenerator::GenerateRandom();
-        obj->_setUUID(uuid);
+        obj->SetUUID(uuid);
         return _createResourceHandle(obj, uuid);
     }
 

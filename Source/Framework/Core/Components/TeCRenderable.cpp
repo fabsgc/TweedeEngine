@@ -49,7 +49,7 @@ namespace te
         return true;
     }
 
-    void CRenderable::_registerAnimation(const HAnimation& animation)
+    void CRenderable::RegisterAnimation(const HAnimation& animation)
     {
         _animation = animation;
 
@@ -63,7 +63,7 @@ namespace te
         }
     }
 
-    void CRenderable::_unregisterAnimation()
+    void CRenderable::UnregisterAnimation()
     {
         _animation = nullptr;
 
@@ -95,7 +95,7 @@ namespace te
         _animation = static_object_cast<CAnimation>(SO()->GetComponent<CAnimation>());
         if (_animation != nullptr)
         {
-            _registerAnimation(_animation);
+            RegisterAnimation(_animation);
             _animation->RegisterRenderable(static_object_cast<CRenderable>(_thisHandle));
         }
     }

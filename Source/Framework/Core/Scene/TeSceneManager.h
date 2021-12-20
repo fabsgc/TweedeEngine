@@ -11,12 +11,6 @@ namespace te
 {
     class PhysicsScene;
 
-    /** Possible states components can be in. Controls which component callbacks are triggered. */
-    enum class ComponentState
-    {
-        Running, /**< All components callbacks are being triggered normally. */
-    };
-
     /** Information about a scene actor and the scene object it has been bound to. */
     struct BoundActorData
     {
@@ -119,15 +113,6 @@ namespace te
         void ClearScene();
 
         /**
-         * Changes the component state that globally determines which component callbacks are activated. Only affects
-         * components that don't have the ComponentFlag::AlwaysRun flag set.
-         */
-        void SetComponentState(ComponentState state);
-
-        /** Checks are the components currently in the Running state. */
-        bool IsRunning() const { return _componentState == ComponentState::Running; }
-
-        /**
          * Returns a list of all components of the specified type currently in the scene.
          *
          * @tparam		T			Type of the component to search for.
@@ -181,26 +166,23 @@ namespace te
         /** Called every frame. Calls update methods on all scene objects and their components. */
         void Update();
 
-        /** Updates dirty transforms on any core objects that may be tied with scene objects. */
-        void _updateCoreObjectTransforms();
-
         /** Notifies the manager that a new component has just been created. The manager triggers necessary callbacks. */
-        void _notifyComponentCreated(const HComponent& component);
+        void NotifyComponentCreated(const HComponent& component);
 
         /**
          * Notifies the manager that a scene object the component belongs to was activated. The manager triggers necessary
          * callbacks.
          */
-        void _notifyComponentActivated(const HComponent& component, bool triggerEvent);
+        void NotifyComponentActivated(const HComponent& component, bool triggerEvent);
 
         /**
          * Notifies the manager that a scene object the component belongs to was deactivated. The manager triggers necessary
          * callbacks.
          */
-        void _notifyComponentDeactivated(const HComponent& component, bool triggerEvent);
+        void NotifyComponentDeactivated(const HComponent& component, bool triggerEvent);
 
         /** Notifies the manager that a component is about to be destroyed. The manager triggers necessary callbacks. */
-        void _notifyComponentDestroyed(const HComponent& component, bool immediate);
+        void NotifyComponentDestroyed(const HComponent& component, bool immediate);
 
     protected:
         friend class SceneObject;
@@ -235,8 +217,6 @@ namespace te
 
         SPtr<RenderTarget> _mainRenderTarget;
         HEvent _mainRTResizedConn;
-
-        ComponentState _componentState = ComponentState::Running;
     };
 
     template<class T>

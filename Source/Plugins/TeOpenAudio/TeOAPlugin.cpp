@@ -31,7 +31,7 @@ namespace te
     extern "C" TE_PLUGIN_EXPORT void* LoadPlugin()
     {
         OAImporter* importer = te_new<OAImporter>();
-        Importer::Instance()._registerAssetImporter(importer);
+        Importer::Instance().RegisterAssetImporter(importer);
 
         return te_new<OAFactory>();
     }

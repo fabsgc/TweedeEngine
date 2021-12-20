@@ -90,7 +90,7 @@ namespace te
         return false;
     }
 
-    void Importer::_registerAssetImporter(BaseImporter* importer)
+    void Importer::RegisterAssetImporter(BaseImporter* importer)
     {
         if (!importer)
         {

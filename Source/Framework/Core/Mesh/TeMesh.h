@@ -165,7 +165,7 @@ namespace te
          * 
          * @note Needs to be called after all commands referencing this mesh have been sent to the GPU.
          */
-        virtual void _notifyUsedOnGPU() { }
+        virtual void NotifyUsedOnGPU() { }
 
         /** Returns properties that contain information about the mesh. */
         MeshProperties& GetProperties() { return _properties; }

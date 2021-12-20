@@ -15,7 +15,7 @@ namespace te
             || (checkQueued && _data->Ptr->Object->_getIsDestroyed());
     }
 
-    void GameObjectHandleBase::_setHandleData(const SPtr<GameObject>& object)
+    void GameObjectHandleBase::SetHandleData(const SPtr<GameObject>& object)
     {
         _data->Ptr = object->_instanceData;
     }

@@ -1896,8 +1896,7 @@ namespace te
     bool WidgetProperties::ShowCamera(SPtr<CCamera> camera)
     {
         bool hasChanged = false;
-        HCamera cameraHandle;
-        cameraHandle._setHandleData(camera);
+        HCamera cameraHandle = camera;
         auto& cameraSettings = camera->GetRenderSettings();
         const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
 

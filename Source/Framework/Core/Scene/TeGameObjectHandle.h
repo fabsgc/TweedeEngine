@@ -99,19 +99,19 @@ namespace te
 
     public:
         /** Returns internal handle data. */
-        const SPtr<GameObjectHandleData>& _getHandleData() const { return _data; }
+        const SPtr<GameObjectHandleData>& GetHandleData() const { return _data; }
 
         /** Returns true if handled data is empty */
         bool Empty() const { return _data->Ptr == nullptr; }
 
-        /** Resolves a handle to a proper GameObject in case it was created uninitialized. */
-        void _resolve(const GameObjectHandleBase& object) { _data->Ptr = object._data->Ptr; }
-
         /**	Changes the GameObject instance the handle is pointing to. */
-        void _setHandleData(const SPtr<GameObject>& object);
+        void SetHandleData(const SPtr<GameObject>& object);
 
     protected:
         friend class GameObjectManager;
+
+        /** Resolves a handle to a proper GameObject in case it was created uninitialized. */
+        void Resolve(const GameObjectHandleBase& object) { _data->Ptr = object._data->Ptr; }
 
         template<class _Ty1, class _Ty2>
         friend bool operator==(const GameObjectHandle<_Ty1>& _Left, const GameObjectHandle<_Ty2>& _Right);
@@ -164,10 +164,24 @@ namespace te
         /**	Move constructor from another handle of the same type. */
         GameObjectHandle(GameObjectHandle<T> && ptr) = default;
 
+        /**	Copy constructor from a shared ptr. */
+        GameObjectHandle(const SPtr<T>& ptr)
+            : GameObjectHandleBase()
+        {
+            SetHandleData(ptr);
+        }
+
         /**	Invalidates the handle. */
         GameObjectHandle<T>& operator=(std::nullptr_t ptr)
         {
             _data = te_shared_ptr_new<GameObjectHandleData>();
+            return *this;
+        }
+
+        /** Created handle from a shared ptr */
+        GameObjectHandle<T>& operator=(const SPtr<T>& ptr)
+        {
+            SetHandleData(ptr);
             return *this;
         }
 
@@ -217,7 +231,7 @@ namespace te
         GameObjectHandle<T> GetNewHandleFromExisting() const
         {
             GameObjectHandle<T> handle;
-            handle._setHandleData(this->GetInternalPtr());
+            handle.SetHandleData(this->GetInternalPtr());
 
             return handle;
         }
@@ -257,14 +271,14 @@ namespace te
     template<class _Ty1, class _Ty2>
     GameObjectHandle<_Ty1> static_object_cast(const GameObjectHandle<_Ty2>& other)
     {
-        return GameObjectHandle<_Ty1>(other._getHandleData());
+        return GameObjectHandle<_Ty1>(other.GetHandleData());
     }
 
     /**	Casts a generic GameObject handle to a specific one . */
     template<class T>
     GameObjectHandle<T> static_object_cast(const GameObjectHandleBase& other)
     {
-        return GameObjectHandle<T>(other._getHandleData());
+        return GameObjectHandle<T>(other.GetHandleData());
     }
 
     /**	Compares if two handles point to the same GameObject. */

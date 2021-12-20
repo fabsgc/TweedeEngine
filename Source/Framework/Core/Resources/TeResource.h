@@ -28,9 +28,6 @@ namespace te
         /**	Globally unique identifier of the resource that persists scene save/load. */
         const UUID& GetUUID() const { return _UUID; }
 
-        /** @copydoc GetUUID */
-        void _setUUID(const UUID& uuid) { _UUID = uuid; }
-
         /** Allow to dynamically retrieve resource type */
         static UINT32 GetResourceType() { return TypeID_Core::TID_Resource; }
 
@@ -39,6 +36,9 @@ namespace te
         friend class ResourceHandleBase;
 
         Resource(UINT32 type);
+
+        /** @copydoc GetUUID */
+        void SetUUID(const UUID& uuid) { _UUID = uuid; }
 
     protected:
         String _name;

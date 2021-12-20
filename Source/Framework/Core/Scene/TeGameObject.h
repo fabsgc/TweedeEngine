@@ -50,7 +50,10 @@ namespace te
         bool _getIsDestroyed() const { return _isDestroyed; }
 
         /** @copydoc GetUUID */
-        void _setUUID(const UUID& uuid) { _UUID = uuid; }
+        void SetUUID(const UUID& uuid) { _UUID = uuid; }
+
+        /** @copydoc GetGameObjectColor */
+        void SetColor(const Color& color) { _gameObjectColor = color; }
 
         /**
          * Replaces the instance data with another objects instance data. This object will basically become the original

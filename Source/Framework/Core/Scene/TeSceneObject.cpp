@@ -362,7 +362,7 @@ namespace te
 
         // Instance data changed, so make sure to refresh the handles to reflect that
         SPtr<SceneObject> thisPtr = _thisHandle.GetInternalPtr();
-        _thisHandle._setHandleData(thisPtr);
+        _thisHandle = thisPtr;
     }
 
     HSceneObject SceneObject::CreateInternal(const String& name, UINT32 flags)
@@ -370,8 +370,8 @@ namespace te
         SPtr<SceneObject> sceneObjectPtr = SPtr<SceneObject>(new (te_allocate<SceneObject>()) SceneObject(name, flags),
             &te_delete<SceneObject>);
 
-        sceneObjectPtr->_UUID = UUIDGenerator::GenerateRandom();
-        sceneObjectPtr->_gameObjectColor = Color::GenerateRandom(0.1f, 1.0f);
+        sceneObjectPtr->SetUUID(UUIDGenerator::GenerateRandom());
+        sceneObjectPtr->SetColor(Color::GenerateRandom(0.1f, 1.0f));
 
         HSceneObject sceneObject = static_object_cast<SceneObject>(
             GameObjectManager::Instance().RegisterObject(sceneObjectPtr));
@@ -405,7 +405,7 @@ namespace te
                 HComponent component = _components.back();
                 component->_setIsDestroyed();
 
-                gSceneManager()._notifyComponentDestroyed(component, immediate);
+                gSceneManager().NotifyComponentDestroyed(component, immediate);
 
                 component->DestroyInternal(component, true);
                 _components.erase(_components.end() - 1);
@@ -651,7 +651,7 @@ namespace te
         {
             (*iter)->_setIsDestroyed();
 
-            gSceneManager()._notifyComponentDestroyed(*iter, immediate);
+            gSceneManager().NotifyComponentDestroyed(*iter, immediate);
 
             (*iter)->DestroyInternal(*iter, immediate);
             _components.erase(iter);
@@ -669,7 +669,10 @@ namespace te
                 if (x.IsDestroyed())
                     return false;
 
-                return x._getHandleData()->Ptr->Object.get() == component; 
+                if (!x.GetHandleData()->Ptr && !component)
+                    return true;
+
+                return x.GetHandleData()->Ptr->Object.get() == component; 
             }
         );
 
@@ -808,12 +811,12 @@ namespace te
                 if (activeHierarchy)
                 {
                     for (auto& component : _components)
-                        gSceneManager()._notifyComponentActivated(component, triggerEvents);
+                        gSceneManager().NotifyComponentActivated(component, triggerEvents);
                 }
                 else
                 {
                     for (auto& component : _components)
-                        gSceneManager()._notifyComponentDeactivated(component, triggerEvents);
+                        gSceneManager().NotifyComponentDeactivated(component, triggerEvents);
                 }
             }
         }
@@ -1186,7 +1189,7 @@ namespace te
 
         _components.push_back(component);
 
-        gSceneManager()._notifyComponentCreated(component);
+        gSceneManager().NotifyComponentCreated(component);
     }
 
     void SceneObject::AddAndInitializeComponent(const SPtr<Component>& component)

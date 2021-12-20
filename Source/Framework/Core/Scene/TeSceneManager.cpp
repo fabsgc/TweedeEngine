@@ -172,12 +172,6 @@ namespace te
         }
     }
 
-    void SceneManager::_updateCoreObjectTransforms()
-    {
-        for (auto& entry : _boundActors)
-            entry.second.Actor->UpdateState(*entry.second.So);
-    }
-
     SPtr<Camera> SceneManager::GetMainCamera() const
     {
         if (_mainCameras.size() > 0)
@@ -220,41 +214,33 @@ namespace te
         }
     }
 
-    void SceneManager::SetComponentState(ComponentState state)
-    {
-        if (_componentState == state)
-            return;
-
-        // Make sure to change the state before calling any callbacks, so callbacks can query the state
-        _componentState = state;
-
-        // TODO
-    }
-
-    void SceneManager::_notifyComponentCreated(const HComponent& component)
+    void SceneManager::NotifyComponentCreated(const HComponent& component)
     {
         component->OnCreated();
         _components.push_back(component);
     }
 
-    void SceneManager::_notifyComponentActivated(const HComponent& component, bool triggerEvent)
+    void SceneManager::NotifyComponentActivated(const HComponent& component, bool triggerEvent)
     {
         const bool alwaysRun = component->HasFlag(Component::AlwaysRun);
         if (alwaysRun && triggerEvent)
             component->OnEnabled();
     }
 
-    void SceneManager::_notifyComponentDeactivated(const HComponent& component, bool triggerEvent)
+    void SceneManager::NotifyComponentDeactivated(const HComponent& component, bool triggerEvent)
     {
         const bool alwaysRun = component->HasFlag(Component::AlwaysRun);
         if (alwaysRun && triggerEvent)
             component->OnDisabled();
     }
 
-    void SceneManager::_notifyComponentDestroyed(const HComponent& component, bool immediate)
+    void SceneManager::NotifyComponentDestroyed(const HComponent& component, bool immediate)
     {
-        //const bool alwaysRun = component->HasFlag(Component::AlwaysRun);
-        //const bool isEnabled = component->SO()->GetActive() && (alwaysRun);
+        const bool alwaysRun = component->HasFlag(Component::AlwaysRun);
+        const bool isEnabled = component->SO()->GetActive() && (alwaysRun);
+
+        if (isEnabled)
+            component->OnDisabled();
 
         component->OnDestroyed();
 

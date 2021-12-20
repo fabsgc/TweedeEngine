@@ -421,9 +421,9 @@ namespace te
                 if (oldParentActive != newParentActive)
                 {
                     if(newParentActive == false)
-                        gSceneManager()._notifyComponentDeactivated(currentCO, true);
+                        gSceneManager().NotifyComponentDeactivated(currentCO, true);
                     else
-                        gSceneManager()._notifyComponentActivated(currentCO, true);
+                        gSceneManager().NotifyComponentActivated(currentCO, true);
                 }
 
                 _expandToSelection = true;

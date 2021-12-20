@@ -106,7 +106,7 @@ namespace te
          * @note	This method should only be called by asset importers themselves on startup. Importer takes ownership
          *			of the provided pointer and will release it. Assumes it is allocated using the general allocator.
          */
-        void _registerAssetImporter(BaseImporter* importer);
+        void RegisterAssetImporter(BaseImporter* importer);
 
     private:
         /**

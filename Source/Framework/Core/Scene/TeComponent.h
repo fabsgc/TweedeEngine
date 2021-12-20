@@ -18,6 +18,7 @@ namespace te
     class TE_CORE_EXPORT Component : public GameObject, public Serializable
     {
     public:
+        /** Each component has a type which is used to recognize and cast components */
         static UINT32 GetComponentType()
         {
             return TypeID_Core::TID_Component;

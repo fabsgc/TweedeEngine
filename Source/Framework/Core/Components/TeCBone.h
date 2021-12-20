@@ -27,15 +27,6 @@ namespace te
         /** @copydoc SetBoneName */
         const String& GetBoneName() const { return _boneName; }
 
-         /**
-          * Changes the parent animation of this component.
-          *
-          * @param[in]	animation	New animation parent, can be null.
-          * @param[in]	isInternal	If true the bone will just be changed internally, but parent animation will not be
-          *							notified.
-          */
-        void _setParent(const HAnimation& animation, bool isInternal = false);
-
         /** @copydoc Component::Clone */
         void Clone(const HComponent& c) override;
 
@@ -44,6 +35,18 @@ namespace te
 
         /** @copydoc Component::update */
         void Update() override { }
+
+    protected:
+        friend class CAnimation;
+
+        /**
+         * Changes the parent animation of this component.
+         *
+         * @param[in]	animation	New animation parent, can be null.
+         * @param[in]	isInternal	If true the bone will just be changed internally, but parent animation will not be
+         *							notified.
+         */
+        void SetParent(const HAnimation& animation, bool isInternal = false);
 
     protected:
         friend class SceneObject;
