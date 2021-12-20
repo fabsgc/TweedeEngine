@@ -612,7 +612,7 @@ namespace te
         return !_renderSettings->OverlayOnly && ShouldDraw(); 
     }
 
-    void RendererView::_notifyNeedsRedraw()
+    void RendererView::NotifyNeedsRedraw()
     {
         _redrawThisFrame = true;
 
@@ -636,7 +636,7 @@ namespace te
         for (UINT32 i = 0; i < numViews; i++)
         {
             _views.push_back(views[i]);
-            views[i]->_setViewIdx(i);
+            views[i]->SetViewIdx(i);
         }
     }
 

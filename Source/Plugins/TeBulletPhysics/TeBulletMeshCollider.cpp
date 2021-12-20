@@ -61,24 +61,27 @@ namespace te
 
         if(_collisionType == PhysicsMeshType::Convex)
         {
-            const SPtr<BulletMesh::ConvexMesh> convexMesh = fMesh->GetConvexMesh();
+            const SPtr<BulletMesh::MeshInfo> mesh = fMesh->GetMeshInfo();
 
-            if (!convexMesh)
+            if (!mesh)
             {
-                TE_DEBUG("PhysicsMesh does not have any ConvexMesh Data");
+                TE_DEBUG("PhysicsMesh does not have any Mesh Data");
                 return;
             }
             
             _shape = te_new<btConvexHullShape>();
             btConvexHullShape* hullShape = (btConvexHullShape*)_shape;
+            btScalar* vertices = mesh->Vertices;
+            int* indices = mesh->Indices;
 
-            for (UINT32 i = 0; i < convexMesh->NumVertices; i++)
+            for (UINT32 i = 0; i < mesh->NumIndices; i++)
             {
-                Vector3 position = *(Vector3*)(convexMesh->Vertices + convexMesh->Stride * i);
-                hullShape->addPoint(ToBtVector3(position));
+                const btVector3 position(vertices[indices[i + 0] * 3], vertices[indices[i + 0] * 3 + 1], vertices[indices[i + 0] * 3 + 2]);
+                hullShape->addPoint(position, false);
             }
 
-            hullShape->setUserPointer(this);
+            _shape->setUserPointer(this);
+            hullShape->recalcLocalAabb();
             hullShape->optimizeConvexHull();
             hullShape->initializePolyhedralFeatures();
 
@@ -87,35 +90,24 @@ namespace te
         }
         else
         {
-            const SPtr<BulletMesh::TriangleMesh> triangleMesh = fMesh->GetTriangleMesh();
+            const SPtr<BulletMesh::MeshInfo> mesh = fMesh->GetMeshInfo();
 
-            if (!triangleMesh)
+            if (!mesh)
             {
-                TE_DEBUG("PhysicsMesh does not have any TriangleMesh Data");
+                TE_DEBUG("PhysicsMesh does not have any Mesh Data");
                 return;
             }
 
             btTriangleMesh* meshInterface = new btTriangleMesh();
-            Vector3* vertices = (Vector3*)triangleMesh->Vertices;
-            UINT32* indices32 = (UINT32*)(triangleMesh->Indices);
-            UINT16* indices16 = (UINT16*)(triangleMesh->Indices);
+            btScalar* vertices = mesh->Vertices;
+            int* indices = mesh->Indices;
 
-            for (UINT32 i = 0; i < triangleMesh->NumIndices / 3; i++)
+            for (UINT32 i = 0; i < mesh->NumIndices; i+=3)
             {
-                if (triangleMesh->Use32BitIndex)
-                {
-                    const btVector3& v0 = ToBtVector3(vertices[indices32[i * 3]]);
-                    const btVector3& v1 = ToBtVector3(vertices[indices32[i * 3 + 1]]);
-                    const btVector3& v2 = ToBtVector3(vertices[indices32[i * 3 + 2]]);
-                    meshInterface->addTriangle(v0, v1, v2);
-                }
-                else
-                {
-                    const btVector3& v0 = ToBtVector3(vertices[indices16[i * 3]]);
-                    const btVector3& v1 = ToBtVector3(vertices[indices16[i * 3 + 1]]);
-                    const btVector3& v2 = ToBtVector3(vertices[indices16[i * 3 + 2]]);
-                    meshInterface->addTriangle(v0, v1, v2);
-                }
+                const btVector3 v0(vertices[indices[i + 0] * 3], vertices[indices[i + 0] * 3 + 1], vertices[indices[i + 0] * 3 + 2]);
+                const btVector3 v1(vertices[indices[i + 1] * 3], vertices[indices[i + 1] * 3 + 1], vertices[indices[i + 1] * 3 + 2]);
+                const btVector3 v2(vertices[indices[i + 2] * 3], vertices[indices[i + 2] * 3 + 1], vertices[indices[i + 2] * 3 + 2]);
+                meshInterface->addTriangle(v0, v1, v2);
             }
 
             _shape = te_new<btBvhTriangleMeshShape>(meshInterface, true, true);

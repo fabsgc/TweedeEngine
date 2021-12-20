@@ -67,7 +67,7 @@ namespace te
                 }
 
                 alGenBuffers(1, &_bufferId);
-                gOAAudio()._writeToOpenALBuffer(_bufferId, sampleBuffer, info);
+                gOAAudio().WriteToOpenALBuffer(_bufferId, sampleBuffer, info);
 
                 _streamData = nullptr;
                 _streamOffset = 0;

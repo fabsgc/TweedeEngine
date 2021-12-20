@@ -20,17 +20,11 @@ namespace te
 
     BulletFMesh::~BulletFMesh()
     {
-        if (_triangleMesh)
-            te_delete(_triangleMesh->Vertices);
-
-        if (_softBodyMesh)
+        if (_meshInfo)
         {
-            te_deallocate(_softBodyMesh->Vertices);
-            te_deallocate(_softBodyMesh->Indices);
+            te_deallocate(_meshInfo->Vertices);
+            te_deallocate(_meshInfo->Indices);
         }
-
-        _convexMesh = nullptr;
-        _triangleMesh = nullptr;
     }
 
     void BulletFMesh::Initialize()
@@ -50,65 +44,38 @@ namespace te
 
         if (_meshData != nullptr)
         {
-            // ConvexMesh
-            {
-                _convexMesh = te_shared_ptr_new<BulletMesh::ConvexMesh>();
+            _meshInfo = te_shared_ptr_new<BulletMesh::MeshInfo>();
 
-                _convexMesh->NumVertices = _meshData->GetNumVertices();
-                _convexMesh->Stride = vertexDesc->GetVertexStride();
-                _convexMesh->Vertices = _meshData->GetElementData(VES_POSITION);
+            UINT32 numVertices = _meshData->GetNumVertices();
+            UINT32 numIndices = _meshData->GetNumIndices();
+            UINT32 vertexStride = vertexDesc->GetVertexStride();
+            UINT32 indexStride = _meshData->GetIndexElementSize();
+            UINT8* vertexReader = _meshData->GetElementData(VES_POSITION);
+            UINT8* indices = (indexStride == sizeof(UINT32))
+                ? (UINT8*)_meshData->GetIndices32() : (UINT8*)_meshData->GetIndices16();
+
+            _meshInfo->NumTriangles = numIndices / 3;
+            _meshInfo->NumVertices = numVertices;
+            _meshInfo->NumIndices = numIndices;
+            _meshInfo->Vertices = te_allocateN<btScalar>(numVertices * 3);
+            _meshInfo->Indices = te_allocateN<int>(numIndices);
+
+            for (UINT32 i = 0; i < numVertices; i++)
+            {
+                Vector3* currVertex = (Vector3*)(vertexReader + (UINT8)vertexStride * i);
+
+                _meshInfo->Vertices[i * 3] = btScalar(currVertex->x);
+                _meshInfo->Vertices[i * 3 + 1] = btScalar(currVertex->y);
+                _meshInfo->Vertices[i * 3 + 2] = btScalar(currVertex->z);
             }
 
-            // TriangleMesh && SoftBodyMesh
+            for (UINT32 i = 0; i < numIndices; i++)
             {
-                _triangleMesh = te_shared_ptr_new<BulletMesh::TriangleMesh>();
-                _softBodyMesh = te_shared_ptr_new<BulletMesh::SoftBodyMesh>();
-
-                UINT32 numVertices = _meshData->GetNumVertices();
-                UINT32 numIndices = _meshData->GetNumIndices();
-                UINT32 vertexStride = vertexDesc->GetVertexStride();
-                UINT32 indexStride = _meshData->GetIndexElementSize();
-                UINT8* indices = (indexStride == sizeof(UINT32))
-                    ? (UINT8*)_meshData->GetIndices32() : (UINT8*)_meshData->GetIndices16();
-
-                _softBodyMesh->NumTriangles = numIndices / 3;
-                _softBodyMesh->Vertices = te_allocateN<btScalar>(numVertices * 3);
-                _softBodyMesh->Indices = te_allocateN<int>(numIndices);
-
-                _triangleMesh->NumVertices = numVertices;
-                _triangleMesh->NumIndices = numIndices;
-                _triangleMesh->VertexStride = sizeof(Vector3);
-                _triangleMesh->IndexStride = indexStride;
-                _triangleMesh->Use32BitIndex = (indexStride == sizeof(UINT32)) ? true : false;
-
-                UINT8* vertices = te_allocate<UINT8>(sizeof(Vector3) * numVertices);
-                UINT8* vertexReader = _meshData->GetElementData(VES_POSITION);
-                Vector3* vertexWriter = (Vector3*)vertices;
-
-                for (UINT32 i = 0; i < numVertices; i++)
-                {
-                    Vector3* currVertex = (Vector3*)(vertexReader + (UINT8)vertexStride * i);
-                    memcpy(vertexWriter, currVertex, sizeof(Vector3));
-
-                    _softBodyMesh->Vertices[i * 3] = btScalar(currVertex->x);
-                    _softBodyMesh->Vertices[i * 3 + 1] = btScalar(currVertex->y);
-                    _softBodyMesh->Vertices[i * 3 + 2] = btScalar(currVertex->z);
-
-                    if(i < numVertices - 1)
-                        vertexWriter++;
-                }
-
-                for (UINT32 i = 0; i < numIndices; i++)
-                {
-                    if (_triangleMesh->Use32BitIndex)
-                        _softBodyMesh->Indices[i] = ((UINT32*)(indices))[i];
-                    else
-                        _softBodyMesh->Indices[i] = ((UINT16*)(indices))[i];
-                }
-   
-                _triangleMesh->Vertices = vertices;
-                _triangleMesh->Indices = indices;
-            }
+                if (indexStride == sizeof(UINT32))
+                    _meshInfo->Indices[i] = ((UINT32*)(indices))[i];
+                else
+                    _meshInfo->Indices[i] = ((UINT16*)(indices))[i];
+            }            
         }
     }
 }

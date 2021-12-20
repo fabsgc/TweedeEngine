@@ -222,9 +222,6 @@ namespace te
         if (!importOptions->ImportMaterials)
             removeComponentFlags |= aiComponent_MATERIALS | aiComponent_TEXTURES;
 
-        if (importOptions->FplitUV)
-            assimpFlags |= aiProcess_FlipUVs;
-
         if (!importOptions->ImportVertexColors)
             removeComponentFlags |= aiComponent_COLORS;
 
@@ -1226,8 +1223,8 @@ namespace te
 
                         if (writeUVIDx == 0)
                             meshData->SetUV0(transformedUV, size);
-                        /*else if (writeUVIDx == 1)
-                            meshData->SetUV1(transformedUV, size);*/
+                        else if (writeUVIDx == 1)
+                            meshData->SetUV1(transformedUV, size);
 
                         te_delete(transformedUV);
 

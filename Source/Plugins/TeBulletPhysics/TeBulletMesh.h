@@ -10,29 +10,13 @@ namespace te
     class BulletMesh : public PhysicsMesh
     {
     public:
-        struct ConvexMesh
-        {
-            UINT8* Vertices = 0;
-            UINT32 NumVertices = 0;
-            UINT32 Stride = 0;
-        };
-
-        struct TriangleMesh
-        {
-            UINT8* Vertices = nullptr;
-            UINT8* Indices = nullptr;
-            UINT32 NumVertices = 0;
-            UINT32 NumIndices = 0;
-            UINT32 VertexStride = 0;
-            UINT32 IndexStride = 0;
-            bool   Use32BitIndex = true;
-        };
-
-        struct SoftBodyMesh
+        struct MeshInfo
         {
             btScalar* Vertices = nullptr;
             int* Indices = nullptr;
             UINT32 NumTriangles = 0;
+            UINT32 NumVertices = 0;
+            UINT32 NumIndices = 0;
         };
 
     public:

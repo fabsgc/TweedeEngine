@@ -108,7 +108,7 @@ namespace te
         float _deltaTimeSec = 1.0f;
 
         UINT32 _debugMode = btIDebugDraw::DBG_DrawWireframe | btIDebugDraw::DBG_DrawContactPoints | 
-            btIDebugDraw::DBG_DrawConstraints | btIDebugDraw::DBG_DrawConstraintLimits | btIDebugDraw::DBG_DrawAabb;
+            btIDebugDraw::DBG_DrawConstraints | btIDebugDraw::DBG_DrawConstraintLimits;
     };
 
     typedef Pair<const btCollisionObject*, const btCollisionObject*> ContactEventKey;
@@ -214,7 +214,7 @@ namespace te
             float maxDist = FLT_MAX) const override;
 
         /** Create a btSoftBody from a PhysicsMesh */
-        btSoftBody* CreateBtSoftBody(const SPtr<BulletMesh::SoftBodyMesh>& mesh) const;
+        btSoftBody* CreateBtSoftBody(const SPtr<BulletMesh::MeshInfo>& mesh) const;
 
     private:
         friend class BulletPhysics;

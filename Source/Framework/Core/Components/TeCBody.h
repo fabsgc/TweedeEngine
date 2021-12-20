@@ -32,6 +32,9 @@ namespace te
         /** @copydoc Component::Update */
         void Update() override;
 
+        /** Returns the current bounding box */
+        AABox GetBoundingBox();
+
         /** @copydoc Body::SetIsTrigger */
         void SetIsTrigger(bool value);
 
@@ -126,6 +129,9 @@ namespace te
         friend class SceneObject;
 
         using Component::DestroyInternal;
+
+        /** As debug is heavy for GPU, we can cull debug info for non visible bodies */
+        void CullDebug(bool cull);
 
         /** Triggered when the internal body begins touching another object. */
         void TriggerOnCollisionBegin(const CollisionDataRaw& data);

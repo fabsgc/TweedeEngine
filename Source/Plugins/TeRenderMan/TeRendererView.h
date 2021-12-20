@@ -269,7 +269,7 @@ namespace te
         SPtr<GpuParamBlockBuffer> GetPerViewBuffer() const { return _paramBuffer; }
 
         /** Assigns a view index to the view. To be called by the parent view group when the view is added to it. */
-        void _setViewIdx(UINT32 viewIdx) { _viewIdx = viewIdx; }
+        void SetViewIdx(UINT32 viewIdx) { _viewIdx = viewIdx; }
 
         /** Returns an index of this view within the parent view group. */
         UINT32 GetViewIdx() const { return _viewIdx; }
@@ -281,7 +281,7 @@ namespace te
         bool ShouldDraw3D() const;
 
         /** Lets an on-demand view know that it should be redrawn this frame. */
-        void _notifyNeedsRedraw();
+        void NotifyNeedsRedraw();
 
         /**
          * Notifies the view that the render target the compositor is rendering to has changed. Note that this does not
@@ -289,7 +289,7 @@ namespace te
          * rendering of a single frame. This should be set to null if the renderer is not currently rendering the
          * view.
          */
-        void _notifyCompositorTargetChanged(const SPtr<RenderTarget>& target) const { _context.CurrentTarget = target; }
+        void NotifyCompositorTargetChanged(const SPtr<RenderTarget>& target) const { _context.CurrentTarget = target; }
 
         /** Returns true if the view should write to the velocity buffer. */
         bool RequiresVelocityWrites() const;

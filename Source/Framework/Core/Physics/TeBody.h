@@ -49,6 +49,9 @@ namespace te
         /** Returns the current rotation of the body. */
         virtual Quaternion GetRotation() const = 0;
 
+        /** Returns the current bounding box */
+        virtual AABox GetBoundingBox() const = 0;
+
         /**
          * Applies new transform values retrieved from the most recent physics update (values resulting from physics
          * simulation).

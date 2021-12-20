@@ -119,8 +119,21 @@ namespace te
             {
                 scene->_debug->Clear();
 
-                if(_debug)
+                if (_debug)
+                {
+                    /*if (_initDesc.SoftBody)
+                    {
+                        btSoftRigidDynamicsWorld* softWorld = static_cast<btSoftRigidDynamicsWorld*>(scene->_world);
+                        softWorld->setDrawFlags(fDrawFlags::Faces);
+                    }
+                    else
+                    {
+                        btSoftRigidDynamicsWorld* softWorld = static_cast<btSoftRigidDynamicsWorld*>(scene->_world);
+                        softWorld->setDrawFlags(fDrawFlags::Faces);
+                    }*/
+
                     scene->_world->debugDrawWorld();
+                }
             }
         }
 
@@ -759,7 +772,7 @@ namespace te
         return hits.size() > 0;
     }
 
-    btSoftBody* BulletScene::CreateBtSoftBody(const SPtr<BulletMesh::SoftBodyMesh>& mesh) const
+    btSoftBody* BulletScene::CreateBtSoftBody(const SPtr<BulletMesh::MeshInfo>& mesh) const
     {
         if (!_worldInfo)
             return nullptr;

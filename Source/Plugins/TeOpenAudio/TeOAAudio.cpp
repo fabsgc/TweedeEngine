@@ -134,7 +134,7 @@ namespace te
         RebuildContexts();
     }
 
-    bool OAAudio::_isExtensionSupported(const String& extension) const
+    bool OAAudio::IsExtensionSupported(const String& extension) const
     {
         if (_device == nullptr)
             return false;
@@ -145,13 +145,13 @@ namespace te
             return alIsExtensionPresent(extension.c_str()) != AL_FALSE;
     }
 
-    void OAAudio::_registerListener(OAAudioListener* listener)
+    void OAAudio::RegisterListener(OAAudioListener* listener)
     {
         _listeners.push_back(listener);
         RebuildContexts();
     }
 
-    void OAAudio::_unregisterListener(OAAudioListener* listener)
+    void OAAudio::UnregisterListener(OAAudioListener* listener)
     {
         auto iterFind = std::find(_listeners.begin(), _listeners.end(), listener);
         if (iterFind != _listeners.end())
@@ -160,12 +160,12 @@ namespace te
         RebuildContexts();
     }
 
-    void OAAudio::_registerSource(OAAudioSource* source)
+    void OAAudio::RegisterSource(OAAudioSource* source)
     {
         _sources.insert(source);
     }
 
-    void OAAudio::_unregisterSource(OAAudioSource* source)
+    void OAAudio::UnregisterSource(OAAudioSource* source)
     {
         _sources.erase(source);
     }
@@ -245,13 +245,13 @@ namespace te
         }
     }
 
-    void OAAudio::_writeToOpenALBuffer(UINT32 bufferId, UINT8* samples, const AudioDataInfo& info)
+    void OAAudio::WriteToOpenALBuffer(UINT32 bufferId, UINT8* samples, const AudioDataInfo& info)
     {
         if (info.NumChannels <= 2) // Mono or stereo
         {
             if (info.BitDepth > 16)
             {
-                if (_isExtensionSupported("AL_EXT_float32"))
+                if (IsExtensionSupported("AL_EXT_float32"))
                 {
                     UINT32 bufferSize = info.NumSamples * sizeof(float);
                     float* sampleBufferFloat = (float*)te_allocate(bufferSize);

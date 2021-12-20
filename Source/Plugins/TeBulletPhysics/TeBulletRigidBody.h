@@ -26,6 +26,9 @@ namespace te
         /** @copydoc Body::GetRotation */
         Quaternion GetRotation() const override;
 
+        /** Returns the current bounding box */
+        AABox GetBoundingBox() const override;
+
         /** @copydoc Body::SetTransform */
         void SetTransform(const Vector3& position, const Quaternion& rotation) override;
 

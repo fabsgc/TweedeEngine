@@ -23,7 +23,7 @@ namespace te
         , _GLSupport(glsupport)
         , _context(nullptr)
     { 
-        _GLSupport._notifyWindowCreated(this);
+        _GLSupport.NotifyWindowCreated(this);
     }
 
     Win32RenderWindow::~Win32RenderWindow()
@@ -151,7 +151,7 @@ namespace te
 
         _context = _GLSupport.CreateContext(_HDC, nullptr);
 
-        _GLSupport._notifyWindowCreated(this);
+        _GLSupport.NotifyWindowCreated(this);
 
         RenderWindow::Initialize();
     }

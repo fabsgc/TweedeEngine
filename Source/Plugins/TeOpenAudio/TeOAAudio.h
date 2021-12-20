@@ -45,19 +45,19 @@ namespace te
         const Vector<AudioDevice>& GetAllDevices() const override { return _allDevices; };
 
         /** Checks is a specific OpenAL extension supported. */
-        bool _isExtensionSupported(const String& extension) const;
+        bool IsExtensionSupported(const String& extension) const;
 
         /** Registers a new AudioListener. Should be called on listener creation. */
-        void _registerListener(OAAudioListener* listener);
+        void RegisterListener(OAAudioListener* listener);
 
         /** Unregisters an existing AudioListener. Should be called before listener destruction. */
-        void _unregisterListener(OAAudioListener* listener);
+        void UnregisterListener(OAAudioListener* listener);
 
         /** Registers a new AudioSource. Should be called on source creation. */
-        void _registerSource(OAAudioSource* source);
+        void RegisterSource(OAAudioSource* source);
 
         /** Unregisters an existing AudioSource. Should be called before source destruction. */
-        void _unregisterSource(OAAudioSource* source);
+        void UnregisterSource(OAAudioSource* source);
 
         /** Returns a list of all OpenAL contexts. Each listener has its own context. */
         const Vector<ALCcontext*>& _getContexts() const { return _contexts; }
@@ -75,7 +75,7 @@ namespace te
          * Writes provided samples into the OpenAL buffer with the provided ID. If the provided format is not supported the
          * samples will first be converted into a valid format.
          */
-        void _writeToOpenALBuffer(UINT32 bufferId, UINT8* samples, const AudioDataInfo& info);
+        void WriteToOpenALBuffer(UINT32 bufferId, UINT8* samples, const AudioDataInfo& info);
 
     private:
         friend class OAAudioSource;

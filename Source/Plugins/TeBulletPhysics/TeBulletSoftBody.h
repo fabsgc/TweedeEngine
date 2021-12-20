@@ -23,6 +23,9 @@ namespace te
         /** @copydoc Body::GetRotation */
         Quaternion GetRotation() const override;
 
+        /** Returns the current bounding box */
+        AABox GetBoundingBox() const override;
+
         /** @copydoc SoftBody::SetMesh */
         void SetMesh(const HPhysicsMesh& mesh) override;
 

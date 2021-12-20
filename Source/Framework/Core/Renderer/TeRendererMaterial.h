@@ -16,7 +16,7 @@ namespace te
     /** References the shader path in RendererMaterial implementation. */
 #define RMAT_DEF(type)														\
     public:																	\
-    static void _initMetaData()												\
+    static void InitMetaData()												\
     {																		\
     	te::RendererMaterialManager::_registerMaterial(&_metaData, type);	\
     };																		\
@@ -34,7 +34,7 @@ namespace te
     public:
         InitRendererMaterialStart()
         {
-            T::_initMetaData();
+            T::InitMetaData();
         }
 
         /**	Forces the compiler to not optimize out construction of this type. */

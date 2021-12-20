@@ -3,6 +3,7 @@
 #include "Physics/TePhysics.h"
 #include "Physics/TeCollider.h"
 #include "Physics/TeJoint.h"
+#include "Math/TeAABox.h"
 #include "TeBulletPhysics.h"
 #include "TeBulletFCollider.h"
 #include "TeBulletFBody.h"
@@ -74,6 +75,11 @@ namespace te
         }
 
         return _rotation;
+    }
+
+    AABox BulletSoftBody::GetBoundingBox() const
+    {
+        return AABox();
     }
 
     void BulletSoftBody::SetMesh(const HPhysicsMesh& mesh)
@@ -256,15 +262,15 @@ namespace te
             return;
         }
 
-        const SPtr<BulletMesh::SoftBodyMesh> softBodyMesh = fMesh->GetSoftBodyMesh();
+        const SPtr<BulletMesh::MeshInfo> mesh = fMesh->GetMeshInfo();
 
-        if (!softBodyMesh)
+        if (!mesh)
         {
             TE_DEBUG("PhysicsMesh does not have any SoftBodyMesh Data");
             return;
         }
 
-        _softBody = _scene->CreateBtSoftBody(softBodyMesh);
+        _softBody = _scene->CreateBtSoftBody(mesh);
         if (_softBody)
         {
             btSoftBody::Material* material = _softBody->appendMaterial();
@@ -374,6 +380,11 @@ namespace te
             flags &= ~btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
         else
             flags |= btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
+
+        for (auto i = 0; i < _softBody->m_faces.size(); i++)
+        {
+            _softBody->m_faces.at(i).m_material->m_flags = _isDebug ? btSoftBody::fMaterial::DebugDraw : 0;
+        }
 
         _softBody->setCollisionFlags(flags);
         _softBody->forceActivationState(DISABLE_DEACTIVATION);

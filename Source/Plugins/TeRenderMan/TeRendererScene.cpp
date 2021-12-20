@@ -107,7 +107,7 @@ namespace te
         RendererView* view = _info.Views[cameraId];
 
         if ((updateFlag & (UINT32)CameraDirtyFlag::Redraw) != 0)
-            view->_notifyNeedsRedraw();
+            view->NotifyNeedsRedraw();
 
         UINT32 updateEverythingFlag = (UINT32)ActorDirtyFlag::Everything
             | (UINT32)CameraDirtyFlag::Viewport;

@@ -54,9 +54,6 @@ namespace te
         /**
          * Checks if this and the provided component represent the same type.
          *
-         * @note
-         * RTTI type cannot be checked directly since components can be further specialized internally for scripting
-         * purposes.
          */
         virtual bool TypeEquals(const Component& other);
 
@@ -119,7 +116,7 @@ namespace te
          */
         bool IsChildOf(const HSceneObject& sceneObject);
 
-        /*Notify that internal data (if exists) must be updated */
+        /** Notify that internal data (if exists) must be updated */
         virtual void MarkDirty() { }
 
         /** Call when a new component is created */

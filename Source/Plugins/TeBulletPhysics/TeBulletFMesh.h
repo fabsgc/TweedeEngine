@@ -13,14 +13,8 @@ namespace te
         BulletFMesh(const SPtr<MeshData>& meshData);
         ~BulletFMesh();
 
-        /** Returns convex mesh generated data */
-        SPtr<BulletMesh::ConvexMesh> GetConvexMesh() const { return _convexMesh; }
-
-        /** Returns triangle mesh generated data */
-        SPtr<BulletMesh::TriangleMesh> GetTriangleMesh() const { return _triangleMesh; }
-
-        /** Returns triangle mesh generated data */
-        SPtr<BulletMesh::SoftBodyMesh> GetSoftBodyMesh() const { return _softBodyMesh; }
+        /** Returns mesh generated data */
+        SPtr<BulletMesh::MeshInfo> GetMeshInfo() const { return _meshInfo; }
 
     private:
         /** Creates the internal triangle/convex mesh */
@@ -30,8 +24,6 @@ namespace te
         BulletFMesh(); // Serialization only
 
     private:
-        SPtr<BulletMesh::ConvexMesh> _convexMesh = nullptr;
-        SPtr<BulletMesh::TriangleMesh> _triangleMesh = nullptr;
-        SPtr<BulletMesh::SoftBodyMesh> _softBodyMesh = nullptr;
+        SPtr<BulletMesh::MeshInfo> _meshInfo = nullptr;
     };
 }

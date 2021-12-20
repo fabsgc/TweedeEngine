@@ -1,5 +1,6 @@
 #include "Components/TeCBody.h"
 #include "Scene/TeSceneObject.h"
+#include "Math/TeAABox.h"
 
 namespace te
 {
@@ -48,6 +49,14 @@ namespace te
     {
         if (_internal != nullptr)
             _internal->Update();
+    }
+
+    AABox CBody::GetBoundingBox()
+    {
+        if (_internal != nullptr)
+            return _internal->GetBoundingBox();
+
+        return AABox();
     }
 
     void CBody::SetIsTrigger(bool trigger)
@@ -188,6 +197,14 @@ namespace te
     {
         if (_internal != nullptr)
             _internal->_setLinkedSO(SO);
+    }
+
+    void CBody::CullDebug(bool cull)
+    {
+        if (_isDebug && _internal)
+        {
+            _internal->SetIsDebug(cull);
+        }
     }
 
     void CBody::TriggerOnCollisionBegin(const CollisionDataRaw& data)

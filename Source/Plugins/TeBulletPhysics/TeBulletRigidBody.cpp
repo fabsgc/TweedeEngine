@@ -3,6 +3,7 @@
 #include "Physics/TePhysics.h"
 #include "Physics/TeCollider.h"
 #include "Physics/TeJoint.h"
+#include "Math/TeAABox.h"
 #include "TeBulletPhysics.h"
 #include "TeBulletFCollider.h"
 #include "TeBulletFBody.h"
@@ -136,6 +137,11 @@ namespace te
             _rigidBody->setInterpolationWorldTransform(transInterpolated);
             _rigidBody->updateInertiaTensor();
         }
+    }
+
+    AABox BulletRigidBody::GetBoundingBox() const
+    {
+        return AABox();
     }
 
     void BulletRigidBody::SetIsTrigger(bool trigger)

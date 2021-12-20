@@ -46,11 +46,11 @@ namespace te
          */
         bool SelectPixelFormat(HDC hdc, int colorDepth, int multisample, bool hwGamma, bool depth);
 
-        /** @copydoc GLSupport::getVideoModeInfo */
+        /** @copydoc GLSupport::GetVideoModeInfo */
         SPtr<VideoModeInfo> GetVideoModeInfo() const override;
 
         /** Notifies the manager that a new window has been created. */
-        void _notifyWindowCreated(Win32RenderWindow* window);
+        void NotifyWindowCreated(Win32RenderWindow* window);
 
     private:
         /**	Initializes windows specific OpenGL extensions needed for advanced context creation. */

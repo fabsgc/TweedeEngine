@@ -383,6 +383,7 @@ namespace te
         RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
 
         RenderAPI& rapi = RenderAPI::Instance();
+        Camera* sceneCamera = inputs.View.GetSceneCamera();
         UINT32 clearBuffers = FBT_COLOR | FBT_DEPTH | FBT_STENCIL;
 
         rapi.SetRenderTarget(gpuInitializationPassNode->RenderTargetTex);
@@ -391,6 +392,9 @@ namespace te
         // Render all visible opaque elements
         RenderQueue* opaqueElements = inputs.View.GetOpaqueQueue().get();       
         RenderQueueElements(opaqueElements->GetSortedElements(), inputs.View, inputs.Scene, inputs.ViewGroup);
+
+        if (sceneCamera != nullptr)
+            inputs.View.NotifyCompositorTargetChanged(gpuInitializationPassNode->RenderTargetTex);
 
         // Make sure that any compute shaders are able to read g-buffer by unbinding it
         rapi.SetRenderTarget(nullptr);
@@ -441,6 +445,10 @@ namespace te
         SPtr<Mesh> mesh = gRendererUtility().GetSkyBoxMesh();
         gRendererUtility().Draw(mesh, mesh->GetProperties().GetSubMesh(0));
 
+        Camera* sceneCamera = inputs.View.GetSceneCamera();
+        if (sceneCamera != nullptr)
+            inputs.View.NotifyCompositorTargetChanged(gpuInitializationPassNode->RenderTargetTex);
+
         // Make sure that any compute shaders are able to read g-buffer by unbinding it
         rapi.SetRenderTarget(nullptr);
     }
@@ -470,8 +478,11 @@ namespace te
         rapi.SetViewport(area);
 
         RenderQueue* transparentElements = inputs.View.GetTransparentQueue().get();
-        rapi.SetRenderTarget(gpuInitializationPassNode->RenderTargetTex, readOnlyFlags);
         RenderQueueElements(transparentElements->GetSortedElements(), inputs.View, inputs.Scene, inputs.ViewGroup);
+
+        Camera* sceneCamera = inputs.View.GetSceneCamera();
+        if (sceneCamera != nullptr)
+            inputs.View.NotifyCompositorTargetChanged(gpuInitializationPassNode->RenderTargetTex);
 
         // Make sure that any compute shaders are able to read g-buffer by unbinding it
         rapi.SetRenderTarget(nullptr);
@@ -874,6 +885,10 @@ namespace te
             input = gpuInitializationPassNode->SceneTex->Tex;
 
         gRendererUtility().Blit(input, Rect2I::EMPTY, viewProps.FlipView, false);
+
+        Camera* sceneCamera = inputs.View.GetSceneCamera();
+        if (sceneCamera != nullptr)
+            inputs.View.NotifyCompositorTargetChanged(target);
 
         if (inputs.View.GetSceneCamera()->IsMain() && GuiAPI::Instance().IsGuiInitialized())
             GuiAPI::Instance().EndFrame();

@@ -23,7 +23,7 @@ namespace te
         InitialiseWGL();
     }
 
-    void Win32GLSupport::_notifyWindowCreated(Win32RenderWindow* window)
+    void Win32GLSupport::NotifyWindowCreated(Win32RenderWindow* window)
     {
         if (!_initialWindow)
             _initialWindow = window;

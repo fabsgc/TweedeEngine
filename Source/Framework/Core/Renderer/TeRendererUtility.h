@@ -166,6 +166,9 @@ namespace te
         /** Do a more generic frustum culling */
         bool DoFrustumCulling(const HCamera& camera, const Sphere& boundingSphere, const float& cullDistanceFactor);
 
+        /** Do a more generic frustum culling */
+        bool DoFrustumCulling(const HCamera& camera, const AABox& boundingBox, const float& cullDistanceFactor);
+
         /** Generate a render texture using data given in parameters */
         void GenerateViewportRenderTexture(RenderTextureData& renderData);
 

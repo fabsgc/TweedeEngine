@@ -376,6 +376,30 @@ namespace te
         return false;
     }
 
+    bool RendererUtility::DoFrustumCulling(const HCamera& camera, const AABox& boundingBox, const float& cullDistanceFactor)
+    {
+        ConvexVolume worldFrustum = camera->GetWorldFrustum();
+        const Vector3& worldCameraPosition = camera->GetTransform().GetPosition();
+        float baseCullDistance = camera->GetRenderSettings()->CullDistance;
+
+        const Vector3& worldRenderablePosition = boundingBox.GetCenter();
+
+        float distanceToCameraSq = worldCameraPosition.SquaredDistance(worldRenderablePosition);
+        float correctedCullDistance = cullDistanceFactor * baseCullDistance;
+        float maxDistanceToCamera = correctedCullDistance + boundingBox.GetRadius();
+
+        if (distanceToCameraSq > maxDistanceToCamera * maxDistanceToCamera)
+            return false;
+
+        if (worldFrustum.Intersects(boundingBox))
+            return true;
+
+        if (worldFrustum.Contains(boundingBox.GetCenter()))
+            return true;
+
+        return false;
+    }
+
     void RendererUtility::GenerateViewportRenderTexture(RenderTextureData& renderData)
     {
         if (renderData.RenderTex)

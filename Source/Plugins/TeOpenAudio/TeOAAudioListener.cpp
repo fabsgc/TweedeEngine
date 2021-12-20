@@ -6,13 +6,13 @@ namespace te
 {
     OAAudioListener::OAAudioListener()
     { 
-        gOAAudio()._registerListener(this);
+        gOAAudio().RegisterListener(this);
         Rebuild();
     }
 
     OAAudioListener::~OAAudioListener()
     { 
-        gOAAudio()._unregisterListener(this);
+        gOAAudio().UnregisterListener(this);
     }
 
     void OAAudioListener::SetTransform(const Transform& transform)

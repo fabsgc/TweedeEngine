@@ -9,14 +9,14 @@ namespace te
         : _streamBuffers()
         , _busyBuffers()
     { 
-        gOAAudio()._registerSource(this);
+        gOAAudio().RegisterSource(this);
         Rebuild();
     }
 
     OAAudioSource::~OAAudioSource()
     { 
         Clear();
-        gOAAudio()._unregisterSource(this);
+        gOAAudio().UnregisterSource(this);
     }
 
     void OAAudioSource::SetTransform(const Transform& transform)
@@ -625,7 +625,7 @@ namespace te
         _streamQueuedPosition += numSamples;
 
         info.NumSamples = numSamples;
-        gOAAudio()._writeToOpenALBuffer(buffer, samples, info);
+        gOAAudio().WriteToOpenALBuffer(buffer, samples, info);
 
         te_delete(samples);
 
