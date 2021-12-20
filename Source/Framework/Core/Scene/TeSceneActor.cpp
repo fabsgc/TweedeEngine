@@ -24,7 +24,7 @@ namespace te
         _markCoreDirty(ActorDirtyFlag::Active);
     }
 
-    void SceneActor::_updateState(const SceneObject& so, bool force)
+    void SceneActor::UpdateState(const SceneObject& so, bool force)
     {
         UINT32 curHash = so.GetTransformHash();
         if (curHash != _hash || force)

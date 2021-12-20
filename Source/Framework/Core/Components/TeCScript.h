@@ -39,7 +39,7 @@ namespace te
         const String GetNativeScriptPath() const { return _internal->GetNativeScriptPath(); }
 
         /** Returns the internal renderable that is used for majority of operations by this component. */
-        SPtr<Script> _getInternal() const { return _internal; }
+        SPtr<Script> GetInternal() const { return _internal; }
 
         /** Return Component type */
         static UINT32 GetComponentType() { return TypeID_Core::TID_CScript; }
@@ -56,8 +56,8 @@ namespace te
     protected:
         friend class SceneObject;
 
-        /** @copydoc Component::_instantiate */
-        void _instantiate() override;
+        /** @copydoc Component::Instantiate */
+        void Instantiate() override;
 
         /** @copydoc Component::OnInitialized */
         void OnInitialized() override;

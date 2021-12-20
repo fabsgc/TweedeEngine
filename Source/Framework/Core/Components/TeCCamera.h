@@ -211,8 +211,8 @@ namespace te
 
         CCamera(const HSceneObject& parent);
 
-        /** @copydoc Component::_instantiate */
-        void _instantiate() override;
+        /** @copydoc Component::Instantiate */
+        void Instantiate() override;
 
         /** @copydoc Component::OnInitialized */
         void OnInitialized() override;

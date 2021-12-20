@@ -30,13 +30,13 @@ namespace te
         _boneName = name;
 
         if (_parent != nullptr)
-            _parent->_notifyBoneChanged(static_object_cast<CBone>(GetHandle()));
+            _parent->NotifyBoneChanged(static_object_cast<CBone>(GetHandle()));
     }
 
     CBone::~CBone()
     { }
 
-    void CBone::_instantiate()
+    void CBone::Instantiate()
     { }
 
     void CBone::Initialize()
@@ -59,7 +59,7 @@ namespace te
     void CBone::OnDisabled()
     {
         if (_parent != nullptr)
-            _parent->_removeBone(static_object_cast<CBone>(GetHandle()));
+            _parent->RemoveBone(static_object_cast<CBone>(GetHandle()));
 
         _parent = nullptr;
 
@@ -78,7 +78,7 @@ namespace te
     void CBone::OnDestroyed()
     {
         if (_parent != nullptr)
-            _parent->_removeBone(static_object_cast<CBone>(GetHandle()));
+            _parent->RemoveBone(static_object_cast<CBone>(GetHandle()));
 
         _parent = nullptr;
 
@@ -113,13 +113,13 @@ namespace te
         {
             if (!_parent.Empty())
             {
-                _parent->_removeBone(static_object_cast<CBone>(GetHandle()));
+                _parent->RemoveBone(static_object_cast<CBone>(GetHandle()));
                 _parent->ForceDirtyState(AnimDirtyStateFlag::Layout);
             }
 
             if (!animation.Empty())
             {
-                animation->_addBone(static_object_cast<CBone>(GetHandle()));
+                animation->AddBone(static_object_cast<CBone>(GetHandle()));
                 animation->ForceDirtyState(AnimDirtyStateFlag::Layout);
             }
         }

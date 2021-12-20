@@ -52,6 +52,11 @@ namespace te
         _play3D = play3D;
     }
 
+    void AudioSource::_markCoreDirty(ActorDirtyFlag flag)
+    {
+        MarkCoreDirty((UINT32)flag);
+    }
+
     SPtr<AudioSource> AudioSource::Create()
     {
         SPtr<AudioSource> source = gAudio().CreateSource();

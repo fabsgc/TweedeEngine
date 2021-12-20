@@ -50,7 +50,7 @@ namespace te
         void RestoreInternal() override;
 
         /**	Returns the HeightField collider that this component wraps. */
-        HeightFieldCollider* _getInternal() const { return static_cast<HeightFieldCollider*>(_internal.get()); }
+        HeightFieldCollider* GetInternal() const { return static_cast<HeightFieldCollider*>(_internal.get()); }
 
     protected:
         CHeightFieldCollider(); // Serialization only

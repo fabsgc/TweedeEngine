@@ -398,6 +398,7 @@ namespace te
                 camera->_getCamera()->MarkCoreDirty();
             }
         }
+
         {
             Vector4 color = camera->GetRenderSettings()->SceneLightColor.GetAsVector4();
 

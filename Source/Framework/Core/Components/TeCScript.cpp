@@ -27,7 +27,7 @@ namespace te
             _internal->Destroy();
     }
 
-    void CScript::_instantiate()
+    void CScript::Instantiate()
     {
         _internal = Script::Create(String(), SO());
     }

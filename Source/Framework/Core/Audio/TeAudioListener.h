@@ -22,6 +22,9 @@ namespace te
         /** Retrieves the velocity of the listener. */
         Vector3 GetVelocity() const { return _velocity; }
 
+        /** @copydoc SceneActor::_markCoreDirty */
+        void _markCoreDirty(ActorDirtyFlag flag = ActorDirtyFlag::Everything) override;
+
         /** Creates a new audio listener. */
         static SPtr<AudioListener> Create();
 

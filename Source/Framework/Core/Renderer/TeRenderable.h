@@ -238,8 +238,8 @@ namespace te
         /** Updates animation properties depending on the current mesh. */
         void RefreshAnimation();
 
-         /** @copydoc SceneActor::_updateState */
-        void _updateState(const SceneObject& so, bool force = false) override;
+         /** @copydoc SceneActor::UpdateState */
+        void UpdateState(const SceneObject& so, bool force = false) override;
 
         /**	Creates a new renderable handler instance. */
         static SPtr<Renderable> Create();

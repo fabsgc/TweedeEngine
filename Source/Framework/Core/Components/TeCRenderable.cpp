@@ -39,7 +39,7 @@ namespace te
 
     Bounds CRenderable::GetBounds() const
     {
-        _internal->_updateState(*SO());
+        _internal->UpdateState(*SO());
         return _internal->GetBounds();
     }
 
@@ -55,11 +55,11 @@ namespace te
 
         if (_internal != nullptr)
         {
-            _internal->SetAnimation(animation->_getInternal());
+            _internal->SetAnimation(animation->GetInternal());
 
             // Need to update transform because animated renderables handle local transforms through bones, so it
             // shouldn't be included in the renderable's transform.
-            _internal->_updateState(*SO(), true);
+            _internal->UpdateState(*SO(), true);
         }
     }
 
@@ -73,11 +73,11 @@ namespace te
 
             // Need to update transform because animated renderables handle local transforms through bones, so it
             // shouldn't be included in the renderable's transform.
-            _internal->_updateState(*SO(), true);
+            _internal->UpdateState(*SO(), true);
         }
     }
 
-    void CRenderable::_instantiate()
+    void CRenderable::Instantiate()
     {
         _internal = Renderable::Create();
     }
@@ -96,7 +96,7 @@ namespace te
         if (_animation != nullptr)
         {
             _registerAnimation(_animation);
-            _animation->_registerRenderable(static_object_cast<CRenderable>(_thisHandle));
+            _animation->RegisterRenderable(static_object_cast<CRenderable>(_thisHandle));
         }
     }
 
@@ -114,13 +114,13 @@ namespace te
 
     void CRenderable::OnTransformChanged(TransformChangedFlags flags)
     {
-        _internal->_updateState(*SO());
+        _internal->UpdateState(*SO());
     }
 
     void CRenderable::OnDestroyed()
     {
         if (_animation != nullptr)
-            _animation->_unregisterRenderable();
+            _animation->UnregisterRenderable();
 
         gSceneManager()._unbindActor(_internal);
         Component::OnDestroyed();
@@ -135,7 +135,7 @@ namespace te
     void CRenderable::Clone(const HRenderable& c)
     {
         Component::Clone(c.GetInternalPtr());
-        SPtr<Renderable> renderable = c->_getInternal();
+        SPtr<Renderable> renderable = c->GetInternal();
 
         _internal->_mesh = renderable->_mesh;
         _internal->_materials = renderable->_materials;

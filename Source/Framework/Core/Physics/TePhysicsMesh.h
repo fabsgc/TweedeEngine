@@ -39,7 +39,7 @@ namespace te
         static SPtr<PhysicsMesh> CreatePtr(const SPtr<MeshData>& meshData);
 
         /** Returns the internal implementation of the physics mesh. */
-        virtual FPhysicsMesh* _getInternal() { return _internal.get(); }
+        virtual FPhysicsMesh* GetInternal() { return _internal.get(); }
 
     protected:
         SPtr<FPhysicsMesh> _internal;

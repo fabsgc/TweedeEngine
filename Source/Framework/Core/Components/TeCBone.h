@@ -51,8 +51,8 @@ namespace te
         /** Attempts to find the parent Animation component and registers itself with it. */
         void UpdateParentAnimation();
 
-        /** @copydoc Component::_instantiate */
-        void _instantiate() override;
+        /** @copydoc Component::Instantiate */
+        void Instantiate() override;
 
         /** @copydoc Component::OnInitialized */
         void OnCreated() override { }

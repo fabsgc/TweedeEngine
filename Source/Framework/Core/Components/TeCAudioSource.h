@@ -107,7 +107,7 @@ namespace te
         AudioSourceState GetState() const;
 
         /** Returns the AudioSource implementation wrapped by this component. */
-        AudioSource* _getInternal() const { return _internal.get(); }
+        AudioSource* GetInternal() const { return _internal.get(); }
 
         /** @copydoc AudioSource::GetTransform */
         const Transform& GetTransform() { return _internal->GetTransform(); }
@@ -118,8 +118,8 @@ namespace te
     protected:
         friend class SceneObject;
 
-        /** @copydoc Component::_instantiate */
-        void _instantiate() override {};
+        /** @copydoc Component::Instantiate */
+        void Instantiate() override {};
 
         /** @copydoc Component::OnInitialized */
         void OnInitialized() override;

@@ -86,7 +86,7 @@ namespace te
          * Construct any resources the component needs before use. Called when the parent scene object is instantiated.
          * A non-instantiated component shouldn't be used
          */
-        virtual void _instantiate() {}
+        virtual void Instantiate() {}
 
         /** Sets new flags that determine when is onTransformChanged called. */
         void _setNotifyFlags(UINT32 flags) { _notifyFlags = flags; }

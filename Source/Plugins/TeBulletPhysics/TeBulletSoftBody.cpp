@@ -255,7 +255,7 @@ namespace te
         if (!_mesh.IsLoaded())
             return;
 
-        BulletFMesh* fMesh = static_cast<BulletFMesh*>(_mesh->_getInternal());
+        BulletFMesh* fMesh = static_cast<BulletFMesh*>(_mesh->GetInternal());
         if (!fMesh)
         {
             TE_DEBUG("No data inside the PhysicsMesh");

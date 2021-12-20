@@ -420,7 +420,7 @@ namespace te
         return returnBounds;
     }
 
-    void Renderable::_updateState(const SceneObject& so, bool force)
+    void Renderable::UpdateState(const SceneObject& so, bool force)
     {
         UINT32 curHash = so.GetTransformHash();
         if (curHash != _hash || force)
@@ -451,7 +451,7 @@ namespace te
         }
 
         // Hash now matches so transform won't be applied twice, so we can just call base class version
-        SceneActor::_updateState(so, force);
+        SceneActor::UpdateState(so, force);
     }
 
     void Renderable::CreateAnimationBuffers()

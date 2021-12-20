@@ -30,13 +30,13 @@ namespace te
         void Clone(const HAudioListener& c);
 
         /* @copydoc Component::MarkDirty */
-        virtual void MarkDirty() { _internal->MarkCoreDirty(); }
+        virtual void MarkDirty() { _internal->_markCoreDirty(); }
 
         /** @copydoc Component::Update */
         void Update() override;
 
         /** Returns the AudioListener implementation wrapped by this component. */
-        AudioListener* _getInternal() const { return _internal.get(); }
+        AudioListener* GetInternal() const { return _internal.get(); }
 
         /** @copydoc AudioListener::GetTransform */
         const Transform& GetTransform() { return _internal->GetTransform(); }
@@ -47,8 +47,8 @@ namespace te
     protected:
         friend class SceneObject;
 
-        /** @copydoc Component::_instantiate */
-        void _instantiate() override {}
+        /** @copydoc Component::Instantiate */
+        void Instantiate() override {}
 
         /** @copydoc Component::OnInitialized */
         void OnInitialized() override;

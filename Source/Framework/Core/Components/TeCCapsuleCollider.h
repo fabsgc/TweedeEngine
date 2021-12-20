@@ -44,7 +44,7 @@ namespace te
         void RestoreInternal() override;
 
         /**	Returns the capsule collider that this component wraps. */
-        CapsuleCollider* _getInternal() const { return static_cast<CapsuleCollider*>(_internal.get()); }
+        CapsuleCollider* GetInternal() const { return static_cast<CapsuleCollider*>(_internal.get()); }
 
     protected:
         CCapsuleCollider(); // Serialization only

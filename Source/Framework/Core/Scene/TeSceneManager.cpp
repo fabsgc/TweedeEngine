@@ -108,7 +108,7 @@ namespace te
     void SceneManager::_bindActor(const SPtr<SceneActor>& actor, const HSceneObject& so)
     {
         _boundActors[actor.get()] = BoundActorData(actor, so);
-        actor->_updateState(*so, true);
+        actor->UpdateState(*so, true);
     }
 
     void SceneManager::_unbindActor(const SPtr<SceneActor>& actor)
@@ -175,7 +175,7 @@ namespace te
     void SceneManager::_updateCoreObjectTransforms()
     {
         for (auto& entry : _boundActors)
-            entry.second.Actor->_updateState(*entry.second.So);
+            entry.second.Actor->UpdateState(*entry.second.So);
     }
 
     SPtr<Camera> SceneManager::GetMainCamera() const

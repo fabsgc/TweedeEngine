@@ -66,8 +66,8 @@ namespace te
     protected:
         friend class SceneObject;
 
-        /** @copydoc Component::_instantiate */
-        void _instantiate() override;
+        /** @copydoc Component::Instantiate */
+        void Instantiate() override;
 
         /** @copydoc Component::OnInitialized */
         void OnCreated() override { }

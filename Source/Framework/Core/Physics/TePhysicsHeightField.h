@@ -43,7 +43,7 @@ namespace te
         static SPtr<PhysicsHeightField> CreatePtr(const SPtr<Texture>& texture);
 
         /** Returns the internal implementation of the physics height field. */
-        virtual FPhysicsHeightField* _getInternal() { return _internal.get(); }
+        virtual FPhysicsHeightField* GetInternal() { return _internal.get(); }
 
     protected:
         SPtr<FPhysicsHeightField> _internal;

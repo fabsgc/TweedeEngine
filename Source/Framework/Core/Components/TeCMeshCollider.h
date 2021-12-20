@@ -45,7 +45,7 @@ namespace te
         bool IsValidParent(const HRigidBody& parent) const override;
 
         /**	Returns the mesh collider that this component wraps. */
-        MeshCollider* _getInternal() const { return static_cast<MeshCollider*>(_internal.get()); }
+        MeshCollider* GetInternal() const { return static_cast<MeshCollider*>(_internal.get()); }
 
     protected:
         CMeshCollider(); // Serialization only

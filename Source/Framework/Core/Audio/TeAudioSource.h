@@ -114,6 +114,9 @@ namespace te
         /** Returns the current state of the audio playback (playing/paused/stopped). */
         virtual AudioSourceState GetState() const = 0;
 
+        /** @copydoc SceneActor::_markCoreDirty */
+        void _markCoreDirty(ActorDirtyFlag flag = ActorDirtyFlag::Everything) override;
+
         /** Creates a new audio source. */
         static SPtr<AudioSource> Create();
 

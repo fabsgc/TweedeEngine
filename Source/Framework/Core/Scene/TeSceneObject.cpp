@@ -1182,7 +1182,7 @@ namespace te
             component->_UUID = UUIDGenerator::GenerateRandom();
 
         component->_gameObjectColor = Color::GenerateRandom(0.1f, 1.0f);
-        component->_instantiate();
+        component->Instantiate();
 
         _components.push_back(component);
 

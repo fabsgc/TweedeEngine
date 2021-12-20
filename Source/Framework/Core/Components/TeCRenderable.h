@@ -116,7 +116,7 @@ namespace te
         const Matrix4& GetMatrixNoScale() const { return _internal->GetMatrixNoScale(); }
 
         /** Returns the internal renderable that is used for majority of operations by this component. */
-        SPtr<Renderable> _getInternal() const { return _internal; }
+        SPtr<Renderable> GetInternal() const { return _internal; }
 
         /** @copydoc SceneActor::SetActive */
         virtual void SetActive(bool active) { _internal->SetActive(active); }
@@ -154,8 +154,8 @@ namespace te
 
         CRenderable(const HSceneObject& parent);
 
-        /** @copydoc Component::_instantiate */
-        void _instantiate() override;
+        /** @copydoc Component::Instantiate */
+        void Instantiate() override;
 
         /** @copydoc Component::OnInitialized */
         void OnCreated() override;

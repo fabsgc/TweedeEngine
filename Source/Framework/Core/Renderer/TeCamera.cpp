@@ -222,6 +222,7 @@ namespace te
     void Camera::SetProjectionType(ProjectionType pt)
     {
         _projType = pt;
+
         InvalidateFrustum();
         _markCoreDirty();
     }
@@ -243,6 +244,7 @@ namespace te
     void Camera::SetOrthoWindowHeight(float h)
     {
         _orthoHeight = h;
+
         InvalidateFrustum();
         _markCoreDirty();
     }
@@ -255,6 +257,7 @@ namespace te
     void Camera::SetOrthoWindowWidth(float w)
     {
         _orthoHeight = w / _aspect;
+
         InvalidateFrustum();
         _markCoreDirty();
     }

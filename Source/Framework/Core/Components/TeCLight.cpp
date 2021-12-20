@@ -37,11 +37,11 @@ namespace te
 
     Sphere CLight::GetBounds() const
     {
-        _internal->_updateState(*SO());
+        _internal->UpdateState(*SO());
         return _internal->GetBounds();
     }
 
-    void CLight::_instantiate()
+    void CLight::Instantiate()
     {
         _internal = Light::Create(_type, _color, _intensity, _range, 
             _linearAtt, _quadraticAtt, _castShadows, _spotAngle);
@@ -67,7 +67,7 @@ namespace te
 
     void CLight::OnTransformChanged(TransformChangedFlags flags)
     {
-        _internal->_updateState(*SO());
+        _internal->UpdateState(*SO());
     }
 
     void CLight::OnDestroyed()

@@ -33,6 +33,6 @@ namespace te
         _perObjectParamDef.gHasAnimation.Set(_perObjectParamBuffer, renderable->IsAnimated() ? 1 : 0);
 
         if (_params->HasBuffer(GPT_VERTEX_PROGRAM, "BoneMatrices"))
-            _params->SetBuffer(GPT_VERTEX_PROGRAM, "BoneMatrices", renderable->_getInternal()->GetBoneMatrixBuffer());
+            _params->SetBuffer(GPT_VERTEX_PROGRAM, "BoneMatrices", renderable->GetInternal()->GetBoneMatrixBuffer());
     }
 }

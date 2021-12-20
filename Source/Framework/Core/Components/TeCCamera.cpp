@@ -46,7 +46,7 @@ namespace te
 
     void CCamera::UpdateView() const
     {
-        _internal->_updateState(*SO());
+        _internal->UpdateState(*SO());
     }
 
     void CCamera::SetMain(bool main)
@@ -54,7 +54,7 @@ namespace te
         _internal->SetMain(main);
     }
 
-    void CCamera::_instantiate()
+    void CCamera::Instantiate()
     {
         _internal = Camera::Create();
     }
@@ -69,7 +69,7 @@ namespace te
 
     void CCamera::OnTransformChanged(TransformChangedFlags flags)
     {
-        _internal->_updateState(*SO());
+        _internal->UpdateState(*SO());
     }
 
     void CCamera::OnDestroyed()

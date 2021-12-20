@@ -53,7 +53,7 @@ namespace te
             if (_parent != nullptr)
                 _parent->RemoveCollider(static_object_cast<CCollider>(GetHandle()));
 
-            _getInternal()->SetHeightField(heightField);
+            GetInternal()->SetHeightField(heightField);
 
             if (_parent.Empty() || !_heightField.IsLoaded())
                 UpdateParentBody();
@@ -74,7 +74,7 @@ namespace te
             if (_parent != nullptr)
                 _parent->RemoveCollider(static_object_cast<CCollider>(GetHandle()));
 
-            _getInternal()->SetMinHeight(minHeight);
+            GetInternal()->SetMinHeight(minHeight);
 
             if (_parent)
                 _parent->AddCollider(static_object_cast<CCollider>(GetHandle()));
@@ -93,7 +93,7 @@ namespace te
             if (_parent != nullptr)
                 _parent->RemoveCollider(static_object_cast<CCollider>(GetHandle()));
 
-            _getInternal()->SetMaxHeight(maxHeight);
+            GetInternal()->SetMaxHeight(maxHeight);
 
             if (_parent)
                 _parent->AddCollider(static_object_cast<CCollider>(GetHandle()));

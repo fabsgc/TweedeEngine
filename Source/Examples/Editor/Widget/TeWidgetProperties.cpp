@@ -393,19 +393,19 @@ namespace te
     {
         bool hasChanged = false;
         SPtr<CRenderable> renderable = std::static_pointer_cast<CRenderable>(_selections.ClickedComponent);
-        ObjectMobility mobility = renderable->_getInternal()->GetMobility();
+        ObjectMobility mobility = renderable->GetInternal()->GetMobility();
         Transform transform = renderable->GetSceneObject()->GetTransform();
 
         if (ShowTransform(transform, mobility))
         {
-            renderable->_getInternal()->SetMobility(mobility);
+            renderable->GetInternal()->SetMobility(mobility);
             renderable->GetSceneObject()->SetLocalTransform(transform);
             hasChanged = true;
         }
 
         if (ImGui::CollapsingHeader("Properties", ImGuiTreeNodeFlags_DefaultOpen))
         {
-            if (ShowRenderableProperties(renderable->_getInternal()))
+            if (ShowRenderableProperties(renderable->GetInternal()))
                 hasChanged = true;
         }
 
@@ -413,7 +413,7 @@ namespace te
         {
             if (ImGui::CollapsingHeader("SubMeshes", ImGuiTreeNodeFlags_DefaultOpen))
             {
-                if (ShowRenderableSubMeshes(renderable->_getInternal()))
+                if (ShowRenderableSubMeshes(renderable->GetInternal()))
                     hasChanged = true;
             }
         }

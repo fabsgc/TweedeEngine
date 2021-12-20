@@ -16,9 +16,9 @@ namespace te
         /** Information about scene objects bound to a specific animation curve. */
         struct SceneObjectMappingInfo
         {
+            HBone Bone;
             HSceneObject So;
             bool IsMappedToBone;
-            HBone Bone;
         };
 
     public:
@@ -122,75 +122,56 @@ namespace te
         /** @copydoc Animation::ForceDirtyState */
         void ForceDirtyState(AnimDirtyStateFlag state) { _internal->ForceDirtyState(state); }
 
+        /** @copydoc Component::Update */
+        void Update();
+
+        /** Returns the Animation implementation wrapped by this component. */
+        SPtr<Animation> GetInternal() const { return _internal; }
+
+    protected:
+        friend class CBone;
+        friend class CRenderable;
+        friend class SceneObject;
+        using Component::DestroyInternal;
+
+        CAnimation();
+
         /**
          * Registers a new bone component, creating a new transform mapping from the bone name to the scene object the
          * component is attached to.
          */
-        void _addBone(HBone bone);
+        void AddBone(HBone bone);
 
         /** Unregisters a bone component, removing the bone -> scene object mapping. */
-        void _removeBone(const HBone& bone);
+        void RemoveBone(const HBone& bone);
 
         /** Called whenever the bone name the Bone component points to changes. */
-        void _notifyBoneChanged(const HBone& bone);
+        void NotifyBoneChanged(const HBone& bone);
 
         /**
          * Registers a Renderable component with the animation, should be called whenever a Renderable component is added
          * to the same scene object as this component.
          */
-        void _registerRenderable(const HRenderable& renderable);
+        void RegisterRenderable(const HRenderable& renderable);
 
         /**
          * Removes renderable from the animation component. Should be called when a Renderable component is removed from
          * this scene object.
          */
-        void _unregisterRenderable();
+        void UnregisterRenderable();
 
         /**
          * Rebuilds internal curve -> property mapping about the currently playing animation clip. This mapping allows the
          * animation component to know which property to assign which values from an animation curve. This should be called
          * whenever playback for a new clip starts, or when clip curves change.
          */
-        void _refreshClipMappings();
+        void RefreshClipMappings();
 
         /** @copydoc Animation::GetGenericCurveValue */
-        bool _getGenericCurveValue(UINT32 curveIdx, float& value);
+        bool GetGenericCurveValue(UINT32 curveIdx, float& value);
 
         /** Re-applies the bounds to the internal animation object, and the relevant renderable object if one exists. */
-        void _updateBounds();
-
-        /** @copydoc Component::Update */
-        void Update();
-
-        /** Returns the Animation implementation wrapped by this component. */
-        SPtr<Animation> _getInternal() const { return _internal; }
-
-    protected:
-        friend class SceneObject;
-
-        /** @copydoc Component::_instantiate */
-        void _instantiate() override;
-
-        /** @copydoc Component::OnInitialized */
-        void OnCreated() override { }
-
-        /** @copydoc Component::OnInitialized */
-        void OnInitialized() override;
-
-        /** @copydoc Component::OnEnabled */
-        void OnEnabled() override;
-
-        /** @copydoc Component::OnEnabled */
-        void OnDisabled() override;
-
-        /** @copydoc Component::OnTransformChanged */
-        void OnTransformChanged(TransformChangedFlags flags) override;
-
-        /** @copydoc Component::OnDestroyed */
-        void OnDestroyed() override;
-
-    protected:
-        using Component::DestroyInternal;
+        void UpdateBounds();
 
         /** 
         * Creates the internal representation of the Animation and restores the values saved by the Component. 
@@ -226,7 +207,26 @@ namespace te
         Vector<HBone> FindChildBones();
 
     protected:
-        CAnimation();
+        /** @copydoc Component::Instantiate */
+        void Instantiate() override;
+
+        /** @copydoc Component::OnInitialized */
+        void OnCreated() override { }
+
+        /** @copydoc Component::OnInitialized */
+        void OnInitialized() override;
+
+        /** @copydoc Component::OnEnabled */
+        void OnEnabled() override;
+
+        /** @copydoc Component::OnEnabled */
+        void OnDisabled() override;
+
+        /** @copydoc Component::OnTransformChanged */
+        void OnTransformChanged(TransformChangedFlags flags) override;
+
+        /** @copydoc Component::OnDestroyed */
+        void OnDestroyed() override;
 
     protected:
         SPtr<Animation> _internal = nullptr;

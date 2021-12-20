@@ -72,7 +72,7 @@ namespace te
                 for (auto& component : components)
                 {
                     HScript handle = static_object_cast<CScript>(component);
-                    SPtr<Script> script = handle->_getInternal();
+                    SPtr<Script> script = handle->GetInternal();
 
                     if (script != nullptr)
                     {

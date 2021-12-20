@@ -39,7 +39,7 @@ namespace te
         void RestoreInternal() override;
 
         /**	Returns the box collider that this component wraps. */
-        BoxCollider* _getInternal() const { return static_cast<BoxCollider*>(_internal.get()); }
+        BoxCollider* GetInternal() const { return static_cast<BoxCollider*>(_internal.get()); }
 
     protected:
         CBoxCollider(); // Serialization only

@@ -65,7 +65,7 @@ namespace te
         if (!_heightField.IsLoaded())
             return;
 
-        BulletFHeightField* fHeightField = static_cast<BulletFHeightField*>(_heightField->_getInternal());
+        BulletFHeightField* fHeightField = static_cast<BulletFHeightField*>(_heightField->GetInternal());
         if (!fHeightField)
         {
             TE_DEBUG("No data inside the PhysicsHeightField");

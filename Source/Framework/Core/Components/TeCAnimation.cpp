@@ -146,7 +146,7 @@ namespace te
         return HAnimationClip();
     }
 
-    void CAnimation::_instantiate()
+    void CAnimation::Instantiate()
     { }
 
     void CAnimation::Initialize()
@@ -184,7 +184,7 @@ namespace te
             return;
 
         if ((flags & (TCF_Transform)) != 0)
-            _updateBounds();
+            UpdateBounds();
     }
 
     void CAnimation::OnDestroyed()
@@ -301,12 +301,12 @@ namespace te
 
         HAnimationClip newPrimaryClip = _internal->GetClip(0);
         if (newPrimaryClip != _primaryPlayingClip)
-            _refreshClipMappings();
+            RefreshClipMappings();
 
         // TODO animation : script
     }
 
-    bool CAnimation::_getGenericCurveValue(UINT32 curveIdx, float& value)
+    bool CAnimation::GetGenericCurveValue(UINT32 curveIdx, float& value)
     {
         if (_internal == nullptr)
             return false;
@@ -314,7 +314,7 @@ namespace te
         return _internal->GetGenericCurveValue(curveIdx, value);
     }
 
-    void CAnimation::_updateBounds()
+    void CAnimation::UpdateBounds()
     {
         if (_internal != nullptr)
         {
@@ -342,7 +342,7 @@ namespace te
         _internal->UnmapSceneObject(so);
     }
 
-    void CAnimation::_addBone(HBone bone)
+    void CAnimation::AddBone(HBone bone)
     {
         const HSceneObject& currentSO = bone->SO();
 
@@ -357,7 +357,7 @@ namespace te
             _internal->MapCurveToSceneObject(newMapping.Bone->GetBoneName(), newMapping.So);
     }
 
-    void CAnimation::_removeBone(const HBone& bone)
+    void CAnimation::RemoveBone(const HBone& bone)
     {
         HSceneObject newSO;
         for (UINT32 i = 0; i < (UINT32)_mappingInfos.size(); i++)
@@ -373,7 +373,7 @@ namespace te
         }
     }
 
-    void CAnimation::_notifyBoneChanged(const HBone& bone)
+    void CAnimation::NotifyBoneChanged(const HBone& bone)
     {
         if (_internal == nullptr)
             return;
@@ -389,12 +389,12 @@ namespace te
         }
     }
 
-    void CAnimation::_registerRenderable(const HRenderable& renderable)
+    void CAnimation::RegisterRenderable(const HRenderable& renderable)
     {
         _animatedRenderable = renderable;
     }
 
-    void CAnimation::_unregisterRenderable()
+    void CAnimation::UnregisterRenderable()
     {
         _animatedRenderable = nullptr;
     }
@@ -412,7 +412,7 @@ namespace te
 
         Vector<HBone> childBones = FindChildBones();
         for (auto& entry : childBones)
-            _addBone(entry);
+            AddBone(entry);
     }
 
     void CAnimation::UpdateSceneObjectMapping()
@@ -473,7 +473,7 @@ namespace te
         _mappingInfos = newMappingInfos;
     }
 
-    void CAnimation::_refreshClipMappings()
+    void CAnimation::RefreshClipMappings()
     {
         _primaryPlayingClip = _internal->GetClip(0);
 

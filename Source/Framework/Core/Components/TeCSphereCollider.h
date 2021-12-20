@@ -38,7 +38,7 @@ namespace te
         void RestoreInternal() override;
 
         /**	Returns the box collider that this component wraps. */
-        SphereCollider* _getInternal() const { return static_cast<SphereCollider*>(_internal.get()); }
+        SphereCollider* GetInternal() const { return static_cast<SphereCollider*>(_internal.get()); }
 
     protected:
         CSphereCollider(); // Serialization only

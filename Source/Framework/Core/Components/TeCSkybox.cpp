@@ -25,7 +25,7 @@ namespace te
             _internal->Destroy();
     }
 
-    void CSkybox::_instantiate()
+    void CSkybox::Instantiate()
     {
         _internal = Skybox::Create();
     }

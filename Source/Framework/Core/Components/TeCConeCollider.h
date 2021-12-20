@@ -44,7 +44,7 @@ namespace te
         void RestoreInternal() override;
 
         /**	Returns the cone collider that this component wraps. */
-        ConeCollider* _getInternal() const { return static_cast<ConeCollider*>(_internal.get()); }
+        ConeCollider* GetInternal() const { return static_cast<ConeCollider*>(_internal.get()); }
 
     protected:
         CConeCollider(); // Serialization only

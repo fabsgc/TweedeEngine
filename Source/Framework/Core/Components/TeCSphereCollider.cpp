@@ -52,7 +52,7 @@ namespace te
             if (_parent != nullptr)
                 _parent->RemoveCollider(static_object_cast<CCollider>(GetHandle()));
 
-            _getInternal()->SetRadius(clampedRadius);
+            GetInternal()->SetRadius(clampedRadius);
 
             if (_parent != nullptr)
                 _parent->AddCollider(static_object_cast<CCollider>(GetHandle()));
