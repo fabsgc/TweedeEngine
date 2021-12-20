@@ -10,7 +10,7 @@ namespace te
         _instanceData->InstanceId = instanceId;
     }
 
-    void GameObject::_setInstanceData(GameObjectInstanceDataPtr& other)
+    void GameObject::SetInstanceData(GameObjectInstanceDataPtr& other)
     {
         SPtr<GameObject> myPtr = _instanceData->Object;
         UINT64 oldId = _instanceData->InstanceId;

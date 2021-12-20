@@ -9,7 +9,7 @@ namespace te
     enum TransformChangedFlags
     {
         TCF_None = 0x00, /**< Component will not be notified about any events relating to the transform. */
-        TCF_Transform = 0x01, /**< Component will be notified when the its position, rotation or scale has changed. */
+        TCF_Transform = 0x01, /**< Component will be notified when its position, rotation or scale has changed. */
         TCF_Parent = 0x02, /**< Component will be notified when its parent changes. */
         TCF_Mobility = 0x04 /**< Component will be notified when mobility state changes. */
     };
@@ -44,10 +44,10 @@ namespace te
          * Marks the object as destroyed. Generally this means the object has been queued for destruction but it hasn't
          * occurred yet.
          */
-        void _setIsDestroyed() { _isDestroyed = true; }
+        void SetIsDestroyed() { _isDestroyed = true; }
 
         /**	Checks if the object has been destroyed. */
-        bool _getIsDestroyed() const { return _isDestroyed; }
+        bool GetIsDestroyed() const { return _isDestroyed; }
 
         /** @copydoc GetUUID */
         void SetUUID(const UUID& uuid) { _UUID = uuid; }
@@ -62,10 +62,10 @@ namespace te
          * @note
          * No alive objects should ever be sharing the same instance data. This can be used for restoring dead handles.
          */
-        virtual void _setInstanceData(GameObjectInstanceDataPtr& other);
+        virtual void SetInstanceData(GameObjectInstanceDataPtr& other);
 
         /** Returns instance data that identifies this GameObject and is used for referencing by game object handles. */
-        virtual GameObjectInstanceDataPtr _getInstanceData() const { return _instanceData; }
+        virtual GameObjectInstanceDataPtr GetInstanceData() const { return _instanceData; }
 
     protected:
         friend class GameObjectHandleBase;

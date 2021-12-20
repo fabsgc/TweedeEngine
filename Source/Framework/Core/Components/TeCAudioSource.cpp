@@ -10,14 +10,16 @@ namespace te
         : Component(HSceneObject(), (UINT32)TID_CAudioSource)
     {
         SetName("AudioSource");
-        _notifyFlags = TCF_Transform;
+        SetNotifyFlags(TCF_Parent | TCF_Transform);
+        SetFlag(Component::AlwaysRun, true);
     }
 
     CAudioSource::CAudioSource(const HSceneObject& parent)
         : Component(parent, (UINT32)TID_CAudioSource)
     {
         SetName("AudioSource");
-        _notifyFlags = TCF_Transform;
+        SetNotifyFlags(TCF_Parent | TCF_Transform);
+        SetFlag(Component::AlwaysRun, true);
     }
 
     void CAudioSource::Initialize()

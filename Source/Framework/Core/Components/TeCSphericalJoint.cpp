@@ -33,10 +33,5 @@ namespace te
     void CSphericalJoint::OnEnabled()
     {
         CJoint::OnEnabled();
-
-        if (_internal)
-        {
-           
-        }
     }
 }

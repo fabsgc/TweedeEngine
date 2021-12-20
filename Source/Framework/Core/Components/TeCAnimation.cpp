@@ -13,18 +13,16 @@ namespace te
     CAnimation::CAnimation()
         : Component(HSceneObject(), (UINT32)TID_CAnimation)
     {
-        _notifyFlags = TCF_Transform;
-
         SetName("Animation");
+        SetNotifyFlags(TCF_Transform);
         SetFlag(Component::AlwaysRun, true);
     }
 
     CAnimation::CAnimation(const HSceneObject& parent)
         : Component(parent, (UINT32)TID_CAnimation)
     {
-        _notifyFlags = TCF_Transform;
-
         SetName("Animation");
+        SetNotifyFlags(TCF_Transform);
         SetFlag(Component::AlwaysRun, true);
     }
 

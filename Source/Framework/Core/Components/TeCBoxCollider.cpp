@@ -9,6 +9,7 @@ namespace te
         : CCollider((UINT32)TID_CBoxCollider)
     {
         SetName("BoxCollider");
+        SetFlag(Component::AlwaysRun, true);
     }
 
     CBoxCollider::CBoxCollider(const HSceneObject& parent, const Vector3& extents)
@@ -16,6 +17,7 @@ namespace te
         , _extents(extents)
     {
         SetName("BoxCollider");
+        SetFlag(Component::AlwaysRun, true);
     }
 
     SPtr<Collider> CBoxCollider::CreateInternal()

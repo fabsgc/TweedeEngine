@@ -10,6 +10,7 @@ namespace te
     {
         SetName("Skybox");
         SetFlag(Component::AlwaysRun, true);
+        SetNotifyFlags(TCF_Parent | TCF_Transform);
     }
 
     CSkybox::CSkybox(const HSceneObject& parent)
@@ -17,6 +18,7 @@ namespace te
     {
         SetName("Skybox");
         SetFlag(Component::AlwaysRun, true);
+        SetNotifyFlags(TCF_Parent | TCF_Transform);
     }
 
     CSkybox::~CSkybox()

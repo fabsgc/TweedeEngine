@@ -9,6 +9,7 @@ namespace te
         : Component(HSceneObject(), (UINT32)TID_CBone)
     {
         SetName("Bone");
+        SetNotifyFlags(TCF_Parent | TCF_Transform);
         SetFlag(Component::AlwaysRun, true);
     }
 
@@ -16,6 +17,7 @@ namespace te
         : Component(parent, (UINT32)TID_CBone)
     {
         SetName("Bone");
+        SetNotifyFlags(TCF_Parent | TCF_Transform);
         SetFlag(Component::AlwaysRun, true);
     }
 

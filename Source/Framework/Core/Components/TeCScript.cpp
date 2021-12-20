@@ -11,6 +11,7 @@ namespace te
         : Component(HSceneObject(), (UINT32)TID_CScript)
     {
         SetName("Script");
+        SetNotifyFlags(TCF_Parent);
         SetFlag(Component::AlwaysRun, true);
     }
 
@@ -18,6 +19,7 @@ namespace te
         : Component(parent, (UINT32)TID_CScript)
     {
         SetName("Script");
+        SetNotifyFlags(TCF_Parent);
         SetFlag(Component::AlwaysRun, true);
     }
 

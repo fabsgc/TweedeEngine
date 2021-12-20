@@ -22,7 +22,6 @@ namespace te
     {
         // Set a name for the component, so we can find it later if needed
         SetName("CCameraFlyer");
-        SetFlag(Component::AlwaysRun, true);
 
         // Get handles for key bindings. Actual keys attached to these bindings will be registered during app start-up.
         _moveForward = VirtualButton("Forward");

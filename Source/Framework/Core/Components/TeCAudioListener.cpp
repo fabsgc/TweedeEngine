@@ -9,14 +9,16 @@ namespace te
         : Component(HSceneObject(), (UINT32)TID_CAudioListener)
     {
         SetName("AudioListener");
-        _notifyFlags = TCF_Transform;
+        SetNotifyFlags(TCF_Transform | TCF_Parent);
+        SetFlag(Component::AlwaysRun, true);
     }
 
     CAudioListener::CAudioListener(const HSceneObject& parent)
         : Component(parent, (UINT32)TID_CAudioListener)
     {
         SetName("AudioListener");
-        _notifyFlags = TCF_Transform;
+        SetNotifyFlags(TCF_Transform | TCF_Parent);
+        SetFlag(Component::AlwaysRun, true);
     }
 
     void CAudioListener::Initialize()

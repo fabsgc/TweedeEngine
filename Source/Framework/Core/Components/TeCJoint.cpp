@@ -11,7 +11,7 @@ namespace te
         , _internal(nullptr)
     {
         SetName("Joint");
-        _notifyFlags = (TransformChangedFlags)(TCF_Parent | TCF_Transform);
+        SetNotifyFlags(TCF_Parent | TCF_Transform);
 
         _positions[0] = Vector3::ZERO;
         _positions[1] = Vector3::ZERO;
@@ -25,7 +25,7 @@ namespace te
         , _internal(nullptr)
     {
         SetName("Joint");
-        _notifyFlags = (TransformChangedFlags)(TCF_Parent | TCF_Transform);
+        SetNotifyFlags(TCF_Parent | TCF_Transform);
 
         _positions[0] = Vector3::ZERO;
         _positions[1] = Vector3::ZERO;

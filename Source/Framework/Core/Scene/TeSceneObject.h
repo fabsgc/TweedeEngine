@@ -77,8 +77,8 @@ namespace te
         void Clone(const SPtr<SceneObject>& so);
 
     private: // ***** INTERNAL ******
-        /** @copydoc GameObject::_setInstanceData */
-        void _setInstanceData(GameObjectInstanceDataPtr& other) override;
+        /** @copydoc GameObject::SetInstanceData */
+        void SetInstanceData(GameObjectInstanceDataPtr& other) override;
 
         /** Recursively enables the provided set of flags on this object and all children. */
         void _setFlags(UINT32 flags);

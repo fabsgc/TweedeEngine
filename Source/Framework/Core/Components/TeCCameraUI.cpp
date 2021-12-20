@@ -44,7 +44,6 @@ namespace te
         , _lastHideCursorState(false)
     {
         SetName("CCameraUI");
-        SetFlag(Component::AlwaysRun, true);
 
         _rotateBtn = VirtualButton(ROTATE_BINDING);
         _moveBtn = VirtualButton(MOVE_BINDING);

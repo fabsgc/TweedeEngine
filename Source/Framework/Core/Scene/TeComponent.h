@@ -89,11 +89,11 @@ namespace te
          */
         virtual void Instantiate() {}
 
-        /** Sets new flags that determine when is onTransformChanged called. */
-        void _setNotifyFlags(UINT32 flags) { _notifyFlags = flags; }
+        /** Sets new flags that determine when is OnTransformChanged called. */
+        void SetNotifyFlags(UINT32 flags) { _notifyFlags = flags; }
 
-        /** Gets the currently assigned notify flags. See _setNotifyFlags(). */
-        UINT32 _getNotifyFlags() const { return _notifyFlags; }
+        /** Gets the currently assigned notify flags. See SetNotifyFlags(). */
+        UINT32 GetNotifyFlags() const { return _notifyFlags; }
 
         /** Enables or disabled a flag controlling component's behaviour. */
         void SetFlag(UINT32 flag, bool enabled) { if (enabled) _flags |= flag; else _flags &= ~flag; }
@@ -179,8 +179,8 @@ namespace te
         }
 
         /**
-         * Called when the component's parent scene object has changed. Not called if the component is in Stopped state.
-         * Also only called if necessary notify flags are set via _setNotifyFlags().
+         * Called when the component's parent scene object has changed.
+         * Also only called if necessary notify flags are set via SetNotifyFlags().
          */
         virtual void OnTransformChanged(TransformChangedFlags flags) 
         { }

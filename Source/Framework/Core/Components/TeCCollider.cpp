@@ -15,7 +15,7 @@ namespace te
         , _internal(nullptr)
     {
         SetName("Collider");
-        _notifyFlags = (TransformChangedFlags)(TCF_Parent | TCF_Transform);
+        SetNotifyFlags(TCF_Parent | TCF_Transform);
     }
 
     CCollider::CCollider(const HSceneObject& parent, UINT32 type)
@@ -23,7 +23,7 @@ namespace te
         , _internal(nullptr)
     {
         SetName("Collider");
-        _notifyFlags = (TransformChangedFlags)(TCF_Parent | TCF_Transform);
+        SetNotifyFlags(TCF_Parent | TCF_Transform);
     }
 
     CCollider::~CCollider()

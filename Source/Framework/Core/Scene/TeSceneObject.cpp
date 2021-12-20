@@ -356,9 +356,9 @@ namespace te
         }
     }
 
-    void SceneObject::_setInstanceData(GameObjectInstanceDataPtr& other)
+    void SceneObject::SetInstanceData(GameObjectInstanceDataPtr& other)
     {
-        GameObject::_setInstanceData(other);
+        GameObject::SetInstanceData(other);
 
         // Instance data changed, so make sure to refresh the handles to reflect that
         SPtr<SceneObject> thisPtr = _thisHandle.GetInternalPtr();
@@ -403,7 +403,7 @@ namespace te
             while (!_components.empty())
             {
                 HComponent component = _components.back();
-                component->_setIsDestroyed();
+                component->SetIsDestroyed();
 
                 gSceneManager().NotifyComponentDestroyed(component, immediate);
 
@@ -649,7 +649,7 @@ namespace te
 
         if (iter != _components.end())
         {
-            (*iter)->_setIsDestroyed();
+            (*iter)->SetIsDestroyed();
 
             gSceneManager().NotifyComponentDestroyed(*iter, immediate);
 
@@ -701,7 +701,11 @@ namespace te
             {
                 if (entry->SupportsNotify(flags))
                 {
-                    entry->OnTransformChanged(componentFlags); 
+                    bool alwaysRun = entry->HasFlag(Component::AlwaysRun);
+                    bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Game);
+
+                    if (alwaysRun || isRunning)
+                        entry->OnTransformChanged(componentFlags); 
                 }
             }
         }

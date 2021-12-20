@@ -9,7 +9,8 @@ namespace te
         , _internal(nullptr)
     {
         SetName("Body");
-        _notifyFlags = (TransformChangedFlags)(TCF_Parent | TCF_Transform);
+        SetNotifyFlags(TCF_Parent | TCF_Transform);
+        SetFlag(Component::AlwaysRun, true);
     }
 
     CBody::CBody(const HSceneObject& parent, UINT32 type)
@@ -17,7 +18,8 @@ namespace te
         , _internal(nullptr)
     {
         SetName("Body");
-        _notifyFlags = (TransformChangedFlags)(TCF_Parent | TCF_Transform);
+        SetNotifyFlags(TCF_Parent | TCF_Transform);
+        SetFlag(Component::AlwaysRun, true);
     }
 
     void CBody::Initialize()
@@ -135,7 +137,6 @@ namespace te
         if (_internal != nullptr)
             _internal->SetFriction(friction);
     }
-
 
     void CBody::SetRollingFriction(float rollingFriction)
     {
