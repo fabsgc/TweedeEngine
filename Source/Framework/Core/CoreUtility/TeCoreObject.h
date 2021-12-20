@@ -71,9 +71,6 @@ namespace te
          */
         void RemoveDirtyFlag(UINT32 flags);
 
-        /** Marks the core data as clean. */
-        void MarkCoreClean() { _coreDirtyFlags = 0; }
-
         /**
          * Checks is the core dirty flag set. This is used by external systems to know when internal data has changed and
          * core thread potentially needs to be notified.
@@ -86,13 +83,19 @@ namespace te
         UINT32 GetCoreDirtyFlags() const { return _coreDirtyFlags; }
 
         /** Synchronize object once per frame */
-        virtual void FrameSync() { }
+        virtual void FrameSync() { };
 
     protected:
+        friend CoreObjectManager;
+
         /** Constructs a new core object. */
         CoreObject();
-        virtual ~CoreObject();
+        virtual ~CoreObject() = 0;
 
+        /** Marks the core data as clean. */
+        void MarkCoreClean() { _coreDirtyFlags = 0; }
+
+        /** Set current object as destroyed or not */
         void SetIsDestroyed(bool destroyed) { _flags = destroyed ? _flags | CGO_DESTROYED : _flags & ~CGO_DESTROYED; }
 
     private:

@@ -292,7 +292,4 @@ namespace te
     {
         MarkCoreDirty((UINT32)flags);
     }
-
-    void Material::FrameSync()
-    { }
 }

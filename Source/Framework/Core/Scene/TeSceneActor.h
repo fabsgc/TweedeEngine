@@ -41,7 +41,7 @@ namespace te
          */
         virtual void SetActive(bool active);
 
-        /** @copydoc setActive */
+        /** @copydoc SetActive */
         bool GetActive() const { return _active; }
 
         /**
@@ -64,24 +64,20 @@ namespace te
          */
         virtual void UpdateState(const SceneObject& so, bool force = false);
 
-    protected:
-        friend Component;
-
         /**
          * Marks the simulation thread object as dirty and notifies the system its data should be synced with its core
          * thread counterpart.
          */
-        virtual void _markCoreDirty(ActorDirtyFlag flag = ActorDirtyFlag::Everything) { }
+        virtual void _markCoreDirty(ActorDirtyFlag flag = ActorDirtyFlag::Everything) = 0;
 
     protected:
-        friend class SceneManager;
-
+        UINT32 _hash = 0;
+        bool _active = true;
         Transform _transform;
         ObjectMobility _mobility = ObjectMobility::Movable;
-        bool _active = true;
-        UINT32 _hash = 0;
 
-        // This attribute must be updated at the end FrameSync with _active value per each inherited class of SceneActor
+        // This attribute must be updated at the end of FrameSync()
+        // with _active value per each inherited class of SceneActor
         bool _oldActive = true; 
     };
 }

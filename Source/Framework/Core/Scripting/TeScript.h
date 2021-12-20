@@ -74,12 +74,6 @@ namespace te
 
         Script();
 
-        /** @copydoc CoreObject::FrameSync */
-        void FrameSync() override;
-
-        /** @copydoc CoreObject::Initialize */
-        void Initialize() override;
-
     protected:
         NativeScript* _nativeScript;
         UINT32 _state;

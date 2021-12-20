@@ -44,9 +44,6 @@ namespace te
         /**	Creates a new technique but doesn't initialize it. */
         static SPtr<Technique> CreateEmpty();
 
-        /** @copydoc CoreObject::FrameSync */
-        void FrameSync() override;
-
     private:
         Technique();
         Technique(const String& language, const Vector<SPtr<Pass>>& passes);

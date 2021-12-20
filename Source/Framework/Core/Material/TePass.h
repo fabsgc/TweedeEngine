@@ -85,9 +85,6 @@ namespace te
         /**	Creates a new empty pass but doesn't initialize it. */
         static SPtr<Pass> CreateEmpty();
 
-        /** @copydoc CoreObject::FrameSync */
-        void FrameSync() override;
-
     protected:
         Pass();
         Pass(const PASS_DESC & desc);

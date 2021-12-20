@@ -135,7 +135,4 @@ namespace te
 
         return newPassPtr;
     }
-
-    void Pass::FrameSync()
-    { }
 }

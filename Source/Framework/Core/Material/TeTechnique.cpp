@@ -75,7 +75,4 @@ namespace te
 
         return techniquePtr;
     }
-
-    void Technique::FrameSync()
-    { }
 }

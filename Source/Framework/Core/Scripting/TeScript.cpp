@@ -39,14 +39,6 @@ namespace te
         return scriptPtr;
     }
 
-    void Script::Initialize()
-    {
-        CoreObject::Initialize();
-    }
-
-    void Script::FrameSync()
-    { }
-
     void Script::SetNativeScript(const String& name, const HSceneObject& sceneObject, const String& path)
     {
         SetNativeScript(ScriptIdentifier(name, path), sceneObject);
