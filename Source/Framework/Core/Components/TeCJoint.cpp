@@ -34,6 +34,9 @@ namespace te
         _rotations[1] = Quaternion::IDENTITY;
     }
 
+    CJoint::~CJoint()
+    { }
+
     void CJoint::Initialize()
     { 
         OnEnabled();

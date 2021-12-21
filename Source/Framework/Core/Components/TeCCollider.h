@@ -17,7 +17,7 @@ namespace te
     {
     public:
         CCollider(const HSceneObject& parent, UINT32 type);
-        virtual ~CCollider() = 0 { };
+        virtual ~CCollider() = 0;
 
         /** Return Component type */
         static UINT32 GetComponentType() { return TypeID_Core::TID_CCollider; }

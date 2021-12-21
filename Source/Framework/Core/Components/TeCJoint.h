@@ -15,7 +15,7 @@ namespace te
     {
     public:
         CJoint(const HSceneObject& parent, UINT32 type);
-        virtual ~CJoint() = 0 { }
+        virtual ~CJoint() = 0;
 
         /** Return Component type */
         static UINT32 GetComponentType() { return TypeID_Core::TID_CJoint; }

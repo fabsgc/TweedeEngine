@@ -22,6 +22,9 @@ namespace te
         SetFlag(Component::AlwaysRun, true);
     }
 
+    CBody::~CBody()
+    { }
+
     void CBody::Initialize()
     {
         Component::Initialize();

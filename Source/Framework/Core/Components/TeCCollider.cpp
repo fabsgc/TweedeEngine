@@ -26,6 +26,9 @@ namespace te
         SetNotifyFlags(TCF_Parent | TCF_Transform);
     }
 
+    CCollider::~CCollider()
+    { }
+
     void CCollider::Initialize()
     { 
         RestoreInternal();

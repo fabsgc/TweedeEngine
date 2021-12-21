@@ -15,7 +15,7 @@ namespace te
     {
     public:
         CBody(const HSceneObject& parent, UINT32 type);
-        virtual ~CBody() = 0 { };
+        virtual ~CBody() = 0;
 
         /** Return Component type */
         static UINT32 GetComponentType() { return TypeID_Core::TID_CBody; }

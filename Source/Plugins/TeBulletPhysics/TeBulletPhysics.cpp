@@ -120,20 +120,7 @@ namespace te
                 scene->_debug->Clear();
 
                 if (_debug)
-                {
-                    /*if (_initDesc.SoftBody)
-                    {
-                        btSoftRigidDynamicsWorld* softWorld = static_cast<btSoftRigidDynamicsWorld*>(scene->_world);
-                        softWorld->setDrawFlags(fDrawFlags::Faces);
-                    }
-                    else
-                    {
-                        btSoftRigidDynamicsWorld* softWorld = static_cast<btSoftRigidDynamicsWorld*>(scene->_world);
-                        softWorld->setDrawFlags(fDrawFlags::Faces);
-                    }*/
-
                     scene->_world->debugDrawWorld();
-                }
             }
         }
 

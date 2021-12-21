@@ -23,6 +23,9 @@ namespace te
         SetName("Component");
     }
 
+    Component::~Component()
+    { }
+
     void Component::Initialize()
     {
         OnInitialized();

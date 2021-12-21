@@ -117,7 +117,7 @@ namespace te
 
     protected:
         Component(HSceneObject parent, UINT32 type);
-        virtual ~Component() = 0 { };
+        virtual ~Component() = 0;
 
         /**
          * If you want to create a copy of a component, first use SceneObject::AddComponent() then, use this method to
