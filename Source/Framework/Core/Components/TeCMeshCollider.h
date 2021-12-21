@@ -26,7 +26,7 @@ namespace te
         HPhysicsMesh GetMesh() const { return _mesh; }
 
         /** @copydoc Component::Clone */
-        void Clone(const HMeshCollider& c);
+        bool Clone(const HMeshCollider& c, const String& suffix = "");
 
         void SetCollisionType(PhysicsMeshType type);
 

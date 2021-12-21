@@ -45,10 +45,7 @@ namespace te
         static UINT32 GetComponentType() { return TypeID_Core::TID_CScript; }
 
         /** @copydoc Component::Clone */
-        void Clone(const HComponent& c) override;
-
-        /** @copydoc Component::Clone */
-        void Clone(const HScript& c);
+        bool Clone(const HScript& c, const String& suffix = "");
 
     protected:
         mutable SPtr<Script> _internal;

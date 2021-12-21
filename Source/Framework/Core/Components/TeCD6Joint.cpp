@@ -25,21 +25,32 @@ namespace te
         return joint;
     }
 
-    void CD6Joint::Clone(const HD6Joint& c)
+    bool CD6Joint::Clone(const HD6Joint& c, const String& suffix)
     {
-        CJoint::Clone(static_object_cast<CJoint>(c));
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
 
-        _lowerLinLimit = c->_lowerLinLimit;
-        _upperLinLimit = c->_upperLinLimit;
-        _lowerAngLimit = c->_lowerAngLimit;
-        _upperAngLimit = c->_upperAngLimit;
+        if (CJoint::Clone(static_object_cast<CJoint>(c), suffix))
+        {
+            _lowerLinLimit = c->_lowerLinLimit;
+            _upperLinLimit = c->_upperLinLimit;
+            _lowerAngLimit = c->_lowerAngLimit;
+            _upperAngLimit = c->_upperAngLimit;
 
-        _linearSpring = c->_linearSpring;
-        _angularSpring = c->_angularSpring;
-        _linearStiffness = c->_linearStiffness;
-        _linearDamping = c->_linearDamping;
-        _angularStiffness = c->_angularStiffness;
-        _angularDamping = c->_angularDamping;
+            _linearSpring = c->_linearSpring;
+            _angularSpring = c->_angularSpring;
+            _linearStiffness = c->_linearStiffness;
+            _linearDamping = c->_linearDamping;
+            _angularStiffness = c->_angularStiffness;
+            _angularDamping = c->_angularDamping;
+
+            return true;
+        }
+
+        return false;
     }
 
     void CD6Joint::OnEnabled()

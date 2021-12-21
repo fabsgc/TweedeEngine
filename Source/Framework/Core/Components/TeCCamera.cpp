@@ -79,17 +79,26 @@ namespace te
         _internal->Destroy();
     }
 
-    void CCamera::Clone(const HComponent& c)
+    bool CCamera::Clone(const HCamera& c, const String& suffix)
     {
-        Clone(static_object_cast<CCamera>(c));
-    }
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
 
-    void CCamera::Clone(const HCamera& c)
-    {
-        Component::Clone(c.GetInternalPtr());
-        SPtr<Camera> camera = c->_getCamera();
+        if (Component::Clone(c.GetInternalPtr(), suffix))
+        {
+            SPtr<Camera> camera = c->_getCamera();
+            if(camera)
+            {
+                _internal->_transform = camera->_transform;
+                _internal->_mobility = camera->_mobility;
+            }
 
-        _internal->_transform = camera->_transform;
-        _internal->_mobility = camera->_mobility;
+            return true;
+        }
+
+        return false;
     }
 }

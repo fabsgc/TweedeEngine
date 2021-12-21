@@ -77,38 +77,47 @@ namespace te
         _internal->Destroy();
     }
 
-    void CLight::Clone(const HComponent& c)
+    bool CLight::Clone(const HLight& c, const String& suffix)
     {
-        Clone(static_object_cast<CLight>(c));
-    }
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
 
-    void CLight::Clone(const HLight& c)
-    {
-        Component::Clone(c.GetInternalPtr());
-        SPtr<Light> light = c->_getLight();
+        if (Component::Clone(c.GetInternalPtr(), suffix))
+        {
+            SPtr<Light> light = c->_getLight();
+            if (light)
+            {
+                _internal->_type = light->_type;
+                _internal->_castShadows = light->_castShadows;
+                _internal->_color = light->_color;
+                _internal->_attRadius = light->_attRadius;
+                _internal->_linearAttenuation = light->_linearAttenuation;
+                _internal->_quadraticAttenuation = light->_quadraticAttenuation;
+                _internal->_spotAngle = light->_spotAngle;
+                _internal->_bounds = light->_bounds;
+                _internal->_shadowBias = light->_shadowBias;
 
-        _internal->_type = light->_type;
-        _internal->_castShadows = light->_castShadows;
-        _internal->_color = light->_color;
-        _internal->_attRadius = light->_attRadius;
-        _internal->_linearAttenuation = light->_linearAttenuation;
-        _internal->_quadraticAttenuation = light->_quadraticAttenuation;
-        _internal->_spotAngle = light->_spotAngle;
-        _internal->_bounds = light->_bounds;
-        _internal->_shadowBias = light->_shadowBias;
+                _internal->_transform = light->_transform;
+                _internal->_mobility = light->_mobility;
 
-        _internal->_transform = light->_transform;
-        _internal->_mobility = light->_mobility;
+                c->_type = _type;
+                c->_color = _color;
+                c->_intensity = _intensity;
+                c->_range = _range;
+                c->_linearAtt = _linearAtt;
+                c->_quadraticAtt = _quadraticAtt;
+                c->_castShadows = _castShadows;
+                c->_spotAngle = _spotAngle;
 
-        c->_type = _type;
-        c->_color = _color;
-        c->_intensity = _intensity;
-        c->_range = _range;
-        c->_linearAtt = _linearAtt;
-        c->_quadraticAtt = _quadraticAtt;
-        c->_castShadows = _castShadows;
-        c->_spotAngle = _spotAngle;
+                _internal->_markCoreDirty();
+            }
 
-        _internal->_markCoreDirty();
+            return true;
+        }
+
+        return false;
     }
 }

@@ -20,7 +20,7 @@ namespace te
         static UINT32 GetComponentType() { return TypeID_Core::TID_CSliderJoint; }
 
         /** @copydoc Component::Clone */
-        void Clone(const HSliderJoint& c);
+        bool Clone(const HSliderJoint& c, const String& suffix = "");
 
         /** @copydoc SetLowerLinLimit */
         void SetLowerLinLimit(float lowerLinLimit);

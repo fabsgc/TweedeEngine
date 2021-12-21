@@ -38,7 +38,7 @@ namespace te
         float GetMaxHeight() const { return _maxHeight; }
 
         /** @copydoc Component::Clone */
-        void Clone(const HHeightFieldCollider& c);
+        bool Clone(const HHeightFieldCollider& c, const String& suffix = "");
 
     protected:
         friend class SceneObject;

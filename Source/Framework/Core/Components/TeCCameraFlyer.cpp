@@ -25,7 +25,7 @@ namespace te
 
         // Get handles for key bindings. Actual keys attached to these bindings will be registered during app start-up.
         _moveForward = VirtualButton("Forward");
-        _moveBack = VirtualButton("Back");
+        _moveBackward = VirtualButton("Back");
         _moveLeft = VirtualButton("Left");
         _moveRight = VirtualButton("Right");
         _fastMove = VirtualButton("FastMove");
@@ -35,13 +35,10 @@ namespace te
     }
 
     void CCameraFlyer::Update()
-    {
-        if (GuiAPI::Instance().HasFocus(GuiAPI::FocusType::Keyboard) || GuiAPI::Instance().HasFocus(GuiAPI::FocusType::Mouse))
-            return;
-
+    { 
         // Check if any movement or rotation keys are being held
         bool goingForward = gVirtualInput().IsButtonHeld(_moveForward);
-        bool goingBack = gVirtualInput().IsButtonHeld(_moveBack);
+        bool goingBack = gVirtualInput().IsButtonHeld(_moveBackward);
         bool goingLeft = gVirtualInput().IsButtonHeld(_moveLeft);
         bool goingRight = gVirtualInput().IsButtonHeld(_moveRight);
         bool fastMove = gVirtualInput().IsButtonHeld(_fastMove);
@@ -126,13 +123,24 @@ namespace te
         }
     }
 
-    void CCameraFlyer::Clone(const HComponent& c)
+    bool CCameraFlyer::Clone(const HCameraFlyer& c, const String& suffix)
     {
-        Clone(static_object_cast<CCameraFlyer>(c));
-    }
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
 
-    void CCameraFlyer::Clone(const HCameraFlyer& c)
-    {
-        Component::Clone(c.GetInternalPtr());
+        if (Component::Clone(c.GetInternalPtr(), suffix))
+        {
+            _currentSpeed = c->_currentSpeed;
+            _pitch = c->_pitch;
+            _yaw = c->_yaw;
+            _lastButtonState = c->_lastButtonState;
+
+            return true;
+        }
+
+        return false;
     }
 }

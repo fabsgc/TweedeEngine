@@ -15,19 +15,13 @@ namespace te
     {
     public:
         CBody(const HSceneObject& parent, UINT32 type);
-        virtual ~CBody() = default;
+        virtual ~CBody() = 0 { };
 
         /** Return Component type */
         static UINT32 GetComponentType() { return TypeID_Core::TID_CBody; }
 
         /** @copydoc Component::Initialize */
         virtual void Initialize() override;
-
-        /** @copydoc Component::Clone */
-        void Clone(const HComponent& c) override;
-
-        /** @copydoc Component::Clone */
-        void Clone(const HBody& c);
 
         /** @copydoc Component::Update */
         void Update() override;
@@ -127,8 +121,10 @@ namespace te
 
     protected:
         friend class SceneObject;
-
         using Component::DestroyInternal;
+
+        /** @copydoc Component::Clone */
+        bool Clone(const HBody& c, const String& suffix = "");
 
         /** As debug is heavy for GPU, we can cull debug info for non visible bodies */
         void CullDebug(bool cull);

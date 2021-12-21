@@ -20,7 +20,7 @@ namespace te
         static UINT32 GetComponentType() { return TypeID_Core::TID_CCylinderCollider; }
 
         /** @copydoc Component::Clone */
-        void Clone(const HCylinderCollider& c);
+        bool Clone(const HCylinderCollider& c, const String& suffix = "");
 
         /** @copydoc CylinderCollider::SetExtents */
         void SetExtents(const Vector3& extents);

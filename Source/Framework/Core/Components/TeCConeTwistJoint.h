@@ -20,7 +20,7 @@ namespace te
         static UINT32 GetComponentType() { return TypeID_Core::TID_CConeTwistJoint; }
 
         /** @copydoc Component::Clone */
-        void Clone(const HConeTwistJoint& c);
+        bool Clone(const HConeTwistJoint& c, const String& suffix = "");
 
         /** @copydoc ConeTwistJoint::SetDamping */
         void SetDamping(float damping);

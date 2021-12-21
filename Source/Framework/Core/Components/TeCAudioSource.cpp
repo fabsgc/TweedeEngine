@@ -207,23 +207,29 @@ namespace te
         _lastPosition = worldPos;
     }
 
-    void CAudioSource::Clone(const HComponent& c)
+    bool CAudioSource::Clone(const HAudioSource& c, const String& suffix)
     {
-        Clone(static_object_cast<CAudioSource>(c));
-    }
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
 
-    void CAudioSource::Clone(const HAudioSource& c)
-    {
-        Component::Clone(c.GetInternalPtr());
-        
-        _audioClip = c->_audioClip;
-        _volume = c->_volume;
-        _pitch = c->_pitch;
-        _loop = c->_loop;
-        _priority = c->_priority;
-        _minDistance = c->_minDistance;
-        _attenuation = c->_attenuation;
-        _playOnStart = c->_playOnStart;
+        if (Component::Clone(c.GetInternalPtr(), suffix))
+        {
+            _audioClip = c->_audioClip;
+            _volume = c->_volume;
+            _pitch = c->_pitch;
+            _loop = c->_loop;
+            _priority = c->_priority;
+            _minDistance = c->_minDistance;
+            _attenuation = c->_attenuation;
+            _playOnStart = c->_playOnStart;
+
+            return true;
+        }
+
+        return false;
     }
 
     void CAudioSource::RestoreInternal()

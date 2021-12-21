@@ -32,18 +32,24 @@ namespace te
         CBody::Initialize();
     }
 
-    void CRigidBody::Clone(const HComponent& c)
-    { 
-        Clone(static_object_cast<CRigidBody>(c));
-    }
+    bool CRigidBody::Clone(const HRigidBody& c, const String& suffix)
+    {
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
 
-    void CRigidBody::Clone(const HRigidBody& c)
-    { 
-        CBody::Clone(static_object_cast<CBody>(c));
+        if(CBody::Clone(static_object_cast<CBody>(c), suffix))
+        {
+            _angularFactor = c->_angularFactor;
+            _useGravity = c->_useGravity;
+            _centerOfMass = c->_centerOfMass;
 
-        _angularFactor = c->_angularFactor;
-        _useGravity = c->_useGravity;
-        _centerOfMass = c->_centerOfMass;
+            return true;
+        }
+
+        return false;
     }
 
     void CRigidBody::Update()

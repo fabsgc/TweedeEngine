@@ -702,9 +702,12 @@ namespace te
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportVertexColors, "##file_dialog_parameters_mesh_vertex_colors", "Import vertex colors");
                     ImGui::Separator();
 
-                    ImGuiExt::RenderOptionBool(Data.MeshParam.ForceGenNormals, "##file_dialog_parameters_mesh_force_gen_normals", "Force normals generation");
-                    ImGuiExt::RenderOptionBool(Data.MeshParam.GenSmoothNormals, "##file_dialog_parameters_mesh_force_gen_smooth_normal", "Generate smooth normals");
-                    ImGui::Separator();
+                    if (Data.MeshParam.ImportNormals)
+                    {
+                        ImGuiExt::RenderOptionBool(Data.MeshParam.ForceGenNormals, "##file_dialog_parameters_mesh_force_gen_normals", "Force normals generation");
+                        ImGuiExt::RenderOptionBool(Data.MeshParam.GenSmoothNormals, "##file_dialog_parameters_mesh_force_gen_smooth_normal", "Generate smooth normals");
+                        ImGui::Separator();
+                    }
 
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportSkin, "##file_dialog_parameters_mesh_skin", "Import skin");
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportBlendShapes, "##file_dialog_parameters_mesh_blend_shapes", "Import blend shapes");

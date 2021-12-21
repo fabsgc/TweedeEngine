@@ -20,7 +20,7 @@ namespace te
         static UINT32 GetComponentType() { return TypeID_Core::TID_CConeCollider; }
 
         /** @copydoc Component::Clone */
-        void Clone(const HConeCollider& c);
+        bool Clone(const HConeCollider& c, const String& suffix = "");
 
         /** @copydoc CapsuleCollider::SetRadius */
         void SetRadius(float radius);

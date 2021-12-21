@@ -17,19 +17,13 @@ namespace te
     {
     public:
         CCollider(const HSceneObject& parent, UINT32 type);
-        virtual ~CCollider();
+        virtual ~CCollider() = 0 { };
 
         /** Return Component type */
         static UINT32 GetComponentType() { return TypeID_Core::TID_CCollider; }
 
         /** @copydoc Component::Initialize */
         virtual void Initialize() override;
-
-        /** @copydoc Component::Clone */
-        void Clone(const HComponent& c) override;
-
-        /** @copydoc Component::Clone */
-        void Clone(const HCollider& c);
 
         /** @copydoc Component::update */
         void Update() override { }
@@ -70,6 +64,9 @@ namespace te
         friend class CRigidBody;
         friend class CSoftBody;
         using Component::DestroyInternal;
+
+        /** @copydoc Component::Clone */
+        bool Clone(const HCollider& c, const String& suffix = "");
 
         /** @copydoc Component::OnInitialized */
         void OnInitialized() override;

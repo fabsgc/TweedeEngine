@@ -62,20 +62,29 @@ namespace te
         _internal->Destroy();
     }
 
-    void CSkybox::Clone(const HComponent& c)
+    bool CSkybox::Clone(const HSkybox& c, const String& suffix)
     {
-        Clone(static_object_cast<CSkybox>(c));
-    }
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
 
-    void CSkybox::Clone(const HSkybox& c)
-    {
-        Component::Clone(c.GetInternalPtr());
-        SPtr<Skybox> skybox = c->_getSkybox();
+        if (Component::Clone(c.GetInternalPtr(), suffix))
+        {
+            SPtr<Skybox> skybox = c->_getSkybox();
+            if (skybox)
+            {
+                _internal->_brightness = skybox->_brightness;
+                _internal->_texture = skybox->_texture;
 
-        _internal->_brightness = skybox->_brightness;
-        _internal->_texture = skybox->_texture;
+                _internal->_transform = skybox->_transform;
+                _internal->_mobility = skybox->_mobility;
+            }
 
-        _internal->_transform = skybox->_transform;
-        _internal->_mobility = skybox->_mobility;
+            return true;
+        }
+
+        return false;
     }
 }

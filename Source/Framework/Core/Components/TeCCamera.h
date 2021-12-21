@@ -191,10 +191,7 @@ namespace te
         SPtr<Camera> _getCamera() const { UpdateView(); return _internal; }
 
         /** @copydoc Component::Clone */
-        void Clone(const HComponent& c) override;
-
-        /** @copydoc Component::Clone */
-        void Clone(const HCamera& c);
+        bool Clone(const HCamera& c, const String& suffix = "");
 
         /* @copydoc Component::MarkDirty */
         virtual void MarkDirty() { _internal->_markCoreDirty(); }

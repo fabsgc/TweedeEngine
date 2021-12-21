@@ -96,13 +96,25 @@ namespace te
         return (_flags & flag) != 0;
     }
 
-    void SceneObject::Clone(const HSceneObject so)
+    bool SceneObject::Clone(const HSceneObject so, const String& suffix)
     {
-        Clone(so.GetInternalPtr());
+        if (so.Empty())
+        {
+            TE_DEBUG("Tries to clone a sceneObject using an invalid sceneObject handle");
+            return false;
+        }
+
+        return Clone(so.GetInternalPtr());
     }
 
-    void SceneObject::Clone(const SPtr<SceneObject>& so)
+    bool SceneObject::Clone(const SPtr<SceneObject>& so, const String& suffix)
     {
+        if (!so)
+        {
+            TE_DEBUG("Tries to clone a sceneObject using an invalid sceneObject pointer");
+            return false;
+        }
+
         Transform tfrm = so->GetTransform();
         this->_name = so->GetName() + " copy";
         this->_mobility = so->GetMobility();
@@ -116,7 +128,6 @@ namespace te
             HSceneObject sceneObject = SceneObject::Create("SceneObject");
             sceneObject->Clone(childSO);
             sceneObject->SetParent(this->GetHandle());
-            sceneObject->SetName(childSO->GetName());
         }
 
         for (auto& co : so->GetComponents())
@@ -129,27 +140,24 @@ namespace te
             case TID_CCamera:
             {
                 HCamera component = this->AddComponent<CCamera>();
-                component->Clone(co->GetHandle());
+                component->Clone(static_object_cast<CCamera>(co->GetHandle()));
                 component->Initialize();
-                component->SetName(co->GetName());
             }
             break;
 
             case TID_CCameraFlyer:
             {
                 HCameraFlyer component = this->AddComponent<CCameraFlyer>();
-                component->Clone(co->GetHandle());
+                component->Clone(static_object_cast<CCameraFlyer>(co->GetHandle()));
                 component->Initialize();
-                component->SetName(co->GetName());
             }
             break;
 
             case TID_CCameraUI:
             {
                 HCameraUI component = this->AddComponent<CCameraUI>();
-                component->Clone(co->GetHandle());
+                component->Clone(static_object_cast<CCameraUI>(co->GetHandle()));
                 component->Initialize();
-                component->SetName(co->GetName());
             }
             break;
 
@@ -157,27 +165,24 @@ namespace te
             {
                 HLight previousLight = static_object_cast<CLight>(co);
                 HLight component = this->AddComponent<CLight>(previousLight->GetType());
-                component->Clone(co->GetHandle());
+                component->Clone(static_object_cast<CLight>(co->GetHandle()));
                 component->Initialize();
-                component->SetName(co->GetName());
             }
             break;
 
             case TID_CRenderable:
             {
                 HRenderable component = this->AddComponent<CRenderable>();
-                component->Clone(co->GetHandle());
+                component->Clone(static_object_cast<CRenderable>(co->GetHandle()));
                 component->Initialize();
-                component->SetName(co->GetName());
             }
             break;
 
             case TID_CScript:
             {
                 HScript component = this->AddComponent<CScript>();
-                component->Clone(co->GetHandle());
+                component->Clone(static_object_cast<CScript>(co->GetHandle()));
                 component->Initialize();
-                component->SetName(co->GetName());
             }
             break;
 
@@ -187,63 +192,56 @@ namespace te
                     break;
 
                 HSkybox component = this->AddComponent<CSkybox>();
-                component->Clone(co->GetHandle());
+                component->Clone(static_object_cast<CSkybox>(co->GetHandle()));
                 component->Initialize();
-                component->SetName(co->GetName());
             }
             break;
 
             case TID_CAnimation:
             {
                 HAnimation component = this->AddComponent<CAnimation>();
-                component->Clone(co->GetHandle());
+                component->Clone(static_object_cast<CAnimation>(co->GetHandle()));
                 component->Initialize();
-                component->SetName(co->GetName());
             }
             break;
 
             case TID_CBone:
             {
                 HBone component = this->AddComponent<CBone>();
-                component->Clone(co->GetHandle());
+                component->Clone(static_object_cast<CBone>(co->GetHandle()));
                 component->Initialize();
-                component->SetName(co->GetName());
             }
             break;
 
             case TID_CAudioListener:
             {
                 HAudioListener component = this->AddComponent<CAudioListener>();
-                component->Clone(co->GetHandle());
+                component->Clone(static_object_cast<CAudioListener>(co->GetHandle()));
                 component->Initialize();
-                component->SetName(co->GetName());
             }
             break;
 
             case TID_CAudioSource:
             {
                 HAudioSource component = this->AddComponent<CAudioSource>();
-                component->Clone(co->GetHandle());
+                component->Clone(static_object_cast<CAudioSource>(co->GetHandle()));
                 component->Initialize();
-                component->SetName(co->GetName());
             }
             break;
 
             case TID_CRigidBody:
             {
                 HRigidBody component = this->AddComponent<CRigidBody>();
-                component->Clone(co->GetHandle());
+                component->Clone(static_object_cast<CRigidBody>(co->GetHandle()));
                 component->Initialize();
-                component->SetName(co->GetName());
             }
             break;
 
             case TID_CSoftBody:
             {
                 HSoftBody component = this->AddComponent<CSoftBody>();
-                component->Clone(co->GetHandle());
+                component->Clone(static_object_cast<CSoftBody>(co->GetHandle()));
                 component->Initialize();
-                component->SetName(co->GetName());
             }
             break;
 
@@ -252,7 +250,6 @@ namespace te
                 HConeTwistJoint component = this->AddComponent<CConeTwistJoint>();
                 component->Clone(static_object_cast<CConeTwistJoint>(co->GetHandle()));
                 component->Initialize();
-                component->SetName(co->GetName());
             }
             break;
 
@@ -261,7 +258,6 @@ namespace te
                 HD6Joint component = this->AddComponent<CD6Joint>();
                 component->Clone(static_object_cast<CD6Joint>(co->GetHandle()));
                 component->Initialize();
-                component->SetName(co->GetName());
             }
             break;
 
@@ -270,7 +266,6 @@ namespace te
                 HHingeJoint component = this->AddComponent<CHingeJoint>();
                 component->Clone(static_object_cast<CHingeJoint>(co->GetHandle()));
                 component->Initialize();
-                component->SetName(co->GetName());
             }
             break;
 
@@ -279,7 +274,6 @@ namespace te
                 HSliderJoint component = this->AddComponent<CSliderJoint>();
                 component->Clone(static_object_cast<CSliderJoint>(co->GetHandle()));
                 component->Initialize();
-                component->SetName(co->GetName());
             }
             break;
 
@@ -288,7 +282,6 @@ namespace te
                 HSphericalJoint component = this->AddComponent<CSphericalJoint>();
                 component->Clone(static_object_cast<CSphericalJoint>(co->GetHandle()));
                 component->Initialize();
-                component->SetName(co->GetName());
             }
             break;
 
@@ -297,7 +290,46 @@ namespace te
                 HBoxCollider component = this->AddComponent<CBoxCollider>();
                 component->Clone(static_object_cast<CBoxCollider>(co->GetHandle()));
                 component->Initialize();
-                component->SetName(co->GetName());
+            }
+            break;
+
+            case TID_CCapsuleCollider:
+            {
+                HCapsuleCollider component = this->AddComponent<CCapsuleCollider>();
+                component->Clone(static_object_cast<CCapsuleCollider>(co->GetHandle()));
+                component->Initialize();
+            }
+            break;
+
+            case TID_CConeCollider:
+            {
+                HConeCollider component = this->AddComponent<CConeCollider>();
+                component->Clone(static_object_cast<CConeCollider>(co->GetHandle()));
+                component->Initialize();
+            }
+            break;
+
+            case TID_CCylinderCollider:
+            {
+                HCylinderCollider component = this->AddComponent<CCylinderCollider>();
+                component->Clone(static_object_cast<CCylinderCollider>(co->GetHandle()));
+                component->Initialize();
+            }
+            break;
+
+            case TID_CHeightFieldCollider:
+            {
+                HHeightFieldCollider component = this->AddComponent<CHeightFieldCollider>();
+                component->Clone(static_object_cast<CHeightFieldCollider>(co->GetHandle()));
+                component->Initialize();
+            }
+            break;
+
+            case TID_CMeshCollider:
+            {
+                HMeshCollider component = this->AddComponent<CMeshCollider>();
+                component->Clone(static_object_cast<CMeshCollider>(co->GetHandle()));
+                component->Initialize();
             }
             break;
 
@@ -318,42 +350,12 @@ namespace te
             }
             break;
 
-            case TID_CCylinderCollider:
-            {
-                HCylinderCollider component = this->AddComponent<CCylinderCollider>();
-                component->Clone(static_object_cast<CCylinderCollider>(co->GetHandle()));
-                component->Initialize();
-            }
-            break;
-
-            case TID_CCapsuleCollider:
-            {
-                HCapsuleCollider component = this->AddComponent<CCapsuleCollider>();
-                component->Clone(static_object_cast<CCapsuleCollider>(co->GetHandle()));
-                component->Initialize();
-            }
-            break;
-
-            case TID_CMeshCollider:
-            {
-                HMeshCollider component = this->AddComponent<CMeshCollider>();
-                component->Clone(static_object_cast<CMeshCollider>(co->GetHandle()));
-                component->Initialize();
-            }
-            break;
-
-            case TID_CConeCollider:
-            {
-                HConeCollider component = this->AddComponent<CConeCollider>();
-                component->Clone(static_object_cast<CConeCollider>(co->GetHandle()));
-                component->Initialize();
-            }
-            break;
-
             default:
                 break;
             }
         }
+
+        return true;
     }
 
     void SceneObject::SetInstanceData(GameObjectInstanceDataPtr& other)

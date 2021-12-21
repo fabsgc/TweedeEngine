@@ -31,14 +31,23 @@ namespace te
         CBody::Initialize();
     }
 
-    void CSoftBody::Clone(const HComponent& c)
-    { 
-        Clone(static_object_cast<CSoftBody>(c));
-    }
+    bool CSoftBody::Clone(const HSoftBody& c, const String& suffix)
+    {
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
 
-    void CSoftBody::Clone(const HSoftBody& c)
-    { 
-        CBody::Clone(static_object_cast<CBody>(c));
+        if(CBody::Clone(static_object_cast<CBody>(c), suffix))
+        {
+            _mesh = c->_mesh;
+            _scale = c->_scale;
+
+            return true;
+        }
+
+        return false;
     }
 
     void CSoftBody::SetMesh(const HPhysicsMesh& mesh)

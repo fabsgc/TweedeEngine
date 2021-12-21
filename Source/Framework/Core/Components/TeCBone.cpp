@@ -129,15 +129,20 @@ namespace te
         _parent = animation;
     }
 
-    void CBone::Clone(const HComponent& c)
+    bool CBone::Clone(const HBone& c, const String& suffix)
     {
-        Clone(static_object_cast<CBone>(c));
-    }
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
 
-    void CBone::Clone(const HBone& c)
-    { 
-        Component::Clone(c.GetInternalPtr());
+        if (Component::Clone(c.GetInternalPtr(), suffix))
+        {
+            _boneName = c->_boneName;
+            return true;
+        }
 
-        _boneName = c->_boneName;
+        return false;
     }
 }

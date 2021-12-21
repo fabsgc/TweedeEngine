@@ -34,12 +34,23 @@ namespace te
         SetHeight(_height);
     }
 
-    void CConeCollider::Clone(const HConeCollider& c)
+    bool CConeCollider::Clone(const HConeCollider& c, const String& suffix)
     {
-        CCollider::Clone(static_object_cast<CCollider>(c));
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
 
-        _radius = c->_radius;
-        _height = c->_height;
+        if (CCollider::Clone(static_object_cast<CCollider>(c), suffix))
+        {
+            _radius = c->_radius;
+            _height = c->_height;
+
+            return true;
+        }
+
+        return false;
     }
 
     void CConeCollider::SetRadius(float radius)

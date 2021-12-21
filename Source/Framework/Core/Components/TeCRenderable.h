@@ -132,10 +132,7 @@ namespace te
         bool IsAnimated() const { return _internal->IsAnimated(); }
 
         /** @copydoc Component::Clone */
-        void Clone(const HComponent& c) override;
-
-        /** @copydoc Component::Clone */
-        void Clone(const HRenderable& c);
+        bool Clone(const HRenderable& c, const String& suffix = "");
 
         /* @copydoc Component::MarkDirty */
         virtual void MarkDirty() { 

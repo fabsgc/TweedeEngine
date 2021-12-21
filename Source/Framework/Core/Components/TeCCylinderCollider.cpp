@@ -34,11 +34,21 @@ namespace te
         SetExtents(_extents);
     }
 
-    void CCylinderCollider::Clone(const HCylinderCollider& c)
+    bool CCylinderCollider::Clone(const HCylinderCollider& c, const String& suffix)
     {
-        CCollider::Clone(static_object_cast<CCollider>(c));
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
 
-        _extents = c->_extents;
+        if (CCollider::Clone(static_object_cast<CCollider>(c), suffix))
+        {
+            _extents = c->_extents;
+            return true;
+        }
+
+        return false;
     }
 
     void CCylinderCollider::SetExtents(const Vector3& extents)

@@ -32,10 +32,7 @@ namespace te
         void Initialize() override;
 
         /** @copydoc Component::Clone */
-        void Clone(const HComponent& c) override;
-
-        /** @copydoc Component::Clone */
-        void Clone(const HAnimation& c);
+        bool Clone(const HAnimation& c, const String& suffix = "");
 
         /* @copydoc Component::MarkDirty */
         virtual void MarkDirty() { _internal->MarkCoreDirty(); }

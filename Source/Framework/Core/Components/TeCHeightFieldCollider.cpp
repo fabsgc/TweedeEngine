@@ -32,13 +32,24 @@ namespace te
         CCollider::RestoreInternal();
     }
 
-    void CHeightFieldCollider::Clone(const HHeightFieldCollider& c)
+    bool CHeightFieldCollider::Clone(const HHeightFieldCollider& c, const String& suffix)
     {
-        CCollider::Clone(static_object_cast<CCollider>(c));
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
 
-        _heightField = c->_heightField;
-        _minHeight = c->_minHeight;
-        _maxHeight = c->_maxHeight;
+        if (CCollider::Clone(static_object_cast<CCollider>(c), suffix))
+        {
+            _heightField = c->_heightField;
+            _minHeight = c->_minHeight;
+            _maxHeight = c->_maxHeight;
+
+            return true;
+        }
+
+        return false;
     }
 
     void CHeightFieldCollider::SetHeightField(const HPhysicsHeightField& heightField)

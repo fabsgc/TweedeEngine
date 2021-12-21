@@ -34,30 +34,33 @@ namespace te
         _rotations[1] = Quaternion::IDENTITY;
     }
 
-    CJoint::~CJoint()
-    { }
-
     void CJoint::Initialize()
     { 
         OnEnabled();
         Component::Initialize();
     }
 
-    void CJoint::Clone(const HComponent& c)
-    { 
-        Clone(static_object_cast<CJoint>(c));
-    }
+    bool CJoint::Clone(const HJoint& c, const String& suffix)
+    {
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
 
-    void CJoint::Clone(const HJoint& c)
-    { 
-        Component::Clone(c.GetInternalPtr());
+        if (CJoint::Clone(static_object_cast<CJoint>(c), suffix))
+        {
+            _breakForce = c->_breakForce;
+            _breakTorque = c->_breakTorque;
+            _enableCollision = c->_enableCollision;
 
-        _breakForce = c->_breakForce;
-        _breakTorque = c->_breakTorque;
-        _enableCollision = c->_enableCollision;
+            _offsetPivots[(int)JointBody::Anchor] = c->_offsetPivots[(int)JointBody::Anchor];
+            _offsetPivots[(int)JointBody::Target] = c->_offsetPivots[(int)JointBody::Target];
 
-        _offsetPivots[(int)JointBody::Anchor] = c->_offsetPivots[(int)JointBody::Anchor];
-        _offsetPivots[(int)JointBody::Target] = c->_offsetPivots[(int)JointBody::Target];
+            return true;
+        }
+
+        return false;
     }
 
     void CJoint::Update()

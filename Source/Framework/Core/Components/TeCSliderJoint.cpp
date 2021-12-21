@@ -25,39 +25,50 @@ namespace te
         return joint;
     }
 
-    void CSliderJoint::Clone(const HSliderJoint& c)
+    bool CSliderJoint::Clone(const HSliderJoint& c, const String& suffix)
     {
-        CJoint::Clone(static_object_cast<CJoint>(c));
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
 
-        _lowerLinLimit = c->_lowerLinLimit;
-        _upperLinLimit = c->_upperLinLimit;
-        _lowerAngLimit = c->_lowerAngLimit;
-        _upperAngLimit = c->_upperAngLimit;
+        if (CJoint::Clone(static_object_cast<CJoint>(c), suffix))
+        {
+            _lowerLinLimit = c->_lowerLinLimit;
+            _upperLinLimit = c->_upperLinLimit;
+            _lowerAngLimit = c->_lowerAngLimit;
+            _upperAngLimit = c->_upperAngLimit;
 
-        _softnessDirLin = c->_softnessDirLin;
-        _restitutionDirLin = c->_restitutionDirLin;
-        _dampingDirLin = c->_dampingDirLin;
-        _softnessDirAng = c->_softnessDirAng;
-        _restitutionDirAng = c->_restitutionDirAng;
-        _dampingDirAng = c->_dampingDirAng;
-        _softnessLimLin = c->_softnessLimLin;
-        _restitutionLimLin = c->_restitutionLimLin;
-        _dampingLimLin = c->_dampingLimLin;
-        _softnessLimAng = c->_softnessLimAng;
-        _restitutionLimAng = c->_restitutionLimAng;
-        _dampingLimAng = c->_dampingLimAng;
-        _softnessOrthoLin = c->_softnessOrthoLin;
-        _restitutionOrthoLin = c->_restitutionOrthoLin;
-        _dampingOrthoLin = c->_dampingOrthoLin;
-        _softnessOrthoAng = c->_softnessOrthoAng;
-        _restitutionOrthoAng = c->_restitutionOrthoAng;
-        _dampingOrthoAng = c->_dampingOrthoAng;
-        _poweredLinMotor = c->_poweredLinMotor;
-        _targetLinMotorVelocity = c->_targetLinMotorVelocity;
-        _maxLinMotorForce = c->_maxLinMotorForce;
-        _poweredAngMotor = c->_poweredAngMotor;
-        _targetAngMotorVelocity = c->_targetAngMotorVelocity;
-        _maxAngMotorForce = c->_maxAngMotorForce;
+            _softnessDirLin = c->_softnessDirLin;
+            _restitutionDirLin = c->_restitutionDirLin;
+            _dampingDirLin = c->_dampingDirLin;
+            _softnessDirAng = c->_softnessDirAng;
+            _restitutionDirAng = c->_restitutionDirAng;
+            _dampingDirAng = c->_dampingDirAng;
+            _softnessLimLin = c->_softnessLimLin;
+            _restitutionLimLin = c->_restitutionLimLin;
+            _dampingLimLin = c->_dampingLimLin;
+            _softnessLimAng = c->_softnessLimAng;
+            _restitutionLimAng = c->_restitutionLimAng;
+            _dampingLimAng = c->_dampingLimAng;
+            _softnessOrthoLin = c->_softnessOrthoLin;
+            _restitutionOrthoLin = c->_restitutionOrthoLin;
+            _dampingOrthoLin = c->_dampingOrthoLin;
+            _softnessOrthoAng = c->_softnessOrthoAng;
+            _restitutionOrthoAng = c->_restitutionOrthoAng;
+            _dampingOrthoAng = c->_dampingOrthoAng;
+            _poweredLinMotor = c->_poweredLinMotor;
+            _targetLinMotorVelocity = c->_targetLinMotorVelocity;
+            _maxLinMotorForce = c->_maxLinMotorForce;
+            _poweredAngMotor = c->_poweredAngMotor;
+            _targetAngMotorVelocity = c->_targetAngMotorVelocity;
+            _maxAngMotorForce = c->_maxAngMotorForce;
+
+            return true;
+        }
+
+        return false;
     }
 
     void CSliderJoint::OnEnabled()

@@ -21,10 +21,7 @@ namespace te
         static UINT32 GetComponentType() { return TypeID_Core::TID_CCameraFlyer; }
 
         /** @copydoc Component::Clone */
-        void Clone(const HComponent& c) override;
-
-        /** @copydoc Component::Clone */
-        void Clone(const HCameraFlyer& c);
+        bool Clone(const HCameraFlyer& c, const String& suffix = "");
 
         /** Returns current pitch angle (for editor) */
         const Degree& GetPitch() const { return _pitch; }
@@ -40,7 +37,7 @@ namespace te
         bool _lastButtonState = false; /**< Determines was the user rotating the camera last frame. */
 
         VirtualButton _moveForward; /**< Key binding for moving the camera forward. */
-        VirtualButton _moveBack; /**< Key binding for moving the camera backward. */
+        VirtualButton _moveBackward; /**< Key binding for moving the camera backward. */
         VirtualButton _moveLeft; /**< Key binding for moving the camera left. */
         VirtualButton _moveRight; /**< Key binding for moving the camera right. */
         VirtualButton _fastMove; /**< Key that speeds up movement while held. */

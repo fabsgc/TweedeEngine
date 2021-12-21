@@ -27,24 +27,30 @@ namespace te
         Component::Initialize();
     }
 
-    void CBody::Clone(const HComponent& c)
+    bool CBody::Clone(const HBody& c, const String& suffix)
     {
-        Clone(static_object_cast<CBody>(c));
-    }
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
 
-    void CBody::Clone(const HBody& c)
-    {
-        Component::Clone(c.GetInternalPtr());
+        if (Component::Clone(c.GetInternalPtr(), suffix))
+        {
+            _mass = c->_mass;
+            _friction = c->_friction;
+            _rollingFriction = c->_rollingFriction;
+            _restitution = c->_restitution;
+            _isKinematic = c->_isKinematic;
+            _velocity = c->_velocity;
+            _angularVelocity = c->_angularVelocity;
+            _collisionReportMode = c->_collisionReportMode;
+            _isDebug = c->_isDebug;
 
-        _mass = c->_mass;
-        _friction = c->_friction;
-        _rollingFriction = c->_rollingFriction;
-        _restitution = c->_restitution;
-        _isKinematic = c->_isKinematic;
-        _velocity = c->_velocity;
-        _angularVelocity = c->_angularVelocity;
-        _collisionReportMode = c->_collisionReportMode;
-        _isDebug = c->_isDebug;
+            return true;
+        }
+
+        return false;
     }
 
     void CBody::Update()

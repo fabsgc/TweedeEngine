@@ -40,11 +40,21 @@ namespace te
         return parent->GetIsKinematic();
     }
 
-    void CPlaneCollider::Clone(const HPlaneCollider& c)
+    bool CPlaneCollider::Clone(const HPlaneCollider& c, const String& suffix)
     {
-        CCollider::Clone(static_object_cast<CCollider>(c));
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
 
-        _normal = c->_normal;
+        if (CCollider::Clone(static_object_cast<CCollider>(c), suffix))
+        {
+            _normal = c->_normal;
+            return true;
+        }
+
+        return false;
     }
 
     void CPlaneCollider::SetNormal(const Vector3& normal)

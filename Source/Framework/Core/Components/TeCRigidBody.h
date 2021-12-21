@@ -53,10 +53,7 @@ namespace te
         void Initialize() override;
 
         /** @copydoc Component::Clone */
-        void Clone(const HComponent& c) override;
-
-        /** @copydoc Component::Clone */
-        void Clone(const HRigidBody& c);
+        bool Clone(const HRigidBody& c, const String& suffix = "");
 
         /** @copydoc Component::Update */
         void Update() override;

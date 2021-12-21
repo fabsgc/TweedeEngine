@@ -27,12 +27,23 @@ namespace te
         return collider;
     }
 
-    void CCapsuleCollider::Clone(const HCapsuleCollider& c)
+    bool CCapsuleCollider::Clone(const HCapsuleCollider& c, const String& suffix)
     {
-        CCollider::Clone(static_object_cast<CCollider>(c));
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
 
-        _radius = c->_radius;
-        _height = c->_height;
+        if (CCollider::Clone(static_object_cast<CCollider>(c), suffix))
+        {
+            _radius = c->_radius;
+            _height = c->_height;
+
+            return true;
+        }
+
+        return false;
     }
 
     void CCapsuleCollider::RestoreInternal()

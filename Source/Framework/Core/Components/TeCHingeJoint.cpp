@@ -25,19 +25,30 @@ namespace te
         return joint;
     }
 
-    void CHingeJoint::Clone(const HHingeJoint& c)
+    bool CHingeJoint::Clone(const HHingeJoint& c, const String& suffix)
     {
-        CJoint::Clone(static_object_cast<CJoint>(c));
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
 
-        _softnessLimit = c->_softnessLimit;
-        _biasLimit = c->_biasLimit;
-        _relaxationLimit = c->_relaxationLimit;
-        _lowLimit = c->_lowLimit;
-        _highLimit = c->_highLimit;
-        _angularOnly = c->_angularOnly;
-        _motorEnabled = c->_motorEnabled;
-        _motorImpulse = c->_motorImpulse;
-        _motorVelocity = c->_motorVelocity;
+        if (CJoint::Clone(static_object_cast<CJoint>(c), suffix))
+        {
+            _softnessLimit = c->_softnessLimit;
+            _biasLimit = c->_biasLimit;
+            _relaxationLimit = c->_relaxationLimit;
+            _lowLimit = c->_lowLimit;
+            _highLimit = c->_highLimit;
+            _angularOnly = c->_angularOnly;
+            _motorEnabled = c->_motorEnabled;
+            _motorImpulse = c->_motorImpulse;
+            _motorVelocity = c->_motorVelocity;
+
+            return true;
+        }
+
+        return false;
     }
 
     void CHingeJoint::OnEnabled()

@@ -25,9 +25,18 @@ namespace te
         return joint;
     }
 
-    void CSphericalJoint::Clone(const HSphericalJoint& c)
+    bool CSphericalJoint::Clone(const HSphericalJoint& c, const String& suffix)
     {
-        CJoint::Clone(static_object_cast<CJoint>(c));
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
+
+        if (CJoint::Clone(static_object_cast<CJoint>(c), suffix))
+            return true;
+
+        return false;
     }
 
     void CSphericalJoint::OnEnabled()

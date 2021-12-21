@@ -127,27 +127,36 @@ namespace te
         _internal->Destroy();
     }
 
-    void CRenderable::Clone(const HComponent& c)
+    bool CRenderable::Clone(const HRenderable& c, const String& suffix)
     {
-        Clone(static_object_cast<CRenderable>(c));
-    }
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
 
-    void CRenderable::Clone(const HRenderable& c)
-    {
-        Component::Clone(c.GetInternalPtr());
-        SPtr<Renderable> renderable = c->GetInternal();
+        if (Component::Clone(c.GetInternalPtr(), suffix))
+        {
+            SPtr<Renderable> renderable = c->GetInternal();
+            if (renderable)
+            {
+                _internal->_mesh = renderable->_mesh;
+                _internal->_materials = renderable->_materials;
+                _internal->_numMaterials = renderable->_numMaterials;
+                _internal->_layer = renderable->_layer;
+                _internal->_tfrmMatrix = renderable->_tfrmMatrix;
+                _internal->_tfrmMatrixNoScale = renderable->_tfrmMatrixNoScale;
+                _internal->_properties = renderable->_properties;
 
-        _internal->_mesh = renderable->_mesh;
-        _internal->_materials = renderable->_materials;
-        _internal->_numMaterials = renderable->_numMaterials;
-        _internal->_layer = renderable->_layer;
-        _internal->_tfrmMatrix = renderable->_tfrmMatrix;
-        _internal->_tfrmMatrixNoScale = renderable->_tfrmMatrixNoScale;
-        _internal->_properties = renderable->_properties;
+                _internal->_transform = renderable->_transform;
+                _internal->_mobility = renderable->_mobility;
 
-        _internal->_transform = renderable->_transform;
-        _internal->_mobility = renderable->_mobility;
+                _internal->_markCoreDirty(ActorDirtyFlag::GpuParams);
+            }
 
-        _internal->_markCoreDirty(ActorDirtyFlag::GpuParams);
+            return true;
+        }
+
+        return false;
     }
 }

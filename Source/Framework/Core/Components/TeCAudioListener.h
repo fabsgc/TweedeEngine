@@ -24,10 +24,7 @@ namespace te
         void Initialize() override;
 
         /** @copydoc Component::Clone */
-        void Clone(const HComponent& c) override;
-
-        /** @copydoc Component::Clone */
-        void Clone(const HAudioListener& c);
+        bool Clone(const HAudioListener& c, const String& suffix = "");
 
         /* @copydoc Component::MarkDirty */
         virtual void MarkDirty() { _internal->_markCoreDirty(); }

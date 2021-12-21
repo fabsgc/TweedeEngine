@@ -20,7 +20,7 @@ namespace te
         static UINT32 GetComponentType() { return TypeID_Core::TID_CD6Joint; }
 
         /** @copydoc Component::Clone */
-        void Clone(const HD6Joint& c);
+        bool Clone(const HD6Joint& c, const String& suffix = "");
 
         /** @copydoc D6Joint::SetLowerLinLimit */
         void SetLowerLinLimit(float lowerLinLimit);

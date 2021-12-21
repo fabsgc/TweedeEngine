@@ -72,17 +72,23 @@ namespace te
         Component::OnDestroyed();
     }
 
-    void CAudioListener::Clone(const HComponent& c)
+    bool CAudioListener::Clone(const HAudioListener& c, const String& suffix)
     {
-        Clone(static_object_cast<CAudioListener>(c));
-    }
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
 
-    void CAudioListener::Clone(const HAudioListener& c)
-    {
-        Component::Clone(c.GetInternalPtr());
+        if (Component::Clone(c.GetInternalPtr(), suffix))
+        {
+            _lastPosition = c->_lastPosition;
+            _velocity = c->_velocity;
 
-        _lastPosition = c->_lastPosition;
-        _velocity = c->_velocity;
+            return true;
+        }
+
+        return false;
     }
 
     void CAudioListener::RestoreInternal()

@@ -68,13 +68,13 @@ namespace te
          * If you want to create a copy of a sceneObject, first use SceneObject::Create() then, use this method to
          * properly copy all from "so" sceneObject
          */
-        void Clone(const HSceneObject so);
+        bool Clone(const HSceneObject so, const String& suffix = "");
 
         /**
          * If you want to create a copy of a sceneObject, first use SceneObject::Create() then, use this method to
          * properly copy all from "so" sceneObject
          */
-        void Clone(const SPtr<SceneObject>& so);
+        bool Clone(const SPtr<SceneObject>& so, const String& suffix = "");
 
     private: // ***** INTERNAL ******
         /** @copydoc GameObject::SetInstanceData */

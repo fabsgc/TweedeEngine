@@ -26,28 +26,31 @@ namespace te
         SetNotifyFlags(TCF_Parent | TCF_Transform);
     }
 
-    CCollider::~CCollider()
-    { }
-
     void CCollider::Initialize()
     { 
         RestoreInternal();
         Component::Initialize();
     }
 
-    void CCollider::Clone(const HComponent& c)
+    bool CCollider::Clone(const HCollider& c, const String& suffix)
     {
-        Clone(static_object_cast<CCollider>(c));
-    }
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
 
-    void CCollider::Clone(const HCollider& c)
-    {
-        Component::Clone(c.GetInternalPtr());
+        if (Component::Clone(c.GetInternalPtr(), suffix))
+        {
+            _scale = c->_scale;
+            _center = c->_center;
+            _position = c->_position;
+            _rotation = c->_rotation;
 
-        _scale = c->_scale;
-        _center = c->_center;
-        _position = c->_position;
-        _rotation = c->_rotation;
+            return true;
+        }
+
+        return false;
     }
 
     void CCollider::SetScale(const Vector3& scale)

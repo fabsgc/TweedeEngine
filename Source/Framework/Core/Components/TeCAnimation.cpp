@@ -519,20 +519,26 @@ namespace te
         // TODO animation script
     }
 
-    void CAnimation::Clone(const HComponent& c)
+    bool CAnimation::Clone(const HAnimation& c, const String& suffix)
     {
-        Clone(static_object_cast<CAnimation>(c));
-    }
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
 
-    void CAnimation::Clone(const HAnimation& c)
-    { 
-        Component::Clone(c.GetInternalPtr());
+        if (Component::Clone(c.GetInternalPtr(), suffix))
+        {
+            _defaultClip = c->_defaultClip.GetNewHandleFromExisting();
+            _primaryPlayingClip = c->_primaryPlayingClip.GetNewHandleFromExisting();
+            _wrapMode = c->_wrapMode;
+            _speed = c->_speed;
+            _enableCull = c->_enableCull;
+            _previewMode = c->_previewMode;
 
-        _defaultClip = c->_defaultClip.GetNewHandleFromExisting();
-        _primaryPlayingClip = c->_primaryPlayingClip.GetNewHandleFromExisting();
-        _wrapMode = c->_wrapMode;
-        _speed = c->_speed;
-        _enableCull = c->_enableCull;
-        _previewMode = c->_previewMode;
+            return true;
+        }
+
+        return false;
     }
 }

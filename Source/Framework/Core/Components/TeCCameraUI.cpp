@@ -248,28 +248,23 @@ namespace te
         InitLocalRotation();
     }
 
-    void CCameraUI::Clone(const HComponent& c)
+    bool CCameraUI::Clone(const HCameraUI& c, const String& suffix)
     {
-        Clone(static_object_cast<CCameraUI>(c));
-    }
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
 
-    void CCameraUI::Clone(const HCameraUI& c)
-    {
-        Component::Clone(c.GetInternalPtr());
+        if (Component::Clone(c.GetInternalPtr(), suffix))
+        {
+            _target = c->_target;
+            _localRotation = c->_localRotation;
+            _lastHideCursorState = c->_lastHideCursorState;
 
-        // TODO : Be careful here (I'm not sure it's a good idea to copy this component)
+            return true;
+        }
 
-        //_cameraInitialized = true;
-
-        //_target = c->_target;
-        //_camera = c->_camera;
-
-        _rotateBtn = c->_rotateBtn;
-        _moveBtn = c->_moveBtn;
-        _zoomBtn = c->_zoomBtn;
-
-        _horizontalAxis = c->_horizontalAxis;
-        _verticalAxis = c->_verticalAxis;
-        _scrollAxis = c->_scrollAxis;
+        return false;
     }
 }

@@ -19,7 +19,7 @@ namespace te
     {
     public:
         /** Each component has a type which is used to recognize and cast components */
-        static UINT32 GetComponentType()
+        static inline UINT32 GetComponentType()
         {
             return TypeID_Core::TID_Component;
         }
@@ -36,10 +36,8 @@ namespace te
         /**	Returns a handle to this object. */
         const HComponent& GetHandle() const { return _thisHandle; }
 
-        virtual void Initialize() 
-        {
-            OnInitialized();
-        }
+        /** */
+        virtual void Initialize();
 
         /** Called once per frame. Only called if the component is in Running state. */
         virtual void Update() { }
@@ -52,10 +50,7 @@ namespace te
          */
         virtual bool CalculateBounds(Bounds& bounds);
 
-        /**
-         * Checks if this and the provided component represent the same type.
-         *
-         */
+        /** Checks if this and the provided component represent the same type. */
         virtual bool TypeEquals(const Component& other);
 
         /**
@@ -66,21 +61,6 @@ namespace te
          *							until the end of the current frame (preferred option).
          */
         void Destroy(bool immediate = false);
-
-        /**
-         * If you want to create a copy of a component, first use SceneObject::AddComponent() then, use this method to
-         * properly copy all from "c" component
-         */
-        virtual void Clone(const HComponent& c) 
-        {
-            _name = c->GetName() + " copy";
-        }
-
-        /** @copydoc Component::Clone */
-        virtual void Clone(const SPtr<Component>& c)
-        {
-            _name = c->GetName() + " copy";
-        }
 
     public:
         /**
@@ -137,53 +117,50 @@ namespace te
 
     protected:
         Component(HSceneObject parent, UINT32 type);
-        virtual ~Component() = default;
+        virtual ~Component() = 0 { };
 
-        /** Called once when the component has been created. Called regardless of the state the component is in. */
-        virtual void OnCreated() 
-        {
-            OnComponentCreated(GetHandle());
-        }
+        /**
+         * If you want to create a copy of a component, first use SceneObject::AddComponent() then, use this method to
+         * properly copy all from "c" component
+         */
+        bool Clone(const HComponent& c, const String& suffix = "");
+
+        /** @copydoc Component::Clone */
+        bool Clone(const SPtr<Component>& c, const String& suffix = "");
+
+        /** 
+         * Called once when the component has been created. Called regardless of the state the component is in. 
+         */
+        virtual void OnCreated();
 
         /**
          * Called once when the component first leaves the Stopped state. This includes component creation if requirements
          * for leaving Stopped state are met, in which case it is called after onCreated.
          */
-        virtual void OnInitialized() 
-        {
-            OnComponentInitialized(GetHandle());
-        }
+        virtual void OnInitialized();
 
-        /**	Called once just before the component is destroyed. Called regardless of the state the component is in. */
-        virtual void OnDestroyed() 
-        {
-            OnComponentDestroyed(GetHandle());
-        }
+        /**	
+         * Called once just before the component is destroyed. Called regardless of the state the component is in. 
+         */
+        virtual void OnDestroyed();
 
         /**
          * Called every time a component switchs in Stopped state. This includes component creation if requirements
          * for leaving the Stopped state are met. When called during creation it is called after onInitialized.
          */
-        virtual void OnDisabled() 
-        {
-            OnComponentDisabled(GetHandle());
-        }
+        virtual void OnDisabled();
 
         /**
          * Called every time a component leaves the Stopped state. This includes component creation if requirements
          * for leaving the Stopped state are met. When called during creation it is called after onInitialized.
          */
-        virtual void OnEnabled() 
-        { 
-            OnComponentEnabled(GetHandle());
-        }
+        virtual void OnEnabled();
 
         /**
          * Called when the component's parent scene object has changed.
          * Also only called if necessary notify flags are set via SetNotifyFlags().
          */
-        virtual void OnTransformChanged(TransformChangedFlags flags) 
-        { }
+        virtual void OnTransformChanged(TransformChangedFlags flags) { }
 
         /** Checks whether the component wants to received the specified transform changed message. */
         bool SupportsNotify(TransformChangedFlags flags) const { return ( _notifyFlags & flags) != 0; }
@@ -214,9 +191,9 @@ namespace te
         friend class SceneObject;
 
         HComponent _thisHandle;
-        UINT32 _notifyFlags = TCF_Transform | TCF_Mobility | TCF_Parent;
+        UINT32 _notifyFlags;
         ComponentFlags _flags;
-        UINT32 _sceneManagerId = 0;
+        UINT32 _sceneManagerId;
 
         HSceneObject _parent;
 

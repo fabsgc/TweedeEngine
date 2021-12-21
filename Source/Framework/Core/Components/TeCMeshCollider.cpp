@@ -38,12 +38,23 @@ namespace te
         return _mesh.IsLoaded();
     }
 
-    void CMeshCollider::Clone(const HMeshCollider& c)
+    bool CMeshCollider::Clone(const HMeshCollider& c, const String& suffix)
     {
-        CCollider::Clone(static_object_cast<CCollider>(c));
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
 
-        _mesh = c->_mesh;
-        _collisionType = c->_collisionType;
+        if (CCollider::Clone(static_object_cast<CCollider>(c), suffix))
+        {
+            _mesh = c->_mesh;
+            _collisionType = c->_collisionType;
+
+            return true;
+        }
+
+        return false;
     }
 
     void CMeshCollider::SetCollisionType(PhysicsMeshType type)

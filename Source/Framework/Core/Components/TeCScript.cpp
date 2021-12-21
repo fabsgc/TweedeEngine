@@ -72,14 +72,20 @@ namespace te
         _internal->Update();
     }
 
-    void CScript::Clone(const HComponent& c)
+    bool CScript::Clone(const HScript& c, const String& suffix)
     {
-        Clone(static_object_cast<CScript>(c));
-    }
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
 
-    void CScript::Clone(const HScript& c)
-    {
-        Component::Clone(c.GetInternalPtr());
-        _internal = Script::Create(c->GetNativeScriptName(), SO());
+        if (Component::Clone(c.GetInternalPtr(), suffix))
+        {
+            _internal = Script::Create(c->GetNativeScriptName(), SO());
+            return true;
+        }
+
+        return false;
     }
 }

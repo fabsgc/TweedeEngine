@@ -36,10 +36,7 @@ namespace te
         static UINT32 GetComponentType() { return TypeID_Core::TID_CCameraUI; }
 
         /** @copydoc Component::Clone */
-        void Clone(const HComponent& c) override;
-
-        /** @copydoc Component::Clone */
-        void Clone(const HCameraUI& c);
+        bool Clone(const HCameraUI& c, const String& suffix = "");
 
     public:
         static const String ROTATE_BINDING;

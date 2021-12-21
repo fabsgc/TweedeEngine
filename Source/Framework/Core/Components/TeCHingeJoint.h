@@ -20,7 +20,7 @@ namespace te
         static UINT32 GetComponentType() { return TypeID_Core::TID_CHingeJoint; }
 
         /** @copydoc Component::Clone */
-        void Clone(const HHingeJoint& c);
+        bool Clone(const HHingeJoint& c, const String& suffix = "");
 
         /** @copydoc HingeJoint::SetSoftnessLimit */
         void SetSoftnessLimit(float softness);

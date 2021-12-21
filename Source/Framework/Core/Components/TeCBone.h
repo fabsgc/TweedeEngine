@@ -28,10 +28,7 @@ namespace te
         const String& GetBoneName() const { return _boneName; }
 
         /** @copydoc Component::Clone */
-        void Clone(const HComponent& c) override;
-
-        /** @copydoc Component::Clone */
-        void Clone(const HBone& c);
+        bool Clone(const HBone& c, const String& suffix = "");
 
         /** @copydoc Component::update */
         void Update() override { }

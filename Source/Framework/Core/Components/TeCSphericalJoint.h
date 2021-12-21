@@ -20,7 +20,7 @@ namespace te
         static UINT32 GetComponentType() { return TypeID_Core::TID_CSphericalJoint; }
 
         /** @copydoc Component::Clone */
-        void Clone(const HSphericalJoint& c);
+        bool Clone(const HSphericalJoint& c, const String& suffix = "");
 
     protected:
         friend class SceneObject;

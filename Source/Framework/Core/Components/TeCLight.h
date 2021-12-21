@@ -95,10 +95,7 @@ namespace te
         static UINT32 GetComponentType() { return TypeID_Core::TID_CLight; }
 
         /** @copydoc Component::Clone */
-        void Clone(const HComponent& c) override;
-
-        /** @copydoc Component::Clone */
-        void Clone(const HLight& c);
+        bool Clone(const HLight& c, const String& suffix = "");
 
         /* @copydoc Component::MarkDirty */
         virtual void MarkDirty() { _internal->_markCoreDirty(); }

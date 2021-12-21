@@ -15,9 +15,54 @@ namespace te
 
     Component::Component(HSceneObject parent, UINT32 type)
         : Serializable(type)
+        , _notifyFlags(TCF_Transform | TCF_Mobility | TCF_Parent)
+        , _flags(0)
+        , _sceneManagerId(0)
         , _parent(std::move(parent))
     {
         SetName("Component");
+    }
+
+    void Component::Initialize()
+    {
+        OnInitialized();
+    }
+
+    bool Component::Clone(const HComponent& c, const String& suffix)
+    {
+        _name = c->GetName() + " " + suffix;
+        return true;
+    }
+
+    bool Component::Clone(const SPtr<Component>& c, const String& suffix)
+    {
+        _name = c->GetName() + " " + suffix;
+        return true;
+    }
+
+    void Component::OnCreated()
+    {
+        OnComponentCreated(GetHandle());
+    }
+
+    void Component::OnInitialized()
+    {
+        OnComponentInitialized(GetHandle());
+    }
+
+    void Component::OnDestroyed()
+    {
+        OnComponentDestroyed(GetHandle());
+    }
+
+    void Component::OnDisabled()
+    {
+        OnComponentDisabled(GetHandle());
+    }
+
+    void Component::OnEnabled()
+    {
+        OnComponentEnabled(GetHandle());
     }
 
     void Component::SetSceneObject(HSceneObject& sceneObject)

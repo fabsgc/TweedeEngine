@@ -15,19 +15,13 @@ namespace te
     {
     public:
         CJoint(const HSceneObject& parent, UINT32 type);
-        virtual ~CJoint();
+        virtual ~CJoint() = 0 { }
 
         /** Return Component type */
         static UINT32 GetComponentType() { return TypeID_Core::TID_CJoint; }
 
         /** @copydoc Component::Initialize */
         virtual void Initialize() override;
-
-        /** @copydoc Component::Clone */
-        void Clone(const HComponent& c) override;
-
-        /** @copydoc Component::Clone */
-        void Clone(const HJoint& c);
 
         /** @copydoc Component::Update */
         void Update() override;
@@ -89,6 +83,9 @@ namespace te
         friend class CSoftBody;
         friend class CBody;
         using Component::DestroyInternal;
+
+        /** @copydoc Component::Clone */
+        bool Clone(const HJoint& c, const String& suffix = "");
 
         /** @copydoc Component::OnInitialized */
         virtual void OnInitialized() override;
