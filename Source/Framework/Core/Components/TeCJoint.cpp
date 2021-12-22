@@ -232,9 +232,6 @@ namespace te
         return _isBroken;
     }
 
-    void CJoint::OnInitialized()
-    { }
-
     void CJoint::OnDestroyed()
     {
         if (_bodies[(int)JointBody::Target] != nullptr)

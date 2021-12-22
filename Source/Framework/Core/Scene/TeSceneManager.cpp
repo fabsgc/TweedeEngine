@@ -88,10 +88,10 @@ namespace te
         GameObjectManager::Instance().DestroyQueuedObjects();
 
         HSceneObject newRoot = SceneObject::CreateInternal("SceneRoot");
-        _setRootNode(newRoot);
+        SetRootNode(newRoot);
     }
 
-    void SceneManager::_setRootNode(const HSceneObject& root)
+    void SceneManager::SetRootNode(const HSceneObject& root)
     {
         if (root == nullptr)
             return;

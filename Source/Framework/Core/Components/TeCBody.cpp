@@ -209,7 +209,7 @@ namespace te
     void CBody::SetLinkedSO(const HSceneObject& SO)
     {
         if (_internal != nullptr)
-            _internal->_setLinkedSO(SO);
+            _internal->SetLinkedSO(SO);
     }
 
     void CBody::CullDebug(bool cull)

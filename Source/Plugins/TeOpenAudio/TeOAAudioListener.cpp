@@ -20,11 +20,11 @@ namespace te
         AudioListener::SetTransform(transform);
 
         std::array<float, 6> orientation = GetOrientation();
-        auto& contexts = gOAAudio()._getContexts();
+        auto& contexts = gOAAudio().GetContexts();
 
         if (contexts.size() > 1) // If only one context is available it is guaranteed it is always active, so we can avoid setting it
         {
-            auto context = gOAAudio()._getContext(this);
+            auto context = gOAAudio().GetContext(this);
             alcMakeContextCurrent(context);
         }
 
@@ -36,10 +36,10 @@ namespace te
     {
         AudioListener::SetVelocity(velocity);
 
-        auto& contexts = gOAAudio()._getContexts();
+        auto& contexts = gOAAudio().GetContexts();
         if (contexts.size() > 1)
         {
-            auto context = gOAAudio()._getContext(this);
+            auto context = gOAAudio().GetContext(this);
             alcMakeContextCurrent(context);
         }
 
@@ -48,14 +48,14 @@ namespace te
 
     void OAAudioListener::Rebuild()
     {
-        auto contexts = gOAAudio()._getContexts();
+        auto contexts = gOAAudio().GetContexts();
 
         float globalVolume = gAudio().GetVolume();
         std::array<float, 6> orientation = GetOrientation();
 
         if (contexts.size() > 1)
         {
-            auto context = gOAAudio()._getContext(this);
+            auto context = gOAAudio().GetContext(this);
             alcMakeContextCurrent(context);
         }
 

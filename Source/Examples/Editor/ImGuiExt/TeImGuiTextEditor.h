@@ -339,7 +339,6 @@ namespace te
 
         typedef Vector<UndoRecord> UndoBuffer;
 
-        void ProcessInputs();
         void Colorize(int fromLine = 0, int vount = -1);
         void ColorizeRange(int fromLine = 0, int toLine = 0);
         void ColorizeInternal();

@@ -60,16 +60,16 @@ namespace te
         void UnregisterSource(OAAudioSource* source);
 
         /** Returns a list of all OpenAL contexts. Each listener has its own context. */
-        const Vector<ALCcontext*>& _getContexts() const { return _contexts; }
+        const Vector<ALCcontext*>& GetContexts() const { return _contexts; }
 
         /** Returns an OpenAL context assigned to the provided listener. */
-        ALCcontext* _getContext(const OAAudioListener* listener) const;
+        ALCcontext* GetContext(const OAAudioListener* listener) const;
 
         /**
          * Returns optimal format for the provided number of channels and bit depth. It is assumed the user has checked if
          * extensions providing these formats are actually available.
          */
-        INT32 _getOpenALBufferFormat(UINT32 numChannels, UINT32 bitDepth);
+        INT32 GetOpenALBufferFormat(UINT32 numChannels, UINT32 bitDepth);
 
         /**
          * Writes provided samples into the OpenAL buffer with the provided ID. If the provided format is not supported the

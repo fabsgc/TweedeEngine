@@ -78,7 +78,7 @@ namespace te
 
         if (Component::Clone(c.GetInternalPtr(), suffix))
         {
-            SPtr<Skybox> skybox = c->_getSkybox();
+            SPtr<Skybox> skybox = c->GetInternal();
             if (skybox)
             {
                 _internal->_brightness = skybox->_brightness;

@@ -153,7 +153,7 @@ namespace te
         CAudioSource();
 
     protected:
-        SPtr<AudioSource> _internal;
+        SPtr<AudioSource> _internal = nullptr;
         Vector3 _lastPosition = Vector3::ZERO;
         Vector3 _velocity = Vector3::ZERO;
 

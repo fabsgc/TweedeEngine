@@ -53,8 +53,9 @@ namespace te
         virtual AABox GetBoundingBox() const = 0;
 
         /**
-         * Applies new transform values retrieved from the most recent physics update (values resulting from physics
-         * simulation).
+         * In case you want to use kinematic objects, this method will allow you to move the body.
+         * Implementation depends on how works each physic engine
+         * ENGINE -> PHYSIC ENGINE
          */
         virtual void SetTransform(const Vector3& position, const Quaternion& rotation) = 0;
 
@@ -219,12 +220,10 @@ namespace te
 
         /**
          * Applies new transform values retrieved from the most recent physics update (values resulting from physics
-         * simulation).
+         * simulation). This method must only be called internally by the physic engine implementation
+         * PHYSIC ENGINE -> ENGINE
          */
         void _setTransform(const Vector3& position, const Quaternion& rotation);
-
-        /** In case this body is moved within the scene, we should need to update its _linkedSO */
-        void _setLinkedSO(const HSceneObject& SO);
 
         /** Returns the object containing common collider code. */
         FBody* GetInternal() const { return _internal; }
@@ -240,6 +239,9 @@ namespace te
          * high level physics objects from the low level ones returned by various queries and events.
          */
         void* GetOwner(PhysicsOwnerType type) const { return _owner.Type == type ? _owner.OwnerData : nullptr; }
+
+        /** In case this body is moved within the scene, we should need to update its _linkedSO */
+        void SetLinkedSO(const HSceneObject& SO);
 
     protected:
         Body(const HSceneObject& linkedSO, UINT32 type);

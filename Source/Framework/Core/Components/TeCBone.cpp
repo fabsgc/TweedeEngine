@@ -35,14 +35,6 @@ namespace te
             _parent->NotifyBoneChanged(static_object_cast<CBone>(GetHandle()));
     }
 
-    void CBone::Instantiate()
-    { }
-
-    void CBone::Initialize()
-    {
-        Component::Initialize();
-    }
-
     void CBone::OnInitialized()
     {
         UpdateParentAnimation();

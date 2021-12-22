@@ -313,12 +313,12 @@ namespace te
     {
         bool hasChanged = false;
         SPtr<CCamera> camera = std::static_pointer_cast<CCamera>(_selections.ClickedComponent);
-        ObjectMobility mobility = camera->_getCamera()->GetMobility();
+        ObjectMobility mobility = camera->GetInternal()->GetMobility();
         Transform transform = camera->GetSceneObject()->GetTransform();
 
         if (ShowTransform(transform, mobility))
         {
-            camera->_getCamera()->SetMobility(mobility);
+            camera->GetInternal()->SetMobility(mobility);
             camera->GetSceneObject()->SetLocalTransform(transform);
             hasChanged = true;
         }
@@ -363,26 +363,27 @@ namespace te
     bool WidgetProperties::ShowCLightProperties()
     {
         bool hasChanged = false;
-        SPtr<CLight> light = std::static_pointer_cast<CLight>(_selections.ClickedComponent);
-        ObjectMobility mobility = light->_getLight()->GetMobility();
-        Transform transform = light->GetSceneObject()->GetTransform();
+        SPtr<CLight> lightCO = std::static_pointer_cast<CLight>(_selections.ClickedComponent);
+        SPtr<Light> lightPtr = lightCO->GetInternal();
+        ObjectMobility mobility = lightPtr->GetMobility();
+        Transform transform = lightCO->GetSceneObject()->GetTransform();
 
         if (ShowTransform(transform, mobility))
         {
-            light->_getLight()->SetMobility(mobility);
-            light->GetSceneObject()->SetLocalTransform(transform);
+            lightPtr->SetMobility(mobility);
+            lightCO->GetSceneObject()->SetLocalTransform(transform);
             hasChanged = true;
         }
 
         if (ImGui::CollapsingHeader("Light", ImGuiTreeNodeFlags_DefaultOpen))
         {
-            if (ShowLight(light->_getLight()))
+            if (ShowLight(lightPtr))
                 hasChanged = true;
         }
 
         if (ImGui::CollapsingHeader("Shadow", ImGuiTreeNodeFlags_DefaultOpen))
         {
-            if (ShowLightShadow(light->_getLight()))
+            if (ShowLightShadow(lightPtr))
                 hasChanged = true;
         }
 
@@ -392,28 +393,29 @@ namespace te
     bool WidgetProperties::ShowCRenderableProperties()
     {
         bool hasChanged = false;
-        SPtr<CRenderable> renderable = std::static_pointer_cast<CRenderable>(_selections.ClickedComponent);
-        ObjectMobility mobility = renderable->GetInternal()->GetMobility();
-        Transform transform = renderable->GetSceneObject()->GetTransform();
+        SPtr<CRenderable> renderableCO = std::static_pointer_cast<CRenderable>(_selections.ClickedComponent);
+        SPtr<Renderable> renderablePtr = renderableCO->GetInternal();
+        ObjectMobility mobility = renderablePtr->GetMobility();
+        Transform transform = renderableCO->GetSceneObject()->GetTransform();
 
         if (ShowTransform(transform, mobility))
         {
-            renderable->GetInternal()->SetMobility(mobility);
-            renderable->GetSceneObject()->SetLocalTransform(transform);
+            renderablePtr->SetMobility(mobility);
+            renderableCO->GetSceneObject()->SetLocalTransform(transform);
             hasChanged = true;
         }
 
         if (ImGui::CollapsingHeader("Properties", ImGuiTreeNodeFlags_DefaultOpen))
         {
-            if (ShowRenderableProperties(renderable->GetInternal()))
+            if (ShowRenderableProperties(renderablePtr))
                 hasChanged = true;
         }
 
-        if (renderable->GetMesh())
+        if (renderablePtr->GetMesh())
         {
             if (ImGui::CollapsingHeader("SubMeshes", ImGuiTreeNodeFlags_DefaultOpen))
             {
-                if (ShowRenderableSubMeshes(renderable->GetInternal()))
+                if (ShowRenderableSubMeshes(renderablePtr))
                     hasChanged = true;
             }
         }
@@ -676,18 +678,18 @@ namespace te
     {
         bool hasChanged = false;
         SPtr<CSkybox> skybox = std::static_pointer_cast<CSkybox>(_selections.ClickedComponent);
-        ObjectMobility mobility = skybox->_getSkybox()->GetMobility();
-        Transform transform = skybox->_getSkybox()->GetTransform();
+        ObjectMobility mobility = skybox->GetInternal()->GetMobility();
+        Transform transform = skybox->GetInternal()->GetTransform();
 
         if (ImGui::CollapsingHeader("Skybox", ImGuiTreeNodeFlags_DefaultOpen))
         {
-            if (ShowSkybox(skybox->_getSkybox()))
+            if (ShowSkybox(skybox->GetInternal()))
                 hasChanged = true;
         }
 
         if (ShowTransform(transform, mobility, true))
         {
-            skybox->_getSkybox()->SetMobility(mobility);
+            skybox->GetInternal()->SetMobility(mobility);
             hasChanged = true;
         }
 

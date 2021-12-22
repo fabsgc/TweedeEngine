@@ -170,7 +170,7 @@ namespace te
         _sources.erase(source);
     }
 
-    ALCcontext* OAAudio::_getContext(const OAAudioListener* listener) const
+    ALCcontext* OAAudio::GetContext(const OAAudioListener* listener) const
     {
         if (_listeners.size() > 0)
         {

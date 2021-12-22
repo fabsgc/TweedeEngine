@@ -98,7 +98,7 @@ namespace te
 
         if (Component::Clone(c.GetInternalPtr(), suffix))
         {
-            SPtr<Light> light = c->_getLight();
+            SPtr<Light> light = c->GetInternal();
             if (light)
             {
                 _internal->_type = light->_type;

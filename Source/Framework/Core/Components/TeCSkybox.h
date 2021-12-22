@@ -51,7 +51,7 @@ namespace te
         float GetBrightness() const { return _internal->GetBrightness(); }
 
         /**	Returns the skybox that this component wraps. */
-        SPtr<Skybox> _getSkybox() const { return _internal; }
+        SPtr<Skybox> GetInternal() const { return _internal; }
 
         /* @copydoc Component::MarkDirty */
         virtual void MarkDirty() { _internal->_markCoreDirty(); }

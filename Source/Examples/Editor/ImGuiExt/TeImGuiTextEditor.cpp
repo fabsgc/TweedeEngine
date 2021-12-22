@@ -1334,9 +1334,6 @@ namespace te
         return result;
     }
 
-    void ImGuiTextEditor::ProcessInputs()
-    { }
-
     void ImGuiTextEditor::Colorize(int fromLine, int lines)
     {
         int toLine = lines == -1 ? (int)_lines.size() : std::min((int)_lines.size(), fromLine + lines);

@@ -395,7 +395,7 @@ namespace te
                 hasChanged = true;
                 camera->GetViewport()->SetClearColorValue(Color(color));
                 // We need a more violent way to refresh camera (if skybox is null)
-                camera->_getCamera()->MarkCoreDirty();
+                camera->GetInternal()->MarkCoreDirty();
             }
         }
 

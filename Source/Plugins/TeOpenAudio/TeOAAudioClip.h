@@ -28,7 +28,7 @@ namespace te
         void GetSamples(UINT8* samples, UINT32 offset, UINT32 count) const;
 
         /** Returns the internal OpenAL buffer. Only valid if the audio clip was created without AudioReadMode::Stream. */
-        UINT32 _getOpenALBuffer() const { return _bufferId; }
+        UINT32 GetOpenALBuffer() const { return _bufferId; }
 
     protected:
         /** @copydoc Resource::Initialize */

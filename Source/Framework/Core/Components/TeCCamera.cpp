@@ -95,7 +95,7 @@ namespace te
 
         if (Component::Clone(c.GetInternalPtr(), suffix))
         {
-            SPtr<Camera> camera = c->_getCamera();
+            SPtr<Camera> camera = c->GetInternal();
             if(camera)
             {
                 _internal->_transform = camera->_transform;

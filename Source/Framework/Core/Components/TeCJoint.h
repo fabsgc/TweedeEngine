@@ -89,9 +89,6 @@ namespace te
         /** @copydoc Component::Clone */
         bool Clone(const HJoint& c, const String& suffix = "");
 
-        /** @copydoc Component::OnInitialized */
-        virtual void OnInitialized() override;
-
         /** @copydoc Component::OnDestroyed */
         virtual void OnDestroyed() override;
 

@@ -191,7 +191,7 @@ namespace te
         bool GetActive() const { return _internal->GetActive(); }
 
         /** Returns the internal camera that is used for majority of operations by this component. */
-        SPtr<Camera> _getCamera() const { UpdateView(); return _internal; }
+        SPtr<Camera> GetInternal() const { UpdateView(); return _internal; }
 
         /* @copydoc Component::MarkDirty */
         virtual void MarkDirty() { _internal->_markCoreDirty(); }

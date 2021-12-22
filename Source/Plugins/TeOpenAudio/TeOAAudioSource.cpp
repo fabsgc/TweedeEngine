@@ -23,7 +23,7 @@ namespace te
     {
         AudioSource::SetTransform(transform);
 
-        auto& contexts = gOAAudio()._getContexts();
+        auto& contexts = gOAAudio().GetContexts();
         UINT32 numContexts = (UINT32)contexts.size();
         for (UINT32 i = 0; i < numContexts; i++)
         {
@@ -54,7 +54,7 @@ namespace te
     {
         AudioSource::SetVelocity(velocity);
 
-        auto& contexts = gOAAudio()._getContexts();
+        auto& contexts = gOAAudio().GetContexts();
         UINT32 numContexts = (UINT32)contexts.size();
         for (UINT32 i = 0; i < numContexts; i++)
         {
@@ -72,7 +72,7 @@ namespace te
     {
         AudioSource::SetVolume(volume);
 
-        auto& contexts = gOAAudio()._getContexts();
+        auto& contexts = gOAAudio().GetContexts();
         UINT32 numContexts = (UINT32)contexts.size();
         for (UINT32 i = 0; i < numContexts; i++)
         {
@@ -87,7 +87,7 @@ namespace te
     {
         AudioSource::SetPitch(pitch);
 
-        auto& contexts = gOAAudio()._getContexts();
+        auto& contexts = gOAAudio().GetContexts();
         UINT32 numContexts = (UINT32)contexts.size();
         for (UINT32 i = 0; i < numContexts; i++)
         {
@@ -106,7 +106,7 @@ namespace te
         if (RequiresStreaming())
             loop = false;
 
-        auto& contexts = gOAAudio()._getContexts();
+        auto& contexts = gOAAudio().GetContexts();
         UINT32 numContexts = (UINT32)contexts.size();
         for (UINT32 i = 0; i < numContexts; i++)
         {
@@ -126,7 +126,7 @@ namespace te
     {
         AudioSource::SetMinDistance(distance);
 
-        auto& contexts = gOAAudio()._getContexts();
+        auto& contexts = gOAAudio().GetContexts();
         UINT32 numContexts = (UINT32)contexts.size();
         for (UINT32 i = 0; i < numContexts; i++)
         {
@@ -141,7 +141,7 @@ namespace te
     {
         AudioSource::SetAttenuation(attenuation);
 
-        auto& contexts = gOAAudio()._getContexts();
+        auto& contexts = gOAAudio().GetContexts();
         UINT32 numContexts = (UINT32)contexts.size();
         for (UINT32 i = 0; i < numContexts; i++)
         {
@@ -181,7 +181,7 @@ namespace te
             }
         }
 
-        auto& contexts = gOAAudio()._getContexts();
+        auto& contexts = gOAAudio().GetContexts();
         UINT32 numContexts = (UINT32)contexts.size();
         for (UINT32 i = 0; i < numContexts; i++)
         {
@@ -202,7 +202,7 @@ namespace te
     {
         Lock lock(_mutex);
 
-        auto& contexts = gOAAudio()._getContexts();
+        auto& contexts = gOAAudio().GetContexts();
 
         if (contexts.size() > 1)
             alcMakeContextCurrent(contexts[0]);
@@ -245,7 +245,7 @@ namespace te
             }
         }
 
-        auto& contexts = gOAAudio()._getContexts();
+        auto& contexts = gOAAudio().GetContexts();
         UINT32 numContexts = (UINT32)contexts.size();
         for (UINT32 i = 0; i < numContexts; i++)
         {
@@ -265,7 +265,7 @@ namespace te
 
     void OAAudioSource::Pause()
     {
-        auto& contexts = gOAAudio()._getContexts();
+        auto& contexts = gOAAudio().GetContexts();
         UINT32 numContexts = (UINT32)contexts.size();
         for (UINT32 i = 0; i < numContexts; i++)
         {
@@ -278,7 +278,7 @@ namespace te
 
     void OAAudioSource::Stop()
     { 
-        auto& contexts = gOAAudio()._getContexts();
+        auto& contexts = gOAAudio().GetContexts();
         UINT32 numContexts = (UINT32)contexts.size();
         for (UINT32 i = 0; i < numContexts; i++)
         {
@@ -324,7 +324,7 @@ namespace te
         _savedTime = GetTime();
         Stop();
 
-        auto& contexts = gOAAudio()._getContexts();
+        auto& contexts = gOAAudio().GetContexts();
         UINT32 numContexts = (UINT32)contexts.size();
 
         Lock lock(_mutex);
@@ -342,7 +342,7 @@ namespace te
 
     void OAAudioSource::Rebuild()
     {
-        auto& contexts = gOAAudio()._getContexts();
+        auto& contexts = gOAAudio().GetContexts();
         UINT32 numContexts = (UINT32)contexts.size();
 
         {
@@ -434,7 +434,7 @@ namespace te
 
         // Note: It is safe to access contexts here only because it is guaranteed by the OAAudio manager that it will always
         // stop all streaming before changing contexts. Otherwise a mutex lock would be needed for every context access.
-        auto& contexts = gOAAudio()._getContexts();
+        auto& contexts = gOAAudio().GetContexts();
         UINT32 numContexts = (UINT32)contexts.size();
         for (UINT32 i = 0; i < numContexts; i++)
         {
@@ -534,7 +534,7 @@ namespace te
         _isStreaming = false;
         gOAAudio().StopStreaming(this);
 
-        auto& contexts = gOAAudio()._getContexts();
+        auto& contexts = gOAAudio().GetContexts();
         UINT32 numContexts = (UINT32)contexts.size();
         for (UINT32 i = 0; i < numContexts; i++)
         {
@@ -563,7 +563,7 @@ namespace te
         {
             if (pause)
             {
-                auto& contexts = gOAAudio()._getContexts();
+                auto& contexts = gOAAudio().GetContexts();
                 UINT32 numContexts = (UINT32)contexts.size();
                 for (UINT32 i = 0; i < numContexts; i++)
                 {
@@ -634,7 +634,7 @@ namespace te
 
     void OAAudioSource::ApplyClip()
     {
-        auto& contexts = gOAAudio()._getContexts();
+        auto& contexts = gOAAudio().GetContexts();
         UINT32 numContexts = (UINT32)contexts.size();
         for (UINT32 i = 0; i < numContexts; i++)
         {

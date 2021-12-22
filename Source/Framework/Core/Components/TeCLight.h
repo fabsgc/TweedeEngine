@@ -94,7 +94,7 @@ namespace te
         bool GetActive() const { return _internal->GetActive(); }
 
         /** Returns the light that this component wraps. */
-        SPtr<Light> _getLight() const { return _internal; }
+        SPtr<Light> GetInternal() const { return _internal; }
 
         /* @copydoc Component::MarkDirty */
         virtual void MarkDirty() { _internal->_markCoreDirty(); }

@@ -209,7 +209,7 @@ namespace te
 
         if (_physicsDirty && _previewViewportCamera == _viewportCamera) // only for default camera
         {
-            gPhysics().DrawDebug(_previewViewportCamera->_getCamera(), _previewViewportCamera->GetViewport()->GetTarget());
+            gPhysics().DrawDebug(_previewViewportCamera->GetInternal(), _previewViewportCamera->GetViewport()->GetTarget());
         }
 
         _hudDirty = false;
@@ -1202,7 +1202,7 @@ namespace te
 
         // LOAD MESH AND TEXTURES RESOURCES
         // ######################################################
-        //_loadedMeshCube = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Primitives/cube.obj", meshImportOptions)->Entries[0].Res);
+        _loadedMeshCube = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Primitives/cube.obj", meshImportOptions)->Entries[0].Res);
         _loadedMeshPlane = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Primitives/plane.obj", meshImportOptions)->Entries[0].Res);
         _loadedSkyboxTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_day_medium.png", textureCubeMapImportOptions);
         _loadedSkyboxIrradianceTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_day_irradiance_small.png", textureCubeMapImportOptions);

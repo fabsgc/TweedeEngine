@@ -23,9 +23,6 @@ namespace te
         /** @copydoc Component::Clone */
         bool Clone(const HBone& c, const String& suffix = "");
 
-        /** @copydoc Component::Initialize */
-        void Initialize() override;
-
         /** Determines the name of the bone the component is referencing. */
         void SetBoneName(const String& name);
 
@@ -52,9 +49,6 @@ namespace te
 
         /** Attempts to find the parent Animation component and registers itself with it. */
         void UpdateParentAnimation();
-
-        /** @copydoc Component::Instantiate */
-        void Instantiate() override;
 
         /** @copydoc Component::OnInitialized */
         void OnInitialized() override;

@@ -140,7 +140,7 @@ namespace te
         void SetMainRenderTarget(const SPtr<RenderTarget>& rt);
 
         /** Changes the root scene object. Any persistent objects will remain in the scene, now parented to the new root. */
-        void _setRootNode(const HSceneObject& root);
+        void SetRootNode(const HSceneObject& root);
 
         /**
          * Binds a scene actor with a scene object. Every frame the scene object's transform will be monitored for
