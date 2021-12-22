@@ -10,7 +10,7 @@ namespace te
         , _flags(BodyFlag::None)
         , _linkedSO(linkedSO)
     { 
-        TE_ASSERT_ERROR(linkedSO.Empty(), "You try to link a body to a SceneObject using an invalid handle");
+        TE_ASSERT_ERROR(!linkedSO.Empty(), "You try to link a body to a SceneObject using an invalid handle");
     }
 
     bool Body::RayCast(const SPtr<PhysicsScene>& physicsScene, const Ray& ray, PhysicsQueryHit& hit, float maxDist) const
@@ -55,7 +55,7 @@ namespace te
 
     void Body::SetLinkedSO(const HSceneObject& SO)
     {
-        TE_ASSERT_ERROR(SO.Empty(), "You try to link a body to a SceneObject using an invalid handle");
+        TE_ASSERT_ERROR(!SO.Empty(), "You try to link a body to a SceneObject using an invalid handle");
         _linkedSO = SO;
     }
 }

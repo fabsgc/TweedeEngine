@@ -398,7 +398,7 @@ namespace te
                     if (_audioClip.IsLoaded())
                     {
                         OAAudioClip* oaClip = static_cast<OAAudioClip*>(_audioClip.Get());
-                        oaBuffer = oaClip->_getOpenALBuffer();
+                        oaBuffer = oaClip->GetOpenALBuffer();
                     }
 
                     alSourcei(_sourceIDs[i], AL_BUFFER, oaBuffer);
@@ -649,7 +649,7 @@ namespace te
                 if (_audioClip.IsLoaded())
                 {
                     OAAudioClip* oaClip = static_cast<OAAudioClip*>(_audioClip.Get());
-                    oaBuffer = oaClip->_getOpenALBuffer();
+                    oaBuffer = oaClip->GetOpenALBuffer();
                 }
 
                 alSourcei(_sourceIDs[i], AL_BUFFER, oaBuffer);

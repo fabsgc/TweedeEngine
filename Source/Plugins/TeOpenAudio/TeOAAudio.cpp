@@ -190,7 +190,7 @@ namespace te
         return nullptr;
     }
 
-    ALenum OAAudio::_getOpenALBufferFormat(UINT32 numChannels, UINT32 bitDepth)
+    ALenum OAAudio::GetOpenALBufferFormat(UINT32 numChannels, UINT32 bitDepth)
     {
         switch (bitDepth)
         {
@@ -258,7 +258,7 @@ namespace te
 
                     AudioUtility::ConvertToFloat(samples, info.BitDepth, sampleBufferFloat, info.NumSamples);
 
-                    ALenum format = _getOpenALBufferFormat(info.NumChannels, info.BitDepth);
+                    ALenum format = GetOpenALBufferFormat(info.NumChannels, info.BitDepth);
                     alBufferData(bufferId, format, sampleBufferFloat, bufferSize, info.SampleRate);
 
                     te_delete(sampleBufferFloat);
@@ -272,7 +272,7 @@ namespace te
 
                     AudioUtility::ConvertBitDepth(samples, info.BitDepth, sampleBuffer16, 16, info.NumSamples);
 
-                    ALenum format = _getOpenALBufferFormat(info.NumChannels, 16);
+                    ALenum format = GetOpenALBufferFormat(info.NumChannels, 16);
                     alBufferData(bufferId, format, sampleBuffer16, bufferSize, info.SampleRate);
 
                     te_delete(sampleBuffer16);
@@ -287,14 +287,14 @@ namespace te
                 for (UINT32 i = 0; i < info.NumSamples; i++)
                     sampleBuffer[i] = ((INT8*)samples)[i] + 128;
 
-                ALenum format = _getOpenALBufferFormat(info.NumChannels, 16);
+                ALenum format = GetOpenALBufferFormat(info.NumChannels, 16);
                 alBufferData(bufferId, format, sampleBuffer, bufferSize, info.SampleRate);
 
                 te_delete(sampleBuffer);
             }
             else
             {
-                ALenum format = _getOpenALBufferFormat(info.NumChannels, info.BitDepth);
+                ALenum format = GetOpenALBufferFormat(info.NumChannels, info.BitDepth);
                 alBufferData(bufferId, format, samples, info.NumSamples * (info.BitDepth / 8), info.SampleRate);
             }
         }
@@ -309,7 +309,7 @@ namespace te
 
                 AudioUtility::ConvertBitDepth(samples, info.BitDepth, sampleBuffer32, 32, info.NumSamples);
 
-                ALenum format = _getOpenALBufferFormat(info.NumChannels, 32);
+                ALenum format = GetOpenALBufferFormat(info.NumChannels, 32);
                 alBufferData(bufferId, format, sampleBuffer32, bufferSize, info.SampleRate);
 
                 te_delete(sampleBuffer32);
@@ -323,14 +323,14 @@ namespace te
                 for (UINT32 i = 0; i < info.NumSamples; i++)
                     sampleBuffer[i] = ((INT8*)samples)[i] + 128;
 
-                ALenum format = _getOpenALBufferFormat(info.NumChannels, 16);
+                ALenum format = GetOpenALBufferFormat(info.NumChannels, 16);
                 alBufferData(bufferId, format, sampleBuffer, bufferSize, info.SampleRate);
 
                 te_delete(sampleBuffer);
             }
             else
             {
-                ALenum format = _getOpenALBufferFormat(info.NumChannels, info.BitDepth);
+                ALenum format = GetOpenALBufferFormat(info.NumChannels, info.BitDepth);
                 alBufferData(bufferId, format, samples, info.NumSamples * (info.BitDepth / 8), info.SampleRate);
             }
         }
