@@ -33,12 +33,18 @@ namespace te
 
     bool Component::Clone(const HComponent& c, const String& suffix)
     {
+        if (c.Empty())
+            return false;
+
         _name = c->GetName() + " " + suffix;
         return true;
     }
 
     bool Component::Clone(const SPtr<Component>& c, const String& suffix)
     {
+        if (!c)
+            return true;
+
         _name = c->GetName() + " " + suffix;
         return true;
     }

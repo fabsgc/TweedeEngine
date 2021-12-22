@@ -11,8 +11,14 @@ namespace te
     class TE_CORE_EXPORT CCameraUI : public Component
     {
     public:
-        CCameraUI(const HSceneObject& parent);
-        virtual ~CCameraUI() = default;
+        /** Returns Component type */
+        static UINT32 GetComponentType() { return TypeID_Core::TID_CCameraUI; }
+
+        /** @copydoc Component::Clone */
+        bool Clone(const HComponent& c, const String& suffix = "") override;
+
+        /** @copydoc Component::Clone */
+        bool Clone(const HCameraUI& c, const String& suffix = "");
 
         /** Triggered once per frame. Allows the component to handle input and move. */
         void Update() override;
@@ -31,12 +37,6 @@ namespace te
 
         /** If linked camera has been modified during frame, return true */
         bool NeedsRedraw() const { return _needsRedraw; }
-
-        /** Returns Component type */
-        static UINT32 GetComponentType() { return TypeID_Core::TID_CCameraUI; }
-
-        /** @copydoc Component::Clone */
-        bool Clone(const HCameraUI& c, const String& suffix = "");
 
     public:
         static const String ROTATE_BINDING;
@@ -58,6 +58,11 @@ namespace te
         static const float MAX_ROTATION;
 
     protected:
+        friend class SceneObject;
+
+        CCameraUI();
+        CCameraUI(const HSceneObject& parent);
+
         void InitDistanceToTarget();
         void InitLocalRotation();
 

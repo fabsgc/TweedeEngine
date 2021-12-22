@@ -17,11 +17,19 @@ namespace te
     class TE_CORE_EXPORT CScript : public Component
     {
     public:
-        CScript(const HSceneObject& parent);
-        virtual ~CScript();
+        ~CScript();
 
-        /** @copydoc Component::Initialize */
-        void Initialize() override;
+        /** Return Component type */
+        static UINT32 GetComponentType() { return TypeID_Core::TID_CScript; }
+
+        /** @copydoc Component::Clone */
+        bool Clone(const HComponent& c, const String& suffix = "") override;
+
+        /** @copydoc Component::Clone */
+        bool Clone(const HScript& c, const String& suffix = "");
+
+        /** @copydoc Component::Update */
+        void Update() override;
 
         /** @copydoc Script::SetNativeScript */
         void SetNativeScript(const String& name, const String& path = "") { _internal->SetNativeScript(name, SO(), path); }
@@ -41,17 +49,11 @@ namespace te
         /** Returns the internal renderable that is used for majority of operations by this component. */
         SPtr<Script> GetInternal() const { return _internal; }
 
-        /** Return Component type */
-        static UINT32 GetComponentType() { return TypeID_Core::TID_CScript; }
-
-        /** @copydoc Component::Clone */
-        bool Clone(const HScript& c, const String& suffix = "");
-
-    protected:
-        mutable SPtr<Script> _internal;
-
     protected:
         friend class SceneObject;
+
+        CScript();
+        CScript(const HSceneObject& parent);
 
         /** @copydoc Component::Instantiate */
         void Instantiate() override;
@@ -67,12 +69,8 @@ namespace te
 
         /** @copydoc Component::OnDestroyed */
         void OnDestroyed() override;
-    
-    public:
-        /** @copydoc Component::Update */
-        void Update() override;
 
     protected:
-        CScript();
+        mutable SPtr<Script> _internal;
     };
 }

@@ -20,13 +20,8 @@ namespace te
 
     CRenderable::~CRenderable()
     {
-        if (!_internal->IsDestroyed())
+        if (_internal && !_internal->IsDestroyed())
             _internal->Destroy();
-    }
-
-    void CRenderable::Initialize()
-    {
-        Component::Initialize();
     }
 
     void CRenderable::SetMaterials(const Vector<HMaterial>& materials)
@@ -125,6 +120,17 @@ namespace te
         gSceneManager()._unbindActor(_internal);
         Component::OnDestroyed();
         _internal->Destroy();
+    }
+
+    bool CRenderable::Clone(const HComponent& c, const String& suffix)
+    {
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
+
+        return Clone(static_object_cast<CRenderable>(c), suffix);
     }
 
     bool CRenderable::Clone(const HRenderable& c, const String& suffix)

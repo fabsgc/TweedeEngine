@@ -16,7 +16,6 @@ namespace te
     class TE_CORE_EXPORT CCollider : public Component
     {
     public:
-        CCollider(const HSceneObject& parent, UINT32 type);
         virtual ~CCollider() = 0;
 
         /** Return Component type */
@@ -24,9 +23,6 @@ namespace te
 
         /** @copydoc Component::Initialize */
         virtual void Initialize() override;
-
-        /** @copydoc Component::update */
-        void Update() override { }
 
         /** @copydoc Collider::SetScale */
         void SetScale(const Vector3& scale);
@@ -65,11 +61,11 @@ namespace te
         friend class CSoftBody;
         using Component::DestroyInternal;
 
+        CCollider(UINT32 type);
+        CCollider(const HSceneObject& parent, UINT32 type);
+
         /** @copydoc Component::Clone */
         bool Clone(const HCollider& c, const String& suffix = "");
-
-        /** @copydoc Component::OnInitialized */
-        void OnInitialized() override;
 
         /** @copydoc Component::OnDestroyed */
         void OnDestroyed() override;
@@ -109,10 +105,6 @@ namespace te
 
         /** Searches the parent scene object hierarchy to find a parent Rigidbody component. */
         void UpdateParentBody();
-
-    protected:
-        friend class CBody;
-        CCollider(UINT32 type);
 
     protected:
         SPtr<Collider> _internal;

@@ -14,10 +14,11 @@ namespace te
     class TE_CORE_EXPORT CConeCollider : public CCollider
     {
     public:
-        CConeCollider(const HSceneObject& parent);
-
         /** Return Component type */
         static UINT32 GetComponentType() { return TypeID_Core::TID_CConeCollider; }
+
+        /** @copydoc Component::Clone */
+        bool Clone(const HComponent& c, const String& suffix = "") override;
 
         /** @copydoc Component::Clone */
         bool Clone(const HConeCollider& c, const String& suffix = "");
@@ -37,6 +38,9 @@ namespace te
     protected:
         friend class SceneObject;
 
+        CConeCollider(); // Serialization only
+        CConeCollider(const HSceneObject& parent);
+
         /** @copydoc CCollider::CreateInternal */
         SPtr<Collider> CreateInternal() override;
 
@@ -45,9 +49,6 @@ namespace te
 
         /**	Returns the cone collider that this component wraps. */
         ConeCollider* GetInternal() const { return static_cast<ConeCollider*>(_internal.get()); }
-
-    protected:
-        CConeCollider(); // Serialization only
 
     protected:
         float _radius = 1.0f;

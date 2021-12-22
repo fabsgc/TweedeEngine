@@ -77,6 +77,17 @@ namespace te
         _internal->Destroy();
     }
 
+    bool CLight::Clone(const HComponent& c, const String& suffix)
+    {
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
+
+        return Clone(static_object_cast<CLight>(c), suffix);
+    }
+
     bool CLight::Clone(const HLight& c, const String& suffix)
     {
         if (c.Empty())

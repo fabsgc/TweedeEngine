@@ -11,7 +11,7 @@ namespace te
     /**
      * Components represent primary logic elements in the scene. They are attached to scene objects.
      *
-     * You should implement some or all of Update/OnCreated/OnInitialized/OnEnabled/OnDisabled/
+     * You should implement some or all of Update/OnCreated/OnInitialized/OnEnabled/OnDisabled/OnTransformChanged/Instantiate/Clone
      * OnTransformChanged/onDestroyed methods to implement the relevant component logic. Avoid putting logic in constructors
      * or destructors.
      **/
@@ -123,7 +123,7 @@ namespace te
          * If you want to create a copy of a component, first use SceneObject::AddComponent() then, use this method to
          * properly copy all from "c" component
          */
-        bool Clone(const HComponent& c, const String& suffix = "");
+        virtual bool Clone(const HComponent& c, const String& suffix = "");
 
         /** @copydoc Component::Clone */
         bool Clone(const SPtr<Component>& c, const String& suffix = "");

@@ -23,18 +23,13 @@ namespace te
 
     CSkybox::~CSkybox()
     {
-        if (!_internal->IsDestroyed())
+        if (_internal && !_internal->IsDestroyed())
             _internal->Destroy();
     }
 
     void CSkybox::Instantiate()
     {
         _internal = Skybox::Create();
-    }
-
-    void CSkybox::Initialize()
-    {
-        Component::Initialize();
     }
 
     void CSkybox::OnInitialized()
@@ -60,6 +55,17 @@ namespace te
         gSceneManager()._unbindActor(_internal);
         Component::OnDestroyed();
         _internal->Destroy();
+    }
+
+    bool CSkybox::Clone(const HComponent& c, const String& suffix)
+    {
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
+
+        return Clone(static_object_cast<CSkybox>(c), suffix);
     }
 
     bool CSkybox::Clone(const HSkybox& c, const String& suffix)

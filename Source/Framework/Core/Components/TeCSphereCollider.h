@@ -14,10 +14,13 @@ namespace te
     class TE_CORE_EXPORT CSphereCollider : public CCollider
     {
     public:
-        CSphereCollider(const HSceneObject& parent, float radius = 1.0f);
+        
 
         /** Return Component type */
         static UINT32 GetComponentType() { return TypeID_Core::TID_CSphereCollider; }
+
+        /** @copydoc Component::Clone */
+        bool Clone(const HComponent& c, const String& suffix = "") override;
 
         /** @copydoc Component::Clone */
         bool Clone(const HSphereCollider& c, const String& suffix = "");
@@ -31,6 +34,9 @@ namespace te
     protected:
         friend class SceneObject;
 
+        CSphereCollider(); // Serialization only
+        CSphereCollider(const HSceneObject& parent, float radius = 1.0f);
+
         /** @copydoc CCollider::CreateInternal */
         SPtr<Collider> CreateInternal() override;
 
@@ -39,9 +45,6 @@ namespace te
 
         /**	Returns the box collider that this component wraps. */
         SphereCollider* GetInternal() const { return static_cast<SphereCollider*>(_internal.get()); }
-
-    protected:
-        CSphereCollider(); // Serialization only
 
     protected:
         float _radius = 1.0f;

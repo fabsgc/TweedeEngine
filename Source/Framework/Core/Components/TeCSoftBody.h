@@ -16,11 +16,20 @@ namespace te
     class TE_CORE_EXPORT CSoftBody : public CBody
     {
     public:
-        CSoftBody(const HSceneObject& parent);
-        ~CSoftBody();
-
         /** Return Component type */
         static UINT32 GetComponentType() { return TypeID_Core::TID_CSoftBody; }
+
+        /** @copydoc Component::Clone */
+        bool Clone(const HComponent& c, const String& suffix = "") override;
+
+        /** @copydoc Component::Clone */
+        bool Clone(const HSoftBody& c, const String& suffix = "");
+
+        /** @copydoc Component::Initialize */
+        void Initialize() override;
+
+        /** @copydoc Component::Update */
+        void Update() override;
 
         /** @copydoc SoftBody::SetMesh */
         void SetMesh(const HPhysicsMesh& mesh);
@@ -34,15 +43,6 @@ namespace te
         /** @copydoc SoftBody::SetScale */
         const Vector3& GetScale() const { return _scale; }
 
-        /** @copydoc Component::Initialize */
-        void Initialize() override;
-
-        /** @copydoc Component::Clone */
-        bool Clone(const HSoftBody& c, const String& suffix = "");
-
-        /** @copydoc Component::Update */
-        void Update() override;
-
         /** Returns the SoftBody implementation wrapped by this component. */
         Body* GetInternal() const override { return (SoftBody*)_internal.get(); }
 
@@ -50,8 +50,8 @@ namespace te
         friend class SceneObject;
         friend class CCollider;
 
-        /** @copydoc Component::OnInitialized */
-        void OnInitialized() override;
+        CSoftBody(); // Serialization only
+        CSoftBody(const HSceneObject& parent);
 
         /** @copydoc Component::OnDestroyed */
         void OnDestroyed() override;
@@ -73,9 +73,6 @@ namespace te
 
         /** Body::ProcessCollisionData */
         void ProcessCollisionData(const CollisionDataRaw& raw, CollisionData& output) override;
-
-    protected:
-        CSoftBody(); // Serialization only
 
     protected:
         HPhysicsMesh _mesh;

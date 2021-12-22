@@ -31,11 +31,25 @@ namespace te
     void CMeshCollider::RestoreInternal()
     {
         CCollider::RestoreInternal();
+
+        SetCollisionType(_collisionType);
+        SetMesh(_mesh);
     }
 
     bool CMeshCollider::IsValidParent(const HRigidBody& parent) const
     {
         return _mesh.IsLoaded();
+    }
+
+    bool CMeshCollider::Clone(const HComponent& c, const String& suffix)
+    {
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
+
+        return Clone(static_object_cast<CMeshCollider>(c), suffix);
     }
 
     bool CMeshCollider::Clone(const HMeshCollider& c, const String& suffix)

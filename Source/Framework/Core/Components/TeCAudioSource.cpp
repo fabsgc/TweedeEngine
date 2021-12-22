@@ -22,6 +22,12 @@ namespace te
         SetFlag(Component::AlwaysRun, true);
     }
 
+    CAudioSource::~CAudioSource()
+    {
+        if (_internal && !_internal->IsDestroyed())
+            _internal->Destroy();
+    }
+
     void CAudioSource::Initialize()
     {
         RestoreInternal();
@@ -158,11 +164,6 @@ namespace te
         return AudioSourceState::Stopped;
     }
 
-    void CAudioSource::OnInitialized()
-    {
-        Component::OnInitialized();
-    }
-
     void CAudioSource::OnEnabled()
     {
         RestoreInternal();
@@ -205,6 +206,17 @@ namespace te
             _velocity = Vector3::ZERO;
 
         _lastPosition = worldPos;
+    }
+
+    bool CAudioSource::Clone(const HComponent& c, const String& suffix)
+    {
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
+
+        return Clone(static_object_cast<CAudioSource>(c), suffix);
     }
 
     bool CAudioSource::Clone(const HAudioSource& c, const String& suffix)

@@ -14,10 +14,14 @@ namespace te
     class TE_CORE_EXPORT CMeshCollider : public CCollider
     {
     public:
-        CMeshCollider(const HSceneObject& parent);
-
         /** Return Component type */
         static UINT32 GetComponentType() { return TypeID_Core::TID_CMeshCollider; }
+
+        /** @copydoc Component::Clone */
+        bool Clone(const HComponent& c, const String& suffix = "") override;
+
+        /** @copydoc Component::Clone */
+        bool Clone(const HMeshCollider& c, const String& suffix = "");
 
         /** @copydoc MeshCollider::SetMesh */
         void SetMesh(const HPhysicsMesh& mesh);
@@ -25,15 +29,15 @@ namespace te
         /** @copydoc MeshCollider::GetMesh */
         HPhysicsMesh GetMesh() const { return _mesh; }
 
-        /** @copydoc Component::Clone */
-        bool Clone(const HMeshCollider& c, const String& suffix = "");
-
         void SetCollisionType(PhysicsMeshType type);
 
         PhysicsMeshType GetCollisionType() const { return _collisionType; }
 
     protected:
         friend class SceneObject;
+
+        CMeshCollider(); // Serialization only
+        CMeshCollider(const HSceneObject& parent);
 
         /** @copydoc CCollider::CreateInternal */
         SPtr<Collider> CreateInternal() override;
@@ -46,9 +50,6 @@ namespace te
 
         /**	Returns the mesh collider that this component wraps. */
         MeshCollider* GetInternal() const { return static_cast<MeshCollider*>(_internal.get()); }
-
-    protected:
-        CMeshCollider(); // Serialization only
 
     protected:
         HPhysicsMesh _mesh;

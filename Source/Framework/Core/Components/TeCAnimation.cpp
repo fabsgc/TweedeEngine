@@ -26,6 +26,12 @@ namespace te
         SetFlag(Component::AlwaysRun, true);
     }
 
+    CAnimation::~CAnimation()
+    {
+        if (_internal && !_internal->IsDestroyed())
+            _internal->Destroy();
+    }
+
     void CAnimation::SetDefaultClip(const HAnimationClip& clip)
     {
         _defaultClip = clip;
@@ -144,18 +150,10 @@ namespace te
         return HAnimationClip();
     }
 
-    void CAnimation::Instantiate()
-    { }
-
     void CAnimation::Initialize()
     {
         RestoreInternal(false);
         Component::Initialize();
-    }
-
-    void CAnimation::OnInitialized()
-    {
-        Component::OnInitialized();
     }
 
     void CAnimation::OnEnabled()
@@ -197,7 +195,6 @@ namespace te
             DestroyInternal();
 
         _internal = Animation::Create();
-
         _animatedRenderable = static_object_cast<CRenderable>(SO()->GetComponent<CRenderable>());
 
         if (_animatedRenderable)
@@ -517,6 +514,17 @@ namespace te
         OnEventTriggered(clip, name);
 
         // TODO animation script
+    }
+
+    bool CAnimation::Clone(const HComponent& c, const String& suffix)
+    {
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
+
+        return Clone(static_object_cast<CAnimation>(c), suffix);
     }
 
     bool CAnimation::Clone(const HAnimation& c, const String& suffix)

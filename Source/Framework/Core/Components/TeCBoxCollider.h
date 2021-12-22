@@ -15,10 +15,11 @@ namespace te
     class TE_CORE_EXPORT CBoxCollider : public CCollider
     {
     public:
-        CBoxCollider(const HSceneObject& parent, const Vector3& extents = Vector3(0.5f, 0.5f, 0.5f));
-
         /** Return Component type */
         static UINT32 GetComponentType() { return TypeID_Core::TID_CBoxCollider; }
+
+        /** @copydoc Component::Clone */
+        bool Clone(const HComponent& c, const String& suffix = "") override;
 
         /** @copydoc Component::Clone */
         bool Clone(const HBoxCollider& c, const String& suffix = "");
@@ -32,6 +33,9 @@ namespace te
     protected:
         friend class SceneObject;
 
+        CBoxCollider(); // Serialization only
+        CBoxCollider(const HSceneObject& parent, const Vector3& extents = Vector3(0.5f, 0.5f, 0.5f));
+
         /** @copydoc CCollider::CreateInternal */
         SPtr<Collider> CreateInternal() override;
 
@@ -40,9 +44,6 @@ namespace te
 
         /**	Returns the box collider that this component wraps. */
         BoxCollider* GetInternal() const { return static_cast<BoxCollider*>(_internal.get()); }
-
-    protected:
-        CBoxCollider(); // Serialization only
 
     protected:
         Vector3 _extents = Vector3(0.5f, 0.5f, 0.5f);

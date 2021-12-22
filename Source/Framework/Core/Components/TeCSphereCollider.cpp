@@ -35,6 +35,17 @@ namespace te
         SetRadius(_radius);
     }
 
+    bool CSphereCollider::Clone(const HComponent& c, const String& suffix)
+    {
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
+
+        return Clone(static_object_cast<CSphereCollider>(c), suffix);
+    }
+
     bool CSphereCollider::Clone(const HSphereCollider& c, const String& suffix)
     {
         if (c.Empty())

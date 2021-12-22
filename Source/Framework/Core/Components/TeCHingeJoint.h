@@ -14,10 +14,11 @@ namespace te
     class TE_CORE_EXPORT CHingeJoint : public CJoint
     {
     public:
-        CHingeJoint(const HSceneObject& parent);
-
         /** Return Component type */
         static UINT32 GetComponentType() { return TypeID_Core::TID_CHingeJoint; }
+
+        /** @copydoc Component::Clone */
+        bool Clone(const HComponent& c, const String& suffix = "") override;
 
         /** @copydoc Component::Clone */
         bool Clone(const HHingeJoint& c, const String& suffix = "");
@@ -79,6 +80,9 @@ namespace te
     protected:
         friend class SceneObject;
 
+        CHingeJoint(); // Serialization only
+        CHingeJoint(const HSceneObject& parent);
+
         /** @copydoc Component::OnEnabled */
         void OnEnabled() override;
 
@@ -87,9 +91,6 @@ namespace te
 
         /**	Returns the Hinge joint that this component wraps. */
         HingeJoint* GetInternal() const { return static_cast<HingeJoint*>(_internal.get()); }
-
-    protected:
-        CHingeJoint(); // Serialization only
 
     protected:
         float _softnessLimit = 1.0f;

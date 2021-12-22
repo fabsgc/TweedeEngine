@@ -25,6 +25,17 @@ namespace te
         return joint;
     }
 
+    bool CSliderJoint::Clone(const HComponent& c, const String& suffix)
+    {
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
+
+        return Clone(static_object_cast<CSliderJoint>(c), suffix);
+    }
+
     bool CSliderJoint::Clone(const HSliderJoint& c, const String& suffix)
     {
         if (c.Empty())

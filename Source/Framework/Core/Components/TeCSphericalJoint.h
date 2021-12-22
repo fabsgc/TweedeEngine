@@ -14,16 +14,20 @@ namespace te
     class TE_CORE_EXPORT CSphericalJoint : public CJoint
     {
     public:
-        CSphericalJoint(const HSceneObject& parent);
-
         /** Return Component type */
         static UINT32 GetComponentType() { return TypeID_Core::TID_CSphericalJoint; }
 
         /** @copydoc Component::Clone */
         bool Clone(const HSphericalJoint& c, const String& suffix = "");
 
+        /** @copydoc Component::Clone */
+        bool Clone(const HComponent& c, const String& suffix = "") override;
+
     protected:
         friend class SceneObject;
+
+        CSphericalJoint(); // Serialization only
+        CSphericalJoint(const HSceneObject& parent);
 
         /** @copydoc Component::OnEnabled */
         void OnEnabled() override;
@@ -33,8 +37,5 @@ namespace te
 
         /**	Returns the spherical joint that this component wraps. */
         SphericalJoint* GetInternal() const { return static_cast<SphericalJoint*>(_internal.get()); }
-
-    protected:
-        CSphericalJoint(); // Serialization only
     };
 }

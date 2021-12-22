@@ -12,11 +12,16 @@ namespace te
     class TE_CORE_EXPORT CBone : public Component
     {
     public:
-        CBone(const HSceneObject& parent);
-        virtual ~CBone();
+        virtual ~CBone() = default;
 
         /** Return Component type */
         static UINT32 GetComponentType() { return TypeID_Core::TID_CBone; }
+
+        /** @copydoc Component::Clone */
+        bool Clone(const HComponent& c, const String& suffix = "") override;
+
+        /** @copydoc Component::Clone */
+        bool Clone(const HBone& c, const String& suffix = "");
 
         /** @copydoc Component::Initialize */
         void Initialize() override;
@@ -26,12 +31,6 @@ namespace te
 
         /** @copydoc SetBoneName */
         const String& GetBoneName() const { return _boneName; }
-
-        /** @copydoc Component::Clone */
-        bool Clone(const HBone& c, const String& suffix = "");
-
-        /** @copydoc Component::update */
-        void Update() override { }
 
     protected:
         friend class CAnimation;
@@ -48,14 +47,14 @@ namespace te
     protected:
         friend class SceneObject;
 
+        CBone();
+        CBone(const HSceneObject& parent);
+
         /** Attempts to find the parent Animation component and registers itself with it. */
         void UpdateParentAnimation();
 
         /** @copydoc Component::Instantiate */
         void Instantiate() override;
-
-        /** @copydoc Component::OnInitialized */
-        void OnCreated() override { }
 
         /** @copydoc Component::OnInitialized */
         void OnInitialized() override;
@@ -71,9 +70,6 @@ namespace te
 
         /** @copydoc Component::OnDestroyed */
         void OnDestroyed() override;
-
-    protected:
-        CBone();
 
     protected:
         String _boneName;

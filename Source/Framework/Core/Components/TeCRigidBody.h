@@ -43,17 +43,17 @@ namespace te
     class TE_CORE_EXPORT CRigidBody : public CBody
     {
     public:
-        CRigidBody(const HSceneObject& parent);
-        ~CRigidBody();
-
         /** Return Component type */
         static UINT32 GetComponentType() { return TypeID_Core::TID_CRigidBody; }
 
-        /** @copydoc Component::Initialize */
-        void Initialize() override;
-
         /** @copydoc Component::Clone */
         bool Clone(const HRigidBody& c, const String& suffix = "");
+
+        /** @copydoc Component::Clone */
+        bool Clone(const HComponent& c, const String& suffix = "") override;
+
+        /** @copydoc Component::Initialize */
+        void Initialize() override;
 
         /** @copydoc Component::Update */
         void Update() override;
@@ -95,8 +95,8 @@ namespace te
         friend class CHeightFieldCollider;
         friend class CJoint;
 
-        /** @copydoc Component::OnInitialized */
-        void OnInitialized() override;
+        CRigidBody(); // Serialization only
+        CRigidBody(const HSceneObject& parent);
 
         /** @copydoc Component::OnDestroyed */
         void OnDestroyed() override;
@@ -178,9 +178,6 @@ namespace te
 
         /** Body::ProcessCollisionData */
         void ProcessCollisionData(const CollisionDataRaw& raw, CollisionData& output) override;
-
-    protected:
-        CRigidBody(); // Serialization only
 
     protected:
         SPtr<RigidBody> _internalRigidBody;

@@ -23,7 +23,10 @@ namespace te
     }
 
     CBody::~CBody()
-    { }
+    {
+        if (_internal && !_internal->IsDestroyed())
+            _internal->Destroy();
+    }
 
     void CBody::Initialize()
     {

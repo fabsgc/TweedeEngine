@@ -14,11 +14,15 @@ namespace te
     class TE_CORE_EXPORT CLight : public Component
     {
     public:
-        CLight(const HSceneObject& parent, LightType type = LightType::Directional, Color color = Color::White,
-            float intensity = Light::DefaultIntensity, float range = Light::DefaultAttRadius, bool castShadows = Light::DefaultCastShadow, 
-            Degree spotAngle = Degree(Light::DefaultSpotAngle));
+        ~CLight();
 
-        virtual ~CLight();
+        static UINT32 GetComponentType() { return TypeID_Core::TID_CLight; }
+
+        /** @copydoc Component::Clone */
+        bool Clone(const HComponent& c, const String& suffix = "") override;
+
+        /** @copydoc Component::Clone */
+        bool Clone(const HLight& c, const String& suffix = "");
 
         /** @copydoc Component::Initialize */
         void Initialize() override;
@@ -92,16 +96,8 @@ namespace te
         /** Returns the light that this component wraps. */
         SPtr<Light> _getLight() const { return _internal; }
 
-        static UINT32 GetComponentType() { return TypeID_Core::TID_CLight; }
-
-        /** @copydoc Component::Clone */
-        bool Clone(const HLight& c, const String& suffix = "");
-
         /* @copydoc Component::MarkDirty */
         virtual void MarkDirty() { _internal->_markCoreDirty(); }
-
-        /** @copydoc Component::Update */
-        void Update() override { }
 
     protected:
         mutable SPtr<Light> _internal;
@@ -118,6 +114,12 @@ namespace te
 
     protected:
         friend class SceneObject;
+
+        CLight();
+
+        CLight(const HSceneObject& parent, LightType type = LightType::Directional, Color color = Color::White,
+            float intensity = Light::DefaultIntensity, float range = Light::DefaultAttRadius, bool castShadows = Light::DefaultCastShadow, 
+            Degree spotAngle = Degree(Light::DefaultSpotAngle));
 
         /** @copydoc Component::Instantiate */
         void Instantiate() override;
@@ -136,8 +138,5 @@ namespace te
 
         /** @copydoc Component::OnDestroyed */
         void OnDestroyed() override;
-
-    protected:
-        CLight();
     };
 }

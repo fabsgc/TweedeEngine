@@ -19,13 +19,8 @@ namespace te
 
     CCamera::~CCamera()
     {
-        if (!_internal->IsDestroyed())
+        if (_internal && !_internal->IsDestroyed())
             _internal->Destroy();
-    }
-
-    void CCamera::Initialize()
-    {
-        Component::Initialize();
     }
 
     ConvexVolume CCamera::GetWorldFrustum() const
@@ -77,6 +72,17 @@ namespace te
         gSceneManager()._unbindActor(_internal);
         Component::OnDestroyed();
         _internal->Destroy();
+    }
+
+    bool CCamera::Clone(const HComponent& c, const String& suffix)
+    {
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
+
+        return Clone(static_object_cast<CCamera>(c), suffix);
     }
 
     bool CCamera::Clone(const HCamera& c, const String& suffix)

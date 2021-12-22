@@ -14,14 +14,15 @@ namespace te
     class TE_CORE_EXPORT CAudioListener : public Component
     {
     public:
-        CAudioListener(const HSceneObject& parent);
-
-        virtual ~CAudioListener() = default;
+        ~CAudioListener();
 
         static UINT32 GetComponentType() { return TypeID_Core::TID_CAudioListener; }
 
         /** @copydoc Component::Initialize */
         void Initialize() override;
+
+        /** @copydoc Component::Clone */
+        bool Clone(const HComponent& c, const String& suffix = "") override;
 
         /** @copydoc Component::Clone */
         bool Clone(const HAudioListener& c, const String& suffix = "");
@@ -44,11 +45,7 @@ namespace te
     protected:
         friend class SceneObject;
 
-        /** @copydoc Component::Instantiate */
-        void Instantiate() override {}
-
-        /** @copydoc Component::OnInitialized */
-        void OnInitialized() override;
+        CAudioListener(const HSceneObject& parent);
 
         /** @copydoc Component::OnEnabled */
         void OnEnabled() override;

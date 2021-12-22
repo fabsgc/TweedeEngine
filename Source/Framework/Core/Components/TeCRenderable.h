@@ -15,16 +15,16 @@ namespace te
     class TE_CORE_EXPORT CRenderable : public Component
     {
     public:
-        virtual ~CRenderable();
-
-        /** @copydoc Component::Initialize */
-        void Initialize() override;
-
-        /** @copydoc Component::Update */
-        void Update() override { }
+        ~CRenderable();
 
         /** @copydoc Component::GetComponentType */
         static UINT32 GetComponentType() { return TypeID_Core::TID_CRenderable; }
+
+        /** @copydoc Component::Clone */
+        bool Clone(const HComponent& c, const String& suffix = "") override;
+
+        /** @copydoc Component::Clone */
+        bool Clone(const HRenderable& c, const String& suffix = "");
 
         /** @copydoc Renderable::SetMesh */
         void SetMesh(HMesh mesh) { _internal->SetMesh(mesh.GetInternalPtr()); }
@@ -130,9 +130,6 @@ namespace te
 
         /** @copydoc Renderable::IsAnimated */
         bool IsAnimated() const { return _internal->IsAnimated(); }
-
-        /** @copydoc Component::Clone */
-        bool Clone(const HRenderable& c, const String& suffix = "");
 
         /* @copydoc Component::MarkDirty */
         virtual void MarkDirty() { 

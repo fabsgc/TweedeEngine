@@ -35,10 +35,13 @@ namespace te
     }
 
     CJoint::~CJoint()
-    { }
+    {
+        if (_internal && !_internal->IsDestroyed())
+            _internal->Destroy();
+    }
 
     void CJoint::Initialize()
-    { 
+    {
         OnEnabled();
         Component::Initialize();
     }

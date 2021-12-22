@@ -11,23 +11,29 @@ namespace te
     class TE_CORE_EXPORT CCameraFlyer : public Component
     {
     public:
-        CCameraFlyer(const HSceneObject& parent);
-        virtual ~CCameraFlyer() = default;
-
-        /** Triggered once per frame. Allows the component to handle input and move. */
-        void Update() override;
-
         /** Return Component type */
         static UINT32 GetComponentType() { return TypeID_Core::TID_CCameraFlyer; }
 
         /** @copydoc Component::Clone */
+        bool Clone(const HComponent& c, const String& suffix = "") override;
+
+        /** @copydoc Component::Clone */
         bool Clone(const HCameraFlyer& c, const String& suffix = "");
+
+        /** Triggered once per frame. Allows the component to handle input and move. */
+        void Update() override;
 
         /** Returns current pitch angle (for editor) */
         const Degree& GetPitch() const { return _pitch; }
 
         /** Returns current yaw angle (for editor) */
         const Degree& GetYaw() const { return _yaw; }
+
+    protected:
+        friend class SceneObject;
+
+        CCameraFlyer();
+        CCameraFlyer(const HSceneObject& parent);
 
     private:
         float _currentSpeed = 0.0f; /**< Current speed of the camera. */

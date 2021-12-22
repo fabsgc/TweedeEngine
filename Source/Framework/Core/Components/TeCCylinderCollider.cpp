@@ -34,6 +34,17 @@ namespace te
         SetExtents(_extents);
     }
 
+    bool CCylinderCollider::Clone(const HComponent& c, const String& suffix)
+    {
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
+
+        return Clone(static_object_cast<CCylinderCollider>(c), suffix);
+    }
+
     bool CCylinderCollider::Clone(const HCylinderCollider& c, const String& suffix)
     {
         if (c.Empty())

@@ -14,10 +14,11 @@ namespace te
     class TE_CORE_EXPORT CSliderJoint : public CJoint
     {
     public:
-        CSliderJoint(const HSceneObject& parent);
-
         /** Return Component type */
         static UINT32 GetComponentType() { return TypeID_Core::TID_CSliderJoint; }
+
+        /** @copydoc Component::Clone */
+        bool Clone(const HComponent& c, const String& suffix = "") override;
 
         /** @copydoc Component::Clone */
         bool Clone(const HSliderJoint& c, const String& suffix = "");
@@ -193,6 +194,9 @@ namespace te
     protected:
         friend class SceneObject;
 
+        CSliderJoint(); // Serialization only
+        CSliderJoint(const HSceneObject& parent);
+
         /** @copydoc Component::OnEnabled */
         void OnEnabled() override;
 
@@ -201,9 +205,6 @@ namespace te
 
         /**	Returns the Slider joint that this component wraps. */
         SliderJoint* GetInternal() const { return static_cast<SliderJoint*>(_internal.get()); }
-
-    protected:
-        CSliderJoint(); // Serialization only
 
     protected:
         float _lowerLinLimit = 1.0f;

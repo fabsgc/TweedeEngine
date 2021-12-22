@@ -21,6 +21,12 @@ namespace te
         SetFlag(Component::AlwaysRun, true);
     }
 
+    CAudioListener::~CAudioListener()
+    {
+        if (_internal && !_internal->IsDestroyed())
+            _internal->Destroy();
+    }
+
     void CAudioListener::Initialize()
     {
         RestoreInternal();
@@ -38,11 +44,6 @@ namespace te
             _velocity = Vector3::ZERO;
 
         _lastPosition = worldPos;
-    }
-
-    void CAudioListener::OnInitialized()
-    {
-        Component::OnInitialized();
     }
 
     void CAudioListener::OnEnabled()
@@ -70,6 +71,17 @@ namespace te
     {
         DestroyInternal();
         Component::OnDestroyed();
+    }
+
+    bool CAudioListener::Clone(const HComponent& c, const String& suffix)
+    {
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
+
+        return Clone(static_object_cast<CAudioListener>(c), suffix);
     }
 
     bool CAudioListener::Clone(const HAudioListener& c, const String& suffix)

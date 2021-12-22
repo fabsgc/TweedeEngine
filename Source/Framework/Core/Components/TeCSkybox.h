@@ -15,11 +15,16 @@ namespace te
     class TE_CORE_EXPORT CSkybox : public Component
     {
     public:
-        CSkybox(const HSceneObject& parent);
-        virtual ~CSkybox();
+        ~CSkybox();
 
-        /** @copydoc Component::Initialize */
-        void Initialize() override;
+        /** Return Component type */
+        static UINT32 GetComponentType() { return TypeID_Core::TID_CSkybox; }
+
+        /** @copydoc Component::Clone */
+        bool Clone(const HComponent& c, const String& suffix = "") override;
+
+        /** @copydoc Component::Clone */
+        bool Clone(const HSkybox& c, const String& suffix = "");
 
         /** @copydoc Skybox::GetTexture */
         SPtr<Texture> GetTexture() const { return _internal->GetTexture(); }
@@ -48,12 +53,6 @@ namespace te
         /**	Returns the skybox that this component wraps. */
         SPtr<Skybox> _getSkybox() const { return _internal; }
 
-        /** Return Component type */
-        static UINT32 GetComponentType() { return TypeID_Core::TID_CSkybox; }
-
-        /** @copydoc Component::Clone */
-        bool Clone(const HSkybox& c, const String& suffix = "");
-
         /* @copydoc Component::MarkDirty */
         virtual void MarkDirty() { _internal->_markCoreDirty(); }
 
@@ -63,11 +62,11 @@ namespace te
     protected:
         friend class SceneObject;
 
+        CSkybox();
+        CSkybox(const HSceneObject& parent);
+
         /** @copydoc Component::Instantiate */
         void Instantiate() override;
-
-        /** @copydoc Component::OnInitialized */
-        void OnCreated() override { }
 
         /** @copydoc Component::OnInitialized */
         void OnInitialized() override;
@@ -83,12 +82,5 @@ namespace te
 
         /** @copydoc Component::OnDestroyed */
         void OnDestroyed() override;
-    
-    public:
-        /** @copydoc Component::update */
-        void Update() override { }
-
-    protected:
-        CSkybox();
     };
 }

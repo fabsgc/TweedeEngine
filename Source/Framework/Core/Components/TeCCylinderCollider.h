@@ -14,10 +14,11 @@ namespace te
     class TE_CORE_EXPORT CCylinderCollider : public CCollider
     {
     public:
-        CCylinderCollider(const HSceneObject& parent);
-
         /** Return Component type */
         static UINT32 GetComponentType() { return TypeID_Core::TID_CCylinderCollider; }
+
+        /** @copydoc Component::Clone */
+        bool Clone(const HComponent& c, const String& suffix = "") override;
 
         /** @copydoc Component::Clone */
         bool Clone(const HCylinderCollider& c, const String& suffix = "");
@@ -31,6 +32,9 @@ namespace te
     protected:
         friend class SceneObject;
 
+        CCylinderCollider(); // Serialization only
+        CCylinderCollider(const HSceneObject& parent);
+
         /** @copydoc CCollider::CreateInternal */
         SPtr<Collider> CreateInternal() override;
 
@@ -39,9 +43,6 @@ namespace te
 
         /**	Returns the cylinder collider that this component wraps. */
         CylinderCollider* GetInternal() const { return static_cast<CylinderCollider*>(_internal.get()); }
-
-    protected:
-        CCylinderCollider(); // Serialization only
 
     protected:
         Vector3 _extents = Vector3(0.5f, 0.5f, 0.5f);

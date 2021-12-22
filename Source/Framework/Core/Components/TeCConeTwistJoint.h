@@ -14,10 +14,11 @@ namespace te
     class TE_CORE_EXPORT CConeTwistJoint : public CJoint
     {
     public:
-        CConeTwistJoint(const HSceneObject& parent);
-
         /** Return Component type */
         static UINT32 GetComponentType() { return TypeID_Core::TID_CConeTwistJoint; }
+
+        /** @copydoc Component::Clone */
+        bool Clone(const HComponent& c, const String& suffix = "") override;
 
         /** @copydoc Component::Clone */
         bool Clone(const HConeTwistJoint& c, const String& suffix = "");
@@ -96,6 +97,7 @@ namespace te
 
     protected:
         CConeTwistJoint(); // Serialization only
+        CConeTwistJoint(const HSceneObject& parent);
 
     protected:
         float _damping = 0.0f;

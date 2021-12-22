@@ -14,13 +14,16 @@ namespace te
     class TE_CORE_EXPORT CCamera : public Component
     {
     public:
-        virtual ~CCamera();
-
-        /** @copydoc Component::Initialize */
-        void Initialize() override;
+        ~CCamera();
 
         /** Return Component type */
         static UINT32 GetComponentType() { return TypeID_Core::TID_CCamera; }
+
+        /** @copydoc Component::Clone */
+        bool Clone(const HComponent& c, const String& suffix = "") override;
+
+        /** @copydoc Component::Clone */
+        bool Clone(const HCamera& c, const String& suffix = "");
 
         /** @copydoc Camera::SetFlags */
         void SetFlags(UINT32 flags) { _internal->SetFlags(flags); }
@@ -190,9 +193,6 @@ namespace te
         /** Returns the internal camera that is used for majority of operations by this component. */
         SPtr<Camera> _getCamera() const { UpdateView(); return _internal; }
 
-        /** @copydoc Component::Clone */
-        bool Clone(const HCamera& c, const String& suffix = "");
-
         /* @copydoc Component::MarkDirty */
         virtual void MarkDirty() { _internal->_markCoreDirty(); }
 
@@ -206,6 +206,7 @@ namespace te
     protected:
         friend class SceneObject;
 
+        CCamera();
         CCamera(const HSceneObject& parent);
 
         /** @copydoc Component::Instantiate */
@@ -219,12 +220,5 @@ namespace te
 
         /** @copydoc Component::OnDestroyed */
         void OnDestroyed() override;
-
-    public:
-        /** @copydoc Component::Update */
-        void Update() override { }
-
-    protected:
-        CCamera();
     };
 }

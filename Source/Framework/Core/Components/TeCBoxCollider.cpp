@@ -33,7 +33,19 @@ namespace te
     void CBoxCollider::RestoreInternal()
     {
         CCollider::RestoreInternal();
+
         SetExtents(_extents);
+    }
+
+    bool CBoxCollider::Clone(const HComponent& c, const String& suffix)
+    {
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
+
+        return Clone(static_object_cast<CBoxCollider>(c), suffix);
     }
 
     bool CBoxCollider::Clone(const HBoxCollider& c, const String& suffix)

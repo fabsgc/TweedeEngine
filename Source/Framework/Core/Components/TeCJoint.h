@@ -14,7 +14,6 @@ namespace te
     class TE_CORE_EXPORT CJoint : public Component
     {
     public:
-        CJoint(const HSceneObject& parent, UINT32 type);
         virtual ~CJoint() = 0;
 
         /** Return Component type */
@@ -84,6 +83,9 @@ namespace te
         friend class CBody;
         using Component::DestroyInternal;
 
+        CJoint(UINT32 type);
+        CJoint(const HSceneObject& parent, UINT32 type);
+
         /** @copydoc Component::Clone */
         bool Clone(const HJoint& c, const String& suffix = "");
 
@@ -125,9 +127,6 @@ namespace te
 
         /** Triggered when the joint constraint gets broken. */
         void TriggerOnJointBroken();
-
-    protected:
-        CJoint(UINT32 type);
 
     protected:
         SPtr<Joint> _internal;

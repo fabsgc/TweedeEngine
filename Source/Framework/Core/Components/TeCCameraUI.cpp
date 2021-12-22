@@ -32,6 +32,21 @@ namespace te
     const float CCameraUI::MIN_ZOOM = 0.5f;
     const float CCameraUI::MAX_ROTATION = 15.0f;
 
+    CCameraUI::CCameraUI()
+        : Component(HSceneObject(), TID_CCameraUI)
+        , _cameraInitialized(false)
+        , _needsRedraw(false)
+        , _target(Vector3::ZERO)
+        , _localRotation(Vector3::ZERO)
+        , _distanceToTarget(0.0f)
+        , _inputEnabled(false)
+        , _zoomingEnabled(false)
+        , _lastHideCursorState(false)
+    {
+        SetName("CCameraUI");
+        SetFlag(Component::AlwaysRun, true);
+    }
+
     CCameraUI::CCameraUI(const HSceneObject& parent)
         : Component(parent, TID_CCameraUI)
         , _cameraInitialized(false)
@@ -44,6 +59,7 @@ namespace te
         , _lastHideCursorState(false)
     {
         SetName("CCameraUI");
+        SetFlag(Component::AlwaysRun, true);
 
         _rotateBtn = VirtualButton(ROTATE_BINDING);
         _moveBtn = VirtualButton(MOVE_BINDING);
@@ -246,6 +262,17 @@ namespace te
 
         InitDistanceToTarget();
         InitLocalRotation();
+    }
+
+    bool CCameraUI::Clone(const HComponent& c, const String& suffix)
+    {
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
+
+        return Clone(static_object_cast<CCameraUI>(c), suffix);
     }
 
     bool CCameraUI::Clone(const HCameraUI& c, const String& suffix)

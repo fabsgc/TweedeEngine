@@ -30,6 +30,20 @@ namespace te
     void CHeightFieldCollider::RestoreInternal()
     {
         CCollider::RestoreInternal();
+
+        SetMinHeight(_minHeight);
+        SetMaxHeight(_maxHeight);
+    }
+
+    bool CHeightFieldCollider::Clone(const HComponent& c, const String& suffix)
+    {
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
+
+        return Clone(static_object_cast<CHeightFieldCollider>(c), suffix);
     }
 
     bool CHeightFieldCollider::Clone(const HHeightFieldCollider& c, const String& suffix)

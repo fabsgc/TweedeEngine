@@ -14,7 +14,6 @@ namespace te
     class TE_CORE_EXPORT CBody : public Component
     {
     public:
-        CBody(const HSceneObject& parent, UINT32 type);
         virtual ~CBody() = 0;
 
         /** Return Component type */
@@ -123,6 +122,9 @@ namespace te
         friend class SceneObject;
         using Component::DestroyInternal;
 
+        CBody(UINT32 type);
+        CBody(const HSceneObject& parent, UINT32 type);
+
         /** @copydoc Component::Clone */
         bool Clone(const HBody& c, const String& suffix = "");
 
@@ -146,9 +148,6 @@ namespace te
 
         /** Appends Component referenes for the colliders to the collision data. */
         virtual void ProcessCollisionData(const CollisionDataRaw& raw, CollisionData& output) = 0;
-
-    protected:
-        CBody(UINT32 type);
 
     protected:
         SPtr<Body> _internal;

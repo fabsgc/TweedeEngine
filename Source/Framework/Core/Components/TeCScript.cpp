@@ -25,18 +25,13 @@ namespace te
 
     CScript::~CScript()
     {
-        if (!_internal->IsDestroyed())
+        if (_internal && !_internal->IsDestroyed())
             _internal->Destroy();
     }
 
     void CScript::Instantiate()
     {
         _internal = Script::Create(String(), SO());
-    }
-
-    void CScript::Initialize()
-    {
-        Component::Initialize();
     }
 
     void CScript::OnInitialized()
@@ -70,6 +65,17 @@ namespace te
             return;
 
         _internal->Update();
+    }
+
+    bool CScript::Clone(const HComponent& c, const String& suffix)
+    {
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
+
+        return Clone(static_object_cast<CScript>(c), suffix);
     }
 
     bool CScript::Clone(const HScript& c, const String& suffix)

@@ -17,11 +17,18 @@ namespace te
     const float CCameraFlyer::FAST_MODE_MULTIPLIER = 2.0f;
     const float CCameraFlyer::ROTATION_SPEED = 2.0f;
 
+    CCameraFlyer::CCameraFlyer()
+        : Component(HSceneObject(), TID_CCameraFlyer)
+    {
+        SetName("CCameraFlyer");
+        SetFlag(Component::AlwaysRun, true);
+    }
+
     CCameraFlyer::CCameraFlyer(const HSceneObject& parent)
         : Component(parent, TID_CCameraFlyer)
     {
-        // Set a name for the component, so we can find it later if needed
         SetName("CCameraFlyer");
+        SetFlag(Component::AlwaysRun, true);
 
         // Get handles for key bindings. Actual keys attached to these bindings will be registered during app start-up.
         _moveForward = VirtualButton("Forward");
@@ -121,6 +128,17 @@ namespace te
             Vector3 velocity = direction * _currentSpeed;
             SO()->Move(velocity * frameDelta);
         }
+    }
+
+    bool CCameraFlyer::Clone(const HComponent& c, const String& suffix)
+    {
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
+
+        return Clone(static_object_cast<CCameraFlyer>(c), suffix);
     }
 
     bool CCameraFlyer::Clone(const HCameraFlyer& c, const String& suffix)

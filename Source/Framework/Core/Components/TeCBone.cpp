@@ -35,9 +35,6 @@ namespace te
             _parent->NotifyBoneChanged(static_object_cast<CBone>(GetHandle()));
     }
 
-    CBone::~CBone()
-    { }
-
     void CBone::Instantiate()
     { }
 
@@ -127,6 +124,17 @@ namespace te
         }
 
         _parent = animation;
+    }
+
+    bool CBone::Clone(const HComponent& c, const String& suffix)
+    {
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
+
+        return Clone(static_object_cast<CBone>(c), suffix);
     }
 
     bool CBone::Clone(const HBone& c, const String& suffix)

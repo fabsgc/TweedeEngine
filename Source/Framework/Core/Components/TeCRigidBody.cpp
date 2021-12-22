@@ -22,14 +22,22 @@ namespace te
         SetName("Rigidbody");
     }
 
-    CRigidBody::~CRigidBody()
-    { }
-
     void CRigidBody::Initialize()
     {
         ClearColliders();
         OnEnabled();
         CBody::Initialize();
+    }
+
+    bool CRigidBody::Clone(const HComponent& c, const String& suffix)
+    {
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
+
+        return Clone(static_object_cast<CRigidBody>(c), suffix);
     }
 
     bool CRigidBody::Clone(const HRigidBody& c, const String& suffix)
@@ -105,9 +113,6 @@ namespace te
             UpdateColliders();
         }
     }
-
-    void CRigidBody::OnInitialized()
-    { }
 
     void CRigidBody::OnDestroyed()
     {

@@ -30,6 +30,17 @@ namespace te
         return joint;
     }
 
+    bool CConeTwistJoint::Clone(const HComponent& c, const String& suffix)
+    {
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
+
+        return Clone(static_object_cast<CConeTwistJoint>(c), suffix);
+    }
+
     bool CConeTwistJoint::Clone(const HConeTwistJoint& c, const String& suffix)
     {
         if (c.Empty())

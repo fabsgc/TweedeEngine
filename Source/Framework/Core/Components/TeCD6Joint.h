@@ -14,10 +14,11 @@ namespace te
     class TE_CORE_EXPORT CD6Joint : public CJoint
     {
     public:
-        CD6Joint(const HSceneObject& parent);
-
         /** Return Component type */
         static UINT32 GetComponentType() { return TypeID_Core::TID_CD6Joint; }
+
+        /** @copydoc Component::Clone */
+        bool Clone(const HComponent& c, const String& suffix = "") override;
 
         /** @copydoc Component::Clone */
         bool Clone(const HD6Joint& c, const String& suffix = "");
@@ -85,6 +86,9 @@ namespace te
     protected:
         friend class SceneObject;
 
+        CD6Joint(); // Serialization only
+        CD6Joint(const HSceneObject& parent);
+
         /** @copydoc Component::OnEnabled */
         void OnEnabled() override;
 
@@ -93,9 +97,6 @@ namespace te
 
         /**	Returns the 6Dof joint that this component wraps. */
         D6Joint* GetInternal() const { return static_cast<D6Joint*>(_internal.get()); }
-
-    protected:
-        CD6Joint(); // Serialization only
 
     protected:
         float _lowerLinLimit = 0.0f;

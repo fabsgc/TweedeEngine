@@ -22,13 +22,21 @@ namespace te
         SetName("SoftBody");
     }
 
-    CSoftBody::~CSoftBody()
-    { }
-
     void CSoftBody::Initialize()
     {
         OnEnabled();
         CBody::Initialize();
+    }
+
+    bool CSoftBody::Clone(const HComponent& c, const String& suffix)
+    {
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
+
+        return Clone(static_object_cast<CSoftBody>(c), suffix);
     }
 
     bool CSoftBody::Clone(const HSoftBody& c, const String& suffix)
@@ -76,9 +84,6 @@ namespace te
     {
         CBody::Update();
     }
-
-    void CSoftBody::OnInitialized()
-    { }
 
     void CSoftBody::OnDestroyed()
     {

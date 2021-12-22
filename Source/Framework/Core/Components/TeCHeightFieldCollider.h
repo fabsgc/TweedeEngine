@@ -14,10 +14,16 @@ namespace te
     class TE_CORE_EXPORT CHeightFieldCollider : public CCollider
     {
     public:
-        CHeightFieldCollider(const HSceneObject& parent);
+        
 
         /** Return Component type */
         static UINT32 GetComponentType() { return TypeID_Core::TID_CHeightFieldCollider; }
+
+        /** @copydoc Component::Clone */
+        bool Clone(const HComponent& c, const String& suffix = "") override;
+
+        /** @copydoc Component::Clone */
+        bool Clone(const HHeightFieldCollider& c, const String& suffix = "");
 
         /** @copydoc HeightFieldCollider::SetHeightField */
         void SetHeightField(const HPhysicsHeightField& heightField);
@@ -37,11 +43,11 @@ namespace te
         /** @copydoc HeightFieldCollider::GetMaxHeight */
         float GetMaxHeight() const { return _maxHeight; }
 
-        /** @copydoc Component::Clone */
-        bool Clone(const HHeightFieldCollider& c, const String& suffix = "");
-
     protected:
         friend class SceneObject;
+
+        CHeightFieldCollider(); // Serialization only
+        CHeightFieldCollider(const HSceneObject& parent);
 
         /** @copydoc CCollider::CreateInternal */
         SPtr<Collider> CreateInternal() override;
@@ -51,9 +57,6 @@ namespace te
 
         /**	Returns the HeightField collider that this component wraps. */
         HeightFieldCollider* GetInternal() const { return static_cast<HeightFieldCollider*>(_internal.get()); }
-
-    protected:
-        CHeightFieldCollider(); // Serialization only
 
     protected:
         HPhysicsHeightField _heightField;

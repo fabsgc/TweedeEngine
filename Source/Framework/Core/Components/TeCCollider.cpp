@@ -27,7 +27,10 @@ namespace te
     }
 
     CCollider::~CCollider()
-    { }
+    {
+        if (_internal && !_internal->IsDestroyed())
+            _internal->Destroy();
+    }
 
     void CCollider::Initialize()
     { 
@@ -119,9 +122,6 @@ namespace te
             }
         }
     }
-
-    void CCollider::OnInitialized()
-    { }
 
     void CCollider::OnDestroyed()
     {

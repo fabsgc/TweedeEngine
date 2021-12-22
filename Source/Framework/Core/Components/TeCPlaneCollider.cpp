@@ -40,6 +40,17 @@ namespace te
         return parent->GetIsKinematic();
     }
 
+    bool CPlaneCollider::Clone(const HComponent& c, const String& suffix)
+    {
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
+
+        return Clone(static_object_cast<CPlaneCollider>(c), suffix);
+    }
+
     bool CPlaneCollider::Clone(const HPlaneCollider& c, const String& suffix)
     {
         if (c.Empty())

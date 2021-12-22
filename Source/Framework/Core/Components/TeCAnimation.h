@@ -22,14 +22,16 @@ namespace te
         };
 
     public:
-        CAnimation(const HSceneObject& parent);
-        virtual ~CAnimation() = default;
+        ~CAnimation();
 
         /** Return Component type */
         static UINT32 GetComponentType() { return TypeID_Core::TID_CAnimation; }
 
         /** @copydoc Component::Initialize */
         void Initialize() override;
+
+        /** @copydoc Component::Clone */
+        bool Clone(const HComponent& c, const String& suffix = "") override;
 
         /** @copydoc Component::Clone */
         bool Clone(const HAnimation& c, const String& suffix = "");
@@ -132,6 +134,7 @@ namespace te
         using Component::DestroyInternal;
 
         CAnimation();
+        CAnimation(const HSceneObject& parent);
 
         /**
          * Registers a new bone component, creating a new transform mapping from the bone name to the scene object the
@@ -204,15 +207,6 @@ namespace te
         Vector<HBone> FindChildBones();
 
     protected:
-        /** @copydoc Component::Instantiate */
-        void Instantiate() override;
-
-        /** @copydoc Component::OnInitialized */
-        void OnCreated() override { }
-
-        /** @copydoc Component::OnInitialized */
-        void OnInitialized() override;
-
         /** @copydoc Component::OnEnabled */
         void OnEnabled() override;
 
