@@ -14,7 +14,6 @@ namespace te
     class TE_CORE_EXPORT SoftBody : public Body
     {
     public:
-        virtual ~SoftBody() = default;
 
         /**
          * Creates a new softbody.

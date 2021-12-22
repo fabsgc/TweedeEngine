@@ -1202,7 +1202,7 @@ namespace te
 
         // LOAD MESH AND TEXTURES RESOURCES
         // ######################################################
-        _loadedMeshCube = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Primitives/cube.obj", meshImportOptions)->Entries[0].Res);
+        //_loadedMeshCube = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Primitives/cube.obj", meshImportOptions)->Entries[0].Res);
         _loadedMeshPlane = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Primitives/plane.obj", meshImportOptions)->Entries[0].Res);
         _loadedSkyboxTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_day_medium.png", textureCubeMapImportOptions);
         _loadedSkyboxIrradianceTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_day_irradiance_small.png", textureCubeMapImportOptions);

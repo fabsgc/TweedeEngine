@@ -17,7 +17,6 @@ namespace te
     class TE_CORE_EXPORT RigidBody : public Body
     {
     public:
-        virtual ~RigidBody() = default;
 
         /**
          * Creates a new rigidbody.
