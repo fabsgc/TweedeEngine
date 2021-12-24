@@ -633,15 +633,15 @@ namespace te
                     {
                         if (ImGui::MenuItem(ICON_FA_BOXES " Rigid Body"))
                             CreateRigidBody();
-                        if (ImGui::BeginMenu(ICON_FA_LINK " Soft Body"))
+                        if (ImGui::BeginMenu(ICON_FA_BOXES " Soft Body"))
                         {
-                            if (ImGui::MenuItem(ICON_FA_LINK " Mesh Soft Body"))
+                            if (ImGui::MenuItem(ICON_FA_BOXES " Mesh Soft Body"))
                                 CreateSoftBody(TID_CMeshSoftBody);
-                            if (ImGui::MenuItem(ICON_FA_LINK " Ellipsoid Soft Body"))
+                            if (ImGui::MenuItem(ICON_FA_BOXES " Ellipsoid Soft Body"))
                                 CreateSoftBody(TID_CEllipsoidSoftBody);
-                            if (ImGui::MenuItem(ICON_FA_LINK " Rope Soft Body"))
+                            if (ImGui::MenuItem(ICON_FA_BOXES " Rope Soft Body"))
                                 CreateSoftBody(TID_CRopeSoftBody);
-                            if (ImGui::MenuItem(ICON_FA_LINK " Patch Soft Body"))
+                            if (ImGui::MenuItem(ICON_FA_BOXES " Patch Soft Body"))
                                 CreateSoftBody(TID_CPatchSoftBody);
 
                             ImGui::EndMenu();
