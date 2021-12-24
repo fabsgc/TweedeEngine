@@ -12,9 +12,6 @@ namespace te
     class TE_CORE_EXPORT HingeJoint : public Joint
     {
     public:
-        HingeJoint();
-        virtual ~HingeJoint() = default;
-
         /** @copydoc Joint::Update */
         virtual void Update() = 0;
 
@@ -88,6 +85,9 @@ namespace te
          * @param[in]	scene		Scene to which to add the joint.
          */
         static SPtr<HingeJoint> Create(PhysicsScene& scene);
+
+    protected:
+        HingeJoint();
 
     protected:
         float _softnessLimit = 1.0f;

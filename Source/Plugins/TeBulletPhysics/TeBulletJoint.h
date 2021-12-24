@@ -40,7 +40,6 @@ namespace te
 
     protected:
         friend class BulletRigidBody;
-        friend class BulletSoftBody;
         friend class Joint;
 
         BulletPhysics* _physics;

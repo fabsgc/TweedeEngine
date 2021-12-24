@@ -11,13 +11,10 @@ namespace te
     class TE_CORE_EXPORT HeightFieldCollider : public Collider
     {
     public:
-        HeightFieldCollider();
-        ~HeightFieldCollider() = default;
-
         /**
          * Sets a texture that represents the vertical position of the terrain
          */
-        virtual void SetHeightField(const HPhysicsHeightField& heightField) { _heightField = heightField; }
+        virtual void SetHeightField(const HPhysicsHeightField& heightField) { _heightField = heightField; OnHeightFieldChanged(); }
 
         /** @copydoc SetHeightField */
         HPhysicsHeightField GetHeightField() const { return _heightField; }
@@ -25,7 +22,7 @@ namespace te
         /**
          * Specify the minimum height of this terrain
          */
-        virtual void SetMinHeight(const float& minHeight) { _minHeight = minHeight; }
+        virtual void SetMinHeight(const float& minHeight) { _minHeight = minHeight; OnHeightFieldChanged(); }
 
         /** @copydoc SetMinHeight */
         float GetMinHeight() { return _minHeight; }
@@ -33,7 +30,7 @@ namespace te
         /**
          * Specify the maximum height of this terrain
          */
-        virtual void SetMaxHeight(const float& maxHeight) { _maxHeight = maxHeight; }
+        virtual void SetMaxHeight(const float& maxHeight) { _maxHeight = maxHeight; OnHeightFieldChanged(); }
 
         /** @copydoc SetMinHeight */
         float GetMaxHeight() { return _maxHeight; }
@@ -49,6 +46,8 @@ namespace te
             const Quaternion& rotation = Quaternion::IDENTITY);
 
     protected:
+        HeightFieldCollider();
+
         /**
          * Triggered by the resources system whenever the attached height field changed (e.g. was reimported) or loaded.
          */

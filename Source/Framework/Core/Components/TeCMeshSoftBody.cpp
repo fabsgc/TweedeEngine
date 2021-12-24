@@ -3,10 +3,6 @@
 #include "Scene/TeSceneObject.h"
 #include "Physics/TePhysics.h"
 
-#include <functional>
-
-using namespace std::placeholders;
-
 namespace te
 {
     CMeshSoftBody::CMeshSoftBody()
@@ -19,6 +15,65 @@ namespace te
         : CSoftBody(parent, (UINT32)TID_CMeshSoftBody)
     {
         SetName("MeshSoftBody");
+    }
+
+    void CMeshSoftBody::Initialize()
+    {
+        OnEnabled();
+        CSoftBody::Initialize();
+    }
+
+    bool CMeshSoftBody::Clone(const HComponent& c, const String& suffix)
+    {
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
+
+        return Clone(static_object_cast<CMeshSoftBody>(c), suffix);
+    }
+
+    bool CMeshSoftBody::Clone(const HMeshSoftBody& c, const String& suffix)
+    {
+        if (c.Empty())
+        {
+            TE_DEBUG("Tries to clone a component using an invalid component handle");
+            return false;
+        }
+
+        if (CSoftBody::Clone(static_object_cast<CSoftBody>(c), suffix))
+        {
+            _mesh = c->_mesh;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    void CMeshSoftBody::SetMesh(const HPhysicsMesh& mesh)
+    {
+        if (_mesh == mesh)
+            return;
+
+        _mesh = mesh;
+
+        if (_internal != nullptr)
+            std::static_pointer_cast<MeshSoftBody>(_internal)->SetMesh(mesh);
+    }
+
+    void CMeshSoftBody::Update()
+    {
+        CSoftBody::Update();
+    }
+
+    void CMeshSoftBody::OnEnabled()
+    {
+        CSoftBody::OnEnabled();
+
+        if (_internal)
+            std::static_pointer_cast<MeshSoftBody>(_internal)->SetMesh(_mesh);
     }
 
     SPtr<Body> CMeshSoftBody::CreateInternal()

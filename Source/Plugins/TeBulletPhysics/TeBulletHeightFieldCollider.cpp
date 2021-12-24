@@ -29,24 +29,6 @@ namespace te
         UpdateCollider();
     }
 
-    void BulletHeightFieldCollider::SetHeightField(const HPhysicsHeightField& heightField)
-    {
-        HeightFieldCollider::SetHeightField(heightField);
-        UpdateCollider();
-    }
-
-    void BulletHeightFieldCollider::SetMinHeight(const float& minHeight)
-    {
-        HeightFieldCollider::SetMinHeight(minHeight);
-        UpdateCollider();
-    }
-
-    void BulletHeightFieldCollider::SetMaxHeight(const float& maxHeight)
-    {
-        HeightFieldCollider::SetMaxHeight(maxHeight);
-        UpdateCollider();
-    }
-
     void BulletHeightFieldCollider::UpdateCollider()
     {
         if (_shape)

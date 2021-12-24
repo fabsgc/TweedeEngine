@@ -14,9 +14,6 @@ namespace te
     class TE_CORE_EXPORT SphericalJoint : public Joint
     {
     public:
-        SphericalJoint();
-        virtual ~SphericalJoint() = default;
-
         /** @copydoc Joint::Update */
         virtual void Update() = 0;
 
@@ -26,5 +23,8 @@ namespace te
          * @param[in]	scene		Scene to which to add the joint.
          */
         static SPtr<SphericalJoint> Create(PhysicsScene& scene);
+
+    protected:
+        SphericalJoint();
     };
 }

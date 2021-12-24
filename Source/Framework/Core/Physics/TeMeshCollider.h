@@ -11,13 +11,10 @@ namespace te
     class TE_CORE_EXPORT MeshCollider : public Collider
     {
     public:
-        MeshCollider();
-        ~MeshCollider() = default;
-
         /**
          * Sets a mesh that represents the collider geometry. This can be a generic triangle mesh, or and convex mesh.
          */
-        virtual void SetMesh(const HPhysicsMesh& mesh) { _mesh = mesh; }
+        virtual void SetMesh(const HPhysicsMesh& mesh) { _mesh = mesh; OnMeshChanged(); }
 
         /** @copydoc SetMesh */
         HPhysicsMesh GetMesh() const { return _mesh; }
@@ -44,6 +41,8 @@ namespace te
             const Quaternion& rotation = Quaternion::IDENTITY);
 
     protected:
+        MeshCollider();
+
         /**
          * Triggered by the resources system whenever the attached collision mesh changed (e.g. was reimported) or loaded.
          */
@@ -51,7 +50,6 @@ namespace te
 
     protected:
         HPhysicsMesh _mesh;
-
         PhysicsMeshType _collisionType = PhysicsMeshType::Convex;
     };
 }

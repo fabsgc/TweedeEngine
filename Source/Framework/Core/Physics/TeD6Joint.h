@@ -14,9 +14,6 @@ namespace te
     class TE_CORE_EXPORT D6Joint : public Joint
     {
     public:
-        D6Joint();
-        ~D6Joint() = default;
-
         /** @copydoc Joint::Update */
         virtual void Update() = 0;
 
@@ -86,6 +83,9 @@ namespace te
          * @param[in]	scene		Scene to which to add the joint.
          */
         static SPtr<D6Joint> Create(PhysicsScene& scene);
+
+    protected:
+        D6Joint();
 
     protected:
         float _lowerLinLimit = 0.0f;

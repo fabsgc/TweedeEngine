@@ -99,9 +99,6 @@ namespace te
         /** @copydoc RigidBody::Create */
         virtual SPtr<RigidBody> CreateRigidBody(const HSceneObject& linkedSO) = 0;
 
-        /** @copydoc SoftBody::Create */
-        virtual SPtr<SoftBody> CreateSoftBody(const HSceneObject& linkedSO) = 0;
-
         /** @copydoc MeshSoftBody::Create */
         virtual SPtr<MeshSoftBody> CreateMeshSoftBody(const HSceneObject& linkedSO) = 0;
 

@@ -12,9 +12,6 @@ namespace te
     class TE_CORE_EXPORT ConeTwistJoint : public Joint
     {
     public:
-        ConeTwistJoint();
-        virtual ~ConeTwistJoint() = default;
-
         /** @copydoc Joint::Update */
         virtual void Update() = 0;
 
@@ -114,6 +111,9 @@ namespace te
          * @param[in]	scene		Scene to which to add the joint.
          */
         static SPtr<ConeTwistJoint> Create(PhysicsScene& scene);
+
+    protected:
+        ConeTwistJoint();
 
     protected:
         float _damping = 0.0f;

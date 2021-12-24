@@ -11,9 +11,6 @@ namespace te
     class TE_CORE_EXPORT CapsuleCollider : public Collider
     {
     public:
-        CapsuleCollider();
-        ~CapsuleCollider() = default;
-
         /** Determine the radius of the capsule geometry */
         virtual void SetRadius(float radius) = 0;
 
@@ -37,5 +34,8 @@ namespace te
          */
         static SPtr<CapsuleCollider> Create(PhysicsScene& scene, float radius = 1.0f, float height = 1.0f, 
             const Vector3& position = Vector3::ZERO, const Quaternion& rotation = Quaternion::IDENTITY);
+
+    protected:
+        CapsuleCollider();
     };
 }

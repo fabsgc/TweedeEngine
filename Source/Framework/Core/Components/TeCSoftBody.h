@@ -3,8 +3,6 @@
 #include "TeCorePrerequisites.h"
 #include "Physics/TeSoftBody.h"
 #include "Components/TeCBody.h"
-#include "Components/TeCJoint.h"
-#include "Physics/TePhysicsMesh.h"
 
 namespace te
 {
@@ -21,23 +19,11 @@ namespace te
         /** Return Component type */
         static UINT32 GetComponentType() { return TypeID_Core::TID_CSoftBody; }
 
-        /** @copydoc Component::Clone */
-        bool Clone(const HComponent& c, const String& suffix = "") override;
-
-        /** @copydoc Component::Clone */
-        bool Clone(const HSoftBody& c, const String& suffix = "");
-
         /** @copydoc Component::Initialize */
         void Initialize() override;
 
         /** @copydoc Component::Update */
         void Update() override;
-
-        /** @copydoc SoftBody::SetMesh */
-        void SetMesh(const HPhysicsMesh& mesh);
-
-        /** @copydoc SoftBody::GetMesh */
-        HPhysicsMesh GetMesh() const { return _mesh; }
 
         /** @copydoc SoftBody::GetMesh */
         void SetScale(const Vector3& scale);
@@ -51,8 +37,11 @@ namespace te
     protected:
         friend class SceneObject;
 
-        CSoftBody(UINT32 type = TID_CSoftBody); // Serialization only
-        CSoftBody(const HSceneObject& parent, UINT32 type = TID_CSoftBody);
+        explicit CSoftBody(UINT32 type); // Serialization only
+        CSoftBody(const HSceneObject& parent, UINT32 type);
+
+        /** @copydoc Component::Clone */
+        bool Clone(const HSoftBody& c, const String& suffix = "");
 
         /** @copydoc Component::OnDestroyed */
         void OnDestroyed() override;
@@ -66,9 +55,6 @@ namespace te
         /** @copydoc Component::OnTransformChanged */
         void OnTransformChanged(TransformChangedFlags flags) override;
 
-        /** @copydoc CBody::CreateInternal */
-        SPtr<Body> CreateInternal() override;
-
         /** Destroys the internal SoftBody representation. */
         virtual void DestroyInternal() override;
 
@@ -76,7 +62,6 @@ namespace te
         void ProcessCollisionData(const CollisionDataRaw& raw, CollisionData& output) override;
 
     protected:
-        HPhysicsMesh _mesh;
         Vector3 _scale = Vector3::ONE;
     };
 }

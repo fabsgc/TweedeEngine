@@ -17,15 +17,6 @@ namespace te
         /** @copydoc HeightFieldCollider::SetScale */
         void SetScale(const Vector3& scale) override;
 
-        /** @copydoc HeightFieldCollider::SetHeightField */
-        void SetHeightField(const HPhysicsHeightField& heightField) override;
-
-        /** @copydoc HeightFieldCollider::SetMinHeight */
-        void SetMinHeight(const float& minHeight) override;
-
-        /** @copydoc HeightFieldCollider::SetMinHeight */
-        void SetMaxHeight(const float& minHeight) override;
-
     private:
         /** @copydoc BulletCollider::UpdateCollider */
         void UpdateCollider() override;

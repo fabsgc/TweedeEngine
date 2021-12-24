@@ -30,17 +30,6 @@ namespace te
         CBody::Initialize();
     }
 
-    bool CSoftBody::Clone(const HComponent& c, const String& suffix)
-    {
-        if (c.Empty())
-        {
-            TE_DEBUG("Tries to clone a component using an invalid component handle");
-            return false;
-        }
-
-        return Clone(static_object_cast<CSoftBody>(c), suffix);
-    }
-
     bool CSoftBody::Clone(const HSoftBody& c, const String& suffix)
     {
         if (c.Empty())
@@ -51,24 +40,11 @@ namespace te
 
         if(CBody::Clone(static_object_cast<CBody>(c), suffix))
         {
-            _mesh = c->_mesh;
             _scale = c->_scale;
-
             return true;
         }
 
         return false;
-    }
-
-    void CSoftBody::SetMesh(const HPhysicsMesh& mesh)
-    {
-        if (_mesh == mesh)
-            return;
-
-        _mesh = mesh;
-
-        if (_internal != nullptr)
-            std::static_pointer_cast<SoftBody>(_internal)->SetMesh(mesh);
     }
 
     void CSoftBody::SetScale(const Vector3& scale)
@@ -122,7 +98,6 @@ namespace te
         _internal->SetCollisionReportMode(_collisionReportMode);
         _internal->SetMass(_mass);
 
-        std::static_pointer_cast<SoftBody>(_internal)->SetMesh(_mesh);
         std::static_pointer_cast<SoftBody>(_internal)->SetScale(_scale);
     }
 
@@ -141,14 +116,6 @@ namespace te
 
         const Transform& tfrm = SO()->GetTransform();
         _internal->SetTransform(tfrm.GetPosition(), tfrm.GetRotation());
-    }
-
-    SPtr<Body> CSoftBody::CreateInternal()
-    {
-        SPtr<SoftBody> body = SoftBody::Create(SO());
-        body->SetOwner(PhysicsOwnerType::Component, this);
-
-        return body;
     }
 
     void CSoftBody::DestroyInternal()

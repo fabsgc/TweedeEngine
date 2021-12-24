@@ -139,9 +139,6 @@ namespace te
         /** @copydoc PhysicsScene::CreateRigidBody */
         SPtr<RigidBody> CreateRigidBody(const HSceneObject& linkedSO) override;
 
-        /** @copydoc PhysicsScene::CreateSoftBody */
-        SPtr<SoftBody> CreateSoftBody(const HSceneObject& linkedSO) override;
-
         /** @copydoc PhysicsScene::CreateMeshSoftBody */
         SPtr<MeshSoftBody> CreateMeshSoftBody(const HSceneObject& linkedSO) override;
 

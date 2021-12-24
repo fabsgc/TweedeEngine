@@ -67,7 +67,7 @@ namespace te
         void* GetOwner(PhysicsOwnerType type) const { return _owner.Type == type ? _owner.OwnerData : nullptr; }
 
     protected:
-        Collider(UINT32 type);
+        explicit Collider(UINT32 type);
 
     protected:
         FCollider* _internal = nullptr;

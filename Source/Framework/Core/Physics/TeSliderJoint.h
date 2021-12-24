@@ -11,9 +11,6 @@ namespace te
     class TE_CORE_EXPORT SliderJoint : public Joint
     {
     public:
-        SliderJoint();
-        virtual ~SliderJoint() = default;
-
         /** @copydoc Joint::Update */
         virtual void Update() = 0;
 
@@ -191,6 +188,9 @@ namespace te
          * @param[in]	scene		Scene to which to add the joint.
          */
         static SPtr<SliderJoint> Create(PhysicsScene& scene);
+
+    protected:
+        SliderJoint();
 
     protected:
         float _lowerLinLimit = 1.0f;

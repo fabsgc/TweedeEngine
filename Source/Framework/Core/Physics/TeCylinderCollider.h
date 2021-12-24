@@ -11,9 +11,6 @@ namespace te
     class TE_CORE_EXPORT CylinderCollider : public Collider
     {
     public:
-        CylinderCollider();
-        ~CylinderCollider() = default;
-
         /** Determines the extents (half size) of the geometry of the cylinder. */
         virtual void SetExtents(const Vector3& extents) = 0;
 
@@ -30,5 +27,8 @@ namespace te
          */
         static SPtr<CylinderCollider> Create(PhysicsScene& scene, const Vector3& extents = Vector3::ZERO, 
             const Vector3& position = Vector3::ZERO, const Quaternion& rotation = Quaternion::IDENTITY);
+
+    protected:
+        CylinderCollider();
     };
 }

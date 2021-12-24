@@ -11,9 +11,6 @@ namespace te
     class TE_CORE_EXPORT SphereCollider : public Collider
     {
     public:
-        SphereCollider();
-        ~SphereCollider() = default;
-
         /** Determines the radius of the sphere geometry. */
         virtual void SetRadius(float radius) = 0;
 
@@ -30,5 +27,8 @@ namespace te
          */
         static SPtr<SphereCollider> Create(PhysicsScene& scene, float radius = 0.0f,
             const Vector3& position = Vector3::ZERO, const Quaternion& rotation = Quaternion::IDENTITY);
+
+    protected:
+        SphereCollider();
     };
 }

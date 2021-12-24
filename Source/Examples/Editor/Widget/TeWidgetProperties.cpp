@@ -31,6 +31,10 @@
 #include "Components/TeCAudioSource.h"
 #include "Components/TeCRigidBody.h"
 #include "Components/TeCSoftBody.h"
+#include "Components/TeCMeshSoftBody.h"
+#include "Components/TeCEllipsoidSoftBody.h"
+#include "Components/TeCRopeSoftBody.h"
+#include "Components/TeCPatchSoftBody.h"
 #include "Components/TeCBoxCollider.h"
 #include "Components/TeCCapsuleCollider.h"
 #include "Components/TeCConeCollider.h"
@@ -770,9 +774,35 @@ namespace te
         bool hasChanged = false;
         const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
         SPtr<CSoftBody> softBody = std::static_pointer_cast<CSoftBody>(_selections.ClickedComponent);
-        HPhysicsMesh mesh = softBody->GetMesh();
 
         if (ImGui::CollapsingHeader("Soft Body", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            // Scale
+            {
+                Vector3 scale = softBody->GetScale();
+                if (ImGuiExt::RenderVector3(scale, "##soft_body_option_scale", " Scale", 60.0f))
+                {
+                    softBody->SetScale(scale);
+                    hasChanged = true;
+                }
+            }
+            ImGui::Separator();
+
+            if (ShowBody(softBody))
+                hasChanged = true;
+        }
+
+        return hasChanged;
+    }
+
+    bool WidgetProperties::ShowCMeshSoftBodyProperties()
+    {
+        bool hasChanged = false;
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
+        SPtr<CMeshSoftBody> softBody = std::static_pointer_cast<CMeshSoftBody>(_selections.ClickedComponent);
+        HPhysicsMesh mesh = softBody->GetMesh();
+
+        if (ImGui::CollapsingHeader("Mesh Soft Body", ImGuiTreeNodeFlags_DefaultOpen))
         {
             // PhysicsMesh
             {
@@ -789,7 +819,7 @@ namespace te
                 meshesOptions.AddOption(emptyMesh, ICON_FA_TIMES_CIRCLE " No Physic Mesh");
                 meshesOptions.AddOption(UUID::EMPTY, ICON_FA_FOLDER_OPEN " Load");
 
-                if (ImGuiExt::RenderOptionCombo<UUID>(&meshUUID, "##soft_body_physic_mesh_option", "Physic Mesh", meshesOptions, width))
+                if (ImGuiExt::RenderOptionCombo<UUID>(&meshUUID, "##soft_mes_body_physic_mesh_option", "Physic Mesh", meshesOptions, width))
                 {
                     if (meshUUID == loadPhysicsMesh)
                     {
@@ -807,47 +837,66 @@ namespace te
                     }
                 }
             }
-            ImGui::Separator();
-
-            // Scale
-            {
-                Vector3 scale = softBody->GetScale();
-                if (ImGuiExt::RenderVector3(scale, "##soft_body_option_scale", " Scale", 60.0f))
-                {
-                    softBody->SetScale(scale);
-                    hasChanged = true;
-                }
-            }
-            ImGui::Separator();
-
-            if (ShowLoadMesh())
-                hasChanged = true;
-
-            if (ShowBody(softBody))
-                hasChanged = true;
         }
+
+        if (ShowCSoftBodyProperties())
+            hasChanged = true;
+
+        if (ShowLoadMesh())
+            hasChanged = true;
 
         return hasChanged;
     }
 
-    bool WidgetProperties::ShowCMeshSoftBodyProperties()
-    {
-        return ShowCSoftBodyProperties();
-    }
-
     bool WidgetProperties::ShowCEllipsoidSoftBodyProperties()
     {
-        return ShowCSoftBodyProperties();
+        bool hasChanged = false;
+        /*const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
+        SPtr<CEllipsoidSoftBody> softBody = std::static_pointer_cast<CEllipsoidSoftBody>(_selections.ClickedComponent);
+
+        if (ImGui::CollapsingHeader("Ellipsoid Soft Body", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            // TODO
+        }*/
+
+        if (ShowCSoftBodyProperties())
+            hasChanged = true;
+
+        return hasChanged;
     }
 
     bool WidgetProperties::ShowCRopeSoftBodyProperties()
     {
-        return ShowCSoftBodyProperties();
+        bool hasChanged = false;
+        /*const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
+        SPtr<CRopeSoftBody> softBody = std::static_pointer_cast<CRopeSoftBody>(_selections.ClickedComponent);
+
+        if (ImGui::CollapsingHeader("Rope Soft Body", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            // TODO
+        }*/
+
+        if (ShowCSoftBodyProperties())
+            hasChanged = true;
+
+        return hasChanged;
     }
 
     bool WidgetProperties::ShowCPatchSoftBodyProperties()
     {
-        return ShowCSoftBodyProperties();
+        bool hasChanged = false;
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
+        /*SPtr<CPatchSoftBody> softBody = std::static_pointer_cast<CPatchSoftBody>(_selections.ClickedComponent);
+
+        if (ImGui::CollapsingHeader("Rope Soft Body", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            // TODO
+        }*/
+
+        if (ShowCSoftBodyProperties())
+            hasChanged = true;
+
+        return hasChanged;
     }
 
     bool WidgetProperties::ShowCBoxColliderProperties()
@@ -2921,9 +2970,9 @@ namespace te
                                 meshCollider->SetMesh(physicsMesh);
                                 meshLoaded = true;
                             }
-                            else if (_selections.ClickedComponent->GetCoreType() == TID_CSoftBody)
+                            else if (_selections.ClickedComponent->GetCoreType() == TID_CMeshSoftBody)
                             {
-                                SPtr<CSoftBody> softBody = std::static_pointer_cast<CSoftBody>(_selections.ClickedComponent);
+                                SPtr<CMeshSoftBody> softBody = std::static_pointer_cast<CMeshSoftBody>(_selections.ClickedComponent);
 
                                 softBody->SetMesh(physicsMesh);
                                 meshLoaded = true;

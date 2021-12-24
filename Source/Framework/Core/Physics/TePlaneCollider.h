@@ -11,9 +11,6 @@ namespace te
     class TE_CORE_EXPORT PlaneCollider : public Collider
     {
     public:
-        PlaneCollider();
-        ~PlaneCollider() = default;
-
         /** Determines the normal of the plane geometry.  */
         virtual void SetNormal(const Vector3& normal) = 0;
 
@@ -30,5 +27,8 @@ namespace te
          */
         static SPtr<PlaneCollider> Create(PhysicsScene& scene, const Vector3& normal = Vector3(0.0f, 1.0f, 0.0f), 
             const Vector3& position = Vector3::ZERO, const Quaternion& rotation = Quaternion::IDENTITY);
+
+    protected:
+        PlaneCollider();
     };
 }

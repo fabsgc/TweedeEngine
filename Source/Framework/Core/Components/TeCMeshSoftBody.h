@@ -18,13 +18,37 @@ namespace te
         /** Return Component type */
         static UINT32 GetComponentType() { return TypeID_Core::TID_CMeshSoftBody; }
 
+        /** @copydoc Component::Initialize */
+        void Initialize() override;
+
+        /** @copydoc Component::Update */
+        void Update() override;
+
+        /** @copydoc Component::Clone */
+        bool Clone(const HComponent & c, const String & suffix = "");
+
+        /** @copydoc Component::Clone */
+        bool Clone(const HMeshSoftBody& c, const String& suffix = "");
+
+        /** @copydoc MeshSoftBody::SetMesh */
+        void SetMesh(const HPhysicsMesh& mesh);
+
+        /** @copydoc MeshSoftBody::GetMesh */
+        HPhysicsMesh GetMesh() const { return _mesh; }
+
     protected:
         friend class SceneObject;
 
         CMeshSoftBody(); // Serialization only
-        CMeshSoftBody(const HSceneObject& parent);
+        explicit CMeshSoftBody(const HSceneObject& parent);
 
         /** @copydoc CBody::CreateInternal */
         SPtr<Body> CreateInternal() override;
+
+        /** @copydoc Component::OnEnabled */
+        void OnEnabled() override;
+
+    protected:
+        HPhysicsMesh _mesh;
     };
 }

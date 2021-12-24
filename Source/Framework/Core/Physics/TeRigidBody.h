@@ -71,6 +71,6 @@ namespace te
          *							will be transfered to this scene object (the movement/rotation resulting from
          *							those updates).
          */
-        RigidBody(const HSceneObject& linkedSO);
+        explicit RigidBody(const HSceneObject& linkedSO);
     };
 }

@@ -14,6 +14,9 @@ namespace te
 
     BulletFJoint::BulletFJoint()
         : FJoint()
+        , _physics(nullptr)
+        , _scene(nullptr)
+        , _parent(nullptr)
     { }
 
     BulletFJoint::~BulletFJoint()
