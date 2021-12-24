@@ -65,6 +65,18 @@ namespace te
         bool ShowCSoftBodyProperties();
 
         /** @copydoc WidgetProperties::ShowSceneObjectProperties */
+        bool ShowCMeshSoftBodyProperties();
+
+        /** @copydoc WidgetProperties::ShowSceneObjectProperties */
+        bool ShowCEllipsoidSoftBodyProperties();
+
+        /** @copydoc WidgetProperties::ShowSceneObjectProperties */
+        bool ShowCRopeSoftBodyProperties();
+
+        /** @copydoc WidgetProperties::ShowSceneObjectProperties */
+        bool ShowCPatchSoftBodyProperties();
+
+        /** @copydoc WidgetProperties::ShowSceneObjectProperties */
         bool ShowCBoxColliderProperties();
 
         /** @copydoc WidgetProperties::ShowSceneObjectProperties */

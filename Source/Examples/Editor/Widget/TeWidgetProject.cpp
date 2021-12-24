@@ -16,7 +16,10 @@
 #include "Components/TeCAudioSource.h"
 #include "Components/TeCAudioListener.h"
 #include "Components/TeCRigidBody.h"
-#include "Components/TeCSoftBody.h"
+#include "Components/TeCMeshSoftBody.h"
+#include "Components/TeCEllipsoidSoftBody.h"
+#include "Components/TeCRopeSoftBody.h"
+#include "Components/TeCPatchSoftBody.h"
 #include "Components/TeCConeTwistJoint.h"
 #include "Components/TeCD6Joint.h"
 #include "Components/TeCHingeJoint.h"
@@ -336,7 +339,10 @@ namespace te
             case TID_CAudioListener:
             case TID_CAudioSource:
             case TID_CRigidBody:
-            case TID_CSoftBody:
+            case TID_CMeshSoftBody:
+            case TID_CEllipsoidSoftBody:
+            case TID_CRopeSoftBody:
+            case TID_CPatchSoftBody:
             case TID_CConeTwistJoint:
             case TID_CD6Joint:
             case TID_CHingeJoint:
@@ -462,12 +468,30 @@ namespace te
                 }
 
                 // if we've moved a softBody call OnEnabled()
-                if (currentCO->GetCoreType() == TID_CSoftBody)
+                if (currentCO->GetCoreType() == TID_CMeshSoftBody)
                 {
-                    HSoftBody softBody = static_object_cast<CSoftBody>(currentCO);
+                    HMeshSoftBody softBody = static_object_cast<CMeshSoftBody>(currentCO);
                     softBody->Initialize();
                     softBody->SetLinkedSO(currentCO->SO());
                 }
+                /*if (currentCO->GetCoreType() == TID_CEllipsoidSoftBody)
+                {
+                    HEllipsoidSoftBody softBody = static_object_cast<CEllipsoidSoftBody>(currentCO);
+                    softBody->Initialize();
+                    softBody->SetLinkedSO(currentCO->SO());
+                }
+                if (currentCO->GetCoreType() == TID_CRopeSoftBody)
+                {
+                    HRopeSoftBody softBody = static_object_cast<CRopeSoftBody>(currentCO);
+                    softBody->Initialize();
+                    softBody->SetLinkedSO(currentCO->SO());
+                }
+                if (currentCO->GetCoreType() == TID_CPatchSoftBody)
+                {
+                    HPatchSoftBody softBody = static_object_cast<CPatchSoftBody>(currentCO);
+                    softBody->Initialize();
+                    softBody->SetLinkedSO(currentCO->SO());
+                } // TODO */
 
                 // if we've moved a collider call RestoreInternal()
                 if (currentCO->GetCoreType() == TID_CBoxCollider)
@@ -609,8 +633,19 @@ namespace te
                     {
                         if (ImGui::MenuItem(ICON_FA_BOXES " Rigid Body"))
                             CreateRigidBody();
-                        if (ImGui::MenuItem(ICON_FA_BOXES " Soft Body"))
-                            CreateSoftBody();
+                        if (ImGui::BeginMenu(ICON_FA_LINK " Soft Body"))
+                        {
+                            if (ImGui::MenuItem(ICON_FA_LINK " Mesh Soft Body"))
+                                CreateSoftBody(TID_CMeshSoftBody);
+                            if (ImGui::MenuItem(ICON_FA_LINK " Ellipsoid Soft Body"))
+                                CreateSoftBody(TID_CEllipsoidSoftBody);
+                            if (ImGui::MenuItem(ICON_FA_LINK " Rope Soft Body"))
+                                CreateSoftBody(TID_CRopeSoftBody);
+                            if (ImGui::MenuItem(ICON_FA_LINK " Patch Soft Body"))
+                                CreateSoftBody(TID_CPatchSoftBody);
+
+                            ImGui::EndMenu();
+                        }
 
                         if (ImGui::BeginMenu(ICON_FA_LINK " Joint"))
                         {
@@ -942,7 +977,10 @@ namespace te
             return;
 
         if (!_selections.ClickedSceneObject->GetComponent<CRigidBody>().Empty() ||
-            !_selections.ClickedSceneObject->GetComponent<CSoftBody>().Empty())
+            !_selections.ClickedSceneObject->GetComponent<CMeshSoftBody>().Empty())
+            /*!_selections.ClickedSceneObject->GetComponent<CEllipsoidSoftBody>().Empty() ||
+            !_selections.ClickedSceneObject->GetComponent<CRopeSoftBody>().Empty() ||
+            !_selections.ClickedSceneObject->GetComponent<CPatchSoftBody>().Empty()) // TODO */
         {
             return;
         }
@@ -958,24 +996,65 @@ namespace te
         gEditor().GetSettings().State = Editor::EditorState::Modified;
     }
 
-    void WidgetProject::CreateSoftBody()
+    void WidgetProject::CreateSoftBody(TypeID_Core type)
     {
         if (!_selections.ClickedSceneObject || _selections.ClickedComponent)
             return;
 
         if (!_selections.ClickedSceneObject->GetComponent<CRigidBody>().Empty() ||
-            !_selections.ClickedSceneObject->GetComponent<CSoftBody>().Empty())
+            !_selections.ClickedSceneObject->GetComponent<CMeshSoftBody>().Empty())
+            /*!_selections.ClickedSceneObject->GetComponent<CEllipsoidSoftBody>().Empty() ||
+            !_selections.ClickedSceneObject->GetComponent<CRopeSoftBody>().Empty() ||
+            !_selections.ClickedSceneObject->GetComponent<CPatchSoftBody>().Empty()) // TODO */
         {
             return;
         }
 
-        HSoftBody softBody = _selections.ClickedSceneObject->AddComponent<CSoftBody>();
-        softBody.Get()->SetName("Soft Body");
-        softBody.Get()->Initialize();
+        switch (type)
+        {
+            case TID_CMeshSoftBody:
+            {
+                HMeshSoftBody softBody = _selections.ClickedSceneObject->AddComponent<CMeshSoftBody>();
+                softBody.Get()->SetName("Mesh Soft Body");
+                softBody.Get()->Initialize();
+                _selections.ClickedComponent = softBody.GetInternalPtr();
+            }
+            break;
+
+            case TID_CEllipsoidSoftBody:
+            {
+                /*HEllipsoidSoftBody softBody = _selections.ClickedSceneObject->AddComponent<CEllipsoidSoftBody>();
+                softBody.Get()->SetName("Ellipsoid Soft Body");
+                softBody.Get()->Initialize();
+                _selections.ClickedComponent = softBody.GetInternalPtr(); // TODO */
+            }
+            break;
+
+            case TID_CRopeSoftBody:
+            {
+                /*HRopeSoftBody softBody = _selections.ClickedSceneObject->AddComponent<CRopeSoftBody>();
+                softBody.Get()->SetName("Rope Soft Body");
+                softBody.Get()->Initialize();
+                _selections.ClickedComponent = softBody.GetInternalPtr(); // TODO */
+            }
+            break;
+
+            case TID_CPatchSoftBody:
+            {
+                /*HPatchSoftBody softBody = _selections.ClickedSceneObject->AddComponent<CPatchSoftBody>();
+                softBody.Get()->SetName("Patch Soft Body");
+                softBody.Get()->Initialize();
+                _selections.ClickedComponent = softBody.GetInternalPtr(); // TODO */
+            }
+            break;
+
+            default:
+            break;
+        }
 
         _expandToSelection = true;
         _handleSelectionWindowSwitch = true;
-        _selections.ClickedComponent = softBody.GetInternalPtr();
+        
         gEditor().NeedsRedraw();
         gEditor().GetSettings().State = Editor::EditorState::Modified;
     }
@@ -1190,7 +1269,10 @@ namespace te
             title += String("  ") + ICON_FA_MICROPHONE;
             break;
         case TID_CRigidBody:
-        case TID_CSoftBody:
+        case TID_CMeshSoftBody:
+        case TID_CEllipsoidSoftBody:
+        case TID_CRopeSoftBody:
+        case TID_CPatchSoftBody:
             title += String("  ") + ICON_FA_BOXES;
             break;
         case TID_CConeTwistJoint:

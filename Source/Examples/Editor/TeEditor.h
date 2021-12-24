@@ -311,7 +311,7 @@ namespace te
         HRigidBody _rigidBodyCube;
         HBoxCollider _boxColliderCube;
 
-        HSoftBody _softBodySphere;
+        HMeshSoftBody _softBodySphere;
         HPhysicsMesh _spherePhysicsMesh;
 #endif
     };

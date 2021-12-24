@@ -17,6 +17,9 @@ namespace te
     protected:
         friend class BulletJoint;
 
+        BulletFJoint();
+
+    protected:
         BulletPhysics* _physics;
         BulletScene* _scene;
         BulletJoint* _parent;

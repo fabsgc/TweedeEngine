@@ -99,8 +99,20 @@ namespace te
         /** @copydoc RigidBody::Create */
         virtual SPtr<RigidBody> CreateRigidBody(const HSceneObject& linkedSO) = 0;
 
-        /** @copydoc RigidBody::Create */
+        /** @copydoc SoftBody::Create */
         virtual SPtr<SoftBody> CreateSoftBody(const HSceneObject& linkedSO) = 0;
+
+        /** @copydoc MeshSoftBody::Create */
+        virtual SPtr<MeshSoftBody> CreateMeshSoftBody(const HSceneObject& linkedSO) = 0;
+
+        /** @copydoc EllipsoidSoftBody::Create */
+        virtual SPtr<EllipsoidSoftBody> CreateEllipsoidSoftBody(const HSceneObject& linkedSO) = 0;
+
+        /** @copydoc RopeSoftBody::Create */
+        virtual SPtr<RopeSoftBody> CreateRopeSoftBody(const HSceneObject& linkedSO) = 0;
+
+        /** @copydoc PatchSoftBody::Create */
+        virtual SPtr<PatchSoftBody> CreatePatchSoftBody(const HSceneObject& linkedSO) = 0;
 
         /** Creates a new cone twist joint. */
         virtual SPtr<ConeTwistJoint> CreateConeTwistJoint() = 0;

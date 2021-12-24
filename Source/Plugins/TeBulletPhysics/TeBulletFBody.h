@@ -22,6 +22,8 @@ namespace te
         friend class BulletRigidBody;
         friend class BulletSoftBody;
 
+    protected:
+
         btCollisionObject* _body;
     };
 }

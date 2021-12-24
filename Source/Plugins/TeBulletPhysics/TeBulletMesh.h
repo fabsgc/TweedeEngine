@@ -20,7 +20,7 @@ namespace te
         };
 
     public:
-        BulletMesh(const SPtr<MeshData>& meshData);
+        explicit BulletMesh(const SPtr<MeshData>& meshData);
 
     private:
         /** @copydoc PhysicsMesh::Initialize */

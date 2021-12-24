@@ -77,7 +77,7 @@ namespace te
         void CreateScript();
         void CreateSkybox();
         void CreateRigidBody();
-        void CreateSoftBody();
+        void CreateSoftBody(TypeID_Core type);
         void CreateJoint(TypeID_Core type);
         void CreateCollider(TypeID_Core type);
         void Paste();

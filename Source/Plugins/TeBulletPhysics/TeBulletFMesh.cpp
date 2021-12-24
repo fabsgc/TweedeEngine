@@ -8,10 +8,6 @@
 
 namespace te
 {
-    BulletFMesh::BulletFMesh()
-        : FPhysicsMesh(nullptr)
-    { }
-
     BulletFMesh::BulletFMesh(const SPtr<MeshData>& meshData)
         : FPhysicsMesh(meshData)
     {

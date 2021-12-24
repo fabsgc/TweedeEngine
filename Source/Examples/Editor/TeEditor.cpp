@@ -34,6 +34,7 @@
 #include "Components/TeCAudioListener.h"
 #include "Components/TeCRigidBody.h"
 #include "Components/TeCSoftBody.h"
+#include "Components/TeCMeshSoftBody.h"
 #include "Components/TeCConeTwistJoint.h"
 #include "Components/TeCD6Joint.h"
 #include "Components/TeCHingeJoint.h"
@@ -965,13 +966,43 @@ namespace te
                 }
                 break;
 
-                case TID_CSoftBody:
+                case TID_CMeshSoftBody:
                 {
-                    HSoftBody component = clickedSceneObject->AddComponent<CSoftBody>();
+                    HMeshSoftBody component = clickedSceneObject->AddComponent<CMeshSoftBody>();
                     component->Clone(_selections.CopiedComponent->GetHandle(), "copy");
                     component->Initialize();
                     _selections.ClickedComponent = component.GetInternalPtr();
                     _selections.CopiedComponent = component.GetInternalPtr();
+                }
+                break;
+
+                case TID_CEllipsoidSoftBody:
+                {
+                    /* HEllipsoidSoftBody component = clickedSceneObject->AddComponent<CEllipsoidSoftBody>();
+                    component->Clone(_selections.CopiedComponent->GetHandle(), "copy");
+                    component->Initialize();
+                    _selections.ClickedComponent = component.GetInternalPtr();
+                    _selections.CopiedComponent = component.GetInternalPtr();  // TODO */
+                }
+                break;
+
+                case TID_CRopeSoftBody:
+                {
+                    /*HEllipsoidSoftBody component = clickedSceneObject->AddComponent<CRopeSoftBody>();
+                    component->Clone(_selections.CopiedComponent->GetHandle(), "copy");
+                    component->Initialize();
+                    _selections.ClickedComponent = component.GetInternalPtr();
+                    _selections.CopiedComponent = component.GetInternalPtr(); // TODO */
+                }
+                break;
+
+                case TID_CPatchSoftBody:
+                {
+                    /*HPatchSoftBody component = clickedSceneObject->AddComponent<CPatchSoftBody>();
+                    component->Clone(_selections.CopiedComponent->GetHandle(), "copy");
+                    component->Initialize();
+                    _selections.ClickedComponent = component.GetInternalPtr();
+                    _selections.CopiedComponent = component.GetInternalPtr(); // TODO */
                 }
                 break;
 
@@ -1379,7 +1410,7 @@ namespace te
 
         if (_sceneRenderableSphereSO)
         {
-            _softBodySphere = _sceneRenderableSphereSO->AddComponent<CSoftBody>();
+            _softBodySphere = _sceneRenderableSphereSO->AddComponent<CMeshSoftBody>();
             _softBodySphere->SetName("Soft Body Plane");
             _softBodySphere->SetCollisionReportMode(CollisionReportMode::ReportPersistent);
             _softBodySphere->SetMesh(_spherePhysicsMesh);

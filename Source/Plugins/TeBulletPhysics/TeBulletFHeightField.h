@@ -16,12 +16,11 @@ namespace te
         /** Returns height field data */
         SPtr<BulletHeightField::HeightFieldInfo> GetHeightFieldInfo() const { return _heightFieldInfo; }
 
-    private:
+    protected:
+        BulletFHeightField(); // Serialization only
+
         /** Creates the internal height field representation */
         void Initialize();
-
-    public:
-        BulletFHeightField(); // Serialization only
 
     private:
         SPtr<BulletHeightField::HeightFieldInfo> _heightFieldInfo = nullptr;

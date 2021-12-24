@@ -128,7 +128,16 @@ namespace te
         TID_CapsuleCollider         = 1073,
         TID_MeshCollider            = 1074,
         TID_ConeCollider            = 1075,
-        TID_HeightFieldCollider     = 1076
+        TID_HeightFieldCollider     = 1076,
+        TID_MeshSoftBody            = 1077,
+        TID_EllipsoidSoftBody       = 1078,
+        TID_RopeSoftBody            = 1079,
+        TID_PatchSoftBody           = 1080,
+        TID_CMeshSoftBody           = 1081,
+        TID_CEllipsoidSoftBody      = 1082,
+        TID_CRopeSoftBody           = 1083,
+        TID_CPatchSoftBody          = 1084,
+        TID_FSoftBody               = 1085
     };
 }
 
@@ -309,6 +318,10 @@ namespace te
     class CBody;
     class CRigidBody;
     class CSoftBody;
+    class CMeshSoftBody;
+    class CEllipsoidSoftBody;
+    class CRopeSoftBody;
+    class CPatchSoftBody;
     class CCollider;
     class CBoxCollider;
     class CPlaneCollider;
@@ -366,6 +379,10 @@ namespace te
     class Body;
     class RigidBody;
     class SoftBody;
+    class MeshSoftBody;
+    class EllipsoidSoftBody;
+    class RopeSoftBody;
+    class PatchSoftBody;
     class Joint;
     class HingeJoint;
     class SliderJoint;
@@ -384,6 +401,7 @@ namespace te
     class FCollider;
     class FJoint;
     class FBody;
+    class FSoftBody;
     class PhysicsDebug;
     class PhysicsMesh;
     class FPhysicsMesh;
@@ -444,6 +462,10 @@ namespace te
     typedef GameObjectHandle<CBody> HBody;
     typedef GameObjectHandle<CRigidBody> HRigidBody;
     typedef GameObjectHandle<CSoftBody> HSoftBody;
+    typedef GameObjectHandle<CMeshSoftBody> HMeshSoftBody;
+    typedef GameObjectHandle<CEllipsoidSoftBody> HEllipsoidSoftBody;
+    typedef GameObjectHandle<CRopeSoftBody> HRopeSoftBody;
+    typedef GameObjectHandle<CPatchSoftBody> HPathSoftBody;
     typedef GameObjectHandle<CCollider> HCollider;
     typedef GameObjectHandle<CBoxCollider> HBoxCollider;
     typedef GameObjectHandle<CPlaneCollider> HPlaneCollider;

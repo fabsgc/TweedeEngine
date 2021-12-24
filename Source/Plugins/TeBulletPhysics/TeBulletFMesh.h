@@ -10,7 +10,7 @@ namespace te
     class BulletFMesh : public FPhysicsMesh
     {
     public:
-        BulletFMesh(const SPtr<MeshData>& meshData);
+        explicit BulletFMesh(const SPtr<MeshData>& meshData);
         ~BulletFMesh();
 
         /** Returns mesh generated data */
@@ -19,9 +19,6 @@ namespace te
     private:
         /** Creates the internal triangle/convex mesh */
         void Initialize();
-
-    public:
-        BulletFMesh(); // Serialization only
 
     private:
         SPtr<BulletMesh::MeshInfo> _meshInfo = nullptr;

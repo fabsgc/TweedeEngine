@@ -12,6 +12,10 @@ namespace te
         , _parent(parent)
     { }
 
+    BulletFJoint::BulletFJoint()
+        : FJoint()
+    { }
+
     BulletFJoint::~BulletFJoint()
     { }
 }

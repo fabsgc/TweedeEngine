@@ -1,7 +1,6 @@
 #include "Components/TeCSoftBody.h"
 
 #include "Scene/TeSceneObject.h"
-#include "Components/TeCJoint.h"
 #include "Physics/TePhysics.h"
 
 #include <functional>
@@ -10,17 +9,20 @@ using namespace std::placeholders;
 
 namespace te
 {
-    CSoftBody::CSoftBody()
-        : CBody(HSceneObject(), (UINT32)TID_CSoftBody)
+    CSoftBody::CSoftBody(UINT32 type)
+        : CBody(HSceneObject(), type)
     {
         SetName("SoftBody");
     }
 
-    CSoftBody::CSoftBody(const HSceneObject& parent)
-        : CBody(parent, (UINT32)TID_CSoftBody)
+    CSoftBody::CSoftBody(const HSceneObject& parent, UINT32 type)
+        : CBody(parent, type)
     {
         SetName("SoftBody");
     }
+
+    CSoftBody::~CSoftBody()
+    { }
 
     void CSoftBody::Initialize()
     {

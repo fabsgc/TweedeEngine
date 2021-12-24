@@ -25,7 +25,7 @@ namespace te
         };
 
     public:
-        BulletHeightField(const SPtr<Texture>& texture);
+        explicit BulletHeightField(const SPtr<Texture>& texture);
 
     private:
         /** @copydoc PhysicsHeightField::Initialize */

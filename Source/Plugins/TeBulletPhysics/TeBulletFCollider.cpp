@@ -4,12 +4,16 @@
 namespace te
 {
     BulletFCollider::BulletFCollider(BulletPhysics* physics, BulletScene* scene, btCollisionShape* shape)
-        : _physics(physics)
+        : FCollider()
+        , _physics(physics)
         , _scene(scene)
         , _shape(shape)
     { 
         SetBtTransform();
     }
+
+    BulletFCollider::BulletFCollider()
+    { }
 
     BulletFCollider::~BulletFCollider()
     { }

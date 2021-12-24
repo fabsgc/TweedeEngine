@@ -16,6 +16,8 @@ namespace te
     class TE_CORE_EXPORT CSoftBody : public CBody
     {
     public:
+        virtual ~CSoftBody() = 0;
+
         /** Return Component type */
         static UINT32 GetComponentType() { return TypeID_Core::TID_CSoftBody; }
 
@@ -48,10 +50,9 @@ namespace te
 
     protected:
         friend class SceneObject;
-        friend class CCollider;
 
-        CSoftBody(); // Serialization only
-        CSoftBody(const HSceneObject& parent);
+        CSoftBody(UINT32 type = TID_CSoftBody); // Serialization only
+        CSoftBody(const HSceneObject& parent, UINT32 type = TID_CSoftBody);
 
         /** @copydoc Component::OnDestroyed */
         void OnDestroyed() override;

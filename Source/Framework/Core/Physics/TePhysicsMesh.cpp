@@ -12,6 +12,9 @@ namespace te
         // Derived class is responsible for initializing _internal
     }
 
+    PhysicsMesh::~PhysicsMesh()
+    { }
+
     SPtr<MeshData> PhysicsMesh::GetMeshData() const
     {
         return _internal->GetMeshData();

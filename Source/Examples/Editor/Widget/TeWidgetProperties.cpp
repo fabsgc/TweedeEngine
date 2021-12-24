@@ -164,9 +164,30 @@ namespace te
             }
             break;
 
-            case TID_CSoftBody:
+            case TID_CMeshSoftBody:
             {
-                if (ShowCSoftBodyProperties())
+                if (ShowCMeshSoftBodyProperties())
+                    hasChanged = true;
+            }
+            break;
+
+            case TID_CEllipsoidSoftBody:
+            {
+                if (ShowCEllipsoidSoftBodyProperties())
+                    hasChanged = true;
+            }
+            break;
+
+            case TID_CRopeSoftBody:
+            {
+                if (ShowCRopeSoftBodyProperties())
+                    hasChanged = true;
+            }
+            break;
+
+            case TID_CPatchSoftBody:
+            {
+                if (ShowCPatchSoftBodyProperties())
                     hasChanged = true;
             }
             break;
@@ -786,7 +807,17 @@ namespace te
                     }
                 }
             }
+            ImGui::Separator();
 
+            // Scale
+            {
+                Vector3 scale = softBody->GetScale();
+                if (ImGuiExt::RenderVector3(scale, "##soft_body_option_scale", " Scale", 60.0f))
+                {
+                    softBody->SetScale(scale);
+                    hasChanged = true;
+                }
+            }
             ImGui::Separator();
 
             if (ShowLoadMesh())
@@ -797,6 +828,26 @@ namespace te
         }
 
         return hasChanged;
+    }
+
+    bool WidgetProperties::ShowCMeshSoftBodyProperties()
+    {
+        return ShowCSoftBodyProperties();
+    }
+
+    bool WidgetProperties::ShowCEllipsoidSoftBodyProperties()
+    {
+        return ShowCSoftBodyProperties();
+    }
+
+    bool WidgetProperties::ShowCRopeSoftBodyProperties()
+    {
+        return ShowCSoftBodyProperties();
+    }
+
+    bool WidgetProperties::ShowCPatchSoftBodyProperties()
+    {
+        return ShowCSoftBodyProperties();
     }
 
     bool WidgetProperties::ShowCBoxColliderProperties()
@@ -2611,18 +2662,6 @@ namespace te
             }
         }
         ImGui::Separator();
-
-        // Scale
-        if (body->GetCoreType() == TID_CSoftBody)
-        {
-            Vector3 scale = std::static_pointer_cast<CSoftBody>(body)->GetScale();
-            if (ImGuiExt::RenderVector3(scale, "##soft_body_option_scale", " Scale", 60.0f))
-            {
-                std::static_pointer_cast<CSoftBody>(body)->SetScale(scale);
-                hasChanged = true;
-            }
-            ImGui::Separator();
-        }
 
         // Velocity
         {

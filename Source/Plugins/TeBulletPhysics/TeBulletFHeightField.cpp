@@ -4,16 +4,16 @@
 #include "Image/TeColor.h"
 
 namespace te
-{ 
-    BulletFHeightField::BulletFHeightField()
-        : FPhysicsHeightField(nullptr)
-    { }
-
+{
     BulletFHeightField::BulletFHeightField(const SPtr<Texture>& texture)
         : FPhysicsHeightField(texture)
     {
         Initialize();
     }
+
+    BulletFHeightField::BulletFHeightField()
+        : FPhysicsHeightField(nullptr)
+    { }
 
     BulletFHeightField::~BulletFHeightField()
     {
@@ -22,6 +22,12 @@ namespace te
 
     void BulletFHeightField::Initialize()
     {
+        if (!_texture)
+        {
+            TE_DEBUG("Provided Texture is invalid.");
+            return;
+        }
+
         _heightFieldInfo = te_shared_ptr_new<BulletHeightField::HeightFieldInfo>(_texture->GetProperties().GetWidth(), 
             _texture->GetProperties().GetHeight());
 

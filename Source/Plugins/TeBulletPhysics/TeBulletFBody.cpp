@@ -3,6 +3,7 @@
 namespace te
 { 
     BulletFBody::BulletFBody(btCollisionObject* body)
-        : _body(body)
+        : FBody()
+        , _body(body)
     { }
 }

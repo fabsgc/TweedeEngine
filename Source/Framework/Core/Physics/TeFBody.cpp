@@ -2,7 +2,10 @@
 
 namespace te
 {
-    FBody::FBody()
-        : Serializable(TypeID_Core::TID_FBody)
+    FBody::FBody(UINT32 type)
+        : Serializable(type)
+    { }
+
+    FBody::~FBody()
     { }
 }

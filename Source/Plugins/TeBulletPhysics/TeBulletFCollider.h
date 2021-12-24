@@ -32,6 +32,8 @@ namespace te
         const btTransform& GetBtTransform();
 
     protected:
+        BulletFCollider(); // Serialization only
+
         /** @copydoc GetBtTransform */
         void SetBtTransform();
 

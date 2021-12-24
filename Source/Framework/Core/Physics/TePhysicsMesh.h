@@ -12,8 +12,8 @@ namespace te
     class TE_CORE_EXPORT PhysicsMesh : public Resource
     {
     public:
-        PhysicsMesh(const SPtr<MeshData>& meshData);
-        virtual ~PhysicsMesh() = default;
+        explicit PhysicsMesh(const SPtr<MeshData>& meshData);
+        virtual ~PhysicsMesh() = 0;
 
         /** @copydoc CoreObject::Initialize */
         void Initialize() override;

@@ -8,7 +8,7 @@ namespace te
     class TE_CORE_EXPORT FBody : public Serializable
     {
     public:
-        FBody();
-        virtual ~FBody() = default;
+        FBody(UINT32 type = TypeID_Core::TID_FBody);
+        virtual ~FBody() = 0;
     };
 }

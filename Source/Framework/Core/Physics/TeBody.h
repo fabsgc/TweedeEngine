@@ -225,7 +225,7 @@ namespace te
          */
         void _setTransform(const Vector3& position, const Quaternion& rotation);
 
-        /** Returns the object containing common collider code. */
+        /** Returns the object containing common body code. */
         FBody* GetInternal() const { return _internal; }
 
         /**

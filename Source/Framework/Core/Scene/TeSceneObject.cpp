@@ -19,7 +19,10 @@
 #include "Components/TeCAudioSource.h"
 #include "Components/TeCAudioListener.h"
 #include "Components/TeCRigidBody.h"
-#include "Components/TeCSoftBody.h"
+#include "Components/TeCMeshSoftBody.h"
+#include "Components/TeCEllipsoidSoftBody.h"
+#include "Components/TeCRopeSoftBody.h"
+#include "Components/TeCPatchSoftBody.h"
 #include "Components/TeCConeTwistJoint.h"
 #include "Components/TeCD6Joint.h"
 #include "Components/TeCHingeJoint.h"
@@ -237,11 +240,35 @@ namespace te
             }
             break;
 
-            case TID_CSoftBody:
+            case TID_CMeshSoftBody:
             {
-                HSoftBody component = this->AddComponent<CSoftBody>();
+                HMeshSoftBody component = this->AddComponent<CMeshSoftBody>();
                 component->Clone(co->GetHandle());
                 component->Initialize();
+            }
+            break;
+
+            case TID_CEllipsoidSoftBody:
+            {
+                /* HEllipsoidSoftBody component = this->AddComponent<CEllipsoidSoftBody>();
+                component->Clone(co->GetHandle());
+                component->Initialize(); // TODO */
+            }
+            break;
+
+            case TID_CRopeSoftBody:
+            {
+                /* HRopeSoftBody component = this->AddComponent<CRopeSoftBody>();
+                component->Clone(co->GetHandle());
+                component->Initialize(); // TODO */
+            }
+            break;
+
+            case TID_CPatchSoftBody:
+            {
+                /* HPatchSoftBody component = this->AddComponent<CPatchSoftBody>();
+                component->Clone(co->GetHandle());
+                component->Initialize(); // TODO */
             }
             break;
 

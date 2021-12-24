@@ -2,6 +2,7 @@
 #include "TeCoreApplication.h"
 #include "TeBulletRigidBody.h"
 #include "TeBulletSoftBody.h"
+#include "TeBulletMeshSoftBody.h"
 #include "TeBulletConeTwistJoint.h"
 #include "TeBulletD6Joint.h"
 #include "TeBulletHingeJoint.h"
@@ -467,6 +468,29 @@ namespace te
         body->SetThisPtr(body);
 
         return body;
+    }
+
+    SPtr<MeshSoftBody> BulletScene::CreateMeshSoftBody(const HSceneObject& linkedSO)
+    {
+        SPtr<MeshSoftBody> body = te_core_ptr_new<BulletMeshSoftBody>(_physics, this, linkedSO);
+        body->SetThisPtr(body);
+
+        return body;
+    }
+
+    SPtr<EllipsoidSoftBody> BulletScene::CreateEllipsoidSoftBody(const HSceneObject& linkedSO)
+    {
+        return nullptr; // TODO
+    }
+
+    SPtr<RopeSoftBody> BulletScene::CreateRopeSoftBody(const HSceneObject& linkedSO)
+    {
+        return nullptr; // TODO
+    }
+
+    SPtr<PatchSoftBody> BulletScene::CreatePatchSoftBody(const HSceneObject& linkedSO)
+    {
+        return nullptr; // TODO
     }
 
     SPtr<ConeTwistJoint> BulletScene::CreateConeTwistJoint()

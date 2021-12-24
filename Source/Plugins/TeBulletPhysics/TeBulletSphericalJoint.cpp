@@ -1,7 +1,6 @@
 #include "TeBulletSphericalJoint.h"
 #include "TeBulletPhysics.h"
 #include "TeBulletFJoint.h"
-#include "TeBulletFBody.h"
 #include "Physics/TeRigidBody.h"
 
 namespace te

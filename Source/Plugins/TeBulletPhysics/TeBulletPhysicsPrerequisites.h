@@ -56,16 +56,34 @@ namespace te
     class BulletPhysics;
     class BulletScene;
     class BulletFBody;
+    class BulletFSoftBody;
+    class BulletFMesh;
+    class BulletFJoint;
+    class BulletFCollider;
+    class BulletFHeightField;
+    class BulletMesh;
     class BulletRigidBody;
     class BulletSoftBody;
-    class BulletMesh;
-    class BulletFMesh;
+    class BulletMeshSoftBody;
+    class BulletEllipsoidSoftBody;
+    class BulletRopeSoftBody;
+    class BulletPathSoftBody;
     class BulletHeightField;
-    class BulletFHeightField;
-    class BulletFJoint;
     class BulletJoint;
-    class BulletFCollider;
+    class BulletConeTwistJoint;
+    class BulletD6Joint;
+    class BulletHingeJoint;
+    class BulletSliderJoint;
+    class BulletSphericalJoint;
     class BulletCollider;
+    class BulletBoxCollider;
+    class BulletCapsuleCollider;
+    class BulletConeCollider;
+    class BulletCylinderCollider;
+    class BulletHeighfieldCollider;
+    class BulletMeshCollider;
+    class BulletPlaneCollider;
+    class BulletSphereCollider;
 
     inline Vector3 ToVector3(const btVector3& vector)
     {
