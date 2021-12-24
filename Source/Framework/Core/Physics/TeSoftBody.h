@@ -18,10 +18,10 @@ namespace te
         /**
          * We can scale the PhysicsMesh in order to match to the 3D mesh geometry
          */
-        virtual void SetScale(const Vector3& scale) = 0;
+        void SetScale(const Vector3& scale);
 
         /** @copydoc SetScale */
-        virtual const Vector3& GetScale() const = 0;
+        const Vector3& GetScale() const;
 
     protected:
         /**

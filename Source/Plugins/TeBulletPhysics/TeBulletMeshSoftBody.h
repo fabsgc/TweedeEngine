@@ -4,11 +4,12 @@
 #include "Physics/TeMeshSoftBody.h"
 #include "Math/TeVector3.h"
 #include "Math/TeQuaternion.h"
+#include "TeBulletSoftBody.h"
 
 namespace te
 {
     /** Bullet implementation of a MeshSoftBody. */
-    class BulletMeshSoftBody : public MeshSoftBody
+    class BulletMeshSoftBody : public MeshSoftBody, public BulletSoftBody
     {
     public:
         BulletMeshSoftBody(BulletPhysics* physics, BulletScene* scene, const HSceneObject& linkedSO);
@@ -28,12 +29,6 @@ namespace te
 
         /** @copydoc SoftBody::SetMesh */
         void SetMesh(const HPhysicsMesh& mesh) override;
-
-        /** @copydoc SoftBody::SetScale */
-        void SetScale(const Vector3& scale) override;
-
-        /** @copydoc SoftBody::GetScale */
-        const Vector3& GetScale() const override { return _scale; }
 
         /** @copydoc Body::SetTransform */
         void SetTransform(const Vector3& position, const Quaternion& rotation);
@@ -111,26 +106,26 @@ namespace te
         void SetFlags(BodyFlag flags) override;
 
     private:
-        /** Add RigidBody to world */
-        void AddToWorld();
+        /** @copydoc BulletSoftBod::AddToWorld */
+        void AddToWorld() override;
 
-        /** Release Body from simulation */
-        void Release();
+        /** @copydoc BulletSoftBod::Release */
+        void Release() override;
 
-        /** Remove RigidBody from world */
-        void RemoveFromWorld();
+        /** @copydoc BulletSoftBod::RemoveFromWorld */
+        void RemoveFromWorld() override;
 
-        /** Update kinematic bullet flag */
-        void UpdateKinematicFlag() const;
+        /** @copydoc BulletSoftBod::UpdateKinematicFlag */
+        void UpdateKinematicFlag() const override;
 
-        /** Enable or disable CCD for this body */
-        void UpdateCCDFlag() const;
+        /** @copydoc BulletSoftBod::UpdateCCDFlag */
+        void UpdateCCDFlag() const override;
 
-        /** Activate btRigidBody */
-        void Activate() const;
+        /** @copydoc BulletSoftBod::Activate */
+        void Activate() const override;
 
-        /** Check if btRigidBody is activated */
-        bool IsActivated() const;
+        /** @copydoc BulletSoftBod::IsActivated */
+        bool IsActivated() const override;
 
     private:
         btSoftBody* _softBody;

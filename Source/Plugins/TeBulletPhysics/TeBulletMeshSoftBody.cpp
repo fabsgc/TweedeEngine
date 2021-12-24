@@ -3,7 +3,7 @@
 #include "Physics/TePhysics.h"
 #include "Math/TeAABox.h"
 #include "TeBulletPhysics.h"
-#include "TeBulletFBody.h"
+#include "TeBulletFSoftBody.h"
 #include "TeBulletFMesh.h"
 #include "TeBulletMesh.h"
 
@@ -27,14 +27,14 @@ namespace te
         _restitution = DEFAULT_RESTITUTION;
         _rollingFriction = DEFAULT_ROLLING_FRICTION;
 
-        _internal = te_new<BulletFBody>();
+        _internal = te_new<BulletFSoftBody>(this);
 
         AddToWorld();
     }
 
     BulletMeshSoftBody::~BulletMeshSoftBody()
     { 
-        te_delete((BulletFBody*)_internal);
+        te_delete((BulletFSoftBody*)_internal);
         Release();
     }
 
@@ -83,15 +83,6 @@ namespace te
             return;
 
         _mesh = mesh;
-        AddToWorld();
-    }
-
-    void BulletMeshSoftBody::SetScale(const Vector3& scale)
-    {
-        if (_scale == scale)
-            return;
-
-        _scale = scale;
         AddToWorld();
     }
 
@@ -278,7 +269,7 @@ namespace te
             _softBody->randomizeConstraints();
             _softBody->generateBendingConstraints(2, material);
 
-            _softBody->scale(ToBtVector3(_scale));
+            _softBody->scale(ToBtVector3(static_cast<BulletFSoftBody*>(_internal)->_scale));
             _softBody->setTotalMass((btScalar)_mass);
             _softBody->setFriction((btScalar)_friction);
             _softBody->setRestitution((btScalar)_restitution);
@@ -289,7 +280,8 @@ namespace te
             _softBody->m_cfg.collisions = btSoftBody::fCollision::CL_SS +
                                           btSoftBody::fCollision::CL_RS;
 
-            ((BulletFBody*)_internal)->SetBody(_softBody);
+            ((BulletFSoftBody*)_internal)->SetBtSoftBody(_softBody);
+            ((BulletFSoftBody*)_internal)->SetSoftBody(this);
 
             if (_mass > 0.0f)
             {
@@ -319,7 +311,8 @@ namespace te
         RemoveFromWorld();
         delete _softBody;
 
-        ((BulletFBody*)_internal)->SetBody(nullptr);
+        ((BulletFSoftBody*)_internal)->SetBtSoftBody(nullptr);
+        ((BulletFSoftBody*)_internal)->SetSoftBody(nullptr);
 
         _softBody = nullptr;
     }

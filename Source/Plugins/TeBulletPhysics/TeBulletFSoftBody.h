@@ -9,25 +9,36 @@ namespace te
     class BulletFSoftBody : public FSoftBody
     {
     public:
-        explicit BulletFSoftBody(btCollisionObject* body = nullptr);
-        ~BulletFSoftBody() = default;
+        BulletFSoftBody(BulletSoftBody* body, btSoftBody* btBody = nullptr);
 
-        /** Set current btCollisionObject */
-        void SetBody(btCollisionObject* body) { _body = body; }
+        /** Set current btSoftBody */
+        void SetBtSoftBody(btSoftBody* body) { _btSoftBody = body; }
 
-        /** Return current btCollisionObject */
-        const auto& GetBody() const { return _body; }
+        /** Return current btSoftBody */
+        const auto& GetBtSoftBody() const { return _btSoftBody; }
+
+        /** Set current BulletSoftBody */
+        void SetSoftBody(BulletSoftBody* body) { _softBody = body; }
+
+        /** Return current BulletSoftBody */
+        const auto& GetSoftBody() const { return _softBody; }
+
+        /** @copydoc FSoftBody::SetScale */
+        void SetScale(const Vector3& scale) override;
+
+        /** @copydoc FSoftBody::GetScale */
+        const Vector3& GetScale() const override;
 
     protected:
-        friend class BulletRigidBody;
-        friend class BulletSoftBody;
         friend class BulletMeshSoftBody;
         friend class BulletEllipsoidSoftBody;
         friend class BulletRopeSoftBody;
         friend class BulletPatchSoftBody;
 
     protected:
+        btSoftBody* _btSoftBody;
+        BulletSoftBody* _softBody;
 
-        btCollisionObject* _body;
+        Vector3 _scale = Vector3::ONE;
     };
 }

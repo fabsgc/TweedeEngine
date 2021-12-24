@@ -1,7 +1,6 @@
 #include "TeBulletPhysics.h"
 #include "TeCoreApplication.h"
 #include "TeBulletRigidBody.h"
-#include "TeBulletSoftBody.h"
 #include "TeBulletMeshSoftBody.h"
 #include "TeBulletEllipsoidSoftBody.h"
 #include "TeBulletRopeSoftBody.h"

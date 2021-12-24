@@ -11,5 +11,11 @@ namespace te
     public:
         FSoftBody();
         virtual ~FSoftBody() = 0;
+
+        /** @copydoc SoftBody::SetScale */
+        virtual void SetScale(const Vector3& scale) = 0;
+
+        /** @copydoc SoftBody::GetScale */
+        virtual const Vector3& GetScale() const = 0;
     };
 }
