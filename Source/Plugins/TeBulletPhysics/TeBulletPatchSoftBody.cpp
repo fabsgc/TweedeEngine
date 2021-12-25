@@ -10,6 +10,12 @@ namespace te
     BulletPatchSoftBody::BulletPatchSoftBody(BulletPhysics* physics, BulletScene* scene, const HSceneObject& linkedSO)
         : PatchSoftBody(linkedSO)
         , BulletSoftBody(physics, scene)
+        , _topLeft(-1.0f, 0.0f, 0.0f)
+        , _topRight(0.0f, 0.0f, 0.0f)
+        , _bottomLeft(-1.0f, 0.0f, -1.0f)
+        , _bottomRight(-1.0f, 0.0f, 1.0f)
+        , _resolutionX(8)
+        , _resolutionY(8)
     {
         _internal = te_new<BulletFSoftBody>(this);
         AddToWorld();
@@ -27,6 +33,34 @@ namespace te
             AddToWorld();
 
         _isDirty = false;
+    }
+
+    void BulletPatchSoftBody::SetCorners(const Vector3& topLeft, const Vector3& topRight, const Vector3& bottomLeft, const Vector3& bottomRight)
+    {
+        _topLeft = topLeft;
+        _topRight = topRight;
+        _bottomLeft = bottomLeft;
+        _bottomRight = bottomRight;
+    }
+
+    void BulletPatchSoftBody::GetCorners(Vector3& topLeft, Vector3& topRight, Vector3& bottomLeft, Vector3& bottomRight)
+    {
+        topLeft = _topLeft;
+        topRight = _topRight;
+        bottomLeft = _bottomLeft;
+        bottomRight = _bottomRight;
+    }
+
+    void BulletPatchSoftBody::SetResolution(UINT32 x, UINT32 y)
+    {
+        _resolutionX = x;
+        _resolutionY = y;
+    }
+
+    void BulletPatchSoftBody::GetResolution(UINT32& x, UINT32& y)
+    {
+        x = _resolutionX;
+        y = _resolutionY;
     }
 
     void BulletPatchSoftBody::AddToWorld()

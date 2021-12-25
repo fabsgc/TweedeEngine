@@ -20,14 +20,15 @@ namespace te
          */
         static SPtr<MeshSoftBody> Create(const HSceneObject& linkedSO);
 
-
         /**
          * Sets a mesh that represents the softbody geometry.
          */
         virtual void SetMesh(const HPhysicsMesh& mesh) = 0;
 
-        /** @copydoc SetMesh */
-        HPhysicsMesh GetMesh() const { return _mesh; }
+        /**
+         * Get the mesh that represents the softbody geometry.
+         */
+        const HPhysicsMesh& GetMesh() const { return _mesh; }
 
     protected:
         /**

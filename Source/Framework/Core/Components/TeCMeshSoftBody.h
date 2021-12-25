@@ -27,7 +27,7 @@ namespace te
         void SetMesh(const HPhysicsMesh& mesh);
 
         /** @copydoc MeshSoftBody::GetMesh */
-        HPhysicsMesh GetMesh() const { return _mesh; }
+        const HPhysicsMesh& GetMesh() const { return _mesh; }
 
     protected:
         friend class SceneObject;
