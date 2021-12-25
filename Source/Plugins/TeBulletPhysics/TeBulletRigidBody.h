@@ -137,6 +137,9 @@ namespace te
         /** @copydoc Body::SetFlags */
         void SetFlags(BodyFlag flags) override;
 
+        /** @copydoc Body::GetFlags */
+        virtual BodyFlag GetFlags() const override { return _flags; }
+
         /** @copydoc RigidBody::SetAngularFactor */
         void SetAngularFactor(const Vector3& angularFactor) override;
 
@@ -211,5 +214,6 @@ namespace te
         Quaternion _rotation = Quaternion::IDENTITY;
 
         BodyFlag _flags = (BodyFlag)((UINT32)BodyFlag::None);
+        CollisionReportMode _collisionReportMode = CollisionReportMode::None;
     };
 }

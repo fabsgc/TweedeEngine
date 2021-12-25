@@ -2,8 +2,6 @@
 
 #include "TeBulletPhysicsPrerequisites.h"
 #include "Physics/TeMeshSoftBody.h"
-#include "Math/TeVector3.h"
-#include "Math/TeQuaternion.h"
 #include "TeBulletSoftBody.h"
 
 namespace te
@@ -18,113 +16,29 @@ namespace te
         /** @copydoc Body::Update */
         void Update() override;
 
-        /** @copydoc Body::GetPosition */
-        Vector3 GetPosition() const override;
-
-        /** @copydoc Body::GetRotation */
-        Quaternion GetRotation() const override;
-
-        /** Returns the current bounding box */
-        AABox GetBoundingBox() const override;
-
-        /** @copydoc SoftBody::SetMesh */
+        /** @copydoc MeshSoftBody::SetMesh */
         void SetMesh(const HPhysicsMesh& mesh) override;
 
-        /** @copydoc Body::SetTransform */
-        void SetTransform(const Vector3& position, const Quaternion& rotation);
-
-        /** @copydoc Body::SetIsTrigger */
-        void SetIsTrigger(bool trigger) override;
-
-        /** @copydoc Body::GetIsTrigger */
-        bool GetIsTrigger() const override { return false; };
-
-        /** @copydoc Body::SetIsTrigger */
-        void SetIsDebug(bool debug) override;
-
-        /** @copydoc Body::GetIsTrigger */
-        bool GetIsDebug() const override { return false; }
-
-        /** @copydoc Body::SetMass */
-        void SetMass(float mass) override;
-
-        /** @copydoc Body::GetMass */
-        float GetMass() const override { return _mass; }
-
-        /** @copydoc Body::SetIsKinematic */
-        void SetIsKinematic(bool kinematic) override;
-
-        /** @copydoc Body::GetIsKinematic */
-        bool GetIsKinematic() const override { return _isKinematic; }
-
-        /** @copydoc Body::SetVelocity */
-        void SetVelocity(const Vector3& velocity) override;
-
-        /** @copydoc Body::GetVelocity */
-        const Vector3& GetVelocity() const override { return _velocity; }
-
-        /** @copydoc Body::SetAngularVelocity */
-        void SetAngularVelocity(const Vector3& velocity) override;
-
-        /** @copydoc Body::GetAngularVelocity */
-        const Vector3& GetAngularVelocity() const override { return _angularVelocity; }
-
-        /** @copydoc Body::SetFriction */
-        void SetFriction(float friction) override;
-
-        /** @copydoc Body::GetFriction */
-        float GetFriction() const override { return _friction; }
-
-        /** @copydoc Body::SetRollingFriction */
-        void SetRollingFriction(float rollingFriction) override;
-
-        /** @copydoc Body::GetRollingFriction */
-        float GetRollingFriction() const override { return _rollingFriction; }
-
-        /** @copydoc Body::SetRestitution */
-        void SetRestitution(float restitution) override;
-
-        /** @copydoc Body::GetRestitution */
-        float GetRestitution() const override { return _restitution; }
-
-        /** @copydoc Body::ApplyForce */
-        void ApplyForce(const Vector3& force, ForceMode mode) const override;
-
-        /** @copydoc Body::ApplyForceAtPoint */
-        void ApplyForceAtPoint(const Vector3& force, const Vector3& position, ForceMode mode) const override;
-
-        /** @copydoc Body::ApplyTorque */
-        void ApplyTorque(const Vector3& torque, ForceMode mode) const override;
-
-        /** @copydoc Body::SetCollisionReportMode */
-        virtual void SetCollisionReportMode(CollisionReportMode mode) override;
-
-        /** @copydoc Body::GetCollisionReportMode */
-        virtual CollisionReportMode GetCollisionReportMode() const override { return _collisionReportMode; }
-
-        /** @copydoc Body::SetFlags */
-        void SetFlags(BodyFlag flags) override;
-
     private:
-        /** @copydoc BulletSoftBod::AddToWorld */
+        /** @copydoc BulletSoftBody::AddToWorld */
         void AddToWorld() override;
 
-        /** @copydoc BulletSoftBod::Release */
+        /** @copydoc BulletSoftBody::Release */
         void Release() override;
 
-        /** @copydoc BulletSoftBod::RemoveFromWorld */
+        /** @copydoc BulletSoftBody::RemoveFromWorld */
         void RemoveFromWorld() override;
 
-        /** @copydoc BulletSoftBod::UpdateKinematicFlag */
+        /** @copydoc BulletSoftBody::UpdateKinematicFlag */
         void UpdateKinematicFlag() const override;
 
-        /** @copydoc BulletSoftBod::UpdateCCDFlag */
+        /** @copydoc BulletSoftBody::UpdateCCDFlag */
         void UpdateCCDFlag() const override;
 
-        /** @copydoc BulletSoftBod::Activate */
+        /** @copydoc BulletSoftBody::Activate */
         void Activate() const override;
 
-        /** @copydoc BulletSoftBod::IsActivated */
+        /** @copydoc BulletSoftBody::IsActivated */
         bool IsActivated() const override;
 
     private:
@@ -132,23 +46,7 @@ namespace te
         BulletPhysics* _physics;
         BulletScene* _scene;
 
-        bool _isDirty = true; // A state has been modified
-
-        float _mass = 0.0f;
-        float _friction = 0.0f;
-        float _rollingFriction = 0.0f;
-        float _restitution = 0.0f;
-        bool _isKinematic = false;
+        bool _isDirty = true;
         bool _inWorld = false;
-        bool _isTrigger = false;
-        bool _isDebug = true;
-
-        Vector3 _scale = Vector3::ONE;
-        Vector3 _position = Vector3::ZERO;
-        Vector3 _velocity = Vector3::ZERO;
-        Vector3 _angularVelocity = Vector3::ZERO;
-        Quaternion _rotation = Quaternion::IDENTITY;
-
-        BodyFlag _flags = (BodyFlag)((UINT32)BodyFlag::None);
     };
 }

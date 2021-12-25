@@ -18,12 +18,6 @@ namespace te
         /** Return Component type */
         static UINT32 GetComponentType() { return TypeID_Core::TID_CMeshSoftBody; }
 
-        /** @copydoc Component::Initialize */
-        void Initialize() override;
-
-        /** @copydoc Component::Update */
-        void Update() override;
-
         /** @copydoc Component::Clone */
         bool Clone(const HComponent & c, const String & suffix = "");
 

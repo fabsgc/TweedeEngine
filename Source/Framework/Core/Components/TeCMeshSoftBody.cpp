@@ -17,12 +17,6 @@ namespace te
         SetName("MeshSoftBody");
     }
 
-    void CMeshSoftBody::Initialize()
-    {
-        OnEnabled();
-        CSoftBody::Initialize();
-    }
-
     bool CMeshSoftBody::Clone(const HComponent& c, const String& suffix)
     {
         if (c.Empty())
@@ -61,11 +55,6 @@ namespace te
 
         if (_internal != nullptr)
             std::static_pointer_cast<MeshSoftBody>(_internal)->SetMesh(mesh);
-    }
-
-    void CMeshSoftBody::Update()
-    {
-        CSoftBody::Update();
     }
 
     void CMeshSoftBody::OnEnabled()

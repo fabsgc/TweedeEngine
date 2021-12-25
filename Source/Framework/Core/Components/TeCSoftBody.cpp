@@ -94,6 +94,7 @@ namespace te
         _internal->SetAngularVelocity(_angularVelocity);
         _internal->SetIsKinematic(_isKinematic);
         _internal->SetIsDebug(_isDebug);
+        _internal->SetIsTrigger(_isTrigger);
         _internal->SetFlags(_flags);
         _internal->SetCollisionReportMode(_collisionReportMode);
         _internal->SetMass(_mass);

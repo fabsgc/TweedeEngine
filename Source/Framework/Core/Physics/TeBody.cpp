@@ -7,7 +7,6 @@ namespace te
 { 
     Body::Body(const HSceneObject& linkedSO, UINT32 type)
         : Serializable(type)
-        , _flags(BodyFlag::None)
         , _linkedSO(linkedSO)
     { 
         TE_ASSERT_ERROR(!linkedSO.Empty(), "You try to link a body to a SceneObject using an invalid handle");

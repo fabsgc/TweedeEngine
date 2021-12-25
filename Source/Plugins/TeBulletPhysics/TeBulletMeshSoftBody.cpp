@@ -1,18 +1,12 @@
 #include "TeBulletMeshSoftBody.h"
 #include "Scene/TeSceneObject.h"
 #include "Physics/TePhysics.h"
-#include "Math/TeAABox.h"
 #include "TeBulletPhysics.h"
 #include "TeBulletFSoftBody.h"
 #include "TeBulletFMesh.h"
-#include "TeBulletMesh.h"
 
 namespace te
 {
-    static const float DEFAULT_MASS = 1.0f;
-    static const float DEFAULT_FRICTION = 0.5f;
-    static const float DEFAULT_ROLLING_FRICTION = 0.2f;
-    static const float DEFAULT_RESTITUTION = 0.1f;
     static const float DEFAULT_DEACTIVATION_TIME = 2000;
 
     BulletMeshSoftBody::BulletMeshSoftBody(BulletPhysics* physics, BulletScene* scene, const HSceneObject& linkedSO)
@@ -22,13 +16,7 @@ namespace te
         , _scene(scene)
         , _isDirty(false)
     {
-        _mass = DEFAULT_MASS;
-        _friction = DEFAULT_FRICTION;
-        _restitution = DEFAULT_RESTITUTION;
-        _rollingFriction = DEFAULT_ROLLING_FRICTION;
-
         _internal = te_new<BulletFSoftBody>(this);
-
         AddToWorld();
     }
 
@@ -46,37 +34,6 @@ namespace te
         _isDirty = false;
     }
 
-    Vector3 BulletMeshSoftBody::GetPosition() const
-    {
-        if (_softBody)
-        {
-            if (((UINT32)_flags & (UINT32)BodyFlag::CCD) != 0)
-                return ToVector3(_softBody->getInterpolationWorldTransform().getOrigin());
-            else
-                return ToVector3(_softBody->getWorldTransform().getOrigin());
-        }
-
-        return _position;
-    }
-
-    Quaternion BulletMeshSoftBody::GetRotation() const
-    {
-        if (_softBody)
-        {
-            if (((UINT32)_flags & (UINT32)BodyFlag::CCD) != 0)
-                return ToQuaternion(_softBody->getInterpolationWorldTransform().getRotation());
-            else
-                return ToQuaternion(_softBody->getWorldTransform().getRotation());
-        }
-
-        return _rotation;
-    }
-
-    AABox BulletMeshSoftBody::GetBoundingBox() const
-    {
-        return AABox();
-    }
-
     void BulletMeshSoftBody::SetMesh(const HPhysicsMesh& mesh)
     {
         if (mesh == _mesh)
@@ -86,155 +43,12 @@ namespace te
         AddToWorld();
     }
 
-    void BulletMeshSoftBody::SetTransform(const Vector3& position, const Quaternion& rotation)
-    {
-        if (_position == position && _rotation == rotation)
-            return;
-
-        _position = position;
-        _rotation = rotation;
-
-        if (_softBody)
-            _softBody->transformTo(btTransform(ToBtQuaternion(_rotation), ToBtVector3(_position)));
-    }
-
-    void BulletMeshSoftBody::SetIsTrigger(bool trigger)
-    {
-        if (_isTrigger == trigger)
-            return;
-
-        _isTrigger = trigger;
-        UpdateKinematicFlag();
-    }
-
-    void BulletMeshSoftBody::SetIsDebug(bool debug)
-    {
-        if (_isDebug == debug)
-            return;
-
-        _isDebug = debug;
-        UpdateKinematicFlag();
-    }
-
-    void BulletMeshSoftBody::SetMass(float mass)
-    {
-        mass = std::max(mass, 0.0f);
-        if (mass == _mass)
-            return;
-
-        _mass = mass;
-
-        if(_softBody)
-            _softBody->setTotalMass(_mass);
-    }
-
-    void BulletMeshSoftBody::SetIsKinematic(bool kinematic)
-    {
-        if (kinematic == _isKinematic)
-            return;
-
-        _isKinematic = kinematic;
-        UpdateKinematicFlag();
-    }
-
-    void BulletMeshSoftBody::SetVelocity(const Vector3& velocity)
-    {
-        if (_velocity == velocity)
-            return;
-
-        _velocity = velocity;
-
-        if (_softBody)
-        {
-            _softBody->setLinearVelocity(ToBtVector3(_velocity));
-
-            if (_velocity != Vector3::ZERO)
-                Activate();
-        }
-    }
-
-    void BulletMeshSoftBody::SetAngularVelocity(const Vector3& velocity)
-    {
-        if (_angularVelocity == velocity)
-            return;
-
-        _angularVelocity = velocity;
-
-        if (_softBody)
-        {
-            _softBody->setAngularVelocity(ToBtVector3(_angularVelocity));
-
-            if (_angularVelocity != Vector3::ZERO)
-                Activate();
-        }
-    }
-
-    void BulletMeshSoftBody::SetFriction(float friction)
-    {
-        if (_friction == friction)
-            return;
-
-        _friction = friction;
-
-        if (_softBody)
-            _softBody->setFriction(friction);
-    }
-
-    void BulletMeshSoftBody::SetRollingFriction(float rollingFriction)
-    {
-        if (_rollingFriction == rollingFriction)
-            return;
-
-        _rollingFriction = rollingFriction;
-
-        if (_softBody)
-            _softBody->setRollingFriction(rollingFriction);
-    }
-
-    void BulletMeshSoftBody::SetRestitution(float restitution)
-    {
-        if (_restitution == restitution)
-            return;
-
-        _restitution = restitution;
-
-        if (_softBody)
-            _softBody->setRestitution(restitution);
-    }
-
-    void BulletMeshSoftBody::SetFlags(BodyFlag flags)
-    {
-        if (_flags == flags)
-            return;
-
-        _flags = flags;
-        UpdateCCDFlag();
-    }
-
-    void BulletMeshSoftBody::ApplyForce(const Vector3& force, ForceMode mode) const
-    {
-        // TODO
-    }
-
-    void BulletMeshSoftBody::ApplyForceAtPoint(const Vector3& force, const Vector3& position, ForceMode mode) const
-    {
-        // TODO
-    }
-
-    void BulletMeshSoftBody::ApplyTorque(const Vector3& torque, ForceMode mode) const
-    {
-        // TODO
-    }
-
-    void BulletMeshSoftBody::SetCollisionReportMode(CollisionReportMode mode)
-    {
-        _collisionReportMode = mode;
-    }
-
     void BulletMeshSoftBody::AddToWorld()
     {
-        if (_mass < 0.0f)
-            _mass = 0.0f;
+        BulletFSoftBody* fSoftBody = static_cast<BulletFSoftBody*>(_internal);
+
+        if (fSoftBody->GetMass() < 0.0f)
+            fSoftBody->SetMass(0.0f);
 
         Release();
 
@@ -270,11 +84,11 @@ namespace te
             _softBody->generateBendingConstraints(2, material);
 
             _softBody->scale(ToBtVector3(static_cast<BulletFSoftBody*>(_internal)->_scale));
-            _softBody->setTotalMass((btScalar)_mass);
-            _softBody->setFriction((btScalar)_friction);
-            _softBody->setRestitution((btScalar)_restitution);
-            _softBody->setRollingFriction((btScalar)_rollingFriction);
-            _softBody->transformTo(btTransform(ToBtQuaternion(_rotation), ToBtVector3(_position)));
+            _softBody->setTotalMass((btScalar)fSoftBody->GetMass());
+            _softBody->setFriction((btScalar)fSoftBody->GetFriction());
+            _softBody->setRestitution((btScalar)fSoftBody->GetRestitution());
+            _softBody->setRollingFriction((btScalar)fSoftBody->GetRollingFriction());
+            _softBody->transformTo(btTransform(ToBtQuaternion(fSoftBody->GetRotation()), ToBtVector3(fSoftBody->GetPosition())));
             
             _softBody->generateClusters(16);
             _softBody->m_cfg.collisions = btSoftBody::fCollision::CL_SS +
@@ -283,11 +97,11 @@ namespace te
             ((BulletFSoftBody*)_internal)->SetBtSoftBody(_softBody);
             ((BulletFSoftBody*)_internal)->SetSoftBody(this);
 
-            if (_mass > 0.0f)
+            if (fSoftBody->GetMass() > 0.0f)
             {
                 Activate();
-                _softBody->setLinearVelocity(ToBtVector3(_velocity));
-                _softBody->setAngularVelocity(ToBtVector3(_angularVelocity));
+                _softBody->setLinearVelocity(ToBtVector3(fSoftBody->GetVelocity()));
+                _softBody->setAngularVelocity(ToBtVector3(fSoftBody->GetAngularVelocity()));
             }
             else
             {
@@ -335,7 +149,7 @@ namespace te
         if (!_softBody)
             return;
 
-        if (_mass > 0.0f)
+        if (static_cast<BulletFSoftBody*>(_internal)->GetMass() > 0.0f)
             _softBody->activate(true);
     }
 
@@ -354,24 +168,25 @@ namespace te
 
         int flags = _softBody->getCollisionFlags();
 
-        if (_isKinematic)
+        if (static_cast<BulletFSoftBody*>(_internal)->GetIsKinematic())
             flags |= btCollisionObject::CF_KINEMATIC_OBJECT;
         else
             flags &= ~btCollisionObject::CF_KINEMATIC_OBJECT;
 
-        if (_isTrigger)
+        if (static_cast<BulletFSoftBody*>(_internal)->GetIsTrigger())
             flags |= btCollisionObject::CF_NO_CONTACT_RESPONSE;
         else
             flags &= ~btCollisionObject::CF_NO_CONTACT_RESPONSE;
 
-        if (_isDebug)
+        if (static_cast<BulletFSoftBody*>(_internal)->GetIsKinematic())
             flags &= ~btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
         else
             flags |= btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
 
         for (auto i = 0; i < _softBody->m_faces.size(); i++)
         {
-            _softBody->m_faces.at(i).m_material->m_flags = _isDebug ? btSoftBody::fMaterial::DebugDraw : 0;
+            _softBody->m_faces.at(i).m_material->m_flags = 
+                static_cast<BulletFSoftBody*>(_internal)->GetIsDebug() ? btSoftBody::fMaterial::DebugDraw : 0;
         }
 
         _softBody->setCollisionFlags(flags);
@@ -384,7 +199,7 @@ namespace te
         if (!_softBody)
             return;
 
-        if (((UINT32)_flags & (UINT32)BodyFlag::CCD))
+        if (((UINT32)static_cast<BulletFSoftBody*>(_internal)->GetFlags() & (UINT32)BodyFlag::CCD))
         {
             _softBody->setCcdMotionThreshold(0.015f);
             _softBody->setCcdSweptSphereRadius(0.01f);

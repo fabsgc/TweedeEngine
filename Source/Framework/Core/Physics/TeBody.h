@@ -38,8 +38,6 @@ namespace te
     class TE_CORE_EXPORT Body : public CoreObject, public Serializable
     {
     public:
-        virtual ~Body() = default;
-
         /** Allows to be able to update body state */
         virtual void Update() = 0;
 
@@ -153,13 +151,13 @@ namespace te
         virtual void SetCollisionReportMode(CollisionReportMode mode) = 0;
 
         /** Gets a value that determines which (if any) collision events are reported. */
-        virtual CollisionReportMode GetCollisionReportMode() const { return _collisionReportMode; }
-        
+        virtual CollisionReportMode GetCollisionReportMode() const = 0;
+
         /** Flags that control the behaviour of the body. */
-        virtual void SetFlags(BodyFlag flags) { _flags = flags; }
+        virtual void SetFlags(BodyFlag flags) = 0;
 
         /** @copydoc SetFlags */
-        virtual BodyFlag GetFlags() const { return _flags; }
+        virtual BodyFlag GetFlags() const = 0;
 
         /**
          * Checks does the ray hit this body.
@@ -251,7 +249,5 @@ namespace te
         PhysicsObjectOwner _owner;
 
         FBody* _internal = nullptr;
-        BodyFlag _flags = (BodyFlag)((UINT32)BodyFlag::None);
-        CollisionReportMode _collisionReportMode = CollisionReportMode::None;
     };
 }
