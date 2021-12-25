@@ -58,11 +58,6 @@ namespace te
             std::static_pointer_cast<SoftBody>(_internal)->SetScale(scale);
     }
 
-    void CSoftBody::Update()
-    {
-        CBody::Update();
-    }
-
     void CSoftBody::OnDestroyed()
     {
         DestroyInternal();

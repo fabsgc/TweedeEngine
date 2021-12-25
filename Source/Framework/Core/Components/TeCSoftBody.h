@@ -22,9 +22,6 @@ namespace te
         /** @copydoc Component::Initialize */
         void Initialize() override;
 
-        /** @copydoc Component::Update */
-        void Update() override;
-
         /** @copydoc SoftBody::GetMesh */
         void SetScale(const Vector3& scale);
 

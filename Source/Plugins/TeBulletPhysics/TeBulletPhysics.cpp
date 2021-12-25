@@ -474,17 +474,26 @@ namespace te
 
     SPtr<EllipsoidSoftBody> BulletScene::CreateEllipsoidSoftBody(const HSceneObject& linkedSO)
     {
-        return nullptr; // TODO
+        SPtr<EllipsoidSoftBody> body = te_core_ptr_new<BulletEllipsoidSoftBody>(_physics, this, linkedSO);
+        body->SetThisPtr(body);
+
+        return body;
     }
 
     SPtr<RopeSoftBody> BulletScene::CreateRopeSoftBody(const HSceneObject& linkedSO)
     {
-        return nullptr; // TODO
+        SPtr<RopeSoftBody> body = te_core_ptr_new<BulletRopeSoftBody>(_physics, this, linkedSO);
+        body->SetThisPtr(body);
+
+        return body;
     }
 
     SPtr<PatchSoftBody> BulletScene::CreatePatchSoftBody(const HSceneObject& linkedSO)
     {
-        return nullptr; // TODO
+        SPtr<PatchSoftBody> body = te_core_ptr_new<BulletPatchSoftBody>(_physics, this, linkedSO);
+        body->SetThisPtr(body);
+
+        return body;
     }
 
     SPtr<ConeTwistJoint> BulletScene::CreateConeTwistJoint()

@@ -6,7 +6,7 @@
 namespace te
 {
     /**
-     * A SoftBody which is build using a PhysicsMesh
+     * A SoftBody built using a PhysicsMesh
      */
     class TE_CORE_EXPORT MeshSoftBody : public SoftBody
     {
@@ -37,7 +37,7 @@ namespace te
          *							will be transfered to this scene object (the movement/rotation resulting from
          *							those updates).
          */
-        MeshSoftBody(const HSceneObject& linkedSO);
+        explicit MeshSoftBody(const HSceneObject& linkedSO);
 
     protected:
         HPhysicsMesh _mesh;

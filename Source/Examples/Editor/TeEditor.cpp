@@ -33,7 +33,10 @@
 #include "Components/TeCAudioSource.h"
 #include "Components/TeCAudioListener.h"
 #include "Components/TeCRigidBody.h"
-#include "Components/TeCSoftBody.h"
+#include "Components/TeCMeshSoftBody.h"
+#include "Components/TeCEllipsoidSoftBody.h"
+#include "Components/TeCRopeSoftBody.h"
+#include "Components/TeCPatchSoftBody.h"
 #include "Components/TeCMeshSoftBody.h"
 #include "Components/TeCConeTwistJoint.h"
 #include "Components/TeCD6Joint.h"
@@ -978,31 +981,31 @@ namespace te
 
                 case TID_CEllipsoidSoftBody:
                 {
-                    /* HEllipsoidSoftBody component = clickedSceneObject->AddComponent<CEllipsoidSoftBody>();
+                    HEllipsoidSoftBody component = clickedSceneObject->AddComponent<CEllipsoidSoftBody>();
                     component->Clone(_selections.CopiedComponent->GetHandle(), "copy");
                     component->Initialize();
                     _selections.ClickedComponent = component.GetInternalPtr();
-                    _selections.CopiedComponent = component.GetInternalPtr();  // TODO */
+                    _selections.CopiedComponent = component.GetInternalPtr();
                 }
                 break;
 
                 case TID_CRopeSoftBody:
                 {
-                    /*HEllipsoidSoftBody component = clickedSceneObject->AddComponent<CRopeSoftBody>();
+                    HRopeSoftBody component = clickedSceneObject->AddComponent<CRopeSoftBody>();
                     component->Clone(_selections.CopiedComponent->GetHandle(), "copy");
                     component->Initialize();
                     _selections.ClickedComponent = component.GetInternalPtr();
-                    _selections.CopiedComponent = component.GetInternalPtr(); // TODO */
+                    _selections.CopiedComponent = component.GetInternalPtr();
                 }
                 break;
 
                 case TID_CPatchSoftBody:
                 {
-                    /*HPatchSoftBody component = clickedSceneObject->AddComponent<CPatchSoftBody>();
+                    HPatchSoftBody component = clickedSceneObject->AddComponent<CPatchSoftBody>();
                     component->Clone(_selections.CopiedComponent->GetHandle(), "copy");
                     component->Initialize();
                     _selections.ClickedComponent = component.GetInternalPtr();
-                    _selections.CopiedComponent = component.GetInternalPtr(); // TODO */
+                    _selections.CopiedComponent = component.GetInternalPtr();
                 }
                 break;
 

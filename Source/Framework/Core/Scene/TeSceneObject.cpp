@@ -250,25 +250,25 @@ namespace te
 
             case TID_CEllipsoidSoftBody:
             {
-                /* HEllipsoidSoftBody component = this->AddComponent<CEllipsoidSoftBody>();
+                HEllipsoidSoftBody component = this->AddComponent<CEllipsoidSoftBody>();
                 component->Clone(co->GetHandle());
-                component->Initialize(); // TODO */
+                component->Initialize();
             }
             break;
 
             case TID_CRopeSoftBody:
             {
-                /* HRopeSoftBody component = this->AddComponent<CRopeSoftBody>();
+                HRopeSoftBody component = this->AddComponent<CRopeSoftBody>();
                 component->Clone(co->GetHandle());
-                component->Initialize(); // TODO */
+                component->Initialize();
             }
             break;
 
             case TID_CPatchSoftBody:
             {
-                /* HPatchSoftBody component = this->AddComponent<CPatchSoftBody>();
+                HPatchSoftBody component = this->AddComponent<CPatchSoftBody>();
                 component->Clone(co->GetHandle());
-                component->Initialize(); // TODO */
+                component->Initialize();
             }
             break;
 

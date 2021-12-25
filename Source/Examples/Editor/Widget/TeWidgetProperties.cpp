@@ -851,13 +851,13 @@ namespace te
     bool WidgetProperties::ShowCEllipsoidSoftBodyProperties()
     {
         bool hasChanged = false;
-        /*const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
         SPtr<CEllipsoidSoftBody> softBody = std::static_pointer_cast<CEllipsoidSoftBody>(_selections.ClickedComponent);
 
         if (ImGui::CollapsingHeader("Ellipsoid Soft Body", ImGuiTreeNodeFlags_DefaultOpen))
         {
             // TODO
-        }*/
+        }
 
         if (ShowCSoftBodyProperties())
             hasChanged = true;
@@ -868,13 +868,13 @@ namespace te
     bool WidgetProperties::ShowCRopeSoftBodyProperties()
     {
         bool hasChanged = false;
-        /*const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
         SPtr<CRopeSoftBody> softBody = std::static_pointer_cast<CRopeSoftBody>(_selections.ClickedComponent);
 
         if (ImGui::CollapsingHeader("Rope Soft Body", ImGuiTreeNodeFlags_DefaultOpen))
         {
             // TODO
-        }*/
+        }
 
         if (ShowCSoftBodyProperties())
             hasChanged = true;
@@ -886,12 +886,12 @@ namespace te
     {
         bool hasChanged = false;
         const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
-        /*SPtr<CPatchSoftBody> softBody = std::static_pointer_cast<CPatchSoftBody>(_selections.ClickedComponent);
+        SPtr<CPatchSoftBody> softBody = std::static_pointer_cast<CPatchSoftBody>(_selections.ClickedComponent);
 
         if (ImGui::CollapsingHeader("Rope Soft Body", ImGuiTreeNodeFlags_DefaultOpen))
         {
             // TODO
-        }*/
+        }
 
         if (ShowCSoftBodyProperties())
             hasChanged = true;

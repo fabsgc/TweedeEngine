@@ -465,7 +465,7 @@ namespace te
     typedef GameObjectHandle<CMeshSoftBody> HMeshSoftBody;
     typedef GameObjectHandle<CEllipsoidSoftBody> HEllipsoidSoftBody;
     typedef GameObjectHandle<CRopeSoftBody> HRopeSoftBody;
-    typedef GameObjectHandle<CPatchSoftBody> HPathSoftBody;
+    typedef GameObjectHandle<CPatchSoftBody> HPatchSoftBody;
     typedef GameObjectHandle<CCollider> HCollider;
     typedef GameObjectHandle<CBoxCollider> HBoxCollider;
     typedef GameObjectHandle<CPlaneCollider> HPlaneCollider;

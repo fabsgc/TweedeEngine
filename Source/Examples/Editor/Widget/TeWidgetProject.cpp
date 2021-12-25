@@ -474,7 +474,7 @@ namespace te
                     softBody->Initialize();
                     softBody->SetLinkedSO(currentCO->SO());
                 }
-                /*if (currentCO->GetCoreType() == TID_CEllipsoidSoftBody)
+                if (currentCO->GetCoreType() == TID_CEllipsoidSoftBody)
                 {
                     HEllipsoidSoftBody softBody = static_object_cast<CEllipsoidSoftBody>(currentCO);
                     softBody->Initialize();
@@ -491,7 +491,7 @@ namespace te
                     HPatchSoftBody softBody = static_object_cast<CPatchSoftBody>(currentCO);
                     softBody->Initialize();
                     softBody->SetLinkedSO(currentCO->SO());
-                } // TODO */
+                }
 
                 // if we've moved a collider call RestoreInternal()
                 if (currentCO->GetCoreType() == TID_CBoxCollider)
@@ -977,10 +977,10 @@ namespace te
             return;
 
         if (!_selections.ClickedSceneObject->GetComponent<CRigidBody>().Empty() ||
-            !_selections.ClickedSceneObject->GetComponent<CMeshSoftBody>().Empty())
-            /*!_selections.ClickedSceneObject->GetComponent<CEllipsoidSoftBody>().Empty() ||
+            !_selections.ClickedSceneObject->GetComponent<CMeshSoftBody>().Empty() ||
+            !_selections.ClickedSceneObject->GetComponent<CEllipsoidSoftBody>().Empty() ||
             !_selections.ClickedSceneObject->GetComponent<CRopeSoftBody>().Empty() ||
-            !_selections.ClickedSceneObject->GetComponent<CPatchSoftBody>().Empty()) // TODO */
+            !_selections.ClickedSceneObject->GetComponent<CPatchSoftBody>().Empty())
         {
             return;
         }
@@ -1002,10 +1002,10 @@ namespace te
             return;
 
         if (!_selections.ClickedSceneObject->GetComponent<CRigidBody>().Empty() ||
-            !_selections.ClickedSceneObject->GetComponent<CMeshSoftBody>().Empty())
-            /*!_selections.ClickedSceneObject->GetComponent<CEllipsoidSoftBody>().Empty() ||
+            !_selections.ClickedSceneObject->GetComponent<CMeshSoftBody>().Empty() ||
+            !_selections.ClickedSceneObject->GetComponent<CEllipsoidSoftBody>().Empty() ||
             !_selections.ClickedSceneObject->GetComponent<CRopeSoftBody>().Empty() ||
-            !_selections.ClickedSceneObject->GetComponent<CPatchSoftBody>().Empty()) // TODO */
+            !_selections.ClickedSceneObject->GetComponent<CPatchSoftBody>().Empty())
         {
             return;
         }
@@ -1023,28 +1023,28 @@ namespace te
 
             case TID_CEllipsoidSoftBody:
             {
-                /*HEllipsoidSoftBody softBody = _selections.ClickedSceneObject->AddComponent<CEllipsoidSoftBody>();
+                HEllipsoidSoftBody softBody = _selections.ClickedSceneObject->AddComponent<CEllipsoidSoftBody>();
                 softBody.Get()->SetName("Ellipsoid Soft Body");
                 softBody.Get()->Initialize();
-                _selections.ClickedComponent = softBody.GetInternalPtr(); // TODO */
+                _selections.ClickedComponent = softBody.GetInternalPtr();
             }
             break;
 
             case TID_CRopeSoftBody:
             {
-                /*HRopeSoftBody softBody = _selections.ClickedSceneObject->AddComponent<CRopeSoftBody>();
+                HRopeSoftBody softBody = _selections.ClickedSceneObject->AddComponent<CRopeSoftBody>();
                 softBody.Get()->SetName("Rope Soft Body");
                 softBody.Get()->Initialize();
-                _selections.ClickedComponent = softBody.GetInternalPtr(); // TODO */
+                _selections.ClickedComponent = softBody.GetInternalPtr();
             }
             break;
 
             case TID_CPatchSoftBody:
             {
-                /*HPatchSoftBody softBody = _selections.ClickedSceneObject->AddComponent<CPatchSoftBody>();
+                HPatchSoftBody softBody = _selections.ClickedSceneObject->AddComponent<CPatchSoftBody>();
                 softBody.Get()->SetName("Patch Soft Body");
                 softBody.Get()->Initialize();
-                _selections.ClickedComponent = softBody.GetInternalPtr(); // TODO */
+                _selections.ClickedComponent = softBody.GetInternalPtr();
             }
             break;
 

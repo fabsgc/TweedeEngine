@@ -67,7 +67,7 @@ namespace te
     class BulletMeshSoftBody;
     class BulletEllipsoidSoftBody;
     class BulletRopeSoftBody;
-    class BulletPathSoftBody;
+    class BulletPatchSoftBody;
     class BulletHeightField;
     class BulletJoint;
     class BulletConeTwistJoint;

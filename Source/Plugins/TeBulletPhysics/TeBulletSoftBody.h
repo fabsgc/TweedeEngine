@@ -32,5 +32,8 @@ namespace te
 
         /** Check if btRigidBody is activated */
         virtual bool IsActivated() const = 0;
+
+    protected:
+        btSoftBody* _softBody;
     };
 }
