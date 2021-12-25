@@ -37,7 +37,7 @@ Additionally, if the dependency structure still isn't clear, download one of the
 - Required by TeFreeImgImporter
 
 **Assimp**
-- assimp 5.0.0
+- assimp 5.0.1
 - http://www.assimp.org/
 - Required by TeObjectImpoter
 
@@ -94,8 +94,8 @@ Additionally, if the dependency structure still isn't clear, download one of the
   - Provide `--disable-shared --enable-static` flags to `configure` to force it to compile as a static library
   - Requires libogg, as described in its readme file.
 
-**Bullet 3**
-- bullet3 commit : 93be7e644024e92df13b454a4a0b0fcd02b21b10
+**Bullet**
+- bullet 3.08 commit : 93be7e644024e92df13b454a4a0b0fcd02b21b10
 - https://github.com/bulletphysics/bullet3
 - Required by BulletPhysics
 - Compile as a static library on both Windows and Linux
