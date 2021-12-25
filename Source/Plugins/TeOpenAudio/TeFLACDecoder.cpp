@@ -5,7 +5,7 @@ namespace te
 {
     FLAC__StreamDecoderReadStatus StreamRead(const FLAC__StreamDecoder*, FLAC__byte buffer[], size_t* bytes, void* clientData)
     {
-        FLACDecoderData* data = (FLACDecoderData*)(clientData);
+        FLACDecoderData* data = static_cast<FLACDecoderData*>(clientData);
 
         INT64 count = (INT64)data->Stream->Read(buffer, *bytes);
         if (count > 0)

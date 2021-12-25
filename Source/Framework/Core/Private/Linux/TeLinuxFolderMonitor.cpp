@@ -111,7 +111,7 @@ namespace te
         {
             UINT8* bytes = (UINT8*)te_allocate((UINT32)(sizeof(FileAction) + (fileName.size() + 1) * sizeof(String::value_type)));
 
-            FileAction* action = (FileAction*)bytes;
+            FileAction* action = reinterpret_cast<FileAction*>(bytes);
             bytes += sizeof(FileAction);
 
             action->OldName = nullptr;
