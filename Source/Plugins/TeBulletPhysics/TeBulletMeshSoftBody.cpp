@@ -11,10 +11,7 @@ namespace te
 
     BulletMeshSoftBody::BulletMeshSoftBody(BulletPhysics* physics, BulletScene* scene, const HSceneObject& linkedSO)
         : MeshSoftBody(linkedSO)
-        , _softBody(nullptr)
-        , _physics(physics)
-        , _scene(scene)
-        , _isDirty(false)
+        , BulletSoftBody(physics, scene)
     {
         _internal = te_new<BulletFSoftBody>(this);
         AddToWorld();
@@ -23,7 +20,7 @@ namespace te
     BulletMeshSoftBody::~BulletMeshSoftBody()
     { 
         te_delete((BulletFSoftBody*)_internal);
-        Release();
+        Release(_internal);
     }
 
     void BulletMeshSoftBody::Update()
@@ -50,7 +47,7 @@ namespace te
         if (fSoftBody->GetMass() < 0.0f)
             fSoftBody->SetMass(0.0f);
 
-        Release();
+        Release(_internal);
 
         if (!_mesh.IsLoaded())
             return;
@@ -99,7 +96,7 @@ namespace te
 
             if (fSoftBody->GetMass() > 0.0f)
             {
-                Activate();
+                Activate(_internal);
                 _softBody->setLinearVelocity(ToBtVector3(fSoftBody->GetVelocity()));
                 _softBody->setAngularVelocity(ToBtVector3(fSoftBody->GetAngularVelocity()));
             }
@@ -109,105 +106,11 @@ namespace te
                 _softBody->setAngularVelocity(ToBtVector3(Vector3::ZERO));
             }
 
-            UpdateKinematicFlag();
-            UpdateCCDFlag();
+            UpdateKinematicFlag(_internal);
+            UpdateCCDFlag(_internal);
 
             _scene->AddSoftBody(_softBody);
             _inWorld = true;
-        }
-    }
-
-    void BulletMeshSoftBody::Release()
-    {
-        if (!_softBody)
-            return;
-
-        RemoveFromWorld();
-        delete _softBody;
-
-        ((BulletFSoftBody*)_internal)->SetBtSoftBody(nullptr);
-        ((BulletFSoftBody*)_internal)->SetSoftBody(nullptr);
-
-        _softBody = nullptr;
-    }
-
-    void BulletMeshSoftBody::RemoveFromWorld()
-    {
-        if (!_softBody)
-            return;
-
-        if (_inWorld)
-        {
-            _softBody->activate(false);
-            _scene->RemoveSoftBody(_softBody);
-            _inWorld = false;
-        }
-    }
-
-    void BulletMeshSoftBody::Activate() const
-    {
-        if (!_softBody)
-            return;
-
-        if (static_cast<BulletFSoftBody*>(_internal)->GetMass() > 0.0f)
-            _softBody->activate(true);
-    }
-
-    bool BulletMeshSoftBody::IsActivated() const
-    {
-        if (_softBody)
-            return _softBody->isActive();
-
-        return false;
-    }
-
-    void BulletMeshSoftBody::UpdateKinematicFlag() const
-    {
-        if (!_softBody)
-            return;
-
-        int flags = _softBody->getCollisionFlags();
-
-        if (static_cast<BulletFSoftBody*>(_internal)->GetIsKinematic())
-            flags |= btCollisionObject::CF_KINEMATIC_OBJECT;
-        else
-            flags &= ~btCollisionObject::CF_KINEMATIC_OBJECT;
-
-        if (static_cast<BulletFSoftBody*>(_internal)->GetIsTrigger())
-            flags |= btCollisionObject::CF_NO_CONTACT_RESPONSE;
-        else
-            flags &= ~btCollisionObject::CF_NO_CONTACT_RESPONSE;
-
-        if (static_cast<BulletFSoftBody*>(_internal)->GetIsKinematic())
-            flags &= ~btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
-        else
-            flags |= btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
-
-        for (auto i = 0; i < _softBody->m_faces.size(); i++)
-        {
-            _softBody->m_faces.at(i).m_material->m_flags = 
-                static_cast<BulletFSoftBody*>(_internal)->GetIsDebug() ? btSoftBody::fMaterial::DebugDraw : 0;
-        }
-
-        _softBody->setCollisionFlags(flags);
-        _softBody->forceActivationState(DISABLE_DEACTIVATION);
-        _softBody->setDeactivationTime(DEFAULT_DEACTIVATION_TIME);
-    }
-
-    void BulletMeshSoftBody::UpdateCCDFlag() const
-    {
-        if (!_softBody)
-            return;
-
-        if (((UINT32)static_cast<BulletFSoftBody*>(_internal)->GetFlags() & (UINT32)BodyFlag::CCD))
-        {
-            _softBody->setCcdMotionThreshold(0.015f);
-            _softBody->setCcdSweptSphereRadius(0.01f);
-        }
-        else
-        {
-            _softBody->setCcdMotionThreshold(std::numeric_limits<float>::infinity());
-            _softBody->setCcdSweptSphereRadius(0);
         }
     }
 }

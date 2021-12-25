@@ -83,7 +83,7 @@ namespace te
             return;
 
         _isTrigger = trigger;
-        _softBody->UpdateKinematicFlag();
+        _softBody->UpdateKinematicFlag(this);
     }
 
     void BulletFSoftBody::SetIsDebug(bool debug)
@@ -92,7 +92,7 @@ namespace te
             return;
 
         _isDebug = debug;
-        _softBody->UpdateKinematicFlag();
+        _softBody->UpdateKinematicFlag(this);
     }
 
     void BulletFSoftBody::SetMass(float mass)
@@ -113,7 +113,7 @@ namespace te
             return;
 
         _isKinematic = kinematic;
-        _softBody->UpdateKinematicFlag();
+        _softBody->UpdateKinematicFlag(this);
     }
 
     void BulletFSoftBody::SetVelocity(const Vector3& velocity)
@@ -128,7 +128,7 @@ namespace te
             _btSoftBody->setLinearVelocity(ToBtVector3(_velocity));
 
             if (_velocity != Vector3::ZERO)
-                _softBody->Activate();
+                _softBody->Activate(this);
         }
     }
 
@@ -144,7 +144,7 @@ namespace te
             _btSoftBody->setAngularVelocity(ToBtVector3(_angularVelocity));
 
             if (_angularVelocity != Vector3::ZERO)
-                _softBody->Activate();
+                _softBody->Activate(this);
         }
     }
 
@@ -187,7 +187,7 @@ namespace te
             return;
 
         _flags = flags;
-        _softBody->UpdateCCDFlag();
+        _softBody->UpdateCCDFlag(this);
     }
 
     void BulletFSoftBody::ApplyForce(const Vector3& force, ForceMode mode) const
