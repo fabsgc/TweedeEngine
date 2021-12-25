@@ -11,10 +11,6 @@ namespace te
     class TE_CORE_EXPORT MeshSoftBody : public SoftBody
     {
     public:
-
-        /** Return Component type */
-        static UINT32 GetComponentType() { return TypeID_Core::TID_CMeshSoftBody; }
-
         /**
          * Creates a new mesh softbody.
          *

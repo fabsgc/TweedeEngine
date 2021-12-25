@@ -48,10 +48,12 @@ namespace te
             _rollingFriction = c->_rollingFriction;
             _restitution = c->_restitution;
             _isKinematic = c->_isKinematic;
+            _isTrigger = c->_isTrigger;
+            _isDebug = c->_isDebug;
             _velocity = c->_velocity;
             _angularVelocity = c->_angularVelocity;
+            _flags = c->_flags;
             _collisionReportMode = c->_collisionReportMode;
-            _isDebug = c->_isDebug;
 
             return true;
         }

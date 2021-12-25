@@ -3,7 +3,6 @@
 #include "TeCorePrerequisites.h"
 #include "Components/TeCSoftBody.h"
 #include "Physics/TeMeshSoftBody.h"
-#include "Physics/TePhysicsMesh.h"
 
 namespace te
 {

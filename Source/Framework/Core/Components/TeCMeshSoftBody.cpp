@@ -39,7 +39,6 @@ namespace te
         if (CSoftBody::Clone(static_object_cast<CSoftBody>(c), suffix))
         {
             _mesh = c->_mesh;
-
             return true;
         }
 
