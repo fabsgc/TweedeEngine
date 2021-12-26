@@ -786,7 +786,7 @@ namespace te
         return hits.size() > 0;
     }
 
-    btSoftBody* BulletScene::CreateBtSoftBody(const SPtr<BulletMesh::MeshInfo>& mesh) const
+    btSoftBody* BulletScene::CreateBtSoftBodyFromMesh(const SPtr<BulletMesh::MeshInfo>& mesh) const
     {
         if (!_worldInfo)
             return nullptr;
@@ -794,7 +794,7 @@ namespace te
         return btSoftBodyHelpers::CreateFromTriMesh(*_worldInfo, mesh->Vertices, mesh->Indices, mesh->NumTriangles);
     }
 
-    btSoftBody* BulletScene::CreateBtSoftBody(const Vector3& topLeft, const Vector3& topRight, const Vector3& bottomLeft, const Vector3& bottomRight,
+    btSoftBody* BulletScene::CreateBtSoftBodyFromPatch(const Vector3& topLeft, const Vector3& topRight, const Vector3& bottomLeft, const Vector3& bottomRight,
         UINT32 resolutionX, UINT32 resolutionY, UINT32 fixeds, bool gendiags) const
     {
         if (!_worldInfo)
@@ -802,6 +802,22 @@ namespace te
         
         return btSoftBodyHelpers::CreatePatch(*_worldInfo, ToBtVector3(topLeft), ToBtVector3(topRight), 
             ToBtVector3(bottomLeft), ToBtVector3(bottomRight), resolutionX, resolutionY, fixeds, gendiags);
+    }
+
+    btSoftBody* BulletScene::CreateBtSoftBodyFromRope(const Vector3& from, const Vector3& to, UINT32 resolution, UINT32 fixeds) const
+    {
+        if (!_worldInfo)
+            return nullptr;
+
+        return btSoftBodyHelpers::CreateRope(*_worldInfo, ToBtVector3(from), ToBtVector3(to), resolution, fixeds);
+    }
+
+    btSoftBody* BulletScene::CreateBtSoftBodyFromEllipsoid(const Vector3& center, const Vector3& radius, UINT32 resolution) const
+    {
+        if (!_worldInfo)
+            return nullptr;
+
+        return btSoftBodyHelpers::CreateRope(*_worldInfo, ToBtVector3(center), ToBtVector3(radius), resolution, resolution);
     }
 
     BulletPhysics& gBulletPhysics()

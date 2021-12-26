@@ -349,7 +349,11 @@ namespace te
 
         while (currentSO != nullptr)
         {
-            if (currentSO->HasComponent(TID_CRigidBody) || currentSO->HasComponent(TID_CSoftBody))
+            if (currentSO->HasComponent(TID_CRigidBody) || 
+                currentSO->HasComponent(TID_CMeshSoftBody) ||
+                currentSO->HasComponent(TID_CPatchSoftBody) ||
+                currentSO->HasComponent(TID_RopeSoftBody) ||
+                currentSO->HasComponent(TID_CEllipsoidSoftBody))
             {
                 TE_DEBUG("Nested Rigidbodies or SoftBodies detected. This will result in inconsistent transformations. "
                     "To parent one Rigidbody to another move its colliders to the new parent, but remove the Rigidbody "

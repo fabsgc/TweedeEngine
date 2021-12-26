@@ -68,8 +68,9 @@ namespace te
         static bool RenderOptionFloat(float& value, const char* id, const char* text, float min = 0.0f, 
             float max = std::numeric_limits<float>::max() / 2, float width = 0.0f, bool disable = false);
 
-        static bool RenderOptionInt(int& value, const char* id, const char* text, int min = 0, 
-            int max = std::numeric_limits<int>::max(), float width = 0.0f, bool disable = false);
+        template<typename T>
+        static bool RenderOptionInt(T& value, const char* id, const char* text, T min = 0, 
+            T max = std::numeric_limits<T>::max(), float width = 0.0f, bool disable = false);
 
         static bool RenderOptionBool(bool& value, const char* id, const char* text, 
             bool disable = false);

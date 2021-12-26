@@ -67,7 +67,7 @@ namespace te
             return;
         }
 
-        _softBody = _scene->CreateBtSoftBody(mesh);
+        _softBody = _scene->CreateBtSoftBodyFromMesh(mesh);
         AddToWorldInternal(_internal);
     }
 }

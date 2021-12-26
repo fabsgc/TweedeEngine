@@ -41,6 +41,8 @@ namespace te
         _topRight = topRight;
         _bottomLeft = bottomLeft;
         _bottomRight = bottomRight;
+
+        AddToWorld();
     }
 
     void BulletPatchSoftBody::GetCorners(Vector3& topLeft, Vector3& topRight, Vector3& bottomLeft, Vector3& bottomRight)
@@ -55,6 +57,8 @@ namespace te
     {
         _resolutionX = x;
         _resolutionY = y;
+
+        AddToWorld();
     }
 
     void BulletPatchSoftBody::GetResolution(UINT32& x, UINT32& y)
@@ -72,7 +76,7 @@ namespace te
 
         Release(_internal);
 
-        _softBody = _scene->CreateBtSoftBody(_topLeft, _topRight, _bottomLeft, _bottomRight, _resolutionX, _resolutionY);
+        _softBody = _scene->CreateBtSoftBodyFromPatch(_topLeft, _topRight, _bottomLeft, _bottomRight, _resolutionX, _resolutionY);
         AddToWorldInternal(_internal);
     }
 }

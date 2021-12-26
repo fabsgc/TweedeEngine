@@ -888,9 +888,55 @@ namespace te
         const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
         SPtr<CPatchSoftBody> softBody = std::static_pointer_cast<CPatchSoftBody>(_selections.ClickedComponent);
 
-        if (ImGui::CollapsingHeader("Rope Soft Body", ImGuiTreeNodeFlags_DefaultOpen))
+        if (ImGui::CollapsingHeader("Patch Soft Body", ImGuiTreeNodeFlags_DefaultOpen))
         {
-            // TODO
+            // Corners
+            {
+                Vector3 topLeft, topRight, bottomLeft, bottomRight;
+                softBody->GetCorners(topLeft, topRight, bottomLeft, bottomRight);
+                if (ImGuiExt::RenderVector3(topLeft, "##patch_soft_body_option_corners_top_left", " Top Left", 20.0f))
+                {
+                    softBody->SetCorners(topLeft, topRight, bottomLeft, bottomRight);
+                    hasChanged = true;
+                }
+
+                if (ImGuiExt::RenderVector3(topRight, "##patch_soft_body_option_corners_top_right", " Top Right", 20.0f))
+                {
+                    softBody->SetCorners(topLeft, topRight, bottomLeft, bottomRight);
+                    hasChanged = true;
+                }
+
+                if (ImGuiExt::RenderVector3(bottomLeft, "##patch_soft_body_option_corners_bottom_left", " Bottom Left", 20.0f))
+                {
+                    softBody->SetCorners(topLeft, topRight, bottomLeft, bottomRight);
+                    hasChanged = true;
+                }
+
+                if (ImGuiExt::RenderVector3(bottomRight, "##patch_soft_body_option_corners_bottom_right", " Bottom Right", 20.0f))
+                {
+                    softBody->SetCorners(topLeft, topRight, bottomLeft, bottomRight);
+                    hasChanged = true;
+                }
+            }
+            ImGui::Separator();
+
+            // Resolution
+            {
+                UINT32 resolutionX, resolutionY;
+                softBody->GetResolution(resolutionX, resolutionY);
+                if (ImGuiExt::RenderOptionInt<UINT32>(resolutionX, "##patch_soft_body_option_resolution_x", " Resolution X", 1, 128, width))
+                {
+                    softBody->SetResolution(resolutionX, resolutionY);
+                    hasChanged = true;
+                }
+
+                if (ImGuiExt::RenderOptionInt<UINT32>(resolutionY, "##patch_soft_body_option_resolution_Y", " Resolution Y", 1, 128, width))
+                {
+                    softBody->SetResolution(resolutionX, resolutionY);
+                    hasChanged = true;
+                }
+            }
+            ImGui::Separator();
         }
 
         if (ShowCSoftBodyProperties())

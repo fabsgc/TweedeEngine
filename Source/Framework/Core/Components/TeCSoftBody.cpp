@@ -75,6 +75,10 @@ namespace te
 
         _internal = CreateInternal();
 
+#if TE_DEBUG_MODE
+        CheckForNestedBody();
+#endif
+
         _internal->OnCollisionBegin.Connect(std::bind(&CSoftBody::TriggerOnCollisionBegin, this, _1));
         _internal->OnCollisionStay.Connect(std::bind(&CSoftBody::TriggerOnCollisionStay, this, _1));
         _internal->OnCollisionEnd.Connect(std::bind(&CSoftBody::TriggerOnCollisionEnd, this, _1));
@@ -104,7 +108,9 @@ namespace te
 
         if ((flags & TCF_Parent) != 0)
         {
-
+#if TE_DEBUG_MODE
+            CheckForNestedBody();
+#endif
         }
 
         if (gPhysics().IsUpdateInProgress())
@@ -120,6 +126,28 @@ namespace te
         {
             _internal->SetOwner(PhysicsOwnerType::None, nullptr);
             _internal = nullptr;
+        }
+    }
+
+    void CSoftBody::CheckForNestedBody()
+    {
+        HSceneObject currentSO = SO()->GetParent();
+
+        while (currentSO != nullptr)
+        {
+            if (currentSO->HasComponent(TID_CRigidBody) ||
+                currentSO->HasComponent(TID_CMeshSoftBody) ||
+                currentSO->HasComponent(TID_CPatchSoftBody) ||
+                currentSO->HasComponent(TID_RopeSoftBody) ||
+                currentSO->HasComponent(TID_CEllipsoidSoftBody))
+            {
+                TE_DEBUG("Nested Rigidbodies or SoftBodies detected. This will result in inconsistent transformations. "
+                    "To parent one Rigidbody to another move its colliders to the new parent, but remove the Rigidbody "
+                    "component.");
+                return;
+            }
+
+            currentSO = currentSO->GetParent();
         }
     }
 

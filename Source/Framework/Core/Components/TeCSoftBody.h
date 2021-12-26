@@ -55,6 +55,9 @@ namespace te
         /** Destroys the internal SoftBody representation. */
         virtual void DestroyInternal() override;
 
+        /** Checks if the body is nested under another body, and throws out a warning if so. */
+        void CheckForNestedBody();
+
         /** Body::ProcessCollisionData */
         void ProcessCollisionData(const CollisionDataRaw& raw, CollisionData& output) override;
 

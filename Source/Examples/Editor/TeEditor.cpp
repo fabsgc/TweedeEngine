@@ -89,7 +89,10 @@ namespace te
     const Vector<UINT32> Editor::ComponentsWhichNeedGuizmo = {
         TID_CRenderable,
         TID_CRigidBody,
-        TID_CSoftBody,
+        TID_CMeshSoftBody,
+        TID_CEllipsoidSoftBody,
+        TID_CRopeSoftBody,
+        TID_CPatchSoftBody,
         TID_CLight,
         TID_CCamera,
         TID_CCameraFlyer,
@@ -1348,7 +1351,7 @@ namespace te
             _renderablePlane->SetName("Plane Renderable");
             _renderablePlane->Initialize();
             _sceneRenderablePlaneSO->Move(Vector3(0.0, -1.0f, 0.0f));
-            _sceneRenderablePlaneSO->SetScale(Vector3(0.5f, 0.5f, 0.5f));
+            _sceneRenderablePlaneSO->SetScale(Vector3(0.75f, 0.75f, 0.75f));
         }
 
         if (_loadedMeshSphere.IsLoaded() && _sphereMaterial.IsLoaded())
@@ -1362,6 +1365,20 @@ namespace te
             _renderablePlane->Initialize();
             _sceneRenderableSphereSO->Move(Vector3(1.0, 5.0f, 0.0f));
             _sceneRenderableSphereSO->SetScale(Vector3(0.5f, 0.5f, 0.5f));
+        }
+
+        {
+            _scenePatchSO = SceneObject::Create("Patch");
+            _scenePatchSO->SetParent(_sceneSO);
+            _scenePatchSO->Move(Vector3(2.0, 5.0f, 0.0f));
+
+            _sceneRopeSO = SceneObject::Create("Rope");
+            _sceneRopeSO->SetParent(_sceneSO);
+            _scenePatchSO->Move(Vector3(0.0, 6.0f, 2.5f));
+
+            _sceneEllipsoidSO = SceneObject::Create("Ellipsoid");
+            _sceneEllipsoidSO->SetParent(_sceneSO);
+            _sceneEllipsoidSO->Move(Vector3(2.0, 6.0f, 2.0f));
         }
 
         if (_loadedMeshKnight.IsLoaded() && _knightMaterial.IsLoaded() && _animationClipKnight.IsLoaded())
@@ -1406,7 +1423,7 @@ namespace te
             _rigidBodyPlane->SetCollisionReportMode(CollisionReportMode::ReportPersistent);
             _rigidBodyPlane->Initialize();
             _boxColliderPlane = _sceneRenderablePlaneSO->AddComponent<CBoxCollider>();
-            _boxColliderPlane->SetExtents(Vector3(5.0f, 0.2f, 5.0f));
+            _boxColliderPlane->SetExtents(Vector3(7.5f, 0.2f, 7.5f));
             _boxColliderPlane->SetPosition(Vector3(0.0f, -0.2f, 0.0f));
             _boxColliderPlane->Initialize();
         }
@@ -1414,11 +1431,35 @@ namespace te
         if (_sceneRenderableSphereSO)
         {
             _softBodySphere = _sceneRenderableSphereSO->AddComponent<CMeshSoftBody>();
-            _softBodySphere->SetName("Soft Body Plane");
+            _softBodySphere->SetName("Soft Body Sphere");
             _softBodySphere->SetCollisionReportMode(CollisionReportMode::ReportPersistent);
             _softBodySphere->SetMesh(_spherePhysicsMesh);
             _softBodySphere->Initialize();
             _softBodySphere->SetScale(Vector3(0.5f, 0.5f, 0.5f));
+        }
+
+        if (_scenePatchSO)
+        {
+            _softBodyPatch = _scenePatchSO->AddComponent<CPatchSoftBody>();
+            _softBodyPatch->SetName("Soft Body Patch");
+            _softBodyPatch->SetCollisionReportMode(CollisionReportMode::ReportPersistent);
+            _softBodyPatch->Initialize();
+        }
+
+        if (_sceneRopeSO)
+        {
+            _softBodyRope = _sceneRopeSO->AddComponent<CRopeSoftBody>();
+            _softBodyRope->SetName("Soft Body Rope");
+            _softBodyRope->SetCollisionReportMode(CollisionReportMode::ReportPersistent);
+            _softBodyRope->Initialize();
+        }
+
+        if (_sceneEllipsoidSO)
+        {
+            _softBodyEllipsoid = _sceneEllipsoidSO->AddComponent<CEllipsoidSoftBody>();
+            _softBodyEllipsoid->SetName("Soft Body Ellipsoid");
+            _softBodyEllipsoid->SetCollisionReportMode(CollisionReportMode::ReportPersistent);
+            _softBodyEllipsoid->Initialize();
         }
 
         if (_sceneRenderableKnightSO)

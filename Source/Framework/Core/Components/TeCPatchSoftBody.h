@@ -23,6 +23,18 @@ namespace te
         /** @copydoc Component::Clone */
         bool Clone(const HPatchSoftBody& c, const String& suffix = "");
 
+        /** @copydoc PatchSoftBody::SetCorners */
+        void SetCorners(const Vector3& topLeft, const Vector3& topRight, const Vector3& bottomLeft, const Vector3& bottomRight);
+
+        /** @copydoc PatchSoftBody::SetCorners */
+        void GetCorners(Vector3& topLeft, Vector3& topRight, Vector3& bottomLeft, Vector3& bottomRight);
+
+        /** @copydoc PatchSoftBody::SetCorners */
+        void SetResolution(UINT32 x, UINT32 y);
+
+        /** @copydoc PatchSoftBody::SetCorners */
+        void GetResolution(UINT32& x, UINT32& y);
+
     protected:
         friend class SceneObject;
 
@@ -34,5 +46,13 @@ namespace te
 
         /** @copydoc Component::OnEnabled */
         void OnEnabled() override;
+
+    protected:
+        Vector3 _topLeft;
+        Vector3 _topRight;
+        Vector3 _bottomLeft;
+        Vector3 _bottomRight;
+        UINT32 _resolutionX;
+        UINT32 _resolutionY;
     };
 }

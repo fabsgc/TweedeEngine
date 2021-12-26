@@ -223,11 +223,17 @@ namespace te
             float maxDist = FLT_MAX) const override;
 
         /** Create a btSoftBody from a PhysicsMesh */
-        btSoftBody* CreateBtSoftBody(const SPtr<BulletMesh::MeshInfo>& mesh) const;
+        btSoftBody* CreateBtSoftBodyFromMesh(const SPtr<BulletMesh::MeshInfo>& mesh) const;
 
-        /** Create a btSoftBody from a Patch info */
-        btSoftBody* CreateBtSoftBody(const Vector3& topLeft, const Vector3& topRight, const Vector3& bottomLeft, const Vector3& bottomRight,
+        /** Create a btSoftBody from Patch info */
+        btSoftBody* CreateBtSoftBodyFromPatch(const Vector3& topLeft, const Vector3& topRight, const Vector3& bottomLeft, const Vector3& bottomRight,
             UINT32 resolutionX, UINT32 resolutionY, UINT32 fixeds = 0, bool gendiags = true) const;
+
+        /** Create a btSoftBody from Rope info */
+        btSoftBody* CreateBtSoftBodyFromRope(const Vector3& from, const Vector3& to, UINT32 resolution, UINT32 fixeds = 0) const;
+
+        /** Create a btSoftBody from Ellipsoid info */
+        btSoftBody* CreateBtSoftBodyFromEllipsoid(const Vector3& center, const Vector3& radius, UINT32 resolution) const;
 
     private:
         friend class BulletPhysics;

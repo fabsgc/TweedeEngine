@@ -285,6 +285,9 @@ namespace te
         HSceneObject _sceneAudioListenerSO;
         HSceneObject _sceneAudioSourceSO;
         HSceneObject _sceneJointSO;
+        HSceneObject _scenePatchSO;
+        HSceneObject _sceneEllipsoidSO;
+        HSceneObject _sceneRopeSO;
 
         HLight _light;
         HSkybox _skybox;
@@ -313,6 +316,10 @@ namespace te
 
         HMeshSoftBody _softBodySphere;
         HPhysicsMesh _spherePhysicsMesh;
+
+        HPatchSoftBody _softBodyPatch;
+        HEllipsoidSoftBody _softBodyEllipsoid;
+        HRopeSoftBody _softBodyRope;
 #endif
     };
 
