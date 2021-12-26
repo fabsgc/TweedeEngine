@@ -15,6 +15,9 @@ namespace te
     protected:
         friend class BulletFSoftBody;
 
+        /** Common part used by all soft bodies */
+        void AddToWorldInternal(FBody* body);
+
         /** Add RigidBody to world */
         virtual void AddToWorld() = 0;
 

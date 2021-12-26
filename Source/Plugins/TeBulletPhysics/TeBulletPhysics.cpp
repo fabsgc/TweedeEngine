@@ -794,6 +794,16 @@ namespace te
         return btSoftBodyHelpers::CreateFromTriMesh(*_worldInfo, mesh->Vertices, mesh->Indices, mesh->NumTriangles);
     }
 
+    btSoftBody* BulletScene::CreateBtSoftBody(const Vector3& topLeft, const Vector3& topRight, const Vector3& bottomLeft, const Vector3& bottomRight,
+        UINT32 resolutionX, UINT32 resolutionY, UINT32 fixeds, bool gendiags) const
+    {
+        if (!_worldInfo)
+            return nullptr;
+        
+        return btSoftBodyHelpers::CreatePatch(*_worldInfo, ToBtVector3(topLeft), ToBtVector3(topRight), 
+            ToBtVector3(bottomLeft), ToBtVector3(bottomRight), resolutionX, resolutionY, fixeds, gendiags);
+    }
+
     BulletPhysics& gBulletPhysics()
     {
         return static_cast<BulletPhysics&>(BulletPhysics::Instance());

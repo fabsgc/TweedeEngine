@@ -492,7 +492,7 @@ namespace te
 
             _scene->AddRigidBody(_rigidBody);
             _inWorld = true;
-
+            _isDirty = false;
         }
 
         for (auto joint : _joints)

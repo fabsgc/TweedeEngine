@@ -225,6 +225,10 @@ namespace te
         /** Create a btSoftBody from a PhysicsMesh */
         btSoftBody* CreateBtSoftBody(const SPtr<BulletMesh::MeshInfo>& mesh) const;
 
+        /** Create a btSoftBody from a Patch info */
+        btSoftBody* CreateBtSoftBody(const Vector3& topLeft, const Vector3& topRight, const Vector3& bottomLeft, const Vector3& bottomRight,
+            UINT32 resolutionX, UINT32 resolutionY, UINT32 fixeds = 0, bool gendiags = true) const;
+
     private:
         friend class BulletPhysics;
 

@@ -12,6 +12,57 @@ namespace te
         , _scene(scene)
     { }
 
+    void BulletSoftBody::AddToWorldInternal(FBody* body)
+    {
+        if (_softBody)
+        {
+            BulletFSoftBody* fSoftBody = static_cast<BulletFSoftBody*>(body);
+
+            btSoftBody::Material* material = _softBody->appendMaterial();
+            material->m_flags -= btSoftBody::fMaterial::DebugDraw;
+            material->m_kLST = 1.0;
+
+            _softBody->m_cfg.piterations = 2;
+            _softBody->m_cfg.kDF = 1.0;
+            _softBody->setUserPointer(this);
+            _softBody->randomizeConstraints();
+            _softBody->generateBendingConstraints(2, material);
+
+            _softBody->scale(ToBtVector3(fSoftBody->GetScale()));
+            _softBody->setTotalMass((btScalar)fSoftBody->GetMass());
+            _softBody->setFriction((btScalar)fSoftBody->GetFriction());
+            _softBody->setRestitution((btScalar)fSoftBody->GetRestitution());
+            _softBody->setRollingFriction((btScalar)fSoftBody->GetRollingFriction());
+            _softBody->transformTo(btTransform(ToBtQuaternion(fSoftBody->GetRotation()), ToBtVector3(fSoftBody->GetPosition())));
+
+            _softBody->generateClusters(16);
+            _softBody->m_cfg.collisions = btSoftBody::fCollision::CL_SS +
+                btSoftBody::fCollision::CL_RS;
+
+            fSoftBody->SetBtSoftBody(_softBody);
+            fSoftBody->SetSoftBody(this);
+
+            if (fSoftBody->GetMass() > 0.0f)
+            {
+                Activate(fSoftBody);
+                _softBody->setLinearVelocity(ToBtVector3(fSoftBody->GetVelocity()));
+                _softBody->setAngularVelocity(ToBtVector3(fSoftBody->GetAngularVelocity()));
+            }
+            else
+            {
+                _softBody->setLinearVelocity(ToBtVector3(Vector3::ZERO));
+                _softBody->setAngularVelocity(ToBtVector3(Vector3::ZERO));
+            }
+
+            UpdateKinematicFlag(fSoftBody);
+            UpdateCCDFlag(fSoftBody);
+
+            _scene->AddSoftBody(_softBody);
+            _inWorld = true;
+            _isDirty = false;
+        }
+    }
+
     void BulletSoftBody::Release(FBody* fBody)
     {
         if (!_softBody)

@@ -10,10 +10,10 @@ namespace te
     BulletPatchSoftBody::BulletPatchSoftBody(BulletPhysics* physics, BulletScene* scene, const HSceneObject& linkedSO)
         : PatchSoftBody(linkedSO)
         , BulletSoftBody(physics, scene)
-        , _topLeft(-1.0f, 0.0f, 0.0f)
-        , _topRight(0.0f, 0.0f, 0.0f)
-        , _bottomLeft(-1.0f, 0.0f, -1.0f)
-        , _bottomRight(-1.0f, 0.0f, 1.0f)
+        , _topLeft(-0.5f, 0.0f, 0.5f)
+        , _topRight(0.5f, 0.0f, 0.5f)
+        , _bottomLeft(-0.5f, 0.0f, -0.5f)
+        , _bottomRight(0.5f, 0.0f, -0.5f)
         , _resolutionX(8)
         , _resolutionY(8)
     {
@@ -72,6 +72,7 @@ namespace te
 
         Release(_internal);
 
-        // TODO
+        _softBody = _scene->CreateBtSoftBody(_topLeft, _topRight, _bottomLeft, _bottomRight, _resolutionX, _resolutionY);
+        AddToWorldInternal(_internal);
     }
 }
