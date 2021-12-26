@@ -11,7 +11,6 @@ namespace te
     {
     public:
         explicit BulletFCollider(BulletPhysics* physics, BulletScene* scene, btCollisionShape* shape = nullptr);
-        ~BulletFCollider();
 
         /** @copydoc FCollider::SetCenter */
         void SetCenter(const Vector3& center) override;

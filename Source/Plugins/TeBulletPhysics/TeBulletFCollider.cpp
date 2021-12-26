@@ -15,9 +15,6 @@ namespace te
     BulletFCollider::BulletFCollider()
     { }
 
-    BulletFCollider::~BulletFCollider()
-    { }
-
     void BulletFCollider::SetCenter(const Vector3& center)
     {
         FCollider::SetCenter(center);

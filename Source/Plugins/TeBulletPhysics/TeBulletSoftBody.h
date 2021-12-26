@@ -18,13 +18,13 @@ namespace te
         /** Common part used by all soft bodies */
         void AddToWorldInternal(FBody* body);
 
-        /** Add RigidBody to world */
+        /** Add SoftBody to world */
         virtual void AddToWorld() = 0;
 
         /** Release Body from simulation */
         virtual void Release(FBody* fBody);
 
-        /** Remove RigidBody from world */
+        /** Remove SoftBody from world */
         virtual void RemoveFromWorld(FBody* fBody);
 
         /** Update kinematic bullet flag */
@@ -33,10 +33,10 @@ namespace te
         /** Enable or disable CCD for this body */
         virtual void UpdateCCDFlag(FBody* fBody) const;
 
-        /** Activate btRigidBody */
+        /** Activate btSoftBody */
         virtual void Activate(FBody* fBody) const;
 
-        /** Check if btRigidBody is activated */
+        /** Check if btSoftBody is activated */
         virtual bool IsActivated(FBody* fBody) const;
 
     protected:

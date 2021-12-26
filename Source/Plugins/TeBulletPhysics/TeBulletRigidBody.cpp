@@ -39,7 +39,7 @@ namespace te
             const Quaternion newWorldRot = ToQuaternion(worldTrans.getRotation());
             const Vector3 newWorldPos = ToVector3(worldTrans.getOrigin()) - newWorldRot * _rigidBody->GetCenterOfMass();
 
-            _rigidBody->SetTransform(newWorldPos, newWorldRot);
+            _rigidBody->_setTransform(newWorldPos, newWorldRot);
 
             _rigidBody->_position = newWorldPos;
             _rigidBody->_rotation = newWorldRot;

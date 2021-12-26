@@ -1236,7 +1236,7 @@ namespace te
 
         // LOAD MESH AND TEXTURES RESOURCES
         // ######################################################
-        //_loadedMeshCube = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Primitives/cube.obj", meshImportOptions)->Entries[0].Res);
+        _loadedMeshCube = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Primitives/cube.obj", meshImportOptions)->Entries[0].Res);
         _loadedMeshPlane = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Primitives/plane.obj", meshImportOptions)->Entries[0].Res);
         _loadedSkyboxTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_day_medium.png", textureCubeMapImportOptions);
         _loadedSkyboxIrradianceTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_day_irradiance_small.png", textureCubeMapImportOptions);
@@ -1430,7 +1430,6 @@ namespace te
             _rigidBodyKnight->SetCollisionReportMode(CollisionReportMode::ReportPersistent);
             _rigidBodyKnight->Initialize();
             _boxColliderKnight = _sceneRenderableKnightSO->AddComponent<CBoxCollider>();
-            _boxColliderKnight->SetCenter(Vector3(0.0f, 1.0f, 0.0f));
             _boxColliderKnight->SetScale(Vector3(1.0f, 2.0f, 1.0f));
             _boxColliderKnight->Initialize();
         }
