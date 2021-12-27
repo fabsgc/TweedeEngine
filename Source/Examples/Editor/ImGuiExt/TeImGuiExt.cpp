@@ -46,44 +46,6 @@ namespace te
         return false;
     };
 
-    template<typename T>
-    bool ImGuiExt::RenderOptionInt(T& value, const char* id, const char* text,
-        T min, T max, float width, bool disable)
-    {
-        const T previousValue = value;
-
-        if (disable)
-        {
-            ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
-            ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
-        }
-
-        ImGui::PushID(id);
-        if (width > 0.0f) ImGui::PushItemWidth(width);
-        ImGui::SliderInt(text, &static_cast<int>(value), min, max, "%.d");
-        if (width > 0.0f) ImGui::PopItemWidth();
-        ImGui::PopID();
-        value = Math::Clamp(value, min, max);
-
-        if (disable)
-        {
-            ImGui::PopItemFlag();
-            ImGui::PopStyleVar();
-        }
-
-        if (previousValue != value)
-            return true;
-
-        return false;
-    };
-
-    template bool ImGuiExt::RenderOptionInt(int& value, const char* id, const char* text,
-        int min, int max, float width, bool disable);
-    template bool ImGuiExt::RenderOptionInt(UINT32& value, const char* id, const char* text,
-        UINT32 min, UINT32 max, float width, bool disable);
-    template bool ImGuiExt::RenderOptionInt(INT32& value, const char* id, const char* text,
-        INT32 min, INT32 max, float width, bool disable);
-
     bool ImGuiExt::RenderOptionBool(bool& value, const char* id, const char* text, bool disable)
     {
         const bool previousValue = value;
@@ -585,4 +547,42 @@ namespace te
         cursor.x -= offset.y;
         ImGui::SetCursorPos(cursor);
     }
+
+    template<typename T>
+    bool ImGuiExt::RenderOptionInt(T& value, const char* id, const char* text,
+        T min, T max, float width, bool disable)
+    {
+        const T previousValue = value;
+
+        if (disable)
+        {
+            ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
+            ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
+        }
+
+        ImGui::PushID(id);
+        if (width > 0.0f) ImGui::PushItemWidth(width);
+        ImGui::SliderInt(text, &static_cast<int>(value), min, max, "%.d");
+        if (width > 0.0f) ImGui::PopItemWidth();
+        ImGui::PopID();
+        value = Math::Clamp(value, min, max);
+
+        if (disable)
+        {
+            ImGui::PopItemFlag();
+            ImGui::PopStyleVar();
+        }
+
+        if (previousValue != value)
+            return true;
+
+        return false;
+    };
+
+    template bool ImGuiExt::RenderOptionInt(int& value, const char* id, const char* text,
+        int min, int max, float width, bool disable);
+    template bool ImGuiExt::RenderOptionInt(UINT32& value, const char* id, const char* text,
+        UINT32 min, UINT32 max, float width, bool disable);
+    template bool ImGuiExt::RenderOptionInt(INT32& value, const char* id, const char* text,
+        INT32 min, INT32 max, float width, bool disable);
 }

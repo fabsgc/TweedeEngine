@@ -20,6 +20,36 @@ namespace te
          */
         static SPtr<EllipsoidSoftBody> Create(const HSceneObject& linkedSO);
 
+        /**
+         * Sets ellipsoid center
+         */
+        virtual void SetCenter(const Vector3& center) = 0;
+
+        /**
+         * Gets ellipsoid center
+         */
+        virtual Vector3 GetCenter() const = 0;
+
+        /**
+         * Sets ellipsoid radius
+         */
+        virtual void SetRadius(const Vector3& radius) = 0;
+
+        /**
+         * Gets ellipsoid radius
+         */
+        virtual Vector3 GetRadius() const = 0;
+
+        /**
+         * Sets ellipsoid resolution
+         */
+        virtual void SetResolution(UINT32 resolution) = 0;
+
+        /**
+         * Gets ellipsoid resolution
+         */
+        virtual UINT32 GetResolution() const = 0;
+
     protected:
         /**
          * Constructs a new EllipsoidSoftBody.

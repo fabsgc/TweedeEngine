@@ -68,10 +68,6 @@ namespace te
         static bool RenderOptionFloat(float& value, const char* id, const char* text, float min = 0.0f, 
             float max = std::numeric_limits<float>::max() / 2, float width = 0.0f, bool disable = false);
 
-        template<typename T>
-        static bool RenderOptionInt(T& value, const char* id, const char* text, T min = 0, 
-            T max = std::numeric_limits<T>::max(), float width = 0.0f, bool disable = false);
-
         static bool RenderOptionBool(bool& value, const char* id, const char* text, 
             bool disable = false);
 
@@ -98,6 +94,10 @@ namespace te
 
         static void RenderImage(SPtr<Texture> texture, UINT32 maxMip, const Vector2& size, 
             const Vector2& offset = Vector2::ZERO);
+
+        template<typename T>
+        static bool RenderOptionInt(T& value, const char* id, const char* text, T min = 0,
+            T max = std::numeric_limits<T>::max(), float width = 0.0f, bool disable = false);
 
         template<typename T>
         static bool RenderOptionCombo(T* value, const char* id, const char* text, ComboOptions<T>& options,

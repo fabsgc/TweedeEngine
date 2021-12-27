@@ -26,14 +26,14 @@ namespace te
         /** @copydoc PatchSoftBody::SetCorners */
         void SetCorners(const Vector3& topLeft, const Vector3& topRight, const Vector3& bottomLeft, const Vector3& bottomRight);
 
-        /** @copydoc PatchSoftBody::SetCorners */
-        void GetCorners(Vector3& topLeft, Vector3& topRight, Vector3& bottomLeft, Vector3& bottomRight);
+        /** @copydoc PatchSoftBody::GetCorners */
+        void GetCorners(Vector3& topLeft, Vector3& topRight, Vector3& bottomLeft, Vector3& bottomRight) const;
 
-        /** @copydoc PatchSoftBody::SetCorners */
+        /** @copydoc PatchSoftBody::SetResolution */
         void SetResolution(UINT32 x, UINT32 y);
 
-        /** @copydoc PatchSoftBody::SetCorners */
-        void GetResolution(UINT32& x, UINT32& y);
+        /** @copydoc PatchSoftBody::GetResolution */
+        void GetResolution(UINT32& x, UINT32& y) const;
 
     protected:
         friend class SceneObject;

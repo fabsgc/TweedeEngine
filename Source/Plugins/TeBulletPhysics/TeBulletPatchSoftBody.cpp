@@ -45,7 +45,7 @@ namespace te
         AddToWorld();
     }
 
-    void BulletPatchSoftBody::GetCorners(Vector3& topLeft, Vector3& topRight, Vector3& bottomLeft, Vector3& bottomRight)
+    void BulletPatchSoftBody::GetCorners(Vector3& topLeft, Vector3& topRight, Vector3& bottomLeft, Vector3& bottomRight) const
     {
         topLeft = _topLeft;
         topRight = _topRight;
@@ -61,7 +61,7 @@ namespace te
         AddToWorld();
     }
 
-    void BulletPatchSoftBody::GetResolution(UINT32& x, UINT32& y)
+    void BulletPatchSoftBody::GetResolution(UINT32& x, UINT32& y) const
     {
         x = _resolutionX;
         y = _resolutionY;

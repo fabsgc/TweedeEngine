@@ -23,6 +23,24 @@ namespace te
         /** @copydoc Component::Clone */
         bool Clone(const HEllipsoidSoftBody& c, const String& suffix = "");
 
+        /** @copydoc EllipsoidSoftBody::SetCenter */
+        void SetCenter(const Vector3& center);
+
+        /** @copydoc EllipsoidSoftBody::GetCenter */
+        Vector3 GetCenter() const;
+
+        /** @copydoc EllipsoidSoftBody::SetRadius */
+        void SetRadius(const Vector3& radius);
+
+        /** @copydoc EllipsoidSoftBody::GetRadius */
+        Vector3 GetRadius() const;
+
+        /** @copydoc EllipsoidSoftBody::SetResolution */
+        void SetResolution(UINT32 resolution);
+
+        /** @copydoc EllipsoidSoftBody::GetResolution */
+        UINT32 GetResolution() const;
+
     protected:
         friend class SceneObject;
 
@@ -34,5 +52,10 @@ namespace te
 
         /** @copydoc Component::OnEnabled */
         void OnEnabled() override;
+
+    protected:
+        Vector3 _center = Vector3::ZERO;
+        Vector3 _radius = Vector3::ONE;
+        UINT32 _resolution = 16;
     };
 }

@@ -20,13 +20,13 @@ namespace te
         void SetCorners(const Vector3& topLeft, const Vector3& topRight, const Vector3& bottomLeft, const Vector3& bottomRight) override;
 
         /** @copydoc PatchSoftBody::SetCorners */
-        void GetCorners(Vector3& topLeft, Vector3& topRight, Vector3& bottomLeft, Vector3& bottomRight) override;
+        void GetCorners(Vector3& topLeft, Vector3& topRight, Vector3& bottomLeft, Vector3& bottomRight) const override;
 
         /** @copydoc PatchSoftBody::SetCorners */
         void SetResolution(UINT32 x, UINT32 y) override;
 
         /** @copydoc PatchSoftBody::SetCorners */
-        void GetResolution(UINT32& x, UINT32& y) override;
+        void GetResolution(UINT32& x, UINT32& y) const override;
 
     private:
         /** @copydoc BulletSoftBody::AddToWorld */

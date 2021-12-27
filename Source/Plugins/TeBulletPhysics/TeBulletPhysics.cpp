@@ -817,7 +817,7 @@ namespace te
         if (!_worldInfo)
             return nullptr;
 
-        return btSoftBodyHelpers::CreateRope(*_worldInfo, ToBtVector3(center), ToBtVector3(radius), resolution, resolution);
+        return btSoftBodyHelpers::CreateEllipsoid(*_worldInfo, ToBtVector3(center), ToBtVector3(radius), resolution);
     }
 
     BulletPhysics& gBulletPhysics()

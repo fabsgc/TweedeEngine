@@ -71,7 +71,7 @@ namespace te
             std::static_pointer_cast<PatchSoftBody>(_internal)->SetCorners(topLeft, topRight, bottomLeft, bottomRight);
     }
 
-    void CPatchSoftBody::GetCorners(Vector3& topLeft, Vector3& topRight, Vector3& bottomLeft, Vector3& bottomRight)
+    void CPatchSoftBody::GetCorners(Vector3& topLeft, Vector3& topRight, Vector3& bottomLeft, Vector3& bottomRight) const
     {
         topLeft = _topLeft;
         topRight = _topRight;
@@ -90,7 +90,7 @@ namespace te
         std::static_pointer_cast<PatchSoftBody>(_internal)->SetResolution(x, y);
     }
 
-    void CPatchSoftBody::GetResolution(UINT32& x, UINT32& y)
+    void CPatchSoftBody::GetResolution(UINT32& x, UINT32& y) const
     {
         x = _resolutionX;
         y = _resolutionY;

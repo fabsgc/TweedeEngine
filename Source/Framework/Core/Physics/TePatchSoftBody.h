@@ -28,7 +28,7 @@ namespace te
         /**
          * Sets the 4 patch corners position
          */
-        virtual void GetCorners(Vector3& topLeft, Vector3& topRight, Vector3& bottomLeft, Vector3& bottomRight) = 0;
+        virtual void GetCorners(Vector3& topLeft, Vector3& topRight, Vector3& bottomLeft, Vector3& bottomRight) const = 0;
 
         /**
          * Sets the x and y patch resolution
@@ -38,7 +38,7 @@ namespace te
         /**
          * Gets the x and y patch resolution
          */
-        virtual void GetResolution(UINT32& x, UINT32& y) = 0;
+        virtual void GetResolution(UINT32& x, UINT32& y) const = 0;
 
     protected:
         /**

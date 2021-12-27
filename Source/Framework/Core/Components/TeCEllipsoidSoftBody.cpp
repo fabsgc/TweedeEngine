@@ -38,11 +38,59 @@ namespace te
 
         if (CSoftBody::Clone(static_object_cast<CSoftBody>(c), suffix))
         {
-            // TODO
+            _center = c->_center;
+            _radius = c->_radius;
+            _resolution = c->_resolution;
+
             return true;
         }
 
         return false;
+    }
+
+    void CEllipsoidSoftBody::SetCenter(const Vector3& center)
+    {
+        if (_center == center)
+            return;
+
+        _center = center;
+
+        std::static_pointer_cast<EllipsoidSoftBody>(_internal)->SetCenter(center);
+    }
+
+    Vector3 CEllipsoidSoftBody::GetCenter() const
+    {
+        return _center;
+    }
+
+    void CEllipsoidSoftBody::SetRadius(const Vector3& radius)
+    {
+        if (_radius == radius)
+            return;
+
+        _radius = radius;
+
+        std::static_pointer_cast<EllipsoidSoftBody>(_internal)->SetRadius(radius);
+    }
+
+    Vector3 CEllipsoidSoftBody::GetRadius() const
+    {
+        return _radius;
+    }
+
+    void CEllipsoidSoftBody::SetResolution(UINT32 resolution)
+    {
+        if (_resolution == resolution)
+            return;
+
+        _resolution = resolution;
+
+        std::static_pointer_cast<EllipsoidSoftBody>(_internal)->SetResolution(resolution);
+    }
+
+    UINT32 CEllipsoidSoftBody::GetResolution() const
+    {
+        return _resolution;
     }
 
     void CEllipsoidSoftBody::OnEnabled()
@@ -50,7 +98,11 @@ namespace te
         CSoftBody::OnEnabled();
 
         if (_internal)
-        { } // TODO
+        { 
+            std::static_pointer_cast<EllipsoidSoftBody>(_internal)->SetCenter(_center);
+            std::static_pointer_cast<EllipsoidSoftBody>(_internal)->SetRadius(_radius);
+            std::static_pointer_cast<EllipsoidSoftBody>(_internal)->SetResolution(_resolution);
+        }
     }
 
     SPtr<Body> CEllipsoidSoftBody::CreateInternal()

@@ -856,7 +856,38 @@ namespace te
 
         if (ImGui::CollapsingHeader("Ellipsoid Soft Body", ImGuiTreeNodeFlags_DefaultOpen))
         {
-            // TODO
+            // center
+            {
+                Vector3 center = softBody->GetCenter();
+                if (ImGuiExt::RenderVector3(center, "##ellipsoid_soft_body_option_center", " Center", 20.0f))
+                {
+                    softBody->SetCenter(center);
+                    hasChanged = true;
+                }
+            }
+            ImGui::Separator();
+
+            // radius
+            {
+                Vector3 radius = softBody->GetRadius();
+                if (ImGuiExt::RenderVector3(radius, "##ellipsoid_soft_body_option_radius", " Radius", 20.0f))
+                {
+                    softBody->SetRadius(radius);
+                    hasChanged = true;
+                }
+            }
+            ImGui::Separator();
+
+            // resolution
+            {
+                UINT32 resolution = softBody->GetResolution();
+                if (ImGuiExt::RenderOptionInt<UINT32>(resolution, "##ellipsoid_soft_body_option_resolution", " Resolution", 1, 256, width))
+                {
+                    softBody->SetResolution(resolution);
+                    hasChanged = true;
+                }
+            }
+            ImGui::Separator();
         }
 
         if (ShowCSoftBodyProperties())
@@ -924,13 +955,13 @@ namespace te
             {
                 UINT32 resolutionX, resolutionY;
                 softBody->GetResolution(resolutionX, resolutionY);
-                if (ImGuiExt::RenderOptionInt<UINT32>(resolutionX, "##patch_soft_body_option_resolution_x", " Resolution X", 1, 128, width))
+                if (ImGuiExt::RenderOptionInt<UINT32>(resolutionX, "##patch_soft_body_option_resolution_x", " Resolution X", 1, 256, width))
                 {
                     softBody->SetResolution(resolutionX, resolutionY);
                     hasChanged = true;
                 }
 
-                if (ImGuiExt::RenderOptionInt<UINT32>(resolutionY, "##patch_soft_body_option_resolution_Y", " Resolution Y", 1, 128, width))
+                if (ImGuiExt::RenderOptionInt<UINT32>(resolutionY, "##patch_soft_body_option_resolution_Y", " Resolution Y", 1, 256, width))
                 {
                     softBody->SetResolution(resolutionX, resolutionY);
                     hasChanged = true;

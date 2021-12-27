@@ -29,6 +29,42 @@ namespace te
         _isDirty = false;
     }
 
+    void BulletEllipsoidSoftBody::SetCenter(const Vector3& center)
+    {
+        _center = center;
+
+        AddToWorld();
+    }
+
+    Vector3 BulletEllipsoidSoftBody::GetCenter() const
+    {
+        return _center;
+    }
+
+    void BulletEllipsoidSoftBody::SetRadius(const Vector3& radius)
+    {
+        _radius = radius;
+
+        AddToWorld();
+    }
+
+    Vector3 BulletEllipsoidSoftBody::GetRadius() const
+    {
+        return _radius;
+    }
+
+    void BulletEllipsoidSoftBody::SetResolution(UINT32 resolution)
+    {
+        _resolution = resolution;
+
+        AddToWorld();
+    }
+
+    UINT32 BulletEllipsoidSoftBody::GetResolution() const
+    {
+        return _resolution;
+    }
+
     void BulletEllipsoidSoftBody::AddToWorld()
     {
         BulletFSoftBody* fSoftBody = static_cast<BulletFSoftBody*>(_internal);
@@ -38,6 +74,7 @@ namespace te
 
         Release(_internal);
 
-        // TODO
+        _softBody = _scene->CreateBtSoftBodyFromEllipsoid(_center, _radius, _resolution);
+        AddToWorldInternal(_internal);
     }
 }
