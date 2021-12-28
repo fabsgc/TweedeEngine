@@ -552,7 +552,8 @@ namespace te
     bool ImGuiExt::RenderOptionInt(T& value, const char* id, const char* text,
         T min, T max, float width, bool disable)
     {
-        const T previousValue = value;
+        const int previousValue = static_cast<int>(value);;
+        int newValue = previousValue;
 
         if (disable)
         {
@@ -562,9 +563,10 @@ namespace te
 
         ImGui::PushID(id);
         if (width > 0.0f) ImGui::PushItemWidth(width);
-        ImGui::SliderInt(text, &static_cast<int>(value), min, max, "%.d");
+        ImGui::SliderInt(text, &newValue, min, max, "%.d");
         if (width > 0.0f) ImGui::PopItemWidth();
         ImGui::PopID();
+        value = newValue;
         value = Math::Clamp(value, min, max);
 
         if (disable)
@@ -573,7 +575,7 @@ namespace te
             ImGui::PopStyleVar();
         }
 
-        if (previousValue != value)
+        if (previousValue != newValue)
             return true;
 
         return false;

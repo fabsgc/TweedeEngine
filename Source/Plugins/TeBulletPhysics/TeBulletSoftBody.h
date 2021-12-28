@@ -46,5 +46,7 @@ namespace te
 
         bool _isDirty = true;
         bool _inWorld = false;
+
+        UINT32 _numClusters = 8;
     };
 }

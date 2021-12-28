@@ -35,7 +35,7 @@ namespace te
             _softBody->setRollingFriction((btScalar)fSoftBody->GetRollingFriction());
             _softBody->transformTo(btTransform(ToBtQuaternion(fSoftBody->GetRotation()), ToBtVector3(fSoftBody->GetPosition())));
 
-            _softBody->generateClusters(0);
+            _softBody->generateClusters(_numClusters);
             _softBody->m_cfg.collisions = btSoftBody::fCollision::CL_SS +
                 btSoftBody::fCollision::CL_RS;
 

@@ -62,7 +62,10 @@ namespace te
 
     AABox BulletFSoftBody::GetBoundingBox() const
     {
-        return AABox(); // TODO
+        btVector3 min, max;
+        _btSoftBody->getAabb(min, max);
+
+        return AABox(ToVector3(min), ToVector3(max));
     }
 
     void BulletFSoftBody::SetTransform(const Vector3& position, const Quaternion& rotation)

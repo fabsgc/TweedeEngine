@@ -12,6 +12,7 @@ namespace te
         , BulletSoftBody(physics, scene)
     {
         _internal = te_new<BulletFSoftBody>(this);
+        _numClusters = 0;
         AddToWorld();
     }
 
@@ -68,7 +69,7 @@ namespace te
 
         Release(_internal);
 
-        _softBody = _scene->CreateBtSoftBodyFromRope(_from, _to, _resolution);
+        _softBody = _scene->CreateBtSoftBodyFromRope(_from, _to, _resolution, 1);
         AddToWorldInternal(_internal);
     }
 }

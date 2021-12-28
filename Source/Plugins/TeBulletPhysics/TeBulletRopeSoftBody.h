@@ -39,8 +39,8 @@ namespace te
         void AddToWorld() override;
 
     private:
-        Vector3 _from = Vector3(0.0f, 2.0f, 0.0f);
-        Vector3 _to = Vector3(-2.0f, 10.0f, -2.0f);
+        Vector3 _from = Vector3(-2.0f, 10.0f, -2.0f);
+        Vector3 _to = Vector3(0.0f, 2.0f, 0.0f);
         UINT32 _resolution = 8;
     };
 }
