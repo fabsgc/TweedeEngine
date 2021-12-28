@@ -16,6 +16,9 @@ namespace te
         friend class BulletFSoftBody;
 
         /** Common part used by all soft bodies */
+        void UpdateInternal(FBody* body);
+
+        /** Common part used by all soft bodies */
         void AddToWorldInternal(FBody* body);
 
         /** Add SoftBody to world */

@@ -23,6 +23,8 @@ namespace te
 
     void BulletEllipsoidSoftBody::Update()
     {
+        UpdateInternal(_internal);
+
         if (_isDirty && _inWorld)
             AddToWorld();
 

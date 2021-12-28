@@ -108,7 +108,7 @@ namespace te
         float _deltaTimeSec = 1.0f;
 
         UINT32 _debugMode = btIDebugDraw::DBG_DrawWireframe | btIDebugDraw::DBG_DrawContactPoints | 
-            btIDebugDraw::DBG_DrawConstraints | btIDebugDraw::DBG_DrawConstraintLimits;
+            btIDebugDraw::DBG_DrawConstraints | btIDebugDraw::DBG_DrawConstraintLimits | btIDebugDraw::DBG_DrawAabb;
     };
 
     typedef Pair<const btCollisionObject*, const btCollisionObject*> ContactEventKey;
@@ -247,6 +247,8 @@ namespace te
         ContactEventsMap* _beginContactEvents = nullptr;
         ContactEventsMap* _stayContactEvents = nullptr;
         ContactEventsMap* _endContactEvents = nullptr;
+
+        Vector<btCollisionObject*> _objects;
     };
 
     BulletPhysics& gBulletPhysics();

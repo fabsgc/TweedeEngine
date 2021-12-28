@@ -1374,7 +1374,7 @@ namespace te
 
             _sceneRopeSO = SceneObject::Create("Rope");
             _sceneRopeSO->SetParent(_sceneSO);
-            _scenePatchSO->Move(Vector3(0.0, 6.0f, 2.5f));
+            _sceneRopeSO->Move(Vector3(0.0, 6.0f, 2.5f));
 
             _sceneEllipsoidSO = SceneObject::Create("Ellipsoid");
             _sceneEllipsoidSO->SetParent(_sceneSO);

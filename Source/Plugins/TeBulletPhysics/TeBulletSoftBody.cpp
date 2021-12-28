@@ -12,6 +12,15 @@ namespace te
         , _scene(scene)
     { }
 
+    void BulletSoftBody::UpdateInternal(FBody* body)
+    {
+        if (_softBody != nullptr)
+        {
+            if (_softBody->m_rcontacts.size() > 0)
+                TE_DEBUG(_softBody->m_rcontacts.size());
+        }
+    }
+
     void BulletSoftBody::AddToWorldInternal(FBody* body)
     {
         if (_softBody)
@@ -35,9 +44,9 @@ namespace te
             _softBody->setRollingFriction((btScalar)fSoftBody->GetRollingFriction());
             _softBody->transformTo(btTransform(ToBtQuaternion(fSoftBody->GetRotation()), ToBtVector3(fSoftBody->GetPosition())));
 
-            _softBody->generateClusters(_numClusters);
-            _softBody->m_cfg.collisions = btSoftBody::fCollision::CL_SS +
-                btSoftBody::fCollision::CL_RS;
+            //_softBody->generateClusters(_numClusters);
+            _softBody->m_cfg.collisions = 
+                btSoftBody::fCollision::SDF_RS;
 
             fSoftBody->SetBtSoftBody(_softBody);
             fSoftBody->SetSoftBody(this);
@@ -112,11 +121,11 @@ namespace te
         else
             flags |= btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
 
-        for (auto i = 0; i < _softBody->m_faces.size(); i++)
+        /*for (auto i = 0; i < _softBody->m_faces.size(); i++)
         {
             _softBody->m_faces.at(i).m_material->m_flags =
                 static_cast<BulletFSoftBody*>(fBody)->GetIsDebug() ? btSoftBody::fMaterial::DebugDraw : 0;
-        }
+        }*/
 
         _softBody->setCollisionFlags(flags);
         _softBody->forceActivationState(DISABLE_DEACTIVATION);

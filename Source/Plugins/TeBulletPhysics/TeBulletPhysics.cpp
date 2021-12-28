@@ -610,6 +610,7 @@ namespace te
         if (!_world)
             return;
 
+        _objects.push_back(body);
         _world->addRigidBody(body);
     }
 
@@ -633,6 +634,10 @@ namespace te
             it++;
         }
 
+        auto it = std::find(_objects.begin(), _objects.end(), body);
+        if (it != _objects.end())
+            _objects.erase(it);
+
         _world->removeRigidBody(body);
     }
 
@@ -641,6 +646,7 @@ namespace te
         if (!_world || !_initDesc.SoftBody)
             return;
 
+        _objects.push_back(body);
         (static_cast<btSoftRigidDynamicsWorld*>(_world))->addSoftBody(body);
     }
 
@@ -663,6 +669,10 @@ namespace te
 
             it++;
         }
+
+        auto it = std::find(_objects.begin(), _objects.end(), body);
+        if (it != _objects.end())
+            _objects.erase(it);
 
         (static_cast<btSoftRigidDynamicsWorld*>(_world))->removeSoftBody(body);
     }

@@ -29,6 +29,8 @@ namespace te
 
     void BulletPatchSoftBody::Update()
     {
+        UpdateInternal(_internal);
+
         if (_isDirty && _inWorld)
             AddToWorld();
 
