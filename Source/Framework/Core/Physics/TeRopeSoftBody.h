@@ -20,6 +20,36 @@ namespace te
          */
         static SPtr<RopeSoftBody> Create(const HSceneObject& linkedSO);
 
+        /**
+         * Sets rope origin
+         */
+        virtual void SetFrom(const Vector3& from) = 0;
+
+        /**
+         * Gets rope origin
+         */
+        virtual Vector3 GetFrom() const = 0;
+
+        /**
+         * Sets rope end
+         */
+        virtual void SetTo(const Vector3& to) = 0;
+
+        /**
+         * Gets rope end
+         */
+        virtual Vector3 GetTo() const = 0;
+
+        /**
+         * Sets rope resolution
+         */
+        virtual void SetResolution(UINT32 resolution) = 0;
+
+        /**
+         * Gets rope resolution
+         */
+        virtual UINT32 GetResolution() const = 0;
+
     protected:
         /**
          * Constructs a new RopeSoftBody.

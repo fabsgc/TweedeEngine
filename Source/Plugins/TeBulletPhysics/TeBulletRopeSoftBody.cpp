@@ -29,6 +29,36 @@ namespace te
         _isDirty = false;
     }
 
+    void BulletRopeSoftBody::SetFrom(const Vector3& from)
+    {
+        _from = from;
+    }
+
+    Vector3 BulletRopeSoftBody::GetFrom() const
+    {
+        return _from;
+    }
+
+    void BulletRopeSoftBody::SetTo(const Vector3& to)
+    {
+        _to = to;
+    }
+
+    Vector3 BulletRopeSoftBody::GetTo() const
+    {
+        return _to;
+    }
+
+    void BulletRopeSoftBody::SetResolution(UINT32 resolution)
+    {
+        _resolution = resolution;
+    }
+
+    UINT32 BulletRopeSoftBody::GetResolution() const
+    {
+        return _resolution;
+    }
+
     void BulletRopeSoftBody::AddToWorld()
     {
         BulletFSoftBody* fSoftBody = static_cast<BulletFSoftBody*>(_internal);
@@ -38,6 +68,7 @@ namespace te
 
         Release(_internal);
 
-        // TODO
+        _softBody = _scene->CreateBtSoftBodyFromRope(_from, _to, _resolution);
+        AddToWorldInternal(_internal);
     }
 }

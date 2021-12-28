@@ -27,19 +27,19 @@ namespace te
         void SetCenter(const Vector3& center);
 
         /** @copydoc EllipsoidSoftBody::GetCenter */
-        Vector3 GetCenter() const;
+        Vector3 GetCenter() const { return _center; }
 
         /** @copydoc EllipsoidSoftBody::SetRadius */
         void SetRadius(const Vector3& radius);
 
         /** @copydoc EllipsoidSoftBody::GetRadius */
-        Vector3 GetRadius() const;
+        Vector3 GetRadius() const { return _radius; }
 
         /** @copydoc EllipsoidSoftBody::SetResolution */
         void SetResolution(UINT32 resolution);
 
         /** @copydoc EllipsoidSoftBody::GetResolution */
-        UINT32 GetResolution() const;
+        UINT32 GetResolution() const { return _resolution; }
 
     protected:
         friend class SceneObject;

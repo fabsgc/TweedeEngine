@@ -58,11 +58,6 @@ namespace te
         std::static_pointer_cast<EllipsoidSoftBody>(_internal)->SetCenter(center);
     }
 
-    Vector3 CEllipsoidSoftBody::GetCenter() const
-    {
-        return _center;
-    }
-
     void CEllipsoidSoftBody::SetRadius(const Vector3& radius)
     {
         if (_radius == radius)
@@ -73,11 +68,6 @@ namespace te
         std::static_pointer_cast<EllipsoidSoftBody>(_internal)->SetRadius(radius);
     }
 
-    Vector3 CEllipsoidSoftBody::GetRadius() const
-    {
-        return _radius;
-    }
-
     void CEllipsoidSoftBody::SetResolution(UINT32 resolution)
     {
         if (_resolution == resolution)
@@ -86,11 +76,6 @@ namespace te
         _resolution = resolution;
 
         std::static_pointer_cast<EllipsoidSoftBody>(_internal)->SetResolution(resolution);
-    }
-
-    UINT32 CEllipsoidSoftBody::GetResolution() const
-    {
-        return _resolution;
     }
 
     void CEllipsoidSoftBody::OnEnabled()

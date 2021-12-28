@@ -38,11 +38,44 @@ namespace te
 
         if (CSoftBody::Clone(static_object_cast<CSoftBody>(c), suffix))
         {
-            // TODO
+            _from = c->_from;
+            _to = c->_to;
+            _resolution = c->_resolution;
+
             return true;
         }
 
         return false;
+    }
+
+    void CRopeSoftBody::SetFrom(const Vector3& from)
+    {
+        if (_from == from)
+            return;
+
+        _from = from;
+
+        std::static_pointer_cast<RopeSoftBody>(_internal)->SetFrom(from);
+    }
+
+    void CRopeSoftBody::SetTo(const Vector3& to)
+    {
+        if (_to == to)
+            return;
+
+        _to = to;
+
+        std::static_pointer_cast<RopeSoftBody>(_internal)->SetTo(to);
+    }
+
+    void CRopeSoftBody::SetResolution(UINT32 resolution)
+    {
+        if (_resolution == resolution)
+            return;
+
+        _resolution = resolution;
+
+        std::static_pointer_cast<RopeSoftBody>(_internal)->SetResolution(resolution);
     }
 
     void CRopeSoftBody::OnEnabled()
@@ -50,7 +83,11 @@ namespace te
         CSoftBody::OnEnabled();
 
         if (_internal)
-        { } // TODO
+        { 
+            std::static_pointer_cast<RopeSoftBody>(_internal)->SetFrom(_from);
+            std::static_pointer_cast<RopeSoftBody>(_internal)->SetTo(_to);
+            std::static_pointer_cast<RopeSoftBody>(_internal)->SetResolution(_resolution);
+        }
     }
 
     SPtr<Body> CRopeSoftBody::CreateInternal()
