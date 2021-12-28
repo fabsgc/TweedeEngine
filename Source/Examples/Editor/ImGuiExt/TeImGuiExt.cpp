@@ -585,6 +585,4 @@ namespace te
         int min, int max, float width, bool disable);
     template bool ImGuiExt::RenderOptionInt(UINT32& value, const char* id, const char* text,
         UINT32 min, UINT32 max, float width, bool disable);
-    template bool ImGuiExt::RenderOptionInt(INT32& value, const char* id, const char* text,
-        INT32 min, INT32 max, float width, bool disable);
 }

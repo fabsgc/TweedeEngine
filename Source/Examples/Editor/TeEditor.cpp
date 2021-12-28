@@ -1363,14 +1363,14 @@ namespace te
             _renderablePlane->SetMaterial(_sphereMaterial);
             _renderablePlane->SetName("Sphere Renderable");
             _renderablePlane->Initialize();
-            _sceneRenderableSphereSO->Move(Vector3(1.0, 5.0f, 0.0f));
+            _sceneRenderableSphereSO->Move(Vector3(1.0, 5.0f, -3.5f));
             _sceneRenderableSphereSO->SetScale(Vector3(0.5f, 0.5f, 0.5f));
         }
 
         {
             _scenePatchSO = SceneObject::Create("Patch");
             _scenePatchSO->SetParent(_sceneSO);
-            _scenePatchSO->Move(Vector3(2.0, 5.0f, 0.0f));
+            _scenePatchSO->Move(Vector3(-3.0, 5.0f, -4.0f));
 
             _sceneRopeSO = SceneObject::Create("Rope");
             _sceneRopeSO->SetParent(_sceneSO);
