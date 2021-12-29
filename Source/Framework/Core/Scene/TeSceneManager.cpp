@@ -2,6 +2,7 @@
 #include "Renderer/TeCamera.h"
 #include "TeCoreApplication.h"
 #include "Physics/TePhysics.h"
+#include "Utility/TeFrameAllocator.h"
 
 namespace te
 {
@@ -76,13 +77,19 @@ namespace te
         _mainRTResizedConn.Disconnect();
     }
 
-    void SceneManager::ClearScene()
+    void SceneManager::ClearScene(bool forceAll)
     {
+        UINT32 curIdx = 0;
         UINT32 numChildren = _mainScene->_root->GetNumChildren();
+
         for (UINT32 i = 0; i < numChildren; i++)
         {
-            HSceneObject child = _mainScene->_root->GetChild(i);
-            child->Destroy();
+            HSceneObject child = _mainScene->_root->GetChild(curIdx);
+            
+            if (forceAll || !child->HasFlag(SOF_Persistent))
+                child->Destroy();
+            else
+                curIdx++;
         }
 
         GameObjectManager::Instance().DestroyQueuedObjects();
@@ -97,6 +104,24 @@ namespace te
             return;
 
         HSceneObject oldRoot = _mainScene->_root;
+        UINT32 numChildren = oldRoot->GetNumChildren();
+
+        // Make sure to keep persistent objects
+        te_frame_mark();
+        {
+            FrameVector<HSceneObject> toRemove;
+            for (UINT32 i = 0; i < numChildren; i++)
+            {
+                HSceneObject child = oldRoot->GetChild(i);
+
+                if (child->HasFlag(SOF_Persistent))
+                    toRemove.push_back(child);
+            }
+
+            for (auto& entry : toRemove)
+                entry->SetParent(root, false);
+        }
+        te_frame_clear();
 
         _mainScene->_root = root;
         _mainScene->_root->_setParent(HSceneObject());

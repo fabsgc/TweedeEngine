@@ -78,20 +78,20 @@ namespace te
         DestroyInternal(_thisHandle, immediate);
     }
 
-    void SceneObject::_setFlags(UINT32 flags)
+    void SceneObject::SetFlags(UINT32 flags)
     {
         _flags |= flags;
 
         for (auto& child : _children)
-            child->_setFlags(flags);
+            child->SetFlags(flags);
     }
 
-    void SceneObject::_unsetFlags(UINT32 flags)
+    void SceneObject::UnsetFlags(UINT32 flags)
     {
         _flags &= ~flags;
 
         for (auto& child : _children)
-            child->_unsetFlags(flags);
+            child->UnsetFlags(flags);
     }
 
     bool SceneObject::HasFlag(UINT32 flag) const
@@ -926,7 +926,7 @@ namespace te
     {
         _children.push_back(object);
 
-        object->_setFlags(_flags);
+        object->SetFlags(_flags);
     }
 
     void SceneObject::RemoveChild(const HSceneObject& object)

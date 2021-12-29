@@ -248,7 +248,8 @@ namespace te
         ContactEventsMap* _stayContactEvents = nullptr;
         ContactEventsMap* _endContactEvents = nullptr;
 
-        Vector<btCollisionObject*> _objects;
+        Vector<btCollisionObject*> _softBodies;
+        Vector<btCollisionObject*> _rigidBodies;
     };
 
     BulletPhysics& gBulletPhysics();

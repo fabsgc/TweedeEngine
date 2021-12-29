@@ -33,6 +33,8 @@ namespace te
 
             _softBody->m_cfg.piterations = 2;
             _softBody->m_cfg.kDF = 1.0;
+            _softBody->m_cfg.kCHR = 1.0;
+            _softBody->m_cfg.kSHR = 1.0;
             _softBody->setUserPointer(this);
             _softBody->randomizeConstraints();
             _softBody->generateBendingConstraints(2, material);
@@ -44,9 +46,32 @@ namespace te
             _softBody->setRollingFriction((btScalar)fSoftBody->GetRollingFriction());
             _softBody->transformTo(btTransform(ToBtQuaternion(fSoftBody->GetRotation()), ToBtVector3(fSoftBody->GetPosition())));
 
-            //_softBody->generateClusters(_numClusters);
-            _softBody->m_cfg.collisions = 
-                btSoftBody::fCollision::SDF_RS;
+            /*_softBody->generateClusters(_numClusters);
+            _softBody->m_cfg.collisions =
+                btSoftBody::fCollision::CL_SS +
+                btSoftBody::fCollision::CL_RS;*/
+
+            _softBody->generateClusters(_numClusters);
+            _softBody->m_cfg.collisions =
+                btSoftBody::fCollision::CL_SS +
+                btSoftBody::fCollision::CL_RS;
+
+            /*_softBody->m_cfg.collisions =
+                btSoftBody::fCollision::RVSmask +   ///Rigid versus soft mask
+                btSoftBody::fCollision::SDF_RS +    ///SDF based rigid vs soft
+                btSoftBody::fCollision::CL_RS +     ///Cluster vs convex rigid vs soft
+                btSoftBody::fCollision::SDF_RD +    ///rigid vs deformable
+
+                btSoftBody::fCollision::SVSmask +   ///Rigid versus soft mask
+                btSoftBody::fCollision::VF_SS +     ///Vertex vs face soft vs soft handling
+                btSoftBody::fCollision::CL_SS +     ///Cluster vs cluster soft vs soft handling
+                btSoftBody::fCollision::CL_SELF +   ///Cluster soft body self collision
+                btSoftBody::fCollision::VF_DD +     ///Vertex vs face soft vs soft handling
+
+                btSoftBody::fCollision::RVDFmask +  /// Rigid versus deformable face mask
+                btSoftBody::fCollision::SDF_RDF +   /// GJK based Rigid vs. deformable face
+                btSoftBody::fCollision::SDF_MDF +   /// GJK based Multibody vs. deformable face
+                btSoftBody::fCollision::SDF_RDN;    /// SDF based Rigid vs. deformable node*/
 
             fSoftBody->SetBtSoftBody(_softBody);
             fSoftBody->SetSoftBody(this);

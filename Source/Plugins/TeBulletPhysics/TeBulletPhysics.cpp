@@ -328,6 +328,22 @@ namespace te
         if (_world)
             _world->performDiscreteCollisionDetection();
 
+        for (auto& softBody : _softBodies)
+        {
+            int numRContacts = static_cast<btSoftBody*>(softBody)->m_rcontacts.size();
+            int numSContacts = static_cast<btSoftBody*>(softBody)->m_scontacts.size();
+            int numNodeRigidContacts = static_cast<btSoftBody*>(softBody)->m_nodeRigidContacts.size();
+            int numFaceNodeContacts = static_cast<btSoftBody*>(softBody)->m_faceNodeContacts.size();
+            int numFaceRigidContacts = static_cast<btSoftBody*>(softBody)->m_faceRigidContacts.size();
+
+            TE_DEBUG(ToString(numRContacts) + " / " + 
+                ToString(numSContacts) + " / " +
+                ToString(numNodeRigidContacts) + " / " +
+                ToString(numFaceNodeContacts) + " / " +
+                ToString(numFaceRigidContacts)
+            );
+        }
+
         int numManifolds = _world->getDispatcher()->getNumManifolds();
         for (int i = 0; i < numManifolds; i++)
         {
@@ -610,7 +626,7 @@ namespace te
         if (!_world)
             return;
 
-        _objects.push_back(body);
+        _rigidBodies.push_back(body);
         _world->addRigidBody(body);
     }
 
@@ -634,9 +650,9 @@ namespace te
             it++;
         }
 
-        auto it = std::find(_objects.begin(), _objects.end(), body);
-        if (it != _objects.end())
-            _objects.erase(it);
+        auto it = std::find(_rigidBodies.begin(), _rigidBodies.end(), body);
+        if (it != _rigidBodies.end())
+            _rigidBodies.erase(it);
 
         _world->removeRigidBody(body);
     }
@@ -646,7 +662,7 @@ namespace te
         if (!_world || !_initDesc.SoftBody)
             return;
 
-        _objects.push_back(body);
+        _softBodies.push_back(body);
         (static_cast<btSoftRigidDynamicsWorld*>(_world))->addSoftBody(body);
     }
 
@@ -670,9 +686,9 @@ namespace te
             it++;
         }
 
-        auto it = std::find(_objects.begin(), _objects.end(), body);
-        if (it != _objects.end())
-            _objects.erase(it);
+        auto it = std::find(_softBodies.begin(), _softBodies.end(), body);
+        if (it != _softBodies.end())
+            _softBodies.erase(it);
 
         (static_cast<btSoftRigidDynamicsWorld*>(_world))->removeSoftBody(body);
     }
