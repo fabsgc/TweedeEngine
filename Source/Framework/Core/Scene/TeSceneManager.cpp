@@ -282,7 +282,9 @@ namespace te
     void SceneManager::Update()
     {
         for (auto& entry : _components)
+        {
             entry->Update();
+        }
 
         GameObjectManager::Instance().DestroyQueuedObjects();
     }

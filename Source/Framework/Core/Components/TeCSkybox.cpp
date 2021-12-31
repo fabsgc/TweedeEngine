@@ -86,6 +86,8 @@ namespace te
 
                 _internal->_transform = skybox->_transform;
                 _internal->_mobility = skybox->_mobility;
+
+                _internal->MarkCoreDirty();
             }
 
             return true;

@@ -344,6 +344,8 @@ namespace te
 
         if(_animation)
             _animationId = animation->GetAnimId();
+        else
+            _animationId = 0;
 
         RefreshAnimation();
         _markCoreDirty();

@@ -1214,7 +1214,9 @@ namespace te
         _sceneSO->SetActive(false);
         _runningSceneSO = SceneObject::Create("Scene");
         _runningSceneSO->Clone(_sceneSO);
+        _runningSceneSO->SetActive(false);
         _runningSceneSO->SetActive(true);
+        
     }
 
     /** When editor goes to stop mode, we destroy to copied scene and restore the original one */

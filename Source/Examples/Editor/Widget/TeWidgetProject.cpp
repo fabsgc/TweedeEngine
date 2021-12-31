@@ -67,6 +67,8 @@ namespace te
     { 
         HSceneObject& sceneSO = gEditor().GetSceneRoot();
         ShowTree(sceneSO);
+
+        return;
     }
 
     void WidgetProject::UpdateBackground()

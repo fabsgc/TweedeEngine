@@ -146,12 +146,18 @@ namespace te
             SPtr<Renderable> renderable = c->GetInternal();
             if (renderable)
             {
-                _internal->SetMesh(renderable->_mesh);
-                _internal->SetMaterials(renderable->_materials);
-                _internal->SetLayer(renderable->_layer);
-                _internal->SetTransform(renderable->_transform);
-                _internal->SetPorperties(renderable->_properties);
-                _internal->SetAnimation(renderable->_animation);
+                _internal->_mesh = renderable->_mesh;
+                _internal->_materials = renderable->_materials;
+                _internal->_numMaterials = renderable->_numMaterials;
+                _internal->_layer = renderable->_layer;
+                _internal->_tfrmMatrix = renderable->_tfrmMatrix;
+                _internal->_tfrmMatrixNoScale = renderable->_tfrmMatrixNoScale;
+                _internal->_properties = renderable->_properties;
+                _internal->_animation = renderable->_animation;
+                _internal->_animationId = renderable->_animationId;
+
+                _internal->_transform = renderable->_transform;
+                _internal->_mobility = renderable->_mobility;
 
                 _internal->_markCoreDirty(ActorDirtyFlag::GpuParams);
             }

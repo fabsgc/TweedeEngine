@@ -121,8 +121,9 @@ namespace te
         Transform tfrm = so->GetTransform();
         this->_name = so->GetName() + suffix;
         this->_mobility = so->GetMobility();
+        this->_activeSelf = so->GetActive(true);
+        this->_activeHierarchy = so->GetActive();
         this->SetLocalTransform(tfrm);
-        this->SetActive(so->GetActive());
         this->SetFlags(so->GetFlags());
 
         for (auto& childSO : so->GetChildren())
@@ -193,8 +194,8 @@ namespace te
 
             case TID_CSkybox:
             {
-                if (SceneManager::Instance().FindComponents<CSkybox>().size() > 0)
-                    break;
+                //if (SceneManager::Instance().FindComponents<CSkybox>().size() > 0)
+                //    break;
 
                 HSkybox component = this->AddComponent<CSkybox>();
                 component->Clone(co->GetHandle());
@@ -381,6 +382,14 @@ namespace te
 
             default:
                 break;
+            }
+        }
+
+        if (!GetActive())
+        {
+            for (auto& component : _components)
+            {
+                component->OnDisabled();
             }
         }
 
