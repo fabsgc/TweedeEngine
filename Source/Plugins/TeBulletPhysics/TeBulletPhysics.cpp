@@ -336,12 +336,15 @@ namespace te
             int numFaceNodeContacts = static_cast<btSoftBody*>(softBody)->m_faceNodeContacts.size();
             int numFaceRigidContacts = static_cast<btSoftBody*>(softBody)->m_faceRigidContacts.size();
 
-            TE_DEBUG(ToString(numRContacts) + " / " + 
-                ToString(numSContacts) + " / " +
-                ToString(numNodeRigidContacts) + " / " +
-                ToString(numFaceNodeContacts) + " / " +
-                ToString(numFaceRigidContacts)
-            );
+            if (numRContacts > 0 || numSContacts > 0 || numNodeRigidContacts > 0 || numFaceNodeContacts > 0 || numFaceRigidContacts > 0)
+            {
+                TE_DEBUG(ToString(numRContacts) + " / " +
+                    ToString(numSContacts) + " / " +
+                    ToString(numNodeRigidContacts) + " / " +
+                    ToString(numFaceNodeContacts) + " / " +
+                    ToString(numFaceRigidContacts)
+                );
+            }
         }
 
         int numManifolds = _world->getDispatcher()->getNumManifolds();

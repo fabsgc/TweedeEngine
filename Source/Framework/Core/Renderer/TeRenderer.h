@@ -120,14 +120,14 @@ namespace te
          *
          * @see RendererMeshData
          */
-        virtual SPtr<RendererMeshData> _createMeshData(UINT32 numVertices, UINT32 numIndices, VertexLayout layout, IndexType indexType = IT_32BIT);
+        virtual SPtr<RendererMeshData> CreateMeshData(UINT32 numVertices, UINT32 numIndices, VertexLayout layout, IndexType indexType = IT_32BIT);
 
         /**
          * Creates a new renderer mesh data using an existing generic mesh data buffer.
 
          * @see RendererMeshData
          */
-        virtual SPtr<RendererMeshData> _createMeshData(const SPtr<MeshData>& meshData);
+        virtual SPtr<RendererMeshData> CreateMeshData(const SPtr<MeshData>& meshData);
 
         /**
          * Save last generated corresponding rendered texture until next call to RenderAll()

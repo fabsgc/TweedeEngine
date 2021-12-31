@@ -347,12 +347,12 @@ namespace te
 
     SPtr<RendererMeshData> RendererMeshData::Create(UINT32 numVertices, UINT32 numIndices, VertexLayout layout, IndexType indexType)
     {
-        return RendererManager::Instance().GetRenderer()->_createMeshData(numVertices, numIndices, layout, indexType);
+        return RendererManager::Instance().GetRenderer()->CreateMeshData(numVertices, numIndices, layout, indexType);
     }
 
     SPtr<RendererMeshData> RendererMeshData::Create(const SPtr<MeshData>& meshData)
     {
-        return RendererManager::Instance().GetRenderer()->_createMeshData(meshData);
+        return RendererManager::Instance().GetRenderer()->CreateMeshData(meshData);
     }
 
     SPtr<VertexDataDesc> RendererMeshData::VertexLayoutVertexDesc(VertexLayout type)
@@ -379,8 +379,8 @@ namespace te
         if ((intType & (INT32)VertexLayout::UV0) != 0)
             vertexDesc->AddVertElem(VET_FLOAT2, VES_TEXCOORD, 0);
 
-        //if ((intType & (INT32)VertexLayout::UV1) != 0)
-        //    vertexDesc->AddVertElem(VET_FLOAT2, VES_TEXCOORD, 1);
+        if ((intType & (INT32)VertexLayout::UV1) != 0)
+            vertexDesc->AddVertElem(VET_FLOAT2, VES_TEXCOORD, 1);
 
         if ((intType & (INT32)VertexLayout::Color) != 0)
             vertexDesc->AddVertElem(VET_FLOAT4, VES_COLOR);

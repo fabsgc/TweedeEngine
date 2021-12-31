@@ -89,6 +89,16 @@ namespace te
                 gCoreApplication().GetState().ToggleFlag(ApplicationState::Mode::Physics);
                 gCoreApplication().GetState().ToggleFlag(ApplicationState::Mode::Scripting);
                 gCoreApplication().GetState().ToggleFlag(ApplicationState::Mode::Animation);
+
+                bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Mode::Game);
+                if (isRunning)
+                {
+                    gEditor().CreateRunningScene();
+                }
+                else
+                {
+                    gEditor().DestroyRunningScene();
+                }
             }
         );
 

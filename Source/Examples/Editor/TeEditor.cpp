@@ -277,7 +277,10 @@ namespace te
                     _selections.ClickedComponent->GetCoreType() == TID_CLight ||
                     _selections.ClickedComponent->GetCoreType() == TID_CAudioListener ||
                     _selections.ClickedComponent->GetCoreType() == TID_CRigidBody ||
-                    _selections.ClickedComponent->GetCoreType() == TID_CSoftBody ||
+                    _selections.ClickedComponent->GetCoreType() == TID_CEllipsoidSoftBody ||
+                    _selections.ClickedComponent->GetCoreType() == TID_CMeshSoftBody ||
+                    _selections.ClickedComponent->GetCoreType() == TID_CPatchSoftBody ||
+                    _selections.ClickedComponent->GetCoreType() == TID_CRopeSoftBody ||
                     _selections.ClickedComponent->GetCoreType() == TID_CBoxCollider ||
                     _selections.ClickedComponent->GetCoreType() == TID_CCapsuleCollider ||
                     _selections.ClickedComponent->GetCoreType() == TID_CConeCollider ||
@@ -690,6 +693,10 @@ namespace te
     void Editor::HandleImGuizmo()
     {
         bool somethingSelected = false;
+        
+        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Mode::Game);
+        if (isRunning)
+            return;
 
         if (_selections.ClickedComponent)
         {
@@ -848,7 +855,7 @@ namespace te
                 case TID_CCamera:
                 {
                     HCamera component = clickedSceneObject->AddComponent<CCamera>();
-                    component->Clone(_selections.CopiedComponent->GetHandle(), "copy");
+                    component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
                     component->Initialize();
                     _selections.ClickedComponent = component.GetInternalPtr();
                     _selections.CopiedComponent = component.GetInternalPtr();
@@ -858,7 +865,7 @@ namespace te
                 case TID_CCameraFlyer:
                 {
                     HCameraFlyer component = clickedSceneObject->AddComponent<CCameraFlyer>();
-                    component->Clone(_selections.CopiedComponent->GetHandle(), "copy");
+                    component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
                     component->Initialize();
                     _selections.ClickedComponent = component.GetInternalPtr();
                     _selections.CopiedComponent = component.GetInternalPtr();
@@ -868,7 +875,7 @@ namespace te
                 case TID_CCameraUI:
                 {
                     HCameraUI component = clickedSceneObject->AddComponent<CCameraUI>();
-                    component->Clone(_selections.CopiedComponent->GetHandle(), "copy");
+                    component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
                     component->Initialize();
                     _selections.ClickedComponent = component.GetInternalPtr();
                     _selections.CopiedComponent = component.GetInternalPtr();
@@ -881,7 +888,7 @@ namespace te
                     if (previousLight)
                     {
                         HLight component = clickedSceneObject->AddComponent<CLight>(previousLight->GetType());
-                        component->Clone(_selections.CopiedComponent->GetHandle(), "copy");
+                        component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
                         component->Initialize();
                         _selections.ClickedComponent = component.GetInternalPtr();
                         _selections.CopiedComponent = component.GetInternalPtr();
@@ -892,7 +899,7 @@ namespace te
                 case TID_CRenderable:
                 {
                     HRenderable component = clickedSceneObject->AddComponent<CRenderable>();
-                    component->Clone(_selections.CopiedComponent->GetHandle(), "copy");
+                    component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
                     component->Initialize();
                     _selections.ClickedComponent = component.GetInternalPtr();
                     _selections.CopiedComponent = component.GetInternalPtr();
@@ -902,7 +909,7 @@ namespace te
                 case TID_CScript:
                 {
                     HScript component = clickedSceneObject->AddComponent<CScript>();
-                    component->Clone(_selections.CopiedComponent->GetHandle(), "copy");
+                    component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
                     component->Initialize();
                     _selections.ClickedComponent = component.GetInternalPtr();
                     _selections.CopiedComponent = component.GetInternalPtr();
@@ -915,7 +922,7 @@ namespace te
                         break;
 
                     HSkybox component = clickedSceneObject->AddComponent<CSkybox>();
-                    component->Clone(_selections.CopiedComponent->GetHandle(), "copy");
+                    component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
                     component->Initialize();
                     _selections.ClickedComponent = component.GetInternalPtr();
                     _selections.CopiedComponent = component.GetInternalPtr();
@@ -925,7 +932,7 @@ namespace te
                 case TID_CAnimation:
                 {
                     HAnimation component = clickedSceneObject->AddComponent<CAnimation>();
-                    component->Clone(_selections.CopiedComponent->GetHandle(), "copy");
+                    component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
                     component->Initialize();
                     _selections.ClickedComponent = component.GetInternalPtr();
                     _selections.CopiedComponent = component.GetInternalPtr();
@@ -935,7 +942,7 @@ namespace te
                 case TID_CBone:
                 {
                     HBone component = clickedSceneObject->AddComponent<CBone>();
-                    component->Clone(_selections.CopiedComponent->GetHandle(), "copy");
+                    component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
                     component->Initialize();
                     _selections.ClickedComponent = component.GetInternalPtr();
                     _selections.CopiedComponent = component.GetInternalPtr();
@@ -945,7 +952,7 @@ namespace te
                 case TID_CAudioListener:
                 {
                     HAudioListener component = clickedSceneObject->AddComponent<CAudioListener>();
-                    component->Clone(_selections.CopiedComponent->GetHandle(), "copy");
+                    component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
                     component->Initialize();
                     _selections.ClickedComponent = component.GetInternalPtr();
                     _selections.CopiedComponent = component.GetInternalPtr();
@@ -955,7 +962,7 @@ namespace te
                 case TID_CAudioSource:
                 {
                     HAudioSource component = clickedSceneObject->AddComponent<CAudioSource>();
-                    component->Clone(_selections.CopiedComponent->GetHandle(), "copy");
+                    component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
                     component->Initialize();
                     _selections.ClickedComponent = component.GetInternalPtr();
                     _selections.CopiedComponent = component.GetInternalPtr();
@@ -965,7 +972,7 @@ namespace te
                 case TID_CRigidBody:
                 {
                     HRigidBody component = clickedSceneObject->AddComponent<CRigidBody>();
-                    component->Clone(_selections.CopiedComponent->GetHandle(), "copy");
+                    component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
                     component->Initialize();
                     _selections.ClickedComponent = component.GetInternalPtr();
                     _selections.CopiedComponent = component.GetInternalPtr();
@@ -975,7 +982,7 @@ namespace te
                 case TID_CMeshSoftBody:
                 {
                     HMeshSoftBody component = clickedSceneObject->AddComponent<CMeshSoftBody>();
-                    component->Clone(_selections.CopiedComponent->GetHandle(), "copy");
+                    component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
                     component->Initialize();
                     _selections.ClickedComponent = component.GetInternalPtr();
                     _selections.CopiedComponent = component.GetInternalPtr();
@@ -985,7 +992,7 @@ namespace te
                 case TID_CEllipsoidSoftBody:
                 {
                     HEllipsoidSoftBody component = clickedSceneObject->AddComponent<CEllipsoidSoftBody>();
-                    component->Clone(_selections.CopiedComponent->GetHandle(), "copy");
+                    component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
                     component->Initialize();
                     _selections.ClickedComponent = component.GetInternalPtr();
                     _selections.CopiedComponent = component.GetInternalPtr();
@@ -995,7 +1002,7 @@ namespace te
                 case TID_CRopeSoftBody:
                 {
                     HRopeSoftBody component = clickedSceneObject->AddComponent<CRopeSoftBody>();
-                    component->Clone(_selections.CopiedComponent->GetHandle(), "copy");
+                    component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
                     component->Initialize();
                     _selections.ClickedComponent = component.GetInternalPtr();
                     _selections.CopiedComponent = component.GetInternalPtr();
@@ -1005,7 +1012,7 @@ namespace te
                 case TID_CPatchSoftBody:
                 {
                     HPatchSoftBody component = clickedSceneObject->AddComponent<CPatchSoftBody>();
-                    component->Clone(_selections.CopiedComponent->GetHandle(), "copy");
+                    component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
                     component->Initialize();
                     _selections.ClickedComponent = component.GetInternalPtr();
                     _selections.CopiedComponent = component.GetInternalPtr();
@@ -1015,7 +1022,7 @@ namespace te
                 case TID_CConeTwistJoint:
                 {
                     HConeTwistJoint component = clickedSceneObject->AddComponent<CConeTwistJoint>();
-                    component->Clone(_selections.CopiedComponent->GetHandle(), "copy");
+                    component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
                     component->Initialize();
                     _selections.ClickedComponent = component.GetInternalPtr();
                     _selections.CopiedComponent = component.GetInternalPtr();
@@ -1025,7 +1032,7 @@ namespace te
                 case TID_CD6Joint:
                 {
                     HD6Joint component = clickedSceneObject->AddComponent<CD6Joint>();
-                    component->Clone(_selections.CopiedComponent->GetHandle(), "copy");
+                    component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
                     component->Initialize();
                     _selections.ClickedComponent = component.GetInternalPtr();
                     _selections.CopiedComponent = component.GetInternalPtr();
@@ -1035,7 +1042,7 @@ namespace te
                 case TID_CHingeJoint:
                 {
                     HHingeJoint component = clickedSceneObject->AddComponent<CHingeJoint>();
-                    component->Clone(_selections.CopiedComponent->GetHandle(), "copy");
+                    component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
                     component->Initialize();
                     _selections.ClickedComponent = component.GetInternalPtr();
                     _selections.CopiedComponent = component.GetInternalPtr();
@@ -1045,7 +1052,7 @@ namespace te
                 case TID_CSliderJoint:
                 {
                     HSliderJoint component = clickedSceneObject->AddComponent<CSliderJoint>();
-                    component->Clone(_selections.CopiedComponent->GetHandle(), "copy");
+                    component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
                     component->Initialize();
                     _selections.ClickedComponent = component.GetInternalPtr();
                     _selections.CopiedComponent = component.GetInternalPtr();
@@ -1055,7 +1062,7 @@ namespace te
                 case TID_CSphericalJoint:
                 {
                     HSphericalJoint component = clickedSceneObject->AddComponent<CSphericalJoint>();
-                    component->Clone(_selections.CopiedComponent->GetHandle(), "copy");
+                    component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
                     component->Initialize();
                     _selections.ClickedComponent = component.GetInternalPtr();
                     _selections.CopiedComponent = component.GetInternalPtr();
@@ -1065,7 +1072,7 @@ namespace te
                 case TID_CBoxCollider:
                 {
                     HBoxCollider component = clickedSceneObject->AddComponent<CBoxCollider>();
-                    component->Clone(_selections.CopiedComponent->GetHandle(), "copy");
+                    component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
                     component->Initialize();
                     _selections.ClickedComponent = component.GetInternalPtr();
                     _selections.CopiedComponent = component.GetInternalPtr();
@@ -1075,7 +1082,7 @@ namespace te
                 case TID_CPlaneCollider:
                 {
                     HPlaneCollider component = clickedSceneObject->AddComponent<CPlaneCollider>();
-                    component->Clone(_selections.CopiedComponent->GetHandle(), "copy");
+                    component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
                     component->Initialize();
                     _selections.ClickedComponent = component.GetInternalPtr();
                     _selections.CopiedComponent = component.GetInternalPtr();
@@ -1085,7 +1092,7 @@ namespace te
                 case TID_CSphereCollider:
                 {
                     HSphereCollider component = clickedSceneObject->AddComponent<CSphereCollider>();
-                    component->Clone(_selections.CopiedComponent->GetHandle(), "copy");
+                    component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
                     component->Initialize();
                     _selections.ClickedComponent = component.GetInternalPtr();
                     _selections.CopiedComponent = component.GetInternalPtr();
@@ -1095,7 +1102,7 @@ namespace te
                 case TID_CCylinderCollider:
                 {
                     HCylinderCollider component = clickedSceneObject->AddComponent<CCylinderCollider>();
-                    component->Clone(_selections.CopiedComponent->GetHandle(), "copy");
+                    component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
                     component->Initialize();
                     _selections.ClickedComponent = component.GetInternalPtr();
                     _selections.CopiedComponent = component.GetInternalPtr();
@@ -1105,7 +1112,7 @@ namespace te
                 case TID_CCapsuleCollider:
                 {
                     HCapsuleCollider component = clickedSceneObject->AddComponent<CCapsuleCollider>();
-                    component->Clone(_selections.CopiedComponent->GetHandle(), "copy");
+                    component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
                     component->Initialize();
                     _selections.ClickedComponent = component.GetInternalPtr();
                     _selections.CopiedComponent = component.GetInternalPtr();
@@ -1115,7 +1122,7 @@ namespace te
                 case TID_CMeshCollider:
                 {
                     HMeshCollider component = clickedSceneObject->AddComponent<CMeshCollider>();
-                    component->Clone(_selections.CopiedComponent->GetHandle(), "copy");
+                    component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
                     component->Initialize();
                     _selections.ClickedComponent = component.GetInternalPtr();
                     _selections.CopiedComponent = component.GetInternalPtr();
@@ -1125,7 +1132,7 @@ namespace te
                 case TID_CConeCollider:
                 {
                     HConeCollider component = clickedSceneObject->AddComponent<CConeCollider>();
-                    component->Clone(_selections.CopiedComponent->GetHandle(), "copy");
+                    component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
                     component->Initialize();
                     _selections.ClickedComponent = component.GetInternalPtr();
                     _selections.CopiedComponent = component.GetInternalPtr();
@@ -1135,7 +1142,7 @@ namespace te
                 case TID_CHeightFieldCollider:
                 {
                     HHeightFieldCollider component = clickedSceneObject->AddComponent<CHeightFieldCollider>();
-                    component->Clone(_selections.CopiedComponent->GetHandle(), "copy");
+                    component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
                     component->Initialize();
                     _selections.ClickedComponent = component.GetInternalPtr();
                     _selections.CopiedComponent = component.GetInternalPtr();
@@ -1152,7 +1159,7 @@ namespace te
                 return;
 
             HSceneObject sceneObject = SceneObject::Create("SceneObject");
-            sceneObject->Clone(_selections.CopiedSceneObject, "copy");
+            sceneObject->Clone(_selections.CopiedSceneObject, " copy");
             sceneObject->SetParent(clickedSceneObject->GetHandle());
 
             _selections.ClickedSceneObject = sceneObject.GetInternalPtr();
@@ -1199,6 +1206,23 @@ namespace te
 
         NeedsRedraw();
         GetSettings().State = Editor::EditorState::Modified;
+    }
+
+    /** When editor goes to play mode, we create a copy of the current scene hierarchy and disable the original */
+    void Editor::CreateRunningScene()
+    {
+        _sceneSO->SetActive(false);
+        _runningSceneSO = SceneObject::Create("Scene");
+        _runningSceneSO->Clone(_sceneSO);
+        _runningSceneSO->SetActive(true);
+    }
+
+    /** When editor goes to stop mode, we destroy to copied scene and restore the original one */
+    void Editor::DestroyRunningScene()
+    {
+        _runningSceneSO->Destroy();
+        _sceneSO->SetActive(true);
+        NeedsRedraw();
     }
 
     void Editor::LoadScene()

@@ -238,7 +238,7 @@ namespace te
         const SceneInfo& sceneInfo = _scene->GetSceneInfo();
 
         SPtr<GpuParamBlockBuffer> perCameraBuffer = view.GetPerViewBuffer();
-        //perCameraBuffer->FlushToGPU(); TODO
+        perCameraBuffer->FlushToGPU();
 
         view.BeginFrame(frameInfo);
 

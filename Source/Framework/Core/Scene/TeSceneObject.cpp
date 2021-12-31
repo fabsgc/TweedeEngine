@@ -119,9 +119,11 @@ namespace te
         }
 
         Transform tfrm = so->GetTransform();
-        this->_name = so->GetName() + " copy";
+        this->_name = so->GetName() + suffix;
         this->_mobility = so->GetMobility();
         this->SetLocalTransform(tfrm);
+        this->SetActive(so->GetActive());
+        this->SetFlags(so->GetFlags());
 
         for (auto& childSO : so->GetChildren())
         {

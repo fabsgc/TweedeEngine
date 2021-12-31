@@ -46,10 +46,10 @@ namespace te
             _softBody->setRollingFriction((btScalar)fSoftBody->GetRollingFriction());
             _softBody->transformTo(btTransform(ToBtQuaternion(fSoftBody->GetRotation()), ToBtVector3(fSoftBody->GetPosition())));
 
-            /*_softBody->generateClusters(_numClusters);
+            _softBody->generateClusters(_numClusters);
             _softBody->m_cfg.collisions =
                 btSoftBody::fCollision::CL_SS +
-                btSoftBody::fCollision::CL_RS;*/
+                btSoftBody::fCollision::CL_RS;
 
             _softBody->generateClusters(_numClusters);
             _softBody->m_cfg.collisions =
@@ -146,11 +146,11 @@ namespace te
         else
             flags |= btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
 
-        /*for (auto i = 0; i < _softBody->m_faces.size(); i++)
+        for (auto i = 0; i < _softBody->m_faces.size(); i++)
         {
             _softBody->m_faces.at(i).m_material->m_flags =
                 static_cast<BulletFSoftBody*>(fBody)->GetIsDebug() ? btSoftBody::fMaterial::DebugDraw : 0;
-        }*/
+        }
 
         _softBody->setCollisionFlags(flags);
         _softBody->forceActivationState(DISABLE_DEACTIVATION);

@@ -191,6 +191,12 @@ namespace te
         /** Delete current selection */
         void Delete();
 
+        /** When editor goes to play mode, we create a copy of the current scene hierarchy and disable the original */
+        void CreateRunningScene();
+
+        /** When editor goes to stop mode, we destroy to copied scene and restore the original one */
+        void DestroyRunningScene();
+
     protected:
         void InitializeInput();
         void InitializeScene();
@@ -219,6 +225,7 @@ namespace te
         HSceneObject _viewportSO;
         // root node for the user
         HSceneObject _sceneSO;
+        HSceneObject _runningSceneSO;
         
         // Camera used to render GUI
         HCamera _uiCamera;

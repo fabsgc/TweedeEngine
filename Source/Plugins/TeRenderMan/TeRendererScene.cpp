@@ -109,6 +109,9 @@ namespace te
         if ((updateFlag & (UINT32)CameraDirtyFlag::Redraw) != 0)
             view->NotifyNeedsRedraw();
 
+        if ((updateFlag & (UINT32)CameraDirtyFlag::RenderSettings) != 0)
+            view->SetRenderSettings(camera->GetRenderSettings());
+
         UINT32 updateEverythingFlag = (UINT32)ActorDirtyFlag::Everything
             | (UINT32)CameraDirtyFlag::Viewport;
 
@@ -117,13 +120,11 @@ namespace te
             RENDERER_VIEW_DESC viewDesc = CreateViewDesc(camera);
 
             view->SetView(viewDesc);
+            view->NotifyNeedsRedraw();
             view->SetRenderSettings(camera->GetRenderSettings());
 
             UpdateCameraRenderTargets(camera);
         }
-
-        if ((updateFlag & (UINT32)CameraDirtyFlag::RenderSettings) != 0)
-            view->SetRenderSettings(camera->GetRenderSettings());
 
         const Transform& tfrm = camera->GetTransform();
         view->SetTransform(

@@ -76,6 +76,9 @@ namespace te
         /**	Checks if the scene object has a specific bit flag set. */
         bool HasFlag(UINT32 flag) const;
 
+        /**	Returns all flags on a this SceneObject. */
+        UINT32 GetFlags() const { return _flags; };
+
         /**
          * If you want to create a copy of a sceneObject, first use SceneObject::Create() then, use this method to
          * properly copy all from "so" sceneObject

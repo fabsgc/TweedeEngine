@@ -37,6 +37,8 @@ namespace te
             return false;
 
         _name = c->GetName() + " " + suffix;
+        _flags = c->GetNotifyFlags();
+
         return true;
     }
 
@@ -46,6 +48,8 @@ namespace te
             return true;
 
         _name = c->GetName() + " " + suffix;
+        _flags = c->GetNotifyFlags();
+
         return true;
     }
 
