@@ -84,6 +84,7 @@ set (TE_CORE_INC_RENDERER
     "Core/Renderer/TeBloomMat.h"
     "Core/Renderer/TeMotionBlurMat.h"
     "Core/Renderer/TeGaussianBlurMat.h"
+    "Core/Renderer/TeDecal.h"
 )
 set (TE_CORE_SRC_RENDERER
     "Core/Renderer/TeRenderer.cpp"
@@ -106,6 +107,7 @@ set (TE_CORE_SRC_RENDERER
     "Core/Renderer/TeBloomMat.cpp"
     "Core/Renderer/TeMotionBlurMat.cpp"
     "Core/Renderer/TeGaussianBlurMat.cpp"
+    "Core/Renderer/TeDecal.cpp"
 )
 
 set (TE_CORE_INC_SCENE
@@ -312,6 +314,7 @@ set (TE_CORE_INC_COMPONENTS
     "Core/Components/TeCMeshCollider.h"
     "Core/Components/TeCConeCollider.h"
     "Core/Components/TeCHeightFieldCollider.h"
+    "Core/Components/TeCDecal.h"
 )
 set (TE_CORE_SRC_COMPONENTS
     "Core/Components/TeCCamera.cpp"
@@ -347,6 +350,7 @@ set (TE_CORE_SRC_COMPONENTS
     "Core/Components/TeCMeshCollider.cpp"
     "Core/Components/TeCConeCollider.cpp"
     "Core/Components/TeCHeightFieldCollider.cpp"
+    "Core/Components/TeCDecal.cpp"
 )
 
 set (TE_CORE_INC_RESOURCE

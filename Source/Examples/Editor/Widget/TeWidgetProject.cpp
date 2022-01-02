@@ -57,7 +57,7 @@ namespace te
     { }
 
     void WidgetProject::Initialize()
-    { 
+    {
         _deleteBtn = VirtualButton(EditorUtils::DELETE_BINDING);
         _copyBtn = VirtualButton(EditorUtils::COPY_BINDING);
         _pasteBtn = VirtualButton(EditorUtils::PASTE_BINDING);
@@ -77,7 +77,6 @@ namespace te
             ShowTree(sceneSO);
         }
         
-
         return;
     }
 

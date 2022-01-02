@@ -137,7 +137,9 @@ namespace te
         TID_CEllipsoidSoftBody      = 1082,
         TID_CRopeSoftBody           = 1083,
         TID_CPatchSoftBody          = 1084,
-        TID_FSoftBody               = 1085
+        TID_FSoftBody               = 1085,
+        TID_Decal                   = 1086,
+        TID_CDecal                  = 1087
     };
 }
 
@@ -239,6 +241,7 @@ namespace te
     class SkyboxMat;
     class FXAAMat;
     class RendererMeshData;
+    class Decal;
 
     class SceneActor;
     class SceneManager;
@@ -331,6 +334,7 @@ namespace te
     class CMeshCollider;
     class CConeCollider;
     class CHeightFieldCollider;
+    class CDecal;
 
     class BuiltinResources;
 
@@ -475,4 +479,5 @@ namespace te
     typedef GameObjectHandle<CMeshCollider> HMeshCollider;
     typedef GameObjectHandle<CConeCollider> HConeCollider;
     typedef GameObjectHandle<CHeightFieldCollider> HHeightFieldCollider;
+    typedef GameObjectHandle<CDecal> HDecal;
 }
