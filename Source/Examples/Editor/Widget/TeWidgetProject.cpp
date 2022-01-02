@@ -65,8 +65,18 @@ namespace te
 
     void WidgetProject::Update()
     { 
-        HSceneObject& sceneSO = gEditor().GetSceneRoot();
-        ShowTree(sceneSO);
+        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Mode::Game);
+        if (isRunning)
+        {
+            HSceneObject& sceneSO = gEditor().GetRunningSceneRoot();
+            ShowTree(sceneSO);
+        }
+        else
+        {
+            HSceneObject& sceneSO = gEditor().GetSceneRoot();
+            ShowTree(sceneSO);
+        }
+        
 
         return;
     }
@@ -582,6 +592,10 @@ namespace te
 
     void WidgetProject::PopupContextMenu()
     {
+        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Mode::Game);
+        if (isRunning)
+            return;
+
         if (!ImGui::BeginPopup("##ProjectContextMenu"))
             return;
 

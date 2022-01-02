@@ -128,7 +128,7 @@ namespace te
         /** Get scene root object */
         HSceneObject& GetSceneRoot() { return _sceneSO; }
 
-        /** Get scene root object */
+        /** Get running scene root object */
         HSceneObject& GetRunningSceneRoot() { return _runningSceneSO; }
 
         /** Get a widget pointer given its type. Return nullptr if not widget has been found */
