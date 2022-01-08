@@ -34,7 +34,8 @@ namespace te
     }
 
     Renderable::Renderable()
-        : _rendererId(0)
+        : Serializable(TID_Renderable)
+        , _rendererId(0)
         , _animationId((UINT64)-1)
         , _boundsDirty(true)
         , _subMeshesBoundsDirty(true)

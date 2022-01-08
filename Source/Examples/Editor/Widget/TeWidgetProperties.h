@@ -115,6 +115,9 @@ namespace te
         /** @copydoc WidgetProperties::ShowSceneObjectProperties */
         bool ShowCSphericalJointProperties();
 
+        /** @copydoc WidgetProperties::ShowSceneObjectProperties */
+        bool ShowCDecal();
+
         /**  Show transform and mobility options */
         bool ShowTransform(Transform& transform, ObjectMobility& mobility, bool disableTransform = false);
 

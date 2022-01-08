@@ -77,11 +77,6 @@ namespace te
         _internal = Renderable::Create();
     }
 
-    void CRenderable::OnCreated()
-    {
-        Component::OnCreated();
-    }
-
     void CRenderable::OnInitialized()
     {
         gSceneManager()._bindActor(_internal, GetSceneObject());

@@ -12,7 +12,8 @@ namespace te
     float Light::DefaultShadowBias = 0.5f;
 
     Light::Light()
-        : _type(LightType::Directional)
+        : Serializable(TID_Light)
+        , _type(LightType::Directional)
         , _castShadows(DefaultCastShadow)
         , _color(Color::White)
         , _attRadius(DefaultAttRadius)
@@ -26,7 +27,8 @@ namespace te
 
     Light::Light(LightType type, Color color, float intensity, float attRadius, float linearAtt,
         float quadraticAtt, bool castShadows, Degree spotAngle)
-        : _type(type)
+        : Serializable(TID_Light)
+        , _type(type)
         , _castShadows(castShadows)
         , _color(color)
         , _attRadius(attRadius)

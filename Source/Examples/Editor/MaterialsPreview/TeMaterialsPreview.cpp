@@ -1,15 +1,17 @@
 #include "TeMaterialsPreview.h"
 
 #include "Mesh/TeMesh.h"
+#include "Image/TeTexture.h"
 #include "Renderer/TeCamera.h"
 #include "Material/TeMaterial.h"
 #include "TeMaterialsPreviewMat.h"
 #include "Resources/TeResourceManager.h"
 #include "Importer/TeMeshImportOptions.h"
+#include "Importer/TeTextureImportOptions.h"
 
 namespace te
 {
-    const UINT32 MaterialsPreview::PreviewSize = 350;
+    const UINT32 MaterialsPreview::PreviewSize = 360;
     const Color  MaterialsPreview::BackgroundColor = Color(0.3f, 0.36f, 0.48f, 1.0f);
 
     MaterialsPreview::Preview::Preview()
@@ -129,12 +131,12 @@ namespace te
         {
             if (mat->GetShader()->GetName() == "ForwardOpaque")
             {
-                _opaqueMat->BindTextures(material);
+                _opaqueMat->BindTextures(material, _irradiance, _environment);
                 _opaqueMat->Bind();
             }
             else
             {
-                _transparentMat->BindTextures(material);
+                _transparentMat->BindTextures(material, _irradiance, _environment);
                 _transparentMat->Bind();
             }
 
@@ -157,7 +159,7 @@ namespace te
         _camera->Initialize();
 
         Transform tfrm = _camera->GetTransform();
-        tfrm.Move(Vector3(1.0f, 1.54f, 1.54f));
+        tfrm.Move(Vector3(1.0f, 1.6f, 1.6f));
         tfrm.LookAt(Vector3::ZERO);
         _camera->SetTransform(tfrm);
     }
@@ -166,8 +168,16 @@ namespace te
     {
         auto meshImportOptions = MeshImportOptions::Create();
 
+        auto textureCubeMapImportOptions = TextureImportOptions::Create();
+        textureCubeMapImportOptions->CpuCached = false;
+        textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
+        textureCubeMapImportOptions->IsCubemap = true;
+        textureCubeMapImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
+
         _box = ResourceManager::Instance().Load<Mesh>("Data/Meshes/Primitives/cube.obj", meshImportOptions).GetInternalPtr();
         _plane = ResourceManager::Instance().Load<Mesh>("Data/Meshes/Primitives/plane.obj", meshImportOptions).GetInternalPtr();
         _sphere = ResourceManager::Instance().Load<Mesh>("Data/Meshes/Primitives/sphere.obj", meshImportOptions).GetInternalPtr();
+        _irradiance = ResourceManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_day_irradiance_small.png", textureCubeMapImportOptions).GetInternalPtr();
+        _environment = ResourceManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_day_medium.png", textureCubeMapImportOptions).GetInternalPtr();
     }
 }

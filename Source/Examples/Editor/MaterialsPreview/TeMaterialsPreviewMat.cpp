@@ -26,9 +26,9 @@ namespace te
 
         _perFrameParamDef.gTime.Set(_perFrameParamBuffer, time);
         _perFrameParamDef.gFrameDelta.Set(_perFrameParamBuffer, delta);
-        _perFrameParamDef.gUseSkyboxMap.Set(_perFrameParamBuffer, 0);
-        _perFrameParamDef.gUseSkyboxIrradianceMap.Set(_perFrameParamBuffer, 0);
-        _perFrameParamDef.gSkyboxBrightness.Set(_perFrameParamBuffer, 0.3f);
+        _perFrameParamDef.gUseSkyboxMap.Set(_perFrameParamBuffer, 1);
+        _perFrameParamDef.gUseSkyboxIrradianceMap.Set(_perFrameParamBuffer, 1);
+        _perFrameParamDef.gSkyboxBrightness.Set(_perFrameParamBuffer, 0.6f);
         _perFrameParamDef.gSceneLightColor.Set(_perFrameParamBuffer, Vector4(1.0f, 1.0f, 1.0f, 1.0f));
     }
 
@@ -36,9 +36,9 @@ namespace te
     {
         static MaterialsPreviewMat::LightData lightData;
 
-        lightData.Position = Vector3(0.0f, 3.0f, 3.0f);
+        lightData.Position = Vector3(0.0f, 3.0f, 1.75f);
         lightData.Direction = Vector3(0.75f, -0.5f, -0.5f);
-        lightData.Intensity = 0.4f;
+        lightData.Intensity = 0.7f;
         lightData.AttenuationRadius = 1.0f;
         lightData.LinearAttenuation = 0.08f;
         lightData.QuadraticAttenuation = 0.0f;
@@ -123,32 +123,43 @@ namespace te
         _perMaterialParamDef.gParallaxSamples.Set(_perMaterialParamBuffer, properties.ParallaxSamples);
     }
 
-    void PreviewMat::BindTextures(const WPtr<Material>& material, SPtr<GpuParams> params)
+    void PreviewMat::BindTextures(const WPtr<Material>& material, SPtr<GpuParams> params, 
+        const SPtr<Texture>& irradiance, const SPtr<Texture>& environment)
     {
         const MaterialProperties& properties = material.lock()->GetProperties();
 
-        if (properties.UseDiffuseMap)
-            params->SetTexture("DiffuseMap", material.lock()->GetTexture("DiffuseMap"));
-        if(properties.UseEmissiveMap)
-            params->SetTexture("EmissiveMap", material.lock()->GetTexture("EmissiveMap"));
-        if(properties.UseNormalMap)
-            params->SetTexture("NormalMap", material.lock()->GetTexture("NormalMap"));
-        if (properties.UseSpecularMap)
-            params->SetTexture("SpecularMap", material.lock()->GetTexture("SpecularMap"));
-        if (properties.UseBumpMap)
-            params->SetTexture("BumpMap", material.lock()->GetTexture("BumpMap"));
-        if (properties.UseParallaxMap)
-            params->SetTexture("ParallaxMap", material.lock()->GetTexture("ParallaxMap"));
-        if (properties.UseTransparencyMap)
-            params->SetTexture("TransparencyMap", material.lock()->GetTexture("TransparencyMap"));
-        if (properties.UseReflectionMap)
-            params->SetTexture("ReflectionMap", material.lock()->GetTexture("ReflectionMap"));
-        if (properties.UseOcclusionMap)
-            params->SetTexture("OcclusionMap", material.lock()->GetTexture("OcclusionMap"));
-        if (properties.UseEnvironmentMap)
-            params->SetTexture("EnvironmentMap", material.lock()->GetTexture("EnvironmentMap"));
-        if (properties.UseIrradianceMap)
-            params->SetTexture("IrradianceMap", material.lock()->GetTexture("IrradianceMap"));
+        {
+            SPtr<Material> mat = material.lock();
+
+            if (properties.UseDiffuseMap)
+                params->SetTexture("DiffuseMap", mat->GetTexture("DiffuseMap"));
+            if (properties.UseEmissiveMap)
+                params->SetTexture("EmissiveMap", mat->GetTexture("EmissiveMap"));
+            if (properties.UseNormalMap)
+                params->SetTexture("NormalMap", mat->GetTexture("NormalMap"));
+            if (properties.UseSpecularMap)
+                params->SetTexture("SpecularMap", mat->GetTexture("SpecularMap"));
+            if (properties.UseBumpMap)
+                params->SetTexture("BumpMap", mat->GetTexture("BumpMap"));
+            if (properties.UseParallaxMap)
+                params->SetTexture("ParallaxMap", mat->GetTexture("ParallaxMap"));
+            if (properties.UseTransparencyMap)
+                params->SetTexture("TransparencyMap", mat->GetTexture("TransparencyMap"));
+            if (properties.UseReflectionMap)
+                params->SetTexture("ReflectionMap", mat->GetTexture("ReflectionMap"));
+            if (properties.UseOcclusionMap)
+                params->SetTexture("OcclusionMap", mat->GetTexture("OcclusionMap"));
+            if (properties.UseEnvironmentMap)
+                params->SetTexture("EnvironmentMap", mat->GetTexture("EnvironmentMap"));
+            if (properties.UseIrradianceMap)
+                params->SetTexture("IrradianceMap", mat->GetTexture("IrradianceMap"));
+        }
+
+        if (properties.UseGlobalIllumination && !properties.UseIrradianceMap)
+            params->SetTexture("IrradianceMap", irradiance);
+
+        if (!properties.UseEnvironmentMap)
+            params->SetTexture("EnvironmentMap", environment);
     }
 
     PreviewOpaqueMat::PreviewOpaqueMat()
@@ -164,9 +175,10 @@ namespace te
         _params->SetSamplerState("TextureSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
     }
 
-    void PreviewOpaqueMat::BindTextures(const WPtr<Material>& material)
+    void PreviewOpaqueMat::BindTextures(const WPtr<Material>& material, 
+        const SPtr<Texture>& irradiance, const SPtr<Texture>& environment)
     {
-        PreviewMat::BindTextures(material, _params);
+        PreviewMat::BindTextures(material, _params, irradiance, environment);
     }
 
     PreviewTransparentMat::PreviewTransparentMat()
@@ -182,8 +194,9 @@ namespace te
         _params->SetSamplerState("TextureSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
     }
 
-    void PreviewTransparentMat::BindTextures(const WPtr<Material>& material)
+    void PreviewTransparentMat::BindTextures(const WPtr<Material>& material, 
+        const SPtr<Texture>& irradiance, const SPtr<Texture>& environment)
     {
-        PreviewMat::BindTextures(material, _params);
+        PreviewMat::BindTextures(material, _params, irradiance, environment);
     }
 }

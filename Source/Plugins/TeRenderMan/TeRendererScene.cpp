@@ -166,7 +166,6 @@ namespace te
         UpdateCameraRenderTargets(camera, true);
     }
 
-    /** Registers a new light in the scene. */
     void RendererScene::RegisterLight(Light* light)
     {
         if (light->GetType() == LightType::Directional)
@@ -197,7 +196,6 @@ namespace te
         }
     }
 
-    /** Updates information about a previously registered light. */
     void RendererScene::UpdateLight(Light* light)
     {
         UINT32 lightId = light->GetRendererId();
@@ -208,7 +206,6 @@ namespace te
             _info.SpotLightWorldBounds[lightId] = light->GetBounds();
     }
 
-    /** Removes a light from the scene. */
     void RendererScene::UnregisterLight(Light* light)
     {
         UINT32 lightId = light->GetRendererId();
@@ -268,7 +265,6 @@ namespace te
         }
     }
 
-    /** Registers a new renderable object in the scene. */
     void RendererScene::RegisterRenderable(Renderable* renderable)
     { 
         UINT32 renderableId = (UINT32)_info.Renderables.size();
@@ -296,7 +292,6 @@ namespace te
         }
     }
 
-    /** Updates information about a previously registered renderable object. */
     void RendererScene::UpdateRenderable(Renderable* renderable)
     {
         UINT32 renderableId = renderable->GetRendererId();
@@ -337,7 +332,6 @@ namespace te
             SetMeshData(rendererRenderable, renderable);
     }
 
-    /** Removes a renderable object from the scene. */
     void RendererScene::UnregisterRenderable(Renderable* renderable)
     { 
         UINT32 renderableId = renderable->GetRendererId();
@@ -377,6 +371,21 @@ namespace te
         _info.RenderableCullInfos.erase(_info.RenderableCullInfos.end() - 1);
 
         te_delete(rendererRenderable);
+    }
+
+    void RendererScene::RegisterDecal(Decal* decal)
+    {
+        // TODO
+    }
+
+    void RendererScene::UpdateDecal(Decal* decal)
+    {
+        // TODO
+    }
+
+    void RendererScene::UnregisterDecal(Decal* decal)
+    {
+        // TODO
     }
 
     void RendererScene::BatchRenderables()

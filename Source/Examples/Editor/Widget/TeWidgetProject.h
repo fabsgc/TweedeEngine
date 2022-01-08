@@ -80,6 +80,7 @@ namespace te
         void CreateSoftBody(TypeID_Core type);
         void CreateJoint(TypeID_Core type);
         void CreateCollider(TypeID_Core type);
+        void CreateDecal();
         void Paste();
         void Delete();
         String GetComponentIcon(const HComponent& component);

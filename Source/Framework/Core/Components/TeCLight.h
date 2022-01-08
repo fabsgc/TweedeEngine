@@ -24,9 +24,6 @@ namespace te
         /** @copydoc Component::Clone */
         bool Clone(const HLight& c, const String& suffix = "");
 
-        /** @copydoc Component::Initialize */
-        void Initialize() override;
-
         /** @copydoc Light::SetType */
         void SetType(LightType type) { _internal->SetType(type); }
 
@@ -97,7 +94,11 @@ namespace te
         SPtr<Light> GetInternal() const { return _internal; }
 
         /* @copydoc Component::MarkDirty */
-        virtual void MarkDirty() { _internal->_markCoreDirty(); }
+        virtual void MarkDirty() 
+        {
+            _internal->SetTransform(_internal->GetTransform());
+            _internal->_markCoreDirty();
+        }
 
     protected:
         mutable SPtr<Light> _internal;

@@ -6,11 +6,13 @@
 namespace te
 {
     Skybox::Skybox()
-        : _texture(nullptr)
+        : Serializable(TID_Skybox)
+        , _texture(nullptr)
     { }
 
     Skybox::Skybox(const SPtr<Texture>& radiance)
-        : _texture(radiance)
+        : Serializable(TID_Skybox)
+        , _texture(radiance)
     { }
 
     Skybox::~Skybox()

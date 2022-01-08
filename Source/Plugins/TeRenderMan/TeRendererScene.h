@@ -81,11 +81,17 @@ namespace te
         /** Removes a renderable object from the scene. */
         void UnregisterRenderable(Renderable* renderable);
 
+        /** Registers a new decal object in the scene. */
+        void RegisterDecal(Decal* decal);
+
+        /** Updates information about a previously registered decal object. */
+        void UpdateDecal(Decal* decal);
+
+        /** Removes a decal object from the scene. */
+        void UnregisterDecal(Decal* decal);
+
         /** All renderables market as "mergeable" will be merged into several bigger mesh according to their material */
         void BatchRenderables();
-
-        /** Sometimes, we just want to update data on a mesh without removing and adding renderable (heavy operation) */
-        void UpdateMeshData(RendererRenderable* rendererRenderable, Renderable* renderable);
 
         /** Sometimes, mesh is missing on creation, need to be added after */
         void SetMeshData(RendererRenderable* rendererRenderable, Renderable* renderable);

@@ -123,7 +123,7 @@ namespace te
         SPtr<Renderable> GetInternal() const { return _internal; }
 
         /** @copydoc SceneActor::SetActive */
-        virtual void SetActive(bool active) { _internal->SetActive(active); }
+        void SetActive(bool active) { _internal->SetActive(active); }
 
         /** @copydoc SceneActor::GetActive */
         bool GetActive() const { return _internal->GetActive(); }
@@ -132,7 +132,8 @@ namespace te
         bool IsAnimated() const { return _internal->IsAnimated(); }
 
         /* @copydoc Component::MarkDirty */
-        virtual void MarkDirty() { 
+        virtual void MarkDirty() 
+        { 
             _internal->SetTransform(_internal->GetTransform());
             _internal->_markCoreDirty(); 
         }
@@ -153,9 +154,6 @@ namespace te
 
         /** @copydoc Component::Instantiate */
         void Instantiate() override;
-
-        /** @copydoc Component::OnInitialized */
-        void OnCreated() override;
 
         /** @copydoc Component::OnInitialized */
         void OnInitialized() override;

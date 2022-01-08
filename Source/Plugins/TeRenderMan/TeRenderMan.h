@@ -110,6 +110,15 @@ namespace te
         /** @copydoc Renderer::NotifySkyboxRemoved */
         void NotifySkyboxRemoved(Skybox* skybox) override;
 
+        /** @copydoc Renderer::NotifyDecalAdded */
+        void NotifyDecalAdded(Decal* decal) override;
+
+        /** @copydoc Renderer::NotifyDecalUpdated */
+        void NotifyDecalUpdated(Decal* decal) override;
+
+        /** @copydoc Renderer::NotifyDecalRemoved */
+        void NotifyDecalRemoved(Decal* decal) override;
+
         /** @copydoc Renderer::BatchRenderables */
         void BatchRenderables() override;
 

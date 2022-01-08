@@ -4,6 +4,7 @@
 #include "CoreUtility/TeCoreObject.h"
 #include "Scene/TeSceneActor.h"
 #include "Math/TeBounds.h"
+#include "Serialization/TeSerializable.h"
 
 namespace te
 {
@@ -33,10 +34,9 @@ namespace te
     };
 
     /** Illuminates a portion of the scene covered by the Renderable. */
-    class TE_CORE_EXPORT Renderable : public CoreObject, public SceneActor
+    class TE_CORE_EXPORT Renderable : public CoreObject, public SceneActor, public Serializable
     {
     public:
-        Renderable();
         ~Renderable();
 
         /** @copydoc CoreObject::Initialize */
@@ -249,6 +249,9 @@ namespace te
 
         /** Creates any buffers required for renderable animation. Should be called whenever animation properties change. */
         void CreateAnimationBuffers();
+
+    protected:
+        Renderable();
 
     protected:
         friend class CRenderable;

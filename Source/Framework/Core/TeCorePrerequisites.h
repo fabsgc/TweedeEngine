@@ -139,7 +139,10 @@ namespace te
         TID_CPatchSoftBody          = 1084,
         TID_FSoftBody               = 1085,
         TID_Decal                   = 1086,
-        TID_CDecal                  = 1087
+        TID_CDecal                  = 1087,
+        TID_Light                   = 1088,
+        TID_Renderable              = 1089,
+        TID_Skybox                  = 1090
     };
 }
 

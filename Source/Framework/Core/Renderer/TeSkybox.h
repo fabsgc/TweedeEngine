@@ -3,6 +3,7 @@
 #include "TeCorePrerequisites.h"
 #include "Scene/TeSceneActor.h"
 #include "CoreUtility/TeCoreObject.h"
+#include "Serialization/TeSerializable.h"
 
 namespace te
 {
@@ -13,7 +14,7 @@ namespace te
         Texture = 1 << 5
     };
 
-    class TE_CORE_EXPORT Skybox : public CoreObject, public SceneActor
+    class TE_CORE_EXPORT Skybox : public CoreObject, public SceneActor, public Serializable
     {
     public:
         ~Skybox();

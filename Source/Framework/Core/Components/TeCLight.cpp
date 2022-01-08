@@ -30,11 +30,6 @@ namespace te
             _internal->Destroy();
     }
 
-    void CLight::Initialize()
-    {
-        Component::Initialize();
-    }
-
     Sphere CLight::GetBounds() const
     {
         _internal->UpdateState(*SO());

@@ -49,6 +49,7 @@
 #include "Components/TeCD6Joint.h"
 #include "Components/TeCSliderJoint.h"
 #include "Components/TeCSphericalJoint.h"
+#include "Components/TeCDecal.h"
 #include "Physics/TePhysics.h"
 
 #if defined(__GNUC__)
@@ -283,6 +284,13 @@ namespace te
             case TID_CSphericalJoint:
             {
                 if (ShowCSphericalJointProperties())
+                    hasChanged = true;
+            }
+            break;
+
+            case TID_CDecal:
+            {
+                if (ShowCDecal())
                     hasChanged = true;
             }
             break;
@@ -2004,6 +2012,48 @@ namespace te
 
         if (ImGui::CollapsingHeader("Common", ImGuiTreeNodeFlags_DefaultOpen))
             hasChanged = ShowJoint(joint) ? true : hasChanged;
+
+        return hasChanged;
+    }
+
+    bool WidgetProperties::ShowCDecal()
+    {
+        bool hasChanged = false;
+        SPtr<CDecal> decalCO = std::static_pointer_cast<CDecal>(_selections.ClickedComponent);
+        SPtr<Decal> decalPtr = decalCO->GetInternal();
+        ObjectMobility mobility = decalPtr->GetMobility();
+        Transform transform = decalCO->GetSceneObject()->GetTransform();
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
+
+        if (ShowTransform(transform, mobility))
+        {
+            decalPtr->SetMobility(mobility);
+            decalCO->GetSceneObject()->SetLocalTransform(transform);
+            hasChanged = true;
+        }
+
+        if (ImGui::CollapsingHeader("Properties", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            // Size
+            {
+                Vector2 size = decalCO->GetSize();
+                if (ImGuiExt::RenderVector2(size, "##decal_size_option", " Size", 20.0f))
+                {
+                    hasChanged = true;
+                    decalCO->SetSize(size);
+                }
+            }
+
+            // Max distance
+            {
+                float maxDistance = decalCO->GetMaxDistance();
+                if (ImGuiExt::RenderOptionFloat(maxDistance, "##decal_max_distance_option", "Max Distance", 0.0f, 512.0f, width - 20.0f))
+                {
+                    hasChanged = true;
+                    decalCO->SetMaxDistance(maxDistance);
+                }
+            }
+        }
 
         return hasChanged;
     }

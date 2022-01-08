@@ -99,6 +99,8 @@ namespace te
         SPtr<Mesh> _plane;
         SPtr<Mesh> _sphere;
         SPtr<Camera> _camera;
+        SPtr<Texture> _irradiance;
+        SPtr<Texture> _environment;
 
         MeshPreviewType _meshPreviewType;
     };

@@ -133,7 +133,8 @@ namespace te
         void BindMaterial(const WPtr<Material>& material);
 
         /** Set all the textures used by this material */
-        void BindTextures(const WPtr<Material>& material, SPtr<GpuParams> params);
+        void BindTextures(const WPtr<Material>& material, SPtr<GpuParams> params, 
+            const SPtr<Texture>& irradiance, const SPtr<Texture>& environment);
 
     protected:
         MaterialsPreviewMat::PerCameraParamDef _perCameraParamDef;
@@ -160,7 +161,8 @@ namespace te
         PreviewOpaqueMat();
 
         /** Set all the textures used by this material */
-        void BindTextures(const WPtr<Material>& material);
+        void BindTextures(const WPtr<Material>& material, 
+            const SPtr<Texture>& irradiance, const SPtr<Texture>& environment);
     };
 
     /** Shader that performs material's preview for transparent objects. */
@@ -172,6 +174,7 @@ namespace te
         PreviewTransparentMat();
 
         /** Set all the textures used by this material */
-        void BindTextures(const WPtr<Material>& material);
+        void BindTextures(const WPtr<Material>& material, 
+            const SPtr<Texture>& irradiance, const SPtr<Texture>& environment);
     };
 }

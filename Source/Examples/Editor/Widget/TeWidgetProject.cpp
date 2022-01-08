@@ -33,6 +33,7 @@
 #include "Components/TeCMeshCollider.h"
 #include "Components/TeCConeCollider.h"
 #include "Components/TeCHeightFieldCollider.h"
+#include "Components/TeCDecal.h"
 #include "../TeEditorUtils.h"
 
 #if defined(__GNUC__)
@@ -367,6 +368,7 @@ namespace te
             case TID_CMeshCollider:
             case TID_CConeCollider:
             case TID_CHeightFieldCollider:
+            case TID_CDecal:
                 gEditor().PutFocus(Editor::WindowType::Viewport);
                 break;
 
@@ -711,6 +713,8 @@ namespace te
                         CreateScript();
                     if (ImGui::MenuItem(ICON_FA_BONE " Bone"))
                         CreateBone();
+                    if (ImGui::MenuItem(ICON_FA_IMAGE " Decal"))
+                        CreateDecal();
 
                     ImGui::EndMenu();
                 }
@@ -1227,6 +1231,26 @@ namespace te
         gEditor().GetSettings().State = Editor::EditorState::Modified;
     }
 
+    void WidgetProject::CreateDecal()
+    {
+        if (!_selections.ClickedSceneObject || _selections.ClickedComponent)
+            return;
+
+        if (!_selections.ClickedSceneObject->GetComponent<CDecal>().Empty())
+            return;
+
+        HDecal decal = _selections.ClickedSceneObject->AddComponent<CDecal>();
+        decal.Get()->SetName("Decal");
+        decal.Get()->Initialize();
+
+        _expandToSelection = true;
+        _handleSelectionWindowSwitch = true;
+
+        _selections.ClickedComponent = decal.GetInternalPtr();
+        gEditor().NeedsRedraw();
+        gEditor().GetSettings().State = Editor::EditorState::Modified;
+    }
+
     void WidgetProject::Paste()
     { 
         gEditor().Paste();
@@ -1306,6 +1330,9 @@ namespace te
         case TID_CConeCollider:
         case TID_CHeightFieldCollider:
             title += String("  ") + ICON_FA_CUBE;
+            break;
+        case TID_CDecal:
+            title += String("  ") + ICON_FA_IMAGE;
             break;
         default:
             title += String("  ") + ICON_FA_QUESTION_CIRCLE;

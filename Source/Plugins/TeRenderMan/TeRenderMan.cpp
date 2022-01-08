@@ -353,6 +353,21 @@ namespace te
         _scene->UnregisterSkybox(skybox);
     }
 
+    void RenderMan::NotifyDecalAdded(Decal* decal)
+    {
+        _scene->RegisterDecal(decal);
+    }
+
+    void RenderMan::NotifyDecalUpdated(Decal* decal)
+    {
+        _scene->UpdateDecal(decal);
+    }
+
+    void RenderMan::NotifyDecalRemoved(Decal* decal)
+    {
+        _scene->UnregisterDecal(decal);
+    }
+
     void RenderMan::BatchRenderables()
     {
         _scene->BatchRenderables();

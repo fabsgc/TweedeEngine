@@ -62,12 +62,12 @@ namespace te
 
         /**
          * Called whenever a camera's position or rotation is updated.
-         *
-         * @param[in]	camera		Camera that was updated.
          */
         virtual void NotifyCameraUpdated(Camera* camera, UINT32 updateFlag) { }
 
-        /** Called whenever a camera is destroyed. */
+        /** 
+         * Called whenever a camera is destroyed. 
+         */
         virtual void NotifyCameraRemoved(Camera* camera) { }
 
         /**
@@ -109,6 +109,21 @@ namespace te
          * Called whenever a skybox is destroyed.
          */
         virtual void NotifySkyboxRemoved(Skybox* skybox) { }
+
+        /**
+         * Called whenever a new decal is created.
+         */
+        virtual void NotifyDecalAdded(Decal* decal) { }
+
+        /**
+         * Called whenever a decal is updated.
+         */
+        virtual void NotifyDecalUpdated(Decal* decal) { }
+
+        /**
+         * Called whenever a decal is destroyed.
+         */
+        virtual void NotifyDecalRemoved(Decal* decal) { }
 
         /**
          * Call by the user when he went to batch several renderables into only one big renderable.
