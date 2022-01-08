@@ -142,6 +142,9 @@ namespace te
         static float DefaultSpotAngle;
         static float DefaultShadowBias;
 
+        static const UINT32 LIGHT_CONE_NUM_SIDES;
+        static const UINT32 LIGHT_CONE_NUM_SLICES;
+
     protected:
         friend class CLight;
 

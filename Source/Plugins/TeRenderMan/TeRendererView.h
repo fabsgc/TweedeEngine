@@ -2,6 +2,7 @@
 
 #include "TeRenderManPrerequisites.h"
 #include "TeRendererLight.h"
+#include "TeRendererDecal.h"
 #include "TeRendererRenderable.h"
 #include "Renderer/TeRenderer.h"
 #include "Renderer/TeRenderQueue.h"

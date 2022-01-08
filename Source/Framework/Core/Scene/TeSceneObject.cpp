@@ -36,6 +36,7 @@
 #include "Components/TeCMeshCollider.h"
 #include "Components/TeCConeCollider.h"
 #include "Components/TeCAnimation.h"
+#include "Components/TeCDecal.h"
 
 namespace te
 {
@@ -375,6 +376,14 @@ namespace te
             case TID_CSphereCollider:
             {
                 HSphereCollider component = this->AddComponent<CSphereCollider>();
+                component->Clone(co->GetHandle());
+                component->Initialize();
+            }
+            break;
+
+            case TID_CDecal:
+            {
+                HDecal component = this->AddComponent<CDecal>();
                 component->Clone(co->GetHandle());
                 component->Initialize();
             }

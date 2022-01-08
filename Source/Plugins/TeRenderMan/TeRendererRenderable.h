@@ -69,7 +69,6 @@ namespace te
     /** Contains information about a Renderable, used by the Renderer. */
     struct RendererRenderable
     {
-    public:
         RendererRenderable();
         ~RendererRenderable();
 

@@ -27,6 +27,10 @@ namespace te
         Vector<Sphere> RadialLightWorldBounds;
         Vector<Sphere> SpotLightWorldBounds;
 
+        // Decals
+        Vector<RendererDecal> Decals;
+        Vector<CullInfo> DecalCullInfos;
+
         // Sky
         Skybox* SkyboxElem = nullptr;
 

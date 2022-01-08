@@ -107,6 +107,18 @@ namespace te
             DrawScreenQuad(uv, textureSize, numInstances);
         }
 
+        /** Returns a unit sphere stencil mesh. */
+        SPtr<Mesh> GetSphereStencil() const { return _unitSphereStencilMesh; }
+
+        /** Returns a unit axis aligned box stencil mesh. */
+        SPtr<Mesh> GetBoxStencil() const { return _unitBoxStencilMesh; }
+
+        /**
+         * Returns a stencil mesh used for a spot light. Actual vertex positions need to be computed in shader as this
+         * method will return uninitialized vertex positions.
+         */
+        SPtr<Mesh> GetSpotLightStencil() const { return _spotLightStencilMesh; }
+
         /**
          * Blits contents of the provided texture into the currently bound render target. If the provided texture contains
          * multiple samples, they will be resolved.
@@ -181,6 +193,9 @@ namespace te
         SPtr<VertexDeclaration> _fullscreenQuadVDecl;
         UINT32 _nextQuadVBSlot = 0;
 
+        SPtr<Mesh> _unitSphereStencilMesh;
+		SPtr<Mesh> _unitBoxStencilMesh;
+		SPtr<Mesh> _spotLightStencilMesh;
         SPtr<Mesh> _skyBoxMesh;
     };
 

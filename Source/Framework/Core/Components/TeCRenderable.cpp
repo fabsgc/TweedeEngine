@@ -79,7 +79,7 @@ namespace te
 
     void CRenderable::OnInitialized()
     {
-        gSceneManager()._bindActor(_internal, GetSceneObject());
+        gSceneManager()._bindActor(_internal, SO());
         Component::OnInitialized();
 
         _animation = static_object_cast<CAnimation>(SO()->GetComponent<CAnimation>());

@@ -11,6 +11,9 @@ namespace te
     float Light::DefaultSpotAngle = 45.0f;
     float Light::DefaultShadowBias = 0.5f;
 
+    const UINT32 Light::LIGHT_CONE_NUM_SIDES = 20;
+    const UINT32 Light::LIGHT_CONE_NUM_SLICES = 10;
+
     Light::Light()
         : Serializable(TID_Light)
         , _type(LightType::Directional)

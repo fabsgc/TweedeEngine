@@ -474,8 +474,6 @@ namespace te
             SHADER_DATA_PARAM_DESC gSceneLightColorDesc("gSceneLightColor", "gSceneLightColor", GPDT_FLOAT4);
             SHADER_DATA_PARAM_DESC gSkyboxBrightnessDesc("gSkyboxBrightness", "gSkyboxBrightness", GPDT_FLOAT1);
 
-            SHADER_DATA_PARAM_DESC gMatWorldViewProj("gMatWorldViewProj", "gMatWorldViewProj", GPDT_MATRIX_4X4);
-
             SHADER_DATA_PARAM_DESC gInstanceData("gInstanceData", "gInstanceData", GPDT_STRUCT);
             gInstanceData.ElementSize = sizeof(PerInstanceData);
 
@@ -585,8 +583,6 @@ namespace te
             _forwardShaderDesc.AddParameter(gUseSkyboxIrradianceMapDesc);
             _forwardShaderDesc.AddParameter(gSceneLightColorDesc);
             _forwardShaderDesc.AddParameter(gSkyboxBrightnessDesc);
-
-            _forwardShaderDesc.AddParameter(gMatWorldViewProj);
 
             _forwardShaderDesc.AddParameter(anisotropicSamplerDesc);
 

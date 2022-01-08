@@ -163,6 +163,22 @@ namespace te
     extern PerLightsParamDef gPerLightsParamDef;
     extern SPtr<GpuParamBlockBuffer> gPerLightsParamBuffer;
 
+    TE_PARAM_BLOCK_BEGIN(DecalParamDef)
+        TE_PARAM_BLOCK_ENTRY(Matrix4, gWorldToDecal)
+        TE_PARAM_BLOCK_ENTRY(Vector3, gDecalNormal)
+        TE_PARAM_BLOCK_ENTRY(float, gNormalTolerance)
+        TE_PARAM_BLOCK_ENTRY(float, gFlipDerivatives)
+        TE_PARAM_BLOCK_ENTRY(INT32, gLayerMask)
+    TE_PARAM_BLOCK_END
+
+    extern DecalParamDef gDecalParamDef;
+
+    TE_PARAM_BLOCK_BEGIN(PerCallParamDef)
+        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatWorldViewProj)
+    TE_PARAM_BLOCK_END
+
+    extern PerCallParamDef gPerCallParamDef;
+
     enum class RenderManCulling
     {
         Frustum = 1 << 0,
@@ -238,4 +254,6 @@ namespace te
     struct RendererRenderable;
     struct SceneInfo;
     struct FrameInfo;
+    struct RendererDecal;
+    class DecalRenderElement;
 }

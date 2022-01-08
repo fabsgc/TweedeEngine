@@ -12,6 +12,8 @@
 #include "RenderAPI/TeGpuPipelineState.h"
 #include "Resources/TeBuiltinResources.h"
 #include "Mesh/TeMesh.h"
+#include "Renderer/TeDecal.h"
+#include "Renderer/TeRendererUtility.h"
 
 namespace te
 {
@@ -375,21 +377,70 @@ namespace te
 
     void RendererScene::RegisterDecal(Decal* decal)
     {
+        const auto renderableId = (UINT32)_info.Decals.size();
+        decal->SetRendererId(renderableId);
+
+        _info.Decals.emplace_back();
+        _info.DecalCullInfos.push_back(CullInfo(decal->GetBounds(), decal->GetLayer()));
+
+        RendererDecal& rendererDecal = _info.Decals.back();
+        rendererDecal.DecalPtr = decal;
+        rendererDecal.UpdatePerObjectBuffer();
+
+        DecalRenderElement& renElement = rendererDecal.Element;
+        renElement.Type = (UINT32)RenderElementType::Decal;
+        renElement.MeshElem = gRendererUtility().GetBoxStencil();
+        renElement.SubMeshElem = &renElement.MeshElem->GetProperties().GetSubMesh();
+
+        renElement.MaterialElem = decal->GetMaterial();
+
+        if (renElement.MaterialElem != nullptr && renElement.MaterialElem->GetShader() == nullptr)
+            renElement.MaterialElem = nullptr;
+
+        // If no material use the default material
+        if (renElement.MaterialElem == nullptr)
+        {
+            // TODO
+        }
+
         // TODO
     }
 
     void RendererScene::UpdateDecal(Decal* decal)
     {
-        // TODO
+        const UINT32 rendererId = decal->GetRendererId();
+
+        _info.Decals[rendererId].UpdatePerObjectBuffer();
+        _info.DecalCullInfos[rendererId].Boundaries = decal->GetBounds();
     }
 
     void RendererScene::UnregisterDecal(Decal* decal)
     {
-        // TODO
+        const UINT32 rendererId = decal->GetRendererId();
+        Decal* lastDecal = _info.Decals.back().DecalPtr;
+        const UINT32 lastDecalId = lastDecal->GetRendererId();
+
+        RendererDecal& rendererDecal = _info.Decals[rendererId];
+        DecalRenderElement& renElement = rendererDecal.Element;
+
+        if (rendererId != lastDecalId)
+        {
+            // Swap current last element with the one we want to erase
+            std::swap(_info.Decals[rendererId], _info.Decals[lastDecalId]);
+            std::swap(_info.DecalCullInfos[rendererId], _info.DecalCullInfos[lastDecalId]);
+
+            lastDecal->SetRendererId(rendererId);
+        }
+
+        // Last element is the one we want to erase
+        _info.Decals.erase(_info.Decals.end() - 1);
+        _info.DecalCullInfos.erase(_info.DecalCullInfos.end() - 1);
     }
 
     void RendererScene::BatchRenderables()
-    { }
+    { 
+        // TODO
+    }
 
     void RendererScene::SetMeshData(RendererRenderable* rendererRenderable, Renderable* renderable)
     {

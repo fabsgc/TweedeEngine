@@ -30,11 +30,6 @@ namespace te
 
     void CDecal::OnInitialized()
     {
-        // If mInternal already exists this means this object was deserialized,
-        // so all we need to do is initialize it.
-        if (_internal != nullptr)
-            _internal->Initialize();
-
         gSceneManager()._bindActor(_internal, SO());
         Component::OnInitialized();
     }

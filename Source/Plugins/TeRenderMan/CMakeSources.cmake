@@ -8,6 +8,7 @@ set (TE_RENDERMAN_INC_NOFILTER
     "TeRendererRenderable.h"
     "TeRendererLight.h"
     "TeRenderCompositor.h"
+    "TeRendererDecal.h"
 )
 
 set (TE_RENDERERMAN_SRC_NOFILTER
@@ -19,6 +20,7 @@ set (TE_RENDERERMAN_SRC_NOFILTER
     "TeRendererRenderable.cpp"
     "TeRendererLight.cpp"
     "TeRenderCompositor.cpp"
+    "TeRendererDecal.cpp"
 )
 
 source_group ("" FILES ${TE_RENDERERMAN_SRC_NOFILTER} ${TE_RENDERMAN_INC_NOFILTER})

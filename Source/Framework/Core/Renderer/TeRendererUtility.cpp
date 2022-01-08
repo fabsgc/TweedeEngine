@@ -59,6 +59,104 @@ namespace te
             UINT32 numVertices = 0;
             UINT32 numIndices = 0;
 
+            ShapeMeshes3D::GetNumElementsSphere(3, numVertices, numIndices);
+            SPtr<MeshData> meshData = te_shared_ptr_new<MeshData>(numVertices, numIndices, vertexDesc);
+
+            UINT32* indexData = meshData->GetIndices32();
+            UINT8* positionData = meshData->GetElementData(VES_POSITION);
+
+            Sphere localSphere(Vector3::ZERO, 1.0f);
+            ShapeMeshes3D::SolidSphere(localSphere, positionData, nullptr, nullptr, 0,
+                vertexDesc->GetVertexStride(), indexData, 0, 3);
+                
+            _unitSphereStencilMesh = Mesh::CreatePtr(meshData);
+        }
+
+        {
+            SPtr<VertexDataDesc> vertexDesc = te_shared_ptr_new<VertexDataDesc>();
+            vertexDesc->AddVertElem(VET_FLOAT3, VES_POSITION);
+
+            UINT32 numVertices = 0;
+            UINT32 numIndices = 0;
+
+            ShapeMeshes3D::GetNumElementsAABox(numVertices, numIndices);
+            SPtr<MeshData> meshData = te_shared_ptr_new<MeshData>(numVertices, numIndices, vertexDesc);
+
+            UINT32* indexData = meshData->GetIndices32();
+            UINT8* positionData = meshData->GetElementData(VES_POSITION);
+
+            AABox localBox(-Vector3::ONE, Vector3::ONE);
+            ShapeMeshes3D::SolidAABox(localBox, positionData, nullptr, nullptr, 0,
+                vertexDesc->GetVertexStride(), indexData, 0);
+
+            _unitBoxStencilMesh = Mesh::CreatePtr(meshData);
+        }
+
+        {
+            UINT32 numSides = Light::LIGHT_CONE_NUM_SIDES;
+            UINT32 numSlices = Light::LIGHT_CONE_NUM_SLICES;
+
+            SPtr<VertexDataDesc> vertexDesc = te_shared_ptr_new<VertexDataDesc>();
+            vertexDesc->AddVertElem(VET_FLOAT3, VES_POSITION);
+
+            UINT32 numVertices = numSides * numSlices * 2;
+            UINT32 numIndices = ((numSides * 2) * (numSlices - 1) * 2) * 3;
+
+            SPtr<MeshData> meshData = te_shared_ptr_new<MeshData>(numVertices, numIndices, vertexDesc);
+
+            UINT32* indexData = meshData->GetIndices32();
+            UINT8* positionData = meshData->GetElementData(VES_POSITION);
+            UINT32 stride = vertexDesc->GetVertexStride();
+
+            // Dummy vertex positions, actual ones generated in shader
+            for (UINT32 i = 0; i < numVertices; i++)
+            {
+                memcpy(positionData, &Vector3::ZERO, sizeof(Vector3));
+                positionData += stride;
+            }
+
+            // Cone indices
+            UINT32 curIdx = 0;
+            for (UINT32 sliceIdx = 0; sliceIdx < (numSlices - 1); sliceIdx++)
+            {
+                for (UINT32 sideIdx = 0; sideIdx < numSides; sideIdx++)
+                {
+                    indexData[curIdx++] = sliceIdx * numSides + sideIdx;
+                    indexData[curIdx++] = sliceIdx * numSides + (sideIdx + 1) % numSides;
+                    indexData[curIdx++] = (sliceIdx + 1) * numSides + sideIdx;
+
+                    indexData[curIdx++] = sliceIdx * numSides + (sideIdx + 1) % numSides;
+                    indexData[curIdx++] = (sliceIdx + 1) * numSides + (sideIdx + 1) % numSides;
+                    indexData[curIdx++] = (sliceIdx + 1) * numSides + sideIdx;
+                }
+            }
+
+            // Sphere cap indices
+            UINT32 coneOffset = numSides * numSlices;
+            for (UINT32 sliceIdx = 0; sliceIdx < (numSlices - 1); sliceIdx++)
+            {
+                for (UINT32 sideIdx = 0; sideIdx < numSides; sideIdx++)
+                {
+                    indexData[curIdx++] = coneOffset + sliceIdx * numSides + sideIdx;
+                    indexData[curIdx++] = coneOffset + sliceIdx * numSides + (sideIdx + 1) % numSides;
+                    indexData[curIdx++] = coneOffset + (sliceIdx + 1) * numSides + sideIdx;
+
+                    indexData[curIdx++] = coneOffset + sliceIdx * numSides + (sideIdx + 1) % numSides;
+                    indexData[curIdx++] = coneOffset + (sliceIdx + 1) * numSides + (sideIdx + 1) % numSides;
+                    indexData[curIdx++] = coneOffset + (sliceIdx + 1) * numSides + sideIdx;
+                }
+            }
+
+            _spotLightStencilMesh = Mesh::CreatePtr(meshData);
+        }
+
+        {
+            SPtr<VertexDataDesc> vertexDesc = te_shared_ptr_new<VertexDataDesc>();
+            vertexDesc->AddVertElem(VET_FLOAT3, VES_POSITION);
+
+            UINT32 numVertices = 0;
+            UINT32 numIndices = 0;
+
             ShapeMeshes3D::GetNumElementsAABox(numVertices, numIndices);
             SPtr<MeshData> meshData = te_shared_ptr_new<MeshData>(numVertices, numIndices, vertexDesc);
 
