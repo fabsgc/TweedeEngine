@@ -1,5 +1,5 @@
 #include "TeGaussianBlurMat.h"
-#include "TeRendererUtility.h"
+#include "Renderer/TeRendererUtility.h"
 #include "Renderer/TeGpuResourcePool.h"
 
 namespace te

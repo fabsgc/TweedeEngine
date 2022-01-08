@@ -50,7 +50,13 @@ namespace te
         /** Shader used for material's preview for opaque objects */
         PreviewOpaque = 0xF,
         /** Shader used for material's preview for transparent objects */
-        PreviewTransparent = 0x10
+        PreviewTransparent = 0x10,
+        /** Shader used for ssao */
+        SSAO = 0x11,
+        /** Shader used to blur ssao output */
+        SSAOBlur = 0x12,
+        /** Shader used to downswample ssao input (depth and normal buffer) */
+        SSAODownSample = 0x13
     };
 
     /** Types of builtin shaders that are always available. */

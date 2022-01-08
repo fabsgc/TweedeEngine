@@ -3,7 +3,7 @@
 #include "TeCorePrerequisites.h"
 #include "Renderer/TeParamBlocks.h"
 #include "Renderer/TeRendererMaterial.h"
-#include "Renderer/TeGaussianBlurMat.h"
+#include "PostProcessing/TeGaussianBlurMat.h"
 
 #define STANDARD_MAX_BLUR_SAMPLES 128
 
@@ -17,7 +17,7 @@ namespace te
     extern BloomParamDef gBloomParamDef;
 
     /** Shader that performs Fast Approximate anti-aliasing. */
-    class TE_CORE_EXPORT BloomMat : public RendererMaterial<BloomMat>
+    class BloomMat : public RendererMaterial<BloomMat>
     {
         RMAT_DEF(BuiltinShader::Bloom);
 

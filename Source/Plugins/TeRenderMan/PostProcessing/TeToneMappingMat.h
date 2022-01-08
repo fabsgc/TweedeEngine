@@ -17,7 +17,7 @@ namespace te
     extern ToneMappingParamDef gToneMappingParamDef;
 
     /** Shader that performs Fast Approximate anti-aliasing. */
-    class TE_CORE_EXPORT ToneMappingMat : public RendererMaterial<ToneMappingMat>
+    class ToneMappingMat : public RendererMaterial<ToneMappingMat>
     {
         RMAT_DEF(BuiltinShader::ToneMapping);
 

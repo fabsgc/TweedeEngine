@@ -19,7 +19,7 @@ namespace te
     extern GaussianBlurParamDef gGaussianBlurParamDef;
 
     /** Shader that performs Fast Approximate anti-aliasing. */
-    class TE_CORE_EXPORT GaussianBlurMat : public RendererMaterial<GaussianBlurMat>
+    class GaussianBlurMat : public RendererMaterial<GaussianBlurMat>
     {
         RMAT_DEF(BuiltinShader::GaussianBlur);
 

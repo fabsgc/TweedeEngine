@@ -17,7 +17,7 @@ namespace te
     /** 
      * Shader that renders a skybox using a cubemap or a solid color. 
      */
-    class TE_CORE_EXPORT SkyboxMat : public RendererMaterial<SkyboxMat>
+    class SkyboxMat : public RendererMaterial<SkyboxMat>
     {
         RMAT_DEF(BuiltinShader::Skybox);
 

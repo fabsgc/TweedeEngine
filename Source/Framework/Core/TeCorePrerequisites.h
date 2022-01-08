@@ -241,8 +241,6 @@ namespace te
     template <typename T>
     class RendererMaterial;
     class BlitMat;
-    class SkyboxMat;
-    class FXAAMat;
     class RendererMeshData;
     class Decal;
 

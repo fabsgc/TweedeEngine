@@ -16,7 +16,7 @@ namespace te
     extern MotionBlurParamDef gMotionBlurParamDef;
 
     /** Shader that performs Fast Approximate anti-aliasing. */
-    class TE_CORE_EXPORT MotionBlurMat : public RendererMaterial<MotionBlurMat>
+    class MotionBlurMat : public RendererMaterial<MotionBlurMat>
     {
         RMAT_DEF(BuiltinShader::MotionBlur);
 

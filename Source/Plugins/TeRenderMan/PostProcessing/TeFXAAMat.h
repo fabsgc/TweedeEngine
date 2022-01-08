@@ -13,7 +13,7 @@ namespace te
     extern FXAAParamDef gFXAAParamDef;
 
     /** Shader that performs Fast Approximate anti-aliasing. */
-    class TE_CORE_EXPORT FXAAMat : public RendererMaterial<FXAAMat>
+    class FXAAMat : public RendererMaterial<FXAAMat>
     {
         RMAT_DEF(BuiltinShader::FXAA);
 

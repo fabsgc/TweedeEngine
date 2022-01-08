@@ -1,5 +1,5 @@
 #include "TeSkyboxMat.h"
-#include "TeRendererUtility.h"
+#include "Renderer/TeRendererUtility.h"
 
 namespace te
 {
