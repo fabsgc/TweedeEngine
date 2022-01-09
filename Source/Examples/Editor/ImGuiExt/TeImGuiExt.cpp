@@ -480,6 +480,61 @@ namespace te
                     hasChanged = true;
             }
         }
+        ImGui::Separator();
+
+        // SSAO
+        {
+            if (ImGuiExt::RenderOptionBool(cameraSettings->AmbientOcclusion.Enabled, "##ao_option", "Enable SSAO"))
+                hasChanged = true;
+
+            if (cameraSettings->AmbientOcclusion.Enabled)
+            {
+                // Quality
+                {
+                    static ImGuiExt::ComboOptions<UINT32> ssaoQualityOptions;
+                    if (ssaoQualityOptions.Options.size() == 0)
+                    {
+                        ssaoQualityOptions.AddOption((int)0, "Low");
+                        ssaoQualityOptions.AddOption((int)1, "Medium");
+                        ssaoQualityOptions.AddOption((int)2, "High");
+                        ssaoQualityOptions.AddOption((int)3, "Ultra");
+                    }
+
+                    if (ImGuiExt::RenderOptionCombo<UINT32>(&cameraSettings->AmbientOcclusion.Quality, "##ssao_quality_option", "Quality", ssaoQualityOptions, width))
+                        hasChanged = true;
+                }
+
+                // Radius
+                {
+
+                }
+
+                // Bias 
+                {
+
+                }
+
+                // Fade Distance
+                {
+
+                }
+
+                // Fade Range
+                {
+
+                }
+
+                // Intensity
+                {
+
+                }
+
+                // Power
+                {
+
+                }
+            }
+        }
 
         return hasChanged;
     }

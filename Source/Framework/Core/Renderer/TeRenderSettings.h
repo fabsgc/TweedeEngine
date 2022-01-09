@@ -69,7 +69,7 @@ namespace te
         float Power = 4.0f;
 
         /**
-         * Quality level of generated ambient occlusion. In range [0, 4]. Higher levels yield higher quality AO at the cost
+         * Quality level of generated ambient occlusion. In range [0, 3]. Higher levels yield higher quality AO at the cost
          * of performance.
          */
         UINT32 Quality = 3;
