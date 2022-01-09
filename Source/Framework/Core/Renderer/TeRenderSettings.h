@@ -45,7 +45,7 @@ namespace te
 
         /**
          * Distance (in view space, in meters) after which AO starts fading out. The fade process will happen over the
-         * range as specified by @p fadeRange.
+         * range as specified by @p FadeRange.
          */
         float FadeDistance = 500.0f;
 

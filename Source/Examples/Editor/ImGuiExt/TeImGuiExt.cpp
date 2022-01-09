@@ -506,32 +506,38 @@ namespace te
 
                 // Radius
                 {
-
+                    if (ImGuiExt::RenderOptionFloat(cameraSettings->AmbientOcclusion.Radius, "##ssao_radius_option", "Radius", 0.05f, 5.0f, width))
+                        hasChanged = true;
                 }
 
                 // Bias 
                 {
-
+                    if (ImGuiExt::RenderOptionFloat(cameraSettings->AmbientOcclusion.Bias, "##ssao_bias_option", "Bias", 0.0f, 200.0f, width))
+                        hasChanged = true;
                 }
 
                 // Fade Distance
                 {
-
+                    if (ImGuiExt::RenderOptionFloat(cameraSettings->AmbientOcclusion.FadeDistance, "##ssao_fade_distance_option", "Fade Distance", 0.0f, 5000.0f, width))
+                        hasChanged = true;
                 }
 
                 // Fade Range
                 {
-
+                    if (ImGuiExt::RenderOptionFloat(cameraSettings->AmbientOcclusion.FadeRange, "##ssao_fade_range_option", "Fade Range", 0.0f, 5000.0f, width))
+                        hasChanged = true;
                 }
 
                 // Intensity
                 {
-
+                    if (ImGuiExt::RenderOptionFloat(cameraSettings->AmbientOcclusion.Intensity, "##ssao_intensity_option", "Intensity", 0.02f, 2.0f, width))
+                        hasChanged = true;
                 }
 
                 // Power
                 {
-
+                    if (ImGuiExt::RenderOptionFloat(cameraSettings->AmbientOcclusion.Power, "##ssao_power_option", "Power", 1.0f, 4.0f, width))
+                        hasChanged = true;
                 }
             }
         }
