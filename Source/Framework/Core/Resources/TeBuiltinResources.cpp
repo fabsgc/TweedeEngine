@@ -128,6 +128,26 @@ namespace te
                 InitShaderTransparent();
             shader = _shaderTransparent;
             break;
+        case BuiltinShader::SSAO:
+            if (!_shaderSSAO.IsLoaded())
+                InitShaderSSAO();
+            shader = _shaderSSAO;
+            break;
+        case BuiltinShader::SSAOBlur:
+            if (!_shaderSSAOBlur.IsLoaded())
+                InitShaderSSAOBlur();
+            shader = _shaderSSAOBlur;
+            break;
+        case BuiltinShader::SSAODownSample:
+            if (!_shaderSSAODownSample.IsLoaded())
+                InitShaderSSAODownSample();
+            shader = _shaderSSAODownSample;
+            break;
+        case BuiltinShader::Decal:
+            if (!_shaderDecal.IsLoaded())
+                InitShaderDecal();
+            shader = _shaderDecal;
+            break;
         default:
             TE_ASSERT_ERROR(false, "Can't find \"" + ToString((UINT32)type) + "\" shader.")
             break;
@@ -399,6 +419,86 @@ namespace te
             _pixelShaderBulletDebugDesc.Language = "hlsl";
             _pixelShaderBulletDebugDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
             _pixelShaderBulletDebugDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/SSAO_VS.hlsl"));
+            _vertexShaderSSAODesc.Type = GPT_VERTEX_PROGRAM;
+            _vertexShaderSSAODesc.FilePath = SHADERS_FOLDER + String("HLSL/SSAO_VS.hlsl");
+            _vertexShaderSSAODesc.EntryPoint = "main";
+            _vertexShaderSSAODesc.Language = "hlsl";
+            _vertexShaderSSAODesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
+            _vertexShaderSSAODesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/SSAO_PS.hlsl"));
+            _pixelShaderSSAODesc.Type = GPT_PIXEL_PROGRAM;
+            _pixelShaderSSAODesc.FilePath = SHADERS_FOLDER + String("HLSL/SSAO_PS.hlsl");
+            _pixelShaderSSAODesc.EntryPoint = "main";
+            _pixelShaderSSAODesc.Language = "hlsl";
+            _pixelShaderSSAODesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
+            _pixelShaderSSAODesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/SSAOBlur_VS.hlsl"));
+            _vertexShaderSSAOBlurDesc.Type = GPT_VERTEX_PROGRAM;
+            _vertexShaderSSAOBlurDesc.FilePath = SHADERS_FOLDER + String("HLSL/SSAOBlur_VS.hlsl");
+            _vertexShaderSSAOBlurDesc.EntryPoint = "main";
+            _vertexShaderSSAOBlurDesc.Language = "hlsl";
+            _vertexShaderSSAOBlurDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
+            _vertexShaderSSAOBlurDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/SSAOBlur_PS.hlsl"));
+            _pixelShaderSSAOBlurDesc.Type = GPT_PIXEL_PROGRAM;
+            _pixelShaderSSAOBlurDesc.FilePath = SHADERS_FOLDER + String("HLSL/SSAOBlur_PS.hlsl");
+            _pixelShaderSSAOBlurDesc.EntryPoint = "main";
+            _pixelShaderSSAOBlurDesc.Language = "hlsl";
+            _pixelShaderSSAOBlurDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
+            _pixelShaderSSAOBlurDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/SSAODownSample_VS.hlsl"));
+            _vertexShaderSSAODownSampleDesc.Type = GPT_VERTEX_PROGRAM;
+            _vertexShaderSSAODownSampleDesc.FilePath = SHADERS_FOLDER + String("HLSL/SSAODownSample_VS.hlsl");
+            _vertexShaderSSAODownSampleDesc.EntryPoint = "main";
+            _vertexShaderSSAODownSampleDesc.Language = "hlsl";
+            _vertexShaderSSAODownSampleDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
+            _vertexShaderSSAODownSampleDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/SSAODownSample_PS.hlsl"));
+            _pixelShaderSSAODownSampleDesc.Type = GPT_PIXEL_PROGRAM;
+            _pixelShaderSSAODownSampleDesc.FilePath = SHADERS_FOLDER + String("HLSL/SSAODownSample_PS.hlsl");
+            _pixelShaderSSAODownSampleDesc.EntryPoint = "main";
+            _pixelShaderSSAODownSampleDesc.Language = "hlsl";
+            _pixelShaderSSAODownSampleDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
+            _pixelShaderSSAODownSampleDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/Decal_VS.hlsl"));
+            _vertexShaderDecalDesc.Type = GPT_VERTEX_PROGRAM;
+            _vertexShaderDecalDesc.FilePath = SHADERS_FOLDER + String("HLSL/Decal_VS.hlsl");
+            _vertexShaderDecalDesc.EntryPoint = "main";
+            _vertexShaderDecalDesc.Language = "hlsl";
+            _vertexShaderDecalDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
+            _vertexShaderDecalDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/Decal_PS.hlsl"));
+            _pixelShaderDecalDesc.Type = GPT_PIXEL_PROGRAM;
+            _pixelShaderDecalDesc.FilePath = SHADERS_FOLDER + String("HLSL/Decal_PS.hlsl");
+            _pixelShaderDecalDesc.EntryPoint = "main";
+            _pixelShaderDecalDesc.Language = "hlsl";
+            _pixelShaderDecalDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
+            _pixelShaderDecalDesc.Source = shaderFile.GetAsString();
         }
     }
     void BuiltinResources::InitStates()
@@ -822,6 +922,22 @@ namespace te
 
             _bulletDebugShaderDesc.AddParameter(gInstanceData);
         }
+
+        {
+            // TODO SSAO
+        }
+
+        {
+            // TODO SSAO BLUR
+        }
+
+        {
+            // TODO SSAO DOWN SAMPLE
+        }
+
+        {
+            // TODO DECAL
+        }
     }
 
     void BuiltinResources::InitSamplers()
@@ -1166,7 +1282,6 @@ namespace te
         passDesc.PixelProgramDesc = _pixelShaderBulletDebugDesc;
 
         passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
-        passDesc.RasterizerStateDesc.polygonMode = PolygonMode::PM_SOLID;
 
         HPass pass = Pass::Create(passDesc);
         HTechnique technique = Technique::Create("hlsl", { pass.GetInternalPtr() });
@@ -1177,6 +1292,94 @@ namespace te
         shaderDesc.Techniques.push_back(technique.GetInternalPtr());
 
         _shaderBulletDebug = Shader::Create("BulletDebug", shaderDesc);
+    }
+
+    void BuiltinResources::InitShaderSSAO()
+    {
+        PASS_DESC passDesc;
+        passDesc.BlendStateDesc = _blendOpaqueStateDesc;
+        passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
+        passDesc.RasterizerStateDesc = _rasterizerStateDesc;
+        passDesc.VertexProgramDesc = _vertexShaderSSAODesc;
+        passDesc.PixelProgramDesc = _pixelShaderSSAODesc;
+
+        passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
+
+        HPass pass = Pass::Create(passDesc);
+        HTechnique technique = Technique::Create("hlsl", { pass.GetInternalPtr() });
+        technique->Compile();
+
+        SHADER_DESC shaderDesc = _ssaoShaderDesc;
+        shaderDesc.QueueType = QueueSortType::BackToFront;
+        shaderDesc.Techniques.push_back(technique.GetInternalPtr());
+
+        _shaderSSAO = Shader::Create("SSAO", shaderDesc);
+    }
+
+    void BuiltinResources::InitShaderSSAOBlur()
+    {
+        PASS_DESC passDesc;
+        passDesc.BlendStateDesc = _blendOpaqueStateDesc;
+        passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
+        passDesc.RasterizerStateDesc = _rasterizerStateDesc;
+        passDesc.VertexProgramDesc = _vertexShaderSSAOBlurDesc;
+        passDesc.PixelProgramDesc = _pixelShaderSSAOBlurDesc;
+
+        passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
+
+        HPass pass = Pass::Create(passDesc);
+        HTechnique technique = Technique::Create("hlsl", { pass.GetInternalPtr() });
+        technique->Compile();
+
+        SHADER_DESC shaderDesc = _ssaoBlurShaderDesc;
+        shaderDesc.QueueType = QueueSortType::BackToFront;
+        shaderDesc.Techniques.push_back(technique.GetInternalPtr());
+
+        _shaderSSAO = Shader::Create("SSAO Blur", shaderDesc);
+    }
+
+    void BuiltinResources::InitShaderSSAODownSample()
+    {
+        PASS_DESC passDesc;
+        passDesc.BlendStateDesc = _blendOpaqueStateDesc;
+        passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
+        passDesc.RasterizerStateDesc = _rasterizerStateDesc;
+        passDesc.VertexProgramDesc = _vertexShaderSSAODownSampleDesc;
+        passDesc.PixelProgramDesc = _pixelShaderSSAODownSampleDesc;
+
+        passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
+
+        HPass pass = Pass::Create(passDesc);
+        HTechnique technique = Technique::Create("hlsl", { pass.GetInternalPtr() });
+        technique->Compile();
+
+        SHADER_DESC shaderDesc = _ssaoDownSampleShaderDesc;
+        shaderDesc.QueueType = QueueSortType::BackToFront;
+        shaderDesc.Techniques.push_back(technique.GetInternalPtr());
+
+        _shaderSSAO = Shader::Create("SSAO Down Sample", shaderDesc);
+    }
+
+    void BuiltinResources::InitShaderDecal()
+    {
+        PASS_DESC passDesc;
+        passDesc.BlendStateDesc = _blendOpaqueStateDesc;
+        passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
+        passDesc.RasterizerStateDesc = _rasterizerStateDesc;
+        passDesc.VertexProgramDesc = _vertexShaderDecalDesc;
+        passDesc.PixelProgramDesc = _pixelShaderDecalDesc;
+
+        passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
+
+        HPass pass = Pass::Create(passDesc);
+        HTechnique technique = Technique::Create("hlsl", { pass.GetInternalPtr() });
+        technique->Compile();
+
+        SHADER_DESC shaderDesc = _decalShaderDesc;
+        shaderDesc.QueueType = QueueSortType::BackToFront;
+        shaderDesc.Techniques.push_back(technique.GetInternalPtr());
+
+        _shaderDecal = Shader::Create("Decal", shaderDesc);
     }
 
     void BuiltinResources::InitDefaultMaterial()

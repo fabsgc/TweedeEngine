@@ -9,7 +9,7 @@ namespace te
     class Decal;
 
     /** Default material used for rendering decals, when no other is available. */
-    // TODO
+    class DefaultDecalMat : public RendererMaterial<DefaultDecalMat> { RMAT_DEF(BuiltinShader::Decal); };
 
     /** Determines how is decal blended with the underlying surface. */
     enum class DecalBlendMode

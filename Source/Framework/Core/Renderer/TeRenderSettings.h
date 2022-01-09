@@ -27,6 +27,52 @@ namespace te
 
         /** Enables or disables the screen space ambient occlusion effect. */
         bool Enabled = true;
+
+        /**
+         * Radius (in world space, in meters) over which occluders are searched for. Smaller radius ensures better sampling
+         * precision but can miss occluders. Larger radius ensures far away occluders are considered but can yield lower
+         * quality or noise because of low sampling precision. Usually best to keep at around a meter, valid range
+         * is roughly [0.05, 5.0].
+         */
+        float Radius = 1.5f;
+
+        /**
+         * Bias used to reduce false occlusion artifacts. Higher values reduce the amount of artifacts but will cause
+         * details to be lost in areas where occlusion isn't high. Value is in millimeters. Usually best to keep at a few
+         * dozen millimeters, valid range is roughly [0, 200].
+         */
+        float Bias = 1.0f;
+
+        /**
+         * Distance (in view space, in meters) after which AO starts fading out. The fade process will happen over the
+         * range as specified by @p fadeRange.
+         */
+        float FadeDistance = 500.0f;
+
+        /**
+         * Range (in view space, in meters) in which AO fades out from 100% to 0%. AO starts fading out after the distance
+         * specified in @p fadeDistance.
+         */
+        float FadeRange = 50.0f;
+
+        /**
+         * Linearly scales the intensity of the AO effect. Values less than 1 make the AO effect less pronounced, and vice
+         * versa. Valid range is roughly [0.2, 2].
+         */
+        float Intensity = 1.0f;
+
+        /**
+         * Controls how quickly does the AO darkening effect increase with higher occlusion percent. This is a non-linear
+         * control and will cause the darkening to ramp up exponentially. Valid range is roughly [1, 4], where 1 means no
+         * extra darkening will occur.
+         */
+        float Power = 4.0f;
+
+        /**
+         * Quality level of generated ambient occlusion. In range [0, 4]. Higher levels yield higher quality AO at the cost
+         * of performance.
+         */
+        UINT32 Quality = 3;
     };
 
     /** Base class for both sim and core thread variants of DepthOfFieldSettings. */
@@ -160,12 +206,13 @@ namespace te
     /** Type of output we want */
     enum class TE_CORE_EXPORT RenderOutputType
     {
-        Final = 0x0,
-        Color = 0x1,
-        Velocity = 0x2,
-        Emissive = 0x3,
-        Depth = 0x4,
-        Normal = 0x5
+        Final     = 0x0,
+        Color     = 0x1,
+        Velocity  = 0x2,
+        Emissive  = 0x3,
+        Depth     = 0x4,
+        Normal    = 0x5,
+        SSAO      = 0x6
     };
 
     enum class TE_CORE_EXPORT AntiAliasingAlgorithm

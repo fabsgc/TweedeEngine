@@ -500,6 +500,47 @@ namespace te
         };
     }
 
+    // ############# SCREEN SPACE
+
+    void RCNodeResolvedSceneDepth::Render(const RenderCompositorNodeInputs& inputs)
+    {
+        const RendererViewProperties& viewProps = inputs.View.GetProperties();
+        RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
+
+        if (viewProps.Target.NumSamples > 1)
+        {
+            UINT32 width = viewProps.Target.ViewRect.width;
+            UINT32 height = viewProps.Target.ViewRect.height;
+
+            Output = gGpuResourcePool().Get(
+                POOLED_RENDER_TEXTURE_DESC::Create2D(PF_D32_S8X24, width, height, TU_DEPTHSTENCIL, 1, false));
+
+            RenderAPI& rapi = RenderAPI::Instance();
+            rapi.SetRenderTarget(Output->RenderTex);
+            rapi.ClearRenderTarget(FBT_STENCIL);
+            gRendererUtility().Blit(gpuInitializationPassNode->DepthTex->Tex, Rect2I::EMPTY, false, true);
+        }
+        else
+        {
+            Output = gpuInitializationPassNode->DepthTex;
+        }
+    }
+
+    void RCNodeResolvedSceneDepth::Clear()
+    {
+        Output = nullptr;
+    }
+
+    Vector<String> RCNodeResolvedSceneDepth::GetDependencies(const RendererView& view)
+    {
+        // GBuffer require because it renders the base pass (populates the depth buffer)
+        return { 
+            RCNodeGpuInitializationPass::GetNodeId(),
+            RCNodeForwardPass::GetNodeId(),
+            RCNodeForwardTransparentPass::GetNodeId()
+        };
+    }
+
     // ############# POST PROCESS
 
     void RCNodePostProcess::GetAndSwitch(const RendererView& view, SPtr<RenderTexture>& output, SPtr<Texture>& lastFrame) const
@@ -733,16 +774,34 @@ namespace te
     // ############# SSAO
 
     void RCNodeSSAO::Render(const RenderCompositorNodeInputs& inputs)
-    { }
+    { 
+        /** Maximum valid depth range within samples in a sample set. In meters. */
+        static const float DEPTH_RANGE = 1.0f;
+
+        const AmbientOcclusionSettings& settings = inputs.View.GetRenderSettings().AmbientOcclusion;
+        if (!settings.Enabled)
+        {
+            Output = Texture::WHITE;
+            return;
+        }
+
+        Output = Texture::WHITE; // TODO
+
+        GpuResourcePool& resPool = gGpuResourcePool();
+        const RendererViewProperties& viewProps = inputs.View.GetProperties();
+    }
 
     void RCNodeSSAO::Clear()
-    { }
+    { 
+        Output = nullptr;
+    }
 
     Vector<String> RCNodeSSAO::GetDependencies(const RendererView& view)
     {
         return
         {
             RCNodeGpuInitializationPass::GetNodeId(),
+            RCNodeResolvedSceneDepth::GetNodeId(),
             RCNodePostProcess::GetNodeId()
         };
     }
@@ -837,10 +896,13 @@ namespace te
 
         RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[4]);
         RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
+        RCNodeSSAO* SSAONode = nullptr;
 
         SPtr<Texture> input;
         if (viewProps.RunPostProcessing && viewProps.Target.NumSamples == 1)
         {
+            SSAONode = static_cast<RCNodeSSAO*>(inputs.InputNodes[7]);
+
             switch (inputs.View.GetSceneCamera()->GetRenderSettings()->OutputType)
             {
             case RenderOutputType::Final:
@@ -864,6 +926,12 @@ namespace te
             case RenderOutputType::Emissive:
                 input = gpuInitializationPassNode->EmissiveTex->Tex;
                 break;
+            case RenderOutputType::SSAO:
+                if (viewProps.RunPostProcessing)
+                    input = SSAONode->Output;
+                else
+                    input = gpuInitializationPassNode->SceneTex->Tex;
+                break;
             default:
                 input = postProcessNode->GetLastOutput();
                 break;
@@ -881,7 +949,7 @@ namespace te
         rapi.SetViewport(viewProps.Target.NrmViewRect);
 
         // If no post process is active, the only available texture is orwardPassNode->SceneTex->Tex;
-        if(!input)
+        if (!input)
             input = gpuInitializationPassNode->SceneTex->Tex;
 
         gRendererUtility().Blit(input, Rect2I::EMPTY, viewProps.FlipView, false);
@@ -898,10 +966,13 @@ namespace te
         gRenderer()->SetLastRenderTexture(RenderOutputType::Normal, gpuInitializationPassNode->NormalTex->Tex);
         gRenderer()->SetLastRenderTexture(RenderOutputType::Depth, gpuInitializationPassNode->DepthTex->Tex);
 
-        if(gpuInitializationPassNode->EmissiveTex)
+        if (gpuInitializationPassNode->EmissiveTex)
             gRenderer()->SetLastRenderTexture(RenderOutputType::Emissive, gpuInitializationPassNode->EmissiveTex->Tex);
-        if(gpuInitializationPassNode->VelocityTex)
+        if (gpuInitializationPassNode->VelocityTex)
             gRenderer()->SetLastRenderTexture(RenderOutputType::Velocity, gpuInitializationPassNode->VelocityTex->Tex);
+        if (SSAONode)
+            gRenderer()->SetLastRenderTexture(RenderOutputType::SSAO, SSAONode->Output);
+
     }
 
     void RCNodeFinalResolve::Clear()
@@ -921,6 +992,7 @@ namespace te
             deps.push_back(RCNodePostProcess::GetNodeId());
             deps.push_back(RCNodeFXAA::GetNodeId());
             deps.push_back(RCNodeTemporalAA::GetNodeId());
+            deps.push_back(RCNodeSSAO::GetNodeId());
         }
         else
         {

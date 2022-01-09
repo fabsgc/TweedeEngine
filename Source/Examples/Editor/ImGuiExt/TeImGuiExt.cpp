@@ -269,6 +269,7 @@ namespace te
                 outputTypeOptions.AddOption((int)RenderOutputType::Emissive, "Emissive map");
                 outputTypeOptions.AddOption((int)RenderOutputType::Depth, "Depth map");
                 outputTypeOptions.AddOption((int)RenderOutputType::Normal, "Normal map");
+                outputTypeOptions.AddOption((int)RenderOutputType::SSAO, "SSAO");
             }
 
             if (ImGuiExt::RenderOptionCombo<int>((int*)(&cameraSettings->OutputType), "##output_type_option", "Output type", outputTypeOptions, width))

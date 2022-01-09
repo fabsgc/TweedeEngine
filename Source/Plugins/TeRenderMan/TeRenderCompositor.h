@@ -250,6 +250,26 @@ namespace te
     };
 
     /************************************************************************/
+    /* 							SCREEN SPACE								*/
+    /************************************************************************/
+
+    /** Resolves the depth buffer (if multi-sampled). Otherwise just references the original depth buffer. */
+    class RCNodeResolvedSceneDepth : public RenderCompositorNode
+    {
+    public:
+        SPtr<PooledRenderTexture> Output;
+
+        static String GetNodeId() { return "ResolvedSceneDepth"; }
+        static Vector<String> GetDependencies(const RendererView& view);
+    protected:
+        /** @copydoc RenderCompositorNode::Render */
+        void Render(const RenderCompositorNodeInputs& inputs) override;
+
+        /** @copydoc RenderCompositorNode::Clear */
+        void Clear() override;
+    };
+
+    /************************************************************************/
     /* 							POST PROCESS NODES                			*/
     /************************************************************************/
 
@@ -370,7 +390,7 @@ namespace te
     class RCNodeSSAO : public RenderCompositorNode
     {
     public:
-        SPtr<Texture> output;
+        SPtr<Texture> Output;
 
         static String GetNodeId() { return "SSAO"; }
         static Vector<String> GetDependencies(const RendererView& view);

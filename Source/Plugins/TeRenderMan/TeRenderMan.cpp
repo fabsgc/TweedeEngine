@@ -52,6 +52,7 @@ namespace te
         RenderCompositor::RegisterNodeType<RCNodeTemporalAA>();
         RenderCompositor::RegisterNodeType<RCNodeSSAO>();
         RenderCompositor::RegisterNodeType<RCNodeBloom>();
+        RenderCompositor::RegisterNodeType<RCNodeResolvedSceneDepth>();
         RenderCompositor::RegisterNodeType<RCNodePostProcess>();
         RenderCompositor::RegisterNodeType<RCNodeFinalResolve>();
     }
@@ -395,6 +396,9 @@ namespace te
         case RenderOutputType::Velocity:
             _renderTextures.VelocityTex = renderTexture;
             break;
+        case RenderOutputType::SSAO:
+            _renderTextures.SSAOTex = renderTexture;
+            break;
         }
     }
 
@@ -419,6 +423,9 @@ namespace te
             break;
         case RenderOutputType::Velocity:
             return _renderTextures.VelocityTex;
+            break;
+        case RenderOutputType::SSAO:
+            return _renderTextures.SSAOTex;
             break;
         }
 

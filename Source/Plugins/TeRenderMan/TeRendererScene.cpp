@@ -399,9 +399,7 @@ namespace te
 
         // If no material use the default material
         if (renElement.MaterialElem == nullptr)
-        {
-            // TODO
-        }
+            renElement.MaterialElem = Material::Create(DefaultDecalMat::Get()->GetShader()).GetInternalPtr();
 
         // TODO
     }
@@ -419,9 +417,6 @@ namespace te
         const UINT32 rendererId = decal->GetRendererId();
         Decal* lastDecal = _info.Decals.back().DecalPtr;
         const UINT32 lastDecalId = lastDecal->GetRendererId();
-
-        RendererDecal& rendererDecal = _info.Decals[rendererId];
-        DecalRenderElement& renElement = rendererDecal.Element;
 
         if (rendererId != lastDecalId)
         {

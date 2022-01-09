@@ -47,16 +47,18 @@ namespace te
         HudSelection = 0xD,
         /** Shared used for Bullet physic debug display */
         BulletDebug = 0xE,
-        /** Shader used for material's preview for opaque objects */
-        PreviewOpaque = 0xF,
-        /** Shader used for material's preview for transparent objects */
-        PreviewTransparent = 0x10,
         /** Shader used for ssao */
-        SSAO = 0x11,
+        SSAO = 0xF,
         /** Shader used to blur ssao output */
-        SSAOBlur = 0x12,
+        SSAOBlur = 0x10,
         /** Shader used to downswample ssao input (depth and normal buffer) */
-        SSAODownSample = 0x13
+        SSAODownSample = 0x11,
+        /** Shader used to render decals on top of rendered objects */
+        Decal = 0x12,
+        /** Shader used for material's preview for opaque objects */
+        PreviewOpaque = 0x13,
+        /** Shader used for material's preview for transparent objects */
+        PreviewTransparent = 0x14,
     };
 
     /** Types of builtin shaders that are always available. */
@@ -171,6 +173,10 @@ namespace te
         void InitShaderHudPicking();
         void InitShaderHudSelection();
         void InitShaderBulletDebug();
+        void InitShaderSSAO();
+        void InitShaderSSAOBlur();
+        void InitShaderSSAODownSample();
+        void InitShaderDecal();
 
         void InitDefaultMaterial();
 
@@ -192,6 +198,10 @@ namespace te
         HShader _shaderSelection;
         HShader _shaderHudSelection;
         HShader _shaderBulletDebug;
+        HShader _shaderSSAO;
+        HShader _shaderSSAOBlur;
+        HShader _shaderSSAODownSample;
+        HShader _shaderDecal;
 
         SPtr<SamplerState> _anisotropicSamplerState = nullptr;
         SPtr<SamplerState> _bilinearSamplerState = nullptr;
@@ -208,6 +218,10 @@ namespace te
         SHADER_DESC _pickSelectShaderDesc;
         SHADER_DESC _hudPickSelectShaderDesc;
         SHADER_DESC _bulletDebugShaderDesc;
+        SHADER_DESC _ssaoShaderDesc;
+        SHADER_DESC _ssaoBlurShaderDesc;
+        SHADER_DESC _ssaoDownSampleShaderDesc;
+        SHADER_DESC _decalShaderDesc;
 
         GPU_PROGRAM_DESC _vertexShaderForwardDesc;
         GPU_PROGRAM_DESC _pixelShaderForwardDesc;
@@ -246,6 +260,18 @@ namespace te
 
         GPU_PROGRAM_DESC _vertexShaderPreviewOpaqueDesc;
         GPU_PROGRAM_DESC _pixelShaderPreviewTransparentDesc;
+
+        GPU_PROGRAM_DESC _vertexShaderSSAODesc;
+        GPU_PROGRAM_DESC _pixelShaderSSAODesc;
+
+        GPU_PROGRAM_DESC _vertexShaderSSAOBlurDesc;
+        GPU_PROGRAM_DESC _pixelShaderSSAOBlurDesc;
+
+        GPU_PROGRAM_DESC _vertexShaderSSAODownSampleDesc;
+        GPU_PROGRAM_DESC _pixelShaderSSAODownSampleDesc;
+
+        GPU_PROGRAM_DESC _vertexShaderDecalDesc;
+        GPU_PROGRAM_DESC _pixelShaderDecalDesc;
 
         BLEND_STATE_DESC _blendOpaqueStateDesc;
         BLEND_STATE_DESC _blendTransparentStateDesc;

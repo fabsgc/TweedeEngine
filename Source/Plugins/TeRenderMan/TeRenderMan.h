@@ -28,6 +28,7 @@ namespace te
         SPtr<Texture> DepthTex    = nullptr;
         SPtr<Texture> VelocityTex = nullptr;
         SPtr<Texture> EmissiveTex = nullptr;
+        SPtr<Texture> SSAOTex     = nullptr;
         UnorderedMap<Light*, SPtr<Texture>> LightMaps;
 
         void Clear()
@@ -38,6 +39,7 @@ namespace te
             DepthTex = nullptr;
             VelocityTex = nullptr;
             EmissiveTex = nullptr;
+            SSAOTex = nullptr;
             LightMaps.clear();
         }
     };
