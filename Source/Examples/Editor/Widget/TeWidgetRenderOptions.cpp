@@ -49,11 +49,8 @@ namespace te
                 hasChanged = true;
         }
 
-        if (ImGui::CollapsingHeader("Post processing", ImGuiTreeNodeFlags_DefaultOpen))
-        {
-            if (ImGuiExt::RenderCameraPostProcessing(_currentCamera, cameraSettings, width))
-                hasChanged = true;
-        }
+        if (ImGuiExt::RenderCameraPostProcessing(_currentCamera, cameraSettings, width))
+            hasChanged = true;
 
         if (hasChanged)
         {

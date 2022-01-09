@@ -411,6 +411,7 @@ namespace te
         bool hasChanged = false;
 
         // HDR, ToneMapping
+        if (ImGui::CollapsingHeader("HDR - ToneMapping", ImGuiTreeNodeFlags_DefaultOpen))
         {
             if (ImGuiExt::RenderOptionBool(cameraSettings->EnableHDR, "##hdr_option", "Enable HDR"))
                 hasChanged = true;
@@ -433,9 +434,9 @@ namespace te
             if (ImGuiExt::RenderOptionFloat(cameraSettings->CullDistance, "##cull_distance_option", "Cull distance", 0.0f, 10000.0f, width))
                 hasChanged = true;
         }
-        ImGui::Separator();
 
         // Blur
+        if (ImGui::CollapsingHeader("Blur", ImGuiTreeNodeFlags_DefaultOpen))
         {
             if (ImGuiExt::RenderOptionBool(cameraSettings->MotionBlur.Enabled, "##blur_option", "Enable blur"))
                 hasChanged = true;
@@ -456,9 +457,9 @@ namespace te
                     hasChanged = true;
             }
         }
-        ImGui::Separator();
 
         // Bloom
+        if (ImGui::CollapsingHeader("Bloom", ImGuiTreeNodeFlags_DefaultOpen))
         {
             if (ImGuiExt::RenderOptionBool(cameraSettings->Bloom.Enabled, "##bloom_option", "Enable bloom"))
                 hasChanged = true;
@@ -480,9 +481,9 @@ namespace te
                     hasChanged = true;
             }
         }
-        ImGui::Separator();
 
         // SSAO
+        if (ImGui::CollapsingHeader("SSAO", ImGuiTreeNodeFlags_DefaultOpen))
         {
             if (ImGuiExt::RenderOptionBool(cameraSettings->AmbientOcclusion.Enabled, "##ao_option", "Enable SSAO"))
                 hasChanged = true;
@@ -491,16 +492,16 @@ namespace te
             {
                 // Quality
                 {
-                    static ImGuiExt::ComboOptions<UINT32> ssaoQualityOptions;
+                    static ImGuiExt::ComboOptions<int> ssaoQualityOptions;
                     if (ssaoQualityOptions.Options.size() == 0)
                     {
-                        ssaoQualityOptions.AddOption((int)0, "Low");
-                        ssaoQualityOptions.AddOption((int)1, "Medium");
-                        ssaoQualityOptions.AddOption((int)2, "High");
-                        ssaoQualityOptions.AddOption((int)3, "Ultra");
+                        ssaoQualityOptions.AddOption((int)AmbientOcclusionQuality::Low, "Low");
+                        ssaoQualityOptions.AddOption((int)AmbientOcclusionQuality::Medium, "Medium");
+                        ssaoQualityOptions.AddOption((int)AmbientOcclusionQuality::High, "High");
+                        ssaoQualityOptions.AddOption((int)AmbientOcclusionQuality::Ultra, "Ultra");
                     }
 
-                    if (ImGuiExt::RenderOptionCombo<UINT32>(&cameraSettings->AmbientOcclusion.Quality, "##ssao_quality_option", "Quality", ssaoQualityOptions, width))
+                    if (ImGuiExt::RenderOptionCombo<int>((int*)&cameraSettings->AmbientOcclusion.Quality, "##ssao_quality_option", "Quality", ssaoQualityOptions, width))
                         hasChanged = true;
                 }
 

@@ -6,136 +6,6 @@
 
 namespace te
 {
-    /** Settings that control automatic exposure (eye adaptation) post-process. */
-    struct TE_CORE_EXPORT AutoExposureSettings
-    {
-        AutoExposureSettings() = default;
-    };
-
-    /** Settings that control tonemap post-process. */
-    struct TE_CORE_EXPORT TonemappingSettings
-    {
-        TonemappingSettings() = default;
-
-        bool Enabled = true;
-    };
-
-    /** Settings that control screen space ambient occlusion. */
-    struct TE_CORE_EXPORT AmbientOcclusionSettings
-    {
-        AmbientOcclusionSettings() = default;
-
-        /** Enables or disables the screen space ambient occlusion effect. */
-        bool Enabled = true;
-
-        /**
-         * Radius (in world space, in meters) over which occluders are searched for. Smaller radius ensures better sampling
-         * precision but can miss occluders. Larger radius ensures far away occluders are considered but can yield lower
-         * quality or noise because of low sampling precision. Usually best to keep at around a meter, valid range
-         * is roughly [0.05, 5.0].
-         */
-        float Radius = 1.5f;
-
-        /**
-         * Bias used to reduce false occlusion artifacts. Higher values reduce the amount of artifacts but will cause
-         * details to be lost in areas where occlusion isn't high. Value is in millimeters. Usually best to keep at a few
-         * dozen millimeters, valid range is roughly [0, 200].
-         */
-        float Bias = 1.0f;
-
-        /**
-         * Distance (in view space, in meters) after which AO starts fading out. The fade process will happen over the
-         * range as specified by @p FadeRange.
-         */
-        float FadeDistance = 500.0f;
-
-        /**
-         * Range (in view space, in meters) in which AO fades out from 100% to 0%. AO starts fading out after the distance
-         * specified in @p fadeDistance.
-         */
-        float FadeRange = 50.0f;
-
-        /**
-         * Linearly scales the intensity of the AO effect. Values less than 1 make the AO effect less pronounced, and vice
-         * versa. Valid range is roughly [0.2, 2].
-         */
-        float Intensity = 1.0f;
-
-        /**
-         * Controls how quickly does the AO darkening effect increase with higher occlusion percent. This is a non-linear
-         * control and will cause the darkening to ramp up exponentially. Valid range is roughly [1, 4], where 1 means no
-         * extra darkening will occur.
-         */
-        float Power = 4.0f;
-
-        /**
-         * Quality level of generated ambient occlusion. In range [0, 3]. Higher levels yield higher quality AO at the cost
-         * of performance.
-         */
-        UINT32 Quality = 3;
-    };
-
-    /** Base class for both sim and core thread variants of DepthOfFieldSettings. */
-    struct TE_CORE_EXPORT DepthOfFieldSettings
-    {
-        DepthOfFieldSettings() = default;
-
-        /** Enables or disables the depth of field effect. */
-        bool Enabled = false;
-
-        /**
-         * Distance from the camera at which the focal plane is located in. Objects at this distance will be fully in focus.
-         * In world units (meters).
-         */
-        float FocalDistance = 0.75f;
-
-        /**
-         * Determines the size of the range within which objects transition from focused to fully unfocused, at the near
-         * plane. Only relevant for Gaussian and Bokeh depth of field. In world units (meters).
-         */
-        float NearTransitionRange = 0.25f;
-
-        /**
-         * Determines the size of the range within which objects transition from focused to fully unfocused, at the far
-         * plane. Only relevant for Gaussian and Bokeh depth of field. In world units (meters).
-         */
-        float FarTransitionRange = 0.25f;
-
-        /**
-         * Determines the maximum size of the blur kernel, in percent of view size. Larger values cost more performance.
-         * Only relevant when using Bokeh depth of field.
-         */
-        float MaxBokehSize = 0.025f;
-
-        /**
-         * Determines the maximum color difference between surrounding pixels allowed (as a sum of all channels) before
-         * higher fidelity sampling is triggered. Increasing this value can improve performance as less higher fidelity
-         * samples will be required, but may decrease quality of the effect. Only relevant when using Bokeh depth of
-         * field.
-         */
-        float AdaptiveColorThreshold = 1.0f;
-
-        /**
-         * Determines the minimum circle of confusion size before higher fidelity sampling is triggered. Small values
-         * trigger high fidelity sampling because they can otherwise produce aliasing, and they are small enough so they
-         * don't cost much. Increasing this value can improve performance as less higher fidelity samples will be required,
-         * but may decrease quality of the effect. Only relevant when using Bokeh depth of field.
-         */
-        float AdaptiveRadiusThreshold = 0.1f;
-
-        /** Camera aperture size in mm. Only relevant when using Bokeh depth of field. */
-        float ApertureSize = 50.0f;
-
-        /** Focal length of the camera's lens (e.g. 75mm). Only relevant when using Bokeh depth of field. */
-        float FocalLength = 50.0f;
-
-        /**
-         * Camera sensor width and height, in mm. Used for controlling the size of the circle of confusion. Only relevant
-         * when using Bokeh depth of field.
-         */
-        Vector2 SensorSize = Vector2(22.2f, 14.8f);
-    };
-
     /** Determines which parts of the scene will trigger motion blur. */
     enum class TE_CORE_EXPORT MotionBlurDomain
     {
@@ -203,6 +73,15 @@ namespace te
         High = 0x2
     };
 
+    /** AmbientOcclusion quality. */
+    enum class TE_CORE_EXPORT AmbientOcclusionQuality
+    {
+        Low = 0x0,
+        Medium = 0x1,
+        High = 0x2,
+        Ultra = 0x3
+    };
+
     /** Type of output we want */
     enum class TE_CORE_EXPORT RenderOutputType
     {
@@ -220,6 +99,136 @@ namespace te
         FXAA = 0x0,
         TAA = 0x1,
         None = 0x2
+    };
+
+    /** Settings that control automatic exposure (eye adaptation) post-process. */
+    struct TE_CORE_EXPORT AutoExposureSettings
+    {
+        AutoExposureSettings() = default;
+    };
+
+    /** Settings that control tonemap post-process. */
+    struct TE_CORE_EXPORT TonemappingSettings
+    {
+        TonemappingSettings() = default;
+
+        bool Enabled = true;
+    };
+
+    /** Settings that control screen space ambient occlusion. */
+    struct TE_CORE_EXPORT AmbientOcclusionSettings
+    {
+        AmbientOcclusionSettings() = default;
+
+        /** Enables or disables the screen space ambient occlusion effect. */
+        bool Enabled = true;
+
+        /**
+         * Radius (in world space, in meters) over which occluders are searched for. Smaller radius ensures better sampling
+         * precision but can miss occluders. Larger radius ensures far away occluders are considered but can yield lower
+         * quality or noise because of low sampling precision. Usually best to keep at around a meter, valid range
+         * is roughly [0.05, 5.0].
+         */
+        float Radius = 1.5f;
+
+        /**
+         * Bias used to reduce false occlusion artifacts. Higher values reduce the amount of artifacts but will cause
+         * details to be lost in areas where occlusion isn't high. Value is in millimeters. Usually best to keep at a few
+         * dozen millimeters, valid range is roughly [0, 200].
+         */
+        float Bias = 1.0f;
+
+        /**
+         * Distance (in view space, in meters) after which AO starts fading out. The fade process will happen over the
+         * range as specified by @p FadeRange.
+         */
+        float FadeDistance = 500.0f;
+
+        /**
+         * Range (in view space, in meters) in which AO fades out from 100% to 0%. AO starts fading out after the distance
+         * specified in @p fadeDistance.
+         */
+        float FadeRange = 50.0f;
+
+        /**
+         * Linearly scales the intensity of the AO effect. Values less than 1 make the AO effect less pronounced, and vice
+         * versa. Valid range is roughly [0.2, 2].
+         */
+        float Intensity = 1.0f;
+
+        /**
+         * Controls how quickly does the AO darkening effect increase with higher occlusion percent. This is a non-linear
+         * control and will cause the darkening to ramp up exponentially. Valid range is roughly [1, 4], where 1 means no
+         * extra darkening will occur.
+         */
+        float Power = 4.0f;
+
+        /**
+         * Quality level of generated ambient occlusion. In range [0, 3]. Higher levels yield higher quality AO at the cost
+         * of performance.
+         */
+        AmbientOcclusionQuality Quality = AmbientOcclusionQuality::Ultra;
+    };
+
+    /** Base class for both sim and core thread variants of DepthOfFieldSettings. */
+    struct TE_CORE_EXPORT DepthOfFieldSettings
+    {
+        DepthOfFieldSettings() = default;
+
+        /** Enables or disables the depth of field effect. */
+        bool Enabled = false;
+
+        /**
+         * Distance from the camera at which the focal plane is located in. Objects at this distance will be fully in focus.
+         * In world units (meters).
+         */
+        float FocalDistance = 0.75f;
+
+        /**
+         * Determines the size of the range within which objects transition from focused to fully unfocused, at the near
+         * plane. Only relevant for Gaussian and Bokeh depth of field. In world units (meters).
+         */
+        float NearTransitionRange = 0.25f;
+
+        /**
+         * Determines the size of the range within which objects transition from focused to fully unfocused, at the far
+         * plane. Only relevant for Gaussian and Bokeh depth of field. In world units (meters).
+         */
+        float FarTransitionRange = 0.25f;
+
+        /**
+         * Determines the maximum size of the blur kernel, in percent of view size. Larger values cost more performance.
+         * Only relevant when using Bokeh depth of field.
+         */
+        float MaxBokehSize = 0.025f;
+
+        /**
+         * Determines the maximum color difference between surrounding pixels allowed (as a sum of all channels) before
+         * higher fidelity sampling is triggered. Increasing this value can improve performance as less higher fidelity
+         * samples will be required, but may decrease quality of the effect. Only relevant when using Bokeh depth of
+         * field.
+         */
+        float AdaptiveColorThreshold = 1.0f;
+
+        /**
+         * Determines the minimum circle of confusion size before higher fidelity sampling is triggered. Small values
+         * trigger high fidelity sampling because they can otherwise produce aliasing, and they are small enough so they
+         * don't cost much. Increasing this value can improve performance as less higher fidelity samples will be required,
+         * but may decrease quality of the effect. Only relevant when using Bokeh depth of field.
+         */
+        float AdaptiveRadiusThreshold = 0.1f;
+
+        /** Camera aperture size in mm. Only relevant when using Bokeh depth of field. */
+        float ApertureSize = 50.0f;
+
+        /** Focal length of the camera's lens (e.g. 75mm). Only relevant when using Bokeh depth of field. */
+        float FocalLength = 50.0f;
+
+        /**
+         * Camera sensor width and height, in mm. Used for controlling the size of the circle of confusion. Only relevant
+         * when using Bokeh depth of field.
+         */
+        Vector2 SensorSize = Vector2(22.2f, 14.8f);
     };
 
     /** Settings that control the motion blur effect. */
