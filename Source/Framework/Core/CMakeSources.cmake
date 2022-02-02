@@ -254,12 +254,14 @@ set (TE_CORE_INC_MATERIAL
     "Core/Material/TeMaterial.h"
     "Core/Material/TeTechnique.h"
     "Core/Material/TePass.h"
+    "Core/Material/TeShaderVariation.h"
 )
 set (TE_CORE_SRC_MATERIAL
     "Core/Material/TeShader.cpp"
     "Core/Material/TeMaterial.cpp"
     "Core/Material/TeTechnique.cpp"
     "Core/Material/TePass.cpp"
+    "Core/Material/TeShaderVariation.cpp"
 )
 
 set (TE_CORE_INC_SERIALIZATION

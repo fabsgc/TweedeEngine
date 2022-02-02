@@ -25,6 +25,11 @@ namespace te
         GPU_PROGRAM_DESC ComputeProgramDesc;
     };
 
+    /**
+     * Class defining a single pass of a technique (of a material). Pass may contain multiple GPU programs (vertex,
+     * fragment, geometry, etc.), and a set of pipeline states (blend, rasterizer, etc.). When initially created the pass
+     * is in its uncompiled state. It needs to be explicitly compiled by calling compile() before use.
+     */
     class TE_CORE_EXPORT Pass : public Resource
     {
     public:

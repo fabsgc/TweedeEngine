@@ -6,6 +6,7 @@
 #include "RenderAPI/TeGpuBuffer.h"
 #include "Math/TeVector2.h"
 #include "Image/TeColor.h"
+#include "TeShaderVariation.h"
 
 #include <atomic>
 
@@ -20,6 +21,39 @@ namespace te
         ParamResource		= 1 << 1,
         /** Material shader has changed. */
         Shader				= 2 << 2
+    };
+
+    /** Structure used when searching for a specific technique in a Material. */
+    struct FIND_TECHNIQUE_DESC
+    {
+        static constexpr UINT32 MAX_NUM_TAGS = 10;
+
+        /** A set of tags that the technique must have. */
+        StringID Tags[MAX_NUM_TAGS];
+
+        /** Number of valid tags in the @p tags array. */
+        UINT32 NumTags = 0;
+
+        /** Specified variation of the technique. Parameters not specified in the variation are assumed to be irrelevant. */
+        const ShaderVariation* Variation = nullptr;
+
+        /**
+         * Determines should the parameters in @p variation override any parameters that might have been defined on the
+         * Material itself. If false then you are guaranteed to search only over the subset of techniques that match the
+         * Material's internal variaton parameters. If true then you can search outside that range by setting a variation
+         * parameter to some different value. Overriding can be useful for renderers which might need to override the user's
+         * choice of variation.
+         */
+        bool override = false;
+
+        /** Registers a new tag to look for when searching for the technique. */
+        void AddTag(const StringID& tag)
+        {
+            TE_ASSERT_ERROR_SHORT(NumTags < MAX_NUM_TAGS);
+
+            Tags[NumTags] = tag;
+            NumTags++;
+        }
     };
 
     struct MaterialProperties
@@ -161,14 +195,40 @@ namespace te
          */
         void SetShader(const SPtr<Shader>& shader);
 
+        /**
+         * Set of parameters that determine which subset of techniques in the assigned shader should be used. Only the
+         * techniques that have the provided parameters with the provided values will match. This will control which
+         * technique is considered the default technique and which subset of techniques are searched during a call to
+         * findTechnique().
+         */
+        void SetVariation(const ShaderVariation& variation);
+
         /** Returns the currently active shader. */
         SPtr<Shader> GetShader() const { return _shader; } 
+
+        /**
+         * Set of parameters that determine which subset of techniques in the assigned shader should be used. Only the
+         * techniques that have the provided parameters with the provided values will match. This will control which
+         * technique is considered the default technique and which subset of techniques are searched during a call to
+         * findTechnique().
+         */
+        const ShaderVariation& GetVariation() const { return _variation; }
 
         /** Returns the total number of techniques supported by this material. */
         UINT32 GetNumTechniques() const;
 
         /** Returns the technique at the specified index. */
         const SPtr<Technique>& GetTechnique(UINT32 idx) const;
+
+        /**
+         * Attempts to find a technique matching the specified variation and tags among the supported techniques.
+         *
+         * @param[in]	desc				Object containing an optional set of tags and a set of variation parameters to
+         *									look for.
+         * @return							First technique that matches the tags & variation parameters specified in
+         *									@p desc.
+         */
+        UINT32 FindTechnique(const FIND_TECHNIQUE_DESC& desc) const;
 
         /**
          * Finds the index of the default (primary) technique to use. This will be the first technique that matches the
@@ -224,11 +284,17 @@ namespace te
 
         /** Assigns a value to an arbitrary constant buffer parameter. */
         template <typename T>
-        void SetParam(const String& name, T& data)
+        void SetParam(const String& name, T& data, GpuProgramType programType = GpuProgramType::GPT_COUNT)
         {
             ParamData param;
+            auto it = _params.find(name);
+
+            if (it != _params.end())
+                te_deallocate(it->second.Param);
+
             param.Param = te_allocate<T>(sizeof(T));
             param.Size = sizeof(T);
+            param.ProgramType = programType;
             memcpy(param.Param, &data, param.Size);
 
             _params[name] = param;
@@ -300,12 +366,14 @@ namespace te
         {
             void* Param;
             size_t Size;
+            GpuProgramType ProgramType;
         };
 
     protected:
         UINT32 _id;
         SPtr<Shader> _shader;
         Vector<SPtr<Technique>> _techniques;
+        ShaderVariation _variation;
 
         UnorderedMap<String, SPtr<TextureData>> _textures;
         UnorderedMap<String, SPtr<TextureData>> _loadStoreTextures;

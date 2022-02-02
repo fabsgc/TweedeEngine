@@ -100,6 +100,7 @@ namespace te
         _materialMonkey->SetTexture("DiffuseMap", _loadedTextureMonkey);
         _materialMonkey->SetSamplerState("TextureSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
         _materialMonkey->SetProperties(properties);
+        UINT32 value = 1;
         // ######################################################
 
         // ######################################################

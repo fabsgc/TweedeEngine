@@ -31,13 +31,13 @@ namespace te
         static String GetFileExtension(const String& filePath);
 
         /** Generates an MD5 hash string for the provided source string. */
-        String Md5(const WString& source);
+        static String Md5(const WString& source);
 
         /**	Generates an MD5 hash string for the provided source string. */
-        String Md5(const String& source);
+        static String Md5(const String& source);
 
         /** Get current time and date into a char array */
-        void GetTime(char* buffer);
+        static void GetTime(char* buffer);
 
         /**
          * Returns a vector of strings containing all the substrings delimited by the provided delimiter characters.

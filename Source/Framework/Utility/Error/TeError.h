@@ -63,7 +63,6 @@
                                                                                                         \
             std::cout << "Assertion failed at " << __FILENAME__ << ":" << __LINE__ << ::std::endl;      \
             std::cout << "Inside " << __FUNCTION__ << std::endl;                                        \
-            std::cout << "Message: " << error << std::endl;                                             \
             std::cout << "############################################: " << std::endl;                 \
             TE_ASSERT_ERROR_ERROR(condition);                                                           \
         }                                                                                               \

@@ -14,7 +14,6 @@ namespace te
         SHADER_PARAM_COMMON(String name, String gpuVariableName, String rendererSemantic = "")
             : Name(std::move(name))
             , GpuVariableName(gpuVariableName)
-            , RendererSemantic(rendererSemantic)
         { }
 
         /** The name of the parameter. Name must be unique between all data and object parameters in a shader. */
@@ -23,20 +22,11 @@ namespace te
         /** Name of the GPU variable in the GpuProgram that the parameter corresponds with. */
         String GpuVariableName;
 
-        /**
-         * Optional semantic that allows you to specify the use of this parameter in the renderer. The actual value of the
-         * semantic depends on the current Renderer and its supported list of semantics. Elements with renderer semantics
-         * should not be updated by the user, and will be updated by the renderer. These semantics will also be used to
-         * determine if a shader is compatible with a specific renderer or not. Value of 0 signifies the parameter is not
-         * used by the renderer.
-         */
-        String RendererSemantic;
-
         /** Index of the default value inside the Shader. Should not be set externally by the user. */
-        UINT32 DefaultValueIdx = (UINT32)-1;
+        UINT32 DefaultValueIdx = static_cast<UINT32>(-1);
 
         /** Index to a set of optional attributes attached to the parameter. Should not be set externally by the user. */
-        UINT32 AttributeIdx = (UINT32)-1;
+        UINT32 AttributeIdx = static_cast<UINT32>(-1);
     };
 
     /**
@@ -95,8 +85,33 @@ namespace te
     {
         String Name;
         bool Shared;
-        String RendererSemantic;
         GpuBufferUsage Usage;
+    };
+
+    /** Represents a single potential value of a shader variation parameter and optionally its name. */
+    struct ShaderVariationParamValue
+    {
+        /** Optional human-readable name describing what this particular value represents. */
+        String Name;
+
+        /** Integer value of the parameter. */
+        INT32 Value = 0;
+    };
+
+    /** Represents a single shader variation parameter and a set of all possible values. */
+    struct ShaderVariationParamInfo
+    {
+        /** Optional human-readable name describing the variation parameter. */
+        String Name;
+
+        /** BSL identifier for the parameter. */
+        String Identifier;
+
+        /** True if the parameter is for internal use by the renderer, and false if its intended to be set by the user. */
+        bool IsInternal = true;
+
+        /** A list of potential values this parameter can take on. */
+        Vector<ShaderVariationParamValue> values;
     };
 
     struct TE_CORE_EXPORT SHADER_DESC
@@ -193,6 +208,12 @@ namespace te
         /** Techniques to initialize the shader with. */
         Vector<SPtr<Technique>> Techniques;
 
+        /**
+         * Information about all variation parameters and their possible values. Each permutation of variation parameters
+         * represents a separate shader technique.
+         */
+        Vector<ShaderVariationParamInfo> VariationParams;
+
         Map<String, SHADER_DATA_PARAM_DESC> DataParams;
         Map<String, SHADER_OBJECT_PARAM_DESC> TextureParams;
         Map<String, SHADER_OBJECT_PARAM_DESC> BufferParams;
@@ -259,8 +280,27 @@ namespace te
         /** Returns the list of all supported techniques based on current render API and renderer. */
         Vector<SPtr<Technique>> GetCompatibleTechniques() const;
 
+        /**
+         * Returns the list of all supported techniques based on current render API and renderer, and limits the techniques
+         * to only those implementing the specified variation.
+         *
+         * @param[in]		variation	Object containing variation parameters to compare to technique variation.
+         * @param[in]		exact		When true the technique variation needs to have the exact number of parameters with
+         *								identical contents to the provided variation. When false, only the provided subset
+         *								of parameters is used for comparison, while any extra parameters present in
+         *								the technique are not compared.
+         */
+        Vector<SPtr<Technique>> GetCompatibleTechniques(const ShaderVariation& variation, bool exact) const;
+
+
         /** Returns a list of all techniques in this shader. */
         const Vector<SPtr<Technique>>& GetTechniques() const { return _desc.Techniques; }
+
+        /**
+         * Returns the list of all variation parameters supported by this shader, possible values of each parameter and
+         * other meta-data.
+         */
+        const Vector<ShaderVariationParamInfo> GetVariationParams() const { return _desc.VariationParams; }
 
         /**	Creates a new shader resource using the provided descriptor and techniques. */
         static HShader Create(const String& name, const SHADER_DESC& desc);

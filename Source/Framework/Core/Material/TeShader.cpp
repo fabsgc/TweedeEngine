@@ -1,4 +1,7 @@
 #include "Material/TeShader.h"
+
+#include "Material/TeTechnique.h"
+#include "Material/TeShaderVariation.h"
 #include "Resources/TeResourceManager.h"
 #include "RenderAPI/TeSamplerState.h"
 #include "RenderAPI/TeGpuParams.h"
@@ -95,7 +98,7 @@ namespace te
             SHADER_OBJECT_PARAM_DESC& desc = iterFind->second;
 
             // If same name but different properties, we ignore this param
-            if (desc.Type != paramDesc.Type || desc.RendererSemantic != paramDesc.RendererSemantic)
+            if (desc.Type != paramDesc.Type)
                 return;
 
             Vector<String>& gpuVariableNames = desc.GpuVariableNames;
@@ -148,7 +151,27 @@ namespace te
 
     Vector<SPtr<Technique>> Shader::GetCompatibleTechniques() const
     {
-        return _desc.Techniques;
+        Vector<SPtr<Technique>> output;
+        for (auto& technique : _desc.Techniques)
+        {
+            if (technique->IsSupported())
+                output.push_back(technique);
+        }
+
+        return output;
+    }
+
+    Vector<SPtr<Technique>> Shader::GetCompatibleTechniques(
+        const ShaderVariation& variation, bool exact) const
+    {
+        Vector<SPtr<Technique>> output;
+        for (auto& technique : _desc.Techniques)
+        {
+            if (technique->IsSupported() && technique->GetVariation().Matches(variation, exact))
+                output.push_back(technique);
+        }
+
+        return output;
     }
 
     GpuParamType Shader::GetParamType(const String& name) const

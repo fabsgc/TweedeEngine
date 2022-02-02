@@ -4,6 +4,7 @@
 #include "TeD3D11HLSLParamParser.h"
 #include "RenderAPI/TeGpuParamDesc.h"
 #include "Utility/TeDataStream.h"
+#include "Utility/TeUtility.h"
 #include <regex>
 
 namespace te
@@ -127,22 +128,12 @@ namespace te
         bool openMicroCode = false;
 
         std::filesystem::path compiledShaderPath = std::filesystem::current_path();
-        compiledShaderPath.append("Shader_" + std::filesystem::path(desc.FilePath).filename().generic_string() + ".blob");
+        compiledShaderPath.append("Shader_" + Util::Md5(desc.Source) + ".blob");
 
         if (std::filesystem::exists(compiledShaderPath) && desc.FilePath != "")
         {
-            /*auto sourcePathTime = std::filesystem::last_write_time(desc.FilePath);
-            auto compiledPathTime = std::filesystem::last_write_time(compiledShaderPath);
-
-            if (sourcePathTime <= compiledPathTime)
-                openMicroCode = true;*/
-
-            openMicroCode = true; // Builtin shader are update at each build, code above does not work well
-        }
-
-        if (openMicroCode)
-        {
             microcode = OpenMicroCode(compiledShaderPath);
+            openMicroCode = true;
         }
 
         if (!microcode)
