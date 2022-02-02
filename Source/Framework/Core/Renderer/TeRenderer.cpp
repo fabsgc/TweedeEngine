@@ -20,6 +20,6 @@ namespace te
 
     SPtr<Renderer> gRenderer()
     {
-        return std::static_pointer_cast<Renderer>(RendererManager::Instance().GetRenderer());
+        return RendererManager::Instance().GetRenderer();
     }
 }

@@ -7,23 +7,15 @@
 namespace te
 {
     Pass::Pass()
-        : Resource(TID_Pass)
+        : Serializable(TID_Pass)
     {
         _data.StencilRefValue = 0;
     }
 
     Pass::Pass(const PASS_DESC& desc)
-        : Resource(TID_Pass)
+        : Serializable(TID_Pass)
         , _data(desc)
     { }
-
-    Pass::~Pass()
-    { }
-
-    void Pass::Initialize()
-    {
-        CoreObject::Initialize();
-    }
 
     bool Pass::HasBlending() const
     {
@@ -109,15 +101,7 @@ namespace te
         MarkCoreDirty();
     }
 
-    HPass Pass::Create(const PASS_DESC& desc)
-    {
-        const SPtr<Pass> passPtr = CreatePtr(desc);
-        passPtr->Initialize();
-
-        return static_resource_cast<Pass>(gResourceManager()._createResourceHandle(passPtr));
-    }
-
-    SPtr<Pass> Pass::CreatePtr(const PASS_DESC& desc)
+    SPtr<Pass> Pass::Create(const PASS_DESC& desc)
     {
         Pass* newPass = new (te_allocate<Pass>()) Pass(desc);
         SPtr<Pass> newPassPtr = te_core_ptr<Pass>(newPass);

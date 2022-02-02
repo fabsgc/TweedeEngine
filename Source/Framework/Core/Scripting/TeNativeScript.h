@@ -20,7 +20,7 @@ namespace te
     /**
      * A native script is the base class of all scripts that can be written, loaded and executed inside the engine
      */
-    class TE_CORE_EXPORT NativeScript : public Serializable
+    class TE_CORE_EXPORT NativeScript : public Serializable, public NonCopyable
     {
     public:
         NativeScript();

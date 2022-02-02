@@ -10,21 +10,12 @@
 namespace te
 {
     Technique::Technique()
-        : Resource(TID_Technique)
-        , _variation(ShaderVariation::EMPTY)
+        : Serializable(TID_Technique)
     { }
-
-    Technique::~Technique()
-    { }
-
-    void Technique::Initialize()
-    {
-        CoreObject::Initialize();
-    }
 
     Technique::Technique(const String& language, const Vector<StringID>& tags, 
         const ShaderVariation& variation, const Vector<SPtr<Pass>>& passes)
-        : Resource(TID_Technique)
+        : Serializable(TID_Technique)
         , _language(language)
         , _tags(tags)
         , _variation(variation)
@@ -64,26 +55,9 @@ namespace te
         return _passes[idx];
     }
 
-    HTechnique Technique::Create(const String& language, const Vector<SPtr<Pass>>& passes)
+    SPtr<Technique> Technique::Create(const String& language, const Vector<SPtr<Pass>>& passes)
     {
-        const SPtr<Technique> techniquePtr = CreatePtr(language, passes);
-        techniquePtr->Initialize();
-
-        return static_resource_cast<Technique>(gResourceManager()._createResourceHandle(techniquePtr));
-    }
-
-    HTechnique Technique::Create(const String& language, const Vector<StringID>& tags,
-        const ShaderVariation& variation, const Vector<SPtr<Pass>>& passes)
-    {
-        const SPtr<Technique> techniquePtr = CreatePtr(language, passes);
-        techniquePtr->Initialize();
-
-        return static_resource_cast<Technique>(gResourceManager()._createResourceHandle(techniquePtr));
-    }
-
-    SPtr<Technique> Technique::CreatePtr(const String& language, const Vector<SPtr<Pass>>& passes)
-    {
-        Technique* technique = new (te_allocate<Technique>()) Technique(language, {}, ShaderVariation::EMPTY, passes);
+        Technique* technique = new (te_allocate<Technique>()) Technique(language, {}, ShaderVariation(), passes);
         SPtr<Technique> techniquePtr = te_core_ptr<Technique>(technique);
         techniquePtr->SetThisPtr(techniquePtr);
         techniquePtr->Initialize();
@@ -91,7 +65,7 @@ namespace te
         return techniquePtr;
     }
 
-    SPtr<Technique> Technique::CreatePtr(const String& language, const Vector<StringID>& tags,
+    SPtr<Technique> Technique::Create(const String& language, const Vector<StringID>& tags,
         const ShaderVariation& variation, const Vector<SPtr<Pass>>& passes)
     {
         Technique* technique = new (te_allocate<Technique>()) Technique(language, tags, variation, passes);

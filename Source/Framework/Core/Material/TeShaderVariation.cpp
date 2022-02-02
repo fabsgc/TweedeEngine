@@ -22,8 +22,6 @@ namespace te
         _defines[name] = value;
     }
 
-    const ShaderVariation ShaderVariation::EMPTY;
-
     ShaderVariation::ShaderVariation()
         : Serializable(TID_ShaderVariation)
     { }

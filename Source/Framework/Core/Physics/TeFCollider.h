@@ -1,8 +1,9 @@
 #pragma once
 
-#include "Physics/TePhysicsCommon.h"
-#include "Math/TeVector3.h"
+#include "TeCorePrerequisites.h"
 #include "Math/TeQuaternion.h"
+#include "Math/TeVector3.h"
+#include "Serialization/TeSerializable.h"
 
 namespace te
 {

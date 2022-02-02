@@ -42,7 +42,7 @@ namespace te
     };
 
     /**	Base class for all RendererMaterial instances, containing common data and methods. */
-    class TE_CORE_EXPORT RendererMaterialBase
+    class TE_CORE_EXPORT RendererMaterialBase : public NonCopyable
     {
     public:
         virtual ~RendererMaterialBase() = default;

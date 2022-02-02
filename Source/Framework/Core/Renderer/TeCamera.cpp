@@ -11,7 +11,8 @@ namespace te
     const float Camera::INFINITE_FAR_PLANE_ADJUST = 0.00001f;
 
     Camera::Camera(SPtr<RenderTarget> target, float left, float top, float width, float height)
-        : _cameraFlags(0)
+        : Serializable(TID_Camera)
+        , _cameraFlags(0)
         , _needComputeFrustum(true)
         , _needComputeFrustumPlanes(true)
         , _needComputeView(true)
@@ -23,7 +24,8 @@ namespace te
     }
 
     Camera::Camera(const SPtr<Viewport>& viewport)
-        : _cameraFlags(0)
+        : Serializable(TID_Camera)
+        , _cameraFlags(0)
         , _needComputeFrustum(true)
         , _needComputeFrustumPlanes(true)
         , _needComputeView(true) 

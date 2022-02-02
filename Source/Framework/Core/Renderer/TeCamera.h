@@ -13,6 +13,7 @@
 #include "Math/TeQuaternion.h"
 #include "Math/TeRay.h"
 #include "Math/TeConvexVolume.h"
+#include "Serialization/TeSerializable.h"
 
 namespace te
 {
@@ -39,7 +40,7 @@ namespace te
      * Camera determines how is world geometry projected onto a 2D surface. You may position and orient it in space, set
      * options like aspect ratio and field or view and it outputs view and projection matrices required for rendering.
      */
-    class TE_CORE_EXPORT Camera : public SceneActor, public CoreObject
+    class TE_CORE_EXPORT Camera : public CoreObject, public SceneActor, public Serializable
     {
     public:
         ~Camera();

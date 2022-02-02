@@ -31,6 +31,6 @@ namespace te
     private:
         UINT64 _nextAvailableID;
         UnorderedMap<UINT64, CoreObject*> _objects;
-        UnorderedMap<UINT64, CoreObject*> _dirtyObjects;
+        Map<UINT64, CoreObject*> _dirtyObjects;
     };
 }

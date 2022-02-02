@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Physics/TePhysicsCommon.h"
+#include "TeCorePrerequisites.h"
+#include "Serialization/TeSerializable.h"
 
 namespace te
 {

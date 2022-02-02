@@ -27,7 +27,7 @@ namespace te
         PNTU = Position | Normal | Tangent | BiTangent | UV0,
     };
 
-    class TE_CORE_EXPORT RendererMeshData
+    class TE_CORE_EXPORT RendererMeshData : public NonCopyable
     {
     public:
         /**

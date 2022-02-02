@@ -59,12 +59,12 @@ namespace te
         if (_dirtyObjects.size() == 0)
             return;
 
-        auto it = _dirtyObjects.begin();
-        while (it != _dirtyObjects.end())
+        for (auto& object : _dirtyObjects)
         {
-            it->second->FrameSync();
-            it->second->MarkCoreClean();
-            _dirtyObjects.erase(it++);
+            object.second->FrameSync();
+            object.second->MarkCoreClean();
         }
+
+        _dirtyObjects.clear();
     }
 }

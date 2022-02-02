@@ -17,16 +17,10 @@ namespace te
      * For example, if you are supporting DirectX11 and OpenGL you will want to have two techniques, one using HLSL based
      * GPU programs, other using GLSL. Those techniques should try to mirror each other's end results.
      */
-    class TE_CORE_EXPORT Technique : public Resource
+    class TE_CORE_EXPORT Technique : public CoreObject, public Serializable, public NonCopyable
     {
     public:
-        virtual ~Technique();
-
-        /** @copydoc CoreObject::Initialize */
-        void Initialize() override;
-
-        /**  @copydoc Resource::GetResourceType */
-        static UINT32 GetResourceType() { return TypeID_Core::TID_Technique; }
+        virtual ~Technique() = default;
 
         /**	Checks if this technique is supported based on current render and other systems. */
         bool IsSupported() const;
@@ -57,7 +51,7 @@ namespace te
          * @param[in]	passes		A set of passes that define the technique.
          * @return					Newly creted technique.
          */
-        static HTechnique Create(const String& language, const Vector<SPtr<Pass>>& passes);
+        static SPtr<Technique> Create(const String& language, const Vector<SPtr<Pass>>& passes);
 
         /**
          * Creates a new technique.
@@ -71,14 +65,7 @@ namespace te
          * @param[in]	passes		A set of passes that define the technique.
          * @return					Newly creted technique.
          */
-        static HTechnique Create(const String& language, const Vector<StringID>& tags,
-            const ShaderVariation& variation, const Vector<SPtr<Pass>>& passes);
-
-        /** @copydoc Technique::Create(const String&, const Vector<SPtr<Pass>>&) */
-        static SPtr<Technique> CreatePtr(const String& language, const Vector<SPtr<Pass>>& passes);
-
-        /** @copydoc Technique::Create(const String&, const Vector<StringID>&, const ShaderVariation&, const Vector<SPtr<Pass>>&) */
-        static SPtr<Technique> CreatePtr(const String& language, const Vector<StringID>& tags,
+        static SPtr<Technique> Create(const String& language, const Vector<StringID>& tags,
             const ShaderVariation& variation, const Vector<SPtr<Pass>>& passes);
 
         /**	Creates a new technique but doesn't initialize it. */

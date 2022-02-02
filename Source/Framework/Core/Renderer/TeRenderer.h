@@ -30,7 +30,7 @@ namespace te
         SPtr<RenderTarget> CurrentTarget;
     };
 
-    class TE_CORE_EXPORT Renderer
+    class TE_CORE_EXPORT Renderer : public NonCopyable
     {
     public:
         Renderer();

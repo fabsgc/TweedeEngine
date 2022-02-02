@@ -30,13 +30,10 @@ namespace te
      * fragment, geometry, etc.), and a set of pipeline states (blend, rasterizer, etc.). When initially created the pass
      * is in its uncompiled state. It needs to be explicitly compiled by calling compile() before use.
      */
-    class TE_CORE_EXPORT Pass : public Resource
+    class TE_CORE_EXPORT Pass : public CoreObject, public Serializable, public NonCopyable
     {
     public:
-        virtual ~Pass();
-
-        /** @copydoc CoreObject::Initialize */
-        void Initialize() override;
+        virtual ~Pass() = default;
 
         /**  @copydoc Resource::GetResourceType */
         static UINT32 GetResourceType() { return TypeID_Core::TID_Pass; }
@@ -82,10 +79,7 @@ namespace te
         void Compile();
 
         /**	Creates a new empty pass. */
-        static HPass Create(const PASS_DESC& desc);
-
-        /** @copydoc Pass::Create */
-        static SPtr<Pass> CreatePtr(const PASS_DESC& desc);
+        static SPtr<Pass> Create(const PASS_DESC& desc);
 
         /**	Creates a new empty pass but doesn't initialize it. */
         static SPtr<Pass> CreateEmpty();

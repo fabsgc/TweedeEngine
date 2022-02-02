@@ -147,6 +147,7 @@ namespace te
         TID_ShaderVariationParam      = 1092,
         TID_ShaderVariationParamInfo  = 1093,
         TID_ShaderVariationParamValue = 1094,
+        TID_Camera                    = 1095
     };
 }
 
@@ -303,7 +304,6 @@ namespace te
     struct MaterialProperties;
     class Technique;
     class Pass;
-    class ShaderVariation;
 
     class Serializable;
 
@@ -424,8 +424,6 @@ namespace te
     class PickingMat;
 }
 
-#include "Utility/TeNonCopyable.h"
-#include "Serialization/TeSerializable.h"
 #include "RenderAPI/TeCommonTypes.h"
 #include "Resources/TeResourceHandle.h"
 
@@ -433,8 +431,6 @@ namespace te
 {
     typedef ResourceHandle<Resource> HResource;
     typedef ResourceHandle<Material> HMaterial;
-    typedef ResourceHandle<Technique> HTechnique;
-    typedef ResourceHandle<Pass> HPass;
     typedef ResourceHandle<Texture> HTexture;
     typedef ResourceHandle<Shader> HShader;
     typedef ResourceHandle<Mesh> HMesh;

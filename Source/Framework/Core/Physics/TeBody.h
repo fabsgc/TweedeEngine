@@ -35,7 +35,7 @@ namespace te
     /**
      * Base class for all Body types such as RigidBody and SoftBody
      */
-    class TE_CORE_EXPORT Body : public CoreObject, public Serializable
+    class TE_CORE_EXPORT Body : public CoreObject, public Serializable, public NonCopyable
     {
     public:
         /** Allows to be able to update body state */

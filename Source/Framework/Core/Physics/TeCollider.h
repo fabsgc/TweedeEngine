@@ -16,7 +16,7 @@ namespace te
      *  - Static geometry that physics objects can collide with.
      *  - Static geometry that can't be collided with but will report touch events.
      */
-    class TE_CORE_EXPORT Collider : public CoreObject, public Serializable
+    class TE_CORE_EXPORT Collider : public CoreObject, public Serializable, public NonCopyable
     {
     public:
         virtual ~Collider() = default;

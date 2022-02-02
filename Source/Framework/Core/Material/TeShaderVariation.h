@@ -163,9 +163,6 @@ namespace te
 
         bool operator==(const ShaderVariation& rhs) const;
 
-        /** Empty variation with no parameters. */
-        static const ShaderVariation EMPTY;
-
         /**
          * @name Internal
          * @{
@@ -177,10 +174,10 @@ namespace te
         /**
          * Returns a unique index of this variation, relative to all other variations registered in ShaderVariations object.
          */
-        UINT32 getIdx() const { return _idx; }
+        UINT32 GetIdx() const { return _idx; }
 
         /** Assigns a unique index to the variation that can later be used for quick lookup. */
-        void setIdx(UINT32 idx) const { _idx = idx; }
+        void SetIdx(UINT32 idx) const { _idx = idx; }
 
         /** @} */
     private:

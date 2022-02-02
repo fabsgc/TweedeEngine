@@ -2,6 +2,7 @@
 
 #include "TeCorePrerequisites.h"
 #include "Resources/TeResource.h"
+#include "Material/TeShaderVariation.h"
 
 #include <atomic>
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
+#include "Serialization/TeSerializable.h"
 
 namespace te
 {

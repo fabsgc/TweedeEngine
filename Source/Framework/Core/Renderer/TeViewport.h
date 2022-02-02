@@ -8,7 +8,7 @@
 namespace te
 {
     /** Common base type used for both sim and core thread variants of Viewport. */
-    class TE_CORE_EXPORT ViewportBase
+    class TE_CORE_EXPORT ViewportBase : public NonCopyable
     {
     public:
         virtual ~ViewportBase() = default;
