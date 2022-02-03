@@ -560,6 +560,7 @@ namespace te
 
         EditorResManager::Instance().Remove<Material>(handle);
         material = nullptr;
+        _currentMaterial = nullptr;
         gEditor().NeedsRedraw();
     }
 }

@@ -26,13 +26,9 @@ namespace te
         // TODO
     }
 
-    void RendererDecal::UpdatePerCallBuffer(const Matrix4& viewProj, bool flush) const
+    void RendererDecal::UpdatePerCallBuffer(const Matrix4& viewProj) const
     {
         const Matrix4 worldViewProjMatrix = viewProj * DecalPtr->GetMatrix();
-
         gPerCallParamDef.gMatWorldViewProj.Set(PerCallParamBuffer, worldViewProjMatrix);
-
-        if (flush)
-            PerCallParamBuffer->FlushToGPU();
     }
 }

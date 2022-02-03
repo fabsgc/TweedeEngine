@@ -347,12 +347,12 @@ namespace te
 
     SPtr<RendererMeshData> RendererMeshData::Create(UINT32 numVertices, UINT32 numIndices, VertexLayout layout, IndexType indexType)
     {
-        return RendererManager::Instance().GetRenderer()->CreateMeshData(numVertices, numIndices, layout, indexType);
+        return Renderer::CreateMeshData(numVertices, numIndices, layout, indexType);
     }
 
     SPtr<RendererMeshData> RendererMeshData::Create(const SPtr<MeshData>& meshData)
     {
-        return RendererManager::Instance().GetRenderer()->CreateMeshData(meshData);
+        return Renderer::CreateMeshData(meshData);
     }
 
     SPtr<VertexDataDesc> RendererMeshData::VertexLayoutVertexDesc(VertexLayout type)

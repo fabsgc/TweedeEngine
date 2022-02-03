@@ -26,12 +26,16 @@ namespace te
     void RenderMan::Initialize()
     {
         Renderer::Initialize();
-        RendererUtility::StartUp();
-        GpuResourcePool::StartUp();
+
+        if(!RendererUtility::IsStarted())
+            RendererUtility::StartUp();
+        if(!GpuResourcePool::IsStarted())
+            GpuResourcePool::StartUp();
 
         for (UINT32 i = 0; i < STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER; i++)
         {
-            gPerInstanceParamBuffer[i] = gPerInstanceParamDef.CreateBuffer();
+            if(!gPerInstanceParamBuffer[i])
+                gPerInstanceParamBuffer[i] = gPerInstanceParamDef.CreateBuffer();
         }
 
         _options = te_shared_ptr_new<RenderManOptions>();
@@ -61,7 +65,11 @@ namespace te
     {
         for (UINT32 i = 0; i < STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER; i++)
         {
-            gPerInstanceParamBuffer[i]->Destroy();
+            if (gPerInstanceParamBuffer[i])
+            {
+                gPerInstanceParamBuffer[i]->Destroy();
+                gPerInstanceParamBuffer[i] = nullptr;
+            }
         }
 
         if (gPerLightsParamBuffer)
@@ -70,20 +78,16 @@ namespace te
             gPerLightsParamBuffer = nullptr;
         }
 
-        for (UINT32 i = 0; i < STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER; i++)
-        {
-            if (gPerInstanceParamBuffer[i])
-                gPerInstanceParamBuffer[i] = nullptr;
-        }
-
         _scene = nullptr;
 
         RenderCompositor::CleanUp();
 
         te_delete(_mainViewGroup);
 
-        GpuResourcePool::ShutDown();
-        RendererUtility::ShutDown();
+        if(GpuResourcePool::IsStarted())
+            GpuResourcePool::ShutDown();
+        if(RendererUtility::IsStarted())
+            RendererUtility::ShutDown();
 
         Renderer::Destroy();
     }
@@ -239,7 +243,6 @@ namespace te
         const SceneInfo& sceneInfo = _scene->GetSceneInfo();
 
         SPtr<GpuParamBlockBuffer> perCameraBuffer = view.GetPerViewBuffer();
-        perCameraBuffer->FlushToGPU();
 
         view.BeginFrame(frameInfo);
 
@@ -253,7 +256,7 @@ namespace te
 
     bool RenderMan::RenderOverlay(RendererView& view, const FrameInfo& frameInfo)
     {
-        // view.GetPerViewBuffer()->FlushToGPU(); TODO
+        view.GetPerViewBuffer()->FlushToGPU();
         view.BeginFrame(frameInfo);
 
         auto& viewProps = view.GetProperties();
@@ -314,6 +317,11 @@ namespace te
         _scene->UnregisterCamera(camera);
     }
 
+    void RenderMan::NotifyCamerasCleared()
+    {
+        _scene->ClearCameras();
+    }
+
     void RenderMan::NotifyRenderableAdded(Renderable* renderable)
     {
         _scene->RegisterRenderable(renderable);
@@ -327,6 +335,11 @@ namespace te
     void RenderMan::NotifyRenderableRemoved(Renderable* renderable)
     {
         _scene->UnregisterRenderable(renderable);
+    }
+
+    void RenderMan::NotifyLightsCleared()
+    {
+        _scene->ClearLights();
     }
 
     void RenderMan::NotifyLightAdded(Light* light)
@@ -344,6 +357,11 @@ namespace te
         _scene->UnregisterLight(light);
     }
 
+    void RenderMan::NotifyRenderablesCleared()
+    {
+        _scene->ClearRenderables();
+    }
+
     void RenderMan::NotifySkyboxAdded(Skybox* skybox)
     {
         _scene->RegisterSkybox(skybox);
@@ -352,6 +370,11 @@ namespace te
     void RenderMan::NotifySkyboxRemoved(Skybox* skybox)
     {
         _scene->UnregisterSkybox(skybox);
+    }
+
+    void RenderMan::NotifySkyboxCleared()
+    {
+        _scene->ClearSkybox();
     }
 
     void RenderMan::NotifyDecalAdded(Decal* decal)
@@ -369,9 +392,19 @@ namespace te
         _scene->UnregisterDecal(decal);
     }
 
+    void RenderMan::NotifyDecalsCleared()
+    {
+        _scene->ClearDecals();
+    }
+
     void RenderMan::BatchRenderables()
     {
         _scene->BatchRenderables();
+    }
+
+    void RenderMan::DestroyBatchedRenderables()
+    {
+        _scene->DestroyBatchedRenderables();
     }
 
     void RenderMan::SetLastRenderTexture(RenderOutputType type, SPtr<Texture> renderTexture)
@@ -444,6 +477,6 @@ namespace te
 
     SPtr<RenderMan> gRenderMan()
     {
-        return std::static_pointer_cast<RenderMan>(RendererManager::Instance().GetRenderer());
+        return std::static_pointer_cast<RenderMan>(gRenderer());
     }
 }

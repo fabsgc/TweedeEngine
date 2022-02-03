@@ -6,8 +6,7 @@
 
 namespace te
 {
-    class PreviewOpaqueMat;
-    class PreviewTransparentMat;
+    struct PerFrameData;
 
     class MaterialsPreview
     {
@@ -29,7 +28,7 @@ namespace te
 
     public:
         MaterialsPreview();
-        ~MaterialsPreview() = default;
+        ~MaterialsPreview();
 
         /**
          * Returns (and draw if necessary) the preview for the given material
@@ -81,9 +80,29 @@ namespace te
         void InitializeCamera();
 
         /**
-         * Initialize the sphere used to display the material preview
+         * Initialize the skybox used to illuminate the scene
+         */
+        void InitializeSkybox();
+
+        /**
+         * Initialize the skybox used to illuminate the scene
+         */
+        void InitializeLight();
+
+        /**
+         * Initialize a new renderer used only by this widget
+         */
+        void InitializeRenderer();
+
+        /**
+         * Initialize the meshes used to display the material preview
          */
         void InitializeRenderable();
+
+        /**
+         * Initialize textures used by the preview
+         */
+        void InitializeTextures();
 
     private:
         static const UINT32 PreviewSize;
@@ -92,13 +111,20 @@ namespace te
     private:
         Map<WPtr<Material>, UPtr<Preview>, std::owner_less<WPtr<Material>>> _previews;
 
-        PreviewOpaqueMat* _opaqueMat;
-        PreviewTransparentMat* _transparentMat;
+        SPtr<PerFrameData> _perFrameData;
+        SPtr<Renderer> _renderer;
+        SPtr<Camera> _camera;
+        SPtr<Skybox> _skybox;
+        SPtr<Light> _light;
 
         SPtr<Mesh> _box;
         SPtr<Mesh> _plane;
         SPtr<Mesh> _sphere;
-        SPtr<Camera> _camera;
+
+        SPtr<Renderable> _boxRenderable;
+        SPtr<Renderable> _planeRenderable;
+        SPtr<Renderable> _sphereRenderable;
+
         SPtr<Texture> _irradiance;
         SPtr<Texture> _environment;
 

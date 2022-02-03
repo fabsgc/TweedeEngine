@@ -2,12 +2,17 @@
 
 #include "Mesh/TeMesh.h"
 #include "Image/TeTexture.h"
+#include "Renderer/TeRenderer.h"
 #include "Renderer/TeCamera.h"
+#include "Renderer/TeSkybox.h"
+#include "Renderer/TeLight.h"
+#include "Renderer/TeRenderable.h"
 #include "Material/TeMaterial.h"
-#include "TeMaterialsPreviewMat.h"
 #include "Resources/TeResourceManager.h"
 #include "Importer/TeMeshImportOptions.h"
 #include "Importer/TeTextureImportOptions.h"
+#include "Manager/TeRendererManager.h"
+#include "TeCoreApplication.h"
 
 namespace te
 {
@@ -33,19 +38,24 @@ namespace te
     }
 
     MaterialsPreview::MaterialsPreview()
-        : _opaqueMat(nullptr)
-        , _transparentMat(nullptr)
-        , _box(nullptr)
-        , _plane(nullptr)
-        , _sphere(nullptr)
-        , _camera(nullptr)
-        , _meshPreviewType(MeshPreviewType::Sphere)
+        : _meshPreviewType(MeshPreviewType::Sphere)
     { 
-        _opaqueMat = PreviewOpaqueMat::Get();
-        _transparentMat = PreviewTransparentMat::Get();
-
+        InitializeTextures();
         InitializeCamera();
+        InitializeSkybox();
+        InitializeLight();
         InitializeRenderable();
+        InitializeRenderer();
+
+        _perFrameData = te_shared_ptr_new<PerFrameData>();
+    }
+
+    MaterialsPreview::~MaterialsPreview()
+    {
+        _renderer->NotifyCamerasCleared();
+        _renderer->NotifyLightsCleared();
+        _renderer->NotifySkyboxCleared();
+        _renderer->NotifyRenderablesCleared();
     }
 
     const RendererUtility::RenderTextureData& MaterialsPreview::GetPreview(const WPtr<Material>& material)
@@ -94,60 +104,37 @@ namespace te
 
     void MaterialsPreview::DrawMaterial(const WPtr<Material>& material, Preview& preview) const
     { 
-        RenderAPI& rapi = RenderAPI::Instance();
-        UINT32 clearBuffers = FBT_COLOR | FBT_DEPTH | FBT_STENCIL;
-        PreviewMat* previewMat = nullptr;
         SPtr<Material> mat = material.lock();
-        SPtr<Mesh> mesh = nullptr;
+        SPtr<Renderable> renderable = nullptr;
 
-        rapi.SetRenderTarget(preview.MatPreview->RenderTex);
-        rapi.ClearViewport(clearBuffers, MaterialsPreview::BackgroundColor);
+        _camera->NotifyNeedsRedraw();
+        _camera->GetViewport()->SetTarget(preview.MatPreview->RenderTex);
 
-        if (mat->GetShader()->GetName() == "ForwardOpaque") 
-            previewMat = _opaqueMat;
-        else 
-            previewMat = _transparentMat;
-
-        previewMat->BindFrame();
-        previewMat->BindLight();
-        previewMat->BindObject();
-        previewMat->BindCamera(_camera);
-        previewMat->BindMaterial(material);
+        _renderer->NotifyRenderablesCleared();
+        _renderer->NotifyCameraUpdated(_camera.get(), (UINT32)CameraDirtyFlag::Viewport);
 
         switch (_meshPreviewType)
         {
         case MeshPreviewType::Box:
-            mesh = _box;
+            renderable = _boxRenderable;
             break;
         case MeshPreviewType::Plane:
-            mesh = _plane;
+            renderable = _planeRenderable;
             break;
         case MeshPreviewType::Sphere:
-            mesh = _sphere;
+            renderable = _sphereRenderable;
             break;
         }
-        
-        if (mesh)
+
+        if (renderable)
         {
-            if (mat->GetShader()->GetName() == "ForwardOpaque")
-            {
-                _opaqueMat->BindTextures(material, _irradiance, _environment);
-                _opaqueMat->Bind();
-            }
-            else
-            {
-                _transparentMat->BindTextures(material, _irradiance, _environment);
-                _transparentMat->Bind();
-            }
-
-            MeshProperties properties = mesh->GetProperties();
-            UINT32 numMeshes = properties.GetNumSubMeshes();
-
-            for (UINT32 i = 0; i < numMeshes; i++)
-                gRendererUtility().Draw(mesh, properties.GetSubMesh(i), 1);
+            renderable->SetMaterial(mat);
+            _renderer->NotifyRenderableAdded(renderable.get());
         }
 
-        rapi.SetRenderTarget(nullptr);
+        _renderer->Update();
+        _renderer->RenderAll(*_perFrameData.get());
+
         preview.IsDirty = false;
     }
 
@@ -156,6 +143,8 @@ namespace te
         _camera = Camera::Create();
         _camera->SetProjectionType(ProjectionType::PT_PERSPECTIVE);
         _camera->SetAspectRatio(1.0f);
+        _camera->SetFlags((UINT32)CameraFlag::OnDemand);
+        _camera->GetViewport()->SetClearColorValue(BackgroundColor);
         _camera->Initialize();
 
         Transform tfrm = _camera->GetTransform();
@@ -164,20 +153,73 @@ namespace te
         _camera->SetTransform(tfrm);
     }
 
+    void MaterialsPreview::InitializeSkybox()
+    {
+        _skybox = Skybox::Create();
+        _skybox->SetIrradiance(_irradiance);
+        _skybox->SetTexture(_environment);
+    }
+
+    void MaterialsPreview::InitializeLight()
+    {
+        _light = Light::Create(LightType::Radial);
+        
+        Transform transform = _light->GetTransform();
+        transform.Move(Vector3(0.0f, 3.0f, 1.75f));
+        _light->SetTransform(transform);
+    }
+
+    void MaterialsPreview::InitializeRenderer()
+    {
+        TE_ASSERT_ERROR(_camera.get(), "Camera must be created before Renderer");
+        TE_ASSERT_ERROR(_skybox.get(), "Skybox must be created before Renderer");
+        TE_ASSERT_ERROR(_light.get(), "Light must be created before Renderer");
+        TE_ASSERT_ERROR(_boxRenderable.get(), "Box must be created before Renderer");
+        TE_ASSERT_ERROR(_planeRenderable.get(), "Plane must be created before Renderer");
+        TE_ASSERT_ERROR(_sphereRenderable.get(),  "Sphere must be created before Renderer");
+
+        const START_UP_DESC& desc = gCoreApplication().GetStartUpDesc();
+        _renderer = RendererManager::Instance().Initialize(desc.Renderer, "Preview", false);
+
+        _renderer->NotifyCameraAdded(_camera.get());
+        _renderer->NotifySkyboxAdded(_skybox.get());
+        _renderer->NotifyLightAdded(_light.get());
+
+        TE_ASSERT_ERROR(_renderer.get(), "Failed to create renderer");
+    }
+
     void MaterialsPreview::InitializeRenderable()
     {
         auto meshImportOptions = MeshImportOptions::Create();
 
+        _box = ResourceManager::Instance().Load<Mesh>("Data/Meshes/Primitives/cube.obj", meshImportOptions).GetInternalPtr();
+        _plane = ResourceManager::Instance().Load<Mesh>("Data/Meshes/Primitives/plane.obj", meshImportOptions).GetInternalPtr();
+        _sphere = ResourceManager::Instance().Load<Mesh>("Data/Meshes/Primitives/sphere.obj", meshImportOptions).GetInternalPtr();
+
+        TE_ASSERT_ERROR(_box.get(), "Failed to load box mesh");
+        TE_ASSERT_ERROR(_plane.get(), "Failed to load plane mesh");
+        TE_ASSERT_ERROR(_sphere.get(), "Failed to load sphere mesh");
+
+        _boxRenderable = Renderable::Create();
+        _boxRenderable->SetMesh(_box);
+        _planeRenderable = Renderable::Create();
+        _planeRenderable->SetMesh(_plane);
+        _sphereRenderable = Renderable::Create();
+        _sphereRenderable->SetMesh(_sphere);
+    }
+
+    void MaterialsPreview::InitializeTextures()
+    {
         auto textureCubeMapImportOptions = TextureImportOptions::Create();
         textureCubeMapImportOptions->CpuCached = false;
         textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
         textureCubeMapImportOptions->IsCubemap = true;
         textureCubeMapImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
 
-        _box = ResourceManager::Instance().Load<Mesh>("Data/Meshes/Primitives/cube.obj", meshImportOptions).GetInternalPtr();
-        _plane = ResourceManager::Instance().Load<Mesh>("Data/Meshes/Primitives/plane.obj", meshImportOptions).GetInternalPtr();
-        _sphere = ResourceManager::Instance().Load<Mesh>("Data/Meshes/Primitives/sphere.obj", meshImportOptions).GetInternalPtr();
         _irradiance = ResourceManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_day_irradiance_small.png", textureCubeMapImportOptions).GetInternalPtr();
         _environment = ResourceManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_day_medium.png", textureCubeMapImportOptions).GetInternalPtr();
+
+        TE_ASSERT_ERROR(_irradiance.get(), "Failed to load irradiance texture");
+        TE_ASSERT_ERROR(_environment.get(), "Failed to load envrionment texture");
     }
 }

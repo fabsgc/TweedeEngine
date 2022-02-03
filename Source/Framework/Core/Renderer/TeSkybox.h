@@ -52,6 +52,13 @@ namespace te
         /** @copydoc Skybox::GetIrradiance */
         void SetIrradiance(const SPtr<Texture>& irradiance);
 
+        /**
+         * You can change at runtime which renderer will handle this skybox
+         * Current renderer will be notified that skybox must be removed
+         * And next renderer will be notified that skybox must be added
+         */
+        void AttachTo(SPtr<Renderer> renderer = nullptr);
+
         /** Creates a new skybox. */
         static SPtr<Skybox> Create();
 
@@ -61,7 +68,7 @@ namespace te
     protected:
         friend class CSkybox;
 
-        Skybox();
+        explicit Skybox();
         Skybox(const SPtr<Texture>& radiance);
 
         /** @copydoc SceneActor::_markCoreDirty */
@@ -81,5 +88,8 @@ namespace te
 
         /** Texture used to compute global illumination */
         SPtr<Texture> _irradiance;
+
+        /** Default renderer if this attributes is not filled in constructor. */
+        SPtr<Renderer> _renderer; 
     };
 }

@@ -31,13 +31,15 @@ namespace te
     Decal::~Decal()
     { 
         if (_active)
-            gRenderer()->NotifyDecalRemoved(this);
+        {
+            if (_renderer) _renderer->NotifyDecalRemoved(this);
+        }
     }
 
     void Decal::Initialize()
     { 
         UpdateBounds();
-        gRenderer()->NotifyDecalAdded(this);
+        if (_renderer) _renderer->NotifyDecalAdded(this);
 
         CoreObject::Initialize();
     }
@@ -59,21 +61,27 @@ namespace te
         if (dirtyFlag == (UINT32)ActorDirtyFlag::Transform)
         {
             if (_active)
-                gRenderer()->NotifyDecalUpdated(this);
+            {
+                if (_renderer) _renderer->NotifyDecalUpdated(this);
+            }
         }
         else
         {
             if (_oldActive != GetActive())
             {
                 if (_active)
-                    gRenderer()->NotifyDecalAdded(this);
+                {
+                    if (_renderer) _renderer->NotifyDecalAdded(this);
+                }
                 else
-                    gRenderer()->NotifyDecalRemoved(this);
+                {
+                    if (_renderer) _renderer->NotifyDecalRemoved(this);
+                }
             }
             else
             {
-                gRenderer()->NotifyDecalRemoved(this);
-                gRenderer()->NotifyDecalAdded(this);
+                if (_renderer) _renderer->NotifyDecalRemoved(this);
+                if (_renderer) _renderer->NotifyDecalAdded(this);
             }
         }
 
@@ -104,6 +112,19 @@ namespace te
         _tfrmMatrixNoScale = Matrix4::TRS(transform.GetPosition(), transform.GetRotation(), Vector3::ONE);
 
         _markCoreDirty(ActorDirtyFlag::Transform);
+    }
+
+    void Decal::AttachTo(SPtr<Renderer> renderer)
+    {
+        if (_renderer)
+            _renderer->NotifyDecalRemoved(this);
+
+        _renderer = renderer;
+
+        if (_renderer)
+            _renderer->NotifyDecalAdded(this);
+
+        _markCoreDirty();
     }
 
     void Decal::UpdateBounds()

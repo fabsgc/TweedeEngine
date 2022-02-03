@@ -46,13 +46,15 @@ namespace te
     Light::~Light()
     {
         if(_active)
-            gRenderer()->NotifyLightRemoved(this);
+        {
+            if (_renderer) _renderer->NotifyLightRemoved(this);
+        }
     }
 
     void Light::Initialize()
     {
         UpdateBounds();
-        gRenderer()->NotifyLightAdded(const_cast<Light*>(this));
+        if (_renderer) _renderer->NotifyLightAdded(const_cast<Light*>(this));
 
         CoreObject::Initialize();
     }
@@ -75,12 +77,14 @@ namespace te
             if (_oldActive != _active)
             {
                 if (_active)
-                    gRenderer()->NotifyLightAdded(this);
+                {
+                    if (_renderer) _renderer->NotifyLightAdded(this);
+                }
                 else
                 {
                     LightType newType = _type;
                     _type = oldType;
-                    gRenderer()->NotifyLightRemoved(this);
+                    if (_renderer) _renderer->NotifyLightRemoved(this);
                     _type = newType;
                 }
             }
@@ -88,9 +92,9 @@ namespace te
             {
                 LightType newType = _type;
                 _type = oldType;
-                gRenderer()->NotifyLightRemoved(this);
+                if (_renderer) _renderer->NotifyLightRemoved(this);
                 _type = newType;
-                gRenderer()->NotifyLightAdded(this);
+                if (_renderer) _renderer->NotifyLightAdded(this);
             }
         }
         else if ((dirtyFlag & (UINT32)ActorDirtyFlag::Mobility) != 0)
@@ -98,17 +102,32 @@ namespace te
             // TODO I'm not sure for that, we might check if SceneActor is active
             if (_active)
             {
-                gRenderer()->NotifyLightRemoved(this);
-                gRenderer()->NotifyLightAdded(this);
+                if (_renderer) _renderer->NotifyLightRemoved(this);
+                if (_renderer) _renderer->NotifyLightAdded(this);
             }
         }
         else if ((dirtyFlag & (UINT32)ActorDirtyFlag::Transform) != 0)
         {
             if (_active)
-                gRenderer()->NotifyLightUpdated(this);
+            {
+                if (_renderer) _renderer->NotifyLightUpdated(this);
+            }
         }
 
         _oldActive = _active;
+    }
+
+    void Light::AttachTo(SPtr<Renderer> renderer)
+    {
+        if (_renderer)
+            _renderer->NotifyLightRemoved(this);
+
+        _renderer = renderer;
+
+        if (_renderer)
+            _renderer->NotifyLightAdded(this);
+
+        _markCoreDirty();
     }
 
     void Light::SetMobility(ObjectMobility mobility)
@@ -187,10 +206,10 @@ namespace te
         }
     }
 
-    SPtr<Light> Light::Create(LightType type, Color color, float intensity, float attRadius, 
+    SPtr<Light> Light::Create(LightType type, Color color, float intensity, float attRadius,
         float linearAtt, float quadraticAtt, bool castShadows, Degree spotAngle)
     {
-        Light* handler = new (te_allocate<Light>())Light(type, color, intensity, attRadius, linearAtt, quadraticAtt, castShadows, spotAngle);
+        Light* handler = new (te_allocate<Light>()) Light(type, color, intensity, attRadius, linearAtt, quadraticAtt, castShadows, spotAngle);
         SPtr<Light> handlerPtr = te_core_ptr<Light>(handler);
         handlerPtr->SetThisPtr(handlerPtr);
         handlerPtr->Initialize();

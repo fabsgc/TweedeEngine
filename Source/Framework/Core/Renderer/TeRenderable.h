@@ -250,6 +250,13 @@ namespace te
         /** Creates any buffers required for renderable animation. Should be called whenever animation properties change. */
         void CreateAnimationBuffers();
 
+        /**
+         * You can change at runtime which renderer will handle this renderable
+         * Current renderer will be notified that renderable must be removed
+         * And next renderer will be notified that renderable must be added
+         */
+        void AttachTo(SPtr<Renderer> renderer = nullptr);
+
     protected:
         Renderable();
 
@@ -278,6 +285,8 @@ namespace te
 
         // For rendering sorting, it's better to use subMesh bounds instead of mesh bounds
         Vector<Bounds> _subMeshesBounds;
-        bool _subMeshesBoundsDirty; 
+        bool _subMeshesBoundsDirty;
+
+        SPtr<Renderer> _renderer; /** Default renderer if this attributes is not filled in constructor. */
     };
 }

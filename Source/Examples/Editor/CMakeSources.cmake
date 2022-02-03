@@ -79,12 +79,10 @@ set (TE_EDITOR_SRC_WIDGET
 
 set (TE_EDITOR_INC_MATERIALS_PREVIEW
     "MaterialsPreview/TeMaterialsPreview.h"
-    "MaterialsPreview/TeMaterialsPreviewMat.h"
 )
 
 set (TE_EDITOR_SRC_MATERIALS_PREVIEW
     "MaterialsPreview/TeMaterialsPreview.cpp"
-    "MaterialsPreview/TeMaterialsPreviewMat.cpp"
 )
 
 source_group ("" FILES ${TE_EDITOR_SRC_NOFILTER} ${TE_EDITOR_INC_NOFILTER})

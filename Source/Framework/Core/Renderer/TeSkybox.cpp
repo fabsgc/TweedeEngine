@@ -18,12 +18,14 @@ namespace te
     Skybox::~Skybox()
     {
         if(_active)
-            gRenderer()->NotifySkyboxRemoved(this);
+        {
+            if (_renderer) _renderer->NotifySkyboxRemoved(this);
+        }
     }
 
     void Skybox::Initialize()
     {
-        gRenderer()->NotifySkyboxAdded(this);
+        if (_renderer) _renderer->NotifySkyboxAdded(this);
         CoreObject::Initialize();
     }
 
@@ -49,6 +51,19 @@ namespace te
     {
         _irradiance = irradiance;
         _markCoreDirty((ActorDirtyFlag)SkyboxDirtyFlag::Texture);
+    }
+
+    void Skybox::AttachTo(SPtr<Renderer> renderer)
+    {
+        if (_renderer)
+            _renderer->NotifySkyboxRemoved(this);
+
+        _renderer = renderer;
+
+        if (_renderer)
+            _renderer->NotifySkyboxAdded(this);
+
+        _markCoreDirty();
     }
 
     SPtr<Skybox> Skybox::CreateEmpty()
@@ -80,14 +95,18 @@ namespace te
         if (_oldActive != _active)
         {
             if (_active)
-                gRenderer()->NotifySkyboxAdded(this);
+            {
+                if (_renderer) _renderer->NotifySkyboxAdded(this);
+            }
             else
-                gRenderer()->NotifySkyboxRemoved(this);
+            {
+                if (_renderer) _renderer->NotifySkyboxRemoved(this);
+            }
         }
         else if ((dirtyFlag & ((UINT32)SkyboxDirtyFlag::Texture)) != 0)
         {
-            gRenderer()->NotifySkyboxRemoved(this);
-            gRenderer()->NotifySkyboxAdded(this);
+            if (_renderer) _renderer->NotifySkyboxRemoved(this);
+            if (_renderer) _renderer->NotifySkyboxAdded(this);
         }
 
         _oldActive = _active;

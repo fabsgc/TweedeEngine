@@ -56,6 +56,11 @@ namespace te
         _clearStencilValue = value;
     }
 
+    void ViewportBase::SetClearFlags(UINT32 flags)
+    {
+        _clearFlags = flags;
+    }
+
     Viewport::Viewport(const SPtr<RenderTarget>& target, float x, float y, float width, float height)
         : ViewportBase(x, y, width, height)
         , _target(target)

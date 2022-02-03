@@ -143,6 +143,9 @@ namespace te
     {
         UINT32 cameraId = camera->GetRendererId();
 
+        if (_info.CameraToView.find(camera) == _info.CameraToView.end())
+            return;
+
         Camera* lastCamera = _info.Views.back()->GetSceneCamera();
         UINT32 lastCameraId = lastCamera->GetRendererId();
 
@@ -166,6 +169,22 @@ namespace te
             _info.CameraToView.erase(iterFind);
 
         UpdateCameraRenderTargets(camera, true);
+    }
+
+    void RendererScene::ClearCameras()
+    {
+        for (auto& camera : _info.CameraToView)
+        {
+            UpdateCameraRenderTargets(const_cast<Camera*>(camera.first), true);
+        }
+
+        for (auto& view : _info.Views)
+        {
+            te_delete(view);
+        }
+
+        _info.Views.clear();
+        _info.CameraToView.clear();
     }
 
     void RendererScene::RegisterLight(Light* light)
@@ -265,6 +284,15 @@ namespace te
                 _info.SpotLightWorldBounds.erase(_info.SpotLightWorldBounds.end() - 1);
             }
         }
+    }
+
+    void RendererScene::ClearLights()
+    {
+        _info.DirectionalLights.clear();
+        _info.RadialLights.clear();
+        _info.RadialLightWorldBounds.clear();
+        _info.SpotLights.clear();
+        _info.SpotLightWorldBounds.clear();
     }
 
     void RendererScene::RegisterRenderable(Renderable* renderable)
@@ -375,6 +403,18 @@ namespace te
         te_delete(rendererRenderable);
     }
 
+    void RendererScene::ClearRenderables()
+    {
+        for (auto& rendererRenderable : _info.Renderables)
+        {
+            te_delete(rendererRenderable);
+        }
+
+        _info.Renderables.clear();
+        _info.RenderablesInstanced.clear();
+        _info.RenderableCullInfos.clear();
+    }
+
     void RendererScene::RegisterDecal(Decal* decal)
     {
         const auto renderableId = (UINT32)_info.Decals.size();
@@ -432,8 +472,19 @@ namespace te
         _info.DecalCullInfos.erase(_info.DecalCullInfos.end() - 1);
     }
 
+    void RendererScene::ClearDecals()
+    {
+        _info.Decals.clear();
+        _info.DecalCullInfos.clear();
+    }
+
     void RendererScene::BatchRenderables()
     { 
+        // TODO
+    }
+
+    void RendererScene::DestroyBatchedRenderables()
+    {
         // TODO
     }
 
@@ -524,6 +575,11 @@ namespace te
     {
         if (_info.SkyboxElem == skybox)
             _info.SkyboxElem = nullptr;
+    }
+
+    void RendererScene::ClearSkybox()
+    {
+        _info.SkyboxElem = nullptr;
     }
 
     void RendererScene::SetOptions(const SPtr<RenderManOptions>& options)

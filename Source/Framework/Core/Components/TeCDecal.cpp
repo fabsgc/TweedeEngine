@@ -1,5 +1,6 @@
 #include "Components/TeCDecal.h"
 #include "Scene/TeSceneManager.h"
+#include "Renderer/TeRenderer.h"
 
 namespace te
 {
@@ -25,7 +26,8 @@ namespace te
 
     void CDecal::Instantiate()
     {
-        _internal = Decal::Create(HMaterial());
+        _internal = Decal::Create(HMaterial(), Vector2::ONE, 10.0f);
+        _internal->AttachTo(gRenderer());
     }
 
     void CDecal::OnInitialized()

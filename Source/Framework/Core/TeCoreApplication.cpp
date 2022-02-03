@@ -80,10 +80,12 @@ namespace te
         RenderAPI::Instance().Initialize();
         RenderAPI::Instance().SetDrawOperation(DOT_TRIANGLE_LIST);
         _window = RenderAPI::Instance().CreateRenderWindow(_startUpDesc.WindowDesc);
+        TE_ASSERT_ERROR(_window.get(), "Failed to create renderer");
 
         ParamBlockManager::StartUp();
 
-        _renderer = RendererManager::Instance().Initialize(_startUpDesc.Renderer);
+        _renderer = RendererManager::Instance().Initialize(_startUpDesc.Renderer, "Default");
+        TE_ASSERT_ERROR(_renderer.get(), "Failed to create renderer");
 
         Importer::StartUp();
         for (auto& importerName : _startUpDesc.Importers)
@@ -97,6 +99,8 @@ namespace te
         VirtualInput::StartUp();
 
         _gui = GuiManager::Instance().Initialize(_startUpDesc.Gui);
+        TE_ASSERT_ERROR(_gui.get(), "Failed to create gui");
+
         _window->InitializeGui();
         _perFrameData = te_shared_ptr_new<PerFrameData>();
 
@@ -181,8 +185,8 @@ namespace te
 
             DisplayFrameRate();
 
-            RendererManager::Instance().GetRenderer()->Update();
-            RendererManager::Instance().GetRenderer()->RenderAll(*_perFrameData);
+            gRenderer()->Update();
+            gRenderer()->RenderAll(*_perFrameData);
 
             gScriptManager().PostRender();
             PostRender();

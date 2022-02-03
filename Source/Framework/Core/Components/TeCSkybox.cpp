@@ -1,6 +1,6 @@
 #include "Components/TeCSkybox.h"
-
 #include "Scene/TeSceneManager.h"
+#include "Renderer/TeRenderer.h"
 #include "Renderer/TeSkybox.h"
 
 namespace te
@@ -30,6 +30,7 @@ namespace te
     void CSkybox::Instantiate()
     {
         _internal = Skybox::Create();
+        _internal->AttachTo(gRenderer());
     }
 
     void CSkybox::OnInitialized()

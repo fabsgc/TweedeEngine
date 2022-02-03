@@ -1,5 +1,6 @@
 #include "Components/TeCCamera.h"
 #include "Scene/TeSceneManager.h"
+#include "Renderer/TeRenderer.h"
 
 namespace te
 {
@@ -52,6 +53,7 @@ namespace te
     void CCamera::Instantiate()
     {
         _internal = Camera::Create();
+        _internal->AttachTo(gRenderer());
     }
 
     void CCamera::OnInitialized()

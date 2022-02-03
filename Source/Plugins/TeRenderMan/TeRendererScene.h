@@ -61,6 +61,9 @@ namespace te
         /** Removes a camera from the scene. */
         void UnregisterCamera(Camera* camera);
 
+        /** Remove all cameras */
+        void ClearCameras();
+
         /** Registers a new light in the scene. */
         void RegisterLight(Light* light);
 
@@ -70,11 +73,17 @@ namespace te
         /** Removes a light from the scene. */
         void UnregisterLight(Light* light);
 
+        /** Removes all lights */
+        void ClearLights();
+
         /** Registers a new sky texture in the scene. */
         void RegisterSkybox(Skybox* skybox);
 
         /** Removes a skybox from the scene. */
         void UnregisterSkybox(Skybox* skybox);
+
+        /** Removes skybox */
+        void ClearSkybox();
 
         /** Registers a new renderable object in the scene. */
         void RegisterRenderable(Renderable* renderable);
@@ -85,6 +94,9 @@ namespace te
         /** Removes a renderable object from the scene. */
         void UnregisterRenderable(Renderable* renderable);
 
+        /** Removes all renderables */
+        void ClearRenderables();
+
         /** Registers a new decal object in the scene. */
         void RegisterDecal(Decal* decal);
 
@@ -94,8 +106,14 @@ namespace te
         /** Removes a decal object from the scene. */
         void UnregisterDecal(Decal* decal);
 
+        /** Removes all decals */
+        void ClearDecals();
+
         /** All renderables market as "mergeable" will be merged into several bigger mesh according to their material */
         void BatchRenderables();
+
+        /** Destroy all batched renderables */
+        void DestroyBatchedRenderables();
 
         /** Sometimes, mesh is missing on creation, need to be added after */
         void SetMeshData(RendererRenderable* rendererRenderable, Renderable* renderable);

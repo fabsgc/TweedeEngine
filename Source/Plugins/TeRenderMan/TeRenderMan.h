@@ -88,6 +88,9 @@ namespace te
         /** @copydoc Renderer::NotifyCameraRemoved */
         void NotifyCameraRemoved(Camera* camera) override;
 
+        /** @copydoc Renderer::NotifyCamerasCleared */
+        void NotifyCamerasCleared() override;
+
         /** @copydoc Renderer::NotifyLightAdded */
         void NotifyLightAdded(Light* light) override;
 
@@ -96,6 +99,9 @@ namespace te
 
         /** @copydoc Renderer::NotifyLightRemoved */
         void NotifyLightRemoved(Light* light) override;
+
+        /** @copydoc Renderer::NotifyLightsCleared */
+        void NotifyLightsCleared() override;
 
         /** @copydoc Renderer::NotifyRenderableAdded */
         void NotifyRenderableAdded(Renderable* renderable) override;
@@ -106,11 +112,17 @@ namespace te
         /** @copydoc Renderer::NotifyRenderableRemoved */
         void NotifyRenderableRemoved(Renderable* renderable) override;
 
+        /** @copydoc Renderer::NotifyRenderablesCleared */
+        void NotifyRenderablesCleared() override;
+
         /** @copydoc Renderer::NotifySkyboxAdded */
         void NotifySkyboxAdded(Skybox* skybox) override;
 
         /** @copydoc Renderer::NotifySkyboxRemoved */
         void NotifySkyboxRemoved(Skybox* skybox) override;
+
+        /** @copydoc Renderer::NotifySkyboxCleared */
+        void NotifySkyboxCleared() override;
 
         /** @copydoc Renderer::NotifyDecalAdded */
         void NotifyDecalAdded(Decal* decal) override;
@@ -121,8 +133,14 @@ namespace te
         /** @copydoc Renderer::NotifyDecalRemoved */
         void NotifyDecalRemoved(Decal* decal) override;
 
+        /** @copydoc Renderer::NotifyDecalsCleared */
+        void NotifyDecalsCleared() override;
+
         /** @copydoc Renderer::BatchRenderables */
         void BatchRenderables() override;
+
+        /** @copydoc Renderer::DestroyBatchedRenderables */
+        void DestroyBatchedRenderables() override;
 
         /** @copydoc Renderer::SetLastRenderTexture */
         void SetLastRenderTexture(RenderOutputType type, SPtr<Texture> renderTexture) override;

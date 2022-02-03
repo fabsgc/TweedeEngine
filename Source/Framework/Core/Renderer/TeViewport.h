@@ -8,7 +8,7 @@
 namespace te
 {
     /** Common base type used for both sim and core thread variants of Viewport. */
-    class TE_CORE_EXPORT ViewportBase : public NonCopyable
+    class TE_CORE_EXPORT ViewportBase
     {
     public:
         virtual ~ViewportBase() = default;
@@ -44,7 +44,7 @@ namespace te
         UINT16 GetClearStencilValue() const { return _clearStencilValue; }
 
         /** Determines which portions of the render target should be cleared before rendering to this viewport is performed. */
-        void setClearFlags(UINT32 flags);
+        void SetClearFlags(UINT32 flags);
 
         /** @copydoc SetClearFlags */
         UINT32 GetClearFlags() const { return _clearFlags; }

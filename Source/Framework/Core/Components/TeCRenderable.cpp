@@ -1,6 +1,7 @@
 #include "Components/TeCRenderable.h"
 #include "Scene/TeSceneManager.h"
 #include "Components/TeCAnimation.h"
+#include "Renderer/TeRenderer.h"
 
 namespace te
 {
@@ -75,6 +76,7 @@ namespace te
     void CRenderable::Instantiate()
     {
         _internal = Renderable::Create();
+        _internal->AttachTo(gRenderer());
     }
 
     void CRenderable::OnInitialized()

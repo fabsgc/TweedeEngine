@@ -110,6 +110,13 @@ namespace te
         const Sphere& GetBounds() const { return _bounds; }
 
         /**
+         * You can change at runtime which renderer will handle this light
+         * Current renderer will be notified that light must be removed
+         * And next renderer will be notified that light must be added
+         */
+        void AttachTo(SPtr<Renderer> renderer = nullptr);
+
+        /**
          * Creates a new light with provided settings.
          *
          * @param[in]	type				Type of light that determines how are the rest of the parameters interpreted.
@@ -123,15 +130,9 @@ namespace te
          * @param[in]	spotFalloffAngle	Spot light angle at which falloff starts. Must be smaller than total angle.
          */
         static SPtr<Light> Create(LightType type = LightType::Directional, Color color = Color::White,
-            float intensity = DefaultIntensity, float attRadius = DefaultAttRadius, float linearAtt = DefaultLinearAtt, 
+            float intensity = DefaultIntensity, float attRadius = DefaultAttRadius, float linearAtt = DefaultLinearAtt,
             float quadraticAtt = DefaultQuadraticAtt, bool castShadows = DefaultCastShadow,
             Degree spotAngle = Degree(DefaultSpotAngle));
-
-        /** @copydoc SceneActor::_markCoreDirty */
-        void _markCoreDirty(ActorDirtyFlag flag = ActorDirtyFlag::Everything) override;
-
-        /** @copydoc CoreObject::FrameSync */
-        void FrameSync() override;
 
     public:
         static bool DefaultCastShadow;
@@ -149,11 +150,17 @@ namespace te
         friend class CLight;
 
         Light();
-        Light(LightType type, Color color, float intensity, float attRadius, float linearAtt, 
+        Light(LightType type, Color color, float intensity, float attRadius, float linearAtt,
             float quadraticAtt, bool castShadows, Degree spotAngle);
 
         /** Updates the internal bounds for the light. Call this whenever a property affecting the bounds changes. */
         void UpdateBounds();
+
+        /** @copydoc SceneActor::_markCoreDirty */
+        void _markCoreDirty(ActorDirtyFlag flag = ActorDirtyFlag::Everything) override;
+
+        /** @copydoc CoreObject::FrameSync */
+        void FrameSync() override;
 
     protected:
         LightType _type; /**< Type of light that determines how are the rest of the parameters interpreted. */
@@ -166,6 +173,8 @@ namespace te
         Degree _spotAngle; /**< Total angle covered by a spot light. */
         Sphere _bounds; /**< Sphere that bounds the light area of influence. */
         float _shadowBias; /**< See SetShadowBias */
+
         UINT32 _rendererId;
+        SPtr<Renderer> _renderer; /** Default renderer if this attributes is not filled in constructor. */
     };
 }

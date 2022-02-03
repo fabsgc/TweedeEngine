@@ -5,6 +5,7 @@
 #include "Manager/TeRendererManager.h"
 #include "Scene/TeSceneManager.h"
 #include "Math/TeRect2I.h"
+#include "Renderer/TeRenderer.h"
 
 namespace te
 {
@@ -38,14 +39,14 @@ namespace te
 
     Camera::~Camera()
     { 
-        gRenderer()->NotifyCameraRemoved(this);
+        if (_renderer) _renderer->NotifyCameraRemoved(this);
     }
 
     void Camera::Initialize()
     {
         CoreObject::Initialize();
         gSceneManager()._registerCamera(std::static_pointer_cast<Camera>(GetThisPtr()));
-        gRenderer()->NotifyCameraAdded(this);
+        if (_renderer) _renderer->NotifyCameraAdded(this);
     }
 
     void Camera::Destroy()
@@ -70,7 +71,7 @@ namespace te
             _needComputeView = true;
         }
 
-        RendererManager::Instance().GetRenderer()->NotifyCameraUpdated(this, (UINT32)dirtyFlag);
+        if (_renderer) _renderer->NotifyCameraUpdated(this, (UINT32)dirtyFlag);
     }
 
     void Camera::SetMobility(ObjectMobility mobility)
@@ -681,5 +682,18 @@ namespace te
     Rect2I Camera::GetViewportRect() const
     {
         return _viewport->GetPixelArea();
+    }
+
+    void Camera::AttachTo(SPtr<Renderer> renderer)
+    {
+        if (_renderer)
+            _renderer->NotifyCameraRemoved(this);
+
+        _renderer = renderer;
+
+        if(_renderer)
+            _renderer->NotifyCameraAdded(this);
+
+        _markCoreDirty();
     }
 }

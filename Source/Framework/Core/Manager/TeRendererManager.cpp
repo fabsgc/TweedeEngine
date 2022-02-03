@@ -10,15 +10,15 @@ namespace te
 
     RendererManager::~RendererManager()
     {
-        if (_renderer != nullptr)
+        for (auto& renderer : _renderers)
         {
-            _renderer->Destroy();
+            renderer.second->Destroy();
         }
     }
 
-    SPtr<Renderer> RendererManager::Initialize(const String& pluginFilename)
+    SPtr<Renderer> RendererManager::Initialize(const String& pluginName, String rendererName, bool useAsDefault)
     {
-        DynLib* loadedLibrary = gDynLibManager().Load(pluginFilename);
+        DynLib* loadedLibrary = gDynLibManager().Load(pluginName);
         const char* name = "";
 
         if (loadedLibrary != nullptr)
@@ -33,25 +33,25 @@ namespace te
         {
             if ((*iter)->Name() == name)
             {
-                SPtr<Renderer> newRenderer = (*iter)->Create();
-
-                if (newRenderer != nullptr)
+                SPtr<Renderer> renderer = (*iter)->Create();
+                if (renderer != nullptr)
                 {
-                    newRenderer->Initialize();
+                    renderer->Initialize();
 
-                    if (_renderer != nullptr)
-                    {
-                        _renderer->Destroy();
-                        te_delete(&_renderer);
-                    }
+                    auto it = _renderers.find(rendererName);
+                    if (it != _renderers.end())
+                        it->second->Destroy();
 
-                    _renderer = newRenderer;
-                    return _renderer;
+                    if (useAsDefault)
+                        _defaultRenderer = renderer;
+
+                    _renderers[rendererName] = renderer;
+                    return renderer;
                 }
             }
         }
 
-        TE_ASSERT_ERROR(_renderer != nullptr, "Cannot initialize renderer. Renderer with the name '" + pluginFilename + "' cannot be found.");
+        TE_ASSERT_ERROR(_renderers[name] != nullptr, "Cannot initialize renderer. Renderer with the name '" + pluginName + "' cannot be found.");
 
         return nullptr;
     }

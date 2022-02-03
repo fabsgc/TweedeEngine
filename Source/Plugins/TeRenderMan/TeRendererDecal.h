@@ -46,9 +46,8 @@ namespace te
          * Updates the per-call GPU buffer according to the provided parameters.
          *
          * @param[in]	viewProj	Combined view-projection matrix of the current camera.
-         * @param[in]	flush		True if the buffer contents should be immediately flushed to the GPU.
          */
-        void UpdatePerCallBuffer(const Matrix4& viewProj, bool flush = true) const;
+        void UpdatePerCallBuffer(const Matrix4& viewProj) const;
 
         Decal* DecalPtr;
         mutable DecalRenderElement Element;

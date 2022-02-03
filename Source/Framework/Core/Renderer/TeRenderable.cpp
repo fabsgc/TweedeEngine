@@ -44,12 +44,14 @@ namespace te
     Renderable::~Renderable()
     {
         if(_active)
-            gRenderer()->NotifyRenderableRemoved(this);
+        {
+            if (_renderer) _renderer->NotifyRenderableRemoved(this);
+        }
     }
 
     void Renderable::Initialize()
     {
-        gRenderer()->NotifyRenderableAdded(this);
+        if (_renderer) _renderer->NotifyRenderableAdded(this);
         CoreObject::Initialize();
     }
 
@@ -102,14 +104,18 @@ namespace te
             if (_oldActive != GetActive())
             {
                 if (_active)
-                    gRenderer()->NotifyRenderableAdded(this);
+                {
+                    if (_renderer) _renderer->NotifyRenderableAdded(this);
+                }
                 else
-                    gRenderer()->NotifyRenderableRemoved(this);
+                {
+                    if (_renderer) _renderer->NotifyRenderableRemoved(this);
+                }
             }
             else
             {
-                gRenderer()->NotifyRenderableRemoved(this);
-                gRenderer()->NotifyRenderableAdded(this);
+                if (_renderer) _renderer->NotifyRenderableRemoved(this);
+                if (_renderer) _renderer->NotifyRenderableAdded(this);
             }
         }
         else if ((dirtyFlag & (UINT32)ActorDirtyFlag::Mobility) != 0)
@@ -117,21 +123,25 @@ namespace te
             // TODO I'm not sure for that, we might check if SceneActor is active
             if (_active)
             {
-                gRenderer()->NotifyRenderableRemoved(this);
-                gRenderer()->NotifyRenderableAdded(this);
+                if (_renderer) _renderer->NotifyRenderableRemoved(this);
+                if (_renderer) _renderer->NotifyRenderableAdded(this);
             }
         }
         else if ((dirtyFlag & (UINT32)ActorDirtyFlag::Transform) != 0)
         {
             if (_active)
-                gRenderer()->NotifyRenderableUpdated(this);
+            {
+                if (_renderer) _renderer->NotifyRenderableUpdated(this);
+            }
         }
         else if ((dirtyFlag & (UINT32)ActorDirtyFlag::GpuParams) != 0)
         {
             CreateAnimationBuffers();
 
             if (_active)
-                gRenderer()->NotifyRenderableUpdated(this);
+            {
+                if (_renderer) _renderer->NotifyRenderableUpdated(this);
+            }
         }
 
         _oldActive = _active;
@@ -531,6 +541,19 @@ namespace te
     {
         if (_animType == RenderableAnimType::Skinned)
             std::swap(_boneMatrixBuffer, _bonePrevMatrixBuffer);
+    }
+
+    void Renderable::AttachTo(SPtr<Renderer> renderer)
+    {
+        if (_renderer)
+            _renderer->NotifyRenderableRemoved(this);
+
+        _renderer = renderer;
+
+        if (_renderer)
+            _renderer->NotifyRenderableAdded(this);
+
+        _markCoreDirty();
     }
 
     SPtr<Renderable> Renderable::Create()

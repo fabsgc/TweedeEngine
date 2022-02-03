@@ -71,6 +71,11 @@ namespace te
         virtual void NotifyCameraRemoved(Camera* camera) { }
 
         /**
+         * Called whenever all cameas are destroyed
+         */
+        virtual void NotifyCamerasCleared() { }
+
+        /**
          * Called whenever a new renderable is created.
          */
         virtual void NotifyRenderableAdded(Renderable* renderable) { }
@@ -84,6 +89,11 @@ namespace te
          * Called whenever a renderable is destroyed.
          */
         virtual void NotifyRenderableRemoved(Renderable* renderable) { }
+
+        /**
+         * Called whenever all renderables are destroyed
+         */
+        virtual void NotifyRenderablesCleared() { }
 
         /**
          * Called whenever a new light is created.
@@ -101,6 +111,11 @@ namespace te
         virtual void NotifyLightRemoved(Light* light) { }
 
         /**
+         * Called whenever all lights are destroyed
+         */
+        virtual void NotifyLightsCleared() { }
+
+        /**
          * Called whenever a skybox is created.
          */
         virtual void NotifySkyboxAdded(Skybox* skybox) { }
@@ -109,6 +124,11 @@ namespace te
          * Called whenever a skybox is destroyed.
          */
         virtual void NotifySkyboxRemoved(Skybox* skybox) { }
+
+        /**
+         * Called whenever skybow is destroyed
+         */
+        virtual void NotifySkyboxCleared() { }
 
         /**
          * Called whenever a new decal is created.
@@ -126,23 +146,33 @@ namespace te
         virtual void NotifyDecalRemoved(Decal* decal) { }
 
         /**
-         * Call by the user when he went to batch several renderables into only one big renderable.
+         * Called whenever all decals are destroyed
+         */
+        virtual void NotifyDecalsCleared() { }
+
+        /**
+         * Called by the user when he want to batch several renderables into only one big renderable.
          */
         virtual void BatchRenderables() { }
+
+        /**
+         * Called by the user when he want to clear all batched renderables
+         */
+        virtual void DestroyBatchedRenderables() { }
 
         /**
          * Creates a new empty renderer mesh data.
          *
          * @see RendererMeshData
          */
-        virtual SPtr<RendererMeshData> CreateMeshData(UINT32 numVertices, UINT32 numIndices, VertexLayout layout, IndexType indexType = IT_32BIT);
+        static SPtr<RendererMeshData> CreateMeshData(UINT32 numVertices, UINT32 numIndices, VertexLayout layout, IndexType indexType = IT_32BIT);
 
         /**
          * Creates a new renderer mesh data using an existing generic mesh data buffer.
 
          * @see RendererMeshData
          */
-        virtual SPtr<RendererMeshData> CreateMeshData(const SPtr<MeshData>& meshData);
+        static SPtr<RendererMeshData> CreateMeshData(const SPtr<MeshData>& meshData);
 
         /**
          * Save last generated corresponding rendered texture until next call to RenderAll()

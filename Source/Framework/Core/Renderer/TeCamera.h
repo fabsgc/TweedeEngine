@@ -407,13 +407,20 @@ namespace te
         /**	Retrieves an ID that can be used for uniquely identifying this object by the renderer. */
         UINT32 GetRendererId() const { return _rendererId; }
 
+        /** 
+         * You can change at runtime which renderer will handle this camera 
+         * Current renderer will be notified that camera must be removed
+         * And next renderer will be notified that camera must be added
+         */
+        void AttachTo(SPtr<Renderer> renderer = nullptr);
+
         static const float INFINITE_FAR_PLANE_ADJUST; /**< Small constant used to reduce far plane projection to avoid inaccuracies. */
 
     protected:
         friend class CCamera;
 
-        Camera(SPtr<RenderTarget> target = nullptr, float left = 0.0f, float top = 0.0f, float width = 1.0f, float height = 1.0f);
         Camera(const SPtr<Viewport>& viewport);
+        Camera(SPtr<RenderTarget> target = nullptr, float left = 0.0f, float top = 0.0f, float width = 1.0f, float height = 1.0f);
 
         /**	Calculate projection parameters that are used when constructing the projection matrix. */
         virtual void ComputeProjectionParameters(float& left, float& right, float& bottom, float& top) const;
@@ -477,5 +484,6 @@ namespace te
         mutable AABox _boundingBox; /**< Frustum bounding box. */
 
         UINT32 _rendererId;
+        SPtr<Renderer> _renderer; /** Default renderer if this attributes is not filled in constructor. */
     };
 }

@@ -89,6 +89,13 @@ namespace te
         void SetTransform(const Transform& transform) override;
 
         /**
+         * You can change at runtime which renderer will handle this decal
+         * Current renderer will be notified that decal must be removed
+         * And next renderer will be notified that decal must be added
+         */
+        void AttachTo(SPtr<Renderer> renderer = nullptr);
+
+        /**
          * Creates a new decal.
          *
          * @param[in]	material		Material to use when rendering the decal.
@@ -102,15 +109,15 @@ namespace te
         /**	Creates the object with without initializing it. Used for serialization. */
         static SPtr<Decal> CreateEmpty();
 
+    protected:
+        /** Updates the internal bounds for the decal. Call this whenever a property affecting the bounds changes. */
+        void UpdateBounds();
+
         /** @copydoc SceneActor::_markCoreDirty */
         void _markCoreDirty(ActorDirtyFlag flag = ActorDirtyFlag::Everything) override;
 
         /** @copydoc CoreObject::FrameSync */
         void FrameSync() override;
-
-    protected:
-        /** Updates the internal bounds for the decal. Call this whenever a property affecting the bounds changes. */
-        void UpdateBounds();
 
     protected:
         friend class CDecal;
@@ -130,5 +137,7 @@ namespace te
         Vector2 _size = Vector2::ONE;
         UINT64 _layer = 1;
         UINT32 _layerMask = 0xFFFFFFFF;
+
+        SPtr<Renderer> _renderer; /** Default renderer if this attributes is not filled in constructor. */
     };
 }
