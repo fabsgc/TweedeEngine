@@ -18,7 +18,7 @@ namespace te
             float MaxHeight = -FLT_MAX;
 
             HeightFieldInfo(UINT32 width, UINT32 length);
-            ~HeightFieldInfo();
+            virtual ~HeightFieldInfo();
 
             float& GetHeightAt(UINT32 x, UINT32 y) const;
             void SetHeightAt(UINT32 x, UINT32 y, const float& value);

@@ -11,7 +11,7 @@ namespace te
     {
     public:
         BulletFHeightField(const SPtr<Texture>& texture);
-        ~BulletFHeightField();
+        virtual ~BulletFHeightField();
 
         /** Returns height field data */
         SPtr<BulletHeightField::HeightFieldInfo> GetHeightFieldInfo() const { return _heightFieldInfo; }

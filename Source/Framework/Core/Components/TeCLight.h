@@ -14,7 +14,7 @@ namespace te
     class TE_CORE_EXPORT CLight : public Component
     {
     public:
-        ~CLight();
+        virtual ~CLight();
 
         static UINT32 GetComponentType() { return TypeID_Core::TID_CLight; }
 

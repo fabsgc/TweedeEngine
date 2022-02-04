@@ -11,7 +11,7 @@ namespace te
     {
     public:
         Win32RenderWindow(const RENDER_WINDOW_DESC& desc, Win32GLSupport& glsupport);
-        ~Win32RenderWindow();
+        virtual ~Win32RenderWindow();
 
         void Initialize() override;
         void InitializeGui() override;

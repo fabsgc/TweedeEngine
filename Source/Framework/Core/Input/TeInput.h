@@ -55,7 +55,7 @@ namespace te
 
     public:
         Input();
-        ~Input();
+        virtual ~Input();
 
         TE_MODULE_STATIC_HEADER_MEMBER(Input)
 

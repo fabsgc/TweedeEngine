@@ -11,7 +11,7 @@ namespace te
     {
     public:
         BulletSliderJoint(BulletPhysics* physics, BulletScene* scene);
-        ~BulletSliderJoint();
+        virtual ~BulletSliderJoint();
 
         /** @copydoc Joint::Update */
         void Update() override;

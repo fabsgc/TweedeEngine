@@ -30,7 +30,7 @@ namespace te
          * well as a number of indices of the provided type.
          */
         MeshData(UINT32 numVertices, UINT32 numIndexes, const SPtr<VertexDataDesc>& vertexData, IndexType indexType = IT_32BIT);
-        ~MeshData();
+        virtual ~MeshData();
 
         /**
          * Copies data from @p data parameter into the internal buffer for the specified semantic.

@@ -30,7 +30,7 @@ namespace te
          * @param[in]	pluginName	Name of the plugin containing a audio system implementation.
          */
         AudioManager(const String& pluginName);
-        ~AudioManager();
+        virtual ~AudioManager();
 
     private:
         DynLib* _plugin = nullptr;

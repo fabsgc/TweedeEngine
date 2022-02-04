@@ -12,9 +12,6 @@ namespace te
 
     struct RenderableProperties
     {
-        RenderableProperties()
-        { }
-
         bool Instancing  = false;
         bool CanBeMerged = false;
         bool CastShadows = true;
@@ -37,22 +34,19 @@ namespace te
     class TE_CORE_EXPORT Renderable : public CoreObject, public SceneActor, public Serializable
     {
     public:
-        ~Renderable();
-
-        /** @copydoc CoreObject::Initialize */
-        void Initialize() override;
+        virtual ~Renderable();
 
         /** @copydoc SceneActor::Destroy */
         void SetMobility(ObjectMobility mobility) override;
 
-        /** @copydoc SceneActor::_markCoreDirty */
-        void _markCoreDirty(ActorDirtyFlag flag = ActorDirtyFlag::Everything) override;
-
-        /** @copydoc CoreObject::FrameSync */
-        void FrameSync() override;
-
         /** @copydoc SceneActor::SetTransform */
         void SetTransform(const Transform& transform) override;
+
+        /**	Sets an ID that can be used for uniquely identifying this object by the renderer. */
+        void SetRendererId(UINT32 id) { _rendererId = id; }
+
+        /**	Retrieves an ID that can be used for uniquely identifying this object by the renderer. */
+        UINT32 GetRendererId() const { return _rendererId; }
 
         /** Determines the mesh to render. All sub-meshes of the mesh will be rendered, and you may set individual materials for each sub-mesh. */
         void SetMesh(SPtr<Mesh> mesh);
@@ -82,6 +76,23 @@ namespace te
          */
         void SetMaterial(const String& name, const SPtr<Material>& material);
 
+        /**
+         * Determines all materials used for rendering this renderable. Each of the materials is used for rendering a single
+         * sub-mesh. If number of materials is larger than number of sub-meshes, they will be ignored. If lower, the
+         * remaining materials will be removed.
+         */
+        void SetMaterials(const Vector<SPtr<Material>>& materials);
+
+        /** @copydoc SetMaterials */
+        const Vector<SPtr<Material>>& GetMaterials() { return _materials; }
+
+        const SPtr<Material>* GetMaterialsPtr() { return _materials.data(); }
+
+        /**	Returns the material used for rendering a sub-mesh with the specified index. */
+        SPtr<Material> GetMaterial(UINT32 idx) const;
+
+        UINT32 GetNumMaterials() { return (UINT32)_materials.size(); }
+
         /** Remove all the instances of this material used on submesh for this renderable */
         void RemoveMaterial(const SPtr<Material>& material);
 
@@ -94,28 +105,14 @@ namespace te
         /** If a material used by this renderable has been modified, we need to send the notification and refresh gpu params */
         void UpdateMaterials();
 
-        /** @copydoc SetMaterials */
-        const Vector<SPtr<Material>>& GetMaterials() { return _materials; }
-
-        const SPtr<Material>* GetMaterialsPtr() { return _materials.data(); }
-
-        UINT32 GetNumMaterials() { return (UINT32)_materials.size(); }
-
-        /**	Returns the material used for rendering a sub-mesh with the specified index. */
-        SPtr<Material> GetMaterial(UINT32 idx) const;
-
-        /**
-         * Determines all materials used for rendering this renderable. Each of the materials is used for rendering a single
-         * sub-mesh. If number of materials is larger than number of sub-meshes, they will be ignored. If lower, the
-         * remaining materials will be removed.
-         */
-        void SetMaterials(const Vector<SPtr<Material>>& materials);
-
         /**
          * Determines the layer bitfield that controls whether a renderable is considered visible in a specific camera.
          * Renderable layer must match camera layer in order for the camera to render the component.
          */
         void SetLayer(UINT64 layer);
+
+        /** @copydoc SetLayer */
+        UINT64 GetLayer() const { return _layer; }
 
         /**
          * If enabled this renderable will write per-pixel velocity information when rendered. This is required for effects
@@ -162,9 +159,6 @@ namespace te
 
         /** @copydoc SetPorperties */
         const RenderableProperties& GetProperties() { return _properties; }
-
-        /** @copydoc SetLayer */
-        UINT64 GetLayer() const { return _layer; }
 
         /** Factor to be applied to the cull distance set in the camera's render settings.  */
         void SetCullDistanceFactor(float factor);
@@ -226,29 +220,11 @@ namespace te
         /** Returns the GPU buffer containing element's bone matrices for the previous frame, if it has any. */
         const SPtr<GpuBuffer>& GetBonePrevMatrixBuffer() const { return _bonePrevMatrixBuffer; }
 
-        /**	Sets an ID that can be used for uniquely identifying this object by the renderer. */
-        void SetRendererId(UINT32 id) { _rendererId = id; }
-
-        /**	Retrieves an ID that can be used for uniquely identifying this object by the renderer. */
-        UINT32 GetRendererId() const { return _rendererId; }
-
         /** Triggered whenever the renderable's mesh changes. */
         void OnMeshChanged();
 
-        /** Updates animation properties depending on the current mesh. */
-        void RefreshAnimation();
-
          /** @copydoc SceneActor::UpdateState */
         void UpdateState(const SceneObject& so, bool force = false) override;
-
-        /**	Creates a new renderable handler instance. */
-        static SPtr<Renderable> Create();
-
-        /**	Creates a new renderable instance without initializing it. */
-        static SPtr<Renderable> CreateEmpty();
-
-        /** Creates any buffers required for renderable animation. Should be called whenever animation properties change. */
-        void CreateAnimationBuffers();
 
         /**
          * You can change at runtime which renderer will handle this renderable
@@ -257,36 +233,60 @@ namespace te
          */
         void AttachTo(SPtr<Renderer> renderer = nullptr);
 
-    protected:
-        Renderable();
+        /**	Creates a new renderable handler instance. */
+        static SPtr<Renderable> Create();
+
+        /**	Creates a new renderable instance without initializing it. */
+        static SPtr<Renderable> CreateEmpty();
 
     protected:
         friend class CRenderable;
+
+        Renderable();
+
+        /** @copydoc CoreObject::Initialize */
+        void Initialize() override;
+
+    protected:
+        /** Updates animation properties depending on the current mesh. */
+        void RefreshAnimation();
+
+        /** Creates any buffers required for renderable animation. Should be called whenever animation properties change. */
+        void CreateAnimationBuffers();
+
+        /** @copydoc SceneActor::_markCoreDirty */
+        void _markCoreDirty(ActorDirtyFlag flag = ActorDirtyFlag::Everything) override;
+
+        /** @copydoc CoreObject::FrameSync */
+        void FrameSync() override;
+
+    protected:
+        RenderableProperties _properties;
 
         SPtr<Mesh> _mesh;
         Vector<SPtr<Material>> _materials;
         UINT32 _numMaterials = 0;
         UINT64 _layer = 1;
-        UINT32 _rendererId;
+
         Matrix4 _tfrmMatrix = TeIdentity;
         Matrix4 _tfrmMatrixNoScale = TeIdentity;
-
-        RenderableProperties _properties;
 
         // Animation
         RenderableAnimType _animType = RenderableAnimType::None;
         SPtr<Animation> _animation;
-        UINT64 _animationId;
+        UINT64 _animationId = (UINT64)-1;
         SPtr<GpuBuffer> _boneMatrixBuffer;
         SPtr<GpuBuffer> _bonePrevMatrixBuffer;
 
+        // Bounds must updated if we change _mesh or _tfrmMatrix
         Bounds _cachedBounds;
-        bool _boundsDirty; // bounds must updated if we change _mesh or _tfrmMatrix
+        bool _boundsDirty = true; 
 
         // For rendering sorting, it's better to use subMesh bounds instead of mesh bounds
         Vector<Bounds> _subMeshesBounds;
-        bool _subMeshesBoundsDirty;
+        bool _subMeshesBoundsDirty = true;
 
+        UINT32 _rendererId = 0;
         SPtr<Renderer> _renderer; /** Default renderer if this attributes is not filled in constructor. */
     };
 }

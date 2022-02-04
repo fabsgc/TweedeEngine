@@ -54,7 +54,7 @@ namespace te
 
     public:
         D3D11RenderAPI();
-        ~D3D11RenderAPI();
+        virtual ~D3D11RenderAPI();
 
         TE_MODULE_STATIC_HEADER_MEMBER(D3D11RenderAPI)
 

@@ -20,7 +20,7 @@ namespace te
 
     public:
         WidgetMenuBar();
-        ~WidgetMenuBar();
+        virtual ~WidgetMenuBar();
 
         virtual void Initialize() override;
         virtual void Update() override;

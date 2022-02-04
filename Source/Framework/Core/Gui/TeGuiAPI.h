@@ -19,7 +19,7 @@ namespace te
         TE_MODULE_STATIC_HEADER_MEMBER(GuiAPI)
 
         GuiAPI();
-        ~GuiAPI() = default;
+        virtual ~GuiAPI() = default;
 
         /**
           * Initialize Gui context using parameters in data. Data must be a void pointer because GuiAPI is an interface which can be used 

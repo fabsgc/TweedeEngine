@@ -77,7 +77,7 @@ namespace te
     {
     public:
         BuiltinResources();
-        ~BuiltinResources();
+        virtual ~BuiltinResources();
 
         TE_MODULE_STATIC_HEADER_MEMBER(BuiltinResources)
 

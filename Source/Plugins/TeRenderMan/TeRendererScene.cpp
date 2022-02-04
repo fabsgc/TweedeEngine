@@ -621,6 +621,9 @@ namespace te
     {
         RendererRenderable* rendererRenderable = _info.Renderables[idx];
 
+        if (frameInfo.PerFrameDatas.Animation != nullptr)
+            rendererRenderable->RenderablePtr->UpdatePrevFrameAnimationBuffers();
+
         if (rendererRenderable->PreviousFrameDirtyState != PrevFrameDirtyState::Clean)
         {
             if (rendererRenderable->PreviousFrameDirtyState == PrevFrameDirtyState::Updated)

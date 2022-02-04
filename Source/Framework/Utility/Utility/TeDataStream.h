@@ -181,7 +181,7 @@ namespace te
     public:
         FileStream(UINT8 mode = static_cast<UINT8>(READ));
         FileStream(const String& path, UINT8 mode = static_cast<UINT8>(READ));
-        ~FileStream();
+        virtual ~FileStream();
 
         /** @copydoc DataStream::IsFile */
         bool IsFile() const override { return true; }
@@ -278,7 +278,7 @@ namespace te
 
         /** Inherits the data from the provided stream, invalidating the source stream. */
         MemoryDataStream(MemoryDataStream&& other) noexcept;
-        ~MemoryDataStream();
+        virtual ~MemoryDataStream();
 
         MemoryDataStream& operator= (const MemoryDataStream& other);
         MemoryDataStream& operator= (MemoryDataStream&& other) noexcept;

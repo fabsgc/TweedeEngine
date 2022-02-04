@@ -89,7 +89,7 @@ namespace te
     {
     public:
         RenderWindow(const RENDER_WINDOW_DESC& desc);
-        ~RenderWindow();
+        virtual ~RenderWindow();
 
         void TriggerCallback();
 

@@ -52,7 +52,7 @@ namespace te
     class GLVertexArrayObjectManager : public Module<GLVertexArrayObjectManager>
     {
     public:
-        ~GLVertexArrayObjectManager();
+        virtual ~GLVertexArrayObjectManager();
 
         /**
          * Attempts to find an existing vertex array object matching the provided set of vertex buffers, vertex declaration,

@@ -11,7 +11,7 @@ namespace te
         TE_MODULE_STATIC_HEADER_MEMBER(CoreObjectManager)
 
         CoreObjectManager();
-        ~CoreObjectManager();
+        virtual ~CoreObjectManager();
 
         /** Generates a new unique ID for a core object. */
         UINT64 GenerateId();

@@ -13,7 +13,7 @@ namespace te
         struct Pimpl;
 
         GamePad(const String& name, const GamePadInfo& gamepadInfo, Input* owner);
-        ~GamePad();
+        virtual ~GamePad();
 
         /** Returns the name of the device. */
         const String& getName() const { return _name; }

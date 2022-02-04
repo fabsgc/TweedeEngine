@@ -1217,6 +1217,9 @@ namespace te
         _runningSceneSO->SetActive(false);
         _runningSceneSO->SetActive(true);
         
+        // Note : CJoint elements will not work when running the scene from the editor
+        // because we can't easly associate cloned joint to cloned bodies
+        // TODO : Find a way to associate joints to their bodies in the cloned scene
     }
 
     /** When editor goes to stop mode, we destroy to copied scene and restore the original one */
@@ -1257,10 +1260,10 @@ namespace te
 
         // LOAD KNIGHT.DAE RESOURCES
         // ######################################################
-        //auto knightResources = EditorResManager::Instance().LoadAll("Data/Meshes/Knight/Knight.dae", meshAnimImportOptions);
+        auto knightResources = EditorResManager::Instance().LoadAll("Data/Meshes/Knight/Knight.dae", meshAnimImportOptions);
 
-        //_loadedMeshKnight = static_resource_cast<Mesh>(knightResources->Entries[0].Res);
-        //_animationClipKnight = static_resource_cast<AnimationClip>(knightResources->Entries[2].Res);
+        _loadedMeshKnight = static_resource_cast<Mesh>(knightResources->Entries[0].Res);
+        _animationClipKnight = static_resource_cast<AnimationClip>(knightResources->Entries[1].Res);
         // ######################################################
 
         // LOAD MESH AND TEXTURES RESOURCES
@@ -1497,7 +1500,8 @@ namespace te
             _rigidBodyKnight->SetCollisionReportMode(CollisionReportMode::ReportPersistent);
             _rigidBodyKnight->Initialize();
             _boxColliderKnight = _sceneRenderableKnightSO->AddComponent<CBoxCollider>();
-            _boxColliderKnight->SetScale(Vector3(1.0f, 2.0f, 1.0f));
+            _boxColliderKnight->SetExtents(Vector3(0.25f, 0.85f, 0.4f));
+            _boxColliderKnight->SetPosition(Vector3(0.0f, 0.85f, 0.0f));
             _boxColliderKnight->Initialize();
         }
 

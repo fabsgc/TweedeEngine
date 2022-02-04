@@ -13,11 +13,6 @@ namespace te
 
     Camera::Camera(SPtr<RenderTarget> target, float left, float top, float width, float height)
         : Serializable(TID_Camera)
-        , _cameraFlags(0)
-        , _needComputeFrustum(true)
-        , _needComputeFrustumPlanes(true)
-        , _needComputeView(true)
-        , _rendererId(0)
     {
         InvalidateFrustum();
         _viewport = Viewport::Create(target, left, top, width, height);
@@ -26,11 +21,6 @@ namespace te
 
     Camera::Camera(const SPtr<Viewport>& viewport)
         : Serializable(TID_Camera)
-        , _cameraFlags(0)
-        , _needComputeFrustum(true)
-        , _needComputeFrustumPlanes(true)
-        , _needComputeView(true) 
-        , _rendererId(0)
     {
         InvalidateFrustum();
         _viewport = viewport;
@@ -39,7 +29,10 @@ namespace te
 
     Camera::~Camera()
     { 
-        if (_renderer) _renderer->NotifyCameraRemoved(this);
+        if (_active)
+        {
+            if (_renderer) _renderer->NotifyCameraRemoved(this);
+        }
     }
 
     void Camera::Initialize()
@@ -55,46 +48,10 @@ namespace te
         CoreObject::Destroy();
     }
 
-    void Camera::_markCoreDirty(ActorDirtyFlag flag)
-    {
-        MarkCoreDirty((UINT32)flag);
-    }
-
-    void Camera::FrameSync()
-    {
-        UINT32 dirtyFlag = GetCoreDirtyFlags();
-
-        if ((dirtyFlag & ~(INT32)CameraDirtyFlag::Redraw) != 0)
-        {
-            _needComputeFrustum = true;
-            _needComputeFrustumPlanes = true;
-            _needComputeView = true;
-        }
-
-        if (_renderer) _renderer->NotifyCameraUpdated(this, (UINT32)dirtyFlag);
-    }
-
     void Camera::SetMobility(ObjectMobility mobility)
     {
         SceneActor::SetMobility(mobility);
         _markCoreDirty(ActorDirtyFlag::Mobility);
-    }
-
-    /** Returns the viewport used by the camera. */
-    void Camera::SetRenderTarget(SPtr<RenderTarget> renderTarget)
-    {
-        _viewport->SetTarget(renderTarget);
-        _markCoreDirty();
-    }
-
-    SPtr<Camera> Camera::Create()
-    {
-        Camera* camera = new (te_allocate<Camera>()) Camera();
-        SPtr<Camera> handlerPtr = te_core_ptr<Camera>(camera);
-        handlerPtr->SetThisPtr(handlerPtr);
-        handlerPtr->Initialize();
-
-        return handlerPtr;
     }
 
     void Camera::SetTransform(const Transform& transform)
@@ -103,6 +60,13 @@ namespace te
         _needComputeView = true;
         _markCoreDirty(ActorDirtyFlag::Transform);
     }
+
+    /** Returns the viewport used by the camera. */
+    void Camera::SetRenderTarget(SPtr<RenderTarget> renderTarget)
+    {
+        _viewport->SetTarget(renderTarget);
+        _markCoreDirty();
+    }   
 
     void Camera::SetFlags(UINT32 flags)
     {
@@ -151,6 +115,19 @@ namespace te
     float Camera::GetAspectRatio() const
     {
         return _aspect;
+    }
+
+    void Camera::SetProjectionType(ProjectionType pt)
+    {
+        _projType = pt;
+
+        InvalidateFrustum();
+        _markCoreDirty();
+    }
+
+    ProjectionType Camera::GetProjectionType() const
+    {
+        return _projType;
     }
 
     const Matrix4& Camera::GetProjectionMatrixRS() const
@@ -220,19 +197,6 @@ namespace te
     {
         UpdateFrustum();
         return _boundingBox;
-    }
-
-    void Camera::SetProjectionType(ProjectionType pt)
-    {
-        _projType = pt;
-
-        InvalidateFrustum();
-        _markCoreDirty();
-    }
-
-    ProjectionType Camera::GetProjectionType() const
-    {
-        return _projType;
     }
 
     void Camera::SetOrthoWindow(float w, float h)
@@ -477,9 +441,36 @@ namespace te
         return Vector3(0.0f, 0.0f, 0.0f);
     }
 
+    Rect2I Camera::GetViewportRect() const
+    {
+        return _viewport->GetPixelArea();
+    }
+
+    void Camera::AttachTo(SPtr<Renderer> renderer)
+    {
+        if (_renderer)
+            _renderer->NotifyCameraRemoved(this);
+
+        _renderer = renderer;
+
+        if (_renderer)
+            _renderer->NotifyCameraAdded(this);
+
+        _markCoreDirty();
+    }
+
+    SPtr<Camera> Camera::Create()
+    {
+        Camera* camera = new (te_allocate<Camera>()) Camera();
+        SPtr<Camera> handlerPtr = te_core_ptr<Camera>(camera);
+        handlerPtr->SetThisPtr(handlerPtr);
+        handlerPtr->Initialize();
+
+        return handlerPtr;
+    }
+
     void Camera::ComputeProjectionParameters(float& left, float& right, float& bottom, float& top) const
     {
-
         if (_projType == PT_PERSPECTIVE)
         {
             Radian thetaX(_horzFOV * 0.5f);
@@ -679,21 +670,22 @@ namespace te
         _needComputeFrustumPlanes = true;
     }
 
-    Rect2I Camera::GetViewportRect() const
+    void Camera::_markCoreDirty(ActorDirtyFlag flag)
     {
-        return _viewport->GetPixelArea();
+        MarkCoreDirty((UINT32)flag);
     }
 
-    void Camera::AttachTo(SPtr<Renderer> renderer)
+    void Camera::FrameSync()
     {
-        if (_renderer)
-            _renderer->NotifyCameraRemoved(this);
+        UINT32 dirtyFlag = GetCoreDirtyFlags();
 
-        _renderer = renderer;
+        if ((dirtyFlag & ~(INT32)CameraDirtyFlag::Redraw) != 0)
+        {
+            _needComputeFrustum = true;
+            _needComputeFrustumPlanes = true;
+            _needComputeView = true;
+        }
 
-        if(_renderer)
-            _renderer->NotifyCameraAdded(this);
-
-        _markCoreDirty();
+        if (_renderer) _renderer->NotifyCameraUpdated(this, (UINT32)dirtyFlag);
     }
 }

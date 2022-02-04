@@ -15,7 +15,7 @@ namespace te
     class TE_CORE_EXPORT CDecal : public Component
     {
     public:
-        ~CDecal();
+        virtual ~CDecal();
 
         /** @copydoc Component::GetComponentType */
         static UINT32 GetComponentType() { return TypeID_Core::TID_CDecal; }

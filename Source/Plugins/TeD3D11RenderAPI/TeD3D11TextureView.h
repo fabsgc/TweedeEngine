@@ -9,7 +9,7 @@ namespace te
     class D3D11TextureView : public TextureView
     {
     public:
-        ~D3D11TextureView();
+        virtual ~D3D11TextureView();
 
         /**
          * Returns a shader resource view. Caller must take care this texture view actually contains a shader resource view,

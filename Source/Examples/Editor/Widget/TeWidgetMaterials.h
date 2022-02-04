@@ -12,7 +12,7 @@ namespace te
     {
     public:
         WidgetMaterials();
-        ~WidgetMaterials();
+        virtual ~WidgetMaterials();
 
         virtual void Initialize() override;
         virtual void Update() override;

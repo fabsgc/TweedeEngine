@@ -35,10 +35,6 @@ namespace te
 
     Renderable::Renderable()
         : Serializable(TID_Renderable)
-        , _rendererId(0)
-        , _animationId((UINT64)-1)
-        , _boundsDirty(true)
-        , _subMeshesBoundsDirty(true)
     { }
 
     Renderable::~Renderable()
@@ -53,98 +49,6 @@ namespace te
     {
         if (_renderer) _renderer->NotifyRenderableAdded(this);
         CoreObject::Initialize();
-    }
-
-    void Renderable::OnMeshChanged()
-    {
-        RefreshAnimation();
-        _markCoreDirty();
-    }
-
-    void Renderable::RefreshAnimation()
-    {
-        if (_animation == nullptr)
-        {
-            _animType = RenderableAnimType::None;
-            return;
-        }
-
-        if (_mesh)
-        {
-            SPtr<Skeleton> skeleton = _mesh->GetSkeleton();
-
-            if (skeleton != nullptr)
-                _animType = RenderableAnimType::Skinned;
-            else
-                _animType = RenderableAnimType::None;
-
-            _animation->SetSkeleton(_mesh->GetSkeleton());
-        }
-        else
-        {
-            _animType = RenderableAnimType::None;
-            _animation->SetSkeleton(nullptr);
-        }
-    }
-
-    void Renderable::_markCoreDirty(ActorDirtyFlag flag) 
-    {
-        MarkCoreDirty((UINT32)flag);
-    }
-
-    void Renderable::FrameSync()
-    {
-        UINT32 dirtyFlag = GetCoreDirtyFlags();
-        UINT32 updateEverythingFlag = (UINT32)ActorDirtyFlag::Everything | (UINT32)ActorDirtyFlag::Active;
-
-        if ((dirtyFlag & updateEverythingFlag) != 0)
-        {
-            CreateAnimationBuffers();
-
-            if (_oldActive != GetActive())
-            {
-                if (_active)
-                {
-                    if (_renderer) _renderer->NotifyRenderableAdded(this);
-                }
-                else
-                {
-                    if (_renderer) _renderer->NotifyRenderableRemoved(this);
-                }
-            }
-            else
-            {
-                if (_renderer) _renderer->NotifyRenderableRemoved(this);
-                if (_renderer) _renderer->NotifyRenderableAdded(this);
-            }
-        }
-        else if ((dirtyFlag & (UINT32)ActorDirtyFlag::Mobility) != 0)
-        {
-            // TODO I'm not sure for that, we might check if SceneActor is active
-            if (_active)
-            {
-                if (_renderer) _renderer->NotifyRenderableRemoved(this);
-                if (_renderer) _renderer->NotifyRenderableAdded(this);
-            }
-        }
-        else if ((dirtyFlag & (UINT32)ActorDirtyFlag::Transform) != 0)
-        {
-            if (_active)
-            {
-                if (_renderer) _renderer->NotifyRenderableUpdated(this);
-            }
-        }
-        else if ((dirtyFlag & (UINT32)ActorDirtyFlag::GpuParams) != 0)
-        {
-            CreateAnimationBuffers();
-
-            if (_active)
-            {
-                if (_renderer) _renderer->NotifyRenderableUpdated(this);
-            }
-        }
-
-        _oldActive = _active;
     }
 
     void Renderable::SetMobility(ObjectMobility mobility)
@@ -203,22 +107,6 @@ namespace te
         _markCoreDirty(ActorDirtyFlag::GpuParams);
     }
 
-    /** Remove all the instances of this material used on submesh for this renderable */
-    void Renderable::RemoveMaterial(const SPtr<Material>& material)
-    {
-        if (!_mesh)
-            return;
-
-        for(auto& element : _materials)
-        {
-            if (element == material)
-            {
-                element = nullptr;
-                _markCoreDirty(ActorDirtyFlag::GpuParams);
-            }
-        }
-    }
-
     void Renderable::SetMaterials(const Vector<SPtr<Material>>& materials)
     {
         if (!_mesh)
@@ -254,7 +142,7 @@ namespace te
                 SetMaterial(i, material);
             }
         }
-        
+
         _markCoreDirty(ActorDirtyFlag::GpuParams);
     }
 
@@ -265,7 +153,7 @@ namespace te
 
         UINT32 numSubMeshes = _mesh->GetProperties().GetNumSubMeshes();
         UINT32 assignedSubMeshed = 0;
-        
+
         for (UINT32 i = 0; i < numSubMeshes; i++)
         {
             const SubMesh& subMesh = _mesh->GetProperties().GetSubMesh(i);
@@ -280,6 +168,30 @@ namespace te
 
         if (assignedSubMeshed == 0)
             TE_DEBUG("No submesh currently use the material {" + name + "} in {" + _mesh->GetName() + "}");
+    }
+
+    SPtr<Material> Renderable::GetMaterial(UINT32 idx) const
+    {
+        if (idx >= (UINT32)_materials.size())
+            return nullptr;
+
+        return _materials[idx];
+    }
+
+    /** Remove all the instances of this material used on submesh for this renderable */
+    void Renderable::RemoveMaterial(const SPtr<Material>& material)
+    {
+        if (!_mesh)
+            return;
+
+        for(auto& element : _materials)
+        {
+            if (element == material)
+            {
+                element = nullptr;
+                _markCoreDirty(ActorDirtyFlag::GpuParams);
+            }
+        }
     }
 
     void Renderable::ClearAllMaterials()
@@ -304,14 +216,6 @@ namespace te
     void Renderable::UpdateMaterials()
     {
         _markCoreDirty(ActorDirtyFlag::GpuParams);
-    }
-
-    SPtr<Material> Renderable::GetMaterial(UINT32 idx) const
-    {
-        if (idx >= (UINT32)_materials.size())
-            return nullptr;
-
-        return _materials[idx];
     }
 
     void Renderable::SetLayer(UINT64 layer)
@@ -433,73 +337,6 @@ namespace te
         return returnBounds;
     }
 
-    void Renderable::UpdateState(const SceneObject& so, bool force)
-    {
-        UINT32 curHash = so.GetTransformHash();
-        if (curHash != _hash || force)
-        {
-            // If skinned animation, don't include own transform since that will be handled by root bone animation
-            bool ignoreOwnTransform;
-            if (_animType == RenderableAnimType::Skinned)
-                ignoreOwnTransform = _animation->GetAnimatesRoot();
-            else
-                ignoreOwnTransform = false;
-
-            if (ignoreOwnTransform)
-            {
-                // Note: Technically we're checking child's hash but using parent's transform. Ideally we check the parent's
-                // hash to reduce the number of required updates.
-                HSceneObject parentSO = so.GetParent();
-                if (parentSO != nullptr)
-                    SetTransform(parentSO->GetTransform());
-                else
-                    SetTransform(Transform());
-            }
-            else
-            {
-                SetTransform(so.GetTransform());
-            }
-
-            _hash = curHash;
-        }
-
-        // Hash now matches so transform won't be applied twice, so we can just call base class version
-        SceneActor::UpdateState(so, force);
-    }
-
-    void Renderable::CreateAnimationBuffers()
-    {
-        if (_animType == RenderableAnimType::Skinned)
-        {
-            SPtr<Skeleton> skeleton = _mesh->GetSkeleton();
-            UINT32 numBones = skeleton != nullptr ? skeleton->GetNumBones() : 0;
-
-            if (numBones > 0)
-            {
-                // If matrix buffer already exists, we don't want to destory it
-                if(!_boneMatrixBuffer) 
-                {
-                    _boneMatrixBuffer = CreateBoneMatrixBuffer(numBones);
-
-                    if (_properties.WriteVelocity)
-                        _bonePrevMatrixBuffer = CreateBoneMatrixBuffer(numBones);
-                    else
-                        _bonePrevMatrixBuffer = nullptr;
-                }
-            }
-            else
-            {
-                _boneMatrixBuffer = nullptr;
-                _bonePrevMatrixBuffer = nullptr;
-            }
-        }
-        else
-        {
-            _boneMatrixBuffer = nullptr;
-            _bonePrevMatrixBuffer = nullptr;
-        }
-    }
-
     void Renderable::UpdateAnimationBuffers(const EvaluatedAnimationData& animData)
     {
         if (_animationId == (UINT64)-1)
@@ -543,6 +380,46 @@ namespace te
             std::swap(_boneMatrixBuffer, _bonePrevMatrixBuffer);
     }
 
+    void Renderable::OnMeshChanged()
+    {
+        RefreshAnimation();
+        _markCoreDirty();
+    }
+
+    void Renderable::UpdateState(const SceneObject& so, bool force)
+    {
+        UINT32 curHash = so.GetTransformHash();
+        if (curHash != _hash || force)
+        {
+            // If skinned animation, don't include own transform since that will be handled by root bone animation
+            bool ignoreOwnTransform;
+            if (_animType == RenderableAnimType::Skinned)
+                ignoreOwnTransform = _animation->GetAnimatesRoot();
+            else
+                ignoreOwnTransform = false;
+
+            if (ignoreOwnTransform)
+            {
+                // Note: Technically we're checking child's hash but using parent's transform. Ideally we check the parent's
+                // hash to reduce the number of required updates.
+                HSceneObject parentSO = so.GetParent();
+                if (parentSO != nullptr)
+                    SetTransform(parentSO->GetTransform());
+                else
+                    SetTransform(Transform());
+            }
+            else
+            {
+                SetTransform(so.GetTransform());
+            }
+
+            _hash = curHash;
+        }
+
+        // Hash now matches so transform won't be applied twice, so we can just call base class version
+        SceneActor::UpdateState(so, force);
+    }
+
     void Renderable::AttachTo(SPtr<Renderer> renderer)
     {
         if (_renderer)
@@ -571,5 +448,124 @@ namespace te
         handlerPtr->SetThisPtr(handlerPtr);
 
         return handlerPtr;
+    }
+
+    void Renderable::RefreshAnimation()
+    {
+        if (_animation == nullptr)
+        {
+            _animType = RenderableAnimType::None;
+            return;
+        }
+
+        if (_mesh)
+        {
+            SPtr<Skeleton> skeleton = _mesh->GetSkeleton();
+
+            if (skeleton != nullptr)
+                _animType = RenderableAnimType::Skinned;
+            else
+                _animType = RenderableAnimType::None;
+
+            _animation->SetSkeleton(_mesh->GetSkeleton());
+        }
+        else
+        {
+            _animType = RenderableAnimType::None;
+            _animation->SetSkeleton(nullptr);
+        }
+    }
+
+    void Renderable::CreateAnimationBuffers()
+    {
+        if (_animType == RenderableAnimType::Skinned)
+        {
+            SPtr<Skeleton> skeleton = _mesh->GetSkeleton();
+            UINT32 numBones = skeleton != nullptr ? skeleton->GetNumBones() : 0;
+
+            if (numBones > 0)
+            {
+                // If matrix buffer already exists, we don't want to destory it
+                if(!_boneMatrixBuffer) 
+                {
+                    _boneMatrixBuffer = CreateBoneMatrixBuffer(numBones);
+
+                    if (_properties.WriteVelocity)
+                        _bonePrevMatrixBuffer = CreateBoneMatrixBuffer(numBones);
+                    else
+                        _bonePrevMatrixBuffer = nullptr;
+                }
+            }
+            else
+            {
+                _boneMatrixBuffer = nullptr;
+                _bonePrevMatrixBuffer = nullptr;
+            }
+        }
+        else
+        {
+            _boneMatrixBuffer = nullptr;
+            _bonePrevMatrixBuffer = nullptr;
+        }
+    }
+
+    void Renderable::_markCoreDirty(ActorDirtyFlag flag)
+    {
+        MarkCoreDirty((UINT32)flag);
+    }
+
+    void Renderable::FrameSync()
+    {
+        UINT32 dirtyFlag = GetCoreDirtyFlags();
+        UINT32 updateEverythingFlag = (UINT32)ActorDirtyFlag::Everything | (UINT32)ActorDirtyFlag::Active;
+
+        if ((dirtyFlag & updateEverythingFlag) != 0)
+        {
+            CreateAnimationBuffers();
+
+            if (_oldActive != GetActive())
+            {
+                if (_active)
+                {
+                    if (_renderer) _renderer->NotifyRenderableAdded(this);
+                }
+                else
+                {
+                    if (_renderer) _renderer->NotifyRenderableRemoved(this);
+                }
+            }
+            else
+            {
+                if (_renderer) _renderer->NotifyRenderableRemoved(this);
+                if (_renderer) _renderer->NotifyRenderableAdded(this);
+            }
+        }
+        else if ((dirtyFlag & (UINT32)ActorDirtyFlag::Mobility) != 0)
+        {
+            // TODO I'm not sure for that, we might check if SceneActor is active
+            if (_active)
+            {
+                if (_renderer) _renderer->NotifyRenderableRemoved(this);
+                if (_renderer) _renderer->NotifyRenderableAdded(this);
+            }
+        }
+        else if ((dirtyFlag & (UINT32)ActorDirtyFlag::Transform) != 0)
+        {
+            if (_active)
+            {
+                if (_renderer) _renderer->NotifyRenderableUpdated(this);
+            }
+        }
+        else if ((dirtyFlag & (UINT32)ActorDirtyFlag::GpuParams) != 0)
+        {
+            CreateAnimationBuffers();
+
+            if (_active)
+            {
+                if (_renderer) _renderer->NotifyRenderableUpdated(this);
+            }
+        }
+
+        _oldActive = _active;
     }
 }

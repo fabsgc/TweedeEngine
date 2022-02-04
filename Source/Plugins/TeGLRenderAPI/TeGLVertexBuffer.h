@@ -12,7 +12,7 @@ namespace te
     {
     public:
         GLVertexBuffer(const VERTEX_BUFFER_DESC& desc, GpuDeviceFlags deviceMask);
-        ~GLVertexBuffer();
+        virtual ~GLVertexBuffer();
 
         /**	Returns internal OpenGL buffer ID. */
         GLuint GetGLBufferId() const { return static_cast<GLHardwareBuffer*>(_buffer)->GetGLBufferId(); }

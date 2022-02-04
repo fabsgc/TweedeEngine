@@ -14,7 +14,7 @@ namespace te
     class TE_CORE_EXPORT CCamera : public Component
     {
     public:
-        ~CCamera();
+        virtual ~CCamera();
 
         /** Return Component type */
         static UINT32 GetComponentType() { return TypeID_Core::TID_CCamera; }

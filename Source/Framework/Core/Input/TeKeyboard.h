@@ -11,7 +11,7 @@ namespace te
         struct Pimpl;
 
         Keyboard(const String& name, Input* owner);
-        ~Keyboard();
+        virtual ~Keyboard();
 
         /** Returns the name of the device. */
         const String& getName() const { return _name; }

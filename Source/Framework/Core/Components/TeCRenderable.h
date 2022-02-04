@@ -15,7 +15,7 @@ namespace te
     class TE_CORE_EXPORT CRenderable : public Component
     {
     public:
-        ~CRenderable();
+        virtual ~CRenderable();
 
         /** @copydoc Component::GetComponentType */
         static UINT32 GetComponentType() { return TypeID_Core::TID_CRenderable; }

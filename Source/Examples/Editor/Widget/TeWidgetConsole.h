@@ -9,7 +9,7 @@ namespace te
     {
     public:
         WidgetConsole();
-        ~WidgetConsole();
+        virtual ~WidgetConsole();
 
         virtual void Initialize() override;
         virtual void Update() override;

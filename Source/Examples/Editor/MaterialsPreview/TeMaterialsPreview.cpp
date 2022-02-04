@@ -145,7 +145,6 @@ namespace te
         _camera->SetAspectRatio(1.0f);
         _camera->SetFlags((UINT32)CameraFlag::OnDemand);
         _camera->GetViewport()->SetClearColorValue(BackgroundColor);
-        _camera->Initialize();
 
         Transform tfrm = _camera->GetTransform();
         tfrm.Move(Vector3(1.0f, 1.6f, 1.6f));

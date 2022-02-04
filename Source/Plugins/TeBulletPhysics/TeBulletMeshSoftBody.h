@@ -11,7 +11,7 @@ namespace te
     {
     public:
         BulletMeshSoftBody(BulletPhysics* physics, BulletScene* scene, const HSceneObject& linkedSO);
-        ~BulletMeshSoftBody();
+        virtual ~BulletMeshSoftBody();
 
         /** @copydoc Body::Update */
         void Update() override;

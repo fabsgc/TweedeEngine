@@ -119,9 +119,6 @@ namespace te
     {
         SHADER_DESC();
 
-        ~SHADER_DESC()
-        { }
-
         /**
          * Registers a new data (int, Vector2, etc.) parameter you that you may then use via Material by providing the
          * parameter name. All parameters internally map to variables defined in GPU programs.

@@ -54,8 +54,14 @@ namespace te
             return false;
         }
 
-        if (CJoint::Clone(static_object_cast<CJoint>(c), suffix))
+        if (Component::Clone(c.GetInternalPtr(), suffix))
         {
+            // Note : _bodies should not be copied, as we surely don't want 
+            // to apply twice the same constraint of the two same bodies
+            // Moreover, in case we are cloning a whole part of the scene
+            // We don't want that this joint to be linked to the original
+            // SceneObjects
+
             _breakForce = c->_breakForce;
             _breakTorque = c->_breakTorque;
             _enableCollision = c->_enableCollision;
@@ -86,7 +92,7 @@ namespace te
 
     void CJoint::SetBody(JointBody body, const HRigidBody& value)
     {
-        if (value->GetComponentType() != (UINT32)TID_CRigidBody)
+        if (value && value->GetComponentType() != (UINT32)TID_CRigidBody)
             return;
 
         if (_bodies[(int)body] == value)

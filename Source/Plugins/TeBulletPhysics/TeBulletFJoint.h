@@ -10,7 +10,7 @@ namespace te
     {
     public:
         BulletFJoint(BulletPhysics* physics, BulletScene* scene, BulletJoint* parent);
-        ~BulletFJoint();
+        virtual ~BulletFJoint();
 
         BulletJoint* GetJoint() const { return _parent; }
 

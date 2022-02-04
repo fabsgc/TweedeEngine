@@ -31,7 +31,7 @@ namespace te
 
     public:
         RendererUtility();
-        ~RendererUtility() = default;
+        virtual ~RendererUtility() = default;
 
         TE_MODULE_STATIC_HEADER_MEMBER(RendererUtility)
 

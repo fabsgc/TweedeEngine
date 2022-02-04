@@ -32,7 +32,7 @@ namespace te
     {
     public:
         D3D11VideoOutputInfo(IDXGIOutput* output, UINT32 outputIdx);
-        ~D3D11VideoOutputInfo();
+        virtual ~D3D11VideoOutputInfo();
 
         /** Returns the internal DXGI object representing an output device. */
         IDXGIOutput* GetDXGIOutput() const { return _DXGIOutput;  }

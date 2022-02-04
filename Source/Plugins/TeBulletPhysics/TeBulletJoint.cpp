@@ -18,9 +18,9 @@ namespace te
         RigidBody* targetBody = _joint->GetBody(JointBody::Target);
 
         if(anchorBody)
-            anchorBody->RemoveJoint((Joint*)this);
+            anchorBody->RemoveJoint(_joint);
         if(targetBody)
-            targetBody->RemoveJoint((Joint*)this);
+            targetBody->RemoveJoint(_joint);
     }
 
     btCollisionObject* BulletJoint::GetBtCollisionObject(BodyInfo* info)

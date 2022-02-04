@@ -225,7 +225,7 @@ namespace te
     class TE_CORE_EXPORT Animation : public CoreObject, public Serializable
     {
     public:
-        ~Animation();
+        virtual ~Animation();
 
         /**
          * Changes the skeleton which will the translation/rotation/scale animation values manipulate. If no skeleton is set

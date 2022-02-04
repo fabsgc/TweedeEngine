@@ -52,7 +52,7 @@ namespace te
         friend class SceneManager;
 
     public:
-        ~SceneObject();
+        virtual ~SceneObject();
 
         /**
          * Creates a new SceneObject with the specified name. Object will be placed in the top of the scene hierarchy.

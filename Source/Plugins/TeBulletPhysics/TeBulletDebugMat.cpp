@@ -25,7 +25,8 @@ namespace te
     void BulletDebugMat::BindDebugElements(const InstanceIter& begin, const InstanceIter& end)
     {
         UINT32 i = 0;
-        for (auto iter = begin; iter != end; iter++, i++)
+        auto iter = begin;
+        for (; iter != end; iter++, i++)
             _perInstanceParamDef.gInstances.Set(_perInstanceParamBuffer, **iter, (UINT32)i);
     }
 }

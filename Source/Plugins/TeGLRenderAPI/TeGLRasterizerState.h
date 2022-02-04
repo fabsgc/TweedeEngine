@@ -9,7 +9,7 @@ namespace te
     class GLRasterizerState : public RasterizerState
     {
     public:
-        ~GLRasterizerState();
+        virtual ~GLRasterizerState();
 
     protected:
         friend class GLRenderStateManager;

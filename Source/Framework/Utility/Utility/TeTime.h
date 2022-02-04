@@ -12,7 +12,7 @@ namespace te
     {
     public:
         Time();
-        ~Time() {}
+        virtual ~Time() = default;
 
         TE_MODULE_STATIC_HEADER_MEMBER(Time)
 

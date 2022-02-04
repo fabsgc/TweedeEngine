@@ -10,7 +10,7 @@ namespace te
     class GLGpuBuffer : public GpuBuffer
     {
     public:
-        ~GLGpuBuffer();
+        virtual ~GLGpuBuffer();
 
         /**
          * Returns internal OpenGL buffer ID. If binding the buffer to the pipeline, bind the texture using

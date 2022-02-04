@@ -9,7 +9,7 @@ namespace te
     {
     public:
         WidgetRenderOptions();
-        ~WidgetRenderOptions();
+        virtual ~WidgetRenderOptions();
 
         virtual void Initialize() override;
         virtual void Update() override;

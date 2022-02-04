@@ -43,16 +43,22 @@ namespace te
     class TE_CORE_EXPORT Camera : public CoreObject, public SceneActor, public Serializable
     {
     public:
-        ~Camera();
-
-        /** @copydoc CoreObject::Initialize */
-        void Initialize() override;
+        virtual ~Camera();
 
         /** @copydoc CoreObject::Destroy */
         void Destroy() override;
 
         /** @copydoc SceneActor::Destroy */
         void SetMobility(ObjectMobility mobility) override;
+
+        /** @copydoc SceneActor::SetTransform */
+        void SetTransform(const Transform& transform) override;
+
+        /**	Sets an ID that can be used for uniquely identifying this object by the renderer. */
+        void SetRendererId(UINT32 id) { _rendererId = id; }
+
+        /**	Retrieves an ID that can be used for uniquely identifying this object by the renderer. */
+        UINT32 GetRendererId() const { return _rendererId; }
 
         /**
          * Determines whether this is the main application camera. Main camera controls the final render surface that is
@@ -63,16 +69,10 @@ namespace te
         /** @copydoc SetMain */
         bool IsMain() const { return _main; }
 
-        /** Creates a new camera that renders to the specified portion of the provided render target. */
-        static SPtr<Camera> Create();
-
         /** Returns the viewport used by the camera. */
         const SPtr<Viewport> GetViewport() { return _viewport; }
 
         void SetRenderTarget(SPtr<RenderTarget> renderTarget);
-
-        /** @copydoc SceneActor::SetTransform */
-        void SetTransform(const Transform& transform) override;
 
         /** Determines flags used for controlling the camera behaviour. */
         void SetFlags(UINT32 flag);
@@ -113,6 +113,12 @@ namespace te
         /** @copydoc SetAspectRatio */
         virtual float GetAspectRatio() const;
 
+        /** Determines the type of projection used by the camera. Projection type controls how is 3D geometry projected onto a 2D plane. */
+        virtual void SetProjectionType(ProjectionType pt);
+
+        /** @copydoc SetProjectionType */
+        virtual ProjectionType GetProjectionType() const;
+
         /**
          * Returns the standard projection matrix that determines how are 3D points projected to two dimensions. The layout
          * of this matrix depends on currently used render system.
@@ -150,12 +156,6 @@ namespace te
 
         /**	Returns the bounding of the frustum. */
         const AABox& GetBoundingBox() const;
-
-        /** Determines the type of projection used by the camera. Projection type controls how is 3D geometry projected onto a 2D plane. */
-        virtual void SetProjectionType(ProjectionType pt);
-
-        /** @copydoc SetProjectionType */
-        virtual ProjectionType GetProjectionType() const;
 
         /**
          * Sets the orthographic window height, for use with orthographic rendering only.
@@ -195,25 +195,6 @@ namespace te
 
         /** @copydoc SetMSAACount */
         UINT32 GetMSAACount() const { return _MSAA; }
-
-        /**
-         * Notifies a on-demand camera that it should re-draw its contents on the next frame. Ignored for a camera
-         * that isn't on-demand.
-         */
-        void NotifyNeedsRedraw() 
-        {
-            if (GetFlags() & (UINT32)CameraFlag::OnDemand)
-                _markCoreDirty((ActorDirtyFlag)CameraDirtyFlag::Redraw);
-        }
-
-        /**
-         * Notifies a on-demand camera that it should re-draw its contents on the next frame. Ignored for a camera
-         * that isn't on-demand.
-         */
-        void NotifyUpdateEverything() 
-        {
-            _markCoreDirty();
-        }
 
         /**
          * Determines a priority that determines in which orders the cameras are rendered. This only applies to cameras rendering
@@ -401,11 +382,24 @@ namespace te
         /**	Returns a rectangle that defines the viewport position and size, in pixels. */
         virtual Rect2I GetViewportRect() const;
 
-        /**	Sets an ID that can be used for uniquely identifying this object by the renderer. */
-        void SetRendererId(UINT32 id) { _rendererId = id; }
+        /**
+         * Notifies a on-demand camera that it should re-draw its contents on the next frame. Ignored for a camera
+         * that isn't on-demand.
+         */
+        void NotifyNeedsRedraw()
+        {
+            if (GetFlags() & (UINT32)CameraFlag::OnDemand)
+                _markCoreDirty((ActorDirtyFlag)CameraDirtyFlag::Redraw);
+        }
 
-        /**	Retrieves an ID that can be used for uniquely identifying this object by the renderer. */
-        UINT32 GetRendererId() const { return _rendererId; }
+        /**
+         * Notifies a on-demand camera that it should re-draw its contents on the next frame. Ignored for a camera
+         * that isn't on-demand.
+         */
+        void NotifyUpdateEverything()
+        {
+            _markCoreDirty();
+        }
 
         /** 
          * You can change at runtime which renderer will handle this camera 
@@ -414,14 +408,12 @@ namespace te
          */
         void AttachTo(SPtr<Renderer> renderer = nullptr);
 
+        /** Creates a new camera that renders to the specified portion of the provided render target. */
+        static SPtr<Camera> Create();
+
         static const float INFINITE_FAR_PLANE_ADJUST; /**< Small constant used to reduce far plane projection to avoid inaccuracies. */
 
     protected:
-        friend class CCamera;
-
-        Camera(const SPtr<Viewport>& viewport);
-        Camera(SPtr<RenderTarget> target = nullptr, float left = 0.0f, float top = 0.0f, float width = 1.0f, float height = 1.0f);
-
         /**	Calculate projection parameters that are used when constructing the projection matrix. */
         virtual void ComputeProjectionParameters(float& left, float& right, float& bottom, float& top) const;
 
@@ -451,6 +443,15 @@ namespace te
         void FrameSync() override;
 
     protected:
+        friend class CCamera;
+
+        Camera(const SPtr<Viewport>& viewport);
+        Camera(SPtr<RenderTarget> target = nullptr, float left = 0.0f, float top = 0.0f, float width = 1.0f, float height = 1.0f);
+
+        /** @copydoc CoreObject::Initialize */
+        void Initialize() override;
+
+    protected:
         UINT64 _layers = 1; /**< Bitfield that can be used for filtering what objects the camera sees. */
 
         ProjectionType _projType = PT_PERSPECTIVE; /**< Type of camera projection. */
@@ -461,7 +462,7 @@ namespace te
         float _orthoHeight = 5; /**< Height in world units used for orthographic cameras. */
         INT32 _priority = 0; /**< Determines in what order will the camera be rendered. Higher priority means the camera will be rendered sooner. */
         bool _main = false; /**< Determines does this camera render to the main render surface. */
-        UINT32 _cameraFlags; /**< Flags for controlling various behaviour. */
+        UINT32 _cameraFlags = 0; /**< Flags for controlling various behaviour. */
 
         SPtr<Viewport> _viewport; /** Viewport that describes a 2D rendering surface. */
 
@@ -483,7 +484,7 @@ namespace te
         mutable float _left = 0.0f, _right = 0.0f, _top = 0.0f, _bottom = 0.0f; /**< Frustum extents. */
         mutable AABox _boundingBox; /**< Frustum bounding box. */
 
-        UINT32 _rendererId;
+        UINT32 _rendererId = 0;
         SPtr<Renderer> _renderer; /** Default renderer if this attributes is not filled in constructor. */
     };
 }

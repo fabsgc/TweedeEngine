@@ -11,7 +11,7 @@ namespace te
         struct Pimpl;
 
         Mouse(const String& name, Input* owner);
-        ~Mouse();
+        virtual ~Mouse();
 
         /** Returns the name of the device. */
         const String& getName() const { return _name; }

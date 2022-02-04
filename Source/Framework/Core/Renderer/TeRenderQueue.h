@@ -44,7 +44,7 @@ namespace te
 
     public:
         RenderQueue(StateReduction grouping = StateReduction::Distance);
-        ~RenderQueue();
+        virtual ~RenderQueue();
 
         /**
          * Adds a new entry to the render queue.

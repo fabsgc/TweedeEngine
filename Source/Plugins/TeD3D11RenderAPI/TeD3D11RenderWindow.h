@@ -12,7 +12,7 @@ namespace te
     {
     public:
         D3D11RenderWindow(const RENDER_WINDOW_DESC& desc, D3D11Device& device, IDXGIFactory1* DXGIFactory);
-        ~D3D11RenderWindow();
+        virtual ~D3D11RenderWindow();
 
         void Initialize() override;
         void InitializeGui() override;

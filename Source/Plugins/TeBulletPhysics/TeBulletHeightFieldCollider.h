@@ -12,7 +12,7 @@ namespace te
     {
     public:
         BulletHeightFieldCollider(BulletPhysics* physics, BulletScene* scene, const Vector3& position, const Quaternion& rotation);
-        ~BulletHeightFieldCollider();
+        virtual ~BulletHeightFieldCollider();
 
         /** @copydoc HeightFieldCollider::SetScale */
         void SetScale(const Vector3& scale) override;

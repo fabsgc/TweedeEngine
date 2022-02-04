@@ -17,7 +17,7 @@ namespace te
     class TE_CORE_EXPORT CScript : public Component
     {
     public:
-        ~CScript();
+        virtual ~CScript();
 
         /** Return Component type */
         static UINT32 GetComponentType() { return TypeID_Core::TID_CScript; }

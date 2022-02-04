@@ -53,7 +53,7 @@ namespace te
 
     public:
         Widget(WidgetType type);
-        ~Widget() = default;
+        virtual ~Widget() = default;
 
         /** Initialize Widget */
         virtual void Initialize() = 0;

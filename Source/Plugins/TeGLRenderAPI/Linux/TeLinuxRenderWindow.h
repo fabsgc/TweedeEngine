@@ -16,7 +16,7 @@ namespace te
     {
     public:
         LinuxRenderWindow(const RENDER_WINDOW_DESC& desc, LinuxGLSupport& glsupport);
-        ~LinuxRenderWindow();
+        virtual ~LinuxRenderWindow();
 
         void Initialize() override;
         void InitializeGui() override;

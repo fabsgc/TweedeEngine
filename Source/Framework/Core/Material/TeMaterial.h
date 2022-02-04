@@ -178,7 +178,7 @@ namespace te
     class TE_CORE_EXPORT Material : public Resource
     {
     public:
-        ~Material();
+        virtual ~Material();
 
         /** @copydoc CoreObject::Initialize */
         void Initialize() override;

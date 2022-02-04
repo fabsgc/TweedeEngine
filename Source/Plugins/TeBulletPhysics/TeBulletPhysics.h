@@ -40,7 +40,7 @@ namespace te
 
     public:
         BulletPhysics(const PHYSICS_INIT_DESC& input);
-        ~BulletPhysics();
+        virtual ~BulletPhysics();
 
         TE_MODULE_STATIC_HEADER_MEMBER(BulletPhysics)
 
@@ -128,7 +128,7 @@ namespace te
     {
     public:
         BulletScene(BulletPhysics* physics, const PHYSICS_INIT_DESC& desc);
-        ~BulletScene();
+        virtual ~BulletScene();
 
         /** PhysicsScene::TriggerCollisions */
         void TriggerCollisions() override;

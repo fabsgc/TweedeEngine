@@ -10,7 +10,7 @@ namespace te
     {
     public:
         explicit BulletFBody(btCollisionObject* body = nullptr);
-        ~BulletFBody() = default;
+        virtual ~BulletFBody() = default;
 
         /** Set current btCollisionObject */
         void SetBody(btCollisionObject* body) { _body = body; }

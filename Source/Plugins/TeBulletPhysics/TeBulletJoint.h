@@ -11,7 +11,7 @@ namespace te
     {
     public:
         BulletJoint(BulletPhysics* physics, BulletScene* scene, Joint* joint);
-        ~BulletJoint();
+        virtual ~BulletJoint();
 
     protected:
         /** Build internal bullet representation of a joint */

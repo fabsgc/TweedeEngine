@@ -10,7 +10,7 @@ namespace te
     {
     public:
         WidgetProperties();
-        ~WidgetProperties();
+        virtual ~WidgetProperties();
 
         /** @copydoc Widget::Initialize */
         virtual void Initialize() override;

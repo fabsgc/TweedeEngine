@@ -16,7 +16,7 @@ namespace te
     {
     public:
         GameObjectManager() = default;
-        ~GameObjectManager();
+        virtual ~GameObjectManager();
 
         TE_MODULE_STATIC_HEADER_MEMBER(GameObjectManager)
 

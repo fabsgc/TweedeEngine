@@ -10,7 +10,7 @@ namespace te
     {
     public:
         D3D11GpuParamBlockBuffer(UINT32 size, GpuBufferUsage usage, GpuDeviceFlags deviceMask);
-        ~D3D11GpuParamBlockBuffer();
+        virtual ~D3D11GpuParamBlockBuffer();
 
         /** Returns internal DX11 buffer object. */
         ID3D11Buffer* GetD3D11Buffer() const;

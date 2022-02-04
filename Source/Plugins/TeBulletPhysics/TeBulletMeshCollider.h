@@ -12,7 +12,7 @@ namespace te
     {
     public:
         BulletMeshCollider(BulletPhysics* physics, BulletScene* scene, const Vector3& position, const Quaternion& rotation);
-        ~BulletMeshCollider();
+        virtual ~BulletMeshCollider();
 
         /** @copydoc MeshCollider::SetScale */
         void SetScale(const Vector3& scale) override;

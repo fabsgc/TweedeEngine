@@ -45,7 +45,7 @@ namespace te
     class GLGpuVertexProgram : public GLGpuProgram
     {
     public:
-        ~GLGpuVertexProgram();
+        virtual ~GLGpuVertexProgram();
 
     protected:
         friend class GLGLSLProgramFactory;
@@ -57,7 +57,7 @@ namespace te
     class GLGpuPixelProgram : public GLGpuProgram
     {
     public:
-        ~GLGpuPixelProgram();
+        virtual ~GLGpuPixelProgram();
 
     protected:
         friend class GLGLSLProgramFactory;
@@ -69,7 +69,7 @@ namespace te
     class GLGpuDomainProgram : public GLGpuProgram
     {
     public:
-        ~GLGpuDomainProgram();
+        virtual ~GLGpuDomainProgram();
 
     protected:
         friend class GLGLSLProgramFactory;
@@ -81,7 +81,7 @@ namespace te
     class GLGpuHullProgram : public GLGpuProgram
     {
     public:
-        ~GLGpuHullProgram();
+        virtual ~GLGpuHullProgram();
 
     protected:
         friend class GLGLSLProgramFactory;
@@ -93,7 +93,7 @@ namespace te
     class GLGpuGeometryProgram : public GLGpuProgram
     {
     public:
-        ~GLGpuGeometryProgram();
+        virtual ~GLGpuGeometryProgram();
 
     protected:
         friend class GLGLSLProgramFactory;
@@ -105,7 +105,7 @@ namespace te
     class GLGpuComputeProgram : public GLGpuProgram
     {
     public:
-        ~GLGpuComputeProgram();
+        virtual ~GLGpuComputeProgram();
 
     protected:
         friend class GLGLSLProgramFactory;

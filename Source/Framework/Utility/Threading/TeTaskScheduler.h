@@ -66,7 +66,7 @@ namespace te
     {
     public:
         TaskScheduler();
-        ~TaskScheduler();
+        virtual ~TaskScheduler();
 
         /** Queues a new task. */
         void AddTask(SPtr<Task> task);

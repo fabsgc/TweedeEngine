@@ -11,7 +11,7 @@ namespace te
     {
     public:
         explicit BulletFMesh(const SPtr<MeshData>& meshData);
-        ~BulletFMesh();
+        virtual ~BulletFMesh();
 
         /** Returns mesh generated data */
         SPtr<BulletMesh::MeshInfo> GetMeshInfo() const { return _meshInfo; }

@@ -12,7 +12,7 @@ namespace te
     {
     public:
         WidgetProject();
-        ~WidgetProject();
+        virtual ~WidgetProject();
 
         virtual void Initialize() override;
         virtual void Update() override;

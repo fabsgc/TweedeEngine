@@ -9,7 +9,7 @@ namespace te
     {
     public:
         WidgetResources();
-        ~WidgetResources();
+        virtual ~WidgetResources();
 
         virtual void Initialize() override;
         virtual void Update() override;

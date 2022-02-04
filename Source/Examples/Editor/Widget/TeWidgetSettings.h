@@ -9,7 +9,7 @@ namespace te
     {
     public:
         WidgetSettings();
-        ~WidgetSettings();
+        virtual ~WidgetSettings();
 
         virtual void Initialize() override;
         virtual void Update() override;

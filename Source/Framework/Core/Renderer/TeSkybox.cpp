@@ -7,7 +7,6 @@ namespace te
 {
     Skybox::Skybox()
         : Serializable(TID_Skybox)
-        , _texture(nullptr)
     { }
 
     Skybox::Skybox(const SPtr<Texture>& radiance)

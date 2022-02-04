@@ -33,7 +33,7 @@ namespace te
      */
     struct TE_CORE_EXPORT GpuProgramBytecode
     {
-        ~GpuProgramBytecode();
+        virtual ~GpuProgramBytecode();
 
         /** Instructions (compiled code) for the GPU program. Contains no data if compilation was not succesful. */
         DataBlob Instructions;

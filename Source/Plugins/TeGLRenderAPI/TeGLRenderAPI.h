@@ -11,7 +11,7 @@ namespace te
     {
     public:
         GLRenderAPI();
-        ~GLRenderAPI() = default;
+        virtual ~GLRenderAPI() = default;
 
         TE_MODULE_STATIC_HEADER_MEMBER(GLRenderAPI)
 

@@ -8,7 +8,7 @@ namespace te {
     class GLSamplerState : public SamplerState
     {
     public:
-        ~GLSamplerState();
+        virtual ~GLSamplerState();
 
     protected:
         friend class GLRenderStateManager;

@@ -9,7 +9,7 @@ namespace te
     class D3D11RasterizerState : public RasterizerState
     {
     public:
-        ~D3D11RasterizerState();
+        virtual ~D3D11RasterizerState();
         ID3D11RasterizerState* GetInternal() const { return _rasterizerState; }
 
     protected:

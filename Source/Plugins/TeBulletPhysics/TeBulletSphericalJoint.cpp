@@ -16,6 +16,7 @@ namespace te
     {
         ReleaseJoint();
         te_delete((BulletFJoint*)_internal);
+        _internal = nullptr;
     }
 
     void BulletSphericalJoint::Update()

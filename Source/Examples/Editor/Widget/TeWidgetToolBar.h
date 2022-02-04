@@ -9,7 +9,7 @@ namespace te
     {
     public:
         WidgetToolBar();
-        ~WidgetToolBar();
+        virtual ~WidgetToolBar();
 
         virtual void Initialize() override;
         virtual void Update() override;

@@ -16,10 +16,7 @@ namespace te
     class TE_CORE_EXPORT Decal : public CoreObject, public SceneActor, public Serializable
     {
     public:
-        ~Decal();
-
-        /** @copydoc CoreObject::Initialize */
-        void Initialize() override;
+        virtual ~Decal();
 
         /**	Sets an ID that can be used for uniquely identifying this object by the renderer. */
         void SetRendererId(UINT32 id) { _rendererId = id; }
@@ -126,9 +123,10 @@ namespace te
         Decal(const HMaterial& material, const Vector2& size, float maxDistance);
         Decal(const SPtr<Material>& material, const Vector2& size, float maxDistance);
 
-    protected:
-        UINT32 _rendererId;
+        /** @copydoc CoreObject::Initialize */
+        void Initialize() override;
 
+    protected:
         Bounds _bounds;
         SPtr<Material> _material;
         Matrix4 _tfrmMatrix = TeIdentity;
@@ -138,6 +136,7 @@ namespace te
         UINT64 _layer = 1;
         UINT32 _layerMask = 0xFFFFFFFF;
 
+        UINT32 _rendererId = 0;
         SPtr<Renderer> _renderer; /** Default renderer if this attributes is not filled in constructor. */
     };
 }

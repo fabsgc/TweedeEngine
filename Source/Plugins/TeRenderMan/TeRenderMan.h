@@ -48,7 +48,7 @@ namespace te
     {
     public:
         RenderMan();
-        ~RenderMan();
+        virtual ~RenderMan();
 
         /** @copydoc Renderer::Initialize */
         void Initialize() override;

@@ -401,7 +401,16 @@ namespace te
 
     void BulletRigidBody::RemoveJoint(Joint* joint)
     {
+        if (_joints.size() == 0)
+            return;
+
         BulletFJoint* fJoint = ((BulletFJoint*)joint->GetInternal());
+
+        // Depending on the order of components activations, sometimes we call AddJoint with a nullptr joint
+        // This is not an issue, it means that we try to create the rigid body before its attached joints
+        if (!fJoint)
+            return;
+
         BulletJoint* bJoint = fJoint->GetJoint();
 
         auto it = std::find(_joints.begin(), _joints.end(), bJoint);

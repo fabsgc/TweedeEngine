@@ -23,7 +23,7 @@ namespace te
 
     public:
         ResourceManager();
-        ~ResourceManager();
+        virtual ~ResourceManager();
 
         TE_MODULE_STATIC_HEADER_MEMBER(ResourceManager)
 

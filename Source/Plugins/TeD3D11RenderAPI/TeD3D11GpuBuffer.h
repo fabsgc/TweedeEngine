@@ -10,7 +10,7 @@ namespace te
     class D3D11GpuBuffer : public GpuBuffer
     {
     public:
-        ~D3D11GpuBuffer();
+        virtual ~D3D11GpuBuffer();
 
         /**
          * Creates a buffer view that may be used for binding a buffer to a slot in the pipeline. Views allow you to specify

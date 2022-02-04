@@ -21,7 +21,7 @@ namespace te
 
     public:
         WidgetViewport();
-        ~WidgetViewport();
+        virtual ~WidgetViewport();
 
         virtual void Initialize() override;
         virtual void Update() override;

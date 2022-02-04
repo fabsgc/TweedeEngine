@@ -22,7 +22,7 @@ namespace te
         };
 
     public:
-        ~CAnimation();
+        virtual ~CAnimation();
 
         /** Return Component type */
         static UINT32 GetComponentType() { return TypeID_Core::TID_CAnimation; }

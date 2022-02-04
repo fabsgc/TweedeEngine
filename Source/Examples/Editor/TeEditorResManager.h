@@ -46,7 +46,7 @@ namespace te
         TE_MODULE_STATIC_HEADER_MEMBER(EditorResManager)
 
         EditorResManager();
-        ~EditorResManager();
+        virtual ~EditorResManager();
 
         /** @copydoc Module::OnStartUp */
         void OnStartUp() override;

@@ -31,7 +31,7 @@ namespace te
 
         D3D11HardwareBuffer(BufferType btype, GpuBufferUsage usage, UINT32 elementCount, UINT32 elementSize,
             D3D11Device& device, bool systemMemory = false, bool streamOut = false);
-        ~D3D11HardwareBuffer();
+        virtual ~D3D11HardwareBuffer();
 
         /** @copydoc HardwareBuffer::ReadData */
         void ReadData(UINT32 offset, UINT32 length, void* dest, UINT32 deviceIdx = 0, UINT32 queueIdx = 0) override;

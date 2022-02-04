@@ -17,7 +17,7 @@ namespace te
     class TE_CORE_EXPORT Skybox : public CoreObject, public SceneActor, public Serializable
     {
     public:
-        ~Skybox();
+        virtual ~Skybox();
 
         /**
          * Brightness multiplier that will be applied to skybox values before they're being used. Allows you to make the
@@ -28,29 +28,29 @@ namespace te
         /** @copydoc setBrightness */
         float GetBrightness() const { return _brightness; }
 
-        /**
-         * Determines an environment map to use for sampling skybox radiance. Must be a cube-map texture, and should ideally
-         * contain HDR data.
-         */
-        SPtr<Texture> GetTexture() const { return _texture; }
-
-        /**
-         * Determines an environment map to use for sampling skybox irradiance. Must be a cube-map texture, and should ideally
-         * contain HDR data.
-         */
-        SPtr<Texture> GetIrradiance() const { return _irradiance; }
-
         /** @copydoc Skybox::GetTexture */
         void SetTexture(const HTexture& texture);
 
         /** @copydoc Skybox::GetTexture */
         void SetTexture(const SPtr<Texture>& texture);
 
+        /**
+         * Determines an environment map to use for sampling skybox radiance. Must be a cube-map texture, and should ideally
+         * contain HDR data.
+         */
+        SPtr<Texture> GetTexture() const { return _texture; }
+
         /** @copydoc Skybox::GetIrradiance */
         void SetIrradiance(const HTexture& irradiance);
 
         /** @copydoc Skybox::GetIrradiance */
         void SetIrradiance(const SPtr<Texture>& irradiance);
+
+        /**
+         * Determines an environment map to use for sampling skybox irradiance. Must be a cube-map texture, and should ideally
+         * contain HDR data.
+         */
+        SPtr<Texture> GetIrradiance() const { return _irradiance; }
 
         /**
          * You can change at runtime which renderer will handle this skybox
@@ -66,16 +66,17 @@ namespace te
         static SPtr<Skybox> CreateEmpty();
 
     protected:
-        friend class CSkybox;
-
-        explicit Skybox();
-        Skybox(const SPtr<Texture>& radiance);
-
         /** @copydoc SceneActor::_markCoreDirty */
         void _markCoreDirty(ActorDirtyFlag flag = ActorDirtyFlag::Everything) override;
 
         /** @copydoc CoreObject::FrameSync */
         void FrameSync() override;
+
+    protected:
+        friend class CSkybox;
+
+        Skybox();
+        Skybox(const SPtr<Texture>& radiance);
 
         /** @copydoc CoreObject::Initialize */
         void Initialize() override;

@@ -54,7 +54,7 @@ namespace te
     {
     public:
         ProfilerGPU();
-        ~ProfilerGPU() = default;
+        virtual ~ProfilerGPU() = default;
 
         /**
          * Signals a start of a new frame. This call must be followed

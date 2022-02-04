@@ -44,50 +44,6 @@ namespace te
         CoreObject::Initialize();
     }
 
-    void Decal::_markCoreDirty(ActorDirtyFlag flag) 
-    {
-        MarkCoreDirty((UINT32)flag);
-    }
-
-    void Decal::FrameSync()
-    { 
-        _tfrmMatrix = _transform.GetMatrix();
-        _tfrmMatrixNoScale = Matrix4::TRS(_transform.GetPosition(), _transform.GetRotation(), Vector3::ONE);
-
-        UpdateBounds();
-
-        UINT32 dirtyFlag = GetCoreDirtyFlags();
-
-        if (dirtyFlag == (UINT32)ActorDirtyFlag::Transform)
-        {
-            if (_active)
-            {
-                if (_renderer) _renderer->NotifyDecalUpdated(this);
-            }
-        }
-        else
-        {
-            if (_oldActive != GetActive())
-            {
-                if (_active)
-                {
-                    if (_renderer) _renderer->NotifyDecalAdded(this);
-                }
-                else
-                {
-                    if (_renderer) _renderer->NotifyDecalRemoved(this);
-                }
-            }
-            else
-            {
-                if (_renderer) _renderer->NotifyDecalRemoved(this);
-                if (_renderer) _renderer->NotifyDecalAdded(this);
-            }
-        }
-
-        _oldActive = _active;
-    }
-
     void Decal::SetLayer(UINT64 layer)
     {
         const bool isPow2 = layer && !((layer - 1) & layer);
@@ -127,6 +83,25 @@ namespace te
         _markCoreDirty();
     }
 
+    SPtr<Decal> Decal::Create(const HMaterial& material, const Vector2& size, float maxDistance)
+    {
+        Decal* handler = new (te_allocate<Decal>())Decal(material, size, maxDistance);
+        SPtr<Decal> handlerPtr = te_core_ptr<Decal>(handler);
+        handlerPtr->SetThisPtr(handlerPtr);
+        handlerPtr->Initialize();
+
+        return handlerPtr;
+    }
+
+    SPtr<Decal> Decal::CreateEmpty()
+    {
+        Decal* decal = new (te_allocate<Decal>()) Decal();
+        SPtr<Decal> decalPtr = te_core_ptr<Decal>(decal);
+        decalPtr->SetThisPtr(decalPtr);
+
+        return decalPtr;
+    }
+
     void Decal::UpdateBounds()
     {
         const Vector2& extents = _size * 0.5f;
@@ -141,22 +116,47 @@ namespace te
         _bounds = Bounds(localAABB, Sphere(localAABB.GetCenter(), localAABB.GetRadius()));
     }
 
-    SPtr<Decal> Decal::Create(const HMaterial& material, const Vector2& size, float maxDistance)
+    void Decal::_markCoreDirty(ActorDirtyFlag flag)
     {
-        Decal* handler = new (te_allocate<Decal>())Decal(material, size, maxDistance);
-        SPtr<Decal> handlerPtr = te_core_ptr<Decal>(handler);
-        handlerPtr->SetThisPtr(handlerPtr);
-        handlerPtr->Initialize();
-
-        return handlerPtr;
+        MarkCoreDirty((UINT32)flag);
     }
 
-    SPtr<Decal> Decal::CreateEmpty()
-	{
-		Decal* decal = new (te_allocate<Decal>()) Decal();
-		SPtr<Decal> decalPtr = te_core_ptr<Decal>(decal);
-		decalPtr->SetThisPtr(decalPtr);
+    void Decal::FrameSync()
+    {
+        _tfrmMatrix = _transform.GetMatrix();
+        _tfrmMatrixNoScale = Matrix4::TRS(_transform.GetPosition(), _transform.GetRotation(), Vector3::ONE);
 
-		return decalPtr;
-	}
+        UpdateBounds();
+
+        UINT32 dirtyFlag = GetCoreDirtyFlags();
+
+        if (dirtyFlag == (UINT32)ActorDirtyFlag::Transform)
+        {
+            if (_active)
+            {
+                if (_renderer) _renderer->NotifyDecalUpdated(this);
+            }
+        }
+        else
+        {
+            if (_oldActive != GetActive())
+            {
+                if (_active)
+                {
+                    if (_renderer) _renderer->NotifyDecalAdded(this);
+                }
+                else
+                {
+                    if (_renderer) _renderer->NotifyDecalRemoved(this);
+                }
+            }
+            else
+            {
+                if (_renderer) _renderer->NotifyDecalRemoved(this);
+                if (_renderer) _renderer->NotifyDecalAdded(this);
+            }
+        }
+
+        _oldActive = _active;
+    }
 }

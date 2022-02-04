@@ -14,7 +14,7 @@ namespace te
     {
     public:
         D3D11HLSLProgramFactory() = default;
-        ~D3D11HLSLProgramFactory() = default;
+        virtual ~D3D11HLSLProgramFactory() = default;
 
         /** @copydoc GpuProgramFactory::Create(const GPU_PROGRAM_DESC&, GpuDeviceFlags) */
         SPtr<GpuProgram> Create(const GPU_PROGRAM_DESC & desc, GpuDeviceFlags deviceMask = GDF_DEFAULT) override;

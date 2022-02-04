@@ -10,7 +10,7 @@ namespace te
     {
     public:
         GLGpuParamBlockBuffer(UINT32 size, GpuBufferUsage usage, GpuDeviceFlags deviceMask);
-        ~GLGpuParamBlockBuffer();
+        virtual ~GLGpuParamBlockBuffer();
 
     protected:
         /** @copydoc GpuParamBlockBuffer::initialize */

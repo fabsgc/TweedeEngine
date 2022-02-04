@@ -12,7 +12,7 @@ namespace te
     public:
         /** Creates and initializes the buffer object. */
         GLHardwareBuffer(GLenum target, UINT32 size, GpuBufferUsage usage);
-        ~GLHardwareBuffer();
+        virtual ~GLHardwareBuffer();
 
         /** @copydoc HardwareBuffer::ReadData */
         void ReadData(UINT32 offset, UINT32 length, void* dest, UINT32 deviceIdx = 0, UINT32 queueIdx = 0) override;

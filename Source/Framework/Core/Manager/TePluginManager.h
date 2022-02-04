@@ -32,7 +32,7 @@ namespace te
             }
         }
 
-        ~PluginManager()
+        virtual ~PluginManager()
         {
             if (_plugin != nullptr)
             {

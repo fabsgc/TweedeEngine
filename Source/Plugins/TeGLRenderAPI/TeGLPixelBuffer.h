@@ -152,7 +152,7 @@ namespace te
          */
         GLTextureBuffer(GLenum target, GLuint id, GLint face,
             GLint level, PixelFormat format, GpuBufferUsage usage, bool hwGamma, UINT32 multisampleCount);
-        ~GLTextureBuffer() = default;
+        virtual ~GLTextureBuffer() = default;
 
         /** @copydoc GLPixelBuffer::bindToFramebuffer */
         void BindToFramebuffer(GLenum attachment, UINT32 zoffset, bool allLayers) override;

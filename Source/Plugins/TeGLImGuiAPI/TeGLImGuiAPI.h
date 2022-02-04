@@ -9,7 +9,7 @@ namespace te
     {
     public:
         GLImGuiAPI();
-        ~GLImGuiAPI();
+        virtual ~GLImGuiAPI();
 
         TE_MODULE_STATIC_HEADER_MEMBER(GLImGuiAPI)
 

@@ -10,7 +10,7 @@ namespace te
     {
     public:
         GuiManager();
-        ~GuiManager();
+        virtual ~GuiManager();
 
         TE_MODULE_STATIC_HEADER_MEMBER(GuiManager)
 

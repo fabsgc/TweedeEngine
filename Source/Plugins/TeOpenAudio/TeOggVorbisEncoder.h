@@ -12,7 +12,7 @@ namespace te
     {
     public:
         OggVorbisEncoder() = default;
-        ~OggVorbisEncoder();
+        virtual ~OggVorbisEncoder();
 
         /**
          * Sets up the writer. Should be called before calling write().

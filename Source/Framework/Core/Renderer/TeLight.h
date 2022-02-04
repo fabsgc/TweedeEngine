@@ -22,10 +22,7 @@ namespace te
     class TE_CORE_EXPORT Light : public CoreObject, public SceneActor, public Serializable
     {
     public:
-        ~Light();
-
-        /** @copydoc CoreObject::Initialize */
-        void Initialize() override;
+        virtual ~Light();
 
         /** @copydoc SceneActor::Destroy */
         void SetMobility(ObjectMobility mobility) override;
@@ -39,11 +36,11 @@ namespace te
         /**	Retrieves an ID that can be used for uniquely identifying this object by the renderer. */
         UINT32 GetRendererId() const { return _rendererId; }
 
-        /**	Determines the type of the light. */
-        LightType GetType() const { return _type; }
-
         /** @copydoc getType */
         void SetType(LightType type) { _type = type; _markCoreDirty(); UpdateBounds(); }
+
+        /**	Determines the type of the light. */
+        LightType GetType() const { return _type; }
 
         /**	Determines does this light can cast shadows when rendered. */
         void SetCastShadows(bool castShadows) { _castShadows = castShadows; _markCoreDirty(); }
@@ -147,12 +144,6 @@ namespace te
         static const UINT32 LIGHT_CONE_NUM_SLICES;
 
     protected:
-        friend class CLight;
-
-        Light();
-        Light(LightType type, Color color, float intensity, float attRadius, float linearAtt,
-            float quadraticAtt, bool castShadows, Degree spotAngle);
-
         /** Updates the internal bounds for the light. Call this whenever a property affecting the bounds changes. */
         void UpdateBounds();
 
@@ -161,6 +152,16 @@ namespace te
 
         /** @copydoc CoreObject::FrameSync */
         void FrameSync() override;
+
+    protected:
+        friend class CLight;
+
+        Light();
+        Light(LightType type, Color color, float intensity, float attRadius, float linearAtt,
+            float quadraticAtt, bool castShadows, Degree spotAngle);
+
+        /** @copydoc CoreObject::Initialize */
+        void Initialize() override;
 
     protected:
         LightType _type; /**< Type of light that determines how are the rest of the parameters interpreted. */
@@ -174,7 +175,7 @@ namespace te
         Sphere _bounds; /**< Sphere that bounds the light area of influence. */
         float _shadowBias; /**< See SetShadowBias */
 
-        UINT32 _rendererId;
+        UINT32 _rendererId = 0;
         SPtr<Renderer> _renderer; /** Default renderer if this attributes is not filled in constructor. */
     };
 }

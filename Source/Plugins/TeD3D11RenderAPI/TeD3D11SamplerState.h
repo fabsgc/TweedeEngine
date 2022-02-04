@@ -8,7 +8,7 @@ namespace te {
     class D3D11SamplerState : public SamplerState
     {
     public:
-        ~D3D11SamplerState();
+        virtual ~D3D11SamplerState();
         ID3D11SamplerState* GetInternal() const { return _samplerState; }
 
     protected:

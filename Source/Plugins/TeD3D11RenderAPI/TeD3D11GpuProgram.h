@@ -36,7 +36,7 @@ namespace te
     class D3D11GpuVertexProgram : public D3D11GpuProgram
     {
     public:
-        ~D3D11GpuVertexProgram();
+        virtual ~D3D11GpuVertexProgram();
 
         /** Returns internal DX11 vertex shader object. */
         ID3D11VertexShader* GetVertexShader() const;
@@ -57,7 +57,7 @@ namespace te
     class D3D11GpuPixelProgram : public D3D11GpuProgram
     {
     public:
-        ~D3D11GpuPixelProgram();
+        virtual ~D3D11GpuPixelProgram();
 
         /** Returns internal DX11 pixel shader object. */
         ID3D11PixelShader* GetPixelShader() const;
@@ -78,7 +78,7 @@ namespace te
     class D3D11GpuDomainProgram : public D3D11GpuProgram
     {
     public:
-        ~D3D11GpuDomainProgram();
+        virtual ~D3D11GpuDomainProgram();
 
         /** Returns internal DX11 domain shader object. */
         ID3D11DomainShader* GetDomainShader() const;
@@ -99,7 +99,7 @@ namespace te
     class D3D11GpuHullProgram : public D3D11GpuProgram
     {
     public:
-        ~D3D11GpuHullProgram();
+        virtual ~D3D11GpuHullProgram();
 
         /** Returns internal DX11 hull shader object. */
         ID3D11HullShader* GetHullShader() const;
@@ -120,7 +120,7 @@ namespace te
     class D3D11GpuGeometryProgram : public D3D11GpuProgram
     {
     public:
-        ~D3D11GpuGeometryProgram();
+        virtual ~D3D11GpuGeometryProgram();
 
         /** Returns internal DX11 geometry shader object. */
         ID3D11GeometryShader* GetGeometryShader() const;
@@ -141,7 +141,7 @@ namespace te
     class D3D11GpuComputeProgram : public D3D11GpuProgram
     {
     public:
-        ~D3D11GpuComputeProgram();
+        virtual ~D3D11GpuComputeProgram();
 
         /**	Returns internal DX11 compute shader object. */
         ID3D11ComputeShader* GetComputeShader() const;

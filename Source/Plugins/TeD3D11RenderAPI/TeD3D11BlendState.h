@@ -9,7 +9,7 @@ namespace te
     class D3D11BlendState : public BlendState
     {
     public:
-        ~D3D11BlendState();
+        virtual ~D3D11BlendState();
 
         /** Returns the internal DX11 blend state object. */
         ID3D11BlendState* GetInternal() const { return _blendState; }

@@ -11,7 +11,7 @@ namespace te
     {
     public:
         EditorPicking();
-        ~EditorPicking() = default;
+        virtual ~EditorPicking() = default;
 
         void Initialize() override;
 

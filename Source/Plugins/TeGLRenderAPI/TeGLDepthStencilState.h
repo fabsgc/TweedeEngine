@@ -9,7 +9,7 @@ namespace te
     class GLDepthStencilState : public DepthStencilState
     {
     public:
-        ~GLDepthStencilState();
+        virtual ~GLDepthStencilState();
 
     protected:
         friend class GLRenderStateManager;

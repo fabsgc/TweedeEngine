@@ -9,7 +9,7 @@ namespace te
     {
     public:
         WidgetProfiler();
-        ~WidgetProfiler();
+        virtual ~WidgetProfiler();
 
         virtual void Initialize() override;
         virtual void Update() override;

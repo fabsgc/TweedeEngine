@@ -9,7 +9,7 @@ namespace te
     {
     public:
         D3D11ImGuiAPI();
-        ~D3D11ImGuiAPI();
+        virtual ~D3D11ImGuiAPI();
 
         TE_MODULE_STATIC_HEADER_MEMBER(D3D11ImGuiAPI)
 

@@ -8,7 +8,7 @@ namespace te
     {
     public:
         D3D11HLSLInclude(const String& directory);
-        ~D3D11HLSLInclude() = default;
+        virtual ~D3D11HLSLInclude() = default;
 
         HRESULT __stdcall Open(
             D3D_INCLUDE_TYPE IncludeType,

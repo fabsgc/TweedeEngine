@@ -22,7 +22,7 @@ namespace te
     {
     public:
         RendererMaterialManager();
-        ~RendererMaterialManager();
+        virtual ~RendererMaterialManager();
 
         TE_MODULE_STATIC_HEADER_MEMBER(RendererMaterialManager)
 

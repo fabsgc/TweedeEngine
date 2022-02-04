@@ -30,7 +30,7 @@ namespace te
          * @param[in]	pluginName	Name of the plugin containing a physics implementation.
          */
         PhysicsManager(const String& pluginName);
-        ~PhysicsManager();
+        virtual ~PhysicsManager();
 
     private:
         DynLib* _plugin = nullptr;

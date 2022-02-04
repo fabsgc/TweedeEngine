@@ -9,7 +9,7 @@ namespace te
     class D3D11DepthStencilState : public DepthStencilState
     {
     public:
-        ~D3D11DepthStencilState();
+        virtual ~D3D11DepthStencilState();
 
         /** Returns the internal DX11 depth stencil state object. */
         ID3D11DepthStencilState* GetInternal() const { return _depthStencilState; }

@@ -9,7 +9,7 @@ namespace te
     class GLBlendState : public BlendState
     {
     public:
-        ~GLBlendState();
+        virtual ~GLBlendState();
 
     protected:
         friend class GLRenderStateManager;

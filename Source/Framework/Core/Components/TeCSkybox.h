@@ -15,7 +15,7 @@ namespace te
     class TE_CORE_EXPORT CSkybox : public Component
     {
     public:
-        ~CSkybox();
+        virtual ~CSkybox();
 
         /** Return Component type */
         static UINT32 GetComponentType() { return TypeID_Core::TID_CSkybox; }

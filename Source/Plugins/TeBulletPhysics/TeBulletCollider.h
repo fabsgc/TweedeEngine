@@ -12,7 +12,7 @@ namespace te
     {
     public:
         BulletCollider(BulletPhysics* physics, BulletScene* scene);
-        ~BulletCollider() = default;
+        virtual ~BulletCollider() = default;
 
     protected:
         /** Update the internal representation of a collider */

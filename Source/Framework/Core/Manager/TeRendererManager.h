@@ -11,7 +11,7 @@ namespace te
     class TE_CORE_EXPORT RendererManager : public Module<RendererManager>
     {
     public:
-        ~RendererManager();
+        virtual ~RendererManager();
 
         TE_MODULE_STATIC_HEADER_MEMBER(RendererManager)
 

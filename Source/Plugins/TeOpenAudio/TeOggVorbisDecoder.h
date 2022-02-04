@@ -20,7 +20,7 @@ namespace te
 	{
 	public:
 		OggVorbisDecoder();
-		~OggVorbisDecoder();
+		virtual ~OggVorbisDecoder();
 
 		/** @copydoc AudioDecoder::open */
 		bool Open(const SPtr<DataStream>& stream, AudioDataInfo& info, UINT32 offset = 0) override;

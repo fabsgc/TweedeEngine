@@ -45,7 +45,7 @@ namespace te
     {
     public:
         Importer(); 
-        ~Importer();
+        virtual ~Importer();
 
         TE_MODULE_STATIC_HEADER_MEMBER(Importer)
 

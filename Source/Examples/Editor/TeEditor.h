@@ -85,7 +85,7 @@ namespace te
 
     public:
         Editor();
-        ~Editor();
+        virtual ~Editor();
 
         TE_MODULE_STATIC_HEADER_MEMBER(Editor)
 

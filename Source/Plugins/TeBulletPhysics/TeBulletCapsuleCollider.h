@@ -13,7 +13,7 @@ namespace te
     public:
         BulletCapsuleCollider(BulletPhysics* physics, BulletScene* scene, const Vector3& position,
             const Quaternion& rotation, float radius, float height);
-        ~BulletCapsuleCollider();
+        virtual ~BulletCapsuleCollider();
 
         /** @copydoc CapsuleCollider::SetScale */
         void SetScale(const Vector3& scale) override;

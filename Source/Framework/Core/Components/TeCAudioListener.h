@@ -14,7 +14,7 @@ namespace te
     class TE_CORE_EXPORT CAudioListener : public Component
     {
     public:
-        ~CAudioListener();
+        virtual ~CAudioListener();
 
         static UINT32 GetComponentType() { return TypeID_Core::TID_CAudioListener; }
 

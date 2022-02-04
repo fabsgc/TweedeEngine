@@ -11,7 +11,7 @@ namespace te
     class D3D11Texture : public Texture
     {
     public:
-        ~D3D11Texture();
+        virtual ~D3D11Texture();
 
         /** Returns internal DX11 texture resource object. */
         ID3D11Resource* GetDX11Resource() const { return _tex; }

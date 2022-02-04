@@ -12,7 +12,7 @@ namespace te
     {
     public:
         RenderAPIManager();
-        ~RenderAPIManager();
+        virtual ~RenderAPIManager();
 
         TE_MODULE_STATIC_HEADER_MEMBER(RenderAPIManager)
 

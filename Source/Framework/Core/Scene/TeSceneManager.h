@@ -102,7 +102,7 @@ namespace te
     {
     public:
         SceneManager();
-        ~SceneManager();
+        virtual ~SceneManager();
 
         TE_MODULE_STATIC_HEADER_MEMBER(SceneManager)
 

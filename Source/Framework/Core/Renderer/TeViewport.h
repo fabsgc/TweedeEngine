@@ -76,7 +76,7 @@ namespace te
     class TE_CORE_EXPORT Viewport : public ViewportBase, public CoreObject
     {
     public:
-        ~Viewport();
+        virtual ~Viewport();
 
         /** Determines the render target the viewport is associated with. */
         void SetTarget(const SPtr<RenderTarget>& target);

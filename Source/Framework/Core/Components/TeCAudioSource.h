@@ -14,7 +14,7 @@ namespace te
     class TE_CORE_EXPORT CAudioSource : public Component
     {
     public:
-        ~CAudioSource();
+        virtual ~CAudioSource();
 
         static UINT32 GetComponentType() { return TypeID_Core::TID_CAudioSource; }
 

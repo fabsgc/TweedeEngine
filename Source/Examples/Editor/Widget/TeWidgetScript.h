@@ -13,7 +13,7 @@ namespace te
     {
     public:
         WidgetScript();
-        ~WidgetScript();
+        virtual ~WidgetScript();
 
         virtual void Initialize() override;
         virtual void Update() override;

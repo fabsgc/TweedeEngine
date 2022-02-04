@@ -62,7 +62,7 @@ namespace te
     {
     public:
         TResourceHandle() = default;
-        ~TResourceHandle() {}
+        virtual ~TResourceHandle() {}
 
         /** Copy constructor. */
         TResourceHandle(const TResourceHandle& other)

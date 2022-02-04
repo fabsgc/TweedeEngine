@@ -25,7 +25,6 @@ namespace te
         , _intensity(DefaultIntensity)
         , _spotAngle(DefaultSpotAngle)
         , _shadowBias(DefaultShadowBias)
-        , _rendererId(0)
     { }
 
     Light::Light(LightType type, Color color, float intensity, float attRadius, float linearAtt,
@@ -40,7 +39,6 @@ namespace te
         , _intensity(intensity)
         , _spotAngle(spotAngle)
         , _shadowBias(DefaultShadowBias)
-        , _rendererId(0)
     { }
 
     Light::~Light()

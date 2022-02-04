@@ -83,7 +83,7 @@ namespace te
     {
     public:
         NullProgramFactory() = default;
-        ~NullProgramFactory() = default;
+        virtual ~NullProgramFactory() = default;
 
         SPtr<GpuProgram> Create(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask) override;
         SPtr<GpuProgram> Create(GpuProgramType type, GpuDeviceFlags deviceMask) override;

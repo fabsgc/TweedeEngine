@@ -102,7 +102,7 @@ namespace te
     class TE_CORE_EXPORT Skeleton : public CoreObject, public Serializable
     {
     public:
-        ~Skeleton();
+        virtual ~Skeleton();
 
         /** Returns the total number of bones in the skeleton. */
         UINT32 GetNumBones() const { return _numBones; }

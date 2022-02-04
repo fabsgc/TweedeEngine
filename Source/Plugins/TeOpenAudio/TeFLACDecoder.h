@@ -23,7 +23,7 @@ namespace te
     {
     public:
         FLACDecoder() = default;
-        ~FLACDecoder();
+        virtual ~FLACDecoder();
 
         /** @copydoc AudioDecoder::Open */
         bool Open(const SPtr<DataStream>& stream, AudioDataInfo& info, UINT32 offset = 0) override;

@@ -85,7 +85,7 @@ namespace te
         };
     public:
         ScriptManager();
-        ~ScriptManager() = default;
+        virtual ~ScriptManager() = default;
 
         TE_MODULE_STATIC_HEADER_MEMBER(ScriptManager)
 

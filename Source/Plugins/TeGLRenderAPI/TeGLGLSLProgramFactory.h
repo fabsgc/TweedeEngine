@@ -10,7 +10,7 @@ namespace te
     {
     public:
         GLGLSLProgramFactory() = default;
-        ~GLGLSLProgramFactory() = default;
+        virtual ~GLGLSLProgramFactory() = default;
 
         /** @copydoc GpuProgramFactory::Create(const GPU_PROGRAM_DESC&, GpuDeviceFlags) */
         SPtr<GpuProgram> Create(const GPU_PROGRAM_DESC & desc, GpuDeviceFlags deviceMask = GDF_DEFAULT) override;

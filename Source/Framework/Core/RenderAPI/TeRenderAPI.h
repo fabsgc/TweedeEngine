@@ -15,7 +15,7 @@ namespace te
     {
     public:
         RenderAPI();
-        ~RenderAPI();
+        virtual ~RenderAPI();
 
         TE_MODULE_STATIC_HEADER_MEMBER(RenderAPI)
 
