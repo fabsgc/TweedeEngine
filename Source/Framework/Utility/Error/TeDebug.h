@@ -1,6 +1,8 @@
 #pragma once
 
-#include "TeEngineConfig.h"
+#include <iostream>
+#include <fstream>
+#include <cstring>
 
 #if TE_DEBUG_MODE == 1
 #   ifndef TE_DEBUG_FILE
