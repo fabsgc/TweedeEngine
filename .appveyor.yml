@@ -6,6 +6,7 @@ platform:
   - x64
 configuration: 
   - Debug
+  - Release
 
 for:
   -
@@ -17,7 +18,7 @@ for:
       - cmd: cd Build
       - cmd: cmake --version
       - cmd: cmake -G "Visual Studio 16 2019" ..
-      - cmd: cmake --build ./ --config Debug
+      - cmd: cmake --build ./ --config %Configuration%
   -
     matrix:
       only:
@@ -31,5 +32,5 @@ for:
       - cmd: mkdir Build
       - cmd: cd Build
       - cmd: cmake --version
-      - cmd: cmake -G "Unix Makefiles" .. -D CMAKE_C_COMPILER=gcc-9 -D CMAKE_CXX_COMPILER=g++-9 -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-      - cmd: cmake --build ./ --config Debug
+      - cmd: cmake -G "Unix Makefiles" .. -D CMAKE_C_COMPILER=gcc-9 -D CMAKE_CXX_COMPILER=g++-9 -DCMAKE_BUILD_TYPE=%Configuration%
+      - cmd: cmake --build ./ --config %Configuration%
