@@ -14,11 +14,11 @@ for:
       only:
         - image: Visual Studio 2019
     build_script:
-      - cmd: mkdir Build
-      - cmd: cd Build
-      - cmd: cmake --version
-      - cmd: cmake -G "Visual Studio 16 2019" ..
-      - cmd: cmake --build ./ --config %Configuration%
+      - mkdir Build
+      - cd Build
+      - cmake --version
+      - cmake -G "Visual Studio 16 2019" ..
+      - cmake --build ./ --config %Configuration%
   -
     matrix:
       only:
@@ -29,8 +29,8 @@ for:
       - sudo apt-get -y install libxrandr-dev libxi-dev uuid-dev libglfw3 libglfw3-dev gcc-9 g++-9
       - CC=gcc-9 CXX=g++-9
     build_script:
-      - cmd: mkdir Build
-      - cmd: cd Build
-      - cmd: cmake --version
-      - cmd: cmake -G "Unix Makefiles" .. -D CMAKE_C_COMPILER=gcc-9 -D CMAKE_CXX_COMPILER=g++-9 -DCMAKE_BUILD_TYPE=%Configuration%
-      - cmd: cmake --build ./ --config %Configuration%
+      - mkdir Build
+      - cd Build
+      - cmake --version
+      - cmake -G "Unix Makefiles" .. -D CMAKE_C_COMPILER=gcc-9 -D CMAKE_CXX_COMPILER=g++-9 -DCMAKE_BUILD_TYPE=%Configuration%
+      - cmake --build ./ --config %Configuration%
