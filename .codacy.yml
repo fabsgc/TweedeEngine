@@ -1,18 +1,12 @@
+# codacy configuration file
+
 ---
-engines:
-  rubocop:
-    exclude_paths:
-      - "*.sh"
-      - "*.md"
-      - "*/ImGui/*"
-      - "*/GL/*"
-      - "Dependencies/*"
-      - "dirent.h"
-  duplication:
-    exclude_paths:
-      - "*.sh"
-      - "*.md"
-      - "*/ImGui/*"
-      - "*/GL/*"
-      - "Dependencies/*"
-      - "dirent.h"
+
+exclude_paths: [
+  'Dependencies/**',
+  '**/ImGui/**',
+  '**/GL/**',
+  'dirent.h',
+  '*.sh',
+  '*.md'
+]
