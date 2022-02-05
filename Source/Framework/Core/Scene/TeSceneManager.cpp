@@ -264,6 +264,9 @@ namespace te
         const bool alwaysRun = component->HasFlag(Component::AlwaysRun);
         const bool isEnabled = component->SO()->GetActive() && (alwaysRun);
 
+        if (isEnabled)
+            component->OnDisabled();
+
         component->OnDestroyed();
 
         // TODO immediate not used here as every destruction is automatically immediate

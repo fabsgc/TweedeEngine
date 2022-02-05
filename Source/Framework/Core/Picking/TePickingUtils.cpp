@@ -35,6 +35,9 @@ namespace te
 
         void FillPerInstanceHud(Vector<PerHudInstanceData>& instancedElements, const HCamera& camera, const HComponent& component, RenderType renderType)
         {
+            if (component.IsDestroyed())
+                return;
+
             TypeID_Core type = (TypeID_Core)component->GetCoreType();
 
             switch (type)

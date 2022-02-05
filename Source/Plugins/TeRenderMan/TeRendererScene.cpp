@@ -232,6 +232,11 @@ namespace te
         UINT32 lightId = light->GetRendererId();
         if (light->GetType() == LightType::Directional)
         {
+            if (_info.DirectionalLights.size() <= lightId)
+                return;
+            if (_info.DirectionalLights[lightId]._internal != light)
+                return;
+
             Light* lastLight = _info.DirectionalLights.back()._internal;
             UINT32 lastLightId = lastLight->GetRendererId();
 
@@ -249,6 +254,11 @@ namespace te
         {
             if (light->GetType() == LightType::Radial)
             {
+                if (_info.RadialLights.size() <= lightId)
+                    return;
+                if (_info.DirectionalLights[lightId]._internal != light)
+                    return;
+
                 Light* lastLight = _info.RadialLights.back()._internal;
                 UINT32 lastLightId = lastLight->GetRendererId();
 
@@ -267,6 +277,11 @@ namespace te
             }
             else
             {
+                if (_info.SpotLights.size() <= lightId)
+                    return;
+                if (_info.DirectionalLights[lightId]._internal != light)
+                    return;
+
                 Light* lastLight = _info.SpotLights.back()._internal;
                 UINT32 lastLightId = lastLight->GetRendererId();
 
@@ -363,15 +378,18 @@ namespace te
     }
 
     void RendererScene::UnregisterRenderable(Renderable* renderable)
-    { 
+    {
         UINT32 renderableId = renderable->GetRendererId();
+
+        if (_info.Renderables.size() <= renderableId)
+            return;
+        if (_info.Renderables[renderableId]->RenderablePtr != renderable)
+            return;
 
         // If element can be merged, we check if it still exist on renderer side
         if (renderable->GetCanBeMerged())
         {
             if (renderableId > _info.Renderables.size())
-                return;
-            if (_info.Renderables[renderableId]->RenderablePtr != renderable)
                 return;
         }
 
@@ -454,17 +472,23 @@ namespace te
 
     void RendererScene::UnregisterDecal(Decal* decal)
     {
-        const UINT32 rendererId = decal->GetRendererId();
+        const UINT32 decalId = decal->GetRendererId();
+
+        if (_info.Decals.size() <= decalId)
+            return;
+        if (_info.Decals[decalId].DecalPtr != decal)
+            return;
+
         Decal* lastDecal = _info.Decals.back().DecalPtr;
         const UINT32 lastDecalId = lastDecal->GetRendererId();
 
-        if (rendererId != lastDecalId)
+        if (decalId != lastDecalId)
         {
             // Swap current last element with the one we want to erase
-            std::swap(_info.Decals[rendererId], _info.Decals[lastDecalId]);
-            std::swap(_info.DecalCullInfos[rendererId], _info.DecalCullInfos[lastDecalId]);
+            std::swap(_info.Decals[decalId], _info.Decals[lastDecalId]);
+            std::swap(_info.DecalCullInfos[decalId], _info.DecalCullInfos[lastDecalId]);
 
-            lastDecal->SetRendererId(rendererId);
+            lastDecal->SetRendererId(decalId);
         }
 
         // Last element is the one we want to erase

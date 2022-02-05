@@ -1225,6 +1225,11 @@ namespace te
     /** When editor goes to stop mode, we destroy to copied scene and restore the original one */
     void Editor::DestroyRunningScene()
     {
+        _selections.ClickedComponent = nullptr;
+        _selections.ClickedSceneObject = nullptr;
+        _selections.HoveredComponent = nullptr;
+        _selections.HoveredSceneObject = nullptr;
+
         _runningSceneSO->Destroy();
         _sceneSO->SetActive(true);
         NeedsRedraw();

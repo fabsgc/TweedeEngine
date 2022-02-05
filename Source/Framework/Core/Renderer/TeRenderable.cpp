@@ -39,10 +39,7 @@ namespace te
 
     Renderable::~Renderable()
     {
-        if(_active)
-        {
-            if (_renderer) _renderer->NotifyRenderableRemoved(this);
-        }
+        if (_renderer) _renderer->NotifyRenderableRemoved(this);
     }
 
     void Renderable::Initialize()

@@ -18,13 +18,13 @@ namespace te
         _cameraList.AddOption(_currentCamera.GetNewHandleFromExisting(), _currentCamera->GetName());
 
         _cameraCreated = Component::OnComponentCreated.Connect(std::bind(&WidgetRenderOptions::CameraCreated, this, _1));
-        _cameraDestroyed = Component::OnComponentDestroyed.Connect(std::bind(&WidgetRenderOptions::CameraDestroyed, this, _1));
+        _cameraDisabled = Component::OnComponentDestroyed.Connect(std::bind(&WidgetRenderOptions::CameraDestroyed, this, _1));
     }
 
     WidgetRenderOptions::~WidgetRenderOptions()
     { 
         _cameraCreated.Disconnect();
-        _cameraDestroyed.Disconnect();
+        _cameraDisabled.Disconnect();
     }
 
     void WidgetRenderOptions::Initialize()

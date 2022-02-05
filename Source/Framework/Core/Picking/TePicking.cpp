@@ -145,6 +145,9 @@ namespace te
 
     void Picking::DrawRenderable(const HRenderable& renderable)
     {
+        if (renderable.IsDestroyed())
+            return;
+
         SPtr<Mesh> mesh = renderable->GetMesh();
 
         if (mesh)

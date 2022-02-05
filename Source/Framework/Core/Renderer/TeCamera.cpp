@@ -28,11 +28,8 @@ namespace te
     }
 
     Camera::~Camera()
-    { 
-        if (_active)
-        {
-            if (_renderer) _renderer->NotifyCameraRemoved(this);
-        }
+    {
+        if (_renderer) _renderer->NotifyCameraRemoved(this);
     }
 
     void Camera::Initialize()

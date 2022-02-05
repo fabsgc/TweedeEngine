@@ -6,8 +6,8 @@ namespace te
 {
     Decal::Decal(const HMaterial& material, const Vector2& size, float maxDistance)
         : Serializable(TID_Decal)
-        , _size(size)
         , _maxDistance(maxDistance)
+        , _size(size)
     {
         if (material.IsLoaded())
             _material = material.GetInternalPtr();
@@ -18,8 +18,8 @@ namespace te
     Decal::Decal(const SPtr<Material>& material, const Vector2& size, float maxDistance)
         : Serializable(TID_Decal)
         , _material(material)
-        , _size(size)
         , _maxDistance(maxDistance)
+        , _size(size)
     {
         UpdateBounds();
     }
@@ -30,10 +30,7 @@ namespace te
 
     Decal::~Decal()
     { 
-        if (_active)
-        {
-            if (_renderer) _renderer->NotifyDecalRemoved(this);
-        }
+        if (_renderer) _renderer->NotifyDecalRemoved(this);
     }
 
     void Decal::Initialize()

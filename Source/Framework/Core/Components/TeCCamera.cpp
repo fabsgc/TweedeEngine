@@ -64,6 +64,18 @@ namespace te
         Component::OnInitialized();
     }
 
+    void CCamera::OnEnabled()
+    {
+        _internal->SetActive(true);
+        Component::OnEnabled();
+    }
+
+    void CCamera::OnDisabled()
+    {
+        _internal->SetActive(false);
+        Component::OnDisabled();
+    }
+
     void CCamera::OnTransformChanged(TransformChangedFlags flags)
     {
         _internal->UpdateState(*SO());

@@ -22,6 +22,6 @@ namespace te
         ImGuiExt::ComboOptions<HCamera> _cameraList;
         HCamera _currentCamera;
         HEvent _cameraCreated;
-        HEvent _cameraDestroyed;
+        HEvent _cameraDisabled;
     };
 }
