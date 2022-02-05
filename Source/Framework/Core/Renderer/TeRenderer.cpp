@@ -3,9 +3,6 @@
 
 namespace te
 {
-    Renderer::Renderer()
-    { }
-
     SPtr<RendererMeshData> Renderer::CreateMeshData(UINT32 numVertices, UINT32 numIndices, VertexLayout layout, IndexType indexType)
     {
         return te_shared_ptr<RendererMeshData>(new (te_allocate<RendererMeshData>())

@@ -33,7 +33,6 @@ namespace te
     class TE_CORE_EXPORT Renderer : public NonCopyable
     {
     public:
-        Renderer();
         virtual ~Renderer() = default;
 
         /** Initializes the renderer. Must be called before using the renderer. */
