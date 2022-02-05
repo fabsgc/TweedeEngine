@@ -7,8 +7,8 @@
 - Install other dependencies
   - See [here](#otherDeps)
 - Run the following commands in the terminal/command line:
-  - `git clone https://github.com/fabsgc/TweedeFrameworkRedux.git`
-  - `cd TweedeFrameworkRedux`
+  - `git clone https://github.com/fabsgc/TweedeEngine.git`
+  - `cd TweedeEngine`
   - `mkdir Build`
   - `cd Build`
   - `cmake -G "$generator$" ..` 

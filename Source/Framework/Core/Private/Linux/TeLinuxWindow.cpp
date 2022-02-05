@@ -171,7 +171,7 @@ namespace te
 
         XClassHint* classHint = XAllocClassHint();
 
-        classHint->res_class = (char*)"TweedeFrameworkRedux";
+        classHint->res_class = (char*)"TweedeEngine";
         classHint->res_name = (char*)desc.Title.c_str();
 
         XSetClassHint(display, _data->XWindow, classHint);
