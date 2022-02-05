@@ -8,7 +8,8 @@ exclude_paths: [
   'Dependencies/**',
   '**/ImGui/**',
   '**/GL/**',
-  'dirent.h',
+  '**/dirent.h',
+  '**/TeImGuiFileBrowser.cpp',
   '**.sh',
   '**.md'
 ]
