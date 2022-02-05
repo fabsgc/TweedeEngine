@@ -1,3 +1,4 @@
+---
 engines:
   rubocop:
     exclude_paths:
