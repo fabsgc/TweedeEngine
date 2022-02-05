@@ -18,8 +18,14 @@ namespace te
         /** Initializes the renderer, making it ready to render. */
         SPtr<Renderer> Initialize(const String& pluginName, String rendererName, bool useAsDefault = true);
 
-        /** Returns the current renderer. Null if no renderer is active. */
-        SPtr<Renderer> GetRenderer() { return _defaultRenderer; }
+        /** Returns the current renderer. Null if no there is no renderer. */
+        SPtr<Renderer> GetRenderer() { return _defaultRenderer; };
+
+        /** 
+         * Returns the renderer attached to the given name. 
+         * Returns Null if renderer is not found or if no there is no renderer. 
+         */
+        SPtr<Renderer> GetRenderer(const String rendererName);
 
         /** Registers a new render API factory responsible for creating a specific render system type. */
         void RegisterFactory(SPtr<RendererFactory> factory);

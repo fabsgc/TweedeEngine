@@ -1,7 +1,17 @@
 engines:
+  rubocop:
+    exclude_paths:
+      - "*.sh"
+      - "*.md"
+      - "*/ImGui/*"
+      - "*/GL/*"
+      - "Dependencies/*"
+      - "dirent.h"
   duplication:
     exclude_paths:
       - "*.sh"
+      - "*.md"
       - "*/ImGui/*"
       - "*/GL/*"
+      - "Dependencies/*"
       - "dirent.h"

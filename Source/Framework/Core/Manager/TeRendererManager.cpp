@@ -62,4 +62,13 @@ namespace te
 
         _availableFactories.push_back(factory);
     }
+
+    SPtr<Renderer> RendererManager::GetRenderer(const String rendererName = "")
+    {
+        auto it = _renderers.find(rendererName);
+        if(it != _renderers.end())
+            return it->second;
+
+        return nullptr;
+    }
 }
