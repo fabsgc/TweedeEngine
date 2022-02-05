@@ -22,7 +22,7 @@ namespace te
 
     FLAC__StreamDecoderSeekStatus StreamSeek(const FLAC__StreamDecoder*, FLAC__uint64 absoluteByteOffset, void* clientData)
     {
-        FLACDecoderData* data = (FLACDecoderData*)(clientData);
+        FLACDecoderData* data = static_cast<FLACDecoderData*>(clientData);
 
         data->Stream->Seek(data->StreamOffset + (UINT32)absoluteByteOffset);
         INT64 position = (INT64)(data->Stream->Tell() - data->StreamOffset);

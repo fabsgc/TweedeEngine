@@ -37,11 +37,11 @@ namespace te
     SPtr<Resource> OAImporter::Import(const String& filePath, SPtr<const ImportOptions> importOptions)
     {
         AudioDataInfo info;
-        size_t size = 0;
         UINT32 bytesPerSample = 0;
         UINT32 bufferSize = 0;
         SPtr<MemoryDataStream> sampleStream;
         {
+            size_t size = 0;
             Lock lock = FileScheduler::GetLock(filePath);
             SPtr<FileStream> file = te_shared_ptr_new<FileStream>(filePath);
 

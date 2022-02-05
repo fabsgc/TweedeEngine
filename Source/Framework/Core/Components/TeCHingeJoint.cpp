@@ -121,7 +121,7 @@ namespace te
         _highLimit = highLimit;
 
         if (_highLimit < _lowLimit)
-            _lowLimit = _lowLimit;
+            _highLimit = _lowLimit;
 
         if (_internal != nullptr)
             std::static_pointer_cast<HingeJoint>(_internal)->SetHighLimit(_highLimit);
@@ -135,7 +135,7 @@ namespace te
         _lowLimit = lowLimit;
 
         if (_lowLimit > _highLimit)
-            _lowLimit = _lowLimit;
+            _lowLimit = _highLimit;
 
         if (_internal != nullptr)
             std::static_pointer_cast<HingeJoint>(_internal)->SetLowLimit(_lowLimit);
