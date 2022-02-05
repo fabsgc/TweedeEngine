@@ -3,10 +3,12 @@
 ---
 
 exclude_paths: [
+  'Source/Framework/Utility/ThirdParty/**',
+  'Documentation/**',
   'Dependencies/**',
   '**/ImGui/**',
   '**/GL/**',
   'dirent.h',
-  '*.sh',
-  '*.md'
+  '**.sh',
+  '**.md'
 ]
