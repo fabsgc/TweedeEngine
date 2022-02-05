@@ -246,7 +246,7 @@ namespace te
 
         view.BeginFrame(frameInfo);
 
-        RenderCompositorNodeInputs inputs(viewGroup, view, sceneInfo, *_options, frameInfo);
+        RenderCompositorNodeInputs inputs(viewGroup, view, sceneInfo, *_options, frameInfo, *this);
 
         const RenderCompositor& compositor = view.GetCompositor();
         compositor.Execute(inputs);
@@ -407,7 +407,7 @@ namespace te
         _scene->DestroyBatchedRenderables();
     }
 
-    void RenderMan::SetLastRenderTexture(RenderOutputType type, SPtr<Texture> renderTexture)
+    void RenderMan::SetLastRenderTexture(RenderOutputType type, SPtr<Texture> renderTexture) const
     {
         switch (type)
         {
@@ -465,7 +465,7 @@ namespace te
         return nullptr;
     }
 
-    void RenderMan::SetLastLightMapTexture(Light* light, SPtr<Texture> depthBuffer)
+    void RenderMan::SetLastLightMapTexture(Light* light, SPtr<Texture> depthBuffer) const
     {
         // TODO
     }

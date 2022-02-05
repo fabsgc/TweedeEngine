@@ -177,7 +177,7 @@ namespace te
         /**
          * Save last generated corresponding rendered texture until next call to RenderAll()
          */
-        virtual void SetLastRenderTexture(RenderOutputType type, SPtr<Texture> depthBuffer) = 0;
+        virtual void SetLastRenderTexture(RenderOutputType type, SPtr<Texture> depthBuffer) const = 0;
 
         /**
          * Retrieve last generated corresponding rendered texture
@@ -189,7 +189,7 @@ namespace te
         /**
          * Save last generated corresponding rendered light map texture until next call to RenderAll()
          */
-        virtual void SetLastLightMapTexture(Light* light, SPtr<Texture> depthBuffer) = 0;
+        virtual void SetLastLightMapTexture(Light* light, SPtr<Texture> depthBuffer) const = 0;
 
         /**
          * Retrieve last generated light map corresponding to the light in parameter

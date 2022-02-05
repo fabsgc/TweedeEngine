@@ -9,17 +9,19 @@ namespace te
     class RendererViewGroup;
     class RenderCompositorNode;
     struct FrameInfo;
+    class Renderer;
 
     /** Inputs provided to each node in the render compositor hierarchy */
     struct RenderCompositorNodeInputs
     {
         RenderCompositorNodeInputs(const RendererViewGroup& viewGroup, const RendererView& view, const SceneInfo& scene,
-            const RenderManOptions& options, const FrameInfo& frameInfo)
+            const RenderManOptions& options, const FrameInfo& frameInfo, const Renderer& renderer)
             : ViewGroup(viewGroup)
             , View(view)
             , Scene(scene)
             , Options(options)
             , FrameInfos(frameInfo)
+            , CurrRenderer(renderer)
         { }
 
         const RendererViewGroup& ViewGroup;
@@ -27,6 +29,7 @@ namespace te
         const SceneInfo& Scene;
         const RenderManOptions& Options;
         const FrameInfo& FrameInfos;
+        const Renderer& CurrRenderer;
 
         // Callbacks to external systems can hook into the compositor
         Vector<RenderCompositorNode*> InputNodes;

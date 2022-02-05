@@ -143,13 +143,13 @@ namespace te
         void DestroyBatchedRenderables() override;
 
         /** @copydoc Renderer::SetLastRenderTexture */
-        void SetLastRenderTexture(RenderOutputType type, SPtr<Texture> renderTexture) override;
+        void SetLastRenderTexture(RenderOutputType type, SPtr<Texture> renderTexture) const override;
 
         /** @copydoc Renderer::GetLastRenderTexture */
         SPtr<Texture> GetLastRenderTexture(RenderOutputType type) const override;
 
         /** @copydoc Renderer::SetLastLightMapTexture */
-        void SetLastLightMapTexture(Light* light, SPtr<Texture> depthBuffer) override;
+        void SetLastLightMapTexture(Light* light, SPtr<Texture> depthBuffer) const override;
 
         /** @copydoc Renderer::GetLastLightMapTexture */
         SPtr<Texture> GetLastLightMapTexture(SPtr<Light> light) const override;
@@ -163,7 +163,7 @@ namespace te
 
         // Keep track of all previously generated render textures
         // This structure is cleared when calling RenderAll()
-        RenderTextures _renderTextures;
+        mutable RenderTextures _renderTextures;
     };
 
     /** Provides easy access to the RenderBeast renderer. */

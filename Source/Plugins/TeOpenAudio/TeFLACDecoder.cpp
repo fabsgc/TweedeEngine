@@ -34,7 +34,7 @@ namespace te
 
     FLAC__StreamDecoderTellStatus StreamTell(const FLAC__StreamDecoder*, FLAC__uint64* absoluteByteOffset, void* clientData)
     {
-        FLACDecoderData* data = (FLACDecoderData*)(clientData);
+        FLACDecoderData* data = static_cast<FLACDecoderData*>(clientData);
 
         INT64 position = (INT64)(data->Stream->Tell() - data->StreamOffset);
         if (position >= 0)

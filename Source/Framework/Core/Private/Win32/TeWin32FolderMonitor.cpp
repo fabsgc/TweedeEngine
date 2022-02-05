@@ -244,7 +244,7 @@ namespace te
             String utf8filename = UTF8::FromWide(fileName);
             UINT8* bytes = (UINT8*)te_allocate((UINT32)(sizeof(FileAction) + (utf8filename.size() + 1) * sizeof(String::value_type)));
 
-            FileAction* action = (FileAction*)bytes;
+            FileAction* action = reinterpret_cast<FileAction*>(bytes);
             bytes += sizeof(FileAction);
 
             action->OldName = nullptr;

@@ -64,64 +64,73 @@ namespace te
         if (deviceID == nullptr)
             cleanup = true;
 
-        // Connect to WMI
-        hr = IWbemLocator->ConnectServer(classNameSpace, nullptr, nullptr, 0L, 0L, nullptr, nullptr, &IWbemServices);
-        if (FAILED(hr) || IWbemServices == nullptr)
-            cleanup = true;
-
-        // Switch security level to IMPERSONATE
-        CoSetProxyBlanket(IWbemServices, RPC_C_AUTHN_WINNT, RPC_C_AUTHZ_NONE, nullptr, RPC_C_AUTHN_LEVEL_CALL, RPC_C_IMP_LEVEL_IMPERSONATE, nullptr, EOAC_NONE);
-
-        hr = IWbemServices->CreateInstanceEnum(className, 0, nullptr, &enumDevices);
-        if (FAILED(hr) || enumDevices == nullptr)
-            cleanup = true;
-
-        // Loop over all devices
-        for (;; )
+        if (IWbemLocator != nullptr)
         {
-            DWORD numDevices = 0;
-            hr = enumDevices->Next(5000, 20, devices, &numDevices);
-            if (FAILED(hr))
+            // Connect to WMI
+            hr = IWbemLocator->ConnectServer(classNameSpace, nullptr, nullptr, 0L, 0L, nullptr, nullptr, &IWbemServices);
+            if (FAILED(hr) || IWbemServices == nullptr)
                 cleanup = true;
 
-            if (numDevices == 0)
-                break;
-
-            for (DWORD i = 0; i < numDevices; i++)
+            if (IWbemServices != nullptr)
             {
-                // For each device, get its device ID
-                VARIANT var;
-                hr = devices[i]->Get(deviceID, 0L, &var, nullptr, nullptr);
-                if (SUCCEEDED(hr) && var.vt == VT_BSTR && var.bstrVal != nullptr)
+                // Switch security level to IMPERSONATE
+                CoSetProxyBlanket(IWbemServices, RPC_C_AUTHN_WINNT, RPC_C_AUTHZ_NONE, nullptr, RPC_C_AUTHN_LEVEL_CALL, RPC_C_IMP_LEVEL_IMPERSONATE, nullptr, EOAC_NONE);
+
+                hr = IWbemServices->CreateInstanceEnum(className, 0, nullptr, &enumDevices);
+                if (FAILED(hr) || enumDevices == nullptr)
+                    cleanup = true;
+
+                if (enumDevices != nullptr)
                 {
-                    // Check if the device ID contains "IG_".  If it does, then it's an XInput device
-                    if (wcsstr(var.bstrVal, L"IG_"))
+                    // Loop over all devices
+                    for (;; )
                     {
-                        // If it does, then get the VID/PID from var.bstrVal
-                        DWORD dwPid = 0, dwVid = 0;
-                        WCHAR* strVid = wcsstr(var.bstrVal, L"VID_");
-                        if (strVid && swscanf_s(strVid, L"VID_%4X", &dwVid) != 1)
-                            dwVid = 0;
+                        DWORD numDevices = 0;
+                        hr = enumDevices->Next(5000, 20, devices, &numDevices);
+                        if (FAILED(hr))
+                            cleanup = true;
 
-                        WCHAR* strPid = wcsstr(var.bstrVal, L"PID_");
-                        if (strPid && swscanf_s(strPid, L"PID_%4X", &dwPid) != 1)
-                            dwPid = 0;
+                        if (numDevices == 0)
+                            break;
 
-                        // Compare the VID/PID to the DInput device
-                        DWORD dwVidPid = MAKELONG(dwVid, dwPid);
-
-                        for (auto entry = infos.begin(); entry != infos.end(); entry++)
+                        for (DWORD i = 0; i < numDevices; i++)
                         {
-                            if (dwVidPid == entry->GuidProduct.Data1)
+                            // For each device, get its device ID
+                            VARIANT var;
+                            hr = devices[i]->Get(deviceID, 0L, &var, nullptr, nullptr);
+                            if (SUCCEEDED(hr) && var.vt == VT_BSTR && var.bstrVal != nullptr)
                             {
-                                entry->IsXInput = true;
-                                entry->XInputDev = (int)entry->Id; // Note: These might not match and I might need to get the XInput id differently
+                                // Check if the device ID contains "IG_".  If it does, then it's an XInput device
+                                if (wcsstr(var.bstrVal, L"IG_"))
+                                {
+                                    // If it does, then get the VID/PID from var.bstrVal
+                                    DWORD dwPid = 0, dwVid = 0;
+                                    WCHAR* strVid = wcsstr(var.bstrVal, L"VID_");
+                                    if (strVid && swscanf_s(strVid, L"VID_%4X", &dwVid) != 1)
+                                        dwVid = 0;
+
+                                    WCHAR* strPid = wcsstr(var.bstrVal, L"PID_");
+                                    if (strPid && swscanf_s(strPid, L"PID_%4X", &dwPid) != 1)
+                                        dwPid = 0;
+
+                                    // Compare the VID/PID to the DInput device
+                                    DWORD dwVidPid = MAKELONG(dwVid, dwPid);
+
+                                    for (auto entry = infos.begin(); entry != infos.end(); entry++)
+                                    {
+                                        if (dwVidPid == entry->GuidProduct.Data1)
+                                        {
+                                            entry->IsXInput = true;
+                                            entry->XInputDev = (int)entry->Id; // Note: These might not match and I might need to get the XInput id differently
+                                        }
+                                    }
+                                }
                             }
+
+                            devices[i]->Release();
                         }
                     }
                 }
-
-                devices[i]->Release();
             }
         }
 

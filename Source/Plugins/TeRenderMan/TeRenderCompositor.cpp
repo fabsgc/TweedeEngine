@@ -962,18 +962,17 @@ namespace te
         if (inputs.View.GetSceneCamera()->IsMain() && GuiAPI::Instance().IsGuiInitialized())
             GuiAPI::Instance().EndFrame();
 
-        gRenderer()->SetLastRenderTexture(RenderOutputType::Final, postProcessNode->GetLastOutput());
-        gRenderer()->SetLastRenderTexture(RenderOutputType::Color, gpuInitializationPassNode->SceneTex->Tex);
-        gRenderer()->SetLastRenderTexture(RenderOutputType::Normal, gpuInitializationPassNode->NormalTex->Tex);
-        gRenderer()->SetLastRenderTexture(RenderOutputType::Depth, gpuInitializationPassNode->DepthTex->Tex);
+        inputs.CurrRenderer.SetLastRenderTexture(RenderOutputType::Final, postProcessNode->GetLastOutput());
+        inputs.CurrRenderer.SetLastRenderTexture(RenderOutputType::Color, gpuInitializationPassNode->SceneTex->Tex);
+        inputs.CurrRenderer.SetLastRenderTexture(RenderOutputType::Normal, gpuInitializationPassNode->NormalTex->Tex);
+        inputs.CurrRenderer.SetLastRenderTexture(RenderOutputType::Depth, gpuInitializationPassNode->DepthTex->Tex);
 
         if (gpuInitializationPassNode->EmissiveTex)
-            gRenderer()->SetLastRenderTexture(RenderOutputType::Emissive, gpuInitializationPassNode->EmissiveTex->Tex);
+            inputs.CurrRenderer.SetLastRenderTexture(RenderOutputType::Emissive, gpuInitializationPassNode->EmissiveTex->Tex);
         if (gpuInitializationPassNode->VelocityTex)
-            gRenderer()->SetLastRenderTexture(RenderOutputType::Velocity, gpuInitializationPassNode->VelocityTex->Tex);
+            inputs.CurrRenderer.SetLastRenderTexture(RenderOutputType::Velocity, gpuInitializationPassNode->VelocityTex->Tex);
         if (SSAONode)
-            gRenderer()->SetLastRenderTexture(RenderOutputType::SSAO, SSAONode->Output);
-
+            inputs.CurrRenderer.SetLastRenderTexture(RenderOutputType::SSAO, SSAONode->Output);
     }
 
     void RCNodeFinalResolve::Clear()
