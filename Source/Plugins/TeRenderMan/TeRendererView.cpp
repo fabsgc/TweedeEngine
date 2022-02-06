@@ -157,8 +157,6 @@ namespace te
             }
         }
 
-        perViewBufferDirty = true;
-
         _properties.NeedDynamicEnvMapCompute = false;
         _properties.ProjTransform = _properties.ProjTransformNoAA;
         _properties.ViewProjTransform = _properties.ProjTransform * _properties.ViewTransform;
