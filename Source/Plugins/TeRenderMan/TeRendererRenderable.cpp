@@ -42,7 +42,7 @@ namespace te
     PerMaterialData PerObjectBuffer::ConvertMaterialProperties(const MaterialProperties& properties)
     {
         PerMaterialData data;
-        data.gAlbedo = properties.Albedo.GetAsVector4();
+        data.BaseColor = properties.BaseColor.GetAsVector4();
 
         return data;
     }

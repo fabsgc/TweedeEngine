@@ -172,7 +172,7 @@ namespace te
             Matrix4 NDCToPrevNDC = _properties.PrevViewProjTransform * invViewProj;
 
             PerCameraData cameraData = gPerCameraParamDef.gCamera.Get(_paramBuffer, 0);
-            cameraData.gNDCToPrevNDC = NDCToPrevNDC;
+            cameraData.NDCToPrevNDC = NDCToPrevNDC;
 
             gPerCameraParamDef.gCamera.Set(_paramBuffer, cameraData);
         }
@@ -441,17 +441,16 @@ namespace te
                 //Once all this stuff is done, we need to write into perinstance buffer
                 //GpuParamBlockBuffer* buffer = sceneInfo.Renderables[elemId]->PerObjectParamBuffer.get();
 
-                data.gMatWorld = sceneInfo.Renderables[elemId]->WorldTfrm;
-                data.gMatInvWorld = sceneInfo.Renderables[elemId]->WorldTfrm.InverseAffine();
-                data.gMatWorldNoScale = tfrmNoScale;
-                data.gMatInvWorldNoScale = tfrmNoScale.InverseAffine();
-                data.gMatPrevWorld = sceneInfo.Renderables[elemId]->PrevWorldTfrm;
-                data.gLayer = (UINT32)renderable->GetLayer();
-                data.gHasAnimation = (renderable->IsAnimated()) ? 1 : 0;
-                data.gWriteVelocity = (renderable->GetWriteVelocity()) ? 1 : 0;
-                data.gCastLights = (renderable->GetCastLights()) ? 1 : 0;
-
-                _instanceDataPool[currInstBlock][subElemIdx - lowerBlockBound] = data;
+                data.MatWorld = sceneInfo.Renderables[elemId]->WorldTfrm;
+                data.MatInvWorld = sceneInfo.Renderables[elemId]->WorldTfrm.InverseAffine();
+                data.MatWorldNoScale = tfrmNoScale;
+                data.MatInvWorldNoScale = tfrmNoScale.InverseAffine();
+                data.MatPrevWorld = sceneInfo.Renderables[elemId]->PrevWorldTfrm;
+                data.Layer = (UINT32)renderable->GetLayer();
+                data.HasAnimation = (renderable->IsAnimated()) ? 1 : 0;
+                data.WriteVelocity = (renderable->GetWriteVelocity()) ? 1 : 0;
+                data.CastLights = (renderable->GetCastLights()) ? 1 : 0;
+                                _instanceDataPool[currInstBlock][subElemIdx - lowerBlockBound] = data;
                 instancedObjectCounter++;
 
                 if (instancedObjectCounter > STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE* STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER)
@@ -544,17 +543,17 @@ namespace te
 
         PerCameraData cameraData;
 
-        cameraData.gViewDir = _properties.ViewDirection;
-        cameraData.gViewportX = static_cast<UINT32>(_camera->GetViewport()->GetArea().x);
-        cameraData.gViewOrigin = _properties.ViewOrigin;
-        cameraData.gViewportY = static_cast<UINT32>(_camera->GetViewport()->GetArea().y);
-        cameraData.gMatViewProj = viewProj;
-        cameraData.gMatView = _properties.ViewTransform;
-        cameraData.gMatProj = _properties.ProjTransform;
-        cameraData.gMatPrevViewProj = _properties.PrevViewProjTransform;
-        cameraData.gNDCToPrevNDC = NDCToPrevNDC;
-        cameraData.gClipToUVScaleOffset = NDCToUV;
-        cameraData.gUVToClipScaleOffset = UVToNDC;
+        cameraData.ViewDir = _properties.ViewDirection;
+        cameraData.ViewportX = static_cast<UINT32>(_camera->GetViewport()->GetArea().x);
+        cameraData.ViewOrigin = _properties.ViewOrigin;
+        cameraData.ViewportY = static_cast<UINT32>(_camera->GetViewport()->GetArea().y);
+        cameraData.MatViewProj = viewProj;
+        cameraData.MatView = _properties.ViewTransform;
+        cameraData.MatProj = _properties.ProjTransform;
+        cameraData.MatPrevViewProj = _properties.PrevViewProjTransform;
+        cameraData.NDCToPrevNDC = NDCToPrevNDC;
+        cameraData.ClipToUVScaleOffset = NDCToUV;
+        cameraData.UVToClipScaleOffset = UVToNDC;
 
         gPerCameraParamDef.gCamera.Set(_paramBuffer, cameraData, 0);
     }

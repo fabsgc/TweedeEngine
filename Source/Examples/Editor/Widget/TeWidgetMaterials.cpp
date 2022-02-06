@@ -261,11 +261,11 @@ namespace te
             if (ImGui::CollapsingHeader("Properties", ImGuiTreeNodeFlags_DefaultOpen))
             {
                 {
-                    Vector4 color = properties.Albedo.GetAsVector4();
-                    if (ImGuiExt::RenderColorRGBA(color, "##material_properties_albdo_option", "Albedo", width))
+                    Vector4 color = properties.BaseColor.GetAsVector4();
+                    if (ImGuiExt::RenderColorRGBA(color, "##material_properties_albdo_option", "Base Color", width))
                     {
                         hasChanged = true;
-                        properties.Albedo = Color(color);
+                        properties.BaseColor = Color(color);
                     }
 
                     // TODO PBR

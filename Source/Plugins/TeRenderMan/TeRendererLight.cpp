@@ -47,18 +47,18 @@ namespace te
         }
 
         const Transform& tfrm = _internal->GetTransform();
-        output.gPosition = tfrm.GetPosition();
-        output.gDirection = -tfrm.GetRotation().ZAxis();
-        output.gIntensity = _internal->GetIntensity();
-        output.gSpotAngles.x = spotAngle.ValueRadians();
-        output.gSpotAngles.y = Math::Cos(output.gSpotAngles.x);
-        output.gSpotAngles.z = 1.0f / std::max(1.0f - output.gSpotAngles.y, 0.001f);
-        output.gAttenuationRadius = _internal->GetAttenuationRadius();
-        output.gColor = Vector3(color.r, color.g, color.b);
-        output.gBoundsRadius = _internal->GetBounds().GetRadius();
-        output.gLinearAttenuation = _internal->GetLinearAttenuation();
-        output.gQuadraticAttenuation = _internal->GetQuadraticAttenuation();
-        output.gType = type;
+        output.Position = tfrm.GetPosition();
+        output.Direction = -tfrm.GetRotation().ZAxis();
+        output.Intensity = _internal->GetIntensity();
+        output.SpotAngles.x = spotAngle.ValueRadians();
+        output.SpotAngles.y = Math::Cos(output.SpotAngles.x);
+        output.SpotAngles.z = 1.0f / std::max(1.0f - output.SpotAngles.y, 0.001f);
+        output.AttenuationRadius = _internal->GetAttenuationRadius();
+        output.Color = Vector3(color.r, color.g, color.b);
+        output.BoundsRadius = _internal->GetBounds().GetRadius();
+        output.LinearAttenuation = _internal->GetLinearAttenuation();
+        output.QuadraticAttenuation = _internal->GetQuadraticAttenuation();
+        output.Type = type;
     }
 
     VisibleLightData::VisibleLightData()
@@ -181,10 +181,10 @@ namespace te
         {
             const PerLightData* lightData = &_visibleLightData[j];
 
-            Sphere lightSphere(lightData->gPosition, lightData->gBoundsRadius);
+            Sphere lightSphere(lightData->Position, lightData->BoundsRadius);
             if (bounds.GetSphere().Intersects(lightSphere))
             {
-                float distance = bounds.GetSphere().GetCenter().SquaredDistance(lightData->gPosition);
+                float distance = bounds.GetSphere().GetCenter().SquaredDistance(lightData->Position);
 
                 // See where in the array can we fit the light
                 if (numInfluencingLights < STANDARD_FORWARD_MAX_NUM_LIGHTS)
@@ -257,9 +257,9 @@ namespace te
         {
             output[i] = &_visibleLightData[i];
 
-            if ((UINT32)_visibleLightData[i].gType == 0) counts.x++;
-            if ((UINT32)_visibleLightData[i].gType == 1) counts.y++;
-            if ((UINT32)_visibleLightData[i].gType == 2) counts.z++;
+            if ((UINT32)_visibleLightData[i].Type == 0) counts.x++;
+            if ((UINT32)_visibleLightData[i].Type == 1) counts.y++;
+            if ((UINT32)_visibleLightData[i].Type == 2) counts.z++;
         }
     }
 }

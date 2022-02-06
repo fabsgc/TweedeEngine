@@ -16,50 +16,50 @@ namespace te
 {
     struct PerCameraData
     {
-        Vector3 gViewDir;
-        UINT32  gViewportX;
-        Vector3 gViewOrigin;
-        UINT32  gViewportY;
-        Matrix4 gMatViewProj;
-        Matrix4 gMatView;
-        Matrix4 gMatProj;
-        Matrix4 gMatPrevViewProj;
-        Matrix4 gNDCToPrevNDC;
-        Vector4 gClipToUVScaleOffset;
-        Vector4 gUVToClipScaleOffset;
+        Vector3 ViewDir;
+        UINT32  ViewportX;
+        Vector3 ViewOrigin;
+        UINT32  ViewportY;
+        Matrix4 MatViewProj;
+        Matrix4 MatView;
+        Matrix4 MatProj;
+        Matrix4 MatPrevViewProj;
+        Matrix4 NDCToPrevNDC;
+        Vector4 ClipToUVScaleOffset;
+        Vector4 UVToClipScaleOffset;
     };
 
     struct PerInstanceData
     {
-        Matrix4 gMatWorld;
-        Matrix4 gMatInvWorld;
-        Matrix4 gMatWorldNoScale;
-        Matrix4 gMatInvWorldNoScale;
-        Matrix4 gMatPrevWorld;
-        UINT32  gLayer;
-        UINT32  gHasAnimation;
-        UINT32  gWriteVelocity;
-        UINT32  gCastLights;
+        Matrix4 MatWorld;
+        Matrix4 MatInvWorld;
+        Matrix4 MatWorldNoScale;
+        Matrix4 MatInvWorldNoScale;
+        Matrix4 MatPrevWorld;
+        UINT32  Layer;
+        UINT32  HasAnimation;
+        UINT32  WriteVelocity;
+        UINT32  CastLights;
     };
 
     struct PerMaterialData
     {
-        Vector4 gAlbedo;
+        Vector4 BaseColor;
     };
 
     struct PerLightData
     {
-        Vector3 gColor;
-        float   gType;
-        Vector3 gPosition;
-        float   gIntensity;
-        Vector3 gDirection;
-        float   gAttenuationRadius;
-        Vector3 gSpotAngles;
-        float   gBoundsRadius;
-        float   gLinearAttenuation;
-        float   gQuadraticAttenuation;
-        Vector2 gPadding;
+        Vector3 Color;
+        float   Type;
+        Vector3 Position;
+        float   Intensity;
+        Vector3 Direction;
+        float   AttenuationRadius;
+        Vector3 SpotAngles;
+        float   BoundsRadius;
+        float   LinearAttenuation;
+        float   QuadraticAttenuation;
+        Vector2 Padding;
     };
 
     // ############ Per Camera

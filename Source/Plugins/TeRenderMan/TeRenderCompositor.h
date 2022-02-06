@@ -181,8 +181,6 @@ namespace te
     public:
         // Outputs
         SPtr<PooledRenderTexture> SceneTex;
-        SPtr<PooledRenderTexture> AlbedoTex;
-        SPtr<PooledRenderTexture> SpecularTex;
         SPtr<PooledRenderTexture> NormalTex;
         SPtr<PooledRenderTexture> VelocityTex;
         SPtr<PooledRenderTexture> EmissiveTex;

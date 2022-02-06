@@ -6,15 +6,15 @@
 
 struct PerInstanceData
 {
-    matrix gMatWorld;
-    matrix gMatInvWorld;
-    matrix gMatWorldNoScale;
-    matrix gMatInvWorldNoScale;
-    matrix gMatPrevWorld;
-    uint   gLayer;
-    uint   gHasAnimation;
-    uint   gWriteVelocity;
-    uint   gCastLights;
+    matrix MatWorld;
+    matrix MatInvWorld;
+    matrix MatWorldNoScale;
+    matrix MatInvWorldNoScale;
+    matrix MatPrevWorld;
+    uint   Layer;
+    uint   HasAnimation;
+    uint   WriteVelocity;
+    uint   CastLights;
 };
 
 // #################### CONSTANT BUFFERS

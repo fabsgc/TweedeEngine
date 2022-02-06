@@ -59,7 +59,7 @@ namespace te
     struct MaterialProperties
     {
         /** Basic parameters for controlling color of the material */
-        Color Albedo = Color(0.75f, 0.75f, 0.75f, 1.0f);
+        Color BaseColor = Color(0.75f, 0.75f, 0.75f, 1.0f);
     };
 
     struct MaterialTextures

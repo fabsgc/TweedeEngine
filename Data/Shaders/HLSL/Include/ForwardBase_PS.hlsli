@@ -13,22 +13,22 @@
 
 struct MaterialData
 {
-    float4 gAlbedo;
+    float4 BaseColor;
 };
 
 struct LightData
 {
-    float3 gColor;
-    float  gType;
-    float3 gPosition;
-    float  gIntensity;
-    float3 gDirection;
-    float  gAttenuationRadius;
-    float3 gSpotAngles;
-    float  gBoundsRadius;
-    float  gLinearAttenuation;
-    float  gQuadraticAttenuation;
-    float2 gPadding1;
+    float3 Color;
+    float  Type;
+    float3 Position;
+    float  Intensity;
+    float3 Direction;
+    float  AttenuationRadius;
+    float3 SpotAngles;
+    float  BoundsRadius;
+    float  LinearAttenuation;
+    float  QuadraticAttenuation;
+    float2 Padding1;
 };
 
 struct LightingResult

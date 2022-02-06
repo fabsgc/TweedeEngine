@@ -4,17 +4,17 @@
 
 struct CameraData
 {
-    float3 gViewDir;
-    uint   gViewportX;
-    float3 gViewOrigin;
-    uint   gViewportY;
-    matrix gMatViewProj;
-    matrix gMatView;
-    matrix gMatProj;
-    matrix gMatPrevViewProj;
-    matrix gNDCToPrevNDC;
-    float4 gClipToUVScaleOffset;
-    float4 gUVToClipScaleOffset;
+    float3 ViewDir;
+    uint   ViewportX;
+    float3 ViewOrigin;
+    uint   ViewportY;
+    matrix MatViewProj;
+    matrix MatView;
+    matrix MatProj;
+    matrix MatPrevViewProj;
+    matrix NDCToPrevNDC;
+    float4 ClipToUVScaleOffset;
+    float4 UVToClipScaleOffset;
 };
 
 // #################### STAGE INPUTS / OUTPUTS

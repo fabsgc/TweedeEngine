@@ -1278,7 +1278,7 @@ namespace te
         // ######################################################
         {
             MaterialProperties monkeyMatprop;
-            monkeyMatprop.Albedo = Color(0.8f, 0.8f, 0.8f, 1.0f);
+            monkeyMatprop.BaseColor = Color(0.8f, 0.8f, 0.8f, 1.0f);
 
             _monkeyMaterial = Material::Create(_shader);
             _monkeyMaterial->SetName("Monkey Material");
