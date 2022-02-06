@@ -35,69 +35,14 @@ namespace te
 
     void PerObjectBuffer::UpdatePerMaterial(SPtr<GpuParamBlockBuffer>& perMaterialBuffer, const MaterialProperties& properties)
     {
-        MaterialData data = ConvertMaterialProperties(properties);
-
-        gPerMaterialParamDef.gAmbient.Set(perMaterialBuffer, data.gAmbient);
-        gPerMaterialParamDef.gDiffuse.Set(perMaterialBuffer, data.gDiffuse);
-        gPerMaterialParamDef.gEmissive.Set(perMaterialBuffer, data.gEmissive);
-        gPerMaterialParamDef.gSpecular.Set(perMaterialBuffer, data.gSpecular);
-        gPerMaterialParamDef.gTextureRepeat.Set(perMaterialBuffer, data.gTextureRepeat);
-        gPerMaterialParamDef.gTextureOffset.Set(perMaterialBuffer, data.gTextureOffset);
-        gPerMaterialParamDef.gUseDiffuseMap.Set(perMaterialBuffer, data.gUseDiffuseMap);
-        gPerMaterialParamDef.gUseEmissiveMap.Set(perMaterialBuffer, data.gUseEmissiveMap);
-        gPerMaterialParamDef.gUseNormalMap.Set(perMaterialBuffer, data.gUseNormalMap);
-        gPerMaterialParamDef.gUseSpecularMap.Set(perMaterialBuffer, data.gUseSpecularMap);
-        gPerMaterialParamDef.gUseBumpMap.Set(perMaterialBuffer, data.gUseBumpMap);
-        gPerMaterialParamDef.gUseParallaxMap.Set(perMaterialBuffer, data.gUseParallaxMap);
-        gPerMaterialParamDef.gUseTransparencyMap.Set(perMaterialBuffer, data.gUseTransparencyMap);
-        gPerMaterialParamDef.gUseReflectionMap.Set(perMaterialBuffer, data.gUseReflectionMap);
-        gPerMaterialParamDef.gUseOcclusionMap.Set(perMaterialBuffer, data.gUseOcclusionMap);
-        gPerMaterialParamDef.gUseEnvironmentMap.Set(perMaterialBuffer, data.gUseEnvironmentMap);
-        gPerMaterialParamDef.gUseIrradianceMap.Set(perMaterialBuffer, data.gUseIrradianceMap);
-        gPerMaterialParamDef.gUseGlobalIllumination.Set(perMaterialBuffer, data.gUseGlobalIllumination);
-        gPerMaterialParamDef.gSpecularPower.Set(perMaterialBuffer, data.gSpecularPower);
-        gPerMaterialParamDef.gSpecularStrength.Set(perMaterialBuffer, data.gSpecularStrength);
-        gPerMaterialParamDef.gTransparency.Set(perMaterialBuffer, data.gTransparency);
-        gPerMaterialParamDef.gIndexOfRefraction.Set(perMaterialBuffer, data.gIndexOfRefraction);
-        gPerMaterialParamDef.gRefraction.Set(perMaterialBuffer, data.gRefraction);
-        gPerMaterialParamDef.gReflection.Set(perMaterialBuffer, data.gReflection);
-        gPerMaterialParamDef.gBumpScale.Set(perMaterialBuffer, data.gBumpScale);
-        gPerMaterialParamDef.gParallaxScale.Set(perMaterialBuffer, data.gParallaxScale);
-        gPerMaterialParamDef.gAlphaThreshold.Set(perMaterialBuffer, data.gAlphaThreshold);
-        gPerMaterialParamDef.gParallaxSamples.Set(perMaterialBuffer, data.gParallaxSamples);
+        PerMaterialData data = ConvertMaterialProperties(properties);
+        gPerMaterialParamDef.gMaterial.Set(perMaterialBuffer, data);
     }
 
-    MaterialData PerObjectBuffer::ConvertMaterialProperties(const MaterialProperties& properties)
+    PerMaterialData PerObjectBuffer::ConvertMaterialProperties(const MaterialProperties& properties)
     {
-        MaterialData data;
-        data.gAmbient = properties.Ambient.GetAsVector4();
-        data.gDiffuse = properties.Diffuse.GetAsVector4();
-        data.gEmissive = properties.Emissive.GetAsVector4();
-        data.gSpecular = properties.Specular.GetAsVector4();
-        data.gTextureRepeat = properties.TextureRepeat;
-        data.gTextureOffset = properties.TextureOffset;
-        data.gUseDiffuseMap = (UINT32)properties.UseDiffuseMap ? 1 : 0;
-        data.gUseEmissiveMap = (UINT32)properties.UseEmissiveMap ? 1 : 0;
-        data.gUseNormalMap = (UINT32)properties.UseNormalMap ? 1 : 0;
-        data.gUseSpecularMap = (UINT32)properties.UseSpecularMap ? 1 : 0;
-        data.gUseBumpMap = (UINT32)properties.UseBumpMap ? 1 : 0;
-        data.gUseParallaxMap = (UINT32)properties.UseParallaxMap ? 1 : 0;
-        data.gUseTransparencyMap = (UINT32)properties.UseTransparencyMap ? 1 : 0;
-        data.gUseReflectionMap = (UINT32)properties.UseReflectionMap ? 1 : 0;
-        data.gUseOcclusionMap = (UINT32)properties.UseOcclusionMap ? 1 : 0;
-        data.gUseEnvironmentMap = (UINT32)properties.UseEnvironmentMap ? 1 : 0;
-        data.gUseIrradianceMap = (UINT32)properties.UseIrradianceMap ? 1 : 0;
-        data.gUseGlobalIllumination = (UINT32)properties.UseGlobalIllumination ? 1 : 0;
-        data.gSpecularPower = properties.SpecularPower;
-        data.gSpecularStrength = properties.SpecularStrength;
-        data.gTransparency = properties.Transparency;
-        data.gIndexOfRefraction = properties.IndexOfRefraction;
-        data.gRefraction = properties.Refraction;
-        data.gReflection = properties.Reflection;
-        data.gBumpScale = properties.BumpScale;
-        data.gParallaxScale = properties.ParallaxScale;
-        data.gAlphaThreshold = properties.AlphaThreshold;
-        data.gParallaxSamples = properties.ParallaxSamples;
+        PerMaterialData data;
+        data.gAlbedo = properties.Albedo.GetAsVector4();
 
         return data;
     }

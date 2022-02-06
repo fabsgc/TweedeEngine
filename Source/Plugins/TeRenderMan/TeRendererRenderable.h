@@ -44,7 +44,7 @@ namespace te
          *
          * @param[in]	properties material properties
          */
-        static MaterialData ConvertMaterialProperties(const MaterialProperties& properties);
+        static PerMaterialData ConvertMaterialProperties(const MaterialProperties& properties);
     };
 
     /**

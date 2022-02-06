@@ -1,7 +1,2 @@
-add_subdirectory (HelloWorld)
-add_subdirectory (SimpleScene)
-add_subdirectory (Sponza)
-add_subdirectory (LightingScene)
-add_subdirectory (MotionBlur)
 add_subdirectory (Template)
 add_subdirectory (Editor)

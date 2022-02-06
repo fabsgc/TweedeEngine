@@ -52,7 +52,7 @@ namespace te
         EditorResManager::ResourcesContainer& textures = EditorResManager::Instance().Get<Texture>();
         const float width = ImGui::GetWindowContentRegionWidth() - 110.0f;
 
-        const auto& ShowTexture = [&](UUID& uuid, bool& textureUsed, const char* id, const char* label, const char* textureName, 
+        /*const auto& ShowTexture = [&](UUID& uuid, bool& textureUsed, const char* id, const char* label, const char* textureName, 
             ImGuiExt::ComboOptions<UUID>& options, float width, bool disable = false)
         {
             SPtr<Texture> texture = nullptr;
@@ -104,7 +104,7 @@ namespace te
             }
 
             return hasChanged;
-        };
+        }; TODO PBR */
 
         const auto& ShowPreviewButton = [this](const char* title, const std::function<bool()>& getVisibility)
         {
@@ -261,103 +261,14 @@ namespace te
             if (ImGui::CollapsingHeader("Properties", ImGuiTreeNodeFlags_DefaultOpen))
             {
                 {
-                    Vector4 color = properties.Ambient.GetAsVector4();
-                    if (ImGuiExt::RenderColorRGBA(color, "##material_properties_ambient_option", "Ambient", width, properties.UseDiffuseMap))
+                    Vector4 color = properties.Albedo.GetAsVector4();
+                    if (ImGuiExt::RenderColorRGBA(color, "##material_properties_albdo_option", "Albedo", width))
                     {
                         hasChanged = true;
-                        properties.Ambient = Color(color);
+                        properties.Albedo = Color(color);
                     }
-                }
-                ImGui::Separator();
-                {
-                    Vector4 color = properties.Diffuse.GetAsVector4();
-                    if (ImGuiExt::RenderColorRGBA(color, "##material_properties_diffuse_option", "Diffuse", width))
-                    {
-                        hasChanged = true;
-                        properties.Diffuse = Color(color);
-                    }
-                }
-                ImGui::Separator();
-                {
-                    Vector4 color = properties.Specular.GetAsVector4();
-                    if (ImGuiExt::RenderColorRGBA(color, "##material_properties_specular_option", "Specular", width))
-                    {
-                        hasChanged = true;
-                        properties.Specular = Color(color);
-                    }
-                }
-                ImGui::Separator();
-                {
-                    Vector4 color = properties.Emissive.GetAsVector4();
-                    if (ImGuiExt::RenderColorRGBA(color, "##material_properties_emissive_option", "Emissive", width))
-                    {
-                        hasChanged = true;
-                        properties.Emissive = Color(color);
-                    }
-                }
-                ImGui::Separator();
-                {
-                    if (ImGuiExt::RenderOptionBool(properties.UseDynamicEnvironmentMap, "##material_properties_dynamic_env_mapping_option", "Use dynamic env mapping"))
-                        hasChanged = true;
-                }
-                ImGui::Separator();
-                {
-                    if (ImGuiExt::RenderOptionBool(properties.UseGlobalIllumination, "##material_properties_global_illumination_option", "Use global illumination"))
-                        hasChanged = true;
-                }
-                ImGui::Separator();
-                {
-                    if (ImGuiExt::RenderVector2(properties.TextureRepeat, "##material_properties_texture_repeat_option", " Texture Repeat", width))
-                        hasChanged = true;
-                    if (ImGuiExt::RenderVector2(properties.TextureOffset, "##material_properties_texture_repeat_option", " Texture Offset", width))
-                        hasChanged = true;
-                }
-                ImGui::Separator();
-                {
-                    if (ImGuiExt::RenderOptionFloat(properties.SpecularPower, "##material_properties_specular_p_option", "Spec. power", 0.0f, 1024.0f, width))
-                        hasChanged = true;
-                    if (ImGuiExt::RenderOptionFloat(properties.SpecularStrength, "##material_properties_specular_s_option", "Spec. strength", 0.0f, 256.0f, width))
-                        hasChanged = true;
-                }
-                ImGui::Separator();
-                {
-                    if (ImGuiExt::RenderOptionFloat(properties.Transparency, "##material_properties_transparency_option", "Opacity", 0.0f, 1.0f, width, properties.UseTransparencyMap))
-                        hasChanged = true;
-                }
-                ImGui::Separator();
-                {
-                    if (ImGuiExt::RenderOptionFloat(properties.IndexOfRefraction, "##material_properties_ind_refraction_option", "Ind. refraction", 0.0f, 10.0f, width))
-                        hasChanged = true;
-                }
-                ImGui::Separator();
-                {
-                    if (ImGuiExt::RenderOptionFloat(properties.Refraction, "##material_properties_refraction_option", "Refraction", 0.0f, 1.0f, width))
-                        hasChanged = true;
-                }
-                ImGui::Separator();
-                {
-                    if (ImGuiExt::RenderOptionFloat(properties.Reflection, "##material_properties_reflection_option", "Reflection", 0.0f, 1.0f, width))
-                        hasChanged = true;
-                }
-                ImGui::Separator();
-                {
-                    if (ImGuiExt::RenderOptionFloat(properties.BumpScale, "##material_properties_bump_scale_option", "Bump scale", -10.0f, 10.0f, width))
-                        hasChanged = true;
-                }
-                ImGui::Separator();
-                {
-                    if (ImGuiExt::RenderOptionFloat(properties.ParallaxScale, "##material_properties_parallax_scale_option", "Parallax scale", 0.0f, 1.0f, width))
-                        hasChanged = true;
-                }
-                ImGui::Separator();
-                {
-                    if (ImGuiExt::RenderOptionInt((int&)properties.ParallaxSamples, "##material_properties_parallax_scale_option", "Parallax samples", 16, 256, width))
-                        hasChanged = true;
-                }
-                ImGui::Separator();
-                {
-                    if (ImGuiExt::RenderOptionFloat(properties.AlphaThreshold, "##material_properties_alpha_threshold_option", "Alpha threshold", 0.0f, 1.0f, width))
-                        hasChanged = true;
+
+                    // TODO PBR
                 }
             }
 
@@ -388,28 +299,7 @@ namespace te
                 texturesEnvMappingOptions.AddOption(empty, ICON_FA_TIMES_CIRCLE " No texture");
                 texturesEnvMappingOptions.AddOption(load, ICON_FA_FOLDER_OPEN " Load");
 
-                if (ShowTexture(uuid, properties.UseDiffuseMap, "##material_texture_diffuse_option", "Diffuse", "DiffuseMap", texturesOptions, width))
-                    hasChanged = true;
-                if (ShowTexture(uuid, properties.UseEmissiveMap, "##material_texture_emissive_option", "Emissive", "EmissiveMap", texturesOptions, width))
-                    hasChanged = true;
-                if (ShowTexture(uuid, properties.UseNormalMap, "##material_texture_normal_option", "Normal", "NormalMap", texturesOptions, width))
-                    hasChanged = true;
-                if (ShowTexture(uuid, properties.UseSpecularMap, "##material_texture_specular_option", "Specular", "SpecularMap", texturesOptions, width))
-                    hasChanged = true;
-                if (ShowTexture(uuid, properties.UseParallaxMap, "##material_texture_parallax_option", "Parallax", "ParallaxMap", texturesOptions, width))
-                    hasChanged = true;
-                if (ShowTexture(uuid, properties.UseBumpMap, "##material_texture_bump_option", "Bump", "BumpMap", texturesOptions, width))
-                    hasChanged = true;
-                if (ShowTexture(uuid, properties.UseTransparencyMap, "##material_texture_transparency_option", "Transparency", "TransparencyMap", texturesOptions, width))
-                    hasChanged = true;
-                if (ShowTexture(uuid, properties.UseOcclusionMap, "##material_texture_occlusion_option", "Occlusion", "OcclusionMap", texturesOptions, width))
-                    hasChanged = true;
-                if (ShowTexture(uuid, properties.UseReflectionMap, "##material_texture_reflection_option", "Reflection", "ReflectionMap", texturesOptions, width))
-                    hasChanged = true;
-                if (ShowTexture(uuid, properties.UseEnvironmentMap, "##material_texture_environment_option", "Environment", "EnvironmentMap", texturesEnvMappingOptions, width, properties.UseDynamicEnvironmentMap))
-                    hasChanged = true;
-                if (ShowTexture(uuid, properties.UseIrradianceMap, "##material_texture_irradiance_option", "Irradiance", "IrradianceMap", texturesEnvMappingOptions, width, properties.UseDynamicEnvironmentMap && properties.UseGlobalIllumination))
-                    hasChanged = true;
+                // TODO PBR
 
                 if (ShowLoadedTexture())
                     hasChanged = true;

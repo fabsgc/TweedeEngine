@@ -102,7 +102,7 @@ namespace te
         TE_ASSERT_ERROR(_gui.get(), "Failed to create gui");
 
         _window->InitializeGui();
-        _perFrameData = te_shared_ptr_new<PerFrameData>();
+        _frameData = te_shared_ptr_new<FrameData>();
 
         AudioManager::StartUp(_startUpDesc.Audio);
         AnimationManager::StartUp();
@@ -181,12 +181,12 @@ namespace te
             gScriptManager().PostUpdate();
             PostUpdate();
 
-            _perFrameData->Animation = AnimationManager::Instance().Update();
+            _frameData->Animation = AnimationManager::Instance().Update();
 
             DisplayFrameRate();
 
             gRenderer()->Update();
-            gRenderer()->RenderAll(*_perFrameData);
+            gRenderer()->RenderAll(*_frameData);
 
             gScriptManager().PostRender();
             PostRender();

@@ -9,7 +9,7 @@ namespace te
     struct EvaluatedAnimationData;
 
     /** Contains various data evaluated by external systems on a per-frame basis that is to be used by the renderer. */
-    struct PerFrameData
+    struct FrameData
     {
         const EvaluatedAnimationData* Animation = nullptr;
     };
@@ -48,7 +48,7 @@ namespace te
         virtual const String& GetName() const = 0;
 
         /** Called in order to render all currently active cameras. */
-        virtual void RenderAll(PerFrameData& perFrameData) = 0;
+        virtual void RenderAll(FrameData& frameData) = 0;
 
         /**	Sets options used for controlling the rendering. */
         virtual void SetOptions(const SPtr<RendererOptions>& options) { }

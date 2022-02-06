@@ -1240,11 +1240,6 @@ namespace te
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         // IMPORT OPTIONS
         // ######################################################
-        auto meshAnimImportOptions = MeshImportOptions::Create();
-        meshAnimImportOptions->ImportSkin = true;
-        meshAnimImportOptions->ImportAnimations = true;
-        meshAnimImportOptions->ImportRootMotion = true;
-
         auto meshImportOptions = MeshImportOptions::Create();
         meshImportOptions->ImportCollisionShape = true;
 
@@ -1258,47 +1253,20 @@ namespace te
         textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
         textureCubeMapImportOptions->IsCubemap = true;
         textureCubeMapImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
-
-        auto audioClipImportOptions = AudioClipImportOptions::Create();
-        audioClipImportOptions->Is3D = true;
-        // ######################################################
-
-        // LOAD KNIGHT.DAE RESOURCES
-        // ######################################################
-        auto knightResources = EditorResManager::Instance().LoadAll("Data/Meshes/Knight/Knight.dae", meshAnimImportOptions);
-
-        _loadedMeshKnight = static_resource_cast<Mesh>(knightResources->Entries[0].Res);
-        _animationClipKnight = static_resource_cast<AnimationClip>(knightResources->Entries[1].Res);
         // ######################################################
 
         // LOAD MESH AND TEXTURES RESOURCES
         // ######################################################
-        //_loadedMeshCube = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Primitives/cube.obj", meshImportOptions)->Entries[0].Res);
-        _loadedMeshPlane = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Primitives/plane.obj", meshImportOptions)->Entries[0].Res);
+        _loadedMeshMonkey = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Monkey/monkey-hd.obj", meshImportOptions)->Entries[0].Res);
         _loadedSkyboxTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_day_medium.png", textureCubeMapImportOptions);
         _loadedSkyboxIrradianceTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_day_irradiance_small.png", textureCubeMapImportOptions);
-        _loadedKnightDiffuseTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Knight/diffuse-small.png", textureImportOptions);
-        //_loadedAudioClip = EditorResManager::Instance().Load<AudioClip>("Data/Sounds/AirHorn.ogg", audioClipImportOptions);
-
-        auto sphereResources = EditorResManager::Instance().LoadAll("Data/Meshes/Primitives/sphere-sd.obj", meshImportOptions);
-
-        _loadedMeshSphere = static_resource_cast<Mesh>(sphereResources->Entries[0].Res);
-        _spherePhysicsMesh = static_resource_cast<PhysicsMesh>(sphereResources->Entries[1].Res);
-
-        if (_loadedMeshCube.IsLoaded())
-            _loadedMeshCube->SetName("Cube Mesh");
-        if (_loadedMeshPlane.IsLoaded())
-            _loadedMeshPlane->SetName("Plane Mesh");
-        if (_loadedMeshSphere.IsLoaded())
-            _loadedMeshSphere->SetName("Sphere Mesh");
-        if (_loadedMeshKnight.IsLoaded())
-            _loadedMeshKnight->SetName("Knight Mesh");
+        
+        if (_loadedMeshMonkey.IsLoaded())
+            _loadedMeshMonkey->SetName("Monkey Mesh");
         if (_loadedSkyboxTexture.IsLoaded())
             _loadedSkyboxTexture->SetName("Skybox Radiance");
         if (_loadedSkyboxIrradianceTexture.IsLoaded())
             _loadedSkyboxIrradianceTexture->SetName("Skybox Irradiance");
-        if (_loadedAudioClip.IsLoaded())
-            _loadedAudioClip->SetName("Audio Clip");
         // ###################################################### 
 
         // GET BUILTIN OPAQUE SHADER
@@ -1309,32 +1277,11 @@ namespace te
         // SET MATERIALS
         // ######################################################
         {
-            MaterialProperties planeMatprop;
-            MaterialProperties sphereMatprop;
-            MaterialProperties knightMatprop;
-            MaterialProperties cubeMatprop;
-            knightMatprop.UseDiffuseMap = true;
+            MaterialProperties monkeyMatprop;
+            monkeyMatprop.Albedo = Color(0.8f, 0.8f, 0.8f, 1.0f);
 
-            _cubeMaterial = Material::Create(_shader);
-            _cubeMaterial->SetName("Cube Material");
-            _cubeMaterial->SetSamplerState("TextureSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
-            _cubeMaterial->SetProperties(cubeMatprop);
-
-            _planeMaterial = Material::Create(_shader);
-            _planeMaterial->SetName("Plane Material");
-            _planeMaterial->SetSamplerState("TextureSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
-            _planeMaterial->SetProperties(planeMatprop);
-
-            _sphereMaterial = Material::Create(_shader);
-            _sphereMaterial->SetName("Sphere Material");
-            _sphereMaterial->SetSamplerState("TextureSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
-            _sphereMaterial->SetProperties(sphereMatprop);
-
-            _knightMaterial = Material::Create(_shader);
-            _knightMaterial->SetName("Knight Material");
-            _knightMaterial->SetTexture("DiffuseMap", _loadedKnightDiffuseTexture);
-            _knightMaterial->SetSamplerState("TextureSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
-            _knightMaterial->SetProperties(knightMatprop);
+            _monkeyMaterial = Material::Create(_shader);
+            _monkeyMaterial->SetName("Monkey Material");
         }
         // ######################################################
 
@@ -1363,204 +1310,22 @@ namespace te
 
         // FILL SCENE WITH MESHES
         // ######################################################
-        if (_loadedMeshCube.IsLoaded() && _cubeMaterial.IsLoaded())
+        if (_loadedMeshMonkey.IsLoaded() && _monkeyMaterial.IsLoaded())
         {
-            _sceneRenderableCubeSO = SceneObject::Create("Cube");
-            _sceneRenderableCubeSO->SetParent(_sceneSO);
-            _renderablePlane = _sceneRenderableCubeSO->AddComponent<CRenderable>();
-            _renderablePlane->SetMesh(_loadedMeshCube);
-            _renderablePlane->SetMaterial(_cubeMaterial);
-            _renderablePlane->SetName("Cube Renderable");
-            _renderablePlane->Initialize();
-            _sceneRenderableCubeSO->Move(Vector3(-2.0, 2.0f, 0.0f));
+            _sceneRenderableMonkeySO = SceneObject::Create("Monkey");
+            _sceneRenderableMonkeySO->SetParent(_sceneSO);
+            _renderableMonkey = _sceneRenderableMonkeySO->AddComponent<CRenderable>();
+            _renderableMonkey->SetMesh(_loadedMeshMonkey);
+            _renderableMonkey->SetMaterial(_monkeyMaterial);
+            _renderableMonkey->SetName("Monkey Renderable");
+            _renderableMonkey->Initialize();
         }
-
-        if (_loadedMeshPlane.IsLoaded() && _planeMaterial.IsLoaded())
-        {
-            _sceneRenderablePlaneSO = SceneObject::Create("Plane");
-            _sceneRenderablePlaneSO->SetParent(_sceneSO);
-            _renderablePlane = _sceneRenderablePlaneSO->AddComponent<CRenderable>();
-            _renderablePlane->SetMesh(_loadedMeshPlane);
-            _renderablePlane->SetMaterial(_planeMaterial);
-            _renderablePlane->SetName("Plane Renderable");
-            _renderablePlane->Initialize();
-            _sceneRenderablePlaneSO->Move(Vector3(0.0, -1.0f, 0.0f));
-            _sceneRenderablePlaneSO->SetScale(Vector3(0.75f, 0.75f, 0.75f));
-        }
-
-        if (_loadedMeshSphere.IsLoaded() && _sphereMaterial.IsLoaded())
-        {
-            _sceneRenderableSphereSO = SceneObject::Create("Sphere");
-            _sceneRenderableSphereSO->SetParent(_sceneSO);
-            _renderablePlane = _sceneRenderableSphereSO->AddComponent<CRenderable>();
-            _renderablePlane->SetMesh(_loadedMeshSphere);
-            _renderablePlane->SetMaterial(_sphereMaterial);
-            _renderablePlane->SetName("Sphere Renderable");
-            _renderablePlane->Initialize();
-            _sceneRenderableSphereSO->Move(Vector3(1.0, 5.0f, -3.5f));
-            _sceneRenderableSphereSO->SetScale(Vector3(0.5f, 0.5f, 0.5f));
-        }
-
-        {
-            _scenePatchSO = SceneObject::Create("Patch");
-            _scenePatchSO->SetParent(_sceneSO);
-            _scenePatchSO->Move(Vector3(-3.0, 5.0f, -4.0f));
-
-            _sceneRopeSO = SceneObject::Create("Rope");
-            _sceneRopeSO->SetParent(_sceneSO);
-            _sceneRopeSO->Move(Vector3(0.0, 6.0f, 2.5f));
-
-            _sceneEllipsoidSO = SceneObject::Create("Ellipsoid");
-            _sceneEllipsoidSO->SetParent(_sceneSO);
-            _sceneEllipsoidSO->Move(Vector3(2.0, 6.0f, 2.0f));
-        }
-
-        if (_loadedMeshKnight.IsLoaded() && _knightMaterial.IsLoaded() && _animationClipKnight.IsLoaded())
-        {
-            _sceneRenderableKnightSO = SceneObject::Create("Knight");
-            _sceneRenderableKnightSO->SetParent(_sceneSO);
-
-            _renderableKnight = _sceneRenderableKnightSO->AddComponent<CRenderable>();
-            _renderableKnight->SetMesh(_loadedMeshKnight);
-            _renderableKnight->SetMaterial(_knightMaterial, true);
-            _renderableKnight->SetName("Knight Renderable");
-            _renderableKnight->Initialize();
-
-            _animationKnight = _sceneRenderableKnightSO->AddComponent<CAnimation>();
-            _animationKnight->SetName("Knight animation");
-            _animationKnight->Initialize();
-            _animationKnight->SetDefaultClip(_animationClipKnight);
-        }
-        // ######################################################
-
-        // FILL SCENE WITH PHYSICAl ELEMENTS
-        // ######################################################
-        if (_sceneRenderableCubeSO)
-        {
-            _rigidBodyCube = _sceneRenderableCubeSO->AddComponent<CRigidBody>();
-            _rigidBodyCube->SetName("Rigid Body Cube");
-            _rigidBodyCube->SetRollingFriction(0.5f);
-            _rigidBodyCube->SetCollisionReportMode(CollisionReportMode::ReportPersistent);
-            _rigidBodyCube->Initialize();
-            _boxColliderCube = _sceneRenderableCubeSO->AddComponent<CBoxCollider>();
-            _boxColliderCube->SetExtents(Vector3(1.0f, 1.0f, 1.0f));
-            _boxColliderCube->Initialize();
-        }
-
-        if (_sceneRenderablePlaneSO)
-        {
-            _rigidBodyPlane = _sceneRenderablePlaneSO->AddComponent<CRigidBody>();
-            _rigidBodyPlane->SetName("Rigid Body Plane");
-            _rigidBodyPlane->SetFriction(1.0f);
-            _rigidBodyPlane->SetRollingFriction(1.0f);
-            _rigidBodyPlane->SetIsKinematic(true);
-            _rigidBodyPlane->SetCollisionReportMode(CollisionReportMode::ReportPersistent);
-            _rigidBodyPlane->Initialize();
-            _boxColliderPlane = _sceneRenderablePlaneSO->AddComponent<CBoxCollider>();
-            _boxColliderPlane->SetExtents(Vector3(7.5f, 0.2f, 7.5f));
-            _boxColliderPlane->SetPosition(Vector3(0.0f, -0.2f, 0.0f));
-            _boxColliderPlane->Initialize();
-        }
-
-        if (_sceneRenderableSphereSO)
-        {
-            _softBodySphere = _sceneRenderableSphereSO->AddComponent<CMeshSoftBody>();
-            _softBodySphere->SetName("Soft Body Sphere");
-            _softBodySphere->SetCollisionReportMode(CollisionReportMode::ReportPersistent);
-            _softBodySphere->SetMesh(_spherePhysicsMesh);
-            _softBodySphere->Initialize();
-            _softBodySphere->SetScale(Vector3(0.5f, 0.5f, 0.5f));
-        }
-
-        if (_scenePatchSO)
-        {
-            _softBodyPatch = _scenePatchSO->AddComponent<CPatchSoftBody>();
-            _softBodyPatch->SetName("Soft Body Patch");
-            _softBodyPatch->SetCollisionReportMode(CollisionReportMode::ReportPersistent);
-            _softBodyPatch->Initialize();
-        }
-
-        if (_sceneRopeSO)
-        {
-            _softBodyRope = _sceneRopeSO->AddComponent<CRopeSoftBody>();
-            _softBodyRope->SetName("Soft Body Rope");
-            _softBodyRope->SetCollisionReportMode(CollisionReportMode::ReportPersistent);
-            _softBodyRope->Initialize();
-        }
-
-        if (_sceneEllipsoidSO)
-        {
-            _softBodyEllipsoid = _sceneEllipsoidSO->AddComponent<CEllipsoidSoftBody>();
-            _softBodyEllipsoid->SetName("Soft Body Ellipsoid");
-            _softBodyEllipsoid->SetCollisionReportMode(CollisionReportMode::ReportPersistent);
-            _softBodyEllipsoid->Initialize();
-        }
-
-        if (_sceneRenderableKnightSO)
-        {
-            _rigidBodyKnight = _sceneRenderableKnightSO->AddComponent<CRigidBody>();
-            _rigidBodyKnight->SetName("Rigid Body Knight");
-            _rigidBodyKnight->SetFriction(1.0f);
-            _rigidBodyKnight->SetRollingFriction(1.0f);
-            _rigidBodyKnight->SetCollisionReportMode(CollisionReportMode::ReportPersistent);
-            _rigidBodyKnight->Initialize();
-            _boxColliderKnight = _sceneRenderableKnightSO->AddComponent<CBoxCollider>();
-            _boxColliderKnight->SetExtents(Vector3(0.25f, 0.85f, 0.4f));
-            _boxColliderKnight->SetPosition(Vector3(0.0f, 0.85f, 0.0f));
-            _boxColliderKnight->Initialize();
-        }
-
-        if (_rigidBodyPlane && _rigidBodyKnight)
-        {
-            _sceneJointSO = SceneObject::Create("Joint");
-            _sceneJointSO->SetParent(_sceneSO);
-
-            _planeKnightSphericalJoint = _sceneJointSO->AddComponent<CSphericalJoint>();
-            _planeKnightSphericalJoint->SetBody(JointBody::Anchor, _rigidBodyPlane);
-            _planeKnightSphericalJoint->SetBody(JointBody::Target, _rigidBodyKnight);
-            _planeKnightSphericalJoint->Initialize();
-        }
-        // ######################################################
-
-        // FILL SCENE WITH SCRIPT
-        // ######################################################
-        /*_sceneScriptSO = SceneObject::Create("Script");
-        _sceneScriptSO->SetParent(_sceneSO);
-        _script = _sceneScriptSO->AddComponent<CScript>();
-        _script->SetNativeScript("DefaultScript");
-        _script->Initialize();*/
-        // ######################################################
-
-        // FILL SCENE WITH AUDIO
-        // ######################################################
-        if (_loadedAudioClip.IsLoaded())
-        {
-            _sceneAudioSourceSO = SceneObject::Create("Audio Source");
-            _sceneAudioSourceSO->SetParent(_sceneSO);
-            _sceneAudioSourceSO->Move(Vector3(5.0f, 0.0f, 0.0f));
-
-            _sceneAudioListenerSO = SceneObject::Create("Audio Listener");
-            _sceneAudioListenerSO->SetParent(_sceneSO);
-            _sceneAudioListenerSO->Move(Vector3(7.0f, 0.0f, 0.0f));
-
-            _audioSource = _sceneAudioSourceSO->AddComponent<CAudioSource>();
-            _audioSource->Initialize();
-            _audioSource->SetIsLooping(true);
-            _audioSource->SetClip(_loadedAudioClip);
-
-            _audioListener = _sceneAudioListenerSO->AddComponent<CAudioListener>();
-            _audioListener->Initialize();
-        }
-        // ######################################################
 
         HShader opaqueShader = gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque);
         HShader transparentShader = gBuiltinResources().GetBuiltinShader(BuiltinShader::Transparent);
         HShader transparentShaderCullNone = gBuiltinResources().GetBuiltinShader(BuiltinShader::TransparentCullNone);
 
-        EditorResManager::Instance().Add<Material>(_cubeMaterial);
-        EditorResManager::Instance().Add<Material>(_planeMaterial);
-        EditorResManager::Instance().Add<Material>(_sphereMaterial);
-        EditorResManager::Instance().Add<Material>(_knightMaterial);
+        EditorResManager::Instance().Add<Material>(_monkeyMaterial);
         EditorResManager::Instance().Add<Shader>(opaqueShader);
         EditorResManager::Instance().Add<Shader>(transparentShader);
         EditorResManager::Instance().Add<Shader>(transparentShaderCullNone);

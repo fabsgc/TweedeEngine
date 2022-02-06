@@ -347,7 +347,7 @@ namespace te
                         }
                     };
 
-                    BindTexture(aiMat, aiTextureType_DIFFUSE, material.MatTextures.DiffuseMap, material.MatProperties.UseDiffuseMap);
+                    /* BindTexture(aiMat, aiTextureType_DIFFUSE, material.MatTextures.DiffuseMap, material.MatProperties.UseDiffuseMap);
                     BindTexture(aiMat, aiTextureType_EMISSIVE, material.MatTextures.EmissiveMap, material.MatProperties.UseEmissiveMap);
                     BindTexture(aiMat, aiTextureType_NORMALS, material.MatTextures.NormalMap, material.MatProperties.UseNormalMap);
                     BindTexture(aiMat, aiTextureType_SPECULAR, material.MatTextures.SpecularMap, material.MatProperties.UseSpecularMap);
@@ -390,7 +390,7 @@ namespace te
                     //if (aiMat->Get(AI_MATKEY_REFLECTIVITY, matProperties.Reflection) == aiReturn_SUCCESS)
                     //    material.MatProperties.Reflection = matProperties.Reflection;
 
-                    material.MatProperties.ParallaxScale = 0.0f;
+                    material.MatProperties.ParallaxScale = 0.0f; TODO PBR */
                 }
 
                 outputScene.Materials.push_back(material);

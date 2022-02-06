@@ -14,6 +14,21 @@
 
 namespace te
 {
+    struct PerCameraData
+    {
+        Vector3 gViewDir;
+        UINT32  gViewportX;
+        Vector3 gViewOrigin;
+        UINT32  gViewportY;
+        Matrix4 gMatViewProj;
+        Matrix4 gMatView;
+        Matrix4 gMatProj;
+        Matrix4 gMatPrevViewProj;
+        Matrix4 gNDCToPrevNDC;
+        Vector4 gClipToUVScaleOffset;
+        Vector4 gUVToClipScaleOffset;
+    };
+
     struct PerInstanceData
     {
         Matrix4 gMatWorld;
@@ -27,68 +42,52 @@ namespace te
         UINT32  gCastLights;
     };
 
-    struct MaterialData
+    struct PerMaterialData
     {
-        Vector4 gAmbient;
-        Vector4 gDiffuse;
-        Vector4 gEmissive;
-        Vector4 gSpecular;
-        Vector2 gTextureRepeat;
-        Vector2 gTextureOffset;
-        UINT32  gUseDiffuseMap;
-        UINT32  gUseEmissiveMap;
-        UINT32  gUseNormalMap;
-        UINT32  gUseSpecularMap;
-        UINT32  gUseBumpMap;
-        UINT32  gUseParallaxMap;
-        UINT32  gUseTransparencyMap;
-        UINT32  gUseReflectionMap;
-        UINT32  gUseOcclusionMap;
-        UINT32  gUseEnvironmentMap;
-        UINT32  gUseIrradianceMap;
-        UINT32  gUseGlobalIllumination;
-        float   gSpecularPower;
-        float   gSpecularStrength;
-        float   gTransparency;
-        float   gIndexOfRefraction;
-        float   gRefraction;
-        float   gReflection;
-        float   gBumpScale;
-        float   gParallaxScale;
-        float   gAlphaThreshold;
-        UINT32  gParallaxSamples;
+        Vector4 gAlbedo;
     };
 
-    struct LightData
+    struct PerLightData
     {
-        Vector3 Color;
-        float   Type;
-        Vector3 Position;
-        float   Intensity;
-        Vector3 Direction;
-        float   AttenuationRadius;
-        Vector3 SpotAngles;
-        float   BoundsRadius;
-        float   LinearAttenuation;
-        float   QuadraticAttenuation;
-        Vector2 Padding;
+        Vector3 gColor;
+        float   gType;
+        Vector3 gPosition;
+        float   gIntensity;
+        Vector3 gDirection;
+        float   gAttenuationRadius;
+        Vector3 gSpotAngles;
+        float   gBoundsRadius;
+        float   gLinearAttenuation;
+        float   gQuadraticAttenuation;
+        Vector2 gPadding;
     };
 
     TE_PARAM_BLOCK_BEGIN(PerCameraParamDef)
-        TE_PARAM_BLOCK_ENTRY(Vector3, gViewDir)
-        TE_PARAM_BLOCK_ENTRY(UINT32,  gViewportX)
-        TE_PARAM_BLOCK_ENTRY(Vector3, gViewOrigin)
-        TE_PARAM_BLOCK_ENTRY(UINT32,  gViewportY)
-        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatViewProj)
-        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatView)
-        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatProj)
-        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatPrevViewProj)
-        TE_PARAM_BLOCK_ENTRY(Matrix4, gNDCToPrevNDC)
-        TE_PARAM_BLOCK_ENTRY(Vector4, gClipToUVScaleOffset)
-        TE_PARAM_BLOCK_ENTRY(Vector4, gUVToClipScaleOffset)
+        TE_PARAM_BLOCK_ENTRY(PerCameraData, gCamera)
     TE_PARAM_BLOCK_END
 
     extern PerCameraParamDef gPerCameraParamDef;
+
+    TE_PARAM_BLOCK_BEGIN(PerInstanceParamDef)
+        TE_PARAM_BLOCK_ENTRY_ARRAY(PerInstanceData, gInstances, STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE)
+    TE_PARAM_BLOCK_END
+
+    extern PerInstanceParamDef gPerInstanceParamDef;
+    extern SPtr<GpuParamBlockBuffer> gPerInstanceParamBuffer[STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER];
+
+    TE_PARAM_BLOCK_BEGIN(PerMaterialParamDef)
+        TE_PARAM_BLOCK_ENTRY(PerMaterialData, gMaterial)
+    TE_PARAM_BLOCK_END
+
+    extern PerMaterialParamDef gPerMaterialParamDef;
+
+    TE_PARAM_BLOCK_BEGIN(PerLightsParamDef)
+        TE_PARAM_BLOCK_ENTRY_ARRAY(PerLightData, gLights, STANDARD_FORWARD_MAX_NUM_LIGHTS)
+        TE_PARAM_BLOCK_ENTRY(INT32, gLightsNumber)
+    TE_PARAM_BLOCK_END
+
+    extern PerLightsParamDef gPerLightsParamDef;
+    extern SPtr<GpuParamBlockBuffer> gPerLightsParamBuffer;
 
     TE_PARAM_BLOCK_BEGIN(PerFrameParamDef)
         TE_PARAM_BLOCK_ENTRY(float, gTime)
@@ -115,53 +114,11 @@ namespace te
 
     extern PerObjectParamDef gPerObjectParamDef;
 
-    TE_PARAM_BLOCK_BEGIN(PerMaterialParamDef)
-        TE_PARAM_BLOCK_ENTRY(Vector4, gAmbient)
-        TE_PARAM_BLOCK_ENTRY(Vector4, gDiffuse)
-        TE_PARAM_BLOCK_ENTRY(Vector4, gEmissive)
-        TE_PARAM_BLOCK_ENTRY(Vector4, gSpecular)
-        TE_PARAM_BLOCK_ENTRY(Vector2, gTextureRepeat)
-        TE_PARAM_BLOCK_ENTRY(Vector2, gTextureOffset)
-        TE_PARAM_BLOCK_ENTRY(INT32, gUseDiffuseMap)
-        TE_PARAM_BLOCK_ENTRY(INT32, gUseEmissiveMap)
-        TE_PARAM_BLOCK_ENTRY(INT32, gUseNormalMap)
-        TE_PARAM_BLOCK_ENTRY(INT32, gUseSpecularMap)
-        TE_PARAM_BLOCK_ENTRY(INT32, gUseBumpMap)
-        TE_PARAM_BLOCK_ENTRY(INT32, gUseParallaxMap)
-        TE_PARAM_BLOCK_ENTRY(INT32, gUseTransparencyMap)
-        TE_PARAM_BLOCK_ENTRY(INT32, gUseReflectionMap)
-        TE_PARAM_BLOCK_ENTRY(INT32, gUseOcclusionMap)
-        TE_PARAM_BLOCK_ENTRY(INT32, gUseEnvironmentMap)
-        TE_PARAM_BLOCK_ENTRY(INT32, gUseIrradianceMap)
-        TE_PARAM_BLOCK_ENTRY(INT32, gUseGlobalIllumination)
-        TE_PARAM_BLOCK_ENTRY(float, gSpecularPower)
-        TE_PARAM_BLOCK_ENTRY(float, gSpecularStrength)
-        TE_PARAM_BLOCK_ENTRY(float, gTransparency)
-        TE_PARAM_BLOCK_ENTRY(float, gIndexOfRefraction)
-        TE_PARAM_BLOCK_ENTRY(float, gRefraction)
-        TE_PARAM_BLOCK_ENTRY(float, gReflection)
-        TE_PARAM_BLOCK_ENTRY(float, gBumpScale)
-        TE_PARAM_BLOCK_ENTRY(float, gParallaxScale)
-        TE_PARAM_BLOCK_ENTRY(float, gAlphaThreshold)
-        TE_PARAM_BLOCK_ENTRY(INT32, gParallaxSamples)
+    TE_PARAM_BLOCK_BEGIN(PerCallParamDef)
+        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatWorldViewProj)
     TE_PARAM_BLOCK_END
 
-    extern PerMaterialParamDef gPerMaterialParamDef;
-
-    TE_PARAM_BLOCK_BEGIN(PerInstanceParamDef)
-        TE_PARAM_BLOCK_ENTRY_ARRAY(PerInstanceData, gInstances, STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE)
-    TE_PARAM_BLOCK_END
-
-    extern PerInstanceParamDef gPerInstanceParamDef;
-    extern SPtr<GpuParamBlockBuffer> gPerInstanceParamBuffer[STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER];
-
-    TE_PARAM_BLOCK_BEGIN(PerLightsParamDef)
-        TE_PARAM_BLOCK_ENTRY_ARRAY(LightData, gLights, STANDARD_FORWARD_MAX_NUM_LIGHTS)
-        TE_PARAM_BLOCK_ENTRY(INT32, gLightsNumber)
-    TE_PARAM_BLOCK_END
-
-    extern PerLightsParamDef gPerLightsParamDef;
-    extern SPtr<GpuParamBlockBuffer> gPerLightsParamBuffer;
+    extern PerCallParamDef gPerCallParamDef;
 
     TE_PARAM_BLOCK_BEGIN(DecalParamDef)
         TE_PARAM_BLOCK_ENTRY(Matrix4, gWorldToDecal)
@@ -172,12 +129,6 @@ namespace te
     TE_PARAM_BLOCK_END
 
     extern DecalParamDef gDecalParamDef;
-
-    TE_PARAM_BLOCK_BEGIN(PerCallParamDef)
-        TE_PARAM_BLOCK_ENTRY(Matrix4, gMatWorldViewProj)
-    TE_PARAM_BLOCK_END
-
-    extern PerCallParamDef gPerCallParamDef;
 
     enum class RenderManCulling
     {
@@ -248,7 +199,7 @@ namespace te
     class RendererScene;
     class RendererView;
     class RendererViewGroup;
-    struct LightData;
+    struct PerLightData;
     class RendererLight;
     class RenderableElement;
     struct RendererRenderable;

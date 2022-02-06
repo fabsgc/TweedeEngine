@@ -28,7 +28,7 @@ namespace te
         bool notAllLoaded = false;
         List<SPtr<Task>> tasks;
 
-        const auto& BindTexture = [&](bool* isSet, const String& textureName, const String& texturePath, HMaterial& material)
+        /*const auto& BindTexture = [&](bool* isSet, const String& textureName, const String& texturePath, HMaterial& material)
         {
             if (*isSet)
             {
@@ -50,7 +50,7 @@ namespace te
                     *isSet = false;
                 }
             }
-        };
+        }; TODO PBR */
 
         for (UINT32 i = 0; i < mesh->GetProperties().GetNumSubMeshes(); i++)
         {
@@ -60,13 +60,13 @@ namespace te
             {
                 subMesh.Mat = createdMaterials[subMesh.MaterialName].GetNewHandleFromExisting();
 
-                subMesh.MatProperties.UseDiffuseMap = subMesh.Mat->GetTexture("DiffuseMap") != nullptr;
+                /* subMesh.MatProperties.UseDiffuseMap = subMesh.Mat->GetTexture("DiffuseMap") != nullptr;
                 subMesh.MatProperties.UseEmissiveMap = subMesh.Mat->GetTexture("EmissiveMap") != nullptr;
                 subMesh.MatProperties.UseNormalMap = subMesh.Mat->GetTexture("NormalMap") != nullptr;
                 subMesh.MatProperties.UseSpecularMap = subMesh.Mat->GetTexture("SpecularMap") != nullptr;
                 subMesh.MatProperties.UseBumpMap = subMesh.Mat->GetTexture("BumpMap") != nullptr;
                 subMesh.MatProperties.UseTransparencyMap = subMesh.Mat->GetTexture("TransparencyMap") != nullptr;
-                subMesh.MatProperties.UseReflectionMap = subMesh.Mat->GetTexture("ReflectionMap") != nullptr;
+                subMesh.MatProperties.UseReflectionMap = subMesh.Mat->GetTexture("ReflectionMap") != nullptr; TODO PBR */
             }
             else if (!subMesh.Mat.IsLoaded())
             {
@@ -79,7 +79,7 @@ namespace te
                 EditorResManager::Instance().Add<Material>(material);
                 createdMaterials[subMesh.MaterialName] = material.GetNewHandleFromExisting();
 
-                if (subMesh.MatProperties.UseDiffuseMap)
+                /* if (subMesh.MatProperties.UseDiffuseMap)
                 {
                     tasks.push_back(Task::Create(subMesh.MaterialName,
                         [&]() { BindTexture(&subMesh.MatProperties.UseDiffuseMap, "DiffuseMap", subMesh.MatTextures.DiffuseMap, createdMaterials[subMesh.MaterialName]); }));
@@ -113,7 +113,7 @@ namespace te
                 {
                     tasks.push_back(Task::Create(subMesh.MaterialName,
                         [&]() { BindTexture(&subMesh.MatProperties.UseReflectionMap, "ReflectionMap", subMesh.MatTextures.ReflectionMap, createdMaterials[subMesh.MaterialName]); }));
-                }
+                } TODO PBR */
             }
         }
 

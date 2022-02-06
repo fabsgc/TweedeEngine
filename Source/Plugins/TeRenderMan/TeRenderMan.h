@@ -10,13 +10,13 @@ namespace te
     /** Contains information global to an entire frame. */
     struct FrameInfo
     {
-        FrameInfo(const FrameTimings& timings, PerFrameData& perFrameDatas)
+        FrameInfo(const FrameTimings& timings, FrameData& frameDatas)
             : Timings(timings)
-            , PerFrameDatas(perFrameDatas)
+            , FrameDatas(frameDatas)
         { }
 
         FrameTimings Timings;
-        PerFrameData& PerFrameDatas;
+        FrameData& FrameDatas;
     };
 
     /** Contains pointers to all generated render textures from last frame computation */
@@ -63,7 +63,7 @@ namespace te
         const String& GetName() const override;
 
         /** @copydoc Renderer::RenderAll */
-        void RenderAll(PerFrameData& perFrameData) override;
+        void RenderAll(FrameData& frameData) override;
 
         /**	Sets options used for controlling the rendering. */
         void SetOptions(const SPtr<RendererOptions>& options) override;

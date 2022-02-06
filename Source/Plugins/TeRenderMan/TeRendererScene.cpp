@@ -645,7 +645,7 @@ namespace te
     {
         RendererRenderable* rendererRenderable = _info.Renderables[idx];
 
-        if (frameInfo.PerFrameDatas.Animation != nullptr)
+        if (frameInfo.FrameDatas.Animation != nullptr)
             rendererRenderable->RenderablePtr->UpdatePrevFrameAnimationBuffers();
 
         if (rendererRenderable->PreviousFrameDirtyState != PrevFrameDirtyState::Clean)
@@ -668,8 +668,8 @@ namespace te
 
         RendererRenderable* rendererRenderable = _info.Renderables[idx];
 
-        if(frameInfo.PerFrameDatas.Animation != nullptr)
-            rendererRenderable->RenderablePtr->UpdateAnimationBuffers(*frameInfo.PerFrameDatas.Animation);
+        if(frameInfo.FrameDatas.Animation != nullptr)
+            rendererRenderable->RenderablePtr->UpdateAnimationBuffers(*frameInfo.FrameDatas.Animation);
 
         _info.RenderableReady[idx] = true;
     }

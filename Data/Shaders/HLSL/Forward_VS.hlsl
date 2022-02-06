@@ -1,38 +1,6 @@
 #include "Include/ForwardBase.hlsli"
+#include "Include/ForwardBase_VS.hlsli"
 #include "Include/Skinning.hlsli"
-
-cbuffer PerCameraBuffer : register(b0)
-{
-    float3 gViewDir;
-    uint   gViewportX;
-    float3 gViewOrigin;
-    uint   gViewportY;
-    matrix gMatViewProj;
-    matrix gMatView;
-    matrix gMatProj;
-    matrix gMatPrevViewProj;
-    matrix gNDCToPrevNDC;
-    float4 gClipToUVScaleOffset;
-    float4 gUVToClipScaleOffset;
-}
-
-cbuffer PerInstanceBuffer : register(b1)
-{
-    PerInstanceData gInstanceData[STANDARD_FORWARD_MAX_INSTANCED_BLOCK];
-}
-
-cbuffer PerObjectBuffer : register(b2)
-{
-    matrix gMatWorld;
-    matrix gMatInvWorld;
-    matrix gMatWorldNoScale;
-    matrix gMatInvWorldNoScale;
-    matrix gMatPrevWorld;
-    uint   gLayer;
-    uint   gHasAnimation;
-    uint   gWriteVelocity;
-    uint   gCastLights;
-}
 
 VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
 {

@@ -6,7 +6,7 @@
 
 namespace te
 {
-    struct PerFrameData;
+    struct FrameData;
 
     class MaterialsPreview
     {
@@ -111,7 +111,7 @@ namespace te
     private:
         Map<WPtr<Material>, UPtr<Preview>, std::owner_less<WPtr<Material>>> _previews;
 
-        SPtr<PerFrameData> _perFrameData;
+        SPtr<FrameData> _perFrameData;
         SPtr<Renderer> _renderer;
         SPtr<Camera> _camera;
         SPtr<Skybox> _skybox;

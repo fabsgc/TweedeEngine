@@ -13,10 +13,10 @@ namespace te
         switch (IncludeType)
         {
         case D3D_INCLUDE_LOCAL: // #include "FILE"
-            includePath = GetFullPath(_directory) + "\\" + String(pFileName);
+            includePath = GetFullPath(_directory) + String(pFileName);
             break;
         case D3D_INCLUDE_SYSTEM: // #include "<FILE>"
-            includePath = GetFullPath(_directory) + "\\" + String(pFileName);
+            includePath = GetFullPath(_directory) + String(pFileName);
             break;
         default:
             TE_ASSERT_ERROR(false, "Only local and system directory is currently supported for HLSL includes");

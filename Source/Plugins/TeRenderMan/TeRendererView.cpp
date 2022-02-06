@@ -164,14 +164,20 @@ namespace te
         _properties.ViewProjTransform = _properties.ProjTransform * _properties.ViewTransform;
 
         if (perViewBufferDirty)
+        {
             UpdatePerViewBuffer();
+        }
+        else
+        {
+            // Note: inverse view-projection can be cached, it doesn't change every frame
+            Matrix4 invViewProj = _properties.ViewProjTransform.Inverse();
+            Matrix4 NDCToPrevNDC = _properties.PrevViewProjTransform * invViewProj;
 
-        // Note: inverse view-projection can be cached, it doesn't change every frame
-        Matrix4 viewProj = _properties.ProjTransform * _properties.ViewTransform;
-        Matrix4 invViewProj = viewProj.Inverse();
-        Matrix4 NDCToPrevNDC = _properties.PrevViewProjTransform * invViewProj;
+            PerCameraData cameraData = gPerCameraParamDef.gCamera.Get(_paramBuffer, 0);
+            cameraData.gNDCToPrevNDC = NDCToPrevNDC;
 
-        gPerCameraParamDef.gNDCToPrevNDC.Set(_paramBuffer, NDCToPrevNDC);
+            gPerCameraParamDef.gCamera.Set(_paramBuffer, cameraData);
+        }
 
         _frameTimings = frameInfo.Timings;
 
@@ -526,33 +532,33 @@ namespace te
 
     void RendererView::UpdatePerViewBuffer()
     {
-        Matrix4 viewProj = _properties.ProjTransform * _properties.ViewTransform;
+        Matrix4 viewProj = _properties.ViewProjTransform;
         Matrix4 invProj = InvertProjectionMatrix(_properties.ProjTransform);
-        Matrix4 invView = _properties.ViewTransform.InverseAffine();
+        Matrix4 invView = _properties.ViewTransform.Inverse();
         Matrix4 invViewProj = invView * invProj;
         Matrix4 NDCToPrevNDC = _properties.PrevViewProjTransform * invViewProj;
+        Vector4 NDCToUV = GetNDCToUV();
+        Vector4 UVToNDC(
+            1.0f / NDCToUV.x,
+            1.0f / NDCToUV.y,
+            -NDCToUV.z / NDCToUV.x,
+            -NDCToUV.w / NDCToUV.y);
 
-        gPerCameraParamDef.gMatProj.Set(_paramBuffer, _properties.ProjTransform);
-        gPerCameraParamDef.gMatView.Set(_paramBuffer, _properties.ViewTransform);
-        gPerCameraParamDef.gMatViewProj.Set(_paramBuffer, viewProj);
-        gPerCameraParamDef.gMatPrevViewProj.Set(_paramBuffer, _properties.PrevViewProjTransform);
+        PerCameraData cameraData;
 
-        gPerCameraParamDef.gNDCToPrevNDC.Set(_paramBuffer, NDCToPrevNDC);
-        gPerCameraParamDef.gViewDir.Set(_paramBuffer, _properties.ViewDirection);
-        gPerCameraParamDef.gViewOrigin.Set(_paramBuffer, _properties.ViewOrigin);
+        cameraData.gViewDir = _properties.ViewDirection;
+        cameraData.gViewportX = static_cast<UINT32>(_camera->GetViewport()->GetArea().x);
+        cameraData.gViewOrigin = _properties.ViewOrigin;
+        cameraData.gViewportY = static_cast<UINT32>(_camera->GetViewport()->GetArea().y);
+        cameraData.gMatViewProj = viewProj;
+        cameraData.gMatView = _properties.ViewTransform;
+        cameraData.gMatProj = _properties.ProjTransform;
+        cameraData.gMatPrevViewProj = _properties.PrevViewProjTransform;
+        cameraData.gNDCToPrevNDC = NDCToPrevNDC;
+        cameraData.gClipToUVScaleOffset = NDCToUV;
+        cameraData.gUVToClipScaleOffset = UVToNDC;
 
-        gPerCameraParamDef.gViewportX.Set(_paramBuffer, static_cast<UINT32>(_camera->GetViewport()->GetArea().x));
-        gPerCameraParamDef.gViewportY.Set(_paramBuffer, static_cast<UINT32>(_camera->GetViewport()->GetArea().y));
-
-        Vector4 ndcToUV = GetNDCToUV();
-        gPerCameraParamDef.gClipToUVScaleOffset.Set(_paramBuffer, ndcToUV);
-
-        Vector4 uvToNDC(
-            1.0f / ndcToUV.x,
-            1.0f / ndcToUV.y,
-            -ndcToUV.z / ndcToUV.x,
-            -ndcToUV.w / ndcToUV.y);
-        gPerCameraParamDef.gUVToClipScaleOffset.Set(_paramBuffer, uvToNDC);
+        gPerCameraParamDef.gCamera.Set(_paramBuffer, cameraData, 0);
     }
 
     Vector4 RendererView::GetNDCToUV() const
@@ -876,7 +882,7 @@ namespace te
 
     void RendererView::CheckIfDynamicEnvMappingNeeded(const RenderElement& element)
     {
-        if(element.MaterialElem->GetProperties().UseDynamicEnvironmentMap)
-            _properties.NeedDynamicEnvMapCompute = true;
+        /*if(element.MaterialElem->GetProperties().UseDynamicEnvironmentMap)
+            _properties.NeedDynamicEnvMapCompute = true; TODO PBR */
     }
 }

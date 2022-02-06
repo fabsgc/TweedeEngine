@@ -7,7 +7,7 @@ namespace te
     PerLightsParamDef gPerLightsParamDef;
     SPtr<GpuParamBlockBuffer> gPerLightsParamBuffer;
 
-    void PerLightsBuffer::UpdatePerLights(const LightData* (&lights)[STANDARD_FORWARD_MAX_NUM_LIGHTS], UINT32 lightNumber)
+    void PerLightsBuffer::UpdatePerLights(const PerLightData* (&lights)[STANDARD_FORWARD_MAX_NUM_LIGHTS], UINT32 lightNumber)
     {
         if (!gPerLightsParamBuffer)
             gPerLightsParamBuffer = gPerLightsParamDef.CreateBuffer();
@@ -15,7 +15,7 @@ namespace te
         gPerLightsParamDef.gLightsNumber.Set(gPerLightsParamBuffer, lightNumber);
 
         for (size_t i = 0; i < lightNumber; i++)
-            gPerLightsParamDef.gLights.Set(gPerLightsParamBuffer, const_cast<LightData&>(*lights[i]), (UINT32)i);
+            gPerLightsParamDef.gLights.Set(gPerLightsParamBuffer, const_cast<PerLightData&>(*lights[i]), (UINT32)i);
     }
 
     RendererLight::RendererLight(Light* light)
@@ -25,7 +25,7 @@ namespace te
     RendererLight::~RendererLight()
     { }
 
-    void RendererLight::GetParameters(LightData& output) const
+    void RendererLight::GetParameters(PerLightData& output) const
     {
         Radian spotAngle = Math::Clamp(_internal->GetSpotAngle() * 0.5f, Degree(0), Degree(89));
         Color color = _internal->GetColor();
@@ -47,18 +47,18 @@ namespace te
         }
 
         const Transform& tfrm = _internal->GetTransform();
-        output.Position = tfrm.GetPosition();
-        output.Direction = -tfrm.GetRotation().ZAxis();
-        output.Intensity = _internal->GetIntensity();
-        output.SpotAngles.x = spotAngle.ValueRadians();
-        output.SpotAngles.y = Math::Cos(output.SpotAngles.x);
-        output.SpotAngles.z = 1.0f / std::max(1.0f - output.SpotAngles.y, 0.001f);
-        output.AttenuationRadius = _internal->GetAttenuationRadius();
-        output.Color = Vector3(color.r, color.g, color.b);
-        output.BoundsRadius = _internal->GetBounds().GetRadius();
-        output.LinearAttenuation = _internal->GetLinearAttenuation();
-        output.QuadraticAttenuation = _internal->GetQuadraticAttenuation();
-        output.Type = type;
+        output.gPosition = tfrm.GetPosition();
+        output.gDirection = -tfrm.GetRotation().ZAxis();
+        output.gIntensity = _internal->GetIntensity();
+        output.gSpotAngles.x = spotAngle.ValueRadians();
+        output.gSpotAngles.y = Math::Cos(output.gSpotAngles.x);
+        output.gSpotAngles.z = 1.0f / std::max(1.0f - output.gSpotAngles.y, 0.001f);
+        output.gAttenuationRadius = _internal->GetAttenuationRadius();
+        output.gColor = Vector3(color.r, color.g, color.b);
+        output.gBoundsRadius = _internal->GetBounds().GetRadius();
+        output.gLinearAttenuation = _internal->GetLinearAttenuation();
+        output.gQuadraticAttenuation = _internal->GetQuadraticAttenuation();
+        output.gType = type;
     }
 
     VisibleLightData::VisibleLightData()
@@ -145,14 +145,14 @@ namespace te
         {
             for (auto& entry : lightsPerType)
             {
-                _visibleLightData.push_back(LightData());
+                _visibleLightData.push_back(PerLightData());
                 entry->GetParameters(_visibleLightData.back());
             }
         }
     }
 
     void VisibleLightData::GatherInfluencingLights(const Bounds& bounds,
-        const LightData* (&output)[STANDARD_FORWARD_MAX_NUM_LIGHTS], Vector3I& counts) const
+        const PerLightData* (&output)[STANDARD_FORWARD_MAX_NUM_LIGHTS], Vector3I& counts) const
     {
         UINT32 outputIndices[STANDARD_FORWARD_MAX_NUM_LIGHTS];
         UINT32 numInfluencingLights = 0;
@@ -179,12 +179,12 @@ namespace te
         float furthestDistance = 0.0f;
         for (UINT32 j = numDirLights; j < numLights; j++)
         {
-            const LightData* lightData = &_visibleLightData[j];
+            const PerLightData* lightData = &_visibleLightData[j];
 
-            Sphere lightSphere(lightData->Position, lightData->BoundsRadius);
+            Sphere lightSphere(lightData->gPosition, lightData->gBoundsRadius);
             if (bounds.GetSphere().Intersects(lightSphere))
             {
-                float distance = bounds.GetSphere().GetCenter().SquaredDistance(lightData->Position);
+                float distance = bounds.GetSphere().GetCenter().SquaredDistance(lightData->gPosition);
 
                 // See where in the array can we fit the light
                 if (numInfluencingLights < STANDARD_FORWARD_MAX_NUM_LIGHTS)
@@ -250,16 +250,16 @@ namespace te
         }
     }
     
-    void VisibleLightData::GatherLights(const LightData* (&output)[STANDARD_FORWARD_MAX_NUM_LIGHTS],
+    void VisibleLightData::GatherLights(const PerLightData* (&output)[STANDARD_FORWARD_MAX_NUM_LIGHTS],
         Vector3I& counts) const
     {
         for (UINT32 i = 0; i < _visibleLightData.size(); i++)
         {
             output[i] = &_visibleLightData[i];
 
-            if ((UINT32)_visibleLightData[i].Type == 0) counts.x++;
-            if ((UINT32)_visibleLightData[i].Type == 1) counts.y++;
-            if ((UINT32)_visibleLightData[i].Type == 2) counts.z++;
+            if ((UINT32)_visibleLightData[i].gType == 0) counts.x++;
+            if ((UINT32)_visibleLightData[i].gType == 1) counts.y++;
+            if ((UINT32)_visibleLightData[i].gType == 2) counts.z++;
         }
     }
 }

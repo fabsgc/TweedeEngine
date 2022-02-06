@@ -47,7 +47,7 @@ namespace te
         InitializeRenderable();
         InitializeRenderer();
 
-        _perFrameData = te_shared_ptr_new<PerFrameData>();
+        _perFrameData = te_shared_ptr_new<FrameData>();
     }
 
     MaterialsPreview::~MaterialsPreview()

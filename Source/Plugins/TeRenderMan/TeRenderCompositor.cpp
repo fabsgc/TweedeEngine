@@ -46,7 +46,7 @@ namespace te
             {
                 // If Globall Illumination is enabled and if a Skybox with a texture exists,,
                 // We bind this texture for this material
-                if (entry.RenderElem->MaterialElem->GetProperties().UseGlobalIllumination && 
+                /* if (entry.RenderElem->MaterialElem->GetProperties().UseGlobalIllumination && 
                     !entry.RenderElem->MaterialElem->GetProperties().UseIrradianceMap)
                 {
                     if (view.GetRenderSettings().EnableSkybox)
@@ -55,9 +55,9 @@ namespace te
                         SPtr<Texture> skyboxMap = skybox ? skybox->GetIrradiance() : nullptr;
                         entry.RenderElem->GpuParamsElem[entry.PassIdx]->SetTexture("IrradianceMap", skyboxMap);
                     } 
-                }
+                } TODO PBR */
 
-                if (!entry.RenderElem->MaterialElem->GetProperties().UseEnvironmentMap)
+                /*if (!entry.RenderElem->MaterialElem->GetProperties().UseEnvironmentMap)
                 {
                     if (view.GetRenderSettings().EnableSkybox)
                     {
@@ -65,7 +65,7 @@ namespace te
                         SPtr<Texture> skyboxMap = skybox ? skybox->GetTexture() : nullptr;
                         entry.RenderElem->GpuParamsElem[entry.PassIdx]->SetTexture("EnvironmentMap", skyboxMap);
                     }
-                }
+                } TODO PBR */
 
                 gpuParamsBindFlags = GPU_BIND_ALL;
                 lastMaterial = entry.RenderElem->MaterialElem;
@@ -348,7 +348,7 @@ namespace te
         }
 
         Vector3I lightCounts;
-        const LightData* lights[STANDARD_FORWARD_MAX_NUM_LIGHTS];
+        const PerLightData* lights[STANDARD_FORWARD_MAX_NUM_LIGHTS];
         const auto numRenderables = (UINT32)inputs.Scene.Renderables.size();
         for (UINT32 i = 0; i < numRenderables; i++)
         {
@@ -788,8 +788,8 @@ namespace te
 
         Output = Texture::WHITE; // TODO
 
-        GpuResourcePool& resPool = gGpuResourcePool();
-        const RendererViewProperties& viewProps = inputs.View.GetProperties();
+        // GpuResourcePool& resPool = gGpuResourcePool();
+        // const RendererViewProperties& viewProps = inputs.View.GetProperties();
     }
 
     void RCNodeSSAO::Clear()

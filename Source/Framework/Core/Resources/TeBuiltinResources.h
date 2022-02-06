@@ -137,7 +137,7 @@ namespace te
             float   Padding2;
         };
 
-        struct LightData
+        struct PerLightData
         {
             Vector3 Color;
             float Type;

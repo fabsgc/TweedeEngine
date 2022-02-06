@@ -18,7 +18,7 @@ namespace te
          *  @param[in]	lightNumber	  Number of lights to be rendered for this pass
          *  @param[in]	lights  	  Array of lights data
          */
-        static void UpdatePerLights(const LightData* (&lights)[STANDARD_FORWARD_MAX_NUM_LIGHTS], UINT32 lightNumber);
+        static void UpdatePerLights(const PerLightData* (&lights)[STANDARD_FORWARD_MAX_NUM_LIGHTS], UINT32 lightNumber);
     };
 
     /**	Renderer information specific to a single light. */
@@ -29,7 +29,7 @@ namespace te
         ~RendererLight();
 
         /** Populates the structure with light parameters. */
-        void GetParameters(LightData& output) const;
+        void GetParameters(PerLightData& output) const;
 
         Light* _internal;
     };
@@ -60,7 +60,7 @@ namespace te
          *
          * Update() must have been called with most recent scene/view information before calling this method.
          */
-        void GatherInfluencingLights(const Bounds& bounds, const LightData* (&output)[STANDARD_FORWARD_MAX_NUM_LIGHTS],
+        void GatherInfluencingLights(const Bounds& bounds, const PerLightData* (&output)[STANDARD_FORWARD_MAX_NUM_LIGHTS],
             Vector3I& counts) const;
 
         /**
@@ -73,7 +73,7 @@ namespace te
          *
          * Update() must have been called with most recent scene/view information before calling this method.
          */
-        void GatherLights(const LightData* (&output)[STANDARD_FORWARD_MAX_NUM_LIGHTS],
+        void GatherLights(const PerLightData* (&output)[STANDARD_FORWARD_MAX_NUM_LIGHTS],
             Vector3I& counts) const;
 
         /** Returns the number of directional lights in the lights buffer. */
@@ -103,6 +103,6 @@ namespace te
 
         // These are rebuilt every call to update()
         Vector<const RendererLight*> _visibleLights[(UINT32)LightType::Count];
-        Vector<LightData> _visibleLightData;
+        Vector<PerLightData> _visibleLightData;
     };
 }

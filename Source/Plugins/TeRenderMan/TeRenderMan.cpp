@@ -101,7 +101,7 @@ namespace te
         return name;
     }
 
-    void RenderMan::RenderAll(PerFrameData& perFrameData)
+    void RenderMan::RenderAll(FrameData& frameData)
     {
         gProfilerGPU().BeginFrame();
 
@@ -122,7 +122,7 @@ namespace te
         sceneInfo.RenderableReady.resize(sceneInfo.Renderables.size(), false);
         sceneInfo.RenderableReady.assign(sceneInfo.Renderables.size(), false);
 
-        FrameInfo frameInfo(timings, perFrameData);
+        FrameInfo frameInfo(timings, frameData);
 
         // Update per-frame data for all renderable objects
         for (UINT32 i = 0; i < sceneInfo.Renderables.size(); i++)

@@ -621,7 +621,7 @@ namespace te
             SHADER_OBJECT_PARAM_DESC irradianceMapDesc("IrradianceMap", "IrradianceMap", GPOT_TEXTURECUBE);
 
             SHADER_DATA_PARAM_DESC gLightsDesc("gLights", "gLights", GPDT_STRUCT);
-            gLightsDesc.ElementSize = sizeof(LightData);
+            gLightsDesc.ElementSize = sizeof(PerLightData);
             SHADER_DATA_PARAM_DESC gLightsNumberDesc("gLightsNumber", "gLightsNumber", GPDT_INT1);
 
             _forwardShaderDesc.AddParameter(gViewDirDesc);
