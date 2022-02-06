@@ -106,52 +106,6 @@ namespace te
         static constexpr const char* TEXTURES_FOLDER = "Data/Textures/";
         static constexpr const char* ICONS_FOLDER = "Data/Icons/";
 
-        struct PerInstanceData
-        {
-            Matrix4 gMatWorld;
-            Matrix4 gMatInvWorld;
-            Matrix4 gMatWorldNoScale;
-            Matrix4 gMatInvWorldNoScale;
-            Matrix4 gMatPrevWorld;
-            UINT32  gLayer;
-            UINT32  gHasAnimation;
-            UINT32  gWriteVelocity;
-            UINT32  gCastLights;
-        };
-
-        struct PerHudInstanceData
-        {
-            Matrix4 MatWorldNoScale;
-            Vector4 Color;
-            float   Type;
-            Vector3 Padding;
-        };
-
-        struct PerBulletDebugInstanceData
-        {
-            Vector4 FromColor;
-            Vector4 ToColor;
-            Vector3 From;
-            float   Padding1;
-            Vector3 To;
-            float   Padding2;
-        };
-
-        struct LightData
-        {
-            Vector3 Color;
-            float Type;
-            Vector3 Position;
-            float Intensity;
-            Vector3 Direction;
-            float AttenuationRadius;
-            Vector3 SpotAngles;
-            float BoundsRadius;
-            float LinearAttenuation;
-            float QuadraticAttenuation;
-            Vector2 Padding;
-        };
-
     private:
         void InitGpuPrograms();
         void InitStates();
