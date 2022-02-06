@@ -58,8 +58,12 @@ namespace te
 
     struct MaterialProperties
     {
-        /** Basic parameters for controlling color of the material */
-        Color BaseColor = Color(0.75f, 0.75f, 0.75f, 1.0f);
+        Color BaseColor      = Color(0.6f, 0.6f, 0.6f);
+
+        float  Roughness     = 0.5f;
+        float  Metallic      = 0.0f;
+        float  Reflectance   = 0.0f;
+        float  AO            = 0.0f;
     };
 
     struct MaterialTextures

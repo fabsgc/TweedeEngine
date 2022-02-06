@@ -45,6 +45,11 @@ namespace te
     struct PerMaterialData
     {
         Vector4 BaseColor;
+        float   Metallic;
+        float   Roughness;
+        float   Reflectance;
+        float   AO;
+        Vector3 Padding1;
     };
 
     struct PerLightData

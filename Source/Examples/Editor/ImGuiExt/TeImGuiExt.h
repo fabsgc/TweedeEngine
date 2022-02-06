@@ -80,6 +80,9 @@ namespace te
         static bool RenderTransform(Transform& transform, const char* text, 
             bool disable = false);
 
+        static bool RenderColorRGB(Vector4& color, const char* id, const char* text, float width = 0.0f,
+            bool disable = false);
+
         static bool RenderColorRGBA(Vector4& color, const char* id, const char* text, float width = 0.0f,
             bool disable = false);
 

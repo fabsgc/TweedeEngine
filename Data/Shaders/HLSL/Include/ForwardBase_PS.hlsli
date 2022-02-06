@@ -14,6 +14,11 @@
 struct MaterialData
 {
     float4 BaseColor;
+    float  Metallic;
+    float  Roughness;
+    float  Reflectance;
+    float  AO;
+    float3 Padding;
 };
 
 struct LightData
@@ -48,7 +53,7 @@ cbuffer PerLightsBuffer : register(b2)
 {
     LightData gLights[MAX_LIGHTS];
     uint      gLightsNumber;
-    float3    gPadding4;
+    float3    gPadding1;
 }
 
 cbuffer PerFrameBuffer : register(b3)
@@ -59,7 +64,7 @@ cbuffer PerFrameBuffer : register(b3)
     uint   gUseSkyboxIrradianceMap;
     float4 gSceneLightColor;
     float  gSkyboxBrightness;
-    float3 gPadding5;
+    float3 gPadding2;
 }
 
 // #################### HELPER FUNCTIONS

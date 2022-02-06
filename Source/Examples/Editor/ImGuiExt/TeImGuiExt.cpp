@@ -220,6 +220,40 @@ namespace te
         return hasChanged;
     };
 
+    bool ImGuiExt::RenderColorRGB(Vector4& color, const char* id, const char* text, float width ,
+        bool disable)
+    {
+        bool hasChanged = false;
+
+        Vector4 oldColor = color;
+        ImVec4 imColor = color;
+
+        if (disable)
+        {
+            ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
+            ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
+        }
+
+        ImGui::PushItemWidth(width);
+        ImGui::ColorEdit3(id, (float*)&imColor, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel);
+        ImGui::SameLine();
+        ImGui::Text(text);
+        ImGui::PopItemWidth();
+
+        if (disable)
+        {
+            ImGui::PopItemFlag();
+            ImGui::PopStyleVar();
+        }
+
+        color = Vector4(imColor.x, imColor.y, imColor.z, imColor.w);
+
+        if (oldColor != color)
+            hasChanged = true;
+
+        return hasChanged;
+    }
+
     bool ImGuiExt::RenderColorRGBA(Vector4& color, const char* id, const char* text, float width,
         bool disable)
     {

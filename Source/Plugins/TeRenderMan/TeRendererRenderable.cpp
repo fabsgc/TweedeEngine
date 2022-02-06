@@ -43,6 +43,10 @@ namespace te
     {
         PerMaterialData data;
         data.BaseColor = properties.BaseColor.GetAsVector4();
+        data.Metallic = properties.Metallic;
+        data.Roughness = properties.Roughness;
+        data.Reflectance = properties.Reflectance;
+        data.AO = properties.AO;
 
         return data;
     }

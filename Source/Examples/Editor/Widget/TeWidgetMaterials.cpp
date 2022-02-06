@@ -260,15 +260,39 @@ namespace te
 
             if (ImGui::CollapsingHeader("Properties", ImGuiTreeNodeFlags_DefaultOpen))
             {
+                // TODO PBR
+
                 {
                     Vector4 color = properties.BaseColor.GetAsVector4();
-                    if (ImGuiExt::RenderColorRGBA(color, "##material_properties_albdo_option", "Base Color", width))
+                    if (ImGuiExt::RenderColorRGB(color, "##material_prop_base_color_option", "Base Color", width))
                     {
                         hasChanged = true;
                         properties.BaseColor = Color(color);
                     }
+                }
+                ImGui::Separator();
 
-                    // TODO PBR
+                {
+                    if (ImGuiExt::RenderOptionFloat(properties.Metallic, "##material_prop_metallic_option", "Metallic", 0.0f, 1.0f, width))
+                        hasChanged = true;
+                }
+                ImGui::Separator();
+
+                {
+                    if (ImGuiExt::RenderOptionFloat(properties.Roughness, "##material_prop_roughness_option", "Roughness", 0.0f, 1.0f, width))
+                        hasChanged = true;
+                }
+                ImGui::Separator();
+
+                {
+                    if (ImGuiExt::RenderOptionFloat(properties.Reflectance, "##material_prop_reflectance_option", "Reflectance", 0.0f, 1.0f, width))
+                        hasChanged = true;
+                }
+                ImGui::Separator();
+
+                {
+                    if (ImGuiExt::RenderOptionFloat(properties.AO, "##material_prop_ao_option", "AO", 0.0f, 1.0f, width))
+                        hasChanged = true;
                 }
             }
 
