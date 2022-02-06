@@ -62,11 +62,15 @@ namespace te
         Vector2 gPadding;
     };
 
+    // ############ Per Camera
+
     TE_PARAM_BLOCK_BEGIN(PerCameraParamDef)
         TE_PARAM_BLOCK_ENTRY(PerCameraData, gCamera)
     TE_PARAM_BLOCK_END
 
     extern PerCameraParamDef gPerCameraParamDef;
+
+    // ############ Per Instance
 
     TE_PARAM_BLOCK_BEGIN(PerInstanceParamDef)
         TE_PARAM_BLOCK_ENTRY_ARRAY(PerInstanceData, gInstances, STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE)
@@ -75,11 +79,15 @@ namespace te
     extern PerInstanceParamDef gPerInstanceParamDef;
     extern SPtr<GpuParamBlockBuffer> gPerInstanceParamBuffer[STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER];
 
+    // ############ Per Material
+
     TE_PARAM_BLOCK_BEGIN(PerMaterialParamDef)
         TE_PARAM_BLOCK_ENTRY(PerMaterialData, gMaterial)
     TE_PARAM_BLOCK_END
 
     extern PerMaterialParamDef gPerMaterialParamDef;
+
+    // ############ Per Light
 
     TE_PARAM_BLOCK_BEGIN(PerLightsParamDef)
         TE_PARAM_BLOCK_ENTRY_ARRAY(PerLightData, gLights, STANDARD_FORWARD_MAX_NUM_LIGHTS)
@@ -88,6 +96,8 @@ namespace te
 
     extern PerLightsParamDef gPerLightsParamDef;
     extern SPtr<GpuParamBlockBuffer> gPerLightsParamBuffer;
+
+    // ############ Per Frame
 
     TE_PARAM_BLOCK_BEGIN(PerFrameParamDef)
         TE_PARAM_BLOCK_ENTRY(float, gTime)
@@ -99,6 +109,8 @@ namespace te
     TE_PARAM_BLOCK_END
 
     extern PerFrameParamDef gPerFrameParamDef;
+
+    // ############ Per Object
 
     TE_PARAM_BLOCK_BEGIN(PerObjectParamDef)
         TE_PARAM_BLOCK_ENTRY(Matrix4, gMatWorld)
@@ -114,11 +126,15 @@ namespace te
 
     extern PerObjectParamDef gPerObjectParamDef;
 
+    // ############ Per Call
+
     TE_PARAM_BLOCK_BEGIN(PerCallParamDef)
         TE_PARAM_BLOCK_ENTRY(Matrix4, gMatWorldViewProj)
     TE_PARAM_BLOCK_END
 
     extern PerCallParamDef gPerCallParamDef;
+
+    // ############ Per Decal
 
     TE_PARAM_BLOCK_BEGIN(DecalParamDef)
         TE_PARAM_BLOCK_ENTRY(Matrix4, gWorldToDecal)
@@ -193,18 +209,18 @@ namespace te
         UINT64 FrameIdx = 0;
     };
 
-    class RenderCompositor;
     struct RenderManOptions;
-    class RenderMan;
-    class RendererScene;
-    class RendererView;
-    class RendererViewGroup;
-    struct PerLightData;
-    class RendererLight;
-    class RenderableElement;
     struct RendererRenderable;
     struct SceneInfo;
     struct FrameInfo;
     struct RendererDecal;
+
+    class RenderMan;
+    class RendererScene;
+    class RendererView;
+    class RendererViewGroup;
+    class RenderCompositor;
+    class RendererLight;
+    class RenderableElement;
     class DecalRenderElement;
 }
