@@ -115,6 +115,7 @@ namespace te
         Vector<ShaderVariationParamValue> values;
     };
 
+    /** Structure used for initializing a shader. */
     struct TE_CORE_EXPORT SHADER_DESC
     {
         SHADER_DESC();
