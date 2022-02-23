@@ -71,6 +71,7 @@ namespace te
         if (_infoQueue != nullptr)
         {
             UINT64 numStoredMessages = _infoQueue->GetNumStoredMessagesAllowedByRetrievalFilter();
+            UINT size = _infoQueue->GetStorageFilterStackSize();
             for (UINT64 i = 0 ; i < numStoredMessages ; i++ )
             {
                 // Get the size of the message

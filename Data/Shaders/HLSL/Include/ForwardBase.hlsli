@@ -27,6 +27,8 @@ struct VS_INPUT
     float4 BiTangent     : BINORMAL;
     float4 BlendWeights  : BLENDWEIGHT;
     uint4  BlendIndices  : BLENDINDICES;
+    float2 UV0           : TEXCOORD0;
+    float2 UV1           : TEXCOORD0;
     float2 Texture       : TEXCOORD0;
     float4 Color         : COLOR0;
 };
@@ -40,11 +42,12 @@ struct VS_OUTPUT
     float3 Normal            : NORMAL;
     float3 Tangent           : TANGENT;
     float3 BiTangent         : BINORMAL;
-    float2 Texture           : TEXCOORD0;
-    float3 ViewDirWS         : TEXCOORD1;
-    float3 ViewDirTS         : TEXCOORD2;
-    float2 ParallaxOffsetTS  : TEXCOORD3;
-    float4 Other             : TEXCOORD4;
+    float2 UV0               : TEXCOORD0;
+    float2 UV1               : TEXCOORD1;
+    float3 ViewDirWS         : TEXCOORD2;
+    float3 ViewDirTS         : TEXCOORD3;
+    float2 ParallaxOffsetTS  : TEXCOORD4;
+    float4 Other             : TEXCOORD5;
     float4 Color             : COLOR0;
 };
 

@@ -1105,7 +1105,7 @@ namespace te
             vertexLayout |= (UINT32)VertexLayout::Tangent;
             vertexLayout |= (UINT32)VertexLayout::BiTangent;
             vertexLayout |= (UINT32)VertexLayout::UV0;
-            // vertexLayout |= (UINT32)VertexLayout::UV1; Could be used for lightmap coordinates
+            vertexLayout |= (UINT32)VertexLayout::UV1;
             vertexLayout |= (UINT32)VertexLayout::BoneWeights;
             vertexLayout |= (UINT32)VertexLayout::Color;
 

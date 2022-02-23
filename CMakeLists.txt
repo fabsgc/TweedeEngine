@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.10.0)
 
-project (TweedeEngineFrameworkRedux)
+project (TweedeEngine)
 
 set (TE_SOURCE_DIR ${PROJECT_SOURCE_DIR}/Source)
 set (APP_ROOT_DIR ${PROJECT_SOURCE_DIR})
