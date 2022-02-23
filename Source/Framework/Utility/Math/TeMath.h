@@ -5,6 +5,8 @@
 #include "Math/TeDegree.h"
 #include "Math/TeVector3.h"
 
+#include <cmath>
+
 namespace te
 {
     class TE_UTILITY_EXPORT Math
