@@ -214,4 +214,6 @@ namespace te
     RendererMaterialMetaData RendererMaterial<T>::_metaData;
 }
 
-#pragma warning (pop)
+#if TE_COMPILER == TE_COMPILER_MSVC
+#   pragma warning (pop)
+#endif
