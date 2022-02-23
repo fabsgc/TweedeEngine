@@ -124,8 +124,8 @@ namespace te
         friend class BulletPatchSoftBody;
 
     protected:
-        btSoftBody* _btSoftBody;
         BulletSoftBody* _softBody;
+        btSoftBody* _btSoftBody;
 
         float _mass = 0.0f;
         float _friction = 0.0f;
