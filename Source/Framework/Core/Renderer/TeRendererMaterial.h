@@ -8,8 +8,10 @@
 #include "Material/TeTechnique.h"
 #include "RenderAPI/TeRenderAPI.h"
 
-#pragma warning (push)
-#pragma warning (disable: 4702)
+#if TE_COMPILER == TE_COMPILER_MSVC
+#   pragma warning (push)
+#   pragma warning (disable: 4702)
+#endif
 
 namespace te
 {
