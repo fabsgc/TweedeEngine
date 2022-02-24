@@ -189,6 +189,7 @@ namespace te
         bool HwGamma = false;
         UINT32 ArraySize = 0;
         UINT32 NumMipLevels = 0;
+        String DebugName = "";
     };
 
     /** Structure used for describing a pooled storage buffer. */

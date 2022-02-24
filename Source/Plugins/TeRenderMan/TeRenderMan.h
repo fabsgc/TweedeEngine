@@ -164,6 +164,8 @@ namespace te
         // Keep track of all previously generated render textures
         // This structure is cleared when calling RenderAll()
         mutable RenderTextures _renderTextures;
+
+        RenderAPI& _renderAPI;
     };
 
     /** Provides easy access to the RenderBeast renderer. */

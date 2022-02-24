@@ -13,7 +13,10 @@
 #   define NOMINMAX // Required to stop windows.h messing up std::min
 #endif
 
+#include "d3d9.h"
+
 #include <d3d11.h>
+#include <d3d11_1.h>
 #include <d3d11shader.h>
 #include <D3Dcompiler.h>
 #include <dxgi1_3.h>

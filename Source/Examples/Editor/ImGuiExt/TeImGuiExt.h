@@ -145,8 +145,8 @@ namespace te
                         cursor.y += 21.0f;
                         ImGui::SetCursorPos(cursor);
 
-                        ImGui::Text(option.Label.c_str());
-                        
+                        ImGui::Text("%s", option.Label.c_str());
+
                         cursor = ImGui::GetCursorPos();
                         cursor.y -= 21.0f;
                         ImGui::SetCursorPos(cursor);

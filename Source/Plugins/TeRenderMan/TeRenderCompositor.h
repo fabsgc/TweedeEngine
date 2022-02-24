@@ -15,13 +15,14 @@ namespace te
     struct RenderCompositorNodeInputs
     {
         RenderCompositorNodeInputs(const RendererViewGroup& viewGroup, const RendererView& view, const SceneInfo& scene,
-            const RenderManOptions& options, const FrameInfo& frameInfo, const Renderer& renderer)
+            const RenderManOptions& options, const FrameInfo& frameInfo, const Renderer& renderer, RenderAPI& renderAPI)
             : ViewGroup(viewGroup)
             , View(view)
             , Scene(scene)
             , Options(options)
             , FrameInfos(frameInfo)
             , CurrRenderer(renderer)
+            , CurrRenderAPI(renderAPI)
         { }
 
         const RendererViewGroup& ViewGroup;
@@ -30,6 +31,7 @@ namespace te
         const RenderManOptions& Options;
         const FrameInfo& FrameInfos;
         const Renderer& CurrRenderer;
+        RenderAPI& CurrRenderAPI;
 
         // Callbacks to external systems can hook into the compositor
         Vector<RenderCompositorNode*> InputNodes;

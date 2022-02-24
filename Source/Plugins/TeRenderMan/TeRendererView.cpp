@@ -414,6 +414,9 @@ namespace te
         // For each instance block we retrieve all necessary data
         for (UINT32 currInstBlock = 0; currInstBlock < instBlockCount; currInstBlock++)
         {
+            if (!gPerInstanceParamBuffer[currInstBlock])
+                gPerInstanceParamBuffer[currInstBlock] = gPerInstanceParamDef.CreateBuffer();
+
             // We need to know start and end of element for this instance block
             UINT32 lowerBlockBound = currInstBlock * STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE;
             UINT32 upperBlockBound = (currInstBlock + 1) * STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE;
@@ -488,7 +491,9 @@ namespace te
                     _forwardOpaqueQueue->Add(elem, distanceToCamera, techniqueIdx);
 
                 for (auto& gpuParams : renderElem.GpuParamsElem)
+                {
                     gpuParams->SetParamBlockBuffer("PerInstanceBuffer", gPerInstanceParamBuffer[currInstBlock]);
+                }
 
                 CheckIfDynamicEnvMappingNeeded(renderElem);
             }

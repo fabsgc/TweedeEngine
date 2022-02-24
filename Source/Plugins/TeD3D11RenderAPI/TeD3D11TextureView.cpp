@@ -2,6 +2,7 @@
 #include "TeD3D11RenderAPI.h"
 #include "TeD3D11Device.h"
 #include "TeD3D11Texture.h"
+#include "TeD3D11Utility.h"
 #include "TeD3D11Mappings.h"
 
 namespace te
@@ -12,10 +13,20 @@ namespace te
         if ((_desc.Usage & GVU_RANDOMWRITE) != 0)
         {
             _UAV = CreateUAV(texture, _desc.MostDetailMip, _desc.FirstArraySlice, _desc.NumArraySlices);
+
+#if  TE_DEBUG_MODE == 1
+            String name = "[UAV] " + _desc.DebugName;
+            D3D11Utility::SetDebugName(_UAV, name.c_str(), name.size());
+#endif
         }
         else if ((_desc.Usage & GVU_RENDERTARGET) != 0)
         {
             _RTV = CreateRTV(texture, _desc.MostDetailMip, _desc.FirstArraySlice, _desc.NumArraySlices);
+
+#if  TE_DEBUG_MODE == 1
+            String name = "[RTV] " + _desc.DebugName;
+            D3D11Utility::SetDebugName(_RTV, name.c_str(), name.size());
+#endif
         }
         else if ((_desc.Usage & GVU_DEPTHSTENCIL) != 0)
         {
@@ -23,10 +34,31 @@ namespace te
             _RODepthWStencilView = CreateDSV(texture, _desc.MostDetailMip, _desc.FirstArraySlice, _desc.NumArraySlices, true, false);
             _RODepthROStencilView = CreateDSV(texture, _desc.MostDetailMip, _desc.FirstArraySlice, _desc.NumArraySlices, true, true);
             _WDepthROStencilView = CreateDSV(texture, _desc.MostDetailMip, _desc.FirstArraySlice, _desc.NumArraySlices, false, true);
+
+#if  TE_DEBUG_MODE == 1
+            String name = "";
+
+            name = "[WDepthWStencilView] " + _desc.DebugName;
+            D3D11Utility::SetDebugName(_WDepthWStencilView, name.c_str(), name.size());
+
+            name = "[RODepthWStencilView] " + _desc.DebugName;
+            D3D11Utility::SetDebugName(_RODepthWStencilView, name.c_str(), name.size());
+
+            name = "[RODepthROStencilView] " + _desc.DebugName;
+            D3D11Utility::SetDebugName(_RODepthROStencilView, name.c_str(), name.size());
+
+            name = "[WDepthROStencilView] " + _desc.DebugName;
+            D3D11Utility::SetDebugName(_WDepthROStencilView, name.c_str(), name.size());
+#endif
         }
         else
         {
             _SRV = CreateSRV(texture, _desc.MostDetailMip, _desc.NumMips, _desc.FirstArraySlice, _desc.NumArraySlices);
+
+#if  TE_DEBUG_MODE == 1
+            String name = "[SRV] " + _desc.DebugName;
+            D3D11Utility::SetDebugName(_SRV, name.c_str(), name.size());
+#endif
         }
     }
 

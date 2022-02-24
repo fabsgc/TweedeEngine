@@ -21,13 +21,14 @@ namespace te
          * @param[in]	numElements		Number of elements to bind to the view.
          * @param[in]	usage			Determines type of the view we are creating, and which slots in the pipeline will
          *								the view be bindable to.
+         * @param[in]	debugName		For debug purpose only
          *
          * @note If a view with this exact parameters already exists, it will be returned and new one will not be created.
          * @note Only Default and RandomWrite views are supported for this type of buffer.
          */
          // TODO Low Priority: Perhaps reflect usage flag limitation by having an enum with only the supported two options?
         static GpuBufferView* RequestView(D3D11GpuBuffer* buffer, UINT32 firstElement, UINT32 numElements,
-            GpuViewUsage usage);
+            GpuViewUsage usage, const String& debugName);
 
         /**
          * Releases a view created with requestView.

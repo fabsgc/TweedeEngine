@@ -26,10 +26,15 @@ if (TE_64BIT)
 else()
     link_directories ("$(DXSDK_DIR)Lib/x86")
 endif()
-    
-## External lib: DirectX 11
-target_link_libraries (TeD3D11RenderAPI d3d11 dxgi dxguid D3DCompiler)  
-    
+
+## External lib: DirectX 11 (and DirectX 9 for debug purpose)
+
+if(DirectX9) 
+    target_link_libraries (TeD3D11RenderAPI d3d9 d3d11 dxgi dxguid D3DCompiler)
+else()
+    target_link_libraries (TeD3D11RenderAPI d3d11 dxgi dxguid D3DCompiler)
+endif()
+
 ## Local libs
 target_link_libraries (TeD3D11RenderAPI tef)
 

@@ -12,7 +12,7 @@
 #define TE_GUI_API_MODULE_D3D11 "TeD3D11GuiAPI"
 #define TE_GUI_API_MODULE_OPENGL "TeGLGuiAPI"
 
-#define TE_VERSION 0.1
+#define TE_VERSION "@TE_FRAMEWORK_VERSION_MAJOR@.@TE_FRAMEWORK_VERSION_MINOR@"
 
 /** Path to the framework root when files haven't been packaged yet (e.g. running from debugger). */
 static constexpr const char* RAW_APP_ROOT = "@APP_ROOT_DIR@/";
@@ -25,11 +25,16 @@ static constexpr const char* MSVC_VCVARS = "@MSVC_VCVARS@";
 
 /** Path to the binaries when files haven't been packaged yet (e.g. running from debugger). */
 #if TE_CONFIG == TE_CONFIG_DEBUG
-#   define TE_BINARIES_PATH = "@CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG@";
+#   define TE_BINARIES_PATH = "@CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG@"
 #elif TE_CONFIG == TE_CONFIG_RELWITHDEBINFO
-#   define TE_BINARIES_PATH = "@CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO@";
+#   define TE_BINARIES_PATH = "@CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO@"
 #elif TE_CONFIG == TE_CONFIG_MINSIZEREL
-#   define TE_BINARIES_PATH = "@CMAKE_RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL@";
+#   define TE_BINARIES_PATH = "@CMAKE_RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL@"
 #elif TE_CONFIG == TE_CONFIG_RELEASE
-#   define TE_BINARIES_PATH = "@CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE@";
+#   define TE_BINARIES_PATH = "@CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE@"
+#endif
+
+/** Is D3D9 available */
+#if @D3D9_FOUND@ == 1
+#   define TE_D3D9
 #endif

@@ -1,4 +1,4 @@
-#pragma
+#pragma once
 
 #include "TeD3D11RenderAPIPrerequisites.h"
 

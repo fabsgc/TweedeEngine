@@ -2,6 +2,7 @@
 #include "TeD3D11Mappings.h"
 #include "TeD3D11RenderAPI.h"
 #include "TeD3D11Device.h"
+#include "TeD3D11Utility.h"
 #include "TeD3D11GpuProgram.h"
 #include "RenderAPI/TeHardwareBufferManager.h"
 #include "Profiling/TeProfilerGPU.h"
@@ -166,6 +167,12 @@ namespace te
         {
             TE_ASSERT_ERROR(false, "Unable to set D3D11 vertex declaration" + device.GetErrorDescription());
         }
+
+#if  TE_DEBUG_MODE == 1
+        String gpuProgramDebugName = vertexProgram.GetDebugName();
+        String debugName = !gpuProgramDebugName.empty() ? "[LAYOUT] " + gpuProgramDebugName : "[LAYOUT]";
+        D3D11Utility::SetDebugName(newEntry->InputLayout, debugName.c_str(), debugName.size());
+#endif
 
         // Create key and add to the layout map
         VertexDeclarationKey pair;

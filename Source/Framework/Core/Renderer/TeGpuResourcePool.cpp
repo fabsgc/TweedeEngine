@@ -38,6 +38,7 @@ namespace te
         texDesc.HwGamma = desc.HwGamma;
         texDesc.NumSamples = desc.NumSamples;
         texDesc.NumMips = desc.NumMipLevels;
+        texDesc.DebugName = desc.DebugName;
 
         if (desc.Type != TEX_TYPE_3D)
             texDesc.NumArraySlices = desc.ArraySize;
@@ -231,6 +232,7 @@ namespace te
         desc.Type = TEX_TYPE_2D;
         desc.ArraySize = arraySize;
         desc.NumMipLevels = mipCount;
+        desc.DebugName = "[Pooled Render Texture] ";
 
         return desc;
     }
@@ -249,6 +251,7 @@ namespace te
         desc.Type = TEX_TYPE_3D;
         desc.ArraySize = 1;
         desc.NumMipLevels = 0;
+        desc.DebugName = "[Pooled Render Texture] ";
 
         return desc;
     }
@@ -267,6 +270,7 @@ namespace te
         desc.Type = TEX_TYPE_CUBE_MAP;
         desc.ArraySize = arraySize;
         desc.NumMipLevels = 0;
+        desc.DebugName = "[Pooled Render Texture] ";
 
         return desc;
     }

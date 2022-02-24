@@ -16,6 +16,7 @@ namespace te
         desc.Usage = TU_STATIC;
 
         // White built-in texture
+        desc.DebugName = "White Texture";
         SPtr<Texture> whiteTexture = CreateTexture(desc);
 
         SPtr<PixelData> whitePixelData = PixelData::Create(2, 2, 1, PF_RGBA8);
@@ -28,6 +29,7 @@ namespace te
         Texture::WHITE = whiteTexture;
 
         // Black built-in texture
+        desc.DebugName = "Black Texture";
         SPtr<Texture> blackTexture = CreateTexture(desc);
 
         SPtr<PixelData> blackPixelData = PixelData::Create(2, 2, 1, PF_RGBA8);
@@ -40,6 +42,7 @@ namespace te
         Texture::BLACK = blackTexture;
 
         // Normal (Y = Up) built-in texture
+        desc.DebugName = "Normal Texture";
         SPtr<Texture> normalTexture = CreateTexture(desc);
         SPtr<PixelData> normalPixelData = PixelData::Create(2, 2, 1, PF_RGBA8);
 

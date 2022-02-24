@@ -30,7 +30,7 @@ namespace te
         };
 
         D3D11HardwareBuffer(BufferType btype, GpuBufferUsage usage, UINT32 elementCount, UINT32 elementSize,
-            D3D11Device& device, bool systemMemory = false, bool streamOut = false);
+            D3D11Device& device, const String& debugName, bool systemMemory = false, bool streamOut = false);
         virtual ~D3D11HardwareBuffer();
 
         /** @copydoc HardwareBuffer::ReadData */

@@ -122,6 +122,7 @@ namespace te
 
     SPtr<Resource> FreeImgImporter::Import(const String& filePath, const SPtr<const ImportOptions> importOptions)
     {
+        auto path = std::filesystem::absolute(filePath);
         const TextureImportOptions* textureImportOptions = static_cast<const TextureImportOptions*>(importOptions.get());
 
         SPtr<PixelData> imgData = ImportRawImage(filePath);
@@ -168,6 +169,7 @@ namespace te
         texDesc.Format = textureImportOptions->Format;
         texDesc.Usage = usage;
         texDesc.HwGamma = sRGB;
+        texDesc.DebugName = path.filename().generic_string();
 
         MipMapGenOptions mipOptions;
         mipOptions.IsSRGB = sRGB;
@@ -231,7 +233,6 @@ namespace te
             }
         }
 
-        auto path = std::filesystem::absolute(filePath);
         texture->SetName(path.filename().generic_string());
         texture->SetPath(path.generic_string());
 

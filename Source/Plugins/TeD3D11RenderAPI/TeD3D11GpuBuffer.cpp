@@ -28,6 +28,7 @@ namespace te
 
     void D3D11GpuBuffer::Initialize()
     {
+        String debugName = "";
         const GpuBufferProperties& props = GetProperties();
         _bufferDeleter = &DeleteBuffer;
 
@@ -41,19 +42,22 @@ namespace te
             {
             case GBT_STANDARD:
                 bufferType = D3D11HardwareBuffer::BT_STANDARD;
+                debugName = "[STANDARD]";
                 break;
             case GBT_STRUCTURED:
                 bufferType = D3D11HardwareBuffer::BT_STRUCTURED;
+                debugName = "[STRUCTURED]";
                 break;
             case GBT_INDIRECTARGUMENT:
                 bufferType = D3D11HardwareBuffer::BT_INDIRECTARGUMENT;
+                debugName = "[INDIRECT ARGUMENT]";
                 break;
             default:
                 TE_ASSERT_ERROR(false, "Unsupported buffer type " + ToString(props.GetType()));
             }
 
             _buffer = te_pool_new<D3D11HardwareBuffer>(bufferType, props.GetUsage(), props.GetElementCount(),
-                props.GetElementSize(), rapi->GetPrimaryDevice(), false, false);
+                props.GetElementSize(), rapi->GetPrimaryDevice(), debugName, false, false);
         }
 
         UINT32 usage = GVU_DEFAULT;
@@ -63,7 +67,7 @@ namespace te
         }
 
         // Keep a single view of the entire buffer, we don't support views of sub-sets (yet)
-        _bufferView = RequestView(this, 0, props.GetElementCount(), (GpuViewUsage)usage);
+        _bufferView = RequestView(this, 0, props.GetElementCount(), (GpuViewUsage)usage, "");
 
         GpuBuffer::Initialize();
     }
@@ -74,7 +78,7 @@ namespace te
     }
 
     GpuBufferView* D3D11GpuBuffer::RequestView(D3D11GpuBuffer* buffer, UINT32 firstElement, UINT32 numElements,
-        GpuViewUsage usage)
+        GpuViewUsage usage, const String& debugName)
     {
         const auto& props = buffer->GetProperties();
 
@@ -85,6 +89,7 @@ namespace te
         key.Usage = usage;
         key.Format = props.GetFormat();
         key.UseCounter = false;
+        key.debugName = debugName;
 
         auto iterFind = buffer->_bufferViews.find(key);
         if (iterFind == buffer->_bufferViews.end())

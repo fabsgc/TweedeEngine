@@ -513,6 +513,7 @@ namespace te
         renderData.TargetColorDesc.Format = PF_RGBA16F;
         renderData.TargetColorDesc.NumSamples = gCoreApplication().GetWindow()->GetDesc().MultisampleCount;
         renderData.TargetColorDesc.Usage = TU_RENDERTARGET;
+        renderData.TargetColorDesc.DebugName = "[Render Texture Color]";
 
         renderData.TargetDepthDesc.Type = TEX_TYPE_2D;
         renderData.TargetDepthDesc.Width = renderData.Width;
@@ -520,6 +521,7 @@ namespace te
         renderData.TargetDepthDesc.Format = PF_RGBA8;
         renderData.TargetDepthDesc.NumSamples = gCoreApplication().GetWindow()->GetDesc().MultisampleCount;
         renderData.TargetDepthDesc.Usage = TU_DEPTHSTENCIL;
+        renderData.TargetDepthDesc.DebugName = "[Render Texture Depth]";
 
         renderData.ColorTex = Texture::Create(renderData.TargetColorDesc);
         renderData.DepthStencilTex = Texture::Create(renderData.TargetDepthDesc);

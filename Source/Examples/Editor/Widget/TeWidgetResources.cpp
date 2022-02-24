@@ -74,7 +74,8 @@ namespace te
                             SPtr<TextureView> textureView = texture->RequestView(
                                 0, texture->GetProperties().GetNumMipmaps(),
                                 0, texture->GetProperties().GetNumFaces(),
-                                GVU_DEFAULT
+                                GVU_DEFAULT, 
+                                texture->GetProperties().GetDebugName()
                             );
 
                             void* rawData = textureView->GetRawData();
@@ -104,11 +105,11 @@ namespace te
                         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 10.0f, 1.0f });
                         ImGui::InputText("Path", inputPath, IM_ARRAYSIZE(inputPath));
                         if (ImGui::IsItemHovered())
-                            ImGui::SetTooltip(inputPathStr.c_str());
+                            ImGui::SetTooltip("%s", inputPathStr.c_str());
 
                         ImGui::InputText("UUID", inputUUID, IM_ARRAYSIZE(inputUUID));
                         if (ImGui::IsItemHovered())
-                            ImGui::SetTooltip(inputUUIDStr.c_str());
+                            ImGui::SetTooltip("%s", inputUUIDStr.c_str());
 
                         ImGui::PopStyleVar();
 
@@ -151,10 +152,10 @@ namespace te
                 ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 10.0f, 1.0f });
                 ImGui::InputText("Path", inputPath, IM_ARRAYSIZE(inputPath));
                 if (ImGui::IsItemHovered())
-                    ImGui::SetTooltip(inputPathStr.c_str());
+                    ImGui::SetTooltip("%s", inputPathStr.c_str());
                 ImGui::InputText("UUID", inputUUID, IM_ARRAYSIZE(inputUUID));
                 if (ImGui::IsItemHovered())
-                    ImGui::SetTooltip(inputUUIDStr.c_str());
+                    ImGui::SetTooltip("%s", inputUUIDStr.c_str());
                 ImGui::PopStyleVar();
 
                 ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 10.0f, 1.0f });

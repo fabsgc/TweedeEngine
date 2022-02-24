@@ -2,9 +2,10 @@
 #include "Private/Win32/TeWin32Platform.h"
 #include "TeD3D11VideoModeInfo.h"
 #include "TeD3D11RenderAPI.h"
-#include "Image/TeTexture.h"
+#include "TeD3D11Utility.h"
 #include "TeD3D11TextureView.h"
 #include "Manager/TeGuiManager.h"
+#include "Image/TeTexture.h"
 #include "Gui/TeGuiAPI.h"
 
 namespace te
@@ -99,6 +100,11 @@ namespace te
         _properties.Left = _window->GetLeft();
 
         CreateSwapChain();
+
+#if TE_DEBUG_MODE == 1
+        String name = "[SWAP_CHAIN] " + windowDesc.Title;
+        D3D11Utility::SetDebugName(_swapChain, name.c_str(), name.size());
+#endif
 
         _properties.IsFullScreen = _desc.Fullscreen;
         _properties.IsWindow = true;
@@ -433,9 +439,10 @@ namespace te
             texDesc.Format = PF_D32_S8X24;
             texDesc.Usage = TU_DEPTHSTENCIL;
             texDesc.NumSamples = GetProperties().MultisampleCount;
+            texDesc.DebugName = "Render Window";
 
             _depthStencilBuffer = Texture::CreatePtr(texDesc);
-            _depthStencilView = _depthStencilBuffer->RequestView(0, 1, 0, 1, GVU_DEPTHSTENCIL);
+            _depthStencilView = _depthStencilBuffer->RequestView(0, 1, 0, 1, GVU_DEPTHSTENCIL, texDesc.DebugName);
         }
         else
         {

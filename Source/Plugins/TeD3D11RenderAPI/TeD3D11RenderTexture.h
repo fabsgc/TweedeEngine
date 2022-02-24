@@ -1,3 +1,5 @@
+#pragma once
+
 #include "TeD3D11RenderAPIPrerequisites.h"
 #include "Image/TeTexture.h"
 #include "RenderAPI/TeRenderTexture.h"

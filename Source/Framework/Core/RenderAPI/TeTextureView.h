@@ -32,6 +32,9 @@ namespace te
 
         /** Type of texture view. */
         GpuViewUsage Usage;
+
+        /** Only used for debugging purpose */
+        String DebugName = "";
     };
 
     /**
@@ -71,6 +74,9 @@ namespace te
 
         /** Returns texture view usage. This determines where on the pipeline can be bind the view. */
         GpuViewUsage GetUsage() const { return _desc.Usage; }
+
+        /** Returns texture view debug name */
+        const String& GetDebugName() const { return _desc.DebugName; }
 
         /** Returns the descriptor structure used for initializing the view. */
         const TEXTURE_VIEW_DESC& GetDesc() const { return _desc; }

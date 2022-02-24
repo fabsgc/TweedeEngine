@@ -91,7 +91,7 @@ namespace te
                     TE_ASSERT_ERROR(false, "Provided texture is not created with render target usage.");
 
                 _colorSurfaces[i] = texture->RequestView(_desc.ColorSurfaces[i].MipLevel, 1,
-                    _desc.ColorSurfaces[i].Face, _desc.ColorSurfaces[i].NumFaces, GVU_RENDERTARGET);
+                    _desc.ColorSurfaces[i].Face, _desc.ColorSurfaces[i].NumFaces, GVU_RENDERTARGET, texture->GetProperties().GetDebugName());
             }
         }
 
@@ -105,7 +105,7 @@ namespace te
             }
 
             _depthStencilSurface = texture->RequestView(_desc.DepthStencilSurface.MipLevel, 1,
-                _desc.DepthStencilSurface.Face, _desc.DepthStencilSurface.NumFaces, GVU_DEPTHSTENCIL);
+                _desc.DepthStencilSurface.Face, _desc.DepthStencilSurface.NumFaces, GVU_DEPTHSTENCIL, texture->GetProperties().GetDebugName());
         }
 
         ThrowIfBuffersDontMatch();

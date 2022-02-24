@@ -2,6 +2,7 @@
 #include "TeD3D11RenderAPI.h"
 #include "TeD3D11Device.h"
 #include "TeD3D11Mappings.h"
+#include "TeD3D11Utility.h"
 
 namespace te {
     D3D11SamplerState::D3D11SamplerState(const SAMPLER_STATE_DESC& desc)
@@ -94,6 +95,11 @@ namespace te {
             String errorDescription = device.GetErrorDescription();
             TE_ASSERT_ERROR(false, "Cannot create sampler state.\nError Description: " + errorDescription);
         }
+
+#if  TE_DEBUG_MODE == 1
+        static String debugName = "[SAMPLER]";
+        D3D11Utility::SetDebugName(_samplerState, debugName.c_str(), debugName.size());
+#endif
 
         SamplerState::CreateInternal();
     }

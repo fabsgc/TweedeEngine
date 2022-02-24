@@ -1,11 +1,12 @@
 #include "TeD3D11HardwareBuffer.h"
 #include "TeD3D11Mappings.h"
 #include "TeD3D11Device.h"
+#include "TeD3D11Utility.h"
 
 namespace te
 {
     D3D11HardwareBuffer::D3D11HardwareBuffer(BufferType btype, GpuBufferUsage usage, UINT32 elementCount, UINT32 elementSize,
-        D3D11Device& device, bool useSystemMem, bool streamOut)
+        D3D11Device& device, const String& debugName, bool useSystemMem, bool streamOut)
         : HardwareBuffer(elementCount* elementSize, usage, GDF_DEFAULT)
         , _bufferType(btype)
         , _elementCount(elementCount)
@@ -112,6 +113,11 @@ namespace te
             String msg = device.GetErrorDescription();
             TE_ASSERT_ERROR(false, "Cannot create D3D11 buffer: " + msg);
         }
+
+#if  TE_DEBUG_MODE == 1
+        String fullDebugName = (!debugName.empty()) ? "[BUF] " + debugName : "[BUF]";
+        D3D11Utility::SetDebugName(_D3DBuffer, fullDebugName.c_str(), fullDebugName.size());
+#endif
     }
 
     D3D11HardwareBuffer::~D3D11HardwareBuffer()
@@ -217,7 +223,7 @@ namespace te
             if (!_pTempStagingBuffer)
             {
                 // Create another buffer instance but use system memory
-                _pTempStagingBuffer = te_new<D3D11HardwareBuffer>(_bufferType, GBU_STATIC, 1, _size, std::ref(_device), true);
+                _pTempStagingBuffer = te_new<D3D11HardwareBuffer>(_bufferType, GBU_STATIC, 1, _size, std::ref(_device), "[STAGING]", true);
             }
 
             // Schedule a copy to the staging

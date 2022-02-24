@@ -441,7 +441,8 @@ namespace te
         memcpy(dest, src, pixelData.GetSize());
     }
 
-    SPtr<TextureView> Texture::RequestView(UINT32 mostDetailMip, UINT32 numMips, UINT32 firstArraySlice, UINT32 numArraySlices, GpuViewUsage usage)
+    SPtr<TextureView> Texture::RequestView(UINT32 mostDetailMip, UINT32 numMips, UINT32 firstArraySlice, UINT32 numArraySlices, 
+        GpuViewUsage usage, const String& debugName)
     {
         const TextureProperties& texProps = GetProperties();
 
@@ -451,6 +452,7 @@ namespace te
         key.FirstArraySlice = firstArraySlice;
         key.NumArraySlices = numArraySlices == 0 ? texProps.GetNumFaces() : numArraySlices;
         key.Usage = usage;
+        key.DebugName = debugName;
 
         auto iterFind = _textureViews.find(key);
         if (iterFind == _textureViews.end())

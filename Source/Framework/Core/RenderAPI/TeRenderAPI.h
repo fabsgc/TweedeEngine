@@ -231,6 +231,12 @@ namespace te
         /** Converts the number of vertices to number of primitives based on the specified draw operation. */
         UINT32 VertexCountToPrimCount(DrawOperationType type, UINT32 elementCount);
 
+        /** You can provide annotations to group regions of the frame under names, with a nested hierarchy */
+        virtual void PushMarker(const String& name, const Color& color) const { }
+
+        /** @copydoc PushMarker */
+        virtual void PopMarker() const { }
+
     protected:
         SPtr<RenderTarget> _activeRenderTarget;
         bool _activeRenderTargetModified = false;

@@ -624,7 +624,7 @@ namespace te
 
         SPtr<TextureView> textureView = texture->RequestView(
             0, mipMap, 0, texture->GetProperties().GetNumFaces(),
-            GVU_DEFAULT
+            GVU_DEFAULT, texture->GetProperties().GetDebugName()
         );
 
         void* rawData = textureView->GetRawData();

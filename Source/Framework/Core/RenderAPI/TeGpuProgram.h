@@ -19,6 +19,7 @@ namespace te
         String IncludePath; /**< For hlsl, you can specify an include path here */
         GpuProgramType Type = GPT_VERTEX_PROGRAM; /**< Type of the program, for example vertex or pixel. */
         bool RequiresAdjacency = false; /**< If true then adjacency information will be provided when rendering. */
+        String DebugName = ""; /**< For debug purpose only */
 
         /**
          * Optional intermediate version of the GPU program. Can significantly speed up GPU program compilation/creation
@@ -119,6 +120,9 @@ namespace te
          */
         static SPtr<GpuProgramBytecode> CompileBytecode(const GPU_PROGRAM_DESC& desc);
 
+        /** For debug purpose only */
+        const String& GetDebugName() const { return _debugName; }
+
     protected:
         friend class GpuProgramManager;
 
@@ -134,6 +138,7 @@ namespace te
         String _includePath;
         String _filePath;
         bool _needsAdjacencyInfo;
+        String _debugName;
 
         SPtr<GpuParamDesc> _parametersDesc;
         SPtr<VertexDeclaration> _inputDeclaration;

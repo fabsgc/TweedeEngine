@@ -17,7 +17,7 @@ namespace te
 
     void D3D11IndexBuffer::Initialize()
     {
-        _buffer = te_pool_new<D3D11HardwareBuffer>(D3D11HardwareBuffer::BT_INDEX, _usage, 1, _size, _device);
+        _buffer = te_pool_new<D3D11HardwareBuffer>(D3D11HardwareBuffer::BT_INDEX, _usage, 1, _size, _device, "[INDEX]");
         _bufferDeleter = &DeleteBuffer;
 
         IndexBuffer::Initialize();

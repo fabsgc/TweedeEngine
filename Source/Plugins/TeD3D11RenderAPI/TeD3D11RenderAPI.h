@@ -133,6 +133,12 @@ namespace te
          */
         void DetermineMultisampleSettings(UINT32 multisampleCount, DXGI_FORMAT format, DXGI_SAMPLE_DESC* outputSampleDesc);
 
+        /** copydoc RenderAPI::PushMarker */
+        void PushMarker(const String& name, const Color& color) const override;
+
+        /** @copydoc RenderAPI::PopMarker */
+        void PopMarker() const override;
+
     private:
         /**
          * Creates or retrieves a proper input layout depending on the currently set vertex shader and vertex buffer.
@@ -187,6 +193,8 @@ namespace te
 
         D3D11HLSLProgramFactory* _HLSLFactory = nullptr;
         D3D11InputLayoutManager* _IAManager = nullptr;
+
+        mutable ID3DUserDefinedAnnotation* _annotation;
 
         bool _PSUAVsBound = false;
         bool _CSUAVsBound = false;

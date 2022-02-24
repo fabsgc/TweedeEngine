@@ -1,5 +1,6 @@
 #include "TeRenderCompositor.h"
 
+#include "RenderAPI/TeRenderAPI.h"
 #include "TeRenderMan.h"
 #include "TeRendererView.h"
 #include "TeRendererLight.h"
@@ -36,6 +37,8 @@ namespace te
 
         for(auto& entry : elements)
         {
+            rapi.PushMarker("[DRAW] Renderable", Color(0.7f, 0.8f, 0.2f));
+
             if(entry.ApplyPass)
                 gRendererUtility().SetPass(entry.RenderElem->MaterialElem, entry.TechniqueIdx, entry.PassIdx);
 
@@ -99,6 +102,8 @@ namespace te
 
             gRendererUtility().SetPassParams(entry.RenderElem->GpuParamsElem[entry.PassIdx], gpuParamsBindFlags, isInstanced);
             entry.RenderElem->Draw();
+
+            rapi.PopMarker();
         }
     }
 
@@ -380,25 +385,32 @@ namespace te
     // ############# FORWARD PASS
 
     void RCNodeForwardPass::Render(const RenderCompositorNodeInputs& inputs)
-    { 
+    {
+        RenderQueue* opaqueElements = inputs.View.GetOpaqueQueue().get();
+        const Vector<RenderQueueElement> elements = opaqueElements->GetSortedElements();
+
+        if (elements.size() == 0)
+            return;
+
+        inputs.CurrRenderAPI.PushMarker("[DRAW] Forward Pass", Color(0.8f, 0.6f, 0.8f));
+
         RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
 
-        RenderAPI& rapi = RenderAPI::Instance();
         Camera* sceneCamera = inputs.View.GetSceneCamera();
         UINT32 clearBuffers = FBT_COLOR | FBT_DEPTH | FBT_STENCIL;
 
-        rapi.SetRenderTarget(gpuInitializationPassNode->RenderTargetTex);
-        rapi.ClearViewport(clearBuffers, Color::Black);
+        inputs.CurrRenderAPI.SetRenderTarget(gpuInitializationPassNode->RenderTargetTex);
+        inputs.CurrRenderAPI.ClearViewport(clearBuffers, Color::Black);
 
-        // Render all visible opaque elements
-        RenderQueue* opaqueElements = inputs.View.GetOpaqueQueue().get();       
-        RenderQueueElements(opaqueElements->GetSortedElements(), inputs.View, inputs.Scene, inputs.ViewGroup);
+        // Render all opaque elements     
+        RenderQueueElements(elements, inputs.View, inputs.Scene, inputs.ViewGroup);
 
         if (sceneCamera != nullptr)
             inputs.View.NotifyCompositorTargetChanged(gpuInitializationPassNode->RenderTargetTex);
 
         // Make sure that any compute shaders are able to read g-buffer by unbinding it
-        rapi.SetRenderTarget(nullptr);
+        inputs.CurrRenderAPI.SetRenderTarget(nullptr);
+        inputs.CurrRenderAPI.PopMarker();
     }
 
     void RCNodeForwardPass::Clear()
@@ -412,7 +424,9 @@ namespace te
     // ############# SKYBOX
 
     void RCNodeSkybox::Render(const RenderCompositorNodeInputs& inputs)
-    { 
+    {
+        inputs.CurrRenderAPI.PushMarker("[DRAW] Skybox", Color(0.4f, 0.8f, 0.1f));
+
         Skybox* skybox = nullptr;
         if (inputs.View.GetRenderSettings().EnableSkybox)
             skybox = inputs.Scene.SkyboxElem;
@@ -437,11 +451,10 @@ namespace te
         RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
         int readOnlyFlags = FBT_DEPTH | FBT_STENCIL;
 
-        RenderAPI& rapi = RenderAPI::Instance();
-        rapi.SetRenderTarget(gpuInitializationPassNode->RenderTargetTex, readOnlyFlags);
+        inputs.CurrRenderAPI.SetRenderTarget(gpuInitializationPassNode->RenderTargetTex, readOnlyFlags);
 
         Rect2 area(0.0f, 0.0f, 1.0f, 1.0f);
-        rapi.SetViewport(area);
+        inputs.CurrRenderAPI.SetViewport(area);
 
         SPtr<Mesh> mesh = gRendererUtility().GetSkyBoxMesh();
         gRendererUtility().Draw(mesh, mesh->GetProperties().GetSubMesh(0));
@@ -451,7 +464,8 @@ namespace te
             inputs.View.NotifyCompositorTargetChanged(gpuInitializationPassNode->RenderTargetTex);
 
         // Make sure that any compute shaders are able to read g-buffer by unbinding it
-        rapi.SetRenderTarget(nullptr);
+        inputs.CurrRenderAPI.SetRenderTarget(nullptr);
+        inputs.CurrRenderAPI.PopMarker();
     }
 
     void RCNodeSkybox::Clear()
@@ -469,24 +483,31 @@ namespace te
 
     void RCNodeForwardTransparentPass::Render(const RenderCompositorNodeInputs& inputs)
     {
+        RenderQueue* transparentElements = inputs.View.GetTransparentQueue().get();
+        const Vector<RenderQueueElement> elements = transparentElements->GetSortedElements();
+
+        if (elements.size() == 0)
+            return;
+
+        inputs.CurrRenderAPI.PushMarker("[DRAW] Forward Transparent Pass", Color(0.6f, 0.6f, 0.9f));
+
         RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
         int readOnlyFlags = FBT_DEPTH;
 
-        RenderAPI& rapi = RenderAPI::Instance();
-        rapi.SetRenderTarget(gpuInitializationPassNode->RenderTargetTex, readOnlyFlags);
+        inputs.CurrRenderAPI.SetRenderTarget(gpuInitializationPassNode->RenderTargetTex, readOnlyFlags);
 
         Rect2 area(0.0f, 0.0f, 1.0f, 1.0f);
-        rapi.SetViewport(area);
+        inputs.CurrRenderAPI.SetViewport(area);
 
-        RenderQueue* transparentElements = inputs.View.GetTransparentQueue().get();
-        RenderQueueElements(transparentElements->GetSortedElements(), inputs.View, inputs.Scene, inputs.ViewGroup);
+        RenderQueueElements(elements, inputs.View, inputs.Scene, inputs.ViewGroup);
 
         Camera* sceneCamera = inputs.View.GetSceneCamera();
         if (sceneCamera != nullptr)
             inputs.View.NotifyCompositorTargetChanged(gpuInitializationPassNode->RenderTargetTex);
 
         // Make sure that any compute shaders are able to read g-buffer by unbinding it
-        rapi.SetRenderTarget(nullptr);
+        inputs.CurrRenderAPI.SetRenderTarget(nullptr);
+        inputs.CurrRenderAPI.PopMarker();
     }
 
     void RCNodeForwardTransparentPass::Clear()
@@ -505,6 +526,8 @@ namespace te
 
     void RCNodeResolvedSceneDepth::Render(const RenderCompositorNodeInputs& inputs)
     {
+        inputs.CurrRenderAPI.PushMarker("[DRAW] Resolve Scene Depth", Color(0.2f, 0.2f, 0.8f));
+
         const RendererViewProperties& viewProps = inputs.View.GetProperties();
         RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
 
@@ -516,15 +539,16 @@ namespace te
             Output = gGpuResourcePool().Get(
                 POOLED_RENDER_TEXTURE_DESC::Create2D(PF_D32_S8X24, width, height, TU_DEPTHSTENCIL, 1, false));
 
-            RenderAPI& rapi = RenderAPI::Instance();
-            rapi.SetRenderTarget(Output->RenderTex);
-            rapi.ClearRenderTarget(FBT_STENCIL);
+            inputs.CurrRenderAPI.SetRenderTarget(Output->RenderTex);
+            inputs.CurrRenderAPI.ClearRenderTarget(FBT_STENCIL);
             gRendererUtility().Blit(gpuInitializationPassNode->DepthTex->Tex, Rect2I::EMPTY, false, true);
         }
         else
         {
             Output = gpuInitializationPassNode->DepthTex;
         }
+
+        inputs.CurrRenderAPI.PopMarker();
     }
 
     void RCNodeResolvedSceneDepth::Clear()
@@ -602,6 +626,8 @@ namespace te
         if (!settings.Tonemapping.Enabled || !settings.EnableHDR)
             return;
 
+        inputs.CurrRenderAPI.PushMarker("[DRAW] Tone Mapping", Color(0.7f, 0.9f, 0.4f));
+
         RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
         RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[1]);
 
@@ -623,6 +649,8 @@ namespace te
             toneMapping->Execute(gpuInitializationPassNode->SceneTex->Tex, ppOutput, texProps.GetNumSamples(),
                 settings.Gamma, settings.ExposureScale, settings.Contrast, settings.Brightness);
         }
+
+        inputs.CurrRenderAPI.PopMarker();
     }
 
     void RCNodeTonemapping::Clear()
@@ -650,6 +678,8 @@ namespace te
         if (!settings.Enabled)
             return;
 
+        inputs.CurrRenderAPI.PushMarker("[DRAW] Motion Blur", Color(0.1f, 0.9f, 0.6f));
+
         RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
         RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[1]);
 
@@ -673,6 +703,8 @@ namespace te
             motionBlur->Execute(gpuInitializationPassNode->SceneTex->Tex, ppOutput, depth, velocity, inputs.View.GetPerViewBuffer(),
                 settings, texProps.GetNumSamples());
         }
+
+        inputs.CurrRenderAPI.PopMarker();
     }
 
     void RCNodeMotionBlur::Clear()
@@ -712,6 +744,8 @@ namespace te
         if (settings.AntialiasingAglorithm != AntiAliasingAlgorithm::FXAA)
             return;
 
+        inputs.CurrRenderAPI.PushMarker("[DRAW] FXAA", Color(0.35f, 0.35f, 0.7f));
+
         RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
         RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[1]);
 
@@ -725,6 +759,8 @@ namespace te
             fxaa->Execute(ppLastFrame, ppOutput);
         else
             fxaa->Execute(gpuInitializationPassNode->SceneTex->Tex, ppOutput);
+
+        inputs.CurrRenderAPI.PopMarker();
     }
 
     void RCNodeFXAA::Clear()
@@ -749,6 +785,8 @@ namespace te
         if (settings.AntialiasingAglorithm != AntiAliasingAlgorithm::TAA)
             return;
 
+        inputs.CurrRenderAPI.PushMarker("[DRAW] TAA", Color(0.55f, 0.85f, 0.25f));
+
         /*RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[3]);
 
         SPtr<RenderTexture> ppOutput;
@@ -756,6 +794,8 @@ namespace te
         postProcessNode->GetAndSwitch(inputs.View, ppOutput, ppLastFrame);*/
 
         // TODO temporal AA
+
+        inputs.CurrRenderAPI.PopMarker();
     }
 
     void RCNodeTemporalAA::Clear()
@@ -786,10 +826,14 @@ namespace te
             return;
         }
 
+        inputs.CurrRenderAPI.PushMarker("[DRAW] SSAO", Color(0.25f, 0.35f, 0.95f));
+
         Output = Texture::WHITE; // TODO
 
         // GpuResourcePool& resPool = gGpuResourcePool();
         // const RendererViewProperties& viewProps = inputs.View.GetProperties();
+
+        inputs.CurrRenderAPI.PopMarker();
     }
 
     void RCNodeSSAO::Clear()
@@ -817,6 +861,8 @@ namespace te
         const RenderSettings& settings = inputs.View.GetRenderSettings();
         if (!settings.Bloom.Enabled)
             return;
+
+        inputs.CurrRenderAPI.PushMarker("[DRAW] Bloom", Color(0.85f, 0.55f, 0.15f));
 
         RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
         RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[1]);
@@ -875,6 +921,8 @@ namespace te
             bloom->Execute(gpuInitializationPassNode->SceneTex->Tex, ppOutput, blurOutput->Tex,
                 settings.Bloom.Intensity, texProps.GetNumSamples());
         }
+
+        inputs.CurrRenderAPI.PopMarker();
     }
 
     void RCNodeBloom::Clear()
@@ -893,6 +941,8 @@ namespace te
 
     void RCNodeFinalResolve::Render(const RenderCompositorNodeInputs& inputs)
     {
+        inputs.CurrRenderAPI.PushMarker("[DRAW] Final", Color(0.6f, 0.7f, 0.8f));
+
         const RendererViewProperties& viewProps = inputs.View.GetProperties();
 
         RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[4]);
@@ -945,9 +995,8 @@ namespace te
 
         SPtr<RenderTarget> target = viewProps.Target.Target;
 
-        RenderAPI& rapi = RenderAPI::Instance();
-        rapi.SetRenderTarget(target);
-        rapi.SetViewport(viewProps.Target.NrmViewRect);
+        inputs.CurrRenderAPI.SetRenderTarget(target);
+        inputs.CurrRenderAPI.SetViewport(viewProps.Target.NrmViewRect);
 
         // If no post process is active, the only available texture is orwardPassNode->SceneTex->Tex;
         if (!input)
@@ -973,6 +1022,8 @@ namespace te
             inputs.CurrRenderer.SetLastRenderTexture(RenderOutputType::Velocity, gpuInitializationPassNode->VelocityTex->Tex);
         if (SSAONode)
             inputs.CurrRenderer.SetLastRenderTexture(RenderOutputType::SSAO, SSAONode->Output);
+
+        inputs.CurrRenderAPI.PopMarker();
     }
 
     void RCNodeFinalResolve::Clear()

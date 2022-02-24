@@ -1,6 +1,6 @@
 #include "TeD3D11GpuProgram.h"
 #include "TeD3D11Device.h"
-//#include "RenderAPI/TeGpuParams.h"
+#include "TeD3D11Utility.h"
 #include "TeD3D11RenderAPI.h"
 #include "RenderAPI/TeGpuProgramManager.h"
 #include "RenderAPI/TeHardwareBufferManager.h"
@@ -42,6 +42,11 @@ namespace te
             desc.IncludePath = _includePath;
             desc.FilePath = _filePath;
 
+#if TE_DEBUG_MODE == 1
+            auto path = std::filesystem::absolute(desc.FilePath);
+            _debugName = path.filename().generic_string();
+#endif
+
             _bytecode = CompileBytecode(desc);
         }
 
@@ -61,7 +66,7 @@ namespace te
             }
         }
 
-         _programId = GlobalProgramId++;
+        _programId = GlobalProgramId++;
 
         GpuProgram::Initialize();
     }
@@ -86,6 +91,11 @@ namespace te
             String errorDescription = device.GetErrorDescription();
             TE_ASSERT_ERROR(false, "Cannot create D3D11 vertex shader from microcode\nError Description: " + errorDescription);
         }
+
+#if  TE_DEBUG_MODE == 1
+        _debugName = "[VS] " + _debugName;
+        D3D11Utility::SetDebugName(_vertexShader, _debugName.c_str(), _debugName.size());
+#endif
     }
 
     ID3D11VertexShader* D3D11GpuVertexProgram::GetVertexShader() const
@@ -113,6 +123,11 @@ namespace te
             String errorDescription = device.GetErrorDescription();
             TE_ASSERT_ERROR(false, "Cannot create D3D11 pixel shader from microcode.\nError Description: " + errorDescription);
         }
+
+#if  TE_DEBUG_MODE == 1
+        _debugName = "[PS] " + _debugName;
+        D3D11Utility::SetDebugName(_pixelShader, _debugName.c_str(), _debugName.size());
+#endif
     }
 
     ID3D11PixelShader* D3D11GpuPixelProgram::GetPixelShader() const
@@ -140,6 +155,11 @@ namespace te
             String errorDescription = device.GetErrorDescription();
             TE_ASSERT_ERROR(false, "Cannot create D3D11 geometry shader from microcode.\nError Description: " + errorDescription);
         }
+
+#if  TE_DEBUG_MODE == 1
+        _debugName = "[GS] " + _debugName;
+        D3D11Utility::SetDebugName(_geometryShader, _debugName.c_str(), _debugName.size());
+#endif
     }
 
     ID3D11GeometryShader* D3D11GpuGeometryProgram::GetGeometryShader() const
@@ -167,6 +187,11 @@ namespace te
             String errorDescription = device.GetErrorDescription();
             TE_ASSERT_ERROR(false, "Cannot create D3D11 domain shader from microcode.\nError Description: " + errorDescription);
         }
+
+#if  TE_DEBUG_MODE == 1
+        _debugName = "[DS] " + _debugName;
+        D3D11Utility::SetDebugName(_domainShader, _debugName.c_str(), _debugName.size());
+#endif
     }
 
     ID3D11DomainShader* D3D11GpuDomainProgram::GetDomainShader() const
@@ -186,7 +211,6 @@ namespace te
 
     void D3D11GpuHullProgram::LoadFromMicrocode(D3D11Device& device, const DataBlob& microcode)
     {
-        // Create the shader
         HRESULT hr = device.GetD3D11Device()->CreateHullShader(
             microcode.Data, microcode.Size, device.GetClassLinkage(), &_hullShader);
 
@@ -195,6 +219,11 @@ namespace te
             String errorDescription = device.GetErrorDescription();
             TE_ASSERT_ERROR(false, "Cannot create D3D11 hull shader from microcode.\nError Description: " + errorDescription);
         }
+
+#if  TE_DEBUG_MODE == 1
+        _debugName = "[HS] " + _debugName;
+        D3D11Utility::SetDebugName(_hullShader, _debugName.c_str(), _debugName.size());
+#endif
     }
 
     ID3D11HullShader* D3D11GpuHullProgram::GetHullShader() const
@@ -221,6 +250,11 @@ namespace te
             String errorDescription = device.GetErrorDescription();
             TE_ASSERT_ERROR(false, "Cannot create D3D11 compute shader from microcode.\nError Description: " + errorDescription);
         }
+
+#if  TE_DEBUG_MODE == 1
+        _debugName = "[CS] " + _debugName;
+        D3D11Utility::SetDebugName(_computeShader, _debugName.c_str(), _debugName.size());
+#endif
     }
 
     ID3D11ComputeShader* D3D11GpuComputeProgram::GetComputeShader() const

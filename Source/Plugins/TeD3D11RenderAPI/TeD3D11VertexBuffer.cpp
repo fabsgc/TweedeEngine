@@ -18,7 +18,7 @@ namespace te
 
     void D3D11VertexBuffer::Initialize()
     {
-        _buffer = te_pool_new<D3D11HardwareBuffer>(D3D11HardwareBuffer::BT_VERTEX, _usage, 1, _size, _device, false, _streamOut);
+        _buffer = te_pool_new<D3D11HardwareBuffer>(D3D11HardwareBuffer::BT_VERTEX, _usage, 1, _size, _device, "[VERTEX]", false, _streamOut);
         _bufferDeleter = &DeleteBuffer;
 
         VertexBuffer::Initialize();

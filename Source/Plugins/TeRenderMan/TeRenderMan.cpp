@@ -15,9 +15,10 @@
 
 namespace te
 {
-    SPtr<GpuParamBlockBuffer> gPerInstanceParamBuffer[STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER];
+    SPtr<GpuParamBlockBuffer> gPerInstanceParamBuffer[STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER] = { nullptr };
 
     RenderMan::RenderMan()
+        : _renderAPI(RenderAPI::Instance())
     { }
 
     RenderMan::~RenderMan()
@@ -31,12 +32,6 @@ namespace te
             RendererUtility::StartUp();
         if(!GpuResourcePool::IsStarted())
             GpuResourcePool::StartUp();
-
-        for (UINT32 i = 0; i < STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER; i++)
-        {
-            if(!gPerInstanceParamBuffer[i])
-                gPerInstanceParamBuffer[i] = gPerInstanceParamDef.CreateBuffer();
-        }
 
         _options = te_shared_ptr_new<RenderManOptions>();
         _options->InstancingMode = RenderManInstancing::Manual;
@@ -131,6 +126,8 @@ namespace te
         // Gather all views
         for (auto& rtInfo : sceneInfo.RenderTargets)
         {
+            _renderAPI.PushMarker("[DRAW] RenderTarget", Color(0.8f, 0.4f, 0.4f));
+
             bool anythingDrawn = false;
             Vector<RendererView*> views;
             SPtr<RenderTarget> target = rtInfo.Target;
@@ -162,6 +159,8 @@ namespace te
 
             for (auto& view : views)
             {
+                _renderAPI.PushMarker("[DRAW] View",Color(0.4f, 0.8f, 0.4f));
+
                 _mainViewGroup->GenerateInstanced(sceneInfo, _options->InstancingMode);
                 _mainViewGroup->GenerateRenderQueue(sceneInfo, *view, _options->InstancingMode);
 
@@ -170,12 +169,16 @@ namespace te
 
                 if (RenderSingleView(*_mainViewGroup, *view, frameInfo))
                     anythingDrawn = true;
+
+                _renderAPI.PopMarker();
             }
 
             if (rtInfo.Target->GetProperties().IsWindow && anythingDrawn)
             {
-                RenderAPI::Instance().SwapBuffers(rtInfo.Target);
+                _renderAPI.SwapBuffers(rtInfo.Target);
             }
+
+            _renderAPI.PopMarker();
         }
 
         GpuResourcePool::Instance().Update();
@@ -246,7 +249,7 @@ namespace te
 
         view.BeginFrame(frameInfo);
 
-        RenderCompositorNodeInputs inputs(viewGroup, view, sceneInfo, *_options, frameInfo, *this);
+        RenderCompositorNodeInputs inputs(viewGroup, view, sceneInfo, *_options, frameInfo, *this, _renderAPI);
 
         const RenderCompositor& compositor = view.GetCompositor();
         compositor.Execute(inputs);
@@ -266,19 +269,18 @@ namespace te
 
         UINT32 clearFlags = viewport->GetClearFlags();
 
-        RenderAPI& rapi = RenderAPI::Instance();
         if (clearFlags != 0)
         {
-            rapi.SetRenderTarget(target);
-            rapi.ClearViewport(clearFlags, viewport->GetClearColorValue(),
+            _renderAPI.SetRenderTarget(target);
+            _renderAPI.ClearViewport(clearFlags, viewport->GetClearColorValue(),
                 viewport->GetClearDepthValue(), viewport->GetClearStencilValue());
         }
         else
         {
-            rapi.SetRenderTarget(target, 0);
+            _renderAPI.SetRenderTarget(target, 0);
         }
 
-        rapi.SetViewport(viewport->GetArea());
+        _renderAPI.SetViewport(viewport->GetArea());
 
         // The only overlay we can manage currently
         if(view.GetSceneCamera()->IsMain() && GuiAPI::Instance().IsGuiInitialized())

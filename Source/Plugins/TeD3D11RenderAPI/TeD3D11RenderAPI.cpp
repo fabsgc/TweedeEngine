@@ -129,6 +129,15 @@ namespace te
         UINT32 maxRenderTargets = D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT;
         _activeViews = te_newN<ID3D11RenderTargetView*>(maxRenderTargets);
 
+#if TE_DEBUG_MODE == 1
+        hr = _device->GetImmediateContext()->QueryInterface(__uuidof(ID3DUserDefinedAnnotation), (void**)&_annotation);
+
+        if (FAILED(hr))
+        {
+            TE_ASSERT_ERROR(false, "Failed to retrieve ID3DUserDefinedAnnotation object : " + ToString(hr));
+        }
+#endif
+
         RenderAPI::Initialize();
     }
 
@@ -182,6 +191,7 @@ namespace te
         HardwareBufferManager::ShutDown();
 
         SAFE_RELEASE(_DXGIFactory);
+        SAFE_RELEASE(_annotation);
 
         RenderAPI::Destroy();
     }
@@ -393,7 +403,7 @@ namespace te
                     if (texture != nullptr)
                     {
                         SPtr<TextureView> texView = texture->RequestView(surface.MipLevel, surface.NumMipLevels,
-                            surface.Face, surface.NumFaces, GVU_DEFAULT);
+                            surface.Face, surface.NumFaces, GVU_DEFAULT, texture->GetProperties().GetDebugName());
 
                         D3D11TextureView* d3d11texView = static_cast<D3D11TextureView*>(texView.get());
                         _gpuResContainer.srvs[slot] = d3d11texView->GetSRV();
@@ -449,7 +459,8 @@ namespace te
                 if (texture != nullptr)
                 {
                     SPtr<TextureView> texView = texture->RequestView(surface.MipLevel, 1,
-                        surface.Face, surface.NumFaces, GVU_RANDOMWRITE);
+                        surface.Face, surface.NumFaces, GVU_RANDOMWRITE, 
+                        texture->GetProperties().GetDebugName());
 
                     D3D11TextureView* d3d11texView = static_cast<D3D11TextureView*>(texView.get());
                     _gpuResContainer.uavs[slot] = d3d11texView->GetUAV();
@@ -1286,5 +1297,36 @@ namespace te
 #endif
 
         return 0;
+    }
+
+
+
+    void D3D11RenderAPI::PushMarker(const String& name, const Color& color) const
+    {
+#if TE_DEBUG_MODE == 1
+#   ifndef TE_D3D9
+        D3DPERF_BeginEvent(color.GetAsRGBA(), ToWString(name).c_str());
+#   else
+        if (!_annotation)
+            return;
+
+        _annotation->BeginEvent(ToWString(name).c_str());
+#   endif
+#endif
+    }
+
+    void D3D11RenderAPI::PopMarker() const
+    {
+#if TE_DEBUG_MODE == 1
+
+#   ifdef TE_D3D9
+        D3DPERF_EndEvent();
+#   else
+        if (!_annotation)
+            return;
+
+        _annotation->EndEvent();
+#   endif
+#endif
     }
 }

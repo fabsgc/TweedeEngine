@@ -2,6 +2,7 @@
 #include "TeD3D11Device.h"
 #include "TeD3D11RenderAPI.h"
 #include "TeD3D11Mappings.h"
+#include "TeD3D11Utility.h"
 
 namespace te
 {
@@ -54,6 +55,11 @@ namespace te
             String errorDescription = device.GetErrorDescription();
             TE_ASSERT_ERROR(false, "Cannot create depth stencil state.\nError Description: " + errorDescription);
         }
+
+#if  TE_DEBUG_MODE == 1
+        static String debugName = "[DEPTH_STENCIL]";
+        D3D11Utility::SetDebugName(_depthStencilState, debugName.c_str(), debugName.size());
+#endif
 
         DepthStencilState::CreateInternal();
     }

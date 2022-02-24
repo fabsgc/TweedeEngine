@@ -18,6 +18,7 @@ namespace te
         bool UseCounter;
         GpuViewUsage Usage;
         GpuBufferFormat Format;
+        String debugName;
     };
 
     /**

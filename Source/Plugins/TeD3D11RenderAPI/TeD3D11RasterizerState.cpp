@@ -2,6 +2,7 @@
 #include "TeD3D11RenderAPI.h"
 #include "TeD3D11Device.h"
 #include "TeD3D11Mappings.h"
+#include "TeD3D11Utility.h"
 #include "Math/TeMath.h"
 
 namespace te
@@ -41,6 +42,11 @@ namespace te
             String errorDescription = device.GetErrorDescription();
             TE_ASSERT_ERROR(false, "Cannot create rasterizer state.\nError Description: " + errorDescription);
         }
+
+#if  TE_DEBUG_MODE == 1
+        static String debugName = "[RASTERIZER]";
+        D3D11Utility::SetDebugName(_rasterizerState, debugName.c_str(), debugName.size());
+#endif
 
         RasterizerState::CreateInternal();
     }

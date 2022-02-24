@@ -1,6 +1,5 @@
 #pragma once
 
-#include "TeD3D11RenderAPIPrerequisites.h"
 #include "RenderAPI/TeRenderAPIFactory.h"
 
 namespace te

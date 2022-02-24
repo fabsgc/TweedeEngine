@@ -3,6 +3,7 @@
 #include "TeD3D11Device.h"
 #include "TeD3D11Mappings.h"
 #include "TeD3D11TextureView.h"
+#include "TeD3D11Utility.h"
 #include "Image/TePixelUtil.h"
 #include "Profiling/TeProfilerGPU.h"
 
@@ -162,6 +163,7 @@ namespace te
                 tempDesc.Height = _properties.GetHeight();
                 tempDesc.Format = _properties.GetFormat();
                 tempDesc.HwGamma = _properties.IsHardwareGammaEnabled();
+                tempDesc.DebugName = _properties.GetDebugName();
 
                 SPtr<D3D11Texture> temporary = std::static_pointer_cast<D3D11Texture>(Texture::CreatePtr(tempDesc));
                 device.GetImmediateContext()->ResolveSubresource(temporary->GetDX11Resource(), 0, _tex, srcResIdx, _DXGIFormat);
@@ -281,6 +283,7 @@ namespace te
         bool hwGamma = _properties.IsHardwareGammaEnabled();
         PixelFormat closestFormat = D3D11Mappings::GetClosestSupportedPF(format, TEX_TYPE_1D, usage);
         UINT32 numFaces = _properties.GetNumFaces();
+        const String& debugName = "[TEX] " + _properties.GetDebugName();
 
         // We must have those defined here
         assert(width > 0);
@@ -364,7 +367,6 @@ namespace te
 
         _DXGIFormat = desc.Format;
 
-         
         if ((usage & TU_DEPTHSTENCIL) == 0 || readableDepth)
         {
             TEXTURE_VIEW_DESC viewDesc;
@@ -373,9 +375,12 @@ namespace te
             viewDesc.FirstArraySlice = 0;
             viewDesc.NumArraySlices = desc.ArraySize;
             viewDesc.Usage = GVU_DEFAULT;
+            viewDesc.DebugName = debugName;
 
             _shaderResourceView = te_shared_ptr<D3D11TextureView>(new (te_allocate<D3D11TextureView>()) D3D11TextureView(this, viewDesc));
         }
+
+        D3D11Utility::SetDebugName(_2DTex, debugName.c_str(), debugName.size());
     }
 
     void D3D11Texture::Create2DTex()
@@ -390,6 +395,7 @@ namespace te
         TextureType texType = _properties.GetTextureType();
         PixelFormat closestFormat = D3D11Mappings::GetClosestSupportedPF(format, texType, usage);
         UINT32 numFaces = _properties.GetNumFaces();
+        const String& debugName = "[TEX] " + _properties.GetDebugName();
 
         // TODO - Consider making this a parameter eventually
         bool readableDepth = true;
@@ -504,9 +510,12 @@ namespace te
             viewDesc.FirstArraySlice = 0;
             viewDesc.NumArraySlices = desc.ArraySize;
             viewDesc.Usage = GVU_DEFAULT;
+            viewDesc.DebugName = debugName;
 
             _shaderResourceView = te_shared_ptr<D3D11TextureView>(new (te_allocate<D3D11TextureView>()) D3D11TextureView(this, viewDesc));
         }
+
+        D3D11Utility::SetDebugName(_2DTex, debugName.c_str(), debugName.size());
     }
 
     void D3D11Texture::Create3DTex()
@@ -519,6 +528,7 @@ namespace te
         PixelFormat format = _properties.GetFormat();
         bool hwGamma = _properties.IsHardwareGammaEnabled();
         PixelFormat closestFormat = D3D11Mappings::GetClosestSupportedPF(format, TEX_TYPE_3D, usage);
+        const String& debugName = "[TEX] " + _properties.GetDebugName();
 
         // TODO - Consider making this a parameter eventually
         bool readableDepth = true;
@@ -610,9 +620,12 @@ namespace te
             viewDesc.FirstArraySlice = 0;
             viewDesc.NumArraySlices = 1;
             viewDesc.Usage = GVU_DEFAULT;
+            viewDesc.DebugName = debugName;
 
             _shaderResourceView = te_shared_ptr<D3D11TextureView>(new (te_allocate<D3D11TextureView>()) D3D11TextureView(this, viewDesc));
         }
+
+        D3D11Utility::SetDebugName(_2DTex, debugName.c_str(), debugName.size());
     }
 
     void* D3D11Texture::D3D11Texture::Map(ID3D11Resource* res, D3D11_MAP flags, UINT32 mipLevel, UINT32 face, UINT32& rowPitch, UINT32& slicePitch)

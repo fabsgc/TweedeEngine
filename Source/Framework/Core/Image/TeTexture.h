@@ -74,6 +74,9 @@ namespace te
 
         /** Number of texture slices to create if creating a texture array. Ignored for 3D textures. */
         UINT32 NumArraySlices = 1;
+
+        /** Only used for debugging purpose */
+        String DebugName = "";
     };
 
     /** Structure used for specifying information about a texture copy operation. */
@@ -149,6 +152,9 @@ namespace te
 
         /**	Returns the pixel format for the texture surface. */
         PixelFormat GetFormat() const { return _desc.Format; }
+
+        /** Returns texture debug name */
+        const String& GetDebugName() const { return _desc.DebugName; }
 
         /**	Returns true if the texture has an alpha layer. */
         bool HasAlpha() const;
@@ -313,7 +319,7 @@ namespace te
          * Requests a texture view for the specified mip and array ranges. Returns an existing view of one for the specified
          * ranges already exists, otherwise creates a new one. You must release all views by calling releaseView() when done.
          */
-        SPtr<TextureView> RequestView(UINT32 mostDetailMip, UINT32 numMips, UINT32 firstArraySlice, UINT32 numArraySlices, GpuViewUsage usage);
+        SPtr<TextureView> RequestView(UINT32 mostDetailMip, UINT32 numMips, UINT32 firstArraySlice, UINT32 numArraySlices, GpuViewUsage usage, const String& debugName);
 
         /** Returns a plain white texture. */
         static SPtr<Texture> WHITE;

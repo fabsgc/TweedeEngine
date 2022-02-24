@@ -234,7 +234,8 @@ namespace te
                 _renderData.ColorTexSurface.NumMipLevels,
                 _renderData.ColorTexSurface.Face,
                 _renderData.ColorTexSurface.NumFaces,
-                GVU_DEFAULT
+                GVU_DEFAULT, 
+                texture->GetProperties().GetDebugName()
             );
 
             void* rawData = textureView->GetRawData();
