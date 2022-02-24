@@ -175,7 +175,7 @@ namespace te
         static constexpr T DivideAndRoundUp(T n, T d) { return (n + d - 1) / d; }
 
         /** Returns the nearest integer equal or lower of the provided value. */
-        static float Floor(float val) { return (float)std::floor(val); }
+        static float Floor(float val) { return (float)floor(val); }
 
         /**
          * Returns the nearest integer equal or lower of the provided value. If you are sure the input is positive
