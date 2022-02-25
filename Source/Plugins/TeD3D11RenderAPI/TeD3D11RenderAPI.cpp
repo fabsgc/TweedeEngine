@@ -1,25 +1,31 @@
 #include "TeD3D11RenderAPI.h"
 #include "TeD3D11RenderWindow.h"
-#include "Math/TeRect2I.h"
-#include "TeD3D11Mappings.h"
-#include "RenderAPI/TeGpuPipelineState.h"
-#include "TeD3D11RasterizerState.h"
-#include "TeD3D11BlendState.h"
-#include "RenderAPI/TeRenderStateManager.h"
+#include "TeD3D11GpuParamBlockBuffer.h"
+#include "TeD3D11GpuBuffer.h"
 #include "TeD3D11RenderStateManager.h"
 #include "TeD3D11TextureManager.h"
-#include "RenderAPI/TeGpuProgramManager.h"
+#include "TeD3D11TextureView.h"
+#include "TeD3D11BlendState.h"
+#include "TeD3D11SamplerState.h"
+#include "TeD3D11RasterizerState.h"
+#include "TeD3D11DepthStencilState.h"
 #include "TeD3D11HardwareBufferManager.h"
 #include "TeD3D11VertexBuffer.h"
 #include "TeD3D11IndexBuffer.h"
+#include "TeD3D11Mappings.h"
+#include "TeD3D11Driver.h"
+#include "TeD3D11DriverList.h"
+#include "TeD3D11GpuProgram.h"
+#include "TeD3D11InputLayoutManager.h"
+#include "TeD3D11HLSLProgramFactory.h"
+#include "RenderAPI/TeRenderStateManager.h"
+#include "RenderAPI/TeGpuPipelineState.h"
+#include "RenderAPI/TeGpuProgramManager.h"
 #include "RenderAPI/TeGpuParams.h"
 #include "RenderAPI/TeGpuParamDesc.h"
 #include "RenderAPI/TeGpuParamBlockBuffer.h"
-#include "TeD3D11TextureView.h"
-#include "TeD3D11SamplerState.h"
-#include "TeD3D11GpuParamBlockBuffer.h"
-#include "TeD3D11GpuBuffer.h"
 #include "Profiling/TeProfilerGPU.h"
+#include "Math/TeRect2I.h"
 
 namespace te
 {
@@ -29,6 +35,7 @@ namespace te
 
     D3D11RenderAPI::D3D11RenderAPI()
         : _viewport()
+        , _annotation(nullptr)
         , _scissorRect(D3D11_RECT())
     { }
 
@@ -999,9 +1006,7 @@ namespace te
     void D3D11RenderAPI::ApplyViewport()
     {
         if (_activeRenderTarget == nullptr)
-        {
             return;
-        }
 
         const RenderTargetProperties& rtProps = _activeRenderTarget->GetProperties();
 
@@ -1288,7 +1293,7 @@ namespace te
             const HRESULT result = adapter->QueryVideoMemoryInfo(0, DXGI_MEMORY_SEGMENT_GROUP_LOCAL, &info);
 
             if (SUCCEEDED(result))
-                return static_cast<uint32_t>(info.CurrentUsage / 1024 / 1024); // convert to MBs
+                return static_cast<UINT64>(info.CurrentUsage / 1024 / 1024); // convert to MBs
 
             // Some integrated or older dedicated GPUs might not support video memory queries, log the error once and don't query again.
             TE_DEBUG("Failed to get adapter memory info");
@@ -1298,8 +1303,6 @@ namespace te
 
         return 0;
     }
-
-
 
     void D3D11RenderAPI::PushMarker(const String& name, const Color& color) const
     {

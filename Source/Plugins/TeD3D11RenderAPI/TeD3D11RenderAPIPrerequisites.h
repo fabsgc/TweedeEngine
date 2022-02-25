@@ -49,6 +49,12 @@ namespace te
     class D3D11RenderTexture;
     class D3D11HLSLProgramFactory;
     class D3D11GpuProgram;
+    class D3D11GpuVertexProgram;
+    class D3D11GpuPixelProgram;
+    class D3D11GpuDomainProgram;
+    class D3D11GpuHullProgram;
+    class D3D11GpuGeometryProgram;
+    class D3D11GpuComputeProgram;
     class D3D11HLSLParamParser;
     class D3D11HardwareBuffer;
     class D3D11HardwareBufferManager;

@@ -5,6 +5,7 @@
 #include "RenderAPI/TeGpuProgramManager.h"
 #include "RenderAPI/TeHardwareBufferManager.h"
 #include <regex>
+#include <filesystem>
 
 namespace te
 {

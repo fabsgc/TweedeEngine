@@ -2,14 +2,7 @@
 
 #include "TeD3D11RenderAPIPrerequisites.h"
 #include "RenderAPI/TeRenderAPI.h"
-#include "TeD3D11Device.h"
-#include "TeD3D11DriverList.h"
-#include "TeD3D11Driver.h"
-#include "TeD3D11InputLayoutManager.h"
-#include "TeD3D11HLSLProgramFactory.h"
 #include "Math/TeRect2.h"
-#include "TeD3D11DepthStencilState.h"
-#include "TeD3D11GpuProgram.h"
 
 #define D3D11_MAX_BOUND_VERTEX_BUFFER 32
 
