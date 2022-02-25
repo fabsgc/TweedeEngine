@@ -9,13 +9,13 @@ namespace te
         static void SetDebugName(T* resource, const char* name, size_t length)
         {
 #if TE_DEBUG_MODE == 1
-            String fullName = "[" + ToString(NextId) + "] " + name;
+            String fullName = "[" + ToString(D3D11Utility::NextId) + "] " + name;
             length = fullName.size();
 
             if (length > 0 && resource)
                 resource->SetPrivateData(WKPDID_D3DDebugObjectName, (UINT)(sizeof(char) * length), fullName.c_str());
 
-            NextId++;
+            D3D11Utility::NextId++;
 #endif
         }
 

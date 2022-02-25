@@ -165,6 +165,8 @@ namespace te
         // This structure is cleared when calling RenderAll()
         mutable RenderTextures _renderTextures;
 
+        // Keep a reference to RenderAPI instance as 
+        // RenderAPI::Instance can be expensive if called to often
         RenderAPI& _renderAPI;
     };
 
