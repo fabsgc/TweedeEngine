@@ -109,6 +109,6 @@ execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_ROOT_DIR}/bin
 execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_ROOT_DIR}/bin/${PLATFORM_TARGET}/Debug/Log/")
 
 if (WIN32)
-    add_custom_target(AlwaysBuild ALL DEPENDS "MissingFile.h")
+    add_custom_target(AlwaysBuild ALL DEPENDS "${APP_ROOT_DIR}/Source/CMake/ForceBuild.cpp")
     install_pre_build_data(AlwaysBuild)
 endif()

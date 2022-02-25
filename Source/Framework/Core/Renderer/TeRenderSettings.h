@@ -7,7 +7,7 @@
 namespace te
 {
     /** Determines which parts of the scene will trigger motion blur. */
-    enum class TE_CORE_EXPORT MotionBlurDomain
+    enum class MotionBlurDomain
     {
         /** Camera movement and rotation will result in full-screen motion blur. */
         CameraOnly,
@@ -24,7 +24,7 @@ namespace te
     };
 
     /** Type of filter to use when filtering samples contributing to a blurred pixel. */
-    enum class TE_CORE_EXPORT MotionBlurFilter
+    enum class MotionBlurFilter
     {
         /** Samples will be simply averaged together to create the blurred pixel. */
         Simple,
@@ -39,7 +39,7 @@ namespace te
     };
 
     /** Determines the number of samples to take during motion blur filtering. */
-    enum class TE_CORE_EXPORT MotionBlurQuality
+    enum class MotionBlurQuality
     {
         /** 4 samples per pixel. */
         VeryLow = 0x0,
@@ -54,7 +54,7 @@ namespace te
     };
 
     /** Determines the number of samples to take during motion blur filtering. */
-    enum class TE_CORE_EXPORT BloomQuality
+    enum class BloomQuality
     {
         /** 
          * Bloom texture 4 times smaller samples per pixel.
@@ -74,7 +74,7 @@ namespace te
     };
 
     /** AmbientOcclusion quality. */
-    enum class TE_CORE_EXPORT AmbientOcclusionQuality
+    enum class AmbientOcclusionQuality
     {
         Low = 0x0,
         Medium = 0x1,
@@ -83,7 +83,7 @@ namespace te
     };
 
     /** Type of output we want */
-    enum class TE_CORE_EXPORT RenderOutputType
+    enum class RenderOutputType
     {
         Final     = 0x0,
         Color     = 0x1,
@@ -94,7 +94,7 @@ namespace te
         SSAO      = 0x6
     };
 
-    enum class TE_CORE_EXPORT AntiAliasingAlgorithm
+    enum class AntiAliasingAlgorithm
     {
         FXAA = 0x0,
         TAA = 0x1,

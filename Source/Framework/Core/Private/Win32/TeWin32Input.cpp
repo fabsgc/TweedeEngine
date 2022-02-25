@@ -175,7 +175,7 @@ namespace te
 
         // Enumerate all attached devices
         // Note: Only enumerating gamepads, assuming there is 1 keyboard and 1 mouse
-        _platformData->DirectInput->EnumDevices(NULL, _DIEnumDevCallback, _platformData, DIEDFL_ATTACHEDONLY);
+        _platformData->DirectInput->EnumDevices((DWORD)NULL, _DIEnumDevCallback, _platformData, DIEDFL_ATTACHEDONLY);
 
         for (UINT32 i = 0; i < 4; ++i)
         {

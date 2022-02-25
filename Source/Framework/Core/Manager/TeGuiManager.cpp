@@ -6,7 +6,7 @@
 
 namespace te
 {
-    TE_MODULE_STATIC_MEMBER(GuiAPIManager)
+    TE_MODULE_STATIC_MEMBER(GuiManager)
 
     GuiManager::GuiManager()
         : _guiInitialized(false)

@@ -17,6 +17,7 @@
 #include <array>
 #include <unordered_map>
 #include <unordered_set>
+#include <limits>
 
 // STL algorithms & functions
 
@@ -331,7 +332,7 @@ namespace te
 
             // Mainly for demonstration purposes, i.e. works but is overly simple
             // In the real world, use sth. like boost.hash_combine
-            return h1 ^ h2;  
+            return h1 ^ h2;
         }
     };
 

@@ -19,8 +19,8 @@ namespace te
         , _filePath(desc.FilePath)
         , _needsAdjacencyInfo(desc.RequiresAdjacency)
         , _parametersDesc(te_shared_ptr_new<GpuParamDesc>())
-        , _bytecode(desc.Bytecode)
         , _debugName(desc.DebugName)
+        , _bytecode(desc.Bytecode)
     { }
 
     GpuProgram::~GpuProgram()

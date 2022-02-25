@@ -4,6 +4,8 @@
 
 namespace te
 {
+    TE_MODULE_STATIC_MEMBER(ProfilerGPU)
+
     ProfilerGPU::ProfilerGPU()
         : _sample(GPUSample())
         , _enabled(true)

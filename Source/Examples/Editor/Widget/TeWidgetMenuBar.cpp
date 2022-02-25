@@ -191,7 +191,7 @@ namespace te
         ImGui::SetNextWindowFocus();
         ImGui::Begin("About", &_settings.AboutWindow, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking);
 
-        ImGui::Text("Tweede Framework Redux");
+        ImGui::Text("Tweede Engine");
         ImGui::Text("Author: Fabien Beaujean");
         ImGui::SameLine(ImGui::GetWindowContentRegionWidth());
         ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 55);

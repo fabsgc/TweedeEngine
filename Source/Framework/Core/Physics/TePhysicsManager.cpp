@@ -4,6 +4,8 @@
 
 namespace te
 {
+    TE_MODULE_STATIC_MEMBER(PhysicsManager)
+
     PhysicsManager::PhysicsManager(const String& pluginName)
         : _plugin(nullptr)
         , _factory(nullptr)

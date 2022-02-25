@@ -223,7 +223,7 @@ namespace te
         HBITMAP hBitmap = Win32PlatformUtility::CreateBitmap((Color*)pixels.data(), width, height, false);
         HBITMAP hMonoBitmap = CreateBitmap(width, height, 1, 1, nullptr);
 
-        ICONINFO iconinfo = { 0 };
+        ICONINFO iconinfo;
         iconinfo.fIcon = FALSE;
         iconinfo.xHotspot = (DWORD)hotSpot.x;
         iconinfo.yHotspot = (DWORD)hotSpot.y;
@@ -252,7 +252,7 @@ namespace te
         HBITMAP hBitmap = Win32PlatformUtility::CreateBitmap((Color*)pixels.data(), width, height, false);
         HBITMAP hMonoBitmap = CreateBitmap(width, height, 1, 1, nullptr);
 
-        ICONINFO iconinfo = { 0 };
+        ICONINFO iconinfo;
         iconinfo.fIcon = TRUE;
         iconinfo.xHotspot = 0;
         iconinfo.yHotspot = 0;

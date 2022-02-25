@@ -16,12 +16,6 @@
 #define TE_ENDIAN_BIG 2
 #define TE_ENDIAN TE_ENDIAN_LITTLE
 
-#define TE_RENDER_API_DIRECTX11 1
-#define TE_RENDER_API_OPENGL 2
-
-
-#define TE_RENDER_API TE_RENDER_API_DIRECTX11
-
 // Finds the compiler type and version.
 #if defined(__clang__)
 #   define TE_COMPILER TE_COMPILER_CLANG
@@ -60,7 +54,7 @@
 #endif
 
 // Finds the current platform
-#if defined( __WIN32__ ) || defined( _WIN32 )
+#if defined( __WIN32__ ) || defined( _WIN32 ) || defined(__CYGWIN__) || defined( __MINGW32__ )
 #   define TE_PLATFORM TE_PLATFORM_WIN32
 #else
 #   define TE_PLATFORM TE_PLATFORM_LINUX
@@ -97,7 +91,7 @@
 #       endif
 #   endif
 #
-#   
+#
 #define TE_UTILITY_HIDDEN
 #else // Linux/Mac settings
 #   define TE_UTILITY_EXPORT __attribute__ ((visibility ("default")))

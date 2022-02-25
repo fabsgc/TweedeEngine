@@ -41,8 +41,10 @@ namespace te
             _taskWorker();
             if (_callback) _callback();
             _state = 2;
-        }        
+        }
     }
+
+    TE_MODULE_STATIC_MEMBER(TaskScheduler)
 
     TaskScheduler::TaskScheduler()
         : _shutdown(false)

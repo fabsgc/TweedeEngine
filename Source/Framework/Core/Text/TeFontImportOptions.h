@@ -7,7 +7,7 @@
 namespace te
 {
     /**	Determines how is a font rendered into the bitmap texture. */
-    enum class TE_CORE_EXPORT FontRenderMode
+    enum class FontRenderMode
     {
         Smooth, /*< Render antialiased fonts without hinting (slightly more blurry). */
         Raster, /*< Render non-antialiased fonts without hinting (slightly more blurry). */

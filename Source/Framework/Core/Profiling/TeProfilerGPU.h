@@ -56,6 +56,8 @@ namespace te
         ProfilerGPU();
         virtual ~ProfilerGPU() = default;
 
+        TE_MODULE_STATIC_HEADER_MEMBER(ProfilerGPU)
+
         /**
          * Signals a start of a new frame. This call must be followed
          * by endFrame(), and any sampling operations must happen between BeginFrame() and EndFrame().

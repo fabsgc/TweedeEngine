@@ -68,6 +68,8 @@ namespace te
         TaskScheduler();
         virtual ~TaskScheduler();
 
+        TE_MODULE_STATIC_HEADER_MEMBER(TaskScheduler)
+
         /** Queues a new task. */
         void AddTask(SPtr<Task> task);
 
