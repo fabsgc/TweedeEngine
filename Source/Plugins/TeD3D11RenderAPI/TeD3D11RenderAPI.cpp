@@ -1304,7 +1304,7 @@ namespace te
     void D3D11RenderAPI::PushMarker(const String& name, const Color& color) const
     {
 #if TE_DEBUG_MODE == 1
-#   ifndef TE_D3D9
+#   ifdef TE_D3D9
         D3DPERF_BeginEvent(color.GetAsRGBA(), ToWString(name).c_str());
 #   else
         if (!_annotation)
@@ -1318,7 +1318,6 @@ namespace te
     void D3D11RenderAPI::PopMarker() const
     {
 #if TE_DEBUG_MODE == 1
-
 #   ifdef TE_D3D9
         D3DPERF_EndEvent();
 #   else
