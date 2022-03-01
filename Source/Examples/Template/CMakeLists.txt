@@ -7,7 +7,7 @@ if (WIN32)
         ${TE_TEMPLATE_SRC}
         ../resources.rc
     )
-    set_target_properties(Template PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/x64/Debug")
+    set_target_properties(Template PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/${PLATFORM_COMPILER}.Debug.${PLATFORM_TARGET}")
 else ()
     add_executable(
         Template

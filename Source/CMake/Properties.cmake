@@ -19,18 +19,63 @@ if (${CMAKE_SIZEOF_VOID_P} EQUAL 8)
     set(TE_64BIT true)
 else ()
     set(TE_32BIT true)
-    message(FATAL_ERROR "The framework could not be compiled on a x86 architecture")
+    message(FATAL_ERROR "-- The framework could not be compiled on a x86 architecture")
 endif ()
 
-## Copy data elements inside bin directory
+# Properties required for scripts building
+set (CXX_COMPILER_PATH ${CMAKE_CXX_COMPILER})
+
+if (MSVC)
+    get_filename_component(COMPILER_DIR ${CMAKE_CXX_COMPILER} DIRECTORY)
+    file(GLOB_RECURSE VCVARSALL_LIST_BAT "${COMPILER_DIR}/../../../../../../*.bat")
+
+    foreach (VCVARSALL_ITEM ${VCVARSALL_LIST_BAT})
+        if (VCVARSALL_ITEM MATCHES "^(.*)(vcvarsall\.bat)(.*)$")
+            set (MSVC_VCVARS ${VCVARSALL_ITEM})
+        endif ()
+    endforeach ()
+endif ()
+
+# A build is identified by its TARGET, its COMPILER and it OS
 if (TE_64BIT)
     set (PLATFORM_TARGET "x64")
 else ()
     set (PLATFORM_TARGET "x86")
 endif ()
 
+if (MSVC)
+    set (PLATFORM_COMPILER "MSVC")
+elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    set (PLATFORM_COMPILER "Clang")
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    set (PLATFORM_COMPILER "GNU")
+endif ()
+
+if (WIN32)
+    set (PLATFORM_OS "Win32")
+elseif (UNIX)
+    set (PLATFORM_OS "Linux")
+endif ()
+
 if (UNIX)
     set (LINUX TRUE)
+endif ()
+
+# Display a message in case dependencies are not available for this OS/COMPILER combination
+if (NOT PLATFORM_OS STREQUAL "Win32" AND NOT PLATFORM_OS STREQUAL "Linux")
+    message(FATAL_ERROR "-- Dependencies are not available for this os")
+elseif (PLATFORM_OS STREQUAL "Win32" AND NOT PLATFORM_COMPILER STREQUAL "MSVC" AND NOT PLATFORM_COMPILER STREQUAL "GNU" )
+    message(FATAL_ERROR "-- Dependencies are not available for this compiler and this os")
+elseif (PLATFORM_OS STREQUAL "Linux" AND NOT PLATFORM_COMPILER STREQUAL "GNU" )
+    message(FATAL_ERROR "-- Dependencies are not available for this compiler and this os")
+endif ()
+
+# On Windows, if using DirectX, we would like to use APIs from D3D9
+find_library (DirectX9 d3d9)
+if (DirectX9)
+    set (D3D9_FOUND 1)
+else ()
+    set (D3D9_FOUND 0)
 endif ()
 
 # Global compile & linker flags
@@ -134,36 +179,27 @@ if (CMAKE_GENERATOR STREQUAL "Ninja")
     endif ()
 endif ()
 
-set (CMAKE_XCODE_ATTRIBUTE_CLANG_ENABLE_OBJC_ARC "YES")
 set (CMAKE_FIND_FRAMEWORK "LAST")
 
 # Output
-if (TE_64BIT)
-    set(TE_OUTPUT_DIR_PREFIX x64)
-else ()
-    set(TE_OUTPUT_DIR_PREFIX x86)
-endif ()
-
-set (TE_BINARY_OUTPUT_DIR ${PROJECT_SOURCE_DIR}/bin/${TE_OUTPUT_DIR_PREFIX})
-set (TE_LIBRARY_OUTPUT_DIR ${PROJECT_SOURCE_DIR}/lib/${TE_OUTPUT_DIR_PREFIX})
+set (TE_BINARY_OUTPUT_DIR ${PROJECT_SOURCE_DIR}/bin/${PLATFORM_COMPILER})
+set (TE_LIBRARY_OUTPUT_DIR ${PROJECT_SOURCE_DIR}/lib/${PLATFORM_COMPILER})
 
 if (TE_TOP_LEVEL)
-    set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${TE_BINARY_OUTPUT_DIR}/Debug)
-    set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${TE_BINARY_OUTPUT_DIR}/RelWithDebInfo)
-    set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL ${TE_BINARY_OUTPUT_DIR}/MinSizeRel)
-    set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${TE_BINARY_OUTPUT_DIR}/Release)
+    set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${TE_BINARY_OUTPUT_DIR}.Debug.${PLATFORM_TARGET})
+    set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${TE_BINARY_OUTPUT_DIR}.RelWithDebInfo.${PLATFORM_TARGET})
+    set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL ${TE_BINARY_OUTPUT_DIR}.MinSizeRel.${PLATFORM_TARGET})
+    set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${TE_BINARY_OUTPUT_DIR}.Release.${PLATFORM_TARGET})
 
-    set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG ${TE_BINARY_OUTPUT_DIR}/Debug)
-    set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${TE_BINARY_OUTPUT_DIR}/RelWithDebInfo)
-    set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_MINSIZEREL ${TE_BINARY_OUTPUT_DIR}/MinSizeRel)
-    set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE ${TE_BINARY_OUTPUT_DIR}/Release)
+    set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG ${TE_BINARY_OUTPUT_DIR}.Debug.${PLATFORM_TARGET})
+    set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${TE_BINARY_OUTPUT_DIR}.RelWithDebInfo.${PLATFORM_TARGET})
+    set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_MINSIZEREL ${TE_BINARY_OUTPUT_DIR}.MinSizeRel.${PLATFORM_TARGET})
+    set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE ${TE_BINARY_OUTPUT_DIR}.Release.${PLATFORM_TARGET})
 
-    set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${TE_LIBRARY_OUTPUT_DIR}/Debug)
-    set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELWITHDEBINFO ${TE_LIBRARY_OUTPUT_DIR}/RelWithDebInfo)
-    set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY_MINSIZEREL ${TE_LIBRARY_OUTPUT_DIR}/MinSizeRel)
-    set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${TE_LIBRARY_OUTPUT_DIR}/Release)
-
-    set_property (GLOBAL PROPERTY USE_FOLDERS TRUE)
+    set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${TE_LIBRARY_OUTPUT_DIR}.Debug.${PLATFORM_TARGET})
+    set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELWITHDEBINFO ${TE_LIBRARY_OUTPUT_DIR}.RelWithDebInfo.${PLATFORM_TARGET})
+    set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY_MINSIZEREL ${TE_LIBRARY_OUTPUT_DIR}.MinSizeRel.${PLATFORM_TARGET})
+    set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${TE_LIBRARY_OUTPUT_DIR}.Release.${PLATFORM_TARGET})
 endif()
 
 # Look for global/system dependencies

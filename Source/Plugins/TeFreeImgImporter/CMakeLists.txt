@@ -1,6 +1,8 @@
 # Source files and their filters
 include(CMakeSources.cmake)
 
+message("-- TeFreeImgImporter Initialization...")
+
 # Target
 add_library (TeFreeImgImporter SHARED ${TE_FREEIMGIMPORTER_SRC})
 
@@ -36,3 +38,5 @@ endif()
 
 # Install
 install_tef_target (TeFreeImgImporter)
+
+message("-- ...TeFreeImgImporter OK.")

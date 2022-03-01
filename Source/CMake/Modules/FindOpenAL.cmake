@@ -7,7 +7,7 @@
 
 start_find_package(OpenAL)
 
-set(OpenAL_INSTALL_DIR ${APP_ROOT_DIR}/Dependencies/OpenAL CACHE PATH "")
+set(OpenAL_INSTALL_DIR ${APP_ROOT_DIR}/Dependencies/${PLATFORM_OS}.${PLATFORM_COMPILER}/OpenAL CACHE PATH "")
 gen_default_lib_search_dirs(OpenAL)
 
 if(WIN32)

@@ -1,6 +1,8 @@
 # Source files and their filters
 include(CMakeSources.cmake)
 
+message("-- TeBulletPhysics Initialization...")
+
 # Find packages
 if(PHYSICS_MODULE MATCHES "BulletPhysics")
 
@@ -42,3 +44,5 @@ endif()
 if(PHYSICS_MODULE MATCHES "BulletPhysics")
     install_tef_target(TeBulletPhysics)
 endif()
+
+message("-- ...TeBulletPhysics OK.")

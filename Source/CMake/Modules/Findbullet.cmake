@@ -7,7 +7,7 @@
 
 start_find_package (bullet)
 
-set (bullet_INSTALL_DIR ${APP_ROOT_DIR}/Dependencies/bullet CACHE PATH "")
+set (bullet_INSTALL_DIR ${APP_ROOT_DIR}/Dependencies/${PLATFORM_OS}.${PLATFORM_COMPILER}/bullet CACHE PATH "")
 gen_default_lib_search_dirs (bullet)
 
 find_imported_includes (bullet btBulletDynamicsCommon.h)

@@ -1,6 +1,8 @@
 # Source files and their filters
 include(CMakeSources.cmake)
-    
+
+message("-- TeRenderMan Initialization...")
+
 # Target
 add_library (TeRenderMan SHARED ${TE_RENDERMAN_SRC})
 
@@ -23,3 +25,5 @@ endif()
 
 # Install
 install_tef_target (TeRenderMan)
+
+message("-- ...TeRenderMan OK.")

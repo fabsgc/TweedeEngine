@@ -55,13 +55,13 @@ endif ()
 target_link_libraries (tef PUBLIC ThirdParty)
 
 ## External lib: NVTT
-target_link_libraries(tef PUBLIC ${nvtt_LIBRARIES})
+target_link_libraries(tef PRIVATE ${nvtt_LIBRARIES})
 
 if (LINUX)
     ## External lib: X11, LibUUID, LibICU
     target_link_libraries (tef PUBLIC ${X11_LIBRARIES} ${X11_Xcursor_LIB} ${X11_Xrandr_LIB} ${X11_Xi_LIB})
-    target_link_libraries (tef PUBLIC ${LibUUID_LIBRARIES})
-    target_link_libraries (tef PUBLIC ${LibICU_LIBRARIES})
+    target_link_libraries (tef PRIVATE ${LibUUID_LIBRARIES})
+    target_link_libraries (tef PRIVATE ${LibICU_LIBRARIES})
 endif ()
 
 ## OS libs

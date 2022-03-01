@@ -9,13 +9,6 @@ set_property(CACHE AUDIO_MODULE PROPERTY STRINGS OpenAudio)
 set(PHYSICS_MODULE "BulletPhysics" CACHE STRING "Physics backend to use.")
 set_property(CACHE PHYSICS_MODULE PROPERTY STRINGS "BulletPhysics")
 
-find_library (DirectX9 d3d9)
-if (DirectX9) 
-    set (D3D9_FOUND 1)
-else ()
-    set (D3D9_FOUND 0)
-endif ()
-
 if (WIN32)
     set (RENDER_API_MODULE "DirectX 11" CACHE STRING "Render API to use.")
     set_property (CACHE RENDER_API_MODULE PROPERTY STRINGS "DirectX 11" "OpenGL")
@@ -98,15 +91,15 @@ install (
     DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/../bin/
 )
 
-execute_process (COMMAND ${CMAKE_COMMAND} -E copy_directory "${APP_ROOT_DIR}/Data" "${APP_ROOT_DIR}/bin/${PLATFORM_TARGET}/Release/Data/")
-execute_process (COMMAND ${CMAKE_COMMAND} -E copy_directory "${APP_ROOT_DIR}/Data" "${APP_ROOT_DIR}/bin/${PLATFORM_TARGET}/RelWithDebInfo/Data/")
-execute_process (COMMAND ${CMAKE_COMMAND} -E copy_directory "${APP_ROOT_DIR}/Data" "${APP_ROOT_DIR}/bin/${PLATFORM_TARGET}/MinSizeRel/Data/")
-execute_process (COMMAND ${CMAKE_COMMAND} -E copy_directory "${APP_ROOT_DIR}/Data" "${APP_ROOT_DIR}/bin/${PLATFORM_TARGET}/Debug/Data/")
+execute_process (COMMAND ${CMAKE_COMMAND} -E copy_directory "${APP_ROOT_DIR}/Data" "${APP_ROOT_DIR}/bin/${PLATFORM_COMPILER}.Release.${PLATFORM_TARGET}/Data/")
+execute_process (COMMAND ${CMAKE_COMMAND} -E copy_directory "${APP_ROOT_DIR}/Data" "${APP_ROOT_DIR}/bin/${PLATFORM_COMPILER}.RelWithDebInfo.${PLATFORM_TARGET}/Data/")
+execute_process (COMMAND ${CMAKE_COMMAND} -E copy_directory "${APP_ROOT_DIR}/Data" "${APP_ROOT_DIR}/bin/${PLATFORM_COMPILER}.MinSizeRel.${PLATFORM_TARGET}/Data/")
+execute_process (COMMAND ${CMAKE_COMMAND} -E copy_directory "${APP_ROOT_DIR}/Data" "${APP_ROOT_DIR}/bin/${PLATFORM_COMPILER}.Debug.${PLATFORM_TARGET}/Data/")
 
-execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_ROOT_DIR}/bin/${PLATFORM_TARGET}/Release/Log/")
-execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_ROOT_DIR}/bin/${PLATFORM_TARGET}/RelWithDebInfo/Log/")
-execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_ROOT_DIR}/bin/${PLATFORM_TARGET}/MinSizeRel/Log/")
-execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_ROOT_DIR}/bin/${PLATFORM_TARGET}/Debug/Log/")
+execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_ROOT_DIR}/bin/${PLATFORM_COMPILER}.Release.${PLATFORM_TARGET}/Log/")
+execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_ROOT_DIR}/bin/${PLATFORM_COMPILER}.RelWithDebInfo.${PLATFORM_TARGET}/Log/")
+execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_ROOT_DIR}/bin/${PLATFORM_COMPILER}.MinSizeRel.${PLATFORM_TARGET}/Log/")
+execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_ROOT_DIR}/bin/${PLATFORM_COMPILER}.Debug.${PLATFORM_TARGET}/Log/")
 
 if (WIN32)
     add_custom_target(AlwaysBuild ALL DEPENDS "${APP_ROOT_DIR}/Source/CMake/ForceBuild.cpp")

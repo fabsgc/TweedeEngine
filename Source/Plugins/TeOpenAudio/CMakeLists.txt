@@ -1,6 +1,8 @@
 # Source files and their filters
 include(CMakeSources.cmake)
 
+message("-- TeOpenAudio Initialization...")
+
 # Find packages
 if(AUDIO_MODULE MATCHES "OpenAudio")
     find_package(OpenAL REQUIRED)
@@ -49,3 +51,5 @@ endif()
 if(AUDIO_MODULE MATCHES "OpenAudio")
     install_tef_target(TeOpenAudio)
 endif()
+
+message("-- ...TeOpenAudio OK.")

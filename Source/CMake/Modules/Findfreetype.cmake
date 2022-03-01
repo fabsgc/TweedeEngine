@@ -7,7 +7,7 @@
 
 start_find_package(freetype)
 
-set(freetype_INSTALL_DIR ${APP_ROOT_DIR}/Dependencies/freetype CACHE PATH "")
+set(freetype_INSTALL_DIR ${APP_ROOT_DIR}/Dependencies/${PLATFORM_OS}.${PLATFORM_COMPILER}/freetype CACHE PATH "")
 gen_default_lib_search_dirs(freetype)
 
 list(APPEND freetype_INCLUDE_SEARCH_DIRS /usr/local/include/freetype2 /usr/include/freetype2)

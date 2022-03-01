@@ -7,7 +7,7 @@
 
 start_find_package(ogg)
 
-set(ogg_INSTALL_DIR ${APP_ROOT_DIR}/Dependencies/libogg CACHE PATH "")
+set(ogg_INSTALL_DIR ${APP_ROOT_DIR}/Dependencies/${PLATFORM_OS}.${PLATFORM_COMPILER}/libogg CACHE PATH "")
 gen_default_lib_search_dirs(ogg)
 
 if(WIN32)

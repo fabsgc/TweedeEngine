@@ -1,6 +1,8 @@
 # Source files and their filters
 include(CMakeSources.cmake)
 
+message("-- TeFontImporter Initialization...")
+
 # Target
 add_library(TeFontImporter SHARED ${TE_FONTIMPORTER_SRC})
 
@@ -22,3 +24,5 @@ set_property(TARGET TeFontImporter PROPERTY FOLDER Plugins)
 
 # Install
 install_tef_target(TeFontImporter)
+
+message("-- ...TeFontImporter OK.")

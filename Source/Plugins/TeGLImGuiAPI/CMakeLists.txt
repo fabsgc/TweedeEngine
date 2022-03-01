@@ -1,6 +1,8 @@
 # Source files and their filters
 include(CMakeSources.cmake)
 
+message("-- TeGLImGuiAPI Initialization...")
+
 # Find packages
 if(LINUX)
     find_package(OpenGL REQUIRED)
@@ -47,3 +49,5 @@ endif()
 
 # Install
 install_tef_target (TeGLImGuiAPI)
+
+message("-- ...TeGLImGuiAPI OK.")

@@ -9,6 +9,7 @@ namespace te
     String CompileDebug(const ScriptIdentifier& identifier)
     {
         String output;
+        static String compiler = TE_PLATFORM_COMPILER;
 #ifdef TE_ENGINE_BUILD
         static String appRoot = ReplaceAll(RAW_APP_ROOT, "/", "\\");
         static String includePath = appRoot + "Source\\Framework\\";
@@ -17,6 +18,7 @@ namespace te
         static String includePath = appRoot + "Include\\";
 #endif
 
+#if TE_COMPILER == TE_COMPILER_MSVC
         output += "/LD ";
         output += "/I" + includePath + "Core ";
         output += "/I" + includePath + "Utility ";
@@ -27,16 +29,19 @@ namespace te
         output += "/Gd /TP /wd4577 /wd4530 /bigobj /link ";
         output += "/OUT:" + identifier.Name + ".dll ";
         output += "/OPT:NOREF /OPT:NOICF ";
-#if TE_CONFIG == TE_CONFIG_DEBUG
-        output += "..\\..\\..\\lib\\x64\\Debug\\tef.lib ";
-#elif  TE_CONFIG == TE_CONFIG_RELWITHDEBINFO
-        output += "..\\..\\..\\lib\\x64\\RelWithDebInfo\\tef.lib ";
-#elif  TE_CONFIG == TE_CONFIG_MINSIZEREL
-        output += "..\\..\\..\\lib\\x64\\MinSizeRel\\tef.lib ";
-#endif
+#   if TE_CONFIG == TE_CONFIG_DEBUG
+        output += "..\\..\\lib\\" + compiler + ".Debug.x64\\tef.lib ";
+#   elif  TE_CONFIG == TE_CONFIG_RELWITHDEBINFO
+        output += "..\\..\\lib\\" + compiler + ".RelWithDebInfo.x64\\tef.lib ";
+#   elif  TE_CONFIG == TE_CONFIG_MINSIZEREL
+        output += "..\\..\\lib\\" + compiler + ".MinSizeRel.x64\\tef.lib ";
+#   endif
         output += "/DEBUG ";
         output += "/PDB:" + identifier.Name + ".pdb" + " ";
         output += "/TLBID:1 /DYNAMICBASE /NXCOMPAT /MACHINE:X64 /DEBUG /machine:x64";
+#elif TE_COMPILER == TE_COMPILER_GNUC
+        // TODO GNU_WIN32
+#endif
 
         return output;
     }
@@ -45,6 +50,7 @@ namespace te
     {
         String output;
         static String librariesPath = ReplaceAll(ScriptManager::LIBRARIES_PATH, "/", "\\");
+        static String compiler = TE_PLATFORM_COMPILER;
 #ifdef TE_ENGINE_BUILD
         static String appRoot = ReplaceAll(RAW_APP_ROOT, "/", "\\");
         static String includePath = appRoot + "Source\\Framework\\";
@@ -53,6 +59,7 @@ namespace te
         static String includePath = appRoot + "Include\\";
 #endif
 
+#if TE_COMPILER == TE_COMPILER_MSVC
         output += "/LD ";
         output += "/I" + includePath + "Core ";
         output += "/I" + includePath + "Utility ";
@@ -63,16 +70,19 @@ namespace te
         output += "/Gd /TP /wd4577 /wd4530 /bigobj /link ";
         output += "/OUT:" + identifier.Name + ".dll ";
         output += "/OPT:REF ";
-#if  TE_CONFIG == TE_CONFIG_RELWITHDEBINFO
-        output += "..\\..\\..\\lib\\x64\\RelWithDebInfo\\tef.lib ";
-#elif  TE_CONFIG == TE_CONFIG_MINSIZEREL
-        output += "..\\..\\..\\lib\\x64\\MinSizeRel\\tef.lib ";
-#elif  TE_CONFIG == TE_CONFIG_RELEASE
-        output += "..\\..\\..\\lib\\x64\\Release\\tef.lib ";
-#endif
+#   if  TE_CONFIG == TE_CONFIG_RELWITHDEBINFO
+        output += "..\\..\\lib\\" + compiler + ".RelWithDebInfo.x64\\tef.lib ";
+#   elif  TE_CONFIG == TE_CONFIG_MINSIZEREL
+        output += "..\\..\\lib\\" + compiler + ".MinSizeRel.x64\\tef.lib ";
+#   elif  TE_CONFIG == TE_CONFIG_RELEASE
+        output += "..\\..\\lib\\" + compiler + ".Release.x64\\tef.lib ";
+#   endif
         output += "/DEBUG ";
         output += "/PDB:" + identifier.Name + ".pdb" + " ";
         output += "/TLBID:1 /DYNAMICBASE /NXCOMPAT /MACHINE:X64 /DEBUG /machine:x64";
+#elif TE_COMPILER == TE_COMPILER_GNUC
+        // TODO GNU_WIN32
+#endif
 
         return output;
     }
@@ -93,8 +103,15 @@ namespace te
         ZeroMemory(&pi, sizeof(pi));
 
         String directory = FileSystem::GetWorkingDirectoryPath();
+
+#if TE_COMPILER == TE_COMPILER_MSVC
         String command = "\"" + msvcVars + "\" x64 && \"" + cxxCompilerPath + "\" ";
         UINT32 flags = 0;
+#elif TE_COMPILER == TE_COMPILER_GNUC
+        String command = "\"" + cxxCompilerPath + "\" ";
+        UINT32 flags = 0;
+        return false; // TODO GNU_WIN32
+#endif
 
 #if TE_DEBUG_MODE
         command = command + CompileDebug(identifier);

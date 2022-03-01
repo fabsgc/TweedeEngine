@@ -1,6 +1,8 @@
 # Source files and their filters
 include (CMakeSources.cmake)
-    
+
+message("-- TeD3D11ImGuiAPI Initialization...")
+
 # Target
 add_library (TeD3D11ImGuiAPI SHARED ${TE_D3D11IMGUIAPI_SRC})
 
@@ -44,3 +46,5 @@ endif()
 if(RENDER_API_MODULE MATCHES "DirectX 11" AND !WIN32)
     install_tef_target(TeD3D11ImGuiAPI)
 endif()
+
+message("-- ...TeD3D11ImGuiAPI OK.")

@@ -14,6 +14,10 @@
 
 #define TE_VERSION "@TE_FRAMEWORK_VERSION_MAJOR@.@TE_FRAMEWORK_VERSION_MINOR@"
 
+#define TE_PLATFORM_TARGET "@PLATFORM_TARGET@"
+#define TE_PLATFORM_COMPILER "@PLATFORM_COMPILER@"
+#define TE_PLATFORM_OS "@PLATFORM_OS@"
+
 /** Path to the framework root when files haven't been packaged yet (e.g. running from debugger). */
 static constexpr const char* RAW_APP_ROOT = "@APP_ROOT_DIR@/";
 

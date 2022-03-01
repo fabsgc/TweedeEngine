@@ -23,10 +23,10 @@ function (install_pre_build_data target)
     add_custom_command (
         TARGET ${target}
         POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory "${APP_ROOT_DIR}/Data" "${APP_ROOT_DIR}/bin/${PLATFORM_TARGET}/Release/Data/"
-        COMMAND ${CMAKE_COMMAND} -E copy_directory "${APP_ROOT_DIR}/Data" "${APP_ROOT_DIR}/bin/${PLATFORM_TARGET}/RelWithDebInfo/Data/"
-        COMMAND ${CMAKE_COMMAND} -E copy_directory "${APP_ROOT_DIR}/Data" "${APP_ROOT_DIR}/bin/${PLATFORM_TARGET}/MinSizeRel/Data/"
-        COMMAND ${CMAKE_COMMAND} -E copy_directory "${APP_ROOT_DIR}/Data" "${APP_ROOT_DIR}/bin/${PLATFORM_TARGET}/Debug/Data/"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory "${APP_ROOT_DIR}/Data" "${APP_ROOT_DIR}/bin/${PLATFORM_COMPILER}.Release.${PLATFORM_TARGET}/Data/"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory "${APP_ROOT_DIR}/Data" "${APP_ROOT_DIR}/bin/${PLATFORM_COMPILER}.RelWithDebInfo.${PLATFORM_TARGET}/Data/"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory "${APP_ROOT_DIR}/Data" "${APP_ROOT_DIR}/bin/${PLATFORM_COMPILER}.MinSizeRel.${PLATFORM_TARGET}/Data/"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory "${APP_ROOT_DIR}/Data" "${APP_ROOT_DIR}/bin/${PLATFORM_COMPILER}.Debug.${PLATFORM_TARGET}/Data/"
     )
 endfunction()
 
@@ -204,14 +204,8 @@ MACRO (install_dependency_binaries FOLDER_NAME)
     foreach (LOOP_ENTRY ${${FOLDER_NAME}_SHARED_LIBS})
         get_filename_component (RELEASE_FILENAME ${${LOOP_ENTRY}_LIBRARY_RELEASE} NAME_WE)
         get_filename_component (DEBUG_FILENAME ${${LOOP_ENTRY}_LIBRARY_DEBUG} NAME_WE)
-        
+
         if (WIN32)
-            if (TE_64BIT)
-                set (PLATFORM "x64")
-            else ()
-                set (PLATFORM "x86")
-            endif ()
-            
             if (RELEASE_FILENAME STREQUAL libFLAC)
                 set (RELEASE_FILENAME libFLAC_dynamic.dll)
                 set (DEBUG_FILENAME libFLAC_dynamic.dll)
@@ -233,9 +227,9 @@ MACRO (install_dependency_binaries FOLDER_NAME)
                 set (DEBUG_FILENAME ${DEBUG_FILENAME}.dll)
                 message (STATUS "...${DEBUG_FILENAME} OK.")
             endif ()
-            
-            set (SRC_RELEASE "${PROJECT_SOURCE_DIR}/Dependencies/binaries/Release/${RELEASE_FILENAME}")
-            set (SRC_DEBUG "${PROJECT_SOURCE_DIR}/Dependencies/binaries/Debug/${DEBUG_FILENAME}")
+
+            set (SRC_RELEASE "${PROJECT_SOURCE_DIR}/Dependencies/${PLATFORM_OS}.${PLATFORM_COMPILER}/binaries/Release/${RELEASE_FILENAME}")
+            set (SRC_DEBUG "${PROJECT_SOURCE_DIR}/Dependencies/${PLATFORM_OS}.${PLATFORM_COMPILER}/binaries/Debug/${DEBUG_FILENAME}")
             set (DESTINATION_DIR bin/)
         else ()
             set (SRC_RELEASE ${${LOOP_ENTRY}_LIBRARY_RELEASE})
@@ -263,43 +257,15 @@ MACRO (install_dependency_binaries FOLDER_NAME)
             endforeach ()
         endif ()
 
-        execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${PROJECT_SOURCE_DIR}/${DESTINATION_DIR}${PLATFORM}/Release/")
-        execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${PROJECT_SOURCE_DIR}/${DESTINATION_DIR}${PLATFORM}/RelWithDebInfo/")
-        execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${PROJECT_SOURCE_DIR}/${DESTINATION_DIR}${PLATFORM}/MinSizeRel/")
-        execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${PROJECT_SOURCE_DIR}/${DESTINATION_DIR}${PLATFORM}/Debug/")
+        execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${PROJECT_SOURCE_DIR}/${DESTINATION_DIR}${PLATFORM_COMPILER}.Release.${PLATFORM_TARGET}/")
+        execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${PROJECT_SOURCE_DIR}/${DESTINATION_DIR}${PLATFORM_COMPILER}.RelWithDebInfo.${PLATFORM_TARGET}/")
+        execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${PROJECT_SOURCE_DIR}/${DESTINATION_DIR}${PLATFORM_COMPILER}.MinSizeRel.${PLATFORM_TARGET}/")
+        execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${PROJECT_SOURCE_DIR}/${DESTINATION_DIR}${PLATFORM_COMPILER}.Debug.${PLATFORM_TARGET}/")
 
-        execute_process (COMMAND ${CMAKE_COMMAND} -E copy ${SRC_RELEASE} "${PROJECT_SOURCE_DIR}/${DESTINATION_DIR}${PLATFORM}/Release/")
-        execute_process (COMMAND ${CMAKE_COMMAND} -E copy ${SRC_RELEASE} "${PROJECT_SOURCE_DIR}/${DESTINATION_DIR}${PLATFORM}/RelWithDebInfo/")
-        execute_process (COMMAND ${CMAKE_COMMAND} -E copy ${SRC_RELEASE} "${PROJECT_SOURCE_DIR}/${DESTINATION_DIR}${PLATFORM}/MinSizeRel/")
-        execute_process (COMMAND ${CMAKE_COMMAND} -E copy ${SRC_DEBUG}   "${PROJECT_SOURCE_DIR}/${DESTINATION_DIR}${PLATFORM}/Debug/")
-        
+        execute_process (COMMAND ${CMAKE_COMMAND} -E copy ${SRC_RELEASE} "${PROJECT_SOURCE_DIR}/${DESTINATION_DIR}${PLATFORM_COMPILER}.Release.${PLATFORM_TARGET}/")
+        execute_process (COMMAND ${CMAKE_COMMAND} -E copy ${SRC_RELEASE} "${PROJECT_SOURCE_DIR}/${DESTINATION_DIR}${PLATFORM_COMPILER}.RelWithDebInfo.${PLATFORM_TARGET}/")
+        execute_process (COMMAND ${CMAKE_COMMAND} -E copy ${SRC_RELEASE} "${PROJECT_SOURCE_DIR}/${DESTINATION_DIR}${PLATFORM_COMPILER}.MinSizeRel.${PLATFORM_TARGET}/")
+        execute_process (COMMAND ${CMAKE_COMMAND} -E copy ${SRC_DEBUG}   "${PROJECT_SOURCE_DIR}/${DESTINATION_DIR}${PLATFORM_COMPILER}.Debug.${PLATFORM_TARGET}/")
+
     endforeach ()
 ENDMACRO ()
-
-# Dependency .dll install is handled automatically if the imported .lib has the same name as the .dll
-# and the .dll is in the project root bin folder. Otherwise you need to call this manually.
-MACRO(install_dependency_dll FOLDER_NAME SRC_DIR LIB_NAME)
-    if(TE_64BIT)
-        set(PLATFORM "x64")
-    else()
-        set(PLATFORM "x86")
-    endif()
-
-    set(BIN_DIR .)
-
-    set(FULL_FILE_NAME ${LIB_NAME}.dll)
-    set(SRC_RELEASE "${SRC_DIR}/bin/${PLATFORM}/Release/${FULL_FILE_NAME}")
-    set(SRC_DEBUG "${SRC_DIR}/bin/${PLATFORM}/Debug/${FULL_FILE_NAME}")
-    
-    install(
-        FILES ${SRC_RELEASE}
-        DESTINATION ${BIN_DIR}
-        CONFIGURATIONS Release RelWithDebInfo MinSizeRel
-    )
-        
-    install(
-        FILES ${SRC_DEBUG}
-        DESTINATION ${BIN_DIR}
-        CONFIGURATIONS Debug
-    )
-ENDMACRO()

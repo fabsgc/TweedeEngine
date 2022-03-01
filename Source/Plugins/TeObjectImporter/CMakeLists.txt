@@ -1,6 +1,8 @@
 # Source files and their filters
 include(CMakeSources.cmake)
 
+message("-- TeObjectImporter Initialization...")
+
 # Target
 add_library (TeObjectImporter SHARED ${TE_OBJECTIMPORTER_SRC})
 
@@ -36,3 +38,5 @@ endif()
 
 # Install
 install_tef_target (TeObjectImporter)
+
+message("-- ...TeObjectImporter OK.")

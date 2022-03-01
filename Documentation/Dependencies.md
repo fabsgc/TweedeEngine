@@ -13,12 +13,12 @@ Note that on Windows most dependencies do not have default install paths and sho
 `/Dependency` folder breakdown:
 - Static & shared libraries (.lib, .a, .so): 
   - Pick one of:
-    - (TeSource)/Dependencies/(DepName)/lib
-    - (TeSource)/Dependencies/(DepName)/lib/(Configuration)
+    - (TeSource)/Dependencies/(Win32|Linux)/(MSVC/GNU)/(DepName)/lib
+    - (TeSource)/Dependencies/(MSVC/GNU)/(DepName)/lib/(Debug|Release)
 - Dynamic libraries (.dll)
-  - Place in (TeSource)/Dependencies/binairies/(Configuration)
+  - Place in (TeSource)/Dependencies/(Win32|Linux)/(MSVC/GNU)/binairies/(Debug|Release)
 - Includes
-  - Place in (TeSource)/Dependencies/(DepName)/include  
+  - Place in (TeSource)/Dependencies/(MSVC/GNU)/(DepName)/include  
 
 Legend:
 - (TeSource) - root directory of the framework

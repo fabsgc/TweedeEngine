@@ -8,7 +8,7 @@
 start_find_package(nvtt)
 
 # Use bundled library, as there is no common packaging for nvtt
-set (nvtt_INSTALL_DIR ${APP_ROOT_DIR}/Dependencies/nvtt CACHE PATH "")
+set (nvtt_INSTALL_DIR ${APP_ROOT_DIR}/Dependencies/${PLATFORM_OS}.${PLATFORM_COMPILER}/nvtt CACHE PATH "")
 gen_default_lib_search_dirs(nvtt) 
 
 find_imported_includes(nvtt nvtt.h)

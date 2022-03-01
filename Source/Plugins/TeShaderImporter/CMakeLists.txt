@@ -1,6 +1,8 @@
 # Source files and their filters
 include(CMakeSources.cmake)
-    
+
+message("-- TeShaderImporter Initialization...")
+
 # Target
 add_library (TeShaderImporter SHARED ${TE_SHADERIMPORTER_SRC})
 
@@ -33,3 +35,5 @@ endif()
 
 # Install
 install_tef_target (TeShaderImporter)
+
+message("-- ...TeShaderImporter OK.")

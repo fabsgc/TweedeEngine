@@ -7,7 +7,7 @@
 
 start_find_package (assimp)
 
-set (assimp_INSTALL_DIR ${APP_ROOT_DIR}/Dependencies/assimp CACHE PATH "")
+set (assimp_INSTALL_DIR ${APP_ROOT_DIR}/Dependencies/${PLATFORM_OS}.${PLATFORM_COMPILER}/assimp CACHE PATH "")
 gen_default_lib_search_dirs (assimp)
 
 find_imported_includes (assimp assimp/Importer.hpp)

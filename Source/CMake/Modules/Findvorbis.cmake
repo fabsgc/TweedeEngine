@@ -7,7 +7,7 @@
 
 start_find_package(vorbis)
 
-set(vorbis_INSTALL_DIR ${APP_ROOT_DIR}/Dependencies/libvorbis CACHE PATH "")
+set(vorbis_INSTALL_DIR ${APP_ROOT_DIR}/Dependencies/${PLATFORM_OS}.${PLATFORM_COMPILER}/libvorbis CACHE PATH "")
 gen_default_lib_search_dirs(vorbis)
 
 if(WIN32)

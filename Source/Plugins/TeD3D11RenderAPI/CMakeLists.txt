@@ -1,6 +1,8 @@
 # Source files and their filters
 include (CMakeSources.cmake)
-    
+
+message("-- TeD3D11RenderAPI Initialization...")
+
 # Target
 add_library (TeD3D11RenderAPI SHARED ${TE_D3D11RENDERAPI_SRC})
 
@@ -28,8 +30,8 @@ else()
 endif()
 
 ## External lib: DirectX 11 (and DirectX 9 for debug purpose)
-
-if(DirectX9) 
+if(D3D9_FOUND EQUAL 1)
+    message("-- ...Link with D3D9.")
     target_link_libraries (TeD3D11RenderAPI d3d9 d3d11 dxgi dxguid D3DCompiler)
 else()
     target_link_libraries (TeD3D11RenderAPI d3d11 dxgi dxguid D3DCompiler)
@@ -49,3 +51,5 @@ endif()
 if(RENDER_API_MODULE MATCHES "DirectX 11" AND !WIN32)
     install_tef_target(TeD3D11RenderAPI)
 endif()
+
+message("-- ...TeD3D11RenderAPI OK.")
