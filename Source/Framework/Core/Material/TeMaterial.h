@@ -58,12 +58,14 @@ namespace te
 
     struct MaterialProperties
     {
-        Color BaseColor      = Color(0.6f, 0.6f, 0.6f);
+        Color BaseColor        = Color(0.6f, 0.6f, 0.6f);
 
-        float  Roughness     = 0.5f;
-        float  Metallic      = 0.0f;
-        float  Reflectance   = 0.0f;
-        float  AO            = 0.0f;
+        float Roughness        = 0.5f;
+        float Metallic         = 0.5f;
+        float Reflectance      = 0.0f;
+        float AmbientOcclusion = 0.0f;
+
+        Color Emissive         = Color::Black;
     };
 
     struct MaterialTextures
@@ -104,6 +106,9 @@ namespace te
          * from the shader. Shader must be set before doing any other operations with the material.
          */
         void SetShader(const SPtr<Shader>& shader);
+
+        /** @copydoc SetShader */
+        void SetShader(const HShader& shader);
 
         /**
          * Set of parameters that determine which subset of techniques in the assigned shader should be used. Only the

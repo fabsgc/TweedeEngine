@@ -271,6 +271,15 @@ namespace te
                     }
                 }
                 ImGui::Separator();
+                {
+                    Vector4 color = properties.Emissive.GetAsVector4();
+                    if (ImGuiExt::RenderColorRGB(color, "##material_prop_emissive_option", "Emissive", width))
+                    {
+                        hasChanged = true;
+                        properties.Emissive = Color(color);
+                    }
+                }
+                ImGui::Separator();
 
                 {
                     if (ImGuiExt::RenderOptionFloat(properties.Metallic, "##material_prop_metallic_option", "Metallic", 0.0f, 1.0f, width))
@@ -286,12 +295,6 @@ namespace te
 
                 {
                     if (ImGuiExt::RenderOptionFloat(properties.Reflectance, "##material_prop_reflectance_option", "Reflectance", 0.0f, 1.0f, width))
-                        hasChanged = true;
-                }
-                ImGui::Separator();
-
-                {
-                    if (ImGuiExt::RenderOptionFloat(properties.AO, "##material_prop_ao_option", "AO", 0.0f, 1.0f, width))
                         hasChanged = true;
                 }
             }

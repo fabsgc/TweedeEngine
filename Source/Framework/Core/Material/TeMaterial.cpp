@@ -37,7 +37,8 @@ namespace te
     Material::Material(const HShader& shader, UINT32 id)
         : Material(id)
     {
-        SetShader(shader.GetInternalPtr());
+        if(shader.IsLoaded())
+            SetShader(shader.GetInternalPtr());
     }
 
     Material::Material(const SPtr<Shader>& shader, UINT32 id)
@@ -125,7 +126,15 @@ namespace te
     void Material::SetShader(const SPtr<Shader>& shader)
     {
         _shader = shader;
-        InitializeTechniques();
+
+        if(_shader)
+            InitializeTechniques();
+    }
+
+    void Material::SetShader(const HShader& shader)
+    {
+        if (shader.IsLoaded())
+            SetShader(shader.GetInternalPtr());
     }
 
     void Material::SetVariation(const ShaderVariation& variation)

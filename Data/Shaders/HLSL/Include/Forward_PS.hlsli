@@ -17,8 +17,8 @@ struct MaterialData
     float  Metallic;
     float  Roughness;
     float  Reflectance;
-    float  AO;
-    float3 Padding;
+    float  AmbientOcclusion;
+    float4 Emissive;
 };
 
 struct LightData

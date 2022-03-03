@@ -46,7 +46,8 @@ namespace te
         data.Metallic = properties.Metallic;
         data.Roughness = properties.Roughness;
         data.Reflectance = properties.Reflectance;
-        data.AO = properties.AO;
+        data.AmbientOcclusion = properties.AmbientOcclusion;
+        data.Emissive = properties.Emissive.GetAsVector4();
 
         return data;
     }

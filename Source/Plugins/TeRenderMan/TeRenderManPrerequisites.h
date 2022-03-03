@@ -48,8 +48,8 @@ namespace te
         float   Metallic;
         float   Roughness;
         float   Reflectance;
-        float   AO;
-        Vector3 Padding1;
+        float   AmbientOcclusion;
+        Vector4 Emissive;
     };
 
     struct PerLightData

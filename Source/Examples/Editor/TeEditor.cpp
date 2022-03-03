@@ -1282,6 +1282,7 @@ namespace te
 
             _monkeyMaterial = Material::Create(_shader);
             _monkeyMaterial->SetName("Monkey Material");
+            _monkeyMaterial->SetProperties(monkeyMatprop);
         }
         // ######################################################
 
