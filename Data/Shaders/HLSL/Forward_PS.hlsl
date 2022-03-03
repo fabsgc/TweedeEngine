@@ -1,5 +1,6 @@
-#include "Include/ForwardBase.hlsli"
-#include "Include/ForwardBase_PS.hlsli"
+#include "Include/Forward.hlsli"
+#include "Include/Forward_PS.hlsli"
+#include "Include/BRDF.hlsli"
 
 [earlydepthstencil]
 PS_OUTPUT main( VS_OUTPUT IN )

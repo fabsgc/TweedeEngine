@@ -1,4 +1,4 @@
-#include "Include/HudBase.hlsli"
+#include "Include/Hud.hlsli"
 
 cbuffer PerFrameBuffer : register(b0)
 {

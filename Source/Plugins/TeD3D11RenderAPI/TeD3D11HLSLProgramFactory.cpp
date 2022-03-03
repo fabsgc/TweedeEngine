@@ -130,11 +130,11 @@ namespace te
         std::filesystem::path compiledShaderPath = std::filesystem::current_path();
         compiledShaderPath.append("Shader_" + Util::Md5(desc.Source) + ".blob");
 
-        if (std::filesystem::exists(compiledShaderPath) && desc.FilePath != "")
+        /*if (std::filesystem::exists(compiledShaderPath) && desc.FilePath != "")
         {
             microcode = OpenMicroCode(compiledShaderPath);
             openMicroCode = true;
-        }
+        }*/
 
         if (!microcode)
         {
@@ -239,7 +239,7 @@ namespace te
             }
 
             if (microcode != nullptr)
-                D3DWriteBlobToFile(microcode, compiledShaderPath.generic_wstring().c_str(), false);
+                D3DWriteBlobToFile(microcode, compiledShaderPath.generic_wstring().c_str(), true);
 
             if (include)
                 te_delete(include);

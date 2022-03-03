@@ -1,4 +1,4 @@
-#include "Include/BulletDebugBase.hlsli"
+#include "Include/BulletDebug.hlsli"
 
 cbuffer PerFrameBuffer : register(b0)
 {

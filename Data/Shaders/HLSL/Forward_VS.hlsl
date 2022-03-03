@@ -1,5 +1,5 @@
-#include "Include/ForwardBase.hlsli"
-#include "Include/ForwardBase_VS.hlsli"
+#include "Include/Forward.hlsli"
+#include "Include/Forward_VS.hlsli"
 #include "Include/Skinning.hlsli"
 
 VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )

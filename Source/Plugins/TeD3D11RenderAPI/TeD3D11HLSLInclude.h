@@ -20,9 +20,6 @@ namespace te
         HRESULT __stdcall Close(LPCVOID pData)  override;
 
     protected:
-        String GetFullPath(String relativePath);
-
-    protected:
         String _directory;
         String _data;
     };

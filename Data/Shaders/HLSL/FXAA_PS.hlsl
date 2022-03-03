@@ -1,5 +1,5 @@
-#include "Include/PostProcessBase.hlsli"
-#include "Include/FXAABase.hlsli"
+#include "Include/PostProcess.hlsli"
+#include "Include/FXAA.hlsli"
 
 cbuffer PerFrameBuffer
 {
