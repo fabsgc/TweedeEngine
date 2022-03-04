@@ -33,7 +33,9 @@ struct LightData
     float  BoundsRadius;
     float  LinearAttenuation;
     float  QuadraticAttenuation;
-    float2 Padding1;
+    bool   CastShadows;
+    bool3  Padding1;
+    float  Padding2;
 };
 
 struct LightingResult

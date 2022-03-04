@@ -64,7 +64,9 @@ namespace te
         float   BoundsRadius;
         float   LinearAttenuation;
         float   QuadraticAttenuation;
-        Vector2 Padding;
+        bool    CastShadows;
+        bool    Padding1[3];
+        float   Padding2;
     };
 
     // ############ Per Camera
@@ -96,7 +98,8 @@ namespace te
 
     TE_PARAM_BLOCK_BEGIN(PerLightsParamDef)
         TE_PARAM_BLOCK_ENTRY_ARRAY(PerLightData, gLights, STANDARD_FORWARD_MAX_NUM_LIGHTS)
-        TE_PARAM_BLOCK_ENTRY(INT32, gLightsNumber)
+        TE_PARAM_BLOCK_ENTRY(UINT32, gLightsNumber)
+        TE_PARAM_BLOCK_ENTRY(Vector3, gPadding1)
     TE_PARAM_BLOCK_END
 
     extern PerLightsParamDef gPerLightsParamDef;
@@ -107,10 +110,11 @@ namespace te
     TE_PARAM_BLOCK_BEGIN(PerFrameParamDef)
         TE_PARAM_BLOCK_ENTRY(float, gTime)
         TE_PARAM_BLOCK_ENTRY(float, gFrameDelta)
-        TE_PARAM_BLOCK_ENTRY(INT32, gUseSkyboxMap)
-        TE_PARAM_BLOCK_ENTRY(INT32, gUseSkyboxIrradianceMap)
+        TE_PARAM_BLOCK_ENTRY(UINT32, gUseSkyboxMap)
+        TE_PARAM_BLOCK_ENTRY(UINT32, gUseSkyboxIrradianceMap)
         TE_PARAM_BLOCK_ENTRY(Vector4, gSceneLightColor)
         TE_PARAM_BLOCK_ENTRY(float, gSkyboxBrightness)
+        TE_PARAM_BLOCK_ENTRY(Vector3, gPadding2)
     TE_PARAM_BLOCK_END
 
     extern PerFrameParamDef gPerFrameParamDef;
@@ -123,10 +127,10 @@ namespace te
         TE_PARAM_BLOCK_ENTRY(Matrix4, gMatWorldNoScale)
         TE_PARAM_BLOCK_ENTRY(Matrix4, gMatInvWorldNoScale)
         TE_PARAM_BLOCK_ENTRY(Matrix4, gMatPrevWorld)
-        TE_PARAM_BLOCK_ENTRY(INT32, gLayer)
-        TE_PARAM_BLOCK_ENTRY(INT32, gHasAnimation)
-        TE_PARAM_BLOCK_ENTRY(INT32, gWriteVelocity)
-        TE_PARAM_BLOCK_ENTRY(INT32, gCastLights)
+        TE_PARAM_BLOCK_ENTRY(UINT32, gLayer)
+        TE_PARAM_BLOCK_ENTRY(UINT32, gHasAnimation)
+        TE_PARAM_BLOCK_ENTRY(UINT32, gWriteVelocity)
+        TE_PARAM_BLOCK_ENTRY(UINT32, gCastLights)
     TE_PARAM_BLOCK_END
 
     extern PerObjectParamDef gPerObjectParamDef;
@@ -146,7 +150,7 @@ namespace te
         TE_PARAM_BLOCK_ENTRY(Vector3, gDecalNormal)
         TE_PARAM_BLOCK_ENTRY(float, gNormalTolerance)
         TE_PARAM_BLOCK_ENTRY(float, gFlipDerivatives)
-        TE_PARAM_BLOCK_ENTRY(INT32, gLayerMask)
+        TE_PARAM_BLOCK_ENTRY(UINT32, gLayerMask)
     TE_PARAM_BLOCK_END
 
     extern DecalParamDef gDecalParamDef;

@@ -223,7 +223,7 @@ namespace te
                     }
                     break;
                 case NotMatching:
-                    if (desc.override)
+                    if (desc.Override)
                     {
                         foundMatch = false;
                         break;
@@ -252,7 +252,7 @@ namespace te
                         numMatchedSearchParams++;
                         break;
                     case NotMatching:
-                        if (desc.override)
+                        if (desc.Override)
                         {
                             numMatchedSearchParams++;
                             numMatchedInternalParams++;

@@ -58,6 +58,7 @@ namespace te
         output.BoundsRadius = _internal->GetBounds().GetRadius();
         output.LinearAttenuation = _internal->GetLinearAttenuation();
         output.QuadraticAttenuation = _internal->GetQuadraticAttenuation();
+        output.CastShadows = _internal->GetCastShadows();
         output.Type = type;
     }
 

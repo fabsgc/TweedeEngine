@@ -44,7 +44,7 @@ namespace te
          * parameter to some different value. Overriding can be useful for renderers which might need to override the user's
          * choice of variation.
          */
-        bool override = false;
+        bool Override = false;
 
         /** Registers a new tag to look for when searching for the technique. */
         void AddTag(const StringID& tag)
