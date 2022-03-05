@@ -80,7 +80,7 @@ namespace te
 
         UINT32 deviceFlags = 0;
         bool debugLayerAvailable = false;
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         debugLayerAvailable = true;
         deviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
@@ -755,7 +755,7 @@ namespace te
         else
             _device->GetImmediateContext()->DrawInstanced(vertexCount, instanceCount, vertexOffset, 0);
 
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         if (_device->HasError())
             TE_DEBUG(_device->GetErrorDescription());
 #endif
@@ -776,7 +776,7 @@ namespace te
         else
             _device->GetImmediateContext()->DrawIndexedInstanced(indexCount, instanceCount, startIndex, vertexOffset, 0);
 
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
             if (_device->HasError())
                 TE_DEBUG(_device->GetErrorDescription());
 #endif
@@ -792,7 +792,7 @@ namespace te
     {
         _device->GetImmediateContext()->Dispatch(numGroupsX, numGroupsY, numGroupsZ);
 
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         if (_device->HasError())
             TE_DEBUG(_device->GetErrorDescription());
 #endif

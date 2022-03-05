@@ -37,7 +37,7 @@ namespace te
 
     void GpuParamBlockBuffer::Write(UINT32 offset, const void* data, UINT32 size)
     {
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         if ((offset + size) > _size)
         {
             TE_ASSERT_ERROR(false, "Wanted range is out of buffer bounds. Available range: 0 .. " + ToString(_size) + ". " +
@@ -51,7 +51,7 @@ namespace te
 
     void GpuParamBlockBuffer::Read(UINT32 offset, void* data, UINT32 size)
     {
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         if ((offset + size) > _size)
         {
             TE_ASSERT_ERROR(false, "Wanted range is out of buffer bounds. Available range: 0 .. " + ToString(_size) + ". " +
@@ -65,7 +65,7 @@ namespace te
 
     void GpuParamBlockBuffer::ZeroOut(UINT32 offset, UINT32 size)
     {
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         if ((offset + size) > _size)
         {
             TE_ASSERT_ERROR(false, "Wanted range is out of buffer bounds. Available range: 0 .. " + ToString(_size) + ". " +

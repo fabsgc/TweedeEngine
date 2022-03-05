@@ -133,7 +133,7 @@ namespace te
         UpdateColliders();
         UpdateJoints();
 
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         CheckForNestedBody();
 #endif
 
@@ -171,7 +171,7 @@ namespace te
             ClearColliders();
             UpdateColliders();
 
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
             CheckForNestedBody();
 #endif
         }

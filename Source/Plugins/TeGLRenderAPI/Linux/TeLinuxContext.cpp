@@ -65,7 +65,7 @@ namespace te
                     attributes[5] = GLX_CONTEXT_CORE_PROFILE_BIT_ARB;
                 }
 
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
                     attributes[6] = GLX_CONTEXT_FLAGS_ARB;
                     attributes[7] = GLX_CONTEXT_DEBUG_BIT_ARB;
 #endif

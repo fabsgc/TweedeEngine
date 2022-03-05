@@ -18,7 +18,7 @@ namespace te
             TE_ASSERT_ERROR(false, "Destructor called but object is not destroyed. This will result in nasty issues.");
         }
 
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         if(!_this.expired())
         {
             TE_ASSERT_ERROR(false, "Shared pointer to this object still has active references but the object is being deleted? You shouldn't delete CoreObjects manually.");

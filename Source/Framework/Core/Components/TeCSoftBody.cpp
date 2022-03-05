@@ -75,7 +75,7 @@ namespace te
 
         _internal = CreateInternal();
 
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         CheckForNestedBody();
 #endif
 
@@ -108,7 +108,7 @@ namespace te
 
         if ((flags & TCF_Parent) != 0)
         {
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
             CheckForNestedBody();
 #endif
         }

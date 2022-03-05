@@ -356,7 +356,7 @@ namespace te
 
         UINT32 elementSizeBytes = desc->ElementSize * sizeof(UINT32);
 
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         if (sizeBytes > elementSizeBytes)
         {
             TE_DEBUG("Provided element size larger than maximum element size. Maximum size: {" + ToString(elementSizeBytes) + "}."

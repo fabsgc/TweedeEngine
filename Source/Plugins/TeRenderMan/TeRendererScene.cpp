@@ -560,7 +560,7 @@ namespace te
                 // Set renderable properties to renderElement
                 renElement->Properties = &renderable->GetProperties();
 
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
                 ValidateBasePassMaterial(*renElement->MaterialElem, renElement->DefaultTechniqueIdx, *vertexDecl);
 #endif
             }

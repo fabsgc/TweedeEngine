@@ -113,7 +113,7 @@ namespace te
         return false; // TODO GNU_WIN32
 #endif
 
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         command = command + CompileDebug(identifier);
 #else
         command = command + CompileRelease(identifier);

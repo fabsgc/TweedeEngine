@@ -194,7 +194,7 @@ namespace te
 
     UINT32 GpuPipelineParamInfo::GetSequentialSlot(ParamType type, UINT32 set, UINT32 slot) const
     {
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         if (set >= _numSets)
         {
             TE_DEBUG("Set index out of range: Valid range: [0, " + ToString(_numSets) + "). Requested: " + ToString(set));
@@ -230,7 +230,7 @@ namespace te
 
     void GpuPipelineParamInfo::GetBinding(ParamType type, UINT32 sequentialSlot, UINT32& set, UINT32& slot) const
     {
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         if (sequentialSlot >= _numElementsPerType[(int)type])
         {
             TE_DEBUG("Sequential slot index out of range: Valid range: [0, " + ToString(_numElementsPerType[(int)type]) + "). Requested: " +

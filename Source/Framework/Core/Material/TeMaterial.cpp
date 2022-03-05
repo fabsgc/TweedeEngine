@@ -389,7 +389,7 @@ namespace te
     /** Assigns a texture to the shader parameter with the specified name. */
     void Material::SetTexture(const String& name, const SPtr<Texture>& value, const TextureSurface& surface)
     {
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         TE_ASSERT_ERROR(value != nullptr, "Texture should not be null");
 #endif
         auto it = _textures.find(name);
@@ -425,7 +425,7 @@ namespace te
 
     void Material::SetLoadStoreTexture(const String& name, const SPtr<Texture>& value, const TextureSurface& surface)
     {
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         TE_ASSERT_ERROR(value != nullptr, "Load store texture should not be null");
 #endif
         auto it = _loadStoreTextures.find(name);
@@ -444,7 +444,7 @@ namespace te
     /** Assigns a buffer to the shader parameter with the specified name. */
     void Material::SetBuffer(const String& name, const SPtr<GpuBuffer>& value)
     {
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         TE_ASSERT_ERROR(value != nullptr, "Buffer should not be null");
 #endif
 
@@ -455,7 +455,7 @@ namespace te
     /** Assigns a sampler state to the shader parameter with the specified name. */
     void Material::SetSamplerState(const String& name, const SPtr<SamplerState>& value)
     {
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         TE_ASSERT_ERROR(value != nullptr, "Sampler state should not be null");
 #endif
         _samplerStates[name] = value;

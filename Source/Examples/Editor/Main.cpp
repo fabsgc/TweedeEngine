@@ -4,7 +4,7 @@
 #if TE_PLATFORM == TE_PLATFORM_WIN32
 #include <windows.h>
 
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
 //#   define _CRTDBG_MAP_ALLOC
 //#   include <stdlib.h>
 //#   include <crtdbg.h>
@@ -45,7 +45,7 @@ int main()
     te::Application::Instance().RunMainLoop();
     te::Application::ShutDown();
 
-#if TE_PLATFORM == TE_PLATFORM_WIN32 && TE_DEBUG_MODE
+#if TE_PLATFORM == TE_PLATFORM_WIN32 && TE_DEBUG_MODE == TE_DEBUG_ENABLED
     /*HANDLE hLogFile = CreateFile("MemoryLeaks.txt", GENERIC_WRITE, FILE_SHARE_WRITE,
         NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 

@@ -33,7 +33,7 @@ namespace te
 
     UINT8* FrameAllocator::Allocate(UINT32 amount)
     {
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         amount += sizeof(UINT32);
 #endif
         UINT32 freeMem = 0;
@@ -45,7 +45,7 @@ namespace te
 
         UINT8* data = _freeBlock->Allocate(amount);
 
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         _totalAllocBytes += amount;
 
         UINT32* storedSize = reinterpret_cast<UINT32*>(data);
@@ -59,7 +59,7 @@ namespace te
 
     UINT8* FrameAllocator::AllocateAligned(UINT32 amount, UINT32 alignment)
     {
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         amount += sizeof(UINT32);
 #endif
 
@@ -69,7 +69,7 @@ namespace te
         {
             freeMem = _freeBlock->_size - _freeBlock->_freePtr;
 
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
             freePtr = _freeBlock->_freePtr + sizeof(UINT32);
 #else
             freePtr = _freeBlock->_freePtr;
@@ -82,7 +82,7 @@ namespace te
             // New blocks are allocated on a 16 byte boundary, ensure enough space is allocated taking into account
             // the requested alignment
 
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
             alignOffset = (alignment - (sizeof(UINT32) & (alignment - 1))) & (alignment - 1);
 #else
             if (alignment > 16)
@@ -97,7 +97,7 @@ namespace te
         amount += alignOffset;
         UINT8* data = _freeBlock->Allocate(amount);
 
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         _totalAllocBytes += amount;
 
         UINT32* storedSize = reinterpret_cast<UINT32*>(data + alignOffset);
@@ -114,7 +114,7 @@ namespace te
         // Dealloc is only used for debug and can be removed if needed. All the actual deallocation
         // happens in clear()
 
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         if (data)
         {
             data -= sizeof(UINT32);
@@ -142,7 +142,7 @@ namespace te
             UINT8* framePtr = (UINT8*)_lastFrame;
             _lastFrame = *(void**)_lastFrame;
 
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
             framePtr -= sizeof(UINT32);
 #endif
 
@@ -204,7 +204,7 @@ namespace te
         }
         else
         {
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
             if (_totalAllocBytes.load() > 0)
                 TE_ASSERT_ERROR(false, "Not all frame allocated bytes were properly released.");
 #endif

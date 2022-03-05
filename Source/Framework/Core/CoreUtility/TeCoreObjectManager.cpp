@@ -11,7 +11,7 @@ namespace te
 
     CoreObjectManager::~CoreObjectManager()
     {
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         if(_objects.size() > 0)
         {
             // All objects MUST be destroyed at this point, otherwise there might be memory corruption.

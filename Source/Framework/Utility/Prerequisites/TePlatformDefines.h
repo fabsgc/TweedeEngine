@@ -122,9 +122,9 @@
 // Win32 compilers use _DEBUG for specifying debug builds.
 // for MinGW, we set DEBUG
 #   if defined(_DEBUG) || defined(DEBUG)
-#       define TE_DEBUG_MODE TE_DEBUG_MODE_ENABLED
+#       define TE_DEBUG_MODE TE_DEBUG_ENABLED
 #   else
-#       define TE_DEBUG_MODE TE_DEBUG_MODE_DISABLED
+#       define TE_DEBUG_MODE TE_DEBUG_DISABLED
 #   endif
 
 #   if TE_COMPILER == TE_COMPILER_INTEL
@@ -135,9 +135,9 @@
 // Linux/Mac Settings
 #if TE_PLATFORM == TE_PLATFORM_LINUX
 #   ifdef DEBUG
-#       define TE_DEBUG_MODE TE_DEBUG_MODE_ENABLED
+#       define TE_DEBUG_MODE TE_DEBUG_ENABLED
 #   else
-#   define TE_DEBUG_MODE TE_DEBUG_MODE_DISABLED
+#   define TE_DEBUG_MODE TE_DEBUG_DISABLED
 #   endif
 
 #   if TE_COMPILER == TE_COMPILER_INTEL

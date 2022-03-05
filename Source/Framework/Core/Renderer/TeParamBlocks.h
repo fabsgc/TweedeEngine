@@ -27,7 +27,7 @@ namespace te
          */
         void Set(const SPtr<GpuParamBlockBuffer>& paramBlock, const T& value, UINT32 arrayIdx = 0) const
         {
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
             if (arrayIdx >= _paramDesc.ArraySize)
             {
                 TE_ASSERT_ERROR(false, "Array index out of range. Array size: " +
@@ -66,7 +66,7 @@ namespace te
          */
         T Get(GpuParamBlockBuffer* paramBlock, UINT32 arrayIdx = 0) const
         {
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
             if (arrayIdx >= _paramDesc.ArraySize)
             {
                 TE_DEBUG("Array index out of range. Array size: {" + ToString(_paramDesc.ArraySize) + "}. Requested size: {" + ToString(arrayIdx) + "}");

@@ -12,7 +12,7 @@ namespace te
         {
             device->GetImmediateContext(&_immediateContext);
 
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
             if (useDebugLayer)
             {
                 // This interface is not available unless we created the device with debug layer

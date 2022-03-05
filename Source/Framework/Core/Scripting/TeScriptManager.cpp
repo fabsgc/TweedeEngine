@@ -59,7 +59,7 @@ namespace te
 
     void ScriptManager::OnShutDown()
     {
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         if (_scripts.size() > 0)
             TE_ASSERT_ERROR(false, "Not all scripts have been unregistered from Script Manager");
 #endif

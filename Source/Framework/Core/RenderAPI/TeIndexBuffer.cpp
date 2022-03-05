@@ -37,7 +37,7 @@ namespace te
         , _properties(desc.Type, desc.NumIndices)
         , _usage(desc.Usage)
     {
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         CheckValidDesc(desc);
 #endif
     }

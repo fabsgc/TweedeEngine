@@ -28,7 +28,7 @@ namespace te
         , _properties(desc.NumVerts, desc.VertexSize)
         , _streamOut(desc.StreamOut)
     {
-#if TE_DEBUG_MODE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         CheckValidDesc(desc);
 #endif
     }
