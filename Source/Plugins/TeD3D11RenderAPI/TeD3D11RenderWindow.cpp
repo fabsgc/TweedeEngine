@@ -101,7 +101,7 @@ namespace te
 
         CreateSwapChain();
 
-#if TE_DEBUG_MODE == 1
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         String name = "[SWAP_CHAIN] " + windowDesc.Title;
         D3D11Utility::SetDebugName(_swapChain, name.c_str(), name.size());
 #endif

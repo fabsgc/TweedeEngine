@@ -413,14 +413,14 @@ namespace te
             {
                 if (LOWORD(wParam) == WA_INACTIVE)
                 {
-#if TE_DEBUG_MODE == 0
+#if TE_DEBUG_MODE == TE_DEBUG_DISABLED
                     gCoreApplication().Pause(true);
                     gTime().Stop();
 #endif
                 }
                 else
                 {
-#if TE_DEBUG_MODE == 0
+#if TE_DEBUG_MODE == TE_DEBUG_DISABLED
                     gCoreApplication().Pause(false);
                     gTime().Start();
 #endif
@@ -486,7 +486,7 @@ namespace te
                 if (wParam == SIZE_MAXIMIZED)
                 {
                     win->NotifyWindowEvent(WindowEventType::Maximized);
-#if TE_DEBUG_MODE == 0
+#if TE_DEBUG_MODE == TE_DEBUG_DISABLED
                     gCoreApplication().Pause(false);
                     gTime().Start();
 #endif
@@ -494,7 +494,7 @@ namespace te
                 else if (wParam == SIZE_MINIMIZED)
                 {
                     win->NotifyWindowEvent(WindowEventType::Minimized);
-#if TE_DEBUG_MODE == 0
+#if TE_DEBUG_MODE == TE_DEBUG_DISABLED
                     gCoreApplication().Pause(true);
                     gTime().Stop();
 #endif
@@ -502,7 +502,7 @@ namespace te
                 else if (wParam == SIZE_RESTORED)
                 {
                     win->NotifyWindowEvent(WindowEventType::Restored);
-#if TE_DEBUG_MODE == 0
+#if TE_DEBUG_MODE == TE_DEBUG_DISABLED
                     gCoreApplication().Pause(false);
                     gTime().Start();
 #endif

@@ -61,12 +61,7 @@ float D_GGX(float roughness, float NoH, const float3 h) {
     // This computes 1.0 - NoH^2 directly (which is close to zero in the highlights and has
     // enough precision).
     // Overall this yields better performance, keeping all computations in mediump
-#if defined(TARGET_MOBILE)
-    float3 NxH = cross(shading_normal, h);
-    float oneMinusNoHSquared = dot(NxH, NxH);
-#else
     float oneMinusNoHSquared = 1.0 - NoH * NoH;
-#endif
 
     float a = NoH * roughness;
     float k = roughness / (oneMinusNoHSquared + a * a);
@@ -168,12 +163,12 @@ float Visibility(float roughness, float NoV, float NoL) {
 
 float3 Fresnel(const float3 f0, float LoH) {
 #if BRDF_SPECULAR_F == SPECULAR_F_SCHLICK
-#if FILAMENT_QUALITY == FILAMENT_QUALITY_LOW
+#   if FILAMENT_QUALITY == FILAMENT_QUALITY_LOW
     return F_Schlick(f0, LoH); // f90 = 1.0
-#else
+#   else
     float f90 = saturate(dot(f0, float3(50.0 * 0.33)));
     return F_Schlick(f0, f90, LoH);
-#endif
+#   endif
 #endif
 }
 
@@ -184,7 +179,7 @@ float DistributionAnisotropic(float at, float ab, float ToH, float BoH, float No
 }
 
 float VisibilityAnisotropic(float roughness, float at, float ab,
-        float ToV, float BoV, float ToL, float BoL, float NoV, float NoL) {
+    float ToV, float BoV, float ToL, float BoL, float NoV, float NoL) {
 #if BRDF_ANISOTROPIC_V == SPECULAR_V_SMITH_GGX
     return V_SmithGGXCorrelated(roughness, NoV, NoL);
 #elif BRDF_ANISOTROPIC_V == SPECULAR_V_GGX_ANISOTROPIC

@@ -8,7 +8,7 @@ namespace te
         template<class T>
         static void SetDebugName(T* resource, const char* name, size_t length)
         {
-#if TE_DEBUG_MODE == 1
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
             String fullName = "[" + ToString(D3D11Utility::NextId) + "] " + name;
             length = fullName.size();
 

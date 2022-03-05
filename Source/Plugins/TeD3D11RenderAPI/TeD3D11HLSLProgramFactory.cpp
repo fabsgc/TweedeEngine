@@ -130,11 +130,13 @@ namespace te
         std::filesystem::path compiledShaderPath = std::filesystem::current_path();
         compiledShaderPath.append("Shader_" + Util::Md5(desc.Source) + ".blob");
 
-        /*if (std::filesystem::exists(compiledShaderPath) && desc.FilePath != "")
+#if TE_DEBUG_MODE == TE_DEBUG_MODE_DISABLED
+        if (std::filesystem::exists(compiledShaderPath) && desc.FilePath != "")
         {
             microcode = OpenMicroCode(compiledShaderPath);
             openMicroCode = true;
-        }*/
+        }
+#endif
 
         if (!microcode)
         {

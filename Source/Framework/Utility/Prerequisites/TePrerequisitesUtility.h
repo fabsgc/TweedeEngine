@@ -51,13 +51,7 @@
 // Windows Settings
 #if TE_PLATFORM == TE_PLATFORM_WIN32
 // Win32 compilers use _DEBUG for specifying debug builds.
-// for MinGW, we set DEBUG
-#   if defined(_DEBUG) || defined(DEBUG)
-#       define TE_DEBUG_MODE 1
-#   else
-#       define TE_DEBUG_MODE 0
-#   endif
-#   
+// for MinGW, we set DEBUG   
 #   undef _WIN32_WINNT
 #
 #   if defined(TE_WIN_SDK_7)
@@ -81,12 +75,6 @@
 #if TE_PLATFORM == TE_PLATFORM_LINUX
 // A quick define to overcome different names for the same function
 #   define stricmp strcasecmp
-
-#   ifdef DEBUG
-#       define TE_DEBUG_MODE 1
-#   else
-#       define TE_DEBUG_MODE 0
-#   endif
 #endif
 
 #include "Error/TeDebug.h"

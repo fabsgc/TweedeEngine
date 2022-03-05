@@ -96,7 +96,7 @@ namespace te {
             TE_ASSERT_ERROR(false, "Cannot create sampler state.\nError Description: " + errorDescription);
         }
 
-#if  TE_DEBUG_MODE == 1
+#if  TE_DEBUG_MODE == TE_DEBUG_ENABLED
         static String debugName = "[SAMPLER]";
         D3D11Utility::SetDebugName(_samplerState, debugName.c_str(), debugName.size());
 #endif

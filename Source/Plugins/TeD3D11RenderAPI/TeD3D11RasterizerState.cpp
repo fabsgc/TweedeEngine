@@ -43,7 +43,7 @@ namespace te
             TE_ASSERT_ERROR(false, "Cannot create rasterizer state.\nError Description: " + errorDescription);
         }
 
-#if  TE_DEBUG_MODE == 1
+#if  TE_DEBUG_MODE == TE_DEBUG_ENABLED
         static String debugName = "[RASTERIZER]";
         D3D11Utility::SetDebugName(_rasterizerState, debugName.c_str(), debugName.size());
 #endif

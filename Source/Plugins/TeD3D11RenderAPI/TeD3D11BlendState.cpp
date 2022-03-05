@@ -45,7 +45,7 @@ namespace te
             TE_ASSERT_ERROR(false, "Cannot create blend state. Error Description: " + errorDescription);
         }
 
-#if  TE_DEBUG_MODE == 1
+#if  TE_DEBUG_MODE == TE_DEBUG_ENABLED
         static String debugName = "[BLEND]";
         D3D11Utility::SetDebugName(_blendState, debugName.c_str(), debugName.size());
 #endif

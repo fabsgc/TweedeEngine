@@ -862,7 +862,7 @@ namespace te
                         if (!renderWindow->GetProperties().HasFocus)
                         {
                             renderWindow->NotifyWindowEvent(WindowEventType::FocusReceived);
-#if TE_DEBUG_MODE == 0
+#if TE_DEBUG_MODE == TE_DEBUG_DISABLED
                             gCoreApplication().Pause(false);
                             gTime().Start();
 #endif
@@ -885,7 +885,7 @@ namespace te
                         if (renderWindow->GetProperties().HasFocus)
                         {
                             renderWindow->NotifyWindowEvent(WindowEventType::FocusLost);
-#if TE_DEBUG_MODE == 0
+#if TE_DEBUG_MODE == TE_DEBUG_DISABLED
                             gCoreApplication().Pause(true);
                             gTime().Stop();
 #endif
@@ -929,7 +929,7 @@ namespace te
                                 if(event.xproperty.state == PropertyNewValue)
                                 {
                                     renderWindow->NotifyWindowEvent(WindowEventType::Maximized);
-#if TE_DEBUG_MODE == 0
+#if TE_DEBUG_MODE == TE_DEBUG_DISABLED
                                     gCoreApplication().Pause(false);
                                     gTime().Start();
 #endif
@@ -937,7 +937,7 @@ namespace te
                                 else
                                 {
                                     renderWindow->NotifyWindowEvent(WindowEventType::Restored);
-#if TE_DEBUG_MODE == 0
+#if TE_DEBUG_MODE == TE_DEBUG_DISABLED
                                     gCoreApplication().Pause(false);
                                     gTime().Start();
 #endif
@@ -949,7 +949,7 @@ namespace te
                                 if(event.xproperty.state == PropertyNewValue)
                                 {
                                     renderWindow->NotifyWindowEvent(WindowEventType::Minimized);
-#if TE_DEBUG_MODE == 0
+#if TE_DEBUG_MODE == TE_DEBUG_DISABLED
                                     gCoreApplication().Pause(true);
                                     gTime().Stop();
 #endif
@@ -957,7 +957,7 @@ namespace te
                                 else
                                 {
                                     renderWindow->NotifyWindowEvent(WindowEventType::Restored);
-#if TE_DEBUG_MODE == 0
+#if TE_DEBUG_MODE == TE_DEBUG_DISABLED
                                     gCoreApplication().Pause(false);
                                     gTime().Start();
 #endif

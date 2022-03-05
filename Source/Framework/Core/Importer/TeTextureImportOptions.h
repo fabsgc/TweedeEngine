@@ -13,11 +13,7 @@ namespace te
         TextureImportOptions();
 
         /** Pixel format to import as. */
-#if TE_ENDIAN == TE_ENDIAN_BIG
-        PixelFormat Format = PF_RGBA8;
-#else
-        PixelFormat Format = PF_BGRA8;
-#endif
+        PixelFormat Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
 
         /** Enables or disables mipmap generation for the texture. */
         bool GenerateMips = false;

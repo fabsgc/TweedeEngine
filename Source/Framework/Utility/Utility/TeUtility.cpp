@@ -136,10 +136,11 @@ namespace te
 
     bool Util::IsBigEndian()
     {
-#if TE_ENDIAN == TE_ENDIAN_BIG
-        return true;
-#else
-        return false;
-#endif
+        /*const int value{ 0x01 };
+        const void* address = static_cast<const void*>(&value);
+        const unsigned char* least_significant_address = static_cast<const unsigned char*>(address);
+        return (*least_significant_address == 0x01);*/
+
+        return TE_ENDIAN == TE_ENDIAN_BIG;
     }
 }

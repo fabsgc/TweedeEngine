@@ -168,7 +168,7 @@ namespace te
             TE_ASSERT_ERROR(false, "Unable to set D3D11 vertex declaration" + device.GetErrorDescription());
         }
 
-#if  TE_DEBUG_MODE == 1
+#if  TE_DEBUG_MODE == TE_DEBUG_ENABLED
         String gpuProgramDebugName = vertexProgram.GetDebugName();
         String debugName = !gpuProgramDebugName.empty() ? "[LAYOUT] " + gpuProgramDebugName : "[LAYOUT]";
         D3D11Utility::SetDebugName(newEntry->InputLayout, debugName.c_str(), debugName.size());

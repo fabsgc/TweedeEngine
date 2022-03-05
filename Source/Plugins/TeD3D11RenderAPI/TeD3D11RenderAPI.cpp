@@ -136,7 +136,7 @@ namespace te
         UINT32 maxRenderTargets = D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT;
         _activeViews = te_newN<ID3D11RenderTargetView*>(maxRenderTargets);
 
-#if TE_DEBUG_MODE == 1
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         hr = _device->GetImmediateContext()->QueryInterface(__uuidof(ID3DUserDefinedAnnotation), (void**)&_annotation);
 
         if (FAILED(hr))
@@ -1306,7 +1306,7 @@ namespace te
 
     void D3D11RenderAPI::PushMarker(const String& name, const Color& color) const
     {
-#if TE_DEBUG_MODE == 1
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
 #   ifdef TE_D3D9
         D3DPERF_BeginEvent(color.GetAsRGBA(), ToWString(name).c_str());
 #   else
@@ -1320,7 +1320,7 @@ namespace te
 
     void D3D11RenderAPI::PopMarker() const
     {
-#if TE_DEBUG_MODE == 1
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
 #   ifdef TE_D3D9
         D3DPERF_EndEvent();
 #   else

@@ -46,7 +46,7 @@ namespace te
             {
                 if (FreeElems != ElemsPerBlock)
                 {
-#if TE_DEBUG_MODE == 1
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
                     assert(FreeElems == ElemsPerBlock && "Not all elements were deallocated from a block.");
 #endif
                 }

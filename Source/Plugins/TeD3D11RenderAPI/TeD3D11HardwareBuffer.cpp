@@ -114,7 +114,7 @@ namespace te
             TE_ASSERT_ERROR(false, "Cannot create D3D11 buffer: " + msg);
         }
 
-#if  TE_DEBUG_MODE == 1
+#if  TE_DEBUG_MODE == TE_DEBUG_ENABLED
         String fullDebugName = (!debugName.empty()) ? "[BUF] " + debugName : "[BUF]";
         D3D11Utility::SetDebugName(_D3DBuffer, fullDebugName.c_str(), fullDebugName.size());
 #endif

@@ -12,9 +12,16 @@
 #define TE_ARCHITECTURE_x86_32 1
 #define TE_ARCHITECTURE_x86_64 2
 
+/* 
+ * Currently it's hard to know before runtime if system is big endian or little endian
+ * Here we are making the assumption that microprocessor are little endian
+ */
 #define TE_ENDIAN_LITTLE 1
 #define TE_ENDIAN_BIG 2
-#define TE_ENDIAN TE_ENDIAN_LITTLE
+#define TE_ENDIAN TE_ENDIAN_LITTLE 
+
+#define TE_DEBUG_ENABLED 1
+#define TE_DEBUG_DISABLED 0
 
 // Finds the compiler type and version.
 #if defined(__clang__)
@@ -115,9 +122,9 @@
 // Win32 compilers use _DEBUG for specifying debug builds.
 // for MinGW, we set DEBUG
 #   if defined(_DEBUG) || defined(DEBUG)
-#       define TE_DEBUG_MODE 1
+#       define TE_DEBUG_MODE TE_DEBUG_MODE_ENABLED
 #   else
-#       define TE_DEBUG_MODE 0
+#       define TE_DEBUG_MODE TE_DEBUG_MODE_DISABLED
 #   endif
 
 #   if TE_COMPILER == TE_COMPILER_INTEL
@@ -128,9 +135,9 @@
 // Linux/Mac Settings
 #if TE_PLATFORM == TE_PLATFORM_LINUX
 #   ifdef DEBUG
-#       define TE_DEBUG_MODE 1
+#       define TE_DEBUG_MODE TE_DEBUG_MODE_ENABLED
 #   else
-#   define TE_DEBUG_MODE 0
+#   define TE_DEBUG_MODE TE_DEBUG_MODE_DISABLED
 #   endif
 
 #   if TE_COMPILER == TE_COMPILER_INTEL

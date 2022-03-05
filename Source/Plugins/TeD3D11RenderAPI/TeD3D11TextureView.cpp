@@ -14,7 +14,7 @@ namespace te
         {
             _UAV = CreateUAV(texture, _desc.MostDetailMip, _desc.FirstArraySlice, _desc.NumArraySlices);
 
-#if  TE_DEBUG_MODE == 1
+#if  TE_DEBUG_MODE == TE_DEBUG_ENABLED
             String name = "[UAV] " + _desc.DebugName;
             D3D11Utility::SetDebugName(_UAV, name.c_str(), name.size());
 #endif
@@ -23,7 +23,7 @@ namespace te
         {
             _RTV = CreateRTV(texture, _desc.MostDetailMip, _desc.FirstArraySlice, _desc.NumArraySlices);
 
-#if  TE_DEBUG_MODE == 1
+#if  TE_DEBUG_MODE == TE_DEBUG_ENABLED
             String name = "[RTV] " + _desc.DebugName;
             D3D11Utility::SetDebugName(_RTV, name.c_str(), name.size());
 #endif
@@ -35,7 +35,7 @@ namespace te
             _RODepthROStencilView = CreateDSV(texture, _desc.MostDetailMip, _desc.FirstArraySlice, _desc.NumArraySlices, true, true);
             _WDepthROStencilView = CreateDSV(texture, _desc.MostDetailMip, _desc.FirstArraySlice, _desc.NumArraySlices, false, true);
 
-#if  TE_DEBUG_MODE == 1
+#if  TE_DEBUG_MODE == TE_DEBUG_ENABLED
             String name = "";
 
             name = "[WDepthWStencilView] " + _desc.DebugName;
@@ -55,7 +55,7 @@ namespace te
         {
             _SRV = CreateSRV(texture, _desc.MostDetailMip, _desc.NumMips, _desc.FirstArraySlice, _desc.NumArraySlices);
 
-#if  TE_DEBUG_MODE == 1
+#if  TE_DEBUG_MODE == TE_DEBUG_ENABLED
             String name = "[SRV] " + _desc.DebugName;
             D3D11Utility::SetDebugName(_SRV, name.c_str(), name.size());
 #endif

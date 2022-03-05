@@ -4,7 +4,7 @@
 #include <fstream>
 #include <cstring>
 
-#if TE_DEBUG_MODE == 1
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
 #   ifndef TE_ASSERT_ERROR_ASSERT
 #   define TE_ASSERT_ERROR_ERROR(condition) assert((condition));
 #   endif

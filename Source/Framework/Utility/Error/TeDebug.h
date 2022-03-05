@@ -4,7 +4,7 @@
 #include <fstream>
 #include <cstring>
 
-#if TE_DEBUG_MODE == 1
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
 #   ifndef TE_DEBUG_FILE
 #       define TE_DEBUG_FILE "Log/Debug.log"
 #   endif

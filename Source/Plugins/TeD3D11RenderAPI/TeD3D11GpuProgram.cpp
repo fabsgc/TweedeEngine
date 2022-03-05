@@ -43,7 +43,7 @@ namespace te
             desc.IncludePath = _includePath;
             desc.FilePath = _filePath;
 
-#if TE_DEBUG_MODE == 1
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
             auto path = std::filesystem::absolute(desc.FilePath);
             _debugName = path.filename().generic_string();
 #endif
@@ -93,7 +93,7 @@ namespace te
             TE_ASSERT_ERROR(false, "Cannot create D3D11 vertex shader from microcode\nError Description: " + errorDescription);
         }
 
-#if  TE_DEBUG_MODE == 1
+#if  TE_DEBUG_MODE == TE_DEBUG_ENABLED
         _debugName = "[VS] " + _debugName;
         D3D11Utility::SetDebugName(_vertexShader, _debugName.c_str(), _debugName.size());
 #endif
@@ -125,7 +125,7 @@ namespace te
             TE_ASSERT_ERROR(false, "Cannot create D3D11 pixel shader from microcode.\nError Description: " + errorDescription);
         }
 
-#if  TE_DEBUG_MODE == 1
+#if  TE_DEBUG_MODE == TE_DEBUG_ENABLED
         _debugName = "[PS] " + _debugName;
         D3D11Utility::SetDebugName(_pixelShader, _debugName.c_str(), _debugName.size());
 #endif
@@ -157,7 +157,7 @@ namespace te
             TE_ASSERT_ERROR(false, "Cannot create D3D11 geometry shader from microcode.\nError Description: " + errorDescription);
         }
 
-#if  TE_DEBUG_MODE == 1
+#if  TE_DEBUG_MODE == TE_DEBUG_ENABLED
         _debugName = "[GS] " + _debugName;
         D3D11Utility::SetDebugName(_geometryShader, _debugName.c_str(), _debugName.size());
 #endif
@@ -189,7 +189,7 @@ namespace te
             TE_ASSERT_ERROR(false, "Cannot create D3D11 domain shader from microcode.\nError Description: " + errorDescription);
         }
 
-#if  TE_DEBUG_MODE == 1
+#if  TE_DEBUG_MODE == TE_DEBUG_ENABLED
         _debugName = "[DS] " + _debugName;
         D3D11Utility::SetDebugName(_domainShader, _debugName.c_str(), _debugName.size());
 #endif
@@ -221,7 +221,7 @@ namespace te
             TE_ASSERT_ERROR(false, "Cannot create D3D11 hull shader from microcode.\nError Description: " + errorDescription);
         }
 
-#if  TE_DEBUG_MODE == 1
+#if  TE_DEBUG_MODE == TE_DEBUG_ENABLED
         _debugName = "[HS] " + _debugName;
         D3D11Utility::SetDebugName(_hullShader, _debugName.c_str(), _debugName.size());
 #endif
@@ -252,7 +252,7 @@ namespace te
             TE_ASSERT_ERROR(false, "Cannot create D3D11 compute shader from microcode.\nError Description: " + errorDescription);
         }
 
-#if  TE_DEBUG_MODE == 1
+#if  TE_DEBUG_MODE == TE_DEBUG_ENABLED
         _debugName = "[CS] " + _debugName;
         D3D11Utility::SetDebugName(_computeShader, _debugName.c_str(), _debugName.size());
 #endif

@@ -9,7 +9,7 @@ namespace te
 
     void Console::OnStartUp()
     {
-#if TE_DEBUG_MODE == 1 && TE_PLATFORM == TE_PLATFORM_WIN32
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED && TE_PLATFORM == TE_PLATFORM_WIN32
         AllocConsole();
 
         fpstdin = stdin;
@@ -24,7 +24,7 @@ namespace te
 
     void Console::OnShutDown()
     {
-#if TE_DEBUG_MODE == 1 && TE_PLATFORM == TE_PLATFORM_WIN32
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED && TE_PLATFORM == TE_PLATFORM_WIN32
         fclose(stdin);
         fclose(stdout);
         fclose(stderr);

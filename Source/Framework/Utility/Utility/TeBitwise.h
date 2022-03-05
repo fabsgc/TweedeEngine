@@ -2,6 +2,7 @@
 
 #include "Prerequisites/TePrerequisitesUtility.h"
 #include "Math/TeMath.h"
+#include <type_traits>
 
 #if TE_COMPILER == TE_COMPILER_MSVC
 #include <intrin.h>
@@ -10,52 +11,74 @@
 namespace te
 {
     /** Floating point number broken down into components for easier access. */
-    union Float754
+    union Float754_BigEndian
     {
         UINT32 raw;
         float value;
         struct {
-#if TE_ENDIAN == TE_ENDIAN_BIG
             UINT32 negative : 1;
             UINT32 exponent : 8;
             UINT32 mantissa : 23;
-#else
+        } field;
+    };
+
+    union Float754_LittleEndian
+    {
+        UINT32 raw;
+        float value;
+        struct {
             UINT32 mantissa : 23;
             UINT32 exponent : 8;
             UINT32 negative : 1;
-#endif
         } field;
     };
 
     /** 10-bit floating point number broken down into components for easier access. */
-    union Float10
+    union Float10_BigEndian
     {
         UINT32 raw;
         struct {
-#if TE_ENDIAN == TE_ENDIAN_BIG
             UINT32 exponent : 5;
             UINT32 mantissa : 5;
-#else
+        } field;
+    };
+
+    union Float10_LittleEndian
+    {
+        UINT32 raw;
+        struct {
             UINT32 mantissa : 5;
             UINT32 exponent : 5;
-#endif
         } field;
     };
 
     /** 11-bit floating point number broken down into components for easier access. */
-    union Float11
+    union Float11_BigEndian
     {
         UINT32 raw;
         struct {
-#if TE_ENDIAN == TE_ENDIAN_BIG
             UINT32 exponent : 5;
             UINT32 mantissa : 6;
-#else
-            UINT32 mantissa : 6;
-            UINT32 exponent : 5;
-#endif
         } field;
     };
+
+    union Float11_LittleEndian
+    {
+        UINT32 raw;
+        struct {
+            UINT32 mantissa : 6;
+            UINT32 exponent : 5;
+        } field;
+    };
+
+    template<bool IsBigEndian>
+    using Float754 = typename std::conditional<IsBigEndian, Float754_BigEndian, Float754_LittleEndian>::type;
+
+    template<bool IsBigEndian>
+    using Float10 = typename std::conditional<IsBigEndian, Float10_BigEndian, Float10_LittleEndian>::type;
+
+    template<bool IsBigEndian>
+    using Float11 = typename std::conditional<IsBigEndian, Float11_BigEndian, Float11_LittleEndian>::type;
 
     /** Class for manipulating bit patterns. */
     class Bitwise
@@ -418,15 +441,18 @@ namespace te
                     ((UINT16*)dest)[0] = (UINT16)value;
                     break;
                 case 3:
-#if TE_ENDIAN == TE_ENDIAN_BIG
-                    ((UINT8*)dest)[0] = (UINT8)((value >> 16) & 0xFF);
-                    ((UINT8*)dest)[1] = (UINT8)((value >> 8) & 0xFF);
-                    ((UINT8*)dest)[2] = (UINT8)(value & 0xFF);
-#else
-                    ((UINT8*)dest)[2] = (UINT8)((value >> 16) & 0xFF);
-                    ((UINT8*)dest)[1] = (UINT8)((value >> 8) & 0xFF);
-                    ((UINT8*)dest)[0] = (UINT8)(value & 0xFF);
-#endif
+                    if (Util::IsBigEndian())
+                    {
+                        ((UINT8*)dest)[0] = (UINT8)((value >> 16) & 0xFF);
+                        ((UINT8*)dest)[1] = (UINT8)((value >> 8) & 0xFF);
+                        ((UINT8*)dest)[2] = (UINT8)(value & 0xFF);
+                    }
+                    else
+                    {
+                        ((UINT8*)dest)[2] = (UINT8)((value >> 16) & 0xFF);
+                        ((UINT8*)dest)[1] = (UINT8)((value >> 8) & 0xFF);
+                        ((UINT8*)dest)[0] = (UINT8)(value & 0xFF);
+                    }
                     break;
                 case 4:
                     ((UINT32*)dest)[0] = (UINT32)value;
@@ -442,15 +468,18 @@ namespace te
                 case 2:
                     return ((UINT16*)src)[0];
                 case 3:
-#if TE_ENDIAN == TE_ENDIAN_BIG
-                    return ((UINT32)((UINT8*)src)[0]<<16)|
-                            ((UINT32)((UINT8*)src)[1]<<8)|
+                    if (Util::IsBigEndian())
+                    {
+                        return ((UINT32)((UINT8*)src)[0] << 16) |
+                            ((UINT32)((UINT8*)src)[1] << 8) |
                             ((UINT32)((UINT8*)src)[2]);
-#else
-                    return ((UINT32)((UINT8*)src)[0])|
-                            ((UINT32)((UINT8*)src)[1]<<8)|
-                            ((UINT32)((UINT8*)src)[2]<<16);
-#endif
+                    }
+                    else
+                    {
+                        return ((UINT32)((UINT8*)src)[0]) |
+                            ((UINT32)((UINT8*)src)[1] << 8) |
+                            ((UINT32)((UINT8*)src)[2] << 16);
+                    }
                 case 4:
                     return ((UINT32*)src)[0];
             }
@@ -559,7 +588,9 @@ namespace te
         /** Converts a 32-bit float to a 10-bit float according to OpenGL packed_float extension. */
         static UINT32 FloatToFloat10(float v)
         {
-            Float754 f;
+            static const bool isBigEndian = Util::IsBigEndian();
+
+            Float754<TE_ENDIAN == TE_ENDIAN_BIG> f;
             f.value = v;
 
             if (f.field.exponent == 0xFF)
@@ -599,7 +630,7 @@ namespace te
         /** Converts a 32-bit float to a 11-bit float according to OpenGL packed_float extension. */
         static UINT32 FloatToFloat11(float v)
         {
-            Float754 f;
+            Float754<TE_ENDIAN == TE_ENDIAN_BIG> f;
             f.value = v;
 
             if (f.field.exponent == 0xFF)
@@ -639,7 +670,7 @@ namespace te
         /** Converts a 10-bit float to a 32-bit float according to OpenGL packed_float extension. */
         static float Float10ToFloat(UINT32 v)
         {
-            Float10 f;
+            Float10<TE_ENDIAN == TE_ENDIAN_BIG> f;
             f.raw = v;
 
             UINT32 output;
@@ -681,7 +712,7 @@ namespace te
         /** Converts a 11-bit float to a 32-bit float according to OpenGL packed_float extension. */
         static float Float11ToFloat(UINT32 v)
         {
-            Float11 f;
+            Float11<TE_ENDIAN == TE_ENDIAN_BIG> f;
             f.raw = v;
 
             UINT32 output;
