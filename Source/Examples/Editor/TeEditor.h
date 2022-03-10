@@ -271,7 +271,7 @@ namespace te
         HMesh _loadedMeshMonkey;
 
         HTexture _loadedSkyboxTexture;
-        HTexture _loadedSkyboxIrradianceTexture;
+        HTexture _loadedSkyboxDiffuseIrrTexture;
 
         HMaterial _monkeyMaterial;
 

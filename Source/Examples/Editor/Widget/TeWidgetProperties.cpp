@@ -2648,7 +2648,7 @@ namespace te
         UUID emptyTexture = UUID(50, 0, 0, 0);
         UUID loadTexture = UUID::EMPTY;
         UUID textureUUID = (skybox->GetTexture()) ? skybox->GetTexture()->GetUUID() : emptyTexture;
-        UUID irradianceuUUID = (skybox->GetIrradiance()) ? skybox->GetIrradiance()->GetUUID() : emptyTexture;
+        UUID irradianceuUUID = (skybox->GetDiffuseIrradiance()) ? skybox->GetDiffuseIrradiance()->GetUUID() : emptyTexture;
         EditorResManager::ResourcesContainer& container = EditorResManager::Instance().Get<Texture>();
 
         for (auto& resource : container.Res)
@@ -2693,12 +2693,12 @@ namespace te
                 }
                 else if (irradianceuUUID == emptyTexture)
                 {
-                    skybox->SetIrradiance(nullptr);
+                    skybox->SetDiffuseIrradiance(nullptr);
                     hasChanged = true;
                 }
                 else
                 {
-                    skybox->SetIrradiance(gResourceManager().Load<Texture>(irradianceuUUID).GetInternalPtr());
+                    skybox->SetDiffuseIrradiance(gResourceManager().Load<Texture>(irradianceuUUID).GetInternalPtr());
                     hasChanged = true;
                 }
             }
@@ -3127,29 +3127,36 @@ namespace te
         bool skyboxLoaded = false;
 
         if (_loadSkybox || _loadSkyboxIrradiance)
-            ImGui::OpenPopup("Load Skybox Texture");
-
-        if (_fileBrowser.ShowFileDialog("Load Skybox Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), false, ".png,.jpeg,.jpg.dds"))
         {
-            auto textureSkyboxImportOptions = TextureImportOptions::Create();
-            textureSkyboxImportOptions->CubemapType = CubemapSourceType::Faces;
-            textureSkyboxImportOptions->IsCubemap = true;
-            textureSkyboxImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
-            textureSkyboxImportOptions->CpuCached = _fileBrowser.Data.TexParam.CpuCached;
+            ImGui::OpenPopup("Load Skybox Texture");
+            _fileBrowser.Data.TexParam.TexType = TextureType::TEX_TYPE_CUBE_MAP;
+        }
 
-            HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.Data.SelectedPath, textureSkyboxImportOptions);
-            if (texture.IsLoaded())
+        if (_fileBrowser.ShowFileDialog("Load Skybox Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, ".png,.jpeg,.jpg,.dds,.tiff,.tga"))
+        {
+            if (_fileBrowser.Data.TexParam.TexType == TextureType::TEX_TYPE_CUBE_MAP)
             {
-                texture->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
-                EditorResManager::Instance().Add<Texture>(texture);
-                SPtr<CSkybox> skybox = std::static_pointer_cast<CSkybox>(_selections.ClickedComponent);
+                auto textureSkyboxImportOptions = TextureImportOptions::Create();
+                textureSkyboxImportOptions->CubemapType = CubemapSourceType::Faces;
+                textureSkyboxImportOptions->IsCubemap = true;
+                textureSkyboxImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
+                textureSkyboxImportOptions->CpuCached = _fileBrowser.Data.TexParam.CpuCached;
+                textureSkyboxImportOptions->SRGB = _fileBrowser.Data.TexParam.SRGB;
 
-                if(_loadSkybox)
-                    skybox->SetTexture(texture.GetInternalPtr());
-                else
-                    skybox->SetIrradiance(texture.GetInternalPtr());
+                HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.Data.SelectedPath, textureSkyboxImportOptions);
+                if (texture.IsLoaded())
+                {
+                    texture->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
+                    EditorResManager::Instance().Add<Texture>(texture);
+                    SPtr<CSkybox> skybox = std::static_pointer_cast<CSkybox>(_selections.ClickedComponent);
 
-                skyboxLoaded = true;
+                    if (_loadSkybox)
+                        skybox->SetTexture(texture.GetInternalPtr());
+                    else
+                        skybox->SetDiffuseIrradiance(texture.GetInternalPtr());
+
+                    skyboxLoaded = true;
+                }
             }
 
             _loadSkybox = false;
@@ -3158,7 +3165,10 @@ namespace te
         else
         {
             if (_fileBrowser.Data.IsCancelled)
+            {
                 _loadSkybox = false;
+                _loadSkyboxIrradiance = false;
+            }
         }
 
         return skyboxLoaded;
@@ -3231,12 +3241,15 @@ namespace te
         bool heightFieldTextureLoaded = false;
 
         if (_loadHeightFieldTexture)
+        {
             ImGui::OpenPopup("Load Height Field Texture");
+            _fileBrowser.Data.TexParam.TexType = TextureType::TEX_TYPE_2D;
+        }
 
         if (_fileBrowser.ShowFileDialog("Load Height Field Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, ".png,.jpeg,.jpg.dds"))
         {
             auto textureImportOptions = TextureImportOptions::Create();
-            if (_fileBrowser.Data.TexParam.TexType != TextureType::TEX_TYPE_CUBE_MAP)
+            if (_fileBrowser.Data.TexParam.TexType == TextureType::TEX_TYPE_2D)
             {
                 textureImportOptions->CpuCached = _fileBrowser.Data.TexParam.CpuCached;
                 textureImportOptions->GenerateMips = _fileBrowser.Data.TexParam.GenerateMips;

@@ -47,18 +47,18 @@ namespace te
             // We also set camera buffer view here (because it will set PerCameraBuffer correctly for the current pass on this material only once)
             if (!lastMaterial || lastMaterial != entry.RenderElem->MaterialElem)
             {
-                // If Globall Illumination is enabled and if a Skybox with a texture exists,,
+                // If Globall Illumination is enabled and if a Skybox with a texture exists,
                 // We bind this texture for this material
-                /* if (entry.RenderElem->MaterialElem->GetProperties().UseGlobalIllumination && 
-                    !entry.RenderElem->MaterialElem->GetProperties().UseIrradianceMap)
+                if (entry.RenderElem->MaterialElem->GetProperties().UseIBL && 
+                    !entry.RenderElem->MaterialElem->GetProperties().UseDiffuseIrrMap)
                 {
                     if (view.GetRenderSettings().EnableSkybox)
                     {
                         Skybox* skybox = scene.SkyboxElem;
-                        SPtr<Texture> skyboxMap = skybox ? skybox->GetIrradiance() : nullptr;
-                        entry.RenderElem->GpuParamsElem[entry.PassIdx]->SetTexture("IrradianceMap", skyboxMap);
+                        SPtr<Texture> skyboxMap = skybox ? skybox->GetDiffuseIrradiance() : nullptr;
+                        entry.RenderElem->GpuParamsElem[entry.PassIdx]->SetTexture("DiffuseIrrMap", skyboxMap);
                     } 
-                } TODO PBR */
+                }
 
                 /*if (!entry.RenderElem->MaterialElem->GetProperties().UseEnvironmentMap)
                 {
@@ -623,7 +623,7 @@ namespace te
     void RCNodeTonemapping::Render(const RenderCompositorNodeInputs& inputs)
     {
         const RenderSettings& settings = inputs.View.GetRenderSettings();
-        if (!settings.Tonemapping.Enabled || !settings.EnableHDR)
+        if (!settings.EnableHDR)
             return;
 
         inputs.CurrRenderAPI.PushMarker("[DRAW] Tone Mapping", Color(0.7f, 0.9f, 0.4f));
@@ -641,13 +641,13 @@ namespace te
         {
             auto& texProps = ppLastFrame->GetProperties();
             toneMapping->Execute(ppLastFrame, ppOutput, texProps.GetNumSamples(), 
-                settings.Gamma, settings.ExposureScale, settings.Contrast, settings.Brightness);
+                settings.Gamma, settings.ExposureScale, settings.Contrast, settings.Brightness, !settings.Tonemapping.Enabled);
         }
         else
         {
             auto& texProps = gpuInitializationPassNode->SceneTex->Tex->GetProperties();
             toneMapping->Execute(gpuInitializationPassNode->SceneTex->Tex, ppOutput, texProps.GetNumSamples(),
-                settings.Gamma, settings.ExposureScale, settings.Contrast, settings.Brightness);
+                settings.Gamma, settings.ExposureScale, settings.Contrast, settings.Brightness, !settings.Tonemapping.Enabled);
         }
 
         inputs.CurrRenderAPI.PopMarker();

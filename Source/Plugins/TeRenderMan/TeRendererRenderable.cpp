@@ -48,6 +48,8 @@ namespace te
         data.Reflectance = properties.Reflectance;
         data.AmbientOcclusion = properties.AmbientOcclusion;
         data.Emissive = properties.Emissive.GetAsVector4();
+        data.UseIBL = (UINT32)properties.UseIBL ? 1 : 0;
+        data.UseDiffuseIrrMap = (UINT32)properties.UseDiffuseIrrMap ? 1 : 0;
 
         return data;
     }

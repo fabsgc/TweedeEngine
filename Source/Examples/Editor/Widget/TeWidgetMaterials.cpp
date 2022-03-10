@@ -52,8 +52,8 @@ namespace te
         EditorResManager::ResourcesContainer& textures = EditorResManager::Instance().Get<Texture>();
         const float width = ImGui::GetWindowContentRegionWidth() - 110.0f;
 
-        /*const auto& ShowTexture = [&](UUID& uuid, bool& textureUsed, const char* id, const char* label, const char* textureName, 
-            ImGuiExt::ComboOptions<UUID>& options, float width, bool disable = false)
+        const auto& ShowTexture = [&](UUID& uuid, bool& textureUsed, const char* id, const char* label, const char* textureName, 
+            ImGuiExt::ComboOptions<UUID>& options, float width, bool disable = false, TextureType texType = TextureType::TEX_TYPE_2D)
         {
             SPtr<Texture> texture = nullptr;
             bool hasChanged = false;
@@ -88,6 +88,7 @@ namespace te
                     _loadTexture = true;
                     _loadTextureName = textureName;
                     _loadTextureUsed = &textureUsed;
+                    _fileBrowser.Data.TexParam.TexType = texType;
                 }
                 else if (uuid == empty)
                 {
@@ -97,14 +98,18 @@ namespace te
                 }
                 else
                 {
-                    _currentMaterial->SetTexture(textureName, gResourceManager().Load<Texture>(uuid).GetInternalPtr());
-                    textureUsed = true;
-                    hasChanged = true;
+                    HTexture loadedTexture = gResourceManager().Load<Texture>(uuid);
+                    if (loadedTexture.IsLoaded() && loadedTexture->GetProperties().GetTextureType() == texType)
+                    {
+                        _currentMaterial->SetTexture(textureName, loadedTexture.GetInternalPtr());
+                        textureUsed = true;
+                        hasChanged = true;
+                    }
                 }
             }
 
             return hasChanged;
-        }; TODO PBR */
+        };
 
         const auto& ShowPreviewButton = [this](const char* title, const std::function<bool()>& getVisibility)
         {
@@ -297,6 +302,12 @@ namespace te
                     if (ImGuiExt::RenderOptionFloat(properties.Reflectance, "##material_prop_reflectance_option", "Reflectance", 0.0f, 1.0f, width))
                         hasChanged = true;
                 }
+
+                ImGui::Separator();
+                {
+                    if (ImGuiExt::RenderOptionBool(properties.UseIBL, "##material_properties_ibl_option", "Use IBL"))
+                        hasChanged = true;
+                }
             }
 
             if (ImGui::CollapsingHeader("Textures", ImGuiTreeNodeFlags_DefaultOpen))
@@ -327,6 +338,9 @@ namespace te
                 texturesEnvMappingOptions.AddOption(load, ICON_FA_FOLDER_OPEN " Load");
 
                 // TODO PBR
+
+                if (ShowTexture(uuid, properties.UseDiffuseIrrMap, "##material_texture_diffuse_irradiance_option", "Diffuse Irradiance", "DiffuseIrrMap", texturesEnvMappingOptions, width, !properties.UseIBL, TextureType::TEX_TYPE_CUBE_MAP))
+                    hasChanged = true;
 
                 if (ShowLoadedTexture())
                     hasChanged = true;
@@ -426,6 +440,7 @@ namespace te
                 textureImportOptions->CubemapType = CubemapSourceType::Faces;
                 textureImportOptions->IsCubemap = true;
                 textureImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
+                textureImportOptions->SRGB = _fileBrowser.Data.TexParam.SRGB;
             }
             else
             {
@@ -433,6 +448,7 @@ namespace te
                 textureImportOptions->GenerateMips = _fileBrowser.Data.TexParam.GenerateMips;
                 textureImportOptions->MaxMip = _fileBrowser.Data.TexParam.MaxMips;
                 textureImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
+                textureImportOptions->SRGB = _fileBrowser.Data.TexParam.SRGB;
             }
 
             HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.Data.SelectedPath, textureImportOptions);

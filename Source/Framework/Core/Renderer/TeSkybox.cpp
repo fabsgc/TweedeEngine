@@ -40,13 +40,13 @@ namespace te
         _markCoreDirty((ActorDirtyFlag)SkyboxDirtyFlag::Texture);
     }
 
-    void Skybox::SetIrradiance(const HTexture& irradiance)
+    void Skybox::SetDiffuseIrradiance(const HTexture& irradiance)
     {
         _irradiance = irradiance.GetInternalPtr();
         _markCoreDirty((ActorDirtyFlag)SkyboxDirtyFlag::Texture);
     }
 
-    void Skybox::SetIrradiance(const SPtr<Texture>& irradiance)
+    void Skybox::SetDiffuseIrradiance(const SPtr<Texture>& irradiance)
     {
         _irradiance = irradiance;
         _markCoreDirty((ActorDirtyFlag)SkyboxDirtyFlag::Texture);

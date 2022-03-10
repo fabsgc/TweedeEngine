@@ -159,8 +159,6 @@ namespace te
         if (textureImportOptions->CpuCached)
             usage |= TU_CPUCACHED;
 
-        bool sRGB = textureImportOptions->SRGB;
-
         TEXTURE_DESC texDesc;
         texDesc.Type = texType;
         texDesc.Width = faceData[0]->GetWidth();
@@ -168,11 +166,11 @@ namespace te
         texDesc.NumMips = 0;
         texDesc.Format = textureImportOptions->Format;
         texDesc.Usage = usage;
-        texDesc.HwGamma = sRGB;
+        texDesc.HwGamma = textureImportOptions->SRGB;
         texDesc.DebugName = path.filename().generic_string();
 
         MipMapGenOptions mipOptions;
-        mipOptions.IsSRGB = sRGB;
+        mipOptions.IsSRGB = textureImportOptions->SRGB;
         mipOptions.Alpha = AlphaMode::Transparency;
         mipOptions.Filter = MipMapFilter::Kaiser;
         mipOptions.Quality = CompressionQuality::Highest;

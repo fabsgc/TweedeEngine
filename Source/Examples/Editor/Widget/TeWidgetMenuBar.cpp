@@ -280,6 +280,7 @@ namespace te
                     textureImportOptions->CubemapType = CubemapSourceType::Faces;
                     textureImportOptions->IsCubemap = true;
                     textureImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
+                    textureImportOptions->SRGB = _fileBrowser.Data.TexParam.SRGB;
                 }
                 else
                 {
@@ -287,6 +288,7 @@ namespace te
                     textureImportOptions->GenerateMips = _fileBrowser.Data.TexParam.GenerateMips;
                     textureImportOptions->MaxMip = _fileBrowser.Data.TexParam.MaxMips;
                     textureImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
+                    textureImportOptions->SRGB = _fileBrowser.Data.TexParam.SRGB;
                 }
 
                 HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.Data.SelectedPath, textureImportOptions, true);

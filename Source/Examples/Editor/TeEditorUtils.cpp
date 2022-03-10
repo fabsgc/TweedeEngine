@@ -28,7 +28,7 @@ namespace te
         bool notAllLoaded = false;
         List<SPtr<Task>> tasks;
 
-        /*const auto& BindTexture = [&](bool* isSet, const String& textureName, const String& texturePath, HMaterial& material)
+        const auto& BindTexture = [&](bool* isSet, const String& textureName, const String& texturePath, HMaterial& material, bool SRGB)
         {
             if (*isSet)
             {
@@ -37,6 +37,7 @@ namespace te
                 textureImportOptions->GenerateMips = true;
                 textureImportOptions->MaxMip = 0;
                 textureImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
+                textureImportOptions->SRGB = SRGB;
 
                 HTexture texture = EditorResManager::Instance().Load<Texture>(texturePath, textureImportOptions);
 
@@ -50,7 +51,7 @@ namespace te
                     *isSet = false;
                 }
             }
-        }; TODO PBR */
+        };
 
         for (UINT32 i = 0; i < mesh->GetProperties().GetNumSubMeshes(); i++)
         {

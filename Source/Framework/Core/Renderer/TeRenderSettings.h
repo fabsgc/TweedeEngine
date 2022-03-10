@@ -418,14 +418,14 @@ namespace te
          * yield brighter image. Allows you to customize exposure manually, applied on top of eye adaptation exposure (if
          * enabled). In range [-8, 8].
          */
-        float ExposureScale = 0.85f;
+        float ExposureScale = 1.25f;
 
         /**
          * Gamma value to adjust the image for. Larger values result in a brighter image. When tonemapping is turned
          * on the best gamma curve for the output device is chosen automatically and this value can by used to merely tweak
          * that curve. If tonemapping is turned off this is the exact value of the gamma curve that will be applied.
          */
-        float Gamma =1.0f;
+        float Gamma = 2.2f;
 
         /**
          * High dynamic range allows light intensity to be more correctly recorded when rendering by allowing for a larger
@@ -468,12 +468,12 @@ namespace te
         /**
          * Add contrast to image output
          */
-        float Contrast = 2.0f;
+        float Contrast = 1.5f;
 
         /**
          * make image brighter
          */
-        float Brightness = 0.1f;
+        float Brightness = 0.2f;
 
         /**
          * The absolute base cull-distance for objects rendered through this camera in world units. Objects will use this

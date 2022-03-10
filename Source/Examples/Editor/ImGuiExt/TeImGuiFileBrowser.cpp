@@ -768,6 +768,8 @@ namespace te
                         }
                     }
 
+                    ImGuiExt::RenderOptionBool(Data.TexParam.SRGB, "##file_dialog_texture_srgb", "sRGB");
+
                     ImGuiExt::RenderOptionBool(Data.TexParam.CpuCached, "##file_dialog_texture_cpu_cached", "CPU cached");
                 }
                 else if (ext == ".ogg" || ext == ".wav" || ext == ".flac")

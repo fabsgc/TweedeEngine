@@ -2,9 +2,9 @@
 
 #define MAX_LIGHTS 24
 
-#define DIRECTIONAL_LIGHT 0.0
-#define POINT_LIGHT 1.0
-#define SPOT_LIGHT 2.0
+#define DIRECTIONAL_LIGHT 0
+#define POINT_LIGHT 1
+#define SPOT_LIGHT 2
 
 #define PARALLAX_MIN_SAMPLE 8
 #define PARALLAX_MAX_SAMPLE 256
@@ -19,6 +19,9 @@ struct MaterialData
     float  Reflectance;
     float  AmbientOcclusion;
     float4 Emissive;
+    uint   UseIBL;
+    uint   UseDiffuseIrrMap;
+    float2 Padding1;
 };
 
 struct LightData
@@ -34,8 +37,8 @@ struct LightData
     float  LinearAttenuation;
     float  QuadraticAttenuation;
     bool   CastShadows;
-    bool3  Padding1;
-    float  Padding2;
+    bool3  Padding2;
+    float  Padding3;
 };
 
 struct LightingResult
@@ -63,15 +66,29 @@ cbuffer PerFrameBuffer : register(b3)
     float  gTime;
     float  gFrameDelta;
     uint   gUseSkyboxMap;
-    uint   gUseSkyboxIrradianceMap;
+    uint   gUseSkyboxDiffuseIrrMap;
     float4 gSceneLightColor;
     float  gSkyboxBrightness;
     float3 gPadding2;
 }
+
+SamplerState TextureSampler : register(s0);
+
+TextureCube DiffuseIrrMap : register(t0);
 
 // #################### HELPER FUNCTIONS
 
 float4 ComputeNormalBuffer(float4 normal)
 {
     return float4(normal.xyz, 1.0);
+}
+
+float3 DoDiffuseIBL(float3 N)
+{
+    float3 result = (float3)0;
+
+    if(gMaterial.UseDiffuseIrrMap || gUseSkyboxDiffuseIrrMap)
+        result = DiffuseIrrMap.Sample(TextureSampler, N).rgb * gSkyboxBrightness * 1.75f;
+
+    return result;
 }

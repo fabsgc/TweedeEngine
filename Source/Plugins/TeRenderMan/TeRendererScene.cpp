@@ -58,8 +58,7 @@ namespace te
                 if (!missingElements.empty())
                 {
                     StringStream wrnStream;
-                    wrnStream << "Provided mesh is missing required vertex attributes to render with the \
-                        provided shader. Missing elements: " << std::endl;
+                    wrnStream << "Provided mesh is missing required vertex attributes to render with the provided shader. Missing elements: " << std::endl;
 
                     for (auto& entry : missingElements)
                         wrnStream << "\t" << ToString(entry.GetSemantic()) << entry.GetSemanticIdx() << std::endl;
@@ -631,13 +630,13 @@ namespace te
         {
             gPerFrameParamDef.gSkyboxBrightness.Set(_info.PerFrameParamBuffer, _info.SkyboxElem->GetBrightness());
             gPerFrameParamDef.gUseSkyboxMap.Set(_info.PerFrameParamBuffer, _info.SkyboxElem->GetTexture() ? 1 : 0);
-            gPerFrameParamDef.gUseSkyboxIrradianceMap.Set(_info.PerFrameParamBuffer, _info.SkyboxElem->GetIrradiance() ? 1 : 0);
+            gPerFrameParamDef.gUseSkyboxDiffuseIrrMap.Set(_info.PerFrameParamBuffer, _info.SkyboxElem->GetDiffuseIrradiance() ? 1 : 0);
         }
         else
         {
             gPerFrameParamDef.gSkyboxBrightness.Set(_info.PerFrameParamBuffer, 1.0f);
             gPerFrameParamDef.gUseSkyboxMap.Set(_info.PerFrameParamBuffer, 0);
-            gPerFrameParamDef.gUseSkyboxIrradianceMap.Set(_info.PerFrameParamBuffer, 0);
+            gPerFrameParamDef.gUseSkyboxDiffuseIrrMap.Set(_info.PerFrameParamBuffer, 0);
         }
     }
 

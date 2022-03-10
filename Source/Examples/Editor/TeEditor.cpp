@@ -402,10 +402,6 @@ namespace te
         _viewportCameraUI->SetName("Viewport camera UI");
 
         auto settings = _viewportCamera->GetRenderSettings();
-        settings->ExposureScale = 0.9f;
-        settings->Gamma = 1.0f;
-        settings->Contrast = 2.0f;
-        settings->Brightness = 0.0f;
         settings->MotionBlur.Enabled = false;
 
         _previewViewportCamera = _viewportCamera.GetNewHandleFromExisting();
@@ -1247,26 +1243,28 @@ namespace te
         textureImportOptions->CpuCached = false;
         textureImportOptions->GenerateMips = true;
         textureImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
+        textureImportOptions->SRGB = true;
 
         auto textureCubeMapImportOptions = TextureImportOptions::Create();
         textureCubeMapImportOptions->CpuCached = false;
         textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
         textureCubeMapImportOptions->IsCubemap = true;
         textureCubeMapImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
+        textureCubeMapImportOptions->SRGB = true;
         // ######################################################
 
         // LOAD MESH AND TEXTURES RESOURCES
         // ######################################################
         _loadedMeshMonkey = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Monkey/monkey-hd.obj", meshImportOptions)->Entries[0].Res);
         _loadedSkyboxTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_day_medium.png", textureCubeMapImportOptions);
-        _loadedSkyboxIrradianceTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_day_irradiance_small.png", textureCubeMapImportOptions);
+        _loadedSkyboxDiffuseIrrTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_day_irradiance_small.png", textureCubeMapImportOptions);
         
         if (_loadedMeshMonkey.IsLoaded())
             _loadedMeshMonkey->SetName("Monkey Mesh");
         if (_loadedSkyboxTexture.IsLoaded())
             _loadedSkyboxTexture->SetName("Skybox Radiance");
-        if (_loadedSkyboxIrradianceTexture.IsLoaded())
-            _loadedSkyboxIrradianceTexture->SetName("Skybox Irradiance");
+        if (_loadedSkyboxDiffuseIrrTexture.IsLoaded())
+            _loadedSkyboxDiffuseIrrTexture->SetName("Skybox Diffuse Irradiance");
         // ###################################################### 
 
         // GET BUILTIN OPAQUE SHADER
@@ -1283,18 +1281,19 @@ namespace te
             _monkeyMaterial = Material::Create(_shader);
             _monkeyMaterial->SetName("Monkey Material");
             _monkeyMaterial->SetProperties(monkeyMatprop);
+            //_monkeyMaterial->SetSamplerState("TextureSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
         }
         // ######################################################
 
         // FILL SCENE WITH SKYBOX
         // ######################################################
-        if (_loadedSkyboxTexture.IsLoaded() && _loadedSkyboxIrradianceTexture.IsLoaded())
+        if (_loadedSkyboxTexture.IsLoaded() && _loadedSkyboxDiffuseIrrTexture.IsLoaded())
         {
             _sceneSkyboxSO = SceneObject::Create("Skybox");
             _sceneSkyboxSO->SetParent(_sceneSO);
             _skybox = _sceneSkyboxSO->AddComponent<CSkybox>();
             _skybox->SetTexture(_loadedSkyboxTexture);
-            _skybox->SetIrradiance(_loadedSkyboxIrradianceTexture);
+            _skybox->SetDiffuseIrradiance(_loadedSkyboxDiffuseIrrTexture);
             _skybox->Initialize();
         }
         // ######################################################

@@ -50,6 +50,9 @@ namespace te
         float   Reflectance;
         float   AmbientOcclusion;
         Vector4 Emissive;
+        UINT32  UseIBL;
+        UINT32  UseDiffuseIrrMap;
+        Vector2 Padding;
     };
 
     struct PerLightData
@@ -111,7 +114,7 @@ namespace te
         TE_PARAM_BLOCK_ENTRY(float, gTime)
         TE_PARAM_BLOCK_ENTRY(float, gFrameDelta)
         TE_PARAM_BLOCK_ENTRY(UINT32, gUseSkyboxMap)
-        TE_PARAM_BLOCK_ENTRY(UINT32, gUseSkyboxIrradianceMap)
+        TE_PARAM_BLOCK_ENTRY(UINT32, gUseSkyboxDiffuseIrrMap)
         TE_PARAM_BLOCK_ENTRY(Vector4, gSceneLightColor)
         TE_PARAM_BLOCK_ENTRY(float, gSkyboxBrightness)
         TE_PARAM_BLOCK_ENTRY(Vector3, gPadding2)

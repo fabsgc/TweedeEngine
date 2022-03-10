@@ -20,7 +20,7 @@ namespace te
     const Color  MaterialsPreview::BackgroundColor = Color(0.3f, 0.36f, 0.48f, 1.0f);
 
     MaterialsPreview::Preview::Preview()
-    { 
+    {
         MatPreview = te_shared_ptr_new<RendererUtility::RenderTextureData>();
 
         MatPreview->Width = MaterialsPreview::PreviewSize;
@@ -155,7 +155,7 @@ namespace te
     void MaterialsPreview::InitializeSkybox()
     {
         _skybox = Skybox::Create();
-        _skybox->SetIrradiance(_irradiance);
+        _skybox->SetDiffuseIrradiance(_irradiance);
         _skybox->SetTexture(_environment);
     }
 
@@ -214,6 +214,7 @@ namespace te
         textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
         textureCubeMapImportOptions->IsCubemap = true;
         textureCubeMapImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
+        textureCubeMapImportOptions->SRGB = true;
 
         _irradiance = ResourceManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_day_irradiance_small.png", textureCubeMapImportOptions).GetInternalPtr();
         _environment = ResourceManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_day_medium.png", textureCubeMapImportOptions).GetInternalPtr();

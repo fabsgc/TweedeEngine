@@ -66,6 +66,19 @@ namespace te
         float AmbientOcclusion = 0.0f;
 
         Color Emissive         = Color::Black;
+
+        /**
+         * Specify if this material must compute IBL using textures
+         * coming from this material, skybox or light probe
+         * Priority : Material > Light Probe > Skybox
+        */
+        bool UseIBL = true;
+
+        /**
+         * Does this material must compute diffuse irradiance using 
+         * a texture stored on this material
+         */
+        bool UseDiffuseIrrMap = false;
     };
 
     struct MaterialTextures

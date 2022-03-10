@@ -28,8 +28,7 @@ struct VS_INPUT
     float4 BlendWeights  : BLENDWEIGHT;
     uint4  BlendIndices  : BLENDINDICES;
     float2 UV0           : TEXCOORD0;
-    float2 UV1           : TEXCOORD0;
-    float2 Texture       : TEXCOORD0;
+    float2 UV1           : TEXCOORD1;
     float4 Color         : COLOR0;
 };
 
