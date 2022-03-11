@@ -200,6 +200,9 @@ namespace te
         /** When editor goes to stop mode, we destroy to copied scene and restore the original one */
         void DestroyRunningScene();
 
+        /** Check is editor is in play mode or not */
+        bool IsEditorRunning() const { return gCoreApplication().GetState().IsFlagSet(ApplicationState::Mode::Game); }
+
     protected:
         void InitializeInput();
         void InitializeScene();

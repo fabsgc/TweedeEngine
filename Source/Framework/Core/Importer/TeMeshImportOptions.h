@@ -99,6 +99,9 @@ namespace te
         /** Determines if we need to set material properties for this mesh during import */
         bool ImportMaterials = true;
 
+        /** If materials must be imported, determines if we want to load texture as rgdb textures or not */
+        bool ImportSRGBTextures = true;
+
         /**
          * Enables or disables import of root motion curves. When enabled, any animation curves in imported animations
          * affecting the root bone will be available through a set of separate curves in AnimationClip, and they won't be

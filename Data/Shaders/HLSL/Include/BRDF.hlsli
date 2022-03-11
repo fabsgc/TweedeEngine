@@ -1,4 +1,5 @@
 #include "Include/CommonMath.hlsli"
+#include "Include/CommonGraphics.hlsli"
 
 //------------------------------------------------------------------------------
 // BRDF configuration

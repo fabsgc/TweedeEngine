@@ -698,8 +698,16 @@ namespace te
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportNormals, "##file_dialog_parameters_mesh_normals", "Import normals");
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportTangents, "##file_dialog_parameters_mesh_tangents", "Import tangents");
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportUVCoords, "##file_dialog_parameters_mesh_uvs", "Import UVs");
-                    ImGuiExt::RenderOptionBool(Data.MeshParam.ImportMaterials, "##file_dialog_parameters_mesh_material", "Import materials");
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportVertexColors, "##file_dialog_parameters_mesh_vertex_colors", "Import vertex colors");
+                    ImGui::Separator();
+
+                    ImGuiExt::RenderOptionBool(Data.MeshParam.ImportMaterials, "##file_dialog_parameters_mesh_material", "Import materials");
+                    if (Data.MeshParam.ImportMaterials)
+                    {
+                        ImGui::Indent(30.0f);
+                        ImGuiExt::RenderOptionBool(Data.MeshParam.ImportSRGBTextures, "##file_dialog_parameters_mesh_srgb_textures", "SRGB Textures");
+                        ImGui::Unindent(30.0f);
+                    }
                     ImGui::Separator();
 
                     if (Data.MeshParam.ImportNormals)

@@ -27,6 +27,8 @@ namespace te
         Matrix4 NDCToPrevNDC;
         Vector4 ClipToUVScaleOffset;
         Vector4 UVToClipScaleOffset;
+        UINT32  UseSRGB;
+        Vector3 Padding; // # PADDING
     };
 
     struct PerInstanceData
@@ -48,11 +50,12 @@ namespace te
         float   Metallic;
         float   Roughness;
         float   Reflectance;
-        float   AmbientOcclusion;
+        float   AO;
         Vector4 Emissive;
-        UINT32  UseIBL;
+        UINT32  UseIndirectLighting;
         UINT32  UseDiffuseIrrMap;
-        Vector2 Padding;
+        UINT32  UseSpecularIrrMap;
+        UINT32  Padding; // # PADDING
     };
 
     struct PerLightData
@@ -68,8 +71,8 @@ namespace te
         float   LinearAttenuation;
         float   QuadraticAttenuation;
         bool    CastShadows;
-        bool    Padding1[3];
-        float   Padding2;
+        bool    Padding1[3]; // # PADDING
+        float   Padding2; // # PADDING
     };
 
     // ############ Per Camera
@@ -117,7 +120,7 @@ namespace te
         TE_PARAM_BLOCK_ENTRY(UINT32, gUseSkyboxDiffuseIrrMap)
         TE_PARAM_BLOCK_ENTRY(Vector4, gSceneLightColor)
         TE_PARAM_BLOCK_ENTRY(float, gSkyboxBrightness)
-        TE_PARAM_BLOCK_ENTRY(Vector3, gPadding2)
+        TE_PARAM_BLOCK_ENTRY(Vector2, gPadding2)
     TE_PARAM_BLOCK_END
 
     extern PerFrameParamDef gPerFrameParamDef;

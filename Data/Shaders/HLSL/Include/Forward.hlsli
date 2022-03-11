@@ -15,6 +15,8 @@ struct CameraData
     matrix NDCToPrevNDC;
     float4 ClipToUVScaleOffset;
     float4 UVToClipScaleOffset;
+    uint   UseSRGB;
+    float3 Padding;
 };
 
 // #################### STAGE INPUTS / OUTPUTS

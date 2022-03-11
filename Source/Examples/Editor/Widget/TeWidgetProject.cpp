@@ -65,9 +65,8 @@ namespace te
     }
 
     void WidgetProject::Update()
-    { 
-        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Mode::Game);
-        if (isRunning)
+    {
+        if (gEditor().IsEditorRunning())
         {
             HSceneObject& sceneSO = gEditor().GetRunningSceneRoot();
             ShowTree(sceneSO);
@@ -290,13 +289,16 @@ namespace te
         // Right click on item - Select and show context menu
         if (rightClick)
         {
-            if (_selections.HoveredSceneObject)
-                SetSelectedSceneObject(_selections.HoveredSceneObject);
+            if (!gEditor().IsEditorRunning())
+            {
+                if (_selections.HoveredSceneObject)
+                    SetSelectedSceneObject(_selections.HoveredSceneObject);
 
-            if (_selections.HoveredComponent)
-                SetSelectedComponent(_selections.HoveredComponent);
+                if (_selections.HoveredComponent)
+                    SetSelectedComponent(_selections.HoveredComponent);
 
-            ImGui::OpenPopup("##ProjectContextMenu");
+                ImGui::OpenPopup("##ProjectContextMenu");
+            }
         }
 
         // Clicking on empty space - Clear selection
@@ -311,21 +313,20 @@ namespace te
 
     void WidgetProject::HandleKeyShortcuts()
     {
+        if (gEditor().IsEditorRunning())
+            return;
+
         if (!ImGui::IsWindowHovered())
             return;
 
         if (gVirtualInput().IsButtonDown(_copyBtn))
         {
             if (_selections.ClickedComponent)
-            {
                 _selections.CopiedComponent = _selections.ClickedComponent;
-                gEditor().NeedsRedraw();
-            }
             else
-            {
                 _selections.CopiedSceneObject = _selections.ClickedSceneObject;
-                gEditor().NeedsRedraw();
-            }
+
+            gEditor().NeedsRedraw();
         }
 
         if (gVirtualInput().IsButtonDown(_pasteBtn))
@@ -383,6 +384,9 @@ namespace te
 
     void WidgetProject::HandleDragAndDrop(HSceneObject& sceneObject)
     {
+        if (gEditor().IsEditorRunning())
+            return;
+
         HSceneObject& root = gEditor().GetSceneRoot();
 
         if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
@@ -535,6 +539,9 @@ namespace te
 
     void WidgetProject::HandleDragAndDrop(HComponent& component)
     {
+        if (gEditor().IsEditorRunning())
+            return;
+
         if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
         {
             _dragPayload.Type = DragPayloadType::Component;
@@ -593,8 +600,7 @@ namespace te
 
     void WidgetProject::PopupContextMenu()
     {
-        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Mode::Game);
-        if (isRunning)
+        if (gEditor().IsEditorRunning())
             return;
 
         if (!ImGui::BeginPopup("##ProjectContextMenu"))

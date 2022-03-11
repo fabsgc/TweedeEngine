@@ -60,6 +60,7 @@ VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
 
         OUT.Other.x = (gWriteVelocity == 1) ? 1.0 : 0.0;
         OUT.Other.y = (gCastLights == 1) ? 1.0 : 0.0;
+        OUT.Other.z = (gCamera.UseSRGB == 1) ? 1.0 : 0.0;
     }
     else
     {
@@ -112,6 +113,7 @@ VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
 
         OUT.Other.x = (gInstanceData[instanceid].WriteVelocity == 1) ? 1.0 : 0.0;
         OUT.Other.y = (gInstanceData[instanceid].CastLights == 1) ? 1.0 : 0.0;
+        OUT.Other.z = (gCamera.UseSRGB == 1) ? 1.0 : 0.0;
     }
 
     float3x3 TBN = float3x3(OUT.Tangent, OUT.BiTangent, OUT.Normal);

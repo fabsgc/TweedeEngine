@@ -63,7 +63,7 @@ namespace te
         float Roughness        = 0.5f;
         float Metallic         = 0.5f;
         float Reflectance      = 0.0f;
-        float AmbientOcclusion = 0.0f;
+        float AO               = 0.0f;
 
         Color Emissive         = Color::Black;
 
@@ -72,13 +72,19 @@ namespace te
          * coming from this material, skybox or light probe
          * Priority : Material > Light Probe > Skybox
         */
-        bool UseIBL = true;
+        bool UseIndirectLighting = true;
 
         /**
          * Does this material must compute diffuse irradiance using 
          * a texture stored on this material
          */
         bool UseDiffuseIrrMap = false;
+
+        /**
+         * Does this material must compute specular irradiance using 
+         * a texture stored on this material
+         */
+        bool UseSpecularIrrMap = false;
     };
 
     struct MaterialTextures

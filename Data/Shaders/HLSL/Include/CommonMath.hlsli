@@ -19,7 +19,8 @@
  *
  * @public-api
  */
-float Pow5(float x) {
+float Pow5(float x)
+{
     float x2 = x * x;
     return x2 * x2 * x;
 }
@@ -29,7 +30,8 @@ float Pow5(float x) {
  *
  * @public-api
  */
-float Sqrt(float x) {
+float Sqrt(float x)
+{
     return x * x;
 }
 
@@ -42,19 +44,23 @@ float Sqrt(float x) {
  *
  * @public-api
  */
-float Max3(const float3 v) {
+float Max3(const float3 v)
+{
     return max(v.x, max(v.y, v.z));
 }
 
-float Vmax(const float2 v) {
+float Vmax(const float2 v)
+{
     return max(v.x, v.y);
 }
 
-float Vmax(const float3 v) {
+float Vmax(const float3 v)
+{
     return max(v.x, max(v.y, v.z));
 }
 
-float Vmax(const float4 v) {
+float Vmax(const float4 v)
+{
     return max(max(v.x, v.y), max(v.y, v.z));
 }
 
@@ -63,19 +69,23 @@ float Vmax(const float4 v) {
  *
  * @public-api
  */
-float Min3(const float3 v) {
+float Min3(const float3 v)
+{
     return min(v.x, min(v.y, v.z));
 }
 
-float Vmin(const float2 v) {
+float Vmin(const float2 v)
+{
     return min(v.x, v.y);
 }
 
-float Vmin(const float3 v) {
+float Vmin(const float3 v)
+{
     return min(v.x, min(v.y, v.z));
 }
 
-float Vmin(const float4 v) {
+float Vmin(const float4 v)
+{
     return min(min(v.x, v.y), min(v.y, v.z));
 }
 
@@ -87,7 +97,8 @@ float Vmin(const float4 v) {
  * Approximates acos(x) with a max absolute error of 9.0x10^-3.
  * Valid in the range -1..1.
  */
-float AcosFast(float x) {
+float AcosFast(float x) 
+{
     // Lagarde 2014, "Inverse trigonometric functions GPU optimization for AMD GCN architecture"
     // This is the approximation of degree 1, with a max absolute error of 9.0x10^-3
     float y = abs(x);
@@ -100,7 +111,8 @@ float AcosFast(float x) {
  * Approximates acos(x) with a max absolute error of 9.0x10^-3.
  * Valid only in the range 0..1.
  */
-float AcosFastPositive(float x) {
+float AcosFastPositive(float x) 
+{
     float p = -0.1565827 * x + 1.570796;
     return p * sqrt(1.0 - x);
 }

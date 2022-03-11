@@ -60,6 +60,7 @@ namespace te
                 bool ImportAnimations = true;
                 bool ReduceKeyFrames = true;
                 bool ImportMaterials = true;
+                bool ImportSRGBTextures = true;
                 bool ImportVertexColors = true;
                 bool ForceGenNormals = false;
                 bool GenSmoothNormals = false;

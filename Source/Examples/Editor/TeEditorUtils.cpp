@@ -22,7 +22,7 @@ namespace te
     const String EditorUtils::COPY_BINDING = "Copy";
     const String EditorUtils::PASTE_BINDING = "Paste";
 
-    void EditorUtils::ImportMeshMaterials(HMesh& mesh)
+    void EditorUtils::ImportMeshMaterials(HMesh& mesh, bool SRGB)
     {
         UnorderedMap<String, HMaterial> createdMaterials;
         bool notAllLoaded = false;
@@ -83,38 +83,38 @@ namespace te
                 /* if (subMesh.MatProperties.UseDiffuseMap)
                 {
                     tasks.push_back(Task::Create(subMesh.MaterialName,
-                        [&]() { BindTexture(&subMesh.MatProperties.UseDiffuseMap, "DiffuseMap", subMesh.MatTextures.DiffuseMap, createdMaterials[subMesh.MaterialName]); }));
+                        [&]() { BindTexture(&subMesh.MatProperties.UseDiffuseMap, "DiffuseMap", subMesh.MatTextures.DiffuseMap, createdMaterials[subMesh.MaterialName], SRGB); }));
                 }
                 if (subMesh.MatProperties.UseEmissiveMap)
                 {
                     tasks.push_back(Task::Create(subMesh.MaterialName,
-                        [&]() { BindTexture(&subMesh.MatProperties.UseEmissiveMap, "EmissiveMap", subMesh.MatTextures.EmissiveMap, createdMaterials[subMesh.MaterialName]); }));
+                        [&]() { BindTexture(&subMesh.MatProperties.UseEmissiveMap, "EmissiveMap", subMesh.MatTextures.EmissiveMap, createdMaterials[subMesh.MaterialName], SRGB); }));
                 }
                 if (subMesh.MatProperties.UseNormalMap)
                 {
                     tasks.push_back(Task::Create(subMesh.MaterialName,
-                        [&]() { BindTexture(&subMesh.MatProperties.UseNormalMap, "NormalMap", subMesh.MatTextures.NormalMap, createdMaterials[subMesh.MaterialName]); }));
+                        [&]() { BindTexture(&subMesh.MatProperties.UseNormalMap, "NormalMap", subMesh.MatTextures.NormalMap, createdMaterials[subMesh.MaterialName], SRGB); }));
                 }
                 if (subMesh.MatProperties.UseSpecularMap)
                 {
                     tasks.push_back(Task::Create(subMesh.MaterialName,
-                        [&]() { BindTexture(&subMesh.MatProperties.UseSpecularMap, "SpecularMap", subMesh.MatTextures.SpecularMap, createdMaterials[subMesh.MaterialName]); }));
+                        [&]() { BindTexture(&subMesh.MatProperties.UseSpecularMap, "SpecularMap", subMesh.MatTextures.SpecularMap, createdMaterials[subMesh.MaterialName], SRGB); }));
                 }
                 if (subMesh.MatProperties.UseBumpMap)
                 {
                     tasks.push_back(Task::Create(subMesh.MaterialName,
-                        [&]() { BindTexture(&subMesh.MatProperties.UseBumpMap, "BumpMap", subMesh.MatTextures.BumpMap, createdMaterials[subMesh.MaterialName]); }));
+                        [&]() { BindTexture(&subMesh.MatProperties.UseBumpMap, "BumpMap", subMesh.MatTextures.BumpMap, createdMaterials[subMesh.MaterialName], SRGB); }));
                 }
                 if (subMesh.MatProperties.UseTransparencyMap)
                 {
                     tasks.push_back(Task::Create(subMesh.MaterialName,
-                        [&]() { BindTexture(&subMesh.MatProperties.UseTransparencyMap, "TransparencyMap", subMesh.MatTextures.TransparencyMap, createdMaterials[subMesh.MaterialName]); }));
+                        [&]() { BindTexture(&subMesh.MatProperties.UseTransparencyMap, "TransparencyMap", subMesh.MatTextures.TransparencyMap, createdMaterials[subMesh.MaterialName], SRGB); }));
                 }
                 if (subMesh.MatProperties.UseReflectionMap)
                 {
                     tasks.push_back(Task::Create(subMesh.MaterialName,
-                        [&]() { BindTexture(&subMesh.MatProperties.UseReflectionMap, "ReflectionMap", subMesh.MatTextures.ReflectionMap, createdMaterials[subMesh.MaterialName]); }));
-                } TODO PBR */
+                        [&]() { BindTexture(&subMesh.MatProperties.UseReflectionMap, "ReflectionMap", subMesh.MatTextures.ReflectionMap, createdMaterials[subMesh.MaterialName], SRGB); }));
+                } TODO PBR : be careful with srgb */
             }
         }
 

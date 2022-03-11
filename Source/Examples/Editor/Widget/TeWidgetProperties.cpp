@@ -3034,6 +3034,7 @@ namespace te
             meshImportOptions->ImportAnimations = _fileBrowser.Data.MeshParam.ImportAnimations;
             meshImportOptions->ReduceKeyFrames = _fileBrowser.Data.MeshParam.ReduceKeyFrames;
             meshImportOptions->ImportMaterials = _fileBrowser.Data.MeshParam.ImportMaterials;
+            meshImportOptions->ImportSRGBTextures = _fileBrowser.Data.MeshParam.ImportSRGBTextures;
             meshImportOptions->ImportVertexColors = _fileBrowser.Data.MeshParam.ImportVertexColors;
             meshImportOptions->ForceGenNormals = _fileBrowser.Data.MeshParam.ForceGenNormals;
             meshImportOptions->GenSmoothNormals = _fileBrowser.Data.MeshParam.GenSmoothNormals;
@@ -3065,7 +3066,7 @@ namespace te
 
                                 if (meshImportOptions->ImportMaterials)
                                 {
-                                    EditorUtils::ImportMeshMaterials(mesh);
+                                    EditorUtils::ImportMeshMaterials(mesh, meshImportOptions->ImportSRGBTextures);
 
                                     for (UINT32 i = 0; i < mesh->GetProperties().GetNumSubMeshes(); i++)
                                     {
@@ -3246,7 +3247,7 @@ namespace te
             _fileBrowser.Data.TexParam.TexType = TextureType::TEX_TYPE_2D;
         }
 
-        if (_fileBrowser.ShowFileDialog("Load Height Field Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, ".png,.jpeg,.jpg.dds"))
+        if (_fileBrowser.ShowFileDialog("Load Height Field Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, ".png,.jpeg,.jpg,.dds,.tiff,.tga"))
         {
             auto textureImportOptions = TextureImportOptions::Create();
             if (_fileBrowser.Data.TexParam.TexType == TextureType::TEX_TYPE_2D)

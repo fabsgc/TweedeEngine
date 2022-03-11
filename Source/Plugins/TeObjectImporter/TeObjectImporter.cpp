@@ -108,6 +108,7 @@ namespace te
                         collisionMeshImportOption.ScaleSystemUnit = meshImportOptions->ScaleSystemUnit;
                         collisionMeshImportOption.ScaleFactor = meshImportOptions->ScaleFactor;
                         collisionMeshImportOption.ImportMaterials = false;
+                        collisionMeshImportOption.ImportSRGBTextures = false;
                         collisionMeshImportOption.ImportRootMotion = false;
                         collisionMeshImportOption.ImportCollisionShape = false;
 

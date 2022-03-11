@@ -46,10 +46,11 @@ namespace te
         data.Metallic = properties.Metallic;
         data.Roughness = properties.Roughness;
         data.Reflectance = properties.Reflectance;
-        data.AmbientOcclusion = properties.AmbientOcclusion;
+        data.AO = properties.AO;
         data.Emissive = properties.Emissive.GetAsVector4();
-        data.UseIBL = (UINT32)properties.UseIBL ? 1 : 0;
+        data.UseIndirectLighting = (UINT32)properties.UseIndirectLighting ? 1 : 0;
         data.UseDiffuseIrrMap = (UINT32)properties.UseDiffuseIrrMap ? 1 : 0;
+        data.UseSpecularIrrMap = (UINT32)properties.UseSpecularIrrMap ? 1 : 0;
 
         return data;
     }

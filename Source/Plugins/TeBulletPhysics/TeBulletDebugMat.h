@@ -15,9 +15,9 @@ namespace te
         Vector4 FromColor;
         Vector4 ToColor;
         Vector3 From;
-        float   Padding1;
+        float   Padding1; // # PADDING
         Vector3 To;
-        float   Padding2;
+        float   Padding2; // # PADDING
     };
 
     TE_PARAM_BLOCK_BEGIN(PerBulletDebugFrameParamDef)

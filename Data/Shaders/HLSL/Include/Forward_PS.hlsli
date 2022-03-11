@@ -17,11 +17,12 @@ struct MaterialData
     float  Metallic;
     float  Roughness;
     float  Reflectance;
-    float  AmbientOcclusion;
+    float  AO;
     float4 Emissive;
-    uint   UseIBL;
+    uint   UseIndirectLighting;
     uint   UseDiffuseIrrMap;
-    float2 Padding1;
+    uint   UseSpecularIrrMap;
+    uint   Padding1;
 };
 
 struct LightData
@@ -75,6 +76,7 @@ cbuffer PerFrameBuffer : register(b3)
 SamplerState TextureSampler : register(s0);
 
 TextureCube DiffuseIrrMap : register(t0);
+TextureCube SpecularIrrMap : register(t1);
 
 // #################### HELPER FUNCTIONS
 
@@ -87,8 +89,8 @@ float3 DoDiffuseIBL(float3 N)
 {
     float3 result = (float3)0;
 
-    if(gMaterial.UseDiffuseIrrMap || gUseSkyboxDiffuseIrrMap)
-        result = DiffuseIrrMap.Sample(TextureSampler, N).rgb * gSkyboxBrightness * 1.75f;
+    if(gMaterial.UseIndirectLighting && (gMaterial.UseDiffuseIrrMap || gUseSkyboxDiffuseIrrMap))
+        result = DiffuseIrrMap.Sample(TextureSampler, N).rgb * gSkyboxBrightness * 2.0f;
 
     return result;
 }

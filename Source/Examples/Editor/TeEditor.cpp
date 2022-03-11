@@ -689,9 +689,8 @@ namespace te
     void Editor::HandleImGuizmo()
     {
         bool somethingSelected = false;
-        
-        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Mode::Game);
-        if (isRunning)
+
+        if (IsEditorRunning())
             return;
 
         if (_selections.ClickedComponent)
@@ -822,18 +821,27 @@ namespace te
 
     void Editor::Save()
     {
+        if (IsEditorRunning())
+            return;
+
         _settings.State = EditorState::Saved;
         // TODO Save
     }
 
     void Editor::Open()
     {
+        if (IsEditorRunning())
+            return;
+
         _settings.State = EditorState::Saved;
         // TODO Open
     }
 
     void Editor::Paste()
     {
+        if (IsEditorRunning())
+            return;
+
         if (!_selections.CopiedSceneObject && !_selections.CopiedComponent)
             return;
 
@@ -1168,6 +1176,9 @@ namespace te
 
     void Editor::Delete()
     {
+        if (IsEditorRunning())
+            return;
+
         if (!_selections.ClickedSceneObject && !_selections.ClickedComponent)
             return;
 

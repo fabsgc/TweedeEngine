@@ -311,6 +311,7 @@ namespace te
                 meshImportOptions->ImportAnimations = _fileBrowser.Data.MeshParam.ImportAnimations;
                 meshImportOptions->ReduceKeyFrames = _fileBrowser.Data.MeshParam.ReduceKeyFrames;
                 meshImportOptions->ImportMaterials = _fileBrowser.Data.MeshParam.ImportMaterials;
+                meshImportOptions->ImportSRGBTextures = _fileBrowser.Data.MeshParam.ImportSRGBTextures;
                 meshImportOptions->ImportVertexColors = _fileBrowser.Data.MeshParam.ImportVertexColors;
                 meshImportOptions->ForceGenNormals = _fileBrowser.Data.MeshParam.ForceGenNormals;
                 meshImportOptions->GenSmoothNormals = _fileBrowser.Data.MeshParam.GenSmoothNormals;
@@ -333,7 +334,7 @@ namespace te
                                 EditorResManager::Instance().Add<Mesh>(mesh);
 
                                 if (_fileBrowser.Data.MeshParam.ImportMaterials)
-                                    EditorUtils::ImportMeshMaterials(mesh);
+                                    EditorUtils::ImportMeshMaterials(mesh, meshImportOptions->ImportSRGBTextures);
                             }
                         }
                         else if (subRes.Name == "collision")

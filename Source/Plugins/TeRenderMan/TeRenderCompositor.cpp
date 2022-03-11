@@ -49,7 +49,7 @@ namespace te
             {
                 // If Globall Illumination is enabled and if a Skybox with a texture exists,
                 // We bind this texture for this material
-                if (entry.RenderElem->MaterialElem->GetProperties().UseIBL && 
+                if (entry.RenderElem->MaterialElem->GetProperties().UseIndirectLighting && 
                     !entry.RenderElem->MaterialElem->GetProperties().UseDiffuseIrrMap)
                 {
                     if (view.GetRenderSettings().EnableSkybox)

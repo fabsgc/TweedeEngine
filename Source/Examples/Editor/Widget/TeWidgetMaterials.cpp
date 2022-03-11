@@ -305,7 +305,7 @@ namespace te
 
                 ImGui::Separator();
                 {
-                    if (ImGuiExt::RenderOptionBool(properties.UseIBL, "##material_properties_ibl_option", "Use IBL"))
+                    if (ImGuiExt::RenderOptionBool(properties.UseIndirectLighting, "##material_properties_ibl_option", "Use Indirect Lighting"))
                         hasChanged = true;
                 }
             }
@@ -339,7 +339,10 @@ namespace te
 
                 // TODO PBR
 
-                if (ShowTexture(uuid, properties.UseDiffuseIrrMap, "##material_texture_diffuse_irradiance_option", "Diffuse Irradiance", "DiffuseIrrMap", texturesEnvMappingOptions, width, !properties.UseIBL, TextureType::TEX_TYPE_CUBE_MAP))
+                if (ShowTexture(uuid, properties.UseDiffuseIrrMap, "##material_texture_diffuse_irradiance_option", "Diff. Irradiance", "DiffuseIrrMap", texturesEnvMappingOptions, width, !properties.UseIndirectLighting, TextureType::TEX_TYPE_CUBE_MAP))
+                    hasChanged = true;
+
+                if (ShowTexture(uuid, properties.UseSpecularIrrMap, "##material_texture_specular_irradiance_option", "Spec. Irradiance", "SpecularIrrMap", texturesEnvMappingOptions, width, !properties.UseIndirectLighting, TextureType::TEX_TYPE_CUBE_MAP))
                     hasChanged = true;
 
                 if (ShowLoadedTexture())

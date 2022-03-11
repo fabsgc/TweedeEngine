@@ -34,7 +34,7 @@ namespace te
             Matrix4 MatWorldNoScale;
             Vector4 Color;
             float   Type;
-            Vector3 Padding;
+            Vector3 Padding; // # PADDING
         };
 
         struct VertexBufferLayout
