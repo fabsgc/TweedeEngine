@@ -130,6 +130,9 @@ namespace te
         /** Update data relative to skybox if exists */
         void SetParamSkyboxParams(bool enabled);
 
+        /** Update data relative to HDR if enabled */
+        void SetParamHDRParams(bool useGamma, bool useToneMapping, float gamma, float exposure, float contrast, float brightness);
+
         /**
          * Performs necessary per-frame updates to a renderable. This must be called once every frame for every renderable.
          *

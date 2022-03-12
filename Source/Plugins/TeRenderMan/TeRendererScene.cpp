@@ -255,7 +255,7 @@ namespace te
             {
                 if (_info.RadialLights.size() <= lightId)
                     return;
-                if (_info.DirectionalLights[lightId]._internal != light)
+                if (_info.RadialLights[lightId]._internal != light)
                     return;
 
                 Light* lastLight = _info.RadialLights.back()._internal;
@@ -278,7 +278,7 @@ namespace te
             {
                 if (_info.SpotLights.size() <= lightId)
                     return;
-                if (_info.DirectionalLights[lightId]._internal != light)
+                if (_info.SpotLights[lightId]._internal != light)
                     return;
 
                 Light* lastLight = _info.SpotLights.back()._internal;
@@ -637,7 +637,18 @@ namespace te
             gPerFrameParamDef.gSkyboxBrightness.Set(_info.PerFrameParamBuffer, 1.0f);
             gPerFrameParamDef.gUseSkyboxMap.Set(_info.PerFrameParamBuffer, 0);
             gPerFrameParamDef.gUseSkyboxDiffuseIrrMap.Set(_info.PerFrameParamBuffer, 0);
+            gPerFrameParamDef.gUseSkyboxSpecularIrrMap.Set(_info.PerFrameParamBuffer, 0);
         }
+    }
+
+    void RendererScene::SetParamHDRParams(bool useGamma, bool useToneMapping, float gamma, float exposure, float contrast, float brightness)
+    {
+        gPerFrameParamDef.gUseGamma.Set(_info.PerFrameParamBuffer, useGamma, 0);
+        gPerFrameParamDef.gUseToneMapping.Set(_info.PerFrameParamBuffer, useToneMapping, 0);
+        gPerFrameParamDef.gGamma.Set(_info.PerFrameParamBuffer, gamma, 0);
+        gPerFrameParamDef.gExposure.Set(_info.PerFrameParamBuffer, exposure, 0);
+        gPerFrameParamDef.gContrast.Set(_info.PerFrameParamBuffer, contrast, 0);
+        gPerFrameParamDef.gBrightness.Set(_info.PerFrameParamBuffer, brightness, 0);
     }
 
     void RendererScene::PrepareRenderable(UINT32 idx, const FrameInfo& frameInfo)

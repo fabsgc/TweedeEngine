@@ -27,7 +27,7 @@ namespace te
         TE_MODULE_STATIC_HEADER_MEMBER(RendererMaterialManager)
 
         /**	Registers a new material that should be initialized on module start-up. */
-        static void _registerMaterial(RendererMaterialMetaData* metaData, const std::any& shaderPath);
+        static void RegisterMaterial(RendererMaterialMetaData* metaData, const std::any& shaderPath);
     private:
         template<class T>
         friend class RendererMaterial;

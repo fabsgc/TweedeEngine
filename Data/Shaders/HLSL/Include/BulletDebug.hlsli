@@ -1,5 +1,8 @@
 #define STANDARD_MAX_INSTANCED_BLOCK 256
 
+#ifndef __BULLETDEBUG__
+#define __BULLETDEBUG__
+
 struct PerInstanceData
 {
     float4 FromColor;
@@ -36,3 +39,5 @@ struct PS_INPUT
     float4 Position : SV_POSITION;
     float4 Color : COLOR0;
 };
+
+#endif // __BULLETDEBUG__

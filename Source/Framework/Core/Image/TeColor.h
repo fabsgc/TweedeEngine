@@ -62,9 +62,11 @@ namespace te
         /** Returns the color as a 32-bit value in GBRA order. */
         GBRA GetAsGBRA() const;
 
-
         /** Returns the color as a 4*32-bit float vector in RGBA order. */
         Vector4 GetAsVector4() const;
+
+        /** Returns the color as a 3*32-bit float vector in RGBA order. */
+        Vector3 GetAsVector3() const;
 
         /**
          * Convert the current color to hue, saturation and brightness values.

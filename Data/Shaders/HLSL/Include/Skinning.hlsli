@@ -1,3 +1,6 @@
+#ifndef __SKINNING__
+#define __SKINNING__
+
 Buffer<float4> BoneMatrices;
 Buffer<float4> PrevBoneMatrices;
 
@@ -52,3 +55,5 @@ float4x4 GetPrevBlendMatrix(float4 blendWeights, uint4 blendIndices)
 
     return result;
 }
+
+#endif // __SKINNING

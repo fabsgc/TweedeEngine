@@ -30,17 +30,17 @@ namespace te
         Radian spotAngle = Math::Clamp(_internal->GetSpotAngle() * 0.5f, Degree(0), Degree(89));
         Color color = _internal->GetColor();
 
-        float type = 0.0f;
+        UINT32 type = 0;
         switch (_internal->GetType())
         {
         case LightType::Directional:
-            type = 0.0;
+            type = 0;
             break;
         case LightType::Radial:
-            type = 1.0f;
+            type = 1;
             break;
         case LightType::Spot:
-            type = 2.0f;
+            type = 2;
             break;
         default:
             break;
@@ -54,11 +54,11 @@ namespace te
         output.SpotAngles.y = Math::Cos(output.SpotAngles.x);
         output.SpotAngles.z = 1.0f / std::max(1.0f - output.SpotAngles.y, 0.001f);
         output.AttenuationRadius = _internal->GetAttenuationRadius();
-        output.Color = Vector3(color.r, color.g, color.b);
+        output.Color = color.GetAsVector3();
         output.BoundsRadius = _internal->GetBounds().GetRadius();
         output.LinearAttenuation = _internal->GetLinearAttenuation();
         output.QuadraticAttenuation = _internal->GetQuadraticAttenuation();
-        output.CastShadows = _internal->GetCastShadows();
+        output.CastShadows = _internal->GetCastShadows() ? 1 : 0;
         output.Type = type;
     }
 

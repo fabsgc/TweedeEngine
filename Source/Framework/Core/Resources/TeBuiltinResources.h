@@ -66,6 +66,8 @@ namespace te
     {
         /** Anistropic sampler. */
         Anisotropic,
+        /** NoFilter sampler */
+        NoFilter,
         /** Bilinear sampler. */
         Bilinear,
         /** Trilinear sampler. */
@@ -158,6 +160,7 @@ namespace te
         HShader _shaderDecal;
 
         SPtr<SamplerState> _anisotropicSamplerState = nullptr;
+        SPtr<SamplerState> _noFilterSamplerState = nullptr;
         SPtr<SamplerState> _bilinearSamplerState = nullptr;
         SPtr<SamplerState> _trilinearSamplerState = nullptr;
 
@@ -234,6 +237,7 @@ namespace te
         DEPTH_STENCIL_STATE_DESC _depthStencilStateDesc;
 
         SAMPLER_STATE_DESC _anisotropicSamplerStateDesc;
+        SAMPLER_STATE_DESC _noFilterSamplerStateDesc;
         SAMPLER_STATE_DESC _bilinearSamplerStateDesc;
         SAMPLER_STATE_DESC _trilinearSamplerStateDesc;
 

@@ -1,3 +1,6 @@
+#ifndef __HUD__
+#define __HUD__
+
 #define STANDARD_MAX_INSTANCED_BLOCK 256
 
 #define HUD_CAMERA 0.0
@@ -47,3 +50,5 @@ struct PS_INPUT
     float4 Color : COLOR0;
     float2 Texture: TEXCOORD0;
 };
+
+#endif // __HUD__

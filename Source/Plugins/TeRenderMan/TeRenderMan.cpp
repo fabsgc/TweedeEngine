@@ -164,8 +164,12 @@ namespace te
                 _mainViewGroup->GenerateInstanced(sceneInfo, _options->InstancingMode);
                 _mainViewGroup->GenerateRenderQueue(sceneInfo, *view, _options->InstancingMode);
 
-                _scene->SetParamCameraParams(view->GetSceneCamera()->GetRenderSettings()->SceneLightColor);
+                const auto& settings = view->GetSceneCamera()->GetRenderSettings();
+
+                _scene->SetParamCameraParams(settings->SceneLightColor);
                 _scene->SetParamSkyboxParams(view->GetSceneCamera()->GetRenderSettings()->EnableSkybox);
+                _scene->SetParamHDRParams(settings->EnableHDR, settings->Tonemapping.Enabled, settings->Gamma, 
+                    settings->ExposureScale, settings->Contrast, settings->Brightness);
 
                 if (RenderSingleView(*_mainViewGroup, *view, frameInfo))
                     anythingDrawn = true;

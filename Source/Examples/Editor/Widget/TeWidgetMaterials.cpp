@@ -308,6 +308,14 @@ namespace te
                     if (ImGuiExt::RenderOptionBool(properties.UseIndirectLighting, "##material_properties_ibl_option", "Use Indirect Lighting"))
                         hasChanged = true;
                 }
+
+                ImGui::Separator();
+                {
+                    if (ImGuiExt::RenderVector2(properties.TextureRepeat, "##material_properties_texture_repeat_option", " Texture Repeat", width))
+                        hasChanged = true;
+                    if (ImGuiExt::RenderVector2(properties.TextureOffset, "##material_properties_texture_repeat_option", " Texture Offset", width))
+                        hasChanged = true;
+                }
             }
 
             if (ImGui::CollapsingHeader("Textures", ImGuiTreeNodeFlags_DefaultOpen))
@@ -386,6 +394,7 @@ namespace te
                         samplerTypeOptions.AddOption(BuiltinSampler::Anisotropic, "Anisotropic");
                         samplerTypeOptions.AddOption(BuiltinSampler::Trilinear, "Trilinear");
                         samplerTypeOptions.AddOption(BuiltinSampler::Bilinear, "Bilinear");
+                        samplerTypeOptions.AddOption(BuiltinSampler::NoFilter, "No Filter");
                     }
 
                     if (_currentMaterial->GetSamplerState("TextureSampler") == gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic))

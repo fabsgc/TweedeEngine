@@ -52,6 +52,8 @@ namespace te
         float   Reflectance;
         float   AO;
         Vector4 Emissive;
+        Vector2 UV0Repeat;
+        Vector2 UV0Offset;
         UINT32  UseIndirectLighting;
         UINT32  UseDiffuseIrrMap;
         UINT32  UseSpecularIrrMap;
@@ -61,7 +63,7 @@ namespace te
     struct PerLightData
     {
         Vector3 Color;
-        float   Type;
+        UINT32  Type;
         Vector3 Position;
         float   Intensity;
         Vector3 Direction;
@@ -70,8 +72,7 @@ namespace te
         float   BoundsRadius;
         float   LinearAttenuation;
         float   QuadraticAttenuation;
-        bool    CastShadows;
-        bool    Padding1[3]; // # PADDING
+        UINT32  CastShadows;
         float   Padding2; // # PADDING
     };
 
@@ -105,7 +106,7 @@ namespace te
     TE_PARAM_BLOCK_BEGIN(PerLightsParamDef)
         TE_PARAM_BLOCK_ENTRY_ARRAY(PerLightData, gLights, STANDARD_FORWARD_MAX_NUM_LIGHTS)
         TE_PARAM_BLOCK_ENTRY(UINT32, gLightsNumber)
-        TE_PARAM_BLOCK_ENTRY(Vector3, gPadding1)
+        TE_PARAM_BLOCK_ENTRY(Vector3, gPadding1) // # PADDING
     TE_PARAM_BLOCK_END
 
     extern PerLightsParamDef gPerLightsParamDef;
@@ -116,11 +117,19 @@ namespace te
     TE_PARAM_BLOCK_BEGIN(PerFrameParamDef)
         TE_PARAM_BLOCK_ENTRY(float, gTime)
         TE_PARAM_BLOCK_ENTRY(float, gFrameDelta)
+        TE_PARAM_BLOCK_ENTRY(Vector2, gPadding2) // # PADDING
         TE_PARAM_BLOCK_ENTRY(UINT32, gUseSkyboxMap)
         TE_PARAM_BLOCK_ENTRY(UINT32, gUseSkyboxDiffuseIrrMap)
-        TE_PARAM_BLOCK_ENTRY(Vector4, gSceneLightColor)
+        TE_PARAM_BLOCK_ENTRY(UINT32, gUseSkyboxSpecularIrrMap)
         TE_PARAM_BLOCK_ENTRY(float, gSkyboxBrightness)
-        TE_PARAM_BLOCK_ENTRY(Vector2, gPadding2)
+        TE_PARAM_BLOCK_ENTRY(Vector4, gSceneLightColor)
+        TE_PARAM_BLOCK_ENTRY(UINT32, gUseGamma)
+        TE_PARAM_BLOCK_ENTRY(UINT32, gUseToneMapping)
+        TE_PARAM_BLOCK_ENTRY(float, gGamma)
+        TE_PARAM_BLOCK_ENTRY(float, gExposure)
+        TE_PARAM_BLOCK_ENTRY(float, gContrast)
+        TE_PARAM_BLOCK_ENTRY(float, gBrightness)
+        TE_PARAM_BLOCK_ENTRY(Vector2, gPadding3) // # PADDING
     TE_PARAM_BLOCK_END
 
     extern PerFrameParamDef gPerFrameParamDef;

@@ -20,13 +20,28 @@ namespace te
     public:																	\
     static void InitMetaData()												\
     {																		\
-    	te::RendererMaterialManager::_registerMaterial(&_metaData, type);	\
+    	te::RendererMaterialManager::RegisterMaterial(&_metaData, type);	\
     };																		\
+
+/**
+ * References the shader path in RendererMaterial implementation. Provides an _initDefines() method allowing the C++
+ * code to provide preprocessor defines to be set when compiling the shader. Note that when changing these defines you need
+ * to manually force the shader to be reimported.
+ */
+#define RMAT_DEF_CUSTOMIZED(type)											\
+	public:																	\
+	static void InitMetaData()												\
+	{																		\
+		InitDefines(_metaData.Defines);										\
+		te::RendererMaterialManager::RegisterMaterial(&_metaData, type);	\
+	};																		\
+	static void _initDefines(ShaderDefines& defines);
 
     struct RendererMaterialMetaData
     {
         SPtr<Shader> ShaderElem = nullptr;
         RendererMaterialBase* Instance = nullptr;
+        ShaderDefines Defines;
     };
 
     /**	Helper class to initialize all renderer materials as soon as the library is loaded. */
@@ -201,6 +216,9 @@ namespace te
                 break;
             }
         }
+
+        /** Returns a set of dynamically defined defines used when compiling this shader. */
+        static ShaderDefines GetShaderDefines() { return _metaData.Defines; }
 
     protected:
         static RendererMaterialMetaData _metaData;

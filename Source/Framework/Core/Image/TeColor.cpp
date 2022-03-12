@@ -209,6 +209,11 @@ namespace te
         return Vector4(r, g, b, a);
     }
 
+    Vector3 Color::GetAsVector3() const
+    {
+        return Vector3(r, g, b);
+    }
+
     Color Color::GetGamma() const
     {
         return Color(

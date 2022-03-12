@@ -261,13 +261,22 @@ namespace te
         bool Enabled = true;
 
         /** Determines the intensity of the bloom effect. Ideally should be in [0, 4] range but higher values are allowed.*/
-        float Intensity = 1.0f;
+        float Intensity = 0.5f;
 
         /**
          * Determines the number of samples to take during bloom. Increasing this value will
          * yield higher quality blur at the cost of the performance. Reduce also generated bloom texture size.
          */
-        BloomQuality Quality = BloomQuality::Medium;
+        BloomQuality Quality = BloomQuality::High;
+
+        /** Tint color to apply to the bloom highlight. A pure white means the bloom inherits the underlying scene color. */
+        Color Tint = Color::White;
+
+        /**
+         * Determines the percent of the texture to account for when filtering for bloom. Larger values will include
+         * farther away pixels.
+         */
+        float FilterSize = 0.15f;
     };
 
     /** Various options that control shadow rendering for a specific view. */

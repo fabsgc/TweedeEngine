@@ -1,3 +1,6 @@
+#ifndef __POSTPROCESS__
+#define __POSTPROCESS__
+
 #define STANDARD_MAX_BLUR_SAMPLES 128
 
 struct VS_INPUT
@@ -55,3 +58,5 @@ float4 TextureLevelSampling(SamplerState samplterState, Texture2D source,
 
     return color;
 }
+
+#endif // __POSTPROCESS__

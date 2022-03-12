@@ -17,6 +17,7 @@ namespace te
     BuiltinResources::~BuiltinResources()
     { 
         _anisotropicSamplerState = nullptr;
+        _noFilterSamplerState = nullptr;
         _bilinearSamplerState = nullptr;
         _trilinearSamplerState = nullptr;
         _frameworkIcon = nullptr;
@@ -162,6 +163,8 @@ namespace te
         {
         case BuiltinSampler::Anisotropic:
             return _anisotropicSamplerState;
+        case BuiltinSampler::NoFilter:
+            return _noFilterSamplerState; 
         case BuiltinSampler::Bilinear:
             return _bilinearSamplerState; 
         case BuiltinSampler::Trilinear:
@@ -540,6 +543,11 @@ namespace te
         _trilinearSamplerStateDesc.MinFilter = FO_LINEAR;
         _trilinearSamplerStateDesc.MagFilter = FO_LINEAR;
         _trilinearSamplerStateDesc.MipFilter = FO_LINEAR;
+
+        _noFilterSamplerStateDesc.AddressMode = UVWAddressingMode();
+        _noFilterSamplerStateDesc.MinFilter = FO_NONE;
+        _noFilterSamplerStateDesc.MagFilter = FO_NONE;
+        _noFilterSamplerStateDesc.MipFilter = FO_NONE;
     }
 
     void BuiltinResources::InitShaderDesc()
@@ -550,6 +558,7 @@ namespace te
     void BuiltinResources::InitSamplers()
     {
         _anisotropicSamplerState = SamplerState::Create(_anisotropicSamplerStateDesc);
+        _noFilterSamplerState = SamplerState::Create(_noFilterSamplerStateDesc);
         _bilinearSamplerState = SamplerState::Create(_bilinearSamplerStateDesc);
         _trilinearSamplerState = SamplerState::Create(_trilinearSamplerStateDesc);
     }

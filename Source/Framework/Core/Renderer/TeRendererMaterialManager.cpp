@@ -41,7 +41,7 @@ namespace te
         DestroyMaterials();
     }
 
-    void RendererMaterialManager::_registerMaterial(RendererMaterialMetaData* metaData, const std::any& shaderPath)
+    void RendererMaterialManager::RegisterMaterial(RendererMaterialMetaData* metaData, const std::any& shaderPath)
     {
 #if TE_PLATFORM == TE_PLATFORM_WIN32 // TODO to remove when OpenGL will be done
         const std::type_info& stringType = typeid(String);

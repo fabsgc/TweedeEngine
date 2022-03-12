@@ -28,7 +28,7 @@ namespace te
         bool notAllLoaded = false;
         List<SPtr<Task>> tasks;
 
-        const auto& BindTexture = [&](bool* isSet, const String& textureName, const String& texturePath, HMaterial& material, bool SRGB)
+        /*const auto& BindTexture = [&](bool* isSet, const String& textureName, const String& texturePath, HMaterial& material, bool SRGB)
         {
             if (*isSet)
             {
@@ -51,7 +51,7 @@ namespace te
                     *isSet = false;
                 }
             }
-        };
+        }; TODO PBR */
 
         for (UINT32 i = 0; i < mesh->GetProperties().GetNumSubMeshes(); i++)
         {

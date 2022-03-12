@@ -48,6 +48,8 @@ namespace te
         data.Reflectance = properties.Reflectance;
         data.AO = properties.AO;
         data.Emissive = properties.Emissive.GetAsVector4();
+        data.UV0Repeat = properties.TextureRepeat;
+        data.UV0Offset = properties.TextureOffset;
         data.UseIndirectLighting = (UINT32)properties.UseIndirectLighting ? 1 : 0;
         data.UseDiffuseIrrMap = (UINT32)properties.UseDiffuseIrrMap ? 1 : 0;
         data.UseSpecularIrrMap = (UINT32)properties.UseSpecularIrrMap ? 1 : 0;

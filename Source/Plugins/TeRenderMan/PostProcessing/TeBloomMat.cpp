@@ -9,7 +9,7 @@ namespace te
     {
         _paramBuffer = gBloomParamDef.CreateBuffer();
         _params->SetParamBlockBuffer("PerFrameBuffer", _paramBuffer);
-        _params->SetSamplerState("BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
+        _params->SetSamplerState("NoFilterSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
     }
 
     void BloomMat::Execute(const SPtr<Texture>& source, const SPtr<RenderTarget>& destination, const SPtr<Texture>& emissive, 

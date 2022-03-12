@@ -58,7 +58,7 @@ namespace te
 
     struct MaterialProperties
     {
-        Color BaseColor        = Color(0.6f, 0.6f, 0.6f);
+        Color BaseColor        = Color(0.8f, 0.8f, 0.8f);
 
         float Roughness        = 0.5f;
         float Metallic         = 0.5f;
@@ -66,6 +66,12 @@ namespace te
         float AO               = 0.0f;
 
         Color Emissive         = Color::Black;
+
+        /** Offset of any texture used for this material (UV0) */
+        Vector2 TextureRepeat = Vector2::ONE;
+
+        /** Repeat of any texture used for this material (UV0) */
+        Vector2 TextureOffset = Vector2::ZERO;
 
         /**
          * Specify if this material must compute IBL using textures

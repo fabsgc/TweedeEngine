@@ -1,3 +1,6 @@
+#ifndef __FORWARD_VS__
+#define __FORWARD_VS__
+
 // #################### DEFINES
 
 #define STANDARD_FORWARD_MAX_INSTANCED_BLOCK 128
@@ -38,3 +41,5 @@ cbuffer PerObjectBuffer : register(b2)
 }
 
 // #################### HELPER FUNCTIONS
+
+#endif // __FORWARD_VS__

@@ -51,7 +51,7 @@ VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
         OUT.BiTangent = normalize(mul(gMatWorld, float4(OUT.BiTangent, 0.0f))).xyz;
 
         OUT.UV0 = FlipUV(IN.UV0);
-        //OUT.UV1 = FlipUV(IN.UV1);
+        OUT.UV1 = FlipUV(IN.UV1);
 
         OUT.PositionWS = float4(IN.Position, 1.0f);
         if(gHasAnimation)
@@ -104,7 +104,7 @@ VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
         OUT.BiTangent = normalize(mul(gInstanceData[instanceid].MatWorld, float4(OUT.BiTangent, 0.0f))).xyz;
 
         OUT.UV0 = FlipUV(IN.UV0);
-        //OUT.UV1 = FlipUV(IN.UV1);
+        OUT.UV1 = FlipUV(IN.UV1);
 
         OUT.PositionWS = float4(IN.Position, 1.0f);
         if(gHasAnimation)

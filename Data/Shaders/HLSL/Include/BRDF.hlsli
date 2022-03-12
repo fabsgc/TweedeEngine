@@ -1,6 +1,9 @@
 #include "Include/CommonMath.hlsli"
 #include "Include/CommonGraphics.hlsli"
 
+#ifndef __BRDF__
+#define __BRDF__
+
 //------------------------------------------------------------------------------
 // BRDF configuration
 //------------------------------------------------------------------------------
@@ -244,3 +247,5 @@ float diffuse(float roughness, float NoV, float NoL, float LoH) {
     return Fd_Burley(roughness, NoV, NoL, LoH);
 #endif
 }
+
+#endif // __BRDF__

@@ -1,3 +1,6 @@
+#ifndef __FORWARD__
+#define __FORWARD__
+
 // #################### DEFINES
 
 // #################### STRUCTS
@@ -73,3 +76,5 @@ float2 FlipUV(float2 coord)
 {
     return float2(coord.x - 1.0f, coord.y);
 }
+
+#endif // __FOWARD__

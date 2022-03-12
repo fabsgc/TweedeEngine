@@ -855,8 +855,7 @@ namespace te
 
     void RCNodeBloom::Render(const RenderCompositorNodeInputs& inputs)
     {
-        UINT32 blurTextureFactor = 1;
-        UINT32 blurNumSamples = 7;
+        UINT32 blurTextureFactor = 2;
         const RendererViewProperties& viewProps = inputs.View.GetProperties();
         const RenderSettings& settings = inputs.View.GetRenderSettings();
         if (!settings.Bloom.Enabled)
@@ -873,21 +872,12 @@ namespace te
         SPtr<PooledRenderTexture> emissiveTex = gpuInitializationPassNode->EmissiveTex;
 
         // We can reduce blur texture size according to bloom quality
-        if (settings.Bloom.Quality == BloomQuality::Medium)
-        {
+        if (settings.Bloom.Quality == BloomQuality::High)
             blurTextureFactor = 2;
-            blurNumSamples = 7;
-        }
         else if (settings.Bloom.Quality == BloomQuality::Medium)
-        {
             blurTextureFactor = 3;
-            blurNumSamples = 5;
-        }
         else if (settings.Bloom.Quality == BloomQuality::Low)
-        {
             blurTextureFactor = 4;
-            blurNumSamples = 5;
-        }
 
         const TextureProperties& inputProps = emissiveTex->Tex->GetProperties();
         SPtr<PooledRenderTexture> blurOutput = gGpuResourcePool().Get(
@@ -900,7 +890,8 @@ namespace te
             )
         );
 
-        gaussianBlur->Execute(emissiveTex->Tex, blurOutput->RenderTex, blurNumSamples, viewProps.Target.NumSamples);
+        gaussianBlur->Execute(emissiveTex->Tex, blurOutput->RenderTex, settings.Bloom.FilterSize, 
+            settings.Bloom.Tint, viewProps.Target.NumSamples);
 
         // ### Once we have our blured texture, we call our bloom material which will add this blured texture to the 
         // ### output final texture

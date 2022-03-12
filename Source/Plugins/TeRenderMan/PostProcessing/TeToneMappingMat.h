@@ -13,7 +13,7 @@ namespace te
         TE_PARAM_BLOCK_ENTRY(float, gBrightness)
         TE_PARAM_BLOCK_ENTRY(UINT32, gGammaOnly)
         TE_PARAM_BLOCK_ENTRY(UINT32, gMSAACount)
-        TE_PARAM_BLOCK_ENTRY(Vector2, gPadding)
+        TE_PARAM_BLOCK_ENTRY(Vector2, gPadding) // # PADDING
     TE_PARAM_BLOCK_END
 
     extern ToneMappingParamDef gToneMappingParamDef;
