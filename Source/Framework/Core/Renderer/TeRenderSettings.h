@@ -276,7 +276,7 @@ namespace te
          * Determines the percent of the texture to account for when filtering for bloom. Larger values will include
          * farther away pixels.
          */
-        float FilterSize = 0.15f;
+        float FilterSize = 0.3f;
     };
 
     /** Various options that control shadow rendering for a specific view. */

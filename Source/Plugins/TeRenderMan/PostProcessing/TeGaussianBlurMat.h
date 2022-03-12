@@ -16,6 +16,9 @@ namespace te
         TE_PARAM_BLOCK_ENTRY(UINT32, gMSAACount)
         TE_PARAM_BLOCK_ENTRY(UINT32, gHorizontal)
         TE_PARAM_BLOCK_ENTRY(UINT32, gNumSamples)
+        TE_PARAM_BLOCK_ENTRY(Vector3, gPadding)
+        TE_PARAM_BLOCK_ENTRY_ARRAY(Vector4, gSampleOffsets, (MAX_BLUR_SAMPLES + 1) / 2)
+        TE_PARAM_BLOCK_ENTRY_ARRAY(Vector4, gSampleWeights, MAX_BLUR_SAMPLES)
     TE_PARAM_BLOCK_END
 
     extern GaussianBlurParamDef gGaussianBlurParamDef;
@@ -60,7 +63,7 @@ namespace te
         static float CalcKernelRadius(const SPtr<Texture>& source, float scale, bool horizontal);
 
         /** Execute a blur pass (horizontal or vertical) */
-        void DoPass(bool horizontal, const SPtr<Texture>& source, const SPtr<RenderTexture>& destination, UINT32 MSAACount = 1);
+        void DoPass(bool horizontal, const SPtr<Texture>& source, const SPtr<RenderTexture>& destination, float filterSize, const Color& tint, UINT32 MSAACount = 1);
 
     private:
         SPtr<GpuParamBlockBuffer> _paramBuffer;

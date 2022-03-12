@@ -1,19 +1,22 @@
 #include "Include/PostProcess.hlsli"
 
+#define MAX_BLUR_SAMPLES 128
+
 cbuffer PerFrameBuffer : register(b0)
 {
     float2 gSourceDimensions;
     uint gMSAACount;
     uint gHorizontal;
     uint gNumSamples;
+    float3 gPadding;
+    float4 gSampleOffsets[MAX_BLUR_SAMPLES / 2];
+    float4 gSampleWeights[MAX_BLUR_SAMPLES];
 }
 
 SamplerState BilinearSampler : register(s0);
 
 Texture2D SourceMap : register(t0);
 Texture2DMS<float4> SourceMapMS : register(t1);
-
-static const float weight[9] = { 0.32, 0.31, 0.29, 0.22, 0.17, 0.11, 0.07, 0.04, 0.01 };
 
 float2 ClampUv(float2 uv, float2 textureOffset)
 {
@@ -30,35 +33,27 @@ float2 ClampUv(float2 uv, float2 textureOffset)
 float4 GaussianBlur(Texture2D source, Texture2DMS<float4> sourceMS, 
     SamplerState samplerState, float2 uv)
 {
-    uint startSample = 9 - gNumSamples;
     float2 textureOffset = 1.0 / gSourceDimensions * 2;
-    float3 result = TextureSampling(BilinearSampler, source, sourceMS, uv, gMSAACount).rgb * weight[startSample];
+    float3 result = (float3)0;
 
-    if(gHorizontal == 1)
+    for(uint i = 0; i < gNumSamples / 2; i++)
     {
-        for(int i = 1; i < (int)gNumSamples; ++i)
+        float3 color = (float3)0;
+        float2 clampedUv = (float2)0;
+
         {
-            float3 color = (float3)0;
-            float2 uv1 = ClampUv(uv + float2(textureOffset.x * i, 0.0), textureOffset);
-            float2 uv2 = ClampUv(uv - float2(textureOffset.x * i, 0.0), textureOffset);
+            if(gHorizontal == 1) clampedUv = ClampUv(uv + gSampleOffsets[i].xy, textureOffset);
+            else clampedUv = ClampUv(uv + gSampleOffsets[i].xy, textureOffset);
 
-            color += TextureSampling(BilinearSampler, source, sourceMS, uv1, gMSAACount).rgb * weight[i + startSample];
-            color += TextureSampling(BilinearSampler, source, sourceMS, uv2, gMSAACount).rgb * weight[i + startSample];
-
+            color += TextureSampling(BilinearSampler, source, sourceMS, clampedUv, gMSAACount).rgb * gSampleWeights[i * 2].rgb;
             result += color;
         }
-    }
-    else
-    {
-        for(int i = 1; i < (int)gNumSamples; ++i)
+
         {
-            float3 color = (float3)0;
-            float2 uv1 = ClampUv(uv + float2(0.0, textureOffset.y * i), textureOffset);
-            float2 uv2 = ClampUv(uv - float2(0.0, textureOffset.y * i), textureOffset);
+            if(gHorizontal == 1) clampedUv = ClampUv(uv + gSampleOffsets[i + 1].zw, textureOffset);
+            else clampedUv = ClampUv(uv + gSampleOffsets[i + 1].zw, textureOffset);
 
-            color += TextureSampling(BilinearSampler, source, sourceMS, uv1, gMSAACount).rgb * weight[i + startSample];
-            color += TextureSampling(BilinearSampler, source, sourceMS, uv2, gMSAACount).rgb * weight[i + startSample];
-
+            color += TextureSampling(BilinearSampler, source, sourceMS, clampedUv, gMSAACount).rgb * gSampleWeights[i * 2 + 1].rgb;
             result += color;
         }
     }

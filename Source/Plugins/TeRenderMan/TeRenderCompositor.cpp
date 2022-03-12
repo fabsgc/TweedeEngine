@@ -661,11 +661,8 @@ namespace te
         Vector<String> deps = {
             RCNodeGpuInitializationPass::GetNodeId(),
             RCNodePostProcess::GetNodeId(),
-            RCNodeMotionBlur::GetNodeId()
+            RCNodeSSAO::GetNodeId()
         };
-
-        if (view.GetRenderSettings().Bloom.Enabled)
-            deps.push_back(RCNodeBloom::GetNodeId());
 
         return deps;
     }
@@ -714,7 +711,8 @@ namespace te
     {
         return { 
             RCNodeGpuInitializationPass::GetNodeId(),
-            RCNodePostProcess::GetNodeId()
+            RCNodePostProcess::GetNodeId(),
+            RCNodeTonemapping::GetNodeId()
         };
     }
 
@@ -732,7 +730,7 @@ namespace te
         {
             RCNodeGpuInitializationPass::GetNodeId(),
             RCNodePostProcess::GetNodeId(),
-            RCNodeTonemapping::GetNodeId() 
+            RCNodeTonemapping::GetNodeId()
         };
     }
 
@@ -773,7 +771,9 @@ namespace te
             RCNodeGpuInitializationPass::GetNodeId(),
             RCNodePostProcess::GetNodeId(),
             RCNodeGaussianDOF::GetNodeId(),
-            RCNodeBloom::GetNodeId()
+            RCNodeMotionBlur::GetNodeId(),
+            RCNodeBloom::GetNodeId(),
+            RCNodeSSAO::GetNodeId()
         };
     }
 
@@ -805,10 +805,11 @@ namespace te
     {
         return
         {
-            RCNodeBloom::GetNodeId(),
+            RCNodePostProcess::GetNodeId(),
             RCNodeGaussianDOF::GetNodeId(),
-            RCNodeForwardPass::GetNodeId(),
-            RCNodePostProcess::GetNodeId()
+            RCNodeMotionBlur::GetNodeId(),
+            RCNodeBloom::GetNodeId(),
+            RCNodeSSAO::GetNodeId()
         };
     }
 
@@ -890,6 +891,8 @@ namespace te
             )
         );
 
+        const Color tint = Color::White * settings.Bloom.Intensity;
+
         gaussianBlur->Execute(emissiveTex->Tex, blurOutput->RenderTex, settings.Bloom.FilterSize, 
             settings.Bloom.Tint, viewProps.Target.NumSamples);
 
@@ -924,7 +927,8 @@ namespace te
         return
         {
             RCNodeGpuInitializationPass::GetNodeId(),
-            RCNodePostProcess::GetNodeId()
+            RCNodePostProcess::GetNodeId(),
+            RCNodeTonemapping::GetNodeId()
         };
     }
 
@@ -1035,6 +1039,9 @@ namespace te
             deps.push_back(RCNodeFXAA::GetNodeId());
             deps.push_back(RCNodeTemporalAA::GetNodeId());
             deps.push_back(RCNodeSSAO::GetNodeId());
+            deps.push_back(RCNodeMotionBlur::GetNodeId());
+            deps.push_back(RCNodeBloom::GetNodeId());
+            deps.push_back(RCNodeGaussianDOF::GetNodeId());
         }
         else
         {

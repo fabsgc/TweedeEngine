@@ -24,18 +24,19 @@ namespace te
 
         gGaussianBlurParamDef.gSourceDimensions.Set(_paramBuffer, Vector2((float)dstProps.Width, (float)dstProps.Height), 0);
         gGaussianBlurParamDef.gMSAACount.Set(_paramBuffer, MSAACount, 0);
-        gGaussianBlurParamDef.gNumSamples.Set(_paramBuffer, 9, 0);
 
         // Horizontal pass
-        DoPass(true, source, tempTexture->RenderTex, MSAACount);
+        DoPass(true, source, tempTexture->RenderTex, filterSize, tint, MSAACount);
         // Vertical pass
-        DoPass(false, tempTexture->Tex, destination, MSAACount);
+        DoPass(false, tempTexture->Tex, destination, filterSize, tint, MSAACount);
     }
 
-    void GaussianBlurMat::DoPass(bool horizontal, const SPtr<Texture>& source, const SPtr<RenderTexture>& destination, UINT32 MSAACount)
+    void GaussianBlurMat::DoPass(bool horizontal, const SPtr<Texture>& source, const SPtr<RenderTexture>& destination, float filterSize, const Color& tint, UINT32 MSAACount)
     {
         if (MSAACount > 1) _params->SetTexture("SourceMapMS", source);
         else _params->SetTexture("SourceMap", source);
+
+        PopulateBuffer(_paramBuffer, horizontal, source, filterSize, (!horizontal) ? tint : Color::White);
 
         gGaussianBlurParamDef.gHorizontal.Set(_paramBuffer, horizontal ? 1 : 0, 0);
 
@@ -64,7 +65,7 @@ namespace te
             Vector4 weight(tint.r, tint.g, tint.b, tint.a);
             weight *= sampleWeights[i];
 
-            //gGaussianBlurParamDef.gSampleWeights.set(buffer, weight, i);
+            gGaussianBlurParamDef.gSampleWeights.Set(buffer, weight, i);
         }
 
         UINT32 axis0 = horizontal ? 0 : 1;
@@ -89,7 +90,7 @@ namespace te
                 offset[axis1 + 2] = 0.0f;
             }
 
-            //gGaussianBlurParamDef.gSampleOffsets.set(buffer, offset, i);
+            gGaussianBlurParamDef.gSampleOffsets.Set(buffer, offset, i);
         }
 
         gGaussianBlurParamDef.gNumSamples.Set(buffer, numSamples);  
