@@ -53,7 +53,7 @@ namespace te
         const float width = ImGui::GetWindowContentRegionWidth() - 110.0f;
 
         const auto& ShowTexture = [&](UUID& uuid, bool& textureUsed, const char* id, const char* label, const char* textureName, 
-            ImGuiExt::ComboOptions<UUID>& options, float width, bool disable = false, TextureType texType = TextureType::TEX_TYPE_2D)
+            ImGuiExt::ComboOptions<UUID>& options, float width, bool disable = false, TextureType texType = TextureType::TEX_TYPE_2D, bool SRGB = false)
         {
             SPtr<Texture> texture = nullptr;
             bool hasChanged = false;
@@ -89,6 +89,7 @@ namespace te
                     _loadTextureName = textureName;
                     _loadTextureUsed = &textureUsed;
                     _fileBrowser.Data.TexParam.TexType = texType;
+                    _fileBrowser.Data.TexParam.SRGB = SRGB;
                 }
                 else if (uuid == empty)
                 {
@@ -410,55 +411,55 @@ namespace te
                 texturesEnvMappingOptions.AddOption(empty, ICON_FA_TIMES_CIRCLE " No texture");
                 texturesEnvMappingOptions.AddOption(load, ICON_FA_FOLDER_OPEN " Load");
 
-                if (ShowTexture(uuid, properties.UseBaseColorMap, "##material_texture_base_color_option", "Base Color", "BaseColorMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D))
+                if (ShowTexture(uuid, properties.UseBaseColorMap, "##material_texture_base_color_option", "Base Color", "BaseColorMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D, true))
                     hasChanged = true;
 
-                if (ShowTexture(uuid, properties.UseMetallicMap, "##material_texture_metallic_option", "Metallic", "MetallicMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D))
+                if (ShowTexture(uuid, properties.UseMetallicMap, "##material_texture_metallic_option", "Metallic", "MetallicMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D, false))
                     hasChanged = true;
 
-                if (ShowTexture(uuid, properties.UseRoughnessMap, "##material_texture_roughness_option", "Roughness", "RoughnessMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D))
+                if (ShowTexture(uuid, properties.UseRoughnessMap, "##material_texture_roughness_option", "Roughness", "RoughnessMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D, false))
                     hasChanged = true;
 
-                if (ShowTexture(uuid, properties.UseReflectanceMap, "##material_texture_reflectance_option", "Reflectance", "ReflectanceMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D))
+                if (ShowTexture(uuid, properties.UseReflectanceMap, "##material_texture_reflectance_option", "Reflectance", "ReflectanceMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D, false))
                     hasChanged = true;
 
-                if (ShowTexture(uuid, properties.UseOcclusionMap, "##material_texture_occlusion_option", "Occlusion", "OcclusionMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D))
+                if (ShowTexture(uuid, properties.UseOcclusionMap, "##material_texture_occlusion_option", "Occlusion", "OcclusionMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D, false))
                     hasChanged = true;
 
-                if (ShowTexture(uuid, properties.UseEmissiveMap, "##material_texture_emissive_option", "Emissive", "EmissiveMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D))
+                if (ShowTexture(uuid, properties.UseEmissiveMap, "##material_texture_emissive_option", "Emissive", "EmissiveMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D, true))
                     hasChanged = true;
 
-                if (ShowTexture(uuid, properties.UseSheenColorMap, "##material_texture_sheen_color_option", "Sheen Color", "SheenColorMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D))
+                if (ShowTexture(uuid, properties.UseSheenColorMap, "##material_texture_sheen_color_option", "Sheen Color", "SheenColorMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D, true))
                     hasChanged = true;
 
-                if (ShowTexture(uuid, properties.UseSheenRoughnessMap, "##material_texture_sheen_roughness_option", "Sheen Rough.", "SheenRoughnessMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D))
+                if (ShowTexture(uuid, properties.UseSheenRoughnessMap, "##material_texture_sheen_roughness_option", "Sheen Rough.", "SheenRoughnessMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D, false))
                     hasChanged = true;
 
-                if (ShowTexture(uuid, properties.UseClearCoatMap, "##material_texture_clear_coat_option", "Clear Coat", "ClearCoatMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D))
+                if (ShowTexture(uuid, properties.UseClearCoatMap, "##material_texture_clear_coat_option", "Clear Coat", "ClearCoatMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D, false))
                     hasChanged = true;
 
-                if (ShowTexture(uuid, properties.UseClearCoatRoughnessMap, "##material_texture_clear_coat_roughness_option", "Clear C. Rough.", "ClearCoatRoughnesssMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D))
+                if (ShowTexture(uuid, properties.UseClearCoatRoughnessMap, "##material_texture_clear_coat_roughness_option", "Clear C. Rough.", "ClearCoatRoughnesssMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D, false))
                     hasChanged = true;
 
                 if (ShowTexture(uuid, properties.UseClearCoatNormalMap, "##material_texture_clear_coat_normal_option", "Clear C. Normal", "ClearCoatNormalMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D))
                     hasChanged = true;
 
-                if (ShowTexture(uuid, properties.UseNormalMap, "##material_texture_normal_option", "Normal", "NormalMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D))
+                if (ShowTexture(uuid, properties.UseNormalMap, "##material_texture_normal_option", "Normal", "NormalMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D, false))
                     hasChanged = true;
 
-                if (ShowTexture(uuid, properties.UseParallaxMap, "##material_texture_parallax_option", "Parallax", "ParallaxMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D))
+                if (ShowTexture(uuid, properties.UseParallaxMap, "##material_texture_parallax_option", "Parallax", "ParallaxMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D, false))
                     hasChanged = true;
 
-                if (ShowTexture(uuid, properties.UseTransmissionMap, "##material_texture_transmission_option", "Transmission", "TransmissionMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D))
+                if (ShowTexture(uuid, properties.UseTransmissionMap, "##material_texture_transmission_option", "Transmission", "TransmissionMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D, false))
                     hasChanged = true;
 
-                if (ShowTexture(uuid, properties.UseRadianceMap, "##material_texture_radiance_option", "Radiance", "RadianceMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D))
+                if (ShowTexture(uuid, properties.UseRadianceMap, "##material_texture_radiance_option", "Radiance", "RadianceMap", texturesOptions, width, false, TextureType::TEX_TYPE_CUBE_MAP, true))
                     hasChanged = true;
 
-                if (ShowTexture(uuid, properties.UseDiffuseIrrMap, "##material_texture_diffuse_irradiance_option", "Diff. Irradiance", "DiffuseIrrMap", texturesEnvMappingOptions, width, !properties.DoIndirectLighting, TextureType::TEX_TYPE_CUBE_MAP))
+                if (ShowTexture(uuid, properties.UseDiffuseIrrMap, "##material_texture_diffuse_irradiance_option", "Diff. Irradiance", "DiffuseIrrMap", texturesEnvMappingOptions, width, !properties.DoIndirectLighting, TextureType::TEX_TYPE_CUBE_MAP, true))
                     hasChanged = true;
 
-                if (ShowTexture(uuid, properties.UseSpecularIrrMap, "##material_texture_specular_irradiance_option", "Spec. Irradiance", "SpecularIrrMap", texturesEnvMappingOptions, width, !properties.DoIndirectLighting, TextureType::TEX_TYPE_CUBE_MAP))
+                if (ShowTexture(uuid, properties.UseSpecularIrrMap, "##material_texture_specular_irradiance_option", "Spec. Irradiance", "SpecularIrrMap", texturesEnvMappingOptions, width, !properties.DoIndirectLighting, TextureType::TEX_TYPE_CUBE_MAP, true))
                     hasChanged = true;
 
                 if (ShowLoadedTexture())

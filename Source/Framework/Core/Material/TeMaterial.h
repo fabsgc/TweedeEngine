@@ -334,6 +334,9 @@ namespace te
         bool UseSpecularIrrMap = false;
     };
 
+    /**
+     * @brief Mostly used by editor to fill textures path from files
+     */
     struct MaterialTextures
     {
         String BaseColorMap;
