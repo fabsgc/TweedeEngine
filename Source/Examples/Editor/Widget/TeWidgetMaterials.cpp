@@ -265,11 +265,9 @@ namespace te
 
             if (ImGui::CollapsingHeader("Properties", ImGuiTreeNodeFlags_DefaultOpen))
             {
-                // TODO PBR
-
                 {
                     Vector4 color = properties.BaseColor.GetAsVector4();
-                    if (ImGuiExt::RenderColorRGB(color, "##material_prop_base_color_option", "Base Color", width))
+                    if (ImGuiExt::RenderColorRGB(color, "##material_prop_base_color_option", "Base Color", width, properties.UseBaseColorMap))
                     {
                         hasChanged = true;
                         properties.BaseColor = Color(color);
@@ -278,42 +276,109 @@ namespace te
                 ImGui::Separator();
                 {
                     Vector4 color = properties.Emissive.GetAsVector4();
-                    if (ImGuiExt::RenderColorRGB(color, "##material_prop_emissive_option", "Emissive", width))
+                    if (ImGuiExt::RenderColorRGB(color, "##material_prop_emissive_option", "Emissive Color", width, properties.UseEmissiveMap))
                     {
                         hasChanged = true;
                         properties.Emissive = Color(color);
                     }
                 }
                 ImGui::Separator();
+                {
+                    Vector4 color = properties.SheenColor.GetAsVector4();
+                    if (ImGuiExt::RenderColorRGB(color, "##material_prop_sheen_color_option", "Sheen Color", width, properties.UseSheenColorMap))
+                    {
+                        hasChanged = true;
+                        properties.SheenColor = Color(color);
+                    }
+                }
+                ImGui::Separator();
 
                 {
-                    if (ImGuiExt::RenderOptionFloat(properties.Metallic, "##material_prop_metallic_option", "Metallic", 0.0f, 1.0f, width))
+                    if (ImGuiExt::RenderOptionBool(properties.DoIndirectLighting, "##material_properties_do_indirect_lighting_option", "Use Indirect Lighting"))
                         hasChanged = true;
                 }
                 ImGui::Separator();
 
                 {
-                    if (ImGuiExt::RenderOptionFloat(properties.Roughness, "##material_prop_roughness_option", "Roughness", 0.0f, 1.0f, width))
+                    if (ImGuiExt::RenderOptionFloat(properties.Metallic, "##material_prop_metallic_option", "Metallic", 0.0f, 1.0f, width, properties.UseMetallicMap))
                         hasChanged = true;
                 }
                 ImGui::Separator();
 
                 {
-                    if (ImGuiExt::RenderOptionFloat(properties.Reflectance, "##material_prop_reflectance_option", "Reflectance", 0.0f, 1.0f, width))
+                    if (ImGuiExt::RenderOptionFloat(properties.Roughness, "##material_prop_roughness_option", "Roughness", 0.0f, 1.0f, width, properties.UseRoughnessMap))
                         hasChanged = true;
                 }
-
                 ImGui::Separator();
+
                 {
-                    if (ImGuiExt::RenderOptionBool(properties.UseIndirectLighting, "##material_properties_ibl_option", "Use Indirect Lighting"))
+                    if (ImGuiExt::RenderOptionFloat(properties.Reflectance, "##material_prop_reflectance_option", "Reflectance", 0.0f, 1.0f, width, properties.UseReflectanceMap))
                         hasChanged = true;
                 }
-
                 ImGui::Separator();
+
                 {
-                    if (ImGuiExt::RenderVector2(properties.TextureRepeat, "##material_properties_texture_repeat_option", " Texture Repeat", width))
+                    if (ImGuiExt::RenderOptionFloat(properties.Occlusion, "##material_prop_occlusion_option", "Occlusion", 0.0f, 1.0f, width, properties.UseOcclusionMap))
                         hasChanged = true;
-                    if (ImGuiExt::RenderVector2(properties.TextureOffset, "##material_properties_texture_repeat_option", " Texture Offset", width))
+                }
+                ImGui::Separator();
+
+                {
+                    if (ImGuiExt::RenderOptionFloat(properties.SheenRoughness, "##material_prop_sheen_roughness_option", "Sheen Rough.", 0.0f, 1.0f, width, properties.UseSheenRoughnessMap))
+                        hasChanged = true;
+                }
+                ImGui::Separator();
+
+                {
+                    if (ImGuiExt::RenderOptionFloat(properties.ClearCoat, "##material_prop_clear_coat_option", "Clear Coat", 0.0f, 1.0f, width, properties.UseClearCoatMap))
+                        hasChanged = true;
+                    if (ImGuiExt::RenderOptionFloat(properties.ClearCoatRoughness, "##material_prop_clear_coat_roughness_option", "Clear C. Rough.", 0.0f, 1.0f, width, properties.UseClearCoatRoughnessMap))
+                        hasChanged = true;
+                }
+                ImGui::Separator();
+
+                {
+                    if (ImGuiExt::RenderOptionFloat(properties.Anisotropy, "##material_prop_anisotropy_option", "Anisotropy", -1.0f, 1.0f, width))
+                        hasChanged = true;
+                    if (ImGuiExt::RenderVector3(properties.AnisotropyDirection, "##material_prop_anisotropy_direction_option", " A. Dir.", width))
+                        hasChanged = true;
+                }
+                ImGui::Separator();
+
+                {
+                    if (ImGuiExt::RenderOptionFloat(properties.ParallaxScale, "##material_prop_parallax_scale_option", "Parallax Scale", 0.0f, 1.0f, width))
+                        hasChanged = true;
+                    if (ImGuiExt::RenderOptionInt((int&)properties.ParallaxSamples, "##material_prop_parallax_samples_option", "Parallax Samples", 16, 256, width))
+                        hasChanged = true;
+                }
+                ImGui::Separator();
+
+                {
+                    if (ImGuiExt::RenderOptionFloat(properties.Thickness, "##material_prop_thickness_option", "Thickness", 0.0f, 1.0f, width))
+                        hasChanged = true;
+                    if (ImGuiExt::RenderOptionFloat(properties.AlphaThreshold, "##material_prop_micto_thickness_option", "Micro Thickness", 0.0f, 1.0f, width))
+                        hasChanged = true;
+                }
+                ImGui::Separator();
+
+                {
+                    if (ImGuiExt::RenderOptionFloat(properties.Transmission, "##material_prop_transmission_option", "Transmission", 0.0f, 1.0f, width), properties.UseTransmissionMap)
+                        hasChanged = true;
+                    if (ImGuiExt::RenderOptionFloat(properties.AlphaThreshold, "##material_prop_alpha_threshold_option", "Alpha Threshold", 0.0f, 1.0f, width))
+                        hasChanged = true;
+                }
+                ImGui::Separator();
+
+                {
+                    if (ImGuiExt::RenderVector3(properties.Absorption, "##material_prop_absorption_option", " Absorp.", width))
+                        hasChanged = true;
+                }
+                ImGui::Separator();
+
+                {
+                    if (ImGuiExt::RenderVector2(properties.TextureRepeat, "##material_properties_texture_repeat_option", " UV Repeat", width))
+                        hasChanged = true;
+                    if (ImGuiExt::RenderVector2(properties.TextureOffset, "##material_properties_texture_repeat_option", " UV Offset", width))
                         hasChanged = true;
                 }
             }
@@ -345,12 +410,55 @@ namespace te
                 texturesEnvMappingOptions.AddOption(empty, ICON_FA_TIMES_CIRCLE " No texture");
                 texturesEnvMappingOptions.AddOption(load, ICON_FA_FOLDER_OPEN " Load");
 
-                // TODO PBR
-
-                if (ShowTexture(uuid, properties.UseDiffuseIrrMap, "##material_texture_diffuse_irradiance_option", "Diff. Irradiance", "DiffuseIrrMap", texturesEnvMappingOptions, width, !properties.UseIndirectLighting, TextureType::TEX_TYPE_CUBE_MAP))
+                if (ShowTexture(uuid, properties.UseBaseColorMap, "##material_texture_base_color_option", "Base Color", "BaseColorMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D))
                     hasChanged = true;
 
-                if (ShowTexture(uuid, properties.UseSpecularIrrMap, "##material_texture_specular_irradiance_option", "Spec. Irradiance", "SpecularIrrMap", texturesEnvMappingOptions, width, !properties.UseIndirectLighting, TextureType::TEX_TYPE_CUBE_MAP))
+                if (ShowTexture(uuid, properties.UseMetallicMap, "##material_texture_metallic_option", "Metallic", "MetallicMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D))
+                    hasChanged = true;
+
+                if (ShowTexture(uuid, properties.UseRoughnessMap, "##material_texture_roughness_option", "Roughness", "RoughnessMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D))
+                    hasChanged = true;
+
+                if (ShowTexture(uuid, properties.UseReflectanceMap, "##material_texture_reflectance_option", "Reflectance", "ReflectanceMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D))
+                    hasChanged = true;
+
+                if (ShowTexture(uuid, properties.UseOcclusionMap, "##material_texture_occlusion_option", "Occlusion", "OcclusionMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D))
+                    hasChanged = true;
+
+                if (ShowTexture(uuid, properties.UseEmissiveMap, "##material_texture_emissive_option", "Emissive", "EmissiveMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D))
+                    hasChanged = true;
+
+                if (ShowTexture(uuid, properties.UseSheenColorMap, "##material_texture_sheen_color_option", "Sheen Color", "SheenColorMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D))
+                    hasChanged = true;
+
+                if (ShowTexture(uuid, properties.UseSheenRoughnessMap, "##material_texture_sheen_roughness_option", "Sheen Rough.", "SheenRoughnessMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D))
+                    hasChanged = true;
+
+                if (ShowTexture(uuid, properties.UseClearCoatMap, "##material_texture_clear_coat_option", "Clear Coat", "ClearCoatMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D))
+                    hasChanged = true;
+
+                if (ShowTexture(uuid, properties.UseClearCoatRoughnessMap, "##material_texture_clear_coat_roughness_option", "Clear C. Rough.", "ClearCoatRoughnesssMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D))
+                    hasChanged = true;
+
+                if (ShowTexture(uuid, properties.UseClearCoatNormalMap, "##material_texture_clear_coat_normal_option", "Clear C. Normal", "ClearCoatNormalMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D))
+                    hasChanged = true;
+
+                if (ShowTexture(uuid, properties.UseNormalMap, "##material_texture_normal_option", "Normal", "NormalMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D))
+                    hasChanged = true;
+
+                if (ShowTexture(uuid, properties.UseParallaxMap, "##material_texture_parallax_option", "Parallax", "ParallaxMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D))
+                    hasChanged = true;
+
+                if (ShowTexture(uuid, properties.UseTransmissionMap, "##material_texture_transmission_option", "Transmission", "TransmissionMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D))
+                    hasChanged = true;
+
+                if (ShowTexture(uuid, properties.UseRadianceMap, "##material_texture_radiance_option", "Radiance", "RadianceMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D))
+                    hasChanged = true;
+
+                if (ShowTexture(uuid, properties.UseDiffuseIrrMap, "##material_texture_diffuse_irradiance_option", "Diff. Irradiance", "DiffuseIrrMap", texturesEnvMappingOptions, width, !properties.DoIndirectLighting, TextureType::TEX_TYPE_CUBE_MAP))
+                    hasChanged = true;
+
+                if (ShowTexture(uuid, properties.UseSpecularIrrMap, "##material_texture_specular_irradiance_option", "Spec. Irradiance", "SpecularIrrMap", texturesEnvMappingOptions, width, !properties.DoIndirectLighting, TextureType::TEX_TYPE_CUBE_MAP))
                     hasChanged = true;
 
                 if (ShowLoadedTexture())

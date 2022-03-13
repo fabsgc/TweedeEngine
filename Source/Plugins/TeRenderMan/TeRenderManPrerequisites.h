@@ -50,14 +50,42 @@ namespace te
         float   Metallic;
         float   Roughness;
         float   Reflectance;
-        float   AO;
+        float   Occlusion;
         Vector4 Emissive;
+        Vector4 SheenColor;
+        float   SheenRoughness;
+        float   ClearCoat;
+        float   ClearCoatRoughness;
+        float   Anisotropy;
+        Vector3 AnisotropyDirection;
+        float   AlphaTreshold;
         Vector2 UV0Repeat;
         Vector2 UV0Offset;
-        UINT32  UseIndirectLighting;
+        float   ParallaxScale;
+        UINT32  ParallaxSamples;
+        float   MicroThickness;
+        float   Thickness;
+        float   Transmission;
+        Vector3 Absorption;
+        UINT32  UseBaseColorMap;
+        UINT32  UseMetallicMap;
+        UINT32  UseRoughnessMap;
+        UINT32  UseReflectanceMap;
+        UINT32  UseOcclusionMap;
+        UINT32  UseEmissiveMap;
+        UINT32  UseSheenColorMap;
+        UINT32  UseSheenRoughnessMap;
+        UINT32  UseClearCoatMap;
+        UINT32  UseClearCoatRoughnessMap;
+        UINT32  UseClearCoatNormalMap;
+        UINT32  UseNormalMap;
+        UINT32  UseParallaxMap;
+        UINT32  UseTransmissionMap;
+        UINT32  UseRadianceMap;
+        UINT32  DoIndirectLighting;
         UINT32  UseDiffuseIrrMap;
         UINT32  UseSpecularIrrMap;
-        UINT32  Padding; // # PADDING
+        UINT32  Padding[2];
     };
 
     struct PerLightData

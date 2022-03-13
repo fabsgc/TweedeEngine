@@ -18,7 +18,7 @@ PS_OUTPUT main( VS_OUTPUT IN )
     float   roughness          = gMaterial.Roughness * gMaterial.Roughness;
     float   metallic           = gMaterial.Metallic;
     float   reflectance        = gMaterial.Reflectance;
-    float   ao                 = gMaterial.AO;
+    float   occlusion          = gMaterial.Occlusion;
 
     float3   sceneLightColor   = gSceneLightColor.rgb;
 

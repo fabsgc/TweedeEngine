@@ -18,18 +18,46 @@
 
 struct MaterialData
 {
-    float4 BaseColor;
-    float  Metallic;
-    float  Roughness;
-    float  Reflectance;
-    float  AO;
-    float4 Emissive;
-    float2 UV0Repeat;
-    float2 UV0Offset;
-    uint   UseIndirectLighting;
-    uint   UseDiffuseIrrMap;
-    uint   UseSpecularIrrMap;
-    uint   Padding1;
+    float4  BaseColor;
+    float   Metallic;
+    float   Roughness;
+    float   Reflectance;
+    float   Occlusion;
+    float4  Emissive;
+    float4  SheenColor;
+    float   SheenRoughness;
+    float   ClearCoat;
+    float   ClearCoatRoughness;
+    float   Anisotropy;
+    float3  AnisotropyDirection;
+    float   AlphaTreshold;
+    float2  UV0Repeat;
+    float2  UV0Offset;
+    float   ParallaxScale;
+    uint    ParallaxSamples;
+    float   MicroThickness;
+    float   Thickness;
+    float   Transmission;
+    float3  Absorption;
+    uint    UseBaseColorMap;
+    uint    UseMetallicMap;
+    uint    UseRoughnessMap;
+    uint    UseReflectanceMap;
+    uint    UseOcclusionMap;
+    uint    UseEmissiveMap;
+    uint    UseSheenColorMap;
+    uint    UseSheenRoughnessMap;
+    uint    UseClearCoatMap;
+    uint    UseClearCoatRoughnessMap;
+    uint    UseClearCoatNormalMap;
+    uint    UseNormalMap;
+    uint    UseParallaxMap;
+    uint    UseTransmissionMap;
+    uint    UseRadianceMap;
+    uint    DoIndirectLighting;
+    uint    UseDiffuseIrrMap;
+    uint    UseSpecularIrrMap;
+    uint    Padding[2];
 };
 
 struct LightData
@@ -91,10 +119,23 @@ cbuffer PerFrameBuffer : register(b3)
     float2 gPadding3;
 }
 
-SamplerState TextureSampler : register(s0);
+Texture2D BaseColorMap : register(t0);
+Texture2D MetallicMap : register(t1);
+Texture2D RoughnessMap : register(t3);
+Texture2D ReflectanceMap : register(t4);
+Texture2D OcclusionMap : register(t5);
+Texture2D EmissiveMap : register(t6);
+Texture2D SheenColorMap : register(t7);
+Texture2D ClearCoatMap : register(t8);
+Texture2D ClearCoatNormalMap : register(t9);
+Texture2D NormalMap : register(t10);
+Texture2D ParallaxMap : register(t11);
+Texture2D TransmissionMap : register(t12);
+TextureCube RadianceMap : register(t13);
+TextureCube DiffuseIrrMap : register(t14);
+TextureCube SpecularIrrMap : register(t15);
 
-TextureCube DiffuseIrrMap : register(t0);
-TextureCube SpecularIrrMap : register(t1);
+SamplerState TextureSampler : register(s0);
 
 // #################### HELPER FUNCTIONS
 
@@ -147,7 +188,7 @@ float3 DoDiffuseIBL(float3 N)
 {
     float3 result = (float3)0;
 
-    if(gMaterial.UseIndirectLighting && (gMaterial.UseDiffuseIrrMap || gUseSkyboxDiffuseIrrMap))
+    if(gMaterial.DoIndirectLighting && (gMaterial.UseDiffuseIrrMap || gUseSkyboxDiffuseIrrMap))
         result = DiffuseIrrMap.Sample(TextureSampler, N).rgb * gSkyboxBrightness;
 
     return result;
@@ -156,6 +197,9 @@ float3 DoDiffuseIBL(float3 N)
 float3 DoSpecularIBL(float3 N)
 {
     float3 result = (float3)0;
+
+    // TODO PBR
+
     return result;
 }
 
@@ -164,7 +208,7 @@ LightingResult DoIBL(float3 N)
 {
     LightingResult result = (LightingResult)0;
 
-    if(gMaterial.UseIndirectLighting && (gMaterial.UseDiffuseIrrMap || gUseSkyboxDiffuseIrrMap))
+    if(gMaterial.DoIndirectLighting && (gMaterial.UseDiffuseIrrMap || gUseSkyboxDiffuseIrrMap))
     {
         result.Diffuse = DoDiffuseIBL(N);
         result.Specular = DoSpecularIBL(N);
@@ -178,7 +222,10 @@ LightingResult DoIBL(float3 N)
 // N : surface normal
 LightingResult DoDirectionalLight( LightData light, float3 V, float3 P, float3 N )
 {
-    LightingResult result = (LightingResult)0; 
+    LightingResult result = (LightingResult)0;
+
+    // TODO PBR
+
     return result;
 }
 
@@ -188,6 +235,9 @@ LightingResult DoDirectionalLight( LightData light, float3 V, float3 P, float3 N
 LightingResult DoPointLight( LightData light, float3 V, float3 P, float3 N )
 {
     LightingResult result = (LightingResult)0;
+
+    // TODO PBR
+
     return result;
 }
 
@@ -197,6 +247,9 @@ LightingResult DoPointLight( LightData light, float3 V, float3 P, float3 N )
 LightingResult DoSpotLight( LightData light, float3 V, float3 P, float3 N )
 {
     LightingResult result = (LightingResult)0;
+
+    // TODO PBR
+
     return result;
 }
 

@@ -1292,7 +1292,7 @@ namespace te
             _monkeyMaterial = Material::Create(_shader);
             _monkeyMaterial->SetName("Monkey Material");
             _monkeyMaterial->SetProperties(monkeyMatprop);
-            //_monkeyMaterial->SetSamplerState("TextureSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
+            _monkeyMaterial->SetSamplerState("TextureSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
         }
         // ######################################################
 

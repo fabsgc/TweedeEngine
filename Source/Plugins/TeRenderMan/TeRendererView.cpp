@@ -157,7 +157,6 @@ namespace te
             }
         }
 
-        _properties.NeedDynamicEnvMapCompute = false;
         _properties.ProjTransform = _properties.ProjTransformNoAA;
         _properties.ViewProjTransform = _properties.ProjTransform * _properties.ViewTransform;
 
@@ -388,8 +387,6 @@ namespace te
                     _forwardTransparentQueue->Add(&renderElem, distanceToCamera, techniqueIdx);
                 else
                     _forwardOpaqueQueue->Add(&renderElem, distanceToCamera, techniqueIdx);
-
-                CheckIfDynamicEnvMappingNeeded(renderElem);
             }
         }
 
@@ -491,11 +488,7 @@ namespace te
                     _forwardOpaqueQueue->Add(elem, distanceToCamera, techniqueIdx);
 
                 for (auto& gpuParams : renderElem.GpuParamsElem)
-                {
                     gpuParams->SetParamBlockBuffer("PerInstanceBuffer", gPerInstanceParamBuffer[currInstBlock]);
-                }
-
-                CheckIfDynamicEnvMappingNeeded(renderElem);
             }
 
             if (instancedObjectCounter > STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE* STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER)
@@ -881,11 +874,5 @@ namespace te
             return _previousEyeAdaptation; // TODO
 
         return Math::Pow(2.0f, _renderSettings->ExposureScale);
-    }
-
-    void RendererView::CheckIfDynamicEnvMappingNeeded(const RenderElement& element)
-    {
-        /*if(element.MaterialElem->GetProperties().UseDynamicEnvironmentMap)
-            _properties.NeedDynamicEnvMapCompute = true; TODO PBR */
     }
 }

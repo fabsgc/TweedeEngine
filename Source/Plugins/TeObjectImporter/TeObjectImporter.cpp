@@ -340,7 +340,6 @@ namespace te
 #else
                                 modelPath += "/" + path;
 #endif
-                                
                                 path = modelPath.generic_string();
                             }
 
@@ -348,50 +347,62 @@ namespace te
                         }
                     };
 
-                    /* BindTexture(aiMat, aiTextureType_DIFFUSE, material.MatTextures.DiffuseMap, material.MatProperties.UseDiffuseMap);
+                    BindTexture(aiMat, aiTextureType_DIFFUSE, material.MatTextures.BaseColorMap, material.MatProperties.UseBaseColorMap);
+                    BindTexture(aiMat, aiTextureType_BASE_COLOR, material.MatTextures.BaseColorMap, material.MatProperties.UseBaseColorMap);
+                    BindTexture(aiMat, aiTextureType_METALNESS, material.MatTextures.MetallicMap, material.MatProperties.UseMetallicMap);
+                    BindTexture(aiMat, aiTextureType_DIFFUSE_ROUGHNESS, material.MatTextures.RoughnessMap, material.MatProperties.UseRoughnessMap);
+                    BindTexture(aiMat, aiTextureType_AMBIENT_OCCLUSION, material.MatTextures.OcclusionMap, material.MatProperties.UseOcclusionMap);
                     BindTexture(aiMat, aiTextureType_EMISSIVE, material.MatTextures.EmissiveMap, material.MatProperties.UseEmissiveMap);
+                    BindTexture(aiMat, aiTextureType_SHEEN, material.MatTextures.SheenColorMap, material.MatProperties.UseSheenColorMap);
+                    BindTexture(aiMat, aiTextureType_CLEARCOAT, material.MatTextures.SheenColorMap, material.MatProperties.UseSheenColorMap);
                     BindTexture(aiMat, aiTextureType_NORMALS, material.MatTextures.NormalMap, material.MatProperties.UseNormalMap);
-                    BindTexture(aiMat, aiTextureType_SPECULAR, material.MatTextures.SpecularMap, material.MatProperties.UseSpecularMap);
-                    BindTexture(aiMat, aiTextureType_REFLECTION, material.MatTextures.ReflectionMap, material.MatProperties.UseReflectionMap);
-                    BindTexture(aiMat, aiTextureType_OPACITY, material.MatTextures.TransparencyMap, material.MatProperties.UseTransparencyMap);
-                    BindTexture(aiMat, aiTextureType_DISPLACEMENT, material.MatTextures.NormalMap, material.MatProperties.UseNormalMap);
-                    BindTexture(aiMat, aiTextureType_DISPLACEMENT, material.MatTextures.BumpMap, material.MatProperties.UseBumpMap);
+                    BindTexture(aiMat, aiTextureType_NORMAL_CAMERA, material.MatTextures.NormalMap, material.MatProperties.UseNormalMap);
+                    BindTexture(aiMat, aiTextureType_HEIGHT, material.MatTextures.ParallaxMap, material.MatProperties.UseParallaxMap);
+                    BindTexture(aiMat, aiTextureType_OPACITY, material.MatTextures.TransmissionMap, material.MatProperties.UseTransmissionMap);
+                    BindTexture(aiMat, aiTextureType_TRANSMISSION, material.MatTextures.TransmissionMap, material.MatProperties.UseTransmissionMap);
 
-                    aiColor3D ambientColor;
-                    if(aiMat->Get(AI_MATKEY_COLOR_AMBIENT, ambientColor) == aiReturn_SUCCESS && ambientColor != aiColor3D(0.0f, 0.0f, 0.0f))
-                        material.MatProperties.Ambient = ConvertToNativeType(ambientColor);
-
-                    aiColor3D diffuseColor;
-                    if (aiMat->Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColor) == aiReturn_SUCCESS)
-                        material.MatProperties.Diffuse = ConvertToNativeType(diffuseColor);
-
-                    aiColor3D specularColor;
-                    if (aiMat->Get(AI_MATKEY_COLOR_SPECULAR, specularColor) == aiReturn_SUCCESS)
-                        material.MatProperties.Specular = ConvertToNativeType(specularColor);
+                    aiColor3D baseColor;
+                    if (aiMat->Get(AI_MATKEY_COLOR_DIFFUSE, baseColor) == aiReturn_SUCCESS)
+                        material.MatProperties.BaseColor = ConvertToNativeType(baseColor);
+                    if (aiMat->Get(AI_MATKEY_BASE_COLOR, baseColor) == aiReturn_SUCCESS)
+                        material.MatProperties.BaseColor = ConvertToNativeType(baseColor);
 
                     aiColor3D emissiveColor;
                     if (aiMat->Get(AI_MATKEY_COLOR_EMISSIVE, emissiveColor) == aiReturn_SUCCESS)
                         material.MatProperties.Emissive = ConvertToNativeType(emissiveColor);
 
-                    if (aiMat->Get(AI_MATKEY_SHININESS, matProperties.SpecularPower) == aiReturn_SUCCESS)
-                        material.MatProperties.SpecularPower = matProperties.SpecularPower;
+                    aiColor3D sheenColor;
+                    if (aiMat->Get(AI_MATKEY_SHEEN_COLOR_FACTOR, sheenColor) == aiReturn_SUCCESS)
+                        material.MatProperties.SheenColor = ConvertToNativeType(sheenColor);
 
-                    if (aiMat->Get(AI_MATKEY_SHININESS_STRENGTH, matProperties.SpecularStrength) == aiReturn_SUCCESS)
-                        material.MatProperties.SpecularStrength = matProperties.SpecularStrength;
+                    if (aiMat->Get(AI_MATKEY_METALLIC_FACTOR, matProperties.Metallic) == aiReturn_SUCCESS)
+                        material.MatProperties.Metallic = matProperties.Metallic;
 
-                    if (aiMat->Get(AI_MATKEY_OPACITY, matProperties.Transparency) == aiReturn_SUCCESS)
-                        material.MatProperties.Transparency = matProperties.Transparency;
+                    if (aiMat->Get(AI_MATKEY_ROUGHNESS_FACTOR, matProperties.Roughness) == aiReturn_SUCCESS)
+                        material.MatProperties.Metallic = matProperties.Roughness;
 
-                    if (aiMat->Get(AI_MATKEY_REFRACTI, matProperties.IndexOfRefraction) == aiReturn_SUCCESS)
-                        material.MatProperties.IndexOfRefraction = matProperties.IndexOfRefraction;
+                    if (aiMat->Get(AI_MATKEY_SHEEN_ROUGHNESS_FACTOR, matProperties.SheenRoughness) == aiReturn_SUCCESS)
+                        material.MatProperties.Metallic = matProperties.Metallic;
 
-                    if (aiMat->Get(AI_MATKEY_BUMPSCALING, matProperties.BumpScale) == aiReturn_SUCCESS)
-                        material.MatProperties.BumpScale = matProperties.BumpScale;
+                    if (aiMat->Get(AI_MATKEY_CLEARCOAT_FACTOR, matProperties.ClearCoat) == aiReturn_SUCCESS)
+                        material.MatProperties.ClearCoat = matProperties.ClearCoat;
 
-                    //if (aiMat->Get(AI_MATKEY_REFLECTIVITY, matProperties.Reflection) == aiReturn_SUCCESS)
-                    //    material.MatProperties.Reflection = matProperties.Reflection;
+                    if (aiMat->Get(AI_MATKEY_CLEARCOAT_ROUGHNESS_FACTOR, matProperties.ClearCoatRoughness) == aiReturn_SUCCESS)
+                        material.MatProperties.ClearCoatRoughness = matProperties.ClearCoatRoughness;
 
-                    material.MatProperties.ParallaxScale = 0.0f; TODO PBR */
+                    if (aiMat->Get(AI_MATKEY_ANISOTROPY_FACTOR, matProperties.Anisotropy) == aiReturn_SUCCESS)
+                        material.MatProperties.Anisotropy = matProperties.Anisotropy;
+
+                    if (aiMat->Get(AI_MATKEY_OPACITY, matProperties.Transmission) == aiReturn_SUCCESS)
+                        material.MatProperties.Transmission = matProperties.Transmission;
+
+                    if (aiMat->Get(AI_MATKEY_TRANSMISSION_FACTOR, matProperties.Transmission) == aiReturn_SUCCESS)
+                        material.MatProperties.Transmission = matProperties.Transmission;
+
+                    if (aiMat->Get(AI_MATKEY_VOLUME_THICKNESS_FACTOR, matProperties.Thickness) == aiReturn_SUCCESS)
+                        material.MatProperties.Thickness = matProperties.Thickness;
+
+                    material.MatProperties.ParallaxScale = 0.0f;
                 }
 
                 outputScene.Materials.push_back(material);

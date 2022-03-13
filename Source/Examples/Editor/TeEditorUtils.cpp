@@ -28,7 +28,7 @@ namespace te
         bool notAllLoaded = false;
         List<SPtr<Task>> tasks;
 
-        /*const auto& BindTexture = [&](bool* isSet, const String& textureName, const String& texturePath, HMaterial& material, bool SRGB)
+        const auto& BindTexture = [&](bool* isSet, const String& textureName, const String& texturePath, HMaterial& material, bool SRGB)
         {
             if (*isSet)
             {
@@ -51,7 +51,7 @@ namespace te
                     *isSet = false;
                 }
             }
-        }; TODO PBR */
+        };
 
         for (UINT32 i = 0; i < mesh->GetProperties().GetNumSubMeshes(); i++)
         {
@@ -61,13 +61,21 @@ namespace te
             {
                 subMesh.Mat = createdMaterials[subMesh.MaterialName].GetNewHandleFromExisting();
 
-                /* subMesh.MatProperties.UseDiffuseMap = subMesh.Mat->GetTexture("DiffuseMap") != nullptr;
+                subMesh.MatProperties.UseBaseColorMap = subMesh.Mat->GetTexture("BaseColorMap") != nullptr;
+                subMesh.MatProperties.UseMetallicMap = subMesh.Mat->GetTexture("MetallicMap") != nullptr;
+                subMesh.MatProperties.UseRoughnessMap = subMesh.Mat->GetTexture("RoughnessMap") != nullptr;
+                subMesh.MatProperties.UseOcclusionMap = subMesh.Mat->GetTexture("OcclusionMap") != nullptr;
                 subMesh.MatProperties.UseEmissiveMap = subMesh.Mat->GetTexture("EmissiveMap") != nullptr;
+                subMesh.MatProperties.UseSheenColorMap = subMesh.Mat->GetTexture("SheenColorMap") != nullptr;
+                subMesh.MatProperties.UseSheenRoughnessMap = subMesh.Mat->GetTexture("SheenRoughnessMap") != nullptr;
+                subMesh.MatProperties.UseClearCoatMap = subMesh.Mat->GetTexture("ClearCoatMap") != nullptr;
+                subMesh.MatProperties.UseClearCoatRoughnessMap = subMesh.Mat->GetTexture("ClearCoatRoughnessMap") != nullptr;
+                subMesh.MatProperties.UseClearCoatNormalMap = subMesh.Mat->GetTexture("ClearCoatNormalMap") != nullptr;
                 subMesh.MatProperties.UseNormalMap = subMesh.Mat->GetTexture("NormalMap") != nullptr;
-                subMesh.MatProperties.UseSpecularMap = subMesh.Mat->GetTexture("SpecularMap") != nullptr;
-                subMesh.MatProperties.UseBumpMap = subMesh.Mat->GetTexture("BumpMap") != nullptr;
-                subMesh.MatProperties.UseTransparencyMap = subMesh.Mat->GetTexture("TransparencyMap") != nullptr;
-                subMesh.MatProperties.UseReflectionMap = subMesh.Mat->GetTexture("ReflectionMap") != nullptr; TODO PBR */
+                subMesh.MatProperties.UseParallaxMap = subMesh.Mat->GetTexture("ParallaxMap") != nullptr;
+                subMesh.MatProperties.UseTransmissionMap = subMesh.Mat->GetTexture("TransmissionMap") != nullptr;
+                subMesh.MatProperties.UseRadianceMap = subMesh.Mat->GetTexture("RadianceMap") != nullptr;
+                subMesh.MatProperties.UseSpecularIrrMap = subMesh.Mat->GetTexture("SpecularIrrMap") != nullptr;
             }
             else if (!subMesh.Mat.IsLoaded())
             {
@@ -80,41 +88,76 @@ namespace te
                 EditorResManager::Instance().Add<Material>(material);
                 createdMaterials[subMesh.MaterialName] = material.GetNewHandleFromExisting();
 
-                /* if (subMesh.MatProperties.UseDiffuseMap)
+                if (subMesh.MatProperties.UseBaseColorMap)
                 {
                     tasks.push_back(Task::Create(subMesh.MaterialName,
-                        [&]() { BindTexture(&subMesh.MatProperties.UseDiffuseMap, "DiffuseMap", subMesh.MatTextures.DiffuseMap, createdMaterials[subMesh.MaterialName], SRGB); }));
+                        [&]() { BindTexture(&subMesh.MatProperties.UseBaseColorMap, "BaseColorMap", subMesh.MatTextures.BaseColorMap, createdMaterials[subMesh.MaterialName], SRGB); }));
+                }
+                if (subMesh.MatProperties.UseMetallicMap)
+                {
+                    tasks.push_back(Task::Create(subMesh.MaterialName,
+                        [&]() { BindTexture(&subMesh.MatProperties.UseMetallicMap, "MetallicMap", subMesh.MatTextures.MetallicMap, createdMaterials[subMesh.MaterialName], false); }));
+                }
+                if (subMesh.MatProperties.UseRoughnessMap)
+                {
+                    tasks.push_back(Task::Create(subMesh.MaterialName,
+                        [&]() { BindTexture(&subMesh.MatProperties.UseRoughnessMap, "RoughnesMap", subMesh.MatTextures.RoughnessMap, createdMaterials[subMesh.MaterialName], false); }));
+                }
+                if (subMesh.MatProperties.UseReflectanceMap)
+                {
+                    tasks.push_back(Task::Create(subMesh.MaterialName,
+                        [&]() { BindTexture(&subMesh.MatProperties.UseReflectanceMap, "ReflectanceMap", subMesh.MatTextures.ReflectanceMap, createdMaterials[subMesh.MaterialName], false); }));
+                }
+                if (subMesh.MatProperties.UseOcclusionMap)
+                {
+                    tasks.push_back(Task::Create(subMesh.MaterialName,
+                        [&]() { BindTexture(&subMesh.MatProperties.UseOcclusionMap, "OcclusionMap", subMesh.MatTextures.OcclusionMap, createdMaterials[subMesh.MaterialName], false); }));
                 }
                 if (subMesh.MatProperties.UseEmissiveMap)
                 {
                     tasks.push_back(Task::Create(subMesh.MaterialName,
                         [&]() { BindTexture(&subMesh.MatProperties.UseEmissiveMap, "EmissiveMap", subMesh.MatTextures.EmissiveMap, createdMaterials[subMesh.MaterialName], SRGB); }));
                 }
+                if (subMesh.MatProperties.UseSheenColorMap)
+                {
+                    tasks.push_back(Task::Create(subMesh.MaterialName,
+                        [&]() { BindTexture(&subMesh.MatProperties.UseSheenColorMap, "SheenColorMap", subMesh.MatTextures.SheenColorMap, createdMaterials[subMesh.MaterialName], SRGB); }));
+                }
+                if (subMesh.MatProperties.UseSheenRoughnessMap)
+                {
+                    tasks.push_back(Task::Create(subMesh.MaterialName,
+                        [&]() { BindTexture(&subMesh.MatProperties.UseSheenRoughnessMap, "SheenRoughnessMap", subMesh.MatTextures.SheenRoughnessMap, createdMaterials[subMesh.MaterialName], false); }));
+                }
+                if (subMesh.MatProperties.UseClearCoatMap)
+                {
+                    tasks.push_back(Task::Create(subMesh.MaterialName,
+                        [&]() { BindTexture(&subMesh.MatProperties.UseClearCoatMap, "ClearCoatMap", subMesh.MatTextures.ClearCoatMap, createdMaterials[subMesh.MaterialName], false); }));
+                }
+                if (subMesh.MatProperties.UseClearCoatRoughnessMap)
+                {
+                    tasks.push_back(Task::Create(subMesh.MaterialName,
+                        [&]() { BindTexture(&subMesh.MatProperties.UseClearCoatRoughnessMap, "ClearCoatRoughnessMap", subMesh.MatTextures.ClearCoatRoughnessMap, createdMaterials[subMesh.MaterialName], false); }));
+                }
+                if (subMesh.MatProperties.UseClearCoatNormalMap)
+                {
+                    tasks.push_back(Task::Create(subMesh.MaterialName,
+                        [&]() { BindTexture(&subMesh.MatProperties.UseClearCoatNormalMap, "ClearCoatNormalMap", subMesh.MatTextures.ClearCoatNormalMap, createdMaterials[subMesh.MaterialName], false); }));
+                }
                 if (subMesh.MatProperties.UseNormalMap)
                 {
                     tasks.push_back(Task::Create(subMesh.MaterialName,
-                        [&]() { BindTexture(&subMesh.MatProperties.UseNormalMap, "NormalMap", subMesh.MatTextures.NormalMap, createdMaterials[subMesh.MaterialName], SRGB); }));
+                        [&]() { BindTexture(&subMesh.MatProperties.UseNormalMap, "NormalMap", subMesh.MatTextures.NormalMap, createdMaterials[subMesh.MaterialName], false); }));
                 }
-                if (subMesh.MatProperties.UseSpecularMap)
+                if (subMesh.MatProperties.UseParallaxMap)
                 {
                     tasks.push_back(Task::Create(subMesh.MaterialName,
-                        [&]() { BindTexture(&subMesh.MatProperties.UseSpecularMap, "SpecularMap", subMesh.MatTextures.SpecularMap, createdMaterials[subMesh.MaterialName], SRGB); }));
+                        [&]() { BindTexture(&subMesh.MatProperties.UseParallaxMap, "ParallaxMap", subMesh.MatTextures.ParallaxMap, createdMaterials[subMesh.MaterialName], false); }));
                 }
-                if (subMesh.MatProperties.UseBumpMap)
+                if (subMesh.MatProperties.UseTransmissionMap)
                 {
                     tasks.push_back(Task::Create(subMesh.MaterialName,
-                        [&]() { BindTexture(&subMesh.MatProperties.UseBumpMap, "BumpMap", subMesh.MatTextures.BumpMap, createdMaterials[subMesh.MaterialName], SRGB); }));
+                        [&]() { BindTexture(&subMesh.MatProperties.UseTransmissionMap, "TransmissionMap", subMesh.MatTextures.TransmissionMap, createdMaterials[subMesh.MaterialName], false); }));
                 }
-                if (subMesh.MatProperties.UseTransparencyMap)
-                {
-                    tasks.push_back(Task::Create(subMesh.MaterialName,
-                        [&]() { BindTexture(&subMesh.MatProperties.UseTransparencyMap, "TransparencyMap", subMesh.MatTextures.TransparencyMap, createdMaterials[subMesh.MaterialName], SRGB); }));
-                }
-                if (subMesh.MatProperties.UseReflectionMap)
-                {
-                    tasks.push_back(Task::Create(subMesh.MaterialName,
-                        [&]() { BindTexture(&subMesh.MatProperties.UseReflectionMap, "ReflectionMap", subMesh.MatTextures.ReflectionMap, createdMaterials[subMesh.MaterialName], SRGB); }));
-                } TODO PBR : be careful with srgb */
             }
         }
 

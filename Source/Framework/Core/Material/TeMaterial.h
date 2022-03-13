@@ -56,56 +56,300 @@ namespace te
         }
     };
 
+    /**
+     * @brief 
+     * 
+     * Several material model properties expect RGB colors. 
+     * The engine materials use RGB colors in linear space 
+     * and you must take proper care of supplying colors in that space. 
+     * 
+     * Materials expect colors to use pre-multiplied alpha.
+     * A color uses pre-multiplied alpha if its RGB components are multiplied by the alpha channel:
+     * color.rgb *= color.a;
+     * 
+     * The light attenuation through the material is defined as e^(−absorption⋅distance), 
+     * and the distance depends on the thickness parameter. 
+     * If thickness is not provided, then the absorption parameter 
+     * is used directly and the light attenuation through the material 
+     * becomes 1−absorption. 
+     * To obtain a certain color at a desired distance, 
+     * the above equation can be inverted such as absorption=−ln(color)/distance.
+     * 
+     * Thickness represents the thickness of solid objects in the direction 
+     * of the normal, for satisfactory results, this should be provided 
+     * per fragment (e.g.: as a texture) or at least per vertex. 
+     * MicroThickness represent the thickness of the thin layer of an object, 
+     * and can generally be provided as a constant value. 
+     * For example, a 1mm thin hollow sphere of radius 1m, 
+     * would have a thickness of 1 and a microThickness of 0.001.
+     */
     struct MaterialProperties
     {
-        Color BaseColor        = Color(0.8f, 0.8f, 0.8f);
+        /**
+         * @brief Diffuse albedo for non-metallic surfaces, and specular color for metallic surfaces. 
+         * Pre-multiplied linear RGB.
+         * Alpha channel will ne be used.
+         * DiffuseColor = (1.0 - metallic) * BaseColor.rgb;
+         * Range : [0..1]
+         */
+        Color BaseColor = Color(0.8f, 0.8f, 0.8f);
 
-        float Roughness        = 0.5f;
-        float Metallic         = 0.5f;
-        float Reflectance      = 0.0f;
-        float AO               = 0.0f;
+        /**
+         * @brief Whether a surface appears to be dielectric (0.0) or conductor (1.0). 
+         * Often used as a binary value (0 or 1).
+         * Range : [0..1]
+         */
+        float Metallic = 0.05f;
 
-        Color Emissive         = Color::Black;
+        /**
+         * @brief Perceived smoothness (1.0) or roughness (0.0) of a surface. 
+         * Smooth surfaces exhibit sharp reflections.
+         * Roughness = Roughness * Roughness
+         * Range : [0..1]
+         */
+        float Roughness = 0.5f;
 
-        /** Offset of any texture used for this material (UV0) */
+        /**
+         * @brief Fresnel reflectance at normal incidence for dielectric surfaces.
+         * This directly controls the strength of the reflections.
+         * f0 = 0.16 * reflectance * reflectance * (1.0 - metallic) + baseColor * metallic;
+         * f90 = 1.0
+         * Range : [0..1]
+         * Prefer values > 0.35
+         */
+        float Reflectance = 0.35f;
+
+        /**
+         * @brief Defines how much of the ambient light is accessible to a surface point. 
+         * It is a per-pixel shadowing factor between 0.0 and 1.0. 
+         * Only used on direct lighting.
+         * Range : [0..1]
+         */
+        float Occlusion = 0.0f;
+
+        /**
+         * @brief Additional diffuse albedo to simulate emissive surfaces (such as neons, etc.) 
+         * This property is mostly useful in an HDR pipeline with a bloom pass. 
+         * Linear RGB intensity in nits
+         * Range : [0..1]
+         */
+        Color Emissive = Color::Black;
+
+        /**
+         * @brief Strength of the sheen layer. Linear RGB
+         * Range : [0..1]
+         */
+        Color SheenColor = Color::Black;
+
+        /**
+         * @brief Perceived smoothness or roughness of the sheen layer
+         * Range : [0..1]
+         */
+        float SheenRoughness = 0.0f;
+
+        /**
+         * @brief Strength of the clear coat layer
+         * Should be 0 or 1
+         * Range : [0..1]
+         */
+        float ClearCoat = 0.0f;
+
+        /**
+         * @brief Perceived smoothness or roughness of the clear coat layer
+         * Range : [0..1]
+         */
+        float ClearCoatRoughness = 0.0f;
+
+        /**
+         * @brief Amount of anisotropy in either the tangent or bitangent direction
+         * Anisotropy is in the tangent direction when this value is positive
+         * Range : [−1..1]
+         */
+        float Anisotropy = 0.0f;
+
+        /**
+         * @brief Local surface direction in tangent space
+         * Linear RGB, encodes a direction vector in tangent space
+         * Range : [0..1]
+         */
+        Vector3 AnisotropyDirection = Vector3::UNIT_X;
+
+        /**
+         * If alpha value (from transparency or transparency map)
+         * is below a certain value, pixel will not be visible (discarded)
+         * Range : [0..1]
+         */
+        float AlphaThreshold = 0.0f;
+
+        /**
+         * @brief Offset of any texture used for this material (UV0)
+         */
         Vector2 TextureRepeat = Vector2::ONE;
 
-        /** Repeat of any texture used for this material (UV0) */
+        /**
+         * @brief Repeat factor of any texture used for this material (UV0)
+         */
         Vector2 TextureOffset = Vector2::ZERO;
 
         /**
-         * Specify if this material must compute IBL using textures
+         * @brief Controls parallax effect strength
+         * Range : [0..1]
+         */
+        float ParallaxScale = 0.05f;
+
+        /**
+         * @brief Controls number of samples used for parallax mapping
+         * Range : [16..256]
+         */
+        UINT32 ParallaxSamples = 64;
+
+        /**
+         * @brief Thickness of the thin layer of refractive objects
+         * Range : [0..n]
+         */
+        float MicroThickness = 0.0f;
+
+        /**
+         * @brief Thickness of the solid volume of refractive objects
+         * Range : [0..n]
+         */
+        float Thickness = 0.0f;
+
+        /**
+         * @brief Defines how much of the diffuse light of a dielectric is transmitted through the object, 
+         * in other words this defines how transparent an object is
+         * Range : [0..1]
+         */
+        float Transmission = 1.0f;
+
+        /**
+         * @brief Absorption factor for refractive objects
+         * Range : [0..n]
+         */
+        Vector3 Absorption = Vector3::ZERO;
+
+        /**
+         * @copydoc MaterialProperties::BaseColor
+         */
+        bool UseBaseColorMap = false;
+
+        /**
+         * @copydoc MaterialProperties::Metallic
+         */
+        bool UseMetallicMap = false;
+
+        /**
+         * @copydoc MaterialProperties::Roughness
+         */
+        bool UseRoughnessMap = false;
+
+        /**
+         * @copydoc MaterialProperties::Reflectance
+         */
+        bool UseReflectanceMap = false;
+        
+        /**
+         * @copydoc MaterialProperties::Occlusion
+         */
+        bool UseOcclusionMap = false;
+
+        /**
+         * @copydoc MaterialProperties::Emissive
+         */
+        bool UseEmissiveMap = false;
+
+        /**
+         * @copydoc MaterialProperties::SheenColor
+         */
+        bool UseSheenColorMap = false;
+
+        /**
+         * @copydoc MaterialProperties::SheenRoughness
+         */
+        bool UseSheenRoughnessMap = false;
+
+        /**
+         * @copydoc MaterialProperties::ClearCoat
+         */
+        bool UseClearCoatMap = false;
+
+        /**
+         * @copydoc MaterialProperties::ClearCoatRoughness
+         */
+        bool UseClearCoatRoughnessMap = false;
+
+        /**
+         * @brief A detail normal used to perturb the clear coat 
+         * layer using bump mapping (normal mapping)
+         * Linear RGB, encodes a direction vector in tangent space
+         * Range : [0..1]
+         */
+        bool UseClearCoatNormalMap = false;
+
+        /**
+         * @brief A detail normal used to perturb the surface
+         * using bump mapping (normal mapping)
+         * Linear RGB, encodes a direction vector in tangent space
+         * Range : [0..1]
+         */
+        bool UseNormalMap = false;
+
+        /**
+         * @copydoc MaterialProperties::ParallaxScale
+         */
+        bool UseParallaxMap = false;
+
+        /**
+         * @copydoc MaterialProperties::Transmission
+         */
+        bool UseTransmissionMap = false;
+
+        /**
+         * @brief Radiance will be used for environment reflection and refraction 
+         * Radiance can come from this material, skybox or light probe
+         * Priority : Material > Light Probe > Skybox
+         * Range : [0..1]
+         */
+        bool UseRadianceMap = false;
+
+        /**
+         * @brief Specify if this material must compute IBL using textures
          * coming from this material, skybox or light probe
          * Priority : Material > Light Probe > Skybox
         */
-        bool UseIndirectLighting = true;
+        bool DoIndirectLighting = true;
 
         /**
-         * Does this material must compute diffuse irradiance using 
+         * @brief Does this material must compute diffuse irradiance using 
          * a texture stored on this material
+         * Range : [0..1]
          */
         bool UseDiffuseIrrMap = false;
 
         /**
-         * Does this material must compute specular irradiance using 
+         * @brief Does this material must compute specular irradiance using 
          * a texture stored on this material
+         * Range : [0..1]
          */
         bool UseSpecularIrrMap = false;
     };
 
     struct MaterialTextures
     {
-        String DiffuseMap;
-        String EmissiveMap;
-        String NormalMap;
-        String SpecularMap;
-        String BumpMap;
-        String ParallaxMap;
-        String TransparencyMap;
-        String ReflectionMap;
+        String BaseColorMap;
+        String MetallicMap;
+        String RoughnessMap;
+        String ReflectanceMap;
         String OcclusionMap;
-        String EnvironmentMap;
-        String IrradianceMap;
+        String EmissiveMap;
+        String SheenColorMap;
+        String SheenRoughnessMap;
+        String ClearCoatMap;
+        String ClearCoatRoughnessMap;
+        String ClearCoatNormalMap;
+        String NormalMap;
+        String ParallaxMap;
+        String TransmissionMap;
     };
 
     /**
