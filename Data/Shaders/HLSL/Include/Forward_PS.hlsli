@@ -129,11 +129,12 @@ cbuffer PerFrameBuffer : register(b3)
 
 Texture2D BaseColorMap : register(t0);
 Texture2D MetallicMap : register(t1);
-Texture2D RoughnessMap : register(t3);
-Texture2D ReflectanceMap : register(t4);
-Texture2D OcclusionMap : register(t5);
-Texture2D EmissiveMap : register(t6);
-Texture2D SheenColorMap : register(t7);
+Texture2D RoughnessMap : register(t2);
+Texture2D ReflectanceMap : register(t3);
+Texture2D OcclusionMap : register(t4);
+Texture2D EmissiveMap : register(t5);
+Texture2D SheenColorMap : register(t6);
+Texture2D SheenRoughnessMap : register(t7);
 Texture2D ClearCoatMap : register(t8);
 Texture2D ClearCoatNormalMap : register(t9);
 Texture2D NormalMap : register(t10);
@@ -351,35 +352,43 @@ float3 GetReflectedVector(float3 V, float3 N, PixelData pixelData)
     return R;
 }
 
+// V : view vector
 // N : surface normal
 float3 DoDiffuseIBL(float3 V, float3 N, PixelData pixelData)
 {
     float3 result = (float3)0;
     float3 R = GetReflectedVector(V, N, pixelData);
 
-    if(gMaterial.DoIndirectLighting)
+    if(gMaterial.DoIndirectLighting && gUseSkyboxDiffuseIrrMap)
+    {
         result = DiffuseIrrMap.Sample(TextureSampler, N).rgb * gSkyboxBrightness * pixelData.DiffuseColor;
+    }
 
     return result;
 }
 
+// V : view vector
 // N : surface normal
 float3 DoSpecularIBL(float3 V, float3 N, PixelData pixelData)
 {
     float3 result = (float3)0;
     float3 R = GetReflectedVector(-V, N, pixelData);
 
-    // TODO PBR
+    if(gMaterial.DoIndirectLighting && gUseSkyboxSpecularIrrMap)
+    {
+        // TODO PBR
+    }
 
     return result;
 }
 
+// V : view vector
 // N : surface normal
 LightingResult DoIBL(float3 V, float3 N, PixelData pixelData)
 {
     LightingResult result = (LightingResult)0;
 
-    if(gMaterial.DoIndirectLighting)
+    if(gMaterial.DoIndirectLighting && (gUseSkyboxDiffuseIrrMap || gUseSkyboxSpecularIrrMap))
     {
         result.Diffuse = DoDiffuseIBL(V, N, pixelData);
         result.Specular = DoSpecularIBL(V, N, pixelData);

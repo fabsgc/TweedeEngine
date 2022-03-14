@@ -3,6 +3,7 @@
 #include "Scene/TeSceneObject.h"
 #include "Renderer/TeRenderer.h"
 #include "Renderer/TeIBLUtility.h"
+#include "RenderAPI/TeRenderAPI.h"
 
 namespace te
 {
@@ -34,27 +35,23 @@ namespace te
 
     void Skybox::SetTexture(const HTexture& texture)
     {
-        _texture = (texture.IsLoaded()) ? texture.GetInternalPtr() : nullptr;
-
-        _filteredRadiance = nullptr;
-        _irradiance = nullptr;
-
-        if (_texture)
-            FilterTexture();
-
-        _markCoreDirty((ActorDirtyFlag)SkyboxDirtyFlag::Texture);
+        SetTexture((texture.IsLoaded()) ? texture.GetInternalPtr() : nullptr);
     }
 
     void Skybox::SetTexture(const SPtr<Texture>& texture)
-    {
-        _texture = texture;
-        
-        _filteredRadiance = nullptr;
-        _irradiance = nullptr;
-
-        if (_texture)
+    {       
+        if (!texture)
+        {
+            _texture = nullptr;
+            _filteredRadiance = nullptr;
+            _irradiance = nullptr;
+        }
+        else if(texture != _texture)
+        {
+            _texture = texture;
             FilterTexture();
-
+        }
+            
         _markCoreDirty((ActorDirtyFlag)SkyboxDirtyFlag::Texture);
     }
 
@@ -67,6 +64,18 @@ namespace te
     void Skybox::SetDiffuseIrradiance(const SPtr<Texture>& irradiance)
     {
         _irradiance = irradiance;
+        _markCoreDirty((ActorDirtyFlag)SkyboxDirtyFlag::Texture);
+    }
+
+    void Skybox::SetSpecularIrradiance(const HTexture& irradiance)
+    {
+        _filteredRadiance = irradiance.GetInternalPtr();
+        _markCoreDirty((ActorDirtyFlag)SkyboxDirtyFlag::Texture);
+    }
+
+    void Skybox::SetSpecularIrradiance(const SPtr<Texture>& irradiance)
+    {
+        _filteredRadiance = irradiance;
         _markCoreDirty((ActorDirtyFlag)SkyboxDirtyFlag::Texture);
     }
 
@@ -140,6 +149,7 @@ namespace te
             cubemapDesc.NumMips = PixelUtil::GetMaxMipmaps(cubemapDesc.Width, cubemapDesc.Height, 1);
             cubemapDesc.Usage = TU_STATIC | TU_RENDERTARGET;
             cubemapDesc.DebugName = "Filtered Radiance Texture";
+            cubemapDesc.HwGamma = _texture->GetProperties().IsHardwareGammaEnabled();
 
             _filteredRadiance = Texture::CreatePtr(cubemapDesc);
         }
@@ -153,16 +163,27 @@ namespace te
             irradianceCubemapDesc.NumMips = 0;
             irradianceCubemapDesc.Usage = TU_STATIC | TU_RENDERTARGET;
             irradianceCubemapDesc.DebugName = "Irradiance Texture";
+            irradianceCubemapDesc.HwGamma = _texture->GetProperties().IsHardwareGammaEnabled();
 
             _irradiance = Texture::CreatePtr(irradianceCubemapDesc);
         }
+
+        RenderAPI& rapi = RenderAPI::Instance();
+
+        rapi.PushMarker("[DRAW] FILTERED RADIANCE MAP", Color(0.67f, 0.49f, 0.26f));
 
         // Filter radiance
         gIBLUtility().ScaleCubemap(_texture, 0, _filteredRadiance, 0);
         gIBLUtility().FilterCubemapForSpecular(_filteredRadiance, nullptr);
 
+        rapi.PopMarker();
+
+        rapi.PushMarker("[DRAW] IRRADIANCE MAP", Color(0.23f, 0.48f, 0.55f));
+
         // Generate irradiance
-        gIBLUtility().FilterCubemapForIrradiance(_texture, _irradiance);
+        //gIBLUtility().FilterCubemapForIrradiance(_texture, _irradiance);
+
+        rapi.PopMarker();
     }
 
     const IBLUtility& gIBLUtility()

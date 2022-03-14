@@ -55,10 +55,8 @@ namespace te
         SSAODownSample = 0x11,
         /** Shader used to render decals on top of rendered objects */
         Decal = 0x12,
-        /** Shader used for material's preview for opaque objects */
-        PreviewOpaque = 0x13,
-        /** Shader used for material's preview for transparent objects */
-        PreviewTransparent = 0x14,
+        /** Shader used to downsample a cubemap*/
+        ReflectionCubeDownsample = 0x13
     };
 
     /** Types of builtin shaders that are always available. */
@@ -133,6 +131,7 @@ namespace te
         void InitShaderSSAOBlur();
         void InitShaderSSAODownSample();
         void InitShaderDecal();
+        void InitShaderReflectionCubeDownsample();
 
         void InitDefaultMaterial();
 
@@ -158,6 +157,7 @@ namespace te
         HShader _shaderSSAOBlur;
         HShader _shaderSSAODownSample;
         HShader _shaderDecal;
+        HShader _shaderReflectionCubeDownsample;
 
         SPtr<SamplerState> _anisotropicSamplerState = nullptr;
         SPtr<SamplerState> _noFilterSamplerState = nullptr;
@@ -179,6 +179,7 @@ namespace te
         SHADER_DESC _ssaoBlurShaderDesc;
         SHADER_DESC _ssaoDownSampleShaderDesc;
         SHADER_DESC _decalShaderDesc;
+        SHADER_DESC _shaderReflectionCubeDownsampleDesc;
 
         GPU_PROGRAM_DESC _vertexShaderForwardDesc;
         GPU_PROGRAM_DESC _pixelShaderForwardDesc;
@@ -215,9 +216,6 @@ namespace te
         GPU_PROGRAM_DESC _geometryShaderBulletDebugDesc;
         GPU_PROGRAM_DESC _pixelShaderBulletDebugDesc;
 
-        GPU_PROGRAM_DESC _vertexShaderPreviewOpaqueDesc;
-        GPU_PROGRAM_DESC _pixelShaderPreviewTransparentDesc;
-
         GPU_PROGRAM_DESC _vertexShaderSSAODesc;
         GPU_PROGRAM_DESC _pixelShaderSSAODesc;
 
@@ -229,6 +227,9 @@ namespace te
 
         GPU_PROGRAM_DESC _vertexShaderDecalDesc;
         GPU_PROGRAM_DESC _pixelShaderDecalDesc;
+
+        GPU_PROGRAM_DESC _vertexShaderReflectionCubeDownsampleDesc;
+        GPU_PROGRAM_DESC _pixelShaderReflectionCubeDownsampleDesc;
 
         BLEND_STATE_DESC _blendOpaqueStateDesc;
         BLEND_STATE_DESC _blendTransparentStateDesc;

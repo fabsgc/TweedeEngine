@@ -2683,7 +2683,7 @@ namespace te
         }
         ImGui::Separator();
 
-        // current irradiance texture to use
+        // current diffuse irradiance texture to use
         {
             if (ImGuiExt::RenderOptionCombo<UUID>(&irradianceuUUID, "##skybox_texture_irradiance_option", "Irradiance", texturesOptions, width))
             {

@@ -47,10 +47,28 @@ namespace te
         void SetDiffuseIrradiance(const SPtr<Texture>& irradiance);
 
         /**
-         * Determines an environment map to use for sampling skybox irradiance. Must be a cube-map texture, and should ideally
+         * Determines an environment map to use for sampling skybox diffuse irradiance. Must be a cube-map texture, and should ideally
          * contain HDR data.
          */
         SPtr<Texture> GetDiffuseIrradiance() const { return _irradiance; }
+
+        /** @copydoc Skybox::GetSpecularrradiance */
+        void SetSpecularIrradiance(const HTexture& irradiance);
+
+        /** @copydoc Skybox::GetSpecularIrradiance */
+        void SetSpecularIrradiance(const SPtr<Texture>& irradiance);
+
+        /**
+         * Determines an environment map to use for sampling skybox specular irradiance. Must be a cube-map texture, and should ideally
+         * contain HDR data.
+         */
+        SPtr<Texture> GetSpecularIrradiance() const { return _filteredRadiance; }
+
+        /**
+         * Filters the skybox radiance texture, generating filtered radiance (for reflections) and irradiance. Should be
+         * called any time the skybox texture changes.
+         */
+        void FilterTexture();
 
         /**
          * You can change at runtime which renderer will handle this skybox
@@ -71,12 +89,6 @@ namespace te
 
         /** @copydoc CoreObject::FrameSync */
         void FrameSync() override;
-
-        /**
-         * Filters the skybox radiance texture, generating filtered radiance (for reflections) and irradiance. Should be
-         * called any time the skybox texture changes.
-         */
-        void FilterTexture();
 
     protected:
         friend class CSkybox;

@@ -22,6 +22,7 @@ namespace te
             if (material.ShaderPath.type() == typeid(BuiltinShader))
             {
                 HShader shader = br.GetBuiltinShader(std::any_cast<BuiltinShader>(material.ShaderPath));
+                TE_ASSERT_ERROR(shader.IsLoaded(), "Shader not found")
                 shaders.push_back(shader.GetInternalPtr());
             }
             else

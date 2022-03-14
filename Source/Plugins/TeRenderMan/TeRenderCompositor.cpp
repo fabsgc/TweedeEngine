@@ -55,9 +55,9 @@ namespace te
                     {
                         Skybox* skybox = scene.SkyboxElem;
                         SPtr<Texture> diffuseIrradiance = skybox ? skybox->GetDiffuseIrradiance() : nullptr;
-                        entry.RenderElem->GpuParamsElem[entry.PassIdx]->SetTexture("DiffuseIrrMap", diffuseIrradiance);
+                        SPtr<Texture> specularIrradiance = skybox ? skybox->GetSpecularIrradiance() : nullptr;
 
-                        SPtr<Texture> specularIrradiance = skybox ? skybox->GetDiffuseIrradiance() : nullptr;
+                        entry.RenderElem->GpuParamsElem[entry.PassIdx]->SetTexture("DiffuseIrrMap", diffuseIrradiance);
                         entry.RenderElem->GpuParamsElem[entry.PassIdx]->SetTexture("SpecularIrrMap", specularIrradiance);
                     } 
                 }
@@ -381,6 +381,9 @@ namespace te
         RenderQueue* opaqueElements = inputs.View.GetOpaqueQueue().get();
         const Vector<RenderQueueElement> elements = opaqueElements->GetSortedElements();
         RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
+
+        //if (inputs.Scene.SkyboxElem)
+        //    inputs.Scene.SkyboxElem->FilterTexture();
 
         inputs.CurrRenderAPI.PushMarker("[DRAW] Forward Pass", Color(0.8f, 0.6f, 0.8f));
 

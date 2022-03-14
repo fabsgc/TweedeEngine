@@ -8,6 +8,29 @@
 
 namespace te
 {
+    TE_PARAM_BLOCK_BEGIN(ReflectionCubeDownsampleParamDef)
+        TE_PARAM_BLOCK_ENTRY(int, gCubeFace)
+        TE_PARAM_BLOCK_ENTRY(int, gMipLevel)
+    TE_PARAM_BLOCK_END
+
+        extern ReflectionCubeDownsampleParamDef gReflectionCubeDownsampleParamDef;
+
+    /** Performs filtering on cubemap faces in order to prepare them for importance sampling. */
+    class ReflectionCubeDownsampleMat : public RendererMaterial<ReflectionCubeDownsampleMat>
+    {
+        RMAT_DEF(BuiltinShader::ReflectionCubeDownsample)
+
+    public:
+        ReflectionCubeDownsampleMat();
+
+        /** Downsamples the provided texture face and outputs it to the provided target. */
+        void Execute(const SPtr<Texture>& source, UINT32 face, UINT32 mip, const SPtr<RenderTarget>& target);
+
+    private:
+        SPtr<GpuParamBlockBuffer> _paramBuffer;
+        SPtr<Texture> _texture;
+    };
+
     /** Renderer implementation of IBLUtility. */
     class RenderManIBLUtility : public IBLUtility
     {

@@ -631,6 +631,7 @@ namespace te
             gPerFrameParamDef.gSkyboxBrightness.Set(_info.PerFrameParamBuffer, _info.SkyboxElem->GetBrightness());
             gPerFrameParamDef.gUseSkyboxMap.Set(_info.PerFrameParamBuffer, _info.SkyboxElem->GetTexture() ? 1 : 0);
             gPerFrameParamDef.gUseSkyboxDiffuseIrrMap.Set(_info.PerFrameParamBuffer, _info.SkyboxElem->GetDiffuseIrradiance() ? 1 : 0);
+            gPerFrameParamDef.gUseSkyboxSpecularIrrMap.Set(_info.PerFrameParamBuffer, _info.SkyboxElem->GetSpecularIrradiance() ? 1 : 0);
         }
         else
         {

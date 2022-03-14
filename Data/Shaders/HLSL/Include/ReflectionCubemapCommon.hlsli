@@ -1,0 +1,88 @@
+#ifndef __REFLECTION_CUBEMAP_COMMON__
+#define __REFLECTION_CUBEMAP_COMMON__
+
+float3 GetDirFromCubeFace(uint cubeFace, float2 uv)
+{
+    float3 dir;
+
+    if(cubeFace == 0)
+        dir = float3(1.0f, -uv.y, -uv.x);
+    else if(cubeFace == 1)
+        dir = float3(-1.0f, -uv.y, uv.x);
+    else if(cubeFace == 2)
+        dir = float3(uv.x, 1.0f, uv.y);
+    else if(cubeFace == 3)
+        dir = float3(uv.x, -1.0f, -uv.y);
+    else if(cubeFace == 4)
+        dir = float3(uv.x, -uv.y, 1.0f);
+    else
+        dir = float3(-uv.x, -uv.y, -1.0f);
+
+    return dir;
+}
+
+/** 
+ * Integrates area of a cube face projected onto the surface of the sphere, from [0, 0] to [u, v]. 
+ * u & v expected in [-1, -1] to [1, 1] range.
+ *
+ * See http://www.rorydriscoll.com/2012/01/15/cubemap-texel-solid-angle/ for derivation.
+*/
+float IntegrateProjectedCubeArea(float u, float v)
+{
+    return atan2(u * v, sqrt(u * u + v * v + 1.0f));
+}
+
+/** Calculates solid angle of a texel projected onto a sphere. */
+float TexelSolidAngle(float u, float v, float invFaceSize)
+{
+    float x0 = u - invFaceSize;
+    float x1 = u + invFaceSize;
+    float y0 = v - invFaceSize;
+    float y1 = v + invFaceSize;
+
+    return   IntegrateProjectedCubeArea(x1, y1)
+            - IntegrateProjectedCubeArea(x0, y1)
+            - IntegrateProjectedCubeArea(x1, y0)
+            + IntegrateProjectedCubeArea(x0, y0);
+}
+
+/**
+ * Calculates a mip level to sample from based on roughness value.
+ *
+ * @param 	roughness	Roughness in range [0, 1]. Higher values yield more roughness.
+ * @param	numMips		Total number of mip-map levels in the texture we'll be sampling from.
+ * @return				Index of the mipmap level to sample.
+ */
+float MapRoughnessToMipLevel(float roughness, int numMips)
+{
+    // We use the following equation:
+    //    mipLevel = log10(1 - roughness) / log10(dropPercent)
+    //
+    // Where dropPercent represent by what % to drop the roughness with each mip level.
+    // We convert to log2 and a assume a drop percent value of 0.7. This gives us:
+    //    mipLevel = -2.8 * log2(1 - roughness);
+
+    // Note: Another value that could be used is drop 0.6, which yields a multiply by -1.35692. 
+    // This more accurately covers the mip range, but early mip levels end up being too smooth,
+    // and benefits from our cubemap importance sampling strategy seem to be lost as most samples
+    // fall within one pixel, resulting in same effect as just trivially downsampling. With 0.7 drop
+    // the roughness increases too early and higher mip levels don't cover the full [0, 1] range. Which
+    // is better depends on what looks better.
+
+    return max(0, -2.8f * log2(1.0f - roughness));
+}
+
+/**
+ * Calculates a roughness value from the provided mip level.
+ *
+ * @param 	mipLevel	Mip level to determine roughness for.
+ * @param	numMips		Total number of mip-map levels in the texture we'll be sampling from.
+ * @return				Roughness value for the specific mip level.
+ */
+float MapMipLevelToRoughness(int mipLevel, int numMips)
+{
+    // mapRoughnessToMipLevel() solved for roughness
+    return 1 - exp2((float)mipLevel / -2.8f);
+}
+
+#endif // __REFLECTION_CUBEMAP_COMMON__

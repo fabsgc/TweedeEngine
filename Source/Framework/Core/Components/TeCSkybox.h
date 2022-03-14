@@ -44,6 +44,15 @@ namespace te
         /** @copydoc Skybox::SetDiffuseIrradiance */
         void SetDiffuseIrradiance(const SPtr<Texture>& irradiance) { _internal->SetDiffuseIrradiance(irradiance); }
 
+        /** @copydoc Skybox::GetSpecularIrradiance */
+        SPtr<Texture> GetSpecularIrradiance() const { return _internal->GetSpecularIrradiance(); }
+
+        /** @copydoc Skybox::SetSpecularIrradiance */
+        void SetSpecularIrradiance(const HTexture& irradiance) { _internal->SetSpecularIrradiance(irradiance); }
+
+        /** @copydoc Skybox::SetDiffuseIrradiance */
+        void SetSpecularIrradiance(const SPtr<Texture>& irradiance) { _internal->SetSpecularIrradiance(irradiance); }
+
         /** @copydoc Skybox::SetBrightness */
         void SetBrightness(float brightness) { _internal->SetBrightness(brightness); }
 

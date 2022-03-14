@@ -119,16 +119,6 @@ namespace te
                 InitShaderBulletDebug();
             shader = _shaderBulletDebug;
             break;
-        case BuiltinShader::PreviewOpaque:
-            if (!_shaderOpaque.IsLoaded())
-                InitShaderOpaque();
-            shader = _shaderOpaque;
-            break;
-        case BuiltinShader::PreviewTransparent:
-            if(!_shaderTransparent.IsLoaded())
-                InitShaderTransparent();
-            shader = _shaderTransparent;
-            break;
         case BuiltinShader::SSAO:
             if (!_shaderSSAO.IsLoaded())
                 InitShaderSSAO();
@@ -148,6 +138,11 @@ namespace te
             if (!_shaderDecal.IsLoaded())
                 InitShaderDecal();
             shader = _shaderDecal;
+            break;
+        case BuiltinShader::ReflectionCubeDownsample:
+            if (!_shaderReflectionCubeDownsample.IsLoaded())
+                InitShaderReflectionCubeDownsample();
+            shader = _shaderReflectionCubeDownsample;
             break;
         default:
             TE_ASSERT_ERROR(false, "Can't find \"" + ToString((UINT32)type) + "\" shader.")
@@ -502,6 +497,26 @@ namespace te
             _pixelShaderDecalDesc.Language = "hlsl";
             _pixelShaderDecalDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
             _pixelShaderDecalDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/ReflectionCubeDownsample_VS.hlsl"));
+            _vertexShaderReflectionCubeDownsampleDesc.Type = GPT_VERTEX_PROGRAM;
+            _vertexShaderReflectionCubeDownsampleDesc.FilePath = SHADERS_FOLDER + String("HLSL/ReflectionCubeDownsample_VS.hlsl");
+            _vertexShaderReflectionCubeDownsampleDesc.EntryPoint = "main";
+            _vertexShaderReflectionCubeDownsampleDesc.Language = "hlsl";
+            _vertexShaderReflectionCubeDownsampleDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
+            _vertexShaderReflectionCubeDownsampleDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/ReflectionCubeDownsample_PS.hlsl"));
+            _pixelShaderReflectionCubeDownsampleDesc.Type = GPT_PIXEL_PROGRAM;
+            _pixelShaderReflectionCubeDownsampleDesc.FilePath = SHADERS_FOLDER + String("HLSL/ReflectionCubeDownsample_PS.hlsl");
+            _pixelShaderReflectionCubeDownsampleDesc.EntryPoint = "main";
+            _pixelShaderReflectionCubeDownsampleDesc.Language = "hlsl";
+            _pixelShaderReflectionCubeDownsampleDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
+            _pixelShaderReflectionCubeDownsampleDesc.Source = shaderFile.GetAsString();
         }
     }
     void BuiltinResources::InitStates()
@@ -974,6 +989,28 @@ namespace te
         shaderDesc.Techniques.push_back(technique);
 
         _shaderSSAO = Shader::Create("SSAO Down Sample", shaderDesc);
+    }
+
+    void BuiltinResources::InitShaderReflectionCubeDownsample()
+    {
+        PASS_DESC passDesc;
+        passDesc.BlendStateDesc = _blendOpaqueStateDesc;
+        passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
+        passDesc.RasterizerStateDesc = _rasterizerStateDesc;
+        passDesc.VertexProgramDesc = _vertexShaderReflectionCubeDownsampleDesc;
+        passDesc.PixelProgramDesc = _pixelShaderReflectionCubeDownsampleDesc;
+
+        passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
+
+        SPtr<Pass> pass = Pass::Create(passDesc);
+        SPtr<Technique> technique = Technique::Create("hlsl", { pass });
+        technique->Compile();
+
+        SHADER_DESC shaderDesc = _shaderReflectionCubeDownsampleDesc;
+        shaderDesc.QueueType = QueueSortType::BackToFront;
+        shaderDesc.Techniques.push_back(technique);
+
+        _shaderReflectionCubeDownsample = Shader::Create("Reflection Cube Down Sample", shaderDesc);
     }
 
     void BuiltinResources::InitShaderDecal()
