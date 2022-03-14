@@ -1,5 +1,5 @@
 #include "TeRenderManIBLUtility.h"
-#include "Image/TETexture.h"
+#include "Image/TeTexture.h"
 #include "Renderer/TeRendererUtility.h"
 #include "RenderAPI/TeGpuBuffer.h"
 #include "TeRenderMan.h"
