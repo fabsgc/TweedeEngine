@@ -53,11 +53,8 @@ struct MaterialData
     uint    UseNormalMap;
     uint    UseParallaxMap;
     uint    UseTransmissionMap;
-    uint    UseRadianceMap;
     uint    DoIndirectLighting;
-    uint    UseDiffuseIrrMap;
-    uint    UseSpecularIrrMap;
-    uint    Padding[2];
+    uint    Padding[5];
 };
 
 struct LightData
@@ -142,9 +139,8 @@ Texture2D ClearCoatNormalMap : register(t9);
 Texture2D NormalMap : register(t10);
 Texture2D ParallaxMap : register(t11);
 Texture2D TransmissionMap : register(t12);
-TextureCube RadianceMap : register(t13);
-TextureCube DiffuseIrrMap : register(t14);
-TextureCube SpecularIrrMap : register(t15);
+TextureCube DiffuseIrrMap : register(t13);
+TextureCube SpecularIrrMap : register(t14);
 
 SamplerState TextureSampler : register(s0);
 
@@ -359,8 +355,9 @@ float3 GetReflectedVector(float3 V, float3 N, PixelData pixelData)
 float3 DoDiffuseIBL(float3 V, float3 N, PixelData pixelData)
 {
     float3 result = (float3)0;
+    float3 R = GetReflectedVector(V, N, pixelData);
 
-    if(gMaterial.DoIndirectLighting && (gMaterial.UseDiffuseIrrMap || gUseSkyboxDiffuseIrrMap))
+    if(gMaterial.DoIndirectLighting)
         result = DiffuseIrrMap.Sample(TextureSampler, N).rgb * gSkyboxBrightness * pixelData.DiffuseColor;
 
     return result;
@@ -370,6 +367,7 @@ float3 DoDiffuseIBL(float3 V, float3 N, PixelData pixelData)
 float3 DoSpecularIBL(float3 V, float3 N, PixelData pixelData)
 {
     float3 result = (float3)0;
+    float3 R = GetReflectedVector(-V, N, pixelData);
 
     // TODO PBR
 
@@ -381,7 +379,7 @@ LightingResult DoIBL(float3 V, float3 N, PixelData pixelData)
 {
     LightingResult result = (LightingResult)0;
 
-    if(gMaterial.DoIndirectLighting && (gMaterial.UseDiffuseIrrMap || gUseSkyboxDiffuseIrrMap))
+    if(gMaterial.DoIndirectLighting)
     {
         result.Diffuse = DoDiffuseIBL(V, N, pixelData);
         result.Specular = DoSpecularIBL(V, N, pixelData);

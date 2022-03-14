@@ -9,6 +9,7 @@ set (TE_RENDERMAN_INC_NOFILTER
     "TeRendererLight.h"
     "TeRenderCompositor.h"
     "TeRendererDecal.h"
+    "TeRenderManIBLUtility.h"
 )
 
 set (TE_RENDERERMAN_SRC_NOFILTER
@@ -21,6 +22,7 @@ set (TE_RENDERERMAN_SRC_NOFILTER
     "TeRendererLight.cpp"
     "TeRenderCompositor.cpp"
     "TeRendererDecal.cpp"
+    "TeRenderManIBLUtility.cpp"
 )
 
 set (TE_RENDERMAN_INC_POSTPROCESSING

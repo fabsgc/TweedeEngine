@@ -305,33 +305,11 @@ namespace te
         bool UseTransmissionMap = false;
 
         /**
-         * @brief Radiance will be used for environment reflection and refraction 
-         * Radiance can come from this material, skybox or light probe
-         * Priority : Material > Light Probe > Skybox
-         * Range : [0..1]
-         */
-        bool UseRadianceMap = false;
-
-        /**
          * @brief Specify if this material must compute IBL using textures
          * coming from this material, skybox or light probe
          * Priority : Material > Light Probe > Skybox
         */
         bool DoIndirectLighting = true;
-
-        /**
-         * @brief Does this material must compute diffuse irradiance using 
-         * a texture stored on this material
-         * Range : [0..1]
-         */
-        bool UseDiffuseIrrMap = false;
-
-        /**
-         * @brief Does this material must compute specular irradiance using 
-         * a texture stored on this material
-         * Range : [0..1]
-         */
-        bool UseSpecularIrrMap = false;
     };
 
     /**

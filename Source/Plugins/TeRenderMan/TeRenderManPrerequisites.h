@@ -81,11 +81,8 @@ namespace te
         UINT32  UseNormalMap;
         UINT32  UseParallaxMap;
         UINT32  UseTransmissionMap;
-        UINT32  UseRadianceMap;
         UINT32  DoIndirectLighting;
-        UINT32  UseDiffuseIrrMap;
-        UINT32  UseSpecularIrrMap;
-        UINT32  Padding[2];
+        UINT32  Padding[5];
     };
 
     struct PerLightData

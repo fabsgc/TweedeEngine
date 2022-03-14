@@ -2,10 +2,12 @@
 #include "TeRendererView.h"
 #include "TeRendererScene.h"
 #include "TeRenderManOptions.h"
+#include "TeRenderManIBLUtility.h"
 #include "TeRenderCompositor.h"
 #include "Renderer/TeCamera.h"
 #include "Renderer/TeRendererUtility.h"
 #include "Renderer/TeGpuResourcePool.h"
+#include "Renderer/TeIBLUtility.h"
 #include "RenderAPI/TeRenderAPI.h"
 #include "Manager/TeRendererManager.h"
 #include "CoreUtility/TeCoreObjectManager.h"
@@ -32,6 +34,8 @@ namespace te
             RendererUtility::StartUp();
         if(!GpuResourcePool::IsStarted())
             GpuResourcePool::StartUp();
+        if(!IBLUtility::IsStarted())
+            IBLUtility::StartUp<RenderManIBLUtility>();
 
         _options = te_shared_ptr_new<RenderManOptions>();
         _options->InstancingMode = RenderManInstancing::Manual;
@@ -83,6 +87,8 @@ namespace te
             GpuResourcePool::ShutDown();
         if(RendererUtility::IsStarted())
             RendererUtility::ShutDown();
+        if(RenderManIBLUtility::IsStarted())
+            IBLUtility::ShutDown();
 
         Renderer::Destroy();
     }

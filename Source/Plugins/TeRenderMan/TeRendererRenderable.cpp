@@ -77,10 +77,7 @@ namespace te
         data.UseNormalMap = (UINT32)properties.UseNormalMap;
         data.UseParallaxMap = (UINT32)properties.UseParallaxMap;
         data.UseTransmissionMap = (UINT32)properties.UseTransmissionMap;
-        data.UseRadianceMap = (UINT32)properties.UseRadianceMap;
         data.DoIndirectLighting = (UINT32)properties.DoIndirectLighting;
-        data.UseDiffuseIrrMap = (UINT32)properties.UseDiffuseIrrMap;
-        data.UseSpecularIrrMap = (UINT32)properties.UseSpecularIrrMap;
 
         return data;
     }

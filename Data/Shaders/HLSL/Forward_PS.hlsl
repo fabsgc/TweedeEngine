@@ -51,9 +51,6 @@ PS_OUTPUT main( VS_OUTPUT IN )
     bool		useNormalMap				= (bool)gMaterial.UseNormalMap;
     bool		useParallaxMap				= (bool)gMaterial.UseParallaxMap;
     bool		useTransmissionMap			= (bool)gMaterial.UseTransmissionMap;
-    bool		useRadianceMap				= (bool)gMaterial.UseRadianceMap;
-    bool		useDiffuseIrrMap			= (bool)gMaterial.UseDiffuseIrrMap;
-    bool		useSpecularIrrMap			= (bool)gMaterial.UseSpecularIrrMap;
 
     float3		sceneLightColor				= gSceneLightColor.rgb;
 

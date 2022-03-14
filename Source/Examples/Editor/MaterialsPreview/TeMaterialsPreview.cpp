@@ -155,8 +155,8 @@ namespace te
     void MaterialsPreview::InitializeSkybox()
     {
         _skybox = Skybox::Create();
-        _skybox->SetDiffuseIrradiance(_irradiance);
         _skybox->SetTexture(_environment);
+        _skybox->SetDiffuseIrradiance(_irradiance);
     }
 
     void MaterialsPreview::InitializeLight()

@@ -453,15 +453,6 @@ namespace te
                 if (ShowTexture(uuid, properties.UseTransmissionMap, "##material_texture_transmission_option", "Transmission", "TransmissionMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D, false))
                     hasChanged = true;
 
-                if (ShowTexture(uuid, properties.UseRadianceMap, "##material_texture_radiance_option", "Radiance", "RadianceMap", texturesOptions, width, false, TextureType::TEX_TYPE_CUBE_MAP, true))
-                    hasChanged = true;
-
-                if (ShowTexture(uuid, properties.UseDiffuseIrrMap, "##material_texture_diffuse_irradiance_option", "Diff. Irradiance", "DiffuseIrrMap", texturesEnvMappingOptions, width, !properties.DoIndirectLighting, TextureType::TEX_TYPE_CUBE_MAP, true))
-                    hasChanged = true;
-
-                if (ShowTexture(uuid, properties.UseSpecularIrrMap, "##material_texture_specular_irradiance_option", "Spec. Irradiance", "SpecularIrrMap", texturesEnvMappingOptions, width, !properties.DoIndirectLighting, TextureType::TEX_TYPE_CUBE_MAP, true))
-                    hasChanged = true;
-
                 if (ShowLoadedTexture())
                     hasChanged = true;
             }

@@ -79,6 +79,7 @@ set (TE_CORE_INC_RENDERER
     "Core/Renderer/TeRendererMaterial.h"
     "Core/Renderer/TeBlitMat.h"
     "Core/Renderer/TeDecal.h"
+    "Core/Renderer/TeIBLUtility.h"
 )
 set (TE_CORE_SRC_RENDERER
     "Core/Renderer/TeRenderer.cpp"
@@ -96,6 +97,7 @@ set (TE_CORE_SRC_RENDERER
     "Core/Renderer/TeRendererMaterialManager.cpp"
     "Core/Renderer/TeBlitMat.cpp"
     "Core/Renderer/TeDecal.cpp"
+    "Core/Renderer/TeIBLUtility.cpp"
 )
 
 set (TE_CORE_INC_SCENE

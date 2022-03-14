@@ -74,8 +74,6 @@ namespace te
                 subMesh.MatProperties.UseNormalMap = subMesh.Mat->GetTexture("NormalMap") != nullptr;
                 subMesh.MatProperties.UseParallaxMap = subMesh.Mat->GetTexture("ParallaxMap") != nullptr;
                 subMesh.MatProperties.UseTransmissionMap = subMesh.Mat->GetTexture("TransmissionMap") != nullptr;
-                subMesh.MatProperties.UseRadianceMap = subMesh.Mat->GetTexture("RadianceMap") != nullptr;
-                subMesh.MatProperties.UseSpecularIrrMap = subMesh.Mat->GetTexture("SpecularIrrMap") != nullptr;
             }
             else if (!subMesh.Mat.IsLoaded())
             {

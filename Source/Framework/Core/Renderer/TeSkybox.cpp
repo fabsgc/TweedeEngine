@@ -2,6 +2,7 @@
 #include "Image/TeTexture.h"
 #include "Scene/TeSceneObject.h"
 #include "Renderer/TeRenderer.h"
+#include "Renderer/TeIBLUtility.h"
 
 namespace te
 {
@@ -33,13 +34,27 @@ namespace te
 
     void Skybox::SetTexture(const HTexture& texture)
     {
-        _texture = texture.GetInternalPtr();
+        _texture = (texture.IsLoaded()) ? texture.GetInternalPtr() : nullptr;
+
+        _filteredRadiance = nullptr;
+        _irradiance = nullptr;
+
+        if (_texture)
+            FilterTexture();
+
         _markCoreDirty((ActorDirtyFlag)SkyboxDirtyFlag::Texture);
     }
 
     void Skybox::SetTexture(const SPtr<Texture>& texture)
     {
         _texture = texture;
+        
+        _filteredRadiance = nullptr;
+        _irradiance = nullptr;
+
+        if (_texture)
+            FilterTexture();
+
         _markCoreDirty((ActorDirtyFlag)SkyboxDirtyFlag::Texture);
     }
 
@@ -116,5 +131,42 @@ namespace te
 
     void Skybox::FilterTexture()
     {
+        {
+            TEXTURE_DESC cubemapDesc;
+            cubemapDesc.Type = TEX_TYPE_CUBE_MAP;
+            cubemapDesc.Format = PF_RG11B10F;
+            cubemapDesc.Width = IBLUtility::REFLECTION_CUBEMAP_SIZE;
+            cubemapDesc.Height = IBLUtility::REFLECTION_CUBEMAP_SIZE;
+            cubemapDesc.NumMips = PixelUtil::GetMaxMipmaps(cubemapDesc.Width, cubemapDesc.Height, 1);
+            cubemapDesc.Usage = TU_STATIC | TU_RENDERTARGET;
+            cubemapDesc.DebugName = "Filtered Radiance Texture";
+
+            _filteredRadiance = Texture::CreatePtr(cubemapDesc);
+        }
+
+        {
+            TEXTURE_DESC irradianceCubemapDesc;
+            irradianceCubemapDesc.Type = TEX_TYPE_CUBE_MAP;
+            irradianceCubemapDesc.Format = PF_RG11B10F;
+            irradianceCubemapDesc.Width = IBLUtility::IRRADIANCE_CUBEMAP_SIZE;
+            irradianceCubemapDesc.Height = IBLUtility::IRRADIANCE_CUBEMAP_SIZE;
+            irradianceCubemapDesc.NumMips = 0;
+            irradianceCubemapDesc.Usage = TU_STATIC | TU_RENDERTARGET;
+            irradianceCubemapDesc.DebugName = "Irradiance Texture";
+
+            _irradiance = Texture::CreatePtr(irradianceCubemapDesc);
+        }
+
+        // Filter radiance
+        gIBLUtility().ScaleCubemap(_texture, 0, _filteredRadiance, 0);
+        gIBLUtility().FilterCubemapForSpecular(_filteredRadiance, nullptr);
+
+        // Generate irradiance
+        gIBLUtility().FilterCubemapForIrradiance(_texture, _irradiance);
+    }
+
+    const IBLUtility& gIBLUtility()
+    {
+        return IBLUtility::Instance();
     }
 }

@@ -1279,7 +1279,7 @@ namespace te
         if (_loadedMeshMonkey.IsLoaded())
             _loadedMeshMonkey->SetName("Monkey Mesh");
         if (_loadedSkyboxTexture.IsLoaded())
-            _loadedSkyboxTexture->SetName("Skybox Radiance");
+            _loadedSkyboxTexture->SetName("Skybox Texture");
         if (_loadedSkyboxDiffuseIrrTexture.IsLoaded())
             _loadedSkyboxDiffuseIrrTexture->SetName("Skybox Diffuse Irradiance");
         // ###################################################### 

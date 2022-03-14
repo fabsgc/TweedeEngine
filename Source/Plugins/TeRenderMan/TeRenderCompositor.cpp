@@ -49,25 +49,17 @@ namespace te
             {
                 // If Globall Illumination is enabled and if a Skybox with a texture exists,
                 // We bind this texture for this material
-                if (entry.RenderElem->MaterialElem->GetProperties().DoIndirectLighting && 
-                    !entry.RenderElem->MaterialElem->GetProperties().UseDiffuseIrrMap)
+                if (entry.RenderElem->MaterialElem->GetProperties().DoIndirectLighting)
                 {
                     if (view.GetRenderSettings().EnableSkybox)
                     {
                         Skybox* skybox = scene.SkyboxElem;
-                        SPtr<Texture> skyboxMap = skybox ? skybox->GetDiffuseIrradiance() : nullptr;
-                        entry.RenderElem->GpuParamsElem[entry.PassIdx]->SetTexture("DiffuseIrrMap", skyboxMap);
-                    } 
-                }
+                        SPtr<Texture> diffuseIrradiance = skybox ? skybox->GetDiffuseIrradiance() : nullptr;
+                        entry.RenderElem->GpuParamsElem[entry.PassIdx]->SetTexture("DiffuseIrrMap", diffuseIrradiance);
 
-                if (!entry.RenderElem->MaterialElem->GetProperties().UseRadianceMap)
-                {
-                    if (view.GetRenderSettings().EnableSkybox)
-                    {
-                        Skybox* skybox = scene.SkyboxElem;
-                        SPtr<Texture> skyboxMap = skybox ? skybox->GetTexture() : nullptr;
-                        entry.RenderElem->GpuParamsElem[entry.PassIdx]->SetTexture("RadianceMap", skyboxMap);
-                    }
+                        SPtr<Texture> specularIrradiance = skybox ? skybox->GetDiffuseIrradiance() : nullptr;
+                        entry.RenderElem->GpuParamsElem[entry.PassIdx]->SetTexture("SpecularIrrMap", specularIrradiance);
+                    } 
                 }
 
                 gpuParamsBindFlags = GPU_BIND_ALL;
