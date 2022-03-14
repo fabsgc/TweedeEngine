@@ -1,26 +1,11 @@
 #ifndef __FORWARD__
 #define __FORWARD__
 
+#include "Include/Common.hlsli"
+
 // #################### DEFINES
 
 // #################### STRUCTS
-
-struct CameraData
-{
-    float3 ViewDir;
-    uint   ViewportX;
-    float3 ViewOrigin;
-    uint   ViewportY;
-    matrix MatViewProj;
-    matrix MatView;
-    matrix MatProj;
-    matrix MatPrevViewProj;
-    matrix NDCToPrevNDC;
-    float4 ClipToUVScaleOffset;
-    float4 UVToClipScaleOffset;
-    uint   UseSRGB;
-    float3 Padding;
-};
 
 // #################### STAGE INPUTS / OUTPUTS
 

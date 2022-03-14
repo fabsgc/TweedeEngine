@@ -1,8 +1,8 @@
-#include "Include/CommonMath.hlsli"
-#include "Include/CommonGraphics.hlsli"
-
 #ifndef __BRDF__
 #define __BRDF__
+
+#include "Include/CommonMath.hlsli"
+#include "Include/CommonGraphics.hlsli"
 
 //------------------------------------------------------------------------------
 // BRDF configuration

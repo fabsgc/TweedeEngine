@@ -210,7 +210,7 @@ namespace te
             _vertexShaderBlitDesc.FilePath = SHADERS_FOLDER + String("HLSL/Blit_VS.hlsl");
             _vertexShaderBlitDesc.EntryPoint = "main";
             _vertexShaderBlitDesc.Language = "hlsl";
-            _vertexShaderBlitDesc.IncludePath = "";
+            _vertexShaderBlitDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
             _vertexShaderBlitDesc.Source = shaderFile.GetAsString();
         }
 
@@ -220,7 +220,7 @@ namespace te
             _pixelShaderBlitDesc.FilePath = SHADERS_FOLDER + String("HLSL/Blit_PS.hlsl");
             _pixelShaderBlitDesc.EntryPoint = "main";
             _pixelShaderBlitDesc.Language = "hlsl";
-            _pixelShaderBlitDesc.IncludePath = "";
+            _pixelShaderBlitDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
             _pixelShaderBlitDesc.Source = shaderFile.GetAsString();
         }
 
@@ -230,7 +230,7 @@ namespace te
             _vertexShaderSkyboxDesc.FilePath = SHADERS_FOLDER + String("HLSL/Skybox_VS.hlsl");
             _vertexShaderSkyboxDesc.EntryPoint = "main";
             _vertexShaderSkyboxDesc.Language = "hlsl";
-            _vertexShaderSkyboxDesc.IncludePath = "";
+            _vertexShaderSkyboxDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
             _vertexShaderSkyboxDesc.Source = shaderFile.GetAsString();
         }
 
@@ -240,7 +240,7 @@ namespace te
             _pixelShaderSkyboxDesc.FilePath = SHADERS_FOLDER + String("HLSL/Skybox_PS.hlsl");
             _pixelShaderSkyboxDesc.EntryPoint = "main";
             _pixelShaderSkyboxDesc.Language = "hlsl";
-            _pixelShaderSkyboxDesc.IncludePath = "";
+            _pixelShaderSkyboxDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
             _pixelShaderSkyboxDesc.Source = shaderFile.GetAsString();
         }
 

@@ -89,11 +89,11 @@ namespace te
         /** @copydoc Renderable::GetWriteVelocity */
         bool GetWriteVelocity() const { return _internal->GetWriteVelocity(); }
 
-        /** @copydoc Renderable::SetUseForDynamicEnvMapping */
-        void SetUseForDynamicEnvMapping(bool use) { _internal->SetUseForDynamicEnvMapping(use); }
+        /** @copydoc Renderable::SetUseForLightProbes */
+        void SetUseForLightProbes(bool use) { _internal->SetUseForLightProbes(use); }
 
-        /** @copydoc Renderable::GetUseForDynamicEnvMapping */
-        float GetUseForDynamicEnvMapping() const { return _internal->GetUseForDynamicEnvMapping(); }
+        /** @copydoc Renderable::GetUseForLightProbes */
+        float GetUseForLightProbes() const { return _internal->GetUseForLightProbes(); }
 
         /** @copydoc Renderable::SetLayer */
         void SetLayer(UINT64 layer) { _internal->SetLayer(layer); }

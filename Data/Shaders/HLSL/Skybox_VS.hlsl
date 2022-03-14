@@ -1,11 +1,8 @@
+#include "Include/Common.hlsli"
+
 cbuffer PerCameraBuffer : register(b0)
 {
-    float3 gViewDir;
-    float3 gViewOrigin;
-    matrix gMatViewProj;
-    matrix gMatView;
-    matrix gMatProj;
-    matrix gMatPrevViewProj;
+    CameraData gCamera;
 }
 
 struct VS_INPUT
@@ -23,7 +20,7 @@ VS_OUTPUT main( VS_INPUT IN )
 {
     VS_OUTPUT OUT = (VS_OUTPUT)0;
 
-    float4 pos = mul(gMatViewProj, float4(IN.Position.xyz + gViewOrigin, 1));
+    float4 pos = mul(gCamera.MatViewProj, float4(IN.Position.xyz + gCamera.ViewOrigin, 1));
 
     // Set Z = W so that final depth is 1.0f and it renders behind everything else
     OUT.Position = pos.xyww;

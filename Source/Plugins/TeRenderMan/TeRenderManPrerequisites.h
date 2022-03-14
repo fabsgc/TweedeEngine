@@ -17,9 +17,9 @@ namespace te
     struct PerCameraData
     {
         Vector3 ViewDir;
-        UINT32  ViewportX;
+        float  ViewportX;
         Vector3 ViewOrigin;
-        UINT32  ViewportY;
+        float  ViewportY;
         Matrix4 MatViewProj;
         Matrix4 MatView;
         Matrix4 MatProj;

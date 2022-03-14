@@ -510,8 +510,10 @@ namespace te
                         samplerType = BuiltinSampler::Anisotropic;
                     else if (_currentMaterial->GetSamplerState("TextureSampler") == gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Trilinear))
                         samplerType = BuiltinSampler::Trilinear;
-                    else
+                    else if (_currentMaterial->GetSamplerState("TextureSampler") == gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear))
                         samplerType = BuiltinSampler::Bilinear;
+                    else
+                        samplerType = BuiltinSampler::NoFilter;
 
                     if (ImGuiExt::RenderOptionCombo<BuiltinSampler>(&samplerType, "##material_sampler_type_option", "Sampler", samplerTypeOptions, width))
                     {

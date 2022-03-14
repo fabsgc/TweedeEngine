@@ -496,6 +496,7 @@ namespace te
             {
                 importMesh->Tangents[i] = ConvertToNativeType(mesh->mTangents[i]);
                 importMesh->Bitangents[i] = ConvertToNativeType(mesh->mBitangents[i]);
+                importMesh->Bitangents[i] *= -1.0f; // TODO BiTangent direction seems to be wrong
             }
         }
 

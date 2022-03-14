@@ -2404,11 +2404,11 @@ namespace te
 
         // use for dynamic env mapping
         {
-            bool useForDynamicEnvMapping = properties.UseForDynamicEnvMapping;
-            if (ImGuiExt::RenderOptionBool(useForDynamicEnvMapping, "##renderable_properties_dynamic_env_mapping_option", "Dynamic env mapping"))
+            bool useForLightProbes = properties.UseForLightProbes;
+            if (ImGuiExt::RenderOptionBool(useForLightProbes, "##renderable_properties_dynamic_env_mapping_option", "Use for Light Probes"))
             {
                 hasChanged = true;
-                renderable->SetUseForDynamicEnvMapping(useForDynamicEnvMapping);
+                renderable->SetUseForLightProbes(useForLightProbes);
             }
         }
         ImGui::Separator();

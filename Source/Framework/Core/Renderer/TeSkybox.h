@@ -72,22 +72,30 @@ namespace te
         /** @copydoc CoreObject::FrameSync */
         void FrameSync() override;
 
+        /**
+         * Filters the skybox radiance texture, generating filtered radiance (for reflections) and irradiance. Should be
+         * called any time the skybox texture changes.
+         */
+        void FilterTexture();
+
     protected:
         friend class CSkybox;
 
         Skybox();
-        Skybox(const SPtr<Texture>& radiance);
 
         /** @copydoc CoreObject::Initialize */
         void Initialize() override;
 
     protected:
         float _brightness = 1.0f; /**< Multiplier to apply to evaluated skybox values before using them. */
-        
+
         /** Texture used to display in 3D scene */
         SPtr<Texture> _texture;
 
-        /** Texture used to compute global illumination */
+        /** Texture used to compute IBL specular irradiance */
+        SPtr<Texture> _filteredRadiance;
+
+        /** Texture used to compute IBL diffuse irradiance */
         SPtr<Texture> _irradiance;
 
         /** Default renderer if this attributes is not filled in constructor. */

@@ -1266,9 +1266,15 @@ namespace te
 
         // LOAD MESH AND TEXTURES RESOURCES
         // ######################################################
-        _loadedMeshMonkey = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Monkey/monkey-hd.obj", meshImportOptions)->Entries[0].Res);
+        //_loadedMeshMonkey = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Monkey/monkey-hd.obj", meshImportOptions)->Entries[0].Res);
+        _loadedMeshMonkey = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Primitives/plane.obj", meshImportOptions)->Entries[0].Res);
         _loadedSkyboxTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_day_medium.png", textureCubeMapImportOptions);
         _loadedSkyboxDiffuseIrrTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_day_irradiance_small.png", textureCubeMapImportOptions);
+
+        HTexture cobbleBaseColor = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/diffuse1.jpg", textureImportOptions);
+        textureImportOptions->SRGB = false;
+        HTexture cobbleNormal = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/normal1.jpg", textureImportOptions);
+        HTexture cobbleParallax = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/parallax1.jpg", textureImportOptions);
         
         if (_loadedMeshMonkey.IsLoaded())
             _loadedMeshMonkey->SetName("Monkey Mesh");
@@ -1288,11 +1294,18 @@ namespace te
         {
             MaterialProperties monkeyMatprop;
             monkeyMatprop.BaseColor = Color(0.8f, 0.8f, 0.8f, 1.0f);
+            monkeyMatprop.UseBaseColorMap = true;
+            monkeyMatprop.UseNormalMap = true;
+            monkeyMatprop.UseParallaxMap = true;
+            monkeyMatprop.ParallaxScale = 0.05f;
 
             _monkeyMaterial = Material::Create(_shader);
             _monkeyMaterial->SetName("Monkey Material");
             _monkeyMaterial->SetProperties(monkeyMatprop);
             _monkeyMaterial->SetSamplerState("TextureSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
+            _monkeyMaterial->SetTexture("BaseColorMap", cobbleBaseColor);
+            _monkeyMaterial->SetTexture("NormalMap", cobbleNormal);
+            _monkeyMaterial->SetTexture("ParallaxMap", cobbleParallax);
         }
         // ######################################################
 

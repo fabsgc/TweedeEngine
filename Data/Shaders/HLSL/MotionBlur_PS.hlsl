@@ -2,17 +2,7 @@
 
 cbuffer PerCameraBuffer : register(b0)
 {
-    float3 gViewDir;
-    float  gPadding1;
-    float3 gViewOrigin;
-    float  gPadding2;
-    matrix gMatViewProj;
-    matrix gMatView;
-    matrix gMatProj;
-    matrix gMatPrevViewProj;
-    matrix gNDCToPrevNDC;
-    float4 gClipToUVScaleOffset;
-    float4 gUVToClipScaleOffset;
+    CameraData gCamera;
 }
 
 cbuffer PerFrameBuffer : register(b1)
@@ -25,7 +15,7 @@ cbuffer PerFrameBuffer : register(b1)
 /** Converts position in NDC to UV coordinates mapped to the screen rectangle. */ 
 float2 NDCToUV(float2 ndcPos)
 {
-    return ndcPos.xy * gClipToUVScaleOffset.xy + gClipToUVScaleOffset.zw;
+    return ndcPos.xy * gCamera.ClipToUVScaleOffset.xy + gCamera.ClipToUVScaleOffset.zw;
 }
 
 SamplerState BilinearSampler : register(s0);
@@ -109,7 +99,7 @@ float4 main( PS_INPUT IN ) : SV_Target0
 
     // ##### CAMERA MOTION BLUR
     float4 currentNDC = float4(ndcPos, 1, 1);
-    float4 prevClip = mul(gNDCToPrevNDC, currentNDC);
+    float4 prevClip = mul(gCamera.NDCToPrevNDC, currentNDC);
     float2 prevNdcPos = prevClip.xy / prevClip.w;
     float2 prevUV = NDCToUV(prevNdcPos);
 

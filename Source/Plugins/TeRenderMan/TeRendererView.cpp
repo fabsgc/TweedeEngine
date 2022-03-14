@@ -542,9 +542,9 @@ namespace te
         PerCameraData cameraData;
 
         cameraData.ViewDir = _properties.ViewDirection;
-        cameraData.ViewportX = static_cast<UINT32>(_camera->GetViewport()->GetArea().x);
+        cameraData.ViewportX = _camera->GetViewport()->GetArea().x;
         cameraData.ViewOrigin = _properties.ViewOrigin;
-        cameraData.ViewportY = static_cast<UINT32>(_camera->GetViewport()->GetArea().y);
+        cameraData.ViewportY = _camera->GetViewport()->GetArea().y;
         cameraData.MatViewProj = viewProj;
         cameraData.MatView = _properties.ViewTransform;
         cameraData.MatProj = _properties.ProjTransform;

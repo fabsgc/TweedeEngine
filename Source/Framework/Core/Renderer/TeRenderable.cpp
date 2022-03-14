@@ -244,9 +244,9 @@ namespace te
         _markCoreDirty();
     }
 
-    void Renderable::SetUseForDynamicEnvMapping(bool use)
+    void Renderable::SetUseForLightProbes(bool use)
     {
-        _properties.UseForDynamicEnvMapping = use;
+        _properties.UseForLightProbes = use;
         _markCoreDirty();
     }
 

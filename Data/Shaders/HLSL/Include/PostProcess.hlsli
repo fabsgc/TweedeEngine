@@ -1,7 +1,13 @@
 #ifndef __POSTPROCESS__
 #define __POSTPROCESS__
 
+#include "Include/Common.hlsli"
+
+// #################### DEFINES
+
 #define STANDARD_MAX_BLUR_SAMPLES 128
+
+// #################### STRUCTS
 
 struct VS_INPUT
 {
@@ -22,6 +28,8 @@ struct PS_INPUT
     float2 Texture : TEXCOORD0;
     float2 ScreenPosition : TEXCOORD1;
 };
+
+// #################### HELPER FUNCTIONS
 
 float4 TextureSampling(SamplerState samplterState, Texture2D source, 
     Texture2DMS<float4> sourceMS, float2 uv, uint MSAACount)

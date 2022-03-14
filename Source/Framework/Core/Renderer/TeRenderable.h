@@ -17,7 +17,7 @@ namespace te
         bool CastShadows = true;
         bool CastLights = true;
         bool ReceiveShadows = true;
-        bool UseForDynamicEnvMapping  = false;
+        bool UseForLightProbes  = false;
         bool WriteVelocity = true;
         float CullDistanceFactor = 1.0f;
     };
@@ -166,11 +166,11 @@ namespace te
         /** @copydoc SetCullDistanceFactor */
         float GetCullDistanceFactor() const { return _properties.CullDistanceFactor; }
 
-        /** The object can be used for dynamic env mapping. */
-        void SetUseForDynamicEnvMapping(bool use);
+        /** This object can be used for light probes generation. */
+        void SetUseForLightProbes(bool use);
 
-        /** @copydoc SetUseForDynamicEnvMapping */
-        bool GetUseForDynamicEnvMapping() const { return _properties.UseForDynamicEnvMapping; }
+        /** @copydoc SetUseForLightProbes */
+        bool GetUseForLightProbes() const { return _properties.UseForLightProbes; }
 
         /**	Returns the transform matrix that is applied to the object when its being rendered. */
         Matrix4 GetMatrix() const { return _tfrmMatrix; }

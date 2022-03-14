@@ -6,8 +6,10 @@
 PS_OUTPUT main( VS_OUTPUT IN )
 {
     PS_OUTPUT OUT = (PS_OUTPUT)0;
+    PixelData pixelData = (PixelData)0;
     LightingResult lit = (LightingResult)0;
 
+    // #########################################################################
     bool		writeVelocity				= (bool)IN.Other.x;
     bool		castLight					= (bool)IN.Other.y;
     bool		useSRGB						= (bool)IN.Other.z;
@@ -16,12 +18,15 @@ PS_OUTPUT main( VS_OUTPUT IN )
     float3		emissive					= GetColor(useSRGB, true, gMaterial.Emissive.rgb);
     float3		sheenColor					= GetColor(useSRGB, true, gMaterial.SheenColor.rgb);
     float		metallic					= gMaterial.Metallic;
-    float		roughness					= gMaterial.Roughness * gMaterial.Roughness;
+    float		pRoughness					= gMaterial.Roughness;
+    float		roughness					= pRoughness * pRoughness;
     float		reflectance					= gMaterial.Reflectance;
     float		occlusion					= gMaterial.Occlusion;
-    float		sheenRoughness				= gMaterial.SheenRoughness * gMaterial.SheenRoughness;
+    float		pSheenRoughness				= gMaterial.SheenRoughness;
+    float		sheenRoughness				= pSheenRoughness * pSheenRoughness;
     float		clearCoat					= gMaterial.ClearCoat;
-    float		clearCoatRoughness			= gMaterial.ClearCoatRoughness;
+    float		pClearCoatRoughness			= gMaterial.ClearCoatRoughness;
+    float		clearCoatRoughness			= pClearCoatRoughness * pClearCoatRoughness;
     float		anisotropy					= gMaterial.Anisotropy;
     float3		anisotropyDirection			= gMaterial.AnisotropyDirection;
     float		alphaThreshold				= gMaterial.AlphaTreshold;
@@ -67,6 +72,7 @@ PS_OUTPUT main( VS_OUTPUT IN )
 
     float3		diffuseBaseColor			= (1.0 - metallic) * baseColor.rgb;
     float3		diffuseSheenColor			= (1.0 - metallic) * sheenColor.rgb;
+    // #########################################################################
 
     // ###################### PARALLAX MAPPING
     if(useParallaxMap)
@@ -105,16 +111,23 @@ PS_OUTPUT main( VS_OUTPUT IN )
         // ###################### ROUGHNESS MAP SAMPLING
         if(useRoughnessMap)
         {
-            roughness = RoughnessMap.Sample(TextureSampler, uv0).r;
-            roughness = roughness * roughness;
+            pRoughness = RoughnessMap.Sample(TextureSampler, uv0).r;
+            roughness = pRoughness * pRoughness;
         }
 
         // ###################### CLEAR COAT NORMAL MAP SAMPLING
         if(useClearCoatNormalMap)
             N_clearCoat = DoNormalMapping(TBN, ClearCoatNormalMap, TextureSampler, uv0);
 
+        // ###################### FILL PIXEL PARAM
+        pixelData.DiffuseColor = diffuseBaseColor;
+        pixelData.PRoughness = pRoughness;
+        pixelData.Roughness = roughness;
+        pixelData.F0 = 0.16 * reflectance * reflectance * (1.0 - metallic) + baseColor * metallic;
+        pixelData.F90 = float3(1.0, 1.0, 1.0);
+
         // ###################### DO LIGHTING
-        lit = DoLighting(P, N, castLight);
+        lit = DoLighting(V, P, N, pixelData, uv0, castLight, useOcclusionMap);
 
         lit.Diffuse *= diffuseBaseColor * sceneLightColor + emissive; // TODO PBR
         lit.Specular = lit.Specular;

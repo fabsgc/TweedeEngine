@@ -396,7 +396,7 @@ namespace te
         float correctedCullDistance = renderable->GetCullDistanceFactor() * baseCullDistance;
         float maxDistanceToCamera = correctedCullDistance + boundingSphere.GetRadius();
 
-        if (distanceToCameraSq > maxDistanceToCamera* maxDistanceToCamera)
+        if (distanceToCameraSq > maxDistanceToCamera * maxDistanceToCamera)
             return false;
 
         if (worldFrustum.Intersects(boundingSphere))

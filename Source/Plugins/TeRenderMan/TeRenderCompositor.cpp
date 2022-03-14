@@ -81,7 +81,7 @@ namespace te
 
                 entry.RenderElem->GpuParamsElem[entry.PassIdx]
                     ->SetParamBlockBuffer("PerCameraBuffer", view.GetPerViewBuffer());
-                
+
                 rapi.SetGpuParams(entry.RenderElem->GpuParamsElem[entry.PassIdx],
                      GPU_BIND_PARAM_BLOCK, GPU_BIND_PARAM_BLOCK_LISTED, PerCameraBuffer);
 
@@ -388,13 +388,9 @@ namespace te
     {
         RenderQueue* opaqueElements = inputs.View.GetOpaqueQueue().get();
         const Vector<RenderQueueElement> elements = opaqueElements->GetSortedElements();
-
-        if (elements.size() == 0)
-            return;
+        RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
 
         inputs.CurrRenderAPI.PushMarker("[DRAW] Forward Pass", Color(0.8f, 0.6f, 0.8f));
-
-        RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
 
         Camera* sceneCamera = inputs.View.GetSceneCamera();
         UINT32 clearBuffers = FBT_COLOR | FBT_DEPTH | FBT_STENCIL;
@@ -402,8 +398,11 @@ namespace te
         inputs.CurrRenderAPI.SetRenderTarget(gpuInitializationPassNode->RenderTargetTex);
         inputs.CurrRenderAPI.ClearViewport(clearBuffers, Color::Black);
 
-        // Render all opaque elements     
-        RenderQueueElements(elements, inputs.View, inputs.Scene, inputs.ViewGroup);
+        if (elements.size() > 0)
+        {
+            // Render all opaque elements     
+            RenderQueueElements(elements, inputs.View, inputs.Scene, inputs.ViewGroup);
+        }
 
         if (sceneCamera != nullptr)
             inputs.View.NotifyCompositorTargetChanged(gpuInitializationPassNode->RenderTargetTex);

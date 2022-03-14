@@ -1,7 +1,7 @@
-#include "Include/CommonGraphics.hlsli"
-
 #ifndef __FORWARD_PS__
 #define __FORWARD_PS__
+
+#include "Include/CommonGraphics.hlsli"
 
 // #################### DEFINES
 
@@ -74,6 +74,17 @@ struct LightData
     float  QuadraticAttenuation;
     uint   CastShadows;
     float  Padding2;
+};
+
+struct PixelData
+{
+    float3 DiffuseColor;
+    float  PRoughness;
+    float  Roughness;
+    float3 F0;
+    float3 F90;
+    float3 DFG;
+    float3 EnergyCompensation;
 };
 
 struct LightingResult
@@ -327,19 +338,36 @@ float2 DoParallaxMapping(float2 uv, float3 V, float3 Pv, float3 N, float3 P,
     return uv;
 }
 
+/**
+ * Returns the reflected vector at the current shading point. The reflected vector
+ * return by this function might be different from shading_reflected:
+ * - For anisotropic material, we bend the reflection vector to simulate
+ *   anisotropic indirect lighting
+ * - The reflected vector may be modified to point towards the dominant specular
+ *   direction to match reference renderings when the roughness increases
+ */
+
+float3 GetReflectedVector(float3 V, float3 N, PixelData pixelData)
+{
+    // TODO PBR Anisotropy
+
+    float3 R = reflect(V, N);
+    return R;
+}
+
 // N : surface normal
-float3 DoDiffuseIBL(float3 N)
+float3 DoDiffuseIBL(float3 V, float3 N, PixelData pixelData)
 {
     float3 result = (float3)0;
 
     if(gMaterial.DoIndirectLighting && (gMaterial.UseDiffuseIrrMap || gUseSkyboxDiffuseIrrMap))
-        result = DiffuseIrrMap.Sample(TextureSampler, N).rgb * gSkyboxBrightness;
+        result = DiffuseIrrMap.Sample(TextureSampler, N).rgb * gSkyboxBrightness * pixelData.DiffuseColor;
 
     return result;
 }
 
 // N : surface normal
-float3 DoSpecularIBL(float3 N)
+float3 DoSpecularIBL(float3 V, float3 N, PixelData pixelData)
 {
     float3 result = (float3)0;
 
@@ -349,14 +377,14 @@ float3 DoSpecularIBL(float3 N)
 }
 
 // N : surface normal
-LightingResult DoIBL(float3 N)
+LightingResult DoIBL(float3 V, float3 N, PixelData pixelData)
 {
     LightingResult result = (LightingResult)0;
 
     if(gMaterial.DoIndirectLighting && (gMaterial.UseDiffuseIrrMap || gUseSkyboxDiffuseIrrMap))
     {
-        result.Diffuse = DoDiffuseIBL(N);
-        result.Specular = DoSpecularIBL(N);
+        result.Diffuse = DoDiffuseIBL(V, N, pixelData);
+        result.Specular = DoSpecularIBL(V, N, pixelData);
     }
 
     return result;
@@ -398,15 +426,21 @@ LightingResult DoSpotLight( LightData light, float3 V, float3 P, float3 N )
     return result;
 }
 
+// V : view vector
 // P : position vector in world space
 // N : normal
-LightingResult DoLighting(float3 P, float3 N, bool castLight)
+LightingResult DoLighting(float3 V, float3 P, float3 N, PixelData pixelData, 
+    float2 uv, bool castLight, bool useOcclusionMap)
 {
     LightingResult totalResult = (LightingResult)0;
-    LightingResult IBLResult = DoIBL(N);
+    LightingResult IBLResult = DoIBL(V, N, pixelData);
+    float occlusion = 1.0;
 
     if(castLight)
     {
+        if(useOcclusionMap)
+            occlusion = OcclusionMap.Sample(TextureSampler, uv).r;
+
         float3 V = normalize( gCamera.ViewDir - P );
         float NoV = abs(dot(N, V)) + 1e-5;
 
@@ -429,8 +463,8 @@ LightingResult DoLighting(float3 P, float3 N, bool castLight)
             else if(gLights[i].Type == SPOT_LIGHT)
                 result = DoSpotLight( gLights[i], V, P, N );
 
-            totalResult.Diffuse += result.Diffuse;
-            totalResult.Specular += result.Specular;
+            totalResult.Diffuse += result.Diffuse * occlusion;
+            totalResult.Specular += result.Specular * occlusion;
         }
     }
 

@@ -7,12 +7,15 @@ namespace te
 {
     Skybox::Skybox()
         : Serializable(TID_Skybox)
-    { }
-
-    Skybox::Skybox(const SPtr<Texture>& radiance)
-        : Serializable(TID_Skybox)
-        , _texture(radiance)
-    { }
+    {
+        // This shouldn't normally happen, as filtered textures are generated when a radiance texture is assigned, but
+        // we check for it anyway (something could have gone wrong).
+        if(_texture)
+        {
+            if (_filteredRadiance == nullptr || _irradiance == nullptr)
+                FilterTexture();
+        }
+    }
 
     Skybox::~Skybox()
     {
@@ -109,5 +112,9 @@ namespace te
         }
 
         _oldActive = _active;
+    }
+
+    void Skybox::FilterTexture()
+    {
     }
 }

@@ -101,6 +101,23 @@ namespace te
         None = 0x2
     };
 
+    /** Types of available depth of field effects. */
+    enum class DepthOfFieldType
+    {
+        /**
+         * Fastest depth of field variant, uses gaussian blur to approximate depth of field on near and far objects, but
+         * doesn't use any physically based methods for determining blur amount.
+         */
+        Gaussian,
+        /**
+            * Very expensive depth of field variant that allows you to use a bokeh texture, controlling the shape of the blur
+            * (usually intended to mimic real world camera aperature shapes). Blur is varied according to actual object
+            * distance and the effect is more physically based than gaussian blur (but not completely). Very expensive in
+            * terms of performance.
+            */
+        Bokeh
+    };
+
     /** Settings that control automatic exposure (eye adaptation) post-process. */
     struct TE_CORE_EXPORT AutoExposureSettings
     {
@@ -177,6 +194,9 @@ namespace te
 
         /** Enables or disables the depth of field effect. */
         bool Enabled = false;
+
+        /** Type of depth of field effect to use. */
+        DepthOfFieldType type = DepthOfFieldType::Gaussian;
 
         /**
          * Distance from the camera at which the focal plane is located in. Objects at this distance will be fully in focus.

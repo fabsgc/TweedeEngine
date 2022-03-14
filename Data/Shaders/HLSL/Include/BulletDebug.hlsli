@@ -1,7 +1,7 @@
-#define STANDARD_MAX_INSTANCED_BLOCK 256
-
 #ifndef __BULLETDEBUG__
 #define __BULLETDEBUG__
+
+#define STANDARD_MAX_INSTANCED_BLOCK 256
 
 struct PerInstanceData
 {
