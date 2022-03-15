@@ -9,8 +9,8 @@ namespace te
     MotionBlurMat::MotionBlurMat()
     {
         _paramBuffer = gMotionBlurParamDef.CreateBuffer();
-        _params->SetParamBlockBuffer("PerFrameBuffer", _paramBuffer);
-        _params->SetSamplerState("BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
+        _params->SetParamBlockBuffer(GPT_PIXEL_PROGRAM, "PerFrameBuffer", _paramBuffer);
+        _params->SetSamplerState(GPT_PIXEL_PROGRAM, "BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
     }
 
     void MotionBlurMat::Execute(const SPtr<Texture>& source, const SPtr<RenderTarget>& destination, const SPtr<Texture>& depth, const SPtr<Texture>& velocity,
@@ -33,15 +33,15 @@ namespace te
 
         if (MSAACount > 1)
         {
-            _params->SetTexture("SourceMapMS", source);
+            _params->SetTexture(GPT_PIXEL_PROGRAM, "SourceMapMS", source);
             _params->SetTexture("DepthMapMS", depth);
-            _params->SetTexture("VelocityMapMS", velocity);
+            _params->SetTexture(GPT_PIXEL_PROGRAM, "VelocityMapMS", velocity);
         }
         else
         {
-            _params->SetTexture("SourceMap", source);
+            _params->SetTexture(GPT_PIXEL_PROGRAM, "SourceMap", source);
             _params->SetTexture("DepthMap", depth);
-            _params->SetTexture("VelocityMap", velocity);
+            _params->SetTexture(GPT_PIXEL_PROGRAM, "VelocityMap", velocity);
         }
 
         _params->SetParamBlockBuffer("PerCameraBuffer", perViewBuffer);

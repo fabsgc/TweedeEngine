@@ -23,7 +23,7 @@ namespace te
 
         UINT32 paramBlocksSize = sizeof(GpuParamBlockBuffer) * numParamBlocks;
         UINT32 texturesSize = (sizeof(Texture) + sizeof(TextureSurface)) * numTextures;
-        UINT32 loadStoreTexturesSize = (sizeof(TextureType) + sizeof(TextureSurface)) * numStorageTextures;
+        UINT32 loadStoreTexturesSize = (sizeof(Texture) + sizeof(TextureSurface)) * numStorageTextures;
         UINT32 buffersSize = sizeof(GpuBuffer) * numBuffers;
         UINT32 samplerStatesSize = sizeof(SamplerState) * numSamplers;
 
@@ -53,7 +53,7 @@ namespace te
         _loadStoreTextureData = (TextureData*)data;
         for (UINT32 i = 0; i < numStorageTextures; i++)
         {
-            new (&_loadStoreTextureData[i].Tex) TextureType();
+            new (&_loadStoreTextureData[i].Tex) SPtr<Texture>();
             new (&_loadStoreTextureData[i].Surface) TextureSurface(0, 0, 0, 0);
         }
         data += loadStoreTexturesSize;
@@ -522,7 +522,7 @@ namespace te
             return;
         }
 
-        SetTexture(iterFind->second.Set, iterFind->second.Slot, texture, surface);
+        SetLoadStoreTexture(iterFind->second.Set, iterFind->second.Slot, texture, surface);
     }
 
     void GpuParams::SetLoadStoreTexture(const String& name, const SPtr<Texture>& texture, const TextureSurface& surface)

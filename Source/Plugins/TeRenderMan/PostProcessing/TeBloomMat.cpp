@@ -8,8 +8,8 @@ namespace te
     BloomMat::BloomMat()
     {
         _paramBuffer = gBloomParamDef.CreateBuffer();
-        _params->SetParamBlockBuffer("PerFrameBuffer", _paramBuffer);
-        _params->SetSamplerState("NoFilterSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
+        _params->SetParamBlockBuffer(GPT_PIXEL_PROGRAM, "PerFrameBuffer", _paramBuffer);
+        _params->SetSamplerState(GPT_PIXEL_PROGRAM, "NoFilterSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
     }
 
     void BloomMat::Execute(const SPtr<Texture>& source, const SPtr<RenderTarget>& destination, const SPtr<Texture>& emissive, 
@@ -20,13 +20,13 @@ namespace te
 
         if (MSAACount > 1)
         {
-            _params->SetTexture("SourceMapMS", source);
-            _params->SetTexture("EmissiveMapMS", emissive);
+            _params->SetTexture(GPT_PIXEL_PROGRAM, "SourceMapMS", source);
+            _params->SetTexture(GPT_PIXEL_PROGRAM, "EmissiveMapMS", emissive);
         }
         else
         {
-            _params->SetTexture("SourceMap", source);
-            _params->SetTexture("EmissiveMap", emissive);
+            _params->SetTexture(GPT_PIXEL_PROGRAM, "SourceMap", source);
+            _params->SetTexture(GPT_PIXEL_PROGRAM, "EmissiveMap", emissive);
         }
 
         RenderAPI& rapi = RenderAPI::Instance();

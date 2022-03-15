@@ -13,8 +13,8 @@ namespace te
         _perInstanceParamBuffer = _perInstanceParamDef.CreateBuffer();
 
         _params->SetParamBlockBuffer("PerFrameBuffer", _perFrameParamBuffer);
-        _params->SetParamBlockBuffer("PerInstanceBuffer", _perInstanceParamBuffer);
-        _params->SetSamplerState("TextureSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
+        _params->SetParamBlockBuffer(GPT_GEOMETRY_PROGRAM, "PerInstanceBuffer", _perInstanceParamBuffer);
+        _params->SetSamplerState(GPT_PIXEL_PROGRAM, "TextureSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
 
         auto textureImportOptions = TextureImportOptions::Create();
         textureImportOptions->CpuCached = false;
@@ -22,7 +22,7 @@ namespace te
         textureImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
 
         _hudMask = gResourceManager().Load<Texture>("Data/Textures/Hud/Hud.png", textureImportOptions);
-        _params->SetTexture("MaskTexture", _hudMask.GetInternalPtr());
+        _params->SetTexture(GPT_PIXEL_PROGRAM, "MaskTexture", _hudMask.GetInternalPtr());
     }
 
     void HudPickingMat::BindCamera(const HCamera& camera, PickingUtils::RenderType renderType)

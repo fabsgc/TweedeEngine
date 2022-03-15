@@ -1266,22 +1266,19 @@ namespace te
 
         // LOAD MESH AND TEXTURES RESOURCES
         // ######################################################
-        //_loadedMeshMonkey = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Monkey/monkey-hd.obj", meshImportOptions)->Entries[0].Res);
-        _loadedMeshMonkey = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Primitives/plane.obj", meshImportOptions)->Entries[0].Res);
-        _loadedSkyboxTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_day_medium.png", textureCubeMapImportOptions);
-        _loadedSkyboxDiffuseIrrTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_day_irradiance_small.png", textureCubeMapImportOptions);
+        _loadedMeshMonkey = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Monkey/monkey-hd.obj", meshImportOptions)->Entries[0].Res);
+        //_loadedMeshMonkey = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Primitives/plane.obj", meshImportOptions)->Entries[0].Res);
+        _loadedSkyboxTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_night_medium.png", textureCubeMapImportOptions);
 
-        HTexture cobbleBaseColor = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/diffuse1.jpg", textureImportOptions);
-        textureImportOptions->SRGB = false;
-        HTexture cobbleNormal = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/normal1.jpg", textureImportOptions);
-        HTexture cobbleParallax = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/parallax1.jpg", textureImportOptions);
+        //HTexture cobbleBaseColor = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/diffuse1.jpg", textureImportOptions);
+        //textureImportOptions->SRGB = false;
+        //HTexture cobbleNormal = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/normal1.jpg", textureImportOptions);
+        //HTexture cobbleParallax = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/parallax1.jpg", textureImportOptions);
         
         if (_loadedMeshMonkey.IsLoaded())
             _loadedMeshMonkey->SetName("Monkey Mesh");
         if (_loadedSkyboxTexture.IsLoaded())
             _loadedSkyboxTexture->SetName("Skybox Texture");
-        if (_loadedSkyboxDiffuseIrrTexture.IsLoaded())
-            _loadedSkyboxDiffuseIrrTexture->SetName("Skybox Diffuse Irradiance");
         // ###################################################### 
 
         // GET BUILTIN OPAQUE SHADER
@@ -1293,31 +1290,30 @@ namespace te
         // ######################################################
         {
             MaterialProperties monkeyMatprop;
-            monkeyMatprop.BaseColor = Color(0.8f, 0.8f, 0.8f, 1.0f);
-            monkeyMatprop.UseBaseColorMap = true;
-            monkeyMatprop.UseNormalMap = true;
-            monkeyMatprop.UseParallaxMap = true;
-            monkeyMatprop.ParallaxScale = 0.05f;
+            monkeyMatprop.BaseColor = Color(0.9f, 0.9f, 0.9f, 1.0f);
+            //monkeyMatprop.UseBaseColorMap = true;
+            //monkeyMatprop.UseNormalMap = true;
+            //monkeyMatprop.UseParallaxMap = true;
+            //monkeyMatprop.ParallaxScale = 0.05f;
 
             _monkeyMaterial = Material::Create(_shader);
             _monkeyMaterial->SetName("Monkey Material");
             _monkeyMaterial->SetProperties(monkeyMatprop);
             _monkeyMaterial->SetSamplerState("TextureSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
-            _monkeyMaterial->SetTexture("BaseColorMap", cobbleBaseColor);
-            _monkeyMaterial->SetTexture("NormalMap", cobbleNormal);
-            _monkeyMaterial->SetTexture("ParallaxMap", cobbleParallax);
+            //_monkeyMaterial->SetTexture("BaseColorMap", cobbleBaseColor);
+            //_monkeyMaterial->SetTexture("NormalMap", cobbleNormal);
+            //_monkeyMaterial->SetTexture("ParallaxMap", cobbleParallax);
         }
         // ######################################################
 
         // FILL SCENE WITH SKYBOX
         // ######################################################
-        if (_loadedSkyboxTexture.IsLoaded() && _loadedSkyboxDiffuseIrrTexture.IsLoaded())
+        if (_loadedSkyboxTexture.IsLoaded())
         {
             _sceneSkyboxSO = SceneObject::Create("Skybox");
             _sceneSkyboxSO->SetParent(_sceneSO);
             _skybox = _sceneSkyboxSO->AddComponent<CSkybox>();
             _skybox->SetTexture(_loadedSkyboxTexture);
-            _skybox->SetDiffuseIrradiance(_loadedSkyboxDiffuseIrrTexture);
             _skybox->Initialize();
         }
         // ######################################################

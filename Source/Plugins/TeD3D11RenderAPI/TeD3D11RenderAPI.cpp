@@ -633,13 +633,20 @@ namespace te
 
         if (_lastFrameGraphicPipeline->d3d11ComputeProgram)
         {
-            PopulateViews(GPT_DOMAIN_PROGRAM, slotConstBuffers);
+            PopulateViews(GPT_COMPUTE_PROGRAM, slotConstBuffers);
             numSRVs = (UINT32)_gpuResContainer.srvs.size();
+            numUAVs = (UINT32)_gpuResContainer.uavs.size();
             numConstBuffers = (UINT32)_gpuResContainer.constBuffers.size();
             numSamplers = (UINT32)_gpuResContainer.samplers.size();
 
             if (numSRVs > 0) context->CSSetShaderResources(0, numSRVs, _gpuResContainer.srvs.data());
-            if (numUAVs > 0) context->CSSetUnorderedAccessViews(0, numUAVs, _gpuResContainer.uavs.data(), nullptr);
+            
+            if (numUAVs > 0)
+            {
+                context->CSSetUnorderedAccessViews(0, numUAVs, _gpuResContainer.uavs.data(), nullptr);
+                _CSUAVsBound = true;
+            }
+
             if (numConstBuffers > 0) context->CSSetConstantBuffers(slotConstBuffers, numConstBuffers, _gpuResContainer.constBuffers.data());
             if (numSamplers > 0) context->CSSetSamplers(0, numSamplers, _gpuResContainer.samplers.data());
         }

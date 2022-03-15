@@ -155,8 +155,7 @@ namespace te
     void MaterialsPreview::InitializeSkybox()
     {
         _skybox = Skybox::Create();
-        _skybox->SetTexture(_environment);
-        _skybox->SetDiffuseIrradiance(_irradiance);
+        _skybox->SetTexture(_radiance);
     }
 
     void MaterialsPreview::InitializeLight()
@@ -216,10 +215,7 @@ namespace te
         textureCubeMapImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
         textureCubeMapImportOptions->SRGB = true;
 
-        _irradiance = ResourceManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_day_irradiance_small.png", textureCubeMapImportOptions).GetInternalPtr();
-        _environment = ResourceManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_day_medium.png", textureCubeMapImportOptions).GetInternalPtr();
-
-        TE_ASSERT_ERROR(_irradiance.get(), "Failed to load irradiance texture");
-        TE_ASSERT_ERROR(_environment.get(), "Failed to load envrionment texture");
+        _radiance = ResourceManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_night_medium.png", textureCubeMapImportOptions).GetInternalPtr();
+        TE_ASSERT_ERROR(_radiance.get(), "Failed to load envrionment texture");
     }
 }

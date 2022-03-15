@@ -2648,7 +2648,6 @@ namespace te
         UUID emptyTexture = UUID(50, 0, 0, 0);
         UUID loadTexture = UUID::EMPTY;
         UUID textureUUID = (skybox->GetTexture()) ? skybox->GetTexture()->GetUUID() : emptyTexture;
-        UUID irradianceuUUID = (skybox->GetDiffuseIrradiance()) ? skybox->GetDiffuseIrradiance()->GetUUID() : emptyTexture;
         EditorResManager::ResourcesContainer& container = EditorResManager::Instance().Get<Texture>();
 
         for (auto& resource : container.Res)
@@ -2677,28 +2676,6 @@ namespace te
                 else
                 {
                     skybox->SetTexture(gResourceManager().Load<Texture>(textureUUID).GetInternalPtr());
-                    hasChanged = true;
-                }
-            }
-        }
-        ImGui::Separator();
-
-        // current diffuse irradiance texture to use
-        {
-            if (ImGuiExt::RenderOptionCombo<UUID>(&irradianceuUUID, "##skybox_texture_irradiance_option", "Irradiance", texturesOptions, width))
-            {
-                if (irradianceuUUID == loadTexture)
-                {
-                    _loadSkyboxIrradiance = true;
-                }
-                else if (irradianceuUUID == emptyTexture)
-                {
-                    skybox->SetDiffuseIrradiance(nullptr);
-                    hasChanged = true;
-                }
-                else
-                {
-                    skybox->SetDiffuseIrradiance(gResourceManager().Load<Texture>(irradianceuUUID).GetInternalPtr());
                     hasChanged = true;
                 }
             }
@@ -3127,7 +3104,7 @@ namespace te
     {
         bool skyboxLoaded = false;
 
-        if (_loadSkybox || _loadSkyboxIrradiance)
+        if (_loadSkybox)
         {
             ImGui::OpenPopup("Load Skybox Texture");
             _fileBrowser.Data.TexParam.TexType = TextureType::TEX_TYPE_CUBE_MAP;
@@ -3151,24 +3128,19 @@ namespace te
                     EditorResManager::Instance().Add<Texture>(texture);
                     SPtr<CSkybox> skybox = std::static_pointer_cast<CSkybox>(_selections.ClickedComponent);
 
-                    if (_loadSkybox)
-                        skybox->SetTexture(texture.GetInternalPtr());
-                    else
-                        skybox->SetDiffuseIrradiance(texture.GetInternalPtr());
+                    skybox->SetTexture(texture.GetInternalPtr());
 
                     skyboxLoaded = true;
                 }
             }
 
             _loadSkybox = false;
-            _loadSkyboxIrradiance = false;
         }
         else
         {
             if (_fileBrowser.Data.IsCancelled)
             {
                 _loadSkybox = false;
-                _loadSkyboxIrradiance = false;
             }
         }
 

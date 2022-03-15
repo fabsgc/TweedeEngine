@@ -379,10 +379,10 @@ namespace te
                         material.MatProperties.Metallic = matProperties.Metallic;
 
                     if (aiMat->Get(AI_MATKEY_ROUGHNESS_FACTOR, matProperties.Roughness) == aiReturn_SUCCESS)
-                        material.MatProperties.Metallic = matProperties.Roughness;
+                        material.MatProperties.Roughness = matProperties.Roughness;
 
                     if (aiMat->Get(AI_MATKEY_SHEEN_ROUGHNESS_FACTOR, matProperties.SheenRoughness) == aiReturn_SUCCESS)
-                        material.MatProperties.Metallic = matProperties.Metallic;
+                        material.MatProperties.SheenRoughness = matProperties.SheenRoughness;
 
                     if (aiMat->Get(AI_MATKEY_CLEARCOAT_FACTOR, matProperties.ClearCoat) == aiReturn_SUCCESS)
                         material.MatProperties.ClearCoat = matProperties.ClearCoat;

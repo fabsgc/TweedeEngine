@@ -240,7 +240,7 @@ float Fd_Wrap(float NoL, float w) {
 // Diffuse BRDF dispatch
 //------------------------------------------------------------------------------
 
-float diffuse(float roughness, float NoV, float NoL, float LoH) {
+float Diffuse(float roughness, float NoV, float NoL, float LoH) {
 #if BRDF_DIFFUSE == DIFFUSE_LAMBERT
     return Fd_Lambert();
 #elif BRDF_DIFFUSE == DIFFUSE_BURLEY

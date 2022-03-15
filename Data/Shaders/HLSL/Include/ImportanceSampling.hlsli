@@ -1,0 +1,70 @@
+#ifndef __IMPORTANCE_SAMPLING__
+#define __IMPORTANCE_SAMPLING__
+
+#define PI 3.1415926
+
+uint RadicalInverse(uint bits)  
+{
+    // Reverse bits. Algorithm from Hacker's Delight.
+    bits = (bits << 16u) | (bits >> 16u);
+    bits = ((bits & 0x55555555u) << 1u) | ((bits & 0xAAAAAAAAu) >> 1u);
+    bits = ((bits & 0x33333333u) << 2u) | ((bits & 0xCCCCCCCCu) >> 2u);
+    bits = ((bits & 0x0F0F0F0Fu) << 4u) | ((bits & 0xF0F0F0F0u) >> 4u);
+    bits = ((bits & 0x00FF00FFu) << 8u) | ((bits & 0xFF00FF00u) >> 8u);
+
+    return bits;
+}
+
+float2 HammersleySequence(uint i, uint count)
+{
+    float2 output;
+    output.x = i / (float)count;
+    uint y = RadicalInverse(i);
+
+    // Normalizes unsigned int in range [0, 4294967295] to [0, 1]
+    output.y = float(y) * 2.3283064365386963e-10;
+
+    return output;
+}
+
+float2 HammersleySequence(uint i, uint count, uint2 random)
+{
+    float2 output;
+    output.x = frac(i / (float)count + float(random.x & 0xFFFF) / (1<<16));
+    uint y = RadicalInverse(i) ^ random.y;
+    
+    // Normalizes unsigned int in range [0, 4294967295] to [0, 1]
+    output.y = float(y) * 2.3283064365386963e-10;
+
+    return output;
+}
+
+// Returns cos(theta) in x and phi in y
+float2 ImportanceSampleGGX(float2 e, float roughness4)
+{
+    // See GGXImportanceSample.nb for derivation (essentially, take base GGX, normalize it,
+    // generate PDF, split PDF into marginal probability for theta and conditional probability
+    // for phi. Plug those into the CDF, invert it.)				
+    float cosTheta = sqrt((1.0f - e.x) / (1.0f + (roughness4 - 1.0f) * e.x));
+    float phi = 2.0f * PI * e.y;
+
+    return float2(cosTheta, phi);
+}
+
+float3 SphericalToCartesian(float cosTheta, float sinTheta, float phi)
+{
+    float3 output;
+    output.x = sinTheta * cos(phi);
+    output.y = sinTheta * sin(phi);
+    output.z = cosTheta;
+
+    return output;
+}
+
+float PdfGGX(float cosTheta, float sinTheta, float roughness4)
+{
+    float d = (cosTheta*roughness4 - cosTheta) * cosTheta + 1;
+    return roughness4 * cosTheta * sinTheta / (d*d*PI);
+}
+
+#endif // __IMPORTANCE_SAMPLING__

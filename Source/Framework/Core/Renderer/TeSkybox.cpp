@@ -55,30 +55,6 @@ namespace te
         _markCoreDirty((ActorDirtyFlag)SkyboxDirtyFlag::Texture);
     }
 
-    void Skybox::SetDiffuseIrradiance(const HTexture& irradiance)
-    {
-        _irradiance = irradiance.GetInternalPtr();
-        _markCoreDirty((ActorDirtyFlag)SkyboxDirtyFlag::Texture);
-    }
-
-    void Skybox::SetDiffuseIrradiance(const SPtr<Texture>& irradiance)
-    {
-        _irradiance = irradiance;
-        _markCoreDirty((ActorDirtyFlag)SkyboxDirtyFlag::Texture);
-    }
-
-    void Skybox::SetSpecularIrradiance(const HTexture& irradiance)
-    {
-        _filteredRadiance = irradiance.GetInternalPtr();
-        _markCoreDirty((ActorDirtyFlag)SkyboxDirtyFlag::Texture);
-    }
-
-    void Skybox::SetSpecularIrradiance(const SPtr<Texture>& irradiance)
-    {
-        _filteredRadiance = irradiance;
-        _markCoreDirty((ActorDirtyFlag)SkyboxDirtyFlag::Texture);
-    }
-
     void Skybox::AttachTo(SPtr<Renderer> renderer)
     {
         if (_renderer)
@@ -181,7 +157,7 @@ namespace te
         rapi.PushMarker("[DRAW] IRRADIANCE MAP", Color(0.23f, 0.48f, 0.55f));
 
         // Generate irradiance
-        //gIBLUtility().FilterCubemapForIrradiance(_texture, _irradiance);
+        gIBLUtility().FilterCubemapForIrradiance(_texture, _irradiance);
 
         rapi.PopMarker();
     }

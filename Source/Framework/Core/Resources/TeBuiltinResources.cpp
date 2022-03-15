@@ -144,6 +144,26 @@ namespace te
                 InitShaderReflectionCubeDownsample();
             shader = _shaderReflectionCubeDownsample;
             break;
+        case BuiltinShader::ReflectionCubeImportanceSample:
+            if (!_shaderReflectionCubeImportanceSample.IsLoaded())
+                InitShaderReflectionCubeImportanceSample();
+            shader = _shaderReflectionCubeImportanceSample;
+            break;
+        case BuiltinShader::IrradianceComputeSH:
+            if (!_shaderIrradianceComputeSH.IsLoaded())
+                InitIrradianceComputeSH();
+            shader = _shaderIrradianceComputeSH;
+            break;
+        case BuiltinShader::IrradianceReduceSH:
+            if (!_shaderIrradianceReduceSH.IsLoaded())
+                InitIrradianceReduceSH();
+            shader = _shaderIrradianceReduceSH;
+            break;
+        case BuiltinShader::IrradianceProjectSH:
+            if (!_shaderIrradianceProjectSH.IsLoaded())
+                InitIrradianceProjectSH();
+            shader = _shaderIrradianceProjectSH;
+            break;
         default:
             TE_ASSERT_ERROR(false, "Can't find \"" + ToString((UINT32)type) + "\" shader.")
             break;
@@ -517,6 +537,66 @@ namespace te
             _pixelShaderReflectionCubeDownsampleDesc.Language = "hlsl";
             _pixelShaderReflectionCubeDownsampleDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
             _pixelShaderReflectionCubeDownsampleDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/ReflectionCubeImportanceSample_VS.hlsl"));
+            _vertexShaderReflectionCubeImportanceSampleDesc.Type = GPT_VERTEX_PROGRAM;
+            _vertexShaderReflectionCubeImportanceSampleDesc.FilePath = SHADERS_FOLDER + String("HLSL/ReflectionCubeImportanceSample_VS.hlsl");
+            _vertexShaderReflectionCubeImportanceSampleDesc.EntryPoint = "main";
+            _vertexShaderReflectionCubeImportanceSampleDesc.Language = "hlsl";
+            _vertexShaderReflectionCubeImportanceSampleDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
+            _vertexShaderReflectionCubeImportanceSampleDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/ReflectionCubeImportanceSample_PS.hlsl"));
+            _pixelShaderReflectionCubeImportanceSampleDesc.Type = GPT_PIXEL_PROGRAM;
+            _pixelShaderReflectionCubeImportanceSampleDesc.FilePath = SHADERS_FOLDER + String("HLSL/ReflectionCubeImportanceSample_PS.hlsl");
+            _pixelShaderReflectionCubeImportanceSampleDesc.EntryPoint = "main";
+            _pixelShaderReflectionCubeImportanceSampleDesc.Language = "hlsl";
+            _pixelShaderReflectionCubeImportanceSampleDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
+            _pixelShaderReflectionCubeImportanceSampleDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/IrradianceComputeSH_CS.hlsl"));
+            _computeShaderIrradianceComputeSHDesc.Type = GPT_COMPUTE_PROGRAM;
+            _computeShaderIrradianceComputeSHDesc.FilePath = SHADERS_FOLDER + String("HLSL/IrradianceComputeSH_CS.hlsl");
+            _computeShaderIrradianceComputeSHDesc.EntryPoint = "main";
+            _computeShaderIrradianceComputeSHDesc.Language = "hlsl";
+            _computeShaderIrradianceComputeSHDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
+            _computeShaderIrradianceComputeSHDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/IrradianceReduceSH_CS.hlsl"));
+            _computeShaderIrradianceReduceSHDesc.Type = GPT_COMPUTE_PROGRAM;
+            _computeShaderIrradianceReduceSHDesc.FilePath = SHADERS_FOLDER + String("HLSL/IrradianceReduceSH_CS.hlsl");
+            _computeShaderIrradianceReduceSHDesc.EntryPoint = "main";
+            _computeShaderIrradianceReduceSHDesc.Language = "hlsl";
+            _computeShaderIrradianceReduceSHDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
+            _computeShaderIrradianceReduceSHDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/IrradianceProjectSH_VS.hlsl"));
+            _vertexShaderIrradianceProjectSHDesc.Type = GPT_VERTEX_PROGRAM;
+            _vertexShaderIrradianceProjectSHDesc.FilePath = SHADERS_FOLDER + String("HLSL/IrradianceProjectSH_VS.hlsl");
+            _vertexShaderIrradianceProjectSHDesc.EntryPoint = "main";
+            _vertexShaderIrradianceProjectSHDesc.Language = "hlsl";
+            _vertexShaderIrradianceProjectSHDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
+            _vertexShaderIrradianceProjectSHDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/IrradianceProjectSH_PS.hlsl"));
+            _pixelShaderIrradianceProjectSHDesc.Type = GPT_PIXEL_PROGRAM;
+            _pixelShaderIrradianceProjectSHDesc.FilePath = SHADERS_FOLDER + String("HLSL/IrradianceProjectSH_PS.hlsl");
+            _pixelShaderIrradianceProjectSHDesc.EntryPoint = "main";
+            _pixelShaderIrradianceProjectSHDesc.Language = "hlsl";
+            _pixelShaderIrradianceProjectSHDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
+            _pixelShaderIrradianceProjectSHDesc.Source = shaderFile.GetAsString();
         }
     }
     void BuiltinResources::InitStates()
@@ -1011,6 +1091,92 @@ namespace te
         shaderDesc.Techniques.push_back(technique);
 
         _shaderReflectionCubeDownsample = Shader::Create("Reflection Cube Down Sample", shaderDesc);
+    }
+
+    void BuiltinResources::InitShaderReflectionCubeImportanceSample()
+    {
+        PASS_DESC passDesc;
+        passDesc.BlendStateDesc = _blendOpaqueStateDesc;
+        passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
+        passDesc.RasterizerStateDesc = _rasterizerStateDesc;
+        passDesc.VertexProgramDesc = _vertexShaderReflectionCubeImportanceSampleDesc;
+        passDesc.PixelProgramDesc = _pixelShaderReflectionCubeImportanceSampleDesc;
+
+        passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
+
+        SPtr<Pass> pass = Pass::Create(passDesc);
+        SPtr<Technique> technique = Technique::Create("hlsl", { pass });
+        technique->Compile();
+
+        SHADER_DESC shaderDesc = _shaderReflectionCubeImportanceSampleDesc;
+        shaderDesc.QueueType = QueueSortType::BackToFront;
+        shaderDesc.Techniques.push_back(technique);
+
+        _shaderReflectionCubeImportanceSample = Shader::Create("Reflection Cube Importance Sample", shaderDesc);
+    }
+
+    void BuiltinResources::InitIrradianceComputeSH()
+    {
+        PASS_DESC passDesc;
+        passDesc.BlendStateDesc = _blendOpaqueStateDesc;
+        passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
+        passDesc.RasterizerStateDesc = _rasterizerStateDesc;
+        passDesc.ComputeProgramDesc = _computeShaderIrradianceComputeSHDesc;
+
+        passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
+
+        SPtr<Pass> pass = Pass::Create(passDesc);
+        SPtr<Technique> technique = Technique::Create("hlsl", { pass });
+        technique->Compile();
+
+        SHADER_DESC shaderDesc = _shaderIrradianceComputeSHDesc;
+        shaderDesc.QueueType = QueueSortType::BackToFront;
+        shaderDesc.Techniques.push_back(technique);
+
+        _shaderIrradianceComputeSH = Shader::Create("Irradiance Compute SH", shaderDesc);
+    }
+
+    void BuiltinResources::InitIrradianceReduceSH()
+    {
+        PASS_DESC passDesc;
+        passDesc.BlendStateDesc = _blendOpaqueStateDesc;
+        passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
+        passDesc.RasterizerStateDesc = _rasterizerStateDesc;
+        passDesc.ComputeProgramDesc = _computeShaderIrradianceReduceSHDesc;
+
+        passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
+
+        SPtr<Pass> pass = Pass::Create(passDesc);
+        SPtr<Technique> technique = Technique::Create("hlsl", { pass });
+        technique->Compile();
+
+        SHADER_DESC shaderDesc = _shaderIrradianceReduceSHDesc;
+        shaderDesc.QueueType = QueueSortType::BackToFront;
+        shaderDesc.Techniques.push_back(technique);
+
+        _shaderIrradianceReduceSH = Shader::Create("Irradiance Reduce SH", shaderDesc);
+    }
+
+    void BuiltinResources::InitIrradianceProjectSH()
+    {
+        PASS_DESC passDesc;
+        passDesc.BlendStateDesc = _blendOpaqueStateDesc;
+        passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
+        passDesc.RasterizerStateDesc = _rasterizerStateDesc;
+        passDesc.VertexProgramDesc = _vertexShaderIrradianceProjectSHDesc;
+        passDesc.PixelProgramDesc = _pixelShaderIrradianceProjectSHDesc;
+
+        passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
+
+        SPtr<Pass> pass = Pass::Create(passDesc);
+        SPtr<Technique> technique = Technique::Create("hlsl", { pass });
+        technique->Compile();
+
+        SHADER_DESC shaderDesc = _shaderIrradianceProjectSHDesc;
+        shaderDesc.QueueType = QueueSortType::BackToFront;
+        shaderDesc.Techniques.push_back(technique);
+
+        _shaderIrradianceProjectSH = Shader::Create("Irradiance Project SH", shaderDesc);
     }
 
     void BuiltinResources::InitShaderDecal()

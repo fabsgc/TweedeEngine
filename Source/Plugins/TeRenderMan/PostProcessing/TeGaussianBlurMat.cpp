@@ -9,8 +9,8 @@ namespace te
     GaussianBlurMat::GaussianBlurMat()
     {
         _paramBuffer = gGaussianBlurParamDef.CreateBuffer();
-        _params->SetParamBlockBuffer("PerFrameBuffer", _paramBuffer);
-        _params->SetSamplerState("BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
+        _params->SetParamBlockBuffer(GPT_PIXEL_PROGRAM, "PerFrameBuffer", _paramBuffer);
+        _params->SetSamplerState(GPT_PIXEL_PROGRAM, "BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
     }
 
     void GaussianBlurMat::Execute(const SPtr<Texture>& source, const SPtr<RenderTexture>& destination, float filterSize, const Color& tint, UINT32 MSAACount)
@@ -33,8 +33,8 @@ namespace te
 
     void GaussianBlurMat::DoPass(bool horizontal, const SPtr<Texture>& source, const SPtr<RenderTexture>& destination, float filterSize, const Color& tint, UINT32 MSAACount)
     {
-        if (MSAACount > 1) _params->SetTexture("SourceMapMS", source);
-        else _params->SetTexture("SourceMap", source);
+        if (MSAACount > 1) _params->SetTexture(GPT_PIXEL_PROGRAM, "SourceMapMS", source);
+        else _params->SetTexture(GPT_PIXEL_PROGRAM, "SourceMap", source);
 
         PopulateBuffer(_paramBuffer, horizontal, source, filterSize, (!horizontal) ? tint : Color::White);
 

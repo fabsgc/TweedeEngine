@@ -125,8 +125,7 @@ namespace te
         SPtr<Renderable> _planeRenderable;
         SPtr<Renderable> _sphereRenderable;
 
-        SPtr<Texture> _irradiance;
-        SPtr<Texture> _environment;
+        SPtr<Texture> _radiance;
 
         MeshPreviewType _meshPreviewType;
     };

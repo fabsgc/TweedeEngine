@@ -2,7 +2,6 @@
 #include "Image/TeTexture.h"
 #include "Renderer/TeRendererUtility.h"
 #include "RenderAPI/TeGpuBuffer.h"
-#include "TeRenderMan.h"
 
 namespace te
 {
@@ -39,6 +38,164 @@ namespace te
         gRendererUtility().DrawScreenQuad();
     }
 
+    const UINT32 ReflectionCubeImportanceSampleMat::NUM_SAMPLES = 1024;
+    ReflectionCubeImportanceSampleParamDef gReflectionCubeImportanceSampleParamDef;
+
+    ReflectionCubeImportanceSampleMat::ReflectionCubeImportanceSampleMat()
+    {
+        _paramBuffer = gReflectionCubeImportanceSampleParamDef.CreateBuffer();
+        _params->SetParamBlockBuffer("PerFrameBuffer", _paramBuffer);
+        _params->SetSamplerState("BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
+    }
+
+    void ReflectionCubeImportanceSampleMat::Execute(const SPtr<Texture>& source, UINT32 face, UINT32 mip,
+        const SPtr<RenderTarget>& target)
+    {
+        gReflectionCubeImportanceSampleParamDef.gCubeFace.Set(_paramBuffer, face);
+        gReflectionCubeImportanceSampleParamDef.gMipLevel.Set(_paramBuffer, mip);
+        gReflectionCubeImportanceSampleParamDef.gNumMips.Set(_paramBuffer, source->GetProperties().GetNumMipmaps() + 1);
+        gReflectionCubeImportanceSampleParamDef.gNumSamples.Set(_paramBuffer, ReflectionCubeImportanceSampleMat::NUM_SAMPLES);
+
+        _params->SetTexture("SourceMap", source);
+
+        float width = (float)source->GetProperties().GetWidth();
+        float height = (float)source->GetProperties().GetHeight();
+
+        // First part of the equation for determining mip level to sample from.
+        // See http://http.developer.nvidia.com/GPUGems3/gpugems3_ch20.html
+        float mipFactor = 0.5f * std::log2(width * height / NUM_SAMPLES);
+        gReflectionCubeImportanceSampleParamDef.gPrecomputedMipFactor.Set(_paramBuffer, mipFactor);
+
+        RenderAPI& rapi = RenderAPI::Instance();
+        rapi.SetRenderTarget(target);
+
+        Bind();
+        gRendererUtility().DrawScreenQuad();
+    }
+
+    IrradianceComputeSHParamDef gIrradianceComputeSHParamDef;
+
+    // TILE_WIDTH * TILE_HEIGHT must be pow2 because of parallel reduction algorithm
+    const static UINT32 TILE_WIDTH = 8;
+    const static UINT32 TILE_HEIGHT = 8;
+
+    // For very small textures this should be reduced so number of launched threads can properly utilize GPU cores
+    const static UINT32 PIXELS_PER_THREAD = 4;
+
+    const static UINT32 SH_ORDER = 5;
+
+    IrradianceComputeSHMat::IrradianceComputeSHMat()
+    {
+        _paramBuffer = gIrradianceComputeSHParamDef.CreateBuffer();
+        _params->SetParamBlockBuffer(GPT_COMPUTE_PROGRAM, "PerFrameBuffer", _paramBuffer);
+        _params->SetSamplerState(GPT_COMPUTE_PROGRAM, "BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
+    }
+
+    void IrradianceComputeSHMat::Execute(const SPtr<Texture>& source, UINT32 face, const SPtr<GpuBuffer>& output)
+    {
+        auto& props = source->GetProperties();
+        UINT32 faceSize = props.GetWidth();
+        assert(faceSize == props.GetHeight());
+
+        Vector2I dispatchSize;
+        dispatchSize.x = Math::DivideAndRoundUp(faceSize, TILE_WIDTH * PIXELS_PER_THREAD);
+        dispatchSize.y = Math::DivideAndRoundUp(faceSize, TILE_HEIGHT * PIXELS_PER_THREAD);
+
+        _params->SetTexture(GPT_COMPUTE_PROGRAM, "SourceMap", source);
+
+        gIrradianceComputeSHParamDef.gCubeFace.Set(_paramBuffer, face);
+        gIrradianceComputeSHParamDef.gFaceSize.Set(_paramBuffer, source->GetProperties().GetWidth());
+        gIrradianceComputeSHParamDef.gDispatchSize.Set(_paramBuffer, dispatchSize);
+
+        _params->SetBuffer(GPT_COMPUTE_PROGRAM, "Output", output);
+
+        RenderAPI& rapi = RenderAPI::Instance();
+
+        Bind();
+        rapi.DispatchCompute(dispatchSize.x, dispatchSize.y);
+    }
+
+    SPtr<GpuBuffer> IrradianceComputeSHMat::CreateOutputBuffer(const SPtr<Texture>& source, UINT32& numCoeffSets)
+    {
+        auto& props = source->GetProperties();
+        UINT32 faceSize = props.GetWidth();
+        assert(faceSize == props.GetHeight());
+
+        Vector2I dispatchSize;
+        dispatchSize.x = Math::DivideAndRoundUp(faceSize, TILE_WIDTH * PIXELS_PER_THREAD);
+        dispatchSize.y = Math::DivideAndRoundUp(faceSize, TILE_HEIGHT * PIXELS_PER_THREAD);
+
+        numCoeffSets = dispatchSize.x * dispatchSize.y * 6;
+
+        GPU_BUFFER_DESC bufferDesc;
+        bufferDesc.Type = GBT_STRUCTURED;
+        bufferDesc.ElementCount = numCoeffSets;
+        bufferDesc.Format = BF_UNKNOWN;
+        bufferDesc.Usage = GBU_LOADSTORE;
+        bufferDesc.ElementSize = sizeof(SHCoeffsAndWeight5);
+        bufferDesc.DebugName = "[TEMP] Irradiance Compute SH";
+
+        return GpuBuffer::Create(bufferDesc);
+    }
+
+    IrradianceReduceSHParamDef gIrradianceReduceSHParamDef;
+
+    IrradianceReduceSHMat::IrradianceReduceSHMat()
+    {
+        _paramBuffer = gIrradianceComputeSHParamDef.CreateBuffer();
+        _params->SetParamBlockBuffer(GPT_COMPUTE_PROGRAM, "PerFrameBuffer", _paramBuffer);
+    }
+
+    void IrradianceReduceSHMat::Execute(const SPtr<GpuBuffer>& source, UINT32 numCoeffSets, const SPtr<Texture>& output, UINT32 outputIdx)
+    {
+        Vector2I outputCoords = IBLUtility::GetSHCoeffXYFromIdx(outputIdx, SH_ORDER);
+        gIrradianceReduceSHParamDef.gOutputIdx.Set(_paramBuffer, outputCoords);
+        gIrradianceReduceSHParamDef.gNumEntries.Set(_paramBuffer, numCoeffSets);
+
+        _params->SetBuffer(GPT_COMPUTE_PROGRAM, "Input", source);
+        _params->SetLoadStoreTexture(GPT_COMPUTE_PROGRAM, "Output", output);
+
+        Bind();
+
+        RenderAPI& rapi = RenderAPI::Instance();
+        rapi.DispatchCompute(1);
+    }
+
+    SPtr<Texture> IrradianceReduceSHMat::CreateOutputTexture(UINT32 numCoeffSets)
+    {
+        Vector2I size = IBLUtility::GetSHCoeffTextureSize(numCoeffSets, SH_ORDER);
+
+        TEXTURE_DESC textureDesc;
+        textureDesc.Width = (UINT32)size.x;
+        textureDesc.Height = (UINT32)size.y;
+        textureDesc.Format = PF_RGBA32F;
+        textureDesc.Usage = TU_STATIC | TU_LOADSTORE;
+        textureDesc.DebugName = "[TEMP] Irradiance Reduce SH";
+
+        return Texture::CreatePtr(textureDesc);
+    }
+
+    IrradianceProjectSHParamDef gIrradianceProjectSHParamDef;
+
+    IrradianceProjectSHMat::IrradianceProjectSHMat()
+    {
+        _paramBuffer = gIrradianceProjectSHParamDef.CreateBuffer();
+        _params->SetParamBlockBuffer(GPT_PIXEL_PROGRAM, "PerFrameBuffer", _paramBuffer);
+    }
+
+    void IrradianceProjectSHMat::Execute(const SPtr<Texture>& shCoeffs, UINT32 face, const SPtr<RenderTarget>& target)
+    {
+        gIrradianceProjectSHParamDef.gCubeFace.Set(_paramBuffer, face);
+
+        _params->SetTexture(GPT_PIXEL_PROGRAM, "SourceMap", shCoeffs);
+
+        RenderAPI& rapi = RenderAPI::Instance();
+        rapi.SetRenderTarget(target);
+
+        Bind();
+        gRendererUtility().DrawScreenQuad();
+    }
+
     void RenderManIBLUtility::FilterCubemapForSpecular(const SPtr<Texture>& cubemap, const SPtr<Texture>& scratch) const
     {
         auto& props = cubemap->GetProperties();
@@ -53,7 +210,7 @@ namespace te
             cubemapDesc.Height = props.GetHeight();
             cubemapDesc.NumMips = PixelUtil::GetMaxMipmaps(cubemapDesc.Width, cubemapDesc.Height, 1);
             cubemapDesc.Usage = TU_STATIC | TU_RENDERTARGET;
-            cubemapDesc.DebugName = "[MIP] " + props.GetDebugName();
+            cubemapDesc.DebugName = "[MIP][TEMP] " + props.GetDebugName();
             cubemapDesc.HwGamma = cubemap->GetProperties().IsHardwareGammaEnabled();
 
             scratchCubemap = Texture::CreatePtr(cubemapDesc);
@@ -98,10 +255,10 @@ namespace te
                 cubeFaceRTDesc.ColorSurfaces[0].NumFaces = 1;
                 cubeFaceRTDesc.ColorSurfaces[0].MipLevel = mip;
 
-                //SPtr<RenderTarget> target = RenderTexture::Create(cubeFaceRTDesc);
+                SPtr<RenderTarget> target = RenderTexture::Create(cubeFaceRTDesc);
 
-                //ReflectionCubeImportanceSampleMat* material = ReflectionCubeImportanceSampleMat::Get();
-                //material->Execute(scratchCubemap, face, mip, target);
+                ReflectionCubeImportanceSampleMat* material = ReflectionCubeImportanceSampleMat::Get();
+                material->Execute(scratchCubemap, face, mip, target);
             }
         }
 
@@ -111,13 +268,42 @@ namespace te
 
     void RenderManIBLUtility::FilterCubemapForIrradiance(const SPtr<Texture>& cubemap, const SPtr<Texture>& output) const
     {
-        // TODO PBR
+        SPtr<Texture> coeffTexture;
+
+        IrradianceComputeSHMat* shCompute = IrradianceComputeSHMat::Get();
+        IrradianceReduceSHMat* shReduce = IrradianceReduceSHMat::Get();
+
+        UINT32 numCoeffSets;
+        SPtr<GpuBuffer> coeffSetBuffer = shCompute->CreateOutputBuffer(cubemap, numCoeffSets);
+        for (UINT32 face = 0; face < 6; face++)
+            shCompute->Execute(cubemap, face, coeffSetBuffer);
+
+        UINT32 size = (UINT32)sizeof(SHCoeffsAndWeight5) * numCoeffSets;
+        void* data = te_allocate(size);
+        coeffSetBuffer->ReadData(0, size, data);
+        SHCoeffsAndWeight5* coeffs = static_cast<SHCoeffsAndWeight5*>(data);
+
+        coeffTexture = shReduce->CreateOutputTexture(1);
+        shReduce->Execute(coeffSetBuffer, numCoeffSets, coeffTexture, 0);
+
+        IrradianceProjectSHMat* shProject = IrradianceProjectSHMat::Get();
+        for (UINT32 face = 0; face < 6; face++)
+        {
+            RENDER_TEXTURE_DESC cubeFaceRTDesc;
+            cubeFaceRTDesc.ColorSurfaces[0].Tex = output;
+            cubeFaceRTDesc.ColorSurfaces[0].Face = face;
+            cubeFaceRTDesc.ColorSurfaces[0].NumFaces = 1;
+            cubeFaceRTDesc.ColorSurfaces[0].MipLevel = 0;
+
+            SPtr<RenderTarget> target = RenderTexture::Create(cubeFaceRTDesc);
+            shProject->Execute(coeffTexture, face, target);
+        }
     }
 
     void RenderManIBLUtility::FilterCubemapForIrradiance(const SPtr<Texture>& cubemap, const SPtr<Texture>& output,
         UINT32 outputIdx) const
     {
-        // TODO PBR
+        // TODO PBR LightProbe
     }
 
     void RenderManIBLUtility::ScaleCubemap(const SPtr<Texture>& src, UINT32 srcMip, const SPtr<Texture>& dst,
@@ -194,11 +380,5 @@ namespace te
             ReflectionCubeDownsampleMat* material = ReflectionCubeDownsampleMat::Get();
             material->Execute(src, face, srcMip, target);
         }
-    }
-
-    void RenderManIBLUtility::FilterCubemapForIrradianceNonCompute(const SPtr<Texture>& cubemap, UINT32 outputIdx,
-        const SPtr<RenderTexture>& output)
-    {
-        // TODO PBR
     }
 }

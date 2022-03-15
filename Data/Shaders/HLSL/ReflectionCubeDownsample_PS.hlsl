@@ -1,11 +1,11 @@
 #include "Include/PostProcess.hlsli"
-#include "Include/CommonGraphics.hlsli"
 #include "Include/ReflectionCubemapCommon.hlsli"
 
 cbuffer PerFrameBuffer : register(b0)
 {
     uint gCubeFace;
     uint gMipLevel;
+    float2 gPadding;
 }
 
 SamplerState BilinearSampler : register(s0);

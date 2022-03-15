@@ -8,14 +8,14 @@ namespace te
     SkyboxMat::SkyboxMat()
     { 
         _paramBuffer = gSkyboxParamDef.CreateBuffer();
-        _params->SetParamBlockBuffer("PerFrameBuffer", _paramBuffer);
-        _params->SetSamplerState("BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
+        _params->SetParamBlockBuffer(GPT_PIXEL_PROGRAM, "PerFrameBuffer", _paramBuffer);
+        _params->SetSamplerState(GPT_PIXEL_PROGRAM, "BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
     }
 
     void SkyboxMat::Bind(const SPtr<GpuParamBlockBuffer>& perCamera, const SPtr<Texture>& texture, const Color& solidColor, const float& brightness)
     {
         _params->SetParamBlockBuffer("PerCameraBuffer", perCamera);
-        _params->SetTexture("TextureMap", texture);
+        _params->SetTexture(GPT_PIXEL_PROGRAM, "TextureMap", texture);
 
         gSkyboxParamDef.gClearColor.Set(_paramBuffer, solidColor);
         gSkyboxParamDef.gBrightness.Set(_paramBuffer, brightness);

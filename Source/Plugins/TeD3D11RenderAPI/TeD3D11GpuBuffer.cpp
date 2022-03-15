@@ -56,6 +56,9 @@ namespace te
                 TE_ASSERT_ERROR(false, "Unsupported buffer type " + ToString(props.GetType()));
             }
 
+            if(!props.GetDebugName().empty())
+                debugName += " " + props.GetDebugName();
+
             _buffer = te_pool_new<D3D11HardwareBuffer>(bufferType, props.GetUsage(), props.GetElementCount(),
                 props.GetElementSize(), rapi->GetPrimaryDevice(), debugName, false, false);
         }

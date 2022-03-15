@@ -56,7 +56,15 @@ namespace te
         /** Shader used to render decals on top of rendered objects */
         Decal = 0x12,
         /** Shader used to downsample a cubemap*/
-        ReflectionCubeDownsample = 0x13
+        ReflectionCubeDownsample = 0x13,
+        /** Shader used to importance sampling a cubemap*/
+        ReflectionCubeImportanceSample = 0x14,
+        /** Computes spherical harmonic coefficients from a radiance cubemap */
+        IrradianceComputeSH = 0x15,
+        /**  Sums spherical harmonic coefficients calculated by each thread group of IrradianceComputeSHMat and outputs a single set of normalized coefficients. */
+        IrradianceReduceSH = 0x16,
+        /** Projects spherical harmonic coefficients calculated by IrradianceReduceSHMat and projects them onto faces of a cubemap. */
+        IrradianceProjectSH = 0x17
     };
 
     /** Types of builtin shaders that are always available. */
@@ -132,6 +140,10 @@ namespace te
         void InitShaderSSAODownSample();
         void InitShaderDecal();
         void InitShaderReflectionCubeDownsample();
+        void InitShaderReflectionCubeImportanceSample();
+        void InitIrradianceComputeSH();
+        void InitIrradianceReduceSH();
+        void InitIrradianceProjectSH();
 
         void InitDefaultMaterial();
 
@@ -158,6 +170,10 @@ namespace te
         HShader _shaderSSAODownSample;
         HShader _shaderDecal;
         HShader _shaderReflectionCubeDownsample;
+        HShader _shaderReflectionCubeImportanceSample;
+        HShader _shaderIrradianceComputeSH;
+        HShader _shaderIrradianceReduceSH;
+        HShader _shaderIrradianceProjectSH;
 
         SPtr<SamplerState> _anisotropicSamplerState = nullptr;
         SPtr<SamplerState> _noFilterSamplerState = nullptr;
@@ -180,6 +196,10 @@ namespace te
         SHADER_DESC _ssaoDownSampleShaderDesc;
         SHADER_DESC _decalShaderDesc;
         SHADER_DESC _shaderReflectionCubeDownsampleDesc;
+        SHADER_DESC _shaderReflectionCubeImportanceSampleDesc;
+        SHADER_DESC _shaderIrradianceComputeSHDesc;
+        SHADER_DESC _shaderIrradianceReduceSHDesc;
+        SHADER_DESC _shaderIrradianceProjectSHDesc;
 
         GPU_PROGRAM_DESC _vertexShaderForwardDesc;
         GPU_PROGRAM_DESC _pixelShaderForwardDesc;
@@ -230,6 +250,16 @@ namespace te
 
         GPU_PROGRAM_DESC _vertexShaderReflectionCubeDownsampleDesc;
         GPU_PROGRAM_DESC _pixelShaderReflectionCubeDownsampleDesc;
+
+        GPU_PROGRAM_DESC _vertexShaderReflectionCubeImportanceSampleDesc;
+        GPU_PROGRAM_DESC _pixelShaderReflectionCubeImportanceSampleDesc;
+
+        GPU_PROGRAM_DESC _computeShaderIrradianceComputeSHDesc;
+        
+        GPU_PROGRAM_DESC _computeShaderIrradianceReduceSHDesc;
+        
+        GPU_PROGRAM_DESC _vertexShaderIrradianceProjectSHDesc;
+        GPU_PROGRAM_DESC _pixelShaderIrradianceProjectSHDesc;
 
         BLEND_STATE_DESC _blendOpaqueStateDesc;
         BLEND_STATE_DESC _blendTransparentStateDesc;

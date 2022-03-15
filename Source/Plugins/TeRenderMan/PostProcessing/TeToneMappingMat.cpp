@@ -8,8 +8,8 @@ namespace te
     ToneMappingMat::ToneMappingMat()
     {
         _paramBuffer = gToneMappingParamDef.CreateBuffer();
-        _params->SetParamBlockBuffer("PerFrameBuffer", _paramBuffer);
-        _params->SetSamplerState("BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
+        _params->SetParamBlockBuffer(GPT_PIXEL_PROGRAM, "PerFrameBuffer", _paramBuffer);
+        _params->SetSamplerState(GPT_PIXEL_PROGRAM, "BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
     }
 
     void ToneMappingMat::Execute(const SPtr<Texture>& source, const SPtr<RenderTarget>& destination, INT32 MSAACount, 
@@ -22,8 +22,8 @@ namespace te
         gToneMappingParamDef.gBrightness.Set(_paramBuffer, brightness, 0);
         gToneMappingParamDef.gGammaOnly.Set(_paramBuffer, gammaOnly ? 1 : 0, 0);
 
-        if (MSAACount > 1) _params->SetTexture("SourceMapMS", source);
-        else _params->SetTexture("SourceMap", source);
+        if (MSAACount > 1) _params->SetTexture(GPT_PIXEL_PROGRAM, "SourceMapMS", source);
+        else _params->SetTexture(GPT_PIXEL_PROGRAM, "SourceMap", source);
 
         RenderAPI& rapi = RenderAPI::Instance();
         rapi.SetRenderTarget(destination);

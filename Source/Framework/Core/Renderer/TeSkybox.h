@@ -40,23 +40,11 @@ namespace te
          */
         SPtr<Texture> GetTexture() const { return _texture; }
 
-        /** @copydoc Skybox::GetDiffuseIrradiance */
-        void SetDiffuseIrradiance(const HTexture& irradiance);
-
-        /** @copydoc Skybox::GetDiffuseIrradiance */
-        void SetDiffuseIrradiance(const SPtr<Texture>& irradiance);
-
         /**
          * Determines an environment map to use for sampling skybox diffuse irradiance. Must be a cube-map texture, and should ideally
          * contain HDR data.
          */
         SPtr<Texture> GetDiffuseIrradiance() const { return _irradiance; }
-
-        /** @copydoc Skybox::GetSpecularrradiance */
-        void SetSpecularIrradiance(const HTexture& irradiance);
-
-        /** @copydoc Skybox::GetSpecularIrradiance */
-        void SetSpecularIrradiance(const SPtr<Texture>& irradiance);
 
         /**
          * Determines an environment map to use for sampling skybox specular irradiance. Must be a cube-map texture, and should ideally

@@ -26,6 +26,9 @@ namespace te
 
         /** Usage that tells the hardware how will be buffer be used. */
         GpuBufferUsage Usage = GBU_STATIC;
+
+        /** Only used for debugging purpose */
+        String DebugName = "";
     };
 
     /** Information about a GpuBuffer. */
@@ -51,6 +54,9 @@ namespace te
 
         /**	Returns size of a single element in the buffer in bytes. */
         UINT32 GetElementSize() const { return _desc.ElementSize; }
+
+        /** Only used for debugging purpose */
+        const String& GetDebugName() const { return _desc.DebugName; }
 
     protected:
         friend class GpuBuffer;

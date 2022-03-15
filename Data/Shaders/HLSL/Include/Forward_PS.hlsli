@@ -54,7 +54,7 @@ struct MaterialData
     uint    UseParallaxMap;
     uint    UseTransmissionMap;
     uint    DoIndirectLighting;
-    uint    Padding[5];
+    uint    Padding;
 };
 
 struct LightData

@@ -25,11 +25,17 @@ namespace te
                 TE_ASSERT_ERROR(shader.IsLoaded(), "Shader not found")
                 shaders.push_back(shader.GetInternalPtr());
             }
-            else
+            else if (material.ShaderPath.type() == typeid(String))
             {
                 auto shaderImportOptions = ShaderImportOptions::Create();
                 HShader shader = gResourceManager().Load<Shader>(
                     std::any_cast<String>(material.ShaderPath), shaderImportOptions);
+            }
+            else
+            {
+                auto shaderImportOptions = ShaderImportOptions::Create();
+                HShader shader = gResourceManager().Load<Shader>(
+                    std::any_cast<const char*>(material.ShaderPath), shaderImportOptions);
             }
         }
 
@@ -46,10 +52,11 @@ namespace te
     {
 #if TE_PLATFORM == TE_PLATFORM_WIN32 // TODO to remove when OpenGL will be done
         const std::type_info& stringType = typeid(String);
+        const std::type_info& charType = typeid(const char*);
         const std::type_info& builtinShaderType = typeid(BuiltinShader);
         const std::type_info& shaderType = shaderPath.type();
 
-        if (shaderType != stringType && shaderType != builtinShaderType)
+        if (shaderType != stringType && shaderType != charType && shaderType != builtinShaderType)
         {
             TE_ASSERT_ERROR(false, "ShaderPath must be a String or a BuiltinShader");
         }

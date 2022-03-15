@@ -1,8 +1,8 @@
 #ifndef __SKINNING__
 #define __SKINNING__
 
-Buffer<float4> BoneMatrices;
-Buffer<float4> PrevBoneMatrices;
+Buffer<float4> BoneMatrices : register(t0);
+Buffer<float4> PrevBoneMatrices : register(t1);
 
 float4x4 GetBoneMatrix(uint idx)
 {
