@@ -1,6 +1,7 @@
 #include "Include/BRDF.hlsli"
 #include "Include/Forward.hlsli"
 #include "Include/Forward_PS.hlsli"
+#include "Include/CommonMaterial.hlsli"
 
 [earlydepthstencil]
 PS_OUTPUT main( VS_OUTPUT IN )
@@ -83,7 +84,7 @@ PS_OUTPUT main( VS_OUTPUT IN )
         transmission = TransmissionMap.Sample(AnisotropicSampler, uv0).r;
 
     // ###################### DISCARD ALPHA THRESHOLD
-    if((1.0 - transmission) < alphaThreshold)
+    if((1.0 - transmission) <= alphaThreshold)
     {
         OUT.Scene = (float4)0;
         OUT.Normal = (float4)0;
@@ -154,6 +155,8 @@ PS_OUTPUT main( VS_OUTPUT IN )
 
         // ###################### FILL PIXEL PARAM
         float NoV = abs(dot(N, V)) + 1e-5;
+        float airIor = 1.0;
+        float materialor = F0ToIor(pixel.F0.g);
 
         pixel.DiffuseColor = diffuseBaseColor;
         pixel.PRoughness = max(MIN_ROUGHNESS, pRoughness);
@@ -161,8 +164,21 @@ PS_OUTPUT main( VS_OUTPUT IN )
         pixel.F0 = 0.16 * reflectance * reflectance * (1.0 - metallic) + baseColor * metallic;
         pixel.F90 = float3(1.0, 1.0, 1.0);
         pixel.TBN = TBN;
-        pixel.Transmission = transmission;
+        pixel.Transmission = saturate(transmission);
         pixel.IOR = 0.16 * reflectance * reflectance;
+        pixel.EtaIR = airIor / materialor;  // air -> material
+        pixel.EtaRI = materialor / airIor;  // material -> air
+
+        if(thickness != 0.0 || microThickness != 0.0)
+            pixel.Absorption = max((float3)0, absorption);
+        else
+            pixel.Absorption = saturate(absorption);
+
+        if(thickness != 0.0)
+            pixel.Thickness = max(0.0, thickness);
+
+        if(microThickness != 0.0)
+            pixel.UThickness = max(0.0, microThickness);
 
         pixel.ClearCoat = clearCoat;
         pixel.ClearCoatRoughness = max(MIN_ROUGHNESS, clearCoatRoughness);
@@ -179,8 +195,6 @@ PS_OUTPUT main( VS_OUTPUT IN )
         pixel.AnisotropyDirection = anisotropyDirection;
         pixel.AnisotropicT = normalize(mul(TBN, anisotropyDirection));
         pixel.AnisotropicB = normalize(cross(N_Raw, pixel.AnisotropicT));
-
-        
 
         // Energy compensation for multiple scattering in a microfacet model
         pixel.DFG = PreIntegratedEnvGF.SampleLevel(BiLinearSampler, float2(saturate(NoV), pixel.PRoughness), 0).xyz;

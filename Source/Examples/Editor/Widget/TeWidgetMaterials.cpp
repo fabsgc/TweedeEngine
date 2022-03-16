@@ -340,7 +340,7 @@ namespace te
                 {
                     if (ImGuiExt::RenderOptionFloat(properties.Anisotropy, "##material_prop_anisotropy_option", "Anisotropy", -1.0f, 1.0f, width))
                         hasChanged = true;
-                    if (ImGuiExt::RenderVector3(properties.AnisotropyDirection, "##material_prop_anisotropy_direction_option", " A. Dir.", width))
+                    if (ImGuiExt::RenderVector3(properties.AnisotropyDirection, "##material_prop_anisotropy_direction_option", " Anisotropy Dir.", width))
                         hasChanged = true;
                 }
                 ImGui::Separator();
@@ -356,13 +356,13 @@ namespace te
                 {
                     if (ImGuiExt::RenderOptionFloat(properties.Thickness, "##material_prop_thickness_option", "Thickness", 0.0f, 1.0f, width))
                         hasChanged = true;
-                    if (ImGuiExt::RenderOptionFloat(properties.AlphaThreshold, "##material_prop_micto_thickness_option", "Micro Thickness", 0.0f, 1.0f, width))
+                    if (ImGuiExt::RenderOptionFloat(properties.MicroThickness, "##material_prop_micto_thickness_option", "Micro Thickness", 0.0f, 1.0f, width))
                         hasChanged = true;
                 }
                 ImGui::Separator();
 
                 {
-                    if (ImGuiExt::RenderOptionFloat(properties.Transmission, "##material_prop_transmission_option", "Transmission", 0.0f, 1.0f, width), properties.UseTransmissionMap)
+                    if (ImGuiExt::RenderOptionFloat(properties.Transmission, "##material_prop_transmission_option", "Transmission", 0.0f, 1.0f, width, properties.UseTransmissionMap))
                         hasChanged = true;
                     if (ImGuiExt::RenderOptionFloat(properties.AlphaThreshold, "##material_prop_alpha_threshold_option", "Alpha Threshold", 0.0f, 1.0f, width))
                         hasChanged = true;

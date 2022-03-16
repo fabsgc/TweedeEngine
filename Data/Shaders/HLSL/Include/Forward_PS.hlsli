@@ -89,8 +89,6 @@ struct PixelData
     float3 AnisotropyDirection;
     float3 AnisotropicT;
     float3 AnisotropicB;
-    float Transmission;
-    float IOR;
     float3 N_clearCoat;
     float ClearCoat;
     float PClearCoatRoughness;
@@ -100,6 +98,13 @@ struct PixelData
     float SheenScaling;
     float PSheenRoughness;
     float SheenRoughness;
+    float Transmission;
+    float IOR;
+    float EtaRI;
+    float EtaIR;
+    float Thickness;
+    float UThickness;
+    float3 Absorption;
 };
 
 struct LightingResult
@@ -402,6 +407,45 @@ float3 GetSpecularDominantDir(float3 N, float3 R, float roughness)
     float r2 = roughness * roughness;
     return normalize(lerp(N, R, (1 - r2) * (sqrt(1 - r2) + r2)));
 }
+
+struct Refraction {
+    float3 Position;
+    float3 Direction;
+    float D;
+};
+
+void RefractionSolidSphere(const PixelData pixel,
+    const float P, const float3 N, float3 R, out Refraction ray) {
+    R = refract(R, N, pixel.EtaIR);
+    float NoR = dot(N, R);
+    float D = pixel.Thickness * -NoR;
+    ray.Position = float3(P + R * D);
+    ray.D = D;
+    float3 N1 = normalize(NoR * R - N * 0.5);
+    ray.Direction = refract(R, N1,  pixel.EtaRI);
+}
+
+void RefractionThinSphere(const PixelData pixel,
+    const float P, const float3 N, float3 R, out Refraction ray) {
+    float D = 0.0;
+
+    if(pixel.UThickness != 0.0)
+    {
+        float3 RR = refract(R, N, pixel.EtaIR);
+        float NoR = dot(N, RR);
+        D = pixel.UThickness / max(-NoR, 0.001);
+        ray.Position = float3(P + RR * D);
+    }
+    else
+    {
+        ray.Position = float3(P, P, P);
+    }
+
+    ray.Direction = R;
+    ray.D = D;
+}
+
+// TODO PBR EvaluateRefraction
 
 // V : view vector
 // N : surface normal

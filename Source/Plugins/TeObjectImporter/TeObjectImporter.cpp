@@ -394,7 +394,7 @@ namespace te
                         material.MatProperties.Anisotropy = matProperties.Anisotropy;
 
                     if (aiMat->Get(AI_MATKEY_OPACITY, matProperties.Transmission) == aiReturn_SUCCESS)
-                        material.MatProperties.Transmission = matProperties.Transmission;
+                        material.MatProperties.Transmission = 1.0f - matProperties.Transmission;
 
                     if (aiMat->Get(AI_MATKEY_TRANSMISSION_FACTOR, matProperties.Transmission) == aiReturn_SUCCESS)
                         material.MatProperties.Transmission = matProperties.Transmission;
