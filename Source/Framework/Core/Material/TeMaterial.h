@@ -117,7 +117,7 @@ namespace te
          * Range : [0..1]
          * Prefer values > 0.35
          */
-        float Reflectance = 0.35f;
+        float Reflectance = 0.85f;
 
         /**
          * @brief Defines how much of the ambient light is accessible to a surface point. 
@@ -218,9 +218,10 @@ namespace te
         /**
          * @brief Defines how much of the diffuse light of a dielectric is transmitted through the object, 
          * in other words this defines how transparent an object is
+         * 0.0 = Opaque, 1.0 = Fully transparent
          * Range : [0..1]
          */
-        float Transmission = 1.0f;
+        float Transmission = 0.0f;
 
         /**
          * @brief Absorption factor for refractive objects
@@ -305,6 +306,11 @@ namespace te
         bool UseTransmissionMap = false;
 
         /**
+         * @copydoc MaterialProperties::AnisotropyDirection
+         */
+        bool UseAnisotropyDirectionMap = false;
+
+        /**
          * @brief Specify if this material must compute IBL using textures
          * coming from this material, skybox or light probe
          * Priority : Material > Light Probe > Skybox
@@ -331,6 +337,7 @@ namespace te
         String NormalMap;
         String ParallaxMap;
         String TransmissionMap;
+        String AnisotropyDirectionMap;
     };
 
     /**

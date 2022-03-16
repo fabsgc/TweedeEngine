@@ -1,5 +1,5 @@
-#include "Include/ReflectionCubemapCommon.hlsli"
-#include "Include/SHCommon.hlsli"
+#include "Include/CommonReflectionCubemap.hlsli"
+#include "Include/CommonSH.hlsli"
 
 #define TILE_WIDTH 8
 #define TILE_HEIGHT 8
@@ -13,7 +13,7 @@ struct SHCoeffsAndWeight
 
 SamplerState BilinearSampler : register(s0);
 TextureCube SourceMap : register(t0);
-RWStructuredBuffer<SHCoeffsAndWeight> Output;
+RWStructuredBuffer<SHCoeffsAndWeight> Output : register(u0);
 
 cbuffer PerFrameBuffer : register(b0)
 {

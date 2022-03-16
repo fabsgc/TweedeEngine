@@ -39,7 +39,7 @@ namespace te
     }
 
     void Skybox::SetTexture(const SPtr<Texture>& texture)
-    {       
+    {
         if (!texture)
         {
             _texture = nullptr;
@@ -51,7 +51,7 @@ namespace te
             _texture = texture;
             FilterTexture();
         }
-            
+
         _markCoreDirty((ActorDirtyFlag)SkyboxDirtyFlag::Texture);
     }
 

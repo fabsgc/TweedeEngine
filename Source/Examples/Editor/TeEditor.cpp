@@ -1268,7 +1268,7 @@ namespace te
         // ######################################################
         _loadedMeshMonkey = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Monkey/monkey-hd.obj", meshImportOptions)->Entries[0].Res);
         //_loadedMeshMonkey = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Primitives/plane.obj", meshImportOptions)->Entries[0].Res);
-        _loadedSkyboxTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_night_medium.png", textureCubeMapImportOptions);
+        _loadedSkyboxTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_night_512.png", textureCubeMapImportOptions);
 
         //HTexture cobbleBaseColor = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/diffuse1.jpg", textureImportOptions);
         //textureImportOptions->SRGB = false;
@@ -1299,7 +1299,6 @@ namespace te
             _monkeyMaterial = Material::Create(_shader);
             _monkeyMaterial->SetName("Monkey Material");
             _monkeyMaterial->SetProperties(monkeyMatprop);
-            _monkeyMaterial->SetSamplerState("TextureSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
             //_monkeyMaterial->SetTexture("BaseColorMap", cobbleBaseColor);
             //_monkeyMaterial->SetTexture("NormalMap", cobbleNormal);
             //_monkeyMaterial->SetTexture("ParallaxMap", cobbleParallax);

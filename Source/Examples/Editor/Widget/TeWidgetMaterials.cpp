@@ -134,7 +134,6 @@ namespace te
             {
                 HMaterial material = Material::Create(gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque));
                 material->SetName("Material " + ToString(_materialCreationCounter));
-                material->SetSamplerState("TextureSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
                 EditorResManager::Instance().Add(material);
                 _currentMaterial = material.GetInternalPtr();
                 _materialCreationCounter++;
@@ -453,6 +452,9 @@ namespace te
                 if (ShowTexture(uuid, properties.UseTransmissionMap, "##material_texture_transmission_option", "Transmission", "TransmissionMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D, false))
                     hasChanged = true;
 
+                if (ShowTexture(uuid, properties.UseAnisotropyDirectionMap, "##material_texture_anisotropy_direction_option", "Anisotropy Dir.", "AnisotropyDirectionMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D, false))
+                    hasChanged = true;
+
                 if (ShowLoadedTexture())
                     hasChanged = true;
             }
@@ -497,18 +499,18 @@ namespace te
                         samplerTypeOptions.AddOption(BuiltinSampler::NoFilter, "No Filter");
                     }
 
-                    if (_currentMaterial->GetSamplerState("TextureSampler") == gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic))
+                    if (_currentMaterial->GetSamplerState("AnisotropicSampler") == gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic))
                         samplerType = BuiltinSampler::Anisotropic;
-                    else if (_currentMaterial->GetSamplerState("TextureSampler") == gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Trilinear))
+                    else if (_currentMaterial->GetSamplerState("AnisotropicSampler") == gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Trilinear))
                         samplerType = BuiltinSampler::Trilinear;
-                    else if (_currentMaterial->GetSamplerState("TextureSampler") == gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear))
+                    else if (_currentMaterial->GetSamplerState("AnisotropicSampler") == gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear))
                         samplerType = BuiltinSampler::Bilinear;
                     else
                         samplerType = BuiltinSampler::NoFilter;
 
                     if (ImGuiExt::RenderOptionCombo<BuiltinSampler>(&samplerType, "##material_sampler_type_option", "Sampler", samplerTypeOptions, width))
                     {
-                        _currentMaterial->SetSamplerState("TextureSampler", gBuiltinResources().GetBuiltinSampler(samplerType));
+                        _currentMaterial->SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(samplerType));
                         hasChanged = true;
                     }
                 }

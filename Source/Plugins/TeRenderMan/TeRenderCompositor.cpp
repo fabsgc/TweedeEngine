@@ -5,6 +5,7 @@
 #include "TeRendererView.h"
 #include "TeRendererLight.h"
 #include "TeRendererScene.h"
+#include "TeRendererTextures.h"
 #include "TeRenderManOptions.h"
 #include "Renderer/TeCamera.h"
 #include "Renderer/TeSkybox.h"
@@ -58,8 +59,14 @@ namespace te
                         SPtr<Texture> specularIrradiance = skybox ? skybox->GetSpecularIrradiance() : nullptr;
 
                         entry.RenderElem->GpuParamsElem[entry.PassIdx]->SetTexture("DiffuseIrrMap", diffuseIrradiance);
-                        entry.RenderElem->GpuParamsElem[entry.PassIdx]->SetTexture("SpecularIrrMap", specularIrradiance);
-                    } 
+                        entry.RenderElem->GpuParamsElem[entry.PassIdx]->SetTexture("PrefilteredRadianceMap", specularIrradiance);
+                    }
+                }
+
+                // We bind PreIntegratedEnvGF
+                {
+                    if(RendererTextures::PreIntegratedEnvGF)
+                        entry.RenderElem->GpuParamsElem[entry.PassIdx]->SetTexture("PreIntegratedEnvGF", RendererTextures::PreIntegratedEnvGF);
                 }
 
                 gpuParamsBindFlags = GPU_BIND_ALL;

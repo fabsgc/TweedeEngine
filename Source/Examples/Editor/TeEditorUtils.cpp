@@ -74,12 +74,12 @@ namespace te
                 subMesh.MatProperties.UseNormalMap = subMesh.Mat->GetTexture("NormalMap") != nullptr;
                 subMesh.MatProperties.UseParallaxMap = subMesh.Mat->GetTexture("ParallaxMap") != nullptr;
                 subMesh.MatProperties.UseTransmissionMap = subMesh.Mat->GetTexture("TransmissionMap") != nullptr;
+                subMesh.MatProperties.UseAnisotropyDirectionMap = subMesh.Mat->GetTexture("AnisotropyDirectionMap") != nullptr;
             }
             else if (!subMesh.Mat.IsLoaded())
             {
                 HMaterial material = Material::Create(gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque));
                 material->SetName(subMesh.MaterialName);
-                material->SetSamplerState("TextureSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
                 material->SetProperties(subMesh.MatProperties);
 
                 subMesh.Mat = material.GetNewHandleFromExisting();
@@ -155,6 +155,11 @@ namespace te
                 {
                     tasks.push_back(Task::Create(subMesh.MaterialName,
                         [&]() { BindTexture(&subMesh.MatProperties.UseTransmissionMap, "TransmissionMap", subMesh.MatTextures.TransmissionMap, createdMaterials[subMesh.MaterialName], false); }));
+                }
+                if (subMesh.MatProperties.UseAnisotropyDirectionMap)
+                {
+                    tasks.push_back(Task::Create(subMesh.MaterialName,
+                        [&]() { BindTexture(&subMesh.MatProperties.UseAnisotropyDirectionMap, "AnisotropyDirectionMap", subMesh.MatTextures.AnisotropyDirectionMap, createdMaterials[subMesh.MaterialName], false); }));
                 }
             }
         }

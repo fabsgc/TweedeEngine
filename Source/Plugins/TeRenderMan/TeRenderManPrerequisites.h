@@ -81,8 +81,8 @@ namespace te
         UINT32  UseNormalMap;
         UINT32  UseParallaxMap;
         UINT32  UseTransmissionMap;
+        UINT32  UseAnisotropyDirectionMap;
         UINT32  DoIndirectLighting;
-        UINT32  Padding;
     };
 
     struct PerLightData
@@ -145,8 +145,8 @@ namespace te
         TE_PARAM_BLOCK_ENTRY(Vector2, gPadding2) // # PADDING
         TE_PARAM_BLOCK_ENTRY(UINT32, gUseSkyboxMap)
         TE_PARAM_BLOCK_ENTRY(UINT32, gUseSkyboxDiffuseIrrMap)
-        TE_PARAM_BLOCK_ENTRY(UINT32, gUseSkyboxSpecularIrrMap)
-        TE_PARAM_BLOCK_ENTRY(float, gSkyboxBrightness)
+        TE_PARAM_BLOCK_ENTRY(UINT32, gUseSkyboxPrefilteredRadianceMap)
+        TE_PARAM_BLOCK_ENTRY(UINT32, gSkyboxNumMips)
         TE_PARAM_BLOCK_ENTRY(Vector4, gSceneLightColor)
         TE_PARAM_BLOCK_ENTRY(UINT32, gUseGamma)
         TE_PARAM_BLOCK_ENTRY(UINT32, gUseToneMapping)
@@ -154,7 +154,8 @@ namespace te
         TE_PARAM_BLOCK_ENTRY(float, gExposure)
         TE_PARAM_BLOCK_ENTRY(float, gContrast)
         TE_PARAM_BLOCK_ENTRY(float, gBrightness)
-        TE_PARAM_BLOCK_ENTRY(Vector2, gPadding3) // # PADDING
+        TE_PARAM_BLOCK_ENTRY(float, gSkyboxBrightness)
+        TE_PARAM_BLOCK_ENTRY(float, gPadding3) // # PADDING
     TE_PARAM_BLOCK_END
 
     extern PerFrameParamDef gPerFrameParamDef;

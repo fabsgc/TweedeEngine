@@ -1,5 +1,5 @@
-#include "Include/ReflectionCubemapCommon.hlsli"
-#include "Include/SHCommon.hlsli"
+#include "Include/CommonReflectionCubemap.hlsli"
+#include "Include/CommonSH.hlsli"
 
 #define PI 3.1415926
 

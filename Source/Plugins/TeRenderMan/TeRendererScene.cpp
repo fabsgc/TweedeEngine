@@ -626,19 +626,27 @@ namespace te
 
     void RendererScene::SetParamSkyboxParams(bool enabled)
     {
+        UINT32 SkyboxNumMips = 0;
+        SPtr<Texture> prefilteredRadiance = _info.SkyboxElem->GetSpecularIrradiance();
+
         if(_info.SkyboxElem != nullptr && enabled)
         {
             gPerFrameParamDef.gSkyboxBrightness.Set(_info.PerFrameParamBuffer, _info.SkyboxElem->GetBrightness());
             gPerFrameParamDef.gUseSkyboxMap.Set(_info.PerFrameParamBuffer, _info.SkyboxElem->GetTexture() ? 1 : 0);
             gPerFrameParamDef.gUseSkyboxDiffuseIrrMap.Set(_info.PerFrameParamBuffer, _info.SkyboxElem->GetDiffuseIrradiance() ? 1 : 0);
-            gPerFrameParamDef.gUseSkyboxSpecularIrrMap.Set(_info.PerFrameParamBuffer, _info.SkyboxElem->GetSpecularIrradiance() ? 1 : 0);
+            gPerFrameParamDef.gUseSkyboxPrefilteredRadianceMap.Set(_info.PerFrameParamBuffer, prefilteredRadiance ? 1 : 0);
+
+            if(prefilteredRadiance)
+                SkyboxNumMips = prefilteredRadiance->GetProperties().GetNumMipmaps();
+
+            gPerFrameParamDef.gSkyboxNumMips.Set(_info.PerFrameParamBuffer, SkyboxNumMips);
         }
         else
         {
             gPerFrameParamDef.gSkyboxBrightness.Set(_info.PerFrameParamBuffer, 1.0f);
             gPerFrameParamDef.gUseSkyboxMap.Set(_info.PerFrameParamBuffer, 0);
             gPerFrameParamDef.gUseSkyboxDiffuseIrrMap.Set(_info.PerFrameParamBuffer, 0);
-            gPerFrameParamDef.gUseSkyboxSpecularIrrMap.Set(_info.PerFrameParamBuffer, 0);
+            gPerFrameParamDef.gUseSkyboxPrefilteredRadianceMap.Set(_info.PerFrameParamBuffer, 0);
         }
     }
 

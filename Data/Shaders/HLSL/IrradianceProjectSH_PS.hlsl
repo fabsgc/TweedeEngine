@@ -1,6 +1,6 @@
 #include "Include/PostProcess.hlsli"
-#include "Include/ReflectionCubemapCommon.hlsli"
-#include "Include/SHCommon.hlsli"
+#include "Include/CommonReflectionCubemap.hlsli"
+#include "Include/CommonSH.hlsli"
 
 cbuffer PerFrameBuffer : register(b0)
 {

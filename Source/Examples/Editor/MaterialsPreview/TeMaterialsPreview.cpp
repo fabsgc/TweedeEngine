@@ -215,7 +215,7 @@ namespace te
         textureCubeMapImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
         textureCubeMapImportOptions->SRGB = true;
 
-        _radiance = ResourceManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_night_medium.png", textureCubeMapImportOptions).GetInternalPtr();
+        _radiance = ResourceManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_night_512.png", textureCubeMapImportOptions).GetInternalPtr();
         TE_ASSERT_ERROR(_radiance.get(), "Failed to load envrionment texture");
     }
 }

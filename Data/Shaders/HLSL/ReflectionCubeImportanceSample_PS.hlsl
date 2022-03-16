@@ -1,5 +1,5 @@
 #include "Include/PostProcess.hlsli"
-#include "Include/ReflectionCubemapCommon.hlsli"
+#include "Include/CommonReflectionCubemap.hlsli"
 #include "Include/ImportanceSampling.hlsli"
 
 cbuffer PerFrameBuffer : register(b0)

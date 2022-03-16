@@ -47,6 +47,9 @@
 #define BRDF_CLOTH_D                SPECULAR_D_CHARLIE
 #define BRDF_CLOTH_V                SPECULAR_V_NEUBELT
 
+#define MAX_ROUGHNESS               0.95
+#define MIN_ROUGHNESS               0.01
+
 //------------------------------------------------------------------------------
 // Specular BRDF implementations
 //------------------------------------------------------------------------------
@@ -167,12 +170,7 @@ float Visibility(float roughness, float NoV, float NoL) {
 
 float3 Fresnel(const float3 f0, float LoH) {
 #if BRDF_SPECULAR_F == SPECULAR_F_SCHLICK
-#   if FILAMENT_QUALITY == FILAMENT_QUALITY_LOW
     return F_Schlick(f0, LoH); // f90 = 1.0
-#   else
-    float f90 = saturate(dot(f0, float3(50.0 * 0.33)));
-    return F_Schlick(f0, f90, LoH);
-#   endif
 #endif
 }
 

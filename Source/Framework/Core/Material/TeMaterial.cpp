@@ -7,6 +7,7 @@
 #include "RenderAPI/TeSamplerState.h"
 #include "Resources/TeResourceHandle.h"
 #include "Resources/TeResourceManager.h"
+#include "Resources/TeBuiltinResources.h"
 
 namespace te
 {
@@ -63,6 +64,9 @@ namespace te
 
     void Material::Initialize()
     {
+        SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
+        SetSamplerState("BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
+
         InitializeTechniques();
         CoreObject::Initialize();
     }

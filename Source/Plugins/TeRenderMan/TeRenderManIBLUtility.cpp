@@ -278,11 +278,6 @@ namespace te
         for (UINT32 face = 0; face < 6; face++)
             shCompute->Execute(cubemap, face, coeffSetBuffer);
 
-        UINT32 size = (UINT32)sizeof(SHCoeffsAndWeight5) * numCoeffSets;
-        void* data = te_allocate(size);
-        coeffSetBuffer->ReadData(0, size, data);
-        SHCoeffsAndWeight5* coeffs = static_cast<SHCoeffsAndWeight5*>(data);
-
         coeffTexture = shReduce->CreateOutputTexture(1);
         shReduce->Execute(coeffSetBuffer, numCoeffSets, coeffTexture, 0);
 
@@ -303,7 +298,15 @@ namespace te
     void RenderManIBLUtility::FilterCubemapForIrradiance(const SPtr<Texture>& cubemap, const SPtr<Texture>& output,
         UINT32 outputIdx) const
     {
-        // TODO PBR LightProbe
+        IrradianceComputeSHMat* shCompute = IrradianceComputeSHMat::Get();
+        IrradianceReduceSHMat* shReduce = IrradianceReduceSHMat::Get();
+
+        UINT32 numCoeffSets;
+        SPtr<GpuBuffer> coeffSetBuffer = shCompute->CreateOutputBuffer(cubemap, numCoeffSets);
+        for (UINT32 face = 0; face < 6; face++)
+            shCompute->Execute(cubemap, face, coeffSetBuffer);
+
+        shReduce->Execute(coeffSetBuffer, numCoeffSets, output, outputIdx);
     }
 
     void RenderManIBLUtility::ScaleCubemap(const SPtr<Texture>& src, UINT32 srcMip, const SPtr<Texture>& dst,

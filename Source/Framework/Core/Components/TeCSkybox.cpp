@@ -85,6 +85,7 @@ namespace te
                 _internal->_brightness = skybox->_brightness;
                 _internal->_texture = skybox->_texture;
                 _internal->_irradiance = skybox->_irradiance;
+                _internal->_filteredRadiance = skybox->_filteredRadiance;
 
                 _internal->_transform = skybox->_transform;
                 _internal->_mobility = skybox->_mobility;

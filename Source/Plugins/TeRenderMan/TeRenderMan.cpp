@@ -1,6 +1,7 @@
 #include "TeRenderMan.h"
 #include "TeRendererView.h"
 #include "TeRendererScene.h"
+#include "TeRendererTextures.h"
 #include "TeRenderManOptions.h"
 #include "TeRenderManIBLUtility.h"
 #include "TeRenderCompositor.h"
@@ -36,6 +37,8 @@ namespace te
             GpuResourcePool::StartUp();
         if(!IBLUtility::IsStarted())
             IBLUtility::StartUp<RenderManIBLUtility>();
+
+        RendererTextures::StartUp();
 
         _options = te_shared_ptr_new<RenderManOptions>();
         _options->InstancingMode = RenderManInstancing::Manual;
@@ -82,6 +85,8 @@ namespace te
         RenderCompositor::CleanUp();
 
         te_delete(_mainViewGroup);
+
+        RendererTextures::ShutDown();
 
         if(GpuResourcePool::IsStarted())
             GpuResourcePool::ShutDown();
