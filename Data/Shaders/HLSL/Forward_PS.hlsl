@@ -57,15 +57,15 @@ PS_OUTPUT main( VS_OUTPUT IN )
 
     float3		sceneLightColor				= gSceneLightColor.rgb;
 
-    float3		N							= IN.Normal;
-    float3		N_Raw						= IN.Normal;
-    float3		N_clearCoat					= IN.Normal;
-    float3		N_clearCoat_Raw				= IN.Normal;
+    float3		N							= normalize(IN.Normal);
+    float3		N_Raw						= N;
+    float3		N_clearCoat					= N;
+    float3		N_clearCoat_Raw				= N;
     float3		P							= IN.PositionWS.xyz;
-    float3		V							= IN.ViewDirWS;
     float3		Pv							= gCamera.ViewOrigin;
+    float3		V							= normalize(P - Pv);
 
-    float3x3	TBN							= float3x3(IN.Tangent, IN.BiTangent, N);
+    float3x3	TBN							= float3x3(normalize(IN.Tangent), normalize(IN.BiTangent), N);
     float2		uv0							= (IN.UV0 * gMaterial.UV0Repeat) + gMaterial.UV0Offset;
     float2		uv1							= IN.UV1;
 
@@ -163,18 +163,18 @@ PS_OUTPUT main( VS_OUTPUT IN )
         float NoV = ClampNoV(dot(N, V));
         float airIor = 1.0;
 
-        pixel.Metallic = metallic;
         pixel.DiffuseColor = diffuseBaseColor;
         pixel.PRoughness = max(MIN_ROUGHNESS, pRoughness);
         pixel.Roughness = max(MIN_ROUGHNESS, roughness);
-        pixel.F0 = 0.16 * reflectance * reflectance * (1.0 - metallic) + baseColor * metallic;
-        pixel.F90 = float3(1.0, 1.0, 1.0);
+        pixel.F0 = ComputeF0(baseColor, metallic, ComputeDielectricF0(reflectance));
+        pixel.F90 = saturate(dot(pixel.F0, float3_splat(50.0 * 0.33)));
         pixel.TBN = TBN;
         pixel.Transmission = saturate(transmission);
         pixel.IOR = F0ToIor(pixel.F0.g);
         pixel.EtaIR = airIor / pixel.IOR;  // air -> material
         pixel.EtaRI = pixel.IOR / airIor;  // material -> air
         pixel.RefractionType = refractionType;
+        pixel.DFG_GXX = PreIntEnvGF_GXX(NoV, pixel.PRoughness).xyz;
 
         if(thickness != 0.0 || microThickness != 0.0)
             pixel.Absorption = max((float3)0, absorption);
@@ -195,18 +195,16 @@ PS_OUTPUT main( VS_OUTPUT IN )
         pixel.SheenColor = sheenColor;
         pixel.SheenRoughness = max(MIN_ROUGHNESS, sheenRoughness);
         pixel.PSheenRoughness = max(MIN_ROUGHNESS, pSheenRoughness);
-        pixel.SheenDFG = PreIntegratedEnvGF.SampleLevel(BiLinearSampler, float2(saturate(NoV), pixel.PSheenRoughness), 0).y;
-        pixel.SheenScaling = 1.0 - max(pixel.SheenColor.r, max(pixel.SheenColor.g, pixel.SheenColor.b)) * pixel.SheenDFG;
+        pixel.DFG_Charlie = PreIntEnvGF_Charlie(NoV, pixel.PSheenRoughness).xyz;
+        pixel.SheenScaling = 1.0 - max(pixel.SheenColor.r, max(pixel.SheenColor.g, pixel.SheenColor.b)) * pixel.DFG_Charlie.z;
 
         pixel.Anisotropy = anisotropy;
         pixel.AnisotropyDirection = anisotropyDirection;
         pixel.AnisotropicT = normalize(mul(TBN, anisotropyDirection));
         pixel.AnisotropicB = normalize(cross(N_Raw, pixel.AnisotropicT));
 
-        pixel.DFG = PreIntegratedEnvGF.SampleLevel(BiLinearSampler, float2(saturate(NoV), pixel.PRoughness), 0).xyz;
-
         // Energy compensation for multiple scattering in a microfacet model
-        pixel.EnergyCompensation = 1.0 + pixel.F0 * (1.0 / pixel.DFG.y - 1.0);
+        pixel.EnergyCompensation = 1.0 + pixel.F0 * (1.0 / pixel.DFG_GXX.y - 1.0);
 
         // ###################### DO LIGHTING
         lit = DoLighting(V, P, N, pixel, uv0, castLight, occlusion);

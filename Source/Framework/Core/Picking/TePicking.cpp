@@ -80,7 +80,7 @@ namespace te
                     Vector4 objColorObjV4 = object->GetGameObjectColor().GetAsVector4();
                     Vector3 objColorObjV3 = Vector3(objColorObjV4.x, objColorObjV4.y, objColorObjV4.z);
 
-                    if (fabs(objColorObjV3.SquaredDistance(pickedColorV3)) < 1e-3)
+                    if (fabs(objColorObjV3.SquaredDistance(pickedColorV3)) < 1e-5)
                         return object;
                 }
             }

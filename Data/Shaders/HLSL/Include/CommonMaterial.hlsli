@@ -6,6 +6,18 @@
 #define MAX_ROUGHNESS 0.95
 #define MIN_ROUGHNESS 0.01
 
+#define DFG_TEXTURE_SIZE 128
+
+float3 ComputeF0(const float3 baseColor, float metallic, float reflectance) 
+{
+    return baseColor * metallic + (reflectance * (1.0 - metallic));
+}
+
+float ComputeDielectricF0(float reflectance)
+{
+    return 0.16 * reflectance * reflectance;
+}
+
 float F0ToIor(float f0) 
 {
     float r = sqrt(f0);

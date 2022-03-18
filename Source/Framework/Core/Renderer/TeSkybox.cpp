@@ -117,11 +117,14 @@ namespace te
     void Skybox::FilterTexture()
     {
         {
+            UINT32 size = IBLUtility::REFLECTION_CUBEMAP_SIZE;
+            size = (size == _texture->GetProperties().GetWidth()) ? size / 2 : size;
+
             TEXTURE_DESC cubemapDesc;
             cubemapDesc.Type = TEX_TYPE_CUBE_MAP;
             cubemapDesc.Format = PF_RG11B10F;
-            cubemapDesc.Width = IBLUtility::REFLECTION_CUBEMAP_SIZE;
-            cubemapDesc.Height = IBLUtility::REFLECTION_CUBEMAP_SIZE;
+            cubemapDesc.Width = size;
+            cubemapDesc.Height = size;
             cubemapDesc.NumMips = PixelUtil::GetMaxMipmaps(cubemapDesc.Width, cubemapDesc.Height, 1);
             cubemapDesc.Usage = TU_STATIC | TU_RENDERTARGET;
             cubemapDesc.DebugName = "Filtered Radiance Texture";

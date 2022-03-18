@@ -1,6 +1,8 @@
 #ifndef __COMMONGRAPHICS__
 #define __COMMONGRAPHICS__
 
+#include "Include/CommonMath.hlsli"
+
 //------------------------------------------------------------------------------
 // Common graphics
 //------------------------------------------------------------------------------
@@ -54,7 +56,7 @@ float4 GetGammaCorrectedColor(float4 color, bool useGamma, bool useToneMapping, 
         if(useToneMapping)
         {
             // Exposure tone mapping
-            mapped = float4(1.0, 1.0, 1.0, 1.0) - exp(-color * exposure);
+            mapped = float4_splat(1.0) - exp(-color * exposure);
         }
 
         // Gamma correction 

@@ -3,7 +3,7 @@
 
 namespace te
 {
-    const UINT32 IBLUtility::REFLECTION_CUBEMAP_SIZE = 256;
+    const UINT32 IBLUtility::REFLECTION_CUBEMAP_SIZE = 512;
     const UINT32 IBLUtility::IRRADIANCE_CUBEMAP_SIZE = 32;
 
     TE_MODULE_STATIC_MEMBER(IBLUtility)
