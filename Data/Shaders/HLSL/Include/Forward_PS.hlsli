@@ -542,23 +542,6 @@ float3 DoDiffuseIBL(float3 V, float3 N, float NoV, PixelData pixel, float occlus
     if(gMaterial.DoIndirectLighting && gUseSkyboxDiffuseIrrMap)
     {
         float3 irradiance = DiffuseIrrMap.Sample(BiLinearSampler, N).rgb;
-        float2 envBRDF = pixel.DFG.rg;
-
-        /*
-        // Roughness dependent fresnel, from Fdez-Aguera
-        // https://bruop.github.io/ibl/
-        float3 Fr = max(float3_splat(1.0 - pixel.PRoughness), pixel.F0) - pixel.F0;
-        float3 k_S = pixel.F0 + Fr * pow(1.0 - NoV, 5.0);
-
-        float3 FssEss = k_S * envBRDF.x + envBRDF.y * pixel.F90;
-
-        // Multiple scattering, from Fdez-Aguera
-        float Ems = (1.0 - (envBRDF.x + envBRDF.y));
-        float3 F_avg = pixel.F0 + (1.0 - pixel.F0) / 21.0;
-        float3 FmsEms = Ems * FssEss * F_avg / (1.0 - F_avg * Ems);
-        float3 k_D = pixel.DiffuseColor * (1.0 - FssEss - FmsEms);
-        */
-
         result = irradiance * pixel.DiffuseColor * gSkyboxBrightness *  occlusion;
     }
 
@@ -571,7 +554,6 @@ float3 DoSpecularIBL(float3 V, float3 N, float NoV, PixelData pixel, float occlu
 {
     float3 result = (float3)0;
     float3 R = GetReflectedVector(V, N, pixel);
-    //float3 specR = GetSpecularDominantDir(N, R, pixel.PRoughness);
     float3 specR = R;
     float ao = ComputeSpecularOcclusion(NoV, occlusion, pixel.Roughness);
 
@@ -579,23 +561,10 @@ float3 DoSpecularIBL(float3 V, float3 N, float NoV, PixelData pixel, float occlu
     {
         float3 radiance = PrefilteredRadiance(specR, pixel.PRoughness);
         float2 envBRDF = pixel.DFG.rg;
-
-        /*
-        // Roughness dependent fresnel, from Fdez-Aguera
-        // https://bruop.github.io/ibl/
-        float3 Fr = max(float3_splat(1.0 - pixel.PRoughness), pixel.F0) - pixel.F0;
-        float3 k_S = pixel.F0 + Fr * pow(1.0 - NoV, 5.0);
-
-        //float3 FssEss = k_S * envBRDF.x + envBRDF.y * pixel.F90;
-        */
-
-        // multi scattering https://google.github.io/filament/Filament.html#listing_multiscatteriblevaluation
-        // float3 FssEss = lerp(pixel.DFG.xxx, pixel.DFG.yyy, pixel.F0);
-
-        // float3 FssEss = lerp(float3(0.04f, 0.04f, 0.04f), pixel.DiffuseColor, 1.0 - pixel.Metallic);
-
         float3 FssEss = pixel.F0 * envBRDF.x + envBRDF.y * pixel.F90;
         result = radiance * FssEss * gSkyboxBrightness * ao;
+
+        // multi scattering https://google.github.io/filament/Filament.html#listing_multiscatteriblevaluation
     }
 
     return result;
@@ -624,16 +593,6 @@ LightingResult DoClearCoatIBL(float3 V, float3 N, const PixelData pixel, float N
     float3 NClearCoat = pixel.N_clearCoat;
     float clearCoatNoV = ClampNoV(dot(NClearCoat, V));
     float3 clearCoatR = GetReflectedVector(V, N, pixel);
-
-    // The clear coat layer assumes an IOR of 1.5 (4% reflectance)
-    // float Fc = F_Schlick(0.04, 1.0, clearCoatNoV) * pixel.ClearCoat;
-    // float attenuation = 1.0 - Fc;
-    // result.Diffuse *= attenuation;
-    // result.Specular *= attenuation;
-
-    // TODO: Should we apply specularAO to the attenuation as well?
-    // float specularAO = ComputeSpecularOcclusion(NoV, occlusion, pixel.ClearCoatRoughness);
-    // result.Specular += PrefilteredRadiance(clearCoatR, pixel.PClearCoatRoughness) * (specularAO * Fc);
 
     PixelData p = (PixelData)0;
     p.PRoughness = pixel.PClearCoatRoughness;

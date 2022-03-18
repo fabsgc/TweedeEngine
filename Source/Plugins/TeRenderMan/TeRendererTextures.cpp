@@ -131,14 +131,6 @@ namespace te
                     }
                 }
 
-                /*float Fc = pow(1 - VoH, 5.0f);
-                r.x += Gv * (1 - Fc);
-                r.y += Gv * Fc;
-
-                float Fc = pow(1 - VoH, 5.0f);
-                r.x += Gv * Fc;
-                r.y += Gv;*/
-
                 scale /= NumSamples;
                 offset /= NumSamples;
 

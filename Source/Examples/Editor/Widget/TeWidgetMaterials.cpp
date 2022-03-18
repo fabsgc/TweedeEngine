@@ -351,7 +351,10 @@ namespace te
                     if (ImGuiExt::RenderOptionFloat(properties.Anisotropy, "##material_prop_anisotropy_option", "Anisotropy", -1.0f, 1.0f, width))
                         hasChanged = true;
                     if (ImGuiExt::RenderVector3(properties.AnisotropyDirection, "##material_prop_anisotropy_direction_option", " Anisotropy Dir.", width))
+                    {
+                        properties.AnisotropyDirection.Normalize();
                         hasChanged = true;
+                    }
                 }
                 ImGui::Separator();
 
