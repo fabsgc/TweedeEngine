@@ -37,6 +37,7 @@ PS_OUTPUT main( VS_OUTPUT IN )
     float		thickness					= gMaterial.Thickness;
     float		transmission				= gMaterial.Transmission;
     float3		absorption					= gMaterial.Absorption;
+    uint		refractionType				= gMaterial.RefractionType;
 
     bool		useBaseColorMap				= (bool)gMaterial.UseBaseColorMap;
     bool		useMetallicMap				= (bool)gMaterial.UseMetallicMap;
@@ -79,12 +80,21 @@ PS_OUTPUT main( VS_OUTPUT IN )
         uv0 = DoParallaxMapping(uv0, V, Pv, N, P, 
             parallaxSamples, parallaxScale, IN.ParallaxOffsetTS);
 
+    // ###################### BASE COLOR MAP SAMPLING
+    if(useBaseColorMap)
+    {
+        float4 baseColorFour = BaseColorMap.Sample(AnisotropicSampler, uv0);
+        baseColor = baseColorFour.rgb;
+        diffuseBaseColor = (1.0 - metallic) * baseColor.rgb;
+        transmission = 1 - baseColorFour.a;
+    }
+
     // ###################### TRANSMISSION MAP SAMPLING
     if(useTransmissionMap == 1)
         transmission = TransmissionMap.Sample(AnisotropicSampler, uv0).r;
 
     // ###################### DISCARD ALPHA THRESHOLD
-    if((1.0 - transmission) <= alphaThreshold)
+    if((1.0 - transmission) < alphaThreshold)
     {
         OUT.Scene = (float4)0;
         OUT.Normal = (float4)0;
@@ -99,19 +109,12 @@ PS_OUTPUT main( VS_OUTPUT IN )
 
         // ###################### METALLIC MAP SAMPLING
         if(useMetallicMap)
-            metallic = MetallicMap.Sample(AnisotropicSampler, uv0).r;
-
-        // ###################### BASE COLOR MAP SAMPLING
-        if(useBaseColorMap)
-        {
-            baseColor = BaseColorMap.Sample(AnisotropicSampler, uv0).rgb;
-            diffuseBaseColor = (1.0 - metallic) * baseColor.rgb;
-        }
+            metallic = MetallicMap.Sample(AnisotropicSampler, uv0).g;
 
         // ###################### ROUGHNESS MAP SAMPLING
         if(useRoughnessMap)
         {
-            pRoughness = min(MAX_ROUGHNESS, RoughnessMap.Sample(AnisotropicSampler, uv0).r);
+            pRoughness = min(MAX_ROUGHNESS, RoughnessMap.Sample(AnisotropicSampler, uv0).b);
             roughness = pRoughness * pRoughness;
         }
 
@@ -121,7 +124,7 @@ PS_OUTPUT main( VS_OUTPUT IN )
 
         // ###################### EMISSIVE MAP SAMPLING
         if(useEmissiveMap)
-            emissive = EmissiveMap.Sample(AnisotropicSampler, uv0).rgb;
+            emissive *= EmissiveMap.Sample(AnisotropicSampler, uv0).rgb;
 
         // ###################### SHEEN COLOR MAP SAMPLING
         if(useSheenColorMap)
@@ -153,11 +156,14 @@ PS_OUTPUT main( VS_OUTPUT IN )
         if(useAnisotropyDirectionMap)
             anisotropyDirection = AnisotropyDirectionMap.Sample(AnisotropicSampler, uv0).rgb;
 
-        // ###################### FILL PIXEL PARAM
-        float NoV = abs(dot(N, V)) + 1e-5;
-        float airIor = 1.0;
-        float materialor = F0ToIor(pixel.F0.g);
+        if(useOcclusionMap)
+            occlusion = OcclusionMap.Sample(AnisotropicSampler, uv0).r;
 
+        // ###################### FILL PIXEL PARAM
+        float NoV = ClampNoV(dot(N, V));
+        float airIor = 1.0;
+
+        pixel.Metallic = metallic;
         pixel.DiffuseColor = diffuseBaseColor;
         pixel.PRoughness = max(MIN_ROUGHNESS, pRoughness);
         pixel.Roughness = max(MIN_ROUGHNESS, roughness);
@@ -165,9 +171,10 @@ PS_OUTPUT main( VS_OUTPUT IN )
         pixel.F90 = float3(1.0, 1.0, 1.0);
         pixel.TBN = TBN;
         pixel.Transmission = saturate(transmission);
-        pixel.IOR = 0.16 * reflectance * reflectance;
-        pixel.EtaIR = airIor / materialor;  // air -> material
-        pixel.EtaRI = materialor / airIor;  // material -> air
+        pixel.IOR = F0ToIor(pixel.F0.g);
+        pixel.EtaIR = airIor / pixel.IOR;  // air -> material
+        pixel.EtaRI = pixel.IOR / airIor;  // material -> air
+        pixel.RefractionType = refractionType;
 
         if(thickness != 0.0 || microThickness != 0.0)
             pixel.Absorption = max((float3)0, absorption);
@@ -188,7 +195,7 @@ PS_OUTPUT main( VS_OUTPUT IN )
         pixel.SheenColor = sheenColor;
         pixel.SheenRoughness = max(MIN_ROUGHNESS, sheenRoughness);
         pixel.PSheenRoughness = max(MIN_ROUGHNESS, pSheenRoughness);
-        pixel.SheenDFG = PreIntegratedEnvGF.SampleLevel(BiLinearSampler, float2(saturate(NoV), pixel.PSheenRoughness), 0).z;
+        pixel.SheenDFG = PreIntegratedEnvGF.SampleLevel(BiLinearSampler, float2(saturate(NoV), pixel.PSheenRoughness), 0).y;
         pixel.SheenScaling = 1.0 - max(pixel.SheenColor.r, max(pixel.SheenColor.g, pixel.SheenColor.b)) * pixel.SheenDFG;
 
         pixel.Anisotropy = anisotropy;
@@ -196,12 +203,13 @@ PS_OUTPUT main( VS_OUTPUT IN )
         pixel.AnisotropicT = normalize(mul(TBN, anisotropyDirection));
         pixel.AnisotropicB = normalize(cross(N_Raw, pixel.AnisotropicT));
 
-        // Energy compensation for multiple scattering in a microfacet model
         pixel.DFG = PreIntegratedEnvGF.SampleLevel(BiLinearSampler, float2(saturate(NoV), pixel.PRoughness), 0).xyz;
+
+        // Energy compensation for multiple scattering in a microfacet model
         pixel.EnergyCompensation = 1.0 + pixel.F0 * (1.0 / pixel.DFG.y - 1.0);
 
         // ###################### DO LIGHTING
-        lit = DoLighting(V, P, N, pixel, uv0, castLight, useOcclusionMap);
+        lit = DoLighting(V, P, N, pixel, uv0, castLight, occlusion);
 
         lit.Diffuse *= sceneLightColor + emissive; // TODO PBR
         lit.Specular = lit.Specular;

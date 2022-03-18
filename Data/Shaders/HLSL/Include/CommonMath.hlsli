@@ -120,4 +120,8 @@ float AcosFastPositive(float x)
     return p * sqrt(1.0 - x);
 }
 
+#define float2_splat(_x) float2(_x, _x)
+#define float3_splat(_x) float3(_x, _x, _x)
+#define float4_splat(_x) float4(_x, _x, _x, _x)
+
 #endif // __COMMONMATH__

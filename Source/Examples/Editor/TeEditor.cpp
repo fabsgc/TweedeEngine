@@ -189,12 +189,6 @@ namespace te
             if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DockingEnable)
                 EndGui();
         }
-
-        /*PhysicsQueryHit hit;
-        if (gSceneManager().GetMainScene()->RayCast(Vector3(0.0f, 10.0f, 0.0f), Vector3(0.0f, -1.0f, 0.0f), hit))
-        {
-            TE_DEBUG("Something hit");
-        }*/
     }
 
     void Editor::PostRender()
@@ -1266,7 +1260,8 @@ namespace te
 
         // LOAD MESH AND TEXTURES RESOURCES
         // ######################################################
-        _loadedMeshMonkey = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Monkey/monkey-hd.obj", meshImportOptions)->Entries[0].Res);
+        _loadedMeshMonkey = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Primitives/sphere-hd.obj", meshImportOptions)->Entries[0].Res);
+        //_loadedMeshMonkey = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Monkey/monkey-hd.obj", meshImportOptions)->Entries[0].Res);
         //_loadedMeshMonkey = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Primitives/plane.obj", meshImportOptions)->Entries[0].Res);
         _loadedSkyboxTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_night_512.png", textureCubeMapImportOptions);
 

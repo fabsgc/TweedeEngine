@@ -112,6 +112,10 @@ namespace te
                     float fresnelScale = 1.0f - fc;
                     float fresnelOffset = fc;
 
+                    // multi scattering https://google.github.io/filament/Filament.html#listing_multiscatteriblevaluation
+                    // float fresnelScale = 1.0f - fc;
+                    // float fresnelOffset = fc;
+
                     // We calculate the G part
                     float G = CalcMicrofacetShadowingSmithGGX(m2, NoV, NoL);
 
@@ -126,6 +130,14 @@ namespace te
                         offset += NoL * pdfFactor * G * fresnelOffset;
                     }
                 }
+
+                /*float Fc = pow(1 - VoH, 5.0f);
+                r.x += Gv * (1 - Fc);
+                r.y += Gv * Fc;
+
+                float Fc = pow(1 - VoH, 5.0f);
+                r.x += Gv * Fc;
+                r.y += Gv;*/
 
                 scale /= NumSamples;
                 offset /= NumSamples;

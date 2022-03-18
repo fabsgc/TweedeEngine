@@ -2,7 +2,9 @@
 #define __FORWARD_PS__
 
 #include "Include/BRDF.hlsli"
+#include "Include/CommonMath.hlsli"
 #include "Include/CommonGraphics.hlsli"
+#include "Include/CommonMaterial.hlsli"
 #include "Include/CommonReflectionCubemap.hlsli"
 
 // #################### DEFINES
@@ -15,6 +17,9 @@
 
 #define PARALLAX_MIN_SAMPLE 8
 #define PARALLAX_MAX_SAMPLE 256
+
+#define REFRACTION_TYPE_SPHERE 0
+#define REFRACTION_TYPE_THIN 1
 
 // #################### STRUCTS
 
@@ -41,6 +46,8 @@ struct MaterialData
     float   Thickness;
     float   Transmission;
     float3  Absorption;
+    uint    RefractionType;
+    float3  Padding;
     uint    UseBaseColorMap;
     uint    UseMetallicMap;
     uint    UseRoughnessMap;
@@ -77,6 +84,7 @@ struct LightData
 
 struct PixelData
 {
+    float Metallic;
     float3 DiffuseColor;
     float  PRoughness;
     float  Roughness;
@@ -99,6 +107,7 @@ struct PixelData
     float PSheenRoughness;
     float SheenRoughness;
     float Transmission;
+    uint  RefractionType;
     float IOR;
     float EtaRI;
     float EtaIR;
@@ -408,54 +417,149 @@ float3 GetSpecularDominantDir(float3 N, float3 R, float roughness)
     return normalize(lerp(N, R, (1 - r2) * (sqrt(1 - r2) + r2)));
 }
 
-struct Refraction {
+float3 PrefilteredRadiance(float3 R, float pRoughness)
+{
+    float skyMipLevel = MapRoughnessToMipLevel(pRoughness, gSkyboxNumMips);
+    return PrefilteredRadianceMap.SampleLevel(BiLinearSampler, R, skyMipLevel).rgb * gSkyboxBrightness;
+}
+
+float ComputeSpecularOcclusion(float NoV, float occlusion, float roughness) 
+{
+    return clamp(pow(NoV + occlusion, exp2(-16.0 * roughness - 1.0)) - 1.0 + occlusion, 0.0, 1.0);
+}
+
+float3 SpecularDFG(const PixelData pixel) {
+    return lerp(pixel.DFG.xxx, pixel.DFG.yyy, pixel.F0);
+}
+
+struct Refraction
+{
     float3 Position;
     float3 Direction;
     float D;
 };
 
-void RefractionSolidSphere(const PixelData pixel,
-    const float P, const float3 N, float3 R, out Refraction ray) {
-    R = refract(R, N, pixel.EtaIR);
+Refraction RefractionSolidSphere(const PixelData pixel,const float3 V, const float3 P, const float3 N)
+{
+    Refraction ray = (Refraction)0;
+
+    float3 R = refract(V, N, pixel.EtaIR);
     float NoR = dot(N, R);
     float D = pixel.Thickness * -NoR;
     ray.Position = float3(P + R * D);
     ray.D = D;
-    float3 N1 = normalize(NoR * R - N * 0.5);
+    float3 N1 = normalize(NoR * R + N * 0.5);
     ray.Direction = refract(R, N1,  pixel.EtaRI);
+
+    return ray;
 }
 
-void RefractionThinSphere(const PixelData pixel,
-    const float P, const float3 N, float3 R, out Refraction ray) {
+Refraction RefractionThinSphere(const PixelData pixel, const float3 V, const float3 P, const float3 N)
+{
+    Refraction ray = (Refraction)0;
     float D = 0.0;
 
     if(pixel.UThickness != 0.0)
     {
-        float3 RR = refract(R, N, pixel.EtaIR);
+        float3 RR = refract(V, N, pixel.EtaIR);
         float NoR = dot(N, RR);
         D = pixel.UThickness / max(-NoR, 0.001);
         ray.Position = float3(P + RR * D);
     }
     else
     {
-        ray.Position = float3(P, P, P);
+        ray.Position = P;
     }
 
-    ray.Direction = R;
+    ray.Direction = V;
     ray.D = D;
+
+    return ray;
 }
 
-// TODO PBR EvaluateRefraction
+float3 EvaluateRefraction(const PixelData pixel, const float3 V, const float3 P, const float3 N, float3 E)
+{
+    Refraction ray = (Refraction)0;
+    float3 Ft = (float3)0;
+    float3 T = (float3)0;
+    bool hasAbsorption = false;
+
+    if(pixel.RefractionType == REFRACTION_TYPE_SPHERE)
+        ray = RefractionSolidSphere(pixel, V, P, N);
+    else
+        ray = RefractionThinSphere(pixel, V, P, N);
+
+    if(pixel.Absorption.x != 0.0 || pixel.Absorption.y != 0.0 || pixel.Absorption.z != 0.0)
+        hasAbsorption = true;
+
+    // compute transmission T
+    if(hasAbsorption)
+    {
+        if(pixel.Thickness != 0.0 || pixel.UThickness != 0.0)
+            T = min(float3(1.0, 1.0, 1.0), exp(-pixel.Absorption * ray.D));
+        else
+            T = 1.0 - pixel.Absorption;
+    }
+
+    float perceptualRoughness = lerp(pixel.PRoughness, 0.0, saturate(pixel.EtaIR * 3.0 - 2.0));
+
+    if(pixel.RefractionType == REFRACTION_TYPE_THIN)
+    {
+        // For thin surfaces, the light will bounce off at the second interface in the direction of
+        // the reflection, effectively adding to the specular, but this process will repeat itself.
+        // Each time the ray exits the surface on the front side after the first bounce,
+        // it's multiplied by E^2, and we get: E + E(1-E)^2 + E^3(1-E)^2 + ...
+        // This infinite series converges and is easy to simplify.
+        // Note: we calculate these bounces only on a single component,
+        // since it's a fairly subtle effect.
+
+        E *= 1.0 + pixel.Transmission * (1.0 - E.g) / (1.0 + E.g);
+    }
+
+    // when reading from the cubemap, we are not pre-exposed so we apply iblLuminance
+    // which is not the case when we'll read from the screen-space buffer
+    Ft = PrefilteredRadiance(ray.Direction, perceptualRoughness);
+
+    // base color changes the amount of light passing through the boundary
+    Ft *= pixel.DiffuseColor;
+
+    // fresnel from the first interface
+    Ft *= 1.0 - E;
+
+    // apply absorption
+    if(hasAbsorption)
+        Ft *= T;
+
+    return Ft;
+}
 
 // V : view vector
 // N : surface normal
-float3 DoDiffuseIBL(float3 V, float3 N, PixelData pixel)
+float3 DoDiffuseIBL(float3 V, float3 N, float NoV, PixelData pixel, float occlusion)
 {
     float3 result = (float3)0;
 
     if(gMaterial.DoIndirectLighting && gUseSkyboxDiffuseIrrMap)
     {
-        result = DiffuseIrrMap.Sample(BiLinearSampler, N).rgb * gSkyboxBrightness * pixel.DiffuseColor;
+        float3 irradiance = DiffuseIrrMap.Sample(BiLinearSampler, N).rgb;
+        float2 envBRDF = pixel.DFG.rg;
+
+        /*
+        // Roughness dependent fresnel, from Fdez-Aguera
+        // https://bruop.github.io/ibl/
+        float3 Fr = max(float3_splat(1.0 - pixel.PRoughness), pixel.F0) - pixel.F0;
+        float3 k_S = pixel.F0 + Fr * pow(1.0 - NoV, 5.0);
+
+        float3 FssEss = k_S * envBRDF.x + envBRDF.y * pixel.F90;
+
+        // Multiple scattering, from Fdez-Aguera
+        float Ems = (1.0 - (envBRDF.x + envBRDF.y));
+        float3 F_avg = pixel.F0 + (1.0 - pixel.F0) / 21.0;
+        float3 FmsEms = Ems * FssEss * F_avg / (1.0 - F_avg * Ems);
+        float3 k_D = pixel.DiffuseColor * (1.0 - FssEss - FmsEms);
+        */
+
+        result = irradiance * pixel.DiffuseColor * gSkyboxBrightness *  occlusion;
     }
 
     return result;
@@ -463,20 +567,35 @@ float3 DoDiffuseIBL(float3 V, float3 N, PixelData pixel)
 
 // V : view vector
 // N : surface normal
-float3 DoSpecularIBL(float3 V, float3 N, float NoV, PixelData pixel)
+float3 DoSpecularIBL(float3 V, float3 N, float NoV, PixelData pixel, float occlusion)
 {
     float3 result = (float3)0;
     float3 R = GetReflectedVector(V, N, pixel);
-    //float3 specR = GetSpecularDominantDir(N, R, pixel.PRoughness); TODO strange results
+    //float3 specR = GetSpecularDominantDir(N, R, pixel.PRoughness);
     float3 specR = R;
+    float ao = ComputeSpecularOcclusion(NoV, occlusion, pixel.Roughness);
 
     if(gMaterial.DoIndirectLighting && gUseSkyboxPrefilteredRadianceMap)
     {
-        float skyMipLevel = MapRoughnessToMipLevel(pixel.PRoughness, gSkyboxNumMips);
-        float3 specular = PrefilteredRadianceMap.SampleLevel(BiLinearSampler, R, skyMipLevel).rgb * gSkyboxBrightness;
+        float3 radiance = PrefilteredRadiance(specR, pixel.PRoughness);
         float2 envBRDF = pixel.DFG.rg;
 
-        result = specular * (pixel.F0 * envBRDF.x + envBRDF.y * pixel.F90);
+        /*
+        // Roughness dependent fresnel, from Fdez-Aguera
+        // https://bruop.github.io/ibl/
+        float3 Fr = max(float3_splat(1.0 - pixel.PRoughness), pixel.F0) - pixel.F0;
+        float3 k_S = pixel.F0 + Fr * pow(1.0 - NoV, 5.0);
+
+        //float3 FssEss = k_S * envBRDF.x + envBRDF.y * pixel.F90;
+        */
+
+        // multi scattering https://google.github.io/filament/Filament.html#listing_multiscatteriblevaluation
+        // float3 FssEss = lerp(pixel.DFG.xxx, pixel.DFG.yyy, pixel.F0);
+
+        // float3 FssEss = lerp(float3(0.04f, 0.04f, 0.04f), pixel.DiffuseColor, 1.0 - pixel.Metallic);
+
+        float3 FssEss = pixel.F0 * envBRDF.x + envBRDF.y * pixel.F90;
+        result = radiance * FssEss * gSkyboxBrightness * ao;
     }
 
     return result;
@@ -484,14 +603,78 @@ float3 DoSpecularIBL(float3 V, float3 N, float NoV, PixelData pixel)
 
 // V : view vector
 // N : surface normal
-LightingResult DoIBL(float3 V, float3 N, float NoV, PixelData pixel)
+LightingResult DoSheenIBL(float3 V, float3 N, const PixelData pixel, float NoV, float occlusion, LightingResult result)
 {
+    // Albedo scaling of the base layer before we layer sheen on top
+    result.Diffuse *= pixel.SheenScaling;
+    result.Specular *= pixel.SheenScaling;
+
+    float3 reflectance = pixel.SheenDFG * pixel.SheenColor;
+    reflectance *= ComputeSpecularOcclusion(NoV, occlusion, pixel.SheenRoughness);
+
+    float3 R = GetReflectedVector(V, N, pixel);
+    result.Specular += reflectance * PrefilteredRadiance(R, pixel.PSheenRoughness);
+
+    return result;
+}
+
+// V : view vector
+LightingResult DoClearCoatIBL(float3 V, float3 N, const PixelData pixel, float NoV, float occlusion, LightingResult result)
+{
+    float3 NClearCoat = pixel.N_clearCoat;
+    float clearCoatNoV = ClampNoV(dot(NClearCoat, V));
+    float3 clearCoatR = GetReflectedVector(V, N, pixel);
+
+    // The clear coat layer assumes an IOR of 1.5 (4% reflectance)
+    // float Fc = F_Schlick(0.04, 1.0, clearCoatNoV) * pixel.ClearCoat;
+    // float attenuation = 1.0 - Fc;
+    // result.Diffuse *= attenuation;
+    // result.Specular *= attenuation;
+
+    // TODO: Should we apply specularAO to the attenuation as well?
+    // float specularAO = ComputeSpecularOcclusion(NoV, occlusion, pixel.ClearCoatRoughness);
+    // result.Specular += PrefilteredRadiance(clearCoatR, pixel.PClearCoatRoughness) * (specularAO * Fc);
+
+    PixelData p = (PixelData)0;
+    p.PRoughness = pixel.PClearCoatRoughness;
+    p.F0 = float3(0.04, 0.04, 0.04);
+    p.F90 = 1.0;
+    p.Roughness = p.PRoughness*p.PRoughness;
+    p.Anisotropy = 0.0;
+    p.DFG = pixel.DFG;
+
+    float3 clearCoatLobe = DoSpecularIBL(V, NClearCoat, clearCoatNoV, p, 1.0);
+    result.Specular += (clearCoatLobe * occlusion * pixel.ClearCoat);
+
+    return result;
+}
+
+// V : view vector
+// N : surface normal
+LightingResult DoIBL(float3 V, float3 P, float3 N, float NoV, PixelData pixel, float occlusion)
+{
+    float3 E = SpecularDFG(pixel);
     LightingResult result = (LightingResult)0;
+    float2 envBRDF = pixel.DFG.rg;
 
     if(gMaterial.DoIndirectLighting && (gUseSkyboxDiffuseIrrMap || gUseSkyboxPrefilteredRadianceMap))
     {
-        result.Diffuse = DoDiffuseIBL(V, N, pixel);
-        result.Specular = DoSpecularIBL(V, N, NoV, pixel);
+        // Diffuse Layer
+        result.Diffuse = DoDiffuseIBL(V, N, NoV, pixel, occlusion);
+        result.Specular = DoSpecularIBL(V, N, NoV, pixel, occlusion);
+
+        // Sheen Layer
+        result = DoSheenIBL(V, N, pixel, NoV, occlusion, result);
+
+        // Clear Coat Layer
+        result = DoClearCoatIBL(V, N, pixel, NoV, occlusion, result);
+
+        if(pixel.Transmission != 0.0)
+        {
+            // Refraction
+            float3 Ft = EvaluateRefraction(pixel, V, P, N, E);
+            result.Diffuse = result.Diffuse * (1 - pixel.Transmission) + (Ft * pixel.Transmission);
+        }
     }
 
     return result;
@@ -659,19 +842,15 @@ LightingResult DoSpotLight( LightData light, float3 V, float3 P, float3 N )
 // P : position vector in world space
 // N : normal
 LightingResult DoLighting(float3 V, float3 P, float3 N, PixelData pixel, 
-    float2 uv, bool castLight, bool useOcclusionMap)
+    float2 uv, bool castLight, float occlusion)
 {
-    float NoV = abs(dot(N, V)) + 1e-5;
-    float occlusion = 1.0;
+    float NoV = ClampNoV(dot(N, V));
 
     LightingResult totalResult = (LightingResult)0;
-    LightingResult IBLResult = DoIBL(V, N, NoV, pixel);
+    LightingResult IBLResult = DoIBL(V, P, N, NoV, pixel, occlusion);
 
     if(castLight)
     {
-        if(useOcclusionMap)
-            occlusion = OcclusionMap.Sample(AnisotropicSampler, uv).r;
-
         float3 V = normalize( gCamera.ViewDir - P );
 
         [unroll]
@@ -686,8 +865,8 @@ LightingResult DoLighting(float3 V, float3 P, float3 N, PixelData pixel,
             else if(gLights[i].Type == SPOT_LIGHT)
                 result = DoSpotLight( gLights[i], V, P, N );
 
-            totalResult.Diffuse += result.Diffuse * occlusion;
-            totalResult.Specular += result.Specular * occlusion;
+            totalResult.Diffuse += result.Diffuse;
+            totalResult.Specular += result.Specular;
         }
     }
 

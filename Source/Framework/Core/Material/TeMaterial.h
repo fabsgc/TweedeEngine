@@ -23,6 +23,13 @@ namespace te
         Shader				= 2 << 2
     };
 
+    /** Refraction type */
+    enum class RefractionType : UINT32
+    {
+        Solid = 0, // refraction through solid objects (e.g. a sphere)
+        Thin = 1, // refraction through thin objects (e.g. window)
+    };
+
     /** Structure used when searching for a specific technique in a Material. */
     struct FIND_TECHNIQUE_DESC
     {
@@ -83,12 +90,13 @@ namespace te
      * For example, a 1mm thin hollow sphere of radius 1m, 
      * would have a thickness of 1 and a microThickness of 0.001.
      */
-    struct MaterialProperties
+    class MaterialProperties
     {
+    public:
         /**
          * @brief Diffuse albedo for non-metallic surfaces, and specular color for metallic surfaces. 
          * Pre-multiplied linear RGB.
-         * Alpha channel will ne be used.
+         * Alpha channel will not be used.
          * DiffuseColor = (1.0 - metallic) * BaseColor.rgb;
          * Range : [0..1]
          */
@@ -125,7 +133,7 @@ namespace te
          * Only used on direct lighting.
          * Range : [0..1]
          */
-        float Occlusion = 0.0f;
+        float Occlusion = 1.0f;
 
         /**
          * @brief Additional diffuse albedo to simulate emissive surfaces (such as neons, etc.) 
@@ -210,10 +218,10 @@ namespace te
         float MicroThickness = 0.0f;
 
         /**
-         * @brief Thickness of the solid volume of refractive objects
+         * @brief MicroThickness of the thin volume of refractive objects
          * Range : [0..n]
          */
-        float Thickness = 0.0f;
+        float Thickness = 1.0f;
 
         /**
          * @brief Defines how much of the diffuse light of a dielectric is transmitted through the object, 
@@ -224,13 +232,33 @@ namespace te
         float Transmission = 0.0f;
 
         /**
+         * @brief Setting the absorption coefficients directly can be unintuitive which is why we recommend 
+         * working with a transmittance color and a “at distance” factor instead. These two parameters 
+         * allow an artist to specify the precise color the material should have at a specified distance 
+         * through the volume. The value to pass to absorption can be computed this way: 
+         * absoption = (-ln(transmittanceColor)/atDistance)
+         */
+        Color TransmittanceColor = Color::White;
+
+        /**
+         * @copydoc TransmittanceColor
+         */
+        float AtDistance = 1.0f;
+
+        /**
          * @brief Absorption factor for refractive objects
          * Range : [0..n]
          */
         Vector3 Absorption = Vector3::ZERO;
 
         /**
+         * @brief Refraction type (Solid or Thin)
+         */
+        RefractionType RefractType = RefractionType::Solid;
+
+        /**
          * @copydoc MaterialProperties::BaseColor
+         * If an alpha channel is provided, it will be used for transmission
          */
         bool UseBaseColorMap = false;
 
@@ -316,6 +344,27 @@ namespace te
          * Priority : Material > Light Probe > Skybox
         */
         bool DoIndirectLighting = true;
+
+        /**
+         * @brief You must call this method if TransmittanceColor or AtDistance
+         * are modified in order to update Absoption
+         */
+        void ComputeAbsorption()
+        {
+            Absorption = TransmittanceColor.GetAsVector3();
+            Absorption.x = -Math::Log(Math::Clamp(Absorption.x, 1e-5f, 1.0f));
+            Absorption.y = -Math::Log(Math::Clamp(Absorption.y, 1e-5f, 1.0f));
+            Absorption.z = -Math::Log(Math::Clamp(Absorption.z, 1e-5f, 1.0f));
+            Absorption /= Math::Max(1e-5f, AtDistance);
+        }
+
+        /**
+         * @brief Construct a new Material Properties object
+         */
+        MaterialProperties()
+        {
+            ComputeAbsorption();
+        }
     };
 
     /**

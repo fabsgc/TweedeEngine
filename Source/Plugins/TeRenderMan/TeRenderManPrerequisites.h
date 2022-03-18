@@ -67,6 +67,8 @@ namespace te
         float   Thickness;
         float   Transmission;
         Vector3 Absorption;
+        UINT32  RefractionType;
+        Vector3 Padding;
         UINT32  UseBaseColorMap;
         UINT32  UseMetallicMap;
         UINT32  UseRoughnessMap;

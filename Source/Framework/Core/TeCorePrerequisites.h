@@ -301,7 +301,7 @@ namespace te
 
     class Shader;
     class Material;
-    struct MaterialProperties;
+    class MaterialProperties;
     class Technique;
     class Pass;
 

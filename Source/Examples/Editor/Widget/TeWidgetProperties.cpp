@@ -3108,6 +3108,7 @@ namespace te
         {
             ImGui::OpenPopup("Load Skybox Texture");
             _fileBrowser.Data.TexParam.TexType = TextureType::TEX_TYPE_CUBE_MAP;
+            _fileBrowser.Data.TexParam.SRGB = true;
         }
 
         if (_fileBrowser.ShowFileDialog("Load Skybox Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, ".png,.jpeg,.jpg,.dds,.tiff,.tga"))

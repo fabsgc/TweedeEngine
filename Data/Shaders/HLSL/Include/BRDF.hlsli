@@ -47,9 +47,6 @@
 #define BRDF_CLOTH_D                SPECULAR_D_CHARLIE
 #define BRDF_CLOTH_V                SPECULAR_V_NEUBELT
 
-#define MAX_ROUGHNESS               0.95
-#define MIN_ROUGHNESS               0.01
-
 //------------------------------------------------------------------------------
 // Specular BRDF implementations
 //------------------------------------------------------------------------------

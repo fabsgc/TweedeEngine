@@ -10,6 +10,7 @@
 #include "Animation/TeAnimationCurve.h"
 #include "Animation/TeAnimationClip.h"
 #include "RenderAPI/TeSubMesh.h"
+#include "Material/TeMaterial.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>

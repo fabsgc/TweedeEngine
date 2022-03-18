@@ -256,7 +256,7 @@ namespace te
                     _materialsPreview->SetMeshPreviewType(MaterialsPreview::MeshPreviewType::Plane);
                 }
 
-                cursor.x += 5.0f;
+                cursor.x -= 5.0f;
                 ImGui::SetCursorPos(cursor);
 
                 cursor.y += 40.0f;
@@ -276,7 +276,7 @@ namespace te
                 ImGui::Separator();
                 {
                     Vector4 color = properties.Emissive.GetAsVector4();
-                    if (ImGuiExt::RenderColorRGB(color, "##material_prop_emissive_option", "Emissive Color", width, properties.UseEmissiveMap))
+                    if (ImGuiExt::RenderColorRGB(color, "##material_prop_emissive_option", "Emissive Color", width))
                     {
                         hasChanged = true;
                         properties.Emissive = Color(color);
@@ -289,6 +289,16 @@ namespace te
                     {
                         hasChanged = true;
                         properties.SheenColor = Color(color);
+                    }
+                }
+                ImGui::Separator();
+                {
+                    Vector4 color = properties.TransmittanceColor.GetAsVector4();
+                    if (ImGuiExt::RenderColorRGB(color, "##material_prop_transmittance_color_option", "Transmittance Color", width))
+                    {
+                        hasChanged = true;
+                        properties.TransmittanceColor = Color(color);
+                        properties.ComputeAbsorption();
                     }
                 }
                 ImGui::Separator();
@@ -354,9 +364,9 @@ namespace te
                 ImGui::Separator();
 
                 {
-                    if (ImGuiExt::RenderOptionFloat(properties.Thickness, "##material_prop_thickness_option", "Thickness", 0.0f, 1.0f, width))
+                    if (ImGuiExt::RenderOptionFloat(properties.Thickness, "##material_prop_thickness_option", "Thickness", 0.0f, 32.0f, width))
                         hasChanged = true;
-                    if (ImGuiExt::RenderOptionFloat(properties.MicroThickness, "##material_prop_micto_thickness_option", "Micro Thickness", 0.0f, 1.0f, width))
+                    if (ImGuiExt::RenderOptionFloat(properties.MicroThickness, "##material_prop_micto_thickness_option", "Micro Thickness", 0.0f, 32.0f, width))
                         hasChanged = true;
                 }
                 ImGui::Separator();
@@ -367,7 +377,31 @@ namespace te
                     if (ImGuiExt::RenderOptionFloat(properties.AlphaThreshold, "##material_prop_alpha_threshold_option", "Alpha Threshold", 0.0f, 1.0f, width))
                         hasChanged = true;
                 }
-                ImGui::Separator();
+
+                {
+                    static ImGuiExt::ComboOptions<RefractionType> refractionTypeOptions;
+                    if (refractionTypeOptions.Options.size() == 0)
+                    {
+                        refractionTypeOptions.AddOption(RefractionType::Solid, "Solid");
+                        refractionTypeOptions.AddOption(RefractionType::Thin, "Thin");
+                    }
+
+                    RefractionType* refractionType = &properties.RefractType;
+
+                    if (ImGuiExt::RenderOptionCombo<RefractionType>(refractionType, "##material_prop_refract_type_option", "Refract. type", refractionTypeOptions, width))
+                    {
+                        hasChanged = true;
+                        properties.ComputeAbsorption();
+                    }
+                }
+
+                {    
+                    if (ImGuiExt::RenderOptionFloat(properties.AtDistance, "##material_prop_at_distance_option", "At Distance", 0.0f, 16.0f, width))
+                    {
+                        hasChanged = true;
+                        properties.ComputeAbsorption();
+                    }
+                }
 
                 {
                     if (ImGuiExt::RenderVector3(properties.Absorption, "##material_prop_absorption_option", " Absorp.", width))

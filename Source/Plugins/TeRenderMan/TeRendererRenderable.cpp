@@ -50,7 +50,7 @@ namespace te
         data.Emissive = properties.Emissive.GetAsVector4();
         data.SheenColor = properties.SheenColor.GetAsVector4();
         data.SheenRoughness = properties.SheenRoughness;
-        data.ClearCoat = properties.ClearCoatRoughness;
+        data.ClearCoat = properties.ClearCoat;
         data.ClearCoatRoughness = properties.ClearCoatRoughness;
         data.Anisotropy = properties.Anisotropy;
         data.AnisotropyDirection = properties.AnisotropyDirection;
@@ -63,6 +63,7 @@ namespace te
         data.Thickness = properties.Thickness;
         data.Transmission = properties.Transmission;
         data.Absorption = properties.Absorption;
+        data.RefractionType = (UINT32)properties.RefractType;
         data.UseBaseColorMap = (UINT32)properties.UseBaseColorMap;
         data.UseMetallicMap = (UINT32)properties.UseMetallicMap;
         data.UseRoughnessMap = (UINT32)properties.UseRoughnessMap;
