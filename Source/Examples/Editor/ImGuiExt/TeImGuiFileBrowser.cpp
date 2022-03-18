@@ -33,7 +33,7 @@
 
 namespace te
 {
-    const Vector<String> ImGuiFileBrowser::_texturesExtensions = { ".png", ".jpeg", ".jpg", ".dds", ".tiff", ".tga" };
+    const Vector<String> ImGuiFileBrowser::_texturesExtensions = { ".png", ".jpeg", ".jpg", ".dds", ".tiff", ".tif", ".tga" };
     const Vector<String> ImGuiFileBrowser::_meshesExtensions = { ".obj", ".dae", ".fbx", ".stl", ".gltf" };
     const Vector<String> ImGuiFileBrowser::_soundsExtensions = { ".ogg", ".wav", ".flac" };
 
@@ -739,7 +739,7 @@ namespace te
 
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportCollisionShape, "##file_dialog_parameters_mesh_import_collision_shape", "Import Collision Shape");
                 }
-                else if (ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".dds" || ext == ".tiff" ||ext == ".tga")
+                else if (ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".dds" || ext == ".tiff" || ext == ".tif" ||ext == ".tga")
                 {
                     static ImGuiExt::ComboOptions<TextureType> textureTypeOptions;
                     if (textureTypeOptions.Options.size() == 0)

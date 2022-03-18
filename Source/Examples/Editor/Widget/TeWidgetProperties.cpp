@@ -3111,7 +3111,7 @@ namespace te
             _fileBrowser.Data.TexParam.SRGB = true;
         }
 
-        if (_fileBrowser.ShowFileDialog("Load Skybox Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, ".png,.jpeg,.jpg,.dds,.tiff,.tga"))
+        if (_fileBrowser.ShowFileDialog("Load Skybox Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, ".png,.jpeg,.jpg,.dds,.tiff,.tif,.tga"))
         {
             if (_fileBrowser.Data.TexParam.TexType == TextureType::TEX_TYPE_CUBE_MAP)
             {
@@ -3220,7 +3220,7 @@ namespace te
             _fileBrowser.Data.TexParam.TexType = TextureType::TEX_TYPE_2D;
         }
 
-        if (_fileBrowser.ShowFileDialog("Load Height Field Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, ".png,.jpeg,.jpg,.dds,.tiff,.tga"))
+        if (_fileBrowser.ShowFileDialog("Load Height Field Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, ".png,.jpeg,.jpg,.dds,.tiff,.tif,.tga"))
         {
             auto textureImportOptions = TextureImportOptions::Create();
             if (_fileBrowser.Data.TexParam.TexType == TextureType::TEX_TYPE_2D)

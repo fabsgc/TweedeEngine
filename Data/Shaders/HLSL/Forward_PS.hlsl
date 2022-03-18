@@ -80,6 +80,10 @@ PS_OUTPUT main( VS_OUTPUT IN )
         uv0 = DoParallaxMapping(uv0, V, Pv, N, P, 
             parallaxSamples, parallaxScale, IN.ParallaxOffsetTS);
 
+    // ###################### METALLIC MAP SAMPLING
+    if(useMetallicMap)
+        metallic = MetallicMap.Sample(AnisotropicSampler, uv0).g;
+
     // ###################### BASE COLOR MAP SAMPLING
     if(useBaseColorMap)
     {
@@ -106,10 +110,6 @@ PS_OUTPUT main( VS_OUTPUT IN )
         // ###################### NORMAL MAP SAMPLING
         if(useNormalMap)
             N = DoNormalMapping(TBN, NormalMap, AnisotropicSampler, uv0);
-
-        // ###################### METALLIC MAP SAMPLING
-        if(useMetallicMap)
-            metallic = MetallicMap.Sample(AnisotropicSampler, uv0).g;
 
         // ###################### ROUGHNESS MAP SAMPLING
         if(useRoughnessMap)
