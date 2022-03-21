@@ -169,6 +169,18 @@ namespace te
         float ClearCoatRoughness = 0.0f;
 
         /**
+         * @brief Tint for the diffuse color after scattering and absorption through the material. Linear RGB
+         * Range : [0..1]
+         */
+        Color SubsurfaceColor = Color::White;
+
+        /**
+         * @brief Subsurface strength
+         * Range : [0..n]
+         */
+        float SubsurfacePower = 12.0f;
+
+        /**
          * @brief Amount of anisotropy in either the tangent or bitangent direction
          * Anisotropy is in the tangent direction when this value is positive
          * Range : [−1..1]

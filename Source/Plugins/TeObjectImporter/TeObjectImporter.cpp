@@ -371,9 +371,9 @@ namespace te
                     if (aiMat->Get(AI_MATKEY_COLOR_EMISSIVE, emissiveColor) == aiReturn_SUCCESS)
                         material.MatProperties.Emissive = ConvertToNativeType(emissiveColor);
 
-                    aiColor3D sheenColor;
-                    if (aiMat->Get(AI_MATKEY_SHEEN_COLOR_FACTOR, sheenColor) == aiReturn_SUCCESS)
-                        material.MatProperties.SheenColor = ConvertToNativeType(sheenColor);
+                    aiColor3D sheenRoughness;
+                    if (aiMat->Get(AI_MATKEY_SHEEN_COLOR_FACTOR, matProperties.SheenRoughness) == aiReturn_SUCCESS)
+                        material.MatProperties.SheenRoughness = matProperties.SheenRoughness;
 
                     if (aiMat->Get(AI_MATKEY_METALLIC_FACTOR, matProperties.Metallic) == aiReturn_SUCCESS)
                         material.MatProperties.Metallic = matProperties.Metallic;

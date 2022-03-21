@@ -35,9 +35,10 @@ struct MaterialData
     float   SheenRoughness;
     float   ClearCoat;
     float   ClearCoatRoughness;
+    float   SubsurfacePower;
+    float4  SubsurfaceColor;
     float   Anisotropy;
     float3  AnisotropyDirection;
-    float   AlphaTreshold;
     float2  UV0Repeat;
     float2  UV0Offset;
     float   ParallaxScale;
@@ -47,7 +48,8 @@ struct MaterialData
     float   Transmission;
     float3  Absorption;
     uint    RefractionType;
-    float3  Padding;
+    float   AlphaTreshold;
+    float2  Padding;
     uint    UseBaseColorMap;
     uint    UseMetallicMap;
     uint    UseRoughnessMap;
@@ -101,6 +103,8 @@ struct PixelData
     float ClearCoat;
     float PClearCoatRoughness;
     float ClearCoatRoughness;
+    float3 SubsurfaceColor;
+    float SubsurfacePower;
     float3 SheenColor;
     float SheenScaling;
     float PSheenRoughness;
@@ -431,12 +435,18 @@ float3 GetSpecularDominantDir(float3 N, float3 R, float roughness)
     return normalize(lerp(N, R, (1 - r2) * (sqrt(1 - r2) + r2)));
 }
 
-float3 PrefilteredRadiance(float3 R, float pRoughness)
+float3 PrefilteredRadiance(const float3 R, float pRoughness)
 {
     float mipLevel =  gSkyboxNumMips * pRoughness * (1.7 - 0.7 * pRoughness);
-
-    float skyMipLevel = gSkyboxNumMips * MapRoughnessToMipLevel(pRoughness, gSkyboxNumMips);
+    //float skyMipLevel = gSkyboxNumMips * MapRoughnessToMipLevel(pRoughness, gSkyboxNumMips);
     return PrefilteredRadianceMap.SampleLevel(BiLinearSampler, R, mipLevel).rgb * gSkyboxBrightness;
+}
+
+float3 PrefilteredRadiance(const float3 R, float pRoughness, float offset)
+{
+    float mipLevel =  gSkyboxNumMips * pRoughness * (1.7 - 0.7 * pRoughness);
+    //float skyMipLevel = gSkyboxNumMips * MapRoughnessToMipLevel(pRoughness, gSkyboxNumMips);
+    return PrefilteredRadianceMap.SampleLevel(BiLinearSampler, R, mipLevel  + offset).rgb * gSkyboxBrightness;
 }
 
 float ComputeSpecularOcclusion(float NoV, float occlusion, float roughness) 
@@ -457,6 +467,11 @@ float3 PreIntEnvGF_Charlie(float NoV, float roughness)
 float3 SpecularDFG(const PixelData pixel)
 {
     return lerp(pixel.DFG_GXX.xxx, pixel.DFG_GXX.yyy, pixel.F0);
+}
+
+float3 Irradiance_RoughnessOne(const float3 N)
+{
+    return PrefilteredRadianceMap.SampleLevel(BiLinearSampler, N, (gSkyboxNumMips - 1)).rgb * gSkyboxBrightness;
 }
 
 struct Refraction
@@ -562,20 +577,22 @@ float3 EvaluateRefraction(const PixelData pixel, const float3 V, const float3 P,
 
 // V : view vector
 // N : surface normal
-float3 DoDiffuseIBL(float3 V, float3 N, float NoV, PixelData pixel, float occlusion)
+// E : SpecularDFG
+float3 DoDiffuseIBL(float3 V, float3 N, float NoV, float3 E, PixelData pixel, float occlusion)
 {
     float3 result = (float3)0;
     float3 dominantN = GetDiffuseDominantDir (V, N, NoV, pixel.Roughness);
 
-    float3 irradiance = DiffuseIrrMap.Sample(BiLinearSampler, dominantN).rgb;
-    result = irradiance * pixel.DiffuseColor * gSkyboxBrightness *  occlusion;
+    float3 irradiance = DiffuseIrrMap.Sample(BiLinearSampler, dominantN).rgb * gSkyboxBrightness;
+    result = irradiance * pixel.DiffuseColor *  occlusion;
 
     return result;
 }
 
 // V : view vector
 // N : surface normal
-float3 DoSpecularIBL(float3 V, float3 N, float NoV, PixelData pixel, float occlusion)
+// E : SpecularDFG
+float3 DoSpecularIBL(float3 V, float3 N, float NoV, float3 E, PixelData pixel, float occlusion)
 {
     float3 result = (float3)0;
     float3 R = GetReflectedVector(V, N, pixel);
@@ -584,8 +601,8 @@ float3 DoSpecularIBL(float3 V, float3 N, float NoV, PixelData pixel, float occlu
 
     float3 radiance = PrefilteredRadiance(dominantR, pixel.PRoughness);
     float2 envBRDF = PreIntEnvGF_GXX(NoV, pixel.Roughness).xy;
-    float3 FssEss = pixel.F0 * envBRDF.x + envBRDF.y * pixel.F90;
-    result = radiance * FssEss * gSkyboxBrightness * ao;
+    float3 FssEss = pixel.F0 * envBRDF.x + envBRDF.y * pixel.F90; // Replace E
+    result = radiance * FssEss * ao;
 
     // multi scattering https://google.github.io/filament/Filament.html#listing_multiscatteriblevaluation
 
@@ -600,38 +617,51 @@ LightingResult DoSheenIBL(float3 V, float3 N, const PixelData pixel, float NoV, 
     result.Diffuse *= pixel.SheenScaling;
     result.Specular *= pixel.SheenScaling;
 
-    float3 reflectance = pixel.DFG_Charlie.z * pixel.SheenColor;
-    reflectance *= ComputeSpecularOcclusion(NoV, occlusion, pixel.SheenRoughness);
-
     float3 R = GetReflectedVector(V, N, pixel);
-    result.Specular += reflectance * PrefilteredRadiance(R, pixel.PSheenRoughness);
+    float3 dominantR = R;
+    float ao = ComputeSpecularOcclusion(NoV, occlusion, pixel.SheenRoughness);
+    float3 reflectance = pixel.DFG_Charlie.z * pixel.SheenColor;
+
+    float3 radiance = PrefilteredRadiance(dominantR, pixel.PSheenRoughness);
+
+    result.Specular += reflectance * radiance * ao;
 
     return result;
 }
 
 // V : view vector
+// N : surface normal
 LightingResult DoClearCoatIBL(float3 V, float3 N, const PixelData pixel, float NoV, float occlusion, LightingResult result)
 {
     float3 NClearCoat = pixel.N_clearCoat;
     float clearCoatNoV = ClampNoV(dot(NClearCoat, V));
     float3 clearCoatR = GetReflectedVector(V, N, pixel);
+    float ao = ComputeSpecularOcclusion(NoV, occlusion, pixel.Roughness);
 
-    PixelData p = (PixelData)0;
-    p.PRoughness = pixel.PClearCoatRoughness;
-    p.F0 = float3(0.04, 0.04, 0.04);
-    p.F90 = 1.0;
-    p.Roughness = p.PRoughness*p.PRoughness;
-    p.Anisotropy = 0.0;
-    p.DFG_GXX = pixel.DFG_GXX;
-    p.DFG_Charlie = pixel.DFG_Charlie;
+    float Fc = F_Schlick(0.04, 1.0, clearCoatNoV) * pixel.ClearCoat;
+    float attenuation = 1.0 - Fc;
+    result.Diffuse *= attenuation;
+    result.Specular *= attenuation;
 
-    float3 clearCoatLobe = DoSpecularIBL(V, NClearCoat, clearCoatNoV, p, 1.0);
-    result.Specular += (clearCoatLobe * occlusion * pixel.ClearCoat);
+    float3 radiance = PrefilteredRadiance(clearCoatR, pixel.PClearCoatRoughness);
+
+    result.Specular += Fc * radiance * ao;
+
+    return result;
+}
+
+LightingResult DoSubSurfaceIBL(float3 V, float3 N, const PixelData pixel, float NoV, float occlusion, LightingResult result)
+{
+    float3 viewIndependent = Irradiance_RoughnessOne(N);
+    float3 viewDependent = PrefilteredRadiance(V, pixel.Roughness, 1.0 + pixel.Thickness);
+    float attenuation = (1.0 - pixel.Thickness) / (2.0 * PI);
+    result.Diffuse += pixel.SubsurfaceColor * (viewIndependent + viewDependent) * attenuation;
 
     return result;
 }
 
 // V : view vector
+// P : World Space position
 // N : surface normal
 LightingResult DoIBL(float3 V, float3 P, float3 N, float NoV, PixelData pixel, float occlusion)
 {
@@ -642,14 +672,17 @@ LightingResult DoIBL(float3 V, float3 P, float3 N, float NoV, PixelData pixel, f
     if(gMaterial.DoIndirectLighting && (gUseSkyboxDiffuseIrrMap || gUseSkyboxPrefilteredRadianceMap))
     {
         // Diffuse Layer
-        result.Diffuse = DoDiffuseIBL(V, N, NoV, pixel, occlusion);
-        result.Specular = DoSpecularIBL(V, N, NoV, pixel, occlusion);
+        result.Diffuse = DoDiffuseIBL(V, N, NoV, E, pixel, occlusion);
+        result.Specular = DoSpecularIBL(V, N, NoV, E, pixel, occlusion);
 
         // Sheen Layer
         result = DoSheenIBL(V, N, pixel, NoV, occlusion, result);
 
         // Clear Coat Layer
         result = DoClearCoatIBL(V, N, pixel, NoV, occlusion, result);
+
+        // SubSurface Layer
+        // result = DoSubSurfaceIBL(V, N, pixel, NoV, occlusion, result);
 
         if(pixel.Transmission != 0.0)
         {
@@ -833,8 +866,6 @@ LightingResult DoLighting(float3 V, float3 P, float3 N, PixelData pixel,
 
     if(castLight)
     {
-        float3 V = normalize( gCamera.ViewDir - P );
-
         [unroll]
         for( uint i = 0; i < gLightsNumber; ++i )
         {

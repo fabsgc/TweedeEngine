@@ -3,7 +3,7 @@
 
 #define MIN_N_DOT_V 1e-4
 
-#define MAX_ROUGHNESS 0.95
+#define MAX_ROUGHNESS 0.99999
 #define MIN_ROUGHNESS 0.01
 
 #define DFG_TEXTURE_SIZE 128

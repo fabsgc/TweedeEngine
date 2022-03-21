@@ -52,6 +52,8 @@ namespace te
         data.SheenRoughness = properties.SheenRoughness;
         data.ClearCoat = properties.ClearCoat;
         data.ClearCoatRoughness = properties.ClearCoatRoughness;
+        data.SubsurfaceColor = properties.SubsurfaceColor.GetAsVector4();
+        data.SurSurfacePower = properties.SubsurfacePower;
         data.Anisotropy = properties.Anisotropy;
         data.AnisotropyDirection = properties.AnisotropyDirection;
         data.AlphaTreshold = properties.AlphaThreshold;

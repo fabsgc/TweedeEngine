@@ -18,6 +18,7 @@ PS_OUTPUT main( VS_OUTPUT IN )
     float3		baseColor					= GetColor(useSRGB, true, gMaterial.BaseColor.rgb);
     float3		emissive					= GetColor(useSRGB, true, gMaterial.Emissive.rgb);
     float3		sheenColor					= GetColor(useSRGB, true, gMaterial.SheenColor.rgb);
+    float3		subsurfaceColor				= GetColor(useSRGB, true, gMaterial.SubsurfaceColor.rgb);
     float		metallic					= gMaterial.Metallic;
     float		pRoughness					= min(MAX_ROUGHNESS, gMaterial.Roughness);
     float		roughness					= pRoughness * pRoughness;
@@ -27,6 +28,7 @@ PS_OUTPUT main( VS_OUTPUT IN )
     float		sheenRoughness				= pSheenRoughness * pSheenRoughness;
     float		clearCoat					= gMaterial.ClearCoat;
     float		pClearCoatRoughness			= min(MAX_ROUGHNESS, gMaterial.ClearCoatRoughness);
+    float		subsurfacePower				= gMaterial.SubsurfacePower;
     float		clearCoatRoughness			= pClearCoatRoughness * pClearCoatRoughness;
     float		anisotropy					= gMaterial.Anisotropy;
     float3		anisotropyDirection			= gMaterial.AnisotropyDirection;
@@ -197,6 +199,9 @@ PS_OUTPUT main( VS_OUTPUT IN )
         pixel.PSheenRoughness = max(MIN_ROUGHNESS, pSheenRoughness);
         pixel.DFG_Charlie = PreIntEnvGF_Charlie(NoV, pixel.PSheenRoughness).xyz;
         pixel.SheenScaling = 1.0 - max(pixel.SheenColor.r, max(pixel.SheenColor.g, pixel.SheenColor.b)) * pixel.DFG_Charlie.z;
+
+        pixel.SubsurfaceColor = subsurfaceColor;
+        pixel.SubsurfacePower = subsurfacePower;
 
         pixel.Anisotropy = anisotropy;
         pixel.AnisotropyDirection = anisotropyDirection;

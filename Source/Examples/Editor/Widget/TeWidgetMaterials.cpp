@@ -293,6 +293,15 @@ namespace te
                 }
                 ImGui::Separator();
                 {
+                    Vector4 color = properties.SubsurfaceColor.GetAsVector4();
+                    if (ImGuiExt::RenderColorRGB(color, "##material_prop_subsurface_color_option", "SubSurface Color", width))
+                    {
+                        hasChanged = true;
+                        properties.SubsurfaceColor = Color(color);
+                    }
+                }
+                ImGui::Separator();
+                {
                     Vector4 color = properties.TransmittanceColor.GetAsVector4();
                     if (ImGuiExt::RenderColorRGB(color, "##material_prop_transmittance_color_option", "Transmittance Color", width))
                     {
@@ -359,7 +368,7 @@ namespace te
                 ImGui::Separator();
 
                 {
-                    if (ImGuiExt::RenderOptionFloat(properties.ParallaxScale, "##material_prop_parallax_scale_option", "Parallax Scale", 0.0f, 1.0f, width))
+                    if (ImGuiExt::RenderOptionFloat(properties.ParallaxScale, "##material_prop_parallax_scale_option", "Parallax Scale", -1.0f, 1.0f, width))
                         hasChanged = true;
                     if (ImGuiExt::RenderOptionInt((int&)properties.ParallaxSamples, "##material_prop_parallax_samples_option", "Parallax Samples", 16, 256, width))
                         hasChanged = true;
@@ -370,6 +379,12 @@ namespace te
                     if (ImGuiExt::RenderOptionFloat(properties.Thickness, "##material_prop_thickness_option", "Thickness", 0.0f, 32.0f, width))
                         hasChanged = true;
                     if (ImGuiExt::RenderOptionFloat(properties.MicroThickness, "##material_prop_micto_thickness_option", "Micro Thickness", 0.0f, 32.0f, width))
+                        hasChanged = true;
+                }
+                ImGui::Separator();
+
+                {
+                    if (ImGuiExt::RenderOptionFloat(properties.SubsurfacePower, "##material_prop_subsurface_power_option", "Sub. power", 0.0f, 64.0f, width))
                         hasChanged = true;
                 }
                 ImGui::Separator();

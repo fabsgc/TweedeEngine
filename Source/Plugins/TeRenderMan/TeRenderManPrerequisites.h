@@ -56,9 +56,10 @@ namespace te
         float   SheenRoughness;
         float   ClearCoat;
         float   ClearCoatRoughness;
+        float   SurSurfacePower;
+        Vector4 SubsurfaceColor;
         float   Anisotropy;
         Vector3 AnisotropyDirection;
-        float   AlphaTreshold;
         Vector2 UV0Repeat;
         Vector2 UV0Offset;
         float   ParallaxScale;
@@ -68,7 +69,8 @@ namespace te
         float   Transmission;
         Vector3 Absorption;
         UINT32  RefractionType;
-        Vector3 Padding;
+        float   AlphaTreshold;
+        Vector2 Padding;
         UINT32  UseBaseColorMap;
         UINT32  UseMetallicMap;
         UINT32  UseRoughnessMap;

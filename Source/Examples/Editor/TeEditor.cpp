@@ -382,7 +382,7 @@ namespace te
         _viewportCameraSO->SetParent(_viewportSO);
 
         _viewportCameraSO->SetPosition(Vector3(3.5f, 2.5f, 4.0f));
-        _viewportCameraSO->LookAt(Vector3(0.0f, 0.75f, 0.0f));
+        _viewportCameraSO->LookAt(Vector3(0.0f, 0.0f, 0.0f));
 
         _viewportCamera = _viewportCameraSO->AddComponent<CCamera>();
         _viewportCamera->GetViewport()->SetClearColorValue(Color(0.42f, 0.67f, 0.94f, 1.0f));
@@ -414,20 +414,20 @@ namespace te
         io.ConfigViewportsNoTaskBarIcon = true;
         ApplyStyleGui();
 
-        _widgets.emplace_back(te_shared_ptr_new<WidgetMenuBar>()); _settings.WMenuBar = _widgets.back();
-        _widgets.emplace_back(te_shared_ptr_new<WidgetToolBar>()); _settings.WToolbar = _widgets.back();
-        _widgets.emplace_back(te_shared_ptr_new<WidgetProject>()); _settings.WProject = _widgets.back();
-        _widgets.emplace_back(te_shared_ptr_new<WidgetProperties>()); _settings.WProperties = _widgets.back();
-        _widgets.emplace_back(te_shared_ptr_new<WidgetProfiler>()); _settings.WProfiler = _widgets.back();
-        _widgets.emplace_back(te_shared_ptr_new<WidgetSettings>()); _settings.WSettings = _widgets.back();
-        _widgets.emplace_back(te_shared_ptr_new<WidgetRenderOptions>()); _settings.WRenderOptions = _widgets.back();
-        _widgets.emplace_back(te_shared_ptr_new<WidgetConsole>()); _settings.WConsole = _widgets.back();
-        _widgets.emplace_back(te_shared_ptr_new<WidgetScript>()); _settings.WScript = _widgets.back();
-        _widgets.emplace_back(te_shared_ptr_new<WidgetMaterials>()); _settings.WMaterial = _widgets.back();
-        _widgets.emplace_back(te_shared_ptr_new<WidgetResources>()); _settings.WResources = _widgets.back();
-        _widgets.emplace_back(te_shared_ptr_new<WidgetViewport>()); _settings.WViewport = _widgets.back();
+        _widgets.emplace_back(te_unique_ptr_new<WidgetMenuBar>()); _settings.WMenuBar = _widgets.back();
+        _widgets.emplace_back(te_unique_ptr_new<WidgetToolBar>()); _settings.WToolbar = _widgets.back();
+        _widgets.emplace_back(te_unique_ptr_new<WidgetProject>()); _settings.WProject = _widgets.back();
+        _widgets.emplace_back(te_unique_ptr_new<WidgetProperties>()); _settings.WProperties = _widgets.back();
+        _widgets.emplace_back(te_unique_ptr_new<WidgetProfiler>()); _settings.WProfiler = _widgets.back();
+        _widgets.emplace_back(te_unique_ptr_new<WidgetSettings>()); _settings.WSettings = _widgets.back();
+        _widgets.emplace_back(te_unique_ptr_new<WidgetRenderOptions>()); _settings.WRenderOptions = _widgets.back();
+        _widgets.emplace_back(te_unique_ptr_new<WidgetConsole>()); _settings.WConsole = _widgets.back();
+        _widgets.emplace_back(te_unique_ptr_new<WidgetScript>()); _settings.WScript = _widgets.back();
+        _widgets.emplace_back(te_unique_ptr_new<WidgetMaterials>()); _settings.WMaterial = _widgets.back();
+        _widgets.emplace_back(te_unique_ptr_new<WidgetResources>()); _settings.WResources = _widgets.back();
+        _widgets.emplace_back(te_unique_ptr_new<WidgetViewport>()); _settings.WViewport = _widgets.back();
 
-        for (auto widget : _widgets)
+        for (auto& widget : _widgets)
             widget->Initialize();
     }
 
