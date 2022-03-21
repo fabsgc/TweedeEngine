@@ -186,6 +186,7 @@ Texture2D PreIntegratedEnvGF_Charlie : register(t18);
 
 SamplerState AnisotropicSampler : register(s0);
 SamplerState BiLinearSampler : register(s1);
+SamplerState NoFilterSampler : register(s2);
 
 // #################### HELPER FUNCTIONS
 
@@ -370,7 +371,7 @@ float2 DoParallaxMapping(float2 uv, float3 V, float3 Pv, float3 N, float3 P,
         // smaller step sizes to achieve more accurate precision for computing displacement.
         // We express the sampling rate as a linear function of the angle between 
         // the geometric normal and the view direction ray:
-        int parallaxSteps = (int)lerp( numSamples, PARALLAX_MIN_SAMPLE, dot( V, N ) );
+        int parallaxSteps = (int)lerp( numSamples, PARALLAX_MIN_SAMPLE, ClampNoV(dot( -V, N )) );
         uv = DoParallaxMappingSteps(uv, parallaxOffsetTS, parallaxSteps, parallaxScale);
     }
 
@@ -398,11 +399,11 @@ float3 GetReflectedVector(float3 V, float3 N, PixelData pixel)
         float   bendFactor          = abs(pixel.Anisotropy) * saturate(5.0 * pixel.PRoughness);
         float3  bentNormal          = normalize(lerp(N, anisotropicNormal, bendFactor));
 
-        R = reflect(V, bentNormal);
+        R = reflect(-V, bentNormal);
     }
     else
     {
-        R = reflect(V, N);
+        R = reflect(-V, N);
     }
 
     return R;
@@ -456,12 +457,12 @@ float ComputeSpecularOcclusion(float NoV, float occlusion, float roughness)
 
 float3 PreIntEnvGF_GXX(float NoV, float roughness)
 {
-    return PreIntegratedEnvGF_GXX.SampleLevel(BiLinearSampler, float2(saturate(NoV), roughness), 0).xyz;
+    return PreIntegratedEnvGF_GXX.SampleLevel(NoFilterSampler, float2(saturate(NoV), roughness), 0).xyz;
 }
 
 float3 PreIntEnvGF_Charlie(float NoV, float roughness)
 {
-    return PreIntegratedEnvGF_Charlie.SampleLevel(BiLinearSampler, float2(saturate(NoV), roughness), 0).xyz;
+    return PreIntegratedEnvGF_Charlie.SampleLevel(NoFilterSampler, float2(saturate(NoV), roughness), 0).xyz;
 }
 
 float3 SpecularDFG(const PixelData pixel)
@@ -490,7 +491,7 @@ Refraction RefractionSolidSphere(const PixelData pixel,const float3 V, const flo
     float D = pixel.Thickness * -NoR;
     ray.Position = float3(P + R * D);
     ray.D = D;
-    float3 N1 = normalize(NoR * R + N * 0.5);
+    float3 N1 = normalize(NoR * R - N * 0.5);
     ray.Direction = refract(R, N1,  pixel.EtaRI);
 
     return ray;
@@ -527,9 +528,9 @@ float3 EvaluateRefraction(const PixelData pixel, const float3 V, const float3 P,
     bool hasAbsorption = false;
 
     if(pixel.RefractionType == REFRACTION_TYPE_SPHERE)
-        ray = RefractionSolidSphere(pixel, V, P, N);
+        ray = RefractionSolidSphere(pixel, -V, P, N);
     else
-        ray = RefractionThinSphere(pixel, V, P, N);
+        ray = RefractionThinSphere(pixel, -V, P, N);
 
     if(pixel.Absorption.x != 0.0 || pixel.Absorption.y != 0.0 || pixel.Absorption.z != 0.0)
         hasAbsorption = true;
@@ -565,9 +566,6 @@ float3 EvaluateRefraction(const PixelData pixel, const float3 V, const float3 P,
     // base color changes the amount of light passing through the boundary
     Ft *= pixel.DiffuseColor;
 
-    // fresnel from the first interface
-    Ft *= 1.0 - E;
-
     // apply absorption
     if(hasAbsorption)
         Ft *= T;
@@ -578,7 +576,7 @@ float3 EvaluateRefraction(const PixelData pixel, const float3 V, const float3 P,
 // V : view vector
 // N : surface normal
 // E : SpecularDFG
-float3 DoDiffuseIBL(float3 V, float3 N, float NoV, float3 E, PixelData pixel, float occlusion)
+float3 DoDiffuseIBL(float3 V, float3 N, float NoV, float3 E, const PixelData pixel, float occlusion)
 {
     float3 result = (float3)0;
     float3 dominantN = GetDiffuseDominantDir (V, N, NoV, pixel.Roughness);
@@ -592,7 +590,7 @@ float3 DoDiffuseIBL(float3 V, float3 N, float NoV, float3 E, PixelData pixel, fl
 // V : view vector
 // N : surface normal
 // E : SpecularDFG
-float3 DoSpecularIBL(float3 V, float3 N, float NoV, float3 E, PixelData pixel, float occlusion)
+float3 DoSpecularIBL(float3 V, float3 N, float NoV, float3 E, const PixelData pixel, float occlusion)
 {
     float3 result = (float3)0;
     float3 R = GetReflectedVector(V, N, pixel);
@@ -601,7 +599,7 @@ float3 DoSpecularIBL(float3 V, float3 N, float NoV, float3 E, PixelData pixel, f
 
     float3 radiance = PrefilteredRadiance(dominantR, pixel.PRoughness);
     float2 envBRDF = PreIntEnvGF_GXX(NoV, pixel.Roughness).xy;
-    float3 FssEss = pixel.F0 * envBRDF.x + envBRDF.y * pixel.F90; // Replace E
+    float3 FssEss = pixel.F0 * envBRDF.x + envBRDF.y * pixel.F90; // E
     result = radiance * FssEss * ao;
 
     // multi scattering https://google.github.io/filament/Filament.html#listing_multiscatteriblevaluation
@@ -653,7 +651,7 @@ LightingResult DoClearCoatIBL(float3 V, float3 N, const PixelData pixel, float N
 LightingResult DoSubSurfaceIBL(float3 V, float3 N, const PixelData pixel, float NoV, float occlusion, LightingResult result)
 {
     float3 viewIndependent = Irradiance_RoughnessOne(N);
-    float3 viewDependent = PrefilteredRadiance(V, pixel.Roughness, 1.0 + pixel.Thickness);
+    float3 viewDependent = PrefilteredRadiance(-V, pixel.Roughness, 1.0 + pixel.Thickness);
     float attenuation = (1.0 - pixel.Thickness) / (2.0 * PI);
     result.Diffuse += pixel.SubsurfaceColor * (viewIndependent + viewDependent) * attenuation;
 
@@ -663,7 +661,7 @@ LightingResult DoSubSurfaceIBL(float3 V, float3 N, const PixelData pixel, float 
 // V : view vector
 // P : World Space position
 // N : surface normal
-LightingResult DoIBL(float3 V, float3 P, float3 N, float NoV, PixelData pixel, float occlusion)
+LightingResult DoIBL(float3 V, float3 P, float3 N, float NoV, const PixelData pixel, float occlusion)
 {
     float3 E = SpecularDFG(pixel);
     LightingResult result = (LightingResult)0;
@@ -682,7 +680,7 @@ LightingResult DoIBL(float3 V, float3 P, float3 N, float NoV, PixelData pixel, f
         result = DoClearCoatIBL(V, N, pixel, NoV, occlusion, result);
 
         // SubSurface Layer
-        // result = DoSubSurfaceIBL(V, N, pixel, NoV, occlusion, result);
+        result = DoSubSurfaceIBL(V, N, pixel, NoV, occlusion, result);
 
         if(pixel.Transmission != 0.0)
         {
@@ -856,7 +854,7 @@ LightingResult DoSpotLight( LightData light, float3 V, float3 P, float3 N )
 // V : view vector
 // P : position vector in world space
 // N : normal
-LightingResult DoLighting(float3 V, float3 P, float3 N, PixelData pixel, 
+LightingResult DoLighting(float3 V, float3 P, float3 N, const PixelData pixel, 
     float2 uv, bool castLight, float occlusion)
 {
     float NoV = ClampNoV(dot(N, V));

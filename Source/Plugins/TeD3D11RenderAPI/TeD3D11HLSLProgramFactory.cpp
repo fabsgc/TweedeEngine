@@ -170,7 +170,8 @@ namespace te
 #if defined(TE_DEBUG_MODE)
             compileFlags |= D3DCOMPILE_DEBUG;
             compileFlags |= D3DCOMPILE_SKIP_OPTIMIZATION;
-            compileFlags |= D3DCOMPILE_PREFER_FLOW_CONTROL;
+            compileFlags |= D3DCOMPILE_AVOID_FLOW_CONTROL;
+            compileFlags |= D3DCOMPILE_OPTIMIZATION_LEVEL0;
 #else
             compileFlags |= D3DCOMPILE_OPTIMIZATION_LEVEL3;
             compileFlags |= D3DCOMPILE_PARTIAL_PRECISION;

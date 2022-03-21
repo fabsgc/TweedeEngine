@@ -210,7 +210,7 @@ namespace te
                     //Vector3 H = TBN.Multiply(SphericalToCartesian(dSample.CosTheta, dSample.SinTheta, dSample.Phi));
                     Vector3 H = SphericalToCartesian(dSample.CosTheta, dSample.SinTheta, dSample.Phi);
                     //Vector3 H = SphericalToCartesian(dSample.CosTheta, dSample.SinTheta, dSample.Phi);
-                    Vector3 L = 2.0f * Vector3::Dot(V, H) * H - V; // Reflect
+                    Vector3 L = (-V) - 2 * N * Vector3::Dot(-V, N);
 
                     float VoH = std::max(Vector3::Dot(V, H), 0.0f);
                     float NoL = (L.z); // N assumed (0, 0, 1)
@@ -218,7 +218,6 @@ namespace te
 
                     if (NoL > 0.0f)
                     {
-
                         if (mode == RendererTextures::DistributionMode::GXX)
                         {
                             // LUT for GGX distribution.

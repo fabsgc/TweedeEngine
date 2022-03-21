@@ -65,7 +65,7 @@ PS_OUTPUT main( VS_OUTPUT IN )
     float3		N_clearCoat_Raw				= N;
     float3		P							= IN.PositionWS.xyz;
     float3		Pv							= gCamera.ViewOrigin;
-    float3		V							= normalize(P - Pv);
+    float3		V							= normalize(Pv - P);
 
     float3x3	TBN							= float3x3(normalize(IN.Tangent), normalize(IN.BiTangent), N);
     float2		uv0							= (IN.UV0 * gMaterial.UV0Repeat) + gMaterial.UV0Offset;

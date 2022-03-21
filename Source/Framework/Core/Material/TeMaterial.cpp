@@ -66,6 +66,7 @@ namespace te
     {
         SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
         SetSamplerState("BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
+        SetSamplerState("NoFilterSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::NoFilter));
 
         InitializeTechniques();
         CoreObject::Initialize();

@@ -646,9 +646,7 @@ namespace te
     }
 
     void BuiltinResources::InitShaderDesc()
-    {
-
-    }
+    { }
 
     void BuiltinResources::InitSamplers()
     {
