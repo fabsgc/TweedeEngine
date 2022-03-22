@@ -91,7 +91,7 @@ struct PixelData
     float  Roughness;
     float3 F0;
     float3 F90;
-    float3 DFG_GXX;
+    float3 DFG_GGX;
     float3 DFG_Charlie;
     float3 EnergyCompensation;
     float3x3 TBN;
@@ -181,7 +181,7 @@ Texture2D TransmissionMap : register(t13);
 Texture2D AnisotropyDirectionMap : register(t14);
 TextureCube DiffuseIrrMap : register(t15);
 TextureCube PrefilteredRadianceMap : register(t16);
-Texture2D PreIntegratedEnvGF_GXX : register(t17);
+Texture2D PreIntegratedEnvGF_GGX : register(t17);
 Texture2D PreIntegratedEnvGF_Charlie : register(t18);
 
 SamplerState AnisotropicSampler : register(s0);
@@ -455,9 +455,9 @@ float ComputeSpecularOcclusion(float NoV, float occlusion, float roughness)
     return clamp(pow(NoV + occlusion, exp2(-16.0 * roughness - 1.0)) - 1.0 + occlusion, 0.0, 1.0);
 }
 
-float3 PreIntEnvGF_GXX(float NoV, float roughness)
+float3 PreIntEnvGF_GGX(float NoV, float roughness)
 {
-    return PreIntegratedEnvGF_GXX.SampleLevel(NoFilterSampler, float2(saturate(NoV), roughness), 0).xyz;
+    return PreIntegratedEnvGF_GGX.SampleLevel(NoFilterSampler, float2(saturate(NoV), roughness), 0).xyz;
 }
 
 float3 PreIntEnvGF_Charlie(float NoV, float roughness)
@@ -467,7 +467,7 @@ float3 PreIntEnvGF_Charlie(float NoV, float roughness)
 
 float3 SpecularDFG(const PixelData pixel)
 {
-    return lerp(pixel.DFG_GXX.xxx, pixel.DFG_GXX.yyy, pixel.F0);
+    return lerp(pixel.DFG_GGX.xxx, pixel.DFG_GGX.yyy, pixel.F0);
 }
 
 float3 Irradiance_RoughnessOne(const float3 N)
@@ -598,7 +598,7 @@ float3 DoSpecularIBL(float3 V, float3 N, float NoV, float3 E, const PixelData pi
     float ao = ComputeSpecularOcclusion(NoV, occlusion, pixel.Roughness);
 
     float3 radiance = PrefilteredRadiance(dominantR, pixel.PRoughness);
-    float2 envBRDF = PreIntEnvGF_GXX(NoV, pixel.Roughness).xy;
+    float2 envBRDF = PreIntEnvGF_GGX(NoV, pixel.Roughness).xy;
     float3 FssEss = pixel.F0 * envBRDF.x + envBRDF.y * pixel.F90; // E
     result = radiance * FssEss * ao;
 
@@ -665,7 +665,6 @@ LightingResult DoIBL(float3 V, float3 P, float3 N, float NoV, const PixelData pi
 {
     float3 E = SpecularDFG(pixel);
     LightingResult result = (LightingResult)0;
-    float2 envBRDF = pixel.DFG_GXX.rg;
 
     if(gMaterial.DoIndirectLighting && (gUseSkyboxDiffuseIrrMap || gUseSkyboxPrefilteredRadianceMap))
     {

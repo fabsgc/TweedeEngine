@@ -14,10 +14,10 @@ namespace te
         /** Cleans up renderer textures. */
         static void ShutDown();
 
-        /** Two modes are avaibles to compute PreIntegratedEnvGF : GXX and Charlie */
+        /** Two modes are avaibles to compute PreIntegratedEnvGF : GGX and Charlie */
         enum class DistributionMode
         {
-            GXX, Charlie
+            GGX, Charlie
         };
 
         /**
@@ -28,7 +28,7 @@ namespace te
          * (u, v) = (NoV, roughness)
          * (r, g) = (scale, bias)
          */
-        static SPtr<Texture> PreIntegratedEnvGF_GXX;
+        static SPtr<Texture> PreIntegratedEnvGF_GGX;
 
         /**
          * 2D 2-channel texture containing a pre-integrated G and F factors of the microfactet BRDF. This is an

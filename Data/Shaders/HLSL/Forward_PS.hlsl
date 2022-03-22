@@ -176,7 +176,7 @@ PS_OUTPUT main( VS_OUTPUT IN )
         pixel.EtaIR = airIor / pixel.IOR;  // air -> material
         pixel.EtaRI = pixel.IOR / airIor;  // material -> air
         pixel.RefractionType = refractionType;
-        pixel.DFG_GXX = PreIntEnvGF_GXX(NoV, pixel.PRoughness).xyz;
+        pixel.DFG_GGX = PreIntEnvGF_GGX(NoV, pixel.Roughness).xyz;
 
         if(thickness != 0.0 || microThickness != 0.0)
             pixel.Absorption = max((float3)0, absorption);
@@ -209,7 +209,7 @@ PS_OUTPUT main( VS_OUTPUT IN )
         pixel.AnisotropicB = normalize(cross(N_Raw, pixel.AnisotropicT));
 
         // Energy compensation for multiple scattering in a microfacet model
-        pixel.EnergyCompensation = 1.0 + pixel.F0 * (1.0 / pixel.DFG_GXX.y - 1.0);
+        pixel.EnergyCompensation = 1.0 + pixel.F0 * (1.0 / pixel.DFG_GGX.y - 1.0);
 
         // ###################### DO LIGHTING
         lit = DoLighting(V, P, N, pixel, uv0, castLight, occlusion);

@@ -164,7 +164,7 @@ namespace te
         desc.Format = PF_RGBA32F;
         desc.Width = 128;
         desc.Height = 128;
-        desc.DebugName = mode == RendererTextures::DistributionMode::GXX ? "GXX LUT" : "Charlie LUT";
+        desc.DebugName = mode == RendererTextures::DistributionMode::GGX ? "GGX LUT" : "Charlie LUT";
 
         Vector3 N = Vector3::UNIT_Z;
         Matrix3 TBN = GenerateTBN(N);
@@ -202,7 +202,7 @@ namespace te
                     DistributionSample dSample;
                     Vector2 xi = HammersleySequence(i, NumSamples);
 
-                    if(mode == RendererTextures::DistributionMode::GXX)
+                    if(mode == RendererTextures::DistributionMode::GGX)
                         dSample = ImportanceSampleGGX(xi, m);
                     else
                         dSample = ImportanceSampleCharlie(xi, m);
@@ -218,7 +218,7 @@ namespace te
 
                     if (NoL > 0.0f)
                     {
-                        if (mode == RendererTextures::DistributionMode::GXX)
+                        if (mode == RendererTextures::DistributionMode::GGX)
                         {
                             // LUT for GGX distribution.
 
@@ -266,18 +266,18 @@ namespace te
         return texture;
     }
 
-    SPtr<Texture> RendererTextures::PreIntegratedEnvGF_GXX;
+    SPtr<Texture> RendererTextures::PreIntegratedEnvGF_GGX;
     SPtr<Texture> RendererTextures::PreIntegratedEnvGF_Charlie;
 
     void RendererTextures::StartUp()
     {
-        PreIntegratedEnvGF_GXX = GeneratePreIntegratedEnvBRDF(RendererTextures::DistributionMode::GXX);
+        PreIntegratedEnvGF_GGX = GeneratePreIntegratedEnvBRDF(RendererTextures::DistributionMode::GGX);
         PreIntegratedEnvGF_Charlie = GeneratePreIntegratedEnvBRDF(RendererTextures::DistributionMode::Charlie);
     }
 
     void RendererTextures::ShutDown()
     {
-        PreIntegratedEnvGF_GXX = nullptr;
+        PreIntegratedEnvGF_GGX = nullptr;
         PreIntegratedEnvGF_Charlie = nullptr;
     }
 }

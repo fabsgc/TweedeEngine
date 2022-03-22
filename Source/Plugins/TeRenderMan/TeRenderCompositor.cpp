@@ -65,8 +65,8 @@ namespace te
 
                 // We bind PreIntegratedEnvGF
                 {
-                    if(RendererTextures::PreIntegratedEnvGF_GXX)
-                        entry.RenderElem->GpuParamsElem[entry.PassIdx]->SetTexture("PreIntegratedEnvGF_GXX", RendererTextures::PreIntegratedEnvGF_GXX);
+                    if(RendererTextures::PreIntegratedEnvGF_GGX)
+                        entry.RenderElem->GpuParamsElem[entry.PassIdx]->SetTexture("PreIntegratedEnvGF_GGX", RendererTextures::PreIntegratedEnvGF_GGX);
 
                     if(RendererTextures::PreIntegratedEnvGF_Charlie)
                         entry.RenderElem->GpuParamsElem[entry.PassIdx]->SetTexture("PreIntegratedEnvGF_Charlie", RendererTextures::PreIntegratedEnvGF_Charlie);
