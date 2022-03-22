@@ -2,6 +2,7 @@
 
 #include "TeCorePrerequisites.h"
 #include "Image/TePixelData.h"
+#include "Image/TeTexture.h"
 #include "Math/TeVector2I.h"
 
 namespace te
@@ -277,6 +278,14 @@ namespace te
          *			largest to smallest.
          */
         static Vector<SPtr<PixelData>> GenMipmaps(const PixelData& src, const MipMapGenOptions& options, UINT32 maxMip = 0);
+
+        /**
+         * Generates mip-maps from the provided source data using the specified compression options. Returned list includes
+         * the base level.
+         *
+         * @return	The final texture with all mipmap
+         */
+        static SPtr<Texture> GenMipmaps(const TEXTURE_DESC& desc, const PixelData& src, const MipMapGenOptions& options, UINT32 maxMip = 0);
 
         /**
          * Scales pixel data in the source buffer and stores the scaled data in the destination buffer. Provided pixel data

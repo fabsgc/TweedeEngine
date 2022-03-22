@@ -80,6 +80,8 @@ set (TE_CORE_INC_RENDERER
     "Core/Renderer/TeBlitMat.h"
     "Core/Renderer/TeDecal.h"
     "Core/Renderer/TeIBLUtility.h"
+    "Core/Renderer/TeTextureDownsampleMat.h"
+    "Core/Renderer/TeTextureCubeDownsampleMat.h"
 )
 set (TE_CORE_SRC_RENDERER
     "Core/Renderer/TeRenderer.cpp"
@@ -98,6 +100,8 @@ set (TE_CORE_SRC_RENDERER
     "Core/Renderer/TeBlitMat.cpp"
     "Core/Renderer/TeDecal.cpp"
     "Core/Renderer/TeIBLUtility.cpp"
+    "Core/Renderer/TeTextureDownsampleMat.cpp"
+    "Core/Renderer/TeTextureCubeDownsampleMat.cpp"
 )
 
 set (TE_CORE_INC_SCENE

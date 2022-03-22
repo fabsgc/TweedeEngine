@@ -55,16 +55,18 @@ namespace te
         SSAODownSample = 0x11,
         /** Shader used to render decals on top of rendered objects */
         Decal = 0x12,
+        /** Shader used to downsample a 2D texture*/
+        TextureDownsample = 0x13,
         /** Shader used to downsample a cubemap*/
-        TextureCubeDownsample = 0x13,
+        TextureCubeDownsample = 0x14,
         /** Shader used to importance sampling a cubemap*/
-        ReflectionCubeImportanceSample = 0x14,
+        ReflectionCubeImportanceSample = 0x15,
         /** Computes spherical harmonic coefficients from a radiance cubemap */
-        IrradianceComputeSH = 0x15,
+        IrradianceComputeSH = 0x16,
         /**  Sums spherical harmonic coefficients calculated by each thread group of IrradianceComputeSHMat and outputs a single set of normalized coefficients. */
-        IrradianceReduceSH = 0x16,
+        IrradianceReduceSH = 0x17,
         /** Projects spherical harmonic coefficients calculated by IrradianceReduceSHMat and projects them onto faces of a cubemap. */
-        IrradianceProjectSH = 0x17
+        IrradianceProjectSH = 0x18
     };
 
     /** Types of builtin shaders that are always available. */
@@ -139,6 +141,7 @@ namespace te
         void InitShaderSSAOBlur();
         void InitShaderSSAODownSample();
         void InitShaderDecal();
+        void InitShaderTextureDownsample();
         void InitShaderTextureCubeDownsample();
         void InitShaderReflectionCubeImportanceSample();
         void InitIrradianceComputeSH();
@@ -169,6 +172,7 @@ namespace te
         HShader _shaderSSAOBlur;
         HShader _shaderSSAODownSample;
         HShader _shaderDecal;
+        HShader _shaderTextureDownsample;
         HShader _shaderTextureCubeDownsample;
         HShader _shaderReflectionCubeImportanceSample;
         HShader _shaderIrradianceComputeSH;
@@ -195,6 +199,7 @@ namespace te
         SHADER_DESC _ssaoBlurShaderDesc;
         SHADER_DESC _ssaoDownSampleShaderDesc;
         SHADER_DESC _decalShaderDesc;
+        SHADER_DESC _shaderTextureDownsampleDesc;
         SHADER_DESC _shaderTextureCubeDownsampleDesc;
         SHADER_DESC _shaderReflectionCubeImportanceSampleDesc;
         SHADER_DESC _shaderIrradianceComputeSHDesc;
@@ -247,6 +252,9 @@ namespace te
 
         GPU_PROGRAM_DESC _vertexShaderDecalDesc;
         GPU_PROGRAM_DESC _pixelShaderDecalDesc;
+
+        GPU_PROGRAM_DESC _vertexShaderTextureDownsampleDesc;
+        GPU_PROGRAM_DESC _pixelShaderTextureDownsampleDesc;
 
         GPU_PROGRAM_DESC _vertexShaderTextureCubeDownsampleDesc;
         GPU_PROGRAM_DESC _pixelShaderTextureCubeDownsampleDesc;

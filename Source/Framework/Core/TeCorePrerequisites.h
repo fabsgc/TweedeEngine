@@ -248,6 +248,9 @@ namespace te
     class BlitMat;
     class RendererMeshData;
     class Decal;
+    class TextureDownsampleMat;
+    class TextureCubeDownsampleMat;
+    class IBLUtility;
 
     class SceneActor;
     class SceneManager;

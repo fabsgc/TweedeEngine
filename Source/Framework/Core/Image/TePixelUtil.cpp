@@ -2391,6 +2391,11 @@ namespace te
         return outputMipBuffers;
     }
 
+    SPtr<Texture> PixelUtil::GenMipmaps(const TEXTURE_DESC& desc, const PixelData& src, const MipMapGenOptions& options, UINT32 maxMip)
+    {
+        return nullptr; // TODO
+    }
+
     void PixelUtil::Mirror(PixelData& pixelData, INT32 mode)
     {
         UINT32 width = pixelData.GetWidth();

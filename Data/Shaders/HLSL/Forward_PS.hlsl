@@ -20,14 +20,14 @@ PS_OUTPUT main( VS_OUTPUT IN )
     float3		sheenColor					= GetColor(useSRGB, true, gMaterial.SheenColor.rgb);
     float3		subsurfaceColor				= GetColor(useSRGB, true, gMaterial.SubsurfaceColor.rgb);
     float		metallic					= gMaterial.Metallic;
-    float		pRoughness					= min(MAX_ROUGHNESS, gMaterial.Roughness);
+    float		pRoughness					= min(max(MIN_ROUGHNESS, gMaterial.Roughness), MAX_ROUGHNESS);
     float		roughness					= pRoughness * pRoughness;
     float		reflectance					= gMaterial.Reflectance;
     float		occlusion					= gMaterial.Occlusion;
-    float		pSheenRoughness				= min(MAX_ROUGHNESS, gMaterial.SheenRoughness);
+    float		pSheenRoughness				= min(max(MIN_ROUGHNESS, gMaterial.SheenRoughness), MAX_ROUGHNESS);
     float		sheenRoughness				= pSheenRoughness * pSheenRoughness;
     float		clearCoat					= gMaterial.ClearCoat;
-    float		pClearCoatRoughness			= min(MAX_ROUGHNESS, gMaterial.ClearCoatRoughness);
+    float		pClearCoatRoughness			= min(max(MIN_ROUGHNESS, gMaterial.ClearCoatRoughness), MAX_ROUGHNESS);
     float		subsurfacePower				= gMaterial.SubsurfacePower;
     float		clearCoatRoughness			= pClearCoatRoughness * pClearCoatRoughness;
     float		anisotropy					= gMaterial.Anisotropy;
@@ -116,7 +116,7 @@ PS_OUTPUT main( VS_OUTPUT IN )
         // ###################### ROUGHNESS MAP SAMPLING
         if(useRoughnessMap)
         {
-            pRoughness = min(MAX_ROUGHNESS, RoughnessMap.Sample(AnisotropicSampler, uv0).b);
+            pRoughness = min(max(MIN_ROUGHNESS, RoughnessMap.Sample(AnisotropicSampler, uv0).b), MAX_ROUGHNESS);
             roughness = pRoughness * pRoughness;
         }
 
@@ -135,7 +135,7 @@ PS_OUTPUT main( VS_OUTPUT IN )
         // ###################### CLEAR COAT ROUGHNESS MAP SAMPLING
         if(useSheenRoughnessMap)
         {
-            pSheenRoughness = min(MAX_ROUGHNESS, SheenRoughnessMap.Sample(AnisotropicSampler, uv0).r);
+            pSheenRoughness = min(max(MIN_ROUGHNESS, SheenRoughnessMap.Sample(AnisotropicSampler, uv0).r), MAX_ROUGHNESS);
             sheenRoughness = pSheenRoughness * pSheenRoughness;
         }
 
@@ -146,7 +146,7 @@ PS_OUTPUT main( VS_OUTPUT IN )
         // ###################### CLEAR COAT ROUGHNESS SAMPLING
         if(useClearCoatRoughnessMap)
         {
-            pClearCoatRoughness = min(MAX_ROUGHNESS, ClearCoatRoughnessMap.Sample(AnisotropicSampler, uv0).r);
+            pClearCoatRoughness = min(max(MIN_ROUGHNESS, ClearCoatRoughnessMap.Sample(AnisotropicSampler, uv0).r), MAX_ROUGHNESS);
             clearCoatRoughness = pClearCoatRoughness * pClearCoatRoughness;
         }
 
@@ -166,8 +166,8 @@ PS_OUTPUT main( VS_OUTPUT IN )
         float airIor = 1.0;
 
         pixel.DiffuseColor = diffuseBaseColor;
-        pixel.PRoughness = min(max(MIN_ROUGHNESS, pRoughness), MAX_ROUGHNESS);
-        pixel.Roughness = min(max(MIN_ROUGHNESS, roughness), MAX_ROUGHNESS);
+        pixel.PRoughness = pRoughness;
+        pixel.Roughness = roughness;
         pixel.F0 = ComputeF0(baseColor, metallic, ComputeDielectricF0(reflectance));
         pixel.F90 = saturate(dot(pixel.F0, float3_splat(50.0 * 0.33)));
         pixel.TBN = TBN;
@@ -190,13 +190,13 @@ PS_OUTPUT main( VS_OUTPUT IN )
             pixel.UThickness = max(0.0, microThickness);
 
         pixel.ClearCoat = clearCoat;
-        pixel.ClearCoatRoughness = min(max(MIN_ROUGHNESS, clearCoatRoughness), MAX_ROUGHNESS);
-        pixel.PClearCoatRoughness = min(max(MIN_ROUGHNESS, pClearCoatRoughness), MAX_ROUGHNESS);
+        pixel.PClearCoatRoughness = pClearCoatRoughness;
+        pixel.ClearCoatRoughness = clearCoatRoughness;
         pixel.N_clearCoat = N_clearCoat;
 
         pixel.SheenColor = sheenColor;
-        pixel.SheenRoughness = min(max(MIN_ROUGHNESS, sheenRoughness), MAX_ROUGHNESS);
-        pixel.PSheenRoughness = min(max(MIN_ROUGHNESS, pSheenRoughness), MAX_ROUGHNESS);
+        pixel.PSheenRoughness = pSheenRoughness;
+        pixel.SheenRoughness = sheenRoughness;
         pixel.DFG_Sheen = PreIntEnvGF(NoV, pixel.PSheenRoughness).xyz;
         pixel.SheenScaling = 1.0 - max(pixel.SheenColor.r, max(pixel.SheenColor.g, pixel.SheenColor.b)) * pixel.DFG_Sheen.z;
 

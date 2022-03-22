@@ -593,7 +593,7 @@ float3 DoSpecularIBL(float3 V, float3 N, float NoV, float3 E, const PixelData pi
 
     float3 radiance = PrefilteredRadiance(dominantR, pixel.PRoughness);
     float3 FssEss = pixel.F0 * pixel.DFG.x + pixel.DFG.y * pixel.F90; // E
-    result = radiance * ao;
+    result = radiance * FssEss * ao;
 
     // multi scattering https://google.github.io/filament/Filament.html#listing_multiscatteriblevaluation
 
@@ -626,10 +626,10 @@ LightingResult DoClearCoatIBL(float3 V, float3 N, const PixelData pixel, float N
 {
     float3 NClearCoat = pixel.N_clearCoat;
     float clearCoatNoV = ClampNoV(dot(NClearCoat, V));
-    float3 clearCoatR = GetReflectedVector(V, N, pixel);
-    float ao = ComputeSpecularOcclusion(NoV, occlusion, pixel.Roughness);
+    float3 clearCoatR = GetReflectedVector(V, NClearCoat, pixel);
+    float ao = ComputeSpecularOcclusion(clearCoatNoV, occlusion, pixel.ClearCoatRoughness);
 
-    float Fc = F_Schlick(0.04, 1.0, clearCoatNoV) * pixel.ClearCoat;
+    float Fc = F_Schlick(0.04, 1.0, NoV) * pixel.ClearCoat;
     float attenuation = 1.0 - Fc;
     result.Diffuse *= attenuation;
     result.Specular *= attenuation;

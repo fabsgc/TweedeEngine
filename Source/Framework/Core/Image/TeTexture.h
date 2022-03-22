@@ -4,7 +4,6 @@
 #include "Resources/TeResource.h"
 #include "CoreUtility/TeCoreObject.h"
 #include "TePixelData.h"
-#include "TePixelUtil.h"
 #include "Math/TeVector3I.h"
 #include "RenderAPI/TeCommonTypes.h"
 #include "RenderAPI/TeTextureView.h"

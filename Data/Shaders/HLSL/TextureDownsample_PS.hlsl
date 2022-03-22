@@ -13,7 +13,7 @@ struct PS_INPUT
 };
 
 SamplerState BilinearSampler : register(s0);
-TextureCube SourceMap : register(t0);
+Texture2D SourceMap : register(t0);
 
 float4 main( PS_INPUT IN ) : SV_Target0
 {

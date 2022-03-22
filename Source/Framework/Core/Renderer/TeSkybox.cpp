@@ -1,5 +1,6 @@
 #include "TeSkybox.h"
 #include "Image/TeTexture.h"
+#include "Image/TePixelUtil.h"
 #include "Scene/TeSceneObject.h"
 #include "Renderer/TeRenderer.h"
 #include "Renderer/TeIBLUtility.h"

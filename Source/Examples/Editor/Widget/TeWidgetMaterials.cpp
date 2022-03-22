@@ -492,7 +492,7 @@ namespace te
                 if (ShowTexture(uuid, properties.UseClearCoatRoughnessMap, "##material_texture_clear_coat_roughness_option", "Clear C. Rough.", "ClearCoatRoughnesssMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D, false))
                     hasChanged = true;
 
-                if (ShowTexture(uuid, properties.UseClearCoatNormalMap, "##material_texture_clear_coat_normal_option", "Clear C. Normal", "ClearCoatNormalMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D))
+                if (ShowTexture(uuid, properties.UseClearCoatNormalMap, "##material_texture_clear_coat_normal_option", "Clear C. Normal", "ClearCoatNormalMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D, false))
                     hasChanged = true;
 
                 if (ShowTexture(uuid, properties.UseNormalMap, "##material_texture_normal_option", "Normal", "NormalMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D, false))

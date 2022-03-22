@@ -139,6 +139,11 @@ namespace te
                 InitShaderDecal();
             shader = _shaderDecal;
             break;
+        case BuiltinShader::TextureDownsample:
+            if (!_shaderTextureDownsample.IsLoaded())
+                InitShaderTextureDownsample();
+            shader = _shaderTextureDownsample;
+            break;
         case BuiltinShader::TextureCubeDownsample:
             if (!_shaderTextureCubeDownsample.IsLoaded())
                 InitShaderTextureCubeDownsample();
@@ -517,6 +522,26 @@ namespace te
             _pixelShaderDecalDesc.Language = "hlsl";
             _pixelShaderDecalDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
             _pixelShaderDecalDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/TextureDownsample_VS.hlsl"));
+            _vertexShaderTextureDownsampleDesc.Type = GPT_VERTEX_PROGRAM;
+            _vertexShaderTextureDownsampleDesc.FilePath = SHADERS_FOLDER + String("HLSL/TextureDownsample_VS.hlsl");
+            _vertexShaderTextureDownsampleDesc.EntryPoint = "main";
+            _vertexShaderTextureDownsampleDesc.Language = "hlsl";
+            _vertexShaderTextureDownsampleDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
+            _vertexShaderTextureDownsampleDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/TextureDownsample_PS.hlsl"));
+            _pixelShaderTextureDownsampleDesc.Type = GPT_PIXEL_PROGRAM;
+            _pixelShaderTextureDownsampleDesc.FilePath = SHADERS_FOLDER + String("HLSL/TextureDownsample_PS.hlsl");
+            _pixelShaderTextureDownsampleDesc.EntryPoint = "main";
+            _pixelShaderTextureDownsampleDesc.Language = "hlsl";
+            _pixelShaderTextureDownsampleDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
+            _pixelShaderTextureDownsampleDesc.Source = shaderFile.GetAsString();
         }
 
         {
@@ -1069,6 +1094,28 @@ namespace te
         _shaderSSAO = Shader::Create("SSAO Down Sample", shaderDesc);
     }
 
+    void BuiltinResources::InitShaderTextureDownsample()
+    {
+        PASS_DESC passDesc;
+        passDesc.BlendStateDesc = _blendOpaqueStateDesc;
+        passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
+        passDesc.RasterizerStateDesc = _rasterizerStateDesc;
+        passDesc.VertexProgramDesc = _vertexShaderTextureDownsampleDesc;
+        passDesc.PixelProgramDesc = _pixelShaderTextureDownsampleDesc;
+
+        passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
+
+        SPtr<Pass> pass = Pass::Create(passDesc);
+        SPtr<Technique> technique = Technique::Create("hlsl", { pass });
+        technique->Compile();
+
+        SHADER_DESC shaderDesc = _shaderTextureDownsampleDesc;
+        shaderDesc.QueueType = QueueSortType::BackToFront;
+        shaderDesc.Techniques.push_back(technique);
+
+        _shaderTextureDownsample = Shader::Create("Texture 2D Down Sample", shaderDesc);
+    }
+
     void BuiltinResources::InitShaderTextureCubeDownsample()
     {
         PASS_DESC passDesc;
@@ -1088,7 +1135,7 @@ namespace te
         shaderDesc.QueueType = QueueSortType::BackToFront;
         shaderDesc.Techniques.push_back(technique);
 
-        _shaderTextureCubeDownsample = Shader::Create("Reflection Cube Down Sample", shaderDesc);
+        _shaderTextureCubeDownsample = Shader::Create("Texture Cube Down Sample", shaderDesc);
     }
 
     void BuiltinResources::InitShaderReflectionCubeImportanceSample()

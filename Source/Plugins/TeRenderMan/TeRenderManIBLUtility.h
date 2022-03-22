@@ -5,32 +5,10 @@
 #include "Renderer/TeRendererMaterial.h"
 #include "Renderer/TeParamBlocks.h"
 #include "Renderer/TeGpuResourcePool.h"
+#include "Math/TeVector2I.h"
 
 namespace te
 {
-    TE_PARAM_BLOCK_BEGIN(TextureCubeDownsampleParamDef)
-        TE_PARAM_BLOCK_ENTRY(UINT32, gCubeFace)
-        TE_PARAM_BLOCK_ENTRY(UINT32, gMipLevel)
-        TE_PARAM_BLOCK_ENTRY(Vector2, gPadding)
-    TE_PARAM_BLOCK_END
-
-    extern TextureCubeDownsampleParamDef gTextureCubeDownsampleParamDef;
-
-    /** Performs filtering on cubemap faces in order to prepare them for importance sampling. */
-    class TextureCubeDownsampleMat : public RendererMaterial<TextureCubeDownsampleMat>
-    {
-        RMAT_DEF(BuiltinShader::TextureCubeDownsample)
-
-    public:
-        TextureCubeDownsampleMat();
-
-        /** Downsamples the provided texture face and outputs it to the provided target. */
-        void Execute(const SPtr<Texture>& source, UINT32 face, UINT32 mip, const SPtr<RenderTarget>& target);
-
-    private:
-        SPtr<GpuParamBlockBuffer> _paramBuffer;
-    };
-
     TE_PARAM_BLOCK_BEGIN(ReflectionCubeImportanceSampleParamDef)
         TE_PARAM_BLOCK_ENTRY(UINT32, gCubeFace)
         TE_PARAM_BLOCK_ENTRY(UINT32, gMipLevel)
