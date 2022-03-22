@@ -627,10 +627,12 @@ namespace te
     void RendererScene::SetParamSkyboxParams(bool enabled)
     {
         UINT32 SkyboxNumMips = 0;
-        SPtr<Texture> prefilteredRadiance = _info.SkyboxElem->GetSpecularIrradiance();
+        SPtr<Texture> prefilteredRadiance = nullptr;
 
         if(_info.SkyboxElem != nullptr && enabled)
         {
+            prefilteredRadiance = _info.SkyboxElem->GetSpecularIrradiance();
+
             gPerFrameParamDef.gSkyboxBrightness.Set(_info.PerFrameParamBuffer, _info.SkyboxElem->GetBrightness());
             gPerFrameParamDef.gUseSkyboxMap.Set(_info.PerFrameParamBuffer, _info.SkyboxElem->GetTexture() ? 1 : 0);
             gPerFrameParamDef.gUseSkyboxDiffuseIrrMap.Set(_info.PerFrameParamBuffer, _info.SkyboxElem->GetDiffuseIrradiance() ? 1 : 0);

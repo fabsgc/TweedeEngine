@@ -1,4 +1,3 @@
-#include "Include/PostProcess.hlsli"
 #include "Include/CommonReflectionCubemap.hlsli"
 
 cbuffer PerFrameBuffer : register(b0)
@@ -7,6 +6,12 @@ cbuffer PerFrameBuffer : register(b0)
     uint gMipLevel;
     float2 gPadding;
 }
+
+struct PS_INPUT
+{
+    float4 Position : SV_POSITION;
+    float2 Texture : TEXCOORD0;
+};
 
 SamplerState BilinearSampler : register(s0);
 TextureCube SourceMap : register(t0);

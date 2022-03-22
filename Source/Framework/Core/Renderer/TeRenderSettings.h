@@ -514,7 +514,7 @@ namespace te
          * It's possible to define a scene color which will be used on every object rendered with this camera
          * It's useful to control globally brightness of a scene without using to much lights
          */
-        Color SceneLightColor = Color(1.0f, 1.0f, 1.0f, 1.0f);
+        Color SceneLightColor = Color::White;
 
         /** 
          * If Skybox is enabled for this camera and if a Skybox with a valid CubeMap is present in the scene, 

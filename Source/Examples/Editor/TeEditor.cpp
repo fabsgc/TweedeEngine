@@ -1269,7 +1269,7 @@ namespace te
         //textureImportOptions->SRGB = false;
         //HTexture cobbleNormal = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/normal1.jpg", textureImportOptions);
         //HTexture cobbleParallax = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/parallax1.jpg", textureImportOptions);
-        
+
         if (_loadedMeshMonkey.IsLoaded())
             _loadedMeshMonkey->SetName("Monkey Mesh");
         if (_loadedSkyboxTexture.IsLoaded())

@@ -17,7 +17,7 @@
 namespace te
 {
     const UINT32 MaterialsPreview::PreviewSize = 360;
-    const Color  MaterialsPreview::BackgroundColor = Color(0.3f, 0.36f, 0.48f, 1.0f);
+    const Color  MaterialsPreview::BackgroundColor = Color(0.42f, 0.67f, 0.94f, 1.0f);
 
     MaterialsPreview::Preview::Preview()
     {

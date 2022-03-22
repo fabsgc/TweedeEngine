@@ -56,7 +56,7 @@ namespace te
         /** Shader used to render decals on top of rendered objects */
         Decal = 0x12,
         /** Shader used to downsample a cubemap*/
-        ReflectionCubeDownsample = 0x13,
+        TextureCubeDownsample = 0x13,
         /** Shader used to importance sampling a cubemap*/
         ReflectionCubeImportanceSample = 0x14,
         /** Computes spherical harmonic coefficients from a radiance cubemap */
@@ -139,7 +139,7 @@ namespace te
         void InitShaderSSAOBlur();
         void InitShaderSSAODownSample();
         void InitShaderDecal();
-        void InitShaderReflectionCubeDownsample();
+        void InitShaderTextureCubeDownsample();
         void InitShaderReflectionCubeImportanceSample();
         void InitIrradianceComputeSH();
         void InitIrradianceReduceSH();
@@ -169,7 +169,7 @@ namespace te
         HShader _shaderSSAOBlur;
         HShader _shaderSSAODownSample;
         HShader _shaderDecal;
-        HShader _shaderReflectionCubeDownsample;
+        HShader _shaderTextureCubeDownsample;
         HShader _shaderReflectionCubeImportanceSample;
         HShader _shaderIrradianceComputeSH;
         HShader _shaderIrradianceReduceSH;
@@ -195,7 +195,7 @@ namespace te
         SHADER_DESC _ssaoBlurShaderDesc;
         SHADER_DESC _ssaoDownSampleShaderDesc;
         SHADER_DESC _decalShaderDesc;
-        SHADER_DESC _shaderReflectionCubeDownsampleDesc;
+        SHADER_DESC _shaderTextureCubeDownsampleDesc;
         SHADER_DESC _shaderReflectionCubeImportanceSampleDesc;
         SHADER_DESC _shaderIrradianceComputeSHDesc;
         SHADER_DESC _shaderIrradianceReduceSHDesc;
@@ -248,8 +248,8 @@ namespace te
         GPU_PROGRAM_DESC _vertexShaderDecalDesc;
         GPU_PROGRAM_DESC _pixelShaderDecalDesc;
 
-        GPU_PROGRAM_DESC _vertexShaderReflectionCubeDownsampleDesc;
-        GPU_PROGRAM_DESC _pixelShaderReflectionCubeDownsampleDesc;
+        GPU_PROGRAM_DESC _vertexShaderTextureCubeDownsampleDesc;
+        GPU_PROGRAM_DESC _pixelShaderTextureCubeDownsampleDesc;
 
         GPU_PROGRAM_DESC _vertexShaderReflectionCubeImportanceSampleDesc;
         GPU_PROGRAM_DESC _pixelShaderReflectionCubeImportanceSampleDesc;

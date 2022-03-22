@@ -5,30 +5,30 @@
 
 namespace te
 {
-    ReflectionCubeDownsampleParamDef gReflectionCubeDownsampleParamDef;
+    TextureCubeDownsampleParamDef gTextureCubeDownsampleParamDef;
 
-    ReflectionCubeDownsampleMat::ReflectionCubeDownsampleMat()
+    TextureCubeDownsampleMat::TextureCubeDownsampleMat()
     {
-        _paramBuffer = gReflectionCubeDownsampleParamDef.CreateBuffer();
+        _paramBuffer = gTextureCubeDownsampleParamDef.CreateBuffer();
         _params->SetParamBlockBuffer("PerFrameBuffer", _paramBuffer);
         _params->SetSamplerState("BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
     }
 
-    void ReflectionCubeDownsampleMat::Execute(const SPtr<Texture>& source, UINT32 face, UINT32 mip,
+    void TextureCubeDownsampleMat::Execute(const SPtr<Texture>& source, UINT32 face, UINT32 mip,
         const SPtr<RenderTarget>& target)
     {
-        gReflectionCubeDownsampleParamDef.gCubeFace.Set(_paramBuffer, face);
+        gTextureCubeDownsampleParamDef.gCubeFace.Set(_paramBuffer, face);
 
         const RenderAPICapabilities& caps = gCaps();
         if (caps.HasCapability(RSC_TEXTURE_VIEWS))
         {
             _params->SetTexture("SourceMap", source, TextureSurface(mip, 1, 0, 6));
-            gReflectionCubeDownsampleParamDef.gMipLevel.Set(_paramBuffer, 0);
+            gTextureCubeDownsampleParamDef.gMipLevel.Set(_paramBuffer, 0);
         }
         else
         {
             _params->SetTexture("SourceMap", source);
-            gReflectionCubeDownsampleParamDef.gMipLevel.Set(_paramBuffer, mip);
+            gTextureCubeDownsampleParamDef.gMipLevel.Set(_paramBuffer, mip);
         }
 
         RenderAPI& rapi = RenderAPI::Instance();
@@ -380,7 +380,7 @@ namespace te
 
             SPtr<RenderTarget> target = RenderTexture::Create(cubeFaceRTDesc);
 
-            ReflectionCubeDownsampleMat* material = ReflectionCubeDownsampleMat::Get();
+            TextureCubeDownsampleMat* material = TextureCubeDownsampleMat::Get();
             material->Execute(src, face, srcMip, target);
         }
     }

@@ -65,11 +65,8 @@ namespace te
 
                 // We bind PreIntegratedEnvGF
                 {
-                    if(RendererTextures::PreIntegratedEnvGF_GGX)
-                        entry.RenderElem->GpuParamsElem[entry.PassIdx]->SetTexture("PreIntegratedEnvGF_GGX", RendererTextures::PreIntegratedEnvGF_GGX);
-
-                    if(RendererTextures::PreIntegratedEnvGF_Charlie)
-                        entry.RenderElem->GpuParamsElem[entry.PassIdx]->SetTexture("PreIntegratedEnvGF_Charlie", RendererTextures::PreIntegratedEnvGF_Charlie);
+                    if(RendererTextures::PreIntegratedEnvGF)
+                        entry.RenderElem->GpuParamsElem[entry.PassIdx]->SetTexture("PreIntegratedEnvGF", RendererTextures::PreIntegratedEnvGF);
                 }
 
                 gpuParamsBindFlags = GPU_BIND_ALL;
@@ -432,13 +429,11 @@ namespace te
         inputs.CurrRenderAPI.PushMarker("[DRAW] Skybox", Color(0.4f, 0.8f, 0.1f));
 
         Skybox* skybox = nullptr;
-        if (inputs.View.GetRenderSettings().EnableSkybox)
+        if (inputs.Scene.SkyboxElem && inputs.View.GetRenderSettings().EnableSkybox)
             skybox = inputs.Scene.SkyboxElem;
-        else
-            return;
 
         SPtr<Texture> radiance = skybox ? skybox->GetTexture() : nullptr;
-        float brightness = skybox ? skybox->GetBrightness() : 0.0f;
+        float brightness = skybox ? skybox->GetBrightness() : 1.0f;
 
         if (radiance != nullptr)
         {
@@ -456,9 +451,6 @@ namespace te
         int readOnlyFlags = FBT_DEPTH | FBT_STENCIL;
 
         inputs.CurrRenderAPI.SetRenderTarget(gpuInitializationPassNode->RenderTargetTex, readOnlyFlags);
-
-        Rect2 area(0.0f, 0.0f, 1.0f, 1.0f);
-        inputs.CurrRenderAPI.SetViewport(area);
 
         SPtr<Mesh> mesh = gRendererUtility().GetSkyBoxMesh();
         gRendererUtility().Draw(mesh, mesh->GetProperties().GetSubMesh(0));

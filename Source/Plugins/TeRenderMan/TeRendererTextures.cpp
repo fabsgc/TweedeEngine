@@ -125,14 +125,14 @@ namespace te
         ggx.Phi = 2.0f * Math::PI * xi.x;
 
         // evaluate GGX pdf (for half vector)
-        ggx.Pdf = D_GGX(ggx.CosTheta, alpha);
+        // ggx.Pdf = D_GGX(ggx.CosTheta, alpha); TODO slow and not used
 
         // Apply the Jacobian to obtain a pdf that is parameterized by l
         // see https://bruop.github.io/ibl/
         // Typically you'd have the following:
         // float pdf = D_GGX(NoH, roughness) * NoH / (4.0 * VoH);
         // but since V = N => VoH == NoH
-        ggx.Pdf /= 4.0f;
+        // ggx.Pdf /= 4.0f;
 
         return ggx;
     }
@@ -149,22 +149,63 @@ namespace te
         charlie.Phi = 2.0f * Math::PI * xi.x;
 
         // evaluate Charlie pdf (for half vector)
-        charlie.Pdf = D_Charlie(alpha, charlie.CosTheta);
+        // charlie.Pdf = D_Charlie(alpha, charlie.CosTheta);  TODO slow and not used
 
         // Apply the Jacobian to obtain a pdf that is parameterized by l
-        charlie.Pdf /= 4.0;
+        // charlie.Pdf /= 4.0;
 
         return charlie;
     }
 
-    SPtr<Texture> GeneratePreIntegratedEnvBRDF(RendererTextures::DistributionMode mode)
+    void ComputeSample(const Vector3& V, const Vector3& N, const float& NoV, const float& roughness,
+        Vector3& oSample, const DistributionSample& distribution, RendererTextures::DistributionMode mode)
+    {
+        //Vector3 H = TBN.Multiply(SphericalToCartesian(distribution.CosTheta, distribution.SinTheta, distribution.Phi));
+        Vector3 H = SphericalToCartesian(distribution.CosTheta, distribution.SinTheta, distribution.Phi);
+        //Vector3 H = SphericalToCartesian(distribution.CosTheta, distribution.SinTheta, distribution.Phi);
+        Vector3 L = (-V) - 2 * N * Vector3::Dot(-V, N);
+
+        float VoH = std::max(Vector3::Dot(V, H), 0.0f);
+        float NoL = (L.z); // N assumed (0, 0, 1)
+        float NoH = (H.z); // N assumed (0, 0, 1)
+
+        if (NoL > 0.0f)
+        {
+            if (mode == RendererTextures::DistributionMode::GGX)
+            {
+                // LUT for GGX distribution.
+
+                // Taken from: https://bruop.github.io/ibl
+                // Shadertoy: https://www.shadertoy.com/view/3lXXDB
+                // Terms besides V are from the GGX PDF we're dividing by.
+
+                float v_pdf = V_SmithGGXCorrelated(NoV, NoL, roughness) * VoH * NoL / NoH;
+                float fc = pow(1.0f - VoH, 5.0f);
+                oSample.x += (1.0f - fc) * v_pdf;
+                oSample.y += fc * v_pdf;
+                oSample.z += 0.0f;
+            }
+            else
+            {
+                // LUT for Charlie distribution.
+                float sheenDistribution = D_Charlie(roughness, NoH);
+                float sheenVisibility = V_Ashikhmin(NoL, NoV);
+
+                oSample.x += 0.0f;
+                oSample.y += 0.0f;
+                oSample.z += sheenVisibility * sheenDistribution * NoL * VoH;
+            }
+        }
+    }
+
+    SPtr<Texture> GeneratePreIntegratedEnvBRDF()
     {
         TEXTURE_DESC desc;
         desc.Type = TEX_TYPE_2D;
         desc.Format = PF_RGBA32F;
         desc.Width = 128;
         desc.Height = 128;
-        desc.DebugName = mode == RendererTextures::DistributionMode::GGX ? "GGX LUT" : "Charlie LUT";
+        desc.DebugName = "BRDF (GGX:r,g/Charlie:b) LUT";
 
         Vector3 N = Vector3::UNIT_Z;
         Matrix3 TBN = GenerateTBN(N);
@@ -172,13 +213,13 @@ namespace te
         SPtr<Texture> texture = Texture::CreatePtr(desc);
         PixelData pixelData = texture->Lock(GBL_WRITE_ONLY_DISCARD);
 
-        for (UINT32 y = 0; y < desc.Height; y++)
+        for (UINT32 y = 1; y <= desc.Height; y++)
         {
             float roughness = (float)y / desc.Height;
             float m = roughness * roughness;
-            for (UINT32 x = 0; x < desc.Width; x++)
+            for (UINT32 x = 1; x <= desc.Width; x++)
             {
-                float NoV = (float)x / desc.Width;
+                float NoV = Math::Clamp01((float)x / desc.Width);
 
                 Vector3 V;
                 V.x = sqrt(1.0f - NoV * NoV); // sine
@@ -190,74 +231,42 @@ namespace te
                 // yielding to the form: F0 * I1 + I2
                 // I1 and I2 are slighlty different in the Fresnel term, but both only depend on
                 // NoL and roughness, so they are both numerically integrated and written into two channels.
-                float A = 0.0f;
-                float B = 0.0f;
-                float C = 0.0f;
+                Vector3 sample = Vector3::ZERO;
 
                 // We use the same importance sampling function we use for reflection cube importance sampling, only we
                 // sample G and F, instead of D factors of the microfactet BRDF.
                 constexpr UINT32 NumSamples = 128;
                 for (UINT32 i = 0; i < NumSamples; i++)
                 {
-                    DistributionSample dSample;
+                    DistributionSample dSampleGGX, dSampleCharlie;
                     Vector2 xi = HammersleySequence(i, NumSamples);
 
-                    if(mode == RendererTextures::DistributionMode::GGX)
-                        dSample = ImportanceSampleGGX(xi, m);
-                    else
-                        dSample = ImportanceSampleCharlie(xi, m);
-
-                    //Vector3 H = TBN.Multiply(SphericalToCartesian(dSample.CosTheta, dSample.SinTheta, dSample.Phi));
-                    Vector3 H = SphericalToCartesian(dSample.CosTheta, dSample.SinTheta, dSample.Phi);
-                    //Vector3 H = SphericalToCartesian(dSample.CosTheta, dSample.SinTheta, dSample.Phi);
-                    Vector3 L = (-V) - 2 * N * Vector3::Dot(-V, N);
-
-                    float VoH = std::max(Vector3::Dot(V, H), 0.0f);
-                    float NoL = (L.z); // N assumed (0, 0, 1)
-                    float NoH = (H.z); // N assumed (0, 0, 1)
-
-                    if (NoL > 0.0f)
+                    // GGX
                     {
-                        if (mode == RendererTextures::DistributionMode::GGX)
-                        {
-                            // LUT for GGX distribution.
+                        dSampleGGX = ImportanceSampleGGX(xi, m);
+                        ComputeSample(V, N, NoV, roughness, sample, dSampleGGX, RendererTextures::DistributionMode::GGX);
+                    }
 
-                            // Taken from: https://bruop.github.io/ibl
-                            // Shadertoy: https://www.shadertoy.com/view/3lXXDB
-                            // Terms besides V are from the GGX PDF we're dividing by.
-
-                            float v_pdf = V_SmithGGXCorrelated(NoV, NoL, roughness) * VoH * NoL / NoH;
-                            float fc = pow(1.0f - VoH, 5.0f);
-                            A += (1.0f - fc) * v_pdf;
-                            B += fc * v_pdf;
-                            C += 0.0f;
-                        }
-                        else
-                        {
-                            // LUT for Charlie distribution.
-                            float sheenDistribution = D_Charlie(roughness, NoH);
-                            float sheenVisibility = V_Ashikhmin(NoL, NoV);
-
-                            A += 0.0f;
-                            B += 0.0f;
-                            C += sheenVisibility * sheenDistribution * NoL * VoH;
-                        }
+                    // Charlie
+                    {
+                        dSampleCharlie = ImportanceSampleCharlie(xi, m);
+                        ComputeSample(V, N, NoV, roughness, sample, dSampleCharlie, RendererTextures::DistributionMode::Charlie);
                     }
                 }
 
-                A /= NumSamples;
-                B /= NumSamples;
-                C /= NumSamples;
+                sample.x /= NumSamples;
+                sample.y /= NumSamples;
+                sample.z /= NumSamples;
 
                 // The PDF is simply pdf(v, h) -> NDF * <nh>.
                 // To parametrize the PDF over l, use the Jacobian transform, yielding to: pdf(v, l) -> NDF * <nh> / 4<vh>
                 // Since the BRDF divide through the PDF to be normalized, the 4 can be pulled out of the integral.
                 Color color;
-                color.r = Math::Clamp01(4.0f * A);
-                color.g = Math::Clamp01(4.0f * B);
-                color.b = Math::Clamp01(4.0f * 2.0f * Math::PI * C);
+                color.r = Math::Clamp01(4.0f * sample.x);
+                color.g = Math::Clamp01(4.0f * sample.y);
+                color.b = Math::Clamp01(4.0f * 2.0f * Math::PI * sample.z);
 
-                pixelData.SetColorAt(color, x, y);
+                pixelData.SetColorAt(color, x-1, y-1);
             }
         }
 
@@ -266,18 +275,16 @@ namespace te
         return texture;
     }
 
-    SPtr<Texture> RendererTextures::PreIntegratedEnvGF_GGX;
-    SPtr<Texture> RendererTextures::PreIntegratedEnvGF_Charlie;
+    SPtr<Texture> RendererTextures::PreIntegratedEnvGF = nullptr;
 
     void RendererTextures::StartUp()
     {
-        PreIntegratedEnvGF_GGX = GeneratePreIntegratedEnvBRDF(RendererTextures::DistributionMode::GGX);
-        PreIntegratedEnvGF_Charlie = GeneratePreIntegratedEnvBRDF(RendererTextures::DistributionMode::Charlie);
+        if(!PreIntegratedEnvGF)
+            PreIntegratedEnvGF = GeneratePreIntegratedEnvBRDF();
     }
 
     void RendererTextures::ShutDown()
     {
-        PreIntegratedEnvGF_GGX = nullptr;
-        PreIntegratedEnvGF_Charlie = nullptr;
+        PreIntegratedEnvGF = nullptr;
     }
 }

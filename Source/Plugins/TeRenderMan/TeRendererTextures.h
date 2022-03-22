@@ -26,18 +26,8 @@ namespace te
          * tandem with the importance sampled reflection cubemaps.
          *
          * (u, v) = (NoV, roughness)
-         * (r, g) = (scale, bias)
+         * (r, g, b) = (scale, bias, charlie)
          */
-        static SPtr<Texture> PreIntegratedEnvGF_GGX;
-
-        /**
-         * 2D 2-channel texture containing a pre-integrated G and F factors of the microfactet BRDF. This is an
-         * approximation used for image based lighting, so we can avoid sampling environment maps for each light. Works in
-         * tandem with the importance sampled reflection cubemaps.
-         *
-         * (u, v) = (NoV, roughness)
-         * (r, g) = (scale, bias)
-         */
-        static SPtr<Texture> PreIntegratedEnvGF_Charlie;
+        static SPtr<Texture> PreIntegratedEnvGF;
     };
 }
