@@ -1,6 +1,7 @@
 #include "TeHudPickingMat.h"
 
 #include "Image/TeTexture.h"
+#include "Image/TePixelUtil.h"
 #include "Components/TeCCamera.h"
 #include "Resources/TeResourceManager.h"
 #include "Importer/TeTextureImportOptions.h"
@@ -17,9 +18,7 @@ namespace te
         _params->SetSamplerState(GPT_PIXEL_PROGRAM, "TextureSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
 
         auto textureImportOptions = TextureImportOptions::Create();
-        textureImportOptions->CpuCached = false;
-        textureImportOptions->GenerateMips = false;
-        textureImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
+        textureImportOptions->Format = PixelUtil::BestFormatFromFile("Data/Textures/Hud/Hud.png");
 
         _hudMask = gResourceManager().Load<Texture>("Data/Textures/Hud/Hud.png", textureImportOptions);
         _params->SetTexture(GPT_PIXEL_PROGRAM, "MaskTexture", _hudMask.GetInternalPtr());

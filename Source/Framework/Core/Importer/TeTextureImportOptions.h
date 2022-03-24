@@ -18,6 +18,11 @@ namespace te
         /** Enables or disables mipmap generation for the texture. */
         bool GenerateMips = false;
 
+        /** Enable this to rescale the alpha values of computed mipmaps so coverage is preserved. 
+         * This means a higher percentage of pixels passes the alpha test and lower mipmap levels do not become more transparent  
+         */
+        bool MipMapsPreserveCoverage = false;
+
         /** Maximum mip level to generate when generating mipmaps. If 0 then maximum amount of mip levels will be generated. */
         UINT32 MaxMip = 0;
 

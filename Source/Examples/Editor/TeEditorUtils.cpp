@@ -14,6 +14,7 @@
 #include "Components/TeCSoftBody.h"
 #include "TeEditorResManager.h"
 #include "Image/TeTexture.h"
+#include "Image/TePixelUtil.h"
 #include "Mesh/TeMesh.h"
 
 namespace te
@@ -35,8 +36,9 @@ namespace te
                 auto textureImportOptions = TextureImportOptions::Create();
                 textureImportOptions->CpuCached = false;
                 textureImportOptions->GenerateMips = true;
+                textureImportOptions->MipMapsPreserveCoverage = true;
                 textureImportOptions->MaxMip = 0;
-                textureImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
+                textureImportOptions->Format = PixelUtil::BestFormatFromFile(texturePath);
                 textureImportOptions->SRGB = SRGB;
 
                 HTexture texture = EditorResManager::Instance().Load<Texture>(texturePath, textureImportOptions);

@@ -12,6 +12,7 @@
 #include "Resources/TeResourceManager.h"
 #include "Resources/TeBuiltinResources.h"
 #include "Importer/TeTextureImportOptions.h"
+#include "Image/TePixelUtil.h"
 
 namespace te
 {
@@ -607,7 +608,7 @@ namespace te
                 textureImportOptions->CpuCached = _fileBrowser.Data.TexParam.CpuCached;
                 textureImportOptions->CubemapType = CubemapSourceType::Faces;
                 textureImportOptions->IsCubemap = true;
-                textureImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
+                textureImportOptions->Format = PixelUtil::BestFormatFromFile(_fileBrowser.Data.SelectedPath);
                 textureImportOptions->SRGB = _fileBrowser.Data.TexParam.SRGB;
             }
             else
@@ -615,7 +616,7 @@ namespace te
                 textureImportOptions->CpuCached = _fileBrowser.Data.TexParam.CpuCached;
                 textureImportOptions->GenerateMips = _fileBrowser.Data.TexParam.GenerateMips;
                 textureImportOptions->MaxMip = _fileBrowser.Data.TexParam.MaxMips;
-                textureImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
+                textureImportOptions->Format = PixelUtil::BestFormatFromFile(_fileBrowser.Data.SelectedPath);
                 textureImportOptions->SRGB = _fileBrowser.Data.TexParam.SRGB;
             }
 

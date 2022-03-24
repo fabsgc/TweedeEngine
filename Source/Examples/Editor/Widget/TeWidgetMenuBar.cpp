@@ -6,6 +6,7 @@
 #include "../ImGuiExt/TeImGuiFileBrowser.h"
 #include "Mesh/TeMesh.h"
 #include "Image/TeTexture.h"
+#include "Image/TePixelUtil.h"
 #include "String/TeUnicode.h"
 #include "Physics/TePhysicsMesh.h"
 #include "Importer/TeMeshImportOptions.h"
@@ -280,15 +281,16 @@ namespace te
                     textureImportOptions->CpuCached = _fileBrowser.Data.TexParam.CpuCached;
                     textureImportOptions->CubemapType = CubemapSourceType::Faces;
                     textureImportOptions->IsCubemap = true;
-                    textureImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
+                    textureImportOptions->Format = PixelUtil::BestFormatFromFile(_fileBrowser.Data.SelectedPath);
                     textureImportOptions->SRGB = _fileBrowser.Data.TexParam.SRGB;
                 }
                 else
                 {
                     textureImportOptions->CpuCached = _fileBrowser.Data.TexParam.CpuCached;
                     textureImportOptions->GenerateMips = _fileBrowser.Data.TexParam.GenerateMips;
+                    textureImportOptions->MipMapsPreserveCoverage = _fileBrowser.Data.TexParam.MipMapsPreserveCoverage;
                     textureImportOptions->MaxMip = _fileBrowser.Data.TexParam.MaxMips;
-                    textureImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
+                    textureImportOptions->Format = PixelUtil::BestFormatFromFile(_fileBrowser.Data.SelectedPath);
                     textureImportOptions->SRGB = _fileBrowser.Data.TexParam.SRGB;
                 }
 

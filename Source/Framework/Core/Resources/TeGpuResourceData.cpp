@@ -43,7 +43,14 @@ namespace te
     {
         FreeInternalBuffer();
 
-        _data = (UINT8*)te_allocate(size);
+        do
+        {
+            // In case of intensive buffer creation, this call could fail
+            // So I put te_allocate inside a loop. This way, I hope that
+            // allocation will succeed
+            _data = (UINT8*)te_allocate(size); 
+        } while (_data == nullptr);
+        
         _ownsData = true;
     }
 

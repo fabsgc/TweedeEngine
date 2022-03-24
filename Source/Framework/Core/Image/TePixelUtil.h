@@ -4,6 +4,7 @@
 #include "Image/TePixelData.h"
 #include "Image/TeTexture.h"
 #include "Math/TeVector2I.h"
+#include "Threading/TeThreading.h"
 
 namespace te
 {
@@ -283,9 +284,9 @@ namespace te
          * Generates mip-maps from the provided source data using the specified compression options. Returned list includes
          * the base level.
          *
-         * @return	The final texture with all mipmap
+         * @return	The final texture with all mipmaps
          */
-        static SPtr<Texture> GenMipmaps(const TEXTURE_DESC& desc, const PixelData& src, const MipMapGenOptions& options, UINT32 maxMip = 0);
+        static SPtr<Texture> GenMipmaps(const TEXTURE_DESC& desc, const Vector<SPtr<PixelData>>& srcs, const MipMapGenOptions& options, UINT32 maxMip = 0);
 
         /**
          * Scales pixel data in the source buffer and stores the scaled data in the destination buffer. Provided pixel data
@@ -304,5 +305,14 @@ namespace te
          * @p offsetX, @p offsetY and @p offsetZ parameters.
          */
         static void Copy(const PixelData& src, PixelData& dst, UINT32 offsetX = 0, UINT32 offsetY = 0, UINT32 offsetZ = 0);
+
+        /**
+         * This method is useful to return a good format to store a texture according to the file extension
+         * Supported extensions : .jpeg, .jpeg, .png, .tif, .tiff, .dds, .tga
+         */
+        static PixelFormat BestFormatFromFile(const String& path);
+    
+    private:
+        static LockingPolicy<true> _lockPolicy;
     };
 }

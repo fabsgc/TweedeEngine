@@ -750,12 +750,18 @@ namespace te
 
                     ImGuiExt::RenderOptionCombo<TextureType>(&Data.TexParam.TexType, "##file_dialog_parameters_texture_type", "Texture type", textureTypeOptions, 300);
 
+                    ImGuiExt::RenderOptionBool(Data.TexParam.SRGB, "##file_dialog_texture_srgb", "sRGB");
+
+                    ImGuiExt::RenderOptionBool(Data.TexParam.CpuCached, "##file_dialog_texture_cpu_cached", "CPU cached");
+
                     if(Data.TexParam.TexType == TextureType::TEX_TYPE_2D)
                     {
                         ImGuiExt::RenderOptionBool(Data.TexParam.GenerateMips, "##file_dialog_parameters_texture_generate_mips", "Generate MipMaps");
 
                         if(Data.TexParam.GenerateMips)
                         {
+                            ImGuiExt::RenderOptionBool(Data.TexParam.MipMapsPreserveCoverage, "##file_dialog_parameters_texture_mipmaps_preserve_coverage", "Preserve alpha coverage");
+
                             static ImGuiExt::ComboOptions<UINT32> maxMipsOptions;
                             if (maxMipsOptions.Options.size() == 0)
                             {
@@ -770,15 +776,13 @@ namespace te
                                 maxMipsOptions.AddOption(8, "8");
                                 maxMipsOptions.AddOption(9, "9");
                                 maxMipsOptions.AddOption(10, "10");
+                                maxMipsOptions.AddOption(11, "11");
+                                maxMipsOptions.AddOption(12, "12");
                             }
 
                             ImGuiExt::RenderOptionCombo<UINT32>(&Data.TexParam.MaxMips, "##file_dialog_parameters_texture_max_mips", "Max mip level", maxMipsOptions, 300);
                         }
                     }
-
-                    ImGuiExt::RenderOptionBool(Data.TexParam.SRGB, "##file_dialog_texture_srgb", "sRGB");
-
-                    ImGuiExt::RenderOptionBool(Data.TexParam.CpuCached, "##file_dialog_texture_cpu_cached", "CPU cached");
                 }
                 else if (ext == ".ogg" || ext == ".wav" || ext == ".flac")
                 {

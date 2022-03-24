@@ -74,6 +74,7 @@ namespace te
             {
                 TextureType TexType = TextureType::TEX_TYPE_2D;
                 bool GenerateMips = true;
+                bool MipMapsPreserveCoverage = true;
                 UINT32 MaxMips = 0;
                 bool CpuCached = false;
                 bool SRGB = true;

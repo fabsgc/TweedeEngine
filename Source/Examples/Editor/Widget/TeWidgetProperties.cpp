@@ -51,6 +51,7 @@
 #include "Components/TeCSphericalJoint.h"
 #include "Components/TeCDecal.h"
 #include "Physics/TePhysics.h"
+#include "Image/TePixelUtil.h"
 
 #if defined(__GNUC__)
 #pragma GCC diagnostic ignored "-Wsign-compare" 
@@ -3118,7 +3119,7 @@ namespace te
                 auto textureSkyboxImportOptions = TextureImportOptions::Create();
                 textureSkyboxImportOptions->CubemapType = CubemapSourceType::Faces;
                 textureSkyboxImportOptions->IsCubemap = true;
-                textureSkyboxImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
+                textureSkyboxImportOptions->Format = PixelUtil::BestFormatFromFile(_fileBrowser.Data.SelectedPath);
                 textureSkyboxImportOptions->CpuCached = _fileBrowser.Data.TexParam.CpuCached;
                 textureSkyboxImportOptions->SRGB = _fileBrowser.Data.TexParam.SRGB;
 
@@ -3227,6 +3228,7 @@ namespace te
             {
                 textureImportOptions->CpuCached = _fileBrowser.Data.TexParam.CpuCached;
                 textureImportOptions->GenerateMips = _fileBrowser.Data.TexParam.GenerateMips;
+                textureImportOptions->MipMapsPreserveCoverage = _fileBrowser.Data.TexParam.MipMapsPreserveCoverage;
                 textureImportOptions->MaxMip = _fileBrowser.Data.TexParam.MaxMips;
                 textureImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
 

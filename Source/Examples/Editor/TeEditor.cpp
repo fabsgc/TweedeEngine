@@ -59,6 +59,7 @@
 #include "Mesh/TeMesh.h"
 #include "Math/TeVector2I.h"
 #include "Image/TeColor.h"
+#include "Image/TePixelUtil.h"
 #include "TeEditorUtils.h"
 #include "Physics/TePhysics.h"
 
@@ -189,6 +190,15 @@ namespace te
             if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DockingEnable)
                 EndGui();
         }
+
+        /*auto textureImportOptions = TextureImportOptions::Create();
+        textureImportOptions->CpuCached = false;
+        textureImportOptions->GenerateMips = true;
+        textureImportOptions->MipMapsPreserveCoverage = true;
+        textureImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
+        textureImportOptions->SRGB = true;
+
+        HTexture cobbleBaseColor = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/diffuse1.jpg", textureImportOptions, true);*/
     }
 
     void Editor::PostRender()
@@ -1247,14 +1257,13 @@ namespace te
         auto textureImportOptions = TextureImportOptions::Create();
         textureImportOptions->CpuCached = false;
         textureImportOptions->GenerateMips = true;
-        textureImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
+        textureImportOptions->MipMapsPreserveCoverage = true;
         textureImportOptions->SRGB = true;
 
         auto textureCubeMapImportOptions = TextureImportOptions::Create();
         textureCubeMapImportOptions->CpuCached = false;
         textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
         textureCubeMapImportOptions->IsCubemap = true;
-        textureCubeMapImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
         textureCubeMapImportOptions->SRGB = true;
         // ######################################################
 
@@ -1263,9 +1272,13 @@ namespace te
         _loadedMeshMonkey = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Primitives/sphere-hd.obj", meshImportOptions)->Entries[0].Res);
         //_loadedMeshMonkey = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Monkey/monkey-hd.obj", meshImportOptions)->Entries[0].Res);
         //_loadedMeshMonkey = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Primitives/plane.obj", meshImportOptions)->Entries[0].Res);
+
+        textureCubeMapImportOptions->Format = PixelUtil::BestFormatFromFile("Data/Textures/Skybox/skybox_night_512.png");
         _loadedSkyboxTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_night_512.png", textureCubeMapImportOptions);
 
-        //HTexture cobbleBaseColor = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/diffuse1.jpg", textureImportOptions);
+        textureImportOptions->Format = PixelUtil::BestFormatFromFile("Data/Textures/Cobble/diffuse1.jpg");
+        HTexture cobbleBaseColor = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/diffuse1.jpg", textureImportOptions);
+
         //textureImportOptions->SRGB = false;
         //HTexture cobbleNormal = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/normal1.jpg", textureImportOptions);
         //HTexture cobbleParallax = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/parallax1.jpg", textureImportOptions);

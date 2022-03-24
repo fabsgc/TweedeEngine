@@ -2,6 +2,7 @@
 
 #include "Mesh/TeMesh.h"
 #include "Image/TeTexture.h"
+#include "Image/TePixelUtil.h"
 #include "Renderer/TeRenderer.h"
 #include "Renderer/TeCamera.h"
 #include "Renderer/TeSkybox.h"
@@ -208,14 +209,16 @@ namespace te
 
     void MaterialsPreview::InitializeTextures()
     {
+        String path = "Data/Textures/Skybox/skybox_night_512.png";
+
         auto textureCubeMapImportOptions = TextureImportOptions::Create();
         textureCubeMapImportOptions->CpuCached = false;
         textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
         textureCubeMapImportOptions->IsCubemap = true;
-        textureCubeMapImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
+        textureCubeMapImportOptions->Format = PixelUtil::BestFormatFromFile(path);
         textureCubeMapImportOptions->SRGB = true;
 
-        _radiance = ResourceManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_night_512.png", textureCubeMapImportOptions).GetInternalPtr();
+        _radiance = ResourceManager::Instance().Load<Texture>(path, textureCubeMapImportOptions).GetInternalPtr();
         TE_ASSERT_ERROR(_radiance.get(), "Failed to load envrionment texture");
     }
 }

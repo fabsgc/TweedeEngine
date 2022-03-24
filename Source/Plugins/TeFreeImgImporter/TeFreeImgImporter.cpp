@@ -211,23 +211,30 @@ namespace te
                 texDesc.NumMips = std::min(maxPossibleMip, textureImportOptions->MaxMip);
         }
 
-        SPtr<Texture> texture = Texture::CreatePtr(texDesc);
-
-        UINT32 numFaces = (UINT32)faceData.size();
-        for (UINT32 i = 0; i < numFaces; i++)
+        SPtr<Texture> texture = PixelUtil::GenMipmaps(texDesc, faceData, mipOptions, texDesc.NumMips);
+        if (!texture)
         {
-            Vector<SPtr<PixelData>> mipLevels;
-            if (texDesc.NumMips > 0)
-                mipLevels = PixelUtil::GenMipmaps(*faceData[i], mipOptions, texDesc.NumMips);
-            else
-                mipLevels.push_back(faceData[i]);
+            TE_DEBUG("Failed to generate mipmaps on GPU, fallback to CPU : " + filePath);
 
-            for (UINT32 mip = 0; mip < (UINT32)mipLevels.size(); ++mip)
+            texture = Texture::CreatePtr(texDesc);
+
+            // If GPU mipmap generation failed, fallback to CPU
+            UINT32 numFaces = (UINT32)faceData.size();
+            for (UINT32 i = 0; i < numFaces; i++)
             {
-                SPtr<PixelData> dst = texture->GetProperties().AllocBuffer(0, mip);
+                Vector<SPtr<PixelData>> mipLevels;
+                if (texDesc.NumMips > 0)
+                    mipLevels = PixelUtil::GenMipmaps(*faceData[i], mipOptions, texDesc.NumMips);
+                else
+                    mipLevels.push_back(faceData[i]);
 
-                PixelUtil::BulkPixelConversion(*mipLevels[mip], *dst);
-                texture->WriteData(*dst, mip, i); //BUG in original version
+                for (UINT32 mip = 0; mip < (UINT32)mipLevels.size(); ++mip)
+                {
+                    SPtr<PixelData> dst = texture->GetProperties().AllocBuffer(0, mip);
+
+                    PixelUtil::BulkPixelConversion(*mipLevels[mip], *dst);
+                    texture->WriteData(*dst, mip, i); //BUG in original version
+                }
             }
         }
 

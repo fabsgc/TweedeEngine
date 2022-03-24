@@ -3,10 +3,17 @@
 #include "Math/TeMath.h"
 #include "Image/TeTexture.h"
 #include "Utility/TeBitwise.h"
+#include "Renderer/TeTextureDownsampleMat.h"
+#include "Renderer/TeTextureCubeDownsampleMat.h"
+#include "Renderer/TeRendererUtility.h"
+#include "Renderer/TeRendererMaterialManager.h"
 #include <nvtt.h>
+#include <filesystem>
 
 namespace te
 {
+    LockingPolicy<true> PixelUtil::_lockPolicy;
+
     /**
      * Performs pixel data resampling using the point filter (nearest neighbor). Does not perform format conversions.
      *
@@ -2391,9 +2398,106 @@ namespace te
         return outputMipBuffers;
     }
 
-    SPtr<Texture> PixelUtil::GenMipmaps(const TEXTURE_DESC& desc, const PixelData& src, const MipMapGenOptions& options, UINT32 maxMip)
+    SPtr<Texture> PixelUtil::GenMipmaps(const TEXTURE_DESC& desc, const Vector<SPtr<PixelData>>& srcs, const MipMapGenOptions& options, UINT32 maxMip)
     {
-        return nullptr; // TODO
+        SPtr<Texture> output = nullptr;
+        SPtr<Texture> tmp = nullptr;
+        ScopedLock<true> lock(_lockPolicy);
+
+        if (!RendererMaterialManager::IsStarted())
+            return output;
+
+        static TextureDownsampleMat* textureMat = TextureDownsampleMat::Get();
+        static TextureCubeDownsampleMat* textureCubeMat = TextureCubeDownsampleMat::Get();
+
+        if (desc.Type != TextureType::TEX_TYPE_2D && desc.Type != TextureType::TEX_TYPE_CUBE_MAP)
+        {
+            TE_DEBUG("Mipmap generation failed. Only 2D and Cube textures are supported.");
+            return output;
+        }
+
+        for (auto& src : srcs)
+        {
+            if (src->GetDepth() != 1)
+            {
+                TE_DEBUG("Mipmap generation failed. 3D texture formats not supported.");
+                return output;
+            }
+
+            if (IsCompressed(src->GetFormat()))
+            {
+                TE_DEBUG("Mipmap generation failed. Source data cannot be compressed.");
+                return output;
+            }
+        }
+
+        if (desc.Type == TextureType::TEX_TYPE_2D && srcs.size() != 1)
+        {
+            TE_DEBUG("2D Texture must have only one PixelData.");
+            return output;
+        }
+
+        if (desc.Type == TextureType::TEX_TYPE_CUBE_MAP && srcs.size() != 6)
+        {
+            TE_DEBUG("Cube Texture must have 6 PixelData.");
+            return output;
+        }
+
+        RenderAPI::Instance().PushMarker("[Draw] MipMap", Color(0.78f, 0.65f, 0.21f));
+
+        TEXTURE_DESC mipTexDesc = desc;
+        mipTexDesc.Usage |= TU_RENDERTARGET;
+        output = Texture::CreatePtr(mipTexDesc);
+        tmp = Texture::CreatePtr(mipTexDesc);
+
+        for (UINT32 i = 0; i < srcs.size(); i++)
+        {
+            SPtr<PixelData> dst = output->GetProperties().AllocBuffer(0, 0);
+
+            PixelUtil::BulkPixelConversion(*srcs[i], *dst);
+
+            output->WriteData(*dst, 0, i);
+            tmp->WriteData(*dst, 0, i);
+        }
+
+        if (mipTexDesc.NumMips > 0)
+        {
+            // TODO PRESERVE ALPHA COVERAGE
+
+            for (UINT32 mip = 1; mip < mipTexDesc.NumMips; mip++)
+            {
+                UINT32 srcMip = mip - 1;
+
+                if (mipTexDesc.Type == TextureType::TEX_TYPE_2D)
+                {
+                    RENDER_TEXTURE_DESC mipDesc;
+                    mipDesc.ColorSurfaces[0].Tex = output;
+                    mipDesc.ColorSurfaces[0].MipLevel = mip;
+                    mipDesc.ColorSurfaces[0].NumFaces = 1;
+
+                    {
+                        SPtr<RenderTarget> target = RenderTexture::Create(mipDesc);
+                        textureMat->Execute(tmp, srcMip, target);
+
+                        TEXTURE_COPY_DESC copyDesc;
+                        copyDesc.SrcFace = 0;
+                        copyDesc.SrcMip = mip;
+                        copyDesc.DstFace = 0;
+                        copyDesc.DstMip = mip;
+
+                        output->Copy(tmp, copyDesc);
+                    }
+                }
+                else
+                {
+                    // TODO CUBE MIPMAP
+                }
+            }
+        }
+
+        RenderAPI::Instance().PopMarker();
+
+        return output;
     }
 
     void PixelUtil::Mirror(PixelData& pixelData, INT32 mode)
@@ -2627,5 +2731,33 @@ namespace te
             srcPtr += src.GetSlicePitch();
             dstPtr += dst.GetSlicePitch();
         }
+    }
+
+    PixelFormat PixelUtil::BestFormatFromFile(const String& path)
+    {
+        struct ExtensionToFormat
+        {
+            PixelFormat BigEndianFormat;
+            PixelFormat LittleEndiantFormat;
+        };
+
+        static UnorderedMap<String, ExtensionToFormat> extensions =
+        {
+            {".jpeg", { PixelFormat::PF_RGB8, PixelFormat::PF_BGR8 } },
+            {".jpg", { PixelFormat::PF_RGB8, PixelFormat::PF_BGR8 } },
+            {".png", { PixelFormat::PF_RGBA8, PixelFormat::PF_BGRA8 } },
+            {".dds", { PixelFormat::PF_RGBA8, PixelFormat::PF_BGRA8 } },
+            {".tiff", { PixelFormat::PF_RGBA8, PixelFormat::PF_BGRA8 } },
+            {".tif", { PixelFormat::PF_RGBA8, PixelFormat::PF_BGRA8 } },
+            {".tga", { PixelFormat::PF_RGBA8, PixelFormat::PF_BGRA8 } }
+        };
+
+        String extension = std::filesystem::path(path).extension().generic_string();
+        auto it = extensions.find(extension);
+
+        if (it != extensions.end())
+            return Util::IsBigEndian() ? it->second.BigEndianFormat : it->second.LittleEndiantFormat;
+
+        return Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
     }
 }

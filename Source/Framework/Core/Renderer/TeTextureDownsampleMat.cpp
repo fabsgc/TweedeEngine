@@ -8,6 +8,7 @@ namespace te
     TextureDownsampleParamDef gTextureDownsampleParamDef;
 
     TextureDownsampleMat::TextureDownsampleMat()
+        : RendererMaterial()
     {
         _paramBuffer = gTextureDownsampleParamDef.CreateBuffer();
         _params->SetParamBlockBuffer("PerFrameBuffer", _paramBuffer);
