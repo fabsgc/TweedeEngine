@@ -641,11 +641,12 @@ namespace te
                 width /= 2;
             } while(size.x < width);
 
-            mipMap = std::max((UINT32)0, --mipMap);
+            if(mipMap > 0)
+                mipMap = std::max((UINT32)0, --mipMap);
         }
 
         SPtr<TextureView> textureView = texture->RequestView(
-            0, mipMap, 0, texture->GetProperties().GetNumFaces(),
+            mipMap, (UINT32)-1, 0, texture->GetProperties().GetNumFaces(),
             GVU_DEFAULT, texture->GetProperties().GetDebugName()
         );
 

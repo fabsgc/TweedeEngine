@@ -315,8 +315,8 @@ namespace te
         {
         case FIT_UNKNOWN:
         case FIT_COMPLEX:
-        case FIT_UINT32:
-        case FIT_INT32:
+        //case FIT_UINT32:
+        //case FIT_INT32:
         case FIT_DOUBLE:
         default:
             TE_DEBUG("Unknown or unsupported image format: " + filePath);
@@ -391,11 +391,33 @@ namespace te
                 break;
             };
             break;
-        case FIT_UINT16:
         case FIT_INT16:
             // 16-bit greyscale
-            TE_DEBUG("No INT pixel formats supported currently: " + filePath);
-            return nullptr;
+            //TE_DEBUG("No INT pixel formats supported currently: " + filePath);
+            //return nullptr;
+            format = PF_R16I;
+            srcElemSize = 2;
+            break;
+        case FIT_UINT16:
+            // 16-bit greyscale
+            //TE_DEBUG("No INT pixel formats supported currently: " + filePath);
+            //return nullptr;
+            format = PF_R16U;
+            srcElemSize = 2;
+            break;
+        case FIT_INT32:
+            // 16-bit greyscale
+            //TE_DEBUG("No INT pixel formats supported currently: " + filePath);
+            //return nullptr;
+            format = PF_R32I;
+            srcElemSize = 4;
+            break;
+        case FIT_UINT32:
+            // 16-bit greyscale
+            //TE_DEBUG("No INT pixel formats supported currently: " + filePath);
+            //return nullptr;
+            format = PF_R32U;
+            srcElemSize = 4;
             break;
         case FIT_FLOAT:
             // Single-component floating point data
