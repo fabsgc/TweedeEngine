@@ -74,7 +74,9 @@ namespace te
             {
                 TextureType TexType = TextureType::TEX_TYPE_2D;
                 bool GenerateMips = true;
-                bool MipMapsPreserveCoverage = true;
+                bool GenerateMipsOnGpu = true;
+                bool MipsPreserveCoverage = true;
+                bool IsNormalMap = false;
                 UINT32 MaxMips = 0;
                 bool CpuCached = false;
                 bool SRGB = true;
@@ -194,9 +196,5 @@ namespace te
             Vector<const Info*> filtered_dirs; // Note: We don't need to call delete. It's just for storing filtered items from subdirs and subfiles so we don't use PassFilter every frame.
             Vector<const Info*> filtered_files;
             Vector<std::reference_wrapper<String>> inputcb_filter_files;
-
-            static const Vector<String> _texturesExtensions;
-            static const Vector<String> _meshesExtensions;
-            static const Vector<String> _soundsExtensions;
     };
 }

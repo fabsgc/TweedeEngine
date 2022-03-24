@@ -216,6 +216,15 @@ namespace te
     protected:
         void LoadScene();
 
+    public:
+        static const Vector<String> TexturesExtensions;
+        static const Vector<String> MeshesExtensions;
+        static const Vector<String> SoundsExtensions;
+
+        static const String TexturesExtensionsStr;
+        static const String MeshesExtensionsStr;
+        static const String SoundsExtensionsStr;
+
     protected:
         static const Vector<UINT32> ComponentsWhichNeedGuizmo;
 

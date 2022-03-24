@@ -268,30 +268,25 @@ namespace te
         if (_settings.Load)
             ImGui::OpenPopup("Load Resource");
 
-        if (_fileBrowser.ShowFileDialog("Load Resource", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, ".png,.jpeg,.jpg,.dds,.tiff,.tif,.tga,.obj,.dae,.fbx,.stl,.gltf,.scene,.ogg,.wav,.flac"))
+        String extensions = Editor::TexturesExtensionsStr + "," + Editor::MeshesExtensionsStr + "," + Editor::SoundsExtensionsStr;
+        if (_fileBrowser.ShowFileDialog("Load Resource", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, extensions))
         {
-            if (_fileBrowser.Data.SelectedFileExt == ".jpeg" || _fileBrowser.Data.SelectedFileExt == ".jpg" ||
-                _fileBrowser.Data.SelectedFileExt == ".png" || _fileBrowser.Data.SelectedFileExt == ".dds" ||
-                _fileBrowser.Data.SelectedFileExt == ".tiff" || _fileBrowser.Data.SelectedFileExt == ".tif" ||
-                _fileBrowser.Data.SelectedFileExt == ".tga")
+            if (std::find(Editor::TexturesExtensions.begin(), Editor::TexturesExtensions.end(), _fileBrowser.Data.SelectedFileExt) != Editor::TexturesExtensions.end())
             {
                 auto textureImportOptions = TextureImportOptions::Create();
+                textureImportOptions->CpuCached = _fileBrowser.Data.TexParam.CpuCached;
+                textureImportOptions->GenerateMips = _fileBrowser.Data.TexParam.GenerateMips;
+                textureImportOptions->GenerateMipsOnGpu = _fileBrowser.Data.TexParam.GenerateMipsOnGpu;
+                textureImportOptions->MaxMip = _fileBrowser.Data.TexParam.MaxMips;
+                textureImportOptions->MipsPreserveCoverage = _fileBrowser.Data.TexParam.MipsPreserveCoverage;
+                textureImportOptions->Format = PixelUtil::BestFormatFromFile(_fileBrowser.Data.SelectedPath);
+                textureImportOptions->SRGB = _fileBrowser.Data.TexParam.SRGB;
+                textureImportOptions->IsNormalMap = _fileBrowser.Data.TexParam.IsNormalMap;
+
                 if (_fileBrowser.Data.TexParam.TexType == TextureType::TEX_TYPE_CUBE_MAP)
                 {
-                    textureImportOptions->CpuCached = _fileBrowser.Data.TexParam.CpuCached;
                     textureImportOptions->CubemapType = CubemapSourceType::Faces;
-                    textureImportOptions->IsCubemap = true;
-                    textureImportOptions->Format = PixelUtil::BestFormatFromFile(_fileBrowser.Data.SelectedPath);
-                    textureImportOptions->SRGB = _fileBrowser.Data.TexParam.SRGB;
-                }
-                else
-                {
-                    textureImportOptions->CpuCached = _fileBrowser.Data.TexParam.CpuCached;
-                    textureImportOptions->GenerateMips = _fileBrowser.Data.TexParam.GenerateMips;
-                    textureImportOptions->MipMapsPreserveCoverage = _fileBrowser.Data.TexParam.MipMapsPreserveCoverage;
-                    textureImportOptions->MaxMip = _fileBrowser.Data.TexParam.MaxMips;
-                    textureImportOptions->Format = PixelUtil::BestFormatFromFile(_fileBrowser.Data.SelectedPath);
-                    textureImportOptions->SRGB = _fileBrowser.Data.TexParam.SRGB;
+                    textureImportOptions->IsCubeMap = true;
                 }
 
                 HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.Data.SelectedPath, textureImportOptions, true);
@@ -301,9 +296,7 @@ namespace te
                     EditorResManager::Instance().Add<Texture>(texture);
                 }
             }
-            else if (_fileBrowser.Data.SelectedFileExt == ".obj" || _fileBrowser.Data.SelectedFileExt == ".dae" || 
-                     _fileBrowser.Data.SelectedFileExt == ".fbx" || _fileBrowser.Data.SelectedFileExt == ".stl" || 
-                     _fileBrowser.Data.SelectedFileExt == ".gltf")
+            else if (std::find(Editor::MeshesExtensions.begin(), Editor::MeshesExtensions.end(), _fileBrowser.Data.SelectedFileExt) != Editor::MeshesExtensions.end())
             {
                 auto meshImportOptions = MeshImportOptions::Create();
                 meshImportOptions->ImportNormals = _fileBrowser.Data.MeshParam.ImportNormals;
@@ -355,8 +348,7 @@ namespace te
                     }
                 }
             }
-            else if (_fileBrowser.Data.SelectedFileExt == ".ogg" || _fileBrowser.Data.SelectedFileExt == ".wav" || 
-                     _fileBrowser.Data.SelectedFileExt == ".flac")
+            else if (std::find(Editor::SoundsExtensions.begin(), Editor::SoundsExtensions.end(), _fileBrowser.Data.SelectedFileExt) != Editor::SoundsExtensions.end())
             {
                 auto audioImportOptions = AudioClipImportOptions::Create();
                 audioImportOptions->Is3D = _fileBrowser.Data.AudioParam.Is3D;

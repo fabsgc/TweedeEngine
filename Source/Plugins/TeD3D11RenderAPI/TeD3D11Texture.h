@@ -135,7 +135,5 @@ namespace te
         PixelData* _staticBuffer = nullptr;
         UINT32 _lockedSubresourceIdx = static_cast<UINT32>(-1);
         bool _lockedForReading = false;
-
-        static RecursiveMutex _deviceMutex;
     };
 }

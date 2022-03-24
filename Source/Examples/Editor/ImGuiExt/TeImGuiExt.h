@@ -95,7 +95,7 @@ namespace te
         static bool RenderOptionComboComponent(HCamera* value, const char* id, const char* text, ComboOptions<HCamera>& options,
             float width = 0.0f);
 
-        static void RenderImage(SPtr<Texture> texture, UINT32 maxMip, const Vector2& size, 
+        static void RenderImage(SPtr<Texture> texture, const Vector2& size, 
             const Vector2& offset = Vector2::ZERO);
 
         template<typename T>
@@ -138,7 +138,7 @@ namespace te
                         }
                         ImGui::SameLine();
 
-                        RenderImage(option.Tex, 4, Vector2(50.0f, 50.0f), Vector2(-5.0f, 2.0f));
+                        RenderImage(option.Tex, Vector2(50.0f, 50.0f), Vector2(-5.0f, 2.0f));
                         ImGui::SameLine();
 
                         ImVec2 cursor = ImGui::GetCursorPos();

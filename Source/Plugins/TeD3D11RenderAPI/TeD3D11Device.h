@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TeD3D11RenderAPIPrerequisites.h"
+#include "Threading/TeThreading.h"
 
 namespace te
 {
@@ -27,6 +28,16 @@ namespace te
 
         /** Returns DX11 immediate context object. */
         ID3D11DeviceContext* GetImmediateContext() const { return _immediateContext; }
+        
+        /** 
+         * If you want to use _immediateContext in a multithreaded context, you need to lock
+         * the resource before because ID3D11DeviceContext is not thread-safe
+         * Never forget to call UnlockContext()
+         * */
+        void LockContext() { _mutex.lock(); }
+
+        /** @copydoc LockContext() */
+        void UnlockContext() { _mutex.unlock(); }
 
         /** Returns DX11 class linkage object. */
         ID3D11ClassLinkage* GetClassLinkage() const { return _classLinkage; }
@@ -63,5 +74,7 @@ namespace te
         ID3D11InfoQueue* _infoQueue = nullptr;
         ID3D11ClassLinkage* _classLinkage = nullptr;
         D3D11_FEATURE_DATA_D3D11_OPTIONS _D3D11FeatureOptions;
+
+        RecursiveMutex _mutex;
     };
 }

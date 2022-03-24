@@ -624,13 +624,25 @@ namespace te
         return hasChanged;
     };
 
-    void ImGuiExt::RenderImage(SPtr<Texture> texture, UINT32 maxMip, const Vector2& size, const Vector2& offset)
+    void ImGuiExt::RenderImage(SPtr<Texture> texture, const Vector2& size, const Vector2& offset)
     {
         if (!texture || texture->GetProperties().GetTextureType() != TextureType::TEX_TYPE_2D)
             return;
 
-        UINT32 mipMap = texture->GetProperties().GetNumMipmaps();
-        if (mipMap > maxMip) mipMap = maxMip;
+        UINT32 mipMap = 0;
+        UINT32 numMipMap = texture->GetProperties().GetNumMipmaps();
+        UINT32 width = texture->GetProperties().GetWidth();
+
+        if(size.x < width )
+        {
+            do
+            {
+                mipMap = std::min(++mipMap, numMipMap);
+                width /= 2;
+            } while(size.x < width);
+
+            mipMap = std::max((UINT32)0, --mipMap);
+        }
 
         SPtr<TextureView> textureView = texture->RequestView(
             0, mipMap, 0, texture->GetProperties().GetNumFaces(),
@@ -646,8 +658,7 @@ namespace te
 
         ImGui::Image(
             static_cast<ImTextureID>(rawData),
-            ImVec2(static_cast<float>(size.x), static_cast<float>(size.y)),
-            ImVec2(0, 0)
+            ImVec2(static_cast<float>(size.x), static_cast<float>(size.y))
         );
 
         cursor.x -= offset.x;

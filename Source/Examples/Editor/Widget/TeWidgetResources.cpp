@@ -71,21 +71,7 @@ namespace te
                         SPtr<Texture> texture = std::static_pointer_cast<Texture>(resource.second.GetInternalPtr());
                         if (texture->GetProperties().GetTextureType() == TextureType::TEX_TYPE_2D)
                         {
-                            SPtr<TextureView> textureView = texture->RequestView(
-                                0, texture->GetProperties().GetNumMipmaps(),
-                                0, texture->GetProperties().GetNumFaces(),
-                                GVU_DEFAULT, 
-                                texture->GetProperties().GetDebugName()
-                            );
-
-                            void* rawData = textureView->GetRawData();
-
-                            ImGui::Image(
-                                static_cast<ImTextureID>(rawData),
-                                ImVec2(static_cast<float>(80.0f), static_cast<float>(80.0f)),
-                                ImVec2(0, 0),
-                                ImVec2(1, 1)
-                            );
+                            ImGuiExt::RenderImage(texture, Vector2(80, 80));
                         }
                         else
                         {

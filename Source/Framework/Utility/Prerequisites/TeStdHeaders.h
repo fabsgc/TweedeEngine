@@ -241,7 +241,8 @@ namespace te
     template<class Type, class... Args>
     inline Type* te_new(Args &&...args)
     {
-        return new (te_allocate<Type>(sizeof(Type))) Type(std::forward<Args>(args)...);
+        uint32_t size = sizeof(Type);
+        return new (te_allocate<Type>(size)) Type(std::forward<Args>(args)...);
     }
 
     /**

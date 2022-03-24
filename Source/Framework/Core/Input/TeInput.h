@@ -274,8 +274,6 @@ namespace te
         // Raw input
         UINT64 _windowHandle;
         InputPrivateData* _platformData;
-
-        Mutex _mutex;
     };
 
     /**	Provides easy access to Input. */

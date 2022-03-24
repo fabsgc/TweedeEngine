@@ -308,11 +308,11 @@ namespace te
 
         /**
          * This method is useful to return a good format to store a texture according to the file extension
-         * Supported extensions : .jpeg, .jpeg, .png, .tif, .tiff, .dds, .tga
+         * Supported extensions : .jpg, .jpeg, .png, .tif, .tiff, .dds, .tga, .bmp
          */
         static PixelFormat BestFormatFromFile(const String& path);
     
     private:
-        static LockingPolicy<true> _lockPolicy;
+        static RecursiveMutex _mutex;
     };
 }

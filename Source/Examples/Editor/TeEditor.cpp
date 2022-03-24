@@ -87,6 +87,14 @@ namespace te
 {
     TE_MODULE_STATIC_MEMBER(Editor)
 
+    const Vector<String> Editor::TexturesExtensions = { ".png", ".jpeg", ".jpg", ".dds", ".tiff", ".tif", ".tga", ".bmp" };
+    const Vector<String> Editor::MeshesExtensions = { ".obj", ".dae", ".fbx", ".stl", ".gltf" };
+    const Vector<String> Editor::SoundsExtensions = { ".ogg", ".wav", ".flac" };
+
+    const String Editor::TexturesExtensionsStr = ".png,.jpeg,.jpg,.dds,.tiff,.tif,.tga,.bmp";
+    const String Editor::MeshesExtensionsStr = ".obj,.dae,.fbx,.stl,.gltf";
+    const String Editor::SoundsExtensionsStr = ".ogg,.flac,.wav";
+
     const Vector<UINT32> Editor::ComponentsWhichNeedGuizmo = {
         TID_CRenderable,
         TID_CRigidBody,
@@ -194,7 +202,7 @@ namespace te
         /*auto textureImportOptions = TextureImportOptions::Create();
         textureImportOptions->CpuCached = false;
         textureImportOptions->GenerateMips = true;
-        textureImportOptions->MipMapsPreserveCoverage = true;
+        textureImportOptions->MipsPreserveCoverage = true;
         textureImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
         textureImportOptions->SRGB = true;
 
@@ -1257,13 +1265,14 @@ namespace te
         auto textureImportOptions = TextureImportOptions::Create();
         textureImportOptions->CpuCached = false;
         textureImportOptions->GenerateMips = true;
-        textureImportOptions->MipMapsPreserveCoverage = true;
+        textureImportOptions->GenerateMipsOnGpu = true;
+        textureImportOptions->MipsPreserveCoverage = true;
         textureImportOptions->SRGB = true;
 
         auto textureCubeMapImportOptions = TextureImportOptions::Create();
         textureCubeMapImportOptions->CpuCached = false;
         textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
-        textureCubeMapImportOptions->IsCubemap = true;
+        textureCubeMapImportOptions->IsCubeMap = true;
         textureCubeMapImportOptions->SRGB = true;
         // ######################################################
 

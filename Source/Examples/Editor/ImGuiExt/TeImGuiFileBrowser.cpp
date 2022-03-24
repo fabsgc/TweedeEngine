@@ -6,6 +6,7 @@
 #include "ImGui/imgui_internal.h"
 #include "../ImGuiExt/TeIconsFontAwesome5.h"
 #include "../ImGuiExt/TeImGuiExt.h"
+#include "../TeEditor.h"
 #include "Image/TeTexture.h"
 #include "String/TeUnicode.h"
 
@@ -33,10 +34,6 @@
 
 namespace te
 {
-    const Vector<String> ImGuiFileBrowser::_texturesExtensions = { ".png", ".jpeg", ".jpg", ".dds", ".tiff", ".tif", ".tga" };
-    const Vector<String> ImGuiFileBrowser::_meshesExtensions = { ".obj", ".dae", ".fbx", ".stl", ".gltf" };
-    const Vector<String> ImGuiFileBrowser::_soundsExtensions = { ".ogg", ".wav", ".flac" };
-
     ImGuiFileBrowser::ImGuiFileBrowser()
     {
         filter_mode = FilterMode_Files | FilterMode_Dirs;
@@ -405,11 +402,11 @@ namespace te
             {
                 String label;
 
-                if (std::find(_texturesExtensions.begin(), _texturesExtensions.end(), filtered_files[i]->extension) != _texturesExtensions.end())
+                if (std::find(Editor::TexturesExtensions.begin(), Editor::TexturesExtensions.end(), filtered_files[i]->extension) != Editor::TexturesExtensions.end())
                     label = ICON_FA_FILE_IMAGE + String(" ") + (filtered_files[i]->name);
-                else if (std::find(_meshesExtensions.begin(), _meshesExtensions.end(), filtered_files[i]->extension) != _meshesExtensions.end())
+                else if (std::find(Editor::MeshesExtensions.begin(), Editor::MeshesExtensions.end(), filtered_files[i]->extension) != Editor::MeshesExtensions.end())
                     label = ICON_FA_FILE_ARCHIVE + String(" ") + (filtered_files[i]->name);
-                else if (std::find(_soundsExtensions.begin(), _soundsExtensions.end(), filtered_files[i]->extension) != _soundsExtensions.end())
+                else if (std::find(Editor::SoundsExtensions.begin(), Editor::SoundsExtensions.end(), filtered_files[i]->extension) != Editor::SoundsExtensions.end())
                     label = ICON_FA_FILE_AUDIO + String(" ") + (filtered_files[i]->name);
                 else if (filtered_files[i]->extension == ".cpp")
                     label = ICON_FA_FILE_CODE + String(" ") + (filtered_files[i]->name);
@@ -693,7 +690,7 @@ namespace te
 
             if (dialog_mode == DialogMode::OPEN)
             {
-                if (ext == ".obj" || ext == ".dae" || ext == ".fbx" || ext == ".stl" || ext == ".gltf")
+                if (std::find(Editor::MeshesExtensions.begin(), Editor::MeshesExtensions.end(), ext) != Editor::MeshesExtensions.end())
                 {
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportNormals, "##file_dialog_parameters_mesh_normals", "Import normals");
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportTangents, "##file_dialog_parameters_mesh_tangents", "Import tangents");
@@ -739,7 +736,7 @@ namespace te
 
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportCollisionShape, "##file_dialog_parameters_mesh_import_collision_shape", "Import Collision Shape");
                 }
-                else if (ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".dds" || ext == ".tiff" || ext == ".tif" ||ext == ".tga")
+                else if (std::find(Editor::TexturesExtensions.begin(), Editor::TexturesExtensions.end(), ext) != Editor::TexturesExtensions.end())
                 {
                     static ImGuiExt::ComboOptions<TextureType> textureTypeOptions;
                     if (textureTypeOptions.Options.size() == 0)
@@ -752,39 +749,39 @@ namespace te
 
                     ImGuiExt::RenderOptionBool(Data.TexParam.SRGB, "##file_dialog_texture_srgb", "sRGB");
 
+                    ImGuiExt::RenderOptionBool(Data.TexParam.IsNormalMap, "##file_dialog_texture_is_normal_map", "Is Normal Map");
+
                     ImGuiExt::RenderOptionBool(Data.TexParam.CpuCached, "##file_dialog_texture_cpu_cached", "CPU cached");
 
-                    if(Data.TexParam.TexType == TextureType::TEX_TYPE_2D)
+                    ImGuiExt::RenderOptionBool(Data.TexParam.GenerateMips, "##file_dialog_parameters_texture_generate_mips", "Generate MipMaps");
+
+                    if(Data.TexParam.GenerateMips)
                     {
-                        ImGuiExt::RenderOptionBool(Data.TexParam.GenerateMips, "##file_dialog_parameters_texture_generate_mips", "Generate MipMaps");
+                        ImGuiExt::RenderOptionBool(Data.TexParam.GenerateMipsOnGpu, "##file_dialog_parameters_texture_generate_mips_on_gpu", "Generate MipMaps on GPU");
+                        ImGuiExt::RenderOptionBool(Data.TexParam.MipsPreserveCoverage, "##file_dialog_parameters_texture_mipmaps_preserve_coverage", "Preserve alpha coverage");
 
-                        if(Data.TexParam.GenerateMips)
+                        static ImGuiExt::ComboOptions<UINT32> maxMipsOptions;
+                        if (maxMipsOptions.Options.size() == 0)
                         {
-                            ImGuiExt::RenderOptionBool(Data.TexParam.MipMapsPreserveCoverage, "##file_dialog_parameters_texture_mipmaps_preserve_coverage", "Preserve alpha coverage");
-
-                            static ImGuiExt::ComboOptions<UINT32> maxMipsOptions;
-                            if (maxMipsOptions.Options.size() == 0)
-                            {
-                                maxMipsOptions.AddOption(0, "Maximum");
-                                maxMipsOptions.AddOption(1, "1");
-                                maxMipsOptions.AddOption(2, "2");
-                                maxMipsOptions.AddOption(3, "3");
-                                maxMipsOptions.AddOption(4, "4");
-                                maxMipsOptions.AddOption(5, "5");
-                                maxMipsOptions.AddOption(6, "6");
-                                maxMipsOptions.AddOption(7, "7");
-                                maxMipsOptions.AddOption(8, "8");
-                                maxMipsOptions.AddOption(9, "9");
-                                maxMipsOptions.AddOption(10, "10");
-                                maxMipsOptions.AddOption(11, "11");
-                                maxMipsOptions.AddOption(12, "12");
-                            }
-
-                            ImGuiExt::RenderOptionCombo<UINT32>(&Data.TexParam.MaxMips, "##file_dialog_parameters_texture_max_mips", "Max mip level", maxMipsOptions, 300);
+                            maxMipsOptions.AddOption(0, "Maximum");
+                            maxMipsOptions.AddOption(1, "1");
+                            maxMipsOptions.AddOption(2, "2");
+                            maxMipsOptions.AddOption(3, "3");
+                            maxMipsOptions.AddOption(4, "4");
+                            maxMipsOptions.AddOption(5, "5");
+                            maxMipsOptions.AddOption(6, "6");
+                            maxMipsOptions.AddOption(7, "7");
+                            maxMipsOptions.AddOption(8, "8");
+                            maxMipsOptions.AddOption(9, "9");
+                            maxMipsOptions.AddOption(10, "10");
+                            maxMipsOptions.AddOption(11, "11");
+                            maxMipsOptions.AddOption(12, "12");
                         }
+
+                        ImGuiExt::RenderOptionCombo<UINT32>(&Data.TexParam.MaxMips, "##file_dialog_parameters_texture_max_mips", "Max mip level", maxMipsOptions, 300);
                     }
                 }
-                else if (ext == ".ogg" || ext == ".wav" || ext == ".flac")
+                else if (std::find(Editor::SoundsExtensions.begin(), Editor::SoundsExtensions.end(), ext) != Editor::SoundsExtensions.end())
                 {
                     ImGuiExt::RenderOptionBool(Data.AudioParam.Is3D, "##file_dialog_parameters_audio_3d", "Is 3D Sound");
                 }

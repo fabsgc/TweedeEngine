@@ -214,7 +214,7 @@ namespace te
         auto textureCubeMapImportOptions = TextureImportOptions::Create();
         textureCubeMapImportOptions->CpuCached = false;
         textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
-        textureCubeMapImportOptions->IsCubemap = true;
+        textureCubeMapImportOptions->IsCubeMap = true;
         textureCubeMapImportOptions->Format = PixelUtil::BestFormatFromFile(path);
         textureCubeMapImportOptions->SRGB = true;
 

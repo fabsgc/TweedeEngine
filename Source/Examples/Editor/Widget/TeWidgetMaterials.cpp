@@ -54,7 +54,7 @@ namespace te
         const float width = ImGui::GetWindowContentRegionWidth() - 110.0f;
 
         const auto& ShowTexture = [&](UUID& uuid, bool& textureUsed, const char* id, const char* label, const char* textureName, 
-            ImGuiExt::ComboOptions<UUID>& options, float width, bool disable = false, TextureType texType = TextureType::TEX_TYPE_2D, bool SRGB = false)
+            ImGuiExt::ComboOptions<UUID>& options, float width, bool disable, TextureType texType, bool SRGB, bool isNormalMap)
         {
             SPtr<Texture> texture = nullptr;
             bool hasChanged = false;
@@ -72,7 +72,7 @@ namespace te
 
             if (texture && texture->GetProperties().GetTextureType() != TextureType::TEX_TYPE_CUBE_MAP)
             {
-                ImGuiExt::RenderImage(texture, 3, Vector2(26.0f, 26.0f));
+                ImGuiExt::RenderImage(texture, Vector2(26.0f, 26.0f));
                 ImGui::SameLine();
 
                 ImVec2 cursor = ImGui::GetCursorPos();
@@ -91,6 +91,19 @@ namespace te
                     _loadTextureUsed = &textureUsed;
                     _fileBrowser.Data.TexParam.TexType = texType;
                     _fileBrowser.Data.TexParam.SRGB = SRGB;
+                    _fileBrowser.Data.TexParam.IsNormalMap = isNormalMap;
+
+                    if(texType == TextureType::TEX_TYPE_CUBE_MAP)
+                    {
+                        _fileBrowser.Data.TexParam.GenerateMips = false;
+                    }
+                    else
+                    {
+                        _fileBrowser.Data.TexParam.GenerateMips = true;
+                        _fileBrowser.Data.TexParam.GenerateMipsOnGpu = true;
+                        _fileBrowser.Data.TexParam.MipsPreserveCoverage = true;
+                        _fileBrowser.Data.TexParam.MaxMips = 0;
+                    }
                 }
                 else if (uuid == empty)
                 {
@@ -165,7 +178,7 @@ namespace te
                 currentTexture = _materialsPreview->GetPreview(_currentMaterial).RenderTex->GetColorTexture(0);
                 if (currentTexture && currentTexture->GetProperties().GetTextureType() == TextureType::TEX_TYPE_2D)
                 {
-                    ImGuiExt::RenderImage(currentTexture, 0, Vector2(26.0f, 26.0f));
+                    ImGuiExt::RenderImage(currentTexture, Vector2(26.0f, 26.0f));
                     ImGui::SameLine();
 
                     ImVec2 cursor = ImGui::GetCursorPos();
@@ -230,7 +243,7 @@ namespace te
                     previewOffset = (previewZoneWidth - previewWidth) * 0.5f;
 
                 ImGui::BeginChild("TexturePreview", ImVec2(previewZoneWidth, previewHeight), true, ImGuiWindowFlags_NoScrollbar);
-                ImGuiExt::RenderImage(currentTexture, 0, Vector2(previewWidth - 16.0f, previewHeight - 16.0f), Vector2(previewOffset, 0.0f));
+                ImGuiExt::RenderImage(currentTexture, Vector2(previewWidth - 16.0f, previewHeight - 16.0f), Vector2(previewOffset, 0.0f));
                 ImGui::EndChild();
 
                 ImVec2 cursor = ImGui::GetCursorPos();
@@ -463,49 +476,64 @@ namespace te
                 texturesEnvMappingOptions.AddOption(empty, ICON_FA_TIMES_CIRCLE " No texture");
                 texturesEnvMappingOptions.AddOption(load, ICON_FA_FOLDER_OPEN " Load");
 
-                if (ShowTexture(uuid, properties.UseBaseColorMap, "##material_texture_base_color_option", "Base Color", "BaseColorMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D, true))
+                if (ShowTexture(uuid, properties.UseBaseColorMap, "##material_texture_base_color_option", "Base Color", "BaseColorMap", 
+                    texturesOptions, width, false, TextureType::TEX_TYPE_2D, true, false))
                     hasChanged = true;
 
-                if (ShowTexture(uuid, properties.UseMetallicMap, "##material_texture_metallic_option", "Metallic", "MetallicMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D, false))
+                if (ShowTexture(uuid, properties.UseMetallicMap, "##material_texture_metallic_option", "Metallic", "MetallicMap", 
+                    texturesOptions, width, false, TextureType::TEX_TYPE_2D, false, false))
                     hasChanged = true;
 
-                if (ShowTexture(uuid, properties.UseRoughnessMap, "##material_texture_roughness_option", "Roughness", "RoughnessMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D, false))
+                if (ShowTexture(uuid, properties.UseRoughnessMap, "##material_texture_roughness_option", "Roughness", "RoughnessMap", 
+                    texturesOptions, width, false, TextureType::TEX_TYPE_2D, false, false))
                     hasChanged = true;
 
-                if (ShowTexture(uuid, properties.UseReflectanceMap, "##material_texture_reflectance_option", "Reflectance", "ReflectanceMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D, false))
+                if (ShowTexture(uuid, properties.UseReflectanceMap, "##material_texture_reflectance_option", "Reflectance", "ReflectanceMap", 
+                    texturesOptions, width, false, TextureType::TEX_TYPE_2D, false, false))
                     hasChanged = true;
 
-                if (ShowTexture(uuid, properties.UseOcclusionMap, "##material_texture_occlusion_option", "Occlusion", "OcclusionMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D, false))
+                if (ShowTexture(uuid, properties.UseOcclusionMap, "##material_texture_occlusion_option", "Occlusion", "OcclusionMap", 
+                    texturesOptions, width, false, TextureType::TEX_TYPE_2D, false, false))
                     hasChanged = true;
 
-                if (ShowTexture(uuid, properties.UseEmissiveMap, "##material_texture_emissive_option", "Emissive", "EmissiveMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D, true))
+                if (ShowTexture(uuid, properties.UseEmissiveMap, "##material_texture_emissive_option", "Emissive", "EmissiveMap", 
+                    texturesOptions, width, false, TextureType::TEX_TYPE_2D, true, false))
                     hasChanged = true;
 
-                if (ShowTexture(uuid, properties.UseSheenColorMap, "##material_texture_sheen_color_option", "Sheen Color", "SheenColorMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D, true))
+                if (ShowTexture(uuid, properties.UseSheenColorMap, "##material_texture_sheen_color_option", "Sheen Color", "SheenColorMap", 
+                    texturesOptions, width, false, TextureType::TEX_TYPE_2D, true, false))
                     hasChanged = true;
 
-                if (ShowTexture(uuid, properties.UseSheenRoughnessMap, "##material_texture_sheen_roughness_option", "Sheen Rough.", "SheenRoughnessMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D, false))
+                if (ShowTexture(uuid, properties.UseSheenRoughnessMap, "##material_texture_sheen_roughness_option", "Sheen Rough.", "SheenRoughnessMap", 
+                    texturesOptions, width, false, TextureType::TEX_TYPE_2D, false, false))
                     hasChanged = true;
 
-                if (ShowTexture(uuid, properties.UseClearCoatMap, "##material_texture_clear_coat_option", "Clear Coat", "ClearCoatMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D, false))
+                if (ShowTexture(uuid, properties.UseClearCoatMap, "##material_texture_clear_coat_option", "Clear Coat", "ClearCoatMap", 
+                    texturesOptions, width, false, TextureType::TEX_TYPE_2D, false, false))
                     hasChanged = true;
 
-                if (ShowTexture(uuid, properties.UseClearCoatRoughnessMap, "##material_texture_clear_coat_roughness_option", "Clear C. Rough.", "ClearCoatRoughnesssMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D, false))
+                if (ShowTexture(uuid, properties.UseClearCoatRoughnessMap, "##material_texture_clear_coat_roughness_option", "Clear C. Rough.", "ClearCoatRoughnesssMap", 
+                    texturesOptions, width, false, TextureType::TEX_TYPE_2D, false, false))
                     hasChanged = true;
 
-                if (ShowTexture(uuid, properties.UseClearCoatNormalMap, "##material_texture_clear_coat_normal_option", "Clear C. Normal", "ClearCoatNormalMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D, false))
+                if (ShowTexture(uuid, properties.UseClearCoatNormalMap, "##material_texture_clear_coat_normal_option", "Clear C. Normal", "ClearCoatNormalMap", 
+                    texturesOptions, width, false, TextureType::TEX_TYPE_2D, false, true))
                     hasChanged = true;
 
-                if (ShowTexture(uuid, properties.UseNormalMap, "##material_texture_normal_option", "Normal", "NormalMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D, false))
+                if (ShowTexture(uuid, properties.UseNormalMap, "##material_texture_normal_option", "Normal", "NormalMap", 
+                    texturesOptions, width, false, TextureType::TEX_TYPE_2D, false, true))
                     hasChanged = true;
 
-                if (ShowTexture(uuid, properties.UseParallaxMap, "##material_texture_parallax_option", "Parallax", "ParallaxMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D, false))
+                if (ShowTexture(uuid, properties.UseParallaxMap, "##material_texture_parallax_option", "Parallax", "ParallaxMap", 
+                    texturesOptions, width, false, TextureType::TEX_TYPE_2D, false, false))
                     hasChanged = true;
 
-                if (ShowTexture(uuid, properties.UseTransmissionMap, "##material_texture_transmission_option", "Transmission", "TransmissionMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D, false))
+                if (ShowTexture(uuid, properties.UseTransmissionMap, "##material_texture_transmission_option", "Transmission", "TransmissionMap", 
+                    texturesOptions, width, false, TextureType::TEX_TYPE_2D, false, false))
                     hasChanged = true;
 
-                if (ShowTexture(uuid, properties.UseAnisotropyDirectionMap, "##material_texture_anisotropy_direction_option", "Anisotropy Dir.", "AnisotropyDirectionMap", texturesOptions, width, false, TextureType::TEX_TYPE_2D, false))
+                if (ShowTexture(uuid, properties.UseAnisotropyDirectionMap, "##material_texture_anisotropy_direction_option", "Anisotropy Dir.", "AnisotropyDirectionMap", 
+                    texturesOptions, width, false, TextureType::TEX_TYPE_2D, false, true))
                     hasChanged = true;
 
                 if (ShowLoadedTexture())
@@ -600,24 +628,22 @@ namespace te
         if (_loadTexture)
             ImGui::OpenPopup("Load Material Texture");
 
-        if (_fileBrowser.ShowFileDialog("Load Material Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, ".png,.jpeg,.jpg,.dds,.tiff,.tif,.tga"))
+        if (_fileBrowser.ShowFileDialog("Load Material Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, Editor::TexturesExtensionsStr))
         {
             auto textureImportOptions = TextureImportOptions::Create();
+            textureImportOptions->CpuCached = _fileBrowser.Data.TexParam.CpuCached;
+            textureImportOptions->GenerateMips = _fileBrowser.Data.TexParam.GenerateMips;
+            textureImportOptions->GenerateMipsOnGpu = _fileBrowser.Data.TexParam.GenerateMipsOnGpu;
+            textureImportOptions->MaxMip = _fileBrowser.Data.TexParam.MaxMips;
+            textureImportOptions->Format = PixelUtil::BestFormatFromFile(_fileBrowser.Data.SelectedPath);
+            textureImportOptions->SRGB = _fileBrowser.Data.TexParam.SRGB;
+            textureImportOptions->IsNormalMap = _fileBrowser.Data.TexParam.IsNormalMap;
+
             if (_fileBrowser.Data.TexParam.TexType == TextureType::TEX_TYPE_CUBE_MAP)
             {
-                textureImportOptions->CpuCached = _fileBrowser.Data.TexParam.CpuCached;
                 textureImportOptions->CubemapType = CubemapSourceType::Faces;
-                textureImportOptions->IsCubemap = true;
-                textureImportOptions->Format = PixelUtil::BestFormatFromFile(_fileBrowser.Data.SelectedPath);
-                textureImportOptions->SRGB = _fileBrowser.Data.TexParam.SRGB;
-            }
-            else
-            {
-                textureImportOptions->CpuCached = _fileBrowser.Data.TexParam.CpuCached;
-                textureImportOptions->GenerateMips = _fileBrowser.Data.TexParam.GenerateMips;
-                textureImportOptions->MaxMip = _fileBrowser.Data.TexParam.MaxMips;
-                textureImportOptions->Format = PixelUtil::BestFormatFromFile(_fileBrowser.Data.SelectedPath);
-                textureImportOptions->SRGB = _fileBrowser.Data.TexParam.SRGB;
+                textureImportOptions->IsCubeMap = true;
+                textureImportOptions->IsNormalMap = false;
             }
 
             HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.Data.SelectedPath, textureImportOptions);

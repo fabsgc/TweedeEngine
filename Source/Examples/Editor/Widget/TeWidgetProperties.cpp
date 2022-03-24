@@ -1291,7 +1291,7 @@ namespace te
 
                 if (texture && texture->GetProperties().GetTextureType() != TextureType::TEX_TYPE_CUBE_MAP)
                 {
-                    ImGuiExt::RenderImage(texture, 3, Vector2(26.0f, 26.0f));
+                    ImGuiExt::RenderImage(texture, Vector2(26.0f, 26.0f));
                     ImGui::SameLine();
 
                     ImVec2 cursor = ImGui::GetCursorPos();
@@ -1307,6 +1307,14 @@ namespace te
                     {
                         // Load and create (if not exists) PhysicsHeightField associated to this texture
                         _loadHeightFieldTexture = true;
+
+                        _fileBrowser.Data.TexParam.TexType = TextureType::TEX_TYPE_2D;
+                        _fileBrowser.Data.TexParam.GenerateMips = true;
+                        _fileBrowser.Data.TexParam.GenerateMipsOnGpu = true;
+                        _fileBrowser.Data.TexParam.MipsPreserveCoverage = true;
+                        _fileBrowser.Data.TexParam.MaxMips = 0;
+                        _fileBrowser.Data.TexParam.SRGB = false;
+                        _fileBrowser.Data.TexParam.IsNormalMap = false;
                     }
                     else if (textureUUID == emptyTexture)
                     {
@@ -2668,6 +2676,11 @@ namespace te
                 if (textureUUID == loadTexture)
                 {
                     _loadSkybox = true;
+
+                    _fileBrowser.Data.TexParam.TexType = TextureType::TEX_TYPE_CUBE_MAP;
+                    _fileBrowser.Data.TexParam.SRGB = true;
+                    _fileBrowser.Data.TexParam.GenerateMips = false;
+                    _fileBrowser.Data.TexParam.IsNormalMap = false;
                 }
                 else if (textureUUID == emptyTexture)
                 {
@@ -3001,7 +3014,7 @@ namespace te
         if (_loadMesh || _loadPhysicsMesh)
             ImGui::OpenPopup("Load Mesh");
 
-        if (_fileBrowser.ShowFileDialog("Load Mesh", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, ".obj,.dae,.fbx,.stl,.gltf"))
+        if (_fileBrowser.ShowFileDialog("Load Mesh", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, Editor::MeshesExtensionsStr))
         {
             auto meshImportOptions = MeshImportOptions::Create();
             meshImportOptions->ImportNormals = _fileBrowser.Data.MeshParam.ImportNormals;
@@ -3109,19 +3122,23 @@ namespace te
         {
             ImGui::OpenPopup("Load Skybox Texture");
             _fileBrowser.Data.TexParam.TexType = TextureType::TEX_TYPE_CUBE_MAP;
-            _fileBrowser.Data.TexParam.SRGB = true;
         }
 
-        if (_fileBrowser.ShowFileDialog("Load Skybox Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, ".png,.jpeg,.jpg,.dds,.tiff,.tif,.tga"))
+        if (_fileBrowser.ShowFileDialog("Load Skybox Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, Editor::TexturesExtensionsStr))
         {
             if (_fileBrowser.Data.TexParam.TexType == TextureType::TEX_TYPE_CUBE_MAP)
             {
                 auto textureSkyboxImportOptions = TextureImportOptions::Create();
-                textureSkyboxImportOptions->CubemapType = CubemapSourceType::Faces;
-                textureSkyboxImportOptions->IsCubemap = true;
-                textureSkyboxImportOptions->Format = PixelUtil::BestFormatFromFile(_fileBrowser.Data.SelectedPath);
                 textureSkyboxImportOptions->CpuCached = _fileBrowser.Data.TexParam.CpuCached;
+                textureSkyboxImportOptions->CubemapType = CubemapSourceType::Faces;
+                textureSkyboxImportOptions->IsCubeMap = true;
+                textureSkyboxImportOptions->GenerateMips = _fileBrowser.Data.TexParam.GenerateMips;
+                textureSkyboxImportOptions->GenerateMipsOnGpu = _fileBrowser.Data.TexParam.GenerateMipsOnGpu;
+                textureSkyboxImportOptions->MipsPreserveCoverage = _fileBrowser.Data.TexParam.MipsPreserveCoverage;
+                textureSkyboxImportOptions->MaxMip = _fileBrowser.Data.TexParam.MaxMips;
+                textureSkyboxImportOptions->Format = PixelUtil::BestFormatFromFile(_fileBrowser.Data.SelectedPath);
                 textureSkyboxImportOptions->SRGB = _fileBrowser.Data.TexParam.SRGB;
+                textureSkyboxImportOptions->IsNormalMap = false;
 
                 HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.Data.SelectedPath, textureSkyboxImportOptions);
                 if (texture.IsLoaded())
@@ -3184,7 +3201,7 @@ namespace te
         if (_loadAudioClip)
             ImGui::OpenPopup("Load Audio Clip");
 
-        if (_fileBrowser.ShowFileDialog("Load Audio Clip", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, ".ogg,.flac,.wav"))
+        if (_fileBrowser.ShowFileDialog("Load Audio Clip", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, Editor::SoundsExtensionsStr))
         {
             auto audioClipImportOptions = AudioClipImportOptions::Create();
             audioClipImportOptions->Is3D = _fileBrowser.Data.AudioParam.Is3D;
@@ -3221,16 +3238,17 @@ namespace te
             _fileBrowser.Data.TexParam.TexType = TextureType::TEX_TYPE_2D;
         }
 
-        if (_fileBrowser.ShowFileDialog("Load Height Field Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, ".png,.jpeg,.jpg,.dds,.tiff,.tif,.tga"))
+        if (_fileBrowser.ShowFileDialog("Load Height Field Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, Editor::TexturesExtensionsStr))
         {
             auto textureImportOptions = TextureImportOptions::Create();
             if (_fileBrowser.Data.TexParam.TexType == TextureType::TEX_TYPE_2D)
             {
                 textureImportOptions->CpuCached = _fileBrowser.Data.TexParam.CpuCached;
                 textureImportOptions->GenerateMips = _fileBrowser.Data.TexParam.GenerateMips;
-                textureImportOptions->MipMapsPreserveCoverage = _fileBrowser.Data.TexParam.MipMapsPreserveCoverage;
+                textureImportOptions->GenerateMipsOnGpu = _fileBrowser.Data.TexParam.GenerateMipsOnGpu;
+                textureImportOptions->MipsPreserveCoverage = _fileBrowser.Data.TexParam.MipsPreserveCoverage;
                 textureImportOptions->MaxMip = _fileBrowser.Data.TexParam.MaxMips;
-                textureImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
+                textureImportOptions->Format = PixelUtil::BestFormatFromFile(_fileBrowser.Data.SelectedPath);
 
                 HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.Data.SelectedPath, textureImportOptions, true);
                 if (texture.IsLoaded())

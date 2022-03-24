@@ -208,7 +208,10 @@ namespace te
             mappedSubResource.pData = nullptr;
             _device.ClearErrors();
 
+            _device.LockContext();
             HRESULT hr = _device.GetImmediateContext()->Map(_D3DBuffer, 0, mapType, 0, &mappedSubResource);
+            _device.UnlockContext();
+
             if (FAILED(hr) || _device.HasError())
             {
                 String msg = _device.GetErrorDescription();
@@ -259,7 +262,9 @@ namespace te
         }
         else
         {
+            _device.LockContext();
             _device.GetImmediateContext()->Unmap(_D3DBuffer, 0);
+            _device.UnlockContext();
         }
     }
 
@@ -270,8 +275,11 @@ namespace te
         if (srcOffset == 0 && dstOffset == 0 &&
             length == _size && _size == srcBuffer.GetSize())
         {
+            _device.LockContext();
             _device.GetImmediateContext()->CopyResource(_D3DBuffer,
                 static_cast<D3D11HardwareBuffer&>(srcBuffer).GetD3DBuffer());
+            _device.UnlockContext();
+
             if (_device.HasError())
             {
                 String errorDescription = _device.GetErrorDescription();
@@ -289,8 +297,11 @@ namespace te
             srcBox.front = 0;
             srcBox.back = 1;
 
+            _device.LockContext();
             _device.GetImmediateContext()->CopySubresourceRegion(_D3DBuffer, 0, (UINT)dstOffset, 0, 0,
                 static_cast<D3D11HardwareBuffer&>(srcBuffer).GetD3DBuffer(), 0, &srcBox);
+            _device.UnlockContext();
+
             if (_device.HasError())
             {
                 String errorDescription = _device.GetErrorDescription();
@@ -327,7 +338,9 @@ namespace te
             if (_bufferType == BT_CONSTANT)
             {
                 assert(offset == 0);
+                _device.LockContext();
                 _device.GetImmediateContext()->UpdateSubresource(_D3DBuffer, 0, nullptr, pSource, 0, 0);
+                _device.UnlockContext();
             }
             else
             {
@@ -339,7 +352,9 @@ namespace te
                 dstBox.front = 0;
                 dstBox.back = 1;
 
+                _device.LockContext();
                 _device.GetImmediateContext()->UpdateSubresource(_D3DBuffer, 0, &dstBox, pSource, 0, 0);
+                _device.UnlockContext();
             }
         }
         else

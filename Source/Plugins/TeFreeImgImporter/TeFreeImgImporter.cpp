@@ -122,37 +122,35 @@ namespace te
 
     SPtr<Resource> FreeImgImporter::Import(const String& filePath, const SPtr<const ImportOptions> importOptions)
     {
+        SPtr<Texture> texture = nullptr;
+        Vector<SPtr<PixelData>> facesData;
         auto path = std::filesystem::absolute(filePath);
         const TextureImportOptions* textureImportOptions = static_cast<const TextureImportOptions*>(importOptions.get());
 
         SPtr<PixelData> imgData = ImportRawImage(filePath);
         if (imgData == nullptr || imgData->GetData() == nullptr)
-        {
             return nullptr;
-        }
-
-        Vector<SPtr<PixelData>> faceData;
 
         TextureType texType;
-        if (textureImportOptions->IsCubemap)
+        if (textureImportOptions->IsCubeMap)
         {
             texType = TEX_TYPE_CUBE_MAP;
 
             std::array<SPtr<PixelData>, 6> cubemapFaces;
             if (GenerateCubemap(imgData, textureImportOptions->CubemapType, cubemapFaces))
             {
-                faceData.insert(faceData.begin(), cubemapFaces.begin(), cubemapFaces.end());
+                facesData.insert(facesData.begin(), cubemapFaces.begin(), cubemapFaces.end());
             }
             else // Fall-back to 2D texture
             {
                 texType = TEX_TYPE_2D;
-                faceData.push_back(imgData);
+                facesData.push_back(imgData);
             }
         }
         else
         {
             texType = TEX_TYPE_2D;
-            faceData.push_back(imgData);
+            facesData.push_back(imgData);
         }
 
         int usage = TU_DEFAULT;
@@ -161,8 +159,8 @@ namespace te
 
         TEXTURE_DESC texDesc;
         texDesc.Type = texType;
-        texDesc.Width = faceData[0]->GetWidth();
-        texDesc.Height = faceData[0]->GetHeight();
+        texDesc.Width = facesData[0]->GetWidth();
+        texDesc.Height = facesData[0]->GetHeight();
         texDesc.NumMips = 0;
         texDesc.Format = textureImportOptions->Format;
         texDesc.Usage = usage;
@@ -171,14 +169,16 @@ namespace te
 
         MipMapGenOptions mipOptions;
         mipOptions.IsSRGB = textureImportOptions->SRGB;
-        mipOptions.Alpha = AlphaMode::Transparency;
-        mipOptions.Filter = MipMapFilter::Kaiser;
+        mipOptions.Alpha = PixelUtil::HasAlpha(facesData[0]->GetFormat()) ? AlphaMode::Transparency: AlphaMode::None;
+        mipOptions.Filter = MipMapFilter::Box;
         mipOptions.Quality = CompressionQuality::Highest;
         mipOptions.RoundMode = MipMapRoundMode::RoundNone;
+        mipOptions.WrapMode = MipMapWrapMode::Mirror;
+        mipOptions.IsNormalMap = textureImportOptions->IsNormalMap;
 
         if (textureImportOptions->GenerateMips)
         {
-            if (!Bitwise::IsPow2(faceData[0]->GetWidth()) || !Bitwise::IsPow2(faceData[0]->GetHeight()))
+            if (!Bitwise::IsPow2(facesData[0]->GetWidth()) || !Bitwise::IsPow2(facesData[0]->GetHeight()))
             {
                 UINT32 previousWidth = Math::ToPreviousPowerOf2(texDesc.Width);
                 UINT32 previousHeight = Math::ToPreviousPowerOf2(texDesc.Height);
@@ -203,7 +203,7 @@ namespace te
                 }
             }
 
-            UINT32 maxPossibleMip = PixelUtil::GetMaxMipmaps(texDesc.Width, texDesc.Height, faceData[0]->GetDepth());
+            UINT32 maxPossibleMip = PixelUtil::GetMaxMipmaps(texDesc.Width, texDesc.Height, facesData[0]->GetDepth());
 
             if (textureImportOptions->MaxMip == 0)
                 texDesc.NumMips = maxPossibleMip;
@@ -211,7 +211,9 @@ namespace te
                 texDesc.NumMips = std::min(maxPossibleMip, textureImportOptions->MaxMip);
         }
 
-        SPtr<Texture> texture = PixelUtil::GenMipmaps(texDesc, faceData, mipOptions, texDesc.NumMips);
+        if(textureImportOptions->GenerateMipsOnGpu)
+            texture = PixelUtil::GenMipmaps(texDesc, facesData, mipOptions, texDesc.NumMips);
+
         if (!texture)
         {
             TE_DEBUG("Failed to generate mipmaps on GPU, fallback to CPU : " + filePath);
@@ -219,14 +221,14 @@ namespace te
             texture = Texture::CreatePtr(texDesc);
 
             // If GPU mipmap generation failed, fallback to CPU
-            UINT32 numFaces = (UINT32)faceData.size();
+            UINT32 numFaces = (UINT32)facesData.size();
             for (UINT32 i = 0; i < numFaces; i++)
             {
                 Vector<SPtr<PixelData>> mipLevels;
                 if (texDesc.NumMips > 0)
-                    mipLevels = PixelUtil::GenMipmaps(*faceData[i], mipOptions, texDesc.NumMips);
+                    mipLevels = PixelUtil::GenMipmaps(*facesData[i], mipOptions, texDesc.NumMips);
                 else
-                    mipLevels.push_back(faceData[i]);
+                    mipLevels.push_back(facesData[i]);
 
                 for (UINT32 mip = 0; mip < (UINT32)mipLevels.size(); ++mip)
                 {

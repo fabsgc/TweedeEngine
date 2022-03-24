@@ -1,5 +1,8 @@
 #include "Resources/TeGpuResourceData.h"
 
+#include <thread>
+#include <chrono>
+
 namespace te
 {
     GpuResourceData::GpuResourceData(const GpuResourceData& copy)
@@ -41,6 +44,8 @@ namespace te
 
     void GpuResourceData::AllocateInternalBuffer(UINT32 size)
     {
+        UINT32 maxTry = 3;
+        std::atomic<UINT32> tryCount = 0;
         FreeInternalBuffer();
 
         do
@@ -48,8 +53,20 @@ namespace te
             // In case of intensive buffer creation, this call could fail
             // So I put te_allocate inside a loop. This way, I hope that
             // allocation will succeed
-            _data = (UINT8*)te_allocate(size); 
-        } while (_data == nullptr);
+            _data = (UINT8*)te_allocate(size);
+            tryCount.fetch_add(1, std::memory_order_relaxed);
+
+            if (!_data)
+            {
+                std::this_thread::sleep_for(std::chrono::milliseconds(200));
+            }
+
+        } while (_data == nullptr && tryCount < maxTry);
+
+        if (!_data)
+        {
+            TE_ASSERT_ERROR(_data, "Failed to allocate a buffer of size : " + ToString(size));
+        }
         
         _ownsData = true;
     }

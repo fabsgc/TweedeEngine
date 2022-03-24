@@ -237,7 +237,6 @@ namespace te
 
     protected:
         RENDER_WINDOW_DESC _desc;
-        mutable Mutex _windowMutex;
         RenderWindowProperties _properties;
 
         bool _moveOrResized;

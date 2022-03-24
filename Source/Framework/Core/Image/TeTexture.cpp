@@ -51,11 +51,6 @@ namespace te
         SPtr<PixelData> dst = te_shared_ptr_new<PixelData>(width, height, depth, GetFormat());
         dst->AllocateInternalBuffer();
 
-        if (!dst->GetData())
-        {
-            TE_ASSERT_ERROR(dst->GetData(), "Failed to allocate a buffer");
-        }
-
         return dst;
     }
 

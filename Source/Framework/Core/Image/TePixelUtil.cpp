@@ -12,7 +12,7 @@
 
 namespace te
 {
-    LockingPolicy<true> PixelUtil::_lockPolicy;
+    RecursiveMutex PixelUtil::_mutex;
 
     /**
      * Performs pixel data resampling using the point filter (nearest neighbor). Does not perform format conversions.
@@ -2402,7 +2402,7 @@ namespace te
     {
         SPtr<Texture> output = nullptr;
         SPtr<Texture> tmp = nullptr;
-        ScopedLock<true> lock(_lockPolicy);
+        bool everythingOk = true;
 
         if (!RendererMaterialManager::IsStarted())
             return output;
@@ -2429,6 +2429,12 @@ namespace te
                 TE_DEBUG("Mipmap generation failed. Source data cannot be compressed.");
                 return output;
             }
+
+            if (src->GetWidth() != desc.Width || src->GetHeight() != desc.Height || src->GetDepth() != desc.Depth)
+            {
+                TE_DEBUG("Output buffer does not correspond to input buffer, mipmap can't be generated with GPU.");
+                everythingOk = false;
+            }
         }
 
         if (desc.Type == TextureType::TEX_TYPE_2D && srcs.size() != 1)
@@ -2443,41 +2449,65 @@ namespace te
             return output;
         }
 
-        RenderAPI::Instance().PushMarker("[Draw] MipMap", Color(0.78f, 0.65f, 0.21f));
+        RecursiveLock lock(_mutex);
 
-        TEXTURE_DESC mipTexDesc = desc;
-        mipTexDesc.Usage |= TU_RENDERTARGET;
-        output = Texture::CreatePtr(mipTexDesc);
-        tmp = Texture::CreatePtr(mipTexDesc);
-
-        for (UINT32 i = 0; i < srcs.size(); i++)
+        if(!everythingOk)
         {
-            SPtr<PixelData> dst = output->GetProperties().AllocBuffer(0, 0);
-
-            PixelUtil::BulkPixelConversion(*srcs[i], *dst);
-
-            output->WriteData(*dst, 0, i);
-            tmp->WriteData(*dst, 0, i);
-        }
-
-        if (mipTexDesc.NumMips > 0)
-        {
-            // TODO PRESERVE ALPHA COVERAGE
-
-            for (UINT32 mip = 1; mip < mipTexDesc.NumMips; mip++)
+            if (desc.NumMips == 0)
             {
-                UINT32 srcMip = mip - 1;
+                TEXTURE_DESC mipTexDesc = desc;
+                mipTexDesc.Width = srcs[0]->GetWidth();
+                mipTexDesc.Height = srcs[0]->GetHeight();
+                mipTexDesc.Depth = srcs[0]->GetDepth();
+                mipTexDesc.NumMips = 0;
+                output = Texture::CreatePtr(mipTexDesc);
 
-                if (mipTexDesc.Type == TextureType::TEX_TYPE_2D)
+                for (UINT32 i = 0; i < srcs.size(); i++)
                 {
-                    RENDER_TEXTURE_DESC mipDesc;
-                    mipDesc.ColorSurfaces[0].Tex = output;
-                    mipDesc.ColorSurfaces[0].MipLevel = mip;
-                    mipDesc.ColorSurfaces[0].NumFaces = 1;
+                    SPtr<PixelData> dst = output->GetProperties().AllocBuffer(0, 0);
 
+                    PixelUtil::BulkPixelConversion(*srcs[i], *dst);
+                    output->WriteData(*dst, 0, i);
+                }
+            }
+
+            return output;
+        }
+        else
+        {
+            RenderAPI::Instance().PushMarker("[Draw] MipMap", Color(0.78f, 0.65f, 0.21f));
+
+            TEXTURE_DESC mipTexDesc = desc;
+            output = Texture::CreatePtr(mipTexDesc);
+            mipTexDesc.Usage |= TU_RENDERTARGET;
+            tmp = Texture::CreatePtr(mipTexDesc);
+
+            for (UINT32 i = 0; i < srcs.size(); i++)
+            {
+                SPtr<PixelData> dst = output->GetProperties().AllocBuffer(0, 0);
+
+                PixelUtil::BulkPixelConversion(*srcs[i], *dst);
+                output->WriteData(*dst, 0, i);
+                tmp->WriteData(*dst, 0, i);
+            }
+
+            if (mipTexDesc.NumMips > 0 && everythingOk)
+            {
+                // TODO PRESERVE ALPHA COVERAGE
+
+                for (UINT32 mip = 1; mip < mipTexDesc.NumMips; mip++)
+                {
+                    UINT32 srcMip = mip - 1;
+
+                    if (mipTexDesc.Type == TextureType::TEX_TYPE_2D)
                     {
+                        RENDER_TEXTURE_DESC mipDesc;
+                        mipDesc.ColorSurfaces[0].Tex = tmp;
+                        mipDesc.ColorSurfaces[0].MipLevel = mip;
+                        mipDesc.ColorSurfaces[0].NumFaces = 1;
+
                         SPtr<RenderTarget> target = RenderTexture::Create(mipDesc);
-                        textureMat->Execute(tmp, srcMip, target);
+                        textureMat->Execute(output, srcMip, target);
 
                         TEXTURE_COPY_DESC copyDesc;
                         copyDesc.SrcFace = 0;
@@ -2485,17 +2515,17 @@ namespace te
                         copyDesc.DstFace = 0;
                         copyDesc.DstMip = mip;
 
-                        output->Copy(tmp, copyDesc);
+                        tmp->Copy(output, copyDesc);
+                    }
+                    else
+                    {
+                        // TODO CUBE MIPMAP
                     }
                 }
-                else
-                {
-                    // TODO CUBE MIPMAP
-                }
             }
-        }
 
-        RenderAPI::Instance().PopMarker();
+            RenderAPI::Instance().PopMarker();
+        }
 
         return output;
     }
@@ -2749,7 +2779,8 @@ namespace te
             {".dds", { PixelFormat::PF_RGBA8, PixelFormat::PF_BGRA8 } },
             {".tiff", { PixelFormat::PF_RGBA8, PixelFormat::PF_BGRA8 } },
             {".tif", { PixelFormat::PF_RGBA8, PixelFormat::PF_BGRA8 } },
-            {".tga", { PixelFormat::PF_RGBA8, PixelFormat::PF_BGRA8 } }
+            {".tga", { PixelFormat::PF_RGBA8, PixelFormat::PF_BGRA8 } },
+            {".bmp", { PixelFormat::PF_RGB8, PixelFormat::PF_BGR8 } }
         };
 
         String extension = std::filesystem::path(path).extension().generic_string();

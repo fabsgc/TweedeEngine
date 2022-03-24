@@ -9,8 +9,6 @@
 
 namespace te
 {
-    RecursiveMutex D3D11Texture::_deviceMutex;
-
     D3D11Texture::D3D11Texture(const TEXTURE_DESC& desc, const SPtr<PixelData>& initialData)
         : Texture(desc, initialData)
     { }
@@ -151,60 +149,66 @@ namespace te
             desc.SrcVolume.GetHeight() == 0 ||
             desc.SrcVolume.GetDepth() == 0;
 
-        if (srcHasMultisample && !destHasMultisample) // Resolving from MS to non-MS texture
         {
-            if(copyEntireSurface)
-                device.GetImmediateContext()->ResolveSubresource(other->GetDX11Resource(), destResIdx, _tex, srcResIdx, _DXGIFormat);
+            device.LockContext();
+
+            if (srcHasMultisample && !destHasMultisample) // Resolving from MS to non-MS texture
+            {
+                if(copyEntireSurface)
+                    device.GetImmediateContext()->ResolveSubresource(other->GetDX11Resource(), destResIdx, _tex, srcResIdx, _DXGIFormat);
+                else
+                {
+                    // Need to first resolve to a temporary texture, then copy
+                    TEXTURE_DESC tempDesc;
+                    tempDesc.Width = _properties.GetWidth();
+                    tempDesc.Height = _properties.GetHeight();
+                    tempDesc.Format = _properties.GetFormat();
+                    tempDesc.HwGamma = _properties.IsHardwareGammaEnabled();
+                    tempDesc.DebugName = _properties.GetDebugName();
+
+                    SPtr<D3D11Texture> temporary = std::static_pointer_cast<D3D11Texture>(Texture::CreatePtr(tempDesc));
+                    device.GetImmediateContext()->ResolveSubresource(temporary->GetDX11Resource(), 0, _tex, srcResIdx, _DXGIFormat);
+
+                    TEXTURE_COPY_DESC tempCopyDesc;
+                    tempCopyDesc.DstMip = desc.DstMip;
+                    tempCopyDesc.DstFace = desc.DstFace;
+                    tempCopyDesc.DstPosition = desc.DstPosition;
+
+                    temporary->Copy(target, tempCopyDesc);
+                }
+            }
             else
             {
-                // Need to first resolve to a temporary texture, then copy
-                TEXTURE_DESC tempDesc;
-                tempDesc.Width = _properties.GetWidth();
-                tempDesc.Height = _properties.GetHeight();
-                tempDesc.Format = _properties.GetFormat();
-                tempDesc.HwGamma = _properties.IsHardwareGammaEnabled();
-                tempDesc.DebugName = _properties.GetDebugName();
+                D3D11_BOX srcRegion;
+                srcRegion.left = desc.SrcVolume.Left;
+                srcRegion.right = desc.SrcVolume.Right;
+                srcRegion.top = desc.SrcVolume.Top;
+                srcRegion.bottom = desc.SrcVolume.Bottom;
+                srcRegion.front = desc.SrcVolume.Front;
+                srcRegion.back = desc.SrcVolume.Back;
 
-                SPtr<D3D11Texture> temporary = std::static_pointer_cast<D3D11Texture>(Texture::CreatePtr(tempDesc));
-                device.GetImmediateContext()->ResolveSubresource(temporary->GetDX11Resource(), 0, _tex, srcResIdx, _DXGIFormat);
+                D3D11_BOX* srcRegionPtr = nullptr;
+                if(!copyEntireSurface)
+                    srcRegionPtr = &srcRegion;
 
-                TEXTURE_COPY_DESC tempCopyDesc;
-                tempCopyDesc.DstMip = desc.DstMip;
-                tempCopyDesc.DstFace = desc.DstFace;
-                tempCopyDesc.DstPosition = desc.DstPosition;
+                device.GetImmediateContext()->CopySubresourceRegion(
+                    other->GetDX11Resource(),
+                    destResIdx,
+                    (UINT32)desc.DstPosition.x,
+                    (UINT32)desc.DstPosition.y,
+                    (UINT32)desc.DstPosition.z,
+                    _tex,
+                    srcResIdx,
+                    srcRegionPtr);
 
-                temporary->Copy(target, tempCopyDesc);
+                if (device.HasError())
+                {
+                    String errorDescription = device.GetErrorDescription();
+                    TE_ASSERT_ERROR(false, "D3D11 device cannot copy subresource\nError Description: " + errorDescription);
+                }
             }
-        }
-        else
-        {
-            D3D11_BOX srcRegion;
-            srcRegion.left = desc.SrcVolume.Left;
-            srcRegion.right = desc.SrcVolume.Right;
-            srcRegion.top = desc.SrcVolume.Top;
-            srcRegion.bottom = desc.SrcVolume.Bottom;
-            srcRegion.front = desc.SrcVolume.Front;
-            srcRegion.back = desc.SrcVolume.Back;
 
-            D3D11_BOX* srcRegionPtr = nullptr;
-            if(!copyEntireSurface)
-                srcRegionPtr = &srcRegion;
-
-            device.GetImmediateContext()->CopySubresourceRegion(
-                other->GetDX11Resource(),
-                destResIdx,
-                (UINT32)desc.DstPosition.x,
-                (UINT32)desc.DstPosition.y,
-                (UINT32)desc.DstPosition.z,
-                _tex,
-                srcResIdx,
-                srcRegionPtr);
-
-            if (device.HasError())
-            {
-                String errorDescription = device.GetErrorDescription();
-                TE_ASSERT_ERROR(false, "D3D11 device cannot copy subresource\nError Description: " + errorDescription);
-            }
+            device.UnlockContext();
         }
     }
 
@@ -255,18 +259,19 @@ namespace te
             UINT32 rowWidth = D3D11Mappings::GetSizeInBytes(format, src.GetWidth());
             UINT32 sliceWidth = D3D11Mappings::GetSizeInBytes(format, src.GetWidth(), src.GetHeight());
 
-            _deviceMutex.lock();
-
-            device.GetImmediateContext()->UpdateSubresource(_tex, subresourceIdx, nullptr, src.GetData(), rowWidth, sliceWidth);
-
-            if (device.HasError())
             {
-                String errorDescription = device.GetErrorDescription();
-                TE_ASSERT_ERROR(false, "D3D11 device cannot map texture\nError Description: " + errorDescription);
-            }
+                device.LockContext();
+                device.GetImmediateContext()->UpdateSubresource(_tex, subresourceIdx, nullptr, src.GetData(), rowWidth, sliceWidth);
+                device.UnlockContext();
 
-            TE_INC_PROFILER_GPU(ResWrite);
-            _deviceMutex.unlock();
+                if (device.HasError())
+                {
+                    String errorDescription = device.GetErrorDescription();
+                    TE_ASSERT_ERROR(false, "D3D11 device cannot map texture\nError Description: " + errorDescription);
+                }
+
+                TE_INC_PROFILER_GPU(ResWrite);
+            }
         }
         else
         {
@@ -642,8 +647,12 @@ namespace te
         D3D11RenderAPI* rs = static_cast<D3D11RenderAPI*>(RenderAPI::InstancePtr());
         D3D11Device& device = rs->GetPrimaryDevice();
 
-        _lockedSubresourceIdx = D3D11CalcSubresource(mipLevel, face, _properties.GetNumMipmaps() + 1);
-        device.GetImmediateContext()->Map(res, _lockedSubresourceIdx, flags, 0, &pMappedResource);
+        {
+            device.LockContext();
+            _lockedSubresourceIdx = D3D11CalcSubresource(mipLevel, face, _properties.GetNumMipmaps() + 1);
+            device.GetImmediateContext()->Map(res, _lockedSubresourceIdx, flags, 0, &pMappedResource);
+            device.UnlockContext();
+        }
 
         if (device.HasError())
         {
@@ -661,7 +670,10 @@ namespace te
     {
         D3D11RenderAPI* rs = static_cast<D3D11RenderAPI*>(RenderAPI::InstancePtr());
         D3D11Device& device = rs->GetPrimaryDevice();
+
+        device.LockContext();
         device.GetImmediateContext()->Unmap(res, _lockedSubresourceIdx);
+        device.UnlockContext();
 
         if (device.HasError())
         {
@@ -681,7 +693,9 @@ namespace te
 
         D3D11RenderAPI* rs = static_cast<D3D11RenderAPI*>(RenderAPI::InstancePtr());
         D3D11Device& device = rs->GetPrimaryDevice();
+        device.LockContext();
         device.GetImmediateContext()->CopyResource(_stagingBuffer, _tex);
+        device.UnlockContext();
 
         return Map(_stagingBuffer, flags, face, mipLevel, rowPitch, slicePitch);
     }
@@ -709,7 +723,9 @@ namespace te
 
         D3D11RenderAPI* rs = static_cast<D3D11RenderAPI*>(RenderAPI::InstancePtr());
         D3D11Device& device = rs->GetPrimaryDevice();
+        device.LockContext();
         device.GetImmediateContext()->UpdateSubresource(_tex, _lockedSubresourceIdx, nullptr, _staticBuffer->GetData(), rowWidth, sliceWidth);
+        device.UnlockContext();
 
         if (device.HasError())
         {
