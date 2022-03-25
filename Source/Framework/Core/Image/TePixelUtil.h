@@ -233,7 +233,7 @@ namespace te
         static void PackColor(UINT8 r, UINT8 g, UINT8 b, UINT8 a, PixelFormat format, void* dest);
 
         /**
-         * Writes the color to the provided memory location. If the destination format in non-floating point, the float
+         * Writes the color to the provided memory location. If the destination format is non-floating point, the float
          * values will be assumed to be in [0.0, 1.0] which	will be converted to integer range. ([0, 255] in the case of bytes)
          */
         static void PackColor(float r, float g, float b, float a, const PixelFormat format, void* dest);
