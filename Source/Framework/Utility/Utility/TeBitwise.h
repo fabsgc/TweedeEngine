@@ -588,8 +588,6 @@ namespace te
         /** Converts a 32-bit float to a 10-bit float according to OpenGL packed_float extension. */
         static UINT32 FloatToFloat10(float v)
         {
-            static const bool isBigEndian = Util::IsBigEndian();
-
             Float754<TE_ENDIAN == TE_ENDIAN_BIG> f;
             f.value = v;
 

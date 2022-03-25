@@ -253,11 +253,29 @@ namespace te
          */
         static void UnpackColor(float* r, float* g, float* b, float* a, PixelFormat format, const void* src);
 
+        /**
+         * @copydoc PackColor
+         */
+        static void PackColor(const float* rgbaPtr, PixelFormat format, void* dstPtr);
+
+        /**
+         * @copydoc UnpackColor
+         */
+        static void UnpackColor(float* rgbaPtr, PixelFormat format, const void* srcPtr);
+
         /** Writes a depth value to the provided memory location. Depth should be in range [0, 1]. */
         static void PackDepth(float depth, const PixelFormat format, void* dest);
 
         /** Reads the depth from the provided memory location. Value ranges in [0, 1]. */
         static float UnpackDepth(PixelFormat format, void* src);
+
+        /** */
+        template <typename T>
+        static void ConvertFromFloat(const float* rgbaPtr, void* dstPtr, size_t numComponents, UINT32 flags);
+
+        /** */
+        template <typename T>
+        static void ConvertToFloat(float* rgbaPtr, const void* srcPtr, size_t numComponents, UINT32 flags);
 
         /**
          * Converts pixels from one format to another. Provided pixel data objects must have previously allocated buffers

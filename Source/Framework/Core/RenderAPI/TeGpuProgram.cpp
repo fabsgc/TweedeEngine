@@ -18,8 +18,9 @@ namespace te
         , _includePath(desc.IncludePath)
         , _filePath(desc.FilePath)
         , _needsAdjacencyInfo(desc.RequiresAdjacency)
-        , _parametersDesc(te_shared_ptr_new<GpuParamDesc>())
         , _debugName(desc.DebugName)
+        , _parametersDesc(te_shared_ptr_new<GpuParamDesc>())
+        , _inputDeclaration(nullptr)
         , _bytecode(desc.Bytecode)
     { }
 

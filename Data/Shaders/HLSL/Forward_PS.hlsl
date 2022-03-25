@@ -84,7 +84,7 @@ PS_OUTPUT main( VS_OUTPUT IN )
 
     // ###################### METALLIC MAP SAMPLING
     if(useMetallicMap)
-        metallic = MetallicMap.Sample(AnisotropicSampler, uv0).b;
+        metallic = MetallicMap.Sample(AnisotropicSampler, uv0).r;
 
     // ###################### BASE COLOR MAP SAMPLING
     if(useBaseColorMap)
@@ -116,7 +116,7 @@ PS_OUTPUT main( VS_OUTPUT IN )
         // ###################### ROUGHNESS MAP SAMPLING
         if(useRoughnessMap)
         {
-            pRoughness = min(max(MIN_ROUGHNESS, RoughnessMap.Sample(AnisotropicSampler, uv0).g), MAX_ROUGHNESS);
+            pRoughness = min(max(MIN_ROUGHNESS, RoughnessMap.Sample(AnisotropicSampler, uv0).r), MAX_ROUGHNESS);
             roughness = pRoughness * pRoughness;
         }
 

@@ -152,7 +152,9 @@ namespace te
         /** Format contains signed data. Absence of this flag implies unsigned data. */
         PFF_SIGNED = 0x20,
         /** Format contains normalized data. This will be [0, 1] for unsigned, and [-1,1] for signed formats. */
-        PFF_NORMALIZED = 0x40
+        PFF_NORMALIZED = 0x40,
+        /** Format is a half format (16 bits) */
+        PFF_HALF = 0x80
     };
 
     /** Determines how are texture pixels filtered during sampling. */

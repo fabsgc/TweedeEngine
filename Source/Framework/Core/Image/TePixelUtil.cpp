@@ -583,7 +583,7 @@ namespace te
         /* Bytes per element */
         2,
         /* Flags */
-        PFF_FLOAT,
+        PFF_FLOAT | PFF_HALF,
         /* Component type and count */
         PCT_FLOAT16, 1,
         /* rbits, gbits, bbits, abits */
@@ -597,7 +597,7 @@ namespace te
         /* Bytes per element */
         4,
         /* Flags */
-        PFF_FLOAT,
+        PFF_FLOAT | PFF_HALF,
         /* Component type and count */
         PCT_FLOAT16, 2,
         /* rbits, gbits, bbits, abits */
@@ -613,7 +613,7 @@ namespace te
         /* Bytes per element */
         8,
         /* Flags */
-        PFF_FLOAT | PFF_HASALPHA,
+        PFF_FLOAT | PFF_HASALPHA | PFF_HALF,
         /* Component type and count */
         PCT_FLOAT16, 4,
         /* rbits, gbits, bbits, abits */
@@ -1181,7 +1181,7 @@ namespace te
         /* Masks and shifts */
         0x0000FFFF, 0xFFFF0000, 0x0000FFFF, 0xFFFF0000,
         0, 16, 0, 16
-        },
+        }
     };
 
     static inline const PixelFormatDescription &GetDescriptionFor(const PixelFormat fmt)
@@ -1841,7 +1841,7 @@ namespace te
 
         if(format == PF_RGB10A2)
         {
-            TE_DEBUG("unpackColor() not implemented for format \"" + GetFormatName(PF_RGB10A2) + "\"");
+            TE_DEBUG("UnpackColor() not implemented for format \"" + GetFormatName(PF_RGB10A2) + "\"");
             return;
         }
 
@@ -1904,6 +1904,194 @@ namespace te
             *outputs[3] = 1.0f;
     }
 
+    void PixelUtil::PackColor(const float* rgbaPtr, PixelFormat format, void* dstPtr)
+    {
+        
+    }
+
+    void PixelUtil::UnpackColor(float* rgbaPtr, PixelFormat format, const void* srcPtr)
+    {
+        // All other formats handled in a generic way
+        const PixelFormatDescription& des = GetDescriptionFor(format);
+        assert(des.componentCount <= 4);
+
+        const UINT32 flags = GetFlags(format);
+        switch (format)
+        {
+        case PF_RG11B10F:
+        {
+            UINT32 value = *((UINT32*)rgbaPtr);
+            rgbaPtr[0] = Bitwise::Float11ToFloat(value);
+            rgbaPtr[1] = Bitwise::Float11ToFloat(value >> 11);
+            rgbaPtr[2] = Bitwise::Float10ToFloat(value >> 22);
+
+            return;
+            break;
+        }
+        case PF_RGBA32F:
+            ConvertToFloat<float>(rgbaPtr, srcPtr, des.componentCount, flags);
+            break;
+        case PF_RGBA32U:
+            ConvertToFloat<UINT32>(rgbaPtr, srcPtr, des.componentCount, flags);
+            break;
+        case PF_RGBA32I:
+            ConvertToFloat<UINT32>(rgbaPtr, srcPtr, des.componentCount, flags);
+            break;
+        case PF_RGB32F:
+            ConvertToFloat<float>(rgbaPtr, srcPtr, des.componentCount, flags);
+            break;
+        case PF_RGB32U:
+            ConvertToFloat<UINT32>(rgbaPtr, srcPtr, des.componentCount, flags);
+            break;
+        case PF_RGB32I:
+            ConvertToFloat<INT32>(rgbaPtr, srcPtr, des.componentCount, flags);
+            break;
+        case PF_RGBA16F:
+            ConvertToFloat<UINT16>(rgbaPtr, srcPtr, des.componentCount, flags);
+            break;
+        case PF_RGBA16:
+            ConvertToFloat<UINT16>(rgbaPtr, srcPtr, des.componentCount, flags);
+            break;
+        case PF_RGBA16U:
+            ConvertToFloat<UINT16>(rgbaPtr, srcPtr, des.componentCount, flags);
+            break;
+        case PF_RGBA16S:
+            ConvertToFloat<INT16>(rgbaPtr, srcPtr, des.componentCount, flags);
+            break;
+        case PF_RGBA16I:
+            ConvertToFloat<INT16>(rgbaPtr, srcPtr, des.componentCount, flags);
+            break;
+        case PF_RG32F:
+            ConvertToFloat<float>(rgbaPtr, srcPtr, des.componentCount, flags);
+            break;
+        case PF_RG32U:
+            ConvertToFloat<UINT32>(rgbaPtr, srcPtr, des.componentCount, flags);
+            break;
+        case PF_RG32I:
+            ConvertToFloat<INT32>(rgbaPtr, srcPtr, des.componentCount, flags);
+            break;
+        case PF_D32_S8X24:
+            rgbaPtr[0] = ((const float*)srcPtr)[0];
+            rgbaPtr[1] = static_cast<float>(((const UINT32*)srcPtr)[1] >> 24u);
+            rgbaPtr[2] = 0.0f;
+            rgbaPtr[3] = 1.0f;
+            break;
+        case PF_RGB10A2:
+        {
+            const UINT32 val = ((const UINT32*)srcPtr)[0];
+            rgbaPtr[0] = static_cast<float>(val & 0x3FF) / 1023.0f;
+            rgbaPtr[1] = static_cast<float>((val >> 10u) & 0x3FF) / 1023.0f;
+            rgbaPtr[2] = static_cast<float>((val >> 20u) & 0x3FF) / 1023.0f;
+            rgbaPtr[3] = static_cast<float>(val >> 30u) / 3.0f;
+            break;
+        }
+        case PF_RGBA8:
+            ConvertToFloat<UINT8>(rgbaPtr, srcPtr, 4u, flags);
+            break;
+        case PF_RGBA8U:
+            ConvertToFloat<UINT8>(rgbaPtr, srcPtr, 4u, flags);
+            break;
+        case PF_RGBA8S:
+            ConvertToFloat<INT8>(rgbaPtr, srcPtr, 4u, flags);
+            break;
+        case PF_RGBA8I:
+            ConvertToFloat<INT8>(rgbaPtr, srcPtr, 4u, flags);
+            break;
+        case PF_RG16F:
+            ConvertToFloat<UINT16>(rgbaPtr, srcPtr, 2u, flags);
+            break;
+        case PF_RG16:
+            ConvertToFloat<UINT16>(rgbaPtr, srcPtr, 2u, flags);
+            break;
+        case PF_RG16U:
+            ConvertToFloat<UINT16>(rgbaPtr, srcPtr, 2u, flags);
+            break;
+        case PF_RG16S:
+            ConvertToFloat<INT16>(rgbaPtr, srcPtr, 2u, flags);
+            break;
+        case PF_RG16I:
+            ConvertToFloat<INT16>(rgbaPtr, srcPtr, 2u, flags);
+            break;
+        case PF_D32:
+            ConvertToFloat<float>(rgbaPtr, srcPtr, 1u, flags);
+            break;
+        case PF_R32F:
+            ConvertToFloat<float>(rgbaPtr, srcPtr, 1u, flags);
+            break;
+        case PF_R32U:
+            ConvertToFloat<UINT32>(rgbaPtr, srcPtr, 1u, flags);
+            break;
+        case PF_R32I:
+            ConvertToFloat<INT32>(rgbaPtr, srcPtr, 1u, flags);
+            break;
+        case PF_D24S8:
+            rgbaPtr[0] = static_cast<float>(((const UINT32*)srcPtr)[0] & 0x00FFFFFF) / 16777215.0f;
+            rgbaPtr[1] = static_cast<float>(((const UINT32*)srcPtr)[0] >> 24u);
+            rgbaPtr[2] = 0.0f;
+            rgbaPtr[3] = 1.0f;
+            break;
+        case PF_RG8:
+            ConvertToFloat<UINT8>(rgbaPtr, srcPtr, 2u, flags);
+            break;
+        case PF_RG8U:
+            ConvertToFloat<UINT8>(rgbaPtr, srcPtr, 2u, flags);
+            break;
+        case PF_RG8S:
+            ConvertToFloat<INT8>(rgbaPtr, srcPtr, 2u, flags);
+            break;
+        case PF_RG8I:
+            ConvertToFloat<INT8>(rgbaPtr, srcPtr, 2u, flags);
+            break;
+        case PF_R16F:
+            ConvertToFloat<UINT16>(rgbaPtr, srcPtr, 1u, flags);
+            break;
+        case PF_D16:
+            ConvertToFloat<UINT16>(rgbaPtr, srcPtr, 1u, flags);
+            break;
+        case PF_R16:
+            ConvertToFloat<UINT16>(rgbaPtr, srcPtr, 1u, flags);
+            break;
+        case PF_R16U:
+            ConvertToFloat<UINT16>(rgbaPtr, srcPtr, 1u, flags);
+            break;
+        case PF_R16S:
+            ConvertToFloat<INT16>(rgbaPtr, srcPtr, 1u, flags);
+            break;
+        case PF_R16I:
+            ConvertToFloat<INT16>(rgbaPtr, srcPtr, 1u, flags);
+            break;
+        case PF_R8:
+            ConvertToFloat<UINT8>(rgbaPtr, srcPtr, 1u, flags);
+            break;
+        case PF_R8U:
+            ConvertToFloat<UINT8>(rgbaPtr, srcPtr, 1u, flags);
+            break;
+        case PF_R8S:
+            ConvertToFloat<INT8>(rgbaPtr, srcPtr, 1u, flags);
+            break;
+        case PF_R8I:
+            ConvertToFloat<INT8>(rgbaPtr, srcPtr, 1u, flags);
+            break;
+        case PF_BGRA8:
+            ConvertToFloat<UINT8>(rgbaPtr, srcPtr, 4u, flags);
+            std::swap(rgbaPtr[0], rgbaPtr[2]);
+            break;
+        case PF_RGB8:
+            ConvertToFloat<UINT8>(rgbaPtr, srcPtr, 3u, flags);
+            break;
+        case PF_BGR8:
+            ConvertToFloat<UINT8>(rgbaPtr, srcPtr, 3u, flags);
+            std::swap(rgbaPtr[0], rgbaPtr[2]);
+            break;
+        case PF_RGB16:
+            ConvertToFloat<UINT16>(rgbaPtr, srcPtr, 3u, flags);
+            break;
+        default:
+            TE_DEBUG("UnpackColor() not implemented for format \"" + GetFormatName(format) + "\"");
+            break;
+        }
+    }
+
     void PixelUtil::PackDepth(float depth, const PixelFormat format, void* dest)
     {
         if (!IsDepth(format))
@@ -1947,6 +2135,50 @@ namespace te
             return 0;
             break;
         }
+    }
+
+    template <typename T>
+    void PixelUtil::ConvertFromFloat(const float* rgbaPtr, void* dstPtr, size_t numComponents,
+        UINT32 flags)
+    {
+
+    }
+
+    template <typename T>
+    void PixelUtil::ConvertToFloat(float* rgbaPtr, const void* srcPtr, size_t numComponents,
+        UINT32 flags)
+    {
+        for (size_t i = 0; i < numComponents; ++i)
+        {
+            if (flags & PFF_FLOAT)
+                rgbaPtr[i] = ((const float*)srcPtr)[i];
+            else if (flags & PFF_HALF)
+                rgbaPtr[i] = Bitwise::HalfToFloat(((const UINT16*)srcPtr)[i]);
+            else if (flags & PFF_NORMALIZED)
+            {
+                const float val = static_cast<float>(((const T*)srcPtr)[i]);
+                float rawValue = val / (float)std::numeric_limits<T>::max();
+                if (!(flags & PFF_SIGNED))
+                {
+                    rgbaPtr[i] = rawValue;
+                }
+                else
+                {
+                    // -128 & -127 and -32768 & -32767 both map to -1 according to D3D10 rules.
+                    rgbaPtr[i] = std::max(rawValue, -1.0f);
+                }
+            }
+            else
+            {
+                rgbaPtr[i] = static_cast<float>(((const T*)srcPtr)[i]);
+            }
+        }
+
+        // Set remaining components to 0, and alpha to 1
+        for (size_t i = numComponents; i < 3u; ++i)
+            rgbaPtr[i] = 0.0f;
+        if (numComponents < 4u)
+            rgbaPtr[3] = 1.0f;
     }
 
     void PixelUtil::BulkPixelConversion(const PixelData &src, PixelData &dst)
@@ -2017,6 +2249,18 @@ namespace te
 
             return;
         }
+        else if (GetFlags(src.GetFormat()) == GetFlags(dst.GetFormat())) // semantic match, copy as typeless
+        {
+            // TODO
+        }
+        else if (GetFlags(src.GetFormat()) == PFF_NORMALIZED && GetFlags(dst.GetFormat()) == (PFF_NORMALIZED | PFF_SIGNED))
+        {
+            // TODO
+        }
+        else if (GetFlags(src.GetFormat()) == (PFF_NORMALIZED | PFF_SIGNED) && GetFlags(dst.GetFormat()) == PFF_NORMALIZED)
+        {
+            // TODO
+        }
 
         // Check for compressed formats, we don't support decompression
         if (IsCompressed(src.GetFormat()))
@@ -2055,15 +2299,24 @@ namespace te
         UINT32 dstSliceSkipBytes = dst.GetSliceSkip();
 
         // The brute force fallback
-        float r, g, b, a;
+        float color[4];
+        float* r = &color[0];
+        float* g = &color[1];
+        float* b = &color[2];
+        float* a = &color[3];
+
+        //float r, g, b, a;
+
         for (UINT32 z = src.GetFront(); z < src.GetBack(); z++)
         {
             for (UINT32 y = src.GetTop(); y < src.GetBottom(); y++)
             {
                 for (UINT32 x = src.GetLeft(); x < src.GetRight(); x++)
                 {
-                    UnpackColor(&r, &g, &b, &a, src.GetFormat(), srcptr);
-                    PackColor(r, g, b, a, dst.GetFormat(), dstptr);
+                    UnpackColor(color, src.GetFormat(), srcptr);
+                    PackColor(*r, *g, *b, *a, dst.GetFormat(), dstptr);
+                    //UnpackColor(&r, &g, &b, &a, src.GetFormat(), srcptr);
+                    //PackColor(r, g, b, a, dst.GetFormat(), dstptr);
 
                     srcptr += srcPixelSize;
                     dstptr += dstPixelSize;
