@@ -211,8 +211,8 @@ namespace te
                 texDesc.NumMips = std::min(maxPossibleMip, textureImportOptions->MaxMip);
         }
 
-        if(textureImportOptions->GenerateMipsOnGpu)
-            texture = PixelUtil::GenMipmaps(texDesc, facesData, mipOptions, texDesc.NumMips);
+        //if(textureImportOptions->GenerateMipsOnGpu)
+        //    texture = PixelUtil::GenMipmaps(texDesc, facesData, mipOptions, texDesc.NumMips);
 
         if (!texture)
         {
@@ -237,6 +237,7 @@ namespace te
                     PixelUtil::BulkPixelConversion(*mipLevels[mip], *dst);
                     texture->WriteData(*dst, mip, i); //BUG in original version
                 }
+
             }
         }
 

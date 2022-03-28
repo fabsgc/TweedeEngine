@@ -68,7 +68,7 @@ namespace te
         Vector3 pickedColorV3 = Vector3(pickedColorV4.x, pickedColorV4.y, pickedColorV4.z);
         Vector3 blackColorV3 = Vector3::ZERO;
 
-        if (fabs(blackColorV3.SquaredDistance(pickedColorV3)) > 1e-3)
+        if (fabs(blackColorV3.SquaredDistance(pickedColorV3)) > 1e-4)
         {
             for (auto& iterObject : _colorToGameObject)
             {

@@ -214,6 +214,9 @@ namespace te
         /** Returns the type of an individual pixel element in the provided format. */
         static PixelComponentType GetElementType(PixelFormat format);
 
+        /** Returns the layout of an individual pixel element in the provided format. */
+        static PixelComponentLayout GetElementLayout(PixelFormat format);
+
         /** Returns the number of pixel elements in the provided format. */
         static UINT32 GetNumElements(PixelFormat format);
 
@@ -233,10 +236,9 @@ namespace te
         static void PackColor(UINT8 r, UINT8 g, UINT8 b, UINT8 a, PixelFormat format, void* dest);
 
         /**
-         * Writes the color to the provided memory location. If the destination format is non-floating point, the float
-         * values will be assumed to be in [0.0, 1.0] which	will be converted to integer range. ([0, 255] in the case of bytes)
+         * @copydoc PackColor
          */
-        static void PackColor(float r, float g, float b, float a, const PixelFormat format, void* dest);
+        static void PackColor(const float* rgbaPtr, PixelFormat format, void* dstPtr);
 
         /** Reads the color from the provided memory location and stores it into the provided color object. */
         static void UnpackColor(Color* color, PixelFormat format, const void* src);
@@ -246,17 +248,6 @@ namespace te
          * clamped to [0, 255] range.
          */
         static void UnpackColor(UINT8* r, UINT8* g, UINT8* b, UINT8* a, PixelFormat format, const void* src);
-
-        /**
-         * Reads the color from the provided memory location and stores it into the provided color elements. If the format
-         * is not natively floating point a conversion is done in such a way that returned values range [0.0, 1.0].
-         */
-        static void UnpackColor(float* r, float* g, float* b, float* a, PixelFormat format, const void* src);
-
-        /**
-         * @copydoc PackColor
-         */
-        static void PackColor(const float* rgbaPtr, PixelFormat format, void* dstPtr);
 
         /**
          * @copydoc UnpackColor

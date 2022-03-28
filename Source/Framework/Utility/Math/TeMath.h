@@ -871,6 +871,20 @@ namespace te
         /** Wraps an angle so it always stays in [0, 360) range. */
         static Degree WrapAngle(Degree angle);
 
+        // Simulate the shader function saturate that clamps a parameter value between 0 and 1
+        static inline float Saturate(float t)
+        {
+            float tmp = std::max(t, 0.0f);
+            tmp = std::min(tmp, 1.0f);
+            return tmp;
+        }
+        static inline double Saturate(double t)
+        {
+            double tmp = std::max(t, 0.0);
+            tmp = std::min(tmp, 1.0);
+            return tmp;
+        }
+
         static constexpr float POS_INFINITY = std::numeric_limits<float>::infinity();
         static constexpr float NEG_INFINITY = -std::numeric_limits<float>::infinity();
         static constexpr float PI = 3.14159265358979323846f;

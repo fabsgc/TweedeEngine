@@ -179,6 +179,31 @@ namespace te
         PCT_COUNT    /**< Number of pixel types */
     };
 
+    enum PixelComponentLayout
+    {
+        PCL_OTHER = 0,
+
+        PCL_RGBA32,
+        PCL_RGB32,
+        PCL_RG32,
+        PCL_R32,
+
+        PCL_RGBA16,
+        PCL_RGB16,
+        PCL_RG16,
+        PCL_R16,
+
+        PCL_RGBA8,
+        PCL_BGRA8,
+        PCL_BGRX8,
+        PCL_RGB8,
+        PCL_BGR8,
+        PCL_RG8,
+        PCL_R8,
+
+        PCL_COUNT
+    };
+
     /** A list of cubemap faces. */
     enum CubemapFace
     {

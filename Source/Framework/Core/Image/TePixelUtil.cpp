@@ -347,6 +347,7 @@ namespace te
         UINT8 elemBytes; /**< Number of bytes one element (color value) uses. */
         UINT32 flags; /**< PixelFormatFlags set by the pixel format. */
         PixelComponentType componentType; /**< Data type of a single element of the format. */
+        PixelComponentLayout componentLayout; /**< Data layout of a single element of the format. */
         UINT8 componentCount; /**< Number of elements in the format. */
 
         UINT8 rbits, gbits, bbits, abits; /**< Number of bits per element in the format. */
@@ -362,8 +363,8 @@ namespace te
         0,
         /* Flags */
         0,
-        /* Component type and count */
-        PCT_BYTE, 0,
+        /* Component type, layout and count */
+        PCT_BYTE, PCL_OTHER, 0,
         /* rbits, gbits, bbits, abits */
         0, 0, 0, 0,
         /* Masks and shifts */
@@ -376,8 +377,8 @@ namespace te
         1,
         /* Flags */
         PFF_INTEGER | PFF_NORMALIZED,
-        /* Component type and count */
-        PCT_BYTE, 1,
+        /* Component type, layout and count */
+        PCT_BYTE, PCL_R8, 1,
         /* rbits, gbits, bbits, abits */
         8, 0, 0, 0,
         /* Masks and shifts */
@@ -390,8 +391,8 @@ namespace te
         2,
         /* Flags */
         PFF_INTEGER | PFF_NORMALIZED,
-        /* Component type and count */
-        PCT_BYTE, 2,
+        /* Component type, layout and count */
+        PCT_BYTE, PCL_RG8, 2,
         /* rbits, gbits, bbits, abits */
         8, 8, 0, 0,
         /* Masks and shifts */
@@ -404,8 +405,8 @@ namespace te
         4,  // 4th byte is unused
         /* Flags */
         PFF_INTEGER | PFF_NORMALIZED,
-        /* Component type and count */
-        PCT_BYTE, 3,
+        /* Component type, layout and count */
+        PCT_BYTE, PCL_RGB8, 3,
         /* rbits, gbits, bbits, abits */
         8, 8, 8, 0,
         /* Masks and shifts */
@@ -418,8 +419,8 @@ namespace te
         4,  // 4th byte is unused
         /* Flags */
         PFF_INTEGER | PFF_NORMALIZED,
-        /* Component type and count */
-        PCT_BYTE, 3,
+        /* Component type, layout and count */
+        PCT_BYTE, PCL_BGR8, 3,
         /* rbits, gbits, bbits, abits */
         8, 8, 8, 0,
         /* Masks and shifts */
@@ -436,8 +437,8 @@ namespace te
         4,
         /* Flags */
         PFF_HASALPHA | PFF_INTEGER | PFF_NORMALIZED,
-        /* Component type and count */
-        PCT_BYTE, 4,
+        /* Component type, layout and count */
+        PCT_BYTE, PCL_BGRA8, 4,
         /* rbits, gbits, bbits, abits */
         8, 8, 8, 8,
         /* Masks and shifts */
@@ -450,8 +451,8 @@ namespace te
         4,
         /* Flags */
         PFF_HASALPHA | PFF_INTEGER | PFF_NORMALIZED,
-        /* Component type and count */
-        PCT_BYTE, 4,
+        /* Component type, layout and count */
+        PCT_BYTE, PCL_RGBA8, 4,
         /* rbits, gbits, bbits, abits */
         8, 8, 8, 8,
         /* Masks and shifts */
@@ -472,8 +473,8 @@ namespace te
         0,
         /* Flags */
         PFF_COMPRESSED | PFF_HASALPHA,
-        /* Component type and count */
-        PCT_BYTE, 3, // No alpha
+        /* Component type, layout and count */
+        PCT_BYTE, PCL_OTHER, 3, // No alpha
         /* rbits, gbits, bbits, abits */
         0, 0, 0, 0,
         /* Masks and shifts */
@@ -486,8 +487,8 @@ namespace te
         0,
         /* Flags */
         PFF_COMPRESSED,
-        /* Component type and count */
-        PCT_BYTE, 3,
+        /* Component type, layout and count */
+        PCT_BYTE, PCL_OTHER, 3,
         /* rbits, gbits, bbits, abits */
         0, 0, 0, 0,
         /* Masks and shifts */
@@ -500,8 +501,8 @@ namespace te
         0,
         /* Flags */
         PFF_COMPRESSED | PFF_HASALPHA,
-        /* Component type and count */
-        PCT_BYTE, 4,
+        /* Component type, layout and count */
+        PCT_BYTE, PCL_OTHER, 4,
         /* rbits, gbits, bbits, abits */
         0, 0, 0, 0,
         /* Masks and shifts */
@@ -514,8 +515,8 @@ namespace te
         0,
         /* Flags */
         PFF_COMPRESSED | PFF_HASALPHA,
-        /* Component type and count */
-        PCT_BYTE, 4,
+        /* Component type, layout and count */
+        PCT_BYTE, PCL_OTHER, 4,
         /* rbits, gbits, bbits, abits */
         0, 0, 0, 0,
         /* Masks and shifts */
@@ -528,8 +529,8 @@ namespace te
         0,
         /* Flags */
         PFF_COMPRESSED,
-        /* Component type and count */
-        PCT_BYTE, 1,
+        /* Component type, layout and count */
+        PCT_BYTE, PCL_OTHER, 1,
         /* rbits, gbits, bbits, abits */
         0, 0, 0, 0,
         /* Masks and shifts */
@@ -542,8 +543,8 @@ namespace te
         0,
         /* Flags */
         PFF_COMPRESSED,
-        /* Component type and count */
-        PCT_BYTE, 2,
+        /* Component type, layout and count */
+        PCT_BYTE, PCL_OTHER, 2,
         /* rbits, gbits, bbits, abits */
         0, 0, 0, 0,
         /* Masks and shifts */
@@ -556,8 +557,8 @@ namespace te
         0,
         /* Flags */
         PFF_COMPRESSED,
-        /* Component type and count */
-        PCT_FLOAT16, 3,
+        /* Component type, layout and count */
+        PCT_FLOAT16, PCL_OTHER, 3,
         /* rbits, gbits, bbits, abits */
         0, 0, 0, 0,
         /* Masks and shifts */
@@ -570,8 +571,8 @@ namespace te
         0,
         /* Flags */
         PFF_COMPRESSED | PFF_HASALPHA,
-        /* Component type and count */
-        PCT_BYTE, 4,
+        /* Component type, layout and count */
+        PCT_BYTE, PCL_OTHER, 4,
         /* rbits, gbits, bbits, abits */
         0, 0, 0, 0,
         /* Masks and shifts */
@@ -583,9 +584,9 @@ namespace te
         /* Bytes per element */
         2,
         /* Flags */
-        PFF_FLOAT | PFF_HALF,
-        /* Component type and count */
-        PCT_FLOAT16, 1,
+        PFF_HALF,
+        /* Component type, layout and count */
+        PCT_FLOAT16, PCL_R16, 1,
         /* rbits, gbits, bbits, abits */
         16, 0, 0, 0,
         /* Masks and shifts */
@@ -597,9 +598,9 @@ namespace te
         /* Bytes per element */
         4,
         /* Flags */
-        PFF_FLOAT | PFF_HALF,
-        /* Component type and count */
-        PCT_FLOAT16, 2,
+        PFF_HALF,
+        /* Component type, layout and count */
+        PCT_FLOAT16, PCL_RG16, 2,
         /* rbits, gbits, bbits, abits */
         16, 16, 0, 0,
         /* Masks and shifts */
@@ -613,9 +614,9 @@ namespace te
         /* Bytes per element */
         8,
         /* Flags */
-        PFF_FLOAT | PFF_HASALPHA | PFF_HALF,
-        /* Component type and count */
-        PCT_FLOAT16, 4,
+        PFF_HASALPHA | PFF_HALF,
+        /* Component type, layout and count */
+        PCT_FLOAT16, PCL_RGBA16, 4,
         /* rbits, gbits, bbits, abits */
         16, 16, 16, 16,
         /* Masks and shifts */
@@ -628,8 +629,8 @@ namespace te
         4,
         /* Flags */
         PFF_FLOAT,
-        /* Component type and count */
-        PCT_FLOAT32, 1,
+        /* Component type, layout and count */
+        PCT_FLOAT32, PCL_R32, 1,
         /* rbits, gbits, bbits, abits */
         32, 0, 0, 0,
         /* Masks and shifts */
@@ -642,8 +643,8 @@ namespace te
         8,
         /* Flags */
         PFF_FLOAT,
-        /* Component type and count */
-        PCT_FLOAT32, 2,
+        /* Component type, layout and count */
+        PCT_FLOAT32, PCL_RG32, 2,
         /* rbits, gbits, bbits, abits */
         32, 32, 0, 0,
         /* Masks and shifts */
@@ -656,8 +657,8 @@ namespace te
         12,
         /* Flags */
         PFF_FLOAT,
-        /* Component type and count */
-        PCT_FLOAT32, 3,
+        /* Component type, layout and count */
+        PCT_FLOAT32, PCL_RGB32, 3,
         /* rbits, gbits, bbits, abits */
         32, 32, 32, 0,
         /* Masks and shifts */
@@ -670,8 +671,8 @@ namespace te
         16,
         /* Flags */
         PFF_FLOAT | PFF_HASALPHA,
-        /* Component type and count */
-        PCT_FLOAT32, 4,
+        /* Component type, layout and count */
+        PCT_FLOAT32, PCL_RGBA32, 4,
         /* rbits, gbits, bbits, abits */
         32, 32, 32, 32,
         /* Masks and shifts */
@@ -683,9 +684,9 @@ namespace te
         /* Bytes per element */
         8,
         /* Flags */
-        PFF_DEPTH | PFF_NORMALIZED,
-        /* Component type and count */
-        PCT_FLOAT32, 2,
+        PFF_DEPTH | PFF_NORMALIZED | PFF_DEPTH,
+        /* Component type, layout and count */
+        PCT_FLOAT32, PCL_R32, 2,
         /* rbits, gbits, bbits, abits */
         32, 8, 0, 0,
         /* Masks and shifts */
@@ -697,9 +698,9 @@ namespace te
         /* Bytes per element */
         4,
         /* Flags */
-        PFF_DEPTH | PFF_INTEGER | PFF_NORMALIZED,
-        /* Component type and count */
-        PCT_INT, 2,
+        PFF_DEPTH | PFF_INTEGER | PFF_NORMALIZED | PFF_DEPTH,
+        /* Component type, layout and count */
+        PCT_INT, PCL_OTHER, 2,
         /* rbits, gbits, bbits, abits */
         24, 8, 0, 0,
         /* Masks and shifts */
@@ -711,9 +712,9 @@ namespace te
         /* Bytes per element */
         4,
         /* Flags */
-        PFF_DEPTH | PFF_FLOAT,
-        /* Component type and count */
-        PCT_FLOAT32, 1,
+        PFF_DEPTH | PFF_FLOAT | PFF_DEPTH,
+        /* Component type, layout and count */
+        PCT_FLOAT32, PCL_R32, 1,
         /* rbits, gbits, bbits, abits */
         32, 0, 0, 0,
         /* Masks and shifts */
@@ -725,9 +726,9 @@ namespace te
         /* Bytes per element */
         2,
         /* Flags */
-        PFF_DEPTH | PFF_INTEGER | PFF_NORMALIZED,
-        /* Component type and count */
-        PCT_SHORT, 1,
+        PFF_DEPTH | PFF_INTEGER | PFF_NORMALIZED | PFF_DEPTH,
+        /* Component type, layout and count */
+        PCT_SHORT, PCL_R16, 1,
         /* rbits, gbits, bbits, abits */
         16, 0, 0, 0,
         /* Masks and shifts */
@@ -740,8 +741,8 @@ namespace te
         4,
         /* Flags */
         PFF_FLOAT,
-        /* Component type and count */
-        PCT_PACKED_R11G11B10, 1,
+        /* Component type, layout and count */
+        PCT_PACKED_R11G11B10, PCL_OTHER, 1,
         /* rbits, gbits, bbits, abits */
         11, 11, 10, 0,
         /* Masks and shifts */
@@ -754,8 +755,8 @@ namespace te
         4,
         /* Flags */
         PFF_INTEGER | PFF_NORMALIZED | PFF_HASALPHA,
-        /* Component type and count */
-        PCT_PACKED_R10G10B10A2, 1,
+        /* Component type, layout and count */
+        PCT_PACKED_R10G10B10A2, PCL_OTHER, 1,
         /* rbits, gbits, bbits, abits */
         10, 10, 10, 2,
         /* Masks and shifts */
@@ -768,8 +769,8 @@ namespace te
         1,
         /* Flags */
         PFF_INTEGER | PFF_SIGNED,
-        /* Component type and count */
-        PCT_BYTE, 1,
+        /* Component type, layout and count */
+        PCT_BYTE, PCL_R8, 1,
         /* rbits, gbits, bbits, abits */
         8, 0, 0, 0,
         /* Masks and shifts */
@@ -782,8 +783,8 @@ namespace te
         2,
         /* Flags */
         PFF_INTEGER | PFF_SIGNED,
-        /* Component type and count */
-        PCT_BYTE, 2,
+        /* Component type, layout and count */
+        PCT_BYTE, PCL_RG8, 2,
         /* rbits, gbits, bbits, abits */
         8, 8, 0, 0,
         /* Masks and shifts */
@@ -796,8 +797,8 @@ namespace te
         4,
         /* Flags */
         PFF_INTEGER | PFF_SIGNED | PFF_HASALPHA,
-        /* Component type and count */
-        PCT_BYTE, 4,
+        /* Component type, layout and count */
+        PCT_BYTE, PCL_RGBA8, 4,
         /* rbits, gbits, bbits, abits */
         8, 8, 8, 8,
         /* Masks and shifts */
@@ -810,8 +811,8 @@ namespace te
         1,
         /* Flags */
         PFF_INTEGER,
-        /* Component type and count */
-        PCT_BYTE, 1,
+        /* Component type, layout and count */
+        PCT_BYTE, PCL_R8, 1,
         /* rbits, gbits, bbits, abits */
         8, 0, 0, 0,
         /* Masks and shifts */
@@ -824,8 +825,8 @@ namespace te
         2,
         /* Flags */
         PFF_INTEGER,
-        /* Component type and count */
-        PCT_BYTE, 2,
+        /* Component type, layout and count */
+        PCT_BYTE, PCL_RG8, 2,
         /* rbits, gbits, bbits, abits */
         8, 8, 0, 0,
         /* Masks and shifts */
@@ -838,8 +839,8 @@ namespace te
         4,
         /* Flags */
         PFF_INTEGER | PFF_HASALPHA,
-        /* Component type and count */
-        PCT_BYTE, 4,
+        /* Component type, layout and count */
+        PCT_BYTE, PCL_RGBA8, 4,
         /* rbits, gbits, bbits, abits */
         8, 8, 8, 8,
         /* Masks and shifts */
@@ -852,8 +853,8 @@ namespace te
         1,
         /* Flags */
         PFF_INTEGER | PFF_NORMALIZED | PFF_SIGNED,
-        /* Component type and count */
-        PCT_BYTE, 1,
+        /* Component type, layout and count */
+        PCT_BYTE, PCL_R8, 1,
         /* rbits, gbits, bbits, abits */
         8, 0, 0, 0,
         /* Masks and shifts */
@@ -866,8 +867,8 @@ namespace te
         2,
         /* Flags */
         PFF_INTEGER | PFF_NORMALIZED | PFF_SIGNED,
-        /* Component type and count */
-        PCT_BYTE, 2,
+        /* Component type, layout and count */
+        PCT_BYTE, PCL_RG8, 2,
         /* rbits, gbits, bbits, abits */
         8, 8, 0, 0,
         /* Masks and shifts */
@@ -880,8 +881,8 @@ namespace te
         4,
         /* Flags */
         PFF_INTEGER | PFF_NORMALIZED | PFF_SIGNED | PFF_HASALPHA,
-        /* Component type and count */
-        PCT_BYTE, 4,
+        /* Component type, layout and count */
+        PCT_BYTE, PCL_RGBA8, 4,
         /* rbits, gbits, bbits, abits */
         8, 8, 8, 8,
         /* Masks and shifts */
@@ -894,8 +895,8 @@ namespace te
         2,
         /* Flags */
         PFF_INTEGER | PFF_SIGNED,
-        /* Component type and count */
-        PCT_SHORT, 1,
+        /* Component type, layout and count */
+        PCT_SHORT, PCL_R16, 1,
         /* rbits, gbits, bbits, abits */
         16, 0, 0, 0,
         /* Masks and shifts */
@@ -908,8 +909,8 @@ namespace te
         4,
         /* Flags */
         PFF_INTEGER | PFF_SIGNED,
-        /* Component type and count */
-        PCT_SHORT, 2,
+        /* Component type, layout and count */
+        PCT_SHORT, PCL_RG16, 2,
         /* rbits, gbits, bbits, abits */
         16, 16, 0, 0,
         /* Masks and shifts */
@@ -922,8 +923,8 @@ namespace te
         8,
         /* Flags */
         PFF_INTEGER | PFF_SIGNED | PFF_HASALPHA,
-        /* Component type and count */
-        PCT_SHORT, 4,
+        /* Component type, layout and count */
+        PCT_SHORT, PCL_RGBA16, 4,
         /* rbits, gbits, bbits, abits */
         16, 16, 16, 16,
         /* Masks and shifts */
@@ -936,8 +937,8 @@ namespace te
         2,
         /* Flags */
         PFF_INTEGER,
-        /* Component type and count */
-        PCT_SHORT, 1,
+        /* Component type, layout and count */
+        PCT_SHORT, PCL_R16, 1,
         /* rbits, gbits, bbits, abits */
         16, 0, 0, 0,
         /* Masks and shifts */
@@ -950,8 +951,8 @@ namespace te
         4,
         /* Flags */
         PFF_INTEGER,
-        /* Component type and count */
-        PCT_SHORT, 2,
+        /* Component type, layout and count */
+        PCT_SHORT, PCL_RG16, 2,
         /* rbits, gbits, bbits, abits */
         16, 16, 0, 0,
         /* Masks and shifts */
@@ -964,8 +965,8 @@ namespace te
         8,
         /* Flags */
         PFF_INTEGER | PFF_HASALPHA,
-        /* Component type and count */
-        PCT_SHORT, 4,
+        /* Component type, layout and count */
+        PCT_SHORT, PCL_RGBA16, 4,
         /* rbits, gbits, bbits, abits */
         16, 16, 16, 16,
         /* Masks and shifts */
@@ -978,8 +979,8 @@ namespace te
         4,
         /* Flags */
         PFF_INTEGER,
-        /* Component type and count */
-        PCT_INT, 1,
+        /* Component type, layout and count */
+        PCT_INT, PCL_R32, 1,
         /* rbits, gbits, bbits, abits */
         32, 0, 0, 0,
         /* Masks and shifts */
@@ -992,8 +993,8 @@ namespace te
         8,
         /* Flags */
         PFF_INTEGER | PFF_SIGNED,
-        /* Component type and count */
-        PCT_INT, 2,
+        /* Component type, layout and count */
+        PCT_INT, PCL_RG32, 2,
         /* rbits, gbits, bbits, abits */
         32, 32, 0, 0,
         /* Masks and shifts */
@@ -1006,8 +1007,8 @@ namespace te
         12,
         /* Flags */
         PFF_INTEGER | PFF_SIGNED,
-        /* Component type and count */
-        PCT_INT, 3,
+        /* Component type, layout and count */
+        PCT_INT, PCL_RGB32, 3,
         /* rbits, gbits, bbits, abits */
         32, 32, 32, 0,
         /* Masks and shifts */
@@ -1020,8 +1021,8 @@ namespace te
         16,
         /* Flags */
         PFF_INTEGER | PFF_SIGNED | PFF_HASALPHA,
-        /* Component type and count */
-        PCT_INT, 4,
+        /* Component type, layout and count */
+        PCT_INT, PCL_RGBA32, 4,
         /* rbits, gbits, bbits, abits */
         32, 32, 32, 32,
         /* Masks and shifts */
@@ -1034,8 +1035,8 @@ namespace te
         4,
         /* Flags */
         PFF_INTEGER,
-        /* Component type and count */
-        PCT_INT, 1,
+        /* Component type, layout and count */
+        PCT_INT, PCL_R32, 1,
         /* rbits, gbits, bbits, abits */
         32, 0, 0, 0,
         /* Masks and shifts */
@@ -1048,8 +1049,8 @@ namespace te
         8,
         /* Flags */
         PFF_INTEGER,
-        /* Component type and count */
-        PCT_INT, 2,
+        /* Component type, layout and count */
+        PCT_INT, PCL_RG32, 2,
         /* rbits, gbits, bbits, abits */
         32, 32, 0, 0,
         /* Masks and shifts */
@@ -1062,8 +1063,8 @@ namespace te
         12,
         /* Flags */
         PFF_INTEGER,
-        /* Component type and count */
-        PCT_INT, 3,
+        /* Component type, layout and count */
+        PCT_INT, PCL_RGB32, 3,
         /* rbits, gbits, bbits, abits */
         32, 32, 32, 0,
         /* Masks and shifts */
@@ -1076,8 +1077,8 @@ namespace te
         16,
         /* Flags */
         PFF_INTEGER | PFF_HASALPHA,
-        /* Component type and count */
-        PCT_INT, 4,
+        /* Component type, layout and count */
+        PCT_INT, PCL_RGBA32, 4,
         /* rbits, gbits, bbits, abits */
         32, 32, 32, 32,
         /* Masks and shifts */
@@ -1090,8 +1091,8 @@ namespace te
         2,
         /* Flags */
         PFF_INTEGER | PFF_NORMALIZED | PFF_SIGNED,
-        /* Component type and count */
-        PCT_SHORT, 1,
+        /* Component type, layout and count */
+        PCT_SHORT, PCL_R16, 1,
         /* rbits, gbits, bbits, abits */
         16, 0, 0, 0,
         /* Masks and shifts */
@@ -1104,8 +1105,8 @@ namespace te
         4,
         /* Flags */
         PFF_INTEGER | PFF_NORMALIZED | PFF_SIGNED,
-        /* Component type and count */
-        PCT_SHORT, 2,
+        /* Component type, layout and count */
+        PCT_SHORT, PCL_RG16, 2,
         /* rbits, gbits, bbits, abits */
         16, 16, 0, 0,
         /* Masks and shifts */
@@ -1118,8 +1119,8 @@ namespace te
         8,
         /* Flags */
         PFF_INTEGER | PFF_NORMALIZED | PFF_SIGNED | PFF_HASALPHA,
-        /* Component type and count */
-        PCT_SHORT, 4,
+        /* Component type, layout and count */
+        PCT_SHORT, PCL_RGBA16, 4,
         /* rbits, gbits, bbits, abits */
         16, 16, 16, 16,
         /* Masks and shifts */
@@ -1132,8 +1133,8 @@ namespace te
         2,
         /* Flags */
         PFF_INTEGER | PFF_NORMALIZED,
-        /* Component type and count */
-        PCT_SHORT, 1,
+        /* Component type, layout and count */
+        PCT_SHORT, PCL_R16, 1,
         /* rbits, gbits, bbits, abits */
         16, 0, 0, 0,
         /* Masks and shifts */
@@ -1146,8 +1147,8 @@ namespace te
         4,
         /* Flags */
         PFF_INTEGER | PFF_NORMALIZED,
-        /* Component type and count */
-        PCT_SHORT, 2,
+        /* Component type, layout and count */
+        PCT_SHORT, PCL_RG16, 2,
         /* rbits, gbits, bbits, abits */
         16, 16, 0, 0,
         /* Masks and shifts */
@@ -1160,8 +1161,8 @@ namespace te
         6,
         /* Flags */
         PFF_INTEGER | PFF_NORMALIZED,
-        /* Component type and count */
-        PCT_SHORT, 3,
+        /* Component type, layout and count */
+        PCT_SHORT, PCL_RGB16, 3,
         /* rbits, gbits, bbits, abits */
         16, 16, 16, 0,
         /* Masks and shifts */
@@ -1174,8 +1175,8 @@ namespace te
         8,
         /* Flags */
         PFF_INTEGER | PFF_NORMALIZED | PFF_HASALPHA,
-        /* Component type and count */
-        PCT_SHORT, 4,
+        /* Component type, layout and count */
+        PCT_SHORT, PCL_RGBA16, 4,
         /* rbits, gbits, bbits, abits */
         16, 16, 16, 16,
         /* Masks and shifts */
@@ -1647,6 +1648,12 @@ namespace te
         return des.componentType;
     }
 
+    PixelComponentLayout PixelUtil::GetElementLayout(PixelFormat format)
+    {
+        const PixelFormatDescription& des = GetDescriptionFor(format);
+        return des.componentLayout;
+    }
+
     UINT32 PixelUtil::GetNumElements(PixelFormat format)
     {
         const PixelFormatDescription& des = GetDescriptionFor(format);
@@ -1673,7 +1680,7 @@ namespace te
 
     void PixelUtil::PackColor(const Color& color, PixelFormat format, void* dest)
     {
-        PackColor(color.r, color.g, color.b, color.a, format, dest);
+        PackColor(&color.r, format, dest);
     }
 
     void PixelUtil::PackColor(UINT8 r, UINT8 g, UINT8 b, UINT8 a, PixelFormat format, void* dest)
@@ -1693,102 +1700,185 @@ namespace te
         }
         else
         {
-            // Convert to float
-            PackColor((float)r / 255.0f, (float)g / 255.0f, (float)b / 255.0f, (float)a / 255.0f, format, dest);
+            float color[4] = {
+                (float)r / 255.0f,
+                (float)g / 255.0f,
+                (float)b / 255.0f,
+                (float)a / 255.0f
+            };
+            PackColor(&color[0], format, dest);
         }
     }
-
-    void PixelUtil::PackColor(float r, float g, float b, float a, const PixelFormat format, void* dest)
+    
+    void PixelUtil::PackColor(const float* rgbaPtr, PixelFormat format, void* dstPtr)
     {
-        // Special cases
-        if (format == PF_RG11B10F)
+        const UINT32 flags = GetFlags(format);
+        switch (format)
         {
-            UINT32 value;
-            value = Bitwise::FloatToFloat11(r);
-            value |= Bitwise::FloatToFloat11(g) << 11;
-            value |= Bitwise::FloatToFloat10(b) << 22;
-
-            ((UINT32*)dest)[0] = value;
-            return;
-        }
-
-        if (format == PF_RGB10A2)
+        case PF_RGBA32F:
+            ConvertFromFloat<float>(rgbaPtr, dstPtr, 4u, flags);
+            break;
+        case PF_RGBA32U:
+            ConvertFromFloat<UINT32>(rgbaPtr, dstPtr, 4u, flags);
+            break;
+        case PF_RGBA32I:
+            ConvertFromFloat<INT32>(rgbaPtr, dstPtr, 4u, flags);
+            break;
+        case PF_RGB32F:
+            ConvertFromFloat<float>(rgbaPtr, dstPtr, 3u, flags);
+            break;
+        case PF_RGB32U:
+            ConvertFromFloat<UINT32>(rgbaPtr, dstPtr, 3u, flags);
+            break;
+        case PF_RGB32I:
+            ConvertFromFloat<INT32>(rgbaPtr, dstPtr, 3u, flags);
+            break;
+        case PF_RGBA16F:
+            ConvertFromFloat<UINT16>(rgbaPtr, dstPtr, 4u, flags);
+            break;
+        case PF_RGBA16:
+            ConvertFromFloat<UINT16>(rgbaPtr, dstPtr, 4u, flags);
+            break;
+        case PF_RGBA16U:
+            ConvertFromFloat<UINT16>(rgbaPtr, dstPtr, 4u, flags);
+            break;
+        case PF_RGBA16S:
+            ConvertFromFloat<INT16>(rgbaPtr, dstPtr, 4u, flags);
+            break;
+        case PF_RGBA16I:
+            ConvertFromFloat<INT16>(rgbaPtr, dstPtr, 4u, flags);
+            break;
+        case PF_RG32F:
+            ConvertFromFloat<float>(rgbaPtr, dstPtr, 2u, flags);
+            break;
+        case PF_RG32U:
+            ConvertFromFloat<UINT32>(rgbaPtr, dstPtr, 2u, flags);
+            break;
+        case PF_RG32I:
+            ConvertFromFloat<INT32>(rgbaPtr, dstPtr, 2u, flags);
+            break;
+        case PF_D32_S8X24:
+            ((float*)dstPtr)[0] = rgbaPtr[0];
+            ((UINT32*)dstPtr)[1] = static_cast<UINT32>(rgbaPtr[1]) << 24u;
+            break;
+        case PF_RGB10A2:
         {
-            TE_DEBUG("packColor() not implemented for format \"" + GetFormatName(PF_RGB10A2) + "\"");
-            return;
+            const UINT32 ir = static_cast<UINT16>(Math::Saturate(rgbaPtr[0]) * 1023.0f + 0.5f);
+            const UINT32 ig = static_cast<UINT16>(Math::Saturate(rgbaPtr[1]) * 1023.0f + 0.5f);
+            const UINT32 ib = static_cast<UINT16>(Math::Saturate(rgbaPtr[2]) * 1023.0f + 0.5f);
+            const UINT32 ia = static_cast<UINT16>(Math::Saturate(rgbaPtr[3]) * 3.0f + 0.5f);
+
+            ((UINT32*)dstPtr)[0] = (ia << 30u) | (ib << 20u) | (ig << 10u) | (ir);
+            break;
         }
-
-        // All other formats handled in a generic way
-        const PixelFormatDescription& des = GetDescriptionFor(format);
-        assert(des.componentCount <= 4);
-
-        float inputs[] = { r, g, b, a };
-        UINT8 bits[] = { des.rbits, des.gbits, des.bbits, des.abits };
-        UINT32 masks[] = { des.rmask, des.gmask, des.bmask, des.amask };
-        UINT8 shifts[] = { des.rshift, des.gshift, des.bshift, des.ashift };
-
-        memset(dest, 0, des.elemBytes);
-
-        UINT32 curBit = 0;
-        UINT32 prevDword = 0;
-        UINT32 dwordValue = 0;
-        for (UINT32 i = 0; i < des.componentCount; i++)
-        {
-            UINT32 curDword = curBit / 32;
-
-            // New dword reached, write current one and advance
-            if(curDword > prevDword)
-            {
-                UINT32* curDst = ((UINT32*)dest) + prevDword;
-                Bitwise::IntWrite(curDst, 4, dwordValue);
-
-                dwordValue = 0;
-                prevDword = curDword;
-            }
-
-            if (des.flags & PFF_INTEGER)
-            {
-                if (des.flags & PFF_NORMALIZED)
-                {
-                    if (des.flags & PFF_SIGNED)
-                        dwordValue |= (Bitwise::SnormToUint(inputs[i], bits[i]) << shifts[i]) & masks[i];
-                    else
-                        dwordValue |= (Bitwise::UnormToUint(inputs[i], bits[i]) << shifts[i]) & masks[i];
-                }
-                else
-                {
-                    // Note: Casting integer to float. A better option would be to have a separate unpackColor that has
-                    // integer output parameters.
-                    dwordValue |= (((UINT32)inputs[i]) << shifts[i]) & masks[i];
-                }
-            }
-            else if (des.flags & PFF_FLOAT)
-            {
-                // Note: Not handling unsigned floats
-
-                if (des.componentType == PCT_FLOAT16)
-                    dwordValue |= (Bitwise::FloatToHalf(inputs[i]) << shifts[i]) & masks[i];
-                else
-                    dwordValue |= *(UINT32*)&inputs[i];
-            }
-            else
-            {
-                TE_DEBUG("packColor() not implemented for format \"" + GetFormatName(PF_RGB10A2) + "\"");
-                return;
-            }
-
-            curBit += bits[i];
+        case PF_RGBA8:
+            ConvertFromFloat<UINT8>(rgbaPtr, dstPtr, 4u, flags);
+            break;
+        case PF_RGBA8U:
+            ConvertFromFloat<UINT8>(rgbaPtr, dstPtr, 4u, flags);
+            break;
+        case PF_RGBA8S:
+            ConvertFromFloat<INT8>(rgbaPtr, dstPtr, 4u, flags);
+            break;
+        case PF_RGBA8I:
+            ConvertFromFloat<INT8>(rgbaPtr, dstPtr, 4u, flags);
+            break;
+        case PF_RG16F:
+            ConvertFromFloat<UINT16>(rgbaPtr, dstPtr, 2u, flags);
+            break;
+        case PF_RG16:
+            ConvertFromFloat<UINT16>(rgbaPtr, dstPtr, 2u, flags);
+            break;
+        case PF_RG16U:
+            ConvertFromFloat<UINT16>(rgbaPtr, dstPtr, 2u, flags);
+            break;
+        case PF_RG16S:
+            ConvertFromFloat<INT16>(rgbaPtr, dstPtr, 2u, flags);
+            break;
+        case PF_RG16I:
+            ConvertFromFloat<INT16>(rgbaPtr, dstPtr, 2u, flags);
+            break;
+        case PF_D32:
+            ConvertFromFloat<float>(rgbaPtr, dstPtr, 1u, flags);
+            break;
+        case PF_R32F:
+            ConvertFromFloat<float>(rgbaPtr, dstPtr, 1u, flags);
+            break;
+        case PF_R32U:
+            ConvertFromFloat<UINT32>(rgbaPtr, dstPtr, 1u, flags);
+            break;
+        case PF_R32I:
+            ConvertFromFloat<INT32>(rgbaPtr, dstPtr, 1u, flags);
+            break;
+        case PF_D24S8:
+            ((UINT32*)dstPtr)[0] = (static_cast<UINT32>(rgbaPtr[1]) << 24u) |
+                static_cast<UINT32>(roundf(rgbaPtr[0] * 16777215.0f));
+            break;
+        case PF_RG8:
+            ConvertFromFloat<UINT8>(rgbaPtr, dstPtr, 2u, flags);
+            break;
+        case PF_RG8U:
+            ConvertFromFloat<UINT8>(rgbaPtr, dstPtr, 2u, flags);
+            break;
+        case PF_RG8S:
+            ConvertFromFloat<INT8>(rgbaPtr, dstPtr, 2u, flags);
+            break;
+        case PF_RG8I:
+            ConvertFromFloat<INT8>(rgbaPtr, dstPtr, 2u, flags);
+            break;
+        case PF_R16F:
+            ConvertFromFloat<UINT16>(rgbaPtr, dstPtr, 1u, flags);
+            break;
+        case PF_D16:
+            ConvertFromFloat<UINT16>(rgbaPtr, dstPtr, 1u, flags);
+            break;
+        case PF_R16:
+            ConvertFromFloat<UINT16>(rgbaPtr, dstPtr, 1u, flags);
+            break;
+        case PF_R16U:
+            ConvertFromFloat<UINT16>(rgbaPtr, dstPtr, 1u, flags);
+            break;
+        case PF_R16S:
+            ConvertFromFloat<INT16>(rgbaPtr, dstPtr, 1u, flags);
+            break;
+        case PF_R16I:
+            ConvertFromFloat<INT16>(rgbaPtr, dstPtr, 1u, flags);
+            break;
+        case PF_R8:
+            ConvertFromFloat<UINT8>(rgbaPtr, dstPtr, 1u, flags);
+            break;
+        case PF_R8U:
+            ConvertFromFloat<UINT8>(rgbaPtr, dstPtr, 1u, flags);
+            break;
+        case PF_R8S:
+            ConvertFromFloat<INT8>(rgbaPtr, dstPtr, 1u, flags);
+            break;
+        case PF_R8I:
+            ConvertFromFloat<INT8>(rgbaPtr, dstPtr, 1u, flags);
+            break;
+        case PF_BGRA8:
+            ((UINT8*)dstPtr)[0] = static_cast<UINT8>(Math::Saturate(rgbaPtr[2]) * 255.0f + 0.5f);
+            ((UINT8*)dstPtr)[1] = static_cast<UINT8>(Math::Saturate(rgbaPtr[1]) * 255.0f + 0.5f);
+            ((UINT8*)dstPtr)[2] = static_cast<UINT8>(Math::Saturate(rgbaPtr[0]) * 255.0f + 0.5f);
+            ((UINT8*)dstPtr)[3] = static_cast<UINT8>(Math::Saturate(rgbaPtr[3]) * 255.0f + 0.5f);
+            break;
+        case PF_RGB8:
+            ConvertFromFloat<UINT8>(rgbaPtr, dstPtr, 3u, flags);
+            break;
+        case PF_BGR8:
+            ((UINT8*)dstPtr)[0] = static_cast<UINT8>(Math::Saturate(rgbaPtr[2]) * 255.0f + 0.5f);
+            ((UINT8*)dstPtr)[1] = static_cast<UINT8>(Math::Saturate(rgbaPtr[1]) * 255.0f + 0.5f);
+            ((UINT8*)dstPtr)[2] = static_cast<UINT8>(Math::Saturate(rgbaPtr[0]) * 255.0f + 0.5f);
+            break;
+        case PF_RGB16:
+            ConvertFromFloat<UINT16>(rgbaPtr, dstPtr, 3u, flags);
+            break;
         }
-
-        // Write last dword
-        UINT32 numBytes = std::min((prevDword + 1) * 4, (UINT32)des.elemBytes) - (prevDword * 4);
-        UINT32* curDst = ((UINT32*)dest) + prevDword;
-        Bitwise::IntWrite(curDst, numBytes, dwordValue);
     }
 
     void PixelUtil::UnpackColor(Color* color, PixelFormat format, const void* src)
     {
-        UnpackColor(&color->r, &color->g, &color->b, &color->a, format, src);
+        UnpackColor(&color->r, format, src);
     }
 
     void PixelUtil::UnpackColor(UINT8* r, UINT8* g, UINT8* b, UINT8* a, PixelFormat format, const void* src)
@@ -1816,97 +1906,14 @@ namespace te
         else
         {
             // Do the operation with the more generic floating point
-            float rr, gg, bb, aa;
-            UnpackColor(&rr, &gg, &bb, &aa, format, src);
+            float color[4];
+            UnpackColor(&color[0], format, src);
 
-            *r = (UINT8)Bitwise::UnormToUint(rr, 8);
-            *g = (UINT8)Bitwise::UnormToUint(gg, 8);
-            *b = (UINT8)Bitwise::UnormToUint(bb, 8);
-            *a = (UINT8)Bitwise::UnormToUint(aa, 8);
+            *r = (UINT8)Bitwise::UnormToUint(color[0], 8);
+            *g = (UINT8)Bitwise::UnormToUint(color[1], 8);
+            *b = (UINT8)Bitwise::UnormToUint(color[2], 8);
+            *a = (UINT8)Bitwise::UnormToUint(color[3], 8);
         }
-    }
-
-    void PixelUtil::UnpackColor(float* r, float* g, float* b, float* a, PixelFormat format, const void* src)
-    {
-        // Special cases
-        if(format == PF_RG11B10F)
-        {
-            UINT32 value = ((UINT32*)src)[0];
-            *r = Bitwise::Float11ToFloat(value);
-            *g = Bitwise::Float11ToFloat(value >> 11);
-            *b = Bitwise::Float10ToFloat(value >> 22);
-
-            return;
-        }
-
-        if(format == PF_RGB10A2)
-        {
-            TE_DEBUG("UnpackColor() not implemented for format \"" + GetFormatName(PF_RGB10A2) + "\"");
-            return;
-        }
-
-        // All other formats handled in a generic way
-        const PixelFormatDescription& des = GetDescriptionFor(format);
-        assert(des.componentCount <= 4);
-
-        float* outputs[] = { r, g, b, a };
-        UINT8 bits[] = { des.rbits, des.gbits, des.bbits, des.abits };
-        UINT32 masks[] = { des.rmask, des.gmask, des.bmask, des.amask };
-        UINT8 shifts[] = { des.rshift, des.gshift, des.bshift, des.ashift };
-
-        UINT32 curBit = 0;
-        for(UINT32 i = 0; i < des.componentCount; i++)
-        {
-            UINT32 curDword = curBit / 32;
-            UINT32 numBytes = std::min((curDword + 1) * 4, (UINT32)des.elemBytes) - (curDword * 4);
-
-            UINT32* curSrc = ((UINT32*)src) + curDword;
-            UINT32 value = Bitwise::IntRead(curSrc, numBytes);
-            if(des.flags & PFF_INTEGER)
-            {
-                if(des.flags & PFF_NORMALIZED)
-                {
-                    if (des.flags & PFF_SIGNED)
-                        *outputs[i] = Bitwise::UintToSnorm((value & masks[i]) >> shifts[i], bits[i]);
-                    else
-                        *outputs[i] = Bitwise::UintToUnorm((value & masks[i]) >> shifts[i], bits[i]);
-                }
-                else
-                {
-                    // Note: Casting integer to float. A better option would be to have a separate unpackColor that has
-                    // integer output parameters.
-                    *outputs[i] = (float)((value & masks[i]) >> shifts[i]);
-                }
-            }
-            else if(des.flags & PFF_FLOAT)
-            {
-                // Note: Not handling unsigned floats
-
-                if (des.componentType == PCT_FLOAT16)
-                    *outputs[i] = Bitwise::HalfToFloat((UINT16)((value & masks[i]) >> shifts[i]));
-                else
-                    *outputs[i] = *(float*)&value;
-            }
-            else
-            {
-                TE_DEBUG("unpackColor() not implemented for format \"" + GetFormatName(format) + "\"");
-                return;
-            }
-
-            curBit += bits[i];
-        }
-
-        // Fill empty components
-        for (UINT32 i = des.componentCount; i < 3; i++)
-            *outputs[i] = 0.0f;
-
-        if (des.componentCount < 4)
-            *outputs[3] = 1.0f;
-    }
-
-    void PixelUtil::PackColor(const float* rgbaPtr, PixelFormat format, void* dstPtr)
-    {
-        
     }
 
     void PixelUtil::UnpackColor(float* rgbaPtr, PixelFormat format, const void* srcPtr)
@@ -2141,7 +2148,31 @@ namespace te
     void PixelUtil::ConvertFromFloat(const float* rgbaPtr, void* dstPtr, size_t numComponents,
         UINT32 flags)
     {
-
+        for (size_t i = 0; i < numComponents; ++i)
+        {
+            if (flags & PFF_FLOAT)
+                ((float*)dstPtr)[i] = rgbaPtr[i];
+            else if (flags & PFF_HALF)
+                ((UINT16*)dstPtr)[i] = Bitwise::FloatToHalf(rgbaPtr[i]);
+            else if (flags & PFF_NORMALIZED)
+            {
+                float val = rgbaPtr[i];
+                if (!(flags & PFF_SIGNED))
+                {
+                    val = Math::Saturate(val);
+                    val *= (float)std::numeric_limits<T>::max();
+                    ((T*)dstPtr)[i] = static_cast<T>(roundf(val));
+                }
+                else
+                {
+                    val = Math::Clamp(val, -1.0f, 1.0f);
+                    val *= (float)std::numeric_limits<T>::max();
+                    ((T*)dstPtr)[i] = static_cast<T>(roundf(val));
+                }
+            }
+            else
+                ((T*)dstPtr)[i] = static_cast<T>(roundf(rgbaPtr[i]));
+        }
     }
 
     template <typename T>
@@ -2181,6 +2212,187 @@ namespace te
             rgbaPtr[3] = 1.0f;
     }
 
+    typedef void (*row_conversion_func_t)(UINT8* src, UINT8* dst, size_t width);
+
+    void ConvCopy16Bpx(UINT8* src, UINT8* dst, size_t width) { memcpy(dst, src, 16 * width); }
+    void ConvCopy12Bpx(UINT8* src, UINT8* dst, size_t width) { memcpy(dst, src, 12 * width); }
+    void ConvCopy8Bpx(UINT8* src, UINT8* dst, size_t width) { memcpy(dst, src, 8 * width); }
+    void ConvCopy6Bpx(UINT8* src, UINT8* dst, size_t width) { memcpy(dst, src, 6 * width); }
+    void ConvCopy4Bpx(UINT8* src, UINT8* dst, size_t width) { memcpy(dst, src, 4 * width); }
+    void ConvCopy3Bpx(UINT8* src, UINT8* dst, size_t width) { memcpy(dst, src, 3 * width); }
+    void ConvCopy2Bpx(UINT8* src, UINT8* dst, size_t width) { memcpy(dst, src, 2 * width); }
+    void ConvCopy1Bpx(UINT8* src, UINT8* dst, size_t width) { memcpy(dst, src, 1 * width); }
+
+    // clang-format off
+    void ConvRGBA32toRGB32(UINT8* _src, UINT8* _dst, size_t width)
+    {
+        UINT32* src = (UINT32*)_src; UINT32* dst = (UINT32*)_dst;
+        while (width--) { dst[0] = src[0]; dst[1] = src[1]; dst[2] = src[2]; src += 4; dst += 3; }
+    }
+    void ConvRGB32toRG32(UINT8* _src, UINT8* _dst, size_t width)
+    {
+        UINT32* src = (UINT32*)_src; UINT32* dst = (UINT32*)_dst;
+        while (width--) { dst[0] = src[0]; dst[1] = src[1]; src += 3; dst += 2; }
+    }
+    void ConvRG32toRGB32(UINT8* _src, UINT8* _dst, size_t width)
+    {
+        UINT32* src = (UINT32*)_src; UINT32* dst = (UINT32*)_dst;
+        while (width--) { dst[0] = src[0]; dst[1] = src[1]; dst[2] = 0u; src += 2; dst += 3; }
+    }
+    void ConvRG32toR32(UINT8* _src, UINT8* _dst, size_t width)
+    {
+        UINT32* src = (UINT32*)_src; UINT32* dst = (UINT32*)_dst;
+        while (width--) { dst[0] = src[0]; src += 2; dst += 1; }
+    }
+
+    void ConvRGBA16toRGB16(UINT8* _src, UINT8* _dst, size_t width)
+    {
+        UINT16* src = (UINT16*)_src; UINT16* dst = (UINT16*)_dst;
+        while (width--) { dst[0] = src[0]; dst[1] = src[1]; dst[2] = src[2]; src += 4; dst += 3; }
+    }
+    void ConvRGB16toRGBA16(UINT8* _src, UINT8* _dst, size_t width)
+    {
+        UINT16* src = (UINT16*)_src; UINT16* dst = (UINT16*)_dst;
+        while (width--) { dst[0] = src[0]; dst[1] = src[1]; dst[2] = src[2]; dst[3] = 0xFFFF; src += 3; dst += 4; }
+    }
+    void ConvRGB16toRG16(UINT8* _src, UINT8* _dst, size_t width)
+    {
+        UINT16* src = (UINT16*)_src; UINT16* dst = (UINT16*)_dst;
+        while (width--) { dst[0] = src[0]; dst[1] = src[1]; src += 3; dst += 2; }
+    }
+    void ConvRG16toRGB16(UINT8* _src, UINT8* _dst, size_t width)
+    {
+        UINT16* src = (UINT16*)_src; UINT16* dst = (UINT16*)_dst;
+        while (width--) { dst[0] = src[0]; dst[1] = src[1]; dst[0] = 0u; src += 2; dst += 3; }
+    }
+    void ConvRG16toR16(UINT8* _src, UINT8* _dst, size_t width)
+    {
+        UINT16* src = (UINT16*)_src; UINT16* dst = (UINT16*)_dst;
+        while (width--) { dst[0] = src[0]; src += 2; dst += 1; }
+    }
+
+    void ConvRGBAtoBGRA(UINT8* src, UINT8* dst, size_t width)
+    {
+        while (width--) { dst[0] = src[2]; dst[1] = src[1]; dst[2] = src[0]; dst[3] = src[3]; src += 4; dst += 4; }
+    }
+    void ConvRGBAtoRGB(UINT8* src, UINT8* dst, size_t width)
+    {
+        while (width--) { dst[0] = src[0]; dst[1] = src[1]; dst[2] = src[2]; src += 4; dst += 3; }
+    }
+    void ConvRGBAtoBGR(UINT8* src, UINT8* dst, size_t width)
+    {
+        while (width--) { dst[0] = src[2]; dst[1] = src[1]; dst[2] = src[0]; src += 4; dst += 3; }
+    }
+    void ConvRGBAtoRG(UINT8* src, UINT8* dst, size_t width)
+    {
+        while (width--) { dst[0] = src[0]; dst[1] = src[1]; src += 4; dst += 2; }
+    }
+    void ConvRGBAtoRG_u2s(UINT8* src, UINT8* dst, size_t width)
+    {
+        while (width--) { dst[0] = src[0] - 128; dst[1] = src[1] - 128; src += 4; dst += 2; }
+    }
+    void ConvRGBAtoRG_s2u(UINT8* src, UINT8* dst, size_t width)
+    {
+        while (width--) { dst[0] = src[0] + 128; dst[1] = src[1] + 128; src += 4; dst += 2; }
+    }
+    void ConvRGBAtoR(UINT8* src, UINT8* dst, size_t width)
+    {
+        while (width--) { dst[0] = src[0]; src += 4; dst += 1; }
+    }
+
+    void ConvBGRAtoRG(UINT8* src, UINT8* dst, size_t width)
+    {
+        while (width--) { dst[0] = src[2]; dst[1] = src[1]; src += 4; dst += 2; }
+    }
+    void ConvBGRAtoRG_u2s(UINT8* src, UINT8* dst, size_t width)
+    {
+        while (width--) { dst[0] = src[2] - 128; dst[1] = src[1] - 128; src += 4; dst += 2; }
+    }
+    void ConvBGRAtoRG_s2u(UINT8* src, UINT8* dst, size_t width)
+    {
+        while (width--) { dst[0] = src[2] + 128; dst[1] = src[1] + 128; src += 4; dst += 2; }
+    }
+    void ConvBGRAtoR(UINT8* src, UINT8* dst, size_t width)
+    {
+        while (width--) { dst[0] = src[2]; src += 4; dst += 1; }
+    }
+
+    void ConvBGRXtoRGBA(UINT8* src, UINT8* dst, size_t width)
+    {
+        while (width--) { dst[0] = src[2]; dst[1] = src[1]; dst[2] = src[0]; dst[3] = 0xFF; src += 4; dst += 4; }
+    }
+    void ConvBGRXtoBGRA(UINT8* src, UINT8* dst, size_t width)
+    {
+        while (width--) { dst[0] = src[0]; dst[1] = src[1]; dst[2] = src[2]; dst[3] = 0xFF; src += 4; dst += 4; }
+    }
+
+    void ConvRGBtoRGBA(UINT8* src, UINT8* dst, size_t width)
+    {
+        while (width--) { dst[0] = src[0]; dst[1] = src[1]; dst[2] = src[2]; dst[3] = 0xFF; src += 3; dst += 4; }
+    }
+    void ConvRGBtoBGRA(UINT8* src, UINT8* dst, size_t width)
+    {
+        while (width--) { dst[0] = src[2]; dst[1] = src[1]; dst[2] = src[0]; dst[3] = 0xFF; src += 3; dst += 4; }
+    }
+    void ConvRGBtoBGR(UINT8* src, UINT8* dst, size_t width)
+    {
+        while (width--) { dst[0] = src[2]; dst[1] = src[1]; dst[2] = src[0]; src += 3; dst += 3; }
+    }
+    void ConvRGBtoRG(UINT8* src, UINT8* dst, size_t width)
+    {
+        while (width--) { dst[0] = src[0]; dst[1] = src[1]; src += 3; dst += 2; }
+    }
+    void ConvRGBtoRG_u2s(UINT8* src, UINT8* dst, size_t width)
+    {
+        while (width--) { dst[0] = src[0] - 128; dst[1] = src[1] - 128; src += 3; dst += 2; }
+    }
+    void ConvRGBtoRG_s2u(UINT8* src, UINT8* dst, size_t width)
+    {
+        while (width--) { dst[0] = src[0] + 128; dst[1] = src[1] + 128; src += 3; dst += 2; }
+    }
+    void ConvRGBtoR(UINT8* src, UINT8* dst, size_t width)
+    {
+        while (width--) { dst[0] = src[0]; src += 3; dst += 1; }
+    }
+
+    void ConvBGRtoRG(UINT8* src, UINT8* dst, size_t width)
+    {
+        while (width--) { dst[0] = src[2]; dst[1] = src[1]; src += 3; dst += 2; }
+    }
+    void ConvBGRtoRG_u2s(UINT8* src, UINT8* dst, size_t width)
+    {
+        while (width--) { dst[0] = src[2] - 128; dst[1] = src[1] - 128; src += 3; dst += 2; }
+    }
+    void ConvBGRtoRG_s2u(UINT8* src, UINT8* dst, size_t width)
+    {
+        while (width--) { dst[0] = src[2] + 128; dst[1] = src[1] + 128; src += 3; dst += 2; }
+    }
+    void ConvBGRtoR(UINT8* src, UINT8* dst, size_t width)
+    {
+        while (width--) { dst[0] = src[2]; src += 3; dst += 1; }
+    }
+
+    void ConvRGtoRGB(UINT8* src, UINT8* dst, size_t width)
+    {
+        while (width--) { dst[0] = src[0]; dst[1] = src[1]; dst[2] = 0u; src += 2; dst += 3; }
+    }
+    void ConvRGtoBGR(UINT8* src, UINT8* dst, size_t width)
+    {
+        while (width--) { dst[0] = 0u; dst[1] = src[1]; dst[2] = src[0]; src += 2; dst += 3; }
+    }
+    void ConvRGtoRG_u2s(UINT8* src, UINT8* dst, size_t width)
+    {
+        while (width--) { dst[0] = src[0] - 128; dst[1] = src[1] - 128; src += 2; dst += 2; }
+    }
+    void ConvRGtoRG_s2u(UINT8* src, UINT8* dst, size_t width)
+    {
+        while (width--) { dst[0] = src[0] + 128; dst[1] = src[1] + 128; src += 2; dst += 2; }
+    }
+    void ConvRGtoR(UINT8* src, UINT8* dst, size_t width)
+    {
+        while (width--) { dst[0] = src[0]; src += 2; dst += 1; }
+    }
+
     void PixelUtil::BulkPixelConversion(const PixelData &src, PixelData &dst)
     {
         if(src.GetWidth() != dst.GetWidth() || src.GetHeight() != dst.GetHeight() || src.GetDepth() != dst.GetDepth())
@@ -2188,6 +2400,11 @@ namespace te
             TE_DEBUG("Cannot convert pixels between buffers of different sizes.");
             return;
         }
+
+        // Is there a optimized row conversion?
+        row_conversion_func_t rowConversionFunc = 0;
+        assert(PCL_COUNT <= 16);  // adjust PCL_PAIR definition if assertion failed
+#define PCL_PAIR( a, b ) ( ( a << 4 ) | b )
 
         // The easy case
         if (src.GetFormat() == dst.GetFormat())
@@ -2251,15 +2468,119 @@ namespace te
         }
         else if (GetFlags(src.GetFormat()) == GetFlags(dst.GetFormat())) // semantic match, copy as typeless
         {
-            // TODO
+            PixelComponentLayout srcLayout = GetElementLayout(src.GetFormat());
+            PixelComponentLayout dstLayout = GetElementLayout(dst.GetFormat());
+            switch (PCL_PAIR(srcLayout, dstLayout))
+            {
+                case PCL_PAIR(PCL_RGBA32, PCL_RGB32): rowConversionFunc = ConvRGBA32toRGB32; break;
+                case PCL_PAIR(PCL_RGB32, PCL_RG32): rowConversionFunc = ConvRGB32toRG32; break;
+                case PCL_PAIR(PCL_RG32, PCL_RGB32): rowConversionFunc = ConvRG32toRGB32; break;
+                case PCL_PAIR(PCL_RG32, PCL_R32): rowConversionFunc = ConvRG32toR32; break;
+
+                case PCL_PAIR(PCL_RGBA16, PCL_RGB16): rowConversionFunc = ConvRGBA16toRGB16; break;
+                case PCL_PAIR(PCL_RGB16, PCL_RGBA16): rowConversionFunc = ConvRGB16toRGBA16; break;
+                case PCL_PAIR(PCL_RGB16, PCL_RG16): rowConversionFunc = ConvRGB16toRG16; break;
+                case PCL_PAIR(PCL_RG16, PCL_RGB16): rowConversionFunc = ConvRG16toRGB16; break;
+                case PCL_PAIR(PCL_RG16, PCL_R16): rowConversionFunc = ConvRG16toR16; break;
+
+                case PCL_PAIR(PCL_RGBA8, PCL_BGRA8): rowConversionFunc = ConvRGBAtoBGRA; break;
+                case PCL_PAIR(PCL_RGBA8, PCL_BGRX8): rowConversionFunc = ConvRGBAtoBGRA; break;
+                case PCL_PAIR(PCL_RGBA8, PCL_RGB8): rowConversionFunc = ConvRGBAtoRGB; break;
+                case PCL_PAIR(PCL_RGBA8, PCL_BGR8): rowConversionFunc = ConvRGBAtoBGR; break;
+                case PCL_PAIR(PCL_RGBA8, PCL_RG8): rowConversionFunc = ConvRGBAtoRG; break;
+                case PCL_PAIR(PCL_RGBA8, PCL_R8): rowConversionFunc = ConvRGBAtoR; break;
+
+                case PCL_PAIR(PCL_BGRA8, PCL_RGBA8): rowConversionFunc = ConvRGBAtoBGRA; break;
+                case PCL_PAIR(PCL_BGRA8, PCL_BGRX8): rowConversionFunc = ConvCopy4Bpx; break;
+                case PCL_PAIR(PCL_BGRA8, PCL_RGB8): rowConversionFunc = ConvRGBAtoBGR; break;
+                case PCL_PAIR(PCL_BGRA8, PCL_BGR8): rowConversionFunc = ConvRGBAtoRGB; break;
+                case PCL_PAIR(PCL_BGRA8, PCL_RG8): rowConversionFunc = ConvBGRAtoRG; break;
+                case PCL_PAIR(PCL_BGRA8, PCL_R8): rowConversionFunc = ConvBGRAtoR; break;
+
+                case PCL_PAIR(PCL_BGRX8, PCL_RGBA8): rowConversionFunc = ConvBGRXtoRGBA; break;
+                case PCL_PAIR(PCL_BGRX8, PCL_BGRA8): rowConversionFunc = ConvBGRXtoBGRA; break;
+                case PCL_PAIR(PCL_BGRX8, PCL_RGB8): rowConversionFunc = ConvRGBAtoBGR; break;
+                case PCL_PAIR(PCL_BGRX8, PCL_BGR8): rowConversionFunc = ConvRGBAtoRGB; break;
+                case PCL_PAIR(PCL_BGRX8, PCL_RG8): rowConversionFunc = ConvBGRAtoRG; break;
+                case PCL_PAIR(PCL_BGRX8, PCL_R8): rowConversionFunc = ConvBGRAtoR; break;
+
+                case PCL_PAIR(PCL_RGB8, PCL_RGBA8): rowConversionFunc = ConvRGBtoRGBA; break;
+                case PCL_PAIR(PCL_RGB8, PCL_BGRA8): rowConversionFunc = ConvRGBtoBGRA; break;
+                case PCL_PAIR(PCL_RGB8, PCL_BGRX8): rowConversionFunc = ConvRGBtoBGRA; break;
+                case PCL_PAIR(PCL_RGB8, PCL_BGR8): rowConversionFunc = ConvRGBtoBGR; break;
+                case PCL_PAIR(PCL_RGB8, PCL_RG8): rowConversionFunc = ConvRGBtoRG; break;
+                case PCL_PAIR(PCL_RGB8, PCL_R8): rowConversionFunc = ConvRGBtoR; break;
+
+                case PCL_PAIR(PCL_BGR8, PCL_RGBA8): rowConversionFunc = ConvRGBtoBGRA; break;
+                case PCL_PAIR(PCL_BGR8, PCL_BGRA8): rowConversionFunc = ConvRGBtoRGBA; break;
+                case PCL_PAIR(PCL_BGR8, PCL_BGRX8): rowConversionFunc = ConvRGBtoRGBA; break;
+                case PCL_PAIR(PCL_BGR8, PCL_RGB8): rowConversionFunc = ConvRGBAtoBGR; break;
+                case PCL_PAIR(PCL_BGR8, PCL_RG8): rowConversionFunc = ConvBGRtoRG; break;
+                case PCL_PAIR(PCL_BGR8, PCL_R8): rowConversionFunc = ConvBGRtoR; break;
+
+                case PCL_PAIR(PCL_RG8, PCL_RGB8): rowConversionFunc = ConvRGtoRGB; break;
+                case PCL_PAIR(PCL_RG8, PCL_BGR8): rowConversionFunc = ConvRGtoBGR; break;
+                case PCL_PAIR(PCL_RG8, PCL_R8): rowConversionFunc = ConvRGtoR; break;
+            }
         }
         else if (GetFlags(src.GetFormat()) == PFF_NORMALIZED && GetFlags(dst.GetFormat()) == (PFF_NORMALIZED | PFF_SIGNED))
         {
-            // TODO
+            PixelComponentLayout srcLayout = GetElementLayout(src.GetFormat());
+            PixelComponentLayout dstLayout = GetElementLayout(dst.GetFormat());
+            switch (PCL_PAIR(srcLayout, dstLayout))
+            {
+                case PCL_PAIR(PCL_RGBA8, PCL_RG8): rowConversionFunc = ConvRGBAtoRG_u2s; break;
+                case PCL_PAIR(PCL_BGRA8, PCL_RG8): rowConversionFunc = ConvBGRAtoRG_u2s; break;
+                case PCL_PAIR(PCL_BGRX8, PCL_RG8): rowConversionFunc = ConvBGRAtoRG_u2s; break;
+                case PCL_PAIR(PCL_RGB8, PCL_RG8): rowConversionFunc = ConvRGBtoRG_u2s; break;
+                case PCL_PAIR(PCL_BGR8, PCL_RG8): rowConversionFunc = ConvBGRtoRG_u2s; break;
+                case PCL_PAIR(PCL_RG8, PCL_RG8): rowConversionFunc = ConvRGtoRG_u2s; break;
+            }
         }
         else if (GetFlags(src.GetFormat()) == (PFF_NORMALIZED | PFF_SIGNED) && GetFlags(dst.GetFormat()) == PFF_NORMALIZED)
         {
-            // TODO
+            PixelComponentLayout srcLayout = GetElementLayout(src.GetFormat());
+            PixelComponentLayout dstLayout = GetElementLayout(dst.GetFormat());
+            switch (PCL_PAIR(srcLayout, dstLayout))
+            {
+                case PCL_PAIR(PCL_RGBA8, PCL_RG8): rowConversionFunc = ConvRGBAtoRG_s2u; break;
+                case PCL_PAIR(PCL_BGRA8, PCL_RG8): rowConversionFunc = ConvBGRAtoRG_s2u; break;
+                case PCL_PAIR(PCL_BGRX8, PCL_RG8): rowConversionFunc = ConvBGRAtoRG_s2u; break;
+                case PCL_PAIR(PCL_RGB8, PCL_RG8): rowConversionFunc = ConvRGBtoRG_s2u; break;
+                case PCL_PAIR(PCL_BGR8, PCL_RG8): rowConversionFunc = ConvBGRtoRG_s2u; break;
+                case PCL_PAIR(PCL_RG8, PCL_RG8): rowConversionFunc = ConvRGtoRG_s2u; break;
+            }
+        }
+#undef PCL_PAIR
+
+        if (rowConversionFunc)
+        {
+            UINT32 srcPixelSize = GetNumElemBytes(src.GetFormat());
+            UINT32 dstPixelSize = GetNumElemBytes(dst.GetFormat());
+
+            UINT8* srcData = static_cast<UINT8*>(src.GetData())
+                + src.GetLeft() * srcPixelSize + src.GetTop() * src.GetRowPitch() + src.GetFront() * src.GetSlicePitch();
+            UINT8* dstData = static_cast<UINT8*>(dst.GetData())
+                + dst.GetLeft() * dstPixelSize + dst.GetTop() * dst.GetRowPitch() + dst.GetFront() * dst.GetSlicePitch();
+
+            // Get pitches+skips in bytes
+            const UINT32 srcRowPitchBytes = src.GetRowPitch();
+            const UINT32 srcSliceSkipBytes = src.GetSliceSkip();
+
+            const UINT32 dstRowPitchBytes = dst.GetRowPitch();
+            const UINT32 dstSliceSkipBytes = dst.GetSliceSkip();
+
+            for (UINT32 z = src.GetFront(); z < src.GetBack(); z++)
+            {
+                for (UINT32 y = src.GetTop(); y < src.GetBottom(); y++)
+                {
+                    UINT8* srcPtr = srcData + src.GetSlicePitch() * z + src.GetRowPitch() * y;
+                    UINT8* dstPtr = dstData + dst.GetSlicePitch() * z + dst.GetRowPitch() * y;
+                    rowConversionFunc(srcPtr, dstPtr, src.GetWidth());
+                }
+            }
+
+            return;
         }
 
         // Check for compressed formats, we don't support decompression
@@ -2300,12 +2621,6 @@ namespace te
 
         // The brute force fallback
         float color[4];
-        float* r = &color[0];
-        float* g = &color[1];
-        float* b = &color[2];
-        float* a = &color[3];
-
-        //float r, g, b, a;
 
         for (UINT32 z = src.GetFront(); z < src.GetBack(); z++)
         {
@@ -2314,9 +2629,7 @@ namespace te
                 for (UINT32 x = src.GetLeft(); x < src.GetRight(); x++)
                 {
                     UnpackColor(color, src.GetFormat(), srcptr);
-                    PackColor(*r, *g, *b, *a, dst.GetFormat(), dstptr);
-                    //UnpackColor(&r, &g, &b, &a, src.GetFormat(), srcptr);
-                    //PackColor(r, g, b, a, dst.GetFormat(), dstptr);
+                    PackColor(color, dst.GetFormat(), dstptr);
 
                     srcptr += srcPixelSize;
                     dstptr += dstPixelSize;
