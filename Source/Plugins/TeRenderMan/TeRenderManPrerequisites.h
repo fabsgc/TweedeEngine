@@ -70,10 +70,11 @@ namespace te
         Vector3 Absorption;
         UINT32  RefractionType;
         float   AlphaTreshold;
-        Vector2 Padding;
+        Vector2 Padding1;
         UINT32  UseBaseColorMap;
         UINT32  UseMetallicMap;
         UINT32  UseRoughnessMap;
+        UINT32  UseMetallicRoughnessMap;
         UINT32  UseReflectanceMap;
         UINT32  UseOcclusionMap;
         UINT32  UseEmissiveMap;
@@ -85,8 +86,10 @@ namespace te
         UINT32  UseNormalMap;
         UINT32  UseParallaxMap;
         UINT32  UseTransmissionMap;
+        UINT32  UseOpacityMap;
         UINT32  UseAnisotropyDirectionMap;
         UINT32  DoIndirectLighting;
+        UINT32  Padding2[2];
     };
 
     struct PerLightData

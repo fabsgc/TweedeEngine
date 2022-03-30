@@ -117,7 +117,7 @@ namespace te
     DistributionSample ImportanceSampleGGX(const Vector2& xi, float roughness)
     {
         DistributionSample ggx;
-		
+
         // evaluate sampling equations
         float alpha = roughness * roughness;
         ggx.CosTheta = Math::Clamp01((1.0f - xi.y) / (1.0f + (alpha * alpha - 1.0f) * xi.y));
@@ -216,10 +216,9 @@ namespace te
         for (UINT32 y = 1; y <= desc.Height; y++)
         {
             float roughness = (float)y / desc.Height;
-            float m = roughness * roughness;
             for (UINT32 x = 1; x <= desc.Width; x++)
             {
-                float NoV = Math::Clamp01((float)x / desc.Width);
+                float NoV = Math::Clamp((float)x / desc.Width, 1e-5f, 0.98f);
 
                 Vector3 V;
                 V.x = sqrt(1.0f - NoV * NoV); // sine
@@ -243,13 +242,13 @@ namespace te
 
                     // GGX
                     {
-                        dSampleGGX = ImportanceSampleGGX(xi, m);
+                        dSampleGGX = ImportanceSampleGGX(xi, roughness);
                         ComputeSample(V, N, NoV, roughness, sample, dSampleGGX, RendererTextures::DistributionMode::GGX);
                     }
 
                     // Charlie
                     {
-                        dSampleCharlie = ImportanceSampleCharlie(xi, m);
+                        dSampleCharlie = ImportanceSampleCharlie(xi, roughness);
                         ComputeSample(V, N, NoV, roughness, sample, dSampleCharlie, RendererTextures::DistributionMode::Charlie);
                     }
                 }

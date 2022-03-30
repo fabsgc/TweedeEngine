@@ -488,6 +488,10 @@ namespace te
                     texturesOptions, width, false, TextureType::TEX_TYPE_2D, false, false))
                     hasChanged = true;
 
+                if (ShowTexture(uuid, properties.UseMetallicRoughnessMap, "##material_texture_metallic_roughness_option", "Metallic/Roughness", "MetallicRoughnessMap", 
+                    texturesOptions, width, false, TextureType::TEX_TYPE_2D, false, false))
+                    hasChanged = true;
+
                 if (ShowTexture(uuid, properties.UseReflectanceMap, "##material_texture_reflectance_option", "Reflectance", "ReflectanceMap", 
                     texturesOptions, width, false, TextureType::TEX_TYPE_2D, false, false))
                     hasChanged = true;
@@ -529,6 +533,10 @@ namespace te
                     hasChanged = true;
 
                 if (ShowTexture(uuid, properties.UseTransmissionMap, "##material_texture_transmission_option", "Transmission", "TransmissionMap", 
+                    texturesOptions, width, false, TextureType::TEX_TYPE_2D, false, false))
+                    hasChanged = true;
+
+                if (ShowTexture(uuid, properties.UseOpacityMap, "##material_texture_opacity_option", "Opacity", "OpacityMap", 
                     texturesOptions, width, false, TextureType::TEX_TYPE_2D, false, false))
                     hasChanged = true;
 

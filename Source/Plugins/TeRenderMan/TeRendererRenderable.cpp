@@ -69,6 +69,7 @@ namespace te
         data.UseBaseColorMap = (UINT32)properties.UseBaseColorMap;
         data.UseMetallicMap = (UINT32)properties.UseMetallicMap;
         data.UseRoughnessMap = (UINT32)properties.UseRoughnessMap;
+        data.UseMetallicRoughnessMap = (UINT32)properties.UseMetallicRoughnessMap;
         data.UseReflectanceMap = (UINT32)properties.UseReflectanceMap;
         data.UseOcclusionMap = (UINT32)properties.UseOcclusionMap;
         data.UseEmissiveMap = (UINT32)properties.UseEmissiveMap;
@@ -80,6 +81,7 @@ namespace te
         data.UseNormalMap = (UINT32)properties.UseNormalMap;
         data.UseParallaxMap = (UINT32)properties.UseParallaxMap;
         data.UseTransmissionMap = (UINT32)properties.UseTransmissionMap;
+        data.UseOpacityMap = (UINT32)properties.UseOpacityMap;
         data.UseAnisotropyDirectionMap = (UINT32)properties.UseAnisotropyDirectionMap;
         data.DoIndirectLighting = (UINT32)properties.DoIndirectLighting;
 

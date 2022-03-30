@@ -49,10 +49,11 @@ struct MaterialData
     float3  Absorption;
     uint    RefractionType;
     float   AlphaTreshold;
-    float2  Padding;
+    float2  Padding1;
     uint    UseBaseColorMap;
     uint    UseMetallicMap;
     uint    UseRoughnessMap;
+    uint    UseMetallicRoughnessMap;
     uint    UseReflectanceMap;
     uint    UseOcclusionMap;
     uint    UseEmissiveMap;
@@ -64,8 +65,10 @@ struct MaterialData
     uint    UseNormalMap;
     uint    UseParallaxMap;
     uint    UseTransmissionMap;
+    uint    UseOpacityMap;
     uint    UseAnisotropyDirectionMap;
     uint    DoIndirectLighting;
+    uint    Padding2[2];
 };
 
 struct LightData
@@ -167,21 +170,23 @@ cbuffer PerFrameBuffer : register(b3)
 Texture2D BaseColorMap : register(t0);
 Texture2D MetallicMap : register(t1);
 Texture2D RoughnessMap : register(t2);
-Texture2D ReflectanceMap : register(t3);
-Texture2D OcclusionMap : register(t4);
-Texture2D EmissiveMap : register(t5);
-Texture2D SheenColorMap : register(t6);
-Texture2D SheenRoughnessMap : register(t7);
-Texture2D ClearCoatMap : register(t8);
-Texture2D ClearCoatRoughnessMap : register(t9);
-Texture2D ClearCoatNormalMap : register(t10);
-Texture2D NormalMap : register(t11);
-Texture2D ParallaxMap : register(t12);
-Texture2D TransmissionMap : register(t13);
-Texture2D AnisotropyDirectionMap : register(t14);
-TextureCube DiffuseIrrMap : register(t15);
-TextureCube PrefilteredRadianceMap : register(t16);
-Texture2D PreIntegratedEnvGF : register(t17);
+Texture2D MetallicRoughnessMap : register(t3);
+Texture2D ReflectanceMap : register(t4);
+Texture2D OcclusionMap : register(t5);
+Texture2D EmissiveMap : register(t6);
+Texture2D SheenColorMap : register(t7);
+Texture2D SheenRoughnessMap : register(t8);
+Texture2D ClearCoatMap : register(t9);
+Texture2D ClearCoatRoughnessMap : register(t10);
+Texture2D ClearCoatNormalMap : register(t11);
+Texture2D NormalMap : register(t12);
+Texture2D ParallaxMap : register(t13);
+Texture2D TransmissionMap : register(t14);
+Texture2D OpacityMap : register(t15);
+Texture2D AnisotropyDirectionMap : register(t16);
+TextureCube DiffuseIrrMap : register(t17);
+TextureCube PrefilteredRadianceMap : register(t18);
+Texture2D PreIntegratedEnvGF : register(t19);
 
 SamplerState AnisotropicSampler : register(s0);
 SamplerState BiLinearSampler : register(s1);
@@ -593,6 +598,7 @@ float3 DoSpecularIBL(float3 V, float3 N, float NoV, float3 E, const PixelData pi
 
     float3 radiance = PrefilteredRadiance(dominantR, pixel.PRoughness);
     float3 FssEss = pixel.F0 * pixel.DFG.x + pixel.DFG.y * pixel.F90; // E
+    //result = radiance * FssEss * ao;
     result = radiance * FssEss * ao;
 
     // multi scattering https://google.github.io/filament/Filament.html#listing_multiscatteriblevaluation

@@ -89,6 +89,12 @@ namespace te
      * and can generally be provided as a constant value. 
      * For example, a 1mm thin hollow sphere of radius 1m, 
      * would have a thickness of 1 and a microThickness of 0.001.
+     * 
+     * Note : If UseRoughnessMap or UseMetallicMap and UseMetallicRoughnessMap 
+     * are both defined, UseMetallicRoughnessMap wins
+     * 
+     * Note : If both UseTransmissionMap and UseOpacityMap are defined, 
+     * UseTransmissionMap wins
      */
     class MaterialProperties
     {
@@ -285,6 +291,14 @@ namespace te
         bool UseRoughnessMap = false;
 
         /**
+         * @copydoc MaterialProperties::Metallic
+         * @copydoc MaterialProperties::Roughness
+         * From gltf specification, we can use a texture with both information
+         * B : Metallic, G : Roughness. R and A : not defined
+         */
+        bool UseMetallicRoughnessMap = false;
+
+        /**
          * @copydoc MaterialProperties::Reflectance
          */
         bool UseReflectanceMap = false;
@@ -346,6 +360,16 @@ namespace te
         bool UseTransmissionMap = false;
 
         /**
+         * @copydoc MaterialProperties::Transmission
+         * Only R channel is used
+         * 0 : transparent
+         * 1 : Opaque
+         * Range : [0..1]
+         * Transmission = 1 - Opacity
+         */
+        bool UseOpacityMap = false;
+
+        /**
          * @copydoc MaterialProperties::AnisotropyDirection
          */
         bool UseAnisotropyDirectionMap = false;
@@ -387,6 +411,7 @@ namespace te
         String BaseColorMap;
         String MetallicMap;
         String RoughnessMap;
+        String MetallicRoughnessMap;
         String ReflectanceMap;
         String OcclusionMap;
         String EmissiveMap;
@@ -398,6 +423,7 @@ namespace te
         String NormalMap;
         String ParallaxMap;
         String TransmissionMap;
+        String OpacityMap;
         String AnisotropyDirectionMap;
     };
 

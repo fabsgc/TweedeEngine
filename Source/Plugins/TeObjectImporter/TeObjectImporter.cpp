@@ -358,7 +358,7 @@ namespace te
                     BindTexture(aiMat, aiTextureType_NORMALS, material.MatTextures.NormalMap, material.MatProperties.UseNormalMap);
                     BindTexture(aiMat, aiTextureType_NORMAL_CAMERA, material.MatTextures.NormalMap, material.MatProperties.UseNormalMap);
                     BindTexture(aiMat, aiTextureType_HEIGHT, material.MatTextures.ParallaxMap, material.MatProperties.UseParallaxMap);
-                    BindTexture(aiMat, aiTextureType_OPACITY, material.MatTextures.TransmissionMap, material.MatProperties.UseTransmissionMap);
+                    BindTexture(aiMat, aiTextureType_OPACITY, material.MatTextures.TransmissionMap, material.MatProperties.UseOpacityMap);
                     BindTexture(aiMat, aiTextureType_TRANSMISSION, material.MatTextures.TransmissionMap, material.MatProperties.UseTransmissionMap);
 
                     aiColor3D baseColor;

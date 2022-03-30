@@ -44,6 +44,7 @@ PS_OUTPUT main( VS_OUTPUT IN )
     bool		useBaseColorMap				= (bool)gMaterial.UseBaseColorMap;
     bool		useMetallicMap				= (bool)gMaterial.UseMetallicMap;
     bool		useRoughnessMap				= (bool)gMaterial.UseRoughnessMap;
+    bool		useMetallicRoughnessMap		= (bool)gMaterial.UseMetallicRoughnessMap;
     bool		useReflectanceMap			= (bool)gMaterial.UseReflectanceMap;
     bool		useOcclusionMap				= (bool)gMaterial.UseOcclusionMap;
     bool		useEmissiveMap				= (bool)gMaterial.UseEmissiveMap;
@@ -55,6 +56,7 @@ PS_OUTPUT main( VS_OUTPUT IN )
     bool		useNormalMap				= (bool)gMaterial.UseNormalMap;
     bool		useParallaxMap				= (bool)gMaterial.UseParallaxMap;
     bool		useTransmissionMap			= (bool)gMaterial.UseTransmissionMap;
+    bool		useOpacityMap				= (bool)gMaterial.UseOpacityMap;
     bool		useAnisotropyDirectionMap	= (bool)gMaterial.UseAnisotropyDirectionMap;
 
     float3		sceneLightColor				= gSceneLightColor.rgb;
@@ -75,6 +77,8 @@ PS_OUTPUT main( VS_OUTPUT IN )
     float3		PrevNDCPos					= (IN.PrevPosition / IN.PrevPosition.w).xyz;
 
     float3		diffuseBaseColor			= (1.0 - metallic) * baseColor.rgb;
+
+    float3		metallicRougness			= (float3)0;
     // #########################################################################
 
     // ###################### PARALLAX MAP MAPPING
@@ -83,8 +87,15 @@ PS_OUTPUT main( VS_OUTPUT IN )
             parallaxSamples, parallaxScale, IN.ParallaxOffsetTS);
 
     // ###################### METALLIC MAP SAMPLING
-    if(useMetallicMap)
+    if(useMetallicRoughnessMap)
+    {
+        metallicRougness = MetallicRoughnessMap.Sample(AnisotropicSampler, uv0).rgb;
+        metallic = metallicRougness.b;
+    }
+    else if(useMetallicMap)
+    {
         metallic = MetallicMap.Sample(AnisotropicSampler, uv0).r;
+    }
 
     // ###################### BASE COLOR MAP SAMPLING
     if(useBaseColorMap)
@@ -96,8 +107,10 @@ PS_OUTPUT main( VS_OUTPUT IN )
     }
 
     // ###################### TRANSMISSION MAP SAMPLING
-    if(useTransmissionMap == 1)
+    if(useTransmissionMap)
         transmission = TransmissionMap.Sample(AnisotropicSampler, uv0).r;
+    else if(useOpacityMap)
+        transmission = 1.0 - OpacityMap.Sample(AnisotropicSampler, uv0).r;
 
     // ###################### DISCARD ALPHA THRESHOLD
     if((1.0 - transmission) < alphaThreshold)
@@ -114,7 +127,12 @@ PS_OUTPUT main( VS_OUTPUT IN )
             N = DoNormalMapping(TBN, NormalMap, AnisotropicSampler, uv0);
 
         // ###################### ROUGHNESS MAP SAMPLING
-        if(useRoughnessMap)
+        if(useMetallicRoughnessMap)
+        {
+            pRoughness = min(max(MIN_ROUGHNESS, metallicRougness.g), MAX_ROUGHNESS);
+            roughness = pRoughness * pRoughness;
+        }
+        else if(useRoughnessMap)
         {
             pRoughness = min(max(MIN_ROUGHNESS, RoughnessMap.Sample(AnisotropicSampler, uv0).r), MAX_ROUGHNESS);
             roughness = pRoughness * pRoughness;

@@ -297,11 +297,11 @@ namespace te
         Vector3 tangent = deltaV1 * side0 - deltaV0 * side1;
         tangent.Normalize();
 
-        // Calculate binormal
+        // Calculate bitangent
         float deltaU0 = u1 - u2;
         float deltaU1 = u3 - u1;
-        Vector3 binormal = deltaU1 * side0 - deltaU0 * side1;
-        binormal.Normalize();
+        Vector3 bitangent = deltaU1 * side0 - deltaU0 * side1;
+        bitangent.Normalize();
 
         // Now, we take the cross product of the tangents to get a vector which 
         // should point in the same direction as our normal calculated above. 
@@ -309,11 +309,11 @@ namespace te
         // then we need to reverse the s and t tangents. 
         // This is because the triangle has been mirrored when going from tangent space to object space.
         // reverse tangents if necessary.
-        Vector3 tangentCross = tangent.Cross(binormal);
+        Vector3 tangentCross = tangent.Cross(bitangent);
         if (tangentCross.Dot(normal) < 0.0f)
         {
             tangent = -tangent;
-            binormal = -binormal;
+            bitangent = -bitangent;
         }
 
         return tangent;
