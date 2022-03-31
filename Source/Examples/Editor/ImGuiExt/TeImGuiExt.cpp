@@ -510,6 +510,7 @@ namespace te
                 static ImGuiExt::ComboOptions<int> bloomQualityOptions;
                 if (bloomQualityOptions.Options.size() == 0)
                 {
+                    bloomQualityOptions.AddOption((int)BloomQuality::Ultra, "Ultra");
                     bloomQualityOptions.AddOption((int)BloomQuality::High, "High");
                     bloomQualityOptions.AddOption((int)BloomQuality::Medium, "Medium");
                     bloomQualityOptions.AddOption((int)BloomQuality::Low, "Low");

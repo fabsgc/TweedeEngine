@@ -59,6 +59,8 @@ namespace te
         RenderCompositor::RegisterNodeType<RCNodeSSAO>();
         RenderCompositor::RegisterNodeType<RCNodeBloom>();
         RenderCompositor::RegisterNodeType<RCNodeResolvedSceneDepth>();
+        RenderCompositor::RegisterNodeType<RCNodeHalfSceneColor>();
+        RenderCompositor::RegisterNodeType<RCNodeSceneColorDownsamples>();
         RenderCompositor::RegisterNodeType<RCNodePostProcess>();
         RenderCompositor::RegisterNodeType<RCNodeFinalResolve>();
     }

@@ -171,7 +171,7 @@ namespace te
         mipOptions.IsSRGB = textureImportOptions->SRGB;
         mipOptions.Alpha = PixelUtil::HasAlpha(facesData[0]->GetFormat()) ? AlphaMode::Transparency: AlphaMode::None;
         mipOptions.Filter = MipMapFilter::Box;
-        mipOptions.Quality = CompressionQuality::Highest;
+        mipOptions.Quality = CompressionQuality::Normal;
         mipOptions.RoundMode = MipMapRoundMode::RoundNone;
         mipOptions.WrapMode = MipMapWrapMode::Mirror;
         mipOptions.IsNormalMap = textureImportOptions->IsNormalMap;

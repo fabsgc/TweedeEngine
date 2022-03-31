@@ -257,6 +257,43 @@ namespace te
     /* 							SCREEN SPACE								*/
     /************************************************************************/
 
+    /** Generates a 1/2 size of the scene color texture. If MSAA only the first sample is used. */
+    class RCNodeHalfSceneColor : public RenderCompositorNode
+    {
+    public:
+        SPtr<PooledRenderTexture> Output;
+
+        static String GetNodeId() { return "HalfSceneColor"; }
+        static Vector<String> GetDependencies(const RendererView& view);
+    protected:
+        /** @copydoc RenderCompositorNode::Render */
+        void Render(const RenderCompositorNodeInputs& inputs) override;
+
+        /** @copydoc RenderCompositorNode::Clear */
+        void Clear() override;
+    };
+
+    /**
+     * Generates a number of downsamples of the scene color texture.
+     */
+    class RCNodeSceneColorDownsamples : public RenderCompositorNode
+    {
+    public:
+        static constexpr UINT32 MAX_NUM_DOWNSAMPLES = 3;
+
+        SPtr<PooledRenderTexture> Outputs[MAX_NUM_DOWNSAMPLES];
+        UINT32 AvailableDownsamples = 0;
+
+        static String GetNodeId() { return "SceneColorDownsamples"; }
+        static Vector<String> GetDependencies(const RendererView& view);
+    protected:
+        /** @copydoc RenderCompositorNode::Render */
+        void Render(const RenderCompositorNodeInputs& inputs) override;
+
+        /** @copydoc RenderCompositorNode::Clear */
+        void Clear() override;
+    };
+
     /** Resolves the depth buffer (if multi-sampled). Otherwise just references the original depth buffer. */
     class RCNodeResolvedSceneDepth : public RenderCompositorNode
     {

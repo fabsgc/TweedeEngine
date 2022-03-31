@@ -890,7 +890,7 @@ namespace te
     void BuiltinResources::InitShaderGaussianBlur()
     {
         PASS_DESC passDesc;
-        passDesc.BlendStateDesc = _blendOpaqueStateDesc;
+        passDesc.BlendStateDesc = _blendTransparentStateDesc;
         passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
         passDesc.RasterizerStateDesc = _rasterizerStateDesc;
         passDesc.VertexProgramDesc = _vertexShaderGaussianBlurDesc;

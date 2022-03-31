@@ -62,15 +62,20 @@ namespace te
          */
         Low = 0x0,
         /** 
-         * Bloom texture 2 times smaller samples per pixel.
+         * Bloom texture 3 times smaller samples per pixel.
          * Only 5 samples horizontally and vertically
          */
         Medium = 0x1,
         /** 
+          * Bloom texture 2 times smaller samples per pixel.
+          * Max sample amount horizontally and vertically
+         */
+        High = 0x2,
+        /** 
           * Bloom texture same size as RenderTarget
           * Max sample amount horizontally and vertically
          */
-        High = 0x2
+        Ultra = 0x3
     };
 
     /** AmbientOcclusion quality. */
