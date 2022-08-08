@@ -20,10 +20,10 @@ namespace te
 #if TE_PLATFORM == TE_PLATFORM_WIN32
             pRENDERDOC_GetAPI rdcGetAPI = nullptr;
             rdcGetAPI = (pRENDERDOC_GetAPI)_rdcLib->GetSymbol("RENDERDOC_GetAPI");
-#endif
 
             TE_ASSERT_ERROR(rdcGetAPI != nullptr, "Failed to RENDERDOC_GetAPI function address from renderdoc.dll");
             TE_ASSERT_ERROR(rdcGetAPI(eRENDERDOC_API_Version_1_5_0, (void**)&_rdcAPI) != 0, "Failed to get RenderDoc API pointer");
+#endif
         }
 
         if(!_rdcAPI)
