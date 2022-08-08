@@ -408,6 +408,9 @@ namespace te
          */
         UINT8* GetDefaultValue(UINT32 index) const;
 
+        /** Compiles all techniqurd and so all the passes in a technique. @see Pass::compile. */
+        void Compile(bool force = false);
+
     protected:
         Shader(UINT32 id);
         Shader(const SHADER_DESC& desc, const String& name, UINT32 id);

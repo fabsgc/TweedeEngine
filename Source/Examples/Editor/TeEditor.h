@@ -12,6 +12,7 @@ namespace te
     class Picking;
     class Selection;
     class Hud;
+    class MaterialsPreview;
 
     class Editor : public Module<Editor>
     {
@@ -205,6 +206,9 @@ namespace te
         /** Check is editor is in play mode or not */
         bool IsEditorRunning() const { return gCoreApplication().GetState().IsFlagSet(ApplicationState::Mode::Game); }
 
+        /** Get raw pointer to MaterialsPreview instance */
+        MaterialsPreview* GetMaterialsPreview() { return _materialsPreview.get(); }
+
     protected:
         void InitializeInput();
         void InitializeScene();
@@ -268,6 +272,9 @@ namespace te
         // If something has changed, we need to redraw hud elements such as cameras and lights on top of render
         UPtr<Hud> _hud;
         bool _hudDirty;
+
+        // Using to store preview of all materials currently used
+        UPtr<MaterialsPreview> _materialsPreview;
 
         // If something has changed, we need to redraw physics debug
         bool _physicsDirty;

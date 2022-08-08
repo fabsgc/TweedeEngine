@@ -129,14 +129,14 @@ namespace te
         static ImGuiExt::ComboOptions<ImGuizmo::MODE> guizmoModeOptions;
         if (guizmoModeOptions.Options.size() == 0)
         {
-            guizmoModeOptions.AddOption(ImGuizmo::MODE::LOCAL, "Local");
-            guizmoModeOptions.AddOption(ImGuizmo::MODE::WORLD, "World");
+            guizmoModeOptions.AddOption(ImGuizmo::MODE::LOCAL, "Local Space");
+            guizmoModeOptions.AddOption(ImGuizmo::MODE::WORLD, "World Space");
         }
 
         ImGuizmo::MODE guizmoMode = gEditor().GetImGuizmoMode();
 
         ImGui::SameLine();
-        if (ImGuiExt::RenderOptionCombo<ImGuizmo::MODE>((ImGuizmo::MODE*)(&guizmoMode), "##guizmo_mode_option", "", guizmoModeOptions, 75))
+        if (ImGuiExt::RenderOptionCombo<ImGuizmo::MODE>((ImGuizmo::MODE*)(&guizmoMode), "##guizmo_mode_option", "", guizmoModeOptions, 150))
             gEditor().SetImGuizmoMode(guizmoMode);
 
         // RenderDoc scale

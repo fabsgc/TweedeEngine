@@ -41,7 +41,7 @@ namespace te
         UINT32 GetNumPasses() const { return (UINT32)_passes.size(); }
 
         /** Compiles all the passes in a technique. @see Pass::compile. */
-        void Compile();
+        void Compile(bool force = false);
 
         /**
          * Creates a new technique.

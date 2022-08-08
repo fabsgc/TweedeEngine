@@ -3,6 +3,7 @@
 #include "RenderAPI/TeGpuPipelineState.h"
 #include "Resources/TeResourceHandle.h"
 #include "Resources/TeResourceManager.h"
+#include "Utility/TeDataStream.h"
 
 namespace te
 {
@@ -92,10 +93,20 @@ namespace te
         }
     }
 
-    void Pass::Compile()
+    void Pass::Compile(bool force)
     {
-        if (_computePipelineState || _graphicsPipelineState)
+        if ((_computePipelineState || _graphicsPipelineState) && !force)
             return; // Already compiled
+
+        if (force) // if force is true, we update all GPU_PROGRAM_DESC source code
+        {
+            UpdateGpuProgramDesc(_data.VertexProgramDesc);
+            UpdateGpuProgramDesc(_data.PixelProgramDesc);
+            UpdateGpuProgramDesc(_data.GeometryProgramDesc);
+            UpdateGpuProgramDesc(_data.HullProgramDesc);
+            UpdateGpuProgramDesc(_data.DomainProgramDesc);
+            UpdateGpuProgramDesc(_data.ComputeProgramDesc);
+        }
 
         CreatePipelineState();
         MarkCoreDirty();
@@ -118,5 +129,14 @@ namespace te
         newPassPtr->SetThisPtr(newPassPtr);
 
         return newPassPtr;
+    }
+
+    void Pass::UpdateGpuProgramDesc(GPU_PROGRAM_DESC& desc)
+    {
+        if (!desc.FilePath.empty())
+        {
+            FileStream shaderFile(desc.FilePath);
+            desc.Source = shaderFile.GetAsString();
+        }
     }
 }

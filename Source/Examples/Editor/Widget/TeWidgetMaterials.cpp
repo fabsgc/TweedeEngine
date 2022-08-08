@@ -32,9 +32,7 @@ namespace te
     { }
 
     void WidgetMaterials::Initialize()
-    { 
-        _materialsPreview = te_unique_ptr_new<MaterialsPreview>();
-    }
+    { }
 
     void WidgetMaterials::Update()
     { 
@@ -166,7 +164,7 @@ namespace te
                     materialUUID = _currentMaterial->GetUUID();
                 }
 
-                SPtr<Texture> texture = _materialsPreview->GetPreview(
+                SPtr<Texture> texture = gEditor().GetMaterialsPreview()->GetPreview(
                     static_resource_cast<Material>(resource.second).GetInternalPtr())
                     .RenderTex->GetColorTexture(0);
 
@@ -175,7 +173,7 @@ namespace te
 
             if (_currentMaterial)
             {
-                currentTexture = _materialsPreview->GetPreview(_currentMaterial).RenderTex->GetColorTexture(0);
+                currentTexture = gEditor().GetMaterialsPreview()->GetPreview(_currentMaterial).RenderTex->GetColorTexture(0);
                 if (currentTexture && currentTexture->GetProperties().GetTextureType() == TextureType::TEX_TYPE_2D)
                 {
                     ImGuiExt::RenderImage(currentTexture, Vector2(26.0f, 26.0f));
@@ -251,23 +249,23 @@ namespace te
                 ImGui::SetCursorPos(cursor);
 
                 if (ShowPreviewButton(ICON_FA_CIRCLE, [this]() { 
-                    return _materialsPreview->GetMeshPreviewType() != MaterialsPreview::MeshPreviewType::Sphere; }))
+                    return gEditor().GetMaterialsPreview()->GetMeshPreviewType() != MaterialsPreview::MeshPreviewType::Sphere; }))
                 {
-                    _materialsPreview->SetMeshPreviewType(MaterialsPreview::MeshPreviewType::Sphere);
+                    gEditor().GetMaterialsPreview()->SetMeshPreviewType(MaterialsPreview::MeshPreviewType::Sphere);
                 }
                 ImGui::SameLine();
 
                 if (ShowPreviewButton(ICON_FA_CUBE, [this]() {
-                    return _materialsPreview->GetMeshPreviewType() != MaterialsPreview::MeshPreviewType::Box; }))
+                    return gEditor().GetMaterialsPreview()->GetMeshPreviewType() != MaterialsPreview::MeshPreviewType::Box; }))
                 {
-                    _materialsPreview->SetMeshPreviewType(MaterialsPreview::MeshPreviewType::Box);
+                    gEditor().GetMaterialsPreview()->SetMeshPreviewType(MaterialsPreview::MeshPreviewType::Box);
                 }
                 ImGui::SameLine();
 
                 if (ShowPreviewButton(ICON_FA_SQUARE, [this]() {
-                    return _materialsPreview->GetMeshPreviewType() != MaterialsPreview::MeshPreviewType::Plane; }))
+                    return gEditor().GetMaterialsPreview()->GetMeshPreviewType() != MaterialsPreview::MeshPreviewType::Plane; }))
                 {
-                    _materialsPreview->SetMeshPreviewType(MaterialsPreview::MeshPreviewType::Plane);
+                    gEditor().GetMaterialsPreview()->SetMeshPreviewType(MaterialsPreview::MeshPreviewType::Plane);
                 }
 
                 cursor.x -= 5.0f;
@@ -621,7 +619,7 @@ namespace te
                 gEditor().NeedsRedraw();
                 gEditor().GetSettings().State = Editor::EditorState::Modified;
 
-                _materialsPreview->MarkDirty(_currentMaterial);
+                gEditor().GetMaterialsPreview()->MarkDirty(_currentMaterial);
             }
         }
     }
@@ -692,7 +690,7 @@ namespace te
             renderable->RemoveMaterial(material);
         }
 
-        _materialsPreview->DeletePreview(material);
+        gEditor().GetMaterialsPreview()->DeletePreview(material);
 
         EditorResManager::Instance().Remove<Material>(handle);
         material = nullptr;

@@ -41,10 +41,10 @@ namespace te
         return false;
     }
 
-    void Technique::Compile()
+    void Technique::Compile(bool force)
     {
         for (auto& pass : _passes)
-            pass->Compile();
+            pass->Compile(force);
     }
 
     SPtr<Pass> Technique::GetPass(UINT32 idx) const

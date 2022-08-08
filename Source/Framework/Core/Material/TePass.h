@@ -75,8 +75,10 @@ namespace te
          * Initializes the pass internals by compiling the GPU programs and creating the relevant pipeline state. This
          * method must be called before pass pipelines can be retrieved. After initial compilation further calls do this
          * method will perform no operation.
+         * 
+         * @param[in] force Force compile even if pass has already been built
          */
-        void Compile();
+        void Compile(bool force = false);
 
         /**	Creates a new empty pass. */
         static SPtr<Pass> Create(const PASS_DESC& desc);
@@ -87,6 +89,8 @@ namespace te
     protected:
         Pass();
         Pass(const PASS_DESC & desc);
+
+        void UpdateGpuProgramDesc(GPU_PROGRAM_DESC& desc);
 
     protected:
         PASS_DESC _data;

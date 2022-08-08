@@ -17,6 +17,8 @@
 #include "Widget/TeWidgetMaterials.h"
 #include "Widget/TeWidgetShaders.h"
 
+#include "MaterialsPreview/TeMaterialsPreview.h"
+
 #include "Gui/TeGuiAPI.h"
 #include "TeCoreApplication.h"
 #include "Renderer/TeCamera.h"
@@ -157,6 +159,7 @@ namespace te
         _picking = te_unique_ptr_new<EditorPicking>();
         _selection = te_unique_ptr_new<Selection>();
         _hud = te_unique_ptr_new<Hud>();
+        _materialsPreview = te_unique_ptr_new<MaterialsPreview>();
 
         _picking->Initialize();
         _selection->Initialize();
@@ -1359,6 +1362,7 @@ namespace te
         HShader transparentShaderCullNone = gBuiltinResources().GetBuiltinShader(BuiltinShader::TransparentCullNone);
 
         EditorResManager::Instance().Add<Material>(_monkeyMaterial);
+
         EditorResManager::Instance().Add<Shader>(opaqueShader);
         EditorResManager::Instance().Add<Shader>(transparentShader);
         EditorResManager::Instance().Add<Shader>(transparentShaderCullNone);

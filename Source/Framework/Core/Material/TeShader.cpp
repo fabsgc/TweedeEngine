@@ -309,6 +309,14 @@ namespace te
         return nullptr;
     }
 
+    void Shader::Compile(bool force)
+    {
+        for (auto& technique : _desc.Techniques)
+        {
+            technique->Compile(force);
+        }
+    }
+
     HShader Shader::Create(const String& name, const SHADER_DESC& desc)
     {
         UINT32 id = Shader::NextShaderId.fetch_add(1, std::memory_order_relaxed);
