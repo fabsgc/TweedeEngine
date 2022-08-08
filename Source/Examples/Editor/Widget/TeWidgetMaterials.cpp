@@ -488,7 +488,7 @@ namespace te
                     texturesOptions, width, false, TextureType::TEX_TYPE_2D, false, false))
                     hasChanged = true;
 
-                if (ShowTexture(uuid, properties.UseMetallicRoughnessMap, "##material_texture_metallic_roughness_option", "Metallic/Roughness", "MetallicRoughnessMap", 
+                if (ShowTexture(uuid, properties.UseMetallicRoughnessMap, "##material_texture_metallic_roughness_option", "Metallic/Rough.", "MetallicRoughnessMap", 
                     texturesOptions, width, false, TextureType::TEX_TYPE_2D, false, false))
                     hasChanged = true;
 

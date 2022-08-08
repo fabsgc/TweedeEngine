@@ -15,6 +15,7 @@
 #include "Widget/TeWidgetResources.h"
 #include "Widget/TeWidgetScript.h"
 #include "Widget/TeWidgetMaterials.h"
+#include "Widget/TeWidgetShaders.h"
 
 #include "Gui/TeGuiAPI.h"
 #include "TeCoreApplication.h"
@@ -198,15 +199,6 @@ namespace te
             if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DockingEnable)
                 EndGui();
         }
-
-        /*auto textureImportOptions = TextureImportOptions::Create();
-        textureImportOptions->CpuCached = false;
-        textureImportOptions->GenerateMips = true;
-        textureImportOptions->MipsPreserveCoverage = true;
-        textureImportOptions->Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
-        textureImportOptions->SRGB = true;
-
-        HTexture cobbleBaseColor = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/diffuse1.jpg", textureImportOptions, true);*/
     }
 
     void Editor::PostRender()
@@ -441,6 +433,7 @@ namespace te
         _widgets.emplace_back(te_unique_ptr_new<WidgetRenderOptions>()); _settings.WRenderOptions = _widgets.back();
         _widgets.emplace_back(te_unique_ptr_new<WidgetConsole>()); _settings.WConsole = _widgets.back();
         _widgets.emplace_back(te_unique_ptr_new<WidgetScript>()); _settings.WScript = _widgets.back();
+        _widgets.emplace_back(te_unique_ptr_new<WidgetShaders>()); _settings.WShaders = _widgets.back();
         _widgets.emplace_back(te_unique_ptr_new<WidgetMaterials>()); _settings.WMaterial = _widgets.back();
         _widgets.emplace_back(te_unique_ptr_new<WidgetResources>()); _settings.WResources = _widgets.back();
         _widgets.emplace_back(te_unique_ptr_new<WidgetViewport>()); _settings.WViewport = _widgets.back();
@@ -614,6 +607,7 @@ namespace te
                 ImGui::DockBuilderDockWindow(RESOURCES_TITLE, dockBottomId);
                 ImGui::DockBuilderDockWindow(VIEWPORT_TITLE, dockMainId);
                 ImGui::DockBuilderDockWindow(SCRIPT_TITLE, dockMainId);
+                ImGui::DockBuilderDockWindow(SHADERS_TITLE, dockRightBottomId);
                 ImGui::DockBuilderDockWindow(MATERIALS_TITLE, dockRightBottomId);
                 ImGui::DockBuilderDockWindow(PROPERTIES_TITLE, dockLeftBottomId);
                 ImGui::DockBuilderFinish(dockMainId);
@@ -661,6 +655,9 @@ namespace te
             break;
         case WindowType::Script:
             _settings.WScript->PutFocus();
+            break;
+        case WindowType::Shaders:
+            _settings.WShaders->PutFocus();
             break;
         case WindowType::Materials:
             _settings.WMaterials->PutFocus();
@@ -771,8 +768,8 @@ namespace te
 
                 case ImGuizmo::OPERATION::SCALE:
                 {
-                    Vector3 translation(matrixTranslation[0], matrixTranslation[1], matrixTranslation[2]);
-                    if (!Math::ApproxEquals(translation, Vector3::ZERO))
+                    Vector3 scale(matrixScale[0], matrixScale[1], matrixScale[2]);
+                    if (!Math::ApproxEquals(scale, Vector3::ZERO))
                         _selections.ClickedSceneObject->SetScale(Vector3(matrixScale[0], matrixScale[1], matrixScale[2]));
                 }
                 break;

@@ -16,7 +16,7 @@ namespace te
 
         /**
          * Starts the gui render API with the provided name
-         * @param[in]	name				Name of the render system to start. Factory for this render system must be
+         * @param[in]	name	Name of the render system to start. Factory for this render system must be
          */
         SPtr<GuiAPI> Initialize(const String& name);
 

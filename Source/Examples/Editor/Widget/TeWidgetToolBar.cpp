@@ -5,6 +5,7 @@
 #include "TeWidgetRenderOptions.h"
 #include "Animation/TeAnimationManager.h"
 #include "Scripting/TeScriptManager.h"
+#include "Manager/TeRenderDocManager.h"
 #include "Scripting/TeScript.h"
 #include "Scene/TeSceneManager.h"
 #include "Components/TeCScript.h"
@@ -51,13 +52,17 @@ namespace te
 
     void WidgetToolBar::Update()
     {
-        auto ShowButton = [this](const char* titleEnabled, const char* titleDisabled, const std::function<bool()>& getVisibility, const std::function<void()>& makeVisible)
+        auto ShowButton = [this](const char* titleEnabled, const char* titleDisabled, const std::function<bool()>& getVisibility, const std::function<void()>& makeVisible, const String& tooltip = String())
         {
             ImGui::SameLine();
             ImGui::PushStyleColor(ImGuiCol_Button, getVisibility() ? ImGui::GetStyle().Colors[ImGuiCol_ButtonActive] : ImGui::GetStyle().Colors[ImGuiCol_Button]);
             if (ImGui::Button(getVisibility() ? titleEnabled : titleDisabled))
             {
                 makeVisible();
+            }
+            if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled) && !tooltip.empty())
+            {
+                ImGui::SetTooltip(tooltip.c_str());
             }
             ImGui::PopStyleColor();
         };
@@ -133,6 +138,13 @@ namespace te
         ImGui::SameLine();
         if (ImGuiExt::RenderOptionCombo<ImGuizmo::MODE>((ImGuizmo::MODE*)(&guizmoMode), "##guizmo_mode_option", "", guizmoModeOptions, 75))
             gEditor().SetImGuizmoMode(guizmoMode);
+
+        // RenderDoc scale
+        ShowButton(ICON_FA_BUG, ICON_FA_BUG,
+            [this]() { return false; },
+            [this]() { RenderDocManager::Instance().FrameCapture(); },
+            "Captures the next frame and then launches RenderDoc"
+        );
     }
 
     void WidgetToolBar::UpdateBackground()

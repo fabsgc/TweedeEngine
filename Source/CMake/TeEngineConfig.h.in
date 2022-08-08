@@ -27,6 +27,9 @@ static constexpr const char* CXX_COMPILER_PATH = "@CXX_COMPILER_PATH@";
 /** When compiling Framework, we need to know where is vcvarsall.bat (on Windows) */
 static constexpr const char* MSVC_VCVARS = "@MSVC_VCVARS@";
 
+/** Path to render doc DLL (without extension) */
+static constexpr const char* RENDERDOC_PATH = "C:/Program Files/RenderDoc/renderdoc";
+
 /** Path to the binaries when files haven't been packaged yet (e.g. running from debugger). */
 #if TE_CONFIG == TE_CONFIG_DEBUG
 #   define TE_BINARIES_PATH = "@CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG@"

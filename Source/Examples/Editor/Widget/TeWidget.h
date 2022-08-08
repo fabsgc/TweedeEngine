@@ -22,6 +22,7 @@
 #define MATERIALS_TITLE ICON_FA_PALETTE " Materials"
 #define PROFILER_TITLE ICON_FA_CHART_LINE " Profiler"
 #define SETTINGS_TITLE ICON_FA_COGS " Settings"
+#define SHADERS_TITLE ICON_FA_PAINT_BRUSH " Shaders"
 
 namespace te
 {
@@ -48,6 +49,7 @@ namespace te
             Material,
             Profiler,
             Settings,
+            Shaders,
             None
         };
 

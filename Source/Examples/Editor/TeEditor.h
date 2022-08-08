@@ -36,6 +36,7 @@ namespace te
             Resources,
             Viewport,
             Script,
+            Shaders,
             Materials,
             Properties
         };
@@ -75,6 +76,7 @@ namespace te
             SPtr<Widget> WMaterials = nullptr;
             SPtr<Widget> WProperties = nullptr;
             SPtr<Widget> WMaterial = nullptr;
+            SPtr<Widget> WShaders = nullptr;
 
             const char* EditorName = "Editor";
             bool Show = true;

@@ -512,7 +512,10 @@ namespace te
 
     Vector<String> RCNodeForwardTransparentPass::GetDependencies(const RendererView& view)
     {
-        return { RCNodeSkybox::GetNodeId() };
+        return { 
+            RCNodeGpuInitializationPass::GetNodeId(),
+            RCNodeSkybox::GetNodeId() 
+        };
     }
 
     // ############# SCREEN SPACE
@@ -645,7 +648,11 @@ namespace te
 
     Vector<String> RCNodeResolvedSceneDepth::GetDependencies(const RendererView& view)
     {
-        return { RCNodeSceneColorDownsamples::GetNodeId() };
+        return 
+        {
+            RCNodeGpuInitializationPass::GetNodeId(),
+            RCNodeSceneColorDownsamples::GetNodeId() 
+        };
     }
 
     // ############# POST PROCESS

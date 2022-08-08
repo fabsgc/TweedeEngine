@@ -202,11 +202,13 @@ set (TE_CORE_INC_MANAGER
     "Core/Manager/TeRendererManager.h"
     "Core/Manager/TePluginManager.h"
     "Core/Manager/TeGuiManager.h"
+    "Core/Manager/TeRenderDocManager.h"
 )
 set (TE_CORE_SRC_MANAGER
     "Core/Manager/TeRenderAPIManager.cpp"
     "Core/Manager/TeRendererManager.cpp"
     "Core/Manager/TeGuiManager.cpp"
+    "Core/Manager/TeRenderDocManager.cpp"
 )
 
 set (TE_CORE_INC_IMPORTER

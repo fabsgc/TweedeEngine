@@ -10,6 +10,7 @@
 #include "Manager/TeRenderAPIManager.h"
 #include "Manager/TeRendererManager.h"
 #include "Manager/TeGuiManager.h"
+#include "Manager/TeRenderDocManager.h"
 #include "Resources/TeResourceManager.h"
 #include "RenderAPI/TeRenderStateManager.h"
 #include "RenderAPI/TeGpuProgramManager.h"
@@ -64,6 +65,7 @@ namespace te
         DynLibManager::StartUp();
         CoreObjectManager::StartUp();
         ProfilerGPU::StartUp();
+        RenderDocManager::StartUp();
         RenderAPIManager::StartUp();
         GuiManager::StartUp();
         GpuProgramManager::StartUp();
@@ -138,6 +140,7 @@ namespace te
         AudioManager::ShutDown();
         GuiManager::ShutDown();
         RenderAPIManager::ShutDown();
+        RenderDocManager::ShutDown();
         GpuProgramManager::ShutDown();
         CoreObjectManager::ShutDown();
         Platform::ShutDown();

@@ -149,6 +149,13 @@ namespace te
                         widget->SetVisible(!widget->GetVisible());
                 }
 
+                if (ImGui::MenuItem(ICON_FA_PAINT_BRUSH "  " ICON_FA_GRIP_LINES_VERTICAL "  Shaders"))
+                {
+                    Widget* widget = static_cast<Widget*>(gEditor().GetWidget(WidgetType::Shaders));
+                    if (widget)
+                        widget->SetVisible(!widget->GetVisible());
+                }
+
                 if (ImGui::MenuItem(ICON_FA_SUITCASE "  " ICON_FA_GRIP_LINES_VERTICAL "  Resources"))
                 { 
                     Widget* widget = static_cast<Widget*>(gEditor().GetWidget(WidgetType::Resources));
