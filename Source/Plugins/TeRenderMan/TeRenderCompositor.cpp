@@ -986,9 +986,9 @@ namespace te
         RCNodeSceneTexDownsamples* sceneColorDownSampleNode = static_cast<RCNodeSceneTexDownsamples*>(inputs.InputNodes[1]);
         RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[2]);
 
-        constexpr UINT32 PREFERRED_NUM_DOWNSAMPLE_LEVELS = 3;
+        constexpr UINT32 PREFERRED_NUM_DOWNSAMPLE_LEVELS = 4;
         constexpr UINT32 NUM_STEPS_PER_QUALITY[] = { 1, 1, 2, 3 };
-        constexpr UINT32 OUTPUT_DOWN_SAMPLE_FACTOR_PER_QUALITY[] = { 3, 2, 1, 1 };
+        constexpr UINT32 OUTPUT_DOWN_SAMPLE_FACTOR_PER_QUALITY[] = { 4, 3, 2, 1 };
 
         const UINT32 availableDownsamples = sceneColorDownSampleNode->AvailableDownsamples;
         const UINT32 numDownsamples = Math::Min(availableDownsamples, PREFERRED_NUM_DOWNSAMPLE_LEVELS);
