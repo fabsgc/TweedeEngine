@@ -700,7 +700,7 @@ namespace te
         shaderDesc.QueueType = QueueSortType::FrontToBack;
         shaderDesc.Techniques.push_back(technique);
 
-        _shaderOpaque = Shader::Create("ForwardOpaque", shaderDesc);
+        _shaderOpaque = Shader::Create("Forward Opaque", shaderDesc);
     }
 
     void BuiltinResources::InitShaderTransparent(bool cull)
@@ -736,9 +736,9 @@ namespace te
         shaderDesc.Techniques.push_back(technique);
 
         if(cull)
-            _shaderTransparent = Shader::Create("ForwardTransparent", shaderDesc);
+            _shaderTransparent = Shader::Create("Forward Transparent", shaderDesc);
         else
-            _shaderTransparentCullNone = Shader::Create("ForwardTransparentCullNone", shaderDesc);
+            _shaderTransparentCullNone = Shader::Create("Forward Transparent No Culling", shaderDesc);
     }
 
     void BuiltinResources::InitShaderBlit()
@@ -834,7 +834,7 @@ namespace te
         SHADER_DESC shaderDesc = _toneMappingShaderDesc;
         shaderDesc.Techniques.push_back(technique);
 
-        _shaderToneMapping = Shader::Create("ToneMapping", shaderDesc);
+        _shaderToneMapping = Shader::Create("Tone Mapping", shaderDesc);
     }
 
     void BuiltinResources::InitShaderBloom()
@@ -884,7 +884,7 @@ namespace te
         SHADER_DESC shaderDesc = _motionBlurShaderDesc;
         shaderDesc.Techniques.push_back(technique);
 
-        _shaderMotionBlur = Shader::Create("MotionBlur", shaderDesc);
+        _shaderMotionBlur = Shader::Create("Motion Blur", shaderDesc);
     }
 
     void BuiltinResources::InitShaderGaussianBlur()
@@ -909,7 +909,7 @@ namespace te
         SHADER_DESC shaderDesc = _motionBlurShaderDesc;
         shaderDesc.Techniques.push_back(technique);
 
-        _shaderGaussianBlur = Shader::Create("GaussianBlur", shaderDesc);
+        _shaderGaussianBlur = Shader::Create("Gaussian Blur", shaderDesc);
     }
 
     void BuiltinResources::InitShaderPicking()
@@ -955,7 +955,7 @@ namespace te
         shaderDesc.QueueType = QueueSortType::BackToFront;
         shaderDesc.Techniques.push_back(technique);
 
-        _shaderSelection = Shader::Create("Picking", shaderDesc);
+        _shaderSelection = Shader::Create("Selection", shaderDesc);
     }
 
     void BuiltinResources::InitShaderHudPicking()
@@ -978,7 +978,7 @@ namespace te
         shaderDesc.QueueType = QueueSortType::BackToFront;
         shaderDesc.Techniques.push_back(technique);
 
-        _shaderHudPicking = Shader::Create("HudPicking", shaderDesc);
+        _shaderHudPicking = Shader::Create("Hud Picking", shaderDesc);
     }
 
     void BuiltinResources::InitShaderHudSelection()
@@ -1002,7 +1002,7 @@ namespace te
         shaderDesc.QueueType = QueueSortType::BackToFront;
         shaderDesc.Techniques.push_back(technique);
 
-        _shaderHudSelection = Shader::Create("HudSelection", shaderDesc);
+        _shaderHudSelection = Shader::Create("Hud Selection", shaderDesc);
     }
 
     void BuiltinResources::InitShaderBulletDebug()
@@ -1025,7 +1025,7 @@ namespace te
         shaderDesc.QueueType = QueueSortType::BackToFront;
         shaderDesc.Techniques.push_back(technique);
 
-        _shaderBulletDebug = Shader::Create("BulletDebug", shaderDesc);
+        _shaderBulletDebug = Shader::Create("Bullet Debug", shaderDesc);
     }
 
     void BuiltinResources::InitShaderSSAO()
@@ -1069,7 +1069,7 @@ namespace te
         shaderDesc.QueueType = QueueSortType::BackToFront;
         shaderDesc.Techniques.push_back(technique);
 
-        _shaderSSAO = Shader::Create("SSAO Blur", shaderDesc);
+        _shaderSSAOBlur = Shader::Create("SSAO Blur", shaderDesc);
     }
 
     void BuiltinResources::InitShaderSSAODownSample()
@@ -1091,7 +1091,7 @@ namespace te
         shaderDesc.QueueType = QueueSortType::BackToFront;
         shaderDesc.Techniques.push_back(technique);
 
-        _shaderSSAO = Shader::Create("SSAO Down Sample", shaderDesc);
+        _shaderSSAODownSample = Shader::Create("SSAO Down Sample", shaderDesc);
     }
 
     void BuiltinResources::InitShaderTextureDownsample()

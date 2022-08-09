@@ -21,7 +21,11 @@ namespace te
     { }
 
     void WidgetShaders::Initialize()
-    { }
+    { 
+        HShader shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque);
+        if (shader.IsLoaded())
+            _currentShader = shader.GetInternalPtr();
+    }
 
     void WidgetShaders::Update()
     {
@@ -94,6 +98,33 @@ namespace te
                     }
                 }
 
+                // Techniques
+                {
+                    UINT32 i = 1, j = 1;
+
+                    auto techniques =_currentShader->GetTechniques();
+                    for (auto& technique : techniques)
+                    {
+                        String id = "Technique " + ToString(i);
+                        if (ImGui::CollapsingHeader(id.c_str()))
+                        {
+                            auto passes = technique->GetPasses();
+                            for (auto& pass : passes)
+                            {
+                                id = "Pass " + ToString(i);
+                                if (ImGui::CollapsingHeader(id.c_str()))
+                                {
+
+                                }
+
+                                j++;
+                            }
+                        }
+
+                        i++;
+                    }
+                }
+
                 if (hasChanged)
                 {
                     gEditor().NeedsRedraw();
@@ -104,7 +135,7 @@ namespace te
                         auto material = static_resource_cast<Material>(resource.second);
                         if (material.IsLoaded() && material->GetShader() == _currentShader)
                         {
-                            gEditor().GetMaterialsPreview()->MarkDirty(material.GetInternalPtr());
+                            gEditor().GetMaterialsPreview().MarkDirty(material.GetInternalPtr());
                         }
                     }
                 }

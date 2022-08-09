@@ -17,8 +17,6 @@
 #include "Widget/TeWidgetMaterials.h"
 #include "Widget/TeWidgetShaders.h"
 
-#include "MaterialsPreview/TeMaterialsPreview.h"
-
 #include "Gui/TeGuiAPI.h"
 #include "TeCoreApplication.h"
 #include "Renderer/TeCamera.h"
@@ -159,7 +157,6 @@ namespace te
         _picking = te_unique_ptr_new<EditorPicking>();
         _selection = te_unique_ptr_new<Selection>();
         _hud = te_unique_ptr_new<Hud>();
-        _materialsPreview = te_unique_ptr_new<MaterialsPreview>();
 
         _picking->Initialize();
         _selection->Initialize();
@@ -394,7 +391,7 @@ namespace te
         _viewportCameraSO = SceneObject::Create("UIViewportCamera");
         _viewportCameraSO->SetParent(_viewportSO);
 
-        _viewportCameraSO->SetPosition(Vector3(3.5f, 2.5f, 4.0f));
+        _viewportCameraSO->SetPosition(Vector3(3.5f, 1.5f, 1.5f));
         _viewportCameraSO->LookAt(Vector3(0.0f, 0.0f, 0.0f));
 
         _viewportCamera = _viewportCameraSO->AddComponent<CCamera>();
@@ -405,7 +402,7 @@ namespace te
         _viewportCamera->SetName("Viewport camera");
 
         _viewportCameraUI = _viewportCameraSO->AddComponent<CCameraUI>();
-        _viewportCameraUI->SetTarget(Vector3(0.0f, 0.75f, 0.0f));
+        _viewportCameraUI->SetTarget(Vector3(0.0f, 0.0f, 0.0f));
         _viewportCameraUI->SetName("Viewport camera UI");
 
         auto settings = _viewportCamera->GetRenderSettings();
@@ -1278,24 +1275,24 @@ namespace te
 
         // LOAD MESH AND TEXTURES RESOURCES
         // ######################################################
-        _loadedMeshMonkey = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Primitives/sphere-hd.obj", meshImportOptions)->Entries[0].Res);
+        _sphereMesh = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Primitives/sphere-hd.obj", meshImportOptions)->Entries[0].Res);
         //_loadedMeshMonkey = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Monkey/monkey-hd.obj", meshImportOptions)->Entries[0].Res);
         //_loadedMeshMonkey = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Primitives/plane.obj", meshImportOptions)->Entries[0].Res);
 
         textureCubeMapImportOptions->Format = PixelUtil::BestFormatFromFile("Data/Textures/Skybox/skybox_night_512.png");
-        _loadedSkyboxTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_night_512.png", textureCubeMapImportOptions);
+        _skyboxTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_night_512.png", textureCubeMapImportOptions);
 
-        textureImportOptions->Format = PixelUtil::BestFormatFromFile("Data/Textures/Cobble/diffuse1.jpg");
-        HTexture cobbleBaseColor = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/diffuse1.jpg", textureImportOptions);
+        //textureImportOptions->Format = PixelUtil::BestFormatFromFile("Data/Textures/Cobble/diffuse1.jpg");
+        //HTexture cobbleBaseColor = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/diffuse1.jpg", textureImportOptions);
 
         //textureImportOptions->SRGB = false;
         //HTexture cobbleNormal = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/normal1.jpg", textureImportOptions);
         //HTexture cobbleParallax = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/parallax1.jpg", textureImportOptions);
 
-        if (_loadedMeshMonkey.IsLoaded())
-            _loadedMeshMonkey->SetName("Monkey Mesh");
-        if (_loadedSkyboxTexture.IsLoaded())
-            _loadedSkyboxTexture->SetName("Skybox Texture");
+        if (_sphereMesh.IsLoaded())
+            _sphereMesh->SetName("Sphere Mesh");
+        if (_sphereMesh.IsLoaded())
+            _skyboxTexture->SetName("Skybox Texture");
         // ###################################################### 
 
         // GET BUILTIN OPAQUE SHADER
@@ -1307,15 +1304,17 @@ namespace te
         // ######################################################
         {
             MaterialProperties monkeyMatprop;
-            monkeyMatprop.BaseColor = Color(0.9f, 0.9f, 0.9f, 1.0f);
+            monkeyMatprop.BaseColor = Color(1.0f, 0.54f, 0.05f, 1.0f);
+            monkeyMatprop.Metallic = 1.0f;
+            monkeyMatprop.Roughness = 0.1f;
             //monkeyMatprop.UseBaseColorMap = true;
             //monkeyMatprop.UseNormalMap = true;
             //monkeyMatprop.UseParallaxMap = true;
             //monkeyMatprop.ParallaxScale = 0.05f;
 
-            _monkeyMaterial = Material::Create(_shader);
-            _monkeyMaterial->SetName("Monkey Material");
-            _monkeyMaterial->SetProperties(monkeyMatprop);
+            _sphereMaterial = Material::Create(_shader);
+            _sphereMaterial->SetName("Sphere Material");
+            _sphereMaterial->SetProperties(monkeyMatprop);
             //_monkeyMaterial->SetTexture("BaseColorMap", cobbleBaseColor);
             //_monkeyMaterial->SetTexture("NormalMap", cobbleNormal);
             //_monkeyMaterial->SetTexture("ParallaxMap", cobbleParallax);
@@ -1324,12 +1323,12 @@ namespace te
 
         // FILL SCENE WITH SKYBOX
         // ######################################################
-        if (_loadedSkyboxTexture.IsLoaded())
+        if (_skyboxTexture.IsLoaded())
         {
             _sceneSkyboxSO = SceneObject::Create("Skybox");
             _sceneSkyboxSO->SetParent(_sceneSO);
             _skybox = _sceneSkyboxSO->AddComponent<CSkybox>();
-            _skybox->SetTexture(_loadedSkyboxTexture);
+            _skybox->SetTexture(_skyboxTexture);
             _skybox->Initialize();
         }
         // ######################################################
@@ -1346,26 +1345,69 @@ namespace te
 
         // FILL SCENE WITH MESHES
         // ######################################################
-        if (_loadedMeshMonkey.IsLoaded() && _monkeyMaterial.IsLoaded())
+        if (_sphereMesh.IsLoaded() && _sphereMaterial.IsLoaded())
         {
-            _sceneRenderableMonkeySO = SceneObject::Create("Monkey");
-            _sceneRenderableMonkeySO->SetParent(_sceneSO);
-            _renderableMonkey = _sceneRenderableMonkeySO->AddComponent<CRenderable>();
-            _renderableMonkey->SetMesh(_loadedMeshMonkey);
-            _renderableMonkey->SetMaterial(_monkeyMaterial);
-            _renderableMonkey->SetName("Monkey Renderable");
-            _renderableMonkey->Initialize();
+            _sceneRenderableSO = SceneObject::Create("Sphere");
+            _sceneRenderableSO->SetParent(_sceneSO);
+            _renderable = _sceneRenderableSO->AddComponent<CRenderable>();
+            _renderable->SetMesh(_sphereMesh);
+            _renderable->SetMaterial(_sphereMaterial);
+            _renderable->SetName("Renderable");
+            _renderable->Initialize();
         }
 
-        HShader opaqueShader = gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque);
-        HShader transparentShader = gBuiltinResources().GetBuiltinShader(BuiltinShader::Transparent);
-        HShader transparentShaderCullNone = gBuiltinResources().GetBuiltinShader(BuiltinShader::TransparentCullNone);
+        EditorResManager::Instance().Add<Material>(_sphereMaterial);
 
-        EditorResManager::Instance().Add<Material>(_monkeyMaterial);
-
-        EditorResManager::Instance().Add<Shader>(opaqueShader);
-        EditorResManager::Instance().Add<Shader>(transparentShader);
-        EditorResManager::Instance().Add<Shader>(transparentShaderCullNone);
+        HShader shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque);
+        EditorResManager::Instance().Add<Shader>(shader);
+        shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::Transparent);
+        EditorResManager::Instance().Add<Shader>(shader);
+        shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::TransparentCullNone);
+        EditorResManager::Instance().Add<Shader>(shader);
+        shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::Blit);
+        EditorResManager::Instance().Add<Shader>(shader);
+        shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::Skybox);
+        EditorResManager::Instance().Add<Shader>(shader);
+        shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::FXAA);
+        EditorResManager::Instance().Add<Shader>(shader);
+        shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::ToneMapping);
+        EditorResManager::Instance().Add<Shader>(shader);
+        shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::Bloom);
+        EditorResManager::Instance().Add<Shader>(shader);
+        shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::MotionBlur);
+        EditorResManager::Instance().Add<Shader>(shader);
+        shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::GaussianBlur);
+        EditorResManager::Instance().Add<Shader>(shader);
+        shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::Picking);
+        EditorResManager::Instance().Add<Shader>(shader);
+        shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::HudPicking);
+        EditorResManager::Instance().Add<Shader>(shader);
+        shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::Selection);
+        EditorResManager::Instance().Add<Shader>(shader);
+        shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::HudSelection);
+        EditorResManager::Instance().Add<Shader>(shader);
+        shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::BulletDebug);
+        EditorResManager::Instance().Add<Shader>(shader);
+        shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::SSAO);
+        EditorResManager::Instance().Add<Shader>(shader);
+        shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::SSAOBlur);
+        EditorResManager::Instance().Add<Shader>(shader);
+        shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::SSAODownSample);
+        EditorResManager::Instance().Add<Shader>(shader);
+        shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::Decal);
+        EditorResManager::Instance().Add<Shader>(shader);
+        shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::TextureDownsample);
+        EditorResManager::Instance().Add<Shader>(shader);
+        shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::TextureCubeDownsample);
+        EditorResManager::Instance().Add<Shader>(shader);
+        shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::ReflectionCubeImportanceSample);
+        EditorResManager::Instance().Add<Shader>(shader);
+        shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::IrradianceComputeSH);
+        EditorResManager::Instance().Add<Shader>(shader);
+        shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::IrradianceReduceSH);
+        EditorResManager::Instance().Add<Shader>(shader);
+        shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::IrradianceProjectSH);
+        EditorResManager::Instance().Add<Shader>(shader);
 #endif
     }
 

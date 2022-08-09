@@ -520,17 +520,17 @@ namespace te
 
     // ############# SCREEN SPACE
 
-    void RCNodeHalfSceneColor::Render(const RenderCompositorNodeInputs& inputs)
+    void RCNodeHalfSceneTex::Render(const RenderCompositorNodeInputs& inputs)
     {
-        inputs.CurrRenderAPI.PushMarker("[DRAW] Half Scene Color", Color(0.74f, 0.21f, 0.32f));
+        inputs.CurrRenderAPI.PushMarker("[DRAW] Half Scene Tex", Color(0.74f, 0.21f, 0.32f));
 
         RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
 
-        SPtr<Texture> input = gpuInitializationPassNode->EmissiveTex->Tex;
+        SPtr<Texture> input = gpuInitializationPassNode->SceneTex->Tex;
         TextureDownsampleMat* downsampleMat = TextureDownsampleMat::Get();
         const TextureProperties& rtProps = input->GetProperties();
 
-        Output = gGpuResourcePool().Get(
+        SceneTex = gGpuResourcePool().Get(
             POOLED_RENDER_TEXTURE_DESC::Create2D(
                 rtProps.GetFormat(), 
                 rtProps.GetWidth() / 2, 
@@ -538,18 +538,28 @@ namespace te
                 TU_RENDERTARGET)
         );
 
-        downsampleMat->Execute(input, 0, Output->RenderTex);
+        EmissiveTex = gGpuResourcePool().Get(
+            POOLED_RENDER_TEXTURE_DESC::Create2D(
+                rtProps.GetFormat(),
+                rtProps.GetWidth() / 2,
+                rtProps.GetHeight() / 2,
+                TU_RENDERTARGET)
+        );
+
+        downsampleMat->Execute(gpuInitializationPassNode->SceneTex->Tex, 0, SceneTex->RenderTex);
+        downsampleMat->Execute(gpuInitializationPassNode->EmissiveTex->Tex, 0, EmissiveTex->RenderTex);
 
         inputs.CurrRenderAPI.SetRenderTarget(nullptr);
         inputs.CurrRenderAPI.PopMarker();
     }
 
-    void RCNodeHalfSceneColor::Clear()
+    void RCNodeHalfSceneTex::Clear()
     {
-        Output = nullptr;
+        SceneTex = nullptr;
+        EmissiveTex = nullptr;
     }
 
-    Vector<String> RCNodeHalfSceneColor::GetDependencies(const RendererView& view)
+    Vector<String> RCNodeHalfSceneTex::GetDependencies(const RendererView& view)
     {
         return { 
             RCNodeGpuInitializationPass::GetNodeId(),
@@ -557,59 +567,65 @@ namespace te
         };
     }
 
-    constexpr UINT32 RCNodeSceneColorDownsamples::MAX_NUM_DOWNSAMPLES;
+    constexpr UINT32 RCNodeSceneTexDownsamples::MAX_NUM_DOWNSAMPLES;
 
-    void RCNodeSceneColorDownsamples::Render(const RenderCompositorNodeInputs& inputs)
+    void RCNodeSceneTexDownsamples::Render(const RenderCompositorNodeInputs& inputs)
     {
-        inputs.CurrRenderAPI.PushMarker("[DRAW] Scene Scene Down Samples", Color(0.44f, 0.71f, 0.52f));
+        inputs.CurrRenderAPI.PushMarker("[DRAW] Scene Tex Down Samples", Color(0.44f, 0.71f, 0.52f));
 
-        GpuResourcePool& resPool = gGpuResourcePool();
-        RCNodeHalfSceneColor* halfSceneColorNode = static_cast<RCNodeHalfSceneColor*>(inputs.InputNodes[2]);
-        const TextureProperties& halfSceneProps = halfSceneColorNode->Output->Tex->GetProperties();
-
-        const UINT32 totalDownsampleLevels = PixelUtil::GetMaxMipmaps(
-            halfSceneProps.GetWidth(),
-            halfSceneProps.GetHeight(),
-            1) + 1;
-
-        AvailableDownsamples = Math::Min(MAX_NUM_DOWNSAMPLES, totalDownsampleLevels);
-
+        auto DownSample = [this](
+            SPtr<PooledRenderTexture> renderTex,
+            SPtr<PooledRenderTexture>* output)
         {
-            Outputs[0] = halfSceneColorNode->Output;
+            const TextureProperties& props = renderTex->Tex->GetProperties();
+            const UINT32 totalDownsampleLevels = PixelUtil::GetMaxMipmaps(
+                props.GetWidth(),
+                props.GetHeight(),
+                1) + 1;
+
+            AvailableDownsamples = Math::Min(MAX_NUM_DOWNSAMPLES, totalDownsampleLevels);
+            output[0] = renderTex;
 
             TextureDownsampleMat* downsampleMat = TextureDownsampleMat::Get();
             for (UINT32 i = 1; i < AvailableDownsamples; i++)
             {
-                const TextureProperties& rtProps = Outputs[i - 1]->Tex->GetProperties();
+                const TextureProperties& rtProps = output[i - 1]->Tex->GetProperties();
 
-                Outputs[i] = resPool.Get(
+                output[i] = gGpuResourcePool().Get(
                     POOLED_RENDER_TEXTURE_DESC::Create2D(
                         rtProps.GetFormat(),
                         rtProps.GetWidth() / 2,
-                        rtProps.GetHeight() / 2, 
+                        rtProps.GetHeight() / 2,
                         TU_RENDERTARGET
                     )
                 );
 
-                downsampleMat->Execute(Outputs[i - 1]->Tex, 0, Outputs[i]->RenderTex);
+                downsampleMat->Execute(output[i - 1]->Tex, 0, output[i]->RenderTex);
             }
-        }
+        };
+
+        RCNodeHalfSceneTex* halfSceneTexNode = static_cast<RCNodeHalfSceneTex*>(inputs.InputNodes[2]);
+        DownSample(halfSceneTexNode->SceneTex, &SceneTex[0]);
+        DownSample(halfSceneTexNode->EmissiveTex, &EmissiveTex[0]);
 
         inputs.CurrRenderAPI.PopMarker();
     }
 
-    void RCNodeSceneColorDownsamples::Clear()
+    void RCNodeSceneTexDownsamples::Clear()
     { 
         for (UINT32 i = 0; i < MAX_NUM_DOWNSAMPLES; i++)
-            Outputs[i] = nullptr;
+        {
+            SceneTex[i] = nullptr;
+            EmissiveTex[i] = nullptr;
+        }
     }
 
-    Vector<String> RCNodeSceneColorDownsamples::GetDependencies(const RendererView& view)
+    Vector<String> RCNodeSceneTexDownsamples::GetDependencies(const RendererView& view)
     {
         return {
             RCNodeGpuInitializationPass::GetNodeId(),
             RCNodePostProcess::GetNodeId(),
-            RCNodeHalfSceneColor::GetNodeId()
+            RCNodeHalfSceneTex::GetNodeId()
         };
     }
 
@@ -651,7 +667,7 @@ namespace te
         return 
         {
             RCNodeGpuInitializationPass::GetNodeId(),
-            RCNodeSceneColorDownsamples::GetNodeId() 
+            RCNodeSceneTexDownsamples::GetNodeId() 
         };
     }
 
@@ -967,7 +983,7 @@ namespace te
         inputs.CurrRenderAPI.PushMarker("[DRAW] Bloom", Color(0.85f, 0.55f, 0.15f));
 
         RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
-        RCNodeSceneColorDownsamples* sceneColorDownSampleNode = static_cast<RCNodeSceneColorDownsamples*>(inputs.InputNodes[1]);
+        RCNodeSceneTexDownsamples* sceneColorDownSampleNode = static_cast<RCNodeSceneTexDownsamples*>(inputs.InputNodes[1]);
         RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[2]);
 
         constexpr UINT32 PREFERRED_NUM_DOWNSAMPLE_LEVELS = 3;
@@ -1063,7 +1079,7 @@ namespace te
         return
         {
             RCNodeGpuInitializationPass::GetNodeId(),
-            RCNodeSceneColorDownsamples::GetNodeId(),
+            RCNodeSceneTexDownsamples::GetNodeId(),
             RCNodePostProcess::GetNodeId()
         };
     }

@@ -55,6 +55,11 @@ namespace te
         return _passes[idx];
     }
 
+    const Vector<SPtr<Pass>>& Technique::GetPasses() const
+    {
+        return _passes;
+    }
+
     SPtr<Technique> Technique::Create(const String& language, const Vector<SPtr<Pass>>& passes)
     {
         Technique* technique = new (te_allocate<Technique>()) Technique(language, {}, ShaderVariation(), passes);

@@ -6,6 +6,7 @@
 #include "ImGuizmo/ImGuizmo.h"
 #include "Components/TeCCamera.h"
 #include "ImGuiExt/TeImGuiFileBrowser.h"
+#include "MaterialsPreview/TeMaterialsPreview.h"
 
 namespace te
 {
@@ -152,6 +153,9 @@ namespace te
         /** Retrieves the current viewport camera. Can be the one created at editor initilization or one created by user in his scene */
         HCamera& GetPreviewViewportCamera() { return _previewViewportCamera; }
 
+        /** Get raw pointer to MaterialsPreview instance */
+        MaterialsPreview& GetMaterialsPreview() { return _materialsPreview; }
+
         /** Set the current preview viewport camera */
         void SetPreviewViewportCamera(HCamera& camera) { _previewViewportCamera = camera.GetNewHandleFromExisting(); }
 
@@ -205,9 +209,6 @@ namespace te
 
         /** Check is editor is in play mode or not */
         bool IsEditorRunning() const { return gCoreApplication().GetState().IsFlagSet(ApplicationState::Mode::Game); }
-
-        /** Get raw pointer to MaterialsPreview instance */
-        MaterialsPreview* GetMaterialsPreview() { return _materialsPreview.get(); }
 
     protected:
         void InitializeInput();
@@ -274,7 +275,7 @@ namespace te
         bool _hudDirty;
 
         // Using to store preview of all materials currently used
-        UPtr<MaterialsPreview> _materialsPreview;
+        MaterialsPreview _materialsPreview;
 
         // If something has changed, we need to redraw physics debug
         bool _physicsDirty;
@@ -289,19 +290,17 @@ namespace te
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         // TODO Temp for debug purpose
-        HMesh _loadedMeshMonkey;
+        HMesh _sphereMesh;
+        HTexture _skyboxTexture;
+        HMaterial _sphereMaterial;
 
-        HTexture _loadedSkyboxTexture;
-
-        HMaterial _monkeyMaterial;
-
-        HSceneObject _sceneRenderableMonkeySO;
+        HSceneObject _sceneRenderableSO;
         HSceneObject _sceneLightSO;
         HSceneObject _sceneSkyboxSO;
 
         HLight _light;
         HSkybox _skybox;
-        HRenderable _renderableMonkey;
+        HRenderable _renderable;
 #endif
     };
 

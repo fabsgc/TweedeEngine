@@ -37,6 +37,9 @@ namespace te
         /**	Returns a pass with the specified index. */
         SPtr<Pass> GetPass(UINT32 idx) const;
 
+        /**	Returns all passes */
+        const Vector<SPtr<Pass>>& GetPasses() const;
+
         /**	Returns total number of passes. */
         UINT32 GetNumPasses() const { return (UINT32)_passes.size(); }
 

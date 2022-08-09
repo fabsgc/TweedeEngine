@@ -257,13 +257,14 @@ namespace te
     /* 							SCREEN SPACE								*/
     /************************************************************************/
 
-    /** Generates a 1/2 size of the scene color texture. If MSAA only the first sample is used. */
-    class RCNodeHalfSceneColor : public RenderCompositorNode
+    /** Generates a 1/2 size of the scene color and emissive texture. If MSAA only the first sample is used. */
+    class RCNodeHalfSceneTex : public RenderCompositorNode
     {
     public:
-        SPtr<PooledRenderTexture> Output;
+        SPtr<PooledRenderTexture> SceneTex;
+        SPtr<PooledRenderTexture> EmissiveTex;
 
-        static String GetNodeId() { return "HalfSceneColor"; }
+        static String GetNodeId() { return "HalfSceneTex"; }
         static Vector<String> GetDependencies(const RendererView& view);
     protected:
         /** @copydoc RenderCompositorNode::Render */
@@ -276,15 +277,16 @@ namespace te
     /**
      * Generates a number of downsamples of the scene color texture.
      */
-    class RCNodeSceneColorDownsamples : public RenderCompositorNode
+    class RCNodeSceneTexDownsamples : public RenderCompositorNode
     {
     public:
         static constexpr UINT32 MAX_NUM_DOWNSAMPLES = 3;
 
-        SPtr<PooledRenderTexture> Outputs[MAX_NUM_DOWNSAMPLES];
+        SPtr<PooledRenderTexture> SceneTex[MAX_NUM_DOWNSAMPLES];
+        SPtr<PooledRenderTexture> EmissiveTex[MAX_NUM_DOWNSAMPLES];
         UINT32 AvailableDownsamples = 0;
 
-        static String GetNodeId() { return "SceneColorDownsamples"; }
+        static String GetNodeId() { return "SceneTexDownsamples"; }
         static Vector<String> GetDependencies(const RendererView& view);
     protected:
         /** @copydoc RenderCompositorNode::Render */

@@ -6,6 +6,7 @@
 namespace te
 {
     class ImGuiFileBrowser;
+    class MaterialsPreview;
 
     class WidgetMaterials : public Widget
     {
@@ -31,5 +32,6 @@ namespace te
         bool* _loadTextureUsed;
 
         ImGuiFileBrowser& _fileBrowser;
+        MaterialsPreview& _materialsPreview;
     };
 }
