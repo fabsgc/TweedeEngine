@@ -389,9 +389,9 @@ namespace te
                 ImGui::Separator();
 
                 {
-                    if (ImGuiExt::RenderOptionFloat(properties.Thickness, "##material_prop_thickness_option", "Thickness", 0.0f, 32.0f, width))
+                    if (ImGuiExt::RenderOptionFloat(properties.Thickness, "##material_prop_thickness_option", "Thickness", 0.0f, 2.0f, width))
                         hasChanged = true;
-                    if (ImGuiExt::RenderOptionFloat(properties.MicroThickness, "##material_prop_micto_thickness_option", "Micro Thickness", 0.0f, 32.0f, width))
+                    if (ImGuiExt::RenderOptionFloat(properties.MicroThickness, "##material_prop_micto_thickness_option", "Micro Thickness", 0.0f, 2.0f, width))
                         hasChanged = true;
                 }
                 ImGui::Separator();

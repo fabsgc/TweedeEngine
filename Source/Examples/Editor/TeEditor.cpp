@@ -391,7 +391,7 @@ namespace te
         _viewportCameraSO = SceneObject::Create("UIViewportCamera");
         _viewportCameraSO->SetParent(_viewportSO);
 
-        _viewportCameraSO->SetPosition(Vector3(3.5f, 1.5f, 1.5f));
+        _viewportCameraSO->SetPosition(Vector3(3.0f, 1.25f, 0.0f));
         _viewportCameraSO->LookAt(Vector3(0.0f, 0.0f, 0.0f));
 
         _viewportCamera = _viewportCameraSO->AddComponent<CCamera>();
