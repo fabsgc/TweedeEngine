@@ -16,11 +16,9 @@ The Tweede Engine Framework is my third attempt to develop a cross-platform full
 
 ## Previews
 
+![Editor](Documentation/sample-pbr.png)
 ![Editor](Documentation/sample-editor-inn.png)
 ![Editor](Documentation/sample-script-editor.png)
 ![Editor](Documentation/sample-animation.png)
 ![Editor](Documentation/sample-parallax-occlusion-mapping.png)
-![Editor](Documentation/sample-editor.png)
 ![Monkeys](Documentation/sample-sponza-night.png)
-![Monkeys](Documentation/sample-monkeys.png)
-![Sponza](Documentation/sample-sponza.png)
