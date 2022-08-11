@@ -232,7 +232,7 @@ PS_OUTPUT main( VS_OUTPUT IN )
         // ###################### DO LIGHTING
         lit = DoLighting(V, P, N, pixel, uv0, castLight, occlusion);
 
-        lit.Diffuse *= sceneLightColor + emissive; // TODO PBR
+        lit.Diffuse *= sceneLightColor + emissive;
         lit.Specular = lit.Specular;
 
         OUT.Scene.rgb = lit.Diffuse + lit.Specular;

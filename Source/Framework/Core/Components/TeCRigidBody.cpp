@@ -232,13 +232,13 @@ namespace te
             (UINT32)TID_CConeCollider
         };
 
-        Stack<HSceneObject> todo;
-        todo.push(SO());
+        Stack<HSceneObject> soToUpdate;
+        soToUpdate.push(SO());
 
-        while (!todo.empty())
+        while (!soToUpdate.empty())
         {
-            HSceneObject currentSO = todo.top();
-            todo.pop();
+            HSceneObject currentSO = soToUpdate.top();
+            soToUpdate.pop();
 
             if (currentSO->HasComponent(colliderTypes))
             {
@@ -259,7 +259,7 @@ namespace te
                 if (child->HasComponent(TID_CRigidBody) || child->HasComponent(TID_CSoftBody))
                     continue;
 
-                todo.push(child);
+                soToUpdate.push(child);
             }
         }
     }

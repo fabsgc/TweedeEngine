@@ -10,5 +10,3 @@ VS_OUTPUT main( VS_INPUT IN )
 
     return OUT;
 }
-
-// TODO
