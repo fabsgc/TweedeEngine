@@ -41,11 +41,6 @@ float4 ComputeMotionBlur(float4 input, float2 currentUV, float2 blurDir)
         float2 offset = blurDir * (i / (float)gHalfNumSamples);
         float2 uv = currentUV + offset;
 
-        if(uv.x > 1.0) uv.x = 0.991;
-        if(uv.x < 0.0) uv.x = 0.001;
-        if(uv.y > 1.0) uv.y = 0.991;
-        if(uv.y < 0.0) uv.y = 0.001;
-
         output += TextureLevelSampling(BilinearSampler, SourceMap, SourceMapMS, uv, gMSAACount, 0);
     }
 
@@ -53,11 +48,6 @@ float4 ComputeMotionBlur(float4 input, float2 currentUV, float2 blurDir)
     {
         float2 offset = blurDir * (i / (float)gHalfNumSamples);
         float2 uv = currentUV + offset;
-
-        if(uv.x > 1.0) uv.x = 0.991;
-        if(uv.x < 0.0) uv.x = 0.001;
-        if(uv.y > 1.0) uv.y = 0.991;
-        if(uv.y < 0.0) uv.y = 0.001;
 
         output += TextureLevelSampling(BilinearSampler, SourceMap, SourceMapMS, uv, gMSAACount, 0);
     }
@@ -74,11 +64,6 @@ float4 ComputeObjectMotionBlur(float4 input, float2 currentUV, float2 blurDir)
     {
         float2 offset = blurDir * (i / (float)gHalfNumSamples);
         float2 uv = currentUV + offset;
-
-        if(uv.x > 1.0) uv.x = 0.991;
-        if(uv.x < 0.0) uv.x = 0.001;
-        if(uv.y > 1.0) uv.y = 0.991;
-        if(uv.y < 0.0) uv.y = 0.001;
 
         output += TextureLevelSampling(BilinearSampler, SourceMap, SourceMapMS, uv, gMSAACount, 0);
     }

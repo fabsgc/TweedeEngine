@@ -18,18 +18,6 @@ SamplerState BilinearSampler : register(s0);
 Texture2D SourceMap : register(t0);
 Texture2DMS<float4> SourceMapMS : register(t1);
 
-float2 ClampUv(float2 uv, float2 textureOffset)
-{
-    float2 clampedUv = uv;
-
-    if(uv.x > 1.0) clampedUv.x = 1.0 - textureOffset.x;
-    if(uv.x < 0.0) clampedUv.x = textureOffset.x;
-    if(uv.y > 1.0 - textureOffset.y * 2) clampedUv.y = 1.0 - textureOffset.y * 2;
-    if(uv.y < textureOffset.y * 2) clampedUv.y = textureOffset.y * 2;
-
-    return clampedUv;
-}
-
 float4 GaussianBlur(Texture2D source, Texture2DMS<float4> sourceMS, 
     SamplerState samplerState, float2 uv)
 {
@@ -39,21 +27,17 @@ float4 GaussianBlur(Texture2D source, Texture2DMS<float4> sourceMS,
     for(uint i = 0; i < gNumSamples / 2; i++)
     {
         float3 color = (float3)0;
-        float2 clampedUv = (float2)0;
+        float2 offsettedUv = (float2)0;
 
         {
-            if(gHorizontal == 1) clampedUv = ClampUv(uv + gSampleOffsets[i].xy, textureOffset);
-            else clampedUv = ClampUv(uv + gSampleOffsets[i].xy, textureOffset);
-
-            color += TextureSampling(BilinearSampler, source, sourceMS, clampedUv, gMSAACount).rgb * gSampleWeights[i * 2].rgb;
+            offsettedUv = uv + gSampleOffsets[i].xy;
+            color += TextureSampling(BilinearSampler, source, sourceMS, offsettedUv, gMSAACount).rgb * gSampleWeights[i * 2].rgb;
             result += color;
         }
 
         {
-            if(gHorizontal == 1) clampedUv = ClampUv(uv + gSampleOffsets[i + 1].zw, textureOffset);
-            else clampedUv = ClampUv(uv + gSampleOffsets[i + 1].zw, textureOffset);
-
-            color += TextureSampling(BilinearSampler, source, sourceMS, clampedUv, gMSAACount).rgb * gSampleWeights[i * 2 + 1].rgb;
+            offsettedUv = uv + gSampleOffsets[i + 1].zw;
+            color += TextureSampling(BilinearSampler, source, sourceMS, offsettedUv, gMSAACount).rgb * gSampleWeights[i * 2 + 1].rgb;
             result += color;
         }
     }
