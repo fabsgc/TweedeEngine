@@ -14,6 +14,9 @@ namespace te
     public:
         PickingMat();
 
+        /** @copydoc RendererMaterialBase::Initialize */
+        void Initialize() override;
+
         /** Set gpu params for camera */
         void BindCamera(const HCamera& camera);
 

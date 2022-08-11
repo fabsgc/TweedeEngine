@@ -9,6 +9,10 @@ namespace te
     FXAAMat::FXAAMat()
     {
         _paramBuffer = gFXAAParamDef.CreateBuffer();
+    }
+
+    void FXAAMat::Initialize()
+    {
         _params->SetParamBlockBuffer(GPT_PIXEL_PROGRAM, "PerFrameBuffer", _paramBuffer);
         _params->SetSamplerState(GPT_PIXEL_PROGRAM, "BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
     }

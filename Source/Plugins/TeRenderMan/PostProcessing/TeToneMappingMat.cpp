@@ -8,6 +8,10 @@ namespace te
     ToneMappingMat::ToneMappingMat()
     {
         _paramBuffer = gToneMappingParamDef.CreateBuffer();
+    }
+
+    void ToneMappingMat::Initialize()
+    {
         _params->SetParamBlockBuffer(GPT_PIXEL_PROGRAM, "PerFrameBuffer", _paramBuffer);
         _params->SetSamplerState(GPT_PIXEL_PROGRAM, "BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
     }

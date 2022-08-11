@@ -286,7 +286,7 @@ namespace te
         bool Enabled = true;
 
         /** Determines the intensity of the bloom effect. Ideally should be in [0, 4] range but higher values are allowed.*/
-        float Intensity = 0.5f;
+        float Intensity = 0.35f;
 
         /**
          * Determines the number of samples to take during bloom. Increasing this value will
@@ -301,7 +301,7 @@ namespace te
          * Determines the percent of the texture to account for when filtering for bloom. Larger values will include
          * farther away pixels.
          */
-        float FilterSize = 0.3f;
+        float FilterSize = 0.25f;
     };
 
     /** Various options that control shadow rendering for a specific view. */

@@ -28,6 +28,9 @@ namespace te
     public:
         ReflectionCubeImportanceSampleMat();
 
+        /** @copydoc RendererMaterialBase::Initialize */
+        void Initialize() override;
+
         /** Importance samples the provided texture face and outputs it to the provided target. */
         void Execute(const SPtr<Texture>& source, UINT32 face, UINT32 mip, const SPtr<RenderTarget>& target);
 
@@ -76,6 +79,9 @@ namespace te
     public:
         IrradianceComputeSHMat();
 
+        /** @copydoc RendererMaterialBase::Initialize */
+        void Initialize() override;
+
         /**
          * Computes spherical harmonic coefficients from a radiance texture and outputs a buffer containing a list of
          * coefficient sets (one set of coefficients for each thread group). Coefficients must be reduced and normalized
@@ -109,6 +115,9 @@ namespace te
     public:
         IrradianceReduceSHMat();
 
+        /** @copydoc RendererMaterialBase::Initialize */
+        void Initialize() override;
+
         /**
          * Sums spherical harmonic coefficients calculated by each thread group of IrradianceComputeSHMat and outputs a
          * single set of normalized coefficients. Output texture should be created by calling createOutputTexture(). The
@@ -140,6 +149,9 @@ namespace te
 
     public:
         IrradianceProjectSHMat();
+
+        /** @copydoc RendererMaterialBase::Initialize */
+        void Initialize() override;
 
         /**
          * Projects spherical harmonic coefficients calculated by IrradianceReduceSHMat and projects them onto faces of

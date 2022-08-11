@@ -24,6 +24,9 @@ namespace te
     public:
         BloomMat();
 
+        /** @copydoc RendererMaterialBase::Initialize */
+        void Initialize() override;
+
         /**
          * Renders the post-process effect with the provided parameters.
          *

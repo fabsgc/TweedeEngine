@@ -19,6 +19,7 @@ namespace te
         _anisotropicSamplerState = nullptr;
         _noFilterSamplerState = nullptr;
         _bilinearSamplerState = nullptr;
+        _bilinearClampedSamplerState = nullptr;
         _trilinearSamplerState = nullptr;
         _frameworkIcon = nullptr;
     }
@@ -186,7 +187,9 @@ namespace te
         case BuiltinSampler::NoFilter:
             return _noFilterSamplerState; 
         case BuiltinSampler::Bilinear:
-            return _bilinearSamplerState; 
+            return _bilinearSamplerState;
+        case BuiltinSampler::BilinearClamped:
+            return _bilinearClampedSamplerState;
         case BuiltinSampler::Trilinear:
             return _trilinearSamplerState;
         default:
@@ -659,6 +662,15 @@ namespace te
         _bilinearSamplerStateDesc.MagFilter = FO_LINEAR;
         _bilinearSamplerStateDesc.MipFilter = FO_POINT;
 
+        _bilinearClampedSamplerStateDesc.AddressMode.u = TextureAddressingMode::TAM_CLAMP;
+        _bilinearClampedSamplerStateDesc.AddressMode.v = TextureAddressingMode::TAM_CLAMP;
+        _bilinearClampedSamplerStateDesc.AddressMode.w = TextureAddressingMode::TAM_CLAMP;
+
+        _bilinearClampedSamplerStateDesc.AddressMode = UVWAddressingMode();
+        _bilinearClampedSamplerStateDesc.MinFilter = FO_LINEAR;
+        _bilinearClampedSamplerStateDesc.MagFilter = FO_LINEAR;
+        _bilinearClampedSamplerStateDesc.MipFilter = FO_POINT;
+
         _trilinearSamplerStateDesc.AddressMode = UVWAddressingMode();
         _trilinearSamplerStateDesc.MinFilter = FO_LINEAR;
         _trilinearSamplerStateDesc.MagFilter = FO_LINEAR;
@@ -678,6 +690,7 @@ namespace te
         _anisotropicSamplerState = SamplerState::Create(_anisotropicSamplerStateDesc);
         _noFilterSamplerState = SamplerState::Create(_noFilterSamplerStateDesc);
         _bilinearSamplerState = SamplerState::Create(_bilinearSamplerStateDesc);
+        _bilinearClampedSamplerState = SamplerState::Create(_bilinearClampedSamplerStateDesc);
         _trilinearSamplerState = SamplerState::Create(_trilinearSamplerStateDesc);
     }
 

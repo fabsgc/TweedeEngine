@@ -8,6 +8,10 @@ namespace te
     BlitMat::BlitMat()
     {
         _paramBuffer = gBlitParamDef.CreateBuffer();
+    }
+
+    void BlitMat::Initialize()
+    {
         _params->SetParamBlockBuffer(GPT_PIXEL_PROGRAM, "PerFrameBuffer", _paramBuffer);
         _params->SetSamplerState(GPT_PIXEL_PROGRAM, "BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
     }

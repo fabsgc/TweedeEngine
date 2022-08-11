@@ -25,6 +25,9 @@ namespace te
     public:
         TextureCubeDownsampleMat();
 
+        /** @copydoc RendererMaterialBase::Initialize */
+        void Initialize() override;
+
         /** Downsamples the provided texture face and outputs it to the provided target. */
         void Execute(const SPtr<Texture>& source, UINT32 face, UINT32 mip, const SPtr<RenderTarget>& target);
 

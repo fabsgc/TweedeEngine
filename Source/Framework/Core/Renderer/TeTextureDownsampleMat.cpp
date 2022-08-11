@@ -11,6 +11,10 @@ namespace te
         : RendererMaterial()
     {
         _paramBuffer = gTextureDownsampleParamDef.CreateBuffer();
+    }
+
+    void TextureDownsampleMat::Initialize()
+    {
         _params->SetParamBlockBuffer("PerFrameBuffer", _paramBuffer);
         _params->SetSamplerState("BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
     }

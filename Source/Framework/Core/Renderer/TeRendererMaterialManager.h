@@ -28,6 +28,9 @@ namespace te
 
         /**	Registers a new material that should be initialized on module start-up. */
         static void RegisterMaterial(RendererMaterialMetaData* metaData, const std::any& shaderPath);
+
+        /**	Returns a list in which are all materials managed by this module. */
+        static Vector<RendererMaterialData>& GetMaterials();
     private:
         template<class T>
         friend class RendererMaterial;
@@ -38,8 +41,5 @@ namespace te
 
         /**	Destroys all materials */
         static void DestroyMaterials();
-
-        /**	Returns a list in which are all materials managed by this module. */
-        static Vector<RendererMaterialData>& GetMaterials();
     };
 }

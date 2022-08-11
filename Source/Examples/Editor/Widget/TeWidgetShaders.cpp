@@ -7,6 +7,7 @@
 #include "Material/TeShader.h"
 #include "Material/TeMaterial.h"
 #include "Scene/TeSceneObject.h"
+#include "Renderer/TeRendererMaterialManager.h"
 
 namespace te
 {
@@ -149,6 +150,16 @@ namespace te
             return;
 
         _currentShader->Compile(true);
+
+        Vector<RendererMaterialData>& materials = RendererMaterialManager::GetMaterials();
+        for (auto& material : materials)
+        {
+            if (material.MetaData->ShaderElem == _currentShader)
+            {
+                material.MetaData->Instance->InitPipelines();
+                material.MetaData->Instance->Initialize();
+            }
+        }
     }
 
     void WidgetShaders::UpdateBackground()

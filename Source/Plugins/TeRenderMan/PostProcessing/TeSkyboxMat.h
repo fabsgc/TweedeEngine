@@ -24,6 +24,9 @@ namespace te
     public:
         SkyboxMat();
 
+        /** @copydoc RendererMaterialBase::Initialize */
+        void Initialize() override;
+
         /** Binds the material for rendering and sets up any parameters. */
         void Bind(const SPtr<GpuParamBlockBuffer>& perCamera, const SPtr<Texture>& texture, const Color& solidColor, const float& brightness);
 

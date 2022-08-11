@@ -78,6 +78,8 @@ namespace te
         NoFilter,
         /** Bilinear sampler. */
         Bilinear,
+        /** Clamped Bilinear sampler. */
+        BilinearClamped,
         /** Trilinear sampler. */
         Trilinear
     };
@@ -182,6 +184,7 @@ namespace te
         SPtr<SamplerState> _anisotropicSamplerState = nullptr;
         SPtr<SamplerState> _noFilterSamplerState = nullptr;
         SPtr<SamplerState> _bilinearSamplerState = nullptr;
+        SPtr<SamplerState> _bilinearClampedSamplerState = nullptr;
         SPtr<SamplerState> _trilinearSamplerState = nullptr;
 
         SHADER_DESC _forwardShaderDesc;
@@ -278,6 +281,7 @@ namespace te
         SAMPLER_STATE_DESC _anisotropicSamplerStateDesc;
         SAMPLER_STATE_DESC _noFilterSamplerStateDesc;
         SAMPLER_STATE_DESC _bilinearSamplerStateDesc;
+        SAMPLER_STATE_DESC _bilinearClampedSamplerStateDesc;
         SAMPLER_STATE_DESC _trilinearSamplerStateDesc;
 
         HMaterial _defaultMaterial;

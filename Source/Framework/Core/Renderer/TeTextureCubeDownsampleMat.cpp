@@ -10,6 +10,10 @@ namespace te
     TextureCubeDownsampleMat::TextureCubeDownsampleMat()
     {
         _paramBuffer = gTextureCubeDownsampleParamDef.CreateBuffer();
+    }
+
+    void TextureCubeDownsampleMat::Initialize()
+    {
         _params->SetParamBlockBuffer("PerFrameBuffer", _paramBuffer);
         _params->SetSamplerState("BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
     }

@@ -8,6 +8,10 @@ namespace te
     BloomMat::BloomMat()
     {
         _paramBuffer = gBloomParamDef.CreateBuffer();
+    }
+
+    void BloomMat::Initialize()
+    {
         _params->SetParamBlockBuffer(GPT_PIXEL_PROGRAM, "PerFrameBuffer", _paramBuffer);
         _params->SetSamplerState(GPT_PIXEL_PROGRAM, "NoFilterSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
     }

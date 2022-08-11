@@ -13,6 +13,10 @@ namespace te
     ReflectionCubeImportanceSampleMat::ReflectionCubeImportanceSampleMat()
     {
         _paramBuffer = gReflectionCubeImportanceSampleParamDef.CreateBuffer();
+    }
+
+    void ReflectionCubeImportanceSampleMat::Initialize()
+    {
         _params->SetParamBlockBuffer("PerFrameBuffer", _paramBuffer);
         _params->SetSamplerState("BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
     }
@@ -56,6 +60,10 @@ namespace te
     IrradianceComputeSHMat::IrradianceComputeSHMat()
     {
         _paramBuffer = gIrradianceComputeSHParamDef.CreateBuffer();
+    }
+
+    void IrradianceComputeSHMat::Initialize()
+    {
         _params->SetParamBlockBuffer(GPT_COMPUTE_PROGRAM, "PerFrameBuffer", _paramBuffer);
         _params->SetSamplerState(GPT_COMPUTE_PROGRAM, "BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
     }
@@ -112,6 +120,10 @@ namespace te
     IrradianceReduceSHMat::IrradianceReduceSHMat()
     {
         _paramBuffer = gIrradianceComputeSHParamDef.CreateBuffer();
+    }
+
+    void IrradianceReduceSHMat::Initialize()
+    {
         _params->SetParamBlockBuffer(GPT_COMPUTE_PROGRAM, "PerFrameBuffer", _paramBuffer);
     }
 
@@ -149,6 +161,10 @@ namespace te
     IrradianceProjectSHMat::IrradianceProjectSHMat()
     {
         _paramBuffer = gIrradianceProjectSHParamDef.CreateBuffer();
+    }
+
+    void IrradianceProjectSHMat::Initialize()
+    {
         _params->SetParamBlockBuffer(GPT_PIXEL_PROGRAM, "PerFrameBuffer", _paramBuffer);
     }
 

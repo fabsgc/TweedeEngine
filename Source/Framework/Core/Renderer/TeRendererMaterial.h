@@ -64,86 +64,17 @@ namespace te
     public:
         virtual ~RendererMaterialBase() = default;
 
+        /** */
+        virtual void Initialize() { }
+
         /** Returns the shader used by the material. */
         SPtr<Shader> GetShader() const { return _shader; }
 
         /** Returns the internal parameter set containing GPU bindable parameters. */
         SPtr<GpuParams> GetParams() const { return _params; }
 
-    protected:
-        friend class RendererMaterialManager;
-
-        SPtr<GpuParams> _params;
-        SPtr<GraphicsPipelineState> _graphicsPipeline;
-        SPtr<ComputePipelineState> _computePipeline;
-        UINT32 _stencilRef = 0;
-
-        SPtr<Shader> _shader;
-    };
-
-    /** Wrapper class around Material that allows a simple way to load and set up materials used by the renderer. */
-    template<class T>
-    class RendererMaterial : public RendererMaterialBase
-    {
-    public:
-        virtual ~RendererMaterial() = default;
-
-        /**
-         * Retrieves an instance of this renderer material. If material has multiple variations the first available
-         * variation will be returned.
-         */
-        static T* Get()
+        void InitPipelines()
         {
-            if (_metaData.Instance == nullptr)
-            {
-                RendererMaterialBase* mat = te_allocate<T>();
-                new (mat) T();
-
-                _metaData.Instance = mat;
-            }
-
-            return (T*)_metaData.Instance;
-        }
-
-        /**
-         * Binds the materials and its parameters to the pipeline. This material will be used for rendering any subsequent
-         * draw calls, or executing dispatch calls. If @p bindParams is false you need to call bindParams() separately
-         * to bind material parameters (if any).
-         */
-        void Bind(bool bindParams = true) const
-        {
-            RenderAPI& rapi = RenderAPI::Instance();
-
-            if (_graphicsPipeline)
-            {
-                rapi.SetGraphicsPipeline(_graphicsPipeline);
-                rapi.SetStencilRef(_stencilRef);
-            }
-            else if(_computePipeline)
-            {
-                rapi.SetComputePipeline(_computePipeline);
-            }
-
-            if (bindParams)
-                rapi.SetGpuParams(_params);
-        }
-
-        /** Binds the material parameters to the pipeline. */
-        void BindParams() const
-        {
-            if(_params)
-            {
-                RenderAPI& rapi = RenderAPI::Instance();
-                rapi.SetGpuParams(_params);
-            }
-        }
-
-    protected:
-        RendererMaterial()
-        {
-            _initOnStart.Instantiate();
-            _shader = _metaData.ShaderElem;
-
             if(_shader == nullptr)
             {
                 TE_DEBUG("Shader is NULL, can't create RendererMaterial");
@@ -154,7 +85,6 @@ namespace te
             for (auto& entry : techniques)
             {
                 SPtr<Pass> pass = entry->GetPass(0);
-                pass->Compile();
 
                 _graphicsPipeline = pass->GetGraphicsPipelineState();
                 if (_graphicsPipeline != nullptr)
@@ -215,6 +145,84 @@ namespace te
                 //We do not support variations, so we only use first technique of the shader
                 break;
             }
+        }
+
+    protected:
+        friend class RendererMaterialManager;
+
+        SPtr<GpuParams> _params;
+        SPtr<GraphicsPipelineState> _graphicsPipeline;
+        SPtr<ComputePipelineState> _computePipeline;
+        UINT32 _stencilRef = 0;
+
+        SPtr<Shader> _shader;
+    };
+
+    /** Wrapper class around Material that allows a simple way to load and set up materials used by the renderer. */
+    template<class T>
+    class RendererMaterial : public RendererMaterialBase
+    {
+    public:
+        virtual ~RendererMaterial() = default;
+
+        /**
+         * Retrieves an instance of this renderer material. If material has multiple variations the first available
+         * variation will be returned.
+         */
+        static T* Get()
+        {
+            if (_metaData.Instance == nullptr)
+            {
+                RendererMaterialBase* mat = te_allocate<T>();
+                new (mat) T();
+                mat->Initialize();
+
+                _metaData.Instance = mat;
+            }
+
+            return (T*)_metaData.Instance;
+        }
+
+        /**
+         * Binds the materials and its parameters to the pipeline. This material will be used for rendering any subsequent
+         * draw calls, or executing dispatch calls. If @p bindParams is false you need to call bindParams() separately
+         * to bind material parameters (if any).
+         */
+        void Bind(bool bindParams = true) const
+        {
+            RenderAPI& rapi = RenderAPI::Instance();
+
+            if (_graphicsPipeline)
+            {
+                rapi.SetGraphicsPipeline(_graphicsPipeline);
+                rapi.SetStencilRef(_stencilRef);
+            }
+            else if(_computePipeline)
+            {
+                rapi.SetComputePipeline(_computePipeline);
+            }
+
+            if (bindParams)
+                rapi.SetGpuParams(_params);
+        }
+
+        /** Binds the material parameters to the pipeline. */
+        void BindParams() const
+        {
+            if(_params)
+            {
+                RenderAPI& rapi = RenderAPI::Instance();
+                rapi.SetGpuParams(_params);
+            }
+        }
+
+    protected:
+        RendererMaterial()
+        {
+            _initOnStart.Instantiate();
+            _shader = _metaData.ShaderElem;
+
+            InitPipelines();
         }
 
         /** Returns a set of dynamically defined defines used when compiling this shader. */

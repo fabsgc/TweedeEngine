@@ -9,7 +9,10 @@ namespace te
     {
         _perFrameParamBuffer = _perFrameParamDef.CreateBuffer();
         _perObjectParamBuffer = _perObjectParamDef.CreateBuffer();
+    }
 
+    void SelectionMat::Initialize()
+    {
         _params->SetParamBlockBuffer("PerFrameBuffer", _perFrameParamBuffer);
         _params->SetParamBlockBuffer("PerObjectBuffer", _perObjectParamBuffer);
         _params->SetSamplerState("BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));

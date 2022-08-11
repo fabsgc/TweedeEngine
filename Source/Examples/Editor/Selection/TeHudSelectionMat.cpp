@@ -8,7 +8,10 @@ namespace te
     {
         _perFrameParamBuffer = _perFrameParamDef.CreateBuffer();
         _perInstanceParamBuffer = _perInstanceParamDef.CreateBuffer();
+    }
 
+    void HudSelectionMat::Initialize()
+    {
         _params->SetParamBlockBuffer("PerFrameBuffer", _perFrameParamBuffer);
         _params->SetParamBlockBuffer("PerInstanceBuffer", _perInstanceParamBuffer);
     }

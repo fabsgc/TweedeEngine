@@ -23,6 +23,9 @@ namespace te
     public:
         MotionBlurMat();
 
+        /** @copydoc RendererMaterialBase::Initialize */
+        void Initialize() override;
+
         /**
          * Renders the post-process effect with the provided parameters.
          *

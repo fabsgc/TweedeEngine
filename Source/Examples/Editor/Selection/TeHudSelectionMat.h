@@ -17,6 +17,9 @@ namespace te
     public:
         HudSelectionMat();
 
+        /** @copydoc RendererMaterialBase::Initialize */
+        void Initialize() override;
+
         /** Set gpu params for camera */
         void BindCamera(const HCamera& camera, PickingUtils::RenderType renderType);
 

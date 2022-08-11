@@ -13,14 +13,17 @@ namespace te
         _perFrameParamBuffer = _perFrameParamDef.CreateBuffer();
         _perInstanceParamBuffer = _perInstanceParamDef.CreateBuffer();
 
+        auto textureImportOptions = TextureImportOptions::Create();
+        textureImportOptions->Format = PixelUtil::BestFormatFromFile("Data/Textures/Hud/Hud.png");
+        _hudMask = gResourceManager().Load<Texture>("Data/Textures/Hud/Hud.png", textureImportOptions);    
+    }
+
+    void HudPickingMat::Initialize()
+    {
         _params->SetParamBlockBuffer("PerFrameBuffer", _perFrameParamBuffer);
         _params->SetParamBlockBuffer(GPT_GEOMETRY_PROGRAM, "PerInstanceBuffer", _perInstanceParamBuffer);
         _params->SetSamplerState(GPT_PIXEL_PROGRAM, "TextureSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
 
-        auto textureImportOptions = TextureImportOptions::Create();
-        textureImportOptions->Format = PixelUtil::BestFormatFromFile("Data/Textures/Hud/Hud.png");
-
-        _hudMask = gResourceManager().Load<Texture>("Data/Textures/Hud/Hud.png", textureImportOptions);
         _params->SetTexture(GPT_PIXEL_PROGRAM, "MaskTexture", _hudMask.GetInternalPtr());
     }
 

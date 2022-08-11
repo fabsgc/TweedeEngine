@@ -986,36 +986,50 @@ namespace te
         RCNodeSceneTexDownsamples* sceneColorDownSampleNode = static_cast<RCNodeSceneTexDownsamples*>(inputs.InputNodes[1]);
         RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[2]);
 
-        constexpr UINT32 PREFERRED_NUM_DOWNSAMPLE_LEVELS = 4;
         constexpr UINT32 NUM_STEPS_PER_QUALITY[] = { 1, 1, 2, 3 };
-        constexpr UINT32 OUTPUT_DOWN_SAMPLE_FACTOR_PER_QUALITY[] = { 4, 3, 2, 1 };
-
-        const UINT32 availableDownsamples = sceneColorDownSampleNode->AvailableDownsamples;
-        const UINT32 numDownsamples = Math::Min(availableDownsamples, PREFERRED_NUM_DOWNSAMPLE_LEVELS);
-        assert(numDownsamples >= 1);
+        constexpr UINT32 OUTPUT_DOWN_SAMPLE_LEVEL_PER_QUALITY[] = { 4, 3, 2, 1 };
 
         // ### First, we get emissive texture from forward pass, use it as input for our GaussianBlur material
         // ### and create a new tex representing the blured result
         GaussianBlurMat* gaussianBlur = GaussianBlurMat::Get();
-        SPtr<PooledRenderTexture> emissiveTex = gpuInitializationPassNode->EmissiveTex;
-
+        
         // We can reduce blur texture size according to bloom quality
         const UINT32 quality = Math::Clamp((UINT32)settings.Bloom.Quality, 0U, 3U);
         const UINT32 numSteps = NUM_STEPS_PER_QUALITY[quality];
-        const UINT32 downSampleFactor = OUTPUT_DOWN_SAMPLE_FACTOR_PER_QUALITY[quality];
+        const UINT32 downSampleLevel = OUTPUT_DOWN_SAMPLE_LEVEL_PER_QUALITY[quality];
+
+        const UINT32 availableDownsamples = sceneColorDownSampleNode->AvailableDownsamples;
+        const UINT32 numDownsamples = Math::Min(availableDownsamples, downSampleLevel);
+        assert(numDownsamples >= 1);
+
+        SPtr<PooledRenderTexture> emissiveTex = sceneColorDownSampleNode->EmissiveTex[numDownsamples - 1];
 
         const TextureProperties& inputProps = emissiveTex->Tex->GetProperties();
-        SPtr<PooledRenderTexture> blurOutput = gGpuResourcePool().Get(
+        SPtr<PooledRenderTexture> tmpBlurOutput = gGpuResourcePool().Get(
             POOLED_RENDER_TEXTURE_DESC::Create2D(
                 inputProps.GetFormat(),
-                inputProps.GetWidth() / downSampleFactor,
-                inputProps.GetHeight() / downSampleFactor,
+                inputProps.GetWidth(),
+                inputProps.GetHeight(),
                 TU_RENDERTARGET,
                 viewProps.Target.NumSamples
             )
         );
 
-        gaussianBlur->Execute(emissiveTex->Tex, blurOutput->RenderTex, settings.Bloom.FilterSize,
+        SPtr<PooledRenderTexture> blurOutput = gGpuResourcePool().Get(
+            POOLED_RENDER_TEXTURE_DESC::Create2D(
+                inputProps.GetFormat(),
+                inputProps.GetWidth(),
+                inputProps.GetHeight(),
+                TU_RENDERTARGET,
+                viewProps.Target.NumSamples
+            )
+        );
+
+        gaussianBlur->Execute(emissiveTex->Tex, tmpBlurOutput->RenderTex, settings.Bloom.FilterSize,
+            settings.Bloom.Tint, emissiveTex->Tex->GetProperties().GetNumSamples());
+        gaussianBlur->Execute(tmpBlurOutput->Tex, blurOutput->RenderTex, settings.Bloom.FilterSize,
+            settings.Bloom.Tint, emissiveTex->Tex->GetProperties().GetNumSamples());
+        gaussianBlur->Execute(blurOutput->Tex, tmpBlurOutput->RenderTex, settings.Bloom.FilterSize,
             settings.Bloom.Tint, emissiveTex->Tex->GetProperties().GetNumSamples());
 
         /*SPtr<PooledRenderTexture> prevOutput;
@@ -1065,7 +1079,7 @@ namespace te
             ppLastFrame = gpuInitializationPassNode->SceneTex->Tex;
 
         auto& texProps = ppLastFrame->GetProperties();
-        bloom->Execute(ppLastFrame, ppOutput, blurOutput->Tex,
+        bloom->Execute(ppLastFrame, ppOutput, tmpBlurOutput->Tex,
             settings.Bloom.Intensity, texProps.GetNumSamples());
 
         inputs.CurrRenderAPI.PopMarker();
