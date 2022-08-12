@@ -72,6 +72,10 @@ namespace te
         /** Returns the viewport used by the camera. */
         const SPtr<Viewport> GetViewport() { return _viewport; }
 
+        /**	Returns a rectangle that defines the viewport position and size, in pixels. */
+        virtual Rect2I GetViewportRect() const;
+
+        /** */
         void SetRenderTarget(SPtr<RenderTarget> renderTarget);
 
         /** Determines flags used for controlling the camera behaviour. */
@@ -80,14 +84,38 @@ namespace te
         /** @copydoc SetFlags */
         UINT32 GetFlags() const { return _cameraFlags; }
 
-        /**
-         * Determines the camera horizontal field of view. This determines how wide the camera viewing angle is along the
-         * horizontal axis. Vertical FOV is calculated from the horizontal FOV and the aspect ratio.
-         */
-        virtual void SetHorzFOV(const Radian& fovy);
-
         /** @copydoc SetHorzFOV */
         virtual const Radian& GetHorzFOV() const { return _horzFOV; }
+
+        /**	Determines the current viewport aspect ratio (width / height). */
+        virtual void SetAspectRatio(float ratio);
+
+        /** @copydoc SetAspectRatio */
+        virtual float GetAspectRatio() const { return _aspect; }
+
+        /**	Determines the focal length which equivalent to FOV. Both can be computed using the other. Expressed in mm */
+        virtual void SetFocalLength(float focalLength);
+
+        /** @copydoc SetFocalLength */
+        virtual float GetFocalLength() const { return _focalLength; }
+
+        /**	Determines how much light hit the sensor. Expressed using f-stop */
+        virtual void SetAperture(float aperture);
+
+        /** @copydoc SetAperture */
+        virtual float GetAperture() const { return _aperture; }
+
+        /**	Determines how long the sensor is exposed. Expressed in second */
+        virtual void SetShutterSpeed(float shutterSpeed);
+
+        /** @copydoc SetShutterSpeed */
+        virtual float GetShutterSpeed() const { return _shutterSpeed; }
+
+        /**	Determines the sensitivity of the sensor. Expressed using ISO notation */
+        virtual void SetSensitivity(UINT32 sensitivity);
+
+        /** @copydoc SetSensitivity */
+        virtual UINT32 GetSensitivity() const { return _sensitivity; }
 
         /**
          * Determines the distance from the frustum to the near clipping plane. Anything closer than the near clipping plane will
@@ -106,12 +134,6 @@ namespace te
 
         /** @copydoc SetFarClipDistance */
         virtual float GetFarClipDistance() const { return _farDist; }
-
-        /**	Determines the current viewport aspect ratio (width / height). */
-        virtual void SetAspectRatio(float ratio);
-
-        /** @copydoc SetAspectRatio */
-        virtual float GetAspectRatio() const;
 
         /** Determines the type of projection used by the camera. Projection type controls how is 3D geometry projected onto a 2D plane. */
         virtual void SetProjectionType(ProjectionType pt);
@@ -211,6 +233,59 @@ namespace te
         /** @copydoc SetLayers */
         UINT64 GetLayers() const { return _layers; }
 
+        /**
+         * Settings that control rendering for this view. They determine how will the renderer process this view, which
+         * effects will be enabled, and what properties will those effects use.
+         */
+        void SetRenderSettings(const SPtr<RenderSettings>& settings)
+        {
+            _renderSettings = settings;
+            _markCoreDirty((ActorDirtyFlag)CameraDirtyFlag::RenderSettings);
+        }
+
+        /**
+         * @copydoc Camera::SetRenderSettings
+         * @note : this method will use copy constructor instead of just changing shared pointer value
+         */
+        void SetRenderSettings(const RenderSettings& settings)
+        {
+            (*_renderSettings) = settings;
+            _markCoreDirty((ActorDirtyFlag)CameraDirtyFlag::RenderSettings);
+        }
+
+        /** @copydoc SetRenderSettings */
+        const SPtr<RenderSettings>& GetRenderSettings() const { return _renderSettings; }
+
+        /**
+         * Notifies a on-demand camera that it should re-draw its contents on the next frame. Ignored for a camera
+         * that isn't on-demand.
+         */
+        void NotifyNeedsRedraw()
+        {
+            if (GetFlags() & (UINT32)CameraFlag::OnDemand)
+                _markCoreDirty((ActorDirtyFlag)CameraDirtyFlag::Redraw);
+        }
+
+        /**
+         * Notifies a on-demand camera that it should re-draw its contents on the next frame. Ignored for a camera
+         * that isn't on-demand.
+         */
+        void NotifyUpdateEverything()
+        {
+            _markCoreDirty();
+        }
+
+        /**
+         * You can change at runtime which renderer will handle this camera
+         * Current renderer will be notified that camera must be removed
+         * And next renderer will be notified that camera must be added
+         */
+        void AttachTo(SPtr<Renderer> renderer = nullptr);
+
+        /** Creates a new camera that renders to the specified portion of the provided render target. */
+        static SPtr<Camera> Create();
+
+    public:
         /**
          * Converts a point in world space to screen coordinates.
          *
@@ -356,64 +431,22 @@ namespace te
          */
         Vector3 UnprojectPoint(const Vector3& point) const;
 
-        /**
-         * Settings that control rendering for this view. They determine how will the renderer process this view, which
-         * effects will be enabled, and what properties will those effects use.
-         */
-        void SetRenderSettings(const SPtr<RenderSettings>& settings)
-        {
-            _renderSettings = settings;
-            _markCoreDirty((ActorDirtyFlag)CameraDirtyFlag::RenderSettings);
-        }
-
-        /**
-         * @copydoc Camera::SetRenderSettings
-         * @note : this method will use copy constructor instead of just changing shared pointer value
-         */
-        void SetRenderSettings(const RenderSettings& settings)
-        {
-            (*_renderSettings) = settings;
-            _markCoreDirty((ActorDirtyFlag)CameraDirtyFlag::RenderSettings);
-        }
-
-        /** @copydoc SetRenderSettings */
-        const SPtr<RenderSettings>& GetRenderSettings() const { return _renderSettings; }
-
-        /**	Returns a rectangle that defines the viewport position and size, in pixels. */
-        virtual Rect2I GetViewportRect() const;
-
-        /**
-         * Notifies a on-demand camera that it should re-draw its contents on the next frame. Ignored for a camera
-         * that isn't on-demand.
-         */
-        void NotifyNeedsRedraw()
-        {
-            if (GetFlags() & (UINT32)CameraFlag::OnDemand)
-                _markCoreDirty((ActorDirtyFlag)CameraDirtyFlag::Redraw);
-        }
-
-        /**
-         * Notifies a on-demand camera that it should re-draw its contents on the next frame. Ignored for a camera
-         * that isn't on-demand.
-         */
-        void NotifyUpdateEverything()
-        {
-            _markCoreDirty();
-        }
-
-        /** 
-         * You can change at runtime which renderer will handle this camera 
-         * Current renderer will be notified that camera must be removed
-         * And next renderer will be notified that camera must be added
-         */
-        void AttachTo(SPtr<Renderer> renderer = nullptr);
-
-        /** Creates a new camera that renders to the specified portion of the provided render target. */
-        static SPtr<Camera> Create();
-
+    public:
         static const float INFINITE_FAR_PLANE_ADJUST; /**< Small constant used to reduce far plane projection to avoid inaccuracies. */
 
+        // a 35mm camera has a 36x24mm wide frame size
+        static const float SENSOR_HEIGHT;  // 24mm
+
     protected:
+        /**
+         * Determines the camera horizontal field of view. This determines how wide the camera viewing angle is along the
+         * horizontal axis. Vertical FOV is calculated from the horizontal FOV and the aspect ratio.
+         */
+        virtual void SetHorzFOV(const Radian& fov);
+
+        /** Convert focal length in mm to FOV in radian */
+        Radian FocalLengthToFOV(float focalLength);
+
         /**	Calculate projection parameters that are used when constructing the projection matrix. */
         virtual void ComputeProjectionParameters(float& left, float& right, float& bottom, float& top) const;
 
@@ -452,13 +485,19 @@ namespace te
         void Initialize() override;
 
     protected:
-        UINT64 _layers = 1; /**< Bitfield that can be used for filtering what objects the camera sees. */
+        UINT32 _rendererId = 0;
+        UINT64 _layers = 0x1; /**< Bitfield that can be used for filtering what objects the camera sees. */
 
         ProjectionType _projType = PT_PERSPECTIVE; /**< Type of camera projection. */
         Radian _horzFOV = Degree(90.0f); /**< Horizontal field of view represents how wide is the camera angle. */
+        float _focalLength = 24.0f; /**< Focal length representing how wide is the camera angle. Expressed in mm */
+        float _aspect = 1.5f; /**< Width/height viewport ratio. */
+        float _aperture = 2.8f; /**< Expressed in f-stop */
+        float _shutterSpeed = 1 / 60.0f; /**< Expressed in seconds */
+        UINT32 _sensitivity = 100; /**< Expressed using ISO */
+
         float _farDist = 500.0f; /**< Clip any objects further than this. Larger value decreases depth precision at smaller depths. */
         float _nearDist = 0.1f; /**< Clip any objects close than this. Smaller value decreases depth precision at larger depths. */
-        float _aspect = 1.33333333333333f; /**< Width/height viewport ratio. */
         float _orthoHeight = 5; /**< Height in world units used for orthographic cameras. */
         INT32 _priority = 0; /**< Determines in what order will the camera be rendered. Higher priority means the camera will be rendered sooner. */
         bool _main = false; /**< Determines does this camera render to the main render surface. */
@@ -484,7 +523,6 @@ namespace te
         mutable float _left = 0.0f, _right = 0.0f, _top = 0.0f, _bottom = 0.0f; /**< Frustum extents. */
         mutable AABox _boundingBox; /**< Frustum bounding box. */
 
-        UINT32 _rendererId = 0;
         SPtr<Renderer> _renderer; /** Default renderer if this attributes is not filled in constructor. */
     };
 }

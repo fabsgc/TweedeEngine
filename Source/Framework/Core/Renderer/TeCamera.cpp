@@ -1,15 +1,16 @@
 #include "TeCamera.h"
 
 #include "Renderer/TeViewport.h"
+#include "Renderer/TeRenderer.h"
 #include "RenderAPI/TeRenderAPI.h"
 #include "Manager/TeRendererManager.h"
 #include "Scene/TeSceneManager.h"
 #include "Math/TeRect2I.h"
-#include "Renderer/TeRenderer.h"
 
 namespace te
 {
     const float Camera::INFINITE_FAR_PLANE_ADJUST = 0.00001f;
+    const float Camera::SENSOR_HEIGHT = 24.0f;
 
     Camera::Camera(SPtr<RenderTarget> target, float left, float top, float width, float height)
         : Serializable(TID_Camera)
@@ -17,6 +18,8 @@ namespace te
         InvalidateFrustum();
         _viewport = Viewport::Create(target, left, top, width, height);
         _renderSettings = te_shared_ptr_new<RenderSettings>();
+
+        FocalLengthToFOV(_focalLength);
     }
 
     Camera::Camera(const SPtr<Viewport>& viewport)
@@ -25,6 +28,8 @@ namespace te
         InvalidateFrustum();
         _viewport = viewport;
         _renderSettings = te_shared_ptr_new<RenderSettings>();
+
+        FocalLengthToFOV(_focalLength);
     }
 
     Camera::~Camera()
@@ -109,15 +114,41 @@ namespace te
         _markCoreDirty();
     }
 
-    float Camera::GetAspectRatio() const
+    void Camera::SetFocalLength(float focalLength)
     {
-        return _aspect;
+        _focalLength = focalLength;
+        SetHorzFOV(FocalLengthToFOV(focalLength));
+    }
+
+    Radian Camera::FocalLengthToFOV(float focalLength)
+    {
+        float width = SENSOR_HEIGHT * _aspect;
+        float diagonale = Math::Sqrt(Math::Pow(width, 2) + Math::Pow(SENSOR_HEIGHT, 2));
+
+        return 2 * Math::Atan(diagonale / (2 * focalLength));
+    }
+
+    void Camera::SetAperture(float aperture)
+    {
+        _aperture = aperture;
+        _markCoreDirty();
+    }
+
+    void Camera::SetShutterSpeed(float shutterSpeed)
+    {
+        _shutterSpeed = shutterSpeed;
+        _markCoreDirty();
+    }
+
+    void Camera::SetSensitivity(UINT32 sensitivity)
+    {
+        _sensitivity = sensitivity;
+        _markCoreDirty();
     }
 
     void Camera::SetProjectionType(ProjectionType pt)
     {
         _projType = pt;
-
         InvalidateFrustum();
         _markCoreDirty();
     }

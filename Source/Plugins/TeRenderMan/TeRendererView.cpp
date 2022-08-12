@@ -182,7 +182,7 @@ namespace te
         if (_redrawThisFrame)
         {
             // Note: Doing this here instead of _notifyNeedsRedraw because we need an up-to-date frame index
-            if (_renderSettings->EnableHDR && _renderSettings->EnableAutoExposure)
+            if (_renderSettings->EnableHDR && _renderSettings->AutoExposure.Enabled)
                 _waitingOnAutoExposureFrame = _frameTimings.FrameIdx;
             else
                 _waitingOnAutoExposureFrame = std::numeric_limits<UINT64>::max();
@@ -589,7 +589,7 @@ namespace te
         if (_redrawThisFrame)
             return true;
 
-        if (_renderSettings->EnableHDR && _renderSettings->EnableAutoExposure)
+        if (_renderSettings->EnableHDR && _renderSettings->AutoExposure.Enabled)
         {
             constexpr float AUTO_EXPOSURE_TOLERANCE = 0.01f;
 
@@ -870,7 +870,7 @@ namespace te
 
     float RendererView::GetCurrentExposure() const
     {
-        if (_renderSettings->EnableAutoExposure)
+        if (_renderSettings->AutoExposure.Enabled)
             return _previousEyeAdaptation; // TODO
 
         return Math::Pow(2.0f, _renderSettings->ExposureScale);

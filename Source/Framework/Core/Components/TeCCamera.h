@@ -34,9 +34,6 @@ namespace te
         /** @copydoc Camera::GetViewport */
         SPtr<Viewport> GetViewport() const { return _internal->GetViewport(); }
 
-        /** @copydoc Camera::SetHorzFOV */
-        virtual void SetHorzFOV(const Radian& fovy) { _internal->SetHorzFOV(fovy); }
-
         /** @copydoc Camera::GetHorzFOV */
         virtual const Radian& GetHorzFOV() const { return _internal->GetHorzFOV(); }
 
@@ -57,6 +54,30 @@ namespace te
 
         /** @copydoc Camera::GetAspectRatio */
         virtual float GetAspectRatio() const { return _internal->GetAspectRatio(); }
+
+        /** @copydoc Camera::SetFocalLength */
+        virtual void SetFocalLength(float focalLength) { _internal->SetFocalLength(focalLength); }
+
+        /** @copydoc Camera::GetFocalLength */
+        virtual float GetFocalLength() const { return _internal->GetFocalLength(); }
+
+        /** @copydoc Camera::SetAperture */
+        virtual void SetAperture(float aperture) { _internal->SetAperture(aperture); }
+
+        /** @copydoc Camera::GetAperture */
+        virtual float GetAperture() const { return _internal->GetAperture(); }
+
+        /** @copydoc Camera::SetShutterSpeed */
+        virtual void SetShutterSpeed(float shutterSpeed) { _internal->SetShutterSpeed(shutterSpeed); }
+
+        /** @copydoc Camera::GetShutterSpeed */
+        virtual float GetShutterSpeed() const { return _internal->GetShutterSpeed(); }
+
+        /** @copydoc Camera::SetSensitivity */
+        virtual void SetSensitivity(UINT32 sensitivity) { _internal->SetSensitivity(sensitivity); }
+
+        /** @copydoc Camera::GetSensitivity */
+        virtual UINT32 GetSensitivity() const { return _internal->GetSensitivity(); }
 
         /** @copydoc Camera::GetProjectionMatrixRS */
         virtual const Matrix4& GetProjectionMatrixRS() const { return _internal->GetProjectionMatrixRS(); }

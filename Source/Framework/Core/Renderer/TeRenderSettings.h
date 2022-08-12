@@ -127,6 +127,75 @@ namespace te
     struct TE_CORE_EXPORT AutoExposureSettings
     {
         AutoExposureSettings() = default;
+
+        /**
+         * Determines should automatic exposure be applied to the HDR image. When turned on the average scene brightness
+         * will be calculated and used to automatically expose the image to the optimal range. Use the parameters provided
+         * by autoExposure to customize the automatic exposure effect. You may also use exposureScale to
+         * manually adjust the automatic exposure. When automatic exposure is turned off you can use exposureScale to
+         * manually set the exposure.
+         */
+        bool Enabled = false;
+
+        /**
+         * Determines minimum luminance value in the eye adaptation histogram. The histogram is used for calculating the
+         * average brightness of the scene. Any luminance value below this value will not be included in the histogram and
+         * ignored in scene brightness calculations. In log2 units (-8 = 1/256). In the range [-16, 0].
+         */
+        float HistogramLog2Min = -8.0f;
+
+        /**
+         * Determines maximum luminance value in the eye adaptation histogram. The histogram is used for calculating the
+         * average brightness of the scene. Any luminance value above this value will not be included in the histogram and
+         * ignored in scene brightness calculations. In log2 units (4 = 16). In the range [0, 16].
+         */
+        float HistogramLog2Max = 4.0f;
+
+        /**
+         * Percentage below which to ignore values in the eye adaptation histogram. The histogram is used for calculating
+         * the average brightness of the scene. Total luminance in the histogram will be summed up and multiplied by this
+         * value to calculate minimal luminance. Luminance values below the minimal luminance will be ignored and not used
+         * in scene brightness calculations. This allows you to remove outliers on the lower end of the histogram (for
+         * example a few very dark pixels in an otherwise bright image). In range [0.0f, 1.0f].
+         */
+        float HistogramPctLow = 0.8f;
+
+        /**
+         * Percentage above which to ignore values in the eye adaptation histogram. The histogram is used for calculating
+         * the average brightness of the scene. Total luminance in the histogram will be summed up and multiplied by this
+         * value to calculate maximum luminance. Luminance values above the maximum luminance will be ignored and not used
+         * in scene brightness calculations. This allows you to remove outliers on the high end of the histogram (for
+         * example a few very bright pixels). In range [0.0f, 1.0f].
+         */
+        float HistogramPctHigh = 0.985f;
+
+        /**
+         * Clamps the minimum eye adaptation scale to this value. This allows you to limit eye adaptation so that exposure
+         * is never too high (for example when in a very dark room you probably do not want the exposure to be so high that
+         * everything is still visible). In range [0.0f, 10.0f].
+         */
+        float MinEyeAdaptation = 0.003f;
+
+        /**
+         * Clamps the maximum eye adaptation scale to this value. This allows you to limit eye adaptation so that exposure
+         * is never too low (for example when looking at a very bright light source you probably don't want the exposure to
+         * be so low that the rest of the scene is all white (overexposed). In range [0.0f, 10.0f].
+         */
+        float MaxEyeAdaptation = 2.0f;
+
+        /**
+         * Determines how quickly does the eye adaptation adjust to larger values. This affects how quickly does the
+         * automatic exposure changes when the scene brightness increases. In range [0.01f, 20.0f].
+         * Not used when camera is on demand
+         */
+        float EyeAdaptationSpeedUp = 3.0f;
+
+        /**
+         * Determines how quickly does the eye adaptation adjust to smaller values. This affects how quickly does the
+         * automatic exposure changes when the scene brightness decreases. In range [0.01f, 20.0f].
+         * Not used when camera is on demand
+         */
+        float EyeAdaptationSpeedDown = 3.0f;
     };
 
     /** Settings that control tonemap post-process. */
@@ -244,16 +313,12 @@ namespace te
         float AdaptiveRadiusThreshold = 0.1f;
 
         /** Camera aperture size in mm. Only relevant when using Bokeh depth of field. */
-        float ApertureSize = 50.0f;
-
         /** Focal length of the camera's lens (e.g. 75mm). Only relevant when using Bokeh depth of field. */
-        float FocalLength = 50.0f;
 
         /**
          * Camera sensor width and height, in mm. Used for controlling the size of the circle of confusion. Only relevant
          * when using Bokeh depth of field.
          */
-        Vector2 SensorSize = Vector2(22.2f, 14.8f);
     };
 
     /** Settings that control the motion blur effect. */
@@ -308,6 +373,9 @@ namespace te
     struct TE_CORE_EXPORT ShadowsSettings
     {
         ShadowsSettings() = default;
+
+        /** Enables or disables the shadows. */
+        bool Enabled = true;
 
         /**
          * Maximum distance that directional light shadows are allowed to render at. Decreasing the distance can yield
@@ -391,15 +459,6 @@ namespace te
     struct TE_CORE_EXPORT RenderSettings
     {
         RenderSettings() = default;
-
-        /**
-         * Determines should automatic exposure be applied to the HDR image. When turned on the average scene brightness
-         * will be calculated and used to automatically expose the image to the optimal range. Use the parameters provided
-         * by autoExposure to customize the automatic exposure effect. You may also use exposureScale to
-         * manually adjust the automatic exposure. When automatic exposure is turned off you can use exposureScale to
-         * manually set the exposure.
-         */
-        bool EnableAutoExposure = false;
 
         /**
          * Parameters used for customizing automatic scene exposure.

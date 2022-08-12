@@ -354,16 +354,61 @@ namespace te
         }
         ImGui::Separator();
 
+        // Focal length
+        {
+            float focalLength = camera->GetFocalLength();
+            float oldFocalLength = focalLength;
+
+            if (ImGuiExt::RenderOptionFloat(focalLength, "##focal_length_option", "Focal Length", 5.0f, 400.0f, width))
+                hasChanged = true;
+
+            if (focalLength != oldFocalLength)
+                camera->SetFocalLength(focalLength);
+        }
+        ImGui::Separator();
+
         // FOV
         {
             float fov = camera->GetHorzFOV().ValueDegrees();
-            float oldFov = fov;
 
-            if (ImGuiExt::RenderOptionFloat(fov, "##fov_option", "FOV", 1.0f, 179.0f, width))
+            if (ImGuiExt::RenderOptionFloat(fov, "##fov_option", "FOV", 1.0f, 179.0f, width, true))
+                hasChanged = true;
+        }
+
+        // Aperture
+        {
+            float aperture = camera->GetAperture();
+            float oldAperture = aperture;
+
+            if (ImGuiExt::RenderOptionFloat(aperture, "##aperture_option", "Aperture", 1.0f, 16.0f, width))
                 hasChanged = true;
 
-            if (fov != oldFov)
-                camera->SetHorzFOV(Radian(Degree(fov)));
+            if (aperture != oldAperture)
+                camera->SetAperture(aperture);
+        }
+
+        // Shutter Speed
+        {
+            float shutterSpeed = 1.0f / camera->GetShutterSpeed();
+            float oldShutterSpeed = shutterSpeed;
+
+            if (ImGuiExt::RenderOptionFloat(shutterSpeed, "##shutter_speed_option", "Shutter Speed", 1.0f, 2000.0f, width))
+                hasChanged = true;
+
+            if (shutterSpeed != oldShutterSpeed)
+                camera->SetShutterSpeed(1.0f / shutterSpeed);
+        }
+
+        // Sensitivity
+        {
+            UINT32 sensitivity = camera->GetSensitivity();
+            UINT32 oldSensitivity = sensitivity;
+
+            if (ImGuiExt::RenderOptionInt((int&)sensitivity, "##sensitivity_option", "Sensitivity", 100, 3200, width))
+                hasChanged = true;
+
+            if (sensitivity != oldSensitivity)
+                camera->SetSensitivity(sensitivity);
         }
         ImGui::Separator();
 
@@ -445,34 +490,45 @@ namespace te
         bool hasChanged = false;
 
         // HDR, ToneMapping
-        if (ImGui::CollapsingHeader("HDR - ToneMapping", ImGuiTreeNodeFlags_DefaultOpen))
+        if (ImGui::CollapsingHeader("HDR - Tone Mapping", ImGuiTreeNodeFlags_DefaultOpen))
         {
             if (ImGuiExt::RenderOptionBool(cameraSettings->EnableHDR, "##hdr_option", "Enable HDR"))
                 hasChanged = true;
             ImGui::Separator();
-            if (ImGuiExt::RenderOptionBool(cameraSettings->Tonemapping.Enabled, "##tonemapping_option", "Enable Tonemapping"))
+            if (ImGuiExt::RenderOptionBool(cameraSettings->Tonemapping.Enabled, "##tonemapping_option", "Enable Tone Mapping"))
                 hasChanged = true;
-            ImGui::Separator();
-            if (ImGuiExt::RenderOptionFloat(cameraSettings->ExposureScale, "##exposure_option", "Exposure", 0.0f, 5.0f, width))
+
+            if (cameraSettings->Tonemapping.Enabled)
+            {
+                if (ImGuiExt::RenderOptionFloat(cameraSettings->ExposureScale, "##exposure_option", "Exposure", 0.0f, 5.0f, width))
+                    hasChanged = true;
+                if (ImGuiExt::RenderOptionFloat(cameraSettings->Gamma, "##gamma_option", "Gamma", 0.0f, 5.0f, width))
+                    hasChanged = true;
+                if (ImGuiExt::RenderOptionFloat(cameraSettings->Contrast, "##contrast_option", "Contrast", 0.0f, 5.0f, width))
+                    hasChanged = true;
+                if (ImGuiExt::RenderOptionFloat(cameraSettings->Brightness, "##brightness_option", "Brightness", -2.0f, 2.0f, width))
+                    hasChanged = true;
+                if (ImGuiExt::RenderOptionFloat(cameraSettings->CullDistance, "##cull_distance_option", "Cull distance", 0.0f, 10000.0f, width))
+                    hasChanged = true;
+            }
+        }
+
+        // Auto Exposure
+        if (ImGui::CollapsingHeader("Auto Exposure", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            if (ImGuiExt::RenderOptionBool(cameraSettings->AutoExposure.Enabled, "##auto_exposure_option", "Enable Auto Exposure"))
                 hasChanged = true;
-            ImGui::Separator();
-            if (ImGuiExt::RenderOptionFloat(cameraSettings->Gamma, "##gamma_option", "Gamma", 0.0f, 5.0f, width))
-                hasChanged = true;
-            ImGui::Separator();
-            if (ImGuiExt::RenderOptionFloat(cameraSettings->Contrast, "##contrast_option", "Contrast", 0.0f, 5.0f, width))
-                hasChanged = true;
-            ImGui::Separator();
-            if (ImGuiExt::RenderOptionFloat(cameraSettings->Brightness, "##brightness_option", "Brightness", -2.0f, 2.0f, width))
-                hasChanged = true;
-            ImGui::Separator();
-            if (ImGuiExt::RenderOptionFloat(cameraSettings->CullDistance, "##cull_distance_option", "Cull distance", 0.0f, 10000.0f, width))
-                hasChanged = true;
+
+            if (cameraSettings->AutoExposure.Enabled)
+            {
+                // TODO
+            }
         }
 
         // Blur
-        if (ImGui::CollapsingHeader("Blur", ImGuiTreeNodeFlags_DefaultOpen))
+        if (ImGui::CollapsingHeader("Motion Blur", ImGuiTreeNodeFlags_DefaultOpen))
         {
-            if (ImGuiExt::RenderOptionBool(cameraSettings->MotionBlur.Enabled, "##blur_option", "Enable blur"))
+            if (ImGuiExt::RenderOptionBool(cameraSettings->MotionBlur.Enabled, "##blur_option", "Enable Motion Blur"))
                 hasChanged = true;
 
             if (cameraSettings->MotionBlur.Enabled)
@@ -495,7 +551,7 @@ namespace te
         // Bloom
         if (ImGui::CollapsingHeader("Bloom", ImGuiTreeNodeFlags_DefaultOpen))
         {
-            if (ImGuiExt::RenderOptionBool(cameraSettings->Bloom.Enabled, "##bloom_option", "Enable bloom"))
+            if (ImGuiExt::RenderOptionBool(cameraSettings->Bloom.Enabled, "##bloom_option", "Enable Bloom"))
                 hasChanged = true;
 
             if (cameraSettings->Bloom.Enabled)
@@ -585,6 +641,42 @@ namespace te
                     if (ImGuiExt::RenderOptionFloat(cameraSettings->AmbientOcclusion.Power, "##ssao_power_option", "Power", 1.0f, 4.0f, width))
                         hasChanged = true;
                 }
+            }
+        }
+
+        // SSR
+        if (ImGui::CollapsingHeader("SSR", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            if (ImGuiExt::RenderOptionBool(cameraSettings->ScreenSpaceReflections.Enabled, "##ssr_option", "Enable SSR"))
+                hasChanged = true;
+
+            if (cameraSettings->ScreenSpaceReflections.Enabled)
+            {
+                // TODO
+            }
+        }
+
+        // Shadows
+        if (ImGui::CollapsingHeader("Shadows", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            if (ImGuiExt::RenderOptionBool(cameraSettings->ShadowSettings.Enabled, "##shadows_option", "Enable Shadows"))
+                hasChanged = true;
+
+            if (cameraSettings->ShadowSettings.Enabled)
+            {
+                // TODO
+            }
+        }
+
+        // Depth of Field
+        if (ImGui::CollapsingHeader("Depth of Field", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            if (ImGuiExt::RenderOptionBool(cameraSettings->DepthOfField.Enabled, "##depth_of_field_option", "Enable Depth of Field"))
+                hasChanged = true;
+
+            if (cameraSettings->DepthOfField.Enabled)
+            {
+                // TODO
             }
         }
 
