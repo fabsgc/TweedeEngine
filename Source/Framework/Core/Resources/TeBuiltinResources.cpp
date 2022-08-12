@@ -665,8 +665,6 @@ namespace te
         _bilinearClampedSamplerStateDesc.AddressMode.u = TextureAddressingMode::TAM_CLAMP;
         _bilinearClampedSamplerStateDesc.AddressMode.v = TextureAddressingMode::TAM_CLAMP;
         _bilinearClampedSamplerStateDesc.AddressMode.w = TextureAddressingMode::TAM_CLAMP;
-
-        _bilinearClampedSamplerStateDesc.AddressMode = UVWAddressingMode();
         _bilinearClampedSamplerStateDesc.MinFilter = FO_LINEAR;
         _bilinearClampedSamplerStateDesc.MagFilter = FO_LINEAR;
         _bilinearClampedSamplerStateDesc.MipFilter = FO_POINT;

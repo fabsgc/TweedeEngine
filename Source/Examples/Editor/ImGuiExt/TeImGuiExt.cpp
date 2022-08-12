@@ -519,7 +519,7 @@ namespace te
                 if (ImGuiExt::RenderOptionCombo<int>((int*)(&cameraSettings->Bloom.Quality), "##bloom_quality_option", "Quality", bloomQualityOptions, width))
                     hasChanged = true;
 
-                if (ImGuiExt::RenderOptionFloat(cameraSettings->Bloom.Intensity, "##bloom_intensity_option", "Intensity", 0.0f, 5.0f, width))
+                if (ImGuiExt::RenderOptionFloat(cameraSettings->Bloom.Intensity, "##bloom_intensity_option", "Intensity", 0.0f, 8.0f, width))
                     hasChanged = true;
 
                 if (ImGuiExt::RenderOptionFloat(cameraSettings->Bloom.FilterSize, "##bloom_filter_size_option", "Filter size", 0.0f, 1.0f, width))

@@ -15,7 +15,7 @@ namespace te
     void TextureCubeDownsampleMat::Initialize()
     {
         _params->SetParamBlockBuffer("PerFrameBuffer", _paramBuffer);
-        _params->SetSamplerState("BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
+        _params->SetSamplerState("BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::BilinearClamped));
     }
 
     void TextureCubeDownsampleMat::Execute(const SPtr<Texture>& source, UINT32 face, UINT32 mip,

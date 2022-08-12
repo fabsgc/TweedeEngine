@@ -22,24 +22,33 @@ float4 GaussianBlur(Texture2D source, Texture2DMS<float4> sourceMS,
     SamplerState samplerState, float2 uv)
 {
     float2 textureOffset = 1.0 / gSourceDimensions * 2;
+    float2 offsettedUv = (float2)0;
     float3 result = (float3)0;
 
-    for(uint i = 0; i < gNumSamples / 2; i++)
+    uint i = 0;
+    for(; i < gNumSamples / 2; i++)
     {
         float3 color = (float3)0;
-        float2 offsettedUv = (float2)0;
 
         {
             offsettedUv = uv + gSampleOffsets[i].xy;
-            color += TextureSampling(BilinearSampler, source, sourceMS, offsettedUv, gMSAACount).rgb * gSampleWeights[i * 2].rgb;
-            result += color;
+            if(offsettedUv.x < 1.0 && offsettedUv.x > 0.0 && 
+               offsettedUv.y < 1.0 && offsettedUv.y > 0.0)
+            {
+                color += TextureSampling(BilinearSampler, source, sourceMS, offsettedUv, gMSAACount).rgb * gSampleWeights[i * 2].rgb;
+            }
         }
 
         {
-            offsettedUv = uv + gSampleOffsets[i + 1].zw;
-            color += TextureSampling(BilinearSampler, source, sourceMS, offsettedUv, gMSAACount).rgb * gSampleWeights[i * 2 + 1].rgb;
-            result += color;
+            offsettedUv = uv + gSampleOffsets[i].zw;
+            if(offsettedUv.x < 1.0 && offsettedUv.x > 0.0 && 
+               offsettedUv.y < 1.0 && offsettedUv.y > 0.0)
+            {
+                color += TextureSampling(BilinearSampler, source, sourceMS, offsettedUv, gMSAACount).rgb * gSampleWeights[i * 2 + 1].rgb;
+            }
         }
+
+        result += color;
     }
 
     return float4(result, 1.0);

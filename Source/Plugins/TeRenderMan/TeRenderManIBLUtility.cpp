@@ -18,7 +18,7 @@ namespace te
     void ReflectionCubeImportanceSampleMat::Initialize()
     {
         _params->SetParamBlockBuffer("PerFrameBuffer", _paramBuffer);
-        _params->SetSamplerState("BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
+        _params->SetSamplerState("BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::BilinearClamped));
     }
 
     void ReflectionCubeImportanceSampleMat::Execute(const SPtr<Texture>& source, UINT32 face, UINT32 mip,
@@ -65,7 +65,7 @@ namespace te
     void IrradianceComputeSHMat::Initialize()
     {
         _params->SetParamBlockBuffer(GPT_COMPUTE_PROGRAM, "PerFrameBuffer", _paramBuffer);
-        _params->SetSamplerState(GPT_COMPUTE_PROGRAM, "BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
+        _params->SetSamplerState(GPT_COMPUTE_PROGRAM, "BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::BilinearClamped));
     }
 
     void IrradianceComputeSHMat::Execute(const SPtr<Texture>& source, UINT32 face, const SPtr<GpuBuffer>& output)

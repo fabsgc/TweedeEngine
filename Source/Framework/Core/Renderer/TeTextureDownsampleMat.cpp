@@ -16,7 +16,7 @@ namespace te
     void TextureDownsampleMat::Initialize()
     {
         _params->SetParamBlockBuffer("PerFrameBuffer", _paramBuffer);
-        _params->SetSamplerState("BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
+        _params->SetSamplerState("BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::BilinearClamped));
     }
 
     void TextureDownsampleMat::Execute(const SPtr<Texture>& source, UINT32 mip, const SPtr<RenderTarget>& target)
