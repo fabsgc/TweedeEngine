@@ -110,8 +110,7 @@ namespace te
     void Camera::SetAspectRatio(float r)
     {
         _aspect = r;
-        InvalidateFrustum();
-        _markCoreDirty();
+        SetHorzFOV(FocalLengthToFOV(_focalLength));
     }
 
     void Camera::SetFocalLength(float focalLength)
