@@ -444,6 +444,8 @@ namespace te
 
         /** @copydoc RenderCompositorNode::Clear */
         void Clear() override;
+
+        SPtr<PooledRenderTexture> PooledOutput;
     };
 
     /** Renders the bloom effect. */

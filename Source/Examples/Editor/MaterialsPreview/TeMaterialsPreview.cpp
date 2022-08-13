@@ -146,6 +146,7 @@ namespace te
         _camera->SetAspectRatio(1.0f);
         _camera->SetFlags((UINT32)CameraFlag::OnDemand);
         _camera->GetViewport()->SetClearColorValue(BackgroundColor);
+        _camera->SetFocalLength(35.0f);
         
         auto settings = _camera->GetRenderSettings();
         settings->MotionBlur.Enabled = false;
@@ -153,7 +154,7 @@ namespace te
         settings->Bloom.Quality = BloomQuality::Ultra;
 
         Transform tfrm = _camera->GetTransform();
-        tfrm.Move(Vector3(1.0f, 1.6f, 1.6f));
+        tfrm.Move(Vector3(3.0f, 1.75f, 2.5f));
         tfrm.LookAt(Vector3::ZERO);
         _camera->SetTransform(tfrm);
     }

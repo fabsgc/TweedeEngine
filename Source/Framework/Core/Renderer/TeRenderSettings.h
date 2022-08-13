@@ -81,10 +81,11 @@ namespace te
     /** AmbientOcclusion quality. */
     enum class AmbientOcclusionQuality
     {
-        Low = 0x0,
-        Medium = 0x1,
-        High = 0x2,
-        Ultra = 0x3
+        Minimum = 0x0,
+        Low = 0x1,
+        Medium = 0x2,
+        High = 0x3,
+        Ultra = 0x4
     };
 
     /** Type of output we want */

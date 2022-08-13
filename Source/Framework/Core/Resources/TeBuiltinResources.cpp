@@ -488,9 +488,9 @@ namespace te
         }
 
         {
-            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/SSAODownSample_VS.hlsl"));
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/SSAODownsample_VS.hlsl"));
             _vertexShaderSSAODownSampleDesc.Type = GPT_VERTEX_PROGRAM;
-            _vertexShaderSSAODownSampleDesc.FilePath = SHADERS_FOLDER + String("HLSL/SSAODownSample_VS.hlsl");
+            _vertexShaderSSAODownSampleDesc.FilePath = SHADERS_FOLDER + String("HLSL/SSAODownsample_VS.hlsl");
             _vertexShaderSSAODownSampleDesc.EntryPoint = "main";
             _vertexShaderSSAODownSampleDesc.Language = "hlsl";
             _vertexShaderSSAODownSampleDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
@@ -498,9 +498,9 @@ namespace te
         }
 
         {
-            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/SSAODownSample_PS.hlsl"));
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/SSAODownsample_PS.hlsl"));
             _pixelShaderSSAODownSampleDesc.Type = GPT_PIXEL_PROGRAM;
-            _pixelShaderSSAODownSampleDesc.FilePath = SHADERS_FOLDER + String("HLSL/SSAODownSample_PS.hlsl");
+            _pixelShaderSSAODownSampleDesc.FilePath = SHADERS_FOLDER + String("HLSL/SSAODownsample_PS.hlsl");
             _pixelShaderSSAODownSampleDesc.EntryPoint = "main";
             _pixelShaderSSAODownSampleDesc.Language = "hlsl";
             _pixelShaderSSAODownSampleDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");

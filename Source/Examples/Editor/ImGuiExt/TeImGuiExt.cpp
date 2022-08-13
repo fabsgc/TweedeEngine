@@ -521,7 +521,24 @@ namespace te
 
             if (cameraSettings->AutoExposure.Enabled)
             {
-                // TODO
+                const float widthAutoExposure = width - 10.0f;
+
+                if (ImGuiExt::RenderOptionFloat(cameraSettings->AutoExposure.HistogramLog2Min, "##auto_exposure_hist_log2_min_option", "Hist. Log2 Min", -8.0f, 0.0f, widthAutoExposure))
+                    hasChanged = true;
+                if (ImGuiExt::RenderOptionFloat(cameraSettings->AutoExposure.HistogramLog2Max, "##auto_exposure_hist_log2_max_option", "Hist. Log2 Max", 0.0f, 16.0f, widthAutoExposure))
+                    hasChanged = true;
+                if (ImGuiExt::RenderOptionFloat(cameraSettings->AutoExposure.HistogramPctLow, "##auto_exposure_hist_pct_low_option", "Hist. Pct Low", 0.0f, 1.0f, widthAutoExposure))
+                    hasChanged = true;
+                if (ImGuiExt::RenderOptionFloat(cameraSettings->AutoExposure.HistogramPctHigh, "##auto_exposure_hist_pct_high_option", "Hist. Pct High", 0.0f, 1.0f, widthAutoExposure))
+                    hasChanged = true;
+                if (ImGuiExt::RenderOptionFloat(cameraSettings->AutoExposure.MinEyeAdaptation, "##auto_exposure_min_eye_adaptation_option", "Min Eye Adapt.", 0.0f, 10.0f, widthAutoExposure))
+                    hasChanged = true;
+                if (ImGuiExt::RenderOptionFloat(cameraSettings->AutoExposure.MaxEyeAdaptation, "##auto_exposure_max_eye_adaptation_option", "Max Eye Adapt.", 0.0f, 10.0f, widthAutoExposure))
+                    hasChanged = true;
+                if (ImGuiExt::RenderOptionFloat(cameraSettings->AutoExposure.EyeAdaptationSpeedUp, "##auto_exposure_eye_adaptation_speed_up_option", "Eye Speed Up", 0.01f, 20.0f, widthAutoExposure))
+                    hasChanged = true;
+                if (ImGuiExt::RenderOptionFloat(cameraSettings->AutoExposure.EyeAdaptationSpeedDown, "##auto_exposure_max_eye_adaptation_speed_down_option", "Eye Speed Down", 0.01f, 20.0f, widthAutoExposure))
+                    hasChanged = true;
             }
         }
 
@@ -533,17 +550,36 @@ namespace te
 
             if (cameraSettings->MotionBlur.Enabled)
             {
-                static ImGuiExt::ComboOptions<int> blurQualityOptions;
+                static ImGuiExt::ComboOptions<MotionBlurQuality> blurQualityOptions;
                 if (blurQualityOptions.Options.size() == 0)
                 {
-                    blurQualityOptions.AddOption((int)MotionBlurQuality::Ultra, "Ultra");
-                    blurQualityOptions.AddOption((int)MotionBlurQuality::High, "High");
-                    blurQualityOptions.AddOption((int)MotionBlurQuality::Medium, "Medium");
-                    blurQualityOptions.AddOption((int)MotionBlurQuality::Low, "Low");
-                    blurQualityOptions.AddOption((int)MotionBlurQuality::VeryLow, "Very low");
+                    blurQualityOptions.AddOption(MotionBlurQuality::Ultra, "Ultra");
+                    blurQualityOptions.AddOption(MotionBlurQuality::High, "High");
+                    blurQualityOptions.AddOption(MotionBlurQuality::Medium, "Medium");
+                    blurQualityOptions.AddOption(MotionBlurQuality::Low, "Low");
+                    blurQualityOptions.AddOption(MotionBlurQuality::VeryLow, "Very low");
                 }
 
-                if (ImGuiExt::RenderOptionCombo<int>((int*)(&cameraSettings->MotionBlur.Quality), "##blur_quality_option", "Quality", blurQualityOptions, width))
+                static ImGuiExt::ComboOptions<MotionBlurDomain> blurDomainOptions;
+                if (blurDomainOptions.Options.size() == 0)
+                {
+                    blurDomainOptions.AddOption(MotionBlurDomain::CameraAndObject, "Camera and Objects");
+                    blurDomainOptions.AddOption(MotionBlurDomain::ObjectOnly, "Objects Only");
+                    blurDomainOptions.AddOption(MotionBlurDomain::CameraOnly, "Camera Only");
+                }
+
+                static ImGuiExt::ComboOptions<MotionBlurFilter> blurFilterOptions;
+                if (blurFilterOptions.Options.size() == 0)
+                {
+                    blurFilterOptions.AddOption(MotionBlurFilter::Simple, "Simple");
+                    blurFilterOptions.AddOption(MotionBlurFilter::Reconstruction, "Reconstruction");
+                }
+
+                if (ImGuiExt::RenderOptionCombo<MotionBlurQuality>((&cameraSettings->MotionBlur.Quality), "##blur_quality_option", "Quality", blurQualityOptions, width))
+                    hasChanged = true;
+                if (ImGuiExt::RenderOptionCombo<MotionBlurDomain>((&cameraSettings->MotionBlur.Domain), "##blur_domain_option", "Domain", blurDomainOptions, width))
+                    hasChanged = true;
+                if (ImGuiExt::RenderOptionCombo<MotionBlurFilter>((&cameraSettings->MotionBlur.Filter), "##blur_filter_option", "Filter", blurFilterOptions, width))
                     hasChanged = true;
             }
         }
@@ -596,6 +632,7 @@ namespace te
                     static ImGuiExt::ComboOptions<int> ssaoQualityOptions;
                     if (ssaoQualityOptions.Options.size() == 0)
                     {
+                        ssaoQualityOptions.AddOption((int)AmbientOcclusionQuality::Minimum, "Minimum");
                         ssaoQualityOptions.AddOption((int)AmbientOcclusionQuality::Low, "Low");
                         ssaoQualityOptions.AddOption((int)AmbientOcclusionQuality::Medium, "Medium");
                         ssaoQualityOptions.AddOption((int)AmbientOcclusionQuality::High, "High");
@@ -664,7 +701,16 @@ namespace te
 
             if (cameraSettings->ShadowSettings.Enabled)
             {
-                // TODO
+                const float widthShadows = width - 10.0f;
+
+                if (ImGuiExt::RenderOptionFloat(cameraSettings->ShadowSettings.DirectionalShadowDistance, "##shadows_directional_shadow_distance_option", "Dir. Shadow Dist.", 1.0f, 512.0f, widthShadows))
+                    hasChanged = true;
+                if (ImGuiExt::RenderOptionInt((int&)cameraSettings->ShadowSettings.NumCascades, "##shadows_num_cascades_option", "Num Cascades.", 1, 6, widthShadows))
+                    hasChanged = true;
+                if (ImGuiExt::RenderOptionFloat(cameraSettings->ShadowSettings.CascadeDistributionExponent, "##shadows_cascade_distribution_component_option", "Cascade Distrib.", 1.0f, 4.0f, widthShadows))
+                    hasChanged = true;
+                if (ImGuiExt::RenderOptionInt((int&)cameraSettings->ShadowSettings.NumCascades, "##shadows_filtering_quality_option", "Quality.", 1, 4, widthShadows))
+                    hasChanged = true;
             }
         }
 

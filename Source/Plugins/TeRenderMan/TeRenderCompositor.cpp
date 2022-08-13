@@ -943,6 +943,7 @@ namespace te
         if (!settings.Enabled)
         {
             Output = Texture::WHITE;
+            PooledOutput = nullptr;
             return;
         }
 
@@ -950,8 +951,44 @@ namespace te
 
         Output = Texture::WHITE; // TODO
 
-        // GpuResourcePool& resPool = gGpuResourcePool();
-        // const RendererViewProperties& viewProps = inputs.View.GetProperties();
+        GpuResourcePool& resPool = gGpuResourcePool();
+        const RendererViewProperties& viewProps = inputs.View.GetProperties();
+
+        RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
+        RCNodeResolvedSceneDepth* resolvedDepthNode = static_cast<RCNodeResolvedSceneDepth*>(inputs.InputNodes[1]);
+
+        SPtr<Texture> sceneNormals = gpuInitializationPassNode->NormalTex->Tex;
+        SPtr<Texture> sceneDepth = resolvedDepthNode->Output->Tex;
+
+        const TextureProperties& normalsProps = sceneNormals->GetProperties();
+        SPtr<PooledRenderTexture> resolvedNormals;
+
+        // Multi sampled sceneDepth is already resolved, we need to do the same with sceneNormal
+        RenderAPI& rapi = RenderAPI::Instance();
+        if (sceneNormals->GetProperties().GetNumSamples() > 1)
+        {
+            inputs.CurrRenderAPI.PushMarker("Resolve MultiSampled Normals", Color(0.35f, 0.15f, 0.75f));
+
+            POOLED_RENDER_TEXTURE_DESC desc = POOLED_RENDER_TEXTURE_DESC::Create2D(normalsProps.GetFormat(),
+                normalsProps.GetWidth(), normalsProps.GetHeight(), TU_RENDERTARGET);
+            resolvedNormals = resPool.Get(desc);
+
+            rapi.SetRenderTarget(resolvedNormals->RenderTex);
+            gRendererUtility().Blit(sceneNormals);
+
+            sceneNormals = resolvedNormals->Tex;
+
+            inputs.CurrRenderAPI.PopMarker();
+        }
+
+        // Multiple downsampled AO levels are used to minimize cache trashing. Downsampled AO targets use larger radius,
+        // whose contents are then blended with the higher level.
+        AmbientOcclusionQuality quality = settings.Quality;
+        UINT32 numDownsampleLevels = 0;
+        if (quality >= AmbientOcclusionQuality::Medium)
+            numDownsampleLevels = 1;
+        else if (quality > AmbientOcclusionQuality::Medium)
+            numDownsampleLevels = 2;
 
         inputs.CurrRenderAPI.PopMarker();
     }
