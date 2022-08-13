@@ -549,9 +549,18 @@ namespace te
         cameraData.MatView = _properties.ViewTransform;
         cameraData.MatProj = _properties.ProjTransform;
         cameraData.MatPrevViewProj = _properties.PrevViewProjTransform;
+
         cameraData.NDCToPrevNDC = NDCToPrevNDC;
+
+        cameraData.DeviceZToWorldZ = GetDeviceZToViewZ(_properties.ProjTransform);
+        cameraData.NDCZToWorldZ = GetNDCZToViewZ(_properties.ProjTransform);
+        cameraData.NDCZToDeviceZ = GetNDCZToDeviceZ();
+
+        cameraData.NearFar = Vector2(_properties.NearPlane, _properties.FarPlane);
+
         cameraData.ClipToUVScaleOffset = NDCToUV;
         cameraData.UVToClipScaleOffset = UVToNDC;
+
         cameraData.UseSRGB = this->GetRenderSettings().EnableHDR ? 1 : 0;
 
         gPerCameraParamDef.gCamera.Set(_paramBuffer, cameraData, 0);
@@ -874,5 +883,98 @@ namespace te
             return _previousEyeAdaptation; // TODO
 
         return Math::Pow(2.0f, _renderSettings->ExposureScale);
+    }
+
+    Vector2 RendererView::GetDeviceZToViewZ(const Matrix4& projMatrix)
+    {
+        // Returns a set of values that will transform depth buffer values (in range [0, 1]) to a distance
+        // in view space. This involes applying the inverse projection transform to the depth value. When you multiply
+        // a vector with the projection matrix you get [clipX, clipY, Az + B, C * z], where we don't care about clipX/clipY.
+        // A is [2, 2], B is [2, 3] and C is [3, 2] elements of the projection matrix (only ones that matter for our depth
+        // value). The hardware will also automatically divide the z value with w to get the depth, therefore the final
+        // formula is:
+        // depth = (Az + B) / (C * z)
+
+        // To get the z coordinate back we simply do the opposite:
+        // z = B / (depth * C - A)
+
+        // However some APIs will also do a transformation on the depth values before storing them to the texture
+        // (e.g. OpenGL will transform from [-1, 1] to [0, 1]). And we need to reverse that as well. Therefore the final
+        // formula is:
+        // z = B / ((depth * (maxDepth - minDepth) + minDepth) * C - A)
+
+        // Are we reorganize it because it needs to fit the "(1.0f / (depth + y)) * x" format used in the shader:
+        // z = 1.0f / (depth + minDepth/(maxDepth - minDepth) - A/((maxDepth - minDepth) * C)) * B/((maxDepth - minDepth) * C)
+
+        const RenderAPICapabilities& caps = gCaps();
+
+        float depthRange = caps.MaxDepth - caps.MinDepth;
+        float minDepth = caps.MinDepth;
+
+        float a = projMatrix[2][2];
+        float b = projMatrix[2][3];
+        float c = projMatrix[3][2];
+
+        Vector2 output;
+
+        if (c != 0.0f)
+        {
+            output.x = b / (depthRange * c);
+            output.y = minDepth / depthRange - a / (depthRange * c);
+        }
+        else // Ortographic, assuming viewing towards negative Z
+        {
+            output.x = b / -depthRange;
+            output.y = minDepth / depthRange - a / -depthRange;
+        }
+
+        return output;
+    }
+
+    Vector2 RendererView::GetNDCZToViewZ(const Matrix4& projMatrix)
+    {
+        // Returns a set of values that will transform depth buffer values (e.g. [0, 1] in DX, [-1, 1] in GL) to a distance
+        // in view space. This involes applying the inverse projection transform to the depth value. When you multiply
+        // a vector with the projection matrix you get [clipX, clipY, Az + B, C * z], where we don't care about clipX/clipY.
+        // A is [2, 2], B is [2, 3] and C is [3, 2] elements of the projection matrix (only ones that matter for our depth
+        // value). The hardware will also automatically divide the z value with w to get the depth, therefore the final
+        // formula is:
+        // depth = (Az + B) / (C * z)
+
+        // To get the z coordinate back we simply do the opposite:
+        // z = B / (depth * C - A)
+
+        // Are we reorganize it because it needs to fit the "(1.0f / (depth + y)) * x" format used in the shader:
+        // z = 1.0f / (depth - A/C) * B/C
+
+        float a = projMatrix[2][2];
+        float b = projMatrix[2][3];
+        float c = projMatrix[3][2];
+
+        Vector2 output;
+
+        if (c != 0.0f)
+        {
+            output.x = b / c;
+            output.y = -a / c;
+        }
+        else // Ortographic, assuming viewing towards negative Z
+        {
+            output.x = -b;
+            output.y = a;
+        }
+
+        return output;
+    }
+
+    Vector2 RendererView::GetNDCZToDeviceZ()
+    {
+        const RenderAPICapabilities& caps = gCaps();
+
+        Vector2 ndcZToDeviceZ;
+        ndcZToDeviceZ.x = 1.0f / (caps.MaxDepth - caps.MinDepth);
+        ndcZToDeviceZ.y = -caps.MinDepth;
+
+        return ndcZToDeviceZ;
     }
 }

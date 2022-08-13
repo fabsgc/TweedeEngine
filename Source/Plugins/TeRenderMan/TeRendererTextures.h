@@ -29,5 +29,8 @@ namespace te
          * (r, g, b) = (scale, bias, charlie)
          */
         static SPtr<Texture> PreIntegratedEnvGF;
+
+        /** Tileable 4x4 texture to be used for randomization in SSAO rendering. */
+        static SPtr<Texture> SSAORandomization4x4;
     };
 }

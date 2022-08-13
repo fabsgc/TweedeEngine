@@ -25,6 +25,10 @@ namespace te
         Matrix4 MatProj;
         Matrix4 MatPrevViewProj;
         Matrix4 NDCToPrevNDC;
+        Vector2 DeviceZToWorldZ;
+        Vector2 NDCZToWorldZ;
+        Vector2 NDCZToDeviceZ;
+        Vector2 NearFar;
         Vector4 ClipToUVScaleOffset;
         Vector4 UVToClipScaleOffset;
         UINT32  UseSRGB;

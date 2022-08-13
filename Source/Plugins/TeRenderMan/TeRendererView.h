@@ -300,6 +300,32 @@ namespace te
         /** Returns a context that reflects the state of the view as it changes during rendering. */
         const RendererViewContext& GetContext() const { return _context; }
 
+        /**
+         * Extracts the necessary values from the projection matrix that allow you to transform device Z value (range [0, 1]
+         * into view Z value.
+         *
+         * @param[in]	projMatrix	Projection matrix that was used to create the device Z value to transform.
+         * @return					Returns two values that can be used to transform device z to view z using this formula:
+         * 							z = (deviceZ + y) * x.
+         */
+        static Vector2 GetDeviceZToViewZ(const Matrix4& projMatrix);
+
+        /**
+         * Extracts the necessary values from the projection matrix that allow you to transform NDC Z value (range depending
+         * on render API) into view Z value.
+         *
+         * @param[in]	projMatrix	Projection matrix that was used to create the NDC Z value to transform.
+         * @return					Returns two values that can be used to transform NDC z to view z using this formula:
+         * 							z = (NDCZ + y) * x.
+         */
+        static Vector2 GetNDCZToViewZ(const Matrix4& projMatrix);
+
+        /**
+         * Returns a value that can be used for tranforming a depth value in NDC, to a depth value in device Z ([0, 1]
+         * range using this formula: (NDCZ + y) * x.
+         */
+        static Vector2 GetNDCZToDeviceZ();
+
     private:
         friend class RendererViewGroup;
         friend class Renderable;

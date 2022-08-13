@@ -22,6 +22,7 @@
 #include "PostProcessing/TeBloomMat.h"
 #include "PostProcessing/TeMotionBlurMat.h"
 #include "PostProcessing/TeGaussianBlurMat.h"
+#include "PostProcessing/TeSSAODownsampleMat.h"
 
 namespace te
 {
@@ -967,8 +968,6 @@ namespace te
         RenderAPI& rapi = RenderAPI::Instance();
         if (sceneNormals->GetProperties().GetNumSamples() > 1)
         {
-            inputs.CurrRenderAPI.PushMarker("Resolve MultiSampled Normals", Color(0.35f, 0.15f, 0.75f));
-
             POOLED_RENDER_TEXTURE_DESC desc = POOLED_RENDER_TEXTURE_DESC::Create2D(normalsProps.GetFormat(),
                 normalsProps.GetWidth(), normalsProps.GetHeight(), TU_RENDERTARGET);
             resolvedNormals = resPool.Get(desc);
@@ -977,8 +976,6 @@ namespace te
             gRendererUtility().Blit(sceneNormals);
 
             sceneNormals = resolvedNormals->Tex;
-
-            inputs.CurrRenderAPI.PopMarker();
         }
 
         // Multiple downsampled AO levels are used to minimize cache trashing. Downsampled AO targets use larger radius,
@@ -989,6 +986,38 @@ namespace te
             numDownsampleLevels = 1;
         else if (quality > AmbientOcclusionQuality::Medium)
             numDownsampleLevels = 2;
+
+        SSAODownsampleMat* downsample = SSAODownsampleMat::Get();
+
+        SPtr<PooledRenderTexture> setupTex0;
+        if (numDownsampleLevels > 0)
+        {
+            Vector2I downsampledSize(
+                std::max(1, Math::DivideAndRoundUp((INT32)viewProps.Target.ViewRect.width, 2)),
+                std::max(1, Math::DivideAndRoundUp((INT32)viewProps.Target.ViewRect.height, 2))
+            );
+
+            POOLED_RENDER_TEXTURE_DESC desc = POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA16F, downsampledSize.x,
+                downsampledSize.y, TU_RENDERTARGET);
+            setupTex0 = resPool.Get(desc);
+
+            downsample->Execute(inputs.View, sceneDepth, sceneNormals, setupTex0->RenderTex, DEPTH_RANGE);
+        }
+
+        SPtr<PooledRenderTexture> setupTex1;
+		if(numDownsampleLevels > 1)
+		{
+			Vector2I downsampledSize(
+				std::max(1, Math::DivideAndRoundUp((INT32)viewProps.Target.ViewRect.width, 4)),
+				std::max(1, Math::DivideAndRoundUp((INT32)viewProps.Target.ViewRect.height, 4))
+			);
+
+			POOLED_RENDER_TEXTURE_DESC desc = POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA16F, downsampledSize.x,
+				downsampledSize.y, TU_RENDERTARGET);
+			setupTex1 = resPool.Get(desc);
+
+			downsample->Execute(inputs.View, sceneDepth, sceneNormals, setupTex1->RenderTex, DEPTH_RANGE);
+		}
 
         inputs.CurrRenderAPI.PopMarker();
     }
