@@ -21,7 +21,7 @@ namespace te
         TE_PARAM_BLOCK_ENTRY(UINT32, gUpSample)
         TE_PARAM_BLOCK_ENTRY(UINT32, gFinalPass)
         TE_PARAM_BLOCK_ENTRY(UINT32, gQuality)
-        TE_PARAM_BLOCK_ENTRY(UINT32, gPadding)
+        TE_PARAM_BLOCK_ENTRY(Vector3, gPadding)
     TE_PARAM_BLOCK_END
 
     extern SSAOParamDef gSSAOParamDef;

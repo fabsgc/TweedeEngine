@@ -15,7 +15,7 @@ cbuffer PerFrameBuffer : register(b0)
     uint gUpSample;
     uint gFinalPass;
     uint gQuality;
-    uint gPadding;
+    float3 gPadding;
 }
 
 cbuffer PerCameraBuffer : register(b1)
