@@ -47,4 +47,10 @@ float4 ConvertFromDeviceZ(CameraData camera, float4 deviceZ)
     return camera.DeviceZToWorldZ.x / (deviceZ + camera.DeviceZToWorldZ.y);
 }
 
+/** Converts position in NDC to UV coordinates mapped to the screen rectangle. */ 
+float2 NDCToUV(CameraData camera, float2 ndcPos)
+{
+    return ndcPos.xy * camera.ClipToUVScaleOffset.xy + camera.ClipToUVScaleOffset.zw;
+}
+
 #endif // __COMMON__
