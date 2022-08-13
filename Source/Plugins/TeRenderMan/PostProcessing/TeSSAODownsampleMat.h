@@ -15,7 +15,8 @@ namespace te
     extern SSAODownsampleParamDef gSSAODownsampleParamDef;
 
     /** 
-     * Shader that renders a SSAODownsample using a cubemap or a solid color. 
+     * Shader that downsamples the depth & normal buffer and stores their results in a common texture, to be consumed
+     * by SSAOMat.
      */
     class SSAODownsampleMat : public RendererMaterial<SSAODownsampleMat>
     {

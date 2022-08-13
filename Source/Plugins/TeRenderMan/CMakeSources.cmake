@@ -35,6 +35,8 @@ set (TE_RENDERMAN_INC_POSTPROCESSING
     "PostProcessing/TeSkyboxMat.h"
     "PostProcessing/TeToneMappingMat.h"
     "PostProcessing/TeSSAODownsampleMat.h"
+    "PostProcessing/TeSSAOMat.h"
+    "PostProcessing/TeSSAOBlurMat.h"
 )
 
 set (TE_RENDERMAN_SRC_POSTPROCESSING
@@ -45,6 +47,8 @@ set (TE_RENDERMAN_SRC_POSTPROCESSING
     "PostProcessing/TeSkyboxMat.cpp"
     "PostProcessing/TeToneMappingMat.cpp"
     "PostProcessing/TeSSAODownsampleMat.cpp"
+    "PostProcessing/TeSSAOMat.cpp"
+    "PostProcessing/TeSSAOBlurMat.cpp"
 )
 
 source_group ("" FILES ${TE_RENDERERMAN_SRC_NOFILTER} ${TE_RENDERMAN_INC_NOFILTER})

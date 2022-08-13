@@ -23,6 +23,8 @@
 #include "PostProcessing/TeMotionBlurMat.h"
 #include "PostProcessing/TeGaussianBlurMat.h"
 #include "PostProcessing/TeSSAODownsampleMat.h"
+#include "PostProcessing/TeSSAOMat.h"
+#include "PostProcessing/TeSSAOBlurMat.h"
 
 namespace te
 {
@@ -965,14 +967,13 @@ namespace te
         SPtr<PooledRenderTexture> resolvedNormals;
 
         // Multi sampled sceneDepth is already resolved, we need to do the same with sceneNormal
-        RenderAPI& rapi = RenderAPI::Instance();
         if (sceneNormals->GetProperties().GetNumSamples() > 1)
         {
             POOLED_RENDER_TEXTURE_DESC desc = POOLED_RENDER_TEXTURE_DESC::Create2D(normalsProps.GetFormat(),
                 normalsProps.GetWidth(), normalsProps.GetHeight(), TU_RENDERTARGET);
             resolvedNormals = resPool.Get(desc);
 
-            rapi.SetRenderTarget(resolvedNormals->RenderTex);
+            inputs.CurrRenderAPI.SetRenderTarget(resolvedNormals->RenderTex);
             gRendererUtility().Blit(sceneNormals);
 
             sceneNormals = resolvedNormals->Tex;
@@ -1019,11 +1020,106 @@ namespace te
 			downsample->Execute(inputs.View, sceneDepth, sceneNormals, setupTex1->RenderTex, DEPTH_RANGE);
 		}
 
+        SSAOTextureInputs textures;
+        textures.SceneDepth = sceneDepth;
+        textures.SceneNormals = sceneNormals;
+        textures.RandomRotations = RendererTextures::SSAORandomization4x4;
+
+        SPtr<PooledRenderTexture> downAOTex1;
+        if (numDownsampleLevels > 1)
+        {
+            textures.AOSetup = setupTex1->Tex;
+
+            Vector2I downsampledSize(
+                std::max(1, Math::DivideAndRoundUp((INT32)viewProps.Target.ViewRect.width, 4)),
+                std::max(1, Math::DivideAndRoundUp((INT32)viewProps.Target.ViewRect.height, 4))
+            );
+
+            POOLED_RENDER_TEXTURE_DESC desc = POOLED_RENDER_TEXTURE_DESC::Create2D(PF_R8, downsampledSize.x,
+                downsampledSize.y, TU_RENDERTARGET);
+            downAOTex1 = resPool.Get(desc);
+
+            SSAOMat* ssaoMat = SSAOMat::Get();
+            ssaoMat->Execute(inputs.View, textures, downAOTex1->RenderTex, settings, false, false, (UINT32)quality);
+
+            setupTex1 = nullptr;
+        }
+
+        SPtr<PooledRenderTexture> downAOTex0;
+        if (numDownsampleLevels > 0)
+        {
+            textures.AOSetup = setupTex0->Tex;
+
+            if (downAOTex1)
+                textures.AODownsampled = downAOTex1->Tex;
+
+            Vector2I downsampledSize(
+                std::max(1, Math::DivideAndRoundUp((INT32)viewProps.Target.ViewRect.width, 2)),
+                std::max(1, Math::DivideAndRoundUp((INT32)viewProps.Target.ViewRect.height, 2))
+            );
+
+            POOLED_RENDER_TEXTURE_DESC desc = POOLED_RENDER_TEXTURE_DESC::Create2D(PF_R8, downsampledSize.x,
+                downsampledSize.y, TU_RENDERTARGET);
+            downAOTex0 = resPool.Get(desc);
+
+            bool upSample = numDownsampleLevels > 1;
+            SSAOMat* ssaoMat = SSAOMat::Get();
+            ssaoMat->Execute(inputs.View, textures, downAOTex0->RenderTex, settings, upSample, false, (UINT32)quality);
+
+            if (upSample)
+                downAOTex1 = nullptr;
+        }
+
+        UINT32 width = viewProps.Target.ViewRect.width;
+        UINT32 height = viewProps.Target.ViewRect.height;
+        PooledOutput = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_R8, width, height, TU_RENDERTARGET));
+
+        {
+            if (setupTex0)
+                textures.AOSetup = setupTex0->Tex;
+
+            if (downAOTex0)
+                textures.AODownsampled = downAOTex0->Tex;
+
+            bool upSample = numDownsampleLevels > 0;
+            SSAOMat* ssaoMat = SSAOMat::Get();
+            ssaoMat->Execute(inputs.View, textures, PooledOutput->RenderTex, settings, upSample, true, (UINT32)quality);
+        }
+
+        resolvedNormals = nullptr;
+
+        if (numDownsampleLevels > 0)
+        {
+            setupTex0 = nullptr;
+            downAOTex0 = nullptr;
+        }
+
+        // Blur the output
+        // Note: If I implement temporal AA then this can probably be avoided. I can instead jitter the sample offsets
+        // each frame, and averaging them out should yield blurred AO.
+        if (quality > AmbientOcclusionQuality::Low) // On level 0 we don't blur at all, on level 1 we use the ad-hoc blur in shader
+        {
+            const RenderTargetProperties& rtProps = PooledOutput->RenderTex->GetProperties();
+
+            POOLED_RENDER_TEXTURE_DESC desc = POOLED_RENDER_TEXTURE_DESC::Create2D(PF_R8, rtProps.Width,
+                rtProps.Height, TU_RENDERTARGET);
+            SPtr<PooledRenderTexture> blurIntermediateTex = resPool.Get(desc);
+
+            SSAOBlurMat* ssaoBlurMat = SSAOBlurMat::Get();
+
+            ssaoBlurMat->Execute(inputs.View, PooledOutput->Tex, sceneDepth, blurIntermediateTex->RenderTex, DEPTH_RANGE, true);
+            ssaoBlurMat->Execute(inputs.View, blurIntermediateTex->Tex, sceneDepth, PooledOutput->RenderTex, DEPTH_RANGE, false);
+        }
+
+        inputs.CurrRenderAPI.SetRenderTarget(nullptr);
+        Output = PooledOutput->Tex;
+
         inputs.CurrRenderAPI.PopMarker();
     }
 
     void RCNodeSSAO::Clear()
-    { 
+    {
+        PooledOutput = nullptr;
         Output = nullptr;
     }
 
