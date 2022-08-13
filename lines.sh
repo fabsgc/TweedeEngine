@@ -1,7 +1,6 @@
 #!/bin/bash
 #this example prints line count for all found files
 total=0
-read touche
 find Source/ -type f -name "CMakeSources.cmake" -o -name "CMakeLists.txt" | while read FILE; do
     #you see use grep instead wc ! for properly counting
     count=$(grep -c ^ < "$FILE")
@@ -38,3 +37,4 @@ find Source/ -type f -name "*.cpp" -o -name "*.h" | while read FILE; do
         echo "$total" > code.txt
     fi
 done
+read touche

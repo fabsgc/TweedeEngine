@@ -709,7 +709,7 @@ namespace te
                     hasChanged = true;
                 if (ImGuiExt::RenderOptionFloat(cameraSettings->ShadowSettings.CascadeDistributionExponent, "##shadows_cascade_distribution_component_option", "Cascade Distrib.", 1.0f, 4.0f, widthShadows))
                     hasChanged = true;
-                if (ImGuiExt::RenderOptionInt((int&)cameraSettings->ShadowSettings.NumCascades, "##shadows_filtering_quality_option", "Quality.", 1, 4, widthShadows))
+                if (ImGuiExt::RenderOptionInt((int&)cameraSettings->ShadowSettings.ShadowFilteringQuality, "##shadows_filtering_quality_option", "Quality.", 1, 4, widthShadows))
                     hasChanged = true;
             }
         }
