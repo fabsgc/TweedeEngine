@@ -93,6 +93,12 @@ namespace te
         {
             _params->SetTexture(GPT_PIXEL_PROGRAM, "DepthMap", textures.SceneDepth);
             _params->SetTexture(GPT_PIXEL_PROGRAM, "NormalsMap", textures.SceneNormals);
+
+            gSSAOParamDef.gFinalPass.Set(_paramBuffer, 1);
+        }
+        else
+        {
+            gSSAOParamDef.gFinalPass.Set(_paramBuffer, 0);
         }
 
         if (upSample)
