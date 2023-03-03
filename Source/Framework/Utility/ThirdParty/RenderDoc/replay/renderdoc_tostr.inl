@@ -1,7 +1,7 @@
 /******************************************************************************
  * The MIT License (MIT)
  *
- * Copyright (c) 2017-2022 Baldur Karlsson
+ * Copyright (c) 2017-2023 Baldur Karlsson
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -57,7 +57,7 @@ rdcstr DoStringise(const ResultCode &el)
                                "Process is incompatible with this build of RenderDoc");
     STRINGISE_ENUM_CLASS_NAMED(NetworkIOFailed, "Network I/O operation failed");
     STRINGISE_ENUM_CLASS_NAMED(NetworkRemoteBusy, "Remote side of network connection is busy");
-    STRINGISE_ENUM_CLASS_NAMED(NetworkVersionMismatch, "Version mismatch between network clients");
+    STRINGISE_ENUM_CLASS_NAMED(NetworkVersionMismatch, "Incompatible version");
     STRINGISE_ENUM_CLASS_NAMED(FileIOFailed, "File I/O failed");
     STRINGISE_ENUM_CLASS_NAMED(
         FileIncompatibleVersion,
@@ -699,6 +699,7 @@ rdcstr DoStringise(const BindType &el)
 {
   BEGIN_ENUM_STRINGISE(BindType)
   {
+    STRINGISE_ENUM_CLASS_NAMED(Unknown, "Unknown");
     STRINGISE_ENUM_CLASS_NAMED(ConstantBuffer, "Constants");
     STRINGISE_ENUM_CLASS_NAMED(Sampler, "Sampler");
     STRINGISE_ENUM_CLASS_NAMED(ImageSampler, "Image&Sampler");
@@ -1001,6 +1002,7 @@ rdcstr DoStringise(const GPUVendor &el)
     STRINGISE_ENUM_CLASS(Qualcomm);
     STRINGISE_ENUM_CLASS(Verisilicon);
     STRINGISE_ENUM_CLASS(Software);
+    STRINGISE_ENUM_CLASS(Samsung);
   }
   END_ENUM_STRINGISE();
 }
@@ -1030,6 +1032,30 @@ rdcstr DoStringise(const ShaderEncoding &el)
     STRINGISE_ENUM_CLASS_NAMED(SPIRVAsm, "SPIR-V Asm");
     STRINGISE_ENUM_CLASS(HLSL);
     STRINGISE_ENUM_CLASS(DXIL);
+    STRINGISE_ENUM_CLASS_NAMED(OpenGLSPIRV, "SPIR-V (OpenGL)");
+    STRINGISE_ENUM_CLASS_NAMED(OpenGLSPIRVAsm, "SPIR-V Asm (OpenGL)");
+  }
+  END_ENUM_STRINGISE();
+}
+
+template <>
+rdcstr DoStringise(const KnownShaderTool &el)
+{
+  BEGIN_ENUM_STRINGISE(KnownShaderTool);
+  {
+    STRINGISE_ENUM_CLASS_NAMED(Unknown, "Custom Tool");
+    STRINGISE_ENUM_CLASS_NAMED(SPIRV_Cross, "SPIRV-Cross");
+    STRINGISE_ENUM_CLASS_NAMED(spirv_dis, "spirv-dis");
+    STRINGISE_ENUM_CLASS_NAMED(glslangValidatorGLSL, "glslang (GLSL)");
+    STRINGISE_ENUM_CLASS_NAMED(glslangValidatorHLSL, "glslang (HLSL)");
+    STRINGISE_ENUM_CLASS_NAMED(spirv_as, "spirv-as");
+    STRINGISE_ENUM_CLASS_NAMED(dxcSPIRV, "dxc (SPIR-V)");
+    STRINGISE_ENUM_CLASS_NAMED(dxcDXIL, "dxc (DXIL)");
+    STRINGISE_ENUM_CLASS_NAMED(fxc, "fxc");
+    STRINGISE_ENUM_CLASS_NAMED(glslangValidatorGLSL_OpenGL, "glslang (GLSL to OpenGL SPIR-V)");
+    STRINGISE_ENUM_CLASS_NAMED(SPIRV_Cross_OpenGL, "SPIRV-Cross (OpenGL SPIR-V)");
+    STRINGISE_ENUM_CLASS_NAMED(spirv_as_OpenGL, "spirv-as (OpenGL SPIR-V)");
+    STRINGISE_ENUM_CLASS_NAMED(spirv_dis_OpenGL, "spirv-dis (OpenGL SPIR-V)");
   }
   END_ENUM_STRINGISE();
 }

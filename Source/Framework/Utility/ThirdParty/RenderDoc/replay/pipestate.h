@@ -1,7 +1,7 @@
 /******************************************************************************
  * The MIT License (MIT)
  *
- * Copyright (c) 2019-2022 Baldur Karlsson
+ * Copyright (c) 2019-2023 Baldur Karlsson
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -190,6 +190,14 @@ requirements.
   {
     return IsCaptureLoaded() && IsCaptureVK() && stage == MeshDataStage::VSOut;
   }
+
+  DOCUMENT(R"(Retrieves the rasterized stream, if multiple streams are being generated in the GS.
+
+:return: The rasterized stream, or -1 of no stream is being rasterized.
+:rtype: int
+)");
+  int32_t GetRasterizedStream() const;
+
   DOCUMENT(R"(For APIs that have explicit barriers, retrieves the current layout of a resource.
 
 :param ResourceId id: The ID of the resource to query for
@@ -311,14 +319,14 @@ For some APIs that don't distinguish by entry point, this may be empty.
 :return: A boolean indicating if primitive restart is enabled.
 :rtype: bool
 )");
-  bool IsStripRestartEnabled() const;
+  bool IsRestartEnabled() const;
 
   DOCUMENT(R"(Retrieves the primitive restart index.
 
-:return: The index value that represents a strip restart not a real index.
+:return: The index value that represents a primitive restart not a real index.
 :rtype: int
 )");
-  uint32_t GetStripRestartIndex() const;
+  uint32_t GetRestartIndex() const;
 
   DOCUMENT(R"(Retrieves the currently bound vertex buffers.
 
@@ -379,6 +387,13 @@ For some APIs that don't distinguish by entry point, this may be empty.
 :rtype: BoundResource
 )");
   BoundResource GetDepthTarget() const;
+
+  DOCUMENT(R"(Retrieves the read/write resources bound to the depth-stencil resolve output.
+
+:return: The currently bound depth-stencil resolve resource.
+:rtype: BoundResource
+)");
+  BoundResource GetDepthResolveTarget() const;
 
   DOCUMENT(R"(Retrieves the resources bound to the color outputs.
 

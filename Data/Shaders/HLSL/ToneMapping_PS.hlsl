@@ -16,11 +16,12 @@ SamplerState BilinearSampler : register(s0);
 
 Texture2D SourceMap : register(t0);
 Texture2DMS<float4> SourceMapMS : register(t1);
+Texture2D SSAOMap : register(t2);
 
 float4 main( PS_INPUT IN ) : SV_Target0
 {
     float4 color = TextureSampling(BilinearSampler, SourceMap, SourceMapMS,
-        IN.Texture, gMSAACount);
+        IN.Texture, gMSAACount) * SSAOMap.Sample(BilinearSampler, IN.Texture).x;
 
     float4 mapped = GetGammaCorrectedColor(color, true, !gGammaOnly, gGamma,
         gContrast, gBrightness, gExposure);

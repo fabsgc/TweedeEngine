@@ -1,7 +1,6 @@
 set(TE_UTILITY_INC_THIRDPARTY
     "Utility/ThirdParty/Md5/md5.h"
     "Utility/ThirdParty/Json/json.h"
-    "Utility/ThirdParty/TinyXml/tinyxml2.h"
     "Utility/ThirdParty/ImGui/imgui.h"
     "Utility/ThirdParty/ImGui/imconfig.h"
     "Utility/ThirdParty/ImGui/imgui_internal.h"
@@ -38,7 +37,6 @@ set(TE_UTILITY_INC_THIRDPARTY
 )
 set(TE_UTILITY_SRC_THIRDPARTY
     "Utility/ThirdParty/Md5/md5.cpp"
-    "Utility/ThirdParty/TinyXml/tinyxml2.cpp"
     "Utility/ThirdParty/ImGui/imgui.cpp"
     "Utility/ThirdParty/ImGui/imgui_demo.cpp"
     "Utility/ThirdParty/ImGui/imgui_draw.cpp"

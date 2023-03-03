@@ -1,7 +1,7 @@
 /******************************************************************************
  * The MIT License (MIT)
  *
- * Copyright (c) 2019-2022 Baldur Karlsson
+ * Copyright (c) 2019-2023 Baldur Karlsson
  * Copyright (c) 2014 Crytek
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -734,7 +734,7 @@ DOCUMENT(R"(The dimensionality of a texture binding.
 
   A Cubemap texture array.
 )");
-enum class TextureType : uint32_t
+enum class TextureType : uint16_t
 {
   Unknown,
   First = Unknown,
@@ -1022,7 +1022,7 @@ to apply to multiple related things - see :data:`ClipDistance`, :data:`CullDista
 .. data:: StencilReference
 
   The stencil reference to be used for stenciling operations on this fragment.
-  
+
 .. data:: PointCoord
 
   The fragments co-ordinates within a point primitive being rasterized.
@@ -1701,6 +1701,10 @@ DOCUMENT(R"(Identifies a GPU vendor.
 .. data:: Software
 
   A software-rendering emulated GPU
+
+.. data:: Samsung
+
+  A Samsung GPU
 )");
 enum class GPUVendor : uint32_t
 {
@@ -1714,6 +1718,7 @@ enum class GPUVendor : uint32_t
   Qualcomm,
   Verisilicon,
   Software,
+  Samsung,
 };
 
 DECLARE_REFLECTION_ENUM(GPUVendor);
@@ -1737,6 +1742,7 @@ constexpr GPUVendor GPUVendorFromPCIVendor(uint32_t vendorID)
        : vendorID == 0x5143 ? GPUVendor::Qualcomm
        : vendorID == 0x1AE0 ? GPUVendor::Software   // Google Swiftshader
        : vendorID == 0x1414 ? GPUVendor::Software   // Microsoft WARP
+       : vendorID == 0x144D ? GPUVendor::Samsung    // Xclipse GPU
        : GPUVendor::Unknown;
   // clang-format on
 }
@@ -1797,12 +1803,24 @@ DOCUMENT(R"(Identifies a shader encoding used to pass shader code to an API.
 
 .. data:: SPIRV
 
-  SPIR-V binary shader, used by Vulkan and with an extension by OpenGL.
+  SPIR-V binary shader, as used by Vulkan. This format is technically not distinct from
+  :data:`OpenGLSPIRV` but is considered unique here since it really *should* have been a different
+  format, and introducing a separation allows better selection of tools automatically.
 
 .. data:: SPIRVAsm
 
-  Canonical SPIR-V assembly form, used (indirectly via :data:`SPIRV`) by Vulkan and with an
-  extension by OpenGL.
+  Canonical SPIR-V assembly form, used (indirectly via :data:`SPIRV`) by Vulkan. See :data:`SPIRV`.
+
+.. data:: OpenGLSPIRV
+
+  SPIR-V binary shader, as used by OpenGL. This format is technically not distinct from
+  :data:`VulkanSPIRV` but is considered unique here since it really *should* have been a different
+  format, and introducing a separation allows better selection of tools automatically.
+
+.. data:: OpenGLSPIRVAsm
+
+  Canonical SPIR-V assembly form, used (indirectly via :data:`OpenGLSPIRV`) by OpenGL. See
+  :data:`OpenGLSPIRV` and note that it's artificially differentiated from :data:`SPIRVAsm`.
 
 .. data:: HLSL
 
@@ -1824,11 +1842,188 @@ enum class ShaderEncoding : uint32_t
   SPIRVAsm,
   HLSL,
   DXIL,
+  OpenGLSPIRV,
+  OpenGLSPIRVAsm,
   Count,
 };
 
 ITERABLE_OPERATORS(ShaderEncoding);
 DECLARE_REFLECTION_ENUM(ShaderEncoding);
+
+DOCUMENT(R"(Identifies a particular known tool used for shader processing.
+
+.. data:: Unknown
+
+  Corresponds to no known tool.
+
+.. data:: SPIRV_Cross
+
+  `SPIRV-Cross <https://github.com/KhronosGroup/SPIRV-Cross>`_
+   targetting normal Vulkan flavoured SPIR-V.
+
+.. data:: SPIRV_Cross_OpenGL
+
+  `SPIRV-Cross <https://github.com/KhronosGroup/SPIRV-Cross>`_
+   targetting OpenGL extension flavoured SPIR-V.
+
+.. data:: spirv_dis
+
+  `spirv-dis from SPIRV-Tools <https://github.com/KhronosGroup/SPIRV-Tools>`_
+   targetting normal Vulkan flavoured SPIR-V.
+
+.. data:: spirv_dis_OpenGL
+
+  `spirv-dis from SPIRV-Tools <https://github.com/KhronosGroup/SPIRV-Tools>`_
+   targetting OpenGL extension flavoured SPIR-V.
+
+.. data:: glslangValidatorGLSL
+
+  `glslang compiler (GLSL) <https://github.com/KhronosGroup/glslang>`_
+   targetting normal Vulkan flavoured SPIR-V.
+
+.. data:: glslangValidatorGLSL_OpenGL
+
+  `glslang compiler (GLSL) <https://github.com/KhronosGroup/glslang>`_
+   targetting OpenGL extension flavoured SPIR-V.
+
+.. data:: glslangValidatorHLSL
+
+  `glslang compiler (HLSL) <https://github.com/KhronosGroup/glslang>`_.
+
+.. data:: spirv_as
+
+  `spirv-as from SPIRV-Tools <https://github.com/KhronosGroup/SPIRV-Tools>`_
+   targetting normal Vulkan flavoured SPIR-V.
+
+.. data:: spirv_as_OpenGL
+
+  `spirv-as from SPIRV-Tools <https://github.com/KhronosGroup/SPIRV-Tools>`_
+   targetting OpenGL extension flavoured SPIR-V.
+
+.. data:: dxcSPIRV
+
+  `DirectX Shader Compiler <https://github.com/microsoft/DirectXShaderCompiler>`_ with Vulkan SPIR-V
+   output.
+
+.. data:: dxcDXIL
+
+  `DirectX Shader Compiler <https://github.com/microsoft/DirectXShaderCompiler>`_ with DXIL output.
+
+.. data:: fxc
+
+  fxc Shader Compiler with DXBC output.
+
+)");
+enum class KnownShaderTool : uint32_t
+{
+  Unknown,
+  First = Unknown,
+  SPIRV_Cross,
+  spirv_dis,
+  glslangValidatorGLSL,
+  glslangValidatorHLSL,
+  spirv_as,
+  dxcSPIRV,
+  dxcDXIL,
+  fxc,
+  glslangValidatorGLSL_OpenGL,
+  SPIRV_Cross_OpenGL,
+  spirv_as_OpenGL,
+  spirv_dis_OpenGL,
+  Count,
+};
+
+ITERABLE_OPERATORS(KnownShaderTool);
+DECLARE_REFLECTION_ENUM(KnownShaderTool);
+
+DOCUMENT(R"(Returns the default executable name with no suffix for a given :class:`KnownShaderTool`.
+
+.. note::
+  The executable name is returned with no suffix, e.g. ``foobar`` which may need a platform specific
+  suffix like ``.exe`` appended.
+
+:param KnownShaderTool tool: The tool to get the executable name for.
+:return: The default executable name for this tool, or an empty string if the tool is unrecognised.
+:rtype: str
+)");
+constexpr inline const char *ToolExecutable(KnownShaderTool tool)
+{
+  // temporarily disable clang-format to make this more readable.
+  // Ideally we'd use a simple switch() but VS2015 doesn't support that :(.
+  // clang-format off
+  return tool == KnownShaderTool::SPIRV_Cross                 ?      "spirv-cross" :
+         tool == KnownShaderTool::SPIRV_Cross_OpenGL          ?      "spirv-cross" :
+         tool == KnownShaderTool::spirv_dis                   ?      "spirv-dis" :
+         tool == KnownShaderTool::spirv_dis_OpenGL            ?      "spirv-dis" :
+         tool == KnownShaderTool::glslangValidatorGLSL        ?      "glslangValidator" :
+         tool == KnownShaderTool::glslangValidatorGLSL_OpenGL ?      "glslangValidator" :
+         tool == KnownShaderTool::glslangValidatorHLSL        ?      "glslangValidator" :
+         tool == KnownShaderTool::spirv_as                    ?      "spirv-as" :
+         tool == KnownShaderTool::spirv_as_OpenGL             ?      "spirv-as" :
+         tool == KnownShaderTool::dxcSPIRV                    ?      "dxc" :
+         tool == KnownShaderTool::dxcDXIL                     ?      "dxc" :
+         tool == KnownShaderTool::fxc                         ?      "fxc" :
+         "";
+  // clang-format on
+}
+
+DOCUMENT(R"(Returns the expected default input :class:`~renderdoc.ShaderEncoding` that a
+:class:`KnownShaderTool` expects. This may not be accurate and may be configurable depending on the
+tool.
+
+:param KnownShaderTool tool: The tool to get the input encoding for.
+:return: The encoding that this tool expects as an input by default.
+:rtype: renderdoc.ShaderEncoding
+)");
+constexpr inline ShaderEncoding ToolInput(KnownShaderTool tool)
+{
+  // temporarily disable clang-format to make this more readable.
+  // Ideally we'd use a simple switch() but VS2015 doesn't support that :(.
+  // clang-format off
+  return tool == KnownShaderTool::SPIRV_Cross                 ?      ShaderEncoding::SPIRV :
+         tool == KnownShaderTool::SPIRV_Cross_OpenGL          ?      ShaderEncoding::OpenGLSPIRV :
+         tool == KnownShaderTool::spirv_dis                   ?      ShaderEncoding::SPIRV :
+         tool == KnownShaderTool::spirv_dis_OpenGL            ?      ShaderEncoding::OpenGLSPIRV :
+         tool == KnownShaderTool::glslangValidatorGLSL        ?      ShaderEncoding::GLSL :
+         tool == KnownShaderTool::glslangValidatorGLSL_OpenGL ?      ShaderEncoding::GLSL :
+         tool == KnownShaderTool::glslangValidatorHLSL        ?      ShaderEncoding::HLSL :
+         tool == KnownShaderTool::spirv_as                    ?      ShaderEncoding::SPIRVAsm :
+         tool == KnownShaderTool::spirv_as_OpenGL             ?      ShaderEncoding::OpenGLSPIRVAsm :
+         tool == KnownShaderTool::dxcSPIRV                    ?      ShaderEncoding::HLSL :
+         tool == KnownShaderTool::dxcDXIL                     ?      ShaderEncoding::HLSL :
+         tool == KnownShaderTool::fxc                         ?      ShaderEncoding::HLSL :
+         ShaderEncoding::Unknown;
+  // clang-format on
+}
+
+DOCUMENT(R"(Returns the expected default output :class:`~renderdoc.ShaderEncoding` that a
+:class:`KnownShaderTool` produces. This may not be accurate and may be configurable depending on the
+tool.
+
+:param KnownShaderTool tool: The tool to get the output encoding for.
+:return: The encoding that this tool produces as an output by default.
+:rtype: renderdoc.ShaderEncoding
+)");
+constexpr inline ShaderEncoding ToolOutput(KnownShaderTool tool)
+{
+  // temporarily disable clang-format to make this more readable.
+  // Ideally we'd use a simple switch() but VS2015 doesn't support that :(.
+  // clang-format off
+  return tool == KnownShaderTool::SPIRV_Cross                 ?      ShaderEncoding::GLSL :
+         tool == KnownShaderTool::SPIRV_Cross_OpenGL          ?      ShaderEncoding::GLSL :
+         tool == KnownShaderTool::spirv_dis                   ?      ShaderEncoding::SPIRVAsm :
+         tool == KnownShaderTool::spirv_dis_OpenGL            ?      ShaderEncoding::OpenGLSPIRVAsm :
+         tool == KnownShaderTool::glslangValidatorGLSL        ?      ShaderEncoding::SPIRV :
+         tool == KnownShaderTool::glslangValidatorGLSL_OpenGL ?      ShaderEncoding::OpenGLSPIRV :
+         tool == KnownShaderTool::glslangValidatorHLSL        ?      ShaderEncoding::SPIRV :
+         tool == KnownShaderTool::spirv_as                    ?      ShaderEncoding::SPIRV :
+         tool == KnownShaderTool::spirv_as_OpenGL             ?      ShaderEncoding::OpenGLSPIRV :
+         tool == KnownShaderTool::dxcSPIRV                    ?      ShaderEncoding::SPIRV :
+         tool == KnownShaderTool::dxcDXIL                     ?      ShaderEncoding::DXIL :
+         tool == KnownShaderTool::fxc                         ?      ShaderEncoding::DXBC :
+         ShaderEncoding::Unknown;
+  // clang-format on
+}
 
 DOCUMENT(R"(Check whether or not this is a human readable text representation.
 
@@ -1839,7 +2034,7 @@ DOCUMENT(R"(Check whether or not this is a human readable text representation.
 constexpr inline bool IsTextRepresentation(ShaderEncoding encoding)
 {
   return encoding == ShaderEncoding::HLSL || encoding == ShaderEncoding::GLSL ||
-         encoding == ShaderEncoding::SPIRVAsm;
+         encoding == ShaderEncoding::SPIRVAsm || encoding == ShaderEncoding::OpenGLSPIRVAsm;
 }
 
 DOCUMENT(R"(A primitive topology used for processing vertex data.
@@ -2103,22 +2298,6 @@ constexpr inline uint32_t PatchList_Count(Topology topology)
   return uint32_t(topology) < uint32_t(Topology::PatchList_1CPs)
              ? 0
              : uint32_t(topology) - uint32_t(Topology::PatchList_1CPs) + 1;
-}
-
-DOCUMENT(R"(Check whether or not this topology supports primitive restart.
-
-.. note:: This is almost but not quite the same as being a line/triangle strip - triangle fans
-  also support restart. See also :func:`IsStrip`.
-
-:param Topology topology: The topology to check.
-:return: ``True`` if it describes a topology that allows restart, ``False`` for a list.
-:rtype: bool
-)");
-constexpr inline bool SupportsRestart(Topology topology)
-{
-  return topology == Topology::LineStrip || topology == Topology::TriangleStrip ||
-         topology == Topology::LineStrip_Adj || topology == Topology::TriangleStrip_Adj ||
-         topology == Topology::TriangleFan;
 }
 
 DOCUMENT(R"(Check whether or not this is a strip-type topology.
@@ -4556,27 +4735,12 @@ DOCUMENT(R"(INTERNAL: A set of flags giving details of the current status of And
 .. data:: RootAccess
 
    The device being targeted has root access.
-
-.. data:: MissingTools
-
-   When patching, some necessary tools were not found.
-
-.. data:: ManifestPatchFailure
-
-   When patching, modifying the manifest file to include the debuggable flag failed.
-
-.. data:: RepackagingAPKFailure
-
-   When patching, repackaging, signing and installing the new package failed.
 )");
 enum class AndroidFlags : uint32_t
 {
   NoFlags = 0x0,
   Debuggable = 0x1,
   RootAccess = 0x2,
-  MissingTools = 0x1000,
-  ManifestPatchFailure = 0x2000,
-  RepackagingAPKFailure = 0x4000,
 };
 
 BITMASK_OPERATORS(AndroidFlags);

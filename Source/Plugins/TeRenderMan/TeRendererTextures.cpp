@@ -11,6 +11,16 @@ namespace te
 {
     SPtr<Texture> Generate4x4RandomizationTexture()
     {
+        TEXTURE_DESC desc;
+        desc.Type = TEX_TYPE_2D;
+        desc.Format = PF_RG8;
+        desc.Width = 4;
+        desc.Height = 4;
+        desc.DebugName = "4x4 Randomization Texture";
+
+        SPtr<Texture> texture = Texture::CreatePtr(desc);
+        PixelData pixelData = texture->Lock(GBL_WRITE_ONLY_DISCARD);
+
         UINT32 mapping[16] = { 13, 5, 1, 9, 14, 3, 7, 11, 15, 2, 6, 12, 4, 8, 0, 10 };
         Vector2 bases[16];
         for (UINT32 i = 0; i < 16; ++i)
@@ -20,7 +30,6 @@ namespace te
             bases[i].y = sin(angle);
         }
 
-        SPtr<PixelData> pixelData = PixelData::Create(4, 4, 1, PF_RG8);
         for (UINT32 y = 0; y < 4; ++y)
         {
             for (UINT32 x = 0; x < 4; ++x)
@@ -31,11 +40,13 @@ namespace te
                 color.r = bases[base].x * 0.5f + 0.5f;
                 color.g = bases[base].y * 0.5f + 0.5f;
 
-                pixelData->SetColorAt(color, x, y);
+                pixelData.SetColorAt(color, x, y);
             }
         }
 
-        return Texture::CreatePtr(pixelData);
+        texture->Unlock();
+
+        return texture;
     }
 
     struct DistributionSample
@@ -304,7 +315,7 @@ namespace te
     }
 
     SPtr<Texture> RendererTextures::PreIntegratedEnvGF = nullptr;
-    SPtr<Texture> RendererTextures::SSAORandomization4x4;
+    SPtr<Texture> RendererTextures::SSAORandomization4x4 = nullptr;
 
     void RendererTextures::StartUp()
     {

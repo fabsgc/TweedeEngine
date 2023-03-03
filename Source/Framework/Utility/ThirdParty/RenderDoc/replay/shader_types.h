@@ -1,7 +1,7 @@
 /******************************************************************************
  * The MIT License (MIT)
  *
- * Copyright (c) 2019-2022 Baldur Karlsson
+ * Copyright (c) 2019-2023 Baldur Karlsson
  * Copyright (c) 2014 Crytek
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -1453,8 +1453,17 @@ in :data:`entryLocation`, and if no file is specified there then use the first f
 )");
   int32_t editBaseFile = -1;
 
-  DOCUMENT("The :class:`ShaderEncoding` of the source. See :data:`files`.");
+  DOCUMENT(R"(The :class:`ShaderEncoding` of the source. See :data:`files`.
+
+:type: ShaderEncoding
+)");
   ShaderEncoding encoding = ShaderEncoding::Unknown;
+
+  DOCUMENT(R"(The :class:`KnownShaderTool` of the compiling tool.
+
+:type: KnownShaderTool
+)");
+  KnownShaderTool compiler = KnownShaderTool::Unknown;
 
   DOCUMENT(R"(Indicates whether this particular shader can be debugged. In some cases even if the
 API can debug shaders in general, specific shaders cannot be debugged because they use unsupported

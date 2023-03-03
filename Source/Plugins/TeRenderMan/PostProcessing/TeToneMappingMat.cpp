@@ -16,7 +16,7 @@ namespace te
         _params->SetSamplerState(GPT_PIXEL_PROGRAM, "BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::BilinearClamped));
     }
 
-    void ToneMappingMat::Execute(const SPtr<Texture>& source, const SPtr<RenderTarget>& destination, INT32 MSAACount, 
+    void ToneMappingMat::Execute(const SPtr<Texture>& ssao, const SPtr<Texture>& source, const SPtr<RenderTarget>& destination, INT32 MSAACount,
         float gamma, float exposure, float contrast, float brightness, bool gammaOnly)
     {
         gToneMappingParamDef.gMSAACount.Set(_paramBuffer, MSAACount, 0);
@@ -28,6 +28,8 @@ namespace te
 
         if (MSAACount > 1) _params->SetTexture(GPT_PIXEL_PROGRAM, "SourceMapMS", source);
         else _params->SetTexture(GPT_PIXEL_PROGRAM, "SourceMap", source);
+
+        _params->SetTexture(GPT_PIXEL_PROGRAM, "SSAOMap", ssao);
 
         RenderAPI& rapi = RenderAPI::Instance();
         rapi.SetRenderTarget(destination);

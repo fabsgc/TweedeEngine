@@ -1,7 +1,7 @@
 /******************************************************************************
  * The MIT License (MIT)
  *
- * Copyright (c) 2019-2022 Baldur Karlsson
+ * Copyright (c) 2019-2023 Baldur Karlsson
  * Copyright (c) 2014 Crytek
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -149,12 +149,6 @@ public:
   typedef T value_type;
 
   rdcarray() : elems(NULL), allocatedCount(0), usedCount(0) {}
-  rdcarray(size_t count)
-  {
-    elems = NULL;
-    allocatedCount = usedCount = 0;
-    resize(count);
-  }
   ~rdcarray()
   {
     // clear will destruct the actual elements still existing

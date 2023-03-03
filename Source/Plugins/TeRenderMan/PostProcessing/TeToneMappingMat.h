@@ -41,7 +41,7 @@ namespace te
          * @param[in]	brightness 
          * @param[in]	gammaOnly 
          */
-        void Execute(const SPtr<Texture>& source, const SPtr<RenderTarget>& destination, 
+        void Execute(const SPtr<Texture>& ssao, const SPtr<Texture>& source, const SPtr<RenderTarget>& destination,
             INT32 MSAACount = 1, float gamma = 2.2f, float exposure = 1.0f, float contrast = 1.0f, float brightness = 0.0f, bool gammaOnly = false);
 
     private:

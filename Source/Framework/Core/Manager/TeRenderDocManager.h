@@ -3,7 +3,7 @@
 #include "TeCorePrerequisites.h"
 #include "Utility/TeModule.h"
 
-struct RENDERDOC_API_1_5_0;
+struct RENDERDOC_API_1_6_0;
 
 namespace te
 {
@@ -23,6 +23,6 @@ namespace te
 
     private:
         DynLib* _rdcLib = nullptr;
-        RENDERDOC_API_1_5_0* _rdcAPI = nullptr;
+        RENDERDOC_API_1_6_0* _rdcAPI = nullptr;
     };
 }

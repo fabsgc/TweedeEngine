@@ -734,6 +734,7 @@ namespace te
 
         RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
         RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[1]);
+        RCNodeSSAO* ssaoNode = static_cast<RCNodeSSAO*>(inputs.InputNodes[2]);
 
         SPtr<RenderTexture> ppOutput;
         SPtr<Texture> ppLastFrame;
@@ -745,7 +746,7 @@ namespace te
             ppLastFrame = gpuInitializationPassNode->SceneTex->Tex;
 
         auto& texProps = ppLastFrame->GetProperties();
-        toneMapping->Execute(ppLastFrame, ppOutput, texProps.GetNumSamples(),
+        toneMapping->Execute(ssaoNode->Output, ppLastFrame, ppOutput, texProps.GetNumSamples(),
             settings.Gamma, settings.ExposureScale, settings.Contrast, settings.Brightness, !settings.Tonemapping.Enabled);
 
         inputs.CurrRenderAPI.SetRenderTarget(nullptr);
@@ -759,7 +760,8 @@ namespace te
     {
         Vector<String> deps = {
             RCNodeGpuInitializationPass::GetNodeId(),
-            RCNodePostProcess::GetNodeId()
+            RCNodePostProcess::GetNodeId(),
+            RCNodeSSAO::GetNodeId()
         };
 
         if(view.GetRenderSettings().MotionBlur.Enabled)
@@ -768,8 +770,8 @@ namespace te
         if(view.GetRenderSettings().Bloom.Enabled)
             deps.push_back(RCNodeBloom::GetNodeId());
 
-        if(view.GetRenderSettings().AmbientOcclusion.Enabled)
-            deps.push_back(RCNodeSSAO::GetNodeId());
+        //if(view.GetRenderSettings().AmbientOcclusion.Enabled)
+        //    deps.push_back(RCNodeSSAO::GetNodeId());
 
         if(view.GetRenderSettings().DepthOfField.Enabled)
             deps.push_back(RCNodeGaussianDOF::GetNodeId());
@@ -967,7 +969,7 @@ namespace te
         SPtr<PooledRenderTexture> resolvedNormals;
 
         // Multi sampled sceneDepth is already resolved, we need to do the same with sceneNormal
-        if (sceneNormals->GetProperties().GetNumSamples() > 1)
+        /*if (sceneNormals->GetProperties().GetNumSamples() > 1)
         {
             POOLED_RENDER_TEXTURE_DESC desc = POOLED_RENDER_TEXTURE_DESC::Create2D(normalsProps.GetFormat(),
                 normalsProps.GetWidth(), normalsProps.GetHeight(), TU_RENDERTARGET);
@@ -977,13 +979,13 @@ namespace te
             gRendererUtility().Blit(sceneNormals);
 
             sceneNormals = resolvedNormals->Tex;
-        }
+        }*/
 
         // Multiple downsampled AO levels are used to minimize cache trashing. Downsampled AO targets use larger radius,
         // whose contents are then blended with the higher level.
         AmbientOcclusionQuality quality = settings.Quality;
         UINT32 numDownsampleLevels = 0;
-        if (quality >= AmbientOcclusionQuality::Medium)
+        if (quality == AmbientOcclusionQuality::Medium)
             numDownsampleLevels = 1;
         else if (quality > AmbientOcclusionQuality::Medium)
             numDownsampleLevels = 2;

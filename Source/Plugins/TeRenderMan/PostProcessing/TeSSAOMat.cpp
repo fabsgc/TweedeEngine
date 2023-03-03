@@ -13,9 +13,9 @@ namespace te
 
     void SSAOMat::Initialize()
     {
-        //_params->SetParamBlockBuffer(GPT_PIXEL_PROGRAM, "PerFrameBuffer", _paramBuffer);
-        //_params->SetSamplerState(GPT_PIXEL_PROGRAM, "BilinearClampedSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::BilinearClamped));
-        //_params->SetSamplerState(GPT_PIXEL_PROGRAM, "BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
+        _params->SetParamBlockBuffer(GPT_PIXEL_PROGRAM, "PerFrameBuffer", _paramBuffer);
+        _params->SetSamplerState(GPT_PIXEL_PROGRAM, "BilinearClampedSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::BilinearClamped));
+        _params->SetSamplerState(GPT_PIXEL_PROGRAM, "BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
     }
 
     void SSAOMat::Execute(const RendererView& view, const SSAOTextureInputs& textures, const SPtr<RenderTexture>& destination, 
@@ -62,6 +62,7 @@ namespace te
         gSSAOParamDef.gFadeMultiplyAdd.Set(_paramBuffer, fadeMultiplyAdd);
         gSSAOParamDef.gPower.Set(_paramBuffer, settings.Power);
         gSSAOParamDef.gIntensity.Set(_paramBuffer, settings.Intensity);
+        gSSAOParamDef.gQuality.Set(_paramBuffer, quality);
 
         if (upSample)
         {
@@ -86,26 +87,26 @@ namespace te
         Vector2 randomTileScale((float)scaleWidth, (float)scaleHeight);
         gSSAOParamDef.gRandomTileScale.Set(_paramBuffer, randomTileScale);
 
-        //_params->SetTexture(GPT_PIXEL_PROGRAM, "SetupAOMap", textures.AOSetup);
+        _params->SetTexture(GPT_PIXEL_PROGRAM, "SetupAOMap", textures.AOSetup);
 
         if (finalPass)
         {
-            //_params->SetTexture(GPT_PIXEL_PROGRAM, "DepthMap", textures.SceneDepth);
-            //_params->SetTexture(GPT_PIXEL_PROGRAM, "NormalsMap", textures.SceneNormals);
+            _params->SetTexture(GPT_PIXEL_PROGRAM, "DepthMap", textures.SceneDepth);
+            _params->SetTexture(GPT_PIXEL_PROGRAM, "NormalsMap", textures.SceneNormals);
         }
 
-        //if (upSample)
-            //_params->SetTexture(GPT_PIXEL_PROGRAM, "DownsampledAOMap", textures.AODownsampled);
+        if (upSample)
+            _params->SetTexture(GPT_PIXEL_PROGRAM, "DownsampledAOMap", textures.AODownsampled);
 
-        //_params->SetTexture(GPT_PIXEL_PROGRAM, "RandomMap", textures.RandomRotations);
+        _params->SetTexture(GPT_PIXEL_PROGRAM, "RandomMap", textures.RandomRotations);
 
         SPtr<GpuParamBlockBuffer> perView = view.GetPerViewBuffer();
-        //_params->SetParamBlockBuffer("PerCameraBuffer", perView);
+        _params->SetParamBlockBuffer("PerCameraBuffer", perView);
 
         RenderAPI& rapi = RenderAPI::Instance();
         rapi.SetRenderTarget(destination);
 
-        //Bind();
+        Bind();
         gRendererUtility().DrawScreenQuad();
     }
 }

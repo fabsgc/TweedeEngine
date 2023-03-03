@@ -6,15 +6,18 @@
   - Ensure they are added to your *PATH* environment variable
 - Install other dependencies
   - See [here](#otherDeps)
+- In Source\CMake\TeEngineConfig.h.in
+  - Set correct path for RENDERDOC_PATH
 - Run the following commands in the terminal/command line:
   - `git clone https://github.com/fabsgc/TweedeEngine.git`
   - `cd TweedeEngine`
   - `mkdir Build`
   - `cd Build`
-  - `cmake -G "$generator$" ..` 
+  - `cmake -G "$generator$" -A x64 ..` 
     - Where *$generator$* should be replaced with any of the supported generators. Some common ones:
+    - `Visual Studio 17 2022` - Visual Studio 2022 (64-bit build)
     - `Visual Studio 16 2019` - Visual Studio 2019 (64-bit build)
-    - `Visual Studio 15 2017 Win64` - Visual Studio 2017 (64-bit build)
+    - `Visual Studio 15 2017` - Visual Studio 2017 (64-bit build)
     - `Unix Makefiles`
     - `Ninja`
     - See all valid generators: [cmake-generators](https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html)
@@ -40,7 +43,7 @@ Modify *CMAKE_BUILD_TYPE* to pick what kind of a build you want. Note that this 
 
 You can choose to use a different *CMake* generator than those specified above, as long as the platform/compiler is supported:  
   - Supported platforms:
-    - Windows 7, 8, 10
+    - Windows 7, 8, 10, 11
     - Linux
   - Supported compilers:
     - MSVC++ 15.0 (Visual Studio 2017) (or newer)

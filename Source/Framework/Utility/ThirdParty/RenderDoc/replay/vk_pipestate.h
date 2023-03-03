@@ -1,7 +1,7 @@
 /******************************************************************************
  * The MIT License (MIT)
  *
- * Copyright (c) 2019-2022 Baldur Karlsson
+ * Copyright (c) 2019-2023 Baldur Karlsson
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,19 +38,22 @@ struct BindingElement
 
   bool operator==(const BindingElement &o) const
   {
-    return dynamicallyUsed == o.dynamicallyUsed && viewResourceId == o.viewResourceId &&
-           resourceResourceId == o.resourceResourceId && samplerResourceId == o.samplerResourceId &&
-           immutableSampler == o.immutableSampler && inlineBlock == o.inlineBlock &&
-           viewFormat == o.viewFormat && swizzle == o.swizzle && firstMip == o.firstMip &&
-           firstSlice == o.firstSlice && numMips == o.numMips && numSlices == o.numSlices &&
-           byteOffset == o.byteOffset && byteSize == o.byteSize && filter == o.filter &&
-           addressU == o.addressU && addressV == o.addressV && addressW == o.addressW &&
-           mipBias == o.mipBias && maxAnisotropy == o.maxAnisotropy &&
+    return type == o.type && dynamicallyUsed == o.dynamicallyUsed &&
+           viewResourceId == o.viewResourceId && resourceResourceId == o.resourceResourceId &&
+           samplerResourceId == o.samplerResourceId && immutableSampler == o.immutableSampler &&
+           inlineBlock == o.inlineBlock && viewFormat == o.viewFormat && swizzle == o.swizzle &&
+           firstMip == o.firstMip && firstSlice == o.firstSlice && numMips == o.numMips &&
+           numSlices == o.numSlices && byteOffset == o.byteOffset && byteSize == o.byteSize &&
+           filter == o.filter && addressU == o.addressU && addressV == o.addressV &&
+           addressW == o.addressW && mipBias == o.mipBias && maxAnisotropy == o.maxAnisotropy &&
            compareFunction == o.compareFunction && minLOD == o.minLOD && maxLOD == o.maxLOD &&
-           borderColor == o.borderColor && unnormalized == o.unnormalized;
+           borderColor == o.borderColor && unnormalized == o.unnormalized &&
+           srgbBorder == o.srgbBorder && seamless == o.seamless;
   }
   bool operator<(const BindingElement &o) const
   {
+    if(!(type == o.type))
+      return type < o.type;
     if(!(dynamicallyUsed == o.dynamicallyUsed))
       return dynamicallyUsed < o.dynamicallyUsed;
     if(!(viewResourceId == o.viewResourceId))
@@ -101,9 +104,15 @@ struct BindingElement
       return borderColor < o.borderColor;
     if(!(unnormalized == o.unnormalized))
       return unnormalized < o.unnormalized;
+    if(!(srgbBorder == o.srgbBorder))
+      return srgbBorder < o.srgbBorder;
+    if(!(seamless == o.seamless))
+      return seamless < o.seamless;
     return false;
   }
 
+  DOCUMENT("The :class:`BindType` of this binding element.");
+  BindType type = BindType::Unknown;
   DOCUMENT("The :class:`ResourceId` of the current view object, if one is in use.");
   ResourceId viewResourceId;    // bufferview, imageview, attachmentview
   DOCUMENT("The :class:`ResourceId` of the current underlying buffer or image object.");
@@ -170,7 +179,7 @@ set's inline block data.
   float maxAnisotropy = 0.0f;
   DOCUMENT("For samplers - the :class:`CompareFunction` for comparison samplers.");
   CompareFunction compareFunction = CompareFunction::AlwaysTrue;
-  DOCUMENT("For samplers - the minimum mip level that can be used.");
+  DOCUMENT("For samplers and image views - the minimum mip level that can be used.");
   float minLOD = 0.0f;
   DOCUMENT("For samplers - the maximum mip level that can be used.");
   float maxLOD = 0.0f;
@@ -179,11 +188,24 @@ set's inline block data.
 :type: Tuple[float,float,float,float]
 )");
   rdcfixedarray<float, 4> borderColor = {0.0f, 0.0f, 0.0f, 0.0f};
+  DOCUMENT(R"(The swizzle applied to samplers. Primarily for ycbcr samplers applied before
+conversion but for non-ycbcr samplers can be used for implementations that require sampler swizzle
+information for border colors.
+
+:type: TextureSwizzle4
+)");
+  TextureSwizzle4 samplerSwizzle;
+  DOCUMENT(
+      "For samplers - ``True`` if the border colour is swizzled with an sRGB formatted image.");
+  bool srgbBorder = false;
   DOCUMENT("For samplers - ``True`` if unnormalized co-ordinates are used in this sampler.");
   bool unnormalized = false;
 
   DOCUMENT("``True`` if this is an inline uniform block binding.");
   bool inlineBlock = false;
+
+  DOCUMENT("``True`` if this sampler is seamless across cubemap boundaries (the default).");
+  bool seamless = true;
 
   DOCUMENT(R"(For samplers - the :class:`ResourceId` of the ycbcr conversion object associated with
 this sampler.
@@ -194,11 +216,6 @@ this sampler.
   YcbcrConversion ycbcrModel;
   DOCUMENT("For ycbcr samplers - the :class:`YcbcrRange` used for conversion.");
   YcbcrRange ycbcrRange;
-  DOCUMENT(R"(For ycbcr samplers - The swizzle applied before conversion.
-
-:type: TextureSwizzle4
-)");
-  TextureSwizzle4 ycbcrSwizzle;
   DOCUMENT("For ycbcr samplers - the :class:`ChromaSampleLocation` X-axis chroma offset.");
   ChromaSampleLocation xChromaOffset;
   DOCUMENT("For ycbcr samplers - the :class:`ChromaSampleLocation` Y-axis chroma offset.");
@@ -232,7 +249,7 @@ struct DescriptorBinding
   {
     return descriptorCount == o.descriptorCount && dynamicallyUsedCount == o.dynamicallyUsedCount &&
            firstUsedIndex == o.firstUsedIndex && lastUsedIndex == o.lastUsedIndex &&
-           type == o.type && stageFlags == o.stageFlags && binds == o.binds;
+           stageFlags == o.stageFlags && binds == o.binds;
   }
   bool operator<(const DescriptorBinding &o) const
   {
@@ -244,8 +261,6 @@ struct DescriptorBinding
       return firstUsedIndex < o.firstUsedIndex;
     if(!(lastUsedIndex == o.lastUsedIndex))
       return lastUsedIndex < o.lastUsedIndex;
-    if(!(type == o.type))
-      return type < o.type;
     if(!(stageFlags == o.stageFlags))
       return stageFlags < o.stageFlags;
     if(!(binds == o.binds))
@@ -278,8 +293,6 @@ to avoid redundant iteration in very large descriptor arrays with a small subset
 For more information see :data:`VKBindingElement.dynamicallyUsed`.
 )");
   int32_t lastUsedIndex = 0x7fffffff;
-  DOCUMENT("The :class:`BindType` of this binding.");
-  BindType type = BindType::Unknown;
   DOCUMENT("The :class:`ShaderStageMask` where this binding is visible.");
   ShaderStageMask stageFlags = ShaderStageMask::Unknown;
 
@@ -685,6 +698,12 @@ struct TransformFeedback
 :type: List[VKXFBBuffer]
 )");
   rdcarray<XFBBuffer> buffers;
+
+  DOCUMENT(R"(Which stream-out stream is being used for rasterization.
+
+:type: int
+)");
+  uint32_t rasterizedStream = 0;
 };
 
 DOCUMENT("Describes a render area in the current framebuffer.");
@@ -781,6 +800,9 @@ and a fragment in none of them is discarded.
   disabled, since with no rectangles no fragment can be inside one.
 )");
   bool discardRectanglesExclusive = true;
+
+  DOCUMENT(R"(Whether depth clip range is set to [-1, 1] through VK_EXT_depth_clip_control.)");
+  bool depthNegativeOneToOne = false;
 };
 
 DOCUMENT("Describes the rasterizer state in the pipeline.");
@@ -992,6 +1014,9 @@ struct RenderPass
   DOCUMENT("Whether or not dynamic rendering is currently suspended.");
   bool suspended = false;
 
+  DOCUMENT("Whether or not there is a potential feedback loop.");
+  bool feedbackLoop = false;
+
   DOCUMENT("The index of the current active subpass.");
   uint32_t subpass;
 
@@ -1076,6 +1101,13 @@ If the list is empty, fdm_offset is disabled and rendering is as normal.
 :type: List[Offset]
 )");
   rdcarray<Offset> fragmentDensityOffsets;
+
+  DOCUMENT(R"(If VK_EXT_multisampled_render_to_single_sampled is enabled, contains the number of
+samples used to render this subpass.
+
+If the subpass is not internally multisampled, tileOnlyMSAASampleCount is set to 0.
+)");
+  uint32_t tileOnlyMSAASampleCount = 0;
 };
 
 DOCUMENT("Describes a single attachment in a framebuffer object.");

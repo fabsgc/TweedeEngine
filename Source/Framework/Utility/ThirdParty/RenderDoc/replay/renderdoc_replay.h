@@ -1,7 +1,7 @@
 /******************************************************************************
  * The MIT License (MIT)
  *
- * Copyright (c) 2019-2022 Baldur Karlsson
+ * Copyright (c) 2019-2023 Baldur Karlsson
  * Copyright (c) 2014 Crytek
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -291,6 +291,26 @@ Should only be called for texture outputs.
 )");
   virtual ResultDetails AddThumbnail(WindowingData window, ResourceId textureId,
                                      const Subresource &sub, CompType typeCast) = 0;
+
+  DOCUMENT(R"(Draws a thumbnail for a particular texture with sensible defaults and returns an RGBA8
+byte buffer for display. This does not render to a window but internally to a texture which is read
+back from the GPU.
+
+Should only be called for texture outputs.
+
+:param int width: The width of the desired thumbnail.
+:param int height: The height of the desired thumbnail.
+:param ResourceId textureId: The texture ID to display in the thumbnail preview.
+:param Subresource sub: The subresource within this texture to use.
+:param CompType typeCast: If possible interpret the texture with this type instead of its normal
+  type. If set to :data:`CompType.Typeless` then no cast is applied, otherwise where allowed the
+  texture data will be reinterpreted - e.g. from unsigned integers to floats, or to unsigned
+  normalised values.
+:return: A buffer with the thumbnail RGBA8 data if successful, or empty if something went wrong.
+:rtype: bytes
+)");
+  virtual bytebuf DrawThumbnail(int32_t width, int32_t height, ResourceId textureId,
+                                const Subresource &sub, CompType typeCast) = 0;
 
   DOCUMENT(R"(Render to the window handle specified when the output was created.
 
@@ -2165,10 +2185,6 @@ extern "C" RENDERDOC_API void RENDERDOC_CC RENDERDOC_SetColors(FloatVector darkC
 DOCUMENT("INTERNAL: Check remote Android package for requirements");
 extern "C" RENDERDOC_API void RENDERDOC_CC RENDERDOC_CheckAndroidPackage(
     const rdcstr &URL, const rdcstr &packageAndActivity, AndroidFlags *flags);
-
-DOCUMENT("INTERNAL: Patch an APK to add debuggable flag.");
-extern "C" RENDERDOC_API AndroidFlags RENDERDOC_CC RENDERDOC_MakeDebuggablePackage(
-    const rdcstr &URL, const rdcstr &packageAndActivity, RENDERDOC_ProgressCallback progress);
 
 DOCUMENT("An interface for enumerating and controlling remote devices.");
 struct IDeviceProtocolController

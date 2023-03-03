@@ -1,7 +1,7 @@
 /******************************************************************************
  * The MIT License (MIT)
  *
- * Copyright (c) 2019-2022 Baldur Karlsson
+ * Copyright (c) 2019-2023 Baldur Karlsson
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -269,6 +269,10 @@ struct View
 
   DOCUMENT("The :class:`ResourceId` of the underlying resource the view refers to.");
   ResourceId resourceId;
+  DOCUMENT("The :class:`ResourceId` of the resource where the hidden buffer counter is stored.");
+  ResourceId counterResourceId;
+  DOCUMENT("The byte offset in :data:`counterResourceId` where the counter is stored.");
+  uint32_t counterByteOffset = 0;
   DOCUMENT("The :class:`TextureType` of the view type.");
   TextureType type;
   DOCUMENT(R"(The format cast that the view uses.
@@ -293,6 +297,14 @@ since single descriptors may only be dynamically skipped by control flow.
   bool dynamicallyUsed = true;
   DOCUMENT("The :class:`D3DBufferViewFlags` set for the buffer.");
   D3DBufferViewFlags bufferFlags = D3DBufferViewFlags::NoFlags;
+  DOCUMENT("Valid for textures - the highest mip that is available through the view.");
+  uint8_t firstMip = 0;
+  DOCUMENT("Valid for textures - the number of mip levels in the view.");
+  uint8_t numMips = 1;
+  DOCUMENT("Valid for texture arrays or 3D textures - the first slice available through the view.");
+  uint16_t firstSlice = 0;
+  DOCUMENT("Valid for texture arrays or 3D textures - the number of slices in the view.");
+  uint16_t numSlices = 1;
   DOCUMENT("If the view has a hidden counter, this stores the current value of the counter.");
   uint32_t bufferStructCount = 0;
   DOCUMENT(R"(The byte size of a single element in the view. Either the byte size of
@@ -303,21 +315,6 @@ since single descriptors may only be dynamically skipped by control flow.
   uint64_t firstElement = 0;
   DOCUMENT("Valid for buffers - the number of elements to be used in the view.");
   uint32_t numElements = 1;
-
-  DOCUMENT("The :class:`ResourceId` of the resource where the hidden buffer counter is stored.");
-  ResourceId counterResourceId;
-  DOCUMENT("The byte offset in :data:`counterResourceId` where the counter is stored.");
-  uint64_t counterByteOffset = 0;
-
-  DOCUMENT("Valid for textures - the highest mip that is available through the view.");
-  uint32_t firstMip = 0;
-  DOCUMENT("Valid for textures - the number of mip levels in the view.");
-  uint32_t numMips = 1;
-
-  DOCUMENT("Valid for texture arrays or 3D textures - the first slice available through the view.");
-  uint32_t firstSlice = 0;
-  DOCUMENT("Valid for texture arrays or 3D textures - the number of slices in the view.");
-  uint32_t numSlices = 1;
 
   DOCUMENT("The minimum mip-level clamp applied when sampling this texture.");
   float minLODClamp = 0.0f;
@@ -623,7 +620,12 @@ written.
   uint64_t writtenCountByteOffset = 0;
 };
 
-DOCUMENT("Describes the stream-out state in the PSO.");
+DOCUMENT(R"(Describes the stream-out state in the PSO.
+
+.. data:: NoRasterization
+
+  Value for :data:`rasterizedStream` that indicates no stream is being rasterized.
+)");
 struct StreamOut
 {
   DOCUMENT("");
@@ -636,6 +638,17 @@ struct StreamOut
 :type: List[D3D12StreamOutBind]
 )");
   rdcarray<StreamOutBind> outputs;
+
+  DOCUMENT(R"(Which stream-out stream is being used for rasterization.
+
+If the value is :data:`NoRasterization` then no stream has been selected for rasterization.
+
+:type: int
+)");
+  uint32_t rasterizedStream = 0;
+
+  // D3D11_SO_NO_RASTERIZED_STREAM
+  static const uint32_t NoRasterization = ~0U;
 };
 
 DOCUMENT("Describes the rasterizer state in the PSO.");

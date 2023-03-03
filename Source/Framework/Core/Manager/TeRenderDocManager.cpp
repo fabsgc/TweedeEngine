@@ -22,7 +22,7 @@ namespace te
             rdcGetAPI = (pRENDERDOC_GetAPI)_rdcLib->GetSymbol("RENDERDOC_GetAPI");
 
             TE_ASSERT_ERROR(rdcGetAPI != nullptr, "Failed to RENDERDOC_GetAPI function address from renderdoc.dll");
-            TE_ASSERT_ERROR(rdcGetAPI(eRENDERDOC_API_Version_1_5_0, (void**)&_rdcAPI) != 0, "Failed to get RenderDoc API pointer");
+            TE_ASSERT_ERROR(rdcGetAPI(eRENDERDOC_API_Version_1_6_0, (void**)&_rdcAPI) != 0, "Failed to get RenderDoc API pointer");
 #endif
         }
 

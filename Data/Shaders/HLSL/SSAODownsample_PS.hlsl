@@ -17,7 +17,7 @@ Texture2D NormalsMap : register(t1);
 
 float4 main( PS_INPUT IN ) : SV_Target0
 {
-    int i = 0;
+    uint i = 0;
     float2 uvs[4];
     uvs[0] = IN.Texture + float2(-0.5f, -0.5f) * gPixelSize;
     uvs[1] = IN.Texture + float2(-0.5f,  0.5f) * gPixelSize;

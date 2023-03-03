@@ -1,7 +1,7 @@
 /******************************************************************************
  * The MIT License (MIT)
  *
- * Copyright (c) 2019-2022 Baldur Karlsson
+ * Copyright (c) 2019-2023 Baldur Karlsson
  * Copyright (c) 2014 Crytek
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -534,6 +534,8 @@ struct NewCaptureData
   int32_t thumbHeight = 0;
   DOCUMENT("The local path on the target system where the capture is saved.");
   rdcstr path;
+  DOCUMENT("The custom title for this capture, if empty a default title can be used.");
+  rdcstr title;
   DOCUMENT(R"(The API used for this capture, if available.
 
 .. note::
