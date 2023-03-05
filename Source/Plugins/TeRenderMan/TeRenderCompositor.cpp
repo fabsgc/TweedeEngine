@@ -944,6 +944,13 @@ namespace te
         /** Maximum valid depth range within samples in a sample set. In meters. */
         static const float DEPTH_RANGE = 1.0f;
 
+        if (inputs.View.GetSceneCamera()->GetProjectionType() == ProjectionType::PT_ORTHOGRAPHIC)
+        {
+            Output = Texture::WHITE;
+            PooledOutput = nullptr;
+            return;
+        }
+
         const AmbientOcclusionSettings& settings = inputs.View.GetRenderSettings().AmbientOcclusion;
         if (!settings.Enabled)
         {
@@ -1008,19 +1015,19 @@ namespace te
         }
 
         SPtr<PooledRenderTexture> setupTex1;
-		if(numDownsampleLevels > 1)
-		{
-			Vector2I downsampledSize(
-				std::max(1, Math::DivideAndRoundUp((INT32)viewProps.Target.ViewRect.width, 4)),
-				std::max(1, Math::DivideAndRoundUp((INT32)viewProps.Target.ViewRect.height, 4))
-			);
+        if(numDownsampleLevels > 1)
+        {
+            Vector2I downsampledSize(
+                std::max(1, Math::DivideAndRoundUp((INT32)viewProps.Target.ViewRect.width, 4)),
+                std::max(1, Math::DivideAndRoundUp((INT32)viewProps.Target.ViewRect.height, 4))
+            );
 
-			POOLED_RENDER_TEXTURE_DESC desc = POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA16F, downsampledSize.x,
-				downsampledSize.y, TU_RENDERTARGET);
-			setupTex1 = resPool.Get(desc);
+            POOLED_RENDER_TEXTURE_DESC desc = POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA16F, downsampledSize.x,
+                downsampledSize.y, TU_RENDERTARGET);
+            setupTex1 = resPool.Get(desc);
 
-			downsample->Execute(inputs.View, sceneDepth, sceneNormals, setupTex1->RenderTex, DEPTH_RANGE);
-		}
+            downsample->Execute(inputs.View, sceneDepth, sceneNormals, setupTex1->RenderTex, DEPTH_RANGE);
+        }
 
         SSAOTextureInputs textures;
         textures.SceneDepth = sceneDepth;
