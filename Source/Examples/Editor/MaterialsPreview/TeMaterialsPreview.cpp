@@ -152,6 +152,7 @@ namespace te
         settings->MotionBlur.Enabled = false;
         settings->Bloom.Enabled = true;
         settings->Bloom.Quality = BloomQuality::Ultra;
+        settings->AmbientOcclusion.Enabled = false;
 
         Transform tfrm = _camera->GetTransform();
         tfrm.Move(Vector3(3.0f, 1.75f, 2.5f));

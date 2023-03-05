@@ -36,19 +36,19 @@ VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
         OUT.PrevPosition = mul(gCamera.MatPrevViewProj, OUT.PrevPosition);
 
         OUT.Normal = IN.Normal;
-        OUT.Tangent = IN.Tangent.xyz;
-        OUT.BiTangent = IN.BiTangent.xyz;
+        OUT.Tangent = IN.Tangent;
+        OUT.BiTangent = IN.BiTangent;
 
         if(gHasAnimation)
         {
             OUT.Normal = mul(blendMatrix, float4(OUT.Normal, 0.0f)).xyz;
-            OUT.Tangent = mul(blendMatrix, float4(OUT.Tangent, 0.0f)).xyz;
-            OUT.BiTangent = mul(blendMatrix, float4(OUT.BiTangent, 0.0f)).xyz;
+            OUT.Tangent = mul(blendMatrix, OUT.Tangent);
+            OUT.BiTangent = mul(blendMatrix, OUT.BiTangent);
         }
 
         OUT.Normal = normalize(mul(gMatWorld, float4(OUT.Normal, 0.0f))).xyz;
-        OUT.Tangent = normalize(mul(gMatWorld, float4(OUT.Tangent, 0.0f))).xyz;
-        OUT.BiTangent = normalize(mul(gMatWorld, float4(OUT.BiTangent, 0.0f))).xyz;
+        OUT.Tangent = normalize(mul(gMatWorld, OUT.Tangent));
+        OUT.BiTangent = normalize(mul(gMatWorld, OUT.BiTangent));
 
         OUT.UV0 = FlipUV(IN.UV0);
         OUT.UV1 = FlipUV(IN.UV1);
@@ -89,19 +89,19 @@ VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
         OUT.PrevPosition = mul(gCamera.MatViewProj, OUT.PrevPosition);
 
         OUT.Normal = IN.Normal;
-        OUT.Tangent = IN.Tangent.xyz;
-        OUT.BiTangent = IN.BiTangent.xyz;
+        OUT.Tangent = IN.Tangent;
+        OUT.BiTangent = IN.BiTangent;
 
         if(gHasAnimation)
         {
             OUT.Normal = mul(blendMatrix, float4(OUT.Normal, 0.0f)).xyz;
-            OUT.Tangent = mul(blendMatrix, float4(OUT.Tangent, 0.0f)).xyz;
-            OUT.BiTangent = mul(blendMatrix, float4(OUT.BiTangent, 0.0f)).xyz;
+            OUT.Tangent = mul(blendMatrix, OUT.Tangent);
+            OUT.BiTangent = mul(blendMatrix, OUT.BiTangent);
         }
 
         OUT.Normal = normalize(mul(gInstanceData[instanceid].MatWorld, float4(OUT.Normal, 0.0f))).xyz;
-        OUT.Tangent = normalize(mul(gInstanceData[instanceid].MatWorld, float4(OUT.Tangent, 0.0f))).xyz;
-        OUT.BiTangent = normalize(mul(gInstanceData[instanceid].MatWorld, float4(OUT.BiTangent, 0.0f))).xyz;
+        OUT.Tangent = normalize(mul(gInstanceData[instanceid].MatWorld, OUT.Tangent));
+        OUT.BiTangent = normalize(mul(gInstanceData[instanceid].MatWorld, OUT.BiTangent));
 
         OUT.UV0 = FlipUV(IN.UV0);
         OUT.UV1 = FlipUV(IN.UV1);
@@ -116,7 +116,7 @@ VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
         OUT.Other.z = (gCamera.UseSRGB == 1) ? 1.0 : 0.0;
     }
 
-    float3x3 TBN = float3x3(OUT.Tangent, OUT.BiTangent, OUT.Normal);
+    float3x3 TBN = float3x3(OUT.Tangent.xyz, OUT.BiTangent.xyz, OUT.Normal);
     OUT.ViewDirWS = normalize(OUT.PositionWS.xyz - gCamera.ViewOrigin);
     OUT.ViewDirTS = mul(TBN, OUT.ViewDirWS);
     OUT.Color = IN.Color;

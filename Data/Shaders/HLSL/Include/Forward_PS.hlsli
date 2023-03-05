@@ -194,8 +194,12 @@ SamplerState NoFilterSampler : register(s2);
 
 // #################### HELPER FUNCTIONS
 
-float4 ComputeNormalBuffer(float4 normal)
+float4 ComputeNormalBuffer(float3 normal)
 {
+    normal.x = normal.x * 0.5 + 0.5;
+    normal.y = normal.y * 0.5 + 0.5;
+    normal.z = normal.z * 0.5 + 0.5;
+
     return float4(normal.xyz, 1.0);
 }
 

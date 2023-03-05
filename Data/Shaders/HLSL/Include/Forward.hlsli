@@ -29,8 +29,8 @@ struct VS_OUTPUT
     float4 CurrPosition      : POSITION1;
     float4 PrevPosition      : POSITION2;
     float3 Normal            : NORMAL;
-    float3 Tangent           : TANGENT;
-    float3 BiTangent         : BINORMAL;
+    float4 Tangent           : TANGENT;
+    float4 BiTangent         : BINORMAL;
     float2 UV0               : TEXCOORD0;
     float2 UV1               : TEXCOORD1;
     float3 ViewDirWS         : TEXCOORD2;

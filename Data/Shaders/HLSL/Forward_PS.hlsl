@@ -69,7 +69,7 @@ PS_OUTPUT main( VS_OUTPUT IN )
     float3		Pv							= gCamera.ViewOrigin;
     float3		V							= normalize(Pv - P);
 
-    float3x3	TBN							= float3x3(normalize(IN.Tangent), normalize(IN.BiTangent), N);
+    float3x3	TBN							= float3x3(normalize(IN.Tangent.xyz), normalize(IN.BiTangent.xyz), N);
     float2		uv0							= (IN.UV0 * gMaterial.UV0Repeat) + gMaterial.UV0Offset;
     float2		uv1							= IN.UV1;
 
@@ -238,7 +238,7 @@ PS_OUTPUT main( VS_OUTPUT IN )
         OUT.Scene.rgb = lit.Diffuse + lit.Specular;
         OUT.Scene.a = 1.0;
 
-        OUT.Normal = ComputeNormalBuffer(float4(N, 0.0f));
+        OUT.Normal = ComputeNormalBuffer(N);
         OUT.Emissive = ComputeEmissiveBuffer(OUT.Scene, float4(emissive, 1.0));
 
         if(writeVelocity)

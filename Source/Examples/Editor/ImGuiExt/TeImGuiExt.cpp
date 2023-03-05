@@ -655,18 +655,6 @@ namespace te
                         hasChanged = true;
                 }
 
-                // Fade Distance
-                {
-                    if (ImGuiExt::RenderOptionFloat(cameraSettings->AmbientOcclusion.FadeDistance, "##ssao_fade_distance_option", "Fade Distance", 0.0f, 5000.0f, width))
-                        hasChanged = true;
-                }
-
-                // Fade Range
-                {
-                    if (ImGuiExt::RenderOptionFloat(cameraSettings->AmbientOcclusion.FadeRange, "##ssao_fade_range_option", "Fade Range", 0.0f, 5000.0f, width))
-                        hasChanged = true;
-                }
-
                 // Intensity
                 {
                     if (ImGuiExt::RenderOptionFloat(cameraSettings->AmbientOcclusion.Intensity, "##ssao_intensity_option", "Intensity", 0.02f, 2.0f, width))
