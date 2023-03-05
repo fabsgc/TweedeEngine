@@ -969,7 +969,7 @@ namespace te
         SPtr<PooledRenderTexture> resolvedNormals;
 
         // Multi sampled sceneDepth is already resolved, we need to do the same with sceneNormal
-        /*if (sceneNormals->GetProperties().GetNumSamples() > 1)
+        if (sceneNormals->GetProperties().GetNumSamples() > 1)
         {
             POOLED_RENDER_TEXTURE_DESC desc = POOLED_RENDER_TEXTURE_DESC::Create2D(normalsProps.GetFormat(),
                 normalsProps.GetWidth(), normalsProps.GetHeight(), TU_RENDERTARGET);
@@ -979,7 +979,7 @@ namespace te
             gRendererUtility().Blit(sceneNormals);
 
             sceneNormals = resolvedNormals->Tex;
-        }*/
+        }
 
         // Multiple downsampled AO levels are used to minimize cache trashing. Downsampled AO targets use larger radius,
         // whose contents are then blended with the higher level.
@@ -1195,42 +1195,6 @@ namespace te
             settings.Bloom.Tint, emissiveTex->Tex->GetProperties().GetNumSamples());
         gaussianBlur->Execute(blurOutput->Tex, tmpBlurOutput->RenderTex, settings.Bloom.FilterSize,
             settings.Bloom.Tint, emissiveTex->Tex->GetProperties().GetNumSamples());
-
-        /*SPtr<PooledRenderTexture> prevOutput;
-        for (UINT32 i = 0; i < numSteps; i++)
-        {
-            const SPtr<PooledRenderTexture> downsampledTex = sceneColorDownSampleNode->Outputs[i];
-            SPtr<PooledRenderTexture> blurInput = downsampledTex;
-
-            gaussianBlur->Execute(blurInput->Tex, blurOutput->RenderTex, settings.Bloom.FilterSize,
-                settings.Bloom.Tint, blurInput->Tex->GetProperties().GetNumSamples());
-        }*/
-
-        /*UINT32 blurTextureFactor = 2;
-
-        // We can reduce blur texture size according to bloom quality
-        if (settings.Bloom.Quality == BloomQuality::Ultra)
-            blurTextureFactor = 1;
-        else if (settings.Bloom.Quality == BloomQuality::High)
-            blurTextureFactor = 2;
-        else if (settings.Bloom.Quality == BloomQuality::Medium)
-            blurTextureFactor = 3;
-        else if (settings.Bloom.Quality == BloomQuality::Low)
-            blurTextureFactor = 4;
-
-        const TextureProperties& inputProps = emissiveTex->Tex->GetProperties();
-        SPtr<PooledRenderTexture> blurOutput = gGpuResourcePool().Get(
-            POOLED_RENDER_TEXTURE_DESC::Create2D(
-                inputProps.GetFormat(),
-                inputProps.GetWidth() / blurTextureFactor,
-                inputProps.GetHeight() / blurTextureFactor,
-                TU_RENDERTARGET,
-                viewProps.Target.NumSamples
-            )
-        );
-
-        gaussianBlur->Execute(emissiveTex->Tex, blurOutput->RenderTex, settings.Bloom.FilterSize,
-            settings.Bloom.Tint, viewProps.Target.NumSamples);*/
 
         // ### Once we have our blured texture, we call our bloom material which will add this blured texture to the 
         // ### output final texture
