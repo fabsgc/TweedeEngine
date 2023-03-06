@@ -787,6 +787,9 @@ namespace te
         if (!settings.Enabled)
             return;
 
+        if (inputs.View.GetSceneCamera()->GetProjectionType() == ProjectionType::PT_ORTHOGRAPHIC)
+            return;
+
         inputs.CurrRenderAPI.PushMarker("[DRAW] Motion Blur", Color(0.1f, 0.9f, 0.6f));
 
         RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
