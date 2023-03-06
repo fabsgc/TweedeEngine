@@ -139,14 +139,18 @@ namespace te
         if (ImGuiExt::RenderOptionCombo<ImGuizmo::MODE>((ImGuizmo::MODE*)(&guizmoMode), "##guizmo_mode_option", "", guizmoModeOptions, 150))
             gEditor().SetImGuizmoMode(guizmoMode);
 
-        // RenderDoc scale
+        // RenderDoc
         ShowButton(ICON_FA_BUG, ICON_FA_BUG,
             [this]() { return false; },
-            [this]() { RenderDocManager::Instance().FrameCapture(); },
+            [this]() { 
+                gEditor().NeedsRedraw();
+                RenderDocManager::Instance().FrameCapture();
+            },
             "Captures the next frame and then launches RenderDoc"
         );
     }
 
     void WidgetToolBar::UpdateBackground()
-    { }
+    {
+    }
 }

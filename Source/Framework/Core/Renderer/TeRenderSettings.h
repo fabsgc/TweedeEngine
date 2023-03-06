@@ -10,46 +10,29 @@ namespace te
     enum class MotionBlurDomain
     {
         /** Camera movement and rotation will result in full-screen motion blur. */
-        CameraOnly,
+        CameraOnly = 0x0,
 
         /**
          * Object movement and rotation will result in blurring of the moving object. Can be significantly more
          * expensive than just using camera blur due to the requirement to use a velocity buffer (unless some
          * other effect also requires it, in which case it will be re-used).
          */
-        ObjectOnly,
+        ObjectOnly = 0x1,
 
         /** Both the camera movement and object movement will result in motion blur. */
-        CameraAndObject
-    };
-
-    /** Type of filter to use when filtering samples contributing to a blurred pixel. */
-    enum class MotionBlurFilter
-    {
-        /** Samples will be simply averaged together to create the blurred pixel. */
-        Simple,
-
-        /**
-         * A more advanced reconstruction filter will be used. This filter provides better blur quality at a
-         * performance cost. In particular the filter will improve blurring at object boundaries, allowing blur
-         * to extend beyond the object silhouette. It will also try to estimate blurred background and provide
-         * better weighting between background, center and foreground samples.
-         */
-        Reconstruction
+        CameraAndObject = 0x2
     };
 
     /** Determines the number of samples to take during motion blur filtering. */
     enum class MotionBlurQuality
     {
-        /** 4 samples per pixel. */
-        VeryLow = 0x0,
-        /** 6 samples per pixel. */
-        Low = 0x1,
         /** 8 samples per pixel. */
-        Medium = 0x2,
+        Low = 0x0,
         /** 12 samples per pixel. */
-        High = 0x3,
+        Medium = 0x2,
         /** 16 samples per pixel. */
+        High = 0x3,
+        /** 24 samples per pixel. */
         Ultra = 0x4
     };
 
@@ -331,10 +314,7 @@ namespace te
         bool Enabled = true;
 
         /** Determines which parts of the scene will trigger motion blur. */
-        MotionBlurDomain Domain = MotionBlurDomain::CameraOnly; // TODO
-
-        /** Type of filter to use when filtering samples contributing to a blurred pixel. */
-        MotionBlurFilter Filter = MotionBlurFilter::Reconstruction; // TODO
+        MotionBlurDomain Domain = MotionBlurDomain::CameraOnly;
 
         /**
          * Determines the number of samples to take during motion blur filtering. Increasing this value will

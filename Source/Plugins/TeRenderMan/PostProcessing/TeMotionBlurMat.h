@@ -10,6 +10,7 @@ namespace te
     TE_PARAM_BLOCK_BEGIN(MotionBlurParamDef)
         TE_PARAM_BLOCK_ENTRY(float, gFrameDelta)
         TE_PARAM_BLOCK_ENTRY(INT32, gHalfNumSamples)
+        TE_PARAM_BLOCK_ENTRY(INT32, gBlurType)
         TE_PARAM_BLOCK_ENTRY(UINT32, gMSAACount)
     TE_PARAM_BLOCK_END
 

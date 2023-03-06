@@ -557,7 +557,6 @@ namespace te
                     blurQualityOptions.AddOption(MotionBlurQuality::High, "High");
                     blurQualityOptions.AddOption(MotionBlurQuality::Medium, "Medium");
                     blurQualityOptions.AddOption(MotionBlurQuality::Low, "Low");
-                    blurQualityOptions.AddOption(MotionBlurQuality::VeryLow, "Very low");
                 }
 
                 static ImGuiExt::ComboOptions<MotionBlurDomain> blurDomainOptions;
@@ -568,18 +567,9 @@ namespace te
                     blurDomainOptions.AddOption(MotionBlurDomain::CameraOnly, "Camera Only");
                 }
 
-                static ImGuiExt::ComboOptions<MotionBlurFilter> blurFilterOptions;
-                if (blurFilterOptions.Options.size() == 0)
-                {
-                    blurFilterOptions.AddOption(MotionBlurFilter::Simple, "Simple");
-                    blurFilterOptions.AddOption(MotionBlurFilter::Reconstruction, "Reconstruction");
-                }
-
                 if (ImGuiExt::RenderOptionCombo<MotionBlurQuality>((&cameraSettings->MotionBlur.Quality), "##blur_quality_option", "Quality", blurQualityOptions, width))
                     hasChanged = true;
                 if (ImGuiExt::RenderOptionCombo<MotionBlurDomain>((&cameraSettings->MotionBlur.Domain), "##blur_domain_option", "Domain", blurDomainOptions, width))
-                    hasChanged = true;
-                if (ImGuiExt::RenderOptionCombo<MotionBlurFilter>((&cameraSettings->MotionBlur.Filter), "##blur_filter_option", "Filter", blurFilterOptions, width))
                     hasChanged = true;
             }
         }

@@ -190,6 +190,7 @@ namespace te
         if (gCoreApplication().GetState().IsFlagSet(ApplicationState::Game))
         {
             gCoreApplication().GetState().SetFlag(ApplicationState::Game, false);
+            gEditor().DestroyRunningScene();
 
             if (!(flags & (UINT32)CameraFlag::OnDemand))
             {

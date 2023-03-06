@@ -34,7 +34,7 @@ VS_OUTPUT main( VS_INPUT IN )
 {
     VS_OUTPUT OUT = (VS_OUTPUT)0;
 
-    float4x4 blendMatrix = (float4x4)0;
+    float3x4 blendMatrix = (float3x4)0;
 
     if(gHasAnimation)
         blendMatrix = GetBlendMatrix(IN.BlendWeights, IN.BlendIndices);
@@ -45,8 +45,8 @@ VS_OUTPUT main( VS_INPUT IN )
 
     if(gHasAnimation)
     {
-        OUT.Position = mul(blendMatrix, OUT.Position);
-        OUT.PositionWS = mul(blendMatrix, OUT.PositionWS);
+        OUT.Position = float4(mul(blendMatrix, OUT.Position), 1.0);
+        OUT.PositionWS = float4(mul(blendMatrix, OUT.PositionWS), 1.0);
         OUT.Normal = mul(blendMatrix, float4(OUT.Normal, 0.0f)).xyz;
     }
 

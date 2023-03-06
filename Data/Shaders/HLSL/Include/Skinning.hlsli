@@ -4,29 +4,27 @@
 Buffer<float4> BoneMatrices : register(t0);
 Buffer<float4> PrevBoneMatrices : register(t1);
 
-float4x4 GetBoneMatrix(uint idx)
+float3x4 GetBoneMatrix(uint idx)
 {
     float4 row0 = BoneMatrices[idx * 4 + 0];
     float4 row1 = BoneMatrices[idx * 4 + 1];
     float4 row2 = BoneMatrices[idx * 4 + 2];
-    float4 row3 = BoneMatrices[idx * 4 + 3];
 
-    return float4x4(row0, row1, row2, row3);
+    return float3x4(row0, row1, row2);
 }
 
-float4x4 GetPrevBoneMatrix(uint idx)
+float3x4 GetPrevBoneMatrix(uint idx)
 {
     float4 row0 = PrevBoneMatrices[idx * 4 + 0];
     float4 row1 = PrevBoneMatrices[idx * 4 + 1];
     float4 row2 = PrevBoneMatrices[idx * 4 + 2];
-    float4 row3 = PrevBoneMatrices[idx * 4 + 3];
 
-    return float4x4(row0, row1, row2, row3);
+    return float3x4(row0, row1, row2);
 }
 
-float4x4 GetBlendMatrix(float4 blendWeights, uint4 blendIndices)
+float3x4 GetBlendMatrix(float4 blendWeights, uint4 blendIndices)
 {
-    float4x4 result = (float4x4)0; 
+    float3x4 result = (float3x4)0; 
 
     if(blendIndices.x >= 0)
         result += blendWeights.x * GetBoneMatrix(blendIndices.x);
@@ -40,9 +38,9 @@ float4x4 GetBlendMatrix(float4 blendWeights, uint4 blendIndices)
     return result;
 }
 
-float4x4 GetPrevBlendMatrix(float4 blendWeights, uint4 blendIndices)
+float3x4 GetPrevBlendMatrix(float4 blendWeights, uint4 blendIndices)
 {
-    float4x4 result = (float4x4)0; 
+    float3x4 result = (float3x4)0; 
 
     if(blendIndices.x >= 0)
         result += blendWeights.x * GetPrevBoneMatrix(blendIndices.x);

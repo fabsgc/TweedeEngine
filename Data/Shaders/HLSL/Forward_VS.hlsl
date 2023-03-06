@@ -6,8 +6,8 @@ VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
 {
     VS_OUTPUT OUT = (VS_OUTPUT)0;
 
-    float4x4 blendMatrix = (float4x4)0;
-    float4x4 prevBlendMatrix = (float4x4)0;
+    float3x4 blendMatrix = (float3x4)0;
+    float3x4 prevBlendMatrix = (float3x4)0;
 
     if(instanceid == 0)
     {
@@ -19,19 +19,19 @@ VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
 
         OUT.Position = float4(IN.Position, 1.0f);
         if(gHasAnimation)
-            OUT.Position = mul(blendMatrix, OUT.Position);
+            OUT.Position = float4(mul(blendMatrix, OUT.Position), 1.0);
         OUT.Position = mul(gMatWorld, OUT.Position);
         OUT.Position = mul(gCamera.MatViewProj, OUT.Position);
 
         OUT.CurrPosition = float4(IN.Position, 1.0f);
         if(gHasAnimation)
-            OUT.CurrPosition = mul(blendMatrix, OUT.CurrPosition);
+            OUT.CurrPosition = float4(mul(blendMatrix, OUT.CurrPosition), 1.0);
         OUT.CurrPosition = mul(gMatWorld, OUT.CurrPosition);
         OUT.CurrPosition = mul(gCamera.MatViewProj, OUT.CurrPosition);
 
         OUT.PrevPosition = float4(IN.Position, 1.0f);
         if(gHasAnimation)
-            OUT.PrevPosition = mul(prevBlendMatrix, OUT.PrevPosition);
+            OUT.PrevPosition = float4(mul(prevBlendMatrix, OUT.PrevPosition), 1.0);
         OUT.PrevPosition = mul(gMatPrevWorld, OUT.PrevPosition);
         OUT.PrevPosition = mul(gCamera.MatPrevViewProj, OUT.PrevPosition);
 
@@ -42,8 +42,8 @@ VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
         if(gHasAnimation)
         {
             OUT.Normal = mul(blendMatrix, float4(OUT.Normal, 0.0f)).xyz;
-            OUT.Tangent = mul(blendMatrix, OUT.Tangent);
-            OUT.BiTangent = mul(blendMatrix, OUT.BiTangent);
+            OUT.Tangent = float4(mul(blendMatrix, OUT.Tangent), 1.0f);
+            OUT.BiTangent = float4(mul(blendMatrix, OUT.BiTangent), 1.0f);
         }
 
         OUT.Normal = normalize(mul(gMatWorld, float4(OUT.Normal, 0.0f))).xyz;
@@ -55,7 +55,7 @@ VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
 
         OUT.PositionWS = float4(IN.Position, 1.0f);
         if(gHasAnimation)
-            OUT.PositionWS = mul(blendMatrix, OUT.PositionWS);
+            OUT.PositionWS = float4(mul(blendMatrix, OUT.PositionWS), 1.0);
         OUT.PositionWS = mul(gMatWorld, OUT.PositionWS);
 
         OUT.Other.x = (gWriteVelocity == 1) ? 1.0 : 0.0;
@@ -72,19 +72,19 @@ VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
 
         OUT.Position = float4(IN.Position, 1.0f);
         if(gHasAnimation)
-            OUT.Position = mul(blendMatrix, OUT.Position);
+            OUT.Position = float4(mul(blendMatrix, OUT.Position), 1.0);
         OUT.Position = mul(gInstanceData[instanceid].MatWorld, OUT.Position);
         OUT.Position = mul(gCamera.MatViewProj, OUT.Position);
 
         OUT.CurrPosition = float4(IN.Position, 1.0f);
         if(gHasAnimation)
-            OUT.CurrPosition = mul(blendMatrix, OUT.CurrPosition);
+            OUT.CurrPosition = float4(mul(blendMatrix, OUT.CurrPosition), 1.0);
         OUT.CurrPosition = mul(gInstanceData[instanceid].MatWorld, OUT.CurrPosition);
         OUT.CurrPosition = mul(gCamera.MatViewProj, OUT.CurrPosition);
 
         OUT.PrevPosition = float4(IN.Position, 1.0f);
         if(gHasAnimation)
-            OUT.PrevPosition = mul(prevBlendMatrix, OUT.PrevPosition);
+            OUT.PrevPosition = float4(mul(prevBlendMatrix, OUT.PrevPosition), 1.0);
         OUT.PrevPosition = mul(gInstanceData[instanceid].MatPrevWorld, OUT.PrevPosition);
         OUT.PrevPosition = mul(gCamera.MatViewProj, OUT.PrevPosition);
 
@@ -95,8 +95,8 @@ VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
         if(gHasAnimation)
         {
             OUT.Normal = mul(blendMatrix, float4(OUT.Normal, 0.0f)).xyz;
-            OUT.Tangent = mul(blendMatrix, OUT.Tangent);
-            OUT.BiTangent = mul(blendMatrix, OUT.BiTangent);
+            OUT.Tangent = float4(mul(blendMatrix, OUT.Tangent), 1.0f);
+            OUT.BiTangent = float4(mul(blendMatrix, OUT.BiTangent), 1.0f);
         }
 
         OUT.Normal = normalize(mul(gInstanceData[instanceid].MatWorld, float4(OUT.Normal, 0.0f))).xyz;
@@ -108,7 +108,7 @@ VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
 
         OUT.PositionWS = float4(IN.Position, 1.0f);
         if(gHasAnimation)
-            OUT.PositionWS = mul(blendMatrix, OUT.PositionWS);
+            OUT.PositionWS = float4(mul(blendMatrix, OUT.PositionWS), 1.0);
         OUT.PositionWS = mul(gInstanceData[instanceid].MatWorld, OUT.PositionWS);
 
         OUT.Other.x = (gInstanceData[instanceid].WriteVelocity == 1) ? 1.0 : 0.0;

@@ -53,4 +53,18 @@ float2 NDCToUV(CameraData camera, float2 ndcPos)
     return ndcPos.xy * camera.ClipToUVScaleOffset.xy + camera.ClipToUVScaleOffset.zw;
 }
 
+// Encodes velocity into a format suitable for storing in a 16-bit SNORM texture. 
+// Velocity range of [-2, 2] is supported (full NDC).
+float2 EncodeVelocity16SNORM(float2 velocity)
+{
+    return velocity * 0.5f;
+}
+
+// Decodes velocity from an encoded 16-bit SNORM format. See encodeVelocity16SNORM().
+// Velocity range of [-2, 2] is supported (full NDC).
+float2 DecodeVelocity16SNORM(float2 val)
+{
+    return val * 2.0f;
+}
+
 #endif // __COMMON__

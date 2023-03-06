@@ -22,7 +22,7 @@ namespace te
     const String CCameraUI::SCROLL_AXIS_BINDING = "SceneScroll";
 
     const float CCameraUI::MOVE_SPEED = 0.2f;
-    const float CCameraUI::ZOOM_SPEED = 6.0f;
+    const float CCameraUI::ZOOM_SPEED = 12.0f;
     const float CCameraUI::SCROLL_SPEED = 12.0f;
     const float CCameraUI::ROTATIONAL_SPEED = 8.0f;
     const float CCameraUI::TOP_SCROLL_SPEED = 12.0f;
@@ -132,34 +132,57 @@ namespace te
             _lastHideCursorState = hideCursor;
         }
 
-        auto scrolling = [&](const float& amount, const float& sensitivity) {
+        // fill amountLeft left if smoothMovement is true
+        auto scrolling = [&](const float& iAmount, bool iSmoothMovement, float& oAmountLeft) {
             // We are too close and want to move forward again
-            if (_distanceToTarget < 0.5f && amount > 0.0f)
+            if (_distanceToTarget < 0.5f && iAmount > 0.0f)
+            {
+                oAmountLeft = 0.0f;
                 return;
+            }
 
             // We are to far and want to move backward again
-            if (_distanceToTarget > MAX_ZOOM && amount < 0.0f)
+            if (_distanceToTarget > MAX_ZOOM && iAmount < 0.0f)
+            {
+                oAmountLeft = 0.0f;
                 return;
+            }
 
             if (frameDelta > 0.004f)
                 frameDelta = 0.004f;
 
             float coefficient = (_distanceToTarget < MAX_ZOOM_SPEED) ? fabs(_distanceToTarget) / 2.0f : MAX_ZOOM_SPEED;
-            float scrollAmount = amount * coefficient * sensitivity * frameDelta;
+            float scrollAmount = iAmount * coefficient * frameDelta;
 
             // We try to move with an amount greater that the target distance
-            if (amount > 0.0f && scrollAmount > fabs(_distanceToTarget))
+            if (iAmount > 0.0f && scrollAmount > fabs(_distanceToTarget))
                 scrollAmount = _distanceToTarget - 1.0f;
+
+            float scrollAmountToDo = scrollAmount;
+
+            if (iSmoothMovement)
+            {
+                if (Math::Abs(scrollAmount) < 0.02f)
+                {
+                    scrollAmountToDo = scrollAmount;
+                    oAmountLeft = 0.0f;
+                }
+                else
+                {
+                    scrollAmountToDo = scrollAmount / 15.0f;
+                    oAmountLeft = (scrollAmount - scrollAmountToDo) / coefficient / frameDelta;
+                }
+            }
 
             if (!isOrtographic)
             {
                 Vector3 forward = SO()->GetLocalTransform().GetForward();
                 forward.Normalize();
-                SO()->Move(forward * scrollAmount);
+                SO()->Move(forward * scrollAmountToDo);
             }
             else
             {
-                float orthoHeight = Math::Max(1.0f, _camera->GetOrthoWindowHeight() - scrollAmount);
+                float orthoHeight = Math::Max(1.0f, _camera->GetOrthoWindowHeight() - scrollAmountToDo);
                 _camera->SetOrthoWindowHeight(orthoHeight);
             }
 
@@ -171,7 +194,8 @@ namespace te
         {
             if (camZooming)
             {
-                scrolling(gVirtualInput().GetAxisValue(_verticalAxis), ZOOM_SPEED);
+                _scrollAmountLeft = 0.0f;
+                scrolling(gVirtualInput().GetAxisValue(_verticalAxis) * ZOOM_SPEED, false, _scrollAmountLeft);
             }
             else if (camMoving)
             {
@@ -193,14 +217,14 @@ namespace te
                 float horzValue = gVirtualInput().GetAxisValue(_horizontalAxis);
                 float vertValue  = gVirtualInput().GetAxisValue(_verticalAxis);
 
-                if (fabs(horzValue) > 0.0f || fabs(vertValue) > 0.0f)
+                if (Math::Abs(horzValue) > 0.0f || Math::Abs(vertValue) > 0.0f)
                 {
                     float rotationRight = Math::Clamp(vertValue * ROTATIONAL_SPEED, -MAX_ROTATION, MAX_ROTATION);
                     float rotationY = Math::Clamp(horzValue * ROTATIONAL_SPEED, -MAX_ROTATION, MAX_ROTATION);
 
                     _localRotation.y += rotationY;
 
-                    if (fabs(_localRotation.x + rotationRight) > MAX_RIGHT_ANGLE)
+                    if (Math::Abs(_localRotation.x + rotationRight) > MAX_RIGHT_ANGLE)
                     {
                         if (rotationRight > 0.0f)
                             rotationRight = MAX_RIGHT_ANGLE - _localRotation.x;
@@ -225,8 +249,10 @@ namespace te
         {
             float scrollAmount = Math::Clamp(gVirtualInput().GetAxisValue(_scrollAxis), -TOP_SCROLL_SPEED, TOP_SCROLL_SPEED);
 
-            if (fabs(scrollAmount) > 1.0f)
-                scrolling(scrollAmount, SCROLL_SPEED);
+            if (Math::Abs(scrollAmount) > 1.0f != 0.0f)
+                scrolling(scrollAmount * SCROLL_SPEED + _scrollAmountLeft, true, _scrollAmountLeft);
+            else if (_scrollAmountLeft != 0.0f)
+                scrolling(_scrollAmountLeft, true, _scrollAmountLeft);
         }
 
         _needsRedraw = needsRedraw;

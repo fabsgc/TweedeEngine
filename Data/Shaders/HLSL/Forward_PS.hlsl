@@ -73,8 +73,8 @@ PS_OUTPUT main( VS_OUTPUT IN )
     float2		uv0							= (IN.UV0 * gMaterial.UV0Repeat) + gMaterial.UV0Offset;
     float2		uv1							= IN.UV1;
 
-    float3		NDCPos						= (IN.CurrPosition / IN.CurrPosition.w).xyz;
-    float3		PrevNDCPos					= (IN.PrevPosition / IN.PrevPosition.w).xyz;
+    float2		NDCPos						= (IN.CurrPosition.xy / IN.CurrPosition.w);
+    float2		PrevNDCPos					= (IN.PrevPosition.xy / IN.PrevPosition.w);
 
     float3		diffuseBaseColor			= (1.0 - metallic) * baseColor.rgb;
 
@@ -118,7 +118,7 @@ PS_OUTPUT main( VS_OUTPUT IN )
         OUT.Scene = (float4)0;
         OUT.Normal = (float4)0;
         OUT.Emissive = (float4)0;
-        OUT.Velocity = (float4)0;
+        OUT.Velocity = (float2)0;
     }
     else
     {
@@ -242,9 +242,9 @@ PS_OUTPUT main( VS_OUTPUT IN )
         OUT.Emissive = ComputeEmissiveBuffer(OUT.Scene, float4(emissive, 1.0));
 
         if(writeVelocity)
-            OUT.Velocity = ComputeVelocityBuffer(float4(NDCPos, 0.0), float4(PrevNDCPos, 0.0), transmission);
+            OUT.Velocity = ComputeVelocityBuffer(NDCPos.xy, PrevNDCPos.xy, transmission);
         else
-            OUT.Velocity = float4(0.0, 0.0, 0.0, 1.0);
+            OUT.Velocity = float2(0.0, 0.0);
     }
 
     return OUT;

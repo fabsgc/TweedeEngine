@@ -14,7 +14,7 @@ namespace te
     void MotionBlurMat::Initialize()
     {
         _params->SetParamBlockBuffer(GPT_PIXEL_PROGRAM, "PerFrameBuffer", _paramBuffer);
-        _params->SetSamplerState(GPT_PIXEL_PROGRAM, "BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::BilinearClamped));
+        _params->SetSamplerState(GPT_PIXEL_PROGRAM, "BilinearClampedSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::BilinearClamped));
     }
 
     void MotionBlurMat::Execute(const SPtr<Texture>& source, const SPtr<RenderTarget>& destination, const SPtr<Texture>& depth, const SPtr<Texture>& velocity,
@@ -24,15 +24,15 @@ namespace te
         switch(settings.Quality)
         {
             default:
-            case MotionBlurQuality::VeryLow: numSamples = 4; break;
-            case MotionBlurQuality::Low: numSamples = 6; break;
-            case MotionBlurQuality::Medium: numSamples = 8; break;
-            case MotionBlurQuality::High: numSamples = 12;  break;
-            case MotionBlurQuality::Ultra: numSamples = 32;  break;
+            case MotionBlurQuality::Low: numSamples = 8; break;
+            case MotionBlurQuality::Medium: numSamples = 12; break;
+            case MotionBlurQuality::High: numSamples = 16;  break;
+            case MotionBlurQuality::Ultra: numSamples = 24;  break;
         }
 
         gMotionBlurParamDef.gFrameDelta.Set(_paramBuffer, gTime().GetFrameDelta(), 0);
         gMotionBlurParamDef.gHalfNumSamples.Set(_paramBuffer, numSamples / 2, 0);
+        gMotionBlurParamDef.gBlurType.Set(_paramBuffer, (INT32)settings.Domain, 0);
         gMotionBlurParamDef.gMSAACount.Set(_paramBuffer, MSAACount, 0);
 
         if (MSAACount > 1)

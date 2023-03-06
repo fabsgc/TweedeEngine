@@ -45,7 +45,7 @@ struct PS_OUTPUT
     float4 Scene      : SV_Target0;
     float4 Normal     : SV_Target1;
     float4 Emissive   : SV_Target2;
-    float4 Velocity   : SV_Target3;
+    float2 Velocity   : SV_Target3;
 };
 
 // #################### CONSTANT BUFFERS

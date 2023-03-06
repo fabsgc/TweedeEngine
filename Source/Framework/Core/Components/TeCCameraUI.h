@@ -76,6 +76,8 @@ namespace te
         bool _zoomingEnabled;
         bool _lastHideCursorState;
 
+        float _scrollAmountLeft = 0.0f; // We want a smooth zoom movement.
+
         HCamera _camera;
 
         VirtualButton _rotateBtn;

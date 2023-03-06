@@ -3,6 +3,7 @@
 #include "TeCorePrerequisites.h"
 #include "Utility/TeModule.h"
 #include "Math/TeConvexVolume.h"
+#include "Math/TeMatrix4.h"
 
 namespace te
 {

@@ -79,6 +79,7 @@
 #include "Material/TeMaterial.h"
 #include "Material/TeShader.h"
 #include "Threading/TeTaskScheduler.h"
+#include "Utility/TeTime.h"
 
 #ifndef GImGui
 ImGuiContext* GImGui = NULL;
@@ -198,6 +199,15 @@ namespace te
 
             if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DockingEnable)
                 EndGui();
+        }
+
+        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Mode::Game);
+        if (isRunning)
+        {
+            HSceneObject sphereSO = _runningSceneSO->GetSceneObject("Sphere", true);
+
+            if(!sphereSO.Empty())
+                sphereSO->Rotate(Vector3(0.0f, 0.0f, 1.0f), Radian(2.5f * gTime().GetFrameDelta()));
         }
     }
 
@@ -406,7 +416,8 @@ namespace te
         _viewportCameraUI->SetName("Viewport camera UI");
 
         auto settings = _viewportCamera->GetRenderSettings();
-        settings->MotionBlur.Enabled = false;
+        settings->MotionBlur.Enabled = true;
+        settings->MotionBlur.Domain = MotionBlurDomain::CameraAndObject;
 
         _previewViewportCamera = _viewportCamera.GetNewHandleFromExisting();
     }
@@ -1232,7 +1243,7 @@ namespace te
         _runningSceneSO->Clone(_sceneSO);
         _runningSceneSO->SetActive(false);
         _runningSceneSO->SetActive(true);
-        
+
         // Note : CJoint elements will not work when running the scene from the editor
         // because we can't easly associate cloned joint to cloned bodies
         // TODO : Find a way to associate joints to their bodies in the cloned scene
@@ -1275,9 +1286,9 @@ namespace te
 
         // LOAD MESH AND TEXTURES RESOURCES
         // ######################################################
-        _sphereMesh = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Primitives/sphere-hd.obj", meshImportOptions)->Entries[0].Res);
-        //_loadedMeshMonkey = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Monkey/monkey-hd.obj", meshImportOptions)->Entries[0].Res);
-        //_loadedMeshMonkey = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Primitives/plane.obj", meshImportOptions)->Entries[0].Res);
+        _sphereMesh = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Mill/mill.obj", meshImportOptions)->Entries[0].Res);
+        //_monkeyMesh = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Monkey/monkey-hd.obj", meshImportOptions)->Entries[0].Res);
+        //_planeMesh = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Primitives/plane.obj", meshImportOptions)->Entries[0].Res);
 
         textureCubeMapImportOptions->Format = PixelUtil::BestFormatFromFile("Data/Textures/Skybox/skybox_night_512.png");
         _skyboxTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_night_512.png", textureCubeMapImportOptions);

@@ -218,34 +218,12 @@ float4 ComputeEmissiveBuffer(float4 color, float4 emissive)
     return result;
 }
 
-float4 ComputeVelocityBuffer(float4 position, float4 prevPosition, float alpha)
+float2 ComputeVelocityBuffer(float2 NDCPos, float2 PrevNDCPos, float alpha)
 {
-    float2 velocity = (float2)0;
-    float4 output = float4(0.0, 0.0, 0.0, 1.0);
+    float2 velocity = NDCPos - PrevNDCPos;
+    velocity = EncodeVelocity16SNORM(velocity);
 
-    if(alpha >= 1.0)
-    {
-        if(all(position =! prevPosition))
-        {
-            float2 a = float2(position.xy);
-            float2 b = float2(prevPosition.xy);
-
-            velocity = (b - a);
-
-            if(velocity.x < -0.99) velocity.x = -0.99;
-            if(velocity.y < -0.99) velocity.y = -0.99;
-
-            if(velocity.x > 0.99) velocity.x = 0.99;
-            if(velocity.y > 0.99) velocity.y = 0.99;
-
-            velocity /= 2.0;
-            velocity += 0.5;
-
-            output.xy = velocity.xy;
-        }
-    }
-
-    return output;
+    return velocity;
 }
 
 float3 ExpandNormal(float3 normal)

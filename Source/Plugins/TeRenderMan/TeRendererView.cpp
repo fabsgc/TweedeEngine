@@ -160,6 +160,12 @@ namespace te
         _properties.ProjTransform = _properties.ProjTransformNoAA;
         _properties.ViewProjTransform = _properties.ProjTransform * _properties.ViewTransform;
 
+        // Motion Blur uses Prev matrices -> need to update buffer at every frame
+        if (_camera->GetRenderSettings()->MotionBlur.Enabled && !_properties.OnDemand)
+        {
+            perViewBufferDirty = true;
+        }
+        
         if (perViewBufferDirty)
         {
             UpdatePerViewBuffer();
