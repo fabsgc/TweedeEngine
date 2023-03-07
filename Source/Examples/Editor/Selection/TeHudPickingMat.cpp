@@ -22,7 +22,7 @@ namespace te
     {
         _params->SetParamBlockBuffer("PerFrameBuffer", _perFrameParamBuffer);
         _params->SetParamBlockBuffer(GPT_GEOMETRY_PROGRAM, "PerInstanceBuffer", _perInstanceParamBuffer);
-        _params->SetSamplerState(GPT_PIXEL_PROGRAM, "TextureSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
+        _params->SetSamplerState(GPT_PIXEL_PROGRAM, "Sampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
 
         _params->SetTexture(GPT_PIXEL_PROGRAM, "MaskTexture", _hudMask.GetInternalPtr());
     }

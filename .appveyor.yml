@@ -1,5 +1,5 @@
 image:
-  - ubuntu1804
+  - Ubuntu
   - Visual Studio 2019
 
 platform:
@@ -22,7 +22,7 @@ for:
   -
     matrix:
       only:
-        - image: ubuntu1804
+        - image: Ubuntu
     install:
       - sudo apt-get update -qq && sudo apt-get install -qq
       - sudo apt-get -y install mesa-common-dev libglu1-mesa-dev libgl1-mesa-dev libx11-dev libxcursor-dev 
@@ -33,4 +33,19 @@ for:
       - cd Build
       - cmake --version
       - cmake -G "Unix Makefiles" .. -D CMAKE_C_COMPILER=gcc-9 -D CMAKE_CXX_COMPILER=g++-9 -DCMAKE_BUILD_TYPE=%Configuration%
+      - cmake --build ./ --config %Configuration%
+  -
+    matrix:
+      only:
+        - image: Ubuntu
+    install:
+      - sudo apt-get update -qq && sudo apt-get install -qq
+      - sudo apt-get -y install mesa-common-dev libglu1-mesa-dev libgl1-mesa-dev libx11-dev libxcursor-dev 
+      - sudo apt-get -y install libxrandr-dev libxi-dev uuid-dev libglfw3 libglfw3-dev gcc-11 g++-11
+      - CC=gcc-11 CXX=g++-11
+    build_script:
+      - mkdir Build
+      - cd Build
+      - cmake --version
+      - cmake -G "Unix Makefiles" .. -D CMAKE_C_COMPILER=gcc-11 -D CMAKE_CXX_COMPILER=g++-11 -DCMAKE_BUILD_TYPE=%Configuration%
       - cmake --build ./ --config %Configuration%

@@ -74,7 +74,7 @@ PS_OUTPUT main( VS_OUTPUT IN )
     float2		uv1							= IN.UV1;
 
     float2		NDCPos						= (IN.CurrPosition.xy / IN.CurrPosition.w);
-    float2		PrevNDCPos					= (IN.PrevPosition.xy / IN.PrevPosition.w);
+    float2		PrevNDCPos					= (IN.PrevPosition.xy / IN.CurrPosition.w);
 
     float3		diffuseBaseColor			= (1.0 - metallic) * baseColor.rgb;
 

@@ -23,7 +23,7 @@ float2 NDCToUV(float2 ndcPos)
     return ndcPos.xy * gCamera.ClipToUVScaleOffset.xy + gCamera.ClipToUVScaleOffset.zw;
 }
 
-SamplerState BilinearClampedSampler : register(s0);
+SamplerState Sampler : register(s0);
 
 Texture2D SourceMap : register(t0);
 Texture2DMS<float4> SourceMapMS : register(t1);
@@ -46,7 +46,7 @@ float4 ComputeMotionBlur(float2 currentUV, float2 blurDir)
         float2 offset = blurDir * step * i;
         float2 uv = currentUV + offset;
 
-        output += TextureLevelSampling(BilinearClampedSampler, SourceMap, SourceMapMS, uv, gMSAACount, 0);
+        output += TextureLevelSampling(Sampler, SourceMap, SourceMapMS, uv, gMSAACount, 0);
     }
 
     for (int j = 1; j <= gHalfNumSamples; ++j) 
@@ -54,7 +54,7 @@ float4 ComputeMotionBlur(float2 currentUV, float2 blurDir)
         float2 offset = blurDir * step * j;
         float2 uv = currentUV + offset;
 
-        output += TextureLevelSampling(BilinearClampedSampler, SourceMap, SourceMapMS, uv, gMSAACount, 0);
+        output += TextureLevelSampling(Sampler, SourceMap, SourceMapMS, uv, gMSAACount, 0);
     }
 
     return output;
@@ -70,7 +70,7 @@ float4 ComputeObjectMotionBlur(float2 currentUV, float2 velocity)
         float2 offset = velocity * i * step;
         float2 uv = currentUV + offset;
 
-        output += TextureLevelSampling(BilinearClampedSampler, SourceMap, SourceMapMS, uv, gMSAACount, 0);
+        output += TextureLevelSampling(Sampler, SourceMap, SourceMapMS, uv, gMSAACount, 0);
     }
 
     return output;
@@ -83,9 +83,9 @@ float4 main( PS_INPUT IN ) : SV_Target0
     float2 ndcPos = IN.ScreenPosition;
     float4 output = (float4)0;
     uint blurPasses = 1;
-    // float curDepth = TextureSampling(BilinearClampedSampler, DepthMap, DepthMapMS, currentUV, gMSAACount).r;
+    // float curDepth = TextureSampling(Sampler, DepthMap, DepthMapMS, currentUV, gMSAACount).r;
 
-    output = TextureSampling(BilinearClampedSampler, SourceMap, SourceMapMS, currentUV, gMSAACount);
+    output = TextureSampling(Sampler, SourceMap, SourceMapMS, currentUV, gMSAACount);
 
     // ##### CAMERA MOTION BLUR
     if(gBlurType == BLUR_CAMERA_ONLY || gBlurType == BLUR_CAMERA_AND_OBJECT)
@@ -102,20 +102,28 @@ float4 main( PS_INPUT IN ) : SV_Target0
             cameraBlurDir /= 2.0;
         }
 
-        output += ComputeMotionBlur(currentUV, cameraBlurDir);
-        blurPasses += gHalfNumSamples * 2;
+        if(length(cameraBlurDir) > 0.001f)
+        {
+            output += ComputeMotionBlur(currentUV, cameraBlurDir);
+            blurPasses += gHalfNumSamples * 2;
+        }
     }
 
     // ##### OBJECT MOTION BLUR
     if(gBlurType == BLUR_OBJECT_ONLY || gBlurType == BLUR_CAMERA_AND_OBJECT)
     {
-        float2 velocity = TextureSampling(BilinearClampedSampler, VelocityMap, VelocityMapMS, currentUV, gMSAACount).xy;
+        float2 velocity = TextureSampling(Sampler, VelocityMap, VelocityMapMS, currentUV, gMSAACount).xy;
         velocity = DecodeVelocity16SNORM(velocity);
 
-        output += ComputeObjectMotionBlur(currentUV, velocity);
-        blurPasses += gHalfNumSamples * 2;
+        if(length(velocity) > 0.001f)
+        {
+            output += ComputeObjectMotionBlur(currentUV, velocity);
+            blurPasses += gHalfNumSamples * 2;
+        }
     }
 
-    output /= blurPasses;
+    if(blurPasses > 1)
+        output /= blurPasses;
+
     return output;
 }

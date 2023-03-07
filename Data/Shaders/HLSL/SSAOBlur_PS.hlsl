@@ -14,19 +14,19 @@ cbuffer PerCameraBuffer : register(b1)
     CameraData gCamera;
 }
 
-SamplerState BilinearSampler : register(s0);
+SamplerState Sampler : register(s0);
 Texture2D InputMap : register(t0);
 Texture2D DepthMap : register(t1);
 
 float4 main( PS_INPUT IN ) : SV_Target0
 {
     const int NUM_SAMPLES = 2;
-    float centerDepth = ConvertFromDeviceZ(gCamera, DepthMap.Sample(BilinearSampler, IN.Texture).r);
+    float centerDepth = ConvertFromDeviceZ(gCamera, DepthMap.Sample(Sampler, IN.Texture).r);
 
     float weightedSum = 0.0f;
     float weightSum = 0.0f;
 
-    float centerAO = InputMap.Sample(BilinearSampler, IN.Texture).r;
+    float centerAO = InputMap.Sample(Sampler, IN.Texture).r;
     weightedSum += centerAO;
     weightSum += 1.0f;
 
@@ -36,8 +36,8 @@ float4 main( PS_INPUT IN ) : SV_Target0
     {
         float2 sampleUV = gPixelSize * i + IN.Texture;
 
-        float sampleAO = InputMap.Sample(BilinearSampler, sampleUV).r;
-        float sampleDepth = ConvertFromDeviceZ(gCamera, DepthMap.Sample(BilinearSampler, sampleUV).r);
+        float sampleAO = InputMap.Sample(Sampler, sampleUV).r;
+        float sampleDepth = ConvertFromDeviceZ(gCamera, DepthMap.Sample(Sampler, sampleUV).r);
 
         float weight = saturate(1.0f - abs(sampleDepth - centerDepth) * gInvDepthThreshold);
         weightedSum += sampleAO * weight;
@@ -49,8 +49,8 @@ float4 main( PS_INPUT IN ) : SV_Target0
     {
         float2 sampleUV = gPixelSize * j + IN.Texture;
 
-        float sampleAO = InputMap.Sample(BilinearSampler, sampleUV).r;
-        float sampleDepth = ConvertFromDeviceZ(gCamera, DepthMap.Sample(BilinearSampler, sampleUV).r);
+        float sampleAO = InputMap.Sample(Sampler, sampleUV).r;
+        float sampleDepth = ConvertFromDeviceZ(gCamera, DepthMap.Sample(Sampler, sampleUV).r);
 
         float weight = saturate(1.0f - abs(sampleDepth - centerDepth) * gInvDepthThreshold);
         weightedSum += sampleAO * weight;

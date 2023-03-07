@@ -770,8 +770,8 @@ namespace te
         if(view.GetRenderSettings().Bloom.Enabled)
             deps.push_back(RCNodeBloom::GetNodeId());
 
-        //if(view.GetRenderSettings().AmbientOcclusion.Enabled)
-        //    deps.push_back(RCNodeSSAO::GetNodeId());
+        if(view.GetRenderSettings().AmbientOcclusion.Enabled)
+            deps.push_back(RCNodeSSAO::GetNodeId());
 
         if(view.GetRenderSettings().DepthOfField.Enabled)
             deps.push_back(RCNodeGaussianDOF::GetNodeId());

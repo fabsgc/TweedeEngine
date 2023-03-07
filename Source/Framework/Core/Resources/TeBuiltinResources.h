@@ -74,14 +74,20 @@ namespace te
     {
         /** Anistropic sampler. */
         Anisotropic,
-        /** NoFilter sampler */
-        NoFilter,
+        /** Trilinear sampler. */
+        Trilinear,
         /** Bilinear sampler. */
         Bilinear,
-        /** Clamped Bilinear sampler. */
+        /** Bilinear clamped sampler. */
         BilinearClamped,
-        /** Trilinear sampler. */
-        Trilinear
+        /** Nearest point sampler. */
+        NearestPoint,
+        /** Nearest point sampler. */
+        NearestPointClamped,
+        /** NoFilter sampler */
+        NoFilter,
+        /** NoFilter clamped sampler */
+        NoFilterClamped,
     };
 
     /**	Holds references to built-in resources used by the core engine. */
@@ -182,10 +188,13 @@ namespace te
         HShader _shaderIrradianceProjectSH;
 
         SPtr<SamplerState> _anisotropicSamplerState = nullptr;
-        SPtr<SamplerState> _noFilterSamplerState = nullptr;
+        SPtr<SamplerState> _trilinearSamplerState = nullptr;
         SPtr<SamplerState> _bilinearSamplerState = nullptr;
         SPtr<SamplerState> _bilinearClampedSamplerState = nullptr;
-        SPtr<SamplerState> _trilinearSamplerState = nullptr;
+        SPtr<SamplerState> _nearestPointSamplerState = nullptr;
+        SPtr<SamplerState> _nearestPointClampedSamplerState = nullptr;
+        SPtr<SamplerState> _noFilterSamplerState = nullptr;
+        SPtr<SamplerState> _noFilterClampedSamplerState = nullptr;
 
         SHADER_DESC _forwardShaderDesc;
         SHADER_DESC _blitShaderDesc;
@@ -279,10 +288,13 @@ namespace te
         DEPTH_STENCIL_STATE_DESC _depthStencilStateDesc;
 
         SAMPLER_STATE_DESC _anisotropicSamplerStateDesc;
-        SAMPLER_STATE_DESC _noFilterSamplerStateDesc;
+        SAMPLER_STATE_DESC _trilinearSamplerStateDesc;
         SAMPLER_STATE_DESC _bilinearSamplerStateDesc;
         SAMPLER_STATE_DESC _bilinearClampedSamplerStateDesc;
-        SAMPLER_STATE_DESC _trilinearSamplerStateDesc;
+        SAMPLER_STATE_DESC _nearestPointSamplerStateDesc;
+        SAMPLER_STATE_DESC _nearestPointClampedSamplerStateDesc;
+        SAMPLER_STATE_DESC _noFilterSamplerStateDesc;
+        SAMPLER_STATE_DESC _noFilterClampedSamplerStateDesc;
 
         HMaterial _defaultMaterial;
 

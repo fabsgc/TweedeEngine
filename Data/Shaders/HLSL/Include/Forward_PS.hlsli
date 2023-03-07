@@ -189,7 +189,7 @@ TextureCube PrefilteredRadianceMap : register(t18);
 Texture2D PreIntegratedEnvGF : register(t19);
 
 SamplerState AnisotropicSampler : register(s0);
-SamplerState BiLinearSampler : register(s1);
+SamplerState BilinearSampler : register(s1);
 SamplerState NoFilterSampler : register(s2);
 
 // #################### HELPER FUNCTIONS
@@ -426,14 +426,14 @@ float3 PrefilteredRadiance(const float3 R, float pRoughness)
 {
     float mipLevel =  gSkyboxNumMips * pRoughness * (1.7 - 0.7 * pRoughness);
     //float skyMipLevel = gSkyboxNumMips * MapRoughnessToMipLevel(pRoughness, gSkyboxNumMips);
-    return PrefilteredRadianceMap.SampleLevel(BiLinearSampler, R, mipLevel).rgb * gSkyboxBrightness;
+    return PrefilteredRadianceMap.SampleLevel(BilinearSampler, R, mipLevel).rgb * gSkyboxBrightness;
 }
 
 float3 PrefilteredRadiance(const float3 R, float pRoughness, float offset)
 {
     float mipLevel =  gSkyboxNumMips * pRoughness * (1.7 - 0.7 * pRoughness);
     //float skyMipLevel = gSkyboxNumMips * MapRoughnessToMipLevel(pRoughness, gSkyboxNumMips);
-    return PrefilteredRadianceMap.SampleLevel(BiLinearSampler, R, mipLevel  + offset).rgb * gSkyboxBrightness;
+    return PrefilteredRadianceMap.SampleLevel(BilinearSampler, R, mipLevel  + offset).rgb * gSkyboxBrightness;
 }
 
 float ComputeSpecularOcclusion(float NoV, float occlusion, float roughness) 
@@ -453,7 +453,7 @@ float3 SpecularDFG(const PixelData pixel)
 
 float3 Irradiance_RoughnessOne(const float3 N)
 {
-    return PrefilteredRadianceMap.SampleLevel(BiLinearSampler, N, (gSkyboxNumMips - 1)).rgb * gSkyboxBrightness;
+    return PrefilteredRadianceMap.SampleLevel(BilinearSampler, N, (gSkyboxNumMips - 1)).rgb * gSkyboxBrightness;
 }
 
 struct Refraction
@@ -562,7 +562,7 @@ float3 DoDiffuseIBL(float3 V, float3 N, float NoV, float3 E, const PixelData pix
     float3 result = (float3)0;
     float3 dominantN = GetDiffuseDominantDir (V, N, NoV, pixel.Roughness);
 
-    float3 irradiance = DiffuseIrrMap.Sample(BiLinearSampler, dominantN).rgb * gSkyboxBrightness;
+    float3 irradiance = DiffuseIrrMap.Sample(BilinearSampler, dominantN).rgb * gSkyboxBrightness;
     result = irradiance * pixel.DiffuseColor *  occlusion;
 
     return result;

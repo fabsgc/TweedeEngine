@@ -23,13 +23,13 @@ VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
         OUT.Position = mul(gMatWorld, OUT.Position);
         OUT.Position = mul(gCamera.MatViewProj, OUT.Position);
 
-        OUT.CurrPosition = float4(IN.Position, 1.0f);
+        OUT.CurrPosition = float4(IN.Position, 1.0f); // Clip Space
         if(gHasAnimation)
             OUT.CurrPosition = float4(mul(blendMatrix, OUT.CurrPosition), 1.0);
         OUT.CurrPosition = mul(gMatWorld, OUT.CurrPosition);
         OUT.CurrPosition = mul(gCamera.MatViewProj, OUT.CurrPosition);
 
-        OUT.PrevPosition = float4(IN.Position, 1.0f);
+        OUT.PrevPosition = float4(IN.Position, 1.0f); // Clip Space
         if(gHasAnimation)
             OUT.PrevPosition = float4(mul(prevBlendMatrix, OUT.PrevPosition), 1.0);
         OUT.PrevPosition = mul(gMatPrevWorld, OUT.PrevPosition);
@@ -53,7 +53,7 @@ VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
         OUT.UV0 = FlipUV(IN.UV0);
         OUT.UV1 = FlipUV(IN.UV1);
 
-        OUT.PositionWS = float4(IN.Position, 1.0f);
+        OUT.PositionWS = float4(IN.Position, 1.0f); // World Space
         if(gHasAnimation)
             OUT.PositionWS = float4(mul(blendMatrix, OUT.PositionWS), 1.0);
         OUT.PositionWS = mul(gMatWorld, OUT.PositionWS);
@@ -76,17 +76,17 @@ VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
         OUT.Position = mul(gInstanceData[instanceid].MatWorld, OUT.Position);
         OUT.Position = mul(gCamera.MatViewProj, OUT.Position);
 
-        OUT.CurrPosition = float4(IN.Position, 1.0f);
+        OUT.CurrPosition = float4(IN.Position, 1.0f); // Clip Space
         if(gHasAnimation)
             OUT.CurrPosition = float4(mul(blendMatrix, OUT.CurrPosition), 1.0);
         OUT.CurrPosition = mul(gInstanceData[instanceid].MatWorld, OUT.CurrPosition);
         OUT.CurrPosition = mul(gCamera.MatViewProj, OUT.CurrPosition);
 
-        OUT.PrevPosition = float4(IN.Position, 1.0f);
+        OUT.PrevPosition = float4(IN.Position, 1.0f); // Clip Space
         if(gHasAnimation)
             OUT.PrevPosition = float4(mul(prevBlendMatrix, OUT.PrevPosition), 1.0);
         OUT.PrevPosition = mul(gInstanceData[instanceid].MatPrevWorld, OUT.PrevPosition);
-        OUT.PrevPosition = mul(gCamera.MatViewProj, OUT.PrevPosition);
+        OUT.PrevPosition = mul(gCamera.MatPrevViewProj, OUT.PrevPosition);
 
         OUT.Normal = IN.Normal;
         OUT.Tangent = IN.Tangent;
@@ -106,7 +106,7 @@ VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
         OUT.UV0 = FlipUV(IN.UV0);
         OUT.UV1 = FlipUV(IN.UV1);
 
-        OUT.PositionWS = float4(IN.Position, 1.0f);
+        OUT.PositionWS = float4(IN.Position, 1.0f); // World Space
         if(gHasAnimation)
             OUT.PositionWS = float4(mul(blendMatrix, OUT.PositionWS), 1.0);
         OUT.PositionWS = mul(gInstanceData[instanceid].MatWorld, OUT.PositionWS);

@@ -354,7 +354,7 @@ namespace te
         }
 
         BlitMat* blitMat = BlitMat::Get();
-        blitMat->Execute(texture, fArea, flipUV, texProps.GetNumSamples(), isDepth);
+        blitMat->Execute(texture, fArea, flipUV, texProps.GetNumSamples(), isDepth, isFiltered);
     }
 
     bool RendererUtility::DoFrustumCulling(const HCamera& camera, const HRenderable& renderable)

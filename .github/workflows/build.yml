@@ -11,7 +11,7 @@ env:
 
 jobs:
   Linux:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
@@ -46,19 +46,19 @@ jobs:
     - name: Install libglfw3-dev
       run: sudo apt-get install libglfw3-dev
 
-    - name: Install gcc-9
-      run: sudo apt-get install gcc-9
+    - name: Install gcc-11
+      run: sudo apt-get install gcc-11
 
-    - name: Install g++-9
-      run: sudo apt-get install g++-9
+    - name: Install g++-11
+      run: sudo apt-get install g++-11
 
-    - name: Change compiler to use GCC 9
-      run: CC=gcc-9 CXX=g++-9
+    - name: Change compiler to use GCC 11
+      run: CC=gcc-11 CXX=g++-11
 
     - name: Configure CMake
       run: |
         mkdir build && cd build
-        cmake -G "Unix Makefiles" .. -D CMAKE_C_COMPILER=gcc-9 -D CMAKE_CXX_COMPILER=g++-9 -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+        cmake -G "Unix Makefiles" .. -D CMAKE_C_COMPILER=gcc-11 -D CMAKE_CXX_COMPILER=g++-11 -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
     - name: Build
       run: |

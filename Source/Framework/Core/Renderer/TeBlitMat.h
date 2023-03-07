@@ -27,7 +27,7 @@ namespace te
         void Initialize() override;
 
         /** Executes the material on the currently bound render target, copying from @p source. */
-        void Execute(const SPtr<Texture>& source, const Rect2& area, bool flipUV, INT32 MSAACount = 1, bool isDepth = false);
+        void Execute(const SPtr<Texture>& source, const Rect2& area, bool flipUV, INT32 MSAACount = 1, bool isDepth = false, bool isFiltered = false);
 
     private:
         SPtr<GpuParamBlockBuffer> _paramBuffer;

@@ -23,8 +23,8 @@ cbuffer PerCameraBuffer : register(b1)
     CameraData gCamera;
 }
 
-SamplerState BilinearSampler : register(s0);
-SamplerState BilinearClampedSampler : register(s1);
+SamplerState Sampler : register(s0);
+SamplerState ClampedSampler : register(s1);
 Texture2D DepthMap : register(t0);
 Texture2D NormalsMap : register(t1);
 Texture2D DownsampledAOMap : register(t2);
@@ -72,10 +72,10 @@ float GetUpsampledAO(float2 uv, float depth, float3 normal)
     for(int i = 0; i < 9; ++i)
     {
         // Get AO from previous step (half-resolution buffer)
-        float sampleAO = DownsampledAOMap.Sample(BilinearClampedSampler, uvs[i]).r;
+        float sampleAO = DownsampledAOMap.Sample(ClampedSampler, uvs[i]).r;
 
         // Get filtered normal/depth
-        float4 sampleNormalAndDepth = SetupAOMap.Sample(BilinearClampedSampler, uvs[i]);
+        float4 sampleNormalAndDepth = SetupAOMap.Sample(ClampedSampler, uvs[i]);
         float3 sampleNormal = sampleNormalAndDepth.xyz * 2.0f - 1.0f;
         float sampleDepth = sampleNormalAndDepth.w;
 
@@ -130,12 +130,12 @@ float4 main( PS_INPUT IN ) : SV_Target0
 
     if (gFinalPass) // Final uses gbuffer input
     {
-        sceneDepth = ConvertFromDeviceZ(gCamera, DepthMap.Sample(BilinearClampedSampler, IN.Texture).r);
-        worldNormal = NormalsMap.Sample(BilinearClampedSampler, IN.Texture).xyz * 2.0f - 1.0f;
+        sceneDepth = ConvertFromDeviceZ(gCamera, DepthMap.Sample(ClampedSampler, IN.Texture).r);
+        worldNormal = NormalsMap.Sample(ClampedSampler, IN.Texture).xyz * 2.0f - 1.0f;
     }
     else // Input from AO setup pass
     {
-        aoSetup = SetupAOMap.Sample(BilinearClampedSampler, IN.Texture);
+        aoSetup = SetupAOMap.Sample(ClampedSampler, IN.Texture);
         sceneDepth = aoSetup.w;
         worldNormal = aoSetup.xyz * 2.0f - 1.0f;
     }
@@ -157,7 +157,7 @@ float4 main( PS_INPUT IN ) : SV_Target0
     float2 rotateDir = (float2)0;
 
     if (gQuality == 0) rotateDir = float2(0, 1); // No random rotation
-    else rotateDir = RandomMap.Sample(BilinearSampler, IN.Texture * gRandomTileScale).rg * 2 - 1;
+    else rotateDir = RandomMap.Sample(Sampler, IN.Texture * gRandomTileScale).rg * 2 - 1;
 
     // Scale by screen space sample radius
     rotateDir *= sampleRadius;
@@ -197,16 +197,16 @@ float4 main( PS_INPUT IN ) : SV_Target0
 
             if (gFinalPass) // Final uses gbuffer input
             {
-                depthL = DepthMap.Sample(BilinearClampedSampler, NdcToDepthUV(screenPosL)).r;
-                depthR = DepthMap.Sample(BilinearClampedSampler, NdcToDepthUV(screenPosR)).r;
+                depthL = DepthMap.Sample(ClampedSampler, NdcToDepthUV(screenPosL)).r;
+                depthR = DepthMap.Sample(ClampedSampler, NdcToDepthUV(screenPosR)).r;
 
                 depthL = ConvertFromDeviceZ(gCamera, depthL);
                 depthR = ConvertFromDeviceZ(gCamera, depthR);
             }
             else
             {
-                depthL = SetupAOMap.Sample(BilinearClampedSampler, NdcToDepthUV(screenPosL)).w;
-                depthR = SetupAOMap.Sample(BilinearClampedSampler, NdcToDepthUV(screenPosR)).w;
+                depthL = SetupAOMap.Sample(ClampedSampler, NdcToDepthUV(screenPosL)).w;
+                depthR = SetupAOMap.Sample(ClampedSampler, NdcToDepthUV(screenPosR)).w;
             }
 
             float3 viewPosL = GetViewSpacePos(screenPosL, depthL);

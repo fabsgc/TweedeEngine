@@ -10,7 +10,7 @@ struct PS_INPUT
     float2 Texture : TEXCOORD0;
 };
 
-SamplerState BilinearSampler : register(s0);
+SamplerState Sampler : register(s0);
 
 Texture2D SourceMap : register(t0);
 Texture2DMS<float4> SourceMapMS : register(t1);
@@ -20,7 +20,7 @@ float4 main( PS_INPUT IN ) : SV_Target0
 {
     if(gMSAACount > 1)
     {
-        float4 sum = float4(0, 0, 0, 0);
+        float4 sum = (float4)0;
 
         for(uint i = 0; i < gMSAACount; i++)
         {
@@ -31,5 +31,5 @@ float4 main( PS_INPUT IN ) : SV_Target0
         return sum / gMSAACount;
     }
 
-    return SourceMap.SampleLevel(BilinearSampler, IN.Texture, 0);
+    return SourceMap.SampleLevel(Sampler, IN.Texture, 0);
 }

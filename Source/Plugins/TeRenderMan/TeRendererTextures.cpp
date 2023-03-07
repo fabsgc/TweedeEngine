@@ -14,6 +14,7 @@ namespace te
         TEXTURE_DESC desc;
         desc.Type = TEX_TYPE_2D;
         desc.Format = PF_RG8;
+        desc.Usage = TU_STATIC;
         desc.Width = 4;
         desc.Height = 4;
         desc.DebugName = "4x4 Randomization Texture";
@@ -243,6 +244,7 @@ namespace te
         TEXTURE_DESC desc;
         desc.Type = TEX_TYPE_2D;
         desc.Format = PF_RGBA32F;
+        desc.Usage = TU_STATIC;
         desc.Width = 128;
         desc.Height = 128;
         desc.DebugName = "BRDF (GGX:r,g/Charlie:b) LUT";

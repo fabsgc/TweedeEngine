@@ -13,13 +13,12 @@ cbuffer PerFrameBuffer : register(b0)
     float4 gSampleWeights[MAX_BLUR_SAMPLES];
 }
 
-SamplerState BilinearSampler : register(s0);
+SamplerState Sampler : register(s0);
 
 Texture2D SourceMap : register(t0);
 Texture2DMS<float4> SourceMapMS : register(t1);
 
-float4 GaussianBlur(Texture2D source, Texture2DMS<float4> sourceMS, 
-    SamplerState samplerState, float2 uv)
+float4 GaussianBlur(Texture2D source, Texture2DMS<float4> sourceMS, float2 uv)
 {
     float2 textureOffset = 1.0 / gSourceDimensions * 2;
     float2 offsettedUv = (float2)0;
@@ -35,7 +34,7 @@ float4 GaussianBlur(Texture2D source, Texture2DMS<float4> sourceMS,
             if(offsettedUv.x < 1.0 && offsettedUv.x > 0.0 && 
                offsettedUv.y < 1.0 && offsettedUv.y > 0.0)
             {
-                color += TextureSampling(BilinearSampler, source, sourceMS, offsettedUv, gMSAACount).rgb * gSampleWeights[i * 2].rgb;
+                color += TextureSampling(Sampler, source, sourceMS, offsettedUv, gMSAACount).rgb * gSampleWeights[i * 2].rgb;
             }
         }
 
@@ -44,7 +43,7 @@ float4 GaussianBlur(Texture2D source, Texture2DMS<float4> sourceMS,
             if(offsettedUv.x < 1.0 && offsettedUv.x > 0.0 && 
                offsettedUv.y < 1.0 && offsettedUv.y > 0.0)
             {
-                color += TextureSampling(BilinearSampler, source, sourceMS, offsettedUv, gMSAACount).rgb * gSampleWeights[i * 2 + 1].rgb;
+                color += TextureSampling(Sampler, source, sourceMS, offsettedUv, gMSAACount).rgb * gSampleWeights[i * 2 + 1].rgb;
             }
         }
 
@@ -56,6 +55,6 @@ float4 GaussianBlur(Texture2D source, Texture2DMS<float4> sourceMS,
 
 float4 main( PS_INPUT IN ) : SV_Target0
 {
-    float4 output = GaussianBlur(SourceMap, SourceMapMS, BilinearSampler, IN.Texture);
+    float4 output = GaussianBlur(SourceMap, SourceMapMS, IN.Texture);
     return output;
 }

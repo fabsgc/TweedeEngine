@@ -15,7 +15,6 @@ namespace te
     {
         _params->SetParamBlockBuffer("PerFrameBuffer", _perFrameParamBuffer);
         _params->SetParamBlockBuffer("PerObjectBuffer", _perObjectParamBuffer);
-        _params->SetSamplerState("BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::BilinearClamped));
     }
 
     void SelectionMat::BindCamera(const HCamera& camera)

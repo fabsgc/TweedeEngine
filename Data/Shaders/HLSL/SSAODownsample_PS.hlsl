@@ -11,7 +11,7 @@ cbuffer PerCameraBuffer : register(b1)
     CameraData gCamera;
 }
 
-SamplerState BilinearSampler : register(s0);
+SamplerState Sampler : register(s0);
 Texture2D DepthMap : register(t0);
 Texture2D NormalsMap : register(t1);
 
@@ -28,8 +28,8 @@ float4 main( PS_INPUT IN ) : SV_Target0
     [unroll]
     for(i = 0; i < 4; i++)
     {
-        samples[i].xyz = NormalsMap.Sample(BilinearSampler, uvs[i]).xyz;
-        samples[i].w = ConvertFromDeviceZ(gCamera, DepthMap.Sample(BilinearSampler, uvs[i]).r);
+        samples[i].xyz = NormalsMap.Sample(Sampler, uvs[i]).xyz;
+        samples[i].w = ConvertFromDeviceZ(gCamera, DepthMap.Sample(Sampler, uvs[i]).r);
     }
 
     float maxZ = max(max(samples[0].w, samples[1].w), max(samples[2].w, samples[3].w));

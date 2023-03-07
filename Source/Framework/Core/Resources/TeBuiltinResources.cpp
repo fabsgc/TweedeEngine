@@ -184,14 +184,18 @@ namespace te
         {
         case BuiltinSampler::Anisotropic:
             return _anisotropicSamplerState;
-        case BuiltinSampler::NoFilter:
-            return _noFilterSamplerState; 
+        case BuiltinSampler::Trilinear:
+            return _trilinearSamplerState;
         case BuiltinSampler::Bilinear:
             return _bilinearSamplerState;
         case BuiltinSampler::BilinearClamped:
             return _bilinearClampedSamplerState;
-        case BuiltinSampler::Trilinear:
-            return _trilinearSamplerState;
+        case BuiltinSampler::NearestPoint:
+            return _nearestPointSamplerState;
+        case BuiltinSampler::NearestPointClamped:
+            return _nearestPointClampedSamplerState;
+        case BuiltinSampler::NoFilter:
+            return _noFilterSamplerState; 
         default:
             TE_ASSERT_ERROR(false, "Can't find \"" + ToString((UINT32)type) + "\" sampler.")
             break;
@@ -657,6 +661,11 @@ namespace te
         _anisotropicSamplerStateDesc.MipFilter = FO_ANISOTROPIC;
         _anisotropicSamplerStateDesc.MaxAnisotropy = 8;
 
+        _trilinearSamplerStateDesc.AddressMode = UVWAddressingMode();
+        _trilinearSamplerStateDesc.MinFilter = FO_LINEAR;
+        _trilinearSamplerStateDesc.MagFilter = FO_LINEAR;
+        _trilinearSamplerStateDesc.MipFilter = FO_LINEAR;
+
         _bilinearSamplerStateDesc.AddressMode = UVWAddressingMode();
         _bilinearSamplerStateDesc.MinFilter = FO_LINEAR;
         _bilinearSamplerStateDesc.MagFilter = FO_LINEAR;
@@ -669,15 +678,29 @@ namespace te
         _bilinearClampedSamplerStateDesc.MagFilter = FO_LINEAR;
         _bilinearClampedSamplerStateDesc.MipFilter = FO_POINT;
 
-        _trilinearSamplerStateDesc.AddressMode = UVWAddressingMode();
-        _trilinearSamplerStateDesc.MinFilter = FO_LINEAR;
-        _trilinearSamplerStateDesc.MagFilter = FO_LINEAR;
-        _trilinearSamplerStateDesc.MipFilter = FO_LINEAR;
+        _nearestPointSamplerStateDesc.AddressMode = UVWAddressingMode();
+        _nearestPointSamplerStateDesc.MinFilter = FO_POINT;
+        _nearestPointSamplerStateDesc.MagFilter = FO_POINT;
+        _nearestPointSamplerStateDesc.MipFilter = FO_POINT;
+
+        _nearestPointClampedSamplerStateDesc.AddressMode.u = TextureAddressingMode::TAM_CLAMP;
+        _nearestPointClampedSamplerStateDesc.AddressMode.v = TextureAddressingMode::TAM_CLAMP;
+        _nearestPointClampedSamplerStateDesc.AddressMode.w = TextureAddressingMode::TAM_CLAMP;
+        _nearestPointClampedSamplerStateDesc.MinFilter = FO_POINT;
+        _nearestPointClampedSamplerStateDesc.MagFilter = FO_POINT;
+        _nearestPointClampedSamplerStateDesc.MipFilter = FO_POINT;
 
         _noFilterSamplerStateDesc.AddressMode = UVWAddressingMode();
         _noFilterSamplerStateDesc.MinFilter = FO_NONE;
         _noFilterSamplerStateDesc.MagFilter = FO_NONE;
         _noFilterSamplerStateDesc.MipFilter = FO_NONE;
+
+        _noFilterClampedSamplerStateDesc.AddressMode.u = TextureAddressingMode::TAM_CLAMP;
+        _noFilterClampedSamplerStateDesc.AddressMode.v = TextureAddressingMode::TAM_CLAMP;
+        _noFilterClampedSamplerStateDesc.AddressMode.w = TextureAddressingMode::TAM_CLAMP;
+        _noFilterClampedSamplerStateDesc.MinFilter = FO_NONE;
+        _noFilterClampedSamplerStateDesc.MagFilter = FO_NONE;
+        _noFilterClampedSamplerStateDesc.MipFilter = FO_NONE;
     }
 
     void BuiltinResources::InitShaderDesc()
@@ -686,10 +709,13 @@ namespace te
     void BuiltinResources::InitSamplers()
     {
         _anisotropicSamplerState = SamplerState::Create(_anisotropicSamplerStateDesc);
-        _noFilterSamplerState = SamplerState::Create(_noFilterSamplerStateDesc);
+        _trilinearSamplerState = SamplerState::Create(_trilinearSamplerStateDesc);
         _bilinearSamplerState = SamplerState::Create(_bilinearSamplerStateDesc);
         _bilinearClampedSamplerState = SamplerState::Create(_bilinearClampedSamplerStateDesc);
-        _trilinearSamplerState = SamplerState::Create(_trilinearSamplerStateDesc);
+        _nearestPointSamplerState = SamplerState::Create(_nearestPointSamplerStateDesc);
+        _nearestPointClampedSamplerState = SamplerState::Create(_nearestPointClampedSamplerStateDesc);
+        _noFilterSamplerState = SamplerState::Create(_noFilterSamplerStateDesc);
+        _noFilterClampedSamplerState = SamplerState::Create(_noFilterClampedSamplerStateDesc);
     }
 
     void BuiltinResources::InitShaderOpaque()
