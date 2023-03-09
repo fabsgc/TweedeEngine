@@ -352,7 +352,7 @@ namespace te
         /**
          * To reduce compute cost of gaussian blur behind. value between [16, 128]
          */
-        UINT MaxBlurSamples = 128;
+        UINT32 MaxBlurSamples = 128;
     };
 
     /** Various options that control shadow rendering for a specific view. */
