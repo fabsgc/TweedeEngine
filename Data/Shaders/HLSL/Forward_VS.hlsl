@@ -42,13 +42,13 @@ VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
         if(gHasAnimation)
         {
             OUT.Normal = mul(blendMatrix, float4(OUT.Normal, 0.0f)).xyz;
-            OUT.Tangent = float4(mul(blendMatrix, OUT.Tangent), 1.0f);
-            OUT.BiTangent = float4(mul(blendMatrix, OUT.BiTangent), 1.0f);
+            OUT.Tangent = float4(mul(blendMatrix, OUT.Tangent), 0.0f);
+            OUT.BiTangent = float4(mul(blendMatrix, OUT.BiTangent), 0.0f);
         }
 
         OUT.Normal = normalize(mul(gMatWorld, float4(OUT.Normal, 0.0f))).xyz;
-        OUT.Tangent = normalize(mul(gMatWorld, OUT.Tangent));
-        OUT.BiTangent = normalize(mul(gMatWorld, OUT.BiTangent));
+        OUT.Tangent = normalize(mul(gMatWorld, float4(OUT.Tangent.xyz, 0.0f)));
+        OUT.BiTangent = normalize(mul(gMatWorld, float4(OUT.BiTangent.xyz, 0.0f)));
 
         OUT.UV0 = FlipUV(IN.UV0);
         OUT.UV1 = FlipUV(IN.UV1);
@@ -95,13 +95,13 @@ VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
         if(gHasAnimation)
         {
             OUT.Normal = mul(blendMatrix, float4(OUT.Normal, 0.0f)).xyz;
-            OUT.Tangent = float4(mul(blendMatrix, OUT.Tangent), 1.0f);
-            OUT.BiTangent = float4(mul(blendMatrix, OUT.BiTangent), 1.0f);
+            OUT.Tangent = float4(mul(blendMatrix, OUT.Tangent), 0.0f);
+            OUT.BiTangent = float4(mul(blendMatrix, OUT.BiTangent), 0.0f);
         }
 
         OUT.Normal = normalize(mul(gInstanceData[instanceid].MatWorld, float4(OUT.Normal, 0.0f))).xyz;
-        OUT.Tangent = normalize(mul(gInstanceData[instanceid].MatWorld, OUT.Tangent));
-        OUT.BiTangent = normalize(mul(gInstanceData[instanceid].MatWorld, OUT.BiTangent));
+        OUT.Tangent = normalize(mul(gInstanceData[instanceid].MatWorld, float4(OUT.Tangent.xyz, 0.0f)));
+        OUT.BiTangent = normalize(mul(gInstanceData[instanceid].MatWorld, float4(OUT.BiTangent.xyz, 0.0f)));
 
         OUT.UV0 = FlipUV(IN.UV0);
         OUT.UV1 = FlipUV(IN.UV1);
