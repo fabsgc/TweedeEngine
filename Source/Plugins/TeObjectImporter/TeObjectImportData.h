@@ -28,6 +28,7 @@ namespace te
         bool ImportSkin = false;
         bool ImportAnimations = true;
         bool ImportMaterials = true;
+        bool ImportTextures = true;
         bool ImportBlendShapes = true;
         bool ForceGenNormals = false;
         bool GenSmoothNormals = false;

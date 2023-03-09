@@ -7,6 +7,7 @@
 #include "Gui/TeGuiAPI.h"
 #include "Utility/TeTime.h"
 #include "../TeEditorUtils.h"
+#include "Renderer/TeRenderer.h"
 
 namespace te
 {
@@ -228,6 +229,7 @@ namespace te
         gEditor().SetImGuizmoRect(Vector2(position.x, position.y), Vector2(width, height));
 
         SPtr<Texture> texture = _renderData.RenderTex->GetColorTexture(0);
+        //texture = gRenderer()->GetLastRenderTexture(RenderOutputType::SSAO);
         if (texture)
         {
             SPtr<TextureView> textureView = texture->RequestView(
@@ -263,7 +265,7 @@ namespace te
         _renderData.Width = (UINT32)width;
         _renderData.Height = (UINT32)height;
 
-        gRendererUtility().GenerateViewportRenderTexture(_renderData);
+        gRendererUtility().GenerateViewportRenderTexture(_renderData, "Viewport Output");
 
         _lastRenderDataUpatedTime = gTime().GetTime();
         _needResetViewport = false;

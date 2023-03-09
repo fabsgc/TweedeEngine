@@ -40,6 +40,11 @@ struct VS_OUTPUT
     float4 Color             : COLOR0;
 };
 
+struct VS_Z_OUTPUT
+{
+    float4 Position          : SV_POSITION;
+};
+
 struct PS_OUTPUT
 {
     float4 Scene      : SV_Target0;

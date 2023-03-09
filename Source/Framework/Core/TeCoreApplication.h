@@ -9,7 +9,7 @@ namespace te
     struct FrameData;
 
     /**	Structure containing parameters for starting the application. */
-    struct START_UP_DESC
+    struct TE_CORE_EXPORT START_UP_DESC
     {
         String RenderAPI; /** Name of the render system plugin to use. */
         String Renderer; /** Name of the renderer plugin to use. */
@@ -23,7 +23,7 @@ namespace te
     };
 
     /** Represents the current state of the application */
-    class ApplicationState
+    class TE_CORE_EXPORT ApplicationState
     {
     public:
         enum Mode : UINT32

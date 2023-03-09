@@ -108,6 +108,7 @@ namespace te
                         collisionMeshImportOption.ScaleSystemUnit = meshImportOptions->ScaleSystemUnit;
                         collisionMeshImportOption.ScaleFactor = meshImportOptions->ScaleFactor;
                         collisionMeshImportOption.ImportMaterials = false;
+                        collisionMeshImportOption.ImportTextures = false;
                         collisionMeshImportOption.ImportSRGBTextures = false;
                         collisionMeshImportOption.ImportRootMotion = false;
                         collisionMeshImportOption.ImportCollisionShape = false;
@@ -221,7 +222,10 @@ namespace te
             removeComponentFlags |= aiComponent_ANIMATIONS | aiComponent_BONEWEIGHTS;
 
         if (!importOptions->ImportMaterials)
-            removeComponentFlags |= aiComponent_MATERIALS | aiComponent_TEXTURES;
+            removeComponentFlags |= aiComponent_MATERIALS;
+
+        if (!importOptions->ImportTextures)
+            removeComponentFlags |= aiComponent_TEXTURES;
 
         if (!importOptions->ImportVertexColors)
             removeComponentFlags |= aiComponent_COLORS;
@@ -247,6 +251,7 @@ namespace te
         assimpImportOptions.ImportBlendShapes  = importOptions->ImportBlendShapes;
         assimpImportOptions.ImportAnimations   = importOptions->ImportAnimations;
         assimpImportOptions.ImportMaterials    = importOptions->ImportMaterials;
+        assimpImportOptions.ImportTextures     = importOptions->ImportTextures;
         assimpImportOptions.ReduceKeyframes    = importOptions->ReduceKeyFrames;
         assimpImportOptions.FilePath           = filePath;
 
@@ -320,7 +325,7 @@ namespace te
                 material.Index = i;
                 material.Name = matName.C_Str();
 
-                if (options.ImportMaterials)
+                if (options.ImportMaterials && options.ImportTextures)
                 {
                     auto BindTexture = [options](aiMaterial* aiMat, aiTextureType textureType, String& path, bool& use)
                     {
@@ -1103,7 +1108,7 @@ namespace te
                 UINT32 indexCount = indicesPerMaterial[key];
                 SubMesh subMesh(currentIndex, indexCount, DOT_TRIANGLE_LIST, scene.Materials[key].Name, "SubMesh " + ToString(key));
 
-                if (options.ImportMaterials)
+                if (options.ImportMaterials && options.ImportTextures)
                 {
                     subMesh.MatProperties = scene.Materials[key].MatProperties;
                     subMesh.MatTextures = scene.Materials[key].MatTextures;

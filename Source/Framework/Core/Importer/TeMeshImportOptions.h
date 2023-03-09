@@ -99,6 +99,9 @@ namespace te
         /** Determines if we need to set material properties for this mesh during import */
         bool ImportMaterials = true;
 
+        /** Determines if we need to import textures used by materials for this mesh during import */
+        bool ImportTextures = true;
+
         /** If materials must be imported, determines if we want to load texture as rgdb textures or not */
         bool ImportSRGBTextures = true;
 

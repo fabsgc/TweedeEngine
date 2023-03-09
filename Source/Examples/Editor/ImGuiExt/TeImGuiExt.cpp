@@ -422,6 +422,13 @@ namespace te
         }
         ImGui::Separator();
 
+        // UseZPrepass
+        {
+            if (ImGuiExt::RenderOptionBool(cameraSettings->UseZPrepass, "##z_prepass_option", "Use Z Prepass"))
+                hasChanged = true;
+        }
+        ImGui::Separator();
+
         // Skybox
         {
             if (ImGuiExt::RenderOptionBool(cameraSettings->EnableSkybox, "##skybox_option", "Enable skybox"))
@@ -605,6 +612,9 @@ namespace te
                     hasChanged = true;
 
                 if (ImGuiExt::RenderOptionFloat(cameraSettings->Bloom.FilterSize, "##bloom_filter_size_option", "Filter size", 0.0f, 1.0f, width))
+                    hasChanged = true;
+
+                if (ImGuiExt::RenderOptionInt((int&)cameraSettings->Bloom.MaxBlurSamples, "##bloom_max_blur_samples_option", "Max Blur Samp.", 16, 128, width))
                     hasChanged = true;
             }
         }

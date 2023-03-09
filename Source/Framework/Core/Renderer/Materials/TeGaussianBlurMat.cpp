@@ -17,7 +17,7 @@ namespace te
         _params->SetSamplerState(GPT_PIXEL_PROGRAM, "Sampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::NearestPointClamped));
     }
 
-    void GaussianBlurMat::Execute(const SPtr<Texture>& source, const SPtr<RenderTexture>& destination, float filterSize, const Color& tint, UINT32 MSAACount)
+    void GaussianBlurMat::Execute(const SPtr<Texture>& source, const SPtr<RenderTexture>& destination, float filterSize, UINT32 maxSamples, const Color& tint, UINT32 MSAACount)
     {
         const TextureProperties& srcProps = source->GetProperties();
         const RenderTextureProperties& dstProps = static_cast<const RenderTextureProperties&>(destination->GetProperties());
@@ -29,18 +29,20 @@ namespace te
         gGaussianBlurParamDef.gSourceDimensions.Set(_paramBuffer, Vector2((float)dstProps.Width, (float)dstProps.Height), 0);
         gGaussianBlurParamDef.gMSAACount.Set(_paramBuffer, MSAACount, 0);
 
+        maxSamples = Math::Clamp(maxSamples, (UINT32)16, (UINT32)MAX_BLUR_SAMPLES);
+
         // Horizontal pass
-        DoPass(true, source, tempTexture->RenderTex, filterSize, tint, MSAACount);
+        DoPass(true, source, tempTexture->RenderTex, filterSize, maxSamples, tint, MSAACount);
         // Vertical pass
-        DoPass(false, tempTexture->Tex, destination, filterSize, tint, MSAACount);
+        DoPass(false, tempTexture->Tex, destination, filterSize, maxSamples, tint, MSAACount);
     }
 
-    void GaussianBlurMat::DoPass(bool horizontal, const SPtr<Texture>& source, const SPtr<RenderTexture>& destination, float filterSize, const Color& tint, UINT32 MSAACount)
+    void GaussianBlurMat::DoPass(bool horizontal, const SPtr<Texture>& source, const SPtr<RenderTexture>& destination, float filterSize, UINT32 maxSamples, const Color& tint, UINT32 MSAACount)
     {
         if (MSAACount > 1) _params->SetTexture(GPT_PIXEL_PROGRAM, "SourceMapMS", source);
         else _params->SetTexture(GPT_PIXEL_PROGRAM, "SourceMap", source);
 
-        PopulateBuffer(_paramBuffer, horizontal, source, filterSize, (!horizontal) ? tint : Color::White);
+        PopulateBuffer(_paramBuffer, horizontal, source, filterSize, maxSamples, (!horizontal) ? tint : Color::White);
 
         gGaussianBlurParamDef.gHorizontal.Set(_paramBuffer, horizontal ? 1 : 0, 0);
 
@@ -52,7 +54,7 @@ namespace te
     }
 
     void GaussianBlurMat::PopulateBuffer(const SPtr<GpuParamBlockBuffer>& buffer, bool horizontal,
-        const SPtr<Texture>& source, float filterSize, const Color& tint)
+        const SPtr<Texture>& source, float filterSize, UINT32 maxSamples, const Color& tint)
     {
         const TextureProperties& srcProps = source->GetProperties();
 
@@ -61,8 +63,8 @@ namespace te
         std::array<float, MAX_BLUR_SAMPLES> sampleOffsets;
         std::array<float, MAX_BLUR_SAMPLES> sampleWeights;
 
-        const float kernelRadius = CalcKernelRadius(source, filterSize, horizontal);
-        const UINT32 numSamples = CalcStdDistribution(kernelRadius, sampleWeights, sampleOffsets);
+        const float kernelRadius = CalcKernelRadius(source, filterSize, maxSamples, horizontal);
+        const UINT32 numSamples = CalcStdDistribution(kernelRadius, maxSamples, sampleWeights, sampleOffsets);
 
         for (UINT32 i = 0; i < numSamples; ++i)
         {
@@ -100,11 +102,11 @@ namespace te
         gGaussianBlurParamDef.gNumSamples.Set(buffer, numSamples);  
     }
 
-    UINT32 GaussianBlurMat::CalcStdDistribution(float filterRadius, std::array<float, MAX_BLUR_SAMPLES>& weights,
-        std::array<float, MAX_BLUR_SAMPLES>& offsets)
+    UINT32 GaussianBlurMat::CalcStdDistribution(float filterRadius, UINT32 maxSamples, 
+        std::array<float, MAX_BLUR_SAMPLES>& weights, std::array<float, MAX_BLUR_SAMPLES>& offsets)
     {
-        filterRadius = Math::Clamp(filterRadius, 0.00001f, (float)(MAX_BLUR_SAMPLES - 1));
-        INT32 intFilterRadius = std::min(Math::CeilToInt(filterRadius), MAX_BLUR_SAMPLES - 1);
+        filterRadius = Math::Clamp(filterRadius, 0.00001f, (float)(maxSamples - 1));
+        INT32 intFilterRadius = std::min(Math::CeilToInt(filterRadius), (INT32)maxSamples - 1);
 
         // Note: Does not include the scaling factor since we normalize later anyway
         auto normalDistribution = [](int i, float scale)
@@ -171,7 +173,7 @@ namespace te
         return numSamples;
     }
 
-    float GaussianBlurMat::CalcKernelRadius(const SPtr<Texture>& source, float scale, bool horizontal)
+    float GaussianBlurMat::CalcKernelRadius(const SPtr<Texture>& source, float scale, UINT32 maxSamples, bool horizontal)
     {
         scale = Math::Clamp01(scale);
 
@@ -182,6 +184,6 @@ namespace te
             length = source->GetProperties().GetHeight();
 
         // Divide by two because we need the radius
-        return std::min(length * scale / 2, (float)MAX_BLUR_SAMPLES - 1);
+        return std::min(length * scale / 2, (float)maxSamples - 1);
     }
 }

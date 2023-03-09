@@ -478,6 +478,7 @@ namespace te
                 elem->DefaultTechniqueIdx = renderElem.DefaultTechniqueIdx;
                 elem->Type = renderElem.Type;
                 elem->InstanceCount = (UINT32)(upperBlockBound - lowerBlockBound);
+                elem->UseForZPrepass = sceneInfo.Renderables[idx]->RenderablePtr->GetUseForZPrepass();
 
                 elem->GpuParamsElem.resize(renderElem.GpuParamsElem.size());
                 std::copy(renderElem.GpuParamsElem.begin(), renderElem.GpuParamsElem.end(), elem->GpuParamsElem.data());

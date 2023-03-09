@@ -25,6 +25,8 @@ namespace te
         RenderAPI& rapi = RenderAPI::Instance();
         UINT32 clearBuffers = FBT_DEPTH;
 
+        rapi.PushMarker("[DRAW] HUD", Color(0.63f, 0.42f, 0.39f));
+
         Vector<PickingUtils::PerHudInstanceData> instancedElements;
         GetHudElements(camera, root, instancedElements);
 
@@ -61,7 +63,9 @@ namespace te
             while (elementToDraw > 0);
 
             rapi.SetRenderTarget(nullptr);
-        } 
+        }
+
+        rapi.PopMarker();
     }
 
     void Hud::GetHudElements(const HCamera& camera, const HSceneObject& sceneObject, Vector<PickingUtils::PerHudInstanceData>& instancedElements)

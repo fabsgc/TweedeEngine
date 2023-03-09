@@ -31,5 +31,5 @@ float4 main( PS_INPUT IN ) : SV_Target0
         return sum / gMSAACount;
     }
 
-    return SourceMap.SampleLevel(Sampler, IN.Texture, 0);
+    return SourceMap.Sample(Sampler, IN.Texture);
 }

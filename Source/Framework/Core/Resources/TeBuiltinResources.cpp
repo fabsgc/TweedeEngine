@@ -60,6 +60,11 @@ namespace te
                 InitShaderTransparent(false);
             shader = _shaderTransparentCullNone;
             break;
+        case BuiltinShader::ZPrepass:
+            if (!_shaderZPrepass.IsLoaded())
+                InitShaderZPrepass();
+            shader = _shaderZPrepass;
+            break;
         case BuiltinShader::Blit:
             if(!_shaderBlit.IsLoaded())
                 InitShaderBlit();
@@ -109,6 +114,11 @@ namespace te
             if(!_shaderSelection.IsLoaded())
                 InitShaderSelection();
             shader = _shaderSelection;
+            break;
+        case BuiltinShader::BlitSelection:
+            if (!_shaderBlitSelection.IsLoaded())
+                InitShaderBlitSelection();
+            shader = _shaderBlitSelection;
             break;
         case BuiltinShader::HudSelection:
             if(!_shaderHudSelection.IsLoaded())
@@ -229,6 +239,16 @@ namespace te
             _pixelShaderForwardDesc.Language = "hlsl";
             _pixelShaderForwardDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
             _pixelShaderForwardDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/ForwardZPrepass_VS.hlsl"));
+            _vertexShaderForwardZPrepassDesc.Type = GPT_VERTEX_PROGRAM;
+            _vertexShaderForwardZPrepassDesc.FilePath = SHADERS_FOLDER + String("HLSL/ForwardZPrepass_VS.hlsl");
+            _vertexShaderForwardZPrepassDesc.EntryPoint = "main";
+            _vertexShaderForwardZPrepassDesc.Language = "hlsl";
+            _vertexShaderForwardZPrepassDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
+            _vertexShaderForwardZPrepassDesc.Source = shaderFile.GetAsString();
         }
 
         {
@@ -389,6 +409,26 @@ namespace te
             _pixelShaderPickSelectDesc.Language = "hlsl";
             _pixelShaderPickSelectDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
             _pixelShaderPickSelectDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/BlitSelect_VS.hlsl"));
+            _vertexShaderBlitSelectDesc.Type = GPT_VERTEX_PROGRAM;
+            _vertexShaderBlitSelectDesc.FilePath = SHADERS_FOLDER + String("HLSL/BlitSelect_VS.hlsl");
+            _vertexShaderBlitSelectDesc.EntryPoint = "main";
+            _vertexShaderBlitSelectDesc.Language = "hlsl";
+            _vertexShaderBlitSelectDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
+            _vertexShaderBlitSelectDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/BlitSelect_PS.hlsl"));
+            _pixelShaderBlitSelectDesc.Type = GPT_PIXEL_PROGRAM;
+            _pixelShaderBlitSelectDesc.FilePath = SHADERS_FOLDER + String("HLSL/BlitSelect_PS.hlsl");
+            _pixelShaderBlitSelectDesc.EntryPoint = "main";
+            _pixelShaderBlitSelectDesc.Language = "hlsl";
+            _pixelShaderBlitSelectDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
+            _pixelShaderBlitSelectDesc.Source = shaderFile.GetAsString();
         }
 
         {
@@ -733,7 +773,7 @@ namespace te
         SPtr<Technique> technique = Technique::Create("hlsl", { pass });
         technique->Compile();
 
-        SHADER_DESC shaderDesc = _forwardShaderDesc;
+        SHADER_DESC shaderDesc;
         shaderDesc.QueueType = QueueSortType::FrontToBack;
         shaderDesc.Techniques.push_back(technique);
 
@@ -767,7 +807,7 @@ namespace te
         SPtr<Technique> technique = Technique::Create("hlsl", { pass });
         technique->Compile();
 
-        SHADER_DESC shaderDesc = _forwardShaderDesc;
+        SHADER_DESC shaderDesc;
         shaderDesc.Flags = (UINT32)ShaderFlag::Transparent;
         shaderDesc.QueueType = QueueSortType::BackToFront;
         shaderDesc.Techniques.push_back(technique);
@@ -776,6 +816,27 @@ namespace te
             _shaderTransparent = Shader::Create("Forward Transparent", shaderDesc);
         else
             _shaderTransparentCullNone = Shader::Create("Forward Transparent No Culling", shaderDesc);
+    }
+
+    void BuiltinResources::InitShaderZPrepass()
+    {
+        PASS_DESC passDesc;
+        passDesc.BlendStateDesc = _blendTransparentStateDesc;
+        passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
+        passDesc.RasterizerStateDesc = _rasterizerStateDesc;
+        passDesc.VertexProgramDesc = _vertexShaderForwardZPrepassDesc;
+
+        passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
+
+        SPtr<Pass> pass = Pass::Create(passDesc);
+        SPtr<Technique> technique = Technique::Create("hlsl", { pass });
+        technique->Compile();
+
+        SHADER_DESC shaderDesc;
+        shaderDesc.QueueType = QueueSortType::FrontToBack;
+        shaderDesc.Techniques.push_back(technique);
+
+        _shaderZPrepass = Shader::Create("Z Prepass", shaderDesc);
     }
 
     void BuiltinResources::InitShaderBlit()
@@ -797,7 +858,7 @@ namespace te
         SPtr<Technique> technique = Technique::Create("hlsl", { pass });
         technique->Compile();
 
-        SHADER_DESC shaderDesc = _blitShaderDesc;
+        SHADER_DESC shaderDesc;
         shaderDesc.Techniques.push_back(technique);
 
         _shaderBlit = Shader::Create("Blit", shaderDesc);
@@ -818,7 +879,7 @@ namespace te
         SPtr<Technique> technique = Technique::Create("hlsl", { pass });
         technique->Compile();
 
-        SHADER_DESC shaderDesc = _skyboxShaderDesc;
+        SHADER_DESC shaderDesc;
         shaderDesc.Techniques.push_back(technique);
 
         _shaderSkybox = Shader::Create("Skybox", shaderDesc);
@@ -843,7 +904,7 @@ namespace te
         SPtr<Technique> technique = Technique::Create("hlsl", { pass });
         technique->Compile();
 
-        SHADER_DESC shaderDesc = _FXAAShaderDesc;
+        SHADER_DESC shaderDesc;
         shaderDesc.Techniques.push_back(technique);
 
         _shaderFXAA = Shader::Create("FXAA", shaderDesc);
@@ -868,7 +929,7 @@ namespace te
         SPtr<Technique> technique = Technique::Create("hlsl", { pass });
         technique->Compile();
 
-        SHADER_DESC shaderDesc = _toneMappingShaderDesc;
+        SHADER_DESC shaderDesc;
         shaderDesc.Techniques.push_back(technique);
 
         _shaderToneMapping = Shader::Create("Tone Mapping", shaderDesc);
@@ -893,7 +954,7 @@ namespace te
         SPtr<Technique> technique = Technique::Create("hlsl", { pass });
         technique->Compile();
 
-        SHADER_DESC shaderDesc = _bloomShaderDesc;
+        SHADER_DESC shaderDesc;
         shaderDesc.Techniques.push_back(technique);
 
         _shaderBloom = Shader::Create("Bloom", shaderDesc);
@@ -918,7 +979,7 @@ namespace te
         SPtr<Technique> technique = Technique::Create("hlsl", { pass });
         technique->Compile();
 
-        SHADER_DESC shaderDesc = _motionBlurShaderDesc;
+        SHADER_DESC shaderDesc;
         shaderDesc.Techniques.push_back(technique);
 
         _shaderMotionBlur = Shader::Create("Motion Blur", shaderDesc);
@@ -943,7 +1004,7 @@ namespace te
         SPtr<Technique> technique = Technique::Create("hlsl", { pass });
         technique->Compile();
 
-        SHADER_DESC shaderDesc = _motionBlurShaderDesc;
+        SHADER_DESC shaderDesc;
         shaderDesc.Techniques.push_back(technique);
 
         _shaderGaussianBlur = Shader::Create("Gaussian Blur", shaderDesc);
@@ -964,7 +1025,7 @@ namespace te
         SPtr<Technique> technique = Technique::Create("hlsl", { pass });
         technique->Compile();
 
-        SHADER_DESC shaderDesc = _pickSelectShaderDesc;
+        SHADER_DESC shaderDesc;
         shaderDesc.QueueType = QueueSortType::BackToFront;
         shaderDesc.Techniques.push_back(technique);
 
@@ -980,19 +1041,44 @@ namespace te
         passDesc.VertexProgramDesc = _vertexShaderPickSelectDesc;
         passDesc.PixelProgramDesc = _pixelShaderPickSelectDesc;
 
-        passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_CLOCKWISE;
-        passDesc.RasterizerStateDesc.polygonMode = PolygonMode::PM_WIREFRAME;
-        passDesc.RasterizerStateDesc.depthBias = 0.00001f;
+        passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
+        passDesc.RasterizerStateDesc.polygonMode = PolygonMode::PM_SOLID;
 
         SPtr<Pass> pass = Pass::Create(passDesc);
         SPtr<Technique> technique = Technique::Create("hlsl", { pass });
         technique->Compile();
 
-        SHADER_DESC shaderDesc = _pickSelectShaderDesc;
+        SHADER_DESC shaderDesc;
         shaderDesc.QueueType = QueueSortType::BackToFront;
         shaderDesc.Techniques.push_back(technique);
 
         _shaderSelection = Shader::Create("Selection", shaderDesc);
+    }
+
+    void BuiltinResources::InitShaderBlitSelection()
+    {
+        PASS_DESC passDesc;
+        passDesc.BlendStateDesc = _blendOpaqueStateDesc;
+        passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
+        passDesc.RasterizerStateDesc = _rasterizerStateDesc;
+        passDesc.VertexProgramDesc = _vertexShaderBlitSelectDesc;
+        passDesc.PixelProgramDesc = _pixelShaderBlitSelectDesc;
+
+        passDesc.DepthStencilStateDesc.StencilEnable = false;
+        passDesc.DepthStencilStateDesc.DepthReadEnable = false;
+        passDesc.DepthStencilStateDesc.DepthWriteEnable = false;
+
+        passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
+
+        SPtr<Pass> pass = Pass::Create(passDesc);
+        SPtr<Technique> technique = Technique::Create("hlsl", { pass });
+        technique->Compile();
+
+        SHADER_DESC shaderDesc;
+        shaderDesc.QueueType = QueueSortType::BackToFront;
+        shaderDesc.Techniques.push_back(technique);
+
+        _shaderBlitSelection = Shader::Create("Selection", shaderDesc);
     }
 
     void BuiltinResources::InitShaderHudPicking()
@@ -1011,7 +1097,7 @@ namespace te
         SPtr<Technique> technique = Technique::Create("hlsl", { pass });
         technique->Compile();
 
-        SHADER_DESC shaderDesc = _hudPickSelectShaderDesc;
+        SHADER_DESC shaderDesc;
         shaderDesc.QueueType = QueueSortType::BackToFront;
         shaderDesc.Techniques.push_back(technique);
 
@@ -1035,7 +1121,7 @@ namespace te
         SPtr<Technique> technique = Technique::Create("hlsl", { pass });
         technique->Compile();
 
-        SHADER_DESC shaderDesc = _hudPickSelectShaderDesc;
+        SHADER_DESC shaderDesc;
         shaderDesc.QueueType = QueueSortType::BackToFront;
         shaderDesc.Techniques.push_back(technique);
 
@@ -1052,13 +1138,17 @@ namespace te
         passDesc.GeometryProgramDesc = _geometryShaderBulletDebugDesc;
         passDesc.PixelProgramDesc = _pixelShaderBulletDebugDesc;
 
+        passDesc.DepthStencilStateDesc.StencilEnable = false;
+        passDesc.DepthStencilStateDesc.DepthReadEnable = false;
+        passDesc.DepthStencilStateDesc.DepthWriteEnable = false;
+
         passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
 
         SPtr<Pass> pass = Pass::Create(passDesc);
         SPtr<Technique> technique = Technique::Create("hlsl", { pass });
         technique->Compile();
 
-        SHADER_DESC shaderDesc = _bulletDebugShaderDesc;
+        SHADER_DESC shaderDesc;
         shaderDesc.QueueType = QueueSortType::BackToFront;
         shaderDesc.Techniques.push_back(technique);
 
@@ -1074,13 +1164,17 @@ namespace te
         passDesc.VertexProgramDesc = _vertexShaderSSAODesc;
         passDesc.PixelProgramDesc = _pixelShaderSSAODesc;
 
+        passDesc.DepthStencilStateDesc.StencilEnable = false;
+        passDesc.DepthStencilStateDesc.DepthReadEnable = false;
+        passDesc.DepthStencilStateDesc.DepthWriteEnable = false;
+
         passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
 
         SPtr<Pass> pass = Pass::Create(passDesc);
         SPtr<Technique> technique = Technique::Create("hlsl", { pass });
         technique->Compile();
 
-        SHADER_DESC shaderDesc = _ssaoShaderDesc;
+        SHADER_DESC shaderDesc;
         shaderDesc.QueueType = QueueSortType::BackToFront;
         shaderDesc.Techniques.push_back(technique);
 
@@ -1096,13 +1190,17 @@ namespace te
         passDesc.VertexProgramDesc = _vertexShaderSSAOBlurDesc;
         passDesc.PixelProgramDesc = _pixelShaderSSAOBlurDesc;
 
+        passDesc.DepthStencilStateDesc.StencilEnable = false;
+        passDesc.DepthStencilStateDesc.DepthReadEnable = false;
+        passDesc.DepthStencilStateDesc.DepthWriteEnable = false;
+
         passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
 
         SPtr<Pass> pass = Pass::Create(passDesc);
         SPtr<Technique> technique = Technique::Create("hlsl", { pass });
         technique->Compile();
 
-        SHADER_DESC shaderDesc = _ssaoBlurShaderDesc;
+        SHADER_DESC shaderDesc;
         shaderDesc.QueueType = QueueSortType::BackToFront;
         shaderDesc.Techniques.push_back(technique);
 
@@ -1118,13 +1216,17 @@ namespace te
         passDesc.VertexProgramDesc = _vertexShaderSSAODownSampleDesc;
         passDesc.PixelProgramDesc = _pixelShaderSSAODownSampleDesc;
 
+        passDesc.DepthStencilStateDesc.StencilEnable = false;
+        passDesc.DepthStencilStateDesc.DepthReadEnable = false;
+        passDesc.DepthStencilStateDesc.DepthWriteEnable = false;
+
         passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
 
         SPtr<Pass> pass = Pass::Create(passDesc);
         SPtr<Technique> technique = Technique::Create("hlsl", { pass });
         technique->Compile();
 
-        SHADER_DESC shaderDesc = _ssaoDownSampleShaderDesc;
+        SHADER_DESC shaderDesc;
         shaderDesc.QueueType = QueueSortType::BackToFront;
         shaderDesc.Techniques.push_back(technique);
 
@@ -1140,13 +1242,17 @@ namespace te
         passDesc.VertexProgramDesc = _vertexShaderTextureDownsampleDesc;
         passDesc.PixelProgramDesc = _pixelShaderTextureDownsampleDesc;
 
+        passDesc.DepthStencilStateDesc.StencilEnable = false;
+        passDesc.DepthStencilStateDesc.DepthReadEnable = false;
+        passDesc.DepthStencilStateDesc.DepthWriteEnable = false;
+
         passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
 
         SPtr<Pass> pass = Pass::Create(passDesc);
         SPtr<Technique> technique = Technique::Create("hlsl", { pass });
         technique->Compile();
 
-        SHADER_DESC shaderDesc = _shaderTextureDownsampleDesc;
+        SHADER_DESC shaderDesc;
         shaderDesc.QueueType = QueueSortType::BackToFront;
         shaderDesc.Techniques.push_back(technique);
 
@@ -1162,13 +1268,17 @@ namespace te
         passDesc.VertexProgramDesc = _vertexShaderTextureCubeDownsampleDesc;
         passDesc.PixelProgramDesc = _pixelShaderTextureCubeDownsampleDesc;
 
+        passDesc.DepthStencilStateDesc.StencilEnable = false;
+        passDesc.DepthStencilStateDesc.DepthReadEnable = false;
+        passDesc.DepthStencilStateDesc.DepthWriteEnable = false;
+
         passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
 
         SPtr<Pass> pass = Pass::Create(passDesc);
         SPtr<Technique> technique = Technique::Create("hlsl", { pass });
         technique->Compile();
 
-        SHADER_DESC shaderDesc = _shaderTextureCubeDownsampleDesc;
+        SHADER_DESC shaderDesc;
         shaderDesc.QueueType = QueueSortType::BackToFront;
         shaderDesc.Techniques.push_back(technique);
 
@@ -1184,13 +1294,17 @@ namespace te
         passDesc.VertexProgramDesc = _vertexShaderReflectionCubeImportanceSampleDesc;
         passDesc.PixelProgramDesc = _pixelShaderReflectionCubeImportanceSampleDesc;
 
+        passDesc.DepthStencilStateDesc.StencilEnable = false;
+        passDesc.DepthStencilStateDesc.DepthReadEnable = false;
+        passDesc.DepthStencilStateDesc.DepthWriteEnable = false;
+
         passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
 
         SPtr<Pass> pass = Pass::Create(passDesc);
         SPtr<Technique> technique = Technique::Create("hlsl", { pass });
         technique->Compile();
 
-        SHADER_DESC shaderDesc = _shaderReflectionCubeImportanceSampleDesc;
+        SHADER_DESC shaderDesc;
         shaderDesc.QueueType = QueueSortType::BackToFront;
         shaderDesc.Techniques.push_back(technique);
 
@@ -1205,13 +1319,17 @@ namespace te
         passDesc.RasterizerStateDesc = _rasterizerStateDesc;
         passDesc.ComputeProgramDesc = _computeShaderIrradianceComputeSHDesc;
 
+        passDesc.DepthStencilStateDesc.StencilEnable = false;
+        passDesc.DepthStencilStateDesc.DepthReadEnable = false;
+        passDesc.DepthStencilStateDesc.DepthWriteEnable = false;
+
         passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
 
         SPtr<Pass> pass = Pass::Create(passDesc);
         SPtr<Technique> technique = Technique::Create("hlsl", { pass });
         technique->Compile();
 
-        SHADER_DESC shaderDesc = _shaderIrradianceComputeSHDesc;
+        SHADER_DESC shaderDesc;
         shaderDesc.QueueType = QueueSortType::BackToFront;
         shaderDesc.Techniques.push_back(technique);
 
@@ -1226,13 +1344,17 @@ namespace te
         passDesc.RasterizerStateDesc = _rasterizerStateDesc;
         passDesc.ComputeProgramDesc = _computeShaderIrradianceReduceSHDesc;
 
+        passDesc.DepthStencilStateDesc.StencilEnable = false;
+        passDesc.DepthStencilStateDesc.DepthReadEnable = false;
+        passDesc.DepthStencilStateDesc.DepthWriteEnable = false;
+
         passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
 
         SPtr<Pass> pass = Pass::Create(passDesc);
         SPtr<Technique> technique = Technique::Create("hlsl", { pass });
         technique->Compile();
 
-        SHADER_DESC shaderDesc = _shaderIrradianceReduceSHDesc;
+        SHADER_DESC shaderDesc;
         shaderDesc.QueueType = QueueSortType::BackToFront;
         shaderDesc.Techniques.push_back(technique);
 
@@ -1248,13 +1370,17 @@ namespace te
         passDesc.VertexProgramDesc = _vertexShaderIrradianceProjectSHDesc;
         passDesc.PixelProgramDesc = _pixelShaderIrradianceProjectSHDesc;
 
+        passDesc.DepthStencilStateDesc.StencilEnable = false;
+        passDesc.DepthStencilStateDesc.DepthReadEnable = false;
+        passDesc.DepthStencilStateDesc.DepthWriteEnable = false;
+
         passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
 
         SPtr<Pass> pass = Pass::Create(passDesc);
         SPtr<Technique> technique = Technique::Create("hlsl", { pass });
         technique->Compile();
 
-        SHADER_DESC shaderDesc = _shaderIrradianceProjectSHDesc;
+        SHADER_DESC shaderDesc;
         shaderDesc.QueueType = QueueSortType::BackToFront;
         shaderDesc.Techniques.push_back(technique);
 
@@ -1276,7 +1402,7 @@ namespace te
         SPtr<Technique> technique = Technique::Create("hlsl", { pass });
         technique->Compile();
 
-        SHADER_DESC shaderDesc = _decalShaderDesc;
+        SHADER_DESC shaderDesc;
         shaderDesc.QueueType = QueueSortType::BackToFront;
         shaderDesc.Techniques.push_back(technique);
 

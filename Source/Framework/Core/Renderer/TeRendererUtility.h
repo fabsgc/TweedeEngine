@@ -182,7 +182,7 @@ namespace te
         bool DoFrustumCulling(const HCamera& camera, const AABox& boundingBox, const float& cullDistanceFactor);
 
         /** Generate a render texture using data given in parameters */
-        void GenerateViewportRenderTexture(RenderTextureData& renderData);
+        void GenerateViewportRenderTexture(RenderTextureData& renderData, const String& debugName = String());
 
     private:
         static constexpr UINT32 NUM_QUAD_VB_SLOTS = 1024;

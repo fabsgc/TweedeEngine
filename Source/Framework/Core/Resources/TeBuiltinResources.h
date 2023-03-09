@@ -66,7 +66,11 @@ namespace te
         /**  Sums spherical harmonic coefficients calculated by each thread group of IrradianceComputeSHMat and outputs a single set of normalized coefficients. */
         IrradianceReduceSH = 0x17,
         /** Projects spherical harmonic coefficients calculated by IrradianceReduceSHMat and projects them onto faces of a cubemap. */
-        IrradianceProjectSH = 0x18
+        IrradianceProjectSH = 0x18,
+        /** Shader to blit outline selection */
+        BlitSelection = 0x19,
+        /** Shader used for Z Prepass (Vertex Shader from Opaque shader) */
+        ZPrepass = 0x20
     };
 
     /** Types of builtin shaders that are always available. */
@@ -133,6 +137,7 @@ namespace te
 
         void InitShaderOpaque();
         void InitShaderTransparent(bool cull = true);
+        void InitShaderZPrepass();
         void InitShaderBlit();
         void InitShaderSkybox();
         void InitShaderFXAA();
@@ -142,6 +147,7 @@ namespace te
         void InitShaderGaussianBlur();
         void InitShaderPicking();
         void InitShaderSelection();
+        void InitShaderBlitSelection();
         void InitShaderHudPicking();
         void InitShaderHudSelection();
         void InitShaderBulletDebug();
@@ -164,6 +170,7 @@ namespace te
         HShader _shaderOpaque;
         HShader _shaderTransparent;
         HShader _shaderTransparentCullNone;
+        HShader _shaderZPrepass;
         HShader _shaderBlit;
         HShader _shaderSkybox;
         HShader _shaderFXAA;
@@ -174,6 +181,7 @@ namespace te
         HShader _shaderPicking;
         HShader _shaderHudPicking;
         HShader _shaderSelection;
+        HShader _shaderBlitSelection;
         HShader _shaderHudSelection;
         HShader _shaderBulletDebug;
         HShader _shaderSSAO;
@@ -196,30 +204,10 @@ namespace te
         SPtr<SamplerState> _noFilterSamplerState = nullptr;
         SPtr<SamplerState> _noFilterClampedSamplerState = nullptr;
 
-        SHADER_DESC _forwardShaderDesc;
-        SHADER_DESC _blitShaderDesc;
-        SHADER_DESC _skyboxShaderDesc;
-        SHADER_DESC _FXAAShaderDesc;
-        SHADER_DESC _toneMappingShaderDesc;
-        SHADER_DESC _bloomShaderDesc;
-        SHADER_DESC _motionBlurShaderDesc;
-        SHADER_DESC _gaussianBlurShaderDesc;
-        SHADER_DESC _pickSelectShaderDesc;
-        SHADER_DESC _hudPickSelectShaderDesc;
-        SHADER_DESC _bulletDebugShaderDesc;
-        SHADER_DESC _ssaoShaderDesc;
-        SHADER_DESC _ssaoBlurShaderDesc;
-        SHADER_DESC _ssaoDownSampleShaderDesc;
-        SHADER_DESC _decalShaderDesc;
-        SHADER_DESC _shaderTextureDownsampleDesc;
-        SHADER_DESC _shaderTextureCubeDownsampleDesc;
-        SHADER_DESC _shaderReflectionCubeImportanceSampleDesc;
-        SHADER_DESC _shaderIrradianceComputeSHDesc;
-        SHADER_DESC _shaderIrradianceReduceSHDesc;
-        SHADER_DESC _shaderIrradianceProjectSHDesc;
-
         GPU_PROGRAM_DESC _vertexShaderForwardDesc;
         GPU_PROGRAM_DESC _pixelShaderForwardDesc;
+
+        GPU_PROGRAM_DESC _vertexShaderForwardZPrepassDesc;
 
         GPU_PROGRAM_DESC _vertexShaderBlitDesc;
         GPU_PROGRAM_DESC _pixelShaderBlitDesc;
@@ -244,6 +232,9 @@ namespace te
 
         GPU_PROGRAM_DESC _vertexShaderPickSelectDesc;
         GPU_PROGRAM_DESC _pixelShaderPickSelectDesc;
+
+        GPU_PROGRAM_DESC _vertexShaderBlitSelectDesc;
+        GPU_PROGRAM_DESC _pixelShaderBlitSelectDesc;
 
         GPU_PROGRAM_DESC _vertexShaderHudPickSelectDesc;
         GPU_PROGRAM_DESC _geometryShaderHudPickSelectDesc;

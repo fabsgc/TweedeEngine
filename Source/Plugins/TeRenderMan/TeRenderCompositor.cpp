@@ -21,14 +21,70 @@
 #include "PostProcessing/TeToneMappingMat.h"
 #include "PostProcessing/TeBloomMat.h"
 #include "PostProcessing/TeMotionBlurMat.h"
-#include "PostProcessing/TeGaussianBlurMat.h"
 #include "PostProcessing/TeSSAODownsampleMat.h"
 #include "PostProcessing/TeSSAOMat.h"
 #include "PostProcessing/TeSSAOBlurMat.h"
+#include "Renderer/Materials/TeGaussianBlurMat.h"
 
 namespace te
 {
     UnorderedMap<String, RenderCompositor::NodeType*> RenderCompositor::_nodeTypes;
+
+    /** Renders all elements for the Z Prepass. */
+    void RenderQueueElementsForZPrepass(const Vector<RenderQueueElement>& elements, const RendererView& view, const SceneInfo& scene, const RendererViewGroup& viewGroup)
+    {
+        RenderAPI& rapi = RenderAPI::Instance();
+        SPtr<Material> lastMaterial = nullptr;
+
+        static const Vector<String> InstancedBuffer = { "PerInstanceBuffer" };
+        static const Vector<String> CameraBuffer = { "PerCameraBuffer" };
+        static const Vector<String> ObjectBuffer = { "PerObjectBuffer" };
+
+        HShader shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::ZPrepass);
+        const auto& techniques = shader->GetTechniques();
+
+        if (techniques.size() == 0)
+            return;
+
+        SPtr<Technique> technique = techniques[0];
+        if (technique->GetNumPasses() == 0)
+            return;
+
+        SPtr<Pass> pass = technique->GetPass(0);
+
+        rapi.SetGraphicsPipeline(pass->GetGraphicsPipelineState());
+        rapi.SetStencilRef(pass->GetStencilRefValue());
+
+        for (auto& entry : elements)
+        {
+            if (entry.RenderElem->UseForZPrepass)
+            {
+                rapi.PushMarker("[DRAW] Renderable", Color(0.7f, 0.8f, 0.2f));
+
+                bool isInstanced = (entry.RenderElem->InstanceCount > 0) ? true : false;
+
+                entry.RenderElem->GpuParamsElem[entry.PassIdx]
+                    ->SetParamBlockBuffer("PerCameraBuffer", view.GetPerViewBuffer());
+
+                if (isInstanced)
+                {
+                    rapi.SetGpuParams(entry.RenderElem->GpuParamsElem[entry.PassIdx],
+                        GPU_BIND_PARAM_BLOCK, GPU_BIND_PARAM_BLOCK_ALL);
+                }
+                else
+                {
+                    rapi.SetGpuParams(entry.RenderElem->GpuParamsElem[entry.PassIdx],
+                        GPU_BIND_PARAM_BLOCK, GPU_BIND_PARAM_BLOCK_LISTED, CameraBuffer);
+
+                    rapi.SetGpuParams(entry.RenderElem->GpuParamsElem[entry.PassIdx],
+                        GPU_BIND_PARAM_BLOCK, GPU_BIND_PARAM_BLOCK_LISTED, ObjectBuffer);
+                }
+
+                entry.RenderElem->Draw();
+                rapi.PopMarker();
+            }
+        }
+    }
 
     /** Renders all elements in a render queue. */
     void RenderQueueElements(const Vector<RenderQueueElement>& elements, const RendererView& view, const SceneInfo& scene, const RendererViewGroup& viewGroup)
@@ -386,6 +442,37 @@ namespace te
         return { };
     }
 
+    void RCNodeZPrePass::Render(const RenderCompositorNodeInputs& inputs)
+    {
+        RenderQueue* opaqueElements = inputs.View.GetOpaqueQueue().get();
+        const Vector<RenderQueueElement> elements = opaqueElements->GetSortedElements();
+        RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
+        Camera* sceneCamera = inputs.View.GetSceneCamera();
+
+        inputs.CurrRenderAPI.PushMarker("[DRAW] Z Pre Pass", Color(0.7f, 0.41f, 0.36f));
+        inputs.CurrRenderAPI.SetRenderTarget(gpuInitializationPassNode->RenderTargetTex);
+        inputs.CurrRenderAPI.ClearViewport(FBT_COLOR | FBT_DEPTH | FBT_STENCIL, Color::Black);
+
+        if (inputs.View.GetRenderSettings().UseZPrepass && elements.size() > 0)
+        {
+            RenderQueueElementsForZPrepass(elements, inputs.View, inputs.Scene, inputs.ViewGroup);
+        }
+
+        if (sceneCamera != nullptr)
+            inputs.View.NotifyCompositorTargetChanged(gpuInitializationPassNode->RenderTargetTex);
+
+        inputs.CurrRenderAPI.SetRenderTarget(nullptr);
+        inputs.CurrRenderAPI.PopMarker();
+    }
+
+    void RCNodeZPrePass::Clear()
+    { }
+
+    Vector<String> RCNodeZPrePass::GetDependencies(const RendererView& view)
+    {
+        return { RCNodeGpuInitializationPass::GetNodeId() };
+    }
+
     // ############# FORWARD PASS
 
     void RCNodeForwardPass::Render(const RenderCompositorNodeInputs& inputs)
@@ -393,17 +480,10 @@ namespace te
         RenderQueue* opaqueElements = inputs.View.GetOpaqueQueue().get();
         const Vector<RenderQueueElement> elements = opaqueElements->GetSortedElements();
         RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
-
-        //if (inputs.Scene.SkyboxElem)
-        //    inputs.Scene.SkyboxElem->FilterTexture();
+        Camera* sceneCamera = inputs.View.GetSceneCamera();
 
         inputs.CurrRenderAPI.PushMarker("[DRAW] Forward Pass", Color(0.8f, 0.6f, 0.8f));
-
-        Camera* sceneCamera = inputs.View.GetSceneCamera();
-        UINT32 clearBuffers = FBT_COLOR | FBT_DEPTH | FBT_STENCIL;
-
         inputs.CurrRenderAPI.SetRenderTarget(gpuInitializationPassNode->RenderTargetTex);
-        inputs.CurrRenderAPI.ClearViewport(clearBuffers, Color::Black);
 
         if (elements.size() > 0)
         {
@@ -424,7 +504,10 @@ namespace te
 
     Vector<String> RCNodeForwardPass::GetDependencies(const RendererView& view)
     {
-        return { RCNodeGpuInitializationPass::GetNodeId() };
+        return { 
+            RCNodeGpuInitializationPass::GetNodeId(),
+            RCNodeZPrePass::GetNodeId()
+        };
     }
 
     // ############# SKYBOX
@@ -625,7 +708,8 @@ namespace te
 
     Vector<String> RCNodeSceneTexDownsamples::GetDependencies(const RendererView& view)
     {
-        return {
+        return 
+        {
             RCNodeGpuInitializationPass::GetNodeId(),
             RCNodePostProcess::GetNodeId(),
             RCNodeHalfSceneTex::GetNodeId()
@@ -669,8 +753,7 @@ namespace te
     {
         return 
         {
-            RCNodeGpuInitializationPass::GetNodeId(),
-            RCNodeSceneTexDownsamples::GetNodeId() 
+            RCNodeGpuInitializationPass::GetNodeId()
         };
     }
 
@@ -746,7 +829,7 @@ namespace te
             ppLastFrame = gpuInitializationPassNode->SceneTex->Tex;
 
         auto& texProps = ppLastFrame->GetProperties();
-        toneMapping->Execute(ssaoNode->Output, ppLastFrame, ppOutput, texProps.GetNumSamples(),
+        toneMapping->Execute((ssaoNode->Output) ? ssaoNode->Output->Tex : Texture::WHITE, ppLastFrame, ppOutput, texProps.GetNumSamples(),
             settings.Gamma, settings.ExposureScale, settings.Contrast, settings.Brightness, !settings.Tonemapping.Enabled);
 
         inputs.CurrRenderAPI.SetRenderTarget(nullptr);
@@ -949,28 +1032,24 @@ namespace te
 
         if (inputs.View.GetSceneCamera()->GetProjectionType() == ProjectionType::PT_ORTHOGRAPHIC)
         {
-            Output = Texture::WHITE;
-            PooledOutput = nullptr;
+            Output = nullptr;
             return;
         }
 
         const AmbientOcclusionSettings& settings = inputs.View.GetRenderSettings().AmbientOcclusion;
         if (!settings.Enabled)
         {
-            Output = Texture::WHITE;
-            PooledOutput = nullptr;
+            Output = nullptr;
             return;
         }
 
         inputs.CurrRenderAPI.PushMarker("[DRAW] SSAO", Color(0.25f, 0.35f, 0.95f));
 
-        Output = Texture::WHITE; // TODO
-
         GpuResourcePool& resPool = gGpuResourcePool();
         const RendererViewProperties& viewProps = inputs.View.GetProperties();
 
         RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
-        RCNodeResolvedSceneDepth* resolvedDepthNode = static_cast<RCNodeResolvedSceneDepth*>(inputs.InputNodes[1]);
+        RCNodeResolvedSceneDepth* resolvedDepthNode = static_cast<RCNodeResolvedSceneDepth*>(inputs.InputNodes[2]);
 
         SPtr<Texture> sceneNormals = gpuInitializationPassNode->NormalTex->Tex;
         SPtr<Texture> sceneDepth = resolvedDepthNode->Output->Tex;
@@ -1084,7 +1163,7 @@ namespace te
 
         UINT32 width = viewProps.Target.ViewRect.width;
         UINT32 height = viewProps.Target.ViewRect.height;
-        PooledOutput = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_R8, width, height, TU_RENDERTARGET));
+        Output = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_R8, width, height, TU_RENDERTARGET));
 
         {
             if (setupTex0)
@@ -1095,7 +1174,7 @@ namespace te
 
             bool upSample = numDownsampleLevels > 0;
             SSAOMat* ssaoMat = SSAOMat::Get();
-            ssaoMat->Execute(inputs.View, textures, PooledOutput->RenderTex, settings, upSample, true, (UINT32)quality);
+            ssaoMat->Execute(inputs.View, textures, Output->RenderTex, settings, upSample, true, (UINT32)quality);
         }
 
         resolvedNormals = nullptr;
@@ -1111,7 +1190,7 @@ namespace te
         // each frame, and averaging them out should yield blurred AO.
         if (quality > AmbientOcclusionQuality::Low) // On level 0 we don't blur at all, on level 1 we use the ad-hoc blur in shader
         {
-            const RenderTargetProperties& rtProps = PooledOutput->RenderTex->GetProperties();
+            const RenderTargetProperties& rtProps = Output->RenderTex->GetProperties();
 
             POOLED_RENDER_TEXTURE_DESC desc = POOLED_RENDER_TEXTURE_DESC::Create2D(PF_R8, rtProps.Width,
                 rtProps.Height, TU_RENDERTARGET);
@@ -1119,30 +1198,30 @@ namespace te
 
             SSAOBlurMat* ssaoBlurMat = SSAOBlurMat::Get();
 
-            ssaoBlurMat->Execute(inputs.View, PooledOutput->Tex, sceneDepth, blurIntermediateTex->RenderTex, DEPTH_RANGE, true);
-            ssaoBlurMat->Execute(inputs.View, blurIntermediateTex->Tex, sceneDepth, PooledOutput->RenderTex, DEPTH_RANGE, false);
+            ssaoBlurMat->Execute(inputs.View, Output->Tex, sceneDepth, blurIntermediateTex->RenderTex, DEPTH_RANGE, true);
+            ssaoBlurMat->Execute(inputs.View, blurIntermediateTex->Tex, sceneDepth, Output->RenderTex, DEPTH_RANGE, false);
         }
 
         inputs.CurrRenderAPI.SetRenderTarget(nullptr);
-        Output = PooledOutput->Tex;
-
         inputs.CurrRenderAPI.PopMarker();
     }
 
     void RCNodeSSAO::Clear()
     {
-        PooledOutput = nullptr;
         Output = nullptr;
     }
 
     Vector<String> RCNodeSSAO::GetDependencies(const RendererView& view)
     {
-        return
-        {
+        Vector<String> deps = {
             RCNodeGpuInitializationPass::GetNodeId(),
-            RCNodeResolvedSceneDepth::GetNodeId(),
             RCNodePostProcess::GetNodeId()
         };
+
+        if(view.GetRenderSettings().AmbientOcclusion.Enabled)
+            deps.push_back(RCNodeResolvedSceneDepth::GetNodeId());
+
+        return deps;
     }
 
     // ############# BLOOM
@@ -1157,8 +1236,9 @@ namespace te
         inputs.CurrRenderAPI.PushMarker("[DRAW] Bloom", Color(0.85f, 0.55f, 0.15f));
 
         RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
-        RCNodeSceneTexDownsamples* sceneColorDownSampleNode = static_cast<RCNodeSceneTexDownsamples*>(inputs.InputNodes[1]);
-        RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[2]);
+        RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[1]);
+
+        RCNodeSceneTexDownsamples* sceneColorDownSampleNode = static_cast<RCNodeSceneTexDownsamples*>(inputs.InputNodes[2]);
 
         constexpr UINT32 NUM_STEPS_PER_QUALITY[] = { 1, 1, 2, 3 };
         constexpr UINT32 OUTPUT_DOWN_SAMPLE_LEVEL_PER_QUALITY[] = { 4, 3, 2, 1 };
@@ -1166,10 +1246,9 @@ namespace te
         // ### First, we get emissive texture from forward pass, use it as input for our GaussianBlur material
         // ### and create a new tex representing the blured result
         GaussianBlurMat* gaussianBlur = GaussianBlurMat::Get();
-        
+
         // We can reduce blur texture size according to bloom quality
         const UINT32 quality = Math::Clamp((UINT32)settings.Bloom.Quality, 0U, 3U);
-        const UINT32 numSteps = NUM_STEPS_PER_QUALITY[quality];
         const UINT32 downSampleLevel = OUTPUT_DOWN_SAMPLE_LEVEL_PER_QUALITY[quality];
 
         const UINT32 availableDownsamples = sceneColorDownSampleNode->AvailableDownsamples;
@@ -1199,11 +1278,11 @@ namespace te
             )
         );
 
-        gaussianBlur->Execute(emissiveTex->Tex, tmpBlurOutput->RenderTex, settings.Bloom.FilterSize,
+        gaussianBlur->Execute(emissiveTex->Tex, tmpBlurOutput->RenderTex, settings.Bloom.FilterSize, settings.Bloom.MaxBlurSamples,
             settings.Bloom.Tint, emissiveTex->Tex->GetProperties().GetNumSamples());
-        gaussianBlur->Execute(tmpBlurOutput->Tex, blurOutput->RenderTex, settings.Bloom.FilterSize,
+        gaussianBlur->Execute(tmpBlurOutput->Tex, blurOutput->RenderTex, settings.Bloom.FilterSize, settings.Bloom.MaxBlurSamples,
             settings.Bloom.Tint, emissiveTex->Tex->GetProperties().GetNumSamples());
-        gaussianBlur->Execute(blurOutput->Tex, tmpBlurOutput->RenderTex, settings.Bloom.FilterSize,
+        gaussianBlur->Execute(blurOutput->Tex, tmpBlurOutput->RenderTex, settings.Bloom.FilterSize, settings.Bloom.MaxBlurSamples,
             settings.Bloom.Tint, emissiveTex->Tex->GetProperties().GetNumSamples());
 
         // ### Once we have our blured texture, we call our bloom material which will add this blured texture to the 
@@ -1228,12 +1307,15 @@ namespace te
 
     Vector<String> RCNodeBloom::GetDependencies(const RendererView& view)
     {
-        return
-        {
+        Vector<String> deps = {
             RCNodeGpuInitializationPass::GetNodeId(),
-            RCNodeSceneTexDownsamples::GetNodeId(),
             RCNodePostProcess::GetNodeId()
         };
+
+        if(view.GetRenderSettings().Bloom.Enabled)
+            deps.push_back(RCNodeSceneTexDownsamples::GetNodeId());
+
+        return deps;
     }
 
     // ############# FINAL RENDER
@@ -1278,7 +1360,7 @@ namespace te
                 break;
             case RenderOutputType::SSAO:
                 if (viewProps.RunPostProcessing)
-                    input = SSAONode->Output;
+                    input = SSAONode->Output->Tex;
                 else
                     input = gpuInitializationPassNode->SceneTex->Tex;
                 break;
@@ -1319,8 +1401,8 @@ namespace te
             inputs.CurrRenderer.SetLastRenderTexture(RenderOutputType::Emissive, gpuInitializationPassNode->EmissiveTex->Tex);
         if (gpuInitializationPassNode->VelocityTex)
             inputs.CurrRenderer.SetLastRenderTexture(RenderOutputType::Velocity, gpuInitializationPassNode->VelocityTex->Tex);
-        if (SSAONode)
-            inputs.CurrRenderer.SetLastRenderTexture(RenderOutputType::SSAO, SSAONode->Output);
+        if (SSAONode && SSAONode->Output)
+            inputs.CurrRenderer.SetLastRenderTexture(RenderOutputType::SSAO, SSAONode->Output->Tex);
 
         inputs.CurrRenderAPI.PopMarker();
     }

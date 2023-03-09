@@ -15,7 +15,7 @@ namespace te
         BLEND_STATE_DESC BlendStateDesc;
         RASTERIZER_STATE_DESC RasterizerStateDesc;
         DEPTH_STENCIL_STATE_DESC DepthStencilStateDesc;
-        UINT32 StencilRefValue;
+        UINT32 StencilRefValue = 0;
 
         GPU_PROGRAM_DESC VertexProgramDesc;
         GPU_PROGRAM_DESC PixelProgramDesc;

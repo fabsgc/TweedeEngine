@@ -1,6 +1,6 @@
 #include "TeRendererUtility.h"
 
-#include "Renderer/TeBlitMat.h"
+#include "Renderer/Materials/TeBlitMat.h"
 #include "RenderAPI/TeGpuParams.h"
 #include "RenderAPI/TeVertexData.h"
 #include "RenderAPI/TeIndexBuffer.h"
@@ -498,7 +498,7 @@ namespace te
         return false;
     }
 
-    void RendererUtility::GenerateViewportRenderTexture(RenderTextureData& renderData)
+    void RendererUtility::GenerateViewportRenderTexture(RenderTextureData& renderData, const String& debugName)
     {
         if (renderData.RenderTex)
             renderData.RenderTex = nullptr;
@@ -514,6 +514,7 @@ namespace te
         renderData.TargetColorDesc.NumSamples = gCoreApplication().GetWindow()->GetDesc().MultisampleCount;
         renderData.TargetColorDesc.Usage = TU_RENDERTARGET;
         renderData.TargetColorDesc.DebugName = "[Render Texture Color]";
+        if (!debugName.empty()) renderData.TargetColorDesc.DebugName += " " + debugName;
 
         renderData.TargetDepthDesc.Type = TEX_TYPE_2D;
         renderData.TargetDepthDesc.Width = renderData.Width;
@@ -522,6 +523,7 @@ namespace te
         renderData.TargetDepthDesc.NumSamples = gCoreApplication().GetWindow()->GetDesc().MultisampleCount;
         renderData.TargetDepthDesc.Usage = TU_DEPTHSTENCIL;
         renderData.TargetDepthDesc.DebugName = "[Render Texture Depth]";
+        if (!debugName.empty()) renderData.TargetDepthDesc.DebugName += " " + debugName;
 
         renderData.ColorTex = Texture::Create(renderData.TargetColorDesc);
         renderData.DepthStencilTex = Texture::Create(renderData.TargetDepthDesc);

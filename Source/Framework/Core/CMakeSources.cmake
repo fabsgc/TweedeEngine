@@ -77,7 +77,6 @@ set (TE_CORE_INC_RENDERER
     "Core/Renderer/TeGpuResourcePool.h"
     "Core/Renderer/TeRendererMaterialManager.h"
     "Core/Renderer/TeRendererMaterial.h"
-    "Core/Renderer/TeBlitMat.h"
     "Core/Renderer/TeDecal.h"
     "Core/Renderer/TeIBLUtility.h"
     "Core/Renderer/TeTextureDownsampleMat.h"
@@ -97,11 +96,19 @@ set (TE_CORE_SRC_RENDERER
     "Core/Renderer/TeRendererUtility.cpp"
     "Core/Renderer/TeGpuResourcePool.cpp"
     "Core/Renderer/TeRendererMaterialManager.cpp"
-    "Core/Renderer/TeBlitMat.cpp"
     "Core/Renderer/TeDecal.cpp"
     "Core/Renderer/TeIBLUtility.cpp"
     "Core/Renderer/TeTextureDownsampleMat.cpp"
     "Core/Renderer/TeTextureCubeDownsampleMat.cpp"
+)
+
+set (TE_CORE_INC_RENDERER_MATERIALS
+    "Core/Renderer/Materials/TeBlitMat.h"
+    "Core/Renderer/Materials/TeGaussianBlurMat.h"
+)
+set (TE_CORE_SRC_RENDERER_MATERIALS
+    "Core/Renderer/Materials/TeBlitMat.cpp"
+    "Core/Renderer/Materials/TeGaussianBlurMat.cpp"
 )
 
 set (TE_CORE_INC_SCENE
@@ -536,6 +543,7 @@ list(APPEND TE_CORE_SRC_PLATFORM ${TE_CORE_SRC_PLATFORM})
 
 source_group("Core\\RenderAPI" FILES ${TE_CORE_INC_RENDERAPI} ${TE_CORE_SRC_RENDERAPI})
 source_group("Core\\Renderer" FILES ${TE_CORE_INC_RENDERER} ${TE_CORE_SRC_RENDERER})
+source_group("Core\\Renderer\\Materials" FILES ${TE_CORE_INC_RENDERER_MATERIALS} ${TE_CORE_SRC_RENDERER_MATERIALS})
 source_group("Core\\Platform" FILES ${TE_CORE_INC_PLATFORM} ${TE_CORE_SRC_PLATFORM})
 source_group("Core\\Input" FILES ${TE_CORE_INC_INPUT} ${TE_CORE_SRC_INPUT})
 source_group("Core\\Manager" FILES ${TE_CORE_INC_MANAGER} ${TE_CORE_SRC_MANAGER})
@@ -563,6 +571,8 @@ set(TE_CORE_SRC
     ${TE_CORE_INC_RENDERAPI}
     ${TE_CORE_SRC_RENDERER}
     ${TE_CORE_INC_RENDERER}
+    ${TE_CORE_SRC_RENDERER_MATERIALS}
+    ${TE_CORE_INC_RENDERER_MATERIALS}
     ${TE_CORE_SRC_PLATFORM}
     ${TE_CORE_INC_PLATFORM}
     ${TE_CORE_SRC_NOFILTER}

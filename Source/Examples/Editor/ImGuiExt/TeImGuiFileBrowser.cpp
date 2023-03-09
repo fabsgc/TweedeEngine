@@ -702,6 +702,10 @@ namespace te
                     if (Data.MeshParam.ImportMaterials)
                     {
                         ImGui::Indent(30.0f);
+                        ImGuiExt::RenderOptionBool(Data.MeshParam.ImportTextures, "##file_dialog_parameters_mesh_textures", "Import Textures");
+                        ImGui::Unindent(30.0f);
+
+                        ImGui::Indent(30.0f);
                         ImGuiExt::RenderOptionBool(Data.MeshParam.ImportSRGBTextures, "##file_dialog_parameters_mesh_srgb_textures", "SRGB Textures");
                         ImGui::Unindent(30.0f);
                     }

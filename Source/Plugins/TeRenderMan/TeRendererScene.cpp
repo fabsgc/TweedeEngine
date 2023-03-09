@@ -535,6 +535,7 @@ namespace te
                 renElement->BonePrevMatrixBuffer = renderable->GetBonePrevMatrixBuffer();
                 renElement->AnimType = renderable->GetAnimType();
                 renElement->AnimationId = renderable->GetAnimationId();
+                renElement->UseForZPrepass = renderable->GetUseForZPrepass();
 
                 renElement->MaterialElem = renderable->GetMaterial(i);
                 if (renElement->MaterialElem == nullptr)

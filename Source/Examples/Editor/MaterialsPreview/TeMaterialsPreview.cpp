@@ -27,7 +27,7 @@ namespace te
         MatPreview->Width = MaterialsPreview::PreviewSize;
         MatPreview->Height = MaterialsPreview::PreviewSize;
 
-        gRendererUtility().GenerateViewportRenderTexture(*MatPreview);
+        gRendererUtility().GenerateViewportRenderTexture(*MatPreview, " Material Preview");
     }
 
     MaterialsPreview::Preview::~Preview()

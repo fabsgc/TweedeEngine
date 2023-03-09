@@ -17,6 +17,7 @@ namespace te
         bool CastShadows = true;
         bool CastLights = true;
         bool ReceiveShadows = true;
+        bool UseForZPrepass = false;
         bool UseForLightProbes  = false;
         bool WriteVelocity = true;
         float CullDistanceFactor = 1.0f;
@@ -153,6 +154,12 @@ namespace te
 
         /** @copydoc SetCastLights */
         bool GetCastLights() const { return _properties.CastLights; }
+
+        /** Determines if this object is used for Z Prepass */
+        void SetUseForZPrepass(bool useForZPrepass) { _properties.UseForZPrepass = useForZPrepass; _markCoreDirty(); }
+
+        /** @copydoc SetUseForZPrepass */
+        bool GetUseForZPrepass() const { return _properties.UseForZPrepass; }
 
         /** Set whole properties in a row */
         void SetPorperties(RenderableProperties& properties) { _properties = properties; _markCoreDirty(); }

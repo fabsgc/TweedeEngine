@@ -858,9 +858,9 @@ namespace te
     void D3D11RenderAPI::ClearRenderTarget(UINT32 buffers, const Color& color, float depth, UINT16 stencil, UINT8 targetMask)
     {
         if (_activeRenderTarget == nullptr)
-        {
             return;
-        }
+
+        PushMarker("[CLEAR] ClearRenderTarget", Color(0.2f, 0.25f, 0.5f));
 
         // Clear render surfaces
         if (buffers & FBT_COLOR)
@@ -871,9 +871,7 @@ namespace te
 
             _activeRenderTarget->GetCustomAttribute("RTV", _activeViews);
             if (!_activeViews[0])
-            {
                 return;
-            }
 
             float clearColor[4];
             clearColor[0] = color.r;
@@ -908,6 +906,8 @@ namespace te
                 _device->GetImmediateContext()->ClearDepthStencilView(depthStencilView, clearFlag, depth, (UINT8)stencil);
             }
         }
+
+        PopMarker();
 
         TE_INC_PROFILER_GPU(NumClears);
         NotifyRenderTargetModified();

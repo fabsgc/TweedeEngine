@@ -206,8 +206,8 @@ namespace te
         {
             HSceneObject sphereSO = _runningSceneSO->GetSceneObject("Sphere", true);
 
-            if(!sphereSO.Empty())
-                sphereSO->Rotate(Vector3(0.0f, 0.0f, 1.0f), Radian(2.5f * gTime().GetFrameDelta()));
+            //if(!sphereSO.Empty())
+            //    sphereSO->Rotate(Vector3(0.0f, 0.5f, 0.0f), Radian(2.5f * gTime().GetFrameDelta()));
         }
     }
 
@@ -217,9 +217,7 @@ namespace te
             return;
 
         if (_hudDirty && _previewViewportCamera == _viewportCamera) // only for default camera
-        {
             _hud->Render(_previewViewportCamera, _sceneSO);
-        }
 
         if (_selectionDirty && _previewViewportCamera == _viewportCamera) // only for default camera
         {
@@ -416,7 +414,7 @@ namespace te
         _viewportCameraUI->SetName("Viewport camera UI");
 
         auto settings = _viewportCamera->GetRenderSettings();
-        settings->MotionBlur.Enabled = true;
+        settings->MotionBlur.Enabled = false;
         settings->MotionBlur.Domain = MotionBlurDomain::CameraAndObject;
 
         _previewViewportCamera = _viewportCamera.GetNewHandleFromExisting();
@@ -1268,7 +1266,11 @@ namespace te
         // IMPORT OPTIONS
         // ######################################################
         auto meshImportOptions = MeshImportOptions::Create();
-        meshImportOptions->ImportCollisionShape = true;
+        meshImportOptions->ImportCollisionShape = false;
+        meshImportOptions->ImportMaterials = true;
+        meshImportOptions->ImportTextures = false;
+        meshImportOptions->ScaleFactor = 3.5f;
+        meshImportOptions->ScaleSystemUnit = true;
 
         auto textureImportOptions = TextureImportOptions::Create();
         textureImportOptions->CpuCached = false;
@@ -1286,7 +1288,7 @@ namespace te
 
         // LOAD MESH AND TEXTURES RESOURCES
         // ######################################################
-        _sphereMesh = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Mill/mill.obj", meshImportOptions)->Entries[0].Res);
+        _sphereMesh = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/VintageWooden/VintageWooden.obj", meshImportOptions)->Entries[0].Res);
         //_monkeyMesh = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Monkey/monkey-hd.obj", meshImportOptions)->Entries[0].Res);
         //_planeMesh = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Primitives/plane.obj", meshImportOptions)->Entries[0].Res);
 
@@ -1365,6 +1367,10 @@ namespace te
             _renderable->SetMaterial(_sphereMaterial);
             _renderable->SetName("Renderable");
             _renderable->Initialize();
+            _renderable->GetInternal()->SetUseForZPrepass(true);
+
+            _sceneRenderableSO->Rotate(Vector3::UNIT_Y, Radian(Math::HALF_PI));
+            _sceneRenderableSO->Move(Vector3(0.0f, -1.0f, 0.0f));
         }
 
         EditorResManager::Instance().Add<Material>(_sphereMaterial);

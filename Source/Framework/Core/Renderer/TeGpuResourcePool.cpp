@@ -28,6 +28,8 @@ namespace te
         SPtr<PooledRenderTexture> newTexture = te_shared_ptr_new<PooledRenderTexture>(_currentFrame);
         _textures.push_back(newTexture);
 
+        _allocationsCountSinceLastPrune++;
+
         TEXTURE_DESC texDesc;
         texDesc.Type = desc.Type;
         texDesc.Width = desc.Width;
@@ -124,9 +126,10 @@ namespace te
     {
         _currentFrame++;
 
-        // Note: Should also force pruning when over some memory limit (in which case I can probably increase the
-        // age pruning limit higher)
-        Prune(60);
+        if (_allocationsCountSinceLastPrune > 120)
+            Prune(0);
+        else
+            Prune(60);
     }
 
     void GpuResourcePool::Prune(UINT32 age)
@@ -173,6 +176,7 @@ namespace te
         }
 
         _lastPruneFrame = _currentFrame;
+        _allocationsCountSinceLastPrune = 0;
     }
 
     bool GpuResourcePool::Matches(const SPtr<Texture>& texture, const POOLED_RENDER_TEXTURE_DESC& desc)

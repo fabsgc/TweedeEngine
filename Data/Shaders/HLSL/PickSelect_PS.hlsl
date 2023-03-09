@@ -1,4 +1,3 @@
-#define RENDER_TYPE_DRAW 0
 #define RENDER_TYPE_SELECTION 1
 #define RENDER_TYPE_PICKING 2
 
@@ -22,7 +21,7 @@ float4 main( PS_INPUT IN ) : SV_Target
     float4 output = (float4)0;
 
     if(gRenderType == RENDER_TYPE_SELECTION)
-        output = float4(1.0, 0.5, 0.0, 1.0);
+        output = float4(1.0, 0.5, 0.0, 0.05);
     else
         output = IN.Color;
 

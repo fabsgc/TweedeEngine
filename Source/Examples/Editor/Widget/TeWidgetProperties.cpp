@@ -2411,6 +2411,17 @@ namespace te
         }
         ImGui::Separator();
 
+        // use for Z Prepass
+        {
+            bool useForZPrepass = properties.UseForZPrepass;
+            if (ImGuiExt::RenderOptionBool(useForZPrepass, "##renderable_properties_use_for_z_prepass_option", "Use for Z Prepass"))
+            {
+                hasChanged = true;
+                renderable->SetUseForZPrepass(useForZPrepass);
+            }
+        }
+        ImGui::Separator();
+
         // use for dynamic env mapping
         {
             bool useForLightProbes = properties.UseForLightProbes;
@@ -3025,6 +3036,7 @@ namespace te
             meshImportOptions->ImportAnimations = _fileBrowser.Data.MeshParam.ImportAnimations;
             meshImportOptions->ReduceKeyFrames = _fileBrowser.Data.MeshParam.ReduceKeyFrames;
             meshImportOptions->ImportMaterials = _fileBrowser.Data.MeshParam.ImportMaterials;
+            meshImportOptions->ImportTextures = _fileBrowser.Data.MeshParam.ImportTextures;
             meshImportOptions->ImportSRGBTextures = _fileBrowser.Data.MeshParam.ImportSRGBTextures;
             meshImportOptions->ImportVertexColors = _fileBrowser.Data.MeshParam.ImportVertexColors;
             meshImportOptions->ForceGenNormals = _fileBrowser.Data.MeshParam.ForceGenNormals;
@@ -3055,7 +3067,7 @@ namespace te
                                 renderable->SetMesh(mesh.GetInternalPtr());
                                 meshLoaded = true;
 
-                                if (meshImportOptions->ImportMaterials)
+                                if (meshImportOptions->ImportMaterials && meshImportOptions->ImportTextures)
                                 {
                                     EditorUtils::ImportMeshMaterials(mesh, meshImportOptions->ImportSRGBTextures);
 

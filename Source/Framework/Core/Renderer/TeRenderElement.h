@@ -34,6 +34,9 @@ namespace te
         /*  All params used by this element for all passes */
         Vector<SPtr<GpuParams>> GpuParamsElem;
 
+        /** Retrieved from parent renderable. Specify if this element will be use during Z Pre Pass */
+        bool UseForZPrepass = false;
+
         /** Executes the draw call for the render element. */
         virtual void Draw() const = 0;
 

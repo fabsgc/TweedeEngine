@@ -126,6 +126,7 @@ namespace te
 
         UINT32 _currentFrame = 0;
         UINT32 _lastPruneFrame = 0;
+        UINT32 _allocationsCountSinceLastPrune = 0;
     };
 
     /** Structure used for creating a new pooled render texture. */

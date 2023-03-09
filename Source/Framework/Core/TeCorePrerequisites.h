@@ -246,11 +246,13 @@ namespace te
     template <typename T>
     class RendererMaterial;
     class BlitMat;
+    class GaussianBlurMat;
     class RendererMeshData;
     class Decal;
     class TextureDownsampleMat;
     class TextureCubeDownsampleMat;
     class IBLUtility;
+    class GpuResourcePool;
 
     class SceneActor;
     class SceneManager;

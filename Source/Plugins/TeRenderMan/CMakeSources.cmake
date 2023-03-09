@@ -30,7 +30,6 @@ set (TE_RENDERERMAN_SRC_NOFILTER
 set (TE_RENDERMAN_INC_POSTPROCESSING
     "PostProcessing/TeBloomMat.h"
     "PostProcessing/TeFXAAMat.h"
-    "PostProcessing/TeGaussianBlurMat.h"
     "PostProcessing/TeMotionBlurMat.h"
     "PostProcessing/TeSkyboxMat.h"
     "PostProcessing/TeToneMappingMat.h"
@@ -42,7 +41,6 @@ set (TE_RENDERMAN_INC_POSTPROCESSING
 set (TE_RENDERMAN_SRC_POSTPROCESSING
     "PostProcessing/TeBloomMat.cpp"
     "PostProcessing/TeFXAAMat.cpp"
-    "PostProcessing/TeGaussianBlurMat.cpp"
     "PostProcessing/TeMotionBlurMat.cpp"
     "PostProcessing/TeSkyboxMat.cpp"
     "PostProcessing/TeToneMappingMat.cpp"

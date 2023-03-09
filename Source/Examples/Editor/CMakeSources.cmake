@@ -30,6 +30,7 @@ set (TE_EDITOR_SRC_IMGUI_EXT
 set (TE_EDITOR_INC_SELECTION
     "Selection/TeSelection.h"
     "Selection/TeSelectionMat.h"
+    "Selection/TeSelectionBlitMat.h"
     "Selection/TeHudSelectionMat.h"
     "Selection/TeHudPickingMat.h"
     "Selection/TeHud.h"
@@ -39,6 +40,7 @@ set (TE_EDITOR_INC_SELECTION
 set (TE_EDITOR_SRC_SELECTION
     "Selection/TeSelection.cpp"
     "Selection/TeSelectionMat.cpp"
+    "Selection/TeSelectionBlitMat.cpp"
     "Selection/TeHudSelectionMat.cpp"
     "Selection/TeHudPickingMat.cpp"
     "Selection/TeHud.cpp"

@@ -348,6 +348,11 @@ namespace te
          * farther away pixels.
          */
         float FilterSize = 0.25f;
+
+        /**
+         * To reduce compute cost of gaussian blur behind. value between [16, 128]
+         */
+        UINT MaxBlurSamples = 128;
     };
 
     /** Various options that control shadow rendering for a specific view. */
@@ -566,5 +571,11 @@ namespace te
          * we will use this Skybox to achieve Global Illumination of each object rendered
          */
         bool UseGlobalIllumination = true;
+
+        /**
+         * In complet scenes, it's very usefull to render some renderables to a depth buffer texture
+         * to avoid overdraw
+         */
+        bool UseZPrepass = true;
     };
 }

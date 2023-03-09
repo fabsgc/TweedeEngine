@@ -314,6 +314,7 @@ namespace te
                 meshImportOptions->ImportAnimations = _fileBrowser.Data.MeshParam.ImportAnimations;
                 meshImportOptions->ReduceKeyFrames = _fileBrowser.Data.MeshParam.ReduceKeyFrames;
                 meshImportOptions->ImportMaterials = _fileBrowser.Data.MeshParam.ImportMaterials;
+                meshImportOptions->ImportTextures = _fileBrowser.Data.MeshParam.ImportTextures;
                 meshImportOptions->ImportSRGBTextures = _fileBrowser.Data.MeshParam.ImportSRGBTextures;
                 meshImportOptions->ImportVertexColors = _fileBrowser.Data.MeshParam.ImportVertexColors;
                 meshImportOptions->ForceGenNormals = _fileBrowser.Data.MeshParam.ForceGenNormals;
@@ -336,7 +337,7 @@ namespace te
                                 mesh->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
                                 EditorResManager::Instance().Add<Mesh>(mesh);
 
-                                if (_fileBrowser.Data.MeshParam.ImportMaterials)
+                                if (_fileBrowser.Data.MeshParam.ImportMaterials && _fileBrowser.Data.MeshParam.ImportTextures)
                                     EditorUtils::ImportMeshMaterials(mesh, meshImportOptions->ImportSRGBTextures);
                             }
                         }

@@ -3,7 +3,6 @@
 #include "TeCorePrerequisites.h"
 #include "Renderer/TeParamBlocks.h"
 #include "Renderer/TeRendererMaterial.h"
-#include "PostProcessing/TeGaussianBlurMat.h"
 
 #define STANDARD_MAX_BLUR_SAMPLES 128
 

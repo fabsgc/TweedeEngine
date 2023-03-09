@@ -202,6 +202,23 @@ namespace te
     };
 
     /**
+     * Z Prepass
+     */
+    class RCNodeZPrePass : public RenderCompositorNode
+    {
+    public:
+        static String GetNodeId() { return "ZPrePass"; }
+        static Vector<String> GetDependencies(const RendererView& view);
+
+    protected:
+        /** @copydoc RenderCompositorNode::Render */
+        void Render(const RenderCompositorNodeInputs& inputs) override;
+
+        /** @copydoc RenderCompositorNode::clear */
+        void Clear() override;
+    };
+
+    /**
      * Render all opaque objects using forward rendering technique
      */
     class RCNodeForwardPass : public RenderCompositorNode
@@ -433,7 +450,7 @@ namespace te
     class RCNodeSSAO : public RenderCompositorNode
     {
     public:
-        SPtr<Texture> Output;
+        SPtr<PooledRenderTexture> Output;
 
         static String GetNodeId() { return "SSAO"; }
         static Vector<String> GetDependencies(const RendererView& view);
@@ -444,8 +461,6 @@ namespace te
 
         /** @copydoc RenderCompositorNode::Clear */
         void Clear() override;
-
-        SPtr<PooledRenderTexture> PooledOutput;
     };
 
     /** Renders the bloom effect. */
