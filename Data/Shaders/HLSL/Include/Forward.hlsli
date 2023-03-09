@@ -12,11 +12,11 @@
 struct VS_INPUT
 {
     float3 Position      : POSITION;
+    uint4  BlendIndices  : BLENDINDICES;
+    float4 BlendWeights  : BLENDWEIGHT;
     float3 Normal        : NORMAL;
     float4 Tangent       : TANGENT;
     float4 BiTangent     : BINORMAL;
-    float4 BlendWeights  : BLENDWEIGHT;
-    uint4  BlendIndices  : BLENDINDICES;
     float2 UV0           : TEXCOORD0;
     float2 UV1           : TEXCOORD1;
     float4 Color         : COLOR0;
@@ -38,6 +38,13 @@ struct VS_OUTPUT
     float2 ParallaxOffsetTS  : TEXCOORD4;
     float4 Other             : TEXCOORD5;
     float4 Color             : COLOR0;
+};
+
+struct VS_Z_INPUT
+{
+    float3 Position      : POSITION;
+    uint4  BlendIndices  : BLENDINDICES;
+    float4 BlendWeights  : BLENDWEIGHT;
 };
 
 struct VS_Z_OUTPUT

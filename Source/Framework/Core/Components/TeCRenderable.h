@@ -30,7 +30,13 @@ namespace te
         void SetMesh(HMesh mesh) { _internal->SetMesh(mesh.GetInternalPtr()); }
 
         /** @copydoc Renderable::SetMesh */
+        void SetZPrepassMesh(HZPrepassMesh mesh) { _internal->SetZPrepassMesh(mesh.GetInternalPtr()); }
+
+        /** @copydoc Renderable::SetMesh */
         void SetMesh(SPtr<Mesh> mesh) { _internal->SetMesh(mesh); }
+
+        /** @copydoc Renderable::SetMesh */
+        void SetZPrepassMesh(SPtr<ZPrepassMesh> mesh) { _internal->SetZPrepassMesh(mesh); }
 
         /** @copydoc Renderable::GetMesh */
         SPtr<Mesh> GetMesh() const { return _internal->GetMesh(); }

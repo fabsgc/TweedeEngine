@@ -212,7 +212,7 @@ namespace te
         RenderAPI& rapi = RenderAPI::Instance();
         SPtr<VertexData> vertexData = mesh->GetVertexData();
 
-        rapi.SetVertexDeclaration(mesh->GetVertexData()->vertexDeclaration);
+        rapi.SetVertexDeclaration(vertexData->vertexDeclaration);
 
         auto& vertexBuffers = vertexData->GetBuffers();
         if (vertexBuffers.size() > 0)

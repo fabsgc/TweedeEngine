@@ -147,7 +147,8 @@ namespace te
         TID_ShaderVariationParam      = 1092,
         TID_ShaderVariationParamInfo  = 1093,
         TID_ShaderVariationParamValue = 1094,
-        TID_Camera                    = 1095
+        TID_Camera                    = 1095,
+        TID_ZPrepassMesh              = 1096
     };
 }
 
@@ -301,6 +302,7 @@ namespace te
     struct MESH_DESC;
     class MeshProperties;
     class Mesh;
+    class ZPrepassMesh;
     class MeshData;
     struct BoneWeight;
 
@@ -439,6 +441,7 @@ namespace te
     typedef ResourceHandle<Texture> HTexture;
     typedef ResourceHandle<Shader> HShader;
     typedef ResourceHandle<Mesh> HMesh;
+    typedef ResourceHandle<ZPrepassMesh> HZPrepassMesh;
     typedef ResourceHandle<Font> HFont;
     typedef ResourceHandle<AudioClip> HAudioClip;
     typedef ResourceHandle<AnimationClip> HAnimationClip;

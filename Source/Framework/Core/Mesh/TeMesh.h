@@ -65,7 +65,10 @@ namespace te
         static MESH_DESC DEFAULT;
     };
 
-    /** Properties of a Mesh. Shared between sim and core thread versions of a Mesh. */
+    /**
+     * Primary class for holding geometry. Stores data in the form of vertex buffers and optionally an index buffer, which
+     * may be bound to the pipeline for drawing. May contain multiple sub-meshes.
+     */
     class TE_CORE_EXPORT MeshProperties
     {
     public:
@@ -103,6 +106,10 @@ namespace te
         Bounds _bounds;
     };
 
+    /**
+     * @brief 
+     * 
+     */
     class TE_CORE_EXPORT Mesh : public Resource
     {
     public:
@@ -282,7 +289,7 @@ namespace te
         Mesh(const MESH_DESC& desc, GpuDeviceFlags deviceMask);
         Mesh(const SPtr<MeshData>& initialMeshData, const MESH_DESC& desc, GpuDeviceFlags deviceMask);
 
-    private:
+    protected:
         Mesh();
 
         /** Updates bounds by calculating them from the vertices in the provided mesh data object. */
@@ -298,7 +305,7 @@ namespace te
         /** Updates the cached CPU buffers with new data. */
         void UpdateCPUBuffer(UINT32 subresourceIdx, const MeshData& meshData);
 
-    private:
+    protected:
         MeshProperties _properties;
 
         mutable SPtr<MeshData> _CPUData;
@@ -314,5 +321,27 @@ namespace te
         GpuDeviceFlags _deviceMask;
 
         SPtr<Skeleton> _skeleton;
+    };
+
+    /**
+     * Specific Mesh type used to optimize ZPrepass step (only Vertex Position)
+     */
+    class TE_CORE_EXPORT ZPrepassMesh : public Mesh
+    {
+    public:
+        /**  @copydoc Resource::GetResourceType */
+        static UINT32 GetResourceType() { return TypeID_Core::TID_ZPrepassMesh; }
+
+        /**
+         * @copydoc Mesh::Create(const SPtr<MeshData>&, const MESH_DESC&)
+         *
+         * @note    Internal method. Use create() for normal use.
+         */
+        static SPtr<ZPrepassMesh> CreatePtr(const SPtr<MeshData>& initialData, const MESH_DESC& desc, GpuDeviceFlags deviceMask = GDF_DEFAULT);
+
+    protected:
+        friend class MeshManager;
+
+        ZPrepassMesh(const SPtr<MeshData>& initialMeshData, const MESH_DESC& desc, GpuDeviceFlags deviceMask);
     };
 }

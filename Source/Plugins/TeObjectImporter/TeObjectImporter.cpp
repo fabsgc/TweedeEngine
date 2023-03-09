@@ -69,6 +69,10 @@ namespace te
         MeshImportOptions* meshImportOptions = const_cast<MeshImportOptions*>
             (static_cast<const MeshImportOptions*>(importOptions.get()));
 
+        // For principal mesh import, we must disable ImportZPrepassMesh because it will not load all Vertex Layout
+        bool importZPrepassMesh = meshImportOptions->ImportZPrepassMesh;
+        meshImportOptions->ImportZPrepassMesh = false;
+
         Vector<AssimpAnimationClipData> animationClips;
         SPtr<RendererMeshData> rendererMeshData = ImportMeshData(filePath, meshImportOptions, desc.SubMeshes, animationClips, desc.MeshSkeleton);
 
@@ -84,52 +88,74 @@ namespace te
             {
                 output.push_back({ u8"primary", mesh });
 
-                if (meshImportOptions->ImportCollisionShape)
+                if(meshImportOptions->ImportCollisionShape && !Physics::IsStarted())
                 {
-                    if (Physics::IsStarted())
-                    {
-                        MESH_DESC collisionDesc;
-                        Vector<AssimpAnimationClipData> collisionAnimationClips;
-                        MeshImportOptions collisionMeshImportOption;
-                        collisionMeshImportOption.CpuCached = false;
-                        collisionMeshImportOption.ImportNormals = false;
-                        collisionMeshImportOption.ImportTangents = false;
-                        collisionMeshImportOption.ImportUVCoords = false;
-                        collisionMeshImportOption.ImportSkin = false;
-                        collisionMeshImportOption.ImportBlendShapes = false;
-                        collisionMeshImportOption.ImportAnimations = false;
-                        collisionMeshImportOption.ImportVertexColors = false;
-                        collisionMeshImportOption.ForceGenNormals = false;
-                        collisionMeshImportOption.GenSmoothNormals = false;
-                        collisionMeshImportOption.ReduceKeyFrames = false;
-                        collisionMeshImportOption.FplitUV = false;
-                        collisionMeshImportOption.LeftHanded = meshImportOptions->LeftHanded;
-                        collisionMeshImportOption.FlipWinding = meshImportOptions->FlipWinding;
-                        collisionMeshImportOption.ScaleSystemUnit = meshImportOptions->ScaleSystemUnit;
-                        collisionMeshImportOption.ScaleFactor = meshImportOptions->ScaleFactor;
-                        collisionMeshImportOption.ImportMaterials = false;
-                        collisionMeshImportOption.ImportTextures = false;
-                        collisionMeshImportOption.ImportSRGBTextures = false;
-                        collisionMeshImportOption.ImportRootMotion = false;
-                        collisionMeshImportOption.ImportCollisionShape = false;
+                    TE_DEBUG("Cannot generate a collision mesh as the physics module was not started.");
+                }
 
-                        SPtr<RendererMeshData> collisionMeshData = ImportMeshData(filePath, &collisionMeshImportOption, collisionDesc.SubMeshes, collisionAnimationClips, collisionDesc.MeshSkeleton);
-                        SPtr<PhysicsMesh> physicsMesh = PhysicsMesh::CreatePtr(collisionMeshData->GetData());
+                if ((meshImportOptions->ImportCollisionShape && Physics::IsStarted()) || importZPrepassMesh)
+                {
+                    MeshImportOptions simpleMeshImportOptions;
+                    simpleMeshImportOptions.CpuCached = false;
+                    simpleMeshImportOptions.ImportNormals = false;
+                    simpleMeshImportOptions.ImportTangents = false;
+                    simpleMeshImportOptions.ImportUVCoords = false;
+                    simpleMeshImportOptions.ImportSkin = false;
+                    simpleMeshImportOptions.ImportBlendShapes = false;
+                    simpleMeshImportOptions.ImportAnimations = false;
+                    simpleMeshImportOptions.ImportVertexColors = false;
+                    simpleMeshImportOptions.ForceGenNormals = false;
+                    simpleMeshImportOptions.GenSmoothNormals = false;
+                    simpleMeshImportOptions.ReduceKeyFrames = false;
+                    simpleMeshImportOptions.FlipUV = false;
+                    simpleMeshImportOptions.LeftHanded = meshImportOptions->LeftHanded;
+                    simpleMeshImportOptions.FlipWinding = meshImportOptions->FlipWinding;
+                    simpleMeshImportOptions.ScaleSystemUnit = meshImportOptions->ScaleSystemUnit;
+                    simpleMeshImportOptions.ScaleFactor = meshImportOptions->ScaleFactor;
+                    simpleMeshImportOptions.ImportMaterials = false;
+                    simpleMeshImportOptions.ImportTextures = false;
+                    simpleMeshImportOptions.ImportSRGBTextures = false;
+                    simpleMeshImportOptions.ImportRootMotion = false;
+                    simpleMeshImportOptions.ImportCollisionShape = meshImportOptions->ImportCollisionShape;
+                    simpleMeshImportOptions.ImportZPrepassMesh = importZPrepassMesh;
 
-                        if (physicsMesh)
-                        {
-                            physicsMesh->SetName("Collision - " + mesh->GetName());
-                            physicsMesh->SetPath(path.generic_string());
-                            output.push_back({ u8"collision", physicsMesh });
-                        }
-                        else
-                        {
-                            TE_DEBUG("Cannot generate a collision mesh.");
-                        }
-                    }
-                    else
+                    MESH_DESC simpleMeshDesc;
+                    Vector<AssimpAnimationClipData> simpleMeshAnimationClips;
+
+                    SPtr<RendererMeshData> simpleMeshData = ImportMeshData(filePath, &simpleMeshImportOptions, simpleMeshDesc.SubMeshes, simpleMeshAnimationClips, simpleMeshDesc.MeshSkeleton);
+                    if (simpleMeshData)
                     {
-                        TE_DEBUG("Cannot generate a collision mesh as the physics module was not started.");
+                        if (meshImportOptions->ImportCollisionShape && Physics::IsStarted())
+                        {
+                            SPtr<PhysicsMesh> physicsMesh = PhysicsMesh::CreatePtr(simpleMeshData->GetData());
+
+                            if (physicsMesh)
+                            {
+                                physicsMesh->SetName("Collision - " + mesh->GetName());
+                                physicsMesh->SetPath(path.generic_string());
+                                output.push_back({ u8"collision", physicsMesh });
+                            }
+                            else
+                            {
+                                TE_DEBUG("Cannot generate a collision mesh.");
+                            }
+                        }
+
+                        if (importZPrepassMesh)
+                        {
+                            SPtr<ZPrepassMesh> zPrepassMesh = ZPrepassMesh::CreatePtr(simpleMeshData->GetData(), desc);
+                            zPrepassMesh->SetName(path.filename().generic_string());
+                            zPrepassMesh->SetPath(path.generic_string());
+
+                            if (zPrepassMesh)
+                            {
+                                output.push_back({ u8"zPrepassMesh", zPrepassMesh });
+                            }
+                            else
+                            {
+                                TE_DEBUG("Cannot generate a z pre pass mesh.");
+                            }
+                        }
                     }
                 }
 
@@ -185,7 +211,7 @@ namespace te
             importer.SetPropertyFloat(AI_CONFIG_GLOBAL_SCALE_FACTOR_KEY, importOptions->ScaleFactor);
         }
 
-        if (importOptions->FplitUV)
+        if (importOptions->FlipUV)
             assimpFlags |= aiProcess_FlipUVs;
 
         if (importOptions->FlipWinding)
@@ -252,8 +278,12 @@ namespace te
         assimpImportOptions.ImportAnimations   = importOptions->ImportAnimations;
         assimpImportOptions.ImportMaterials    = importOptions->ImportMaterials;
         assimpImportOptions.ImportTextures     = importOptions->ImportTextures;
+        assimpImportOptions.ImportColors       = importOptions->ImportVertexColors;
         assimpImportOptions.ReduceKeyframes    = importOptions->ReduceKeyFrames;
         assimpImportOptions.FilePath           = filePath;
+
+        if (importOptions->ImportZPrepassMesh)
+            assimpImportOptions.CustomVertexLayout = (UINT32)VertexLayout::Position | (UINT32)VertexLayout::BoneWeights;
 
         ParseScene(scene, assimpImportOptions, importedScene);
 
@@ -465,8 +495,6 @@ namespace te
 
             if (mesh->HasVertexColors(i) && options.ImportColors)
                 importMesh->Colors[i] = ConvertToNativeType(*mesh->mColors[i]);
-            else
-                importMesh->Colors[i] = Color::LightGray.GetAsVector4();
         }
 
         // Import triangles
@@ -1118,14 +1146,22 @@ namespace te
                 currentIndex += indexCount;
             }
 
-            UINT32 vertexLayout = (UINT32)VertexLayout::Position;
-            vertexLayout |= (UINT32)VertexLayout::Normal;
-            vertexLayout |= (UINT32)VertexLayout::Tangent;
-            vertexLayout |= (UINT32)VertexLayout::BiTangent;
-            vertexLayout |= (UINT32)VertexLayout::UV0;
-            vertexLayout |= (UINT32)VertexLayout::UV1;
-            vertexLayout |= (UINT32)VertexLayout::BoneWeights;
-            vertexLayout |= (UINT32)VertexLayout::Color;
+            UINT32 vertexLayout = 0;
+            if (options.CustomVertexLayout != 0)
+            {
+                vertexLayout = options.CustomVertexLayout;
+            }
+            else
+            {
+                vertexLayout |= (UINT32)VertexLayout::Position;
+                vertexLayout |= (UINT32)VertexLayout::Normal;
+                vertexLayout |= (UINT32)VertexLayout::Tangent;
+                vertexLayout |= (UINT32)VertexLayout::BiTangent;
+                vertexLayout |= (UINT32)VertexLayout::UV0;
+                vertexLayout |= (UINT32)VertexLayout::UV1;
+                vertexLayout |= (UINT32)VertexLayout::BoneWeights;
+                vertexLayout |= (UINT32)VertexLayout::Color;
+            }
 
             size_t numVertices = mesh->Positions.size();
             bool hasColors = mesh->Colors.size() == numVertices;

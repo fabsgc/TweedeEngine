@@ -291,6 +291,7 @@ namespace te
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         // TODO Temp for debug purpose
         HMesh _sphereMesh;
+        HZPrepassMesh _zPrepassSphereMesh;
         HTexture _skyboxTexture;
         HMaterial _sphereMaterial;
 

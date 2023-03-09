@@ -322,6 +322,7 @@ namespace te
                 meshImportOptions->ScaleSystemUnit = _fileBrowser.Data.MeshParam.ScaleSystemUnit;
                 meshImportOptions->ScaleFactor = _fileBrowser.Data.MeshParam.ScaleFactor;
                 meshImportOptions->ImportCollisionShape = _fileBrowser.Data.MeshParam.ImportCollisionShape;
+                meshImportOptions->ImportZPrepassMesh = _fileBrowser.Data.MeshParam.ImportZPrepassMesh;
                 meshImportOptions->CpuCached = false;
 
                 SPtr<MultiResource> resources = EditorResManager::Instance().LoadAll(_fileBrowser.Data.SelectedPath, meshImportOptions, true);

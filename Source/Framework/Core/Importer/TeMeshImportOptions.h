@@ -82,7 +82,7 @@ namespace te
         bool ReduceKeyFrames = true;
 
         /** Determine if we need to flip UV mapping when importing object */
-        bool FplitUV = false;
+        bool FlipUV = false;
 
         /** Determine if we need to change coordinate system */
         bool LeftHanded = false;
@@ -128,6 +128,11 @@ namespace te
          * available as a sub-resource returned by the importer (along with the normal mesh).
          */
         bool ImportCollisionShape = false;
+
+        /**
+         * ZPrepass only draw outline of meshes on screen. Thus, we would like to have a position only vertex buffer mesh
+         */
+        bool ImportZPrepassMesh = false;
 
         /** Creates a new import options object that allows you to customize how are Meshs imported. */
         static SPtr<MeshImportOptions> Create();

@@ -68,6 +68,7 @@ namespace te
                 bool ScaleSystemUnit = false;
                 float ScaleFactor = 1.0f;
                 bool ImportCollisionShape = true;
+                bool ImportZPrepassMesh = false;
             };
 
             /** If we want to load a texture, here are stored the list of parameters to apply on it during loading */

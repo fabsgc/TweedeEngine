@@ -52,8 +52,14 @@ namespace te
         /** Determines the mesh to render. All sub-meshes of the mesh will be rendered, and you may set individual materials for each sub-mesh. */
         void SetMesh(SPtr<Mesh> mesh);
 
+        /** For Z Prepass, we want to use a lighter mesh. */
+        void SetZPrepassMesh(SPtr<ZPrepassMesh> mesh);
+
         /**	@copydoc SetMesh */
         SPtr<Mesh> GetMesh() const { return _mesh; }
+
+        /**	@copydoc SetMesh */
+        SPtr<ZPrepassMesh> GetZPrepassMesh() const { return _ZPrepassMesh; }
 
         /**
          * Sets a material that will be used for rendering a sub-mesh with the specified index. If a sub-mesh doesn't have
@@ -271,6 +277,7 @@ namespace te
         RenderableProperties _properties;
 
         SPtr<Mesh> _mesh;
+        SPtr<ZPrepassMesh> _ZPrepassMesh;
         Vector<SPtr<Material>> _materials;
         UINT32 _numMaterials = 0;
         UINT64 _layer = 1;

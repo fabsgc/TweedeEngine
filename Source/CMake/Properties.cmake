@@ -74,8 +74,10 @@ endif ()
 find_library (DirectX9 d3d9)
 if (DirectX9)
     set (D3D9_FOUND 1)
+    message(STATUS "DirectX9 found.")
 else ()
     set (D3D9_FOUND 0)
+    message(STATUS "DirectX9 not found.")
 endif ()
 
 # Global compile & linker flags

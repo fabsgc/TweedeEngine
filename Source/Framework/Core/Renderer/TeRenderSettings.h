@@ -217,13 +217,13 @@ namespace te
          * Distance (in view space, in meters) after which AO starts fading out. The fade process will happen over the
          * range as specified by @p FadeRange.
          */
-        float FadeDistance = 500.0f;
+        float FadeDistance = 1000.0f;
 
         /**
          * Range (in view space, in meters) in which AO fades out from 100% to 0%. AO starts fading out after the distance
          * specified in @p fadeDistance.
          */
-        float FadeRange = 50.0f;
+        float FadeRange = 100.0f;
 
         /**
          * Linearly scales the intensity of the AO effect. Values less than 1 make the AO effect less pronounced, and vice

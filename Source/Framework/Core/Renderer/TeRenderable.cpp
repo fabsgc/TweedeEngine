@@ -92,6 +92,20 @@ namespace te
         _markCoreDirty(ActorDirtyFlag::GpuParams);
     }
 
+    void Renderable::SetZPrepassMesh(SPtr<ZPrepassMesh> mesh)
+    {
+        if (mesh == _ZPrepassMesh)
+            return;
+
+        _ZPrepassMesh = mesh;
+
+        _boundsDirty = true;
+        _subMeshesBoundsDirty = true;
+
+        OnMeshChanged();
+        _markCoreDirty(ActorDirtyFlag::GpuParams);
+    }
+
     void Renderable::SetMaterial(UINT32 idx, const SPtr<Material>& material)
     {
         if (!_mesh)

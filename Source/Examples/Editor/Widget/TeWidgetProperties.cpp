@@ -2296,17 +2296,21 @@ namespace te
         bool hasChanged = false;
         const RenderableProperties& properties = renderable->GetProperties();
         const SPtr<Mesh> mesh = renderable->GetMesh();
+        const SPtr<ZPrepassMesh> zPrepassMesh = renderable->GetZPrepassMesh();
         const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
 
         ImGuiExt::ComboOptions<UUID> meshesOptions;
+        ImGuiExt::ComboOptions<UUID> zPrepassMeshesOptions;
         UUID emptyMesh = UUID(50, 0, 0, 0);
         UUID loadMesh = UUID::EMPTY;
         UUID meshUUID = (mesh) ? mesh->GetUUID() : emptyMesh;
-        EditorResManager::ResourcesContainer& container = EditorResManager::Instance().Get<Mesh>();
+        UUID ZPrepassMeshUUID = (zPrepassMesh) ? zPrepassMesh->GetUUID() : emptyMesh;
+        EditorResManager::ResourcesContainer& meshes = EditorResManager::Instance().Get<Mesh>();
+        EditorResManager::ResourcesContainer& zPrepassMeshes = EditorResManager::Instance().Get<ZPrepassMesh>();
 
         // current mesh to use
         {
-            for (auto& resource : container.Res)
+            for (auto& resource : meshes.Res)
                 meshesOptions.AddOption(resource.second->GetUUID(), resource.second->GetName());
 
             meshesOptions.AddOption(emptyMesh, ICON_FA_TIMES_CIRCLE " No mesh");
@@ -2342,6 +2346,39 @@ namespace te
 
             if (ShowLoadMesh())
                 hasChanged = true;
+        }
+        ImGui::Separator();
+
+        // use for Z Prepass
+        {
+            bool useForZPrepass = properties.UseForZPrepass;
+            if (ImGuiExt::RenderOptionBool(useForZPrepass, "##renderable_properties_use_for_z_prepass_option", "Use for Z Prepass"))
+            {
+                hasChanged = true;
+                renderable->SetUseForZPrepass(useForZPrepass);
+            }
+
+            if (properties.UseForZPrepass)
+            {
+                for (auto& resource : zPrepassMeshes.Res)
+                    zPrepassMeshesOptions.AddOption(resource.second->GetUUID(), resource.second->GetName());
+
+                zPrepassMeshesOptions.AddOption(emptyMesh, ICON_FA_TIMES_CIRCLE " No mesh");
+
+                if (ImGuiExt::RenderOptionCombo<UUID>(&ZPrepassMeshUUID, "##z_prepass_meshes_option", "Z Prepass Mesh", zPrepassMeshesOptions, width))
+                {
+                    if (ZPrepassMeshUUID == emptyMesh)
+                    {
+                        renderable->SetZPrepassMesh(nullptr);
+                        hasChanged = true;
+                    }
+                    else
+                    {
+                        renderable->SetZPrepassMesh(gResourceManager().Load<ZPrepassMesh>(ZPrepassMeshUUID).GetInternalPtr());
+                        hasChanged = true;
+                    }
+                }
+            }
         }
         ImGui::Separator();
 
@@ -2407,17 +2444,6 @@ namespace te
             {
                 hasChanged = true;
                 renderable->SetCastLight(castLights);
-            }
-        }
-        ImGui::Separator();
-
-        // use for Z Prepass
-        {
-            bool useForZPrepass = properties.UseForZPrepass;
-            if (ImGuiExt::RenderOptionBool(useForZPrepass, "##renderable_properties_use_for_z_prepass_option", "Use for Z Prepass"))
-            {
-                hasChanged = true;
-                renderable->SetUseForZPrepass(useForZPrepass);
             }
         }
         ImGui::Separator();
@@ -3044,6 +3070,7 @@ namespace te
             meshImportOptions->ScaleSystemUnit = _fileBrowser.Data.MeshParam.ScaleSystemUnit;
             meshImportOptions->ScaleFactor = _fileBrowser.Data.MeshParam.ScaleFactor;
             meshImportOptions->ImportCollisionShape = _fileBrowser.Data.MeshParam.ImportCollisionShape;
+            meshImportOptions->ImportZPrepassMesh = _fileBrowser.Data.MeshParam.ImportZPrepassMesh;
             meshImportOptions->CpuCached = false;
 
             SPtr<MultiResource> resources = EditorResManager::Instance().LoadAll(_fileBrowser.Data.SelectedPath, meshImportOptions);

@@ -367,6 +367,12 @@ namespace te
         if ((intType & (INT32)VertexLayout::Position) != 0)
             vertexDesc->AddVertElem(VET_FLOAT3, VES_POSITION);
 
+        if ((intType & (INT32)VertexLayout::BoneWeights) != 0)
+        {
+            vertexDesc->AddVertElem(VET_UBYTE4, VES_BLEND_INDICES);
+            vertexDesc->AddVertElem(VET_FLOAT4, VES_BLEND_WEIGHTS);
+        }
+
         if ((intType & (INT32)VertexLayout::Normal) != 0)
             vertexDesc->AddVertElem(VET_FLOAT3, VES_NORMAL);
 
@@ -384,12 +390,6 @@ namespace te
 
         if ((intType & (INT32)VertexLayout::Color) != 0)
             vertexDesc->AddVertElem(VET_FLOAT4, VES_COLOR);
-
-        if ((intType & (INT32)VertexLayout::BoneWeights) != 0)
-        {
-            vertexDesc->AddVertElem(VET_FLOAT4, VES_BLEND_WEIGHTS);
-            vertexDesc->AddVertElem(VET_UBYTE4, VES_BLEND_INDICES);
-        }
 
         return vertexDesc;
     }

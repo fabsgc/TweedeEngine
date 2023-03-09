@@ -30,6 +30,19 @@ namespace te
 {
     UnorderedMap<String, RenderCompositor::NodeType*> RenderCompositor::_nodeTypes;
 
+    struct ZPrepassElem
+    {
+        const SPtr<Mesh>* MeshElem = nullptr; // Can be a Mesh of a ZPrepassMesh
+        SubMesh* SubMeshElem = nullptr;
+        const SPtr<GpuParams>* GpuParamsElem = nullptr;
+        UINT32 InstanceCount = 0;
+
+        ~ZPrepassElem()
+        { }
+    };
+
+    IMPLEMENT_GLOBAL_POOL(ZPrepassElem, 32)
+
     /** Renders all elements for the Z Prepass. */
     void RenderQueueElementsForZPrepass(const Vector<RenderQueueElement>& elements, const RendererView& view, const SceneInfo& scene, const RendererViewGroup& viewGroup)
     {
@@ -40,48 +53,104 @@ namespace te
         static const Vector<String> CameraBuffer = { "PerCameraBuffer" };
         static const Vector<String> ObjectBuffer = { "PerObjectBuffer" };
 
-        HShader shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::ZPrepass);
-        const auto& techniques = shader->GetTechniques();
-
-        if (techniques.size() == 0)
-            return;
-
-        SPtr<Technique> technique = techniques[0];
-        if (technique->GetNumPasses() == 0)
-            return;
-
-        SPtr<Pass> pass = technique->GetPass(0);
-
-        rapi.SetGraphicsPipeline(pass->GetGraphicsPipelineState());
-        rapi.SetStencilRef(pass->GetStencilRefValue());
+        Vector<ZPrepassElem*> zPrepassMeshElements;
+        Vector<ZPrepassElem*> zMeshElements;
+        UnorderedSet<Mesh*> zPrepassMeshTreated;
 
         for (auto& entry : elements)
         {
-            if (entry.RenderElem->UseForZPrepass)
+            if (!entry.RenderElem->UseForZPrepass)
+                continue;
+
+            SPtr<Mesh> zPrepassMesh = entry.RenderElem->ZPrepassMeshElem;
+
+            if (zPrepassMesh && entry.RenderElem->InstanceCount == 0)
             {
-                rapi.PushMarker("[DRAW] Renderable", Color(0.7f, 0.8f, 0.2f));
-
-                bool isInstanced = (entry.RenderElem->InstanceCount > 0) ? true : false;
-
-                entry.RenderElem->GpuParamsElem[entry.PassIdx]
-                    ->SetParamBlockBuffer("PerCameraBuffer", view.GetPerViewBuffer());
-
-                if (isInstanced)
+                if (zPrepassMeshTreated.emplace(zPrepassMesh.get()).second)
                 {
-                    rapi.SetGpuParams(entry.RenderElem->GpuParamsElem[entry.PassIdx],
-                        GPU_BIND_PARAM_BLOCK, GPU_BIND_PARAM_BLOCK_ALL);
-                }
-                else
-                {
-                    rapi.SetGpuParams(entry.RenderElem->GpuParamsElem[entry.PassIdx],
-                        GPU_BIND_PARAM_BLOCK, GPU_BIND_PARAM_BLOCK_LISTED, CameraBuffer);
+                    MeshProperties& properties = zPrepassMesh->GetProperties();
 
-                    rapi.SetGpuParams(entry.RenderElem->GpuParamsElem[entry.PassIdx],
-                        GPU_BIND_PARAM_BLOCK, GPU_BIND_PARAM_BLOCK_LISTED, ObjectBuffer);
+                    for (UINT32 i = 0; i < properties.GetNumSubMeshes(); i++)
+                    {
+                        ZPrepassElem* zPrepassElem = te_pool_new<ZPrepassElem>();
+                        zPrepassElem->MeshElem = &entry.RenderElem->ZPrepassMeshElem;
+                        zPrepassElem->SubMeshElem = properties.GetSubMeshPtr(i);
+                        zPrepassElem->InstanceCount = 0;
+                        zPrepassElem->GpuParamsElem = &entry.RenderElem->GpuParamsElem[entry.PassIdx];
+                        zPrepassMeshElements.push_back(zPrepassElem);
+                    }
                 }
+            }
+            else
+            {
+                ZPrepassElem* zPrepassElem = te_pool_new<ZPrepassElem>();
+                zPrepassElem->MeshElem = &entry.RenderElem->MeshElem;
+                zPrepassElem->SubMeshElem = entry.RenderElem->SubMeshElem;
+                zPrepassElem->InstanceCount = entry.RenderElem->InstanceCount;
+                zPrepassElem->GpuParamsElem = &entry.RenderElem->GpuParamsElem[entry.PassIdx];
+                zMeshElements.push_back(zPrepassElem);
+            }
+        }
 
-                entry.RenderElem->Draw();
-                rapi.PopMarker();
+        auto DrawZPrepassElem = [&](SPtr<Pass>& pass, ZPrepassElem* zPrepassElem)
+        {
+            rapi.SetGraphicsPipeline(pass->GetGraphicsPipelineState());
+            rapi.SetStencilRef(pass->GetStencilRefValue());
+
+            (*zPrepassElem->GpuParamsElem)->SetParamBlockBuffer("PerCameraBuffer", view.GetPerViewBuffer());
+
+            if (zPrepassElem->InstanceCount > 0)
+            {
+                rapi.SetGpuParams((*zPrepassElem->GpuParamsElem), GPU_BIND_PARAM_BLOCK, GPU_BIND_PARAM_BLOCK_ALL);
+            }
+            else
+            {
+                rapi.SetGpuParams((*zPrepassElem->GpuParamsElem), GPU_BIND_PARAM_BLOCK, GPU_BIND_PARAM_BLOCK_LISTED, CameraBuffer);
+                rapi.SetGpuParams((*zPrepassElem->GpuParamsElem), GPU_BIND_PARAM_BLOCK, GPU_BIND_PARAM_BLOCK_LISTED, ObjectBuffer);
+            }
+
+            rapi.PushMarker("[DRAW] Renderable", Color(0.7f, 0.8f, 0.2f));
+            gRendererUtility().Draw((*zPrepassElem->MeshElem), *zPrepassElem->SubMeshElem, zPrepassElem->InstanceCount);
+            rapi.PopMarker();
+        };
+
+        {
+            HShader shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::ZPrepassLight);
+            const auto& techniques = shader->GetTechniques();
+
+            if (techniques.size() == 0)
+                return;
+
+            SPtr<Technique> technique = techniques[0];
+            if (technique->GetNumPasses() == 0)
+                return;
+
+            SPtr<Pass> pass = technique->GetPass(0);
+
+            for (auto& zPrepassElem : zPrepassMeshElements)
+            {
+                DrawZPrepassElem(pass, zPrepassElem);
+                te_pool_delete<ZPrepassElem>(static_cast<ZPrepassElem*>(zPrepassElem));
+            }
+        }
+
+        {
+            HShader shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::ZPrepass);
+            const auto& techniques = shader->GetTechniques();
+
+            if (techniques.size() == 0)
+                return;
+
+            SPtr<Technique> technique = techniques[0];
+            if (technique->GetNumPasses() == 0)
+                return;
+
+            SPtr<Pass> pass = technique->GetPass(0);
+
+            for (auto& zPrepassElem : zMeshElements)
+            {
+                DrawZPrepassElem(pass, zPrepassElem);
+                te_pool_delete<ZPrepassElem>(static_cast<ZPrepassElem*>(zPrepassElem));
             }
         }
     }
@@ -461,7 +530,6 @@ namespace te
         if (sceneCamera != nullptr)
             inputs.View.NotifyCompositorTargetChanged(gpuInitializationPassNode->RenderTargetTex);
 
-        inputs.CurrRenderAPI.SetRenderTarget(nullptr);
         inputs.CurrRenderAPI.PopMarker();
     }
 
@@ -483,7 +551,6 @@ namespace te
         Camera* sceneCamera = inputs.View.GetSceneCamera();
 
         inputs.CurrRenderAPI.PushMarker("[DRAW] Forward Pass", Color(0.8f, 0.6f, 0.8f));
-        inputs.CurrRenderAPI.SetRenderTarget(gpuInitializationPassNode->RenderTargetTex);
 
         if (elements.size() > 0)
         {

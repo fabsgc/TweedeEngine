@@ -739,6 +739,7 @@ namespace te
                     ImGui::Separator();
 
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportCollisionShape, "##file_dialog_parameters_mesh_import_collision_shape", "Import Collision Shape");
+                    ImGuiExt::RenderOptionBool(Data.MeshParam.ImportZPrepassMesh, "##file_dialog_parameters_mesh_import_z_prepass", "Import Z Prepass mesh");
                 }
                 else if (std::find(Editor::TexturesExtensions.begin(), Editor::TexturesExtensions.end(), ext) != Editor::TexturesExtensions.end())
                 {

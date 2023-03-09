@@ -8,8 +8,11 @@ namespace te
     class TE_CORE_EXPORT RenderElement
     {
     public:
-        /**	Reference to the mesh to render. */
+        /**	Pointer to the mesh to render. */
         SPtr<Mesh> MeshElem;
+
+        /**	Pointer to the z prepass mesh to render. */
+        SPtr<Mesh> ZPrepassMeshElem;
 
         /**	Portion of the mesh to render. */
         SubMesh* SubMeshElem = nullptr;

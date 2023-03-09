@@ -1271,6 +1271,7 @@ namespace te
         meshImportOptions->ImportTextures = false;
         meshImportOptions->ScaleFactor = 3.5f;
         meshImportOptions->ScaleSystemUnit = true;
+        meshImportOptions->ImportZPrepassMesh = true;
 
         auto textureImportOptions = TextureImportOptions::Create();
         textureImportOptions->CpuCached = false;
@@ -1288,7 +1289,10 @@ namespace te
 
         // LOAD MESH AND TEXTURES RESOURCES
         // ######################################################
-        _sphereMesh = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/VintageWooden/VintageWooden.obj", meshImportOptions)->Entries[0].Res);
+        SPtr<MultiResource> MultiResourcesMesh = EditorResManager::Instance().LoadAll("Data/Meshes/VintageWooden/VintageWooden.obj", meshImportOptions);
+
+        _sphereMesh = static_resource_cast<Mesh>(MultiResourcesMesh->Entries[0].Res);
+        _zPrepassSphereMesh = static_resource_cast<ZPrepassMesh>(MultiResourcesMesh->Entries[1].Res);
         //_monkeyMesh = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Monkey/monkey-hd.obj", meshImportOptions)->Entries[0].Res);
         //_planeMesh = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Primitives/plane.obj", meshImportOptions)->Entries[0].Res);
 
@@ -1304,6 +1308,8 @@ namespace te
 
         if (_sphereMesh.IsLoaded())
             _sphereMesh->SetName("Sphere Mesh");
+        if (_zPrepassSphereMesh.IsLoaded())
+            _zPrepassSphereMesh->SetName("Sphere Mesh");
         if (_sphereMesh.IsLoaded())
             _skyboxTexture->SetName("Skybox Texture");
         // ###################################################### 
@@ -1364,6 +1370,7 @@ namespace te
             _sceneRenderableSO->SetParent(_sceneSO);
             _renderable = _sceneRenderableSO->AddComponent<CRenderable>();
             _renderable->SetMesh(_sphereMesh);
+            _renderable->SetZPrepassMesh(_zPrepassSphereMesh);
             _renderable->SetMaterial(_sphereMaterial);
             _renderable->SetName("Renderable");
             _renderable->Initialize();
@@ -1380,6 +1387,10 @@ namespace te
         shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::Transparent);
         EditorResManager::Instance().Add<Shader>(shader);
         shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::TransparentCullNone);
+        EditorResManager::Instance().Add<Shader>(shader);
+        shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::ZPrepassLight);
+        EditorResManager::Instance().Add<Shader>(shader);
+        shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::ZPrepass);
         EditorResManager::Instance().Add<Shader>(shader);
         shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::Blit);
         EditorResManager::Instance().Add<Shader>(shader);
@@ -1424,6 +1435,8 @@ namespace te
         shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::IrradianceReduceSH);
         EditorResManager::Instance().Add<Shader>(shader);
         shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::IrradianceProjectSH);
+        EditorResManager::Instance().Add<Shader>(shader);
+        shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::BlitSelection);
         EditorResManager::Instance().Add<Shader>(shader);
 #endif
     }

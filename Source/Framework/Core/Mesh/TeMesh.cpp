@@ -485,4 +485,19 @@ namespace te
             }
         }
     }
+
+    ZPrepassMesh::ZPrepassMesh(const SPtr<MeshData>& initialMeshData, const MESH_DESC& desc, GpuDeviceFlags deviceMask)
+        : Mesh(initialMeshData, desc, deviceMask)
+    {
+        _coreType = TID_ZPrepassMesh;
+    }
+
+    SPtr<ZPrepassMesh> ZPrepassMesh::CreatePtr(const SPtr<MeshData>& initialMeshData, const MESH_DESC& desc, GpuDeviceFlags deviceMask)
+    {
+        SPtr<ZPrepassMesh> mesh = te_core_ptr<ZPrepassMesh>(new (te_allocate<ZPrepassMesh>()) ZPrepassMesh(initialMeshData, desc, deviceMask));
+        mesh->SetThisPtr(mesh);
+        mesh->Initialize();
+
+        return mesh;
+    }
 }

@@ -35,6 +35,7 @@ namespace te
         float AnimSampleRate = 1.0f / 60.0f;
         bool AnimResample = false;
         bool ReduceKeyframes = true;
+        UINT32 CustomVertexLayout = 0;
         String FilePath;
     };
 
