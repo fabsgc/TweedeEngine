@@ -127,8 +127,21 @@ namespace te
         D3D11HLSLInclude* include = nullptr;
         bool openMicroCode = false;
 
+        String variationSuffixes;
+        for (auto& param : desc.Variation.GetParams())
+        {
+            if (param.second.Type == ShaderVariation::ParamType::Bool)
+                variationSuffixes += param.second.Name + "_" + ToString((UINT32)param.second.Ui) + "_";
+            else if (param.second.Type == ShaderVariation::ParamType::Float)
+                variationSuffixes += param.second.Name + "_" + ToString((float)param.second.F) + "_";
+            else if (param.second.Type == ShaderVariation::ParamType::Int)
+                variationSuffixes += param.second.Name + "_" + ToString((INT32)param.second.I) + "_";
+            else if (param.second.Type == ShaderVariation::ParamType::UInt)
+                variationSuffixes += param.second.Name + "_" + ToString((UINT32)param.second.Ui) + "_";
+        }
+
         std::filesystem::path compiledShaderPath = std::filesystem::current_path();
-        compiledShaderPath.append("Shader_" + Util::Md5(desc.Source) + ".blob");
+        compiledShaderPath.append("Shader_" + Util::Md5(desc.Source + "_" + variationSuffixes) + ".blob");
 
 #if TE_DEBUG_MODE == TE_DEBUG_DISABLED
         if (std::filesystem::exists(compiledShaderPath) && desc.FilePath != "")
@@ -184,17 +197,43 @@ namespace te
             if (desc.IncludePath != "")
                 include = te_new<D3D11HLSLInclude>(desc.IncludePath);
 
-            const D3D_SHADER_MACRO defines[] =
-            {
-                { "HLSL", "1" },
-                { nullptr, nullptr }
+            Vector<D3D_SHADER_MACRO> defines = {
+                {"HLSL", "1" }
             };
+
+            List<String> values;
+
+            for (auto& param : desc.Variation.GetParams())
+            {
+                if (param.second.Type == ShaderVariation::ParamType::Bool)
+                {
+                    values.push_back(ToString((UINT32)param.second.Ui));
+                    defines.push_back({ param.second.Name.c_str(), values.back().c_str() });
+                }
+                else if (param.second.Type == ShaderVariation::ParamType::Float)
+                {
+                    values.push_back(ToString((UINT32)param.second.Ui));
+                    defines.push_back({ param.second.Name.c_str(), values.back().c_str() });
+                }
+                else if (param.second.Type == ShaderVariation::ParamType::Int)
+                {
+                    values.push_back(ToString((UINT32)param.second.Ui));
+                    defines.push_back({ param.second.Name.c_str(), values.back().c_str() });
+                }
+                else if (param.second.Type == ShaderVariation::ParamType::UInt)
+                {
+                    values.push_back(ToString((UINT32)param.second.Ui));
+                    defines.push_back({ param.second.Name.c_str(), values.back().c_str() });
+                }
+            }
+
+            defines.push_back({ nullptr, nullptr });
 
             HRESULT hr = D3DCompile(
                 source.c_str(),		// [in] Pointer to the shader in memory.
                 source.size(),		// [in] Size of the shader in memory.
                 nullptr,			// [in] The name of the file that contains the shader code.
-                defines,			// [in] Optional. Pointer to a NULL-terminated array of macro definitions.
+                defines.data(),		// [in] Optional. Pointer to a NULL-terminated array of macro definitions.
                                     //		See D3D_SHADER_MACRO. If not used, set this to NULL.
                 include,			// [in] Optional. Pointer to an ID3DInclude Interface interface for handling include files.
                                     //		Setting this to NULL will cause a compile error if a shader contains a #include.

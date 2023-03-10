@@ -22,6 +22,8 @@ namespace te
         _defines[name] = value;
     }
 
+    const ShaderVariation ShaderVariation::EMPTY;
+
     ShaderVariation::ShaderVariation()
         : Serializable(TID_ShaderVariation)
     { }
@@ -33,7 +35,7 @@ namespace te
             _params[entry.Name] = entry;
     }
 
-    INT32 ShaderVariation::GetInt(const StringID& name)
+    INT32 ShaderVariation::GetInt(const String& name)
     {
         auto iterFind = _params.find(name);
         if (iterFind == _params.end())
@@ -42,7 +44,7 @@ namespace te
             return iterFind->second.I;
     }
 
-    UINT32 ShaderVariation::GetUInt(const StringID& name)
+    UINT32 ShaderVariation::GetUInt(const String& name)
     {
         auto iterFind = _params.find(name);
         if (iterFind == _params.end())
@@ -51,7 +53,7 @@ namespace te
             return iterFind->second.Ui;
     }
 
-    float ShaderVariation::GetFloat(const StringID& name)
+    float ShaderVariation::GetFloat(const String& name)
     {
         auto iterFind = _params.find(name);
         if (iterFind == _params.end())
@@ -60,7 +62,7 @@ namespace te
             return iterFind->second.F;
     }
 
-    bool ShaderVariation::GetBool(const StringID& name)
+    bool ShaderVariation::GetBool(const String& name)
     {
         auto iterFind = _params.find(name);
         if (iterFind == _params.end())
@@ -69,22 +71,22 @@ namespace te
             return iterFind->second.I > 0 ? true : false;
     }
 
-    void ShaderVariation::SetInt(const StringID& name, INT32 value)
+    void ShaderVariation::SetInt(const String& name, INT32 value)
     {
         AddParam(Param(name, value));
     }
 
-    void ShaderVariation::SetUInt(const StringID& name, UINT32 value)
+    void ShaderVariation::SetUInt(const String& name, UINT32 value)
     {
         AddParam(Param(name, value));
     }
 
-    void ShaderVariation::SetFloat(const StringID& name, float value)
+    void ShaderVariation::SetFloat(const String& name, float value)
     {
         AddParam(Param(name, value));
     }
 
-    void ShaderVariation::SetBool(const StringID& name, bool value)
+    void ShaderVariation::SetBool(const String& name, bool value)
     {
         AddParam(Param(name, value));
     }

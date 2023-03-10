@@ -3,7 +3,6 @@
 #include "TeCorePrerequisites.h"
 #include "Resources/TeResource.h"
 #include "Material/TeShaderVariation.h"
-#include "String/TeStringID.h"
 
 namespace te
 {
@@ -26,7 +25,7 @@ namespace te
         bool IsSupported() const;
 
         /** Checks if the technique has the specified tag. */
-        bool HasTag(const StringID& tag);
+        bool HasTag(const String& tag);
 
         /** Checks if the technique has any tags. */
         UINT32 HasTags() const { return !_tags.empty(); }
@@ -68,7 +67,7 @@ namespace te
          * @param[in]	passes		A set of passes that define the technique.
          * @return					Newly creted technique.
          */
-        static SPtr<Technique> Create(const String& language, const Vector<StringID>& tags,
+        static SPtr<Technique> Create(const String& language, const Vector<String>& tags,
             const ShaderVariation& variation, const Vector<SPtr<Pass>>& passes);
 
         /**	Creates a new technique but doesn't initialize it. */
@@ -76,12 +75,12 @@ namespace te
 
     private:
         Technique();
-        Technique(const String& language, const Vector<StringID>& tags, 
+        Technique(const String& language, const Vector<String>& tags, 
             const ShaderVariation& variation, const Vector<SPtr<Pass>>& passes);
 
     protected:
         String _language;
-        Vector<StringID> _tags;
+        Vector<String> _tags;
         ShaderVariation _variation;
         Vector<SPtr<Pass>> _passes;
     };

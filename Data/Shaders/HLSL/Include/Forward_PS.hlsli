@@ -218,6 +218,7 @@ float4 ComputeEmissiveBuffer(float4 color, float4 emissive)
     return result;
 }
 
+#if WRITE_VELOCITY == 1
 float2 ComputeVelocityBuffer(float2 NDCPos, float2 PrevNDCPos, float alpha)
 {
     float2 velocity = NDCPos - PrevNDCPos;
@@ -225,6 +226,7 @@ float2 ComputeVelocityBuffer(float2 NDCPos, float2 PrevNDCPos, float alpha)
 
     return velocity;
 }
+#endif
 
 float3 ExpandNormal(float3 normal)
 {

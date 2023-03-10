@@ -3,6 +3,7 @@
 #include "TeCorePrerequisites.h"
 #include "Renderer/TeRenderSettings.h"
 #include "Renderer/TeRendererMeshData.h"
+#include "Material/TeShaderVariation.h"
 
 namespace te
 {
@@ -13,6 +14,29 @@ namespace te
     {
         const EvaluatedAnimationData* Animation = nullptr;
     };
+
+    /** Returns a specific vertex input shader variation. */
+    template<bool SKINNED, bool WRITE_VELOCITY>
+    static const ShaderVariation& GetVertexInputVariation(bool supportsVelocityWrites)
+    {
+        if (!supportsVelocityWrites)
+        {
+            static ShaderVariation variation = ShaderVariation({
+                ShaderVariation::Param("SKINNED", SKINNED)
+            });
+
+            return variation;
+        }
+        else
+        {
+            static ShaderVariation variation = ShaderVariation({
+                ShaderVariation::Param("SKINNED", SKINNED),
+                ShaderVariation::Param("WRITE_VELOCITY", WRITE_VELOCITY),
+            });
+
+            return variation;
+        }
+    }
 
     /**	Set of options that can be used for controlling the renderer. */
     struct TE_CORE_EXPORT RendererOptions

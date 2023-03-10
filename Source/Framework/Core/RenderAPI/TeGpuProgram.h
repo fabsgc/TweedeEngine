@@ -4,6 +4,7 @@
 #include "CoreUtility/TeCoreObject.h"
 #include "Utility/TeDataBlob.h"
 #include "TeVertexDeclaration.h"
+#include "Material/TeShaderVariation.h"
 
 namespace te
 {
@@ -20,6 +21,7 @@ namespace te
         GpuProgramType Type = GPT_VERTEX_PROGRAM; /**< Type of the program, for example vertex or pixel. */
         bool RequiresAdjacency = false; /**< If true then adjacency information will be provided when rendering. */
         String DebugName = ""; /**< For debug purpose only */
+        ShaderVariation Variation; /**< We will use variation to generate DEFINES */
 
         /**
          * Optional intermediate version of the GPU program. Can significantly speed up GPU program compilation/creation
@@ -139,6 +141,7 @@ namespace te
         String _filePath;
         bool _needsAdjacencyInfo;
         String _debugName;
+        ShaderVariation _variation;
 
         SPtr<GpuParamDesc> _parametersDesc;
         SPtr<VertexDeclaration> _inputDeclaration;

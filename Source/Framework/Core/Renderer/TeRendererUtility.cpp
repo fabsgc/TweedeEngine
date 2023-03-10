@@ -175,6 +175,9 @@ namespace te
     {
         RenderAPI& rapi = RenderAPI::Instance();
         SPtr<Pass> pass = material->GetPass(passIdx, techniqueIdx);
+
+        TE_ASSERT_ERROR(pass != nullptr, "Failed to find a valid pass with passIdx=" + ToString(passIdx) + " and techniqueIdx=" + ToString(techniqueIdx))
+
         rapi.SetGraphicsPipeline(pass->GetGraphicsPipelineState());
         rapi.SetStencilRef(pass->GetStencilRefValue());
     }

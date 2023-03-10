@@ -42,6 +42,7 @@ namespace te
             desc.Language = "hlsl";
             desc.IncludePath = _includePath;
             desc.FilePath = _filePath;
+            desc.Variation = _variation;
 
 #if TE_DEBUG_MODE == TE_DEBUG_ENABLED
             auto path = std::filesystem::absolute(desc.FilePath);

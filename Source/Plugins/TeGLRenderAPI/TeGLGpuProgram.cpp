@@ -4,6 +4,7 @@
 #include "RenderAPI/TeGpuProgramManager.h"
 #include "RenderAPI/TeHardwareBufferManager.h"
 #include <regex>
+#include <filesystem>
 
 namespace te
 {
@@ -45,6 +46,14 @@ namespace te
             desc.EntryPoint = _entryPoint;
             desc.Source = _source;
             desc.Language = "glsl";
+             desc.IncludePath = _includePath;
+            desc.FilePath = _filePath;
+            desc.Variation = _variation;
+
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
+            auto path = std::filesystem::absolute(desc.FilePath);
+            _debugName = path.filename().generic_string();
+#endif
 
             _bytecode = CompileBytecode(desc);
         }

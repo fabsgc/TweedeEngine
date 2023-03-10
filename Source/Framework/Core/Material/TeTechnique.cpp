@@ -13,7 +13,7 @@ namespace te
         : Serializable(TID_Technique)
     { }
 
-    Technique::Technique(const String& language, const Vector<StringID>& tags, 
+    Technique::Technique(const String& language, const Vector<String>& tags, 
         const ShaderVariation& variation, const Vector<SPtr<Pass>>& passes)
         : Serializable(TID_Technique)
         , _language(language)
@@ -30,7 +30,7 @@ namespace te
         return false;
     }
 
-    bool Technique::HasTag(const StringID& tag)
+    bool Technique::HasTag(const String& tag)
     {
         for (auto& entry : _tags)
         {
@@ -44,7 +44,7 @@ namespace te
     void Technique::Compile(bool force)
     {
         for (auto& pass : _passes)
-            pass->Compile(force);
+            pass->Compile(_variation, force);
     }
 
     SPtr<Pass> Technique::GetPass(UINT32 idx) const
@@ -70,7 +70,7 @@ namespace te
         return techniquePtr;
     }
 
-    SPtr<Technique> Technique::Create(const String& language, const Vector<StringID>& tags,
+    SPtr<Technique> Technique::Create(const String& language, const Vector<String>& tags,
         const ShaderVariation& variation, const Vector<SPtr<Pass>>& passes)
     {
         Technique* technique = new (te_allocate<Technique>()) Technique(language, tags, variation, passes);

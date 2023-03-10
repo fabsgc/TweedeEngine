@@ -2,6 +2,7 @@
 
 #include "TeCorePrerequisites.h"
 #include "Utility/TeModule.h"
+#include "Material/TeShaderVariation.h"
 
 namespace te
 {

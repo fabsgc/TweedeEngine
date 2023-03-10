@@ -89,16 +89,6 @@ namespace te
         GpuBufferUsage Usage;
     };
 
-    /** Represents a single potential value of a shader variation parameter and optionally its name. */
-    struct ShaderVariationParamValue
-    {
-        /** Optional human-readable name describing what this particular value represents. */
-        String Name;
-
-        /** Integer value of the parameter. */
-        INT32 Value = 0;
-    };
-
     /** Represents a single shader variation parameter and a set of all possible values. */
     struct ShaderVariationParamInfo
     {
@@ -108,11 +98,14 @@ namespace te
         /** BSL identifier for the parameter. */
         String Identifier;
 
-        /** True if the parameter is for internal use by the renderer, and false if its intended to be set by the user. */
-        bool IsInternal = true;
-
         /** A list of potential values this parameter can take on. */
-        Vector<ShaderVariationParamValue> values;
+        UnorderedSet<INT32> Values;
+
+        ShaderVariationParamInfo(const String& name, const String& identifier, const UnorderedSet<INT32>& values)
+            : Name(name)
+            , Identifier(identifier)
+            , Values(values)
+        { }
     };
 
     /** Structure used for initializing a shader. */

@@ -19,29 +19,46 @@ namespace te
 {
     PerFrameParamDef gPerFrameParamDef;
 
-    /** Initializes a specific base pass technique on the provided material and returns the technique index. */
-    static UINT32 InitAndRetrieveBasePassTechnique(Material& material)
+    /** Returns a specific base pass shader variation. */
+    template<bool WRITE_VELOCITY>
+    static const ShaderVariation* GetBasePassVariation(bool shaderCanWriteVelocity, RenderableAnimType animType)
     {
-        UINT32 techniqueIdx  = material.GetDefaultTechnique();
-        UINT32 numTechniques = material.GetNumTechniques();
+        const ShaderVariation* VAR_LOOKUP[2];
+        VAR_LOOKUP[0] = &GetVertexInputVariation<false, WRITE_VELOCITY>(shaderCanWriteVelocity);
+        VAR_LOOKUP[1] = &GetVertexInputVariation<true, WRITE_VELOCITY>(shaderCanWriteVelocity);
 
-        if (numTechniques == 0)
-            TE_ASSERT_ERROR(false, "A material must a least have one technique");
+        return VAR_LOOKUP[(int)animType];
+    }
+
+    /** Initializes a specific base pass technique on the provided material and returns the technique index. */
+    static UINT32 InitAndRetrieveBasePassTechnique(Material& material, bool shaderCanWriteVelocity, bool writeVelocity, RenderableAnimType animType)
+    {
+        const ShaderVariation* variation = writeVelocity ?
+            GetBasePassVariation<true>(shaderCanWriteVelocity, animType) :
+            GetBasePassVariation<false>(shaderCanWriteVelocity, animType);
+
+        FIND_TECHNIQUE_DESC findDesc;
+        findDesc.Variation = variation;
+        findDesc.Override = true;
+
+        UINT32 techniqueIdx = material.FindTechnique(findDesc);
+
+        if (techniqueIdx == (UINT32)-1)
+            techniqueIdx = material.GetDefaultTechnique();
 
         // Make sure the technique shaders are compiled
         const SPtr<Technique>& technique = material.GetTechnique(techniqueIdx);
+        if (technique)
+            technique->Compile();
 
         UINT32 numPasses = technique->GetNumPasses();
         if (numPasses == 0)
             TE_ASSERT_ERROR(false, "A technique must a least have one pass");
 
-        if (technique)
-            technique->Compile();
-
         return techniqueIdx;
     }
 
-    static void ValidateBasePassMaterial(Material& material, UINT32 techniqueIdx, VertexDeclaration& vertexDecl)
+    static void ValidateBasePassMaterial(Material& material, RenderableAnimType animType, UINT32 techniqueIdx, VertexDeclaration& vertexDecl)
     {
         // Validate mesh <-> shader vertex bindings
         UINT32 numPasses = material.GetNumPasses(techniqueIdx);
@@ -549,21 +566,46 @@ namespace te
                 if (renElement->MaterialElem == nullptr)
                     renElement->MaterialElem = gBuiltinResources().GetDefaultMaterial().GetInternalPtr();
 
+                const SPtr<Shader>& shader = renElement->MaterialElem->GetShader();
+
+                const Vector<ShaderVariationParamInfo>& variationParams = shader->GetVariationParams();
+                const bool shaderCanWriteVelocity = std::find_if(variationParams.begin(), variationParams.end(),
+                    [](const ShaderVariationParamInfo& x) { return x.Identifier == "WRITE_VELOCITY"; }) != variationParams.end();
+
+                const bool writeVelocity = shaderCanWriteVelocity && renderable->GetWriteVelocity();
+
+                RenderableAnimType animType = renderable->GetAnimType();
+
                 // Determine which technique to use
-                renElement->DefaultTechniqueIdx = InitAndRetrieveBasePassTechnique(*renElement->MaterialElem);
+                renElement->DefaultTechniqueIdx = InitAndRetrieveBasePassTechnique(*renElement->MaterialElem, shaderCanWriteVelocity, false, animType);
+
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
+                ValidateBasePassMaterial(*renElement->MaterialElem, animType, renElement->DefaultTechniqueIdx, *vertexDecl);
+#endif
 
                 // Generate or assigned renderer specific data for the material
                 renElement->MaterialElem->CreateGpuParams(renElement->DefaultTechniqueIdx, renElement->GpuParamsElem);
+
+                if (writeVelocity)
+                {
+                    renElement->WriteVelocityTechniqueIdx = InitAndRetrieveBasePassTechnique(*renElement->MaterialElem, shaderCanWriteVelocity, true, animType);
+
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
+                    ValidateBasePassMaterial(*renElement->MaterialElem, animType, renElement->WriteVelocityTechniqueIdx, *vertexDecl);
+#endif
+
+                    // Note: Using the same params as the non-velocity technique. There are assumed to be no differences
+                }
+                else
+                {
+                    renElement->WriteVelocityTechniqueIdx = (UINT32)-1;
+                }
 
                 // We update gpu paremeters such as diffuse or specular defined for this material
                 PerObjectBuffer::UpdatePerMaterial(renElement->PerMaterialParamBuffer, renElement->MaterialElem->GetProperties());
 
                 // Set renderable properties to renderElement
                 renElement->Properties = &renderable->GetProperties();
-
-#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
-                ValidateBasePassMaterial(*renElement->MaterialElem, renElement->DefaultTechniqueIdx, *vertexDecl);
-#endif
             }
 
             // Prepare all parameter bindings

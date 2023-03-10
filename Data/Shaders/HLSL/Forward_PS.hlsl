@@ -11,7 +11,9 @@ PS_OUTPUT main( VS_OUTPUT IN )
     LightingResult lit = (LightingResult)0;
 
     // #########################################################################
+#if WRITE_VELOCITY == 1
     bool		writeVelocity				= (bool)IN.Other.x;
+#endif
     bool		castLight					= (bool)IN.Other.y;
     bool		useSRGB						= (bool)IN.Other.z;
 
@@ -241,10 +243,15 @@ PS_OUTPUT main( VS_OUTPUT IN )
         OUT.Normal = ComputeNormalBuffer(N);
         OUT.Emissive = ComputeEmissiveBuffer(OUT.Scene, float4(emissive, 1.0));
 
+#if WRITE_VELOCITY == 1
         if(writeVelocity)
             OUT.Velocity = ComputeVelocityBuffer(NDCPos.xy, PrevNDCPos.xy, transmission);
         else
             OUT.Velocity = float2(0.0, 0.0);
+#else
+        OUT.Velocity = float2(0.0, 0.0);
+#endif
+
     }
 
     return OUT;

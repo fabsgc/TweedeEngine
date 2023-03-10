@@ -784,13 +784,59 @@ namespace te
 
         passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
 
-        SPtr<Pass> pass = Pass::Create(passDesc);
-        SPtr<Technique> technique = Technique::Create("hlsl", { pass });
-        technique->Compile();
-
         SHADER_DESC shaderDesc;
         shaderDesc.QueueType = QueueSortType::FrontToBack;
-        shaderDesc.Techniques.push_back(technique);
+
+        Vector<ShaderVariation> variations = {
+            ShaderVariation({
+                ShaderVariation::Param("WRITE_VELOCITY", false),
+                ShaderVariation::Param("SKINNED", false)
+            }),
+            ShaderVariation({
+                ShaderVariation::Param("WRITE_VELOCITY", true),
+                ShaderVariation::Param("SKINNED", false)
+            }),
+            ShaderVariation({
+                ShaderVariation::Param("WRITE_VELOCITY", false),
+                ShaderVariation::Param("SKINNED", true)
+            }),
+            ShaderVariation({
+                ShaderVariation::Param("WRITE_VELOCITY", true),
+                ShaderVariation::Param("SKINNED", true)
+            })
+        };
+
+        Map<String, UnorderedSet<INT32>> values;
+        for (auto& variation : variations)
+        {
+            SPtr<Pass> pass = Pass::Create(passDesc);
+            SPtr<Technique> technique = Technique::Create("hlsl", {}, variation, { pass });
+            shaderDesc.Techniques.push_back(technique);
+
+            for (auto& param : variation.GetParams())
+            {
+                if (param.second.Type == ShaderVariation::ParamType::Bool)
+                    values[param.second.Name].emplace(param.second.Ui);
+                else if (param.second.Type == ShaderVariation::ParamType::Float)
+                    values[param.second.Name].emplace(static_cast<INT32>(param.second.F)); // TODO UGLY
+                else if (param.second.Type == ShaderVariation::ParamType::Int)
+                    values[param.second.Name].emplace(param.second.I);
+                else if (param.second.Type == ShaderVariation::ParamType::UInt)
+                    values[param.second.Name].emplace(param.second.Ui);
+            }
+        }
+
+        for (auto& value : values)
+        {
+            shaderDesc.VariationParams.push_back(
+                ShaderVariationParamInfo(value.first, value.first, value.second));
+        }
+
+        {
+            SPtr<Pass> pass = Pass::Create(passDesc);
+            SPtr<Technique> technique = Technique::Create("hlsl", { pass });
+            shaderDesc.Techniques.push_back(technique);
+        }
 
         _shaderOpaque = Shader::Create("Forward Opaque", shaderDesc);
     }

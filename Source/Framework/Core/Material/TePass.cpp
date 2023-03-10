@@ -58,10 +58,11 @@ namespace te
         }
     }
 
-    void Pass::CreatePipelineState()
+    void Pass::CreatePipelineState(const ShaderVariation& variation)
     {
         if (IsCompute())
         {
+            _data.ComputeProgramDesc.Variation = variation;
             SPtr<GpuProgram> program = GpuProgram::Create(_data.ComputeProgramDesc);
             _computePipelineState = ComputePipelineState::Create(program);
         }
@@ -70,19 +71,34 @@ namespace te
             GpuPipelineStateTypes::StateDescType desc;
 
             if (!_data.VertexProgramDesc.Source.empty() && !desc.vertexProgram)
+            {
+                _data.VertexProgramDesc.Variation = variation;
                 desc.vertexProgram = GpuProgram::Create(_data.VertexProgramDesc);
+            }
 
             if (!_data.PixelProgramDesc.Source.empty() && !desc.pixelProgram)
+            {
+                _data.PixelProgramDesc.Variation = variation;
                 desc.pixelProgram = GpuProgram::Create(_data.PixelProgramDesc);
+            }
 
             if (!_data.GeometryProgramDesc.Source.empty() && !desc.geometryProgram)
+            {
+                _data.GeometryProgramDesc.Variation = variation;
                 desc.geometryProgram = GpuProgram::Create(_data.GeometryProgramDesc);
+            }
 
             if (!_data.HullProgramDesc.Source.empty() && !desc.hullProgram)
+            {
+                _data.HullProgramDesc.Variation = variation;
                 desc.hullProgram = GpuProgram::Create(_data.HullProgramDesc);
+            }
 
             if (!_data.DomainProgramDesc.Source.empty() && !desc.domainProgram)
+            {
+                _data.DomainProgramDesc.Variation = variation;
                 desc.domainProgram = GpuProgram::Create(_data.DomainProgramDesc);
+            }
 
             desc.blendState = BlendState::Create(_data.BlendStateDesc);
             desc.rasterizerState = RasterizerState::Create(_data.RasterizerStateDesc);
@@ -93,7 +109,7 @@ namespace te
         }
     }
 
-    void Pass::Compile(bool force)
+    void Pass::Compile(const ShaderVariation& variation, bool force)
     {
         if ((_computePipelineState || _graphicsPipelineState) && !force)
             return; // Already compiled
@@ -108,7 +124,7 @@ namespace te
             UpdateGpuProgramDesc(_data.ComputeProgramDesc);
         }
 
-        CreatePipelineState();
+        CreatePipelineState(variation);
         MarkCoreDirty();
     }
 

@@ -369,6 +369,7 @@ namespace te
                 continue;
 
             UINT32 j = 0;
+            bool needsVelocity = RequiresVelocityWrites();
             for (auto& renderElem : sceneInfo.Renderables[i]->Elements)
             {
                 Bounds bounds = sceneInfo.Renderables[i]->RenderablePtr->GetSubMeshBounds(j);
@@ -386,7 +387,16 @@ namespace te
                 }
 
                 UINT32 shaderFlags = renderElem.MaterialElem->GetShader()->GetFlags();
-                UINT32 techniqueIdx = renderElem.DefaultTechniqueIdx;
+                UINT32 techniqueIdx;
+
+                if (needsVelocity)
+                {
+                    techniqueIdx = renderElem.WriteVelocityTechniqueIdx != (UINT32)-1
+                        ? renderElem.WriteVelocityTechniqueIdx
+                        : renderElem.DefaultTechniqueIdx;
+                }
+                else
+                    techniqueIdx = renderElem.DefaultTechniqueIdx;
 
                 // Note: I could keep renderables in multiple separate arrays, so I don't need to do the check here
                 if (shaderFlags & (UINT32)ShaderFlag::Transparent)

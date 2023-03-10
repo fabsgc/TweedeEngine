@@ -22,6 +22,7 @@ namespace te
         , _parametersDesc(te_shared_ptr_new<GpuParamDesc>())
         , _inputDeclaration(nullptr)
         , _bytecode(desc.Bytecode)
+        , _variation(desc.Variation)
     { }
 
     GpuProgram::~GpuProgram()

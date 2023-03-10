@@ -28,6 +28,9 @@ namespace te
         /** Index of the technique in the material to render the element with. */
         UINT32 DefaultTechniqueIdx = 0;
 
+        /** Index of the technique in the material to render the element with when velocity writes are supported. */
+        UINT32 WriteVelocityTechniqueIdx = (UINT32)-1;
+
         /** Renderer specific value that identifies the type of this renderable element. */
         UINT32 Type = 0;
 

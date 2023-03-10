@@ -171,7 +171,7 @@ namespace te
             rapi.PushMarker("[DRAW] Renderable", Color(0.7f, 0.8f, 0.2f));
 
             if(entry.ApplyPass)
-                gRendererUtility().SetPass(entry.RenderElem->MaterialElem, entry.TechniqueIdx, entry.PassIdx);
+                gRendererUtility().SetPass(entry.RenderElem->MaterialElem, entry.PassIdx, entry.TechniqueIdx);
 
             // If Material is the same as the previous object, we only set constant buffer params
             // Instead, we set full gpu params

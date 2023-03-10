@@ -36,7 +36,7 @@ namespace te
         static constexpr UINT32 MAX_NUM_TAGS = 10;
 
         /** A set of tags that the technique must have. */
-        StringID Tags[MAX_NUM_TAGS];
+        String Tags[MAX_NUM_TAGS];
 
         /** Number of valid tags in the @p tags array. */
         UINT32 NumTags = 0;
@@ -54,7 +54,7 @@ namespace te
         bool Override = false;
 
         /** Registers a new tag to look for when searching for the technique. */
-        void AddTag(const StringID& tag)
+        void AddTag(const String& tag)
         {
             TE_ASSERT_ERROR_SHORT(NumTags < MAX_NUM_TAGS);
 
@@ -578,11 +578,17 @@ namespace te
         /** Creates a new empty material. */
         static HMaterial Create();
 
-        /** Creates a new material with the specified shader. */
+        /** Creates a new material with the specified shader . */
         static HMaterial Create(const HShader& shader);
 
         /** Creates a new material with the specified shader. */
         static HMaterial Create(const SPtr<Shader>& shader);
+
+        /** Creates a new material with the specified shader and variation. */
+        static HMaterial Create(const HShader& shader, const ShaderVariation& variation);
+
+        /** Creates a new material with the specified shader and variation. */
+        static HMaterial Create(const SPtr<Shader>& shader, const ShaderVariation& variation);
 
         /**	Creates a new empty material but doesn't initialize it. */
         static SPtr<Material> CreateEmpty();
@@ -592,11 +598,9 @@ namespace te
 
     protected:
         Material();
-        Material(UINT32 id);
-        Material(const HShader& shader, UINT32 id);
-        Material(const SPtr<Shader>& shader, UINT32 id);
-        Material(const HShader& shader, const Vector<SPtr<Technique>>& techniques, UINT32 id);
-        Material(const SPtr<Shader>& shader, const Vector<SPtr<Technique>>& techniques, UINT32 id);
+        Material(UINT32 id, const ShaderVariation& variation);
+        Material(const HShader& shader, const ShaderVariation& variation, UINT32 id);
+        Material(const SPtr<Shader>& shader, const ShaderVariation& variation, UINT32 id);
 
         /**
          * Initializes the material by using the compatible techniques from the currently set shader. Shader must contain

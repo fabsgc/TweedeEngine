@@ -6,6 +6,7 @@
 #include "RenderAPI/TeDepthStencilState.h"
 #include "RenderAPI/TeGpuProgram.h"
 #include "Resources/TeResource.h"
+#include "TeShaderVariation.h"
 
 namespace te
 {
@@ -69,7 +70,7 @@ namespace te
         SPtr<GpuParams>& GetGpuParams() { return _gpuParams; }
 
         /** Creates either the graphics or the compute pipeline state from the stored pass data. */
-        void CreatePipelineState();
+        void CreatePipelineState(const ShaderVariation& variation);
 
         /**
          * Initializes the pass internals by compiling the GPU programs and creating the relevant pipeline state. This
@@ -78,7 +79,7 @@ namespace te
          * 
          * @param[in] force Force compile even if pass has already been built
          */
-        void Compile(bool force = false);
+        void Compile(const ShaderVariation& variation, bool force = false);
 
         /**	Creates a new empty pass. */
         static SPtr<Pass> Create(const PASS_DESC& desc);

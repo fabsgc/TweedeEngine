@@ -1,7 +1,6 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
-#include "String/TeStringID.h"
 #include "Serialization/TeSerializable.h"
 
 namespace te
@@ -78,68 +77,68 @@ namespace te
                 float F;
             };
 
-            StringID Name;
+            String Name;
             ParamType Type;
         };
 
         ShaderVariation();
 
         /** Creates a new shader variation with the specified parameters. */
-        ShaderVariation(const Vector<Param>&params);
+        ShaderVariation(const Vector<Param>& params);
 
         /**
          * Returns the value of a signed integer parameter with the specified name. Returns 0 if the parameter cannot be
          * found.
          */
-        INT32 GetInt(const StringID& name);
+        INT32 GetInt(const String& name);
 
         /**
          * Returns the value of a unsigned integer parameter with the specified name. Returns 0 if the parameter cannot be
          * found.
          */
-        UINT32 GetUInt(const StringID& name);
+        UINT32 GetUInt(const String& name);
 
         /** Returns the value of a float parameter with the specified name. Returns 0 if the parameter cannot be found.  */
-        float GetFloat(const StringID& name);
+        float GetFloat(const String& name);
 
         /**
          * Returns the value of a boolean parameter with the specified name. Returns false if the parameter cannot be
          * found.
          */
-        bool GetBool(const StringID& name);
+        bool GetBool(const String& name);
 
         /**
          * Sets the value of the parameter for the provided name. Any previous value for a parameter with the same name
          * will be overwritten.
          */
-        void SetInt(const StringID& name, INT32 value);
+        void SetInt(const String& name, INT32 value);
 
         /**
          * Sets the value of the parameter for the provided name. Any previous value for a parameter with the same name
          * will be overwritten.
          */
-        void SetUInt(const StringID& name, UINT32 value);
+        void SetUInt(const String& name, UINT32 value);
 
         /**
          * Sets the value of the parameter for the provided name. Any previous value for a parameter with the same name
          * will be overwritten.
          */
-        void SetFloat(const StringID& name, float value);
+        void SetFloat(const String& name, float value);
 
         /**
          * Sets the value of the parameter for the provided name. Any previous value for a parameter with the same name
          * will be overwritten.
          */
-        void SetBool(const StringID& name, bool value);
+        void SetBool(const String& name, bool value);
 
         /** Registers a new parameter that controls the variation. */
         void AddParam(const Param& param) { _params[param.Name] = param; }
 
         /** Removes a parameter with the specified name. */
-        void RemoveParam(const StringID& paramName) { _params.erase(paramName); }
+        void RemoveParam(const String& paramName) { _params.erase(paramName); }
 
         /** Checks if the variation has a parameter with the specified name. */
-        bool HasParam(const StringID& paramName) { return _params.find(paramName) != _params.end(); }
+        bool HasParam(const String& paramName) { return _params.find(paramName) != _params.end(); }
 
         /** Removes all parameters. */
         void ClearParams() {_params.clear(); }
@@ -159,16 +158,14 @@ namespace te
         bool Matches(const ShaderVariation& other, bool exact = true) const;
 
         /** Returns all the variation parameters. */
-        const UnorderedMap<StringID, Param>& GetParams() const { return _params; }
+        const UnorderedMap<String, Param>& GetParams() const { return _params; }
 
         bool operator==(const ShaderVariation& rhs) const;
 
-        /**
-         * @name Internal
-         * @{
-         */
+        /** Empty variation with no parameters. */
+        static const ShaderVariation EMPTY;
 
-         /** Converts all the variation parameters in a ShaderDefines object, that may be consumed by the shader compiler. */
+        /** Converts all the variation parameters in a ShaderDefines object, that may be consumed by the shader compiler. */
         ShaderDefines GetDefines() const;
 
         /**
@@ -179,11 +176,10 @@ namespace te
         /** Assigns a unique index to the variation that can later be used for quick lookup. */
         void SetIdx(UINT32 idx) const { _idx = idx; }
 
-        /** @} */
     private:
         friend class ShaderVariations;
 
-        UnorderedMap<StringID, Param> _params;
+        UnorderedMap<String, Param> _params;
         mutable UINT32 _idx = static_cast<UINT32>(-1);
     };
 

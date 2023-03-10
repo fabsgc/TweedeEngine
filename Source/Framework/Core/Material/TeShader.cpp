@@ -161,8 +161,7 @@ namespace te
         return output;
     }
 
-    Vector<SPtr<Technique>> Shader::GetCompatibleTechniques(
-        const ShaderVariation& variation, bool exact) const
+    Vector<SPtr<Technique>> Shader::GetCompatibleTechniques(const ShaderVariation& variation, bool exact) const
     {
         Vector<SPtr<Technique>> output;
         for (auto& technique : _desc.Techniques)
