@@ -1874,7 +1874,7 @@ namespace te
             ConvertFromFloat<UINT16>(rgbaPtr, dstPtr, 3u, flags);
             break;
         case PF_UNKNOWN:
-            TE_DEBUG("Can't pack to PF_UNKNOW")
+            TE_DEBUG("Can't pack to PF_UNKNOW");
             break;
         }
     }
