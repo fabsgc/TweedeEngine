@@ -44,7 +44,7 @@ namespace te
             Int,
             UInt,
             Float,
-            Bool
+            Boolean
         };
 
         /** Name, type and value of a variation parameter. */
@@ -55,19 +55,19 @@ namespace te
             { }
 
             Param(const String& name, INT32 val)
-                : I(val), Name(name), Type(Int)
+                : I(val), Name(name), Type(ParamType::Int)
             { }
 
             Param(const String& name, UINT32 val)
-                : Ui(val), Name(name), Type(Int)
+                : Ui(val), Name(name), Type(ParamType::Int)
             { }
 
             Param(const String& name, float val)
-                : F(val), Name(name), Type(Float)
+                : F(val), Name(name), Type(ParamType::Float)
             { }
 
             Param(const String& name, bool val)
-                : I(val ? 1 : 0), Name(name), Type(Bool)
+                : I(val ? 1 : 0), Name(name), Type(ParamType::Boolean)
             { }
 
             union

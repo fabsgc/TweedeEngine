@@ -46,7 +46,7 @@ namespace te
             desc.EntryPoint = _entryPoint;
             desc.Source = _source;
             desc.Language = "glsl";
-             desc.IncludePath = _includePath;
+            desc.IncludePath = _includePath;
             desc.FilePath = _filePath;
             desc.Variation = _variation;
 

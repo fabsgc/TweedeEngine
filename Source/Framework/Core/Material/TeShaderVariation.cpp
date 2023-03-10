@@ -109,14 +109,14 @@ namespace te
         {
             switch (entry.second.Type)
             {
-            case Int:
-            case Bool:
+            case ParamType::Int:
+            case ParamType::Boolean:
                 defines.Set(entry.first.c_str(), entry.second.I);
                 break;
-            case UInt:
+            case ParamType::UInt:
                 defines.Set(entry.first.c_str(), entry.second.Ui);
                 break;
-            case Float:
+            case ParamType::Float:
                 defines.Set(entry.first.c_str(), entry.second.F);
                 break;
             }

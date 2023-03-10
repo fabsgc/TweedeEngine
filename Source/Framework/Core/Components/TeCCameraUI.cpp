@@ -249,7 +249,7 @@ namespace te
         {
             float scrollAmount = Math::Clamp(gVirtualInput().GetAxisValue(_scrollAxis), -TOP_SCROLL_SPEED, TOP_SCROLL_SPEED);
 
-            if (Math::Abs(scrollAmount) > 1.0f != 0.0f)
+            if (Math::Abs(scrollAmount) > 1.0f)
                 scrolling(scrollAmount * SCROLL_SPEED + _scrollAmountLeft, true, _scrollAmountLeft);
             else if (_scrollAmountLeft != 0.0f)
                 scrolling(_scrollAmountLeft, true, _scrollAmountLeft);

@@ -815,8 +815,8 @@ namespace te
 
             for (auto& param : variation.GetParams())
             {
-                if (param.second.Type == ShaderVariation::ParamType::Bool)
-                    values[param.second.Name].emplace(param.second.Ui);
+                if (param.second.Type == ShaderVariation::ParamType::Boolean)
+                    values[param.second.Name].emplace(param.second.I);
                 else if (param.second.Type == ShaderVariation::ParamType::Float)
                     values[param.second.Name].emplace(static_cast<INT32>(param.second.F)); // TODO UGLY
                 else if (param.second.Type == ShaderVariation::ParamType::Int)
