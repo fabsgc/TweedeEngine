@@ -7,7 +7,7 @@
 - Install other dependencies
   - See [here](#otherDeps)
 - In Source\CMake\TeEngineConfig.h.in
-  - Set correct path for RENDERDOC_PATH
+  - Set correct path for RENDERDOC_PATH (API version must be at least eRENDERDOC_API_Version_1_6_0)
 - Run the following commands in the terminal/command line:
   - `git clone https://github.com/fabsgc/TweedeEngine.git`
   - `cd TweedeEngine`
