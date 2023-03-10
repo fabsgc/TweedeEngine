@@ -8,7 +8,10 @@
 
 namespace te
 {
-    /** Shared memebers between SHADER_DATA_PARAM_DESC and SHADER_OBJECT_PARAM_DESC */
+    /** 
+     * Shared members between SHADER_DATA_PARAM_DESC and SHADER_OBJECT_PARAM_DESC
+     * TODO : not used currently (maybe when serialization will be available ?)
+     */
     struct SHADER_PARAM_COMMON
     {
         SHADER_PARAM_COMMON() = default;
@@ -32,7 +35,8 @@ namespace te
 
     /**
      * Describes a single data (int, Vector2, etc.) shader parameter.
-     *
+     * TODO : not used currently (maybe when serialization will be available ?)
+     * 
      * @see	Shader::AddParameter().
      */
     struct SHADER_DATA_PARAM_DESC : SHADER_PARAM_COMMON
@@ -61,6 +65,7 @@ namespace te
 
     /**
      * Describes a single object (texture, sampler state, etc.) shader parameter.
+     * TODO : not used currently (maybe when serialization will be available ?)
      *
      * @see	Shader::AddParameter().
      */
@@ -81,7 +86,10 @@ namespace te
         Vector<String> GpuVariableNames;
     };
 
-    /** Describes a shader parameter block. */
+    /** 
+     * Describes a shader parameter block.
+     * TODO : not used currently (maybe when serialization will be available ?)
+     */
     struct SHADER_PARAM_BLOCK_DESC
     {
         String Name;
@@ -95,11 +103,11 @@ namespace te
         /** Optional human-readable name describing the variation parameter. */
         String Name;
 
-        /** BSL identifier for the parameter. */
+        /** Identifier for the parameter. */
         String Identifier;
 
         /** A list of potential values this parameter can take on. */
-        UnorderedSet<INT32> Values;
+        UnorderedSet<INT32> Values; // TODO how to store float values ?
 
         ShaderVariationParamInfo(const String& name, const String& identifier, const UnorderedSet<INT32>& values)
             : Name(name)

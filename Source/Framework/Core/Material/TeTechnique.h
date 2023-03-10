@@ -45,6 +45,9 @@ namespace te
         /** Compiles all the passes in a technique. @see Pass::compile. */
         void Compile(bool force = false);
 
+        /** Get shader language used by this technique */
+        const String& GetLanguage() const { return _language; }
+
         /**
          * Creates a new technique.
          *

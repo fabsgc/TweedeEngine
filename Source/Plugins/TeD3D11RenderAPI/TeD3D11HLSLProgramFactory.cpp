@@ -131,7 +131,7 @@ namespace te
         for (auto& param : desc.Variation.GetParams())
         {
             if (param.second.Type == ShaderVariation::ParamType::Boolean)
-                variationSuffixes += param.second.Name + "_" + ToString((UINT32)param.second.I) + "_";
+                variationSuffixes += param.second.Name + "_" + ToString((INT32)param.second.I) + "_";
             else if (param.second.Type == ShaderVariation::ParamType::Float)
                 variationSuffixes += param.second.Name + "_" + ToString((float)param.second.F) + "_";
             else if (param.second.Type == ShaderVariation::ParamType::Int)
@@ -207,7 +207,7 @@ namespace te
             {
                 if (param.second.Type == ShaderVariation::ParamType::Boolean)
                 {
-                    values.push_back(ToString((UINT32)param.second.I));
+                    values.push_back(ToString((INT32)param.second.I));
                     defines.push_back({ param.second.Name.c_str(), values.back().c_str() });
                 }
                 else if (param.second.Type == ShaderVariation::ParamType::Float)

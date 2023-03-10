@@ -109,10 +109,57 @@ namespace te
                         String id = "Technique " + ToString(i);
                         if (ImGui::CollapsingHeader(id.c_str()))
                         {
-                            auto passes = technique->GetPasses();
-                            for (auto& pass : passes)
+                            char inputLanguage[32];
+                            const String& language = technique->GetLanguage();
+
+                            if (language.length() < 256)
+                                strcpy(inputLanguage, language.c_str());
+                            else
+                                strcpy(inputLanguage, language.substr(0, 255).c_str());
+
+                            ImGui::PushItemWidth(width);
+                            ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
+                            ImGui::InputText("Language", inputLanguage, IM_ARRAYSIZE(inputLanguage));
+                            ImGui::PopItemFlag();
+                            ImGui::PopItemWidth();
+
+                            id = "Technique Content " + ToString(i);
+                            ImGui::PushID(id.c_str());
+
+                            if (ImGui::CollapsingHeader("Variation"))
                             {
-                                id = "Pass " + ToString(i);
+                                ShaderVariation shaderVariation = technique->GetVariation();
+                                for (auto& param : shaderVariation.GetParams())
+                                {
+                                    String value;
+                                    char inputValue[32];
+
+                                    if (param.second.Type == ShaderVariation::ParamType::Boolean)
+                                        value += ToString((INT32)param.second.I);
+                                    else if (param.second.Type == ShaderVariation::ParamType::Float)
+                                        value += ToString((float)param.second.F);
+                                    else if (param.second.Type == ShaderVariation::ParamType::Int)
+                                        value += ToString((INT32)param.second.I);
+                                    else if (param.second.Type == ShaderVariation::ParamType::UInt)
+                                        value += ToString((UINT32)param.second.Ui);
+
+                                    if (value.length() < 256)
+                                        strcpy(inputValue, value.c_str());
+                                    else
+                                        strcpy(inputValue, value.substr(0, 255).c_str());
+
+                                    ImGui::PushItemWidth(width - 25);
+                                    ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
+                                    ImGui::InputText(param.second.Name.c_str(), inputValue, IM_ARRAYSIZE(inputValue));
+                                    ImGui::PopItemFlag();
+                                    ImGui::PopItemWidth();
+                                }
+                            }
+
+                            j = 1;
+                            for (auto& pass : technique->GetPasses())
+                            {
+                                id = "Pass " + ToString(j);
                                 if (ImGui::CollapsingHeader(id.c_str()))
                                 {
 
@@ -120,6 +167,7 @@ namespace te
 
                                 j++;
                             }
+                            ImGui::PopID();
                         }
 
                         i++;
