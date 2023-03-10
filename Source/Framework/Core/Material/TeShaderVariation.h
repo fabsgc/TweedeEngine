@@ -193,6 +193,9 @@ namespace te
         /** Returns a variation at the specified index. Variations are indexed sequentially as they are added. */
         const ShaderVariation& Get(UINT32 idx) { return _variations[idx]; }
 
+        /** Get() returns a reference and don't do any check. This method is usefull to prevent the application from crashing */
+        const bool Exist(UINT32 idx) { return _variations.size() > idx; }
+
         /**
          * Scans a list of stored variations and returns an index of a variation that has the same parameters as the
          * provided one, or -1 if one is not found.

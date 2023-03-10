@@ -99,8 +99,14 @@ namespace te
         {
 #if TE_PLATFORM == TE_PLATFORM_WIN32 // TODO to remove when OpenGL will be done
             materials[i].MetaData->ShaderElem = nullptr;
-            if(materials[i].MetaData->Instance)
-                te_delete(materials[i].MetaData->Instance);
+
+            for (auto& entry : materials[i].MetaData->Instances)
+            {
+                if(entry != nullptr)
+                    te_delete(entry);
+            }
+
+            materials[i].MetaData->Instances.clear();
 #endif
         }
     }

@@ -204,8 +204,11 @@ namespace te
         {
             if (material.MetaData->ShaderElem == _currentShader)
             {
-                material.MetaData->Instance->InitPipelines();
-                material.MetaData->Instance->Initialize();
+                for(auto& instance : material.MetaData->Instances)
+                {
+                    instance->InitPipelines();
+                    instance->Initialize();
+                }
             }
         }
     }

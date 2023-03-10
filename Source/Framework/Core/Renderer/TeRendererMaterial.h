@@ -20,7 +20,7 @@ namespace te
     public:																	\
     static void InitMetaData()												\
     {																		\
-    	te::RendererMaterialManager::RegisterMaterial(&_metaData, type);	\
+        te::RendererMaterialManager::RegisterMaterial(&_metaData, type);	\
     };																		\
 
 /**
@@ -29,18 +29,19 @@ namespace te
  * to manually force the shader to be reimported.
  */
 #define RMAT_DEF_CUSTOMIZED(type)											\
-	public:																	\
-	static void InitMetaData()												\
-	{																		\
-		InitDefines(_metaData.Defines);										\
-		te::RendererMaterialManager::RegisterMaterial(&_metaData, type);	\
-	};																		\
-	static void _initDefines(ShaderDefines& defines);
+    public:																	\
+    static void InitMetaData()												\
+    {																		\
+        InitDefines(_metaData.Defines);										\
+        te::RendererMaterialManager::RegisterMaterial(&_metaData, type);	\
+    };																		\
+    static void InitDefines(ShaderDefines& defines);
 
     struct RendererMaterialMetaData
     {
         SPtr<Shader> ShaderElem = nullptr;
-        RendererMaterialBase* Instance = nullptr;
+        Vector<RendererMaterialBase*> Instances;
+        ShaderVariations Variations;
         ShaderDefines Defines;
     };
 
@@ -64,7 +65,7 @@ namespace te
     public:
         virtual ~RendererMaterialBase() = default;
 
-        /** */
+        /** Initialize */
         virtual void Initialize() { }
 
         /** Returns the shader used by the material. */
@@ -73,6 +74,13 @@ namespace te
         /** Returns the internal parameter set containing GPU bindable parameters. */
         SPtr<GpuParams> GetParams() const { return _params; }
 
+        /**
+         * Helper field to be set before construction. Identifiers the variation of the material to initialize this
+         * object with.
+         */
+        UINT32 _varIdx;
+
+    public:
         void InitPipelines()
         {
             if(_shader == nullptr)
@@ -84,66 +92,69 @@ namespace te
             const Vector<SPtr<Technique>>& techniques = _shader->GetTechniques();
             for (auto& entry : techniques)
             {
-                SPtr<Pass> pass = entry->GetPass(0);
+                if(!entry->IsSupported())
+                    continue;
 
-                _graphicsPipeline = pass->GetGraphicsPipelineState();
-                if (_graphicsPipeline != nullptr)
+                if(entry->GetVariation() == _variation)
                 {
-                    _params = GpuParams::Create(_graphicsPipeline);
-                }
-                else
-                {
-                    _computePipeline = pass->GetComputePipelineState();
-                    _params = GpuParams::Create(_computePipeline);
-                }
+                    SPtr<Pass> pass = entry->GetPass(0);
 
-                // Assign default values from the shader
-                const auto& textureParams = _shader->GetTextureParams();
-                for (auto& param : textureParams)
-                {
-                    UINT32 defaultValueIdx = param.second.DefaultValueIdx;
-                    if (defaultValueIdx == (UINT32)-1)
-                        continue;
-
-                    for (UINT32 i = 0; i < GPT_COUNT; i++)
+                    _graphicsPipeline = pass->GetGraphicsPipelineState();
+                    if (_graphicsPipeline != nullptr)
                     {
-                        GpuProgramType progType = (GpuProgramType)i;
-                        for (auto& varName : param.second.GpuVariableNames)
+                        _params = GpuParams::Create(_graphicsPipeline);
+                    }
+                    else
+                    {
+                        _computePipeline = pass->GetComputePipelineState();
+                        _params = GpuParams::Create(_computePipeline);
+                    }
+
+                    // Assign default values from the shader
+                    const auto& textureParams = _shader->GetTextureParams();
+                    for (auto& param : textureParams)
+                    {
+                        UINT32 defaultValueIdx = param.second.DefaultValueIdx;
+                        if (defaultValueIdx == (UINT32)-1)
+                            continue;
+
+                        for (UINT32 i = 0; i < GPT_COUNT; i++)
                         {
-                            if (_params->HasTexture(progType, varName))
+                            GpuProgramType progType = (GpuProgramType)i;
+                            for (auto& varName : param.second.GpuVariableNames)
                             {
-                                SPtr<Texture> texture = _shader->GetDefaultTexture(defaultValueIdx);
-                                _params->SetTexture(progType, varName, texture);
+                                if (_params->HasTexture(progType, varName))
+                                {
+                                    SPtr<Texture> texture = _shader->GetDefaultTexture(defaultValueIdx);
+                                    _params->SetTexture(progType, varName, texture);
+                                }
                             }
                         }
                     }
-                }
 
-                const auto& samplerParams = _shader->GetSamplerParams();
-                for (auto& param : samplerParams)
-                {
-                    UINT32 defaultValueIdx = param.second.DefaultValueIdx;
-                    if (defaultValueIdx == (UINT32)-1)
-                        continue;
-
-                    for (UINT32 i = 0; i < GPT_COUNT; i++)
+                    const auto& samplerParams = _shader->GetSamplerParams();
+                    for (auto& param : samplerParams)
                     {
-                        GpuProgramType progType = (GpuProgramType)i;
-                        for (auto& varName : param.second.GpuVariableNames)
+                        UINT32 defaultValueIdx = param.second.DefaultValueIdx;
+                        if (defaultValueIdx == (UINT32)-1)
+                            continue;
+
+                        for (UINT32 i = 0; i < GPT_COUNT; i++)
                         {
-                            if (_params->HasSamplerState(progType, varName))
+                            GpuProgramType progType = (GpuProgramType)i;
+                            for (auto& varName : param.second.GpuVariableNames)
                             {
-                                SPtr<SamplerState> samplerState = _shader->GetDefaultSampler(defaultValueIdx);
-                                _params->SetSamplerState(progType, varName, samplerState);
+                                if (_params->HasSamplerState(progType, varName))
+                                {
+                                    SPtr<SamplerState> samplerState = _shader->GetDefaultSampler(defaultValueIdx);
+                                    _params->SetSamplerState(progType, varName, samplerState);
+                                }
                             }
                         }
                     }
+
+                    _stencilRef = pass->GetStencilRefValue();
                 }
-
-                _stencilRef = pass->GetStencilRefValue();
-
-                //We do not support variations, so we only use first technique of the shader
-                break;
             }
         }
 
@@ -155,6 +166,7 @@ namespace te
         SPtr<ComputePipelineState> _computePipeline;
         UINT32 _stencilRef = 0;
 
+        ShaderVariation _variation;
         SPtr<Shader> _shader;
     };
 
@@ -171,16 +183,37 @@ namespace te
          */
         static T* Get()
         {
-            if (_metaData.Instance == nullptr)
+            if(_metaData.Instances.size() == 0)
             {
                 RendererMaterialBase* mat = te_allocate<T>();
+                mat->_varIdx = 0;
                 new (mat) T();
                 mat->Initialize();
 
-                _metaData.Instance = mat;
+                _metaData.Instances.push_back(mat);
             }
 
-            return (T*)_metaData.Instance;
+            return (T*)_metaData.Instances[0];
+        }
+
+        /** Retrieves an instance of a particular variation of this renderer material. */
+        static T* Get(const ShaderVariation& variation)
+        {
+            if(variation.GetIdx() == (UINT32)-1)
+                variation.SetIdx(_metaData.Variations.Find(variation));
+
+            UINT32 varIdx = variation.GetIdx();
+            if(_metaData.Instances.size() <= varIdx)
+            {
+                RendererMaterialBase* mat = te_allocate<T>();
+                mat->_varIdx = varIdx;
+                new (mat) T();
+                mat->Initialize();
+
+                _metaData.Instances.push_back(mat);
+            }
+
+            return (T*)_metaData.Instances[varIdx];
         }
 
         /**
@@ -221,6 +254,9 @@ namespace te
         {
             _initOnStart.Instantiate();
             _shader = _metaData.ShaderElem;
+
+            if(_metaData.Variations.Exist(_varIdx))
+                _variation = _metaData.Variations.Get(_varIdx);
 
             InitPipelines();
         }

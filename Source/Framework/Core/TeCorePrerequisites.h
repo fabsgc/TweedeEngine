@@ -310,6 +310,8 @@ namespace te
     class MaterialProperties;
     class Technique;
     class Pass;
+    struct SHADER_DESC;
+    struct PASS_DESC;
 
     class Serializable;
 

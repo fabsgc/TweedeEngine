@@ -247,10 +247,10 @@ namespace te
         }
 
         {
-            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/ForwardZPrepassLight_VS.hlsl"));
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/ForwardZPrepass_VS.hlsl"));
             _vertexShaderForwardZPrepassLightDesc.Type = GPT_VERTEX_PROGRAM;
             _vertexShaderForwardZPrepassLightDesc.FilePath = SHADERS_FOLDER + String("HLSL/ForwardZPrepassLight_VS.hlsl");
-            _vertexShaderForwardZPrepassLightDesc.EntryPoint = "main";
+            _vertexShaderForwardZPrepassLightDesc.EntryPoint = "mainLight";
             _vertexShaderForwardZPrepassLightDesc.Language = "hlsl";
             _vertexShaderForwardZPrepassLightDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
             _vertexShaderForwardZPrepassLightDesc.Source = shaderFile.GetAsString();
@@ -773,20 +773,8 @@ namespace te
         _noFilterClampedSamplerState = SamplerState::Create(_noFilterClampedSamplerStateDesc);
     }
 
-    void BuiltinResources::InitShaderOpaque()
+    HShader BuiltinResources::InitShaderForward(SHADER_DESC& shaderDesc, const PASS_DESC& passDesc, const String& name)
     {
-        PASS_DESC passDesc;
-        passDesc.BlendStateDesc = _blendOpaqueStateDesc;
-        passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
-        passDesc.RasterizerStateDesc = _rasterizerStateDesc;
-        passDesc.VertexProgramDesc = _vertexShaderForwardDesc;
-        passDesc.PixelProgramDesc = _pixelShaderForwardDesc;
-
-        passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
-
-        SHADER_DESC shaderDesc;
-        shaderDesc.QueueType = QueueSortType::FrontToBack;
-
         Vector<ShaderVariation> variations = {
             ShaderVariation({
                 ShaderVariation::Param("WRITE_VELOCITY", false),
@@ -838,7 +826,24 @@ namespace te
             shaderDesc.Techniques.push_back(technique);
         }
 
-        _shaderOpaque = Shader::Create("Forward Opaque", shaderDesc);
+        return Shader::Create(name, shaderDesc);
+    }
+
+    void BuiltinResources::InitShaderOpaque()
+    {
+        PASS_DESC passDesc;
+        passDesc.BlendStateDesc = _blendOpaqueStateDesc;
+        passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
+        passDesc.RasterizerStateDesc = _rasterizerStateDesc;
+        passDesc.VertexProgramDesc = _vertexShaderForwardDesc;
+        passDesc.PixelProgramDesc = _pixelShaderForwardDesc;
+
+        passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
+
+        SHADER_DESC shaderDesc;
+        shaderDesc.QueueType = QueueSortType::FrontToBack;
+
+        _shaderOpaque = InitShaderForward(shaderDesc, passDesc, "Forward Opaque");
     }
 
     void BuiltinResources::InitShaderTransparent(bool cull)
@@ -873,10 +878,8 @@ namespace te
         shaderDesc.QueueType = QueueSortType::BackToFront;
         shaderDesc.Techniques.push_back(technique);
 
-        if(cull)
-            _shaderTransparent = Shader::Create("Forward Transparent", shaderDesc);
-        else
-            _shaderTransparentCullNone = Shader::Create("Forward Transparent No Culling", shaderDesc);
+        if(cull) _shaderTransparent = InitShaderForward(shaderDesc, passDesc, "Forward Transparent");
+        else _shaderTransparentCullNone = InitShaderForward(shaderDesc, passDesc, "Forward Transparent No Culling");
     }
 
     void BuiltinResources::InitShaderZPrepassLight()

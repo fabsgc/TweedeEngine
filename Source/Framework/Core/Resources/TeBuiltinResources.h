@@ -137,6 +137,7 @@ namespace te
 
         void InitSamplers();
 
+        HShader InitShaderForward(SHADER_DESC& shaderDesc, const PASS_DESC& passDesc, const String& name);
         void InitShaderOpaque();
         void InitShaderTransparent(bool cull = true);
         void InitShaderZPrepassLight();
