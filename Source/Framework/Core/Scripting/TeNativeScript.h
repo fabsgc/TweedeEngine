@@ -70,27 +70,27 @@ namespace te
         /**
          * We want to internally keep the name of the lib used for this native script
          */
-        void SetLibraryName(const String& name) { _libraryName = name; }
+        virtual void SetLibraryName(const String& name) final { _libraryName = name; }
 
         /**
          * We want to internally keep the name of the lib used for this native script
          */
-        void SetLibraryPath(const String& path) { _libraryPath = path; }
+        virtual void SetLibraryPath(const String& path) final { _libraryPath = path; }
 
         /**
          * Returns library name used for this script
          */
-        const String GetLibraryName() const { return _libraryName; }
+        virtual const String GetLibraryName() const final { return _libraryName; }
 
         /**
          * Returns library path used for this script
          */
-        const String GetLibraryPath() const { return _libraryPath; }
+        virtual const String GetLibraryPath() const final { return _libraryPath; }
 
         /**
          * Because a script lives inside the scene graph we want to store an handle to its parent SceneObject
          */
-        void SetParentSceneObject(const HSceneObject& sceneObject) 
+        virtual void SetParentSceneObject(const HSceneObject& sceneObject) final
         { 
             if (!sceneObject.Empty())
                 _parentSO = sceneObject.GetNewHandleFromExisting();
@@ -101,7 +101,7 @@ namespace te
         /**
          * @copydoc SetParentSceneObject
          */
-        const HSceneObject& GetParentSceneObject() const { return _parentSO; }
+        virtual const HSceneObject& GetParentSceneObject() const final { return _parentSO; }
 
     private:
         /** For file wathing, we need to know which dll is used behind each native script */
