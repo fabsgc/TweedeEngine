@@ -337,7 +337,7 @@ namespace te
         _nextQuadVBSlot = 0;
     }
 
-    void RendererUtility::Blit(const SPtr<Texture>& texture, const Rect2I& area, bool flipUV, bool isDepth, bool isFiltered)
+    void RendererUtility::Blit(const SPtr<Texture>& texture, const Rect2I& area, bool flipUV, bool isDepth)
     {
         auto& texProps = texture->GetProperties();
 
@@ -356,8 +356,10 @@ namespace te
             fArea.height = 1.0f;
         }
 
-        BlitMat* blitMat = BlitMat::Get();
-        blitMat->Execute(texture, fArea, flipUV, texProps.GetNumSamples(), isDepth, isFiltered);
+        BlitMat* blitMat = BlitMat::GetVariation(texProps.GetNumSamples(), !isDepth);
+        TE_ASSERT_ERROR(blitMat != nullptr, "Failed to retrieve variation of BlitMat material");
+
+        blitMat->Execute(texture, fArea, flipUV);
     }
 
     bool RendererUtility::DoFrustumCulling(const HCamera& camera, const HRenderable& renderable)

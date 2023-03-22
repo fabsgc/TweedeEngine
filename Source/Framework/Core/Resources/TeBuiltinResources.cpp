@@ -773,27 +773,9 @@ namespace te
         _noFilterClampedSamplerState = SamplerState::Create(_noFilterClampedSamplerStateDesc);
     }
 
-    HShader BuiltinResources::InitShaderForward(SHADER_DESC& shaderDesc, const PASS_DESC& passDesc, const String& name)
+    HShader BuiltinResources::InitShader(Vector<ShaderVariation>& variations, SHADER_DESC& shaderDesc, 
+            const PASS_DESC& passDesc, const String& name, bool defaultShader)
     {
-        Vector<ShaderVariation> variations = {
-            ShaderVariation({
-                ShaderVariation::Param("WRITE_VELOCITY", false),
-                ShaderVariation::Param("SKINNED", false)
-            }),
-            ShaderVariation({
-                ShaderVariation::Param("WRITE_VELOCITY", true),
-                ShaderVariation::Param("SKINNED", false)
-            }),
-            ShaderVariation({
-                ShaderVariation::Param("WRITE_VELOCITY", false),
-                ShaderVariation::Param("SKINNED", true)
-            }),
-            ShaderVariation({
-                ShaderVariation::Param("WRITE_VELOCITY", true),
-                ShaderVariation::Param("SKINNED", true)
-            })
-        };
-
         Map<String, UnorderedSet<INT32>> values;
         for (auto& variation : variations)
         {
@@ -820,6 +802,7 @@ namespace te
                 ShaderVariationParamInfo(value.first, value.first, value.second));
         }
 
+        if (defaultShader)
         {
             SPtr<Pass> pass = Pass::Create(passDesc);
             SPtr<Technique> technique = Technique::Create("hlsl", { pass });
@@ -827,6 +810,31 @@ namespace te
         }
 
         return Shader::Create(name, shaderDesc);
+    }
+
+    HShader BuiltinResources::InitShaderForward(SHADER_DESC& shaderDesc, const PASS_DESC& passDesc, 
+        const String& name)
+    {
+        Vector<ShaderVariation> variations = {
+            ShaderVariation({
+                ShaderVariation::Param("WRITE_VELOCITY", false),
+                ShaderVariation::Param("SKINNED", false)
+            }),
+            ShaderVariation({
+                ShaderVariation::Param("WRITE_VELOCITY", true),
+                ShaderVariation::Param("SKINNED", false)
+            }),
+            ShaderVariation({
+                ShaderVariation::Param("WRITE_VELOCITY", false),
+                ShaderVariation::Param("SKINNED", true)
+            }),
+            ShaderVariation({
+                ShaderVariation::Param("WRITE_VELOCITY", true),
+                ShaderVariation::Param("SKINNED", true)
+            })
+        };
+
+        return InitShader(variations, shaderDesc, passDesc, name, true);
     }
 
     void BuiltinResources::InitShaderOpaque()
@@ -939,14 +947,44 @@ namespace te
 
         passDesc.RasterizerStateDesc.cullMode = CULL_NONE;
 
-        SPtr<Pass> pass = Pass::Create(passDesc);
-        SPtr<Technique> technique = Technique::Create("hlsl", { pass });
-        technique->Compile();
-
         SHADER_DESC shaderDesc;
-        shaderDesc.Techniques.push_back(technique);
 
-        _shaderBlit = Shader::Create("Blit", shaderDesc);
+        Vector<ShaderVariation> variations = {
+            ShaderVariation({
+                ShaderVariation::Param("MSAA_COUNT", 1),
+                ShaderVariation::Param("MODE", 0)
+            }),
+            ShaderVariation({
+                ShaderVariation::Param("MSAA_COUNT", 2),
+                ShaderVariation::Param("MODE", 0)
+            }),
+            ShaderVariation({
+                ShaderVariation::Param("MSAA_COUNT", 4),
+                ShaderVariation::Param("MODE", 0)
+            }),
+            ShaderVariation({
+                ShaderVariation::Param("MSAA_COUNT", 8),
+                ShaderVariation::Param("MODE", 0)
+            }),
+            ShaderVariation({
+                ShaderVariation::Param("MSAA_COUNT", 1),
+                ShaderVariation::Param("MODE", 1)
+            }),
+            ShaderVariation({
+                ShaderVariation::Param("MSAA_COUNT", 2),
+                ShaderVariation::Param("MODE", 1)
+            }),
+            ShaderVariation({
+                ShaderVariation::Param("MSAA_COUNT", 4),
+                ShaderVariation::Param("MODE", 1)
+            }),
+            ShaderVariation({
+                ShaderVariation::Param("MSAA_COUNT", 8),
+                ShaderVariation::Param("MODE", 1)
+            })
+        };
+
+        _shaderBlit = InitShader(variations, shaderDesc, passDesc, "Blit");
     }
 
     void BuiltinResources::InitShaderSkybox()

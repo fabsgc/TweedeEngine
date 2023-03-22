@@ -130,11 +130,9 @@ namespace te
          * @param[in]	isDepth	If true, the input texture is assumed to be a depth texture (instead of a color one).
          *						Multisampled depth textures will be resolved by taking the minimum value of all samples,
          *						unlike color textures which wil be averaged.
-         * @param	isFiltered	True if to apply bilinear filtering to the sampled texture. Only relevant for color
-         *						textures with no multiple samples.
          */
         void Blit(const SPtr<Texture>& texture, const Rect2I& area = Rect2I::EMPTY, bool flipUV = false,
-            bool isDepth = false, bool isFiltered = false);
+            bool isDepth = false);
 
         /** Returns a mesh that can be used for rendering a skybox. */
         SPtr<Mesh> GetSkyBoxMesh() const { return _skyBoxMesh; }
