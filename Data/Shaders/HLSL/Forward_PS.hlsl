@@ -3,6 +3,9 @@
 #include "Include/Forward_PS.hlsli"
 #include "Include/CommonMaterial.hlsli"
 
+// WRITE_VELOCITY (false, true)
+// SKINNED (false, true)
+
 [earlydepthstencil]
 PS_OUTPUT main( VS_OUTPUT IN )
 {

@@ -2,6 +2,9 @@
 #include "Include/Forward_VS.hlsli"
 #include "Include/Skinning.hlsli"
 
+// WRITE_VELOCITY (false, true)
+// SKINNED (false, true)
+
 VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
 {
     VS_OUTPUT OUT = (VS_OUTPUT)0;

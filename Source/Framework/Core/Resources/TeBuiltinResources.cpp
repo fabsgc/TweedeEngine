@@ -834,7 +834,7 @@ namespace te
             })
         };
 
-        return InitShader(variations, shaderDesc, passDesc, name, true);
+        return InitShader(variations, shaderDesc, passDesc, name);
     }
 
     void BuiltinResources::InitShaderOpaque()
@@ -984,7 +984,7 @@ namespace te
             })
         };
 
-        _shaderBlit = InitShader(variations, shaderDesc, passDesc, "Blit");
+        _shaderBlit = InitShader(variations, shaderDesc, passDesc, "Tone Mapping");
     }
 
     void BuiltinResources::InitShaderSkybox()
@@ -1048,14 +1048,44 @@ namespace te
 
         passDesc.RasterizerStateDesc.cullMode = CULL_NONE;
 
-        SPtr<Pass> pass = Pass::Create(passDesc);
-        SPtr<Technique> technique = Technique::Create("hlsl", { pass });
-        technique->Compile();
-
         SHADER_DESC shaderDesc;
-        shaderDesc.Techniques.push_back(technique);
 
-        _shaderToneMapping = Shader::Create("Tone Mapping", shaderDesc);
+        Vector<ShaderVariation> variations = {
+            ShaderVariation({
+                ShaderVariation::Param("MSAA_COUNT", 1),
+                ShaderVariation::Param("GAMMA_ONLY", false)
+            }),
+            ShaderVariation({
+                ShaderVariation::Param("MSAA_COUNT", 2),
+                ShaderVariation::Param("GAMMA_ONLY", false)
+            }),
+            ShaderVariation({
+                ShaderVariation::Param("MSAA_COUNT", 4),
+                ShaderVariation::Param("GAMMA_ONLY", false)
+            }),
+            ShaderVariation({
+                ShaderVariation::Param("MSAA_COUNT", 8),
+                ShaderVariation::Param("GAMMA_ONLY", false)
+            }),
+            ShaderVariation({
+                ShaderVariation::Param("MSAA_COUNT", 1),
+                ShaderVariation::Param("GAMMA_ONLY", true)
+            }),
+            ShaderVariation({
+                ShaderVariation::Param("MSAA_COUNT", 2),
+                ShaderVariation::Param("GAMMA_ONLY", true)
+            }),
+            ShaderVariation({
+                ShaderVariation::Param("MSAA_COUNT", 4),
+                ShaderVariation::Param("GAMMA_ONLY", true)
+            }),
+            ShaderVariation({
+                ShaderVariation::Param("MSAA_COUNT", 8),
+                ShaderVariation::Param("GAMMA_ONLY", true)
+            })
+        };
+
+        _shaderToneMapping = InitShader(variations, shaderDesc, passDesc, "Blit");
     }
 
     void BuiltinResources::InitShaderBloom()

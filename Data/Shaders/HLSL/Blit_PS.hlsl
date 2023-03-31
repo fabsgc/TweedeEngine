@@ -14,7 +14,7 @@ Texture2DMS<float4> SourceMap : register(t0);
 Texture2DMS<float> SourceMap : register(t0);
     #endif // MODE
 #else //MSAA_COUNT
-SamplerState Sampler : register(s0)
+SamplerState Sampler : register(s0);
 Texture2D SourceMap : register(t0);
 #endif //MSAA_COUNT
 

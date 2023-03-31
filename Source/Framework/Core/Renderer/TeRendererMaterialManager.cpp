@@ -88,6 +88,13 @@ namespace te
 
                 continue;
             }
+
+            // Note: Making the assumption here that all the techniques are generated due to shader variations
+            Vector<SPtr<Technique>> techniques = shaders[i]->GetCompatibleTechniques();
+            materials[i].MetaData->Instances.resize((UINT32)techniques.size());
+
+            for (auto& entry : techniques)
+                materials[i].MetaData->Variations.Add(entry->GetVariation());
 #endif
         }
     }

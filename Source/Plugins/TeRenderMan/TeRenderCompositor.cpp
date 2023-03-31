@@ -114,6 +114,7 @@ namespace te
             rapi.PopMarker();
         };
 
+        if(zPrepassMeshElements.size() > 0)
         {
             HShader shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::ZPrepassLight);
             const auto& techniques = shader->GetTechniques();
@@ -134,6 +135,7 @@ namespace te
             }
         }
 
+        if(zMeshElements.size() > 0)
         {
             HShader shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::ZPrepass);
             const auto& techniques = shader->GetTechniques();
@@ -890,12 +892,14 @@ namespace te
         SPtr<Texture> ppLastFrame;
         postProcessNode->GetAndSwitch(inputs.View, ppOutput, ppLastFrame);
 
-        ToneMappingMat* toneMapping = ToneMappingMat::Get();
-
         if (!ppLastFrame)
             ppLastFrame = gpuInitializationPassNode->SceneTex->Tex;
 
         auto& texProps = ppLastFrame->GetProperties();
+
+        ToneMappingMat* toneMapping = ToneMappingMat::GetVariation(texProps.GetNumSamples(), !settings.Tonemapping.Enabled);
+        TE_ASSERT_ERROR(toneMapping != nullptr, "Failed to retrieve variation of ToneMappingMat material");
+
         toneMapping->Execute((ssaoNode->Output) ? ssaoNode->Output->Tex : Texture::WHITE, ppLastFrame, ppOutput, texProps.GetNumSamples(),
             settings.Gamma, settings.ExposureScale, settings.Contrast, settings.Brightness, !settings.Tonemapping.Enabled);
 

@@ -77,6 +77,7 @@ namespace te
          * method must be called before pass pipelines can be retrieved. After initial compilation further calls do this
          * method will perform no operation.
          * 
+         * @param[in] variation
          * @param[in] force Force compile even if pass has already been built
          */
         void Compile(const ShaderVariation& variation, bool force = false);

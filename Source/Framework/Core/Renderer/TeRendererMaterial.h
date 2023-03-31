@@ -98,6 +98,7 @@ namespace te
                 if(entry->GetVariation() == _variation)
                 {
                     SPtr<Pass> pass = entry->GetPass(0);
+                    pass->Compile(_variation);
 
                     _graphicsPipeline = pass->GetGraphicsPipelineState();
                     if (_graphicsPipeline != nullptr)
@@ -183,14 +184,14 @@ namespace te
          */
         static T* Get()
         {
-            if(_metaData.Instances.size() == 0)
+            if(_metaData.Instances[0] == nullptr)
             {
                 RendererMaterialBase* mat = te_allocate<T>();
                 mat->_varIdx = 0;
                 new (mat) T();
                 mat->Initialize();
 
-                _metaData.Instances.push_back(mat);
+                _metaData.Instances[0] = mat;
             }
 
             return (T*)_metaData.Instances[0];
@@ -203,14 +204,17 @@ namespace te
                 variation.SetIdx(_metaData.Variations.Find(variation));
 
             UINT32 varIdx = variation.GetIdx();
-            if(_metaData.Instances.size() <= varIdx)
+
+            TE_ASSERT_ERROR((variation.GetIdx() != (UINT32)-1), "Failed to find a compatible variation for this material")
+
+            if(_metaData.Instances[varIdx] == nullptr)
             {
                 RendererMaterialBase* mat = te_allocate<T>();
                 mat->_varIdx = varIdx;
                 new (mat) T();
                 mat->Initialize();
 
-                _metaData.Instances.push_back(mat);
+                _metaData.Instances[varIdx] = mat;
             }
 
             return (T*)_metaData.Instances[varIdx];
