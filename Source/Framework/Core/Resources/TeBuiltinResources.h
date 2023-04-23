@@ -12,8 +12,12 @@
 #include "RenderAPI/TeGpuProgram.h"
 #include "Material/TeShader.h"
 
+#include <any>
+
 namespace te
 {
+    using ShaderVariationParam = Pair<String, Vector<std::any>>;
+
     /** Types of builtin shaders that are always available. */
     enum class BuiltinShader
     {
@@ -136,6 +140,8 @@ namespace te
         void InitShaderDesc();
 
         void InitSamplers();
+
+        Vector<ShaderVariation> FillShaderVariations(const Vector<ShaderVariationParam>& iShaderVariationParamsList);
 
         HShader InitShader(Vector<ShaderVariation>& variations, SHADER_DESC& shaderDesc, 
             const PASS_DESC& passDesc, const String& name, bool defaultShader = false);

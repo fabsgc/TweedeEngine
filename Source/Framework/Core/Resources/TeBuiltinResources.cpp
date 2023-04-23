@@ -773,6 +773,108 @@ namespace te
         _noFilterClampedSamplerState = SamplerState::Create(_noFilterClampedSamplerStateDesc);
     }
 
+    Vector<ShaderVariation> BuiltinResources::FillShaderVariations(const Vector<ShaderVariationParam>& iShaderVariationParamsList)
+    {
+        Vector<ShaderVariation> variations;
+        UINT32 numberOfVariations = 1;
+
+        auto CartesianProduct = [](const ShaderVariationParam& left, const ShaderVariationParam& right)
+        {
+            ShaderVariationParam resultLeft;
+            ShaderVariationParam resultRight;
+
+            resultLeft.first = left.first;
+            resultRight.first = right.first;
+
+            for (UINT32 i = 0; i < right.second.size(); i++)
+            {
+                for (UINT32 j = 0; j < left.second.size(); j++)
+                {
+                    resultLeft.second.push_back(left.second[j]);
+                    resultRight.second.push_back(right.second[i]);
+                }
+            }
+
+            return Vector<ShaderVariationParam> { resultLeft, resultRight };
+        };
+
+        auto CreateVariation = [](const String& name, const std::any& value, ShaderVariation& oVariation)
+        {
+            if (value.type() == typeid(float))
+                oVariation.AddParam(ShaderVariation::Param(name, std::any_cast<float>(value)));
+            else if (value.type() == typeid(UINT32))
+                oVariation.AddParam(ShaderVariation::Param(name, std::any_cast<UINT32>(value)));
+            else if (value.type() == typeid(INT32))
+                oVariation.AddParam(ShaderVariation::Param(name, std::any_cast<INT32>(value)));
+            else if (value.type() == typeid(bool))
+                oVariation.AddParam(ShaderVariation::Param(name, std::any_cast<bool>(value)));
+        };
+
+        for (auto& shaderVariationDesc : iShaderVariationParamsList)
+        {
+            numberOfVariations *= static_cast<UINT32>(shaderVariationDesc.second.size());
+        }
+
+        if (iShaderVariationParamsList.size() > 1)
+        {
+            // Create cartesian product of two first ShaderVariationParam
+            Vector<ShaderVariationParam> cartesianProduct = CartesianProduct(iShaderVariationParamsList[0], iShaderVariationParamsList[1]);
+
+            // Create cartesian product of first then second ShaderVariationParam with n th ShaderVariationParam
+            if (iShaderVariationParamsList.size() > 2)
+            {
+                for (UINT32 i = 2; i < iShaderVariationParamsList.size(); i++)
+                {
+                    Vector<ShaderVariationParam> tmp1;
+                    Vector<ShaderVariationParam> tmp2;
+
+                    for (UINT32 j = 0; j < cartesianProduct.size(); j++)
+                    {
+                        tmp2 = CartesianProduct(cartesianProduct[j], iShaderVariationParamsList[i]);
+
+                        tmp1.push_back(tmp2[0]);
+
+                        if (j == cartesianProduct.size() - 1)
+                            tmp1.push_back(tmp2[1]);
+                    }
+
+                    cartesianProduct = tmp1;
+                }
+            }
+
+            // Create all final variations
+            for (UINT32 i = 0; i < numberOfVariations; i++)
+            {
+                ShaderVariation variation;
+
+                for (auto& value : cartesianProduct)
+                {
+                    if (value.second.size() > i && value.second[i].has_value())
+                        CreateVariation(value.first, value.second[i], variation);
+                }
+
+                variations.push_back(variation);
+            }
+        }
+        else
+        {
+            for (auto& value : iShaderVariationParamsList[0].second)
+            {
+                if (value.has_value())
+                {
+                    ShaderVariation variation;
+                    CreateVariation(iShaderVariationParamsList[0].first, value, variation);
+
+                    if (variation.HasParam(iShaderVariationParamsList[0].first))
+                        variations.push_back(variation);
+
+                }
+            }
+        }
+
+        return variations;
+    }
+
     HShader BuiltinResources::InitShader(Vector<ShaderVariation>& variations, SHADER_DESC& shaderDesc, 
             const PASS_DESC& passDesc, const String& name, bool defaultShader)
     {
@@ -815,24 +917,10 @@ namespace te
     HShader BuiltinResources::InitShaderForward(SHADER_DESC& shaderDesc, const PASS_DESC& passDesc, 
         const String& name)
     {
-        Vector<ShaderVariation> variations = {
-            ShaderVariation({
-                ShaderVariation::Param("WRITE_VELOCITY", false),
-                ShaderVariation::Param("SKINNED", false)
-            }),
-            ShaderVariation({
-                ShaderVariation::Param("WRITE_VELOCITY", true),
-                ShaderVariation::Param("SKINNED", false)
-            }),
-            ShaderVariation({
-                ShaderVariation::Param("WRITE_VELOCITY", false),
-                ShaderVariation::Param("SKINNED", true)
-            }),
-            ShaderVariation({
-                ShaderVariation::Param("WRITE_VELOCITY", true),
-                ShaderVariation::Param("SKINNED", true)
-            })
-        };
+        Vector<ShaderVariation> variations = FillShaderVariations({
+            { "WRITE_VELOCITY", { false, true } },
+            { "SKINNED", { false, true } }
+        });
 
         return InitShader(variations, shaderDesc, passDesc, name);
     }
@@ -949,40 +1037,10 @@ namespace te
 
         SHADER_DESC shaderDesc;
 
-        Vector<ShaderVariation> variations = {
-            ShaderVariation({
-                ShaderVariation::Param("MSAA_COUNT", 1),
-                ShaderVariation::Param("MODE", 0)
-            }),
-            ShaderVariation({
-                ShaderVariation::Param("MSAA_COUNT", 2),
-                ShaderVariation::Param("MODE", 0)
-            }),
-            ShaderVariation({
-                ShaderVariation::Param("MSAA_COUNT", 4),
-                ShaderVariation::Param("MODE", 0)
-            }),
-            ShaderVariation({
-                ShaderVariation::Param("MSAA_COUNT", 8),
-                ShaderVariation::Param("MODE", 0)
-            }),
-            ShaderVariation({
-                ShaderVariation::Param("MSAA_COUNT", 1),
-                ShaderVariation::Param("MODE", 1)
-            }),
-            ShaderVariation({
-                ShaderVariation::Param("MSAA_COUNT", 2),
-                ShaderVariation::Param("MODE", 1)
-            }),
-            ShaderVariation({
-                ShaderVariation::Param("MSAA_COUNT", 4),
-                ShaderVariation::Param("MODE", 1)
-            }),
-            ShaderVariation({
-                ShaderVariation::Param("MSAA_COUNT", 8),
-                ShaderVariation::Param("MODE", 1)
-            })
-        };
+        Vector<ShaderVariation> variations = FillShaderVariations({
+            { "MSAA_COUNT", { 1, 2, 4, 8 } },
+            { "MODE", { 0, 1 } }
+        });
 
         _shaderBlit = InitShader(variations, shaderDesc, passDesc, "Tone Mapping");
     }
@@ -1050,40 +1108,10 @@ namespace te
 
         SHADER_DESC shaderDesc;
 
-        Vector<ShaderVariation> variations = {
-            ShaderVariation({
-                ShaderVariation::Param("MSAA_COUNT", 1),
-                ShaderVariation::Param("GAMMA_ONLY", false)
-            }),
-            ShaderVariation({
-                ShaderVariation::Param("MSAA_COUNT", 2),
-                ShaderVariation::Param("GAMMA_ONLY", false)
-            }),
-            ShaderVariation({
-                ShaderVariation::Param("MSAA_COUNT", 4),
-                ShaderVariation::Param("GAMMA_ONLY", false)
-            }),
-            ShaderVariation({
-                ShaderVariation::Param("MSAA_COUNT", 8),
-                ShaderVariation::Param("GAMMA_ONLY", false)
-            }),
-            ShaderVariation({
-                ShaderVariation::Param("MSAA_COUNT", 1),
-                ShaderVariation::Param("GAMMA_ONLY", true)
-            }),
-            ShaderVariation({
-                ShaderVariation::Param("MSAA_COUNT", 2),
-                ShaderVariation::Param("GAMMA_ONLY", true)
-            }),
-            ShaderVariation({
-                ShaderVariation::Param("MSAA_COUNT", 4),
-                ShaderVariation::Param("GAMMA_ONLY", true)
-            }),
-            ShaderVariation({
-                ShaderVariation::Param("MSAA_COUNT", 8),
-                ShaderVariation::Param("GAMMA_ONLY", true)
-            })
-        };
+        Vector<ShaderVariation> variations = FillShaderVariations({
+            { "MSAA_COUNT", { 1, 2, 4, 8 } },
+            { "GAMMA_ONLY", { false, true } }
+        });
 
         _shaderToneMapping = InitShader(variations, shaderDesc, passDesc, "Blit");
     }

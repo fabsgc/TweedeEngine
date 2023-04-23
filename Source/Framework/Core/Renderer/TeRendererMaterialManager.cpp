@@ -44,7 +44,7 @@ namespace te
     }
 
     RendererMaterialManager::~RendererMaterialManager()
-    { 
+    {
         DestroyMaterials();
     }
 
