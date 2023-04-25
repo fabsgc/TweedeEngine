@@ -6,10 +6,13 @@
 #include "Material/TeTechnique.h"
 #include "Utility/TeDataStream.h"
 #include "Importer/TeTextureImportOptions.h"
+#include "Utility/TePoolAllocator.h"
 
 namespace te
 {
     TE_MODULE_STATIC_MEMBER(BuiltinResources)
+
+    IMPLEMENT_GLOBAL_POOL(ShaderVariationParam, 64)
 
     BuiltinResources::BuiltinResources()
     { }
@@ -773,29 +776,37 @@ namespace te
         _noFilterClampedSamplerState = SamplerState::Create(_noFilterClampedSamplerStateDesc);
     }
 
-    Vector<ShaderVariation> BuiltinResources::FillShaderVariations(const Vector<ShaderVariationParam>& iShaderVariationParamsList)
+    List<ShaderVariation> BuiltinResources::FillShaderVariations(const Vector<ShaderVariationParam*>& iShaderVariationParamsList)
     {
-        Vector<ShaderVariation> variations;
+        List<ShaderVariation> variations;
         UINT32 numberOfVariations = 1;
 
         auto CartesianProduct = [](const ShaderVariationParam& left, const ShaderVariationParam& right)
         {
-            ShaderVariationParam resultLeft;
-            ShaderVariationParam resultRight;
+            size_t valuesNumber = left.second.size() * right.second.size();
+            ShaderVariationParam* resultLeft = te_pool_new<ShaderVariationParam>();
+            ShaderVariationParam* resultRight = te_pool_new<ShaderVariationParam>();
 
-            resultLeft.first = left.first;
-            resultRight.first = right.first;
+            resultLeft->second.resize(valuesNumber);
+            resultRight->second.resize(valuesNumber);
 
-            for (UINT32 i = 0; i < right.second.size(); i++)
+            resultLeft->first = left.first;
+            resultRight->first = right.first;
+
+            UINT32 i = 0;
+
+            for (auto& rightValue : right.second)
             {
-                for (UINT32 j = 0; j < left.second.size(); j++)
+                for (auto& leftValue : left.second)
                 {
-                    resultLeft.second.push_back(left.second[j]);
-                    resultRight.second.push_back(right.second[i]);
+                    resultLeft->second[i] = leftValue;
+                    resultRight->second[i] = rightValue;
+
+                    i++;
                 }
             }
 
-            return Vector<ShaderVariationParam> { resultLeft, resultRight };
+            return Vector<ShaderVariationParam*> { resultLeft, resultRight };
         };
 
         auto CreateVariation = [](const String& name, const std::any& value, ShaderVariation& oVariation)
@@ -812,31 +823,33 @@ namespace te
 
         for (auto& shaderVariationDesc : iShaderVariationParamsList)
         {
-            numberOfVariations *= static_cast<UINT32>(shaderVariationDesc.second.size());
+            numberOfVariations *= static_cast<UINT32>(shaderVariationDesc->second.size());
         }
 
         if (iShaderVariationParamsList.size() > 1)
         {
             // Create cartesian product of two first ShaderVariationParam
-            Vector<ShaderVariationParam> cartesianProduct = CartesianProduct(iShaderVariationParamsList[0], iShaderVariationParamsList[1]);
+            Vector<ShaderVariationParam*> cartesianProduct = CartesianProduct(*iShaderVariationParamsList[0], *iShaderVariationParamsList[1]);
 
             // Create cartesian product of first then second ShaderVariationParam with n th ShaderVariationParam
             if (iShaderVariationParamsList.size() > 2)
             {
                 for (UINT32 i = 2; i < iShaderVariationParamsList.size(); i++)
                 {
-                    Vector<ShaderVariationParam> tmp1;
-                    Vector<ShaderVariationParam> tmp2;
+                    Vector<ShaderVariationParam*> tmp1;
+                    Vector<ShaderVariationParam*> tmp2;
 
                     for (UINT32 j = 0; j < cartesianProduct.size(); j++)
                     {
-                        tmp2 = CartesianProduct(cartesianProduct[j], iShaderVariationParamsList[i]);
-
+                        tmp2 = CartesianProduct(*cartesianProduct[j], *iShaderVariationParamsList[i]);
                         tmp1.push_back(tmp2[0]);
 
-                        if (j == cartesianProduct.size() - 1)
-                            tmp1.push_back(tmp2[1]);
+                        if (j == cartesianProduct.size() - 1) { tmp1.push_back(tmp2[1]); }
+                        else { te_pool_delete(tmp2[1]); }
                     }
+
+                    for (auto& variationParam : cartesianProduct)
+                        te_pool_delete(variationParam);
 
                     cartesianProduct = tmp1;
                 }
@@ -847,35 +860,43 @@ namespace te
             {
                 ShaderVariation variation;
 
-                for (auto& value : cartesianProduct)
+                for (auto& variationParam : cartesianProduct)
                 {
-                    if (value.second.size() > i && value.second[i].has_value())
-                        CreateVariation(value.first, value.second[i], variation);
+                    if (variationParam->second.size() > i && variationParam->second[i].has_value())
+                        CreateVariation(variationParam->first, variationParam->second[i], variation);
                 }
 
                 variations.push_back(variation);
             }
+
+            for (auto& variationParam : cartesianProduct)
+                te_pool_delete(variationParam);
         }
         else
         {
-            for (auto& value : iShaderVariationParamsList[0].second)
+            for (auto& value : iShaderVariationParamsList[0]->second)
             {
                 if (value.has_value())
                 {
                     ShaderVariation variation;
-                    CreateVariation(iShaderVariationParamsList[0].first, value, variation);
+                    CreateVariation(iShaderVariationParamsList[0]->first, value, variation);
 
-                    if (variation.HasParam(iShaderVariationParamsList[0].first))
+                    if (variation.HasParam(iShaderVariationParamsList[0]->first))
                         variations.push_back(variation);
 
                 }
             }
         }
 
+        for (auto& value : iShaderVariationParamsList)
+            te_pool_delete(value);
+
+        te_pool_prune<ShaderVariationParam>();
+
         return variations;
     }
 
-    HShader BuiltinResources::InitShader(Vector<ShaderVariation>& variations, SHADER_DESC& shaderDesc, 
+    HShader BuiltinResources::InitShader(List<ShaderVariation>& variations, SHADER_DESC& shaderDesc, 
             const PASS_DESC& passDesc, const String& name, bool defaultShader)
     {
         Map<String, UnorderedSet<INT32>> values;
@@ -914,17 +935,6 @@ namespace te
         return Shader::Create(name, shaderDesc);
     }
 
-    HShader BuiltinResources::InitShaderForward(SHADER_DESC& shaderDesc, const PASS_DESC& passDesc, 
-        const String& name)
-    {
-        Vector<ShaderVariation> variations = FillShaderVariations({
-            { "WRITE_VELOCITY", { false, true } },
-            { "SKINNED", { false, true } }
-        });
-
-        return InitShader(variations, shaderDesc, passDesc, name);
-    }
-
     void BuiltinResources::InitShaderOpaque()
     {
         PASS_DESC passDesc;
@@ -939,7 +949,29 @@ namespace te
         SHADER_DESC shaderDesc;
         shaderDesc.QueueType = QueueSortType::FrontToBack;
 
-        _shaderOpaque = InitShaderForward(shaderDesc, passDesc, "Forward Opaque");
+        List<ShaderVariation> variations = FillShaderVariations({
+            te_pool_new<ShaderVariationParam>("WRITE_VELOCITY", std::forward<Vector<std::any>>({ false, true })),
+            te_pool_new<ShaderVariationParam>("SKINNED", std::forward<Vector<std::any>>({ false, true })),
+            te_pool_new<ShaderVariationParam>("TRANSPARENT", std::forward<Vector<std::any>>({ false, true })),
+            te_pool_new<ShaderVariationParam>("USE_BASE_COLOR_MAP", std::forward<Vector<std::any>>({ false, true })),
+            /*te_pool_new<ShaderVariationParam>("USE_ROUGHNESS_MAP", std::forward<Vector<std::any>>({false, true})),
+            te_pool_new<ShaderVariationParam>("USE_METALLIC_ROUGHNESS_MAP", std::forward<Vector<std::any>>({false, true})),
+            te_pool_new<ShaderVariationParam>("USE_REFLECTANCE_MAP", std::forward<Vector<std::any>>({ false, true })),
+            te_pool_new<ShaderVariationParam>("USE_OCCLUSION_MAP", std::forward<Vector<std::any>>({ false, true })),
+            te_pool_new<ShaderVariationParam>("USE_EMISSIVE_MAP", std::forward<Vector<std::any>>({ false, true })),
+            te_pool_new<ShaderVariationParam>("USE_SHEEN_COLOR_MAP", std::forward<Vector<std::any>>({false, true})),
+            te_pool_new<ShaderVariationParam>("USE_SHEEN_ROUGHNESS_MAP", std::forward<Vector<std::any>>({ false, true })),
+            te_pool_new<ShaderVariationParam>("USE_CLEAR_COAT_MAP", std::forward<Vector<std::any>>({false, true})),
+            te_pool_new<ShaderVariationParam>("USE_CLEAR_COAT_ROUGHNESS_MAP", std::forward<Vector<std::any>>({false, true})),
+            te_pool_new<ShaderVariationParam>("USE_CLEAR_COAT_NORMAL_MAP", std::forward<Vector<std::any>>({false, true})),
+            te_pool_new<ShaderVariationParam>("USE_NORMAL_MAP", std::forward<Vector<std::any>>({false, true})),
+            te_pool_new<ShaderVariationParam>("USE_PARALLAX_MAP", std::forward<Vector<std::any>>({ false, true })),
+            te_pool_new<ShaderVariationParam>("USE_OPACITY_MAP", std::forward<Vector<std::any>>({ false, true })),
+            te_pool_new<ShaderVariationParam>("USE_ANISOTROPY_DIRECTION_MAP", std::forward<Vector<std::any>>({false, true})),
+            te_pool_new<ShaderVariationParam>("DO_INDIRECT_LIGHTING", std::forward<Vector<std::any>>({false, true}))*/
+        });
+
+        _shaderOpaque = InitShader(variations, shaderDesc, passDesc, "Forward Opaque");
     }
 
     void BuiltinResources::InitShaderTransparent(bool cull)
@@ -974,8 +1006,32 @@ namespace te
         shaderDesc.QueueType = QueueSortType::BackToFront;
         shaderDesc.Techniques.push_back(technique);
 
-        if(cull) _shaderTransparent = InitShaderForward(shaderDesc, passDesc, "Forward Transparent");
-        else _shaderTransparentCullNone = InitShaderForward(shaderDesc, passDesc, "Forward Transparent No Culling");
+        List<ShaderVariation> variations = FillShaderVariations({
+            te_pool_new<ShaderVariationParam>("WRITE_VELOCITY", std::forward<Vector<std::any>>({ false, true })),
+            te_pool_new<ShaderVariationParam>("SKINNED", std::forward<Vector<std::any>>({ false, true })),
+            te_pool_new<ShaderVariationParam>("TRANSPARENT", std::forward<Vector<std::any>>({ false, true })),
+            te_pool_new<ShaderVariationParam>("USE_BASE_COLOR_MAP", std::forward<Vector<std::any>>({ false, true })),
+            /*te_pool_new<ShaderVariationParam>("USE_ROUGHNESS_MAP", std::forward<Vector<std::any>>({false, true})),
+            te_pool_new<ShaderVariationParam>("USE_METALLIC_ROUGHNESS_MAP", std::forward<Vector<std::any>>({ false, true })),
+            te_pool_new<ShaderVariationParam>("USE_REFLECTANCE_MAP", std::forward<Vector<std::any>>({ false, true })),
+            te_pool_new<ShaderVariationParam>("USE_OCCLUSION_MAP", std::forward<Vector<std::any>>({ false, true })),
+            te_pool_new<ShaderVariationParam>("USE_EMISSIVE_MAP", std::forward<Vector<std::any>>({ false, true })),
+            te_pool_new<ShaderVariationParam>("USE_SHEEN_COLOR_MAP", std::forward<Vector<std::any>>({ false, true })),
+            te_pool_new<ShaderVariationParam>("USE_SHEEN_ROUGHNESS_MAP", std::forward<Vector<std::any>>({ false, true })),
+            te_pool_new<ShaderVariationParam>("USE_CLEAR_COAT_MAP", std::forward<Vector<std::any>>({ false, true })),
+            te_pool_new<ShaderVariationParam>("USE_CLEAR_COAT_ROUGHNESS_MAP", std::forward<Vector<std::any>>({ false, true })),
+            te_pool_new<ShaderVariationParam>("USE_CLEAR_COAT_NORMAL_MAP", std::forward<Vector<std::any>>({ false, true })),
+            te_pool_new<ShaderVariationParam>("USE_NORMAL_MAP", std::forward<Vector<std::any>>({ false, true })),
+            te_pool_new<ShaderVariationParam>("USE_PARALLAX_MAP", std::forward<Vector<std::any>>({ false, true })),
+            te_pool_new<ShaderVariationParam>("USE_OPACITY_MAP", std::forward<Vector<std::any>>({ false, true })),
+            te_pool_new<ShaderVariationParam>("USE_ANISOTROPY_DIRECTION_MAP", std::forward<Vector<std::any>>({ false, true })),
+            te_pool_new<ShaderVariationParam>("DO_INDIRECT_LIGHTING", std::forward<Vector<std::any>>({ false, true }))*/
+        });
+
+        if (cull)
+            _shaderTransparent = InitShader(variations, shaderDesc, passDesc, "Forward Transparent");
+        else
+            _shaderTransparentCullNone = InitShader(variations, shaderDesc, passDesc, "Forward Transparent No Culling");
     }
 
     void BuiltinResources::InitShaderZPrepassLight()
@@ -1037,9 +1093,9 @@ namespace te
 
         SHADER_DESC shaderDesc;
 
-        Vector<ShaderVariation> variations = FillShaderVariations({
-            { "MSAA_COUNT", { 1, 2, 4, 8 } },
-            { "MODE", { 0, 1 } }
+        List<ShaderVariation> variations = FillShaderVariations({
+            te_pool_new<ShaderVariationParam>(std::forward<String>("MSAA_COUNT"), std::forward<Vector<std::any>>({ 1, 2, 4, 8 })),
+            te_pool_new<ShaderVariationParam>(std::forward<String>("MODE"), std::forward<Vector<std::any>>({ 0, 1 }))
         });
 
         _shaderBlit = InitShader(variations, shaderDesc, passDesc, "Tone Mapping");
@@ -1108,9 +1164,9 @@ namespace te
 
         SHADER_DESC shaderDesc;
 
-        Vector<ShaderVariation> variations = FillShaderVariations({
-            { "MSAA_COUNT", { 1, 2, 4, 8 } },
-            { "GAMMA_ONLY", { false, true } }
+        List<ShaderVariation> variations = FillShaderVariations({
+            te_pool_new<ShaderVariationParam>(std::forward<String>("MSAA_COUNT"), std::forward<Vector<std::any>>({ 1, 2, 4, 8 })),
+            te_pool_new<ShaderVariationParam>(std::forward<String>("GAMMA_ONLY"), std::forward<Vector<std::any>>({ false, true }))
         });
 
         _shaderToneMapping = InitShader(variations, shaderDesc, passDesc, "Blit");

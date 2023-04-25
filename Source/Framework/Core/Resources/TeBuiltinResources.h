@@ -141,12 +141,10 @@ namespace te
 
         void InitSamplers();
 
-        Vector<ShaderVariation> FillShaderVariations(const Vector<ShaderVariationParam>& iShaderVariationParamsList);
+        List<ShaderVariation> FillShaderVariations(const Vector<ShaderVariationParam*>& iShaderVariationParamsList);
 
-        HShader InitShader(Vector<ShaderVariation>& variations, SHADER_DESC& shaderDesc, 
+        HShader InitShader(List<ShaderVariation>& variations, SHADER_DESC& shaderDesc, 
             const PASS_DESC& passDesc, const String& name, bool defaultShader = false);
-        HShader InitShaderForward(SHADER_DESC& shaderDesc, const PASS_DESC& passDesc, 
-            const String& name);
 
         void InitShaderOpaque();
         void InitShaderTransparent(bool cull = true);

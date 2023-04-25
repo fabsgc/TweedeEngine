@@ -20,5 +20,6 @@ namespace te
 
     private:
         SPtr<Shader> _currentShader;
+        bool _showTechniques;
     };
 }

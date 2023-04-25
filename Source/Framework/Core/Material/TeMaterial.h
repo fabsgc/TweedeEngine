@@ -42,7 +42,7 @@ namespace te
         UINT32 NumTags = 0;
 
         /** Specified variation of the technique. Parameters not specified in the variation are assumed to be irrelevant. */
-        const ShaderVariation* Variation = nullptr;
+        ShaderVariation Variation;
 
         /**
          * Determines should the parameters in @p variation override any parameters that might have been defined on the

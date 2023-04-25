@@ -182,13 +182,11 @@ namespace te
                 };
 
                 SearchResult matchesSearch = NoParam;
-                if (desc.Variation)
-                {
-                    const auto& searchVarParams = desc.Variation->GetParams();
-                    const auto findSearch = searchVarParams.find(param.first);
-                    if (findSearch != searchVarParams.end())
-                        matchesSearch = findSearch->second.I == param.second.I ? Matching : NotMatching;
-                }
+
+                const auto& searchVarParams = desc.Variation.GetParams();
+                const auto findSearch = searchVarParams.find(param.first);
+                if (findSearch != searchVarParams.end())
+                    matchesSearch = findSearch->second.I == param.second.I ? Matching : NotMatching;
 
                 SearchResult matchesInternal = NoParam;
                 const auto findInternal = internalVarParams.find(param.first);
@@ -267,12 +265,9 @@ namespace te
             if (!foundMatch)
                 continue;
 
-            if (desc.Variation)
-            {
-                const auto& searchVarParams = desc.Variation->GetParams();
-                if (numMatchedSearchParams != (UINT32)searchVarParams.size())
-                    continue;
-            }
+            const auto& searchVarParams = desc.Variation.GetParams();
+            if (numMatchedSearchParams != (UINT32)searchVarParams.size())
+                continue;
 
             if (numMatchedInternalParams != (UINT32)internalVarParams.size())
                 continue;

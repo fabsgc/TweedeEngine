@@ -91,6 +91,12 @@ namespace te
 
         ~PoolAllocator()
         {
+            Prune();
+        }
+
+        /** Destroy all elements allocated */
+        void Prune()
+        {
             ScopedLock<Lock> lock(_lockPolicy);
 
             MemBlock* curBlock = _freeBlock;
@@ -101,6 +107,8 @@ namespace te
 
                 curBlock = nextBlock;
             }
+
+            _freeBlock = nullptr;
         }
 
         /** Allocates enough memory for a single element in the pool. */
@@ -294,5 +302,11 @@ namespace te
     {
         ptr->~T();
         te_pool_free(ptr);
+    }
+
+    template<class T>
+    void te_pool_prune()
+    {
+        GlobalPoolAllocator<T>::m.Prune();
     }
 }

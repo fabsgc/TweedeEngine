@@ -16,7 +16,7 @@ PS_OUTPUT main( VS_OUTPUT IN )
     // #########################################################################
 #if WRITE_VELOCITY == 1
     bool		writeVelocity				= (bool)IN.Other.x;
-#endif
+#endif // WRITE_VELOCITY
     bool		castLight					= (bool)IN.Other.y;
     bool		useSRGB						= (bool)IN.Other.z;
 
@@ -103,13 +103,14 @@ PS_OUTPUT main( VS_OUTPUT IN )
     }
 
     // ###################### BASE COLOR MAP SAMPLING
-    if(useBaseColorMap)
+#if USE_BASE_COLOR_MAP == 1
     {
         float4 baseColorFour = BaseColorMap.Sample(AnisotropicSampler, uv0);
         baseColor = baseColorFour.rgb;
         diffuseBaseColor = (1.0 - metallic) * baseColor.rgb;
         transmission = 1 - baseColorFour.a;
     }
+#endif // USE_BASE_COLOR_MAP
 
     // ###################### TRANSMISSION MAP SAMPLING
     if(useTransmissionMap)
@@ -120,10 +121,14 @@ PS_OUTPUT main( VS_OUTPUT IN )
     // ###################### DISCARD ALPHA THRESHOLD
     if((1.0 - transmission) < alphaThreshold)
     {
+#if TRANSPARENT == 1
+        discard;
+#else // TRANSPARENT
         OUT.Scene = (float4)0;
         OUT.Normal = (float4)0;
         OUT.Emissive = (float4)0;
         OUT.Velocity = (float2)0;
+#endif // TRANSPARENT
     }
     else
     {

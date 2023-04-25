@@ -13,6 +13,7 @@ namespace te
 {
     WidgetShaders::WidgetShaders()
         : Widget(WidgetType::Shaders)
+        , _showTechniques(false)
     { 
         _title = SHADERS_TITLE;
         _flags |= ImGuiWindowFlags_HorizontalScrollbar;
@@ -99,15 +100,18 @@ namespace te
                     }
                 }
 
+                ImGuiExt::RenderOptionBool(_showTechniques, "show_techniques", "Show Techniques");
+
                 // Techniques
+                if (_showTechniques)
                 {
                     UINT32 i = 1, j = 1;
 
-                    auto techniques =_currentShader->GetTechniques();
+                    const auto& techniques =_currentShader->GetTechniques();
                     for (auto& technique : techniques)
                     {
-                        String id = "Technique " + ToString(i);
-                        if (ImGui::CollapsingHeader(id.c_str()))
+                        ImGui::PushID(i);
+                        if (ImGui::CollapsingHeader("Technique"))
                         {
                             char inputLanguage[32];
                             const String& language = technique->GetLanguage();
@@ -123,9 +127,7 @@ namespace te
                             ImGui::PopItemFlag();
                             ImGui::PopItemWidth();
 
-                            id = "Technique Content " + ToString(i);
-                            ImGui::PushID(id.c_str());
-
+                            ImGui::PushID("Technique Content");
                             if (ImGui::CollapsingHeader("Variation"))
                             {
                                 ShaderVariation shaderVariation = technique->GetVariation();
@@ -157,18 +159,22 @@ namespace te
                             }
 
                             j = 1;
+                            ImGui::PushID("Passes content");
                             for (auto& pass : technique->GetPasses())
                             {
-                                id = "Pass " + ToString(j);
-                                if (ImGui::CollapsingHeader(id.c_str()))
+                                ImGui::PushID(j);
+                                if (ImGui::CollapsingHeader("Pass"))
                                 {
 
                                 }
+                                ImGui::PopID();
 
                                 j++;
                             }
                             ImGui::PopID();
+                            ImGui::PopID();
                         }
+                        ImGui::PopID();
 
                         i++;
                     }

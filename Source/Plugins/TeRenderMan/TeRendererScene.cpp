@@ -33,13 +33,32 @@ namespace te
     /** Initializes a specific base pass technique on the provided material and returns the technique index. */
     static UINT32 InitAndRetrieveBasePassTechnique(Material& material, bool shaderCanWriteVelocity, bool writeVelocity, RenderableAnimType animType)
     {
-        const ShaderVariation* variation = writeVelocity ?
-            GetBasePassVariation<true>(shaderCanWriteVelocity, animType) :
-            GetBasePassVariation<false>(shaderCanWriteVelocity, animType);
+        const MaterialProperties& properties = material.GetProperties();
 
         FIND_TECHNIQUE_DESC findDesc;
-        findDesc.Variation = variation;
         findDesc.Override = true;
+        findDesc.Variation = writeVelocity ?
+            *GetBasePassVariation<true>(shaderCanWriteVelocity, animType) :
+            *GetBasePassVariation<false>(shaderCanWriteVelocity, animType);
+
+        findDesc.Variation.AddParam(ShaderVariation::Param("TRANSPARENT", material.GetShader() && material.GetShader()->GetFlags() & (UINT32)ShaderFlag::Transparent));
+        findDesc.Variation.AddParam(ShaderVariation::Param("USE_BASE_COLOR_MAP", properties.UseBaseColorMap));
+        /*findDesc.Variation.AddParam(ShaderVariation::Param("USE_METALLIC_MAP", properties.UseMetallicMap));
+        findDesc.Variation.AddParam(ShaderVariation::Param("USE_ROUGHNESS_MAP", properties.UseRoughnessMap));
+        findDesc.Variation.AddParam(ShaderVariation::Param("USE_METALLIC_ROUGHNESS_MAP", properties.UseMetallicRoughnessMap));
+        findDesc.Variation.AddParam(ShaderVariation::Param("USE_REFLECTANCE_MAP", properties.UseReflectanceMap));
+        findDesc.Variation.AddParam(ShaderVariation::Param("USE_OCCLUSION_MAP", properties.UseOcclusionMap));
+        findDesc.Variation.AddParam(ShaderVariation::Param("USE_EMISSIVE_MAP", properties.UseEmissiveMap));
+        findDesc.Variation.AddParam(ShaderVariation::Param("USE_SHEEN_COLOR_MAP", properties.UseSheenColorMap));
+        findDesc.Variation.AddParam(ShaderVariation::Param("USE_SHEEN_ROUGHNESS_MAP", properties.UseSheenRoughnessMap));
+        findDesc.Variation.AddParam(ShaderVariation::Param("USE_CLEAR_COAT_MAP", properties.UseClearCoatMap));
+        findDesc.Variation.AddParam(ShaderVariation::Param("USE_CLEAR_COAT_ROUGHNESS_MAP", properties.UseClearCoatRoughnessMap));
+        findDesc.Variation.AddParam(ShaderVariation::Param("USE_CLEAR_COAT_NORMAL_MAP", properties.UseClearCoatNormalMap));
+        findDesc.Variation.AddParam(ShaderVariation::Param("USE_NORMAL_MAP", properties.UseNormalMap));
+        findDesc.Variation.AddParam(ShaderVariation::Param("USE_PARALLAX_MAP", properties.UseParallaxMap));
+        findDesc.Variation.AddParam(ShaderVariation::Param("USE_OPACITY_MAP", properties.UseOpacityMap));
+        findDesc.Variation.AddParam(ShaderVariation::Param("USE_ANISOTROPY_DIRECTION_MAP", properties.UseAnisotropyDirectionMap));
+        findDesc.Variation.AddParam(ShaderVariation::Param("DO_INDIRECT_LIGHTING", properties.DoIndirectLighting));*/
 
         UINT32 techniqueIdx = material.FindTechnique(findDesc);
 
