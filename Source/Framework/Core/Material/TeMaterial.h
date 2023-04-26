@@ -33,10 +33,8 @@ namespace te
     /** Structure used when searching for a specific technique in a Material. */
     struct FIND_TECHNIQUE_DESC
     {
-        static constexpr UINT32 MAX_NUM_TAGS = 10;
-
         /** A set of tags that the technique must have. */
-        String Tags[MAX_NUM_TAGS];
+        Vector<String> Tags;
 
         /** Number of valid tags in the @p tags array. */
         UINT32 NumTags = 0;
@@ -56,9 +54,7 @@ namespace te
         /** Registers a new tag to look for when searching for the technique. */
         void AddTag(const String& tag)
         {
-            TE_ASSERT_ERROR_SHORT(NumTags < MAX_NUM_TAGS);
-
-            Tags[NumTags] = tag;
+            Tags.push_back(tag);
             NumTags++;
         }
     };
@@ -458,7 +454,7 @@ namespace te
          * Set of parameters that determine which subset of techniques in the assigned shader should be used. Only the
          * techniques that have the provided parameters with the provided values will match. This will control which
          * technique is considered the default technique and which subset of techniques are searched during a call to
-         * findTechnique().
+         * FindTechnique().
          */
         void SetVariation(const ShaderVariation& variation);
 
@@ -469,7 +465,7 @@ namespace te
          * Set of parameters that determine which subset of techniques in the assigned shader should be used. Only the
          * techniques that have the provided parameters with the provided values will match. This will control which
          * technique is considered the default technique and which subset of techniques are searched during a call to
-         * findTechnique().
+         * FindTechnique().
          */
         const ShaderVariation& GetVariation() const { return _variation; }
 
@@ -484,16 +480,25 @@ namespace te
          *
          * @param[in]	desc				Object containing an optional set of tags and a set of variation parameters to
          *									look for.
+         * @param[in]	createTechnique		if no technique has been found, try to create a valid one
          * @return							First technique that matches the tags & variation parameters specified in
          *									@p desc.
          */
-        UINT32 FindTechnique(const FIND_TECHNIQUE_DESC& desc) const;
+        UINT32 FindTechnique(const FIND_TECHNIQUE_DESC& desc, bool createTechnique = false) const;
 
         /**
          * Finds the index of the default (primary) technique to use. This will be the first technique that matches the
          * currently set variation parameters (if any).
+         * 
+         * @param[in]   createTechnique		if no technique has been found, try to create a valid one
          */
-        UINT32 GetDefaultTechnique() const;
+        UINT32 GetDefaultTechnique(bool createTechnique = false) const;
+
+        /**
+         * Create a technique using the description
+         * 
+         */
+        UINT32 CreateTechnique(const FIND_TECHNIQUE_DESC& desc);
 
         /**
          * Returns the number of passes that are used by the technique at the specified index.
@@ -635,7 +640,7 @@ namespace te
     protected:
         UINT32 _id;
         SPtr<Shader> _shader;
-        Vector<SPtr<Technique>> _techniques;
+        mutable Map<UINT32, SPtr<Technique>> _techniques;
         ShaderVariation _variation;
 
         UnorderedMap<String, SPtr<TextureData>> _textures;

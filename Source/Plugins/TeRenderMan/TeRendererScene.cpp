@@ -43,7 +43,7 @@ namespace te
 
         findDesc.Variation.AddParam(ShaderVariation::Param("TRANSPARENT", material.GetShader() && material.GetShader()->GetFlags() & (UINT32)ShaderFlag::Transparent));
         findDesc.Variation.AddParam(ShaderVariation::Param("USE_BASE_COLOR_MAP", properties.UseBaseColorMap));
-        /*findDesc.Variation.AddParam(ShaderVariation::Param("USE_METALLIC_MAP", properties.UseMetallicMap));
+        findDesc.Variation.AddParam(ShaderVariation::Param("USE_METALLIC_MAP", properties.UseMetallicMap));
         findDesc.Variation.AddParam(ShaderVariation::Param("USE_ROUGHNESS_MAP", properties.UseRoughnessMap));
         findDesc.Variation.AddParam(ShaderVariation::Param("USE_METALLIC_ROUGHNESS_MAP", properties.UseMetallicRoughnessMap));
         findDesc.Variation.AddParam(ShaderVariation::Param("USE_REFLECTANCE_MAP", properties.UseReflectanceMap));
@@ -58,21 +58,24 @@ namespace te
         findDesc.Variation.AddParam(ShaderVariation::Param("USE_PARALLAX_MAP", properties.UseParallaxMap));
         findDesc.Variation.AddParam(ShaderVariation::Param("USE_OPACITY_MAP", properties.UseOpacityMap));
         findDesc.Variation.AddParam(ShaderVariation::Param("USE_ANISOTROPY_DIRECTION_MAP", properties.UseAnisotropyDirectionMap));
-        findDesc.Variation.AddParam(ShaderVariation::Param("DO_INDIRECT_LIGHTING", properties.DoIndirectLighting));*/
+        findDesc.Variation.AddParam(ShaderVariation::Param("DO_INDIRECT_LIGHTING", properties.DoIndirectLighting));
 
-        UINT32 techniqueIdx = material.FindTechnique(findDesc);
+        UINT32 techniqueIdx = material.FindTechnique(findDesc, true);
 
         if (techniqueIdx == (UINT32)-1)
-            techniqueIdx = material.GetDefaultTechnique();
+            techniqueIdx = material.GetDefaultTechnique(true);
+
+        TE_ASSERT_ERROR(techniqueIdx != (UINT32)-1, "No technique has been found");
 
         // Make sure the technique shaders are compiled
         const SPtr<Technique>& technique = material.GetTechnique(techniqueIdx);
-        if (technique)
-            technique->Compile();
+
+        TE_ASSERT_ERROR(technique, "No technique has been found");
+
+        technique->Compile();
 
         UINT32 numPasses = technique->GetNumPasses();
-        if (numPasses == 0)
-            TE_ASSERT_ERROR(false, "A technique must a least have one pass");
+        TE_ASSERT_ERROR(numPasses > 0, "A technique must a least have one pass");
 
         return techniqueIdx;
     }

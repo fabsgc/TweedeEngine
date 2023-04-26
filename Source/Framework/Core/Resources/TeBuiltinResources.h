@@ -143,6 +143,8 @@ namespace te
 
         List<ShaderVariation> FillShaderVariations(const Vector<ShaderVariationParam*>& iShaderVariationParamsList);
 
+        void FillShaderDesc(const Vector<ShaderVariationParam*>& iVariationParams, SHADER_DESC& ioShaderDesc);
+
         HShader InitShader(List<ShaderVariation>& variations, SHADER_DESC& shaderDesc, 
             const PASS_DESC& passDesc, const String& name, bool defaultShader = false);
 

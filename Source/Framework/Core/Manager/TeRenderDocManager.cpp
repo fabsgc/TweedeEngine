@@ -13,6 +13,10 @@ namespace te
 
     void RenderDocManager::OnStartUp()
     {
+#if TE_CONFIG == TE_CONFIG_RELEASE
+        return;
+#endif
+
         _rdcLib = gDynLibManager().Load(RENDERDOC_PATH);
 
         if (_rdcLib != nullptr)

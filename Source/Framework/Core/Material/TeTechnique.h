@@ -4,6 +4,8 @@
 #include "Resources/TeResource.h"
 #include "Material/TeShaderVariation.h"
 
+#include <atomic>
+
 namespace te
 {
     /**
@@ -21,6 +23,9 @@ namespace te
     public:
         virtual ~Technique() = default;
 
+        /** Returns the unique technique ID. */
+        UINT32 GetId() const { return _id; }
+
         /**	Checks if this technique is supported based on current render and other systems. */
         bool IsSupported() const;
 
@@ -29,6 +34,9 @@ namespace te
 
         /** Checks if the technique has any tags. */
         UINT32 HasTags() const { return !_tags.empty(); }
+
+        /** Returns all tags */
+        const Vector<String>& GetTags() const { return _tags; }
 
         /** Returns a set of preprocessor defines used for compiling this particular technique. */
         const ShaderVariation& GetVariation() const { return _variation; }
@@ -78,13 +86,16 @@ namespace te
 
     private:
         Technique();
-        Technique(const String& language, const Vector<String>& tags, 
+        Technique(UINT32 id, const String& language, const Vector<String>& tags, 
             const ShaderVariation& variation, const Vector<SPtr<Pass>>& passes);
 
     protected:
+        UINT32 _id;
         String _language;
         Vector<String> _tags;
         ShaderVariation _variation;
         Vector<SPtr<Pass>> _passes;
+
+        static std::atomic<UINT32> NextTechniqueId;
     };
 }

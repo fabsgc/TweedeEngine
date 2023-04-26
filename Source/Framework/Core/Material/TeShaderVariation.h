@@ -59,7 +59,7 @@ namespace te
             { }
 
             Param(const String& name, UINT32 val)
-                : Ui(val), Name(name), Type(ParamType::Int)
+                : Ui(val), Name(name), Type(ParamType::UInt)
             { }
 
             Param(const String& name, float val)

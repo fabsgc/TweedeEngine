@@ -107,11 +107,17 @@ namespace te
         String Identifier;
 
         /** A list of potential values this parameter can take on. */
-        UnorderedSet<INT32> Values; // TODO how to store float values ?
+        Vector<ShaderVariation::Param> Values;
 
-        ShaderVariationParamInfo(const String& name, const String& identifier, const UnorderedSet<INT32>& values)
+        ShaderVariationParamInfo(const String& name, const String& identifier, const Vector<ShaderVariation::Param>& values)
             : Name(name)
             , Identifier(identifier)
+            , Values(values)
+        { }
+
+        ShaderVariationParamInfo(const String& name, const Vector<ShaderVariation::Param>& values)
+            : Name(name)
+            , Identifier(name)
             , Values(values)
         { }
     };
@@ -277,20 +283,25 @@ namespace te
         /** Returns the total number of techniques in this shader. */
         UINT32 GetNumTechniques() const { return (UINT32)_desc.Techniques.size(); }
 
-        /** Returns the list of all supported techniques based on current render API and renderer. */
-        Vector<SPtr<Technique>> GetCompatibleTechniques() const;
+        /** 
+         * Returns the list of all supported techniques based on current render API and renderer.
+         * 
+         * @param[out]		oTechniques
+         */
+        void GetCompatibleTechniques(Map<UINT32, SPtr<Technique>>& oTechniques) const;
 
         /**
          * Returns the list of all supported techniques based on current render API and renderer, and limits the techniques
          * to only those implementing the specified variation.
          *
-         * @param[in]		variation	Object containing variation parameters to compare to technique variation.
-         * @param[in]		exact		When true the technique variation needs to have the exact number of parameters with
+         * @param[in]		iVariation	Object containing variation parameters to compare to technique variation.
+         * @param[in]		iExact		When true the technique variation needs to have the exact number of parameters with
          *								identical contents to the provided variation. When false, only the provided subset
          *								of parameters is used for comparison, while any extra parameters present in
          *								the technique are not compared.
+         * @param[out]		oTechniques
          */
-        Vector<SPtr<Technique>> GetCompatibleTechniques(const ShaderVariation& variation, bool exact) const;
+        void GetCompatibleTechniques(const ShaderVariation& iVariation, bool iExact, Map<UINT32, SPtr<Technique>>& oTechniques) const;
 
 
         /** Returns a list of all techniques in this shader. */
@@ -411,6 +422,20 @@ namespace te
 
         /** Compiles all techniqurd and so all the passes in a technique. @see Pass::compile. */
         void Compile(bool force = false);
+
+        /** 
+         * Try to create a new using technique using iVariation and adding iTags
+         * If a technique using this variation already exist and is supported by the renderer
+         *  - return the variation if it uses the same tags
+         * Otherwise
+         *  - create a copy of the variation and replace tags
+         *  - add the technique to the list of techniques for this shader
+         * 
+         * Note : the shader must at least contain one technique supported by the renderer
+         * 
+         * @return pointer to new technique or nullptr
+         */
+        SPtr<Technique> CreateTechnique(const ShaderVariation& iVariation, const Vector<String>& iTags);
 
     protected:
         Shader(UINT32 id);

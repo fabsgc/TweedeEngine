@@ -447,6 +447,9 @@ namespace te
         _widgets.emplace_back(te_unique_ptr_new<WidgetResources>()); _settings.WResources = _widgets.back();
         _widgets.emplace_back(te_unique_ptr_new<WidgetViewport>()); _settings.WViewport = _widgets.back();
 
+        _settings.WResources->SetVisible(false);
+        _settings.WConsole->SetVisible(false);
+
         for (auto& widget : _widgets)
             widget->Initialize();
     }

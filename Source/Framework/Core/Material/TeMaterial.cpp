@@ -19,6 +19,8 @@ namespace te
     { 
         UINT32 id = Material::NextMaterialId.fetch_add(1, std::memory_order_relaxed);
         assert(id < std::numeric_limits<UINT32>::max() && "Created too many materials, reached maximum id.");
+
+        _id = id;
     }
 
     Material::Material(UINT32 id, const ShaderVariation& variation)
@@ -65,7 +67,7 @@ namespace te
 
         if (_shader != nullptr)
         {
-            _techniques = _shader->GetCompatibleTechniques();
+            _shader->GetCompatibleTechniques(_techniques);
 
             if (_techniques.empty())
                 return;
@@ -141,21 +143,28 @@ namespace te
 
     const SPtr<Technique>& Material::GetTechnique(UINT32 idx) const 
     {
-        return _techniques[idx];
+        const auto it = _techniques.find(idx);
+
+        if (it != _techniques.end())
+            return it->second;
+
+        TE_ASSERT_ERROR(false, "Can't find technique with idx : " + ToString(idx));
+
+        return _techniques.begin()->second;
     }
 
-    UINT32 Material::FindTechnique(const FIND_TECHNIQUE_DESC& desc) const
+    UINT32 Material::FindTechnique(const FIND_TECHNIQUE_DESC& desc, bool createTechnique) const
     {
         UINT32 bestTechniqueIdx = (UINT32)-1;
         UINT32 bestTechniqueScore = std::numeric_limits<UINT32>::max();
 
-        for (UINT32 i = 0; i < (UINT32)_techniques.size(); i++)
+        for (const auto& technique : _techniques)
         {
             // Make sure tags match
             bool foundMatch = true;
             for (UINT32 j = 0; j < desc.NumTags; j++)
             {
-                if (!_techniques[i]->HasTag(desc.Tags[j]))
+                if (!technique.second->HasTag(desc.Tags[j]))
                 {
                     foundMatch = false;
                     break;
@@ -165,7 +174,7 @@ namespace te
             if (!foundMatch)
                 continue;
 
-            const ShaderVariation& curVariation = _techniques[i]->GetVariation();
+            const ShaderVariation& curVariation = technique.second->GetVariation();
             const auto& curVarParams = curVariation.GetParams();
             const auto& internalVarParams = _variation.GetParams();
 
@@ -274,25 +283,35 @@ namespace te
 
             if (currentScore < bestTechniqueScore)
             {
-                bestTechniqueIdx = i;
+                bestTechniqueIdx = technique.second->GetId();
                 bestTechniqueScore = currentScore;
+            }
+        }
+
+        if (bestTechniqueIdx == (UINT32)-1 && createTechnique && _shader)
+        {
+            SPtr<Technique> newTechnique = _shader->CreateTechnique(desc.Variation, desc.Tags);
+            if (newTechnique)
+            {
+                bestTechniqueIdx = newTechnique->GetId();
+                _techniques[bestTechniqueIdx] = newTechnique;
             }
         }
 
         return bestTechniqueIdx;
     }
 
-    UINT32 Material::GetDefaultTechnique() const
+    UINT32 Material::GetDefaultTechnique(bool createTechnique) const
     {
-        UINT32 bestTechniqueIdx = 0;
+        UINT32 bestTechniqueIdx = (UINT32)-1;
         UINT32 bestTechniqueScore = std::numeric_limits<UINT32>::max();
 
-        for (UINT32 i = 0; i < (UINT32)_techniques.size(); i++)
+        for (const auto& technique : _techniques)
         {
-            if (_techniques[i]->HasTags())
+            if (technique.second->HasTags())
                 continue;
 
-            const ShaderVariation& curVariation = _techniques[i]->GetVariation();
+            const ShaderVariation& curVariation = technique.second->GetVariation();
             const auto& curVarParams = curVariation.GetParams();
             const auto& internalVarParams = _variation.GetParams();
 
@@ -340,8 +359,18 @@ namespace te
 
             if (currentScore < bestTechniqueScore)
             {
-                bestTechniqueIdx = i;
+                bestTechniqueIdx = technique.second->GetId();
                 bestTechniqueScore = currentScore;
+            }
+        }
+
+        if (bestTechniqueIdx == (UINT32)-1 && createTechnique && _shader)
+        {
+            SPtr<Technique> newTechnique = _shader->CreateTechnique(ShaderVariation(), {});
+            if (newTechnique)
+            {
+                bestTechniqueIdx = newTechnique->GetId();
+                _techniques[bestTechniqueIdx] = newTechnique;
             }
         }
 
@@ -353,10 +382,11 @@ namespace te
         if (_shader == nullptr)
             return 0;
 
-        if (techniqueIdx >= (UINT32)_techniques.size())
+        const auto& it = _techniques.find(techniqueIdx);
+        if (it == _techniques.end())
             return 0;
 
-        return _techniques[techniqueIdx]->GetNumPasses();
+        return it->second->GetNumPasses();
     }
 
     SPtr<Pass> Material::GetPass(UINT32 passIdx, UINT32 techniqueIdx) const
@@ -364,13 +394,14 @@ namespace te
         if (_shader == nullptr)
             return nullptr;
 
-        if (techniqueIdx >= (UINT32)_techniques.size())
+        const auto& it = _techniques.find(techniqueIdx);
+        if (it == _techniques.end())
             return nullptr;
 
-        if (passIdx >= _techniques[techniqueIdx]->GetNumPasses())
+        if (passIdx >= it->second->GetNumPasses())
             return nullptr;
 
-        return _techniques[techniqueIdx]->GetPass(passIdx);
+        return it->second->GetPass(passIdx);
     }
 
     /** Assigns a texture to the shader parameter with the specified name. */

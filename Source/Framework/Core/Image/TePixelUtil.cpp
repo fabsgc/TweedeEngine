@@ -2567,11 +2567,11 @@ namespace te
                 + dst.GetLeft() * dstPixelSize + dst.GetTop() * dst.GetRowPitch() + dst.GetFront() * dst.GetSlicePitch();
 
             // Get pitches+skips in bytes
-            const UINT32 srcRowPitchBytes = src.GetRowPitch();
-            const UINT32 srcSliceSkipBytes = src.GetSliceSkip();
+            //const UINT32 srcRowPitchBytes = src.GetRowPitch();
+            //const UINT32 srcSliceSkipBytes = src.GetSliceSkip();
 
-            const UINT32 dstRowPitchBytes = dst.GetRowPitch();
-            const UINT32 dstSliceSkipBytes = dst.GetSliceSkip();
+            //const UINT32 dstRowPitchBytes = dst.GetRowPitch();
+            //const UINT32 dstSliceSkipBytes = dst.GetSliceSkip();
 
             for (UINT32 z = src.GetFront(); z < src.GetBack(); z++)
             {

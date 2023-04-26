@@ -9,13 +9,22 @@
 
 namespace te
 {
+    std::atomic<UINT32> Technique::NextTechniqueId;
+
     Technique::Technique()
         : Serializable(TID_Technique)
-    { }
+        , _id(0)
+    { 
+        UINT32 id = Technique::NextTechniqueId.fetch_add(1, std::memory_order_relaxed);
+        assert(id < std::numeric_limits<UINT32>::max() && "Created too many techniques, reached maximum id.");
 
-    Technique::Technique(const String& language, const Vector<String>& tags, 
+        _id = id;
+    }
+
+    Technique::Technique(UINT32 id, const String& language, const Vector<String>& tags, 
         const ShaderVariation& variation, const Vector<SPtr<Pass>>& passes)
         : Serializable(TID_Technique)
+        , _id(id)
         , _language(language)
         , _tags(tags)
         , _variation(variation)
@@ -62,7 +71,10 @@ namespace te
 
     SPtr<Technique> Technique::Create(const String& language, const Vector<SPtr<Pass>>& passes)
     {
-        Technique* technique = new (te_allocate<Technique>()) Technique(language, {}, ShaderVariation(), passes);
+        UINT32 id = Technique::NextTechniqueId.fetch_add(1, std::memory_order_relaxed);
+        assert(id < std::numeric_limits<UINT32>::max() && "Created too many techniques, reached maximum id.");
+
+        Technique* technique = new (te_allocate<Technique>()) Technique(id, language, {}, ShaderVariation(), passes);
         SPtr<Technique> techniquePtr = te_core_ptr<Technique>(technique);
         techniquePtr->SetThisPtr(techniquePtr);
         techniquePtr->Initialize();
@@ -73,7 +85,10 @@ namespace te
     SPtr<Technique> Technique::Create(const String& language, const Vector<String>& tags,
         const ShaderVariation& variation, const Vector<SPtr<Pass>>& passes)
     {
-        Technique* technique = new (te_allocate<Technique>()) Technique(language, tags, variation, passes);
+        UINT32 id = Technique::NextTechniqueId.fetch_add(1, std::memory_order_relaxed);
+        assert(id < std::numeric_limits<UINT32>::max() && "Created too many techniques, reached maximum id.");
+
+        Technique* technique = new (te_allocate<Technique>()) Technique(id, language, tags, variation, passes);
         SPtr<Technique> techniquePtr = te_core_ptr<Technique>(technique);
         techniquePtr->SetThisPtr(techniquePtr);
         techniquePtr->Initialize();

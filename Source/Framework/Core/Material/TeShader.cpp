@@ -1,11 +1,15 @@
 #include "Material/TeShader.h"
 
+#include "Image/TeTexture.h"
+#include "Material/TePass.h"
 #include "Material/TeTechnique.h"
 #include "Material/TeShaderVariation.h"
 #include "Resources/TeResourceManager.h"
 #include "RenderAPI/TeSamplerState.h"
 #include "RenderAPI/TeGpuParams.h"
-#include "Image/TeTexture.h"
+#include "RenderAPI/TeGpuProgramManager.h"
+
+#include <algorithm>
 
 namespace te
 {
@@ -149,28 +153,22 @@ namespace te
     void Shader::Initialize()
     { }
 
-    Vector<SPtr<Technique>> Shader::GetCompatibleTechniques() const
+    void Shader::GetCompatibleTechniques(Map<UINT32, SPtr<Technique>>& oTechniques) const
     {
-        Vector<SPtr<Technique>> output;
         for (auto& technique : _desc.Techniques)
         {
             if (technique->IsSupported())
-                output.push_back(technique);
+                oTechniques[technique->GetId()] = technique;
         }
-
-        return output;
     }
 
-    Vector<SPtr<Technique>> Shader::GetCompatibleTechniques(const ShaderVariation& variation, bool exact) const
+    void Shader::GetCompatibleTechniques(const ShaderVariation& iVariation, bool iExact, Map<UINT32, SPtr<Technique>>& oTechniques) const
     {
-        Vector<SPtr<Technique>> output;
         for (auto& technique : _desc.Techniques)
         {
-            if (technique->IsSupported() && technique->GetVariation().Matches(variation, exact))
-                output.push_back(technique);
+            if (technique->IsSupported() && technique->GetVariation().Matches(iVariation, iExact))
+                oTechniques[technique->GetId()] = technique;
         }
-
-        return output;
     }
 
     GpuParamType Shader::GetParamType(const String& name) const
@@ -314,6 +312,46 @@ namespace te
         {
             technique->Compile(force);
         }
+    }
+
+    SPtr<Technique> Shader::CreateTechnique(const ShaderVariation& iVariation, const Vector<String>& iTags)
+    {
+        // TODO check if iVariation according to _desc.VariationParams
+
+        SPtr<Technique> refTechnique = nullptr;
+
+        for (auto& technique : _desc.Techniques)
+        {
+            if (technique->IsSupported())
+            {
+                refTechnique = technique;
+
+                if (technique->GetVariation() == iVariation)
+                {
+                    const Vector<String> tags = technique->GetTags();
+                    if (tags.size() == iTags.size() && std::is_permutation(tags.begin(), tags.end(), iTags.begin()))
+                        return technique;
+                }
+            }
+        }
+        
+        if (refTechnique)
+        {
+            SPtr<Technique> technique = nullptr;
+            Vector<SPtr<Pass>> passes;
+
+            for (const auto& refPass : refTechnique->GetPasses())
+            {
+                const PASS_DESC& passDesc = refPass->GetDesc();
+                passes.push_back(Pass::Create(passDesc));
+            }
+
+            technique = Technique::Create(refTechnique->GetLanguage(), iTags, iVariation, passes);
+            _desc.Techniques.push_back(technique);
+            return technique;
+        }
+        
+        return nullptr;
     }
 
     HShader Shader::Create(const String& name, const SHADER_DESC& desc)

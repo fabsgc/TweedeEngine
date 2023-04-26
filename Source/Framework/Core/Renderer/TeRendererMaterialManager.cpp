@@ -90,11 +90,12 @@ namespace te
             }
 
             // Note: Making the assumption here that all the techniques are generated due to shader variations
-            Vector<SPtr<Technique>> techniques = shaders[i]->GetCompatibleTechniques();
+            Map<UINT32, SPtr<Technique>> techniques;
+            shaders[i]->GetCompatibleTechniques(techniques);
             materials[i].MetaData->Instances.resize((UINT32)techniques.size());
 
             for (auto& entry : techniques)
-                materials[i].MetaData->Variations.Add(entry->GetVariation());
+                materials[i].MetaData->Variations.Add(entry.second->GetVariation());
 #endif
         }
     }

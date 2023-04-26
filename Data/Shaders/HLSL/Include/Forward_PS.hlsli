@@ -253,6 +253,7 @@ float3 DoNormalMapping(float3x3 TBN, Texture2D tex, SamplerState samplerState, f
     return normalize(normal);
 }
 
+#if USE_PARALLAX_MAP == 1
 // uv : original uv coordinates
 // parallaxOffsetTS : computed in vertex shader
 // numsteps : number of steps to execute (more steps lead to a more convincing effect)
@@ -319,7 +320,9 @@ float2 DoParallaxMappingSteps(float2 uv, float2 parallaxOffsetTS, int numSteps, 
 
     return uv - vParallaxOffset;
 }
+#endif // USE_PARALLAX_MAP
 
+#if USE_PARALLAX_MAP == 1
 // uv : original uv coordinates
 // V : view vector
 // Pv : view world space position
@@ -365,6 +368,7 @@ float2 DoParallaxMapping(float2 uv, float3 V, float3 Pv, float3 N, float3 P,
 
     return uv;
 }
+#endif // USE_PARALLAX_MAP
 
 /**
  * Returns the reflected vector at the current shading point. The reflected vector
@@ -842,7 +846,9 @@ LightingResult DoLighting(float3 V, float3 P, float3 N, const PixelData pixel,
     float NoV = ClampNoV(dot(N, V));
 
     LightingResult totalResult = (LightingResult)0;
+#if DO_INDIRECT_LIGHTING == 1
     LightingResult IBLResult = DoIBL(V, P, N, NoV, pixel, occlusion);
+#endif // DO_INDIRECT_LIGHTING
 
     if(castLight)
     {
@@ -863,8 +869,10 @@ LightingResult DoLighting(float3 V, float3 P, float3 N, const PixelData pixel,
         }
     }
 
+#if DO_INDIRECT_LIGHTING == 1
     totalResult.Diffuse += IBLResult.Diffuse;
     totalResult.Specular += IBLResult.Specular;
+#endif // DO_INDIRECT_LIGHTING
 
     totalResult.Diffuse = saturate(totalResult.Diffuse);
     totalResult.Specular = saturate(totalResult.Specular);

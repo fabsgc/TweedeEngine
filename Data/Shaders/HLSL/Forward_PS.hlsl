@@ -87,9 +87,10 @@ PS_OUTPUT main( VS_OUTPUT IN )
     // #########################################################################
 
     // ###################### PARALLAX MAP MAPPING
-    if(useParallaxMap)
+#if USE_PARALLAX_MAP == 1
         uv0 = DoParallaxMapping(uv0, V, Pv, N, P, 
             parallaxSamples, parallaxScale, IN.ParallaxOffsetTS);
+#endif // USE_PARALLAX_MAP
 
     // ###################### METALLIC MAP SAMPLING
     if(useMetallicRoughnessMap)
@@ -246,7 +247,11 @@ PS_OUTPUT main( VS_OUTPUT IN )
         lit.Specular = lit.Specular;
 
         OUT.Scene.rgb = lit.Diffuse + lit.Specular;
-        OUT.Scene.a = 1.0;
+        #if TRANSPARENT == 1
+                OUT.Scene.a = 1.0 - transmission;
+        #else // TRANSPARENT
+                OUT.Scene.a = 1.0;
+        #endif // TRANSPARENT
 
         OUT.Normal = ComputeNormalBuffer(N);
         OUT.Emissive = ComputeEmissiveBuffer(OUT.Scene, float4(emissive, 1.0));

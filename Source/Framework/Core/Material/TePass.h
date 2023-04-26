@@ -48,6 +48,9 @@ namespace te
         /** Gets the stencil reference value that is used when performing operations using the stencil buffer. */
         UINT32 GetStencilRefValue() const { return _data.StencilRefValue; }
 
+        /** Returns pass description */
+        const PASS_DESC& GetDesc() const { return _data; }
+
         /** Returns the GPU program descriptor for the specified GPU program type. */
         const GPU_PROGRAM_DESC& GetProgramDesc(GpuProgramType type) const;
 
