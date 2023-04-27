@@ -88,20 +88,23 @@ PS_OUTPUT main( VS_OUTPUT IN )
 
     // ###################### PARALLAX MAP MAPPING
 #if USE_PARALLAX_MAP == 1
+    {
         uv0 = DoParallaxMapping(uv0, V, Pv, N, P, 
             parallaxSamples, parallaxScale, IN.ParallaxOffsetTS);
+    }
 #endif // USE_PARALLAX_MAP
 
     // ###################### METALLIC MAP SAMPLING
-    if(useMetallicRoughnessMap)
+#if USE_METALLIC_ROUGHNESS_MAP == 1
     {
         metallicRougness = MetallicRoughnessMap.Sample(AnisotropicSampler, uv0).rgb;
         metallic = metallicRougness.b;
     }
-    else if(useMetallicMap)
+#elif USE_METALLIC_MAP == 1
     {
         metallic = MetallicMap.Sample(AnisotropicSampler, uv0).r;
     }
+#endif // USE_METALLIC_ROUGHNESS_MAP
 
     // ###################### BASE COLOR MAP SAMPLING
 #if USE_BASE_COLOR_MAP == 1
@@ -114,10 +117,15 @@ PS_OUTPUT main( VS_OUTPUT IN )
 #endif // USE_BASE_COLOR_MAP
 
     // ###################### TRANSMISSION MAP SAMPLING
-    if(useTransmissionMap)
+#if USE_TRANSMISSION_MAP == 1
+    {
         transmission = TransmissionMap.Sample(AnisotropicSampler, uv0).r;
-    else if(useOpacityMap)
+    }
+#elif USE_OPACITY_MAP == 1
+    {
         transmission = 1.0 - OpacityMap.Sample(AnisotropicSampler, uv0).r;
+    }
+#endif // USE_TRANSMISSION_MAP
 
     // ###################### DISCARD ALPHA THRESHOLD
     if((1.0 - transmission) < alphaThreshold)
@@ -134,61 +142,88 @@ PS_OUTPUT main( VS_OUTPUT IN )
     else
     {
         // ###################### NORMAL MAP SAMPLING
-        if(useNormalMap)
+#if USE_NORMAL_MAP == 1
+        {
             N = DoNormalMapping(TBN, NormalMap, AnisotropicSampler, uv0);
+        }
+#endif // USE_NORMAL_MAP
 
         // ###################### ROUGHNESS MAP SAMPLING
-        if(useMetallicRoughnessMap)
+#if USE_METALLIC_ROUGHNESS_MAP == 1
         {
             pRoughness = min(max(MIN_ROUGHNESS, metallicRougness.g), MAX_ROUGHNESS);
             roughness = pRoughness * pRoughness;
         }
-        else if(useRoughnessMap)
+#elif USE_ROUGHNESS_MAP == 1
         {
             pRoughness = min(max(MIN_ROUGHNESS, RoughnessMap.Sample(AnisotropicSampler, uv0).r), MAX_ROUGHNESS);
             roughness = pRoughness * pRoughness;
         }
+#endif // USE_METALLIC_ROUGHNESS_MAP
 
         // ###################### REFLECTANCE MAP SAMPLING
-        if(useReflectanceMap)
+#if USE_REFLECTANCE_MAP == 1
+        {
             reflectance = ReflectanceMap.Sample(AnisotropicSampler, uv0).r;
+        }
+#endif // USE_REFLECTANCE_MAP
 
         // ###################### EMISSIVE MAP SAMPLING
-        if(useEmissiveMap)
+#if USE_EMISSIVE_MAP == 1
+        {
             emissive *= EmissiveMap.Sample(AnisotropicSampler, uv0).rgb;
+        }
+#endif // USE_EMISSIVE_MAP
 
         // ###################### SHEEN COLOR MAP SAMPLING
-        if(useSheenColorMap)
+#if USE_SHEEN_COLOR_MAP == 1
+        {
             sheenColor = SheenColorMap.Sample(AnisotropicSampler, uv0).rgb;
+        }
+#endif // USE_SHEEN_COLOR_MAP
 
         // ###################### CLEAR COAT ROUGHNESS MAP SAMPLING
-        if(useSheenRoughnessMap)
+#if USE_SHEEN_ROUGHNESS_MAP == 1
         {
             pSheenRoughness = min(max(MIN_ROUGHNESS, SheenRoughnessMap.Sample(AnisotropicSampler, uv0).r), MAX_ROUGHNESS);
             sheenRoughness = pSheenRoughness * pSheenRoughness;
         }
+#endif // USE_SHEEN_ROUGHNESS_MAP
 
         // ###################### CLEAR COAT MAP SAMPLING
-        if(useClearCoatMap)
+#if USE_CLEAR_COAT_MAP == 1
+        {
             clearCoat = ClearCoatMap.Sample(AnisotropicSampler, uv0).r;
+        }
+#endif // USE_CLEAR_COAT_MAP
 
         // ###################### CLEAR COAT ROUGHNESS SAMPLING
-        if(useClearCoatRoughnessMap)
+#if USE_CLEAR_COAT_ROUGHNESS_MAP == 1
         {
             pClearCoatRoughness = min(max(MIN_ROUGHNESS, ClearCoatRoughnessMap.Sample(AnisotropicSampler, uv0).r), MAX_ROUGHNESS);
             clearCoatRoughness = pClearCoatRoughness * pClearCoatRoughness;
         }
+#endif // USE_CLEAR_COAT_ROUGHNESS_MAP
 
         // ###################### CLEAR COAT NORMAL MAP SAMPLING
-        if(useClearCoatNormalMap)
+#if USE_CLEAR_COAT_NORMAL_MAP == 1
+        {
             N_clearCoat = DoNormalMapping(TBN, ClearCoatNormalMap, AnisotropicSampler, uv0);
+        }
+#endif // USE_CLEAR_COAT_NORMAL_MAP
 
         // ###################### ANISOTROPY DIRECTION MAP SAMPLING
-        if(useAnisotropyDirectionMap)
+#if USE_ANISOTROPY_DIRECTION_MAP == 1
+        {
             anisotropyDirection = AnisotropyDirectionMap.Sample(AnisotropicSampler, uv0).rgb;
+        }
+#endif // USE_ANISOTROPY_DIRECTION_MAP
 
-        if(useOcclusionMap)
+#if USE_OCCLUSION_MAP == 1
+        {
             occlusion = OcclusionMap.Sample(AnisotropicSampler, uv0).r;
+        }
+#endif // USE_OCCLUSION_MAP
 
         // ###################### FILL PIXEL PARAM
         float NoV = ClampNoV(dot(N, V));
@@ -263,7 +298,7 @@ PS_OUTPUT main( VS_OUTPUT IN )
             OUT.Velocity = float2(0.0, 0.0);
 #else
         OUT.Velocity = float2(0.0, 0.0);
-#endif
+#endif // WRITE_VELOCITY
 
     }
 

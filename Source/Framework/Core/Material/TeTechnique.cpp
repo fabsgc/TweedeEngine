@@ -56,7 +56,7 @@ namespace te
             pass->Compile(_variation, force);
     }
 
-    SPtr<Pass> Technique::GetPass(UINT32 idx) const
+    const SPtr<Pass> Technique::GetPass(UINT32 idx) const
     {
         if (idx >= (UINT32)_passes.size())
             TE_ASSERT_ERROR(false, "Index out of range: " + ToString(idx));

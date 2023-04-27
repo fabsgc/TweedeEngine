@@ -226,7 +226,7 @@ float2 ComputeVelocityBuffer(float2 NDCPos, float2 PrevNDCPos, float alpha)
 
     return velocity;
 }
-#endif
+#endif // WRITE_VELOCITY
 
 float3 ExpandNormal(float3 normal)
 {
@@ -243,6 +243,7 @@ float3 GetColor(in bool useSRGB, in bool isSRGBColor, in float3 color)
     return convertedColor;
 }
 
+#if USE_NORMAL_MAP == 1
 float3 DoNormalMapping(float3x3 TBN, Texture2D tex, SamplerState samplerState, float2 uv)
 {
     float3 normal = tex.Sample(samplerState, uv).xyz;
@@ -252,6 +253,7 @@ float3 DoNormalMapping(float3x3 TBN, Texture2D tex, SamplerState samplerState, f
     normal = mul(normal, TBN);
     return normalize(normal);
 }
+#endif // USE_NORMAL_MAP
 
 #if USE_PARALLAX_MAP == 1
 // uv : original uv coordinates
@@ -560,6 +562,7 @@ float3 EvaluateRefraction(const PixelData pixel, const float3 V, const float3 P,
     return Ft;
 }
 
+#if DO_INDIRECT_LIGHTING == 1
 // V : view vector
 // N : surface normal
 // E : SpecularDFG
@@ -573,7 +576,9 @@ float3 DoDiffuseIBL(float3 V, float3 N, float NoV, float3 E, const PixelData pix
 
     return result;
 }
+#endif // DO_INDIRECT_LIGHTING
 
+#if DO_INDIRECT_LIGHTING == 1
 // V : view vector
 // N : surface normal
 // E : SpecularDFG
@@ -593,7 +598,9 @@ float3 DoSpecularIBL(float3 V, float3 N, float NoV, float3 E, const PixelData pi
 
     return result;
 }
+#endif // DO_INDIRECT_LIGHTING
 
+#if DO_INDIRECT_LIGHTING == 1
 // V : view vector
 // N : surface normal
 LightingResult DoSheenIBL(float3 V, float3 N, const PixelData pixel, float NoV, float occlusion, LightingResult result)
@@ -613,7 +620,9 @@ LightingResult DoSheenIBL(float3 V, float3 N, const PixelData pixel, float NoV, 
 
     return result;
 }
+#endif // DO_INDIRECT_LIGHTING
 
+#if DO_INDIRECT_LIGHTING == 1
 // V : view vector
 // N : surface normal
 LightingResult DoClearCoatIBL(float3 V, float3 N, const PixelData pixel, float NoV, float occlusion, LightingResult result)
@@ -634,6 +643,7 @@ LightingResult DoClearCoatIBL(float3 V, float3 N, const PixelData pixel, float N
 
     return result;
 }
+#endif // DO_INDIRECT_LIGHTING
 
 /*LightingResult DoSubSurfaceIBL(float3 V, float3 N, const PixelData pixel, float NoV, float occlusion, LightingResult result)
 {
@@ -645,6 +655,7 @@ LightingResult DoClearCoatIBL(float3 V, float3 N, const PixelData pixel, float N
     return result;
 } TODO */
 
+#if DO_INDIRECT_LIGHTING == 1
 // V : view vector
 // P : World Space position
 // N : surface normal
@@ -678,6 +689,7 @@ LightingResult DoIBL(float3 V, float3 P, float3 N, float NoV, const PixelData pi
 
     return result;
 }
+#endif // DO_INDIRECT_LIGHTING
 
 float3 SheenLobe(const PixelData pixel, float NoV, float NoL, float NoH)
 {

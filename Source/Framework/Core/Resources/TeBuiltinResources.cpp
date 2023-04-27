@@ -974,6 +974,7 @@ namespace te
             te_pool_new<ShaderVariationParam>("USE_CLEAR_COAT_NORMAL_MAP", std::forward<Vector<std::any>>({ false, true })),
             te_pool_new<ShaderVariationParam>("USE_NORMAL_MAP", std::forward<Vector<std::any>>({ false, true })),
             te_pool_new<ShaderVariationParam>("USE_PARALLAX_MAP", std::forward<Vector<std::any>>({ false, true })),
+            te_pool_new<ShaderVariationParam>("USE_TRANSMISSION_MAP", std::forward<Vector<std::any>>({ false, true })),
             te_pool_new<ShaderVariationParam>("USE_OPACITY_MAP", std::forward<Vector<std::any>>({ false, true })),
             te_pool_new<ShaderVariationParam>("USE_ANISOTROPY_DIRECTION_MAP", std::forward<Vector<std::any>>({false, true})),
             te_pool_new<ShaderVariationParam>("DO_INDIRECT_LIGHTING", std::forward<Vector<std::any>>({false, true}))
@@ -1027,6 +1028,7 @@ namespace te
             te_pool_new<ShaderVariationParam>("USE_CLEAR_COAT_NORMAL_MAP", std::forward<Vector<std::any>>({ false, true })),
             te_pool_new<ShaderVariationParam>("USE_NORMAL_MAP", std::forward<Vector<std::any>>({ false, true })),
             te_pool_new<ShaderVariationParam>("USE_PARALLAX_MAP", std::forward<Vector<std::any>>({ false, true })),
+            te_pool_new<ShaderVariationParam>("USE_TRANSMISSION_MAP", std::forward<Vector<std::any>>({ false, true })),
             te_pool_new<ShaderVariationParam>("USE_OPACITY_MAP", std::forward<Vector<std::any>>({ false, true })),
             te_pool_new<ShaderVariationParam>("USE_ANISOTROPY_DIRECTION_MAP", std::forward<Vector<std::any>>({ false, true })),
             te_pool_new<ShaderVariationParam>("DO_INDIRECT_LIGHTING", std::forward<Vector<std::any>>({ false, true }))

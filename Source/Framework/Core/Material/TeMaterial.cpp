@@ -389,7 +389,7 @@ namespace te
         return it->second->GetNumPasses();
     }
 
-    SPtr<Pass> Material::GetPass(UINT32 passIdx, UINT32 techniqueIdx) const
+    const SPtr<Pass> Material::GetPass(UINT32 passIdx, UINT32 techniqueIdx) const
     {
         if (_shader == nullptr)
             return nullptr;

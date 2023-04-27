@@ -28,6 +28,9 @@
 #elif defined(TE_WIN_SDK_8)
 #   define WIN32_LEAN_AND_MEAN
 #   define _WIN32_WINNT _WIN32_WINNT_WIN8
+#elif defined(TE_WIN_SDK_8_1)
+#   define WIN32_LEAN_AND_MEAN
+#   define _WIN32_WINNT _WIN32_WINNT_WINBLUE
 #elif defined(TE_WIN_SDK_10)
 #   define WIN32_LEAN_AND_MEAN
 #   define _WIN32_WINNT _WIN32_WINNT_WIN10

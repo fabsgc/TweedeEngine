@@ -10,7 +10,29 @@ add_library(TeFontImporter SHARED ${TE_FONTIMPORTER_SRC})
 target_include_directories(TeFontImporter PRIVATE "./")
 
 # Defines
-target_compile_definitions(TeFontImporter PRIVATE -DTE_FONT_EXPORTS -DTE_ENGINE_BUILD -DUSE_FREETYPE2_STATIC)
+target_compile_definitions(TeFontImporter PRIVATE 
+    -DTE_ENGINE_BUILD
+    -DUSE_FREETYPE2_STATIC
+    -DTE_CONFIG_DEBUG=1
+    -DTE_CONFIG_RELWITHDEBINFO=2
+    -DTE_CONFIG_MINSIZEREL=3
+    -DTE_CONFIG_RELEASE=4
+    $<$<CONFIG:Debug>:TE_CONFIG=1>
+    $<$<CONFIG:RelWithDebInfo>:TE_CONFIG=2>
+    $<$<CONFIG:MinSizeRel>:TE_CONFIG=3>
+    $<$<CONFIG:Release>:TE_CONFIG=4>)
+
+if (WIN32)
+    if (${CMAKE_SYSTEM_VERSION} EQUAL 6.1) # Windows 7
+        target_compile_definitions (TeFontImporter PRIVATE -DTE_WIN_SDK_7)
+    elseif (${CMAKE_SYSTEM_VERSION} EQUAL 6.2) # Windows 8
+        target_compile_definitions (TeFontImporter PRIVATE -DTE_WIN_SDK_8)
+    elseif (${CMAKE_SYSTEM_VERSION} EQUAL 6.3) # Windows 8.1
+        target_compile_definitions (TeOpenAudio PRIVATE -DTE_WIN_SDK_8_1)
+    elseif (${CMAKE_SYSTEM_VERSION} EQUAL 10.0) # Windows 10
+        target_compile_definitions (TeFontImporter PRIVATE -DTE_WIN_SDK_10)
+    endif ()
+endif ()
 
 # Libraries
 ## External lib: FreeType

@@ -56,6 +56,7 @@ namespace te
         findDesc.Variation.AddParam(ShaderVariation::Param("USE_CLEAR_COAT_NORMAL_MAP", properties.UseClearCoatNormalMap));
         findDesc.Variation.AddParam(ShaderVariation::Param("USE_NORMAL_MAP", properties.UseNormalMap));
         findDesc.Variation.AddParam(ShaderVariation::Param("USE_PARALLAX_MAP", properties.UseParallaxMap));
+        findDesc.Variation.AddParam(ShaderVariation::Param("USE_TRANSMISSION_MAP", properties.UseTransmissionMap));
         findDesc.Variation.AddParam(ShaderVariation::Param("USE_OPACITY_MAP", properties.UseOpacityMap));
         findDesc.Variation.AddParam(ShaderVariation::Param("USE_ANISOTROPY_DIRECTION_MAP", properties.UseAnisotropyDirectionMap));
         findDesc.Variation.AddParam(ShaderVariation::Param("DO_INDIRECT_LIGHTING", properties.DoIndirectLighting));
@@ -86,8 +87,8 @@ namespace te
         UINT32 numPasses = material.GetNumPasses(techniqueIdx);
         for (UINT32 j = 0; j < numPasses; j++)
         {
-            SPtr<Pass> pass = material.GetPass(j, techniqueIdx);
-            SPtr<GraphicsPipelineState> graphicsPipeline = pass->GetGraphicsPipelineState();
+            const SPtr<Pass> pass = material.GetPass(j, techniqueIdx);
+            const SPtr<GraphicsPipelineState>& graphicsPipeline = pass->GetGraphicsPipelineState();
 
             SPtr<VertexDeclaration> shaderDecl = graphicsPipeline->GetVertexProgram()->GetInputDeclaration();
             if (shaderDecl && !vertexDecl.IsCompatible(shaderDecl))

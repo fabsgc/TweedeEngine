@@ -42,7 +42,7 @@ namespace te
         const ShaderVariation& GetVariation() const { return _variation; }
 
         /**	Returns a pass with the specified index. */
-        SPtr<Pass> GetPass(UINT32 idx) const;
+        const SPtr<Pass> GetPass(UINT32 idx) const;
 
         /**	Returns all passes */
         const Vector<SPtr<Pass>>& GetPasses() const;

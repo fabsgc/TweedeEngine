@@ -97,7 +97,7 @@ namespace te
 
                 if(entry->GetVariation() == _variation)
                 {
-                    SPtr<Pass> pass = entry->GetPass(0);
+                    SPtr<Pass> pass = std::const_pointer_cast<Pass>(entry->GetPass(0));
                     pass->Compile(_variation);
 
                     _graphicsPipeline = pass->GetGraphicsPipelineState();

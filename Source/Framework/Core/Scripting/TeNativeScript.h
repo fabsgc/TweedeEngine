@@ -4,17 +4,6 @@
 #include "Serialization/TeSerializable.h"
 #include "Scene/TeSceneObject.h"
 
-// DLL export for plugins
-#if TE_PLATFORM == TE_PLATFORM_WIN32 // Windows
-#   if TE_COMPILER == TE_COMPILER_MSVC
-#       define TE_SCRIPT_EXPORT __declspec(dllexport)
-#   else
-#       define TE_SCRIPT_EXPORT __attribute__ ((dllexport))
-#   endif
-#else // Linux/Mac settings
-#   define TE_SCRIPT_EXPORT __attribute__ ((visibility ("default")))
-#endif
-
 namespace te
 {
     /**

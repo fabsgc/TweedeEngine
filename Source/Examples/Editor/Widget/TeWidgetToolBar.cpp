@@ -139,6 +139,7 @@ namespace te
         if (ImGuiExt::RenderOptionCombo<ImGuizmo::MODE>((ImGuizmo::MODE*)(&guizmoMode), "##guizmo_mode_option", "", guizmoModeOptions, 150))
             gEditor().SetImGuizmoMode(guizmoMode);
 
+#if TE_CONFIG != TE_CONFIG_RELEASE
         // RenderDoc
         ShowButton(ICON_FA_BUG, ICON_FA_BUG,
             [this]() { return false; },
@@ -148,6 +149,7 @@ namespace te
             },
             "Captures the next frame and then launches RenderDoc"
         );
+#endif
     }
 
     void WidgetToolBar::UpdateBackground()

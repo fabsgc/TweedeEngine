@@ -495,12 +495,6 @@ namespace te
         UINT32 GetDefaultTechnique(bool createTechnique = false) const;
 
         /**
-         * Create a technique using the description
-         * 
-         */
-        UINT32 CreateTechnique(const FIND_TECHNIQUE_DESC& desc);
-
-        /**
          * Returns the number of passes that are used by the technique at the specified index.
          *
          * @param[in]	techniqueIdx	Index of the technique to retrieve the number of passes for. 0 is always guaranteed
@@ -517,7 +511,7 @@ namespace te
          *								the default technique.
          * @return						Pass if found, null otherwise.
          */
-        SPtr<Pass> GetPass(UINT32 passIdx = 0, UINT32 techniqueIdx = 0) const;
+        const SPtr<Pass> GetPass(UINT32 passIdx = 0, UINT32 techniqueIdx = 0) const;
 
         /** Assigns a texture to the shader parameter with the specified name. */
         void SetTexture(const String& name, const SPtr<Texture>& value, const TextureSurface& surface = GpuParams::COMPLETE);
