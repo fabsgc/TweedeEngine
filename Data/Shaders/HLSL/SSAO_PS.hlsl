@@ -96,7 +96,8 @@ float4 main( PS_INPUT IN ) : SV_Target0
     uint SAMPLE_STEPS = 0;
     uint SAMPLE_SET = 0;
     uint SAMPLE_COUNT = 0;
-    float2 SAMPLES[6];
+    //float2 SAMPLES[6];
+    float2 SAMPLES[5];
 
     if (gQuality < 3) SAMPLE_STEPS = 1;
     else SAMPLE_STEPS = 3;
@@ -114,14 +115,15 @@ float4 main( PS_INPUT IN ) : SV_Target0
     }
     else
     {
-        SAMPLE_COUNT = 6;
+        //SAMPLE_COUNT = 6;
+        SAMPLE_COUNT = 5;
 
         SAMPLES[0] = float2( 0.142f,  0.000f);
         SAMPLES[1] = float2( 0.142f,  0.247f);
         SAMPLES[2] = float2(-0.214f,  0.371f);
         SAMPLES[3] = float2(-0.571f,  0.000f);
         SAMPLES[4] = float2(-0.357f, -0.618f);
-        SAMPLES[5] = float2( 0.428f, -0.742f);
+        //SAMPLES[5] = float2( 0.428f, -0.742f);
     }
 
     float sceneDepth = 0.0;

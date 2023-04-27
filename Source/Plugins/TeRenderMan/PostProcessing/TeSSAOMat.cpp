@@ -73,6 +73,7 @@ namespace te
             downsampledPixelSize.y = 1.0f / props.GetHeight();
 
             gSSAOParamDef.gDownsampledPixelSize.Set(_paramBuffer, downsampledPixelSize);
+            gSSAOParamDef.gUpSample.Set(_paramBuffer, 1);
         }
 
         // Generate a scale which we need to use in order to achieve tiling

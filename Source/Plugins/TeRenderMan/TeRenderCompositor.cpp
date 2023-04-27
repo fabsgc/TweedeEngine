@@ -1167,7 +1167,7 @@ namespace te
             downsample->Execute(inputs.View, sceneDepth, sceneNormals, setupTex0->RenderTex, DEPTH_RANGE);
         }
 
-        SPtr<PooledRenderTexture> setupTex1;
+        /*SPtr<PooledRenderTexture> setupTex1;
         if(numDownsampleLevels > 1)
         {
             Vector2I downsampledSize(
@@ -1180,7 +1180,7 @@ namespace te
             setupTex1 = resPool.Get(desc);
 
             downsample->Execute(inputs.View, sceneDepth, sceneNormals, setupTex1->RenderTex, DEPTH_RANGE);
-        }
+        }*/
 
         SSAOTextureInputs textures;
         textures.SceneDepth = sceneDepth;
@@ -1190,7 +1190,8 @@ namespace te
         SPtr<PooledRenderTexture> downAOTex1;
         if (numDownsampleLevels > 1)
         {
-            textures.AOSetup = setupTex1->Tex;
+            //textures.AOSetup = setupTex1->Tex;
+            textures.AOSetup = setupTex0->Tex;
 
             Vector2I downsampledSize(
                 std::max(1, Math::DivideAndRoundUp((INT32)viewProps.Target.ViewRect.width, 4)),
@@ -1204,11 +1205,12 @@ namespace te
             SSAOMat* ssaoMat = SSAOMat::Get();
             ssaoMat->Execute(inputs.View, textures, downAOTex1->RenderTex, settings, false, false, (UINT32)quality);
 
-            setupTex1 = nullptr;
+            //setupTex1 = nullptr;
+            setupTex0 = nullptr;
         }
 
         SPtr<PooledRenderTexture> downAOTex0;
-        if (numDownsampleLevels > 0)
+        /*if (numDownsampleLevels > 0)
         {
             textures.AOSetup = setupTex0->Tex;
 
@@ -1230,7 +1232,7 @@ namespace te
 
             if (upSample)
                 downAOTex1 = nullptr;
-        }
+        }*/
 
         UINT32 width = viewProps.Target.ViewRect.width;
         UINT32 height = viewProps.Target.ViewRect.height;
@@ -1243,7 +1245,8 @@ namespace te
             if (downAOTex0)
                 textures.AODownsampled = downAOTex0->Tex;
 
-            bool upSample = numDownsampleLevels > 0;
+            //bool upSample = numDownsampleLevels > 0;
+            bool upSample = false;
             SSAOMat* ssaoMat = SSAOMat::Get();
             ssaoMat->Execute(inputs.View, textures, Output->RenderTex, settings, upSample, true, (UINT32)quality);
         }
