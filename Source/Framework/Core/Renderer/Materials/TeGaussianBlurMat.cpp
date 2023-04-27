@@ -14,10 +14,24 @@ namespace te
     void GaussianBlurMat::Initialize()
     {
         _params->SetParamBlockBuffer(GPT_PIXEL_PROGRAM, "PerFrameBuffer", _paramBuffer);
-        _params->SetSamplerState(GPT_PIXEL_PROGRAM, "Sampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::NearestPointClamped));
+
+        const auto& variationParams = _variation.GetParams();
+        const bool isMultiSampledVariation = std::find_if(variationParams.begin(), variationParams.end(),
+            [](const Pair<String, ShaderVariation::Param>& x) { 
+                if (x.second.Name == "MSAA_COUNT") {
+                    if (x.second.Type == ShaderVariation::ParamType::UInt && x.second.Ui > 1)
+                        return true;
+                }
+
+                return false;
+            }) != variationParams.end();
+
+        if (!isMultiSampledVariation)
+            _params->SetSamplerState(GPT_PIXEL_PROGRAM, "Sampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::NearestPointClamped));
     }
 
-    void GaussianBlurMat::Execute(const SPtr<Texture>& source, const SPtr<RenderTexture>& destination, float filterSize, UINT32 maxSamples, const Color& tint, UINT32 MSAACount)
+    void GaussianBlurMat::Execute(const SPtr<Texture>& source, const SPtr<RenderTexture>& destination, float filterSize, UINT32 maxSamples, 
+        const Color& tint, UINT32 MSAACount)
     {
         const TextureProperties& srcProps = source->GetProperties();
         const RenderTextureProperties& dstProps = static_cast<const RenderTextureProperties&>(destination->GetProperties());
@@ -27,24 +41,21 @@ namespace te
         SPtr<PooledRenderTexture> tempTexture = gGpuResourcePool().Get(tempTextureDesc);
 
         gGaussianBlurParamDef.gSourceDimensions.Set(_paramBuffer, Vector2((float)dstProps.Width, (float)dstProps.Height), 0);
-        gGaussianBlurParamDef.gMSAACount.Set(_paramBuffer, MSAACount, 0);
 
         maxSamples = Math::Clamp(maxSamples, (UINT32)16, (UINT32)MAX_BLUR_SAMPLES);
 
         // Horizontal pass
-        DoPass(true, source, tempTexture->RenderTex, filterSize, maxSamples, tint, MSAACount);
+        DoPass(true, source, tempTexture->RenderTex, filterSize, maxSamples, tint);
         // Vertical pass
-        DoPass(false, tempTexture->Tex, destination, filterSize, maxSamples, tint, MSAACount);
+        DoPass(false, tempTexture->Tex, destination, filterSize, maxSamples, tint);
     }
 
-    void GaussianBlurMat::DoPass(bool horizontal, const SPtr<Texture>& source, const SPtr<RenderTexture>& destination, float filterSize, UINT32 maxSamples, const Color& tint, UINT32 MSAACount)
+    void GaussianBlurMat::DoPass(bool horizontal, const SPtr<Texture>& source, const SPtr<RenderTexture>& destination, float filterSize, 
+        UINT32 maxSamples, const Color& tint)
     {
-        if (MSAACount > 1) _params->SetTexture(GPT_PIXEL_PROGRAM, "SourceMapMS", source);
-        else _params->SetTexture(GPT_PIXEL_PROGRAM, "SourceMap", source);
+        _params->SetTexture(GPT_PIXEL_PROGRAM, "SourceMap", source);
 
         PopulateBuffer(_paramBuffer, horizontal, source, filterSize, maxSamples, (!horizontal) ? tint : Color::White);
-
-        gGaussianBlurParamDef.gHorizontal.Set(_paramBuffer, horizontal ? 1 : 0, 0);
 
         RenderAPI& rapi = RenderAPI::Instance();
         rapi.SetRenderTarget(destination);
@@ -185,5 +196,21 @@ namespace te
 
         // Divide by two because we need the radius
         return std::min(length * scale / 2, (float)maxSamples - 1);
+    }
+
+    GaussianBlurMat* GaussianBlurMat::GetVariation(UINT32 msaaCount)
+    {
+        switch (msaaCount)
+        {
+        case 1:
+            return Get(GetVariation<1>());
+        case 2:
+            return Get(GetVariation<2>());
+        case 4:
+            return Get(GetVariation<4>());
+        default:
+        case 8:
+            return Get(GetVariation<8>());
+        }
     }
 }

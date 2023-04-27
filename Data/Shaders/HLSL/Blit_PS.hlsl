@@ -30,7 +30,7 @@ float4 main( PS_INPUT IN, out float depth : SV_Depth) : SV_Target0
     [unroll]
     for(uint i = 0; i < MSAA_COUNT; i++)
     {
-        sum += SourceMapMS.Load(IN.Texture, i);
+        sum += SourceMap.Load(IN.Texture, i);
     }
 
     return sum / MSAA_COUNT;

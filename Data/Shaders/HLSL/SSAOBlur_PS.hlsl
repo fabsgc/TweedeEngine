@@ -5,8 +5,7 @@ cbuffer PerFrameBuffer : register(b0)
     float2 gPixelSize;
     float2 gPixelOffset;
     float gInvDepthThreshold;
-    uint gHorizontal;
-    float2 gPadding;
+    float3 gPadding;
 }
 
 cbuffer PerCameraBuffer : register(b1)

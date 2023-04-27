@@ -22,10 +22,7 @@ namespace te
 
     Skybox::~Skybox()
     {
-        if(_active)
-        {
-            if (_renderer) _renderer->NotifySkyboxRemoved(this);
-        }
+        if (_renderer) _renderer->NotifySkyboxRemoved(this);
     }
 
     void Skybox::Initialize()

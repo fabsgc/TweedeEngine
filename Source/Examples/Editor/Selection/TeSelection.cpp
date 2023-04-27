@@ -33,7 +33,7 @@ namespace te
     void Selection::Initialize()
     {
         _selectionMat = SelectionMat::Get();
-        _selectionBlurMat = GaussianBlurMat::Get();
+        _selectionBlurMat = GaussianBlurMat::GetVariation(1);
         _selectionBlitMat = SelectionBlitMat::Get();
         _hudMat = HudSelectionMat::Get();
 

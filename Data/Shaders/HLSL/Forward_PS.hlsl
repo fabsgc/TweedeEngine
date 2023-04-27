@@ -46,24 +46,6 @@ PS_OUTPUT main( VS_OUTPUT IN )
     float3		absorption					= gMaterial.Absorption;
     uint		refractionType				= gMaterial.RefractionType;
 
-    bool		useBaseColorMap				= (bool)gMaterial.UseBaseColorMap;
-    bool		useMetallicMap				= (bool)gMaterial.UseMetallicMap;
-    bool		useRoughnessMap				= (bool)gMaterial.UseRoughnessMap;
-    bool		useMetallicRoughnessMap		= (bool)gMaterial.UseMetallicRoughnessMap;
-    bool		useReflectanceMap			= (bool)gMaterial.UseReflectanceMap;
-    bool		useOcclusionMap				= (bool)gMaterial.UseOcclusionMap;
-    bool		useEmissiveMap				= (bool)gMaterial.UseEmissiveMap;
-    bool		useSheenColorMap			= (bool)gMaterial.UseSheenColorMap;
-    bool		useSheenRoughnessMap		= (bool)gMaterial.UseSheenRoughnessMap;
-    bool		useClearCoatMap				= (bool)gMaterial.UseClearCoatMap;
-    bool		useClearCoatRoughnessMap	= (bool)gMaterial.UseClearCoatRoughnessMap;
-    bool		useClearCoatNormalMap		= (bool)gMaterial.UseClearCoatNormalMap;
-    bool		useNormalMap				= (bool)gMaterial.UseNormalMap;
-    bool		useParallaxMap				= (bool)gMaterial.UseParallaxMap;
-    bool		useTransmissionMap			= (bool)gMaterial.UseTransmissionMap;
-    bool		useOpacityMap				= (bool)gMaterial.UseOpacityMap;
-    bool		useAnisotropyDirectionMap	= (bool)gMaterial.UseAnisotropyDirectionMap;
-
     float3		sceneLightColor				= gSceneLightColor.rgb;
 
     float3		N							= normalize(IN.Normal);

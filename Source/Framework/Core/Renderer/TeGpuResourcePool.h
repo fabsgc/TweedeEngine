@@ -149,7 +149,7 @@ namespace te
          * @return					Descriptor that is accepted by RenderTexturePool.
          */
         static POOLED_RENDER_TEXTURE_DESC Create2D(PixelFormat format, UINT32 width, UINT32 height,
-            INT32 usage = TU_STATIC, UINT32 samples = 0, bool hwGamma = false, UINT32 arraySize = 1, UINT32 mipCount = 0);
+            INT32 usage = TU_STATIC, UINT32 samples = 1, bool hwGamma = false, UINT32 arraySize = 1, UINT32 mipCount = 0);
 
         /**
          * Creates a descriptor for a three dimensional render texture.

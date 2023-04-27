@@ -75,25 +75,6 @@ namespace te
         UINT32  RefractionType;
         float   AlphaTreshold;
         Vector2 Padding1;
-        UINT32  UseBaseColorMap;
-        UINT32  UseMetallicMap;
-        UINT32  UseRoughnessMap;
-        UINT32  UseMetallicRoughnessMap;
-        UINT32  UseReflectanceMap;
-        UINT32  UseOcclusionMap;
-        UINT32  UseEmissiveMap;
-        UINT32  UseSheenColorMap;
-        UINT32  UseSheenRoughnessMap;
-        UINT32  UseClearCoatMap;
-        UINT32  UseClearCoatRoughnessMap;
-        UINT32  UseClearCoatNormalMap;
-        UINT32  UseNormalMap;
-        UINT32  UseParallaxMap;
-        UINT32  UseTransmissionMap;
-        UINT32  UseOpacityMap;
-        UINT32  UseAnisotropyDirectionMap;
-        UINT32  DoIndirectLighting;
-        UINT32  Padding2[2];
     };
 
     struct PerLightData

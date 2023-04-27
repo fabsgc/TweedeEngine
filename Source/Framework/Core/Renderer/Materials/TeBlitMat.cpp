@@ -7,12 +7,25 @@ namespace te
     { }
 
     void BlitMat::Initialize()
-    { }
+    {
+        const auto& variationParams = _variation.GetParams();
+        const bool isMultiSampledVariation = std::find_if(variationParams.begin(), variationParams.end(),
+            [](const Pair<String, ShaderVariation::Param>& x) { 
+                if (x.second.Name == "MSAA_COUNT") {
+                    if (x.second.Type == ShaderVariation::ParamType::UInt && x.second.Ui > 1)
+                        return true;
+                }
+
+                return false;
+            }) != variationParams.end();
+
+        if (!isMultiSampledVariation)
+            _params->SetSamplerState(GPT_PIXEL_PROGRAM, "Sampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::NearestPointClamped));
+    }
 
     void BlitMat::Execute(const SPtr<Texture>& source, const Rect2& area, bool flipUV)
     {
         _params->SetTexture(GPT_PIXEL_PROGRAM, "SourceMap", source);
-        _params->SetSamplerState(GPT_PIXEL_PROGRAM, "Sampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::BilinearClamped));
 
         Bind();
         gRendererUtility().DrawScreenQuad(area, Vector2I(1, 1), 1, flipUV);

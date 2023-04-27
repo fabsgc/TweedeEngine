@@ -13,7 +13,7 @@ namespace te
 
     void RenderDocManager::OnStartUp()
     {
-#if TE_CONFIG == TE_CONFIG_RELEASE
+#if TE_CONFIG == TE_CONFIG_RELEASE 
         return;
 #endif
 

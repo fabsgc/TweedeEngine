@@ -13,7 +13,20 @@ namespace te
     void ToneMappingMat::Initialize()
     {
         _params->SetParamBlockBuffer(GPT_PIXEL_PROGRAM, "PerFrameBuffer", _paramBuffer);
-        _params->SetSamplerState(GPT_PIXEL_PROGRAM, "Sampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::NearestPointClamped));
+
+        const auto& variationParams = _variation.GetParams();
+        const bool isMultiSampledVariation = std::find_if(variationParams.begin(), variationParams.end(),
+            [](const Pair<String, ShaderVariation::Param>& x) { 
+                if (x.second.Name == "MSAA_COUNT") {
+                    if (x.second.Type == ShaderVariation::ParamType::UInt && x.second.Ui > 1)
+                        return true;
+                }
+
+                return false;
+            }) != variationParams.end();
+
+        if (!isMultiSampledVariation)
+            _params->SetSamplerState(GPT_PIXEL_PROGRAM, "Sampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::NearestPointClamped));
     }
 
     void ToneMappingMat::Execute(const SPtr<Texture>& ssao, const SPtr<Texture>& source, const SPtr<RenderTarget>& destination, INT32 MSAACount,

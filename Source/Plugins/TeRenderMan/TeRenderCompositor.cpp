@@ -1316,7 +1316,6 @@ namespace te
 
         // ### First, we get emissive texture from forward pass, use it as input for our GaussianBlur material
         // ### and create a new tex representing the blured result
-        GaussianBlurMat* gaussianBlur = GaussianBlurMat::Get();
 
         // We can reduce blur texture size according to bloom quality
         const UINT32 quality = Math::Clamp((UINT32)settings.Bloom.Quality, 0U, 3U);
@@ -1349,6 +1348,8 @@ namespace te
             )
         );
 
+        GaussianBlurMat* gaussianBlur = GaussianBlurMat::GetVariation(emissiveTex->Tex->GetProperties().GetNumSamples());
+
         gaussianBlur->Execute(emissiveTex->Tex, tmpBlurOutput->RenderTex, settings.Bloom.FilterSize, settings.Bloom.MaxBlurSamples,
             settings.Bloom.Tint, emissiveTex->Tex->GetProperties().GetNumSamples());
         gaussianBlur->Execute(tmpBlurOutput->Tex, blurOutput->RenderTex, settings.Bloom.FilterSize, settings.Bloom.MaxBlurSamples,
@@ -1358,17 +1359,19 @@ namespace te
 
         // ### Once we have our blured texture, we call our bloom material which will add this blured texture to the 
         // ### output final texture
-        BloomMat* bloom = BloomMat::Get();
         SPtr<RenderTexture> ppOutput;
         SPtr<Texture> ppLastFrame;
+
         postProcessNode->GetAndSwitch(inputs.View, ppOutput, ppLastFrame);
 
         if (!ppLastFrame)
             ppLastFrame = gpuInitializationPassNode->SceneTex->Tex;
 
         auto& texProps = ppLastFrame->GetProperties();
+
+        BloomMat* bloom = BloomMat::GetVariation(texProps.GetNumSamples());
         bloom->Execute(ppLastFrame, ppOutput, tmpBlurOutput->Tex,
-            settings.Bloom.Intensity, texProps.GetNumSamples());
+            settings.Bloom.Intensity);
 
         inputs.CurrRenderAPI.PopMarker();
     }

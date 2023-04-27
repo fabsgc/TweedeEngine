@@ -50,25 +50,6 @@ struct MaterialData
     uint    RefractionType;
     float   AlphaTreshold;
     float2  Padding1;
-    uint    UseBaseColorMap;
-    uint    UseMetallicMap;
-    uint    UseRoughnessMap;
-    uint    UseMetallicRoughnessMap;
-    uint    UseReflectanceMap;
-    uint    UseOcclusionMap;
-    uint    UseEmissiveMap;
-    uint    UseSheenColorMap;
-    uint    UseSheenRoughnessMap;
-    uint    UseClearCoatMap;
-    uint    UseClearCoatRoughnessMap;
-    uint    UseClearCoatNormalMap;
-    uint    UseNormalMap;
-    uint    UseParallaxMap;
-    uint    UseTransmissionMap;
-    uint    UseOpacityMap;
-    uint    UseAnisotropyDirectionMap;
-    uint    DoIndirectLighting;
-    uint    Padding2[2];
 };
 
 struct LightData
@@ -664,7 +645,7 @@ LightingResult DoIBL(float3 V, float3 P, float3 N, float NoV, const PixelData pi
     float3 E = SpecularDFG(pixel);
     LightingResult result = (LightingResult)0;
 
-    if(gMaterial.DoIndirectLighting && (gUseSkyboxDiffuseIrrMap || gUseSkyboxPrefilteredRadianceMap))
+    if(gUseSkyboxDiffuseIrrMap || gUseSkyboxPrefilteredRadianceMap)
     {
         // Diffuse Layer
         result.Diffuse = DoDiffuseIBL(V, N, NoV, E, pixel, occlusion);

@@ -13,30 +13,49 @@ namespace te
     void BloomMat::Initialize()
     {
         _params->SetParamBlockBuffer(GPT_PIXEL_PROGRAM, "PerFrameBuffer", _paramBuffer);
-        _params->SetSamplerState(GPT_PIXEL_PROGRAM, "Sampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::BilinearClamped));
+
+        const auto& variationParams = _variation.GetParams();
+        const bool isMultiSampledVariation = std::find_if(variationParams.begin(), variationParams.end(),
+            [](const Pair<String, ShaderVariation::Param>& x) { 
+                if (x.second.Name == "MSAA_COUNT") {
+                    if (x.second.Type == ShaderVariation::ParamType::UInt && x.second.Ui > 1)
+                        return true;
+                }
+
+                return false;
+            }) != variationParams.end();
+
+        if (!isMultiSampledVariation)
+            _params->SetSamplerState(GPT_PIXEL_PROGRAM, "Sampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::NearestPointClamped));
     }
 
     void BloomMat::Execute(const SPtr<Texture>& source, const SPtr<RenderTarget>& destination, const SPtr<Texture>& emissive, 
-        const float& intensity, UINT32 MSAACount)
+        const float& intensity)
     {
-        gBloomParamDef.gMSAACount.Set(_paramBuffer, MSAACount, 0);
         gBloomParamDef.gIntensity.Set(_paramBuffer, intensity, 0);
-
-        if (MSAACount > 1)
-        {
-            _params->SetTexture(GPT_PIXEL_PROGRAM, "SourceMapMS", source);
-            _params->SetTexture(GPT_PIXEL_PROGRAM, "EmissiveMapMS", emissive);
-        }
-        else
-        {
-            _params->SetTexture(GPT_PIXEL_PROGRAM, "SourceMap", source);
-            _params->SetTexture(GPT_PIXEL_PROGRAM, "EmissiveMap", emissive);
-        }
+        _params->SetTexture(GPT_PIXEL_PROGRAM, "SourceMap", source);
+        _params->SetTexture(GPT_PIXEL_PROGRAM, "EmissiveMap", emissive);
 
         RenderAPI& rapi = RenderAPI::Instance();
         rapi.SetRenderTarget(destination);
 
         Bind();
         gRendererUtility().DrawScreenQuad();
+    }
+
+    BloomMat* BloomMat::GetVariation(UINT32 msaaCount)
+    {
+        switch (msaaCount)
+        {
+        case 1:
+            return Get(GetVariation<1>());
+        case 2:
+            return Get(GetVariation<2>());
+        case 4:
+            return Get(GetVariation<4>());
+        default:
+        case 8:
+            return Get(GetVariation<8>());
+        }
     }
 }

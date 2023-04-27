@@ -1103,8 +1103,8 @@ namespace te
         SHADER_DESC shaderDesc;
 
         Vector<ShaderVariationParam*> variationParams = {
-            te_pool_new<ShaderVariationParam>(std::forward<String>("MSAA_COUNT"), std::forward<Vector<std::any>>({ 1, 2, 4, 8 })),
-            te_pool_new<ShaderVariationParam>(std::forward<String>("MODE"), std::forward<Vector<std::any>>({ 0, 1 }))
+            te_pool_new<ShaderVariationParam>(std::forward<String>("MSAA_COUNT"), std::forward<Vector<std::any>>({ (UINT32)1, (UINT32)2, (UINT32)4, (UINT32)8 })),
+            te_pool_new<ShaderVariationParam>(std::forward<String>("MODE"), std::forward<Vector<std::any>>({ (UINT32)0, (UINT32)1 }))
         };
 
         FillShaderDesc(variationParams, shaderDesc);
@@ -1177,7 +1177,7 @@ namespace te
         SHADER_DESC shaderDesc;
 
         Vector<ShaderVariationParam*> variationParams = {
-            te_pool_new<ShaderVariationParam>(std::forward<String>("MSAA_COUNT"), std::forward<Vector<std::any>>({ 1, 2, 4, 8 })),
+            te_pool_new<ShaderVariationParam>(std::forward<String>("MSAA_COUNT"), std::forward<Vector<std::any>>({ (UINT32)1, (UINT32)2, (UINT32)4, (UINT32)8 })),
             te_pool_new<ShaderVariationParam>(std::forward<String>("GAMMA_ONLY"), std::forward<Vector<std::any>>({ false, true }))
         };
 
@@ -1207,9 +1207,15 @@ namespace te
         technique->Compile();
 
         SHADER_DESC shaderDesc;
-        shaderDesc.Techniques.push_back(technique);
 
-        _shaderBloom = Shader::Create("Bloom", shaderDesc);
+        Vector<ShaderVariationParam*> variationParams = {
+            te_pool_new<ShaderVariationParam>(std::forward<String>("MSAA_COUNT"), std::forward<Vector<std::any>>({ (UINT32)1, (UINT32)2, (UINT32)4, (UINT32)8 }))
+        };
+
+        FillShaderDesc(variationParams, shaderDesc);
+        List<ShaderVariation> variations = FillShaderVariations(variationParams);
+
+        _shaderBloom = InitShader(variations, shaderDesc, passDesc, "Bloom");
     }
 
     void BuiltinResources::InitShaderMotionBlur()
@@ -1252,14 +1258,16 @@ namespace te
 
         passDesc.RasterizerStateDesc.cullMode = CULL_NONE;
 
-        SPtr<Pass> pass = Pass::Create(passDesc);
-        SPtr<Technique> technique = Technique::Create("hlsl", { pass });
-        technique->Compile();
-
         SHADER_DESC shaderDesc;
-        shaderDesc.Techniques.push_back(technique);
 
-        _shaderGaussianBlur = Shader::Create("Gaussian Blur", shaderDesc);
+        Vector<ShaderVariationParam*> variationParams = {
+            te_pool_new<ShaderVariationParam>(std::forward<String>("MSAA_COUNT"), std::forward<Vector<std::any>>({ (UINT32)1, (UINT32)2, (UINT32)4, (UINT32)8 }))
+        };
+
+        FillShaderDesc(variationParams, shaderDesc);
+        List<ShaderVariation> variations = FillShaderVariations(variationParams);
+
+        _shaderGaussianBlur = InitShader(variations, shaderDesc, passDesc, "Gaussian Blur");
     }
 
     void BuiltinResources::InitShaderPicking()

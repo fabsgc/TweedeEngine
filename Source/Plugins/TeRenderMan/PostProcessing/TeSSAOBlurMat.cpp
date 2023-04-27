@@ -18,7 +18,7 @@ namespace te
     }
 
     void SSAOBlurMat::Execute(const RendererView& view, const SPtr<Texture>& ao, const SPtr<Texture>& sceneDepth,
-			const SPtr<RenderTexture>& destination, float depthRange, bool horizontal)
+        const SPtr<RenderTexture>& destination, float depthRange, bool horizontal)
     {
         const RendererViewProperties& viewProps = view.GetProperties();
         const TextureProperties& texProps = ao->GetProperties();
