@@ -44,8 +44,9 @@ namespace te
     IMPLEMENT_GLOBAL_POOL(ZPrepassElem, 32)
 
     /** Renders all elements for the Z Prepass. */
-    void RenderQueueElementsForZPrepass(const Vector<RenderQueueElement>& elements, const RendererView& view, const SceneInfo& scene, const RendererViewGroup& viewGroup)
+    UINT32 RenderQueueElementsForZPrepass(const Vector<RenderQueueElement>& elements, const RendererView& view, const SceneInfo& scene, const RendererViewGroup& viewGroup)
     {
+        UINT32 drawCallsCounter = 0;
         RenderAPI& rapi = RenderAPI::Instance();
         SPtr<Material> lastMaterial = nullptr;
 
@@ -94,6 +95,7 @@ namespace te
 
         auto DrawZPrepassElem = [&](SPtr<Pass>& pass, ZPrepassElem* zPrepassElem)
         {
+            rapi.PushMarker("[DRAW] Renderable", Color(0.7f, 0.8f, 0.2f));
             rapi.SetGraphicsPipeline(pass->GetGraphicsPipelineState());
             rapi.SetStencilRef(pass->GetStencilRefValue());
 
@@ -109,9 +111,10 @@ namespace te
                 rapi.SetGpuParams((*zPrepassElem->GpuParamsElem), GPU_BIND_PARAM_BLOCK, GPU_BIND_PARAM_BLOCK_LISTED, ObjectBuffer);
             }
 
-            rapi.PushMarker("[DRAW] Renderable", Color(0.7f, 0.8f, 0.2f));
             gRendererUtility().Draw((*zPrepassElem->MeshElem), *zPrepassElem->SubMeshElem, zPrepassElem->InstanceCount);
             rapi.PopMarker();
+
+            drawCallsCounter++;
         };
 
         if(zPrepassMeshElements.size() > 0)
@@ -120,11 +123,11 @@ namespace te
             const auto& techniques = shader->GetTechniques();
 
             if (techniques.size() == 0)
-                return;
+                return 0;
 
             SPtr<Technique> technique = techniques[0];
             if (technique->GetNumPasses() == 0)
-                return;
+                return 0;
 
             SPtr<Pass> pass = technique->GetPass(0);
 
@@ -141,11 +144,11 @@ namespace te
             const auto& techniques = shader->GetTechniques();
 
             if (techniques.size() == 0)
-                return;
+                return 0;
 
             SPtr<Technique> technique = techniques[0];
             if (technique->GetNumPasses() == 0)
-                return;
+                return 0;
 
             SPtr<Pass> pass = technique->GetPass(0);
 
@@ -155,11 +158,14 @@ namespace te
                 te_pool_delete<ZPrepassElem>(static_cast<ZPrepassElem*>(zPrepassElem));
             }
         }
+
+        return drawCallsCounter;
     }
 
     /** Renders all elements in a render queue. */
-    void RenderQueueElements(const Vector<RenderQueueElement>& elements, const RendererView& view, const SceneInfo& scene, const RendererViewGroup& viewGroup)
+    UINT32 RenderQueueElements(const Vector<RenderQueueElement>& elements, const RendererView& view, const SceneInfo& scene, const RendererViewGroup& viewGroup)
     {
+        UINT32 drawCallsCounter = 0;
         RenderAPI& rapi = RenderAPI::Instance();
         SPtr<Material> lastMaterial = nullptr;
         UINT32 gpuParamsBindFlags = 0;
@@ -235,7 +241,10 @@ namespace te
             entry.RenderElem->Draw();
 
             rapi.PopMarker();
+            drawCallsCounter++;
         }
+
+        return drawCallsCounter;
     }
 
     RenderCompositor::~RenderCompositor()
@@ -506,6 +515,7 @@ namespace te
         EmissiveTex = nullptr;
         VelocityTex = nullptr;
         DepthTex = nullptr;
+        DrawCallsCounter = 0;
     }
 
     Vector<String> RCNodeGpuInitializationPass::GetDependencies(const RendererView& view)
@@ -526,7 +536,7 @@ namespace te
 
         if (inputs.View.GetRenderSettings().UseZPrepass && elements.size() > 0)
         {
-            RenderQueueElementsForZPrepass(elements, inputs.View, inputs.Scene, inputs.ViewGroup);
+            gpuInitializationPassNode->DrawCallsCounter = RenderQueueElementsForZPrepass(elements, inputs.View, inputs.Scene, inputs.ViewGroup);
         }
 
         if (sceneCamera != nullptr)
@@ -552,13 +562,13 @@ namespace te
         RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
         Camera* sceneCamera = inputs.View.GetSceneCamera();
 
+        if (elements.size() == 0)
+            return;
+
         inputs.CurrRenderAPI.PushMarker("[DRAW] Forward Pass", Color(0.8f, 0.6f, 0.8f));
 
-        if (elements.size() > 0)
-        {
-            // Render all opaque elements     
-            RenderQueueElements(elements, inputs.View, inputs.Scene, inputs.ViewGroup);
-        }
+        // Render all opaque elements     
+        gpuInitializationPassNode->DrawCallsCounter = RenderQueueElements(elements, inputs.View, inputs.Scene, inputs.ViewGroup);
 
         if (sceneCamera != nullptr)
             inputs.View.NotifyCompositorTargetChanged(gpuInitializationPassNode->RenderTargetTex);
@@ -638,26 +648,21 @@ namespace te
     {
         RenderQueue* transparentElements = inputs.View.GetTransparentQueue().get();
         const Vector<RenderQueueElement> elements = transparentElements->GetSortedElements();
+        RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
+        Camera* sceneCamera = inputs.View.GetSceneCamera();
 
         if (elements.size() == 0)
             return;
 
         inputs.CurrRenderAPI.PushMarker("[DRAW] Forward Transparent Pass", Color(0.6f, 0.6f, 0.9f));
+        inputs.CurrRenderAPI.SetRenderTarget(gpuInitializationPassNode->RenderTargetTex, FBT_DEPTH);
 
-        RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
-        int readOnlyFlags = FBT_DEPTH;
-
-        inputs.CurrRenderAPI.SetRenderTarget(gpuInitializationPassNode->RenderTargetTex, readOnlyFlags);
-
-        Rect2 area(0.0f, 0.0f, 1.0f, 1.0f);
-        inputs.CurrRenderAPI.SetViewport(area);
-
-        RenderQueueElements(elements, inputs.View, inputs.Scene, inputs.ViewGroup);
-
-        Camera* sceneCamera = inputs.View.GetSceneCamera();
+        gpuInitializationPassNode->DrawCallsCounter = RenderQueueElements(elements, inputs.View, inputs.Scene, inputs.ViewGroup);
+        
         if (sceneCamera != nullptr)
             inputs.View.NotifyCompositorTargetChanged(gpuInitializationPassNode->RenderTargetTex);
 
+        // Make sure that any compute shaders are able to read g-buffer by unbinding it
         inputs.CurrRenderAPI.SetRenderTarget(nullptr);
         inputs.CurrRenderAPI.PopMarker();
     }
@@ -680,6 +685,8 @@ namespace te
         inputs.CurrRenderAPI.PushMarker("[DRAW] Half Scene Tex", Color(0.74f, 0.21f, 0.32f));
 
         RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
+        if (gpuInitializationPassNode->DrawCallsCounter == 0)
+            return;
 
         SPtr<Texture> input = gpuInitializationPassNode->SceneTex->Tex;
         TextureDownsampleMat* downsampleMat = TextureDownsampleMat::Get();
@@ -728,6 +735,10 @@ namespace te
     {
         inputs.CurrRenderAPI.PushMarker("[DRAW] Scene Tex Down Samples", Color(0.44f, 0.71f, 0.52f));
 
+        RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
+        if (gpuInitializationPassNode->DrawCallsCounter == 0)
+            return;
+
         auto DownSample = [this](
             SPtr<PooledRenderTexture> renderTex,
             SPtr<PooledRenderTexture>* output)
@@ -763,6 +774,7 @@ namespace te
         DownSample(halfSceneTexNode->SceneTex, &SceneTex[0]);
         DownSample(halfSceneTexNode->EmissiveTex, &EmissiveTex[0]);
 
+        inputs.CurrRenderAPI.SetRenderTarget(nullptr);
         inputs.CurrRenderAPI.PopMarker();
     }
 
@@ -947,6 +959,9 @@ namespace te
         inputs.CurrRenderAPI.PushMarker("[DRAW] Motion Blur", Color(0.1f, 0.9f, 0.6f));
 
         RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
+        if (gpuInitializationPassNode->DrawCallsCounter == 0)
+            return;
+
         RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[1]);
 
         SPtr<RenderTexture> ppOutput;
@@ -964,6 +979,7 @@ namespace te
         motionBlur->Execute(ppLastFrame, ppOutput, depth, velocity, inputs.View.GetPerViewBuffer(),
             settings, texProps.GetNumSamples());
 
+        inputs.CurrRenderAPI.SetRenderTarget(nullptr);
         inputs.CurrRenderAPI.PopMarker();
     }
 
@@ -982,7 +998,9 @@ namespace te
     // ############# GAUSSIAN DOF
 
     void RCNodeGaussianDOF::Render(const RenderCompositorNodeInputs& inputs)
-    { }
+    { 
+        // TODO
+    }
 
     void RCNodeGaussianDOF::Clear()
     { }
@@ -1007,6 +1025,9 @@ namespace te
         inputs.CurrRenderAPI.PushMarker("[DRAW] FXAA", Color(0.35f, 0.35f, 0.7f));
 
         RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
+        if (gpuInitializationPassNode->DrawCallsCounter == 0)
+            return;
+
         RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[1]);
 
         SPtr<RenderTexture> ppOutput;
@@ -1020,6 +1041,7 @@ namespace te
         else
             fxaa->Execute(gpuInitializationPassNode->SceneTex->Tex, ppOutput);
 
+        inputs.CurrRenderAPI.SetRenderTarget(nullptr);
         inputs.CurrRenderAPI.PopMarker();
     }
 
@@ -1066,6 +1088,7 @@ namespace te
 
         // TODO temporal AA
 
+        inputs.CurrRenderAPI.SetRenderTarget(nullptr);
         inputs.CurrRenderAPI.PopMarker();
     }
 
@@ -1114,12 +1137,17 @@ namespace te
             return;
         }
 
+        RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
+        if (gpuInitializationPassNode->DrawCallsCounter == 0)
+        {
+            Output = nullptr;
+            return;
+        }
+
         inputs.CurrRenderAPI.PushMarker("[DRAW] SSAO", Color(0.25f, 0.35f, 0.95f));
 
         GpuResourcePool& resPool = gGpuResourcePool();
         const RendererViewProperties& viewProps = inputs.View.GetProperties();
-
-        RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
         RCNodeResolvedSceneDepth* resolvedDepthNode = static_cast<RCNodeResolvedSceneDepth*>(inputs.InputNodes[2]);
 
         SPtr<Texture> sceneNormals = gpuInitializationPassNode->NormalTex->Tex;
@@ -1307,11 +1335,13 @@ namespace te
         if (!settings.Bloom.Enabled)
             return;
 
+        RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
+        if (gpuInitializationPassNode->DrawCallsCounter == 0)
+            return;
+
         inputs.CurrRenderAPI.PushMarker("[DRAW] Bloom", Color(0.85f, 0.55f, 0.15f));
 
-        RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
         RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[1]);
-
         RCNodeSceneTexDownsamples* sceneColorDownSampleNode = static_cast<RCNodeSceneTexDownsamples*>(inputs.InputNodes[2]);
 
         constexpr UINT32 NUM_STEPS_PER_QUALITY[] = { 1, 1, 2, 3 };
@@ -1376,6 +1406,7 @@ namespace te
         bloom->Execute(ppLastFrame, ppOutput, tmpBlurOutput->Tex,
             settings.Bloom.Intensity);
 
+        inputs.CurrRenderAPI.SetRenderTarget(nullptr);
         inputs.CurrRenderAPI.PopMarker();
     }
 
@@ -1481,6 +1512,7 @@ namespace te
         if (SSAONode && SSAONode->Output)
             inputs.CurrRenderer.SetLastRenderTexture(RenderOutputType::SSAO, SSAONode->Output->Tex);
 
+        inputs.CurrRenderAPI.SetRenderTarget(nullptr);
         inputs.CurrRenderAPI.PopMarker();
     }
 

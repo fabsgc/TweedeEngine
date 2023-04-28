@@ -190,6 +190,8 @@ namespace te
 
         SPtr<RenderTexture> RenderTargetTex;
 
+        UINT32 DrawCallsCounter = 0;
+
         static String GetNodeId() { return "GpuInitializationPass"; }
         static Vector<String> GetDependencies(const RendererView& view);
 
