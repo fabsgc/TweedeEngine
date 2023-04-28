@@ -41,10 +41,11 @@ namespace te
         _params->SetTexture(GPT_PIXEL_PROGRAM, "SSAOMap", ssao);
 
         RenderAPI& rapi = RenderAPI::Instance();
-        rapi.SetRenderTarget(destination);
 
         Bind();
+        rapi.SetRenderTarget(destination);
         gRendererUtility().DrawScreenQuad();
+        rapi.SetRenderTarget(nullptr);
     }
 
     ToneMappingMat* ToneMappingMat::GetVariation(UINT32 msaaCount, bool gammaOnly)

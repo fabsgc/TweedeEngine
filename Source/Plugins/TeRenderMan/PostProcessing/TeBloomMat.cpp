@@ -37,10 +37,11 @@ namespace te
         _params->SetTexture(GPT_PIXEL_PROGRAM, "EmissiveMap", emissive);
 
         RenderAPI& rapi = RenderAPI::Instance();
-        rapi.SetRenderTarget(destination);
 
         Bind();
+        rapi.SetRenderTarget(destination);
         gRendererUtility().DrawScreenQuad();
+        rapi.SetRenderTarget(nullptr);
     }
 
     BloomMat* BloomMat::GetVariation(UINT32 msaaCount)

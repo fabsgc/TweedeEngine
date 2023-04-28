@@ -13,7 +13,7 @@ namespace te
 
     void RenderDocManager::OnStartUp()
     {
-#if TE_CONFIG == TE_CONFIG_RELEASE 
+#if TE_CONFIG == TE_CONFIG_RELEASE
         return;
 #endif
 
@@ -38,7 +38,6 @@ namespace te
         _rdcAPI->SetCaptureOptionU32(eRENDERDOC_Option_CaptureCallstacks, 1);
         _rdcAPI->SetCaptureOptionU32(eRENDERDOC_Option_VerifyBufferAccess, 1);
         _rdcAPI->SetCaptureOptionU32(eRENDERDOC_Option_RefAllResources, 1);
-        _rdcAPI->SetCaptureOptionU32(eRENDERDOC_Option_CaptureAllCmdLists, 1);
 
         _rdcAPI->MaskOverlayBits(eRENDERDOC_Overlay_None, eRENDERDOC_Overlay_None);
     }

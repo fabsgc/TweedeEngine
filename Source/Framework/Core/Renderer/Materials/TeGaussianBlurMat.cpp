@@ -58,10 +58,11 @@ namespace te
         PopulateBuffer(_paramBuffer, horizontal, source, filterSize, maxSamples, (!horizontal) ? tint : Color::White);
 
         RenderAPI& rapi = RenderAPI::Instance();
-        rapi.SetRenderTarget(destination);
 
         Bind();
+        rapi.SetRenderTarget(destination);
         gRendererUtility().DrawScreenQuad();
+        rapi.SetRenderTarget(nullptr);
     }
 
     void GaussianBlurMat::PopulateBuffer(const SPtr<GpuParamBlockBuffer>& buffer, bool horizontal,

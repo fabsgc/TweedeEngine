@@ -2846,10 +2846,7 @@ namespace te
 
         PixelFormat interimFormat;
 
-        if (HasAlpha(src.GetFormat()))
-            interimFormat = IsFloatingPoint(src.GetFormat()) ? PF_RGBA32F : PF_BGRA8;
-        else
-            interimFormat = IsFloatingPoint(src.GetFormat()) ? PF_RGB32F : PF_BGR8;
+        interimFormat = IsFloatingPoint(src.GetFormat()) ? PF_RGBA32F : PF_BGRA8;
 
         PixelData interimData(src.GetWidth(), src.GetHeight(), 1, interimFormat);
         interimData.AllocateInternalBuffer();

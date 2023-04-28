@@ -21,7 +21,7 @@ namespace te
                 if (FAILED(hr))
                     TE_ASSERT_ERROR(false, "Unable to query D3D11InfoQueue");
 
-                SetExceptionsErrorLevel(D3D11ERR_ERROR);
+                SetExceptionsErrorLevel(D3D11ERR_WARNING);
             }
 #endif
 
@@ -145,7 +145,19 @@ namespace te
             filter.AllowList.pSeverityList = &severityList[0];
         }
 
+        D3D11_MESSAGE_ID knownMessages[] =
+        {
+            D3D11_MESSAGE_ID_SETPRIVATEDATA_CHANGINGPARAMS,
+            D3D11_MESSAGE_ID_DEVICE_DRAW_RENDERTARGETVIEW_NOT_SET
+        };
+
+        filter.DenyList.NumIDs = _countof(knownMessages);
+        filter.DenyList.pIDList = knownMessages;
+
         _infoQueue->AddStorageFilterEntries(&filter);
         _infoQueue->AddRetrievalFilterEntries(&filter);
+
+        _infoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_CORRUPTION, true);
+        _infoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_ERROR, true);
     }
 }

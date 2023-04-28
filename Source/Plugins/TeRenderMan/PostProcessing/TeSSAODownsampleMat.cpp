@@ -39,9 +39,10 @@ namespace te
         _params->SetParamBlockBuffer("PerCameraBuffer", perView);
 
         RenderAPI& rapi = RenderAPI::Instance();
-        rapi.SetRenderTarget(destination);
 
         Bind();
+        rapi.SetRenderTarget(destination);
         gRendererUtility().DrawScreenQuad();
+        rapi.SetRenderTarget(nullptr);
     }
 }

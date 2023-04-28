@@ -27,9 +27,10 @@ namespace te
         _params->SetTexture(GPT_PIXEL_PROGRAM, "SourceMap", source);
 
         RenderAPI& rapi = RenderAPI::Instance();
-        rapi.SetRenderTarget(destination);
 
         Bind();
+        rapi.SetRenderTarget(destination);
         gRendererUtility().DrawScreenQuad();
+        rapi.SetRenderTarget(nullptr);
     }
 }
