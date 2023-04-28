@@ -10,12 +10,12 @@ namespace te
 {
     WidgetRenderOptions::WidgetRenderOptions()
         : Widget(WidgetType::RenderOptions)
-        , _currentCamera(gEditor().GetViewportCamera().GetNewHandleFromExisting())
+        , _currentCamera(gEditor().GetViewportCamera())
     {
         _title = RENDER_OPTIONS_TITLE;
         _flags |= ImGuiWindowFlags_HorizontalScrollbar;
 
-        _cameraList.AddOption(_currentCamera.GetNewHandleFromExisting(), _currentCamera->GetName());
+        _cameraList.AddOption(_currentCamera, _currentCamera->GetName());
 
         _cameraCreated = Component::OnComponentCreated.Connect(std::bind(&WidgetRenderOptions::CameraCreated, this, _1));
         _cameraDestroyed = Component::OnComponentDestroyed.Connect(std::bind(&WidgetRenderOptions::CameraDestroyed, this, _1));

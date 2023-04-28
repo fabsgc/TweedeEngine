@@ -2844,7 +2844,12 @@ namespace te
             return outputMipBuffers;
         }
 
-        PixelFormat interimFormat = IsFloatingPoint(src.GetFormat()) ? PF_RGBA32F : PF_BGRA8;
+        PixelFormat interimFormat;
+
+        if (HasAlpha(src.GetFormat()))
+            interimFormat = IsFloatingPoint(src.GetFormat()) ? PF_RGBA32F : PF_BGRA8;
+        else
+            interimFormat = IsFloatingPoint(src.GetFormat()) ? PF_RGB32F : PF_BGR8;
 
         PixelData interimData(src.GetWidth(), src.GetHeight(), 1, interimFormat);
         interimData.AllocateInternalBuffer();
@@ -2867,8 +2872,23 @@ namespace te
         io.setMipmapFilter(ToNVTTFilter(options.Filter));
         io.setMipmapData(interimData.GetData(), src.GetWidth(), src.GetHeight());
 
-        if (interimFormat == PF_RGBA32F) io.setFormat(nvtt::InputFormat_RGBA_32F);
-        else io.setFormat(nvtt::InputFormat_BGRA_8UB);
+        interimData.FreeInternalBuffer();
+
+        switch (interimFormat)
+        {
+            case PF_RGBA32F:
+                io.setFormat(nvtt::InputFormat_RGBA_32F);
+                break;
+            case PF_BGRA8:
+                io.setFormat(nvtt::InputFormat_BGRA_8UB);
+                break;
+            case PF_RGB32F:
+                io.setFormat(nvtt::InputFormat_RGBA_32F);
+                break;
+            case PF_BGR8:
+                io.setFormat(nvtt::InputFormat_BGRA_8UB);
+                break;
+        }
 
         if (options.IsSRGB) io.setGamma(2.2f, 2.2f);
         else io.setGamma(1.0f, 1.0f);
@@ -2949,8 +2969,6 @@ namespace te
             TE_DEBUG("Mipmap generation failed. Internal error.");
             return outputMipBuffers;
         }
-
-        interimData.FreeInternalBuffer();
 
         for (UINT32 i = 0; i < (UINT32)rgbaMipBuffers.size(); i++)
         {

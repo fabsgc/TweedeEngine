@@ -31,8 +31,8 @@ namespace te
     enum class CameraDirtyFlag
     {
         // First few bits reserved by ActorDirtyFlag
-        RenderSettings = 1 << 4,
-        Redraw = 1 << 5,
+        RenderSettings = 1 << 5,
+        Redraw = 1 << 6,
         Viewport = 1 << 31
     };
 

@@ -157,7 +157,7 @@ namespace te
         MaterialsPreview& GetMaterialsPreview() { return _materialsPreview; }
 
         /** Set the current preview viewport camera */
-        void SetPreviewViewportCamera(HCamera& camera) { _previewViewportCamera = camera.GetNewHandleFromExisting(); }
+        void SetPreviewViewportCamera(HCamera& camera) { _previewViewportCamera = camera; }
 
         /** Manage ImGuizmo */
         void HandleImGuizmo();

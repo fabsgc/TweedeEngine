@@ -519,9 +519,6 @@ namespace te
          */
         bool EnableLighting = true;
 
-        /** Determines if shadows cast by lights should be rendered. Only relevant if lighting is turned on. */
-        bool EnableShadows = true;
-
         /** 
          * It's possible to generate at each frame a dynamic cubemap environment texture. For each material, if
          * UseDynamicEnvironmentMap is set, renderer will try to find a lighprobe for this object and material. 

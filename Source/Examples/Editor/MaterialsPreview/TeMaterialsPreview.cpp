@@ -149,10 +149,16 @@ namespace te
         _camera->SetFocalLength(35.0f);
         
         auto settings = _camera->GetRenderSettings();
+        settings->AmbientOcclusion.Enabled = false;
+        settings->AutoExposure.Enabled = false;
+        settings->DepthOfField.Enabled = false;
+        settings->AntialiasingAglorithm = AntiAliasingAlgorithm::None;
         settings->MotionBlur.Enabled = false;
+        settings->UseZPrepass = false;
         settings->Bloom.Enabled = true;
         settings->Bloom.Quality = BloomQuality::Ultra;
-        settings->AmbientOcclusion.Enabled = false;
+        settings->ShadowSettings.Enabled = false;
+        _camera->SetRenderSettings(settings); // renderer is not updated otherwise
 
         Transform tfrm = _camera->GetTransform();
         tfrm.Move(Vector3(3.0f, 1.75f, 2.5f));

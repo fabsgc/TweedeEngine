@@ -412,12 +412,9 @@ namespace te
         }
         ImGui::Separator();
 
-        // Lighting, Shadowing
+        // Lighting
         {
             if (ImGuiExt::RenderOptionBool(cameraSettings->EnableLighting, "##lighting_option", "Enable lighting"))
-                hasChanged = true;
-
-            if (ImGuiExt::RenderOptionBool(cameraSettings->EnableShadows, "##shadows_option", "Enable shadows"))
                 hasChanged = true;
         }
         ImGui::Separator();

@@ -20,7 +20,7 @@ namespace te
     WidgetViewport::WidgetViewport()
         : Widget(WidgetType::Viewport)
         , _selections(gEditor().GetSelectionData())
-        , _viewportCamera(gEditor().GetPreviewViewportCamera().GetNewHandleFromExisting())
+        , _viewportCamera(gEditor().GetPreviewViewportCamera())
         , _viewportCameraUI(gEditor().GetViewportCameraUI())
         , _lastRenderDataUpatedTime(0.0f)
         , _needResetViewport(true)

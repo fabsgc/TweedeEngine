@@ -261,6 +261,9 @@ namespace te
 
     void Selection::ReleaseRenderTexture(SPtr<RendererUtility::RenderTextureData>& renderTexture)
     {
+        if (!renderTexture)
+            return;
+
         if (renderTexture->ColorTex.IsLoaded())
             renderTexture->ColorTex.Release();
         if (renderTexture->DepthStencilTex.IsLoaded())

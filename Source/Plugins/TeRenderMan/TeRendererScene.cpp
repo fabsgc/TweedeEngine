@@ -162,7 +162,6 @@ namespace te
 
             view->SetView(viewDesc);
             view->NotifyNeedsRedraw();
-            view->SetRenderSettings(camera->GetRenderSettings());
 
             UpdateCameraRenderTargets(camera);
         }

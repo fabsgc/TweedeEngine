@@ -4,6 +4,7 @@
 #include "Scene/TeComponent.h"
 #include "Input/TeVirtualInput.h"
 #include "Math/TeVector3.h"
+#include "Components/TeCCamera.h"
 
 namespace te
 {
@@ -64,7 +65,11 @@ namespace te
         CCameraUI(const HSceneObject& parent);
 
         void InitDistanceToTarget();
+
         void InitLocalRotation();
+
+        /** @copydoc Component::OnInitialized */
+        void OnInitialized() override;
 
     protected:
         bool _cameraInitialized; // On first update, we get CCamera component from parent sceneObject

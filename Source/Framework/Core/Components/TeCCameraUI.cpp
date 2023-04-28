@@ -82,13 +82,11 @@ namespace te
         _localRotation.x = -(180.0f - 90.0f - oppositeAngle);
     }
 
-    void CCameraUI::Update()
+    void CCameraUI::OnInitialized()
     {
-        _needsRedraw = false;
-
         if (!_cameraInitialized)
         {
-            if(_parent->HasComponent(TID_CCamera))
+            if (_parent->HasComponent(TID_CCamera))
                 _camera = static_object_cast<CCamera>(_parent->GetComponent(TID_CCamera)->GetHandle());
 
             if (!_camera)
@@ -96,6 +94,11 @@ namespace te
 
             _cameraInitialized = true;
         }
+    }
+
+    void CCameraUI::Update()
+    {
+        _needsRedraw = false;
 
         bool isOrtographic = _camera->GetProjectionType() == ProjectionType::PT_ORTHOGRAPHIC;
         bool camRotating = gVirtualInput().IsButtonHeld(_rotateBtn);

@@ -388,6 +388,7 @@ namespace te
 
         SPtr<RenderSettings> settings = _uiCamera->GetRenderSettings();
         settings->OverlayOnly = true;
+        _uiCamera->SetRenderSettings(settings); // renderer is not updated otherwise
 
         gSceneManager().SetMainRenderTarget(gCoreApplication().GetWindow());
     }
@@ -410,14 +411,16 @@ namespace te
         _viewportCamera->SetName("Viewport camera");
 
         _viewportCameraUI = _viewportCameraSO->AddComponent<CCameraUI>();
+        _viewportCameraUI->Initialize();
         _viewportCameraUI->SetTarget(Vector3(0.0f, 0.0f, 0.0f));
         _viewportCameraUI->SetName("Viewport camera UI");
 
         auto settings = _viewportCamera->GetRenderSettings();
         settings->MotionBlur.Enabled = false;
-        settings->MotionBlur.Domain = MotionBlurDomain::CameraAndObject;
+        settings->ScreenSpaceReflections.Enabled = false;
+        _viewportCamera->SetRenderSettings(settings); // renderer is not updated otherwise
 
-        _previewViewportCamera = _viewportCamera.GetNewHandleFromExisting();
+        _previewViewportCamera = _viewportCamera;
     }
 
     void Editor::InitializeGui()
