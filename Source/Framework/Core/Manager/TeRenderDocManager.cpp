@@ -13,10 +13,7 @@ namespace te
 
     void RenderDocManager::OnStartUp()
     {
-#if TE_CONFIG == TE_CONFIG_RELEASE
-        return;
-#endif
-
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         _rdcLib = gDynLibManager().Load(RENDERDOC_PATH);
 
         if (_rdcLib != nullptr)
@@ -30,7 +27,7 @@ namespace te
 #endif
         }
 
-        if(!_rdcAPI)
+        if (!_rdcAPI)
             TE_DEBUG("RenderDoc API has not been initialised");
 
         _rdcAPI->SetCaptureOptionU32(eRENDERDOC_Option_DebugOutputMute, 0);
@@ -40,18 +37,20 @@ namespace te
         _rdcAPI->SetCaptureOptionU32(eRENDERDOC_Option_RefAllResources, 1);
 
         _rdcAPI->MaskOverlayBits(eRENDERDOC_Overlay_None, eRENDERDOC_Overlay_None);
+#else
+        return;
+#endif
     }
 
     void RenderDocManager::OnShutDown()
     {
         if (_rdcLib != nullptr)
-        {
             gDynLibManager().Unload(_rdcLib);
-        }
     }
 
     void RenderDocManager::FrameCapture()
     {
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         if (_rdcAPI == nullptr)
             return;
 
@@ -71,5 +70,6 @@ namespace te
         {
             TE_DEBUG("Failed to launch RenderDoc");
         }
+#endif
     }
 }

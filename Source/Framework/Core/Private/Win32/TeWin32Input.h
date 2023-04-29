@@ -2,12 +2,10 @@
 
 #include "TeCorePrerequisites.h"
 
-#define WIN32_LEAN_AND_MEAN
 #ifndef DIRECTINPUT_VERSION
-#define DIRECTINPUT_VERSION 0x0800
+#   define DIRECTINPUT_VERSION 0x0800
 #endif
 
-#include <windows.h>
 #include <dinput.h>
 #include <Xinput.h>
 

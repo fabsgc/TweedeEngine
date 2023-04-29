@@ -1,6 +1,6 @@
 #pragma once
+
 #include "Prerequisites/TePrerequisitesUtility.h"
-#include <windows.h>
 
 namespace te
 {

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Prerequisites/TePlatformDefines.h"
+
 #ifdef __BORLANDC__
 #   define __STD_ALGORITHM
 #endif
@@ -21,21 +23,15 @@
 
 // STL algorithms & functions
 
-
 extern "C" {
 #   include <sys/types.h>
 #   include <sys/stat.h>
 }
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
-#  undef min
-#  undef max
-#   if !defined(NOMINMAX) && defined(_MSC_VER)
-#       define NOMINMAX // required to stop windows.h messing up std::min
+#   if defined( __MINGW32__ )
+#       include <unistd.h>
 #   endif
-#  if defined( __MINGW32__ )
-#    include <unistd.h>
-#  endif
 #endif
 
 #if TE_PLATFORM == TE_PLATFORM_LINUX
@@ -48,6 +44,14 @@ extern "C" {
 #endif
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
+#   ifndef WIN32_LEAN_AND_MEAN
+#       define WIN32_LEAN_AND_MEAN
+#   endif
+#   if !defined(NOMINMAX) && defined(_MSC_VER)
+#       undef min
+#       undef max
+#       define NOMINMAX // Required to stop Windows.h messing up std::min
+#   endif
 #   include <Windows.h>
 #   include <fcntl.h>
 #   include <io.h>
@@ -127,7 +131,8 @@ namespace te
     public:
         static void* Allocate(size_t bytes)
         {
-            return ::malloc(bytes);
+            void* pointer = ::malloc(bytes);
+            return pointer;
         }
 
         static void Deallocate(void* ptr)
@@ -381,7 +386,7 @@ namespace te
             te_free(p);
         }
 
-        static constexpr size_t max_size() { return std::numeric_limits<size_type>::max() / sizeof(T); }
+        static constexpr size_t max_size() { return (std::numeric_limits<size_type>::max)() / sizeof(T); }
         static constexpr void destroy(pointer p) { p->~T(); }
 
         template<class... Args>

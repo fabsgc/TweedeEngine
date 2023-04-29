@@ -1,7 +1,6 @@
 #include "Platform/TeFolderMonitor.h"
 #include "Utility/TeFileSystem.h"
 
-#include <windows.h>
 #include <filesystem>
 #include "String/TeUnicode.h"
 

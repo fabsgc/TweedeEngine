@@ -51,10 +51,14 @@ namespace te
         , _isFrameRenderingFinished(true)
         , _runMainLoop(false)
         , _pause(false)
-    { }
+    {
+        // StartCatchMemoryLeaks();
+    }
 
     CoreApplication::~CoreApplication()
-    { }
+    {
+        //EndCatchMemoryLeaks();
+    }
 
     void CoreApplication::OnStartUp()
     {

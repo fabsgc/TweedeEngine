@@ -67,6 +67,21 @@
 #       define WIN32_LEAN_AND_MEAN
 #       define _WIN32_WINNT _WIN32_WINNT_WIN10
 #   endif
+
+#   ifndef WIN32_LEAN_AND_MEAN
+#       define WIN32_LEAN_AND_MEAN
+#   endif
+#   if !defined(NOMINMAX) && defined(_MSC_VER)
+#       undef min
+#       undef max
+#       define NOMINMAX // Required to stop Windows.h messing up std::min
+#   endif
+
+#   if TE_DEBUG_MODE == TE_DEBUG_ENABLED
+#       define _CRTDBG_MAP_ALLOC
+#       include <stdlib.h>
+#       include <crtdbg.h>
+#   endif
 #endif
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
@@ -94,3 +109,26 @@
 #include "Utility/TeUtility.h"
 
 #include "Utility/TeUUID.h"
+
+inline void StartCatchMemoryLeaks()
+{
+#if TE_PLATFORM == TE_PLATFORM_WIN32 && TE_DEBUG_MODE == TE_DEBUG_ENABLED && TE_CONFIG == TE_CONFIG_DEBUG
+    HANDLE hLogFile = CreateFile("MemoryLeaks.txt", GENERIC_WRITE, FILE_SHARE_WRITE,
+        NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+    _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE);
+    _CrtSetReportFile(_CRT_WARN, hLogFile);
+    _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_FILE);
+    _CrtSetReportFile(_CRT_ERROR, hLogFile);
+    _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
+    _CrtSetReportFile(_CRT_ASSERT, hLogFile);
+#endif
+}
+
+inline void EndCatchMemoryLeaks()
+{
+#if TE_PLATFORM == TE_PLATFORM_WIN32 && TE_DEBUG_MODE == TE_DEBUG_ENABLED && TE_CONFIG == TE_CONFIG_DEBUG
+    _CrtDumpMemoryLeaks();
+#endif
+}

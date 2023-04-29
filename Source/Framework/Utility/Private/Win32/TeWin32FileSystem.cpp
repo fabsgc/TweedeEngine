@@ -2,7 +2,6 @@
 #include "String/TeUnicode.h"
 
 #include <functional>
-#include <Windows.h>
 
 namespace te
 {

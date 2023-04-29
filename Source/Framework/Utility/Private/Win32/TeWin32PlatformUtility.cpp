@@ -2,7 +2,7 @@
 #include "Private/Win32/TeWin32PlatformUtility.h"
 #include "Utility/TePlatformUtility.h"
 #include "Image/TeColor.h"
-#include <windows.h>
+
 #include <iphlpapi.h>
 #include <intrin.h>
 

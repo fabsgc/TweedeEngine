@@ -20,14 +20,10 @@
 #include <algorithm>
 #include <cmath>
 #if TE_PLATFORM == TE_PLATFORM_WIN32
-#   ifndef NOMINMAX
-        #define NOMINMAX
-#   endif
-
 #   pragma warning(push, 0)
 #   include "../ImGuiExt/dirent.h"
 #   pragma warning(pop)
-#   include <windows.h>
+#   include <Windows.h>
 #else
 #   include <dirent.h>
 #endif

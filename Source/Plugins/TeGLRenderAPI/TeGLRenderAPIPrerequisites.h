@@ -18,13 +18,7 @@
 #define TE_OPENGLES_3_2 0
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
-#if !defined( __MINGW32__ )
-#   define WIN32_LEAN_AND_MEAN
-#   ifndef NOMINMAX
-#       define NOMINMAX // required to stop windows.h messing up std::min
-#   endif
-#endif
-#   include <windows.h>
+#   include <Windows.h>
 #   include <wingdi.h>
 #   include <GL/glew.h>
 #   include <GL/wglew.h>

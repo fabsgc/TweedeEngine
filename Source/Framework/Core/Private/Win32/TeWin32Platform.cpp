@@ -1,4 +1,5 @@
 #include "Private/Win32/TeWin32Platform.h"
+
 #include "RenderAPI/TeRenderWindow.h"
 #include "TeCoreApplication.h"
 #include "Math/TeVector2I.h"
@@ -9,9 +10,14 @@
 #include "Utility/TeTime.h"
 #include "Image/TePixelData.h"
 #include "Image/TeColor.h"
-#include <shellapi.h>
 #include "Utility/TePlatformUtility.h"
 #include "Private/Win32/TeWin32PlatformUtility.h"
+
+#include <shellapi.h>
+#include <windowsx.h>
+
+#define WM_TE_SETCAPTURE WM_USER + 101
+#define WM_TE_RELEASECAPTURE WM_USER + 102
 
 #ifndef WM_DPICHANGED
 #   define WM_DPICHANGED 0x02E0 // From Windows SDK 8.1+ headers

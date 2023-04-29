@@ -29,13 +29,13 @@ target_compile_definitions (Template PRIVATE
 
 if (WIN32)
     if (${CMAKE_SYSTEM_VERSION} EQUAL 6.1) # Windows 7
-        target_compile_definitions (TeShaderImporter PRIVATE -DTE_WIN_SDK_7)
+        target_compile_definitions (Template PRIVATE -DTE_WIN_SDK_7)
     elseif (${CMAKE_SYSTEM_VERSION} EQUAL 6.2) # Windows 8
-        target_compile_definitions (TeShaderImporter PRIVATE -DTE_WIN_SDK_8)
+        target_compile_definitions (Template PRIVATE -DTE_WIN_SDK_8)
     elseif (${CMAKE_SYSTEM_VERSION} EQUAL 6.3) # Windows 8.1
-        target_compile_definitions (TeOpenAudio PRIVATE -DTE_WIN_SDK_8_1)
+        target_compile_definitions (Template PRIVATE -DTE_WIN_SDK_8_1)
     elseif (${CMAKE_SYSTEM_VERSION} EQUAL 10.0) # Windows 10
-        target_compile_definitions (TeShaderImporter PRIVATE -DTE_WIN_SDK_10)
+        target_compile_definitions (Template PRIVATE -DTE_WIN_SDK_10)
     endif ()
 endif ()
 

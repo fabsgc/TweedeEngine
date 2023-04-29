@@ -121,7 +121,7 @@
 #if TE_PLATFORM == TE_PLATFORM_WIN32
 // Win32 compilers use _DEBUG for specifying debug builds.
 // for MinGW, we set DEBUG
-#   if defined(_DEBUG) || defined(DEBUG)
+#   if (defined(_DEBUG) || defined(DEBUG))
 #       define TE_DEBUG_MODE TE_DEBUG_ENABLED
 #   else
 #       define TE_DEBUG_MODE TE_DEBUG_DISABLED

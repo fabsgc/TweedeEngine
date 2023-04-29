@@ -68,6 +68,7 @@ namespace te
 
         String res;
 
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         if (_infoQueue != nullptr)
         {
             UINT64 numStoredMessages = _infoQueue->GetNumStoredMessagesAllowedByRetrievalFilter();
@@ -77,11 +78,11 @@ namespace te
                 SIZE_T messageLength = 0;
                 _infoQueue->GetMessage(i, nullptr, &messageLength);
                 // Allocate space and get the message
-                D3D11_MESSAGE* pMessage = (D3D11_MESSAGE*)malloc(messageLength);
+                D3D11_MESSAGE* pMessage = (D3D11_MESSAGE*)te_allocate(static_cast<UINT32>(messageLength));
                 _infoQueue->GetMessage(i, pMessage, &messageLength);
                 res = res + pMessage->pDescription + "\n";
                 res = res + ToString(pMessage->ID) + "\n";
-                free(pMessage);
+                te_deallocate(pMessage);
             }
         }
 
@@ -89,31 +90,37 @@ namespace te
         {
             ClearErrors();
         }
+#endif
 
         return res;
     }
 
     bool D3D11Device::HasError() const
     {
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         if (_infoQueue != nullptr)
         {
             const UINT64 numStoredMessages = _infoQueue->GetNumStoredMessagesAllowedByRetrievalFilter();
             return numStoredMessages > 0;
         }
+#endif
 
         return false;
     }
 
     void D3D11Device::ClearErrors()
     {
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         if (_D3D11Device != nullptr && _infoQueue != nullptr)
         {
             _infoQueue->ClearStoredMessages();
         }
+#endif
     }
 
     void D3D11Device::SetExceptionsErrorLevel(const TE_D3D11_ERROR_LEVEL exceptionsErrorLevel)
     {
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         if(_infoQueue == nullptr)
             return;
 
@@ -159,5 +166,6 @@ namespace te
 
         _infoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_CORRUPTION, true);
         _infoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_ERROR, true);
+#endif
     }
 }

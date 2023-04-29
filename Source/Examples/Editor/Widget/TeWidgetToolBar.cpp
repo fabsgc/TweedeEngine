@@ -139,7 +139,7 @@ namespace te
         if (ImGuiExt::RenderOptionCombo<ImGuizmo::MODE>((ImGuizmo::MODE*)(&guizmoMode), "##guizmo_mode_option", "", guizmoModeOptions, 150))
             gEditor().SetImGuizmoMode(guizmoMode);
 
-#if TE_CONFIG != TE_CONFIG_RELEASE
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         // RenderDoc
         ShowButton(ICON_FA_BUG, ICON_FA_BUG,
             [this]() { return false; },

@@ -8,15 +8,15 @@ namespace te
     struct GpuParamDataDesc
     {
         String Name;
-        UINT32 ElementSize; /**< In multiples of 4 bytes. */
-        UINT32 ArraySize;
-        UINT32 ArrayElementStride; /**< In multiples of 4 bytes. */
-        GpuParamDataType Type;
+        UINT32 ElementSize = 0; /**< In multiples of 4 bytes. */
+        UINT32 ArraySize = 0;
+        UINT32 ArrayElementStride = 0; /**< In multiples of 4 bytes. */
+        GpuParamDataType Type = GpuParamDataType::GPDT_FLOAT1;
 
-        UINT32 ParamBlockSlot;
-        UINT32 ParamBlockSet;
-        UINT32 GpuMemOffset; /**< In multiples of 4 bytes, or index for parameters not in a buffer. */
-        UINT32 CpuMemOffset; /**< In multiples of 4 bytes. */
+        UINT32 ParamBlockSlot = 0;
+        UINT32 ParamBlockSet = 0;
+        UINT32 GpuMemOffset = 0; /**< In multiples of 4 bytes, or index for parameters not in a buffer. */
+        UINT32 CpuMemOffset = 0; /**< In multiples of 4 bytes. */
     };
 
     /** Describes a single GPU program object (for example texture, sampler state) parameter. */

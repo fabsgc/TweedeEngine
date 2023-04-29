@@ -322,6 +322,7 @@ namespace te
         static PixelFormat BestFormatFromFile(const String& path);
     
     private:
-        static RecursiveMutex _mutex;
+        static RecursiveMutex _recursiveMutex;
+        static Mutex _mutex;
     };
 }

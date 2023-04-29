@@ -1,7 +1,6 @@
 #include "Scripting/TeScriptManager.h"
 #include "Utility/TeFileSystem.h"
 
-#include <windows.h>
 #include <tchar.h>
 
 namespace te
