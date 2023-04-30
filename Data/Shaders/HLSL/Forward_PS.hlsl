@@ -255,23 +255,30 @@ PS_OUTPUT main( VS_OUTPUT IN )
         pixel.AnisotropyDirection = anisotropyDirection;
         pixel.AnisotropicT = normalize(mul(TBN, anisotropyDirection));
         pixel.AnisotropicB = normalize(cross(N_Raw, pixel.AnisotropicT));
-#endif
+#endif // USE_ANISOTROPY
 
         // Energy compensation for multiple scattering in a microfacet model
         pixel.EnergyCompensation = 1.0 + pixel.F0 * (1.0 / pixel.DFG.y - 1.0);
 
         // ###################### DO LIGHTING
-        lit = DoLighting(V, P, N, pixel, uv0, castLight, occlusion);
+#if DO_INDIRECT_LIGHTING == 1
+        lit = DoIndirectLighting(V, P, N, NoV, pixel, occlusion);
+#endif // DO_INDIRECT_LIGHTING
 
-        lit.Diffuse *= sceneLightColor + emissive;
+        lit.Diffuse = (lit.Diffuse * sceneLightColor) + emissive;
         lit.Specular = lit.Specular;
 
         OUT.Scene.rgb = lit.Diffuse + lit.Specular;
-        #if TRANSPARENT == 1
+
+#if DO_DIRECT_LIGHTING == 1
+        OUT.Scene.rgb += DoDirectLighting(V, P, N, NoV, pixel, castLight, occlusion);
+#endif // DO_DIRECT_LIGHTING
+
+#if TRANSPARENT == 1
                 OUT.Scene.a = 1.0 - transmission;
-        #else // TRANSPARENT
+#else // TRANSPARENT
                 OUT.Scene.a = 1.0;
-        #endif // TRANSPARENT
+#endif // TRANSPARENT
 
         OUT.Normal = ComputeNormalBuffer(N);
         OUT.Emissive = ComputeEmissiveBuffer(OUT.Scene, float4(emissive, 1.0));

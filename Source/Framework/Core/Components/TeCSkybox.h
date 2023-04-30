@@ -47,6 +47,12 @@ namespace te
         /** @copydoc Skybox::GetBrightness */
         float GetBrightness() const { return _internal->GetBrightness(); }
 
+        /** @copydoc Skybox::SetIBLIntensity */
+        void SetIBLIntensity(float IBLIntensity) { _internal->SetIBLIntensity(IBLIntensity); }
+
+        /** @copydoc Skybox::GetIBLIntensity */
+        float GetIBLIntensity() const { return _internal->GetIBLIntensity(); }
+
         /**	Returns the skybox that this component wraps. */
         SPtr<Skybox> GetInternal() const { return _internal; }
 

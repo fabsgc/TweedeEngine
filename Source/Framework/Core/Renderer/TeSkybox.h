@@ -17,6 +17,9 @@ namespace te
     class TE_CORE_EXPORT Skybox : public CoreObject, public SceneActor, public Serializable
     {
     public:
+        static constexpr float DEFAULT_IBL_INTENSITY = 30000.f;
+
+    public:
         virtual ~Skybox();
 
         /**
@@ -25,8 +28,16 @@ namespace te
          */
         void SetBrightness(float brightness) { _brightness = brightness; _markCoreDirty(); }
 
-        /** @copydoc setBrightness */
+        /** @copydoc SetBrightness */
         float GetBrightness() const { return _brightness; }
+
+        /**
+         * Represents the amount of LUX brang by the environment. By default, equal to 30 000 Lux.
+         */
+        void SetIBLIntensity(float IBLIntensity) { _IBLIntensity = IBLIntensity; _markCoreDirty(); }
+
+        /** @copydoc SetIBLIntensity */
+        float GetIBLIntensity() const { return _IBLIntensity; }
 
         /** @copydoc Skybox::GetTexture */
         void SetTexture(const HTexture& texture);
@@ -87,7 +98,11 @@ namespace te
         void Initialize() override;
 
     protected:
-        float _brightness = 1.0f; /**< Multiplier to apply to evaluated skybox values before using them. */
+        /**< Multiplier to apply to evaluated skybox values before using them. */
+        float _brightness = 1.0f;
+
+        /**< Represents the amount of LUX brang by the environment. By default, equal to 30 000 Lux. */
+        float _IBLIntensity = DEFAULT_IBL_INTENSITY;
 
         /** Texture used to display in 3D scene */
         SPtr<Texture> _texture;

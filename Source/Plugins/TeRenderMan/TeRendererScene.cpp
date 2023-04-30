@@ -705,6 +705,7 @@ namespace te
             prefilteredRadiance = _info.SkyboxElem->GetSpecularIrradiance();
 
             gPerFrameParamDef.gSkyboxBrightness.Set(_info.PerFrameParamBuffer, _info.SkyboxElem->GetBrightness());
+            gPerFrameParamDef.gSkyboxIBLIntensity.Set(_info.PerFrameParamBuffer, _info.SkyboxElem->GetIBLIntensity());
             gPerFrameParamDef.gUseSkyboxMap.Set(_info.PerFrameParamBuffer, _info.SkyboxElem->GetTexture() ? 1 : 0);
             gPerFrameParamDef.gUseSkyboxDiffuseIrrMap.Set(_info.PerFrameParamBuffer, _info.SkyboxElem->GetDiffuseIrradiance() ? 1 : 0);
             gPerFrameParamDef.gUseSkyboxPrefilteredRadianceMap.Set(_info.PerFrameParamBuffer, prefilteredRadiance ? 1 : 0);
@@ -717,6 +718,7 @@ namespace te
         else
         {
             gPerFrameParamDef.gSkyboxBrightness.Set(_info.PerFrameParamBuffer, 1.0f);
+            gPerFrameParamDef.gSkyboxIBLIntensity.Set(_info.PerFrameParamBuffer, Skybox::DEFAULT_IBL_INTENSITY);
             gPerFrameParamDef.gUseSkyboxMap.Set(_info.PerFrameParamBuffer, 0);
             gPerFrameParamDef.gUseSkyboxDiffuseIrrMap.Set(_info.PerFrameParamBuffer, 0);
             gPerFrameParamDef.gUseSkyboxPrefilteredRadianceMap.Set(_info.PerFrameParamBuffer, 0);

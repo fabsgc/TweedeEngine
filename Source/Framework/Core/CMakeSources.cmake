@@ -81,6 +81,7 @@ set (TE_CORE_INC_RENDERER
     "Core/Renderer/TeIBLUtility.h"
     "Core/Renderer/TeTextureDownsampleMat.h"
     "Core/Renderer/TeTextureCubeDownsampleMat.h"
+    "Core/Renderer/TeExposure.h"
 )
 set (TE_CORE_SRC_RENDERER
     "Core/Renderer/TeRenderer.cpp"
@@ -100,6 +101,7 @@ set (TE_CORE_SRC_RENDERER
     "Core/Renderer/TeIBLUtility.cpp"
     "Core/Renderer/TeTextureDownsampleMat.cpp"
     "Core/Renderer/TeTextureCubeDownsampleMat.cpp"
+    "Core/Renderer/TeExposure.cpp"
 )
 
 set (TE_CORE_INC_RENDERER_MATERIALS

@@ -2268,7 +2268,7 @@ namespace te
 
         // intensity
         {
-            if (ImGuiExt::RenderOptionFloat(intensity, "##light_intensity_option", "Intensity", 0.0f, 16.0f, width))
+            if (ImGuiExt::RenderOptionFloat(intensity, "##light_intensity_option", "Intensity", 0.0f, 120000.0f, width))
             {
                 hasChanged = true;
                 light->SetIntensity(intensity);
@@ -2718,6 +2718,7 @@ namespace te
     {
         bool hasChanged = false;
         float brigtness = skybox->GetBrightness();
+        float IBLIntensity = skybox->GetIBLIntensity();
         const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
 
         ImGuiExt::ComboOptions<UUID> texturesOptions;
@@ -2763,9 +2764,15 @@ namespace te
         }
         ImGui::Separator();
 
-        if (ImGuiExt::RenderOptionFloat(brigtness, "##skybox_option", "Brightness", 0.0f, 3.0f, width))
+        if (ImGuiExt::RenderOptionFloat(brigtness, "##skybox_option_brightness", "Brightness", 0.0f, 3.0f, width))
         {
             skybox->SetBrightness(brigtness);
+            hasChanged = true;
+        }
+
+        if (ImGuiExt::RenderOptionFloat(IBLIntensity, "##skybox_option_IBL_intensity", "IBL Intensity", 0.0f, 30000.0f, width))
+        {
+            skybox->SetIBLIntensity(IBLIntensity);
             hasChanged = true;
         }
 

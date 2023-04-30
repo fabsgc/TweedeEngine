@@ -170,15 +170,18 @@ namespace te
     {
         _skybox = Skybox::Create();
         _skybox->SetTexture(_radiance);
+        _skybox->SetIBLIntensity(5000.f);
     }
 
     void MaterialsPreview::InitializeLight()
     {
-        _light = Light::Create(LightType::Radial);
+        _light = Light::Create(LightType::Directional);
         
         Transform transform = _light->GetTransform();
         transform.Move(Vector3(0.0f, 3.0f, 1.75f));
+        transform.Rotate(Vector3::UNIT_X, -Radian(Math::PI / 4.f));
         _light->SetTransform(transform);
+        _light->SetIntensity(5000.f);
     }
 
     void MaterialsPreview::InitializeRenderer()

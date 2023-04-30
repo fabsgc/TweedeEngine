@@ -83,6 +83,7 @@ namespace te
             if (skybox)
             {
                 _internal->_brightness = skybox->_brightness;
+                _internal->_IBLIntensity = skybox->_IBLIntensity;
                 _internal->_texture = skybox->_texture;
                 _internal->_irradiance = skybox->_irradiance;
                 _internal->_filteredRadiance = skybox->_filteredRadiance;

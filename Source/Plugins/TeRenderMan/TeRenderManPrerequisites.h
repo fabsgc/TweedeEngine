@@ -32,7 +32,8 @@ namespace te
         Vector4 ClipToUVScaleOffset;
         Vector4 UVToClipScaleOffset;
         UINT32  UseSRGB;
-        Vector3 Padding; // # PADDING
+        float   Exposure;
+        Vector2 Padding; // # PADDING
     };
 
     struct PerInstanceData
@@ -147,7 +148,7 @@ namespace te
         TE_PARAM_BLOCK_ENTRY(float, gContrast)
         TE_PARAM_BLOCK_ENTRY(float, gBrightness)
         TE_PARAM_BLOCK_ENTRY(float, gSkyboxBrightness)
-        TE_PARAM_BLOCK_ENTRY(float, gPadding3) // # PADDING
+        TE_PARAM_BLOCK_ENTRY(float, gSkyboxIBLIntensity)
     TE_PARAM_BLOCK_END
 
     extern PerFrameParamDef gPerFrameParamDef;

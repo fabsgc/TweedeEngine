@@ -30,7 +30,10 @@ struct CameraData
     float4 UVToClipScaleOffset;
 
     uint   UseSRGB;
-    float3 Padding;
+
+    float  Exposure; // Exposure computed from camera Aperture, ShutterSpeed and ISO
+
+    float2 Padding;
 };
 
 /** Converts Z value in range [0,1] into Z value in view space. */

@@ -578,6 +578,8 @@ namespace te
         cameraData.ClipToUVScaleOffset = NDCToUV;
         cameraData.UVToClipScaleOffset = UVToNDC;
 
+        cameraData.Exposure = _camera->GetExposure();
+
         cameraData.UseSRGB = this->GetRenderSettings().EnableHDR ? 1 : 0;
 
         gPerCameraParamDef.gCamera.Set(_paramBuffer, cameraData, 0);

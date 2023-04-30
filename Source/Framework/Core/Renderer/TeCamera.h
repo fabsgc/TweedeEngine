@@ -117,6 +117,12 @@ namespace te
         /** @copydoc SetSensitivity */
         virtual UINT32 GetSensitivity() const { return _sensitivity; }
 
+        /** Get Ev100 */
+        virtual float GetEv100() const { return _ev100; }
+
+        /** Get Exposure */
+        virtual float GetExposure() const { return _exposure; }
+
         /**
          * Determines the distance from the frustum to the near clipping plane. Anything closer than the near clipping plane will
          * not be rendered. Decreasing this value decreases depth buffer precision.
@@ -492,9 +498,11 @@ namespace te
         Radian _horzFOV = Degree(90.0f); /**< Horizontal field of view represents how wide is the camera angle. */
         float _focalLength = 24.0f; /**< Focal length representing how wide is the camera angle. Expressed in mm */
         float _aspect = 1.5f; /**< Width/height viewport ratio. */
-        float _aperture = 2.8f; /**< Expressed in f-stop */
-        float _shutterSpeed = 1 / 60.0f; /**< Expressed in seconds */
+        float _aperture = 8.f; /**< Expressed in f-stop */
+        float _shutterSpeed = 1 / 60.f; /**< Expressed in seconds */
         UINT32 _sensitivity = 100; /**< Expressed using ISO */
+        float _ev100 = 1.f;
+        float _exposure = 1.f;
 
         float _farDist = 500.0f; /**< Clip any objects further than this. Larger value decreases depth precision at smaller depths. */
         float _nearDist = 0.1f; /**< Clip any objects close than this. Smaller value decreases depth precision at larger depths. */

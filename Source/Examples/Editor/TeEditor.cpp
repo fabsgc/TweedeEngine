@@ -1330,8 +1330,8 @@ namespace te
         {
             MaterialProperties monkeyMatprop;
             monkeyMatprop.BaseColor = Color(1.0f, 0.54f, 0.05f, 1.0f);
-            monkeyMatprop.Metallic = 1.0f;
-            monkeyMatprop.Roughness = 0.1f;
+            monkeyMatprop.Metallic = 0.0f;
+            monkeyMatprop.Roughness = 0.2f;
             //monkeyMatprop.UseBaseColorMap = true;
             //monkeyMatprop.UseNormalMap = true;
             //monkeyMatprop.UseParallaxMap = true;
@@ -1354,6 +1354,8 @@ namespace te
             _sceneSkyboxSO->SetParent(_sceneSO);
             _skybox = _sceneSkyboxSO->AddComponent<CSkybox>();
             _skybox->SetTexture(_skyboxTexture);
+            _skybox->SetBrightness(1.f);
+            _skybox->SetIBLIntensity(5000.f);
             _skybox->Initialize();
         }
         // ######################################################
@@ -1364,7 +1366,11 @@ namespace te
         _sceneLightSO->SetParent(_sceneSO);
         _light = _sceneLightSO->AddComponent<CLight>(LightType::Directional);
         _light->Initialize();
-        _sceneLightSO->Rotate(Vector3(1.0f, 0.0f, 0.0f), -Radian(Math::HALF_PI / 2.0f));
+        _light->SetIntensity(5000.f);
+
+        Quaternion rot;
+        rot.FromEulerAngles(Radian(Degree(-21.69f)), Radian(Degree(36.4f)), Radian(Degree(15.06f)));
+        _sceneLightSO->SetRotation(rot);
         _sceneLightSO->Move(Vector3(0.0f, 4.0f, 4.0f));
         // ######################################################
 

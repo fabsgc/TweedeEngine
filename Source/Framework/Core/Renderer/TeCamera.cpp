@@ -2,6 +2,7 @@
 
 #include "Renderer/TeViewport.h"
 #include "Renderer/TeRenderer.h"
+#include "Renderer/TeExposure.h"
 #include "RenderAPI/TeRenderAPI.h"
 #include "Manager/TeRendererManager.h"
 #include "Scene/TeSceneManager.h"
@@ -18,6 +19,9 @@ namespace te
         InvalidateFrustum();
         _viewport = Viewport::Create(target, left, top, width, height);
         _renderSettings = te_shared_ptr_new<RenderSettings>();
+
+        _ev100 = Exposure::GetEv100(*this);
+        _exposure = Exposure::GetExposure(*this);
 
         FocalLengthToFOV(_focalLength);
     }
@@ -130,18 +134,24 @@ namespace te
     void Camera::SetAperture(float aperture)
     {
         _aperture = aperture;
+        _ev100 = Exposure::GetEv100(*this);
+        _exposure = Exposure::GetExposure(*this);
         _markCoreDirty();
     }
 
     void Camera::SetShutterSpeed(float shutterSpeed)
     {
         _shutterSpeed = shutterSpeed;
+        _ev100 = Exposure::GetEv100(*this);
+        _exposure = Exposure::GetExposure(*this);
         _markCoreDirty();
     }
 
     void Camera::SetSensitivity(UINT32 sensitivity)
     {
         _sensitivity = sensitivity;
+        _ev100 = Exposure::GetEv100(*this);
+        _exposure = Exposure::GetExposure(*this);
         _markCoreDirty();
     }
 

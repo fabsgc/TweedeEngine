@@ -144,8 +144,7 @@ cbuffer PerFrameBuffer : register(b3)
     float  gBrightness;
 
     float  gSkyboxBrightness;
-
-    float gPadding3;
+    float  gSkyboxIBLIntensity;
 }
 
 Texture2D BaseColorMap : register(t0);
@@ -412,14 +411,16 @@ float3 PrefilteredRadiance(const float3 R, float pRoughness)
 {
     float mipLevel =  gSkyboxNumMips * pRoughness * (1.7 - 0.7 * pRoughness);
     //float skyMipLevel = gSkyboxNumMips * MapRoughnessToMipLevel(pRoughness, gSkyboxNumMips);
-    return PrefilteredRadianceMap.SampleLevel(BilinearSampler, R, mipLevel).rgb * gSkyboxBrightness;
+    return PrefilteredRadianceMap.SampleLevel(BilinearSampler, R, mipLevel).rgb 
+        * gSkyboxBrightness * gSkyboxIBLIntensity * gCamera.Exposure;
 }
 
 float3 PrefilteredRadiance(const float3 R, float pRoughness, float offset)
 {
     float mipLevel =  gSkyboxNumMips * pRoughness * (1.7 - 0.7 * pRoughness);
     //float skyMipLevel = gSkyboxNumMips * MapRoughnessToMipLevel(pRoughness, gSkyboxNumMips);
-    return PrefilteredRadianceMap.SampleLevel(BilinearSampler, R, mipLevel  + offset).rgb * gSkyboxBrightness;
+    return PrefilteredRadianceMap.SampleLevel(BilinearSampler, R, mipLevel  + offset).rgb 
+        * gSkyboxBrightness * gSkyboxIBLIntensity * gCamera.Exposure;
 }
 
 float ComputeSpecularOcclusion(float NoV, float occlusion, float roughness) 
@@ -439,7 +440,8 @@ float3 SpecularDFG(const PixelData pixel)
 
 float3 Irradiance_RoughnessOne(const float3 N)
 {
-    return PrefilteredRadianceMap.SampleLevel(BilinearSampler, N, (gSkyboxNumMips - 1)).rgb * gSkyboxBrightness;
+    return PrefilteredRadianceMap.SampleLevel(BilinearSampler, N, (gSkyboxNumMips - 1)).rgb 
+        * gSkyboxBrightness* gSkyboxIBLIntensity * gCamera.Exposure;
 }
 
 struct Refraction
@@ -549,7 +551,8 @@ float3 DoDiffuseIBL(float3 V, float3 N, float NoV, float3 E, const PixelData pix
     float3 result = (float3)0;
     float3 dominantN = GetDiffuseDominantDir (V, N, NoV, pixel.Roughness);
 
-    float3 irradiance = DiffuseIrrMap.Sample(BilinearSampler, dominantN).rgb * gSkyboxBrightness;
+    float3 irradiance = DiffuseIrrMap.Sample(BilinearSampler, dominantN).rgb 
+        * gSkyboxBrightness * gSkyboxIBLIntensity * gCamera.Exposure;
     result = irradiance * pixel.DiffuseColor *  occlusion;
 
     return result;
@@ -766,9 +769,10 @@ float3 DiffuseLobe(const PixelData pixel, float NoV, float NoL, float LoH)
  * V : view vector
  * N : surface normal
  */
-float3 DoDirectLighting(float3 V, float3 N ,const PixelData pixel, float NoV, const LightData light, float lightAttenuation) 
+float3 DoLighting(float3 V, float3 N , const PixelData pixel, float NoV, const LightData light, 
+    float lightAttenuation, float occlusion) 
 {
-    float3 L = light.Direction;
+    float3 L = -light.Direction;
     float3 H = normalize(V + L);
 
     float NoL = saturate(dot(N, L));
@@ -777,11 +781,9 @@ float3 DoDirectLighting(float3 V, float3 N ,const PixelData pixel, float NoV, co
 
     float3 Fr = SpecularLobe(pixel, light, V, H, NoV, NoL, NoH, LoH);
     float3 Fd = DiffuseLobe(pixel, NoV, NoL, LoH);
-    Fd *= (pixel.Transmission);
+    Fd *= (1 - pixel.Transmission);
 
-    // The energy compensation term is used to counteract the darkening effect
-    // at high roughness
-    float3 color = Fd + Fr * pixel.EnergyCompensation;
+    float3 color = Fd + Fr;
 
 #if USE_SHEEN == 1
     color *= pixel.SheenScaling;
@@ -801,7 +803,7 @@ float3 DoDirectLighting(float3 V, float3 N ,const PixelData pixel, float NoV, co
     color += clearCoat * clearCoatNoL;
 #endif // CLEAR_COAT
 
-    return (color * light.Color.rgb * light.Intensity * lightAttenuation * NoL);
+    return (color * light.Color.rgb * light.Intensity * gCamera.Exposure * lightAttenuation * NoL);
 }
 #endif // DO_DIRECT_LIGHTING
 
@@ -809,9 +811,21 @@ float3 DoDirectLighting(float3 V, float3 N ,const PixelData pixel, float NoV, co
 // V : view vector
 // P : position vector in worldspace
 // N : surface normal
-LightingResult DoDirectionalLight( LightData light, float3 V, float3 P, float3 N )
+float3 DoDirectionalLight( LightData light, const PixelData pixel, float NoV, float3 V, float3 P, float3 N, float occlusion )
 {
-    LightingResult result = (LightingResult)0;
+    float3 result = (float3)0;
+    result = DoLighting(V, N , pixel, NoV, light, 1.0, occlusion);
+    return result;
+}
+#endif // DO_DIRECT_LIGHTING
+
+#if DO_DIRECT_LIGHTING == 1
+// V : view vector
+// P : position vector in worldspace
+// N : surface normal
+float3 DoPointLight( LightData light, const PixelData pixel, float NoV, float3 V, float3 P, float3 N, float occlusion )
+{
+    float3 result = (float3)0;
 
     // TODO PBR
 
@@ -823,9 +837,9 @@ LightingResult DoDirectionalLight( LightData light, float3 V, float3 P, float3 N
 // V : view vector
 // P : position vector in worldspace
 // N : surface normal
-LightingResult DoPointLight( LightData light, float3 V, float3 P, float3 N )
+float3 DoSpotLight( LightData light, const PixelData pixel, float NoV, float3 V, float3 P, float3 N, float occlusion )
 {
-    LightingResult result = (LightingResult)0;
+    float3 result = (float3)0;
 
     // TODO PBR
 
@@ -833,63 +847,50 @@ LightingResult DoPointLight( LightData light, float3 V, float3 P, float3 N )
 }
 #endif // DO_DIRECT_LIGHTING
 
-#if DO_DIRECT_LIGHTING == 1
-// V : view vector
-// P : position vector in worldspace
-// N : surface normal
-LightingResult DoSpotLight( LightData light, float3 V, float3 P, float3 N )
-{
-    LightingResult result = (LightingResult)0;
-
-    // TODO PBR
-
-    return result;
-}
-#endif // DO_DIRECT_LIGHTING
-
+#if DO_INDIRECT_LIGHTING == 1
 // V : view vector
 // P : position vector in world space
 // N : normal
-LightingResult DoLighting(float3 V, float3 P, float3 N, const PixelData pixel, 
-    float2 uv, bool castLight, float occlusion)
+LightingResult DoIndirectLighting(float3 V, float3 P, float3 N, float NoV, const PixelData pixel, float occlusion)
 {
-    float NoV = ClampNoV(dot(N, V));
-
     LightingResult totalResult = (LightingResult)0;
-#if DO_INDIRECT_LIGHTING == 1
+
     LightingResult IBLResult = DoIBL(V, P, N, NoV, pixel, occlusion);
-#endif // DO_INDIRECT_LIGHTING
 
-#if DO_DIRECT_LIGHTING == 1
-    if(castLight)
-    {
-        [unroll]
-        for( uint i = 0; i < gLightsNumber; ++i )
-        {
-            LightingResult result = (LightingResult)0;
-
-            if(gLights[i].Type == DIRECTIONAL_LIGHT)
-                result = DoDirectionalLight( gLights[i], V, P, N );
-            else if(gLights[i].Type == POINT_LIGHT)
-                result = DoPointLight( gLights[i], V, P, N );
-            else if(gLights[i].Type == SPOT_LIGHT)
-                result = DoSpotLight( gLights[i], V, P, N );
-
-            totalResult.Diffuse += result.Diffuse;
-            totalResult.Specular += result.Specular;
-        }
-    }
-#endif // DO_DIRECT_LIGHTING
-
-#if DO_INDIRECT_LIGHTING == 1
     totalResult.Diffuse += IBLResult.Diffuse;
     totalResult.Specular += IBLResult.Specular;
-#endif // DO_INDIRECT_LIGHTING
 
     totalResult.Diffuse = saturate(totalResult.Diffuse);
     totalResult.Specular = saturate(totalResult.Specular);
 
     return totalResult;
 }
+#endif // DO_INDIRECT_LIGHTING
+
+#if DO_DIRECT_LIGHTING == 1
+// V : view vector
+// P : position vector in world space
+// N : normal
+float3 DoDirectLighting(float3 V, float3 P, float3 N, float NoV, const PixelData pixel, bool castLight, float occlusion)
+{
+    float3 result = (float3)0;
+
+    if (castLight)
+    {
+        [unroll]
+        for( uint i = 0; i < gLightsNumber; ++i )
+        {
+            if(gLights[i].Type == DIRECTIONAL_LIGHT)
+                result += DoDirectionalLight( gLights[i], pixel, NoV, V, P, N, occlusion );
+            else if(gLights[i].Type == POINT_LIGHT)
+                result += DoPointLight( gLights[i], pixel, NoV, V, P, N, occlusion  );
+            else if(gLights[i].Type == SPOT_LIGHT)
+                result += DoSpotLight( gLights[i], pixel, NoV, V, P, N, occlusion  );
+        }
+    }
+
+    return result;
+}
+#endif // DO_DIRECT_LIGHTING
 
 #endif // __FORWARD_PS__

@@ -106,6 +106,7 @@ namespace te
                 _internal->_spotAngle = light->_spotAngle;
                 _internal->_bounds = light->_bounds;
                 _internal->_shadowBias = light->_shadowBias;
+                _internal->_intensity = light->_intensity;
 
                 _internal->_transform = light->_transform;
                 _internal->_mobility = light->_mobility;
