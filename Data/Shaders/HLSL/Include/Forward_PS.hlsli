@@ -768,11 +768,12 @@ float3 DiffuseLobe(const PixelData pixel, float NoV, float NoL, float LoH)
  *
  * V : view vector
  * N : surface normal
+ * L : For Directional : -light.Direction
+ *     For Point & Spot : ( light.Position - P );
  */
-float3 DoLighting(float3 V, float3 N , const PixelData pixel, float NoV, const LightData light, 
+float3 DoLighting(float3 V, float3 N , float3 L, const PixelData pixel, float NoV, const LightData light, 
     float lightAttenuation, float occlusion) 
 {
-    float3 L = -light.Direction;
     float3 H = normalize(V + L);
 
     float NoL = saturate(dot(N, L));
@@ -814,8 +815,17 @@ float3 DoLighting(float3 V, float3 N , const PixelData pixel, float NoV, const L
 float3 DoDirectionalLight( LightData light, const PixelData pixel, float NoV, float3 V, float3 P, float3 N, float occlusion )
 {
     float3 result = (float3)0;
-    result = DoLighting(V, N , pixel, NoV, light, 1.0, occlusion);
+    float3 L = -light.Direction;
+    result = DoLighting(V, N , L, pixel, NoV, light, 1.0, occlusion);
     return result;
+}
+#endif // DO_DIRECT_LIGHTING
+
+#if DO_DIRECT_LIGHTING == 1
+// d : distance from light
+float DoAttenuation( LightData light, float d )
+{
+    return 1.0f / ( light.AttenuationRadius + light.LinearAttenuation * d + light.QuadraticAttenuation * d * d );
 }
 #endif // DO_DIRECT_LIGHTING
 
@@ -827,7 +837,15 @@ float3 DoPointLight( LightData light, const PixelData pixel, float NoV, float3 V
 {
     float3 result = (float3)0;
 
-    // TODO PBR
+    float3 L = ( light.Position - P );
+    float distance = length(L);
+    L = L / distance;
+
+    float attenuation = DoAttenuation( light, distance );
+    if(attenuation > 0.00001f)
+    {
+        result = DoLighting(V, N , L, pixel, NoV, light, attenuation, occlusion);
+    }
 
     return result;
 }
@@ -840,6 +858,16 @@ float3 DoPointLight( LightData light, const PixelData pixel, float NoV, float3 V
 float3 DoSpotLight( LightData light, const PixelData pixel, float NoV, float3 V, float3 P, float3 N, float occlusion )
 {
     float3 result = (float3)0;
+
+    float3 L = ( light.Position - P );
+    float distance = length(L);
+    L = L / distance;
+
+    float attenuation = DoAttenuation( light, distance );
+    if(attenuation > 0.00001f)
+    {
+
+    }
 
     // TODO PBR
 

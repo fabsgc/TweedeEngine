@@ -2237,7 +2237,7 @@ namespace te
         {
             // Attenuation radius
             {
-                if (ImGuiExt::RenderOptionFloat(attenuationRadius, "##light_attenuation_radius_option", "Att. Radius", 0.0f, 5.0f, width))
+                if (ImGuiExt::RenderOptionFloat(attenuationRadius, "##light_attenuation_radius_option", "Att. Radius", 0.0f, 32.0f, width))
                 {
                     hasChanged = true;
                     light->SetAttenuationRadius(attenuationRadius);

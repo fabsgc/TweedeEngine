@@ -4,10 +4,10 @@
 namespace te
 {
     bool Light::DefaultCastShadow = false;
-    float Light::DefaultAttRadius = 1.0f;
-    float Light::DefaultLinearAtt = 0.08f;
-    float Light::DefaultQuadraticAtt = 0.0f;
-    float Light::DefaultIntensity = 0.5f;
+    float Light::DefaultAttRadius = 5.0f;
+    float Light::DefaultLinearAtt = 0.75f;
+    float Light::DefaultQuadraticAtt = 0.75f;
+    float Light::DefaultIntensity = 500.f;
     float Light::DefaultSpotAngle = 45.0f;
     float Light::DefaultShadowBias = 0.5f;
 
