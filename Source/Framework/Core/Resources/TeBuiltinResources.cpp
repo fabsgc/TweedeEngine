@@ -978,7 +978,10 @@ namespace te
             te_pool_new<ShaderVariationParam>("USE_OPACITY_MAP", std::forward<Vector<std::any>>({ false, true })),
             te_pool_new<ShaderVariationParam>("USE_ANISOTROPY_DIRECTION_MAP", std::forward<Vector<std::any>>({false, true})),
             te_pool_new<ShaderVariationParam>("DO_INDIRECT_LIGHTING", std::forward<Vector<std::any>>({false, true})),
-            te_pool_new<ShaderVariationParam>("DO_DIRECT_LIGHTING", std::forward<Vector<std::any>>({false, true}))
+            te_pool_new<ShaderVariationParam>("DO_DIRECT_LIGHTING", std::forward<Vector<std::any>>({false, true})),
+            te_pool_new<ShaderVariationParam>("USE_SHEEN", std::forward<Vector<std::any>>({false, true})),
+            te_pool_new<ShaderVariationParam>("USE_CLEAR_COAT", std::forward<Vector<std::any>>({false, true})),
+            te_pool_new<ShaderVariationParam>("USE_ANISOTROPY", std::forward<Vector<std::any>>({false, true}))
         };
 
         FillShaderDesc(variationParams, shaderDesc);
@@ -1033,7 +1036,10 @@ namespace te
             te_pool_new<ShaderVariationParam>("USE_OPACITY_MAP", std::forward<Vector<std::any>>({ false, true })),
             te_pool_new<ShaderVariationParam>("USE_ANISOTROPY_DIRECTION_MAP", std::forward<Vector<std::any>>({ false, true })),
             te_pool_new<ShaderVariationParam>("DO_INDIRECT_LIGHTING", std::forward<Vector<std::any>>({ false, true })),
-            te_pool_new<ShaderVariationParam>("DO_DIRECT_LIGHTING", std::forward<Vector<std::any>>({false, true}))
+            te_pool_new<ShaderVariationParam>("DO_DIRECT_LIGHTING", std::forward<Vector<std::any>>({false, true})),
+            te_pool_new<ShaderVariationParam>("USE_SHEEN", std::forward<Vector<std::any>>({false, true})),
+            te_pool_new<ShaderVariationParam>("USE_CLEAR_COAT", std::forward<Vector<std::any>>({false, true})),
+            te_pool_new<ShaderVariationParam>("USE_ANISOTROPY", std::forward<Vector<std::any>>({false, true}))
         };
 
         FillShaderDesc(variationParams, shaderDesc);

@@ -34,6 +34,7 @@ namespace te
     static UINT32 InitAndRetrieveBasePassTechnique(Material& material, bool shaderCanWriteVelocity, bool writeVelocity, RenderableAnimType animType)
     {
         const MaterialProperties& properties = material.GetProperties();
+        static const Vector3 Black(0.f, 0.f, 0.f);
 
         FIND_TECHNIQUE_DESC findDesc;
         findDesc.Override = true;
@@ -61,6 +62,9 @@ namespace te
         findDesc.Variation.AddParam(ShaderVariation::Param("USE_ANISOTROPY_DIRECTION_MAP", properties.UseAnisotropyDirectionMap));
         findDesc.Variation.AddParam(ShaderVariation::Param("DO_INDIRECT_LIGHTING", properties.DoIndirectLighting));
         findDesc.Variation.AddParam(ShaderVariation::Param("DO_DIRECT_LIGHTING", properties.DoDirectLighting));
+        findDesc.Variation.AddParam(ShaderVariation::Param("USE_SHEEN", properties.UseSheenColorMap || !Math::ApproxEquals(properties.SheenColor.GetAsVector3(), Black)));
+        findDesc.Variation.AddParam(ShaderVariation::Param("USE_CLEAR_COAT", properties.UseClearCoatMap || !Math::ApproxEquals(properties.ClearCoat, 0.f)));
+        findDesc.Variation.AddParam(ShaderVariation::Param("USE_ANISOTROPY", !Math::ApproxEquals(properties.Anisotropy, 0.f)));
 
         UINT32 techniqueIdx = material.FindTechnique(findDesc, true);
 

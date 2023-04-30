@@ -232,24 +232,30 @@ PS_OUTPUT main( VS_OUTPUT IN )
         if(microThickness != 0.0)
             pixel.UThickness = max(0.0, microThickness);
 
+#if USE_CLEAR_COAT == 1
         pixel.ClearCoat = clearCoat;
         pixel.PClearCoatRoughness = pClearCoatRoughness;
         pixel.ClearCoatRoughness = clearCoatRoughness;
         pixel.N_clearCoat = N_clearCoat;
+#endif // USE_CLEAR_COAT
 
+#if USE_SHEEN == 1
         pixel.SheenColor = sheenColor;
         pixel.PSheenRoughness = pSheenRoughness;
         pixel.SheenRoughness = sheenRoughness;
         pixel.DFG_Sheen = PreIntEnvGF(NoV, pixel.PSheenRoughness).xyz;
         pixel.SheenScaling = 1.0 - max(pixel.SheenColor.r, max(pixel.SheenColor.g, pixel.SheenColor.b)) * pixel.DFG_Sheen.z;
+#endif // USE_SHEEN
 
         pixel.SubsurfaceColor = subsurfaceColor;
         pixel.SubsurfacePower = subsurfacePower;
 
+#if USE_ANISOTROPY
         pixel.Anisotropy = anisotropy;
         pixel.AnisotropyDirection = anisotropyDirection;
         pixel.AnisotropicT = normalize(mul(TBN, anisotropyDirection));
         pixel.AnisotropicB = normalize(cross(N_Raw, pixel.AnisotropicT));
+#endif
 
         // Energy compensation for multiple scattering in a microfacet model
         pixel.EnergyCompensation = 1.0 + pixel.F0 * (1.0 / pixel.DFG.y - 1.0);

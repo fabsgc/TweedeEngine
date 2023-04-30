@@ -366,20 +366,17 @@ float3 GetReflectedVector(float3 V, float3 N, PixelData pixel)
 {
     float3 R = (float3)0;
 
-    if(pixel.Anisotropy != 0.0)
-    {
-        float3  anisotropyDirection = pixel.Anisotropy >= 0.0 ? pixel.AnisotropicB : pixel.AnisotropicT;
-        float3  anisotropicTangent  = cross(anisotropyDirection, V);
-        float3  anisotropicNormal   = cross(anisotropicTangent, anisotropyDirection);
-        float   bendFactor          = abs(pixel.Anisotropy) * saturate(5.0 * pixel.PRoughness);
-        float3  bentNormal          = normalize(lerp(N, anisotropicNormal, bendFactor));
+#if USE_ANISOTROPY == 1
+    float3  anisotropyDirection = pixel.Anisotropy >= 0.0 ? pixel.AnisotropicB : pixel.AnisotropicT;
+    float3  anisotropicTangent  = cross(anisotropyDirection, V);
+    float3  anisotropicNormal   = cross(anisotropicTangent, anisotropyDirection);
+    float   bendFactor          = abs(pixel.Anisotropy) * saturate(5.0 * pixel.PRoughness);
+    float3  bentNormal          = normalize(lerp(N, anisotropicNormal, bendFactor));
 
-        R = reflect(-V, bentNormal);
-    }
-    else
-    {
-        R = reflect(-V, N);
-    }
+    R = reflect(-V, bentNormal);
+#else // USE_ANISOTROPY
+    R = reflect(-V, N);
+#endif // USE_ANISOTROPY
 
     return R;
 }
@@ -581,7 +578,7 @@ float3 DoSpecularIBL(float3 V, float3 N, float NoV, float3 E, const PixelData pi
 }
 #endif // DO_INDIRECT_LIGHTING
 
-#if DO_INDIRECT_LIGHTING == 1
+#if DO_INDIRECT_LIGHTING == 1 && USE_SHEEN == 1
 // V : view vector
 // N : surface normal
 LightingResult DoSheenIBL(float3 V, float3 N, const PixelData pixel, float NoV, float occlusion, LightingResult result)
@@ -601,9 +598,9 @@ LightingResult DoSheenIBL(float3 V, float3 N, const PixelData pixel, float NoV, 
 
     return result;
 }
-#endif // DO_INDIRECT_LIGHTING
+#endif // DO_INDIRECT_LIGHTING && USE_SHEEN
 
-#if DO_INDIRECT_LIGHTING == 1
+#if DO_INDIRECT_LIGHTING == 1 && USE_CLEAR_COAT == 1
 // V : view vector
 // N : surface normal
 LightingResult DoClearCoatIBL(float3 V, float3 N, const PixelData pixel, float NoV, float occlusion, LightingResult result)
@@ -624,7 +621,7 @@ LightingResult DoClearCoatIBL(float3 V, float3 N, const PixelData pixel, float N
 
     return result;
 }
-#endif // DO_INDIRECT_LIGHTING
+#endif // DO_INDIRECT_LIGHTING && USE_CLEAR_COAT
 
 /*LightingResult DoSubSurfaceIBL(float3 V, float3 N, const PixelData pixel, float NoV, float occlusion, LightingResult result)
 {
@@ -651,11 +648,15 @@ LightingResult DoIBL(float3 V, float3 P, float3 N, float NoV, const PixelData pi
         result.Diffuse = DoDiffuseIBL(V, N, NoV, E, pixel, occlusion);
         result.Specular = DoSpecularIBL(V, N, NoV, E, pixel, occlusion);
 
+#if USE_SHEEN == 1
         // Sheen Layer
         result = DoSheenIBL(V, N, pixel, NoV, occlusion, result);
+#endif // USE_SHEEN
 
+#if USE_CLEAR_COAT == 1
         // Clear Coat Layer
         result = DoClearCoatIBL(V, N, pixel, NoV, occlusion, result);
+#endif // USE_CLEAR_COAT
 
         // SubSurface Layer
         // result = DoSubSurfaceIBL(V, N, pixel, NoV, occlusion, result);
@@ -672,6 +673,7 @@ LightingResult DoIBL(float3 V, float3 P, float3 N, float NoV, const PixelData pi
 }
 #endif // DO_INDIRECT_LIGHTING
 
+#if USE_SHEEN == 1
 float3 SheenLobe(const PixelData pixel, float NoV, float NoL, float NoH)
 {
     float D = DistributionCloth(pixel.SheenRoughness, NoH);
@@ -679,7 +681,9 @@ float3 SheenLobe(const PixelData pixel, float NoV, float NoL, float NoH)
 
     return (D * V) * pixel.SheenColor;
 }
+#endif // USE_SHEEN
 
+#if USE_CLEAR_COAT == 1
 float ClearCoatLobe(const PixelData pixel, const float3 H, float NoH, float LoH, out float Fcc)
 {
     // If the material has a normal map, we want to use the geometric normal
@@ -694,6 +698,7 @@ float ClearCoatLobe(const PixelData pixel, const float3 H, float NoH, float LoH,
     Fcc = F;
     return D * V * F;
 }
+#endif // USE_CLEAR_COAT
 
 float3 AnisotropicLobe(const PixelData pixel, const LightData light, const float3 V, const float3 H,
     float NoV, float NoL, float NoH, float LoH)
@@ -778,9 +783,12 @@ float3 DoDirectLighting(float3 V, float3 N ,const PixelData pixel, float NoV, co
     // at high roughness
     float3 color = Fd + Fr * pixel.EnergyCompensation;
 
+#if USE_SHEEN == 1
     color *= pixel.SheenScaling;
     color += SheenLobe(pixel, NoV, NoL, NoH);
+#endif // USE_SHEEN;
 
+#if USE_CLEAR_COAT == 1
     float Fcc;
     float clearCoat = ClearCoatLobe(pixel, H, NoH, LoH, Fcc);
     float attenuation = 1.0 - Fcc;
@@ -791,6 +799,7 @@ float3 DoDirectLighting(float3 V, float3 N ,const PixelData pixel, float NoV, co
     // instead to avoid applying the normal map details to the clear coat layer
     float clearCoatNoL = saturate(dot(pixel.N_clearCoat, light.Direction));
     color += clearCoat * clearCoatNoL;
+#endif // CLEAR_COAT
 
     return (color * light.Color.rgb * light.Intensity * lightAttenuation * NoL);
 }
