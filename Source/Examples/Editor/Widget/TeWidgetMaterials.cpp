@@ -328,6 +328,8 @@ namespace te
                 {
                     if (ImGuiExt::RenderOptionBool(properties.DoIndirectLighting, "##material_properties_do_indirect_lighting_option", "Use Indirect Lighting"))
                         hasChanged = true;
+                    if (ImGuiExt::RenderOptionBool(properties.DoDirectLighting, "##material_properties_do_direct_lighting_option", "Use Direct Lighting"))
+                        hasChanged = true;
                 }
                 ImGui::Separator();
 

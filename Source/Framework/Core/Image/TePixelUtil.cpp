@@ -13,7 +13,6 @@
 namespace te
 {
     RecursiveMutex PixelUtil::_recursiveMutex;
-    Mutex PixelUtil::_mutex;
 
     /**
      * Performs pixel data resampling using the point filter (nearest neighbor). Does not perform format conversions.
@@ -2860,7 +2859,7 @@ namespace te
         if (maxMip > 0)
             numMips = std::min(numMips, maxMip);
 
-        Lock lock(_mutex);
+        RecursiveLock lock(_recursiveMutex);
 
         nvtt::InputOptions io;
         io.setTextureLayout(nvtt::TextureType_2D, src.GetWidth(), src.GetHeight());

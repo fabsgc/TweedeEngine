@@ -6,6 +6,8 @@
 #include "Math/TeVector2I.h"
 #include "Threading/TeThreading.h"
 
+#include <atomic>
+
 namespace te
 {
 
@@ -323,6 +325,5 @@ namespace te
     
     private:
         static RecursiveMutex _recursiveMutex;
-        static Mutex _mutex;
     };
 }

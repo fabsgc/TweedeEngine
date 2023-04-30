@@ -747,6 +747,7 @@ float3 DiffuseLobe(const PixelData pixel, float NoV, float NoL, float LoH)
     return pixel.DiffuseColor * Diffuse(pixel.Roughness, NoV, NoL, LoH);
 }
 
+#if DO_DIRECT_LIGHTING == 1
 /**
  * Evaluates lit materials with the standard shading model. This model comprises
  * of 2 BRDFs: an optional clear coat BRDF, and a regular surface BRDF.
@@ -793,7 +794,9 @@ float3 DoDirectLighting(float3 V, float3 N ,const PixelData pixel, float NoV, co
 
     return (color * light.Color.rgb * light.Intensity * lightAttenuation * NoL);
 }
+#endif // DO_DIRECT_LIGHTING
 
+#if DO_DIRECT_LIGHTING == 1
 // V : view vector
 // P : position vector in worldspace
 // N : surface normal
@@ -805,7 +808,9 @@ LightingResult DoDirectionalLight( LightData light, float3 V, float3 P, float3 N
 
     return result;
 }
+#endif // DO_DIRECT_LIGHTING
 
+#if DO_DIRECT_LIGHTING == 1
 // V : view vector
 // P : position vector in worldspace
 // N : surface normal
@@ -817,7 +822,9 @@ LightingResult DoPointLight( LightData light, float3 V, float3 P, float3 N )
 
     return result;
 }
+#endif // DO_DIRECT_LIGHTING
 
+#if DO_DIRECT_LIGHTING == 1
 // V : view vector
 // P : position vector in worldspace
 // N : surface normal
@@ -829,6 +836,7 @@ LightingResult DoSpotLight( LightData light, float3 V, float3 P, float3 N )
 
     return result;
 }
+#endif // DO_DIRECT_LIGHTING
 
 // V : view vector
 // P : position vector in world space
@@ -843,6 +851,7 @@ LightingResult DoLighting(float3 V, float3 P, float3 N, const PixelData pixel,
     LightingResult IBLResult = DoIBL(V, P, N, NoV, pixel, occlusion);
 #endif // DO_INDIRECT_LIGHTING
 
+#if DO_DIRECT_LIGHTING == 1
     if(castLight)
     {
         [unroll]
@@ -861,6 +870,7 @@ LightingResult DoLighting(float3 V, float3 P, float3 N, const PixelData pixel,
             totalResult.Specular += result.Specular;
         }
     }
+#endif // DO_DIRECT_LIGHTING
 
 #if DO_INDIRECT_LIGHTING == 1
     totalResult.Diffuse += IBLResult.Diffuse;

@@ -60,6 +60,7 @@ namespace te
         findDesc.Variation.AddParam(ShaderVariation::Param("USE_OPACITY_MAP", properties.UseOpacityMap));
         findDesc.Variation.AddParam(ShaderVariation::Param("USE_ANISOTROPY_DIRECTION_MAP", properties.UseAnisotropyDirectionMap));
         findDesc.Variation.AddParam(ShaderVariation::Param("DO_INDIRECT_LIGHTING", properties.DoIndirectLighting));
+        findDesc.Variation.AddParam(ShaderVariation::Param("DO_DIRECT_LIGHTING", properties.DoDirectLighting));
 
         UINT32 techniqueIdx = material.FindTechnique(findDesc, true);
 

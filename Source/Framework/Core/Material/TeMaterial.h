@@ -378,6 +378,11 @@ namespace te
         bool DoIndirectLighting = true;
 
         /**
+         * Specify if the material must compute Direct Ligting (Directional, Point and Spot lights)
+         */
+        bool DoDirectLighting = true;
+
+        /**
          * @brief You must call this method if TransmittanceColor or AtDistance
          * are modified in order to update Absoption
          */

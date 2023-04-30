@@ -160,7 +160,7 @@ namespace te
 
                             j = 1;
                             ImGui::PushID("Passes content");
-                            for (auto& pass : technique->GetPasses())
+                            /*for (auto& pass : technique->GetPasses())
                             {
                                 ImGui::PushID(j);
                                 if (ImGui::CollapsingHeader("Pass"))
@@ -170,7 +170,7 @@ namespace te
                                 ImGui::PopID();
 
                                 j++;
-                            }
+                            }*/
                             ImGui::PopID();
                             ImGui::PopID();
                         }

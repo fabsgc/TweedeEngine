@@ -781,7 +781,6 @@ namespace te
     bool WidgetProperties::ShowCSoftBodyProperties()
     {
         bool hasChanged = false;
-        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
         SPtr<CSoftBody> softBody = std::static_pointer_cast<CSoftBody>(_selections.ClickedComponent);
 
         if (ImGui::CollapsingHeader("Soft Body", ImGuiTreeNodeFlags_DefaultOpen))
@@ -913,7 +912,38 @@ namespace te
 
         if (ImGui::CollapsingHeader("Rope Soft Body", ImGuiTreeNodeFlags_DefaultOpen))
         {
-            // TODO
+            // from
+            {
+                Vector3 from = softBody->GetFrom();
+                if (ImGuiExt::RenderVector3(from, "##rope_soft_body_option_from", " From", 20.0f))
+                {
+                    softBody->SetFrom(from);
+                    hasChanged = true;
+                }
+            }
+            ImGui::Separator();
+
+            // to
+            {
+                Vector3 to = softBody->GetTo();
+                if (ImGuiExt::RenderVector3(to, "##rope_soft_body_option_to", " To", 20.0f))
+                {
+                    softBody->SetTo(to);
+                    hasChanged = true;
+                }
+            }
+            ImGui::Separator();
+
+            // resolution
+            {
+                UINT32 resolution = softBody->GetResolution();
+                if (ImGuiExt::RenderOptionInt<UINT32>(resolution, "##rope_soft_body_resolution", " Resolution", 1, 256, width))
+                {
+                    softBody->SetResolution(resolution);
+                    hasChanged = true;
+                }
+            }
+            ImGui::Separator();
         }
 
         if (ShowCSoftBodyProperties())
