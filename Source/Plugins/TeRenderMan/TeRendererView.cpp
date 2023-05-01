@@ -26,6 +26,7 @@ namespace te
 
         if (lhs.MeshElem != rhs.MeshElem) return false;
         if (lhsSize != rhsSize) return false;
+        if (lhs.Layer != rhs.Layer) return false; // Both renderables must be present in the same layers
 
         if (lhsSize == rhsSize)
         {
@@ -489,6 +490,7 @@ namespace te
                 elem->Type = renderElem.Type;
                 elem->InstanceCount = (UINT32)(upperBlockBound - lowerBlockBound);
                 elem->UseForZPrepass = sceneInfo.Renderables[idx]->RenderablePtr->GetUseForZPrepass();
+                elem->Properties = &sceneInfo.Renderables[idx]->RenderablePtr->GetProperties();
 
                 elem->GpuParamsElem.resize(renderElem.GpuParamsElem.size());
                 std::copy(renderElem.GpuParamsElem.begin(), renderElem.GpuParamsElem.end(), elem->GpuParamsElem.data());
@@ -773,6 +775,7 @@ namespace te
             key.MeshElem = renderable->GetMesh().get();
             key.Materials = renderable->GetMaterialsPtr();
             key.MaterialCount = renderable->GetNumMaterials();
+            key.Layer = renderable->GetLayer();
             if(key.Idx.size() > 0) key.Idx.clear();
 
             auto iter = find(RendererView::_instancedBuffersPool.begin(), RendererView::_instancedBuffersPool.end(), key);
@@ -784,7 +787,9 @@ namespace te
                 RendererView::_instancedBuffersPool.push_back(key);
             }
             else
+            {
                 iter->Idx.push_back(current);
+            }
         };
 
         if (instancingMode == RenderManInstancing::Automatic)

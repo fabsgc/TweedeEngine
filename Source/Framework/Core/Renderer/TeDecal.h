@@ -65,7 +65,7 @@ namespace te
          * Determines the layer that controls whether a system is considered visible in a specific camera. Layer must match
          * camera layer bitfield in order for the camera to render the decal.
          */
-        void SetLayer(UINT64 layer);
+        void SetLayer(UINT32 layer);
 
         /** @copydoc SetLayer() */
         UINT64 GetLayer() const { return _layer; }

@@ -41,7 +41,7 @@ namespace te
         CoreObject::Initialize();
     }
 
-    void Decal::SetLayer(UINT64 layer)
+    void Decal::SetLayer(UINT32 layer)
     {
         const bool isPow2 = layer && !((layer - 1) & layer);
 

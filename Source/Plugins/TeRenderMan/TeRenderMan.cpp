@@ -162,6 +162,7 @@ namespace te
 
             _mainViewGroup->SetViews(views.data(), (UINT32)views.size());
 
+            // Find all visible renderables
             if (_options->CullingFlags & (UINT32)RenderManCulling::Frustum ||
                 _options->CullingFlags & (UINT32)RenderManCulling::Occlusion)
             {
@@ -172,11 +173,30 @@ namespace te
                 _mainViewGroup->SetAllObjectsAsVisible(sceneInfo);
             }
 
+            // Generate Instanced Buffers
+            {
+                _mainViewGroup->GenerateInstanced(sceneInfo, _options->InstancingMode);
+            }
+
+            // Update various buffers required by each renderable
+            {
+                const VisibilityInfo& visibility = _mainViewGroup->GetVisibilityInfo();
+                UINT32 numRenderables = (UINT32)visibility.Renderables.size();
+
+                for (UINT32 i = 0; i < numRenderables; i++)
+                {
+                    if (!visibility.Renderables[i].Visible && !visibility.Renderables[i].Instanced)
+                        continue;
+
+                    _scene->PrepareVisibleRenderable(i, frameInfo);
+                }
+            }
+
+            // Loop through view for rendering
             for (auto& view : views)
             {
                 _renderAPI.PushMarker("[DRAW] View",Color(0.4f, 0.8f, 0.4f));
 
-                _mainViewGroup->GenerateInstanced(sceneInfo, _options->InstancingMode);
                 _mainViewGroup->GenerateRenderQueue(sceneInfo, *view, _options->InstancingMode);
 
                 const auto& settings = view->GetSceneCamera()->GetRenderSettings();
@@ -219,9 +239,6 @@ namespace te
 
         if (needs3DRender)
         {
-            const SceneInfo& sceneInfo = _scene->GetSceneInfo();
-            const VisibilityInfo& visibility = viewGroup.GetVisibilityInfo();
-
             Vector3I lightCounts;
             const PerLightData* lights[STANDARD_FORWARD_MAX_NUM_LIGHTS];
 
@@ -230,7 +247,8 @@ namespace te
             {
                 for (const auto& element : view.GetOpaqueQueue()->GetSortedElements())
                 {
-                    if (!element.RenderElem->Properties->CastLights)
+                    if (!element.RenderElem->Properties ||
+                        !element.RenderElem->Properties->CastLights)
                         continue;
                     if ((lightCounts.x + lightCounts.y + lightCounts.z) == STANDARD_FORWARD_MAX_NUM_LIGHTS)
                         break;
@@ -247,18 +265,6 @@ namespace te
             // If a shadow map has been drawn by a previous view, do not draw it again
             {
                 // TODO
-            }
-
-            // Update various buffers required by each renderable
-            {
-                UINT32 numRenderables = (UINT32)sceneInfo.Renderables.size();
-                for (UINT32 i = 0; i < numRenderables; i++)
-                {
-                    if (!visibility.Renderables[i].Visible && !visibility.Renderables[i].Instanced)
-                        continue;
-
-                    _scene->PrepareVisibleRenderable(i, frameInfo);
-                }
             }
         }
 

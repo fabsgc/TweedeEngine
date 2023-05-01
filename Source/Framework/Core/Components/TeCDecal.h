@@ -51,7 +51,7 @@ namespace te
         float GetMaxDistance() const { return _internal->GetMaxDistance(); }
 
         /** @copydoc Decal::SetLayer */
-        void SetLayer(UINT64 layer) { _internal->SetLayer(layer); }
+        void SetLayer(UINT32 layer) { _internal->SetLayer(layer); }
 
         /** @copydoc SetLayer() */
         UINT64 GetLayer() const { return _internal->GetLayer(); }

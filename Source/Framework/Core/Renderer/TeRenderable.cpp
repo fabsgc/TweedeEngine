@@ -229,7 +229,7 @@ namespace te
         _markCoreDirty(ActorDirtyFlag::GpuParams);
     }
 
-    void Renderable::SetLayer(UINT64 layer)
+    void Renderable::SetLayer(UINT32 layer)
     {
         const bool isPow2 = layer && !((layer - 1) & layer);
 

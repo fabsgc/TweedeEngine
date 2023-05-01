@@ -116,7 +116,7 @@ namespace te
          * Determines the layer bitfield that controls whether a renderable is considered visible in a specific camera.
          * Renderable layer must match camera layer in order for the camera to render the component.
          */
-        void SetLayer(UINT64 layer);
+        void SetLayer(UINT32 layer);
 
         /** @copydoc SetLayer */
         UINT64 GetLayer() const { return _layer; }
@@ -280,7 +280,7 @@ namespace te
         SPtr<ZPrepassMesh> _ZPrepassMesh;
         Vector<SPtr<Material>> _materials;
         UINT32 _numMaterials = 0;
-        UINT64 _layer = 1;
+        UINT32 _layer = 1;
 
         Matrix4 _tfrmMatrix = TeIdentity;
         Matrix4 _tfrmMatrixNoScale = TeIdentity;

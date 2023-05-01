@@ -114,6 +114,7 @@ namespace te
         Mesh* MeshElem;
         const SPtr<Material>* Materials;
         UINT32 MaterialCount = 0;
+        UINT32 Layer = 0;
         Vector<UINT32> Idx;
     };
 
