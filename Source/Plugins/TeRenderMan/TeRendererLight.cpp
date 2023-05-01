@@ -53,11 +53,8 @@ namespace te
         output.SpotAngles.x = spotAngle.ValueRadians();
         output.SpotAngles.y = Math::Cos(output.SpotAngles.x);
         output.SpotAngles.z = 1.0f / std::max(1.0f - output.SpotAngles.y, 0.001f);
-        output.AttenuationRadius = _internal->GetAttenuationRadius();
         output.Color = color.GetAsVector3();
         output.BoundsRadius = _internal->GetBounds().GetRadius();
-        output.LinearAttenuation = _internal->GetLinearAttenuation();
-        output.QuadraticAttenuation = _internal->GetQuadraticAttenuation();
         output.CastShadows = _internal->GetCastShadows() ? 1 : 0;
         output.Type = type;
     }

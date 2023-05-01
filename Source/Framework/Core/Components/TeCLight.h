@@ -42,24 +42,6 @@ namespace te
         /** @copydoc Light::GetIntensity */
         float GetIntensity() const { return _internal->GetIntensity(); }
 
-        /** @copydoc Light::SetAttenuationRadius */
-        void SetAttenuationRadius(float radius) { _internal->SetAttenuationRadius(radius); }
-
-        /** @copydoc Light::GetAttenuationRadius */
-        float GetAttenuationRadius() const { return _internal->GetAttenuationRadius(); }
-
-        /** @copydoc Light::SetLinearAttenuation */
-        void SetLinearAttenuation(float attenuation) { _internal->SetLinearAttenuation(attenuation); }
-
-        /** @copydoc Light::GetLinearAttenuation */
-        float GetLinearAttenuation() const { return _internal->GetLinearAttenuation(); }
-
-        /** @copydoc Light::SetQuadraticAttenuation */
-        void SetQuadraticAttenuation(float attenuation) { _internal->SetQuadraticAttenuation(attenuation); }
-
-        /** @copydoc Light::GetQuadraticAttenuation */
-        float GetQuadraticAttenuation() const { return _internal->GetQuadraticAttenuation(); }
-
         /** @copydoc Light::SetSpotAngle */
         void SetSpotAngle(const Degree& spotAngle) { _internal->SetSpotAngle(spotAngle); }
 
@@ -106,10 +88,7 @@ namespace te
         // Only valid during construction
         LightType _type = LightType::Directional;
         Color _color = Color::White;
-        float _intensity = Light::DefaultAttRadius;
-        float _range = Light::DefaultAttRadius;
-        float _linearAtt = Light::DefaultLinearAtt;
-        float _quadraticAtt = Light::DefaultQuadraticAtt;
+        float _intensity = Light::DefaultIntensity;
         bool _castShadows = Light::DefaultCastShadow;
         Degree _spotAngle = Degree(Light::DefaultSpotAngle);
 
@@ -119,7 +98,7 @@ namespace te
         CLight();
 
         CLight(const HSceneObject& parent, LightType type = LightType::Directional, Color color = Color::White,
-            float intensity = Light::DefaultIntensity, float range = Light::DefaultAttRadius, bool castShadows = Light::DefaultCastShadow, 
+            float intensity = Light::DefaultIntensity, bool castShadows = Light::DefaultCastShadow, 
             Degree spotAngle = Degree(Light::DefaultSpotAngle));
 
         /** @copydoc Component::Instantiate */

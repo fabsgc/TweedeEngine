@@ -85,13 +85,9 @@ namespace te
         Vector3 Position;
         float   Intensity;
         Vector3 Direction;
-        float   AttenuationRadius;
-        Vector3 SpotAngles;
         float   BoundsRadius;
-        float   LinearAttenuation;
-        float   QuadraticAttenuation;
+        Vector3 SpotAngles;
         UINT32  CastShadows;
-        float   Padding2; // # PADDING
     };
 
     // ############ Per Camera

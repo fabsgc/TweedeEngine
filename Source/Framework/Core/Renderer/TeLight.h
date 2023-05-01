@@ -69,24 +69,6 @@ namespace te
         /** @copydoc SetColor */
         Color GetColor() const { return _color; }
 
-        /** Range at which the light contribution fades out to zero. */
-        void SetAttenuationRadius(float radius);
-
-        /**	@copydoc SetAttenuationRadius */
-        float GetAttenuationRadius() const { return _attRadius; }
-
-        /** Range at which the light contribution fades out to zero. */
-        void SetLinearAttenuation(float attenuation);
-
-        /**	@copydoc SetAttenuationRadius */
-        float GetLinearAttenuation() const { return _linearAttenuation; }
-
-        /** Range at which the light contribution fades out to zero. */
-        void SetQuadraticAttenuation(float attenuation);
-
-        /**	@copydoc SetAttenuationRadius */
-        float GetQuadraticAttenuation() const { return _quadraticAttenuation; }
-
         /**
          * Determines the power of the light source. This will be luminous flux for radial & spot lights,
          * luminance for directional lights with no area, and illuminance for directional lights with area (non-zero source
@@ -121,21 +103,14 @@ namespace te
          * @param[in]	intensity			Power of the light source. This will be luminous flux for radial & spot lights,
          *									luminance for directional lights with no area, and illuminance for directional
          *									lights with area (non-zero source radius).
-         * @param[in]	attRadius			Radius at which light's influence fades out to zero.
          * @param[in]	castShadows			Determines whether the light cast shadows.
          * @param[in]	spotAngle			Total angle covered by a spot light.
-         * @param[in]	spotFalloffAngle	Spot light angle at which falloff starts. Must be smaller than total angle.
          */
         static SPtr<Light> Create(LightType type = LightType::Directional, Color color = Color::White,
-            float intensity = DefaultIntensity, float attRadius = DefaultAttRadius, float linearAtt = DefaultLinearAtt,
-            float quadraticAtt = DefaultQuadraticAtt, bool castShadows = DefaultCastShadow,
-            Degree spotAngle = Degree(DefaultSpotAngle));
+            float intensity = DefaultIntensity, bool castShadows = DefaultCastShadow, Degree spotAngle = Degree(DefaultSpotAngle));
 
     public:
         static bool DefaultCastShadow;
-        static float DefaultAttRadius;
-        static float DefaultLinearAtt;
-        static float DefaultQuadraticAtt;
         static float DefaultIntensity;
         static float DefaultSpotAngle;
         static float DefaultShadowBias;
@@ -157,8 +132,7 @@ namespace te
         friend class CLight;
 
         Light();
-        Light(LightType type, Color color, float intensity, float attRadius, float linearAtt,
-            float quadraticAtt, bool castShadows, Degree spotAngle);
+        Light(LightType type, Color color, float intensity, bool castShadows, Degree spotAngle);
 
         /** @copydoc CoreObject::Initialize */
         void Initialize() override;
@@ -167,9 +141,6 @@ namespace te
         LightType _type; /**< Type of light that determines how are the rest of the parameters interpreted. */
         bool _castShadows; /**< Determines whether the light can cast shadows. */
         Color _color; /**< Color of the light. */
-        float _attRadius; /**< Radius at which light intensity falls off to zero. */
-        float _linearAttenuation; /**< Radius at which light intensity falls off to zero. */
-        float _quadraticAttenuation; /**< Radius at which light intensity falls off to zero. */
         float _intensity; /**< Power of the light source. @see SetIntensity. */
         Degree _spotAngle; /**< Total angle covered by a spot light. */
         Sphere _bounds; /**< Sphere that bounds the light area of influence. */

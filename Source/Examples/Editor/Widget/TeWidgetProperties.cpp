@@ -2215,12 +2215,9 @@ namespace te
     bool WidgetProperties::ShowLight(SPtr<Light> light)
     {
         bool hasChanged = false;
-        float attenuationRadius = light->GetAttenuationRadius();
-        float linearAttenuation = light->GetLinearAttenuation();
-        float quadraticAttenuation = light->GetQuadraticAttenuation();
         float intensity = light->GetIntensity();
         Degree spotAngle = light->GetSpotAngle();
-        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 120.0f;
 
         // Color
         {
@@ -2233,42 +2230,9 @@ namespace te
         }
         ImGui::Separator();
 
-        if (light->GetType() != LightType::Directional)
-        {
-            // Attenuation radius
-            {
-                if (ImGuiExt::RenderOptionFloat(attenuationRadius, "##light_attenuation_radius_option", "Att. Radius", 0.0f, 32.0f, width))
-                {
-                    hasChanged = true;
-                    light->SetAttenuationRadius(attenuationRadius);
-                }
-            }
-            ImGui::Separator();
-
-            // Linear attenuation
-            {
-                if (ImGuiExt::RenderOptionFloat(linearAttenuation, "##light_linear_attenuation_option", "Linear att.", 0.0f, 1.0f, width))
-                {
-                    hasChanged = true;
-                    light->SetLinearAttenuation(linearAttenuation);
-                }
-            }
-            ImGui::Separator();
-
-            // quadratic attenuation
-            {
-                if (ImGuiExt::RenderOptionFloat(quadraticAttenuation, "##light_quadratic_attenuation_option", "Quadratic att.", 0.0f, 1.0f, width))
-                {
-                    hasChanged = true;
-                    light->SetQuadraticAttenuation(quadraticAttenuation);
-                }
-            }
-            ImGui::Separator();
-        }
-
         // intensity
         {
-            if (ImGuiExt::RenderOptionFloat(intensity, "##light_intensity_option", "Intensity", 0.0f, 120000.0f, width))
+            if (ImGuiExt::RenderOptionFloat(intensity, "##light_intensity_option", "Intensity (Lux)", 0.f, 200000.f, width))
             {
                 hasChanged = true;
                 light->SetIntensity(intensity);
@@ -2281,7 +2245,7 @@ namespace te
         {
             {
                 float angle = spotAngle.ValueDegrees();
-                if (ImGuiExt::RenderOptionFloat(angle, "##light_spot_angle_option", "Spot angle", 0.0f, 179.0f, width))
+                if (ImGuiExt::RenderOptionFloat(angle, "##light_spot_angle_option", "Spot angle (Deg.)", 0.0f, 179.0f, width))
                 {
                     hasChanged = true;
                     light->SetSpotAngle(Degree(angle));

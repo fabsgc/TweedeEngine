@@ -59,13 +59,10 @@ struct LightData
     float3 Position;
     float  Intensity;
     float3 Direction;
-    float  AttenuationRadius;
-    float3 SpotAngles;
     float  BoundsRadius;
-    float  LinearAttenuation;
-    float  QuadraticAttenuation;
+    float3 SpotAngles;
+    
     uint   CastShadows;
-    float  Padding2;
 };
 
 struct PixelData
@@ -769,10 +766,10 @@ float3 DiffuseLobe(const PixelData pixel, float NoV, float NoL, float LoH)
  * V : view vector
  * N : surface normal
  * L : For Directional : -light.Direction
- *     For Point & Spot : ( light.Position - P );
+ *     For Point & Spot : ( light.Position - P ) / Distance;
  */
 float3 DoLighting(float3 V, float3 N , float3 L, const PixelData pixel, float NoV, const LightData light, 
-    float lightAttenuation, float occlusion) 
+    float lightIntensity, float lightAttenuation, float occlusion) 
 {
     float3 H = normalize(V + L);
 
@@ -794,9 +791,9 @@ float3 DoLighting(float3 V, float3 N , float3 L, const PixelData pixel, float No
 #if USE_CLEAR_COAT == 1
     float Fcc;
     float clearCoat = ClearCoatLobe(pixel, H, NoH, LoH, Fcc);
-    float attenuation = 1.0 - Fcc;
+    float clearCoatAttenuation = 1.0 - Fcc;
 
-    color *= attenuation * NoL;
+    color *= clearCoatAttenuation * NoL;
 
     // If the material has a normal map, we want to use the geometric normal
     // instead to avoid applying the normal map details to the clear coat layer
@@ -804,7 +801,7 @@ float3 DoLighting(float3 V, float3 N , float3 L, const PixelData pixel, float No
     color += clearCoat * clearCoatNoL;
 #endif // CLEAR_COAT
 
-    return (color * light.Color.rgb * light.Intensity * gCamera.Exposure * lightAttenuation * NoL);
+    return (color * light.Color.rgb * lightIntensity * gCamera.Exposure * lightAttenuation * NoL);
 }
 #endif // DO_DIRECT_LIGHTING
 
@@ -816,7 +813,7 @@ float3 DoDirectionalLight( LightData light, const PixelData pixel, float NoV, fl
 {
     float3 result = (float3)0;
     float3 L = -light.Direction;
-    result = DoLighting(V, N , L, pixel, NoV, light, 1.0, occlusion);
+    result = DoLighting(V, N , L, pixel, NoV, light, light.Intensity, 1.0, occlusion);
     return result;
 }
 #endif // DO_DIRECT_LIGHTING
@@ -825,7 +822,18 @@ float3 DoDirectionalLight( LightData light, const PixelData pixel, float NoV, fl
 // d : distance from light
 float DoAttenuation( LightData light, float d )
 {
-    return 1.0f / ( light.AttenuationRadius + light.LinearAttenuation * d + light.QuadraticAttenuation * d * d );
+    return 1.f / ( 4.f * 3.14159 * d * d);
+}
+#endif // DO_DIRECT_LIGHTING
+
+#if DO_DIRECT_LIGHTING == 1
+// L : ( light.Position - P ) / Distance;
+float DoSpotCone( LightData light, float3 L )
+{
+    float minCos = cos( light.SpotAngles.x );
+    float maxCos = ( minCos + 1.0f ) / 2.0f;
+    float cosAngle = dot( light.Direction.xyz, -L );
+    return smoothstep( minCos, maxCos, cosAngle ); 
 }
 #endif // DO_DIRECT_LIGHTING
 
@@ -841,10 +849,12 @@ float3 DoPointLight( LightData light, const PixelData pixel, float NoV, float3 V
     float distance = length(L);
     L = L / distance;
 
+    // intensity = lux * 1/(PI * 4)
+    float intensity = light.Intensity * 0.3183 * 0.25f;
     float attenuation = DoAttenuation( light, distance );
-    if(attenuation > 0.00001f)
+    if(attenuation > 0.0001f)
     {
-        result = DoLighting(V, N , L, pixel, NoV, light, attenuation, occlusion);
+        result = DoLighting(V, N , L, pixel, NoV, light, intensity, attenuation, occlusion);
     }
 
     return result;
@@ -863,13 +873,17 @@ float3 DoSpotLight( LightData light, const PixelData pixel, float NoV, float3 V,
     float distance = length(L);
     L = L / distance;
 
+    // intensity = lux * 1/(PI)
+    float intensity = light.Intensity  * 0.3183;
     float attenuation = DoAttenuation( light, distance );
-    if(attenuation > 0.00001f)
+    if(attenuation > 0.0001f)
     {
-
+        float spotIntensity = DoSpotCone( light, L );
+        if(spotIntensity > 0.001f)
+        {
+            result = DoLighting(V, N , L, pixel, NoV, light, light.Intensity, attenuation * spotIntensity, occlusion);
+        }
     }
-
-    // TODO PBR
 
     return result;
 }

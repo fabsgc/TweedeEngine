@@ -29,7 +29,7 @@ namespace te
 
         ImGui::PushID(id);
         if (width > 0.0f) ImGui::PushItemWidth(width);
-        ImGui::SliderFloat(text, &value, min, max, "%.2f");
+        ImGui::SliderFloat(text, &value, min, max, "%.3f");
         if (width > 0.0f) ImGui::PopItemWidth();
         ImGui::PopID();
         value = Math::Clamp(value, min, max);

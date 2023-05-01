@@ -4,11 +4,8 @@
 namespace te
 {
     bool Light::DefaultCastShadow = false;
-    float Light::DefaultAttRadius = 5.0f;
-    float Light::DefaultLinearAtt = 0.75f;
-    float Light::DefaultQuadraticAtt = 0.75f;
     float Light::DefaultIntensity = 500.f;
-    float Light::DefaultSpotAngle = 45.0f;
+    float Light::DefaultSpotAngle = 45.f;
     float Light::DefaultShadowBias = 0.5f;
 
     const UINT32 Light::LIGHT_CONE_NUM_SIDES = 20;
@@ -19,23 +16,17 @@ namespace te
         , _type(LightType::Directional)
         , _castShadows(DefaultCastShadow)
         , _color(Color::White)
-        , _attRadius(DefaultAttRadius)
-        , _linearAttenuation(DefaultLinearAtt)
-        , _quadraticAttenuation(DefaultQuadraticAtt)
         , _intensity(DefaultIntensity)
         , _spotAngle(DefaultSpotAngle)
         , _shadowBias(DefaultShadowBias)
     { }
 
-    Light::Light(LightType type, Color color, float intensity, float attRadius, float linearAtt,
-        float quadraticAtt, bool castShadows, Degree spotAngle)
+    Light::Light(LightType type, Color color, float intensity, 
+        bool castShadows, Degree spotAngle)
         : Serializable(TID_Light)
         , _type(type)
         , _castShadows(castShadows)
         , _color(color)
-        , _attRadius(attRadius)
-        , _linearAttenuation(linearAtt)
-        , _quadraticAttenuation(quadraticAtt)
         , _intensity(intensity)
         , _spotAngle(spotAngle)
         , _shadowBias(DefaultShadowBias)
@@ -139,26 +130,6 @@ namespace te
         SceneActor::SetTransform(transform);
         UpdateBounds();
     }
-
-    void Light::SetAttenuationRadius(float radius)
-    {
-        _attRadius = radius;
-        _markCoreDirty();
-        UpdateBounds();
-    }
-
-    void Light::SetLinearAttenuation(float attenuation)
-    {
-        _linearAttenuation = attenuation;
-        _markCoreDirty();
-    }
-
-    void Light::SetQuadraticAttenuation(float attenuation)
-    {
-        _quadraticAttenuation = attenuation;
-        _markCoreDirty();
-    }
-
     void Light::SetIntensity(float intensity)
     {
         _intensity = intensity;
@@ -169,24 +140,36 @@ namespace te
     {
         const Transform& tfrm = GetTransform();
 
+        // We assume that below 0.0001f, attenuation is equal to zero
+        // Attenuation is calculated using this formula : Att =  1 / (4 * PI * D²)
+        // We want D when Att = 0.0001f
+        // D = sqrt ( 1 / (4 * PI * Att ))
+        float maxRadius = 1.f;
+
+        if (_type == LightType::Radial || _type == LightType::Spot)
+        {
+            float minAtt = 0.0001f;
+            maxRadius = Math::Sqrt(1.f / ( 4 * Math::PI * minAtt ));
+        }
+
         switch (_type)
         {
         case LightType::Directional:
             _bounds = Sphere(tfrm.GetPosition(), std::numeric_limits<float>::infinity());
             break;
         case LightType::Radial:
-            _bounds = Sphere(tfrm.GetPosition(), _attRadius * 150.0f);
+            _bounds = Sphere(tfrm.GetPosition(), maxRadius);
             break;
         case LightType::Spot:
         {
             // Note: We could use the formula for calculating the circumcircle of a triangle (after projecting the cone),
             // but the radius of the sphere is the same as in the formula we use here, yet it is much simpler with no need
             // to calculate multiple determinants. Neither are good approximations when cone angle is wide.
-            Vector3 offset(0, 0, _attRadius * 75.0f);
+            Vector3 offset(0, 0, maxRadius * 0.5f);
 
             // Direction along the edge of the cone, on the YZ plane (doesn't matter if we used XZ instead)
             Degree angle = Math::Clamp(_spotAngle * 0.5f, Degree(-89), Degree(89));
-            Vector3 coneDir(0, Math::Tan(angle) * _attRadius * 150.0f, _attRadius * 150.0f);
+            Vector3 coneDir(0, Math::Tan(angle) * maxRadius, maxRadius);
 
             // Distance between the "corner" of the cone and our center, must be the radius (provided the center is at
             // the middle of the range)
@@ -201,10 +184,9 @@ namespace te
         }
     }
 
-    SPtr<Light> Light::Create(LightType type, Color color, float intensity, float attRadius,
-        float linearAtt, float quadraticAtt, bool castShadows, Degree spotAngle)
+    SPtr<Light> Light::Create(LightType type, Color color, float intensity, bool castShadows, Degree spotAngle)
     {
-        Light* handler = new (te_allocate<Light>()) Light(type, color, intensity, attRadius, linearAtt, quadraticAtt, castShadows, spotAngle);
+        Light* handler = new (te_allocate<Light>()) Light(type, color, intensity, castShadows, spotAngle);
         SPtr<Light> handlerPtr = te_core_ptr<Light>(handler);
         handlerPtr->SetThisPtr(handlerPtr);
         handlerPtr->Initialize();
