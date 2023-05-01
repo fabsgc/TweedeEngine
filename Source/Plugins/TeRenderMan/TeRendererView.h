@@ -3,6 +3,7 @@
 #include "TeRenderManPrerequisites.h"
 #include "TeRendererLight.h"
 #include "TeRendererDecal.h"
+#include "TeShadowRendering.h"
 #include "TeRendererRenderable.h"
 #include "Renderer/TeRenderer.h"
 #include "Renderer/TeRenderQueue.h"
@@ -402,6 +403,12 @@ namespace te
          */
         const VisibleLightData& GetVisibleLightData() const { return _visibleLightData; }
 
+        /** Returns the object responsible for rendering shadows for this view group. */
+        ShadowRendering& GetShadowRenderer() { return _shadowRenderer; }
+
+        /** Returns the object responsible for rendering shadows for this view group. */
+        const ShadowRendering& GetShadowRenderer() const { return _shadowRenderer; }
+
         /**
          * Updates visibility information for the provided scene objects, from the perspective of all views in this group,
          * and updates the render queues of each individual view. Use getVisibilityInfo() to retrieve the calculated
@@ -433,6 +440,8 @@ namespace te
         VisibilityInfo _visibility;
 
         VisibleLightData _visibleLightData;
+
+        ShadowRendering _shadowRenderer;
     };
 
     IMPLEMENT_GLOBAL_POOL(RenderableElement, STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE)

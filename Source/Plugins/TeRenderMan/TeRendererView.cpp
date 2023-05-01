@@ -657,7 +657,11 @@ namespace te
 
     RendererViewGroup::RendererViewGroup(RendererView** views, UINT32 numViews, SPtr<RenderManOptions> options)
         : _options(options)
+        , _shadowRenderer(2048)
     {
+        if (options)
+            _shadowRenderer.SetShadowMapSize(options->ShadowMapSize);
+
         SetViews(views, numViews);
     }
 
