@@ -130,7 +130,7 @@ PS_OUTPUT main( VS_OUTPUT IN )
         // ###################### ROUGHNESS MAP SAMPLING
 #if USE_METALLIC_ROUGHNESS_MAP == 1
         {
-            pRoughness = min(max(MIN_ROUGHNESS, metallicRougness.g), MAX_ROUGHNESS);
+            pRoughness = min(max(MIN_ROUGHNESS, MetallicRoughnessMap.Sample(AnisotropicSampler, uv0).g), MAX_ROUGHNESS);
             roughness = pRoughness * pRoughness;
         }
 #elif USE_ROUGHNESS_MAP == 1
