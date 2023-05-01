@@ -24,6 +24,7 @@ namespace te
         gPerObjectParamDef.gHasAnimation.Set(buffer, (UINT32)renderable->IsAnimated() ? 1 : 0);
         gPerObjectParamDef.gWriteVelocity.Set(buffer, (UINT32)renderable->GetWriteVelocity() ? 1 : 0);
         gPerObjectParamDef.gCastLights.Set(buffer, (UINT32)renderable->GetCastLights() ? 1 : 0);
+        gPerObjectParamDef.gReceiveShadows.Set(buffer, (UINT32)renderable->GetReceiveShadows() ? 1 : 0);
     }
 
     void PerObjectBuffer::UpdatePerInstance(SPtr<GpuParamBlockBuffer>& perObjectBuffer, 

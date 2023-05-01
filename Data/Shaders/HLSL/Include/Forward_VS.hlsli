@@ -38,6 +38,8 @@ cbuffer PerObjectBuffer : register(b2)
     uint   gHasAnimation;
     uint   gWriteVelocity;
     uint   gCastLights;
+    uint   gReceiveShadows;
+    float3 gPadding;
 }
 
 // #################### HELPER FUNCTIONS

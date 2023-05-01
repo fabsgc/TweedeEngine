@@ -258,12 +258,6 @@ namespace te
         _markCoreDirty();
     }
 
-    void Renderable::SetUseForLightProbes(bool use)
-    {
-        _properties.UseForLightProbes = use;
-        _markCoreDirty();
-    }
-
     void Renderable::SetAnimation(const SPtr<Animation>& animation)
     {
         _animation = animation;

@@ -95,11 +95,35 @@ namespace te
         /** @copydoc Renderable::GetWriteVelocity */
         bool GetWriteVelocity() const { return _internal->GetWriteVelocity(); }
 
+        /** @copydoc Renderable::SetCastShadows */
+        void SetCastShadows(bool castShadows) { _internal->SetCastShadows(castShadows); }
+
+        /** @copydoc SetCastShadows */
+        bool GetCastShadows() const { return _internal->GetCastShadows(); }
+
+        /** @copydoc Renderable::SetReceiveShadows */
+        void SetReceiveShadows(bool receiveShadows) { _internal->SetReceiveShadows(receiveShadows); }
+
+        /** @copydoc SetCastShadows */
+        bool GetReceiveShadows() const { return _internal->GetReceiveShadows(); }
+
+        /** @copydoc Renderable::SetCastLight */
+        void SetCastLight(bool castLights) { _internal->SetCastLight(castLights); }
+
+        /** @copydoc SetCastLights */
+        bool GetCastLights() const { return _internal->GetCastLights(); }
+
         /** @copydoc Renderable::SetUseForLightProbes */
         void SetUseForLightProbes(bool use) { _internal->SetUseForLightProbes(use); }
 
         /** @copydoc Renderable::GetUseForLightProbes */
         float GetUseForLightProbes() const { return _internal->GetUseForLightProbes(); }
+
+        /** @copydoc Renderable::SetUseForZPrepass */
+        void SetUseForZPrepass(bool use) { _internal->SetUseForZPrepass(use); }
+
+        /** @copydoc Renderable::GetUseForZPrepass */
+        float GetUseForZPrepass() const { return _internal->GetUseForZPrepass(); }
 
         /** @copydoc Renderable::SetLayer */
         void SetLayer(UINT64 layer) { _internal->SetLayer(layer); }

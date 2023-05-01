@@ -1367,6 +1367,7 @@ namespace te
         _light = _sceneLightSO->AddComponent<CLight>(LightType::Directional);
         _light->Initialize();
         _light->SetIntensity(5000.f);
+        _light->SetCastShadows(true);
 
         Quaternion rot;
         rot.FromEulerAngles(Radian(Degree(-21.69f)), Radian(Degree(36.4f)), Radian(Degree(15.06f)));
@@ -1386,7 +1387,12 @@ namespace te
             _renderable->SetMaterial(_sphereMaterial);
             _renderable->SetName("Renderable");
             _renderable->Initialize();
-            _renderable->GetInternal()->SetUseForZPrepass(true);
+            _renderable->SetCastLight(true);
+            _renderable->SetCastShadows(true);
+            _renderable->SetReceiveShadows(true);
+            _renderable->SetUseForZPrepass(true);
+            _renderable->SetUseForLightProbes(true);
+            _renderable->SetUseForLightProbes(true);
 
             _sceneRenderableSO->Rotate(Vector3::UNIT_Y, Radian(Math::HALF_PI));
             _sceneRenderableSO->Move(Vector3(0.0f, -1.0f, 0.0f));

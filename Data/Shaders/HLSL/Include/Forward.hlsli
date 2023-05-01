@@ -74,4 +74,4 @@ float2 FlipUV(float2 coord)
     return float2(coord.x - 1.0f, coord.y);
 }
 
-#endif // __FOWARD__
+#endif // __FORWARD__

@@ -161,6 +161,8 @@ namespace te
         TE_PARAM_BLOCK_ENTRY(UINT32, gHasAnimation)
         TE_PARAM_BLOCK_ENTRY(UINT32, gWriteVelocity)
         TE_PARAM_BLOCK_ENTRY(UINT32, gCastLights)
+        TE_PARAM_BLOCK_ENTRY(UINT32, gReceiveShadows)
+        TE_PARAM_BLOCK_ENTRY(Vector3, gPadding)
     TE_PARAM_BLOCK_END
 
     extern PerObjectParamDef gPerObjectParamDef;

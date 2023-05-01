@@ -65,7 +65,7 @@ VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
         OUT.Other.x = (gWriteVelocity == 1) ? 1.0 : 0.0;
 #endif
         OUT.Other.y = (gCastLights == 1) ? 1.0 : 0.0;
-        OUT.Other.z = (gCamera.UseSRGB == 1) ? 1.0 : 0.0;
+        OUT.Other.z = (gReceiveShadows == 1) ? 1.0 : 0.0;
     }
     else
     {

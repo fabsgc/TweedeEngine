@@ -494,14 +494,15 @@ namespace te
 
         Vector3I lightCounts;
         const PerLightData* lights[STANDARD_FORWARD_MAX_NUM_LIGHTS];
-        const auto numRenderables = (UINT32)inputs.Scene.Renderables.size();
-        for (UINT32 i = 0; i < numRenderables; i++)
+        RenderQueue* opaqueElements = inputs.View.GetOpaqueQueue().get();
+
+        for (auto& element : opaqueElements->GetSortedElements())
         {
-            if (!inputs.Scene.Renderables[i]->RenderablePtr->GetCastLights())
+            if (!element.RenderElem->Properties->CastLights)
                 continue;
 
-            // Compute list of lights that influence renderables
-            const Bounds& bounds = inputs.Scene.RenderableCullInfos[i].Boundaries;
+            // Compute list of lights that influence this Mesh
+            const Bounds& bounds = element.RenderElem->MeshElem->GetProperties().GetBounds();
             inputs.ViewGroup.GetVisibleLightData().GatherInfluencingLights(bounds, lights, lightCounts);
         }
 

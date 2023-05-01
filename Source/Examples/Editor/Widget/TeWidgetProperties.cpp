@@ -2431,6 +2431,17 @@ namespace te
         }
         ImGui::Separator();
 
+        // use for light probes
+        {
+            bool useForLightProbes = properties.UseForLightProbes;
+            if (ImGuiExt::RenderOptionBool(useForLightProbes, "##renderable_properties_use_for_light_probes_option", "Use For Light Probes"))
+            {
+                hasChanged = true;
+                renderable->SetReceiveShadows(useForLightProbes);
+            }
+        }
+        ImGui::Separator();
+
         // cast lights
         {
             bool castLights = properties.CastLights;
@@ -2438,17 +2449,6 @@ namespace te
             {
                 hasChanged = true;
                 renderable->SetCastLight(castLights);
-            }
-        }
-        ImGui::Separator();
-
-        // use for dynamic env mapping
-        {
-            bool useForLightProbes = properties.UseForLightProbes;
-            if (ImGuiExt::RenderOptionBool(useForLightProbes, "##renderable_properties_dynamic_env_mapping_option", "Use for Light Probes"))
-            {
-                hasChanged = true;
-                renderable->SetUseForLightProbes(useForLightProbes);
             }
         }
         ImGui::Separator();

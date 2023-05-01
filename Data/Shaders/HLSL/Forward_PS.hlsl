@@ -15,7 +15,9 @@ PS_OUTPUT main( VS_OUTPUT IN )
     bool		writeVelocity				= (bool)IN.Other.x;
 #endif // WRITE_VELOCITY
     bool		castLight					= (bool)IN.Other.y;
-    bool		useSRGB						= (bool)IN.Other.z;
+    bool		receiveShadows				= (bool)IN.Other.z;
+
+    bool		useSRGB						= gCamera.UseSRGB;
 
     float3		baseColor					= GetColor(useSRGB, true, gMaterial.BaseColor.rgb);
     float3		emissive					= GetColor(useSRGB, true, gMaterial.Emissive.rgb);

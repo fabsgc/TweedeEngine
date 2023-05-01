@@ -161,6 +161,12 @@ namespace te
         /** @copydoc SetCastLights */
         bool GetCastLights() const { return _properties.CastLights; }
 
+        /** This object can be used for light probes generation. */
+        void SetUseForLightProbes(bool use) { _properties.UseForLightProbes = use; _markCoreDirty(); }
+
+        /** @copydoc SetUseForLightProbes */
+        bool GetUseForLightProbes() const { return _properties.UseForLightProbes; }
+
         /** Determines if this object is used for Z Prepass */
         void SetUseForZPrepass(bool useForZPrepass) { _properties.UseForZPrepass = useForZPrepass; _markCoreDirty(); }
 
@@ -178,12 +184,6 @@ namespace te
 
         /** @copydoc SetCullDistanceFactor */
         float GetCullDistanceFactor() const { return _properties.CullDistanceFactor; }
-
-        /** This object can be used for light probes generation. */
-        void SetUseForLightProbes(bool use);
-
-        /** @copydoc SetUseForLightProbes */
-        bool GetUseForLightProbes() const { return _properties.UseForLightProbes; }
 
         /**	Returns the transform matrix that is applied to the object when its being rendered. */
         Matrix4 GetMatrix() const { return _tfrmMatrix; }
