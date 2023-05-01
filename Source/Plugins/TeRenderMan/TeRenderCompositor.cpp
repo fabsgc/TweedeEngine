@@ -984,7 +984,7 @@ namespace te
 
     void RCNodeGaussianDOF::Render(const RenderCompositorNodeInputs& inputs)
     { 
-        // TODO
+        // TODO Gaussian DOF
     }
 
     void RCNodeGaussianDOF::Clear()

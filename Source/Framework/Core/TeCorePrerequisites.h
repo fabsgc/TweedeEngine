@@ -253,6 +253,7 @@ namespace te
     class TextureCubeDownsampleMat;
     class IBLUtility;
     class GpuResourcePool;
+    class Exposure;
 
     class SceneActor;
     class SceneManager;

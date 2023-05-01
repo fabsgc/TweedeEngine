@@ -264,7 +264,7 @@ namespace te
             // Render only shadow maps for lights needed for this view
             // If a shadow map has been drawn by a previous view, do not draw it again
             {
-                // TODO
+                // TODO Shadows
             }
         }
 
@@ -512,12 +512,12 @@ namespace te
 
     void RenderMan::SetLastShadowMapTexture(Light* light, SPtr<Texture> depthBuffer) const
     {
-        // TODO
+        // TODO Shadows
     }
 
     SPtr<Texture> RenderMan::GetLastShadowMapTexture(SPtr<Light> light) const
     {
-        return nullptr;
+        return nullptr; // TODO Shadows
     }
 
     SPtr<RenderMan> gRenderMan()

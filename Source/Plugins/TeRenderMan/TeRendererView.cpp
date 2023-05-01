@@ -733,6 +733,8 @@ namespace te
         // efficient to do it per view. Additionally I'm using a single GPU buffer to hold their information, which is
         // then updated when each view group is rendered. It might be better to keep one buffer reserved per-view.
         _visibleLightData.Update(sceneInfo, *this);
+
+        // TODO calculate Decal visibility
     }
 
     void RendererViewGroup::SetAllObjectsAsVisible(const SceneInfo& sceneInfo)
@@ -754,13 +756,23 @@ namespace te
             return;
 
         // Calculate renderable visibility per view
-        _visibility.Renderables.resize(sceneInfo.Renderables.size(), RenderableVisibility());
-        _visibility.Renderables.assign(sceneInfo.Renderables.size(), RenderableVisibility());
+        _visibility.Renderables.resize(sceneInfo.Renderables.size(), RenderableVisibility(true));
+        _visibility.Renderables.assign(sceneInfo.Renderables.size(), RenderableVisibility(true));
 
-        for (UINT32 i = 0; i < (UINT32)_visibility.Renderables.size(); i++)
-        {
-            _visibility.Renderables[i].Visible = true;
-        }
+        // Calculate light visibility for all views
+        const auto numRadialLights = (UINT32)sceneInfo.RadialLights.size();
+        _visibility.RadialLights.resize(numRadialLights, true);
+        _visibility.RadialLights.assign(numRadialLights, true);
+
+        const auto numSpotLights = (UINT32)sceneInfo.SpotLights.size();
+        _visibility.SpotLights.resize(numSpotLights, true);
+        _visibility.SpotLights.assign(numSpotLights, true);
+
+        const auto numDirectionalLights = (UINT32)sceneInfo.DirectionalLights.size();
+        _visibility.DirectionalLights.resize(numDirectionalLights, true);
+        _visibility.DirectionalLights.assign(numDirectionalLights, true);
+
+        // TODO calculate Decal visibility
     }
 
     void RendererViewGroup::GenerateInstanced(const SceneInfo& sceneInfo, RenderManInstancing instancingMode)

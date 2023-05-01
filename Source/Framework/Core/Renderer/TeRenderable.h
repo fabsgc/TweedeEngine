@@ -119,7 +119,7 @@ namespace te
         void SetLayer(UINT32 layer);
 
         /** @copydoc SetLayer */
-        UINT64 GetLayer() const { return _layer; }
+        UINT32 GetLayer() const { return _layer; }
 
         /**
          * If enabled this renderable will write per-pixel velocity information when rendered. This is required for effects

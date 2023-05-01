@@ -11,6 +11,7 @@ set (TE_RENDERMAN_INC_NOFILTER
     "TeRendererDecal.h"
     "TeRenderManIBLUtility.h"
     "TeRendererTextures.h"
+    "TeShadowRendering.h"
 )
 
 set (TE_RENDERERMAN_SRC_NOFILTER
@@ -25,6 +26,7 @@ set (TE_RENDERERMAN_SRC_NOFILTER
     "TeRendererDecal.cpp"
     "TeRenderManIBLUtility.cpp"
     "TeRendererTextures.cpp"
+    "TeShadowRendering.cpp"
 )
 
 set (TE_RENDERMAN_INC_POSTPROCESSING

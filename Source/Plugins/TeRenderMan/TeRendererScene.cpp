@@ -502,7 +502,7 @@ namespace te
         if (renElement.MaterialElem == nullptr)
             renElement.MaterialElem = Material::Create(DefaultDecalMat::Get()->GetShader()).GetInternalPtr();
 
-        // TODO
+        // TODO decal
     }
 
     void RendererScene::UpdateDecal(Decal* decal)
@@ -547,12 +547,12 @@ namespace te
 
     void RendererScene::BatchRenderables()
     { 
-        // TODO
+        // TODO batch renderables
     }
 
     void RendererScene::DestroyBatchedRenderables()
     {
-        // TODO
+        // TODO batch renderables
     }
 
     void RendererScene::SetMeshData(RendererRenderable* rendererRenderable, Renderable* renderable)

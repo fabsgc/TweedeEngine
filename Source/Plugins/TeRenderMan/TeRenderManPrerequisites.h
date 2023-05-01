@@ -264,4 +264,6 @@ namespace te
     class RendererLight;
     class RenderableElement;
     class DecalRenderElement;
+
+    class ShadowRendering;
 }

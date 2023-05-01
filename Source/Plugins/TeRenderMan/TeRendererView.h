@@ -90,6 +90,11 @@ namespace te
     {
         bool Visible = false;
         bool Instanced = false;
+
+        RenderableVisibility(bool visible = false, bool instanced = false)
+            : Visible(visible)
+            , Instanced(instanced)
+        { }
     };
 
     struct VisibilityInfo
