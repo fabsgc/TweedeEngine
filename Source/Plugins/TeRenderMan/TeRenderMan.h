@@ -148,11 +148,11 @@ namespace te
         /** @copydoc Renderer::GetLastRenderTexture */
         SPtr<Texture> GetLastRenderTexture(RenderOutputType type) const override;
 
-        /** @copydoc Renderer::SetLastLightMapTexture */
-        void SetLastLightMapTexture(Light* light, SPtr<Texture> depthBuffer) const override;
+        /** @copydoc Renderer::SetLastShadowMapTexture */
+        void SetLastShadowMapTexture(Light* light, SPtr<Texture> depthBuffer) const override;
 
-        /** @copydoc Renderer::GetLastLightMapTexture */
-        SPtr<Texture> GetLastLightMapTexture(SPtr<Light> light) const override;
+        /** @copydoc Renderer::GetLastShadowMapTexture */
+        SPtr<Texture> GetLastShadowMapTexture(SPtr<Light> light) const override;
 
     private:
         SPtr<RendererScene> _scene;

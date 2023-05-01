@@ -210,9 +210,9 @@ namespace te
         virtual SPtr<Texture> GetLastRenderTexture(RenderOutputType type) const = 0;
 
         /**
-         * Save last generated corresponding rendered light map texture until next call to RenderAll()
+         * Save last generated corresponding rendered shadow map texture until next call to RenderAll()
          */
-        virtual void SetLastLightMapTexture(Light* light, SPtr<Texture> depthBuffer) const = 0;
+        virtual void SetLastShadowMapTexture(Light* light, SPtr<Texture> depthBuffer) const = 0;
 
         /**
          * Retrieve last generated light map corresponding to the light in parameter
@@ -220,7 +220,7 @@ namespace te
          * 
          * @note be careful, this texture will only be valid until next call to renderer
          */
-        virtual SPtr<Texture> GetLastLightMapTexture(SPtr<Light> light) const = 0;
+        virtual SPtr<Texture> GetLastShadowMapTexture(SPtr<Light> light) const = 0;
     };
 
     /**	Provides easy access to Renderer. */

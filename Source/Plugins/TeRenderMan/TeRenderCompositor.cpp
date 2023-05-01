@@ -491,22 +491,6 @@ namespace te
 
             RenderTargetTex = RenderTexture::Create(gbufferDesc);
         }
-
-        Vector3I lightCounts;
-        const PerLightData* lights[STANDARD_FORWARD_MAX_NUM_LIGHTS];
-        RenderQueue* opaqueElements = inputs.View.GetOpaqueQueue().get();
-
-        for (auto& element : opaqueElements->GetSortedElements())
-        {
-            if (!element.RenderElem->Properties->CastLights)
-                continue;
-
-            // Compute list of lights that influence this Mesh
-            const Bounds& bounds = element.RenderElem->MeshElem->GetProperties().GetBounds();
-            inputs.ViewGroup.GetVisibleLightData().GatherInfluencingLights(bounds, lights, lightCounts);
-        }
-
-        PerLightsBuffer::UpdatePerLights(lights, lightCounts.x + lightCounts.y + lightCounts.z);
     }
 
     void RCNodeGpuInitializationPass::Clear()

@@ -15,6 +15,7 @@
 #include "Profiling/TeProfilerGPU.h"
 #include "Utility/TeTime.h"
 #include "Gui/TeGuiAPI.h"
+#include "Mesh/TeMesh.h"
 
 namespace te
 {
@@ -208,51 +209,69 @@ namespace te
     bool RenderMan::RenderSingleView(RendererViewGroup& viewGroup, RendererView& view, const FrameInfo& frameInfo)
     {
         bool needs3DRender = false;
-        UINT32 numViews = viewGroup.GetNumViews();
-        for (UINT32 i = 0; i < numViews; i++)
-        {
-            if (viewGroup.GetView(i)->ShouldDraw3D())
-            {
-                needs3DRender = true;
-                break;
-            }
-        }
+        bool anythingDrawn = false;
+
+        if (!view.ShouldDraw())
+            return anythingDrawn;
+        
+        if (view.ShouldDraw3D())
+            needs3DRender = true;
 
         if (needs3DRender)
         {
             const SceneInfo& sceneInfo = _scene->GetSceneInfo();
             const VisibilityInfo& visibility = viewGroup.GetVisibilityInfo();
 
-            // Update various buffers required by each renderable
-            UINT32 numRenderables = (UINT32)sceneInfo.Renderables.size();
-            for (UINT32 i = 0; i < numRenderables; i++)
-            {
-                if (!visibility.Renderables[i].Visible && !visibility.Renderables[i].Instanced)
-                    continue;
+            Vector3I lightCounts;
+            const PerLightData* lights[STANDARD_FORWARD_MAX_NUM_LIGHTS];
 
-                _scene->PrepareVisibleRenderable(i, frameInfo);
+            // Find influencing lights for this view
+            // Update Light Buffers
+            {
+                for (const auto& element : view.GetOpaqueQueue()->GetSortedElements())
+                {
+                    if (!element.RenderElem->Properties->CastLights)
+                        continue;
+                    if ((lightCounts.x + lightCounts.y + lightCounts.z) == STANDARD_FORWARD_MAX_NUM_LIGHTS)
+                        break;
+
+                    // Compute list of lights that influence this Mesh
+                    const Bounds& bounds = element.RenderElem->MeshElem->GetProperties().GetBounds();
+                    viewGroup.GetVisibleLightData().GatherInfluencingLights(bounds, lights, lightCounts);
+                }
+                PerLightsBuffer::UpdatePerLights(lights, lightCounts.x + lightCounts.y + lightCounts.z);
+            }
+
+            // Render shadow maps
+            // Render only shadow maps for lights needed for this view
+            // If a shadow map has been drawn by a previous view, do not draw it again
+            {
+                // TODO
+            }
+
+            // Update various buffers required by each renderable
+            {
+                UINT32 numRenderables = (UINT32)sceneInfo.Renderables.size();
+                for (UINT32 i = 0; i < numRenderables; i++)
+                {
+                    if (!visibility.Renderables[i].Visible && !visibility.Renderables[i].Instanced)
+                        continue;
+
+                    _scene->PrepareVisibleRenderable(i, frameInfo);
+                }
             }
         }
 
-        bool anythingDrawn = false;
-        for (UINT32 i = 0; i < numViews; i++)
+        const RenderSettings& settings = view.GetRenderSettings();
+        if (settings.OverlayOnly)
         {
-            RendererView* currView = viewGroup.GetView(i);
-
-            if (!currView->ShouldDraw())
-                continue;
-
-            const RenderSettings& settings = currView->GetRenderSettings();
-            if (settings.OverlayOnly)
-            {
-                if (RenderOverlay(*currView, frameInfo))
-                    anythingDrawn = true;
-            }
-            else
-            {
-                RenderSingleViewInternal(viewGroup, *currView, frameInfo);
+            if (RenderOverlay(view, frameInfo))
                 anythingDrawn = true;
-            }
+        }
+        else if (needs3DRender)
+        {
+            RenderSingleViewInternal(viewGroup, view, frameInfo);
+            anythingDrawn = true;
         }
 
         return anythingDrawn;
@@ -485,12 +504,12 @@ namespace te
         return nullptr;
     }
 
-    void RenderMan::SetLastLightMapTexture(Light* light, SPtr<Texture> depthBuffer) const
+    void RenderMan::SetLastShadowMapTexture(Light* light, SPtr<Texture> depthBuffer) const
     {
         // TODO
     }
 
-    SPtr<Texture> RenderMan::GetLastLightMapTexture(SPtr<Light> light) const
+    SPtr<Texture> RenderMan::GetLastShadowMapTexture(SPtr<Light> light) const
     {
         return nullptr;
     }
