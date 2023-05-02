@@ -94,19 +94,19 @@ namespace te
 
         if (_oldActive != _active)
         {
-            if (_active)
+            if (_renderer)
             {
-                if (_renderer) _renderer->NotifySkyboxAdded(this);
-            }
-            else
-            {
-                if (_renderer) _renderer->NotifySkyboxRemoved(this);
+                if (_active) _renderer->NotifySkyboxAdded(this);
+                else _renderer->NotifySkyboxRemoved(this);
             }
         }
         else if ((dirtyFlag & ((UINT32)SkyboxDirtyFlag::Texture)) != 0)
         {
-            if (_renderer) _renderer->NotifySkyboxRemoved(this);
-            if (_renderer) _renderer->NotifySkyboxAdded(this);
+            if (_renderer) 
+            {
+                _renderer->NotifySkyboxRemoved(this);
+                _renderer->NotifySkyboxAdded(this);
+            }
         }
 
         _oldActive = _active;

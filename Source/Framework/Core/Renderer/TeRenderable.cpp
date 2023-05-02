@@ -530,45 +530,33 @@ namespace te
 
             if (_oldActive != GetActive())
             {
-                if (_active)
+                if (_renderer)
                 {
-                    if (_renderer) _renderer->NotifyRenderableAdded(this);
+                    if (_active) _renderer->NotifyRenderableAdded(this);
+                    else _renderer->NotifyRenderableRemoved(this);
                 }
-                else
-                {
-                    if (_renderer) _renderer->NotifyRenderableRemoved(this);
-                }
+
             }
-            else
+            else if (_renderer)
             {
-                if (_renderer) _renderer->NotifyRenderableRemoved(this);
-                if (_renderer) _renderer->NotifyRenderableAdded(this);
+                _renderer->NotifyRenderableRemoved(this);
+                _renderer->NotifyRenderableAdded(this);
             }
         }
         else if ((dirtyFlag & (UINT32)ActorDirtyFlag::Mobility) != 0)
         {
             // TODO I'm not sure for that, we might check if SceneActor is active
-            if (_active)
+            if (_active && _renderer)
             {
-                if (_renderer) _renderer->NotifyRenderableRemoved(this);
-                if (_renderer) _renderer->NotifyRenderableAdded(this);
+                _renderer->NotifyRenderableRemoved(this);
+                _renderer->NotifyRenderableAdded(this);
             }
         }
-        else if ((dirtyFlag & (UINT32)ActorDirtyFlag::Transform) != 0)
+        else if ((dirtyFlag & (UINT32)ActorDirtyFlag::Transform) != 0 ||
+                 (dirtyFlag & (UINT32)ActorDirtyFlag::GpuParams) != 0)
         {
-            if (_active)
-            {
-                if (_renderer) _renderer->NotifyRenderableUpdated(this);
-            }
-        }
-        else if ((dirtyFlag & (UINT32)ActorDirtyFlag::GpuParams) != 0)
-        {
-            CreateAnimationBuffers();
-
-            if (_active)
-            {
-                if (_renderer) _renderer->NotifyRenderableUpdated(this);
-            }
+            if (_active && _renderer)
+                _renderer->NotifyRenderableUpdated(this, dirtyFlag);
         }
 
         _oldActive = _active;

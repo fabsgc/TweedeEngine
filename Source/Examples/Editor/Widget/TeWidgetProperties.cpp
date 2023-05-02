@@ -2261,6 +2261,7 @@ namespace te
         bool hasChanged = false;
         bool castShadows = light->GetCastShadows();
         float shadowBias = light->GetShadowBias();
+        Light::CastShadowsType castShadowsType = light->GetCastShadowsType();
         const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
 
         // Cast shadows
@@ -2273,12 +2274,42 @@ namespace te
         }
         ImGui::Separator();
 
-        // Shadow bias
+        if (castShadows)
         {
-            if (ImGuiExt::RenderOptionFloat(shadowBias, "##light_shadow_bias_option", "Shadow bias", 0.0f, 5.0f, width))
+            static ImGuiExt::ComboOptions<Light::CastShadowsType> castShadowsTypeOptions;
+            if (castShadowsTypeOptions.Options.size() == 0)
             {
-                hasChanged = true;
-                light->SetShadowBias(shadowBias);
+                castShadowsTypeOptions.AddOption(Light::CastShadowsType::Static, "Static");
+                castShadowsTypeOptions.AddOption(Light::CastShadowsType::Dynamic, "Dynamic");
+                castShadowsTypeOptions.AddOption(Light::CastShadowsType::Both, "Both");
+            }
+
+            // Cast Shadows Type
+            {
+                if (ImGuiExt::RenderOptionCombo<Light::CastShadowsType>(&castShadowsType, "##light_cast_shadows_type_option", "Cast Type", castShadowsTypeOptions, width))
+                {
+                    light->SetCastShadowsType(castShadowsType);
+                    hasChanged = true;
+                }
+            }
+
+            // Shadow bias
+            {
+                if (ImGuiExt::RenderOptionFloat(shadowBias, "##light_shadow_bias_option", "Shadow bias", 0.0f, 5.0f, width))
+                {
+                    hasChanged = true;
+                    light->SetShadowBias(shadowBias);
+                }
+            }
+
+            if (castShadowsType == Light::CastShadowsType::Static)
+            {
+                // Force Shadow Redraw
+                if (ImGui::Button(ICON_FA_SCREWDRIVER " Redraw Shadow", ImVec2(ImGui::GetWindowContentRegionWidth(), 25.0f)))
+                {
+                    light->ForceShadowRedraw();
+                    hasChanged = true;
+                }
             }
         }
 

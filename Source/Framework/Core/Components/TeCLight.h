@@ -60,6 +60,15 @@ namespace te
         /** @copydoc Light::SetShadowBias */
         float GetShadowBias() const { return _internal->GetShadowBias(); }
 
+        /** @copydoc Light::SetCastShadowsType */
+        void SetCastShadowsType(Light::CastShadowsType castShadowsType) { _internal->SetCastShadowsType(castShadowsType); }
+
+        /** @copydoc Light::SetCastShadowsType */
+        Light::CastShadowsType GetCastShadowsType() const { return _internal->GetCastShadowsType(); }
+
+        /** @copydoc Light::ForceShadowRedraw */
+        void ForceShadowRedraw() { _internal->ForceShadowRedraw(); }
+
         /** @copydoc Light::GetBounds */
         Sphere GetBounds() const;
 
@@ -89,8 +98,9 @@ namespace te
         Light::Type _type = Light::Type::Directional;
         Color _color = Color::White;
         float _intensity = Light::DefaultIntensity;
-        bool _castShadows = Light::DefaultCastShadow;
+        bool _castShadows = Light::DefaultCastShadows;
         Degree _spotAngle = Degree(Light::DefaultSpotAngle);
+        Light::CastShadowsType _castShadowsType = Light::DefaultCastShadowsType;
 
     protected:
         friend class SceneObject;
@@ -98,8 +108,8 @@ namespace te
         CLight();
 
         CLight(const HSceneObject& parent, Light::Type type = Light::Type::Directional, Color color = Color::White,
-            float intensity = Light::DefaultIntensity, bool castShadows = Light::DefaultCastShadow, 
-            Degree spotAngle = Degree(Light::DefaultSpotAngle));
+            float intensity = Light::DefaultIntensity, bool castShadows = Light::DefaultCastShadows,
+            Light::CastShadowsType castShadowsType = Light::DefaultCastShadowsType, Degree spotAngle = Degree(Light::DefaultSpotAngle));
 
         /** @copydoc Component::Instantiate */
         void Instantiate() override;

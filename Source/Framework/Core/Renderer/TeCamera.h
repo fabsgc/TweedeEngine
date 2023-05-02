@@ -33,7 +33,7 @@ namespace te
         // First few bits reserved by ActorDirtyFlag
         RenderSettings = 1 << 5,
         Redraw = 1 << 6,
-        Viewport = 1 << 31
+        Viewport = 1 << 7
     };
 
     /**

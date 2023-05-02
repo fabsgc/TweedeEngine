@@ -3,10 +3,11 @@
 
 namespace te
 {
-    bool Light::DefaultCastShadow = false;
+    bool Light::DefaultCastShadows = false;
     float Light::DefaultIntensity = 500.f;
     float Light::DefaultSpotAngle = 45.f;
     float Light::DefaultShadowBias = 0.5f;
+    Light::CastShadowsType Light::DefaultCastShadowsType = Light::CastShadowsType::Both;
 
     const UINT32 Light::LIGHT_CONE_NUM_SIDES = 20;
     const UINT32 Light::LIGHT_CONE_NUM_SLICES = 10;
@@ -14,15 +15,16 @@ namespace te
     Light::Light()
         : Serializable(TID_Light)
         , _type(Light::Type::Directional)
-        , _castShadows(DefaultCastShadow)
+        , _castShadows(DefaultCastShadows)
         , _color(Color::White)
         , _intensity(DefaultIntensity)
         , _spotAngle(DefaultSpotAngle)
         , _shadowBias(DefaultShadowBias)
+        , _castShadowsType(DefaultCastShadowsType)
     { }
 
     Light::Light(Light::Type type, Color color, float intensity, 
-        bool castShadows, Degree spotAngle)
+        bool castShadows, Light::CastShadowsType castShadowsType, Degree spotAngle)
         : Serializable(TID_Light)
         , _type(type)
         , _castShadows(castShadows)
@@ -30,6 +32,7 @@ namespace te
         , _intensity(intensity)
         , _spotAngle(spotAngle)
         , _shadowBias(DefaultShadowBias)
+        , _castShadowsType(castShadowsType)
     { }
 
     Light::~Light()
@@ -62,42 +65,44 @@ namespace te
         {
             if (_oldActive != _active)
             {
-                if (_active)
+                if (_renderer) 
                 {
-                    if (_renderer) _renderer->NotifyLightAdded(this);
-                }
-                else
-                {
-                    Light::Type newType = _type;
-                    _type = oldType;
-                    if (_renderer) _renderer->NotifyLightRemoved(this);
-                    _type = newType;
+                    if (_active)
+                    {
+                        _renderer->NotifyLightAdded(this);
+                    }
+                    else
+                    {
+                        Light::Type newType = _type;
+                        _type = oldType;
+                        _renderer->NotifyLightRemoved(this);
+                        _type = newType;
+                    }
                 }
             }
-            else
+            else if (_renderer) 
             {
                 Light::Type newType = _type;
                 _type = oldType;
-                if (_renderer) _renderer->NotifyLightRemoved(this);
+                _renderer->NotifyLightRemoved(this);
                 _type = newType;
-                if (_renderer) _renderer->NotifyLightAdded(this);
+                _renderer->NotifyLightAdded(this);
             }
         }
         else if ((dirtyFlag & (UINT32)ActorDirtyFlag::Mobility) != 0)
         {
             // TODO I'm not sure for that, we might check if SceneActor is active
-            if (_active)
+            if (_active && _renderer)
             {
-                if (_renderer) _renderer->NotifyLightRemoved(this);
-                if (_renderer) _renderer->NotifyLightAdded(this);
+                _renderer->NotifyLightRemoved(this);
+                _renderer->NotifyLightAdded(this);
             }
         }
-        else if ((dirtyFlag & (UINT32)ActorDirtyFlag::Transform) != 0)
+        else if ((dirtyFlag & (UINT32)ActorDirtyFlag::Transform) != 0 ||
+                 (dirtyFlag & (UINT32)LightDirtyFlag::RedrawShadow) != 0)
         {
-            if (_active)
-            {
-                if (_renderer) _renderer->NotifyLightUpdated(this);
-            }
+            if (_active && _renderer)
+                _renderer->NotifyLightUpdated(this, dirtyFlag);
         }
 
         _oldActive = _active;
@@ -184,9 +189,10 @@ namespace te
         }
     }
 
-    SPtr<Light> Light::Create(Light::Type type, Color color, float intensity, bool castShadows, Degree spotAngle)
+    SPtr<Light> Light::Create(Light::Type type, Color color, float intensity, bool castShadows, 
+        Light::CastShadowsType castShadowsType, Degree spotAngle)
     {
-        Light* handler = new (te_allocate<Light>()) Light(type, color, intensity, castShadows, spotAngle);
+        Light* handler = new (te_allocate<Light>()) Light(type, color, intensity, castShadows, castShadowsType, spotAngle);
         SPtr<Light> handlerPtr = te_core_ptr<Light>(handler);
         handlerPtr->SetThisPtr(handlerPtr);
         handlerPtr->Initialize();

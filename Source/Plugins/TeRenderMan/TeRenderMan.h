@@ -95,7 +95,7 @@ namespace te
         void NotifyLightAdded(Light* light) override;
 
         /** @copydoc Renderer::NotifyLightUpdated */
-        void NotifyLightUpdated(Light* light) override;
+        void NotifyLightUpdated(Light* light, UINT32 updateFlag) override;
 
         /** @copydoc Renderer::NotifyLightRemoved */
         void NotifyLightRemoved(Light* light) override;
@@ -107,7 +107,7 @@ namespace te
         void NotifyRenderableAdded(Renderable* renderable) override;
 
         /** @copydoc Renderer::NotifyRenderableUpdated */
-        void NotifyRenderableUpdated(Renderable* renderable) override;
+        void NotifyRenderableUpdated(Renderable* renderable, UINT32 updateFlag) override;
 
         /** @copydoc Renderer::NotifyRenderableRemoved */
         void NotifyRenderableRemoved(Renderable* renderable) override;
@@ -128,7 +128,7 @@ namespace te
         void NotifyDecalAdded(Decal* decal) override;
 
         /** @copydoc Renderer::NotifyDecalUpdated */
-        void NotifyDecalUpdated(Decal* decal) override;
+        void NotifyDecalUpdated(Decal* decal, UINT32 updateFlag) override;
 
         /** @copydoc Renderer::NotifyDecalRemoved */
         void NotifyDecalRemoved(Decal* decal) override;

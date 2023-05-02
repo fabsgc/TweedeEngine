@@ -260,7 +260,7 @@ namespace te
         }
     }
 
-    void RendererScene::UpdateLight(Light* light)
+    void RendererScene::UpdateLight(Light* light, UINT32 updateFlag)
     {
         UINT32 lightId = light->GetRendererId();
 
@@ -268,6 +268,13 @@ namespace te
             _info.RadialLightWorldBounds[lightId] = light->GetBounds();
         else if (light->GetType() == Light::Type::Spot)
             _info.SpotLightWorldBounds[lightId] = light->GetBounds();
+
+        if ((updateFlag & (UINT32)LightDirtyFlag::RedrawShadow) != 0 
+            && light->GetCastShadowsType() == Light::CastShadowsType::Static 
+            && light->GetCastShadows())
+        {
+            // TODO Shadow
+        }
     }
 
     void RendererScene::UnregisterLight(Light* light)
@@ -380,7 +387,7 @@ namespace te
         }
     }
 
-    void RendererScene::UpdateRenderable(Renderable* renderable)
+    void RendererScene::UpdateRenderable(Renderable* renderable, UINT32 updateFlag)
     {
         UINT32 renderableId = renderable->GetRendererId();
 
@@ -505,7 +512,7 @@ namespace te
         // TODO decal
     }
 
-    void RendererScene::UpdateDecal(Decal* decal)
+    void RendererScene::UpdateDecal(Decal* decal, UINT32 updateFlag)
     {
         const UINT32 rendererId = decal->GetRendererId();
 

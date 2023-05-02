@@ -374,9 +374,9 @@ namespace te
         _scene->RegisterRenderable(renderable);
     }
 
-    void RenderMan::NotifyRenderableUpdated(Renderable* renderable)
+    void RenderMan::NotifyRenderableUpdated(Renderable* renderable, UINT32 updateFlag)
     {
-        _scene->UpdateRenderable(renderable);
+        _scene->UpdateRenderable(renderable, updateFlag);
     }
 
     void RenderMan::NotifyRenderableRemoved(Renderable* renderable)
@@ -394,9 +394,9 @@ namespace te
         _scene->RegisterLight(light);
     }
 
-    void RenderMan::NotifyLightUpdated(Light* light)
+    void RenderMan::NotifyLightUpdated(Light* light, UINT32 updateFlag)
     {
-        _scene->UpdateLight(light);
+        _scene->UpdateLight(light, updateFlag);
     }
 
     void RenderMan::NotifyLightRemoved(Light* light)
@@ -429,9 +429,9 @@ namespace te
         _scene->RegisterDecal(decal);
     }
 
-    void RenderMan::NotifyDecalUpdated(Decal* decal)
+    void RenderMan::NotifyDecalUpdated(Decal* decal, UINT32 updateFlag)
     {
-        _scene->UpdateDecal(decal);
+        _scene->UpdateDecal(decal, updateFlag);
     }
 
     void RenderMan::NotifyDecalRemoved(Decal* decal)

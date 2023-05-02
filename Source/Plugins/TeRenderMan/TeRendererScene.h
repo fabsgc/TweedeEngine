@@ -68,7 +68,7 @@ namespace te
         void RegisterLight(Light* light);
 
         /** Updates information about a previously registered light. */
-        void UpdateLight(Light* light);
+        void UpdateLight(Light* light, UINT32 updateFlag);
 
         /** Removes a light from the scene. */
         void UnregisterLight(Light* light);
@@ -89,7 +89,7 @@ namespace te
         void RegisterRenderable(Renderable* renderable);
 
         /** Updates information about a previously registered renderable object. */
-        void UpdateRenderable(Renderable* renderable);
+        void UpdateRenderable(Renderable* renderable, UINT32 updateFlag);
 
         /** Removes a renderable object from the scene. */
         void UnregisterRenderable(Renderable* renderable);
@@ -101,7 +101,7 @@ namespace te
         void RegisterDecal(Decal* decal);
 
         /** Updates information about a previously registered decal object. */
-        void UpdateDecal(Decal* decal);
+        void UpdateDecal(Decal* decal, UINT32 updateFlag);
 
         /** Removes a decal object from the scene. */
         void UnregisterDecal(Decal* decal);

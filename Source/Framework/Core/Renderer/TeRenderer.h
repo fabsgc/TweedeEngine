@@ -102,7 +102,7 @@ namespace te
         /**
          * Called whenever a renderable is updated.
          */
-        virtual void NotifyRenderableUpdated(Renderable* renderable) { }
+        virtual void NotifyRenderableUpdated(Renderable* renderable, UINT32 updateFlag) { }
 
         /**
          * Called whenever a renderable is destroyed.
@@ -122,7 +122,7 @@ namespace te
         /**
          * Called whenever a light is updated.
          */
-        virtual void NotifyLightUpdated(Light* light) { }
+        virtual void NotifyLightUpdated(Light* light, UINT32 updateFlag) { }
 
         /**
          * Called whenever a light is destroyed.
@@ -157,7 +157,7 @@ namespace te
         /**
          * Called whenever a decal is updated.
          */
-        virtual void NotifyDecalUpdated(Decal* decal) { }
+        virtual void NotifyDecalUpdated(Decal* decal, UINT32 updateFlag) { }
 
         /**
          * Called whenever a decal is destroyed.

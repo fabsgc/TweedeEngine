@@ -129,28 +129,23 @@ namespace te
 
         if (dirtyFlag == (UINT32)ActorDirtyFlag::Transform)
         {
-            if (_active)
-            {
-                if (_renderer) _renderer->NotifyDecalUpdated(this);
-            }
+            if (_active && _renderer)
+                _renderer->NotifyDecalUpdated(this, dirtyFlag);
         }
         else
         {
             if (_oldActive != GetActive())
             {
-                if (_active)
+                if (_renderer)
                 {
-                    if (_renderer) _renderer->NotifyDecalAdded(this);
-                }
-                else
-                {
-                    if (_renderer) _renderer->NotifyDecalRemoved(this);
+                    if (_active) _renderer->NotifyDecalAdded(this);
+                    else _renderer->NotifyDecalRemoved(this);
                 }
             }
-            else
+            else if (_renderer)
             {
-                if (_renderer) _renderer->NotifyDecalRemoved(this);
-                if (_renderer) _renderer->NotifyDecalAdded(this);
+                _renderer->NotifyDecalRemoved(this);
+                _renderer->NotifyDecalAdded(this);
             }
         }
 

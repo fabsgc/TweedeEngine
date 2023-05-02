@@ -12,13 +12,14 @@ namespace te
     }
 
     CLight::CLight(const HSceneObject& parent, Light::Type type, Color color,
-        float intensity, bool castShadows, Degree spotAngle)
+        float intensity, bool castShadows, Light::CastShadowsType castShadowsType, Degree spotAngle)
         : Component(parent, (UINT32)TID_CLight)
         , _type(type)
         , _color(color)
         , _intensity(intensity)
         , _castShadows(castShadows)
         , _spotAngle(spotAngle)
+        , _castShadowsType(castShadowsType)
     {
         SetName("Light");
         SetFlag(Component::AlwaysRun, true);
@@ -38,7 +39,7 @@ namespace te
 
     void CLight::Instantiate()
     {
-        _internal = Light::Create(_type, _color, _intensity, _castShadows, _spotAngle);
+        _internal = Light::Create(_type, _color, _intensity, _castShadows, _castShadowsType, _spotAngle);
         _internal->AttachTo(gRenderer());
     }
 
@@ -103,6 +104,7 @@ namespace te
                 _internal->_bounds = light->_bounds;
                 _internal->_shadowBias = light->_shadowBias;
                 _internal->_intensity = light->_intensity;
+                _internal->_castShadowsType = light->_castShadowsType;
 
                 _internal->_transform = light->_transform;
                 _internal->_mobility = light->_mobility;
@@ -112,6 +114,7 @@ namespace te
                 c->_intensity = _intensity;
                 c->_castShadows = _castShadows;
                 c->_spotAngle = _spotAngle;
+                c->_castShadowsType = _castShadowsType;
 
                 _internal->_markCoreDirty();
             }

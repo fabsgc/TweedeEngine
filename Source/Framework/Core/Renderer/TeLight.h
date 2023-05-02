@@ -9,6 +9,13 @@
 
 namespace te
 {
+    /**	Signals which portion of a Camera is dirty. */
+    enum class LightDirtyFlag
+    {
+        // First few bits reserved by ActorDirtyFlag
+        RedrawShadow = 1 << 5 // Only valid if CastShadowsType == Static
+    };
+
     /** Illuminates a portion of the scene covered by the light. */
     class TE_CORE_EXPORT Light : public CoreObject, public SceneActor, public Serializable
     {
@@ -20,6 +27,13 @@ namespace te
             Spot = 0x2,
 
             Count // Keep at end
+        };
+
+        enum class CastShadowsType
+        {
+            Static = 0x1,
+            Dynamic = 0x2,
+            Both = 0x4
         };
 
     public:
@@ -48,6 +62,24 @@ namespace te
 
         /** @copydoc SetCastsShadows */
         bool GetCastShadows() const { return _castShadows; }
+
+        /**
+        * A light can cast shadows for static geometry, dynamic geometry or both.
+        * In case the light cast only shadows for static geometry, drawing will be on demand
+        */
+        void SetCastShadowsType(CastShadowsType castShadowsType) 
+        {
+            _castShadowsType = castShadowsType; _markCoreDirty((ActorDirtyFlag)LightDirtyFlag::RedrawShadow);
+        }
+
+        CastShadowsType GetCastShadowsType() const { return _castShadowsType; }
+
+        /** Ask to the renderer to redraw the shadow for this light */
+        void ForceShadowRedraw()
+        {
+            if (_castShadowsType == CastShadowsType::Static)
+                _markCoreDirty((ActorDirtyFlag)LightDirtyFlag::RedrawShadow);
+        }
 
         /**
          * Shadow bias determines offset at which the shadows are rendered from the shadow caster. Bias value of 0 means
@@ -105,16 +137,19 @@ namespace te
          *									luminance for directional lights with no area, and illuminance for directional
          *									lights with area (non-zero source radius).
          * @param[in]	castShadows			Determines whether the light cast shadows.
+         * @param[in]	castShadowsType		Determines which type of geometry is shadow casted by this list
          * @param[in]	spotAngle			Total angle covered by a spot light.
          */
         static SPtr<Light> Create(Light::Type type = Light::Type::Directional, Color color = Color::White,
-            float intensity = DefaultIntensity, bool castShadows = DefaultCastShadow, Degree spotAngle = Degree(DefaultSpotAngle));
+            float intensity = DefaultIntensity, bool castShadows = DefaultCastShadows,
+            Light::CastShadowsType castShadowsType = DefaultCastShadowsType, Degree spotAngle = Degree(DefaultSpotAngle));
 
     public:
-        static bool DefaultCastShadow;
+        static bool DefaultCastShadows;
         static float DefaultIntensity;
         static float DefaultSpotAngle;
         static float DefaultShadowBias;
+        static Light::CastShadowsType DefaultCastShadowsType;
 
         static const UINT32 LIGHT_CONE_NUM_SIDES;
         static const UINT32 LIGHT_CONE_NUM_SLICES;
@@ -133,7 +168,7 @@ namespace te
         friend class CLight;
 
         Light();
-        Light(Light::Type type, Color color, float intensity, bool castShadows, Degree spotAngle);
+        Light(Light::Type type, Color color, float intensity, bool castShadows, Light::CastShadowsType castShadowsType, Degree spotAngle);
 
         /** @copydoc CoreObject::Initialize */
         void Initialize() override;
@@ -146,6 +181,7 @@ namespace te
         Degree _spotAngle; /**< Total angle covered by a spot light. */
         Sphere _bounds; /**< Sphere that bounds the light area of influence. */
         float _shadowBias; /**< See SetShadowBias */
+        CastShadowsType _castShadowsType; /** A light can cast shadows for static geometry, dynamic geometry or both. */
 
         UINT32 _rendererId = 0;
         SPtr<Renderer> _renderer; /** Default renderer if this attributes is not filled in constructor. */
