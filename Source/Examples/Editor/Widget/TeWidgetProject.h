@@ -68,7 +68,7 @@ namespace te
         void PopupContextMenu();
         void CreateSceneObject();
         void CreateRenderable(RenderableType type);
-        void CreateLight(LightType type);
+        void CreateLight(Light::Type type);
         void CreateCamera(TypeID_Core type);
         void CreateAudioSource();
         void CreateAudioListener();

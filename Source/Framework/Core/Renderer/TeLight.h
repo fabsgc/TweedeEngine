@@ -9,18 +9,19 @@
 
 namespace te
 {
-    enum class LightType
-    {
-        Directional = 0x0,
-        Radial = 0x1,
-        Spot = 0x2,
-
-        Count // Keep at end
-    };
-
     /** Illuminates a portion of the scene covered by the light. */
     class TE_CORE_EXPORT Light : public CoreObject, public SceneActor, public Serializable
     {
+    public:
+        enum class Type
+        {
+            Directional = 0x0,
+            Radial = 0x1,
+            Spot = 0x2,
+
+            Count // Keep at end
+        };
+
     public:
         virtual ~Light();
 
@@ -37,10 +38,10 @@ namespace te
         UINT32 GetRendererId() const { return _rendererId; }
 
         /** @copydoc getType */
-        void SetType(LightType type) { _type = type; _markCoreDirty(); UpdateBounds(); }
+        void SetType(Light::Type type) { _type = type; _markCoreDirty(); UpdateBounds(); }
 
         /**	Determines the type of the light. */
-        LightType GetType() const { return _type; }
+        Light::Type GetType() const { return _type; }
 
         /**	Determines does this light can cast shadows when rendered. */
         void SetCastShadows(bool castShadows) { _castShadows = castShadows; _markCoreDirty(); }
@@ -106,7 +107,7 @@ namespace te
          * @param[in]	castShadows			Determines whether the light cast shadows.
          * @param[in]	spotAngle			Total angle covered by a spot light.
          */
-        static SPtr<Light> Create(LightType type = LightType::Directional, Color color = Color::White,
+        static SPtr<Light> Create(Light::Type type = Light::Type::Directional, Color color = Color::White,
             float intensity = DefaultIntensity, bool castShadows = DefaultCastShadow, Degree spotAngle = Degree(DefaultSpotAngle));
 
     public:
@@ -132,13 +133,13 @@ namespace te
         friend class CLight;
 
         Light();
-        Light(LightType type, Color color, float intensity, bool castShadows, Degree spotAngle);
+        Light(Light::Type type, Color color, float intensity, bool castShadows, Degree spotAngle);
 
         /** @copydoc CoreObject::Initialize */
         void Initialize() override;
 
     protected:
-        LightType _type; /**< Type of light that determines how are the rest of the parameters interpreted. */
+        Light::Type _type; /**< Type of light that determines how are the rest of the parameters interpreted. */
         bool _castShadows; /**< Determines whether the light can cast shadows. */
         Color _color; /**< Color of the light. */
         float _intensity; /**< Power of the light source. @see SetIntensity. */

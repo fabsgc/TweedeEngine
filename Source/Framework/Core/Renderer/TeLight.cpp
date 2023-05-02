@@ -13,7 +13,7 @@ namespace te
 
     Light::Light()
         : Serializable(TID_Light)
-        , _type(LightType::Directional)
+        , _type(Light::Type::Directional)
         , _castShadows(DefaultCastShadow)
         , _color(Color::White)
         , _intensity(DefaultIntensity)
@@ -21,7 +21,7 @@ namespace te
         , _shadowBias(DefaultShadowBias)
     { }
 
-    Light::Light(LightType type, Color color, float intensity, 
+    Light::Light(Light::Type type, Color color, float intensity, 
         bool castShadows, Degree spotAngle)
         : Serializable(TID_Light)
         , _type(type)
@@ -52,7 +52,7 @@ namespace te
 
     void Light::FrameSync()
     {
-        LightType oldType = _type;
+        Light::Type oldType = _type;
         UINT32 dirtyFlag = GetCoreDirtyFlags();
         UINT32 updateEverythingFlag = (UINT32)ActorDirtyFlag::Everything | (UINT32)ActorDirtyFlag::Active;
 
@@ -68,7 +68,7 @@ namespace te
                 }
                 else
                 {
-                    LightType newType = _type;
+                    Light::Type newType = _type;
                     _type = oldType;
                     if (_renderer) _renderer->NotifyLightRemoved(this);
                     _type = newType;
@@ -76,7 +76,7 @@ namespace te
             }
             else
             {
-                LightType newType = _type;
+                Light::Type newType = _type;
                 _type = oldType;
                 if (_renderer) _renderer->NotifyLightRemoved(this);
                 _type = newType;
@@ -146,7 +146,7 @@ namespace te
         // D = sqrt ( 1 / (4 * PI * Att ))
         float maxRadius = 1.f;
 
-        if (_type == LightType::Radial || _type == LightType::Spot)
+        if (_type == Light::Type::Radial || _type == Light::Type::Spot)
         {
             float minAtt = 0.0001f;
             maxRadius = Math::Sqrt(1.f / ( 4 * Math::PI * minAtt ));
@@ -154,13 +154,13 @@ namespace te
 
         switch (_type)
         {
-        case LightType::Directional:
+        case Light::Type::Directional:
             _bounds = Sphere(tfrm.GetPosition(), std::numeric_limits<float>::infinity());
             break;
-        case LightType::Radial:
+        case Light::Type::Radial:
             _bounds = Sphere(tfrm.GetPosition(), maxRadius);
             break;
-        case LightType::Spot:
+        case Light::Type::Spot:
         {
             // Note: We could use the formula for calculating the circumcircle of a triangle (after projecting the cone),
             // but the radius of the sphere is the same as in the formula we use here, yet it is much simpler with no need
@@ -184,7 +184,7 @@ namespace te
         }
     }
 
-    SPtr<Light> Light::Create(LightType type, Color color, float intensity, bool castShadows, Degree spotAngle)
+    SPtr<Light> Light::Create(Light::Type type, Color color, float intensity, bool castShadows, Degree spotAngle)
     {
         Light* handler = new (te_allocate<Light>()) Light(type, color, intensity, castShadows, spotAngle);
         SPtr<Light> handlerPtr = te_core_ptr<Light>(handler);

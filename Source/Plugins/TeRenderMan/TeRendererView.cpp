@@ -245,7 +245,7 @@ namespace te
     }
 
     void RendererView::DetermineVisible(const Vector<RendererLight>& lights, const Vector<Sphere>* bounds,
-        LightType lightType, Vector<bool>* visibility)
+        Light::Type lightType, Vector<bool>* visibility)
     {
         if (!_renderSettings->EnableLighting)
         {
@@ -253,7 +253,7 @@ namespace te
                 (*visibility)[i] = false;
         }
 
-        if (lightType == LightType::Directional)
+        if (lightType == Light::Type::Directional)
         {
             if (visibility && _renderSettings->EnableLighting)
                 visibility->assign(lights.size(), true);
@@ -264,7 +264,7 @@ namespace te
         }
 
         Vector<bool>* perViewVisibility;
-        if (lightType == LightType::Radial)
+        if (lightType == Light::Type::Radial)
         {
             _visibility.RadialLights.clear();
             _visibility.RadialLights.resize(lights.size(), false);
@@ -724,13 +724,13 @@ namespace te
             if (!_views[i]->ShouldDraw3D())
                 continue;
 
-            _views[i]->DetermineVisible(sceneInfo.RadialLights, &sceneInfo.RadialLightWorldBounds, LightType::Radial,
+            _views[i]->DetermineVisible(sceneInfo.RadialLights, &sceneInfo.RadialLightWorldBounds, Light::Type::Radial,
                 &_visibility.RadialLights);
 
-            _views[i]->DetermineVisible(sceneInfo.SpotLights, &sceneInfo.SpotLightWorldBounds, LightType::Spot,
+            _views[i]->DetermineVisible(sceneInfo.SpotLights, &sceneInfo.SpotLightWorldBounds, Light::Type::Spot,
                 &_visibility.SpotLights);
 
-            _views[i]->DetermineVisible(sceneInfo.DirectionalLights, nullptr, LightType::Directional,
+            _views[i]->DetermineVisible(sceneInfo.DirectionalLights, nullptr, Light::Type::Directional,
                 &_visibility.DirectionalLights);
         }
 

@@ -219,7 +219,7 @@ namespace te
          *									As a side-effect, per-view visibility data is also calculated and can be
          *									retrieved by calling getVisibilityMask().
          */
-        void DetermineVisible(const Vector<RendererLight>& lights, const Vector<Sphere>* bounds, LightType type,
+        void DetermineVisible(const Vector<RendererLight>& lights, const Vector<Sphere>* bounds, Light::Type type,
             Vector<bool>* visibility = nullptr);
 
         /**

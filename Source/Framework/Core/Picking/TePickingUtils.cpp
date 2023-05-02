@@ -58,13 +58,13 @@ namespace te
 
                     switch (light->GetType())
                     {
-                    case LightType::Directional:
+                    case Light::Type::Directional:
                         element.Type = static_cast<float>(HudType::DirectionalLight);
                         break;
-                    case LightType::Radial:
+                    case Light::Type::Radial:
                         element.Type = static_cast<float>(HudType::RadialLight);
                         break;
-                    case LightType::Spot:
+                    case Light::Type::Spot:
                         element.Type = static_cast<float>(HudType::SpotLight);
                         break;
                     default:

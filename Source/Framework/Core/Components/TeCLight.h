@@ -25,10 +25,10 @@ namespace te
         bool Clone(const HLight& c, const String& suffix = "");
 
         /** @copydoc Light::SetType */
-        void SetType(LightType type) { _internal->SetType(type); }
+        void SetType(Light::Type type) { _internal->SetType(type); }
 
         /** @copydoc Light::GetType */
-        LightType GetType() const { return _internal->GetType(); }
+        Light::Type GetType() const { return _internal->GetType(); }
 
         /** @copydoc Light::SetColor */
         void SetColor(const Color& color) { _internal->SetColor(color); }
@@ -86,7 +86,7 @@ namespace te
         mutable SPtr<Light> _internal;
 
         // Only valid during construction
-        LightType _type = LightType::Directional;
+        Light::Type _type = Light::Type::Directional;
         Color _color = Color::White;
         float _intensity = Light::DefaultIntensity;
         bool _castShadows = Light::DefaultCastShadow;
@@ -97,7 +97,7 @@ namespace te
 
         CLight();
 
-        CLight(const HSceneObject& parent, LightType type = LightType::Directional, Color color = Color::White,
+        CLight(const HSceneObject& parent, Light::Type type = Light::Type::Directional, Color color = Color::White,
             float intensity = Light::DefaultIntensity, bool castShadows = Light::DefaultCastShadow, 
             Degree spotAngle = Degree(Light::DefaultSpotAngle));
 

@@ -33,13 +33,13 @@ namespace te
         UINT32 type = 0;
         switch (_internal->GetType())
         {
-        case LightType::Directional:
+        case Light::Type::Directional:
             type = 0;
             break;
-        case LightType::Radial:
+        case Light::Type::Radial:
             type = 1;
             break;
-        case LightType::Spot:
+        case Light::Type::Spot:
             type = 2;
             break;
         default:
@@ -68,7 +68,7 @@ namespace te
     {
         const VisibilityInfo& visibility = viewGroup.GetVisibilityInfo();
 
-        for (UINT32 i = 0; i < (UINT32)LightType::Count; i++)
+        for (UINT32 i = 0; i < (UINT32)Light::Type::Count; i++)
             _visibleLights[i].clear();
 
         // Generate a list of lights and their GPU buffers
@@ -78,7 +78,7 @@ namespace te
             if (!visibility.DirectionalLights[i])
                 continue;
 
-            _visibleLights[(UINT32)LightType::Directional].push_back(&sceneInfo.DirectionalLights[i]);
+            _visibleLights[(UINT32)Light::Type::Directional].push_back(&sceneInfo.DirectionalLights[i]);
         }
 
         UINT32 numRadialLights = (UINT32)sceneInfo.RadialLights.size();
@@ -87,7 +87,7 @@ namespace te
             if (!visibility.RadialLights[i])
                 continue;
 
-            _visibleLights[(UINT32)LightType::Radial].push_back(&sceneInfo.RadialLights[i]);
+            _visibleLights[(UINT32)Light::Type::Radial].push_back(&sceneInfo.RadialLights[i]);
         }
 
         UINT32 numSpotLights = (UINT32)sceneInfo.SpotLights.size();
@@ -96,10 +96,10 @@ namespace te
             if (!visibility.SpotLights[i])
                 continue;
 
-            _visibleLights[(UINT32)LightType::Spot].push_back(&sceneInfo.SpotLights[i]);
+            _visibleLights[(UINT32)Light::Type::Spot].push_back(&sceneInfo.SpotLights[i]);
         }
 
-        for (UINT32 i = 0; i < (UINT32)LightType::Count; i++)
+        for (UINT32 i = 0; i < (UINT32)Light::Type::Count; i++)
             _numLights[i] = (UINT32)_visibleLights[i].size();
 
         // Partition all visible lights so that unshadowed ones come first
@@ -133,7 +133,7 @@ namespace te
             return numUnshadowed;
         };
 
-        for (UINT32 i = 0; i < (UINT32)LightType::Count; i++)
+        for (UINT32 i = 0; i < (UINT32)Light::Type::Count; i++)
             _numShadowedLights[i] = _numLights[i] - partition(_visibleLights[i]);
 
         // Generate light data to initialize the GPU buffer with

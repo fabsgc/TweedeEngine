@@ -175,7 +175,7 @@ namespace te
 
     void MaterialsPreview::InitializeLight()
     {
-        _light = Light::Create(LightType::Directional);
+        _light = Light::Create(Light::Type::Directional);
         
         Transform transform = _light->GetTransform();
         transform.Move(Vector3(0.0f, 3.0f, 1.75f));

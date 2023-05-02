@@ -11,7 +11,7 @@ namespace te
         SetFlag(Component::AlwaysRun, true);
     }
 
-    CLight::CLight(const HSceneObject& parent, LightType type, Color color,
+    CLight::CLight(const HSceneObject& parent, Light::Type type, Color color,
         float intensity, bool castShadows, Degree spotAngle)
         : Component(parent, (UINT32)TID_CLight)
         , _type(type)

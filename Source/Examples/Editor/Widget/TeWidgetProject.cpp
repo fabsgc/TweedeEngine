@@ -621,11 +621,11 @@ namespace te
                     if (ImGui::BeginMenu(ICON_FA_LIGHTBULB " Light"))
                     {
                         if (ImGui::MenuItem(ICON_FA_LIGHTBULB " Directional light"))
-                            CreateLight(LightType::Directional);
+                            CreateLight(Light::Type::Directional);
                         if (ImGui::MenuItem(ICON_FA_LIGHTBULB " Point light"))
-                            CreateLight(LightType::Radial);
+                            CreateLight(Light::Type::Radial);
                         if (ImGui::MenuItem(ICON_FA_LIGHTBULB " Spot light"))
-                            CreateLight(LightType::Spot);
+                            CreateLight(Light::Type::Spot);
 
                         ImGui::EndMenu();
                     }
@@ -801,7 +801,7 @@ namespace te
         gEditor().GetSettings().State = Editor::EditorState::Modified;
     }
 
-    void WidgetProject::CreateLight(LightType type)
+    void WidgetProject::CreateLight(Light::Type type)
     { 
         if (!_selections.ClickedSceneObject || _selections.ClickedComponent)
             return;
@@ -810,17 +810,17 @@ namespace te
 
         switch (type)
         {
-        case LightType::Directional:
+        case Light::Type::Directional:
             light.Get()->SetName("Directional");
             light.Get()->Initialize();
             break;
 
-        case LightType::Radial:
+        case Light::Type::Radial:
             light.Get()->SetName("Point");
             light.Get()->Initialize();
             break;
 
-        case LightType::Spot:
+        case Light::Type::Spot:
             light.Get()->SetName("Spot");
             light.Get()->Initialize();
             break;

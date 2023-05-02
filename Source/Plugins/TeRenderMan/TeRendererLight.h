@@ -86,23 +86,23 @@ namespace te
         UINT32 GetNumSpotLights() const { return _numLights[2]; }
 
         /** Returns the number of visible lights of the specified type. */
-        UINT32 GetNumLights(LightType type) const { return _numLights[(UINT32)type]; }
+        UINT32 GetNumLights(Light::Type type) const { return _numLights[(UINT32)type]; }
 
         /** Returns the number of visible shadowed lights of the specified type. */
-        UINT32 GetNumShadowedLights(LightType type) const { return _numShadowedLights[(UINT32)type]; }
+        UINT32 GetNumShadowedLights(Light::Type type) const { return _numShadowedLights[(UINT32)type]; }
 
         /** Returns the number of visible unshadowed lights of the specified type. */
-        UINT32 GetNumUnshadowedLights(LightType type) const { return _numLights[(UINT32)type] - _numShadowedLights[(UINT32)type]; }
+        UINT32 GetNumUnshadowedLights(Light::Type type) const { return _numLights[(UINT32)type] - _numShadowedLights[(UINT32)type]; }
 
         /** Returns a list of all visible lights of the specified type. */
-        const Vector<const RendererLight*>& GetLights(LightType type) const { return _visibleLights[(UINT32)type]; }
+        const Vector<const RendererLight*>& GetLights(Light::Type type) const { return _visibleLights[(UINT32)type]; }
 
     private:
-        INT32 _numLights[(UINT32)LightType::Count];
-        UINT32 _numShadowedLights[(UINT32)LightType::Count];
+        INT32 _numLights[(UINT32)Light::Type::Count];
+        UINT32 _numShadowedLights[(UINT32)Light::Type::Count];
 
         // These are rebuilt every call to update()
-        Vector<const RendererLight*> _visibleLights[(UINT32)LightType::Count];
+        Vector<const RendererLight*> _visibleLights[(UINT32)Light::Type::Count];
         Vector<PerLightData> _visibleLightData;
     };
 }

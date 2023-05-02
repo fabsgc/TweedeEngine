@@ -2241,7 +2241,7 @@ namespace te
         ImGui::Separator();
 
         // Spot angle
-        if (light->GetType() == LightType::Spot)
+        if (light->GetType() == Light::Type::Spot)
         {
             {
                 float angle = spotAngle.ValueDegrees();

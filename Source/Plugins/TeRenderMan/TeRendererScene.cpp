@@ -232,7 +232,7 @@ namespace te
 
     void RendererScene::RegisterLight(Light* light)
     {
-        if (light->GetType() == LightType::Directional)
+        if (light->GetType() == Light::Type::Directional)
         {
             UINT32 lightId = (UINT32)_info.DirectionalLights.size();
             light->SetRendererId(lightId);
@@ -241,7 +241,7 @@ namespace te
         }
         else
         {
-            if (light->GetType() == LightType::Radial)
+            if (light->GetType() == Light::Type::Radial)
             {
                 UINT32 lightId = (UINT32)_info.RadialLights.size();
                 light->SetRendererId(lightId);
@@ -264,16 +264,16 @@ namespace te
     {
         UINT32 lightId = light->GetRendererId();
 
-        if (light->GetType() == LightType::Radial)
+        if (light->GetType() == Light::Type::Radial)
             _info.RadialLightWorldBounds[lightId] = light->GetBounds();
-        else if (light->GetType() == LightType::Spot)
+        else if (light->GetType() == Light::Type::Spot)
             _info.SpotLightWorldBounds[lightId] = light->GetBounds();
     }
 
     void RendererScene::UnregisterLight(Light* light)
     {
         UINT32 lightId = light->GetRendererId();
-        if (light->GetType() == LightType::Directional)
+        if (light->GetType() == Light::Type::Directional)
         {
             if (_info.DirectionalLights.size() <= lightId)
                 return;
@@ -295,7 +295,7 @@ namespace te
         }
         else
         {
-            if (light->GetType() == LightType::Radial)
+            if (light->GetType() == Light::Type::Radial)
             {
                 if (_info.RadialLights.size() <= lightId)
                     return;
