@@ -45,6 +45,9 @@ namespace te
         /**	Determines does this light can cast shadows when rendered. */
         void SetCastShadows(bool castShadows) { _castShadows = castShadows; _markCoreDirty(); }
 
+        /** @copydoc SetCastsShadows */
+        bool GetCastShadows() const { return _castShadows; }
+
         /**
          * Shadow bias determines offset at which the shadows are rendered from the shadow caster. Bias value of 0 means
          * the shadow will be renderered exactly at the casters position. If your geometry has thin areas this will
