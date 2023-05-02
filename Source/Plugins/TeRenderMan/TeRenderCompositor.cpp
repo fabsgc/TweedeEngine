@@ -440,7 +440,7 @@ namespace te
             numSamples, false));
 
         bool rebuildRT = false;
-        if (RenderTargetTex != nullptr)
+        if (RenderTargetTex)
         {
             UINT32 targetIdx = 0;
             rebuildRT |= RenderTargetTex->GetColorTexture(targetIdx++) != SceneTex->Tex;
@@ -451,7 +451,15 @@ namespace te
             rebuildRT |= RenderTargetTex->GetDepthStencilTexture() != DepthTex->Tex;
         }
         else
+        {
             rebuildRT = true;
+        }
+
+        bool rebuildZPrepassRT = false;
+        if (RenderTargetZPrepassTex)
+            rebuildZPrepassRT = RenderTargetZPrepassTex->GetDepthStencilTexture() != DepthTex->Tex;
+        else
+            rebuildZPrepassRT = true;
 
         if (RenderTargetTex == nullptr || rebuildRT)
         {
@@ -492,7 +500,7 @@ namespace te
             RenderTargetTex = RenderTexture::Create(gbufferDesc);
         }
 
-        if (RenderTargetZPrepassTex == nullptr || rebuildRT)
+        if (RenderTargetZPrepassTex == nullptr || rebuildZPrepassRT)
         {
             RENDER_TEXTURE_DESC gbufferDesc;
             gbufferDesc.DepthStencilSurface.Tex = DepthTex->Tex;
