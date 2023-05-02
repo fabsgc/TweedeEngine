@@ -183,6 +183,16 @@ namespace te
                 InitIrradianceProjectSH();
             shader = _shaderIrradianceProjectSH;
             break;
+        case BuiltinShader::ShadowDepthNormal:
+            if (!_shaderShadowDepthNormal.IsLoaded())
+                InitShaderShadowDepthNormal();
+            shader = _shaderShadowDepthNormal;
+            break;
+        case BuiltinShader::ShadowDepthCube:
+            if (!_shaderShadowDepthCube.IsLoaded())
+                InitShaderShadowDepthCube();
+            shader = _shaderShadowDepthCube;
+            break;
         default:
             TE_ASSERT_ERROR(false, "Can't find \"" + ToString((UINT32)type) + "\" shader.")
             break;
@@ -555,26 +565,6 @@ namespace te
         }
 
         {
-            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/Decal_VS.hlsl"));
-            _vertexShaderDecalDesc.Type = GPT_VERTEX_PROGRAM;
-            _vertexShaderDecalDesc.FilePath = SHADERS_FOLDER + String("HLSL/Decal_VS.hlsl");
-            _vertexShaderDecalDesc.EntryPoint = "main";
-            _vertexShaderDecalDesc.Language = "hlsl";
-            _vertexShaderDecalDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
-            _vertexShaderDecalDesc.Source = shaderFile.GetAsString();
-        }
-
-        {
-            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/Decal_PS.hlsl"));
-            _pixelShaderDecalDesc.Type = GPT_PIXEL_PROGRAM;
-            _pixelShaderDecalDesc.FilePath = SHADERS_FOLDER + String("HLSL/Decal_PS.hlsl");
-            _pixelShaderDecalDesc.EntryPoint = "main";
-            _pixelShaderDecalDesc.Language = "hlsl";
-            _pixelShaderDecalDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
-            _pixelShaderDecalDesc.Source = shaderFile.GetAsString();
-        }
-
-        {
             FileStream shaderFile(SHADERS_FOLDER + String("HLSL/TextureDownsample_VS.hlsl"));
             _vertexShaderTextureDownsampleDesc.Type = GPT_VERTEX_PROGRAM;
             _vertexShaderTextureDownsampleDesc.FilePath = SHADERS_FOLDER + String("HLSL/TextureDownsample_VS.hlsl");
@@ -673,7 +663,68 @@ namespace te
             _pixelShaderIrradianceProjectSHDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
             _pixelShaderIrradianceProjectSHDesc.Source = shaderFile.GetAsString();
         }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/Decal_VS.hlsl"));
+            _vertexShaderDecalDesc.Type = GPT_VERTEX_PROGRAM;
+            _vertexShaderDecalDesc.FilePath = SHADERS_FOLDER + String("HLSL/Decal_VS.hlsl");
+            _vertexShaderDecalDesc.EntryPoint = "main";
+            _vertexShaderDecalDesc.Language = "hlsl";
+            _vertexShaderDecalDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
+            _vertexShaderDecalDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/Decal_PS.hlsl"));
+            _pixelShaderDecalDesc.Type = GPT_PIXEL_PROGRAM;
+            _pixelShaderDecalDesc.FilePath = SHADERS_FOLDER + String("HLSL/Decal_PS.hlsl");
+            _pixelShaderDecalDesc.EntryPoint = "main";
+            _pixelShaderDecalDesc.Language = "hlsl";
+            _pixelShaderDecalDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
+            _pixelShaderDecalDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/ShadowDepthNormal_VS.hlsl"));
+            _vertexShaderShadowDepthNormalDesc.Type = GPT_VERTEX_PROGRAM;
+            _vertexShaderShadowDepthNormalDesc.FilePath = SHADERS_FOLDER + String("HLSL/ShadowDepthNormal_VS.hlsl");
+            _vertexShaderShadowDepthNormalDesc.EntryPoint = "main";
+            _vertexShaderShadowDepthNormalDesc.Language = "hlsl";
+            _vertexShaderShadowDepthNormalDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
+            _vertexShaderShadowDepthNormalDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/ShadowDepthNormal_PS.hlsl"));
+            _pixelShaderShadowDepthNormalDesc.Type = GPT_PIXEL_PROGRAM;
+            _pixelShaderShadowDepthNormalDesc.FilePath = SHADERS_FOLDER + String("HLSL/ShadowDepthNormal_PS.hlsl");
+            _pixelShaderShadowDepthNormalDesc.EntryPoint = "main";
+            _pixelShaderShadowDepthNormalDesc.Language = "hlsl";
+            _pixelShaderShadowDepthNormalDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
+            _pixelShaderShadowDepthNormalDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/ShadowDepthCube_VS.hlsl"));
+            _vertexShaderShadowDepthCubeDesc.Type = GPT_VERTEX_PROGRAM;
+            _vertexShaderShadowDepthCubeDesc.FilePath = SHADERS_FOLDER + String("HLSL/ShadowDepthCube_VS.hlsl");
+            _vertexShaderShadowDepthCubeDesc.EntryPoint = "main";
+            _vertexShaderShadowDepthCubeDesc.Language = "hlsl";
+            _vertexShaderShadowDepthCubeDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
+            _vertexShaderShadowDepthCubeDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/ShadowDepthCube_PS.hlsl"));
+            _pixelShaderShadowDepthCubeDesc.Type = GPT_PIXEL_PROGRAM;
+            _pixelShaderShadowDepthCubeDesc.FilePath = SHADERS_FOLDER + String("HLSL/ShadowDepthCube_PS.hlsl");
+            _pixelShaderShadowDepthCubeDesc.EntryPoint = "main";
+            _pixelShaderShadowDepthCubeDesc.Language = "hlsl";
+            _pixelShaderShadowDepthCubeDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
+            _pixelShaderShadowDepthCubeDesc.Source = shaderFile.GetAsString();
+        }
     }
+
     void BuiltinResources::InitStates()
     {
         _blendTransparentStateDesc.AlphaToCoverageEnable = false;
@@ -1082,7 +1133,7 @@ namespace te
         FillShaderDesc(variationParams, shaderDesc);
         List<ShaderVariation> variations = FillShaderVariations(variationParams);
 
-        _shaderBlit = InitShader(variations, shaderDesc, passDesc, "Tone Mapping");
+        _shaderBlit = InitShader(variations, shaderDesc, passDesc, "Blit");
     }
 
     void BuiltinResources::InitShaderSkybox()
@@ -1639,6 +1690,64 @@ namespace te
         shaderDesc.Techniques.push_back(technique);
 
         _shaderDecal = Shader::Create("Decal", shaderDesc);
+    }
+
+    void BuiltinResources::InitShaderShadowDepthNormal()
+    {
+        PASS_DESC passDesc;
+        passDesc.BlendStateDesc = _blendOpaqueStateDesc;
+        passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
+        passDesc.RasterizerStateDesc = _rasterizerStateDesc;
+        passDesc.VertexProgramDesc = _vertexShaderShadowDepthNormalDesc;
+        passDesc.PixelProgramDesc = _pixelShaderShadowDepthNormalDesc;
+
+        passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_COUNTERCLOCKWISE;
+
+        SPtr<Pass> pass = Pass::Create(passDesc);
+        SPtr<Technique> technique = Technique::Create("hlsl", { pass });
+        technique->Compile();
+
+        SHADER_DESC shaderDesc;
+        shaderDesc.QueueType = QueueSortType::BackToFront;
+        shaderDesc.Techniques.push_back(technique);
+
+        Vector<ShaderVariationParam*> variationParams = {
+            te_pool_new<ShaderVariationParam>(std::forward<String>("SKINNED"), std::forward<Vector<std::any>>({ false, true }))
+        };
+
+        FillShaderDesc(variationParams, shaderDesc);
+        List<ShaderVariation> variations = FillShaderVariations(variationParams);
+
+        _shaderShadowDepthNormal = InitShader(variations, shaderDesc, passDesc, "Shadow Depth Normal");
+    }
+
+    void BuiltinResources::InitShaderShadowDepthCube()
+    {
+        PASS_DESC passDesc;
+        passDesc.BlendStateDesc = _blendOpaqueStateDesc;
+        passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
+        passDesc.RasterizerStateDesc = _rasterizerStateDesc;
+        passDesc.VertexProgramDesc = _vertexShaderShadowDepthCubeDesc;
+        passDesc.PixelProgramDesc = _pixelShaderShadowDepthCubeDesc;
+
+        passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_COUNTERCLOCKWISE;
+
+        SPtr<Pass> pass = Pass::Create(passDesc);
+        SPtr<Technique> technique = Technique::Create("hlsl", { pass });
+        technique->Compile();
+
+        SHADER_DESC shaderDesc;
+        shaderDesc.QueueType = QueueSortType::BackToFront;
+        shaderDesc.Techniques.push_back(technique);
+
+        Vector<ShaderVariationParam*> variationParams = {
+            te_pool_new<ShaderVariationParam>(std::forward<String>("SKINNED"), std::forward<Vector<std::any>>({ false, true }))
+        };
+
+        FillShaderDesc(variationParams, shaderDesc);
+        List<ShaderVariation> variations = FillShaderVariations(variationParams);
+
+        _shaderShadowDepthCube = InitShader(variations, shaderDesc, passDesc, "Shadow Depth Cube");
     }
 
     void BuiltinResources::InitDefaultMaterial()

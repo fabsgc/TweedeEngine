@@ -5,6 +5,7 @@
 #include "TeRenderManOptions.h"
 #include "TeRenderManIBLUtility.h"
 #include "TeRenderCompositor.h"
+#include "TeShadowRendering.h"
 #include "Renderer/TeCamera.h"
 #include "Renderer/TeRendererUtility.h"
 #include "Renderer/TeGpuResourcePool.h"
@@ -161,6 +162,7 @@ namespace te
             }
 
             _mainViewGroup->SetViews(views.data(), (UINT32)views.size());
+            _mainViewGroup->GetShadowRenderer()->SetShadowMapSize(_options->ShadowMapSize);
 
             // Find all visible renderables
             if (_options->CullingFlags & (UINT32)RenderManCulling::Frustum ||
@@ -190,6 +192,13 @@ namespace te
 
                     _scene->PrepareVisibleRenderable(i, frameInfo);
                 }
+            }
+
+            // Render shadow maps
+            // Render only shadow maps for lights needed for this viewGroup
+            // If a shadow map has been drawn by a previous view, do not draw it again
+            {
+                // TODO Shadows
             }
 
             // Loop through view for rendering
@@ -258,13 +267,6 @@ namespace te
                     viewGroup.GetVisibleLightData().GatherInfluencingLights(bounds, lights, lightCounts);
                 }
                 PerLightsBuffer::UpdatePerLights(lights, lightCounts.x + lightCounts.y + lightCounts.z);
-            }
-
-            // Render shadow maps
-            // Render only shadow maps for lights needed for this view
-            // If a shadow map has been drawn by a previous view, do not draw it again
-            {
-                // TODO Shadows
             }
         }
 

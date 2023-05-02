@@ -1454,6 +1454,10 @@ namespace te
         EditorResManager::Instance().Add<Shader>(shader);
         shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::BlitSelection);
         EditorResManager::Instance().Add<Shader>(shader);
+        shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::ShadowDepthNormal);
+        EditorResManager::Instance().Add<Shader>(shader);
+        shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::ShadowDepthCube);
+        EditorResManager::Instance().Add<Shader>(shader);
 #endif
     }
 

@@ -368,7 +368,7 @@ namespace te
          * higher quality shadows nearer to the viewer, as the shadow map resolution isn't being used up on far away
          * portions of the scene. In world units (meters).
          */
-        float DirectionalShadowDistance = 250.0f;
+        float DirectionalShadowDistance = 256.0f;
 
         /**
          * Number of cascades to use for directional shadows. Higher number of cascades increases shadow quality as each

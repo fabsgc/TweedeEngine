@@ -7,6 +7,7 @@
 #include "Math/TeQuaternion.h"
 #include "Renderer/TeCamera.h"
 #include "Components/TeCCamera.h"
+#include "Renderer/TeRenderer.h"
 #include "Renderer/TeRenderSettings.h"
 #include "Scene/TeTransform.h"
 
@@ -695,6 +696,22 @@ namespace te
                 if (ImGuiExt::RenderOptionFloat(cameraSettings->ShadowSettings.CascadeDistributionExponent, "##shadows_cascade_distribution_component_option", "Cascade Distrib.", 1.0f, 4.0f, widthShadows))
                     hasChanged = true;
                 if (ImGuiExt::RenderOptionInt((int&)cameraSettings->ShadowSettings.ShadowFilteringQuality, "##shadows_filtering_quality_option", "Quality.", 1, 4, widthShadows))
+                    hasChanged = true;
+
+                static ImGuiExt::ComboOptions<int> shadowMapSizeOptions;
+                if (shadowMapSizeOptions.Options.size() == 0)
+                {
+                    shadowMapSizeOptions.AddOption(32, "32");
+                    shadowMapSizeOptions.AddOption(64, "64");
+                    shadowMapSizeOptions.AddOption(128, "128");
+                    shadowMapSizeOptions.AddOption(256, "256");
+                    shadowMapSizeOptions.AddOption(512, "512");
+                    shadowMapSizeOptions.AddOption(1024, "1024");
+                    shadowMapSizeOptions.AddOption(2048, "2048");
+                    shadowMapSizeOptions.AddOption(4096, "4096");
+                }
+
+                if (ImGuiExt::RenderOptionCombo<int>((int*)&gRenderer()->GetOptions()->ShadowMapSize, "##shadows_shadow_map_size", "Shadow Map Size", shadowMapSizeOptions, width - 10.f))
                     hasChanged = true;
             }
         }

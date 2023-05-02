@@ -4,6 +4,7 @@
 #include "TeRenderCompositor.h"
 #include "TeRenderManOptions.h"
 #include "TeRendererRenderable.h"
+#include "TeShadowRendering.h"
 #include "Renderer/TeCamera.h"
 #include "Renderer/TeRenderable.h"
 #include "Renderer/TeRenderSettings.h"
@@ -657,12 +658,14 @@ namespace te
 
     RendererViewGroup::RendererViewGroup(RendererView** views, UINT32 numViews, SPtr<RenderManOptions> options)
         : _options(options)
-        , _shadowRenderer(2048)
     {
-        if (options)
-            _shadowRenderer.SetShadowMapSize(options->ShadowMapSize);
-
+        _shadowRenderer = te_shared_ptr_new<ShadowRendering>(options->ShadowMapSize);
         SetViews(views, numViews);
+    }
+
+    RendererViewGroup::~RendererViewGroup()
+    {
+        _shadowRenderer = nullptr;
     }
 
     void RendererViewGroup::SetViews(RendererView** views, UINT32 numViews)

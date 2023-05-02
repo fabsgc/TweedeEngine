@@ -73,8 +73,12 @@ namespace te
         IrradianceProjectSH = 0x18,
         /** Shader to blit outline selection */
         BlitSelection = 0x19,
-        /** Same as above but with heavier Vertex Buffer */
-        ZPrepass = 0x21
+        /** Compute Z Prepass to filll Depth Buffer */
+        ZPrepass = 0x21,
+        /** Render a single face of a shadow map */
+        ShadowDepthNormal = 0x22,
+         /** Render an omni directional cube shadow map */
+        ShadowDepthCube= 0x23
     };
 
     /** Types of builtin shaders that are always available. */
@@ -165,13 +169,15 @@ namespace te
         void InitShaderSSAO();
         void InitShaderSSAOBlur();
         void InitShaderSSAODownSample();
-        void InitShaderDecal();
         void InitShaderTextureDownsample();
         void InitShaderTextureCubeDownsample();
         void InitShaderReflectionCubeImportanceSample();
         void InitIrradianceComputeSH();
         void InitIrradianceReduceSH();
         void InitIrradianceProjectSH();
+        void InitShaderDecal();
+        void InitShaderShadowDepthNormal();
+        void InitShaderShadowDepthCube();
 
         void InitDefaultMaterial();
 
@@ -205,6 +211,8 @@ namespace te
         HShader _shaderIrradianceComputeSH;
         HShader _shaderIrradianceReduceSH;
         HShader _shaderIrradianceProjectSH;
+        HShader _shaderShadowDepthNormal;
+        HShader _shaderShadowDepthCube;
 
         SPtr<SamplerState> _anisotropicSamplerState = nullptr;
         SPtr<SamplerState> _trilinearSamplerState = nullptr;
@@ -282,6 +290,12 @@ namespace te
         
         GPU_PROGRAM_DESC _vertexShaderIrradianceProjectSHDesc;
         GPU_PROGRAM_DESC _pixelShaderIrradianceProjectSHDesc;
+
+        GPU_PROGRAM_DESC _vertexShaderShadowDepthNormalDesc;
+        GPU_PROGRAM_DESC _pixelShaderShadowDepthNormalDesc;
+
+        GPU_PROGRAM_DESC _vertexShaderShadowDepthCubeDesc;
+        GPU_PROGRAM_DESC _pixelShaderShadowDepthCubeDesc;
 
         BLEND_STATE_DESC _blendOpaqueStateDesc;
         BLEND_STATE_DESC _blendTransparentStateDesc;

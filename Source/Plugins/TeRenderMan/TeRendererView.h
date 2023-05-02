@@ -3,7 +3,6 @@
 #include "TeRenderManPrerequisites.h"
 #include "TeRendererLight.h"
 #include "TeRendererDecal.h"
-#include "TeShadowRendering.h"
 #include "TeRendererRenderable.h"
 #include "Renderer/TeRenderer.h"
 #include "Renderer/TeRenderQueue.h"
@@ -366,6 +365,8 @@ namespace te
     public:
         RendererViewGroup(RendererView** views, UINT32 numViews, SPtr<RenderManOptions> options);
 
+        ~RendererViewGroup();
+
         /**
          * Updates the internal list of views. This is more efficient than always constructing a new instance of this class
          * when views change, as internal buffers don't need to be re-allocated.
@@ -392,10 +393,10 @@ namespace te
         const VisibleLightData& GetVisibleLightData() const { return _visibleLightData; }
 
         /** Returns the object responsible for rendering shadows for this view group. */
-        ShadowRendering& GetShadowRenderer() { return _shadowRenderer; }
+        SPtr<ShadowRendering>& GetShadowRenderer() { return _shadowRenderer; }
 
         /** Returns the object responsible for rendering shadows for this view group. */
-        const ShadowRendering& GetShadowRenderer() const { return _shadowRenderer; }
+        const SPtr<ShadowRendering>& GetShadowRenderer() const { return _shadowRenderer; }
 
         /**
          * Updates visibility information for the provided scene objects, from the perspective of all views in this group,
@@ -429,7 +430,7 @@ namespace te
 
         VisibleLightData _visibleLightData;
 
-        ShadowRendering _shadowRenderer;
+        SPtr<ShadowRendering> _shadowRenderer;
     };
 
     IMPLEMENT_GLOBAL_POOL(RenderableElement, STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE)

@@ -42,6 +42,12 @@ namespace te
     struct TE_CORE_EXPORT RendererOptions
     {
         virtual ~RendererOptions() = default;
+
+        /**
+         * Determines the maximum shadow map size, in pixels. The system might decide to use smaller resolution maps for
+         * shadows far away, but will never increase the resolution past the provided value.
+         */
+        UINT32 ShadowMapSize = 2048;
     };
 
     class TE_CORE_EXPORT Renderer : public NonCopyable
