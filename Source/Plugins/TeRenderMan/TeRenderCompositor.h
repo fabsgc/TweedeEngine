@@ -189,6 +189,7 @@ namespace te
         SPtr<PooledRenderTexture> DepthTex;
 
         SPtr<RenderTexture> RenderTargetTex;
+        SPtr<RenderTexture> RenderTargetZPrepassTex;
 
         UINT32 DrawCallsCounter = 0;
 

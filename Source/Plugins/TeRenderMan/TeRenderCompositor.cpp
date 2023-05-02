@@ -119,7 +119,7 @@ namespace te
 
         if(zPrepassMeshElements.size() > 0)
         {
-            HShader shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::ZPrepassLight);
+            HShader shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::ZPrepass);
             const auto& techniques = shader->GetTechniques();
 
             if (techniques.size() == 0)
@@ -491,6 +491,16 @@ namespace te
 
             RenderTargetTex = RenderTexture::Create(gbufferDesc);
         }
+
+        if (RenderTargetZPrepassTex == nullptr || rebuildRT)
+        {
+            RENDER_TEXTURE_DESC gbufferDesc;
+            gbufferDesc.DepthStencilSurface.Tex = DepthTex->Tex;
+            gbufferDesc.DepthStencilSurface.Face = 0;
+            gbufferDesc.DepthStencilSurface.MipLevel = 0;
+
+            RenderTargetZPrepassTex = RenderTexture::Create(gbufferDesc);
+        }
     }
 
     void RCNodeGpuInitializationPass::Clear()
@@ -513,20 +523,21 @@ namespace te
         RenderQueue* opaqueElements = inputs.View.GetOpaqueQueue().get();
         const Vector<RenderQueueElement> elements = opaqueElements->GetSortedElements();
         RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
-        Camera* sceneCamera = inputs.View.GetSceneCamera();
+
+        if (elements.size() == 0)
+            return;
 
         inputs.CurrRenderAPI.PushMarker("[DRAW] Z Pre Pass", Color(0.7f, 0.41f, 0.36f));
-        inputs.CurrRenderAPI.SetRenderTarget(gpuInitializationPassNode->RenderTargetTex);
-        inputs.CurrRenderAPI.ClearViewport(FBT_COLOR | FBT_DEPTH | FBT_STENCIL, Color::Black);
+        inputs.CurrRenderAPI.SetRenderTarget(gpuInitializationPassNode->RenderTargetZPrepassTex);
+        inputs.CurrRenderAPI.ClearViewport(FBT_DEPTH | FBT_STENCIL, Color::Black);
 
         if (inputs.View.GetRenderSettings().UseZPrepass && elements.size() > 0)
         {
             gpuInitializationPassNode->DrawCallsCounter = RenderQueueElementsForZPrepass(elements, inputs.View, inputs.Scene, inputs.ViewGroup);
         }
 
-        if (sceneCamera != nullptr)
-            inputs.View.NotifyCompositorTargetChanged(gpuInitializationPassNode->RenderTargetTex);
-
+        // Make sure that any compute shaders are able to read g-buffer by unbinding it
+        inputs.CurrRenderAPI.SetRenderTarget(nullptr);
         inputs.CurrRenderAPI.PopMarker();
     }
 
@@ -545,18 +556,16 @@ namespace te
         RenderQueue* opaqueElements = inputs.View.GetOpaqueQueue().get();
         const Vector<RenderQueueElement> elements = opaqueElements->GetSortedElements();
         RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
-        Camera* sceneCamera = inputs.View.GetSceneCamera();
 
         if (elements.size() == 0)
             return;
 
         inputs.CurrRenderAPI.PushMarker("[DRAW] Forward Pass", Color(0.8f, 0.6f, 0.8f));
+        inputs.CurrRenderAPI.SetRenderTarget(gpuInitializationPassNode->RenderTargetTex);
+        inputs.CurrRenderAPI.ClearViewport(FBT_COLOR, Color::Black);
 
         // Render all opaque elements     
         gpuInitializationPassNode->DrawCallsCounter = RenderQueueElements(elements, inputs.View, inputs.Scene, inputs.ViewGroup);
-
-        if (sceneCamera != nullptr)
-            inputs.View.NotifyCompositorTargetChanged(gpuInitializationPassNode->RenderTargetTex);
 
         // Make sure that any compute shaders are able to read g-buffer by unbinding it
         inputs.CurrRenderAPI.SetRenderTarget(nullptr);
@@ -600,16 +609,11 @@ namespace te
         }
 
         RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
-        int readOnlyFlags = FBT_DEPTH | FBT_STENCIL;
 
-        inputs.CurrRenderAPI.SetRenderTarget(gpuInitializationPassNode->RenderTargetTex, readOnlyFlags);
+        inputs.CurrRenderAPI.SetRenderTarget(gpuInitializationPassNode->RenderTargetTex, FBT_DEPTH | FBT_STENCIL);
 
         SPtr<Mesh> mesh = gRendererUtility().GetSkyBoxMesh();
         gRendererUtility().Draw(mesh, mesh->GetProperties().GetSubMesh(0));
-
-        Camera* sceneCamera = inputs.View.GetSceneCamera();
-        if (sceneCamera != nullptr)
-            inputs.View.NotifyCompositorTargetChanged(gpuInitializationPassNode->RenderTargetTex);
 
         // Make sure that any compute shaders are able to read g-buffer by unbinding it
         inputs.CurrRenderAPI.SetRenderTarget(nullptr);
@@ -634,7 +638,6 @@ namespace te
         RenderQueue* transparentElements = inputs.View.GetTransparentQueue().get();
         const Vector<RenderQueueElement> elements = transparentElements->GetSortedElements();
         RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
-        Camera* sceneCamera = inputs.View.GetSceneCamera();
 
         if (elements.size() == 0)
             return;
@@ -643,9 +646,6 @@ namespace te
         inputs.CurrRenderAPI.SetRenderTarget(gpuInitializationPassNode->RenderTargetTex, FBT_DEPTH);
 
         gpuInitializationPassNode->DrawCallsCounter = RenderQueueElements(elements, inputs.View, inputs.Scene, inputs.ViewGroup);
-        
-        if (sceneCamera != nullptr)
-            inputs.View.NotifyCompositorTargetChanged(gpuInitializationPassNode->RenderTargetTex);
 
         // Make sure that any compute shaders are able to read g-buffer by unbinding it
         inputs.CurrRenderAPI.SetRenderTarget(nullptr);
@@ -1477,10 +1477,6 @@ namespace te
             input = gpuInitializationPassNode->SceneTex->Tex;
 
         gRendererUtility().Blit(input, Rect2I::EMPTY, viewProps.FlipView, false);
-
-        Camera* sceneCamera = inputs.View.GetSceneCamera();
-        if (sceneCamera != nullptr)
-            inputs.View.NotifyCompositorTargetChanged(target);
 
         if (inputs.View.GetSceneCamera()->IsMain() && GuiAPI::Instance().IsGuiInitialized())
             GuiAPI::Instance().EndFrame();

@@ -287,14 +287,6 @@ namespace te
         /** Lets an on-demand view know that it should be redrawn this frame. */
         void NotifyNeedsRedraw();
 
-        /**
-         * Notifies the view that the render target the compositor is rendering to has changed. Note that this does not
-         * mean the final render target, rather the current intermediate target as set by the renderer during the
-         * rendering of a single frame. This should be set to null if the renderer is not currently rendering the
-         * view.
-         */
-        void NotifyCompositorTargetChanged(const SPtr<RenderTarget>& target) const { _context.CurrentTarget = target; }
-
         /** Returns true if the view should write to the velocity buffer. */
         bool RequiresVelocityWrites() const;
 
@@ -303,9 +295,6 @@ namespace te
          * displayed on a display device.
          */
         float GetCurrentExposure() const;
-
-        /** Returns a context that reflects the state of the view as it changes during rendering. */
-        const RendererViewContext& GetContext() const { return _context; }
 
         /**
          * Extracts the necessary values from the projection matrix that allow you to transform device Z value (range [0, 1]
@@ -338,7 +327,6 @@ namespace te
         friend class Renderable;
 
         RendererViewProperties _properties;
-        mutable RendererViewContext _context;
         Camera* _camera;
 
         UPtr<RenderCompositor> _compositor;

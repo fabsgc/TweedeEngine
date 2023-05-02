@@ -63,11 +63,6 @@ namespace te
                 InitShaderTransparent(false);
             shader = _shaderTransparentCullNone;
             break;
-        case BuiltinShader::ZPrepassLight:
-            if (!_shaderZPrepassLight.IsLoaded())
-                InitShaderZPrepassLight();
-            shader = _shaderZPrepassLight;
-            break;
         case BuiltinShader::ZPrepass:
             if (!_shaderZPrepass.IsLoaded())
                 InitShaderZPrepass();
@@ -247,16 +242,6 @@ namespace te
             _pixelShaderForwardDesc.Language = "hlsl";
             _pixelShaderForwardDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
             _pixelShaderForwardDesc.Source = shaderFile.GetAsString();
-        }
-
-        {
-            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/ForwardZPrepass_VS.hlsl"));
-            _vertexShaderForwardZPrepassLightDesc.Type = GPT_VERTEX_PROGRAM;
-            _vertexShaderForwardZPrepassLightDesc.FilePath = SHADERS_FOLDER + String("HLSL/ForwardZPrepassLight_VS.hlsl");
-            _vertexShaderForwardZPrepassLightDesc.EntryPoint = "mainLight";
-            _vertexShaderForwardZPrepassLightDesc.Language = "hlsl";
-            _vertexShaderForwardZPrepassLightDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
-            _vertexShaderForwardZPrepassLightDesc.Source = shaderFile.GetAsString();
         }
 
         {
@@ -1049,27 +1034,6 @@ namespace te
             _shaderTransparent = InitShader(variations, shaderDesc, passDesc, "Forward Transparent");
         else
             _shaderTransparentCullNone = InitShader(variations, shaderDesc, passDesc, "Forward Transparent No Culling");
-    }
-
-    void BuiltinResources::InitShaderZPrepassLight()
-    {
-        PASS_DESC passDesc;
-        passDesc.BlendStateDesc = _blendTransparentStateDesc;
-        passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
-        passDesc.RasterizerStateDesc = _rasterizerStateDesc;
-        passDesc.VertexProgramDesc = _vertexShaderForwardZPrepassLightDesc;
-
-        passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
-
-        SPtr<Pass> pass = Pass::Create(passDesc);
-        SPtr<Technique> technique = Technique::Create("hlsl", { pass });
-        technique->Compile();
-
-        SHADER_DESC shaderDesc;
-        shaderDesc.QueueType = QueueSortType::FrontToBack;
-        shaderDesc.Techniques.push_back(technique);
-
-        _shaderZPrepassLight = Shader::Create("Z Prepass Light", shaderDesc);
     }
 
     void BuiltinResources::InitShaderZPrepass()

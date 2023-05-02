@@ -73,8 +73,6 @@ namespace te
         IrradianceProjectSH = 0x18,
         /** Shader to blit outline selection */
         BlitSelection = 0x19,
-        /** Shader used for Z Prepass (Vertex Shader from Opaque shader) */
-        ZPrepassLight = 0x20,
         /** Same as above but with heavier Vertex Buffer */
         ZPrepass = 0x21
     };
@@ -150,7 +148,6 @@ namespace te
 
         void InitShaderOpaque();
         void InitShaderTransparent(bool cull = true);
-        void InitShaderZPrepassLight();
         void InitShaderZPrepass();
         void InitShaderBlit();
         void InitShaderSkybox();
@@ -184,7 +181,6 @@ namespace te
         HShader _shaderOpaque;
         HShader _shaderTransparent;
         HShader _shaderTransparentCullNone;
-        HShader _shaderZPrepassLight;
         HShader _shaderZPrepass;
         HShader _shaderBlit;
         HShader _shaderSkybox;
@@ -221,8 +217,6 @@ namespace te
 
         GPU_PROGRAM_DESC _vertexShaderForwardDesc;
         GPU_PROGRAM_DESC _pixelShaderForwardDesc;
-
-        GPU_PROGRAM_DESC _vertexShaderForwardZPrepassLightDesc;
 
         GPU_PROGRAM_DESC _vertexShaderForwardZPrepassDesc;
 

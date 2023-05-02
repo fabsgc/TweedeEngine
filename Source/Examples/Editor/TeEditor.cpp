@@ -1406,8 +1406,6 @@ namespace te
         EditorResManager::Instance().Add<Shader>(shader);
         shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::TransparentCullNone);
         EditorResManager::Instance().Add<Shader>(shader);
-        shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::ZPrepassLight);
-        EditorResManager::Instance().Add<Shader>(shader);
         shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::ZPrepass);
         EditorResManager::Instance().Add<Shader>(shader);
         shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::Blit);
