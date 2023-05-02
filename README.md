@@ -16,6 +16,8 @@ The Tweede Engine Framework is my third attempt to develop a cross-platform full
 
 ## Previews
 
+![Editor](Documentation/sample-pbr-2.png)
+![Editor](Documentation/sample-pbr-3.png)
 ![Editor](Documentation/sample-pbr.png)
 ![Editor](Documentation/sample-bistro.png)
 ![Editor](Documentation/sample-editor-inn.png)
