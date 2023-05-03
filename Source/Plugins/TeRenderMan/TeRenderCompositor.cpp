@@ -532,9 +532,6 @@ namespace te
         const Vector<RenderQueueElement> elements = opaqueElements->GetSortedElements();
         RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
 
-        if (elements.size() == 0)
-            return;
-
         inputs.CurrRenderAPI.PushMarker("[DRAW] Z Pre Pass", Color(0.7f, 0.41f, 0.36f));
         inputs.CurrRenderAPI.SetRenderTarget(gpuInitializationPassNode->RenderTargetZPrepassTex);
         inputs.CurrRenderAPI.ClearViewport(FBT_DEPTH | FBT_STENCIL, Color::Black);
@@ -565,15 +562,13 @@ namespace te
         const Vector<RenderQueueElement> elements = opaqueElements->GetSortedElements();
         RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
 
-        if (elements.size() == 0)
-            return;
-
         inputs.CurrRenderAPI.PushMarker("[DRAW] Forward Pass", Color(0.8f, 0.6f, 0.8f));
         inputs.CurrRenderAPI.SetRenderTarget(gpuInitializationPassNode->RenderTargetTex);
         inputs.CurrRenderAPI.ClearViewport(FBT_COLOR, Color::Black);
 
-        // Render all opaque elements     
-        gpuInitializationPassNode->DrawCallsCounter = RenderQueueElements(elements, inputs.View, inputs.Scene, inputs.ViewGroup);
+        // Render all opaque elements
+        if (elements.size() > 0)
+            gpuInitializationPassNode->DrawCallsCounter = RenderQueueElements(elements, inputs.View, inputs.Scene, inputs.ViewGroup);
 
         // Make sure that any compute shaders are able to read g-buffer by unbinding it
         inputs.CurrRenderAPI.SetRenderTarget(nullptr);

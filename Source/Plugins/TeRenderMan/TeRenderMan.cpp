@@ -218,7 +218,8 @@ namespace te
             {
                 _renderAPI.PushMarker("[DRAW] Shadows", Color(0.3f, 0.47f, 0.7f));
 
-                // TODO Shadows
+                SPtr<ShadowRendering> shadowRenderer = viewGroup.GetShadowRenderer();
+                shadowRenderer->RenderShadowMaps(*_scene, viewGroup, frameInfo);
 
                 _renderAPI.PopMarker();
             }

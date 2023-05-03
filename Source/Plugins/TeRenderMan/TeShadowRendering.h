@@ -3,9 +3,13 @@
 #include "TeRenderManPrerequisites.h"
 #include "Resources/TeBuiltinResources.h"
 #include "Renderer/TeRendererMaterial.h"
+#include "Renderer/TeGpuResourcePool.h"
 #include "Renderer/TeParamBlocks.h"
 #include "Renderer/TeLight.h"
 #include "Math/TeMatrix4.h"
+#include "Math/TeRect2I.h"
+#include "Math/TeRect2.h"
+#include "Image/TePixelData.h"
 
 namespace te
 {
@@ -98,6 +102,124 @@ namespace te
         static ShadowDepthCubeMat* GetVariation(bool skinned);
     };
 
+    /** Pixel format used for rendering and storing shadow maps. */
+    const PixelFormat SHADOW_MAP_FORMAT = PF_D16;
+
+    /** Information about a shadow cast from a single light. */
+    struct ShadowInfo
+    {
+        /** Updates normalized area coordinates based on the non-normalized ones and the provided atlas size. */
+        void UpdateNormArea(UINT32 atlasSize);
+
+        UINT32 LightIdx; /**< Index of the light casting this shadow. */
+        Rect2I Area; /**< Area of the shadow map in pixels, relative to its source texture. */
+        Rect2 NormArea; /**< Normalized shadow map area in [0, 1] range. */
+        UINT32 TextureIdx; /**< Index of the texture the shadow map is stored in. */
+
+        float DepthNear; /**< Distance to the near plane. */
+        float DepthFar; /**< Distance to the far plane. */
+        float DepthFade; /**< Distance to the plane at which to start fading out the shadows (only for CSM). */
+        float FadeRange; /**< Distance from the fade plane to the far plane (only for CSM). */
+
+        float DepthBias; /**< Bias used to reduce shadow acne. */
+        float DepthRange; /**< Length of the range covered by the shadow caster volume. */
+
+        UINT32 CascadeIdx; /**< Index of a cascade. Only relevant for CSM. */
+
+        /** View-projection matrix from the shadow casters point of view. */
+        Matrix4 ShadowVPTransform;
+
+        /** View-projection matrix for each cubemap face, used for omni-directional shadows. */
+        Matrix4 ShadowVPTransforms[6];
+
+        /** Bounds of the geometry the shadow is being applied on. */
+        Sphere SubjectBounds;
+
+        /** Determines the fade amount of the shadow, for each view in the scene. */
+        Vector<float> fadePerView;
+    };
+
+    /**
+     * Contains a texture that serves as an atlas for one or multiple shadow maps. Provides methods for inserting new maps
+     * in the atlas.
+     */
+    class ShadowMapAtlas
+    {
+    public:
+        // TODO Shadows
+    };
+
+    /** Contains common code for different shadow map types. */
+    class ShadowMapBase
+    {
+    public:
+        ShadowMapBase(UINT32 size);
+        virtual ~ShadowMapBase() {}
+
+        /** Returns the bindable shadow map texture. */
+        SPtr<Texture> GetTexture() const;
+
+        /** Returns the size of a single face of the shadow map texture, in pixels. */
+        UINT32 GetSize() const { return _size; }
+
+        /** Makes the shadow map available for re-use and increments the counter returned by getLastUsedCounter(). */
+        void Clear() { _isUsed = false; _lastUsedCounter++; }
+
+        /** Marks the shadow map as used and resets the last used counter to zero. */
+        void MarkAsUsed() { _isUsed = true; _lastUsedCounter = 0; }
+
+        /** Returns true if the object is storing a valid shadow map. */
+        bool IsUsed() const { return _isUsed; }
+
+        /**
+         * Returns the value of the last used counter. See MarkAsUsed() for information on how is
+         * the counter incremented/decremented.
+         */
+        UINT32 GetLastUsedCounter() const { return _lastUsedCounter; }
+       
+    protected:
+    protected:
+        SPtr<PooledRenderTexture> _shadowMap;
+        UINT32 _size;
+
+        bool _isUsed;
+        UINT32 _lastUsedCounter;
+    };
+
+    /** Contains a cubemap for storing an omnidirectional cubemap. */
+    class ShadowCubemap : public ShadowMapBase
+    {
+    public:
+        ShadowCubemap(UINT32 size);
+
+        /** Returns a render target encompassing all six faces of the shadow cubemap. */
+        SPtr<RenderTexture> GetTarget() const;
+    };
+
+    /** Contains a texture required for rendering cascaded shadow maps. */
+    class ShadowCascadedMap : public ShadowMapBase
+    {
+    public:
+        ShadowCascadedMap(UINT32 size, UINT32 numCascades);
+
+        /** Returns the total number of cascades in the cascade shadow map. */
+        UINT32 GetNumCascades() const { return _numCascades; }
+
+        /** Returns a render target that allows rendering into a specific cascade of the cascaded shadow map. */
+        SPtr<RenderTexture> GetTarget(UINT32 cascadeIdx) const;
+
+        /** Provides information about a shadow for the specified cascade. */
+        void SetShadowInfo(UINT32 cascadeIdx, const ShadowInfo& info) { _shadowInfos[cascadeIdx] = info; }
+
+        /** @copydoc setShadowInfo */
+        const ShadowInfo& GetShadowInfo(UINT32 cascadeIdx) const { return _shadowInfos[cascadeIdx]; }
+
+    private:
+        UINT32 _numCascades;
+        Vector<SPtr<RenderTexture>> _targets;
+        Vector<ShadowInfo> _shadowInfos;
+    };
+
     /** Provides functionality for rendering shadow maps. */
     class ShadowRendering
     {
@@ -108,6 +230,19 @@ namespace te
             UINT32 LightIdx;
             UINT32 MapSize;
             Vector<float> FadePercents;
+        };
+
+        /** Contains references to all shadows cast by a specific light. */
+        struct LightShadows
+        {
+            UINT32 StartIdx = 0;
+            UINT32 NumShadows = 0;
+        };
+
+        /** Contains references to all shadows cast by a specific light, per view. */
+        struct PerViewLightShadows
+        {
+            Vector<LightShadows> ViewShadows;
         };
 
     public:
@@ -153,5 +288,19 @@ namespace te
 
     private:
         UINT32 _shadowMapSize;
+
+        Vector<ShadowMapAtlas> _dynamicShadowMaps;
+        Vector<ShadowCascadedMap> _cascadedShadowMaps;
+        Vector<ShadowCubemap> _shadowCubemaps;
+
+        Vector<ShadowInfo> _shadowInfos;
+
+        Vector<LightShadows> _spotLightShadows;
+        Vector<LightShadows> _radialLightShadows;
+        Vector<PerViewLightShadows> _directionalLightShadows;
+
+        Vector<bool> _renderableVisibility; // Transient
+        Vector<ShadowMapOptions> _spotLightShadowOptions; // Transient
+        Vector<ShadowMapOptions> _radialLightShadowOptions; // Transient
     };
 }

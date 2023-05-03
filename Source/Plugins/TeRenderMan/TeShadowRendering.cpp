@@ -1,5 +1,8 @@
 #include "TeShadowRendering.h"
 
+#include "TeRendererScene.h"
+#include "RenderAPI/TeRenderTexture.h"
+
 namespace te
 {
     void ShadowDepthNormalMat::Bind(const SPtr<GpuParamBlockBuffer>& shadowParams)
@@ -41,6 +44,62 @@ namespace te
     ShadowDepthCubeMat::ShadowDepthCubeMat()
     { }
 
+    void ShadowInfo::UpdateNormArea(UINT32 atlasSize)
+    {
+        NormArea.x = Area.x / (float)atlasSize;
+        NormArea.y = Area.y / (float)atlasSize;
+        NormArea.width = Area.width / (float)atlasSize;
+        NormArea.height = Area.height / (float)atlasSize;
+    }
+
+    ShadowMapBase::ShadowMapBase(UINT32 size)
+        : _size(size)
+        , _isUsed(false)
+        , _lastUsedCounter(0)
+    { }
+
+    SPtr<Texture> ShadowMapBase::GetTexture() const
+    {
+        return _shadowMap->Tex;
+    }
+
+    ShadowCubemap::ShadowCubemap(UINT32 size)
+        : ShadowMapBase(size)
+    {
+        _shadowMap = gGpuResourcePool().Get(
+            POOLED_RENDER_TEXTURE_DESC::CreateCube(SHADOW_MAP_FORMAT, size, size, TU_DEPTHSTENCIL));
+    }
+
+    SPtr<RenderTexture> ShadowCubemap::GetTarget() const
+    {
+        return _shadowMap->RenderTex;
+    }
+
+    ShadowCascadedMap::ShadowCascadedMap(UINT32 size, UINT32 numCascades)
+        : ShadowMapBase(size)
+        , _numCascades(numCascades)
+        , _targets(numCascades)
+        , _shadowInfos(numCascades)
+    {
+        _shadowMap = gGpuResourcePool().Get(POOLED_RENDER_TEXTURE_DESC::Create2D(SHADOW_MAP_FORMAT, size, size,
+            TU_DEPTHSTENCIL, 0, false, numCascades));
+
+        RENDER_TEXTURE_DESC rtDesc;
+        rtDesc.DepthStencilSurface.Tex = _shadowMap->Tex;
+        rtDesc.DepthStencilSurface.NumFaces = 1;
+
+        for (UINT32 i = 0; i < _numCascades; ++i)
+        {
+            rtDesc.DepthStencilSurface.Face = i;
+            _targets[i] = RenderTexture::Create(rtDesc);
+        }
+    }
+
+    SPtr<RenderTexture> ShadowCascadedMap::GetTarget(UINT32 cascadeIdx) const
+    {
+        return _targets[cascadeIdx];
+    }
+
     const UINT32 ShadowRendering::MAX_ATLAS_SIZE = 4096;
     const UINT32 ShadowRendering::MAX_UNUSED_FRAMES = 60;
     const UINT32 ShadowRendering::MIN_SHADOW_MAP_SIZE = 32;
@@ -54,6 +113,9 @@ namespace te
 
     void ShadowRendering::RenderShadowMaps(RendererScene& scene, const RendererViewGroup& viewGroup, const FrameInfo& frameInfo)
     {
+        const SceneInfo& sceneInfo = scene.GetSceneInfo();
+        const VisibilityInfo& visibility = viewGroup.GetVisibilityInfo();
+
         // TODO Shadow
     }
 
