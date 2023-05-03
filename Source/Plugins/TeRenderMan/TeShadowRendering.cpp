@@ -52,6 +52,12 @@ namespace te
         NormArea.height = Area.height / (float)atlasSize;
     }
 
+    /** Clears all shadow maps from the atlas. Increments the last used counter.*/
+    void ShadowMapAtlas::Clear()
+    {
+        // TODO Shadow
+    }
+
     ShadowMapBase::ShadowMapBase(UINT32 size)
         : _size(size)
         , _isUsed(false)
@@ -116,6 +122,26 @@ namespace te
         const SceneInfo& sceneInfo = scene.GetSceneInfo();
         const VisibilityInfo& visibility = viewGroup.GetVisibilityInfo();
 
+        // Clear all transient data from last frame
+        _shadowInfos.clear();
+
+        _spotLightShadows.resize(sceneInfo.SpotLights.size());
+        _radialLightShadows.resize(sceneInfo.RadialLights.size());
+        _directionalLightShadows.resize(sceneInfo.DirectionalLights.size());
+
+        _spotLightShadowOptions.clear();
+        _radialLightShadowOptions.clear();
+
+        // Clear all dynamic light atlases
+        for (auto& entry : _cascadedShadowMaps)
+            entry.Clear();
+
+        for (auto& entry : _dynamicShadowMaps)
+            entry.Clear();
+
+        for (auto& entry : _shadowCubemaps)
+            entry.Clear();
+
         // TODO Shadow
     }
 
@@ -123,6 +149,10 @@ namespace te
     {
         if (_shadowMapSize == size)
             return;
+
+        _cascadedShadowMaps.clear();
+        _dynamicShadowMaps.clear();
+        _shadowCubemaps.clear();
 
         _shadowMapSize = size;
     }

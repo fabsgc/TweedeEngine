@@ -146,7 +146,8 @@ namespace te
     class ShadowMapAtlas
     {
     public:
-        // TODO Shadows
+        /** Clears all shadow maps from the atlas. Increments the last used counter.*/
+        void Clear();
     };
 
     /** Contains common code for different shadow map types. */
