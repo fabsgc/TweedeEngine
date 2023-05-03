@@ -14,5 +14,8 @@ namespace te
     public:
         /** When we load a mesh using with GUI, we can generate materials to apply on its submeshes */
         static void ImportMeshMaterials(HMesh& mesh, bool SRGB);
+
+        /** */
+        static void ApplyDefaultMaterial(HMesh& mesh);
     };
 }

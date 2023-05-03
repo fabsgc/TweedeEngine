@@ -162,27 +162,69 @@ namespace te
             }
 
             _mainViewGroup->SetViews(views.data(), (UINT32)views.size());
-            _mainViewGroup->GetShadowRenderer()->SetShadowMapSize(_options->ShadowMapSize);
+
+            // Draw all views inside the viewGroup
+            anythingDrawn = RenderViews(*_mainViewGroup, frameInfo);
+
+            if (rtInfo.Target->GetProperties().IsWindow && anythingDrawn)
+                _renderAPI.SwapBuffers(rtInfo.Target);
+
+            _renderAPI.PopMarker();
+        }
+
+        GpuResourcePool::Instance().Update();
+
+        gProfilerGPU().EndFrame();
+    }
+
+    bool RenderMan::RenderViews(RendererViewGroup& viewGroup, const FrameInfo& frameInfo)
+    {
+        bool anythingDrawn = false;
+        bool needs3DRender = false;
+        const SceneInfo& sceneInfo = _scene->GetSceneInfo();
+        const VisibilityInfo& visibility = viewGroup.GetVisibilityInfo();
+
+        UINT32 numViews = viewGroup.GetNumViews();
+        for (UINT32 i = 0; i < numViews; i++)
+        {
+            RendererView* view = viewGroup.GetView(i);
+
+            if (view->ShouldDraw3D())
+            {
+                needs3DRender = true;
+                break;
+            }
+        }
+
+        if (needs3DRender)
+        {
+            // Update ShadowMap size
+            viewGroup.GetShadowRenderer()->SetShadowMapSize(_options->ShadowMapSize);
 
             // Find all visible renderables
-            if (_options->CullingFlags & (UINT32)RenderManCulling::Frustum ||
-                _options->CullingFlags & (UINT32)RenderManCulling::Occlusion)
             {
-                _mainViewGroup->DetermineVisibility(sceneInfo);
-            }
-            else // Set all objects as visible
-            {
-                _mainViewGroup->SetAllObjectsAsVisible(sceneInfo);
+                if (_options->CullingFlags & (UINT32)RenderManCulling::Frustum || _options->CullingFlags & (UINT32)RenderManCulling::Occlusion)
+                    viewGroup.DetermineVisibility(sceneInfo);
+                else // Set all objects as visible
+                    viewGroup.SetAllObjectsAsVisible(sceneInfo);
             }
 
             // Generate Instanced Buffers
+            viewGroup.GenerateInstanced(sceneInfo, _options->InstancingMode);
+
+            // Render shadow maps
+            // Render only shadow maps for lights needed for this viewGroup
+            // If a shadow map has been drawn by a previous view, do not draw it again
             {
-                _mainViewGroup->GenerateInstanced(sceneInfo, _options->InstancingMode);
+                _renderAPI.PushMarker("[DRAW] Shadows", Color(0.3f, 0.47f, 0.7f));
+
+                // TODO Shadows
+
+                _renderAPI.PopMarker();
             }
 
             // Update various buffers required by each renderable
             {
-                const VisibilityInfo& visibility = _mainViewGroup->GetVisibilityInfo();
                 UINT32 numRenderables = (UINT32)visibility.Renderables.size();
 
                 for (UINT32 i = 0; i < numRenderables; i++)
@@ -193,45 +235,21 @@ namespace te
                     _scene->PrepareVisibleRenderable(i, frameInfo);
                 }
             }
+        }
 
-            // Render shadow maps
-            // Render only shadow maps for lights needed for this viewGroup
-            // If a shadow map has been drawn by a previous view, do not draw it again
-            {
-                // TODO Shadows
-            }
+        // Loop through view for rendering
+        for (UINT32 i = 0; i < numViews; i++)
+        {
+            RendererView* view = viewGroup.GetView(i);
+            _renderAPI.PushMarker("[DRAW] View", Color(0.4f, 0.8f, 0.4f));
 
-            // Loop through view for rendering
-            for (auto& view : views)
-            {
-                _renderAPI.PushMarker("[DRAW] View",Color(0.4f, 0.8f, 0.4f));
-
-                _mainViewGroup->GenerateRenderQueue(sceneInfo, *view, _options->InstancingMode);
-
-                const auto& settings = view->GetSceneCamera()->GetRenderSettings();
-
-                _scene->SetParamCameraParams(settings->SceneLightColor);
-                _scene->SetParamSkyboxParams(view->GetSceneCamera()->GetRenderSettings()->EnableSkybox);
-                _scene->SetParamHDRParams(settings->EnableHDR, settings->Tonemapping.Enabled, settings->Gamma, 
-                    settings->ExposureScale, settings->Contrast, settings->Brightness);
-
-                if (RenderSingleView(*_mainViewGroup, *view, frameInfo))
-                    anythingDrawn = true;
-
-                _renderAPI.PopMarker();
-            }
-
-            if (rtInfo.Target->GetProperties().IsWindow && anythingDrawn)
-            {
-                _renderAPI.SwapBuffers(rtInfo.Target);
-            }
+            if (RenderSingleView(viewGroup, *view, frameInfo))
+                anythingDrawn = true;
 
             _renderAPI.PopMarker();
         }
 
-        GpuResourcePool::Instance().Update();
-
-        gProfilerGPU().EndFrame();
+        return anythingDrawn;
     }
 
     /** Renders all views in the provided view group. Returns true if anything has been draw to any of the views. */
@@ -239,6 +257,7 @@ namespace te
     {
         bool needs3DRender = false;
         bool anythingDrawn = false;
+        const SceneInfo& sceneInfo = _scene->GetSceneInfo();
 
         if (!view.ShouldDraw())
             return anythingDrawn;
@@ -248,12 +267,20 @@ namespace te
 
         if (needs3DRender)
         {
-            Vector3I lightCounts;
-            const PerLightData* lights[STANDARD_FORWARD_MAX_NUM_LIGHTS];
+            viewGroup.GenerateRenderQueue(sceneInfo, view, _options->InstancingMode);
+
+            const auto& settings = view.GetSceneCamera()->GetRenderSettings();
+            _scene->SetParamCameraParams(settings->SceneLightColor);
+            _scene->SetParamSkyboxParams(view.GetSceneCamera()->GetRenderSettings()->EnableSkybox);
+            _scene->SetParamHDRParams(settings->EnableHDR, settings->Tonemapping.Enabled, settings->Gamma,
+                settings->ExposureScale, settings->Contrast, settings->Brightness);
 
             // Find influencing lights for this view
             // Update Light Buffers
             {
+                Vector3I lightCounts;
+                const PerLightData* lights[STANDARD_FORWARD_MAX_NUM_LIGHTS];
+
                 for (const auto& element : view.GetOpaqueQueue()->GetSortedElements())
                 {
                     if (!element.RenderElem->Properties ||

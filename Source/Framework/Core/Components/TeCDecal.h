@@ -54,7 +54,7 @@ namespace te
         void SetLayer(UINT32 layer) { _internal->SetLayer(layer); }
 
         /** @copydoc SetLayer() */
-        UINT64 GetLayer() const { return _internal->GetLayer(); }
+        UINT32 GetLayer() const { return _internal->GetLayer(); }
 
         /** @copydoc Decal::SetLayerMask */
         void SetLayerMask(UINT32 mask) { _internal->SetLayerMask(mask); }

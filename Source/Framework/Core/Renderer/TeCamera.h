@@ -234,10 +234,10 @@ namespace te
         INT32 GetPriority() const { return _priority; }
 
         /**	Determines layer bitfield that is used when determining which object should the camera render. */
-        void SetLayers(UINT64 layers) { _layers = layers; _markCoreDirty(); }
+        void SetLayers(UINT32 layers) { _layers = layers; _markCoreDirty(); }
 
         /** @copydoc SetLayers */
-        UINT64 GetLayers() const { return _layers; }
+        UINT32 GetLayers() const { return _layers; }
 
         /**
          * Settings that control rendering for this view. They determine how will the renderer process this view, which
@@ -492,7 +492,7 @@ namespace te
 
     protected:
         UINT32 _rendererId = 0;
-        UINT64 _layers = 0x1; /**< Bitfield that can be used for filtering what objects the camera sees. */
+        UINT32 _layers = 0x1; /**< Bitfield that can be used for filtering what objects the camera sees. */
 
         ProjectionType _projType = PT_PERSPECTIVE; /**< Type of camera projection. */
         Radian _horzFOV = Degree(90.0f); /**< Horizontal field of view represents how wide is the camera angle. */

@@ -68,7 +68,7 @@ namespace te
         void SetLayer(UINT32 layer);
 
         /** @copydoc SetLayer() */
-        UINT64 GetLayer() const { return _layer; }
+        UINT32 GetLayer() const { return _layer; }
 
         /**	Gets world bounds of this object. */
         Bounds GetBounds() const { return _bounds; }
@@ -133,7 +133,7 @@ namespace te
         Matrix4 _tfrmMatrixNoScale = TeIdentity;
         float _maxDistance = 10.0f;
         Vector2 _size = Vector2::ONE;
-        UINT64 _layer = 1;
+        UINT32 _layer = 1;
         UINT32 _layerMask = 0xFFFFFFFF;
 
         UINT32 _rendererId = 0;

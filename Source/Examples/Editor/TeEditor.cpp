@@ -384,7 +384,7 @@ namespace te
 
         _uiCamera->SetNearClipDistance(5);
         _uiCamera->SetFarClipDistance(10000);
-        _uiCamera->SetLayers(0);
+        _uiCamera->SetLayers(static_cast<UINT32>(0));
 
         SPtr<RenderSettings> settings = _uiCamera->GetRenderSettings();
         settings->OverlayOnly = true;
@@ -1399,6 +1399,9 @@ namespace te
         }
 
         EditorResManager::Instance().Add<Material>(_sphereMaterial);
+
+        HMaterial defaultMaterial = gBuiltinResources().GetDefaultMaterial();
+        EditorResManager::Instance().Add<Material>(defaultMaterial);
 
         HShader shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque);
         EditorResManager::Instance().Add<Shader>(shader);

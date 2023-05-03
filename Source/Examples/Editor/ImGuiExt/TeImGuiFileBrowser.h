@@ -67,7 +67,7 @@ namespace te
                 bool GenSmoothNormals = false;
                 bool ScaleSystemUnit = false;
                 float ScaleFactor = 1.0f;
-                bool ImportCollisionShape = true;
+                bool ImportCollisionShape = false;
                 bool ImportZPrepassMesh = false;
             };
 

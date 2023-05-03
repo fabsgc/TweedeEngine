@@ -340,6 +340,8 @@ namespace te
 
                                 if (_fileBrowser.Data.MeshParam.ImportMaterials && _fileBrowser.Data.MeshParam.ImportTextures)
                                     EditorUtils::ImportMeshMaterials(mesh, meshImportOptions->ImportSRGBTextures);
+                                else
+                                    EditorUtils::ApplyDefaultMaterial(mesh);
                             }
                         }
                         else if (subRes.Name == "collision")

@@ -71,6 +71,10 @@ namespace te
         /**	Returns current set of options used for controlling the rendering. */
         SPtr<RendererOptions> GetOptions() const override;
 
+        /** Renders all views in the provided view group. Returns true if anything has been draw to any of the views. */
+        bool RenderViews(RendererViewGroup& viewGroup, const FrameInfo& frameInfo);
+
+        /** Renders all overlay of the provided view. Returns true if anything has been rendered in any of the views. */
         bool RenderOverlay(RendererView& view, const FrameInfo& frameInfo);
 
         /** Renders all views in the provided view group. Returns true if anything has been draw to any of the views. */

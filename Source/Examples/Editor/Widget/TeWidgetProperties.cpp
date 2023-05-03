@@ -3137,6 +3137,10 @@ namespace te
                                             renderable->SetMaterial(i, subMesh.Mat.GetInternalPtr());
                                     }
                                 }
+                                else if (!renderable->GetMaterial(0))
+                                {
+                                     renderable->SetMaterial(gBuiltinResources().GetDefaultMaterial(), true);
+                                }
                             }
                         }
 

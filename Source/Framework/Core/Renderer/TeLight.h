@@ -122,6 +122,15 @@ namespace te
         const Sphere& GetBounds() const { return _bounds; }
 
         /**
+         * Determines the layer bitfield that controls whether a renderable is considered visible in a specific camera.
+         * Renderable layer must match camera layer in order for the camera to render the component.
+         */
+        void SetLayer(UINT32 layer);
+
+        /** @copydoc SetLayer */
+        UINT32 GetLayer() const { return _layer; }
+
+        /**
          * You can change at runtime which renderer will handle this light
          * Current renderer will be notified that light must be removed
          * And next renderer will be notified that light must be added
@@ -142,14 +151,13 @@ namespace te
          */
         static SPtr<Light> Create(Light::Type type = Light::Type::Directional, Color color = Color::White,
             float intensity = DefaultIntensity, bool castShadows = DefaultCastShadows,
-            Light::CastShadowsType castShadowsType = DefaultCastShadowsType, Degree spotAngle = Degree(DefaultSpotAngle));
+            Light::CastShadowsType castShadowsType = Light::CastShadowsType::Both, Degree spotAngle = Degree(DefaultSpotAngle));
 
     public:
         static bool DefaultCastShadows;
         static float DefaultIntensity;
         static float DefaultSpotAngle;
         static float DefaultShadowBias;
-        static Light::CastShadowsType DefaultCastShadowsType;
 
         static const UINT32 LIGHT_CONE_NUM_SIDES;
         static const UINT32 LIGHT_CONE_NUM_SLICES;
@@ -182,6 +190,7 @@ namespace te
         Sphere _bounds; /**< Sphere that bounds the light area of influence. */
         float _shadowBias; /**< See SetShadowBias */
         CastShadowsType _castShadowsType; /** A light can cast shadows for static geometry, dynamic geometry or both. */
+        UINT32 _layer = 1;
 
         UINT32 _rendererId = 0;
         SPtr<Renderer> _renderer; /** Default renderer if this attributes is not filled in constructor. */

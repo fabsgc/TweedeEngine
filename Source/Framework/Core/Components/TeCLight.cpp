@@ -105,6 +105,7 @@ namespace te
                 _internal->_shadowBias = light->_shadowBias;
                 _internal->_intensity = light->_intensity;
                 _internal->_castShadowsType = light->_castShadowsType;
+                _internal->_layer = light->_layer;
 
                 _internal->_transform = light->_transform;
                 _internal->_mobility = light->_mobility;

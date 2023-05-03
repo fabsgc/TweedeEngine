@@ -32,6 +32,10 @@ namespace te
         void GetParameters(PerLightData& output) const;
 
         Light* _internal;
+
+        // Ask the renderer to update a shadow when the light CastShadowsType is equal to Static
+        // Updated (false) by ShadowRendering API
+        bool RedrawStaticShadow = false;
     };
 
     /**

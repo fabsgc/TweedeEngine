@@ -217,4 +217,13 @@ namespace te
             subMesh.Mat->SetProperties(subMesh.MatProperties);
         }
     }
+
+    void EditorUtils::ApplyDefaultMaterial(HMesh& mesh)
+    {
+        for (UINT32 i = 0; i < mesh->GetProperties().GetNumSubMeshes(); i++)
+        {
+            SubMesh& subMesh = mesh->GetProperties().GetSubMesh(i);
+            subMesh.Mat = gBuiltinResources().GetDefaultMaterial();
+        }
+    }
 }

@@ -7,7 +7,6 @@ namespace te
     float Light::DefaultIntensity = 500.f;
     float Light::DefaultSpotAngle = 45.f;
     float Light::DefaultShadowBias = 0.5f;
-    Light::CastShadowsType Light::DefaultCastShadowsType = Light::CastShadowsType::Both;
 
     const UINT32 Light::LIGHT_CONE_NUM_SIDES = 20;
     const UINT32 Light::LIGHT_CONE_NUM_SLICES = 10;
@@ -20,7 +19,7 @@ namespace te
         , _intensity(DefaultIntensity)
         , _spotAngle(DefaultSpotAngle)
         , _shadowBias(DefaultShadowBias)
-        , _castShadowsType(DefaultCastShadowsType)
+        , _castShadowsType(Light::CastShadowsType::Both)
     { }
 
     Light::Light(Light::Type type, Color color, float intensity, 
@@ -187,6 +186,20 @@ namespace te
         default:
             break;
         }
+    }
+
+    void Light::SetLayer(UINT32 layer)
+    {
+        const bool isPow2 = layer && !((layer - 1) & layer);
+
+        if (!isPow2)
+        {
+            TE_DEBUG("Invalid layer provided. Only one layer bit may be set. Ignoring.");
+            return;
+        }
+
+        _layer = layer;
+        _markCoreDirty();
     }
 
     SPtr<Light> Light::Create(Light::Type type, Color color, float intensity, bool castShadows, 

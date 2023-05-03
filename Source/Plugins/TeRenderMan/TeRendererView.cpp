@@ -247,6 +247,8 @@ namespace te
     void RendererView::DetermineVisible(const Vector<RendererLight>& lights, const Vector<Sphere>* bounds,
         Light::Type lightType, Vector<bool>* visibility)
     {
+        UINT64 cameraLayers = _properties.VisibleLayers;
+
         if (!_renderSettings->EnableLighting)
         {
             for (UINT32 i = 0; i < (UINT32)lights.size(); i++)
@@ -290,7 +292,7 @@ namespace te
             for (UINT32 i = 0; i < (UINT32)lights.size(); i++)
             {
                 bool visible = (*visibility)[i];
-                (*visibility)[i] = visible || (*perViewVisibility)[i];
+                (*visibility)[i] = (visible || (*perViewVisibility)[i]) && (lights[i]._internal->GetLayer() & cameraLayers) != 0;
             }
         }
     }
@@ -741,7 +743,10 @@ namespace te
         // then updated when each view group is rendered. It might be better to keep one buffer reserved per-view.
         _visibleLightData.Update(sceneInfo, *this);
 
-        // TODO calculate Decal visibility
+        // TODO decal
+        {
+
+        }
     }
 
     void RendererViewGroup::SetAllObjectsAsVisible(const SceneInfo& sceneInfo)

@@ -273,7 +273,12 @@ namespace te
             && light->GetCastShadowsType() == Light::CastShadowsType::Static 
             && light->GetCastShadows())
         {
-            // TODO Shadow
+            if (light->GetType() == Light::Type::Directional)
+                _info.DirectionalLights[lightId].RedrawStaticShadow = true;
+            else if (light->GetType() == Light::Type::Radial)
+                _info.RadialLights[lightId].RedrawStaticShadow = true;
+            else if (light->GetType() == Light::Type::Spot)
+                _info.SpotLights[lightId].RedrawStaticShadow = true;
         }
     }
 

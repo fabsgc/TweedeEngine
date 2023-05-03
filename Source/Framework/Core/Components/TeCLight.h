@@ -72,6 +72,12 @@ namespace te
         /** @copydoc Light::GetBounds */
         Sphere GetBounds() const;
 
+        /** @copydoc Renderable::SetLayer */
+        void SetLayer(UINT32 layer) { _internal->SetLayer(layer); }
+
+        /** @copydoc Renderable::GetLayer */
+        UINT32 GetLayer() const { return _internal->GetLayer(); }
+
         /** @copydoc Light::GetTransform */
         const Transform& GetTransform() { return _internal->GetTransform(); }
 
@@ -100,7 +106,7 @@ namespace te
         float _intensity = Light::DefaultIntensity;
         bool _castShadows = Light::DefaultCastShadows;
         Degree _spotAngle = Degree(Light::DefaultSpotAngle);
-        Light::CastShadowsType _castShadowsType = Light::DefaultCastShadowsType;
+        Light::CastShadowsType _castShadowsType = Light::CastShadowsType::Both;
 
     protected:
         friend class SceneObject;
@@ -109,7 +115,7 @@ namespace te
 
         CLight(const HSceneObject& parent, Light::Type type = Light::Type::Directional, Color color = Color::White,
             float intensity = Light::DefaultIntensity, bool castShadows = Light::DefaultCastShadows,
-            Light::CastShadowsType castShadowsType = Light::DefaultCastShadowsType, Degree spotAngle = Degree(Light::DefaultSpotAngle));
+            Light::CastShadowsType castShadowsType = Light::CastShadowsType::Both, Degree spotAngle = Degree(Light::DefaultSpotAngle));
 
         /** @copydoc Component::Instantiate */
         void Instantiate() override;

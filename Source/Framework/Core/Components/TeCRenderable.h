@@ -129,7 +129,7 @@ namespace te
         void SetLayer(UINT32 layer) { _internal->SetLayer(layer); }
 
         /** @copydoc Renderable::GetLayer */
-        UINT64 GetLayer() const { return _internal->GetLayer(); }
+        UINT32 GetLayer() const { return _internal->GetLayer(); }
 
         /** @copydoc SetInstancing */
         void SetInstancing(bool instancing) { _internal->SetInstancing(instancing); }

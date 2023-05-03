@@ -1755,6 +1755,7 @@ namespace te
         MaterialProperties properties;
         _defaultMaterial = Material::Create(GetBuiltinShader(BuiltinShader::Opaque));
         _defaultMaterial->SetProperties(properties);
+        _defaultMaterial->SetName("Default Material");
     }
 
     void BuiltinResources::InitFrameworkIcon()

@@ -36,7 +36,7 @@ namespace te
         /** If true the view will only be rendered when requested, otherwise it will be rendered every frame. */
         bool OnDemand = false;
 
-        UINT64 VisibleLayers = 0;
+        UINT32 VisibleLayers = 0;
         ConvexVolume CullFrustum;
 
         /** When enabled, post-processing effects (like tonemapping) will be executed. */
