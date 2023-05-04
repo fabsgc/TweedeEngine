@@ -27,18 +27,15 @@ namespace te
         {
             assert(Right >= Left && Bottom >= Top && Back >= Front);
         }
-            
+
         /** Return true if the other box is a part of this one. */
         bool Contains(const PixelVolume &volume) const
         {
             return (volume.Left >= Left && volume.Top >= Top && volume.Front >= Front &&
                 volume.Right <= Right && volume.Bottom <= Bottom && volume.Back <= Back);
         }
-            
-        UINT32 GetWidth() const { return Right-Left; }
+                    UINT32 GetWidth() const { return Right-Left; }
         UINT32 GetHeight() const { return Bottom-Top; }
         UINT32 GetDepth() const { return Back-Front; }
     };
-
-    /** @} */
 }

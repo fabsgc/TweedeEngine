@@ -10,6 +10,7 @@
 #include "Math/TeRect2I.h"
 #include "Math/TeRect2.h"
 #include "Image/TePixelData.h"
+#include "Image/TeTextureAtlasLayout.h"
 
 namespace te
 {
@@ -136,7 +137,7 @@ namespace te
         Sphere SubjectBounds;
 
         /** Determines the fade amount of the shadow, for each view in the scene. */
-        Vector<float> fadePerView;
+        Vector<float> FadePerView;
     };
 
     /**
@@ -146,8 +147,37 @@ namespace te
     class ShadowMapAtlas
     {
     public:
+        ShadowMapAtlas(UINT32 size);
+
+        /**
+        * Registers a new map in the shadow map atlas. Returns true if the map fits in the atlas, or false otherwise.
+        * Resets the last used counter to zero.
+        */
+        bool AddMap(UINT32 size, Rect2I& area, UINT32 border = 4);
+
         /** Clears all shadow maps from the atlas. Increments the last used counter.*/
         void Clear();
+
+        /** Checks have any maps been added to the atlas. */
+        bool IsEmpty() const;
+
+        /**
+         * Returns the value of the last used counter. See addMap() and clear() for information on how the counter is
+         * incremented/decremented.
+         */
+        UINT32 GetLastUsedCounter() const { return _lastUsedCounter; }
+
+        /** Returns the bindable atlas texture. */
+        SPtr<Texture> GetTexture() const;
+
+        /** Returns the render target that allows you to render into the atlas. */
+        SPtr<RenderTexture> GetTarget() const;
+
+    private:
+        SPtr<PooledRenderTexture> _atlas;
+
+        TextureAtlasLayout _layout;
+        UINT32 _lastUsedCounter;
     };
 
     /** Contains common code for different shadow map types. */
@@ -261,12 +291,38 @@ namespace te
             const FrameInfo& frameInfo);
 
         /** Renders shadow maps for the provided spot light. */
-        void RenderSpotShadowMap(const RendererLight& light, const ShadowMapOptions& options, RendererScene& scene,
+        void RenderSpotShadowMap(const RendererLight& rendererLight, const ShadowMapOptions& options, RendererScene& scene,
             const FrameInfo& frameInfo);
 
         /** Renders shadow maps for the provided radial light. */
-        void RenderRadialShadowMap(const RendererLight& light, const ShadowMapOptions& options, RendererScene& scene,
+        void RenderRadialShadowMap(const RendererLight& rendererLight, const ShadowMapOptions& options, RendererScene& scene,
             const FrameInfo& frameInfo);
+
+        /**
+         * Calculates optimal shadow map size, taking into account all views in the scene. Also calculates a fade value
+         * that can be used for fading out small shadow maps.
+         *
+         * @param[in]	light			Light for which to calculate the shadow map properties. Cannot be a directional light.
+         * @param[in]	viewGroup		All the views the shadow will (potentially) be seen through.
+         * @param[in]	border			Border to reduce the shadow map size by, in pixels.
+         * @param[out]	size			Optimal size of the shadow map, in pixels.
+         * @param[out]	fadePercents	Value in range [0, 1] determining how much should the shadow map be faded out. Each
+         *								entry corresponds to a single view.
+         * @param[out]	maxFadePercent	Maximum value in the @p fadePercents array.
+         */
+        void CalcShadowMapProperties(const RendererLight& light, const RendererViewGroup& viewGroup, UINT32 border,
+            UINT32& size, Vector<float>& fadePercents, float& maxFadePercent) const;
+
+        /**
+         * Calculates a bias that can be applied when rendering shadow maps, in order to reduce shadow artifacts.
+         *
+         * @param[in]	light		Light to calculate the depth bias for.
+         * @param[in]	radius		Radius of the light bounds.
+         * @param[in]	depthRange	Range of depths (distance between near and far planes) covered by the shadow.
+         * @param[in]	mapSize		Size of the shadow map, in pixels.
+         * @return					Depth bias that can be passed to shadow depth rendering shader.
+         */
+        static float GetDepthBias(const Light& light, float radius, float depthRange, UINT32 mapSize);
 
     private:
         /** Size of a single shadow map atlas, in pixels. */

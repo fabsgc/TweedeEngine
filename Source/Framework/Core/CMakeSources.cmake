@@ -244,6 +244,7 @@ set (TE_CORE_INC_IMAGE
     "Core/Image/TePixelUtil.h"
     "Core/Image/TePixelVolume.h"
     "Core/Image/TeColor.h"
+    "Core/Image/TeTextureAtlasLayout.h"
 )
 set (TE_CORE_SRC_IMAGE
     "Core/Image/TeTexture.cpp"
@@ -251,6 +252,7 @@ set (TE_CORE_SRC_IMAGE
     "Core/Image/TePixelData.cpp"
     "Core/Image/TePixelUtil.cpp"
     "Core/Image/TeColor.cpp"
+    "Core/Image/TeTextureAtlasLayout.cpp"
 )
 
 set (TE_CORE_INC_MESH

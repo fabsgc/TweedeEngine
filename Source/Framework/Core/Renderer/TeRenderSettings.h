@@ -338,7 +338,7 @@ namespace te
          * Determines the number of samples to take during bloom. Increasing this value will
          * yield higher quality blur at the cost of the performance. Reduce also generated bloom texture size.
          */
-        BloomQuality Quality = BloomQuality::High;
+        BloomQuality Quality = BloomQuality::Ultra;
 
         /** Tint color to apply to the bloom highlight. A pure white means the bloom inherits the underlying scene color. */
         Color Tint = Color::White;

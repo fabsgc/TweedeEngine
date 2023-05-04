@@ -298,6 +298,11 @@ namespace te
 
     class Texture;
     class PixelData;
+    class TextureAtlasLayout;
+    class TextureAtlasUtility;
+    class Color;
+    struct PixelVolume;
+    class TextureManager;
 
     struct MESH_DESC;
     class MeshProperties;

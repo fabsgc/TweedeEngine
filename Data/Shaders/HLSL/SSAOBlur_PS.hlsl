@@ -19,7 +19,7 @@ Texture2D DepthMap : register(t1);
 
 float4 main( PS_INPUT IN ) : SV_Target0
 {
-    const int NUM_SAMPLES = 2;
+    const int NUM_SAMPLES = 3;
     float centerDepth = ConvertFromDeviceZ(gCamera, DepthMap.Sample(Sampler, IN.Texture).r);
 
     float weightedSum = 0.0f;

@@ -59,6 +59,18 @@ namespace te
         output.Type = type;
     }
 
+    Vector3 RendererLight::GetShiftedLightPosition() const
+    {
+        const Transform& tfrm = _internal->GetTransform();
+        Vector3 direction = -tfrm.GetRotation().ZAxis();
+
+        // Create position for fake attenuation for area spot lights (with disc center)
+        if (_internal->GetType() == Light::Type::Spot)
+            return tfrm.GetPosition() - direction * (1.f / Math::Tan(_internal->GetSpotAngle() * 0.5f));
+        else
+            return tfrm.GetPosition();
+    }
+
     VisibleLightData::VisibleLightData()
         : _numLights { }
         , _numShadowedLights { }
