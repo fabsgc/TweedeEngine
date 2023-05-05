@@ -54,4 +54,4 @@ float3x4 GetPrevBlendMatrix(float4 blendWeights, uint4 blendIndices)
     return result;
 }
 
-#endif // __SKINNING
+#endif // __SKINNING__

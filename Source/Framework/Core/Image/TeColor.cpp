@@ -204,6 +204,33 @@ namespace te
         return val32;
     }
 
+    GBRA Color::GetAsARGB() const
+    {
+        UINT8 val8;
+        UINT32 val32 = 0;
+
+        // Convert to 32bit pattern
+        // (ARGB = 8888)
+
+        // Blue
+        val8 = static_cast<UINT8>(b * 255);
+        val32 = val8 << 24;
+
+        // Green
+        val8 = static_cast<UINT8>(g * 255);
+        val32 += val8 << 16;
+
+        // Red
+        val8 = static_cast<UINT8>(r * 255);
+        val32 += val8 << 8;
+
+        // Alpha
+        val8 = static_cast<UINT8>(a * 255);
+        val32 += val8;
+
+        return val32;
+    }
+
     Vector4 Color::GetAsVector4() const
     {
         return Vector4(r, g, b, a);

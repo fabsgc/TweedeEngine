@@ -3,6 +3,7 @@
 #include "TeRendererScene.h"
 #include "RenderAPI/TeRenderTexture.h"
 #include "Utility/TeBitwise.h"
+#include "Utility/TeFrameAllocator.h"
 
 namespace te
 {
@@ -10,12 +11,17 @@ namespace te
 
     void ShadowDepthNormalMat::Bind(const SPtr<GpuParamBlockBuffer>& shadowParams)
     {
-        // TODO Shadow
+        _params->SetParamBlockBuffer("PerShadowBuffer", shadowParams);
+
+        RenderAPI::Instance().SetGraphicsPipeline(_graphicsPipeline);
+        RenderAPI::Instance().SetStencilRef(_stencilRef);
     }
 
     void ShadowDepthNormalMat::SetPerObjectBuffer(const SPtr<GpuParamBlockBuffer>& perObjectParams)
     {
-        // TODO Shadow
+        _params->SetParamBlockBuffer("PerObjectBuffer", perObjectParams);
+
+        RenderAPI::Instance().SetGpuParams(_params);
     }
 
     ShadowDepthNormalMat* ShadowDepthNormalMat::GetVariation(bool skinned)
@@ -26,20 +32,46 @@ namespace te
             return Get(GetVariation<false>());
     }
 
+    void ShadowDepthDirectionalMat::Bind(const SPtr<GpuParamBlockBuffer>& shadowParams)
+    {
+        _params->SetParamBlockBuffer("ShadowParams", shadowParams);
+
+        RenderAPI::Instance().SetGraphicsPipeline(_graphicsPipeline);
+        RenderAPI::Instance().SetStencilRef(_stencilRef);
+    }
+
+    void ShadowDepthDirectionalMat::SetPerObjectBuffer(const SPtr<GpuParamBlockBuffer>& perObjectParams)
+    {
+        _params->SetParamBlockBuffer("PerObjectBuffer", perObjectParams);
+        RenderAPI::Instance().SetGpuParams(_params);
+    }
+
+    ShadowDepthDirectionalMat* ShadowDepthDirectionalMat::GetVariation(bool skinned)
+    {
+        if (skinned)
+            return Get(GetVariation<true>());
+        else
+            return Get(GetVariation<false>());
+    }
+
     ShadowCubeMatricesDef gShadowCubeMatricesDef;
     ShadowCubeMasksDef gShadowCubeMasksDef;
 
-    ShadowDepthCubeMat::ShadowDepthCubeMat()
-    { }
-
     void ShadowDepthCubeMat::Bind(const SPtr<GpuParamBlockBuffer>& shadowParams, const SPtr<GpuParamBlockBuffer>& shadowCubeParams)
     {
-        // TODO Shadow
+        _params->SetParamBlockBuffer("PerShadowBuffer", shadowParams);
+        _params->SetParamBlockBuffer("PerShadowCubeMatrices", shadowCubeParams);
+
+        RenderAPI::Instance().SetGraphicsPipeline(_graphicsPipeline);
+        RenderAPI::Instance().SetStencilRef(_stencilRef);
     }
 
     void ShadowDepthCubeMat::SetPerObjectBuffer(const SPtr<GpuParamBlockBuffer>& perObjectParams, const SPtr<GpuParamBlockBuffer>& shadowCubeMasks)
     {
-        // TODO Shadow
+        _params->SetParamBlockBuffer("PerObjectBuffer", perObjectParams);
+        _params->SetParamBlockBuffer("PerShadowCubeMasks", shadowCubeMasks);
+
+        RenderAPI::Instance().SetGpuParams(_params);
     }
 
     ShadowDepthCubeMat* ShadowDepthCubeMat::GetVariation(bool skinned)
@@ -150,6 +182,195 @@ namespace te
     {
         return _targets[cascadeIdx];
     }
+
+    /**
+     * Provides a common way for all types of shadow depth rendering to render the relevant objects into the depth map.
+     * Iterates over all relevant objects in the scene, binds the relevant materials and renders the objects into the depth
+     * map.
+     */
+    class ShadowRenderQueue
+    {
+    public:
+        struct Command
+        {
+            Command ()
+            { }
+
+            Command (RenderableElement* element)
+                : Element(element)
+            { }
+
+            union
+            {
+                RenderableElement* Element;
+                RendererRenderable* Renderable;
+            };
+
+            UINT32 Mask : 6;
+        };
+
+        template<class Options>
+        static void Execute(RendererScene& scene, const FrameInfo& frameInfo, const Options& opt)
+        {
+            static_assert((UINT32)RenderableAnimType::Count == 2, "RenderableAnimType is expected to have two sequential entries.");
+
+            const SceneInfo& sceneInfo = scene.GetSceneInfo();
+
+            te_frame_mark();
+            {
+                FrameVector<Command> commands[4];
+
+                // Make a list of relevant renderables and prepare them for rendering
+                for (UINT32 i = 0; i < sceneInfo.Renderables.size(); i++)
+                {
+                    if (!sceneInfo.Renderables[i]->RenderablePtr->GetCastShadows())
+                        continue;
+
+                    const Sphere& bounds = sceneInfo.RenderableCullInfos[i].Boundaries.GetSphere();
+                    if (!opt.Intersects(bounds))
+                        continue;
+
+                    Command renderableCommand;
+                    renderableCommand.Mask = 0;
+
+                    RendererRenderable* renderable = sceneInfo.Renderables[i];
+                    renderableCommand.Renderable = renderable;
+
+                    opt.Prepare(renderableCommand, bounds);
+
+                    // TODO Shadow
+                }
+            }
+            te_frame_clear();
+        }
+    };
+
+    /** Specialization used for ShadowRenderQueue when rendering cube (omnidirectional) shadow maps (all faces at once). */
+    struct ShadowRenderQueueCubeOptions
+    {
+        ShadowRenderQueueCubeOptions(
+            const ConvexVolume(&frustums)[6],
+            const ConvexVolume& boundingVolume,
+            const SPtr<GpuParamBlockBuffer>& shadowParamsBuffer,
+            const SPtr<GpuParamBlockBuffer>& shadowCubeMatricesBuffer,
+            const SPtr<GpuParamBlockBuffer>& shadowCubeMasksBuffer)
+                : Frustums(frustums)
+                , BoundingVolume(boundingVolume)
+                , ShadowParamsBuffer(shadowParamsBuffer)
+                , ShadowCubeMatricesBuffer(shadowCubeMatricesBuffer)
+                , ShadowCubeMasksBuffer(shadowCubeMasksBuffer)
+        { }
+
+        bool Intersects(const Sphere& bounds) const
+        {
+            return BoundingVolume.Intersects(bounds);
+        }
+
+        void Prepare(ShadowRenderQueue::Command& command, const Sphere& bounds) const
+        {
+            for (UINT32 j = 0; j < 6; j++)
+                command.Mask |= (Frustums[j].Intersects(bounds) ? 1 : 0) << j;
+        }
+
+        void BindMaterial(const ShaderVariation& variation) const
+        {
+            Mat = ShadowDepthCubeMat::Get(variation);
+            Mat->Bind(ShadowParamsBuffer, ShadowCubeMatricesBuffer);
+        }
+
+        void BindRenderable(ShadowRenderQueue::Command& command) const
+        {
+            RendererRenderable* renderable = command.Renderable;
+
+            for (UINT32 j = 0; j < 6; j++)
+                gShadowCubeMasksDef.gFaceMasks.Set(ShadowCubeMasksBuffer, (command.Mask & (1 << j)), j);
+
+            Mat->SetPerObjectBuffer(renderable->PerObjectParamBuffer, ShadowCubeMasksBuffer);
+        }
+
+        const ConvexVolume(&Frustums)[6];
+        const ConvexVolume& BoundingVolume;
+        const SPtr<GpuParamBlockBuffer>& ShadowParamsBuffer;
+        const SPtr<GpuParamBlockBuffer>& ShadowCubeMatricesBuffer;
+        const SPtr<GpuParamBlockBuffer>& ShadowCubeMasksBuffer;
+
+        mutable ShadowDepthCubeMat* Mat = nullptr;
+    };
+
+    /** Specialization used for ShadowRenderQueue when rendering spot light shadow maps. */
+    struct ShadowRenderQueueSpotOptions
+    {
+        ShadowRenderQueueSpotOptions(
+            const ConvexVolume& boundingVolume,
+            const SPtr<GpuParamBlockBuffer>& shadowParamsBuffer)
+                : BoundingVolume(boundingVolume)
+                , ShadowParamsBuffer(shadowParamsBuffer)
+        { }
+
+        bool Intersects(const Sphere& bounds) const
+        {
+            return BoundingVolume.Intersects(bounds);
+        }
+
+        void Prepare(ShadowRenderQueue::Command& command, const Sphere& bounds) const
+        {
+        }
+
+        void BindMaterial(const ShaderVariation& variation) const
+        {
+            Mat = ShadowDepthNormalMat::Get(variation);
+            Mat->Bind(ShadowParamsBuffer);
+        }
+
+        void BindRenderable(ShadowRenderQueue::Command& command) const
+        {
+            RendererRenderable* renderable = command.Renderable;
+
+            Mat->SetPerObjectBuffer(renderable->PerObjectParamBuffer);
+        }
+
+        const ConvexVolume& BoundingVolume;
+        const SPtr<GpuParamBlockBuffer>& ShadowParamsBuffer;
+
+        mutable ShadowDepthNormalMat* Mat = nullptr;
+    };
+
+    struct ShadowRenderQueueDirOptions
+    {
+        ShadowRenderQueueDirOptions(
+            const ConvexVolume& boundingVolume,
+            const SPtr<GpuParamBlockBuffer>& shadowParamsBuffer)
+                : BoundingVolume(boundingVolume)
+                , ShadowParamsBuffer(shadowParamsBuffer)
+        { }
+
+        bool Intersects(const Sphere& bounds) const
+        {
+            return BoundingVolume.Intersects(bounds);
+        }
+
+        void Prepare(ShadowRenderQueue::Command& command, const Sphere& bounds) const
+        {
+        }
+
+        void BindMaterial(const ShaderVariation& variation) const
+        {
+            Mat = ShadowDepthDirectionalMat::Get(variation);
+            Mat->Bind(ShadowParamsBuffer);
+        }
+
+        void bindRenderable(ShadowRenderQueue::Command& command) const
+        {
+            RendererRenderable* renderable = command.Renderable;
+
+            Mat->SetPerObjectBuffer(renderable->PerObjectParamBuffer);
+        }
+
+        const ConvexVolume& BoundingVolume;
+        const SPtr<GpuParamBlockBuffer>& ShadowParamsBuffer;
+
+        mutable ShadowDepthDirectionalMat* Mat = nullptr;
+    };
 
     const UINT32 ShadowRendering::MAX_ATLAS_SIZE = 4096;
     const UINT32 ShadowRendering::MAX_UNUSED_FRAMES = 60;
@@ -388,14 +609,87 @@ namespace te
         Quaternion lightRotation(TeIdentity);
         lightRotation.LookRotation(lightDir, Vector3::UNIT_Y);
 
+        rapi.PushMarker("[DRAW] Project Directional Shadow", Color(0.85f, 0.43f, 0.25f));
+
         for (UINT32 i = 0; i < numCascades; ++i)
         {
-            rapi.PushMarker("[DRAW] Project Directional Shadow", Color(0.4f, 0.57f, 0.6f));
+            rapi.PushMarker("[DRAW] Project Directional Shadow Cascade", Color(0.7f, 0.47f, 0.25f));
 
-            // TODO Shadow
+            Sphere frustumBounds;
+            ConvexVolume cascadeCullVolume = GetCSMSplitFrustum(view, lightDir, i, numCascades, frustumBounds);
+
+            // Make sure the size of the projected area is in multiples of shadow map pixel size (for stability)
+            float worldUnitsPerTexel = frustumBounds.GetRadius() * 2.0f / shadowMap.GetSize();
+
+            float orthoSize = floor(frustumBounds.GetRadius() * 2.0f / worldUnitsPerTexel) * worldUnitsPerTexel * 0.5f;
+            worldUnitsPerTexel = orthoSize * 2.0f / shadowMap.GetSize();
+
+            // Snap caster origin to the shadow map pixel grid, to ensure shadow map stability
+            Vector3 casterOrigin = frustumBounds.GetCenter();
+            Matrix4 shadowView = Matrix4::View(Vector3::ZERO, lightRotation);
+            Vector3 shadowSpaceOrigin = shadowView.MultiplyAffine(casterOrigin);
+
+            Vector2 snapOffset(fmod(shadowSpaceOrigin.x, worldUnitsPerTexel), fmod(shadowSpaceOrigin.y, worldUnitsPerTexel));
+            shadowSpaceOrigin.x -= snapOffset.x;
+            shadowSpaceOrigin.y -= snapOffset.y;
+
+            Matrix4 shadowViewInv = shadowView.InverseAffine();
+            casterOrigin = shadowViewInv.MultiplyAffine(shadowSpaceOrigin);
+
+            // Move the light so it is centered at the subject frustum, with depth range covering the frustum bounds
+            shadowInfo.DepthRange = frustumBounds.GetRadius() * 2.0f;
+
+            Vector3 offsetLightPos = casterOrigin - lightDir * frustumBounds.GetRadius();
+            Matrix4 offsetViewMat = Matrix4::View(offsetLightPos, lightRotation);
+
+            Matrix4 proj = Matrix4::ProjectionOrthographic(-orthoSize, orthoSize, orthoSize, -orthoSize, 0.0f,
+                shadowInfo.DepthRange);
+
+            RenderAPI::Instance().ConvertProjectionMatrix(proj, proj);
+
+            shadowInfo.CascadeIdx = i;
+            shadowInfo.ShadowVPTransform = proj * offsetViewMat;
+
+            // Determine split range
+            float splitNear = GetCSMSplitDistance(view, i, numCascades);
+            float splitFar = GetCSMSplitDistance(view, i + 1, numCascades);
+
+            shadowInfo.DepthNear = splitNear;
+            shadowInfo.DepthFade = splitFar;
+            shadowInfo.SubjectBounds = frustumBounds;
+
+            if ((UINT32)(i + 1) < numCascades)
+                shadowInfo.FadeRange = CASCADE_FRACTION_FADE * (shadowInfo.DepthFade - shadowInfo.DepthNear);
+            else
+                shadowInfo.FadeRange = 0.0f;
+
+            shadowInfo.DepthFar = shadowInfo.DepthFade + shadowInfo.FadeRange;
+            shadowInfo.DepthBias = GetDepthBias(*light, frustumBounds.GetRadius(), shadowInfo.DepthRange, mapSize);
+
+            gShadowParamsDef.gDepthBias.Set(shadowParamsBuffer, shadowInfo.DepthBias);
+            gShadowParamsDef.gInvDepthRange.Set(shadowParamsBuffer, 1.0f / shadowInfo.DepthRange);
+            gShadowParamsDef.gMatViewProj.Set(shadowParamsBuffer, shadowInfo.ShadowVPTransform);
+            gShadowParamsDef.gNDCZToDeviceZ.Set(shadowParamsBuffer, RendererView::GetNDCZToDeviceZ());
+
+            rapi.SetRenderTarget(shadowMap.GetTarget(i));
+            rapi.ClearRenderTarget(FBT_DEPTH);
+
+            ShadowDepthDirectionalMat* depthDirMat = ShadowDepthDirectionalMat::Get();
+            depthDirMat->Bind(shadowParamsBuffer);
+
+            // Render all renderables into the shadow map
+            ShadowRenderQueueDirOptions dirOptions(
+                cascadeCullVolume,
+                shadowParamsBuffer);
+
+            ShadowRenderQueue::Execute(scene, frameInfo, dirOptions);
+
+            shadowMap.SetShadowInfo(i, shadowInfo);
 
             rapi.PopMarker();
         }
+
+        rapi.PopMarker();
 
         lightShadows.StartIdx = shadowInfo.TextureIdx;
         lightShadows.NumShadows = 1;
@@ -440,7 +734,7 @@ namespace te
         mapInfo.UpdateNormArea(MAX_ATLAS_SIZE);
         ShadowMapAtlas& atlas = _dynamicShadowMaps[mapInfo.TextureIdx];
 
-        rapi.PushMarker("[DRAW] Project Spot Shadow", Color(0.4f, 0.57f, 0.6f));
+        rapi.PushMarker("[DRAW] Project Spot Shadow", Color(0.85f, 0.43f, 0.25f));
 
         rapi.SetRenderTarget(atlas.GetTarget());
         rapi.SetViewport(mapInfo.NormArea);
@@ -482,8 +776,14 @@ namespace te
 
         ConvexVolume worldFrustum(worldPlanes);
 
-        // TODO Shadow
+        // Render all renderables into the shadow map
+        ShadowRenderQueueSpotOptions spotOptions(
+            worldFrustum,
+            shadowParamsBuffer);
 
+        ShadowRenderQueue::Execute(scene, frameInfo, spotOptions);
+
+        // Restore viewport
         rapi.SetViewport(Rect2(0.0f, 0.0f, 1.0f, 1.0f));
 
         LightShadows& lightShadows = _spotLightShadows[options.LightIdx];
@@ -500,6 +800,12 @@ namespace te
     {
         Light* light = rendererLight._internal;
         RenderAPI& rapi = RenderAPI::Instance();
+        const RenderAPICapabilities& caps = gCaps();
+        bool renderAllFacesAtOnce = caps.HasCapability(RSC_RENDER_TARGET_LAYERS);
+
+        if (!renderAllFacesAtOnce)
+            return;
+
         SPtr<GpuParamBlockBuffer> shadowParamsBuffer = gShadowParamsDef.CreateBuffer();
 
         ShadowInfo mapInfo;
@@ -542,8 +848,6 @@ namespace te
         mapInfo.DepthBias = GetDepthBias(*light, light->GetBounds().GetRadius(), mapInfo.DepthRange, options.MapSize);
         mapInfo.SubjectBounds = light->GetBounds();
 
-        const RenderAPICapabilities& caps = gCaps();
-
         // Note: Projecting on positive Z axis, because cubemaps use a left-handed coordinate system
         Matrix4 proj = Matrix4::ProjectionPerspective(Degree(90.f), 1.f, 0.05f, 1.f, true);
         ConvexVolume localFrustum(proj);
@@ -561,15 +865,11 @@ namespace te
             adjustedProj[1][1] = -proj[1][1];
         }
 
-        bool renderAllFacesAtOnce = caps.HasCapability(RSC_RENDER_TARGET_LAYERS);
-
         SPtr<GpuParamBlockBuffer> shadowCubeMatricesBuffer;
         SPtr<GpuParamBlockBuffer> shadowCubeMasksBuffer;
-        if (renderAllFacesAtOnce)
-        {
-            shadowCubeMatricesBuffer = gShadowCubeMatricesDef.CreateBuffer();
-            shadowCubeMasksBuffer = gShadowCubeMasksDef.CreateBuffer();
-        }
+
+        shadowCubeMatricesBuffer = gShadowCubeMatricesDef.CreateBuffer();
+        shadowCubeMasksBuffer = gShadowCubeMasksDef.CreateBuffer();
 
         gShadowParamsDef.gDepthBias.Set(shadowParamsBuffer, mapInfo.DepthBias);
         gShadowParamsDef.gInvDepthRange.Set(shadowParamsBuffer, 1.0f / mapInfo.DepthRange);
@@ -634,24 +934,30 @@ namespace te
 
             ConvexVolume frustum(worldPlanes);
 
-            if (renderAllFacesAtOnce)
-            {
-                frustums[i] = frustum;
+            frustums[i] = frustum;
 
-                // Register far plane of all frustums
-                boundingPlanes.push_back(worldPlanes[FRUSTUM_PLANE_FAR]);
-                gShadowCubeMatricesDef.gFaceVPMatrices.Set(shadowCubeMatricesBuffer, shadowViewProj, i);
-            }
+            // Register far plane of all frustums
+            boundingPlanes.push_back(worldPlanes[FRUSTUM_PLANE_FAR]);
+            gShadowCubeMatricesDef.gFaceVPMatrices.Set(shadowCubeMatricesBuffer, shadowViewProj, i);
         }
 
-        if (renderAllFacesAtOnce)
         {
-            rapi.PushMarker("[DRAW] Project Spot Shadow", Color(0.4f, 0.57f, 0.6f));
+            rapi.PushMarker("[DRAW] Project Radial Shadow", Color(0.85f, 0.43f, 0.25f));
 
             rapi.SetRenderTarget(cubemap.GetTarget());
             rapi.ClearRenderTarget(FBT_DEPTH);
 
-            // TODO Shadow
+            // Render all renderables into the shadow map
+            ConvexVolume boundingVolume(boundingPlanes);
+            ShadowRenderQueueCubeOptions cubeOptions(
+                frustums,
+                boundingVolume,
+                shadowParamsBuffer,
+                shadowCubeMatricesBuffer,
+                shadowCubeMasksBuffer
+            );
+
+            ShadowRenderQueue::Execute(scene, frameInfo, cubeOptions);
 
             rapi.PopMarker();
         }
@@ -718,6 +1024,182 @@ namespace te
 
         // Leave room for border
         size = std::max(effectiveMapSize - 2 * border, 1u);
+    }
+
+    ConvexVolume ShadowRendering::GetCSMSplitFrustum(const RendererView& view, const Vector3& lightDir, UINT32 cascade,
+        UINT32 numCascades, Sphere& outBounds)
+    {
+        // Determine split range
+        float splitNear = ShadowRendering::GetCSMSplitDistance(view, cascade, numCascades);
+        float splitFar = ShadowRendering::GetCSMSplitDistance(view, cascade + 1, numCascades);
+
+        // Increase by fade range, unless last cascade
+        if ((UINT32)(cascade + 1) < numCascades)
+            splitFar += CASCADE_FRACTION_FADE * (splitFar - splitNear);
+
+        // Calculate the eight vertices of the split frustum
+        auto& viewProps = view.GetProperties();
+
+        const Matrix4& projMat = viewProps.ProjTransform;
+
+        float aspect;
+        float nearHalfWidth, nearHalfHeight;
+        float farHalfWidth, farHalfHeight;
+        if (viewProps.ProjType == PT_PERSPECTIVE)
+        {
+            aspect = fabs(projMat[0][0] / projMat[1][1]);
+            float tanHalfFOV = 1.0f / projMat[0][0];
+
+            nearHalfWidth = splitNear * tanHalfFOV;
+            nearHalfHeight = nearHalfWidth * aspect;
+
+            farHalfWidth = splitFar * tanHalfFOV;
+            farHalfHeight = farHalfWidth * aspect;
+        }
+        else
+        {
+            aspect = projMat[0][0] / projMat[1][1];
+
+            nearHalfWidth = farHalfWidth = projMat[0][0] / 4.0f;
+            nearHalfHeight = farHalfHeight = projMat[1][1] / 4.0f;
+        }
+
+        const Matrix4& viewMat = viewProps.ViewTransform;
+        Vector3 cameraRight = Vector3(viewMat[0]);
+        Vector3 cameraUp = Vector3(viewMat[1]);
+
+        const Vector3& viewOrigin = viewProps.ViewOrigin;
+        const Vector3& viewDir = viewProps.ViewDirection;
+
+        Vector3 frustumVerts[] =
+        {
+            viewOrigin + viewDir * splitNear - cameraRight * nearHalfWidth + cameraUp * nearHalfHeight, // Near, left, top
+            viewOrigin + viewDir * splitNear + cameraRight * nearHalfWidth + cameraUp * nearHalfHeight, // Near, right, top
+            viewOrigin + viewDir * splitNear + cameraRight * nearHalfWidth - cameraUp * nearHalfHeight, // Near, right, bottom
+            viewOrigin + viewDir * splitNear - cameraRight * nearHalfWidth - cameraUp * nearHalfHeight, // Near, left, bottom
+            viewOrigin + viewDir * splitFar - cameraRight * farHalfWidth + cameraUp * farHalfHeight, // Far, left, top
+            viewOrigin + viewDir * splitFar + cameraRight * farHalfWidth + cameraUp * farHalfHeight, // Far, right, top
+            viewOrigin + viewDir * splitFar + cameraRight * farHalfWidth - cameraUp * farHalfHeight, // Far, right, bottom
+            viewOrigin + viewDir * splitFar - cameraRight * farHalfWidth - cameraUp * farHalfHeight, // Far, left, bottom
+        };
+
+        // Calculate the bounding sphere of the frustum
+        float diagonalNearSq = nearHalfWidth * nearHalfWidth + nearHalfHeight * nearHalfHeight;
+        float diagonalFarSq = farHalfWidth * farHalfWidth + farHalfHeight * farHalfHeight;
+
+        float length = splitFar - splitNear;
+        float offset = (diagonalNearSq - diagonalFarSq) / (2 * length) + length * 0.5f;
+        float distToCenter = Math::Clamp(splitFar - offset, splitNear, splitFar);
+
+        Vector3 center = viewOrigin + viewDir * distToCenter;
+
+        float radius = 0.0f;
+        for (auto& entry : frustumVerts)
+            radius = std::max(radius, center.SquaredDistance(entry));
+
+        radius = std::max((float)sqrt(radius), 1.0f);
+        outBounds = Sphere(center, radius);
+
+        // Generate light frustum planes
+        Plane viewPlanes[6];
+        viewPlanes[FRUSTUM_PLANE_NEAR] = Plane(frustumVerts[0], frustumVerts[1], frustumVerts[2]);
+        viewPlanes[FRUSTUM_PLANE_FAR] = Plane(frustumVerts[5], frustumVerts[4], frustumVerts[7]);
+        viewPlanes[FRUSTUM_PLANE_LEFT] = Plane(frustumVerts[4], frustumVerts[0], frustumVerts[3]);
+        viewPlanes[FRUSTUM_PLANE_RIGHT] = Plane(frustumVerts[1], frustumVerts[5], frustumVerts[6]);
+        viewPlanes[FRUSTUM_PLANE_TOP] = Plane(frustumVerts[4], frustumVerts[5], frustumVerts[1]);
+        viewPlanes[FRUSTUM_PLANE_BOTTOM] = Plane(frustumVerts[3], frustumVerts[2], frustumVerts[6]);
+
+        //// Add camera's planes facing towards the lights (forming the back of the volume)
+        Vector<Plane> lightVolume;
+        for (auto& entry : viewPlanes)
+        {
+            if (entry.normal.Dot(lightDir) < 0.0f)
+                lightVolume.push_back(entry);
+        }
+
+        //// Determine edge planes by testing adjacent planes with different facing
+        ////// Pairs of frustum planes that share an edge
+        UINT32 adjacentPlanes[][2] =
+        {
+            { FRUSTUM_PLANE_NEAR, FRUSTUM_PLANE_LEFT },
+            { FRUSTUM_PLANE_NEAR, FRUSTUM_PLANE_RIGHT },
+            { FRUSTUM_PLANE_NEAR, FRUSTUM_PLANE_TOP },
+            { FRUSTUM_PLANE_NEAR, FRUSTUM_PLANE_BOTTOM },
+
+            { FRUSTUM_PLANE_FAR, FRUSTUM_PLANE_LEFT },
+            { FRUSTUM_PLANE_FAR, FRUSTUM_PLANE_RIGHT },
+            { FRUSTUM_PLANE_FAR, FRUSTUM_PLANE_TOP },
+            { FRUSTUM_PLANE_FAR, FRUSTUM_PLANE_BOTTOM },
+
+            { FRUSTUM_PLANE_LEFT, FRUSTUM_PLANE_TOP },
+            { FRUSTUM_PLANE_TOP, FRUSTUM_PLANE_RIGHT },
+            { FRUSTUM_PLANE_RIGHT, FRUSTUM_PLANE_BOTTOM },
+            { FRUSTUM_PLANE_BOTTOM, FRUSTUM_PLANE_LEFT },
+        };
+
+        ////// Vertex indices of edges on the boundary between two planes
+        UINT32 sharedEdges[][2] =
+        {
+            { 3, 0 },{ 1, 2 },{ 0, 1 },{ 2, 3 },
+            { 4, 7 },{ 6, 5 },{ 5, 4 },{ 7, 6 },
+            { 4, 0 },{ 5, 1 },{ 6, 2 },{ 7, 3 }
+        };
+
+        for (UINT32 i = 0; i < 12; i++)
+        {
+            const Plane& planeA = viewPlanes[adjacentPlanes[i][0]];
+            const Plane& planeB = viewPlanes[adjacentPlanes[i][1]];
+
+            float dotA = planeA.normal.Dot(lightDir);
+            float dotB = planeB.normal.Dot(lightDir);
+
+            if ((dotA * dotB) < 0.0f)
+            {
+                const Vector3& vertA = frustumVerts[sharedEdges[i][0]];
+                const Vector3& vertB = frustumVerts[sharedEdges[i][1]];
+                Vector3 vertC = vertA + lightDir;
+
+                if (dotA < 0.0f)
+                    lightVolume.push_back(Plane(vertA, vertB, vertC));
+                else
+                    lightVolume.push_back(Plane(vertB, vertA, vertC));
+            }
+        }
+
+        return ConvexVolume(lightVolume);
+    }
+
+    float ShadowRendering::GetCSMSplitDistance(const RendererView& view, UINT32 index, UINT32 numCascades)
+    {
+        auto& shadowSettings = view.GetRenderSettings().ShadowSettings;
+        float distributionExponent = shadowSettings.CascadeDistributionExponent;
+
+        // First determine the scale of the split, relative to the entire range
+        float scaleModifier = 1.0f;
+        float scale = 0.0f;
+        float totalScale = 0.0f;
+
+        //// Split 0 corresponds to near plane
+        if (index > 0)
+        {
+            for (UINT32 i = 0; i < numCascades; i++)
+            {
+                if (i < index)
+                    scale += scaleModifier;
+
+                totalScale += scaleModifier;
+                scaleModifier *= distributionExponent;
+            }
+
+            scale = scale / totalScale;
+        }
+
+        // Calculate split distance in Z
+        auto& viewProps = view.GetProperties();
+        float near = viewProps.NearPlane;
+        float far = Math::Clamp(shadowSettings.DirectionalShadowDistance, viewProps.NearPlane, viewProps.FarPlane);
+
+        return near + (far - near) * scale;
     }
 
     float ShadowRendering::GetDepthBias(const Light& light, float radius, float depthRange, UINT32 mapSize)

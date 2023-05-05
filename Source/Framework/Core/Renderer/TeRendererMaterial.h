@@ -78,7 +78,7 @@ namespace te
          * Helper field to be set before construction. Identifiers the variation of the material to initialize this
          * object with.
          */
-        UINT32 _varIdx;
+        UINT32 _varIdx = 0;
 
     public:
         void InitPipelines()

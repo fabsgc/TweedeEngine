@@ -9,6 +9,7 @@
 #include "Math/TeMatrix4.h"
 #include "Math/TeRect2I.h"
 #include "Math/TeRect2.h"
+#include "Math/TeConvexVolume.h"
 #include "Image/TePixelData.h"
 #include "Image/TeTextureAtlasLayout.h"
 
@@ -57,6 +58,40 @@ namespace te
         static ShadowDepthNormalMat* GetVariation(bool skinned);
     };
 
+    /** Material used for rendering a single face of a shadow map, for a directional light. */
+    class ShadowDepthDirectionalMat : public RendererMaterial<ShadowDepthDirectionalMat>
+    {
+        RMAT_DEF(BuiltinShader::ShadowDepthDirectional);
+
+        /** Helper method used for initializing variations of this material. */
+        template<bool skinned>
+        static const ShaderVariation& GetVariation()
+        {
+            static ShaderVariation variation = ShaderVariation(
+            {
+                ShaderVariation::Param("SKINNED", skinned)
+            });
+
+            return variation;
+        }
+
+    public:
+        ShadowDepthDirectionalMat() = default;
+
+        /** Binds the material to the pipeline, ready to be used on subsequent draw calls. */
+        void Bind(const SPtr<GpuParamBlockBuffer>& shadowParams);
+
+        /** Sets a new buffer that determines per-object properties. */
+        void SetPerObjectBuffer(const SPtr<GpuParamBlockBuffer>& perObjectParams);
+
+        /**
+         * Returns the material variation matching the provided parameters.
+         *
+         * @param[in]	skinned		True if the shadow caster supports bone animation.
+         */
+        static ShadowDepthDirectionalMat* GetVariation(bool skinned);
+    };
+
     TE_PARAM_BLOCK_BEGIN(ShadowCubeMatricesDef)
         TE_PARAM_BLOCK_ENTRY_ARRAY(Matrix4, gFaceVPMatrices, 6)
     TE_PARAM_BLOCK_END
@@ -86,7 +121,7 @@ namespace te
             return variation;
         }
     public:
-        ShadowDepthCubeMat();
+        ShadowDepthCubeMat() = default;
 
         /** Binds the material to the pipeline, ready to be used on subsequent draw calls. */
         void Bind(const SPtr<GpuParamBlockBuffer>& shadowParams, const SPtr<GpuParamBlockBuffer>& shadowCubeParams);
@@ -125,7 +160,7 @@ namespace te
         float DepthBias; /**< Bias used to reduce shadow acne. */
         float DepthRange; /**< Length of the range covered by the shadow caster volume. */
 
-        UINT32 CascadeIdx; /**< Index of a cascade. Only relevant for CSM. */
+        UINT32 CascadeIdx = (UINT32)-1; /**< Index of a cascade. Only relevant for CSM. */
 
         /** View-projection matrix from the shadow casters point of view. */
         Matrix4 ShadowVPTransform;
@@ -312,6 +347,32 @@ namespace te
          */
         void CalcShadowMapProperties(const RendererLight& light, const RendererViewGroup& viewGroup, UINT32 border,
             UINT32& size, Vector<float>& fadePercents, float& maxFadePercent) const;
+
+        /**
+         * Generates a frustum for a single cascade of a cascaded shadow map. Also outputs spherical bounds of the
+         * split view frustum.
+         *
+         * @param[in]	view		View whose frustum to split.
+         * @param[in]	lightDir	Direction of the light for which we're generating the shadow map.
+         * @param[in]	cascade		Index of the cascade to generate the frustum for.
+         * @param[in]	numCascades	Maximum number of cascades in the cascaded shadow map. Must be greater than zero.
+         * @param[out]	outBounds	Spherical bounds of the split view frustum.
+         * @return					Convex volume covering the area of the split view frustum visible from the light.
+         */
+        static ConvexVolume GetCSMSplitFrustum(const RendererView& view, const Vector3& lightDir, UINT32 cascade,
+            UINT32 numCascades, Sphere& outBounds);
+
+        /**
+         * Finds the distance (along the view direction) of the frustum split for the specified index. Used for cascaded
+         * shadow maps.
+         *
+         * @param[in]	view					View whose frustum to split.
+         * @param[in]	index					Index of the split. 0 = near plane.
+         * @param[in]	numCascades				Maximum number of cascades in the cascaded shadow map. Must be greater than
+         *										zero and greater or equal to @p index.
+         * @return								Distance to the split position along the view direction.
+         */
+        static float GetCSMSplitDistance(const RendererView& view, UINT32 index, UINT32 numCascades);
 
         /**
          * Calculates a bias that can be applied when rendering shadow maps, in order to reduce shadow artifacts.

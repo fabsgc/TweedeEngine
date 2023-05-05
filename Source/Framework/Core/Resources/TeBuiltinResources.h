@@ -77,8 +77,10 @@ namespace te
         ZPrepass = 0x21,
         /** Render a single face of a shadow map */
         ShadowDepthNormal = 0x22,
-         /** Render an omni directional cube shadow map */
-        ShadowDepthCube= 0x23
+        /** Render an omni directional shadow cube map */
+        ShadowDepthCube = 0x23,
+        /** Render a directional shadow map */
+        ShadowDepthDirectional = 0x24
     };
 
     /** Types of builtin shaders that are always available. */
@@ -178,6 +180,7 @@ namespace te
         void InitShaderDecal();
         void InitShaderShadowDepthNormal();
         void InitShaderShadowDepthCube();
+        void InitShaderShadowDepthDirectional();
 
         void InitDefaultMaterial();
 
@@ -213,6 +216,7 @@ namespace te
         HShader _shaderIrradianceProjectSH;
         HShader _shaderShadowDepthNormal;
         HShader _shaderShadowDepthCube;
+        HShader _shaderShadowDepthDirectional;
 
         SPtr<SamplerState> _anisotropicSamplerState = nullptr;
         SPtr<SamplerState> _trilinearSamplerState = nullptr;
@@ -293,6 +297,9 @@ namespace te
 
         GPU_PROGRAM_DESC _vertexShaderShadowDepthNormalDesc;
         GPU_PROGRAM_DESC _pixelShaderShadowDepthNormalDesc;
+
+        GPU_PROGRAM_DESC _vertexShaderShadowDepthDirectionalDesc;
+        GPU_PROGRAM_DESC _pixelShaderShadowDepthDirectionalDesc;
 
         GPU_PROGRAM_DESC _vertexShaderShadowDepthCubeDesc;
         GPU_PROGRAM_DESC _pixelShaderShadowDepthCubeDesc;

@@ -1315,7 +1315,7 @@ namespace te
     {
 #if TE_DEBUG_MODE == TE_DEBUG_ENABLED
 #   ifdef TE_D3D9
-        D3DPERF_BeginEvent(color.GetAsRGBA(), ToWString(name).c_str());
+        D3DPERF_BeginEvent(color.GetAsBGRA(), ToWString(name).c_str());
 #   else
         if (!_annotation)
             return;

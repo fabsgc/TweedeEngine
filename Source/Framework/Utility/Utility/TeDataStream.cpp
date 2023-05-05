@@ -290,6 +290,9 @@ namespace te
 
     bool FileStream::Eof() const
     {
+        if (_inStream->fail())
+            return true;
+
         return _inStream->eof();
     }
 

@@ -184,9 +184,9 @@ namespace te
         UINT32 Height = 0;
         UINT32 Depth = 0;
         UINT32 NumSamples = 0;
-        PixelFormat Format;
-        TextureUsage Flag;
-        TextureType Type;
+        PixelFormat Format = PixelFormat::PF_RGBA16F;
+        TextureUsage Flag = TextureUsage::TU_DEFAULT;
+        TextureType Type = TextureType::TEX_TYPE_2D;
         bool HwGamma = false;
         UINT32 ArraySize = 0;
         UINT32 NumMipLevels = 0;

@@ -193,6 +193,11 @@ namespace te
                 InitShaderShadowDepthCube();
             shader = _shaderShadowDepthCube;
             break;
+        case BuiltinShader::ShadowDepthDirectional:
+            if (!_shaderShadowDepthDirectional.IsLoaded())
+                InitShaderShadowDepthDirectional();
+            shader = _shaderShadowDepthDirectional;
+            break;
         default:
             TE_ASSERT_ERROR(false, "Can't find \"" + ToString((UINT32)type) + "\" shader.")
             break;
@@ -722,6 +727,26 @@ namespace te
             _pixelShaderShadowDepthCubeDesc.Language = "hlsl";
             _pixelShaderShadowDepthCubeDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
             _pixelShaderShadowDepthCubeDesc.Source = shaderFile.GetAsString();
+        }
+        
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/ShadowDepthDirectional_VS.hlsl"));
+            _vertexShaderShadowDepthDirectionalDesc.Type = GPT_VERTEX_PROGRAM;
+            _vertexShaderShadowDepthDirectionalDesc.FilePath = SHADERS_FOLDER + String("HLSL/ShadowDepthDirectional_VS.hlsl");
+            _vertexShaderShadowDepthDirectionalDesc.EntryPoint = "main";
+            _vertexShaderShadowDepthDirectionalDesc.Language = "hlsl";
+            _vertexShaderShadowDepthDirectionalDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
+            _vertexShaderShadowDepthDirectionalDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/ShadowDepthDirectional_PS.hlsl"));
+            _pixelShaderShadowDepthDirectionalDesc.Type = GPT_PIXEL_PROGRAM;
+            _pixelShaderShadowDepthDirectionalDesc.FilePath = SHADERS_FOLDER + String("HLSL/ShadowDepthDirectional_PS.hlsl");
+            _pixelShaderShadowDepthDirectionalDesc.EntryPoint = "main";
+            _pixelShaderShadowDepthDirectionalDesc.Language = "hlsl";
+            _pixelShaderShadowDepthDirectionalDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
+            _pixelShaderShadowDepthDirectionalDesc.Source = shaderFile.GetAsString();
         }
     }
 
@@ -1748,6 +1773,35 @@ namespace te
         List<ShaderVariation> variations = FillShaderVariations(variationParams);
 
         _shaderShadowDepthCube = InitShader(variations, shaderDesc, passDesc, "Shadow Depth Cube");
+    }
+
+    void BuiltinResources::InitShaderShadowDepthDirectional()
+    {
+        PASS_DESC passDesc;
+        passDesc.BlendStateDesc = _blendOpaqueStateDesc;
+        passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
+        passDesc.RasterizerStateDesc = _rasterizerStateDesc;
+        passDesc.VertexProgramDesc = _vertexShaderShadowDepthDirectionalDesc;
+        passDesc.PixelProgramDesc = _pixelShaderShadowDepthDirectionalDesc;
+
+        passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_COUNTERCLOCKWISE;
+
+        SPtr<Pass> pass = Pass::Create(passDesc);
+        SPtr<Technique> technique = Technique::Create("hlsl", { pass });
+        technique->Compile();
+
+        SHADER_DESC shaderDesc;
+        shaderDesc.QueueType = QueueSortType::BackToFront;
+        shaderDesc.Techniques.push_back(technique);
+
+        Vector<ShaderVariationParam*> variationParams = {
+            te_pool_new<ShaderVariationParam>(std::forward<String>("SKINNED"), std::forward<Vector<std::any>>({ false, true }))
+        };
+
+        FillShaderDesc(variationParams, shaderDesc);
+        List<ShaderVariation> variations = FillShaderVariations(variationParams);
+
+        _shaderShadowDepthDirectional = InitShader(variations, shaderDesc, passDesc, "Shadow Depth Directional");
     }
 
     void BuiltinResources::InitDefaultMaterial()
