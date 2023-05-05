@@ -34,7 +34,10 @@ namespace te
         _perObjectParamDef.gColor.Set(_perObjectParamBuffer, renderable->GetGameObjectColor().GetAsVector4());
         _perObjectParamDef.gHasAnimation.Set(_perObjectParamBuffer, renderable->IsAnimated() ? 1 : 0);
 
-        if (_params->HasBuffer(GPT_VERTEX_PROGRAM, "BoneMatrices"))
-            _params->SetBuffer(GPT_VERTEX_PROGRAM, "BoneMatrices", renderable->GetInternal()->GetBoneMatrixBuffer());
+        if (renderable->GetMobility() != ObjectMobility::Static)
+        {
+            if (_params->HasBuffer(GPT_VERTEX_PROGRAM, "BoneMatrices"))
+                _params->SetBuffer(GPT_VERTEX_PROGRAM, "BoneMatrices", renderable->GetInternal()->GetBoneMatrixBuffer());
+        }
     }
 }

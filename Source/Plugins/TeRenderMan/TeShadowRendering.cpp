@@ -1,6 +1,7 @@
 #include "TeShadowRendering.h"
 
 #include "TeRendererScene.h"
+#include "Renderer/TeRendererUtility.h"
 #include "RenderAPI/TeRenderTexture.h"
 #include "Utility/TeBitwise.h"
 #include "Utility/TeFrameAllocator.h"
@@ -17,9 +18,12 @@ namespace te
         RenderAPI::Instance().SetStencilRef(_stencilRef);
     }
 
-    void ShadowDepthNormalMat::SetPerObjectBuffer(const SPtr<GpuParamBlockBuffer>& perObjectParams)
+    void ShadowDepthNormalMat::SetPerObjectBuffer(const SPtr<GpuParamBlockBuffer>& perObjectParams, const SPtr<te::GpuBuffer>& boneMatrices)
     {
         _params->SetParamBlockBuffer("PerObjectBuffer", perObjectParams);
+
+        if (_params->HasBuffer(GPT_VERTEX_PROGRAM, "BoneMatrices"))
+            _params->SetBuffer(GPT_VERTEX_PROGRAM, "BoneMatrices", boneMatrices);
 
         RenderAPI::Instance().SetGpuParams(_params);
     }
@@ -40,9 +44,13 @@ namespace te
         RenderAPI::Instance().SetStencilRef(_stencilRef);
     }
 
-    void ShadowDepthDirectionalMat::SetPerObjectBuffer(const SPtr<GpuParamBlockBuffer>& perObjectParams)
+    void ShadowDepthDirectionalMat::SetPerObjectBuffer(const SPtr<GpuParamBlockBuffer>& perObjectParams, const SPtr<te::GpuBuffer>& boneMatrices)
     {
         _params->SetParamBlockBuffer("PerObjectBuffer", perObjectParams);
+
+        if (_params->HasBuffer(GPT_VERTEX_PROGRAM, "BoneMatrices"))
+            _params->SetBuffer(GPT_VERTEX_PROGRAM, "BoneMatrices", boneMatrices);
+
         RenderAPI::Instance().SetGpuParams(_params);
     }
 
@@ -66,10 +74,14 @@ namespace te
         RenderAPI::Instance().SetStencilRef(_stencilRef);
     }
 
-    void ShadowDepthCubeMat::SetPerObjectBuffer(const SPtr<GpuParamBlockBuffer>& perObjectParams, const SPtr<GpuParamBlockBuffer>& shadowCubeMasks)
+    void ShadowDepthCubeMat::SetPerObjectBuffer(const SPtr<GpuParamBlockBuffer>& perObjectParams, 
+        const SPtr<GpuParamBlockBuffer>& shadowCubeMasks, const SPtr<te::GpuBuffer>& boneMatrices)
     {
         _params->SetParamBlockBuffer("PerObjectBuffer", perObjectParams);
         _params->SetParamBlockBuffer("PerShadowCubeMasks", shadowCubeMasks);
+
+        if (_params->HasBuffer(GPT_VERTEX_PROGRAM, "BoneMatrices"))
+            _params->SetBuffer(GPT_VERTEX_PROGRAM, "BoneMatrices", boneMatrices);
 
         RenderAPI::Instance().SetGpuParams(_params);
     }
@@ -194,10 +206,13 @@ namespace te
         struct Command
         {
             Command ()
+                : Element(nullptr)
+                , IsElement(false)
             { }
 
-            Command (RenderableElement* element)
+            Command (RenderableElement* element, bool isElement)
                 : Element(element)
+                , IsElement(isElement)
             { }
 
             union
@@ -206,11 +221,12 @@ namespace te
                 RendererRenderable* Renderable;
             };
 
-            UINT32 Mask : 6;
+            UINT32 Mask = 0;
+            bool IsElement = false;
         };
 
         template<class Options>
-        static void Execute(RendererScene& scene, const FrameInfo& frameInfo, const Options& opt)
+        static void Execute(RendererScene& scene, const FrameInfo& frameInfo, const Options& opt, const Light& light)
         {
             static_assert((UINT32)RenderableAnimType::Count == 2, "RenderableAnimType is expected to have two sequential entries.");
 
@@ -218,27 +234,75 @@ namespace te
 
             te_frame_mark();
             {
-                FrameVector<Command> commands[4];
+                FrameVector<Command> commands[2];
 
                 // Make a list of relevant renderables and prepare them for rendering
                 for (UINT32 i = 0; i < sceneInfo.Renderables.size(); i++)
                 {
-                    if (!sceneInfo.Renderables[i]->RenderablePtr->GetCastShadows())
+                    Renderable* renderable = sceneInfo.Renderables[i]->RenderablePtr;
+
+                    if (!renderable->GetCastShadows())
+                        continue;
+
+                    if (renderable->GetLayer() != light.GetLayer())
+                        continue;
+
+                    if (light.GetCastShadowsType() == Light::CastShadowsType::Static && renderable->GetMobility() != ObjectMobility::Static)
+                        continue;
+
+                    if (light.GetCastShadowsType() == Light::CastShadowsType::Dynamic && renderable->GetMobility() == ObjectMobility::Static)
                         continue;
 
                     const Sphere& bounds = sceneInfo.RenderableCullInfos[i].Boundaries.GetSphere();
                     if (!opt.Intersects(bounds))
                         continue;
 
-                    Command renderableCommand;
-                    renderableCommand.Mask = 0;
+                    {
+                        Command renderableCommand;
+                        renderableCommand.Mask = 0;
+                        renderableCommand.Renderable = sceneInfo.Renderables[i];
+                        renderableCommand.IsElement = false;
 
-                    RendererRenderable* renderable = sceneInfo.Renderables[i];
-                    renderableCommand.Renderable = renderable;
+                        opt.Prepare(renderableCommand, bounds);
 
-                    opt.Prepare(renderableCommand, bounds);
+                        bool renderableBound[2];
+                        te_zero_out(renderableBound);
 
-                    // TODO Shadow
+                        for (auto& element : renderableCommand.Renderable->Elements)
+                        {
+                            UINT32 arrayIdx = (int)element.AnimType;
+
+                            if (!renderableBound[arrayIdx])
+                            {
+                                commands[arrayIdx].push_back(renderableCommand);
+                                renderableBound[arrayIdx] = true;
+                            }
+
+                            commands[arrayIdx].push_back(Command(&element, true));
+                        }
+                    }
+                }
+
+                static const ShaderVariation* VAR_LOOKUP[2];
+                VAR_LOOKUP[0] = &GetVertexInputVariation<false, false>(false);
+                VAR_LOOKUP[1] = &GetVertexInputVariation<true, false>(false);
+
+                for (UINT32 i = 0; i < (UINT32)RenderableAnimType::Count; i++)
+                {
+                    opt.BindMaterial(*VAR_LOOKUP[i]);
+
+                    for (auto& command : commands[i])
+                    {
+                        if (command.IsElement)
+                        {
+                            const RenderableElement& element = *command.Element;
+                            gRendererUtility().Draw(element.MeshElem, *element.SubMeshElem, 0);
+                        }
+                        else
+                        {
+                            opt.BindRenderable(command);
+                        }
+                    }
                 }
             }
             te_frame_clear();
@@ -285,7 +349,8 @@ namespace te
             for (UINT32 j = 0; j < 6; j++)
                 gShadowCubeMasksDef.gFaceMasks.Set(ShadowCubeMasksBuffer, (command.Mask & (1 << j)), j);
 
-            Mat->SetPerObjectBuffer(renderable->PerObjectParamBuffer, ShadowCubeMasksBuffer);
+            Mat->SetPerObjectBuffer(renderable->PerObjectParamBuffer, 
+                ShadowCubeMasksBuffer, renderable->RenderablePtr->GetBoneMatrixBuffer());
         }
 
         const ConvexVolume(&Frustums)[6];
@@ -326,7 +391,8 @@ namespace te
         {
             RendererRenderable* renderable = command.Renderable;
 
-            Mat->SetPerObjectBuffer(renderable->PerObjectParamBuffer);
+            Mat->SetPerObjectBuffer(renderable->PerObjectParamBuffer, 
+                renderable->RenderablePtr->GetBoneMatrixBuffer());
         }
 
         const ConvexVolume& BoundingVolume;
@@ -359,11 +425,12 @@ namespace te
             Mat->Bind(ShadowParamsBuffer);
         }
 
-        void bindRenderable(ShadowRenderQueue::Command& command) const
+        void BindRenderable(ShadowRenderQueue::Command& command) const
         {
             RendererRenderable* renderable = command.Renderable;
 
-            Mat->SetPerObjectBuffer(renderable->PerObjectParamBuffer);
+            Mat->SetPerObjectBuffer(renderable->PerObjectParamBuffer,
+                renderable->RenderablePtr->GetBoneMatrixBuffer());
         }
 
         const ConvexVolume& BoundingVolume;
@@ -682,7 +749,7 @@ namespace te
                 cascadeCullVolume,
                 shadowParamsBuffer);
 
-            ShadowRenderQueue::Execute(scene, frameInfo, dirOptions);
+            ShadowRenderQueue::Execute(scene, frameInfo, dirOptions, *light);
 
             shadowMap.SetShadowInfo(i, shadowInfo);
 
@@ -781,7 +848,7 @@ namespace te
             worldFrustum,
             shadowParamsBuffer);
 
-        ShadowRenderQueue::Execute(scene, frameInfo, spotOptions);
+        ShadowRenderQueue::Execute(scene, frameInfo, spotOptions, *light);
 
         // Restore viewport
         rapi.SetViewport(Rect2(0.0f, 0.0f, 1.0f, 1.0f));
@@ -957,7 +1024,7 @@ namespace te
                 shadowCubeMasksBuffer
             );
 
-            ShadowRenderQueue::Execute(scene, frameInfo, cubeOptions);
+            ShadowRenderQueue::Execute(scene, frameInfo, cubeOptions, *light);
 
             rapi.PopMarker();
         }

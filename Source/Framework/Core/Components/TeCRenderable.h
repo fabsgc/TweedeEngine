@@ -161,6 +161,12 @@ namespace te
         /** @copydoc Renderable::IsAnimated */
         bool IsAnimated() const { return _internal->IsAnimated(); }
 
+        /** @copydoc SceneActor::SetMobility */
+        void SetMobility(ObjectMobility mobility) { _internal->SetMobility(mobility); }
+
+        /** @copydoc SetMobility */
+        ObjectMobility GetMobility() const { return _internal->GetMobility(); }
+
         /* @copydoc Component::MarkDirty */
         virtual void MarkDirty() 
         { 

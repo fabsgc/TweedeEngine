@@ -613,7 +613,8 @@ namespace te
 
                 const bool writeVelocity = shaderCanWriteVelocity && renderable->GetWriteVelocity();
 
-                RenderableAnimType animType = renderable->GetAnimType();
+                RenderableAnimType animType = 
+                    renderable->GetMobility() != ObjectMobility::Static ? renderable->GetAnimType() : RenderableAnimType::None;
 
                 // Determine which technique to use
                 renElement->DefaultTechniqueIdx = InitAndRetrieveBasePassTechnique(*renElement->MaterialElem, shaderCanWriteVelocity, false, animType);

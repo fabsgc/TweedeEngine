@@ -48,7 +48,7 @@ namespace te
         void Bind(const SPtr<GpuParamBlockBuffer>& shadowParams);
 
         /** Sets a new buffer that determines per-object properties. */
-        void SetPerObjectBuffer(const SPtr<GpuParamBlockBuffer>& perObjectParams);
+        void SetPerObjectBuffer(const SPtr<GpuParamBlockBuffer>& perObjectParams, const SPtr<te::GpuBuffer>& boneMatrices);
 
         /**
          * Returns the material variation matching the provided parameters.
@@ -82,7 +82,7 @@ namespace te
         void Bind(const SPtr<GpuParamBlockBuffer>& shadowParams);
 
         /** Sets a new buffer that determines per-object properties. */
-        void SetPerObjectBuffer(const SPtr<GpuParamBlockBuffer>& perObjectParams);
+        void SetPerObjectBuffer(const SPtr<GpuParamBlockBuffer>& perObjectParams, const SPtr<te::GpuBuffer>& boneMatrices);
 
         /**
          * Returns the material variation matching the provided parameters.
@@ -128,7 +128,7 @@ namespace te
 
         /** Sets a new buffer that determines per-object properties. */
         void SetPerObjectBuffer(const SPtr<GpuParamBlockBuffer>& perObjectParams,
-            const SPtr<GpuParamBlockBuffer>& shadowCubeMasks);
+            const SPtr<GpuParamBlockBuffer>& shadowCubeMasks, const SPtr<te::GpuBuffer>& boneMatrices);
 
         /**
          * Returns the material variation matching the provided parameters.
