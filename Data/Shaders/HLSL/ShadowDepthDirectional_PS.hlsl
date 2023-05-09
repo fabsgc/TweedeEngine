@@ -1,4 +1,3 @@
-#include "Include/PostProcess.hlsli"
 #include "Include/Shadow.hlsli"
 
 float4 main( PS_INPUT IN ) : SV_Target0

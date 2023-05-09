@@ -38,7 +38,7 @@ namespace te
 
     void ShadowDepthDirectionalMat::Bind(const SPtr<GpuParamBlockBuffer>& shadowParams)
     {
-        _params->SetParamBlockBuffer("ShadowParams", shadowParams);
+        _params->SetParamBlockBuffer("PerShadowBuffer", shadowParams);
 
         RenderAPI::Instance().SetGraphicsPipeline(_graphicsPipeline);
         RenderAPI::Instance().SetStencilRef(_stencilRef);
