@@ -311,7 +311,7 @@ namespace te
         return Vector2I(pos.x, pos.y);
     }
 
-    Vector2I Win32Window::windowToScreenPos(const Vector2I& windowPos) const
+    Vector2I Win32Window::WindowToScreenPos(const Vector2I& windowPos) const
     {
         POINT pos;
         pos.x = windowPos.x;

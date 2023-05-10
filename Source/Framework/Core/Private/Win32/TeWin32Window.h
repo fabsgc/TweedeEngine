@@ -85,7 +85,7 @@ namespace te
         Vector2I ScreenToWindowPos(const Vector2I& screenPos) const;
 
         /** Converts window local position to screen position. */
-        Vector2I windowToScreenPos(const Vector2I& windowPos) const;
+        Vector2I WindowToScreenPos(const Vector2I& windowPos) const;
 
         /** Called when window is moved or resized externally. */
         void WindowMovedOrResized();
