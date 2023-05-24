@@ -1364,7 +1364,7 @@ namespace te
         // ######################################################
         _sceneLightSO = SceneObject::Create("Light");
         _sceneLightSO->SetParent(_sceneSO);
-        _light = _sceneLightSO->AddComponent<CLight>(Light::Type::Directional);
+        _light = _sceneLightSO->AddComponent<CLight>(Light::Type::Spot);
         _light->Initialize();
         _light->SetIntensity(5000.f);
         _light->SetCastShadows(true);

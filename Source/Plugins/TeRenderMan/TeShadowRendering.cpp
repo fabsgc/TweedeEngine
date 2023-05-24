@@ -568,7 +568,7 @@ namespace te
             const RendererLight& light = sceneInfo.DirectionalLights[i];
 
             if (!light._internal->GetCastShadows())
-                return;
+                continue;
 
             UINT32 numViews = viewGroup.GetNumViews();
             _directionalLightShadows[i].ViewShadows.resize(numViews);
@@ -583,7 +583,7 @@ namespace te
             const RendererLight& light = sceneInfo.SpotLights[lightIdx];
 
             if (!light._internal->GetCastShadows())
-                return;
+                continue;
 
             RenderSpotShadowMap(sceneInfo.SpotLights[lightIdx], entry, scene, frameInfo);
         }
@@ -594,7 +594,7 @@ namespace te
             const RendererLight& light = sceneInfo.RadialLights[lightIdx];
 
             if (!light._internal->GetCastShadows())
-                return;
+                continue;
             
             RenderRadialShadowMap(sceneInfo.RadialLights[lightIdx], entry, scene, frameInfo);
         }
@@ -807,8 +807,10 @@ namespace te
         rapi.SetViewport(mapInfo.NormArea);
         rapi.ClearViewport(FBT_DEPTH);
 
+        float maxAttenuationRadius = Math::Sqrt(1.f / (4 * Math::PI * 0.0001f));
+
         mapInfo.DepthNear = 0.05f;
-        mapInfo.DepthFar = 1.f;
+        mapInfo.DepthFar = light->GetBounds().GetRadius();
         mapInfo.DepthFade = mapInfo.DepthFar;
         mapInfo.FadeRange = 0.f;
         mapInfo.DepthRange = mapInfo.DepthFar - mapInfo.DepthNear;
@@ -818,7 +820,7 @@ namespace te
         Quaternion lightRotation = light->GetTransform().GetRotation();
 
         Matrix4 view = Matrix4::View(rendererLight.GetShiftedLightPosition(), lightRotation);
-        Matrix4 proj = Matrix4::ProjectionPerspective(light->GetSpotAngle(), 1.f, 0.05f, 1.f);
+        Matrix4 proj = Matrix4::ProjectionPerspective(light->GetSpotAngle(), 1.f, 0.05f, light->GetBounds().GetRadius());
 
         ConvexVolume localFrustum = ConvexVolume(proj);
         rapi.ConvertProjectionMatrix(proj, proj);

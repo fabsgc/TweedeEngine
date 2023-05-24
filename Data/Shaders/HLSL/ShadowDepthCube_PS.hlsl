@@ -1,3 +1,5 @@
+#define USES_PS 1
+
 #include "Include/Shadow.hlsli"
 
 cbuffer PerShadowCubeMatrices : register(b2)

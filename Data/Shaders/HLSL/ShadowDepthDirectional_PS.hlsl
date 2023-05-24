@@ -1,3 +1,5 @@
+#define USES_PS 1
+
 #include "Include/Shadow.hlsli"
 
 float4 main( PS_INPUT IN ) : SV_Target0
