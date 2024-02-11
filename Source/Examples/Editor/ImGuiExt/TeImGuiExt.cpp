@@ -767,7 +767,7 @@ namespace te
 
     void ImGuiExt::RenderImage(SPtr<Texture> texture, const Vector2& size, const Vector2& offset)
     {
-        if (!texture || texture->GetProperties().GetTextureType() != TextureType::TEX_TYPE_2D)
+        if (!texture || texture->GetProperties().GetTextureType() != TextureType::TEX_TYPE_2D || texture->GetProperties().GetWidth() == 0)
             return;
 
         UINT32 mipMap = 0;

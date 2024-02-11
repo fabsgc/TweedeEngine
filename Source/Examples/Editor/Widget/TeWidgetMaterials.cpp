@@ -238,6 +238,9 @@ namespace te
                 float previewHeight = previewWidth;
                 float previewOffset = 0.0f;
 
+                if (previewWidth < 16.0f)
+                    previewWidth = 16.0f;
+
                 if (previewZoneWidth > 256.0f)
                     previewOffset = (previewZoneWidth - previewWidth) * 0.5f;
 
