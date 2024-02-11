@@ -20,6 +20,7 @@ namespace te
         RENDER_WINDOW_DESC WindowDesc; /** Describes the window to create during start-up. */
 
         Vector<String> Importers; /** A list of importer plugins to load. */
+        Vector<String> Exporters; /** A list of exporter plugins to load. */
     };
 
     /** Represents the current state of the application */

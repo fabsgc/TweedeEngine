@@ -237,6 +237,18 @@ set (TE_CORE_SRC_IMPORTER
     "Core/Importer/TeShaderImportOptions.cpp"
 )
 
+set (TE_CORE_INC_EXPORTER
+    "Core/Exporter/TeExporter.h"
+    "Core/Exporter/TeExportOptions.h"
+    "Core/Exporter/TeBaseExporter.h"
+)
+
+set (TE_CORE_SRC_EXPORTER
+    "Core/Exporter/TeExporter.cpp"
+    "Core/Exporter/TeExportOptions.cpp"
+    "Core/Exporter/TeBaseExporter.cpp"
+)
+
 set (TE_CORE_INC_IMAGE
     "Core/Image/TeTexture.h"
     "Core/Image/TeTextureManager.h"
@@ -552,6 +564,7 @@ source_group("Core\\Platform" FILES ${TE_CORE_INC_PLATFORM} ${TE_CORE_SRC_PLATFO
 source_group("Core\\Input" FILES ${TE_CORE_INC_INPUT} ${TE_CORE_SRC_INPUT})
 source_group("Core\\Manager" FILES ${TE_CORE_INC_MANAGER} ${TE_CORE_SRC_MANAGER})
 source_group("Core\\Importer" FILES ${TE_CORE_INC_IMPORTER} ${TE_CORE_SRC_IMPORTER})
+source_group("Core\\Exporter" FILES ${TE_CORE_INC_EXPORTER} ${TE_CORE_SRC_EXPORTER})
 source_group("Core\\Image" FILES ${TE_CORE_INC_IMAGE} ${TE_CORE_SRC_IMAGE})
 source_group("Core\\Mesh" FILES ${TE_CORE_INC_MESH} ${TE_CORE_SRC_MESH})
 source_group("Core\\Resources" FILES ${TE_CORE_INC_RESOURCE} ${TE_CORE_SRC_RESOURCE})
@@ -587,6 +600,8 @@ set(TE_CORE_SRC
     ${TE_CORE_SRC_MANAGER}
     ${TE_CORE_INC_IMPORTER}
     ${TE_CORE_SRC_IMPORTER}
+    ${TE_CORE_INC_EXPORTER}
+    ${TE_CORE_SRC_EXPORTER}
     ${TE_CORE_INC_IMAGE}
     ${TE_CORE_SRC_IMAGE}
     ${TE_CORE_INC_MESH}

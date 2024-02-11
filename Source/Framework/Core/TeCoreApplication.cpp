@@ -33,6 +33,7 @@
 
 #include "RenderAPI/TeRenderAPI.h"
 #include "Importer/TeImporter.h"
+#include "Exporter/TeExporter.h"
 #include "Renderer/TeRenderer.h"
 #include "Profiling/TeProfilerGPU.h"
 
@@ -97,6 +98,10 @@ namespace te
         for (auto& importerName : _startUpDesc.Importers)
             LoadPlugin(importerName);
 
+        Exporter::StartUp();
+        for (auto& exporterName : _startUpDesc.Exporters)
+            LoadPlugin(exporterName);
+
         BuiltinResources::StartUp();
         PhysicsManager::StartUp(_startUpDesc.Physics);
         RendererMaterialManager::StartUp();
@@ -128,6 +133,7 @@ namespace te
         _renderer = nullptr;
 
         TaskScheduler::ShutDown();
+        Exporter::ShutDown();
         Importer::ShutDown();
         VirtualInput::ShutDown();
         Input::ShutDown();

@@ -147,7 +147,8 @@ namespace te
         TID_ShaderVariationParam      = 1092,
         TID_ShaderVariationParamInfo  = 1093,
         TID_Camera                    = 1094,
-        TID_ZPrepassMesh              = 1095
+        TID_ZPrepassMesh              = 1095,
+        TID_ExportOptions             = 1096
     };
 }
 
