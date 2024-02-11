@@ -196,7 +196,7 @@ namespace te
         /**
          * Save last generated corresponding rendered texture until next call to RenderAll()
          */
-        virtual void SetLastRenderTexture(RenderOutputType type, SPtr<Texture> depthBuffer) const = 0;
+        virtual void SetLastRenderTexture(RenderOutputType type, SPtr<Texture> renderTexture) const = 0;
 
         /**
          * Retrieve last generated corresponding rendered texture

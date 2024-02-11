@@ -807,7 +807,7 @@ namespace te
         rapi.SetViewport(mapInfo.NormArea);
         rapi.ClearViewport(FBT_DEPTH);
 
-        float maxAttenuationRadius = Math::Sqrt(1.f / (4 * Math::PI * 0.0001f));
+        //float maxAttenuationRadius = Math::Sqrt(1.f / (4 * Math::PI * 0.0001f));
 
         mapInfo.DepthNear = 0.05f;
         mapInfo.DepthFar = light->GetBounds().GetRadius();
