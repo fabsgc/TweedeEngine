@@ -148,7 +148,9 @@ namespace te
         TID_ShaderVariationParamInfo  = 1093,
         TID_Camera                    = 1094,
         TID_ZPrepassMesh              = 1095,
-        TID_ExportOptions             = 1096
+        TID_ExportOptions             = 1096,
+        TID_SceneImportOptions        = 1097,
+        TID_SceneExportOptions        = 1098
     };
 }
 
@@ -392,6 +394,12 @@ namespace te
     class TextureImportOptions;
     class FontImportOptions;
     class AudioClipImportOptions;
+    class SceneImportOptions;
+
+    class Exporter;
+    class BaseExporter;
+    class ExportOptions;
+    class SceneExportOptions;
 
     class DataStream;
     class FileStream;

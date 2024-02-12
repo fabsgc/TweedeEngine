@@ -82,6 +82,8 @@ add_subdirectory (Plugins/TeFontImporter)
 add_subdirectory (Plugins/TeShaderImporter)
 add_subdirectory (Plugins/TeOpenAudio)
 add_subdirectory (Plugins/TeBulletPhysics)
+add_subdirectory (Plugins/TeSceneImporter)
+add_subdirectory (Plugins/TeSceneExporter)
 
 add_subdirectory (Examples)
 

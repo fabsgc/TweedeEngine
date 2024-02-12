@@ -24,7 +24,12 @@ int main()
         "TeFreeImgImporter",
         "TeObjectImporter",
         "TeShaderImporter",
-        "TeFontImporter"
+        "TeFontImporter",
+        "TeSceneImporter"
+    };
+
+    desc.Exporters = {
+        "TeSceneExporter"
     };
 
     desc.WindowDesc.Mode = te::VideoMode(1280, 720);

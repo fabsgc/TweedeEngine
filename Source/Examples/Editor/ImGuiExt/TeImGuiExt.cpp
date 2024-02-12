@@ -775,7 +775,7 @@ namespace te
         UINT32 width = texture->GetProperties().GetWidth();
 
         if(size.x < width )
-        {
+        { 
             do
             {
                 mipMap = std::min(++mipMap, numMipMap);
