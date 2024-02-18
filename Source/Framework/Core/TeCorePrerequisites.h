@@ -150,7 +150,8 @@ namespace te
         TID_ZPrepassMesh              = 1095,
         TID_ExportOptions             = 1096,
         TID_SceneImportOptions        = 1097,
-        TID_SceneExportOptions        = 1098
+        TID_SceneExportOptions        = 1098,
+        TID_TextureExportOptions      = 1099
     };
 }
 
@@ -400,6 +401,7 @@ namespace te
     class BaseExporter;
     class ExportOptions;
     class SceneExportOptions;
+    class TextureExportOptions;
 
     class DataStream;
     class FileStream;

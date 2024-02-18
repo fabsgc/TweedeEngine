@@ -244,6 +244,7 @@ set (TE_CORE_INC_EXPORTER
     "Core/Exporter/TeExportOptions.h"
     "Core/Exporter/TeBaseExporter.h"
     "Core/Exporter/TeSceneExportOptions.h"
+    "Core/Exporter/TeTextureExportOptions.h"
 )
 
 set (TE_CORE_SRC_EXPORTER
@@ -251,6 +252,7 @@ set (TE_CORE_SRC_EXPORTER
     "Core/Exporter/TeExportOptions.cpp"
     "Core/Exporter/TeBaseExporter.cpp"
     "Core/Exporter/TeSceneExportOptions.cpp"
+    "Core/Exporter/TeTextureExportOptions.cpp"
 )
 
 set (TE_CORE_INC_IMAGE

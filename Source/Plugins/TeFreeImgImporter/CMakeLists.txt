@@ -6,6 +6,9 @@ message("-- TeFreeImgImporter Initialization...")
 # Target
 add_library (TeFreeImgImporter SHARED ${TE_FREEIMGIMPORTER_SRC})
 
+# Includes
+target_include_directories (TeFreeImgImporter PRIVATE "./")
+
 # Defines
 target_compile_definitions (TeFreeImgImporter PRIVATE 
     -DTE_ENGINE_BUILD
@@ -29,9 +32,6 @@ if (WIN32)
         target_compile_definitions (TeFreeImgImporter PRIVATE -DTE_WIN_SDK_10)
     endif ()
 endif ()
-
-# Includes
-target_include_directories (TeFreeImgImporter PRIVATE "./")
 
 # Libraries
 ## External libs: FLAC, Vorbis, Ogg, OpenAL

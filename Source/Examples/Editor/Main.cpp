@@ -29,7 +29,8 @@ int main()
     };
 
     desc.Exporters = {
-        "TeSceneExporter"
+        "TeSceneExporter",
+        "TeFreeImgExporter"
     };
 
     desc.WindowDesc.Mode = te::VideoMode(1280, 720);

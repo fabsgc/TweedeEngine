@@ -1,0 +1,16 @@
+set (TE_FREEIMG_EXPORTER_INC_NOFILTER
+    "TeFreeImgExporterPrerequisites.h"
+    "TeFreeImgExporter.h"
+)
+
+set (TE_FREEIMG_EXPORTER_SRC_NOFILTER
+    "TeFreeImgExporter.cpp"
+    "TeFreeImgExporterPlugin.cpp"
+)
+
+source_group ("" FILES ${TE_FREEIMG_EXPORTER_SRC_NOFILTER} ${TE_FREEIMG_EXPORTER_INC_NOFILTER})
+
+set (TE_FREEIMG_EXPORTER_SRC
+    ${TE_FREEIMG_EXPORTER_INC_NOFILTER}
+    ${TE_FREEIMG_EXPORTER_SRC_NOFILTER}
+)
