@@ -450,6 +450,11 @@ namespace te
         : _shadowMapSize(shadowMapSize)
     { }
 
+    ShadowRendering::~ShadowRendering()
+    {
+        _shadowParamsBuffer = nullptr;
+    }
+
     void ShadowRendering::RenderShadowMaps(RendererScene& scene, const RendererViewGroup& viewGroup, const FrameInfo& frameInfo)
     {
         const SceneInfo& sceneInfo = scene.GetSceneInfo();
@@ -768,12 +773,14 @@ namespace te
     {
         Light* light = rendererLight._internal;
         RenderAPI& rapi = RenderAPI::Instance();
-        SPtr<GpuParamBlockBuffer> shadowParamsBuffer = gShadowParamsDef.CreateBuffer();
 
         ShadowInfo mapInfo;
         mapInfo.FadePerView = options.FadePercents;
         mapInfo.LightIdx = options.LightIdx;
         mapInfo.CascadeIdx = (UINT32)-1;
+
+        if (!_shadowParamsBuffer)
+            _shadowParamsBuffer = gShadowParamsDef.CreateBuffer();
 
         bool foundSpace = false;
         for (UINT32 i = 0; i < (UINT32)_dynamicShadowMaps.size(); i++)
@@ -827,10 +834,10 @@ namespace te
 
         mapInfo.ShadowVPTransform = proj * view;
 
-        gShadowParamsDef.gDepthBias.Set(shadowParamsBuffer, mapInfo.DepthBias);
-        gShadowParamsDef.gInvDepthRange.Set(shadowParamsBuffer, 1.0f / mapInfo.DepthRange);
-        gShadowParamsDef.gMatViewProj.Set(shadowParamsBuffer, mapInfo.ShadowVPTransform);
-        gShadowParamsDef.gNDCZToDeviceZ.Set(shadowParamsBuffer, RendererView::GetNDCZToDeviceZ());
+        gShadowParamsDef.gDepthBias.Set(_shadowParamsBuffer, mapInfo.DepthBias);
+        gShadowParamsDef.gInvDepthRange.Set(_shadowParamsBuffer, 1.0f / mapInfo.DepthRange);
+        gShadowParamsDef.gMatViewProj.Set(_shadowParamsBuffer, mapInfo.ShadowVPTransform);
+        gShadowParamsDef.gNDCZToDeviceZ.Set(_shadowParamsBuffer, RendererView::GetNDCZToDeviceZ());
 
         const Vector<Plane>& frustumPlanes = localFrustum.GetPlanes();
         Matrix4 worldMatrix = view.InverseAffine();
@@ -848,7 +855,7 @@ namespace te
         // Render all renderables into the shadow map
         ShadowRenderQueueSpotOptions spotOptions(
             worldFrustum,
-            shadowParamsBuffer);
+            _shadowParamsBuffer);
 
         ShadowRenderQueue::Execute(scene, frameInfo, spotOptions, *light);
 

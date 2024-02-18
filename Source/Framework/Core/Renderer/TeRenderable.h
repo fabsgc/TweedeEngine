@@ -37,7 +37,7 @@ namespace te
     public:
         virtual ~Renderable();
 
-        /** @copydoc SceneActor::Destroy */
+        /** @copydoc SceneActor::SetMobility */
         void SetMobility(ObjectMobility mobility) override;
 
         /** @copydoc SceneActor::SetTransform */

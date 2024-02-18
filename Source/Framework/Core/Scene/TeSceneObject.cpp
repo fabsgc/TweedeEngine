@@ -416,8 +416,9 @@ namespace te
 
     HSceneObject SceneObject::CreateInternal(const String& name, UINT32 flags)
     {
-        SPtr<SceneObject> sceneObjectPtr = SPtr<SceneObject>(new (te_allocate<SceneObject>()) SceneObject(name, flags),
-            &te_delete<SceneObject>);
+        SceneObject* rawPtr = new (te_allocate<SceneObject>()) SceneObject(name, flags);
+        SPtr<SceneObject> sceneObjectPtr = te_core_ptr<SceneObject>(rawPtr);
+        sceneObjectPtr->SetThisPtr(sceneObjectPtr);
 
         sceneObjectPtr->SetUUID(UUIDGenerator::GenerateRandom());
         sceneObjectPtr->SetColor(Color::GenerateRandom(0.1f, 1.0f));

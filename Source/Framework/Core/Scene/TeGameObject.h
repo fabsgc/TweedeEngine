@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
+#include "CoreUtility/TeCoreObject.h"
 #include "Image/TeColor.h"
 
 namespace te
@@ -18,7 +19,7 @@ namespace te
      * Type of object that can be referenced by a GameObject handle. Each object has an unique ID and is registered with
      * the GameObjectManager.
      */
-    class TE_CORE_EXPORT GameObject : public NonCopyable
+    class TE_CORE_EXPORT GameObject : public CoreObject, public NonCopyable
     {
     public:
         GameObject() = default;

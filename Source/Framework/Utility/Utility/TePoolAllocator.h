@@ -18,7 +18,7 @@ namespace te
      *							for each element, and therefore require more internal memory.
      * @tparam	Lock			If true the pool allocator will be made thread safe (at the cost of performance).
      */
-    template <int ElemSize, int ElemsPerBlock = 512, int Alignment = 4, bool Lock = false>
+    template <typename T, int ElemSize, int ElemsPerBlock = 512, int Alignment = 4, bool Lock = false>
     class PoolAllocator
     {
     private:
@@ -249,11 +249,11 @@ namespace te
     class StaticPoolAllocator
     {
     public:
-        static PoolAllocator<sizeof(T), ElemsPerBlock, Alignment, Lock> m;
+        static PoolAllocator<T, sizeof(T), ElemsPerBlock, Alignment, Lock> m;
     };
 
     template <class T, int ElemsPerBlock, int Alignment, bool Lock>
-    PoolAllocator<sizeof(T), ElemsPerBlock, Alignment, Lock> StaticPoolAllocator<T, ElemsPerBlock, Alignment, Lock>::m;
+    PoolAllocator<T, sizeof(T), ElemsPerBlock, Alignment, Lock> StaticPoolAllocator<T, ElemsPerBlock, Alignment, Lock>::m;
 
     /** Specializable template that allows users to implement globally accessible pool allocators for custom types. */
     template<class T>

@@ -314,6 +314,8 @@ namespace te
     public:
         ShadowRendering(UINT32 shadowMapSize);
 
+        ~ShadowRendering();
+
         /** For each visible shadow casting light, renders a shadow map from its point of view. */
         void RenderShadowMaps(RendererScene& scene, const RendererViewGroup& viewGroup, const FrameInfo& frameInfo);
 
@@ -420,5 +422,7 @@ namespace te
         Vector<bool> _renderableVisibility; // Transient
         Vector<ShadowMapOptions> _spotLightShadowOptions; // Transient
         Vector<ShadowMapOptions> _radialLightShadowOptions; // Transient
+
+        SPtr<GpuParamBlockBuffer> _shadowParamsBuffer;
     };
 }

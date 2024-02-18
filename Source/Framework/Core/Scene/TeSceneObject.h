@@ -393,8 +393,9 @@ namespace te
             static_assert((std::is_base_of<te::Component, T>::value),
                 "Specified type is not a valid Component.");
 
-            SPtr<T> gameObject(new (te_allocate<T>()) T(_thisHandle,
-                std::forward<Args>(args)...), &te_delete<T>);
+            T* rawPtr = new (te_allocate<T>()) T(_thisHandle, std::forward<Args>(args)...);
+            SPtr<T> gameObject = te_core_ptr<T>(rawPtr);
+            gameObject->SetThisPtr(gameObject);
 
             const HComponent newComponent =
                 static_object_cast<Component>(GameObjectManager::Instance().RegisterObject(gameObject));
@@ -451,7 +452,8 @@ namespace te
             static_assert((std::is_base_of<te::Component, T>::value), "Specified type is not a valid Component.");
 
             T* rawPtr = new (te_allocate<T>()) T();
-            SPtr<T> gameObject(rawPtr, &te_delete<T>);
+            SPtr<T> gameObject = te_core_ptr<T>(rawPtr);
+            gameObject->SetThisPtr(gameObject);
 
             return gameObject;
         }
