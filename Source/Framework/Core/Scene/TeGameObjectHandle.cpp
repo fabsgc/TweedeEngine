@@ -11,7 +11,7 @@ namespace te
 
     bool GameObjectHandleBase::IsDestroyed(bool checkQueued) const
     {
-        return _data->Ptr == nullptr || _data->Ptr->Object == nullptr
+        return _data == nullptr || _data->Ptr == nullptr || _data->Ptr->Object == nullptr
             || (checkQueued && _data->Ptr->Object->GetIsDestroyed());
     }
 

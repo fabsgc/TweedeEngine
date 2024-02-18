@@ -35,7 +35,7 @@ namespace te
     void CoreObject::Destroy()
     {
         CoreObjectManager::Instance().UnregisterObject(this);
-        SetIsDestroyed(true);
+        _flags |= CGO_DESTROYED;
     }
 
     void CoreObject::SetThisPtr(SPtr<CoreObject> ptrThis)

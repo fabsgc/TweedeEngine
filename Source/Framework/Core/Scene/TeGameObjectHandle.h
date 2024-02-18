@@ -263,7 +263,7 @@ namespace te
          */
         operator int Bool_struct<T>::* () const
         {
-            return (((_data->Ptr != nullptr) && (_data->Ptr->Object != nullptr)) ? &Bool_struct<T>::_Member : 0);
+            return (((_data != nullptr) && (_data->Ptr != nullptr) && (_data->Ptr->Object != nullptr)) ? &Bool_struct<T>::_Member : 0);
         }
     };
 

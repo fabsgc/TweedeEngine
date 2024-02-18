@@ -95,9 +95,6 @@ namespace te
         /** Marks the core data as clean. */
         void MarkCoreClean() { _coreDirtyFlags = 0; }
 
-        /** Set current object as destroyed or not */
-        void SetIsDestroyed(bool destroyed) { _flags = destroyed ? _flags | CGO_DESTROYED : _flags & ~CGO_DESTROYED; }
-
     private:
         volatile UINT8 _flags;
         UINT32 _coreDirtyFlags;
