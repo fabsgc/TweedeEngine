@@ -22,7 +22,7 @@ namespace te
         return te_shared_ptr_new<SceneExportOptions>();
     }
 
-    bool SceneExporter::Export(const String& filePath, SPtr<const ExportOptions> exportOptions, bool force)
+    bool SceneExporter::Export(void* object, const String& filePath, SPtr<const ExportOptions> exportOptions, bool force)
     {
         const SceneExportOptions* sceneExportOptions = static_cast<const SceneExportOptions*>(exportOptions.get());
 

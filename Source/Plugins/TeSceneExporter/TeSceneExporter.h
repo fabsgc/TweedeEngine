@@ -17,7 +17,7 @@ namespace te
         bool IsExtensionSupported(const String& ext) const override;
 
         /** @copydoc SpecificExporter::import */
-        bool Export(const String& filePath, SPtr<const ExportOptions> importOptions, bool force = false) override;
+        bool Export(void* object, const String& filePath, SPtr<const ExportOptions> importOptions, bool force = false) override;
 
         /** @copydoc SpecificExporter::createExportOptions */
         SPtr<ExportOptions> CreateExportOptions() const override;

@@ -19,13 +19,13 @@ namespace te
         _assetExporters.clear();
     }
 
-    bool Exporter::Export(const String& inputFilePath, SPtr<const ExportOptions> exportOptions)
+    bool Exporter::Export(void* object, const String& inputFilePath, SPtr<const ExportOptions> exportOptions)
     {
         BaseExporter* importer = PrepareForExport(inputFilePath, exportOptions);
         if (!importer)
             return false;
 
-        return importer->Export(inputFilePath, exportOptions);
+        return importer->Export(object, inputFilePath, exportOptions);
     }
 
     bool Exporter::SupportsFileType(const String& extension) const

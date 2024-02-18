@@ -89,7 +89,7 @@ namespace te
         return te_shared_ptr_new<TextureExportOptions>();
     }
 
-    bool FreeImgExporter::Export(const String& filePath, SPtr<const ExportOptions> exportOptions, bool force)
+    bool FreeImgExporter::Export(void* object, const String& filePath, SPtr<const ExportOptions> exportOptions, bool force)
     {
         const TextureExportOptions* textureExportOptions = static_cast<const TextureExportOptions*>(exportOptions.get());
 

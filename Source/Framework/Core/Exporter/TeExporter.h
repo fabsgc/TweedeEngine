@@ -24,7 +24,7 @@ namespace te
          *								actually match the type of the exporter used for the file type.
          * @return						boolean : true for success, false othewise
         */
-        bool Export(const String& inputFilePath, SPtr<const ExportOptions> exportOptions);
+        bool Export(void* object, const String& inputFilePath, SPtr<const ExportOptions> exportOptions);
 
         /**
          * Checks if we can export a file with the specified extension.
