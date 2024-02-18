@@ -70,6 +70,8 @@ namespace te
 
     void RenderMan::Destroy()
     {
+        _renderTextures.Clear();
+
         for (UINT32 i = 0; i < STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER; i++)
         {
             if (gPerInstanceParamBuffer[i])
@@ -115,8 +117,6 @@ namespace te
     void RenderMan::RenderAll(FrameData& frameData)
     {
         gProfilerGPU().BeginFrame();
-
-        _renderTextures.Clear();
 
         CoreObjectManager::Instance().FrameSync();
 

@@ -1489,12 +1489,9 @@ namespace te
         inputs.CurrRenderer.SetLastRenderTexture(RenderOutputType::Normal, gpuInitializationPassNode->NormalTex->Tex);
         inputs.CurrRenderer.SetLastRenderTexture(RenderOutputType::Depth, gpuInitializationPassNode->DepthTex->Tex);
 
-        if (gpuInitializationPassNode->EmissiveTex)
-            inputs.CurrRenderer.SetLastRenderTexture(RenderOutputType::Emissive, gpuInitializationPassNode->EmissiveTex->Tex);
-        if (gpuInitializationPassNode->VelocityTex)
-            inputs.CurrRenderer.SetLastRenderTexture(RenderOutputType::Velocity, gpuInitializationPassNode->VelocityTex->Tex);
-        if (SSAONode && SSAONode->Output)
-            inputs.CurrRenderer.SetLastRenderTexture(RenderOutputType::SSAO, SSAONode->Output->Tex);
+        inputs.CurrRenderer.SetLastRenderTexture(RenderOutputType::Emissive, gpuInitializationPassNode->EmissiveTex ? gpuInitializationPassNode->EmissiveTex->Tex : nullptr);
+        inputs.CurrRenderer.SetLastRenderTexture(RenderOutputType::Velocity, gpuInitializationPassNode->VelocityTex ? gpuInitializationPassNode->VelocityTex->Tex : nullptr);
+        inputs.CurrRenderer.SetLastRenderTexture(RenderOutputType::SSAO, (SSAONode && SSAONode->Output) ? SSAONode->Output->Tex : nullptr);
 
         inputs.CurrRenderAPI.SetRenderTarget(nullptr);
         inputs.CurrRenderAPI.PopMarker();

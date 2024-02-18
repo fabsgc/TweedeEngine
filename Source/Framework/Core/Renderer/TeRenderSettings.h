@@ -80,7 +80,8 @@ namespace te
         Emissive  = 0x3,
         Depth     = 0x4,
         Normal    = 0x5,
-        SSAO      = 0x6
+        SSAO      = 0x6,
+        Count     = 0x7
     };
 
     enum class AntiAliasingAlgorithm
