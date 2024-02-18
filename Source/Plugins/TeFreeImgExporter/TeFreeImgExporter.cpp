@@ -40,8 +40,8 @@ namespace te
         {
             // Skip DDS codec since FreeImage does not have the option
             // to keep DXT data compressed, we'll use our own codec
-            //if ((FREE_IMAGE_FORMAT)i == FIF_DDS)
-            //    continue;
+            if ((FREE_IMAGE_FORMAT)i == FIF_DDS)
+                continue;
 
             String exts = String(FreeImage_GetFIFExtensionList((FREE_IMAGE_FORMAT)i));
             if (!first)

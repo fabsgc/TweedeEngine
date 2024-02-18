@@ -226,9 +226,13 @@ namespace te
             {
                 Vector<SPtr<PixelData>> mipLevels;
                 if (texDesc.NumMips > 0)
+                {
                     mipLevels = PixelUtil::GenMipmaps(*facesData[i], mipOptions, texDesc.NumMips);
+                }
                 else
+                {
                     mipLevels.push_back(facesData[i]);
+                }
 
                 for (UINT32 mip = 0; mip < (UINT32)mipLevels.size(); ++mip)
                 {
