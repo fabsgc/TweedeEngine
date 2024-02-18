@@ -1399,6 +1399,10 @@ namespace te
         passDesc.GeometryProgramDesc = _geometryShaderHudPickSelectDesc;
         passDesc.PixelProgramDesc = _pixelShaderHudPickSelectDesc;
 
+        passDesc.DepthStencilStateDesc.StencilEnable = false;
+        passDesc.DepthStencilStateDesc.DepthReadEnable = false;
+        passDesc.DepthStencilStateDesc.DepthWriteEnable = false;
+
         passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
 
         SPtr<Pass> pass = Pass::Create(passDesc);
