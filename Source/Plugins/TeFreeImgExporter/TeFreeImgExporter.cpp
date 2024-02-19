@@ -93,6 +93,75 @@ namespace te
     {
         const TextureExportOptions* textureExportOptions = static_cast<const TextureExportOptions*>(exportOptions.get());
 
+        Texture* texture = static_cast<Texture*>(object);
+        if (!texture)
+            return false;
+
+        if (PixelUtil::IsCompressed(texture->GetProperties().GetFormat()))
+        {
+            TE_DEBUG("Texture is compressed and can't be exported : " + filePath);
+            return false;
+        }
+
+        if (texture->GetProperties().GetTextureType() == TextureType::TEX_TYPE_3D)
+        {
+            TE_DEBUG("3D Texture are not handled yet : " + filePath);
+            return false;
+        }
+
+        SPtr<PixelData> pixelData = texture->GetProperties().AllocBuffer(0, 0);
+        texture->ReadData(*pixelData);
+
+        return Export(*pixelData.get(), texture->GetProperties().GetWidth(), texture->GetProperties().GetHeight(), texture->GetProperties().IsHardwareGammaEnabled(), filePath, textureExportOptions, force);
+    }
+
+    bool FreeImgExporter::Export(const PixelData& pixelData,  UINT32 width, UINT32 height, bool isSRGB, const String& filePath, const TextureExportOptions* exportOptions, bool force)
+    {
+        int bitsDepth[4] = { 0, 0, 0, 0 };
+        UINT32 bitsMask[4]  = { 0, 0, 0, 0 };
+
+        PixelUtil::GetBitDepths(pixelData.GetFormat(), bitsDepth);
+        PixelUtil::GetBitMasks(pixelData.GetFormat(), bitsMask);
+
+        FIBITMAP* bitmap = FreeImage_Allocate(width, height, 32);
+        RGBQUAD bitmapColor;
+
+        if (!bitmap)
+        {
+            TE_DEBUG("Can't create bitmap object : " + filePath);
+            return false;
+        }
+
+        for (UINT32 i = 0; i < width; i++)
+        {
+            for (UINT32 j = 0; j < height; j++)
+            {
+                Color pixelColor = pixelData.GetColorAt(i, j);
+
+                if (isSRGB)
+                {
+                    pixelColor = pixelColor.GetLinear();
+                }
+
+                // TODO : Manage single channel texture (avoid red textures)
+                // TODO : For Depth texture, allow to fit black and white values to the the range [0,1]
+                // TODO : Separate Depth and Stencil buffer ?
+
+                bitmapColor.rgbRed = static_cast<UINT8>(Math::Clamp01(pixelColor.r) * 255.0f);
+                bitmapColor.rgbGreen = static_cast<UINT8>(Math::Clamp01(pixelColor.g) * 255.0f);
+                bitmapColor.rgbBlue = static_cast<UINT8>(Math::Clamp01(pixelColor.b) * 255.0f);
+
+                FreeImage_SetPixelColor(bitmap, i, height - 1 - j, &bitmapColor);
+            }
+        }
+
+        if (!FreeImage_Save(FIF_PNG, bitmap, filePath.c_str()), PNG_Z_BEST_SPEED)
+        {
+            TE_DEBUG("Can't save bitmap object to file : " + filePath);
+            FreeImage_Unload(bitmap);
+            return false;
+        }
+
         return true;
     }
 }

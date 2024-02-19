@@ -425,11 +425,11 @@ namespace te
 
         // Note: Consider customizable formats. e.g. for testing if quality can be improved with higher precision normals.
         SceneTex = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA16F, width, height, TU_RENDERTARGET,
-            numSamples, true));
+            numSamples, false));
         NormalTex = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA8, width, height, TU_RENDERTARGET,
-            numSamples, true));
+            numSamples, false));
         EmissiveTex = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RGBA8, width, height, TU_RENDERTARGET,
-            numSamples, true));
+            numSamples, false));
         if (needsVelocity)
         {
             VelocityTex = resPool.Get(POOLED_RENDER_TEXTURE_DESC::Create2D(PF_RG16S, width, height, TU_RENDERTARGET,

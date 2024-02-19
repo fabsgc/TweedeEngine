@@ -18,10 +18,14 @@ namespace te
         bool IsExtensionSupported(const String& ext) const override;
 
         /** @copydoc SpecificExporter::import */
-        bool Export(void* object, const String& filePath, SPtr<const ExportOptions> importOptions, bool force = false) override;
+        bool Export(void* object, const String& filePath, SPtr<const ExportOptions> exportOptions, bool force = false) override;
 
         /** @copydoc SpecificExporter::createExportOptions */
         SPtr<ExportOptions> CreateExportOptions() const override;
+
+    private:
+        /** Export a single PixelData to a speficied output file */
+        bool Export(const PixelData& pixelData, UINT32 width, UINT32 height, bool isSRGB, const String& filePath, const TextureExportOptions* exportOptions, bool force = false);
 
     private:
         Vector<String> _extensions;
