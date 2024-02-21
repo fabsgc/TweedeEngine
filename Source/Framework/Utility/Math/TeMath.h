@@ -516,6 +516,21 @@ namespace te
         static float FastATan1(float val);
 
         /**
+         * Remap a value from one range to another range (Don't do any check)
+         * 
+         * @param[in]	value	value to remap
+         * @param[in]	from1	minimal value of source range
+         * @param[in]	to1		maximal value of source range
+         * @param[in]	from2	minimal value of destination range
+         * @param[in]	to2		maximal value of destination range
+        */
+        template <typename T>
+        static float Remap(T value, T from1, T to1, T from2, T to2)
+        {
+            return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
+        }
+
+        /**
          * Linearly interpolates between the two values using @p t. t should be in [0, 1] range, where t = 0 corresponds
          * to @p min value, while t = 1 corresponds to @p max value.
          */

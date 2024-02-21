@@ -115,23 +115,9 @@ namespace te
         return Export(*pixelData.get(), texture->GetProperties().GetWidth(), texture->GetProperties().GetHeight(), texture->GetProperties().IsHardwareGammaEnabled(), filePath, textureExportOptions, force);
     }
 
-    bool FreeImgExporter::Export(const PixelData& pixelData,  UINT32 width, UINT32 height, bool isSRGB, const String& filePath, const TextureExportOptions* exportOptions, bool force)
+    template<typename Predicate>
+    void LoopThroughPixelData(const PixelData& pixelData, UINT32 width, UINT32 height, bool isSRGB, Predicate pred)
     {
-        int bitsDepth[4] = { 0, 0, 0, 0 };
-        UINT32 bitsMask[4]  = { 0, 0, 0, 0 };
-
-        PixelUtil::GetBitDepths(pixelData.GetFormat(), bitsDepth);
-        PixelUtil::GetBitMasks(pixelData.GetFormat(), bitsMask);
-
-        FIBITMAP* bitmap = FreeImage_Allocate(width, height, 32);
-        RGBQUAD bitmapColor;
-
-        if (!bitmap)
-        {
-            TE_DEBUG("Can't create bitmap object : " + filePath);
-            return false;
-        }
-
         for (UINT32 i = 0; i < width; i++)
         {
             for (UINT32 j = 0; j < height; j++)
@@ -143,25 +129,69 @@ namespace te
                     pixelColor = pixelColor.GetLinear();
                 }
 
-                // TODO : Manage single channel texture (avoid red textures)
-                // TODO : For Depth texture, allow to fit black and white values to the the range [0,1]
-                // TODO : Separate Depth and Stencil buffer ?
-
-                bitmapColor.rgbRed = static_cast<UINT8>(Math::Clamp01(pixelColor.r) * 255.0f);
-                bitmapColor.rgbGreen = static_cast<UINT8>(Math::Clamp01(pixelColor.g) * 255.0f);
-                bitmapColor.rgbBlue = static_cast<UINT8>(Math::Clamp01(pixelColor.b) * 255.0f);
-
-                FreeImage_SetPixelColor(bitmap, i, height - 1 - j, &bitmapColor);
+                pred(pixelColor, i, j);
             }
         }
+    }
 
-        if (!FreeImage_Save(FIF_PNG, bitmap, filePath.c_str()), PNG_Z_BEST_SPEED)
+    bool FreeImgExporter::Export(const PixelData& pixelData, UINT32 width, UINT32 height, bool isSRGB, const String& filePath, const TextureExportOptions* exportOptions, bool force)
+    {
+        FIBITMAP* bitmap = FreeImage_Allocate(width, height, 32);
+        RGBQUAD bitmapColor;
+
+        float minValue = std::numeric_limits<float>::max();
+        float maxValue = std::numeric_limits<float>::min();
+
+        if (!bitmap)
+        {
+            TE_DEBUG("Can't create bitmap object : " + filePath);
+            return false;
+        }
+
+        if (exportOptions->IsDepthStencilBuffer)
+        {
+            LoopThroughPixelData(pixelData, width, height, isSRGB, [&](const Color& color, UINT32 i, UINT32 j) {
+                minValue = std::min(minValue, color.r);
+                maxValue = std::max(maxValue, color.r);
+            });
+        }
+
+        LoopThroughPixelData(pixelData, width, height, isSRGB, [&](const Color& color, UINT32 i, UINT32 j) {
+            // TODO : Separate Depth and Stencil buffer ?
+
+            if (exportOptions->IsSingleChannel || exportOptions->IsDepthStencilBuffer)
+            {
+                float remappedColor = Math::Clamp01(color.r);
+                if (exportOptions->IsDepthStencilBuffer)
+                {
+                     remappedColor = Math::Remap(Math::Clamp01(color.r), minValue, maxValue, 0.0f, 1.0f);
+                }
+
+                bitmapColor.rgbRed = static_cast<UINT8>(remappedColor * 255.0f);
+                bitmapColor.rgbGreen = static_cast<UINT8>(remappedColor * 255.0f);
+                bitmapColor.rgbBlue = static_cast<UINT8>(remappedColor * 255.0f);
+            }
+            else
+            {
+                bitmapColor.rgbRed = static_cast<UINT8>(Math::Clamp01(color.r) * 255.0f);
+                bitmapColor.rgbGreen = static_cast<UINT8>(Math::Clamp01(color.g) * 255.0f);
+                bitmapColor.rgbBlue = static_cast<UINT8>(Math::Clamp01(color.b) * 255.0f);
+            }
+
+            if (!FreeImage_SetPixelColor(bitmap, i, height - 1 - j, &bitmapColor))
+            {
+                TE_DEBUG("Can't save bitmap pixel color : ");
+            }
+        });
+
+        if (!FreeImage_Save(FIF_PNG, bitmap, filePath.c_str(), PNG_Z_BEST_SPEED))
         {
             TE_DEBUG("Can't save bitmap object to file : " + filePath);
             FreeImage_Unload(bitmap);
             return false;
         }
 
+        FreeImage_Unload(bitmap);
         return true;
     }
 }

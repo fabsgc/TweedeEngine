@@ -158,8 +158,14 @@ namespace te
         ShowButton(ICON_FA_CAMERA_RETRO, ICON_FA_CAMERA_RETRO,
             [this]() { return false; },
             [this]() {
+                struct TextureElement
+                {
+                    SPtr<Texture> texture;
+                    SPtr<TextureExportOptions> option;
+                };
+
                 gEditor().NeedsRedraw();
-                Vector<SPtr<Texture>> textures;
+                Vector<TextureElement> textures;
 
                 for (int i = 0; i != static_cast<int>(RenderOutputType::Count); i++)
                 {
@@ -168,7 +174,23 @@ namespace te
 
                     if (texture)
                     {
-                        textures.push_back(texture);
+                        TextureElement textureElement;
+
+                        textureElement.texture = texture;
+                        textureElement.option = TextureExportOptions::Create();
+
+                        if (renderType == RenderOutputType::Depth)
+                        {
+                            textureElement.option->IsDepthStencilBuffer = true;
+                            textureElement.option->IsSingleChannel = true;
+                        }
+
+                        if (renderType == RenderOutputType::SSAO)
+                        {
+                            textureElement.option->IsSingleChannel = true;
+                        }
+
+                        textures.push_back(textureElement);
                     }
                 }
 
@@ -179,16 +201,19 @@ namespace te
 
                     if (texture)
                     {
-                        textures.push_back(texture);
+                        TextureElement textureElement;
+
+                        textureElement.texture = texture;
+                        textureElement.option = TextureExportOptions::Create();
+
+                        textures.push_back(textureElement);
                     }
                 }
 
                 UINT32 count = 0;
-                SPtr<TextureExportOptions> options = TextureExportOptions::Create();
-
                 for (const auto& texture : textures)
                 {
-                    gExporter().Export(texture.get(), ToString(count) + ".png", options);
+                    gExporter().Export(texture.texture.get(), ToString(count) + ".png", texture.option);
                     count++;
                 }
             },

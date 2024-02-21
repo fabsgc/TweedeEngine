@@ -21,6 +21,15 @@ namespace te
         /** Maximum mip level to generate when generating mipmaps. If 0 then maximum amount of mip levels will be generated. */
         UINT32 MaxMip = 0;
 
+        /**
+         * Find minimal and maximal values for each channel and clamp them to [0,1] 
+         * Write Stencil buffer to a second texture
+         */
+        bool IsDepthStencilBuffer = false;
+
+        /** For some textures, only red channel is filled. To avoid them from being rendered completely red, you can set this to true */
+        bool IsSingleChannel = false;
+
         /** Creates a new import options object that allows you to customize how are textures imported. */
         static SPtr<TextureExportOptions> Create();
     };
