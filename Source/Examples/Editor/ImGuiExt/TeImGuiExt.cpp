@@ -381,7 +381,7 @@ namespace te
             float aperture = camera->GetAperture();
             float oldAperture = aperture;
 
-            if (ImGuiExt::RenderOptionFloat(aperture, "##aperture_option", "Aperture", 1.0f, 16.0f, width))
+            if (ImGuiExt::RenderOptionFloat(aperture, "##aperture_option", "Aperture", 1.0f, 32.0f, width))
                 hasChanged = true;
 
             if (aperture != oldAperture)
@@ -393,7 +393,7 @@ namespace te
             float shutterSpeed = 1.0f / camera->GetShutterSpeed();
             float oldShutterSpeed = shutterSpeed;
 
-            if (ImGuiExt::RenderOptionFloat(shutterSpeed, "##shutter_speed_option", "Shutter Speed", 1.0f, 2000.0f, width))
+            if (ImGuiExt::RenderOptionFloat(shutterSpeed, "##shutter_speed_option", "Shutter Speed", 1.0f, 8000.0f, width))
                 hasChanged = true;
 
             if (shutterSpeed != oldShutterSpeed)
@@ -405,7 +405,7 @@ namespace te
             UINT32 sensitivity = camera->GetSensitivity();
             UINT32 oldSensitivity = sensitivity;
 
-            if (ImGuiExt::RenderOptionInt((int&)sensitivity, "##sensitivity_option", "Sensitivity", 100, 3200, width))
+            if (ImGuiExt::RenderOptionInt((int&)sensitivity, "##sensitivity_option", "Sensitivity", 100, 12800, width))
                 hasChanged = true;
 
             if (sensitivity != oldSensitivity)

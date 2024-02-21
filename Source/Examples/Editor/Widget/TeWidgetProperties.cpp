@@ -2232,10 +2232,21 @@ namespace te
 
         // intensity
         {
-            if (ImGuiExt::RenderOptionFloat(intensity, "##light_intensity_option", "Intensity (Lux)", 0.f, 200000.f, width))
+            if (light->GetType() == Light::Type::Radial || light->GetType() == Light::Type::Spot)
             {
-                hasChanged = true;
-                light->SetIntensity(intensity);
+                if (ImGuiExt::RenderOptionFloat(intensity, "##light_intensity_option", "Intensity (Lumen)", 0.f, 50000.f, width))
+                {
+                    hasChanged = true;
+                    light->SetIntensity(intensity);
+                }
+            }
+            else
+            {
+                if (ImGuiExt::RenderOptionFloat(intensity, "##light_intensity_option", "Intensity (Lux)", 0.f, 150000.f, width))
+                {
+                    hasChanged = true;
+                    light->SetIntensity(intensity);
+                }
             }
         }
         ImGui::Separator();

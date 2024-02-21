@@ -820,9 +820,14 @@ float3 DoDirectionalLight( LightData light, const PixelData pixel, float NoV, fl
 
 #if DO_DIRECT_LIGHTING == 1
 // d : distance from light
-float DoAttenuation( LightData light, float d )
+float DoPointLightAttenuation( LightData light, float d )
 {
     return 1.f / ( 4.f * 3.14159 * d * d);
+}
+
+float DoSpotLightAttenuation( LightData light, float d )
+{
+    return 1.f / ( 3.14159 * d * d);
 }
 #endif // DO_DIRECT_LIGHTING
 
@@ -849,9 +854,8 @@ float3 DoPointLight( LightData light, const PixelData pixel, float NoV, float3 V
     float distance = length(L);
     L = L / distance;
 
-    // intensity = lux * 1/(PI * 4)
-    float intensity = light.Intensity * 0.3183 * 0.25f;
-    float attenuation = DoAttenuation( light, distance );
+    float intensity = light.Intensity;
+    float attenuation = DoPointLightAttenuation( light, distance );
     if(attenuation > 0.0001f)
     {
         result = DoLighting(V, N , L, pixel, NoV, light, intensity, attenuation, occlusion);
@@ -873,9 +877,8 @@ float3 DoSpotLight( LightData light, const PixelData pixel, float NoV, float3 V,
     float distance = length(L);
     L = L / distance;
 
-    // intensity = lux * 1/(PI)
     float intensity = light.Intensity  * 0.3183;
-    float attenuation = DoAttenuation( light, distance );
+    float attenuation = DoSpotLightAttenuation( light, distance );
     if(attenuation > 0.0001f)
     {
         float spotIntensity = DoSpotCone( light, L );
