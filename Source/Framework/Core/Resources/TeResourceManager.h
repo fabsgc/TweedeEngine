@@ -77,7 +77,7 @@ namespace te
         void Update(HResource& handle, const SPtr<Resource>& resource);
 
         void Release(const HResource& resource) 
-        { 
+        {
             Release((ResourceHandleBase&)resource); 
         }
 
