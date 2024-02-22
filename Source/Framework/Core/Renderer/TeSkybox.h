@@ -17,7 +17,7 @@ namespace te
     class TE_CORE_EXPORT Skybox : public CoreObject, public SceneActor, public Serializable
     {
     public:
-        static constexpr float DEFAULT_IBL_INTENSITY = 50000.f;
+        static constexpr float DEFAULT_IBL_INTENSITY = 5000.f;
 
     public:
         virtual ~Skybox();
