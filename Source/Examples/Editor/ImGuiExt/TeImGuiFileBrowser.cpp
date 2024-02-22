@@ -406,7 +406,7 @@ namespace te
                     label = ICON_FA_FILE_AUDIO + String(" ") + (filtered_files[i]->name);
                 else if (filtered_files[i]->extension == ".cpp")
                     label = ICON_FA_FILE_CODE + String(" ") + (filtered_files[i]->name);
-                else if (filtered_files[i]->extension == ".scene")
+                else if (filtered_files[i]->extension == ".project")
                     label = ICON_FA_FILE_SIGNATURE + String(" ") + (filtered_files[i]->name);
                 else
                     label = ICON_FA_FILE + String(" ") + (filtered_files[i]->name);
@@ -786,12 +786,12 @@ namespace te
                 {
                     ImGuiExt::RenderOptionBool(Data.AudioParam.Is3D, "##file_dialog_parameters_audio_3d", "Is 3D Sound");
                 }
-                else if (ext == ".scene")
+                else
                 {
-                    // TODO .scene file handling
+                    // TODO engine resource loading (Native HResource)
                 }
             }
-            else if (dialog_mode == DialogMode::SAVE && ext == ".scene")
+            else if (dialog_mode == DialogMode::SAVE && ext == ".project")
             { /** TODO */ }
 
             ImGui::Separator();

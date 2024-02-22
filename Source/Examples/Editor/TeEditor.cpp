@@ -72,10 +72,10 @@
 #include "Renderer/TeRendererUtility.h"
 
 #include "Exporter/TeExporter.h"
-#include "Exporter/TeSceneExportOptions.h"
+#include "Exporter/TeProjectExportOptions.h"
 
 #include "Importer/TeImporter.h"
-#include "Importer/TeSceneImportOptions.h"
+#include "Importer/TeProjectImportOptions.h"
 
 // TODO Temp for debug purpose
 #include "Importer/TeMeshImportOptions.h"
@@ -848,58 +848,56 @@ namespace te
         _guizmoMode = mode;
     }
 
-    void Editor::Save()
+    bool Editor::SaveProject()
     {
         if (IsEditorRunning())
         {
-            TE_DEBUG("You can't save scene while editor is running");
-            return;
+            TE_DEBUG("You can't save your project while editor is running");
+            return false;
+        }
+
+        SPtr<ProjectExportOptions> options = te_shared_ptr_new<ProjectExportOptions>();
+        if (!gExporter().Export(nullptr, _settings.FilePath, options))
+        {
+            TE_DEBUG("Fail to save your project at the specified path : " + _settings.FilePath);
+            return false;
         }
 
         _settings.State = EditorState::Saved;
 
-        SPtr<SceneExportOptions> options = te_shared_ptr_new<SceneExportOptions>();
-        options->isScene = true;
-
-        if (!gExporter().Export(GetSceneRoot().Get(), _settings.FilePath, options))
-        {
-            TE_DEBUG("You can't save scene while editor is running");
-        }
-
-        // TODO Save
+        return true;
     }
 
-    void Editor::Open()
+    bool Editor::OpenProject()
     {
         if (IsEditorRunning())
         {
-            TE_DEBUG("You can't open scene while editor is running");
-            return;
+            TE_DEBUG("You can't open a project while editor is running");
+            return false;
         }
 
         if (_settings.State != EditorState::Saved)
         {
-            TE_DEBUG("You didn't save your scene");
-            return;
+            TE_DEBUG("You didn't save your current project");
+            return false;
         }
 
-        _settings.State = EditorState::Saved;
-
-        SPtr<SceneImportOptions> options = te_shared_ptr_new<SceneImportOptions>();
+        SPtr<ProjectImportOptions> options = te_shared_ptr_new<ProjectImportOptions>();
         SPtr<MultiResource> multiResourceScene = EditorResManager::Instance().LoadAll(_settings.FilePath, options, true);
 
-        /*if (multiResourceScene->Entries.size() == 0 || multiResourceScene->Entries[0].Res.IsLoaded())
+        if (multiResourceScene->Entries.size() == 0 || multiResourceScene->Entries[0].Res.IsLoaded())
         {
-            TE_DEBUG("Failed to load the scene at the specified path : " + _settings.FilePath);
-            return;
-        }*/
+            TE_DEBUG("Failed to load the your project at the specified path : " + _settings.FilePath);
+            return false;
+        }
 
         DestroyRunningScene();
         DestroyScene();
 
         _sceneSO = SceneObject::Create("Scene");
+        _settings.State = EditorState::Saved;
 
-        // TODO Open
+        return true;
     }
 
     void Editor::Paste()

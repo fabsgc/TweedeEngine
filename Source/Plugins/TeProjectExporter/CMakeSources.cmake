@@ -1,11 +1,11 @@
 set (TE_SCENE_EXPORTER_INC_NOFILTER
-    "TeSceneExporterPrerequisites.h"
-    "TeSceneExporter.h"
+    "TeProjectExporterPrerequisites.h"
+    "TeProjectExporter.h"
 )
 
 set (TE_SCENE_EXPORTER_SRC_NOFILTER
-    "TeSceneExporter.cpp"
-    "TeSceneExporterPlugin.cpp"
+    "TeProjectExporter.cpp"
+    "TeProjectExporterPlugin.cpp"
 )
 
 source_group ("" FILES ${TE_SCENE_EXPORTER_SRC_NOFILTER} ${TE_SCENE_EXPORTER_INC_NOFILTER})

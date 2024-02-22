@@ -189,11 +189,11 @@ namespace te
         /** Enable or disable animation debug */
         void SetAnimationDebug(bool debug) { _animationDebug = debug; }
 
-        /** Save current scene */
-        void Save();
+        /** Save current project */
+        bool SaveProject();
 
-        /** Open current scene */
-        void Open();
+        /** Open current project */
+        bool OpenProject();
 
         /** Paste current selection */
         void Paste();

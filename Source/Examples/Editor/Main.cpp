@@ -25,11 +25,14 @@ int main()
         "TeObjectImporter",
         "TeShaderImporter",
         "TeFontImporter",
-        "TeSceneImporter"
+        "TeProjectImporter",
+        "TeResourceImporter"
+        
     };
 
     desc.Exporters = {
-        "TeSceneExporter",
+        "TeProjectExporter",
+        "TeResourceExporter",
         "TeFreeImgExporter"
     };
 
@@ -42,7 +45,6 @@ int main()
     te::Application::StartUp(desc);
     te::Application::Instance().RunMainLoop();
     te::Application::ShutDown();
-
 
     return 0;
 }

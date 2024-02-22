@@ -90,8 +90,8 @@ namespace te
                 bool Is3D = false;
             };
 
-            /** If we want to load a scene, here are stored the list of parameters to apply on it during loading */
-            struct SceneParameters
+            /** If we want to load a project, here are stored the list of parameters to apply on it during loading */
+            struct ProjectParameters
             { };
 
             /* Store the opened/saved file name or dir name (incase of selectDirectoryDialog) and the absolute path to the selection
@@ -107,7 +107,7 @@ namespace te
 
                 MeshParameters    MeshParam;
                 TextureParameters TexParam;
-                SceneParameters   SceneParam;
+                ProjectParameters   ProjectParam;
                 AudioParameters   AudioParam;
 
             };

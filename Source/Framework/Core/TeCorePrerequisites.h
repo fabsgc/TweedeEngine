@@ -149,9 +149,11 @@ namespace te
         TID_Camera                    = 1094,
         TID_ZPrepassMesh              = 1095,
         TID_ExportOptions             = 1096,
-        TID_SceneImportOptions        = 1097,
-        TID_SceneExportOptions        = 1098,
-        TID_TextureExportOptions      = 1099
+        TID_ProjectImportOptions      = 1097,
+        TID_ProjectExportOptions      = 1098,
+        TID_ResourceImportOptions     = 1099,
+        TID_ResourceExportOptions     = 1100,
+        TID_TextureExportOptions      = 1101
     };
 }
 
@@ -395,12 +397,14 @@ namespace te
     class TextureImportOptions;
     class FontImportOptions;
     class AudioClipImportOptions;
-    class SceneImportOptions;
+    class ProjectImportOptions;
+    class ResourceImportOptions;
 
     class Exporter;
     class BaseExporter;
     class ExportOptions;
-    class SceneExportOptions;
+    class ProjectExportOptions;
+    class ResourceExportOptions;
     class TextureExportOptions;
 
     class DataStream;

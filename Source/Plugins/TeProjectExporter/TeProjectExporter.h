@@ -1,17 +1,17 @@
 #pragma once
 
-#include "TeSceneExporterPrerequisites.h"
+#include "TeProjectExporterPrerequisites.h"
 #include "Exporter/TeBaseExporter.h"
 #include "Exporter/TeExporter.h"
 
 namespace te
 {
     /** Exporter implementation that handles scene export. */
-    class SceneExporter : public BaseExporter
+    class ProjectExporter : public BaseExporter
     {
     public:
-        SceneExporter();
-        virtual ~SceneExporter() = default;
+        ProjectExporter();
+        virtual ~ProjectExporter() = default;
 
         /** @copydoc BaseExporter::IsExtensionSupported */
         bool IsExtensionSupported(const String& ext) const override;

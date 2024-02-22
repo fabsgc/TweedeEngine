@@ -28,19 +28,22 @@ namespace te
 
     protected:
         void ShowAboutWindow();
-        void ShowOpen();
-        void ShowSave();
-        void ShowLoad();
+        void ShowNewProject();
+        void ShowOpenProject();
+        void ShowSaveProject();
+        void ShowLoadResource();
+        void SaveProject();
+        void SaveProjectAs();
         void Quit();
-        void Save();
 
     protected:
         struct WidgetMenubarSettings
         {
             bool AboutWindow = false;
-            bool Open = false;
-            bool Save = false;
-            bool Load = false;
+            bool NewProject = false;
+            bool OpenProject = false;
+            bool SaveProject = false;
+            bool LoadResource = false;
         };
 
     protected:

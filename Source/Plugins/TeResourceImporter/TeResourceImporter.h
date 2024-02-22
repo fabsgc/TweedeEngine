@@ -1,17 +1,17 @@
 #pragma once
 
-#include "TeSceneImporterPrerequisites.h"
+#include "TeResourceImporterPrerequisites.h"
 #include "Importer/TeBaseImporter.h"
 #include "Importer/TeImporter.h"
 
 namespace te
 {
     /** Importer implementation that handles scene import. */
-    class SceneImporter : public BaseImporter
+    class ResourceImporter : public BaseImporter
     {
     public:
-        SceneImporter();
-        virtual ~SceneImporter() = default;
+        ResourceImporter();
+        virtual ~ResourceImporter() = default;
 
         /** @copydoc BaseImporter::IsExtensionSupported */
         bool IsExtensionSupported(const String& ext) const override;

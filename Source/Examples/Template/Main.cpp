@@ -26,11 +26,13 @@ int main()
         "TeObjectImporter",
         "TeShaderImporter",
         "TeFontImporter",
-        "TeSceneImporter"
+        "TeProjectImporter"
+        "TeResourceImporter"
     };
 
     desc.Exporters = {
-        "TeSceneExporter",
+        "TeProjectExporter",
+        "TeResourceExporter",
         "TeFreeImgExporter"
     };
 

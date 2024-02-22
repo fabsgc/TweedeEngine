@@ -227,7 +227,8 @@ set (TE_CORE_INC_IMPORTER
     "Core/Importer/TeTextureImportOptions.h"
     "Core/Importer/TeMeshImportOptions.h"
     "Core/Importer/TeShaderImportOptions.h"
-    "Core/Importer/TeSceneImportOptions.h"
+    "Core/Importer/TeProjectImportOptions.h"
+    "Core/Importer/TeResourceImportOptions.h"
 )
 set (TE_CORE_SRC_IMPORTER
     "Core/Importer/TeImporter.cpp"
@@ -236,14 +237,16 @@ set (TE_CORE_SRC_IMPORTER
     "Core/Importer/TeTextureImportOptions.cpp"
     "Core/Importer/TeMeshImportOptions.cpp"
     "Core/Importer/TeShaderImportOptions.cpp"
-    "Core/Importer/TeSceneImportOptions.cpp"
+    "Core/Importer/TeProjectImportOptions.cpp"
+    "Core/Importer/TeResourceImportOptions.cpp"
 )
 
 set (TE_CORE_INC_EXPORTER
     "Core/Exporter/TeExporter.h"
     "Core/Exporter/TeExportOptions.h"
     "Core/Exporter/TeBaseExporter.h"
-    "Core/Exporter/TeSceneExportOptions.h"
+    "Core/Exporter/TeProjectExportOptions.h"
+    "Core/Exporter/TeResourceExportOptions.h"
     "Core/Exporter/TeTextureExportOptions.h"
 )
 
@@ -251,7 +254,8 @@ set (TE_CORE_SRC_EXPORTER
     "Core/Exporter/TeExporter.cpp"
     "Core/Exporter/TeExportOptions.cpp"
     "Core/Exporter/TeBaseExporter.cpp"
-    "Core/Exporter/TeSceneExportOptions.cpp"
+    "Core/Exporter/TeProjectExportOptions.cpp"
+    "Core/Exporter/TeResourceExportOptions.cpp"
     "Core/Exporter/TeTextureExportOptions.cpp"
 )
 

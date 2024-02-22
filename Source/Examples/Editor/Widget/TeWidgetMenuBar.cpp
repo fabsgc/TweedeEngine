@@ -51,43 +51,46 @@ namespace te
             gEditor().GetSettings().State = Editor::EditorState::Modified;
 
         if (gVirtualInput().IsButtonDown(_openBtn))
-            _settings.Open = true;
+            _settings.OpenProject = true;
 
         if (gVirtualInput().IsButtonDown(_saveBtn))
-            Save();
+            SaveProject();
             
         if (gVirtualInput().IsButtonDown(_saveAsBtn))
-            _settings.Save = true;
+            _settings.SaveProject = true;
 
         if (gVirtualInput().IsButtonDown(_quitBtn))
             Quit();
 
         if (gVirtualInput().IsButtonDown(_loadResource))
-            _settings.Load = true;
+            _settings.LoadResource = true;
 
         if (ImGui::BeginMainMenuBar())
         {
             if (ImGui::BeginMenu("File"))
             {
-                if (ImGui::MenuItem(ICON_FA_FILE_ALT "   " ICON_FA_GRIP_LINES_VERTICAL "  New", "Ctrl+N"))
-                { }
+                if (ImGui::MenuItem(ICON_FA_FILE_ALT "   " ICON_FA_GRIP_LINES_VERTICAL "  New project", "Ctrl+N"))
+                {
+                    // TODO New Project
+                }
 
-                ImGui::MenuItem(ICON_FA_FOLDER_OPEN " " ICON_FA_GRIP_LINES_VERTICAL "  Open", "Ctrl+O", &_settings.Open);
+                ImGui::MenuItem(ICON_FA_FOLDER_OPEN " " ICON_FA_GRIP_LINES_VERTICAL "  Open project", "Ctrl+O", &_settings.OpenProject);
 
-                if (ImGui::MenuItem(ICON_FA_SAVE "  " ICON_FA_GRIP_LINES_VERTICAL "  Save", "Ctrl+S"))
-                    Save();
+                if (ImGui::MenuItem(ICON_FA_SAVE "  " ICON_FA_GRIP_LINES_VERTICAL "  Save project", "Ctrl+S"))
+                    SaveProject();
 
-                ImGui::MenuItem(ICON_FA_SAVE "  " ICON_FA_GRIP_LINES_VERTICAL "  Save As ..", "Ctrl+Shift+S", _settings.Save);
+                if (ImGui::MenuItem(ICON_FA_SAVE "  " ICON_FA_GRIP_LINES_VERTICAL "  Save project As ..", "Ctrl+Shift+S", _settings.SaveProject))
+                    SaveProjectAs();
 
                 if (ImGui::MenuItem(ICON_FA_SIGN_OUT_ALT "  " ICON_FA_GRIP_LINES_VERTICAL "  Quit", "Ctrl+Q"))
-                    gCoreApplication().OnStopRequested();
+                    Quit();
 
                 ImGui::EndMenu();
             }
 
             if (ImGui::BeginMenu("Project"))
             {
-                ImGui::MenuItem(ICON_FA_FILE_DOWNLOAD "  " ICON_FA_GRIP_LINES_VERTICAL "  Load resource", "Ctrl+R", &_settings.Load);
+                ImGui::MenuItem(ICON_FA_FILE_DOWNLOAD "  " ICON_FA_GRIP_LINES_VERTICAL "  Load resource", "Ctrl+R", &_settings.LoadResource);
                 ImGui::EndMenu();
             }
 
@@ -183,9 +186,10 @@ namespace te
         }
 
         ShowAboutWindow();
-        ShowOpen();
-        ShowSave();
-        ShowLoad();
+        ShowNewProject();
+        ShowOpenProject();
+        ShowSaveProject();
+        ShowLoadResource();
     }
 
     void WidgetMenuBar::UpdateBackground()
@@ -230,49 +234,54 @@ namespace te
         ImGui::End();
     }
 
-    void WidgetMenuBar::ShowOpen()
+    void WidgetMenuBar::ShowNewProject()
     {
-        if (_settings.Open)
+
+    }
+
+    void WidgetMenuBar::ShowOpenProject()
+    {
+        if (_settings.OpenProject)
             ImGui::OpenPopup("Open Project");
 
-        if (_fileBrowser.ShowFileDialog("Open Project", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, ".scene"))
+        if (_fileBrowser.ShowFileDialog("Open Project", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, ".project"))
         {
             gEditor().GetSettings().FilePath = _fileBrowser.Data.SelectedPath;
-            gEditor().Open();
-            _settings.Open = false;
+            gEditor().OpenProject();
+            _settings.OpenProject = false;
         }
         else
         {
             if (_fileBrowser.Data.IsCancelled)
-                _settings.Open = false;
+                _settings.OpenProject = false;
         }
     }
 
-    void WidgetMenuBar::ShowSave()
+    void WidgetMenuBar::ShowSaveProject()
     {
-        if (_settings.Save)
+        if (_settings.SaveProject)
             ImGui::OpenPopup("Save Project");
 
-        if (_fileBrowser.ShowFileDialog("Save Project", ImGuiFileBrowser::DialogMode::SAVE, ImVec2(900, 450), false, ".scene"))
+        if (_fileBrowser.ShowFileDialog("Save Project", ImGuiFileBrowser::DialogMode::SAVE, ImVec2(900, 450), false, ".project"))
         {
-            if (!std::regex_match(_fileBrowser.Data.SelectedPath, std::regex("^(.*)\\.(scene)$")))
-                gEditor().GetSettings().FilePath = _fileBrowser.Data.SelectedPath + ".scene";
+            if (!std::regex_match(_fileBrowser.Data.SelectedPath, std::regex("^(.*)\\.(project)$")))
+                gEditor().GetSettings().FilePath = _fileBrowser.Data.SelectedPath + ".project";
             else
                 gEditor().GetSettings().FilePath = _fileBrowser.Data.SelectedPath;
 
-            gEditor().Save();
-            _settings.Save = false;
+            gEditor().SaveProject();
+            _settings.SaveProject = false;
         }
         else
         {
             if (_fileBrowser.Data.IsCancelled)
-                _settings.Save = false;
+                _settings.SaveProject = false;
         }
     }
 
-    void WidgetMenuBar::ShowLoad()
+    void WidgetMenuBar::ShowLoadResource()
     {
-        if (_settings.Load)
+        if (_settings.LoadResource)
             ImGui::OpenPopup("Load Resource");
 
         String extensions = Editor::TexturesExtensionsStr + "," + Editor::MeshesExtensionsStr + "," + Editor::SoundsExtensionsStr;
@@ -373,16 +382,32 @@ namespace te
             }
             else
             {
-                // TODO scene loading
+                // TODO engine resource loading (Native HResource)
             }
 
-            _settings.Load = false;
+            _settings.LoadResource = false;
         }
         else
         {
             if (_fileBrowser.Data.IsCancelled)
-                _settings.Load = false;
+                _settings.LoadResource = false;
         }
+    }
+
+    void WidgetMenuBar::SaveProject()
+    {
+        if (gEditor().GetSettings().State == Editor::EditorState::Modified)
+        {
+            if (gEditor().GetSettings().FilePath.empty())
+                _settings.SaveProject = true;
+            else
+                gEditor().SaveProject();
+        }
+    }
+
+    void WidgetMenuBar::SaveProjectAs()
+    {
+        _settings.SaveProject = true;
     }
 
     void WidgetMenuBar::Quit()
@@ -393,16 +418,5 @@ namespace te
         }
 
         gCoreApplication().OnStopRequested();
-    }
-
-    void WidgetMenuBar::Save()
-    {
-        if (gEditor().GetSettings().State == Editor::EditorState::Modified)
-        {
-            if (gEditor().GetSettings().FilePath.empty())
-                _settings.Save = true;
-            else
-                gEditor().Save();
-        }
     }
 }
