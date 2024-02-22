@@ -91,6 +91,11 @@ namespace te
             return _resources[T::GetResourceType()];
         }
 
+        void Clear()
+        {
+            _resources.clear();
+        }
+
     protected:
         UnorderedMap<UINT32, ResourcesContainer> _resources;
     };

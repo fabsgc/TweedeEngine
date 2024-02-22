@@ -786,6 +786,10 @@ namespace te
                 {
                     ImGuiExt::RenderOptionBool(Data.AudioParam.Is3D, "##file_dialog_parameters_audio_3d", "Is 3D Sound");
                 }
+                else if (ext == ".project")
+                {
+                    // TODO
+                }
                 else
                 {
                     // TODO engine resource loading (Native HResource)

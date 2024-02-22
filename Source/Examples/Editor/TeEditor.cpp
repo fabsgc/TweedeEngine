@@ -77,6 +77,8 @@
 #include "Importer/TeImporter.h"
 #include "Importer/TeProjectImportOptions.h"
 
+#include "Project/TeProject.h"
+
 // TODO Temp for debug purpose
 #include "Importer/TeMeshImportOptions.h"
 #include "Importer/TeTextureImportOptions.h"
@@ -170,6 +172,8 @@ namespace te
 
         if (GuiAPI::Instance().IsGuiInitialized())
             InitializeGui();
+
+        _project = Project::Create();
     }
 
     void Editor::OnShutDown()
@@ -375,6 +379,7 @@ namespace te
     {
         _sceneSO = SceneObject::Create("Scene");
         LoadScene();
+        LoadEngineResources();
     }
 
     void Editor::InitializeUICamera()
@@ -451,7 +456,7 @@ namespace te
         _widgets.emplace_back(te_unique_ptr_new<WidgetConsole>()); _settings.WConsole = _widgets.back();
         _widgets.emplace_back(te_unique_ptr_new<WidgetScript>()); _settings.WScript = _widgets.back();
         _widgets.emplace_back(te_unique_ptr_new<WidgetShaders>()); _settings.WShaders = _widgets.back();
-        _widgets.emplace_back(te_unique_ptr_new<WidgetMaterials>()); _settings.WMaterial = _widgets.back();
+        _widgets.emplace_back(te_unique_ptr_new<WidgetMaterials>()); _settings.WMaterials = _widgets.back();
         _widgets.emplace_back(te_unique_ptr_new<WidgetResources>()); _settings.WResources = _widgets.back();
         _widgets.emplace_back(te_unique_ptr_new<WidgetViewport>()); _settings.WViewport = _widgets.back();
 
@@ -848,7 +853,79 @@ namespace te
         _guizmoMode = mode;
     }
 
-    bool Editor::SaveProject()
+    bool Editor::NewProject()
+    {
+        if (IsEditorRunning())
+        {
+            TE_DEBUG("You can't open a project while editor is running");
+            return false;
+        }
+
+        /*if (_settings.State != EditorState::Saved)
+        {
+            TE_DEBUG("You didn't save your current project");
+            return false;
+        }*/
+
+        DestroyRunningScene();
+        DestroyScene();
+        EditorResManager::Instance().Clear();
+        std::static_pointer_cast<WidgetMaterials>(_settings.WMaterials)->ResetCurrentMaterial();
+        // TODO Unload resources loaded by the user
+        // TODO Remove all material previews
+
+        LoadEngineResources();
+
+        _sceneSO = SceneObject::Create("Scene");
+        _settings.State = EditorState::Saved;
+
+        _project = Project::Create();
+
+        return true;
+    }
+
+    bool Editor::OpenProject(const String& path)
+    {
+        if (IsEditorRunning())
+        {
+            TE_DEBUG("You can't open a project while editor is running");
+            return false;
+        }
+
+        /*if (_settings.State != EditorState::Saved)
+        {
+            TE_DEBUG("You didn't save your current project");
+            return false;
+        }*/
+
+        SPtr<ProjectImportOptions> options = te_shared_ptr_new<ProjectImportOptions>();
+        SPtr<MultiResource> multiResourceScene = EditorResManager::Instance().LoadAll(path, options, true);
+
+        if (multiResourceScene->Entries.size() == 0 || multiResourceScene->Entries[0].Res.IsLoaded())
+        {
+            TE_DEBUG("Failed to load the your project at the specified path : " + path);
+            return false;
+        }
+
+        DestroyRunningScene();
+        DestroyScene();
+        EditorResManager::Instance().Clear();
+        std::static_pointer_cast<WidgetMaterials>(_settings.WMaterials)->ResetCurrentMaterial();
+        // TODO Unload resources loaded by the user
+        // TODO Remove all material previews
+
+        LoadEngineResources();
+
+        _sceneSO = SceneObject::Create("Scene");
+        _settings.State = EditorState::Saved;
+
+        _project = static_resource_cast<Project>(multiResourceScene->Entries[0].Res);
+        _project->SetPath(path);
+
+        return true;
+    }
+
+    bool Editor::SaveProject(const String& path)
     {
         if (IsEditorRunning())
         {
@@ -857,44 +934,12 @@ namespace te
         }
 
         SPtr<ProjectExportOptions> options = te_shared_ptr_new<ProjectExportOptions>();
-        if (!gExporter().Export(nullptr, _settings.FilePath, options))
+        if (!gExporter().Export(nullptr, _project->GetPath(), options))
         {
-            TE_DEBUG("Fail to save your project at the specified path : " + _settings.FilePath);
+            TE_DEBUG("Fail to save your project at the specified path : " + _project->GetPath());
             return false;
         }
 
-        _settings.State = EditorState::Saved;
-
-        return true;
-    }
-
-    bool Editor::OpenProject()
-    {
-        if (IsEditorRunning())
-        {
-            TE_DEBUG("You can't open a project while editor is running");
-            return false;
-        }
-
-        if (_settings.State != EditorState::Saved)
-        {
-            TE_DEBUG("You didn't save your current project");
-            return false;
-        }
-
-        SPtr<ProjectImportOptions> options = te_shared_ptr_new<ProjectImportOptions>();
-        SPtr<MultiResource> multiResourceScene = EditorResManager::Instance().LoadAll(_settings.FilePath, options, true);
-
-        if (multiResourceScene->Entries.size() == 0 || multiResourceScene->Entries[0].Res.IsLoaded())
-        {
-            TE_DEBUG("Failed to load the your project at the specified path : " + _settings.FilePath);
-            return false;
-        }
-
-        DestroyRunningScene();
-        DestroyScene();
-
-        _sceneSO = SceneObject::Create("Scene");
         _settings.State = EditorState::Saved;
 
         return true;
@@ -1456,7 +1501,12 @@ namespace te
         }
 
         EditorResManager::Instance().Add<Material>(_sphereMaterial);
+#endif
+    }
 
+    void Editor::LoadEngineResources()
+    {
+#if TE_PLATFORM == TE_PLATFORM_WIN32
         HMaterial defaultMaterial = gBuiltinResources().GetDefaultMaterial();
         EditorResManager::Instance().Add<Material>(defaultMaterial);
 

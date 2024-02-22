@@ -670,11 +670,11 @@ namespace te
 
     void RCNodeHalfSceneTex::Render(const RenderCompositorNodeInputs& inputs)
     {
-        inputs.CurrRenderAPI.PushMarker("[DRAW] Half Scene Tex", Color(0.74f, 0.21f, 0.32f));
-
         RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
         if (gpuInitializationPassNode->DrawCallsCounter == 0)
             return;
+
+        inputs.CurrRenderAPI.PushMarker("[DRAW] Half Scene Tex", Color(0.74f, 0.21f, 0.32f));
 
         SPtr<Texture> input = gpuInitializationPassNode->SceneTex->Tex;
         TextureDownsampleMat* downsampleMat = TextureDownsampleMat::Get();
@@ -721,11 +721,11 @@ namespace te
 
     void RCNodeSceneTexDownsamples::Render(const RenderCompositorNodeInputs& inputs)
     {
-        inputs.CurrRenderAPI.PushMarker("[DRAW] Scene Tex Down Samples", Color(0.44f, 0.71f, 0.52f));
-
         RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
         if (gpuInitializationPassNode->DrawCallsCounter == 0)
             return;
+
+        inputs.CurrRenderAPI.PushMarker("[DRAW] Scene Tex Down Samples", Color(0.44f, 0.71f, 0.52f));
 
         auto DownSample = [this](
             SPtr<PooledRenderTexture> renderTex,
@@ -944,11 +944,11 @@ namespace te
         if (inputs.View.GetSceneCamera()->GetProjectionType() == ProjectionType::PT_ORTHOGRAPHIC)
             return;
 
-        inputs.CurrRenderAPI.PushMarker("[DRAW] Motion Blur", Color(0.1f, 0.9f, 0.6f));
-
         RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
         if (gpuInitializationPassNode->DrawCallsCounter == 0)
             return;
+
+        inputs.CurrRenderAPI.PushMarker("[DRAW] Motion Blur", Color(0.1f, 0.9f, 0.6f));
 
         RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[1]);
 
@@ -1010,11 +1010,11 @@ namespace te
         if (settings.AntialiasingAglorithm != AntiAliasingAlgorithm::FXAA)
             return;
 
-        inputs.CurrRenderAPI.PushMarker("[DRAW] FXAA", Color(0.35f, 0.35f, 0.7f));
-
         RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
         if (gpuInitializationPassNode->DrawCallsCounter == 0)
             return;
+
+        inputs.CurrRenderAPI.PushMarker("[DRAW] FXAA", Color(0.35f, 0.35f, 0.7f));
 
         RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[1]);
 

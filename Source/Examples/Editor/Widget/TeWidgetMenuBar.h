@@ -28,10 +28,11 @@ namespace te
 
     protected:
         void ShowAboutWindow();
-        void ShowNewProject();
         void ShowOpenProject();
         void ShowSaveProject();
         void ShowLoadResource();
+        void NewProject();
+        void OpenProject();
         void SaveProject();
         void SaveProjectAs();
         void Quit();
@@ -40,7 +41,6 @@ namespace te
         struct WidgetMenubarSettings
         {
             bool AboutWindow = false;
-            bool NewProject = false;
             bool OpenProject = false;
             bool SaveProject = false;
             bool LoadResource = false;

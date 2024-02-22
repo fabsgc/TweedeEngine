@@ -153,7 +153,8 @@ namespace te
         TID_ProjectExportOptions      = 1098,
         TID_ResourceImportOptions     = 1099,
         TID_ResourceExportOptions     = 1100,
-        TID_TextureExportOptions      = 1101
+        TID_TextureExportOptions      = 1101,
+        TID_Project                   = 1102
     };
 }
 
@@ -451,6 +452,8 @@ namespace te
 
     class Picking;
     class PickingMat;
+
+    class Project;
 }
 
 #include "RenderAPI/TeCommonTypes.h"
@@ -469,6 +472,7 @@ namespace te
     typedef ResourceHandle<AnimationClip> HAnimationClip;
     typedef ResourceHandle<PhysicsMesh> HPhysicsMesh;
     typedef ResourceHandle<PhysicsHeightField> HPhysicsHeightField;
+    typedef ResourceHandle<Project> HProject;
 }
 
 #include "Scene/TeGameObjectHandle.h"

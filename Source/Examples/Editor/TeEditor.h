@@ -77,14 +77,12 @@ namespace te
             SPtr<Widget> WScript = nullptr;
             SPtr<Widget> WMaterials = nullptr;
             SPtr<Widget> WProperties = nullptr;
-            SPtr<Widget> WMaterial = nullptr;
             SPtr<Widget> WShaders = nullptr;
 
             const char* EditorName = "Editor";
             bool Show = true;
 
             EditorState State = EditorState::Modified;
-            String FilePath;
         };
 
     public:
@@ -128,6 +126,9 @@ namespace te
 
         /** Get viewport camera UI handle */
         HCameraUI& GetViewportCameraUI() { return _viewportCameraUI;  }
+
+        /** Get current project */
+        HProject& GetProject() { return _project; }
 
         /** Get scene root object */
         HSceneObject& GetSceneRoot() { return _sceneSO; }
@@ -189,11 +190,14 @@ namespace te
         /** Enable or disable animation debug */
         void SetAnimationDebug(bool debug) { _animationDebug = debug; }
 
-        /** Save current project */
-        bool SaveProject();
+        /** Create new project */
+        bool NewProject();
 
-        /** Open current project */
-        bool OpenProject();
+        /** Open an existing project */
+        bool OpenProject(const String& path);
+
+        /** Save current project */
+        bool SaveProject(const String& path);
 
         /** Paste current selection */
         void Paste();
@@ -225,6 +229,7 @@ namespace te
 
     protected:
         void LoadScene();
+        void LoadEngineResources();
 
     public:
         static const Vector<String> TexturesExtensions;
@@ -245,6 +250,8 @@ namespace te
         ImGuiFileBrowser _fileBrowser;
         SelectionData _selections;
         EditorSettings _settings;
+
+        HProject _project;
 
         // viewport scene object is a hidden node to store stuff like cameras not visible
         HSceneObject _viewportSO;

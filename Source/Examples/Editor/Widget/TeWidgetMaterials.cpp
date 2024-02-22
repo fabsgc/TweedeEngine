@@ -633,6 +633,11 @@ namespace te
     void WidgetMaterials::UpdateBackground()
     { }
 
+    void WidgetMaterials::ResetCurrentMaterial()
+    {
+        _currentMaterial = nullptr;
+    }
+
     bool WidgetMaterials::ShowLoadedTexture()
     {
         bool textureLoaded = false;

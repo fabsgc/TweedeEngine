@@ -27,7 +27,6 @@ int main()
         "TeFontImporter",
         "TeProjectImporter",
         "TeResourceImporter"
-        
     };
 
     desc.Exporters = {

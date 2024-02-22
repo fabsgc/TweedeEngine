@@ -12,6 +12,7 @@
 #include "Importer/TeMeshImportOptions.h"
 #include "Importer/TeTextureImportOptions.h"
 #include "Audio/TeAudioClipImportOptions.h"
+#include "Project/TeProject.h"
 
 #include <regex>
 
@@ -53,11 +54,10 @@ namespace te
         if (gVirtualInput().IsButtonDown(_openBtn))
             _settings.OpenProject = true;
 
-        if (gVirtualInput().IsButtonDown(_saveBtn))
-            SaveProject();
-            
         if (gVirtualInput().IsButtonDown(_saveAsBtn))
             _settings.SaveProject = true;
+        else if (gVirtualInput().IsButtonDown(_saveBtn))
+            SaveProject();
 
         if (gVirtualInput().IsButtonDown(_quitBtn))
             Quit();
@@ -70,11 +70,10 @@ namespace te
             if (ImGui::BeginMenu("File"))
             {
                 if (ImGui::MenuItem(ICON_FA_FILE_ALT "   " ICON_FA_GRIP_LINES_VERTICAL "  New project", "Ctrl+N"))
-                {
-                    // TODO New Project
-                }
+                    NewProject();
 
-                ImGui::MenuItem(ICON_FA_FOLDER_OPEN " " ICON_FA_GRIP_LINES_VERTICAL "  Open project", "Ctrl+O", &_settings.OpenProject);
+                if (ImGui::MenuItem(ICON_FA_FOLDER_OPEN " " ICON_FA_GRIP_LINES_VERTICAL "  Open project", "Ctrl+O", &_settings.OpenProject))
+                    OpenProject();
 
                 if (ImGui::MenuItem(ICON_FA_SAVE "  " ICON_FA_GRIP_LINES_VERTICAL "  Save project", "Ctrl+S"))
                     SaveProject();
@@ -186,7 +185,6 @@ namespace te
         }
 
         ShowAboutWindow();
-        ShowNewProject();
         ShowOpenProject();
         ShowSaveProject();
         ShowLoadResource();
@@ -234,11 +232,6 @@ namespace te
         ImGui::End();
     }
 
-    void WidgetMenuBar::ShowNewProject()
-    {
-
-    }
-
     void WidgetMenuBar::ShowOpenProject()
     {
         if (_settings.OpenProject)
@@ -246,8 +239,7 @@ namespace te
 
         if (_fileBrowser.ShowFileDialog("Open Project", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, ".project"))
         {
-            gEditor().GetSettings().FilePath = _fileBrowser.Data.SelectedPath;
-            gEditor().OpenProject();
+            gEditor().OpenProject(_fileBrowser.Data.SelectedPath);
             _settings.OpenProject = false;
         }
         else
@@ -265,11 +257,10 @@ namespace te
         if (_fileBrowser.ShowFileDialog("Save Project", ImGuiFileBrowser::DialogMode::SAVE, ImVec2(900, 450), false, ".project"))
         {
             if (!std::regex_match(_fileBrowser.Data.SelectedPath, std::regex("^(.*)\\.(project)$")))
-                gEditor().GetSettings().FilePath = _fileBrowser.Data.SelectedPath + ".project";
+                gEditor().SaveProject(_fileBrowser.Data.SelectedPath + ".project");
             else
-                gEditor().GetSettings().FilePath = _fileBrowser.Data.SelectedPath;
+                gEditor().SaveProject(_fileBrowser.Data.SelectedPath);
 
-            gEditor().SaveProject();
             _settings.SaveProject = false;
         }
         else
@@ -394,14 +385,34 @@ namespace te
         }
     }
 
+    void WidgetMenuBar::NewProject()
+    {
+        if (gEditor().GetSettings().State == Editor::EditorState::Modified)
+        {
+            // TODO
+        }
+
+        gEditor().NewProject();
+    }
+
+    void WidgetMenuBar::OpenProject()
+    {
+        if (gEditor().GetSettings().State == Editor::EditorState::Modified)
+        {
+            // TODO
+        }
+
+        _settings.OpenProject = true;
+    }
+
     void WidgetMenuBar::SaveProject()
     {
         if (gEditor().GetSettings().State == Editor::EditorState::Modified)
         {
-            if (gEditor().GetSettings().FilePath.empty())
+            if (gEditor().GetProject()->GetPath().empty())
                 _settings.SaveProject = true;
             else
-                gEditor().SaveProject();
+                gEditor().SaveProject(gEditor().GetProject()->GetPath());
         }
     }
 

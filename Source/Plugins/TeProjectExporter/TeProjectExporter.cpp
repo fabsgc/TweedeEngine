@@ -6,7 +6,7 @@ namespace te
     ProjectExporter::ProjectExporter()
         : BaseExporter()
     {
-        _extensions.push_back(u8"scene");
+        _extensions.push_back(u8"project");
     }
 
     bool ProjectExporter::IsExtensionSupported(const String& ext) const
