@@ -259,7 +259,7 @@ namespace te
                 gEditor().GetSettings().FilePath = _fileBrowser.Data.SelectedPath + ".scene";
             else
                 gEditor().GetSettings().FilePath = _fileBrowser.Data.SelectedPath;
-            
+
             gEditor().Save();
             _settings.Save = false;
         }

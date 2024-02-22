@@ -207,6 +207,9 @@ namespace te
         /** When editor goes to stop mode, we destroy to copied scene and restore the original one */
         void DestroyRunningScene();
 
+        /** When loading a new scene, we want to remove the already exising scene */
+        void DestroyScene();
+
         /** Check is editor is in play mode or not */
         bool IsEditorRunning() const { return gCoreApplication().GetState().IsFlagSet(ApplicationState::Mode::Game); }
 

@@ -71,8 +71,13 @@
 #include "RenderAPI/TeRenderTarget.h"
 #include "Renderer/TeRendererUtility.h"
 
-// TODO Temp for debug purpose
+#include "Exporter/TeExporter.h"
+#include "Exporter/TeSceneExportOptions.h"
+
 #include "Importer/TeImporter.h"
+#include "Importer/TeSceneImportOptions.h"
+
+// TODO Temp for debug purpose
 #include "Importer/TeMeshImportOptions.h"
 #include "Importer/TeTextureImportOptions.h"
 #include "Audio/TeAudioClipImportOptions.h"
@@ -846,18 +851,54 @@ namespace te
     void Editor::Save()
     {
         if (IsEditorRunning())
+        {
+            TE_DEBUG("You can't save scene while editor is running");
             return;
+        }
 
         _settings.State = EditorState::Saved;
+
+        SPtr<SceneExportOptions> options = te_shared_ptr_new<SceneExportOptions>();
+        options->isScene = true;
+
+        if (!gExporter().Export(GetSceneRoot().Get(), _settings.FilePath, options))
+        {
+            TE_DEBUG("You can't save scene while editor is running");
+        }
+
         // TODO Save
     }
 
     void Editor::Open()
     {
         if (IsEditorRunning())
+        {
+            TE_DEBUG("You can't open scene while editor is running");
             return;
+        }
+
+        if (_settings.State != EditorState::Saved)
+        {
+            TE_DEBUG("You didn't save your scene");
+            return;
+        }
 
         _settings.State = EditorState::Saved;
+
+        SPtr<SceneImportOptions> options = te_shared_ptr_new<SceneImportOptions>();
+        SPtr<MultiResource> multiResourceScene = EditorResManager::Instance().LoadAll(_settings.FilePath, options, true);
+
+        /*if (multiResourceScene->Entries.size() == 0 || multiResourceScene->Entries[0].Res.IsLoaded())
+        {
+            TE_DEBUG("Failed to load the scene at the specified path : " + _settings.FilePath);
+            return;
+        }*/
+
+        DestroyRunningScene();
+        DestroyScene();
+
+        _sceneSO = SceneObject::Create("Scene");
+
         // TODO Open
     }
 
@@ -1245,7 +1286,6 @@ namespace te
         _sceneSO->SetActive(false);
         _runningSceneSO = SceneObject::Create("Scene");
         _runningSceneSO->Clone(_sceneSO);
-        _runningSceneSO->SetActive(false);
         _runningSceneSO->SetActive(true);
 
         // Note : CJoint elements will not work when running the scene from the editor
@@ -1261,8 +1301,27 @@ namespace te
         _selections.HoveredComponent = nullptr;
         _selections.HoveredSceneObject = nullptr;
 
-        _runningSceneSO->Destroy();
-        _sceneSO->SetActive(true);
+        if (!_runningSceneSO.IsDestroyed())
+        {
+            _runningSceneSO->Destroy();
+            _sceneSO->SetActive(true);
+        }
+
+        NeedsRedraw();
+    }
+
+    void Editor::DestroyScene()
+    {
+        _selections.ClickedComponent = nullptr;
+        _selections.ClickedSceneObject = nullptr;
+        _selections.HoveredComponent = nullptr;
+        _selections.HoveredSceneObject = nullptr;
+
+        if (!_sceneSO.IsDestroyed())
+        {
+            _sceneSO->Destroy();
+        }
+
         NeedsRedraw();
     }
 
