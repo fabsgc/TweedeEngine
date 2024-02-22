@@ -213,7 +213,7 @@ namespace te
                 UINT32 count = 0;
                 for (const auto& texture : textures)
                 {
-                    gExporter().Export(texture.texture.get(), ToString(count) + ".png", texture.option);
+                    gExporter().Export(texture.texture.get(), ToString(count) + ".jpeg", texture.option);
                     count++;
                 }
             },

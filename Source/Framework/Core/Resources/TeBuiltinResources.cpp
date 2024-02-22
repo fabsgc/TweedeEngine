@@ -234,7 +234,11 @@ namespace te
 
     const PixelData& BuiltinResources::GetFrameworkIcon()
     {
-        return *_frameworkIcon.get();
+        if (_frameworkIcon)
+            return *_frameworkIcon.get();
+
+        static PixelData pixelData;
+        return pixelData;
     }
 
     void BuiltinResources::InitGpuPrograms()
@@ -1821,8 +1825,11 @@ namespace te
         auto options = te_shared_ptr_new<TextureImportOptions>();
         HTexture iconTex = gResourceManager().Load<Texture>(ICONS_FOLDER + String("frameworkIcon.png"), options);
 
-        _frameworkIcon = iconTex->GetProperties().AllocBuffer(0, 0);
-        iconTex->ReadData(*_frameworkIcon.get());
+        if (iconTex.IsLoaded())
+        {
+            _frameworkIcon = iconTex->GetProperties().AllocBuffer(0, 0);
+            iconTex->ReadData(*_frameworkIcon.get());
+        }
     }
 
     BuiltinResources& gBuiltinResources()

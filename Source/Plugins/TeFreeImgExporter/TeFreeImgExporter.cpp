@@ -136,17 +136,19 @@ namespace te
 
     bool FreeImgExporter::Export(const PixelData& pixelData, UINT32 width, UINT32 height, bool isSRGB, const String& filePath, const TextureExportOptions* exportOptions, bool force)
     {
-        FIBITMAP* bitmap = FreeImage_Allocate(width, height, 32);
+        FIBITMAP* bitmap = FreeImage_Allocate(width, height, 24);
         RGBQUAD bitmapColor;
-
-        float minValue = std::numeric_limits<float>::max();
-        float maxValue = std::numeric_limits<float>::min();
 
         if (!bitmap)
         {
             TE_DEBUG("Can't create bitmap object : " + filePath);
             return false;
         }
+
+        FreeImage_SetTransparent(bitmap, false);
+
+        float minValue = std::numeric_limits<float>::max();
+        float maxValue = std::numeric_limits<float>::min();
 
         if (exportOptions->IsDepthStencilBuffer)
         {
@@ -184,7 +186,7 @@ namespace te
             }
         });
 
-        if (!FreeImage_Save(FIF_PNG, bitmap, filePath.c_str(), PNG_Z_BEST_SPEED))
+        if (!FreeImage_Save(FIF_JPEG, bitmap, filePath.c_str()))
         {
             TE_DEBUG("Can't save bitmap object to file : " + filePath);
             FreeImage_Unload(bitmap);

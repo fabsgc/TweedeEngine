@@ -235,6 +235,6 @@ namespace te
         textureCubeMapImportOptions->SRGB = true;
 
         _radiance = ResourceManager::Instance().Load<Texture>(path, textureCubeMapImportOptions).GetInternalPtr();
-        TE_ASSERT_ERROR(_radiance.get(), "Failed to load envrionment texture");
+        TE_ASSERT_ERROR(_radiance.get(), "Failed to load environment texture");
     }
 }
