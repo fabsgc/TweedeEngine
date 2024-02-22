@@ -17,7 +17,7 @@ namespace te
     class TE_CORE_EXPORT Skybox : public CoreObject, public SceneActor, public Serializable
     {
     public:
-        static constexpr float DEFAULT_IBL_INTENSITY = 30000.f;
+        static constexpr float DEFAULT_IBL_INTENSITY = 50000.f;
 
     public:
         virtual ~Skybox();
@@ -32,7 +32,7 @@ namespace te
         float GetBrightness() const { return _brightness; }
 
         /**
-         * Represents the amount of LUX brang by the environment. By default, equal to 30 000 Lux.
+         * Represents the amount of LUX brang by the environment. By default, equal to 5 000 Lux.
          */
         void SetIBLIntensity(float IBLIntensity) { _IBLIntensity = IBLIntensity; _markCoreDirty(); }
 
