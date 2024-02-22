@@ -17,17 +17,17 @@ namespace te
         /**
          * Returns the exposure value (EV at ISO 100) of the specified exposure parameters.
          */
-        static float GetEv100(float Getaperture, float GetshutterSpeed, float Getsensitivity) noexcept;
+        static float GetEv100(float aperture, float shutterSpeed, float sensitivity) noexcept;
 
         /**
          * Returns the exposure value (EV at ISO 100) for the given average luminance (in @f$ \frac{cd}{m^2} @f$).
          */
-        static float GetEv100FromLuminance(float GetLuminance) noexcept;
+        static float GetEv100FromLuminance(float luminance) noexcept;
 
         /**
         * Returns the exposure value (EV at ISO 100) for the given illuminance (in lux).
         */
-        static float GetEv100FromIlluminance(float Getilluminance) noexcept;
+        static float GetEv100FromIlluminance(float illuminance) noexcept;
 
         /**
          * Returns the photometric exposure for the specified camera.
@@ -39,12 +39,12 @@ namespace te
          * This function is equivalent to calling `exposure(ev100(aperture, shutterSpeed, sensitivity))`
          * but is slightly faster and offers higher precision.
          */
-        static float GetExposure(float Getaperture, float GetshutterSpeed, float Getsensitivity) noexcept;
+        static float GetExposure(float aperture, float shutterSpeed, float sensitivity) noexcept;
 
         /**
          * Returns the photometric exposure for the given EV100.
          */
-        static float GetExposure(float GetEv100) noexcept;
+        static float GetExposure(float ev100) noexcept;
 
         /**
          * Returns the incident luminance in @f$ \frac{cd}{m^2} @f$ for the specified camera acting as a spot meter.
@@ -57,7 +57,7 @@ namespace te
          * This function is equivalent to calling `luminance(ev100(aperture, shutterSpeed, sensitivity))`
          * but is slightly faster and offers higher precision.
          */
-        static float GetLuminance(float Getaperture, float GetshutterSpeed, float Getsensitivity) noexcept;
+        static float GetLuminance(float aperture, float shutterSpeed, float sensitivity) noexcept;
 
         /**
          * Converts the specified EV100 to luminance in @f$ \frac{cd}{m^2} @f$.
@@ -65,7 +65,7 @@ namespace te
          * luminance for which a camera would use said EV100 to obtain the nominally
          * correct exposure
          */
-        static float GetLuminance(float GetEv100) noexcept;
+        static float GetLuminance(float ev100) noexcept;
 
         /**
          * Returns the illuminance in lux for the specified camera acting as an incident light meter.
@@ -78,7 +78,7 @@ namespace te
          * This function is equivalent to calling `illuminance(ev100(aperture, shutterSpeed, sensitivity))`
          * but is slightly faster and offers higher precision.
          */
-        static float GetIlluminance(float Getaperture, float GetshutterSpeed, float Getsensitivity) noexcept;
+        static float GetIlluminance(float aperture, float shutterSpeed, float sensitivity) noexcept;
 
         /**
          * Converts the specified EV100 to illuminance in lux.
@@ -86,6 +86,6 @@ namespace te
          * illuminance for which a camera would use said EV100 to obtain the nominally
          * correct exposure.
          */
-        static float GetIlluminance(float GetEv100) noexcept;
+        static float GetIlluminance(float ev100) noexcept;
     };
 }
