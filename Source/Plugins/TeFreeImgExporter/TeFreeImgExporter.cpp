@@ -186,7 +186,7 @@ namespace te
             }
         });
 
-        if (!FreeImage_Save(FIF_JPEG, bitmap, filePath.c_str()))
+        if (!FreeImage_Save(FIF_JPEG, bitmap, filePath.c_str(), JPEG_QUALITYSUPERB))
         {
             TE_DEBUG("Can't save bitmap object to file : " + filePath);
             FreeImage_Unload(bitmap);
