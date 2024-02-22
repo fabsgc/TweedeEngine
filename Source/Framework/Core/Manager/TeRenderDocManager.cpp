@@ -16,7 +16,7 @@ namespace te
 #if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         _rdcLib = gDynLibManager().Load(RENDERDOC_PATH);
 
-        if (_rdcLib != nullptr)
+        if (_rdcLib != nullptr && _rdcLib->IsLoaded())
         {
 #if TE_PLATFORM == TE_PLATFORM_WIN32
             pRENDERDOC_GetAPI rdcGetAPI = nullptr;
@@ -27,16 +27,20 @@ namespace te
 #endif
         }
 
-        if (!_rdcAPI)
+        if (_rdcAPI)
+        {
+            _rdcAPI->SetCaptureOptionU32(eRENDERDOC_Option_DebugOutputMute, 0);
+            _rdcAPI->SetCaptureOptionU32(eRENDERDOC_Option_APIValidation, 1);
+            _rdcAPI->SetCaptureOptionU32(eRENDERDOC_Option_CaptureCallstacks, 1);
+            _rdcAPI->SetCaptureOptionU32(eRENDERDOC_Option_VerifyBufferAccess, 1);
+            _rdcAPI->SetCaptureOptionU32(eRENDERDOC_Option_RefAllResources, 1);
+
+            _rdcAPI->MaskOverlayBits(eRENDERDOC_Overlay_None, eRENDERDOC_Overlay_None);
+        }
+        else
+        {
             TE_DEBUG("RenderDoc API has not been initialised");
-
-        _rdcAPI->SetCaptureOptionU32(eRENDERDOC_Option_DebugOutputMute, 0);
-        _rdcAPI->SetCaptureOptionU32(eRENDERDOC_Option_APIValidation, 1);
-        _rdcAPI->SetCaptureOptionU32(eRENDERDOC_Option_CaptureCallstacks, 1);
-        _rdcAPI->SetCaptureOptionU32(eRENDERDOC_Option_VerifyBufferAccess, 1);
-        _rdcAPI->SetCaptureOptionU32(eRENDERDOC_Option_RefAllResources, 1);
-
-        _rdcAPI->MaskOverlayBits(eRENDERDOC_Overlay_None, eRENDERDOC_Overlay_None);
+        }
 #else
         return;
 #endif
@@ -44,7 +48,7 @@ namespace te
 
     void RenderDocManager::OnShutDown()
     {
-        if (_rdcLib != nullptr)
+        if (_rdcLib != nullptr && _rdcLib->IsLoaded())
             gDynLibManager().Unload(_rdcLib);
     }
 

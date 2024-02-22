@@ -25,6 +25,7 @@ namespace te
         DynLib(const String& name);
         ~DynLib() = default;
 
+        bool  IsLoaded() const;
         void  Load();
         void  Unload();
         const String& GetName() const { return _name; }

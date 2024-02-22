@@ -12,6 +12,11 @@ namespace te
         Load();
     }
 
+    bool DynLib::IsLoaded() const
+    {
+        return _handle != nullptr;
+    }
+
     void DynLib::Load()
     {
         if (_handle)
