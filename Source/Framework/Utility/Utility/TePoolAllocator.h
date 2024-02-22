@@ -18,7 +18,7 @@ namespace te
      *							for each element, and therefore require more internal memory.
      * @tparam	Lock			If true the pool allocator will be made thread safe (at the cost of performance).
      */
-    template <typename T, int ElemSize, int ElemsPerBlock = 512, int Alignment = 4, bool Lock = false>
+    template <typename Type, int ElemSize, int ElemsPerBlock = 512, int Alignment = 4, bool Lock = false>
     class PoolAllocator
     {
     private:
