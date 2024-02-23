@@ -136,6 +136,22 @@ namespace te
 
     bool FreeImgExporter::Export(const PixelData& pixelData, UINT32 width, UINT32 height, bool isSRGB, const String& filePath, const TextureExportOptions* exportOptions, bool force)
     {
+        auto path = std::filesystem::absolute(filePath);
+
+        if (std::filesystem::exists(path) && !force)
+            return false;
+
+        String extension = path.extension().generic_string();
+        extension = extension.substr(1, extension.size() - 1); // Remove the .
+
+        auto FID = _extensionToFID.find(extension);
+        FREE_IMAGE_FORMAT FIFFormat = FREE_IMAGE_FORMAT::FIF_UNKNOWN;
+
+        if (FID != _extensionToFID.end())
+            FIFFormat = static_cast<FREE_IMAGE_FORMAT>(FID->second);
+        else
+            return false;
+
         FIBITMAP* bitmap = FreeImage_Allocate(width, height, 24);
         RGBQUAD bitmapColor;
 
@@ -155,7 +171,7 @@ namespace te
             LoopThroughPixelData(pixelData, width, height, isSRGB, [&](const Color& color, UINT32 i, UINT32 j) {
                 minValue = std::min(minValue, color.r);
                 maxValue = std::max(maxValue, color.r);
-            });
+                });
         }
 
         LoopThroughPixelData(pixelData, width, height, isSRGB, [&](const Color& color, UINT32 i, UINT32 j) {
@@ -166,7 +182,7 @@ namespace te
                 float remappedColor = Math::Clamp01(color.r);
                 if (exportOptions->IsDepthStencilBuffer)
                 {
-                     remappedColor = Math::Remap(Math::Clamp01(color.r), minValue, maxValue, 0.0f, 1.0f);
+                    remappedColor = Math::Remap(Math::Clamp01(color.r), minValue, maxValue, 0.0f, 1.0f);
                 }
 
                 bitmapColor.rgbRed = static_cast<UINT8>(remappedColor * 255.0f);
@@ -184,9 +200,9 @@ namespace te
             {
                 TE_DEBUG("Can't save bitmap pixel color : ");
             }
-        });
+            });
 
-        if (!FreeImage_Save(FIF_JPEG, bitmap, filePath.c_str(), JPEG_QUALITYSUPERB))
+        if (!FreeImage_Save(FIFFormat, bitmap, filePath.c_str(), FIFFormat == FREE_IMAGE_FORMAT::FIF_JPEG ? JPEG_QUALITYSUPERB : 0))
         {
             TE_DEBUG("Can't save bitmap object to file : " + filePath);
             FreeImage_Unload(bitmap);
