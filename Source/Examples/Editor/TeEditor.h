@@ -191,7 +191,7 @@ namespace te
         void SetAnimationDebug(bool debug) { _animationDebug = debug; }
 
         /** Create new project */
-        bool NewProject();
+        bool NewProject(const String& path);
 
         /** Open an existing project */
         bool OpenProject(const String& path);

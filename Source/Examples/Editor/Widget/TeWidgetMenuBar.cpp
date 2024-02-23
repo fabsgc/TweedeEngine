@@ -49,10 +49,10 @@ namespace te
     void WidgetMenuBar::Update()
     {
         if (gVirtualInput().IsButtonDown(_newBtn))
-            gEditor().GetSettings().State = Editor::EditorState::Modified;
+            NewProject();
 
         if (gVirtualInput().IsButtonDown(_openBtn))
-            _settings.OpenProject = true;
+            OpenProject();
 
         if (gVirtualInput().IsButtonDown(_saveAsBtn))
             _settings.SaveProject = true;
@@ -72,13 +72,13 @@ namespace te
                 if (ImGui::MenuItem(ICON_FA_FILE_ALT "   " ICON_FA_GRIP_LINES_VERTICAL "  New project", "Ctrl+N"))
                     NewProject();
 
-                if (ImGui::MenuItem(ICON_FA_FOLDER_OPEN " " ICON_FA_GRIP_LINES_VERTICAL "  Open project", "Ctrl+O", &_settings.OpenProject))
+                if (ImGui::MenuItem(ICON_FA_FOLDER_OPEN " " ICON_FA_GRIP_LINES_VERTICAL "  Open project", "Ctrl+O"))
                     OpenProject();
 
                 if (ImGui::MenuItem(ICON_FA_SAVE "  " ICON_FA_GRIP_LINES_VERTICAL "  Save project", "Ctrl+S"))
                     SaveProject();
 
-                if (ImGui::MenuItem(ICON_FA_SAVE "  " ICON_FA_GRIP_LINES_VERTICAL "  Save project As ..", "Ctrl+Shift+S", _settings.SaveProject))
+                if (ImGui::MenuItem(ICON_FA_SAVE "  " ICON_FA_GRIP_LINES_VERTICAL "  Save project As ..", "Ctrl+Shift+S"))
                     SaveProjectAs();
 
                 if (ImGui::MenuItem(ICON_FA_SIGN_OUT_ALT "  " ICON_FA_GRIP_LINES_VERTICAL "  Quit", "Ctrl+Q"))
@@ -184,9 +184,12 @@ namespace te
             ImGui::EndMainMenuBar();
         }
 
+        ShowSavePreviousModal();
+
         ShowAboutWindow();
-        ShowOpenProject();
         ShowSaveProject();
+        ShowNewProject();
+        ShowOpenProject();
         ShowLoadResource();
     }
 
@@ -230,6 +233,23 @@ namespace te
         ImGui::Separator();
 
         ImGui::End();
+    }
+
+    void WidgetMenuBar::ShowNewProject()
+    {
+        if (_settings.NewProject)
+            ImGui::OpenPopup("New Project");
+
+        if (_fileBrowser.ShowFileDialog("New Project", ImGuiFileBrowser::DialogMode::SELECT, ImVec2(900, 450), true, ""))
+        {
+            gEditor().NewProject(_fileBrowser.Data.SelectedPath + "project.json");
+            _settings.NewProject = false;
+        }
+        else
+        {
+            if (_fileBrowser.Data.IsCancelled)
+                _settings.NewProject = false;
+        }
     }
 
     void WidgetMenuBar::ShowOpenProject()
@@ -385,24 +405,62 @@ namespace te
         }
     }
 
+    void WidgetMenuBar::ShowSavePreviousModal()
+    {
+        if (_settings.SavePreviousModalNewProject || _settings.SavePreviousModalOpenProject)
+            ImGui::OpenPopup("Current project not saved");
+
+        ImGuiExt::RenderYesNo("Current project not saved",
+            [&]() {
+                if (gEditor().GetProject()->GetPath().empty())
+                {
+                    _settings.SaveProject = true;
+                }
+                else
+                {
+                    gEditor().SaveProject(gEditor().GetProject()->GetPath());
+
+                    if (_settings.SavePreviousModalNewProject) _settings.NewProject = true;
+                    else _settings.OpenProject = true;
+                }
+
+                _settings.SavePreviousModalNewProject = false;
+                _settings.SavePreviousModalOpenProject = false;
+            },
+            [&]() {
+                if (_settings.SavePreviousModalNewProject) _settings.NewProject = true;
+                else _settings.OpenProject = true;
+
+                _settings.SavePreviousModalNewProject = false;
+                _settings.SavePreviousModalOpenProject = false;
+            },
+            []() {},
+            "Your current project is not saved. Do you want to save it before creating a new project ?"
+        );
+    }
+
     void WidgetMenuBar::NewProject()
     {
         if (gEditor().GetSettings().State == Editor::EditorState::Modified)
         {
-            // TODO
+            _settings.SavePreviousModalNewProject = true;
         }
-
-        gEditor().NewProject();
+        else
+        {
+            _settings.NewProject = true;
+        }
     }
 
     void WidgetMenuBar::OpenProject()
     {
         if (gEditor().GetSettings().State == Editor::EditorState::Modified)
         {
-            // TODO
+            _settings.SavePreviousModalOpenProject = true;
         }
-
-        _settings.OpenProject = true;
+        else
+        {
+            _settings.OpenProject = true;
+        }
     }
 
     void WidgetMenuBar::SaveProject()

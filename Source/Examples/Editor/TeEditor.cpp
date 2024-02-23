@@ -79,6 +79,8 @@
 
 #include "Project/TeProject.h"
 
+#include <filesystem>
+
 // TODO Temp for debug purpose
 #include "Importer/TeMeshImportOptions.h"
 #include "Importer/TeTextureImportOptions.h"
@@ -174,6 +176,7 @@ namespace te
             InitializeGui();
 
         _project = Project::Create();
+        _project->SetPath(std::filesystem::absolute("Data/Project/project.json").generic_string());
     }
 
     void Editor::OnShutDown()
@@ -853,19 +856,13 @@ namespace te
         _guizmoMode = mode;
     }
 
-    bool Editor::NewProject()
+    bool Editor::NewProject(const String& path)
     {
         if (IsEditorRunning())
         {
             TE_DEBUG("You can't open a project while editor is running");
             return false;
         }
-
-        /*if (_settings.State != EditorState::Saved)
-        {
-            TE_DEBUG("You didn't save your current project");
-            return false;
-        }*/
 
         DestroyRunningScene();
         DestroyScene();
@@ -877,7 +874,7 @@ namespace te
         LoadEngineResources();
 
         _sceneSO = SceneObject::Create("Scene");
-        _settings.State = EditorState::Saved;
+        _settings.State = EditorState::Modified;
 
         _project = Project::Create();
 
@@ -891,12 +888,6 @@ namespace te
             TE_DEBUG("You can't open a project while editor is running");
             return false;
         }
-
-        /*if (_settings.State != EditorState::Saved)
-        {
-            TE_DEBUG("You didn't save your current project");
-            return false;
-        }*/
 
         SPtr<ProjectImportOptions> options = te_shared_ptr_new<ProjectImportOptions>();
         SPtr<MultiResource> multiResourceScene = EditorResManager::Instance().LoadAll(path, options, true);
