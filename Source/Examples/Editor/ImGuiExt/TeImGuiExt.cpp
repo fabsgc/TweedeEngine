@@ -17,6 +17,11 @@
 
 namespace te
 {
+    ImVec2 ImGuiExt::GetButtonSize(const String& button_text)
+    {
+        return (ImGui::CalcTextSize(button_text.c_str()) + ImGui::GetStyle().FramePadding * 2.0);
+    }
+
     bool ImGuiExt::RenderOptionFloat(float& value, const char* id, const char* text, 
         float min, float max, float width, bool disable)
     {

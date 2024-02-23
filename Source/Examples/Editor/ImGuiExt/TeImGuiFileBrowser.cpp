@@ -819,7 +819,7 @@ namespace te
 
             ImGui::EndPopup();
         }
-        
+
         return ret_val;
     }
 
@@ -1086,81 +1086,43 @@ namespace te
 
     void ImGuiFileBrowser::ShowErrorModal()
     {
-        ImVec2 window_size(260, 0);
-        ImGui::SetNextWindowSize(window_size);
-
-        if (ImGui::BeginPopupModal(error_title.c_str(), nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize))
-        {
-            ImGui::TextWrapped("%s", error_msg.c_str());
-
-            ImGui::Separator();
-            ImGui::SetCursorPosX(window_size.x/2.0f - GetButtonSize("OK").x/2.0f);
-            if (ImGui::Button("OK", GetButtonSize("OK")))
-                ImGui::CloseCurrentPopup();
-            ImGui::EndPopup();
-        }
+        ImGuiExt::RenderMessage(invfile_modal_id.c_str(),
+            []() {},
+            []() {},
+            error_msg
+        );
     }
 
     bool ImGuiFileBrowser::ShowReplaceFileModal()
     {
-        ImVec2 window_size(250, 0);
-        ImGui::SetNextWindowSize(window_size);
-        bool ret_val = false;
-        if (ImGui::BeginPopupModal(repfile_modal_id.c_str(), nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize))
-        {
-            String text = "A file with the following filename already exists. Are you sure you want to replace the existing file?";
-            ImGui::TextWrapped("%s", text.c_str());
-
-            ImGui::Separator();
-
-            float buttons_width = GetButtonSize("Yes").x + GetButtonSize("No").x + ImGui::GetStyle().ItemSpacing.x;
-            ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetWindowWidth()/2.0f - buttons_width/2.0f - ImGui::GetStyle().WindowPadding.x);
-
-            if (ImGui::Button("Yes", GetButtonSize("Yes")))
-            {
+        return ImGuiExt::RenderYesNo(repfile_modal_id.c_str(),
+            [&]() {
                 Data.SelectedPath = current_path + Data.SelectedFileName;
-                ImGui::CloseCurrentPopup();
-                ret_val = true;
-            }
-
-            ImGui::SameLine();
-            if (ImGui::Button("No", GetButtonSize("No")))
-            {
+            },
+            [&]() {
                 Data.SelectedFileName.clear();
                 Data.SelectedPath.clear();
-                ImGui::CloseCurrentPopup();
-                ret_val = false;
-            }
-            ImGui::EndPopup();
-        }
-        return ret_val;
+            },
+            []() {},
+            "A file with the following filename already exists. Are you sure you want to replace the existing file?"
+        );
     }
 
     void ImGuiFileBrowser::ShowInvalidFileModal()
     {
-        String text = "Selected file either doesn't exist or is not supported. Please select a file with the following extensions...";
-        ImVec2 button_size = GetButtonSize("OK");
-
-        float frame_height = ImGui::GetFrameHeightWithSpacing();
-        float cw_content_height = valid_exts.size() * frame_height;
-        float cw_height = std::min(4.0f * frame_height, cw_content_height);
-        ImVec2 window_size(350, 0);
-        ImGui::SetNextWindowSize(window_size);
-
-        if (ImGui::BeginPopupModal(invfile_modal_id.c_str(), nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize))
-        {
-
-            ImGui::TextWrapped("%s", text.c_str());
-            ImGui::BeginChild("##SupportedExts", ImVec2(0, cw_height), true);
-            for(int i = 0; i < (int)valid_exts.size(); i++)
-                ImGui::BulletText("%s", valid_exts[i].c_str());
-            ImGui::EndChild();
-
-            ImGui::SetCursorPosX(window_size.x/2.0f - button_size.x/2.0f);
-            if (ImGui::Button("OK", button_size))
-                ImGui::CloseCurrentPopup();
-            ImGui::EndPopup();
-        }
+        ImGuiExt::RenderMessage(invfile_modal_id.c_str(),
+            []() {},
+            [&]() {
+                float frame_height = ImGui::GetFrameHeightWithSpacing();
+                float cw_content_height = valid_exts.size() * frame_height;
+                float cw_height = std::min(4.0f * frame_height, cw_content_height);
+                ImGui::BeginChild("##SupportedExts", ImVec2(0, cw_height), true);
+                for (int i = 0; i < (int)valid_exts.size(); i++)
+                    ImGui::BulletText("%s", valid_exts[i].c_str());
+                ImGui::EndChild();
+            },
+            "Selected file either doesn't exist or is not supported. Please select a file with the following extensions..."
+        );
     }
 
     void ImGuiFileBrowser::SetValidExtTypes(const String& valid_types_string)

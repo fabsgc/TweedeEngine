@@ -1,5 +1,9 @@
 #pragma once
 
+#ifndef IMGUI_DEFINE_MATH_OPERATORS
+#   define IMGUI_DEFINE_MATH_OPERATORS
+#endif
+
 #include "TeCorePrerequisites.h"
 #include "Math/TeVector2.h"
 #include "Math/TeVector3.h"
@@ -65,6 +69,8 @@ namespace te
         };
 
     public:
+        static ImVec2 GetButtonSize(const String& button_text);
+
         static bool RenderOptionFloat(float& value, const char* id, const char* text, float min = 0.0f, 
             float max = std::numeric_limits<float>::max() / 2, float width = 0.0f, bool disable = false);
 
@@ -97,6 +103,73 @@ namespace te
 
         static void RenderImage(SPtr<Texture> texture, const Vector2& size, 
             const Vector2& offset = Vector2::ZERO);
+
+        template<typename PredYes, typename PredNo, typename PredCustom>
+        static bool RenderYesNo(const char* id, PredYes predYes, PredNo predNo, PredCustom predCustom, const String& message)
+        {
+            ImVec2 window_size(400, 0);
+            bool ret_val = false;
+
+            ImGui::SetNextWindowSize(window_size);
+            ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+            if (ImGui::BeginPopupModal(id, nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize))
+            {
+                ImGui::TextWrapped("%s", message.c_str());
+                ImGui::Separator();
+
+                predCustom();
+
+                float buttons_width = GetButtonSize("Yes").x + GetButtonSize("No").x + ImGui::GetStyle().ItemSpacing.x;
+                ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetWindowWidth() / 2.0f - buttons_width / 2.0f - ImGui::GetStyle().WindowPadding.x);
+
+                if (ImGui::Button("Yes", GetButtonSize("Yes")))
+                {
+                    predYes();
+                    ImGui::CloseCurrentPopup();
+                    ret_val = true;
+                }
+
+                ImGui::SameLine();
+                if (ImGui::Button("No", GetButtonSize("No")))
+                {
+                    predNo();
+                    ImGui::CloseCurrentPopup();
+                    ret_val = false;
+                }
+                ImGui::EndPopup();
+            }
+
+            return ret_val;
+        }
+
+        template<typename PredOk, typename PredCustom>
+        static bool RenderMessage(const char* id, PredOk predOk, PredCustom predCustom, const String& message)
+        {
+            ImVec2 window_size(400, 0);
+            bool ret_val = false;
+
+            ImGui::SetNextWindowSize(window_size);
+            ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+            if (ImGui::BeginPopupModal(id, nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize))
+            {
+                ImVec2 button_size = GetButtonSize("OK");
+                ImGui::TextWrapped("%s", message.c_str());
+
+                predCustom();
+
+                ImGui::SetCursorPosX(window_size.x / 2.0f - button_size.x / 2.0f);
+                if (ImGui::Button("OK", button_size))
+                {
+                    predOk();
+                    ImGui::CloseCurrentPopup();
+                }
+                ImGui::EndPopup();
+            }
+
+            return ret_val;
+        }
 
         template<typename T>
         static bool RenderOptionInt(T& value, const char* id, const char* text, T min = 0,
