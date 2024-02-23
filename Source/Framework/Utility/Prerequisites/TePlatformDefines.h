@@ -117,6 +117,18 @@
 #   define TE_PLUGIN_EXPORT __attribute__ ((visibility ("default")))
 #endif
 
+// DLL export for scripts
+#if TE_PLATFORM == TE_PLATFORM_WIN32 // Windows
+#   if TE_COMPILER == TE_COMPILER_MSVC
+#       define TE_SCRIPT_EXPORT __declspec(dllexport)
+#   else
+#       define TE_SCRIPT_EXPORT __attribute__ ((dllexport))
+#   endif
+#   define TE_UTILITY_HIDDEN
+#else // Linux/Mac settings
+#   define TE_SCRIPT_EXPORT __attribute__ ((visibility ("default")))
+#endif
+
 // Windows Settings
 #if TE_PLATFORM == TE_PLATFORM_WIN32
 // Win32 compilers use _DEBUG for specifying debug builds.
