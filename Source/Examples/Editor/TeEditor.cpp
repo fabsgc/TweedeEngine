@@ -892,7 +892,7 @@ namespace te
         SPtr<ProjectImportOptions> options = te_shared_ptr_new<ProjectImportOptions>();
         SPtr<MultiResource> multiResourceScene = EditorResManager::Instance().LoadAll(path, options, true);
 
-        if (multiResourceScene->Entries.size() == 0 || multiResourceScene->Entries[0].Res.IsLoaded())
+        if (multiResourceScene->Entries.size() == 0 || !multiResourceScene->Entries[0].Res.IsLoaded())
         {
             TE_DEBUG("Failed to load the your project at the specified path : " + path);
             return false;

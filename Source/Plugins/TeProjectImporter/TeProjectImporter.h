@@ -3,6 +3,7 @@
 #include "TeProjectImporterPrerequisites.h"
 #include "Importer/TeBaseImporter.h"
 #include "Importer/TeImporter.h"
+#include "Json/json.h"
 
 namespace te
 {
