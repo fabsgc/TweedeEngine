@@ -413,8 +413,8 @@ namespace te
         _viewportCameraSO = SceneObject::Create("UIViewportCamera");
         _viewportCameraSO->SetParent(_viewportSO);
 
-        _viewportCameraSO->SetPosition(Vector3(3.0f, 1.25f, 0.0f));
-        _viewportCameraSO->LookAt(Vector3(0.0f, 0.0f, 0.0f));
+        _viewportCameraSO->SetPosition(Vector3(2.5f, 1.5f, -2.5f));
+        _viewportCameraSO->LookAt(Vector3(-0.5f, 0.0f, 0.0f));
 
         _viewportCamera = _viewportCameraSO->AddComponent<CCamera>();
         _viewportCamera->GetViewport()->SetClearColorValue(Color(0.42f, 0.67f, 0.94f, 1.0f));
@@ -422,6 +422,8 @@ namespace te
         _viewportCamera->SetMSAACount(gCoreApplication().GetWindow()->GetDesc().MultisampleCount);
         _viewportCamera->SetProjectionType(ProjectionType::PT_PERSPECTIVE);
         _viewportCamera->SetName("Viewport camera");
+        _viewportCamera->SetShutterSpeed(1.0f/2000.0f);
+        _viewportCamera->SetAperture(3.2f);
 
         _viewportCameraUI = _viewportCameraSO->AddComponent<CCameraUI>();
         _viewportCameraUI->Initialize();
@@ -1446,7 +1448,7 @@ namespace te
             _skybox = _sceneSkyboxSO->AddComponent<CSkybox>();
             _skybox->SetTexture(_skyboxTexture);
             _skybox->SetBrightness(1.f);
-            _skybox->SetIBLIntensity(5000.f);
+            _skybox->SetIBLIntensity(15000.f);
             _skybox->Initialize();
         }
         // ######################################################
@@ -1455,9 +1457,9 @@ namespace te
         // ######################################################
         _sceneLightSO = SceneObject::Create("Light");
         _sceneLightSO->SetParent(_sceneSO);
-        _light = _sceneLightSO->AddComponent<CLight>(Light::Type::Spot);
+        _light = _sceneLightSO->AddComponent<CLight>(Light::Type::Directional);
         _light->Initialize();
-        _light->SetIntensity(5000.f);
+        _light->SetIntensity(60000.f);
         _light->SetCastShadows(true);
 
         Quaternion rot;
