@@ -40,16 +40,7 @@ namespace te
 
     MaterialsPreview::MaterialsPreview()
         : _meshPreviewType(MeshPreviewType::Sphere)
-    { 
-        InitializeTextures();
-        InitializeCamera();
-        InitializeSkybox();
-        InitializeLight();
-        InitializeRenderable();
-        InitializeRenderer();
-
-        _perFrameData = te_shared_ptr_new<FrameData>();
-    }
+    { }
 
     MaterialsPreview::~MaterialsPreview()
     {
@@ -57,6 +48,26 @@ namespace te
         _renderer->NotifyLightsCleared();
         _renderer->NotifySkyboxCleared();
         _renderer->NotifyRenderablesCleared();
+    }
+
+    void MaterialsPreview::Initialize()
+    {
+        if (_renderer)
+        {
+            _renderer->NotifyCamerasCleared();
+            _renderer->NotifyLightsCleared();
+            _renderer->NotifySkyboxCleared();
+            _renderer->NotifyRenderablesCleared();
+        }
+
+        InitializeTextures();
+        InitializeCamera();
+        InitializeSkybox();
+        InitializeLight();
+        InitializeRenderable();
+        InitializeRenderer();
+
+        _perFrameData = te_unique_ptr_new<FrameData>();
     }
 
     const RendererUtility::RenderTextureData& MaterialsPreview::GetPreview(const WPtr<Material>& material)
@@ -124,6 +135,9 @@ namespace te
             break;
         case MeshPreviewType::Sphere:
             renderable = _sphereRenderable;
+            break;
+        case MeshPreviewType::Monkey:
+            renderable = _monkeyRenderable;
             break;
         }
 
@@ -210,10 +224,12 @@ namespace te
         _box = ResourceManager::Instance().Load<Mesh>("Data/Meshes/Primitives/cube.obj", meshImportOptions).GetInternalPtr();
         _plane = ResourceManager::Instance().Load<Mesh>("Data/Meshes/Primitives/plane.obj", meshImportOptions).GetInternalPtr();
         _sphere = ResourceManager::Instance().Load<Mesh>("Data/Meshes/Primitives/sphere.obj", meshImportOptions).GetInternalPtr();
+        _monkey = ResourceManager::Instance().Load<Mesh>("Data/Meshes/Monkey/monkey.obj", meshImportOptions).GetInternalPtr();
 
         TE_ASSERT_ERROR(_box.get(), "Failed to load box mesh");
         TE_ASSERT_ERROR(_plane.get(), "Failed to load plane mesh");
         TE_ASSERT_ERROR(_sphere.get(), "Failed to load sphere mesh");
+        TE_ASSERT_ERROR(_monkey.get(), "Failed to load monkey mesh");
 
         _boxRenderable = Renderable::Create();
         _boxRenderable->SetMesh(_box);
@@ -221,6 +237,14 @@ namespace te
         _planeRenderable->SetMesh(_plane);
         _sphereRenderable = Renderable::Create();
         _sphereRenderable->SetMesh(_sphere);
+        _monkeyRenderable = Renderable::Create();
+        _monkeyRenderable->SetMesh(_monkey);
+
+        Transform transform = _monkeyRenderable->GetTransform();
+        transform.Move(Vector3(-0.25f, -0.75f, 0.0f));
+        transform.SetScale(Vector3(1.5f, 1.5f, 1.5f));
+        transform.Rotate(Vector3::UNIT_Y, Radian(Degree(20)));
+        _monkeyRenderable->SetTransform(transform);
     }
 
     void MaterialsPreview::InitializeTextures()

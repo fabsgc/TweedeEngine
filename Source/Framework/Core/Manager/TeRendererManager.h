@@ -11,9 +11,15 @@ namespace te
     class TE_CORE_EXPORT RendererManager : public Module<RendererManager>
     {
     public:
-        virtual ~RendererManager();
-
         TE_MODULE_STATIC_HEADER_MEMBER(RendererManager)
+
+        virtual ~RendererManager() = default;
+
+        /** @copydoc Module::OnStartUp */
+        void OnStartUp() override;
+
+        /** @copydoc Module::OnShutDown */
+        void OnShutDown() override;
 
         /** Initializes the renderer, making it ready to render. */
         SPtr<Renderer> Initialize(const String& pluginName, String rendererName, bool useAsDefault = true);

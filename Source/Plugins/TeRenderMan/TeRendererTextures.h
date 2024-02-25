@@ -1,18 +1,21 @@
 #pragma once
 
 #include "TeRenderManPrerequisites.h"
+#include "Utility/TeModule.h"
 
 namespace te
 {
     /** Contains static textures required for various render techniques. */
-    class RendererTextures
+    class RendererTextures : public Module<RendererTextures>
     {
     public:
         /** Initializes the renderer textures. Must be called before using the textures. */
-        static void StartUp();
+        /** @copydoc Module::OnStartUp */
+        void OnStartUp() override;
 
         /** Cleans up renderer textures. */
-        static void ShutDown();
+        /** @copydoc Module::OnShutDown */
+        void OnShutDown() override;
 
         /** Two modes are avaibles to compute PreIntegratedEnvGF : GGX and Charlie */
         enum class DistributionMode
@@ -28,9 +31,11 @@ namespace te
          * (u, v) = (NoV, roughness)
          * (r, g, b) = (scale, bias, charlie)
          */
-        static SPtr<Texture> PreIntegratedEnvGF;
+        SPtr<Texture> PreIntegratedEnvGF;
 
         /** Tileable 4x4 texture to be used for randomization in SSAO rendering. */
-        static SPtr<Texture> SSAORandomization4x4;
+        SPtr<Texture> SSAORandomization4x4;
     };
+
+    RendererTextures& gRendererTextures();
 }

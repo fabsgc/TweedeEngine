@@ -866,10 +866,9 @@ namespace te
 
         DestroyRunningScene();
         DestroyScene();
-        EditorResManager::Instance().Clear();
-        std::static_pointer_cast<WidgetMaterials>(_settings.WMaterials)->ResetCurrentMaterial();
-        // TODO Unload resources loaded by the user
-        // TODO Remove all material previews
+        EditorResManager::Instance().RemoveAndClear();
+        std::static_pointer_cast<WidgetShaders>(_settings.WShaders)->Initialize();
+        std::static_pointer_cast<WidgetMaterials>(_settings.WMaterials)->Initialize();
 
         LoadEngineResources();
 
@@ -900,10 +899,9 @@ namespace te
 
         DestroyRunningScene();
         DestroyScene();
-        EditorResManager::Instance().Clear();
-        std::static_pointer_cast<WidgetMaterials>(_settings.WMaterials)->ResetCurrentMaterial();
-        // TODO Unload resources loaded by the user
-        // TODO Remove all material previews
+        EditorResManager::Instance().RemoveAndClear();
+        std::static_pointer_cast<WidgetShaders>(_settings.WShaders)->Initialize();
+        std::static_pointer_cast<WidgetMaterials>(_settings.WMaterials)->Initialize();
 
         LoadEngineResources();
 

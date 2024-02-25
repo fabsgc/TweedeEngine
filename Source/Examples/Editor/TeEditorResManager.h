@@ -96,6 +96,19 @@ namespace te
             _resources.clear();
         }
 
+        void RemoveAndClear()
+        {
+            for (auto& container : _resources)
+            {
+                for (auto resource : container.second.Res)
+                {
+                    gResourceManager().Release(resource.second);
+                }
+            }
+
+            Clear();
+        }
+
     protected:
         UnorderedMap<UINT32, ResourcesContainer> _resources;
     };

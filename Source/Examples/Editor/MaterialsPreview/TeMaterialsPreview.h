@@ -13,7 +13,7 @@ namespace te
     public:
         enum class MeshPreviewType
         {
-            Box, Plane, Sphere
+            Box, Plane, Sphere, Monkey
         };
 
     private:
@@ -29,6 +29,9 @@ namespace te
     public:
         MaterialsPreview();
         ~MaterialsPreview();
+
+        /** */
+        void Initialize();
 
         /**
          * Returns (and draw if necessary) the preview for the given material
@@ -120,10 +123,12 @@ namespace te
         SPtr<Mesh> _box;
         SPtr<Mesh> _plane;
         SPtr<Mesh> _sphere;
+        SPtr<Mesh> _monkey;
 
         SPtr<Renderable> _boxRenderable;
         SPtr<Renderable> _planeRenderable;
         SPtr<Renderable> _sphereRenderable;
+        SPtr<Renderable> _monkeyRenderable;
 
         SPtr<Texture> _radiance;
 

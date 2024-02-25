@@ -12,20 +12,13 @@ namespace te
 {
     TE_MODULE_STATIC_MEMBER(BuiltinResources)
 
-        IMPLEMENT_GLOBAL_POOL(ShaderVariationParam, 64)
+    IMPLEMENT_GLOBAL_POOL(ShaderVariationParam, 64)
 
     BuiltinResources::BuiltinResources()
     { }
 
     BuiltinResources::~BuiltinResources()
-    { 
-        _anisotropicSamplerState = nullptr;
-        _noFilterSamplerState = nullptr;
-        _bilinearSamplerState = nullptr;
-        _bilinearClampedSamplerState = nullptr;
-        _trilinearSamplerState = nullptr;
-        _frameworkIcon = nullptr;
-    }
+    { }
 
     void BuiltinResources::OnStartUp()
     {
@@ -204,6 +197,14 @@ namespace te
         }
 
         return shader.GetNewHandleFromExisting();
+    }
+
+    HMaterial BuiltinResources::GetDefaultMaterial()
+    {
+        if (!_defaultMaterial.IsLoaded())
+            InitDefaultMaterial();
+
+        return _defaultMaterial;
     }
 
     SPtr<SamplerState> BuiltinResources::GetBuiltinSampler(BuiltinSampler type)

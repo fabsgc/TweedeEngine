@@ -75,11 +75,9 @@ namespace te
         GuiManager::StartUp();
         GpuProgramManager::StartUp();
         GameObjectManager::StartUp();
-        RendererManager::StartUp();
         ResourceManager::StartUp();
         ScriptManager::StartUp();
 
-        LoadPlugin(_startUpDesc.Renderer, &_rendererPlugin);
         LoadPlugin(_startUpDesc.RenderAPI, &_renderAPIPlugin);
         LoadPlugin(_startUpDesc.Gui, &_guiPlugin);
 
@@ -91,6 +89,8 @@ namespace te
 
         ParamBlockManager::StartUp();
 
+        RendererManager::StartUp();
+        LoadPlugin(_startUpDesc.Renderer, &_rendererPlugin);
         _renderer = RendererManager::Instance().Initialize(_startUpDesc.Renderer, "Default");
         TE_ASSERT_ERROR(_renderer.get(), "Failed to create renderer");
 
@@ -131,6 +131,7 @@ namespace te
 
         _window = nullptr;
         _renderer = nullptr;
+        _gui = nullptr;
 
         TaskScheduler::ShutDown();
         Exporter::ShutDown();
@@ -152,6 +153,11 @@ namespace te
         RenderAPIManager::ShutDown();
         RenderDocManager::ShutDown();
         GpuProgramManager::ShutDown();
+
+        UnloadPlugin(_rendererPlugin);
+        UnloadPlugin(_renderAPIPlugin);
+        UnloadPlugin(_guiPlugin);
+
         CoreObjectManager::ShutDown();
         Platform::ShutDown();
         DynLibManager::ShutDown();

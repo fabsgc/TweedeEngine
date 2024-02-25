@@ -3,17 +3,29 @@
 #include "Renderer/TeRendererFactory.h"
 #include "Utility/TeDynLib.h"
 #include "Utility/TeDynLibManager.h"
+#include "Renderer/TeIBLUtility.h"
+#include "Renderer/TeRendererUtility.h"
+#include "Renderer/TeGpuResourcePool.h"
 
 namespace te
 {
     TE_MODULE_STATIC_MEMBER(RendererManager)
 
-    RendererManager::~RendererManager()
+    void RendererManager::OnStartUp()
+    {
+        RendererUtility::StartUp();
+        GpuResourcePool::StartUp();
+    }
+
+    void RendererManager::OnShutDown()
     {
         for (auto& renderer : _renderers)
         {
             renderer.second->Destroy();
         }
+
+        GpuResourcePool::ShutDown();
+        RendererUtility::ShutDown();
     }
 
     SPtr<Renderer> RendererManager::Initialize(const String& pluginName, String rendererName, bool useAsDefault)
@@ -33,14 +45,14 @@ namespace te
         {
             if ((*iter)->Name() == name)
             {
+                auto it = _renderers.find(rendererName);
+                if (it != _renderers.end())
+                    it->second->Destroy();
+
                 SPtr<Renderer> renderer = (*iter)->Create();
                 if (renderer != nullptr)
                 {
                     renderer->Initialize();
-
-                    auto it = _renderers.find(rendererName);
-                    if (it != _renderers.end())
-                        it->second->Destroy();
 
                     if (useAsDefault)
                         _defaultRenderer = renderer;

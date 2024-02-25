@@ -203,8 +203,8 @@ namespace te
 
                 // We bind PreIntegratedEnvGF
                 {
-                    if(RendererTextures::PreIntegratedEnvGF)
-                        entry.RenderElem->GpuParamsElem[entry.PassIdx]->SetTexture("PreIntegratedEnvGF", RendererTextures::PreIntegratedEnvGF);
+                    if(gRendererTextures().PreIntegratedEnvGF)
+                        entry.RenderElem->GpuParamsElem[entry.PassIdx]->SetTexture("PreIntegratedEnvGF", gRendererTextures().PreIntegratedEnvGF);
                 }
 
                 gpuParamsBindFlags = GPU_BIND_ALL;
@@ -1201,7 +1201,7 @@ namespace te
         SSAOTextureInputs textures;
         textures.SceneDepth = sceneDepth;
         textures.SceneNormals = sceneNormals;
-        textures.RandomRotations = RendererTextures::SSAORandomization4x4;
+        textures.RandomRotations = gRendererTextures().SSAORandomization4x4;
 
         SPtr<PooledRenderTexture> downAOTex1;
         if (numDownsampleLevels > 1)

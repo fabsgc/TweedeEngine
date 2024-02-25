@@ -123,7 +123,7 @@ namespace te
         HShader GetBuiltinShader(BuiltinShader type);
 
         /** If no material has been specified, it's useful to use the default one */
-        HMaterial GetDefaultMaterial() { return _defaultMaterial;  }
+        HMaterial GetDefaultMaterial();
 
         /**	Returns one of the builtin sampler types. */
         SPtr<SamplerState> GetBuiltinSampler(BuiltinSampler type);

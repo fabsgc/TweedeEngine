@@ -33,7 +33,10 @@ namespace te
     { }
 
     void WidgetMaterials::Initialize()
-    { }
+    {
+        _currentMaterial = nullptr;
+        _materialsPreview.Initialize();
+    }
 
     void WidgetMaterials::Update()
     { 
@@ -127,7 +130,7 @@ namespace te
 
         const auto& ShowPreviewButton = [this](const char* title, const std::function<bool()>& getVisibility)
         {
-            float buttonWidth = ImGui::GetWindowContentRegionWidth() / 3.0f - 4.0f;
+            float buttonWidth = ImGui::GetWindowContentRegionWidth() / 4.0f - 5.0f;
 
             bool clicked = false;
             ImGui::PushStyleColor(ImGuiCol_Button, getVisibility() ? ImGui::GetStyle().Colors[ImGuiCol_ButtonActive] : ImGui::GetStyle().Colors[ImGuiCol_Button]);
@@ -270,6 +273,13 @@ namespace te
                     return _materialsPreview.GetMeshPreviewType() != MaterialsPreview::MeshPreviewType::Plane; }))
                 {
                     _materialsPreview.SetMeshPreviewType(MaterialsPreview::MeshPreviewType::Plane);
+                }
+                ImGui::SameLine();
+
+                if (ShowPreviewButton(ICON_FA_PAW, [this]() {
+                    return _materialsPreview.GetMeshPreviewType() != MaterialsPreview::MeshPreviewType::Monkey; }))
+                {
+                    _materialsPreview.SetMeshPreviewType(MaterialsPreview::MeshPreviewType::Monkey);
                 }
 
                 cursor.x -= 5.0f;
@@ -632,11 +642,6 @@ namespace te
 
     void WidgetMaterials::UpdateBackground()
     { }
-
-    void WidgetMaterials::ResetCurrentMaterial()
-    {
-        _currentMaterial = nullptr;
-    }
 
     bool WidgetMaterials::ShowLoadedTexture()
     {

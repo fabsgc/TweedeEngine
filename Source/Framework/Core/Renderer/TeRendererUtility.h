@@ -192,8 +192,8 @@ namespace te
         UINT32 _nextQuadVBSlot = 0;
 
         SPtr<Mesh> _unitSphereStencilMesh;
-		SPtr<Mesh> _unitBoxStencilMesh;
-		SPtr<Mesh> _spotLightStencilMesh;
+        SPtr<Mesh> _unitBoxStencilMesh;
+        SPtr<Mesh> _spotLightStencilMesh;
         SPtr<Mesh> _skyBoxMesh;
     };
 

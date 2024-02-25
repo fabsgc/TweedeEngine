@@ -17,7 +17,6 @@ namespace te
         virtual void Initialize() override;
         virtual void Update() override;
         virtual void UpdateBackground() override;
-        virtual void ResetCurrentMaterial();
 
     protected:
         bool ShowLoadedTexture();

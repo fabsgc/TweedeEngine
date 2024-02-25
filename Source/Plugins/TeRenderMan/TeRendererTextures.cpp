@@ -316,21 +316,20 @@ namespace te
         return texture;
     }
 
-    SPtr<Texture> RendererTextures::PreIntegratedEnvGF = nullptr;
-    SPtr<Texture> RendererTextures::SSAORandomization4x4 = nullptr;
-
-    void RendererTextures::StartUp()
+    void RendererTextures::OnStartUp()
     {
-        if (!PreIntegratedEnvGF)
-            PreIntegratedEnvGF = GeneratePreIntegratedEnvBRDF();
-
-        if (!SSAORandomization4x4)
-            SSAORandomization4x4 = Generate4x4RandomizationTexture();
+        PreIntegratedEnvGF = GeneratePreIntegratedEnvBRDF();
+        SSAORandomization4x4 = Generate4x4RandomizationTexture();
     }
 
-    void RendererTextures::ShutDown()
+    void RendererTextures::OnShutDown()
     {
         PreIntegratedEnvGF = nullptr;
         SSAORandomization4x4 = nullptr;
+    }
+
+    RendererTextures& gRendererTextures()
+    {
+        return RendererTextures::Instance();
     }
 }
