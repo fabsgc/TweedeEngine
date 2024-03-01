@@ -231,7 +231,7 @@ namespace te
                 }
                 else
                 {
-                    mipLevels.push_back(facesData[i]);
+                    mipLevels.push_back(facesData[i]); // No GPU compression ?
                 }
 
                 for (UINT32 mip = 0; mip < (UINT32)mipLevels.size(); ++mip)

@@ -241,7 +241,7 @@ namespace te
         _monkeyRenderable->SetMesh(_monkey);
 
         Transform transform = _monkeyRenderable->GetTransform();
-        transform.Move(Vector3(-0.25f, -0.75f, 0.0f));
+        transform.Move(Vector3(-0.4f, -0.85f, 0.0f));
         transform.SetScale(Vector3(1.5f, 1.5f, 1.5f));
         transform.Rotate(Vector3::UNIT_Y, Radian(Degree(20)));
         _monkeyRenderable->SetTransform(transform);

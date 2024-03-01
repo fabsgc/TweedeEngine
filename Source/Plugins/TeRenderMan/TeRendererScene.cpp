@@ -616,11 +616,13 @@ namespace te
                 RenderableAnimType animType = 
                     renderable->GetMobility() != ObjectMobility::Static ? renderable->GetAnimType() : RenderableAnimType::None;
 
-                // Determine which technique to use
-                renElement->DefaultTechniqueIdx = InitAndRetrieveBasePassTechnique(*renElement->MaterialElem, shaderCanWriteVelocity, false, animType);
-
 #if TE_DEBUG_MODE == TE_DEBUG_ENABLED
+                // Determine which technique to use
+                renElement->DefaultTechniqueIdx = InitAndRetrieveBasePassTechnique(*renElement->MaterialElem, shaderCanWriteVelocity, true, animType);
                 ValidateBasePassMaterial(*renElement->MaterialElem, animType, renElement->DefaultTechniqueIdx, *vertexDecl);
+
+#else
+                renElement->DefaultTechniqueIdx = InitAndRetrieveBasePassTechnique(*renElement->MaterialElem, shaderCanWriteVelocity, false, animType);
 #endif
 
                 // Generate or assigned renderer specific data for the material
@@ -628,9 +630,10 @@ namespace te
 
                 if (writeVelocity)
                 {
-                    renElement->WriteVelocityTechniqueIdx = InitAndRetrieveBasePassTechnique(*renElement->MaterialElem, shaderCanWriteVelocity, true, animType);
-
 #if TE_DEBUG_MODE == TE_DEBUG_ENABLED
+                    renElement->WriteVelocityTechniqueIdx = renElement->DefaultTechniqueIdx;
+#else
+                    renElement->WriteVelocityTechniqueIdx = InitAndRetrieveBasePassTechnique(*renElement->MaterialElem, shaderCanWriteVelocity, true, animType);
                     ValidateBasePassMaterial(*renElement->MaterialElem, animType, renElement->WriteVelocityTechniqueIdx, *vertexDecl);
 #endif
 

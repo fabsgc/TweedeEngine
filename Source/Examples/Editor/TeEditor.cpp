@@ -99,11 +99,11 @@ namespace te
     TE_MODULE_STATIC_MEMBER(Editor)
 
     const Vector<String> Editor::TexturesExtensions = { ".png", ".jpeg", ".jpg", ".dds", ".tiff", ".tif", ".tga", ".bmp" };
-    const Vector<String> Editor::MeshesExtensions = { ".obj", ".dae", ".fbx", ".stl", ".gltf" };
+    const Vector<String> Editor::MeshesExtensions = { ".obj", ".dae", ".fbx", ".stl", ".gltf", ".glb" };
     const Vector<String> Editor::SoundsExtensions = { ".ogg", ".wav", ".flac" };
 
     const String Editor::TexturesExtensionsStr = ".png,.jpeg,.jpg,.dds,.tiff,.tif,.tga,.bmp";
-    const String Editor::MeshesExtensionsStr = ".obj,.dae,.fbx,.stl,.gltf";
+    const String Editor::MeshesExtensionsStr = ".obj,.dae,.fbx,.stl,.gltf,.glb";
     const String Editor::SoundsExtensionsStr = ".ogg,.flac,.wav";
 
     const Vector<UINT32> Editor::ComponentsWhichNeedGuizmo = {
@@ -414,7 +414,7 @@ namespace te
         _viewportCameraSO->SetParent(_viewportSO);
 
         _viewportCameraSO->SetPosition(Vector3(2.5f, 1.5f, -2.5f));
-        _viewportCameraSO->LookAt(Vector3(-0.5f, 0.0f, 0.0f));
+        _viewportCameraSO->LookAt(Vector3(0.0f, 0.0f, 0.0f));
 
         _viewportCamera = _viewportCameraSO->AddComponent<CCamera>();
         _viewportCamera->GetViewport()->SetClearColorValue(Color(0.42f, 0.67f, 0.94f, 1.0f));

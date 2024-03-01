@@ -284,6 +284,8 @@ namespace te
 
             if (include)
                 te_delete(include);
+
+            TE_DEBUG("Shader compilation of : \"" + desc.FilePath + "\" succeeded");
         }
         else
         {
