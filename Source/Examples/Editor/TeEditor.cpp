@@ -1395,8 +1395,8 @@ namespace te
         //_monkeyMesh = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Monkey/monkey-hd.obj", meshImportOptions)->Entries[0].Res);
         //_planeMesh = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Primitives/plane.obj", meshImportOptions)->Entries[0].Res);
 
-        textureCubeMapImportOptions->Format = PixelUtil::BestFormatFromFile("Data/Textures/Skybox/skybox_night_512.png");
-        _skyboxTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_night_512.png", textureCubeMapImportOptions);
+        textureCubeMapImportOptions->Format = PixelUtil::BestFormatFromFile("Data/Textures/Skybox/skybox_syferfontein_1024.png");
+        _skyboxTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_syferfontein_1024.png", textureCubeMapImportOptions);
 
         //textureImportOptions->Format = PixelUtil::BestFormatFromFile("Data/Textures/Cobble/diffuse1.jpg");
         //HTexture cobbleBaseColor = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/diffuse1.jpg", textureImportOptions);
