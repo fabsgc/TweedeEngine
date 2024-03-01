@@ -1086,7 +1086,7 @@ namespace te
 
     void ImGuiFileBrowser::ShowErrorModal()
     {
-        ImGuiExt::RenderMessage(invfile_modal_id.c_str(),
+        ImGuiExt::RenderMessage(error_title.c_str(),
             []() {},
             []() {},
             error_msg
@@ -1209,6 +1209,8 @@ namespace te
             }
             size_t idx = Data.SelectedFileName.find_last_of('.');
             String file_ext = idx == String::npos ? "" : Data.SelectedFileName.substr(idx, Data.SelectedFileName.length() - idx);
+            //std::transform(file_ext.begin(), file_ext.end(), file_ext.begin(), 
+            //    [](unsigned char c) -> unsigned char { return static_cast<unsigned char>(std::tolower(c)); });
             return (std::find(valid_exts.begin(), valid_exts.end(), file_ext) != valid_exts.end());
         }
     }

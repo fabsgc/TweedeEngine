@@ -107,7 +107,7 @@ namespace te
         template<typename PredYes, typename PredNo, typename PredCustom>
         static bool RenderYesNo(const char* id, PredYes predYes, PredNo predNo, PredCustom predCustom, const String& message)
         {
-            ImVec2 window_size(400, 0);
+            ImVec2 window_size(500, 0);
             bool ret_val = false;
 
             ImGui::SetNextWindowSize(window_size);
@@ -146,7 +146,7 @@ namespace te
         template<typename PredOk, typename PredCustom>
         static bool RenderMessage(const char* id, PredOk predOk, PredCustom predCustom, const String& message)
         {
-            ImVec2 window_size(400, 0);
+            ImVec2 window_size(500, 0);
             bool ret_val = false;
 
             ImGui::SetNextWindowSize(window_size);
@@ -154,11 +154,12 @@ namespace te
 
             if (ImGui::BeginPopupModal(id, nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize))
             {
-                ImVec2 button_size = GetButtonSize("OK");
                 ImGui::TextWrapped("%s", message.c_str());
+                ImGui::Separator();
 
                 predCustom();
 
+                ImVec2 button_size = GetButtonSize("OK");
                 ImGui::SetCursorPosX(window_size.x / 2.0f - button_size.x / 2.0f);
                 if (ImGui::Button("OK", button_size))
                 {
