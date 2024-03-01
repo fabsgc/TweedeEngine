@@ -181,7 +181,7 @@ namespace te
         String Name;
 
         /** Flags that describe the animation curve. */
-        AnimationCurveFlags Flags;
+        AnimationCurveFlags Flags = 0;
 
         /** Actual curve containing animation data. */
         TAnimationCurve<T> Curve;

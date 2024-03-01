@@ -828,7 +828,7 @@ namespace te
 
             while (!todo.empty())
             {
-                auto entry = todo.top();
+                auto& entry = todo.top();
                 todo.pop();
 
                 AssimpImportNode* node = entry.first;

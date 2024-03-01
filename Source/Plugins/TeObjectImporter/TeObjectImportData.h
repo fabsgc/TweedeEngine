@@ -56,7 +56,7 @@ namespace te
     /**	Contains data about a single bone in a skinned mesh. */
     struct AssimpBone
     {
-        AssimpImportNode* Node;
+        AssimpImportNode* Node = nullptr;
         Matrix4 LocalTransform = Matrix4::IDENTITY;
         Matrix4 InvBindPose = Matrix4::IDENTITY;
     };
