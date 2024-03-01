@@ -45,7 +45,7 @@ namespace te
 
     protected:
         static const float MIN_TIME_BETWEEN_UPDATE;
-        
+
     protected:
         HEvent _resizeEvent;
         Editor::SelectionData& _selections;

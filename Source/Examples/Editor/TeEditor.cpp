@@ -13,6 +13,7 @@
 #include "Widget/TeWidgetConsole.h"
 #include "Widget/TeWidgetViewport.h"
 #include "Widget/TeWidgetResources.h"
+#include "Widget/TeWidgetScripts.h"
 #include "Widget/TeWidgetTextEditor.h"
 #include "Widget/TeWidgetMaterials.h"
 #include "Widget/TeWidgetShaders.h"
@@ -105,6 +106,9 @@ namespace te
     const String Editor::TexturesExtensionsStr = ".png,.jpeg,.jpg,.dds,.tiff,.tif,.tga,.bmp";
     const String Editor::MeshesExtensionsStr = ".obj,.dae,.fbx,.stl,.gltf,.glb";
     const String Editor::SoundsExtensionsStr = ".ogg,.flac,.wav";
+
+    Event<void()> Editor::OnOpen;
+    Event<void()> Editor::OnSave;
 
     const Vector<UINT32> Editor::ComponentsWhichNeedGuizmo = {
         TID_CRenderable,
@@ -459,7 +463,7 @@ namespace te
         _widgets.emplace_back(te_unique_ptr_new<WidgetSettings>()); _settings.WSettings = _widgets.back();
         _widgets.emplace_back(te_unique_ptr_new<WidgetRenderOptions>()); _settings.WRenderOptions = _widgets.back();
         _widgets.emplace_back(te_unique_ptr_new<WidgetConsole>()); _settings.WConsole = _widgets.back();
-        _widgets.emplace_back(te_unique_ptr_new<WidgetScriptEditor>()); _settings.WScript = _widgets.back();
+        _widgets.emplace_back(te_unique_ptr_new<WidgetScripts>()); _settings.WScript = _widgets.back();
         _widgets.emplace_back(te_unique_ptr_new<WidgetShaders>()); _settings.WShaders = _widgets.back();
         _widgets.emplace_back(te_unique_ptr_new<WidgetMaterials>()); _settings.WMaterials = _widgets.back();
         _widgets.emplace_back(te_unique_ptr_new<WidgetResources>()); _settings.WResources = _widgets.back();
@@ -636,9 +640,9 @@ namespace te
                 ImGui::DockBuilderDockWindow(CONSOLE_TITLE, dockBottomId);
                 ImGui::DockBuilderDockWindow(RESOURCES_TITLE, dockBottomId);
                 ImGui::DockBuilderDockWindow(VIEWPORT_TITLE, dockMainId);
-                ImGui::DockBuilderDockWindow(SCRIPT_TITLE, dockMainId);
                 ImGui::DockBuilderDockWindow(SHADERS_TITLE, dockRightBottomId);
                 ImGui::DockBuilderDockWindow(MATERIALS_TITLE, dockRightBottomId);
+                ImGui::DockBuilderDockWindow(SCRIPTS_TITLE, dockLeftBottomId);
                 ImGui::DockBuilderDockWindow(PROPERTIES_TITLE, dockLeftBottomId);
                 ImGui::DockBuilderFinish(dockMainId);
             }
@@ -913,6 +917,8 @@ namespace te
         _project = static_resource_cast<Project>(multiResourceScene->Entries[0].Res);
         _project->SetPath(path);
 
+        OnOpen();
+
         return true;
     }
 
@@ -932,6 +938,8 @@ namespace te
         }
 
         _settings.State = EditorState::Saved;
+
+        OnSave();
 
         return true;
     }

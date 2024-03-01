@@ -18,7 +18,8 @@
 #define RESOURCES_TITLE ICON_FA_SUITCASE " Resources"
 #define TOOLBAR_TITLE "ToolBar"
 #define VIEWPORT_TITLE ICON_FA_IMAGE " Viewport"
-#define SCRIPT_TITLE ICON_FA_SCROLL " Script"
+#define EDITOR_TITLE ICON_FA_CODE " Editor"
+#define SCRIPTS_TITLE ICON_FA_SCROLL " Scripts"
 #define MATERIALS_TITLE ICON_FA_PALETTE " Materials"
 #define PROFILER_TITLE ICON_FA_CHART_LINE " Profiler"
 #define SETTINGS_TITLE ICON_FA_COGS " Settings"
@@ -45,11 +46,12 @@ namespace te
             ToolBar,
             Viewport,
             Resources,
-            Script,
+            Editor,
             Material,
             Profiler,
             Settings,
             Shaders,
+            Scripts,
             None
         };
 

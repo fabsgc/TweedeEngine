@@ -240,6 +240,9 @@ namespace te
         static const String MeshesExtensionsStr;
         static const String SoundsExtensionsStr;
 
+        static Event<void()> OnOpen;
+        static Event<void()> OnSave;
+
     protected:
         static const Vector<UINT32> ComponentsWhichNeedGuizmo;
 

@@ -9,11 +9,11 @@ namespace te
     class ImGuiTextEditor;
 
 
-    class WidgetScriptEditor : public Widget
+    class WidgetTextEditor : public Widget
     {
     public:
-        WidgetScriptEditor();
-        virtual ~WidgetScriptEditor();
+        WidgetTextEditor();
+        virtual ~WidgetTextEditor();
 
         virtual void Initialize() override;
         virtual void Update() override;

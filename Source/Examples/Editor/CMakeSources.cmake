@@ -62,6 +62,7 @@ set (TE_EDITOR_INC_WIDGET
     "Widget/TeWidgetProfiler.h"
     "Widget/TeWidgetSettings.h"
     "Widget/TeWidgetShaders.h"
+    "Widget/TeWidgetScripts.h"
 )
 
 set (TE_EDITOR_SRC_WIDGET
@@ -79,6 +80,7 @@ set (TE_EDITOR_SRC_WIDGET
     "Widget/TeWidgetProfiler.cpp"
     "Widget/TeWidgetSettings.cpp"
     "Widget/TeWidgetShaders.cpp"
+    "Widget/TeWidgetScripts.cpp"
 )
 
 set (TE_EDITOR_INC_MATERIALS_PREVIEW
