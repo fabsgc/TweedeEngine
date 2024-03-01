@@ -13,7 +13,7 @@
 #include "Widget/TeWidgetConsole.h"
 #include "Widget/TeWidgetViewport.h"
 #include "Widget/TeWidgetResources.h"
-#include "Widget/TeWidgetScript.h"
+#include "Widget/TeWidgetTextEditor.h"
 #include "Widget/TeWidgetMaterials.h"
 #include "Widget/TeWidgetShaders.h"
 
@@ -459,7 +459,7 @@ namespace te
         _widgets.emplace_back(te_unique_ptr_new<WidgetSettings>()); _settings.WSettings = _widgets.back();
         _widgets.emplace_back(te_unique_ptr_new<WidgetRenderOptions>()); _settings.WRenderOptions = _widgets.back();
         _widgets.emplace_back(te_unique_ptr_new<WidgetConsole>()); _settings.WConsole = _widgets.back();
-        _widgets.emplace_back(te_unique_ptr_new<WidgetScript>()); _settings.WScript = _widgets.back();
+        _widgets.emplace_back(te_unique_ptr_new<WidgetScriptEditor>()); _settings.WScript = _widgets.back();
         _widgets.emplace_back(te_unique_ptr_new<WidgetShaders>()); _settings.WShaders = _widgets.back();
         _widgets.emplace_back(te_unique_ptr_new<WidgetMaterials>()); _settings.WMaterials = _widgets.back();
         _widgets.emplace_back(te_unique_ptr_new<WidgetResources>()); _settings.WResources = _widgets.back();

@@ -1,4 +1,4 @@
-#include "TeWidgetScript.h"
+#include "TeWidgetTextEditor.h"
 
 #include "../TeEditor.h"
 #include "../ImGuiExt/TeImGuiTextEditor.h"
@@ -8,7 +8,7 @@
 
 namespace te
 {
-    WidgetScript::WidgetScript()
+    WidgetScriptEditor::WidgetScriptEditor()
         : Widget(WidgetType::Script)
         , _selections(gEditor().GetSelectionData())
         , _editor(nullptr)
@@ -17,15 +17,15 @@ namespace te
         _title = SCRIPT_TITLE;
     }
 
-    WidgetScript::~WidgetScript()
+    WidgetScriptEditor::~WidgetScriptEditor()
     { }
 
-    void WidgetScript::Initialize()
+    void WidgetScriptEditor::Initialize()
     {
         _editor = te_shared_ptr_new<ImGuiTextEditor>();
     }
 
-    void WidgetScript::Update()
+    void WidgetScriptEditor::Update()
     {
         const auto& scripts = gScriptManager().GetScripts();
         for (const auto& script : scripts)
@@ -47,10 +47,10 @@ namespace te
         }
     }
 
-    void WidgetScript::UpdateBackground()
+    void WidgetScriptEditor::UpdateBackground()
     { }
 
-    void WidgetScript::PutFocus()
+    void WidgetScriptEditor::PutFocus()
     {
         Widget::PutFocus();
 
@@ -76,7 +76,7 @@ namespace te
         }
     }
 
-    void WidgetScript::Save(bool force)
+    void WidgetScriptEditor::Save(bool force)
     {
         if (!_currentScriptName.empty() && (_needsSave || force))
         {
@@ -93,7 +93,7 @@ namespace te
         }
     }
 
-    void WidgetScript::Build()
+    void WidgetScriptEditor::Build()
     {
         if (!_currentScriptName.empty())
         {
@@ -109,7 +109,7 @@ namespace te
         }
     }
 
-    void WidgetScript::UpdateEditorContent()
+    void WidgetScriptEditor::UpdateEditorContent()
     {
         if (_currentScriptName != "")
         {
@@ -129,14 +129,14 @@ namespace te
         }
     }
 
-    void WidgetScript::ShowEditor()
+    void WidgetScriptEditor::ShowEditor()
     {
         ImGui::BeginChild("ScriptEditor", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetWindowHeight() - 90.0f), false);
         _editor->Render("Title", ImVec2(0.0f, ImGui::GetContentRegionMax().y)); // shrink y to bring the compile button into view
         ImGui::EndChild();
     }
 
-    void WidgetScript::ShowToolbar()
+    void WidgetScriptEditor::ShowToolbar()
     {
         auto ShowButton = [this](const char* title, bool enabled, const std::function<void()>& action)
         {
