@@ -1,5 +1,5 @@
 image:
-  - Ubuntu
+  - Ubuntu2204
   - Visual Studio 2019
 
 platform:
@@ -22,9 +22,8 @@ for:
   -
     matrix:
       only:
-        - image: Ubuntu
+        - image: Ubuntu2204
     install:
-      - sudo add-apt-repository --remove "deb http://apt.postgresql.org/pub/repos/apt/ xenial-pgdg main"
       - sudo apt-get update -qq && sudo apt-get install -qq
       - sudo apt-get -y install mesa-common-dev libglu1-mesa-dev libgl1-mesa-dev libx11-dev libxcursor-dev 
       - sudo apt-get -y install libxrandr-dev libxi-dev uuid-dev libglfw3 libglfw3-dev gcc-9 g++-9
@@ -38,9 +37,8 @@ for:
   -
     matrix:
       only:
-        - image: Ubuntu
+        - image: Ubuntu2204
     install:
-      - sudo add-apt-repository --remove "deb http://apt.postgresql.org/pub/repos/apt/ xenial-pgdg main"
       - sudo apt-get update -qq && sudo apt-get install -qq
       - sudo apt-get -y install mesa-common-dev libglu1-mesa-dev libgl1-mesa-dev libx11-dev libxcursor-dev 
       - sudo apt-get -y install libxrandr-dev libxi-dev uuid-dev libglfw3 libglfw3-dev gcc-11 g++-11
