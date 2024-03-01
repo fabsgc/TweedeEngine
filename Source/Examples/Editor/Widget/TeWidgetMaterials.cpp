@@ -398,7 +398,7 @@ namespace te
                 {
                     if (ImGuiExt::RenderOptionFloat(properties.ParallaxScale, "##material_prop_parallax_scale_option", "Parallax Scale", -1.0f, 1.0f, width))
                         hasChanged = true;
-                    if (ImGuiExt::RenderOptionInt((int&)properties.ParallaxSamples, "##material_prop_parallax_samples_option", "Parallax Samples", 16, 256, width))
+                    if (ImGuiExt::RenderOptionInt((int&)properties.ParallaxSamples, "##material_prop_parallax_samples_option", "Parallax Samples", 4, 256, width))
                         hasChanged = true;
                 }
                 ImGui::Separator();
