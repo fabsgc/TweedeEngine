@@ -74,7 +74,6 @@ namespace te
         void CreateAudioListener();
         void CreateAnimation();
         void CreateBone();
-        void CreateScript();
         void CreateSkybox();
         void CreateRigidBody();
         void CreateSoftBody(TypeID_Core type);

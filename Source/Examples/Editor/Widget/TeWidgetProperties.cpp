@@ -23,7 +23,6 @@
 #include "Components/TeCCameraUI.h"
 #include "Components/TeCCamera.h"
 #include "Components/TeCSkybox.h"
-#include "Components/TeCScript.h"
 #include "Components/TeCLight.h"
 #include "Components/TeCAnimation.h"
 #include "Components/TeCBone.h"
@@ -124,13 +123,6 @@ namespace te
             case TID_CCameraUI:
             {
                 if (ShowCCameraUIProperties())
-                    hasChanged = true;
-            }
-            break;
-
-            case TID_CScript:
-            {
-                if (ShowCScriptProperties())
                     hasChanged = true;
             }
             break;
@@ -454,20 +446,6 @@ namespace te
             }
         }
         
-        return hasChanged;
-    }
-
-    bool WidgetProperties::ShowCScriptProperties()
-    {
-        bool hasChanged = false;
-        SPtr<CScript> script = std::static_pointer_cast<CScript>(_selections.ClickedComponent);
-
-        if (ImGui::CollapsingHeader("Script", ImGuiTreeNodeFlags_DefaultOpen))
-        {
-            if (ShowScript(script))
-                hasChanged = true;
-        }
-
         return hasChanged;
     }
 
@@ -2552,70 +2530,6 @@ namespace te
         return hasChanged;
     }
 
-    bool WidgetProperties::ShowScript(SPtr<CScript> script)
-    {
-        bool hasChanged = false;
-        Vector<String> files;
-        Vector<String> directories;
-        Vector<String> identifiers;
-        ImGuiExt::ComboOptions<ScriptIdentifier> scriptsOptions;
-        const float width = ImGui::GetWindowContentRegionWidth() - 50.0f;
-
-        FileSystem::GetChildren(RAW_APP_ROOT + ScriptManager::LIBRARIES_PATH, files, directories, true);
-
-        // current script to use
-        {
-            for (auto& file : files)
-            {
-                if(file.length() > 4)
-                {
-                    if(file.substr(file.length() - 4, 4) == ".cpp")
-                    {
-                        String fileName = file.substr(0, file.length() - 4);
-                        ScriptIdentifier ident(fileName);
-
-                        scriptsOptions.AddOption(ident, fileName);
-                        identifiers.push_back(ident.Name);
-                    }
-                }
-            }
-
-            const auto& scriptLibraries = gScriptManager().GetScriptLibraries();
-            for (auto& scriptLibrary : scriptLibraries)
-            {
-                if (std::find(identifiers.begin(), identifiers.end(), scriptLibrary.first.Name) == identifiers.end())
-                {
-                    scriptsOptions.AddOption(scriptLibrary.first, scriptLibrary.first.Name);
-                    identifiers.push_back(scriptLibrary.first.Name);
-                }
-            }
-
-            scriptsOptions.AddOption(ScriptIdentifier(""), ICON_FA_TIMES_CIRCLE " No script");
-            scriptsOptions.AddOption(ScriptIdentifier("_"), ICON_FA_FOLDER_OPEN " Load");
-
-            ScriptIdentifier previousScript(script->GetNativeScriptName(), script->GetNativeScriptPath());
-            ScriptIdentifier currentScript = previousScript;
-
-            if (ImGuiExt::RenderOptionCombo<ScriptIdentifier>(&currentScript, "##scripts_options", "Script", scriptsOptions, width))
-            {
-                if (currentScript.Name == "_")
-                {
-                    _loadScript = true;
-                }
-                else if (currentScript.Name != previousScript.Name)
-                {
-                    script->SetNativeScript(currentScript);
-                    hasChanged = true;
-                }
-            }
-        }
-
-        if (ShowLoadScript())
-            hasChanged = true;
-
-        return hasChanged;
-    }
-
     bool WidgetProperties::ShowAnimation(SPtr<CAnimation> animation)
     {
         bool hasChanged = false;
@@ -3252,37 +3166,9 @@ namespace te
         return skyboxLoaded;
     }
 
-    bool WidgetProperties::ShowLoadScript()
-    {
-        bool scriptLoaded = false;
-
-        if (_loadScript)
-            ImGui::OpenPopup("Load Script");
-
-        if (_fileBrowser.ShowFileDialog("Load Script", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), false, ".cpp"))
-        {
-            if (_selections.ClickedComponent && _selections.ClickedComponent->GetCoreType() == TID_CScript)
-            {
-                String fileName = _fileBrowser.Data.SelectedFileName;
-                fileName = fileName.substr(0, fileName.length() - 4);
-                SPtr<CScript> script = std::static_pointer_cast<CScript>(_selections.ClickedComponent);
-                script->SetNativeScript(fileName, _fileBrowser.Data.SelectedPath);
-            }
-
-            _loadScript = false;
-        }
-        else
-        {
-            if (_fileBrowser.Data.IsCancelled)
-                _loadScript = false;
-        }
-
-        return scriptLoaded;
-    }
-
     bool WidgetProperties::ShowLoadAudioClip()
     {
-        bool audioScriptLoaded = false;
+        bool audioLoaded = false;
 
         if (_loadAudioClip)
             ImGui::OpenPopup("Load Audio Clip");
@@ -3300,7 +3186,7 @@ namespace te
 
                 SPtr<CAudioSource> audioSource = std::static_pointer_cast<CAudioSource>(_selections.ClickedComponent);
                 audioSource->SetClip(audioClip);
-                audioScriptLoaded = true;
+                audioLoaded = true;
             }
 
             _loadAudioClip = false;
@@ -3311,7 +3197,7 @@ namespace te
                 _loadAudioClip = false;
         }
         
-        return audioScriptLoaded;
+        return audioLoaded;
     }
 
     bool WidgetProperties::ShowLoadHeightFieldTexture()

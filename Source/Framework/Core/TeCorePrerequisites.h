@@ -59,7 +59,6 @@ namespace te
         TID_CLight                    = 1004,
         TID_CSkybox                   = 1005,
         TID_CCameraFlyer              = 1006,
-        TID_CScript                   = 1007,
         TID_CCameraUI                 = 1008,
         TID_SceneObject               = 1008,
         TID_Texture                   = 1010,
@@ -154,7 +153,8 @@ namespace te
         TID_ResourceImportOptions     = 1099,
         TID_ResourceExportOptions     = 1100,
         TID_TextureExportOptions      = 1101,
-        TID_Project                   = 1102
+        TID_Project                   = 1102,
+        TID_Script                    = 1103,
     };
 }
 
@@ -334,7 +334,6 @@ namespace te
     class CRenderable;
     class CLight;
     class CSkybox;
-    class CScript;
     class CBone;
     class CAnimation;
     class CAudioSource;
@@ -473,6 +472,7 @@ namespace te
     typedef ResourceHandle<PhysicsMesh> HPhysicsMesh;
     typedef ResourceHandle<PhysicsHeightField> HPhysicsHeightField;
     typedef ResourceHandle<Project> HProject;
+    typedef ResourceHandle<Script> HScript;
 }
 
 #include "Scene/TeGameObjectHandle.h"
@@ -488,7 +488,6 @@ namespace te
     typedef GameObjectHandle<CCameraUI> HCameraUI;
     typedef GameObjectHandle<CLight> HLight;
     typedef GameObjectHandle<CSkybox> HSkybox;
-    typedef GameObjectHandle<CScript> HScript;
     typedef GameObjectHandle<CBone> HBone;
     typedef GameObjectHandle<CAnimation> HAnimation;
     typedef GameObjectHandle<CAudioSource> HAudioSource;

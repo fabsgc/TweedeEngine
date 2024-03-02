@@ -37,7 +37,7 @@ namespace te
             Console,
             Resources,
             Viewport,
-            Script,
+            Scripts,
             Shaders,
             Materials,
             Properties
@@ -74,7 +74,7 @@ namespace te
             SPtr<Widget> WConsole = nullptr;
             SPtr<Widget> WResources = nullptr;
             SPtr<Widget> WViewport = nullptr;
-            SPtr<Widget> WScript = nullptr;
+            SPtr<Widget> WScripts = nullptr;
             SPtr<Widget> WMaterials = nullptr;
             SPtr<Widget> WProperties = nullptr;
             SPtr<Widget> WShaders = nullptr;

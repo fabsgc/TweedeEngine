@@ -26,7 +26,6 @@
 #include "Components/TeCCamera.h"
 #include "Components/TeCCameraUI.h"
 #include "Components/TeCCameraFlyer.h"
-#include "Components/TeCScript.h"
 #include "Components/TeCRenderable.h"
 #include "Components/TeCLight.h"
 #include "Components/TeCSkybox.h"
@@ -160,7 +159,6 @@ namespace te
 
         gCoreApplication().GetState().SetFlag(ApplicationState::Mode::Game, false);
         gCoreApplication().GetState().SetFlag(ApplicationState::Mode::Physics, false);
-        gCoreApplication().GetState().SetFlag(ApplicationState::Mode::Scripting, false);
         gCoreApplication().GetState().SetFlag(ApplicationState::Mode::Animation, false);
 
         InitializeInput();
@@ -463,7 +461,7 @@ namespace te
         _widgets.emplace_back(te_unique_ptr_new<WidgetSettings>()); _settings.WSettings = _widgets.back();
         _widgets.emplace_back(te_unique_ptr_new<WidgetRenderOptions>()); _settings.WRenderOptions = _widgets.back();
         _widgets.emplace_back(te_unique_ptr_new<WidgetConsole>()); _settings.WConsole = _widgets.back();
-        _widgets.emplace_back(te_unique_ptr_new<WidgetScripts>()); _settings.WScript = _widgets.back();
+        _widgets.emplace_back(te_unique_ptr_new<WidgetScripts>()); _settings.WScripts = _widgets.back();
         _widgets.emplace_back(te_unique_ptr_new<WidgetShaders>()); _settings.WShaders = _widgets.back();
         _widgets.emplace_back(te_unique_ptr_new<WidgetMaterials>()); _settings.WMaterials = _widgets.back();
         _widgets.emplace_back(te_unique_ptr_new<WidgetResources>()); _settings.WResources = _widgets.back();
@@ -687,8 +685,8 @@ namespace te
         case WindowType::Viewport:
             _settings.WViewport->PutFocus();
             break;
-        case WindowType::Script:
-            _settings.WScript->PutFocus();
+        case WindowType::Scripts:
+            _settings.WScripts->PutFocus();
             break;
         case WindowType::Shaders:
             _settings.WShaders->PutFocus();
@@ -1010,16 +1008,6 @@ namespace te
                 case TID_CRenderable:
                 {
                     HRenderable component = clickedSceneObject->AddComponent<CRenderable>();
-                    component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
-                    component->Initialize();
-                    _selections.ClickedComponent = component.GetInternalPtr();
-                    _selections.CopiedComponent = component.GetInternalPtr();
-                }
-                break;
-
-                case TID_CScript:
-                {
-                    HScript component = clickedSceneObject->AddComponent<CScript>();
                     component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
                     component->Initialize();
                     _selections.ClickedComponent = component.GetInternalPtr();

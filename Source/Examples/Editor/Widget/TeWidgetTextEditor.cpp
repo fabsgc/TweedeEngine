@@ -2,8 +2,6 @@
 
 #include "../TeEditor.h"
 #include "../ImGuiExt/TeImGuiTextEditor.h"
-#include "Components/TeCScript.h"
-#include "Scripting/TeScriptManager.h"
 #include "Utility/TeDataStream.h"
 
 namespace te
@@ -23,20 +21,13 @@ namespace te
     void WidgetTextEditor::Initialize()
     {
         _editor = te_shared_ptr_new<ImGuiTextEditor>();
+
+        OnBuild = Event<void()>();
+        OnSave = Event<void()>();
     }
 
     void WidgetTextEditor::Update()
     {
-        const auto& scripts = gScriptManager().GetScripts();
-        for (const auto& script : scripts)
-        {
-            String name = script->GetNativeScriptName();
-            if (name != "")
-            {
-                _existingScripts[name] = script->GetNativeScriptPath();
-            }
-        }
-
         ShowToolbar();
         ShowEditor();
 
@@ -53,85 +44,17 @@ namespace te
     void WidgetTextEditor::PutFocus()
     {
         Widget::PutFocus();
-
-        if (_selections.ClickedComponent && _selections.ClickedComponent->GetCoreType() == TID_CScript)
-        {
-            auto script = std::static_pointer_cast<CScript>(_selections.ClickedComponent);
-            if (script)
-            {
-                String name = script->GetNativeScriptName();
-                String path = script->GetNativeScriptPath();
-
-                if (name.empty())
-                    return;
-
-                if (name != _currentScriptName) // Update current script name
-                {
-                    _currentScriptName = name;
-                    _existingScripts[name] = path;
-
-                    UpdateEditorContent(); // If current script name different from previous, we need to load its content
-                }
-            }
-        }
-    }
-
-    void WidgetTextEditor::Save(bool force)
-    {
-        if (!_currentScriptName.empty() && (_needsSave || force))
-        {
-            String path = _existingScripts[_currentScriptName] + _currentScriptName + ".cpp";
-            FileStream file(path, FileStream::AccessMode::WRITE);
-
-            if (!file.Fail())
-            {
-                file.Write((void*)(_editorContent.c_str()), _editorContent.size());
-                file.Close();
-
-                _needsSave = false;
-            }
-        }
-    }
-
-    void WidgetTextEditor::Build()
-    {
-        if (!_currentScriptName.empty())
-        {
-            if (_needsSave)
-            {
-                Save(false);
-            }
-            else
-            {
-                String path = _existingScripts[_currentScriptName] + _currentScriptName + ".cpp";
-                gScriptManager().OnMonitorFileModified(path);
-            }
-        }
+        UpdateEditorContent(); // If current script name different from previous, we need to load its content
     }
 
     void WidgetTextEditor::UpdateEditorContent()
     {
-        if (_currentScriptName != "")
-        {
-            FileStream file(_existingScripts[_currentScriptName] + _currentScriptName + ".cpp");
-            if (!file.Fail())
-            {
-                _editorContent = file.GetAsString();
-                _editor->SetText(_editorContent);
-                _needsSave = false;
-                file.Close();
-            }
-        }
-        else
-        {
-            _editor->SetText("");
-            _needsSave = false;
-        }
+        // TODO Script
     }
 
     void WidgetTextEditor::ShowEditor()
     {
-        ImGui::BeginChild("ScriptEditor", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetWindowHeight() - 90.0f), false);
+        ImGui::BeginChild("TextEditor", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetWindowHeight() - 90.0f), false);
         _editor->Render("Title", ImVec2(0.0f, ImGui::GetContentRegionMax().y)); // shrink y to bring the compile button into view
         ImGui::EndChild();
     }
@@ -150,32 +73,17 @@ namespace te
             ImGui::PopStyleColor();
         };
 
-        ImGui::BeginChild("ScriptActionList", ImVec2(ImGui::GetContentRegionAvail().x, 42.0f), true);
+        ImGui::BeginChild("TextEditorActionList", ImVec2(ImGui::GetContentRegionAvail().x, 42.0f), true);
 
         // Build current script
-        ShowButton(ICON_FA_COGS, (_currentScriptName != ""), [this]() {
-            Build();
+        ShowButton(ICON_FA_COGS, true, [this]() {
+            OnBuild();
         });
 
         // Save current script
-        ShowButton(ICON_FA_SAVE, (_currentScriptName != ""), [this]() {
-            Save();
+        ShowButton(ICON_FA_SAVE, true, [this]() {
+            OnSave();
         });
-
-        ImGui::SameLine();
-
-        ImGuiExt::ComboOptions<String> scriptsOptions;
-        for (const auto& script : _existingScripts)
-        {
-            scriptsOptions.AddOption(script.first, script.first);
-        }
-
-        scriptsOptions.AddOption("", ICON_FA_TIMES_CIRCLE " No script");
-
-        if (ImGuiExt::RenderOptionCombo<String>(&_currentScriptName, "##scripts_editor_options", "Current script", scriptsOptions, 200.0f))
-        {
-            UpdateEditorContent();
-        }
 
         ImGui::EndChild();
     }

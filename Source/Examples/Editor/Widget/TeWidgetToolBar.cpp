@@ -6,9 +6,7 @@
 #include "Animation/TeAnimationManager.h"
 #include "Scripting/TeScriptManager.h"
 #include "Manager/TeRenderDocManager.h"
-#include "Scripting/TeScript.h"
 #include "Scene/TeSceneManager.h"
-#include "Components/TeCScript.h"
 #include "ImGuizmo/ImGuizmo.h"
 #include "Renderer/TeRenderer.h"
 #include "Components/TeCLight.h"
@@ -77,21 +75,7 @@ namespace te
                 return !gCoreApplication().GetState().IsFlagSet(ApplicationState::Game); 
             },
             [this]() {
-                Vector<HComponent> components = gEditor().GetSceneRoot()->GetComponents<CScript>(true);
-                for (auto& component : components)
-                {
-                    HScript handle = static_object_cast<CScript>(component);
-                    SPtr<Script> script = handle->GetInternal();
-
-                    if (script != nullptr)
-                    {
-                        if (gCoreApplication().GetState().IsFlagSet(ApplicationState::Game))
-                            script->OnShutdown();
-                        else
-                            script->OnStartup();
-                    }
-                }
-
+                // TODO Script Call OnStartUp() or OnShutDown on all scripts registered in ScriptManager
                 gScriptManager().TogglePaused();
 
                 gCoreApplication().GetState().ToggleFlag(ApplicationState::Mode::Game);

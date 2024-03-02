@@ -10,7 +10,6 @@
 #include "Components/TeCLight.h"
 #include "Components/TeCRenderable.h"
 #include "Components/TeCSkybox.h"
-#include "Components/TeCScript.h"
 #include "Components/TeCAnimation.h"
 #include "Components/TeCBone.h"
 #include "Components/TeCAudioSource.h"
@@ -372,10 +371,6 @@ namespace te
             case TID_CDecal:
                 gEditor().PutFocus(Editor::WindowType::Viewport);
                 break;
-
-            case TID_CScript:
-                gEditor().PutFocus(Editor::WindowType::Script);
-                break;
             }
 
             _handleSelectionWindowSwitch = false;
@@ -715,8 +710,6 @@ namespace te
                         CreateAnimation();
                     if (ImGui::MenuItem(ICON_FA_GLOBE " Skybox"))
                         CreateSkybox();
-                    if (ImGui::MenuItem(ICON_FA_SCROLL " Script"))
-                        CreateScript();
                     if (ImGui::MenuItem(ICON_FA_BONE " Bone"))
                         CreateBone();
                     if (ImGui::MenuItem(ICON_FA_IMAGE " Decal"))
@@ -919,25 +912,6 @@ namespace te
         _expandToSelection = true;
         _handleSelectionWindowSwitch = true;
         _selections.ClickedComponent = audioListener.GetInternalPtr();
-        gEditor().NeedsRedraw();
-        gEditor().GetSettings().State = Editor::EditorState::Modified;
-    }
-
-    void WidgetProject::CreateScript()
-    {
-        if (!_selections.ClickedSceneObject || _selections.ClickedComponent)
-            return;
-
-        if (!_selections.ClickedSceneObject->GetComponent<CScript>().Empty())
-            return;
-
-        HScript script = _selections.ClickedSceneObject->AddComponent<CScript>();
-        script.Get()->SetName("Script");
-        script.Get()->Initialize();
-
-        _expandToSelection = true;
-        _handleSelectionWindowSwitch = true;
-        _selections.ClickedComponent = script.GetInternalPtr();
         gEditor().NeedsRedraw();
         gEditor().GetSettings().State = Editor::EditorState::Modified;
     }
@@ -1297,9 +1271,6 @@ namespace te
             break;
         case TID_CCameraUI:
             title += String("  ") + ICON_FA_CAMERA;
-            break;
-        case TID_CScript:
-            title += String("  ") + ICON_FA_SCROLL;
             break;
         case TID_CAnimation:
             title += String("  ") + ICON_FA_STEP_FORWARD;

@@ -13,7 +13,6 @@
 #include "Components/TeCLight.h"
 #include "Components/TeCRenderable.h"
 #include "Components/TeCSkybox.h"
-#include "Components/TeCScript.h"
 #include "Components/TeCAnimation.h"
 #include "Components/TeCBone.h"
 #include "Components/TeCAudioSource.h"
@@ -180,14 +179,6 @@ namespace te
             case TID_CRenderable:
             {
                 HRenderable component = this->AddComponent<CRenderable>();
-                component->Clone(co->GetHandle());
-                component->Initialize();
-            }
-            break;
-
-            case TID_CScript:
-            {
-                HScript component = this->AddComponent<CScript>();
                 component->Clone(co->GetHandle());
                 component->Initialize();
             }

@@ -41,9 +41,6 @@ namespace te
         bool ShowCRenderableProperties();
 
         /** @copydoc WidgetProperties::ShowSceneObjectProperties */
-        bool ShowCScriptProperties();
-
-        /** @copydoc WidgetProperties::ShowSceneObjectProperties */
         bool ShowCSkyboxProperties();
 
         /** @copydoc WidgetProperties::ShowSceneObjectProperties */
@@ -145,9 +142,6 @@ namespace te
         /** Show information about renderable properties */
         bool ShowRenderableSubMeshes(SPtr<Renderable> renderable);
 
-        /** Show information about a script */
-        bool ShowScript(SPtr<CScript> script);
-
         /** Show information about an animation */
         bool ShowAnimation(SPtr<CAnimation> animation);
 
@@ -172,9 +166,6 @@ namespace te
         /** Show FileBrowser in order to load a new cubemap texture */
         bool ShowLoadSkybox();
 
-        /** Show FileBrowser in order to load a new script */
-        bool ShowLoadScript();
-
         /** Show FileBrowser in order to load a new audio clip */
         bool ShowLoadAudioClip();
 
@@ -191,7 +182,6 @@ namespace te
         bool _loadMesh = false;
         bool _loadPhysicsMesh = false;
         bool _loadSkybox = false;
-        bool _loadScript = false;
         bool _loadAudioClip = false;
         bool _loadHeightFieldTexture = false;
     };

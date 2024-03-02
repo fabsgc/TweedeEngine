@@ -20,6 +20,10 @@ namespace te
         virtual void UpdateBackground() override;
         virtual void PutFocus() override;
 
+    public:
+        Event<void()> OnBuild;
+        Event<void()> OnSave;
+
     private:
         void Save(bool force = false);
         void Build();
@@ -30,8 +34,6 @@ namespace te
     private:
         Editor::SelectionData& _selections;
         SPtr<ImGuiTextEditor> _editor;
-        UnorderedMap<String, String> _existingScripts; //Name - Path
-        String _currentScriptName;
         String _editorContent;
         bool _needsSave;
     };
