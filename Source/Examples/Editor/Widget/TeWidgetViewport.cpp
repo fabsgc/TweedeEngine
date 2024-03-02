@@ -95,7 +95,7 @@ namespace te
             {
                 _viewportCameraUI->EnableInput(false);
             }
-            
+
             // Handle zooming if mouse is hovering windows (even if windows not focused)
             if (viewportPos.x > 0.0f && viewportPos.x < _renderData.Width && viewportPos.y > 0.0f && viewportPos.y < _renderData.Height)
             {

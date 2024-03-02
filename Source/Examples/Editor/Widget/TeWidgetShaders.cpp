@@ -150,7 +150,7 @@ namespace te
                                     else
                                         strcpy(inputValue, value.substr(0, 255).c_str());
 
-                                    ImGui::PushItemWidth(width - 25);
+                                    ImGui::PushItemWidth(width - 125);
                                     ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
                                     ImGui::InputText(param.second.Name.c_str(), inputValue, IM_ARRAYSIZE(inputValue));
                                     ImGui::PopItemFlag();
@@ -173,6 +173,8 @@ namespace te
                             }*/
                             ImGui::PopID();
                             ImGui::PopID();
+
+                            ImGui::Separator();
                         }
                         ImGui::PopID();
 
