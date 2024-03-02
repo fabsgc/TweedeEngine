@@ -20,10 +20,14 @@ namespace te
     private:
         void DeleteScript(SPtr<Script> script, const UUID& uuid);
 
+        bool ShowLoadScript();
+
     private:
+        ImGuiFileBrowser& _fileBrowser;
+
         SPtr<Script> _currentScript;
         UINT32 _scriptCreationCounter;
 
-        ImGuiFileBrowser& _fileBrowser;
+        bool _loadScript = false;
     };
 }

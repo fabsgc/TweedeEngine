@@ -105,6 +105,7 @@ namespace te
     const String Editor::TexturesExtensionsStr = ".png,.jpeg,.jpg,.dds,.tiff,.tif,.tga,.bmp";
     const String Editor::MeshesExtensionsStr = ".obj,.dae,.fbx,.stl,.gltf,.glb";
     const String Editor::SoundsExtensionsStr = ".ogg,.flac,.wav";
+    const String Editor::ScriptsExtensionsStr = ".c,.cpp";
 
     Event<void()> Editor::OnOpen;
     Event<void()> Editor::OnSave;

@@ -111,6 +111,19 @@ namespace te
                 ImGui::PopItemFlag();
                 ImGui::PopItemWidth();
             }
+
+            if (ImGui::CollapsingHeader("Properties"))
+            {
+                String path = _currentScript->GetPath();
+            }
+
+            if (ShowLoadScript())
+                hasChanged = true;
+        }
+
+        if (hasChanged)
+        {
+
         }
     }
 
@@ -133,5 +146,28 @@ namespace te
         script = nullptr;
         _currentScript = nullptr;
         gEditor().NeedsRedraw();
+    }
+
+    bool WidgetScripts::ShowLoadScript()
+    {
+        bool scriptLoaded = false;
+
+        if (_loadScript)
+            ImGui::OpenPopup("Load Script");
+
+        if (_fileBrowser.ShowFileDialog("Load Script", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, Editor::ScriptsExtensionsStr))
+        {
+            scriptLoaded = true;
+            _loadScript = false;
+        }
+        else
+        {
+            if (_fileBrowser.Data.IsCancelled)
+            {
+                _loadScript = false;
+            }
+        }
+
+            return scriptLoaded;
     }
 }

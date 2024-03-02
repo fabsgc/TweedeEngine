@@ -239,6 +239,7 @@ namespace te
         static const String TexturesExtensionsStr;
         static const String MeshesExtensionsStr;
         static const String SoundsExtensionsStr;
+        static const String ScriptsExtensionsStr;
 
         static Event<void()> OnOpen;
         static Event<void()> OnSave;
