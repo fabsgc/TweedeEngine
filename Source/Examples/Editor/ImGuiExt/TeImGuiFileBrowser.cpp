@@ -1202,7 +1202,7 @@ namespace te
         else
         {
             // If list of extensions has all types, no need to validate.
-            for(auto ext : valid_exts)
+            for(const auto& ext : valid_exts)
             {
                 if(ext == "*.*")
                     return true;
