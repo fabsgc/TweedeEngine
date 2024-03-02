@@ -369,6 +369,7 @@ namespace te
             case TID_CConeCollider:
             case TID_CHeightFieldCollider:
             case TID_CDecal:
+                gEditor().PutFocus(Editor::WindowType::Properties);
                 gEditor().PutFocus(Editor::WindowType::Viewport);
                 break;
             }

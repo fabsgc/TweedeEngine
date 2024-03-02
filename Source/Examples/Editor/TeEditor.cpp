@@ -293,6 +293,9 @@ namespace te
 
                     if (_settings.WProject)
                         std::static_pointer_cast<WidgetProject>(_settings.WProject)->ForceExpandToSelection();
+
+                    gEditor().PutFocus(Editor::WindowType::Properties);
+                    gEditor().PutFocus(Editor::WindowType::Viewport);
                 }
             }
             else

@@ -39,7 +39,7 @@ namespace te
     }
 
     void WidgetMaterials::Update()
-    { 
+    {
         bool hasChanged = false;
         char inputName[256];
         char inputUUID[64];

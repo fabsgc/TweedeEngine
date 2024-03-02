@@ -25,7 +25,7 @@ namespace te
     protected:
         SPtr<Material> _currentMaterial;
         UINT32 _materialCreationCounter;
-        
+
         // Data used to set the correct texture while loading
         bool _loadTexture;
         String _loadTextureName;
