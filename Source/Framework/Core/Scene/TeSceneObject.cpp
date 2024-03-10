@@ -37,6 +37,8 @@
 #include "Components/TeCAnimation.h"
 #include "Components/TeCDecal.h"
 
+#include "Scripting/TeScript.h"
+
 namespace te
 {
     SceneObject::SceneObject(const String& name, UINT32 flags)
@@ -1066,7 +1068,11 @@ namespace te
     {
         for (auto& entry : currentSO->GetComponents())
         {
-            if (searchType == ComponentSearchType::CoreType)
+            if (searchType == ComponentSearchType::All)
+            {
+                components.push_back(entry.GetNewHandleFromExisting());
+            }
+            else if (searchType == ComponentSearchType::CoreType)
             {
                 if (entry->GetCoreType() == std::any_cast<UINT32>(criteria))
                 {
@@ -1079,7 +1085,6 @@ namespace te
                 if (entry->GetName() == std::any_cast<String>(criteria))
                 {
                     components.push_back(entry.GetNewHandleFromExisting());
-                    break;
                 }
             }
             else if (searchType == ComponentSearchType::UUID)
@@ -1087,7 +1092,7 @@ namespace te
                 if (entry->GetUUID() == std::any_cast<UUID>(criteria))
                 {
                     components.push_back(entry.GetNewHandleFromExisting());
-                    break;
+                    return;
                 }
             }
         }
@@ -1121,6 +1126,14 @@ namespace te
     {
         Vector<HSceneObject> sceneObjects;
         _getSceneObjectsInternal(_thisHandle, uuid, sceneObjects, ComponentSearchType::UUID, searchInChildren);
+
+        return sceneObjects;
+    }
+
+    Vector<HSceneObject> SceneObject::GetSceneObjects(bool searchInChildren) const
+    {
+        Vector<HSceneObject> sceneObjects;
+        _getSceneObjectsInternal(_thisHandle, nullptr, sceneObjects, ComponentSearchType::All, searchInChildren);
 
         return sceneObjects;
     }
@@ -1170,12 +1183,15 @@ namespace te
     {
         for (auto& entry : currentSO->GetChildren())
         {
-            if (searchType == ComponentSearchType::Name)
+            if (searchType == ComponentSearchType::All)
+            {
+                sceneObjects.push_back(entry.GetNewHandleFromExisting());
+            }
+            else if (searchType == ComponentSearchType::Name)
             {
                 if (entry->GetName() == std::any_cast<String>(criteria))
                 {
                     sceneObjects.push_back(entry.GetNewHandleFromExisting());
-                    break;
                 }
             }
             else if (searchType == ComponentSearchType::UUID)
@@ -1183,7 +1199,7 @@ namespace te
                 if (entry->GetUUID() == std::any_cast<UUID>(criteria))
                 {
                     sceneObjects.push_back(entry.GetNewHandleFromExisting());
-                    break;
+                    return;
                 }
             }
         }
@@ -1253,24 +1269,42 @@ namespace te
             if ((*iter)->GetUUID() == component->GetUUID())
             {
                 _components.erase(iter);
-                break;
+                return;
             }
         }
     }
 
     void SceneObject::AddExistingComponent(const HComponent& component)
     {
-        bool alreadyPresent = false;
-        for (auto iter = _components.begin(); iter != _components.end(); iter++)
+        for (const auto& c : _components)
         {
-            if ((*iter)->GetUUID() == component->GetUUID())
-            {
-                alreadyPresent = true;
-                break;
-            }
+            if (c->GetUUID() == component->GetUUID())
+                return;
         }
 
-        if (!alreadyPresent)
-            _components.push_back(component.GetNewHandleFromExisting());
+        _components.push_back(component.GetNewHandleFromExisting());
+    }
+
+    void SceneObject::AddScript(const HScript& script)
+    {
+        for (const auto& e : _scripts)
+        {
+            if (e->GetUUID() == script->GetUUID())
+                return;
+        }
+
+        _scripts.push_back(script.GetNewHandleFromExisting());
+    }
+
+    void SceneObject::RemoveScript(const HScript& script)
+    {
+        for (auto iter = _scripts.begin(); iter != _scripts.end(); iter++)
+        {
+            if ((*iter)->GetUUID() == script->GetUUID())
+            {
+                _scripts.erase(iter);
+                return;
+            }
+        }
     }
 }

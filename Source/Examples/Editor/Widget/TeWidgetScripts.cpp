@@ -30,6 +30,7 @@ namespace te
     void WidgetScripts::Update()
     {
         bool hasChanged = false;
+        char inputPath[1024];
         char inputName[256];
         char inputUUID[64];
         UUID load = UUID::EMPTY;
@@ -97,7 +98,7 @@ namespace te
             strcpy(inputUUID, uuidStr.c_str());
 
             if (name.length() < 256) strcpy(inputName, name.c_str());
-            else strcpy(inputName, name.substr(0, 255).c_str());
+            else strcpy(inputName, name.substr(0, 256).c_str());
 
             if (ImGui::CollapsingHeader("Identification"))
             {
@@ -112,9 +113,21 @@ namespace te
                 ImGui::PopItemWidth();
             }
 
-            if (ImGui::CollapsingHeader("Properties"))
+            if (ImGui::CollapsingHeader("Properties", ImGuiTreeNodeFlags_DefaultOpen))
             {
                 String path = _currentScript->GetPath();
+                if (path.length() < 1024) strcpy(inputPath, path.c_str());
+                else strcpy(inputPath, name.substr(0, 1024).c_str());
+
+                ImGui::PushItemWidth(width + 45.0f);
+                ImGui::InputText("Path", inputPath, IM_ARRAYSIZE(inputPath), ImGuiInputTextFlags_ReadOnly);
+                ImGui::PopItemWidth();
+
+                ImGui::SameLine();
+                if (ImGui::Button(ICON_FA_FOLDER_OPEN, ImVec2(28.0f, 26.0f)))
+                {
+                    _loadScript = true;
+                }
             }
 
             if (ShowLoadScript())
@@ -135,11 +148,11 @@ namespace te
         HScript handle = static_resource_cast<Script>(
             gResourceManager()._createResourceHandle(script, uuid));
 
-        Vector<HComponent> components = gSceneManager().GetRootNode()->GetComponents(true);
+        Vector<HSceneObject> sceneObjects = gSceneManager().GetRootNode()->GetSceneObjects(true); 
 
-        for (auto& component : components)
+        for (auto& sceneObject : sceneObjects)
         {
-            // TODO Script
+            sceneObject->RemoveScript(handle);
         }
 
         EditorResManager::Instance().Remove<Script>(handle);
@@ -159,6 +172,8 @@ namespace te
         {
             scriptLoaded = true;
             _loadScript = false;
+
+            _currentScript->SetPath(_fileBrowser.Data.SelectedPath);
         }
         else
         {
@@ -168,6 +183,6 @@ namespace te
             }
         }
 
-            return scriptLoaded;
+        return scriptLoaded;
     }
 }

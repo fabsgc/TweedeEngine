@@ -44,11 +44,6 @@ namespace te
             WorldTfrmDirty = 0x02
         };
 
-        enum class ComponentSearchType
-        {
-            CoreType, Name, UUID
-        };
-
         friend class SceneManager;
 
     public:
@@ -524,7 +519,7 @@ namespace te
          *
          * @param[in]	name				name of the component
          * @param[in]	searchInChildren	if true, will also search in children SceneObject
-         * @return		Vector ofComponents
+         * @return		Vector of Components
          */
         Vector<HComponent> GetComponents(const String& name, bool searchInChildren = false) const;
 
@@ -550,6 +545,7 @@ namespace te
          * Searches for a scene object with the specified name accross all direct children and returns the first one it finds.
          *
          * @param[in]	name				name of the scene object
+         * @param[in]	searchInChildren	if true, will also search in children SceneObject
          * @return		SceneObject if found, nullptr otherwise.
          */
         HSceneObject GetSceneObject(const String& name, bool searchInChildren = false) const;
@@ -558,6 +554,7 @@ namespace te
          * Searches for a scene object with the specified name accross all direct children and returns all that match.
          *
          * @param[in]	name				name of the scene object
+         * @param[in]	searchInChildren	if true, will also search in children SceneObject
          * @return		Vector of SceneObjects
          */
         Vector<HSceneObject> GetSceneObjects(const String& name, bool searchInChildren = false) const;
@@ -566,6 +563,7 @@ namespace te
          * Searches for a scene object with the specified name accross all direct children and returns the first one it finds.
          *
          * @param[in]	uuid				uuid of the scene object
+         * @param[in]	searchInChildren	if true, will also search in children SceneObject
          * @return		SceneObject if found, nullptr otherwise.
          */
         HSceneObject GetSceneObject(const UUID& uuid, bool searchInChildren = false) const;
@@ -574,9 +572,17 @@ namespace te
          * Searches for a scene object with the specified name accross all direct children and returns all that match.
          *
          * @param[in]	uuid				uuid of the scene object
+         * @param[in]	searchInChildren	if true, will also search in children SceneObject
          * @return		Vector of SceneObjects
          */
         Vector<HSceneObject> GetSceneObjects(const UUID& uuid, bool searchInChildren = false) const;
+
+        /**
+         * Searches for a all scene objects without distinction
+         * @param[in]	searchInChildren	if true, will also search in children SceneObject
+         * @return		Vector of SceneObjects
+         */
+        Vector<HSceneObject> GetSceneObjects(bool searchInChildren = false) const;
 
         /**
          * Returns true if the current sceneObject is below the sceneObject given in parameter in the scene hierarchy
@@ -586,7 +592,20 @@ namespace te
          */
         bool IsDescendantOf(const HSceneObject& sceneObject);
 
+    public:
+        /** Add a script to this scene object */
+        void AddScript(const HScript& script);
+
+        /** Remove a script from this scene object */
+        void RemoveScript(const HScript& script);
+
     private:
+
+        enum class ComponentSearchType
+        {
+            CoreType, Name, UUID, All
+        };
+
         /**
          * Searches for components with the specified type accross all direct children of the current sceneObject and returns the first one it finds.
          *
@@ -660,5 +679,6 @@ namespace te
         bool _activeHierarchy = true;
 
         Vector<HComponent> _components;
+        Vector<HScript> _scripts;
     };
 }
