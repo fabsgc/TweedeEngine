@@ -39,6 +39,15 @@ namespace te
                     Res.erase(it);
             }
 
+            HResource Find(const UUID& uuid)
+            {
+                auto it = Res.find(uuid);
+                if (it != Res.end())
+                    return it->second.GetNewHandleFromExisting();
+
+                return HResource();
+            }
+
             UnorderedMap<UUID, HResource> Res;
         };
 
@@ -89,6 +98,16 @@ namespace te
         ResourcesContainer& Get()
         {
             return _resources[T::GetResourceType()];
+        }
+
+        template <class T>
+        ResourceHandle<T> Find(const UUID& uuid)
+        {
+            HResource res = _resources[T::GetResourceType()].Find(uuid);
+            if (res.IsLoaded())
+                return static_resource_cast<T>(res);
+
+            return ResourceHandle<T>();
         }
 
         void Clear()
