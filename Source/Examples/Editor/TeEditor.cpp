@@ -89,6 +89,7 @@
 #include "Material/TeShader.h"
 #include "Threading/TeTaskScheduler.h"
 #include "Utility/TeTime.h"
+#include "Scripting/TeScript.h"
 
 #ifndef GImGui
 ImGuiContext* GImGui = NULL;
@@ -105,7 +106,7 @@ namespace te
     const String Editor::TexturesExtensionsStr = ".png,.jpeg,.jpg,.dds,.tiff,.tif,.tga,.bmp";
     const String Editor::MeshesExtensionsStr = ".obj,.dae,.fbx,.stl,.gltf,.glb";
     const String Editor::SoundsExtensionsStr = ".ogg,.flac,.wav";
-    const String Editor::ScriptsExtensionsStr = ".c,.cpp";
+    const String Editor::ScriptsExtensionsStr = ".cpp";
 
     Event<void()> Editor::OnOpen;
     Event<void()> Editor::OnSave;
@@ -162,6 +163,9 @@ namespace te
         gCoreApplication().GetState().SetFlag(ApplicationState::Mode::Physics, false);
         gCoreApplication().GetState().SetFlag(ApplicationState::Mode::Animation, false);
 
+        _project = Project::Create();
+        _project->SetPath(std::filesystem::absolute("Data/Project/project.json").generic_string());
+
         InitializeInput();
         InitializeScene();
         InitializeUICamera();
@@ -177,9 +181,6 @@ namespace te
 
         if (GuiAPI::Instance().IsGuiInitialized())
             InitializeGui();
-
-        _project = Project::Create();
-        _project->SetPath(std::filesystem::absolute("Data/Project/project.json").generic_string());
     }
 
     void Editor::OnShutDown()
@@ -1489,6 +1490,23 @@ namespace te
 
             _sceneRenderableSO->Rotate(Vector3::UNIT_Y, Radian(Math::HALF_PI));
             _sceneRenderableSO->Move(Vector3(0.0f, -1.0f, 0.0f));
+        }
+
+        // LOAD SCRIPT
+        {
+            std::filesystem::path projectPath(_project->GetPath());
+            String scriptPathStr = projectPath.parent_path().generic_string();
+            scriptPathStr += std::filesystem::path::preferred_separator;
+            scriptPathStr += "FirstScript.cpp";
+
+            std::filesystem::path scriptPath(scriptPathStr);
+            scriptPathStr = scriptPath.generic_string();
+
+            _script = Script::Create();
+            _script->SetName("First script");
+            _script->SetPath(scriptPathStr);
+
+            EditorResManager::Instance().Add(_script);
         }
 
         EditorResManager::Instance().Add<Material>(_sphereMaterial);

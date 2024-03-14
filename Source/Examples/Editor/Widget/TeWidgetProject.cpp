@@ -376,6 +376,12 @@ namespace te
 
             _handleSelectionWindowSwitch = false;
         }
+
+        if (_selections.ClickedSceneObject && _handleSelectionWindowSwitch && !io.MouseDown[ImGuiMouseButton_Left])
+        {
+            gEditor().PutFocus(Editor::WindowType::Properties);
+            _handleSelectionWindowSwitch = false;
+        }
     }
 
     void WidgetProject::HandleDragAndDrop(HSceneObject& sceneObject)

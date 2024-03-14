@@ -599,6 +599,9 @@ namespace te
         /** Remove a script from this scene object */
         void RemoveScript(const HScript& script);
 
+        /* Return all scripts used by this SceneObject instance */
+        const Vector<HScript>& GetScripts() const { return _scripts; }
+
     private:
 
         enum class ComponentSearchType

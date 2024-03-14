@@ -51,6 +51,7 @@
 #include "Components/TeCDecal.h"
 #include "Physics/TePhysics.h"
 #include "Image/TePixelUtil.h"
+#include "Scripting/TeScript.h"
 
 #if defined(__GNUC__)
 #pragma GCC diagnostic ignored "-Wsign-compare" 
@@ -315,6 +316,15 @@ namespace te
         Transform transform = _selections.ClickedSceneObject->GetLocalTransform();
         SPtr<GameObject> gameObject = std::static_pointer_cast<GameObject>(_selections.ClickedSceneObject);
 
+        char inputName[256];
+        const std::vector<HScript>& scripts = _selections.ClickedSceneObject->GetScripts();
+        UUID emptyScript = UUID(50, 0, 0, 0);
+        UUID loadScript = UUID::EMPTY;
+
+        EditorResManager::ResourcesContainer& container = EditorResManager::Instance().Get<Script>();
+
+        const float width = ImGui::GetWindowContentRegionWidth() - 110.0f;
+
         if (ShowGameObjectInformation(gameObject))
             hasChanged = true;
 
@@ -330,6 +340,51 @@ namespace te
             _selections.ClickedSceneObject->SetLocalTransform(transform);
             _selections.ClickedSceneObject->SetMobility(mobility);
             hasChanged = true;
+        }
+
+        if (ImGui::CollapsingHeader("Scripts", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            ImGuiExt::ComboOptions<UUID> scriptsOptions;
+            scriptsOptions.AddOption(emptyScript, "Select a script ...");
+
+            for (const auto& script : container.Res)
+            {
+                if (std::find(scripts.begin(), scripts.end(), script.second) == scripts.end())
+                {
+                    scriptsOptions.AddOption(script.second->GetUUID(), script.second->GetName());
+                }
+            }
+
+            if (ImGuiExt::RenderOptionCombo<UUID>(&loadScript, "##scene_object_add_script", "Add script", scriptsOptions, width))
+            {
+                if (loadScript != UUID::EMPTY)
+                {
+                    HScript loadedScript = EditorResManager::Instance().Find<Script>(loadScript);
+                    if (loadedScript.IsLoaded())
+                    {
+                        _selections.ClickedSceneObject->AddScript(loadedScript);
+                    }
+                }
+
+                hasChanged = true;
+            }
+
+            for (const auto& script : scripts)
+            {
+                const String& name = script->GetName();
+                if (name.length() < 256) strcpy(inputName, name.c_str());
+                else strcpy(inputName, name.substr(0, 256).c_str());
+
+                ImGui::PushItemWidth(width);
+                ImGui::InputText("", inputName, IM_ARRAYSIZE(inputName), ImGuiInputTextFlags_ReadOnly);
+                ImGui::PopItemWidth();
+
+                ImGui::SameLine();
+                if (ImGui::Button(ICON_FA_TIMES_CIRCLE, ImVec2(28.0f, 26.0f)))
+                {
+                    _selections.ClickedSceneObject->RemoveScript(script);
+                }
+            }
         }
 
         return hasChanged;

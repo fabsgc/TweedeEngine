@@ -316,6 +316,8 @@ namespace te
         HLight _light;
         HSkybox _skybox;
         HRenderable _renderable;
+
+        HScript _script;
 #endif
     };
 
