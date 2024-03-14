@@ -64,7 +64,7 @@ namespace te
         while (EnumDisplaySettings(monitorInfo.szDevice, i++, &devMode))
         {
             bool foundVideoMode = false;
-            for (auto videoMode : _videoModes)
+            for (auto& videoMode : _videoModes)
             {
                 Win32VideoMode* win32VideoMode = static_cast<Win32VideoMode*>(videoMode);
 

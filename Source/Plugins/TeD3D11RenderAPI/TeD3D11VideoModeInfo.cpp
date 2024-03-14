@@ -45,7 +45,7 @@ namespace te
             DXGI_MODE_DESC displayMode = modeDesc[i];
 
             bool foundVideoMode = false;
-            for (auto videoMode : _videoModes)
+            for (auto& videoMode : _videoModes)
             {
                 D3D11VideoMode* d3d11videoMode = static_cast<D3D11VideoMode*>(videoMode);
 
