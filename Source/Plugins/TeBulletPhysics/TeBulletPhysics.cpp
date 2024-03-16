@@ -127,7 +127,7 @@ namespace te
             }
         }
 
-        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Physics);
+        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Mode::Physics);
         if (IsPaused() || !isRunning)
             return;
 
