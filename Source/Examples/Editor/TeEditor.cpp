@@ -79,6 +79,9 @@
 
 #include "Project/TeProject.h"
 
+#include "Scripting/TeScript.h"
+#include "Scripting/TeScriptManager.h"
+
 #include <filesystem>
 
 // TODO Temp for debug purpose
@@ -89,7 +92,6 @@
 #include "Material/TeShader.h"
 #include "Threading/TeTaskScheduler.h"
 #include "Utility/TeTime.h"
-#include "Scripting/TeScript.h"
 
 #ifndef GImGui
 ImGuiContext* GImGui = NULL;
@@ -668,12 +670,12 @@ namespace te
 
     void Editor::BuildScript()
     {
-
+        const Script* script = std::static_pointer_cast<WidgetTextEditor>(_settings.WTextEditor)->GetScript();
     }
 
     void Editor::SaveScript()
     {
-
+        const Script* script = std::static_pointer_cast<WidgetTextEditor>(_settings.WTextEditor)->GetScript();
     }
 
     Widget* Editor::GetWidget(Widget::WidgetType type)
