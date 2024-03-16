@@ -14,19 +14,19 @@ namespace te
         virtual ~Resource() = default;
 
         /** Returns the name of the resource. */
-        const String& GetName() const { return _name; }
+        virtual const String& GetName() const { return _name; }
 
         /** Sets the name of the resource. */
-        void SetName(const String& name) { _name = name; }
+        virtual void SetName(const String& name) { _name = name; }
 
         /** Returns the path of the resource. */
-        const String& GetPath() const { return _path; };
+        virtual const String& GetPath() const { return _path; };
 
         /** Sets the path of the resource. */
         virtual void SetPath(const String& path) { _path = path; }
 
         /**	Globally unique identifier of the resource that persists scene save/load. */
-        const UUID& GetUUID() const { return _UUID; }
+        virtual const UUID& GetUUID() const { return _UUID; }
 
         /** Allow to dynamically retrieve resource type */
         static UINT32 GetResourceType() { return TypeID_Core::TID_Resource; }
@@ -38,7 +38,7 @@ namespace te
         Resource(UINT32 type);
 
         /** @copydoc GetUUID */
-        void SetUUID(const UUID& uuid) { _UUID = uuid; }
+        virtual void SetUUID(const UUID& uuid) { _UUID = uuid; }
 
     protected:
         String _name;
