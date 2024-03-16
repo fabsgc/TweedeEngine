@@ -7,7 +7,7 @@ namespace te
     template <typename T>
     class GameObjectHandle;
 
-    /**	Contains instance data that is held by all GameObject handles. */
+    /** Contains instance data that is held by all GameObject handles. */
     struct GameObjectInstanceData
     {
         GameObjectInstanceData()
@@ -20,7 +20,7 @@ namespace te
 
     typedef SPtr<GameObjectInstanceData> GameObjectInstanceDataPtr;
 
-    /**	Internal data shared between GameObject handles. */
+    /** Internal data shared between GameObject handles. */
     struct TE_CORE_EXPORT GameObjectHandleData
     {
         GameObjectHandleData() = default;
@@ -58,7 +58,7 @@ namespace te
          */
         bool IsDestroyed(bool checkQueued = false) const;
 
-        /**	Returns the instance ID of the object the handle is referencing. */
+        /** Returns the instance ID of the object the handle is referencing. */
         UINT64 GetInstanceId() const { return _data->Ptr != nullptr ? _data->Ptr->InstanceId : 0; }
 
         /**
@@ -104,13 +104,13 @@ namespace te
         /** Returns true if handled data is empty */
         bool Empty() const { return _data->Ptr == nullptr; }
 
-        /**	Changes the GameObject instance the handle is pointing to. */
+        /** Changes the GameObject instance the handle is pointing to. */
         void SetHandleData(const SPtr<GameObject>& object);
 
-        /**	@copydoc SetHandleData */
+        /** @copydoc SetHandleData */
         void SetHandleData(const GameObject& object);
 
-        /**	@copydoc SetHandleData */
+        /** @copydoc SetHandleData */
         void SetHandleData(const GameObject* object);
 
     protected:
@@ -134,10 +134,10 @@ namespace te
             : _data(te_shared_ptr_new<GameObjectHandleData>(nullptr))
         { }
 
-        /**	Throws an exception if the referenced GameObject has been destroyed. */
+        /** Throws an exception if the referenced GameObject has been destroyed. */
         void ThrowIfDestroyed() const;
 
-        /**	Invalidates the handle signifying the referenced object was destroyed. */
+        /** Invalidates the handle signifying the referenced object was destroyed. */
         void Destroy()
         {
             // It's important not to clear _data->Ptr as some code might rely
@@ -159,35 +159,35 @@ namespace te
     class GameObjectHandle : public GameObjectHandleBase
     {
     public:
-        /**	Constructs a new empty handle. */
+        /** Constructs a new empty handle. */
         GameObjectHandle()
             : GameObjectHandleBase()
         {
             _data = te_shared_ptr_new<GameObjectHandleData>();
         }
 
-        /**	Copy constructor from another handle of the same type. */
+        /** Copy constructor from another handle of the same type. */
         GameObjectHandle(const GameObjectHandle<T>& ptr) = default;
 
-        /**	Move constructor from another handle of the same type. */
+        /** Move constructor from another handle of the same type. */
         GameObjectHandle(GameObjectHandle<T> && ptr) = default;
 
-        /**	Copy constructor from a shared ptr. */
+        /** Copy constructor from a shared ptr. */
         GameObjectHandle(const SPtr<T>& ptr)
             : GameObjectHandleBase(ptr)
         { }
 
-        /**	Copy constructor from a ptr. */
+        /** Copy constructor from a ptr. */
         GameObjectHandle(const T* ptr)
             : GameObjectHandleBase(ptr)
         { }
 
-        /**	Copy constructor from a reference. */
+        /** Copy constructor from a reference. */
         GameObjectHandle(const T& ptr)
             : GameObjectHandleBase(&ptr)
         { }
 
-        /**	Invalidates the handle. */
+        /** Invalidates the handle. */
         GameObjectHandle<T>& operator=(std::nullptr_t ptr)
         {
             _data = te_shared_ptr_new<GameObjectHandleData>();
@@ -283,21 +283,21 @@ namespace te
         }
     };
 
-    /**	Casts one GameObject handle type to another. */
+    /** Casts one GameObject handle type to another. */
     template<class _Ty1, class _Ty2>
     GameObjectHandle<_Ty1> static_object_cast(const GameObjectHandle<_Ty2>& other)
     {
         return GameObjectHandle<_Ty1>(other.GetHandleData());
     }
 
-    /**	Casts a generic GameObject handle to a specific one . */
+    /** Casts a generic GameObject handle to a specific one . */
     template<class T>
     GameObjectHandle<T> static_object_cast(const GameObjectHandleBase& other)
     {
         return GameObjectHandle<T>(other.GetHandleData());
     }
 
-    /**	Compares if two handles point to the same GameObject. */
+    /** Compares if two handles point to the same GameObject. */
     template<class _Ty1, class _Ty2>
     bool operator==(const GameObjectHandle<_Ty1>& _Left, const GameObjectHandle<_Ty2>& _Right)
     {
@@ -305,7 +305,7 @@ namespace te
             (_Left._data != nullptr && _Right._data != nullptr && _Left.GetInstanceId() == _Right.GetInstanceId());
     }
 
-    /**	Compares if two handles point to different GameObject%s. */
+    /** Compares if two handles point to different GameObject%s. */
     template<class _Ty1, class _Ty2>
     bool operator!=(const GameObjectHandle<_Ty1>& _Left, const GameObjectHandle<_Ty2>& _Right)
     {

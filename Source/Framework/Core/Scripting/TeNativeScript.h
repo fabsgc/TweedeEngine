@@ -47,7 +47,7 @@ namespace te
 
     public:
         /**
-         * Because a script lives inside the scene graph we want to store an handle to its parent SceneObject
+         * Because a script is attached to the scene graph we want to store an handle to its parent SceneObject
          */
         virtual void SetParentSceneObject(const HSceneObject& sceneObject) final
         { 

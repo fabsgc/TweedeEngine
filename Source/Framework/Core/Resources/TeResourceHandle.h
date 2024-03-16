@@ -139,7 +139,9 @@ namespace te
         static TResourceHandle<T> GetNewHandleFromExisting(T* ptr)
         {
             if (ptr)
+            {
                 return TResourceHandle<T>(ptr, ptr->GetUUID());
+            }
 
             return TResourceHandle<T>();
         }
