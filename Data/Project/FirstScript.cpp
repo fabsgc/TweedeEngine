@@ -3,6 +3,8 @@
 #include "Scene/TeSceneObject.h"
 #include "Scene/TeSceneManager.h"
 
+#include "Utility/TeTime.h"
+
 using namespace te;
 
 class FirstScript : public NativeScript
@@ -27,7 +29,7 @@ public:
 
     virtual void Update() override
     {
-        TE_PRINT("FirstScript::Update");
+        TE_PRINT(gTime().GetFrameDelta());
     }
 };
 

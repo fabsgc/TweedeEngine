@@ -18,7 +18,7 @@ namespace te
     TE_MODULE_STATIC_MEMBER(ScriptManager)
 
     ScriptManager::ScriptManager()
-        : _paused(true)
+        : _paused(false)
     { }
 
     void ScriptManager::OnStartUp()
@@ -197,7 +197,7 @@ namespace te
 
     void ScriptManager::PreUpdate()
     {
-        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Scripting);
+        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Mode::Scripting);
         if (IsPaused() || !isRunning)
             return;
 
@@ -209,7 +209,7 @@ namespace te
 
     void ScriptManager::PostUpdate()
     {
-        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Scripting);
+        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Mode::Scripting);
         if (IsPaused() || !isRunning)
             return;
 
@@ -221,7 +221,7 @@ namespace te
 
     void ScriptManager::PostRender()
     {
-        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Scripting);
+        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Mode::Scripting);
         if (IsPaused() || !isRunning)
             return;
 
@@ -233,7 +233,7 @@ namespace te
 
     void ScriptManager::Update()
     {
-        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Scripting);
+        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Mode::Scripting);
         if (IsPaused() || !isRunning)
             return;
 

@@ -49,7 +49,7 @@ namespace te
 
     const EvaluatedAnimationData* AnimationManager::Update()
     {
-        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Animation);
+        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Mode::Animation);
         if (IsPaused() || !isRunning)
             return &_animData;
 

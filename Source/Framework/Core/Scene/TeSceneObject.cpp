@@ -748,7 +748,7 @@ namespace te
                 if (entry->SupportsNotify(flags))
                 {
                     bool alwaysRun = entry->HasFlag(Component::AlwaysRun);
-                    bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Game);
+                    bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Mode::Game);
 
                     if (alwaysRun || isRunning)
                         entry->OnTransformChanged(componentFlags); 

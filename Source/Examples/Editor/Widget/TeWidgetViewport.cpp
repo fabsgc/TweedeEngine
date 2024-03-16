@@ -8,6 +8,7 @@
 #include "Utility/TeTime.h"
 #include "../TeEditorUtils.h"
 #include "Renderer/TeRenderer.h"
+#include "Scripting/TeScriptManager.h"
 
 namespace te
 {
@@ -143,7 +144,7 @@ namespace te
         }
 
         // Notify camera has been updated
-        if (!gCoreApplication().GetState().IsFlagSet(ApplicationState::Game))
+        if (!gCoreApplication().GetState().IsFlagSet(ApplicationState::Mode::Game))
             _viewportCamera->NotifyUpdateEverything(); // updating everything is very heavy
 
         _viewportCamera->NotifyNeedsRedraw();
@@ -152,7 +153,7 @@ namespace te
 
     void WidgetViewport::Update()
     {
-        if (gCoreApplication().GetState().IsFlagSet(ApplicationState::Game))
+        if (gCoreApplication().GetState().IsFlagSet(ApplicationState::Mode::Game))
             gEditor().NeedsRedraw();
 
         if (_viewportCameraUI->NeedsRedraw())
@@ -188,9 +189,13 @@ namespace te
         UINT32 flags = _viewportCamera->GetFlags();
 
         //We are in simulation mode, we switch to edit mode and change camera to onDemand
-        if (gCoreApplication().GetState().IsFlagSet(ApplicationState::Game))
+        if (gCoreApplication().GetState().IsFlagSet(ApplicationState::Mode::Game))
         {
-            gCoreApplication().GetState().SetFlag(ApplicationState::Game, false);
+            gCoreApplication().GetState().SetFlag(ApplicationState::Mode::Game, false);
+            gCoreApplication().GetState().SetFlag(ApplicationState::Mode::Physics, false);
+            gCoreApplication().GetState().SetFlag(ApplicationState::Mode::Scripting, false);
+            gCoreApplication().GetState().SetFlag(ApplicationState::Mode::Animation, false);
+
             gEditor().DestroyRunningScene();
 
             if (!(flags & (UINT32)CameraFlag::OnDemand))

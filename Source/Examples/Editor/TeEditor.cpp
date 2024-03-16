@@ -162,6 +162,7 @@ namespace te
         gCoreApplication().GetState().SetFlag(ApplicationState::Mode::Game, false);
         gCoreApplication().GetState().SetFlag(ApplicationState::Mode::Physics, false);
         gCoreApplication().GetState().SetFlag(ApplicationState::Mode::Animation, false);
+        gCoreApplication().GetState().SetFlag(ApplicationState::Mode::Scripting, false);
 
         _project = Project::Create();
         _project->SetPath(std::filesystem::absolute("Data/Project/project.json").generic_string());
@@ -1356,7 +1357,7 @@ namespace te
 
         if (!_runningSceneSO.IsDestroyed())
         {
-            _runningSceneSO->Destroy();
+            _runningSceneSO->Destroy(true);
             _sceneSO->SetActive(true);
         }
 
@@ -1372,7 +1373,7 @@ namespace te
 
         if (!_sceneSO.IsDestroyed())
         {
-            _sceneSO->Destroy();
+            _sceneSO->Destroy(true);
         }
 
         NeedsRedraw();

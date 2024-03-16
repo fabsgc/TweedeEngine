@@ -72,16 +72,13 @@ namespace te
         // Play
         ShowButton(ICON_FA_PLAY, ICON_FA_STOP,
             [this]() {
-                return !gCoreApplication().GetState().IsFlagSet(ApplicationState::Game); 
+                return !gCoreApplication().GetState().IsFlagSet(ApplicationState::Mode::Game); 
             },
             [this]() {
-                gScriptManager().TogglePaused();
-
                 gCoreApplication().GetState().ToggleFlag(ApplicationState::Mode::Game);
                 gCoreApplication().GetState().ToggleFlag(ApplicationState::Mode::Physics);
                 gCoreApplication().GetState().ToggleFlag(ApplicationState::Mode::Scripting);
                 gCoreApplication().GetState().ToggleFlag(ApplicationState::Mode::Animation);
-                gCoreApplication().GetState().ToggleFlag(ApplicationState::Mode::Scripting);
 
                 bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Mode::Game);
                 if (isRunning)

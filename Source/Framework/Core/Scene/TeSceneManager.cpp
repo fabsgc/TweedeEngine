@@ -38,7 +38,7 @@ namespace te
 
     bool SceneInstance::RayCast(const Vector3& origin, const Vector3& unitDir, PhysicsQueryHit& hit, float maxDist) const
     {
-        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Physics);
+        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Mode::Physics);
         if (gPhysics().IsPaused() || !isRunning)
             return false;
 
@@ -52,7 +52,7 @@ namespace te
 
     bool SceneInstance::RayCast(const Vector3& origin, const Vector3& unitDir, Vector<PhysicsQueryHit>& hits, float maxDist) const
     {
-        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Physics);
+        bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Mode::Physics);
         if (gPhysics().IsPaused() || !isRunning)
             return false;
 
