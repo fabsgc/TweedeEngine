@@ -88,29 +88,10 @@ namespace te
 
     void WidgetTextEditor::ShowToolbar()
     {
-        auto ShowButton = [this](const char* title, bool enabled, const std::function<void()>& action)
-        {
-            ImGui::SameLine();
-            ImGui::PushStyleColor(ImGuiCol_Button, (enabled) ? ImGui::GetStyle().Colors[ImGuiCol_ButtonActive] : ImGui::GetStyle().Colors[ImGuiCol_Button]);
-            if (ImGui::Button(title, ImVec2(32.0f, 26.0f)))
-            {
-                if(enabled)
-                    action();
-            }
-            ImGui::PopStyleColor();
-        };
-
         ImGui::BeginChild("TextEditorActionList", ImVec2(ImGui::GetContentRegionAvail().x, 42.0f), true);
 
-        // Build current script
-        ShowButton(ICON_FA_COGS, _script != nullptr, [this]() {
-            OnBuild();
-        });
-
-        // Save current script
-        ShowButton(ICON_FA_SAVE, _script != nullptr, [this]() {
-            OnSave();
-        });
+        ImGuiExt::RenderButton(ICON_FA_COGS, ICON_FA_COGS, [&]() { return _script != nullptr; }, [&]() { return _script != nullptr; }, OnBuild, ImVec2(32.0f, 26.0f));
+        ImGuiExt::RenderButton(ICON_FA_SAVE, ICON_FA_SAVE, [&]() { return _script != nullptr; }, [&]() { return _script != nullptr; }, OnSave, ImVec2(32.0f, 26.0f));
 
         ImGui::EndChild();
     }

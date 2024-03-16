@@ -12,6 +12,8 @@
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
 
+#include <functional>
+
 namespace te
 {
     class ImGuiExt
@@ -103,6 +105,9 @@ namespace te
 
         static void RenderImage(SPtr<Texture> texture, const Vector2& size, 
             const Vector2& offset = Vector2::ZERO);
+
+        static void RenderButton(const char* titleActive, const char* titleInactive, const std::function<bool()>& isActive, const std::function<bool()>& isEnabled,
+            const std::function<void()>& action, const ImVec2& size = ImVec2(), const String& tooltip = String());
 
         template<typename PredYes, typename PredNo, typename PredCustom>
         static bool RenderYesNo(const char* id, PredYes predYes, PredNo predNo, PredCustom predCustom, const String& message)

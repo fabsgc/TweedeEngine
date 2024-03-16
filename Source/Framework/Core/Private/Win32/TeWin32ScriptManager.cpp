@@ -85,7 +85,7 @@ namespace te
 #if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         command = command + CompileDebug(script);
 #else
-        command = command + CompileRelease(identifier);
+        command = command + CompileRelease(script);
         flags |= CREATE_NO_WINDOW;
 #endif
 

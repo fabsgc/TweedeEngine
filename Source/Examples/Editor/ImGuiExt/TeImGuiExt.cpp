@@ -813,6 +813,23 @@ namespace te
         ImGui::SetCursorPos(cursor);
     }
 
+    void ImGuiExt::RenderButton(const char* titleActive, const char* titleInactive, const std::function<bool()>& isActive, const std::function<bool()>& isEnabled,
+        const std::function<void()>& action, const ImVec2& size, const String& tooltip)
+    {
+        ImGui::SameLine();
+        ImGui::PushStyleColor(ImGuiCol_Button, isActive() ? ImGui::GetStyle().Colors[ImGuiCol_ButtonActive] : ImGui::GetStyle().Colors[ImGuiCol_Button]);
+        if (ImGui::Button(isActive() ? titleActive : titleInactive, size))
+        {
+            if (isEnabled())
+                action();
+        }
+        if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled) && !tooltip.empty())
+        {
+            ImGui::SetTooltip(tooltip.c_str());
+        }
+        ImGui::PopStyleColor();
+    }
+
     template<typename T>
     bool ImGuiExt::RenderOptionInt(T& value, const char* id, const char* text,
         T min, T max, float width, bool disable)

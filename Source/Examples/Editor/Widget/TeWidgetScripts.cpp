@@ -73,7 +73,7 @@ namespace te
             if (_currentScript)
             {
                 if (ImGuiExt::RenderOptionCombo<UUID>(&scriptUUID, "##script_list_option", "", 
-                    scriptsOptions, ImGui::GetWindowContentRegionWidth() - 32.0f - offsetListScripts))
+                    scriptsOptions, ImGui::GetWindowContentRegionWidth() - 35.0f - offsetListScripts))
                 {
                     if (scriptUUID != _currentScript->GetUUID())
                         _currentScript = gResourceManager().Load<Script>(scriptUUID).GetInternalPtr();
@@ -82,7 +82,7 @@ namespace te
                 // You can delete a script
                 // Be careful this feature also reset all components that are using this script
                 ImGui::SameLine();
-                if (ImGui::Button(ICON_FA_TIMES_CIRCLE, ImVec2(25.0f, 26.0f)))
+                if (ImGui::Button(ICON_FA_TIMES_CIRCLE, ImVec2(28.0f, 26.0f)))
                 {
                     DeleteScript(_currentScript, scriptUUID);
                 }
@@ -120,21 +120,26 @@ namespace te
                 if (path.length() < 1024) strcpy(inputPath, path.c_str());
                 else strcpy(inputPath, name.substr(0, 1024).c_str());
 
-                ImGui::PushItemWidth(width + 15.0f);
+                ImGui::PushItemWidth(width + 10.0f);
                 ImGui::InputText("Path", inputPath, IM_ARRAYSIZE(inputPath), ImGuiInputTextFlags_ReadOnly);
                 ImGui::PopItemWidth();
 
-                ImGui::SameLine();
-                if (ImGui::Button(ICON_FA_FOLDER_OPEN, ImVec2(28.0f, 26.0f)))
-                {
-                    _loadScript = true;
-                }
-                ImGui::SameLine();
-                if (ImGui::Button(ICON_FA_EDIT, ImVec2(28.0f, 26.0f)))
-                {
-                    static_cast<WidgetTextEditor*>(gEditor().GetWidget(Widget::WidgetType::TextEditor))->SetScript(_currentScript.get());
-                    gEditor().PutFocus(Editor::WindowType::TextEditor);
-                }
+                ImGuiExt::RenderButton(ICON_FA_FOLDER_OPEN, ICON_FA_FOLDER_OPEN,
+                    []() { return true; },
+                    []() { return true; },
+                    [&]() { _loadScript = true; },
+                    ImVec2(28.0f, 26.0f)
+                );
+                
+                ImGuiExt::RenderButton(ICON_FA_EDIT, ICON_FA_EDIT,
+                    [&]() { return !_currentScript->GetPath().empty(); },
+                    [&]() { return !_currentScript->GetPath().empty(); },
+                    [&]() {
+                        static_cast<WidgetTextEditor*>(gEditor().GetWidget(Widget::WidgetType::TextEditor))->SetScript(_currentScript.get());
+                        gEditor().PutFocus(Editor::WindowType::TextEditor);
+                    },
+                    ImVec2(28.0f, 26.0f)
+                );
             }
 
             if (ShowLoadScript())
