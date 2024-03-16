@@ -876,7 +876,10 @@ namespace te
             child->SetActiveHierarchy(_activeHierarchy, triggerEvents);
         }
 
-        (active) ? CreateAllRunningScripts() : RemoveAllRunningScripts();
+        if (active)
+            CreateAllRunningScripts();
+        else
+            RemoveAllRunningScripts();
     }
 
     bool SceneObject::GetActive(bool self) const
