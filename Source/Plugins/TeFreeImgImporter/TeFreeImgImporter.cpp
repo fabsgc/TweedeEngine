@@ -51,13 +51,13 @@ namespace te
 
             // Pull off individual formats (separated by comma by FI)
             Vector<String> extsVector = Util::Split(exts, u8",");
-            for (auto v = extsVector.begin(); v != extsVector.end(); ++v)
+            for (const auto& v : extsVector)
             {
-                auto findIter = std::find(_extensions.begin(), _extensions.end(), *v);
+                auto findIter = std::find(_extensions.begin(), _extensions.end(), v);
 
                 if (findIter == _extensions.end())
                 {
-                    String ext = *v;
+                    String ext = v;
                     Util::ToLowerCase(ext);
 
                     _extensionToFID.insert(std::make_pair(ext, i));

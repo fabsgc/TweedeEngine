@@ -2114,7 +2114,7 @@ namespace te
         _errorMarkers = std::move(etmp);
 
         Breakpoints btmp;
-        for (auto i : _breakpoints)
+        for (const auto& i : _breakpoints)
         {
             if (i >= start && i <= end)
                 continue;
@@ -2144,7 +2144,7 @@ namespace te
         _errorMarkers = std::move(etmp);
 
         Breakpoints btmp;
-        for (auto i : _breakpoints)
+        for (const auto& i : _breakpoints)
         {
             if (i == index)
                 continue;
@@ -2170,7 +2170,7 @@ namespace te
         _errorMarkers = std::move(etmp);
 
         Breakpoints btmp;
-        for (auto i : _breakpoints)
+        for (const auto& i : _breakpoints)
             btmp.insert(i >= index ? i + 1 : i);
         _breakpoints = std::move(btmp);
 

@@ -162,7 +162,7 @@ namespace te
                 gRendererUtility().Draw(mesh, properties.GetSubMesh(i), 1);
         }
     }
-        
+
     void Picking::CleanGameObjectsList()
     {
         float now = gTime().GetTime();

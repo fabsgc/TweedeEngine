@@ -10,13 +10,10 @@ namespace te
 
     Importer::~Importer()
     {
-        for (auto i = _assetImporters.begin(); i != _assetImporters.end(); ++i)
+        for (const auto& assetImporters : _assetImporters)
         {
-            if ((*i) != nullptr)
-                te_delete(*i);
+            te_safe_delete(assetImporters);
         }
-
-        _assetImporters.clear();
     }
 
     SPtr<Resource> Importer::_import(const String& inputFilePath, SPtr<const ImportOptions> importOptions)
@@ -81,9 +78,9 @@ namespace te
 
     bool Importer::SupportsFileType(const String& extension) const
     {
-        for (auto iter = _assetImporters.begin(); iter != _assetImporters.end(); ++iter)
+        for (const auto& assetImporter : _assetImporters)
         {
-            if (*iter != nullptr && (*iter)->IsExtensionSupported(extension))
+            if (assetImporter && assetImporter->IsExtensionSupported(extension))
                 return true;
         }
 
@@ -115,10 +112,10 @@ namespace te
             return nullptr;
         }
 
-        for (auto iter = _assetImporters.begin(); iter != _assetImporters.end(); ++iter)
+        for (const auto& assetImporter : _assetImporters)
         {
-            if (*iter != nullptr && (*iter)->IsExtensionSupported(ext))
-                return *iter;
+            if (assetImporter && assetImporter->IsExtensionSupported(ext))
+                return assetImporter;
         }
 
         return nullptr;

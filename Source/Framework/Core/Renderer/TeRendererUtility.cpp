@@ -224,18 +224,18 @@ namespace te
 
             UINT32 endSlot = 0;
             UINT32 startSlot = TE_MAX_BOUND_VERTEX_BUFFERS;
-            for (auto iter = vertexBuffers.begin(); iter != vertexBuffers.end(); ++iter)
+            for (const auto& buffer : vertexBuffers)
             {
-                if (iter->first >= TE_MAX_BOUND_VERTEX_BUFFERS)
+                if (buffer.first >= TE_MAX_BOUND_VERTEX_BUFFERS)
                     TE_ASSERT_ERROR(false, "Buffer index out of range");
 
-                startSlot = std::min(iter->first, startSlot);
-                endSlot = std::max(iter->first, endSlot);
+                startSlot = std::min(buffer.first, startSlot);
+                endSlot = std::max(buffer.first, endSlot);
             }
 
-            for (auto iter = vertexBuffers.begin(); iter != vertexBuffers.end(); ++iter)
+            for (const auto& buffer : vertexBuffers)
             {
-                buffers[iter->first - startSlot] = iter->second;
+                buffers[buffer.first - startSlot] = buffer.second;
             }
 
             rapi.SetVertexBuffers(startSlot, buffers, endSlot - startSlot + 1);

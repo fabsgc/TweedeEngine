@@ -174,7 +174,7 @@ namespace te
          * Returns a list of vertex elements that the provided shader's vertex declaration expects but aren't present in
          * this vertex declaration.
          */
-        Vector<VertexElement> GetMissingElements(const SPtr<VertexDeclaration>& shaderDecl);
+        Vector<const VertexElement*> GetMissingElements(const SPtr<VertexDeclaration>& shaderDecl);
 
         /** @copydoc HardwareBufferManager::CreateVertexDeclaration */
         static SPtr<VertexDeclaration> Create(const SPtr<VertexDataDesc>& desc, GpuDeviceFlags deviceMask = GDF_DEFAULT);

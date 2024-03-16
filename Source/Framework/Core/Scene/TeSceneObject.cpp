@@ -438,8 +438,8 @@ namespace te
     {
         if (immediate)
         {
-            for (auto iter = _children.begin(); iter != _children.end(); ++iter)
-                (*iter)->DestroyInternal(*iter, true);
+            for (auto& child : _children)
+                child->DestroyInternal(child, true);
 
             _children.clear();
 

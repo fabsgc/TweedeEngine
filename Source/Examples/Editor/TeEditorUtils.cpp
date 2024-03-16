@@ -204,7 +204,7 @@ namespace te
         do
         {
             notAllLoaded = false;
-            for (auto task : tasks)
+            for (auto& task : tasks)
             {
                 if (!task->IsComplete())
                     notAllLoaded = true;

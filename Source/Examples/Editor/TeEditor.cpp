@@ -201,7 +201,7 @@ namespace te
             if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DockingEnable)
                 BeginGui();
 
-            for (auto widget : _widgets)
+            for (auto& widget : _widgets)
             {
                 if (widget->BeginGui())
                 {

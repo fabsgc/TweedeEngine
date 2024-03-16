@@ -139,12 +139,12 @@ namespace te
 
             bool foundSemantic = false;
             GLint attribLocation = 0;
-            for (auto iter = inputAttributes.begin(); iter != inputAttributes.end(); ++iter)
+            for (const auto& attr : inputAttributes)
             {
-                if (iter->GetSemantic() == elem.GetSemantic() && iter->GetSemanticIdx() == elem.GetSemanticIdx())
+                if (attr.GetSemantic() == elem.GetSemantic() && attr.GetSemanticIdx() == elem.GetSemanticIdx())
                 {
                     foundSemantic = true;
-                    attribLocation = iter->GetOffset();
+                    attribLocation = attr.GetOffset();
                     break;
                 }
             }

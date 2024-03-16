@@ -20,9 +20,9 @@ namespace te
 
     void Font::Initialize(const Vector<SPtr<FontBitmap>>& fontData)
     { 
-        for (auto iter = fontData.begin(); iter != fontData.end(); ++iter)
+        for (const auto& font : fontData)
         {
-            _fontDataPerSize[(*iter)->Size] = *iter;
+            _fontDataPerSize[font->Size] = font;
         }
 
         Resource::Initialize();

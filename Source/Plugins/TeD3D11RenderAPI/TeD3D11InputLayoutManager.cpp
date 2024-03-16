@@ -91,20 +91,20 @@ namespace te
 
         INT32 maxStreamIdx = -1;
         UINT currentByteOffset = 0;
-        for (auto iter = bufferElems.begin(); iter != bufferElems.end(); ++iter)
+        for (const auto& buffer : bufferElems)
         {
             declElements.push_back(D3D11_INPUT_ELEMENT_DESC());
             D3D11_INPUT_ELEMENT_DESC& elementDesc = declElements.back();
 
-            elementDesc.SemanticName = D3D11Mappings::Get(iter->GetSemantic());
-            elementDesc.SemanticIndex = iter->GetSemanticIdx();
-            elementDesc.Format = D3D11Mappings::Get(iter->GetType());
-            elementDesc.InputSlot = iter->GetStreamIdx();
+            elementDesc.SemanticName = D3D11Mappings::Get(buffer.GetSemantic());
+            elementDesc.SemanticIndex = buffer.GetSemanticIdx();
+            elementDesc.Format = D3D11Mappings::Get(buffer.GetType());
+            elementDesc.InputSlot = buffer.GetStreamIdx();
             elementDesc.AlignedByteOffset = currentByteOffset;
 
-            currentByteOffset += (D3D11Mappings::GetSize(D3D11Mappings::Get(iter->GetType())) / 8);
+            currentByteOffset += (D3D11Mappings::GetSize(D3D11Mappings::Get(buffer.GetType())) / 8);
 
-            if (iter->GetInstanceStepRate() == 0)
+            if (buffer.GetInstanceStepRate() == 0)
             {
                 elementDesc.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
                 elementDesc.InstanceDataStepRate = 0;
@@ -112,19 +112,19 @@ namespace te
             else
             {
                 elementDesc.InputSlotClass = D3D11_INPUT_PER_INSTANCE_DATA;
-                elementDesc.InstanceDataStepRate = iter->GetInstanceStepRate();
+                elementDesc.InstanceDataStepRate = buffer.GetInstanceStepRate();
             }
 
-            maxStreamIdx = std::max(maxStreamIdx, (INT32)iter->GetStreamIdx());
+            maxStreamIdx = std::max(maxStreamIdx, (INT32)buffer.GetStreamIdx());
         }
 
         // Find elements missing in buffer and add a dummy stream for them
-        for (auto shaderIter = shaderElems.begin(); shaderIter != shaderElems.end(); ++shaderIter)
+        for (const auto& shader : shaderElems)
         {
             bool foundElement = false;
-            for (auto bufferIter = bufferElems.begin(); bufferIter != bufferElems.end(); ++bufferIter)
+            for (const auto& buffer : bufferElems)
             {
-                if (shaderIter->GetSemantic() == bufferIter->GetSemantic() && shaderIter->GetSemanticIdx() == bufferIter->GetSemanticIdx())
+                if (shader.GetSemantic() == buffer.GetSemantic() && shader.GetSemanticIdx() == buffer.GetSemanticIdx())
                 {
                     foundElement = true;
                     break;
@@ -136,9 +136,9 @@ namespace te
                 declElements.push_back(D3D11_INPUT_ELEMENT_DESC());
                 D3D11_INPUT_ELEMENT_DESC& elementDesc = declElements.back();
 
-                elementDesc.SemanticName = D3D11Mappings::Get(shaderIter->GetSemantic());
-                elementDesc.SemanticIndex = shaderIter->GetSemanticIdx();
-                elementDesc.Format = D3D11Mappings::Get(shaderIter->GetType());
+                elementDesc.SemanticName = D3D11Mappings::Get(shader.GetSemantic());
+                elementDesc.SemanticIndex = shader.GetSemanticIdx();
+                elementDesc.Format = D3D11Mappings::Get(shader.GetType());
                 elementDesc.InputSlot = (UINT32)(maxStreamIdx + 1);
                 elementDesc.AlignedByteOffset = 0;
                 elementDesc.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
@@ -197,15 +197,15 @@ namespace te
 
         Map<UINT32, VertexDeclarationKey> leastFrequentlyUsedMap;
 
-        for (auto iter = _inputLayoutMap.begin(); iter != _inputLayoutMap.end(); ++iter)
+        for (const auto& inputLayout : _inputLayoutMap)
         {
-            leastFrequentlyUsedMap[iter->second->LastUsedIdx] = iter->first;
+            leastFrequentlyUsedMap[inputLayout.second->LastUsedIdx] = inputLayout.first;
         }
 
         UINT32 elemsRemoved = 0;
-        for (auto iter = leastFrequentlyUsedMap.begin(); iter != leastFrequentlyUsedMap.end(); ++iter)
+        for (const auto& inputLayout : leastFrequentlyUsedMap)
         {
-            auto inputLayoutIter = _inputLayoutMap.find(iter->second);
+            auto inputLayoutIter = _inputLayoutMap.find(inputLayout.second);
 
             SAFE_RELEASE(inputLayoutIter->second->InputLayout);
             te_delete(inputLayoutIter->second);

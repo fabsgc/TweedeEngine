@@ -51,11 +51,11 @@ namespace te
 
     D3D11Driver* D3D11DriverList::Item(const String& name) const
     {
-        for (auto it = _driverList.begin(); it != _driverList.end(); ++it)
+        for (auto& driver : _driverList)
         {
-            if ((*it)->GetDriverDescription() == name)
+            if (driver->GetDriverDescription() == name)
             {
-                return (*it);
+                return driver;
             }
         }
 

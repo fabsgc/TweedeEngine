@@ -428,9 +428,9 @@ namespace te
          */
         bool HasComponent(const Vector<UINT32>& types)
         {
-            for (auto entry : _components)
+            for (const auto& entry : _components)
             {
-                for (auto type : types)
+                for (const auto& type : types)
                 {
                     if (entry->GetCoreType() == type)
                         return true;

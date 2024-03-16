@@ -397,12 +397,12 @@ namespace te
 
             if (gpuParamsBindFlags & (UINT32)GPU_BIND_TEXTURE)
             {
-                for (auto iter = paramDesc->Textures.begin(); iter != paramDesc->Textures.end(); ++iter)
+                for (const auto& textureDesc : paramDesc->Textures)
                 {
-                    UINT32 slot = iter->second.Slot;
+                    UINT32 slot = textureDesc.second.Slot;
 
-                    SPtr<Texture> texture = gpuParams->GetTexture(iter->second.Set, slot);
-                    const TextureSurface& surface = gpuParams->GetTextureSurface(iter->second.Set, slot);
+                    SPtr<Texture> texture = gpuParams->GetTexture(textureDesc.second.Set, slot);
+                    const TextureSurface& surface = gpuParams->GetTextureSurface(textureDesc.second.Set, slot);
 
                     while (slot >= (UINT32)_gpuResContainer.srvs.size())
                         _gpuResContainer.srvs.push_back(nullptr);
@@ -420,13 +420,13 @@ namespace te
 
             if (gpuParamsBindFlags & (UINT32)GPU_BIND_BUFFER)
             {
-                for (auto iter = paramDesc->Buffers.begin(); iter != paramDesc->Buffers.end(); ++iter)
+                for (const auto& bufferDesc : paramDesc->Buffers)
                 {
-                    UINT32 slot = iter->second.Slot;
-                    SPtr<GpuBuffer> buffer = gpuParams->GetBuffer(iter->second.Set, slot);
+                    UINT32 slot = bufferDesc.second.Slot;
+                    SPtr<GpuBuffer> buffer = gpuParams->GetBuffer(bufferDesc.second.Set, slot);
 
-                    bool isLoadStore = iter->second.Type != GPOT_BYTE_BUFFER &&
-                        iter->second.Type != GPOT_STRUCTURED_BUFFER;
+                    bool isLoadStore = bufferDesc.second.Type != GPOT_BYTE_BUFFER &&
+                        bufferDesc.second.Type != GPOT_STRUCTURED_BUFFER;
 
                     if (!isLoadStore)
                     {
@@ -453,12 +453,12 @@ namespace te
                 }
             }
 
-            for (auto iter = paramDesc->LoadStoreTextures.begin(); iter != paramDesc->LoadStoreTextures.end(); ++iter)
+            for (const auto& loadStoreDesc : paramDesc->LoadStoreTextures)
             {
-                UINT32 slot = iter->second.Slot;
+                UINT32 slot = loadStoreDesc.second.Slot;
 
-                SPtr<Texture> texture = gpuParams->GetLoadStoreTexture(iter->second.Set, slot);
-                const TextureSurface& surface = gpuParams->GetLoadStoreSurface(iter->second.Set, slot);
+                SPtr<Texture> texture = gpuParams->GetLoadStoreTexture(loadStoreDesc.second.Set, slot);
+                const TextureSurface& surface = gpuParams->GetLoadStoreSurface(loadStoreDesc.second.Set, slot);
 
                 while (slot >= (UINT32)_gpuResContainer.uavs.size())
                     _gpuResContainer.uavs.push_back(nullptr);
@@ -480,10 +480,10 @@ namespace te
 
             if (gpuParamsBindFlags & (UINT32)GPU_BIND_SAMPLER)
             {
-                for (auto iter = paramDesc->Samplers.begin(); iter != paramDesc->Samplers.end(); ++iter)
+                for (const auto& samplerDesc : paramDesc->Samplers)
                 {
-                    UINT32 slot = iter->second.Slot;
-                    SPtr<SamplerState> samplerState = gpuParams->GetSamplerState(iter->second.Set, slot);
+                    UINT32 slot = samplerDesc.second.Slot;
+                    SPtr<SamplerState> samplerState = gpuParams->GetSamplerState(samplerDesc.second.Set, slot);
 
                     while (slot >= (UINT32)_gpuResContainer.samplers.size())
                         _gpuResContainer.samplers.push_back(nullptr);
@@ -511,10 +511,10 @@ namespace te
                     // because paramDesc->ParamBlocks is a map ordered by name
                     _gpuResContainer.constBuffers.resize(paramDesc->ParamBlocks.size());
 
-                    for (auto iter = paramDesc->ParamBlocks.begin(); iter != paramDesc->ParamBlocks.end(); ++iter)
+                    for (auto& paramBlocksDesc : paramDesc->ParamBlocks)
                     {
-                        PopulateParamBlocks(iter->second, true);
-                        currentSlot = (UINT32)iter->second.Slot;
+                        PopulateParamBlocks(paramBlocksDesc.second, true);
+                        currentSlot = (UINT32)paramBlocksDesc.second.Slot;
 
                         if (currentSlot < slotConstBuffers)
                             slotConstBuffers = (UINT32)currentSlot;
@@ -527,23 +527,23 @@ namespace te
                     Vector<String>::const_iterator findNameInList = paramBlocksToBind.end();
                     bool onlyBindSelectedBlocks = paramBlocksToBind.size() > 0;
 
-                    for (auto iter = paramDesc->ParamBlocks.begin(); iter != paramDesc->ParamBlocks.end(); ++iter)
+                    for (auto& paramBlocksDesc : paramDesc->ParamBlocks)
                     {
                         if(onlyBindSelectedBlocks)
-                            findNameInList = std::find(paramBlocksToBind.begin(), paramBlocksToBind.end(), iter->second.Name);
+                            findNameInList = std::find(paramBlocksToBind.begin(), paramBlocksToBind.end(), paramBlocksDesc.second.Name);
 
                         if (gpuParamsBlockBindFlags & (UINT32)GPU_BIND_PARAM_BLOCK_ALL_EXCEPT && findNameInList == paramBlocksToBind.end())
                         {
-                            PopulateParamBlocks(iter->second);
-                            currentSlot = iter->second.Slot;
+                            PopulateParamBlocks(paramBlocksDesc.second);
+                            currentSlot = paramBlocksDesc.second.Slot;
 
                             if (currentSlot < slotConstBuffers)
                                 slotConstBuffers = (UINT32)currentSlot;
                         }
                         else if (gpuParamsBlockBindFlags & (UINT32)GPU_BIND_PARAM_BLOCK_LISTED && findNameInList != paramBlocksToBind.end())
                         {
-                            PopulateParamBlocks(iter->second);
-                            currentSlot = iter->second.Slot;
+                            PopulateParamBlocks(paramBlocksDesc.second);
+                            currentSlot = paramBlocksDesc.second.Slot;
 
                             if (currentSlot < slotConstBuffers)
                                 slotConstBuffers = (UINT32)currentSlot;

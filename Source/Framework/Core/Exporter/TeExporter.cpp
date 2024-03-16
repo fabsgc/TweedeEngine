@@ -10,13 +10,10 @@ namespace te
 
     Exporter::~Exporter()
     {
-        for (auto i = _assetExporters.begin(); i != _assetExporters.end(); ++i)
+        for (const auto& assetExporter : _assetExporters)
         {
-            if ((*i) != nullptr)
-                te_delete(*i);
+            te_safe_delete(assetExporter);
         }
-
-        _assetExporters.clear();
     }
 
     bool Exporter::Export(void* object, const String& inputFilePath, SPtr<const ExportOptions> exportOptions)
@@ -30,9 +27,9 @@ namespace te
 
     bool Exporter::SupportsFileType(const String& extension) const
     {
-        for (auto iter = _assetExporters.begin(); iter != _assetExporters.end(); ++iter)
+        for (const auto& assetExporter : _assetExporters)
         {
-            if (*iter != nullptr && (*iter)->IsExtensionSupported(extension))
+            if (assetExporter && assetExporter->IsExtensionSupported(extension))
                 return true;
         }
 
@@ -64,10 +61,10 @@ namespace te
             return nullptr;
         }
 
-        for (auto iter = _assetExporters.begin(); iter != _assetExporters.end(); ++iter)
+        for (const auto& assetExporter : _assetExporters)
         {
-            if (*iter != nullptr && (*iter)->IsExtensionSupported(ext))
-                return *iter;
+            if (assetExporter && assetExporter->IsExtensionSupported(ext))
+                return assetExporter;
         }
 
         return nullptr;

@@ -33,11 +33,11 @@ namespace te
             name = getPluginNameFunc();
         }
 
-        for (auto iter = _availableFactories.begin(); iter != _availableFactories.end(); ++iter)
+        for (const auto& factory : _availableFactories)
         {
-            if ((*iter)->Name() == name)
+            if (factory->Name() == name)
             {
-                SPtr<GuiAPI> newGuiAPI = (*iter)->Create();
+                SPtr<GuiAPI> newGuiAPI = factory->Create();
                 _guiInitialized = true;
 
                 if (newGuiAPI != nullptr)

@@ -98,15 +98,15 @@ namespace te
             SPtr<VertexDeclaration> shaderDecl = graphicsPipeline->GetVertexProgram()->GetInputDeclaration();
             if (shaderDecl && !vertexDecl.IsCompatible(shaderDecl))
             {
-                Vector<VertexElement> missingElements = vertexDecl.GetMissingElements(shaderDecl);
+                Vector<const VertexElement*> missingElements = vertexDecl.GetMissingElements(shaderDecl);
 
                 if (!missingElements.empty())
                 {
                     StringStream wrnStream;
                     wrnStream << "Provided mesh is missing required vertex attributes to render with the provided shader. Missing elements: " << std::endl;
 
-                    for (auto& entry : missingElements)
-                        wrnStream << "\t" << ToString(entry.GetSemantic()) << entry.GetSemanticIdx() << std::endl;
+                    for (const auto& entry : missingElements)
+                        wrnStream << "\t" << ToString(entry->GetSemantic()) << entry->GetSemanticIdx() << std::endl;
 
                     TE_DEBUG(wrnStream.str());
                     break;

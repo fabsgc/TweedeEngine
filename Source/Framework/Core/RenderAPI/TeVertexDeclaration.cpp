@@ -275,14 +275,14 @@ namespace te
         const Vector<VertexElement>& shaderElems = shaderDecl->GetProperties().GetElements();
         const Vector<VertexElement>& bufferElems = GetProperties().GetElements();
 
-        for (auto shaderIter = shaderElems.begin(); shaderIter != shaderElems.end(); ++shaderIter)
+        for (const auto& shader : shaderElems)
         {
             const VertexElement* foundElement = nullptr;
-            for (auto bufferIter = bufferElems.begin(); bufferIter != bufferElems.end(); ++bufferIter)
+            for (const auto& buffer : bufferElems)
             {
-                if (shaderIter->GetSemantic() == bufferIter->GetSemantic() && shaderIter->GetSemanticIdx() == bufferIter->GetSemanticIdx())
+                if (shader.GetSemantic() == buffer.GetSemantic() && shader.GetSemanticIdx() == buffer.GetSemanticIdx())
                 {
-                    foundElement = &(*bufferIter);
+                    foundElement = &buffer;
                     break;
                 }
             }
@@ -296,27 +296,27 @@ namespace te
         return true;
     }
 
-    Vector<VertexElement> VertexDeclaration::GetMissingElements(const SPtr<VertexDeclaration>& shaderDecl)
+    Vector<const VertexElement*> VertexDeclaration::GetMissingElements(const SPtr<VertexDeclaration>& shaderDecl)
     {
-        Vector<VertexElement> missingElements;
+        Vector<const VertexElement*> missingElements;
 
         const Vector<VertexElement>& shaderElems = shaderDecl->GetProperties().GetElements();
         const Vector<VertexElement>& bufferElems = GetProperties().GetElements();
 
-        for (auto shaderIter = shaderElems.begin(); shaderIter != shaderElems.end(); ++shaderIter)
+        for (const auto& shader : shaderElems)
         {
             const VertexElement* foundElement = nullptr;
-            for (auto bufferIter = bufferElems.begin(); bufferIter != bufferElems.end(); ++bufferIter)
+            for (const auto& buffer : bufferElems)
             {
-                if (shaderIter->GetSemantic() == bufferIter->GetSemantic() && shaderIter->GetSemanticIdx() == bufferIter->GetSemanticIdx())
+                if (shader.GetSemantic() == buffer.GetSemantic() && shader.GetSemanticIdx() == buffer.GetSemanticIdx())
                 {
-                    foundElement = &(*bufferIter);
+                    foundElement = &(buffer);
                     break;
                 }
             }
 
             if (foundElement == nullptr)
-                missingElements.push_back(*shaderIter);
+                missingElements.push_back(&shader);
         }
 
         return missingElements;

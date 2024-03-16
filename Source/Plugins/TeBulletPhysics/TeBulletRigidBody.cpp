@@ -504,7 +504,7 @@ namespace te
             _isDirty = false;
         }
 
-        for (auto joint : _joints)
+        for (auto& joint : _joints)
             joint->BuildJoint();
     }
 
@@ -515,7 +515,7 @@ namespace te
 
         RemoveFromWorld();
 
-        for (auto joint : _joints)
+        for (auto& joint : _joints)
             joint->ReleaseJoint();
 
         te_delete(_rigidBody->getMotionState());

@@ -119,7 +119,7 @@ namespace te
         {
             for (auto& container : _resources)
             {
-                for (auto resource : container.second.Res)
+                for (auto& resource : container.second.Res)
                 {
                     gResourceManager().Release(resource.second);
                 }

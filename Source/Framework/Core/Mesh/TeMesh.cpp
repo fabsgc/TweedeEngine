@@ -446,12 +446,12 @@ namespace te
             auto vertexBuffers = _vertexData->GetBuffers();
 
             UINT32 streamIdx = 0;
-            for (auto iter = vertexBuffers.begin(); iter != vertexBuffers.end(); ++iter)
+            for (const auto& buffer : vertexBuffers)
             {
                 if (!meshData.GetVertexDesc()->HasStream(streamIdx))
                     continue;
 
-                SPtr<VertexBuffer> vertexBuffer = iter->second;
+                SPtr<VertexBuffer> vertexBuffer = buffer.second;
                 const VertexBufferProperties& vbProps = vertexBuffer->GetProperties();
 
                 // Ensure both have the same sized vertices

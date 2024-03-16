@@ -137,14 +137,14 @@ namespace te
 
     void D3D11GpuBuffer::ClearBufferViews()
     {
-        for (auto iter = _bufferViews.begin(); iter != _bufferViews.end(); ++iter)
+        for (const auto& bufferView : _bufferViews)
         {
-            if (iter->second->View != nullptr)
+            if (bufferView.second->View != nullptr)
             {
-                te_delete(iter->second->View);
+                te_delete(bufferView.second->View);
             }
 
-            te_delete(iter->second);
+            te_delete(bufferView.second);
         }
 
         _bufferViews.clear();
