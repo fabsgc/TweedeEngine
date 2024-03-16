@@ -172,6 +172,13 @@ namespace te
                         widget->SetVisible(!widget->GetVisible());
                 }
 
+                if (ImGui::MenuItem(ICON_FA_SCROLL " " ICON_FA_GRIP_LINES_VERTICAL "  Text Editor"))
+                {
+                    Widget* widget = static_cast<Widget*>(gEditor().GetWidget(WidgetType::TextEditor));
+                    if (widget)
+                        widget->SetVisible(!widget->GetVisible());
+                }
+
                 ImGui::EndMenu();
             }
 

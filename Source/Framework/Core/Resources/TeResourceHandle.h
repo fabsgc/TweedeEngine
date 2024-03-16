@@ -135,6 +135,15 @@ namespace te
             return handle;
         }
 
+        /** Create a handle from a valid resource pointer */
+        static TResourceHandle<T> GetNewHandleFromExisting(T* ptr)
+        {
+            if (ptr)
+                return TResourceHandle<T>(ptr, ptr->GetUUID());
+
+            return TResourceHandle<T>();
+        }
+
     protected:
         friend ResourceManager;
         template<class _T>

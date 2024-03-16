@@ -470,10 +470,14 @@ namespace te
         _widgets.emplace_back(te_unique_ptr_new<WidgetShaders>()); _settings.WShaders = _widgets.back();
         _widgets.emplace_back(te_unique_ptr_new<WidgetMaterials>()); _settings.WMaterials = _widgets.back();
         _widgets.emplace_back(te_unique_ptr_new<WidgetResources>()); _settings.WResources = _widgets.back();
+        _widgets.emplace_back(te_unique_ptr_new<WidgetTextEditor>()); _settings.WTextEditor = _widgets.back();
         _widgets.emplace_back(te_unique_ptr_new<WidgetViewport>()); _settings.WViewport = _widgets.back();
 
         _settings.WResources->SetVisible(false);
         _settings.WConsole->SetVisible(false);
+
+        std::static_pointer_cast<WidgetTextEditor>(_settings.WTextEditor)->OnBuild.Connect(std::bind(&Editor::BuildScript, this));
+        std::static_pointer_cast<WidgetTextEditor>(_settings.WTextEditor)->OnSave.Connect(std::bind(&Editor::SaveScript, this));
 
         for (auto& widget : _widgets)
             widget->Initialize();
@@ -643,6 +647,7 @@ namespace te
                 ImGui::DockBuilderDockWindow(CONSOLE_TITLE, dockBottomId);
                 ImGui::DockBuilderDockWindow(RESOURCES_TITLE, dockBottomId);
                 ImGui::DockBuilderDockWindow(VIEWPORT_TITLE, dockMainId);
+                ImGui::DockBuilderDockWindow(TEXT_EDITOR_TITLE, dockMainId);
                 ImGui::DockBuilderDockWindow(SHADERS_TITLE, dockRightBottomId);
                 ImGui::DockBuilderDockWindow(MATERIALS_TITLE, dockRightBottomId);
                 ImGui::DockBuilderDockWindow(SCRIPTS_TITLE, dockLeftBottomId);
@@ -658,6 +663,16 @@ namespace te
     {
         if (_editorBegun)
             ImGui::End();
+    }
+
+    void Editor::BuildScript()
+    {
+
+    }
+
+    void Editor::SaveScript()
+    {
+
     }
 
     Widget* Editor::GetWidget(Widget::WidgetType type)
@@ -707,6 +722,9 @@ namespace te
             break;
         case WindowType::Settings:
             _settings.WSettings->PutFocus();
+            break;
+        case WindowType::TextEditor:
+            _settings.WTextEditor->PutFocus();
             break;
         }
     }

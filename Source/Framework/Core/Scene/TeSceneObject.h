@@ -409,7 +409,7 @@ namespace te
          */
         bool HasComponent(UINT32 type)
         {
-            for (auto entry : _components)
+            for (auto& entry : _components)
             {
                 if (entry->GetCoreType() == type)
                     return true;
@@ -601,6 +601,29 @@ namespace te
 
         /* Return all scripts used by this SceneObject instance */
         const Vector<HScript>& GetScripts() const { return _scripts; }
+
+    private:
+        /**
+         * From a Script attached to a SceneObject, the engine needs to request the creation of a NativeScript.
+         * Native script are totally handled by ScriptManager
+         *
+         * @param[in]	script			Script you want to create a NativeScript from
+         * @return		true if a script has been created
+         */
+        bool CreateRunningScript(const HScript& script) const;
+
+        /**
+         * Remove the attached NativeScript created from this SceneObject and the Script given in parameter
+         *
+         * @param[in]	script			Script whose you want to remove the running version attached to this SceneObject
+         */
+        void RemoveRunningScript(const HScript& script) const;
+
+        /** @copydoc CreateRunningScript */
+        bool CreateAllRunningScripts() const;
+
+        /** @copydoc RemoveRunningScript */
+        void RemoveAllRunningScripts() const;
 
     private:
 

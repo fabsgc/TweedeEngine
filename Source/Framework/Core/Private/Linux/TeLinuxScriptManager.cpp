@@ -3,7 +3,7 @@
 
 namespace te
 {
-    bool ScriptManager::CompileLibrary()
+    bool ScriptManager::CompileLibrary(const Script* script)
     {
         return false;
     }

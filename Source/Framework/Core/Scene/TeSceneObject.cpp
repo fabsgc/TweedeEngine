@@ -37,6 +37,7 @@
 #include "Components/TeCAnimation.h"
 #include "Components/TeCDecal.h"
 
+#include "Scripting/TeScriptManager.h"
 #include "Scripting/TeScript.h"
 
 namespace te
@@ -125,6 +126,7 @@ namespace te
         this->_mobility = so->GetMobility();
         this->_activeSelf = so->GetActive(true);
         this->_activeHierarchy = so->GetActive();
+        this->_scripts = so->GetScripts();
         this->SetLocalTransform(tfrm);
         this->SetFlags(so->GetFlags());
 
@@ -454,6 +456,7 @@ namespace te
                 _components.erase(_components.end() - 1);
             }
 
+            RemoveAllRunningScripts();
             GameObjectManager::Instance().UnregisterObject(handle);
         }
         else
@@ -868,10 +871,12 @@ namespace te
             }
         }
 
-        for (auto child : _children)
+        for (auto& child : _children)
         {
             child->SetActiveHierarchy(_activeHierarchy, triggerEvents);
         }
+
+        (active) ? CreateAllRunningScripts() : RemoveAllRunningScripts();
     }
 
     bool SceneObject::GetActive(bool self) const
@@ -1294,6 +1299,7 @@ namespace te
         }
 
         _scripts.push_back(script.GetNewHandleFromExisting());
+        CreateRunningScript(script);
     }
 
     void SceneObject::RemoveScript(const HScript& script)
@@ -1302,9 +1308,40 @@ namespace te
         {
             if ((*iter)->GetUUID() == script->GetUUID())
             {
+                RemoveRunningScript(*iter);
                 _scripts.erase(iter);
                 return;
             }
+        }
+    }
+
+    bool SceneObject::CreateRunningScript(const HScript& script) const
+    {
+        return gScriptManager().RegisterScript(script, *const_cast<SceneObject*>(this));
+    }
+
+    void SceneObject::RemoveRunningScript(const HScript& script) const
+    {
+        gScriptManager().UnregisterScript(script, *const_cast<SceneObject*>(this));
+    }
+
+    bool SceneObject::CreateAllRunningScripts() const
+    {
+        bool value = true;
+
+        for (const auto& script : _scripts)
+        {
+            value = value && CreateRunningScript(script);
+        }
+
+        return value;
+    }
+
+    void SceneObject::RemoveAllRunningScripts() const
+    {
+        for (const auto& script : _scripts)
+        {
+            RemoveRunningScript(script);
         }
     }
 }

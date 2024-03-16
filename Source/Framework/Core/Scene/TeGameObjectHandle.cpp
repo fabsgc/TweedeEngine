@@ -3,8 +3,13 @@
 #include "Scene/TeGameObject.h"
 
 namespace te
-{ 
+{
     GameObjectHandleBase::GameObjectHandleBase(const SPtr<GameObject>& ptr)
+    {
+        _data = te_shared_ptr_new<GameObjectHandleData>(ptr->_instanceData);
+    }
+
+    GameObjectHandleBase::GameObjectHandleBase(const GameObject* ptr)
     {
         _data = te_shared_ptr_new<GameObjectHandleData>(ptr->_instanceData);
     }
@@ -16,6 +21,16 @@ namespace te
     }
 
     void GameObjectHandleBase::SetHandleData(const SPtr<GameObject>& object)
+    {
+        _data->Ptr = object->_instanceData;
+    }
+
+    void GameObjectHandleBase::SetHandleData(const GameObject& object)
+    {
+        _data->Ptr = object._instanceData;
+    }
+
+    void GameObjectHandleBase::SetHandleData(const GameObject* object)
     {
         _data->Ptr = object->_instanceData;
     }

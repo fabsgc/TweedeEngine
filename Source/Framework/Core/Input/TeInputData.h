@@ -366,10 +366,11 @@ namespace te
     {
     public:
         TextInputEvent()
-            :_isUsed(false)
+            : textChar(0)
+            , _isUsed(false)
         { }
 
-        UINT32 textChar; /**< Character the that was input. */
+        UINT32 textChar; /**< Character that was input. */
 
         /**
          * Check if the event has been marked as used. Internally this means nothing but caller might choose to ignore an

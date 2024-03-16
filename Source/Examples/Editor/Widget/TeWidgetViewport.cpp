@@ -97,7 +97,7 @@ namespace te
             }
 
             // Handle zooming if mouse is hovering windows (even if windows not focused)
-            if (viewportPos.x > 0.0f && viewportPos.x < _renderData.Width && viewportPos.y > 0.0f && viewportPos.y < _renderData.Height)
+            if (viewportPos.x > 0.0f && viewportPos.x < _renderData.Width && viewportPos.y > 0.0f && viewportPos.y < _renderData.Height && ImGui::IsWindowHovered())
             {
                 _viewportCameraUI->EnableInput(true);
                 _viewportCameraUI->EnableZooming(true);

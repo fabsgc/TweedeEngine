@@ -40,7 +40,8 @@ namespace te
             Scripts,
             Shaders,
             Materials,
-            Properties
+            Properties,
+            TextEditor
         };
 
         struct SelectionData
@@ -78,6 +79,7 @@ namespace te
             SPtr<Widget> WMaterials = nullptr;
             SPtr<Widget> WProperties = nullptr;
             SPtr<Widget> WShaders = nullptr;
+            SPtr<Widget> WTextEditor = nullptr;
 
             const char* EditorName = "Editor";
             bool Show = true;
@@ -226,6 +228,8 @@ namespace te
         void ApplyStyleGui() const;
         void BeginGui();
         void EndGui();
+        void BuildScript();
+        void SaveScript();
 
     protected:
         void LoadScene();

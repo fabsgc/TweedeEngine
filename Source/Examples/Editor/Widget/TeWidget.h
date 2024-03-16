@@ -18,7 +18,7 @@
 #define RESOURCES_TITLE ICON_FA_SUITCASE " Resources"
 #define TOOLBAR_TITLE "ToolBar"
 #define VIEWPORT_TITLE ICON_FA_IMAGE " Viewport"
-#define EDITOR_TITLE ICON_FA_CODE " Editor"
+#define TEXT_EDITOR_TITLE ICON_FA_SCROLL " Text Editor"
 #define SCRIPTS_TITLE ICON_FA_SCROLL " Scripts"
 #define MATERIALS_TITLE ICON_FA_PALETTE " Materials"
 #define PROFILER_TITLE ICON_FA_CHART_LINE " Profiler"
@@ -46,7 +46,7 @@ namespace te
             ToolBar,
             Viewport,
             Resources,
-            Editor,
+            TextEditor,
             Material,
             Profiler,
             Settings,

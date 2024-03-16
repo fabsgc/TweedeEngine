@@ -13,6 +13,9 @@ namespace te
     public:
         virtual ~Script() = default;
 
+        /** @copydoc Resource::SetPath */
+        void SetPath(const String& path) override;
+
         /**  @copydoc Resource::GetResourceType */
         static UINT32 GetResourceType() { return TypeID_Core::TID_Script; }
 
@@ -25,7 +28,7 @@ namespace te
         /** Creates a script without initializing it. */
         static SPtr<Script> CreateEmpty();
 
-    protected:
+    private:
         Script();
 
     };

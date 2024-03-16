@@ -20,13 +20,14 @@ namespace te
         virtual void UpdateBackground() override;
         virtual void PutFocus() override;
 
+        void SetScript(Script* script);
+        const Script* GetScript() const;
+
     public:
         Event<void()> OnBuild;
         Event<void()> OnSave;
 
     private:
-        void Save(bool force = false);
-        void Build();
         void UpdateEditorContent();
         void ShowEditor();
         void ShowToolbar();
@@ -36,5 +37,7 @@ namespace te
         SPtr<ImGuiTextEditor> _editor;
         String _editorContent;
         bool _needsSave;
+
+        Script* _script = nullptr;
     };
 }

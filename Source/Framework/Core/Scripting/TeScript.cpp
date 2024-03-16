@@ -1,4 +1,6 @@
 #include "Scripting/TeScript.h"
+
+#include "Scripting/TeScriptManager.h"
 #include "Resources/TeResourceManager.h"
 
 namespace te
@@ -28,5 +30,11 @@ namespace te
         newScript->SetThisPtr(newScript);
 
         return newScript;
+    }
+
+    void Script::SetPath(const String& path)
+    {
+        Resource::SetPath(path);
+        gScriptManager().LoadScriptLibrary(this); // If we change the path of the attached script, we build the library and update all running scripts
     }
 }

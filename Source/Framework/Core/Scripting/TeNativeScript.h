@@ -26,16 +26,6 @@ namespace te
         virtual void OnShutdown() { }
 
         /**
-         * Called when a script using this native script is disabled
-         */
-        virtual void OnDisabled() { }
-
-        /**
-         * Called when a script using this native script is enabled
-         */
-        virtual void OnEnabled() { }
-
-        /**
          * Called before scene update
          */
         virtual void PreUpdate() { }
@@ -57,26 +47,6 @@ namespace te
 
     public:
         /**
-         * We want to internally keep the name of the lib used for this native script
-         */
-        virtual void SetLibraryName(const String& name) final { _libraryName = name; }
-
-        /**
-         * We want to internally keep the name of the lib used for this native script
-         */
-        virtual void SetLibraryPath(const String& path) final { _libraryPath = path; }
-
-        /**
-         * Returns library name used for this script
-         */
-        virtual const String GetLibraryName() const final { return _libraryName; }
-
-        /**
-         * Returns library path used for this script
-         */
-        virtual const String GetLibraryPath() const final { return _libraryPath; }
-
-        /**
          * Because a script lives inside the scene graph we want to store an handle to its parent SceneObject
          */
         virtual void SetParentSceneObject(const HSceneObject& sceneObject) final
@@ -93,9 +63,6 @@ namespace te
         virtual const HSceneObject& GetParentSceneObject() const final { return _parentSO; }
 
     private:
-        /** For file wathing, we need to know which dll is used behind each native script */
-        String _libraryName;
-        String _libraryPath;
         HSceneObject _parentSO;
     };
 }

@@ -107,6 +107,12 @@ namespace te
         /**	Changes the GameObject instance the handle is pointing to. */
         void SetHandleData(const SPtr<GameObject>& object);
 
+        /**	@copydoc SetHandleData */
+        void SetHandleData(const GameObject& object);
+
+        /**	@copydoc SetHandleData */
+        void SetHandleData(const GameObject* object);
+
     protected:
         friend class GameObjectManager;
 
@@ -117,6 +123,8 @@ namespace te
         friend bool operator==(const GameObjectHandle<_Ty1>& _Left, const GameObjectHandle<_Ty2>& _Right);
 
         GameObjectHandleBase(const SPtr<GameObject>& ptr);
+
+        GameObjectHandleBase(const GameObject* ptr);
 
         GameObjectHandleBase(SPtr<GameObjectHandleData> data)
             : _data(std::move(data))
@@ -166,10 +174,18 @@ namespace te
 
         /**	Copy constructor from a shared ptr. */
         GameObjectHandle(const SPtr<T>& ptr)
-            : GameObjectHandleBase()
-        {
-            SetHandleData(ptr);
-        }
+            : GameObjectHandleBase(ptr)
+        { }
+
+        /**	Copy constructor from a ptr. */
+        GameObjectHandle(const T* ptr)
+            : GameObjectHandleBase(ptr)
+        { }
+
+        /**	Copy constructor from a reference. */
+        GameObjectHandle(const T& ptr)
+            : GameObjectHandleBase(&ptr)
+        { }
 
         /**	Invalidates the handle. */
         GameObjectHandle<T>& operator=(std::nullptr_t ptr)

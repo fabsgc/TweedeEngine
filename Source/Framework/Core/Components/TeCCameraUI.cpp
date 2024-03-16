@@ -245,7 +245,7 @@ namespace te
                         SO()->RotateAround(_target, tfrm.GetRight(), Radian::FromDegrees(rotationRight));
 
                     needsRedraw = true;
-                }                
+                }
             }
         }
         else if(_zoomingEnabled)

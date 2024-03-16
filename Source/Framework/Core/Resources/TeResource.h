@@ -23,7 +23,7 @@ namespace te
         const String& GetPath() const { return _path; };
 
         /** Sets the path of the resource. */
-        void SetPath(const String& path) { _path = path; }
+        virtual void SetPath(const String& path) { _path = path; }
 
         /**	Globally unique identifier of the resource that persists scene save/load. */
         const UUID& GetUUID() const { return _UUID; }

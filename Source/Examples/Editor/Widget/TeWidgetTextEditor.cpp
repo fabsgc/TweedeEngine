@@ -3,16 +3,17 @@
 #include "../TeEditor.h"
 #include "../ImGuiExt/TeImGuiTextEditor.h"
 #include "Utility/TeDataStream.h"
+#include "Scripting/TeScript.h"
 
 namespace te
 {
     WidgetTextEditor::WidgetTextEditor()
-        : Widget(WidgetType::Editor)
+        : Widget(WidgetType::TextEditor)
         , _selections(gEditor().GetSelectionData())
         , _editor(nullptr)
         , _needsSave(false)
     {
-        _title = EDITOR_TITLE;
+        _title = TEXT_EDITOR_TITLE;
     }
 
     WidgetTextEditor::~WidgetTextEditor()
@@ -49,7 +50,33 @@ namespace te
 
     void WidgetTextEditor::UpdateEditorContent()
     {
-        // TODO Script
+        if (_script && !_script->GetPath().empty())
+        {
+            FileStream file(_script->GetPath());
+            if (!file.Fail())
+            {
+                _editorContent = file.GetAsString();
+                _editor->SetText(_editorContent);
+                _needsSave = false;
+                file.Close();
+            }
+        }
+        else
+        {
+            _editor->SetText("");
+            _needsSave = false;
+        }
+    }
+
+    void WidgetTextEditor::SetScript(Script* script)
+    {
+        _script = script;
+        UpdateEditorContent();
+    }
+
+    const Script* WidgetTextEditor::GetScript() const
+    {
+        return _script;
     }
 
     void WidgetTextEditor::ShowEditor()
@@ -76,12 +103,12 @@ namespace te
         ImGui::BeginChild("TextEditorActionList", ImVec2(ImGui::GetContentRegionAvail().x, 42.0f), true);
 
         // Build current script
-        ShowButton(ICON_FA_COGS, true, [this]() {
+        ShowButton(ICON_FA_COGS, _script != nullptr, [this]() {
             OnBuild();
         });
 
         // Save current script
-        ShowButton(ICON_FA_SAVE, true, [this]() {
+        ShowButton(ICON_FA_SAVE, _script != nullptr, [this]() {
             OnSave();
         });
 

@@ -75,13 +75,13 @@ namespace te
                 return !gCoreApplication().GetState().IsFlagSet(ApplicationState::Game); 
             },
             [this]() {
-                // TODO Script Call OnStartUp() or OnShutDown on all scripts registered in ScriptManager
                 gScriptManager().TogglePaused();
 
                 gCoreApplication().GetState().ToggleFlag(ApplicationState::Mode::Game);
                 gCoreApplication().GetState().ToggleFlag(ApplicationState::Mode::Physics);
                 gCoreApplication().GetState().ToggleFlag(ApplicationState::Mode::Scripting);
                 gCoreApplication().GetState().ToggleFlag(ApplicationState::Mode::Animation);
+                gCoreApplication().GetState().ToggleFlag(ApplicationState::Mode::Scripting);
 
                 bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Mode::Game);
                 if (isRunning)

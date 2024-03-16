@@ -4,6 +4,7 @@
 #include "../TeEditorResManager.h"
 #include "../ImGuiExt/TeImGuiExt.h"
 #include "../ImGuiExt/TeImGuiFileBrowser.h"
+#include "../Widget/TeWidgetTextEditor.h"
 #include "Scene/TeSceneManager.h"
 #include "Scripting/TeScript.h"
 
@@ -119,7 +120,7 @@ namespace te
                 if (path.length() < 1024) strcpy(inputPath, path.c_str());
                 else strcpy(inputPath, name.substr(0, 1024).c_str());
 
-                ImGui::PushItemWidth(width + 45.0f);
+                ImGui::PushItemWidth(width + 15.0f);
                 ImGui::InputText("Path", inputPath, IM_ARRAYSIZE(inputPath), ImGuiInputTextFlags_ReadOnly);
                 ImGui::PopItemWidth();
 
@@ -127,6 +128,12 @@ namespace te
                 if (ImGui::Button(ICON_FA_FOLDER_OPEN, ImVec2(28.0f, 26.0f)))
                 {
                     _loadScript = true;
+                }
+                ImGui::SameLine();
+                if (ImGui::Button(ICON_FA_EDIT, ImVec2(28.0f, 26.0f)))
+                {
+                    static_cast<WidgetTextEditor*>(gEditor().GetWidget(Widget::WidgetType::TextEditor))->SetScript(_currentScript.get());
+                    gEditor().PutFocus(Editor::WindowType::TextEditor);
                 }
             }
 
