@@ -112,6 +112,11 @@ namespace te
         }
     }
 
+    void ScriptManager::BuildAndUpdateNativeScripts(const Script* script)
+    {
+        // TODO Script
+    }
+
     void ScriptManager::UnloadAll()
     {
         for (auto& runningScript : _runningScripts)

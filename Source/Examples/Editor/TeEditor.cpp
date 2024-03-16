@@ -671,11 +671,13 @@ namespace te
     void Editor::BuildScript()
     {
         const Script* script = std::static_pointer_cast<WidgetTextEditor>(_settings.WTextEditor)->GetScript();
+        gScriptManager().BuildAndUpdateNativeScripts(script);
     }
 
     void Editor::SaveScript()
     {
         const Script* script = std::static_pointer_cast<WidgetTextEditor>(_settings.WTextEditor)->GetScript();
+        // TODO Script
     }
 
     Widget* Editor::GetWidget(Widget::WidgetType type)

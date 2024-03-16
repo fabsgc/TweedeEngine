@@ -34,6 +34,9 @@ namespace te
         /** Memory management for NativeScript, is manual, each script has an exported function for deleting a NativeScript */
         void DeleteNativeScript(const Script* script, NativeScript* nativeScript);
 
+        /** Force the build of the library for the given script and update all already created running scripts */
+        void BuildAndUpdateNativeScripts(const Script* script);
+
         /** Unloads all script libraries loaded in the engine */
         void UnloadAll();
 
