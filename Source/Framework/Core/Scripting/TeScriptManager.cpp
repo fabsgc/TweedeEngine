@@ -72,6 +72,31 @@ namespace te
         }
     }
 
+    bool ScriptManager::BuildAndUpdateNativeScripts(const Script* script)
+    {
+        UnloadScriptLibrary(script);
+
+        // TODO Script
+
+        return true;
+    }
+
+    void ScriptManager::UnloadAll()
+    {
+        for (const auto& runningScript : _runningScripts)
+        {
+            DeleteNativeScript(runningScript.first.first, runningScript.second);
+        }
+
+        for (const auto& scriptLibrary : _scriptLibraries)
+        {
+            scriptLibrary.second->Unload();
+        }
+
+        _runningScripts.clear();
+        _scriptLibraries.clear();
+    }
+
     NativeScript* ScriptManager::CreateNativeScript(const HScript& script, SceneObject& so)
     {
         NativeScript* nativeScript = nullptr;
@@ -112,27 +137,6 @@ namespace te
         }
     }
 
-    void ScriptManager::BuildAndUpdateNativeScripts(const Script* script)
-    {
-        // TODO Script
-    }
-
-    void ScriptManager::UnloadAll()
-    {
-        for (auto& runningScript : _runningScripts)
-        {
-            DeleteNativeScript(runningScript.first.first, runningScript.second);
-        }
-
-        for (auto& scriptLibrary : _scriptLibraries)
-        {
-            scriptLibrary.second->Unload();
-        }
-
-        _runningScripts.clear();
-        _scriptLibraries.clear();
-    }
-
     DynLib* ScriptManager::LoadScriptLibrary(const Script* script)
     {
         if (!LibraryExists(script))
@@ -155,6 +159,11 @@ namespace te
         return nullptr;
     }
 
+    bool ScriptManager::LibraryExists(const Script* script)
+    {
+        return std::filesystem::exists(script->GetUUID().ToString() + "." + DynLib::EXTENSION);
+    }
+
     void ScriptManager::UnloadScriptLibrary(const Script* script)
     {
         auto iter = _scriptLibraries.find(script);
@@ -175,15 +184,10 @@ namespace te
         }
     }
 
-    DynLib* ScriptManager::GetScriptLibrary(const Script* script)
+    DynLib* ScriptManager::GetScriptLibrary(const Script* script, bool force)
     {
-        DynLib* library = (_scriptLibraries.find(script) == _scriptLibraries.end()) ? LoadScriptLibrary(script) : _scriptLibraries[script];
+        DynLib* library = (_scriptLibraries.find(script) == _scriptLibraries.end()) ? force ? LoadScriptLibrary(script) : nullptr : _scriptLibraries[script];
         return library;
-    }
-
-    bool ScriptManager::LibraryExists(const Script* script)
-    {
-        return std::filesystem::exists(script->GetUUID().ToString() + "." + DynLib::EXTENSION);
     }
 
     bool ScriptManager::CheckLastBuildOldEnough(const Script* script)

@@ -28,22 +28,19 @@ namespace te
         /** Unregister a script */
         void UnregisterScript(const HScript& script, SceneObject& so);
 
-        /** When a script need a new instance of the given native script */
-        NativeScript* CreateNativeScript(const HScript& script, SceneObject& so);
-
-        /** Memory management for NativeScript, is manual, each script has an exported function for deleting a NativeScript */
-        void DeleteNativeScript(const Script* script, NativeScript* nativeScript);
-
         /** Force the build of the library for the given script and update all already created running scripts */
-        void BuildAndUpdateNativeScripts(const Script* script);
+        bool BuildAndUpdateNativeScripts(const Script* script);
 
         /** Unloads all script libraries loaded in the engine */
         void UnloadAll();
 
+        /** */
         void TogglePaused();
 
+        /** */
         void SetPaused(bool paused);
 
+        /** */
         bool IsPaused() const { return _paused; };
 
     public: // #### EVENTS FOR SCRIPTS
@@ -62,8 +59,17 @@ namespace te
     private:
         friend class Script;
 
+        /** When a script need a new instance of the given native script */
+        NativeScript* CreateNativeScript(const HScript& script, SceneObject& so);
+
+        /** Memory management for NativeScript, is manual, each script has an exported function for deleting a NativeScript */
+        void DeleteNativeScript(const Script* script, NativeScript* nativeScript);
+
         /** Try to load a new script lib (.dll, .so) */
         DynLib* LoadScriptLibrary(const Script* script);
+
+        /** Check if a library already exists. Usefull if we don't want to compile everything (time consuming) */
+        bool LibraryExists(const Script* script);
 
         /**
          * Try to unload a script lib (.dll, .so),
@@ -71,14 +77,11 @@ namespace te
          */
         void UnloadScriptLibrary(const Script* script);
 
-        /** Returns (and loads if not loaded yet) the given dynamic library */
-        DynLib* GetScriptLibrary(const Script* script);
+        /** Returns (and loads if not loaded yet) the given dynamic library. If force is equal to true, try to load the library from HDD if it doesn't exist */
+        DynLib* GetScriptLibrary(const Script* script, bool force = true);
 
         /** Compiles a library using provided name. All libraries will be located in the same directory as dlls and binaries */
         bool CompileLibrary(const Script* script);
-
-        /** Check if a library already exists. Usefull if we don't want to compile everything (time consuming) */
-        bool LibraryExists(const Script* script);
 
         /** On Win32, file monitoring triggers twice when file modified (so two build) */
         bool CheckLastBuildOldEnough(const Script* script);
