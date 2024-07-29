@@ -110,6 +110,11 @@
 
 #include "Utility/TeUUID.h"
 
+// ImGui ImVec4 conversion 
+#define IM_VEC4_CLASS_EXTRA                                                      \
+        ImVec4(const te::Vector4& f) { x = f.x; y = f.y; z = f.z; w = f.w; }     \
+        operator te::Vector4() const { return te::Vector4(x,y,z,w); }
+
 inline void StartCatchMemoryLeaks()
 {
 #if TE_PLATFORM == TE_PLATFORM_WIN32 && TE_DEBUG_MODE == TE_DEBUG_ENABLED && TE_CONFIG == TE_CONFIG_DEBUG
