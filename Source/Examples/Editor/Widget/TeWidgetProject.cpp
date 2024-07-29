@@ -166,10 +166,9 @@ namespace te
             const bool isNodeOpened = ImGui::TreeNodeEx(
                 reinterpret_cast<void*>(static_cast<intptr_t>(sceneObjectId)), nodeFlags, nodeTitle.c_str());
 
-            // TODO IMGUI
             // Keep a copy of the selected item's rect so that we can scroll to bring it into view
-            //if ((nodeFlags & ImGuiTreeNodeFlags_Selected) && _expandToSelection)
-            //    _selectedSceneObjectRect = _window->DC.LastItemRect;
+            if ((nodeFlags & ImGuiTreeNodeFlags_Selected) && _expandToSelection)
+                _selectedSceneObjectRect = _window->DC.LastItemRect;
 
             // Manually detect some useful states
             if (ImGui::IsItemHovered(ImGuiHoveredFlags_RectOnly))
@@ -234,10 +233,9 @@ namespace te
                 const bool isNodeOpened = ImGui::TreeNodeEx(
                     reinterpret_cast<void*>(static_cast<intptr_t>(componentId)), componentFlags, componentIcon.c_str());
 
-                // TODO IMGUI
                 // Keep a copy of the selected item's rect so that we can scroll to bring it into view
-                //if ((componentFlags & ImGuiTreeNodeFlags_Selected) && _expandToSelection)
-                //    _selectedSceneObjectRect = _window->DC.LastItemRect;
+                if ((componentFlags & ImGuiTreeNodeFlags_Selected) && _expandToSelection)
+                    _selectedSceneObjectRect = _window->DC.LastItemRect;
 
                 // Manually detect some useful states
                 if (ImGui::IsItemHovered(ImGuiHoveredFlags_RectOnly))

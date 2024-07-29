@@ -323,7 +323,7 @@ namespace te
 
         EditorResManager::ResourcesContainer& container = EditorResManager::Instance().Get<Script>();
 
-        const float width = ImGui::GetContentRegionAvail().x - 110.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 110.0f;
 
         if (ShowGameObjectInformation(gameObject))
             hasChanged = true;
@@ -530,7 +530,7 @@ namespace te
         SPtr<CBone> bone = std::static_pointer_cast<CBone>(_selections.ClickedComponent);
         ObjectMobility mobility = bone->GetSceneObject()->GetMobility();
         Transform transform = bone->GetSceneObject()->GetTransform();
-        const float width = ImGui::GetContentRegionAvail().x - 120.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 120.0f;
 
         if (ShowTransform(transform, mobility))
         {
@@ -606,7 +606,7 @@ namespace te
     {
         bool hasChanged = false;
         SPtr<CAudioSource> audioSource = std::static_pointer_cast<CAudioSource>(_selections.ClickedComponent);
-        const float width = ImGui::GetContentRegionAvail().x - 100.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
         HAudioClip clip = audioSource->GetClip();
 
         if (ImGui::CollapsingHeader("Audio Source", ImGuiTreeNodeFlags_DefaultOpen))
@@ -623,12 +623,12 @@ namespace te
 
                 if (audioSource->GetState() == AudioSourceState::Playing)
                 {
-                    if (ImGui::Button(ICON_FA_STOP " Stop", ImVec2(ImGui::GetContentRegionAvail().x, 25.0f)))
+                    if (ImGui::Button(ICON_FA_STOP " Stop", ImVec2(ImGui::GetWindowContentRegionWidth(), 25.0f)))
                         audioSource->Stop();
                 }
                 else
                 {
-                    if (ImGui::Button(ICON_FA_PLAY " Play", ImVec2(ImGui::GetContentRegionAvail().x, 25.0f)))
+                    if (ImGui::Button(ICON_FA_PLAY " Play", ImVec2(ImGui::GetWindowContentRegionWidth(), 25.0f)))
                         audioSource->Play();
                 }
                 ImGui::PopID();
@@ -839,7 +839,7 @@ namespace te
     bool WidgetProperties::ShowCMeshSoftBodyProperties()
     {
         bool hasChanged = false;
-        const float width = ImGui::GetContentRegionAvail().x - 100.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
         SPtr<CMeshSoftBody> softBody = std::static_pointer_cast<CMeshSoftBody>(_selections.ClickedComponent);
         HPhysicsMesh mesh = softBody->GetMesh();
 
@@ -892,7 +892,7 @@ namespace te
     bool WidgetProperties::ShowCEllipsoidSoftBodyProperties()
     {
         bool hasChanged = false;
-        const float width = ImGui::GetContentRegionAvail().x - 100.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
         SPtr<CEllipsoidSoftBody> softBody = std::static_pointer_cast<CEllipsoidSoftBody>(_selections.ClickedComponent);
 
         if (ImGui::CollapsingHeader("Ellipsoid Soft Body", ImGuiTreeNodeFlags_DefaultOpen))
@@ -940,7 +940,7 @@ namespace te
     bool WidgetProperties::ShowCRopeSoftBodyProperties()
     {
         bool hasChanged = false;
-        const float width = ImGui::GetContentRegionAvail().x - 100.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
         SPtr<CRopeSoftBody> softBody = std::static_pointer_cast<CRopeSoftBody>(_selections.ClickedComponent);
 
         if (ImGui::CollapsingHeader("Rope Soft Body", ImGuiTreeNodeFlags_DefaultOpen))
@@ -988,7 +988,7 @@ namespace te
     bool WidgetProperties::ShowCPatchSoftBodyProperties()
     {
         bool hasChanged = false;
-        const float width = ImGui::GetContentRegionAvail().x - 100.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
         SPtr<CPatchSoftBody> softBody = std::static_pointer_cast<CPatchSoftBody>(_selections.ClickedComponent);
 
         if (ImGui::CollapsingHeader("Patch Soft Body", ImGuiTreeNodeFlags_DefaultOpen))
@@ -1077,7 +1077,7 @@ namespace te
     bool WidgetProperties::ShowCCapsuleColliderProperties()
     {
         bool hasChanged = false;
-        const float width = ImGui::GetContentRegionAvail().x - 100.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
         SPtr<CCapsuleCollider> collider = std::static_pointer_cast<CCapsuleCollider>(_selections.ClickedComponent);
 
         if (ImGui::CollapsingHeader("Capsule Collider", ImGuiTreeNodeFlags_DefaultOpen))
@@ -1113,7 +1113,7 @@ namespace te
     bool WidgetProperties::ShowCConeColliderProperties()
     {
         bool hasChanged = false;
-        const float width = ImGui::GetContentRegionAvail().x - 100.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
         SPtr<CConeCollider> collider = std::static_pointer_cast<CConeCollider>(_selections.ClickedComponent);
 
         if (ImGui::CollapsingHeader("Cone Collider", ImGuiTreeNodeFlags_DefaultOpen))
@@ -1175,7 +1175,7 @@ namespace te
     bool WidgetProperties::ShowCMeshColliderProperties()
     {
         bool hasChanged = false;
-        const float width = ImGui::GetContentRegionAvail().x - 100.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
         SPtr<CMeshCollider> collider = std::static_pointer_cast<CMeshCollider>(_selections.ClickedComponent);
         HPhysicsMesh mesh = collider->GetMesh();
 
@@ -1274,7 +1274,7 @@ namespace te
     bool WidgetProperties::ShowCSphereColliderProperties()
     {
         bool hasChanged = false;
-        const float width = ImGui::GetContentRegionAvail().x - 100.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
         SPtr<CSphereCollider> collider = std::static_pointer_cast<CSphereCollider>(_selections.ClickedComponent);
 
         if (ImGui::CollapsingHeader("Sphere Collider", ImGuiTreeNodeFlags_DefaultOpen))
@@ -1299,7 +1299,7 @@ namespace te
     bool WidgetProperties::ShowCHeightFieldColliderProperties()
     {
         bool hasChanged = false;
-        float width = ImGui::GetContentRegionAvail().x - 100.0f;
+        float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
         SPtr<CHeightFieldCollider> collider = std::static_pointer_cast<CHeightFieldCollider>(_selections.ClickedComponent);
         HPhysicsHeightField heightField = collider->GetHeightField();
         SPtr<Texture> texture = heightField.IsLoaded() ? heightField->GetTexture() : nullptr;
@@ -1407,7 +1407,7 @@ namespace te
     bool WidgetProperties::ShowCConeTwistJointProperties()
     {
         bool hasChanged = false;
-        const float width = ImGui::GetContentRegionAvail().x - 100.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
         SPtr<CConeTwistJoint> joint = std::static_pointer_cast<CConeTwistJoint>(_selections.ClickedComponent);
 
         if (ImGui::CollapsingHeader("Twist Joint", ImGuiTreeNodeFlags_DefaultOpen))
@@ -1527,7 +1527,7 @@ namespace te
     bool WidgetProperties::ShowCD6JointProperties()
     {
         bool hasChanged = false;
-        const float width = ImGui::GetContentRegionAvail().x - 105.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 105.0f;
         SPtr<CD6Joint> joint = std::static_pointer_cast<CD6Joint>(_selections.ClickedComponent);
 
         if (ImGui::CollapsingHeader("D6 Joint", ImGuiTreeNodeFlags_DefaultOpen))
@@ -1644,7 +1644,7 @@ namespace te
     bool WidgetProperties::ShowCHingeJointProperties()
     {
         bool hasChanged = false;
-        const float width = ImGui::GetContentRegionAvail().x - 100.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
         SPtr<CHingeJoint> joint = std::static_pointer_cast<CHingeJoint>(_selections.ClickedComponent);
 
         if (ImGui::CollapsingHeader("Hinge Joint", ImGuiTreeNodeFlags_DefaultOpen))
@@ -1753,7 +1753,7 @@ namespace te
     bool WidgetProperties::ShowCSliderJointProperties()
     {
         bool hasChanged = false;
-        const float width = ImGui::GetContentRegionAvail().x - 165.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 165.0f;
         SPtr<CSliderJoint> joint = std::static_pointer_cast<CSliderJoint>(_selections.ClickedComponent);
 
         if (ImGui::CollapsingHeader("Slider Joint", ImGuiTreeNodeFlags_DefaultOpen))
@@ -2095,7 +2095,7 @@ namespace te
         SPtr<Decal> decalPtr = decalCO->GetInternal();
         ObjectMobility mobility = decalPtr->GetMobility();
         Transform transform = decalCO->GetSceneObject()->GetTransform();
-        const float width = ImGui::GetContentRegionAvail().x - 100.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
 
         if (ShowTransform(transform, mobility))
         {
@@ -2133,7 +2133,7 @@ namespace te
     bool WidgetProperties::ShowTransform(Transform& transform, ObjectMobility& mobility, bool disableTransform)
     {
         bool hasChanged = false;
-        const float width = ImGui::GetContentRegionAvail().x - 100.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
 
         if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
         {
@@ -2166,7 +2166,7 @@ namespace te
         bool hasChanged = false;
         String name = gameObject->GetName();
         String uuid = gameObject->GetUUID().ToString();
-        const float widgetWidth = ImGui::GetContentRegionAvail().x - 100.0f;
+        const float widgetWidth = ImGui::GetWindowContentRegionWidth() - 100.0f;
 
         if(name.length() < 256)
             strcpy(inputName, name.c_str());
@@ -2199,7 +2199,7 @@ namespace te
         bool hasChanged = false;
         HCamera cameraHandle = camera;
         auto& cameraSettings = camera->GetRenderSettings();
-        const float width = ImGui::GetContentRegionAvail().x - 100.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
 
         if (ImGui::CollapsingHeader("Graphics", ImGuiTreeNodeFlags_DefaultOpen))
         {
@@ -2221,7 +2221,7 @@ namespace te
         bool hasChanged = false;
         Degree pitch = cameraFlyer->GetPitch();
         Degree yaw = cameraFlyer->GetYaw();
-        const float width = ImGui::GetContentRegionAvail().x - 100.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
 
         float pitchAngle = pitch.ValueDegrees();
         float yawAngle = yaw.ValueDegrees();
@@ -2250,7 +2250,7 @@ namespace te
         bool hasChanged = false;
         float intensity = light->GetIntensity();
         Degree spotAngle = light->GetSpotAngle();
-        const float width = ImGui::GetContentRegionAvail().x - 120.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 120.0f;
 
         // Color
         {
@@ -2306,7 +2306,7 @@ namespace te
         bool castShadows = light->GetCastShadows();
         float shadowBias = light->GetShadowBias();
         Light::CastShadowsType castShadowsType = light->GetCastShadowsType();
-        const float width = ImGui::GetContentRegionAvail().x - 100.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
 
         // Cast shadows
         {
@@ -2349,7 +2349,7 @@ namespace te
             if (castShadowsType == Light::CastShadowsType::Static)
             {
                 // Force Shadow Redraw
-                if (ImGui::Button(ICON_FA_SCREWDRIVER " Redraw Shadow", ImVec2(ImGui::GetContentRegionAvail().x, 25.0f)))
+                if (ImGui::Button(ICON_FA_SCREWDRIVER " Redraw Shadow", ImVec2(ImGui::GetWindowContentRegionWidth(), 25.0f)))
                 {
                     light->ForceShadowRedraw();
                     hasChanged = true;
@@ -2366,7 +2366,7 @@ namespace te
         const RenderableProperties& properties = renderable->GetProperties();
         const SPtr<Mesh> mesh = renderable->GetMesh();
         const SPtr<ZPrepassMesh> zPrepassMesh = renderable->GetZPrepassMesh();
-        const float width = ImGui::GetContentRegionAvail().x - 100.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
 
         ImGuiExt::ComboOptions<UUID> meshesOptions;
         ImGuiExt::ComboOptions<UUID> zPrepassMeshesOptions;
@@ -2548,7 +2548,7 @@ namespace te
         ImGuiExt::ComboOptions<UUID> materialsOptions;
         UUID emptyMaterial = UUID(50, 0, 0, 0);
         MeshProperties& meshProperties = mesh->GetProperties();
-        const float width = ImGui::GetContentRegionAvail().x - 120.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 120.0f;
         EditorResManager::ResourcesContainer& container = EditorResManager::Instance().Get<Material>();
 
         for (auto& resource : container.Res)
@@ -2588,7 +2588,7 @@ namespace te
     bool WidgetProperties::ShowAnimation(SPtr<CAnimation> animation)
     {
         bool hasChanged = false;
-        const float width = ImGui::GetContentRegionAvail().x - 100.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
 
         // cull
         {
@@ -2659,7 +2659,7 @@ namespace te
         bool hasChanged = false;
         char inputName[256];
         UINT32 numClip = animation->GetNumClips();
-        const float widgetWidth = ImGui::GetContentRegionAvail().x - 100.0f;
+        const float widgetWidth = ImGui::GetWindowContentRegionWidth() - 100.0f;
 
         for (UINT32 i = 0; i < numClip; i++)
         {
@@ -2694,7 +2694,7 @@ namespace te
         bool hasChanged = false;
         float brigtness = skybox->GetBrightness();
         float IBLIntensity = skybox->GetIBLIntensity();
-        const float width = ImGui::GetContentRegionAvail().x - 100.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
 
         ImGuiExt::ComboOptions<UUID> texturesOptions;
         UUID emptyTexture = UUID(50, 0, 0, 0);
@@ -2760,7 +2760,7 @@ namespace te
     bool WidgetProperties::ShowBody(SPtr<CBody> body)
     {
         bool hasChanged = false;
-        const float width = ImGui::GetContentRegionAvail().x - 100.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
 
         // Is Kinematic
         {
@@ -2955,7 +2955,7 @@ namespace te
     bool WidgetProperties::ShowJoint(SPtr<CJoint> joint)
     {
         bool hasChanged = false;
-        const float width = ImGui::GetContentRegionAvail().x - 100.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
 
         Vector<HComponent> bodies = gEditor().GetSceneRoot()->GetComponents((UINT32)TID_CRigidBody, true);
         ImGuiExt::ComboOptions<UUID> bodiesOptions;

@@ -34,9 +34,9 @@ namespace te
     {
         bool hasChanged = false;
         auto cameraSettings = _currentCamera->GetRenderSettings();
-        const float width = ImGui::GetContentRegionAvail().x - 100.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
 
-        if (ImGuiExt::RenderOptionComboComponent(&_currentCamera, "##renderoptions_switch_camera_option", "", _cameraList, ImGui::GetContentRegionAvail().x))
+        if (ImGuiExt::RenderOptionComboComponent(&_currentCamera, "##renderoptions_switch_camera_option", "", _cameraList, ImGui::GetWindowContentRegionWidth()))
         {
             gEditor().SetPreviewViewportCamera(_currentCamera);
             cameraSettings = _currentCamera->GetRenderSettings();

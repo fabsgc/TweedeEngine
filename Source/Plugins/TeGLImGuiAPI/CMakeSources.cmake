@@ -13,7 +13,6 @@ set (TE_GLIMGUIAPI_SRC_NOFILTER
 
 set(TE_GLIMGUIAPI_INC_IMGUI
     "ImGui/imgui_impl_opengl3.h"
-    "ImGui/imgui_impl_opengl3_loader.h"
 )
 
 set(TE_GLIMGUIAPI_SRC_IMGUI

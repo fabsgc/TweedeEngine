@@ -37,7 +37,7 @@ namespace te
         UUID shaderUUID = (_currentShader) ? _currentShader->GetUUID() : empty;
         EditorResManager::ResourcesContainer& shaders = EditorResManager::Instance().Get<Shader>();
         EditorResManager::ResourcesContainer& materials = EditorResManager::Instance().Get<Material>();
-        const float width = ImGui::GetContentRegionAvail().x - 110.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 110.0f;
 
         // Shaders list
         {
@@ -55,7 +55,7 @@ namespace te
             if (_currentShader)
             {
                 if (ImGuiExt::RenderOptionCombo<UUID>(&shaderUUID, "##shader_list_option", "",
-                    shadersOptions, ImGui::GetContentRegionAvail().x))
+                    shadersOptions, ImGui::GetWindowContentRegionWidth()))
                 {
                     if (shaderUUID != _currentShader->GetUUID())
                         _currentShader = gResourceManager().Load<Shader>(shaderUUID).GetInternalPtr();
@@ -64,7 +64,7 @@ namespace te
                 // Built Shader
                 {
                     ImGui::PushID("##shader_build_option");
-                    if (ImGui::Button(ICON_FA_SCREWDRIVER " Build Shader", ImVec2(ImGui::GetContentRegionAvail().x, 25.0f)))
+                    if (ImGui::Button(ICON_FA_SCREWDRIVER " Build Shader", ImVec2(ImGui::GetWindowContentRegionWidth(), 25.0f)))
                     {
                         Build();
                         hasChanged = true;

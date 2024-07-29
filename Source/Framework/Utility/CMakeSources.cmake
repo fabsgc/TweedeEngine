@@ -41,7 +41,6 @@ set(TE_UTILITY_SRC_THIRDPARTY
     "Utility/ThirdParty/ImGui/imgui_demo.cpp"
     "Utility/ThirdParty/ImGui/imgui_draw.cpp"
     "Utility/ThirdParty/ImGui/imgui_widgets.cpp"
-    "Utility/ThirdParty/ImGui/imgui_tables.cpp"
     "Utility/ThirdParty/ImGuizmo/ImGuizmo.cpp"
 )
 

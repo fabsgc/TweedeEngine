@@ -21,7 +21,7 @@ namespace te
 
     void WidgetSettings::Update()
     {
-        const float width = ImGui::GetContentRegionAvail().x - 110.0f;
+        const float width = ImGui::GetWindowContentRegionWidth() - 110.0f;
 
         if (ImGui::CollapsingHeader("Physics", ImGuiTreeNodeFlags_DefaultOpen))
         {

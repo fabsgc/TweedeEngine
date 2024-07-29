@@ -41,7 +41,7 @@ namespace te
 
         {
             ImGui::BeginGroup();
-            ImGui::BeginChild("Textures", ImVec2(ImGui::GetContentRegionAvail().x / 2.0f, 0.0f), false);
+            ImGui::BeginChild("Textures", ImVec2(ImGui::GetWindowContentRegionWidth() / 2.0f, 0.0f), false);
             if (ImGui::CollapsingHeader("   Textures", ImGuiTreeNodeFlags_Leaf))
             {
                 ImGui::BeginChild("TexturesList", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetWindowHeight() - 35.0f), true);
@@ -86,7 +86,7 @@ namespace te
                         ImGui::SameLine();
 
                         ImGui::BeginChild("TexturesFields", ImVec2(ImGui::GetContentRegionAvail().x, 96.0f), true);
-                        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x - 50.0f);
+                        ImGui::PushItemWidth(ImGui::GetWindowContentRegionWidth() - 50.0f);
 
                         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 10.0f, 1.0f });
                         ImGui::InputText("Path", inputPath, IM_ARRAYSIZE(inputPath));
@@ -133,7 +133,7 @@ namespace te
                 strcpy(inputUUID, inputUUIDStr.c_str());
                 strcpy(inputName, inputNameStr.c_str());
 
-                ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x - 50.0f);
+                ImGui::PushItemWidth(ImGui::GetWindowContentRegionWidth() - 50.0f);
 
                 ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 10.0f, 1.0f });
                 ImGui::InputText("Path", inputPath, IM_ARRAYSIZE(inputPath));
@@ -182,21 +182,21 @@ namespace te
         if (animationClipContainer.Res.size() > 0)
         {
             ShowResourceType(animationClipContainer, "AnimationClips", "   Animation Clips", "AnimationClipsList", 
-                ImVec2(ImGui::GetContentRegionAvail().x / 2.0f, 0.0f));
+                ImVec2(ImGui::GetWindowContentRegionWidth() / 2.0f, 0.0f));
             ImGui::SameLine();
         }
 
         if (audioClipContainer.Res.size() > 0)
         {
             ShowResourceType(audioClipContainer, "AudioClips", "   Audio Clips", "AudioClipsList",
-                ImVec2(ImGui::GetContentRegionAvail().x / 2.0f, 0.0f));
+                ImVec2(ImGui::GetWindowContentRegionWidth() / 2.0f, 0.0f));
             ImGui::SameLine();
         }
 
         if (physicMeshContainer.Res.size() > 0)
         {
             ShowResourceType(physicMeshContainer, "PhysicsMeshes", "   Physic Meshes", "PhysicsMeshesList",
-                ImVec2(ImGui::GetContentRegionAvail().x / 2.0f, 0.0f));
+                ImVec2(ImGui::GetWindowContentRegionWidth() / 2.0f, 0.0f));
             ImGui::SameLine();
         }
     }
