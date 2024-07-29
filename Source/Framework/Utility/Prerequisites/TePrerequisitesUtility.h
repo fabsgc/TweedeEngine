@@ -111,9 +111,16 @@
 #include "Utility/TeUUID.h"
 
 // ImGui ImVec4 conversion 
+#ifndef IMGUI_DEFINE_MATH_OPERATORS
+#define IMGUI_DEFINE_MATH_OPERATORS
+#endif
 #define IM_VEC4_CLASS_EXTRA                                                      \
         ImVec4(const te::Vector4& f) { x = f.x; y = f.y; z = f.z; w = f.w; }     \
         operator te::Vector4() const { return te::Vector4(x,y,z,w); }
+
+#ifndef IMGUI_API
+#define IMGUI_API TE_UTILITY_EXPORT
+#endif
 
 inline void StartCatchMemoryLeaks()
 {

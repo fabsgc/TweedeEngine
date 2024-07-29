@@ -53,7 +53,7 @@ namespace te
         UUID materialUUID = (_currentMaterial) ? _currentMaterial->GetUUID() : empty;
         EditorResManager::ResourcesContainer& materials = EditorResManager::Instance().Get<Material>();
         EditorResManager::ResourcesContainer& textures = EditorResManager::Instance().Get<Texture>();
-        const float width = ImGui::GetWindowContentRegionWidth() - 110.0f;
+        const float width = ImGui::GetContentRegionAvail().x - 110.0f;
 
         const auto& ShowTexture = [&](UUID& uuid, bool& textureUsed, const char* id, const char* label, const char* textureName, 
             ImGuiExt::ComboOptions<UUID>& options, float width, bool disable, TextureType texType, bool SRGB, bool isNormalMap)
@@ -130,7 +130,7 @@ namespace te
 
         const auto& ShowPreviewButton = [this](const char* title, const std::function<bool()>& getVisibility)
         {
-            float buttonWidth = ImGui::GetWindowContentRegionWidth() / 4.0f - 5.0f;
+            float buttonWidth = ImGui::GetContentRegionAvail().x / 4.0f - 5.0f;
 
             bool clicked = false;
             ImGui::PushStyleColor(ImGuiCol_Button, getVisibility() ? ImGui::GetStyle().Colors[ImGuiCol_ButtonActive] : ImGui::GetStyle().Colors[ImGuiCol_Button]);
@@ -146,7 +146,7 @@ namespace te
         // New material
         {
             ImGui::PushID("##material_new_option");
-            if (ImGui::Button(ICON_FA_PLUS_SQUARE " New material", ImVec2(ImGui::GetWindowContentRegionWidth(), 25.0f)))
+            if (ImGui::Button(ICON_FA_PLUS_SQUARE " New material", ImVec2(ImGui::GetContentRegionAvail().x, 25.0f)))
             {
                 HMaterial material = Material::Create(gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque));
                 material->SetName("Material " + ToString(_materialCreationCounter));
@@ -191,7 +191,7 @@ namespace te
                 }
 
                 if (ImGuiExt::RenderOptionCombo<UUID>(&materialUUID, "##material_list_option", "", 
-                    materialsOptions, ImGui::GetWindowContentRegionWidth() - 32.0f - offsetListMaterials, flags))
+                    materialsOptions, ImGui::GetContentRegionAvail().x - 32.0f - offsetListMaterials, flags))
                 {
                     if (materialUUID != _currentMaterial->GetUUID())
                         _currentMaterial = gResourceManager().Load<Material>(materialUUID).GetInternalPtr();
@@ -236,7 +236,7 @@ namespace te
 
             if (ImGui::CollapsingHeader("Preview", ImGuiTreeNodeFlags_DefaultOpen))
             {
-                float previewZoneWidth = ImGui::GetWindowContentRegionWidth();
+                float previewZoneWidth = ImGui::GetContentRegionAvail().x;
                 float previewWidth = (previewZoneWidth > 256.0f) ? 256.0f : previewZoneWidth;
                 float previewHeight = previewWidth;
                 float previewOffset = 0.0f;

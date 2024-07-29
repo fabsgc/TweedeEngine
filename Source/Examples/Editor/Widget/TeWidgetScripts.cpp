@@ -40,12 +40,12 @@ namespace te
         ImGuiExt::ComboOptions<UUID> scriptsOptions;
         UUID scriptUUID = (_currentScript) ? _currentScript->GetUUID() : empty;
         EditorResManager::ResourcesContainer& scripts = EditorResManager::Instance().Get<Script>();
-        const float width = ImGui::GetWindowContentRegionWidth() - 110.0f;
+        const float width = ImGui::GetContentRegionAvail().x - 110.0f;
 
         // New script
         {
             ImGui::PushID("##script_new_option");
-            if (ImGui::Button(ICON_FA_PLUS_SQUARE " New script", ImVec2(ImGui::GetWindowContentRegionWidth(), 25.0f)))
+            if (ImGui::Button(ICON_FA_PLUS_SQUARE " New script", ImVec2(ImGui::GetContentRegionAvail().x, 25.0f)))
             {
                 HScript script = Script::Create();
                 script->SetName("Script " + ToString(_scriptCreationCounter));
@@ -73,7 +73,7 @@ namespace te
             if (_currentScript)
             {
                 if (ImGuiExt::RenderOptionCombo<UUID>(&scriptUUID, "##script_list_option", "", 
-                    scriptsOptions, ImGui::GetWindowContentRegionWidth() - 35.0f - offsetListScripts))
+                    scriptsOptions, ImGui::GetContentRegionAvail().x - 35.0f - offsetListScripts))
                 {
                     if (scriptUUID != _currentScript->GetUUID())
                         _currentScript = gResourceManager().Load<Script>(scriptUUID).GetInternalPtr();

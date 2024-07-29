@@ -213,7 +213,7 @@ namespace te
 
         ImGui::Text("Tweede Engine");
         ImGui::Text("Author: Fabien Beaujean");
-        ImGui::SameLine(ImGui::GetWindowContentRegionWidth());
+        ImGui::SameLine(ImGui::GetContentRegionAvail().x);
         ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 55);
         ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 5);
 
