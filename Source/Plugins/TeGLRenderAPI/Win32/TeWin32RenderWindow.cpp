@@ -156,7 +156,7 @@ namespace te
         RenderWindow::Initialize();
     }
 
-    void Win32RenderWindow::InitializeGui()
+    void Win32RenderWindow::InitializeGui() const
     {
         GuiAPIData data;
 

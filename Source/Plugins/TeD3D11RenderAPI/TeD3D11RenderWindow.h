@@ -15,7 +15,7 @@ namespace te
         virtual ~D3D11RenderWindow();
 
         void Initialize() override;
-        void InitializeGui() override;
+        void InitializeGui() const override;
         void GetCustomAttribute(const String& name, void* pData) const override;
         void WindowMovedOrResized() override;
 

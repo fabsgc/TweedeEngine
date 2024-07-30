@@ -19,7 +19,7 @@ namespace te
         virtual ~LinuxRenderWindow();
 
         void Initialize() override;
-        void InitializeGui() override;
+        void InitializeGui() const override;
         void GetCustomAttribute(const String& name, void* pData) const override;
         void WindowMovedOrResized() override;
 

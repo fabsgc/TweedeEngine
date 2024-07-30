@@ -123,7 +123,7 @@ namespace te
         RenderWindow::Initialize();
     }
 
-    void D3D11RenderWindow::InitializeGui()
+    void D3D11RenderWindow::InitializeGui() const
     {
         GuiAPIData data;
         data.HWnd = _window->GetHWnd();

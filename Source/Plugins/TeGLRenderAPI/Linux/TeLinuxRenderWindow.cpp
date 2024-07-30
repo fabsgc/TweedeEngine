@@ -87,7 +87,7 @@ namespace te
         RenderWindow::Initialize();
     }
 
-    void LinuxRenderWindow::InitializeGui()
+    void LinuxRenderWindow::InitializeGui() const
     {
         GuiAPIData data;
 
