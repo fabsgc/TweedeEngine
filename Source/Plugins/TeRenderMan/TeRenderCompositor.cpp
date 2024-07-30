@@ -901,7 +901,7 @@ namespace te
         TE_ASSERT_ERROR(toneMapping != nullptr, "Failed to retrieve variation of ToneMappingMat material");
 
         toneMapping->Execute((ssaoNode->Output) ? ssaoNode->Output->Tex : Texture::WHITE, ppLastFrame, ppOutput, texProps.GetNumSamples(),
-            settings.Gamma, settings.ExposureScale, settings.Contrast, settings.Brightness, !settings.Tonemapping.Enabled);
+            settings.Gamma, settings.ExposureScale, settings.Contrast, settings.Brightness);
 
         inputs.CurrRenderAPI.SetRenderTarget(nullptr);
         inputs.CurrRenderAPI.PopMarker();

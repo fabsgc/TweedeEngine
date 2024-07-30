@@ -24,7 +24,8 @@ namespace te
         template<UINT32 MSAA, bool GAMMA_ONLY>
         static const ShaderVariation& GetVariation()
         {
-            static ShaderVariation variation = ShaderVariation(
+            static ShaderVariation variation;
+            variation = ShaderVariation(
             Vector<ShaderVariation::Param>({
                 ShaderVariation::Param("MSAA_COUNT", MSAA),
                 ShaderVariation::Param("GAMMA_ONLY", GAMMA_ONLY)
@@ -48,11 +49,10 @@ namespace te
          * @param[in]	gamma 
          * @param[in]	exposure 
          * @param[in]	contrast 
-         * @param[in]	brightness 
-         * @param[in]	gammaOnly 
+         * @param[in]	brightness
          */
         void Execute(const SPtr<Texture>& ssao, const SPtr<Texture>& source, const SPtr<RenderTarget>& destination,
-            INT32 MSAACount = 1, float gamma = 2.2f, float exposure = 1.0f, float contrast = 1.0f, float brightness = 0.0f, bool gammaOnly = false);
+            INT32 MSAACount = 1, float gamma = 2.2f, float exposure = 1.0f, float contrast = 1.0f, float brightness = 0.0f);
 
         /**
          * Returns the material variation matching the provided parameters.

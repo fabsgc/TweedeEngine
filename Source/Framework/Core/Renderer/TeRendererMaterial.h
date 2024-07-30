@@ -66,7 +66,7 @@ namespace te
         virtual ~RendererMaterialBase() = default;
 
         /** Initialize */
-        virtual void Initialize() { }
+        virtual void Initialize() = 0;
 
         /** Returns the shader used by the material. */
         SPtr<Shader> GetShader() const { return _shader; }
@@ -74,11 +74,19 @@ namespace te
         /** Returns the internal parameter set containing GPU bindable parameters. */
         SPtr<GpuParams> GetParams() const { return _params; }
 
+        /** Returns currently used shader variation */
+        const ShaderVariation& GetShaderVariation() const { return _variation; }
+
         /**
          * Helper field to be set before construction. Identifiers the variation of the material to initialize this
          * object with.
          */
         UINT32 _varIdx = 0;
+
+        /**
+         * Current variation used by the material
+         */
+        ShaderVariation _variation;
 
     public:
         void InitPipelines()
@@ -166,8 +174,6 @@ namespace te
         SPtr<GraphicsPipelineState> _graphicsPipeline;
         SPtr<ComputePipelineState> _computePipeline;
         UINT32 _stencilRef = 0;
-
-        ShaderVariation _variation;
         SPtr<Shader> _shader;
     };
 
@@ -186,9 +192,8 @@ namespace te
         {
             if(_metaData.Instances[0] == nullptr)
             {
-                RendererMaterialBase* mat = te_allocate<T>();
-                mat->_varIdx = 0;
-                new (mat) T();
+                RendererMaterial<T>* mat = new T();
+                mat->InitPipelines();
                 mat->Initialize();
 
                 _metaData.Instances[0] = mat;
@@ -209,9 +214,10 @@ namespace te
 
             if(_metaData.Instances[varIdx] == nullptr)
             {
-                RendererMaterialBase* mat = te_allocate<T>();
+                RendererMaterial<T>* mat = new T();
                 mat->_varIdx = varIdx;
-                new (mat) T();
+                mat->_variation = variation;
+                mat->InitPipelines();
                 mat->Initialize();
 
                 _metaData.Instances[varIdx] = mat;
@@ -261,8 +267,6 @@ namespace te
 
             if(_metaData.Variations.Exist(_varIdx))
                 _variation = _metaData.Variations.Get(_varIdx);
-
-            InitPipelines();
         }
 
         /** Returns a set of dynamically defined defines used when compiling this shader. */

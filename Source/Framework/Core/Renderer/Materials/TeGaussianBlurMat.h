@@ -30,7 +30,8 @@ namespace te
         template<UINT32 MSAA>
         static const ShaderVariation& GetVariation()
         {
-            static ShaderVariation variation = ShaderVariation(
+            static ShaderVariation variation;
+            variation = ShaderVariation(
                 Vector<ShaderVariation::Param>({
                     ShaderVariation::Param("MSAA_COUNT", MSAA),
                 }));

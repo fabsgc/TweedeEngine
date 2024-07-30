@@ -33,7 +33,8 @@ namespace te
         template<bool skinned>
         static const ShaderVariation& GetVariation()
         {
-            static ShaderVariation variation = ShaderVariation(
+            static ShaderVariation variation;
+            variation = ShaderVariation(
             {
                 ShaderVariation::Param("SKINNED", skinned)
             });
@@ -43,6 +44,9 @@ namespace te
 
     public:
         ShadowDepthNormalMat() = default;
+
+        /** @copydoc RendererMaterialBase::Initialize */
+        void Initialize() override { }
 
         /** Binds the material to the pipeline, ready to be used on subsequent draw calls. */
         void Bind(const SPtr<GpuParamBlockBuffer>& shadowParams);
@@ -67,7 +71,7 @@ namespace te
         template<bool skinned>
         static const ShaderVariation& GetVariation()
         {
-            static ShaderVariation variation = ShaderVariation(
+            ShaderVariation variation = ShaderVariation(
             {
                 ShaderVariation::Param("SKINNED", skinned)
             });
@@ -77,6 +81,9 @@ namespace te
 
     public:
         ShadowDepthDirectionalMat() = default;
+
+        /** @copydoc RendererMaterialBase::Initialize */
+        void Initialize() override { }
 
         /** Binds the material to the pipeline, ready to be used on subsequent draw calls. */
         void Bind(const SPtr<GpuParamBlockBuffer>& shadowParams);
@@ -113,7 +120,7 @@ namespace te
         template<bool skinned>
         static const ShaderVariation& GetVariation()
         {
-            static ShaderVariation variation = ShaderVariation(
+            ShaderVariation variation = ShaderVariation(
             {
                 ShaderVariation::Param("SKINNED", skinned)
             });
@@ -122,6 +129,9 @@ namespace te
         }
     public:
         ShadowDepthCubeMat() = default;
+
+        /** @copydoc RendererMaterialBase::Initialize */
+        void Initialize() override { }
 
         /** Binds the material to the pipeline, ready to be used on subsequent draw calls. */
         void Bind(const SPtr<GpuParamBlockBuffer>& shadowParams, const SPtr<GpuParamBlockBuffer>& shadowCubeParams);

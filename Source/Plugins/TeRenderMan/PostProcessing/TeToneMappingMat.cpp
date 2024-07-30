@@ -30,7 +30,7 @@ namespace te
     }
 
     void ToneMappingMat::Execute(const SPtr<Texture>& ssao, const SPtr<Texture>& source, const SPtr<RenderTarget>& destination, INT32 MSAACount,
-        float gamma, float exposure, float contrast, float brightness, bool gammaOnly)
+        float gamma, float exposure, float contrast, float brightness)
     {
         gToneMappingParamDef.gGamma.Set(_paramBuffer, gamma, 0);
         gToneMappingParamDef.gExposure.Set(_paramBuffer, exposure, 0);
