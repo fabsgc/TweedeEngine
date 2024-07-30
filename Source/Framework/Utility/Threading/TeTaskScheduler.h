@@ -38,6 +38,9 @@ namespace te
         /** Calls worker method */
         void Execute();
 
+        /** Reset task to initial state */
+        void Reset();
+
     private:
         friend class TaskScheduler;
 

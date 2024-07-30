@@ -105,10 +105,12 @@ namespace te
         auto worker = [this]() { UpdateStreaming(); };
 
         // If previous task still hasn't completed, just skip streaming this frame, queuing more tasks won't help
-        if (_streamingTask != nullptr && !_streamingTask->IsComplete())
+        if (_streamingTask && !_streamingTask->IsComplete())
             return;
 
-        _streamingTask = Task::Create("AudioStream", worker);
+        _streamingTask = !_streamingTask ? Task::Create("AudioStream", worker) : _streamingTask;
+        _streamingTask->Reset();
+
         gTaskScheduler().AddTask(_streamingTask);
 
         Audio::Update();

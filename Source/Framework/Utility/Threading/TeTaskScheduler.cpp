@@ -44,6 +44,11 @@ namespace te
         }
     }
 
+    void Task::Reset()
+    {
+        _state = 0;
+    }
+
     TE_MODULE_STATIC_MEMBER(TaskScheduler)
 
     TaskScheduler::TaskScheduler()
