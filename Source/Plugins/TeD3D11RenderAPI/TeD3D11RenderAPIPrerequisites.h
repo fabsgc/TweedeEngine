@@ -2,7 +2,9 @@
 
 #include "Prerequisites/TePrerequisitesUtility.h"
 
-#define SAFE_RELEASE(p)      { if(p) { (p)->Release(); (p)=NULL; } }
+#ifndef SAFE_RELEASE
+#   define SAFE_RELEASE(p)      { if(p) { (p)->Release(); (p)=NULL; } }
+#endif
 
 #if TE_DEBUG_MODE == TE_DEBUG_ENABLED
 #   define D3D_DEBUG_INFO

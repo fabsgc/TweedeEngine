@@ -164,6 +164,7 @@ set (TE_CORE_SRC_PLATFORM_WIN32
     "Core/Private/Win32/TeWin32Platform.cpp"
     "Core/Private/Win32/TeWin32ScriptManager.cpp"
     "Core/Private/Win32/TeWin32FolderMonitor.cpp"
+    "Core/Private/Win32/TeWin32AudioManager.cpp"
 )
 
 set (TE_CORE_INC_PLATFORM_LINUX
@@ -180,6 +181,7 @@ set (TE_CORE_SRC_PLATFORM_LINUX
     "Core/Private/Linux/TeLinuxPlatform.cpp"
     "Core/Private/Linux/TeLinuxScriptManager.cpp"
     "Core/Private/Linux/TeLinuxFolderMonitor.cpp"
+    "Core/Private/Win32/TeLinuxAudioManager.cpp"
 )
 
 set(TE_CORE_INC_NOFILTER

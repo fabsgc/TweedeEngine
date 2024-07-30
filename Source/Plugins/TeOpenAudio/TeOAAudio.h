@@ -29,8 +29,23 @@ namespace te
         /** @copydoc Audio::IsPaused */
         bool IsPaused() const override { return _isPaused; }
 
+        /** @copydoc Audio::OnDeviceAdded */
+        void OnDeviceAdded() override;
+
+        /** @copydoc Audio::OnDeviceRemoved */
+        void OnDeviceRemoved() override;
+
+        /** @copydoc Audio::OnDefaultDeviceChanged */
+        void OnDefaultDeviceChanged() override;
+
+        /** @copydoc Audio::OnDeviceStateChanged */
+        void OnDeviceStateChanged() override;
+
         /** @copydoc Audio::Update */
         void Update() override;
+
+        /** @copydoc Audio::Update */
+        void UpdateDevices() override;
 
         /** @copydoc Audio::SetActiveDevice */
         void SetActiveDevice(const AudioDevice& device) override;
@@ -127,6 +142,7 @@ namespace te
     private:
         float _volume = 1.0f;
         bool _isPaused = false;
+        bool _needDeviceRefresh = true;
 
         ALCdevice* _device = nullptr;
         Vector<AudioDevice> _allDevices;

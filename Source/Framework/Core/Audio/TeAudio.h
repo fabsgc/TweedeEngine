@@ -43,6 +43,21 @@ namespace te
         /** @copydoc SetPaused */
         virtual bool IsPaused() const = 0;
 
+        /** Called by the engine when a new device is added */
+        virtual void OnDeviceAdded() = 0;
+
+        /** Called by the engine when a device is Removed */
+        virtual void OnDeviceRemoved() = 0;
+
+        /** Called by the engine when a new device is added */
+        virtual void OnDefaultDeviceChanged() = 0;
+
+        /** Called by the engine when a new device is added */
+        virtual void OnDeviceStateChanged() = 0;
+
+        /** Retrieves all available devices and set the default device to use  */
+        virtual void UpdateDevices() = 0;
+
         /** Determines the device on which is the audio played back on. */
         virtual void SetActiveDevice(const AudioDevice& device) = 0;
 

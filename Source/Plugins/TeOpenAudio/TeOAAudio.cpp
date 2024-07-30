@@ -12,57 +12,7 @@ namespace te
 
     OAAudio::OAAudio()
     {
-        bool enumeratedDevices;
-        if (alcIsExtensionPresent(nullptr, "ALC_ENUMERATE_ALL_EXT") != ALC_FALSE)
-        {
-            const ALCchar* defaultDevice = alcGetString(nullptr, ALC_DEFAULT_ALL_DEVICES_SPECIFIER);
-            _defaultDevice.Name = String(defaultDevice);
-
-            const ALCchar* devices = alcGetString(nullptr, ALC_ALL_DEVICES_SPECIFIER);
-
-            Vector<char> deviceName;
-            while (true)
-            {
-                if (*devices == 0)
-                {
-                    if (deviceName.empty())
-                        break;
-
-                    // Clean up the name to get the actual hardware name
-                    String fixedName(deviceName.data(), deviceName.size());
-                    fixedName = ReplaceAll(fixedName, u8"OpenAL Soft on ", u8"");
-
-                    _allDevices.push_back({ fixedName });
-                    deviceName.clear();
-
-                    devices++;
-                    continue;
-                }
-
-                deviceName.push_back(*devices);
-                devices++;
-            }
-
-            enumeratedDevices = true;
-        }
-        else
-        {
-            _allDevices.push_back({ u8"" });
-            enumeratedDevices = false;
-        }
-
-        _activeDevice = _defaultDevice;
-
-        String defaultDeviceName = _defaultDevice.Name;
-        if (enumeratedDevices)
-            _device = alcOpenDevice(defaultDeviceName.c_str());
-        else
-            _device = alcOpenDevice(nullptr);
-
-        if (_device == nullptr)
-            TE_DEBUG("Failed to open OpenAL device: " + defaultDeviceName);
-
-        RebuildContexts();
+        UpdateDevices();
     }
 
     OAAudio::~OAAudio()
@@ -100,8 +50,34 @@ namespace te
             source->SetGlobalPause(paused);
     }
 
+    void OAAudio::OnDeviceAdded()
+    {
+        _needDeviceRefresh = true;
+    }
+
+    void OAAudio::OnDeviceRemoved()
+    {
+        _needDeviceRefresh = true;
+    }
+
+    void OAAudio::OnDefaultDeviceChanged()
+    {
+        _needDeviceRefresh = true;
+    }
+
+    void OAAudio::OnDeviceStateChanged()
+    {
+        _needDeviceRefresh = true;
+    }
+
     void OAAudio::Update()
     {
+        if (_needDeviceRefresh)
+        {
+            UpdateDevices();
+            _needDeviceRefresh = false;
+        }
+
         auto worker = [this]() { UpdateStreaming(); };
 
         // If previous task still hasn't completed, just skip streaming this frame, queuing more tasks won't help
@@ -114,6 +90,64 @@ namespace te
         gTaskScheduler().AddTask(_streamingTask);
 
         Audio::Update();
+    }
+
+    void OAAudio::UpdateDevices()
+    {
+        _allDevices.clear();
+
+        if (_device != nullptr)
+            alcCloseDevice(_device);
+
+        bool enumeratedDevices = true;
+        if (alcIsExtensionPresent(nullptr, "ALC_ENUMERATE_ALL_EXT") != ALC_FALSE)
+        {
+            const ALCchar* defaultDevice = alcGetString(nullptr, ALC_DEFAULT_ALL_DEVICES_SPECIFIER);
+            _defaultDevice.Name = String(defaultDevice);
+
+            const ALCchar* devices = alcGetString(nullptr, ALC_ALL_DEVICES_SPECIFIER);
+
+            Vector<char> deviceName;
+            while (true)
+            {
+                if (*devices == 0)
+                {
+                    if (deviceName.empty())
+                        break;
+
+                    // Clean up the name to get the actual hardware name
+                    String fixedName(deviceName.data(), deviceName.size());
+                    fixedName = ReplaceAll(fixedName, u8"OpenAL Soft on ", u8"");
+
+                    _allDevices.push_back({ fixedName });
+                    deviceName.clear();
+
+                    devices++;
+                    continue;
+                }
+
+                deviceName.push_back(*devices);
+                devices++;
+            }
+        }
+        else
+        {
+            _allDevices.push_back({ u8"" });
+            enumeratedDevices = false;
+        }
+
+        _activeDevice = _defaultDevice;
+
+        String defaultDeviceName = _defaultDevice.Name;
+        if (enumeratedDevices)
+            _device = alcOpenDevice(defaultDeviceName.c_str());
+        else
+            _device = alcOpenDevice(nullptr);
+
+        if (_device == nullptr)
+            TE_DEBUG("Failed to open OpenAL device: " + defaultDeviceName);
+
+        RebuildContexts();
     }
 
     void OAAudio::SetActiveDevice(const AudioDevice& device)

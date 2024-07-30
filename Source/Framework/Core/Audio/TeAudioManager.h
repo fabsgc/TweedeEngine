@@ -5,6 +5,19 @@
 
 namespace te
 {
+    class AudioDeviceWatcher
+    {
+    public:
+        struct Pimpl;
+
+    public:
+        AudioDeviceWatcher();
+        ~AudioDeviceWatcher();
+
+    private:
+        Pimpl* _data;
+    };
+
     /** Creates and destroys a specific audio system implementation. */
     class TE_CORE_EXPORT AudioFactory
     {
@@ -35,5 +48,6 @@ namespace te
     private:
         DynLib* _plugin = nullptr;
         AudioFactory* _factory = nullptr;
+        AudioDeviceWatcher _deviceWatcher;
     };
 }
