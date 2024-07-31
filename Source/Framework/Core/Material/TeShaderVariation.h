@@ -194,7 +194,7 @@ namespace te
         const ShaderVariation& Get(UINT32 idx) { return _variations[idx]; }
 
         /** Get() returns a reference and don't do any check. This method is usefull to prevent the application from crashing */
-        const bool Exist(UINT32 idx) { return _variations.size() > idx; }
+        bool Exist(UINT32 idx) { return _variations.size() > idx; }
 
         /**
          * Scans a list of stored variations and returns an index of a variation that has the same parameters as the

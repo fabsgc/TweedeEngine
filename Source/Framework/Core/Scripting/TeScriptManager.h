@@ -59,7 +59,7 @@ namespace te
     private:
         friend class Script;
 
-        bool ScriptManager::RegisterScript(Script* script, SceneObject& so);
+        bool RegisterScript(Script* script, SceneObject& so);
 
         /** When a script need a new instance of the given native script */
         NativeScript* CreateNativeScript(Script* script, SceneObject& so);
