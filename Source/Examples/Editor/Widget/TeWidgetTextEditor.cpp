@@ -74,11 +74,6 @@ namespace te
         UpdateEditorContent();
     }
 
-    const Script* WidgetTextEditor::GetScript() const
-    {
-        return _script;
-    }
-
     void WidgetTextEditor::ShowEditor()
     {
         ImGui::BeginChild("TextEditor", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetWindowHeight() - 90.0f), false);

@@ -59,8 +59,10 @@ namespace te
     private:
         friend class Script;
 
+        bool ScriptManager::RegisterScript(Script* script, SceneObject& so);
+
         /** When a script need a new instance of the given native script */
-        NativeScript* CreateNativeScript(const HScript& script, SceneObject& so);
+        NativeScript* CreateNativeScript(Script* script, SceneObject& so);
 
         /** Memory management for NativeScript, is manual, each script has an exported function for deleting a NativeScript */
         void DeleteNativeScript(const Script* script, NativeScript* nativeScript);

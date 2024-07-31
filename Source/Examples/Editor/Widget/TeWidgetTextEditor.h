@@ -21,7 +21,8 @@ namespace te
         virtual void PutFocus() override;
 
         void SetScript(Script* script);
-        const Script* GetScript() const;
+        const Script* GetScript() const { return _script; }
+        const String& GetContent() const { return _editorContent; }
 
     public:
         Event<void()> OnBuild;

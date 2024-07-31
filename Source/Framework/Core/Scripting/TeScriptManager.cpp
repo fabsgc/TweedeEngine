@@ -38,7 +38,17 @@ namespace te
     {
         if (script.IsLoaded())
         {
-            Pair<Script*, SceneObject*> identifier = std::make_pair(script.GetInternalPtr().get(), &so);
+            RegisterScript(script.GetInternalPtr().get(), so);
+        }
+
+        return false;
+    }
+
+    bool ScriptManager::RegisterScript(Script* script, SceneObject& so)
+    {
+        if (script)
+        {
+            Pair<Script*, SceneObject*> identifier = std::make_pair(script, &so);
 
             if (_runningScripts.find(identifier) == _runningScripts.end())
             {
@@ -74,10 +84,30 @@ namespace te
 
     bool ScriptManager::BuildAndUpdateNativeScripts(const Script* script)
     {
+        // Keep track of all SceneObject that are using this script
+        Vector<SceneObject*> sceneObjects;
+
+        for (auto& runningScript : _runningScripts)
+        {
+            if (runningScript.first.first == script)
+            {
+                sceneObjects.push_back(runningScript.first.second);
+            }
+        }
+
+        // Unload the script
         UnloadScriptLibrary(script);
 
-        // TODO Script
+        // Compile library
+        if (!CompileLibrary(script))
+            return false;
 
+        // Register again the script
+        for (auto& sceneObject : sceneObjects)
+        {
+            RegisterScript(const_cast<Script*>(script), *sceneObject);
+        }
+        
         return true;
     }
 
@@ -97,11 +127,11 @@ namespace te
         _scriptLibraries.clear();
     }
 
-    NativeScript* ScriptManager::CreateNativeScript(const HScript& script, SceneObject& so)
+    NativeScript* ScriptManager::CreateNativeScript(Script* script, SceneObject& so)
     {
         NativeScript* nativeScript = nullptr;
         typedef NativeScript* (*LoadScriptFunc)();
-        DynLib* library = GetScriptLibrary(script.GetInternalPtr().get());
+        DynLib* library = GetScriptLibrary(script);
 
         if (library)
         {
@@ -212,7 +242,8 @@ namespace te
 
         for (auto& script : _runningScripts)
         {
-            script.second->PreUpdate();
+            if (script.second)
+                script.second->PreUpdate();
         }
     }
 
@@ -224,7 +255,8 @@ namespace te
 
         for (auto& script : _runningScripts)
         {
-            script.second->PostUpdate();
+            if (script.second)
+                script.second->PostUpdate();
         }
     }
 
@@ -236,7 +268,8 @@ namespace te
 
         for (auto& script : _runningScripts)
         {
-            script.second->PostRender();
+            if (script.second)
+                script.second->PostRender();
         }
     }
 
@@ -248,7 +281,8 @@ namespace te
 
         for (auto& script : _runningScripts)
         {
-            script.second->Update();
+            if (script.second)
+                script.second->Update();
         }
     }
 

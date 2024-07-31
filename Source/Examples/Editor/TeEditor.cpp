@@ -82,6 +82,8 @@
 #include "Scripting/TeScript.h"
 #include "Scripting/TeScriptManager.h"
 
+#include "Utility/TeDataStream.h"
+
 #include <filesystem>
 
 // TODO Temp for debug purpose
@@ -670,6 +672,8 @@ namespace te
 
     void Editor::BuildScript()
     {
+        SaveScript();
+
         const Script* script = std::static_pointer_cast<WidgetTextEditor>(_settings.WTextEditor)->GetScript();
         gScriptManager().BuildAndUpdateNativeScripts(script);
     }
@@ -677,7 +681,13 @@ namespace te
     void Editor::SaveScript()
     {
         const Script* script = std::static_pointer_cast<WidgetTextEditor>(_settings.WTextEditor)->GetScript();
-        // TODO Script
+        
+        FileStream file(_script->GetPath(), FileStream::WRITE);
+        if (!file.Fail())
+        {
+            file.WriteString(std::static_pointer_cast<WidgetTextEditor>(_settings.WTextEditor)->GetContent());
+            file.Close();
+        }
     }
 
     Widget* Editor::GetWidget(Widget::WidgetType type)
