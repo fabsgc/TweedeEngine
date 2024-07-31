@@ -181,7 +181,7 @@ set (TE_CORE_SRC_PLATFORM_LINUX
     "Core/Private/Linux/TeLinuxPlatform.cpp"
     "Core/Private/Linux/TeLinuxScriptManager.cpp"
     "Core/Private/Linux/TeLinuxFolderMonitor.cpp"
-    "Core/Private/Win32/TeLinuxAudioManager.cpp"
+    "Core/Private/Linux/TeLinuxAudioManager.cpp"
 )
 
 set(TE_CORE_INC_NOFILTER
