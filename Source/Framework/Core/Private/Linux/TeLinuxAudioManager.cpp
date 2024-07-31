@@ -1,6 +1,5 @@
-#include "TeLinuxAudioManager.h"
-
 #include "Audio/TeAudioManager.h"
+#include "Audio/TeAudio.h"
 
 namespace te
 {
