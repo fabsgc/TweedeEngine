@@ -101,7 +101,7 @@ namespace te
             if (name.length() < 256) strcpy(inputName, name.c_str());
             else strcpy(inputName, name.substr(0, 256).c_str());
 
-            if (ImGui::CollapsingHeader("Identification"))
+            if (ImGui::CollapsingHeader("Identification", ImGuiTreeNodeFlags_DefaultOpen))
             {
                 ImGui::PushItemWidth(width);
                 if (ImGui::InputText("Name", inputName, IM_ARRAYSIZE(inputName)))
