@@ -306,6 +306,9 @@ namespace te
         ImGuizmo::OPERATION _guizmoOperation;
         ImGuizmo::MODE _guizmoMode;
 
+        HEvent _buildScript;
+        HEvent _saveScript;
+
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         // TODO Temp for debug purpose
         HMesh _furnitureMesh;

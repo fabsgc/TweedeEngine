@@ -479,11 +479,11 @@ namespace te
         _settings.WResources->SetVisible(false);
         _settings.WConsole->SetVisible(false);
 
-        std::static_pointer_cast<WidgetTextEditor>(_settings.WTextEditor)->OnBuild.Connect(std::bind(&Editor::BuildScript, this));
-        std::static_pointer_cast<WidgetTextEditor>(_settings.WTextEditor)->OnSave.Connect(std::bind(&Editor::SaveScript, this));
-
         for (auto& widget : _widgets)
             widget->Initialize();
+
+        _buildScript = std::static_pointer_cast<WidgetTextEditor>(_settings.WTextEditor)->OnBuild.Connect(std::bind(&Editor::BuildScript, this));
+        _saveScript = std::static_pointer_cast<WidgetTextEditor>(_settings.WTextEditor)->OnSave.Connect(std::bind(&Editor::SaveScript, this));
     }
 
     void Editor::ApplyStyleGui() const

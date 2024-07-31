@@ -90,8 +90,8 @@ namespace te
     {
         ImGui::BeginChild("TextEditorActionList", ImVec2(ImGui::GetContentRegionAvail().x, 42.0f), true);
 
-        ImGuiExt::RenderButton(ICON_FA_COGS, ICON_FA_COGS, [&]() { return _script != nullptr; }, [&]() { return _script != nullptr; }, OnBuild, ImVec2(32.0f, 26.0f));
-        ImGuiExt::RenderButton(ICON_FA_SAVE, ICON_FA_SAVE, [&]() { return _script != nullptr; }, [&]() { return _script != nullptr; }, OnSave, ImVec2(32.0f, 26.0f));
+        ImGuiExt::RenderButton(ICON_FA_COGS, ICON_FA_COGS, [&]() { return _script != nullptr; }, [&]() { return _script != nullptr; }, [&]() { OnBuild(); }, ImVec2(32.0f, 26.0f));
+        ImGuiExt::RenderButton(ICON_FA_SAVE, ICON_FA_SAVE, [&]() { return _script != nullptr; }, [&]() { return _script != nullptr; }, [&]() { OnSave(); }, ImVec2(32.0f, 26.0f));
 
         ImGui::EndChild();
     }
