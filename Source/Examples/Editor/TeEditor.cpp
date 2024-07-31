@@ -1408,13 +1408,16 @@ namespace te
         textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
         textureCubeMapImportOptions->IsCubeMap = true;
         textureCubeMapImportOptions->SRGB = true;
+
+        auto clipImportOptions = AudioClipImportOptions::Create();
+        clipImportOptions->Is3D = true;
         // ######################################################
 
         // LOAD MESH AND TEXTURES RESOURCES
         // ######################################################
         SPtr<MultiResource> MultiResourcesMesh = EditorResManager::Instance().LoadAll("Data/Meshes/VintageWooden/VintageWooden.obj", meshImportOptions);
 
-        _sphereMesh = static_resource_cast<Mesh>(MultiResourcesMesh->Entries[0].Res);
+        _furnitureMesh = static_resource_cast<Mesh>(MultiResourcesMesh->Entries[0].Res);
         _zPrepassSphereMesh = static_resource_cast<ZPrepassMesh>(MultiResourcesMesh->Entries[1].Res);
         //_monkeyMesh = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Monkey/monkey-hd.obj", meshImportOptions)->Entries[0].Res);
         //_planeMesh = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Primitives/plane.obj", meshImportOptions)->Entries[0].Res);
@@ -1429,12 +1432,16 @@ namespace te
         //HTexture cobbleNormal = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/normal1.jpg", textureImportOptions);
         //HTexture cobbleParallax = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/parallax1.jpg", textureImportOptions);
 
-        if (_sphereMesh.IsLoaded())
-            _sphereMesh->SetName("Sphere Mesh");
+        _audioClip = static_resource_cast<AudioClip>(EditorResManager::Instance().LoadAll("Data/Sounds/AirHorn.ogg", clipImportOptions)->Entries[0].Res);
+
+        if (_furnitureMesh.IsLoaded())
+            _furnitureMesh->SetName("Furniture Mesh");
         if (_zPrepassSphereMesh.IsLoaded())
             _zPrepassSphereMesh->SetName("Sphere Mesh");
-        if (_sphereMesh.IsLoaded())
+        if (_furnitureMesh.IsLoaded())
             _skyboxTexture->SetName("Skybox Texture");
+        if (_audioClip.IsLoaded())
+            _audioClip->SetName("Audio Clip");
         // ###################################################### 
 
         // GET BUILTIN OPAQUE SHADER
@@ -1454,9 +1461,9 @@ namespace te
             //monkeyMatprop.UseParallaxMap = true;
             //monkeyMatprop.ParallaxScale = 0.05f;
 
-            _sphereMaterial = Material::Create(_shader);
-            _sphereMaterial->SetName("Sphere Material");
-            _sphereMaterial->SetProperties(monkeyMatprop);
+            _furnitureMaterial = Material::Create(_shader);
+            _furnitureMaterial->SetName("Furniture Material");
+            _furnitureMaterial->SetProperties(monkeyMatprop);
             //_monkeyMaterial->SetTexture("BaseColorMap", cobbleBaseColor);
             //_monkeyMaterial->SetTexture("NormalMap", cobbleNormal);
             //_monkeyMaterial->SetTexture("ParallaxMap", cobbleParallax);
@@ -1494,14 +1501,14 @@ namespace te
 
         // FILL SCENE WITH MESHES
         // ######################################################
-        if (_sphereMesh.IsLoaded() && _sphereMaterial.IsLoaded())
+        if (_furnitureMesh.IsLoaded() && _furnitureMaterial.IsLoaded())
         {
             _sceneRenderableSO = SceneObject::Create("Sphere");
             _sceneRenderableSO->SetParent(_sceneSO);
             _renderable = _sceneRenderableSO->AddComponent<CRenderable>();
-            _renderable->SetMesh(_sphereMesh);
+            _renderable->SetMesh(_furnitureMesh);
             _renderable->SetZPrepassMesh(_zPrepassSphereMesh);
-            _renderable->SetMaterial(_sphereMaterial);
+            _renderable->SetMaterial(_furnitureMaterial);
             _renderable->SetName("Renderable");
             _renderable->Initialize();
             _renderable->SetCastLight(true);
@@ -1514,6 +1521,16 @@ namespace te
             _sceneRenderableSO->Rotate(Vector3::UNIT_Y, Radian(Math::HALF_PI));
             _sceneRenderableSO->Move(Vector3(0.0f, -1.0f, 0.0f));
         }
+        // ######################################################
+
+        // FILL SCENE WITH SOUND
+        // ######################################################
+        _sceneSoundSO = SceneObject::Create("Sound");
+        _sceneSoundSO->SetParent(_sceneSO);
+        _audioSource = _sceneSoundSO->AddComponent<CAudioSource>();
+        _audioSource->Initialize();
+        _audioSource->SetClip(_audioClip);
+        // ######################################################
 
         // LOAD SCRIPT
         {
@@ -1532,7 +1549,8 @@ namespace te
             EditorResManager::Instance().Add(_script);
         }
 
-        EditorResManager::Instance().Add<Material>(_sphereMaterial);
+        EditorResManager::Instance().Add<Material>(_furnitureMaterial);
+        EditorResManager::Instance().Add<AudioClip>(_audioClip);
 #endif
     }
 

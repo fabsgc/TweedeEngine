@@ -18,7 +18,10 @@ namespace te
             _factory = loadPluginFunc();
 
             if (_factory != nullptr)
+            {
                 _factory->StartUp();
+                _deviceWatcher = te_new<AudioDeviceWatcher>();
+            }
         }
     }
 
@@ -34,6 +37,7 @@ namespace te
 
                 _factory->ShutDown();
                 unloadPluginFunc(_factory);
+                te_safe_delete(_deviceWatcher);
             }
 
             DynLibManager::Instance().Unload(_plugin);

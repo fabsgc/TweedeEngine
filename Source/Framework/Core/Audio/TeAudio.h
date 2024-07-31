@@ -11,7 +11,11 @@ namespace te
     struct TE_CORE_EXPORT AudioDevice
     {
         String Name;
+
+        friend bool TE_CORE_EXPORT operator== (const AudioDevice& lhs, const AudioDevice& rhs);
     };
+
+    bool TE_CORE_EXPORT operator== (const AudioDevice& lhs, const AudioDevice& rhs);
 
     /** Provides global functionality relating to sounds and music. */
     class TE_CORE_EXPORT Audio : public Module<Audio>

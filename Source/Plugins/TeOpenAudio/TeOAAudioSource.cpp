@@ -228,7 +228,7 @@ namespace te
 
     void OAAudioSource::Play()
     {
-        if (_globallyPaused)
+        if (gAudio().IsPaused())
             return;
 
         if(GetState() == AudioSourceState::Playing)
@@ -342,6 +342,8 @@ namespace te
 
     void OAAudioSource::Rebuild()
     {
+        _globallyPaused = gAudio().IsPaused();
+
         auto& contexts = gOAAudio().GetContexts();
         UINT32 numContexts = (UINT32)contexts.size();
 

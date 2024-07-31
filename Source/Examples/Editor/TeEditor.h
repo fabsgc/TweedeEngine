@@ -308,19 +308,21 @@ namespace te
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         // TODO Temp for debug purpose
-        HMesh _sphereMesh;
+        HMesh _furnitureMesh;
         HZPrepassMesh _zPrepassSphereMesh;
         HTexture _skyboxTexture;
-        HMaterial _sphereMaterial;
+        HMaterial _furnitureMaterial;
 
         HSceneObject _sceneRenderableSO;
         HSceneObject _sceneLightSO;
         HSceneObject _sceneSkyboxSO;
+        HSceneObject _sceneSoundSO;
 
         HLight _light;
         HSkybox _skybox;
         HRenderable _renderable;
-
+        HAudioSource _audioSource;
+        HAudioClip _audioClip;
         HScript _script;
 #endif
     };

@@ -44,9 +44,6 @@ namespace te
         /** @copydoc Audio::Update */
         void Update() override;
 
-        /** @copydoc Audio::Update */
-        void UpdateDevices() override;
-
         /** @copydoc Audio::SetActiveDevice */
         void SetActiveDevice(const AudioDevice& device) override;
 
@@ -118,6 +115,18 @@ namespace te
 
         /** @copydoc Audio::CreateSource */
         SPtr<AudioSource> CreateSource() override;
+
+        /** Try to open a device with new device AudioDevice */
+        bool OpenDevice(const AudioDevice& device);
+
+        /** Try to reopen current device with new device AudioDevice */
+        bool ReopenDevice(const AudioDevice& device);
+
+        /** @copydoc Audio::Update */
+        void UpdateDevices() override;
+
+        /** Fill _allDevices and _defaultDevice */
+        void FindAllAvailableDevices();
 
         /**
          * Delete all existing contexts and rebuild them according to the listener list. All audio sources will be rebuilt

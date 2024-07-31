@@ -6,6 +6,11 @@ namespace te
 {
     TE_MODULE_STATIC_MEMBER(Audio)
 
+    bool operator== (const AudioDevice& lhs, const AudioDevice& rhs)
+    {
+        return lhs.Name == rhs.Name;
+    }
+
     void Audio::Play(const HAudioClip& clip, const Vector3& position, float volume)
     {
         Transform transform;

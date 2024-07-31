@@ -48,6 +48,6 @@ namespace te
     private:
         DynLib* _plugin = nullptr;
         AudioFactory* _factory = nullptr;
-        AudioDeviceWatcher _deviceWatcher;
+        AudioDeviceWatcher* _deviceWatcher = nullptr;
     };
 }

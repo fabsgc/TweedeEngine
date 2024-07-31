@@ -5,6 +5,7 @@
 #include "TeOAAudioSource.h"
 #include "Audio/TeAudioUtility.h"
 #include "AL/al.h"
+#include "AL/alext.h"
 
 namespace te
 {
@@ -12,7 +13,8 @@ namespace te
 
     OAAudio::OAAudio()
     {
-        UpdateDevices();
+        FindAllAvailableDevices();
+        SetActiveDevice(_defaultDevice);
     }
 
     OAAudio::~OAAudio()
@@ -20,10 +22,11 @@ namespace te
         StopManualSources();
 
         assert(_listeners.empty() && _sources.empty()); // Everything should be destroyed at this point
-        ClearContexts();
-
+        
         if (_device != nullptr)
             alcCloseDevice(_device);
+
+        ClearContexts();
     }
 
     void OAAudio::SetVolume(float volume)
@@ -94,17 +97,28 @@ namespace te
 
     void OAAudio::UpdateDevices()
     {
+        FindAllAvailableDevices();
+
+        int connected = false;
+        alcGetIntegerv(_device, ALC_CONNECTED, 1, &connected);
+        if (!connected)
+        {
+            TE_DEBUG("Device disconnected");
+        }
+
+        // If active device is not present in new available devices, we switch to the default one
+        if (std::find(_allDevices.begin(), _allDevices.end(), _activeDevice) == _allDevices.end() || !connected)
+        {
+            SetActiveDevice(_defaultDevice);
+        }
+    }
+
+    void OAAudio::FindAllAvailableDevices()
+    {
         _allDevices.clear();
 
-        if (_device != nullptr)
-            alcCloseDevice(_device);
-
-        bool enumeratedDevices = true;
         if (alcIsExtensionPresent(nullptr, "ALC_ENUMERATE_ALL_EXT") != ALC_FALSE)
         {
-            const ALCchar* defaultDevice = alcGetString(nullptr, ALC_DEFAULT_ALL_DEVICES_SPECIFIER);
-            _defaultDevice.Name = String(defaultDevice);
-
             const ALCchar* devices = alcGetString(nullptr, ALC_ALL_DEVICES_SPECIFIER);
 
             Vector<char> deviceName;
@@ -129,45 +143,134 @@ namespace te
                 deviceName.push_back(*devices);
                 devices++;
             }
+
+            const ALCchar* defaultDevice = alcGetString(nullptr, ALC_DEFAULT_ALL_DEVICES_SPECIFIER);
+            _defaultDevice.Name = ReplaceAll(String(defaultDevice), u8"OpenAL Soft on ", u8"");
         }
         else
         {
+            _defaultDevice.Name = "";
             _allDevices.push_back({ u8"" });
-            enumeratedDevices = false;
         }
+    }
 
-        _activeDevice = _defaultDevice;
+    bool OAAudio::OpenDevice(const AudioDevice& device)
+    {
+        alGetError();
 
-        String defaultDeviceName = _defaultDevice.Name;
-        if (enumeratedDevices)
-            _device = alcOpenDevice(defaultDeviceName.c_str());
-        else
-            _device = alcOpenDevice(nullptr);
+        ALenum error;
+        String narrowName = device.Name != "" ? "OpenAL Soft on " + device.Name : "";
+
+        _device = alcOpenDevice(narrowName != "" ? narrowName.c_str() : nullptr);
 
         if (_device == nullptr)
-            TE_DEBUG("Failed to open OpenAL device: " + defaultDeviceName);
+        {
+            TE_DEBUG("Failed to open OpenAL device : " + narrowName);
+        }
+        else if ((error = alGetError()) != AL_NO_ERROR && error != AL_INVALID_OPERATION)
+        {
+            TE_DEBUG("Something wrong happened during device reopenning : " + narrowName);
+        }
+        else
+        {
+            int connected = false;
+            alcGetIntegerv(_device, ALC_CONNECTED, 1, &connected);
+            if (connected)
+            {
+                _activeDevice = device;
+                return true;
+            }
+            else
+            {
+                TE_DEBUG("Device disconnected : " + narrowName);
+            }
+        }
 
-        RebuildContexts();
+        return false;
+    }
+
+    bool OAAudio::ReopenDevice(const AudioDevice& device)
+    {
+        alGetError();
+
+        if (!_device)
+        {
+            TE_DEBUG("No device already opened");
+            return false;
+        }
+
+        if (!alcIsExtensionPresent(_device, "ALC_SOFT_reopen_device"))
+        {
+            TE_DEBUG("ALC_SOFT_reopen_device not available");
+            return false;
+        }
+
+        ALCboolean(ALC_APIENTRY * alcReopenDeviceSOFT)(ALCdevice * device, const ALCchar * name, const ALCint * attribs);
+        alcReopenDeviceSOFT = reinterpret_cast<ALCboolean(ALC_APIENTRY*)(ALCdevice * device, const ALCchar * name, const ALCint * attribs)>(alcGetProcAddress(_device, "alcReopenDeviceSOFT"));
+
+        String narrowName = device.Name != "" ? "OpenAL Soft on " + device.Name : "";
+        if (alcReopenDeviceSOFT(_device, narrowName != "" ? narrowName.c_str() : nullptr, NULL))
+        {
+            ALenum error;
+            if ((error = alGetError()) != AL_NO_ERROR && error != AL_INVALID_OPERATION)
+            {
+                TE_DEBUG("Something wrong happened during device reopenning : " + narrowName);
+            }
+            else
+            {
+                int connected = false;
+                alcGetIntegerv(_device, ALC_CONNECTED, 1, &connected);
+                if (connected)
+                {
+                    _activeDevice = device;
+                    return true;
+                }
+                else
+                {
+                    TE_DEBUG("Device disconnected : " + narrowName);
+                }
+            }
+        }
+        else
+        {
+            TE_DEBUG("Failed to reopen OpenAL device with : " + narrowName);
+        }
+
+        return false;
     }
 
     void OAAudio::SetActiveDevice(const AudioDevice& device)
     {
-        if (_allDevices.size() == 1)
-            return; // No devices to change to, keep the active device as is
+        FindAllAvailableDevices();
 
-        ClearContexts();
+        if (!_device)
+        {
+            if (!OpenDevice(device))
+            {
+                for (const auto& audioDevice : _allDevices)
+                {
+                    if (OpenDevice(audioDevice))
+                    {
+                        break;
+                    }
+                }
+            }
 
-        if (_device != nullptr)
-            alcCloseDevice(_device);
-
-        _activeDevice = device;
-
-        String narrowName = device.Name;
-        _device = alcOpenDevice(narrowName.c_str());
-        if (_device == nullptr)
-            TE_DEBUG("Failed to open OpenAL device: " + narrowName);
-
-        RebuildContexts();
+            RebuildContexts();
+        }
+        else
+        {
+            if (!ReopenDevice(device))
+            {
+                for (const auto& audioDevice : _allDevices)
+                {
+                    if (ReopenDevice(audioDevice))
+                    {
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     bool OAAudio::IsExtensionSupported(const String& extension) const
@@ -402,7 +505,6 @@ namespace te
             source->Rebuild();
     }
 
-    /** Delete all existing OpenAL contexts. */
     void OAAudio::ClearContexts()
     {
         alcMakeContextCurrent(nullptr);
@@ -413,7 +515,6 @@ namespace te
         _contexts.clear();
     }
 
-    /** Streams new data to audio sources that require it. */
     void OAAudio::UpdateStreaming()
     {
         {

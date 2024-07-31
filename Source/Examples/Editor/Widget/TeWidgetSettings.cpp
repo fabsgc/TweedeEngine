@@ -3,6 +3,7 @@
 #include "../TeEditor.h"
 #include "Physics/TePhysics.h"
 #include "Animation/TeAnimationManager.h"
+#include "Audio/TeAudio.h"
 
 namespace te
 {
@@ -121,6 +122,47 @@ namespace te
                 }
             }
             ImGui::Separator();
+        }
+
+        if (ImGui::CollapsingHeader("Audio", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            // Device
+            {
+                AudioDevice activeDevice = gAudio().GetActiveDevice();
+                ImGuiExt::ComboOptions<AudioDevice> options;
+
+                const Vector<AudioDevice>& devices = gAudio().GetAllDevices();
+
+                options.AddOption(AudioDevice(), "Default");
+                for (const auto device : devices)
+                {
+                    if (device.Name != "")
+                        options.AddOption(device, device.Name != "" ? device.Name : "Default");
+                }
+
+                if (ImGuiExt::RenderOptionCombo<AudioDevice>(&activeDevice, "##settings_audio_device", "Audio output", options, width))
+                {
+                    gAudio().SetActiveDevice(activeDevice);
+                }
+            }
+
+            // Volume
+            {
+                float volume = gAudio().GetVolume();
+                if (ImGuiExt::RenderOptionFloat(volume, "##settings_audio_volume", "Volume", 0.f, 1.f))
+                {
+                    gAudio().SetVolume(volume);
+                }
+            }
+
+            // Audio pause
+            {
+                bool running = !gAudio().IsPaused();
+                if (ImGuiExt::RenderOptionBool(running, "##settings_audio_enable", "Enable Audio"))
+                {
+                    gAudio().SetPaused(!running);
+                }
+            }
         }
     }
 

@@ -319,7 +319,7 @@ namespace te
         char inputName[256];
         const std::vector<HScript>& scripts = _selections.ClickedSceneObject->GetScripts();
         UUID emptyScript = UUID(50, 0, 0, 0);
-        UUID loadScript = UUID::EMPTY;
+        UUID loadScript = emptyScript;
 
         EditorResManager::ResourcesContainer& container = EditorResManager::Instance().Get<Script>();
 
@@ -357,7 +357,7 @@ namespace te
 
             if (ImGuiExt::RenderOptionCombo<UUID>(&loadScript, "##scene_object_add_script", "Add script", scriptsOptions, width))
             {
-                if (loadScript != UUID::EMPTY)
+                if (loadScript != emptyScript)
                 {
                     HScript loadedScript = EditorResManager::Instance().Find<Script>(loadScript);
                     if (loadedScript.IsLoaded())
