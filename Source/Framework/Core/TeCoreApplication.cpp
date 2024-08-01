@@ -95,6 +95,7 @@ namespace te
         TE_ASSERT_ERROR(_renderer.get(), "Failed to create renderer");
 
         Importer::StartUp();
+        AudioManager::StartUp(_startUpDesc.Audio);
         for (auto& importerName : _startUpDesc.Importers)
             LoadPlugin(importerName);
 
@@ -115,7 +116,6 @@ namespace te
         _window->InitializeGui();
         _frameData = te_shared_ptr_new<FrameData>();
 
-        AudioManager::StartUp(_startUpDesc.Audio);
         AnimationManager::StartUp();
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
