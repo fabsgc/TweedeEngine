@@ -234,7 +234,7 @@ MACRO (install_dependency_binaries FOLDER_NAME)
         else ()
             set (SRC_RELEASE ${${LOOP_ENTRY}_LIBRARY_RELEASE})
             set (SRC_DEBUG ${${LOOP_ENTRY}_LIBRARY_DEBUG})
-            set (DESTINATION_DIR lib)
+            set (DESTINATION_DIR lib/)
 
             list(GET SRC_RELEASE 0 HEAD)
             get_filename_component (SRC_DIR ${HEAD} DIRECTORY)
